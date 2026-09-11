@@ -17351,6 +17351,16 @@ const COURSES = [
         modules: PREK_MODULES(),
     },
     {
+        id: 'first-sounds-pk',
+        grade: 'PK4',
+        subject: 'Reading',
+        title: 'First sounds and letters',
+        audience: 'Pre-K',
+        readAloud: true,
+        linear: false, // parallel activities, like the pre-K math course
+        modules: PREK_READING_MODULES(),
+    },
+    {
         id: 'counting-k',
         grade: 'K',
         subject: 'Math',
@@ -17701,6 +17711,67 @@ function PREK_MODULES() {
             },
             sources: ['Aligned with Texas Prekindergarten Guidelines V.A.1 to V.A.3 (counting and cardinality to at least 3) and Head Start ELOF Goal P-MATH 1.'],
             generators: ['p3-how-many', 'p3-tap-group', 'p3-tap-one', 'p3-more', 'p3-how-many'],
+        },
+    ];
+}
+// Pre-K reading. Listening and looking, nothing to read. Rhymes, first sounds, and a
+// handful of big letters, each spoken and tapped.
+function PREK_READING_MODULES() {
+    return [
+        {
+            id: 'listen-for-rhymes',
+            order: 1,
+            title: 'Rhyme time',
+            tagline: 'Words that sound alike',
+            lesson: {
+                paragraphs: ['Some words end the same way. Cat. Hat. They rhyme.', 'Listen to the end of the word.'],
+                keyIdea: 'Rhymes end the same way.',
+                example: { kind: 'letters', text: 'cat hat', caption: 'Cat. Hat.' },
+                script: [
+                    { say: 'Cat. Hat. They sound alike at the end.', show: { kind: 'letters', text: 'cat hat' } },
+                    { say: 'Dog. Log. They rhyme too.', show: { kind: 'letters', text: 'dog log' } },
+                    { say: 'Listen to the end of the word.', show: { kind: 'letters', text: 'cat hat' } },
+                ],
+            },
+            sources: ['Aligned with Texas Prekindergarten Guidelines III.B.1 (rhyming) and Head Start ELOF Goal P-LIT 1.'],
+            generators: ['rr-does-rhyme', 'rr-pick-rhyme', 'rr-does-rhyme', 'rr-pick-rhyme', 'rr-does-rhyme'],
+        },
+        {
+            id: 'first-sounds',
+            order: 2,
+            title: 'First sounds',
+            tagline: 'How a word starts',
+            lesson: {
+                paragraphs: ['Every word starts with a sound. Mmm, moon. Sss, sun.', 'Say the word slowly. Listen to the start.'],
+                keyIdea: 'Listen to the start of the word.',
+                example: { kind: 'letters', text: 'M', caption: 'Mmm. Moon.' },
+                script: [
+                    { say: 'Moon. Mmm. Moon starts with mmm.', show: { kind: 'letters', text: 'M' } },
+                    { say: 'Sun. Sss. Sun starts with sss.', show: { kind: 'letters', text: 'S' } },
+                    { say: 'Say the word slowly. Listen to the start.', show: { kind: 'letters', text: 'M S' } },
+                ],
+            },
+            sources: ['Aligned with Texas Prekindergarten Guidelines III.B.6 (beginning sounds) and Head Start ELOF Goal P-LIT 1.'],
+            generators: ['rs-same-start', 'rs-odd-start', 'rs-same-start', 'rs-odd-start', 'rs-same-start'],
+        },
+        {
+            id: 'big-letters',
+            order: 3,
+            title: 'Big letters',
+            tagline: 'A, B, C',
+            lesson: {
+                paragraphs: ['Letters have names. This is A. This is B.', 'Find the letter when you hear its name.'],
+                keyIdea: 'Every letter has a name.',
+                example: { kind: 'letters', text: 'A', caption: 'A.' },
+                script: [
+                    { say: 'This is A.', show: { kind: 'letters', text: 'A' } },
+                    { say: 'This is B.', show: { kind: 'letters', text: 'B' } },
+                    { say: 'This is C.', show: { kind: 'letters', text: 'C' } },
+                    { say: 'Find the letter when you hear its name.', show: { kind: 'letters', text: 'A B C' } },
+                ],
+            },
+            sources: ['Aligned with Texas Prekindergarten Guidelines III.C.1 (letter names) and Head Start ELOF Goal P-LIT 3.'],
+            generators: ['pl-tap-letter', 'pl-name-letter', 'pl-tap-letter', 'pl-name-letter', 'pl-tap-letter'],
         },
     ];
 }
@@ -19112,6 +19183,20 @@ Object.assign(GENERATORS, {
         const [a, b] = shuffle(rng, [1, 2, 3]).slice(0, 2);
         return { type: 'choice', story: null, prompt: 'Which has more?', choices: shuffle(rng, [`dots:${a}`, `dots:${b}`]), answer: `dots:${Math.max(a, b)}`,
             explain: `${Math.max(a, b)} is more than ${Math.min(a, b)}.`, visual: null, explainVisual: null };
+    },
+});
+// Pre-K letters: only the first few, big and spoken.
+const PREK_LETTERS = ['A', 'B', 'C', 'D', 'E', 'M', 'S'];
+Object.assign(GENERATORS, {
+    'pl-tap-letter': (rng) => {
+        const L = pick(rng, PREK_LETTERS);
+        return { type: 'choice', story: null, prompt: `Tap the letter ${L}.`, choices: shuffle(rng, [L, ...shuffle(rng, PREK_LETTERS.filter((x) => x !== L)).slice(0, 2)]), answer: L,
+            explain: `This is ${L}.`, visual: null, explainVisual: null };
+    },
+    'pl-name-letter': (rng) => {
+        const L = pick(rng, PREK_LETTERS);
+        return { type: 'choice', story: null, prompt: 'What letter is this?', choices: shuffle(rng, [L, ...shuffle(rng, PREK_LETTERS.filter((x) => x !== L)).slice(0, 2)]), answer: L,
+            explain: `It is ${L}.`, visual: { kind: 'letters', text: L }, explainVisual: null };
     },
 });
 // Counting questions. A choice written as 'dots:4' means "a picture of 4 dots";
@@ -22488,6 +22573,26 @@ const WONDER = [
         closing: 'Who did you help this week? How did it feel afterwards?',
     },
     {
+        id: 'w-quiet-sound',
+        theme: 'world',
+        stage: 'early',
+        courseIds: ['first-sounds-pk'],
+        answerMode: 'pick',
+        prompt: 'What is the quietest sound you can hear right now?',
+        options: ['My breath', 'The wind', 'Not sure'],
+        simple: [
+            { voice: 'A scientist says', says: 'Close your eyes and listen. There is always a small sound somewhere.' },
+            { voice: 'An artist says', says: 'Quiet sounds are hiding under the loud ones.' },
+        ],
+        perspectives: [
+            { voice: 'A scientist', says: 'Your ears are always working, even when you are not listening. Close your eyes for a moment and the small sounds come forward: a clock, a bird, your own breath. They were there all along, waiting under the louder ones.' },
+            { voice: 'An artist', says: 'Musicians practice listening for the quietest sounds, because that is where a song gets its feeling. Try sitting still for the time it takes to count to ten and see how many sounds you can find.' },
+            { voice: 'A grandparent of faith', says: 'Many traditions make room for quiet on purpose, a moment before a meal or at the end of the day. Quiet is not an empty thing. It is where people notice what they were too busy to hear.' },
+            { voice: 'A skeptic', says: 'Is there such a thing as total silence? People who sit in a room built to be perfectly quiet say they can hear their own heartbeat. So maybe there is no silence, only sounds we have stopped noticing.' },
+        ],
+        closing: 'Close your eyes and count the sounds you can hear. How many did you find?',
+    },
+    {
         id: 'w-ants-elephant',
         theme: 'world',
         stage: 'early',
@@ -24087,6 +24192,17 @@ const CURRICULUM = [
         ],
     },
     {
+        grade: 'PK4', subject: 'Reading', status: 'ready',
+        source: 'Texas Prekindergarten Guidelines (2015), Domain III Emergent Literacy: Reading; Head Start Early Learning Outcomes Framework, Literacy',
+        standards: [
+            { framework: 'TEKS', code: 'PK.III.B.1', text: 'Child separates a normally spoken four-word sentence into individual words; identifies rhyming words.', moduleIds: ['listen-for-rhymes'] },
+            { framework: 'TEKS', code: 'PK.III.B.6', text: 'Child can produce a word that begins with the same sound as a given pair of words.', moduleIds: ['first-sounds'] },
+            { framework: 'TEKS', code: 'PK.III.C.1', text: 'Child names at least 20 upper- and at least 20 lower-case letters.', moduleIds: ['big-letters'] },
+            { framework: 'CCSS', code: 'ELOF.P-LIT.1', text: 'Demonstrates awareness that spoken language is composed of smaller segments of sound.', moduleIds: ['listen-for-rhymes', 'first-sounds'] },
+            { framework: 'CCSS', code: 'ELOF.P-LIT.3', text: 'Identifies letters of the alphabet and produces correct sounds associated with letters.', moduleIds: ['big-letters'] },
+        ],
+    },
+    {
         grade: 'K', subject: 'Math', status: 'ready', // every TEKS standard has a module; CCSS K.NBT.A.1 (teen numbers as ten and some more) is the one open item
         source: 'Texas Essential Knowledge and Skills, Kindergarten Mathematics (TEKS §111.2); Common Core Kindergarten Mathematics',
         standards: [
@@ -24784,6 +24900,17 @@ const KID_ANIMATION = `
   .edu-welcome-card h2 { font-size: 26px !important; }
   .edu-welcome-links { padding-top: 48px; padding-bottom: 24px; }
   .edu-welcome-links button, .edu-welcome-links p { font-size: 18px !important; }
+}
+@media (min-width: 1000px) {
+  /* Everything grows a little on a laptop, so text and taps stay in proportion. */
+  .edu-wrap { zoom: 1.08; }
+  .edu-wrap > div[style*="margin-bottom: 14px"] { margin-bottom: 22px !important; }
+  .edu-wrap h1 { margin-top: 20px !important; }
+  .edu-classroom-intro { padding: 12px 90px 0 !important; }
+  .edu-two-up { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: stretch; }
+  .edu-two-up > div { margin-top: 0 !important; margin-bottom: 0 !important; }
+  .edu-narrow { max-width: 380px; margin-left: auto; margin-right: auto; }
+  .edu-backup-link { font-size: 19px !important; }
 }
 @media (min-width: 1100px) {
   .edu-side { display: block; position: fixed; top: 0; bottom: 0; width: 300px; pointer-events: none; z-index: 0; opacity: 0.6; }
@@ -26353,9 +26480,11 @@ function EduSphereApp() {
                     "PIN last reset ",
                     fmtDate((educator.resets || []).slice(-1)[0]),
                     ".")),
-                react_1.default.createElement("p", { style: { color: C.muted, marginTop: 0, fontSize: 15, textAlign: 'center' } },
-                    "Input student ID, add, then assign a nickname. Students will login by selecting their name to avoid typos.",
-                    react_1.default.createElement("button", { type: "button", onClick: () => setShowRosterTip(!showRosterTip), "aria-label": "More about nicknames", style: { background: 'none', border: `1.5px solid ${C.green}`, color: C.green, fontFamily: FONT, fontSize: 12, fontWeight: 700, lineHeight: '15px', width: 18, height: 18, borderRadius: 999, cursor: 'pointer', padding: 0, marginLeft: 6, verticalAlign: 'middle' } }, "i")),
+                react_1.default.createElement("p", { className: "edu-classroom-intro", style: { color: C.muted, marginTop: 0, fontSize: 15, textAlign: 'center' } },
+                    "Input student ID, add, then assign a nickname. Students will login by selecting their name to avoid ",
+                    react_1.default.createElement("span", { style: { whiteSpace: 'nowrap' } },
+                        "typos.",
+                        react_1.default.createElement("button", { type: "button", onClick: () => setShowRosterTip(!showRosterTip), "aria-label": "More about nicknames", style: { background: 'none', border: `1.5px solid ${C.green}`, color: C.green, fontFamily: FONT, fontSize: 12, fontWeight: 700, lineHeight: '15px', width: 18, height: 18, borderRadius: 999, cursor: 'pointer', padding: 0, marginLeft: 6, verticalAlign: 'middle' } }, "i"))),
                 showRosterTip && (react_1.default.createElement(TipText, null,
                     "Early-years students are given a picture beside their nickname, so they can find themselves on the sign-in screen without reading.",
                     stateCode && react_1.default.createElement(react_1.default.Fragment, null,
@@ -26367,19 +26496,21 @@ function EduSphereApp() {
                         "). ",
                         react_1.default.createElement("button", { type: "button", onClick: () => { setStateDraft(stateCode); setScreen('change-state'); }, style: { ...linkBtn, fontSize: 13, padding: 0 } }, "Change state")))),
                 react_1.default.createElement("div", { style: { height: 10 } }),
-                react_1.default.createElement(Btn, { full: true, onClick: () => { setAdding(true); setRosterError(''); setRosterInput(''); setNewLevel(''); setNewPicture(''); setNewTint(''); } }, "Add someone new"),
+                react_1.default.createElement("div", { className: "edu-narrow" },
+                    react_1.default.createElement(Btn, { full: true, onClick: () => { setAdding(true); setRosterError(''); setRosterInput(''); setNewLevel(''); setNewPicture(''); setNewTint(''); } }, "Add someone new")),
                 react_1.default.createElement("div", { style: { height: 14 } }),
                 visible.length > 1 && (react_1.default.createElement("div", { style: card },
                     react_1.default.createElement("div", { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10 } },
-                        react_1.default.createElement(Btn, { full: true, kind: "secondary", onClick: async () => {
-                                const students = [];
-                                for (const st of visible) {
-                                    const r = await loadRecord(st.id);
-                                    students.push({ id: st.id, label: st.label, events: r.events });
-                                }
-                                setClassRows(classView(students, new Date().toISOString()));
-                                setScreen('class-view');
-                            } }, "Who needs help")),
+                        react_1.default.createElement("div", { className: "edu-narrow" },
+                            react_1.default.createElement(Btn, { full: true, kind: "secondary", onClick: async () => {
+                                    const students = [];
+                                    for (const st of visible) {
+                                        const r = await loadRecord(st.id);
+                                        students.push({ id: st.id, label: st.label, events: r.events });
+                                    }
+                                    setClassRows(classView(students, new Date().toISOString()));
+                                    setScreen('class-view');
+                                } }, "Who needs help"))),
                     react_1.default.createElement("p", { style: { margin: '6px 0 0', fontSize: 14, color: C.muted, textAlign: 'center' } }, "Every student organized by most in need."))),
                 adding && (react_1.default.createElement("div", { style: { position: 'fixed', inset: 0, background: 'rgba(36, 41, 31, 0.55)', zIndex: 100, overflowY: 'auto', padding: '24px 12px' } },
                     react_1.default.createElement("div", { className: "edu-rise", style: { maxWidth: 560, margin: '0 auto', background: C.surface, borderRadius: 14, padding: 18, position: 'relative' } },
@@ -26432,60 +26563,61 @@ function EduSphereApp() {
                         rosterError && react_1.default.createElement("p", { style: { color: C.clay, fontSize: 14, margin: '10px 0 0' } }, rosterError)))),
                 visible.length === 0 && react_1.default.createElement("div", { style: card },
                     react_1.default.createElement("p", { style: { margin: 0, color: C.muted } }, "Nobody here yet. Add someone above.")),
-                visible.length > 0 && (react_1.default.createElement("button", { type: "button", onClick: () => setActiveOpen(!activeOpen), "aria-expanded": activeOpen, style: { fontFamily: FONT, width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'linear-gradient(135deg, #D6E6DB 0%, #E6F0E8 100%)', border: '1px solid #C9DCCF', borderRadius: 12, padding: '14px 16px', marginBottom: 10, cursor: 'pointer', color: C.ink } },
-                    react_1.default.createElement("span", { style: { fontSize: 18, fontWeight: 600 } }, "Active Students"),
-                    react_1.default.createElement("span", { style: { fontSize: 14, color: C.muted } },
-                        visible.length,
-                        " ",
-                        activeOpen ? '▴' : '▾'))),
-                activeOpen && visible.map((st) => (react_1.default.createElement("div", { key: st.id, style: card }, renamingId === st.id ? (react_1.default.createElement(react_1.default.Fragment, null,
-                    react_1.default.createElement("input", { value: renameInput, onChange: (e) => setRenameInput(e.target.value), placeholder: "Name shown to the student", style: { fontFamily: FONT, fontSize: 17, padding: '10px 12px', width: '100%', boxSizing: 'border-box', border: `2px solid ${C.line}`, borderRadius: 10, marginBottom: 10 } }),
-                    react_1.default.createElement("div", { style: { display: 'flex', gap: 10 } },
-                        react_1.default.createElement(Btn, { onClick: async () => { const r = renameStudent(roster, st.id, renameInput); await applyRoster(r.roster, r.error); if (!r.error)
-                                setRenamingId(null); } }, "Save name"),
-                        react_1.default.createElement(Btn, { kind: "secondary", onClick: () => { setRenamingId(null); setRosterError(''); } }, "Cancel")),
-                    react_1.default.createElement("p", { style: { color: C.muted, fontSize: 13, margin: '10px 0 0' } }, "The ID stays the same, so progress follows the new name."))) : (react_1.default.createElement(react_1.default.Fragment, null,
-                    react_1.default.createElement("div", { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10 } },
-                        react_1.default.createElement("span", { style: { display: 'flex', alignItems: 'center', gap: 10 } },
-                            st.picture && react_1.default.createElement(StudentPicture, { name: st.picture, tint: st.tint, size: 40 }),
-                            react_1.default.createElement("span", null,
-                                react_1.default.createElement("span", { style: { display: 'block', fontSize: 18, fontWeight: 600 } }, st.label),
-                                st.level && react_1.default.createElement("span", { style: { display: 'block', fontSize: 12, color: C.muted } }, levelFor(st.level).title))),
-                        react_1.default.createElement("span", { style: { alignSelf: 'center', flexShrink: 0 } },
-                            react_1.default.createElement(Btn, { kind: "secondary", disabled: busy, onClick: async () => {
-                                    setBusy(true);
-                                    const rec = await loadRecord(st.id);
-                                    setEducatorRecord(rec);
-                                    setRecommendedIds(recommendedCourseIds(rec.events, st.level));
-                                    setOpenSubjects([]);
-                                    setShowAllCourses(false);
-                                    setConfirmReset(false);
-                                    setBusy(false);
-                                    setScreen('educator-report');
-                                } }, "Open report"))),
-                    react_1.default.createElement("div", { style: { display: 'flex', gap: 8, flexWrap: 'wrap', marginTop: 10 } },
-                        react_1.default.createElement("button", { type: "button", onClick: () => { setRenamingId(st.id); setRenameInput(st.label); setRosterError(''); }, style: linkBtn }, "Rename"),
-                        react_1.default.createElement("button", { type: "button", onClick: () => setPictureFor(pictureFor === st.id ? null : st.id), style: linkBtn }, st.picture ? 'Change picture' : 'Add picture'),
-                        react_1.default.createElement("button", { type: "button", onClick: () => applyRoster(setStudentActive(roster, st.id, false)), style: linkBtn }, "Hide"),
-                        mergeFrom === '' ? (react_1.default.createElement("button", { type: "button", onClick: () => { setMergeFrom(st.id); setRosterError(''); }, style: linkBtn }, "Merge into\u2026")) : mergeFrom === st.id ? (react_1.default.createElement("button", { type: "button", onClick: () => setMergeFrom(''), style: linkBtn }, "Cancel merge")) : (react_1.default.createElement("button", { type: "button", onClick: async () => {
-                                const r = mergeStudents(roster, st.id, mergeFrom);
-                                if (!r.error) {
-                                    const keep = await loadRecord(st.id);
-                                    const gone = await loadRecord(mergeFrom);
-                                    await saveRecord({ ...keep, events: mergeEventLogs(keep.events, gone.events) });
-                                }
-                                await applyRoster(r.roster, r.error);
-                                setMergeFrom('');
-                            }, style: { ...linkBtn, color: C.gold } }, "Merge here"))),
-                    mergeFrom === st.id && react_1.default.createElement("p", { style: { color: C.gold, fontSize: 13, margin: '8px 0 0' } }, "Now tap \u201CMerge here\u201D on the student to keep. Both histories are joined; nothing is deleted."),
-                    pictureFor === st.id && (react_1.default.createElement("div", { style: { marginTop: 10 } },
-                        react_1.default.createElement("div", { style: { display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 8 } }, PICTURES.map((pic) => (react_1.default.createElement("button", { key: pic, type: "button", onClick: () => applyRoster(setStudentPicture(roster, st.id, pic, st.tint || TINTS[0].id)), "aria-label": pic, style: { padding: 3, borderRadius: 12, cursor: 'pointer', background: C.surface, border: `2px solid ${st.picture === pic ? C.green : C.line}` } },
-                            react_1.default.createElement(StudentPicture, { name: pic, tint: st.tint || TINTS[0].id, size: 40 }))))),
-                        react_1.default.createElement("div", { style: { display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' } },
-                            TINTS.map((t) => (react_1.default.createElement("button", { key: t.id, type: "button", onClick: () => applyRoster(setStudentPicture(roster, st.id, st.picture || PICTURES[0], t.id)), "aria-label": t.id, style: { width: 30, height: 30, borderRadius: 999, cursor: 'pointer', background: t.color, border: `3px solid ${st.tint === t.id ? C.green : C.surface}`, boxShadow: `0 0 0 1px ${C.line}` } }))),
-                            st.picture && pictureInUse(roster, st.picture, st.tint, st.id) && react_1.default.createElement("span", { style: { fontSize: 13, color: C.clay } }, "Another student has this one."),
-                            st.picture && react_1.default.createElement("button", { type: "button", style: linkBtn, onClick: async () => { await applyRoster(setStudentPicture(roster, st.id, null)); setPictureFor(null); } }, "No picture"),
-                            react_1.default.createElement("button", { type: "button", style: linkBtn, onClick: () => setPictureFor(null) }, "Done"))))))))),
+                visible.length > 0 && (react_1.default.createElement("div", { style: { ...card, padding: 10, background: 'linear-gradient(135deg, #E6F0E8 0%, #F3F8F4 100%)', borderColor: '#C9DCCF' } },
+                    react_1.default.createElement("button", { type: "button", onClick: () => setActiveOpen(!activeOpen), "aria-expanded": activeOpen, style: { fontFamily: FONT, width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'linear-gradient(135deg, #D6E6DB 0%, #E6F0E8 100%)', border: '1px solid #C9DCCF', borderRadius: 12, padding: '14px 16px', marginBottom: 10, cursor: 'pointer', color: C.ink } },
+                        react_1.default.createElement("span", { style: { fontSize: 18, fontWeight: 600 } }, "Active Students"),
+                        react_1.default.createElement("span", { style: { fontSize: 14, color: C.muted } },
+                            visible.length,
+                            " ",
+                            activeOpen ? '▴' : '▾')),
+                    activeOpen && visible.map((st) => (react_1.default.createElement("div", { key: st.id, style: card }, renamingId === st.id ? (react_1.default.createElement(react_1.default.Fragment, null,
+                        react_1.default.createElement("input", { value: renameInput, onChange: (e) => setRenameInput(e.target.value), placeholder: "Name shown to the student", style: { fontFamily: FONT, fontSize: 17, padding: '10px 12px', width: '100%', boxSizing: 'border-box', border: `2px solid ${C.line}`, borderRadius: 10, marginBottom: 10 } }),
+                        react_1.default.createElement("div", { style: { display: 'flex', gap: 10 } },
+                            react_1.default.createElement(Btn, { onClick: async () => { const r = renameStudent(roster, st.id, renameInput); await applyRoster(r.roster, r.error); if (!r.error)
+                                    setRenamingId(null); } }, "Save name"),
+                            react_1.default.createElement(Btn, { kind: "secondary", onClick: () => { setRenamingId(null); setRosterError(''); } }, "Cancel")),
+                        react_1.default.createElement("p", { style: { color: C.muted, fontSize: 13, margin: '10px 0 0' } }, "The ID stays the same, so progress follows the new name."))) : (react_1.default.createElement(react_1.default.Fragment, null,
+                        react_1.default.createElement("div", { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10 } },
+                            react_1.default.createElement("span", { style: { display: 'flex', alignItems: 'center', gap: 10 } },
+                                st.picture && react_1.default.createElement(StudentPicture, { name: st.picture, tint: st.tint, size: 40 }),
+                                react_1.default.createElement("span", null,
+                                    react_1.default.createElement("span", { style: { display: 'block', fontSize: 18, fontWeight: 600 } }, st.label),
+                                    st.level && react_1.default.createElement("span", { style: { display: 'block', fontSize: 12, color: C.muted } }, levelFor(st.level).title))),
+                            react_1.default.createElement("span", { style: { alignSelf: 'center', flexShrink: 0 } },
+                                react_1.default.createElement(Btn, { kind: "secondary", disabled: busy, onClick: async () => {
+                                        setBusy(true);
+                                        const rec = await loadRecord(st.id);
+                                        setEducatorRecord(rec);
+                                        setRecommendedIds(recommendedCourseIds(rec.events, st.level));
+                                        setOpenSubjects([]);
+                                        setShowAllCourses(false);
+                                        setConfirmReset(false);
+                                        setBusy(false);
+                                        setScreen('educator-report');
+                                    } }, "Open report"))),
+                        react_1.default.createElement("div", { style: { display: 'flex', gap: 8, flexWrap: 'wrap', marginTop: 10 } },
+                            react_1.default.createElement("button", { type: "button", onClick: () => { setRenamingId(st.id); setRenameInput(st.label); setRosterError(''); }, style: linkBtn }, "Rename"),
+                            react_1.default.createElement("button", { type: "button", onClick: () => setPictureFor(pictureFor === st.id ? null : st.id), style: linkBtn }, st.picture ? 'Change picture' : 'Add picture'),
+                            react_1.default.createElement("button", { type: "button", onClick: () => applyRoster(setStudentActive(roster, st.id, false)), style: linkBtn }, "Hide"),
+                            mergeFrom === '' ? (react_1.default.createElement("button", { type: "button", onClick: () => { setMergeFrom(st.id); setRosterError(''); }, style: linkBtn }, "Merge into\u2026")) : mergeFrom === st.id ? (react_1.default.createElement("button", { type: "button", onClick: () => setMergeFrom(''), style: linkBtn }, "Cancel merge")) : (react_1.default.createElement("button", { type: "button", onClick: async () => {
+                                    const r = mergeStudents(roster, st.id, mergeFrom);
+                                    if (!r.error) {
+                                        const keep = await loadRecord(st.id);
+                                        const gone = await loadRecord(mergeFrom);
+                                        await saveRecord({ ...keep, events: mergeEventLogs(keep.events, gone.events) });
+                                    }
+                                    await applyRoster(r.roster, r.error);
+                                    setMergeFrom('');
+                                }, style: { ...linkBtn, color: C.gold } }, "Merge here"))),
+                        mergeFrom === st.id && react_1.default.createElement("p", { style: { color: C.gold, fontSize: 13, margin: '8px 0 0' } }, "Now tap \u201CMerge here\u201D on the student to keep. Both histories are joined; nothing is deleted."),
+                        pictureFor === st.id && (react_1.default.createElement("div", { style: { marginTop: 10 } },
+                            react_1.default.createElement("div", { style: { display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 8 } }, PICTURES.map((pic) => (react_1.default.createElement("button", { key: pic, type: "button", onClick: () => applyRoster(setStudentPicture(roster, st.id, pic, st.tint || TINTS[0].id)), "aria-label": pic, style: { padding: 3, borderRadius: 12, cursor: 'pointer', background: C.surface, border: `2px solid ${st.picture === pic ? C.green : C.line}` } },
+                                react_1.default.createElement(StudentPicture, { name: pic, tint: st.tint || TINTS[0].id, size: 40 }))))),
+                            react_1.default.createElement("div", { style: { display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' } },
+                                TINTS.map((t) => (react_1.default.createElement("button", { key: t.id, type: "button", onClick: () => applyRoster(setStudentPicture(roster, st.id, st.picture || PICTURES[0], t.id)), "aria-label": t.id, style: { width: 30, height: 30, borderRadius: 999, cursor: 'pointer', background: t.color, border: `3px solid ${st.tint === t.id ? C.green : C.surface}`, boxShadow: `0 0 0 1px ${C.line}` } }))),
+                                st.picture && pictureInUse(roster, st.picture, st.tint, st.id) && react_1.default.createElement("span", { style: { fontSize: 13, color: C.clay } }, "Another student has this one."),
+                                st.picture && react_1.default.createElement("button", { type: "button", style: linkBtn, onClick: async () => { await applyRoster(setStudentPicture(roster, st.id, null)); setPictureFor(null); } }, "No picture"),
+                                react_1.default.createElement("button", { type: "button", style: linkBtn, onClick: () => setPictureFor(null) }, "Done"))))))))))),
                 hidden.length > 0 && (react_1.default.createElement("button", { type: "button", onClick: () => setHiddenOpen(!hiddenOpen), "aria-expanded": hiddenOpen, style: { fontFamily: FONT, width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: C.surface, border: `1px solid ${C.line}`, borderRadius: 12, padding: '14px 16px', marginBottom: 10, cursor: 'pointer', color: C.ink } },
                     react_1.default.createElement("span", { style: { fontSize: 18, fontWeight: 600 } },
                         "Inactive Students (",
@@ -26499,21 +26631,22 @@ function EduSphereApp() {
                             st.mergedInto ? ` (merged into ${(findStudent(roster, st.mergedInto) || { label: st.mergedInto }).label})` : ''),
                         !st.mergedInto && react_1.default.createElement("button", { type: "button", onClick: () => applyRoster(setStudentActive(roster, st.id, true)), style: linkBtn }, "Show again")))),
                     react_1.default.createElement("p", { style: { color: C.muted, fontSize: 13, margin: '8px 0 0' } }, "Inactive students are those you've chosen to hide. All student progress is retained but they are hidden from the login screen."))),
-                FEATURES.reflection && (react_1.default.createElement("div", { style: { ...card, marginTop: 22, background: wonderAwaitingReview(wonderReview) > 0 ? C.goldSoft : C.greenSoft, borderColor: wonderAwaitingReview(wonderReview) > 0 ? C.goldSoft : C.greenSoft } },
-                    react_1.default.createElement("p", { style: { margin: '0 0 6px', fontWeight: 600, textAlign: 'center' } }, "Wonder Questions"),
-                    react_1.default.createElement("p", { style: { margin: '0 0 10px', fontSize: 15, textAlign: 'center' } }, wonderAwaitingReview(wonderReview) > 0 ? `${wonderAwaitingReview(wonderReview)} to review. These optional reflection questions remain invisible until approved.` : 'All reviewed. Only the ones you approved are shown to students.'),
-                    react_1.default.createElement(Btn, { full: true, kind: "secondary", onClick: () => setScreen('wonder-review') }, "Wonder Questions"))),
-                FEATURES.lifeSkills && (react_1.default.createElement("div", { style: { ...card, background: C.greenSoft, borderColor: C.greenSoft } },
-                    react_1.default.createElement("p", { style: { margin: '0 0 6px', fontWeight: 600, textAlign: 'center' } }, "Practical Life Skills"),
-                    react_1.default.createElement("p", { style: { margin: '0 0 10px', fontSize: 15, textAlign: 'center' } }, "Ideas for the hours the academic work gives back, listed from the earliest skills to the most mature."),
-                    react_1.default.createElement(Btn, { full: true, kind: "secondary", onClick: () => setScreen('life-skills') }, "Life Skills"))),
+                react_1.default.createElement("div", { className: "edu-two-up", style: { marginTop: 22 } },
+                    FEATURES.reflection && (react_1.default.createElement("div", { style: { ...card, background: wonderAwaitingReview(wonderReview) > 0 ? C.goldSoft : C.greenSoft, borderColor: wonderAwaitingReview(wonderReview) > 0 ? C.goldSoft : C.greenSoft } },
+                        react_1.default.createElement("p", { style: { margin: '0 0 6px', fontWeight: 600, textAlign: 'center' } }, "Wonder Questions"),
+                        react_1.default.createElement("p", { style: { margin: '0 0 10px', fontSize: 15, textAlign: 'center' } }, wonderAwaitingReview(wonderReview) > 0 ? `${wonderAwaitingReview(wonderReview)} to review. These optional reflection questions remain invisible until approved.` : 'All reviewed. Only the ones you approved are shown to students.'),
+                        react_1.default.createElement(Btn, { full: true, kind: "secondary", onClick: () => setScreen('wonder-review') }, "Wonder Questions"))),
+                    FEATURES.lifeSkills && (react_1.default.createElement("div", { style: { ...card, background: C.greenSoft, borderColor: C.greenSoft } },
+                        react_1.default.createElement("p", { style: { margin: '0 0 6px', fontWeight: 600, textAlign: 'center' } }, "Practical Life Skills"),
+                        react_1.default.createElement("p", { style: { margin: '0 0 10px', fontSize: 15, textAlign: 'center' } }, "Ideas for the hours the academic work gives back, listed from the earliest skills to the most mature."),
+                        react_1.default.createElement(Btn, { full: true, kind: "secondary", onClick: () => setScreen('life-skills') }, "Life Skills")))),
                 saveNote && react_1.default.createElement("p", { style: { color: C.muted, fontSize: 13, textAlign: 'center' } }, saveNote),
                 (() => {
                     const days = daysSinceBackup(backupAt, new Date().toISOString());
                     const overdue = visible.length > 0 && (days === null || days >= 1);
                     return (react_1.default.createElement("div", { style: { textAlign: 'center', marginTop: 24 } },
                         react_1.default.createElement("span", { style: { position: 'relative', display: 'inline-flex', alignItems: 'center', gap: 6 } },
-                            react_1.default.createElement("button", { type: "button", onClick: () => setScreen('backup'), className: overdue ? 'edu-glow' : undefined, style: { position: 'relative', background: 'none', border: 'none', color: C.green, fontFamily: FONT, fontSize: 16, fontWeight: 600, cursor: 'pointer', padding: '8px 12px', textDecoration: 'underline' } }, "Backup classroom"),
+                            react_1.default.createElement("button", { type: "button", onClick: () => setScreen('backup'), className: `edu-backup-link${overdue ? ' edu-glow' : ''}`, style: { position: 'relative', background: 'none', border: 'none', color: C.green, fontFamily: FONT, fontSize: 16, fontWeight: 600, cursor: 'pointer', padding: '8px 12px', textDecoration: 'underline' } }, "Backup classroom"),
                             react_1.default.createElement("button", { type: "button", onClick: () => setShowBackupTip(!showBackupTip), "aria-label": "About backups", style: { position: 'relative', background: 'none', border: `1.5px solid ${C.green}`, color: C.green, fontFamily: FONT, fontSize: 12, fontWeight: 700, lineHeight: '15px', width: 18, height: 18, borderRadius: 999, cursor: 'pointer', padding: 0 } }, "i")),
                         showBackupTip && (react_1.default.createElement("p", { style: { ...tipStyle, textAlign: 'left' } }, "We recommend backing up at the end of each day. Since all student data lives on this device (rather than in a cloud) the ability to restore progress after a browser's cache is cleared becomes paramount. This backup creates a file that holds all student progression, educator settings, life skill progress etc. Share it to your email, drive folder or any place that can be accessed if and when your device becomes compromised. Backup files allow you to restore everything with ease!"))));
                 })(),

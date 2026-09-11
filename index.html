@@ -17468,8 +17468,8 @@ function LETTER_MODULES() {
                 keyIdea: 'Letters have names and an order.',
                 example: { kind: 'letters', text: 'A B C D E', caption: 'A, B, C, D, E.' },
                 script: [
-                    { say: 'This is A. This is B. This is C.', show: { kind: 'letters', text: 'A B C' } },
-                    { say: 'Every letter has a name.', show: { kind: 'letters', text: 'A B C' } },
+                    { say: 'This is A, this is B, and this is C.', show: { kind: 'letters', text: 'A B C' } },
+                    { say: 'Every letter has a name. A, B and C are three of them.', show: { kind: 'letters', text: 'A B C' } },
                     { say: 'Letters go in order. A, B, C, D, E.', show: { kind: 'letters', text: 'A B C D E' } },
                 ],
             },
@@ -17486,9 +17486,9 @@ function LETTER_MODULES() {
                 keyIdea: 'Big and small are the same letter.',
                 example: { kind: 'letters', text: 'B b   D d   G g', caption: 'Big B and small b. Big D and small d. Big G and small g.' },
                 script: [
-                    { say: 'Big B. Small b.', show: { kind: 'letters', text: 'B b' } },
+                    { say: 'Here is a big B and a small b.', show: { kind: 'letters', text: 'B b' } },
                     { say: 'Every letter has a big shape and a small shape.', show: { kind: 'letters', text: 'D d' } },
-                    { say: 'They are the same letter with the same name.', show: { kind: 'letters', text: 'G g' } },
+                    { say: 'Big G and small g are the same letter with the same name.', show: { kind: 'letters', text: 'G g' } },
                 ],
             },
             sources: ['Aligned with Common Core RF.K.1.d and Texas TEKS K.2.A.'],
@@ -17505,8 +17505,8 @@ function LETTER_MODULES() {
                 keyIdea: 'Letters make sounds. The first sound of a word is its first letter.',
                 example: { kind: 'letters', text: 'M', caption: 'M says mmm. Moon starts with M.' },
                 script: [
-                    { say: 'This is M. M says mmm. Mmm, moon.', show: { kind: 'letters', text: 'M' } },
-                    { say: 'This is S. S says sss. Sss, sun.', show: { kind: 'letters', text: 'S' } },
+                    { say: 'This is the letter M. It says mmm, like the start of moon.', show: { kind: 'letters', text: 'moon', highlight: 'm' } },
+                    { say: 'This is the letter S. It says sss, like the start of sun.', show: { kind: 'letters', text: 'sun', highlight: 's' } },
                     { say: 'Say a word slowly. The first sound you hear is the first letter.', show: { kind: 'letters', text: 'M S' } },
                 ],
             },
@@ -17524,9 +17524,9 @@ function LETTER_MODULES() {
                 keyIdea: 'Rhyming words end with the same sound.',
                 example: { kind: 'letters', text: 'cat hat', caption: 'Cat, hat. They rhyme.' },
                 script: [
-                    { say: 'Cat. Hat. They end the same way. Cat and hat rhyme.', show: { kind: 'letters', text: 'cat hat' } },
-                    { say: 'Dog. Log. Dog and log rhyme.', show: { kind: 'letters', text: 'dog log' } },
-                    { say: 'Listen to the end of the word. Same ending, same rhyme.', show: { kind: 'letters', text: 'cat hat' } },
+                    { say: 'Cat. Hat. These two words end the same way, so they rhyme.', show: { kind: 'letters', text: 'cat hat', highlight: 'at' } },
+                    { say: 'Dog. Log. These two words rhyme as well.', show: { kind: 'letters', text: 'dog log', highlight: 'og' } },
+                    { say: 'Listen to the end of each word. The same ending makes the same rhyme.', show: { kind: 'letters', text: 'cat hat', highlight: 'at' } },
                 ],
             },
             sources: ['Aligned with Texas TEKS K.2A.i (identify and produce rhyming words) and Common Core RF.K.2.A.'],
@@ -17563,9 +17563,9 @@ function LETTER_MODULES() {
                 keyIdea: 'Say the word slowly and clap each beat.',
                 example: { kind: 'letters', text: 'rab bit', caption: 'Rab, bit. Two claps.' },
                 script: [
-                    { say: 'Cat. One clap. Cat.', show: { kind: 'letters', text: 'cat' } },
-                    { say: 'Rabbit. Rab. Bit. Two claps.', show: { kind: 'letters', text: 'rab bit' } },
-                    { say: 'Banana. Ba. Na. Na. Three claps.', show: { kind: 'letters', text: 'ba na na' } },
+                    { say: 'Cat. That word takes one clap.', show: { kind: 'letters', text: 'cat' } },
+                    { say: 'Rabbit. Rab, bit. That word takes two claps.', show: { kind: 'letters', text: 'rab bit' } },
+                    { say: 'Banana. Ba, na, na. That word takes three claps.', show: { kind: 'letters', text: 'ba na na' } },
                 ],
             },
             sources: ['Aligned with Texas TEKS K.2A.iv (identify syllables in spoken words) and Common Core RF.K.2.B.'],
@@ -17582,8 +17582,8 @@ function LETTER_MODULES() {
                 keyIdea: 'Say each sound. Then say them fast together.',
                 example: { kind: 'letters', text: 'c a t', caption: 'C, a, t. Cat.' },
                 script: [
-                    { say: 'C. A. T. Now fast. Cat.', show: { kind: 'letters', text: 'c a t' } },
-                    { say: 'S. U. N. Now fast. Sun.', show: { kind: 'letters', text: 's u n' } },
+                    { say: 'C, a, t. Now say the sounds fast. Cat.', show: { kind: 'letters', text: 'c a t' } },
+                    { say: 'S, u, n. Now say the sounds fast. Sun.', show: { kind: 'letters', text: 's u n' } },
                     { say: 'Say each sound. Then push them together.', show: { kind: 'letters', text: 'cat' } },
                 ],
             },
@@ -17602,8 +17602,8 @@ function LETTER_MODULES() {
                 example: { kind: 'letters', text: 'A B C', caption: 'Start with A. Then B. Then C.' },
                 script: [
                     { say: 'Start on the left. A. Then go right. B. C.', show: { kind: 'letters', text: 'A B C' } },
-                    { say: 'When the line ends, go down to the next line.', show: { kind: 'letters', text: 'A B C' } },
-                    { say: 'The first one is on the left. The last one is on the right.', show: { kind: 'letters', text: 'A B C' } },
+                    { say: 'After A, B and C the line ends, so go down to the next line.', show: { kind: 'letters', text: 'A B C' } },
+                    { say: 'A comes first, on the left. B is in the middle, and C comes last, on the right.', show: { kind: 'letters', text: 'A B C' } },
                 ],
             },
             sources: ['Aligned with Texas TEKS K.2D.ii (recognize that print is read left to right and top to bottom) and Common Core RF.K.1.A.'],
@@ -17621,7 +17621,7 @@ function LETTER_MODULES() {
                 example: { kind: 'shape', name: 'circle', caption: 'Circle. The picture shows a circle.' },
                 script: [
                     { say: 'This word says circle. The picture shows a circle. They match.', show: { kind: 'shape', name: 'circle' } },
-                    { say: 'A picture is a clue to what a word means.', show: { kind: 'shape', name: 'square' } },
+                    { say: 'A picture of a square is a clue that the word means square.', show: { kind: 'shape', name: 'square' } },
                     { say: 'Read the word. Look at the picture. Do they match?', show: { kind: 'shape', name: 'triangle' } },
                 ],
             },
@@ -17647,10 +17647,10 @@ function PREK_MODULES() {
                 keyIdea: 'Every color has a name.',
                 example: { kind: 'swatch', colour: 'red', caption: 'Red.' },
                 script: [
-                    { say: 'Red.', show: { kind: 'swatch', colour: 'red' } },
-                    { say: 'Blue.', show: { kind: 'swatch', colour: 'blue' } },
-                    { say: 'Yellow.', show: { kind: 'swatch', colour: 'yellow' } },
-                    { say: 'Green.', show: { kind: 'swatch', colour: 'green' } },
+                    { say: 'This color is red.', show: { kind: 'swatch', colour: 'red' } },
+                    { say: 'This color is blue.', show: { kind: 'swatch', colour: 'blue' } },
+                    { say: 'This color is yellow.', show: { kind: 'swatch', colour: 'yellow' } },
+                    { say: 'This color is green.', show: { kind: 'swatch', colour: 'green' } },
                 ],
             },
             sources: ['Aligned with Texas Prekindergarten Guidelines V.D.1 (sorting objects by attributes such as color) and Head Start ELOF Goal P-MATH 5.'],
@@ -17667,7 +17667,7 @@ function PREK_MODULES() {
                 example: { kind: 'pair', a: { shape: 'circle', colour: 'green' }, b: { shape: 'circle', colour: 'green' }, caption: 'Two circles are the same.' },
                 script: [
                     { say: 'A circle. Another circle. They are the same.', show: { kind: 'pair', a: { shape: 'circle', colour: 'green' }, b: { shape: 'circle', colour: 'green' } } },
-                    { say: 'A circle. A square. They are different.', show: { kind: 'pair', a: { shape: 'circle', colour: 'green' }, b: { shape: 'square', colour: 'green' } } },
+                    { say: 'A circle and a square are two different shapes.', show: { kind: 'pair', a: { shape: 'circle', colour: 'green' }, b: { shape: 'square', colour: 'green' } } },
                     { say: 'Look carefully. Find the one that matches.', show: { kind: 'pair', a: { shape: 'triangle', colour: 'blue' }, b: { shape: 'triangle', colour: 'blue' } } },
                 ],
             },
@@ -17685,8 +17685,8 @@ function PREK_MODULES() {
                 keyIdea: 'A pattern repeats. Say it out loud to find what comes next.',
                 example: { kind: 'pattern', items: ['circle', 'square', 'circle', 'square'], caption: 'Circle, square, circle, square.' },
                 script: [
-                    { say: 'Circle. Square. Circle. Square.', show: { kind: 'pattern', items: ['circle', 'square', 'circle', 'square'] } },
-                    { say: 'What comes next? Circle.', show: { kind: 'pattern', items: ['circle', 'square', 'circle', 'square', 'circle'] } },
+                    { say: 'Circle, square, circle, square. This pattern repeats.', show: { kind: 'pattern', items: ['circle', 'square', 'circle', 'square'] } },
+                    { say: 'What comes next? A circle comes next.', show: { kind: 'pattern', items: ['circle', 'square', 'circle', 'square', 'circle'] } },
                     { say: 'A pattern repeats. Say it out loud.', show: { kind: 'pattern', items: ['triangle', 'circle', 'triangle', 'circle'] } },
                 ],
             },
@@ -17728,9 +17728,9 @@ function PREK_READING_MODULES() {
                 keyIdea: 'Rhymes end the same way.',
                 example: { kind: 'letters', text: 'cat hat', caption: 'Cat. Hat.' },
                 script: [
-                    { say: 'Cat. Hat. They sound alike at the end.', show: { kind: 'letters', text: 'cat hat' } },
-                    { say: 'Dog. Log. They rhyme too.', show: { kind: 'letters', text: 'dog log' } },
-                    { say: 'Listen to the end of the word.', show: { kind: 'letters', text: 'cat hat' } },
+                    { say: 'Cat. Hat. These two words have endings that sound alike.', show: { kind: 'letters', text: 'cat hat', highlight: 'at' } },
+                    { say: 'Dog. Log. These two words rhyme.', show: { kind: 'letters', text: 'dog log', highlight: 'og' } },
+                    { say: 'Listen to the end of each word. Cat and hat both end in at.', show: { kind: 'letters', text: 'cat hat', highlight: 'at' } },
                 ],
             },
             sources: ['Aligned with Texas Prekindergarten Guidelines III.B.1 (rhyming) and Head Start ELOF Goal P-LIT 1.'],
@@ -17746,9 +17746,9 @@ function PREK_READING_MODULES() {
                 keyIdea: 'Listen to the start of the word.',
                 example: { kind: 'letters', text: 'M', caption: 'Mmm. Moon.' },
                 script: [
-                    { say: 'Moon. Mmm. Moon starts with mmm.', show: { kind: 'letters', text: 'M' } },
-                    { say: 'Sun. Sss. Sun starts with sss.', show: { kind: 'letters', text: 'S' } },
-                    { say: 'Say the word slowly. Listen to the start.', show: { kind: 'letters', text: 'M S' } },
+                    { say: 'Moon. Mmm. The word moon starts with the sound mmm.', show: { kind: 'letters', text: 'moon', highlight: 'm' } },
+                    { say: 'Sun. Sss. The word sun starts with the sound sss.', show: { kind: 'letters', text: 'sun', highlight: 's' } },
+                    { say: 'Say each word slowly and listen to how it starts.', show: { kind: 'letters', text: 'moon sun', highlight: 'first' } },
                 ],
             },
             sources: ['Aligned with Texas Prekindergarten Guidelines III.B.6 (beginning sounds) and Head Start ELOF Goal P-LIT 1.'],
@@ -17764,9 +17764,9 @@ function PREK_READING_MODULES() {
                 keyIdea: 'Every letter has a name.',
                 example: { kind: 'letters', text: 'A', caption: 'A.' },
                 script: [
-                    { say: 'This is A.', show: { kind: 'letters', text: 'A' } },
-                    { say: 'This is B.', show: { kind: 'letters', text: 'B' } },
-                    { say: 'This is C.', show: { kind: 'letters', text: 'C' } },
+                    { say: 'This is the letter A.', show: { kind: 'letters', text: 'A' } },
+                    { say: 'This is the letter B.', show: { kind: 'letters', text: 'B' } },
+                    { say: 'This is the letter C.', show: { kind: 'letters', text: 'C' } },
                     { say: 'Find the letter when you hear its name.', show: { kind: 'letters', text: 'A B C' } },
                 ],
             },
@@ -17790,9 +17790,9 @@ function COUNTING_MODULES() {
                 // Spoken script for children who cannot read. Always show before telling: the
                 // example comes first, then the instruction, then the rule it teaches.
                 script: [
-                    { say: 'One. Two. Three. There are three.', show: { kind: 'dots', count: 3 } },
+                    { say: 'One. Two. Three. There are three dots.', show: { kind: 'dots', count: 3 } },
                     { say: 'Count each one. Touch it and say the number.', show: { kind: 'dots', count: 3 } },
-                    { say: 'The last number you say is how many.', show: { kind: 'dots', count: 3 } },
+                    { say: 'The last number you say tells you how many. Three.', show: { kind: 'dots', count: 3 } },
                 ],
             },
             sources: ['Aligned with Common Core math standards K.CC.B.4 and K.CC.B.5 (counting to tell how many).'],
@@ -17808,9 +17808,9 @@ function COUNTING_MODULES() {
                 keyIdea: 'Count one at a time. The last number is how many.',
                 example: { kind: 'dots', count: 7, caption: 'One, two, three, four, five, six, seven. There are 7.' },
                 script: [
-                    { say: 'One. Two. Three. Four. Five. Six. Seven. There are seven.', show: { kind: 'dots', count: 7 } },
+                    { say: 'One. Two. Three. Four. Five. Six. Seven. There are seven dots.', show: { kind: 'dots', count: 7 } },
                     { say: 'Bigger groups work the same way. Count slowly.', show: { kind: 'dots', count: 7 } },
-                    { say: 'The last number you say is how many.', show: { kind: 'dots', count: 7 } },
+                    { say: 'The last number you say tells you how many. Seven.', show: { kind: 'dots', count: 7 } },
                 ],
             },
             sources: ['Aligned with Common Core math standards K.CC.B.5 and K.CC.C.6 (counting to 10 and comparing groups).'],
@@ -17867,7 +17867,7 @@ function COUNTING_MODULES() {
                 keyIdea: 'The number you say later when counting is the bigger one.',
                 example: { kind: 'dots', count: 7, caption: 'Seven is bigger than four.' },
                 script: [
-                    { say: 'Seven. Four. Seven has more. Seven is bigger.', show: { kind: 'dots', count: 7 } },
+                    { say: 'Seven and four. Seven has more, so seven is bigger.', show: { kind: 'dots', count: 7 } },
                     { say: 'When you count, the numbers you say later are bigger.', show: { kind: 'dots', count: 7 } },
                     { say: 'Four is smaller than seven. It has fewer.', show: { kind: 'dots', count: 4 } },
                 ],
@@ -17926,7 +17926,7 @@ function COUNTING_MODULES() {
                 example: { kind: 'bars', lengths: [3, 7], caption: 'The bottom one is longer.' },
                 script: [
                     { say: 'Two lines. This one is short. This one is long.', show: { kind: 'bars', lengths: [3, 7] } },
-                    { say: 'Longer reaches further. Shorter stops sooner.', show: { kind: 'bars', lengths: [7, 3] } },
+                    { say: 'The longer one reaches further. The shorter one stops sooner.', show: { kind: 'bars', lengths: [7, 3] } },
                     { say: 'A heavy thing is hard to lift. A light thing is easy.', show: { kind: 'bars', lengths: [5, 5] } },
                 ],
             },
@@ -17945,7 +17945,7 @@ function COUNTING_MODULES() {
                 example: { kind: 'shape', name: 'circle', caption: 'Circles go with circles.' },
                 script: [
                     { say: 'Circles go with circles. Squares go with squares.', show: { kind: 'shape', name: 'circle' } },
-                    { say: 'That is sorting. Things that are alike go together.', show: { kind: 'shape', name: 'square' } },
+                    { say: 'That is sorting. Every square goes with the other squares.', show: { kind: 'shape', name: 'square' } },
                     { say: 'Then count each group. Which group has more?', show: { kind: 'dots', count: 4 } },
                 ],
             },
@@ -18008,7 +18008,7 @@ function GRADE1_MATH_MODULES() {
                 keyIdea: 'A teen number is one ten and some ones.',
                 example: { kind: 'tenframe', filled: 10, caption: 'Ten, and three more, is thirteen.' },
                 script: [
-                    { say: 'Ten. And three more. Thirteen.', show: { kind: 'tenframe', filled: 10 } },
+                    { say: 'Here is a full ten. Three more makes thirteen.', show: { kind: 'tenframe', filled: 10 } },
                     { say: 'Teen numbers are ten and some more.', show: { kind: 'dots', count: 3 } },
                     { say: 'Fill the ten. Then count the extra ones.', show: { kind: 'tenframe', filled: 10 } },
                 ],
@@ -18044,7 +18044,7 @@ function GRADE1_MATH_MODULES() {
                 keyIdea: 'Count back. Subtracting undoes adding.',
                 example: { kind: 'dots', count: 9, caption: 'Twelve take away three. Nine.' },
                 script: [
-                    { say: 'Twelve. Take away three. Eleven, ten, nine. Nine are left.', show: { kind: 'dots', count: 9 } },
+                    { say: 'Start with twelve and take away three. Eleven, ten, nine. Nine are left.', show: { kind: 'dots', count: 9 } },
                     { say: 'Count back to take away.', show: { kind: 'dots', count: 9 } },
                     { say: 'Subtracting undoes adding. Nine and four is thirteen. Thirteen take away four is nine.', show: { kind: 'dots', count: 9 } },
                 ],
@@ -18063,8 +18063,8 @@ function GRADE1_MATH_MODULES() {
                 keyIdea: 'Tens first, then ones.',
                 example: { kind: 'tens', count: 3, caption: 'Three tens and four ones. Thirty-four.' },
                 script: [
-                    { say: 'Three tens. Ten, twenty, thirty.', show: { kind: 'tens', count: 3 } },
-                    { say: 'And four ones. Thirty-four.', show: { kind: 'dots', count: 4 } },
+                    { say: 'Here are three tens. Count them by ten. Ten, twenty, thirty.', show: { kind: 'tens', count: 3 } },
+                    { say: 'Now add four ones to make thirty-four.', show: { kind: 'dots', count: 4 } },
                     { say: 'Count the tens first, then the ones.', show: { kind: 'tens', count: 3 } },
                 ],
             },
@@ -18106,7 +18106,7 @@ function GRADE1_READING_MODULES() {
                 keyIdea: 'Sound it out. Then find the picture.',
                 example: { kind: 'letters', text: 'box', caption: 'B, o, x. Box.' },
                 script: [
-                    { say: 'Read this word. Sound it out.', show: { kind: 'letters', text: 'box' } },
+                    { say: 'Read this word by sounding it out.', show: { kind: 'letters', text: 'box' } },
                     { say: 'B. O. X. Box. Now find the box.', show: { kind: 'solid', name: 'cube' } },
                     { say: 'Sound it out. Then find the picture.', show: { kind: 'letters', text: 'box' } },
                 ],
@@ -24729,7 +24729,26 @@ function Picture({ visual, animate = false, animKey = 0 }) {
         // Each letter swells as it is named, so a child who cannot read still knows which one
         // is being talked about.
         const parts = visual.text.split('');
-        return (react_1.default.createElement("p", { style: { fontSize: 44, fontWeight: 700, letterSpacing: 6, margin: '6px 0', textAlign: 'center', color: C.green } }, parts.map((ch, i) => (react_1.default.createElement("span", { key: `${animKey}-${i}`, className: animate && ch.trim() ? 'edu-grow' : undefined, style: animate && ch.trim() ? { display: 'inline-block', animationDelay: `${parts.slice(0, i).filter((x) => x.trim()).length * 0.75}s` } : undefined }, ch === ' ' ? '\u00A0' : ch)))));
+        // A highlight names the part of each word to stand out: an ending like 'at' for rhymes,
+        // 'first' for the opening sound. Those letters turn gold and grow; the rest stay quiet.
+        const words = visual.text.split(' ');
+        const stressed = new Set();
+        if (visual.highlight) {
+            let offset = 0;
+            for (const w of words) {
+                const at = visual.highlight === 'first' ? 0 : w.toLowerCase().lastIndexOf(visual.highlight.toLowerCase());
+                const len = visual.highlight === 'first' ? 1 : visual.highlight.length;
+                if (at >= 0)
+                    for (let k = at; k < at + len; k++)
+                        stressed.add(offset + k);
+                offset += w.length + 1;
+            }
+        }
+        return (react_1.default.createElement("p", { style: { fontSize: 44, fontWeight: 700, letterSpacing: 6, margin: '6px 0', textAlign: 'center', color: C.green } }, parts.map((ch, i) => {
+            const hot = stressed.has(i);
+            const grow = animate && ch.trim() && (!visual.highlight || hot);
+            return (react_1.default.createElement("span", { key: `${animKey}-${i}`, className: grow ? 'edu-grow' : undefined, style: { display: 'inline-block', color: hot ? C.gold : undefined, transform: hot ? 'scale(1.12)' : undefined, animationDelay: grow ? `${parts.slice(0, i).filter((x) => x.trim() && (!visual.highlight || stressed.has(parts.indexOf(x)))).length * 0.6}s` : undefined } }, ch === ' ' ? '\u00A0' : ch));
+        })));
     }
     return react_1.default.createElement(FractionBar, { parts: visual.parts, shaded: visual.shaded });
 }
@@ -24927,7 +24946,7 @@ const KID_ANIMATION = `
   .edu-welcome-logo svg { width: 333px !important; height: auto !important; }
   .edu-welcome-card { margin-top: 36px; padding: 22px 24px !important; }
   .edu-welcome-card h2 { font-size: 24px !important; }
-  .edu-welcome-links { padding-top: 48px; padding-bottom: 24px; }
+  .edu-welcome-links { padding-top: 16px; padding-bottom: 16px; }
   .edu-welcome-links button, .edu-welcome-links p { font-size: 18px !important; }
 }
 @media (min-width: 1000px) {
@@ -24940,6 +24959,7 @@ const KID_ANIMATION = `
   .edu-two-up > div { margin-top: 0 !important; margin-bottom: 0 !important; }
   .edu-narrow { max-width: 380px; margin-left: auto; margin-right: auto; }
   .edu-backup-link { font-size: 19px !important; }
+  .edu-login { padding-top: 14vh; }
 }
 @media (min-width: 1100px) {
   .edu-side { display: block; position: fixed; top: 0; bottom: 0; width: 300px; pointer-events: none; z-index: 0; opacity: 0.6; }
@@ -25359,13 +25379,14 @@ function EduSphereApp() {
     const [showTouchlessTip, setShowTouchlessTip] = (0, react_1.useState)(false);
     const [showContact, setShowContact] = (0, react_1.useState)(false);
     const [showWonderTip, setShowWonderTip] = (0, react_1.useState)(false);
+    const [showHelpTip, setShowHelpTip] = (0, react_1.useState)(false);
     const [showProgressTip, setShowProgressTip] = (0, react_1.useState)(false);
     const [openSummary, setOpenSummary] = (0, react_1.useState)(true);
     const [openAssigned, setOpenAssigned] = (0, react_1.useState)(false);
     const [openProgress, setOpenProgress] = (0, react_1.useState)(false);
     const [openTerms, setOpenTerms] = (0, react_1.useState)([]);
     const [openApproved, setOpenApproved] = (0, react_1.useState)([]);
-    const closeTips = () => { setShowBackupTip(false); setShowRosterTip(false); setShowStateTip(false); setShowTouchlessTip(false); setShowWonderTip(false); setShowProgressTip(false); };
+    const closeTips = () => { setShowBackupTip(false); setShowRosterTip(false); setShowStateTip(false); setShowTouchlessTip(false); setShowWonderTip(false); setShowProgressTip(false); setShowHelpTip(false); };
     const [stateCode, setStateCode] = (0, react_1.useState)(''); // the educator's state, chosen once
     const [stateDraft, setStateDraft] = (0, react_1.useState)('');
     const [autoSaving, setAutoSaving] = (0, react_1.useState)(false); // a file has been chosen for touchless backup
@@ -25477,13 +25498,27 @@ function EduSphereApp() {
         setBusy(false);
         return next;
     }
+    // A record with no course decision yet gets the starter set for the student's level, once.
+    // This covers students added before the starter rule existed, who would otherwise be
+    // handed every course there is.
+    async function withStarterCourses(rec) {
+        if (rec.events.some((e) => e.type === 'courses_enabled'))
+            return rec;
+        const st = findStudent(roster, rec.name);
+        if (!st || !st.level)
+            return rec;
+        const starter = makeCoursesEnabledEvent(recommendedCourseIds([makeCoursesEnabledEvent([], new Date().toISOString())], st.level), new Date().toISOString());
+        const next = { ...rec, events: [...rec.events, starter] };
+        await saveRecord(next);
+        return next;
+    }
     async function startWithName(name) {
         if (!name.trim())
             return;
         setBusy(true);
         setErrorMsg('');
         try {
-            const rec = await loadRecord(name);
+            const rec = await withStarterCourses(await loadRecord(name));
             setRecord(rec);
             setScreen('overview');
         }
@@ -25674,15 +25709,15 @@ function EduSphereApp() {
                             nameInput.trim(),
                             "\u201D. Ask your educator.")))),
                     errorMsg && react_1.default.createElement("p", { style: { color: C.clay } }, errorMsg)),
-                react_1.default.createElement("p", { style: { color: C.muted, fontSize: 13, margin: '14px 0 0', textAlign: 'center' } }, "Progress is saved on this device only. Nothing is sent anywhere."),
-                react_1.default.createElement("div", { className: "edu-welcome-links", style: { marginTop: 28, textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 } },
+                react_1.default.createElement("div", { className: "edu-welcome-links", style: { marginTop: 14, textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 } },
                     react_1.default.createElement("div", { style: { width: '100%', maxWidth: 320, marginBottom: 6 } },
                         react_1.default.createElement(Btn, { full: true, onClick: () => { if (lastActive && Date.now() - lastActive < 5 * 60 * 1000) {
                                 setScreen('educator-pick');
                                 return;
                             } setPinInput(''); setScreen('educator-pin'); } }, "Educator Login")),
                     !educator && (react_1.default.createElement("button", { type: "button", onClick: () => { setNewPin(''); setNewPin2(''); setDeviceDraft(''); setStateDraft(''); setSetupError(''); setScreen('educator-setup'); }, style: { background: 'none', border: 'none', color: C.muted, fontFamily: FONT, fontSize: 14, cursor: 'pointer', padding: '4px 12px', textDecoration: 'underline' } }, "Create account")),
-                    react_1.default.createElement(ContactLine, { onOpen: () => setShowContact(true), inline: true })),
+                    react_1.default.createElement(ContactLine, { onOpen: () => setShowContact(true), inline: true }),
+                    react_1.default.createElement("p", { style: { color: C.muted, fontSize: 13, margin: '18px 0 0', padding: '0 36px', textAlign: 'center' } }, "Progress is saved on this device only. Nothing is sent anywhere.")),
                 showContact && react_1.default.createElement(ContactPopup, { onClose: () => setShowContact(false) }))));
     }
     if (screen === 'overview') {
@@ -25759,20 +25794,9 @@ function EduSphereApp() {
                                 react_1.default.createElement("span", { style: { fontSize: 14, color: C.muted } }, showFinished ? '▴' : '▾'))))))))));
                 }),
                 youngLearner ? (react_1.default.createElement("div", { style: { marginTop: 'auto', paddingTop: 28 } },
-                    react_1.default.createElement("div", { style: { ...card, background: C.goldSoft, borderColor: C.goldSoft } },
+                    react_1.default.createElement("div", { style: { ...card, background: C.goldSoft, borderColor: C.goldSoft, marginBottom: 0 } },
                         react_1.default.createElement("div", { style: { display: 'flex', justifyContent: 'flex-start', gap: 4, flexWrap: 'wrap' } }, [...visibleModules.filter((m) => earlyModuleIds.includes(m.id))].sort((a, b) => (progress.masteredIds.includes(b.id) ? 1 : 0) - (progress.masteredIds.includes(a.id) ? 1 : 0)).map((m) => (react_1.default.createElement("svg", { key: m.id, viewBox: "0 0 24 24", width: "26", height: "26", "aria-hidden": "true" },
-                            react_1.default.createElement("path", { d: "M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4l-5.9 3.1 1.2-6.5L2.5 9.4l6.6-.9z", fill: progress.masteredIds.includes(m.id) ? C.gold : C.line })))))),
-                    visibleModules.some((m) => earlyModuleIds.includes(m.id) && progress.masteredIds.includes(m.id)) && (react_1.default.createElement("div", { style: { ...card, padding: 0, overflow: 'hidden' } },
-                        react_1.default.createElement("button", { type: "button", onClick: () => setShowFinished(!showFinished), "aria-expanded": showFinished, "aria-label": "Finished modules", style: { fontFamily: FONT, width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: C.goldSoft, border: 'none', padding: '12px 14px', cursor: 'pointer', color: C.ink } },
-                            react_1.default.createElement("span", { style: { display: 'flex', alignItems: 'center', gap: 8 } },
-                                react_1.default.createElement(StatusMark, { status: "mastered", size: 24 }),
-                                react_1.default.createElement("span", { style: { fontSize: 15, fontWeight: 600 } }, visibleModules.filter((m) => earlyModuleIds.includes(m.id) && progress.masteredIds.includes(m.id)).length)),
-                            react_1.default.createElement("span", { style: { fontSize: 14, color: C.muted } }, showFinished ? '▴' : '▾')),
-                        showFinished && (react_1.default.createElement("div", { style: { padding: 10 } }, visibleModules.filter((m) => earlyModuleIds.includes(m.id) && progress.masteredIds.includes(m.id)).map((m) => (react_1.default.createElement("div", { key: m.id, style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10, padding: '8px 6px', borderTop: `1px solid ${C.line}` } },
-                            react_1.default.createElement("span", { style: { display: 'flex', alignItems: 'center', gap: 8 } },
-                                react_1.default.createElement(StatusMark, { status: "mastered", size: 22 }),
-                                react_1.default.createElement("span", { style: { fontSize: 16, fontWeight: 600 } }, m.title)),
-                            react_1.default.createElement(Btn, { kind: "secondary", onClick: () => openModule(m.id) }, "Practice")))))))))) : (react_1.default.createElement(Btn, { kind: "secondary", full: true, onClick: () => setScreen('my-progress') }, "My progress")),
+                            react_1.default.createElement("path", { d: "M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4l-5.9 3.1 1.2-6.5L2.5 9.4l6.6-.9z", fill: progress.masteredIds.includes(m.id) ? C.gold : C.line })))))))) : (react_1.default.createElement(Btn, { kind: "secondary", full: true, onClick: () => setScreen('my-progress') }, "My progress")),
                 saveNote && react_1.default.createElement("p", { style: { color: C.muted, fontSize: 13, textAlign: 'center' } }, saveNote),
                 errorMsg && react_1.default.createElement("p", { style: { color: C.clay } }, errorMsg))));
     }
@@ -26431,7 +26455,7 @@ function EduSphereApp() {
         const ok = educator ? scramble(pinInput) === educator.pin : pinInput === EDUCATOR_PIN;
         return (react_1.default.createElement("div", { style: page },
             react_1.default.createElement(PageChrome, { idleWarning: idleWarning }),
-            react_1.default.createElement("div", { className: "edu-wrap", style: wrap },
+            react_1.default.createElement("div", { className: "edu-wrap edu-login", style: wrap },
                 react_1.default.createElement("button", { type: "button", onClick: () => setScreen('welcome'), style: { background: 'none', border: 'none', color: C.green, fontFamily: FONT, fontSize: 15, cursor: 'pointer', padding: 0 } }, "Back"),
                 react_1.default.createElement("h1", { style: { fontSize: 24, margin: '12px 0 8px', textAlign: 'center' } }, "Please log in to continue:"),
                 react_1.default.createElement("div", { style: card },
@@ -26550,9 +26574,9 @@ function EduSphereApp() {
                 react_1.default.createElement("div", { className: "edu-narrow" },
                     react_1.default.createElement(Btn, { full: true, onClick: () => { setAdding(true); setRosterError(''); setRosterInput(''); setNewLevel(''); setNewPicture(''); setNewTint(''); } }, "Add someone new")),
                 react_1.default.createElement("div", { style: { height: 14 } }),
-                visible.length > 1 && (react_1.default.createElement("div", { style: card },
-                    react_1.default.createElement("div", { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10 } },
-                        react_1.default.createElement("div", { className: "edu-narrow" },
+                visible.length > 1 && (react_1.default.createElement("div", { className: "edu-narrow", style: { marginTop: 10 } },
+                    react_1.default.createElement("div", { style: { display: 'flex', alignItems: 'center', gap: 6 } },
+                        react_1.default.createElement("div", { style: { flex: 1 } },
                             react_1.default.createElement(Btn, { full: true, kind: "secondary", onClick: async () => {
                                     const students = [];
                                     for (const st of visible) {
@@ -26561,8 +26585,9 @@ function EduSphereApp() {
                                     }
                                     setClassRows(classView(students, new Date().toISOString()));
                                     setScreen('class-view');
-                                } }, "Who needs help"))),
-                    react_1.default.createElement("p", { style: { margin: '6px 0 0', fontSize: 14, color: C.muted, textAlign: 'center' } }, "Every student organized by most in need."))),
+                                } }, "Who needs help")),
+                        react_1.default.createElement(InfoButton, { onClick: () => setShowHelpTip(!showHelpTip), label: "About who needs help", open: showHelpTip })),
+                    showHelpTip && react_1.default.createElement(TipText, null, "Every student organized by most in need."))),
                 adding && (react_1.default.createElement("div", { style: { position: 'fixed', inset: 0, background: 'rgba(36, 41, 31, 0.55)', zIndex: 100, overflowY: 'auto', padding: '24px 12px' } },
                     react_1.default.createElement("div", { className: "edu-rise", style: { maxWidth: 560, margin: '0 auto', background: C.surface, borderRadius: 14, padding: 18, position: 'relative' } },
                         react_1.default.createElement("button", { type: "button", onClick: () => setAdding(false), "aria-label": "Close", style: { position: 'absolute', top: 8, right: 10, background: 'none', border: 'none', width: 36, height: 36, fontSize: 30, lineHeight: '34px', cursor: 'pointer', color: C.ink, fontFamily: FONT, padding: 0 } }, "\u00D7"),
@@ -26637,7 +26662,7 @@ function EduSphereApp() {
                             react_1.default.createElement("span", { style: { alignSelf: 'center', flexShrink: 0 } },
                                 react_1.default.createElement(Btn, { kind: "secondary", disabled: busy, onClick: async () => {
                                         setBusy(true);
-                                        const rec = await loadRecord(st.id);
+                                        const rec = await withStarterCourses(await loadRecord(st.id));
                                         setEducatorRecord(rec);
                                         setRecommendedIds(recommendedCourseIds(rec.events, st.level));
                                         setOpenSubjects([]);
@@ -26730,7 +26755,7 @@ function EduSphereApp() {
                         react_1.default.createElement("div", { style: { marginTop: 8 } },
                             react_1.default.createElement("button", { type: "button", style: linkBtn, onClick: async () => {
                                     setBusy(true);
-                                    const rec = await loadRecord(r.id);
+                                    const rec = await withStarterCourses(await loadRecord(r.id));
                                     setEducatorRecord(rec);
                                     setRecommendedIds(recommendedCourseIds(rec.events, st ? st.level : null));
                                     setOpenSubjects([]);
@@ -26985,7 +27010,7 @@ function EduSphereApp() {
                         shownName,
                         " has ever worked on, including courses that are no longer assigned. This is the clearest view of student progression."),
                     react_1.default.createElement(Btn, { kind: "secondary", onClick: () => setScreen('transcript') }, "Open transcript")),
-                react_1.default.createElement("div", { style: { ...card, background: 'linear-gradient(135deg, #D6E6DB 0%, #E6F0E8 100%)', borderColor: '#C9DCCF' } },
+                react_1.default.createElement("div", { style: { ...card, background: 'linear-gradient(135deg, #BFD6C7 0%, #D3E4D9 100%)', borderColor: '#A9C6B4' } },
                     react_1.default.createElement("p", { style: { margin: '0 0 8px', fontWeight: 600 } }, "Key Words - Explained"),
                     EXPLANATIONS.map((x, i) => {
                         const open = openTerms.includes(x.term);

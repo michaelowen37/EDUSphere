@@ -24738,7 +24738,9 @@ function Picture({ visual, animate = false, animKey = 0 }) {
 // most natural-sounding English voice the device offers (preferring the softer female
 // voices), and fall back to whatever exists. A truly natural voice needs a paid
 // text-to-speech service; that is a phase 1 decision.
-const PREFERRED_VOICES = ['Samantha', 'Ava', 'Allison', 'Karen', 'Moira', 'Google US English', 'Microsoft Aria', 'Microsoft Jenny', 'Microsoft Zira', 'Tessa', 'Fiona', 'Victoria'];
+// Warm, clear, female voices first, on whichever device this is. Names are matched loosely
+// because each maker names its voices differently.
+const PREFERRED_VOICES = ['Ava', 'Samantha', 'Allison', 'Microsoft Aria', 'Microsoft Jenny', 'Google US English', 'Karen', 'Moira', 'Microsoft Zira', 'Tessa', 'Victoria', 'Fiona', 'Susan', 'Joanna', 'Salli'];
 function pickVoice() {
     if (typeof window === 'undefined' || !window.speechSynthesis)
         return null;
@@ -24756,6 +24758,33 @@ function pickVoice() {
 function canSpeak() {
     return typeof window !== 'undefined' && !!window.speechSynthesis && typeof window.SpeechSynthesisUtterance === 'function';
 }
+// A soft two-note blip when a young learner taps an answer. Made with the browser's own
+// sound engine, so there is no file to load and it works offline. Silent where blocked.
+let tapAudio = null;
+function playTap() {
+    try {
+        const Ctx = window.AudioContext || window.webkitAudioContext;
+        if (!Ctx)
+            return;
+        tapAudio = tapAudio || new Ctx();
+        if (tapAudio.state === 'suspended')
+            tapAudio.resume();
+        const now = tapAudio.currentTime;
+        const o = tapAudio.createOscillator();
+        const g = tapAudio.createGain();
+        o.type = 'sine';
+        o.frequency.setValueAtTime(520, now);
+        o.frequency.exponentialRampToValueAtTime(780, now + 0.09);
+        g.gain.setValueAtTime(0.0001, now);
+        g.gain.exponentialRampToValueAtTime(0.18, now + 0.02);
+        g.gain.exponentialRampToValueAtTime(0.0001, now + 0.16);
+        o.connect(g);
+        g.connect(tapAudio.destination);
+        o.start(now);
+        o.stop(now + 0.17);
+    }
+    catch (e) { /* no sound is never a problem */ }
+}
 function speak(text) {
     if (typeof window === 'undefined' || !window.speechSynthesis || !text)
         return;
@@ -24765,8 +24794,8 @@ function speak(text) {
         const voice = pickVoice();
         if (voice)
             u.voice = voice;
-        u.rate = 0.88; // a little slower than normal speech, for young listeners
-        u.pitch = 1.05; // slightly warmer than the default
+        u.rate = 0.92; // a touch slower than normal speech, for young listeners
+        u.pitch = 1.15; // brighter and warmer than the default, less like a machine
         window.speechSynthesis.speak(u);
     }
     catch (e) { /* a broken voice must never stop a lesson */ }
@@ -24778,7 +24807,7 @@ function SpeakButton({ text, label, full = false }) {
     if (!canSpeak()) {
         return react_1.default.createElement("p", { style: { margin: '0 0 12px', fontSize: 14, color: C.muted } }, "Reading aloud is not available on this device or in this preview. The words are all on screen.");
     }
-    return (react_1.default.createElement("div", { style: { marginBottom: 12 } },
+    return (react_1.default.createElement("div", { style: { marginBottom: 12, textAlign: 'center' } },
         react_1.default.createElement(Btn, { full: full, kind: "secondary", onClick: () => { speak(text); setSpoke(true); } }, label),
         spoke && react_1.default.createElement("p", { style: { margin: '6px 0 0', fontSize: 13, color: C.muted } }, "If you heard nothing, check that your device is not on silent.")));
 }
@@ -24829,11 +24858,11 @@ function Logo({ width = 250, animate = false }) {
         const nums = points.split(/[ ,]/).map(Number);
         const mid = Math.floor(nums.length / 4) * 2;
         const d = Math.hypot(nums[mid] - clearing.x, nums[mid + 1] - clearing.y);
-        return d < 44 ? 0.08 : d < 70 ? 0.45 : 1;
+        return d < 24 ? 0.08 : d < 38 ? 0.45 : 1;
     };
     // A letter near the pointer thins out and comes back, the same way the arcs do.
     const letterFade = (p) => { if (!clearing)
-        return 1; const d = Math.hypot(p.cx - clearing.x, p.cy - clearing.y); return d < 30 ? 0.06 : d < 52 ? 0.4 : 1; };
+        return 1; const d = Math.hypot(p.cx - clearing.x, p.cy - clearing.y); return d < 18 ? 0.06 : d < 30 ? 0.4 : 1; };
     const letters = (word, fill, halo) => (react_1.default.createElement(react_1.default.Fragment, null,
         halo ? react_1.default.createElement("g", { fill: C.bg, stroke: C.bg, strokeWidth: halo, strokeLinejoin: "round", strokeLinecap: "round" }, word.paths.map((p, i) => react_1.default.createElement("path", { key: i, d: p.d, transform: p.transform }))) : null,
         react_1.default.createElement("g", { fill: fill, stroke: fill, strokeWidth: 9, strokeLinejoin: "round", strokeLinecap: "round" }, word.paths.map((p, i) => react_1.default.createElement("path", { key: i, d: p.d, transform: p.transform, style: { opacity: letterFade(p), transition: 'opacity 0.35s ease' } })))));
@@ -24896,8 +24925,8 @@ const KID_ANIMATION = `
   .edu-wrap { max-width: 720px; }
   .edu-welcome { min-height: calc(100vh - 40px); }
   .edu-welcome-logo svg { width: 333px !important; height: auto !important; }
-  .edu-welcome-card { margin-top: 36px; min-height: 340px; padding: 28px 24px !important; }
-  .edu-welcome-card h2 { font-size: 26px !important; }
+  .edu-welcome-card { margin-top: 36px; padding: 22px 24px !important; }
+  .edu-welcome-card h2 { font-size: 24px !important; }
   .edu-welcome-links { padding-top: 48px; padding-bottom: 24px; }
   .edu-welcome-links button, .edu-welcome-links p { font-size: 18px !important; }
 }
@@ -24920,11 +24949,14 @@ const KID_ANIMATION = `
 @keyframes edu-glow { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
 @keyframes edu-breathe { 0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(58, 107, 88, 0); } 50% { transform: scale(1.015); box-shadow: 0 0 0 6px rgba(58, 107, 88, 0.18); } }
 .edu-breathe { animation: edu-breathe 2.2s ease-in-out infinite; border-radius: 12px; }
+@keyframes edu-side-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+.edu-side path { stroke-dasharray: 1; animation: edu-side-draw 1.6s ease-out both; }
 @keyframes edu-slide-in { from { transform: translateX(-40px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
 .edu-slide-in { animation: edu-slide-in 0.6s ease-out both; }
 .edu-glow { animation: edu-glow 1.8s ease-in-out infinite; }
 @media (prefers-reduced-motion: reduce) {
-  .edu-glow, .edu-breathe, .edu-slide-in { animation: none; }
+  .edu-glow, .edu-breathe, .edu-slide-in, .edu-side path { animation: none; }
+  .edu-side path { stroke-dasharray: none; }
   .edu-halo, .edu-drift, .edu-cheer, .edu-wobble, .edu-burst, .edu-rise, .edu-sway, .edu-star-twinkle, .edu-grow, .edu-draw, .edu-settle, .edu-settle-late { animation: none; }
   .edu-draw { stroke-dasharray: none; }
   .edu-press { transition: none; }
@@ -25085,12 +25117,12 @@ function InfoButton({ onClick, label, open = false }) {
 function SideArcs({ side }) {
     return (react_1.default.createElement("svg", { className: `edu-side edu-side-${side}`, viewBox: "0 0 240 900", preserveAspectRatio: "xMinYMid slice", "aria-hidden": "true" },
         react_1.default.createElement("g", { fill: "none", stroke: C.green, strokeLinecap: "round" },
-            react_1.default.createElement("path", { d: "M-40 120 C 120 220, 120 420, -40 520", strokeWidth: "2.2", strokeOpacity: "0.55" }),
-            react_1.default.createElement("path", { d: "M-60 260 C 160 360, 160 560, -60 660", strokeWidth: "1.6", strokeOpacity: "0.4" }),
-            react_1.default.createElement("path", { d: "M-30 420 C 200 520, 200 720, -30 820", strokeWidth: "2.6", strokeOpacity: "0.35" }),
-            react_1.default.createElement("path", { d: "M-70 40 C 90 120, 90 300, -70 380", strokeWidth: "1.4", strokeOpacity: "0.3" }),
-            react_1.default.createElement("path", { d: "M-50 600 C 140 680, 140 860, -50 940", strokeWidth: "1.8", strokeOpacity: "0.45" }),
-            react_1.default.createElement("path", { d: "M60 180 C 150 260, 150 380, 60 460", strokeWidth: "1.2", stroke: C.gold, strokeOpacity: "0.5" }))));
+            react_1.default.createElement("path", { pathLength: "1", d: "M-40 120 C 120 220, 120 420, -40 520", strokeWidth: "2.2", strokeOpacity: "0.55" }),
+            react_1.default.createElement("path", { pathLength: "1", d: "M-60 260 C 160 360, 160 560, -60 660", strokeWidth: "1.6", strokeOpacity: "0.4", style: { animationDelay: '0.2s' } }),
+            react_1.default.createElement("path", { pathLength: "1", d: "M-30 420 C 200 520, 200 720, -30 820", strokeWidth: "2.6", strokeOpacity: "0.35", style: { animationDelay: '0.4s' } }),
+            react_1.default.createElement("path", { pathLength: "1", d: "M-70 40 C 90 120, 90 300, -70 380", strokeWidth: "1.4", strokeOpacity: "0.3", style: { animationDelay: '0.6s' } }),
+            react_1.default.createElement("path", { pathLength: "1", d: "M-50 600 C 140 680, 140 860, -50 940", strokeWidth: "1.8", strokeOpacity: "0.45", style: { animationDelay: '0.8s' } }),
+            react_1.default.createElement("path", { pathLength: "1", d: "M60 180 C 150 260, 150 380, 60 460", strokeWidth: "1.2", stroke: C.gold, strokeOpacity: "0.5", style: { animationDelay: '1.1s' } }))));
 }
 // The stylesheet rides along with the frame, so every screen has the animations.
 function PageChrome({ idleWarning = false }) {
@@ -25414,6 +25446,9 @@ function EduSphereApp() {
     // the regular screens.
     const earlyModuleIds = (0, react_1.useMemo)(() => visibleCourses.filter((c) => stageForGrade(c.grade) === 'early').flatMap((c) => c.modules.map((m) => m.id)), [visibleCourses]);
     const youngLearner = earlyModuleIds.length > 0 && earlyModuleIds.some((id) => !progress.masteredIds.includes(id));
+    // Young learners see only their early-years courses; anything above grade 2 waits until they graduate.
+    const shownCourses = (0, react_1.useMemo)(() => (earlyModuleIds.length > 0 && earlyModuleIds.some((id) => !progress.masteredIds.includes(id)) ? visibleCourses.filter((c) => stageForGrade(c.grade) === 'early') : visibleCourses), [visibleCourses, earlyModuleIds, progress]);
+    const shownSubjects = (0, react_1.useMemo)(() => [...new Set(shownCourses.map((c) => c.subject))].sort(), [shownCourses]);
     // On first load: find learners who have used this device before.
     (0, react_1.useEffect)(() => {
         (async () => {
@@ -25624,11 +25659,11 @@ function EduSphereApp() {
             react_1.default.createElement("div", { className: "edu-wrap edu-welcome", style: wrap },
                 react_1.default.createElement("div", { className: "edu-welcome-logo", style: { margin: '10px 0 8px' } },
                     react_1.default.createElement(Logo, { width: 250, animate: true })),
-                react_1.default.createElement("div", { className: "edu-welcome-card", style: card },
+                react_1.default.createElement("div", { className: "edu-welcome-card", style: { ...card, background: '#F9FBF7', borderColor: '#E3EBE2' } },
                     react_1.default.createElement("h2", { style: { fontSize: 20, margin: '0 0 14px', textAlign: 'center' } }, "Who's learning today?"),
                     activeStudents(roster).length === 0 ? (react_1.default.createElement("p", { style: { margin: 0, color: C.muted, fontSize: 15, textAlign: 'center' } }, "No students have been added. An educator can add students by logging in below.")) : (react_1.default.createElement(react_1.default.Fragment, null,
                         activeStudents(roster).length > 8 && (react_1.default.createElement("input", { value: nameInput, onChange: (e) => setNameInput(e.target.value), placeholder: "Find your name", style: { fontFamily: FONT, fontSize: 17, padding: '10px 12px', width: '100%', boxSizing: 'border-box', border: `2px solid ${C.line}`, borderRadius: 10, marginBottom: 10 } })),
-                        react_1.default.createElement("div", { style: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: 8, maxHeight: 320, overflowY: 'auto' } }, activeStudents(roster)
+                        react_1.default.createElement("div", { style: { display: 'grid', gridTemplateColumns: activeStudents(roster).length <= 2 ? '1fr' : activeStudents(roster).length <= 8 ? 'repeat(auto-fit, minmax(160px, 1fr))' : 'repeat(auto-fill, minmax(150px, 1fr))', gap: 10, maxHeight: 360, overflowY: 'auto' } }, activeStudents(roster)
                             .filter((st) => st.label.toLowerCase().includes(nameInput.trim().toLowerCase()))
                             .map((st) => (react_1.default.createElement("button", { key: st.id, type: "button", onClick: () => startWithName(st.id), disabled: busy, className: "edu-press", style: { fontFamily: FONT, fontSize: 15, fontWeight: 600, borderRadius: 10, background: C.surface, border: `2px solid ${C.line}`, color: C.ink, cursor: 'pointer', height: 64, padding: '0 10px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, overflow: 'hidden', position: 'relative' } },
                             st.picture && react_1.default.createElement("span", { style: { position: 'absolute', left: 8, top: '50%', transform: 'translateY(-50%)', display: 'inline-flex' } },
@@ -25641,10 +25676,11 @@ function EduSphereApp() {
                     errorMsg && react_1.default.createElement("p", { style: { color: C.clay } }, errorMsg)),
                 react_1.default.createElement("p", { style: { color: C.muted, fontSize: 13, margin: '14px 0 0', textAlign: 'center' } }, "Progress is saved on this device only. Nothing is sent anywhere."),
                 react_1.default.createElement("div", { className: "edu-welcome-links", style: { marginTop: 28, textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 } },
-                    react_1.default.createElement("button", { type: "button", onClick: () => { if (lastActive && Date.now() - lastActive < 5 * 60 * 1000) {
-                            setScreen('educator-pick');
-                            return;
-                        } setPinInput(''); setScreen('educator-pin'); }, style: { background: 'none', border: 'none', color: C.muted, fontFamily: FONT, fontSize: 14, cursor: 'pointer', padding: '8px 12px', textDecoration: 'underline' } }, "Educator Login"),
+                    react_1.default.createElement("div", { style: { width: '100%', maxWidth: 320, marginBottom: 6 } },
+                        react_1.default.createElement(Btn, { full: true, onClick: () => { if (lastActive && Date.now() - lastActive < 5 * 60 * 1000) {
+                                setScreen('educator-pick');
+                                return;
+                            } setPinInput(''); setScreen('educator-pin'); } }, "Educator Login")),
                     !educator && (react_1.default.createElement("button", { type: "button", onClick: () => { setNewPin(''); setNewPin2(''); setDeviceDraft(''); setStateDraft(''); setSetupError(''); setScreen('educator-setup'); }, style: { background: 'none', border: 'none', color: C.muted, fontFamily: FONT, fontSize: 14, cursor: 'pointer', padding: '4px 12px', textDecoration: 'underline' } }, "Create account")),
                     react_1.default.createElement(ContactLine, { onOpen: () => setShowContact(true), inline: true })),
                 showContact && react_1.default.createElement(ContactPopup, { onClose: () => setShowContact(false) }))));
@@ -25653,11 +25689,11 @@ function EduSphereApp() {
         const mastered = visibleModules.filter((m) => progress.masteredIds.includes(m.id)).length;
         return (react_1.default.createElement("div", { style: page },
             react_1.default.createElement(PageChrome, { idleWarning: idleWarning }),
-            react_1.default.createElement("div", { className: "edu-wrap", style: wrap },
+            react_1.default.createElement("div", { className: youngLearner ? "edu-wrap edu-welcome" : "edu-wrap", style: wrap },
                 react_1.default.createElement("div", { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' } },
                     react_1.default.createElement("h1", { style: { fontSize: 26, margin: '8px 0' } }, "Your courses"),
                     react_1.default.createElement("button", { type: "button", onClick: () => setScreen('welcome'), style: { background: 'none', border: 'none', color: C.green, fontFamily: FONT, fontSize: 15, cursor: 'pointer' } }, "Exit")),
-                react_1.default.createElement("p", { style: { color: C.muted, marginTop: 0 } },
+                react_1.default.createElement("p", { style: { color: C.muted, marginTop: 0, textAlign: 'center', fontSize: youngLearner ? 22 : 18, fontWeight: youngLearner ? 600 : 400 } },
                     "Hi ",
                     displayName,
                     ", welcome back!"),
@@ -25686,9 +25722,9 @@ function EduSphereApp() {
                             react_1.default.createElement(Btn, { halo: isPreReader(course.id) && st === 'available', kind: st === 'mastered' ? 'secondary' : 'primary', onClick: () => openModule(m.id), disabled: busy }, st === 'mastered' ? 'Practice again' : 'Open')))));
                     return null;
                 })(),
-                subjects.map((sub) => {
+                shownSubjects.map((sub) => {
                     const isOpen = openSubject === sub;
-                    const subCourses = visibleCourses.filter((c) => c.subject === sub).sort(byGradeOrder);
+                    const subCourses = shownCourses.filter((c) => c.subject === sub).sort(byGradeOrder);
                     const subModules = subCourses.flatMap((c) => c.modules);
                     const done = subModules.filter((m) => progress.masteredIds.includes(m.id)).length;
                     return (react_1.default.createElement("div", { key: sub, style: { ...card, padding: 0, overflow: 'visible', position: 'relative', borderColor: isOpen ? C.green : C.line } },
@@ -25704,7 +25740,7 @@ function EduSphereApp() {
                             react_1.default.createElement("div", { style: { marginTop: 8 } },
                                 react_1.default.createElement(FractionBar, { parts: Math.max(1, subModules.length), shaded: done, color: C.gold, height: 12 }))),
                         isOpen && (react_1.default.createElement("div", { style: { padding: '0 12px 12px' } }, subCourses.map((course) => (react_1.default.createElement("div", { key: course.id },
-                            subCourses.length > 1 && react_1.default.createElement("p", { style: { margin: '10px 0 2px', fontSize: 14, color: C.muted, paddingLeft: 4 } }, course.title),
+                            subCourses.length > 1 && !youngLearner && react_1.default.createElement("p", { style: { margin: '10px 0 2px', fontSize: 14, color: C.muted, paddingLeft: 4 } }, course.title),
                             course.modules.slice().sort((a, b) => a.order - b.order).map((m) => {
                                 const st = statusOf(m.id);
                                 const p = progress.perModule[m.id];
@@ -25712,19 +25748,31 @@ function EduSphereApp() {
                                 // Young learners see only what they can do now; locked work would only clutter the screen.
                                 if (youngLearner && locked)
                                     return null;
-                                if (isPreReader(course.id) && st === 'mastered' && !showFinished)
+                                if (isPreReader(course.id) && st === 'mastered' && (youngLearner || !showFinished))
                                     return null;
                                 return renderModuleCard(course, m, st, p, locked);
                             }),
-                            isPreReader(course.id) && course.modules.some((m) => statusOf(m.id) === 'mastered') && (react_1.default.createElement("button", { type: "button", onClick: () => setShowFinished(!showFinished), "aria-expanded": showFinished, "aria-label": "Finished modules", style: { fontFamily: FONT, width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: C.goldSoft, border: 'none', borderRadius: 10, padding: '10px 14px', marginBottom: 10, cursor: 'pointer', color: C.ink } },
+                            isPreReader(course.id) && !youngLearner && course.modules.some((m) => statusOf(m.id) === 'mastered') && (react_1.default.createElement("button", { type: "button", onClick: () => setShowFinished(!showFinished), "aria-expanded": showFinished, "aria-label": "Finished modules", style: { fontFamily: FONT, width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: C.goldSoft, border: 'none', borderRadius: 10, padding: '10px 14px', marginBottom: 10, cursor: 'pointer', color: C.ink } },
                                 react_1.default.createElement("span", { style: { display: 'flex', alignItems: 'center', gap: 8 } },
                                     react_1.default.createElement(StatusMark, { status: "mastered", size: 24 }),
                                     react_1.default.createElement("span", { style: { fontSize: 15, fontWeight: 600 } }, course.modules.filter((m) => statusOf(m.id) === 'mastered').length)),
                                 react_1.default.createElement("span", { style: { fontSize: 14, color: C.muted } }, showFinished ? '▴' : '▾'))))))))));
                 }),
-                youngLearner ? (react_1.default.createElement("div", { style: { ...card, background: C.goldSoft, borderColor: C.goldSoft, textAlign: 'center' } },
-                    react_1.default.createElement("div", { style: { display: 'flex', justifyContent: 'center', gap: 4, flexWrap: 'wrap' } }, visibleModules.filter((m) => earlyModuleIds.includes(m.id)).map((m) => (react_1.default.createElement("svg", { key: m.id, viewBox: "0 0 24 24", width: "26", height: "26", "aria-hidden": "true" },
-                        react_1.default.createElement("path", { d: "M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4l-5.9 3.1 1.2-6.5L2.5 9.4l6.6-.9z", fill: progress.masteredIds.includes(m.id) ? C.gold : C.line }))))))) : (react_1.default.createElement(Btn, { kind: "secondary", full: true, onClick: () => setScreen('my-progress') }, "My progress")),
+                youngLearner ? (react_1.default.createElement("div", { style: { marginTop: 'auto', paddingTop: 28 } },
+                    react_1.default.createElement("div", { style: { ...card, background: C.goldSoft, borderColor: C.goldSoft } },
+                        react_1.default.createElement("div", { style: { display: 'flex', justifyContent: 'flex-start', gap: 4, flexWrap: 'wrap' } }, [...visibleModules.filter((m) => earlyModuleIds.includes(m.id))].sort((a, b) => (progress.masteredIds.includes(b.id) ? 1 : 0) - (progress.masteredIds.includes(a.id) ? 1 : 0)).map((m) => (react_1.default.createElement("svg", { key: m.id, viewBox: "0 0 24 24", width: "26", height: "26", "aria-hidden": "true" },
+                            react_1.default.createElement("path", { d: "M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4l-5.9 3.1 1.2-6.5L2.5 9.4l6.6-.9z", fill: progress.masteredIds.includes(m.id) ? C.gold : C.line })))))),
+                    visibleModules.some((m) => earlyModuleIds.includes(m.id) && progress.masteredIds.includes(m.id)) && (react_1.default.createElement("div", { style: { ...card, padding: 0, overflow: 'hidden' } },
+                        react_1.default.createElement("button", { type: "button", onClick: () => setShowFinished(!showFinished), "aria-expanded": showFinished, "aria-label": "Finished modules", style: { fontFamily: FONT, width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: C.goldSoft, border: 'none', padding: '12px 14px', cursor: 'pointer', color: C.ink } },
+                            react_1.default.createElement("span", { style: { display: 'flex', alignItems: 'center', gap: 8 } },
+                                react_1.default.createElement(StatusMark, { status: "mastered", size: 24 }),
+                                react_1.default.createElement("span", { style: { fontSize: 15, fontWeight: 600 } }, visibleModules.filter((m) => earlyModuleIds.includes(m.id) && progress.masteredIds.includes(m.id)).length)),
+                            react_1.default.createElement("span", { style: { fontSize: 14, color: C.muted } }, showFinished ? '▴' : '▾')),
+                        showFinished && (react_1.default.createElement("div", { style: { padding: 10 } }, visibleModules.filter((m) => earlyModuleIds.includes(m.id) && progress.masteredIds.includes(m.id)).map((m) => (react_1.default.createElement("div", { key: m.id, style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10, padding: '8px 6px', borderTop: `1px solid ${C.line}` } },
+                            react_1.default.createElement("span", { style: { display: 'flex', alignItems: 'center', gap: 8 } },
+                                react_1.default.createElement(StatusMark, { status: "mastered", size: 22 }),
+                                react_1.default.createElement("span", { style: { fontSize: 16, fontWeight: 600 } }, m.title)),
+                            react_1.default.createElement(Btn, { kind: "secondary", onClick: () => openModule(m.id) }, "Practice")))))))))) : (react_1.default.createElement(Btn, { kind: "secondary", full: true, onClick: () => setScreen('my-progress') }, "My progress")),
                 saveNote && react_1.default.createElement("p", { style: { color: C.muted, fontSize: 13, textAlign: 'center' } }, saveNote),
                 errorMsg && react_1.default.createElement("p", { style: { color: C.clay } }, errorMsg))));
     }
@@ -25809,8 +25857,11 @@ function EduSphereApp() {
                         else if (picked) {
                             border = C.green;
                         }
-                        return (react_1.default.createElement("button", { key: c, type: "button", onClick: () => { if (!checked)
-                                setGiven(c); }, style: { opacity: ruledOut && !checked ? 0.45 : 1, fontFamily: FONT, fontSize: /^(\d+|[A-Za-z])$/.test(c) ? 34 : 18, textAlign: /^(\d+|[A-Za-z])$/.test(c) ? 'center' : 'left', padding: '12px 14px', borderRadius: 10, background: bg, border: `2px solid ${border}`, color: C.ink, cursor: checked ? 'default' : 'pointer', minHeight: 48 } }, /^dots:(\d+)$/.test(c) ? react_1.default.createElement(DotGroup, { count: Number(c.split(':')[1]), size: 28 }) : /^shape:/.test(c) ? react_1.default.createElement(ShapePic, { name: c.slice(6), size: 64 }) : /^tens:(\d+)$/.test(c) ? react_1.default.createElement(TensGroup, { count: Number(c.split(':')[1]), size: 14 }) : /^bar:(\d+)$/.test(c) ? react_1.default.createElement(BarPic, { length: Number(c.split(':')[1]), size: 18 }) : /^tower:(\d+)$/.test(c) ? react_1.default.createElement(BarPic, { length: Number(c.split(':')[1]), vertical: true, size: 14 }) : /^solid:/.test(c) ? react_1.default.createElement(SolidPic, { name: c.slice(6), size: 64 }) : /^swatch:/.test(c) ? react_1.default.createElement(Swatch, { colour: c.slice(7), size: 64 }) : /^item:/.test(c) ? react_1.default.createElement(Item, { spec: c.slice(5), size: 64 }) : /^clock:/.test(c) ? react_1.default.createElement(ClockPic, { hour: Number(c.split(':')[1]), minute: Number(c.split(':')[2]), size: 80 }) : /^array:/.test(c) ? react_1.default.createElement(ArrayPic, { rows: Number(c.slice(6).split('x')[0]), cols: Number(c.slice(6).split('x')[1]), size: 12 }) : c));
+                        return (react_1.default.createElement("button", { key: c, type: "button", onClick: () => { if (!checked) {
+                                if (readAloud)
+                                    playTap();
+                                setGiven(c);
+                            } }, style: { opacity: ruledOut && !checked ? 0.45 : 1, fontFamily: FONT, fontSize: /^(\d+|[A-Za-z])$/.test(c) ? 34 : 18, textAlign: /^(\d+|[A-Za-z])$/.test(c) ? 'center' : 'left', padding: '12px 14px', borderRadius: 10, background: bg, border: `2px solid ${border}`, color: C.ink, cursor: checked ? 'default' : 'pointer', minHeight: 48 } }, /^dots:(\d+)$/.test(c) ? react_1.default.createElement(DotGroup, { count: Number(c.split(':')[1]), size: 28 }) : /^shape:/.test(c) ? react_1.default.createElement(ShapePic, { name: c.slice(6), size: 64 }) : /^tens:(\d+)$/.test(c) ? react_1.default.createElement(TensGroup, { count: Number(c.split(':')[1]), size: 14 }) : /^bar:(\d+)$/.test(c) ? react_1.default.createElement(BarPic, { length: Number(c.split(':')[1]), size: 18 }) : /^tower:(\d+)$/.test(c) ? react_1.default.createElement(BarPic, { length: Number(c.split(':')[1]), vertical: true, size: 14 }) : /^solid:/.test(c) ? react_1.default.createElement(SolidPic, { name: c.slice(6), size: 64 }) : /^swatch:/.test(c) ? react_1.default.createElement(Swatch, { colour: c.slice(7), size: 64 }) : /^item:/.test(c) ? react_1.default.createElement(Item, { spec: c.slice(5), size: 64 }) : /^clock:/.test(c) ? react_1.default.createElement(ClockPic, { hour: Number(c.split(':')[1]), minute: Number(c.split(':')[2]), size: 80 }) : /^array:/.test(c) ? react_1.default.createElement(ArrayPic, { rows: Number(c.slice(6).split('x')[0]), cols: Number(c.slice(6).split('x')[1]), size: 12 }) : c));
                     }))) : q.type === 'trace' ? (react_1.default.createElement("div", null,
                         react_1.default.createElement(TracePad, { letter: q.answer, paths: tracePaths, disabled: checked, tone: checked ? (wasCorrect ? 'good' : 'bad') : null, onChange: (next) => { setTracePaths(next); setGiven(JSON.stringify(next)); } }),
                         !checked && tracePaths.length > 0 && (react_1.default.createElement("div", { style: { textAlign: 'center', marginTop: 8 } },

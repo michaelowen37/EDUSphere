@@ -24960,8 +24960,13 @@ const KID_ANIMATION = `
 @media (min-width: 1000px) {
   .edu-wrap { max-width: 720px; }
   .edu-welcome { min-height: calc(100vh - 40px); }
-  .edu-welcome-logo svg { width: 680px !important; height: auto !important; }
-  .edu-welcome-logo { align-items: flex-start !important; }
+  /* A very large logo that grows downward: its top edge stays put and its lower half runs
+     behind the sign-in card, which is drawn over it. */
+  .edu-welcome-logo svg { width: min(1200px, 92vw) !important; height: auto !important; }
+  .edu-welcome-logo { align-items: flex-start !important; margin-bottom: -300px !important; z-index: 1; }
+  .edu-welcome-card { z-index: 2; }
+  .edu-welcome-links { z-index: 2; }
+  .edu-galaxy { height: 92vh; min-height: 900px; }
   .edu-welcome-card { margin-top: 36px; padding: 22px 24px !important; }
   .edu-welcome-card h2 { font-size: 24px !important; }
   .edu-welcome-links { padding-top: 16px; padding-bottom: 16px; }
@@ -24986,7 +24991,7 @@ const KID_ANIMATION = `
 }
 @media (min-width: 1500px) { .edu-side { width: 420px; opacity: 0.7; } }
 /* A name lifts a little under the pointer, where there is one. */
-@media (hover: hover) { .edu-name { transition: background 0.18s ease, border-color 0.18s ease; } .edu-name:hover { background: #E4F0E8 !important; border-color: #3A6B58 !important; } }
+@media (hover: hover) { .edu-name { transition: background 0.18s ease, border-color 0.18s ease; } .edu-name:hover { background: #E4F0E8 !important; border-color: #3A6B58 !important; } .edu-login-btn button { transition: transform 0.18s ease, filter 0.18s ease; } .edu-login-btn button:hover { transform: scale(1.04); filter: brightness(1.1); } }
 @keyframes edu-glow { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
 @keyframes edu-pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.025); } }
 .edu-pulse { animation: edu-pulse 1.6s ease-in-out infinite; }
@@ -25185,7 +25190,7 @@ function buildGalaxy(scale) {
         if (scale === 1 && Math.abs(x - cx) < 320 && y < cy - 70 && y > cy - 300 && rng() < 0.3)
             return;
         // and quieter directly behind the logo, so the drawing stays the thing you look at
-        if (Math.abs(x - cx) < 400 && y > cy - 280 && y < cy + 250 && rng() < 0.72)
+        if (Math.abs(x - cx) < 520 && y > cy - 320 && y < cy + 360 && rng() < 0.92)
             return;
         stars.push({ x: x.toFixed(1), y: y.toFixed(1), r: (bright ? 0.9 + rng() * 1.8 : 0.35 + rng() * 1.0).toFixed(2), gold: rng() < 0.2, twinkle: rng() < 0.12, delay: (2.2 + rng() * 10).toFixed(2), dur: (1.6 + rng() * 2.4).toFixed(2), alpha: (bright ? 0.45 + rng() * 0.5 : 0.16 + rng() * 0.36).toFixed(2) });
     };
@@ -25799,7 +25804,7 @@ function EduSphereApp() {
                             "\u201D. Ask your educator.")))),
                     errorMsg && react_1.default.createElement("p", { style: { color: C.clay } }, errorMsg)),
                 react_1.default.createElement("div", { className: "edu-welcome-links", style: { marginTop: 14, textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 } },
-                    react_1.default.createElement("div", { style: { width: '100%', maxWidth: 320, marginBottom: 18 } },
+                    react_1.default.createElement("div", { className: "edu-login-btn", style: { width: '100%', maxWidth: 320, marginBottom: 18 } },
                         react_1.default.createElement(Btn, { full: true, onClick: () => { if (lastActive && Date.now() - lastActive < 5 * 60 * 1000) {
                                 setScreen('educator-pick');
                                 return;

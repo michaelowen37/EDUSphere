@@ -24962,8 +24962,11 @@ const KID_ANIMATION = `
   .edu-welcome { min-height: calc(100vh - 40px); }
   /* A very large logo that grows downward: its top edge stays put and its lower half runs
      behind the sign-in card, which is drawn over it. */
-  .edu-welcome-logo svg { width: min(1200px, 92vw) !important; height: auto !important; }
-  .edu-welcome-logo { align-items: flex-start !important; margin-bottom: 0 !important; z-index: 1; }
+  .edu-welcome-logo > svg:not(.edu-flank) { width: min(1200px, 92vw) !important; height: auto !important; flex-shrink: 0 !important; max-width: none !important; }
+  /* At this size the logo fills the width on its own; the two distant spheres would only be pushed off the edge. */
+  .edu-flank { display: none !important; }
+  .edu-welcome-logo { align-items: flex-start !important; margin-bottom: 0 !important; z-index: 1; overflow: visible !important; }
+  .edu-welcome { overflow: visible; }
   .edu-welcome-card { z-index: 2; }
   .edu-welcome-links { z-index: 2; }
   .edu-galaxy { height: 92vh; min-height: 900px; }
@@ -25201,6 +25204,17 @@ function buildGalaxy(scale) {
     }
     for (let i = 0; i < Math.round(500 * scale); i++)
         add(rng() * W, rng() * H, false);
+    // Two thick clouds to the left and right of the sphere, where the wide screen has room.
+    for (const side of [-1, 1])
+        for (let i = 0; i < Math.round(1600 * scale); i++) {
+            const a = rng() * Math.PI * 2;
+            const d = Math.pow(rng(), 1.4);
+            const x = cx + side * 760 + Math.cos(a) * d * 360;
+            const y = cy + 40 + Math.sin(a) * d * 320;
+            if (Math.abs(x - cx) < 520 && y > cy - 320 && y < cy + 360)
+                continue;
+            add(x, y, rng() < 0.3);
+        }
     // A dense ring just outside the logo, fading outward. Points that would land inside the
     // clear zone are dropped before they are added, so the logo keeps its quiet sky.
     for (let i = 0; i < Math.round(2400 * scale); i++) {

@@ -24940,14 +24940,14 @@ const KID_ANIMATION = `
 .edu-wrap { max-width: 560px; }
 .edu-side { display: none; }
 .edu-flank { display: none; }
-.edu-galaxy { display: block; position: absolute; left: 50%; top: 50%; width: 900px; height: 300px; transform: translate(-50%, -50%); pointer-events: none; z-index: 0; }
-.edu-welcome-logo { overflow: hidden; padding: 12px 0; }
-@keyframes edu-twinkle-star { 0%, 100% { opacity: 0.15; } 50% { opacity: 0.9; } }
-.edu-twinkle-star { animation: edu-twinkle-star 4s ease-in-out infinite; }
+.edu-welcome { position: relative; }
+.edu-galaxy { display: block; position: absolute; left: 50%; top: -10px; width: 100vw; height: 380px; transform: translateX(-50%); pointer-events: none; z-index: 0; }
+.edu-welcome-logo, .edu-welcome-card, .edu-welcome-links { position: relative; z-index: 1; }
+@keyframes edu-twinkle-star { 0% { transform: scale(1); } 50% { transform: scale(2.4); } 100% { transform: scale(1); } }
+.edu-twinkle-star { animation: edu-twinkle-star 2.4s ease-in-out 1 both; transform-box: fill-box; transform-origin: center; }
 @media (min-width: 1000px) {
   .edu-flank { display: block; position: relative; z-index: 1; }
-  .edu-galaxy { width: 1100px; height: 370px; }
-  .edu-welcome-logo { overflow: visible; }
+  .edu-galaxy { height: 52vh; min-height: 480px; }
 }
 .edu-welcome { display: flex; flex-direction: column; }
 .edu-welcome-links { margin-top: auto; }
@@ -25156,50 +25156,51 @@ function FlankSphere({ side }) {
 // green and gold, and two long arms sweeping around the sphere, as if the logo were one
 // world seen from a little way out. Positions come from a fixed seed so it is the same
 // every time. Everything sits behind the logo and takes no taps.
-const GALAXY = (() => {
+// Two star fields from one seed: the full one for laptops and a lighter one for phones,
+// where thousands of circles would slow the page and make the logo's own animation
+// stutter. Only a small share of stars sparkle, and each sparkles once, after the logo
+// has finished drawing itself, so the two animations never compete.
+function buildGalaxy(scale) {
     const rng = makeRng(2026);
     const stars = [];
-    // A real galaxy from a distance: a faint even dust everywhere, denser clusters along the
-    // arms and in a few knots, and nothing kept clear, so the field runs behind the logo too.
-    const clusters = [
-        { x: 180, y: 300, r: 130, n: 60 }, { x: 420, y: 90, r: 110, n: 55 }, { x: 760, y: 320, r: 150, n: 70 },
-        { x: 1020, y: 110, r: 120, n: 60 }, { x: 600, y: 200, r: 260, n: 90 }, { x: 900, y: 220, r: 90, n: 35 }, { x: 300, y: 190, r: 90, n: 35 },
-    ];
+    const W = 1600;
+    const H = 900;
+    const cx = W / 2;
+    const cy = H * 0.32;
     const add = (x, y, bright) => {
-        if (x < 0 || x > 1200 || y < 0 || y > 400)
+        if (x < 0 || x > W || y < 0 || y > H)
             return;
-        stars.push({ x: x.toFixed(1), y: y.toFixed(1), r: (bright ? 0.9 + rng() * 1.7 : 0.4 + rng() * 1.0).toFixed(2), gold: rng() < 0.2, twinkle: rng() < 0.6, delay: (rng() * 8).toFixed(2), dur: (2 + rng() * 5).toFixed(2), alpha: (bright ? 0.4 + rng() * 0.5 : 0.18 + rng() * 0.35).toFixed(2) });
+        // A little thinner in the band just under the logo, which otherwise clots on wide screens.
+        if (Math.abs(x - cx) < 420 && y > cy + 60 && y < cy + 300 && rng() < 0.4)
+            return;
+        stars.push({ x: x.toFixed(1), y: y.toFixed(1), r: (bright ? 0.9 + rng() * 1.8 : 0.35 + rng() * 1.0).toFixed(2), gold: rng() < 0.2, twinkle: rng() < 0.12, delay: (2.2 + rng() * 10).toFixed(2), dur: (1.6 + rng() * 2.4).toFixed(2), alpha: (bright ? 0.45 + rng() * 0.5 : 0.16 + rng() * 0.36).toFixed(2) });
     };
-    for (let i = 0; i < 260; i++)
-        add(rng() * 1200, rng() * 400, false); // the even dust
-    for (const c of clusters)
-        for (let i = 0; i < c.n; i++) { // the knots, thick at the centre and thinning out
-            const a = rng() * Math.PI * 2;
-            const d = c.r * Math.sqrt(rng()) * (0.6 + rng() * 0.6);
-            add(c.x + Math.cos(a) * d, c.y + Math.sin(a) * d * 0.7, rng() < 0.5);
-        }
-    // stars strung along the two arms
+    for (let i = 0; i < Math.round(2600 * scale); i++) {
+        const a = rng() * Math.PI * 2;
+        const d = Math.pow(rng(), 1.5);
+        add(cx + Math.cos(a) * d * W * 0.62, cy + Math.sin(a) * d * H * 0.62, rng() < 0.28 && d < 0.5);
+    }
+    for (let i = 0; i < Math.round(500 * scale); i++)
+        add(rng() * W, rng() * H, false);
     const along = (p0, p1, p2, p3, n) => { for (let i = 0; i < n; i++) {
         const t = rng();
         const u = 1 - t;
         const x = u * u * u * p0[0] + 3 * u * u * t * p1[0] + 3 * u * t * t * p2[0] + t * t * t * p3[0];
         const y = u * u * u * p0[1] + 3 * u * u * t * p1[1] + 3 * u * t * t * p2[1] + t * t * t * p3[1];
-        add(x + (rng() - 0.5) * 40, y + (rng() - 0.5) * 30, rng() < 0.4);
+        add(x + (rng() - 0.5) * 70, y + (rng() - 0.5) * 50, rng() < 0.35);
     } };
-    along([40, 300], [220, 80], [470, 60], [600, 130], 60);
-    along([600, 130], [740, 200], [980, 190], [1160, 60], 60);
-    along([60, 120], [260, 320], [480, 340], [600, 270], 50);
-    along([600, 270], [720, 200], [960, 230], [1150, 330], 50);
-    return { stars };
-})();
+    along([cx, cy], [cx + 150, cy - 240], [cx + 620, cy - 300], [W + 60, cy + 120], Math.round(220 * scale));
+    along([cx, cy], [cx - 150, cy + 240], [cx - 620, cy + 300], [-60, cy - 120], Math.round(220 * scale));
+    along([cx, cy], [cx - 240, cy - 120], [cx - 520, cy - 380], [cx - 300, -60], Math.round(120 * scale));
+    along([cx, cy], [cx + 240, cy + 120], [cx + 520, cy + 380], [cx + 300, H + 60], Math.round(120 * scale));
+    return { stars, W, H };
+}
+const GALAXY_FULL = buildGalaxy(1);
+const GALAXY_LIGHT = buildGalaxy(0.32);
 function Galaxy() {
-    return (react_1.default.createElement("svg", { className: "edu-galaxy", viewBox: "0 0 1200 400", preserveAspectRatio: "xMidYMid meet", "aria-hidden": "true" },
-        react_1.default.createElement("g", { fill: "none", strokeLinecap: "round" },
-            react_1.default.createElement("path", { d: "M 40 300 C 220 80, 470 60, 600 130 C 740 200, 980 190, 1160 60", stroke: C.green, strokeWidth: "1.6", strokeOpacity: "0.28" }),
-            react_1.default.createElement("path", { d: "M 60 120 C 260 320, 480 340, 600 270 C 720 200, 960 230, 1150 330", stroke: C.green, strokeWidth: "1.2", strokeOpacity: "0.22" }),
-            react_1.default.createElement("path", { d: "M 120 330 C 300 170, 420 150, 520 190", stroke: C.gold, strokeWidth: "1.1", strokeOpacity: "0.28" }),
-            react_1.default.createElement("path", { d: "M 690 190 C 800 250, 920 240, 1080 100", stroke: C.gold, strokeWidth: "1.1", strokeOpacity: "0.28" })),
-        GALAXY.stars.map((st, i) => (react_1.default.createElement("circle", { key: i, cx: st.x, cy: st.y, r: st.r, fill: st.gold ? C.gold : C.green, opacity: st.alpha, className: st.twinkle ? 'edu-twinkle-star' : undefined, style: st.twinkle ? { animationDelay: `${st.delay}s`, animationDuration: `${st.dur}s` } : undefined })))));
+    const light = typeof window !== 'undefined' && window.innerWidth < 1000;
+    const g = light ? GALAXY_LIGHT : GALAXY_FULL;
+    return (react_1.default.createElement("svg", { className: "edu-galaxy", viewBox: `0 0 ${g.W} ${g.H}`, preserveAspectRatio: "xMidYMid slice", "aria-hidden": "true" }, g.stars.map((st, i) => (react_1.default.createElement("circle", { key: i, cx: st.x, cy: st.y, r: st.r, fill: st.gold ? C.gold : C.green, opacity: st.alpha, className: st.twinkle ? 'edu-twinkle-star' : undefined, style: st.twinkle ? { animationDelay: `${st.delay}s`, animationDuration: `${st.dur}s` } : undefined })))));
 }
 // The arcs that fill the edges of a wide screen. Hidden on anything narrower than a
 // laptop, never in the way of a tap, and drawn once with no animation.
@@ -25749,8 +25750,9 @@ function EduSphereApp() {
     // The learner list can change during a session (a new learner just started), so refresh it whenever a picker screen opens.
     (0, react_1.useEffect)(() => { if (screen === 'welcome' || screen === 'educator-pick')
         loadRoster().then(setRoster); }, [screen]);
+    // A young learner who was wrong tries again, so the voice must not give the answer away.
     (0, react_1.useEffect)(() => { if (screen === 'practice' && readAloud && checked && q)
-        speak((wasCorrect ? 'Correct. ' : 'Not quite. The answer is ' + describeChoice(q.answer) + '. ') + q.explain); }, [checked]);
+        speak(wasCorrect ? 'Correct. ' + q.explain : 'Not that one. Have another try.'); }, [checked]);
     // ---------- Screens ----------
     if (screen === 'loading')
         return react_1.default.createElement("div", { style: page },
@@ -25761,13 +25763,12 @@ function EduSphereApp() {
         return (react_1.default.createElement("div", { style: page },
             react_1.default.createElement(PageChrome, { idleWarning: idleWarning }),
             react_1.default.createElement("div", { className: "edu-wrap edu-welcome", style: wrap },
-                react_1.default.createElement("div", { className: "edu-welcome-logo", style: { margin: '10px 0 8px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 28, position: 'relative' } },
-                    react_1.default.createElement(Galaxy, null),
+                react_1.default.createElement(Galaxy, null),
+                react_1.default.createElement("div", { className: "edu-welcome-logo", style: { margin: '10px 0 8px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 28 } },
                     react_1.default.createElement(FlankSphere, { side: "left" }),
-                    react_1.default.createElement("span", { style: { position: 'relative', zIndex: 1 } },
-                        react_1.default.createElement(Logo, { width: 250, animate: true })),
+                    react_1.default.createElement(Logo, { width: 250, animate: true }),
                     react_1.default.createElement(FlankSphere, { side: "right" })),
-                react_1.default.createElement("div", { className: "edu-welcome-card", style: { ...card, background: '#F9FBF7', borderColor: '#E3EBE2' } },
+                react_1.default.createElement("div", { className: "edu-welcome-card", style: { ...card, background: 'rgba(249, 251, 247, 0.9)', borderColor: '#E3EBE2' } },
                     react_1.default.createElement("h2", { style: { fontSize: 20, margin: '0 0 14px', textAlign: 'center' } }, "Who's learning today?"),
                     activeStudents(roster).length === 0 ? (react_1.default.createElement("p", { style: { margin: 0, color: C.muted, fontSize: 15, textAlign: 'center' } }, "No students have been added. An educator can add students by logging in below.")) : (react_1.default.createElement(react_1.default.Fragment, null,
                         activeStudents(roster).length > 8 && (react_1.default.createElement("input", { value: nameInput, onChange: (e) => setNameInput(e.target.value), placeholder: "Find your name", style: { fontFamily: FONT, fontSize: 17, padding: '10px 12px', width: '100%', boxSizing: 'border-box', border: `2px solid ${C.line}`, borderRadius: 10, marginBottom: 10 } })),
@@ -25965,10 +25966,10 @@ function EduSphereApp() {
                             checkCurrent(); }, placeholder: "Type a number", style: { fontFamily: FONT, fontSize: 20, padding: '12px 14px', width: '100%', boxSizing: 'border-box', border: `2px solid ${checked ? (wasCorrect ? C.green : C.clay) : C.line}`, borderRadius: 10 } })),
                     checked && (react_1.default.createElement("div", { key: cheer, className: wasCorrect ? 'edu-cheer' : 'edu-wobble', style: { position: 'relative', marginTop: 14, padding: 14, borderRadius: 10, background: wasCorrect ? C.greenSoft : C.claySoft } },
                         wasCorrect && react_1.default.createElement(StarBurst, null),
-                        react_1.default.createElement("p", { style: { margin: 0, fontWeight: 600, color: wasCorrect ? C.green : C.clay } }, wasCorrect ? 'Correct' : `Not quite. The answer is ${describeChoice(q.answer)}.`),
-                        react_1.default.createElement("p", { style: { margin: '6px 0 0', fontSize: 15 } }, q.explain),
-                        Array.isArray(q.explainVisual) && q.explainVisual.map((b, i) => react_1.default.createElement(LabeledBar, { key: i, parts: b.parts, shaded: b.shaded, label: b.label, color: wasCorrect ? C.green : C.clay })),
-                        q.explainVisual && !Array.isArray(q.explainVisual) && q.explainVisual.kind === 'dots' && react_1.default.createElement("div", { style: { marginTop: 8 } },
+                        react_1.default.createElement("p", { style: { margin: 0, fontWeight: 600, color: wasCorrect ? C.green : C.clay } }, wasCorrect ? 'Correct' : readAloud ? 'Not that one. Have another try.' : `Not quite. The answer is ${describeChoice(q.answer)}.`),
+                        (wasCorrect || !readAloud) && react_1.default.createElement("p", { style: { margin: '6px 0 0', fontSize: 15 } }, q.explain),
+                        (wasCorrect || !readAloud) && Array.isArray(q.explainVisual) && q.explainVisual.map((b, i) => react_1.default.createElement(LabeledBar, { key: i, parts: b.parts, shaded: b.shaded, label: b.label, color: wasCorrect ? C.green : C.clay })),
+                        (wasCorrect || !readAloud) && q.explainVisual && !Array.isArray(q.explainVisual) && q.explainVisual.kind === 'dots' && react_1.default.createElement("div", { style: { marginTop: 8 } },
                             react_1.default.createElement(DotGroup, { count: q.explainVisual.count, size: 28, animate: true, animKey: cheer }))))),
                 checked && !wasCorrect && readAloud
                     ? react_1.default.createElement(Btn, { full: true, halo: readAloud, onClick: tryAgain }, "Try again")

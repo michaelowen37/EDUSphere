@@ -25887,6 +25887,7 @@ function EduSphereApp() {
     const [showWonderTip, setShowWonderTip] = (0, react_1.useState)(false);
     const [showHelpTip, setShowHelpTip] = (0, react_1.useState)(false);
     const [showProTip, setShowProTip] = (0, react_1.useState)(false);
+    const [showRecommendTip, setShowRecommendTip] = (0, react_1.useState)(false);
     const [showProgressTip, setShowProgressTip] = (0, react_1.useState)(false);
     const [openSummary, setOpenSummary] = (0, react_1.useState)(true);
     const [openAssigned, setOpenAssigned] = (0, react_1.useState)(false);
@@ -25904,7 +25905,7 @@ function EduSphereApp() {
         setScreen('educator-pick'); };
     const pendingScroll = (0, react_1.useRef)(null);
     const rememberHere = () => { returnTo.current = { screen, scrollY: typeof window !== 'undefined' ? window.scrollY : 0 }; };
-    const closeTips = () => { setRestoreNote(''); setShowBackupTip(false); setShowRosterTip(false); setShowStateTip(false); setShowTouchlessTip(false); setShowWonderTip(false); setShowProgressTip(false); setShowHelpTip(false); setShowProTip(false); setForgotPin(false); setSetupError(''); };
+    const closeTips = () => { setRestoreNote(''); setShowBackupTip(false); setShowRosterTip(false); setShowStateTip(false); setShowTouchlessTip(false); setShowWonderTip(false); setShowProgressTip(false); setShowHelpTip(false); setShowProTip(false); setShowRecommendTip(false); setForgotPin(false); setSetupError(''); };
     const [stateCode, setStateCode] = (0, react_1.useState)(''); // the educator's state, chosen once
     const [stateDraft, setStateDraft] = (0, react_1.useState)('');
     const [autoSaving, setAutoSaving] = (0, react_1.useState)(false); // a file has been chosen for touchless backup
@@ -27642,9 +27643,9 @@ function EduSphereApp() {
                         "'s initial placement check and/or his or her progression through the modules) but you are free to edit how you see fit."),
                     react_1.default.createElement("input", { value: courseQuery, onChange: (e) => setCourseQuery(e.target.value), placeholder: "Search courses, for example: grade 1 math, kinder, fractions", "aria-label": "Search courses", style: { fontFamily: FONT, fontSize: 15, padding: '10px 12px', width: '100%', boxSizing: 'border-box', border: `2px solid ${C.line}`, borderRadius: 10, marginBottom: 10, background: C.surface } }),
                     !courseQuery.trim() && (react_1.default.createElement("p", { style: { margin: '0 0 10px', fontSize: 13, textAlign: 'center' } },
-                        react_1.default.createElement("button", { type: "button", onClick: () => { const student = findStudent(roster, educatorRecord.name); const starter = recommendedCourseIds([makeCoursesEnabledEvent([], new Date().toISOString())], student ? student.level : null); const keep = COURSES.filter((c) => c.modules.some((m) => rep.modules.find((x) => x.id === m.id && x.attempts > 0))).map((c) => c.id); setEnabled([...new Set([...starter, ...keep])]); }, style: { ...linkBtn, fontSize: 13, padding: 0 } }, "Back to recommended courses"),
-                        ' ',
-                        "(keeps any course already started)")),
+                        react_1.default.createElement("button", { type: "button", onClick: () => { const student = findStudent(roster, educatorRecord.name); const starter = recommendedCourseIds([makeCoursesEnabledEvent([], new Date().toISOString())], student ? student.level : null); const keep = COURSES.filter((c) => c.modules.some((m) => rep.modules.find((x) => x.id === m.id && x.attempts > 0))).map((c) => c.id); const next = [...new Set([...starter, ...keep])]; setEnabled(next); setRecommendedIds(next); setShowAllCourses(false); }, style: { ...linkBtn, fontSize: 13, padding: 0 } }, "Back to recommended courses"),
+                        react_1.default.createElement(InfoButton, { onClick: () => setShowRecommendTip(!showRecommendTip), label: "About recommended courses", open: showRecommendTip }))),
+                    !courseQuery.trim() && showRecommendTip && (react_1.default.createElement(TipText, null, "Sets this student back to the courses we recommend for their level. Any course they have already started stays assigned, so no progress is hidden.")),
                     courseQuery.trim() && (react_1.default.createElement("div", null,
                         COURSES.filter((c) => matchesCourseSearch(c, courseQuery)).sort(byGradeOrder).map((c) => (react_1.default.createElement("label", { key: c.id, style: { display: 'flex', alignItems: 'center', gap: 10, padding: '7px 0', fontSize: 16 } },
                             react_1.default.createElement("input", { type: "checkbox", checked: enabled.includes(c.id), onChange: () => setEnabled(enabled.includes(c.id) ? enabled.filter((id) => id !== c.id) : [...enabled, c.id]) }),

@@ -25671,11 +25671,100 @@ async function gatherEverything(roster) {
 // finished practice round, so the record on disk is never more than one round behind.
 // iPads do not allow it; there, Share and Download are the way. Nothing is sent anywhere.
 let autoSaveHandle = null; // the chosen file, kept for this session only
+// The touchless file is rewritten in place, so its name carries no date or time: a time in
+// the name would go stale the moment the file was rewritten. The time lives inside the file.
+function touchlessFileName(deviceName) {
+    const device = String(deviceName || 'device').trim().toLowerCase().replace(/['\u2019]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'device';
+    return `edusphere-${device}-touchless-backup.json`;
+}
 function canAutoSave() { return typeof window !== 'undefined' && typeof window.showSaveFilePicker === 'function'; }
-async function chooseAutoSaveFile(suggestedName) {
-    if (!canAutoSave())
+// Touchless backup writes into a folder the educator chooses: one file per day, named by the
+// date and rewritten through the day. A folder of daily snapshots gives history without a
+// file for every round, which would run to thousands. Where a browser cannot offer a folder
+// but can offer a file, the older one-file way is used instead.
+let autoSaveFolder = null;
+let autoSaveDevice = 'device';
+// The chosen folder is remembered by the browser itself, in a small store that survives
+// restarts. After a restart the browser may ask for one confirming tap before writing
+// again; on some devices it remembers the permission and needs none.
+const HANDLE_DB = 'edusphere-touchless';
+function handleStore(mode) {
+    return new Promise((resolve, reject) => {
+        if (typeof indexedDB === 'undefined') {
+            reject(new Error('no store'));
+            return;
+        }
+        const req = indexedDB.open(HANDLE_DB, 1);
+        req.onupgradeneeded = () => req.result.createObjectStore('handles');
+        req.onerror = () => reject(req.error);
+        req.onsuccess = () => resolve(req.result.transaction('handles', mode).objectStore('handles'));
+    });
+}
+async function rememberAutoSaveFolder(handle) {
+    try {
+        const st = await handleStore('readwrite');
+        st.put(handle, 'folder');
+    }
+    catch (e) { /* remembering is a convenience, not a requirement */ }
+}
+async function recallAutoSaveFolder() {
+    try {
+        const st = await handleStore('readonly');
+        return await new Promise((res) => { const r = st.get('folder'); r.onsuccess = () => res(r.result || null); r.onerror = () => res(null); });
+    }
+    catch (e) {
+        return null;
+    }
+}
+async function forgetAutoSaveFolder() {
+    try {
+        const st = await handleStore('readwrite');
+        st.delete('folder');
+    }
+    catch (e) { /* nothing to forget */ }
+}
+// 'granted' means writing can resume by itself; 'prompt' means one tap is needed; null means nothing is remembered.
+async function touchlessRecallState() {
+    const h = await recallAutoSaveFolder();
+    if (!h || !h.queryPermission)
+        return null;
+    try {
+        const p = await h.queryPermission({ mode: 'readwrite' });
+        if (p === 'granted') {
+            autoSaveFolder = h;
+            return 'granted';
+        }
+        return 'prompt';
+    }
+    catch (e) {
+        return null;
+    }
+}
+async function resumeTouchless() {
+    const h = await recallAutoSaveFolder();
+    if (!h || !h.requestPermission)
         return false;
     try {
+        const p = await h.requestPermission({ mode: 'readwrite' });
+        if (p === 'granted') {
+            autoSaveFolder = h;
+            return true;
+        }
+    }
+    catch (e) { /* refused */ }
+    return false;
+}
+async function chooseAutoSaveFile(suggestedName, deviceName) {
+    if (!canAutoSave())
+        return false;
+    autoSaveDevice = deviceName || 'device';
+    try {
+        if (window.showDirectoryPicker) {
+            autoSaveFolder = await window.showDirectoryPicker({ mode: 'readwrite' });
+            autoSaveHandle = null;
+            await rememberAutoSaveFolder(autoSaveFolder);
+            return true;
+        }
         autoSaveHandle = await window.showSaveFilePicker({ suggestedName, types: [{ description: 'EduSphere backup', accept: { 'application/json': ['.json'] } }] });
         return true;
     }
@@ -25683,10 +25772,22 @@ async function chooseAutoSaveFile(suggestedName) {
         return false;
     }
 }
-async function writeAutoSave(text) {
-    if (!autoSaveHandle)
-        return false;
+function dailyBackupName(deviceName, at) {
+    const device = String(deviceName || 'device').trim().toLowerCase().replace(/['\u2019]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'device';
+    const d = new Date(at);
+    return `edusphere-${device}-${d.getMonth() + 1}-${d.getDate()}-${d.getFullYear()}.json`;
+}
+async function writeAutoSave(text, at = new Date().toISOString()) {
     try {
+        if (autoSaveFolder) {
+            const file = await autoSaveFolder.getFileHandle(dailyBackupName(autoSaveDevice, at), { create: true });
+            const w = await file.createWritable();
+            await w.write(text);
+            await w.close();
+            return dailyBackupName(autoSaveDevice, at);
+        }
+        if (!autoSaveHandle)
+            return false;
         const w = await autoSaveHandle.createWritable();
         await w.write(text);
         await w.close();
@@ -25694,6 +25795,8 @@ async function writeAutoSave(text) {
     }
     catch (err) {
         autoSaveHandle = null;
+        autoSaveFolder = null;
+        await forgetAutoSaveFolder();
         return false;
     }
 }
@@ -25766,6 +25869,15 @@ function EduSphereApp() {
     const [openApproved, setOpenApproved] = (0, react_1.useState)([]);
     const [openProgressGroups, setOpenProgressGroups] = (0, react_1.useState)([]);
     const [openMapGroups, setOpenMapGroups] = (0, react_1.useState)([]); // the standards map's dropdowns, closed until opened
+    const returnTo = (0, react_1.useRef)(null); // { screen, scrollY } to go back to after Change state or a PIN unlock
+    const goBackTo = () => { const r = returnTo.current; returnTo.current = null; if (r) {
+        pendingScroll.current = r.scrollY;
+        setScreen(r.screen);
+    }
+    else
+        setScreen('educator-pick'); };
+    const pendingScroll = (0, react_1.useRef)(null);
+    const rememberHere = () => { returnTo.current = { screen, scrollY: typeof window !== 'undefined' ? window.scrollY : 0 }; };
     const closeTips = () => { setRestoreNote(''); setShowBackupTip(false); setShowRosterTip(false); setShowStateTip(false); setShowTouchlessTip(false); setShowWonderTip(false); setShowProgressTip(false); setShowHelpTip(false); setForgotPin(false); setSetupError(''); };
     const [stateCode, setStateCode] = (0, react_1.useState)(''); // the educator's state, chosen once
     const [stateDraft, setStateDraft] = (0, react_1.useState)('');
@@ -25786,6 +25898,32 @@ function EduSphereApp() {
     onSpoke = () => setHeardNote(true);
     const [now, setNow] = (0, react_1.useState)(Date.now()); // ticks each second while an educator is signed in, for the countdown
     const [touchlessNote, setTouchlessNote] = (0, react_1.useState)(''); // what the touchless backup last did
+    const [touchlessWaiting, setTouchlessWaiting] = (0, react_1.useState)(false); // a remembered folder needs one confirming tap after a restart
+    const resumeTouchlessNow = async () => { if (await resumeTouchless()) {
+        setAutoSaving(true);
+        setTouchlessWaiting(false);
+        setTouchlessNote('Touchless backup resumed. Daily files continue in your chosen folder.');
+    }
+    else
+        setTouchlessNote('The browser did not allow the folder. Open Backup classroom and choose the destination again.'); };
+    const resumeControl = touchlessWaiting && !autoSaving ? (react_1.default.createElement("div", { style: { margin: '8px 0 12px', textAlign: 'center' } },
+        react_1.default.createElement("button", { type: "button", onClick: resumeTouchlessNow, className: "edu-glow", style: { background: 'none', border: 'none', color: C.green, fontFamily: FONT, fontSize: 16, fontWeight: 600, cursor: 'pointer', padding: '6px 10px', textDecoration: 'underline' } }, "Resume touchless backup"),
+        react_1.default.createElement("p", { style: { margin: '4px 0 0', fontSize: 13, color: C.muted, textAlign: 'center' } }, "The browser restarted since the folder was chosen. One tap and daily backups carry on."))) : null;
+    (0, react_1.useEffect)(() => {
+        if (screen !== 'educator-pick' || autoSaving)
+            return;
+        (async () => {
+            const state = await touchlessRecallState();
+            autoSaveDevice = deviceName || 'device';
+            if (state === 'granted') {
+                setAutoSaving(true);
+                setTouchlessWaiting(false);
+                setTouchlessNote('Touchless backup resumed by itself. Daily files continue in your chosen folder.');
+            }
+            else if (state === 'prompt')
+                setTouchlessWaiting(true);
+        })();
+    }, [screen]);
     (0, react_1.useEffect)(() => {
         if (screen !== 'backup')
             return;
@@ -26020,7 +26158,7 @@ function EduSphereApp() {
             if (wrote) {
                 setBackupAt(at);
                 await saveBackupAt(at);
-                setTouchlessNote(`Touchless backup rewrote its file at ${fmtDate(at)}.`);
+                setTouchlessNote(typeof wrote === 'string' ? `Touchless backup saved today's file (${wrote}) at ${fmtDate(at)}.` : `Touchless backup rewrote its file at ${fmtDate(at)}.`);
             }
             else {
                 setAutoSaving(false);
@@ -26075,6 +26213,7 @@ function EduSphereApp() {
             const quiet = Date.now() - lastActive;
             setNow(Date.now());
             if (quiet >= EDUCATOR_IDLE_MS) {
+                rememberHere();
                 setIdleWarning(false);
                 setPinInput('');
                 setScreen('educator-pin');
@@ -26085,8 +26224,19 @@ function EduSphereApp() {
         return () => clearInterval(tick);
     }, [onEducatorScreen, lastActive]);
     // Every screen opens at the top. Without this, a long page keeps the previous scroll position.
-    (0, react_1.useEffect)(() => { if (typeof window !== 'undefined' && window.scrollTo)
-        window.scrollTo(0, 0); closeTips(); setHeardNote(false); }, [screen]);
+    (0, react_1.useEffect)(() => {
+        if (typeof window !== 'undefined' && window.scrollTo) {
+            if (pendingScroll.current !== null) {
+                const y = pendingScroll.current;
+                pendingScroll.current = null;
+                setTimeout(() => window.scrollTo(0, y), 0);
+            }
+            else
+                window.scrollTo(0, 0);
+        }
+        closeTips();
+        setHeardNote(false);
+    }, [screen]);
     // Whatever route brought a question on screen, it starts clean: nothing picked, nothing counted.
     const questionKey = attempt ? `${attempt.seed}-${qIndex}` : '';
     (0, react_1.useEffect)(() => { setGiven(''); setChecked(false); setMisses(0); setWrongPicks([]); setTracePaths([]); }, [questionKey]);
@@ -26814,10 +26964,16 @@ function EduSphereApp() {
         const student = findStudent(roster, educatorRecord.name);
         const who = student ? student.label : educatorRecord.name;
         const tr = buildTranscript(who, educatorRecord.events);
+        // The standards a finished course covers, in the state's own framework, read from the curriculum plan.
+        const standardsSatisfied = (courseId) => {
+            const fw = frameworkForState(stateCode || 'CA');
+            const ids = (getCourse(courseId) || { modules: [] }).modules.map((m) => m.id);
+            return CURRICULUM.flatMap((entry) => entry.standards.filter((st) => st.framework === fw && st.moduleIds.some((id) => ids.includes(id))).map((st) => st.code));
+        };
         const section = (title, list) => (react_1.default.createElement("div", { style: { marginBottom: 18 } },
             react_1.default.createElement("h2", { style: { fontSize: 18, margin: '0 0 10px' } }, title),
             list.length === 0 && react_1.default.createElement("p", { style: { margin: 0, fontSize: 15, color: C.muted } }, "Nothing to show here yet."),
-            list.map((c) => (react_1.default.createElement("div", { key: c.id, style: { border: `1px solid ${C.line}`, borderRadius: 10, padding: 14, marginBottom: 10 } },
+            list.map((c) => (react_1.default.createElement("div", { key: c.id, style: { border: `1px solid ${C.line}`, borderRadius: 10, padding: 14, marginBottom: 10, background: C.surface } },
                 react_1.default.createElement("p", { style: { margin: 0, fontSize: 17, fontWeight: 600 } }, c.title),
                 react_1.default.createElement("p", { style: { margin: '2px 0 8px', fontSize: 13, color: C.muted } },
                     gradeShort(c.grade),
@@ -26833,6 +26989,12 @@ function EduSphereApp() {
                 react_1.default.createElement("p", { style: { margin: '4px 0 8px', fontSize: 14, color: C.muted } },
                     c.startedAt ? `Started ${fmtDate(c.startedAt)}` : '',
                     c.completedAt ? ` · completed ${fmtDate(c.completedAt)}` : ''),
+                c.completedAt && standardsSatisfied(c.id).length > 0 && (react_1.default.createElement("p", { style: { margin: '0 0 8px', fontSize: 14, lineHeight: 1.6 } },
+                    react_1.default.createElement("strong", null, "Standards satisfied"),
+                    " (",
+                    FRAMEWORKS[frameworkForState(stateCode || 'CA')].name,
+                    "): ",
+                    standardsSatisfied(c.id).join(', '))),
                 react_1.default.createElement("table", { style: { width: '100%', borderCollapse: 'collapse', fontSize: 14 } },
                     react_1.default.createElement("tbody", null, c.modules.map((m) => (react_1.default.createElement("tr", { key: m.id, style: { borderTop: `1px solid ${C.line}` } },
                         react_1.default.createElement("td", { style: { padding: '6px 0' } }, m.title),
@@ -26849,19 +27011,19 @@ function EduSphereApp() {
                     who,
                     " \u00B7 issued ",
                     fmtDate(tr.generatedAt)),
-                react_1.default.createElement("div", { style: { border: `1px solid ${C.line}`, borderRadius: 10, padding: 14, marginBottom: 18 } },
-                    react_1.default.createElement("p", { style: { margin: 0, fontSize: 15, lineHeight: 1.6 } }, "Every course is considered complete once every module within that course is mastered. All completions remain on this record indefinitely while currently assigned courses, which are not yet complete, can appear or disappear depending on whether or not they are actively assigned.")),
+                react_1.default.createElement("div", { style: { border: `1px solid ${C.line}`, borderRadius: 10, padding: 14, marginBottom: 18, background: C.surface } },
+                    react_1.default.createElement("p", { style: { margin: 0, fontSize: 15, lineHeight: 1.6, textAlign: 'center' } }, "Courses are considered complete once every associated module is mastered. Completions remain on this record indefinitely. Currently assigned courses can appear or disappear depending on whether or not they are actively assigned.")),
                 section('Completed courses', tr.completed),
                 section('Courses in progress', tr.inProgress),
-                tr.retention.asked > 0 && (react_1.default.createElement("div", { style: { border: `1px solid ${C.line}`, borderRadius: 10, padding: 14, marginBottom: 18 } },
-                    react_1.default.createElement("p", { style: { margin: 0, fontSize: 15 } },
+                tr.retention.asked > 0 && (react_1.default.createElement("div", { style: { border: `1px solid ${C.line}`, borderRadius: 10, padding: 14, marginBottom: 18, background: C.surface } },
+                    react_1.default.createElement("p", { style: { margin: 0, fontSize: 15, textAlign: 'center' } },
                         "Memory checks from earlier modules: ",
                         tr.retention.correct,
                         " of ",
                         tr.retention.asked,
                         " answered correctly."))),
-                react_1.default.createElement("p", { style: { fontSize: 13, color: C.muted, lineHeight: 1.6 } }, tr.note),
-                react_1.default.createElement("p", { style: { fontSize: 13, color: C.muted } }, "Untouched courses are left off of this record for obvious reasons."),
+                react_1.default.createElement("p", { style: { fontSize: 13, color: C.muted, lineHeight: 1.6, textAlign: 'center' } }, tr.note),
+                react_1.default.createElement("p", { style: { fontSize: 13, color: C.muted, textAlign: 'center' } }, "Untouched courses are left off of this record for obvious reasons."),
                 react_1.default.createElement("div", { className: "edu-no-print", style: { marginTop: 16 } },
                     react_1.default.createElement(Btn, { full: true, onClick: () => { if (typeof window !== 'undefined' && window.print)
                             window.print(); } }, "Print or save as PDF")))));
@@ -26878,7 +27040,7 @@ function EduSphereApp() {
                 react_1.default.createElement("p", { style: { color: C.muted, marginTop: 0, fontSize: 15 } }, "Each state publishes its own learning standards. Your reports show coverage against the standards that apply to you."),
                 react_1.default.createElement("div", { style: card },
                     react_1.default.createElement("select", { value: stateDraft, onChange: (e) => setStateDraft(e.target.value), "aria-label": "Your state", style: { fontFamily: FONT, fontSize: 16, padding: '10px 12px', width: '100%', boxSizing: 'border-box', border: `2px solid ${C.line}`, borderRadius: 10, background: C.surface, marginBottom: 12 } }, STATES.map((st) => react_1.default.createElement("option", { key: st.code, value: st.code }, st.name))),
-                    react_1.default.createElement(Btn, { full: true, onClick: async () => { setStateCode(stateDraft); await saveStateCode(stateDraft); setScreen('educator-pick'); } }, "Save")))));
+                    react_1.default.createElement(Btn, { full: true, onClick: async () => { setStateCode(stateDraft); await saveStateCode(stateDraft); goBackTo(); } }, "Save")))));
     }
     // ---------- Creating the educator account: PIN, device name and state, asked once ----------
     if (screen === 'educator-setup') {
@@ -26953,11 +27115,13 @@ function EduSphereApp() {
                     react_1.default.createElement("div", { style: card },
                         react_1.default.createElement("p", { style: { margin: '0 0 10px' } }, "Enter your PIN."),
                         react_1.default.createElement(PinInput, { value: pinInput, onChange: setPinInput, placeholder: "PIN", onEnter: () => { if (ok)
-                                setScreen('educator-pick'); }, style: { fontFamily: FONT, fontSize: 18, padding: '12px 14px', width: '100%', boxSizing: 'border-box', border: `2px solid ${C.line}`, borderRadius: 10, marginBottom: 12, letterSpacing: 4 } }),
-                        react_1.default.createElement(Btn, { full: true, onClick: () => setScreen('educator-pick'), disabled: !ok }, "Open"),
+                                goBackTo(); }, style: { fontFamily: FONT, fontSize: 18, padding: '12px 14px', width: '100%', boxSizing: 'border-box', border: `2px solid ${C.line}`, borderRadius: 10, marginBottom: 12, letterSpacing: 4 } }),
+                        react_1.default.createElement(Btn, { full: true, onClick: goBackTo, disabled: !ok }, "Open"),
                         !educator && react_1.default.createElement("p", { style: { margin: '12px 0 0', fontSize: 14, color: C.muted, textAlign: 'center' } },
-                            "No educator account on this device yet, so the starter PIN still works. Create your own to replace it: ",
-                            react_1.default.createElement("button", { type: "button", onClick: () => { setNewPin(''); setNewPin2(''); setDeviceDraft(''); setStateDraft(''); setSetupError(''); setScreen('educator-setup'); }, style: { ...linkBtn, fontSize: 14, padding: 0 } }, "Create one")),
+                            "No educator account created on this device. ",
+                            react_1.default.createElement("button", { type: "button", onClick: () => { setNewPin(''); setNewPin2(''); setDeviceDraft(''); setStateDraft(''); setSetupError(''); setScreen('educator-setup'); }, style: { ...linkBtn, fontSize: 14, padding: 0 } }, "Create one here"),
+                            react_1.default.createElement("br", null),
+                            "Starter PIN still works and data can be merged later."),
                         educator && !forgotPin && react_1.default.createElement("p", { style: { margin: '12px 0 0', fontSize: 14, color: C.muted } },
                             react_1.default.createElement("button", { type: "button", onClick: () => setForgotPin(true), style: { ...linkBtn, fontSize: 14, padding: 0 } }, "Forgot my PIN")),
                         educator && forgotPin && (react_1.default.createElement("div", { style: { marginTop: 12, padding: 12, borderRadius: 10, background: C.goldSoft } },
@@ -27042,6 +27206,7 @@ function EduSphereApp() {
                         react_1.default.createElement("button", { type: "button", onClick: () => { setLastActive(0); setIdleWarning(false); closeTips(); setScreen('welcome'); }, style: { background: 'none', border: 'none', color: C.muted, fontFamily: FONT, fontSize: 14, cursor: 'pointer', padding: 0, textDecoration: 'underline' } }, "Sign out")));
                 })(),
                 react_1.default.createElement("h1", { style: { fontSize: 24, margin: '12px 0 4px', textAlign: 'center' } }, "My Classroom"),
+                resumeControl,
                 educator && backupAt === null && (react_1.default.createElement("p", { style: { margin: '0 0 10px', fontSize: 14, color: C.clay, textAlign: 'center' } }, "Make your first backup soon. A forgotten PIN can only be reset with a backup file. Scroll to the bottom to backup.")),
                 educator && (educator.resets || []).length > 0 && (react_1.default.createElement("p", { style: { margin: '0 0 10px', fontSize: 13, color: C.muted } },
                     "PIN last reset ",
@@ -27208,9 +27373,10 @@ function EduSphereApp() {
                     const overdue = visible.length > 0 && (days === null || days >= 1);
                     return (react_1.default.createElement("div", { style: { textAlign: 'center', marginTop: 24 } },
                         react_1.default.createElement("span", { style: { position: 'relative', display: 'inline-flex', alignItems: 'center', gap: 6 } },
-                            touchlessNote && react_1.default.createElement("p", { style: { margin: '0 0 6px', fontSize: 13, color: touchlessNote.includes('switched off') ? C.clay : C.muted, textAlign: 'center' } }, touchlessNote),
                             react_1.default.createElement("button", { type: "button", onClick: () => setScreen('backup'), className: `edu-backup-link${overdue ? ' edu-glow' : ''}`, style: { position: 'relative', background: 'none', border: 'none', color: C.green, fontFamily: FONT, fontSize: 16, fontWeight: 600, cursor: 'pointer', padding: '8px 12px', textDecoration: 'underline' } }, "Backup classroom"),
                             react_1.default.createElement("button", { type: "button", onClick: () => setShowBackupTip(!showBackupTip), "aria-label": "About backups", style: { position: 'relative', background: 'none', border: `1.5px solid ${C.green}`, color: C.green, fontFamily: FONT, fontSize: 12, fontWeight: 700, lineHeight: '15px', width: 18, height: 18, borderRadius: 999, cursor: 'pointer', padding: 0 } }, "i")),
+                        resumeControl,
+                        touchlessNote && react_1.default.createElement("p", { style: { margin: '6px 0 0', fontSize: 13, color: touchlessNote.includes('switched off') || touchlessNote.includes('did not allow') ? C.clay : C.muted, textAlign: 'center' } }, touchlessNote),
                         showBackupTip && (react_1.default.createElement("p", { style: { ...tipStyle, textAlign: 'left' } }, "We recommend backing up at the end of each day. Since all student data lives on this device (rather than in a cloud) the ability to restore progress after a browser's cache is cleared becomes paramount. This backup creates a file that holds all student progression, educator settings, life skill progress etc. Share it to your email, drive folder or any place that can be accessed if and when your device becomes compromised. Backup files allow you to restore everything with ease!"))));
                 })(),
                 react_1.default.createElement(ContactLine, { onOpen: () => setShowContact(true) }),
@@ -27223,8 +27389,8 @@ function EduSphereApp() {
             react_1.default.createElement(PageChrome, { idleWarning: idleWarning, logoutIn: logoutIn }),
             react_1.default.createElement("div", { className: "edu-wrap", style: wrap },
                 react_1.default.createElement("button", { type: "button", onClick: () => setScreen('educator-pick'), style: linkBtn }, "Back to Classroom"),
-                react_1.default.createElement("h1", { style: { fontSize: 24, margin: '12px 0 4px', textAlign: 'center' } }, "Who needs help"),
-                react_1.default.createElement("div", { style: { ...card, background: C.greenSoft, borderColor: C.greenSoft } }, classSummary(classRows).split('\n').map((line, i) => react_1.default.createElement("p", { key: i, style: { margin: i === 0 ? '0 0 8px' : 0, fontSize: 16, lineHeight: 1.6, textAlign: 'center' } }, line))),
+                react_1.default.createElement("h1", { style: { fontSize: 24, margin: '12px 0 16px', textAlign: 'center' } }, "Who needs help"),
+                react_1.default.createElement("div", { style: { ...card, background: C.greenSoft, borderColor: C.greenSoft, marginBottom: 24 } }, classSummary(classRows).split('\n').map((line, i) => react_1.default.createElement("p", { key: i, style: { margin: i === 0 ? '0 0 10px' : 0, fontSize: 16, lineHeight: 1.6, textAlign: 'center', fontWeight: i === 0 ? 400 : 700 } }, line))),
                 classRows.map((r) => {
                     const st = findStudent(roster, r.id);
                     return (react_1.default.createElement("div", { key: r.id, style: { ...card, borderColor: r.band === 'needs help now' ? C.clay : C.line } },
@@ -27279,8 +27445,8 @@ function EduSphereApp() {
             react_1.default.createElement(PageChrome, { idleWarning: idleWarning, logoutIn: logoutIn }),
             react_1.default.createElement("div", { className: "edu-wrap", style: wrap },
                 react_1.default.createElement("button", { type: "button", onClick: () => setScreen('educator-pick'), style: linkBtn }, "Back to Classroom"),
-                react_1.default.createElement("h1", { style: { fontSize: 24, margin: '12px 0 4px', textAlign: 'center' } }, "Backup classroom"),
-                react_1.default.createElement("p", { style: { color: C.muted, marginTop: 0, fontSize: 15 } },
+                react_1.default.createElement("h1", { style: { fontSize: 24, margin: '12px 0 18px', textAlign: 'center' } }, "Backup classroom"),
+                react_1.default.createElement("p", { style: { color: C.muted, marginTop: 0, fontSize: 15, textAlign: 'center' } },
                     days === null ? 'This classroom has never been backed up.' : days === 0 ? 'Backed up today.' : `Last backed up ${days} ${days === 1 ? 'day' : 'days'} ago.`,
                     ' ',
                     "Backups save all student progress and allow for restoration on any device at a later time. Regular backups are highly recommended. While some devices allow for automatic backups on a per module basis, others require manual backups."),
@@ -27335,14 +27501,15 @@ function EduSphereApp() {
                     react_1.default.createElement("p", { style: { margin: '0 0 6px', fontWeight: 600 } },
                         "Touchless backup",
                         react_1.default.createElement("button", { type: "button", onClick: () => setShowTouchlessTip(!showTouchlessTip), "aria-label": "Touchless backup exceptions", style: { background: 'none', border: `1.5px solid ${C.green}`, color: C.green, fontFamily: FONT, fontSize: 12, fontWeight: 700, lineHeight: '15px', width: 18, height: 18, borderRadius: 999, cursor: 'pointer', padding: 0, marginLeft: 8, verticalAlign: 'middle' } }, "i")),
-                    showTouchlessTip && react_1.default.createElement(TipText, null, "Touchless Backups only work with Chrome or Edge (laptop or PC). It does not work on iPads or in Safari as these options prevent pages from writing files. If you are using an iPad or Safari, you must manually backup your classroom then share or download the file yourself."),
-                    react_1.default.createElement("p", { style: { margin: '0 0 10px', fontSize: 14, color: C.muted } }, "Choose a file location once (ideally a shared folder) and this device will rewrite it after every finished practice round. One file, always current, nothing to remember."),
+                    showTouchlessTip && react_1.default.createElement(TipText, null, "Touchless Backups only work with Chrome or Edge (laptop or PC). It does not work on iPads or in Safari as these options prevent pages from writing files. If you are using an iPad or Safari, you must manually backup your classroom then share or download the file yourself. The chosen folder is remembered across restarts; after the browser reopens, the Classroom page may ask for one tap to resume, and on some devices it resumes by itself."),
+                    react_1.default.createElement("p", { style: { margin: '0 0 10px', fontSize: 14, color: C.muted } }, "Choose a folder once (ideally a shared folder) and this device will continually backup student progress as modules are completed. One file, continuously refreshed throughout the day. For some browsers, you will need to \"resume touchless backup\" daily."),
+                    resumeControl,
                     autoSaving
                         ? react_1.default.createElement("p", { style: { margin: 0, fontSize: 15, color: C.green, fontWeight: 600, textAlign: 'center' } },
-                            "Touchless backup is on. The file updates itself after every completed module.",
-                            touchlessNote && touchlessNote.includes('rewrote') ? ` ${touchlessNote}` : '')
-                        : react_1.default.createElement("div", { style: { textAlign: 'center' } },
-                            react_1.default.createElement(Btn, { kind: "secondary", onClick: async () => { if (await chooseAutoSaveFile(backupFileName(deviceName, activeCount, new Date().toISOString()))) {
+                            "Touchless backup is on. One file per day is kept in your chosen folder, rewritten after every completed module. If the browser restarts, the Classroom page offers one tap to resume.",
+                            touchlessNote && (touchlessNote.includes('rewrote') || touchlessNote.includes('saved today')) ? ` ${touchlessNote}` : '')
+                        : touchlessWaiting ? null : react_1.default.createElement("div", { style: { textAlign: 'center' } },
+                            react_1.default.createElement(Btn, { kind: "secondary", onClick: async () => { if (await chooseAutoSaveFile(touchlessFileName(deviceName), deviceName)) {
                                     setAutoSaving(true);
                                     const f = await makeFile();
                                     if (await writeAutoSave(f.text))
@@ -27539,16 +27706,13 @@ function EduSphereApp() {
                             open && react_1.default.createElement("p", { style: { margin: '0 0 6px', fontSize: 15 } }, x.plain)));
                     }),
                     react_1.default.createElement("p", { style: { margin: '4px 0 0', fontSize: 14, color: C.muted } }, "We never store a numerical student score. We store, one line at a time, what happened. These ground truths are recounted each time you open this page.")),
-                stateCode && (react_1.default.createElement("p", { style: { fontSize: 14, color: C.muted, textAlign: 'center', margin: '0 0 14px' } },
-                    "Reports measure against ",
-                    stateFor(stateCode).name,
-                    "'s standards (",
-                    FRAMEWORKS[frameworkForState(stateCode)].name,
-                    ").",
-                    ' ',
-                    react_1.default.createElement("button", { type: "button", onClick: () => { setStateDraft(stateCode); setScreen('change-state'); }, style: { ...linkBtn, fontSize: 14, padding: 0 } }, "Change state"),
-                    ' · ',
-                    react_1.default.createElement("button", { type: "button", onClick: () => setScreen('standards-map'), style: { ...linkBtn, fontSize: 14, padding: 0 } }, "Standards map"))),
+                react_1.default.createElement("p", { style: { fontSize: 14, color: C.muted, textAlign: 'center', margin: '0 0 14px' } },
+                    stateCode ? `We measure against ${stateFor(stateCode).name}'s standards (${FRAMEWORKS[frameworkForState(stateCode)].name}).` : `We measure against the ${FRAMEWORKS.CCSS.name} until a state is chosen.`,
+                    react_1.default.createElement("br", null),
+                    educator && react_1.default.createElement(react_1.default.Fragment, null,
+                        react_1.default.createElement("button", { type: "button", onClick: () => { rememberHere(); setStateDraft(stateCode || ''); setScreen('change-state'); }, style: { ...linkBtn, fontSize: 14, padding: 0 } }, "Change state"),
+                        ' · '),
+                    react_1.default.createElement("button", { type: "button", onClick: () => setScreen('standards-map'), style: { ...linkBtn, fontSize: 14, padding: 0 } }, "Standards map")),
                 react_1.default.createElement("details", { style: { marginBottom: 14 } },
                     react_1.default.createElement("summary", { style: { cursor: 'pointer', color: C.green, fontWeight: 600 } }, "Raw data"),
                     react_1.default.createElement("p", { style: { fontSize: 14, color: C.muted, margin: '8px 0' } }, "Every line below records one thing that happened, in the order it happened. Lines are only ever added. Because nothing is changed or removed, any report from any date can be reproduced exactly as it was."),

@@ -25726,6 +25726,21 @@ function EduSphereApp() {
     const [openSubjects, setOpenSubjects] = (0, react_1.useState)([]); // which subject panels are expanded on the report
     const [showAllCourses, setShowAllCourses] = (0, react_1.useState)(false); // optional courses on the educator report
     const [courseQuery, setCourseQuery] = (0, react_1.useState)(''); // the course search box on the report
+    const [preparedBackup, setPreparedBackup] = (0, react_1.useState)(null); // the backup text made ahead of a share, so the click shares at once
+    const [shareRefused, setShareRefused] = (0, react_1.useState)(false); // a browser that refused to share hides the button for this session
+    (0, react_1.useEffect)(() => {
+        if (screen !== 'backup')
+            return;
+        let alive = true;
+        (async () => {
+            const everything = await gatherEverything(roster);
+            const at = new Date().toISOString();
+            const text = JSON.stringify(buildBackup({ ...everything, deviceName, recovery: educator ? educator.recovery : null }, at), null, 2);
+            if (alive)
+                setPreparedBackup({ at, name: backupFileName(deviceName, activeStudents(roster).length, at), text });
+        })();
+        return () => { alive = false; };
+    }, [screen, roster, deviceName, educator]);
     // Worked out once, when the report opens. Recalculating it on every change would reshuffle
     // the list under the educator's finger, so the next row slides into the place they just tapped.
     const [recommendedIds, setRecommendedIds] = (0, react_1.useState)([]);
@@ -27124,7 +27139,7 @@ function EduSphereApp() {
         const activeCount = roster.students.filter((st) => st.active).length;
         // Share appears only where this browser can actually share a file. Most desktop browsers
         // cannot, so there it stays hidden and Download stands alone.
-        const canShare = (() => { try {
+        const canShare = !shareRefused && (() => { try {
             return typeof navigator !== 'undefined' && !!navigator.share && !!navigator.canShare && navigator.canShare({ files: [new File(['x'], 'x.json', { type: 'application/json' })] });
         }
         catch (e) {
@@ -27160,20 +27175,27 @@ function EduSphereApp() {
                         backupFileName(deviceName || 'chromebook', activeCount || 2, new Date().toISOString()))),
                 react_1.default.createElement("div", { style: card },
                     react_1.default.createElement("div", { style: { display: 'grid', gridTemplateColumns: canShare ? '1fr 1fr' : '1fr', gap: 10 } },
-                        canShare && (react_1.default.createElement(Btn, { full: true, onClick: async () => {
-                                const f = await makeFile();
+                        canShare && (react_1.default.createElement(Btn, { full: true, onClick: () => {
+                                // Sharing must happen in the same instant as the click, so the file is the one prepared earlier.
+                                const f = preparedBackup;
+                                if (!f) {
+                                    setBackupNote('One moment, the backup is still being prepared. Try again.');
+                                    return;
+                                }
                                 const file = new File([f.text], f.name, { type: 'application/json' });
                                 if (!navigator.canShare({ files: [file] })) {
+                                    setShareRefused(true);
                                     setBackupNote('Sharing files is not available here. Use Download instead.');
                                     return;
                                 }
-                                try {
-                                    await navigator.share({ files: [file], title: 'EduSphere backup' });
-                                    await markDone(f.at, 'Shared. Wherever you sent it is now your backup.');
-                                }
-                                catch (err) {
-                                    setBackupNote(err && err.name === 'AbortError' ? 'Sharing was canceled.' : 'This browser cannot share files. Use Download instead.');
-                                }
+                                navigator.share({ files: [file], title: 'EduSphere backup' })
+                                    .then(() => markDone(f.at, 'Shared. Wherever you sent it is now your backup.'))
+                                    .catch((err) => { if (err && err.name === 'AbortError')
+                                    setBackupNote('Sharing was canceled.');
+                                else {
+                                    setShareRefused(true);
+                                    setBackupNote('This browser cannot share files. Use Download instead.');
+                                } });
                             } }, "Share backup")),
                         react_1.default.createElement(Btn, { full: true, kind: canShare ? 'secondary' : 'primary', onClick: async () => {
                                 const f = await makeFile();
@@ -27262,8 +27284,8 @@ function EduSphereApp() {
             react_1.default.createElement(PageChrome, { idleWarning: idleWarning }),
             react_1.default.createElement("div", { className: "edu-wrap", style: wrap },
                 react_1.default.createElement("button", { type: "button", onClick: () => setScreen('educator-pick'), style: linkBtn }, "Back to Classroom"),
-                react_1.default.createElement("h1", { style: { fontSize: 26, margin: '10px 0 2px' } }, shownName),
-                react_1.default.createElement("p", { style: { color: C.muted, marginTop: 0, fontSize: 14 } },
+                react_1.default.createElement("h1", { style: { fontSize: 26, margin: '10px 0 2px', textAlign: 'center' } }, shownName),
+                react_1.default.createElement("p", { style: { color: C.muted, marginTop: 0, fontSize: 14, textAlign: 'center' } },
                     "Report generated ",
                     fmtDate(rep.generatedAt)),
                 (() => {

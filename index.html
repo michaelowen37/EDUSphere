@@ -25196,7 +25196,7 @@ function buildGalaxy(scale) {
         // and quieter directly behind the logo, so the drawing stays the thing you look at
         if (Math.abs(x - cx) < 300 && y > cy - 220 && y < cy + 240 && rng() < 0.92)
             return;
-        stars.push({ x: x.toFixed(1), y: y.toFixed(1), r: (bright ? 0.9 + rng() * 1.8 : 0.35 + rng() * 1.0).toFixed(2), gold: rng() < 0.2, twinkle: rng() < 0.12, delay: (2.2 + rng() * 10).toFixed(2), dur: (1.6 + rng() * 2.4).toFixed(2), alpha: (bright ? 0.45 + rng() * 0.5 : 0.16 + rng() * 0.36).toFixed(2) });
+        stars.push({ x: x.toFixed(1), y: y.toFixed(1), r: (bright ? 0.9 + rng() * 1.8 : 0.35 + rng() * 1.0).toFixed(2), gold: rng() < 0.2, twinkle: rng() < 0.05, delay: (2.2 + rng() * 10).toFixed(2), dur: (1.6 + rng() * 2.4).toFixed(2), alpha: (bright ? 0.45 + rng() * 0.5 : 0.16 + rng() * 0.36).toFixed(2) });
     };
     for (let i = 0; i < Math.round(2600 * scale); i++) {
         const a = rng() * Math.PI * 2;
@@ -25242,10 +25242,28 @@ function buildGalaxy(scale) {
 }
 const GALAXY_FULL = buildGalaxy(1);
 const GALAXY_LIGHT = buildGalaxy(0.32);
+// Thousands of stars as thousands of elements made the page stagger. The faint dust is
+// now drawn as a handful of paths, one per dot size, each holding hundreds of dots; only
+// the brighter stars are their own circles, and only some of those sparkle.
+const GALAXY_DRAWN = { full: null, light: null };
+function galaxyLayers(g) {
+    const bright = g.stars.filter((st) => Number(st.r) >= 1.7);
+    const dust = g.stars.filter((st) => Number(st.r) < 1.7);
+    const buckets = {};
+    for (const st of dust) {
+        const key = `${st.gold ? 'g' : 'n'}${(Math.round(Number(st.r) * 4) / 4).toFixed(2)}`;
+        (buckets[key] = buckets[key] || { gold: st.gold, r: Number(st.r), d: [] }).d.push(`M${st.x} ${st.y}h0.01`);
+    }
+    return { bright, dust: Object.values(buckets).map((b) => ({ ...b, d: b.d.join('') })) };
+}
 function Galaxy() {
     const light = typeof window !== 'undefined' && window.innerWidth < 1000;
     const g = light ? GALAXY_LIGHT : GALAXY_FULL;
-    return (react_1.default.createElement("svg", { className: "edu-galaxy", viewBox: `0 0 ${g.W} ${g.H}`, preserveAspectRatio: "xMidYMid slice", "aria-hidden": "true" }, g.stars.map((st, i) => (react_1.default.createElement("circle", { key: i, cx: st.x, cy: st.y, r: st.r, fill: st.gold ? C.gold : C.green, opacity: st.alpha, className: st.twinkle && !light ? 'edu-twinkle-star' : undefined, style: st.twinkle && !light ? { animationDelay: `${st.delay}s`, animationDuration: `${st.dur}s` } : undefined })))));
+    const key = light ? 'light' : 'full';
+    const layers = GALAXY_DRAWN[key] || (GALAXY_DRAWN[key] = galaxyLayers(g));
+    return (react_1.default.createElement("svg", { className: "edu-galaxy", viewBox: `0 0 ${g.W} ${g.H}`, preserveAspectRatio: "xMidYMid slice", "aria-hidden": "true" },
+        layers.dust.map((b, i) => (react_1.default.createElement("path", { key: `d${i}`, d: b.d, fill: "none", stroke: b.gold ? C.gold : C.green, strokeWidth: b.r * 2, strokeLinecap: "round", strokeOpacity: "0.32" }))),
+        layers.bright.map((st, i) => (react_1.default.createElement("circle", { key: i, cx: st.x, cy: st.y, r: st.r, fill: st.gold ? C.gold : C.green, opacity: st.alpha, className: st.twinkle && !light ? 'edu-twinkle-star' : undefined, style: st.twinkle && !light ? { animationDelay: `${st.delay}s`, animationDuration: `${st.dur}s` } : undefined })))));
 }
 // The arcs that fill the edges of a wide screen. Hidden on anything narrower than a
 // laptop, never in the way of a tap, and drawn once with no animation.

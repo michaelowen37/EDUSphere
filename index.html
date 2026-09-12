@@ -17428,6 +17428,26 @@ function coursesToUnlock(events) {
     }
     return out;
 }
+// Course search. Every word the educator types must appear somewhere in the course's
+// searchable text, which holds the title, the subject, and every way a grade gets said:
+// "Grade 1", "1st grade", "first grade", "kindergarten", "KG", "pre-K". So "grade 1",
+// "math", "1st grade math", "kinder reading" and "fractions" all narrow the list sensibly.
+const ORDINALS = { '1': '1st first', '2': '2nd second', '3': '3rd third', '4': '4th fourth', '5': '5th fifth', '6': '6th sixth', '7': '7th seventh', '8': '8th eighth', '9': '9th ninth', '10': '10th tenth', '11': '11th eleventh', '12': '12th twelfth' };
+function courseSearchText(course) {
+    const g = course.grade;
+    // Pre-K carries every way it gets typed, including as two words ("pre k"), so each half finds it.
+    const gradeWords = g === 'K' ? 'kindergarten kinder kg k grade k' : g === 'PK3' || g === 'PK4' ? `pre-k pre k prek preschool pre-kindergarten ${g.toLowerCase()} ${g === 'PK3' ? '3s three' : '4s four'}` : g === 'C' ? 'college' : `grade ${g} ${ORDINALS[g] || ''} grade`;
+    return `${course.title} ${course.subject} ${gradeWords} ${course.audience || ''}`.toLowerCase();
+}
+function matchesCourseSearch(course, query) {
+    const words = String(query || '').toLowerCase().split(/\s+/).filter(Boolean);
+    if (words.length === 0)
+        return true;
+    // A typed word matches the start of any token, letter by letter as it is typed ("ki" already
+    // finds kindergarten). A number must match a whole token, so "1" never finds "1,000".
+    const tokens = courseSearchText(course).split(/\s+/).filter(Boolean);
+    return words.every((w) => tokens.some((t) => (/^\d+$/.test(w) ? t === w : t.startsWith(w))));
+}
 // Pre-K first, college last, then by subject. Every course list on an educator screen uses this.
 function byGradeOrder(a, b) { return GRADES.indexOf(a.grade) - GRADES.indexOf(b.grade) || a.subject.localeCompare(b.subject) || a.title.localeCompare(b.title); }
 function recommendedCourseIds(events, level) {
@@ -23837,6 +23857,11 @@ function classView(students, now) {
             reasons.push(`${daysIdle} days since last practice`);
         }
         const mastered = assigned.filter((m) => m.mastered).length;
+        // Among students who are fine, the one who needed more tries per mastered module comes
+        // first, and the reason says so in words, so "on track" is never a flat list.
+        const effort = mastered > 0 ? attempts.length / mastered : 0;
+        if (score === 0 && mastered > 0)
+            reasons.push(effort >= 2 ? `on track, but it took about ${effort.toFixed(1)} rounds per module to get there` : `on track and quick about it: about ${effort.toFixed(1)} rounds per module`);
         const next = assigned.find((m) => !m.mastered && moduleStatuses(deriveProgress(events), report.enabledCourseIds).find((x) => x.id === m.id).status === 'available');
         return {
             id, label: label || id, score, reasons,
@@ -23844,9 +23869,10 @@ function classView(students, now) {
             next: next ? next.title : null,
             daysIdle,
             band: score >= 5 ? 'needs help now' : score >= 2 ? 'keep an eye on' : 'on track',
+            effort,
         };
     });
-    return rows.sort((a, b) => b.score - a.score || a.label.localeCompare(b.label));
+    return rows.sort((a, b) => b.score - a.score || b.effort - a.effort || a.label.localeCompare(b.label));
 }
 // The one-paragraph version a teacher can read in ten seconds.
 function classSummary(rows) {
@@ -24528,6 +24554,27 @@ function ContactPopup({ onClose }) {
             react_1.default.createElement("p", { style: { margin: '0 0 14px', fontSize: 15, color: C.muted } }, "Questions, problems, or an idea. We read everything."),
             react_1.default.createElement("p", { style: { margin: '0 0 14px', fontSize: 16, fontWeight: 600 } }, CONTACT_EMAIL),
             react_1.default.createElement("a", { href: `mailto:${CONTACT_EMAIL}`, style: { display: 'inline-block', fontFamily: FONT, fontSize: 16, fontWeight: 600, padding: '12px 18px', borderRadius: 10, background: C.green, color: '#fff', textDecoration: 'none' } }, "Open in your email app"))));
+}
+// A PIN box that shows dots, with only the digit just typed visible for a moment.
+function PinInput({ value, onChange, placeholder, style }) {
+    const [reveal, setReveal] = (0, react_1.useState)(false);
+    const timer = (0, react_1.useRef)(null);
+    const shown = value.split('').map((ch, i) => (i === value.length - 1 && reveal ? ch : '•')).join('');
+    return (react_1.default.createElement("input", { value: shown, inputMode: "numeric", autoComplete: "off", placeholder: placeholder, "aria-label": placeholder, style: style, onChange: (e) => {
+            const next = e.target.value;
+            let real = value;
+            if (next.length < value.length)
+                real = value.slice(0, next.length);
+            else {
+                const added = next.slice(value.length).replace(/[^0-9]/g, '');
+                real = (value + added).slice(0, 6);
+            }
+            onChange(real);
+            setReveal(true);
+            if (timer.current)
+                clearTimeout(timer.current);
+            timer.current = setTimeout(() => setReveal(false), 900);
+        } }));
 }
 function ContactLine({ onOpen, inline = false }) {
     return (react_1.default.createElement("p", { className: "edu-no-print", style: { textAlign: 'center', marginTop: inline ? 0 : 28, fontSize: inline ? 14 : 12, color: C.muted, margin: inline ? '0' : undefined } }, onOpen
@@ -25666,7 +25713,7 @@ function EduSphereApp() {
     const [openTerms, setOpenTerms] = (0, react_1.useState)([]);
     const [openApproved, setOpenApproved] = (0, react_1.useState)([]);
     const [openProgressGroups, setOpenProgressGroups] = (0, react_1.useState)([]);
-    const closeTips = () => { setShowBackupTip(false); setShowRosterTip(false); setShowStateTip(false); setShowTouchlessTip(false); setShowWonderTip(false); setShowProgressTip(false); setShowHelpTip(false); };
+    const closeTips = () => { setShowBackupTip(false); setShowRosterTip(false); setShowStateTip(false); setShowTouchlessTip(false); setShowWonderTip(false); setShowProgressTip(false); setShowHelpTip(false); setForgotPin(false); setSetupError(''); };
     const [stateCode, setStateCode] = (0, react_1.useState)(''); // the educator's state, chosen once
     const [stateDraft, setStateDraft] = (0, react_1.useState)('');
     const [autoSaving, setAutoSaving] = (0, react_1.useState)(false); // a file has been chosen for touchless backup
@@ -25678,6 +25725,7 @@ function EduSphereApp() {
     const [idleWarning, setIdleWarning] = (0, react_1.useState)(false);
     const [openSubjects, setOpenSubjects] = (0, react_1.useState)([]); // which subject panels are expanded on the report
     const [showAllCourses, setShowAllCourses] = (0, react_1.useState)(false); // optional courses on the educator report
+    const [courseQuery, setCourseQuery] = (0, react_1.useState)(''); // the course search box on the report
     // Worked out once, when the report opens. Recalculating it on every change would reshuffle
     // the list under the educator's finger, so the next row slides into the place they just tapped.
     const [recommendedIds, setRecommendedIds] = (0, react_1.useState)([]);
@@ -26002,7 +26050,7 @@ function EduSphereApp() {
                             } setPinInput(''); setScreen('educator-pin'); } }, "Educator Login")),
                     !educator && (react_1.default.createElement("button", { type: "button", onClick: () => { setNewPin(''); setNewPin2(''); setDeviceDraft(''); setStateDraft(''); setSetupError(''); setScreen('educator-setup'); }, style: { background: 'none', border: 'none', color: C.muted, fontFamily: FONT, fontSize: 14, cursor: 'pointer', padding: '4px 12px', textDecoration: 'underline' } }, "Create account")),
                     react_1.default.createElement(ContactLine, { onOpen: () => setShowContact(true), inline: true })),
-                react_1.default.createElement("p", { style: { color: C.muted, fontSize: 13, margin: 'auto 0 0', padding: '40px 36px 12px', textAlign: 'center', maxWidth: '100%', boxSizing: 'border-box' } }, "All of your school's important information, including students, student progression, educator settings and transcripts, lives entirely on this device. Regular backups (shared folders and/or email) are highly recommended."),
+                react_1.default.createElement("p", { style: { color: C.muted, fontSize: 13, margin: 'auto 0 0', padding: '40px 36px 12px', textAlign: 'center', maxWidth: '100%', boxSizing: 'border-box' } }, "All of your school's important information, including students, student progression, educator settings and transcripts, lives entirely on this device. Regular backups (shared folders, private folders and/or email) are highly recommended."),
                 showContact && react_1.default.createElement(ContactPopup, { onClose: () => setShowContact(false) }))));
     }
     if (screen === 'overview') {
@@ -26700,8 +26748,8 @@ function EduSphereApp() {
                 react_1.default.createElement("div", { style: card },
                     react_1.default.createElement("p", { style: { margin: '0 0 6px', fontWeight: 600, textAlign: 'center' } }, "Choose a PIN"),
                     react_1.default.createElement("p", { style: { margin: '0 0 8px', fontSize: 14, color: C.muted, textAlign: 'center' } }, "Four to six digits. It keeps students out of the educator pages; it is not a bank-grade lock. If it is ever forgotten, it can be reset from the sign-in screen without losing any student progress."),
-                    react_1.default.createElement("input", { value: newPin, inputMode: "numeric", autoComplete: "off", onChange: (e) => setNewPin(e.target.value.replace(/[^0-9]/g, '').slice(0, 6)), placeholder: "PIN", style: { fontFamily: FONT, fontSize: 18, padding: '12px 14px', width: '100%', boxSizing: 'border-box', border: `2px solid ${C.line}`, borderRadius: 10, marginBottom: 10 } }),
-                    react_1.default.createElement("input", { value: newPin2, inputMode: "numeric", autoComplete: "off", onChange: (e) => setNewPin2(e.target.value.replace(/[^0-9]/g, '').slice(0, 6)), placeholder: "PIN again", style: { fontFamily: FONT, fontSize: 18, padding: '12px 14px', width: '100%', boxSizing: 'border-box', border: `2px solid ${C.line}`, borderRadius: 10 } })),
+                    react_1.default.createElement(PinInput, { value: newPin, onChange: setNewPin, placeholder: "PIN", style: { fontFamily: FONT, fontSize: 18, padding: '12px 14px', width: '100%', boxSizing: 'border-box', border: `2px solid ${C.line}`, borderRadius: 10, marginBottom: 10, letterSpacing: 4 } }),
+                    react_1.default.createElement(PinInput, { value: newPin2, onChange: setNewPin2, placeholder: "PIN again", style: { fontFamily: FONT, fontSize: 18, padding: '12px 14px', width: '100%', boxSizing: 'border-box', border: `2px solid ${C.line}`, borderRadius: 10, letterSpacing: 4 } })),
                 react_1.default.createElement("div", { style: card },
                     react_1.default.createElement("p", { style: { margin: '0 0 6px', fontWeight: 600, textAlign: 'center' } }, "This device's name"),
                     react_1.default.createElement("p", { style: { margin: '0 0 8px', fontSize: 14, color: C.muted, textAlign: 'center' } }, "Student progress should be backed up daily. The name you choose for your device incorporates into the name of the backup file so multiple device classrooms are easier to restore (i.e. iPad 3, laptop, chrome book 4)."),
@@ -26761,16 +26809,15 @@ function EduSphereApp() {
                     react_1.default.createElement("h1", { style: { fontSize: 24, margin: '12px 0 22px', textAlign: 'center' } }, "Please log in to continue:"),
                     react_1.default.createElement("div", { style: card },
                         react_1.default.createElement("p", { style: { margin: '0 0 10px' } }, "Enter your PIN."),
-                        react_1.default.createElement("input", { value: pinInput, inputMode: "numeric", autoComplete: "off", onChange: (e) => setPinInput(e.target.value.replace(/[^0-9]/g, '')), placeholder: "PIN", onKeyDown: (e) => { if (e.key === 'Enter' && ok)
-                                setScreen('educator-pick'); }, style: { fontFamily: FONT, fontSize: 18, padding: '12px 14px', width: '100%', boxSizing: 'border-box', border: `2px solid ${C.line}`, borderRadius: 10, marginBottom: 12 } }),
+                        react_1.default.createElement(PinInput, { value: pinInput, onChange: setPinInput, placeholder: "PIN", style: { fontFamily: FONT, fontSize: 18, padding: '12px 14px', width: '100%', boxSizing: 'border-box', border: `2px solid ${C.line}`, borderRadius: 10, marginBottom: 12, letterSpacing: 4 } }),
                         react_1.default.createElement(Btn, { full: true, onClick: () => setScreen('educator-pick'), disabled: !ok }, "Open"),
                         !educator && react_1.default.createElement("p", { style: { margin: '12px 0 0', fontSize: 14, color: C.muted, textAlign: 'center' } },
                             "No educator account on this device yet. ",
                             react_1.default.createElement("button", { type: "button", onClick: () => { setNewPin(''); setNewPin2(''); setDeviceDraft(''); setStateDraft(''); setSetupError(''); setScreen('educator-setup'); }, style: { ...linkBtn, fontSize: 14, padding: 0 } }, "Create one")),
                         educator && !forgotPin && react_1.default.createElement("p", { style: { margin: '12px 0 0', fontSize: 14, color: C.muted } },
-                            react_1.default.createElement("button", { type: "button", onClick: () => setForgotPin(true), style: { ...linkBtn, fontSize: 14, padding: 0 } }, "Forgot your PIN?")),
+                            react_1.default.createElement("button", { type: "button", onClick: () => setForgotPin(true), style: { ...linkBtn, fontSize: 14, padding: 0 } }, "Forgot my PIN")),
                         educator && forgotPin && (react_1.default.createElement("div", { style: { marginTop: 12, padding: 12, borderRadius: 10, background: C.goldSoft } },
-                            react_1.default.createElement("p", { style: { margin: '0 0 10px', fontSize: 14 } }, "To reset, choose a backup file of this classroom, or type the recovery code from the top of that file. Only this classroom's backups carry it, which is how we know it is you and not a student. Nothing else changes: every student, the device name and the state stay as they are. Resets are shown on the Classroom page."),
+                            react_1.default.createElement("p", { style: { margin: '0 0 10px', fontSize: 14, textAlign: 'center' } }, "To reset your pin, select a backup file for your specific classroom or type the recovery code in the field below. This code is located on the classroom page and within your backup files."),
                             react_1.default.createElement("input", { value: typedCode, onChange: (e) => setTypedCode(e.target.value), placeholder: "Recovery code, e.g. 1234-5678-9012-3456", inputMode: "numeric", style: { fontFamily: FONT, fontSize: 16, padding: '10px 12px', width: '100%', boxSizing: 'border-box', border: `2px solid ${C.line}`, borderRadius: 10, marginBottom: 10 } }),
                             typedCode.replace(/[^0-9]/g, '').length === 16 && (react_1.default.createElement("div", { style: { marginBottom: 10 } },
                                 react_1.default.createElement(Btn, { onClick: async () => {
@@ -26792,9 +26839,9 @@ function EduSphereApp() {
                                         setScreen('educator-setup');
                                     } }, "Reset with this code"))),
                             setupError && react_1.default.createElement("p", { style: { margin: '0 0 10px', fontSize: 14, color: C.clay } }, setupError),
-                            react_1.default.createElement("div", { style: { display: 'flex', gap: 10 } },
-                                react_1.default.createElement("label", { style: { display: 'inline-block' } },
-                                    react_1.default.createElement("span", { style: { display: 'inline-block', fontFamily: FONT, fontSize: 16, fontWeight: 600, padding: '12px 18px', borderRadius: 10, background: C.green, color: '#fff', cursor: 'pointer' } }, "Choose a backup file to reset"),
+                            react_1.default.createElement("div", { style: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 } },
+                                react_1.default.createElement("label", { style: { display: 'block' } },
+                                    react_1.default.createElement("span", { style: { display: 'block', textAlign: 'center', fontFamily: FONT, fontSize: 16, fontWeight: 600, padding: '12px 18px', borderRadius: 10, background: C.green, color: '#fff', cursor: 'pointer' } }, "Choose a backup file to reset"),
                                     react_1.default.createElement("input", { type: "file", accept: "application/json,.json", style: { display: 'none' }, onChange: async (e) => {
                                             const f = e.target.files && e.target.files[0];
                                             if (!f)
@@ -26822,7 +26869,7 @@ function EduSphereApp() {
                                             }
                                             e.target.value = '';
                                         } })),
-                                react_1.default.createElement(Btn, { kind: "secondary", onClick: () => setForgotPin(false) }, "Cancel")))),
+                                react_1.default.createElement(Btn, { full: true, kind: "secondary", onClick: () => setForgotPin(false) }, "Cancel")))),
                         pinInput.length >= 4 && !ok && react_1.default.createElement("p", { style: { color: C.clay, fontSize: 14 } }, "That PIN is not right.")),
                     react_1.default.createElement("p", { style: { color: C.muted, fontSize: 13, textAlign: 'center' } }, "PIN numbers are easily reset. First, backup your classroom. Then, reset keys can be found within the backup file.")))));
     }
@@ -26851,7 +26898,7 @@ function EduSphereApp() {
                         react_1.default.createElement("button", { type: "button", onClick: () => { setLastActive(0); setIdleWarning(false); closeTips(); setScreen('welcome'); }, style: { background: 'none', border: 'none', color: C.muted, fontFamily: FONT, fontSize: 14, cursor: 'pointer', padding: 0, textDecoration: 'underline' } }, "Sign out")));
                 })(),
                 react_1.default.createElement("h1", { style: { fontSize: 24, margin: '12px 0 4px', textAlign: 'center' } }, "My Classroom"),
-                educator && backupAt === null && (react_1.default.createElement("p", { style: { margin: '0 0 10px', fontSize: 14, color: C.clay } }, "Make your first backup soon. A forgotten PIN can only be reset with a backup of this classroom.")),
+                educator && backupAt === null && (react_1.default.createElement("p", { style: { margin: '0 0 10px', fontSize: 14, color: C.clay, textAlign: 'center' } }, "Make your first backup soon. A forgotten PIN can only be reset with a backup file. Scroll to the bottom to backup.")),
                 educator && (educator.resets || []).length > 0 && (react_1.default.createElement("p", { style: { margin: '0 0 10px', fontSize: 13, color: C.muted } },
                     "PIN last reset ",
                     fmtDate((educator.resets || []).slice(-1)[0]),
@@ -26889,7 +26936,7 @@ function EduSphereApp() {
                                 } }, "Who needs help")),
                         react_1.default.createElement("span", { style: { position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)', display: 'inline-flex' } },
                             react_1.default.createElement(InfoButton, { onClick: () => setShowHelpTip(!showHelpTip), label: "About who needs help", open: showHelpTip }))),
-                    showHelpTip && react_1.default.createElement(TipText, null, "Every student organized by most in need."))),
+                    showHelpTip && react_1.default.createElement(TipText, null, "A list of struggling students who might need some guidance. Fast clicking, repeat failures and low confidence scores will push a student to the top of the list."))),
                 adding && (react_1.default.createElement("div", { style: { position: 'fixed', inset: 0, background: 'rgba(36, 41, 31, 0.55)', zIndex: 100, overflowY: 'auto', padding: '24px 12px' } },
                     react_1.default.createElement("div", { className: "edu-rise", style: { maxWidth: 560, margin: '0 auto', background: C.surface, borderRadius: 14, padding: 18, position: 'relative' } },
                         react_1.default.createElement("button", { type: "button", onClick: () => setAdding(false), "aria-label": "Close", style: { position: 'absolute', top: 8, right: 10, background: 'none', border: 'none', width: 36, height: 36, fontSize: 30, lineHeight: '34px', cursor: 'pointer', color: C.ink, fontFamily: FONT, padding: 0 } }, "\u00D7"),
@@ -27040,7 +27087,7 @@ function EduSphereApp() {
             react_1.default.createElement(PageChrome, { idleWarning: idleWarning }),
             react_1.default.createElement("div", { className: "edu-wrap", style: wrap },
                 react_1.default.createElement("button", { type: "button", onClick: () => setScreen('educator-pick'), style: linkBtn }, "Back to Classroom"),
-                react_1.default.createElement("h1", { style: { fontSize: 24, margin: '12px 0 4px' } }, "Who needs help"),
+                react_1.default.createElement("h1", { style: { fontSize: 24, margin: '12px 0 4px', textAlign: 'center' } }, "Who needs help"),
                 react_1.default.createElement("div", { style: { ...card, background: C.greenSoft, borderColor: C.greenSoft } },
                     react_1.default.createElement("p", { style: { margin: 0, fontSize: 16, lineHeight: 1.6 } }, classSummary(classRows))),
                 classRows.map((r) => {
@@ -27069,13 +27116,20 @@ function EduSphereApp() {
                                     setScreen('educator-report');
                                 } }, "Open report"))));
                 }),
-                react_1.default.createElement("p", { style: { fontSize: 13, color: C.muted } }, "Order is chosen by student metrics. Stuck on a module? Frequent loop backs? Guessing or low confidence? To the top for you."))));
+                react_1.default.createElement("p", { style: { fontSize: 13, color: C.muted, textAlign: 'center', padding: '0 24px' } }, "Order is chosen by student metrics. Stuck on a module? Frequent loop backs? Guessing or low confidence? To the top for you. Students on track are ordered by how many tries it took them to get there."))));
     }
     // ---------- Backup: the whole classroom in one file, nothing sent anywhere ----------
     if (screen === 'backup') {
         const days = daysSinceBackup(backupAt, new Date().toISOString());
         const activeCount = roster.students.filter((st) => st.active).length;
-        const canShare = typeof navigator !== 'undefined' && !!navigator.share && !!navigator.canShare;
+        // Share appears only where this browser can actually share a file. Most desktop browsers
+        // cannot, so there it stays hidden and Download stands alone.
+        const canShare = (() => { try {
+            return typeof navigator !== 'undefined' && !!navigator.share && !!navigator.canShare && navigator.canShare({ files: [new File(['x'], 'x.json', { type: 'application/json' })] });
+        }
+        catch (e) {
+            return false;
+        } })();
         const makeFile = async () => {
             const everything = await gatherEverything(roster);
             const at = new Date().toISOString();
@@ -27087,7 +27141,7 @@ function EduSphereApp() {
             react_1.default.createElement(PageChrome, { idleWarning: idleWarning }),
             react_1.default.createElement("div", { className: "edu-wrap", style: wrap },
                 react_1.default.createElement("button", { type: "button", onClick: () => setScreen('educator-pick'), style: linkBtn }, "Back to Classroom"),
-                react_1.default.createElement("h1", { style: { fontSize: 24, margin: '12px 0 4px' } }, "Backup classroom"),
+                react_1.default.createElement("h1", { style: { fontSize: 24, margin: '12px 0 4px', textAlign: 'center' } }, "Backup classroom"),
                 react_1.default.createElement("p", { style: { color: C.muted, marginTop: 0, fontSize: 15 } },
                     days === null ? 'This classroom has never been backed up.' : days === 0 ? 'Backed up today.' : `Last backed up ${days} ${days === 1 ? 'day' : 'days'} ago.`,
                     ' ',
@@ -27096,17 +27150,17 @@ function EduSphereApp() {
                 educator && educator.recovery && (react_1.default.createElement("div", { style: { ...card, background: C.greenSoft, borderColor: C.greenSoft } },
                     react_1.default.createElement("p", { style: { margin: '0 0 4px', fontWeight: 600 } }, "Recovery code"),
                     react_1.default.createElement("p", { style: { margin: '0 0 6px', fontSize: 22, fontWeight: 700, letterSpacing: 1 } }, educator.recovery),
-                    react_1.default.createElement("p", { style: { margin: 0, fontSize: 14, color: C.muted } }, "It is written at the top of every backup file. If the PIN is ever forgotten, choose a backup file on the sign-in screen or type this code. Keep it where students cannot see it."))),
+                    react_1.default.createElement("p", { style: { margin: 0, fontSize: 14, color: C.muted } }, "This code is also written at the top of every backup file. If you ever forget your PIN, simply select \"forgot my pin\" on the login screen and type in the code or choose a backup file. Keep it where students cannot see it."))),
                 react_1.default.createElement("div", { style: card },
                     react_1.default.createElement("p", { style: { margin: '0 0 6px', fontWeight: 600 } }, "This device's name"),
                     react_1.default.createElement("p", { style: { margin: '0 0 8px', fontSize: 14, color: C.muted } }, "Device name goes into the file name so a classroom of ten devices reads at a glance."),
                     react_1.default.createElement("input", { value: deviceName, onChange: (e) => setDeviceName(e.target.value), onBlur: () => saveDeviceName(deviceName), placeholder: "Example: iPad 3, Chromebook", style: { fontFamily: FONT, fontSize: 16, padding: '10px 12px', width: '100%', boxSizing: 'border-box', border: `2px solid ${C.line}`, borderRadius: 10 } }),
-                    react_1.default.createElement("p", { style: { margin: '8px 0 0', fontSize: 13, color: C.muted } },
+                    react_1.default.createElement("p", { style: { margin: '8px 0 0', fontSize: 13, color: C.muted, textAlign: 'center' } },
                         "Example file name: ",
                         backupFileName(deviceName || 'chromebook', activeCount || 2, new Date().toISOString()))),
                 react_1.default.createElement("div", { style: card },
-                    react_1.default.createElement("div", { style: { display: 'flex', gap: 10, flexWrap: 'wrap' } },
-                        canShare && (react_1.default.createElement(Btn, { onClick: async () => {
+                    react_1.default.createElement("div", { style: { display: 'grid', gridTemplateColumns: canShare ? '1fr 1fr' : '1fr', gap: 10 } },
+                        canShare && (react_1.default.createElement(Btn, { full: true, onClick: async () => {
                                 const f = await makeFile();
                                 const file = new File([f.text], f.name, { type: 'application/json' });
                                 if (!navigator.canShare({ files: [file] })) {
@@ -27118,10 +27172,10 @@ function EduSphereApp() {
                                     await markDone(f.at, 'Shared. Wherever you sent it is now your backup.');
                                 }
                                 catch (err) {
-                                    setBackupNote('Sharing was canceled.');
+                                    setBackupNote(err && err.name === 'AbortError' ? 'Sharing was canceled.' : 'This browser cannot share files. Use Download instead.');
                                 }
                             } }, "Share backup")),
-                        react_1.default.createElement(Btn, { kind: canShare ? 'secondary' : 'primary', onClick: async () => {
+                        react_1.default.createElement(Btn, { full: true, kind: canShare ? 'secondary' : 'primary', onClick: async () => {
                                 const f = await makeFile();
                                 if (downloadFile(f.name, f.text))
                                     await markDone(f.at, 'Backup downloaded. Keep it somewhere safe, such as your email.');
@@ -27136,21 +27190,22 @@ function EduSphereApp() {
                     showTouchlessTip && react_1.default.createElement(TipText, null, "Touchless Backups only work with Chrome or Edge (laptop or PC). It does not work on iPads or in Safari as these options prevent pages from writing files. If you are using an iPad or Safari, you must manually backup your classroom then share or download the file yourself."),
                     react_1.default.createElement("p", { style: { margin: '0 0 10px', fontSize: 14, color: C.muted } }, "Choose a file location once (ideally a shared folder) and this device will rewrite it after every finished practice round. One file, always current, nothing to remember."),
                     autoSaving
-                        ? react_1.default.createElement("p", { style: { margin: 0, fontSize: 15, color: C.green, fontWeight: 600 } }, "On. The file updates itself after every round.")
-                        : react_1.default.createElement(Btn, { kind: "secondary", onClick: async () => { if (await chooseAutoSaveFile(backupFileName(deviceName, activeCount, new Date().toISOString()))) {
-                                setAutoSaving(true);
-                                const f = await makeFile();
-                                if (await writeAutoSave(f.text))
-                                    await markDone(f.at, 'Touchless backup is on and the first copy is written.');
-                            } } }, "Choose the file"))),
+                        ? react_1.default.createElement("p", { style: { margin: 0, fontSize: 15, color: C.green, fontWeight: 600, textAlign: 'center' } }, "Touchless backup is on. The file updates itself after every completed module.")
+                        : react_1.default.createElement("div", { style: { textAlign: 'center' } },
+                            react_1.default.createElement(Btn, { kind: "secondary", onClick: async () => { if (await chooseAutoSaveFile(backupFileName(deviceName, activeCount, new Date().toISOString()))) {
+                                    setAutoSaving(true);
+                                    const f = await makeFile();
+                                    if (await writeAutoSave(f.text))
+                                        await markDone(f.at, 'Touchless backup is on and the first copy is written.');
+                                } } }, "Choose a Destination")))),
                 react_1.default.createElement("div", { style: card },
                     react_1.default.createElement("p", { style: { margin: '0 0 6px', fontWeight: 600 } }, "Restore from backup"),
                     react_1.default.createElement("p", { style: { margin: '0 0 10px', fontSize: 14, color: C.muted } },
                         "Restoring ",
                         react_1.default.createElement("strong", null, "adds"),
                         " student metrics to whatever currently lives on this device. Students are matched by ID and histories are then merged. Nothing on this device is ever removed."),
-                    react_1.default.createElement("label", { style: { display: 'inline-block' } },
-                        react_1.default.createElement("span", { style: { display: 'inline-block', fontFamily: FONT, fontSize: 16, fontWeight: 600, padding: '12px 18px', borderRadius: 10, border: `2px solid ${C.green}`, color: C.green, cursor: 'pointer' } }, "Choose a backup file"),
+                    react_1.default.createElement("label", { style: { display: 'block', textAlign: 'center' } },
+                        react_1.default.createElement("span", { style: { display: 'inline-block', fontFamily: FONT, fontSize: 16, fontWeight: 600, padding: '12px 18px', borderRadius: 10, border: `2px solid ${C.green}`, color: C.green, cursor: 'pointer' } }, "Restore from backup file"),
                         react_1.default.createElement("input", { type: "file", accept: "application/json,.json", style: { display: 'none' }, onChange: async (e) => {
                                 const f = e.target.files && e.target.files[0];
                                 if (!f)
@@ -27179,7 +27234,7 @@ function EduSphereApp() {
                                 }
                                 e.target.value = '';
                             } }))),
-                react_1.default.createElement("p", { style: { fontSize: 13, color: C.muted } }, "We send nothing anywhere. You choose where the file goes. Choose wisely."))));
+                react_1.default.createElement("p", { style: { fontSize: 13, color: C.muted, textAlign: 'center' } }, "We send nothing anywhere. You choose where the file goes. Choose wisely."))));
     }
     // ---------- One student's report: summary, what's assigned, course switches, progress, resets ----------
     if (screen === 'educator-report' && educatorRecord) {
@@ -27228,14 +27283,22 @@ function EduSphereApp() {
                         "Assign courses by checking or unchecking the boxes below. Each student starts with the courses we recommend (based on a combination of ",
                         shownName,
                         "'s initial placement check and/or his or her progression through the modules) but you are free to edit how you see fit."),
-                    COURSES.filter((c) => recommended.includes(c.id)).length === 0 && (react_1.default.createElement("p", { style: { margin: '0 0 8px', fontSize: 15, color: C.muted } }, "Nothing is written yet for this student's level. Anything below can still be assigned.")),
-                    COURSES.filter((c) => recommended.includes(c.id)).sort(byGradeOrder).map((c) => (react_1.default.createElement("label", { key: c.id, style: { display: 'flex', alignItems: 'center', gap: 10, padding: '7px 0', fontSize: 16 } },
+                    react_1.default.createElement("input", { value: courseQuery, onChange: (e) => setCourseQuery(e.target.value), placeholder: "Search courses, for example: grade 1 math, kinder, fractions", "aria-label": "Search courses", style: { fontFamily: FONT, fontSize: 15, padding: '10px 12px', width: '100%', boxSizing: 'border-box', border: `2px solid ${C.line}`, borderRadius: 10, marginBottom: 10, background: C.surface } }),
+                    courseQuery.trim() && (react_1.default.createElement("div", null,
+                        COURSES.filter((c) => matchesCourseSearch(c, courseQuery)).sort(byGradeOrder).map((c) => (react_1.default.createElement("label", { key: c.id, style: { display: 'flex', alignItems: 'center', gap: 10, padding: '7px 0', fontSize: 16 } },
+                            react_1.default.createElement("input", { type: "checkbox", checked: enabled.includes(c.id), onChange: () => setEnabled(enabled.includes(c.id) ? enabled.filter((id) => id !== c.id) : [...enabled, c.id]) }),
+                            react_1.default.createElement("span", { style: { display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 2 } },
+                                react_1.default.createElement("span", null, courseLabel(c)),
+                                courseNeedsTouch(c.id) && react_1.default.createElement(Tag, { tone: "review" }, "Needs a touch screen"))))),
+                        COURSES.filter((c) => matchesCourseSearch(c, courseQuery)).length === 0 && react_1.default.createElement("p", { style: { margin: '0 0 8px', fontSize: 15, color: C.muted } }, "No course matches that. Try a grade, a subject, or a word from a course title."))),
+                    !courseQuery.trim() && COURSES.filter((c) => recommended.includes(c.id)).length === 0 && (react_1.default.createElement("p", { style: { margin: '0 0 8px', fontSize: 15, color: C.muted } }, "Nothing is written yet for this student's level. Anything below can still be assigned.")),
+                    !courseQuery.trim() && COURSES.filter((c) => recommended.includes(c.id)).sort(byGradeOrder).map((c) => (react_1.default.createElement("label", { key: c.id, style: { display: 'flex', alignItems: 'center', gap: 10, padding: '7px 0', fontSize: 16 } },
                         react_1.default.createElement("input", { type: "checkbox", checked: enabled.includes(c.id), onChange: () => setEnabled(enabled.includes(c.id) ? enabled.filter((id) => id !== c.id) : [...enabled, c.id]) }),
                         react_1.default.createElement("span", { style: { display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 2 } },
                             react_1.default.createElement("span", null, courseLabel(c)),
                             courseNeedsTouch(c.id) && react_1.default.createElement(Tag, { tone: "review" }, "Needs a touch screen"))))),
-                    react_1.default.createElement("button", { type: "button", style: { ...linkBtn, marginTop: 6 }, onClick: () => setShowAllCourses(!showAllCourses) }, showAllCourses ? 'Hide other courses' : `Show other courses (${COURSES.length - recommended.length})`),
-                    showAllCourses && (react_1.default.createElement("div", { style: { borderTop: `1px solid ${C.line}`, marginTop: 8, paddingTop: 8 } },
+                    !courseQuery.trim() && react_1.default.createElement("button", { type: "button", style: { ...linkBtn, marginTop: 6 }, onClick: () => setShowAllCourses(!showAllCourses) }, showAllCourses ? 'Hide other courses' : `Show other courses (${COURSES.length - recommended.length})`),
+                    !courseQuery.trim() && showAllCourses && (react_1.default.createElement("div", { style: { borderTop: `1px solid ${C.line}`, marginTop: 8, paddingTop: 8 } },
                         react_1.default.createElement("p", { style: { margin: '0 0 4px', fontWeight: 600 } }, "Optional courses"),
                         react_1.default.createElement("p", { style: { margin: '0 0 8px', fontSize: 14, color: C.muted } },
                             "Select any course you would like to include for ",

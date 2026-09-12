@@ -24973,7 +24973,7 @@ html, body { overflow-x: hidden; }
   .edu-galaxy { height: 92vh; min-height: 900px; }
   .edu-welcome-card { margin-top: 36px; padding: 22px 24px !important; }
   .edu-welcome-card h2 { font-size: 24px !important; }
-  .edu-welcome-links { padding-top: 16px; padding-bottom: 16px; }
+  .edu-welcome-links { padding-top: 4px; padding-bottom: 16px; }
   .edu-welcome-links button, .edu-welcome-links p { font-size: 18px !important; }
 }
 @media (min-width: 1000px) {
@@ -25194,7 +25194,7 @@ function buildGalaxy(scale) {
         if (scale === 1 && Math.abs(x - cx) < 320 && y < cy - 70 && y > cy - 300 && rng() < 0.3)
             return;
         // and quieter directly behind the logo, so the drawing stays the thing you look at
-        if (Math.abs(x - cx) < 520 && y > cy - 320 && y < cy + 360 && rng() < 0.92)
+        if (Math.abs(x - cx) < 300 && y > cy - 220 && y < cy + 240 && rng() < 0.92)
             return;
         stars.push({ x: x.toFixed(1), y: y.toFixed(1), r: (bright ? 0.9 + rng() * 1.8 : 0.35 + rng() * 1.0).toFixed(2), gold: rng() < 0.2, twinkle: rng() < 0.12, delay: (2.2 + rng() * 10).toFixed(2), dur: (1.6 + rng() * 2.4).toFixed(2), alpha: (bright ? 0.45 + rng() * 0.5 : 0.16 + rng() * 0.36).toFixed(2) });
     };
@@ -25207,12 +25207,12 @@ function buildGalaxy(scale) {
         add(rng() * W, rng() * H, false);
     // Two thick clouds to the left and right of the sphere, where the wide screen has room.
     for (const side of [-1, 1])
-        for (let i = 0; i < Math.round(1600 * scale); i++) {
+        for (let i = 0; i < Math.round(4200 * scale); i++) {
             const a = rng() * Math.PI * 2;
-            const d = Math.pow(rng(), 1.4);
-            const x = cx + side * 760 + Math.cos(a) * d * 360;
-            const y = cy + 40 + Math.sin(a) * d * 320;
-            if (Math.abs(x - cx) < 520 && y > cy - 320 && y < cy + 360)
+            const d = Math.pow(rng(), 1.3);
+            const x = cx + side * 560 + Math.cos(a) * d * 400;
+            const y = cy + 30 + Math.sin(a) * d * 330;
+            if (Math.abs(x - cx) < 300 && y > cy - 220 && y < cy + 240)
                 continue;
             add(x, y, rng() < 0.3);
         }
@@ -25221,9 +25221,9 @@ function buildGalaxy(scale) {
     for (let i = 0; i < Math.round(2400 * scale); i++) {
         const a = rng() * Math.PI * 2;
         const d = 1 + Math.pow(rng(), 1.3) * 1.6;
-        const x = cx + Math.cos(a) * 560 * d;
-        const y = cy + Math.sin(a) * 380 * d;
-        if (Math.abs(x - cx) < 520 && y > cy - 320 && y < cy + 360)
+        const x = cx + Math.cos(a) * 340 * d;
+        const y = cy + Math.sin(a) * 260 * d;
+        if (Math.abs(x - cx) < 300 && y > cy - 220 && y < cy + 240)
             continue;
         add(x, y, rng() < 0.3);
     }
@@ -25829,7 +25829,7 @@ function EduSphereApp() {
                             nameInput.trim(),
                             "\u201D. Ask your educator.")))),
                     errorMsg && react_1.default.createElement("p", { style: { color: C.clay } }, errorMsg)),
-                react_1.default.createElement("div", { className: "edu-welcome-links", style: { marginTop: 14, textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 } },
+                react_1.default.createElement("div", { className: "edu-welcome-links", style: { marginTop: 4, textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 } },
                     react_1.default.createElement("div", { className: "edu-login-btn", style: { width: '100%', maxWidth: 320, marginBottom: 18 } },
                         react_1.default.createElement(Btn, { full: true, onClick: () => { if (lastActive && Date.now() - lastActive < 5 * 60 * 1000) {
                                 setScreen('educator-pick');

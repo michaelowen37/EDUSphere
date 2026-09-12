@@ -19094,7 +19094,7 @@ Object.assign(GENERATORS, {
         const other = otherColours(rng, c, 1)[0];
         const shapeA = pick(rng, PATTERN_SHAPES);
         const shapeB = pick(rng, PATTERN_SHAPES);
-        return { type: 'choice', story: null, prompt: 'Tap the one that is the same color.', choices: shuffle(rng, [`item:${shapeA}-${c}`, `item:${shapeB}-${other}`]), answer: `item:${shapeA}-${c}`,
+        return { type: 'choice', story: `This color is ${c}.`, prompt: 'Tap the one that is the same color.', choices: shuffle(rng, [`item:${shapeA}-${c}`, `item:${shapeB}-${other}`]), answer: `item:${shapeA}-${c}`,
             explain: `Both are ${c}.`, visual: { kind: 'swatch', colour: c }, explainVisual: null };
     },
     'pc-different-colour': (rng) => {
@@ -19109,7 +19109,7 @@ Object.assign(GENERATORS, {
         const c = pickColour(rng);
         const other = pick(rng, PATTERN_SHAPES.filter((x) => x !== sh));
         const oc = otherColours(rng, c, 1)[0];
-        return { type: 'choice', story: null, prompt: 'Tap the one that matches.', choices: shuffle(rng, [`item:${sh}-${c}`, `item:${other}-${c}`, `item:${sh}-${oc}`]), answer: `item:${sh}-${c}`,
+        return { type: 'choice', story: `Here is a ${c} ${sh}.`, prompt: 'Tap the one that matches it.', choices: shuffle(rng, [`item:${sh}-${c}`, `item:${other}-${c}`, `item:${sh}-${oc}`]), answer: `item:${sh}-${c}`,
             explain: `Same shape, same color. It matches.`, visual: { kind: 'item', shape: sh, colour: c }, explainVisual: null };
     },
     'ps-odd-one-out': (rng) => {
@@ -19124,7 +19124,7 @@ Object.assign(GENERATORS, {
         const sh = pick(rng, PATTERN_SHAPES);
         const c = pickColour(rng);
         const oc = otherColours(rng, c, 1)[0];
-        return { type: 'choice', story: null, prompt: 'Which one is exactly the same?', choices: shuffle(rng, [`item:${sh}-${c}`, `item:${sh}-${oc}`]), answer: `item:${sh}-${c}`,
+        return { type: 'choice', story: `Here is a ${c} ${sh}.`, prompt: 'Which one is exactly the same as this?', choices: shuffle(rng, [`item:${sh}-${c}`, `item:${sh}-${oc}`]), answer: `item:${sh}-${c}`,
             explain: `Same ${sh}, same ${c}. Exactly the same.`, visual: { kind: 'item', shape: sh, colour: c }, explainVisual: null };
     },
     'ps-bigger': (rng) => {
@@ -19684,7 +19684,7 @@ Object.assign(GENERATORS, {
         const [w, pair] = pick(rng, DIGRAPH_WORDS);
         const twin = pick(rng, DIGRAPH_WORDS.filter((x) => x[1] === pair && x[0] !== w))[0];
         const other = pick(rng, DIGRAPH_WORDS.filter((x) => x[1] !== pair))[0];
-        return { type: 'choice', story: null, prompt: 'Which word has the same two-letter sound?', choices: shuffle(rng, [twin, other]), answer: twin,
+        return { type: 'choice', story: `${capWord(w)}.`, prompt: `Which word has the same two-letter sound as ${w}?`, choices: shuffle(rng, [twin, other]), answer: twin,
             explain: `${w} and ${twin} both have ${pair}.`, visual: { kind: 'letters', text: w }, explainVisual: null };
     },
     'r1-odd-pair': (rng) => {
@@ -19709,7 +19709,7 @@ Object.assign(GENERATORS, {
     'r1-long-or-short': (rng) => {
         const [short, long] = pick(rng, SILENT_E);
         const isLong = randInt(rng, 0, 1) === 1;
-        return { type: 'choice', story: null, prompt: 'Does the vowel say its name?', choices: ['Yes', 'No'], answer: isLong ? 'Yes' : 'No',
+        return { type: 'choice', story: `${capWord(isLong ? long : short)}.`, prompt: `In ${isLong ? long : short}, does the vowel say its name?`, choices: ['Yes', 'No'], answer: isLong ? 'Yes' : 'No',
             explain: isLong ? `${long} has a silent e, so the vowel says its name.` : `${short} has no silent e, so the vowel is short.`, visual: { kind: 'letters', text: isLong ? long : short }, explainVisual: null };
     },
     'r1-pick-long': (rng) => {
@@ -19829,7 +19829,7 @@ Object.assign(GENERATORS, {
     },
     'g1-which-teen': (rng) => {
         const n = randInt(rng, 11, 19);
-        return { type: 'choice', story: null, prompt: `Which shows ${n}?`, choices: shuffle(rng, [...new Set([`dots:${n - 10}`, `dots:${Math.max(1, n - 11)}`, `dots:${Math.min(9, n - 9)}`])]), answer: `dots:${n - 10}`,
+        return { type: 'choice', story: `Here is a full ten.`, prompt: `Which group of extra ones makes ${n}?`, choices: shuffle(rng, [...new Set([`dots:${n - 10}`, `dots:${Math.max(1, n - 11)}`, `dots:${Math.min(9, n - 9)}`])]), answer: `dots:${n - 10}`,
             explain: `${n} is ten and ${n - 10}. The ten is the frame; these are the ${n - 10} more.`, visual: { kind: 'tenframe', filled: 10 }, explainVisual: null };
     },
     'g1-teen-after': (rng) => {
@@ -19923,7 +19923,7 @@ Object.assign(GENERATORS, {
         const right = `${tens} tens and ${ones} ones`;
         const wrong1 = `${ones} tens and ${tens} ones`;
         const wrong2 = `${tens} tens and ${ones === 9 ? 8 : ones + 1} ones`;
-        return { type: 'choice', story: null, prompt: `Which makes ${n}?`, choices: shuffle(rng, [...new Set([right, wrong1, wrong2])]), answer: right,
+        return { type: 'choice', story: `These are ${tens} tens.`, prompt: `Which makes ${n}?`, choices: shuffle(rng, [...new Set([right, wrong1, wrong2])]), answer: right,
             explain: `${n} is ${right}.`, visual: { kind: 'tens', count: tens }, explainVisual: null };
     },
     'g1-ten-more': (rng) => {
@@ -20661,7 +20661,7 @@ Object.assign(GENERATORS, {
         const b = 10 - a;
         const right = `${a} and ${b}`;
         const wrongs = [`${a} and ${b + 1 <= 9 ? b + 1 : b - 1}`, `${a + 1 <= 9 ? a + 1 : a - 1} and ${b}`];
-        return { type: 'choice', story: null, prompt: 'Which pair makes 10?', choices: [...new Set(shuffle(rng, [right, ...wrongs]))], answer: right,
+        return { type: 'choice', story: `The frame shows ${a}.`, prompt: 'Which pair makes 10?', choices: [...new Set(shuffle(rng, [right, ...wrongs]))], answer: right,
             explain: `${a} and ${b} make 10.`, visual: { kind: 'tenframe', filled: a }, explainVisual: null };
     },
     'kn-take-from-ten': (rng) => {
@@ -20877,6 +20877,7 @@ Object.assign(GENERATORS, {
             explain: `${right} is fewer than ${n}.`, visual: { kind: 'dots', count: n }, explainVisual: null };
     },
 });
+const capWord = (w) => w[0].toUpperCase() + w.slice(1);
 // Syllables. The count is given per word so it can be re-checked without a dictionary.
 const SYLLABLE_WORDS = [
     ['cat', 1], ['dog', 1], ['sun', 1], ['hat', 1], ['fish', 1], ['ball', 1],
@@ -20923,7 +20924,7 @@ Object.assign(GENERATORS, {
         while (b === a && guard++ < 20)
             [b] = sylWord(rng, n);
         const [o] = sylWord(rng, n === 1 ? 2 : 1);
-        return { type: 'choice', story: `Listen: ${a}.`, prompt: 'Which word has the same number of claps?', choices: shuffle(rng, [b, o]), answer: b,
+        return { type: 'choice', story: `${capWord(a)}.`, prompt: `Which word has the same number of claps as ${a}?`, choices: shuffle(rng, [b, o]), answer: b,
             explain: `${a} and ${b} both have ${n} ${n === 1 ? 'clap' : 'claps'}.`, visual: { kind: 'letters', text: a }, explainVisual: null };
     },
 });
@@ -20938,18 +20939,18 @@ Object.assign(GENERATORS, {
     },
     'rd-first-sound': (rng) => {
         const w = pick(rng, CVC_WORDS);
-        return { type: 'choice', story: `Listen: ${w}.`, prompt: 'What is the first sound?', choices: shuffle(rng, [w[0], w[1], w[2]]).filter((c, i, arr) => arr.indexOf(c) === i), answer: w[0],
+        return { type: 'choice', story: `${capWord(w)}.`, prompt: `What is the first sound in ${w}?`, choices: shuffle(rng, [w[0], w[1], w[2]]).filter((c, i, arr) => arr.indexOf(c) === i), answer: w[0],
             explain: `${w} starts with ${w[0]}.`, visual: { kind: 'letters', text: w }, explainVisual: null };
     },
     'rd-last-sound': (rng) => {
         const w = pick(rng, CVC_WORDS);
-        return { type: 'choice', story: `Listen: ${w}.`, prompt: 'What is the last sound?', choices: shuffle(rng, [w[0], w[1], w[2]]).filter((c, i, arr) => arr.indexOf(c) === i), answer: w[2],
+        return { type: 'choice', story: `${capWord(w)}.`, prompt: `What is the last sound in ${w}?`, choices: shuffle(rng, [w[0], w[1], w[2]]).filter((c, i, arr) => arr.indexOf(c) === i), answer: w[2],
             explain: `${w} ends with ${w[2]}.`, visual: { kind: 'letters', text: w }, explainVisual: null };
     },
     'rd-middle-sound': (rng) => {
         const w = pick(rng, CVC_WORDS);
         const vowels = ['a', 'e', 'i', 'o', 'u'];
-        return { type: 'choice', story: `Listen: ${w}.`, prompt: 'What is the middle sound?', choices: shuffle(rng, [w[1], ...shuffle(rng, vowels.filter((v) => v !== w[1])).slice(0, 2)]), answer: w[1],
+        return { type: 'choice', story: `${capWord(w)}.`, prompt: `What is the middle sound in ${w}?`, choices: shuffle(rng, [w[1], ...shuffle(rng, vowels.filter((v) => v !== w[1])).slice(0, 2)]), answer: w[1],
             explain: `${w[0]}, ${w[1]}, ${w[2]}. The middle sound is ${w[1]}.`, visual: { kind: 'letters', text: w }, explainVisual: null };
     },
     'rd-which-word': (rng) => {
@@ -20986,7 +20987,7 @@ Object.assign(GENERATORS, {
     },
     'rw-which-way': (rng) => {
         const yes = randInt(rng, 0, 1) === 1;
-        return { type: 'choice', story: yes ? 'We read from left to right.' : 'We read from right to left.', prompt: 'Is that right?', choices: ['Yes', 'No'], answer: yes ? 'Yes' : 'No',
+        return { type: 'choice', story: yes ? 'We read from left to right, A then B then C.' : 'We read from right to left, C then B then A.', prompt: 'Is that right?', choices: ['Yes', 'No'], answer: yes ? 'Yes' : 'No',
             explain: 'We read from left to right, then down to the next line.', visual: { kind: 'letters', text: 'A B C' }, explainVisual: null };
     },
 });
@@ -21129,14 +21130,14 @@ Object.assign(GENERATORS, {
         const L = ALPHABET[i];
         const next = ALPHABET[i + 1];
         return { type: 'choice', story: null, prompt: `What letter comes after ${L}?`, choices: shuffle(rng, [next, ...otherLetters(rng, 3, next).filter((x) => x !== L).slice(0, 3)]), answer: next,
-            explain: `${L}, then ${next}. ${next} comes after ${L}.`, visual: { kind: 'letters', text: ALPHABET.slice(Math.max(0, i - 2), i + 3).split('').join(' ') }, explainVisual: null };
+            explain: `${L}, then ${next}. ${next} comes after ${L}.`, visual: { kind: 'letters', text: ALPHABET.slice(Math.max(0, i - 2), i + 1).split('').join(' ') + ' ?' }, explainVisual: null };
     },
     'r-before': (rng) => {
         const i = randInt(rng, 1, 25);
         const L = ALPHABET[i];
         const prev = ALPHABET[i - 1];
         return { type: 'choice', story: null, prompt: `What letter comes before ${L}?`, choices: shuffle(rng, [prev, ...otherLetters(rng, 3, prev).filter((x) => x !== L).slice(0, 3)]), answer: prev,
-            explain: `${prev}, then ${L}. ${prev} comes before ${L}.`, visual: { kind: 'letters', text: ALPHABET.slice(Math.max(0, i - 2), i + 3).split('').join(' ') }, explainVisual: null };
+            explain: `${prev}, then ${L}. ${prev} comes before ${L}.`, visual: { kind: 'letters', text: '? ' + ALPHABET.slice(i, Math.min(26, i + 3)).split('').join(' ') }, explainVisual: null };
     },
     'r-first-letter': (rng) => {
         const word = pick(rng, SHORT_WORDS);
@@ -21148,7 +21149,7 @@ Object.assign(GENERATORS, {
     // The sound words below are spoken; the letter is what the child taps.
     'rs-word-starts': (rng) => {
         const w = pick(rng, SOUND_WORDS);
-        return { type: 'choice', story: `Listen: ${w.word}.`, prompt: 'What letter does it start with?', choices: shuffle(rng, [w.letter, ...otherLetters(rng, 3, w.letter)]), answer: w.letter,
+        return { type: 'choice', story: `${capWord(w.word)}.`, prompt: `What letter does ${w.word} start with?`, choices: shuffle(rng, [w.letter, ...otherLetters(rng, 3, w.letter)]), answer: w.letter,
             explain: `${w.word} starts with ${w.letter}. ${w.letter} says ${w.sound}.`, visual: { kind: 'letters', text: w.word }, explainVisual: null };
     },
     'rs-letter-for-sound': (rng) => {
@@ -21166,7 +21167,7 @@ Object.assign(GENERATORS, {
         const w = pick(rng, SOUND_WORDS);
         const twin = pick(rng, SOUND_WORDS.filter((x) => x.letter === w.letter && x.word !== w.word)) || w;
         const other = pick(rng, SOUND_WORDS.filter((x) => x.letter !== w.letter));
-        return { type: 'choice', story: `Listen: ${w.word}.`, prompt: 'Which word starts the same way?', choices: shuffle(rng, [twin.word, other.word]), answer: twin.word,
+        return { type: 'choice', story: `${capWord(w.word)}.`, prompt: `Which word starts the same way as ${w.word}?`, choices: shuffle(rng, [twin.word, other.word]), answer: twin.word,
             explain: `${w.word} and ${twin.word} both start with ${w.sound}.`, visual: { kind: 'letters', text: w.word }, explainVisual: null };
     },
     'rs-odd-start': (rng) => {
@@ -21189,7 +21190,7 @@ Object.assign(GENERATORS, {
         const fam = pick(rng, RHYME_FAMILIES);
         const [a, b] = shuffle(rng, fam).slice(0, 2);
         const others = shuffle(rng, RHYME_FAMILIES.filter((f) => f !== fam)).slice(0, 2).map((f) => pick(rng, f));
-        return { type: 'choice', story: `Listen: ${a}.`, prompt: 'Which word rhymes with it?', choices: shuffle(rng, [b, ...others]), answer: b,
+        return { type: 'choice', story: `${capWord(a)}.`, prompt: `Which word rhymes with ${a}?`, choices: shuffle(rng, [b, ...others]), answer: b,
             explain: `${a} and ${b} rhyme. They end the same way.`, visual: { kind: 'letters', text: a }, explainVisual: null };
     },
     'rr-odd-rhyme': (rng) => {
@@ -24796,26 +24797,23 @@ function Picture({ visual, animate = false, animKey = 0 }) {
         // Each letter swells as it is named, so a child who cannot read still knows which one
         // is being talked about.
         const parts = visual.text.split('');
-        // A highlight names the part of each word to stand out: an ending like 'at' for rhymes,
-        // 'first' for the opening sound. Those letters turn gold and grow; the rest stay quiet.
-        const words = visual.text.split(' ');
-        const stressed = new Set();
+        // With a highlight, the named part of each word is emphasized as one piece: it turns gold,
+        // sits a little larger, and swells together, word by word. The other letters stay quiet.
         if (visual.highlight) {
-            let offset = 0;
-            for (const w of words) {
+            const words = visual.text.split(' ');
+            return (react_1.default.createElement("p", { style: { fontSize: 44, fontWeight: 700, letterSpacing: 6, margin: '6px 0', textAlign: 'center', color: C.green } }, words.map((w, wi) => {
                 const at = visual.highlight === 'first' ? 0 : w.toLowerCase().lastIndexOf(visual.highlight.toLowerCase());
                 const len = visual.highlight === 'first' ? 1 : visual.highlight.length;
-                if (at >= 0)
-                    for (let k = at; k < at + len; k++)
-                        stressed.add(offset + k);
-                offset += w.length + 1;
-            }
+                const before = at >= 0 ? w.slice(0, at) : w;
+                const hot = at >= 0 ? w.slice(at, at + len) : '';
+                const after = at >= 0 ? w.slice(at + len) : '';
+                return (react_1.default.createElement("span", { key: `${animKey}-${wi}`, style: { display: 'inline-block', marginRight: wi < words.length - 1 ? 18 : 0 } },
+                    before,
+                    hot && react_1.default.createElement("span", { className: animate ? 'edu-stress' : undefined, style: { display: 'inline-block', color: C.gold, transform: 'scale(1.12)', transformOrigin: 'center', animationDelay: `${0.4 + wi * 0.9}s` } }, hot),
+                    after));
+            })));
         }
-        return (react_1.default.createElement("p", { style: { fontSize: 44, fontWeight: 700, letterSpacing: 6, margin: '6px 0', textAlign: 'center', color: C.green } }, parts.map((ch, i) => {
-            const hot = stressed.has(i);
-            const grow = animate && ch.trim() && (!visual.highlight || hot);
-            return (react_1.default.createElement("span", { key: `${animKey}-${i}`, className: grow ? 'edu-grow' : undefined, style: { display: 'inline-block', color: hot ? C.gold : undefined, transform: hot ? 'scale(1.12)' : undefined, animationDelay: grow ? `${parts.slice(0, i).filter((x) => x.trim() && (!visual.highlight || stressed.has(parts.indexOf(x)))).length * 0.6}s` : undefined } }, ch === ' ' ? '\u00A0' : ch));
-        })));
+        return (react_1.default.createElement("p", { style: { fontSize: 44, fontWeight: 700, letterSpacing: 6, margin: '6px 0', textAlign: 'center', color: C.green } }, parts.map((ch, i) => (react_1.default.createElement("span", { key: `${animKey}-${i}`, className: animate && ch.trim() ? 'edu-grow' : undefined, style: animate && ch.trim() ? { display: 'inline-block', animationDelay: `${parts.slice(0, i).filter((x) => x.trim()).length * 0.75}s` } : undefined }, ch === ' ' ? '\u00A0' : ch)))));
     }
     return react_1.default.createElement(FractionBar, { parts: visual.parts, shaded: visual.shaded });
 }
@@ -24884,21 +24882,31 @@ function speechFriendly(text) { let out = String(text); for (const [re, to] of S
     out = out.replace(re, to); return out; }
 // A line is spoken in pieces: ordinary words at the normal pace, and each sustained sound
 // as its own slow, stretched utterance, so "mmm" is held rather than clipped.
+// Speech is shaped sentence by sentence so it sounds like a person rather than a flat run:
+// a one-word sentence is the word at play, so it is held slowly and a little higher; a
+// question lifts at the end; everything else rolls along at an easy pace. Sustained sounds
+// stay their own long, slow pieces.
 function speechPieces(text) {
-    const pieces = [];
-    let last = 0;
     const src = String(text);
-    for (const m of src.matchAll(SOUND_TOKEN)) {
-        if (m.index > last)
-            pieces.push({ text: src.slice(last, m.index), sound: false });
-        pieces.push({ text: speechFriendly(m[0]), sound: true });
-        last = m.index + m[0].length;
+    const sentences = src.split(/(?<=[.!?])\s+/).filter((x) => x.trim());
+    const pieces = [];
+    for (const sentence of sentences) {
+        const words = sentence.replace(/[.!?]+$/, '').trim().split(/\s+/).filter(Boolean);
+        const shape = words.length === 1 && !/\d/.test(words[0]) ? 'key' : /\?$/.test(sentence.trim()) ? 'question' : 'plain';
+        let last = 0;
+        for (const m of sentence.matchAll(SOUND_TOKEN)) {
+            if (m.index > last)
+                pieces.push({ text: sentence.slice(last, m.index), shape });
+            pieces.push({ text: speechFriendly(m[0]), shape: 'sound' });
+            last = m.index + m[0].length;
+        }
+        if (last < sentence.length)
+            pieces.push({ text: sentence.slice(last), shape });
     }
-    if (last < src.length)
-        pieces.push({ text: src.slice(last), sound: false });
-    // A piece that is only punctuation, like the full stop after a sound, would be read aloud as a word. Drop it.
+    // A piece that is only punctuation would be read aloud as a word. Drop it.
     return pieces.filter((p) => /[A-Za-z0-9]/.test(p.text));
 }
+const SPEECH_SHAPES = { key: { rate: 0.6, pitch: 1.25 }, question: { rate: 0.9, pitch: 1.22 }, plain: { rate: 0.86, pitch: 1.15 }, sound: { rate: 0.1, pitch: 1.15 } };
 function speak(text) {
     if (typeof window === 'undefined' || !window.speechSynthesis || !text)
         return;
@@ -24909,8 +24917,9 @@ function speak(text) {
             const u = new SpeechSynthesisUtterance(piece.text);
             if (voice)
                 u.voice = voice;
-            u.rate = piece.sound ? 0.1 : 0.86; // sounds are held as long as a voice allows; words a little slower than normal speech
-            u.pitch = 1.15; // brighter and warmer than the default, less like a machine
+            const shape = SPEECH_SHAPES[piece.shape] || SPEECH_SHAPES.plain;
+            u.rate = shape.rate;
+            u.pitch = shape.pitch;
             window.speechSynthesis.speak(u);
         }
     }
@@ -25104,6 +25113,8 @@ html, body { overflow-x: hidden; }
 /* A name lifts a little under the pointer, where there is one. */
 @media (hover: hover) { .edu-name { transition: background 0.18s ease, border-color 0.18s ease; } .edu-name:hover { background: #E4F0E8 !important; border-color: #3A6B58 !important; } .edu-login-btn button { transition: transform 0.18s ease, filter 0.18s ease; } .edu-login-btn button:hover { transform: scale(1.04); filter: brightness(1.1); } }
 @keyframes edu-glow { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
+@keyframes edu-stress { 0%, 100% { transform: scale(1.12); } 25% { transform: scale(1.55); } 50% { transform: scale(1.12); } 75% { transform: scale(1.55); } }
+.edu-stress { animation: edu-stress 1.6s ease-in-out both; }
 @keyframes edu-pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.025); } }
 .edu-pulse { animation: edu-pulse 1.6s ease-in-out infinite; }
 @keyframes edu-breathe { 0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(58, 107, 88, 0); } 50% { transform: scale(1.015); box-shadow: 0 0 0 6px rgba(58, 107, 88, 0.18); } }
@@ -25114,7 +25125,7 @@ html, body { overflow-x: hidden; }
 .edu-slide-in { animation: edu-slide-in 1.1s cubic-bezier(0.2, 0.9, 0.3, 1.2) both; background: linear-gradient(90deg, #3A6B58, #D9A83B, #3A6B58); background-size: 200% auto; -webkit-background-clip: text; background-clip: text; color: transparent !important; animation: edu-slide-in 1.1s cubic-bezier(0.2, 0.9, 0.3, 1.2) both, edu-shimmer 3s linear 1.1s infinite; }
 .edu-glow { animation: edu-glow 1.8s ease-in-out infinite; }
 @media (prefers-reduced-motion: reduce) {
-  .edu-glow, .edu-breathe, .edu-slide-in, .edu-pulse, .edu-twinkle-star, .edu-side path { animation: none; }
+  .edu-glow, .edu-breathe, .edu-slide-in, .edu-pulse, .edu-stress, .edu-twinkle-star, .edu-side path { animation: none; }
   .edu-side path { stroke-dasharray: none; }
   .edu-halo, .edu-drift, .edu-cheer, .edu-wobble, .edu-burst, .edu-rise, .edu-sway, .edu-star-twinkle, .edu-grow, .edu-draw, .edu-settle, .edu-settle-late { animation: none; }
   .edu-draw { stroke-dasharray: none; }
@@ -25990,8 +26001,8 @@ function EduSphereApp() {
                                 return;
                             } setPinInput(''); setScreen('educator-pin'); } }, "Educator Login")),
                     !educator && (react_1.default.createElement("button", { type: "button", onClick: () => { setNewPin(''); setNewPin2(''); setDeviceDraft(''); setStateDraft(''); setSetupError(''); setScreen('educator-setup'); }, style: { background: 'none', border: 'none', color: C.muted, fontFamily: FONT, fontSize: 14, cursor: 'pointer', padding: '4px 12px', textDecoration: 'underline' } }, "Create account")),
-                    react_1.default.createElement(ContactLine, { onOpen: () => setShowContact(true), inline: true }),
-                    react_1.default.createElement("p", { style: { color: C.muted, fontSize: 13, margin: '40px 0 0', padding: '0 36px', textAlign: 'center' } }, "Progress is saved on this device only. Nothing is sent anywhere.")),
+                    react_1.default.createElement(ContactLine, { onOpen: () => setShowContact(true), inline: true })),
+                react_1.default.createElement("p", { style: { color: C.muted, fontSize: 13, margin: 'auto 0 0', padding: '40px 36px 12px', textAlign: 'center', maxWidth: '100%', boxSizing: 'border-box' } }, "All of your school's important information, including students, student progression, educator settings and transcripts, lives entirely on this device. Regular backups (shared folders and/or email) are highly recommended."),
                 showContact && react_1.default.createElement(ContactPopup, { onClose: () => setShowContact(false) }))));
     }
     if (screen === 'overview') {

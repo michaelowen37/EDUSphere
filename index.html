@@ -25290,7 +25290,18 @@ function SideArcs({ side }) {
 let PAGE_STARS = null;
 function PageStars() {
     if (!PAGE_STARS) {
-        const layers = galaxyLayers({ stars: GALAXY_FULL.stars.filter((st) => Math.abs(Number(st.x) - 800) > 470) });
+        // Stars fizzle out toward the middle rather than stopping at a line: full density at the
+        // edges of the content column, a faint scatter behind the text. The choice per star is a
+        // fixed hash of its position, so the sky is the same on every visit.
+        const keep = (st) => {
+            const x = Number(st.x);
+            const y = Number(st.y);
+            const t = Math.min(1, Math.abs(x - 800) / 560);
+            const chance = 0.1 + 0.9 * Math.pow(t, 1.6);
+            const h = Math.abs(Math.sin(x * 12.9898 + y * 78.233) * 43758.5453) % 1;
+            return h < chance;
+        };
+        const layers = galaxyLayers({ stars: GALAXY_FULL.stars.filter(keep) });
         PAGE_STARS = layers;
     }
     return (react_1.default.createElement("svg", { className: "edu-page-stars", viewBox: `0 0 ${GALAXY_FULL.W} ${GALAXY_FULL.H}`, preserveAspectRatio: "xMidYMid slice", "aria-hidden": "true" },
@@ -25539,6 +25550,7 @@ function EduSphereApp() {
     const [openProgress, setOpenProgress] = (0, react_1.useState)(false);
     const [openTerms, setOpenTerms] = (0, react_1.useState)([]);
     const [openApproved, setOpenApproved] = (0, react_1.useState)([]);
+    const [openProgressGroups, setOpenProgressGroups] = (0, react_1.useState)(['available']);
     const closeTips = () => { setShowBackupTip(false); setShowRosterTip(false); setShowStateTip(false); setShowTouchlessTip(false); setShowWonderTip(false); setShowProgressTip(false); setShowHelpTip(false); };
     const [stateCode, setStateCode] = (0, react_1.useState)(''); // the educator's state, chosen once
     const [stateDraft, setStateDraft] = (0, react_1.useState)('');
@@ -25912,7 +25924,7 @@ function EduSphereApp() {
                             " of ",
                             moduleRules(m.id).questions),
                         locked ? (!isPreReader(course.id) && react_1.default.createElement("p", { style: { color: C.muted, fontSize: 14, margin: '10px 0 0' } }, "Finish the module before this one first.")) : (react_1.default.createElement("div", { style: { marginTop: 12 } },
-                            react_1.default.createElement(Btn, { halo: isPreReader(course.id) && st === 'available', kind: st === 'mastered' ? 'secondary' : 'primary', onClick: () => openModule(m.id), disabled: busy }, st === 'mastered' ? 'Practice again' : 'Open')))));
+                            react_1.default.createElement(Btn, { halo: st === 'available', kind: st === 'mastered' ? 'secondary' : 'primary', onClick: () => openModule(m.id), disabled: busy }, st === 'mastered' ? 'Practice again' : 'Open')))));
                     return null;
                 })(),
                 shownSubjects.map((sub) => {
@@ -25991,10 +26003,12 @@ function EduSphereApp() {
             react_1.default.createElement(PageChrome, { idleWarning: idleWarning }),
             react_1.default.createElement("div", { className: "edu-wrap", style: wrap },
                 react_1.default.createElement("button", { type: "button", onClick: () => setScreen('overview'), style: { background: 'none', border: 'none', color: C.green, fontFamily: FONT, fontSize: 15, cursor: 'pointer', padding: 0 } }, "Back to overview"),
-                react_1.default.createElement("p", { style: { color: C.muted, margin: '12px 0 0', fontSize: 14 } },
+                react_1.default.createElement("p", { style: { color: C.muted, margin: '-22px 0 0', fontSize: 14, textAlign: 'right' } },
                     "Module ",
-                    mod.order),
-                react_1.default.createElement("h1", { style: { fontSize: 26, margin: '2px 0 14px' } }, mod.title),
+                    mod.order,
+                    " of ",
+                    course.modules.length),
+                react_1.default.createElement("h1", { style: { fontSize: 26, margin: '14px 0 14px', textAlign: 'center' } }, mod.title),
                 react_1.default.createElement("div", { style: card },
                     mod.lesson.paragraphs.map((t, i) => react_1.default.createElement("p", { key: i, style: { fontSize: 17, margin: '0 0 14px' } }, t)),
                     react_1.default.createElement("div", { style: { background: C.greenSoft, borderRadius: 10, padding: 14 } },
@@ -26005,7 +26019,7 @@ function EduSphereApp() {
                     react_1.default.createElement("p", { style: { margin: '6px 0 0', fontSize: 16 } }, mod.lesson.keyIdea)),
                 course && course.readAloud && react_1.default.createElement(SpeakButton, { full: true, text: [...mod.lesson.paragraphs, mod.lesson.example.caption, mod.lesson.keyIdea].join(' '), label: "Read it to me" }),
                 react_1.default.createElement(Btn, { full: true, onClick: startPractice }, "Practice this"),
-                react_1.default.createElement("p", { style: { color: C.muted, fontSize: 13, marginTop: 16 } },
+                react_1.default.createElement("p", { style: { color: C.muted, fontSize: 13, marginTop: 16, textAlign: 'center' } },
                     "Source: ",
                     mod.sources.join(' ')))));
     }
@@ -26252,33 +26266,52 @@ function EduSphereApp() {
     // ---------- Learner-facing progress: short, plain words, no numbers a child has to interpret ----------
     if (screen === 'my-progress') {
         const rep = buildReport(displayName, record.events);
+        const mine = rep.modules.filter((m) => visibleModules.some((v) => v.id === m.id));
+        const groups = [
+            { key: 'mastered', title: "Courses I've Mastered", items: mine.filter((m) => statusOf(m.id) === 'mastered') },
+            { key: 'available', title: 'Available Courses', items: mine.filter((m) => statusOf(m.id) === 'available') },
+            { key: 'locked', title: 'Locked Courses', items: mine.filter((m) => statusOf(m.id) === 'locked') },
+        ];
+        // Plain, encouraging words about how it is going, built from the same facts as the educator's report.
+        const nearly = mine.filter((m) => !m.mastered && m.attempts > 0).length;
+        const summary = [
+            rep.modulesMastered === 0 ? "You're just getting started, and every expert started exactly here." : rep.modulesMastered === rep.modulesTotal ? "You've mastered every module you've been given. That took real work." : `You've mastered ${rep.modulesMastered} of ${rep.modulesTotal} modules so far.`,
+            nearly > 0 ? (nearly === 1 ? 'One module is partly done, and a fresh set of questions is often all it takes.' : `${nearly} modules are partly done, and a fresh set of questions is often all it takes.`) : '',
+            groups[1].items.length > 0 ? (groups[1].items.length === 1 ? 'One module is open and waiting for you.' : `${groups[1].items.length} modules are open and waiting for you.`) : '',
+            rep.retention.asked > 0 ? (rep.retention.percent >= 80 ? 'When old questions come back, you remember them. Your learning is sticking.' : 'Some old questions are slipping. That is normal, and a quick look back fixes it.') : '',
+        ].filter(Boolean).join(' ');
         return (react_1.default.createElement("div", { style: page },
             react_1.default.createElement(PageChrome, { idleWarning: idleWarning }),
             react_1.default.createElement("div", { className: "edu-wrap", style: wrap },
-                react_1.default.createElement("button", { type: "button", onClick: () => setScreen('overview'), style: { background: 'none', border: 'none', color: C.green, fontFamily: FONT, fontSize: 15, cursor: 'pointer', padding: 0 } }, "Back to overview"),
-                react_1.default.createElement("h1", { style: { fontSize: 26, margin: '12px 0 4px' } }, "My progress"),
-                react_1.default.createElement("p", { style: { color: C.muted, marginTop: 0 } }, rep.learnerName),
-                react_1.default.createElement("div", { style: card },
-                    react_1.default.createElement("p", { style: { margin: '0 0 8px', fontSize: 18, fontWeight: 600 } }, rep.modulesMastered === 0 ? "You're just getting started." : rep.modulesMastered === rep.modulesTotal ? "You've mastered every part. Amazing." : `You've mastered ${rep.modulesMastered} of ${rep.modulesTotal} parts.`),
-                    react_1.default.createElement(FractionBar, { parts: rep.modulesTotal, shaded: rep.modulesMastered, color: C.gold, height: 36 }),
-                    react_1.default.createElement("p", { style: { margin: '10px 0 0', color: C.muted, fontSize: 15 } },
+                react_1.default.createElement("button", { type: "button", onClick: () => setScreen('overview'), style: { background: 'none', border: 'none', color: C.green, fontFamily: FONT, fontSize: 15, cursor: 'pointer', padding: 0 } }, "Back"),
+                react_1.default.createElement("h1", { style: { fontSize: 26, margin: '12px 0 12px', textAlign: 'center' } }, "My progress"),
+                react_1.default.createElement("div", { style: { ...card, background: 'linear-gradient(135deg, #DCEBE1 0%, #EEF5F0 100%)', borderColor: '#C9DCCF' } },
+                    react_1.default.createElement("p", { style: { margin: '0 0 10px', fontSize: 17, lineHeight: 1.6 } }, summary),
+                    react_1.default.createElement(FractionBar, { parts: rep.modulesTotal, shaded: rep.modulesMastered, color: C.gold, height: 30 }),
+                    react_1.default.createElement("p", { style: { margin: '10px 0 0', color: C.muted, fontSize: 14, textAlign: 'center' } },
                         "You have practiced ",
                         rep.totalAttempts,
                         " ",
                         rep.totalAttempts === 1 ? 'time' : 'times',
                         ".")),
-                rep.modules.filter((m) => visibleModules.some((v) => v.id === m.id)).map((m) => {
-                    const st = statusOf(m.id);
-                    return (react_1.default.createElement("div", { key: m.id, style: card },
-                        react_1.default.createElement("div", { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10 } },
-                            react_1.default.createElement("h2", { style: { fontSize: 18, margin: 0 } }, m.title),
-                            react_1.default.createElement(Tag, { tone: m.mastered ? 'mastered' : m.attempts ? 'review' : 'locked' }, m.mastered ? 'Mastered' : m.attempts ? 'Keep going' : 'Not started')),
-                        react_1.default.createElement("p", { style: { margin: '8px 0 0', fontSize: 15, color: C.muted } }, m.mastered ? 'You showed you understand this.' : m.attempts ? `Your best so far is ${m.bestScore}. You need ${CONFIG.MASTERY_MIN_CORRECT} to master it.` : st === 'locked' ? 'This one unlocks when you finish the module before it.' : 'This one is ready when you are.'),
-                        st !== 'locked' && (react_1.default.createElement("div", { style: { marginTop: 10 } },
-                            react_1.default.createElement(Btn, { kind: m.mastered ? 'secondary' : 'primary', onClick: () => openModule(m.id), disabled: busy }, m.mastered ? 'Practice again' : 'Open module')))));
-                }),
-                rep.retention.asked > 0 && (react_1.default.createElement("div", { style: { ...card, background: C.greenSoft, borderColor: C.greenSoft } },
-                    react_1.default.createElement("p", { style: { margin: 0, fontSize: 15 } }, rep.retention.percent >= 80 ? 'When old questions come back, you remember them. That means your learning is sticking.' : 'Some older questions have been tricky when they came back. A quick look at those lessons again would help.'))))));
+                groups.map((g) => {
+                    const open = openProgressGroups.includes(g.key);
+                    return (react_1.default.createElement("div", { key: g.key, style: { ...card, padding: 0, overflow: 'hidden' } },
+                        react_1.default.createElement("button", { type: "button", onClick: () => setOpenProgressGroups((list) => (list.includes(g.key) ? list.filter((x) => x !== g.key) : [...list, g.key])), "aria-expanded": open, style: { fontFamily: FONT, width: '100%', textAlign: 'left', background: 'none', border: 'none', padding: 16, cursor: 'pointer', color: C.ink, display: 'flex', justifyContent: 'space-between', alignItems: 'center' } },
+                            react_1.default.createElement("span", { style: { fontSize: 17, fontWeight: 600 } },
+                                g.title,
+                                " (",
+                                g.items.length,
+                                ")"),
+                            react_1.default.createElement("span", { style: { color: C.muted } }, open ? '▴' : '▾')),
+                        open && (react_1.default.createElement("div", { style: { padding: '0 12px 8px' } },
+                            g.items.length === 0 && react_1.default.createElement("p", { style: { margin: '0 0 8px', color: C.muted, fontSize: 15 } }, "Nothing here yet."),
+                            g.items.map((m) => (react_1.default.createElement("div", { key: m.id, style: { padding: '10px 4px', borderTop: `1px solid ${C.line}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10, flexWrap: 'wrap' } },
+                                react_1.default.createElement("div", null,
+                                    react_1.default.createElement("p", { style: { margin: 0, fontSize: 16, fontWeight: 600 } }, m.title),
+                                    react_1.default.createElement("p", { style: { margin: '4px 0 0', fontSize: 14, color: C.muted } }, m.mastered ? 'You showed you understand this.' : m.attempts ? `Your best so far is ${m.bestScore}. You need ${moduleRules(m.id).toMaster} to master it.` : g.key === 'locked' ? 'Opens when the module before it is mastered.' : 'Ready when you are.')),
+                                g.key !== 'locked' && react_1.default.createElement(Btn, { kind: m.mastered ? 'secondary' : 'primary', onClick: () => openModule(m.id), disabled: busy }, m.mastered ? 'Practice again' : 'Open module'))))))));
+                }))));
     }
     // ---------- Reviewing the Wonder questions before any child sees one ----------
     if (screen === 'wonder-review') {

@@ -23525,11 +23525,23 @@ function makeLoopBackEvent(fromModuleId, toModuleId, at) {
     return { type: 'looped_back', at, moduleId: fromModuleId, toModuleId };
 }
 // A module is open when every prerequisite is mastered. There is no other way in.
-function moduleStatuses(progress) {
+// Which prerequisites actually gate a module for this student. Those inside the same
+// course always do. One from another course only does when that course is assigned:
+// an educator who places a student at grade 3 without grade 2 has judged them past it,
+// and grade 3 must open. Loop-back still uses the full list, so a struggling student is
+// sent back to the earlier module all the same.
+function gatingPrerequisites(moduleId, enabledIds) {
+    const all = prerequisitesOf(moduleId);
+    if (!enabledIds)
+        return all;
+    const mod = getModule(moduleId);
+    return all.filter((id) => { const p = getModule(id); return !p || p.courseId === mod.courseId || enabledIds.includes(p.courseId); });
+}
+function moduleStatuses(progress, enabledIds) {
     return MODULES.map((m) => {
         if (progress.perModule[m.id].mastered)
             return { id: m.id, status: 'mastered' };
-        const ready = prerequisitesOf(m.id).every((id) => progress.perModule[id] && progress.perModule[id].mastered);
+        const ready = gatingPrerequisites(m.id, enabledIds).every((id) => progress.perModule[id] && progress.perModule[id].mastered);
         return { id: m.id, status: ready ? 'available' : 'locked' };
     });
 }
@@ -23824,7 +23836,7 @@ function classView(students, now) {
             reasons.push(`${daysIdle} days since last practice`);
         }
         const mastered = assigned.filter((m) => m.mastered).length;
-        const next = assigned.find((m) => !m.mastered && moduleStatuses(deriveProgress(events)).find((x) => x.id === m.id).status === 'available');
+        const next = assigned.find((m) => !m.mastered && moduleStatuses(deriveProgress(events), report.enabledCourseIds).find((x) => x.id === m.id).status === 'available');
         return {
             id, label: label || id, score, reasons,
             mastered, total: assigned.length,
@@ -23881,7 +23893,7 @@ function studentSummary(events, moduleIds) {
         out.push(`You've mastered ${mastered.length} ${modulesWord} across ${rounds.length} practice ${roundsWord}${tail}`);
     }
     // What those skills open up
-    const statuses = moduleStatuses(progress);
+    const statuses = moduleStatuses(progress, enabledCourseIds(events));
     const unlocked = mine.filter((m) => !progress.masteredIds.includes(m.id) && statuses.find((x) => x.id === m.id)?.status === 'available' && prerequisitesOf(m.id).some((p) => progress.masteredIds.includes(p)));
     if (unlocked.length > 0) {
         const because = getModule(prerequisitesOf(unlocked[0].id).find((p) => progress.masteredIds.includes(p)));
@@ -24862,7 +24874,10 @@ function playTap() {
 // Device voices read letters, not sounds: "mmm" comes out as em, em, em. These swaps
 // give each sustained sound a spelling the voice will hum or hiss instead. Recorded
 // audio, when it comes, replaces this for good.
-const SOUND_SPEECH = [[/\bmmm\b/gi, 'hmmmmmmmm'], [/\bnnn\b/gi, 'hnnnnnnnn'], [/\bsss\b/gi, 'sssssssss'], [/\bfff\b/gi, 'fffffffff'], [/\bzzz\b/gi, 'zzzzzzzzz'], [/\brrr\b/gi, 'rrrrrrrrr'], [/\blll\b/gi, 'lllllllll']];
+// "hmm" put an H in front of the M sound, which was wrong. Each sound is now spoken as the
+// stretched start of a word the voice knows how to say: mmmoon, sssun, fffish. The letters
+// run into the word, so the sound is held and the word confirms it. The screen keeps "mmm".
+const SOUND_SPEECH = [[/\bmmm\b/gi, 'mmmmoon'], [/\bnnn\b/gi, 'nnnnut'], [/\bsss\b/gi, 'sssssun'], [/\bfff\b/gi, 'ffffish'], [/\bzzz\b/gi, 'zzzzip'], [/\brrr\b/gi, 'rrrrun'], [/\blll\b/gi, 'llllion']];
 const SOUND_TOKEN = /\b(mmm|nnn|sss|fff|zzz|rrr|lll)\b/gi;
 function speechFriendly(text) { let out = String(text); for (const [re, to] of SOUND_SPEECH)
     out = out.replace(re, to); return out; }
@@ -25697,7 +25712,7 @@ function EduSphereApp() {
     const [showFinished, setShowFinished] = (0, react_1.useState)(false); // young learners: finished modules stay folded away
     // Everything the screens need is recomputed from the event log on every render.
     const progress = (0, react_1.useMemo)(() => (record ? deriveProgress(record.events) : null), [record]);
-    const statuses = (0, react_1.useMemo)(() => (progress ? moduleStatuses(progress) : []), [progress]);
+    const statuses = (0, react_1.useMemo)(() => (progress && record ? moduleStatuses(progress, enabledCourseIds(record.events)) : []), [progress, record]);
     const statusOf = (id) => (statuses.find((s) => s.id === id) || {}).status;
     const sortedModules = (0, react_1.useMemo)(() => [...MODULES].sort((a, b) => a.order - b.order), []);
     // The record is keyed by the student's ID, but every screen shows the name an admin typed.

@@ -23286,7 +23286,18 @@ function buildBackup({ roster, records, wonderReview, covered, deviceName, recov
 function backupFileName(deviceName, studentCount, at) {
     // Apostrophes vanish rather than becoming hyphens, so "Mike's laptop" reads as mikes-laptop.
     const device = String(deviceName || 'device').trim().toLowerCase().replace(/['\u2019]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'device';
-    return `edusphere-${device}-${studentCount}-${studentCount === 1 ? 'student' : 'students'}-${String(at).slice(0, 10)}.json`;
+    return `edusphere-${device}-${studentCount}-${studentCount === 1 ? 'student' : 'students'}-${backupStamp(at)}.json`;
+}
+// The date and time in the file name, in local time and the American order: 9-11-2026-10-43pm.
+// Two backups on one day then get two names, and a folder sorts them by name and reads well.
+function backupStamp(at) {
+    const d = new Date(at);
+    if (Number.isNaN(d.getTime()))
+        return String(at).slice(0, 10);
+    const h24 = d.getHours();
+    const h = h24 % 12 === 0 ? 12 : h24 % 12;
+    const mm = String(d.getMinutes()).padStart(2, '0');
+    return `${d.getMonth() + 1}-${d.getDate()}-${d.getFullYear()}-${h}-${mm}${h24 < 12 ? 'am' : 'pm'}`;
 }
 // Checks a file before anything is merged from it. Returns a plain sentence on failure.
 function checkBackup(data) {
@@ -23752,7 +23763,7 @@ function moduleStory(learnerName, events, moduleId) {
     if (attempts.length === 0)
         return `${name} has read the ${mod.title.toLowerCase()} lesson ${reads === 1 ? 'once' : reads + ' times'} but has not practiced it yet. Nothing counts until a practice round is finished.`;
     const times = (n) => (n === 1 ? 'once' : n === 2 ? 'twice' : `${n} times`);
-    const parts = [`${name} read this lesson ${times(reads || 1)} and practiced it ${times(attempts.length)}.`];
+    const parts = [`${name} read through this lesson ${times(reads || 1)} and practiced it ${times(attempts.length)}.`];
     const loops = mine.filter((e) => e.type === 'looped_back');
     if (loops.length) {
         const back = getModule(loops[loops.length - 1].toModuleId);
@@ -23762,8 +23773,9 @@ function moduleStory(learnerName, events, moduleId) {
     attempts.forEach((a, i) => {
         const passed = a.coreCorrect >= rules.toMaster;
         const label = attempts.length === 1 ? 'That attempt' : i === 0 ? 'The first attempt' : i === attempts.length - 1 ? 'The most recent attempt' : `Attempt ${i + 1}`;
+        const which = attempts.length === 1 ? 'the single practice attempt' : i === 0 ? 'the first attempt' : i === attempts.length - 1 ? 'the most recent attempt' : `attempt ${i + 1}`;
         if (passed)
-            parts.push(`${label} reached ${a.coreCorrect} out of ${a.coreTotal}, which is enough to count as mastered.`);
+            parts.push(`By answering ${a.coreCorrect} out of ${a.coreTotal} correctly on ${which}, the content is considered mastered.`);
         else
             parts.push(`${label} came to ${a.coreCorrect} out of ${a.coreTotal}, so the module stayed open for more practice.`);
     });
@@ -23783,7 +23795,7 @@ function moduleStory(learnerName, events, moduleId) {
             parts.push('Several of the quick answers were wrong, which suggests guessing rather than working it out.');
     }
     else if (hereSec !== null) {
-        parts.push(`Their answers on the last round took about ${hereSec} seconds each, which is a normal pace for them.`);
+        parts.push(`The last round took about ${hereSec} seconds per question which is a normal pace for them.`);
     }
     // What happens next, said plainly.
     const progress = deriveProgress(events);
@@ -23794,7 +23806,7 @@ function moduleStory(learnerName, events, moduleId) {
         parts.push('To ensure true mastery, these types of questions will be introduced again at a later time for further evaluation.');
     }
     else if (p && p.mastered) {
-        parts.push('Questions from here will reappear now and then as memory checks, so we can see that it has stuck.');
+        parts.push('Questions from this module will reappear again later as a memory check which not only helps to improve retention, it refines the confidence score.');
     }
     else {
         parts.push('Until the mark is reached, the modules after this one stay locked, and every practice round brings fresh questions.');
@@ -23802,7 +23814,7 @@ function moduleStory(learnerName, events, moduleId) {
     if (conf.score !== null)
         parts.push(`${name}'s confidence score in ${mod.title.toLowerCase()} currently stands at ${conf.score} out of 5.`);
     if (p && p.mastered && p.masteredAt)
-        parts.push(`Mastered on ${new Date(p.masteredAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}.`);
+        parts.push(`Mastered on ${new Date(p.masteredAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} after ${attempts.length === 1 ? 'one attempt' : `${attempts.length} attempts`}.`);
     return parts.join(' ');
 }
 // ---------------------------------------------------------------------
@@ -24556,11 +24568,12 @@ function ContactPopup({ onClose }) {
             react_1.default.createElement("a", { href: `mailto:${CONTACT_EMAIL}`, style: { display: 'inline-block', fontFamily: FONT, fontSize: 16, fontWeight: 600, padding: '12px 18px', borderRadius: 10, background: C.green, color: '#fff', textDecoration: 'none' } }, "Open in your email app"))));
 }
 // A PIN box that shows dots, with only the digit just typed visible for a moment.
-function PinInput({ value, onChange, placeholder, style }) {
+function PinInput({ value, onChange, placeholder, style, onEnter = null }) {
     const [reveal, setReveal] = (0, react_1.useState)(false);
     const timer = (0, react_1.useRef)(null);
     const shown = value.split('').map((ch, i) => (i === value.length - 1 && reveal ? ch : '•')).join('');
-    return (react_1.default.createElement("input", { value: shown, inputMode: "numeric", autoComplete: "off", placeholder: placeholder, "aria-label": placeholder, style: style, onChange: (e) => {
+    return (react_1.default.createElement("input", { value: shown, inputMode: "numeric", autoComplete: "off", placeholder: placeholder, "aria-label": placeholder, style: style, onKeyDown: (e) => { if (e.key === 'Enter' && onEnter)
+            onEnter(); }, onChange: (e) => {
             const next = e.target.value;
             let real = value;
             if (next.length < value.length)
@@ -24585,7 +24598,7 @@ const linkBtn = { background: 'none', border: 'none', color: '#2F5D4F', fontFami
 // Cards are solid, so stars show only in the open space between them and never behind text.
 const card = { background: C.surface, border: `1px solid ${C.line}`, borderRadius: 14, padding: 18, marginBottom: 14 };
 // ---------- Small building blocks ----------
-function Btn({ children, onClick, kind = 'primary', disabled = false, full = false, halo = false }) {
+function Btn({ children, onClick, kind = 'primary', disabled = false, full = false, halo = false, style: extra = null }) {
     const base = {
         fontFamily: FONT, fontSize: 16, fontWeight: 600, padding: '12px 18px', borderRadius: 10,
         cursor: disabled ? 'default' : 'pointer', border: `2px solid ${C.green}`, minHeight: 46,
@@ -24595,7 +24608,7 @@ function Btn({ children, onClick, kind = 'primary', disabled = false, full = fal
         ? { background: C.green, color: '#fff' }
         : { background: C.surface, color: C.green };
     // An inviting button pulses itself, gently, rather than casting a ring around it.
-    return react_1.default.createElement("button", { type: "button", className: halo && !disabled ? 'edu-press edu-pulse' : 'edu-press', style: { ...base, ...looks }, onClick: onClick, disabled: disabled }, children);
+    return react_1.default.createElement("button", { type: "button", className: halo && !disabled ? 'edu-press edu-pulse' : 'edu-press', style: { ...base, ...looks, ...(extra || {}) }, onClick: onClick, disabled: disabled }, children);
 }
 // The signature visual: a bar split into equal parts with some shaded.
 // Used in lessons, in questions, and on the overview to show progress.
@@ -25660,9 +25673,23 @@ async function writeAutoSave(text) {
     }
 }
 // Hands the browser a file to download. Works in every browser; nothing is sent anywhere.
-function downloadFile(name, text) {
+async function downloadFile(name, text) {
     if (typeof document === 'undefined')
         return false;
+    // Chrome and Edge on a laptop can ask where to save. Other browsers save to their downloads folder.
+    if (typeof window !== 'undefined' && window.showSaveFilePicker) {
+        try {
+            const handle = await window.showSaveFilePicker({ suggestedName: name, types: [{ description: 'EduSphere backup', accept: { 'application/json': ['.json'] } }] });
+            const w = await handle.createWritable();
+            await w.write(text);
+            await w.close();
+            return true;
+        }
+        catch (err) {
+            if (err && err.name === 'AbortError')
+                return 'canceled'; /* fall through to a plain download */
+        }
+    }
     const blob = new Blob([text], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -25713,7 +25740,7 @@ function EduSphereApp() {
     const [openTerms, setOpenTerms] = (0, react_1.useState)([]);
     const [openApproved, setOpenApproved] = (0, react_1.useState)([]);
     const [openProgressGroups, setOpenProgressGroups] = (0, react_1.useState)([]);
-    const closeTips = () => { setShowBackupTip(false); setShowRosterTip(false); setShowStateTip(false); setShowTouchlessTip(false); setShowWonderTip(false); setShowProgressTip(false); setShowHelpTip(false); setForgotPin(false); setSetupError(''); };
+    const closeTips = () => { setRestoreNote(''); setShowBackupTip(false); setShowRosterTip(false); setShowStateTip(false); setShowTouchlessTip(false); setShowWonderTip(false); setShowProgressTip(false); setShowHelpTip(false); setForgotPin(false); setSetupError(''); };
     const [stateCode, setStateCode] = (0, react_1.useState)(''); // the educator's state, chosen once
     const [stateDraft, setStateDraft] = (0, react_1.useState)('');
     const [autoSaving, setAutoSaving] = (0, react_1.useState)(false); // a file has been chosen for touchless backup
@@ -25728,6 +25755,7 @@ function EduSphereApp() {
     const [courseQuery, setCourseQuery] = (0, react_1.useState)(''); // the course search box on the report
     const [preparedBackup, setPreparedBackup] = (0, react_1.useState)(null); // the backup text made ahead of a share, so the click shares at once
     const [shareRefused, setShareRefused] = (0, react_1.useState)(false); // a browser that refused to share hides the button for this session
+    const [restoreNote, setRestoreNote] = (0, react_1.useState)(''); // the outcome of a restore, shown inside the restore card
     (0, react_1.useEffect)(() => {
         if (screen !== 'backup')
             return;
@@ -26484,6 +26512,34 @@ function EduSphereApp() {
                                 g.key !== 'locked' && react_1.default.createElement(Btn, { kind: m.mastered ? 'secondary' : 'primary', onClick: () => openModule(m.id), disabled: busy }, m.mastered ? 'Practice again' : 'Open module'))))))));
                 }))));
     }
+    // ---------- The standards map: which module covers which standard, for this state ----------
+    if (screen === 'standards-map') {
+        const fw = frameworkForState(stateCode || 'TX');
+        const plan = CURRICULUM.filter((entry) => entry.standards.some((st) => st.framework === fw));
+        return (react_1.default.createElement("div", { style: page },
+            react_1.default.createElement(PageChrome, { idleWarning: idleWarning }),
+            react_1.default.createElement("div", { className: "edu-wrap", style: wrap },
+                react_1.default.createElement("button", { type: "button", onClick: () => setScreen('educator-pick'), style: linkBtn }, "Back to Classroom"),
+                react_1.default.createElement("h1", { style: { fontSize: 24, margin: '12px 0 4px', textAlign: 'center' } }, "Standards map"),
+                react_1.default.createElement("p", { style: { color: C.muted, marginTop: 0, fontSize: 15, textAlign: 'center' } },
+                    "Every module, matched to ",
+                    stateCode ? `${stateFor(stateCode).name}'s` : 'the',
+                    " standards (",
+                    FRAMEWORKS[fw].name,
+                    "). Print this page for a coverage record."),
+                plan.map((entry) => (react_1.default.createElement("div", { key: `${entry.grade}-${entry.subject}`, style: card },
+                    react_1.default.createElement("p", { style: { margin: '0 0 2px', fontWeight: 600, fontSize: 17 } },
+                        gradeLabel(entry.grade),
+                        " ",
+                        entry.subject),
+                    react_1.default.createElement("p", { style: { margin: '0 0 10px', fontSize: 13, color: C.muted } }, entry.source),
+                    entry.standards.filter((st) => st.framework === fw).map((st) => (react_1.default.createElement("div", { key: st.code, style: { padding: '8px 0', borderTop: `1px solid ${C.line}` } },
+                        react_1.default.createElement("p", { style: { margin: 0, fontSize: 15 } },
+                            react_1.default.createElement("strong", null, st.code),
+                            " ",
+                            st.text),
+                        react_1.default.createElement("p", { style: { margin: '4px 0 0', fontSize: 14, color: st.moduleIds.length ? C.green : C.clay } }, st.moduleIds.length ? `Covered by: ${st.moduleIds.map((id) => (getModule(id) ? getModule(id).title : id)).join(', ')}` : 'Not yet covered'))))))))));
+    }
     // ---------- Reviewing the Wonder questions before any child sees one ----------
     if (screen === 'wonder-review') {
         const waiting = wonderAwaitingReview(wonderReview);
@@ -26824,7 +26880,8 @@ function EduSphereApp() {
                     react_1.default.createElement("h1", { style: { fontSize: 24, margin: '12px 0 22px', textAlign: 'center' } }, "Please log in to continue:"),
                     react_1.default.createElement("div", { style: card },
                         react_1.default.createElement("p", { style: { margin: '0 0 10px' } }, "Enter your PIN."),
-                        react_1.default.createElement(PinInput, { value: pinInput, onChange: setPinInput, placeholder: "PIN", style: { fontFamily: FONT, fontSize: 18, padding: '12px 14px', width: '100%', boxSizing: 'border-box', border: `2px solid ${C.line}`, borderRadius: 10, marginBottom: 12, letterSpacing: 4 } }),
+                        react_1.default.createElement(PinInput, { value: pinInput, onChange: setPinInput, placeholder: "PIN", onEnter: () => { if (ok)
+                                setScreen('educator-pick'); }, style: { fontFamily: FONT, fontSize: 18, padding: '12px 14px', width: '100%', boxSizing: 'border-box', border: `2px solid ${C.line}`, borderRadius: 10, marginBottom: 12, letterSpacing: 4 } }),
                         react_1.default.createElement(Btn, { full: true, onClick: () => setScreen('educator-pick'), disabled: !ok }, "Open"),
                         !educator && react_1.default.createElement("p", { style: { margin: '12px 0 0', fontSize: 14, color: C.muted, textAlign: 'center' } },
                             "No educator account on this device yet. ",
@@ -26932,7 +26989,9 @@ function EduSphereApp() {
                         "'s standards (",
                         FRAMEWORKS[frameworkForState(stateCode)].name,
                         "). ",
-                        react_1.default.createElement("button", { type: "button", onClick: () => { setStateDraft(stateCode); setScreen('change-state'); }, style: { ...linkBtn, fontSize: 13, padding: 0 } }, "Change state")))),
+                        react_1.default.createElement("button", { type: "button", onClick: () => { setStateDraft(stateCode); setScreen('change-state'); }, style: { ...linkBtn, fontSize: 13, padding: 0 } }, "Change state"),
+                        ' · ',
+                        react_1.default.createElement("button", { type: "button", onClick: () => setScreen('standards-map'), style: { ...linkBtn, fontSize: 13, padding: 0 } }, "Standards map")))),
                 react_1.default.createElement("div", { style: { height: 10 } }),
                 react_1.default.createElement("div", { className: "edu-narrow" },
                     react_1.default.createElement(Btn, { full: true, onClick: () => { setAdding(true); setRosterError(''); setRosterInput(''); setNewLevel(''); setNewPicture(''); setNewTint(''); } }, "Add someone new")),
@@ -27118,7 +27177,7 @@ function EduSphereApp() {
                             ' ',
                             r.total ? `${r.mastered} of ${r.total} modules mastered.` : 'No courses assigned.',
                             r.next ? ` Next up: ${r.next}.` : ''),
-                        react_1.default.createElement("div", { style: { marginTop: 8 } },
+                        react_1.default.createElement("div", { style: { marginTop: 8, textAlign: 'right' } },
                             react_1.default.createElement("button", { type: "button", style: linkBtn, onClick: async () => {
                                     setBusy(true);
                                     const rec = await withStarterCourses(await loadRecord(r.id));
@@ -27139,7 +27198,10 @@ function EduSphereApp() {
         const activeCount = roster.students.filter((st) => st.active).length;
         // Share appears only where this browser can actually share a file. Most desktop browsers
         // cannot, so there it stays hidden and Download stands alone.
-        const canShare = !shareRefused && (() => { try {
+        // Share is offered on phones and tablets only, where the share sheet is dependable. A laptop
+        // browser may claim it can share a file and then refuse, so there Download stands alone.
+        const handheld = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
+        const canShare = handheld && !shareRefused && (() => { try {
             return typeof navigator !== 'undefined' && !!navigator.share && !!navigator.canShare && navigator.canShare({ files: [new File(['x'], 'x.json', { type: 'application/json' })] });
         }
         catch (e) {
@@ -27199,12 +27261,15 @@ function EduSphereApp() {
                             } }, "Share backup")),
                         react_1.default.createElement(Btn, { full: true, kind: canShare ? 'secondary' : 'primary', onClick: async () => {
                                 const f = await makeFile();
-                                if (downloadFile(f.name, f.text))
-                                    await markDone(f.at, 'Backup downloaded. Keep it somewhere safe, such as your email.');
+                                const outcome = await downloadFile(f.name, f.text);
+                                if (outcome === 'canceled')
+                                    setBackupNote('No file was saved.');
+                                else if (outcome)
+                                    await markDone(f.at, 'Backup saved. Keep it somewhere safe, such as a shared folder or your email.');
                                 else
                                     setBackupNote('Downloads are not available here.');
                             } }, "Download backup")),
-                    backupNote && react_1.default.createElement("p", { style: { margin: '10px 0 0', fontSize: 14, color: C.muted } }, backupNote)),
+                    backupNote && react_1.default.createElement("p", { style: { margin: '10px 0 0', fontSize: 14, color: C.muted, textAlign: 'center' } }, backupNote)),
                 canAutoSave() && (react_1.default.createElement("div", { style: card },
                     react_1.default.createElement("p", { style: { margin: '0 0 6px', fontWeight: 600 } },
                         "Touchless backup",
@@ -27219,7 +27284,7 @@ function EduSphereApp() {
                                     const f = await makeFile();
                                     if (await writeAutoSave(f.text))
                                         await markDone(f.at, 'Touchless backup is on and the first copy is written.');
-                                } } }, "Choose a Destination")))),
+                                } }, style: { width: 280 } }, "Choose a Destination")))),
                 react_1.default.createElement("div", { style: card },
                     react_1.default.createElement("p", { style: { margin: '0 0 6px', fontWeight: 600 } }, "Restore from backup"),
                     react_1.default.createElement("p", { style: { margin: '0 0 10px', fontSize: 14, color: C.muted } },
@@ -27227,7 +27292,7 @@ function EduSphereApp() {
                         react_1.default.createElement("strong", null, "adds"),
                         " student metrics to whatever currently lives on this device. Students are matched by ID and histories are then merged. Nothing on this device is ever removed."),
                     react_1.default.createElement("label", { style: { display: 'block', textAlign: 'center' } },
-                        react_1.default.createElement("span", { style: { display: 'inline-block', fontFamily: FONT, fontSize: 16, fontWeight: 600, padding: '12px 18px', borderRadius: 10, border: `2px solid ${C.green}`, color: C.green, cursor: 'pointer' } }, "Restore from backup file"),
+                        react_1.default.createElement("span", { style: { display: 'inline-block', width: 280, minHeight: 46, boxSizing: 'border-box', textAlign: 'center', fontFamily: FONT, fontSize: 16, fontWeight: 600, padding: '12px 18px', borderRadius: 10, border: `2px solid ${C.green}`, color: C.green, cursor: 'pointer' } }, "Restore from backup file"),
                         react_1.default.createElement("input", { type: "file", accept: "application/json,.json", style: { display: 'none' }, onChange: async (e) => {
                                 const f = e.target.files && e.target.files[0];
                                 if (!f)
@@ -27236,7 +27301,7 @@ function EduSphereApp() {
                                     const data = JSON.parse(await f.text());
                                     const problem = checkBackup(data);
                                     if (problem) {
-                                        setBackupNote(problem);
+                                        setRestoreNote(problem);
                                         return;
                                     }
                                     const merged = mergeBackup(await gatherEverything(roster), data);
@@ -27249,13 +27314,14 @@ function EduSphereApp() {
                                     setWonderReview(merged.wonderReview);
                                     setCovered(merged.covered);
                                     const from = data.deviceName ? ` from ${data.deviceName}` : '';
-                                    setBackupNote(`Restored${from}. ${merged.addedStudents} ${merged.addedStudents === 1 ? 'student' : 'students'} added and every history joined. Nothing already here was lost.`);
+                                    setRestoreNote(`Restored from ${data.deviceName ? data.deviceName : 'a'} backup file. ${merged.addedStudents} ${merged.addedStudents === 1 ? 'student was' : 'students were'} added and all relevant history was merged. Nothing was removed.`);
                                 }
                                 catch (err) {
-                                    setBackupNote('That file could not be read.');
+                                    setRestoreNote('That file could not be read.');
                                 }
                                 e.target.value = '';
-                            } }))),
+                            } })),
+                    restoreNote && react_1.default.createElement("p", { style: { margin: '10px 0 0', fontSize: 14, color: C.green, fontWeight: 600, textAlign: 'center' } }, restoreNote)),
                 react_1.default.createElement("p", { style: { fontSize: 13, color: C.muted, textAlign: 'center' } }, "We send nothing anywhere. You choose where the file goes. Choose wisely."))));
     }
     // ---------- One student's report: summary, what's assigned, course switches, progress, resets ----------
@@ -27339,7 +27405,7 @@ function EduSphereApp() {
                             react_1.default.createElement(InfoButton, { onClick: () => setShowProgressTip(!showProgressTip), label: "About progress by course", open: showProgressTip })),
                         react_1.default.createElement("button", { type: "button", onClick: () => setOpenProgress(!openProgress), "aria-expanded": openProgress, "aria-label": "Progress by course", style: { fontFamily: FONT, flex: 1, textAlign: 'right', background: 'none', border: 'none', padding: 0, cursor: 'pointer', color: C.muted, fontSize: 16 } }, openProgress ? '▴' : '▾')),
                     showProgressTip && react_1.default.createElement("div", { style: { padding: '0 16px' } },
-                        react_1.default.createElement(TipText, null, "This section shows progression through the assigned courses only. Each course opens to show every module, whether it is mastered, and how confident the work looks."))),
+                        react_1.default.createElement(TipText, null, "Once you assign a course above, you can view or reset the student's progression within said course. See how they're doing or allow them to start fresh."))),
                 openProgress && assigned.map((course) => {
                     const open = openSubjects.includes(course.id);
                     const rows = rep.modules.filter((m) => m.courseId === course.id);

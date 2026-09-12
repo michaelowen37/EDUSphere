@@ -24877,7 +24877,8 @@ function playTap() {
 // "hmm" put an H in front of the M sound, which was wrong. Each sound is now spoken as the
 // stretched start of a word the voice knows how to say: mmmoon, sssun, fffish. The letters
 // run into the word, so the sound is held and the word confirms it. The screen keeps "mmm".
-const SOUND_SPEECH = [[/\bmmm\b/gi, 'mmmmoon'], [/\bnnn\b/gi, 'nnnnut'], [/\bsss\b/gi, 'sssssun'], [/\bfff\b/gi, 'ffffish'], [/\bzzz\b/gi, 'zzzzip'], [/\brrr\b/gi, 'rrrrun'], [/\blll\b/gi, 'llllion']];
+const stretch = (letter, word) => letter.repeat(44) + word;
+const SOUND_SPEECH = [[/\bmmm\b/gi, stretch('m', 'oon')], [/\bnnn\b/gi, stretch('n', 'ut')], [/\bsss\b/gi, stretch('s', 'un')], [/\bfff\b/gi, stretch('f', 'ish')], [/\bzzz\b/gi, stretch('z', 'ip')], [/\brrr\b/gi, stretch('r', 'un')], [/\blll\b/gi, stretch('l', 'ion')]];
 const SOUND_TOKEN = /\b(mmm|nnn|sss|fff|zzz|rrr|lll)\b/gi;
 function speechFriendly(text) { let out = String(text); for (const [re, to] of SOUND_SPEECH)
     out = out.replace(re, to); return out; }
@@ -24895,7 +24896,8 @@ function speechPieces(text) {
     }
     if (last < src.length)
         pieces.push({ text: src.slice(last), sound: false });
-    return pieces.filter((p) => p.text.trim());
+    // A piece that is only punctuation, like the full stop after a sound, would be read aloud as a word. Drop it.
+    return pieces.filter((p) => /[A-Za-z0-9]/.test(p.text));
 }
 function speak(text) {
     if (typeof window === 'undefined' || !window.speechSynthesis || !text)
@@ -24907,7 +24909,7 @@ function speak(text) {
             const u = new SpeechSynthesisUtterance(piece.text);
             if (voice)
                 u.voice = voice;
-            u.rate = piece.sound ? 0.45 : 0.86; // sounds are held long and slow; words a little slower than normal speech
+            u.rate = piece.sound ? 0.1 : 0.86; // sounds are held as long as a voice allows; words a little slower than normal speech
             u.pitch = 1.15; // brighter and warmer than the default, less like a machine
             window.speechSynthesis.speak(u);
         }

@@ -23262,6 +23262,20 @@ function coveredCount(state, skills) { return skills.filter((sk) => state.covere
 //    newer device can only add history, never lose it.
 // ---------------------------------------------------------------------
 const BACKUP_VERSION = 1;
+// A moment written out plainly for a person: "Saturday, September 12, 2026 at 12:35 AM Central Daylight Time".
+function describeMoment(at) {
+    const d = new Date(at);
+    if (Number.isNaN(d.getTime()))
+        return String(at);
+    try {
+        const date = d.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
+        const time = d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', timeZoneName: 'long' });
+        return `${date} at ${time}`;
+    }
+    catch (e) {
+        return d.toString();
+    }
+}
 function buildBackup({ roster, records, wonderReview, covered, deviceName, recovery }, at) {
     return {
         app: 'EduSphere',
@@ -23271,6 +23285,9 @@ function buildBackup({ roster, records, wonderReview, covered, deviceName, recov
         recovery: recovery || null,
         recoveryNote: recovery ? 'RECOVERY CODE. Keep this file somewhere safe. To reset a forgotten educator PIN, choose this file on the sign-in screen or type the code above.' : null,
         version: BACKUP_VERSION,
+        // Two forms of the same moment: one a person can read at a glance, in the device's own
+        // time zone, and one a machine can sort and compare.
+        saved: describeMoment(at),
         savedAt: at,
         deviceName: String(deviceName || '').trim() || null,
         studentIds: roster.students.filter((s) => s.active).map((s) => s.id),
@@ -27125,7 +27142,7 @@ function EduSphereApp() {
                         educator && !forgotPin && react_1.default.createElement("p", { style: { margin: '12px 0 0', fontSize: 14, color: C.muted } },
                             react_1.default.createElement("button", { type: "button", onClick: () => setForgotPin(true), style: { ...linkBtn, fontSize: 14, padding: 0 } }, "Forgot my PIN")),
                         educator && forgotPin && (react_1.default.createElement("div", { style: { marginTop: 12, padding: 12, borderRadius: 10, background: C.goldSoft } },
-                            react_1.default.createElement("p", { style: { margin: '0 0 10px', fontSize: 14, textAlign: 'center' } }, "To reset your pin, select a backup file for your specific classroom or type the recovery code in the field below. This code is located on the classroom page and within your backup files."),
+                            react_1.default.createElement("p", { style: { margin: '0 0 10px', fontSize: 14, textAlign: 'center' } }, "To reset your pin, select a backup file or type the recovery code into the field below."),
                             react_1.default.createElement("input", { value: typedCode, onChange: (e) => setTypedCode(e.target.value), placeholder: "Recovery code, e.g. 1234-5678-9012-3456", inputMode: "numeric", style: { fontFamily: FONT, fontSize: 16, padding: '10px 12px', width: '100%', boxSizing: 'border-box', border: `2px solid ${C.line}`, borderRadius: 10, marginBottom: 10 } }),
                             typedCode.replace(/[^0-9]/g, '').length === 16 && (react_1.default.createElement("div", { style: { marginBottom: 10 } },
                                 react_1.default.createElement(Btn, { onClick: async () => {
@@ -27147,9 +27164,9 @@ function EduSphereApp() {
                                         setScreen('educator-setup');
                                     } }, "Reset with this code"))),
                             setupError && react_1.default.createElement("p", { style: { margin: '0 0 10px', fontSize: 14, color: C.clay } }, setupError),
-                            react_1.default.createElement("div", { style: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 } },
+                            react_1.default.createElement("div", { style: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, maxWidth: 360, margin: '0 auto' } },
                                 react_1.default.createElement("label", { style: { display: 'block' } },
-                                    react_1.default.createElement("span", { style: { display: 'block', textAlign: 'center', fontFamily: FONT, fontSize: 16, fontWeight: 600, padding: '12px 18px', borderRadius: 10, background: C.green, color: '#fff', cursor: 'pointer' } }, "Choose a backup file to reset"),
+                                    react_1.default.createElement("span", { style: { display: 'block', textAlign: 'center', fontFamily: FONT, fontSize: 15, fontWeight: 600, padding: '9px 14px', borderRadius: 10, background: C.green, color: '#fff', cursor: 'pointer' } }, "Choose File"),
                                     react_1.default.createElement("input", { type: "file", accept: "application/json,.json", style: { display: 'none' }, onChange: async (e) => {
                                             const f = e.target.files && e.target.files[0];
                                             if (!f)
@@ -27177,7 +27194,7 @@ function EduSphereApp() {
                                             }
                                             e.target.value = '';
                                         } })),
-                                react_1.default.createElement(Btn, { full: true, kind: "secondary", onClick: () => setForgotPin(false) }, "Cancel")))),
+                                react_1.default.createElement(Btn, { full: true, kind: "secondary", onClick: () => setForgotPin(false), style: { padding: '9px 14px', minHeight: 40, fontSize: 15 } }, "Cancel")))),
                         pinInput.length >= 4 && !ok && react_1.default.createElement("p", { style: { color: C.clay, fontSize: 14 } }, "That PIN is not right.")),
                     react_1.default.createElement("p", { style: { color: C.muted, fontSize: 13, textAlign: 'center' } }, "PIN numbers are easily reset. First, backup your classroom. Then, reset keys can be found within the backup file.")))));
     }
@@ -27451,10 +27468,13 @@ function EduSphereApp() {
                     ' ',
                     "Backups save all student progress and allow for restoration on any device at a later time. Regular backups are highly recommended. While some devices allow for automatic backups on a per module basis, others require manual backups."),
                 react_1.default.createElement("div", { style: { height: 20 } }),
+                !(educator && educator.recovery) && (react_1.default.createElement("div", { style: { ...card, background: C.goldSoft, borderColor: C.goldSoft } },
+                    react_1.default.createElement("p", { style: { margin: '0 0 4px', fontWeight: 600, textAlign: 'center' } }, "No recovery code yet"),
+                    react_1.default.createElement("p", { style: { margin: 0, fontSize: 14, color: C.muted, textAlign: 'center' } }, "A recovery code comes with an educator account, because it exists to reset a PIN you chose. This device is still on the starter PIN. Create an account from the sign-in screen and the code appears here and at the top of every backup."))),
                 educator && educator.recovery && (react_1.default.createElement("div", { style: { ...card, background: C.greenSoft, borderColor: C.greenSoft } },
                     react_1.default.createElement("p", { style: { margin: '0 0 4px', fontWeight: 600 } }, "Recovery code"),
                     react_1.default.createElement("p", { style: { margin: '0 0 6px', fontSize: 22, fontWeight: 700, letterSpacing: 1 } }, educator.recovery),
-                    react_1.default.createElement("p", { style: { margin: 0, fontSize: 14, color: C.muted } }, "This code is also written at the top of every backup file. If you ever forget your PIN, simply select \"forgot my pin\" on the login screen and type in the code or choose a backup file. Keep it where students cannot see it."))),
+                    react_1.default.createElement("p", { style: { margin: 0, fontSize: 14, color: C.muted, textAlign: 'center' } }, "This code is also written at the top of every backup file. If you ever forget your PIN, simply select \"forgot my pin\" on the login screen and type in the code or choose a backup file. Keep it where students cannot see it."))),
                 react_1.default.createElement("div", { style: card },
                     react_1.default.createElement("p", { style: { margin: '0 0 6px', fontWeight: 600 } }, "This device's name"),
                     react_1.default.createElement("p", { style: { margin: '0 0 8px', fontSize: 14, color: C.muted } }, "Device name goes into the file name so a classroom of ten devices reads at a glance."),

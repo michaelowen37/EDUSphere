@@ -94,3 +94,6 @@ Schools are the only customers. Identifier = school-issued ID. No names, emails,
 - Learning should feel good: short questions, pictures, spoken words for young children, Wonder questions with no right answer, no pressure tricks.
 - Schools are the customer; privacy is designed in, not added.
 - Design and layout rules: `docs/DESIGN.md`. Session start prompt: `docs/DESIGN.md` bottom.
+
+## When you add a course
+Add its standards to src/curriculum.mjs (every code, with the module ids that cover it). The Standards map screen and the coverage check both read that plan, so a course added there appears on the map and is checked for gaps without any screen work. Mark the grade `ready` only when every code is covered.

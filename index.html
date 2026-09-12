@@ -23893,13 +23893,14 @@ function classSummary(rows) {
     const now = rows.filter((r) => r.band === 'needs help now');
     const eye = rows.filter((r) => r.band === 'keep an eye on');
     const fine = rows.length - now.length - eye.length;
-    const parts = ['Students on top could use a bit more guidance than those on bottom. Guessing, low confidence, failed attempts and slow progress pushes students higher up the list. Currently:'];
+    // The explanation, then the counts on a line of their own (the screen splits on the newline).
+    const parts = ['Students on top could use a bit more guidance than those on bottom. Guessing, low confidence, failed attempts and slow progress all pushes students higher up the list.\n'];
     if (now.length)
         parts.push(`${now.length} ${now.length === 1 ? 'student needs' : 'students need'} help now (${now.map((r) => r.label).join(', ')}).`);
     if (eye.length)
         parts.push(`${eye.length} ${eye.length === 1 ? 'student' : 'students'} worth keeping an eye on.`);
     parts.push(`${fine} on track.`);
-    return parts.join(' ');
+    return parts.join(' ').replace('\n ', '\n');
 }
 // ---------------------------------------------------------------------
 // THE STUDENT'S OWN SUMMARY
@@ -24574,13 +24575,18 @@ function PinInput({ value, onChange, placeholder, style, onEnter = null }) {
     const shown = value.split('').map((ch, i) => (i === value.length - 1 && reveal ? ch : '•')).join('');
     return (react_1.default.createElement("input", { value: shown, inputMode: "numeric", autoComplete: "off", placeholder: placeholder, "aria-label": placeholder, style: style, onKeyDown: (e) => { if (e.key === 'Enter' && onEnter)
             onEnter(); }, onChange: (e) => {
+            // Rebuild the real PIN from what the box now shows: a dot keeps the digit already there,
+            // anything else is a new digit. This handles typing, deleting and pasting a whole PIN.
             const next = e.target.value;
-            let real = value;
-            if (next.length < value.length)
-                real = value.slice(0, next.length);
-            else {
-                const added = next.slice(value.length).replace(/[^0-9]/g, '');
-                real = (value + added).slice(0, 6);
+            let real = '';
+            for (let i = 0; i < next.length && real.length < 6; i++) {
+                const ch = next[i];
+                if (ch === '•') {
+                    if (value[i])
+                        real += value[i];
+                }
+                else if (/[0-9]/.test(ch))
+                    real += ch;
             }
             onChange(real);
             setReveal(true);
@@ -25502,7 +25508,7 @@ function PageChrome({ idleWarning = false, stars = true, logoutIn = null }) {
         react_1.default.createElement("style", null, WONDER_ANIMATION + PRINT_STYLES + KID_ANIMATION),
         react_1.default.createElement("div", { className: "edu-frame", style: frame, "aria-hidden": "true" }),
         stars && react_1.default.createElement(PageStars, null),
-        logoutIn !== null && (react_1.default.createElement("div", { role: "status", className: "edu-no-print", style: { position: 'fixed', top: 10, right: 12, zIndex: 60, background: logoutIn <= 10 ? '#24291F' : 'rgba(36, 41, 31, 0.72)', color: '#fff', borderRadius: 999, padding: '6px 12px', fontFamily: FONT, fontSize: 13, fontWeight: 600, pointerEvents: 'none' } },
+        logoutIn !== null && (react_1.default.createElement("div", { role: "status", className: "edu-no-print", style: { position: 'fixed', bottom: 12, right: 12, zIndex: 60, background: logoutIn <= 10 ? '#24291F' : 'rgba(36, 41, 31, 0.72)', color: '#fff', borderRadius: 999, padding: '6px 12px', fontFamily: FONT, fontSize: 13, fontWeight: 600, pointerEvents: 'none' } },
             "Logging out in ",
             logoutIn,
             " ",
@@ -25759,6 +25765,7 @@ function EduSphereApp() {
     const [openTerms, setOpenTerms] = (0, react_1.useState)([]);
     const [openApproved, setOpenApproved] = (0, react_1.useState)([]);
     const [openProgressGroups, setOpenProgressGroups] = (0, react_1.useState)([]);
+    const [openMapGroups, setOpenMapGroups] = (0, react_1.useState)([]); // the standards map's dropdowns, closed until opened
     const closeTips = () => { setRestoreNote(''); setShowBackupTip(false); setShowRosterTip(false); setShowStateTip(false); setShowTouchlessTip(false); setShowWonderTip(false); setShowProgressTip(false); setShowHelpTip(false); setForgotPin(false); setSetupError(''); };
     const [stateCode, setStateCode] = (0, react_1.useState)(''); // the educator's state, chosen once
     const [stateDraft, setStateDraft] = (0, react_1.useState)('');
@@ -25909,6 +25916,9 @@ function EduSphereApp() {
     async function startWithName(name) {
         if (!name.trim())
             return;
+        // Opening a student ends any educator session at once, so the next Educator Login asks for the PIN.
+        setLastActive(0);
+        setIdleWarning(false);
         setBusy(true);
         setErrorMsg('');
         try {
@@ -26572,18 +26582,35 @@ function EduSphereApp() {
                     " standards (",
                     FRAMEWORKS[fw].name,
                     "). Print this page for a coverage record."),
-                plan.map((entry) => (react_1.default.createElement("div", { key: `${entry.grade}-${entry.subject}`, style: card },
-                    react_1.default.createElement("p", { style: { margin: '0 0 2px', fontWeight: 600, fontSize: 17 } },
-                        gradeLabel(entry.grade),
-                        " ",
-                        entry.subject),
-                    react_1.default.createElement("p", { style: { margin: '0 0 10px', fontSize: 13, color: C.muted } }, entry.source),
-                    entry.standards.filter((st) => st.framework === fw).map((st) => (react_1.default.createElement("div", { key: st.code, style: { padding: '8px 0', borderTop: `1px solid ${C.line}` } },
-                        react_1.default.createElement("p", { style: { margin: 0, fontSize: 15 } },
-                            react_1.default.createElement("strong", null, st.code),
-                            " ",
-                            st.text),
-                        react_1.default.createElement("p", { style: { margin: '4px 0 0', fontSize: 14, color: st.moduleIds.length ? C.green : C.clay } }, st.moduleIds.length ? `Covered by: ${st.moduleIds.map((id) => (getModule(id) ? getModule(id).title : id)).join(', ')}` : 'Not yet covered'))))))))));
+                plan.map((entry) => {
+                    const key = `${entry.grade}-${entry.subject}`;
+                    const open = openMapGroups.includes(key);
+                    const rows = entry.standards.filter((st) => st.framework === fw);
+                    const covered = rows.filter((st) => st.moduleIds.length).length;
+                    return (react_1.default.createElement("div", { key: key, style: { ...card, padding: 0, overflow: 'hidden' } },
+                        react_1.default.createElement("button", { type: "button", onClick: () => setOpenMapGroups((list) => (list.includes(key) ? list.filter((x) => x !== key) : [...list, key])), "aria-expanded": open, style: { fontFamily: FONT, width: '100%', textAlign: 'left', background: 'none', border: 'none', padding: 16, cursor: 'pointer', color: C.ink, display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10 } },
+                            react_1.default.createElement("span", { style: { fontSize: 17, fontWeight: 600 } },
+                                gradeLabel(entry.grade),
+                                " ",
+                                entry.subject),
+                            react_1.default.createElement("span", { style: { fontSize: 14, color: covered === rows.length ? C.green : C.muted, whiteSpace: 'nowrap' } },
+                                covered,
+                                " of ",
+                                rows.length,
+                                " covered ",
+                                open ? '▴' : '▾')),
+                        react_1.default.createElement("div", { className: "edu-collapsible", style: { display: open ? 'block' : 'none', padding: '0 16px 12px' } },
+                            react_1.default.createElement("p", { style: { margin: '0 0 6px', fontSize: 13, color: C.muted } }, entry.source),
+                            rows.map((st) => (react_1.default.createElement("div", { key: st.code, style: { padding: '8px 0', borderTop: `1px solid ${C.line}` } },
+                                react_1.default.createElement("p", { style: { margin: 0, fontSize: 15 } },
+                                    react_1.default.createElement("strong", null, st.code),
+                                    " ",
+                                    st.text),
+                                react_1.default.createElement("p", { style: { margin: '4px 0 0', fontSize: 14, color: st.moduleIds.length ? C.green : C.clay } }, st.moduleIds.length ? `Covered by: ${st.moduleIds.map((id) => (getModule(id) ? getModule(id).title : id)).join(', ')}` : 'Not yet covered')))))));
+                }),
+                react_1.default.createElement("div", { className: "edu-no-print", style: { textAlign: 'center', marginTop: 8 } },
+                    react_1.default.createElement(Btn, { onClick: () => { if (typeof window !== 'undefined' && window.print)
+                            window.print(); } }, "Print standards map")))));
     }
     // ---------- Reviewing the Wonder questions before any child sees one ----------
     if (screen === 'wonder-review') {
@@ -27163,7 +27190,7 @@ function EduSphereApp() {
                             st.label,
                             st.mergedInto ? ` (merged into ${(findStudent(roster, st.mergedInto) || { label: st.mergedInto }).label})` : ''),
                         !st.mergedInto && react_1.default.createElement("button", { type: "button", onClick: () => applyRoster(setStudentActive(roster, st.id, true)), style: linkBtn }, "Show again")))),
-                    react_1.default.createElement("p", { style: { color: C.muted, fontSize: 13, margin: '8px 0 0' } }, "Inactive students are those you've chosen to hide. All student progress is retained but they are hidden from the login screen."))),
+                    react_1.default.createElement("p", { style: { color: C.muted, fontSize: 13, margin: '8px 0 0', padding: '0 20px', textAlign: 'center' } }, "Inactive students are those you've chosen to hide. All student progress is retained but they are hidden from the login screen."))),
                 react_1.default.createElement("div", { className: "edu-two-up", style: { marginTop: 22 } },
                     FEATURES.reflection && (react_1.default.createElement("div", { style: { ...card, background: 'linear-gradient(135deg, #DCEBE1 0%, #EEF5F0 100%)', borderColor: '#C9DCCF', display: 'flex', flexDirection: 'column' } },
                         react_1.default.createElement("p", { style: { margin: '0 0 6px', fontWeight: 600, textAlign: 'center' } }, "Wonder Questions"),
@@ -27197,8 +27224,7 @@ function EduSphereApp() {
             react_1.default.createElement("div", { className: "edu-wrap", style: wrap },
                 react_1.default.createElement("button", { type: "button", onClick: () => setScreen('educator-pick'), style: linkBtn }, "Back to Classroom"),
                 react_1.default.createElement("h1", { style: { fontSize: 24, margin: '12px 0 4px', textAlign: 'center' } }, "Who needs help"),
-                react_1.default.createElement("div", { style: { ...card, background: C.greenSoft, borderColor: C.greenSoft } },
-                    react_1.default.createElement("p", { style: { margin: 0, fontSize: 16, lineHeight: 1.6 } }, classSummary(classRows))),
+                react_1.default.createElement("div", { style: { ...card, background: C.greenSoft, borderColor: C.greenSoft } }, classSummary(classRows).split('\n').map((line, i) => react_1.default.createElement("p", { key: i, style: { margin: i === 0 ? '0 0 8px' : 0, fontSize: 16, lineHeight: 1.6, textAlign: 'center' } }, line))),
                 classRows.map((r) => {
                     const st = findStudent(roster, r.id);
                     return (react_1.default.createElement("div", { key: r.id, style: { ...card, borderColor: r.band === 'needs help now' ? C.clay : C.line } },

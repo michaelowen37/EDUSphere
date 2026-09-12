@@ -23850,6 +23850,65 @@ function classSummary(rows) {
     parts.push(`${fine} on track.`);
     return parts.join(' ');
 }
+// ---------------------------------------------------------------------
+// THE STUDENT'S OWN SUMMARY
+// A few plain sentences for the learner: what they have achieved, what those skills
+// open up, and a word that fits their recent record. Failure is framed as the place
+// learning happens; a run of wins is named as a streak. Built from the same events as
+// everything else, so it can never disagree with the record.
+// ---------------------------------------------------------------------
+function studentSummary(events, moduleIds) {
+    const active = activeEvents(events);
+    const progress = deriveProgress(events);
+    const mine = moduleIds.map((id) => getModule(id)).filter(Boolean);
+    const mastered = mine.filter((m) => progress.masteredIds.includes(m.id));
+    const rounds = active.filter((e) => e.type === 'attempt_completed' && moduleIds.includes(e.moduleId));
+    const titles = (list) => list.map((m) => m.title.toLowerCase());
+    const join = (arr) => (arr.length <= 1 ? arr.join('') : `${arr.slice(0, -1).join(', ')} and ${arr[arr.length - 1]}`);
+    const out = [];
+    // What has been achieved
+    if (rounds.length === 0) {
+        out.push("You haven't started a practice round yet, and that is the easiest thing in the world to fix: open a module and try one.");
+    }
+    else if (mastered.length === 0) {
+        out.push(`You've finished ${rounds.length} practice ${rounds.length === 1 ? 'round' : 'rounds'} and nothing is mastered yet, which is exactly how everyone starts.`);
+    }
+    else {
+        const named = join(titles(mastered.slice(0, 3)));
+        const modulesWord = mastered.length === 1 ? 'module' : 'modules';
+        const roundsWord = rounds.length === 1 ? 'round' : 'rounds';
+        const tail = mastered.length <= 3 ? `: ${named}.` : `, including ${named}.`;
+        out.push(`You've mastered ${mastered.length} ${modulesWord} across ${rounds.length} practice ${roundsWord}${tail}`);
+    }
+    // What those skills open up
+    const statuses = moduleStatuses(progress);
+    const unlocked = mine.filter((m) => !progress.masteredIds.includes(m.id) && statuses.find((x) => x.id === m.id)?.status === 'available' && prerequisitesOf(m.id).some((p) => progress.masteredIds.includes(p)));
+    if (unlocked.length > 0) {
+        const because = getModule(prerequisitesOf(unlocked[0].id).find((p) => progress.masteredIds.includes(p)));
+        const opened = unlocked.length === 1 ? `${unlocked[0].title.toLowerCase()} is` : `${join(titles(unlocked.slice(0, 2)))} are`;
+        out.push(`Because you know ${because.title.toLowerCase()}, ${opened} open to you now. Each skill you master unlocks the ones that build on it.`);
+    }
+    // A word that fits the recent record
+    let streak = 0;
+    for (let i = rounds.length - 1; i >= 0; i--) {
+        if (isMasteredAttempt(rounds[i]))
+            streak++;
+        else
+            break;
+    }
+    const recent = rounds.slice(-6);
+    const recentMisses = recent.filter((e) => !isMasteredAttempt(e)).length;
+    const loops = active.filter((e) => e.type === 'looped_back').length;
+    if (streak >= 3)
+        out.push(`You are on a streak: ${streak} rounds mastered in a row. Keep that going while it feels easy.`);
+    else if (recentMisses >= 3)
+        out.push(`${recentMisses} of your last ${recent.length} rounds did not go your way. That is not a problem. A wrong answer shows you exactly what to learn next, which a lucky right answer never does, and the people who end up best at something are the ones who kept going through this part.`);
+    else if (loops > 0)
+        out.push(`You went back to an earlier module and came forward again. That is how strong foundations get built, and it is the smartest move a learner can make.`);
+    else if (rounds.length > 0 && mastered.length > 0)
+        out.push('Steady work like this adds up faster than it feels. Keep going.');
+    return out;
+}
 // The transcript: a record of work done, including courses that are no longer switched on.
 // Courses a student never opened are left out, because an empty row proves nothing and a
 // transcript should only report what actually happened. Nothing personal appears here
@@ -25559,7 +25618,7 @@ function EduSphereApp() {
     const [openProgress, setOpenProgress] = (0, react_1.useState)(false);
     const [openTerms, setOpenTerms] = (0, react_1.useState)([]);
     const [openApproved, setOpenApproved] = (0, react_1.useState)([]);
-    const [openProgressGroups, setOpenProgressGroups] = (0, react_1.useState)(['available']);
+    const [openProgressGroups, setOpenProgressGroups] = (0, react_1.useState)([]);
     const closeTips = () => { setShowBackupTip(false); setShowRosterTip(false); setShowStateTip(false); setShowTouchlessTip(false); setShowWonderTip(false); setShowProgressTip(false); setShowHelpTip(false); };
     const [stateCode, setStateCode] = (0, react_1.useState)(''); // the educator's state, chosen once
     const [stateDraft, setStateDraft] = (0, react_1.useState)('');
@@ -26281,28 +26340,20 @@ function EduSphereApp() {
             { key: 'available', title: 'Available Courses', items: mine.filter((m) => statusOf(m.id) === 'available') },
             { key: 'locked', title: 'Locked Courses', items: mine.filter((m) => statusOf(m.id) === 'locked') },
         ];
-        // Plain, encouraging words about how it is going, built from the same facts as the educator's report.
-        const nearly = mine.filter((m) => !m.mastered && m.attempts > 0).length;
-        const summary = [
-            rep.modulesMastered === 0 ? "You're just getting started, and every expert started exactly here." : rep.modulesMastered === rep.modulesTotal ? "You've mastered every module you've been given. That took real work." : `You've mastered ${rep.modulesMastered} of ${rep.modulesTotal} modules so far.`,
-            nearly > 0 ? (nearly === 1 ? 'One module is partly done, and a fresh set of questions is often all it takes.' : `${nearly} modules are partly done, and a fresh set of questions is often all it takes.`) : '',
-            groups[1].items.length > 0 ? (groups[1].items.length === 1 ? 'One module is open and waiting for you.' : `${groups[1].items.length} modules are open and waiting for you.`) : '',
-            rep.retention.asked > 0 ? (rep.retention.percent >= 80 ? 'When old questions come back, you remember them. Your learning is sticking.' : 'Some old questions are slipping. That is normal, and a quick look back fixes it.') : '',
-        ].filter(Boolean).join(' ');
+        const sentences = studentSummary(record.events, visibleModules.map((m) => m.id));
         return (react_1.default.createElement("div", { style: page },
             react_1.default.createElement(PageChrome, { idleWarning: idleWarning }),
             react_1.default.createElement("div", { className: "edu-wrap", style: wrap },
                 react_1.default.createElement("button", { type: "button", onClick: () => setScreen('overview'), style: { background: 'none', border: 'none', color: C.green, fontFamily: FONT, fontSize: 15, cursor: 'pointer', padding: 0 } }, "Back"),
                 react_1.default.createElement("h1", { style: { fontSize: 26, margin: '12px 0 12px', textAlign: 'center' } }, "My progress"),
                 react_1.default.createElement("div", { style: { ...card, background: 'linear-gradient(135deg, #DCEBE1 0%, #EEF5F0 100%)', borderColor: '#C9DCCF' } },
-                    react_1.default.createElement("p", { style: { margin: '0 0 10px', fontSize: 17, lineHeight: 1.6 } }, summary),
+                    sentences.map((line, i) => react_1.default.createElement("p", { key: i, style: { margin: i === 0 ? '0 0 10px' : '0 0 10px', fontSize: 17, lineHeight: 1.6 } }, line)),
                     react_1.default.createElement(FractionBar, { parts: rep.modulesTotal, shaded: rep.modulesMastered, color: C.gold, height: 30 }),
                     react_1.default.createElement("p", { style: { margin: '10px 0 0', color: C.muted, fontSize: 14, textAlign: 'center' } },
-                        "You have practiced ",
-                        rep.totalAttempts,
-                        " ",
-                        rep.totalAttempts === 1 ? 'time' : 'times',
-                        ".")),
+                        rep.modulesMastered,
+                        " of ",
+                        rep.modulesTotal,
+                        " modules mastered")),
                 groups.map((g) => {
                     const open = openProgressGroups.includes(g.key);
                     return (react_1.default.createElement("div", { key: g.key, style: { ...card, padding: 0, overflow: 'hidden' } },

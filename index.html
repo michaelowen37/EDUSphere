@@ -24862,21 +24862,40 @@ function playTap() {
 // Device voices read letters, not sounds: "mmm" comes out as em, em, em. These swaps
 // give each sustained sound a spelling the voice will hum or hiss instead. Recorded
 // audio, when it comes, replaces this for good.
-const SOUND_SPEECH = [[/\bmmm\b/gi, 'hmm'], [/\bnnn\b/gi, 'hnn'], [/\bsss\b/gi, 'ssss'], [/\bfff\b/gi, 'ffff'], [/\bzzz\b/gi, 'zzzz'], [/\brrr\b/gi, 'rrrr'], [/\blll\b/gi, 'llll']];
+const SOUND_SPEECH = [[/\bmmm\b/gi, 'hmmmmmmmm'], [/\bnnn\b/gi, 'hnnnnnnnn'], [/\bsss\b/gi, 'sssssssss'], [/\bfff\b/gi, 'fffffffff'], [/\bzzz\b/gi, 'zzzzzzzzz'], [/\brrr\b/gi, 'rrrrrrrrr'], [/\blll\b/gi, 'lllllllll']];
+const SOUND_TOKEN = /\b(mmm|nnn|sss|fff|zzz|rrr|lll)\b/gi;
 function speechFriendly(text) { let out = String(text); for (const [re, to] of SOUND_SPEECH)
     out = out.replace(re, to); return out; }
+// A line is spoken in pieces: ordinary words at the normal pace, and each sustained sound
+// as its own slow, stretched utterance, so "mmm" is held rather than clipped.
+function speechPieces(text) {
+    const pieces = [];
+    let last = 0;
+    const src = String(text);
+    for (const m of src.matchAll(SOUND_TOKEN)) {
+        if (m.index > last)
+            pieces.push({ text: src.slice(last, m.index), sound: false });
+        pieces.push({ text: speechFriendly(m[0]), sound: true });
+        last = m.index + m[0].length;
+    }
+    if (last < src.length)
+        pieces.push({ text: src.slice(last), sound: false });
+    return pieces.filter((p) => p.text.trim());
+}
 function speak(text) {
     if (typeof window === 'undefined' || !window.speechSynthesis || !text)
         return;
     try {
         window.speechSynthesis.cancel();
-        const u = new SpeechSynthesisUtterance(speechFriendly(text));
         const voice = pickVoice();
-        if (voice)
-            u.voice = voice;
-        u.rate = 0.86; // slower than normal speech, for young listeners
-        u.pitch = 1.15; // brighter and warmer than the default, less like a machine
-        window.speechSynthesis.speak(u);
+        for (const piece of speechPieces(text)) {
+            const u = new SpeechSynthesisUtterance(piece.text);
+            if (voice)
+                u.voice = voice;
+            u.rate = piece.sound ? 0.45 : 0.86; // sounds are held long and slow; words a little slower than normal speech
+            u.pitch = 1.15; // brighter and warmer than the default, less like a machine
+            window.speechSynthesis.speak(u);
+        }
     }
     catch (e) { /* a broken voice must never stop a lesson */ }
 }

@@ -24463,6 +24463,7 @@ function ContactLine({ onOpen, inline = false }) {
         : react_1.default.createElement("a", { href: `mailto:${CONTACT_EMAIL}`, style: { color: C.muted, textDecoration: 'underline' } }, "Contact us")));
 }
 const linkBtn = { background: 'none', border: 'none', color: '#2F5D4F', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif', fontSize: 15, cursor: 'pointer', padding: '6px 0', textDecoration: 'underline' };
+// Cards are solid, so stars show only in the open space between them and never behind text.
 const card = { background: C.surface, border: `1px solid ${C.line}`, borderRadius: 14, padding: 18, marginBottom: 14 };
 // ---------- Small building blocks ----------
 function Btn({ children, onClick, kind = 'primary', disabled = false, full = false, halo = false }) {
@@ -24943,10 +24944,18 @@ const KID_ANIMATION = `
 /* Layout for larger screens. Phones stay narrow; a laptop gets a wider column and a
    pair of quiet arcs at the edges, drawn in the same green as the logo, so the page
    does not sit in a sea of blank space. */
-.edu-wrap { max-width: 560px; }
+.edu-wrap { max-width: 560px; position: relative; z-index: 1; }
 .edu-side { display: none; }
 .edu-page-stars { display: none; }
-@media (min-width: 1000px) { .edu-page-stars { display: block; position: fixed; inset: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 0; opacity: 0.55; } }
+@media (min-width: 1000px) {
+  .edu-page-stars { display: block; position: fixed; inset: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 0; opacity: 0.55; }
+  /* Loose text outside the tiles carries a backing in the page's own color, so no star ever
+     sits behind a heading, a paragraph or a text link. Inside a tile the tile already covers it. */
+  .edu-wrap :is(p, h1, h2, h3, li, label) { background: #F5F7F1; }
+  .edu-wrap [style*="border-radius: 14px"] :is(p, h1, h2, h3, li, label) { background: transparent; }
+  .edu-wrap :is(button, a)[style*="background: none"] { background: #F5F7F1 !important; }
+  .edu-wrap [style*="border-radius: 14px"] :is(button, a)[style*="background: none"] { background: transparent !important; }
+}
 .edu-flank { display: none; }
 .edu-welcome { position: relative; }
 .edu-galaxy { display: block; position: absolute; left: 50%; top: -10px; width: 100vw; height: 380px; transform: translateX(-50%); pointer-events: none; z-index: 0; }
@@ -25297,7 +25306,7 @@ function PageStars() {
             const x = Number(st.x);
             const y = Number(st.y);
             const t = Math.min(1, Math.abs(x - 800) / 560);
-            const chance = 0.1 + 0.9 * Math.pow(t, 1.6);
+            const chance = 0.42 + 0.58 * Math.pow(t, 1.4);
             const h = Math.abs(Math.sin(x * 12.9898 + y * 78.233) * 43758.5453) % 1;
             return h < chance;
         };
@@ -26029,9 +26038,9 @@ function EduSphereApp() {
             react_1.default.createElement("div", { className: "edu-wrap", style: wrap },
                 react_1.default.createElement("div", { style: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10 } },
                     react_1.default.createElement("p", { style: { color: C.muted, fontSize: 14, margin: '4px 0 6px' } }, isReviewQ ? 'Quick review from an earlier module' : `${mod.title} · Question ${qIndex + 1} of ${attempt.core.length}`),
-                    react_1.default.createElement("button", { type: "button", onClick: () => setScreen('overview'), "aria-label": "Back", title: "Back to overview", style: { background: 'none', border: `1.5px solid ${C.line}`, color: C.muted, width: 34, height: 34, borderRadius: 999, cursor: 'pointer', padding: 0, flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' } },
+                    readAloud ? (react_1.default.createElement("button", { type: "button", onClick: () => setScreen('overview'), "aria-label": "Back", title: "Back to overview", style: { background: 'none', border: `1.5px solid ${C.line}`, color: C.muted, width: 34, height: 34, borderRadius: 999, cursor: 'pointer', padding: 0, flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' } },
                         react_1.default.createElement("svg", { viewBox: "0 0 24 24", width: "18", height: "18", "aria-hidden": "true" },
-                            react_1.default.createElement("path", { d: "M15 5l-7 7 7 7", fill: "none", stroke: "currentColor", strokeWidth: "2.4", strokeLinecap: "round", strokeLinejoin: "round" })))),
+                            react_1.default.createElement("path", { d: "M15 5l-7 7 7 7", fill: "none", stroke: "currentColor", strokeWidth: "2.4", strokeLinecap: "round", strokeLinejoin: "round" })))) : (react_1.default.createElement("button", { type: "button", onClick: () => setScreen('overview'), style: { background: 'none', border: 'none', color: C.green, fontFamily: FONT, fontSize: 15, cursor: 'pointer', padding: 0, textDecoration: 'underline', flexShrink: 0 } }, "Exit"))),
                 react_1.default.createElement("div", { style: card },
                     q.story && react_1.default.createElement("p", { style: { fontSize: 17, margin: '0 0 8px', color: C.muted } }, q.story),
                     react_1.default.createElement("p", { style: { fontSize: 20, fontWeight: 600, margin: '0 0 14px' } }, q.prompt),
@@ -26074,10 +26083,10 @@ function EduSphereApp() {
                         (wasCorrect || !readAloud) && q.explainVisual && !Array.isArray(q.explainVisual) && q.explainVisual.kind === 'dots' && react_1.default.createElement("div", { style: { marginTop: 8 } },
                             react_1.default.createElement(DotGroup, { count: q.explainVisual.count, size: 28, animate: true, animKey: cheer }))))),
                 checked && !wasCorrect && readAloud
-                    ? react_1.default.createElement(Btn, { full: true, halo: readAloud, onClick: tryAgain }, "Try again")
+                    ? react_1.default.createElement(Btn, { full: true, halo: true, onClick: tryAgain }, "Try again")
                     : checked
-                        ? react_1.default.createElement(Btn, { full: true, halo: readAloud, onClick: nextQuestion, disabled: busy }, qIndex + 1 < questions.length ? 'Next question' : 'See results')
-                        : react_1.default.createElement(Btn, { full: true, halo: readAloud && given !== '', onClick: checkCurrent, disabled: given === '' }, "Check answer"))));
+                        ? react_1.default.createElement(Btn, { full: true, halo: true, onClick: nextQuestion, disabled: busy }, qIndex + 1 < questions.length ? 'Next question' : 'See results')
+                        : react_1.default.createElement(Btn, { full: true, halo: given !== '', onClick: checkCurrent, disabled: given === '' }, "Check answer"))));
     }
     if (screen === 'result' && lastEvent && mod && course && course.readAloud) {
         const mastered = isMasteredAttempt(lastEvent);

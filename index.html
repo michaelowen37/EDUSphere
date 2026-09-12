@@ -26347,7 +26347,7 @@ function EduSphereApp() {
                 react_1.default.createElement("button", { type: "button", onClick: () => setScreen('overview'), style: { background: 'none', border: 'none', color: C.green, fontFamily: FONT, fontSize: 15, cursor: 'pointer', padding: 0 } }, "Back"),
                 react_1.default.createElement("h1", { style: { fontSize: 26, margin: '12px 0 12px', textAlign: 'center' } }, "My progress"),
                 react_1.default.createElement("div", { style: { ...card, background: 'linear-gradient(135deg, #DCEBE1 0%, #EEF5F0 100%)', borderColor: '#C9DCCF' } },
-                    sentences.map((line, i) => react_1.default.createElement("p", { key: i, style: { margin: i === 0 ? '0 0 10px' : '0 0 10px', fontSize: 17, lineHeight: 1.6 } }, line)),
+                    sentences.map((line, i) => react_1.default.createElement("p", { key: i, style: { margin: '0 0 10px', fontSize: 17, lineHeight: 1.6, textAlign: 'center' } }, line)),
                     react_1.default.createElement(FractionBar, { parts: rep.modulesTotal, shaded: rep.modulesMastered, color: C.gold, height: 30 }),
                     react_1.default.createElement("p", { style: { margin: '10px 0 0', color: C.muted, fontSize: 14, textAlign: 'center' } },
                         rep.modulesMastered,

@@ -24949,6 +24949,7 @@ const KID_ANIMATION = `
 .edu-welcome { position: relative; }
 .edu-galaxy { display: block; position: absolute; left: 50%; top: -10px; width: 100vw; height: 380px; transform: translateX(-50%); pointer-events: none; z-index: 0; }
 .edu-welcome-logo, .edu-welcome-card, .edu-welcome-links { position: relative; z-index: 1; }
+@media (max-width: 999px) { .edu-welcome-card { margin-top: 26px; } }
 @keyframes edu-twinkle-star { 0% { transform: scale(1); } 50% { transform: scale(2.4); } 100% { transform: scale(1); } }
 .edu-twinkle-star { animation: edu-twinkle-star 2.4s ease-in-out 1 both; transform-box: fill-box; transform-origin: center; }
 @media (min-width: 1000px) {
@@ -25207,11 +25208,11 @@ function buildGalaxy(scale) {
         add(rng() * W, rng() * H, false);
     // Two thick clouds to the left and right of the sphere, where the wide screen has room.
     for (const side of [-1, 1])
-        for (let i = 0; i < Math.round(4200 * scale); i++) {
+        for (let i = 0; i < Math.round(7000 * scale); i++) {
             const a = rng() * Math.PI * 2;
-            const d = Math.pow(rng(), 1.3);
-            const x = cx + side * 560 + Math.cos(a) * d * 400;
-            const y = cy + 30 + Math.sin(a) * d * 330;
+            const d = Math.pow(rng(), 1.2);
+            const x = cx + side * 600 + Math.cos(a) * d * 520;
+            const y = cy + 30 + Math.sin(a) * d * 360;
             if (Math.abs(x - cx) < 300 && y > cy - 220 && y < cy + 240)
                 continue;
             add(x, y, rng() < 0.3);

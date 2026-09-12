@@ -23856,25 +23856,27 @@ function classView(students, now) {
         const stuck = assigned.filter((m) => !m.mastered && failedStreak(events, m.id) >= 2);
         if (stuck.length) {
             score += 3 * stuck.length;
-            reasons.push(`stuck on ${stuck.map((m) => m.title.toLowerCase()).join(', ')}`);
+            reasons.push(`stuck on ${stuck.map((m) => `${m.title.toLowerCase()} (${failedStreak(events, m.id)} misses in a row, best ${m.bestScore} of ${moduleRules(m.id).questions})`).join('; ')}`);
         }
         // Loop backs in the last while mean the platform already had to step in.
         const loops = active.filter((e) => e.type === 'looped_back').length;
         if (loops) {
+            const backTo = [...new Set(active.filter((e) => e.type === 'looped_back').map((e) => getModule(e.toModuleId)).filter(Boolean).map((m) => m.title.toLowerCase()))];
+            const howOften = loops === 1 ? 'once' : `${loops} times`;
             score += 2 * loops;
-            reasons.push(`${loops} loop ${loops === 1 ? 'back' : 'backs'}`);
+            reasons.push(`sent back ${howOften} after repeated misses, to ${backTo.join(' and ')}`);
         }
         // Guessing flags.
         const guessing = assigned.filter((m) => m.confidence.signals.some((x) => /guessing/.test(x)));
         if (guessing.length) {
             score += 2 * guessing.length;
-            reasons.push(`guessing in ${guessing.map((m) => m.title.toLowerCase()).join(', ')}`);
+            reasons.push(`signs of guessing in ${guessing.map((m) => m.title.toLowerCase()).join(', ')} (quick wrong answers, under four seconds each)`);
         }
         // Low confidence on mastered work suggests it may not hold.
         const shaky = assigned.filter((m) => m.mastered && m.confidence.score !== null && m.confidence.score <= 2);
         if (shaky.length) {
             score += shaky.length;
-            reasons.push(`low confidence in ${shaky.map((m) => m.title.toLowerCase()).join(', ')}`);
+            reasons.push(`mastered but shaky: ${shaky.map((m) => `${m.title.toLowerCase()} at confidence ${m.confidence.score} of 5`).join(', ')}`);
         }
         // Not practicing at all.
         if (attempts.length === 0 && assigned.length) {
@@ -23892,8 +23894,14 @@ function classView(students, now) {
         if (score === 0 && mastered > 0)
             reasons.push(effort >= 2 ? `on track, but it took about ${effort.toFixed(1)} rounds per module to get there` : `on track and quick about it: about ${effort.toFixed(1)} rounds per module`);
         const next = assigned.find((m) => !m.mastered && moduleStatuses(deriveProgress(events), report.enabledCourseIds).find((x) => x.id === m.id).status === 'available');
+        // One sentence that squares the good news with the flags: a student who has mastered a lot
+        // can still top the list, and the educator should see why without decoding it.
+        const flagged = stuck.length + guessing.length + shaky.length + (loops ? 1 : 0);
+        const why = score >= 5
+            ? `${mastered} ${mastered === 1 ? 'module' : 'modules'} mastered, but ${flagged} ${flagged === 1 ? 'thing needs' : 'things need'} attention right now, which is why ${label || id} is near the top.`
+            : score >= 2 ? `${mastered} mastered so far; a couple of small flags, nothing urgent.` : '';
         return {
-            id, label: label || id, score, reasons,
+            id, label: label || id, score, reasons, why,
             mastered, total: assigned.length,
             next: next ? next.title : null,
             daysIdle,
@@ -27420,10 +27428,11 @@ function EduSphereApp() {
                                 st && st.picture && react_1.default.createElement(StudentPicture, { name: st.picture, tint: st.tint, size: 36 }),
                                 react_1.default.createElement("span", { style: { fontSize: 17, fontWeight: 600 } }, r.label)),
                             react_1.default.createElement(Tag, { tone: tone(r.band) }, r.band)),
-                        react_1.default.createElement("p", { style: { margin: '8px 0 0', fontSize: 15 } },
-                            r.reasons.length ? r.reasons.join('. ').replace(/^./, (c) => c.toUpperCase()) + '.' : 'Nothing to flag.',
+                        r.why && react_1.default.createElement("p", { style: { margin: '8px 0 0', fontSize: 15, fontWeight: 600 } }, r.why),
+                        react_1.default.createElement("p", { style: { margin: '6px 0 0', fontSize: 15 } },
+                            r.reasons.length ? r.reasons.map((x) => x.replace(/^./, (c) => c.toUpperCase()) + '.').join(' ') : 'Nothing to flag.',
                             ' ',
-                            r.total ? `${r.mastered} of ${r.total} modules mastered.` : 'No courses assigned.',
+                            r.total ? `${r.mastered} of ${r.total} assigned modules mastered.` : 'No courses assigned.',
                             r.next ? ` Next up: ${r.next}.` : ''),
                         react_1.default.createElement("div", { style: { marginTop: 8, textAlign: 'right' } },
                             react_1.default.createElement("button", { type: "button", style: linkBtn, onClick: async () => {
@@ -27632,6 +27641,10 @@ function EduSphereApp() {
                         shownName,
                         "'s initial placement check and/or his or her progression through the modules) but you are free to edit how you see fit."),
                     react_1.default.createElement("input", { value: courseQuery, onChange: (e) => setCourseQuery(e.target.value), placeholder: "Search courses, for example: grade 1 math, kinder, fractions", "aria-label": "Search courses", style: { fontFamily: FONT, fontSize: 15, padding: '10px 12px', width: '100%', boxSizing: 'border-box', border: `2px solid ${C.line}`, borderRadius: 10, marginBottom: 10, background: C.surface } }),
+                    !courseQuery.trim() && (react_1.default.createElement("p", { style: { margin: '0 0 10px', fontSize: 13, textAlign: 'center' } },
+                        react_1.default.createElement("button", { type: "button", onClick: () => { const student = findStudent(roster, educatorRecord.name); const starter = recommendedCourseIds([makeCoursesEnabledEvent([], new Date().toISOString())], student ? student.level : null); const keep = COURSES.filter((c) => c.modules.some((m) => rep.modules.find((x) => x.id === m.id && x.attempts > 0))).map((c) => c.id); setEnabled([...new Set([...starter, ...keep])]); }, style: { ...linkBtn, fontSize: 13, padding: 0 } }, "Back to recommended courses"),
+                        ' ',
+                        "(keeps any course already started)")),
                     courseQuery.trim() && (react_1.default.createElement("div", null,
                         COURSES.filter((c) => matchesCourseSearch(c, courseQuery)).sort(byGradeOrder).map((c) => (react_1.default.createElement("label", { key: c.id, style: { display: 'flex', alignItems: 'center', gap: 10, padding: '7px 0', fontSize: 16 } },
                             react_1.default.createElement("input", { type: "checkbox", checked: enabled.includes(c.id), onChange: () => setEnabled(enabled.includes(c.id) ? enabled.filter((id) => id !== c.id) : [...enabled, c.id]) }),
@@ -27724,7 +27737,8 @@ function EduSphereApp() {
                         "A printable record of everything ",
                         shownName,
                         " has ever worked on, including courses that are no longer assigned. This is the clearest view of student progression."),
-                    react_1.default.createElement(Btn, { kind: "secondary", onClick: () => setScreen('transcript') }, "Open transcript")),
+                    react_1.default.createElement("div", { style: { textAlign: 'center' } },
+                        react_1.default.createElement(Btn, { kind: "secondary", onClick: () => setScreen('transcript'), style: { width: 300 } }, "Open transcript"))),
                 react_1.default.createElement("div", { style: { ...card, background: 'linear-gradient(135deg, #BFD6C7 0%, #D3E4D9 100%)', borderColor: '#A9C6B4' } },
                     react_1.default.createElement("p", { style: { margin: '0 0 8px', fontWeight: 600 } }, "Key Words - Explained"),
                     EXPLANATIONS.map((x, i) => {
@@ -27755,7 +27769,7 @@ function EduSphereApp() {
                     react_1.default.createElement("div", { style: { display: 'flex', gap: 10 } },
                         react_1.default.createElement(Btn, { onClick: async () => { await addToStudent(makeResetEvent(new Date().toISOString())); setConfirmReset(false); }, disabled: busy }, "Yes, reset all progress"),
                         react_1.default.createElement(Btn, { kind: "secondary", onClick: () => setConfirmReset(false) }, "Cancel")))) : (react_1.default.createElement("div", { style: { textAlign: 'center' } },
-                    react_1.default.createElement(Btn, { kind: "secondary", onClick: () => setConfirmReset(true) },
+                    react_1.default.createElement(Btn, { kind: "secondary", onClick: () => setConfirmReset(true), style: { width: 300 } },
                         "Reset ",
                         shownName,
                         "'s Progress"))),

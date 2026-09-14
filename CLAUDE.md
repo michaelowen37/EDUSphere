@@ -97,3 +97,4 @@ Schools are the only customers. Identifier = school-issued ID. No names, emails,
 
 ## When you add a course
 Add its standards to src/curriculum.mjs (every code, with the module ids that cover it). The Standards map screen and the coverage check both read that plan, so a course added there appears on the map and is checked for gaps without any screen work. Mark the grade `ready` only when every code is covered.
+- Standing rule (2026-09-14): every build pass adds at least one module to the early years, pre-K 3 through grade 2, with stylus work preferred. The youngest need the most variety and get the least text.

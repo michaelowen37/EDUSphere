@@ -117,8 +117,8 @@ deliberate choice, not a gap: no child's record sits anywhere we would have to g
 and the educator's settings. The educator downloads it, or on an iPad shares it
 straight to their email. Restoring it on any device brings everything back, and a
 restore can only ever add, never remove. File names say which device made them and
-how many students they hold. On Chromebooks and desktop Chrome the file can be
-rewritten automatically after every finished round. A backup made today is kept in
+how many students they hold. A backup file also goes to the device's downloads folder
+by itself each time a student finishes a course. A backup made today is kept in
 the test suite and must restore on every future version.
 
 **Updates.** Because there is no account, an educator gets the newest version simply
@@ -128,7 +128,7 @@ by opening the site. Nothing to install and nothing to send.
 them. Signing several devices into one browser account does not share it, because
 browsers sync settings and bookmarks, not a website's stored data. Use one device per
 student, or restore the classroom backup onto a device before using it. Every finished
-round saves a backup file to the device's downloads folder by itself; only the newest one is
+course saves a backup file to the device's downloads folder by itself; only the newest one is
 needed, and older ones can be deleted at any time. An educator can also download a backup
 to a folder of their choosing from the Backup page.
 

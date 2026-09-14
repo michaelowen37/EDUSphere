@@ -18392,6 +18392,44 @@ function PREK3_MODULES() {
             sources: ['Aligned with Texas Prekindergarten Guidelines V.A.8 (compare sets to determine which has more or fewer) and Head Start ELOF Goal P-MATH 5.'],
             generators: ['p3-tap-more', 'p3-tap-more', 'p3-tap-fewer', 'p3-tap-more', 'p3-tap-fewer'],
         },
+        {
+            id: 'first-marks',
+            order: 5,
+            title: 'First marks',
+            tagline: 'Down, across, round',
+            needsTouch: true,
+            lesson: {
+                paragraphs: ['Hold the stylus. Start at the dot and draw along the line.', 'Down. Across. Round and round.'],
+                keyIdea: 'Start at the dot and follow the line.',
+                example: { kind: 'dots', count: 1, caption: 'Start at the dot.' },
+                script: [
+                    { say: 'Start at dot number 1. Draw a line down.', show: { kind: 'dots', count: 1 } },
+                    { say: 'Now dot number 2. Draw a line across.', show: { kind: 'dots', count: 2 } },
+                    { say: 'Now dot number 3. Draw round and round.', show: { kind: 'dots', count: 3 } },
+                ],
+            },
+            sources: ['Aligned with Texas Prekindergarten Guidelines VI.B.1 (coordinate sequence of movements to perform tasks) and Head Start ELOF Goal P-PMP 3 (demonstrates increasing control, strength, and coordination of small muscles).'],
+            generators: ['p3-trace-mark', 'p3-trace-mark', 'p3-trace-mark', 'p3-trace-mark', 'p3-trace-mark'],
+        },
+        {
+            id: 'three-dots',
+            order: 6,
+            title: 'Three dots',
+            tagline: 'Draw from 1 to 2 to 3',
+            needsTouch: true,
+            lesson: {
+                paragraphs: ['Start at dot 1. Draw to dot 2. Draw to dot 3.', 'A picture appears.'],
+                keyIdea: 'Start at 1 and draw to each dot in order.',
+                example: { kind: 'dots', count: 3, caption: 'Three dots.' },
+                script: [
+                    { say: 'Start at dot number 1.', show: { kind: 'dots', count: 1 } },
+                    { say: 'Draw a line to dot number 2.', show: { kind: 'dots', count: 2 } },
+                    { say: 'Draw a line to dot number 3. A picture appears.', show: { kind: 'dots', count: 3 } },
+                ],
+            },
+            sources: ['Aligned with Texas Prekindergarten Guidelines VI.B.1 and Head Start ELOF Goal P-PMP 3.'],
+            generators: ['p3-connect-few', 'p3-connect-few', 'p3-connect-few', 'p3-connect-few', 'p3-connect-few'],
+        },
     ];
 }
 function PREK3_READING_MODULES() {
@@ -29351,6 +29389,8 @@ const TRACE_ANY = Object.keys(TRACE_LETTERS).filter((k) => k.length === 1 && /[A
 const TRACE_MORE = ['K', 'W', 'X', 'Y', 'Z'];
 const DOT_PICTURES = ['triangle', 'square', 'house', 'star', 'zigzag', 'boat', 'kite', 'fish', 'tree', 'cup'];
 const FIRST_LINES = ['line-down', 'line-across', 'line-wave', 'line-zigzag', 'line-circle'];
+const FIRST_MARKS = ['line-down', 'line-across', 'line-circle'];
+const FEW_DOTS = ['triangle', 'square', 'boat', 'cup'];
 const LINE_WORDS = { 'line-down': 'a line down', 'line-across': 'a line across', 'line-wave': 'a wavy line', 'line-zigzag': 'a zigzag', 'line-circle': 'a circle' };
 const TRACE_NUMBERS = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
 const TRACE_SHAPES = ['shape-triangle', 'shape-square', 'shape-circle', 'shape-star', 'shape-heart'];
@@ -29396,6 +29436,16 @@ Object.assign(GENERATORS, {
     'rt-trace-medium': traceQuestion(TRACE_MEDIUM),
     'rt-trace-any': traceQuestion(TRACE_ANY),
     'rt-trace-more': traceQuestion(TRACE_MORE),
+    'p3-trace-mark': (rng) => {
+        const name = pick(rng, FIRST_MARKS);
+        return { type: 'trace', traceKind: 'line', story: null, prompt: `Draw ${LINE_WORDS[name]}. Start at the dot.`, choices: [], answer: name,
+            explain: `That is ${LINE_WORDS[name]}. Start at the dot and follow the line.`, visual: null, explainVisual: null };
+    },
+    'p3-connect-few': (rng) => {
+        const name = pick(rng, FEW_DOTS);
+        return { type: 'trace', traceKind: 'dots', story: null, prompt: `Connect the dots to make a ${name}.`, choices: [], answer: name,
+            explain: `That makes a ${name}. Start at 1 and go in order.`, visual: null, explainVisual: null };
+    },
     'pd-trace-line': (rng) => {
         const name = pick(rng, FIRST_LINES);
         return { type: 'trace', traceKind: 'line', story: null, prompt: `Draw ${LINE_WORDS[name]}. Start at the dot.`, choices: [], answer: name,
@@ -34201,6 +34251,8 @@ const CURRICULUM = [
             { framework: 'CCSS', code: 'ELOF.P-MATH.5', text: 'Compares numbers and sets.', moduleIds: ['red-and-blue', 'more-or-fewer'] },
             { framework: 'CCSS', code: 'ELOF.P-MATH.8', text: 'Measures objects by their various attributes and uses differences in attributes to make comparisons.', moduleIds: ['find-the-match'] },
             { framework: 'CCSS', code: 'ELOF.P-MATH.1', text: 'Knows number names and the count sequence.', moduleIds: ['one-and-two'] },
+            { framework: 'TEKS', code: 'PK.VI.B.1', text: 'Coordinate sequence of movements to perform tasks.', moduleIds: ['first-marks', 'three-dots'] },
+            { framework: 'CCSS', code: 'ELOF.P-PMP.3', text: 'Demonstrates increasing control, strength, and coordination of small muscles.', moduleIds: ['first-marks', 'three-dots'] },
         ],
     },
     {
@@ -36625,6 +36677,8 @@ function EduSphereApp() {
     const [ticks, setTicks] = (0, react_1.useState)([]); // the self-check boxes ticked on a writing question           // the finger's path on a tracing question
     const [cheer, setCheer] = (0, react_1.useState)(0); // bumped to replay the celebration
     const [record, setRecord] = (0, react_1.useState)(null); // { name, events, ... } for the current learner
+    const recordRef = (0, react_1.useRef)(null); // the newest record, for back-to-back writes
+    (0, react_1.useEffect)(() => { recordRef.current = record; }, [record]);
     const [busy, setBusy] = (0, react_1.useState)(false);
     const [errorMsg, setErrorMsg] = (0, react_1.useState)('');
     const [moduleId, setModuleId] = (0, react_1.useState)(null);
@@ -36696,8 +36750,13 @@ function EduSphereApp() {
         })();
     }, []);
     // Adds one event to the learner's log and saves. This is the ONLY place the log changes.
-    async function addEvent(event) {
-        const next = { ...record, events: [...record.events, event] };
+    async function addEvent(event) { return addEvents([event]); }
+    // Every write starts from the newest record, not the one this render closed over, so two writes in a
+    // row never lose each other. recordRef always holds the latest.
+    async function addEvents(list) {
+        const base = recordRef.current || record;
+        const next = { ...base, events: [...base.events, ...list] };
+        recordRef.current = next;
         setRecord(next);
         if (record.preview)
             return next; // a walk-through: nothing is written to this device
@@ -36764,7 +36823,9 @@ function EduSphereApp() {
         const grades = placementGrades(subject, st ? st.level : null);
         if (!grades.length)
             return;
-        const probe = buildPlacementProbe(subject, grades[0], (Date.now() % 2147483646) + 1);
+        // A student added at a particular grade starts the walk there; everyone else starts at the bottom of the band.
+        const startAt = st && st.startGrade && grades.includes(st.startGrade) ? st.startGrade : grades[0];
+        const probe = buildPlacementProbe(subject, startAt, (Date.now() % 2147483646) + 1);
         if (!probe)
             return;
         setPlacementWalk({ subject, grades, cleared: [], failed: [], direction: 'up' });
@@ -36940,14 +37001,14 @@ function EduSphereApp() {
             }
             const st = findStudent(roster, record.name);
             // The start is the lowest grade not cleared: a walk down that clears grade 7 after failing 9 and 8 starts at 8.
-            const startGrade = failed.length ? failed.slice().sort((a, b) => all.indexOf(a) - all.indexOf(b))[0] : null;
+            const highestCleared = nextCleared.length ? nextCleared.slice().sort((a, b) => all.indexOf(b) - all.indexOf(a))[0] : null;
+            const startGrade = failed.length ? failed.slice().sort((a, b) => all.indexOf(a) - all.indexOf(b))[0] : highestCleared ? all[Math.min(all.length - 1, all.indexOf(highestCleared) + 1)] : null;
             const outcome = placementOutcome(placementWalk.subject, st ? st.level : null, nextCleared, startGrade);
             const at = new Date().toISOString();
-            await addEvent(makePlacementEvent(placementWalk.subject, outcome.startGrade, outcome.clearedModuleIds, at));
             // Switch on the starting grade's courses in this subject, keeping everything else assigned.
             const enabledNow = enabledCourseIds([...record.events]);
             const others = enabledNow.filter((id) => { const c = getCourse(id); return !c || c.subject !== placementWalk.subject; });
-            await addEvent(makeCoursesEnabledEvent([...new Set([...others, ...outcome.startCourseIds])], new Date().toISOString()));
+            await addEvents([makePlacementEvent(placementWalk.subject, outcome.startGrade, outcome.clearedModuleIds, at), makeCoursesEnabledEvent([...new Set([...others, ...outcome.startCourseIds])], at)]);
             setPlacementResult({ subject: placementWalk.subject, startGrade: outcome.startGrade, cleared: nextCleared, lastCleared: cleared });
             setPlacementWalk(null);
             setScreen('placement-result');
@@ -36962,12 +37023,10 @@ function EduSphereApp() {
         }
         const event = makeAttemptEvent(attempt, coreResults, reviewResult, startedAt, new Date().toISOString(), review2Result);
         setLastEvent(event);
-        await addEvent(event);
         // Finishing a whole course switches on the next course up in that subject, recorded as
-        // an event so the educator can see it happened and change it if they like.
+        // an event so the educator can see it happened and change it if they like. Both go in one write.
         const nextUp = coursesToUnlock([...record.events, event]);
-        if (nextUp.length)
-            await addEvent(makeCoursesEnabledEvent([...enabledCourseIds([...record.events, event]), ...nextUp], new Date().toISOString()));
+        await addEvents(nextUp.length ? [event, makeCoursesEnabledEvent([...enabledCourseIds([...record.events, event]), ...nextUp], new Date().toISOString())] : [event]);
         setScreen('result');
         await autoBackup();
     }
@@ -37084,13 +37143,13 @@ function EduSphereApp() {
                     react_1.default.createElement("h2", { style: { fontSize: 20, margin: '0 0 14px', textAlign: 'center' } }, "Who's learning today?"),
                     activeStudents(roster).length === 0 ? (react_1.default.createElement("p", { style: { margin: 0, color: C.muted, fontSize: 15, textAlign: 'center' } }, "No students have been added. An educator can add students by logging in below.")) : (react_1.default.createElement(react_1.default.Fragment, null,
                         activeStudents(roster).length > 8 && (react_1.default.createElement("input", { value: nameInput, onChange: (e) => setNameInput(e.target.value), placeholder: "Find your name", style: { fontFamily: FONT, fontSize: 17, padding: '10px 12px', width: '100%', boxSizing: 'border-box', border: `2px solid ${C.line}`, borderRadius: 10, marginBottom: 10 } })),
-                        react_1.default.createElement("div", { style: { display: 'grid', gridTemplateColumns: activeStudents(roster).length <= 2 ? '1fr' : activeStudents(roster).length <= 8 ? 'repeat(auto-fit, minmax(160px, 1fr))' : 'repeat(auto-fill, minmax(150px, 1fr))', gap: 10, maxHeight: 360, overflowY: 'auto' } }, activeStudents(roster)
+                        react_1.default.createElement("div", { style: { display: 'grid', gridTemplateColumns: activeStudents(roster).length <= 1 ? '1fr' : '1fr 1fr', gridAutoRows: 84, gap: 10, maxHeight: 420, overflowY: 'auto' } }, activeStudents(roster)
                             .filter((st) => st.label.toLowerCase().includes(nameInput.trim().toLowerCase()))
-                            .map((st) => (react_1.default.createElement("button", { key: st.id, type: "button", onClick: () => startWithName(st.id), disabled: busy, className: "edu-press edu-name", style: { fontFamily: FONT, fontSize: 15, fontWeight: 600, borderRadius: 10, background: C.surface, border: `2px solid ${C.line}`, color: C.ink, cursor: 'pointer', height: 64, padding: '0 10px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, overflow: 'hidden', position: 'relative' } },
+                            .map((st) => (react_1.default.createElement("button", { key: st.id, type: "button", onClick: () => startWithName(st.id), disabled: busy, className: "edu-press edu-name", style: { fontFamily: FONT, fontSize: 15, fontWeight: 600, borderRadius: 10, background: C.surface, border: `2px solid ${C.line}`, color: C.ink, cursor: 'pointer', height: 84, padding: '0 10px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, overflow: 'hidden', position: 'relative' } },
                             react_1.default.createElement("span", { style: { display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 6, maxWidth: '100%' } },
                                 st.picture && react_1.default.createElement("span", { style: { display: 'inline-flex', flexShrink: 0 } },
                                     react_1.default.createElement(StudentPicture, { name: st.picture, tint: st.tint, size: 40 })),
-                                react_1.default.createElement("span", { style: { overflow: 'hidden', textAlign: 'center', lineHeight: 1.2, maxHeight: '2.4em', flex: st.picture ? 1 : 'none', minWidth: 0 } }, st.label)))))),
+                                react_1.default.createElement("span", { style: { overflow: 'hidden', textAlign: 'center', lineHeight: 1.2, maxHeight: '3.6em', flex: st.picture ? 1 : 'none', minWidth: 0, overflowWrap: 'anywhere' } }, st.label)))))),
                         activeStudents(roster).filter((st) => st.label.toLowerCase().includes(nameInput.trim().toLowerCase())).length === 0 && (react_1.default.createElement("p", { style: { margin: '10px 0 0', color: C.muted, fontSize: 15 } },
                             "No name matches \u201C",
                             nameInput.trim(),
@@ -37104,10 +37163,7 @@ function EduSphereApp() {
                             } setPinInput(''); setScreen('educator-pin'); } }, "Educator Login")),
                     !educator && (react_1.default.createElement("button", { type: "button", onClick: () => { setNewPin(''); setNewPin2(''); setDeviceDraft(''); setStateDraft(''); setSetupError(''); setScreen('educator-setup'); }, style: { background: 'none', border: 'none', color: C.muted, fontFamily: FONT, fontSize: 14, cursor: 'pointer', padding: '4px 12px', textDecoration: 'underline' } }, "Create account")),
                     react_1.default.createElement(ContactLine, { onOpen: () => setShowContact(true), inline: true })),
-                react_1.default.createElement("p", { style: { color: C.muted, fontSize: 13, margin: 'auto 0 0', padding: '72px 36px 12px', textAlign: 'center', maxWidth: '100%', boxSizing: 'border-box' } },
-                    "All of your school's important information lives entirely on this device (students, student progression, educator settings, transcripts etc). Regular backups (shared folders, private folders and/or email) are ",
-                    react_1.default.createElement("strong", null, "highly"),
-                    " recommended."),
+                react_1.default.createElement("p", { style: { color: C.muted, fontSize: 13, margin: 'auto 0 0', padding: '72px 36px 12px', textAlign: 'center', maxWidth: '100%', boxSizing: 'border-box' } }, "All of your school's important information lives entirely on this device (students, student progression, educator settings, transcripts etc)."),
                 showContact && react_1.default.createElement(ContactPopup, { onClose: () => setShowContact(false) }))));
     }
     const refreshIds = refresherIds(record ? record.events : []);
@@ -37117,10 +37173,14 @@ function EduSphereApp() {
         ? ['Math', 'Reading', 'Science'].filter((subject) => placementGrades(subject, (findStudent(roster, record.name) || {}).level).length > 0 && !placementDone(record.events, subject) && !record.events.some((e) => e.type === 'attempt_completed' && (getCourse((getModule(e.moduleId) || {}).courseId) || {}).subject === subject))
         : [];
     async function skipPlacement(subject) {
-        // Starting at the beginning is a placement decision too: nothing cleared, first grade of the band.
+        // Starting at the beginning is a placement decision too: nothing cleared, first grade of the band,
+        // and the subject's courses switch to that grade so the student really does start there.
         const st = findStudent(roster, record.name);
         const outcome = placementOutcome(subject, st ? st.level : null, []);
-        await addEvent(makePlacementEvent(subject, outcome.startGrade, [], new Date().toISOString()));
+        const enabledNow = enabledCourseIds(record.events);
+        const others = enabledNow.filter((id) => { const c = getCourse(id); return !c || c.subject !== subject; });
+        const at = new Date().toISOString();
+        await addEvents([makePlacementEvent(subject, outcome.startGrade, [], at), makeCoursesEnabledEvent([...new Set([...others, ...outcome.startCourseIds])], at)]);
     }
     if (screen === 'overview') {
         const mastered = visibleModules.filter((m) => progress.masteredIds.includes(m.id)).length;

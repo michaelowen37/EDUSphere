@@ -13,6 +13,7 @@ await page.fill('input[placeholder="PIN again"]', '2468');
 await page.fill('input[placeholder="This device\'s name"]', 'Front desk');
 await page.selectOption('select[aria-label="Your state"]', 'CA');
 await page.getByRole('button', { name: 'Create account', exact: true }).click();
+{ const later = page.getByRole('button', { name: 'Later' }); if (await later.count()) await later.click(); }
 await page.getByRole('button', { name: 'Add someone new' }).click();
 await page.fill('input[placeholder="School-issued ID"]', 'S-777');
 await page.getByRole('button', { name: /^Elementary/ }).click();

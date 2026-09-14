@@ -26,12 +26,27 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
       if (!/^\d+$/.test(q.answer)) problems.push('number answer is not a whole number');
     } else if (q.type === 'trace') {
       if (!L.TRACE_LETTERS[q.answer]) problems.push('trace letter has no strokes');
-      if (q.answer !== q.prompt.match(/letter ([A-Z])/)[1]) problems.push('trace prompt names a different letter');
+      if (q.traceKind === 'dots') { if (!q.prompt.includes(q.answer)) problems.push('dots prompt names a different picture'); }
+      else if (q.traceKind === 'line') { if (!q.answer.startsWith('line-')) problems.push('line trace names a non-line'); }
+      else if (q.traceKind === 'shape') { if (!q.prompt.includes(q.answer.slice(6))) problems.push('shape trace names a different shape'); }
+      else if (q.traceKind === 'number') { if (q.answer !== q.prompt.match(/number (\d)/)[1]) problems.push('number trace prompt names a different number'); }
+      else if (q.answer !== q.prompt.match(/letter ([A-Za-z])/)[1]) problems.push('trace prompt names a different letter');
       // an ideal tracing of the letter must pass, and a tracing of a different letter must fail
       const ideal = L.TRACE_LETTERS[q.answer].strokes.map((st) => st.flatMap((p, i) => (i === 0 ? [p] : Array.from({ length: 6 }, (_, k) => [st[i - 1][0] + ((p[0] - st[i - 1][0]) * (k + 1)) / 6, st[i - 1][1] + ((p[1] - st[i - 1][1]) * (k + 1)) / 6]))));
       if (!L.checkAnswer(q, JSON.stringify(ideal))) problems.push('an ideal tracing does not pass');
-      const other = Object.keys(L.TRACE_LETTERS).find((k) => k !== q.answer && k !== 'E' && k !== 'F' && k !== 'H' && q.answer !== 'I');
+      const other = Object.keys(L.TRACE_LETTERS).find((k) => k !== q.answer && /^[A-Z]$/.test(k) && k !== 'E' && k !== 'F' && k !== 'H' && q.answer !== 'I');
       if (other && L.TRACE_LETTERS[other] && ['L', 'T', 'V', 'O', 'C'].includes(q.answer) && L.checkAnswer(q, JSON.stringify(L.TRACE_LETTERS[other].strokes))) problems.push(`tracing ${other} passes as ${q.answer}`);
+    } else if (q.type === 'order') {
+      if (!Array.isArray(q.items) || q.items.length < 3) problems.push('order needs three or more pieces');
+      if (new Set(q.items).size !== q.items.length) problems.push('order pieces repeat');
+      if ([...q.items].sort().join('|') !== q.answer.split(' | ').sort().join('|')) problems.push('order answer is not the same pieces');
+      if (q.items.join(' | ') === q.answer) problems.push('order already in order');
+      if (!L.checkAnswer(q, q.answer) || L.checkAnswer(q, q.items.join(' | '))) problems.push('order judging wrong');
+    } else if (q.type === 'writing') {
+      if (!q.prompt || q.prompt.length < 20) problems.push('writing prompt too short');
+      if (!Array.isArray(q.checklist) || q.checklist.length < 3) problems.push('writing needs a checklist of three or more');
+      if (!(q.minWords > 0)) problems.push('writing needs a word target');
+      if (L.checkAnswer(q, 'anything at all')) problems.push('writing must never be auto-judged');
     } else problems.push('unknown type');
     // Independent arithmetic re-check of the answer, per generator family
     const text = (q.story ? q.story + ' ' : '') + q.prompt; // the full question as the learner reads it
@@ -68,6 +83,7 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
     else if (q.visual && q.visual.kind === 'item') { if (!q.visual.shape || !q.visual.colour) problems.push('item incomplete'); }
     else if (q.visual && q.visual.kind === 'pattern') { if (!Array.isArray(q.visual.items) || q.visual.items.length < 3) problems.push('pattern too short'); }
     else if (q.visual && q.visual.kind === 'clock') { if (!(q.visual.hour >= 1 && q.visual.hour <= 12 && [0, 30].includes(q.visual.minute))) problems.push('clock out of range'); }
+    else if (q.visual && q.visual.kind === 'icon') { if (!['sun', 'moon', 'cloud', 'rain', 'snow', 'plant', 'tree', 'flower', 'fish', 'bird', 'rock', 'drop', 'ice', 'fire', 'magnet'].includes(q.visual.name)) problems.push('unknown icon'); }
     else if (q.visual && !(q.visual.shaded >= 0 && q.visual.shaded <= q.visual.parts)) problems.push('visual out of range');
     // Independent checks for the counting questions (a 'dots:N' choice is a picture of N things)
     const dotCount = (c) => Number((/^dots:(\d+)$/.exec(c) || [])[1]);
@@ -149,11 +165,11 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
     if (genId === 'ry-pick-two' && SYL[q.answer] !== 2) problems.push('pick-two wrong');
     if (genId === 'ry-pick-one' && SYL[q.answer] !== 1) problems.push('pick-one wrong');
     if (genId === 'ry-more-claps' && SYL[q.answer] !== Math.max(...q.choices.map((c) => SYL[c]))) problems.push('more claps wrong');
-    if (genId === 'ry-same-claps' && SYL[q.answer] !== SYL[q.visual.text]) problems.push('same claps wrong');
+    if (genId === 'ry-same-claps' && SYL[q.answer] !== SYL[q.story.replace(/\.$/, '').toLowerCase()]) problems.push('same claps wrong');
     if (genId === 'rd-blend' && q.answer !== q.story.replace(/[,. ]/g, '')) problems.push('blend wrong');
-    if (genId === 'rd-first-sound' && q.answer !== q.story.match(/Listen: (\w+)/)[1][0]) problems.push('first sound wrong');
-    if (genId === 'rd-last-sound' && q.answer !== q.story.match(/Listen: (\w+)/)[1].slice(-1)) problems.push('last sound wrong');
-    if (genId === 'rd-middle-sound' && q.answer !== q.story.match(/Listen: (\w+)/)[1][1]) problems.push('middle sound wrong');
+    if (genId === 'rd-first-sound' && q.answer !== q.story.replace(/\.$/, '').toLowerCase()[0]) problems.push('first sound wrong');
+    if (genId === 'rd-last-sound' && q.answer !== q.story.replace(/\.$/, '').toLowerCase().slice(-1)) problems.push('last sound wrong');
+    if (genId === 'rd-middle-sound' && q.answer !== q.story.replace(/\.$/, '').toLowerCase()[1]) problems.push('middle sound wrong');
     if (genId === 'rd-which-word' && q.answer !== q.story.replace(/^Read: /, '').replace(/[ .]/g, '')) problems.push('which word wrong');
     const lineWords = (t) => t.trim().split(/\s+/);
     if (genId === 'rw-first' && q.answer !== lineWords(q.story)[0]) problems.push('first word wrong');
@@ -231,7 +247,7 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
     if (genId === 'g1-tens-ones' && Number(q.answer) !== g1[0] * 10 + g1[1]) problems.push('tens and ones wrong');
     if (genId === 'g1-how-many-tens' && Number(q.answer) !== Math.floor(g1[0] / 10)) problems.push('how many tens wrong');
     if (genId === 'g1-how-many-ones' && Number(q.answer) !== g1[0] % 10) problems.push('how many ones wrong');
-    if (genId === 'g1-build-number') { const [t, o] = q.answer.match(/\d+/g).map(Number); if (t * 10 + o !== g1[0]) problems.push('build number wrong'); }
+    if (genId === 'g1-build-number') { const [t, o] = q.answer.match(/\d+/g).map(Number); const target = Number(q.prompt.match(/\d+/)[0]); if (t * 10 + o !== target) problems.push('build number wrong'); }
     if (genId === 'g1-ten-more' && Number(q.answer) !== g1[0] + 10) problems.push('ten more wrong');
     if (genId === 'g1-bigger' && Number(q.answer) !== Math.max(...q.choices.map(Number))) problems.push('grade 1 bigger wrong');
     if (genId === 'g1-smaller' && Number(q.answer) !== Math.min(...q.choices.map(Number))) problems.push('grade 1 smaller wrong');
@@ -370,12 +386,228 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
     if (genId === 'bf-add-same-bottom') { const [a, p, b] = nums.flatMap((f) => f.split('/').map(Number)).filter((_, i) => i !== 3); if (q.answer !== `${a + b}/${p}`) problems.push('same-bottom sum wrong'); }
     // Letter sounds and rhymes, re-derived from the words themselves
     const RHYME_END = (w) => w.slice(-2);
-    if (genId === 'rs-word-starts' && q.answer !== q.story.match(/Listen: (\w+)/)[1][0].toUpperCase()) problems.push('first sound letter wrong');
+    if (genId === 'rs-word-starts' && q.answer !== q.story.replace(/\.$/, '').toLowerCase()[0].toUpperCase()) problems.push('first sound letter wrong');
+    if (genId === 'pl-tap-letter' && q.answer !== q.prompt.match(/letter (\w)/)[1]) problems.push('pre-K tap letter wrong');
+    // Grade 5 math, re-derived from the prompt
+    if (genId === 'g5-add-decimals') { const [a, b] = q.prompt.match(/[\d.]+/g).map(Number); if (Math.abs(a + b - Number(q.answer)) > 0.001) problems.push('decimal sum wrong'); }
+    if (genId === 'g5-subtract-decimals') { const [a, b] = q.prompt.match(/[\d.]+/g).map(Number); if (Math.abs(a - b - Number(q.answer)) > 0.001) problems.push('decimal difference wrong'); }
+    if (genId === 'g5-decimal-money') { const [a, b] = q.story.match(/[\d.]+/g).map(Number); if (Math.abs(a + b - Number(q.answer.replace('$', ''))) > 0.001) problems.push('money sum wrong'); }
+    if (genId === 'g5-multiply-fractions') { const [a, b, c, d] = q.prompt.match(/\d+/g).map(Number); const [t, m] = q.answer.split('/').map(Number); if (a * c * m !== b * d * t) problems.push('fraction product wrong'); }
+    if (genId === 'g5-fraction-of-whole') { const [n, c, d] = q.prompt.match(/\d+/g).map(Number); const parts = q.answer.split('/').map(Number); const val = parts.length === 2 ? parts[0] / parts[1] : parts[0]; if (Math.abs(val - n * c / d) > 0.0001) problems.push('fraction of whole wrong'); }
+    if (genId === 'g5-divide-2digit') { const [n, d] = q.prompt.match(/\d+/g).map(Number); if (n / d !== Number(q.answer)) problems.push('two-digit quotient wrong'); }
+    if (genId === 'g5-divide-check') { const [n, d, qn] = q.story.match(/\d+/g).map(Number); if (!q.answer.startsWith(`${d} x ${qn} = ${n}`)) problems.push('division check wrong'); }
+    if (genId === 'g5-divide-remainder') { const [n, d] = q.prompt.match(/\d+/g).map(Number); const [qn, r] = q.answer.match(/\d+/g).map(Number); if (qn * d + r !== n || r >= d) problems.push('remainder wrong'); }
+    if (genId === 'g5-volume') { const [l, w, h] = q.story.match(/\d+/g).map(Number); if (Number(q.answer.match(/\d+/)[0]) !== l * w * h) problems.push('volume wrong'); }
+    if (genId === 'g5-missing-side') { const [v, l, w] = q.story.match(/\d+/g).map(Number); if (Number(q.answer.match(/\d+/)[0]) * l * w !== v) problems.push('missing side wrong'); }
+    if (genId === 'g5-volume-layers') { const [layer, h] = q.story.match(/\d+/g).map(Number); if (Number(q.answer) !== layer * h) problems.push('layers wrong'); }
+    if (genId === 'g5-order-ops') { const [a, b, c] = q.prompt.match(/\d+/g).map(Number); if (Number(q.answer) !== a + b * c) problems.push('order of operations wrong'); }
+    if (genId === 'g5-brackets') { const [a, b, c] = q.prompt.match(/\d+/g).map(Number); if (Number(q.answer) !== (a + b) * c) problems.push('brackets wrong'); }
+    // College math, re-derived from the prompt
+    if (genId === 'gc-mean') { const vals = q.story.split(', ').map(Number); if (Math.abs(Number(q.answer) - vals.reduce((a, b) => a + b, 0) / vals.length) > 0.06) problems.push('mean wrong'); }
+    if (genId === 'gc-median') { const vals = q.story.split(', ').map(Number).sort((a, b) => a - b); if (Number(q.answer) !== vals[Math.floor(vals.length / 2)]) problems.push('median wrong'); }
+    if (genId === 'gc-mode') { const vals = q.story.split(', ').map(Number); const counts = {}; vals.forEach((v) => { counts[v] = (counts[v] || 0) + 1; }); const best = Object.keys(counts).sort((a, b) => counts[b] - counts[a])[0]; if (q.answer !== best) problems.push('mode wrong'); }
+    if (genId === 'gc-range') { const vals = q.story.split(', ').map(Number); if (Number(q.answer) !== Math.max(...vals) - Math.min(...vals)) problems.push('range wrong'); }
+    if (genId === 'gc-more-spread') { const [a, b] = q.story.split('\n').map((line) => line.replace(/^Set [AB]: /, '').split(', ').map(Number)); const ra = Math.max(...a) - Math.min(...a); const rb = Math.max(...b) - Math.min(...b); if (q.answer !== (ra > rb ? 'Set A' : 'Set B')) problems.push('spread wrong'); }
+    if (genId === 'gc-simple-probability') { const [red, blue] = q.story.match(/\d+/g).map(Number); const [t, m] = q.answer.split('/').map(Number); if (t * (red + blue) !== red * m) problems.push('probability wrong'); }
+    if (genId === 'gc-not-probability') { const [red, blue] = q.story.match(/\d+/g).map(Number); const [t, m] = q.answer.split('/').map(Number); if (t * (red + blue) !== blue * m) problems.push('not probability wrong'); }
+    if (genId === 'gc-two-independent') { const [a, b] = q.story.match(/1\/(\d+)/g).map((x) => Number(x.slice(2))); if (q.answer !== `1/${a * b}`) problems.push('two independent wrong'); }
+    if (genId === 'gc-compound-amount') { const [principal, rate] = q.story.replace(/,/g, '').match(/\d+/g).map(Number); const years = Number(q.prompt.match(/\d+/)[0]); if (Number(q.answer.replace(/,/g, '').match(/\d+/)[0]) !== Math.round(principal * (1 + rate / 100) ** years)) problems.push('compound amount wrong'); }
+    if (genId === 'gc-simple-vs-compound') { const [principal, rate, years] = q.story.replace(/,/g, '').match(/\d+/g).map(Number); const diff = Math.round(principal * (1 + rate / 100) ** years) - (principal + principal * rate / 100 * years); if (Number(q.answer.replace(/,/g, '').match(/\d+/)[0]) !== diff) problems.push('simple vs compound wrong'); }
+    if (genId === 'gc-years-to-grow') { const target = Number(q.prompt.match(/\d+/)[0]); if (Number(q.answer.match(/\d+/)[0]) !== Math.log2(target) * 10) problems.push('years to grow wrong'); }
+    // History: a dated fact is always followed by its story, so a wrong answer teaches something.
+    if (/^h\d+-/.test(genId) && ['When?', 'In what year?', 'What happened that year?', 'What happened then?', 'What was it, and when?'].includes(q.prompt) && !q.explain.includes('\n')) problems.push('dated fact has no story');
+    // History, re-derived from the fixed facts
+    if (/^h1[01]-.*-year$/.test(genId) || genId === 'h10-rome-year' || genId === 'h10-medieval-year' || genId === 'h10-rev-year' || genId === 'h10-war-year') { const years = { 'Rome becomes a republic': '509 BC', 'Caesar crosses the Rubicon': '49 BC', 'Caesar is killed': '44 BC', 'Augustus becomes the first emperor': '27 BC', 'Rome falls in the west': '476 AD', 'The Black Death arrives in Europe': '1347', 'The Renaissance begins in Italy': 'about 1400', 'Gutenberg\'s printing press': 'about 1450', 'Rome falls in the west and feudal Europe begins': '476', 'The American Revolution declares independence': '1776', 'The French Revolution begins': '1789', 'France executes its king': '1793', 'Napoleon becomes emperor': '1804', 'The First World War begins': '1914', 'The First World War ends': '1918', 'Hitler comes to power in Germany': '1933', 'Germany invades Poland and the Second World War begins': '1939', 'Pearl Harbor brings the United States in': '1941', 'The Second World War ends': '1945', 'The transcontinental railroad is finished': '1869', 'Food and drug safety laws pass': '1906', 'Standard Oil is broken up': '1911', 'The income tax and direct election of senators': '1913', 'The 19th Amendment: women win the vote': '1920', 'The stock market crashes': '1929', 'A quarter of workers are unemployed and the New Deal begins': '1933', 'Social Security is created': '1935', 'Pearl Harbor, December 7': '1941', 'D-Day, June 6': '1944', 'Germany surrenders in May and Japan in August': '1945', 'The country apologizes for the internment of Japanese Americans': '1988', 'Sputnik': '1957', 'The Cuban Missile Crisis': '1962', 'Americans land on the moon': '1969', 'The Berlin Wall falls': '1989', 'The Soviet Union dissolves': '1991', 'Brown v. Board of Education': '1954', 'The Montgomery bus boycott': '1955', 'The March on Washington': '1963', 'The Civil Rights Act': '1964', 'The Voting Rights Act': '1965', 'Dr. King is assassinated': '1968', 'The September 11 attacks': '2001', 'The war in Iraq begins': '2003', 'The financial crisis': '2008', 'Barack Obama becomes the first Black president': '2009', 'The pandemic closes schools and businesses': '2020' }; const key = q.story.replace(/\.$/, ''); if (years[key] !== undefined && q.answer !== years[key]) problems.push('year wrong'); }
+    if (['h4-tx-year', 'h4-rev-year', 'h4-union-year', 'h8-republic-year', 'h8-crisis-year'].includes(genId)) { const years = { 'San Antonio is founded': 1718, 'Mexico wins independence from Spain': 1821, 'Texas declares independence': 1836, 'Texas becomes the 28th state': 1845, 'The Alamo falls after a thirteen-day siege': 1836, 'Texans win at San Jacinto in eighteen minutes': 1836, 'Texans rise against Mexico': 1835, 'The Republic of Texas joins the United States': 1845, 'Texas becomes a state': 1845, 'Texas joins the Confederacy': 1861, 'Juneteenth: slavery ends in Texas': 1865, 'Oil at Spindletop': 1901, 'Washington takes office': 1789, 'Jefferson buys Louisiana': 1803, 'A second war with Britain begins': 1812, 'The Monroe Doctrine': 1823, 'Andrew Jackson is elected': 1828, 'The Missouri Compromise': 1820, 'The Compromise of 1850': 1850, 'The Kansas-Nebraska Act': 1854, 'The Dred Scott decision': 1857, 'Lincoln is elected': 1860 }; if (Number(q.answer) !== years[q.story.replace(/\.$/, '')]) problems.push('year wrong'); }
+    if (genId === 'h8-amendment-year') { const y = { '13th': 1865, '14th': 1868, '15th': 1870 }[q.story.match(/(1[345]th)/)[1]]; if (Number(q.answer) !== y) problems.push('amendment year wrong'); }
+    if (genId === 'h5-event-year' || genId === 'h5-west-year' || genId === 'h5-war-year') { const years = { 'The Stamp Act taxes paper': 1765, 'British soldiers fire on a crowd in Boston': 1770, 'Colonists dump tea into Boston Harbor': 1773, 'Shots at Lexington and Concord': 1775, 'The Declaration of Independence': 1776, 'The Louisiana Purchase doubles the country': 1803, 'Lewis and Clark set out for the Pacific': 1804, 'Gold is found in California': 1848, 'The country stretches from ocean to ocean': 1850, 'The war begins at Fort Sumter': 1861, 'The Emancipation Proclamation and Gettysburg': 1863, 'The Confederacy surrenders and the 13th Amendment ends slavery': 1865 }; if (Number(q.answer) !== years[q.story.replace(/\.$/, '')]) problems.push('year wrong'); }
+    // Grade 12 government and economics, re-derived from the story
+    if (genId === 'g12-two-thirds') { const n = Number(q.story.match(/\d+/)[0]); if (Number(q.answer) !== Math.ceil(2 * n / 3)) problems.push('two thirds wrong'); }
+    if (genId === 'g12-override-votes') { const [total, yes] = q.story.match(/\d+/g).map(Number); if (q.answer !== (yes >= Math.ceil(2 * total / 3) ? 'Yes' : 'No')) problems.push('override wrong'); }
+    if (genId === 'g12-electors') { const reps = Number(q.story.match(/has (\d+)/)[1]); if (Number(q.answer) !== reps + 2) problems.push('electors wrong'); }
+    if (genId === 'g12-presidential-year') { const y = Number(q.story.match(/\d+/)[0]); if (q.answer !== (y % 4 === 0 ? 'Presidential' : 'Midterm')) problems.push('election year wrong'); }
+    if (genId === 'g12-how-many') { const table = { 'members of the House of Representatives': 435, senators: 100, 'senators from each state': 2, 'justices on the Supreme Court': 9, "years in a President's term": 4, "years in a senator's term": 6, "years in a representative's term": 2, 'terms a President may serve': 2 }; const what = q.prompt.replace(/^How many /, '').replace(/\?$/, ''); if (Number(q.answer) !== table[what]) problems.push('count wrong'); }
+    if (genId === 'e12-opportunity-cost') { const nums = q.story.match(/\d+/g).map(Number); if (Number(q.answer) !== (nums.length > 1 ? Math.min(...nums) : nums[0])) problems.push('opportunity cost wrong'); }
+    if (genId === 'e12-equilibrium-price') { const line = q.story.split('\n').find((l) => { const [, d, s] = l.match(/want (\d+) and sellers offer (\d+)/); return d === s; }); if (Number(q.answer) !== Number(line.match(/At (\d+)/)[1])) problems.push('equilibrium wrong'); }
+    if (genId === 'e12-shortage-or-surplus') { const [a, b] = q.story.match(/\d+/g).map(Number); if (q.answer !== (a > b ? 'Shortage' : 'Surplus')) problems.push('shortage wrong'); }
+    if (genId === 'e12-revenue') { const [qty, price] = q.story.match(/\d+/g).map(Number); if (Number(q.answer) !== qty * price) problems.push('revenue wrong'); }
+    if (genId === 'e12-profit') { const [r, c] = q.story.match(/\d+/g).map(Number); if (Number(q.answer) !== r - c) problems.push('profit wrong'); }
+    if (genId === 'e12-simple-interest') { const [p, r] = q.story.match(/\d+/g).map(Number); const y = Number(q.prompt.match(/\d+/)[0]); if (Number(q.answer) !== p * r * y / 100) problems.push('simple interest wrong'); }
+    if (genId === 'e12-growth-rate') { const [last, now] = q.story.match(/\d+/g).map(Number); if (Number(q.answer) !== (now - last) / last * 100) problems.push('growth wrong'); }
+    if (genId === 'e12-price-after-inflation') { const [r, old] = q.story.match(/\d+/g).map(Number); if (Number(q.answer) !== old * (100 + r) / 100) problems.push('inflation wrong'); }
+    if (genId === 'e12-unemployment-rate') { const [w, u] = q.story.match(/\d+/g).map(Number); if (Number(q.answer) !== u / (w + u) * 100) problems.push('unemployment wrong'); }
+    if (genId === 'e12-budget-left') { const [i, r, f, o] = q.story.match(/\d+/g).map(Number); if (Number(q.answer) !== i - r - f - o || i - r - f - o <= 0) problems.push('budget wrong'); }
+    if (genId === 'e12-percent-of-income') { const [i, pct] = q.story.match(/\d+/g).map(Number); if (Number(q.answer) !== i * pct / 100) problems.push('percent of income wrong'); }
+    if (genId === 'e12-rule-of-72') { const rate = Number(q.story.match(/\d+/)[0]); if (Number(q.answer) !== 72 / rate) problems.push('rule of 72 wrong'); }
+    if (genId === 'e12-card-interest') { const [apr, bal] = q.story.match(/\d+/g).map(Number); if (Number(q.answer) !== bal * apr / 1200) problems.push('card interest wrong'); }
+    // Science, re-derived from the fixed lists
+    if (genId === 's6-density') { const [m, v] = q.story.match(/\d+/g).map(Number); if (Number(q.answer.match(/\d+/)[0]) * v !== m) problems.push('density wrong'); }
+    if (genId === 's6-float-or-sink') { const d = Number(q.story.match(/about ([\d.]+)/)[1]); if (q.answer !== (d < 1 ? 'Floats' : 'Sinks')) problems.push('float wrong'); }
+    if (genId === 's7-tenth-rule') { const base = Number(q.story.replace(/,/g, '').match(/\d+/)[0]); if (Number(q.answer.replace(/,/g, '').match(/\d+/)[0]) * 10 !== base) problems.push('tenth rule wrong'); }
+    if (genId === 's8-read-slope') { const [d, t] = q.story.match(/\d+/g).map(Number); if (Number(q.answer.match(/\d+/)[0]) * t !== d) problems.push('slope read wrong'); }
+    if (genId === 's8-which-older') { const [a, b] = q.story.match(/layer (\d+)/g).map((x) => Number(x.slice(6))); if (q.answer !== `The one in layer ${Math.max(a, b)}`) problems.push('older layer wrong'); }
+    if (genId === 's11-momentum') { const [m, v] = q.story.match(/\d+/g).map(Number); if (Number(q.answer.match(/\d+/)[0]) !== m * v) problems.push('momentum wrong'); }
+    if (genId === 's11-after-collision') { const [m, v] = q.story.match(/\d+/g).map(Number); if (Number(q.answer.match(/\d+/)[0]) !== v) problems.push('collision wrong'); }
+    if (genId === 's11-same-momentum') { const [truck, v, ball] = q.story.match(/\d+/g).map(Number); if (Number(q.answer.match(/[\d.]+/)[0]) * ball !== truck * v) problems.push('same momentum wrong'); }
+    if (genId === 's11-work') { const [f, d] = q.story.match(/\d+/g).map(Number); if (Number(q.answer.match(/\d+/)[0]) !== f * d) problems.push('work wrong'); }
+    if (genId === 's11-power') { const [w, t] = q.story.match(/\d+/g).map(Number); if (Number(q.answer.match(/\d+/)[0]) * t !== w) problems.push('power wrong'); }
+    if (genId === 's11-angle-out') { const a = Number(q.story.match(/\d+/)[0]); if (Number(q.answer.match(/\d+/)[0]) !== a) problems.push('angle wrong'); }
+    if (genId === 's11-series-resistance') { const [a, b] = q.story.match(/\d+/g).map(Number); if (Number(q.answer.match(/\d+/)[0]) !== a + b) problems.push('series resistance wrong'); }
+    if (genId === 's12-layer-order') { const order = ['Crust', 'Mantle', 'Outer core', 'Inner core']; const i = order.findIndex((x) => q.story.startsWith(x)); if (q.answer !== order[i + 1]) problems.push('layer order wrong'); }
+    if (genId === 's12-redshift' && q.answer !== 'Galaxy B') problems.push('redshift wrong');
+    if (genId === 's9-chromosome-count') { const full = Number(q.story.match(/\d+/)[0]); const meiosis = /meiosis/.test(q.story); if (Number(q.answer) !== (meiosis ? full / 2 : full)) problems.push('chromosome count wrong'); }
+    if (genId === 's9-codon-count') { const letters = Number(q.story.match(/\d+/)[0]); if (Number(q.answer) * 3 !== letters) problems.push('codon count wrong'); }
+    if (genId === 's10-molar-mass') { const masses = { 'H₂O': 18, 'CO₂': 44, 'NaCl': 58.5, 'CH₄': 16, 'O₂': 32, 'NH₃': 17, 'MgO': 40 }; const f = q.story.split(',')[0]; if (Number(q.answer.match(/[\d.]+/)[0]) !== masses[f]) problems.push('molar mass wrong'); }
+    if (genId === 's10-grams-in-moles') { const mass = Number(q.story.match(/of (\d+) grams/)[1]); const n = Number(q.prompt.match(/\d+/)[0]); if (Number(q.answer.match(/\d+/)[0]) !== mass * n) problems.push('grams wrong'); }
+    if (genId === 's10-moles-from-grams') { const [mass, grams] = q.story.match(/\d+/g).map(Number); if (Number(q.answer) * mass !== grams) problems.push('moles wrong'); }
+    if (genId === 's10-boyle') { const [v1, one, v2] = q.story.match(/\d+/g).map(Number); if (Number(q.answer.match(/\d+/)[0]) * v2 !== v1) problems.push('boyle wrong'); }
+    if (genId === 's10-molarity') { const [moles, liters] = q.story.match(/[\d.]+/g).map(Number); if (Math.abs(Number(q.answer.match(/[\d.]+/)[0]) * liters - moles) > 0.001) problems.push('molarity wrong'); }
+    if (genId === 's11-speed') { const [d, t] = q.story.match(/\d+/g).map(Number); if (Number(q.answer.match(/\d+/)[0]) * t !== d) problems.push('speed wrong'); }
+    if (genId === 's11-acceleration') { const [v0, v1, t] = q.story.match(/\d+/g).map(Number); if (Number(q.answer.match(/\d+/)[0]) * t !== v1 - v0) problems.push('acceleration wrong'); }
+    if (genId === 's11-potential') { const [m, h] = q.story.match(/\d+/g).map(Number); if (Number(q.answer.match(/\d+/)[0]) !== m * 10 * h) problems.push('potential wrong'); }
+    if (genId === 's11-kinetic') { const [m, v] = q.story.match(/\d+/g).map(Number); if (Number(q.answer.match(/\d+/)[0]) !== m * v * v / 2) problems.push('kinetic wrong'); }
+    if (genId === 's11-wave-speed') { const [wl, f] = q.story.match(/\d+/g).map(Number); if (Number(q.answer.match(/\d+/)[0]) !== wl * f) problems.push('wave speed wrong'); }
+    if (genId === 's11-wavelength-from') { const f = Number(q.story.match(/frequency of (\d+)/)[1]); if (Number(q.answer.match(/[\d.]+/)[0]) * f !== 340) problems.push('wavelength wrong'); }
+    if (genId === 's11-current') { const [v, r] = q.story.match(/\d+/g).map(Number); if (Number(q.answer.match(/\d+/)[0]) * r !== v) problems.push('current wrong'); }
+    if (genId === 's11-resistance') { const [v, i] = q.story.match(/\d+/g).map(Number); if (Number(q.answer.match(/\d+/)[0]) * i !== v) problems.push('resistance wrong'); }
+    if (genId === 's11-voltage') { const [i, r] = q.story.match(/\d+/g).map(Number); if (Number(q.answer.match(/\d+/)[0]) !== i * r) problems.push('voltage wrong'); }
+    if (genId === 's9-pair-letter') { const L = q.story.match(/letter ([ATCG])/)[1]; const pair = { A: 'T', T: 'A', C: 'G', G: 'C' }; if (q.answer !== pair[L]) problems.push('base pair wrong'); }
+    if (genId === 's9-complement') { const strand = q.story.replace('Strand: ', '').split(' '); const pair = { A: 'T', T: 'A', C: 'G', G: 'C' }; if (q.answer !== strand.map((x) => pair[x]).join(' ')) problems.push('complement wrong'); }
+    if (genId === 's9-shows-trait') { const combo = q.story.match(/has (\w\w)\./)[1]; if ((combo === 'bb' ? 'Blue' : 'Brown') !== q.answer) problems.push('trait shown wrong'); }
+    if (genId === 's9-closer-relative' && q.answer !== 'Species X') problems.push('closer relative wrong');
+    if (genId === 's10-count-atoms') { const mm = q.story.match(/^(\d+)/); const mult = Number(mm[1]); const atom = q.prompt.match(/many (\w+) atoms/)[1]; const sub = { hydrogen: { '2H₂O': 2, '4NH₃': 3, '2CH₄': 4 }, oxygen: { '2H₂O': 1, '3CO₂': 2 }, carbon: { '3CO₂': 1 }, chlorine: { '2NaCl': 1 } }[atom][q.story]; if (Number(q.answer) !== mult * sub) problems.push('atom count wrong'); }
+    if (genId === 's10-acid-or-base') { const ph = Number(q.story.match(/pH of about (\d+)/)[1]); if (q.answer !== (ph < 7 ? 'Acid' : ph === 7 ? 'Neutral' : 'Base')) problems.push('acid or base wrong'); }
+    if (genId === 's10-how-many-times') { const [low, high] = q.story.match(/pH (\d+)/g).map((x) => Number(x.slice(3))); if (Number(q.answer.match(/\d+/)[0]) !== 10 ** (high - low)) problems.push('ten times wrong'); }
+    if (genId === 's10-metal-or-not') { const el = q.story.replace('.', '').toLowerCase(); const metals = ['iron', 'copper', 'sodium', 'gold', 'aluminum']; if ((metals.includes(el) ? 'Metal' : 'Nonmetal') !== q.answer) problems.push('metal wrong'); }
+    if (genId === 's8-f-equals-ma') { const [m, a] = q.story.match(/\d+/g).map(Number); if (Number(q.answer.match(/\d+/)[0]) !== m * a) problems.push('force wrong'); }
+    if (genId === 's8-mass-conserved') { const [a, b] = q.story.match(/\d+/g).map(Number); if (Number(q.answer.match(/\d+/)[0]) !== a + b) problems.push('conservation wrong'); }
+    if (genId === 's8-more-mass') { const [light] = q.story.match(/\d+/g).map(Number); if (q.answer !== `The ${light} kg ball`) problems.push('more mass wrong'); }
+    if (genId === 's8-atomic-number') { const n = Number(q.story.match(/\d+/)[0]); const table = { 1: 'hydrogen', 2: 'helium', 6: 'carbon', 7: 'nitrogen', 8: 'oxygen', 10: 'neon' }; if (q.answer !== table[n]) problems.push('atomic number wrong'); }
+    if (genId === 's8-biggest-of') { const order = ['the moon', 'the Earth', 'the solar system', 'the Milky Way', 'the universe']; const best = [...q.choices].sort((x, y) => order.indexOf(y) - order.indexOf(x))[0]; if (q.answer !== best) problems.push('biggest wrong'); }
+    if (genId === 's4-will-it-light') { const broken = /not connected|switch open|rubber|dead battery/.test(q.story); if ((broken ? 'No' : 'Yes') !== q.answer) problems.push('circuit wrong'); }
+    if (genId === 's4-conductor-or-insulator') { const metal = /copper|iron|aluminum|steel/.test(q.story); if ((metal ? 'Conductor' : 'Insulator') !== q.answer) problems.push('conductor wrong'); }
+    if (genId === 's5-next-stage') { const cycle = ['evaporation', 'condensation', 'precipitation', 'collection']; const i = cycle.findIndex((x) => q.story.includes(x)); if (q.answer.toLowerCase() !== cycle[(i + 1) % 4]) problems.push('next stage wrong'); }
+    if (genId === 's5-moon-phase') { const i = ['none of', 'half of', 'all of'].findIndex((x) => q.story.includes(x)); if (q.answer !== ['new moon', 'half moon', 'full moon'][i]) problems.push('moon phase wrong'); }
+    if (genId === 's6-count-kinds') { const kinds = (q.story.match(/[A-Z]/g) || []).length; if (Number(q.answer) !== kinds) problems.push('count kinds wrong'); }
+    if (genId === 's6-element-or-compound') { const kinds = (q.story.split(',')[0].match(/[A-Z]/g) || []).length; if ((kinds === 1 ? 'Element' : 'Compound') !== q.answer) problems.push('element or compound wrong'); }
+    if (genId === 's3-next-season') { const seasons = ['spring', 'summer', 'fall', 'winter']; const i = seasons.findIndex((x) => q.story.includes(x)); if (q.answer !== seasons[(i + 1) % 4]) problems.push('next season wrong'); }
+    if (genId === 's6-warm-to-cool' && q.answer !== 'From the stone into the water') problems.push('heat direction wrong');
+    // Grade 12 math, re-derived from the prompt
+    if (genId === 'g12-shift-direction') { const k = Number(q.story.match(/\d+/)[0]); const dir = /f\(x\) \+/.test(q.story) ? 'Up' : /f\(x\) -/.test(q.story) ? 'Down' : /f\(x - /.test(q.story) ? 'Right' : 'Left'; if (q.answer !== `${dir} ${k}`) problems.push('shift direction wrong'); }
+    if (genId === 'g12-shifted-point') { const [x, y] = q.story.match(/\((-?\d+), (-?\d+)\)/).slice(1).map(Number); const mm = q.story.match(/f\(x ([+-]) (\d+)\) ([+-]) (\d+)/); const nx = x + (mm[1] === '-' ? 1 : -1) * Number(mm[2]); const ny = y + (mm[3] === '+' ? 1 : -1) * Number(mm[4]); if (q.answer !== `(${nx}, ${ny})`) problems.push('shifted point wrong'); }
+    if (genId === 'g12-write-shift') { const [h, k] = q.prompt.match(/\d+/g).map(Number); if (q.answer !== `(x - ${h})² + ${k}`) problems.push('write shift wrong'); }
+    if (genId === 'g12-compose-value') { const [m, c] = q.story.match(/\d+/g).map(Number); const x = Number(q.prompt.match(/\d+/)[0]); if (Number(q.answer) !== m * x * x + c) problems.push('compose value wrong'); }
+    if (genId === 'g12-compose-order') { const [m, c] = q.story.match(/\d+/g).map(Number); const x = Number(q.prompt.match(/\d+/)[0]); if (Number(q.answer) !== (m * x + c) ** 2) problems.push('compose order wrong'); }
+    if (genId === 'g12-unit-value') { const angle = Number(q.prompt.match(/\d+/)[0]); const fn = /sin/.test(q.prompt) ? 'sin' : 'cos'; const table = { 0: { cos: '1', sin: '0' }, 30: { cos: '√3/2', sin: '1/2' }, 45: { cos: '√2/2', sin: '√2/2' }, 60: { cos: '1/2', sin: '√3/2' }, 90: { cos: '0', sin: '1' } }; if (q.answer !== table[angle][fn]) problems.push('unit value wrong'); }
+    if (genId === 'g12-quadrant-sign') { const angle = Number(q.prompt.match(/\d+/)[0]); const fn = /sin/.test(q.prompt) ? 'sin' : 'cos'; const positive = fn === 'sin' ? angle < 180 : angle > 270; if (q.answer !== (positive ? 'Positive' : 'Negative')) problems.push('quadrant sign wrong'); }
+    if (genId === 'g12-half-life-left') { const [start, hl] = q.story.match(/\d+/g).map(Number); const t = Number(q.prompt.match(/\d+/)[0]); if (Number(q.answer.match(/\d+/)[0]) !== start / 2 ** (t / hl)) problems.push('half life left wrong'); }
+    if (genId === 'g12-half-lives-count') { const [hl] = q.story.match(/\d+/g).map(Number); const t = Number(q.prompt.match(/\d+/)[0]); if (Number(q.answer) * hl !== t) problems.push('half lives count wrong'); }
+    if (genId === 'g12-end-behavior') { const mm = q.story.match(/^(-?\d+)x\^(\d+)/); const lead = Number(mm[1]); const power = Number(mm[2]); const even = power % 2 === 0; const expected = even ? (lead > 0 ? 'Both ends go up' : 'Both ends go down') : (lead > 0 ? 'Down on the left, up on the right' : 'Up on the left, down on the right'); if (q.answer !== expected) problems.push('end behavior wrong'); }
+    if (genId === 'g12-leading-term') { const mm = q.story.match(/([-\d]+)x\^(\d+)/); if (q.answer !== `${mm[1]}x^${mm[2]}`) problems.push('leading term wrong'); }
+    // Grade 11 math, re-derived from the prompt
+    if (genId === 'g11-quadratic-roots') { const [b, c] = q.story.match(/\d+/g).map(Number); const [lo, hi] = q.answer.match(/\d+/g).map(Number); if (lo + hi !== b || lo * hi !== c) problems.push('quadratic roots wrong'); }
+    if (genId === 'g11-discriminant') { const mm = q.story.match(/^(\d*)x² \+ (\d+)x \+ (\d+)/); const a = mm[1] ? Number(mm[1]) : 1; const b = Number(mm[2]); const c = Number(mm[3]); if (Number(q.answer) !== b * b - 4 * a * c) problems.push('discriminant wrong'); }
+    if (genId === 'g11-how-many-roots') { const d = Number(q.story.match(/-?\d+/)[0]); if (q.answer !== (d > 0 ? 'Two' : d === 0 ? 'One' : 'None')) problems.push('root count wrong'); }
+    if (genId === 'g11-multiply-binomials') { const [p, qq] = q.prompt.match(/\d+/g).map(Number); if (q.answer !== `x² + ${p + qq}x + ${p * qq}`) problems.push('binomial product wrong'); }
+    if (genId === 'g11-middle-term') { const [p, qq] = q.story.match(/\d+/g).map(Number); if (Number(q.answer) !== p + qq) problems.push('middle term wrong'); }
+    if (genId === 'g11-square-binomial') { const [p] = q.prompt.match(/\d+/g).map(Number); if (q.answer !== `x² + ${2 * p}x + ${p * p}`) problems.push('square binomial wrong'); }
+    if (genId === 'g11-arithmetic-term') { const seq = q.story.match(/\d+/g).map(Number); const n = Number(q.prompt.match(/\d+/)[0]); if (Number(q.answer) !== seq[0] + (n - 1) * (seq[1] - seq[0])) problems.push('arithmetic term wrong'); }
+    if (genId === 'g11-geometric-term') { const seq = q.story.match(/\d+/g).map(Number); const n = Number(q.prompt.match(/\d+/)[0]); if (Number(q.answer) !== seq[0] * (seq[1] / seq[0]) ** (n - 1)) problems.push('geometric term wrong'); }
+    if (genId === 'g11-sequence-kind') { const seq = q.story.split(', ').map(Number); if (q.answer !== (seq[1] - seq[0] === seq[2] - seq[1] ? 'Arithmetic' : 'Geometric')) problems.push('sequence kind wrong'); }
+    if (genId === 'g11-log-value') { const [b, y] = q.prompt.match(/\d+/g).map(Number); if (b ** Number(q.answer) !== y) problems.push('log value wrong'); }
+    if (genId === 'g11-exp-to-log') { const [b, e, y] = q.story.match(/\d+/g).map(Number); if (q.answer !== `log base ${b} of ${y} = ${e}`) problems.push('exp to log wrong'); }
+    if (genId === 'g11-log-to-exp') { const [b, y, e] = q.story.match(/\d+/g).map(Number); if (q.answer !== `${b}^${e} = ${y}`) problems.push('log to exp wrong'); }
+    if (genId === 'g11-absolute-solve') { const [k, d] = q.story.match(/\d+/g).map(Number); if (q.answer !== `x = ${k + d} or x = ${k - d}`) problems.push('absolute solve wrong'); }
+    if (genId === 'g11-absolute-value-of') { const n = Number(q.prompt.match(/-?\d+/)[0]); if (Number(q.answer) !== Math.abs(n)) problems.push('absolute value wrong'); }
+    if (genId === 'g11-absolute-none') { if (q.answer !== (/= -\d/.test(q.story) ? 'None' : 'Two')) problems.push('absolute none wrong'); }
+    // Grade 10 math, re-derived from the prompt
+    if (genId === 'g10-vertical-angle') { const [a] = q.story.match(/\d+/g).map(Number); if (Number(q.answer.match(/\d+/)[0]) !== a) problems.push('vertical angle wrong'); }
+    if (genId === 'g10-supplementary') { const [a] = q.story.match(/\d+/g).map(Number); if (Number(q.answer.match(/\d+/)[0]) !== 180 - a) problems.push('supplementary wrong'); }
+    if (genId === 'g10-triangle-angle') { const [a, b] = q.story.match(/\d+/g).map(Number); if (Number(q.answer.match(/\d+/)[0]) !== 180 - a - b) problems.push('triangle angle wrong'); }
+    if (genId === 'g10-scale-factor') { const [small, big] = q.story.match(/\d+/g).map(Number); if (Number(q.answer) * small !== big) problems.push('scale factor wrong'); }
+    if (genId === 'g10-missing-side') { const [a, b, ak] = q.story.match(/\d+/g).map(Number); if (Number(q.answer) * a !== b * ak) problems.push('missing side wrong'); }
+    if (genId === 'g10-shadow') { const [stick, shadow, treeShadow] = q.story.match(/\d+/g).map(Number); if (Number(q.answer.match(/\d+/)[0]) * shadow !== stick * treeShadow) problems.push('shadow wrong'); }
+    if (genId === 'g10-translate') { const nums = q.story.match(/-?\d+/g).map(Number); const [x, y] = nums; const dx = (/left/.test(q.story) ? -1 : 1) * nums[2]; const dy = (/down/.test(q.story) ? -1 : 1) * nums[3]; if (q.answer !== `(${x + dx}, ${y + dy})`) problems.push('translate wrong'); }
+    if (genId === 'g10-reflect') { const [x, y] = q.story.match(/-?\d+/g).map(Number); const overY = /y-axis/.test(q.story); if (q.answer !== (overY ? `(${-x}, ${y})` : `(${x}, ${-y})`)) problems.push('reflect wrong'); }
+    if (genId === 'g10-rotate') { const [x, y] = q.story.match(/-?\d+/g).map(Number); if (q.answer !== `(${-y}, ${x})`) problems.push('rotate wrong'); }
+    if (genId === 'g10-sine') { const [a, b, c] = q.story.match(/\d+/g).map(Number); if (q.answer !== `${a}/${c}`) problems.push('sine wrong'); }
+    if (genId === 'g10-cosine') { const [a, b, c] = q.story.match(/\d+/g).map(Number); if (q.answer !== `${b}/${c}`) problems.push('cosine wrong'); }
+    if (genId === 'g10-tangent') { const [a, b] = q.story.match(/\d+/g).map(Number); if (q.answer !== `${a}/${b}`) problems.push('tangent wrong'); }
+    if (genId === 'g10-sector-fraction') { const [angle] = q.story.match(/\d+/g).map(Number); const [t, m] = q.answer.split('/').map(Number); if (t * 360 !== angle * m) problems.push('sector fraction wrong'); }
+    if (genId === 'g10-arc-length') { const [r, angle] = q.story.match(/\d+/g).map(Number); if (Math.abs(Number(q.answer) - 2 * 3.14 * r * angle / 360) > 0.01) problems.push('arc length wrong'); }
+    if (genId === 'g10-sector-area') { const [r, angle] = q.story.match(/\d+/g).map(Number); if (Math.abs(Number(q.answer) - 3.14 * r * r * angle / 360) > 0.01) problems.push('sector area wrong'); }
+    // Grade 9 math, re-derived from the prompt
+    if (genId === 'g9-both-sides') { const [a, c, b, d] = q.prompt.match(/\d+/g).map(Number); const x = Number(q.answer); if (a * x + c !== b * x + d) problems.push('both sides wrong'); }
+    if (genId === 'g9-distribute-solve') { const [a, b, total] = q.prompt.match(/\d+/g).map(Number); if (a * (Number(q.answer) + b) !== total) problems.push('distribute solve wrong'); }
+    if (genId === 'g9-evaluate-function') { const mm = q.story.match(/f\(x\) = (\d+)x ([+-]) (\d+)/); const m = Number(mm[1]); const c = (mm[2] === '-' ? -1 : 1) * Number(mm[3]); const x = Number(q.prompt.match(/\d+/)[0]); if (Number(q.answer) !== m * x + c) problems.push('evaluate function wrong'); }
+    if (genId === 'g9-find-input') { const [m, c] = q.story.match(/\d+/g).map(Number); const out = Number(q.prompt.match(/= (\d+)/)[1]); if (m * Number(q.answer) + c !== out) problems.push('find input wrong'); }
+    if (genId === 'g9-is-function') { const inputs = [...q.story.matchAll(/\((\d+), \d+\)/g)].map((mm) => mm[1]); if ((new Set(inputs).size === inputs.length ? 'Yes' : 'No') !== q.answer) problems.push('is function wrong'); }
+    if (genId === 'g9-system-substitute') { const mm = q.story.match(/y = x \+ (\d+) and y = (\d+)x ([+-]) (\d+)/); const a = Number(mm[1]); const m = Number(mm[2]); const c = (mm[3] === '-' ? -1 : 1) * Number(mm[4]); const [x, y] = q.answer.match(/\d+/g).map(Number); if (y !== x + a || y !== m * x + c) problems.push('system wrong'); }
+    if (genId === 'g9-check-pair') { const mm = q.story.match(/y = x \+ (\d+) and y = (\d+)x ([+-]) (\d+)/); const a = Number(mm[1]); const m = Number(mm[2]); const c = (mm[3] === '-' ? -1 : 1) * Number(mm[4]); const [px, py] = q.prompt.match(/\d+/g).map(Number); if (((py === px + a && py === m * px + c) ? 'Yes' : 'No') !== q.answer) problems.push('check pair wrong'); }
+    if (genId === 'g9-factor-pair') { const [b, c] = q.story.match(/\d+/g).slice(1).map(Number); const [p, qq] = q.answer.match(/\d+/g).map(Number); if (p * qq !== c || p + qq !== b) problems.push('factor pair wrong'); }
+    if (genId === 'g9-factor-trinomial') { const [b, c] = q.prompt.match(/\d+/g).slice(1).map(Number); const [p, qq] = q.answer.match(/\d+/g).map(Number); if (p * qq !== c || p + qq !== b) problems.push('factor trinomial wrong'); }
+    if (genId === 'g9-zeros') { const [lo, hi] = q.story.match(/\d+/g).map(Number); if (q.answer !== `x = -${lo} or x = -${hi}`) problems.push('zeros wrong'); }
+    if (genId === 'g9-linear-or-exponential') { const seq = q.story.split(', ').map(Number); const linear = seq[1] - seq[0] === seq[2] - seq[1]; if ((linear ? 'Linear' : 'Exponential') !== q.answer) problems.push('linear or exponential wrong'); }
+    if (genId === 'g9-growth-value') { const [start, rate] = q.story.match(/\d+/g).map(Number); const t = Number(q.prompt.match(/\d+/)[0]); if (Number(q.answer) !== start * rate ** t) problems.push('growth value wrong'); }
+    if (genId === 'g9-next-term') { const seq = q.story.match(/\d+/g).map(Number); if (Number(q.answer) * seq[1] !== seq[2] * seq[2]) problems.push('next term wrong'); }
+    // Grade 8 math, re-derived from the prompt
+    if (genId === 'g8-slope-points') { const [x1, y1, x2, y2] = q.story.match(/-?\d+/g).map(Number); if (Number(q.answer) * (x2 - x1) !== y2 - y1) problems.push('slope from points wrong'); }
+    if (genId === 'g8-slope-from-equation') { const m = Number(q.story.match(/y = (-?\d+)x/)[1]); if (Number(q.answer) !== m) problems.push('slope from equation wrong'); }
+    if (genId === 'g8-intercept-from-equation') { const mm = q.story.match(/x ([+-]) (\d+)/); const b = (mm[1] === '-' ? -1 : 1) * Number(mm[2]); if (Number(q.answer) !== b) problems.push('intercept wrong'); }
+    if (genId === 'g8-power-value') { const [base, e] = q.prompt.match(/\d+/g).map(Number); if (Number(q.answer) !== base ** e) problems.push('power value wrong'); }
+    if (genId === 'g8-multiply-powers') { const [base, a, base2, b] = q.prompt.match(/\d+/g).map(Number); if (q.answer !== `${base}^${a + b}`) problems.push('multiply powers wrong'); }
+    if (genId === 'g8-divide-powers') { const [base, a, base2, b] = q.prompt.match(/\d+/g).map(Number); if (q.answer !== `${base}^${a - b}`) problems.push('divide powers wrong'); }
+    if (genId === 'g8-zero-negative-power') { const [base, e] = q.prompt.match(/\d+/g).map(Number); if (/\^0/.test(q.prompt) ? q.answer !== '1' : q.answer !== `1/${base ** e}`) problems.push('zero or negative power wrong'); }
+    if (genId === 'g8-square-root') { const [sq] = q.prompt.match(/\d+/g).map(Number); if (Number(q.answer) ** 2 !== sq) problems.push('square root wrong'); }
+    if (genId === 'g8-square-of') { const [n] = q.prompt.match(/\d+/g).map(Number); if (Number(q.answer) !== n * n) problems.push('square of wrong'); }
+    if (genId === 'g8-root-between') { const [n] = q.prompt.match(/\d+/g).map(Number); const [lo, hi] = q.answer.match(/\d+/g).map(Number); if (!(lo * lo < n && n < hi * hi && hi === lo + 1)) problems.push('root between wrong'); }
+    if (genId === 'g8-hypotenuse') { const [a, b] = q.story.match(/\d+/g).map(Number); if (Number(q.answer) ** 2 !== a * a + b * b) problems.push('hypotenuse wrong'); }
+    if (genId === 'g8-missing-leg') { const [c, a] = q.story.match(/\d+/g).map(Number); if (Number(q.answer) ** 2 !== c * c - a * a) problems.push('missing leg wrong'); }
+    if (genId === 'g8-is-right-triangle') { const [a, b, c] = q.story.match(/\d+/g).map(Number); if ((a * a + b * b === c * c ? 'Yes' : 'No') !== q.answer) problems.push('right triangle check wrong'); }
+    if (genId === 'g8-to-scientific') { const shown = Number(q.prompt.match(/[\d,]+/)[0].replace(/,/g, '')); const mm = q.answer.match(/(\d+)\.(\d+) x 10\^(\d+)/); const val = (Number(mm[1]) + Number(mm[2]) / 10) * 10 ** Number(mm[3]); if (Math.abs(val - shown) > 0.5) problems.push('to scientific wrong'); }
+    if (genId === 'g8-from-scientific') { const mm = q.prompt.match(/(\d+)\.(\d+) x 10\^(\d+)/); if (Number(q.answer.replace(/,/g, '')) !== Math.round((Number(mm[1]) + Number(mm[2]) / 10) * 10 ** Number(mm[3]))) problems.push('from scientific wrong'); }
+    if (genId === 'g8-compare-scientific') { const parts = [...q.prompt.matchAll(/(\d+) x 10\^(\d+)/g)].map((mm) => [Number(mm[1]), Number(mm[2])]); const bigger = parts[0][1] > parts[1][1] ? `${parts[0][0]} x 10^${parts[0][1]}` : `${parts[1][0]} x 10^${parts[1][1]}`; if (q.answer !== bigger) problems.push('compare scientific wrong'); }
+    // Grade 7 math, re-derived from the prompt
+    if (genId === 'g7-unit-rate') { const [n, total] = q.story.match(/\d+/g).map(Number); if (Number(q.answer.match(/\d+/)[0]) * n !== total) problems.push('unit rate wrong'); }
+    if (genId === 'g7-solve-proportion') { const [a, b] = q.story.match(/\d+/g).map(Number); const [c] = q.prompt.match(/\d+/g).map(Number); if (Number(q.answer.match(/\d+/)[0]) * a !== b * c) problems.push('proportion wrong'); }
+    if (genId === 'g7-is-proportional') { const [a, b, c, d] = q.story.match(/\d+/g).map(Number); if ((a * d === b * c ? 'Yes' : 'No') !== q.answer) problems.push('proportional check wrong'); }
+    if (genId === 'g7-percent-of') { const [pct, base] = q.prompt.match(/\d+/g).map(Number); if (Number(q.answer) !== base * pct / 100) problems.push('percent of wrong'); }
+    if (genId === 'g7-discount') { const [price, pct] = q.story.match(/\d+/g).map(Number); if (Number(q.answer.match(/\d+/)[0]) !== price - price * pct / 100) problems.push('discount wrong'); }
+    if (genId === 'g7-what-percent') { const [part, base] = q.story.match(/\d+/g).map(Number); if (Number(q.answer.match(/\d+/)[0]) * base !== part * 100) problems.push('what percent wrong'); }
+    if (genId === 'g7-add-integers') { const [a, b] = q.prompt.match(/-?\d+/g).map(Number); if (Number(q.answer) !== a + b) problems.push('add integers wrong'); }
+    if (genId === 'g7-subtract-integers') { const [a, b] = q.prompt.match(/-?\d+/g).map(Number); if (Number(q.answer) !== a - b) problems.push('subtract integers wrong'); }
+    if (genId === 'g7-two-step') { const [m, c, total] = q.prompt.match(/\d+/g).map(Number); if (m * Number(q.answer) + c !== total) problems.push('two step wrong'); }
+    if (genId === 'g7-two-step-subtract') { const [m, c, total] = q.prompt.match(/\d+/g).map(Number); if (m * Number(q.answer) - c !== total) problems.push('two step subtract wrong'); }
+    if (genId === 'g7-first-step') { const [m, c] = q.story.match(/\d+/g).map(Number); if (q.answer !== `Subtract ${c} from both sides`) problems.push('first step wrong'); }
+    if (genId === 'g7-circumference') { const [d] = q.story.match(/\d+/g).map(Number); if (Math.abs(Number(q.answer) - 3.14 * d) > 0.01) problems.push('circumference wrong'); }
+    if (genId === 'g7-circle-area') { const [r] = q.story.match(/\d+/g).map(Number); if (Math.abs(Number(q.answer) - 3.14 * r * r) > 0.01) problems.push('circle area wrong'); }
+    if (genId === 'g7-radius-or-diameter') { const [n] = q.story.match(/\d+/g).map(Number); const askD = /diameter\?/.test(q.prompt); if (Number(q.answer) !== (askD ? n * 2 : n / 2)) problems.push('radius or diameter wrong'); }
+    // Grade 6 math, re-derived from the prompt
+    if (genId === 'g6-simplify-ratio') { const [a, b] = q.prompt.match(/\d+/g).map(Number); const [x, y] = q.answer.split(':').map(Number); if (a * y !== b * x) problems.push('ratio simplify wrong'); }
+    if (genId === 'g6-scale-ratio') { const [a, b] = q.story.match(/\d+/g).map(Number); const [ak] = q.prompt.match(/\d+/g).map(Number); if (Number(q.answer) * a !== b * ak) problems.push('ratio scale wrong'); }
+    if (genId === 'g6-ratio-from-words') { const [a, b] = q.story.match(/\d+/g).map(Number); if (q.answer !== `${a}:${b}`) problems.push('ratio words wrong'); }
+    if (genId === 'g6-whole-by-fraction') { const [n, one, d] = q.prompt.match(/\d+/g).map(Number); if (Number(q.answer) !== n * d) problems.push('whole by fraction wrong'); }
+    if (genId === 'g6-divide-by-fraction') { const [a, b, c, d] = q.prompt.match(/\d+/g).map(Number); const parts = q.answer.split('/').map(Number); const val = parts.length === 2 ? parts[0] / parts[1] : parts[0]; if (Math.abs(val - (a / b) / (c / d)) > 0.0001) problems.push('divide by fraction wrong'); }
+    if (genId === 'g6-compare-negatives') { const [a, b] = q.prompt.match(/-?\d+/g).map(Number); if (Number(q.answer) !== Math.min(a, b)) problems.push('compare negatives wrong'); }
+    if (genId === 'g6-opposite') { const [n] = q.prompt.match(/-?\d+/g).map(Number); if (Number(q.answer) !== -n) problems.push('opposite wrong'); }
+    if (genId === 'g6-order-negatives') { const nums = q.story.match(/-?\d+/g).map(Number); if (q.answer !== [...nums].sort((x, y) => x - y).join(', ')) problems.push('order negatives wrong'); }
+    if (genId === 'g6-temperature') { const [st, dr] = q.story.match(/-?\d+/g).map(Number); if (Number(q.answer.match(/-?\d+/)[0]) !== st - dr) problems.push('temperature wrong'); }
+    if (genId === 'g6-triangle-area') { const [b, h] = q.story.match(/\d+/g).map(Number); if (Number(q.answer.match(/\d+/)[0]) !== b * h / 2) problems.push('triangle area wrong'); }
+    if (genId === 'g6-parallelogram-area') { const [b, h] = q.story.match(/\d+/g).map(Number); if (Number(q.answer.match(/\d+/)[0]) !== b * h) problems.push('parallelogram area wrong'); }
+    if (genId === 'g6-missing-height') { const [area, b] = q.story.match(/\d+/g).map(Number); if (Number(q.answer) * b !== 2 * area) problems.push('missing height wrong'); }
+    if (genId === 'g6-solve-add') { const [p, qv] = q.prompt.match(/\d+/g).map(Number); if (Number(q.answer) + p !== qv) problems.push('solve add wrong'); }
+    if (genId === 'g6-solve-multiply') { const [p, qv] = q.prompt.match(/\d+/g).map(Number); if (Number(q.answer) * p !== qv) problems.push('solve multiply wrong'); }
+    if (genId === 'g6-check-solution') { const [claimed, p, qv] = q.story.match(/\d+/g).map(Number); if ((claimed + p === qv ? 'Yes' : 'No') !== q.answer) problems.push('check solution wrong'); }
+    if (genId === 'r5-pov' && (q.answer === 'First person') !== /\b(I|we|my|me|our)\b/.test(q.story)) problems.push('point of view wrong');
+    // Grade 4 reading, re-derived from the fixed lists
+    if (genId === 'r4-simile-or-metaphor' && (q.answer === 'Simile') !== /\b(like|as)\b/.test(q.story)) problems.push('simile or metaphor wrong');
+    if (genId === 'r4-find-figurative' && !/\b(like|as|was a|is a|were a)\b/.test(q.answer)) problems.push('figurative pick wrong');
+    if (genId === 'pl-name-letter' && q.answer !== q.visual.text) problems.push('pre-K name letter wrong');
     if (genId === 'rs-pick-word' && q.answer[0].toUpperCase() !== q.prompt.match(/starts with ([A-Z])/)[1]) problems.push('picked word starts with the wrong letter');
-    if (genId === 'rs-same-start') { const w = q.story.match(/Listen: (\w+)/)[1]; if (q.answer[0] !== w[0]) problems.push('same-start word differs'); if (q.choices.filter((c) => c[0] === w[0]).length !== 1) problems.push('same-start has two matches'); }
+    if (genId === 'rs-same-start') { const w = q.story.replace(/\.$/, '').toLowerCase(); if (q.answer[0] !== w[0]) problems.push('same-start word differs'); if (q.choices.filter((c) => c[0] === w[0]).length !== 1) problems.push('same-start has two matches'); }
     if (genId === 'rs-odd-start') { const firsts = q.choices.map((c) => c[0]); const odd = q.choices.find((c) => firsts.filter((f) => f === c[0]).length === 1); if (q.answer !== odd) problems.push('odd start wrong'); }
     if (genId === 'rr-does-rhyme') { const [a, c] = q.story.replace(/\./g, '').trim().split(/\s+/); if ((RHYME_END(a) === RHYME_END(c) ? 'Yes' : 'No') !== q.answer) problems.push('rhyme yes/no wrong'); }
-    if (genId === 'rr-pick-rhyme') { const a = q.story.match(/Listen: (\w+)/)[1]; if (RHYME_END(q.answer) !== RHYME_END(a)) problems.push('picked rhyme does not rhyme'); if (q.choices.filter((c) => RHYME_END(c) === RHYME_END(a)).length !== 1) problems.push('two choices rhyme'); }
+    if (genId === 'rr-pick-rhyme') { const a = q.story.replace(/\.$/, '').toLowerCase(); if (RHYME_END(q.answer) !== RHYME_END(a)) problems.push('picked rhyme does not rhyme'); if (q.choices.filter((c) => RHYME_END(c) === RHYME_END(a)).length !== 1) problems.push('two choices rhyme'); }
     if (genId === 'rr-odd-rhyme') { const ends = q.choices.map(RHYME_END); const odd = q.choices.find((c) => ends.filter((e) => e === RHYME_END(c)).length === 1); if (q.answer !== odd) problems.push('odd rhyme wrong'); }
     if (genId === 'rr-same-end') { const end = q.prompt.match(/ends with (\w+)/)[1]; if (!q.answer.endsWith(end)) problems.push('same-end word does not end that way'); }
     if (genId === 'rr-which-two') { const [x, y] = q.answer.split(' and '); if (RHYME_END(x) !== RHYME_END(y)) problems.push('which-two pair does not rhyme'); }
@@ -455,14 +687,14 @@ ok('reset: history kept, but nothing counts as mastered afterwards', events.leng
   const rep = L.buildReport('Test', [att(M, '11110', t(1))]);
   ok('report includes a confidence score per module', rep.modules.find((m) => m.id === M).confidence.score === 3 && rep.modules.find((m) => m.id === 'equivalent-fractions').confidence.score === null);
   ok('report prints the confidence rules', rep.definitions.some((d) => d.startsWith('Confidence starts at 1')));
-  ok('every question has a one-sentence prompt and a story or null', Object.keys(L.GENERATORS).every((g) => { const q = L.generateQuestion(g, 7); return typeof q.prompt === 'string' && q.prompt.length < 70 && (q.story === null || typeof q.story === 'string'); }));
+  ok('every question has a one-sentence prompt and a story or null', Object.keys(L.GENERATORS).every((g) => { const q = L.generateQuestion(g, 7); return typeof q.prompt === 'string' && (q.type === 'writing' ? q.prompt.length < 110 : q.prompt.length < 70) && (q.story === null || typeof q.story === 'string'); }));
   ok('explanation pictures are valid bars or a group of dots', Object.keys(L.GENERATORS).every((g) => { const q = L.generateQuestion(g, 11); if (q.explainVisual === null) return true; if (Array.isArray(q.explainVisual)) return q.explainVisual.every((b) => Number.isInteger(b.parts) && b.parts >= 2 && b.shaded >= 0 && b.shaded <= b.parts && typeof b.label === 'string'); if (q.explainVisual.kind === 'letters') return typeof q.explainVisual.text === 'string' && q.explainVisual.text.length > 0; return q.explainVisual.kind === 'dots' && q.explainVisual.count >= 1 && q.explainVisual.count <= 10; }));
 }
 
 // ---- 7. Courses, subjects, and the per-learner course switch ----
 {
   ok('every module belongs to a course with a subject', L.MODULES.every((m) => L.getCourse(m.courseId) && typeof L.getCourse(m.courseId).subject === 'string'));
-  ok('coverage rule: every module has at least 5 question types', L.MODULES.every((m) => m.generators.length >= 5));
+  ok('coverage rule: every module has at least 5 question types, except writing which is one piece per round', L.MODULES.every((m) => m.generators.length >= 5 || (L.getCourse(m.courseId) || {}).educatorMarked));
   ok('all courses enabled by default', JSON.stringify(L.enabledCourseIds([])) === JSON.stringify(L.COURSES.map((c) => c.id)));
   const off = L.makeCoursesEnabledEvent([], '2026-09-03T10:00:00.000Z');
   ok('educator can switch every course off', L.enabledCourseIds([off]).length === 0);
@@ -471,7 +703,7 @@ ok('reset: history kept, but nothing counts as mastered afterwards', events.leng
   const reset = L.makeResetEvent('2026-09-03T10:02:00.000Z');
   ok('course setting survives a progress reset', L.buildReport('T', [off, reset]).enabledCourseIds.length === 0);
   ok('report rows carry subject and course', L.buildReport('T', []).modules.every((m) => typeof m.subject === 'string' && typeof m.courseTitle === 'string'));
-  ok('kindergarten course exists, is read-aloud, and has eleven modules', L.getCourse('counting-k') && L.getCourse('counting-k').readAloud === true && L.getCourse('counting-k').modules.length === 11);
+  ok('kindergarten course exists, is read-aloud, and has thirteen modules', L.getCourse('counting-k') && L.getCourse('counting-k').readAloud === true && L.getCourse('counting-k').modules.length === 13);
   ok('reading course exists in a second subject', L.getCourse('letters-k') && L.getCourse('letters-k').subject === 'Reading' && L.getCourse('letters-k').readAloud === true);
   ok('describeChoice turns a picture choice into words', L.describeChoice('dots:4') === 'the group with 4' && L.describeChoice('3/4') === '3/4');
 }
@@ -488,12 +720,12 @@ ok('reset: history kept, but nothing counts as mastered afterwards', events.leng
   ok('hiding a question also withdraws its approval', L.isWonderApproved(hiddenState, 'w-one-thing') === false && L.isWonderHidden(hiddenState, 'w-one-thing'));
   ok('a hidden question is not counted as awaiting review', L.wonderAwaitingReview(hiddenState) === 0);
   ok('a hidden question can be brought back for review', L.wonderAwaitingReview(L.restoreWonder(hiddenState, 'w-one-thing')) === 1);
-  ok('questions run from the first met in pre-K to the last', L.wonderInOrder()[0].id === 'w-favourite-colour' && L.wonderInOrder().slice(-1)[0].stage === 'growing');
+  ok('questions run from the first met in pre-K to the last', L.wonderInOrder()[0].stage === 'early' && L.wonderInOrder().slice(-1)[0].stage === 'grown');
   ok('every question names a stage the platform knows', L.WONDER.every((w) => L.LIFE_STAGES.some((st) => st.id === w.stage)));
   ok('approve all approves everything not removed', L.approveAllWonder(L.emptyWonderReview()).approved.length === L.WONDER.length);
   ok('approve all leaves removed questions removed', L.approveAllWonder(hiddenState).approved.includes('w-one-thing') === false);
   ok('un-approve all sends everything back to awaiting review and keeps removals', L.unapproveAllWonder(allApproved).approved.length === 0 && L.unapproveAllWonder(hiddenState).hidden.includes('w-one-thing'));
-  { const done = ['colours', 'same-and-different', 'patterns', 'count-to-3'].map((id, i) => ({ type: 'attempt_completed', at: `u${i}`, startedAt: 'u', moduleId: id, seed: 1, core: [], review: null, coreCorrect: 5, coreTotal: 5 }));
+  { const done = ['colours', 'same-and-different', 'patterns', 'count-to-3', 'first-strokes', 'connect-the-dots'].map((id, i) => ({ type: 'attempt_completed', at: `u${i}`, startedAt: 'u', moduleId: id, seed: 1, core: [], review: null, coreCorrect: 5, coreTotal: 5 }));
     ok('finishing a course unlocks the next course up in that subject', JSON.stringify(L.coursesToUnlock([L.makeCoursesEnabledEvent(['first-steps-pk'], 't'), ...done])) === '["counting-k"]');
     ok('nothing unlocks while a course is unfinished', L.coursesToUnlock([L.makeCoursesEnabledEvent(['first-steps-pk'], 't'), ...done.slice(0, 2)]).length === 0); }
   // The cadence: one reflection after every two mastered modules, rotating through the pool
@@ -537,10 +769,12 @@ ok('reset: history kept, but nothing counts as mastered afterwards', events.leng
 {
   ok('every course names a grade the platform knows', L.COURSES.every((c) => L.GRADES.includes(c.grade)));
   ok('grade labels read plainly', L.gradeLabel('K') === 'Kindergarten' && L.gradeLabel('3') === 'Grade 3');
-  ok('only grades that have courses are offered, in order', JSON.stringify(L.gradesWithCourses()) === '["PK4","K","1","2","3","4"]');
+  ok('only grades that have courses are offered, in order', JSON.stringify(L.gradesWithCourses()) === '["PK3","PK4","K","1","2","3","4","5","6","7","8","9","10","11","12","C"]');
   const k = L.subjectsForGrade('K');
-  ok('kindergarten groups into Math and Reading', k.length === 2 && k[0].subject === 'Math' && k[1].subject === 'Reading');
-  ok('a grade with no courses returns nothing', L.subjectsForGrade('7').length === 0);
+  ok('kindergarten groups into Math, Reading and Science', k.length === 3 && k[0].subject === 'Math' && k[1].subject === 'Reading' && k[2].subject === 'Science');
+  ok('every grade now has courses', L.subjectsForGrade('PK3').length === 2);
+  ok('science runs from kindergarten to grade 12', ['K', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'].every((g) => L.subjectsForGrade(g).some((x) => x.subject === 'Science')));
+  ok('pre-K 3 is never a starter; a new early-years student begins at pre-K 4', L.recommendedCourseIds([L.makeCoursesEnabledEvent([], 't')], 'early').every((id) => L.getCourse(id).grade === 'PK4'));
   ok('every course in a grade group really belongs to that grade', L.gradesWithCourses().every((g) => L.subjectsForGrade(g).every((s) => s.courses.every((c) => c.grade === g))));
   ok('the optional sections have switches', ['reflection', 'lifeSkills', 'checks'].every((k2) => typeof L.FEATURES[k2] === 'boolean'));
 }
@@ -556,6 +790,10 @@ ok('reset: history kept, but nothing counts as mastered afterwards', events.leng
   r = L.addStudent(r, 'S-2001', 't', { level: 'elementary' }).roster;
   ok('renaming keeps the id, so progress cannot be lost', L.renameStudent(r, 'S-1042', 'Sam R.').roster.students[0].id === 's_1042' && L.renameStudent(r, 'S-1042', 'Sam R.').roster.students[0].label === 'Sam R.');
   ok('a blank name is refused', L.renameStudent(r, 'S-1042', ' ').error !== null);
+  ok('a name of thirty characters fits', L.renameStudent(r, 'S-1042', 'Very Very Long Name (Grade 3)!').error === null && L.NAME_MAX === 30);
+  ok('a name of thirty-one characters is refused with a plain sentence', L.renameStudent(r, 'S-1042', 'A'.repeat(31)).error === 'Names can be up to 30 characters.');
+  ok('the same cap holds when a student is added', L.addStudent(r, 'B'.repeat(31), 't', { level: 'elementary' }).error === 'Names can be up to 30 characters.' && L.addStudent(r, 'B'.repeat(30), 't', { level: 'elementary' }).error === null);
+  ok('subjects sort Math, Reading, Writing, Science, History, then the rest', L.sortSubjects(['History', 'Science', 'Art', 'Math', 'Writing', 'Reading', 'Math']).join(',') === 'Math,Reading,Writing,Science,History,Art');
   const hidden = L.setStudentActive(r, 'S-2001', false);
   ok('deactivating hides a student without deleting them', L.activeStudents(hidden).length === 1 && hidden.students.length === 2);
   const merged = L.mergeStudents(r, 'S-1042', 'S-2001');
@@ -571,8 +809,10 @@ ok('reset: history kept, but nothing counts as mastered afterwards', events.leng
   ok('a student can be added with a level and a picture', young.level === 'early' && young.picture === 'fox');
   ok('an unknown level is refused, a level is required', L.addStudent(L.emptyRoster(), 'S-8', 't', { level: 'genius' }).error === 'Choose a starting level first.');
   ok('an unknown picture is dropped rather than stored', L.addStudent(L.emptyRoster(), 'S-8', 't', { level: 'middle', picture: 'selfie.jpg' }).roster.students[0].picture === null);
-  ok('a backup file name names the device, the count and the date', L.backupFileName('iPad 3', 12, '2026-09-10T15:00:00.000Z') === 'edusphere-ipad-3-12-students-2026-09-10.json');
-  ok('a missing device name still gives a sensible file name', L.backupFileName('', 1, '2026-09-10') === 'edusphere-device-1-student-2026-09-10.json');
+  ok('a backup file name names the device, the count, the date and the time', /^edusphere-ipad-3-12-students-\d{1,2}-\d{1,2}-2026-\d{1,2}-\d{2}(am|pm)\.json$/.test(L.backupFileName('iPad 3', 12, '2026-09-10T15:00:00.000Z')));
+  ok('a backup file says when it was saved in plain words, in the device\'s own time zone', /^[A-Z][a-z]+day, [A-Z][a-z]+ \d{1,2}, \d{4} at \d{1,2}:\d{2} [AP]M .+/.test(L.describeMoment('2026-09-12T05:35:00.000Z')) && L.buildBackup({ roster: { students: [] }, records: [], wonderReview: null, covered: [], deviceName: 'x', recovery: null }, '2026-09-12T05:35:00.000Z').saved === L.describeMoment('2026-09-12T05:35:00.000Z'));
+  ok('the stamp reads month, day, year, then the time', L.backupStamp(new Date(2026, 8, 11, 22, 43).toISOString()) === '9-11-2026-10-43pm' && L.backupStamp(new Date(2026, 0, 5, 0, 7).toISOString()) === '1-5-2026-12-07am');
+  ok('a missing device name still gives a sensible file name', /^edusphere-device-1-student-/.test(L.backupFileName('', 1, '2026-09-10T15:00:00.000Z')));
   ok('pictures are a fixed drawn set, never an upload', L.PICTURES.length === 12 && L.PICTURES.every((p) => /^[a-z]+$/.test(p)));
   ok('twelve animals and six colours give seventy-two pictures', L.PICTURES.length * L.TINTS.length === 72);
   let big = L.emptyRoster();
@@ -585,9 +825,9 @@ ok('reset: history kept, but nothing counts as mastered afterwards', events.leng
   const withPic = L.setStudentPicture(L.addStudent(L.emptyRoster(), 'S-7', 't', { level: 'elementary' }).roster, 'S-7', 'owl');
   ok('a picture can be added later, with a default colour', L.findStudent(withPic, 'S-7').picture === 'owl' && L.findStudent(withPic, 'S-7').tint === 'sun');
   ok('a picture can be removed again', L.findStudent(L.setStudentPicture(withPic, 'S-7', null), 'S-7').picture === null);
-  ok('a level narrows recommendations to its band', JSON.stringify(L.recommendedCourseIds([L.makeCoursesEnabledEvent([], 't')], 'early')) === '["first-steps-pk"]');
-  ok('a level with no courses yet recommends nothing rather than kindergarten', L.recommendedCourseIds([L.makeCoursesEnabledEvent([], 't')], 'middle').length === 0);
-  ok('the letters course needs a touch screen and math does not', L.courseNeedsTouch('letters-k') === true && L.courseNeedsTouch('counting-k') === false);
+  ok('a level narrows recommendations to its band', JSON.stringify(L.recommendedCourseIds([L.makeCoursesEnabledEvent([], 't')], 'early')) === '["first-steps-pk","first-sounds-pk"]');
+  ok('a high school student starts on the grade 9 courses', JSON.stringify(L.recommendedCourseIds([L.makeCoursesEnabledEvent([], 't')], 'high')) === '["math-9","reading-9","science-9","writing-9"]');
+  ok('the letters course and now the counting course both have a touch module', L.courseNeedsTouch('letters-k') === true && L.courseNeedsTouch('counting-k') === true && L.courseNeedsTouch('fractions-intro') === false);
   ok('a wobbly hand passes, a wrong letter and a scribble do not', L.traceMatches('L', [[[34, 16], [31, 42], [28, 63], [33, 84]], [[31, 88], [52, 83], [74, 86]]]) && !L.traceMatches('L', [[[30, 15], [75, 15]], [[50, 15], [50, 85]]]) && !L.traceMatches('L', [Array.from({ length: 80 }, (_, i) => [(i * 37) % 100, (i * 53) % 100])]));
 }
 
@@ -608,6 +848,13 @@ ok('reset: history kept, but nothing counts as mastered afterwards', events.leng
   ok('the first module in a course needs nothing, unless it names something', L.prerequisitesOf('colours').length === 0 && JSON.stringify(L.prerequisitesOf('count-to-5')) === '["count-to-3"]');
   ok('the graph has no missing links and no loops', L.checkPrerequisiteGraph().length === 0);
   ok('a non-linear course does not chain its modules', L.prerequisitesOf('count-to-3').length === 0 && JSON.stringify(L.prerequisitesOf('patterns')) === '["same-and-different"]');
+  // A student placed at grade 3 without grade 2 is not locked out of grade 3 reading
+  { const fresh = L.deriveProgress([]);
+    const placed = L.moduleStatuses(fresh, ['reading-3', 'fractions-intro', 'multiplication-3']);
+    ok('a first module whose only prerequisite lives in an unassigned course opens', placed.find((x) => x.id === 'main-idea').status === 'available');
+    ok('the same module stays locked when the earlier course is assigned too', L.moduleStatuses(fresh, ['reading-2', 'reading-3']).find((x) => x.id === 'main-idea').status === 'locked');
+    ok('in-course chains still hold', placed.find((x) => x.id === 'fact-or-opinion').status === 'locked');
+    ok('without an assignment list every prerequisite gates, as before', L.moduleStatuses(fresh).find((x) => x.id === 'main-idea').status === 'locked'); }
   const fresh = L.deriveProgress([]);
   ok('only first modules are open to a brand new student', L.moduleStatuses(fresh).filter((s) => s.status === 'available').every((s) => L.prerequisitesOf(s.id).length === 0));
 }
@@ -618,13 +865,13 @@ ok('reset: history kept, but nothing counts as mastered afterwards', events.leng
   const rep = L.buildReport('Sam R.', [att('count-to-5', '2026-09-01T10:00:00.000Z', 5)]);
   const text = L.summaryParagraph(rep);
   ok('the summary opens with the readable name', text.startsWith('Sam R. has mastered'));
-  ok('it counts every assigned course, not one grade at a time', text.includes('1 of 11 in Kindergarten math') && text.includes('in third grade math') && text.includes('pre-K 4 math') && text.includes('first grade math'));
+  ok('it counts every assigned course, not one grade at a time', text.includes('1 of 13 in Kindergarten math') && text.includes('in third grade math') && text.includes('pre-K 4 math') && text.includes('first grade math'));
   ok('grades are spoken the way a person would say them', text.includes('Kindergarten') && text.includes('third grade') && !text.includes('Grade 3'));
   ok('confidence is described in words, never as a raw score', /Confidence is strongest|ground to make up|steady across the board|not been enough practice/.test(text) && !/score of \d|\d out of 5/.test(text));
   ok('reflections are reported in a plain sentence', text.includes('No reflections have been answered yet'));
   const noneOn = L.buildReport('Sam', [L.makeCoursesEnabledEvent([], '2026-09-01T09:00:00.000Z')]);
   ok('a student with nothing switched on is told so plainly', L.summaryParagraph(noneOn).includes('no courses switched on yet'));
-  ok('the summary agrees with the report it came from', text.includes(`${rep.modules.filter((m) => m.courseId === 'counting-k' && m.mastered).length} of 11`));
+  ok('the summary agrees with the report it came from', text.includes(`${rep.modules.filter((m) => m.courseId === 'counting-k' && m.mastered).length} of 13`));
 }
 
 // ---- 13. Course labels and the recommended list ----
@@ -643,7 +890,7 @@ ok('reset: history kept, but nothing counts as mastered afterwards', events.leng
   ok('a module with no override uses the platform default', L.moduleRules('count-to-5').questions === L.CONFIG.CORE_QUESTIONS_PER_ATTEMPT && L.moduleRules('count-to-5').toMaster === L.CONFIG.MASTERY_MIN_CORRECT);
   ok('an unknown module still returns sensible rules', L.moduleRules('nope').questions === L.CONFIG.CORE_QUESTIONS_PER_ATTEMPT);
   const att = (moduleId, at, correct, total) => ({ type: 'attempt_completed', at, startedAt: at, moduleId, seed: 1, core: [], review: null, coreCorrect: correct, coreTotal: total || 5 });
-  const events = [att('count-to-5', '2026-09-01T10:00:00.000Z', 5), att('count-to-10', '2026-09-02T10:00:00.000Z', 5), att('one-more-one-less', '2026-09-02T11:00:00.000Z', 5), att('joining-and-taking-away', '2026-09-02T12:00:00.000Z', 5), att('comparing-numbers', '2026-09-02T13:00:00.000Z', 5), att('shapes', '2026-09-02T14:00:00.000Z', 5), att('counting-by-tens', '2026-09-02T15:00:00.000Z', 5), att('longer-and-heavier', '2026-09-02T16:00:00.000Z', 5), att('sorting', '2026-09-02T17:00:00.000Z', 5), att('solids', '2026-09-02T18:00:00.000Z', 5), att('making-ten', '2026-09-02T19:00:00.000Z', 5), att('fraction-meaning', '2026-09-03T10:00:00.000Z', 2)];
+  const events = [att('count-to-5', '2026-09-01T10:00:00.000Z', 5), att('count-to-10', '2026-09-02T10:00:00.000Z', 5), att('tracing-numbers', '2026-09-02T10:30:00.000Z', 5), att('tracing-shapes', '2026-09-02T10:40:00.000Z', 5), att('one-more-one-less', '2026-09-02T11:00:00.000Z', 5), att('joining-and-taking-away', '2026-09-02T12:00:00.000Z', 5), att('comparing-numbers', '2026-09-02T13:00:00.000Z', 5), att('shapes', '2026-09-02T14:00:00.000Z', 5), att('counting-by-tens', '2026-09-02T15:00:00.000Z', 5), att('longer-and-heavier', '2026-09-02T16:00:00.000Z', 5), att('sorting', '2026-09-02T17:00:00.000Z', 5), att('solids', '2026-09-02T18:00:00.000Z', 5), att('making-ten', '2026-09-02T19:00:00.000Z', 5), att('fraction-meaning', '2026-09-03T10:00:00.000Z', 2)];
   const tr = L.buildTranscript('S-1042', events);
   ok('a course with every module mastered is listed as completed', tr.completed.length === 1 && tr.completed[0].id === 'counting-k');
   ok('a course part way through is listed separately', tr.inProgress.length === 1 && tr.inProgress[0].id === 'fractions-intro');
@@ -692,7 +939,7 @@ ok('reset: history kept, but nothing counts as mastered afterwards', events.leng
     att('fraction-meaning', '2026-09-03T10:00:00.000Z', 5, 9500),
   ];
   const story = L.moduleStory('Sam', ev, 'count-to-5');
-  ok('the story opens with reads and practices in words', story.startsWith('Sam read this lesson once and practiced it twice.'));
+  ok('the story opens with reads and practices in words', story.startsWith('Sam read through this lesson once and practiced it twice.'));
   ok('each attempt is narrated with its score', story.includes('3 out of 5') && story.includes('4 out of 5'));
   ok('a suspiciously quick final round is called out against their usual pace', story.includes('noticeably quicker than the 9.5 seconds'));
   ok('a quick round triggers a promise to re-check later', story.includes('introduced again at a later time'));
@@ -700,8 +947,8 @@ ok('reset: history kept, but nothing counts as mastered afterwards', events.leng
   ok('no em dashes in the story', !story.includes('\u2014'));
   ok('an untouched module says so plainly', L.moduleStory('Sam', [], 'count-to-10').includes('has not opened'));
   ok('a read-only module says nothing counts yet', L.moduleStory('Sam', [{ type: 'lesson_viewed', at: 't', moduleId: 'count-to-10' }], 'count-to-10').includes('has not practiced it yet'));
-  ok('encouragement names what was mastered and what is next', L.encouragementFor(ev, 'count-to-5', true) === 'You have mastered count to 5! Great job! Next up is count to 10.');
-  const wholeCourse = ['count-to-5', 'count-to-10', 'one-more-one-less', 'joining-and-taking-away', 'comparing-numbers', 'shapes', 'counting-by-tens', 'longer-and-heavier', 'sorting', 'solids', 'making-ten'].map((id, i) => att(id, `t${i}`, 5, 9000));
+  ok('encouragement names what was mastered and what is next', L.encouragementFor(ev, 'count-to-5', true) === 'You have mastered **count to 5!** Way to go!\nNext up is **count to 10.**');
+  const wholeCourse = ['count-to-5', 'count-to-10', 'tracing-numbers', 'one-more-one-less', 'tracing-shapes', 'joining-and-taking-away', 'comparing-numbers', 'shapes', 'counting-by-tens', 'longer-and-heavier', 'sorting', 'solids', 'making-ten'].map((id, i) => att(id, `t${i}`, 5, 9000));
   ok('finishing a course points at the next course', L.encouragementFor(wholeCourse, 'making-ten', true).includes('Next we will learn about'));
   ok('a miss is met with encouragement, not a score', !L.encouragementFor(ev, 'count-to-5', false).includes('out of'));
 }
@@ -752,7 +999,7 @@ ok('reset: history kept, but nothing counts as mastered afterwards', events.leng
   ok('a module with no prerequisite never routes back', L.loopBackTarget([att('colours', 't1', 1), att('colours', 't2', 1)], 'colours') === null);
   const loop = L.makeLoopBackEvent('count-to-10', 'count-to-5', '2026-09-03T11:00:00.000Z');
   ok('a loop back is recorded as an event, never a deletion', loop.type === 'looped_back' && loop.moduleId === 'count-to-10' && loop.toModuleId === 'count-to-5');
-  ok('the module story tells the educator about the loop back', L.moduleStory('Sam', [...twoMiss, loop], 'count-to-10').includes('sent Sam back to count to 5'));
+  ok('the module story tells the educator about the loop back', L.moduleStory('Sam', [...twoMiss, loop], 'count-to-10').includes('Sam was sent back to count to 5'));
   ok('a loop back event does not disturb mastery counts', L.deriveProgress([...twoMiss, loop]).masteredIds.includes('count-to-5'));
 }
 
@@ -767,11 +1014,97 @@ ok('reset: history kept, but nothing counts as mastered afterwards', events.leng
   const rows = L.classView(students, '2026-09-10T12:00:00.000Z');
   ok('the student who is stuck and guessing comes first', rows[0].label === 'S-1' && rows[0].band === 'needs help now');
   ok('a student who has not started is flagged, gently', rows.find((r) => r.label === 'S-3').reasons.includes('has not started'));
-  ok('a student doing fine is on track with nothing flagged', rows.find((r) => r.label === 'S-2').band === 'on track' && rows.find((r) => r.label === 'S-2').reasons.length === 0);
+  ok('a student doing fine is on track and the reason says how quick they were', rows.find((r) => r.label === 'S-2').band === 'on track' && /on track/.test(rows.find((r) => r.label === 'S-2').reasons.join(' ')));
+  { const quick = { id: 'q', label: 'Q', events: [att('count-to-5', '2026-09-09T10:00:00.000Z', 5, 6000)] };
+    const slow = { id: 's', label: 'S', events: [att('count-to-5', '2026-09-08T10:00:00.000Z', 2, 6000), att('count-to-5', '2026-09-08T11:00:00.000Z', 3, 6000), att('count-to-5', '2026-09-09T10:00:00.000Z', 5, 6000)] };
+    const ordered = L.classView([quick, slow], '2026-09-10T12:00:00.000Z');
+    ok('among students on track, the one who needed more tries comes first', ordered[0].label === 'S' && ordered[0].band === 'on track' && /took about 3.0 rounds per module/.test(ordered[0].reasons.join(' '))); }
   ok('every reason is a plain phrase, never a number alone', rows.every((r) => r.reasons.every((x) => /[a-z]/.test(x))));
   ok('each row names what the student should do next', rows.every((r) => typeof r.next === 'string'));
-  ok('the summary reads in one breath', L.classSummary(rows) === '1 student needs help now: S-1. 1 worth keeping an eye on. 1 on track.');
+  ok('the summary explains the order, then counts', L.classSummary(rows).startsWith('Students on top could use a bit more guidance than those on bottom.') && L.classSummary(rows).endsWith('\n1 student needs help now (S-1). 1 student worth keeping an eye on. 1 on track.'));
   ok('an empty class says so', L.classSummary([]) === 'No students yet.');
+  ok('September 11 and Veterans Day are remembered in any year, and ordinary days are not', L.remembranceFor('2026-09-11').id === 'september-11' && L.remembranceFor('2031-11-11').id === 'veterans-day' && !L.isRemembranceDay('2026-09-12') && !L.isRemembranceDay('2026-11-09'));
+  ok('Memorial Day is the last Monday of May', L.remembranceFor('2026-05-25').id === 'memorial-day' && L.remembranceFor('2027-05-31').id === 'memorial-day' && !L.isRemembranceDay('2026-05-18') && !L.isRemembranceDay('2026-05-26'));
+  ok('every remembrance card has a title and three plain lines', L.REMEMBRANCE_DAYS.every((d) => d.title && d.lines.length === 3 && d.lines.every((l) => l.length > 40)));
+  // Writing, marked by the educator
+  { const wq = L.generateQuestion('wr4-topic-paragraph', 2);
+    const sent = L.makeWritingEvent('topic-sentences', wq.prompt, 'Dogs make good pets. They are easy to feed. They love a walk. They sit with you.', [{ item: 'x', ticked: true }], '2026-09-14T10:00:00.000Z', '2026-09-14T10:05:00.000Z');
+    ok('a sent piece is pending and counts as an attempt, not a pass', L.pendingWritings([sent]).length === 1 && L.deriveProgress([sent]).perModule['topic-sentences'].attempts === 1 && !L.deriveProgress([sent]).perModule['topic-sentences'].passed && L.deriveProgress([sent]).perModule['topic-sentences'].pendingWriting === true);
+    const met = L.makeWritingMark('topic-sentences', sent.at, true, '', '2026-09-14T15:00:00.000Z');
+    const pg = L.deriveProgress([sent, met]);
+    ok('a mark that meets the bar is a pass on the day it was marked', pg.perModule['topic-sentences'].passed && pg.perModule['topic-sentences'].passes === 1 && !pg.perModule['topic-sentences'].mastered && L.pendingWritings([sent, met]).length === 0);
+    const notYet = L.makeWritingMark('topic-sentences', sent.at, false, '', '2026-09-14T15:00:00.000Z');
+    ok('not yet clears the waiting state without a pass', !L.deriveProgress([sent, notYet]).perModule['topic-sentences'].passed && L.pendingWritings([sent, notYet]).length === 0);
+    const sent2 = L.makeWritingEvent('topic-sentences', wq.prompt, 'A second paragraph, a day later, with a topic sentence first and reasons after it.', [], '2026-09-15T10:00:00.000Z', '2026-09-15T10:05:00.000Z');
+    const met2 = L.makeWritingMark('topic-sentences', sent2.at, true, '', '2026-09-15T12:00:00.000Z');
+    ok('two pieces that meet the bar on different days earn the star', L.deriveProgress([sent, met, sent2, met2]).perModule['topic-sentences'].mastered === true);
+    ok('a pass opens the next writing module', L.moduleStatuses(L.deriveProgress([sent, met]), ['writing-4']).find((x) => x.id === 'opinion-paragraph').status === 'available');
+    ok('the module story tells the writing record', L.moduleStory('x', [sent, met], 'topic-sentences').includes('marked as meeting the bar')); }
+  { const oq = L.generateQuestion('ord-numbers-100', 5); const nums = oq.answer.split(' | ').map(Number);
+    ok('an order question is judged as a sequence', L.checkAnswer(oq, oq.answer) && !L.checkAnswer(oq, oq.items.join(' | ')) && nums.every((n, i) => i === 0 || n > nums[i - 1])); }
+  // Placement check
+  { ok('placement grades follow the band and skip spoken and hidden courses', JSON.stringify(L.placementGrades('Math', 'middle')) === '["6","7","8"]' && JSON.stringify(L.placementGrades('Reading', 'elementary')) === '["3","4","5"]' && JSON.stringify(L.placementGrades('Math', 'early')) === '["2"]');
+    const probe = L.buildPlacementProbe('Math', '6', 11);
+    ok('a probe is four questions from that grade and subject', probe.core.length === 4 && probe.core.every((q) => { const c = L.getCourse(L.getModule(q.fromModuleId).courseId); return c.grade === '6' && c.subject === 'Math'; }));
+    ok('three of four clears a grade, two does not', L.placementCleared([{ correct: true }, { correct: true }, { correct: true }, { correct: false }]) && !L.placementCleared([{ correct: true }, { correct: true }, { correct: false }, { correct: false }]));
+    const out = L.placementOutcome('Math', 'middle', ['6', '7']);
+    ok('clearing two grades starts the student at the third and places past everything below it', out.startGrade === '8' && out.startCourseIds.join() === 'math-8' && ['ratios', 'fraction-meaning'].every((id) => out.clearedModuleIds.includes(id)) && !out.clearedModuleIds.includes('slope'));
+    { const down = L.placementOutcome('Math', 'high', ['7'], '8'); ok('a high school student who clears grade 7 after failing 9 and 8 starts at grade 8 with everything below placed past', down.startGrade === '8' && down.startCourseIds.join() === 'math-8' && down.clearedModuleIds.includes('ratios') && !down.clearedModuleIds.includes('slope')); }
+    const top = L.placementOutcome('Math', 'middle', ['6', '7', '8']);
+    ok('clearing every grade in the band starts at the top of the band', top.startGrade === '8');
+    const ev = [L.makePlacementEvent('Math', '8', out.clearedModuleIds, '2026-09-14T09:00:00.000Z')];
+    const pg = L.deriveProgress(ev);
+    ok('placed modules are passed for gating and never mastered', pg.passedIds.length === out.clearedModuleIds.length && pg.masteredIds.length === 0 && pg.perModule['ratios'].placed === true);
+    ok('a placed module opens the ones after it', L.moduleStatuses(pg, ['math-8']).find((x) => x.id === 'slope').status === 'available');
+    ok('placement is recorded per subject', L.placementDone(ev, 'Math') && !L.placementDone(ev, 'Reading'));
+    ok('the report rows and story say placed past', L.buildReport('x', ev).modules.find((m) => m.id === 'ratios').placed === true && L.moduleStory('x', ev, 'ratios').includes('placement check placed past')); }
+  // Cumulative checkpoint
+  { const passOn = (id, i) => L.makeAttemptEvent({ moduleId: id, seed: 1 }, [1, 1, 1, 1, 1].map(() => ({ correct: true })), null, `2026-09-14T10:0${i}:00.000Z`, `2026-09-14T10:0${i}:30.000Z`);
+    const three = ['fraction-meaning', 'equivalent-fractions', 'comparing-fractions'].map(passOn);
+    ok('no checkpoint before four modules are passed', L.checkpointDue(three) === null);
+    const four = [...three, passOn('fractions-on-a-line', 3)];
+    ok('a checkpoint is due at four passed modules', L.checkpointDue(four) && L.checkpointDue(four).atCount === 4);
+    const cp = L.buildCheckpoint(four, 5);
+    ok('a checkpoint has eight questions drawn from passed modules only', cp.core.length === 8 && cp.core.every((q) => four.some((e) => e.moduleId === q.fromModuleId)));
+    ok('a checkpoint never repeats a question', new Set(cp.core.map((q) => q.story + '|' + q.prompt)).size === 8);
+    const done = L.makeCheckpointEvent(cp, cp.core.map((q, i) => ({ correct: i !== 2, given: 'x' })), '2026-09-14T11:00:00.000Z', '2026-09-14T11:05:00.000Z');
+    const after = [...four, done];
+    ok('a finished checkpoint is not offered again for the same count', L.checkpointDue(after) === null);
+    ok('a missed checkpoint question marks that module for a refresher', L.refresherIds(after).length === 1 && L.refresherIds(after)[0] === cp.core[2].fromModuleId);
+    ok('the pass and the star are kept after a miss', L.deriveProgress(after).passedIds.length === 4);
+    const again = [...after, L.makeAttemptEvent({ moduleId: cp.core[2].fromModuleId, seed: 1 }, [1, 1, 1, 1, 1].map(() => ({ correct: true })), null, '2026-09-14T12:00:00.000Z', '2026-09-14T12:00:30.000Z')];
+    ok('passing the module again clears the refresher', L.refresherIds(again).length === 0);
+    ok('a checkpoint miss lowers confidence like a missed memory check', L.computeConfidence(cp.core[2].fromModuleId, after).score < L.computeConfidence(cp.core[2].fromModuleId, four).score);
+    ok('the report flags the refresher and the module story explains it', L.buildReport('x', after).modules.find((m) => m.id === cp.core[2].fromModuleId).refresher === true && L.moduleStory('x', after, cp.core[2].fromModuleId).includes('missed in the last checkpoint'));
+  }
+  // Memory checks can come from any mastered module in any course
+  { const mastered = ['fraction-meaning', 'count-to-5', 'letter-names']; const seen = new Set();
+    for (let seed = 1; seed <= 60; seed++) { const a = L.buildAttempt('equivalent-fractions', seed, mastered); if (a.review) seen.add(a.review.moduleId); }
+    ok('memory checks draw from the same course and from other courses', seen.has('fraction-meaning') && [...seen].some((id) => id !== 'fraction-meaning')); }
+  { const mastered = ['fraction-meaning', 'count-to-5', 'letter-names']; let both = 0; let distinct = true;
+    for (let seed = 1; seed <= 40; seed++) { const a = L.buildAttempt('equivalent-fractions', seed, mastered); if (a.review && a.review2) { both += 1; if (a.review.moduleId === a.review2.moduleId) distinct = false; } }
+    ok('a round carries two memory checks from two different passed modules', both === 40 && distinct); }
+  { const a = L.buildAttempt('equivalent-fractions', 3, ['fraction-meaning']);
+    ok('with one passed module there is one memory check, not a repeat', a.review && !a.review2); }
+  { const ev = [L.makeAttemptEvent({ moduleId: 'count-to-10', seed: 1 }, [{ correct: true }, { correct: true }, { correct: true }, { correct: true }, { correct: true }], { moduleId: 'count-to-5', correct: true }, 't0', 't1', { moduleId: 'letter-names', correct: false })];
+    const pr = L.deriveProgress(ev);
+    ok('both memory checks count in the review tally', pr.review.asked === 2 && pr.review.correct === 1); }
+  // Course search: every typed word must appear, and grades are matched every way they are said
+  ok('"grade 1 math" finds the grade 1 math course and nothing else', L.COURSES.filter((c) => L.matchesCourseSearch(c, 'grade 1 math')).map((c) => c.id).join() === 'numbers-1');
+  ok('"1st grade" and "first grade" find the same courses', JSON.stringify(L.COURSES.filter((c) => L.matchesCourseSearch(c, '1st grade')).map((c) => c.id)) === JSON.stringify(L.COURSES.filter((c) => L.matchesCourseSearch(c, 'first grade')).map((c) => c.id)) && L.COURSES.some((c) => L.matchesCourseSearch(c, '1st grade')));
+  ok('"math" finds every math course', L.COURSES.filter((c) => L.matchesCourseSearch(c, 'math')).length === L.COURSES.filter((c) => c.subject === 'Math').length);
+  ok('"kinder reading" narrows to kindergarten reading', L.COURSES.filter((c) => L.matchesCourseSearch(c, 'kinder reading')).map((c) => c.id).join() === 'letters-k');
+  ok('a word from a title works too', L.COURSES.filter((c) => L.matchesCourseSearch(c, 'fractions')).map((c) => c.id).includes('fractions-intro'));
+  ok('an empty search matches everything', L.COURSES.every((c) => L.matchesCourseSearch(c, '  ')));
+  ok('"pre k" typed as two words finds the pre-K courses, and "pr" already does', L.COURSES.filter((c) => L.matchesCourseSearch(c, 'pre k')).every((c) => c.grade.startsWith('PK')) && L.COURSES.filter((c) => L.matchesCourseSearch(c, 'pre k')).length === L.COURSES.filter((c) => c.grade.startsWith('PK')).length && L.COURSES.filter((c) => L.matchesCourseSearch(c, 'pr')).some((c) => c.grade.startsWith('PK')));
+  ok('a search matches letter by letter as it is typed', L.COURSES.filter((c) => L.matchesCourseSearch(c, 'ki')).some((c) => c.grade === 'K') && L.COURSES.filter((c) => L.matchesCourseSearch(c, 'k')).length > 0);
+  // The student's own summary
+  { const ids = L.getCourse('fractions-intro').modules.map((m) => m.id); const p5 = (id, at, c) => ({ type: 'attempt_completed', at, startedAt: at, moduleId: id, seed: 1, core: [], review: null, coreCorrect: c, coreTotal: 5 });
+    ok('a student with no rounds is told the easy first step', L.studentSummary([], ids)[0].includes('Open a module and try one'));
+    ok('mastery is named and what it unlocks is explained', L.studentSummary([p5('fraction-meaning', 't1', 5)], ids).join(' ').includes('Because you know what a fraction means, **equivalent fractions** is open'));
+    ok('a run of misses is framed as where learning happens', L.studentSummary([p5('fraction-meaning', 't1', 5), p5('equivalent-fractions', 't2', 1), p5('equivalent-fractions', 't3', 2), p5('equivalent-fractions', 't4', 1)], ids).join(' ').includes('A wrong answer shows you exactly what to learn next'));
+    ok('a run of wins is named as a streak', L.studentSummary([p5('fraction-meaning', 't1', 5), p5('equivalent-fractions', 't2', 5), p5('comparing-fractions', 't3', 5)], ids).join(' ').includes('streak: 3 rounds mastered in a row'));
+    ok('the summary is at least three sentences once there is anything to say', L.studentSummary([p5('fraction-meaning', 't1', 5)], ids).length >= 3); }
 }
 
 console.log(`\n${pass} passed, ${fail} failed`);

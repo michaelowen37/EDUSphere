@@ -43,9 +43,31 @@ for (const file of ['src/logic.mjs', 'src/ui.jsx']) {
   ok(`${file}: no em dashes in prose`, !strings.some((t) => t.includes('\u2014')), strings.filter((t) => t.includes('\u2014')).slice(0, 2).join(' | '));
   ok(`${file}: no double spaces in prose`, !strings.some((t) => /\S  \S/.test(t)), strings.filter((t) => /\S  \S/.test(t)).slice(0, 2).join(' | '));
   const plain = (t) => t.replace(/\$\{[^}]*\}/g, 'X');
-  const isProse = (t) => !/@media|@keyframes|\{ *[a-z-]+ *:/.test(t) && !/\+ \?|= \?|\? =|÷ \?|× \?|as \?/.test(t);
+  const isProse = (t) => !/@media|@keyframes|\{ *[a-z-]+ *:/.test(t) && !/\+ \?|= \?|\? =|÷ \?|× \?|as \?/.test(t) && t.trim() !== '?';
   const spaced = (t) => isProse(t) && (/ [,.;:!?]/.test(plain(t)));
   ok(`${file}: no space before punctuation`, !strings.some((t) => spaced(t) && !/\.\.\./.test(t)), strings.filter((t) => spaced(t) && !/\.\.\./.test(t)).slice(0, 2).map((t) => JSON.stringify(t.slice(0, 60))).join(' | '));
 }
+// Teaching text reads cleanly: a key idea is short sentences, never one long one, and every
+// line of a lesson that is a sentence starts with a capital and ends with a mark. Centered
+// [[ ]] lines, equations and connector words like "becomes" are not sentences and are skipped.
+const L = await import('../src/logic.mjs');
+const strip = (t) => t.replace(/\*\*/g, '');
+const isEquation = (t) => /[=<>×÷+]/.test(t) || /^\d+[\/.]\d+/.test(t) || /^[^a-z]*$/.test(t);
+const runOn = [], noEnd = [], lower = [];
+for (const m of L.MODULES) {
+  for (const sentence of strip(m.lesson.keyIdea || '').replace(/\[\[|\]\]/g, '').split(/(?<=[.!?])\s+|\n/)) {
+    if (sentence.trim().split(/\s+/).length > 28) runOn.push(`${m.id}: ${sentence.trim().slice(0, 50)}`);
+  }
+  for (const paragraph of m.lesson.paragraphs || []) for (const raw of paragraph.split('\n')) {
+    let t = raw.trim(); if (!t) continue;
+    const centered = /^\[\[.*\]\]$/.test(t); t = strip(t.replace(/^\[\[|\]\]$/g, '')).trim();
+    if (centered || isEquation(t) || t.split(/\s+/).length < 3) continue;
+    if (!/[.!?:)"\u201d'\u2019]$/.test(t)) noEnd.push(`${m.id}: ${t.slice(0, 50)}`);
+    if (/^[a-z]/.test(t)) lower.push(`${m.id}: ${t.slice(0, 50)}`);
+  }
+}
+ok('no key idea runs a sentence past 28 words', runOn.length === 0, runOn.slice(0, 3).join(' | '));
+ok('every lesson sentence ends with a mark', noEnd.length === 0, noEnd.slice(0, 3).join(' | '));
+ok('every lesson sentence starts with a capital', lower.length === 0, lower.slice(0, 3).join(' | '));
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

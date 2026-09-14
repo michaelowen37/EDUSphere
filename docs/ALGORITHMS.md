@@ -33,9 +33,11 @@ they were right first time, so retrying does not inflate mastery.
 
 ## What is open
 
-A module is open when every prerequisite is mastered. Prerequisites are the module
-before it in its course plus anything in its `requires` list, which may cross courses
-and grades. The graph is checked for missing links and loops; a loop would lock a
+A module is open when every gating prerequisite is mastered. Prerequisites are the
+module before it in its course plus anything in its `requires` list, which may cross
+courses and grades. A prerequisite from another course gates only when that course is
+assigned to the student; placement above it is the educator's call. Loop-back still
+uses the full list. The graph is checked for missing links and loops; a loop would lock a
 student out forever.
 
 ## Loop-back
@@ -111,3 +113,19 @@ A backup is the roster, every record, and the educator's settings, in one JSON f
 with a version number. Restore merges: students by ID, events joined without
 duplicates, settings unioned. Restore can only ever add. A fixture file from each
 format version is kept in `tests/fixtures` and must restore forever.
+
+## Memory checks (updated 2026-09-13)
+
+The review question in a round is drawn from any module the student has mastered, in any
+course. Six times in ten it comes from an earlier module in the same course; otherwise
+from anywhere mastered. It never affects mastery of the current module. Mastery v2 (see
+DECISIONS.md) will raise this to two checks per round and add a cumulative checkpoint
+round after every fourth module.
+
+## Checkpoints (2026-09-14)
+
+After every fourth passed module (checkpointDue), buildCheckpoint draws eight questions from
+passed modules (cycling through them, never repeating a question). makeCheckpointEvent records
+per-module results. refresherIds returns modules missed in the latest checkpoint and not passed
+since; computeConfidence counts checkpoint misses with memory-check misses, and a return that
+is half missed or worse costs one point. A checkpoint never changes a pass or a star.

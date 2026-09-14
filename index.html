@@ -17880,6 +17880,22 @@ const COURSES = [
         modules: GRADE11_HISTORY_MODULES(),
     },
     {
+        id: 'government-12',
+        grade: '12',
+        subject: 'History',
+        title: 'United States government',
+        audience: 'Grade 12',
+        modules: GRADE12_GOVERNMENT_MODULES(),
+    },
+    {
+        id: 'economics-12',
+        grade: '12',
+        subject: 'History',
+        title: 'Economics and personal finance',
+        audience: 'Grade 12',
+        modules: GRADE12_ECONOMICS_MODULES(),
+    },
+    {
         id: 'history-5',
         grade: '5',
         subject: 'History',
@@ -18089,11 +18105,15 @@ function recommendedCourseIds(events, level, startGrade = null) {
     const first = gradesWithCourses().find((g) => !gradeStartsHidden(g));
     return COURSES.filter((c) => c.grade === first).map((c) => c.id);
 }
+// Subjects always read Math, Reading, Writing, Science, History, then anything else alphabetically,
+// whatever order the courses were written in. Every screen that lists subjects sorts with this.
+const SUBJECT_RANK = { Math: 0, Reading: 1, Writing: 2, Science: 3, History: 4 };
+function sortSubjects(subjects) {
+    return [...new Set(subjects)].sort((a, b) => (SUBJECT_RANK[a] ?? 9) - (SUBJECT_RANK[b] ?? 9) || a.localeCompare(b));
+}
 function subjectsForGrade(grade) {
     const inGrade = COURSES.filter((c) => c.grade === grade);
-    // Subjects always read Math, Reading, Science, then anything else, whatever order the courses were written in.
-    const rank = { Math: 0, Reading: 1, Writing: 2, Science: 3, History: 4 };
-    const subjects = [...new Set(inGrade.map((c) => c.subject))].sort((a, b) => (rank[a] ?? 9) - (rank[b] ?? 9) || a.localeCompare(b));
+    const subjects = sortSubjects(inGrade.map((c) => c.subject));
     return subjects.map((subject) => ({ subject, courses: inGrade.filter((c) => c.subject === subject) }));
 }
 // Kindergarten reading: letter names, order, and big/small letters. No pictures
@@ -19364,6 +19384,26 @@ function GRADE1_READING_MODULES() {
             },
             sources: ['Aligned with Texas TEKS 1.6 (comprehension: ask and answer questions about a text) and Common Core RL.1.1.'],
             generators: ['r1-who', 'r1-where', 'r1-what-colour', 'r1-how-many', 'r1-true-false'],
+        },
+        {
+            id: 'tracing-more-small-letters',
+            order: 6,
+            title: 'More small letters to trace',
+            tagline: 'Tall sticks, bumps and zigzags',
+            needsTouch: true,
+            lesson: {
+                paragraphs: ['Some small letters have a tall stick. Some have bumps. Some zigzag. Start at the dot and follow the arrow.', 'Go slowly. Lift your finger when the line ends.'],
+                keyIdea: 'Tall sticks, bumps and zigzags. Start at the dot and follow the arrow.',
+                example: { kind: 'letters', text: 'h', caption: 'A tall stick and a bump. That is small h.' },
+                script: [
+                    { say: 'Start at the dot. Go down the tall stick, then over the bump. That is small h.', show: { kind: 'letters', text: 'h' } },
+                    { say: 'Start at the dot. Down, then bump, then bump again. That is small m.', show: { kind: 'letters', text: 'm' } },
+                    { say: 'Start at the dot. Across, down the slide, and across again. That is small z.', show: { kind: 'letters', text: 'z' } },
+                    { say: 'Start at the dot. Follow the arrow. Stay on the line.', show: { kind: 'letters', text: 'w' } },
+                ],
+            },
+            sources: ['Aligned with Texas TEKS 1.2F (develop handwriting by printing words, sentences, and answers legibly) and Common Core L.1.1.A (print all upper- and lowercase letters).'],
+            generators: ['r1-trace-tall', 'r1-trace-bumps', 'r1-trace-zigzag', 'r1-trace-any-small', 'r1-trace-any-small'],
         },
     ];
 }
@@ -22674,7 +22714,7 @@ function GRADE10_HISTORY_MODULES() {
                     "Let's follow the road to the second. Depression, resentment and fear brought Hitler to power in Germany in 1933. He invaded Poland in 1939, and the war spread across Europe, Asia and the Pacific. The United States entered after Pearl Harbor in December 1941. Germany surrendered in May 1945 and Japan in August, after two atomic bombs.\n[[1939 to 1945: the Second World War.]]",
                     "About sixty million people died in the second war, most of them civilians, six million of them Jews murdered in the Holocaust. The United Nations, formed in 1945, was built on the promise never again. Studying the wars is how each generation is asked to keep it.",
                 ],
-                keyIdea: 'The First World War, 1914 to 1918, made the peace that led to the Second, 1939 to 1945; sixty million died, six million Jews in the Holocaust, and the UN was built on never again.',
+                keyIdea: 'The First World War, 1914 to 1918, made the peace that led to the Second, 1939 to 1945.\nSixty million people died, six million of them Jews murdered in the Holocaust.\nThe United Nations was built in 1945 on the promise never again.',
                 example: { kind: 'letters', text: '1914, 1939, 1945', caption: 'The world wars.' },
             },
             sources: ['Aligned with Texas TEKS WH.11A and WH.12B (identify the causes and effects of the world wars; explain the roles of major participants; and explain the Holocaust) and NCSS Theme IX (Global Connections).'],
@@ -22683,6 +22723,234 @@ function GRADE10_HISTORY_MODULES() {
     ];
 }
 // Grade 11 United States history since 1877: six turns.
+// Grade 12 government: the Constitution's principles, the three branches, federalism, the Bill of
+// Rights, how a bill becomes a law, and elections. Texas teaches government and economics as two
+// half-year courses in grade 12, so they are two courses here under the History subject.
+function GRADE12_GOVERNMENT_MODULES() {
+    return [
+        {
+            id: 'principles-of-the-constitution',
+            order: 1,
+            title: 'The principles of the Constitution',
+            tagline: 'A few ideas under everything',
+            requires: ['founding-documents'],
+            lesson: {
+                paragraphs: [
+                    "The Constitution is a short document, about 4,500 words, written in Philadelphia in the summer of 1787.\n[[1787: written. 1788: ratified. 1789: the new government begins.]]\nIt starts with three words that were a choice: **We the People**. Not we the states, and not we the king.\nThe people are the source of the government's power. That idea is called **popular sovereignty**.",
+                    "Let's look at the principles built into it, one at a time.\n**Limited government:** the government may only do what the Constitution allows.\n**Separation of powers:** making laws, carrying out laws and judging laws are three different jobs, given to three different branches.\n**Checks and balances:** each branch can stop the others, so no one branch runs away with the power.\n**Federalism:** power is split between the national government and the states.\n**Republicanism:** the people elect representatives to decide for them.\n**Individual rights:** some things the government may never do to a person, listed in the Bill of Rights.",
+                    "Why so many ways to limit power? The founders had read Roman history, and they had just fought a king.\nIn Federalist Number 51, James Madison explained the design in one line: **ambition must be made to counteract ambition**.\nGive every office a reason to guard its own power, and no office can take all of it.\n[[Popular sovereignty. Limited government. Separation of powers. Checks and balances. Federalism.]]\nThat is the shape of the whole system. Every module after this one is one of those ideas in detail.",
+                ],
+                keyIdea: 'The Constitution, written in 1787, rests on a few principles.\nThe people are the source of power, the government is limited, power is separated and checked, and it is shared with the states.\nMadison said why: ambition must be made to counteract ambition.',
+                example: { kind: 'letters', text: 'We the People', caption: 'The first three words of the Constitution.' },
+            },
+            sources: ['Aligned with Texas TEKS United States Government knowledge statement 7 (constitutional principles: popular sovereignty, limited government, separation of powers, checks and balances, federalism, republicanism and individual rights) and NCSS Theme VI (Power, Authority, and Governance).'],
+            generators: ['g12-which-principle', 'g12-constitution-year', 'g12-which-principle', 'g12-madison-line', 'g12-constitution-fact'],
+        },
+        {
+            id: 'three-branches',
+            order: 2,
+            title: 'The three branches and checks and balances',
+            tagline: 'Who makes, carries out and judges the laws',
+            requires: ['principles-of-the-constitution'],
+            lesson: {
+                paragraphs: [
+                    "Article I of the Constitution creates Congress, Article II the President, and Article III the courts. Three articles, three branches, three jobs.\n[[Legislative: Congress makes the laws.]]\n[[Executive: the President carries out the laws.]]\n[[Judicial: the courts decide what the laws mean.]]\nCongress has two houses. The **House of Representatives** has 435 members, elected every two years, with seats shared out by population. The **Senate** has 100 members, two from every state, elected for six years.",
+                    "Let's look at the checks, because the checks are the whole point.\nCongress passes a bill. The President can **veto** it. Congress can **override** the veto with two thirds of both houses.\nThe President appoints judges and ambassadors. The Senate must **confirm** them.\nThe President makes treaties. The Senate must approve them by two thirds.\nThe House can **impeach** a president or a judge by a majority vote. The Senate holds the trial and needs two thirds to convict.\nThe Supreme Court can strike down a law as unconstitutional. That power is called **judicial review**, and the Court claimed it in Marbury v. Madison in 1803.",
+                    "The numbers are worth knowing, because the numbers are the checks.\n[[Two thirds of 435 representatives is 290.]]\n[[Two thirds of 100 senators is 67.]]\nA President serves four years and, since the 22nd Amendment in 1951, at most two terms. The nine justices of the Supreme Court serve for life.\nNobody in this design is trusted with power alone. That was on purpose.",
+                ],
+                keyIdea: 'Congress makes the laws, the President carries them out, and the courts decide what they mean.\nEach branch can check the others: veto and override, confirmation, impeachment, judicial review.\nTwo thirds of 435 is 290 and two thirds of 100 is 67, and those numbers are the checks.',
+                example: { kind: 'letters', text: '435 + 100', caption: 'Representatives plus senators: the Congress.' },
+            },
+            sources: ['Aligned with Texas TEKS United States Government knowledge statement 8 (the structure and functions of the legislative, executive and judicial branches, and how the Constitution provides for checks and balances) and NCSS Theme VI (Power, Authority, and Governance).'],
+            generators: ['g12-which-branch', 'g12-how-many', 'g12-which-check', 'g12-two-thirds', 'g12-term-length'],
+        },
+        {
+            id: 'federalism',
+            order: 3,
+            title: 'Federalism: national, state and local',
+            tagline: 'Two governments over every person',
+            requires: ['three-branches'],
+            lesson: {
+                paragraphs: [
+                    "Every American lives under at least two governments at once: the national government in Washington and the government of their state. Add a county, a city and a school district, and it is often five.\n[[Federalism: power shared between the national government and the states.]]\nThe Constitution lists what the national government may do. Those are the **enumerated powers**: coin money, declare war, raise an army, run the post office, regulate trade between the states.",
+                    "Let's look at the other side.\nThe 10th Amendment says that any power not given to the national government is **reserved** to the states or to the people.\n**Reserved powers:** schools, police, driver's licenses, marriage licenses, most crimes, elections.\n**Shared powers:** both may tax, build roads, run courts and borrow money.\nWhen a state law and a national law collide, the national law wins. That rule is the **supremacy clause**, in Article VI.",
+                    "Texas has its own constitution, written in 1876, and it keeps its government on a short leash: the legislature meets in regular session only every two years, for 140 days.\nLocal governments are creatures of the state: a city council, a county commissioners court, a school board.\nThe closer the government, the more likely you are to see it work: the pothole, the school calendar, the zoning of the lot next door.\n[[National: enumerated. States: reserved. Both: shared.]]",
+                ],
+                keyIdea: 'Power is shared between the national government and the states.\nThe national government holds the enumerated powers, like coining money and declaring war.\nThe states keep the reserved powers, like schools and police, and when the two collide, national law wins.',
+                example: { kind: 'letters', text: '10th', caption: 'The amendment that reserves powers to the states.' },
+            },
+            sources: ['Aligned with Texas TEKS United States Government knowledge statement 9 (federalism: the distribution of powers between the national and state governments, and the limits on each) and NCSS Theme VI (Power, Authority, and Governance).'],
+            generators: ['g12-which-level', 'g12-power-kind', 'g12-which-level', 'g12-supremacy', 'g12-tenth'],
+        },
+        {
+            id: 'bill-of-rights',
+            order: 4,
+            title: 'The Bill of Rights and civil liberties',
+            tagline: 'What the government may never do to you',
+            requires: ['federalism'],
+            lesson: {
+                paragraphs: [
+                    "The Constitution of 1787 said what the government could do. Many people refused to ratify it until it also said what the government could never do.\nThe answer was the first ten amendments, the **Bill of Rights**, ratified in 1791.\n[[First Amendment: religion, speech, press, assembly, petition.]]\nFive freedoms in one sentence. They are the ones a government would most like to take, which is why they come first.",
+                    "Let's look at the rest, in the order a person might meet them.\n**Second:** the right to keep and bear arms.\n**Fourth:** no unreasonable searches, and a warrant needs a good reason.\n**Fifth:** no trial twice for the same crime, no being forced to testify against yourself, and no loss of life, liberty or property without **due process** of law.\n**Sixth:** a speedy and public trial, a jury, and a lawyer.\n**Eighth:** no cruel and unusual punishment.\n**Tenth:** powers not given to the nation stay with the states or the people.",
+                    "The Bill of Rights protected people from the national government. It took later amendments, and a century, to make the promise reach everyone.\n[[13th, 1865: slavery ends. 14th, 1868: citizenship and equal protection. 15th, 1870: the vote, whatever your race.]]\n[[19th, 1920: women vote. 26th, 1971: the vote at 18.]]\nA democracy is majority rule. The Bill of Rights is the list of things a majority may not do to a minority, and that is what keeps majority rule from becoming mob rule.",
+                ],
+                keyIdea: 'The first ten amendments, ratified in 1791, list what the government may never do to a person.\nThe First Amendment protects religion, speech, press, assembly and petition.\nLater amendments ended slavery and widened the vote, and the whole list is what protects a minority from a majority.',
+                example: { kind: 'letters', text: '1791', caption: 'The Bill of Rights is ratified.' },
+            },
+            sources: ['Aligned with Texas TEKS United States Government knowledge statement 10 (the rights guaranteed in the Bill of Rights and later amendments, and the balance between majority rule and minority rights) and NCSS Theme X (Civic Ideals and Practices).'],
+            generators: ['g12-which-amendment', 'g12-amendment-year', 'g12-first-freedoms', 'g12-which-amendment', 'g12-vote-order'],
+        },
+        {
+            id: 'how-a-bill-becomes-law',
+            order: 5,
+            title: 'How a bill becomes a law',
+            tagline: 'The long road from idea to law',
+            requires: ['bill-of-rights'],
+            lesson: {
+                paragraphs: [
+                    "Thousands of bills are introduced in Congress every two years. A few hundred become law. The road is long on purpose, so a bad idea has many places to die.\n[[1. A member of Congress introduces the bill.]]\n[[2. A committee studies it, holds hearings and votes on it.]]\n[[3. The full House or Senate debates it and votes.]]\n[[4. The other house does the same.]]\n[[5. Both houses agree on one identical text.]]\n[[6. The President signs it, or vetoes it.]]",
+                    "Let's look at where bills actually die. Most never leave the committee, because the chair never brings them to a vote. That is step 2, and it is the graveyard.\nIf the House and the Senate pass different versions, a **conference committee** writes one text, and both houses vote again.\nThen the President has ten days. Sign it, and it is law. **Veto** it, and it goes back to Congress, which can override with two thirds of both houses.\nDo nothing for ten days while Congress is in session, and it becomes law without a signature. Do nothing while Congress has adjourned, and it dies. That is a **pocket veto**.",
+                    "Count the places a bill can be stopped: a committee chair, a floor vote in the House, a floor vote in the Senate, a conference, a veto.\nThat is five locks on one door. Madison would have said that is the point.\n[[Introduce, committee, floor, other house, agree, President.]]\nRead the steps until you can say them in order without looking.",
+                ],
+                keyIdea: 'A bill is introduced, studied in committee, passed by one house and then the other, agreed as one text, and signed or vetoed.\nMost bills die in committee.\nA veto can be overridden by two thirds of both houses.',
+                example: { kind: 'letters', text: '2/3', caption: 'The share of both houses that overrides a veto.' },
+            },
+            sources: ['Aligned with Texas TEKS United States Government knowledge statement 8 (the procedure for enacting laws and the role of committees) and NCSS Theme VI (Power, Authority, and Governance).'],
+            generators: ['g12-bill-order', 'g12-where-bills-die', 'g12-after-veto', 'g12-override-votes', 'g12-bill-next-step'],
+        },
+        {
+            id: 'elections-parties-and-voting',
+            order: 6,
+            title: 'Elections, parties and voting',
+            tagline: 'How the people pick the people',
+            requires: ['how-a-bill-becomes-law'],
+            lesson: {
+                paragraphs: [
+                    "Every even-numbered year, in November, the whole House and a third of the Senate are elected. Every four years, the President is too.\n[[Presidential years: 2024, 2028, 2032. Midterm years: 2026, 2030.]]\nBefore the general election come the **primaries**, where each party's voters choose its candidate. Two parties, Democrats and Republicans, have won every presidential election since 1856, though others run.",
+                    "Let's look at how a president is actually chosen. Not by the national vote count, but by the **Electoral College**.\nEach state gets electors equal to its representatives plus its two senators. Washington, D.C. gets three.\n[[538 electors in all. 270 wins.]]\nTexas has 38 representatives, so 40 electors. Wyoming has 1 representative, so 3.\nIn almost every state, the candidate who wins the state's popular vote gets all of its electors.",
+                    "Who can vote? A citizen who is at least 18 and registered. The 15th, 19th and 26th Amendments and the Voting Rights Act of 1965 each widened that circle.\nParties organize the choices. **Interest groups** press for their cause. The **media** tells the story. All three shape what a voter hears.\nA vote is a small thing that adds up to the only thing: the people deciding who governs them. Popular sovereignty, from module one, is what happens at the polls.",
+                ],
+                keyIdea: 'Primaries choose each party\'s candidate, and the general election chooses the winner.\nA president is chosen by the Electoral College: each state\'s representatives plus two, 538 in all, and 270 wins.\nA citizen who is 18 and registered can vote.',
+                example: { kind: 'letters', text: '270', caption: 'Electoral votes needed to win the presidency.' },
+            },
+            sources: ['Aligned with Texas TEKS United States Government knowledge statements 11 and 12 (political parties, interest groups and the media; the process of electing the President and the importance of voting) and NCSS Theme X (Civic Ideals and Practices).'],
+            generators: ['g12-electors', 'g12-presidential-year', 'g12-primary-or-general', 'g12-who-can-vote', 'g12-electors'],
+        },
+    ];
+}
+// Grade 12 economics and personal finance: scarcity, supply and demand, competition, money and the
+// Fed, the big three measurements, and a person's own budget. Every number is computed.
+function GRADE12_ECONOMICS_MODULES() {
+    return [
+        {
+            id: 'scarcity-and-opportunity-cost',
+            order: 1,
+            title: 'Scarcity and opportunity cost',
+            tagline: 'Every choice costs the next best thing',
+            lesson: {
+                paragraphs: [
+                    "There is never enough of everything for everyone. Not enough time, not enough money, not enough land. That fact is called **scarcity**, and it is where economics begins.\n[[Scarcity means choosing.]]\nEvery choice gives something up. The thing you give up, the next best thing you could have done, is the **opportunity cost**.",
+                    "Let's look at a Saturday.\nYou could work a shift for **60 dollars**, or go to the game.\nIf you go to the game, the opportunity cost is the 60 dollars you did not earn.\nIf you work, the opportunity cost is the game.\n[[Opportunity cost = the best thing you gave up]]\nNot everything you gave up. Just the best one. If you had three options and picked the first, the cost is the second, not the second plus the third.",
+                    "Every society faces the same three questions because of scarcity: **what** to produce, **how** to produce it, and **for whom**.\nTo produce anything takes four things, the **factors of production**.\n**Land:** natural resources, the field and the oil under it.\n**Labor:** the work people do.\n**Capital:** the tools, machines and buildings that make work productive.\n**Entrepreneurship:** the person who takes the risk of putting the other three together.\nScarcity, choice, cost. Say those three words and you have said most of economics.",
+                ],
+                keyIdea: 'Scarcity means there is never enough of everything, so every choice gives something up.\nThe opportunity cost of a choice is the best thing you gave up to make it.\nProducing anything takes land, labor, capital and entrepreneurship.',
+                example: { kind: 'letters', text: '60 dollars', caption: 'The opportunity cost of a Saturday at the game.' },
+            },
+            sources: ['Aligned with Texas TEKS Economics knowledge statement 1 (scarcity, choice and opportunity cost; the basic economic questions; the factors of production) and Council for Economic Education national standards 1 and 2 (Scarcity; Decision Making).'],
+            generators: ['e12-opportunity-cost', 'e12-factor-kind', 'e12-opportunity-cost', 'e12-basic-question', 'e12-factor-kind'],
+        },
+        {
+            id: 'supply-demand-and-price',
+            order: 2,
+            title: 'Supply, demand and price',
+            tagline: 'Where buyers and sellers meet',
+            requires: ['scarcity-and-opportunity-cost'],
+            lesson: {
+                paragraphs: [
+                    "A price is not set by anyone. It is found, where two forces meet.\n**Demand** is how much buyers want at each price. When the price rises, buyers want less. That is the **law of demand**.\n**Supply** is how much sellers will offer at each price. When the price rises, sellers offer more. That is the **law of supply**.\n[[Price up: buyers want less, sellers offer more.]]",
+                    "Let's look at a market for lemonade, at three prices.\nAt 1 dollar, buyers want 60 cups and sellers offer 20. Buyers want more than there is. That is a **shortage**, and the price rises.\nAt 3 dollars, buyers want 20 cups and sellers offer 60. Sellers have too many. That is a **surplus**, and the price falls.\nAt 2 dollars, buyers want 40 and sellers offer 40. Nobody is pushing the price anywhere.\n[[Equilibrium: the price where the amount wanted equals the amount offered.]]",
+                    "Prices move when a whole curve moves.\nA heat wave makes people want more lemonade at every price. Demand shifts up, and the price rises.\nA cheap lemon harvest lets sellers offer more at every price. Supply shifts up, and the price falls.\nRead a price change backward and you can usually find the shift that caused it.\n[[Demand up: price up. Supply up: price down.]]",
+                ],
+                keyIdea: 'Buyers want less as the price rises, and sellers offer more.\nThe equilibrium price is where the amount wanted equals the amount offered.\nBelow it there is a shortage, above it a surplus, and a shift in demand or supply moves the price.',
+                example: { kind: 'letters', text: '40 = 40', caption: 'At the equilibrium price, the amount wanted equals the amount offered.' },
+            },
+            sources: ['Aligned with Texas TEKS Economics knowledge statement 3 (how the interaction of supply and demand determines equilibrium price and quantity, and the effects of shifts in supply and demand) and Council for Economic Education national standards 7 and 8 (Markets and Prices; Role of Prices).'],
+            generators: ['e12-equilibrium-price', 'e12-shortage-or-surplus', 'e12-shift-effect', 'e12-equilibrium-price', 'e12-law-of-demand'],
+        },
+        {
+            id: 'competition-and-markets',
+            order: 3,
+            title: 'Competition and markets',
+            tagline: 'Why the free enterprise system works',
+            requires: ['supply-demand-and-price'],
+            lesson: {
+                paragraphs: [
+                    "The American economy is a **free enterprise system**. That phrase means five things.\n**Private property:** you own what you earn and what you buy.\n**Freedom of choice:** you pick your work, your purchases, your business.\n**The profit motive:** people make things because they can earn from it.\n**Competition:** sellers race for the buyer's dollar.\n**Limited government:** the government sets the rules and steps back.",
+                    "Let's look at what competition does.\nTwo pizza shops on one street. If one raises its price or lets its quality slip, customers walk to the other. So both keep prices down and quality up, without anyone ordering them to.\nNow imagine one shop and no other for a hundred miles. That is a **monopoly**. It can charge what it likes, and it does.\nThe Standard Oil breakup of 1911 was the government acting as referee. Competition had been crushed, so the law restored it.",
+                    "A business lives on **profit**.\n[[Revenue = price × quantity sold]]\n[[Profit = revenue − costs]]\nSell 200 pizzas at 12 dollars, and revenue is 2,400 dollars. If costs were 1,900, profit is 500.\nA loss sends a signal too: stop making this, and make something people want more. Profit and loss are how a free market tells producers what to do.",
+                ],
+                keyIdea: 'Free enterprise means private property, free choice, the profit motive, competition and limited government.\nCompetition keeps prices down and quality up, while a monopoly can charge what it likes.\nRevenue is price times quantity, and profit is revenue minus costs.',
+                example: { kind: 'letters', text: 'Profit', caption: 'Revenue minus costs: what a business lives on.' },
+            },
+            sources: ['Aligned with Texas TEKS Economics (the characteristics of the U.S. free enterprise system, competition and market structure, and the role of profit) and Council for Economic Education national standards 9 and 10 (Competition and Market Structure; Institutions).'],
+            generators: ['e12-revenue', 'e12-profit', 'e12-competition-effect', 'e12-free-enterprise-kind', 'e12-profit'],
+        },
+        {
+            id: 'money-banking-and-the-fed',
+            order: 4,
+            title: 'Money, banking and the Fed',
+            tagline: 'What money does and who watches it',
+            requires: ['competition-and-markets'],
+            lesson: {
+                paragraphs: [
+                    "Money is anything people accept in trade. Dollars work because everyone agrees they work.\nMoney does three jobs.\n**A medium of exchange:** you sell your labor for dollars and buy bread with them, instead of trading labor for bread.\n**A unit of account:** prices are written in it, so a car and a coffee can be compared.\n**A store of value:** you can hold it and spend it next year.\n[[Exchange, account, store.]]",
+                    "Let's look at a bank. You deposit 1,000 dollars. The bank keeps some and lends most of it to someone buying a car. The borrower pays **interest**, and the bank pays you a smaller interest for the use of your money.\n[[Simple interest = principal × rate × years]]\n1,000 dollars at 5 percent for 2 years earns 1,000 × 0.05 × 2, which is 100 dollars.\nInterest is the price of money. Borrow it and you pay. Lend it and you earn.",
+                    "The **Federal Reserve**, created in 1913, is the bank of the banks and the referee of the money supply.\nIts main tool is a short-term interest rate. When prices are rising too fast, the Fed **raises** rates, borrowing slows, and spending cools. When the economy stalls, it **lowers** rates, and borrowing picks up.\n[[Inflation high: rates up. Economy slow: rates down.]]\nThat one lever moves mortgages, car loans, credit cards and hiring, which is why the whole country listens when the Fed speaks.",
+                ],
+                keyIdea: 'Money is a medium of exchange, a unit of account and a store of value.\nBanks lend deposits and charge interest, the price of money, and simple interest is principal times rate times years.\nThe Federal Reserve, created in 1913, raises rates to slow inflation and lowers them to spur growth.',
+                example: { kind: 'letters', text: '1913', caption: 'The Federal Reserve is created.' },
+            },
+            sources: ['Aligned with Texas TEKS Economics (the functions of money, the role of banks and interest rates, and the Federal Reserve System and monetary policy) and Council for Economic Education national standards 11, 12 and 20 (Money and Inflation; Interest Rates; Fiscal and Monetary Policy).'],
+            generators: ['e12-simple-interest', 'e12-money-job', 'e12-fed-response', 'e12-simple-interest', 'e12-bank-gap'],
+        },
+        {
+            id: 'gdp-inflation-and-unemployment',
+            order: 5,
+            title: 'GDP, inflation and unemployment',
+            tagline: 'Three numbers that describe an economy',
+            requires: ['money-banking-and-the-fed'],
+            lesson: {
+                paragraphs: [
+                    "**GDP**, gross domestic product, is the value of everything a country produces in a year: every haircut, truck, app and bushel of corn, added up in dollars.\nWhen GDP grows, the country is making more than last year. When it shrinks for two quarters in a row, people usually call it a **recession**.\n[[Growth rate = (this year − last year) ÷ last year × 100]]\nGDP of 100 billion last year and 105 billion this year is growth of 5 ÷ 100, which is 5 percent.",
+                    "Let's look at **inflation**: a general rise in prices, which is the same thing as a fall in what a dollar buys.\nIf prices rise 10 percent, a 100-dollar cart of groceries costs 110 dollars.\n[[New price = old price × (1 + rate)]]\nA little inflation, around 2 percent a year, is normal. Fast inflation is a tax on everyone who holds cash, and it is why the Fed raises rates.",
+                    "The **unemployment rate** counts people who want a job and cannot find one, as a share of the labor force.\nThe labor force is everyone working plus everyone looking. A retiree is not in it. A student who is not looking is not in it. A person applying for jobs is.\n[[Unemployment rate = unemployed ÷ labor force × 100]]\nA town with 90 people working and 10 looking has a labor force of 100 and unemployment of 10 percent.\nGDP, inflation, unemployment: three numbers, and between them most of the news about the economy.",
+                ],
+                keyIdea: 'GDP is the value of everything a country produces in a year, and its growth rate is the change divided by last year.\nInflation is a general rise in prices, which is a fall in what a dollar buys.\nThe unemployment rate is the unemployed divided by the labor force, which is everyone working or looking.',
+                example: { kind: 'letters', text: 'GDP', caption: 'Gross domestic product: everything a country makes in a year.' },
+            },
+            sources: ['Aligned with Texas TEKS Economics (the key economic measurements: gross domestic product, inflation and the unemployment rate, and the business cycle) and Council for Economic Education national standards 18 and 19 (Economic Fluctuations; Unemployment and Inflation).'],
+            generators: ['e12-growth-rate', 'e12-price-after-inflation', 'e12-unemployment-rate', 'e12-in-labor-force', 'e12-growth-rate'],
+        },
+        {
+            id: 'budgets-saving-and-credit',
+            order: 6,
+            title: 'Budgets, saving and credit',
+            tagline: 'Your own economy',
+            requires: ['gdp-inflation-and-unemployment'],
+            lesson: {
+                paragraphs: [
+                    "Everything so far applies to you. Scarcity is your paycheck. A **budget** is your plan for it.\n[[Income − expenses = what is left]]\nA paycheck of 2,000 dollars, rent of 900, food of 400 and everything else 500 leaves 200.\nOne rule many people use is **50/30/20**. About half for needs, about 30 percent for wants, and 20 percent saved. On 2,000 dollars, 20 percent is 400.\nThe order matters: **pay yourself first**. Move the savings before the wants get a chance.",
+                    "Let's look at why saving early is worth so much.\nMoney that earns interest grows on its own interest. That is **compound interest**.\nA quick rule: money doubles in about 72 divided by the rate, in years.\n[[Years to double ≈ 72 ÷ rate]]\nAt 6 percent, 72 ÷ 6 is 12 years. At 8 percent, 9 years. Start at 20 with one doubling every nine years, and the money doubles five times by 65, which is 32 times what you put in.",
+                    "Credit is compound interest running against you.\nA credit card charging 24 percent a year charges 2 percent a month on what you have not paid. On a 1,200-dollar balance, that is 24 dollars a month for nothing.\n[[Monthly interest = balance × yearly rate ÷ 12]]\nPay the full balance every month, and credit costs nothing. Pay the minimum, and the balance can take many years to clear.\nA **credit score** is a record of whether you pay what you owe on time. A good one makes every future loan cheaper. It is built the same way as savings: a little, on time, every month.",
+                ],
+                keyIdea: 'A budget is income minus expenses, and 50/30/20 is one way to split it, with the saving done first.\nSavings compound, and money doubles in about 72 divided by the rate, in years.\nCredit compounds against you, and monthly interest is the balance times the yearly rate divided by 12.',
+                example: { kind: 'letters', text: '72 ÷ rate', caption: 'About how many years it takes money to double.' },
+            },
+            sources: ['Aligned with Texas TEKS Economics (personal financial literacy: budgeting, saving, compound interest, credit and credit scores) and Council for Economic Education national standards 2 and 12 (Decision Making; Interest Rates).'],
+            generators: ['e12-budget-left', 'e12-percent-of-income', 'e12-rule-of-72', 'e12-card-interest', 'e12-need-or-want'],
+        },
+    ];
+}
 function GRADE11_HISTORY_MODULES() {
     return [
         {
@@ -22715,7 +22983,7 @@ function GRADE11_HISTORY_MODULES() {
                     "Let's look at Franklin Roosevelt\'s answer. From 1933 the New Deal put people to work building dams, roads and parks, insured bank deposits, regulated the stock market, and in 1935 created Social Security.\n[[1935: Social Security.]]\nIt did not end the Depression; the war did. It changed what Americans expected government to do.",
                     "The argument over the New Deal is the argument of American politics since: how much should government do for people when the market fails? Both sides are still making their case, which is a sign the question is real.",
                 ],
-                keyIdea: 'The 1929 crash left a quarter of workers jobless by 1933; the New Deal put people to work and created Social Security in 1935, and changed what government was for.',
+                keyIdea: 'The 1929 crash left a quarter of workers jobless by 1933.\nThe New Deal put people to work and created Social Security in 1935.\nIt changed what Americans expected government to do.',
                 example: { kind: 'letters', text: '1929', caption: 'The crash.' },
             },
             sources: ['Aligned with Texas TEKS US.6C (analyze the causes of the Great Depression) and US.6D (evaluate the New Deal) and NCSS Theme VII.'],
@@ -22733,7 +23001,7 @@ function GRADE11_HISTORY_MODULES() {
                     "Let's look at the home front. Women took factory jobs by the millions. Black Americans served and worked and were still segregated, which fed the civil rights movement to come. Over a hundred thousand Japanese Americans were forced into camps, a wrong the country formally apologized for in 1988.",
                     "The war ended in 1945, with Germany\'s surrender in May and Japan\'s in August after atomic bombs on Hiroshima and Nagasaki. The United States came out the strongest country on earth, and with the responsibility that came with it.",
                 ],
-                keyIdea: 'Pearl Harbor on December 7, 1941 brought America in; D-Day was June 6, 1944; victory came in 1945, with a home front that changed women\'s work and exposed the country\'s own injustices.',
+                keyIdea: 'Pearl Harbor, December 7, 1941, brought America into the war.\nD-Day was June 6, 1944. Victory came in 1945.\nAt home, women went to work in the factories, and Japanese Americans were forced into camps.',
                 example: { kind: 'letters', text: '1941 to 1945', caption: 'America at war.' },
             },
             sources: ['Aligned with Texas TEKS US.7A and US.7D (identify reasons for U.S. involvement in World War II; analyze major issues on the home front, including the internment of Japanese Americans) and NCSS Theme IX.'],
@@ -22751,7 +23019,7 @@ function GRADE11_HISTORY_MODULES() {
                     "Let's look at the closest call. In October 1962 the Soviets put missiles in Cuba, ninety miles from Florida. For thirteen days the world waited. Both sides backed down, and a hotline was installed so that would never happen by accident.\n[[1962: the Cuban Missile Crisis.]]",
                     "The Berlin Wall fell in 1989 and the Soviet Union dissolved in 1991, without a shot between the two great powers. The Cold War is the story of a rivalry that stayed cold because enough people on both sides understood what hot would mean.",
                 ],
-                keyIdea: 'From 1945 to 1991 two nuclear powers never fought directly; the closest call was Cuba in 1962, and it ended with the Wall in 1989 and the Soviet collapse in 1991.',
+                keyIdea: 'From 1945 to 1991, two nuclear powers never fought each other directly.\nThe closest call was Cuba in 1962.\nIt ended with the Berlin Wall in 1989 and the Soviet collapse in 1991.',
                 example: { kind: 'letters', text: '1962', caption: 'The Cuban Missile Crisis.' },
             },
             sources: ['Aligned with Texas TEKS US.8A and US.8B (describe U.S. responses to Soviet aggression; describe the Cuban Missile Crisis and the arms race) and NCSS Theme IX.'],
@@ -22769,7 +23037,7 @@ function GRADE11_HISTORY_MODULES() {
                     "Let's look at the laws that followed. The Civil Rights Act of 1964 outlawed segregation in public places and discrimination in hiring. The Voting Rights Act of 1965 put federal power behind the 15th Amendment at last. Dr. King was assassinated in 1968.\n[[1964 and 1965: the two great acts.]]",
                     "The movement won by nonviolence, by courts, by marches that made the country look at itself, and by ordinary people who kept going after being beaten and jailed. It was, in the plainest sense, the country being held to its own words.",
                 ],
-                keyIdea: 'Brown in 1954, Montgomery in 1955, Washington in 1963, the Civil Rights Act of 1964 and the Voting Rights Act of 1965: the amendments of the 1860s finally enforced.',
+                keyIdea: 'Brown in 1954, Montgomery in 1955, Washington in 1963.\nThen the Civil Rights Act of 1964 and the Voting Rights Act of 1965.\nThe amendments of the 1860s were finally enforced.',
                 example: { kind: 'letters', text: '1964, 1965', caption: 'The two great acts.' },
             },
             sources: ['Aligned with Texas TEKS US.9A and US.9F (trace the historical development of the civil rights movement; describe the Civil Rights Act of 1964 and the Voting Rights Act of 1965) and NCSS Theme VI.'],
@@ -22787,7 +23055,7 @@ function GRADE11_HISTORY_MODULES() {
                     "Let's look at the turns since. A financial crisis in 2008 was the worst since 1929. Barack Obama became the first Black president in 2009. A pandemic in 2020 closed schools and businesses and killed over a million Americans. Through all of it, the country kept holding elections and handing over power, which is the thing most countries in history could not do.",
                     "This is the history you are living in, and it is not finished. The habits this course has tried to teach, dates, causes, both sides, the cost and the gain, are how to read it while it happens.",
                 ],
-                keyIdea: 'The internet, September 11, 2001, the 2008 crisis, the first Black president in 2009 and the 2020 pandemic, with elections held and power handed over through all of it.',
+                keyIdea: 'The internet, September 11, 2001, the 2008 crisis, the first Black president in 2009 and the 2020 pandemic.\nThrough all of it, elections were held and power was handed over.',
                 example: { kind: 'letters', text: '2001', caption: 'September 11.' },
             },
             sources: ['Aligned with Texas TEKS US.10A and US.11A (describe U.S. involvement in world affairs since 1991; analyze the effects of the September 11, 2001 attacks) and NCSS Theme X (Civic Ideals and Practices).'],
@@ -22805,11 +23073,11 @@ function GRADE5_HISTORY_MODULES() {
             tagline: 'Who came, and why',
             lesson: {
                 paragraphs: [
-                    "Before there was a United States, there were thirteen British colonies along the Atlantic coast, settled between 1607 and 1732.\n[[Jamestown, Virginia, 1607: the first that lasted.]]\n[[Plymouth, Massachusetts, 1620: the Pilgrims.]]\nPeople came for land, for money, for religious freedom, and, for enslaved Africans, not by choice at all.",
-                    "Let's look at the three regions.\nNew England: small farms, fishing, ships, towns built around a church.\nThe middle colonies: wheat, trade, many languages and faiths.\nThe southern colonies: big farms growing tobacco and rice, worked by enslaved people.\nDifferent land, different work, different lives, and one king across the ocean.",
+                    "Before there was a United States, there were thirteen British colonies along the Atlantic coast, settled between 1607 and 1732.\n[[Jamestown, Virginia, 1607: the first that lasted.]]\n[[Plymouth, Massachusetts, 1620: the Pilgrims.]]\nPeople came for land, for money and for religious freedom.\nBut for enslaved Africans, it was not by choice at all.",
+                    "Let's look at the three regions.\n**New England:** small farms, fishing, ships, towns built around a church.\n**The middle colonies:** wheat, trade, many languages and faiths.\n**The southern colonies:** big farms growing tobacco and rice, worked by enslaved people.\nDifferent land, different work, different lives, and one king across the ocean.",
                     "The land was not empty. Native nations had lived there for thousands of years, and every colony began with trade, treaties, disease and war between newcomers and the people already home. Any honest story of the colonies keeps both sides in view.",
                 ],
-                keyIdea: 'Thirteen colonies, three regions, settled from 1607 to 1732 for land, money and freedom, on land that was already home to Native nations.',
+                keyIdea: 'Thirteen colonies in three regions, settled from 1607 to 1732.\nPeople came for land, for money and for freedom.\nThe land was already home to Native nations.',
                 example: { kind: 'letters', text: '1607', caption: 'Jamestown.' },
             },
             sources: ['Aligned with Texas TEKS 5.2A (describe the reasons for European exploration and settlement of North America) and NCSS Theme II (Time, Continuity, and Change).'],
@@ -28410,17 +28678,406 @@ const REV_EVENTS = [{ year: 1765, event: 'The Stamp Act taxes paper' }, { year: 
 const BRANCHES = [{ name: 'Legislative', who: 'The Congress', job: 'Makes the laws' }, { name: 'Executive', who: 'The President', job: 'Carries out the laws' }, { name: 'Judicial', who: 'The courts', job: 'Decides what the laws mean' }];
 const WEST = [{ year: 1803, event: 'The Louisiana Purchase doubles the country' }, { year: 1804, event: 'Lewis and Clark set out for the Pacific' }, { year: 1848, event: 'Gold is found in California' }, { year: 1850, event: 'The country stretches from ocean to ocean' }];
 const WAR = [{ year: 1861, event: 'The war begins at Fort Sumter' }, { year: 1863, event: 'The Emancipation Proclamation and Gettysburg' }, { year: 1865, event: 'The Confederacy surrenders and the 13th Amendment ends slavery' }];
+// A short story behind every dated fact. A wrong answer is followed by the fact and its story,
+// because a story sticks where a bare date does not. Keyed by the event's own words, so a renamed
+// event loses its story and the sweep in tests/logic.test.mjs says so.
+const HISTORY_WHY = {
+    'The Stamp Act taxes paper': 'Every newspaper, deed and playing card needed a paid stamp. Colonists had no say in the tax, and no taxation without representation became the cry.',
+    'British soldiers fire on a crowd in Boston': 'A crowd threw snowballs and stones at soldiers, and the soldiers fired. Five people died, and Paul Revere\'s picture of it spread the anger through the colonies.',
+    'Colonists dump tea into Boston Harbor': 'Colonists dressed as Mohawks boarded three ships at night and dumped 342 chests of tea into the harbor rather than pay the tax on it.',
+    'Shots at Lexington and Concord': 'British troops marched out of Boston to seize weapons, and militia met them at dawn. The shot heard round the world had started the war.',
+    'The Declaration of Independence': 'Jefferson wrote it in Philadelphia, and Congress adopted it on July 4. It named the rights the king had broken and declared thirteen colonies free.',
+    'The Louisiana Purchase doubles the country': 'Jefferson bought 828,000 square miles from France for fifteen million dollars, about three cents an acre, and the country doubled overnight.',
+    'Lewis and Clark set out for the Pacific': 'Jefferson sent them to map the new land and find a way to the Pacific. With the guide Sacagawea they reached the ocean in 1805 and came home in 1806.',
+    'Gold is found in California': 'James Marshall spotted gold flakes in a mill stream at Sutter\'s Mill. Within a year, about eighty thousand people had rushed to California.',
+    'The country stretches from ocean to ocean': 'California became a state, and the United States now ran from the Atlantic to the Pacific.',
+    'The war begins at Fort Sumter': 'Confederate guns fired on the Union fort in Charleston Harbor for thirty-four hours, and the fort surrendered. The war had begun.',
+    'The Emancipation Proclamation and Gettysburg': 'On January 1, Lincoln declared the enslaved people in the rebelling states free. In July, the largest battle ever fought in North America, at Gettysburg, turned the war.',
+    'The Confederacy surrenders and the 13th Amendment ends slavery': 'Lee surrendered to Grant at Appomattox in April. In December, the 13th Amendment ended slavery in every state.',
+    'San Antonio is founded': 'Spanish priests and soldiers built a mission on the San Antonio River to bring Native people into the Spanish faith and empire. That mission was the Alamo.',
+    'Mexico wins independence from Spain': 'After eleven years of fighting, Mexico broke from Spain, and Texas became part of Mexico. Stephen F. Austin\'s first settlers arrived that same year.',
+    'Texas declares independence': 'Fifty-nine delegates signed the declaration at Washington-on-the-Brazos on March 2, while the Alamo was under siege.',
+    'Texas becomes the 28th state': 'After nine years as its own republic, Texas joined the Union on December 29, 1845, as the 28th state.',
+    'The Alamo falls after a thirteen-day siege': 'About 200 defenders held the old mission for thirteen days against Santa Anna\'s army. All of them died, and Remember the Alamo became the Texan battle cry.',
+    'Texans win at San Jacinto in eighteen minutes': 'Sam Houston\'s army caught Santa Anna\'s camp resting on the afternoon of April 21. The fight took eighteen minutes, and the captured Santa Anna signed Texas away.',
+    'Texans rise against Mexico': 'Mexican soldiers came to take a small cannon from the town of Gonzales. The settlers raised a flag reading Come and Take It and fired the first shot of the revolution.',
+    'The Republic of Texas joins the United States': 'Texas gave up being a country to become a state. Mexico objected, and within a year Mexico and the United States were at war.',
+    'Texas becomes a state': 'Nine years a republic, then the 28th state, on December 29, 1845.',
+    'Texas joins the Confederacy': 'Texans voted to leave the Union and join the Confederacy. Governor Sam Houston refused to swear loyalty to it and was removed from office.',
+    'Juneteenth: slavery ends in Texas': 'On June 19, General Gordon Granger read the order in Galveston: every enslaved person in Texas was free, two and a half years after the Emancipation Proclamation.',
+    'Oil at Spindletop': 'A well near Beaumont blew a gusher 150 feet into the air for nine days. Texas oil had begun, and with it a new Texas economy.',
+    'Washington takes office': 'He took the oath on a balcony in New York City, the first capital, and set the pattern every president followed: two terms, then home.',
+    'Jefferson buys Louisiana': 'Jefferson doubted the Constitution let him buy land, then bought 828,000 square miles anyway, for fifteen million dollars.',
+    'A second war with Britain begins': 'Britain was seizing American ships and sailors. During the war the British burned the White House, and Francis Scott Key wrote the Star-Spangled Banner watching Fort McHenry hold.',
+    'The Monroe Doctrine': 'President Monroe told Europe to stay out of the Americas: no new colonies here. The United States would treat any attempt as a threat.',
+    'Andrew Jackson is elected': 'A frontier general and war hero won with the votes of ordinary men who could now vote in most states without owning property. Politics had changed.',
+    'The Missouri Compromise': 'Missouri entered as a slave state and Maine as a free one, keeping the Senate balanced, with a line drawn across the west: no slavery north of it.',
+    'The Compromise of 1850': 'California came in free, and a harsh new Fugitive Slave Act forced northerners to help return escaped people. It bought ten years of peace and a lot of anger.',
+    'The Kansas-Nebraska Act': 'Each new territory would vote on slavery for itself. Settlers from both sides rushed to Kansas and fought, and the country called it Bleeding Kansas.',
+    'The Dred Scott decision': 'The Supreme Court ruled that Dred Scott, an enslaved man who had lived on free soil, was not a citizen and could not sue, and that Congress could not ban slavery in the territories.',
+    'Lincoln is elected': 'Lincoln won without carrying a single southern state. Before he took office, seven states had left the Union.',
+    'Rome becomes a republic': 'Romans drove out their last king and swore never to be ruled by a king again. Two elected consuls, one year each, took his place.',
+    'Caesar crosses the Rubicon': 'Caesar led his army across the little Rubicon river into Italy, which the law forbade. The die is cast, he said, and civil war followed.',
+    'Caesar is killed': 'Senators who feared Caesar wanted to be king stabbed him on the Ides of March, the 15th. His friend Brutus was among them.',
+    'Augustus becomes the first emperor': 'Caesar\'s heir Octavian took the name Augustus and kept the Senate as decoration. The republic was over, and the empire had begun.',
+    'Rome falls in the west': 'A Germanic general, Odoacer, removed the last western emperor, a boy named Romulus Augustulus, and sent the crown away to Constantinople.',
+    'The Black Death arrives in Europe': 'Ships from the east brought plague to Sicily. Within five years it had killed about a third of Europe, and the workers who survived could ask for higher pay.',
+    'The Renaissance begins in Italy': 'Florence\'s bankers and merchants paid artists and scholars to bring back Greek and Roman learning. Rebirth is what the word Renaissance means.',
+    'Gutenberg\'s printing press': 'Johannes Gutenberg in Mainz cast metal letters that could be arranged, inked and used again. A page that took a monk a day could now be printed by the hundred.',
+    'Rome falls in the west and feudal Europe begins': 'With Rome\'s armies gone, people traded their labor to a local lord for protection. That deal, land for service, was feudalism.',
+    'The American Revolution declares independence': 'Thirteen colonies told the world why they were leaving Britain, in words about rights that all people hold. Eight years of war made the words real.',
+    'The French Revolution begins': 'A crowd in Paris stormed the Bastille prison on July 14. The king\'s power began to fall, and July 14 is still France\'s national day.',
+    'France executes its king': 'The revolution turned on its king. Louis XVI was tried and beheaded in January, and the Terror that followed killed thousands by guillotine.',
+    'Napoleon becomes emperor': 'Napoleon crowned himself emperor in Notre-Dame, taking the crown from the pope\'s hands and putting it on his own head.',
+    'The First World War begins': 'An assassin in Sarajevo shot Archduke Franz Ferdinand of Austria. Alliances pulled in one country after another, and within weeks most of Europe was at war.',
+    'The First World War ends': 'The guns stopped at 11 in the morning on November 11. About nine million soldiers had died.',
+    'Hitler comes to power in Germany': 'Hitler was named chancellor in January and within months had made himself dictator, blaming Germany\'s troubles on Jews and on the treaty that ended the last war.',
+    'Germany invades Poland and the Second World War begins': 'German tanks and planes crossed into Poland on September 1. Britain and France declared war two days later.',
+    'Pearl Harbor brings the United States in': 'Japanese planes struck the fleet at Pearl Harbor on December 7. The next day Congress declared war, and within days Germany declared war on the United States.',
+    'The Second World War ends': 'Germany surrendered in May. In August, after atomic bombs fell on Hiroshima and Nagasaki, Japan surrendered too.',
+    'The transcontinental railroad is finished': 'Crews from the east and the west met at Promontory Summit, Utah, and drove a golden spike. A trip across the country fell from months to about a week.',
+    'Food and drug safety laws pass': 'Upton Sinclair\'s book The Jungle described rotten meat and filthy packing plants. Readers were sickened, and Congress passed the Meat Inspection and Pure Food and Drug Acts that year.',
+    'Standard Oil is broken up': 'The Supreme Court ruled that Standard Oil had crushed its competition illegally and split it into 34 companies.',
+    'The income tax and direct election of senators': 'The 16th Amendment allowed an income tax, and the 17th let voters, not state legislatures, choose their senators.',
+    'The 19th Amendment: women win the vote': 'After more than seventy years of marching and petitions, the 19th Amendment gave women the vote nationwide, in time for that fall\'s election.',
+    'The stock market crashes': 'On Black Tuesday, October 29, stock prices collapsed. Fortunes vanished in days, and people who had borrowed to buy stocks lost everything.',
+    'A quarter of workers are unemployed and the New Deal begins': 'Banks had failed by the thousands, and one worker in four had no job. Roosevelt took office in March and signed fifteen major laws in his first hundred days.',
+    'Social Security is created': 'Social Security promised a pension to workers who paid in, so old age would not mean poverty. The first monthly checks went out in 1940.',
+    'Pearl Harbor, December 7': 'Japanese planes sank or damaged eight battleships and killed about 2,400 Americans in two hours. The next day the United States declared war.',
+    'D-Day, June 6': 'About 156,000 Allied troops landed on the beaches of Normandy in one day, the largest sea invasion in history, and began the push toward Berlin.',
+    'Germany surrenders in May and Japan in August': 'Germany surrendered in May. Japan surrendered in August after the atomic bombs, and the war was over.',
+    'The country apologizes for the internment of Japanese Americans': 'Congress apologized to the Japanese Americans who had been held in camps and paid each survivor twenty thousand dollars.',
+    'Sputnik': 'The Soviets launched Sputnik, the first satellite, a beeping metal ball the size of a beach ball. Americans looked up and worried, and the space race began.',
+    'The Cuban Missile Crisis': 'American spy planes photographed Soviet missiles in Cuba. Kennedy blockaded the island, the world waited thirteen days, and Khrushchev pulled the missiles out.',
+    'Americans land on the moon': 'Neil Armstrong stepped onto the moon on July 20 and spoke of one small step for man. Hundreds of millions of people watched on television.',
+    'The Berlin Wall falls': 'East Germany opened its border on November 9, and crowds tore at the wall with hammers. Families separated for 28 years walked through.',
+    'The Soviet Union dissolves': 'The Soviet flag came down over the Kremlin on Christmas Day, and fifteen countries stood where one had been.',
+    'Brown v. Board of Education': 'The Supreme Court ruled 9 to 0 that separate schools for Black and white children could never be equal. Linda Brown of Topeka, Kansas, gave the case its name.',
+    'The Montgomery bus boycott': 'Rosa Parks refused to give up her bus seat on December 1. Black residents of Montgomery walked and carpooled for 381 days until the buses were desegregated.',
+    'The March on Washington': 'About 250,000 people gathered at the Lincoln Memorial, and Dr. King told them he had a dream.',
+    'The Civil Rights Act': 'The Civil Rights Act made it illegal to refuse someone a job, a hotel room or a restaurant seat because of race.',
+    'The Voting Rights Act': 'After marchers were beaten on a bridge in Selma, Congress sent federal officials to register Black voters where the states refused.',
+    'Dr. King is assassinated': 'Dr. King was shot on a motel balcony in Memphis on April 4. He was 39 years old.',
+    'The September 11 attacks': 'Hijacked planes hit the World Trade Center and the Pentagon, and a fourth crashed in Pennsylvania when its passengers fought back. Nearly 3,000 people died.',
+    'The war in Iraq begins': 'The United States invaded Iraq in March to remove Saddam Hussein. The weapons the war was launched to find were never found.',
+    'The financial crisis': 'Home prices fell, and banks that had bet on them failed. Lehman Brothers collapsed in September, and millions of people lost jobs and homes.',
+    'Barack Obama becomes the first Black president': 'Barack Obama took the oath in January before a crowd of more than a million people on the National Mall.',
+    'The pandemic closes schools and businesses': 'A new virus spread around the world. Schools closed, streets emptied, and by the end of the year more than 300,000 Americans had died.',
+};
+const withStory = (line, event) => (HISTORY_WHY[event] ? `${line}\n${HISTORY_WHY[event]}` : line);
+// ---- Grade 12 government and economics generators. Every number is computed; every dated fact carries its story.
+const PRINCIPLES = [
+    { name: 'Popular sovereignty', clue: 'The people are the source of the government\'s power' },
+    { name: 'Limited government', clue: 'The government may only do what the Constitution allows' },
+    { name: 'Separation of powers', clue: 'Making, carrying out and judging laws are three different jobs in three branches' },
+    { name: 'Checks and balances', clue: 'Each branch can stop the others' },
+    { name: 'Federalism', clue: 'Power is split between the national government and the states' },
+    { name: 'Individual rights', clue: 'Some things the government may never do to a person' },
+];
+const PRINCIPLE_NOTES = { 'Popular sovereignty': 'Popular sovereignty means the people are the source of power.', 'Limited government': 'Limited government means the government may only do what the Constitution allows.', 'Separation of powers': 'Separation of powers means three jobs in three branches.', 'Checks and balances': 'Checks and balances means each branch can stop the others.', 'Federalism': 'Federalism means power is shared with the states.', 'Individual rights': 'Individual rights are the things the government may never do to a person.' };
+const GOV_DATES = [
+    { year: '1787', event: 'The Constitution is written in Philadelphia', why: 'Fifty-five delegates met behind closed doors through a hot summer. Washington presided, Madison took the notes, and 39 of them signed on September 17.' },
+    { year: '1788', event: 'The Constitution is ratified', why: 'Nine states had to say yes. New Hampshire was the ninth, in June, and the new government could begin.' },
+    { year: '1789', event: 'The first Congress meets and Washington takes office', why: 'Congress met in New York in March, and Washington took the oath on April 30 on a balcony over Wall Street.' },
+    { year: '1791', event: 'The Bill of Rights is ratified', why: 'Madison had promised amendments to win ratification. Ten of his twelve were approved by the states in December 1791.' },
+    { year: '1803', event: 'Marbury v. Madison establishes judicial review', why: 'Chief Justice John Marshall ruled that a law that conflicts with the Constitution is void, and that the Court, not Congress, would say so.' },
+    { year: '1951', event: 'The 22nd Amendment limits a president to two terms', why: 'Franklin Roosevelt had won four times. Washington\'s old custom of two terms became a written rule.' },
+];
+const LATER_AMENDMENTS = [
+    { year: '1791', event: 'The Bill of Rights is ratified', why: 'Madison had promised amendments to win ratification. Ten of his twelve were approved by the states in December 1791.' },
+    { year: '1865', event: 'The 13th Amendment ends slavery', why: 'Lincoln pushed it through the House in January, and the states ratified it in December, months after his death. Four million people were free by law.' },
+    { year: '1868', event: 'The 14th Amendment: citizenship and equal protection', why: 'It answered the Dred Scott decision. Anyone born here is a citizen, and no state may deny any person the equal protection of the laws.' },
+    { year: '1870', event: 'The 15th Amendment: the vote cannot be denied by race', why: 'Black men voted and won office across the South for a few years, until poll taxes, tests and violence took the vote away again for almost a century.' },
+    { year: '1920', event: 'The 19th Amendment: women win the vote', why: 'After more than seventy years of marching and petitions, women voted nationwide in that fall\'s election.' },
+    { year: '1971', event: 'The 26th Amendment: the vote at 18', why: 'Young men were being drafted at 18 to fight in Vietnam. Old enough to fight, old enough to vote, the argument went, and the amendment passed in months.' },
+];
+function datedQuestion(rng, list) {
+    const e = pick(rng, list);
+    const others = shuffle(rng, [...new Set(list.filter((x) => x.year !== e.year).map((x) => x.year))]).slice(0, 2);
+    return { type: 'choice', story: `${e.event}.`, prompt: 'When?', choices: shuffle(rng, [e.year, ...others]), answer: e.year, explain: `${e.event}: ${e.year}.\n${e.why}`, visual: null, explainVisual: null };
+}
+function datedFact(rng, list) {
+    const e = pick(rng, list);
+    const others = shuffle(rng, list.filter((x) => x.year !== e.year)).slice(0, 2).map((x) => x.event);
+    return { type: 'choice', story: `${e.year}.`, prompt: 'What happened then?', choices: shuffle(rng, [e.event, ...others]), answer: e.event, explain: `${e.year}: ${lowerTitle(e.event)}.\n${e.why}`, visual: null, explainVisual: null };
+}
+const BRANCH_POWERS = [
+    { power: 'Makes the laws', branch: 'Congress' }, { power: 'Declares war', branch: 'Congress' }, { power: 'Confirms the President\'s appointments', branch: 'Congress' },
+    { power: 'Vetoes a bill', branch: 'The President' }, { power: 'Commands the armed forces', branch: 'The President' }, { power: 'Appoints judges and ambassadors', branch: 'The President' },
+    { power: 'Decides what a law means', branch: 'The courts' }, { power: 'Strikes down an unconstitutional law', branch: 'The courts' },
+];
+const BRANCHES3 = ['Congress', 'The President', 'The courts'];
+const GOV_COUNTS = [
+    { what: 'members of the House of Representatives', n: 435 }, { what: 'senators', n: 100 }, { what: 'senators from each state', n: 2 }, { what: 'justices on the Supreme Court', n: 9 },
+    { what: 'years in a President\'s term', n: 4 }, { what: 'years in a senator\'s term', n: 6 }, { what: 'years in a representative\'s term', n: 2 }, { what: 'terms a President may serve', n: 2 },
+];
+const GOV_CHECKS = [
+    { check: 'Veto a bill', by: 'The President' }, { check: 'Override a veto with two thirds of both houses', by: 'Congress' }, { check: 'Confirm or reject the President\'s judges', by: 'Congress' },
+    { check: 'Impeach and remove a president', by: 'Congress' }, { check: 'Strike down a law as unconstitutional', by: 'The courts' }, { check: 'Appoint the judges', by: 'The President' },
+];
+const TERMS = [{ who: 'A member of the House of Representatives', term: '2 years' }, { who: 'The President', term: '4 years' }, { who: 'A senator', term: '6 years' }, { who: 'A Supreme Court justice', term: 'For life' }];
+const LEVELS_OF_GOVT = [
+    { power: 'Coins money', level: 'National' }, { power: 'Declares war', level: 'National' }, { power: 'Runs the post office', level: 'National' }, { power: 'Regulates trade between the states', level: 'National' },
+    { power: 'Runs the public schools', level: 'State' }, { power: 'Issues driver\'s licenses', level: 'State' }, { power: 'Issues marriage licenses', level: 'State' }, { power: 'Runs elections', level: 'State' },
+    { power: 'Collects taxes', level: 'Both' }, { power: 'Builds roads', level: 'Both' }, { power: 'Runs courts', level: 'Both' },
+];
+const POWER_KIND = { National: 'Enumerated', State: 'Reserved', Both: 'Shared' };
+const POWER_KIND_NOTES = { Enumerated: 'Enumerated powers are the ones the Constitution lists for the national government.', Reserved: 'Reserved powers are the ones the 10th Amendment keeps for the states or the people.', Shared: 'Shared powers belong to both the national government and the states.' };
+const AMENDMENT_RIGHTS = [
+    { n: 'The First Amendment', right: 'Freedom of religion, speech, press, assembly and petition' }, { n: 'The Second Amendment', right: 'The right to keep and bear arms' },
+    { n: 'The Fourth Amendment', right: 'No unreasonable searches, and a warrant needs a good reason' }, { n: 'The Fifth Amendment', right: 'Due process, and no being forced to testify against yourself' },
+    { n: 'The Sixth Amendment', right: 'A speedy public trial with a jury and a lawyer' }, { n: 'The Eighth Amendment', right: 'No cruel and unusual punishment' },
+    { n: 'The Tenth Amendment', right: 'Powers not given to the nation stay with the states or the people' },
+];
+const FIRST_FREEDOMS = ['Religion', 'Speech', 'The press', 'Assembly', 'Petition'];
+const NOT_FIRST = ['The right to bear arms', 'A speedy trial', 'No cruel and unusual punishment', 'A warrant for a search'];
+const BILL_STEPS = ['A member introduces the bill', 'A committee studies it and votes', 'The full house debates and votes', 'The other house does the same', 'Both houses agree on one text', 'The President signs or vetoes it'];
+const STATE_REPS = [['Texas', 38], ['California', 52], ['Florida', 28], ['New York', 26], ['Pennsylvania', 17], ['Ohio', 15], ['Georgia', 14], ['Colorado', 8], ['Wyoming', 1], ['Vermont', 1]];
+const VOTERS = [{ who: 'A citizen who is 18 and registered', can: 'Yes' }, { who: 'A citizen who is 17', can: 'No' }, { who: 'A citizen who is 18 but not registered', can: 'No' }, { who: 'A citizen who is 30 and registered', can: 'Yes' }, { who: 'A citizen who is 80 and registered', can: 'Yes' }];
+Object.assign(GENERATORS, {
+    'g12-which-principle': (rng) => {
+        const c = pick(rng, PRINCIPLES);
+        const others = shuffle(rng, PRINCIPLES.filter((x) => x !== c)).slice(0, 2).map((x) => x.name);
+        return { type: 'choice', story: `${c.clue}.`, prompt: 'Which principle is that?', choices: shuffle(rng, [c.name, ...others]), answer: c.name, explain: PRINCIPLE_NOTES[c.name], choiceNotes: PRINCIPLE_NOTES, visual: null, explainVisual: null };
+    },
+    'g12-constitution-year': (rng) => datedQuestion(rng, GOV_DATES),
+    'g12-constitution-fact': (rng) => datedFact(rng, GOV_DATES),
+    'g12-madison-line': (rng) => ({ type: 'choice', story: 'Federalist Number 51, by James Madison.', prompt: 'What must be made to counteract ambition?', choices: shuffle(rng, ['Ambition', 'Virtue', 'The army']), answer: 'Ambition', explain: 'Ambition must be made to counteract ambition.\nGive every office a reason to guard its own power, and no office can take all of it.', visual: null, explainVisual: null }),
+    'g12-which-branch': (rng) => {
+        const c = pick(rng, BRANCH_POWERS);
+        return { type: 'choice', story: `${c.power}.`, prompt: 'Which branch does that?', choices: shuffle(rng, BRANCHES3), answer: c.branch, explain: `${c.branch}: ${c.power.toLowerCase()}.`, visual: null, explainVisual: null };
+    },
+    'g12-how-many': (rng) => {
+        const c = pick(rng, GOV_COUNTS);
+        return { type: 'number', story: null, prompt: `How many ${c.what}?`, answer: String(c.n), explain: `There are ${c.n} ${c.what}.`, visual: null, explainVisual: null };
+    },
+    'g12-which-check': (rng) => {
+        const c = pick(rng, GOV_CHECKS);
+        return { type: 'choice', story: `${c.check}.`, prompt: 'Which branch holds that check?', choices: shuffle(rng, BRANCHES3), answer: c.by, explain: `${c.by} can ${c.check.charAt(0).toLowerCase()}${c.check.slice(1)}.`, visual: null, explainVisual: null };
+    },
+    'g12-two-thirds': (rng) => {
+        const n = pick(rng, [435, 100, 300, 90, 60, 420, 96, 99, 51]);
+        const need = Math.ceil((2 * n) / 3);
+        return { type: 'number', story: `${n} members vote. Two thirds are needed to override a veto.`, prompt: 'How many votes is that, at least?', answer: String(need), explain: `First, two thirds of ${n} is ${n} × 2 ÷ 3, which is ${((2 * n) / 3).toFixed(1).replace(/\.0$/, '')}.\nThen, a vote cannot be a fraction, so round up to get: **${need}**.`, visual: null, explainVisual: null };
+    },
+    'g12-term-length': (rng) => {
+        const c = pick(rng, TERMS);
+        return { type: 'choice', story: `${c.who}.`, prompt: 'How long is one term?', choices: shuffle(rng, TERMS.map((x) => x.term)), answer: c.term, explain: `${c.who}: ${c.term.toLowerCase()}.`, visual: null, explainVisual: null };
+    },
+    'g12-which-level': (rng) => {
+        const c = pick(rng, LEVELS_OF_GOVT);
+        return { type: 'choice', story: `${c.power}.`, prompt: 'Which government holds that power?', choices: ['National', 'State', 'Both'], answer: c.level, explain: `${c.power}: ${c.level === 'Both' ? 'both the national government and the states' : c.level === 'National' ? 'the national government, an enumerated power' : 'the states, a reserved power'}.`, visual: null, explainVisual: null };
+    },
+    'g12-power-kind': (rng) => {
+        const c = pick(rng, LEVELS_OF_GOVT);
+        const kind = POWER_KIND[c.level];
+        return { type: 'choice', story: `${c.power}.`, prompt: 'Enumerated, reserved or shared?', choices: ['Enumerated', 'Reserved', 'Shared'], answer: kind, explain: POWER_KIND_NOTES[kind], choiceNotes: POWER_KIND_NOTES, visual: null, explainVisual: null };
+    },
+    'g12-supremacy': (rng) => ({ type: 'choice', story: 'A state law and a national law collide.', prompt: 'Which one wins?', choices: shuffle(rng, ['The national law', 'The state law', 'Whichever passed first']), answer: 'The national law', explain: 'The supremacy clause in Article VI makes national law the supreme law of the land.', visual: null, explainVisual: null }),
+    'g12-tenth': (rng) => ({ type: 'choice', story: 'A power the Constitution never gives to the national government.', prompt: 'Where does it belong?', choices: shuffle(rng, ['With the states or the people', 'With the President', 'With the Supreme Court']), answer: 'With the states or the people', explain: 'The 10th Amendment reserves every power not given to the nation to the states or to the people.', visual: null, explainVisual: null }),
+    'g12-which-amendment': (rng) => {
+        const c = pick(rng, AMENDMENT_RIGHTS);
+        const others = shuffle(rng, AMENDMENT_RIGHTS.filter((x) => x !== c)).slice(0, 2).map((x) => x.n);
+        return { type: 'choice', story: `${c.right}.`, prompt: 'Which amendment?', choices: shuffle(rng, [c.n, ...others]), answer: c.n, explain: `${c.n}: ${c.right.charAt(0).toLowerCase()}${c.right.slice(1)}.`, visual: null, explainVisual: null };
+    },
+    'g12-amendment-year': (rng) => datedQuestion(rng, LATER_AMENDMENTS),
+    'g12-first-freedoms': (rng) => {
+        const odd = pick(rng, NOT_FIRST);
+        const three = shuffle(rng, FIRST_FREEDOMS).slice(0, 3);
+        return { type: 'choice', story: 'The First Amendment.', prompt: 'Which of these is not one of its five freedoms?', choices: shuffle(rng, [odd, ...three]), answer: odd, explain: 'The First Amendment protects religion, speech, the press, assembly and petition.\nThe odd one out belongs to a later amendment.', visual: null, explainVisual: null };
+    },
+    'g12-vote-order': (rng) => orderQuestion(rng, 'Amendments that widened the vote.', 'Tap them in order, from first to last.', ['15th: the vote cannot be denied by race', '19th: women vote', '26th: the vote at 18'], 'The 15th came in 1870, the 19th in 1920 and the 26th in 1971.'),
+    'g12-bill-order': (rng) => orderQuestion(rng, 'How a bill becomes a law.', 'Tap the steps in order, from first to last.', BILL_STEPS, 'Introduce, committee, floor, the other house, agree on one text, then the President.'),
+    'g12-where-bills-die': (rng) => ({ type: 'choice', story: 'Most bills that are introduced never become law.', prompt: 'Where do most of them die?', choices: shuffle(rng, ['In committee', 'In the Supreme Court', 'On the President\'s desk']), answer: 'In committee', explain: 'Most bills never leave the committee, because the chair never brings them to a vote.', visual: null, explainVisual: null }),
+    'g12-after-veto': (rng) => ({ type: 'choice', story: 'The President vetoes a bill.', prompt: 'What can Congress do?', choices: shuffle(rng, ['Override with two thirds of both houses', 'Nothing, because a veto is final', 'Ask the Supreme Court to sign it']), answer: 'Override with two thirds of both houses', explain: 'A veto sends the bill back. Two thirds of the House and two thirds of the Senate can pass it anyway.', visual: null, explainVisual: null }),
+    'g12-override-votes': (rng) => {
+        const total = pick(rng, [435, 100, 420, 96, 90]);
+        const need = Math.ceil((2 * total) / 3);
+        const yes = pick(rng, [need - 12, need - 3, need - 1, need, need + 1, need + 8]);
+        const no = total - yes;
+        const passed = yes >= need;
+        return { type: 'choice', story: `${total} members vote on overriding a veto: ${yes} yes, ${no} no.`, prompt: 'Is the veto overridden?', choices: ['Yes', 'No'], answer: passed ? 'Yes' : 'No', explain: `First, two thirds of ${total} is ${need} votes, rounded up.\nThen, ${yes} ${passed ? 'is at least' : 'is less than'} ${need}, so the veto ${passed ? 'is overridden' : 'stands'}.`, visual: null, explainVisual: null };
+    },
+    'g12-bill-next-step': (rng) => {
+        const i = randInt(rng, 0, BILL_STEPS.length - 2);
+        const next = BILL_STEPS[i + 1];
+        const others = shuffle(rng, BILL_STEPS.filter((x, j) => j !== i && j !== i + 1)).slice(0, 2);
+        return { type: 'choice', story: `${BILL_STEPS[i]}.`, prompt: 'What comes next?', choices: shuffle(rng, [next, ...others]), answer: next, explain: `After that step: ${next.charAt(0).toLowerCase()}${next.slice(1)}.`, visual: null, explainVisual: null };
+    },
+    'g12-electors': (rng) => {
+        const [state, reps] = pick(rng, STATE_REPS);
+        return { type: 'number', story: `${state} has ${reps} ${reps === 1 ? 'representative' : 'representatives'} in the House.`, prompt: 'How many electoral votes does it have?', answer: String(reps + 2), explain: `First, every state has 2 senators.\nThen, ${reps} + 2 gives: **${reps + 2}** electoral votes.`, visual: null, explainVisual: null };
+    },
+    'g12-presidential-year': (rng) => {
+        const year = 2020 + 2 * randInt(rng, 0, 10);
+        const pres = year % 4 === 0;
+        return { type: 'choice', story: `${year}.`, prompt: 'Presidential election or midterm?', choices: ['Presidential', 'Midterm'], answer: pres ? 'Presidential' : 'Midterm', explain: pres ? `${year} divides by 4, so it is a presidential year.` : `${year} does not divide by 4, so it is a midterm: the House and a third of the Senate, but not the President.`, visual: null, explainVisual: null };
+    },
+    'g12-primary-or-general': (rng) => {
+        const primary = randInt(rng, 0, 1) === 1;
+        return { type: 'choice', story: primary ? 'Each party\'s voters choose the party\'s candidate.' : 'Voters choose between the parties\' candidates.', prompt: 'Primary or general election?', choices: ['Primary', 'General'], answer: primary ? 'Primary' : 'General', explain: primary ? 'A primary picks the candidate. The general election comes after.' : 'The general election picks the winner. The primaries came first.', visual: null, explainVisual: null };
+    },
+    'g12-who-can-vote': (rng) => {
+        const c = pick(rng, VOTERS);
+        return { type: 'choice', story: `${c.who}.`, prompt: 'Can this person vote?', choices: ['Yes', 'No'], answer: c.can, explain: 'A citizen who is at least 18 and registered can vote. Under 18, or not registered, and not yet.', visual: null, explainVisual: null };
+    },
+});
+const FACTORS = [
+    { thing: 'A field of wheat', kind: 'Land' }, { thing: 'Oil under the ground', kind: 'Land' }, { thing: 'A welder\'s eight-hour shift', kind: 'Labor' }, { thing: 'A nurse\'s work', kind: 'Labor' },
+    { thing: 'A tractor', kind: 'Capital' }, { thing: 'A factory building', kind: 'Capital' }, { thing: 'The founder who risks her savings to open a bakery', kind: 'Entrepreneurship' },
+];
+const FACTOR_NOTES = { Land: 'Land is any natural resource.', Labor: 'Labor is the work people do.', Capital: 'Capital is the tools, machines and buildings that make work productive.', Entrepreneurship: 'Entrepreneurship is taking the risk of putting the other three together.' };
+const BASIC_QUESTIONS = [{ case: 'Should the factory make trucks or cars this year', q: 'What to produce' }, { case: 'Should the farm use ten workers or one machine', q: 'How to produce' }, { case: 'Who gets the new apartments, the highest bidder or the first in line', q: 'For whom to produce' }];
+const SHIFTS = [
+    { event: 'A heat wave makes everyone want lemonade', shift: 'demand rises', price: 'Rises' }, { event: 'A cheap lemon harvest lets sellers make more', shift: 'supply rises', price: 'Falls' },
+    { event: 'A frost ruins the lemon crop', shift: 'supply falls', price: 'Rises' }, { event: 'People decide lemonade is out of fashion', shift: 'demand falls', price: 'Falls' },
+];
+const FREE_ENTERPRISE = [
+    { case: 'You own the truck you bought', kind: 'Private property' }, { case: 'You may open a bakery or take a job, as you choose', kind: 'Freedom of choice' },
+    { case: 'A company makes phones because people will pay for them', kind: 'The profit motive' }, { case: 'Three grocery stores race for the same shoppers', kind: 'Competition' },
+    { case: 'The government sets the rules of the game and steps back', kind: 'Limited government' },
+];
+const FE_NOTES = { 'Private property': 'Private property: you own what you earn and what you buy.', 'Freedom of choice': 'Freedom of choice: you pick your work and your purchases.', 'The profit motive': 'The profit motive: people make things because they can earn from it.', 'Competition': 'Competition: sellers race for the buyer\'s dollar.', 'Limited government': 'Limited government: the government sets the rules and steps back.' };
+const MONEY_JOBS = [{ case: 'Prices in every store are written in dollars', job: 'A unit of account' }, { case: 'You sell your Saturday for 60 dollars and buy groceries with them', job: 'A medium of exchange' }, { case: 'You keep 200 dollars in a drawer to spend next summer', job: 'A store of value' }];
+const MONEY_NOTES = { 'A unit of account': 'A unit of account: prices are written in it, so things can be compared.', 'A medium of exchange': 'A medium of exchange: you trade for money and money for goods.', 'A store of value': 'A store of value: you can hold it and spend it later.' };
+const LABOR_FORCE = [{ who: 'A retired teacher', in: 'No' }, { who: 'A student who is not looking for a job', in: 'No' }, { who: 'A person applying for jobs every week', in: 'Yes' }, { who: 'A part-time cashier', in: 'Yes' }, { who: 'A full-time welder', in: 'Yes' }];
+const NEEDS_WANTS = [{ item: 'Rent', kind: 'Need' }, { item: 'Groceries', kind: 'Need' }, { item: 'The electric bill', kind: 'Need' }, { item: 'Concert tickets', kind: 'Want' }, { item: 'A new video game', kind: 'Want' }, { item: 'A third streaming subscription', kind: 'Want' }];
+Object.assign(GENERATORS, {
+    'e12-opportunity-cost': (rng) => {
+        if (randInt(rng, 0, 1) === 1) {
+            const pay = pick(rng, [40, 60, 80, 100, 120]);
+            return { type: 'number', story: `You can earn ${pay} dollars at work, or go to the game.`, prompt: 'In dollars, what is the opportunity cost of the game?', answer: String(pay), explain: `Going to the game gives up the ${pay} dollars you would have earned.\n[[Opportunity cost = ${pay} dollars]]`, visual: null, explainVisual: null };
+        }
+        const a = pick(rng, [50, 70, 90, 110]);
+        const b = pick(rng, [60, 80, 100, 120]);
+        return { type: 'number', story: `Job A pays ${a} dollars. Job B pays ${b} dollars. You pick the one that pays more.`, prompt: 'What is the opportunity cost, in dollars?', answer: String(Math.min(a, b)), explain: `First, you take the ${Math.max(a, b)}-dollar job.\nThen, the best thing you gave up is the other job, so the opportunity cost is: **${Math.min(a, b)} dollars**.`, visual: null, explainVisual: null };
+    },
+    'e12-factor-kind': (rng) => {
+        const c = pick(rng, FACTORS);
+        return { type: 'choice', story: `${c.thing}.`, prompt: 'Which factor of production is that?', choices: ['Land', 'Labor', 'Capital', 'Entrepreneurship'], answer: c.kind, explain: FACTOR_NOTES[c.kind], choiceNotes: FACTOR_NOTES, visual: null, explainVisual: null };
+    },
+    'e12-basic-question': (rng) => {
+        const c = pick(rng, BASIC_QUESTIONS);
+        return { type: 'choice', story: `${c.case}?`, prompt: 'Which basic economic question is that?', choices: BASIC_QUESTIONS.map((x) => x.q), answer: c.q, explain: `That is the question of ${c.q.toLowerCase()}.\nEvery society has to answer what, how and for whom.`, visual: null, explainVisual: null };
+    },
+    'e12-equilibrium-price': (rng) => {
+        const p = randInt(rng, 2, 8);
+        const step = pick(rng, [10, 20]);
+        const q = pick(rng, [30, 40, 50, 60]);
+        const rows = [[p - 1, q + step, q - step], [p, q, q], [p + 1, q - step, q + step]];
+        return { type: 'number', story: rows.map(([price, d, s]) => `At ${price} dollars, buyers want ${d} and sellers offer ${s}.`).join('\n'), prompt: 'What is the equilibrium price, in dollars?', answer: String(p), explain: `First, look for the price where the amount wanted equals the amount offered.\nAt ${p} dollars, both are ${q}.\n[[Equilibrium price = ${p} dollars]]`, visual: null, explainVisual: null };
+    },
+    'e12-shortage-or-surplus': (rng) => {
+        let a = pick(rng, [20, 30, 40, 50, 60, 70]);
+        let b = pick(rng, [20, 30, 40, 50, 60, 70]);
+        if (a === b)
+            b = a + 10;
+        const shortage = a > b;
+        return { type: 'choice', story: `At this price, buyers want ${a} cups and sellers offer ${b}.`, prompt: 'Shortage or surplus?', choices: ['Shortage', 'Surplus'], answer: shortage ? 'Shortage' : 'Surplus', explain: shortage ? `Buyers want ${a} and sellers offer only ${b}: a shortage, and the price rises.` : `Sellers offer ${b} and buyers want only ${a}: a surplus, and the price falls.`, visual: null, explainVisual: null };
+    },
+    'e12-shift-effect': (rng) => {
+        const c = pick(rng, SHIFTS);
+        return { type: 'choice', story: `${c.event}.`, prompt: 'What happens to the price?', choices: ['Rises', 'Falls'], answer: c.price, explain: `${c.event}, so ${c.shift}, and the price ${c.price.toLowerCase()}.`, visual: null, explainVisual: null };
+    },
+    'e12-law-of-demand': (rng) => {
+        const demand = randInt(rng, 0, 1) === 1;
+        return demand ? { type: 'choice', story: 'The price of a game rises from 40 dollars to 60 dollars.', prompt: 'What happens to the amount buyers want?', choices: shuffle(rng, ['It falls', 'It rises', 'It stays the same']), answer: 'It falls', explain: 'The law of demand: when the price rises, buyers want less.', visual: null, explainVisual: null }
+            : { type: 'choice', story: 'The price sellers can get for a game rises.', prompt: 'What happens to the amount sellers offer?', choices: shuffle(rng, ['It rises', 'It falls', 'It stays the same']), answer: 'It rises', explain: 'The law of supply: when the price rises, sellers offer more.', visual: null, explainVisual: null };
+    },
+    'e12-revenue': (rng) => {
+        const q = pick(rng, [50, 100, 150, 200, 300]);
+        const price = pick(rng, [8, 10, 12, 15, 20]);
+        return { type: 'number', story: `A shop sells ${q} pizzas at ${price} dollars each.`, prompt: 'What is its revenue, in dollars?', answer: String(q * price), explain: `Revenue is price times quantity.\n[[${price} × ${q} = ${q * price} dollars]]`, visual: null, explainVisual: null };
+    },
+    'e12-profit': (rng) => {
+        const r = pick(rng, [2400, 3000, 4500, 6000]);
+        const c = r - pick(rng, [500, 800, 1200, 1500]);
+        return { type: 'number', story: `Revenue was ${r} dollars and costs were ${c} dollars.`, prompt: 'What is the profit, in dollars?', answer: String(r - c), explain: `Profit is revenue minus costs.\n[[${r} − ${c} = ${r - c} dollars]]`, visual: null, explainVisual: null };
+    },
+    'e12-competition-effect': (rng) => ({ type: 'choice', story: 'A second pizza shop opens across the street from the only one in town.', prompt: 'What tends to happen to prices and quality?', choices: shuffle(rng, ['Prices fall and quality rises', 'Prices rise and quality falls', 'Nothing changes']), answer: 'Prices fall and quality rises', explain: 'With a rival next door, a shop that raises prices or lets quality slip loses its customers.', visual: null, explainVisual: null }),
+    'e12-free-enterprise-kind': (rng) => {
+        const c = pick(rng, FREE_ENTERPRISE);
+        return { type: 'choice', story: `${c.case}.`, prompt: 'Which feature of free enterprise is that?', choices: FREE_ENTERPRISE.map((x) => x.kind), answer: c.kind, explain: FE_NOTES[c.kind], choiceNotes: FE_NOTES, visual: null, explainVisual: null };
+    },
+    'e12-simple-interest': (rng) => {
+        const p = pick(rng, [500, 1000, 2000, 4000]);
+        const r = pick(rng, [2, 3, 4, 5, 10]);
+        const y = randInt(rng, 1, 3);
+        const interest = (p * r * y) / 100;
+        return { type: 'number', story: `${p} dollars at ${r} percent a year, simple interest.`, prompt: `How much interest after ${y} ${y === 1 ? 'year' : 'years'}, in dollars?`, answer: String(interest), explain: `Simple interest is principal times rate times years.\n[[${p} × ${r}/100 × ${y} = ${interest} dollars]]`, visual: null, explainVisual: null };
+    },
+    'e12-money-job': (rng) => {
+        const c = pick(rng, MONEY_JOBS);
+        return { type: 'choice', story: `${c.case}.`, prompt: 'Which job of money is that?', choices: MONEY_JOBS.map((x) => x.job), answer: c.job, explain: MONEY_NOTES[c.job], choiceNotes: MONEY_NOTES, visual: null, explainVisual: null };
+    },
+    'e12-fed-response': (rng) => {
+        const hot = randInt(rng, 0, 1) === 1;
+        return { type: 'choice', story: hot ? 'Prices are rising much too fast.' : 'The economy has stalled and hiring has stopped.', prompt: 'What does the Fed usually do?', choices: ['Raise interest rates', 'Lower interest rates'], answer: hot ? 'Raise interest rates' : 'Lower interest rates', explain: hot ? 'Higher rates make borrowing cost more, so spending cools and prices slow.' : 'Lower rates make borrowing cheaper, so spending and hiring pick up.', visual: null, explainVisual: null };
+    },
+    'e12-bank-gap': (rng) => ({ type: 'choice', story: 'A bank pays 2 percent on deposits and charges borrowers 6 percent.', prompt: 'How does the bank earn its living?', choices: shuffle(rng, ['On the gap between the two rates', 'By printing money', 'From the government']), answer: 'On the gap between the two rates', explain: 'It lends your deposit out at 6 percent, pays you 2, and keeps the difference.', visual: null, explainVisual: null }),
+    'e12-growth-rate': (rng) => {
+        const last = pick(rng, [100, 200, 500, 1000]);
+        const g = pick(rng, [2, 3, 4, 5, 10, 12]);
+        const now = last + (last * g) / 100;
+        return { type: 'number', story: `GDP was ${last} billion dollars last year and ${now} billion this year.`, prompt: 'What is the growth rate, in percent?', answer: String(g), explain: `First, the change is ${now} − ${last} = ${now - last}.\nThen, divide by last year and multiply by 100: ${now - last} ÷ ${last} × 100.\n[[Growth = ${g} percent]]`, visual: null, explainVisual: null };
+    },
+    'e12-price-after-inflation': (rng) => {
+        const old = pick(rng, [100, 200, 400, 1000]);
+        const r = pick(rng, [5, 10, 20, 25]);
+        const now = old + (old * r) / 100;
+        return { type: 'number', story: `Prices rise ${r} percent. A cart of groceries cost ${old} dollars.`, prompt: 'What does the same cart cost now, in dollars?', answer: String(now), explain: `First, ${r} percent of ${old} is ${(old * r) / 100}.\nThen, add it on: ${old} + ${(old * r) / 100}.\n[[New price = ${now} dollars]]`, visual: null, explainVisual: null };
+    },
+    'e12-unemployment-rate': (rng) => {
+        const lf = pick(rng, [100, 200, 500, 1000]);
+        const rate = pick(rng, [3, 4, 5, 8, 10, 12]);
+        const u = (lf * rate) / 100;
+        const w = lf - u;
+        return { type: 'number', story: `A town has ${w} people working and ${u} looking for work.`, prompt: 'What is the unemployment rate, in percent?', answer: String(rate), explain: `First, the labor force is everyone working or looking: ${w} + ${u} = ${lf}.\nThen, ${u} ÷ ${lf} × 100.\n[[Unemployment = ${rate} percent]]`, visual: null, explainVisual: null };
+    },
+    'e12-in-labor-force': (rng) => {
+        const c = pick(rng, LABOR_FORCE);
+        return { type: 'choice', story: `${c.who}.`, prompt: 'Is this person in the labor force?', choices: ['Yes', 'No'], answer: c.in, explain: c.in === 'Yes' ? 'Working or looking for work: in the labor force.' : 'Not working and not looking: not in the labor force, so not counted as unemployed either.', visual: null, explainVisual: null };
+    },
+    'e12-budget-left': (rng) => {
+        const income = pick(rng, [2000, 2500, 3000, 4000]);
+        const rent = pick(rng, [700, 800, 900, 1000]);
+        const food = pick(rng, [300, 400, 500]);
+        const other = pick(rng, [200, 300, 400]);
+        const left = income - rent - food - other;
+        return { type: 'number', story: `Income ${income} dollars. Rent ${rent}, food ${food}, everything else ${other}.`, prompt: 'How much is left, in dollars?', answer: String(left), explain: `First, add the expenses: ${rent} + ${food} + ${other} = ${rent + food + other}.\nThen, take them from the income: ${income} − ${rent + food + other}.\n[[Left = ${left} dollars]]`, visual: null, explainVisual: null };
+    },
+    'e12-percent-of-income': (rng) => {
+        const income = pick(rng, [1000, 2000, 2500, 3000, 4000, 5000]);
+        const pct = pick(rng, [10, 20, 30, 50]);
+        const amount = (income * pct) / 100;
+        return { type: 'number', story: `Income is ${income} dollars a month. You save ${pct} percent.`, prompt: 'How much is that, in dollars?', answer: String(amount), explain: `${pct} percent is ${pct}/100.\n[[${income} × ${pct}/100 = ${amount} dollars]]`, visual: null, explainVisual: null };
+    },
+    'e12-rule-of-72': (rng) => {
+        const rate = pick(rng, [2, 3, 4, 6, 8, 9, 12]);
+        return { type: 'number', story: `Money grows at ${rate} percent a year.`, prompt: 'About how many years to double?', answer: String(72 / rate), explain: `The rule of 72: divide 72 by the rate.\n[[72 ÷ ${rate} = ${72 / rate} years]]`, visual: null, explainVisual: null };
+    },
+    'e12-card-interest': (rng) => {
+        const balance = pick(rng, [600, 1200, 2400, 3000]);
+        const apr = pick(rng, [12, 18, 24]);
+        const monthly = (balance * apr) / 1200;
+        return { type: 'number', story: `A card charges ${apr} percent a year. The unpaid balance is ${balance} dollars.`, prompt: 'How much interest this month, in dollars?', answer: String(monthly), explain: `First, the monthly rate is ${apr} ÷ 12 = ${apr / 12} percent.\nThen, ${apr / 12} percent of ${balance}.\n[[Interest = ${monthly} dollars this month]]`, visual: null, explainVisual: null };
+    },
+    'e12-need-or-want': (rng) => {
+        const c = pick(rng, NEEDS_WANTS);
+        return { type: 'choice', story: `${c.item}.`, prompt: 'Need or want?', choices: ['Need', 'Want'], answer: c.kind, explain: c.kind === 'Need' ? 'A need comes first in a budget: a roof, food, power.' : 'A want comes after the needs and after the saving.', visual: null, explainVisual: null };
+    },
+});
 function yearQuestion(rng, list, story) {
     const e = pick(rng, list);
     const others = shuffle(rng, [...new Set(list.filter((x) => x.year !== e.year).map((x) => String(x.year)))]).slice(0, 2);
     return { type: 'choice', story: story ? `${story} ${e.event}.` : `${e.event}.`, prompt: 'In what year?', choices: shuffle(rng, [String(e.year), ...others]), answer: String(e.year),
-        explain: `${e.event}: ${e.year}.`, visual: null, explainVisual: null };
+        explain: withStory(`${e.event}: ${e.year}.`, e.event), visual: null, explainVisual: null };
 }
 function factQuestion(rng, list) {
     const e = pick(rng, list);
     const others = shuffle(rng, list.filter((x) => x !== e)).slice(0, 2).map((x) => x.event);
     return { type: 'choice', story: `${e.year}.`, prompt: 'What happened that year?', choices: shuffle(rng, [e.event, ...others]), answer: e.event,
-        explain: `${e.year}: ${lowerTitle(e.event)}.`, visual: null, explainVisual: null };
+        explain: withStory(`${e.year}: ${lowerTitle(e.event)}.`, e.event), visual: null, explainVisual: null };
 }
 const TX_PEOPLES = [{ clue: 'Farmers in villages in the wet east, growing corn', people: 'The Caddo' }, { clue: 'Horse riders on the plains, following the buffalo', people: 'The Comanche' }, { clue: 'Fishers and gatherers on the coast, moving with the seasons', people: 'The Karankawa' }];
 const TX_LANDS = [{ land: 'Rain and forests', life: 'Farming, in settled villages' }, { land: 'Dry, open plains', life: 'Following the buffalo on horseback' }, { land: 'The coast', life: 'Fishing and gathering shellfish' }];
@@ -28431,7 +29088,11 @@ const TX_UNION = [{ year: 1845, event: 'Texas becomes a state' }, { year: 1861, 
 const FOUNDING = [{ q: 'Why we are leaving Britain', doc: 'The Declaration of Independence' }, { q: 'How our government works', doc: 'The Constitution' }, { q: 'What the government may never do to you', doc: 'The Bill of Rights' }];
 const REPUBLIC = [{ year: 1789, event: 'Washington takes office' }, { year: 1803, event: 'Jefferson buys Louisiana' }, { year: 1812, event: 'A second war with Britain begins' }, { year: 1823, event: 'The Monroe Doctrine' }, { year: 1828, event: 'Andrew Jackson is elected' }];
 const CRISIS = [{ year: 1820, event: 'The Missouri Compromise' }, { year: 1850, event: 'The Compromise of 1850' }, { year: 1854, event: 'The Kansas-Nebraska Act' }, { year: 1857, event: 'The Dred Scott decision' }, { year: 1860, event: 'Lincoln is elected' }];
-const AMENDMENTS = [{ n: '13th', year: 1865, does: 'Abolishes slavery' }, { n: '14th', year: 1868, does: 'Makes everyone born here a citizen with equal protection' }, { n: '15th', year: 1870, does: 'Says the vote cannot be denied by race' }];
+const AMENDMENTS = [
+    { n: '13th', year: 1865, does: 'Abolishes slavery', why: 'Lincoln pushed it through the House in January, and the states ratified it in December, months after his death. Four million people were free by law.' },
+    { n: '14th', year: 1868, does: 'Makes everyone born here a citizen with equal protection', why: 'It answered the Dred Scott decision: anyone born here is a citizen, and no state may deny any person the equal protection of the laws.' },
+    { n: '15th', year: 1870, does: 'Says the vote cannot be denied by race', why: 'Black men voted and won office across the South for a few years, until poll taxes, tests and violence took the vote away again for almost a century.' },
+];
 Object.assign(GENERATORS, {
     'h4-which-people': (rng) => {
         const c = pick(rng, TX_PEOPLES);
@@ -28507,7 +29168,7 @@ Object.assign(GENERATORS, {
     'h8-amendment-year': (rng) => {
         const a = pick(rng, AMENDMENTS);
         return { type: 'choice', story: `The ${a.n} Amendment.`, prompt: 'In what year?', choices: shuffle(rng, AMENDMENTS.map((x) => String(x.year))), answer: String(a.year),
-            explain: `The ${a.n} Amendment was ratified in ${a.year}.`, visual: null, explainVisual: null };
+            explain: `The ${a.n} Amendment was ratified in ${a.year}.\n${a.why}`, visual: null, explainVisual: null };
     },
     'h8-after-1877': (rng) => {
         return { type: 'choice', story: 'Federal troops left the South in 1877.', prompt: 'What happened next?', choices: shuffle(rng, ['Southern states used laws and terror to take the vote back, and segregation lasted almost a century', 'The amendments were repealed', 'Black men kept full voting rights everywhere']), answer: 'Southern states used laws and terror to take the vote back, and segregation lasted almost a century',
@@ -28529,12 +29190,12 @@ const RECENT = [{ year: '2001', event: 'The September 11 attacks' }, { year: '20
 function yearQuestionS(rng, list) {
     const e = pick(rng, list);
     const others = shuffle(rng, [...new Set(list.filter((x) => x.year !== e.year).map((x) => x.year))]).slice(0, 2);
-    return { type: 'choice', story: `${e.event}.`, prompt: 'When?', choices: shuffle(rng, [e.year, ...others]), answer: e.year, explain: `${e.event}: ${e.year}.`, visual: null, explainVisual: null };
+    return { type: 'choice', story: `${e.event}.`, prompt: 'When?', choices: shuffle(rng, [e.year, ...others]), answer: e.year, explain: withStory(`${e.event}: ${e.year}.`, e.event), visual: null, explainVisual: null };
 }
 function factQuestionS(rng, list) {
     const e = pick(rng, list);
     const others = shuffle(rng, list.filter((x) => x !== e)).slice(0, 2).map((x) => x.event);
-    return { type: 'choice', story: `${e.year}.`, prompt: 'What happened then?', choices: shuffle(rng, [e.event, ...others]), answer: e.event, explain: `${e.year}: ${lowerTitle(e.event)}.`, visual: null, explainVisual: null };
+    return { type: 'choice', story: `${e.year}.`, prompt: 'What happened then?', choices: shuffle(rng, [e.event, ...others]), answer: e.event, explain: withStory(`${e.year}: ${lowerTitle(e.event)}.`, e.event), visual: null, explainVisual: null };
 }
 Object.assign(GENERATORS, {
     'h10-which-river': (rng) => { const c = pick(rng, RIVERS); return { type: 'choice', story: `${c.civ}.`, prompt: 'Which river did it grow along?', choices: shuffle(rng, RIVERS.map((x) => x.river)), answer: c.river, explain: `${c.civ} grew along ${lowerTitle(c.river)}.`, visual: null, explainVisual: null }; },
@@ -28588,7 +29249,7 @@ Object.assign(GENERATORS, {
     'h5-first-colony': (rng) => {
         const jamestown = randInt(rng, 0, 1) === 1;
         return { type: 'choice', story: jamestown ? 'The first English colony that lasted, in Virginia.' : 'The Pilgrims\' colony in Massachusetts.', prompt: 'What was it, and when?', choices: shuffle(rng, ['Jamestown, 1607', 'Plymouth, 1620', 'Boston, 1776']), answer: jamestown ? 'Jamestown, 1607' : 'Plymouth, 1620',
-            explain: jamestown ? 'Jamestown, Virginia, 1607.' : 'Plymouth, Massachusetts, 1620.', visual: null, explainVisual: null };
+            explain: jamestown ? 'Jamestown, Virginia, 1607.\nAbout a hundred men landed on a swampy river bank in Virginia. Most died of hunger and disease in the first years, but the colony hung on, and tobacco made it pay.' : 'Plymouth, Massachusetts, 1620.\nThe Pilgrims crossed on the Mayflower and landed as winter began. Half of them died before spring, and the Wampanoag showed the rest how to plant corn.', visual: null, explainVisual: null };
     },
     'h5-event-year': (rng) => yearQuestion(rng, REV_EVENTS, null),
     'h5-order-events': (rng) => {
@@ -29506,6 +30167,12 @@ const TRACE_LETTERS = {
     x: { strokes: [[[30, 42], [70, 85]], [[70, 42], [30, 85]]] },
     n: { strokes: [[[32, 85], [32, 42]], [[32, 52], [44, 42], [60, 42], [68, 52], [68, 85]]] },
     u: { strokes: [[[32, 42], [32, 74], [42, 85], [58, 85], [68, 74], [68, 42]], [[68, 42], [68, 85]]] },
+    m: { strokes: [[[24, 85], [24, 42]], [[24, 52], [32, 42], [42, 42], [48, 52], [48, 85]], [[48, 52], [56, 42], [66, 42], [74, 52], [74, 85]]] },
+    h: { strokes: [[[32, 85], [32, 15]], [[32, 52], [44, 42], [60, 42], [68, 52], [68, 85]]] },
+    r: { strokes: [[[36, 85], [36, 42]], [[36, 52], [46, 42], [60, 42], [66, 48]]] },
+    w: { strokes: [[[22, 42], [36, 85], [50, 50], [64, 85], [78, 42]]] },
+    z: { strokes: [[[32, 42], [68, 42]], [[68, 42], [32, 85]], [[32, 85], [68, 85]]] },
+    k: { strokes: [[[32, 15], [32, 85]], [[64, 42], [32, 66]], [[42, 58], [66, 85]]] },
 };
 const TRACE_EASY = ['L', 'T', 'I', 'H', 'E', 'F'];
 const TRACE_MEDIUM = ['V', 'A', 'N', 'M'];
@@ -29521,6 +30188,11 @@ const TRACE_SHAPES = ['shape-triangle', 'shape-square', 'shape-circle', 'shape-s
 const TRACE_SMALL_EASY = ['l', 'i', 't', 'v', 'x'];
 const TRACE_SMALL_ROUND = ['o', 'c', 'n', 'u'];
 const TRACE_SMALL_ANY = [...TRACE_SMALL_EASY, ...TRACE_SMALL_ROUND];
+// Grade 1: the small letters with a tall stick, a bump, or a zigzag.
+const TRACE_SMALL_TALL = ['h', 'k'];
+const TRACE_SMALL_BUMPS = ['m', 'r'];
+const TRACE_SMALL_ZIGZAG = ['w', 'z'];
+const TRACE_SMALL_MORE = [...TRACE_SMALL_TALL, ...TRACE_SMALL_BUMPS, ...TRACE_SMALL_ZIGZAG, ...TRACE_SMALL_ANY];
 // Was the traced path close enough? Every stroke must be visited in order: for each
 // point along a stroke, some drawn point must lie within `tolerance` grid units. This
 // forgives a wobbly hand but not a letter drawn in the wrong shape.
@@ -29600,6 +30272,10 @@ Object.assign(GENERATORS, {
     'rt-trace-small-easy': traceQuestion(TRACE_SMALL_EASY),
     'rt-trace-small-round': traceQuestion(TRACE_SMALL_ROUND),
     'rt-trace-small-any': traceQuestion(TRACE_SMALL_ANY),
+    'r1-trace-tall': traceQuestion(TRACE_SMALL_TALL),
+    'r1-trace-bumps': traceQuestion(TRACE_SMALL_BUMPS),
+    'r1-trace-zigzag': traceQuestion(TRACE_SMALL_ZIGZAG),
+    'r1-trace-any-small': traceQuestion(TRACE_SMALL_MORE),
 });
 // Words a kindergartener knows, each starting with one clear consonant sound.
 const SOUND_WORDS = [
@@ -30717,6 +31393,36 @@ const WONDER = [
             { voice: 'A skeptic', says: 'Notice who benefits from you believing each version. That is not cynicism; it is the first question a historian asks of any source, and the present is a source like any other. Then look for the boring documents, the budgets and the court records, which lie less than the speeches.' },
         ],
         closing: 'What is happening now that you think a textbook will one day give a whole chapter?',
+    },
+    {
+        id: 'w-ambition-counteracts',
+        theme: 'world',
+        stage: 'grown',
+        courseIds: ['government-12'],
+        answerMode: 'typed',
+        prompt: 'Madison built a government on the idea that people in power will reach for more of it, so every office should be able to block the others. Is it wise to design for the worst in people, or does expecting the worst bring it out?',
+        perspectives: [
+            { voice: 'A scientist', says: 'An engineer designs a bridge for the heaviest truck, not the average one, and nobody calls that pessimism. Madison did the same with power. The checks cost something every day in slowness, and they pay for themselves on the one day a person tries to take everything.' },
+            { voice: 'An artist', says: 'Every good story needs a character who could do wrong and chooses not to. A system that makes wrong impossible has no such characters in it. Maybe the checks are the stage, and the choosing still has to happen on it.' },
+            { voice: 'A grandparent of faith', says: 'The old traditions never trusted anyone with unchecked power, not even the good ones, because the good ones do not stay good on their own. Guarding against that is not thinking badly of people. It is knowing them, and loving them anyway.' },
+            { voice: 'A skeptic', says: 'Notice that the checks only work if the people in each office actually use them. Paper cannot block a president; senators can. So the design assumes ambition and also assumes courage, and it is the second assumption that is tested more often.' },
+        ],
+        closing: 'Where in your own life do you set things up so that you cannot easily do the wrong thing, and does that make you less free or more?',
+    },
+    {
+        id: 'w-price-of-a-saturday',
+        theme: 'feelings',
+        stage: 'grown',
+        courseIds: ['economics-12'],
+        answerMode: 'typed',
+        prompt: 'Every choice has an opportunity cost: the best thing you gave up. Does thinking about what you gave up make your choices better, or only make you unhappy with the ones you made?',
+        perspectives: [
+            { voice: 'A scientist', says: 'Before the choice, counting the cost is the whole method: it is how you find out which option is actually the best. After the choice, the same count turns into regret, which changes nothing. Use the tool while it still works, then put it down.' },
+            { voice: 'An artist', says: 'A finished painting is every stroke that was not painted. If I mourned each one, nothing would ever be done. The road not taken is a beautiful poem precisely because the walker keeps walking.' },
+            { voice: 'A grandparent of faith', says: 'Most traditions have a word for the practice of being at peace with what you chose: gratitude. Not because the other road was worse, but because you can only live on one road at a time, and this is yours.' },
+            { voice: 'A skeptic', says: 'Beware of anyone who says the cost of a choice does not matter. It matters to the person who pays it. What does not help is paying it twice, once in the choosing and again every night after. Count once, honestly, then sleep.' },
+        ],
+        closing: 'What is one choice you made this year whose opportunity cost you are glad you paid?',
     },
     {
         id: 'w-infinite-primes',
@@ -32202,10 +32908,15 @@ function findStudent(roster, id) {
 }
 function activeStudents(roster) { return roster.students.filter((s) => s.active); }
 // Adds a student. Returns { roster, error } — error is a plain sentence for the screen.
+// The longest name the screens are laid out for: one row on a phone, two per row on a
+// tablet. Names already on a roster are never cut; the cap applies when a name is typed.
+const NAME_MAX = 30;
 function addStudent(roster, rawId, at, extras = {}) {
     const id = normalizeStudentId(rawId);
     if (!id)
         return { roster, error: 'Enter a student ID first.' };
+    if (String(rawId).trim().length > NAME_MAX)
+        return { roster, error: `Names can be up to ${NAME_MAX} characters.` };
     if (findStudent(roster, id))
         return { roster, error: 'That student ID is already on the list.' };
     if (!levelFor(extras.level))
@@ -32222,6 +32933,8 @@ function renameStudent(roster, id, newLabel) {
     const label = String(newLabel || '').trim();
     if (!label)
         return { roster, error: 'Enter a name first.' };
+    if (label.length > NAME_MAX)
+        return { roster, error: `Names can be up to ${NAME_MAX} characters.` };
     return { roster: { ...roster, students: roster.students.map((s) => (s.id === normalizeStudentId(id) ? { ...s, label } : s)) }, error: null };
 }
 // Changes the starting level or the picture. Either can be left empty.
@@ -34560,6 +35273,8 @@ const CURRICULUM = [
         grade: '1', subject: 'Reading', status: 'ready',
         source: 'Texas Essential Knowledge and Skills, Grade 1 English Language Arts and Reading (TEKS §110.3); Common Core Grade 1 Reading: Foundational Skills and Literature',
         standards: [
+            { framework: 'TEKS', code: '1.2F', text: 'Develop handwriting by printing words, sentences, and answers legibly.', moduleIds: ['tracing-more-small-letters'] },
+            { framework: 'CCSS', code: 'L.1.1.A', text: 'Print all upper- and lowercase letters.', moduleIds: ['tracing-more-small-letters'] },
             { framework: 'TEKS', code: '1.2B.i', text: 'Decode words in isolation and in context by applying common letter-sound correspondences (closed syllables).', moduleIds: ['read-the-word', 'read-the-sentence'] },
             { framework: 'TEKS', code: '1.2B.ii', text: 'Decode words with initial and final consonant blends, digraphs, and trigraphs.', moduleIds: ['sh-ch-th'] },
             { framework: 'TEKS', code: '1.2B.iii', text: 'Decode words with closed syllables, open syllables, VCe syllables, vowel teams, and r-controlled syllables.', moduleIds: ['silent-e'] },
@@ -35281,6 +35996,35 @@ const CURRICULUM = [
         ],
     },
     {
+        grade: '12', subject: 'History', status: 'ready',
+        source: 'Texas Essential Knowledge and Skills, United States Government (§113.44) and Economics with Emphasis on the Free Enterprise System and Its Benefits (§113.31), cited by knowledge statement; National Council for the Social Studies, National Curriculum Standards themes; Council for Economic Education, Voluntary National Content Standards in Economics',
+        standards: [
+            { framework: 'TEKS', code: 'GOVT.7', text: 'Constitutional principles: popular sovereignty, limited government, separation of powers, checks and balances, federalism, republicanism and individual rights.', moduleIds: ['principles-of-the-constitution'] },
+            { framework: 'TEKS', code: 'GOVT.8', text: 'The structure and functions of the three branches, checks and balances, and the procedure for enacting laws.', moduleIds: ['three-branches', 'how-a-bill-becomes-law'] },
+            { framework: 'TEKS', code: 'GOVT.9', text: 'Federalism: the distribution of powers between the national and state governments, and the limits on each.', moduleIds: ['federalism'] },
+            { framework: 'TEKS', code: 'GOVT.10', text: 'The rights guaranteed in the Bill of Rights and later amendments, and the balance between majority rule and minority rights.', moduleIds: ['bill-of-rights'] },
+            { framework: 'TEKS', code: 'GOVT.11', text: 'Political parties, interest groups and the media in the political process.', moduleIds: ['elections-parties-and-voting'] },
+            { framework: 'TEKS', code: 'GOVT.12', text: 'The process of electing the President, the Electoral College, and the importance of voting.', moduleIds: ['elections-parties-and-voting'] },
+            { framework: 'TEKS', code: 'ECON.1', text: 'Scarcity, choice and opportunity cost; the basic economic questions; the factors of production.', moduleIds: ['scarcity-and-opportunity-cost'] },
+            { framework: 'TEKS', code: 'ECON.3', text: 'Supply, demand and equilibrium price; shifts in supply and demand.', moduleIds: ['supply-demand-and-price'] },
+            { framework: 'TEKS', code: 'ECON (free enterprise)', text: 'The characteristics of the U.S. free enterprise system, competition and market structure, and the role of profit.', moduleIds: ['competition-and-markets'] },
+            { framework: 'TEKS', code: 'ECON (money and the Fed)', text: 'The functions of money, banks and interest rates, and the Federal Reserve System and monetary policy.', moduleIds: ['money-banking-and-the-fed'] },
+            { framework: 'TEKS', code: 'ECON (measurements)', text: 'Gross domestic product, inflation, the unemployment rate and the business cycle.', moduleIds: ['gdp-inflation-and-unemployment'] },
+            { framework: 'TEKS', code: 'ECON (personal finance)', text: 'Personal financial literacy: budgeting, saving, compound interest, credit and credit scores.', moduleIds: ['budgets-saving-and-credit'] },
+            { framework: 'CCSS', code: 'NCSS Theme VI', text: 'Power, Authority, and Governance.', moduleIds: ['principles-of-the-constitution', 'three-branches', 'federalism', 'how-a-bill-becomes-law'] },
+            { framework: 'CCSS', code: 'NCSS Theme X', text: 'Civic Ideals and Practices.', moduleIds: ['bill-of-rights', 'elections-parties-and-voting'] },
+            { framework: 'CCSS', code: 'NCSS Theme VII', text: 'Production, Distribution, and Consumption.', moduleIds: ['scarcity-and-opportunity-cost', 'supply-demand-and-price', 'competition-and-markets', 'money-banking-and-the-fed', 'gdp-inflation-and-unemployment', 'budgets-saving-and-credit'] },
+            { framework: 'CCSS', code: 'CEE Standard 1', text: 'Scarcity.', moduleIds: ['scarcity-and-opportunity-cost'] },
+            { framework: 'CCSS', code: 'CEE Standard 2', text: 'Decision Making.', moduleIds: ['scarcity-and-opportunity-cost', 'budgets-saving-and-credit'] },
+            { framework: 'CCSS', code: 'CEE Standard 7', text: 'Markets and Prices.', moduleIds: ['supply-demand-and-price'] },
+            { framework: 'CCSS', code: 'CEE Standard 9', text: 'Competition and Market Structure.', moduleIds: ['competition-and-markets'] },
+            { framework: 'CCSS', code: 'CEE Standard 11', text: 'Money and Inflation.', moduleIds: ['money-banking-and-the-fed', 'gdp-inflation-and-unemployment'] },
+            { framework: 'CCSS', code: 'CEE Standard 12', text: 'Interest Rates.', moduleIds: ['money-banking-and-the-fed', 'budgets-saving-and-credit'] },
+            { framework: 'CCSS', code: 'CEE Standard 19', text: 'Unemployment and Inflation.', moduleIds: ['gdp-inflation-and-unemployment'] },
+            { framework: 'CCSS', code: 'CEE Standard 20', text: 'Fiscal and Monetary Policy.', moduleIds: ['money-banking-and-the-fed'] },
+        ],
+    },
+    {
         grade: '4', subject: 'Math', status: 'ready',
         source: 'Texas Essential Knowledge and Skills, Grade 4 Mathematics (TEKS §111.6); Common Core Grade 4 Mathematics',
         standards: [
@@ -35421,8 +36165,13 @@ function ContactLine({ onOpen, inline = false }) {
         ? react_1.default.createElement("button", { type: "button", onClick: onOpen, style: { background: 'none', border: 'none', color: C.muted, fontFamily: FONT, fontSize: 12, cursor: 'pointer', padding: 0, textDecoration: 'underline' } }, "Contact us")
         : react_1.default.createElement("a", { href: `mailto:${CONTACT_EMAIL}`, style: { color: C.muted, textDecoration: 'underline' } }, "Contact us")));
 }
+// A name typed with a parenthetical, like "Mikey (Grade 3)", keeps the parenthetical on one line
+// wherever the name is shown: the spaces inside the parentheses become non-breaking. Display only;
+// the stored name never changes.
+const keepTogether = (s) => String(s).replace(/\(([^)]*)\)/g, (m) => m.replace(/ /g, '\u00A0').replace(/-/g, '\u2011'));
 const linkBtn = { background: 'none', border: 'none', color: '#2F5D4F', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif', fontSize: 15, cursor: 'pointer', padding: '6px 0', textDecoration: 'underline' };
 // Cards are solid, so stars show only in the open space between them and never behind text.
+const cardLink = { ...linkBtn, marginRight: 12 };
 const card = { background: C.surface, border: `1px solid ${C.line}`, borderRadius: 14, padding: 18, marginBottom: 14 };
 // ---------- Small building blocks ----------
 function Btn({ children, onClick, kind = 'primary', disabled = false, full = false, halo = false, style: extra = null }) {
@@ -36078,8 +36827,11 @@ const KID_ANIMATION = `
      edge chases it a beat late, so phones get no bottom bar and the device's own edge closes the frame.
      Laptops and desktops, which have no moving bars, get the full frame. */
   .edu-frame-bottom { display: none; }
-  /* On a laptop the student card's links sit centered beneath the name, close to Open report; on a phone they stay left. */
-  @media (min-width: 1000px) { .edu-student-links { margin-left: auto; } }
+  /* The login grid: one name per row on a phone, two per row from a tablet up (never for a single student). */
+  .edu-name-grid { grid-template-columns: 1fr; }
+  @media (min-width: 600px) { .edu-name-grid-two { grid-template-columns: 1fr 1fr; } }
+  /* On a laptop the student card's links sit on one line beside Open report; on a phone they stay left and wrap. */
+  @media (min-width: 1000px) { .edu-student-actions { text-align: right; } }
   /* On a phone the logout countdown sits centered at the foot; on a laptop it stays bottom right. */
   @media (max-width: 999px) { .edu-logout-chip { right: auto !important; left: 50% !important; transform: translateX(-50%); } }
   @media (hover: hover) and (pointer: fine) { .edu-frame-bottom { display: block; position: fixed; left: 0; right: 0; bottom: 0; height: 6px; background: ${C.green}; pointer-events: none; z-index: 50; } }
@@ -36860,7 +37612,7 @@ function EduSphereApp() {
     const visibleCourses = (0, react_1.useMemo)(() => (record ? COURSES.filter((c) => enabledCourseIds(record.events).includes(c.id)) : []), [record]);
     const visibleModules = (0, react_1.useMemo)(() => visibleCourses.flatMap((c) => c.modules), [visibleCourses]);
     // Alphabetical, so the order never depends on how the content happens to be written.
-    const subjects = (0, react_1.useMemo)(() => [...new Set(visibleCourses.map((c) => c.subject))].sort(), [visibleCourses]);
+    const subjects = (0, react_1.useMemo)(() => sortSubjects(visibleCourses.map((c) => c.subject)), [visibleCourses]);
     // A young learner is any student with an early-years course (pre-K to grade 2) still
     // unfinished, whatever else is assigned. Their screens are simpler: no numbers to read,
     // nothing that needs a scroll to find, one thing to do next. Early courses come first in
@@ -36871,7 +37623,7 @@ function EduSphereApp() {
     const youngLearner = earlyModuleIds.length > 0 && earlyModuleIds.some((id) => !progress.masteredIds.includes(id));
     // Young learners see only their early-years courses; anything above grade 2 waits until they graduate.
     const shownCourses = (0, react_1.useMemo)(() => (earlyModuleIds.length > 0 && earlyModuleIds.some((id) => !progress.masteredIds.includes(id)) ? visibleCourses.filter((c) => stageForGrade(c.grade) === 'early') : visibleCourses), [visibleCourses, earlyModuleIds, progress]);
-    const shownSubjects = (0, react_1.useMemo)(() => [...new Set(shownCourses.map((c) => c.subject))].sort(), [shownCourses]);
+    const shownSubjects = (0, react_1.useMemo)(() => sortSubjects(shownCourses.map((c) => c.subject)), [shownCourses]);
     // On first load: find learners who have used this device before.
     (0, react_1.useEffect)(() => {
         (async () => {
@@ -37307,13 +38059,13 @@ function EduSphereApp() {
                     react_1.default.createElement("h2", { style: { fontSize: 20, margin: '0 0 14px', textAlign: 'center' } }, "Who's learning today?"),
                     activeStudents(roster).length === 0 ? (react_1.default.createElement("p", { style: { margin: 0, color: C.muted, fontSize: 15, textAlign: 'center' } }, "No students have been added. An educator can add students by logging in below.")) : (react_1.default.createElement(react_1.default.Fragment, null,
                         activeStudents(roster).length > 8 && (react_1.default.createElement("input", { value: nameInput, onChange: (e) => setNameInput(e.target.value), placeholder: "Find your name", style: { textAlign: 'center', fontFamily: FONT, fontSize: 17, padding: '10px 12px', width: '100%', boxSizing: 'border-box', border: `2px solid ${C.line}`, borderRadius: 10, marginBottom: 10 } })),
-                        react_1.default.createElement("div", { style: { display: 'grid', gridTemplateColumns: activeStudents(roster).length <= 1 ? '1fr' : '1fr 1fr', gridAutoRows: 84, gap: 10 } }, activeStudents(roster)
+                        react_1.default.createElement("div", { className: 'edu-name-grid' + (activeStudents(roster).length > 1 ? ' edu-name-grid-two' : ''), style: { display: 'grid', gridAutoRows: 84, gap: 10 } }, activeStudents(roster)
                             .filter((st) => st.label.toLowerCase().includes(nameInput.trim().toLowerCase()))
                             .map((st) => (react_1.default.createElement("button", { key: st.id, type: "button", onClick: () => startWithName(st.id), disabled: busy, className: "edu-press edu-name", style: { fontFamily: FONT, fontSize: 15, fontWeight: 600, borderRadius: 10, background: C.surface, border: `2px solid ${C.line}`, color: C.ink, cursor: 'pointer', height: 84, padding: '0 18px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, overflow: 'hidden', position: 'relative' } },
                             react_1.default.createElement("span", { style: { display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 6, maxWidth: '100%' } },
                                 st.picture && react_1.default.createElement("span", { style: { display: 'inline-flex', flexShrink: 0 } },
                                     react_1.default.createElement(StudentPicture, { name: st.picture, tint: st.tint, size: 40 })),
-                                react_1.default.createElement("span", { style: { overflow: 'hidden', textAlign: 'center', lineHeight: 1.2, maxHeight: '3.6em', flex: st.picture ? 1 : 'none', minWidth: 0, overflowWrap: 'anywhere' } }, String(st.label).replace(/\(([^)]*)\)/g, (m) => m.replace(/ /g, '\u00A0')))))))),
+                                react_1.default.createElement("span", { style: { overflow: 'hidden', textAlign: 'center', lineHeight: 1.2, maxHeight: '3.6em', flex: '1 1 auto', minWidth: 0, overflowWrap: 'anywhere' } }, keepTogether(st.label))))))),
                         activeStudents(roster).filter((st) => st.label.toLowerCase().includes(nameInput.trim().toLowerCase())).length === 0 && (react_1.default.createElement("p", { style: { margin: '10px 0 0', color: C.muted, fontSize: 15 } },
                             "No name matches \u201C",
                             nameInput.trim(),
@@ -37491,7 +38243,7 @@ function EduSphereApp() {
                     mod.lesson.paragraphs.map((t, i) => react_1.default.createElement(RichText, { key: i, text: formatTeachingText(t), size: 17, lineGap: 12 })),
                     react_1.default.createElement("div", { style: { background: C.greenSoft, borderRadius: 10, padding: 14 } },
                         react_1.default.createElement(Picture, { visual: mod.lesson.example }),
-                        react_1.default.createElement("p", { style: { margin: '10px 0 0', fontSize: 15 } }, mod.lesson.example.caption))),
+                        react_1.default.createElement("p", { style: { margin: '10px 0 0', fontSize: 15, textAlign: 'center' } }, mod.lesson.example.caption))),
                 react_1.default.createElement("div", { style: { ...card, background: C.goldSoft, borderColor: C.goldSoft } },
                     react_1.default.createElement("p", { style: { margin: 0, fontWeight: 600 } }, "Key idea"),
                     react_1.default.createElement("div", { style: { marginTop: 6 } },
@@ -38474,7 +39226,7 @@ function EduSphereApp() {
                     react_1.default.createElement("div", { className: "edu-rise", style: { maxWidth: 560, margin: '0 auto', background: C.surface, borderRadius: 14, padding: 18, position: 'relative' } },
                         react_1.default.createElement("button", { type: "button", onClick: () => setAdding(false), "aria-label": "Close", style: { position: 'absolute', top: 8, right: 10, background: 'none', border: 'none', width: 36, height: 36, fontSize: 30, lineHeight: '34px', cursor: 'pointer', color: C.ink, fontFamily: FONT, padding: 0 } }, "\u00D7"),
                         react_1.default.createElement("p", { style: { margin: '0 0 14px', fontWeight: 600, fontSize: 18 } }, "Add someone new"),
-                        react_1.default.createElement("input", { value: rosterInput, onChange: (e) => setRosterInput(e.target.value), placeholder: "School-issued ID", style: { fontFamily: FONT, fontSize: 17, padding: '12px 14px', width: '100%', boxSizing: 'border-box', border: `2px solid ${C.line}`, borderRadius: 10, marginBottom: 12 } }),
+                        react_1.default.createElement("input", { value: rosterInput, onChange: (e) => setRosterInput(e.target.value), placeholder: "School-issued ID", maxLength: NAME_MAX, style: { fontFamily: FONT, fontSize: 17, padding: '12px 14px', width: '100%', boxSizing: 'border-box', border: `2px solid ${C.line}`, borderRadius: 10, marginBottom: 12 } }),
                         react_1.default.createElement("div", { style: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: 8, marginBottom: 12 } },
                             LEVELS.map((lv) => {
                                 const on = newLevel === lv.id;
@@ -38536,8 +39288,8 @@ function EduSphereApp() {
                             visible.length,
                             " ",
                             activeOpen ? '▴' : '▾')),
-                    activeOpen && visible.map((st) => (react_1.default.createElement("div", { key: st.id, style: card }, renamingId === st.id ? (react_1.default.createElement(react_1.default.Fragment, null,
-                        react_1.default.createElement("input", { value: renameInput, onChange: (e) => setRenameInput(e.target.value), placeholder: "Name shown to the student", style: { fontFamily: FONT, fontSize: 17, padding: '10px 12px', width: '100%', boxSizing: 'border-box', border: `2px solid ${C.line}`, borderRadius: 10, marginBottom: 10 } }),
+                    activeOpen && visible.map((st) => (react_1.default.createElement("div", { key: st.id, style: { ...card, paddingBottom: 14 } }, renamingId === st.id ? (react_1.default.createElement(react_1.default.Fragment, null,
+                        react_1.default.createElement("input", { value: renameInput, onChange: (e) => setRenameInput(e.target.value), placeholder: "Name shown to the student", maxLength: NAME_MAX, style: { fontFamily: FONT, fontSize: 17, padding: '10px 12px', width: '100%', boxSizing: 'border-box', border: `2px solid ${C.line}`, borderRadius: 10, marginBottom: 10 } }),
                         react_1.default.createElement("div", { style: { display: 'flex', gap: 10 } },
                             react_1.default.createElement(Btn, { onClick: async () => { const r = renameStudent(roster, st.id, renameInput); await applyRoster(r.roster, r.error); if (!r.error)
                                     setRenamingId(null); } }, "Save name"),
@@ -38546,26 +39298,25 @@ function EduSphereApp() {
                         react_1.default.createElement("div", { style: { display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, textAlign: 'center' } },
                             st.picture && react_1.default.createElement(StudentPicture, { name: st.picture, tint: st.tint, size: 40 }),
                             react_1.default.createElement("span", null,
-                                react_1.default.createElement("span", { style: { display: 'block', fontSize: 18, fontWeight: 600 } }, st.label),
+                                react_1.default.createElement("span", { style: { display: 'block', fontSize: 18, fontWeight: 600 } }, keepTogether(st.label)),
                                 st.level && react_1.default.createElement("span", { style: { display: 'block', fontSize: 12, color: C.muted } },
                                     levelFor(st.level).title,
-                                    st.startGrade ? ` · starts ${gradeLabel(st.startGrade).toLowerCase()}` : ''))),
-                        react_1.default.createElement("div", { className: "edu-student-actions", style: { display: 'flex', gap: 8, flexWrap: 'wrap', marginTop: 12, alignItems: 'center' } },
-                            react_1.default.createElement("span", { className: "edu-student-links", style: { display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' } },
-                                react_1.default.createElement("button", { type: "button", onClick: () => { setRenamingId(st.id); setRenameInput(st.label); setRosterError(''); }, style: linkBtn }, "Rename"),
-                                react_1.default.createElement("button", { type: "button", onClick: () => setPictureFor(pictureFor === st.id ? null : st.id), style: linkBtn }, st.picture ? 'Change picture' : 'Add picture'),
-                                react_1.default.createElement("button", { type: "button", onClick: () => applyRoster(setStudentActive(roster, st.id, false)), style: linkBtn }, "Hide"),
-                                mergeFrom === '' ? (react_1.default.createElement("button", { type: "button", onClick: () => { setMergeFrom(st.id); setRosterError(''); }, style: linkBtn }, "Merge into\u2026")) : mergeFrom === st.id ? (react_1.default.createElement("button", { type: "button", onClick: () => setMergeFrom(''), style: linkBtn }, "Cancel merge")) : (react_1.default.createElement("button", { type: "button", onClick: async () => {
-                                        const r = mergeStudents(roster, st.id, mergeFrom);
-                                        if (!r.error) {
-                                            const keep = await loadRecord(st.id);
-                                            const gone = await loadRecord(mergeFrom);
-                                            await saveRecord({ ...keep, events: mergeEventLogs(keep.events, gone.events) });
-                                        }
-                                        await applyRoster(r.roster, r.error);
-                                        setMergeFrom('');
-                                    }, style: { ...linkBtn, color: C.gold } }, "Merge here"))),
-                            react_1.default.createElement("span", { style: { marginLeft: 'auto' } },
+                                    st.startGrade ? ` · ${gradeLabel(st.startGrade)}` : ''))),
+                        react_1.default.createElement("div", { className: "edu-student-actions", style: { display: 'flow-root', marginTop: 8 } },
+                            react_1.default.createElement("button", { type: "button", onClick: () => { setRenamingId(st.id); setRenameInput(st.label); setRosterError(''); }, style: cardLink }, "Rename"),
+                            react_1.default.createElement("button", { type: "button", onClick: () => setPictureFor(pictureFor === st.id ? null : st.id), style: cardLink }, st.picture ? 'Change picture' : 'Add picture'),
+                            react_1.default.createElement("button", { type: "button", onClick: () => applyRoster(setStudentActive(roster, st.id, false)), style: cardLink }, "Hide"),
+                            mergeFrom === '' ? (react_1.default.createElement("button", { type: "button", onClick: () => { setMergeFrom(st.id); setRosterError(''); }, style: cardLink }, "Merge into\u2026")) : mergeFrom === st.id ? (react_1.default.createElement("button", { type: "button", onClick: () => setMergeFrom(''), style: cardLink }, "Cancel merge")) : (react_1.default.createElement("button", { type: "button", onClick: async () => {
+                                    const r = mergeStudents(roster, st.id, mergeFrom);
+                                    if (!r.error) {
+                                        const keep = await loadRecord(st.id);
+                                        const gone = await loadRecord(mergeFrom);
+                                        await saveRecord({ ...keep, events: mergeEventLogs(keep.events, gone.events) });
+                                    }
+                                    await applyRoster(r.roster, r.error);
+                                    setMergeFrom('');
+                                }, style: { ...cardLink, color: C.gold } }, "Merge here")),
+                            react_1.default.createElement("span", { className: "edu-student-open", style: { float: 'right', marginLeft: 8, marginTop: -4 } },
                                 react_1.default.createElement(Btn, { kind: "secondary", disabled: busy, onClick: async () => {
                                         setBusy(true);
                                         const rec = await withStarterCourses(await loadRecord(st.id));
@@ -38857,7 +39608,7 @@ function EduSphereApp() {
             react_1.default.createElement(PageChrome, { idleWarning: idleWarning, logoutIn: logoutIn, walkthrough: !!(record && record.preview) }),
             react_1.default.createElement("div", { className: "edu-wrap", style: wrap },
                 react_1.default.createElement("button", { type: "button", onClick: () => setScreen('educator-pick'), style: linkBtn }, "Back to Classroom"),
-                react_1.default.createElement("h1", { style: { fontSize: 26, margin: '10px 0 2px', textAlign: 'center' } }, shownName),
+                react_1.default.createElement("h1", { style: { fontSize: 26, margin: '10px 0 2px', textAlign: 'center' } }, keepTogether(shownName)),
                 react_1.default.createElement("p", { style: { color: C.muted, marginTop: 0, fontSize: 14, textAlign: 'center' } },
                     "Report generated ",
                     fmtDate(rep.generatedAt)),

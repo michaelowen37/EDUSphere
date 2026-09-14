@@ -61,3 +61,25 @@ Read CLAUDE.md first. All changes must follow CLAUDE.md, docs/DECISIONS.md, docs
 ## Writing style
 
 Standard American spelling throughout (color, favorite, center, recognize, gray, math, practice, canceled). Contractions are welcome. A test enforces the spelling and a few style rules on every user-facing string.
+
+## Teaching text (the rule from 2026-09-13)
+
+Every lesson, key idea, explanation and result line is written to be read by a student who is
+meeting the idea for the first time, and is rendered through one small markup:
+
+- A newline starts a new line. One idea per line. Extra scrolling is fine.
+- `**bold**` marks the thing the eye should land on: the variable, the number being moved, the module name.
+- A line wrapped in `[[ ]]` is centered, bold, and given air above and below. Every equation and every
+  key phrase goes on such a line, never inside a sentence.
+- Explanations walk the steps one per line: "First, you ... to get: **result**", "Then, you ...".
+- Lessons repeat themselves on purpose, the way a patient tutor does, and end with the shape of the answer
+  (`[[x = answer]]`, `[[Claim = The Point]]`). Write it the way Malcolm Gladwell would explain it to a
+  younger student: a concrete case first, the rule after, and the same idea said twice in two ways.
+- On a question screen the question comes first, then the statement it is about, both centered, and every
+  choice is centered in its button.
+- A wrong answer is followed by one sentence about the answer the student chose, when the choices are named
+  kinds (appeals, flaws, ironies).
+
+Model lessons in this style: multi-step equations, rhetorical appeals, claims and reasons, the main idea.
+Older lessons are being brought up to this standard as they are touched; any lesson edited from now on
+must be written this way.

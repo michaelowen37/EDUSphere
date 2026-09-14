@@ -1,0 +1,68 @@
+// Every spoken lesson line must make sense with the picture beside it, and read like a
+// person talking rather than a list of words. This checks all of them.
+import * as L from '../src/logic.mjs';
+
+let pass = 0, fail = 0;
+const ok = (name, cond, detail = '') => { if (cond) { pass++; console.log('PASS -', name); } else { fail++; console.log('FAIL -', name, detail); } };
+const NUMBER_WORDS = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety', 'hundred'];
+const nameOnly = (sentence) => /^[A-Za-z]$/.test(sentence) || NUMBER_WORDS.includes(sentence.toLowerCase()) || /^[A-Za-z]([, ]+[A-Za-z])+$/.test(sentence);
+
+const fragments = []; const mismatches = [];
+for (const mod of L.MODULES) {
+  for (const line of mod.lesson.script || []) {
+    // Natural speech: at least one real sentence of four or more words, unless the line only names letters or counts aloud.
+    const sentences = line.say.split(/[.!?]+/).map((x) => x.trim()).filter(Boolean);
+    if (!sentences.every(nameOnly) && Math.max(...sentences.map((x) => x.split(/\s+/).length)) < 4) fragments.push(`${mod.id}: ${line.say}`);
+    // The picture matches the words.
+    const said = line.say.toLowerCase();
+    const show = line.show;
+    if (!show) continue;
+    // An instruction ("Read this word", "Find the one that matches") shows the thing to act on,
+    // which must not be spoken in a reading lesson. Only lines that describe what is shown are matched word for word.
+    if (/^(read|find|look|listen|touch|say|tap|sound|count|start|try|watch|now|what)\b/i.test(line.say.trim())) continue;
+    if (show.kind === 'letters') {
+      const words = show.text.split(' ').filter(Boolean);
+      const spelled = words.every((w) => w.length > 1 && /^[a-z]+$/.test(w)) && words.join('').length >= 3 && new Set(words.map((w) => w.length)).size === 1 && words.length >= 2 && !words.some((w) => said.includes(w));
+      // a word shown must be said; a single letter shown must be said as a letter; split syllables must appear joined
+      const fine = words.every((w) => said.includes(w.toLowerCase()) || (w.length === 1 && new RegExp(`\\b${w.toLowerCase()}\\b`).test(said))) || said.replace(/[^a-z]/g, '').includes(words.join('').toLowerCase()) || spelled;
+      if (!fine) mismatches.push(`${mod.id}: "${line.say}" shows "${show.text}"`);
+      if (show.highlight && show.highlight !== 'first' && !words.every((w) => w.toLowerCase().includes(show.highlight.toLowerCase()))) mismatches.push(`${mod.id}: highlight "${show.highlight}" is not in every word of "${show.text}"`);
+    }
+    if (show.kind === 'shape' && !said.includes(show.name)) mismatches.push(`${mod.id}: "${line.say}" shows a ${show.name}`);
+    if (show.kind === 'icon' && !said.includes(show.name)) mismatches.push(`${mod.id}: "${line.say}" shows a ${show.name}`);
+    if (show.kind === 'solid' && !said.includes(show.name) && !said.includes({ sphere: 'ball', cube: 'box', cylinder: 'can', cone: 'cone' }[show.name])) mismatches.push(`${mod.id}: "${line.say}" shows a ${show.name}`);
+    if (show.kind === 'pair' && (!said.includes(show.a.shape) || !said.includes(show.b.shape))) mismatches.push(`${mod.id}: "${line.say}" shows ${show.a.shape} and ${show.b.shape}`);
+    if (show.kind === 'swatch' && !said.includes(show.colour)) mismatches.push(`${mod.id}: "${line.say}" shows ${show.colour}`);
+    if (show.kind === 'dots' && !(said.includes(NUMBER_WORDS[show.count]) || said.includes(String(show.count)) || /count|one, two|more|less|away|left|dots|tap|group/.test(said))) mismatches.push(`${mod.id}: "${line.say}" shows ${show.count} dots`);
+  }
+}
+// Questions too: in every read-aloud course, the picture beside a question must be named or
+// pointed at by the words, so what a child sees and hears agree.
+const THING = { sphere: 'ball', cube: 'box', cylinder: 'can', cone: 'cone' };
+const deictic = /\b(this|it|these|those|the picture|the word|the group|the shape|the letter|the letters|the array|the line|the frame|the clock|the sentence|the story|here)\b/i;
+const qbad = [];
+for (const c of L.COURSES.filter((x) => x.readAloud)) for (const m of c.modules) for (const g of new Set(m.generators)) for (let seed = 1; seed <= 40; seed++) {
+  const q = L.generateQuestion(g, seed); const v = q.visual; if (!v) continue;
+  const text = `${q.story || ''} ${q.prompt}`.toLowerCase();
+  let fine = deictic.test(text);
+  if (!fine) {
+    if (v.kind === 'letters') { const words = v.text.split(' ').filter((w) => w !== '?'); const singles = words.every((w) => w.length === 1); fine = singles ? words.some((w) => new RegExp(`\\b${w.toLowerCase()}\\b`).test(text)) : words.every((w) => text.includes(w.toLowerCase())); }
+    else if (v.kind === 'shape' || v.kind === 'solid') fine = text.includes(v.name) || (v.kind === 'solid' && text.includes(THING[v.name]));
+    else if (v.kind === 'swatch') fine = text.includes(v.colour);
+    else if (v.kind === 'icon') fine = text.includes(v.name);
+    else if (v.kind === 'dots') fine = text.includes(NUMBER_WORDS[v.count]) || text.includes(String(v.count)) || /how many|count/.test(text);
+    else if (v.kind === 'tens') fine = text.includes(String(v.count * 10)) || /how many|count|tens/.test(text);
+    else if (v.kind === 'tenframe') fine = /ten|frame|make 10|empty|spaces|left|more/.test(text) || text.includes(String(v.filled));
+    else if (v.kind === 'pair') fine = text.includes(v.a.shape) && text.includes(v.b.shape);
+    else if (v.kind === 'item') fine = text.includes(v.shape) || text.includes(v.colour);
+    else if (v.kind === 'pattern') fine = /pattern|next|missing|repeat/.test(text);
+    else if (v.kind === 'bars' || v.kind === 'bar') fine = /line|long|short|bar|same/.test(text) || (v.shaded !== undefined && text.includes(String(v.shaded)));
+    else fine = true;
+  }
+  if (!fine && !qbad.some((x) => x.startsWith(g + ':'))) qbad.push(`${g}: "${q.story || ''} ${q.prompt}" shows ${JSON.stringify(v)}`);
+}
+ok('every spoken lesson line reads like a person talking', fragments.length === 0, '\n  ' + fragments.slice(0, 12).join('\n  '));
+ok('every young-learner question names or points at its picture', qbad.length === 0, '\n  ' + qbad.slice(0, 12).join('\n  '));
+ok('every lesson picture matches the words spoken over it', mismatches.length === 0, '\n  ' + mismatches.slice(0, 12).join('\n  '));
+console.log(`\n${pass} passed, ${fail} failed`);
+process.exit(fail ? 1 : 0);

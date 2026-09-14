@@ -7,7 +7,7 @@ const ok = (name, cond) => { if (cond) { pass++; console.log('PASS -', name); } 
 
 const { rows, orphans } = coverageReport(L.MODULES);
 
-ok('every plan names its published sources', CURRICULUM.every((p) => /TEKS|Texas/.test(p.source) && /Common Core|Head Start/.test(p.source)));
+ok('every plan names its published sources', CURRICULUM.every((p) => /TEKS|Texas/.test(p.source) && /Common Core|Head Start|Next Generation Science|National Council for the Social Studies/.test(p.source)));
 ok('every standard names a framework the platform knows', CURRICULUM.every((p) => p.standards.every((st) => FRAMEWORKS[st.framework])));
 ok('every state and the District of Columbia are listed with a framework', STATES.length === 51 && STATES.every((st) => FRAMEWORKS[st.framework]));
 ok('Texas builds to TEKS and California to Common Core', frameworkForState('TX') === 'TEKS' && frameworkForState('CA') === 'CCSS');
@@ -36,5 +36,12 @@ for (const stage of ['early', 'growing', 'teen', 'grown']) {
   ok(`every theme is represented in the ${stage} pool`, Object.keys(L.WONDER_THEMES).every((t) => themes.has(t)));
 }
 ok('every reflection carries a known theme', L.WONDER.every((w) => L.WONDER_THEMES[w.theme]));
+// The transcript names the standards a finished course satisfied; every course must map to at least one code in each framework.
+for (const c of L.COURSES) for (const fw of ['TEKS', 'CCSS']) {
+  const ids = c.modules.map((m) => m.id);
+  const codes = CURRICULUM.flatMap((e) => e.standards.filter((st) => st.framework === fw && st.moduleIds.some((id) => ids.includes(id))).map((st) => st.code));
+  ok(`${c.id} has standards satisfied to show on a transcript (${fw})`, codes.length > 0);
+}
+
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

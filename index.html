@@ -18067,7 +18067,7 @@ function matchesCourseSearch(course, query) {
 function byGradeOrder(a, b) { return GRADES.indexOf(a.grade) - GRADES.indexOf(b.grade) || a.subject.localeCompare(b.subject) || a.title.localeCompare(b.title); }
 // A grade whose courses all start hidden (pre-K 3) is never a starter; an educator switches it on for the children who need it.
 function gradeStartsHidden(grade) { const inGrade = COURSES.filter((c) => c.grade === grade); return inGrade.length > 0 && inGrade.every((c) => c.startsHidden); }
-function recommendedCourseIds(events, level) {
+function recommendedCourseIds(events, level, startGrade = null) {
     const enabled = enabledCourseIds(events);
     const placed = COURSES.filter((c) => enabled.includes(c.id));
     if (placed.length > 0) {
@@ -18077,9 +18077,12 @@ function recommendedCourseIds(events, level) {
     // A starting level narrows the recommendation to that band, so a new sixth grader is
     // not handed kindergarten counting.
     const band = levelFor(level);
+    // An educator can name the starting grade outright; then every subject in that grade is the start.
+    if (startGrade && gradesWithCourses().includes(startGrade))
+        return COURSES.filter((c) => c.grade === startGrade).sort(byGradeOrder).map((c) => c.id);
     if (band) {
-        // Start small: the two lowest grades in the band that have courses. Everything else in
-        // the band sits under "show other courses", so a new student is not handed ten courses.
+        // Start small: the lowest grade in the band that has courses, every subject in it. Everything else in
+        // the band sits under other grades, so a new student is not handed ten courses.
         const grades = gradesWithCourses().filter((g) => band.grades.includes(g) && !gradeStartsHidden(g)).slice(0, 1);
         return COURSES.filter((c) => grades.includes(c.grade)).sort(byGradeOrder).map((c) => c.id);
     }
@@ -32031,7 +32034,8 @@ function addStudent(roster, rawId, at, extras = {}) {
     const level = extras.level;
     const picture = PICTURES.includes(extras.picture) ? extras.picture : null;
     const tint = picture && tintFor(extras.tint) ? extras.tint : picture ? TINTS[0].id : null;
-    const student = { id, label: String(rawId).trim(), createdAt: at, active: true, level, picture, tint };
+    const startGrade = extras.startGrade && gradesWithCourses().includes(extras.startGrade) && levelFor(level).grades.includes(extras.startGrade) ? extras.startGrade : null;
+    const student = { id, label: String(rawId).trim(), createdAt: at, active: true, level, picture, tint, startGrade };
     return { roster: { ...roster, students: [...roster.students, student] }, error: null };
 }
 // Changes the name shown on screen. The id never changes, so progress is never lost.
@@ -33776,7 +33780,7 @@ function studentSummary(events, moduleIds) {
     const out = [];
     // What has been achieved
     if (rounds.length === 0) {
-        out.push("You haven't started a practice round yet, and that is the easiest thing in the world to fix: open a module and try one.");
+        out.push("You haven't started a practice round yet, and that is the easiest thing in the world to fix. Open a module and try one.");
     }
     else if (mastered.length === 0) {
         out.push(`You've finished ${rounds.length} practice ${rounds.length === 1 ? 'round' : 'rounds'} and nothing is mastered yet, which is exactly how everyone starts.`);
@@ -35177,7 +35181,10 @@ const FONT = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, 
 // The frame is fixed to the window rather than drawn around the content, so it stays
 // in place while the page scrolls behind it.
 const page = { fontFamily: FONT, background: C.bg, color: C.ink, minHeight: '100vh', boxSizing: 'border-box', padding: '22px 16px 40px', lineHeight: 1.5 };
-const frame = { position: 'fixed', inset: 0, border: `6px solid ${C.green}`, pointerEvents: 'none', zIndex: 50, transform: 'translateZ(0)', willChange: 'transform' };
+// The frame is fixed to the viewport. On phones the bottom edge chased the address bar as it hid and
+// showed during fast scrolling, so the bottom bar is drawn by the page's own padding instead (see
+// .edu-page-foot), and the fixed frame carries only the top and sides.
+const frame = { position: 'fixed', top: 0, left: 0, right: 0, height: '100lvh', borderTop: `6px solid ${C.green}`, borderLeft: `6px solid ${C.green}`, borderRight: `6px solid ${C.green}`, boxSizing: 'border-box', pointerEvents: 'none', zIndex: 50, transform: 'translateZ(0)', willChange: 'transform' };
 // Width comes from the .edu-wrap class, so a wide screen can be given more room.
 const wrap = { margin: '0 auto' };
 // Where 'Contact us' goes. One place to change it later.
@@ -35462,7 +35469,13 @@ function IconPic({ name, size = 90 }) {
     const brown = '#8B5A2B';
     const body = {
         sun: react_1.default.createElement("g", null,
-            react_1.default.createElement("circle", { cx: "50", cy: "50", r: "20", fill: gold }),
+            react_1.default.createElement("defs", null,
+                react_1.default.createElement("radialGradient", { id: "eduSunG", cx: "40%", cy: "38%", r: "65%" },
+                    react_1.default.createElement("stop", { offset: "0", stopColor: "#FFF1B8" }),
+                    react_1.default.createElement("stop", { offset: "0.6", stopColor: gold }),
+                    react_1.default.createElement("stop", { offset: "1", stopColor: "#D99A2B" }))),
+            react_1.default.createElement("circle", { cx: "50", cy: "50", r: "30", fill: gold, opacity: "0.18" }),
+            react_1.default.createElement("circle", { cx: "50", cy: "50", r: "20", fill: "url(#eduSunG)" }),
             [0, 45, 90, 135, 180, 225, 270, 315].map((a) => react_1.default.createElement("line", { key: a, x1: 50 + 28 * Math.cos(a * Math.PI / 180), y1: 50 + 28 * Math.sin(a * Math.PI / 180), x2: 50 + 40 * Math.cos(a * Math.PI / 180), y2: 50 + 40 * Math.sin(a * Math.PI / 180), stroke: gold, strokeWidth: "5", strokeLinecap: "round" }))),
         moon: react_1.default.createElement("path", { d: "M62 14a34 34 0 1 0 0 72 27 27 0 0 1 0-72z", fill: gold }),
         cloud: react_1.default.createElement("path", { d: "M28 66a14 14 0 0 1 3-27 20 20 0 0 1 38-4 15 15 0 0 1 3 31z", fill: "#D6DBD2", stroke: grey, strokeWidth: "3" }),
@@ -35473,28 +35486,51 @@ function IconPic({ name, size = 90 }) {
             react_1.default.createElement("path", { d: "M28 52a14 14 0 0 1 3-27 20 20 0 0 1 38-4 15 15 0 0 1 3 31z", fill: "#D6DBD2", stroke: grey, strokeWidth: "3" }),
             [34, 50, 66].map((x) => react_1.default.createElement("circle", { key: x, cx: x, cy: "74", r: "5", fill: "#fff", stroke: blue, strokeWidth: "2" }))),
         plant: react_1.default.createElement("g", null,
+            react_1.default.createElement("defs", null,
+                react_1.default.createElement("linearGradient", { id: "eduLeafG", x1: "0", y1: "0", x2: "1", y2: "1" },
+                    react_1.default.createElement("stop", { offset: "0", stopColor: "#6FAF7E" }),
+                    react_1.default.createElement("stop", { offset: "1", stopColor: "#245A3C" }))),
             react_1.default.createElement("rect", { x: "30", y: "72", width: "40", height: "16", rx: "4", fill: brown }),
-            react_1.default.createElement("line", { x1: "50", y1: "72", x2: "50", y2: "34", stroke: green, strokeWidth: "5", strokeLinecap: "round" }),
-            react_1.default.createElement("ellipse", { cx: "38", cy: "48", rx: "12", ry: "7", fill: green, transform: "rotate(-30 38 48)" }),
-            react_1.default.createElement("ellipse", { cx: "62", cy: "40", rx: "12", ry: "7", fill: green, transform: "rotate(30 62 40)" })),
+            react_1.default.createElement("rect", { x: "30", y: "72", width: "40", height: "4", rx: "2", fill: "#A8743F", opacity: "0.7" }),
+            react_1.default.createElement("line", { x1: "50", y1: "72", x2: "50", y2: "34", stroke: "#3E7D52", strokeWidth: "5", strokeLinecap: "round" }),
+            react_1.default.createElement("ellipse", { cx: "38", cy: "48", rx: "12", ry: "7", fill: "url(#eduLeafG)", transform: "rotate(-30 38 48)" }),
+            react_1.default.createElement("ellipse", { cx: "62", cy: "40", rx: "12", ry: "7", fill: "url(#eduLeafG)", transform: "rotate(30 62 40)" })),
         tree: react_1.default.createElement("g", null,
-            react_1.default.createElement("rect", { x: "44", y: "60", width: "12", height: "28", fill: brown }),
-            react_1.default.createElement("circle", { cx: "50", cy: "44", r: "26", fill: green })),
+            react_1.default.createElement("defs", null,
+                react_1.default.createElement("radialGradient", { id: "eduTreeG", cx: "38%", cy: "32%", r: "70%" },
+                    react_1.default.createElement("stop", { offset: "0", stopColor: "#7FB58E" }),
+                    react_1.default.createElement("stop", { offset: "1", stopColor: "#245A3C" }))),
+            react_1.default.createElement("rect", { x: "44", y: "60", width: "12", height: "28", rx: "3", fill: brown }),
+            react_1.default.createElement("rect", { x: "47", y: "60", width: "3", height: "28", fill: "#A8743F", opacity: "0.6" }),
+            react_1.default.createElement("circle", { cx: "50", cy: "44", r: "26", fill: "url(#eduTreeG)" }),
+            react_1.default.createElement("circle", { cx: "38", cy: "36", r: "7", fill: "#fff", opacity: "0.18" })),
         flower: react_1.default.createElement("g", null,
             react_1.default.createElement("line", { x1: "50", y1: "88", x2: "50", y2: "50", stroke: green, strokeWidth: "5" }),
             [0, 72, 144, 216, 288].map((a) => react_1.default.createElement("ellipse", { key: a, cx: 50 + 14 * Math.cos(a * Math.PI / 180), cy: 44 + 14 * Math.sin(a * Math.PI / 180), rx: "10", ry: "7", fill: red, transform: `rotate(${a} ${50 + 14 * Math.cos(a * Math.PI / 180)} ${44 + 14 * Math.sin(a * Math.PI / 180)})` })),
             react_1.default.createElement("circle", { cx: "50", cy: "44", r: "8", fill: gold })),
         fish: react_1.default.createElement("g", null,
-            react_1.default.createElement("ellipse", { cx: "46", cy: "50", rx: "28", ry: "16", fill: blue }),
-            react_1.default.createElement("path", { d: "M70 50l18-14v28z", fill: blue }),
-            react_1.default.createElement("circle", { cx: "32", cy: "46", r: "3", fill: "#fff" })),
+            react_1.default.createElement("defs", null,
+                react_1.default.createElement("linearGradient", { id: "eduFishG", x1: "0", y1: "0", x2: "0", y2: "1" },
+                    react_1.default.createElement("stop", { offset: "0", stopColor: "#7FB3E6" }),
+                    react_1.default.createElement("stop", { offset: "1", stopColor: "#2F66A8" }))),
+            react_1.default.createElement("path", { d: "M70 50l18-14v28z", fill: "#2F66A8" }),
+            react_1.default.createElement("ellipse", { cx: "46", cy: "50", rx: "28", ry: "16", fill: "url(#eduFishG)" }),
+            react_1.default.createElement("path", { d: "M40 40q8 2 12 10-4 8-12 10", fill: "none", stroke: "#fff", strokeWidth: "1.5", opacity: "0.5" }),
+            react_1.default.createElement("circle", { cx: "32", cy: "46", r: "3.5", fill: "#fff" }),
+            react_1.default.createElement("circle", { cx: "33", cy: "46", r: "1.6", fill: "#1a1a1a" })),
         bird: react_1.default.createElement("g", null,
             react_1.default.createElement("ellipse", { cx: "50", cy: "54", rx: "22", ry: "14", fill: grey }),
             react_1.default.createElement("circle", { cx: "70", cy: "42", r: "9", fill: grey }),
             react_1.default.createElement("path", { d: "M78 42l10 3-10 3z", fill: gold }),
             react_1.default.createElement("path", { d: "M40 50q10-16 26-6", fill: "none", stroke: "#6B716A", strokeWidth: "4", strokeLinecap: "round" })),
         rock: react_1.default.createElement("path", { d: "M22 70q-6-22 18-34 30-10 40 14 6 20-14 24-38 6-44-4z", fill: "#A5AAA0", stroke: grey, strokeWidth: "3" }),
-        drop: react_1.default.createElement("path", { d: "M50 14q26 34 26 50a26 26 0 0 1-52 0q0-16 26-50z", fill: blue }),
+        drop: react_1.default.createElement("g", null,
+            react_1.default.createElement("defs", null,
+                react_1.default.createElement("radialGradient", { id: "eduDropG", cx: "38%", cy: "55%", r: "70%" },
+                    react_1.default.createElement("stop", { offset: "0", stopColor: "#9CC7F0" }),
+                    react_1.default.createElement("stop", { offset: "1", stopColor: "#2F66A8" }))),
+            react_1.default.createElement("path", { d: "M50 14q26 34 26 50a26 26 0 0 1-52 0q0-16 26-50z", fill: "url(#eduDropG)" }),
+            react_1.default.createElement("ellipse", { cx: "40", cy: "58", rx: "5", ry: "9", fill: "#fff", opacity: "0.45", transform: "rotate(-20 40 58)" })),
         ice: react_1.default.createElement("g", null,
             react_1.default.createElement("rect", { x: "24", y: "30", width: "52", height: "46", rx: "6", fill: "#DDEBF7", stroke: blue, strokeWidth: "3" }),
             react_1.default.createElement("line", { x1: "34", y1: "40", x2: "46", y2: "52", stroke: "#fff", strokeWidth: "4", strokeLinecap: "round" })),
@@ -35849,6 +35885,11 @@ const KID_ANIMATION = `
    pair of quiet arcs at the edges, drawn in the same green as the logo, so the page
    does not sit in a sea of blank space. */
 .edu-wrap { max-width: 560px; position: relative; z-index: 1; padding-bottom: 72px; }
+  /* The bottom bar of the frame. On a phone the address bar hides and shows as you scroll, and a fixed bottom
+     edge chases it a beat late, so phones get no bottom bar and the device's own edge closes the frame.
+     Laptops and desktops, which have no moving bars, get the full frame. */
+  .edu-frame-bottom { display: none; }
+  @media (hover: hover) and (pointer: fine) { .edu-frame-bottom { display: block; position: fixed; left: 0; right: 0; bottom: 0; height: 6px; background: ${C.green}; pointer-events: none; z-index: 50; } }
 .edu-side { display: none; }
 .edu-page-stars { display: none; }
 @media (min-width: 1000px) {
@@ -36253,6 +36294,7 @@ function PageChrome({ idleWarning = false, stars = true, logoutIn = null, walkth
     return (react_1.default.createElement(react_1.default.Fragment, null,
         react_1.default.createElement("style", null, WONDER_ANIMATION + PRINT_STYLES + KID_ANIMATION),
         react_1.default.createElement("div", { className: "edu-frame", style: frame, "aria-hidden": "true" }),
+        react_1.default.createElement("div", { className: "edu-frame-bottom", "aria-hidden": "true" }),
         stars && react_1.default.createElement(PageStars, null),
         logoutIn !== null && (react_1.default.createElement("div", { role: "status", className: "edu-no-print", style: { position: 'fixed', bottom: 12, right: 12, zIndex: 60, background: logoutIn <= 10 ? '#24291F' : 'rgba(36, 41, 31, 0.72)', color: '#fff', borderRadius: 999, padding: '6px 12px', fontFamily: FONT, fontSize: 13, fontWeight: 600, pointerEvents: 'none' } },
             "Logging out in ",
@@ -36484,6 +36526,7 @@ function EduSphereApp() {
     const [rosterError, setRosterError] = (0, react_1.useState)('');
     const [showRosterTip, setShowRosterTip] = (0, react_1.useState)(false);
     const [newLevel, setNewLevel] = (0, react_1.useState)(''); // starting level chosen while adding
+    const [newStartGrade, setNewStartGrade] = (0, react_1.useState)(''); // the grade to start at, chosen after the level
     const [newPicture, setNewPicture] = (0, react_1.useState)(''); // picture chosen while adding (early years only)
     const [newTint, setNewTint] = (0, react_1.useState)('');
     const [pictureFor, setPictureFor] = (0, react_1.useState)(null); // student whose picture is being changed
@@ -36748,11 +36791,8 @@ function EduSphereApp() {
             const at = new Date().toISOString();
             const text = JSON.stringify(buildBackup({ ...everything, deviceName, recovery: educator ? educator.recovery : null }, at), null, 2);
             const name = backupFileName(deviceName, (everything.students || []).length, at);
-            if (plainDownload(name, text)) {
-                setBackupAt(at);
-                await saveBackupAt(at);
+            if (plainDownload(name, text))
                 setAutoBackupNote(`Backup saved to downloads at ${fmtDate(at)}.`);
-            }
         }
         catch (e) {
             setAutoBackupNote('The automatic backup could not be saved this time.');
@@ -37146,7 +37186,7 @@ function EduSphereApp() {
                     const subModules = subCourses.flatMap((c) => c.modules);
                     const done = subModules.filter((m) => progress.masteredIds.includes(m.id)).length;
                     return (react_1.default.createElement("div", { key: sub, style: { ...card, padding: 0, overflow: 'visible', position: 'relative', borderColor: isOpen ? C.green : C.line } },
-                        react_1.default.createElement("button", { type: "button", onClick: () => setOpenSubject(isOpen ? null : sub), "aria-expanded": isOpen, className: youngLearner && !isOpen && openSubject === null && subModules.some((m) => statusOf(m.id) === 'available') ? 'edu-breathe' : undefined, style: { fontFamily: FONT, width: '100%', textAlign: 'left', background: 'none', border: 'none', padding: 16, cursor: 'pointer', color: C.ink } },
+                        react_1.default.createElement("button", { type: "button", onClick: () => setOpenSubject(isOpen ? null : sub), "aria-expanded": isOpen, className: youngLearner && !isOpen && openSubject === null && subModules.some((m) => statusOf(m.id) === 'available') ? 'edu-breathe' : undefined, style: { fontFamily: FONT, width: '100%', textAlign: 'left', background: 'transparent', border: 'none', padding: 16, cursor: 'pointer', color: C.ink } },
                             react_1.default.createElement("div", { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10 } },
                                 react_1.default.createElement("span", { style: { fontSize: 21, fontWeight: 600 } }, sub),
                                 react_1.default.createElement("span", { style: { fontSize: 14, color: C.muted, whiteSpace: 'nowrap' } },
@@ -37612,7 +37652,7 @@ function EduSphereApp() {
                 groups.map((g) => {
                     const open = openProgressGroups.includes(g.key);
                     return (react_1.default.createElement("div", { key: g.key, style: { ...card, padding: 0, overflow: 'hidden' } },
-                        react_1.default.createElement("button", { type: "button", onClick: () => setOpenProgressGroups((list) => (list.includes(g.key) ? list.filter((x) => x !== g.key) : [...list, g.key])), "aria-expanded": open, style: { fontFamily: FONT, width: '100%', textAlign: 'left', background: 'none', border: 'none', padding: 16, cursor: 'pointer', color: C.ink, display: 'flex', justifyContent: 'space-between', alignItems: 'center' } },
+                        react_1.default.createElement("button", { type: "button", onClick: () => setOpenProgressGroups((list) => (list.includes(g.key) ? list.filter((x) => x !== g.key) : [...list, g.key])), "aria-expanded": open, style: { fontFamily: FONT, width: '100%', textAlign: 'left', background: 'transparent', border: 'none', padding: 16, cursor: 'pointer', color: C.ink, display: 'flex', justifyContent: 'space-between', alignItems: 'center' } },
                             react_1.default.createElement("span", { style: { fontSize: 17, fontWeight: 600 } },
                                 g.title,
                                 " (",
@@ -37620,8 +37660,8 @@ function EduSphereApp() {
                                 ")"),
                             react_1.default.createElement("span", { style: { color: C.muted } }, open ? '▴' : '▾')),
                         open && (react_1.default.createElement("div", { style: { padding: '0 12px 8px' } },
-                            g.items.length === 0 && react_1.default.createElement("p", { style: { margin: '0 0 8px', color: C.muted, fontSize: 15 } }, "Nothing here yet."),
-                            g.items.map((m) => (react_1.default.createElement("div", { key: m.id, style: { padding: '10px 4px', borderTop: `1px solid ${C.line}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10, flexWrap: 'wrap' } },
+                            g.items.length === 0 && react_1.default.createElement("p", { style: { margin: '0 0 8px', color: C.muted, fontSize: 15, textAlign: 'center' } }, "Nothing here yet."),
+                            g.items.map((m) => (react_1.default.createElement("div", { key: m.id, style: { padding: '10px 4px', borderTop: `1px solid ${C.line}`, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6, textAlign: 'center' } },
                                 react_1.default.createElement("div", null,
                                     react_1.default.createElement("p", { style: { margin: 0, fontSize: 16, fontWeight: 600 } }, m.title),
                                     react_1.default.createElement("p", { style: { margin: '4px 0 0', fontSize: 14, color: C.muted } }, m.mastered ? 'You showed you understand this.' : m.attempts ? `Your best so far is ${m.bestScore}. You need ${moduleRules(m.id).toMaster} to master it.` : g.key === 'locked' ? 'Opens when the module before it is mastered.' : 'Ready when you are.')),
@@ -37650,7 +37690,7 @@ function EduSphereApp() {
                     const rows = entry.standards.filter((st) => st.framework === fw);
                     const covered = rows.filter((st) => st.moduleIds.length).length;
                     return (react_1.default.createElement("div", { key: key, style: { ...card, padding: 0, overflow: 'hidden' } },
-                        react_1.default.createElement("button", { type: "button", onClick: () => setOpenMapGroups((list) => (list.includes(key) ? list.filter((x) => x !== key) : [...list, key])), "aria-expanded": open, style: { fontFamily: FONT, width: '100%', textAlign: 'left', background: 'none', border: 'none', padding: 16, cursor: 'pointer', color: C.ink, display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10 } },
+                        react_1.default.createElement("button", { type: "button", onClick: () => setOpenMapGroups((list) => (list.includes(key) ? list.filter((x) => x !== key) : [...list, key])), "aria-expanded": open, style: { fontFamily: FONT, width: '100%', textAlign: 'left', background: 'transparent', border: 'none', padding: 16, cursor: 'pointer', color: C.ink, display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10 } },
                             react_1.default.createElement("span", { style: { fontSize: 17, fontWeight: 600 } },
                                 gradeLabel(entry.grade),
                                 " ",
@@ -37694,7 +37734,7 @@ function EduSphereApp() {
                     const title = g === 'grown' ? 'For parents, educators and advanced readers' : gradeLabel(g);
                     const count = lists ? readingListFor(g).length : experimentsFor(g).length;
                     return (react_1.default.createElement("div", { key: g, style: { borderRadius: 12, overflow: 'hidden', marginBottom: 10, background: 'rgb(26, 71, 58)' } },
-                        react_1.default.createElement("button", { type: "button", onClick: () => setOpenResourceGrades((list) => (list.includes(g) ? list.filter((x) => x !== g) : [...list, g])), "aria-expanded": open, style: { fontFamily: FONT, width: '100%', textAlign: 'left', background: 'none', border: 'none', padding: '14px 16px', cursor: 'pointer', color: '#fff' } },
+                        react_1.default.createElement("button", { type: "button", onClick: () => setOpenResourceGrades((list) => (list.includes(g) ? list.filter((x) => x !== g) : [...list, g])), "aria-expanded": open, style: { fontFamily: FONT, width: '100%', textAlign: 'left', background: 'transparent', border: 'none', padding: '14px 16px', cursor: 'pointer', color: '#fff' } },
                             react_1.default.createElement("div", { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10 } },
                                 react_1.default.createElement("span", { style: { fontSize: 18, fontWeight: 600 } }, title),
                                 react_1.default.createElement("span", { style: { fontSize: 14, opacity: 0.85, whiteSpace: 'nowrap' } },
@@ -37793,7 +37833,7 @@ function EduSphereApp() {
                             const foldOpen = openApproved.includes(stage.id);
                             return (react_1.default.createElement(react_1.default.Fragment, null,
                                 reviewed.length > 0 && (react_1.default.createElement("div", { style: { ...card, padding: 0, overflow: 'hidden', background: C.greenSoft, borderColor: C.greenSoft } },
-                                    react_1.default.createElement("button", { type: "button", onClick: () => setOpenApproved((list) => (list.includes(stage.id) ? list.filter((x) => x !== stage.id) : [...list, stage.id])), "aria-expanded": foldOpen, style: { fontFamily: FONT, width: '100%', textAlign: 'left', background: 'none', border: 'none', padding: 14, cursor: 'pointer', color: C.ink, display: 'flex', justifyContent: 'space-between', alignItems: 'center' } },
+                                    react_1.default.createElement("button", { type: "button", onClick: () => setOpenApproved((list) => (list.includes(stage.id) ? list.filter((x) => x !== stage.id) : [...list, stage.id])), "aria-expanded": foldOpen, style: { fontFamily: FONT, width: '100%', textAlign: 'left', background: 'transparent', border: 'none', padding: 14, cursor: 'pointer', color: C.ink, display: 'flex', justifyContent: 'space-between', alignItems: 'center' } },
                                         react_1.default.createElement("span", { style: { fontSize: 15, fontWeight: 600 } },
                                             "Reviewed (",
                                             reviewed.length,
@@ -37825,7 +37865,7 @@ function EduSphereApp() {
                         reviewingQuestion.perspectives.map((p) => {
                             const shown = openVoices.includes(p.voice);
                             return (react_1.default.createElement("div", { key: p.voice, style: { borderTop: `1px solid ${C.line}` } },
-                                react_1.default.createElement("button", { type: "button", onClick: () => setOpenVoices((list) => (list.includes(p.voice) ? list.filter((x) => x !== p.voice) : [...list, p.voice])), "aria-expanded": shown, style: { fontFamily: FONT, width: '100%', textAlign: 'left', background: 'none', border: 'none', padding: '10px 0', cursor: 'pointer', color: C.green, fontSize: 15, fontWeight: 600, display: 'flex', justifyContent: 'space-between', gap: 10 } },
+                                react_1.default.createElement("button", { type: "button", onClick: () => setOpenVoices((list) => (list.includes(p.voice) ? list.filter((x) => x !== p.voice) : [...list, p.voice])), "aria-expanded": shown, style: { fontFamily: FONT, width: '100%', textAlign: 'left', background: 'transparent', border: 'none', padding: '10px 0', cursor: 'pointer', color: C.green, fontSize: 15, fontWeight: 600, display: 'flex', justifyContent: 'space-between', gap: 10 } },
                                     react_1.default.createElement("span", null, p.voice),
                                     react_1.default.createElement("span", { style: { color: C.muted, fontWeight: 400 } }, shown ? '▴' : '▾')),
                                 react_1.default.createElement("div", { className: "edu-collapsible", style: { display: shown ? 'block' : 'none', paddingBottom: 10 } },
@@ -37896,7 +37936,7 @@ function EduSphereApp() {
                             const bg = done ? '#EDEFEA' : SKILL_GREEN;
                             const light = done;
                             return (react_1.default.createElement("div", { key: sk.id, style: { borderRadius: 12, overflow: 'hidden', marginBottom: 10, background: bg, opacity: done ? 0.75 : 1 } },
-                                react_1.default.createElement("button", { type: "button", onClick: () => setOpenSkills((list) => (list.includes(sk.id) ? list.filter((x) => x !== sk.id) : [...list, sk.id])), "aria-expanded": open, style: { fontFamily: FONT, width: '100%', textAlign: 'left', background: 'none', border: 'none', padding: '16px 18px', cursor: 'pointer', color: light ? C.ink : '#fff' } },
+                                react_1.default.createElement("button", { type: "button", onClick: () => setOpenSkills((list) => (list.includes(sk.id) ? list.filter((x) => x !== sk.id) : [...list, sk.id])), "aria-expanded": open, style: { fontFamily: FONT, width: '100%', textAlign: 'left', background: 'transparent', border: 'none', padding: '16px 18px', cursor: 'pointer', color: light ? C.ink : '#fff' } },
                                     react_1.default.createElement("div", { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10 } },
                                         react_1.default.createElement("span", { style: { fontSize: 18, fontWeight: 600 } },
                                             done ? '✓ ' : '',
@@ -38210,24 +38250,31 @@ function EduSphereApp() {
                         react_1.default.createElement("button", { type: "button", onClick: () => setAdding(false), "aria-label": "Close", style: { position: 'absolute', top: 8, right: 10, background: 'none', border: 'none', width: 36, height: 36, fontSize: 30, lineHeight: '34px', cursor: 'pointer', color: C.ink, fontFamily: FONT, padding: 0 } }, "\u00D7"),
                         react_1.default.createElement("p", { style: { margin: '0 0 14px', fontWeight: 600, fontSize: 18 } }, "Add someone new"),
                         react_1.default.createElement("input", { value: rosterInput, onChange: (e) => setRosterInput(e.target.value), placeholder: "School-issued ID", style: { fontFamily: FONT, fontSize: 17, padding: '12px 14px', width: '100%', boxSizing: 'border-box', border: `2px solid ${C.line}`, borderRadius: 10, marginBottom: 12 } }),
-                        react_1.default.createElement("div", { style: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: 8, marginBottom: 12 } }, LEVELS.map((lv) => {
-                            const on = newLevel === lv.id;
-                            return (react_1.default.createElement("button", { key: lv.id, type: "button", "aria-pressed": on, onClick: () => {
-                                    setNewLevel(on ? '' : lv.id);
-                                    // Suggest a picture nobody is using yet, so the common case is one tap.
-                                    if (!on && lv.picture) {
-                                        const free = firstFreePicture(roster);
-                                        setNewPicture(free.picture);
-                                        setNewTint(free.tint);
-                                    }
-                                    if (!lv.picture || on) {
-                                        setNewPicture('');
-                                        setNewTint('');
-                                    }
-                                }, style: { fontFamily: FONT, textAlign: 'left', padding: '10px 12px', borderRadius: 10, cursor: 'pointer', background: on ? C.greenSoft : C.surface, border: `2px solid ${on ? C.green : C.line}`, color: C.ink } },
-                                react_1.default.createElement("span", { style: { display: 'block', fontSize: 15, fontWeight: 600 } }, lv.title),
-                                react_1.default.createElement("span", { style: { display: 'block', fontSize: 12, color: C.muted, marginTop: 2 } }, lv.blurb)));
-                        })),
+                        react_1.default.createElement("div", { style: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: 8, marginBottom: 12 } },
+                            LEVELS.map((lv) => {
+                                const on = newLevel === lv.id;
+                                return (react_1.default.createElement("button", { key: lv.id, type: "button", "aria-pressed": on, onClick: () => {
+                                        setNewLevel(on ? '' : lv.id);
+                                        // Suggest a picture nobody is using yet, so the common case is one tap.
+                                        if (!on && lv.picture) {
+                                            const free = firstFreePicture(roster);
+                                            setNewPicture(free.picture);
+                                            setNewTint(free.tint);
+                                        }
+                                        if (!lv.picture || on) {
+                                            setNewPicture('');
+                                            setNewTint('');
+                                        }
+                                    }, style: { fontFamily: FONT, textAlign: 'left', padding: '10px 12px', borderRadius: 10, cursor: 'pointer', background: on ? C.greenSoft : C.surface, border: `2px solid ${on ? C.green : C.line}`, color: C.ink } },
+                                    react_1.default.createElement("span", { style: { display: 'block', fontSize: 15, fontWeight: 600 } }, lv.title),
+                                    react_1.default.createElement("span", { style: { display: 'block', fontSize: 12, color: C.muted, marginTop: 2 } }, lv.blurb)));
+                            }),
+                            newLevel && levelFor(newLevel) && (react_1.default.createElement("div", { style: { gridColumn: '1 / -1', marginTop: 4 } },
+                                react_1.default.createElement("p", { style: { margin: '0 0 6px', fontSize: 14, color: C.muted } }, "Which grade should they start in? The placement check can still move a reader up or down from here."),
+                                react_1.default.createElement("div", { style: { display: 'flex', flexWrap: 'wrap', gap: 8 } }, gradesWithCourses().filter((g) => levelFor(newLevel).grades.includes(g)).map((g) => {
+                                    const on = newStartGrade === g;
+                                    return react_1.default.createElement("button", { key: g, type: "button", "aria-pressed": on, onClick: () => setNewStartGrade(on ? '' : g), style: { fontFamily: FONT, fontSize: 14, fontWeight: 600, padding: '8px 12px', borderRadius: 10, cursor: 'pointer', background: on ? C.greenSoft : C.surface, border: `2px solid ${on ? C.green : C.line}`, color: C.ink } }, gradeLabel(g));
+                                }))))),
                         levelFor(newLevel) && levelFor(newLevel).picture && (react_1.default.createElement(react_1.default.Fragment, null,
                             react_1.default.createElement("p", { style: { margin: '0 0 6px', fontSize: 14, color: C.muted } }, "Choose a sign-in picture."),
                             react_1.default.createElement("div", { style: { display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 8 } }, PICTURES.map((pic) => (react_1.default.createElement("button", { key: pic, type: "button", onClick: () => setNewPicture(pic), "aria-label": pic, "aria-pressed": newPicture === pic, style: { padding: 3, borderRadius: 12, cursor: 'pointer', background: C.surface, border: `2px solid ${newPicture === pic ? C.green : C.line}` } },
@@ -38236,18 +38283,19 @@ function EduSphereApp() {
                                 TINTS.map((t) => (react_1.default.createElement("button", { key: t.id, type: "button", onClick: () => setNewTint(t.id), "aria-label": t.id, "aria-pressed": newTint === t.id, style: { width: 30, height: 30, borderRadius: 999, cursor: 'pointer', background: t.color, border: `3px solid ${newTint === t.id ? C.green : C.surface}`, boxShadow: `0 0 0 1px ${C.line}` } }))),
                                 newPicture && pictureInUse(roster, newPicture, newTint, normalizeStudentId(rosterInput)) && react_1.default.createElement("span", { style: { fontSize: 13, color: C.clay } }, "Another student has this one.")))),
                         react_1.default.createElement(Btn, { full: true, onClick: async () => {
-                                const r = addStudent(roster, rosterInput, new Date().toISOString(), { level: newLevel, picture: newPicture, tint: newTint });
+                                const r = addStudent(roster, rosterInput, new Date().toISOString(), { level: newLevel, picture: newPicture, tint: newTint, startGrade: newStartGrade || null });
                                 await applyRoster(r.roster, r.error);
                                 if (!r.error) {
                                     // A new student starts with the recommended courses for their level, not every course there is.
                                     const id = normalizeStudentId(rosterInput);
                                     const rec = await loadRecord(id);
                                     if (!rec.events.some((e) => e.type === 'courses_enabled')) {
-                                        const starter = makeCoursesEnabledEvent(recommendedCourseIds([makeCoursesEnabledEvent([], new Date().toISOString())], newLevel), new Date().toISOString());
+                                        const starter = makeCoursesEnabledEvent(recommendedCourseIds([makeCoursesEnabledEvent([], new Date().toISOString())], newLevel, newStartGrade || null), new Date().toISOString());
                                         await saveRecord({ ...rec, events: [...rec.events, starter] });
                                     }
                                     setRosterInput('');
                                     setNewLevel('');
+                                    setNewStartGrade('');
                                     setNewPicture('');
                                     setNewTint('');
                                     setAdding(false);
@@ -38384,7 +38432,7 @@ function EduSphereApp() {
                         react_1.default.createElement("span", { style: { position: 'relative', display: 'inline-flex', alignItems: 'center', gap: 6 } },
                             react_1.default.createElement("button", { type: "button", onClick: () => setScreen('backup'), className: `edu-backup-link${overdue ? ' edu-glow' : ''}`, style: { position: 'relative', background: 'none', border: 'none', color: C.green, fontFamily: FONT, fontSize: 16, fontWeight: 600, cursor: 'pointer', padding: '8px 12px', textDecoration: 'underline' } }, "Backup classroom"),
                             react_1.default.createElement("button", { type: "button", onClick: () => setShowBackupTip(!showBackupTip), "aria-label": "About backups", style: { position: 'relative', background: 'none', border: `1.5px solid ${C.green}`, color: C.green, fontFamily: FONT, fontSize: 12, fontWeight: 700, lineHeight: '15px', width: 18, height: 18, borderRadius: 999, cursor: 'pointer', padding: 0 } }, "i")),
-                        showBackupTip && (react_1.default.createElement("p", { style: { ...tipStyle, textAlign: 'left' } }, "We recommend backing up at the end of each day. Since all student data lives on this device (rather than in a cloud) the ability to restore progress after a browser's cache is cleared becomes paramount. This backup creates a file that holds all student progression, educator settings, life skill progress etc. Share it to your email, drive folder or any place that can be accessed if and when your device becomes compromised. Backup files allow you to restore everything with ease!"))));
+                        showBackupTip && (react_1.default.createElement("p", { style: { ...tipStyle, textAlign: 'left' } }, "All student progress is regularly backed up into your device's download folder. A fresh copy is made after every completed module. However, we still recommend periodic manual backups to shared drive folders in order to insure yourself against broken or lost devices. Only one recent backup file is required to restore all settings and progress for both students and educators!"))));
                 })(),
                 react_1.default.createElement(ContactLine, { onOpen: () => setShowContact(true) }),
                 showContact && react_1.default.createElement(ContactPopup, { onClose: () => setShowContact(false) }))));
@@ -38451,23 +38499,24 @@ function EduSphereApp() {
                 react_1.default.createElement("button", { type: "button", onClick: () => setScreen('educator-pick'), style: linkBtn }, "Back to Classroom"),
                 react_1.default.createElement("h1", { style: { fontSize: 24, margin: '12px 0 18px', textAlign: 'center' } }, "Backup classroom"),
                 react_1.default.createElement("p", { style: { color: C.muted, marginTop: 0, fontSize: 15, textAlign: 'center' } },
-                    days === null ? 'This classroom has never been backed up.' : days === 0 ? 'Backed up today.' : `Last backed up ${days} ${days === 1 ? 'day' : 'days'} ago.`,
+                    days === null ? 'No manual backup yet.' : days === 0 ? 'Last manual backup today.' : `Last manual backup ${days} ${days === 1 ? 'day' : 'days'} ago.`,
                     ' ',
-                    "Backups save all student progress and allow for restoration on any device at a later time. Regular backups are highly recommended. While some devices allow for automatic backups on a per module basis, others require manual backups."),
+                    "Backups save all student progress and allow for restoration on any device at a later time. Regular backups are highly recommended."),
                 react_1.default.createElement("div", { style: { height: 20 } }),
                 !(educator && educator.recovery) && (react_1.default.createElement("div", { style: { ...card, background: C.goldSoft, borderColor: C.goldSoft } },
                     react_1.default.createElement("p", { style: { margin: '0 0 4px', fontWeight: 600, textAlign: 'center' } }, "No recovery code yet"),
                     react_1.default.createElement("p", { style: { margin: 0, fontSize: 14, color: C.muted, textAlign: 'center' } },
                         "A recovery code, used to reset a pin, comes with an educator account. ",
                         react_1.default.createElement("button", { type: "button", onClick: () => { setNewPin(''); setNewPin2(''); setDeviceDraft(deviceName || ''); setStateDraft(stateCode || ''); setSetupError(''); setScreen('educator-setup'); }, style: { ...linkBtn, fontSize: 14, padding: 0 } }, "Create one here"),
-                        ". This device is still using a starter PIN. Once an account is created, your recovery code will appear here and within every backup file."))),
+                        "."),
+                    react_1.default.createElement("p", { style: { margin: '10px 0 0', fontSize: 14, color: C.muted, textAlign: 'center' } }, "This device is still using a starter PIN. Once an account is created, your recovery code will appear here and within every backup file."))),
                 educator && educator.recovery && (react_1.default.createElement("div", { style: { ...card, background: C.greenSoft, borderColor: C.greenSoft } },
                     react_1.default.createElement("p", { style: { margin: '0 0 4px', fontWeight: 600 } }, "Recovery code"),
                     react_1.default.createElement("p", { style: { margin: '0 0 6px', fontSize: 22, fontWeight: 700, letterSpacing: 1 } }, educator.recovery),
                     react_1.default.createElement("p", { style: { margin: 0, fontSize: 14, color: C.muted, textAlign: 'center' } }, "This code is also written at the top of every backup file. If you ever forget your PIN, simply select \"forgot my pin\" on the login screen and type in the code or choose a backup file. Keep it where students cannot see it."))),
                 react_1.default.createElement("div", { style: card },
-                    react_1.default.createElement("p", { style: { margin: '0 0 6px', fontWeight: 600 } }, "This device's name"),
-                    react_1.default.createElement("p", { style: { margin: '0 0 8px', fontSize: 14, color: C.muted } }, "Device name goes into the file name so a classroom of ten devices reads at a glance."),
+                    react_1.default.createElement("p", { style: { margin: '0 0 6px', fontWeight: 600, textAlign: 'center' } }, "This device's name"),
+                    react_1.default.createElement("p", { style: { margin: '0 0 8px', fontSize: 14, color: C.muted, textAlign: 'center' } }, "Backing up your device includes the name you add here. This allows for a classroom of ten devices to read at a glance."),
                     react_1.default.createElement("input", { value: deviceName, onChange: (e) => setDeviceName(e.target.value), onBlur: () => saveDeviceName(deviceName), placeholder: "Example: iPad 3, Chromebook", style: { fontFamily: FONT, fontSize: 16, padding: '10px 12px', width: '100%', boxSizing: 'border-box', border: `2px solid ${C.line}`, borderRadius: 10 } }),
                     react_1.default.createElement("p", { style: { margin: '8px 0 0', fontSize: 13, color: C.muted, textAlign: 'center' } },
                         "Example file name: ",
@@ -38508,12 +38557,12 @@ function EduSphereApp() {
                             } }, "Download backup")),
                     backupNote && react_1.default.createElement("p", { style: { margin: '10px 0 0', fontSize: 14, color: C.muted, textAlign: 'center' } }, backupNote)),
                 react_1.default.createElement("div", { style: card },
-                    react_1.default.createElement("p", { style: { margin: '0 0 6px', fontWeight: 600 } }, "Backups happen by themselves"),
-                    react_1.default.createElement("p", { style: { margin: '0 0 6px', fontSize: 14, color: C.muted, textAlign: 'center' } }, "Every time a student finishes a round, a backup file is saved to this device's downloads folder. Nothing to set up and nothing to remember."),
-                    react_1.default.createElement("p", { style: { margin: 0, fontSize: 14, color: C.muted, textAlign: 'center' } }, "Only the most recent file is needed. Older backups can be deleted at any time to free up space. The button above saves one to a folder you choose, for a copy you keep somewhere safer."),
+                    react_1.default.createElement("p", { style: { margin: '0 0 6px', fontWeight: 600, textAlign: 'center' } }, "Automatic Backups"),
+                    react_1.default.createElement("p", { style: { margin: '0 0 10px', fontSize: 14, color: C.muted, textAlign: 'center' } }, "Each time a student finishes a module, a backup of their progress is stored into your downloads folder."),
+                    react_1.default.createElement("p", { style: { margin: 0, fontSize: 14, color: C.muted, textAlign: 'center' } }, "While you have the option to push a backup manually and select a destination above, it's not entirely necessary. However, it could be a good idea to periodically save into a shared drive folder to insure yourself against broken devices. This allows you to restore all progress and settings on any other device of your choosing."),
                     autoBackupNote && react_1.default.createElement("p", { style: { margin: '8px 0 0', fontSize: 13, color: C.muted, textAlign: 'center' } }, autoBackupNote)),
                 react_1.default.createElement("div", { style: card },
-                    react_1.default.createElement("p", { style: { margin: '0 0 6px', fontWeight: 600 } }, "Restore from backup"),
+                    react_1.default.createElement("p", { style: { margin: '0 0 6px', fontWeight: 600, textAlign: 'center' } }, "Restore from backup"),
                     react_1.default.createElement("p", { style: { margin: '0 0 10px', fontSize: 14, color: C.muted, textAlign: 'center' } },
                         "Restoring ",
                         react_1.default.createElement("strong", null, "adds"),
@@ -38584,7 +38633,7 @@ function EduSphereApp() {
                 (() => {
                     const parts = summaryParts(rep);
                     return (react_1.default.createElement("div", { style: { ...card, padding: 0, overflow: 'hidden' } },
-                        react_1.default.createElement("button", { type: "button", onClick: () => setOpenSummary(!openSummary), "aria-expanded": openSummary, style: { fontFamily: FONT, width: '100%', textAlign: 'left', background: 'none', border: 'none', padding: 16, cursor: 'pointer', color: C.ink, display: 'flex', justifyContent: 'space-between', alignItems: 'center' } },
+                        react_1.default.createElement("button", { type: "button", onClick: () => setOpenSummary(!openSummary), "aria-expanded": openSummary, style: { fontFamily: FONT, width: '100%', textAlign: 'left', background: 'transparent', border: 'none', padding: 16, cursor: 'pointer', color: C.ink, display: 'flex', justifyContent: 'space-between', alignItems: 'center' } },
                             react_1.default.createElement("span", { style: { fontSize: 17, fontWeight: 600 } }, "Summary"),
                             react_1.default.createElement("span", { style: { color: C.muted } }, openSummary ? '▴' : '▾')),
                         openSummary && (react_1.default.createElement("div", { style: { padding: '0 16px 16px' } },
@@ -38660,7 +38709,7 @@ function EduSphereApp() {
                     const rows = rep.modules.filter((m) => m.courseId === course.id);
                     const done = rows.filter((m) => m.mastered).length;
                     return (react_1.default.createElement("div", { key: course.id, style: { ...card, padding: 0, overflow: 'hidden' } },
-                        react_1.default.createElement("button", { type: "button", onClick: () => toggleSubjectPanel(course.id), "aria-expanded": open, style: { fontFamily: FONT, width: '100%', textAlign: 'left', background: 'none', border: 'none', padding: 16, cursor: 'pointer', color: C.ink } },
+                        react_1.default.createElement("button", { type: "button", onClick: () => toggleSubjectPanel(course.id), "aria-expanded": open, style: { fontFamily: FONT, width: '100%', textAlign: 'left', background: 'transparent', border: 'none', padding: 16, cursor: 'pointer', color: C.ink } },
                             react_1.default.createElement("div", { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10 } },
                                 react_1.default.createElement("span", null,
                                     react_1.default.createElement("span", { style: { display: 'block', fontSize: 17, fontWeight: 600 } }, course.title),
@@ -38723,7 +38772,7 @@ function EduSphereApp() {
                     EXPLANATIONS.map((x, i) => {
                         const open = openTerms.includes(x.term);
                         return (react_1.default.createElement("div", { key: x.term, style: { borderTop: i === 0 ? 'none' : '1px solid rgba(58, 107, 88, 0.18)' } },
-                            react_1.default.createElement("button", { type: "button", onClick: () => setOpenTerms((list) => (list.includes(x.term) ? list.filter((t) => t !== x.term) : [...list, x.term])), "aria-expanded": open, style: { fontFamily: FONT, width: '100%', textAlign: 'left', background: 'none', border: 'none', padding: '6px 0', cursor: 'pointer', color: C.ink, display: 'flex', justifyContent: 'space-between', alignItems: 'center' } },
+                            react_1.default.createElement("button", { type: "button", onClick: () => setOpenTerms((list) => (list.includes(x.term) ? list.filter((t) => t !== x.term) : [...list, x.term])), "aria-expanded": open, style: { fontFamily: FONT, width: '100%', textAlign: 'left', background: 'transparent', border: 'none', padding: '6px 0', cursor: 'pointer', color: C.ink, display: 'flex', justifyContent: 'space-between', alignItems: 'center' } },
                                 react_1.default.createElement("span", { style: { fontWeight: 600, fontSize: 15 } }, x.term),
                                 react_1.default.createElement("span", { style: { color: C.muted } }, open ? '▴' : '▾')),
                             open && react_1.default.createElement("p", { style: { margin: '0 0 6px', fontSize: 15 } }, x.plain)));

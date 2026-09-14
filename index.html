@@ -36078,6 +36078,8 @@ const KID_ANIMATION = `
      edge chases it a beat late, so phones get no bottom bar and the device's own edge closes the frame.
      Laptops and desktops, which have no moving bars, get the full frame. */
   .edu-frame-bottom { display: none; }
+  /* On a laptop the student card's links sit centered beneath the name, close to Open report; on a phone they stay left. */
+  @media (min-width: 1000px) { .edu-student-links { margin-left: auto; } }
   /* On a phone the logout countdown sits centered at the foot; on a laptop it stays bottom right. */
   @media (max-width: 999px) { .edu-logout-chip { right: auto !important; left: 50% !important; transform: translateX(-50%); } }
   @media (hover: hover) and (pointer: fine) { .edu-frame-bottom { display: block; position: fixed; left: 0; right: 0; bottom: 0; height: 6px; background: ${C.green}; pointer-events: none; z-index: 50; } }
@@ -36135,7 +36137,7 @@ html, body { overflow-x: hidden; }
   .edu-narrow { max-width: 380px; margin-left: auto; margin-right: auto; }
   .edu-backup-link { font-size: 19px !important; }
   .edu-login-body { margin-top: 12vh; }
-  .edu-overview-body { margin-top: 56px !important; }
+  .edu-overview-body { margin-top: 10px !important; }
 }
 @media (min-width: 1100px) {
   .edu-side { display: block; position: fixed; top: 0; bottom: 0; width: 300px; pointer-events: none; z-index: 0; opacity: 0.6; }
@@ -37305,7 +37307,7 @@ function EduSphereApp() {
                     react_1.default.createElement("h2", { style: { fontSize: 20, margin: '0 0 14px', textAlign: 'center' } }, "Who's learning today?"),
                     activeStudents(roster).length === 0 ? (react_1.default.createElement("p", { style: { margin: 0, color: C.muted, fontSize: 15, textAlign: 'center' } }, "No students have been added. An educator can add students by logging in below.")) : (react_1.default.createElement(react_1.default.Fragment, null,
                         activeStudents(roster).length > 8 && (react_1.default.createElement("input", { value: nameInput, onChange: (e) => setNameInput(e.target.value), placeholder: "Find your name", style: { textAlign: 'center', fontFamily: FONT, fontSize: 17, padding: '10px 12px', width: '100%', boxSizing: 'border-box', border: `2px solid ${C.line}`, borderRadius: 10, marginBottom: 10 } })),
-                        react_1.default.createElement("div", { style: { display: 'grid', gridTemplateColumns: activeStudents(roster).length <= 1 ? '1fr' : '1fr 1fr', gridAutoRows: 84, gap: 10, ...(Math.ceil(activeStudents(roster).length / 2) > 8 ? { maxHeight: 8 * 84 + 7 * 10, overflowY: 'auto' } : {}) } }, activeStudents(roster)
+                        react_1.default.createElement("div", { style: { display: 'grid', gridTemplateColumns: activeStudents(roster).length <= 1 ? '1fr' : '1fr 1fr', gridAutoRows: 84, gap: 10 } }, activeStudents(roster)
                             .filter((st) => st.label.toLowerCase().includes(nameInput.trim().toLowerCase()))
                             .map((st) => (react_1.default.createElement("button", { key: st.id, type: "button", onClick: () => startWithName(st.id), disabled: busy, className: "edu-press edu-name", style: { fontFamily: FONT, fontSize: 15, fontWeight: 600, borderRadius: 10, background: C.surface, border: `2px solid ${C.line}`, color: C.ink, cursor: 'pointer', height: 84, padding: '0 18px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, overflow: 'hidden', position: 'relative' } },
                             react_1.default.createElement("span", { style: { display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 6, maxWidth: '100%' } },
@@ -37332,7 +37334,7 @@ function EduSphereApp() {
     // Subjects still waiting on a placement decision: the check is offered, and that subject's
     // courses, the mastered count and My progress stay out of sight until it is settled.
     const placementPending = record && !youngLearner && !record.preview
-        ? ['Math', 'Reading', 'Science'].filter((subject) => placementGrades(subject, (findStudent(roster, record.name) || {}).level).length > 0 && !placementDone(record.events, subject) && !record.events.some((e) => e.type === 'attempt_completed' && (getCourse((getModule(e.moduleId) || {}).courseId) || {}).subject === subject))
+        ? ['Math', 'Reading', 'Science'].filter((subject) => placementGrades(subject, (findStudent(roster, record.name) || {}).level).length > 0 && !placementDone(record.events, subject) && !activeEvents(record.events).some((e) => e.type === 'attempt_completed' && (getCourse((getModule(e.moduleId) || {}).courseId) || {}).subject === subject))
         : [];
     async function skipPlacement(subject) {
         // Starting at the beginning is a placement decision too: nothing cleared, first grade of the band,
@@ -38548,20 +38550,21 @@ function EduSphereApp() {
                                 st.level && react_1.default.createElement("span", { style: { display: 'block', fontSize: 12, color: C.muted } },
                                     levelFor(st.level).title,
                                     st.startGrade ? ` · starts ${gradeLabel(st.startGrade).toLowerCase()}` : ''))),
-                        react_1.default.createElement("div", { style: { display: 'flex', gap: 8, flexWrap: 'wrap', marginTop: 12, alignItems: 'center' } },
-                            react_1.default.createElement("button", { type: "button", onClick: () => { setRenamingId(st.id); setRenameInput(st.label); setRosterError(''); }, style: linkBtn }, "Rename"),
-                            react_1.default.createElement("button", { type: "button", onClick: () => setPictureFor(pictureFor === st.id ? null : st.id), style: linkBtn }, st.picture ? 'Change picture' : 'Add picture'),
-                            react_1.default.createElement("button", { type: "button", onClick: () => applyRoster(setStudentActive(roster, st.id, false)), style: linkBtn }, "Hide"),
-                            mergeFrom === '' ? (react_1.default.createElement("button", { type: "button", onClick: () => { setMergeFrom(st.id); setRosterError(''); }, style: linkBtn }, "Merge into\u2026")) : mergeFrom === st.id ? (react_1.default.createElement("button", { type: "button", onClick: () => setMergeFrom(''), style: linkBtn }, "Cancel merge")) : (react_1.default.createElement("button", { type: "button", onClick: async () => {
-                                    const r = mergeStudents(roster, st.id, mergeFrom);
-                                    if (!r.error) {
-                                        const keep = await loadRecord(st.id);
-                                        const gone = await loadRecord(mergeFrom);
-                                        await saveRecord({ ...keep, events: mergeEventLogs(keep.events, gone.events) });
-                                    }
-                                    await applyRoster(r.roster, r.error);
-                                    setMergeFrom('');
-                                }, style: { ...linkBtn, color: C.gold } }, "Merge here")),
+                        react_1.default.createElement("div", { className: "edu-student-actions", style: { display: 'flex', gap: 8, flexWrap: 'wrap', marginTop: 12, alignItems: 'center' } },
+                            react_1.default.createElement("span", { className: "edu-student-links", style: { display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' } },
+                                react_1.default.createElement("button", { type: "button", onClick: () => { setRenamingId(st.id); setRenameInput(st.label); setRosterError(''); }, style: linkBtn }, "Rename"),
+                                react_1.default.createElement("button", { type: "button", onClick: () => setPictureFor(pictureFor === st.id ? null : st.id), style: linkBtn }, st.picture ? 'Change picture' : 'Add picture'),
+                                react_1.default.createElement("button", { type: "button", onClick: () => applyRoster(setStudentActive(roster, st.id, false)), style: linkBtn }, "Hide"),
+                                mergeFrom === '' ? (react_1.default.createElement("button", { type: "button", onClick: () => { setMergeFrom(st.id); setRosterError(''); }, style: linkBtn }, "Merge into\u2026")) : mergeFrom === st.id ? (react_1.default.createElement("button", { type: "button", onClick: () => setMergeFrom(''), style: linkBtn }, "Cancel merge")) : (react_1.default.createElement("button", { type: "button", onClick: async () => {
+                                        const r = mergeStudents(roster, st.id, mergeFrom);
+                                        if (!r.error) {
+                                            const keep = await loadRecord(st.id);
+                                            const gone = await loadRecord(mergeFrom);
+                                            await saveRecord({ ...keep, events: mergeEventLogs(keep.events, gone.events) });
+                                        }
+                                        await applyRoster(r.roster, r.error);
+                                        setMergeFrom('');
+                                    }, style: { ...linkBtn, color: C.gold } }, "Merge here"))),
                             react_1.default.createElement("span", { style: { marginLeft: 'auto' } },
                                 react_1.default.createElement(Btn, { kind: "secondary", disabled: busy, onClick: async () => {
                                         setBusy(true);

@@ -35232,13 +35232,13 @@ const FONT = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, 
 // Every screen sits inside a bold green frame — the app's outer edge.
 // The frame is fixed to the window rather than drawn around the content, so it stays
 // in place while the page scrolls behind it.
-const page = { fontFamily: FONT, background: C.bg, color: C.ink, minHeight: '100vh', boxSizing: 'border-box', padding: '22px 16px 40px', lineHeight: 1.5 };
+const page = { fontFamily: FONT, background: C.bg, color: C.ink, minHeight: '100vh', boxSizing: 'border-box', padding: '22px 16px 40px', lineHeight: 1.5, position: 'relative', isolation: 'isolate' };
 // The frame is fixed to the viewport. On phones the bottom edge chased the address bar as it hid and
 // showed during fast scrolling, so the bottom bar is drawn by the page's own padding instead (see
 // .edu-page-foot), and the fixed frame carries only the top and sides.
-const frame = { position: 'fixed', top: 0, left: 0, right: 0, height: '100lvh', borderTop: `6px solid ${C.green}`, borderLeft: `6px solid ${C.green}`, borderRight: `6px solid ${C.green}`, boxSizing: 'border-box', pointerEvents: 'none', zIndex: 50, transform: 'translateZ(0)', willChange: 'transform' };
+const frame = { position: 'fixed', top: 0, left: 0, right: 0, height: '100lvh', borderTop: `6px solid ${C.green}`, borderLeft: `6px solid ${C.green}`, borderRight: `6px solid ${C.green}`, boxSizing: 'border-box', pointerEvents: 'none', zIndex: 50 };
 // Width comes from the .edu-wrap class, so a wide screen can be given more room.
-const wrap = { margin: '0 auto' };
+const wrap = { margin: '0 auto', minHeight: 'calc(100vh - 62px)' };
 // Where 'Contact us' goes. One place to change it later.
 const CONTACT_EMAIL = 'michaelowen37@gmail.com';
 // A quiet line at the foot of a screen. Discreet by design: help is there without shouting.

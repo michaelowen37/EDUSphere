@@ -14,11 +14,13 @@ the educator rather than the child.
 ## How it works
 
 **Gated modules.** Every module has to be mastered before the one after it opens.
-Mastery means answering enough questions correctly in a single sitting, and the
+Today, mastery means answering enough questions correctly in a single round, and the
 number depends on the subject and the grade. Modules can require others from any
 course or grade, so the whole library is one map of what depends on what. Grade 3
 multiplication, for instance, requires kindergarten joining and taking away, and a
-grade 3 student who never mastered it finds it locked until they do.
+grade 3 student who never mastered it finds it locked until they do. A prerequisite
+from another course gates a module only when that course is assigned, because placing
+a student above a grade is the educator's call.
 
 Pre-K courses are the one exception to the chain. Their activities are parallel,
 because a three-year-old need not finish patterns before counting to three, so those
@@ -40,9 +42,31 @@ For older grades the platform can build a prompt from a template and check its
 structure, but judging quality needs a person, or an AI acting as an assistant with a
 teacher confirming. We say so rather than pretend otherwise.
 
-**Spaced repetition.** Once a module is mastered, its questions reappear inside later
-practice rounds as memory checks. Those never count against the current module. They
-tell us, and the educator, whether the learning held.
+**Spaced repetition, across courses.** Once a module is mastered, its questions
+reappear inside later practice rounds as memory checks, drawn from any course the
+student has worked in, not only the one they are in now. Those never count against
+the current module. They tell us, and the educator, whether the learning held, and the
+report and the transcript both say how the old material fared when it came back.
+
+**Mastery takes two days.** One passing round shows a student can do something
+today. It does not show they can do it in three weeks, or inside a bigger problem. So a
+passing round opens the next module at once, and the star, mastery, takes a second pass
+on a different day. The result screen says which one just happened, the overview shows a
+hollow star for passed once, and the report and transcript say "passed once" until the
+second day comes. Stars earned before this rule stay earned. Every round carries two memory checks from two different passed modules.
+
+**Placement.** A reader who already knows the early material does not start at the
+bottom. The overview offers a placement check in each subject: four questions per grade,
+three right to clear it, walking up the band and stopping at the first grade not cleared.
+Every module in the cleared grades is unlocked, marked "placed past" rather than mastered,
+and the student starts at the grade where the walk stopped.
+
+**Checkpoints.** After every fourth module a student passes, the overview offers a
+checkpoint: eight questions drawn from everything they have passed, with nothing new in
+it. A miss never removes a pass or a star. It lowers that module's confidence score and
+marks the module "missed in the last checkpoint" on the course list and the report, and
+passing the module again clears the mark. Checkpoints are their own events, so the
+transcript and the who-needs-help list see them.
 
 **Confidence, not just correctness.** Each module carries a score from 1 to 5 built
 from mastery, streaks, timing and how the material fares when it comes back. Two
@@ -176,6 +200,13 @@ platform's job is to apply them consistently.
 These citations were written from memory and should be checked against the papers
 before they appear in anything a school reads. What we do not claim is that students
 outperform anyone. That is a result to be earned with data from real classrooms.
+
+## Devices
+
+EduSphere runs in any modern browser. For pre-K and kindergarten, an iPad or another large
+tablet with a stylus is the right device: the youngest modules are tracing, connect-the-dots
+and first strokes, and they require a touch screen. They refuse a mouse on purpose, because the
+point of those modules is practice holding a stylus. Readers can use anything.
 
 ## Running it
 

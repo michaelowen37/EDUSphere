@@ -127,8 +127,10 @@ by opening the site. Nothing to install and nothing to send.
 **One device at a time.** A student's live record lives on the device in front of
 them. Signing several devices into one browser account does not share it, because
 browsers sync settings and bookmarks, not a website's stored data. Use one device per
-student, or restore the classroom backup onto a device before using it. On Chromebooks
-and desktop Chrome, touchless backup can write into a shared folder after every round.
+student, or restore the classroom backup onto a device before using it. Every finished
+round saves a backup file to the device's downloads folder by itself; only the newest one is
+needed, and older ones can be deleted at any time. An educator can also download a backup
+to a folder of their choosing from the Backup page.
 
 Every number on a report is recomputed from the record of what happened. Nothing is
 stored as a score, so a figure can never disagree with the record. It is the record,

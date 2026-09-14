@@ -17290,8 +17290,8 @@ function courseLabel(course) { return `${course.title} (${gradeShort(course.grad
 const WRITING_LADDER = {
     2: [
         { id: 'complete-sentences', title: 'Complete sentences', tagline: 'A who and a what', teks: '2.11D', ccss: 'L.2.1f', words: 15,
-            lines: ["A sentence has a who and a what.\n[[The dog ran.]]\nThe dog is the who. Ran is the what. Start with a capital letter and end with a period.", "Let's fix one that is not a sentence.\n[[ran to the park]]\nWho ran? Add the who:\n[[My sister ran to the park.]]\nNow it is a sentence."],
-            key: 'A sentence has a who and a what.\nCapital letter at the start, period at the end.',
+            lines: ["A sentence has a **who** and a **what**.\n[[The dog ran.]]\nThe dog is the **who**. Ran is the **what**.", "Sentences also start with a **capital letter** and end with a **period**.", "Let's try to fix an example that is not a sentence.\n[[ran to the park]]\nWho was it that ran?\nLet's add a who:\n[[My sister ran to the park.]]\nNow that there is a who and a what, a capital letter at the beginning and a period at the end, it is a **complete sentence**."],
+            key: 'Complete sentences require a who and a what.',
             prompts: ['Write three sentences about what you did this morning.', 'Write three sentences about your favorite animal.', 'Write three sentences about a game you like.'],
             checks: ['Each sentence has a who and a what.', 'Each one starts with a capital letter.', 'Each one ends with a period.'] },
         { id: 'describing-sentences', title: 'Sentences that describe', tagline: 'Add a word that paints', teks: '2.11D', ccss: 'W.2.3', words: 25,
@@ -17862,6 +17862,22 @@ const COURSES = [
         title: 'The United States to 1877',
         audience: 'Grade 8',
         modules: GRADE8_HISTORY_MODULES(),
+    },
+    {
+        id: 'history-10',
+        grade: '10',
+        subject: 'History',
+        title: 'World history',
+        audience: 'Grade 10',
+        modules: GRADE10_HISTORY_MODULES(),
+    },
+    {
+        id: 'history-11',
+        grade: '11',
+        subject: 'History',
+        title: 'United States history since 1877',
+        audience: 'Grade 11',
+        modules: GRADE11_HISTORY_MODULES(),
     },
     {
         id: 'history-5',
@@ -22420,6 +22436,231 @@ function GRADE8_HISTORY_MODULES() {
             },
             sources: ['Aligned with Texas TEKS 8.9B (evaluate legislative reform programs of the Radical Reconstruction Congress and reconstructed state governments) and 8.9C, and NCSS Theme VI.'],
             generators: ['h8-which-amendment', 'h8-amendment-year', 'h8-which-amendment', 'h8-after-1877', 'h8-amendment-year'],
+        },
+    ];
+}
+// Grade 10 world history: six turns that made the modern world.
+function GRADE10_HISTORY_MODULES() {
+    return [
+        {
+            id: 'ancient-civilizations',
+            order: 1,
+            title: 'The first civilizations',
+            tagline: 'Rivers, writing and law',
+            lesson: {
+                paragraphs: [
+                    "Civilization began where rivers flooded and farming fed more people than farming needed.\n[[Mesopotamia, between the Tigris and Euphrates, about 3500 BC: the first cities and the first writing.]]\n[[Egypt on the Nile, about 3100 BC: a kingdom that lasted three thousand years.]]\n[[The Indus Valley and China\'s Yellow River soon after.]]",
+                    "Let's look at what a surplus does. When one farmer can feed five people, four are free to do something else: build, trade, rule, pray, write. Writing began as accounting, marks on clay for grain and sheep, and became law, story and scripture. Hammurabi\'s code, about 1750 BC, is the first long set of written laws we have.",
+                    "Every civilization solved the same problems in its own way: how to feed a city, how to settle a quarrel, how to remember. When you meet a new one, ask those three questions first.",
+                ],
+                keyIdea: 'Civilization began on flooding rivers where a surplus freed people to build, rule and write; writing began as accounting and became law.',
+                example: { kind: 'letters', text: 'rivers, surplus, writing', caption: 'How civilization starts.' },
+            },
+            sources: ['Aligned with Texas TEKS WH.2A (summarize the impact of the development of farming on the creation of river valley civilizations) and NCSS Theme II.'],
+            generators: ['h10-which-river', 'h10-surplus', 'h10-which-river', 'h10-first-writing', 'h10-surplus'],
+        },
+        {
+            id: 'greece-and-rome',
+            order: 2,
+            title: 'Greece and Rome',
+            tagline: 'Democracy, republic, empire',
+            requires: ['ancient-civilizations'],
+            lesson: {
+                paragraphs: [
+                    "Athens invented democracy about 500 BC: citizens voting directly on laws, though citizens meant free men only. Rome, from 509 BC, was a republic: citizens electing officials and a senate that lasted almost five centuries.\n[[Athens: direct democracy. Rome: a republic with elected officials.]]",
+                    "Let's follow Rome\'s turn. Generals grew stronger than the senate. Julius Caesar crossed the Rubicon in 49 BC and was killed in 44 BC; his heir Augustus became the first emperor in 27 BC. The republic was over and the empire lasted, in the west, until 476 AD.",
+                    "The founders of the United States read this history closely. Their fear of a Caesar is why the Constitution splits power three ways and limits terms. When you study Rome, you are reading the founders\' notes.",
+                ],
+                keyIdea: 'Athens invented direct democracy, Rome built a republic that became an empire in 27 BC, and the American founders designed against Rome\'s fall.',
+                example: { kind: 'letters', text: '27 BC', caption: 'Augustus, the first emperor.' },
+            },
+            sources: ['Aligned with Texas TEKS WH.3B (compare the democracy of Athens and the republic of Rome) and NCSS Theme VI.'],
+            generators: ['h10-athens-or-rome', 'h10-rome-year', 'h10-athens-or-rome', 'h10-rome-year', 'h10-founders-fear'],
+        },
+        {
+            id: 'middle-ages-and-renaissance',
+            order: 3,
+            title: 'The Middle Ages and the Renaissance',
+            tagline: 'Feudal Europe, the plague, and rebirth',
+            requires: ['greece-and-rome'],
+            lesson: {
+                paragraphs: [
+                    "After Rome fell in the west, Europe broke into small kingdoms held together by feudalism: land for loyalty, lords and knights above, peasants below, and the church over all.\n[[Feudalism: land in exchange for service.]]\nIn 1347 the Black Death arrived and killed perhaps a third of Europe in five years.",
+                    "Let's look at the rebirth. With fewer workers, labor grew valuable and old bonds loosened. Trade cities in Italy grew rich, and from about 1400 the Renaissance rediscovered Greek and Roman learning and made new art and science on top of it. Gutenberg\'s printing press, about 1450, put books in ordinary hands.\n[[About 1450: the printing press.]]",
+                    "Printing did to the Middle Ages what the internet did to the twentieth century. Ideas moved faster than any ruler could stop them, and the next century, the Reformation and the age of exploration, followed straight from it.",
+                ],
+                keyIdea: 'Feudalism held Europe together after Rome; the Black Death of 1347 loosened it; the Renaissance and the printing press of about 1450 remade it.',
+                example: { kind: 'letters', text: '1347, 1450', caption: 'The plague, then the press.' },
+            },
+            sources: ['Aligned with Texas TEKS WH.5A (explain the political, intellectual, artistic, economic, and religious impact of the Renaissance) and NCSS Theme II.'],
+            generators: ['h10-medieval-year', 'h10-feudal', 'h10-medieval-year', 'h10-press', 'h10-feudal'],
+        },
+        {
+            id: 'age-of-revolutions',
+            order: 4,
+            title: 'The age of revolutions',
+            tagline: 'America, France and the idea of rights',
+            requires: ['middle-ages-and-renaissance'],
+            lesson: {
+                paragraphs: [
+                    "In the 1600s and 1700s, thinkers of the Enlightenment argued that people have natural rights and that governments get their power from the governed. Two revolutions put that idea to the test.\n[[1776: the American Revolution declares it.]]\n[[1789: the French Revolution tries it, and by 1793 is executing its king and then its own leaders.]]",
+                    "Let's look at why they went differently. America was three thousand miles from its king and had elected assemblies for a century; the revolution replaced a distant government with a nearby one. France tore out a whole society at once, with no practice at self-rule, and the result was terror and then Napoleon, an emperor by 1804.",
+                    "The ideas survived both. Rights, consent, constitutions: by 1850 they had spread across Europe and Latin America, and the arguments of 1776 and 1789 are still the arguments of any country deciding who rules.",
+                ],
+                keyIdea: 'The Enlightenment said rights come first and governments from consent; America tested it in 1776 and France in 1789, one with practice at self-rule and one without.',
+                example: { kind: 'letters', text: '1776, 1789', caption: 'Two revolutions.' },
+            },
+            sources: ['Aligned with Texas TEKS WH.9B (compare the causes, characteristics, and consequences of the American and French revolutions) and NCSS Theme VI.'],
+            generators: ['h10-rev-year', 'h10-why-different', 'h10-rev-year', 'h10-enlightenment', 'h10-why-different'],
+        },
+        {
+            id: 'industrial-revolution',
+            order: 5,
+            title: 'The Industrial Revolution',
+            tagline: 'Steam, factories and cities',
+            requires: ['age-of-revolutions'],
+            lesson: {
+                paragraphs: [
+                    "From about 1760 in Britain, machines driven by water and then steam began doing work that hands had done for all of history.\n[[The steam engine, improved by James Watt in the 1770s.]]\n[[Factories, railroads by the 1830s, and cities that doubled in a generation.]]",
+                    "Let's look at the price and the payoff. Children worked twelve-hour days in mills; cities were crowded and sick. And for the first time in history, ordinary people grew steadily richer, life expectancy rose, and a shirt cost a day\'s wage instead of a month\'s. Both things are true, and reformers spent the next century fixing the first without losing the second.",
+                    "Every later change, electricity, cars, computers, follows the same pattern: a new source of power, a burst of growth, real harm to real people, and laws that catch up. Knowing the pattern is the point of studying the first one.",
+                ],
+                keyIdea: 'Steam and factories from about 1760 made ordinary people richer for the first time in history, at a real cost that reformers spent a century fixing.',
+                example: { kind: 'letters', text: 'steam, factories, cities', caption: 'The Industrial Revolution.' },
+            },
+            sources: ['Aligned with Texas TEKS WH.10A (identify the causes and effects of the Industrial Revolution) and NCSS Theme VIII (Science, Technology, and Society).'],
+            generators: ['h10-industry-fact', 'h10-price-and-payoff', 'h10-industry-fact', 'h10-pattern', 'h10-price-and-payoff'],
+        },
+        {
+            id: 'world-wars',
+            order: 6,
+            title: 'The world wars',
+            tagline: '1914 to 1945',
+            requires: ['industrial-revolution'],
+            lesson: {
+                paragraphs: [
+                    "In 1914 an assassination in Sarajevo pulled Europe\'s alliances into a war nobody planned. Four years of trenches killed about ten million soldiers. The peace of 1919 punished Germany and satisfied no one.\n[[1914 to 1918: the First World War.]]",
+                    "Let's follow the road to the second. Depression, resentment and fear brought Hitler to power in Germany in 1933. He invaded Poland in 1939, and the war spread across Europe, Asia and the Pacific. The United States entered after Pearl Harbor in December 1941. Germany surrendered in May 1945 and Japan in August, after two atomic bombs.\n[[1939 to 1945: the Second World War.]]",
+                    "About sixty million people died in the second war, most of them civilians, six million of them Jews murdered in the Holocaust. The United Nations, formed in 1945, was built on the promise never again. Studying the wars is how each generation is asked to keep it.",
+                ],
+                keyIdea: 'The First World War, 1914 to 1918, made the peace that led to the Second, 1939 to 1945; sixty million died, six million Jews in the Holocaust, and the UN was built on never again.',
+                example: { kind: 'letters', text: '1914, 1939, 1945', caption: 'The world wars.' },
+            },
+            sources: ['Aligned with Texas TEKS WH.11A and WH.12B (identify the causes and effects of the world wars; explain the roles of major participants; and explain the Holocaust) and NCSS Theme IX (Global Connections).'],
+            generators: ['h10-war-year', 'h10-war-fact', 'h10-war-year', 'h10-war-fact', 'h10-never-again'],
+        },
+    ];
+}
+// Grade 11 United States history since 1877: six turns.
+function GRADE11_HISTORY_MODULES() {
+    return [
+        {
+            id: 'gilded-age-and-progressives',
+            order: 1,
+            title: 'The Gilded Age and the Progressives',
+            tagline: 'Railroads, robber barons and reform',
+            requires: ['reconstruction'],
+            lesson: {
+                paragraphs: [
+                    "After 1877 the country industrialized at a run. Railroads crossed the continent, steel and oil made fortunes for Carnegie and Rockefeller, and millions of immigrants filled the cities.\n[[1869: the transcontinental railroad is finished.]]",
+                    "Let's look at the reaction. Workers struck for the eight-hour day. Muckraking reporters exposed meatpacking plants and child labor. Progressives passed laws: food and drug safety in 1906, antitrust cases that broke up Standard Oil in 1911, the income tax and the direct election of senators in 1913, and women\'s suffrage in 1920.\n[[1920: the 19th Amendment.]]",
+                    "The pattern of the Industrial Revolution again: a burst of growth, real harm, and laws that caught up. The Progressives are the reason a factory has a fire exit and a can of soup has a label.",
+                ],
+                keyIdea: 'Railroads and industry made fortunes and misery after 1877; Progressives answered with food safety, antitrust, the income tax and women\'s suffrage in 1920.',
+                example: { kind: 'letters', text: '1920', caption: 'Women win the vote.' },
+            },
+            sources: ['Aligned with Texas TEKS US.3B and US.5A (analyze the impact of industrialization; evaluate the impact of Progressive Era reforms) and NCSS Theme VII (Production, Distribution, and Consumption).'],
+            generators: ['h11-gilded-year', 'h11-gilded-fact', 'h11-gilded-year', 'h11-progressive-law', 'h11-gilded-fact'],
+        },
+        {
+            id: 'depression-and-new-deal',
+            order: 2,
+            title: 'The Depression and the New Deal',
+            tagline: 'The crash and the response',
+            requires: ['gilded-age-and-progressives'],
+            lesson: {
+                paragraphs: [
+                    "The stock market crashed in October 1929, banks failed by the thousand, and by 1933 one worker in four had no job.\n[[1929: the crash. 1933: a quarter of workers unemployed.]]",
+                    "Let's look at Franklin Roosevelt\'s answer. From 1933 the New Deal put people to work building dams, roads and parks, insured bank deposits, regulated the stock market, and in 1935 created Social Security.\n[[1935: Social Security.]]\nIt did not end the Depression; the war did. It changed what Americans expected government to do.",
+                    "The argument over the New Deal is the argument of American politics since: how much should government do for people when the market fails? Both sides are still making their case, which is a sign the question is real.",
+                ],
+                keyIdea: 'The 1929 crash left a quarter of workers jobless by 1933; the New Deal put people to work and created Social Security in 1935, and changed what government was for.',
+                example: { kind: 'letters', text: '1929', caption: 'The crash.' },
+            },
+            sources: ['Aligned with Texas TEKS US.6C (analyze the causes of the Great Depression) and US.6D (evaluate the New Deal) and NCSS Theme VII.'],
+            generators: ['h11-depression-year', 'h11-depression-fact', 'h11-depression-year', 'h11-new-deal', 'h11-depression-fact'],
+        },
+        {
+            id: 'america-in-world-war-two',
+            order: 3,
+            title: 'America in the Second World War',
+            tagline: 'Pearl Harbor to victory',
+            requires: ['depression-and-new-deal'],
+            lesson: {
+                paragraphs: [
+                    "On December 7, 1941, Japan attacked Pearl Harbor and the United States entered the war. Sixteen million Americans served; the whole economy turned to making ships, planes and tanks.\n[[December 7, 1941: Pearl Harbor.]]\n[[June 6, 1944: D-Day, the landings in Normandy.]]",
+                    "Let's look at the home front. Women took factory jobs by the millions. Black Americans served and worked and were still segregated, which fed the civil rights movement to come. Over a hundred thousand Japanese Americans were forced into camps, a wrong the country formally apologized for in 1988.",
+                    "The war ended in 1945, with Germany\'s surrender in May and Japan\'s in August after atomic bombs on Hiroshima and Nagasaki. The United States came out the strongest country on earth, and with the responsibility that came with it.",
+                ],
+                keyIdea: 'Pearl Harbor on December 7, 1941 brought America in; D-Day was June 6, 1944; victory came in 1945, with a home front that changed women\'s work and exposed the country\'s own injustices.',
+                example: { kind: 'letters', text: '1941 to 1945', caption: 'America at war.' },
+            },
+            sources: ['Aligned with Texas TEKS US.7A and US.7D (identify reasons for U.S. involvement in World War II; analyze major issues on the home front, including the internment of Japanese Americans) and NCSS Theme IX.'],
+            generators: ['h11-ww2-year', 'h11-ww2-fact', 'h11-ww2-year', 'h11-home-front', 'h11-ww2-fact'],
+        },
+        {
+            id: 'cold-war',
+            order: 4,
+            title: 'The Cold War',
+            tagline: 'Forty-five years without a direct war',
+            requires: ['america-in-world-war-two'],
+            lesson: {
+                paragraphs: [
+                    "From 1945 to 1991 the United States and the Soviet Union faced each other with enough nuclear weapons to end civilization and never fought directly. They fought through others instead, in Korea, Vietnam and a dozen smaller places, and competed in space.\n[[1957: Sputnik. 1969: Americans on the moon.]]",
+                    "Let's look at the closest call. In October 1962 the Soviets put missiles in Cuba, ninety miles from Florida. For thirteen days the world waited. Both sides backed down, and a hotline was installed so that would never happen by accident.\n[[1962: the Cuban Missile Crisis.]]",
+                    "The Berlin Wall fell in 1989 and the Soviet Union dissolved in 1991, without a shot between the two great powers. The Cold War is the story of a rivalry that stayed cold because enough people on both sides understood what hot would mean.",
+                ],
+                keyIdea: 'From 1945 to 1991 two nuclear powers never fought directly; the closest call was Cuba in 1962, and it ended with the Wall in 1989 and the Soviet collapse in 1991.',
+                example: { kind: 'letters', text: '1962', caption: 'The Cuban Missile Crisis.' },
+            },
+            sources: ['Aligned with Texas TEKS US.8A and US.8B (describe U.S. responses to Soviet aggression; describe the Cuban Missile Crisis and the arms race) and NCSS Theme IX.'],
+            generators: ['h11-cold-year', 'h11-cold-fact', 'h11-cold-year', 'h11-why-cold', 'h11-cold-fact'],
+        },
+        {
+            id: 'civil-rights-movement',
+            order: 5,
+            title: 'The civil rights movement',
+            tagline: 'Holding the country to its amendments',
+            requires: ['cold-war'],
+            lesson: {
+                paragraphs: [
+                    "The Reconstruction amendments had promised equal citizenship and the vote. The civil rights movement made the country keep the promise.\n[[1954: Brown v. Board of Education ends legal school segregation.]]\n[[1955: Rosa Parks and the Montgomery bus boycott.]]\n[[1963: the March on Washington and Martin Luther King Jr.\'s I Have a Dream.]]",
+                    "Let's look at the laws that followed. The Civil Rights Act of 1964 outlawed segregation in public places and discrimination in hiring. The Voting Rights Act of 1965 put federal power behind the 15th Amendment at last. Dr. King was assassinated in 1968.\n[[1964 and 1965: the two great acts.]]",
+                    "The movement won by nonviolence, by courts, by marches that made the country look at itself, and by ordinary people who kept going after being beaten and jailed. It was, in the plainest sense, the country being held to its own words.",
+                ],
+                keyIdea: 'Brown in 1954, Montgomery in 1955, Washington in 1963, the Civil Rights Act of 1964 and the Voting Rights Act of 1965: the amendments of the 1860s finally enforced.',
+                example: { kind: 'letters', text: '1964, 1965', caption: 'The two great acts.' },
+            },
+            sources: ['Aligned with Texas TEKS US.9A and US.9F (trace the historical development of the civil rights movement; describe the Civil Rights Act of 1964 and the Voting Rights Act of 1965) and NCSS Theme VI.'],
+            generators: ['h11-cr-year', 'h11-cr-fact', 'h11-cr-year', 'h11-order-cr', 'h11-cr-fact'],
+        },
+        {
+            id: 'recent-america',
+            order: 6,
+            title: 'Recent America',
+            tagline: '1991 to today',
+            requires: ['civil-rights-movement'],
+            lesson: {
+                paragraphs: [
+                    "After the Cold War the United States was the only superpower, the internet went public in the 1990s, and the economy boomed. Then on September 11, 2001, attacks killed nearly three thousand people, and the country went to war in Afghanistan that year and Iraq in 2003.\n[[September 11, 2001.]]",
+                    "Let's look at the turns since. A financial crisis in 2008 was the worst since 1929. Barack Obama became the first Black president in 2009. A pandemic in 2020 closed schools and businesses and killed over a million Americans. Through all of it, the country kept holding elections and handing over power, which is the thing most countries in history could not do.",
+                    "This is the history you are living in, and it is not finished. The habits this course has tried to teach, dates, causes, both sides, the cost and the gain, are how to read it while it happens.",
+                ],
+                keyIdea: 'The internet, September 11, 2001, the 2008 crisis, the first Black president in 2009 and the 2020 pandemic, with elections held and power handed over through all of it.',
+                example: { kind: 'letters', text: '2001', caption: 'September 11.' },
+            },
+            sources: ['Aligned with Texas TEKS US.10A and US.11A (describe U.S. involvement in world affairs since 1991; analyze the effects of the September 11, 2001 attacks) and NCSS Theme X (Civic Ideals and Practices).'],
+            generators: ['h11-recent-year', 'h11-recent-fact', 'h11-recent-year', 'h11-recent-fact', 'h11-handover'],
         },
     ];
 }
@@ -28108,6 +28349,66 @@ Object.assign(GENERATORS, {
             explain: 'The promise stayed in law and was broken in practice, until the civil rights movement held the country to it.', visual: null, explainVisual: null };
     },
 });
+const RIVERS = [{ civ: 'Mesopotamia', river: 'The Tigris and Euphrates' }, { civ: 'Egypt', river: 'The Nile' }, { civ: 'The Indus Valley civilization', river: 'The Indus' }, { civ: 'Early China', river: 'The Yellow River' }];
+const ROME_DATES = [{ year: '509 BC', event: 'Rome becomes a republic' }, { year: '49 BC', event: 'Caesar crosses the Rubicon' }, { year: '44 BC', event: 'Caesar is killed' }, { year: '27 BC', event: 'Augustus becomes the first emperor' }, { year: '476 AD', event: 'Rome falls in the west' }];
+const MEDIEVAL = [{ year: '1347', event: 'The Black Death arrives in Europe' }, { year: 'about 1400', event: 'The Renaissance begins in Italy' }, { year: 'about 1450', event: 'Gutenberg\'s printing press' }, { year: '476', event: 'Rome falls in the west and feudal Europe begins' }];
+const REVS = [{ year: '1776', event: 'The American Revolution declares independence' }, { year: '1789', event: 'The French Revolution begins' }, { year: '1793', event: 'France executes its king' }, { year: '1804', event: 'Napoleon becomes emperor' }];
+const INDUSTRY = [{ text: 'Improved the steam engine in the 1770s', a: 'James Watt' }, { text: 'Where the Industrial Revolution began, about 1760', a: 'Britain' }, { text: 'Arrived by the 1830s and tied factories to cities', a: 'Railroads' }, { text: 'Worked twelve-hour days in early mills', a: 'Children' }];
+const WW = [{ year: '1914', event: 'The First World War begins' }, { year: '1918', event: 'The First World War ends' }, { year: '1933', event: 'Hitler comes to power in Germany' }, { year: '1939', event: 'Germany invades Poland and the Second World War begins' }, { year: '1941', event: 'Pearl Harbor brings the United States in' }, { year: '1945', event: 'The Second World War ends' }];
+const GILDED = [{ year: '1869', event: 'The transcontinental railroad is finished' }, { year: '1906', event: 'Food and drug safety laws pass' }, { year: '1911', event: 'Standard Oil is broken up' }, { year: '1913', event: 'The income tax and direct election of senators' }, { year: '1920', event: 'The 19th Amendment: women win the vote' }];
+const DEPRESSION = [{ year: '1929', event: 'The stock market crashes' }, { year: '1933', event: 'A quarter of workers are unemployed and the New Deal begins' }, { year: '1935', event: 'Social Security is created' }];
+const WW2US = [{ year: '1941', event: 'Pearl Harbor, December 7' }, { year: '1944', event: 'D-Day, June 6' }, { year: '1945', event: 'Germany surrenders in May and Japan in August' }, { year: '1988', event: 'The country apologizes for the internment of Japanese Americans' }];
+const COLD = [{ year: '1957', event: 'Sputnik' }, { year: '1962', event: 'The Cuban Missile Crisis' }, { year: '1969', event: 'Americans land on the moon' }, { year: '1989', event: 'The Berlin Wall falls' }, { year: '1991', event: 'The Soviet Union dissolves' }];
+const CIVIL_RIGHTS = [{ year: '1954', event: 'Brown v. Board of Education' }, { year: '1955', event: 'The Montgomery bus boycott' }, { year: '1963', event: 'The March on Washington' }, { year: '1964', event: 'The Civil Rights Act' }, { year: '1965', event: 'The Voting Rights Act' }, { year: '1968', event: 'Dr. King is assassinated' }];
+const RECENT = [{ year: '2001', event: 'The September 11 attacks' }, { year: '2003', event: 'The war in Iraq begins' }, { year: '2008', event: 'The financial crisis' }, { year: '2009', event: 'Barack Obama becomes the first Black president' }, { year: '2020', event: 'The pandemic closes schools and businesses' }];
+function yearQuestionS(rng, list) {
+    const e = pick(rng, list);
+    const others = shuffle(rng, [...new Set(list.filter((x) => x.year !== e.year).map((x) => x.year))]).slice(0, 2);
+    return { type: 'choice', story: `${e.event}.`, prompt: 'When?', choices: shuffle(rng, [e.year, ...others]), answer: e.year, explain: `${e.event}: ${e.year}.`, visual: null, explainVisual: null };
+}
+function factQuestionS(rng, list) {
+    const e = pick(rng, list);
+    const others = shuffle(rng, list.filter((x) => x !== e)).slice(0, 2).map((x) => x.event);
+    return { type: 'choice', story: `${e.year}.`, prompt: 'What happened then?', choices: shuffle(rng, [e.event, ...others]), answer: e.event, explain: `${e.year}: ${lowerTitle(e.event)}.`, visual: null, explainVisual: null };
+}
+Object.assign(GENERATORS, {
+    'h10-which-river': (rng) => { const c = pick(rng, RIVERS); return { type: 'choice', story: `${c.civ}.`, prompt: 'Which river did it grow along?', choices: shuffle(rng, RIVERS.map((x) => x.river)), answer: c.river, explain: `${c.civ} grew along ${lowerTitle(c.river)}.`, visual: null, explainVisual: null }; },
+    'h10-surplus': (rng) => ({ type: 'choice', story: 'One farmer can feed five people.', prompt: 'What does that surplus make possible?', choices: shuffle(rng, ['Four people free to build, trade, rule, pray or write', 'Nothing changes', 'Fewer cities']), answer: 'Four people free to build, trade, rule, pray or write', explain: 'A surplus is what frees people to do something other than farm.', visual: null, explainVisual: null }),
+    'h10-first-writing': (rng) => ({ type: 'choice', story: 'The first writing, on clay in Mesopotamia.', prompt: 'What was it for?', choices: shuffle(rng, ['Keeping accounts of grain and sheep', 'Writing poems', 'Sending letters']), answer: 'Keeping accounts of grain and sheep', explain: 'Writing began as accounting and became law, story and scripture.', visual: null, explainVisual: null }),
+    'h10-athens-or-rome': (rng) => { const a = randInt(rng, 0, 1) === 1; return { type: 'choice', story: a ? 'Citizens vote directly on the laws.' : 'Citizens elect officials, and a senate governs.', prompt: 'Athens or Rome?', choices: ['Athens', 'Rome'], answer: a ? 'Athens' : 'Rome', explain: a ? 'Athens: direct democracy.' : 'Rome: a republic.', visual: null, explainVisual: null }; },
+    'h10-rome-year': (rng) => yearQuestionS(rng, ROME_DATES),
+    'h10-founders-fear': (rng) => ({ type: 'choice', story: 'The American founders read Roman history closely.', prompt: 'What did it make them build into the Constitution?', choices: shuffle(rng, ['Power split three ways and limited terms, out of fear of a Caesar', 'An emperor for life', 'A senate with no elections']), answer: 'Power split three ways and limited terms, out of fear of a Caesar', explain: 'Their fear of a Caesar is why power is split and terms are limited.', visual: null, explainVisual: null }),
+    'h10-medieval-year': (rng) => yearQuestionS(rng, MEDIEVAL),
+    'h10-feudal': (rng) => ({ type: 'choice', story: 'Feudalism.', prompt: 'What was the deal at its heart?', choices: shuffle(rng, ['Land in exchange for service', 'Money in exchange for votes', 'Food in exchange for books']), answer: 'Land in exchange for service', explain: 'Lords gave land; knights and peasants gave loyalty and work.', visual: null, explainVisual: null }),
+    'h10-press': (rng) => ({ type: 'choice', story: 'The printing press, about 1450.', prompt: 'What did it change?', choices: shuffle(rng, ['Ideas moved faster than any ruler could stop them', 'Fewer people could read', 'Books became rarer']), answer: 'Ideas moved faster than any ruler could stop them', explain: 'The Reformation and the age of exploration followed straight from it.', visual: null, explainVisual: null }),
+    'h10-rev-year': (rng) => yearQuestionS(rng, REVS),
+    'h10-why-different': (rng) => ({ type: 'choice', story: 'The American and French revolutions ended very differently.', prompt: 'Why?', choices: shuffle(rng, ['America had a century of practice at self-rule; France tore out a whole society at once', 'America was richer', 'France had no thinkers']), answer: 'America had a century of practice at self-rule; France tore out a whole society at once', explain: 'Practice at self-rule was the difference.', visual: null, explainVisual: null }),
+    'h10-enlightenment': (rng) => ({ type: 'choice', story: 'The Enlightenment.', prompt: 'What was its central claim about government?', choices: shuffle(rng, ['People have natural rights, and governments get their power from the governed', 'Kings rule by divine right', 'Only the church may make laws']), answer: 'People have natural rights, and governments get their power from the governed', explain: 'Rights first, consent second: the idea both revolutions tested.', visual: null, explainVisual: null }),
+    'h10-industry-fact': (rng) => { const c = pick(rng, INDUSTRY); return { type: 'choice', story: `${c.text}.`, prompt: 'Who or what?', choices: shuffle(rng, INDUSTRY.map((x) => x.a)), answer: c.a, explain: `${c.a}: ${c.text.toLowerCase()}.`, visual: null, explainVisual: null }; },
+    'h10-price-and-payoff': (rng) => ({ type: 'choice', story: 'The Industrial Revolution.', prompt: 'Which statement is true?', choices: shuffle(rng, ['It caused real harm and made ordinary people richer for the first time in history; both are true', 'It only made people poorer', 'It only made people richer']), answer: 'It caused real harm and made ordinary people richer for the first time in history; both are true', explain: 'Reformers spent a century fixing the first without losing the second.', visual: null, explainVisual: null }),
+    'h10-pattern': (rng) => ({ type: 'choice', story: 'Electricity, cars and computers each followed a pattern set by the Industrial Revolution.', prompt: 'What is the pattern?', choices: shuffle(rng, ['A new source of power, a burst of growth, real harm, and laws that catch up', 'A war, a treaty, a new king', 'A discovery, a patent, a monopoly forever']), answer: 'A new source of power, a burst of growth, real harm, and laws that catch up', explain: 'Knowing the pattern is the point of studying the first one.', visual: null, explainVisual: null }),
+    'h10-war-year': (rng) => yearQuestionS(rng, WW),
+    'h10-war-fact': (rng) => factQuestionS(rng, WW),
+    'h10-never-again': (rng) => ({ type: 'choice', story: 'Six million Jews were murdered in the Holocaust.', prompt: 'What was built in 1945 on the promise never again?', choices: shuffle(rng, ['The United Nations', 'The League of Nations', 'The European Union']), answer: 'The United Nations', explain: 'The United Nations was formed in 1945.', visual: null, explainVisual: null }),
+    'h11-gilded-year': (rng) => yearQuestionS(rng, GILDED),
+    'h11-gilded-fact': (rng) => factQuestionS(rng, GILDED),
+    'h11-progressive-law': (rng) => ({ type: 'choice', story: 'A factory has a fire exit and a can of soup has a label.', prompt: 'Who is that thanks to?', choices: shuffle(rng, ['The Progressives', 'The robber barons', 'The Confederacy']), answer: 'The Progressives', explain: 'Progressive laws caught up with industry\'s harms.', visual: null, explainVisual: null }),
+    'h11-depression-year': (rng) => yearQuestionS(rng, DEPRESSION),
+    'h11-depression-fact': (rng) => factQuestionS(rng, DEPRESSION),
+    'h11-new-deal': (rng) => ({ type: 'choice', story: 'The New Deal.', prompt: 'What did it change most?', choices: shuffle(rng, ['What Americans expected government to do when the market fails', 'The number of states', 'The length of the school year']), answer: 'What Americans expected government to do when the market fails', explain: 'It did not end the Depression; the war did. It changed what government was for.', visual: null, explainVisual: null }),
+    'h11-ww2-year': (rng) => yearQuestionS(rng, WW2US),
+    'h11-ww2-fact': (rng) => factQuestionS(rng, WW2US),
+    'h11-home-front': (rng) => ({ type: 'choice', story: 'The home front during the Second World War.', prompt: 'Which of these is true?', choices: shuffle(rng, ['Women took factory jobs by the millions, and over a hundred thousand Japanese Americans were forced into camps', 'Nothing changed at home', 'The country stayed out of the war']), answer: 'Women took factory jobs by the millions, and over a hundred thousand Japanese Americans were forced into camps', explain: 'The war changed women\'s work and exposed the country\'s own injustices.', visual: null, explainVisual: null }),
+    'h11-cold-year': (rng) => yearQuestionS(rng, COLD),
+    'h11-cold-fact': (rng) => factQuestionS(rng, COLD),
+    'h11-why-cold': (rng) => ({ type: 'choice', story: 'The United States and the Soviet Union never fought each other directly.', prompt: 'Why did the war stay cold?', choices: shuffle(rng, ['Enough people on both sides understood what a nuclear war would mean', 'They were allies', 'Neither had an army']), answer: 'Enough people on both sides understood what a nuclear war would mean', explain: 'They fought through others and competed in space, and stopped short every time.', visual: null, explainVisual: null }),
+    'h11-cr-year': (rng) => yearQuestionS(rng, CIVIL_RIGHTS),
+    'h11-cr-fact': (rng) => factQuestionS(rng, CIVIL_RIGHTS),
+    'h11-order-cr': (rng) => { const picked = CIVIL_RIGHTS.slice(0, 4).map((x) => x.event); return orderQuestion(rng, null, 'Tap the events in the order they happened.', picked, `In order: ${picked.map(lowerTitle).join(', then ')}.`); },
+    'h11-recent-year': (rng) => yearQuestionS(rng, RECENT),
+    'h11-recent-fact': (rng) => factQuestionS(rng, RECENT),
+    'h11-handover': (rng) => ({ type: 'choice', story: 'Through wars, a crisis and a pandemic, the country kept doing one thing most countries in history could not.', prompt: 'What?', choices: shuffle(rng, ['Holding elections and handing over power', 'Growing every year', 'Staying out of wars']), answer: 'Holding elections and handing over power', explain: 'That habit is the quiet achievement under all the loud history.', visual: null, explainVisual: null }),
+});
 Object.assign(GENERATORS, {
     'h5-colony-region': (rng) => {
         const c = pick(rng, COLONY_REGIONS);
@@ -30219,6 +30520,21 @@ const WONDER = [
             { voice: 'A skeptic', says: 'Do not let the eventual keeping excuse the breaking. A promise kept a century late was broken for a century, for real people, and a written promise is only as good as the people willing to enforce it. The paper mattered, and the people mattered more.' },
         ],
         closing: 'What is a promise you have seen written down and not kept, and who finally held someone to it?',
+    },
+    {
+        id: 'w-living-in-history',
+        theme: 'world',
+        stage: 'grown',
+        courseIds: ['history-10', 'history-11'],
+        answerMode: 'typed',
+        prompt: 'You are living inside history that is not finished. How should a person read events while they are still happening?',
+        perspectives: [
+            { voice: 'A scientist', says: 'The same way you read data before the experiment ends: carefully, without deciding early. Ask what would change your mind, hold more than one explanation at once, and expect the first account of anything to be partly wrong. History written the next morning is a draft.' },
+            { voice: 'An artist', says: 'Keep a record of your own. Diaries and letters from ordinary people are what historians treasure most, because the people writing did not know how it would turn out. Your notes from this year will be worth more than any summary written later.' },
+            { voice: 'A grandparent of faith', says: 'Older people have watched crises that felt like the end of the world become paragraphs in a textbook. That is not a reason to care less. It is a reason to keep your head, be kind to the people around you, and do the next right thing.' },
+            { voice: 'A skeptic', says: 'Notice who benefits from you believing each version. That is not cynicism; it is the first question a historian asks of any source, and the present is a source like any other. Then look for the boring documents, the budgets and the court records, which lie less than the speeches.' },
+        ],
+        closing: 'What is happening now that you think a textbook will one day give a whole chapter?',
     },
     {
         id: 'w-infinite-primes',
@@ -32563,6 +32879,11 @@ function placementGrades(subject, level) {
     const grades = gradesWithCourses().filter((g) => (!band || band.grades.includes(g)) && COURSES.some((c) => c.grade === g && c.subject === subject && !c.readAloud && !c.startsHidden));
     return grades;
 }
+// Every grade a placement can land on, in order, whatever the band: a high school student who
+// cannot clear grade 9 walks down to find where they are.
+function placementGradesAll(subject) {
+    return gradesWithCourses().filter((g) => COURSES.some((c) => c.grade === g && c.subject === subject && !c.readAloud && !c.startsHidden));
+}
 function buildPlacementProbe(subject, grade, seed) {
     const rng = makeRng(seed);
     const pool = MODULES.filter((m) => { const c = getCourse(m.courseId); return c && c.grade === grade && c.subject === subject; });
@@ -32581,10 +32902,13 @@ function buildPlacementProbe(subject, grade, seed) {
 }
 function placementCleared(results) { return results.filter((r) => r.correct).length >= PLACEMENT_TO_CLEAR; }
 // After the walk: which grade to start at, which modules are unlocked, which courses to switch on.
-function placementOutcome(subject, level, clearedGrades) {
+function placementOutcome(subject, level, clearedGrades, startGradeGiven = null) {
+    const all = placementGradesAll(subject);
     const grades = placementGrades(subject, level);
-    const startGrade = grades.find((g) => !clearedGrades.includes(g)) || grades[grades.length - 1];
-    const clearedModuleIds = MODULES.filter((m) => { const c = getCourse(m.courseId); return c && c.subject === subject && clearedGrades.includes(c.grade); }).map((m) => m.id);
+    const startGrade = startGradeGiven || grades.find((g) => !clearedGrades.includes(g)) || grades[grades.length - 1];
+    // Everything below the starting grade is placed past, whether it was probed or sits under a cleared grade.
+    const below = all.slice(0, all.indexOf(startGrade));
+    const clearedModuleIds = MODULES.filter((m) => { const c = getCourse(m.courseId); return c && c.subject === subject && (below.includes(c.grade) || clearedGrades.includes(c.grade)); }).map((m) => m.id);
     const startCourseIds = COURSES.filter((c) => c.subject === subject && c.grade === startGrade).map((c) => c.id);
     return { startGrade, clearedModuleIds, startCourseIds };
 }
@@ -32644,110 +32968,305 @@ const EXPERIMENTS = {
         { title: 'Color mixing', ask: 'What do red and blue make?', do: 'Two drops of food coloring in a cup of water. Stir.', see: 'A new color. Red and blue make purple.' },
         { title: 'Loud and quiet', ask: 'Which makes a louder sound?', do: 'Tap a spoon on a pot, a cup, a pillow, a table.', see: 'Hard things ring; soft things thud.' },
         { title: 'Ice cube race', ask: 'Where does ice melt fastest?', do: 'One cube on a plate in the sun, one in the fridge, one in your hand.', see: 'Warmth melts ice. Your hand is warm.' },
+        { title: 'Rolling or not', ask: 'Which of these will roll?', do: 'A ball, a block, a can, a book, on a tray tilted a little.', see: 'Round things roll; flat things slide or stay.' },
+        { title: 'Wet sand, dry sand', ask: 'Which sand makes a castle?', do: 'Two cups of sand, one with a little water. Try to shape each.', see: 'Wet sand holds a shape; dry sand falls apart.' },
+        { title: 'Smell jars', ask: 'Can you tell what it is with your nose?', do: 'Cotton balls with vanilla, lemon, cinnamon, in covered cups with holes.', see: 'Noses know things eyes cannot see.' },
+        { title: 'Sound shakers', ask: 'Which shaker is loudest?', do: 'Rice, beans and coins in three closed containers. Shake each.', see: 'Different things make different sounds.' },
+        { title: 'Melting chocolate', ask: 'What does warmth do?', do: 'A chocolate chip in a warm hand, one on a cold plate.', see: 'Warmth melts it; cold keeps it solid.' },
+        { title: 'Big splash, small splash', ask: 'Which makes the bigger splash?', do: 'A pebble and a big rock dropped into a bucket, from the same height.', see: 'Bigger things push more water out of the way.' },
+        { title: 'Frozen toys', ask: 'How do you get the toy out?', do: 'A small toy frozen in a cup of water; salt, warm water, a spoon.', see: 'Warmth and salt melt ice faster than waiting.' },
+        { title: 'Feathers and rocks', ask: 'Which falls faster?', do: 'Drop a feather and a rock together.', see: 'The rock hits first because air slows the feather.' },
+        { title: 'Shadow puppets', ask: 'What makes a shadow?', do: 'A flashlight, a wall, your hands.', see: 'Something in the way of the light makes a shadow.' },
+        { title: 'Sorting by color', ask: 'Which pile does it go in?', do: 'A bowl of colored buttons or blocks, sorted into cups.', see: 'Things can be grouped by what they look like.' },
+        { title: 'Fizzing colors', ask: 'What happens when they meet?', do: 'Baking soda on a tray, colored vinegar dripped on with a dropper.', see: 'It fizzes. Two things met and made a gas.' },
+        { title: 'Bird watching', ask: 'Who lives outside?', do: 'Sit quietly by a window or outside for five minutes. Count what moves.', see: 'Living things are everywhere when you are still enough to notice.' },
     ],
     PK4: [
         { title: 'Grow a bean', ask: 'What does a seed need?', do: 'A bean in a damp paper towel in a clear cup by a window. Keep it damp.', see: 'A sprout, then a root, then leaves.' },
         { title: 'Shadow tracing', ask: 'Does a shadow move?', do: 'Trace a toy\'s shadow on paper outside in the morning; trace it again after lunch.', see: 'The shadow moved because the sun did.' },
         { title: 'Magnet hunt', ask: 'What does a magnet pull?', do: 'Walk around the house with a fridge magnet and touch things.', see: 'It grabs some metal things and nothing else.' },
         { title: 'Bubbles', ask: 'What shape is a bubble?', do: 'Dish soap and water; blow through a straw, a bent pipe cleaner, your hands.', see: 'Always round, whatever the shape of the wand.' },
+        { title: 'Which cup keeps it warm?', ask: 'Where does the warm water stay warm?', do: 'Warm water in a paper cup, a metal cup and a foam cup. Feel each after ten minutes.', see: 'Some materials hold heat in; some let it out.' },
+        { title: 'Ramp race', ask: 'Which ramp is faster?', do: 'Two books, two boards at different angles, one toy car.', see: 'Steeper is faster.' },
+        { title: 'Sink the boat', ask: 'How many coins can a foil boat hold?', do: 'A small boat folded from foil; add pennies one at a time.', see: 'A wide, flat boat holds more before it sinks.' },
+        { title: 'Celery in colored water', ask: 'Where does the water go?', do: 'A celery stalk in a glass of water with food coloring, left overnight.', see: 'The leaves turn color. Plants drink through their stems.' },
+        { title: 'Static balloon', ask: 'Can a balloon pick things up?', do: 'Rub a balloon on your hair, hold it near tiny bits of paper.', see: 'The paper jumps to the balloon. That is static.' },
+        { title: 'Which is heavier?', ask: 'Can you guess by feel?', do: 'Two closed boxes, one with rocks and one with cotton. Guess, then open.', see: 'Size does not tell weight.' },
+        { title: 'Rain in a jar', ask: 'Where does the rain come from?', do: 'Hot water in a jar, a plate of ice on top.', see: 'Drops form under the plate and fall. That is rain.' },
+        { title: 'Butter shaking', ask: 'Can you make butter?', do: 'Heavy cream in a jar with a lid; shake for ten minutes.', see: 'The cream turns to butter and buttermilk.' },
+        { title: 'Salt or sugar?', ask: 'Which one disappears faster in water?', do: 'A spoon of each in two cups of warm water, stirred the same.', see: 'Both dissolve; one takes longer.' },
+        { title: 'Living things need water', ask: 'What happens to a plant without water?', do: 'Two potted plants, one watered, one not, for a week.', see: 'The dry one droops. Plants need water.' },
+        { title: 'Magnet fishing', ask: 'Which fish will the magnet catch?', do: 'Paper fish, some with paper clips, on a string with a magnet.', see: 'Only the fish with metal get caught.' },
+        { title: 'Sound through the table', ask: 'Can you hear through wood?', do: 'Put your ear on the table while a friend taps the far end.', see: 'Sound travels through wood, and loudly.' },
     ],
     K: [
         { title: 'Sound through a string', ask: 'Can sound travel through a string?', do: 'Two paper cups and a long string pulled tight.', see: 'A whisper comes through the string.' },
         { title: 'Which paper towel is strongest?', ask: 'Which brand holds the most water?', do: 'Wet each, hang it, add coins until it tears.', see: 'Some hold far more. Testing beats guessing.' },
         { title: 'Freeze and melt', ask: 'Can water go back and forth?', do: 'Freeze water in a cup, melt it, freeze it again.', see: 'Same water, solid then liquid then solid.' },
         { title: 'Living or not', ask: 'Which of these is alive?', do: 'A rock, a plant, a toy, a pet. Ask: does it grow, eat, move on its own?', see: 'Living things grow and need food and water.' },
+        { title: 'Ice cube lifting', ask: 'Can you lift ice with a string?', do: 'A wet string on an ice cube, sprinkled with salt; wait a minute and lift.', see: 'Salt melts the ice a little and it refreezes around the string.' },
+        { title: 'Dancing raisins', ask: 'Why do the raisins go up and down?', do: 'Raisins dropped into a clear cup of fizzy water.', see: 'Bubbles stick to them and lift them; the bubbles pop and they sink.' },
+        { title: 'Seed sorting', ask: 'Which seeds are alike?', do: 'A handful of mixed seeds sorted by size, color and shape.', see: 'Seeds come in many kinds, and each grows its own plant.' },
+        { title: 'Which cup is loudest?', ask: 'Does the size change the sound?', do: 'Tap a spoon on a full glass, a half-full glass, an empty glass.', see: 'More water, lower sound.' },
+        { title: 'Bending water', ask: 'Can a comb pull water?', do: 'A charged comb held near a thin stream from the tap.', see: 'The stream bends toward the comb.' },
+        { title: 'Ice and salt on the sidewalk', ask: 'Why do people salt roads?', do: 'Two ice cubes on plates, one sprinkled with salt.', see: 'The salted one melts first.' },
+        { title: 'Growing crystals on a string', ask: 'What grows on the string?', do: 'Sugar dissolved in hot water, a string hung in it, a week of waiting.', see: 'Sugar crystals grow along the string.' },
+        { title: 'Sink or float, part two', ask: 'Can you make a sinker float?', do: 'A ball of clay sinks; the same clay shaped like a boat floats.', see: 'Shape changes floating.' },
+        { title: 'Shadow lengths', ask: 'When is your shadow longest?', do: 'Measure your shadow at morning, noon and late afternoon.', see: 'Longest when the sun is low.' },
+        { title: 'Which soil drains?', ask: 'Where does water go fastest?', do: 'Cups of sand, soil and clay with holes; pour water and time it.', see: 'Sand drains fast; clay holds water.' },
+        { title: 'Ladybug or ant?', ask: 'How many legs?', do: 'Look closely at a bug outside and count its legs.', see: 'Insects have six legs. Spiders have eight.' },
+        { title: 'Plant in the dark', ask: 'Does a plant need light?', do: 'Two bean sprouts, one in a dark box for a week.', see: 'The dark one grows pale and thin, reaching for light.' },
     ],
     1: [
         { title: 'Day and night in a room', ask: 'Why do we have night?', do: 'A flashlight and a ball. Turn the ball slowly in front of the light.', see: 'Half the ball is dark. The turning makes night.' },
         { title: 'Melt, boil, cool', ask: 'What happens when water gets hot?', do: 'With an adult, watch a pot of water boil, then hold a cold spoon over the steam.', see: 'Steam rises; it turns back to drops on the cold spoon.' },
         { title: 'Bird feeder', ask: 'What do birds eat?', do: 'A pine cone rolled in peanut butter and seed, hung outside. Watch for a week.', see: 'Birds come for the seed. They need food like we do.' },
         { title: 'Ramps', ask: 'Does a steeper ramp make a car go faster?', do: 'A book, a board, a toy car. Raise the board one book at a time.', see: 'Steeper means farther and faster.' },
+        { title: 'Homemade thermometer', ask: 'Can water show temperature?', do: 'A bottle of colored water with a straw through the lid; warm it in your hands.', see: 'The water climbs the straw as it warms.' },
+        { title: 'Paper airplane test', ask: 'Which design flies farthest?', do: 'Three folds, three throws each, measure with steps.', see: 'Design changes flight. Testing beats guessing.' },
+        { title: 'Tooth in soda', ask: 'What does soda do to teeth?', do: 'An eggshell in a cup of soda for three days, another in water.', see: 'The soda egg gets soft and stained.' },
+        { title: 'Which materials block light?', ask: 'Can light get through it?', do: 'A flashlight through paper, wax paper, plastic wrap, cardboard.', see: 'Some block, some blur, some let light straight through.' },
+        { title: 'Moon journal', ask: 'Does the moon change?', do: 'Draw the moon every clear night for two weeks.', see: 'It changes shape a little each night.' },
+        { title: 'Pinwheel', ask: 'What moves the pinwheel?', do: 'A paper pinwheel on a pin; blow on it, hold it in the wind.', see: 'Moving air pushes it around.' },
+        { title: 'Mixing colors with light', ask: 'What do colored lights make?', do: 'Three flashlights with red, green and blue cellophane, shone together on a wall.', see: 'Colored lights mix differently from paints.' },
+        { title: 'Fruit or vegetable?', ask: 'Does it have seeds inside?', do: 'Cut open a tomato, a cucumber, a carrot, an apple.', see: 'Fruits have seeds inside; roots and stems do not.' },
+        { title: 'Egg drop', ask: 'Can you protect an egg?', do: 'An egg wrapped in a small package of your design, dropped from a chair.', see: 'Cushioning and slowing the fall protect it.' },
+        { title: 'Which freezes first?', ask: 'Salt water or fresh?', do: 'Two cups in the freezer, one salty.', see: 'Fresh water freezes first.' },
+        { title: 'Sound vibrations', ask: 'Can you feel a sound?', do: 'Hum with a hand on your throat; a ruler twanged on a table edge.', see: 'Sound is something vibrating.' },
+        { title: 'Ant watching', ask: 'Where do ants go?', do: 'A crumb on the sidewalk; watch for ten minutes.', see: 'Ants follow trails and work together.' },
     ],
     2: [
         { title: 'Hard, soft, wet, dry', ask: 'How can we sort things?', do: 'A tray of objects; sort by one property, then another.', see: 'The same things sort differently by different properties.' },
         { title: 'Magnet through paper', ask: 'Can a magnet pull through things?', do: 'A magnet under paper, cardboard, a plate, with a paper clip on top.', see: 'It pulls through thin things and not thick ones.' },
         { title: 'Habitat jar', ask: 'What does a plant need in its home?', do: 'Two identical plants; one in the light with water, one in a dark cupboard.', see: 'A habitat that gives what is needed keeps it alive.' },
         { title: 'Erosion in a tray', ask: 'What does rain do to a hill?', do: 'A pile of soil in a tray; pour water from a cup over it slowly.', see: 'The water carries soil downhill and drops it at the bottom.' },
+        { title: 'Bridge of straws', ask: 'Which shape is strongest?', do: 'Straws taped into triangles, then squares; push on each.', see: 'Triangles hold their shape; squares fold.' },
+        { title: 'Water on a penny', ask: 'How many drops fit?', do: 'A dropper of water onto a penny, counting drops until it spills.', see: 'Far more than you guess. Water sticks to itself.' },
+        { title: 'Invisible ink', ask: 'Can you read it?', do: 'Lemon juice written on paper, dried, warmed near a bulb with an adult.', see: 'The writing turns brown as it warms.' },
+        { title: 'Which fabric dries fastest?', ask: 'Cotton, wool or nylon?', do: 'Wet squares of each, hung side by side, checked every ten minutes.', see: 'Thin, smooth fabrics dry first.' },
+        { title: 'Balloon rocket', ask: 'What pushes the balloon?', do: 'A balloon taped to a straw on a string across the room; let it go.', see: 'Air rushing out one way pushes the balloon the other way.' },
+        { title: 'Habitat walk', ask: 'What lives here?', do: 'Ten minutes in a yard, a park and a parking lot. Count living things.', see: 'Different places hold different lives.' },
+        { title: 'Marshmallow tower', ask: 'How tall can it stand?', do: 'Spaghetti and marshmallows; build the tallest tower that stands alone.', see: 'A wide base and triangles win.' },
+        { title: 'Rock scratch test', ask: 'Which rock is harder?', do: 'Scratch rocks against each other and a penny.', see: 'The harder rock scratches the softer one.' },
+        { title: 'Magnet maze', ask: 'Can you move it without touching?', do: 'A paper clip on a paper maze, a magnet underneath.', see: 'The magnet pulls through the paper.' },
+        { title: 'Evaporation race', ask: 'Where does water disappear fastest?', do: 'Equal water in a wide dish and a narrow cup, for a day.', see: 'More surface, faster evaporation.' },
+        { title: 'Bean in the dark and light', ask: 'Which way does it grow?', do: 'A bean sprout in a box with one hole for light.', see: 'It bends toward the light.' },
+        { title: 'Oil and water', ask: 'Will they mix?', do: 'Oil and water in a jar, shaken hard, then left.', see: 'They separate again. Oil floats.' },
     ],
     3: [
         { title: 'Balloon on a bottle', ask: 'Can a gas blow up a balloon?', do: 'Baking soda in a balloon, vinegar in a bottle, stretch and tip.', see: 'A new gas fills the balloon.' },
         { title: 'Friction race', ask: 'Which surface slows a toy car most?', do: 'The same ramp onto tile, carpet, a towel, sandpaper. Measure how far it rolls.', see: 'Rougher surfaces stop it sooner.' },
         { title: 'Life cycle jar', ask: 'How does a caterpillar change?', do: 'A caterpillar kit, or watch a bean go seed to sprout to leaves to flower.', see: 'Stages, in order, every time.' },
         { title: 'Homemade rain gauge', ask: 'How much did it rain?', do: 'A clear bottle with centimeter marks, outside for a week.', see: 'Weather can be measured and compared.' },
+        { title: 'Lever lifting', ask: 'Can a small push lift a big weight?', do: 'A ruler over a pencil; a book on one end, push the other. Move the pencil.', see: 'The farther the pencil from the load, the easier the lift.' },
+        { title: 'Static electricity race', ask: 'Which material makes the most static?', do: 'A balloon rubbed on wool, cotton, hair; test on paper bits.', see: 'Some materials give up more charge.' },
+        { title: 'Fossil casts', ask: 'How does a fossil form?', do: 'A shell pressed into clay, then filled with plaster.', see: 'A print, then a cast: the two kinds of fossil.' },
+        { title: 'Plant parts', ask: 'What does each part do?', do: 'Pull up a weed; find root, stem, leaf, flower.', see: 'Root drinks, stem carries, leaf makes food, flower makes seeds.' },
+        { title: 'Sound tubes', ask: 'Does length change pitch?', do: 'Blow across bottles with different water levels.', see: 'More air in the bottle, lower note.' },
+        { title: 'Which insulator?', ask: 'What keeps ice from melting?', do: 'Ice cubes wrapped in foil, paper, cloth, nothing. Time them.', see: 'Cloth and paper trap air and slow melting.' },
+        { title: 'Puddle map', ask: 'Where does the puddle go?', do: 'Chalk around a puddle every hour on a sunny day.', see: 'It shrinks as water evaporates.' },
+        { title: 'Simple pulley', ask: 'Does a pulley make lifting easier?', do: 'A rope over a broom handle; lift a bag straight up, then with the rope.', see: 'Same weight, different direction, easier pull.' },
+        { title: 'Camouflage hunt', ask: 'Which colors hide best?', do: 'Colored toothpicks scattered in grass; a partner has 30 seconds to find them.', see: 'The ones that match the grass survive.' },
+        { title: 'Weather station', ask: 'Can you predict tomorrow?', do: 'Record clouds, wind and temperature at the same time daily for two weeks.', see: 'Patterns appear, and some days you guess right.' },
+        { title: 'Frozen bubbles', ask: 'What happens to a bubble in the cold?', do: 'Blow bubbles on a freezing morning.', see: 'They freeze into crystal balls.' },
+        { title: 'Ladybug life', ask: 'How many spots?', do: 'Look at a ladybug closely, then a picture of its larva.', see: 'The young looks nothing like the adult.' },
     ],
     4: [
         { title: 'Circuit with a bulb', ask: 'What makes a bulb light?', do: 'A battery, two wires and a small bulb. Try a broken loop, then a closed one.', see: 'Only a complete loop lights it.' },
         { title: 'Conductor or insulator', ask: 'Which materials let electricity through?', do: 'Put a coin, a key, an eraser, a paper clip into the circuit gap.', see: 'Metals conduct; rubber and plastic do not.' },
         { title: 'Paper bridge', ask: 'Which fold holds the most?', do: 'A sheet between two books; add coins flat, then folded like an accordion.', see: 'Shape matters more than material.' },
         { title: 'Rock, sand, water', ask: 'What happens when rock is shaken?', do: 'Sugar cubes in a jar, shaken for a minute.', see: 'Corners wear off. That is weathering, fast.' },
+        { title: 'Series and parallel bulbs', ask: 'Which stays lit?', do: 'Two bulbs in a row, then side by side; unscrew one.', see: 'In a row both go out; side by side one stays lit.' },
+        { title: 'Electromagnet', ask: 'Can a battery make a magnet?', do: 'Wire coiled around a nail, connected to a battery; test on paper clips.', see: 'The coil makes the nail magnetic while current flows.' },
+        { title: 'Sand dune in a box', ask: 'What does wind do to sand?', do: 'A tray of dry sand and a hair dryer on cool.', see: 'Sand piles up in dunes and moves.' },
+        { title: 'Owl pellets', ask: 'What did the owl eat?', do: 'A store-bought owl pellet pulled apart with tweezers.', see: 'Tiny bones sort into skulls and legs: a whole food chain.' },
+        { title: 'Sound speed in a rope', ask: 'Can you see a wave?', do: 'A long rope tied to a post; flick it once, then faster.', see: 'A hump travels down the rope. Faster flicks, closer humps.' },
+        { title: 'Water filter', ask: 'Can you clean muddy water?', do: 'A bottle with gravel, sand and cotton; pour muddy water through.', see: 'Clearer, though not safe to drink.' },
+        { title: 'Erosion with a hose', ask: 'What slows erosion?', do: 'Two soil hills, one with grass or a mat of leaves; water each.', see: 'Plants hold soil in place.' },
+        { title: 'Bird beak tools', ask: 'Which beak eats what?', do: 'Tweezers, a spoon, a clothespin; pick up rice, marbles, water.', see: 'Each beak shape suits a food.' },
+        { title: 'Hot air rises', ask: 'Which way does warm air go?', do: 'A paper spiral hung over a warm lamp with an adult.', see: 'It spins in the rising air.' },
+        { title: 'Lemon battery', ask: 'Can fruit make electricity?', do: 'A lemon with a copper coin and a zinc nail, wires to a small LED.', see: 'A faint glow: chemistry making current.' },
+        { title: 'Rock cycle candy', ask: 'Can you make three kinds of rock?', do: 'Grated crayon layered, pressed, then warmed with an adult.', see: 'Sedimentary, then metamorphic, then melted and cooled.' },
+        { title: 'Leaf rubbings', ask: 'Are leaf veins all the same?', do: 'Paper over leaves, rubbed with a crayon.', see: 'Veins branch in patterns; each kind of tree has its own.' },
     ],
     5: [
         { title: 'Salt water evaporation', ask: 'Where does the salt go?', do: 'Salt in warm water until it disappears; leave the cup in the sun for days.', see: 'The water leaves; the salt stays.' },
         { title: 'Moon phases with a lamp', ask: 'Why does the moon change shape?', do: 'A lamp, a ball on a stick, a dark room. Walk the ball around your head.', see: 'You see more or less of the lit side. That is the phase.' },
         { title: 'Water cycle in a bag', ask: 'Can you make rain?', do: 'Water in a zip bag taped to a sunny window for a day.', see: 'Drops form at the top and run down: evaporation, condensation, rain.' },
         { title: 'Inherited or learned', ask: 'Which traits are you born with?', do: 'List ten traits of a pet or a person; sort into born-with and learned.', see: 'Some come from parents; some take practice.' },
+        { title: 'Chromatography flowers', ask: 'What colors hide in black ink?', do: 'A marker dot on a coffee filter, the tip in water.', see: 'The ink separates into colors as water climbs.' },
+        { title: 'Sundial', ask: 'Can a stick tell time?', do: 'A stick in the ground; mark the shadow tip every hour.', see: 'The shadow sweeps like a clock hand.' },
+        { title: 'Clouds in a jar', ask: 'How does a cloud form?', do: 'Warm water in a jar, hairspray puff, ice on top, with an adult.', see: 'A cloud swirls when vapor meets cold and something to cling to.' },
+        { title: 'Which dissolves faster?', ask: 'Does temperature matter?', do: 'Sugar cubes in cold, warm and hot water, timed.', see: 'Hot water dissolves fastest.' },
+        { title: 'Balloon lung', ask: 'How do lungs fill?', do: 'A bottle with a balloon inside and a balloon skin on the cut bottom; pull the skin.', see: 'The inner balloon fills when the space grows. That is breathing.' },
+        { title: 'Iron in cereal', ask: 'Is there metal in your food?', do: 'Fortified cereal crushed in water; stir with a strong magnet in a bag.', see: 'Tiny iron flecks cling to the magnet.' },
+        { title: 'Solar oven', ask: 'Can the sun cook?', do: 'A pizza box lined with foil and black paper under plastic; a marshmallow inside.', see: 'It softens in an hour of sun.' },
+        { title: 'Fingerprint patterns', ask: 'Are yours loops, whorls or arches?', do: 'Pencil-rubbed fingertips pressed on tape, stuck to paper.', see: 'Everyone has a pattern; no two match.' },
+        { title: 'Layers of the earth model', ask: 'What is inside?', do: 'A clay ball built in layers, then cut in half.', see: 'Crust, mantle, core, in order.' },
+        { title: 'Seed dispersal', ask: 'How do seeds travel?', do: 'Dandelion, burr, maple key, berry: test each for wind, fur, water.', see: 'Each seed has a way to leave home.' },
+        { title: 'Vinegar volcano', ask: 'Why does it erupt?', do: 'Baking soda in a bottle inside a clay cone; add vinegar and soap.', see: 'Gas pushes the foam out. A model, not a volcano.' },
+        { title: 'Stream table', ask: 'How does a river bend?', do: 'Sand in a tray, tilted; a slow trickle of water.', see: 'The stream wanders and cuts bends.' },
     ],
     6: [
         { title: 'Density column', ask: 'Which liquid sits on top?', do: 'Honey, dish soap, water, oil, poured slowly. Drop in a grape and a cork.', see: 'Liquids stack by density; objects settle at their match.' },
         { title: 'Heat transfer three ways', ask: 'How does heat move?', do: 'A metal spoon in hot water (touch), warm water rising in a clear pot with food coloring (flow), a lamp on your hand (rays).', see: 'Conduction, convection, radiation, each seen.' },
         { title: 'Food chain web', ask: 'Who eats whom?', do: 'Cards for grass, grasshopper, bird, hawk, fungus; string between eaters and eaten.', see: 'Remove one card and count the strings that fall.' },
         { title: 'Plate edges with graham crackers', ask: 'What happens where plates meet?', do: 'Two crackers on frosting; push together, pull apart, slide past.', see: 'Mountains, gaps, and crumbling edges.' },
+        { title: 'Convection currents', ask: 'Can you see heat move?', do: 'A clear pan of water, a drop of food coloring, a candle under one corner with an adult.', see: 'The color rises over the heat and sinks elsewhere.' },
+        { title: 'Osmosis egg', ask: 'Can water pass through a shell?', do: 'An egg soaked in vinegar for two days, then in corn syrup, then in water.', see: 'The egg shrinks, then swells. Water moves through the membrane.' },
+        { title: 'Homemade compass', ask: 'Can a needle find north?', do: 'A magnetized needle on a cork in water.', see: 'It swings to point north.' },
+        { title: 'Buoyancy and salt', ask: 'Does salt water hold you up better?', do: 'An egg in fresh water, then salt water.', see: 'It sinks, then floats. Denser water holds more.' },
+        { title: 'Cell model', ask: 'What is inside a cell?', do: 'A zip bag of gel with candy parts labeled as organelles.', see: 'A model of the parts and their jobs.' },
+        { title: 'Insulation test', ask: 'Which cup keeps cocoa hottest?', do: 'Thermometers in cups of hot water wrapped in different materials.', see: 'Trapped air insulates best.' },
+        { title: 'Topographic potato', ask: 'What do contour lines mean?', do: 'Slice a potato in even layers, trace each on paper stacked.', see: 'Close lines mean steep; wide lines mean flat.' },
+        { title: 'Sugar and yeast rates', ask: 'Which sugar feeds yeast best?', do: 'Yeast with white sugar, honey and none, balloons on each bottle.', see: 'Different foods, different gas.' },
+        { title: 'Mirror and angles', ask: 'Where does the light go?', do: 'A flashlight beam on a mirror, angles marked with tape.', see: 'Angle in equals angle out.' },
+        { title: 'Water hardness', ask: 'Does soap lather the same everywhere?', do: 'Tap water and distilled water shaken with the same soap.', see: 'Minerals in hard water fight the lather.' },
+        { title: 'Composting jar', ask: 'What breaks down?', do: 'Soil, food scraps and a leaf in a clear jar, watched for three weeks.', see: 'Decomposers turn scraps into soil.' },
+        { title: 'Ecosystem in a bottle', ask: 'Can a jar keep itself alive?', do: 'A sealed bottle with soil, a plant and water, in indirect light.', see: 'It cycles water and gas for weeks.' },
     ],
     7: [
         { title: 'Yeast and sugar', ask: 'Is yeast alive?', do: 'Warm water, sugar, yeast in a bottle; a balloon over the neck.', see: 'The yeast breathes out gas. Living things do that.' },
         { title: 'Leaf in the dark', ask: 'Does a leaf need light to make food?', do: 'Cover half a leaf with foil for three days; then test both halves with iodine.', see: 'The covered half stored no starch.' },
         { title: 'Cold front in a box', ask: 'What happens when cold air meets warm?', do: 'A clear box divided by a card; cold colored water one side, warm the other; lift the card.', see: 'The cold slides under and the warm rides up.' },
         { title: 'Selection with beans', ask: 'How does selection change a group?', do: 'Mixed beans on a patterned cloth; a partner grabs quickly for 20 seconds; count what is left.', see: 'The hidden colors survive and would pass on.' },
+        { title: 'Pulse and exercise', ask: 'What does running do to your heart?', do: 'Count your pulse at rest, after jumping jacks, and after resting again.', see: 'It rises to move more oxygen, then settles.' },
+        { title: 'Lung capacity', ask: 'How much air do you breathe out?', do: 'Blow into a balloon with one breath; measure the balloon.', see: 'Bigger people usually hold more, and practice matters.' },
+        { title: 'Stomata under a lens', ask: 'Where does a leaf breathe?', do: 'Clear nail polish on a leaf, peeled off and viewed under a hand lens.', see: 'Tiny mouths, the stomata, dot the underside.' },
+        { title: 'Barometer in a jar', ask: 'Can you see pressure change?', do: 'A balloon skin over a jar with a straw glued on as a pointer.', see: 'The straw moves with the weather.' },
+        { title: 'Natural selection with candy', ask: 'Which color survives?', do: 'Mixed candies on a patterned tablecloth; grab quickly for 20 seconds.', see: 'The camouflaged ones are left.' },
+        { title: 'Reaction time ruler', ask: 'How fast are your reflexes?', do: 'A partner drops a ruler between your fingers; note where you catch it.', see: 'Practice speeds it up a little.' },
+        { title: 'Dew point', ask: 'When does water appear on the can?', do: 'A metal can with ice, water and a thermometer; note when it fogs.', see: 'That temperature is the dew point.' },
+        { title: 'Beak variation', ask: 'Which beak survives a drought?', do: 'Different tools picking up seeds of one size only.', see: 'Only some tools work. That is selection.' },
+        { title: 'Photosynthesis bubbles', ask: 'Can you watch a plant make oxygen?', do: 'A sprig of pondweed in a jar of water in bright light.', see: 'Bubbles rise from the leaves.' },
+        { title: 'Tornado in a bottle', ask: 'How does spinning air behave?', do: 'Two bottles joined at the neck, one with water; swirl.', see: 'A funnel forms as water spins down.' },
+        { title: 'Digestion in a bag', ask: 'What does the stomach do?', do: 'Crackers, water and vinegar squished in a zip bag.', see: 'Mashing plus acid breaks food down.' },
+        { title: 'Fingerprint classification', ask: 'Can you sort a class?', do: 'Everyone prints a thumb; tally loops, whorls and arches.', see: 'Loops are common; arches are rare.' },
     ],
     8: [
         { title: 'Pendulum timing', ask: 'What changes a pendulum\'s swing?', do: 'A washer on a string; time ten swings; change length, weight, and pull.', see: 'Only length changes the timing.' },
         { title: 'Newton\'s cart', ask: 'Does more mass need more force?', do: 'A skateboard pushed with a spring scale, empty and then loaded.', see: 'Same speed change takes more force with more mass.' },
         { title: 'Crystal growing', ask: 'How do crystals form?', do: 'Saturated sugar water in a jar with a string, left for a week.', see: 'Sugar comes back out of solution as crystals.' },
         { title: 'Scale of the solar system', ask: 'How far apart are the planets?', do: 'A sun the size of a grapefruit; pace out the planets on a field.', see: 'Mostly empty space. Neptune is far down the field.' },
+        { title: 'Inertia trick', ask: 'Will the coin drop in?', do: 'A card on a cup with a coin on it; flick the card away.', see: 'The coin stays and drops. First law.' },
+        { title: 'Friction ramp', ask: 'Which surface needs the steepest ramp?', do: 'A block on a board covered with sandpaper, foil, cloth; raise until it slides.', see: 'More friction, steeper start.' },
+        { title: 'Balloon and bottle rocket', ask: 'What pushes it up?', do: 'A bottle with water and a pump, launched outside with an adult.', see: 'Water pushed down, bottle pushed up. Third law.' },
+        { title: 'Chemical vs physical', ask: 'Which changes make something new?', do: 'Melt ice, tear paper, burn a match with an adult, rust steel wool in vinegar.', see: 'Only some make a new substance.' },
+        { title: 'Periodic table scavenger', ask: 'Which elements are in your kitchen?', do: 'Read labels for sodium, calcium, iron, potassium.', see: 'Elements are everywhere with different names.' },
+        { title: 'Salt crystals vs sugar', ask: 'Do they look the same?', do: 'Grow both and compare under a lens.', see: 'Salt cubes; sugar longer prisms. Structure shows in shape.' },
+        { title: 'Momentum with marbles', ask: 'What happens when they hit?', do: 'A line of marbles in a ruler groove; roll one in.', see: 'One comes out the far end at the same speed.' },
+        { title: 'Endothermic and exothermic', ask: 'Which gets cold?', do: 'Baking soda in vinegar (cold), yeast in peroxide with an adult (warm).', see: 'Some reactions take in heat; some give it.' },
+        { title: 'Star chart', ask: 'Do the stars move?', do: 'Sketch a bright constellation at 8 pm and 10 pm.', see: 'The sky turns as the Earth does.' },
+        { title: 'Lever classes', ask: 'Where is the fulcrum?', do: 'A seesaw, a wheelbarrow, tongs: find the pivot, the load, the push.', see: 'Three classes of lever, all around you.' },
+        { title: 'Ocean acidification', ask: 'What does carbon dioxide do to shells?', do: 'Chalk in plain water and in fizzy water for a day.', see: 'The fizzy-water chalk pits and fizzes.' },
+        { title: 'Fossil layers', ask: 'Which is older?', do: 'Play dough layers with buttons; cut a cross section.', see: 'Deeper is older.' },
     ],
     9: [
         { title: 'Extract DNA from a strawberry', ask: 'Can you see DNA?', do: 'Mash with salt, water and dish soap; strain; cold rubbing alcohol on top.', see: 'A white cloud of DNA rises.' },
         { title: 'Coin flip genetics', ask: 'What does one in four really look like?', do: 'Flip two coins 40 times; heads is B, tails is b; tally BB, Bb, bb.', see: 'Close to 1:2:1, and never exactly.' },
         { title: 'Respiration in a jar', ask: 'Do seeds breathe?', do: 'Sprouting seeds in a sealed jar with limewater beside them for a day.', see: 'The limewater clouds: carbon dioxide from respiration.' },
         { title: 'Bones and fossils', ask: 'What can a bone tell you?', do: 'Compare a chicken wing, a photo of a bat wing, and your own arm; count the bones.', see: 'Same bones, different jobs: homologous structures.' },
+        { title: 'Enzyme in pineapple', ask: 'Why won\'t jello set with fresh pineapple?', do: 'Gelatin with fresh pineapple and with canned.', see: 'The fresh enzyme breaks the gelatin; heat destroyed it in the can.' },
+        { title: 'Mitosis on the microscope', ask: 'Can you see cells dividing?', do: 'An onion root tip slide, or a photo, under magnification.', see: 'Chromosomes in stages, frozen mid-divide.' },
+        { title: 'Punnett square with a class', ask: 'Do the odds hold?', do: 'Tally tongue rolling and earlobe shape across a group.', see: 'Ratios roughly match dominant and recessive.' },
+        { title: 'Osmosis in potatoes', ask: 'Which way does water move?', do: 'Potato strips in salt water and fresh water, weighed before and after.', see: 'They lose or gain water toward the saltier side.' },
+        { title: 'Yeast fermentation rate', ask: 'What temperature is best?', do: 'Yeast and sugar in bottles at three temperatures, balloons on top.', see: 'Warm wins; too hot kills it.' },
+        { title: 'Pond water survey', ask: 'What lives in a drop?', do: 'Pond water under a microscope.', see: 'A whole ecosystem, moving.' },
+        { title: 'Transpiration bags', ask: 'Do leaves lose water?', do: 'A plastic bag tied over a leafy branch in the sun.', see: 'Droplets gather inside.' },
+        { title: 'Owl pellet food web', ask: 'Who ate whom?', do: 'Sort bones from a pellet into prey species.', see: 'A food web reconstructed from lunch.' },
+        { title: 'Fruit fly life cycle', ask: 'How fast is a generation?', do: 'Banana in a jar with a paper funnel; watch for two weeks.', see: 'Eggs to flies in about ten days.' },
+        { title: 'Antibiotic soap test', ask: 'Which soap works?', do: 'Handprints on agar plates, with an adult, before and after washing.', see: 'Fewer colonies after washing.' },
+        { title: 'Homologous chicken wing', ask: 'Same bones as your arm?', do: 'Dissect a chicken wing with an adult; name the bones.', see: 'Upper, two lower, wrist, fingers.' },
+        { title: 'Ecosystem sampling', ask: 'How many plants per square meter?', do: 'A string square in a lawn; count species inside.', see: 'Sampling estimates a whole field.' },
     ],
     10: [
         { title: 'Red cabbage indicator', ask: 'How acidic is it?', do: 'Boil red cabbage; add the juice to vinegar, water, baking soda, soap.', see: 'Red to purple to green, mapping the pH scale.' },
         { title: 'Conservation of mass', ask: 'Does mass change in a reaction?', do: 'Weigh baking soda and vinegar in a sealed bag before and after mixing.', see: 'Same mass. Atoms rearranged, not lost.' },
         { title: 'Boyle in a syringe', ask: 'What happens when you squeeze a gas?', do: 'A capped syringe; note the volume as you push with one, two, three books.', see: 'Halve the volume and the pressure doubles.' },
         { title: 'Ionic or covalent', ask: 'Which solutions conduct?', do: 'A battery, a bulb, two wires; test salt water, sugar water, tap water.', see: 'Salt water lights it; sugar water does not.' },
+        { title: 'Flame colors', ask: 'Do elements have colors?', do: 'Salt, copper sulfate, potassium chloride in a flame with an adult.', see: 'Yellow, green, lilac: each element its own color.' },
+        { title: 'Reaction rate and surface area', ask: 'Does crushing speed it up?', do: 'A whole antacid tablet and a crushed one in water, timed.', see: 'Crushed reacts faster: more surface.' },
+        { title: 'Electrolysis of water', ask: 'Can you split water?', do: 'Two pencils in salted water wired to a battery.', see: 'Bubbles at both: hydrogen and oxygen, two to one.' },
+        { title: 'Copper plating', ask: 'Can electricity move metal?', do: 'A coin and a nail in copper sulfate with a battery.', see: 'Copper plates onto the nail.' },
+        { title: 'Titration by drops', ask: 'How many drops to neutralize?', do: 'Vinegar with cabbage indicator; add baking soda solution by drops.', see: 'A sharp color change at the balance point.' },
+        { title: 'Exothermic hand warmer', ask: 'Can you make heat?', do: 'Iron filings, salt and water in a bag with an adult.', see: 'Rusting gives off warmth.' },
+        { title: 'Mole of sugar', ask: 'What does a mole look like?', do: 'Weigh out 342 grams of table sugar.', see: 'That pile is about six hundred sextillion molecules.' },
+        { title: 'Gas laws in a syringe', ask: 'Pressure and volume?', do: 'A capped syringe with weights; record volume per weight.', see: 'Pressure times volume stays constant.' },
+        { title: 'Endothermic slush', ask: 'Can dissolving get cold?', do: 'Ammonium nitrate from a cold pack in water, with an adult.', see: 'It gets cold fast.' },
+        { title: 'Ionic conductivity', ask: 'Which solutions conduct?', do: 'A conductivity tester in salt, sugar, vinegar, tap water.', see: 'Ions carry current; sugar does not.' },
+        { title: 'Rate and temperature', ask: 'Does heat speed a reaction?', do: 'Glow sticks in hot, room and ice water.', see: 'Hot glows brightest and dies fastest.' },
+        { title: 'Precipitation reaction', ask: 'Can two clear liquids make a solid?', do: 'Epsom salt solution and ammonia, with an adult.', see: 'A white cloud of solid forms.' },
     ],
     11: [
         { title: 'Measure the speed of sound', ask: 'How fast is sound?', do: 'Clap two boards 100 meters away while a partner times see-to-hear.', see: 'About 340 meters per second.' },
         { title: 'Ohm\'s law on the table', ask: 'Does V equal I times R?', do: 'A resistor and a multimeter with one, two and three batteries.', see: 'Current rises with voltage; the ratio is the resistance.' },
         { title: 'Momentum on a track', ask: 'Is momentum kept in a collision?', do: 'Two toy cars, one still; roll one into the other and time both.', see: 'What one loses the other gains.' },
         { title: 'Waves in a rope', ask: 'What sets a wave\'s speed?', do: 'A long rope; shake at two rates; measure crest spacing.', see: 'Faster shaking, shorter waves, same speed.' },
+        { title: 'Projectile range', ask: 'Which angle throws farthest?', do: 'A marble launcher or hose at several angles; measure.', see: 'About 45 degrees wins.' },
+        { title: 'Pendulum period', ask: 'Does length set the period?', do: 'Time ten swings at several lengths; plot it.', see: 'Period grows with the square root of length.' },
+        { title: 'Hooke\'s law', ask: 'How much does a spring stretch?', do: 'A spring with added weights; measure each stretch.', see: 'Stretch rises evenly with weight.' },
+        { title: 'Refraction in a tank', ask: 'How much does light bend?', do: 'A laser pointer into a tank of water at angles, with an adult.', see: 'The beam bends toward the normal.' },
+        { title: 'Speed of a wave in a slinky', ask: 'Faster with tension?', do: 'Time a pulse along a slinky, loose then tight.', see: 'Tighter is faster.' },
+        { title: 'Series resistance', ask: 'Do resistances add?', do: 'Two resistors measured alone and in series.', see: 'The sum, within a few percent.' },
+        { title: 'Capacitor charging', ask: 'How does a capacitor fill?', do: 'A capacitor, resistor, battery and voltmeter; read every five seconds.', see: 'Fast at first, then slower: a curve.' },
+        { title: 'Coffee cup calorimetry', ask: 'How much heat does hot metal hold?', do: 'A hot bolt dropped into cold water in a foam cup; thermometer.', see: 'Heat lost equals heat gained.' },
+        { title: 'Doppler with a phone', ask: 'Does pitch change with motion?', do: 'A phone playing a tone, swung on a string.', see: 'The pitch rises and falls as it passes.' },
+        { title: 'Static charge and distance', ask: 'Does the force fade with distance?', do: 'A charged balloon near hanging foil at several distances.', see: 'Force drops fast as distance grows.' },
+        { title: 'Sound resonance tube', ask: 'Where does the tube sing?', do: 'A tube in water with a tuning fork above; raise until loud.', see: 'Resonance at a quarter wavelength.' },
+        { title: 'Lens focal length', ask: 'Where does the image form?', do: 'A magnifying glass, a window, a wall; find the sharp image.', see: 'That distance is the focal length.' },
     ],
     12: [
         { title: 'Rock cycle in a bag', ask: 'Can you make sedimentary rock?', do: 'Sand, gravel and a little glue pressed in a bag under books for a week.', see: 'Pieces pressed into one rock: sedimentary.' },
         { title: 'Ocean currents in a pan', ask: 'Why does cold salty water sink?', do: 'A pan of warm water; pour cold salty colored water gently in one corner.', see: 'It sinks and creeps along the bottom.' },
         { title: 'Greenhouse in two jars', ask: 'Does carbon dioxide trap heat?', do: 'Two jars with thermometers under a lamp; one with air, one with baking soda and vinegar gas.', see: 'The carbon dioxide jar runs warmer.' },
         { title: 'Redshift with a balloon', ask: 'Why do galaxies recede faster the farther they are?', do: 'Dots on a balloon; blow it up and measure the distances between pairs.', see: 'Every dot moves away from every other, farther means faster, no center.' },
+        { title: 'Core sampling', ask: 'What is under the layers?', do: 'A straw pushed through a layered cake or clay.', see: 'A core shows the layers in order.' },
+        { title: 'Albedo test', ask: 'Do colors heat differently?', do: 'Thermometers under black and white paper in the sun.', see: 'Black warms more. Ice melting matters.' },
+        { title: 'Sea level in a glass', ask: 'Does melting ice raise the water?', do: 'Ice in a full glass, and ice on a block above a full glass.', see: 'Floating ice does not raise it; land ice does.' },
+        { title: 'Star brightness and distance', ask: 'Why do far stars look dim?', do: 'A bulb viewed from 1, 2 and 4 meters with a light meter or phone app.', see: 'Brightness falls with the square of distance.' },
+        { title: 'Spectroscope', ask: 'What colors are in light?', do: 'A cardboard tube with a slit and a CD fragment.', see: 'The rainbow, with dark lines from some lamps.' },
+        { title: 'Half-life with coins', ask: 'How does decay work?', do: 'Shake 100 coins; remove the heads; repeat and record.', see: 'About half go each round: a decay curve.' },
+        { title: 'Aquifer in a cup', ask: 'Where does well water come from?', do: 'Gravel, sand and clay in a clear cup; pour water; drill with a straw.', see: 'Water sits in the gravel above the clay.' },
+        { title: 'Ocean layers and salinity', ask: 'Do salt and fresh mix?', do: 'Colored salt water poured under fresh.', see: 'Layers stay separate.' },
+        { title: 'Soil pH map', ask: 'Is your yard acidic?', do: 'Soil samples with cabbage indicator from several spots.', see: 'A map of what will grow where.' },
+        { title: 'Plate boundary with foam', ask: 'What happens at each edge?', do: 'Foam slabs on honey; push, pull, slide.', see: 'Mountains, gaps, quakes.' },
+        { title: 'Moon phase calendar', ask: 'Can you predict the next full moon?', do: 'Track the moon for a month; predict the next.', see: 'About 29.5 days, and you can be right.' },
+        { title: 'Carbon footprint audit', ask: 'Where does your energy go?', do: 'Read a month of electricity and gas bills; list the biggest uses.', see: 'Heating and cooling usually top the list.' },
     ],
 };
 function experimentsFor(grade) { return EXPERIMENTS[grade] || []; }
 // ---------------------------------------------------------------------
-// SEPTEMBER 11. Each year on September 11, schools across the United States pause to
+// DAYS OF REMEMBRANCE. On a few days each year, schools across the United States pause to
 // remember. The app shows one quiet card that day, the same words for every age, and an
 // educator can hide it on this device for the year. Nothing is recorded about it.
+// Memorial Day is the last Monday of May; the others are fixed dates.
 // ---------------------------------------------------------------------
-function isRemembranceDay(isoLocalDate) {
-    const d = String(isoLocalDate || '').slice(5, 10);
-    return d === '09-11';
+const REMEMBRANCE_DAYS = [
+    { id: 'september-11', title: 'September 11', when: (y, m, d) => m === 9 && d === 11, lines: [
+            'On this day in 2001, nearly three thousand people were killed in attacks on New York City, at the Pentagon, and in a field near Shanksville, Pennsylvania.',
+            'Firefighters, police officers and ordinary people ran toward the danger to help others, and many of them did not come home.',
+            'Each year the country pauses to remember them, and the families who still miss them. Take a quiet moment before you begin today.',
+        ] },
+    { id: 'veterans-day', title: 'Veterans Day', when: (y, m, d) => m === 11 && d === 11, lines: [
+            'Today is Veterans Day. It began as the day the fighting of the First World War ended, at eleven in the morning on November 11, 1918.',
+            'It honors everyone who has served in the armed forces of the United States, in war and in peace, and the families who waited for them.',
+            'If you know someone who served, today is a good day to say thank you. Take a quiet moment before you begin.',
+        ] },
+    { id: 'memorial-day', title: 'Memorial Day', when: (y, m, d) => m === 5 && d > 24 && new Date(y, 4, d).getDay() === 1, lines: [
+            'Today is Memorial Day. It is set aside for the people who died serving in the armed forces of the United States, from the first wars to the most recent.',
+            'Flags fly at half-staff until noon, and many families visit graves and leave flowers.',
+            'It is a day for remembering, more than celebrating. Take a quiet moment before you begin.',
+        ] },
+];
+function remembranceFor(isoLocalDate) {
+    const parts = String(isoLocalDate || '').split('-').map(Number);
+    if (parts.length < 3 || parts.some((n) => !Number.isFinite(n)))
+        return null;
+    const [y, m, d] = parts;
+    return REMEMBRANCE_DAYS.find((day) => day.when(y, m, d)) || null;
 }
-const REMEMBRANCE = {
-    title: 'September 11',
-    lines: [
-        'On this day in 2001, nearly three thousand people were killed in attacks on New York City, at the Pentagon, and in a field near Shanksville, Pennsylvania.',
-        'Firefighters, police officers and ordinary people ran toward the danger to help others, and many of them did not come home.',
-        'Each year the country pauses to remember them, and the families who still miss them. Take a quiet moment before you begin today.',
-    ],
-};
+function isRemembranceDay(isoLocalDate) { return remembranceFor(isoLocalDate) !== null; }
+const REMEMBRANCE = REMEMBRANCE_DAYS[0];
 // Spaced mastery began on this day. A pass on an earlier day, or with a time that cannot
 // be read, earns the star on its own, as it did then.
 const MASTERY_V2_FROM = '2026-09-14';
@@ -34537,6 +35056,38 @@ const CURRICULUM = [
         ],
     },
     {
+        grade: '10', subject: 'History', status: 'ready',
+        source: 'Texas Essential Knowledge and Skills, World History Studies (2018); National Council for the Social Studies, National Curriculum Standards themes',
+        standards: [
+            { framework: 'TEKS', code: 'WH.2A', text: 'Summarize the impact of the development of farming on the creation of river valley civilizations.', moduleIds: ['ancient-civilizations'] },
+            { framework: 'TEKS', code: 'WH.3B', text: 'Compare the democracy of Athens and the republic of Rome.', moduleIds: ['greece-and-rome'] },
+            { framework: 'TEKS', code: 'WH.5A', text: 'Explain the impact of the Renaissance.', moduleIds: ['middle-ages-and-renaissance'] },
+            { framework: 'TEKS', code: 'WH.9B', text: 'Compare the causes, characteristics, and consequences of the American and French revolutions.', moduleIds: ['age-of-revolutions'] },
+            { framework: 'TEKS', code: 'WH.10A', text: 'Identify the causes and effects of the Industrial Revolution.', moduleIds: ['industrial-revolution'] },
+            { framework: 'TEKS', code: 'WH.11A', text: 'Identify the causes and effects of the world wars, and explain the Holocaust.', moduleIds: ['world-wars'] },
+            { framework: 'CCSS', code: 'NCSS Theme II', text: 'Time, Continuity, and Change.', moduleIds: ['ancient-civilizations', 'middle-ages-and-renaissance'] },
+            { framework: 'CCSS', code: 'NCSS Theme VI', text: 'Power, Authority, and Governance.', moduleIds: ['greece-and-rome', 'age-of-revolutions'] },
+            { framework: 'CCSS', code: 'NCSS Theme VIII', text: 'Science, Technology, and Society.', moduleIds: ['industrial-revolution'] },
+            { framework: 'CCSS', code: 'NCSS Theme IX', text: 'Global Connections.', moduleIds: ['world-wars'] },
+        ],
+    },
+    {
+        grade: '11', subject: 'History', status: 'ready',
+        source: 'Texas Essential Knowledge and Skills, United States History Studies Since 1877 (2018); National Council for the Social Studies, National Curriculum Standards themes',
+        standards: [
+            { framework: 'TEKS', code: 'US.5A', text: 'Evaluate the impact of Progressive Era reforms.', moduleIds: ['gilded-age-and-progressives'] },
+            { framework: 'TEKS', code: 'US.6C', text: 'Analyze the causes of the Great Depression and evaluate the New Deal.', moduleIds: ['depression-and-new-deal'] },
+            { framework: 'TEKS', code: 'US.7A', text: 'Identify reasons for U.S. involvement in World War II and analyze the home front.', moduleIds: ['america-in-world-war-two'] },
+            { framework: 'TEKS', code: 'US.8A', text: 'Describe U.S. responses to Soviet aggression, including the Cuban Missile Crisis and the arms race.', moduleIds: ['cold-war'] },
+            { framework: 'TEKS', code: 'US.9A', text: 'Trace the historical development of the civil rights movement.', moduleIds: ['civil-rights-movement'] },
+            { framework: 'TEKS', code: 'US.10A', text: 'Describe U.S. involvement in world affairs since 1991 and the effects of the September 11, 2001 attacks.', moduleIds: ['recent-america'] },
+            { framework: 'CCSS', code: 'NCSS Theme VII', text: 'Production, Distribution, and Consumption.', moduleIds: ['gilded-age-and-progressives', 'depression-and-new-deal'] },
+            { framework: 'CCSS', code: 'NCSS Theme IX', text: 'Global Connections.', moduleIds: ['america-in-world-war-two', 'cold-war'] },
+            { framework: 'CCSS', code: 'NCSS Theme VI', text: 'Power, Authority, and Governance.', moduleIds: ['civil-rights-movement'] },
+            { framework: 'CCSS', code: 'NCSS Theme X', text: 'Civic Ideals and Practices.', moduleIds: ['recent-america'] },
+        ],
+    },
+    {
         grade: '4', subject: 'Math', status: 'ready',
         source: 'Texas Essential Knowledge and Skills, Grade 4 Mathematics (TEKS §111.6); Common Core Grade 4 Mathematics',
         standards: [
@@ -34883,20 +35434,22 @@ catch (e) {
 // The September 11 card. Same words for everyone; an educator can hide it on this device for the year.
 function todayLocalIso() { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; }
 function RemembranceCard({ educator = false }) {
+    const day = remembranceFor(todayLocalIso());
+    const key = day ? `edu-remembrance-hidden-${day.id}-${new Date().getFullYear()}` : '';
     const [hidden, setHidden] = (0, react_1.useState)(() => { try {
-        return localStorage.getItem(`edu-remembrance-hidden-${new Date().getFullYear()}`) === '1';
+        return key ? localStorage.getItem(key) === '1' : false;
     }
     catch (e) {
         return false;
     } });
-    if (!isRemembranceDay(todayLocalIso()) || hidden)
+    if (!day || hidden)
         return null;
     return (react_1.default.createElement("div", { style: { ...card, borderColor: '#B9C4BF', background: '#F4F6F4', textAlign: 'center' } },
-        react_1.default.createElement("p", { style: { margin: '0 0 8px', fontWeight: 700, fontSize: 18 } }, REMEMBRANCE.title),
-        REMEMBRANCE.lines.map((line) => react_1.default.createElement("p", { key: line, style: { margin: '0 0 8px', fontSize: 15 } }, line)),
+        react_1.default.createElement("p", { style: { margin: '0 0 8px', fontWeight: 700, fontSize: 18 } }, day.title),
+        day.lines.map((line) => react_1.default.createElement("p", { key: line, style: { margin: '0 0 8px', fontSize: 15 } }, line)),
         educator && react_1.default.createElement("p", { style: { margin: '4px 0 0', fontSize: 13 } },
             react_1.default.createElement("button", { type: "button", onClick: () => { try {
-                    localStorage.setItem(`edu-remembrance-hidden-${new Date().getFullYear()}`, '1');
+                    localStorage.setItem(key, '1');
                 }
                 catch (e) { /* fine */ } setHidden(true); }, style: { ...linkBtn, fontSize: 13, padding: 0 } }, "Hide this on this device for the rest of the year"))));
 }
@@ -35704,7 +36257,7 @@ function PageChrome({ idleWarning = false, stars = true, logoutIn = null, walkth
         logoutIn !== null && (react_1.default.createElement("div", { role: "status", className: "edu-no-print", style: { position: 'fixed', bottom: 12, right: 12, zIndex: 60, background: logoutIn <= 10 ? '#24291F' : 'rgba(36, 41, 31, 0.72)', color: '#fff', borderRadius: 999, padding: '6px 12px', fontFamily: FONT, fontSize: 13, fontWeight: 600, pointerEvents: 'none' } },
             "Logging out in ",
             logoutIn)),
-        walkthrough && (react_1.default.createElement("div", { role: "status", className: "edu-no-print", style: { position: 'fixed', bottom: 12, left: 12, zIndex: 60, background: 'rgba(36, 41, 31, 0.72)', color: '#fff', borderRadius: 999, padding: '6px 12px', fontSize: 13, fontFamily: FONT } }, "Walk-through: nothing is recorded")),
+        walkthrough && (react_1.default.createElement("div", { role: "status", className: "edu-no-print", style: { position: 'fixed', bottom: 12, left: 12, zIndex: 60, background: 'rgba(36, 41, 31, 0.72)', color: '#fff', borderRadius: 999, padding: '6px 12px', fontSize: 13, fontFamily: FONT } }, "Walkthrough Mode")),
         react_1.default.createElement(SideArcs, { side: "left" }),
         react_1.default.createElement(SideArcs, { side: "right" }),
         idleWarning && logoutIn === null && (react_1.default.createElement("div", { role: "status", className: "edu-no-print edu-rise", style: { position: 'fixed', left: 12, right: 12, bottom: 16, zIndex: 60, background: '#24291F', color: '#fff', borderRadius: 12, padding: '12px 16px', fontFamily: FONT, fontSize: 15, textAlign: 'center' } }, "You will be logged out in a few seconds due to inactivity. Tap anywhere to stay."))));
@@ -35874,135 +36427,21 @@ async function gatherEverything(roster) {
 // chose once. When that is available, the classroom backup rewrites itself after every
 // finished practice round, so the record on disk is never more than one round behind.
 // iPads do not allow it; there, Share and Download are the way. Nothing is sent anywhere.
-let autoSaveHandle = null; // the chosen file, kept for this session only
-// The touchless file is rewritten in place, so its name carries no date or time: a time in
-// the name would go stale the moment the file was rewritten. The time lives inside the file.
-function touchlessFileName(deviceName) {
-    const device = String(deviceName || 'device').trim().toLowerCase().replace(/['\u2019]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'device';
-    return `edusphere-${device}-touchless-backup.json`;
-}
-function canAutoSave() { return typeof window !== 'undefined' && typeof window.showSaveFilePicker === 'function'; }
-// Touchless backup writes into a folder the educator chooses: one file per day, named by the
-// date and rewritten through the day. A folder of daily snapshots gives history without a
-// file for every round, which would run to thousands. Where a browser cannot offer a folder
-// but can offer a file, the older one-file way is used instead.
-let autoSaveFolder = null;
-let autoSaveDevice = 'device';
-// The chosen folder is remembered by the browser itself, in a small store that survives
-// restarts. After a restart the browser may ask for one confirming tap before writing
-// again; on some devices it remembers the permission and needs none.
-const HANDLE_DB = 'edusphere-touchless';
-function handleStore(mode) {
-    return new Promise((resolve, reject) => {
-        if (typeof indexedDB === 'undefined') {
-            reject(new Error('no store'));
-            return;
-        }
-        const req = indexedDB.open(HANDLE_DB, 1);
-        req.onupgradeneeded = () => req.result.createObjectStore('handles');
-        req.onerror = () => reject(req.error);
-        req.onsuccess = () => resolve(req.result.transaction('handles', mode).objectStore('handles'));
-    });
-}
-async function rememberAutoSaveFolder(handle) {
-    try {
-        const st = await handleStore('readwrite');
-        st.put(handle, 'folder');
-    }
-    catch (e) { /* remembering is a convenience, not a requirement */ }
-}
-async function recallAutoSaveFolder() {
-    try {
-        const st = await handleStore('readonly');
-        return await new Promise((res) => { const r = st.get('folder'); r.onsuccess = () => res(r.result || null); r.onerror = () => res(null); });
-    }
-    catch (e) {
-        return null;
-    }
-}
-async function forgetAutoSaveFolder() {
-    try {
-        const st = await handleStore('readwrite');
-        st.delete('folder');
-    }
-    catch (e) { /* nothing to forget */ }
-}
-// 'granted' means writing can resume by itself; 'prompt' means one tap is needed; null means nothing is remembered.
-async function touchlessRecallState() {
-    const h = await recallAutoSaveFolder();
-    if (!h || !h.queryPermission)
-        return null;
-    try {
-        const p = await h.queryPermission({ mode: 'readwrite' });
-        if (p === 'granted') {
-            autoSaveFolder = h;
-            return 'granted';
-        }
-        return 'prompt';
-    }
-    catch (e) {
-        return null;
-    }
-}
-async function resumeTouchless() {
-    const h = await recallAutoSaveFolder();
-    if (!h || !h.requestPermission)
+// Automatic backups: after every finished round, a backup file goes to the device's downloads
+// folder without asking. Only the newest file is ever needed; older ones can be deleted.
+function plainDownload(name, text) {
+    if (typeof document === 'undefined')
         return false;
-    try {
-        const p = await h.requestPermission({ mode: 'readwrite' });
-        if (p === 'granted') {
-            autoSaveFolder = h;
-            return true;
-        }
-    }
-    catch (e) { /* refused */ }
-    return false;
-}
-async function chooseAutoSaveFile(suggestedName, deviceName) {
-    if (!canAutoSave())
-        return false;
-    autoSaveDevice = deviceName || 'device';
-    try {
-        if (window.showDirectoryPicker) {
-            autoSaveFolder = await window.showDirectoryPicker({ mode: 'readwrite' });
-            autoSaveHandle = null;
-            await rememberAutoSaveFolder(autoSaveFolder);
-            return true;
-        }
-        autoSaveHandle = await window.showSaveFilePicker({ suggestedName, types: [{ description: 'EduSphere backup', accept: { 'application/json': ['.json'] } }] });
-        return true;
-    }
-    catch (err) {
-        return false;
-    }
-}
-function dailyBackupName(deviceName, at) {
-    const device = String(deviceName || 'device').trim().toLowerCase().replace(/['\u2019]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'device';
-    const d = new Date(at);
-    return `edusphere-${device}-${d.getMonth() + 1}-${d.getDate()}-${d.getFullYear()}.json`;
-}
-async function writeAutoSave(text, at = new Date().toISOString()) {
-    try {
-        if (autoSaveFolder) {
-            const file = await autoSaveFolder.getFileHandle(dailyBackupName(autoSaveDevice, at), { create: true });
-            const w = await file.createWritable();
-            await w.write(text);
-            await w.close();
-            return dailyBackupName(autoSaveDevice, at);
-        }
-        if (!autoSaveHandle)
-            return false;
-        const w = await autoSaveHandle.createWritable();
-        await w.write(text);
-        await w.close();
-        return true;
-    }
-    catch (err) {
-        autoSaveHandle = null;
-        autoSaveFolder = null;
-        await forgetAutoSaveFolder();
-        return false;
-    }
+    const blob = new Blob([text], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = name;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    return true;
 }
 // Hands the browser a file to download. Works in every browser; nothing is sent anywhere.
 async function downloadFile(name, text) {
@@ -36061,7 +36500,6 @@ function EduSphereApp() {
     const [forgotPin, setForgotPin] = (0, react_1.useState)(false);
     const [pendingProfile, setPendingProfile] = (0, react_1.useState)(null); // carried through a reset so the recovery code survives
     const [typedCode, setTypedCode] = (0, react_1.useState)('');
-    const [showTouchlessTip, setShowTouchlessTip] = (0, react_1.useState)(false);
     const [showContact, setShowContact] = (0, react_1.useState)(false);
     const [showWonderTip, setShowWonderTip] = (0, react_1.useState)(false);
     const [showHelpTip, setShowHelpTip] = (0, react_1.useState)(false);
@@ -36069,6 +36507,7 @@ function EduSphereApp() {
     const [showRecommendTip, setShowRecommendTip] = (0, react_1.useState)(false);
     const [confirmDelete, setConfirmDelete] = (0, react_1.useState)(null); // the hidden student whose deletion is being confirmed
     const [backupNudgeSeen, setBackupNudgeSeen] = (0, react_1.useState)(false); // the first-backup popup shows once per session
+    const [openResourceGrades, setOpenResourceGrades] = (0, react_1.useState)([]); // which grade folds are open on the resource pages
     const [placementWalk, setPlacementWalk] = (0, react_1.useState)(null); // { subject, grades, cleared } while a placement check runs
     const [placementResult, setPlacementResult] = (0, react_1.useState)(null); // what the last placement check decided
     const [showProgressTip, setShowProgressTip] = (0, react_1.useState)(false);
@@ -36088,10 +36527,9 @@ function EduSphereApp() {
         setScreen('educator-pick'); };
     const pendingScroll = (0, react_1.useRef)(null);
     const rememberHere = () => { returnTo.current = { screen, scrollY: typeof window !== 'undefined' ? window.scrollY : 0 }; };
-    const closeTips = () => { setRestoreNote(''); setShowBackupTip(false); setShowRosterTip(false); setShowStateTip(false); setShowTouchlessTip(false); setShowWonderTip(false); setShowProgressTip(false); setShowHelpTip(false); setShowProTip(false); setShowRecommendTip(false); setForgotPin(false); setSetupError(''); };
+    const closeTips = () => { setRestoreNote(''); setShowBackupTip(false); setShowRosterTip(false); setShowStateTip(false); setShowWonderTip(false); setShowProgressTip(false); setShowHelpTip(false); setShowProTip(false); setShowRecommendTip(false); setForgotPin(false); setSetupError(''); };
     const [stateCode, setStateCode] = (0, react_1.useState)(''); // the educator's state, chosen once
     const [stateDraft, setStateDraft] = (0, react_1.useState)('');
-    const [autoSaving, setAutoSaving] = (0, react_1.useState)(false); // a file has been chosen for touchless backup
     const [activeOpen, setActiveOpen] = (0, react_1.useState)(true); // the Active students list, open by default
     const [hiddenOpen, setHiddenOpen] = (0, react_1.useState)(false);
     const [adding, setAdding] = (0, react_1.useState)(false); // the add-a-student popup
@@ -36107,33 +36545,7 @@ function EduSphereApp() {
     const [heardNote, setHeardNote] = (0, react_1.useState)(false); // the "on silent" note, once anything has been spoken on this screen
     onSpoke = () => setHeardNote(true);
     const [now, setNow] = (0, react_1.useState)(Date.now()); // ticks each second while an educator is signed in, for the countdown
-    const [touchlessNote, setTouchlessNote] = (0, react_1.useState)(''); // what the touchless backup last did
-    const [touchlessWaiting, setTouchlessWaiting] = (0, react_1.useState)(false); // a remembered folder needs one confirming tap after a restart
-    const resumeTouchlessNow = async () => { if (await resumeTouchless()) {
-        setAutoSaving(true);
-        setTouchlessWaiting(false);
-        setTouchlessNote('Touchless backup resumed. Daily files continue in your chosen folder.');
-    }
-    else
-        setTouchlessNote('The browser did not allow the folder. Open Backup classroom and choose the destination again.'); };
-    const resumeControl = touchlessWaiting && !autoSaving ? (react_1.default.createElement("div", { style: { margin: '8px 0 12px', textAlign: 'center' } },
-        react_1.default.createElement("button", { type: "button", onClick: resumeTouchlessNow, className: "edu-glow", style: { background: 'none', border: 'none', color: C.green, fontFamily: FONT, fontSize: 16, fontWeight: 600, cursor: 'pointer', padding: '6px 10px', textDecoration: 'underline' } }, "Resume touchless backup"),
-        react_1.default.createElement("p", { style: { margin: '4px 0 0', fontSize: 13, color: C.muted, textAlign: 'center' } }, "The browser restarted since the folder was chosen. One tap and daily backups carry on."))) : null;
-    (0, react_1.useEffect)(() => {
-        if (screen !== 'educator-pick' || autoSaving)
-            return;
-        (async () => {
-            const state = await touchlessRecallState();
-            autoSaveDevice = deviceName || 'device';
-            if (state === 'granted') {
-                setAutoSaving(true);
-                setTouchlessWaiting(false);
-                setTouchlessNote('Touchless backup resumed by itself and updates are sent each time a student completes a module.');
-            }
-            else if (state === 'prompt')
-                setTouchlessWaiting(true);
-        })();
-    }, [screen]);
+    const [autoBackupNote, setAutoBackupNote] = (0, react_1.useState)(''); // what the last automatic backup did
     (0, react_1.useEffect)(() => {
         if (screen !== 'backup')
             return;
@@ -36312,7 +36724,7 @@ function EduSphereApp() {
         const probe = buildPlacementProbe(subject, grades[0], (Date.now() % 2147483646) + 1);
         if (!probe)
             return;
-        setPlacementWalk({ subject, grades, cleared: [] });
+        setPlacementWalk({ subject, grades, cleared: [], failed: [], direction: 'up' });
         setModuleId(probe.moduleId);
         setAttempt(probe);
         setQIndex(0);
@@ -36327,9 +36739,32 @@ function EduSphereApp() {
         setQShownAt(Date.now());
         setScreen('practice');
     }
+    // A backup file after every finished round, straight to the downloads folder. Never during a walk-through.
+    async function autoBackup() {
+        if (!record || record.preview)
+            return;
+        try {
+            const everything = await gatherEverything(roster);
+            const at = new Date().toISOString();
+            const text = JSON.stringify(buildBackup({ ...everything, deviceName, recovery: educator ? educator.recovery : null }, at), null, 2);
+            const name = backupFileName(deviceName, (everything.students || []).length, at);
+            if (plainDownload(name, text)) {
+                setBackupAt(at);
+                await saveBackupAt(at);
+                setAutoBackupNote(`Backup saved to downloads at ${fmtDate(at)}.`);
+            }
+        }
+        catch (e) {
+            setAutoBackupNote('The automatic backup could not be saved this time.');
+        }
+    }
     function startPreview(level) {
-        // A walk-through record: the recommended courses for the band, nothing saved, every module open.
-        const events = [makeCoursesEnabledEvent(recommendedCourseIds([], level), new Date().toISOString())];
+        // A walk-through record: every course in the band, every subject, pre-K included, nothing saved, every module open.
+        const band = levelFor(level);
+        const ids = COURSES.filter((c) => band && band.grades.includes(c.grade)).map((c) => c.id);
+        const events = [makeCoursesEnabledEvent(ids, new Date().toISOString())];
+        setOpenSubject(null);
+        setShowFinished(false);
         setRecord({ name: 'Walk-through', events, preview: true, level });
         setEducatorRecord(null);
         setScreen('overview');
@@ -36439,12 +36874,19 @@ function EduSphereApp() {
         }
         if (attempt.placement && placementWalk) {
             const cleared = placementCleared(coreResults);
+            const all = placementGradesAll(placementWalk.subject);
+            const here = all.indexOf(attempt.grade);
             const nextCleared = cleared ? [...placementWalk.cleared, attempt.grade] : placementWalk.cleared;
-            const nextGrade = cleared ? placementWalk.grades[placementWalk.grades.indexOf(attempt.grade) + 1] : null;
-            if (cleared && nextGrade) {
-                // Cleared this grade: walk up one and keep going, no result screen in between.
+            const failed = cleared ? (placementWalk.failed || []) : [...(placementWalk.failed || []), attempt.grade];
+            // Walking up: cleared, and there is a higher grade in the band. Walking down: nothing cleared yet,
+            // this grade was not cleared, and there is a lower grade to try.
+            const upIndex = placementWalk.grades.indexOf(attempt.grade);
+            const goUp = cleared && placementWalk.direction !== 'down' && upIndex >= 0 && placementWalk.grades[upIndex + 1];
+            const goDown = !cleared && nextCleared.length === 0 && here > 0;
+            const nextGrade = goUp ? placementWalk.grades[upIndex + 1] : goDown ? all[here - 1] : null;
+            if (nextGrade) {
                 const probe = buildPlacementProbe(placementWalk.subject, nextGrade, (Date.now() % 2147483646) + 1);
-                setPlacementWalk({ ...placementWalk, cleared: nextCleared });
+                setPlacementWalk({ ...placementWalk, cleared: nextCleared, failed, direction: goDown ? 'down' : placementWalk.direction });
                 setModuleId(probe.moduleId);
                 setAttempt(probe);
                 setQIndex(0);
@@ -36457,7 +36899,9 @@ function EduSphereApp() {
                 return;
             }
             const st = findStudent(roster, record.name);
-            const outcome = placementOutcome(placementWalk.subject, st ? st.level : null, nextCleared);
+            // The start is the lowest grade not cleared: a walk down that clears grade 7 after failing 9 and 8 starts at 8.
+            const startGrade = failed.length ? failed.slice().sort((a, b) => all.indexOf(a) - all.indexOf(b))[0] : null;
+            const outcome = placementOutcome(placementWalk.subject, st ? st.level : null, nextCleared, startGrade);
             const at = new Date().toISOString();
             await addEvent(makePlacementEvent(placementWalk.subject, outcome.startGrade, outcome.clearedModuleIds, at));
             // Switch on the starting grade's courses in this subject, keeping everything else assigned.
@@ -36485,21 +36929,7 @@ function EduSphereApp() {
         if (nextUp.length)
             await addEvent(makeCoursesEnabledEvent([...enabledCourseIds([...record.events, event]), ...nextUp], new Date().toISOString()));
         setScreen('result');
-        // Touchless backup: if a file was chosen, it is rewritten now with everything on the device.
-        if (autoSaving) {
-            const everything = await gatherEverything(roster);
-            const at = new Date().toISOString();
-            const wrote = await writeAutoSave(JSON.stringify(buildBackup({ ...everything, deviceName, recovery: educator ? educator.recovery : null }, at), null, 2));
-            if (wrote) {
-                setBackupAt(at);
-                await saveBackupAt(at);
-                setTouchlessNote(typeof wrote === 'string' ? `Touchless backup saved today's file (${wrote}) at ${fmtDate(at)}.` : `Touchless backup rewrote its file at ${fmtDate(at)}.`);
-            }
-            else {
-                setAutoSaving(false);
-                setTouchlessNote('Touchless backup could not write its file and has switched off. Open Backup classroom and choose the destination again.');
-            }
-        }
+        await autoBackup();
     }
     // Which module/course is open, and read-aloud for courses that use it.
     // (Hooks live here, above the first early return, so React sees the same hooks every render.)
@@ -36665,10 +37095,7 @@ function EduSphereApp() {
                         }
                         else
                             setScreen('welcome'); }, style: { background: 'none', border: 'none', color: C.green, fontFamily: FONT, fontSize: 15, cursor: 'pointer' } }, "Exit")),
-                react_1.default.createElement("p", { className: "edu-overview-body", style: { color: C.muted, margin: '0 0 22px', textAlign: 'center', fontSize: youngLearner ? 22 : 18, fontWeight: youngLearner ? 600 : 400 } },
-                    "Hi ",
-                    displayName,
-                    ", welcome back!"),
+                react_1.default.createElement("p", { className: "edu-overview-body", style: { color: C.muted, margin: '0 0 22px', textAlign: 'center', fontSize: youngLearner ? 22 : 18, fontWeight: youngLearner ? 600 : 400 } }, record.preview ? 'Walkthrough mode. Nothing here is recorded.' : `Hi ${displayName}, welcome back!`),
                 react_1.default.createElement(RemembranceCard, null),
                 !youngLearner && placementPending.map((subject) => (react_1.default.createElement("div", { key: subject, style: { ...card, background: C.greenSoft, borderColor: C.green, textAlign: 'center', marginTop: 18 } },
                     react_1.default.createElement("p", { style: { margin: '0 0 6px', fontSize: 18, fontWeight: 700 } },
@@ -36917,11 +37344,10 @@ function EduSphereApp() {
             react_1.default.createElement(PageChrome, { idleWarning: idleWarning, logoutIn: logoutIn, walkthrough: !!(record && record.preview) }),
             react_1.default.createElement("div", { className: "edu-wrap", style: wrap },
                 react_1.default.createElement("div", { style: { ...card, textAlign: 'center' } },
-                    react_1.default.createElement("h1", { style: { fontSize: 24, margin: '12px 0 6px' } }, "Hand it to your teacher"),
-                    react_1.default.createElement("p", { style: { fontSize: 16, margin: '0 0 10px' } }, "Give your teacher the paper, or the printed or sent file if you typed it. This module opens the next one once your teacher has read it and checked it off."),
-                    react_1.default.createElement("p", { style: { fontSize: 15, margin: 0, color: C.muted } }, "The app keeps only the prompt and the time. The writing itself is never stored here.")),
+                    react_1.default.createElement("h1", { style: { fontSize: 24, margin: '12px 0 6px' } }, "Great job!"),
+                    react_1.default.createElement("p", { style: { fontSize: 16, margin: 0 } }, String(lastEvent.prompt || '').startsWith('Typed') ? 'Now you just need to give your teacher your printed or sent file and the next module will open after they check it.' : 'Now you just need to give your teacher the paper and the next module will open after they check it.')),
                 react_1.default.createElement("div", { style: { textAlign: 'center' } },
-                    react_1.default.createElement(Btn, { onClick: () => setScreen('overview') }, "Back to my courses")))));
+                    react_1.default.createElement(Btn, { halo: true, onClick: () => setScreen('overview') }, "Back to my courses")))));
     }
     if (screen === 'placement-result' && placementResult) {
         const pr = placementResult;
@@ -36944,7 +37370,7 @@ function EduSphereApp() {
                         : react_1.default.createElement("p", { style: { fontSize: 16, margin: '0 0 10px' } }, "That is the first grade in your band, so you start at the beginning. Nothing you got wrong counts against you."),
                     react_1.default.createElement("p", { style: { fontSize: 15, margin: 0, color: C.muted } }, "Unlocked modules are not counted as mastered. The star on each one is still yours to earn, and memory checks will visit them along the way.")),
                 react_1.default.createElement("div", { style: { textAlign: 'center' } },
-                    react_1.default.createElement(Btn, { onClick: () => { setPlacementResult(null); setScreen('overview'); } }, "Back to my courses")))));
+                    react_1.default.createElement(Btn, { halo: true, onClick: () => { setPlacementResult(null); setScreen('overview'); } }, "Back to my courses")))));
     }
     if (screen === 'checkpoint-result' && lastEvent && lastEvent.type === 'checkpoint_completed') {
         const missed = [...new Set(lastEvent.results.filter((r) => !r.correct).map((r) => r.moduleId))].map((id) => getModule(id)).filter(Boolean);
@@ -36969,7 +37395,7 @@ function EduSphereApp() {
                                 "."),
                             react_1.default.createElement("p", { style: { fontSize: 15, margin: 0, color: C.muted } }, "Nothing you passed is lost. A miss here only means the memory needs one more visit, so those modules are marked on your course list."))),
                 react_1.default.createElement("div", { style: { textAlign: 'center' } },
-                    react_1.default.createElement(Btn, { onClick: () => setScreen('overview') }, "Back to my courses")))));
+                    react_1.default.createElement(Btn, { halo: true, onClick: () => setScreen('overview') }, "Back to my courses")))));
     }
     if (screen === 'result' && lastEvent && mod && course && course.readAloud) {
         const mastered = isMasteredAttempt(lastEvent);
@@ -37261,23 +37687,36 @@ function EduSphereApp() {
             react_1.default.createElement(PageChrome, { idleWarning: idleWarning, logoutIn: logoutIn, walkthrough: !!(record && record.preview) }),
             react_1.default.createElement("div", { className: "edu-wrap", style: wrap },
                 react_1.default.createElement("button", { type: "button", onClick: () => setScreen('educator-pick'), style: { ...linkBtn, marginBottom: 6 } }, "Back"),
-                react_1.default.createElement("h1", { style: { fontSize: 24, margin: '12px 0 4px', textAlign: 'center' } }, lists ? 'Reading lists by grade' : 'Science experiments by age'),
-                react_1.default.createElement("p", { style: { color: C.muted, marginTop: 0, fontSize: 15, textAlign: 'center' } }, lists ? 'Titles and authors only. Nothing from the books is stored here; these are pointers to a library shelf. A few titles are marked as read in selections.' : 'Common materials, an adult alongside, and a question to ask before and after. Nothing about doing them is recorded.'),
-                lists ? [...gradesWithCourses(), 'grown'].map((g) => (react_1.default.createElement("div", { key: g, style: card },
-                    react_1.default.createElement("p", { style: { margin: '0 0 6px', fontWeight: 600 } }, g === 'grown' ? 'For parents, educators and advanced readers' : gradeLabel(g)),
-                    react_1.default.createElement("ul", { style: { margin: 0, paddingLeft: 20, fontSize: 15 } }, readingListFor(g).map((t) => react_1.default.createElement("li", { key: t }, t)))))) : gradesWithCourses().filter((g) => experimentsFor(g).length).map((g) => (react_1.default.createElement("div", { key: g, style: card },
-                    react_1.default.createElement("p", { style: { margin: '0 0 8px', fontWeight: 600 } }, gradeLabel(g)),
-                    experimentsFor(g).map((x) => (react_1.default.createElement("div", { key: x.title, style: { borderTop: `1px solid ${C.line}`, padding: '8px 0' } },
-                        react_1.default.createElement("p", { style: { margin: '0 0 2px', fontWeight: 600 } }, x.title),
-                        react_1.default.createElement("p", { style: { margin: '0 0 4px', fontSize: 15 } },
-                            react_1.default.createElement("strong", null, "Ask first:"),
-                            " ",
-                            x.ask),
-                        react_1.default.createElement("p", { style: { margin: '0 0 4px', fontSize: 15 } }, x.do),
-                        react_1.default.createElement("p", { style: { margin: 0, fontSize: 15, color: C.muted } },
-                            react_1.default.createElement("strong", null, "What you see:"),
-                            " ",
-                            x.see))))))),
+                react_1.default.createElement("h1", { style: { fontSize: 24, margin: '12px 0 4px', textAlign: 'center' } }, lists ? 'Reading List Ideas' : 'Science Experiment Ideas'),
+                react_1.default.createElement("p", { style: { color: C.muted, marginTop: 0, fontSize: 15, textAlign: 'center' } }, lists ? 'Here\'s a comprehensive list of books you might consider incorporating into your curriculum. Regular reading is fantastic for growing brains!' : 'Science is way more fun when it\'s tangible. Here are some ideas for every age group!'),
+                (lists ? [...gradesWithCourses(), 'grown'] : gradesWithCourses().filter((g) => experimentsFor(g).length)).map((g) => {
+                    const open = openResourceGrades.includes(g);
+                    const title = g === 'grown' ? 'For parents, educators and advanced readers' : gradeLabel(g);
+                    const count = lists ? readingListFor(g).length : experimentsFor(g).length;
+                    return (react_1.default.createElement("div", { key: g, style: { borderRadius: 12, overflow: 'hidden', marginBottom: 10, background: 'rgb(26, 71, 58)' } },
+                        react_1.default.createElement("button", { type: "button", onClick: () => setOpenResourceGrades((list) => (list.includes(g) ? list.filter((x) => x !== g) : [...list, g])), "aria-expanded": open, style: { fontFamily: FONT, width: '100%', textAlign: 'left', background: 'none', border: 'none', padding: '14px 16px', cursor: 'pointer', color: '#fff' } },
+                            react_1.default.createElement("div", { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10 } },
+                                react_1.default.createElement("span", { style: { fontSize: 18, fontWeight: 600 } }, title),
+                                react_1.default.createElement("span", { style: { fontSize: 14, opacity: 0.85, whiteSpace: 'nowrap' } },
+                                    count,
+                                    " ",
+                                    lists ? (count === 1 ? 'book' : 'books') : 'ideas',
+                                    " ",
+                                    open ? '▴' : '▾'))),
+                        react_1.default.createElement("div", { className: "edu-collapsible", style: { display: open ? 'block' : 'none', background: C.greenSoft, padding: '14px 18px' } }, lists
+                            ? react_1.default.createElement("ul", { style: { margin: 0, paddingLeft: 20, fontSize: 15 } }, readingListFor(g).map((t) => react_1.default.createElement("li", { key: t, style: { margin: '3px 0' } }, t)))
+                            : experimentsFor(g).map((x) => (react_1.default.createElement("div", { key: x.title, style: { borderTop: `1px solid rgba(26, 71, 58, 0.15)`, padding: '8px 0' } },
+                                react_1.default.createElement("p", { style: { margin: '0 0 2px', fontWeight: 600 } }, x.title),
+                                react_1.default.createElement("p", { style: { margin: '0 0 4px', fontSize: 15 } },
+                                    react_1.default.createElement("strong", null, "Ask first:"),
+                                    " ",
+                                    x.ask),
+                                react_1.default.createElement("p", { style: { margin: '0 0 4px', fontSize: 15 } }, x.do),
+                                react_1.default.createElement("p", { style: { margin: 0, fontSize: 15, color: C.muted } },
+                                    react_1.default.createElement("strong", null, "What you see:"),
+                                    " ",
+                                    x.see)))))));
+                }),
                 react_1.default.createElement("div", { className: "edu-no-print", style: { textAlign: 'center', marginTop: 12 } },
                     react_1.default.createElement(Btn, { kind: "secondary", onClick: () => window.print() }, "Print")))));
     }
@@ -37353,7 +37792,7 @@ function EduSphereApp() {
                             const reviewed = inStage.filter((w) => isWonderApproved(wonderReview, w.id) || isWonderHidden(wonderReview, w.id));
                             const foldOpen = openApproved.includes(stage.id);
                             return (react_1.default.createElement(react_1.default.Fragment, null,
-                                reviewed.length > 0 && (react_1.default.createElement("div", { style: { ...card, padding: 0, overflow: 'hidden' } },
+                                reviewed.length > 0 && (react_1.default.createElement("div", { style: { ...card, padding: 0, overflow: 'hidden', background: C.greenSoft, borderColor: C.greenSoft } },
                                     react_1.default.createElement("button", { type: "button", onClick: () => setOpenApproved((list) => (list.includes(stage.id) ? list.filter((x) => x !== stage.id) : [...list, stage.id])), "aria-expanded": foldOpen, style: { fontFamily: FONT, width: '100%', textAlign: 'left', background: 'none', border: 'none', padding: 14, cursor: 'pointer', color: C.ink, display: 'flex', justifyContent: 'space-between', alignItems: 'center' } },
                                         react_1.default.createElement("span", { style: { fontSize: 15, fontWeight: 600 } },
                                             "Reviewed (",
@@ -37423,7 +37862,7 @@ function EduSphereApp() {
             react_1.default.createElement(PageChrome, { idleWarning: idleWarning, logoutIn: logoutIn, walkthrough: !!(record && record.preview) }),
             react_1.default.createElement("div", { className: "edu-wrap", style: wrap },
                 react_1.default.createElement("button", { type: "button", onClick: () => setScreen('educator-pick'), style: linkBtn }, "Back to Classroom"),
-                react_1.default.createElement("h1", { style: { fontSize: 24, margin: '12px 0 4px' } }, "Practical Life Skills"),
+                react_1.default.createElement("h1", { style: { fontSize: 24, margin: '12px 0 4px', textAlign: 'center' } }, "Practical Life Skills"),
                 react_1.default.createElement("p", { style: { color: C.muted, marginTop: 0, fontSize: 15 } }, "Making the academic work efficient frees up hours. These are ideas for what to do with them, listed from the earliest skills at the top to the most mature at the bottom. Nothing here is graded, tracked, or shown to a student."),
                 react_1.default.createElement("div", { style: { ...card, marginTop: 22, background: C.greenSoft, borderColor: C.greenSoft } },
                     react_1.default.createElement("p", { style: { margin: '0 0 8px', fontSize: 16, fontWeight: 600 } },
@@ -37463,7 +37902,7 @@ function EduSphereApp() {
                                             done ? '✓ ' : '',
                                             sk.title),
                                         react_1.default.createElement("span", { style: { fontSize: 14, opacity: 0.8, whiteSpace: 'nowrap' } }, open ? '▴' : '▾'))),
-                                react_1.default.createElement("div", { className: "edu-collapsible", style: { display: open ? 'block' : 'none', background: C.surface, padding: '14px 18px' } },
+                                react_1.default.createElement("div", { className: "edu-collapsible", style: { display: open ? 'block' : 'none', background: C.greenSoft, padding: '14px 18px' } },
                                     react_1.default.createElement("p", { style: { margin: 0, fontSize: 15, lineHeight: 1.6 } }, sk.why),
                                     sk.ways.length > 0 && (react_1.default.createElement(react_1.default.Fragment, null,
                                         react_1.default.createElement("p", { style: { margin: '12px 0 4px', fontSize: 14, fontWeight: 600 } }, "Ways to practice"),
@@ -37730,7 +38169,6 @@ function EduSphereApp() {
                         react_1.default.createElement("button", { type: "button", onClick: () => { setLastActive(0); setIdleWarning(false); closeTips(); setScreen('welcome'); }, style: { background: 'none', border: 'none', color: C.muted, fontFamily: FONT, fontSize: 14, cursor: 'pointer', padding: 0, textDecoration: 'underline' } }, "Sign out")));
                 })(),
                 react_1.default.createElement("h1", { style: { fontSize: 24, margin: '12px 0 4px', textAlign: 'center' } }, "My Classroom"),
-                resumeControl,
                 educator && backupAt === null && !backupNudgeSeen && (react_1.default.createElement("div", { className: "edu-no-print", style: { position: 'fixed', inset: 0, background: 'rgba(36, 41, 31, 0.55)', zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 } },
                     react_1.default.createElement("div", { className: "edu-rise", style: { maxWidth: 420, width: '100%', background: C.surface, borderRadius: 14, padding: 22, textAlign: 'center' } },
                         react_1.default.createElement("p", { style: { margin: '0 0 8px', fontSize: 18, fontWeight: 600 } }, "Make your first backup soon"),
@@ -37816,7 +38254,7 @@ function EduSphereApp() {
                                 }
                             } }, "Add"),
                         rosterError && react_1.default.createElement("p", { style: { color: C.clay, fontSize: 14, margin: '10px 0 0' } }, rosterError)))),
-                visible.length === 0 && react_1.default.createElement("div", { style: card },
+                visible.length === 0 && react_1.default.createElement("div", { style: { ...card, background: C.greenSoft, borderColor: C.greenSoft, textAlign: 'center' } },
                     react_1.default.createElement("p", { style: { margin: 0, color: C.muted } }, "Nobody here yet. Add someone above.")),
                 visible.length > 0 && (react_1.default.createElement("div", { style: { ...card, padding: 10, background: 'linear-gradient(135deg, #E6F0E8 0%, #F3F8F4 100%)', borderColor: '#C9DCCF' } },
                     react_1.default.createElement("button", { type: "button", onClick: () => setActiveOpen(!activeOpen), "aria-expanded": activeOpen, style: { fontFamily: FONT, width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'linear-gradient(135deg, #D6E6DB 0%, #E6F0E8 100%)', border: '1px solid #C9DCCF', borderRadius: 12, padding: '14px 16px', marginBottom: 10, cursor: 'pointer', color: C.ink } },
@@ -37886,23 +38324,37 @@ function EduSphereApp() {
                             st.mergedInto ? ` (merged into ${(findStudent(roster, st.mergedInto) || { label: st.mergedInto }).label})` : ''),
                         !st.mergedInto && (react_1.default.createElement("span", { style: { display: 'inline-flex', gap: 12, alignItems: 'center' } },
                             react_1.default.createElement("button", { type: "button", onClick: () => applyRoster(setStudentActive(roster, st.id, true)), style: linkBtn }, "Show again"),
-                            confirmDelete === st.id
-                                ? react_1.default.createElement("span", { style: { fontSize: 13, color: C.clay } },
-                                    "Delete every record for ",
-                                    st.label,
-                                    "? ",
-                                    react_1.default.createElement("button", { type: "button", onClick: async () => { await storageDelete(STORE_PREFIX + slug(st.id)); await applyRoster(removeStudent(roster, st.id)); setConfirmDelete(null); }, style: { ...linkBtn, color: C.clay, fontSize: 13, padding: 0 } }, "Yes, delete"),
-                                    " \u00B7 ",
-                                    react_1.default.createElement("button", { type: "button", onClick: () => setConfirmDelete(null), style: { ...linkBtn, fontSize: 13, padding: 0 } }, "Keep"))
-                                : react_1.default.createElement("button", { type: "button", onClick: () => setConfirmDelete(st.id), style: { ...linkBtn, color: C.clay } }, "Delete")))))),
-                    react_1.default.createElement("p", { style: { color: C.muted, fontSize: 13, margin: '8px 0 0', padding: '0 20px', textAlign: 'center' } }, "Inactive students are those you've chosen to hide. All student progress is retained but they are hidden from the login screen."))),
+                            react_1.default.createElement("button", { type: "button", onClick: () => setConfirmDelete(st.id), style: { ...linkBtn, color: C.clay } }, "Delete")))))),
+                    react_1.default.createElement("p", { style: { color: C.muted, fontSize: 13, margin: '8px 0 0', padding: '0 20px', textAlign: 'center' } }, "Inactive students are those you've chosen to hide. All student progress is retained but they are hidden from the login screen. Deleting inactive students will remove all of their history and progress from this point forward but data can still be recovered from old backup files."),
+                    hidden.filter((st) => !st.mergedInto).length > 1 && (react_1.default.createElement("div", { style: { textAlign: 'center', marginTop: 14 } },
+                        react_1.default.createElement("button", { type: "button", onClick: () => setConfirmDelete('__all__'), style: { ...linkBtn, color: C.clay, fontSize: 15 } }, "Delete all inactive students"))))),
+                confirmDelete && (() => {
+                    const all = confirmDelete === '__all__';
+                    const targets = all ? hidden.filter((st) => !st.mergedInto) : hidden.filter((st) => st.id === confirmDelete);
+                    if (!targets.length)
+                        return null;
+                    const doDelete = async () => {
+                        let next = roster;
+                        for (const st of targets) {
+                            await storageDelete(STORE_PREFIX + slug(st.id));
+                            next = removeStudent(next, st.id);
+                        }
+                        await applyRoster(next);
+                        setConfirmDelete(null);
+                    };
+                    return (react_1.default.createElement("div", { role: "dialog", "aria-modal": "true", onClick: () => setConfirmDelete(null), style: { position: 'fixed', inset: 0, background: 'rgba(36, 41, 31, 0.55)', zIndex: 80, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20 } },
+                        react_1.default.createElement("div", { onClick: (e) => e.stopPropagation(), style: { ...card, maxWidth: 420, width: '100%', textAlign: 'center', padding: 22, boxShadow: '0 12px 40px rgba(0,0,0,0.25)' } },
+                            react_1.default.createElement("p", { style: { margin: '0 0 8px', fontSize: 19, fontWeight: 700 } }, all ? `Delete every record for all ${targets.length} inactive students?` : `Delete every record for ${targets[0].label}?`),
+                            react_1.default.createElement("p", { style: { margin: '0 0 18px', fontSize: 15, color: C.muted } }, "Their history and progress leave this device for good. Old backup files still hold them."),
+                            react_1.default.createElement("div", { style: { display: 'flex', justifyContent: 'center', gap: 24, flexWrap: 'wrap' } },
+                                react_1.default.createElement(Btn, { onClick: doDelete, style: { background: C.clay, borderColor: C.clay, minWidth: 140 } }, "Yes, delete"),
+                                react_1.default.createElement(Btn, { kind: "secondary", onClick: () => setConfirmDelete(null), style: { minWidth: 140 } }, "Keep")))));
+                })(),
                 react_1.default.createElement(RemembranceCard, { educator: true }),
                 react_1.default.createElement("div", { style: { ...card, marginTop: 22, textAlign: 'center' } },
-                    react_1.default.createElement("p", { style: { margin: '0 0 6px', fontWeight: 600 } }, "Walk through it as a student"),
+                    react_1.default.createElement("p", { style: { margin: '0 0 6px', fontWeight: 600 } }, "Walk through as a student"),
                     react_1.default.createElement("p", { style: { margin: '0 0 10px', fontSize: 15 } }, "See exactly what a student sees. Every module is open, every question can be skipped, and nothing is recorded."),
-                    react_1.default.createElement("div", { style: { display: 'flex', flexWrap: 'wrap', gap: 8, justifyContent: 'center' } }, LEVELS.map((lv) => react_1.default.createElement(Btn, { key: lv.id, kind: "secondary", onClick: () => startPreview(lv.id) },
-                        "Walk through ",
-                        lv.title.toLowerCase())))),
+                    react_1.default.createElement("div", { style: { display: 'flex', flexWrap: 'wrap', gap: 8, justifyContent: 'center' } }, LEVELS.map((lv) => react_1.default.createElement("button", { key: lv.id, type: "button", "aria-label": `Walk through ${lv.title.toLowerCase()}`, onClick: () => startPreview(lv.id), style: { fontFamily: FONT, fontSize: 15, fontWeight: 600, padding: '10px 16px', borderRadius: 10, background: C.surface, border: `2px solid ${C.green}`, color: C.green, cursor: 'pointer' } }, lv.title)))),
                 react_1.default.createElement("div", { className: "edu-two-up", style: { marginTop: 22 } },
                     FEATURES.reflection && (react_1.default.createElement("div", { style: { ...card, background: 'linear-gradient(135deg, #DCEBE1 0%, #EEF5F0 100%)', borderColor: '#C9DCCF', display: 'flex', flexDirection: 'column' } },
                         react_1.default.createElement("p", { style: { margin: '0 0 6px', fontWeight: 600, textAlign: 'center' } }, "Wonder Questions"),
@@ -37932,11 +38384,6 @@ function EduSphereApp() {
                         react_1.default.createElement("span", { style: { position: 'relative', display: 'inline-flex', alignItems: 'center', gap: 6 } },
                             react_1.default.createElement("button", { type: "button", onClick: () => setScreen('backup'), className: `edu-backup-link${overdue ? ' edu-glow' : ''}`, style: { position: 'relative', background: 'none', border: 'none', color: C.green, fontFamily: FONT, fontSize: 16, fontWeight: 600, cursor: 'pointer', padding: '8px 12px', textDecoration: 'underline' } }, "Backup classroom"),
                             react_1.default.createElement("button", { type: "button", onClick: () => setShowBackupTip(!showBackupTip), "aria-label": "About backups", style: { position: 'relative', background: 'none', border: `1.5px solid ${C.green}`, color: C.green, fontFamily: FONT, fontSize: 12, fontWeight: 700, lineHeight: '15px', width: 18, height: 18, borderRadius: 999, cursor: 'pointer', padding: 0 } }, "i")),
-                        resumeControl,
-                        touchlessNote && (react_1.default.createElement("div", { style: { margin: '6px 0 0', textAlign: 'center' } },
-                            react_1.default.createElement("p", { style: { margin: 0, fontSize: 13, color: touchlessNote.includes('switched off') || touchlessNote.includes('did not allow') ? C.clay : C.muted, display: 'inline' } }, touchlessNote),
-                            touchlessNote.includes('resumed') && react_1.default.createElement(InfoButton, { onClick: () => setShowProTip(!showProTip), label: "Pro tip", open: showProTip }),
-                            showProTip && react_1.default.createElement(TipText, null, "Pro tip: Open backup file to view recovery code and time stamp of last backup."))),
                         showBackupTip && (react_1.default.createElement("p", { style: { ...tipStyle, textAlign: 'left' } }, "We recommend backing up at the end of each day. Since all student data lives on this device (rather than in a cloud) the ability to restore progress after a browser's cache is cleared becomes paramount. This backup creates a file that holds all student progression, educator settings, life skill progress etc. Share it to your email, drive folder or any place that can be accessed if and when your device becomes compromised. Backup files allow you to restore everything with ease!"))));
                 })(),
                 react_1.default.createElement(ContactLine, { onOpen: () => setShowContact(true) }),
@@ -38060,27 +38507,11 @@ function EduSphereApp() {
                                     setBackupNote('Downloads are not available here.');
                             } }, "Download backup")),
                     backupNote && react_1.default.createElement("p", { style: { margin: '10px 0 0', fontSize: 14, color: C.muted, textAlign: 'center' } }, backupNote)),
-                canAutoSave() && (react_1.default.createElement("div", { style: card },
-                    react_1.default.createElement("p", { style: { margin: '0 0 6px', fontWeight: 600 } },
-                        "Touchless backup",
-                        react_1.default.createElement("button", { type: "button", onClick: () => setShowTouchlessTip(!showTouchlessTip), "aria-label": "Touchless backup exceptions", style: { background: 'none', border: `1.5px solid ${C.green}`, color: C.green, fontFamily: FONT, fontSize: 12, fontWeight: 700, lineHeight: '15px', width: 18, height: 18, borderRadius: 999, cursor: 'pointer', padding: 0, marginLeft: 8, verticalAlign: 'middle' } }, "i")),
-                    showTouchlessTip && react_1.default.createElement(TipText, null,
-                        react_1.default.createElement("p", { style: { margin: '0 0 8px' } }, "Touchless Backups only work with Chrome or Edge (laptop or PC). It does not work on iPads or in Safari as these options prevent pages from writing files. If you're using an iPad or Safari, you must manually backup your classroom and the file's safekeeping is up to you. We recommend shared cloud files."),
-                        react_1.default.createElement("p", { style: { margin: 0 } }, "Our touchless backup feature remembers your chosen folder across restarts. While some devices resume backups on their own, others require a 'single tap resume' which will be displayed in an obvious location upon login.")),
-                    react_1.default.createElement("p", { style: { margin: '0 0 4px', fontSize: 14, color: C.muted, textAlign: 'center' } }, "Choose a folder once (ideally a shared folder) and this device will continually backup student progress as modules are completed. One file, continuously refreshed throughout the day."),
-                    react_1.default.createElement("p", { style: { margin: '0 0 10px', fontSize: 13, color: C.muted, textAlign: 'center', fontStyle: 'italic' } }, "For some browsers, you will need to \"resume touchless backup\" daily."),
-                    resumeControl,
-                    autoSaving
-                        ? react_1.default.createElement("p", { style: { margin: 0, fontSize: 15, color: C.green, fontWeight: 600, textAlign: 'center' } },
-                            "Touchless backup is on. One file per day is kept in your chosen folder, rewritten after every completed module. If the browser restarts, the Classroom page offers one tap to resume.",
-                            touchlessNote && (touchlessNote.includes('rewrote') || touchlessNote.includes('saved today')) ? ` ${touchlessNote}` : '')
-                        : touchlessWaiting ? null : react_1.default.createElement("div", { style: { textAlign: 'center' } },
-                            react_1.default.createElement(Btn, { kind: "secondary", onClick: async () => { if (await chooseAutoSaveFile(touchlessFileName(deviceName), deviceName)) {
-                                    setAutoSaving(true);
-                                    const f = await makeFile();
-                                    if (await writeAutoSave(f.text))
-                                        await markDone(f.at, 'Touchless backup is on and the first copy is written.');
-                                } }, style: { width: 280 } }, "Choose a Destination")))),
+                react_1.default.createElement("div", { style: card },
+                    react_1.default.createElement("p", { style: { margin: '0 0 6px', fontWeight: 600 } }, "Backups happen by themselves"),
+                    react_1.default.createElement("p", { style: { margin: '0 0 6px', fontSize: 14, color: C.muted, textAlign: 'center' } }, "Every time a student finishes a round, a backup file is saved to this device's downloads folder. Nothing to set up and nothing to remember."),
+                    react_1.default.createElement("p", { style: { margin: 0, fontSize: 14, color: C.muted, textAlign: 'center' } }, "Only the most recent file is needed. Older backups can be deleted at any time to free up space. The button above saves one to a folder you choose, for a copy you keep somewhere safer."),
+                    autoBackupNote && react_1.default.createElement("p", { style: { margin: '8px 0 0', fontSize: 13, color: C.muted, textAlign: 'center' } }, autoBackupNote)),
                 react_1.default.createElement("div", { style: card },
                     react_1.default.createElement("p", { style: { margin: '0 0 6px', fontWeight: 600 } }, "Restore from backup"),
                     react_1.default.createElement("p", { style: { margin: '0 0 10px', fontSize: 14, color: C.muted, textAlign: 'center' } },

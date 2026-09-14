@@ -35897,7 +35897,7 @@ const KID_ANIMATION = `
   /* Loose text outside the tiles carries a backing in the page's own color, so no star ever
      sits behind a heading, a paragraph or a text link. Inside a tile the tile already covers it. */
   .edu-wrap :is(p, h1, h2, h3, li, label) { background: #F5F7F1; }
-  .edu-wrap [style*="border-radius: 14px"] :is(p, h1, h2, h3, li, label) { background: transparent; }
+  .edu-wrap :is([style*="border-radius: 14px"], [style*="border-radius: 12px"], [style*="border-radius: 10px"], button) :is(p, h1, h2, h3, li, label) { background: transparent; }
   .edu-wrap :is(button, a)[style*="background: none"] { background: #F5F7F1 !important; }
   .edu-wrap [style*="border-radius: 14px"] :is(button, a)[style*="background: none"] { background: transparent !important; }
 }
@@ -36289,7 +36289,7 @@ function PageStars() {
         PAGE_STARS.dust.map((b, i) => react_1.default.createElement("path", { key: `d${i}`, d: b.d, fill: "none", stroke: b.gold ? C.gold : C.green, strokeWidth: b.r * 2, strokeLinecap: "round", strokeOpacity: "0.32" })),
         PAGE_STARS.bright.map((st, i) => react_1.default.createElement("circle", { key: i, cx: st.x, cy: st.y, r: st.r, fill: st.gold ? C.gold : C.green, opacity: st.alpha }))));
 }
-const EDUCATOR_IDLE_MS = 30 * 1000;
+const EDUCATOR_IDLE_MS = 60 * 1000; // an educator stays signed in for a quiet minute; the chip warns for the last ten seconds
 function PageChrome({ idleWarning = false, stars = true, logoutIn = null, walkthrough = false }) {
     return (react_1.default.createElement(react_1.default.Fragment, null,
         react_1.default.createElement("style", null, WONDER_ANIMATION + PRINT_STYLES + KID_ANIMATION),
@@ -37728,7 +37728,7 @@ function EduSphereApp() {
             react_1.default.createElement("div", { className: "edu-wrap", style: wrap },
                 react_1.default.createElement("button", { type: "button", onClick: () => setScreen('educator-pick'), style: { ...linkBtn, marginBottom: 6 } }, "Back"),
                 react_1.default.createElement("h1", { style: { fontSize: 24, margin: '12px 0 4px', textAlign: 'center' } }, lists ? 'Reading List Ideas' : 'Science Experiment Ideas'),
-                react_1.default.createElement("p", { style: { color: C.muted, marginTop: 0, fontSize: 15, textAlign: 'center' } }, lists ? 'Here\'s a comprehensive list of books you might consider incorporating into your curriculum. Regular reading is fantastic for growing brains!' : 'Science is way more fun when it\'s tangible. Here are some ideas for every age group!'),
+                react_1.default.createElement("p", { style: { color: C.muted, margin: '0 0 26px', fontSize: 15, textAlign: 'center' } }, lists ? 'Here\'s a comprehensive list of books you might consider incorporating into your curriculum. Regular reading is fantastic for growing brains!' : 'Science is way more fun when it\'s tangible. Here are some ideas for every age group!'),
                 (lists ? [...gradesWithCourses(), 'grown'] : gradesWithCourses().filter((g) => experimentsFor(g).length)).map((g) => {
                     const open = openResourceGrades.includes(g);
                     const title = g === 'grown' ? 'For parents, educators and advanced readers' : gradeLabel(g);

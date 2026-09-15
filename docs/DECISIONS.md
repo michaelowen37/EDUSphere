@@ -344,6 +344,8 @@ Approved by Mikey on 2026-09-04 unless marked "proposed".
 
 - (2026-09-15) A saved note sits on its own soft green card, centered, with Edit and Remove beneath it. An edit is the old note removed and the new one written in a single save, so the log still records everything that happened and the report shows one note; an edited note carries the date it was rewritten. The automatic "Student ID" note looks the same as any other, and can be edited or removed.
 
+- (2026-09-15) The student report reads centered at every width: titles, closing lines, the note box and the course search, with a fold's count and chevron still pinned to its right edge. The notes i sits beside the Notes title and carries both sentences (what a note survives, and where to search notes), so nothing sits under the box.
+
 ## Open items
 - Verify audio plays inside the chat artifact sandbox (works in a normal browser).
 - Common Core / TEKS codes on existing modules to be checked against the official lists.

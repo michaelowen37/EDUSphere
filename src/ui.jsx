@@ -765,25 +765,17 @@ const KID_ANIMATION = `
     .edu-student-body { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
     .edu-student-left { flex: 1 1 auto; min-width: 0; text-align: left; flex-direction: row; align-items: center; gap: 10px; }
   }
-  /* Section titles read centered on a phone and stay left on a laptop. A fold keeps its count and
-     chevron pinned right while the title centers. */
+  /* Section titles read centered at every width. A fold keeps its count and chevron pinned to its
+     right edge while the title centers. */
   .edu-card-title { text-align: center; }
   .edu-fold-head { position: relative; justify-content: center !important; }
   .edu-fold-title { text-align: center; }
   .edu-fold-meta { position: absolute; right: 16px; top: 50%; transform: translateY(-50%); }
-  @media (min-width: 1000px) {
-    .edu-card-title { text-align: left; }
-    .edu-fold-head { justify-content: space-between !important; }
-    .edu-fold-meta { position: static; transform: none; }
-  }
-  /* The note box: on a phone the field spans the card, tall enough for the example, and Save note sits centered below it. */
+  /* The note box: the field spans the card, tall enough for the example, with Save note centered below it. */
   .edu-note-box { margin-top: 8px; }
-  .edu-note-box textarea { min-height: 96px; }
-  @media (min-width: 1000px) { .edu-note-box textarea { min-height: 0; } }
+  .edu-note-box textarea { min-height: 96px; text-align: center; }
   .edu-note-save { display: flex; justify-content: center; margin-top: 8px; }
   @media (min-width: 1000px) {
-    .edu-note-box { display: flex; gap: 8px; align-items: flex-start; }
-    .edu-note-save { margin-top: 0; flex: 0 0 auto; }
     .edu-student-open { margin-top: 0; flex: 0 0 auto; }
   }
   /* On a phone the logout countdown sits centered at the foot; on a laptop it stays bottom right. */
@@ -3857,7 +3849,8 @@ export default function EduSphereApp() {
 
         {/* Teacher notes: written here, kept on the student's log, so they ride along in every backup. */}
         <div style={{ ...card, marginBottom: 14 }}>
-          <p className="edu-card-title" style={{ margin: '0 0 6px', fontWeight: 600 }}>Notes</p>
+          <p className="edu-card-title" style={{ margin: '0 0 6px', fontWeight: 600 }}>Notes <InfoButton onClick={() => setShowNoteTip(!showNoteTip)} label="About notes" open={showNoteTip} /></p>
+          {showNoteTip && <TipText>A note here stays with the student and can be restored through backups. Quickly search student notes through the "Who Needs Help" page.</TipText>}
           {/* Each note sits on its own soft green card, centered, with Edit and Remove under it. An edit is
               the old note removed and the new one written, so the log still says everything that happened. */}
           {rep.notes.map((n) => (
@@ -3887,8 +3880,7 @@ export default function EduSphereApp() {
               style={{ width: '100%', boxSizing: 'border-box', fontFamily: FONT, fontSize: 15, padding: 10, borderRadius: 10, border: `1px solid ${C.line}`, resize: 'vertical' }} />
             <div className="edu-note-save"><Btn kind="secondary" disabled={!noteInput.trim()} onClick={async () => { await addToStudent(makeNoteEvent(noteInput, new Date().toISOString())); setNoteInput(''); }}>Save note</Btn></div>
           </div>
-          <p style={{ margin: '10px 0 0', fontSize: 14, color: C.muted, textAlign: 'center' }}>Quickly search student notes through the "Who Needs Help" page. <InfoButton onClick={() => setShowNoteTip(!showNoteTip)} label="About notes" open={showNoteTip} /></p>
-          {showNoteTip && <TipText>A note here stays with the student and can be restored through backups.</TipText>}
+
         </div>
         {/* The summary a parent or principal can read without decoding anything: a list, then sentences */}
         {(() => {
@@ -3940,7 +3932,7 @@ export default function EduSphereApp() {
           <p className="edu-card-title" style={{ margin: '0 0 4px', fontWeight: 600 }}>Assigned Now</p>
           <p style={{ margin: '0 0 10px', fontSize: 14, color: C.muted }}>Assign courses by checking or unchecking the boxes below. Each student starts with the courses we recommend (based on a combination of {shownName}'s initial placement check, quick-check module skips and/or his or her actual progression through the modules) but you are free to edit how you see fit.</p>
           <input value={courseQuery} onChange={(e) => setCourseQuery(e.target.value)} placeholder="Search courses, for example: grade 1 math, kinder, fractions" aria-label="Search courses"
-            style={{ fontFamily: FONT, fontSize: 15, padding: '10px 12px', width: '100%', boxSizing: 'border-box', border: `2px solid ${C.line}`, borderRadius: 10, marginBottom: 10, background: C.surface }} />
+            style={{ fontFamily: FONT, fontSize: 15, padding: '10px 12px', width: '100%', boxSizing: 'border-box', border: `2px solid ${C.line}`, borderRadius: 10, marginBottom: 10, background: C.surface, textAlign: 'center' }} />
           {!courseQuery.trim() && (
             <p style={{ margin: '0 0 10px', fontSize: 13, textAlign: 'center' }}>
               <button type="button" onClick={() => { const student = findStudent(roster, educatorRecord.name); const starter = recommendedCourseIds([makeCoursesEnabledEvent([], new Date().toISOString())], student ? student.level : null); const keep = COURSES.filter((c) => c.modules.some((m) => rep.modules.find((x) => x.id === m.id && x.attempts > 0))).map((c) => c.id); const unlocked = coursesToUnlock([...educatorRecord.events, makeCoursesEnabledEvent([...new Set([...starter, ...keep])], new Date().toISOString())]); const next = [...new Set([...starter, ...keep, ...unlocked])]; setEnabled(next); setRecommendedIds(next); setShowAllCourses(false); }} style={{ ...linkBtn, fontSize: 13, padding: 0 }}>Back to recommended courses</button>

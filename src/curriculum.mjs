@@ -982,12 +982,12 @@ export const CURRICULUM = [
     standards: [
       { framework: 'TEKS', code: 'K.7A', text: 'Identify purposes for having rules.', moduleIds: ['rules-and-helpers'] },
       { framework: 'TEKS', code: 'K.5B', text: 'Explain the difference between needs and wants.', moduleIds: ['needs-and-wants'] },
-      { framework: 'TEKS', code: 'K.9A', text: 'Identify the United States flag and the Texas state flag.', moduleIds: ['our-flag-and-holidays'] },
+      { framework: 'TEKS', code: 'K.9A', text: 'Identify the United States flag and the Texas state flag.', moduleIds: ['our-flag-and-holidays', 'our-two-flags'] },
       { framework: 'TEKS', code: 'K.6B', text: 'Explain why people have jobs.', moduleIds: ['jobs-people-do'] },
       { framework: 'TEKS', code: 'K.9C', text: 'Use voting as a method for group decision making.', moduleIds: ['voting-in-class'] },
       { framework: 'CCSS', code: 'NCSS Theme VI', text: 'Power, Authority, and Governance.', moduleIds: ['rules-and-helpers'] },
       { framework: 'CCSS', code: 'NCSS Theme VII', text: 'Production, Distribution, and Consumption.', moduleIds: ['needs-and-wants', 'jobs-people-do'] },
-      { framework: 'CCSS', code: 'NCSS Theme X', text: 'Civic Ideals and Practices.', moduleIds: ['our-flag-and-holidays', 'voting-in-class'] },
+      { framework: 'CCSS', code: 'NCSS Theme X', text: 'Civic Ideals and Practices.', moduleIds: ['our-flag-and-holidays', 'voting-in-class', 'our-two-flags'] },
     ],
   },
   {

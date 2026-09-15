@@ -122,14 +122,18 @@ await page.getByRole('button', { name: 'Open report' }).first().click();
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'educator-report');
 t = await text();
 ok('a new student starts on the lowest grade of their band', t.includes('pre-K 4 math') && !t.includes('Kindergarten') && !t.includes('third grade'));
-await page.getByRole('button', { name: /^Show other grades and electives/ }).click();
-ok('other courses are listed pre-K first and later grades last', (await text()).indexOf('Grade 1 - Math') < (await text()).indexOf('Grade 4 - Math'));
+await page.getByRole('button', { name: /^Show other courses/ }).click();
+ok('other courses fold into grade dropdowns, earliest grade first', (await text()).indexOf('Kindergarten') < (await text()).indexOf('Grade 4') && (await page.getByRole('button', { name: 'Electives' }).count()) === 1);
+await page.getByRole('button', { name: /^Grade 1\b/ }).first().click();
+ok('a grade dropdown opens to its courses', (await text()).includes('Grade 1 - Math'));
 await page.fill('input[aria-label="Search courses"]', 'grade 1 math');
 t = await text();
 ok('searching narrows the course list to what was typed', t.includes('Numbers to 20 (Grade 1 - Math)') && !t.includes('Grade 4 - Math'));
 await page.fill('input[aria-label="Search courses"]', '');
+await page.getByRole('button', { name: /^Grade 3\b/ }).first().click();
 await page.locator('label', { hasText: 'Fractions (Grade 3 - Math)' }).locator('input[type=checkbox]').check();
 await page.waitForTimeout(400);
+await page.getByRole('button', { name: /^Kindergarten\b/ }).first().click();
 for (const name of ['Counting (KG - Math)', 'Letters (KG - Reading)']) { await page.locator('label', { hasText: name }).locator('input[type=checkbox]').check(); await page.waitForTimeout(300); }
 await tap('Back to Classroom');
 // A grade 3 reader for the reading-age flows. Elementary starts on the grade 3 courses, Fractions included.
@@ -391,7 +395,7 @@ t = await text();
 ok('the report opens with a plain-English paragraph naming the student', t.includes('S-1042 has mastered') && t.includes('Kindergarten math'));
 ok('the summary never shows the storage id', !t.includes('s_1042'));
 ok('assigned courses lead with the course name', t.includes('Assigned Now') && t.includes('(KG - Math)'));
-ok('courses are split into assigned and other', t.includes('Assigned Now') && t.includes('Show other grades and electives'));
+ok('courses are split into assigned and other', t.includes('Assigned Now') && t.includes('Show other courses'));
 ok('a course that needs a touch screen says so where it is assigned', t.includes('Needs a touch screen'));
 ok('the report explains its key words, each folded until opened', t.includes('Key Words - Explained') && t.includes('Mastered') && t.includes('Reflections'));
 await page.getByRole('button', { name: /^Mastered ▾$/ }).click();
@@ -549,10 +553,6 @@ ok('searching the notes keeps only the student written about, and shows the line
 await page.fill('input[aria-label="Search notes"]', 'nobody wrote this');
 ok('a search no note matches says so', (await text()).includes('No note says that.'));
 await page.fill('input[aria-label="Search notes"]', '');
-await tap('Missed a quick check (1)');
-t = await text();
-ok('the missed-quick-check filter shows only the student who missed one', t.includes('S-3003') && !t.includes('S-1042') && t.includes('quick check'));
-await tap('Everyone');
 ok('the class view can be printed', (await page.getByRole('button', { name: 'Print this list' }).count()) === 1 && (await text()).includes('S-1042'));
 // Slower on a tracing demonstration lengthens the drawing's cycle (and slows the voice with it). The test hook opens the module by name.
 await tap('Back to Classroom');
@@ -578,7 +578,7 @@ await tap('Exit');
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'educator-pick');
 await tap('Who needs help');
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'class-view');
-
+t = await text();
 ok('the class view explains its order in plain words', t.includes('To the top for you'));
 ok('the class view leads with a one-breath summary', /(on track|keep an eye on|needs help now)/.test(t));
 await tap('Back to Classroom');

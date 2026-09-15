@@ -7,10 +7,12 @@ const ok = (label, cond, detail = '') => { console.log((cond ? 'PASS' : 'FAIL') 
 const val = (s) => { const [n, d] = s.split('/').map(Number); return n / d; }; // independent fraction value
 
 // ---- 1. Every generator produces valid, correct questions across many seeds ----
+const whenAnswers = new Map(); // event story -> the years it has been answered with, across every course
 for (const [genId, gen] of Object.entries(L.GENERATORS)) {
   let bad = [];
   for (let seed = 1; seed <= 300; seed++) {
     const q = L.generateQuestion(genId, seed);
+    if (q.prompt === 'When?' && q.story) { if (!whenAnswers.has(q.story)) whenAnswers.set(q.story, new Set()); whenAnswers.get(q.story).add(q.answer); }
     const problems = [];
     if (!q.prompt || !q.explain) problems.push('empty prompt/explain');
     if (q.type === 'choice') {
@@ -646,6 +648,8 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
   }
   ok(`${genId}: 300 seeds all valid and arithmetically correct`, bad.length === 0, bad.slice(0, 3).join(' | '));
 }
+{ const twice = [...whenAnswers].filter(([, years]) => years.size > 1).map(([story, years]) => `${story} -> ${[...years].join('/')}`);
+  ok('no event is told with two different years anywhere in the bank', twice.length === 0, twice.slice(0, 5).join(' | ')); }
 
 // ---- 2. Determinism: same seed => identical question; different seed => usually different ----
 ok('same seed gives identical question', JSON.stringify(L.generateQuestion('m3-different', 7)) === JSON.stringify(L.generateQuestion('m3-different', 7)));
@@ -830,7 +834,10 @@ ok('reset: history kept, but nothing counts as mastered afterwards', events.leng
   { const yearsOf = (cid) => { const years = new Set(); for (const m of L.getCourse(cid).modules) for (const g of new Set(m.generators)) for (let seed = 1; seed <= 60; seed++) { const q = L.generateQuestion(g, seed); for (const y of (JSON.stringify([q.story, q.answer, q.choices]).match(/\b1[5-9]\d\d\b|\b20[0-2]\d\b/g) || [])) years.add(y); } return years; };
     const y8 = yearsOf('history-8'); const y11 = yearsOf('history-11');
     ok('grade 8 asks about all six 8.1B dates: 1607, 1620, 1776, 1787, 1803, 1861', ['1607', '1620', '1776', '1787', '1803', '1861'].every((y) => y8.has(y)));
-    ok('grade 11 asks about all ten 11.2B turning points', ['1898', '1914', '1918', '1929', '1939', '1945', '1957', '1968', '1969', '1991', '2001', '2008'].every((y) => y11.has(y))); }
+    ok('grade 11 asks about all ten 11.2B turning points', ['1898', '1914', '1918', '1929', '1939', '1945', '1957', '1968', '1969', '1991', '2001', '2008'].every((y) => y11.has(y)));
+    const y10 = new Set(); for (const m of L.getCourse('history-10').modules) for (const g of new Set(m.generators)) for (let seed = 1; seed <= 60; seed++) { const q = L.generateQuestion(g, seed); for (const y of (JSON.stringify([q.story, q.answer, q.choices]).match(/\b\d{3,4}\b/g) || [])) y10.add(y); }
+    ok('grade 10 asks about a turn in every TEKS period: river valleys, classical, post-classical, connecting hemispheres, revolutions, the twentieth century', ['8000', '509', '476', '1347', '1492', '1760', '1914'].every((y) => y10.has(y))); }
+  ok('every course with reference dates exists and lists at least six', Object.entries(L.REFERENCE_DATES).every(([cid, list]) => L.getCourse(cid) && list.length >= 6));
   ok('a name of thirty-one characters is refused with a plain sentence', L.renameStudent(r, 'S-1042', 'A'.repeat(31)).error === 'Names can be up to 30 characters.');
   ok('the same cap holds when a student is added', L.addStudent(r, 'B'.repeat(31), 't', { level: 'elementary' }).error === 'Names can be up to 30 characters.' && L.addStudent(r, 'B'.repeat(30), 't', { level: 'elementary' }).error === null);
   ok('subjects sort Math, Reading, Writing, Science, History, then the rest', L.sortSubjects(['History', 'Science', 'Art', 'Math', 'Writing', 'Reading', 'Math']).join(',') === 'Math,Reading,Writing,Science,History,Art');
@@ -1089,28 +1096,28 @@ ok('reset: history kept, but nothing counts as mastered afterwards', events.leng
   ];
   const rows = L.classView(students, '2026-09-10T12:00:00.000Z');
   ok('the student who is stuck and guessing comes first', rows[0].label === 'S-1' && rows[0].band === 'needs help now');
-  ok('a student who has not started is flagged, gently', rows.find((r) => r.label === 'S-3').reasons.includes('has not started'));
+  ok('a student who has not started is flagged, gently', rows.find((r) => r.label === 'S-3').reasons.some((x) => x.endsWith('has not started')));
   // One failed round, nothing else: the row says so instead of "nothing to flag" (Mikey's test student, 2026-09-14).
   const oneMiss = { id: 's_4', label: 'S-4', events: [att('count-to-5', '2026-09-09T10:00:00.000Z', 2, 6000)] };
   const missRow = L.classView([oneMiss], '2026-09-10T12:00:00.000Z')[0];
-  ok('one missed round is named, with its score, and what a second miss would bring', missRow.reasons.some((r) => r.includes('missed the last round of count to 5 (2 of 5 right)') && r.includes('second miss')));
-  ok('every class row carries the practice line the report summary shows', missRow.practice === 'Practice so far: 1 round, 0 passed. Tried but not passed yet: count to 5 (best 2 of 5, 1 try).' && rows.find((r) => r.label === 'S-3').practice === '');
+  ok('one missed round is named, with its score, and what a second miss would bring', missRow.reasons.some((r) => r.includes('S-4 failed the last round of **Count to 5** (2 of 5 right, 1 attempt)') && r.includes('second miss')));
+  ok('every class row carries the practice line the report summary shows', missRow.practice === 'Practice so far: 1 round, 0 passed.\nTried but not passed yet: **Count to 5** (best score 2 out of 5, 1 attempt).' && rows.find((r) => r.label === 'S-3').practice === '');
   const quickEvents = [L.makeCoursesEnabledEvent(['history-8'], '2026-09-09T09:00:00.000Z'), L.makeQuickCheckEvent('founding-documents', Array.from({ length: 5 }, (_, i) => ({ correct: i < 2, timeMs: 9000 })), '2026-09-09T10:00:00.000Z')];
   const quickRow = L.classView([{ id: 's_5', label: 'S-5', events: quickEvents }], '2026-09-10T12:00:00.000Z')[0];
-  ok('a missed quick check shows on the class view practice line as a try to skip', quickRow.practice.includes('founding documents (quick check 2 of 5)') && quickRow.missedQuickChecks === 1 && missRow.missedQuickChecks === 0);
+  ok('a missed quick check shows on the class view practice line as a try to skip', quickRow.practice.includes('**The Founding Documents** (quick check 2 out of 5)') && quickRow.missedQuickChecks === 1 && missRow.missedQuickChecks === 0);
   const notedRow = L.classView([{ id: 's_7', label: 'S-7', events: [...quickEvents, L.makeNoteEvent('Older note', '2026-09-08T10:00:00.000Z'), L.makeNoteEvent('Shy in groups; reads well aloud.\nSecond line.', '2026-09-09T11:00:00.000Z')] }], '2026-09-10T12:00:00.000Z')[0];
   ok('a class row carries the first line of the latest note', notedRow.note === 'Shy in groups; reads well aloud.' && missRow.note === '');
   ok('a class row carries every note for searching, first lines and full text', notedRow.notesAll.join('|') === 'Shy in groups; reads well aloud.|Older note' && notedRow.notesText.includes('Older note') && notedRow.notesText.includes('Second line.'));
   ok('a middle-sized shape choice is described in words', L.describeChoice('shape:triangle:medium') === 'the middle-sized triangle');
   ok('a big or little shape choice is described in words', L.describeChoice('shape:circle:big') === 'the big circle' && L.describeChoice('shape:square:small') === 'the little square' && L.describeChoice('shape:star') === 'shape:star');
   const passedQuick = [...quickEvents.slice(0, 1), L.makeQuickCheckEvent('early-republic', Array.from({ length: 5 }, () => ({ correct: true, timeMs: 9000 })), '2026-09-09T10:00:00.000Z'), L.makeQuickPlacedEvent('early-republic', '2026-09-09T10:00:00.000Z')];
-  ok('a passed quick check shows as a module skipped', L.practiceLine(L.buildReport('S-5', passedQuick)).line.includes('Skipped by quick check: the early republic'));
+  ok('a passed quick check shows as a module skipped', L.practiceLine(L.buildReport('S-5', passedQuick)).line.includes('Skipped by quick check: The Early Republic'));
   ok('a module skipped by quick check is placed and carries the passed check, so paper can tell it from mastery', (() => { const m = L.buildReport('S-5', passedQuick).modules.find((x) => x.id === 'early-republic'); return m.placed && !m.mastered && m.quickCheck && m.quickCheck.passed; })());
-  ok('the stuck reason reads "best 1 of 5", never "best 1 of 5 of 5"', !rows[0].reasons.some((r) => /of \d+ of \d+/.test(r)) && rows[0].reasons.some((r) => r.includes('best 2 of 5')));
+  ok('the stuck reason reads "best 1 of 5", never "best 1 of 5 of 5"', !rows[0].reasons.some((r) => /of \d+ of \d+/.test(r)) && rows[0].reasons.some((r) => r.includes('best score 2 out of 5')));
   const missSummary = L.summaryParagraph(L.buildReport('S-4', [L.makeCoursesEnabledEvent(['counting-k'], '2026-09-09T09:00:00.000Z'), ...oneMiss.events]));
-  ok('the report summary names practice so far and what was tried but not passed', missSummary.includes('Practice so far: 1 round, 0 passed.') && missSummary.includes('Tried but not passed yet: count to 5 (best 2 of 5, 1 try).'));
+  ok('the report summary names practice so far and what was tried but not passed', missSummary.includes('Practice so far: 1 round, 0 passed.') && missSummary.includes('Tried but not passed yet: Count to 5 (best attempt 2 out of 5, 1 try).'));
   const missParts = L.summaryParts(L.buildReport('S-4', [L.makeCoursesEnabledEvent(['counting-k'], '2026-09-09T09:00:00.000Z'), ...oneMiss.events]));
-  ok('the summary parts hand the screen each tried module as a link, and keep it out of the prose', missParts.tried.length === 1 && missParts.tried[0].id === 'count-to-5' && missParts.tried[0].detail === 'best 2 of 5, 1 try' && !missParts.rest.includes('Tried but not passed') && missParts.rest.includes('Practice so far: 1 round, 0 passed.'));
+  ok('the summary parts hand the screen each tried module as a link, and keep it out of the prose', missParts.tried.length === 1 && missParts.tried[0].id === 'count-to-5' && missParts.tried[0].detail === 'best attempt 2 out of 5, 1 try' && missParts.tried[0].subject === 'Math' && !missParts.rest.includes('Tried but not passed') && missParts.rest.includes('Practice so far: 1 round, 0 passed.'));
   ok('a student doing fine is on track and the reason says how quick they were', rows.find((r) => r.label === 'S-2').band === 'on track' && /on track/.test(rows.find((r) => r.label === 'S-2').reasons.join(' ')));
   { const quick = { id: 'q', label: 'Q', events: [att('count-to-5', '2026-09-09T10:00:00.000Z', 5, 6000)] };
     const slow = { id: 's', label: 'S', events: [att('count-to-5', '2026-09-08T10:00:00.000Z', 2, 6000), att('count-to-5', '2026-09-08T11:00:00.000Z', 3, 6000), att('count-to-5', '2026-09-09T10:00:00.000Z', 5, 6000)] };

@@ -5555,7 +5555,7 @@ function GRADE10_HISTORY_MODULES() { return [
       example: { kind: 'letters', text: 'rivers, surplus, writing', caption: 'How civilization starts.' },
     },
     sources: ['Aligned with Texas TEKS WH.2A (summarize the impact of the development of farming on the creation of river valley civilizations) and NCSS Theme II.'],
-    generators: ['h10-which-river', 'h10-surplus', 'h10-which-river', 'h10-first-writing', 'h10-surplus'],
+    generators: ['h10-which-river', 'h10-surplus', 'h10-period-year', 'h10-first-writing', 'h10-period-fact'],
   },
   {
     id: 'greece-and-rome',
@@ -5747,6 +5747,25 @@ function KINDER_CIVICS_MODULES() { return [
     },
     sources: ['Aligned with Texas TEKS Kindergarten Social Studies K.9C (use voting as a method for group decision making) and NCSS Theme X (Civic Ideals and Practices).'],
     generators: ['ck-more-votes', 'ck-one-vote-each', 'ck-more-votes', 'ck-more-votes', 'ck-one-vote-each'],
+  },
+  {
+    id: 'our-two-flags',
+    order: 6,
+    title: 'Our two flags',
+    tagline: 'Fifty stars, and one lone star',
+    requires: ['voting-in-class'],
+    lesson: {
+      paragraphs: ['The United States flag has 50 stars, one for each state. The Texas flag has one big star. That is why Texas is called the Lone Star State.'],
+      keyIdea: 'Fifty stars for the country. One star for Texas.',
+      example: { kind: 'letters', text: '1', caption: 'One star. The Texas flag.' },
+      script: [
+        { say: 'The Texas flag has 1 big star, so Texas is the Lone Star State.', show: { kind: 'letters', text: '1' } },
+        { say: 'The United States flag has 50 stars, one for each state.', show: { kind: 'letters', text: '50' } },
+        { say: 'Two flags. Fifty stars for the country, one star for Texas.', show: null },
+      ],
+    },
+    sources: ['Aligned with Texas TEKS Kindergarten Social Studies K.9A (identify the United States flag and the Texas state flag) and NCSS Theme X (Civic Ideals and Practices).'],
+    generators: ['ck-which-flag', 'ck-lone-star', 'ck-flag-count', 'ck-which-flag', 'ck-lone-star'],
   },
 ]; }
 
@@ -11886,6 +11905,9 @@ Object.assign(GENERATORS, {
     return { type: 'choice', story: c[0], prompt: 'What do we do?', choices: shuffle(rng, [c[1], c[2]]), answer: c[1], explain: `${c[1]}. Then everybody gets a turn.`, visual: null, explainVisual: null }; },
   'pk-whose-turn': (rng) => { const first = randInt(rng, 0, 1) === 1;
     return { type: 'choice', story: first ? 'Sam had a turn. Now Sam is done.' : 'Ana is waiting. Sam is still swinging.', prompt: 'Whose turn is next?', choices: ['Sam', 'Ana'], answer: first ? 'Ana' : 'Ana', explain: first ? 'Sam had a turn, so Ana is next.' : 'Ana is waiting, so Ana is next when Sam is done.', visual: null, explainVisual: null }; },
+  'ck-which-flag': (rng) => { const tx = randInt(rng, 0, 1) === 1;
+    return { type: 'choice', story: tx ? 'A flag with one big star.' : 'A flag with 50 stars.', prompt: 'Which flag is that?', choices: ['The Texas flag', 'The United States flag'], answer: tx ? 'The Texas flag' : 'The United States flag', explain: tx ? 'One star is the Texas flag. Texas is the Lone Star State.' : 'Fifty stars is the United States flag, one star for each state.', visual: null, explainVisual: null }; },
+  'ck-lone-star': (rng) => ({ type: 'choice', story: 'The Texas flag.', prompt: 'How many stars does it have?', choices: shuffle(rng, ['One', 'Fifty', 'Thirteen']), answer: 'One', explain: 'One big star. That is why Texas is the Lone Star State.', visual: null, explainVisual: null }),
   'ck-more-votes': (rng) => { let a = randInt(rng, 1, 6); let b = randInt(rng, 1, 6); if (a === b) b = a === 6 ? 5 : a + 1;
     return { type: 'choice', story: 'The story got the first votes. The song got the second votes.', prompt: 'Tap the one with more votes.', choices: [`dots:${a}`, `dots:${b}`], answer: `dots:${Math.max(a, b)}`, explain: `${Math.max(a, b)} is more than ${Math.min(a, b)}, so that one wins.`, visual: null, explainVisual: null }; },
   'ck-one-vote-each': (rng) => ({ type: 'choice', story: 'The class is voting.', prompt: 'How many votes does each person get?', choices: shuffle(rng, ['One', 'As many as they want']), answer: 'One', explain: 'Everyone gets one vote. That is what makes it fair.', visual: null, explainVisual: null }),
@@ -12183,10 +12205,28 @@ const US_TURNING_11 = [
   { year: '2001', event: 'The September 11 attacks', why: 'Hijacked planes hit the World Trade Center and the Pentagon, and a fourth crashed in Pennsylvania when its passengers fought back. Nearly 3,000 people died.' },
   { year: '2008', event: 'Barack Obama is elected the first Black president', why: 'Obama won 365 electoral votes in November 2008 and took the oath the next January before a crowd of more than a million on the National Mall.' },
 ];
+const WORLD_PERIODS_10 = [
+  { year: 'About 8000 BC', event: 'Farming begins and river valley civilizations follow', why: 'People who had followed herds settled by their fields. Villages, then cities, then writing followed from having more food than the day needed.' },
+  { year: 'About 3200 BC', event: 'Writing begins in Sumer', why: 'The first writing was accounting: marks on clay for grain and sheep. Once a mark could hold a thought, memory no longer died with the rememberer.' },
+  { year: '509 BC', event: 'Rome becomes a republic', why: 'Romans drove out their last king and swore never to be ruled by a king again. Two elected consuls, one year each, took his place.' },
+  { year: '476 AD', event: 'Rome falls in the west', why: 'A Germanic general, Odoacer, removed the last western emperor, a boy named Romulus Augustulus, and sent the crown away to Constantinople.' },
+  { year: '1347', event: 'The Black Death arrives in Europe', why: 'Ships from the east brought plague to Sicily. Within five years it had killed about a third of Europe.' },
+  { year: '1492', event: 'The Columbian Exchange begins', why: 'Two halves of the world that had been apart for ten thousand years met. Horses, wheat and smallpox went west; potatoes, corn and tomatoes went east.' },
+  { year: 'About 1760', event: 'The industrial revolution begins in Britain', why: 'Coal and steam did the work of muscles. For the first time in history, a country could grow richer faster than its population grew.' },
+  { year: '1914', event: 'The First World War begins', why: 'An assassin in Sarajevo shot Archduke Franz Ferdinand of Austria. Alliances pulled in one country after another, and within weeks most of Europe was at war.' },
+];
+export const REFERENCE_DATES = {
+  'history-7': [['1519', 'Piñeda maps the Texas coast'], ['1718', 'San Antonio is founded'], ['1821', 'Mexico wins independence from Spain'], ['1836', 'Texas independence'], ['1845', 'Annexation: the 28th state'], ['1861', 'The Civil War begins'], ['1876', 'The current Texas constitution'], ['1901', 'Oil at Spindletop']],
+  'history-8': [['1607', 'Jamestown'], ['1620', 'The Pilgrims and the Mayflower Compact'], ['1776', 'The Declaration of Independence'], ['1787', 'The Constitution is written'], ['1803', 'The Louisiana Purchase'], ['1861 to 1865', 'The Civil War']],
+  'history-10': [['8000 BC to 500 BC', 'River valley civilizations'], ['500 BC to AD 600', 'The classical era'], ['600 to 1450', 'The post-classical era'], ['1450 to 1750', 'Connecting hemispheres'], ['1750 to 1914', 'The age of revolutions'], ['1914 to now', 'The twentieth century to the present']],
+  'history-11': [['1898', 'The Spanish-American War'], ['1914 to 1918', 'The First World War'], ['1929', 'The Great Depression begins'], ['1939 to 1945', 'The Second World War'], ['1957', 'Sputnik and the space race'], ['1968', 'Martin Luther King Jr. is assassinated'], ['1969', 'The moon landing'], ['1991', 'The Cold War ends'], ['2001', 'September 11'], ['2008', 'The first Black president is elected']],
+};
 const BILL_STEPS = ['A member introduces the bill', 'A committee studies it and votes', 'The full house debates and votes', 'The other house does the same', 'Both houses agree on one text', 'The President signs or vetoes it'];
 const STATE_REPS = [['Texas', 38], ['California', 52], ['Florida', 28], ['New York', 26], ['Pennsylvania', 17], ['Ohio', 15], ['Georgia', 14], ['Colorado', 8], ['Wyoming', 1], ['Vermont', 1]];
 const VOTERS = [{ who: 'A citizen who is 18 and registered', can: 'Yes' }, { who: 'A citizen who is 17', can: 'No' }, { who: 'A citizen who is 18 but not registered', can: 'No' }, { who: 'A citizen who is 30 and registered', can: 'Yes' }, { who: 'A citizen who is 80 and registered', can: 'Yes' }];
 Object.assign(GENERATORS, {
+  'h10-period-year': (rng) => datedQuestion(rng, WORLD_PERIODS_10),
+  'h10-period-fact': (rng) => datedFact(rng, WORLD_PERIODS_10),
   'h8-reference-year': (rng) => datedQuestion(rng, US_REFERENCE_8),
   'h8-reference-fact': (rng) => datedFact(rng, US_REFERENCE_8),
   'h11-turning-year': (rng) => datedQuestion(rng, US_TURNING_11),
@@ -17876,29 +17916,31 @@ export function classView(students, now) {
 
     // Stuck: a module with two or more misses in a row and no pass since.
     const stuck = assigned.filter((m) => !m.mastered && failedStreak(events, m.id) >= 2);
-    if (stuck.length) { score += 3 * stuck.length; reasons.push(`stuck on ${stuck.map((m) => `${lowerTitle(m.title)} (${failedStreak(events, m.id)} misses in a row, best ${m.bestScore})`).join('; ')}`); }
+    const who = label || id;
+    const bold = (m) => `**${titleCase(m.title)}**`;
+    if (stuck.length) { score += 3 * stuck.length; reasons.push(`${who} is stuck on ${stuck.map((m) => `${bold(m)} (${failedStreak(events, m.id)} misses in a row, best score ${outOf(m.bestScore)})`).join('; ')}`); }
 
     // One miss is not a crisis, but it is not nothing either: the educator sees it, and sees what a second miss would bring.
     const missedOnce = assigned.filter((m) => !m.passed && !m.mastered && m.attempts > 0 && failedStreak(events, m.id) === 1);
-    if (missedOnce.length) { score += 1; reasons.push(`missed the last round of ${missedOnce.map((m) => `${lowerTitle(m.title)} (${m.bestScore} right${m.attempts > 1 ? `, ${m.attempts} tries` : ''})`).join('; ')}; a second miss in a row would route back to the fundamentals`); }
+    if (missedOnce.length) { score += 1; reasons.push(missedOnce.map((m) => { const f = fundamentalsOf(m.id); const back = f ? ', **' + titleCase(f.title) + '**' : ''; const tries = m.attempts === 1 ? 'attempt' : 'attempts'; return `${who} failed the last round of ${bold(m)} (${m.bestScore} right, ${m.attempts} ${tries}); a second miss would route them back to the fundamentals${back}`; }).join('. ')); }
 
     // Loop backs in the last while mean the platform already had to step in.
     const loops = active.filter((e) => e.type === 'looped_back').length;
-    if (loops) { const backTo = [...new Set(active.filter((e) => e.type === 'looped_back').map((e) => getModule(e.toModuleId)).filter(Boolean).map((m) => lowerTitle(m.title)))]; const howOften = loops === 1 ? 'once' : `${loops} times`; score += 2 * loops; reasons.push(`sent back ${howOften} after repeated misses, to ${backTo.join(' and ')}`); }
+    if (loops) { const backTo = [...new Set(active.filter((e) => e.type === 'looped_back').map((e) => getModule(e.toModuleId)).filter(Boolean).map((m) => lowerTitle(m.title)))]; const howOften = loops === 1 ? 'once' : `${loops} times`; score += 2 * loops; reasons.push(`${who} was sent back ${howOften} after repeated misses, to ${backTo.map((t) => `**${titleCase(t)}**`).join(' and ')}`); }
 
     // Guessing flags.
     const guessing = assigned.filter((m) => m.confidence.signals.some((x) => /guessing/.test(x)));
-    if (guessing.length) { score += 2 * guessing.length; reasons.push(`signs of guessing in ${guessing.map((m) => lowerTitle(m.title)).join(', ')} (quick wrong answers, under four seconds each)`); }
+    if (guessing.length) { score += 2 * guessing.length; reasons.push(`There are signs of guessing in ${guessing.map(bold).join(', ')} (quick and incorrect answers, under four seconds each)`); }
 
     // Low confidence on mastered work suggests it may not hold.
     const shaky = assigned.filter((m) => m.mastered && m.confidence.score !== null && m.confidence.score <= 2);
     const refresh = assigned.filter((m) => m.refresher);
-    if (refresh.length) { score += refresh.length; reasons.push(`missed in the last checkpoint: ${refresh.map((m) => lowerTitle(m.title)).join(', ')} (a refresher round is suggested)`); }
-    if (shaky.length) { score += shaky.length; reasons.push(`mastered but shaky: ${shaky.map((m) => `${lowerTitle(m.title)} at confidence ${m.confidence.score} of 5`).join(', ')}`); }
+    if (refresh.length) { score += refresh.length; reasons.push(`Missed in the last checkpoint: ${refresh.map(bold).join(', ')} (a refresher round is suggested)`); }
+    if (shaky.length) { score += shaky.length; reasons.push(`Mastered but shaky: ${shaky.map((m) => `${bold(m)} at confidence ${m.confidence.score} out of 5`).join(', ')}`); }
 
     // Not practicing at all.
-    if (attempts.length === 0 && assigned.length) { score += 2; reasons.push('has not started'); }
-    else if (daysIdle !== null && daysIdle >= 7) { score += 1 + Math.min(3, Math.floor(daysIdle / 7)); reasons.push(`${daysIdle} days since last practice`); }
+    if (attempts.length === 0 && assigned.length) { score += 2; reasons.push(`${who} has not started`); }
+    else if (daysIdle !== null && daysIdle >= 7) { score += 1 + Math.min(3, Math.floor(daysIdle / 7)); reasons.push(`It has been ${daysIdle} days since ${who} last practiced`); }
 
     const mastered = assigned.filter((m) => m.mastered).length;
     const passedOnce = assigned.filter((m) => m.passed && !m.mastered).length;
@@ -17906,11 +17948,11 @@ export function classView(students, now) {
     // Among students who are fine, the one who needed more tries per mastered module comes
     // first, and the reason says so in words, so "on track" is never a flat list.
     const effort = mastered > 0 ? attempts.length / mastered : 0;
-    if (score === 0 && mastered > 0) reasons.push(effort >= 2 ? `on track, but it took about ${effort.toFixed(1)} rounds per module to get there` : `on track and quick about it: about ${effort.toFixed(1)} rounds per module`);
+    if (score === 0 && mastered > 0) reasons.push(effort >= 2 ? `${who} is on track, but it took about ${effort.toFixed(1)} rounds per module to get there` : `${who} is on track and quick about it: about ${effort.toFixed(1)} rounds per module`);
     // Every row carries the same practice line the report summary shows, so a row never reads as if nothing happened.
     const practice = practiceLine(report);
-    const triedText = practice.tried.length ? ` Tried but not passed yet: ${practice.tried.map((t) => `${t.title} (${t.detail})`).join('; ')}.` : '';
-    const practiceText = practice.line ? practice.line + triedText : '';
+    const triedText = practice.tried.length ? `Tried but not passed yet: ${practice.tried.map((t) => `**${t.title}** (${t.short})`).join('; ')}.` : '';
+    const practiceText = practice.line ? practice.line + (triedText ? `\n${triedText}` : '') : '';
     const next = assigned.find((m) => !m.mastered && moduleStatuses(deriveProgress(events), report.enabledCourseIds).find((x) => x.id === m.id).status === 'available');
     // One sentence that squares the good news with the flags: a student who has mastered a lot
     // can still top the list, and the educator should see why without decoding it.
@@ -17919,7 +17961,7 @@ export function classView(students, now) {
       ? `${masteredPhrase}, but ${flagged} ${flagged === 1 ? 'thing needs' : 'things need'} attention right now, which is why ${label || id} is near the top.`
       : score >= 2 ? `${mastered} mastered so far; a couple of small flags, nothing urgent.` : '';
     return {
-      id, label: label || id, score, reasons, why, practice: practiceText,
+      id, label: label || id, score, reasons, why, practice: practiceText, nextTitle: next ? titleCase(next) : '',
       missedQuickChecks: assigned.filter((m) => m.quickCheck && !m.quickCheck.passed).length,
       note: report.notes.length ? report.notes[0].text.split('\n')[0].slice(0, 120) : '',
       notesAll: report.notes.map((n) => n.text.split('\n')[0].slice(0, 120)),
@@ -18131,15 +18173,30 @@ export function summaryParagraph(report) {
 
 // "Practice so far: 3 rounds, 1 passed." and the modules tried but not passed, each with its best
 // score and number of tries. The report summary and the class view both read this, so they agree.
+// Module titles are written in sentence case; educator lists show them in title case, small words aside.
+const SMALL_WORDS = new Set(['and', 'or', 'of', 'the', 'a', 'an', 'to', 'in', 'on', 'for', 'with', 'by', 'at']);
+export function titleCase(text) {
+  return String(text).split(' ').map((w, i) => (i > 0 && SMALL_WORDS.has(w.toLowerCase()) ? w.toLowerCase() : w.charAt(0).toUpperCase() + w.slice(1))).join(' ');
+}
+// The module a loop back returns to: the module before it in its course, else its first named prerequisite.
+export function fundamentalsOf(moduleId) {
+  const m = getModule(moduleId); if (!m) return null;
+  const course = getCourse(m.courseId);
+  const before = course ? course.modules.filter((x) => x.order < m.order).sort((a, b) => b.order - a.order)[0] : null;
+  const target = before || (m.requires && m.requires.length ? getModule(m.requires[0]) : null);
+  return target ? { id: target.id, title: target.title } : null;
+}
+const outOf = (score) => String(score).replace(' of ', ' out of ');
 export function practiceLine(report) {
   const assigned = report.modules.filter((m) => report.enabledCourseIds.includes(m.courseId));
   if (report.totalAttempts === 0 && !assigned.some((m) => m.quickCheck)) return { line: '', tried: [] };
   const passedRounds = assigned.reduce((a, m) => a + (m.passes || 0), 0);
   const line = report.totalAttempts ? `Practice so far: ${report.totalAttempts} ${report.totalAttempts === 1 ? 'round' : 'rounds'}, ${passedRounds} passed.` : 'No practice rounds yet.';
-  const tried = assigned.filter((m) => m.attempts > 0 && !m.passed && !m.mastered).map((m) => ({ id: m.id, title: lowerTitle(m.title), detail: `best ${m.bestScore}, ${m.attempts} ${m.attempts === 1 ? 'try' : 'tries'}` }));
+  const subjectOf = (m) => { const c = getCourse(m.courseId); return c ? c.subject : ''; };
+  const tried = assigned.filter((m) => m.attempts > 0 && !m.passed && !m.mastered).map((m) => ({ id: m.id, title: titleCase(m.title), subject: subjectOf(m), detail: `best attempt ${outOf(m.bestScore)}, ${m.attempts} ${m.attempts === 1 ? 'try' : 'tries'}`, short: `best score ${outOf(m.bestScore)}, ${m.attempts} ${m.attempts === 1 ? 'attempt' : 'attempts'}` }));
   // Quick checks too: a missed one is a try to skip that did not work, and a passed one is a module skipped.
-  for (const m of assigned.filter((m) => m.quickCheck && !m.quickCheck.passed && !m.passed && !m.mastered && !tried.some((t) => t.id === m.id))) tried.push({ id: m.id, title: lowerTitle(m.title), detail: `quick check ${m.quickCheck.right} of ${m.quickCheck.total}${m.quickCheck.guessed ? ', too fast to count' : ''}` });
-  const skipped = assigned.filter((m) => m.quickCheck && m.quickCheck.passed).map((m) => lowerTitle(m.title));
+  for (const m of assigned.filter((m) => m.quickCheck && !m.quickCheck.passed && !m.passed && !m.mastered && !tried.some((t) => t.id === m.id))) { const d = `quick check ${m.quickCheck.right} out of ${m.quickCheck.total}${m.quickCheck.guessed ? ', too fast to count' : ''}`; tried.push({ id: m.id, title: titleCase(m.title), subject: subjectOf(m), detail: d, short: d }); }
+  const skipped = assigned.filter((m) => m.quickCheck && m.quickCheck.passed).map((m) => titleCase(m.title));
   return { line: skipped.length ? `${line} Skipped by quick check: ${skipped.join(', ')}.` : line, tried };
 }
 

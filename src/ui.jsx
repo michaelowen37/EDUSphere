@@ -752,8 +752,17 @@ const KID_ANIMATION = `
   /* The login grid: one name per row on a phone, two per row from a tablet up (never for a single student). */
   .edu-name-grid { grid-template-columns: 1fr; }
   @media (min-width: 600px) { .edu-name-grid-two { grid-template-columns: 1fr 1fr; } }
-  /* On a laptop the student card's links sit on one line beside Open report; on a phone they stay left and wrap. */
-  @media (min-width: 1000px) { .edu-student-actions { text-align: right; } }
+  /* The student card: on a phone the name, grade and links stay left and Open report sits below them, centered;
+     on a laptop the name, grade and links stack on the left and Open report sits on the right, centered on them. */
+  .edu-student-body { display: block; }
+  .edu-student-actions { text-align: left; }
+  .edu-student-actions button { margin-right: 10px; }
+  .edu-student-open { display: flex; justify-content: center; margin-top: 12px; }
+  @media (min-width: 1000px) {
+    .edu-student-body { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+    .edu-student-left { flex: 1 1 auto; min-width: 0; text-align: left; }
+    .edu-student-open { margin-top: 0; flex: 0 0 auto; }
+  }
   /* On a phone the logout countdown sits centered at the foot; on a laptop it stays bottom right. */
   @media (max-width: 999px) { .edu-logout-chip { right: auto !important; left: 50% !important; transform: translateX(-50%); } }
   @media (hover: hover) and (pointer: fine) { .edu-frame-bottom { display: block; position: fixed; left: 0; right: 0; bottom: 0; height: 6px; background: ${C.green}; pointer-events: none; z-index: 50; } }
@@ -1370,6 +1379,15 @@ export default function EduSphereApp() {
   const [mapOrder, setMapOrder] = useState('grade');                // the standards map: grouped by grade, or by subject
   const [classFilter, setClassFilter] = useState('all');            // who needs help: everyone, or only the flagged, or only missed quick checks
   const [noteSearch, setNoteSearch] = useState('');                  // who needs help: find students by what you wrote about them
+  const [showQuickTip, setShowQuickTip] = useState(false);           // the quick checks explanation on the Classroom page
+  const [showOrderTip, setShowOrderTip] = useState(false);           // who needs help: how ties are ordered
+  const [showPlacedTip, setShowPlacedTip] = useState(false);         // transcript: placed past and skipped by quick check
+  const [otherKind, setOtherKind] = useState('core');               // other courses: core or electives
+  const [openOtherGrades, setOpenOtherGrades] = useState([]);        // other courses: which grade dropdowns are open
+  const [openDoneGrades, setOpenDoneGrades] = useState([]);          // transcript: which completed-course grades are open
+  const [showRequirements, setShowRequirements] = useState(false);   // a writing assignment's requirements popup
+  const [printing, setPrinting] = useState(false);                   // true while the report prints, so every course fold opens with its stories
+  useEffect(() => { if (typeof window === 'undefined' || !window.matchMedia) return undefined; const before = () => setPrinting(true); const after = () => setPrinting(false); window.addEventListener('beforeprint', before); window.addEventListener('afterprint', after); return () => { window.removeEventListener('beforeprint', before); window.removeEventListener('afterprint', after); }; }, []);
   const returnTo = useRef(null);                                     // { screen, scrollY } to go back to after Change state or a PIN unlock
   const goBackTo = () => { const r = returnTo.current; returnTo.current = null; if (r) { pendingScroll.current = r.scrollY; setScreen(r.screen); } else setScreen('educator-pick'); };
   const pendingScroll = useRef(null);
@@ -1960,7 +1978,7 @@ export default function EduSphereApp() {
                               <div style={{ marginTop: 12 }}>
                                 <Btn halo={st === 'available'} kind={st === 'mastered' ? 'secondary' : 'primary'} onClick={() => openModule(m.id)} disabled={busy}>{st === 'mastered' ? 'Practice again' : st === 'passed' ? 'Pass it again' : 'Open'}</Btn>
                                 {/* One try per module: five questions, no lesson, and a pass places the module without the star. */}
-                                {st === 'available' && !(record && record.preview) && !(educator && educator.quickChecks === false) && quickCheckAllowed(record.events, m.id) && (
+                                {st === 'available' && !(record && record.preview) && !((educator || pendingProfile || {}).quickChecks === false) && quickCheckAllowed(record.events, m.id) && (
                                   <div style={{ marginTop: 8 }}><button type="button" style={linkBtn} onClick={() => startQuickCheck(m.id)} disabled={busy}>I already know this</button></div>
                                 )}
                               </div>
@@ -1989,6 +2007,13 @@ export default function EduSphereApp() {
                   {subCourses.map((course) => (
                     <div key={course.id}>
                       {subCourses.length > 1 && !youngLearner && <p style={{ margin: '10px 0 2px', fontSize: 14, color: C.muted, paddingLeft: 4 }}>{course.title}</p>}
+                      {/* Where the standards name dates to know, they sit at the top of the course, before the first module. */}
+                      {REFERENCE_DATES[course.id] && (
+                        <div style={{ ...card, padding: '12px 14px', marginBottom: 10, background: C.goldSoft || C.surface }}>
+                          <p style={{ margin: '0 0 6px', fontWeight: 600, fontSize: 15 }}>Dates to know</p>
+                          {REFERENCE_DATES[course.id].map(([year, what]) => <p key={year} style={{ margin: '2px 0', fontSize: 14 }}><strong>{year}</strong>: {what}</p>)}
+                        </div>
+                      )}
                       {course.modules.slice().sort((a, b) => a.order - b.order).map((m) => {
                         const st = statusOf(m.id);
                         const p = progress.perModule[m.id];
@@ -2163,13 +2188,25 @@ export default function EduSphereApp() {
                 <p style={{ margin: '0 0 6px', fontWeight: 600 }}>{q.medium === 'typed' ? 'Type this in a word processor.' : 'Write this by hand, on paper.'}</p>
                 <p style={{ margin: 0, fontSize: 15 }}>Aim for about {q.minWords} words. {q.medium === 'typed' ? 'Print it or send it the way your teacher asks, then' : 'When you are done,'} check your work against the list below and tap the button. Your teacher will read it and check it off.</p>
               </div>
-              <p style={{ margin: '0 0 6px', fontWeight: 600, fontSize: 15 }}>Before you hand it in, check your work:</p>
-              {q.checklist.map((item, i2) => (
-                <label key={i2} style={{ display: 'flex', gap: 10, alignItems: 'flex-start', padding: '6px 0', fontSize: 15, cursor: 'pointer' }}>
-                  <input type="checkbox" checked={ticks.includes(i2)} onChange={() => setTicks((t) => (t.includes(i2) ? t.filter((x) => x !== i2) : [...t, i2]))} style={{ width: 20, height: 20, marginTop: 2 }} />
-                  <span>{item}</span>
-                </label>
-              ))}
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10 }}>
+                <p style={{ margin: 0, fontWeight: 600, fontSize: 15 }}>{ticks.length} of {q.checklist.length} requirements checked</p>
+                <button type="button" style={linkBtn} onClick={() => setShowRequirements(true)}>Requirements</button>
+              </div>
+              {showRequirements && (
+                <div role="dialog" aria-label="Requirements" style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.35)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16, zIndex: 40 }} onClick={() => setShowRequirements(false)}>
+                  <div style={{ ...card, maxWidth: 520, width: '100%', maxHeight: '80vh', overflowY: 'auto' }} onClick={(e) => e.stopPropagation()}>
+                    <p style={{ margin: '0 0 10px', fontWeight: 600, fontSize: 17 }}>Requirements</p>
+                    <p style={{ margin: '0 0 10px', fontSize: 14, color: C.muted }}>Check each one against your work before you hand it in.</p>
+                    {q.checklist.map((item, i2) => (
+                      <label key={i2} style={{ display: 'flex', gap: 10, alignItems: 'flex-start', padding: '8px 0', fontSize: 15, cursor: 'pointer', borderTop: `1px solid ${C.line}` }}>
+                        <input type="checkbox" checked={ticks.includes(i2)} onChange={() => setTicks((t) => (t.includes(i2) ? t.filter((x) => x !== i2) : [...t, i2]))} style={{ width: 20, height: 20, marginTop: 2 }} />
+                        <span>{item}</span>
+                      </label>
+                    ))}
+                    <div style={{ textAlign: 'center', marginTop: 12 }}><Btn onClick={() => setShowRequirements(false)}>Done</Btn></div>
+                  </div>
+                </div>
+              )}
             </div>
           ) : q.type === 'order' ? (
             <div>
@@ -2599,14 +2636,14 @@ export default function EduSphereApp() {
 
   // ---------- The standards map: which module covers which standard, for this state ----------
   if (screen === 'standards-map') {
-    const fw = frameworkForState(stateCode || 'TX');
+    const fw = frameworkForState(stateCode || 'CA');
     const plan = CURRICULUM.filter((entry) => entry.standards.some((st) => st.framework === fw));
     return (
       <div style={page}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={wrap}>
         <button type="button" onClick={() => setScreen('educator-pick')} style={linkBtn}>Back to Classroom</button>
         <h1 style={{ fontSize: 24, margin: '12px 0 4px', textAlign: 'center' }}>Standards map</h1>
         <p style={{ color: C.muted, marginTop: 0, fontSize: 15, textAlign: 'center' }}>
-          Every module, matched to {stateCode ? `${stateFor(stateCode).name}'s` : 'the'} standards ({FRAMEWORKS[fw].name}). Print this page for a coverage record.
+          {stateCode && fw !== 'CCSS' ? `Every module, matched to ${stateFor(stateCode).name}'s standards (${FRAMEWORKS[fw].name}).` : `Every module, matched to ${FRAMEWORKS.CCSS.name}.`}<br />Print this page for a coverage record.
         </p>
         {/* Grouped by grade (each grade a heading, one light-green dropdown per subject) or by subject.
             The list grows by itself as courses are added, because it is read from the curriculum plan. */}
@@ -2991,7 +3028,7 @@ export default function EduSphereApp() {
     const codesForModule = (moduleId) => { const fw = frameworkForState(stateCode || 'CA'); return [...new Set(CURRICULUM.flatMap((entry) => entry.standards.filter((st) => st.framework === fw && st.moduleIds.includes(moduleId)).map((st) => st.code)))]; };
     const section = (title, list) => (
       <div style={{ marginBottom: 18 }}>
-        <h2 style={{ fontSize: 18, margin: '0 0 10px', textAlign: 'center' }}>{title}</h2>
+        {title && <h2 style={{ fontSize: 18, margin: '0 0 10px', textAlign: 'center' }}>{title}</h2>}
         {list.length === 0 && <p style={{ margin: 0, fontSize: 15, color: C.muted, textAlign: 'center' }}>Nothing to show here yet.</p>}
         {list.map((c) => (
           <div key={c.id} style={{ border: `1px solid ${C.line}`, borderRadius: 10, padding: 14, marginBottom: 10, background: C.surface }}>
@@ -3012,7 +3049,7 @@ export default function EduSphereApp() {
               <tbody>
                 {c.modules.map((m) => (
                   <tr key={m.id} style={{ borderTop: `1px solid ${C.line}` }}>
-                    <td style={{ padding: '6px 0' }}>{m.title}{m.mastered && codesForModule(m.id).length > 0 && <span style={{ display: 'block', fontSize: 12, color: C.muted }}>Satisfies {codesForModule(m.id).join(', ')}</span>}</td>
+                    <td style={{ padding: '6px 0' }}>{titleCase(m.title)}{!m.mastered && m.attempts > 0 && m.bestScore && <span style={{ display: 'block', fontSize: 12, color: C.muted }}>(best score {String(m.bestScore).replace(' of ', ' out of ')}; attempted {m.attempts === 1 ? 'once' : m.attempts === 2 ? 'twice' : `${m.attempts} times`})</span>}{m.mastered && codesForModule(m.id).length > 0 && <span style={{ display: 'block', fontSize: 12, color: C.muted }}>Satisfies {codesForModule(m.id).join(', ')}</span>}</td>
                     <td style={{ padding: '6px 0 6px 12px', textAlign: 'right', color: C.muted }}>
                       {m.mastered ? `Mastered ${fmtDate(m.masteredAt)}` : m.passed && m.firstPassedAt ? `Passed once ${fmtDate(m.firstPassedAt)}` : m.placed ? (m.quickCheck && m.quickCheck.passed ? 'Skipped by quick check' : 'Placed past') : m.pendingWriting ? 'Needs your check' : m.attempts ? 'In progress' : 'Not started'}
                     </td>
@@ -3035,10 +3072,31 @@ export default function EduSphereApp() {
 
         {/* One explanation at the top, so the headings below can stand on their own. */}
         <div style={{ border: `1px solid ${C.line}`, borderRadius: 10, padding: 14, marginBottom: 18, background: C.surface }}>
-          <p style={{ margin: 0, fontSize: 15, lineHeight: 1.6, textAlign: 'center' }}>Courses are considered complete once every associated module is mastered. Completions remain on this record indefinitely. Currently assigned courses can appear or disappear depending on whether or not they are actively assigned.</p>
+          <p style={{ margin: 0, fontSize: 15, lineHeight: 1.6, textAlign: 'center' }}>Courses are considered complete once every associated module is mastered. Completions remain on this record indefinitely. Currently assigned courses can appear or disappear depending on whether or not they are actively assigned. <InfoButton onClick={() => setShowPlacedTip(!showPlacedTip)} label="About placed and skipped modules" open={showPlacedTip} /></p>
+                  {showPlacedTip && <TipText><strong>Placed Past</strong> means that a student has cleared a module by demonstrating their knowledge in a placement test.<br /><br /><strong>Skipped by quick-check</strong> means a student has cleared a module without entering the lesson by correctly answering five test questions.<br /><br />Neither of the above situations lead to a mastered status (stars still need to be earned) and students will continue to be exposed to questions from these modules at random (routed back for review if necessary).</TipText>}
         </div>
 
-        {section('Completed courses', tr.completed)}
+        {(() => {
+          const grades = GRADES.filter((g) => tr.completed.some((c) => c.grade === g));
+          if (!grades.length) return section('Completed courses', tr.completed);
+          return (
+            <div style={{ marginBottom: 18 }}>
+              <h2 style={{ fontSize: 19, margin: '0 0 8px' }}>Completed courses</h2>
+              {grades.map((g) => { const open = openDoneGrades.includes(g); const list = tr.completed.filter((c) => c.grade === g);
+                return (
+                  <div key={g} style={{ border: `1px solid ${C.line}`, borderRadius: 10, marginBottom: 8, overflow: 'hidden', background: C.surface }}>
+                    <button type="button" className="edu-no-print" aria-expanded={open} onClick={() => setOpenDoneGrades((l) => (l.includes(g) ? l.filter((x) => x !== g) : [...l, g]))}
+                      style={{ fontFamily: FONT, width: '100%', textAlign: 'left', background: C.greenSoft, border: 'none', padding: '12px 14px', cursor: 'pointer', color: C.ink, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <span style={{ fontSize: 16, fontWeight: 600 }}>{gradeLabel(g)}</span>
+                      <span style={{ fontSize: 14, color: C.muted }}>{list.length} {list.length === 1 ? 'course ' : 'courses '}{open ? '▴' : '▾'}</span>
+                    </button>
+                    <p className="edu-print-only" style={{ margin: 0, padding: '10px 14px 0', fontWeight: 600 }}>{gradeLabel(g)}</p>
+                    <div className="edu-collapsible" style={{ display: open ? 'block' : 'none', padding: '8px 10px' }}>{section('', list)}</div>
+                  </div>
+                ); })}
+            </div>
+          );
+        })()}
         {section('Courses in progress', tr.inProgress)}
 
         {tr.retention.asked > 0 && (
@@ -3052,7 +3110,7 @@ export default function EduSphereApp() {
 
         <div className="edu-no-print" style={{ marginTop: 16 }}>
           <Btn full onClick={() => { if (typeof window !== 'undefined' && window.print) window.print(); }}>Print or save as PDF</Btn>
-          <p style={{ margin: '10px 0 0', fontSize: 13, color: C.muted, textAlign: 'center' }}>Placed past means the placement check cleared it; skipped by quick check means five questions were passed without the lesson. Neither counts as mastered, and both are still to be earned.</p>
+
         </div>
       </div></div>
     );
@@ -3354,22 +3412,26 @@ export default function EduSphereApp() {
                 <input value={renameInput} onChange={(e) => setRenameInput(e.target.value)} placeholder="Name shown to the student" maxLength={NAME_MAX}
                   style={{ fontFamily: FONT, fontSize: 17, padding: '10px 12px', width: '100%', boxSizing: 'border-box', border: `2px solid ${C.line}`, borderRadius: 10, marginBottom: 10 }} />
                 <div style={{ display: 'flex', gap: 10 }}>
-                  <Btn onClick={async () => { const r = renameStudent(roster, st.id, renameInput); await applyRoster(r.roster, r.error); if (!r.error) setRenamingId(null); }}>Save name</Btn>
+                  <Btn onClick={async () => { const r = renameStudent(roster, st.id, renameInput); await applyRoster(r.roster, r.error); if (!r.error) { setRenamingId(null);
+                    // The ID becomes the first note, so the report still shows it; the educator can remove it.
+                    const rec = await loadRecord(st.id); if (rec && renameInput.trim() !== st.id && !teacherNotes(rec.events).some((n) => n.text.startsWith('Student ID:'))) await saveRecord({ ...rec, events: [...rec.events, makeNoteEvent(`Student ID: ${st.id}`, new Date().toISOString())] }); } }}>Save name</Btn>
                   <Btn kind="secondary" onClick={() => { setRenamingId(null); setRosterError(''); }}>Cancel</Btn>
                 </div>
                 <p style={{ color: C.muted, fontSize: 13, margin: '10px 0 0' }}>The ID stays the same, so progress follows the new name.</p>
               </>
             ) : (
               <>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, textAlign: 'center' }}>
+                <div className="edu-student-body">
+                <div className="edu-student-left">
+                <div className="edu-student-head" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                   {st.picture && <StudentPicture name={st.picture} tint={st.tint} size={40} />}
                   <span>
                     <span style={{ display: 'block', fontSize: 18, fontWeight: 600 }}>{keepTogether(st.label)}</span>
                     {st.level && <span style={{ display: 'block', fontSize: 12, color: C.muted }}>{levelFor(st.level).title}{st.startGrade ? ` · ${gradeLabel(st.startGrade)}` : ''}</span>}
                   </span>
                 </div>
-                {/* The links flow like text and wrap where they must; Open report floats right on whichever line the
-                    links end on, so on a phone it tucks in beside "Merge into…" instead of taking a row of its own. */}
+                {/* On a laptop the name, grade and links stack on the left and Open report sits on the right, centered
+                    on them; on a phone the name and links stay as they are and Open report sits below them, centered. */}
                 <div className="edu-student-actions" style={{ display: 'flow-root', marginTop: 8 }}>
                   <button type="button" onClick={() => { setRenamingId(st.id); setRenameInput(st.label); setRosterError(''); }} style={cardLink}>Rename</button>
                   <button type="button" onClick={() => setPictureFor(pictureFor === st.id ? null : st.id)} style={cardLink}>{st.picture ? 'Change picture' : 'Add picture'}</button>
@@ -3389,13 +3451,15 @@ export default function EduSphereApp() {
                       setMergeFrom('');
                     }} style={{ ...cardLink, color: C.gold }}>Merge here</button>
                   )}
-                  <span className="edu-student-open" style={{ float: 'right', marginLeft: 8, marginTop: -4 }}><Btn kind="secondary" disabled={busy} onClick={async () => {
+                </div>
+                </div>
+                <div className="edu-student-open"><Btn kind="secondary" disabled={busy} onClick={async () => {
                     setBusy(true);
                     const rec = await withStarterCourses(await loadRecord(st.id));
                     setEducatorRecord(rec);
                     setRecommendedIds(recommendedCourseIds(rec.events, st.level));
                     setOpenSubjects([]); setShowAllCourses(false); setConfirmReset(false); setBusy(false); setScreen('educator-report');
-                  }}>Open report</Btn></span>
+                  }}>Open report</Btn></div>
                 </div>
                 {mergeFrom === st.id && <p style={{ color: C.gold, fontSize: 13, margin: '8px 0 0' }}>Now tap “Merge here” on the student to keep. Both histories are joined; nothing is deleted.</p>}
                 {pictureFor === st.id && (
@@ -3479,16 +3543,16 @@ export default function EduSphereApp() {
         })()}
         <RemembranceCard educator />
         <div style={{ ...card, marginTop: 22, textAlign: 'center' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12, margin: '0 0 16px', padding: '12px 14px', borderRadius: 10, background: C.greenSoft }}>
-            <div>
-              <p style={{ margin: 0, fontWeight: 600 }}>Quick checks</p>
-              <p style={{ margin: '2px 0 0', fontSize: 14, color: C.muted }}>A student may skip a module by passing five questions on it. Placed, not mastered; memory checks still visit it.</p>
-            </div>
-            <button type="button" role="switch" aria-checked={!(educator && educator.quickChecks === false)} onClick={async () => { const next = { ...educator, quickChecks: educator.quickChecks === false }; await saveEducator(next); setEducator(next); }}
-              style={{ fontFamily: FONT, fontSize: 15, fontWeight: 600, padding: '8px 14px', borderRadius: 999, border: `2px solid ${C.green}`, cursor: 'pointer', whiteSpace: 'nowrap', background: educator && educator.quickChecks === false ? C.surface : C.green, color: educator && educator.quickChecks === false ? C.green : '#fff' }}>
-              {educator && educator.quickChecks === false ? 'Off' : 'On'}
+          {(() => { const prof = educator || pendingProfile || {}; const off = prof.quickChecks === false; return (
+          <div style={{ margin: '0 0 16px', padding: '12px 14px', borderRadius: 10, background: C.greenSoft, textAlign: 'center' }}>
+            <p style={{ margin: '0 0 4px', fontWeight: 600 }}>Quick checks</p>
+            <p style={{ margin: '0 0 8px', fontSize: 14, color: C.muted, lineHeight: 1.5 }}>All new students (above grade 2) start by taking placement tests. This is how we match a student's skill level to a grade. However, generically placing a student in grade 3 math is a simplification. They may already have a solid understanding of some of the material so, instead of wasting time going over what they already know, they are presented with an opportunity to skip a module by passing five questions. <InfoButton onClick={() => setShowQuickTip(!showQuickTip)} label="About quick checks" open={showQuickTip} /></p>
+            {showQuickTip && <TipText>Successful skips lead to a transcript status of "placed" rather than "mastered." Future memory checks will further test their level of understanding even if they do successfully skip a module and, if necessary, route them backwards.<br /><br />Answering the five questions too quickly will prevent students from skipping to prevent potential advancements through guessing.</TipText>}
+            <button type="button" role="switch" aria-checked={!off} onClick={async () => { const next = { ...prof, quickChecks: !off }; await saveEducator(next); if (educator) setEducator(next); else setPendingProfile(next); }}
+              style={{ fontFamily: FONT, fontSize: 15, fontWeight: 600, padding: '8px 14px', borderRadius: 999, border: `2px solid ${C.green}`, cursor: 'pointer', whiteSpace: 'nowrap', background: off ? C.surface : C.green, color: off ? C.green : '#fff' }}>
+              {off ? 'Off' : 'On'}
             </button>
-          </div>
+          </div>); })()}
           <p style={{ margin: '0 0 6px', fontWeight: 600 }}>Walk through as a student</p>
           <p style={{ margin: '0 0 10px', fontSize: 15 }}>See exactly what a student sees. Every module is open, every question can be skipped, and nothing is recorded.</p>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, justifyContent: 'center' }}>
@@ -3556,21 +3620,14 @@ export default function EduSphereApp() {
         <div style={{ ...card, background: C.greenSoft, borderColor: C.greenSoft, marginBottom: 24 }}>
           {classSummary(classRows).split('\n').map((line, i) => <p key={i} style={{ margin: i === 0 ? '0 0 10px' : 0, fontSize: 16, lineHeight: 1.6, textAlign: 'center', fontWeight: i === 0 ? 400 : 700 }}>{line}</p>)}
         </div>
-        {/* Filters: everyone, only students flagged, or only students who missed a quick check. */}
-        <div className="edu-no-print" style={{ display: 'flex', justifyContent: 'center', gap: 8, flexWrap: 'wrap', margin: '0 0 16px' }}>
-          {[['all', 'Everyone'], ['flagged', 'Needs a look'], ['quick', 'Missed a quick check']].map(([key, label]) => (
-            <button key={key} type="button" onClick={() => setClassFilter(key)} aria-pressed={classFilter === key}
-              style={{ fontFamily: FONT, fontSize: 15, fontWeight: 600, padding: '8px 14px', borderRadius: 999, cursor: 'pointer', border: `2px solid ${C.green}`, background: classFilter === key ? C.green : C.surface, color: classFilter === key ? '#fff' : C.green }}>{label}{key === 'quick' && classRows.some((r) => r.missedQuickChecks) ? ` (${classRows.filter((r) => r.missedQuickChecks).length})` : ''}</button>
-          ))}
-        </div>
         <div className="edu-no-print" style={{ margin: '0 0 14px' }}>
           <input value={noteSearch} onChange={(e) => setNoteSearch(e.target.value)} aria-label="Search notes" placeholder="Search your notes, for example: shy"
             style={{ width: '100%', boxSizing: 'border-box', fontFamily: FONT, fontSize: 15, padding: '10px 12px', borderRadius: 10, border: `1px solid ${C.line}` }} />
         </div>
-        {classRows.filter((r) => (classFilter === 'all' || (classFilter === 'flagged' ? r.band !== 'on track' : r.missedQuickChecks > 0)) && (!noteSearch.trim() || r.notesText.toLowerCase().includes(noteSearch.trim().toLowerCase()))).length === 0 && (
-          <p style={{ textAlign: 'center', color: C.muted, fontSize: 15 }}>{noteSearch.trim() ? 'No note says that.' : classFilter === 'quick' ? 'Nobody has missed a quick check.' : 'Nobody needs a look right now.'}</p>
+        {classRows.filter((r) => (!noteSearch.trim() || r.notesText.toLowerCase().includes(noteSearch.trim().toLowerCase()))).length === 0 && (
+          <p style={{ textAlign: 'center', color: C.muted, fontSize: 15 }}>{noteSearch.trim() ? 'No note says that.' : 'Nobody needs a look right now.'}</p>
         )}
-        {classRows.filter((r) => (classFilter === 'all' || (classFilter === 'flagged' ? r.band !== 'on track' : r.missedQuickChecks > 0)) && (!noteSearch.trim() || r.notesText.toLowerCase().includes(noteSearch.trim().toLowerCase()))).map((r) => {
+        {classRows.filter((r) => (!noteSearch.trim() || r.notesText.toLowerCase().includes(noteSearch.trim().toLowerCase()))).map((r) => {
           const st = findStudent(roster, r.id);
           return (
             <div key={r.id} style={{ ...card, borderColor: r.band === 'needs help now' ? C.clay : C.line }}>
@@ -3582,12 +3639,13 @@ export default function EduSphereApp() {
                 <Tag tone={tone(r.band)}>{r.band}</Tag>
               </div>
               {r.why && <p style={{ margin: '8px 0 0', fontSize: 15, fontWeight: 600 }}>{r.why}</p>}
-              <p style={{ margin: '6px 0 0', fontSize: 15 }}>
-                {r.reasons.length ? r.reasons.map((x) => x.replace(/^./, (c) => c.toUpperCase()) + '.').join(' ') : 'Nothing to flag.'}
-                {' '}{r.total ? `${r.mastered} of ${r.total} assigned modules mastered.` : 'No courses assigned.'}
-                {r.next ? ` Next up: ${r.next}.` : ''}
-              </p>
-              {r.practice && <p style={{ margin: '6px 0 0', fontSize: 14, color: C.muted }}>{r.practice}</p>}
+              <div style={{ margin: '6px 0 0', fontSize: 15 }}>
+                {(() => { const lines = r.reasons.length ? r.reasons.map((x) => x.replace(/^./, (c) => c.toUpperCase()) + '.') : ['Nothing to flag.'];
+                  const tally = r.total ? `${r.mastered} out of ${r.total} assigned modules have been mastered.` : 'No courses assigned.';
+                  const next = r.nextTitle ? ` Next up: **${r.nextTitle}**.` : '';
+                  return <RichText text={[...lines, tally + next].join('\n')} size={15} lineGap={4} />; })()}
+              </div>
+              {r.practice && <div style={{ margin: '6px 0 0', fontSize: 14, color: C.muted }}><RichText text={r.practice} size={14} lineGap={4} /></div>}
               {r.note && <p style={{ margin: '6px 0 0', fontSize: 14, fontStyle: 'italic' }}>Your note: {noteSearch.trim() && !r.note.toLowerCase().includes(noteSearch.trim().toLowerCase()) ? (r.notesAll.find((n) => n.toLowerCase().includes(noteSearch.trim().toLowerCase())) || r.note) : r.note}</p>}
               <div style={{ marginTop: 8, textAlign: 'right' }}>
                 <button type="button" style={linkBtn} onClick={async () => {
@@ -3600,10 +3658,10 @@ export default function EduSphereApp() {
             </div>
           );
         })}
-        <p style={{ fontSize: 13, color: C.muted, textAlign: 'center', padding: '0 24px' }}>Order is chosen by student metrics. Stuck on a module? Frequent loop backs? Guessing or low confidence? To the top for you.<br /><br />Students on track are ordered by how many tries it took them to get there.</p>
+        {!noteSearch.trim() && <p style={{ fontSize: 13, color: C.muted, textAlign: 'center', padding: '0 24px' }}>Order is chosen by student metrics. Stuck on a module? Frequent loop backs? Guessing or low confidence? To the top for you. <InfoButton onClick={() => setShowOrderTip(!showOrderTip)} label="About the order" open={showOrderTip} /></p>}
+        {!noteSearch.trim() && showOrderTip && <TipText>If students share an "on track" status, they are ordered by the number of attempts required to remain on track (more attempts on top).</TipText>}
         <div className="edu-no-print" style={{ textAlign: 'center', marginTop: 8 }}>
           <Btn onClick={() => { if (typeof window !== 'undefined' && window.print) window.print(); }}>Print this list</Btn>
-          <p style={{ margin: '8px 0 0', fontSize: 13, color: C.muted }}>Prints the students shown, with their reasons and practice so far.</p>
         </div>
       </div></div>
     );
@@ -3756,7 +3814,7 @@ export default function EduSphereApp() {
         {/* Teacher notes: written here, kept on the student's log, so they ride along in every backup. */}
         <div style={{ ...card, marginBottom: 14 }}>
           <p style={{ margin: '0 0 6px', fontWeight: 600 }}>Notes</p>
-          {rep.notes.length === 0 && <p style={{ margin: '0 0 8px', fontSize: 14, color: C.muted }}>Nothing yet. A note here stays with the student, in every backup.</p>}
+          {rep.notes.length === 0 && <p style={{ margin: '0 0 8px', fontSize: 14, color: C.muted }}>Nothing yet. A note here stays with the student and can be restored through backups. Quickly search student notes through the "Who Needs Help" page.</p>}
           {rep.notes.map((n) => (
             <div key={n.id} style={{ borderTop: `1px solid ${C.line}`, padding: '8px 0' }}>
               <p style={{ margin: 0, fontSize: 15, whiteSpace: 'pre-wrap' }}>{n.text}</p>
@@ -3764,7 +3822,7 @@ export default function EduSphereApp() {
             </div>
           ))}
           <div className="edu-no-print" style={{ display: 'flex', gap: 8, alignItems: 'flex-start', marginTop: 8 }}>
-            <textarea value={noteInput} onChange={(e) => setNoteInput(e.target.value)} aria-label="Teacher note" placeholder="Write a note about this student" rows={2}
+            <textarea value={noteInput} onChange={(e) => setNoteInput(e.target.value)} aria-label="Teacher note" placeholder="Write a note about this student (i.e. reads well aloud, needs help focusing)" rows={2}
               style={{ flex: 1, fontFamily: FONT, fontSize: 15, padding: 10, borderRadius: 10, border: `1px solid ${C.line}`, resize: 'vertical' }} />
             <Btn kind="secondary" disabled={!noteInput.trim()} onClick={async () => { await addToStudent(makeNoteEvent(noteInput, new Date().toISOString())); setNoteInput(''); }}>Save note</Btn>
           </div>
@@ -3784,11 +3842,12 @@ export default function EduSphereApp() {
                   {parts.items.length > 0 && <ul style={{ margin: '0 0 10px', padding: '10px 12px 10px 32px', listStyleType: 'disc', fontSize: 15, lineHeight: 1.7, borderRadius: 10, background: 'linear-gradient(135deg, #EAF2EC 0%, #F5F9F5 100%)', border: '1px solid #DCE8DF' }}>{parts.items.map((it) => <li key={it} style={{ display: 'list-item' }}>{it}</li>)}</ul>}
                   {parts.rest && <p style={{ margin: 0, fontSize: 16, lineHeight: 1.6 }}>{parts.rest}</p>}
                   {parts.tried && parts.tried.length > 0 && (
-                    <p style={{ margin: '8px 0 0', fontSize: 16, lineHeight: 1.6 }}>
-                      Tried but not passed yet: {parts.tried.map((t, i) => (
-                        <span key={t.id}>{i > 0 ? '; ' : ''}<button type="button" style={{ ...linkBtn, fontSize: 16 }} onClick={() => setStoryModule(t.id)}>{t.title}</button> ({t.detail})</span>
-                      ))}.
-                    </p>
+                    <div style={{ margin: '8px 0 0' }}>
+                      <p style={{ margin: '0 0 4px', fontSize: 16, lineHeight: 1.6 }}>Tried but not passed yet:</p>
+                      <ul style={{ margin: 0, padding: '10px 12px 10px 32px', listStyleType: 'disc', fontSize: 15, lineHeight: 1.7, borderRadius: 10, background: 'linear-gradient(135deg, #EAF2EC 0%, #F5F9F5 100%)', border: '1px solid #DCE8DF' }}>
+                        {parts.tried.map((t) => <li key={t.id}><button type="button" style={{ ...linkBtn, fontSize: 15, fontWeight: 600 }} onClick={() => setStoryModule(t.id)}>{t.title}</button> ({t.subject ? `${t.subject}: ` : ''}{t.detail})</li>)}
+                      </ul>
+                    </div>
                   )}
                 </div>
               )}
@@ -3798,16 +3857,16 @@ export default function EduSphereApp() {
 
         {pendingWritings(educatorRecord.events).length > 0 && (
           <div style={{ ...card, background: C.goldSoft, borderColor: C.gold }}>
-            <p style={{ margin: '0 0 4px', fontWeight: 600 }}>Writing that needs your check ({pendingWritings(educatorRecord.events).length})</p>
-            <p style={{ margin: '0 0 12px', fontSize: 14, color: C.muted }}>The student wrote this on paper and says it is finished. Read the paper against the checklist. Meets the bar counts as a pass and opens the next module; Not yet sends it back to try again. Neither is shown to the student as a score.</p>
+            <p style={{ margin: '0 0 4px', fontWeight: 600 }}>Writing assignment that needs your check ({pendingWritings(educatorRecord.events).length})</p>
+            <p style={{ margin: '0 0 12px', fontSize: 14, color: C.muted }}>The student wrote this assignment on paper and claims that it is finished. The requirements are outlined below and it is up to you to select "Pass" and "Not Yet". By selecting "Pass" you are unlocking the next writing module. "Not Yet" requires a retry. Student does not receive a numerical score from us.</p>
             {pendingWritings(educatorRecord.events).map((w) => (
               <div key={w.at} style={{ borderTop: `1px solid ${C.line}`, padding: '10px 0' }}>
-                <p style={{ margin: '0 0 4px', fontWeight: 600 }}>{(getModule(w.moduleId) || { title: w.moduleId }).title} · finished {fmtDate(w.at)}</p>
+                <p style={{ margin: '0 0 4px', fontWeight: 600 }}>{titleCase((getModule(w.moduleId) || { title: w.moduleId }).title)} · finished {fmtDate(w.at)}</p>
                 <p style={{ margin: '0 0 6px', fontSize: 14, color: C.muted }}>{w.prompt}</p>
-                <p style={{ margin: '0 0 8px', fontSize: 13, color: C.muted }}>Self-check: {(w.checklist || []).map((c) => `${c.ticked ? '✓' : '✗'} ${c.item}`).join('  ')}</p>
+                <ul style={{ margin: '0 0 8px', padding: '0 0 0 4px', listStyle: 'none', fontSize: 13, color: C.muted }}>{(w.checklist || []).map((c) => <li key={c.item} style={{ padding: '2px 0' }}>{c.ticked ? '✓' : '✗'} {c.item}</li>)}</ul>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-                  <Btn full onClick={async () => { const at = new Date().toISOString(); const next = { ...educatorRecord, events: [...educatorRecord.events, makeWritingMark(w.moduleId, w.at, true, '', at)] }; await saveRecord(next); setEducatorRecord(next); }} disabled={busy}>Meets the bar</Btn>
-                  <Btn full kind="secondary" onClick={async () => { const at = new Date().toISOString(); const next = { ...educatorRecord, events: [...educatorRecord.events, makeWritingMark(w.moduleId, w.at, false, '', at)] }; await saveRecord(next); setEducatorRecord(next); }} disabled={busy}>Not yet</Btn>
+                  <Btn full onClick={async () => { const at = new Date().toISOString(); const next = { ...educatorRecord, events: [...educatorRecord.events, makeWritingMark(w.moduleId, w.at, true, '', at)] }; await saveRecord(next); setEducatorRecord(next); }} disabled={busy}>Pass</Btn>
+                  <Btn full kind="secondary" onClick={async () => { const at = new Date().toISOString(); const next = { ...educatorRecord, events: [...educatorRecord.events, makeWritingMark(w.moduleId, w.at, false, '', at)] }; await saveRecord(next); setEducatorRecord(next); }} disabled={busy}>Not Yet</Btn>
                 </div>
               </div>
             ))}
@@ -3816,7 +3875,7 @@ export default function EduSphereApp() {
         {/* Choose what this student works on. Recommended first, everything else tucked away. */}
         <div style={{ ...card, background: C.greenSoft, borderColor: C.greenSoft }}>
           <p style={{ margin: '0 0 4px', fontWeight: 600 }}>Assigned Now</p>
-          <p style={{ margin: '0 0 10px', fontSize: 14, color: C.muted }}>Assign courses by checking or unchecking the boxes below. Each student starts with the courses we recommend (based on a combination of {shownName}'s initial placement check and/or his or her progression through the modules) but you are free to edit how you see fit.</p>
+          <p style={{ margin: '0 0 10px', fontSize: 14, color: C.muted }}>Assign courses by checking or unchecking the boxes below. Each student starts with the courses we recommend (based on a combination of {shownName}'s initial placement check, quick-check module skips and/or his or her actual progression through the modules) but you are free to edit how you see fit.</p>
           <input value={courseQuery} onChange={(e) => setCourseQuery(e.target.value)} placeholder="Search courses, for example: grade 1 math, kinder, fractions" aria-label="Search courses"
             style={{ fontFamily: FONT, fontSize: 15, padding: '10px 12px', width: '100%', boxSizing: 'border-box', border: `2px solid ${C.line}`, borderRadius: 10, marginBottom: 10, background: C.surface }} />
           {!courseQuery.trim() && (
@@ -3848,19 +3907,42 @@ export default function EduSphereApp() {
               <span style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 2 }}><span>{courseLabel(c)}</span>{courseNeedsTouch(c.id) && <Tag tone="review">Needs a touch screen</Tag>}</span>
             </label>
           ))}
-          {!courseQuery.trim() && <button type="button" style={{ ...linkBtn, marginTop: 6 }} onClick={() => setShowAllCourses(!showAllCourses)}>
-            {showAllCourses ? 'Hide other grades and electives' : `Show other grades and electives (${COURSES.length - recommended.length})`}
+          {!courseQuery.trim() && <button type="button" className="edu-no-print" style={{ ...linkBtn, marginTop: 6 }} onClick={() => setShowAllCourses(!showAllCourses)}>
+            {showAllCourses ? 'Hide other courses' : `Show other courses (${COURSES.length - recommended.length})`}
           </button>}
           {!courseQuery.trim() && showAllCourses && (
-            <div style={{ borderTop: `1px solid ${C.line}`, marginTop: 8, paddingTop: 8 }}>
-              <p style={{ margin: '0 0 4px', fontWeight: 600 }}>Other grades</p>
-              <p style={{ margin: '0 0 8px', fontSize: 14, color: C.muted }}>Courses above or below the recommended set. Select any you would like to include for {shownName}. Electives, when a course is one, are marked.</p>
-              {COURSES.filter((c) => !recommended.includes(c.id)).sort(byGradeOrder).map((c) => (
-                <label key={c.id} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '7px 0', fontSize: 16 }}>
-                  <input type="checkbox" checked={enabled.includes(c.id)} onChange={() => setEnabled(enabled.includes(c.id) ? enabled.filter((id) => id !== c.id) : [...enabled, c.id])} />
-                  <span style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 2 }}><span>{courseLabel(c)}</span>{courseNeedsTouch(c.id) && <Tag tone="review">Needs a touch screen</Tag>}</span>
-                </label>
-              ))}
+            <div className="edu-no-print" style={{ borderTop: `1px solid ${C.line}`, marginTop: 8, paddingTop: 8 }}>
+              <p style={{ margin: '0 0 10px', fontSize: 14, color: C.muted, textAlign: 'center' }}>Wish to stray from our recommendations? Select anything below for {shownName} to complete.</p>
+              {/* Core courses or electives, then one closed dropdown per grade, so a long catalog stays quick to navigate. */}
+              <div style={{ display: 'flex', justifyContent: 'center', gap: 8, margin: '0 0 12px' }}>
+                {[['core', 'Core'], ['electives', 'Electives']].map(([key, label]) => (
+                  <button key={key} type="button" onClick={() => setOtherKind(key)} aria-pressed={otherKind === key}
+                    style={{ fontFamily: FONT, fontSize: 15, fontWeight: 600, padding: '8px 16px', borderRadius: 999, cursor: 'pointer', border: `2px solid ${C.green}`, background: otherKind === key ? C.green : C.surface, color: otherKind === key ? '#fff' : C.green }}>{label}</button>
+                ))}
+              </div>
+              {(() => {
+                const others = COURSES.filter((c) => !recommended.includes(c.id) && (otherKind === 'electives' ? !!c.elective : !c.elective)).sort(byGradeOrder);
+                const grades = GRADES.filter((g) => others.some((c) => c.grade === g));
+                if (!grades.length) return <p style={{ margin: '0 0 8px', fontSize: 15, color: C.muted, textAlign: 'center' }}>{otherKind === 'electives' ? 'No electives outside the recommended set.' : 'No other core courses outside the recommended set.'}</p>;
+                return grades.map((g) => { const key = `${otherKind}-${g}`; const open = openOtherGrades.includes(key); const list = others.filter((c) => c.grade === g);
+                  return (
+                    <div key={key} style={{ border: `1px solid ${C.line}`, borderRadius: 10, marginBottom: 8, overflow: 'hidden', background: C.surface }}>
+                      <button type="button" aria-expanded={open} onClick={() => setOpenOtherGrades((l) => (l.includes(key) ? l.filter((x) => x !== key) : [...l, key]))}
+                        style={{ fontFamily: FONT, width: '100%', textAlign: 'left', background: C.greenSoft, border: 'none', padding: '12px 14px', cursor: 'pointer', color: C.ink, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <span style={{ fontSize: 16, fontWeight: 600 }}>{gradeLabel(g)}</span>
+                        <span style={{ fontSize: 14, color: C.muted }}>{list.filter((c) => enabled.includes(c.id)).length ? `${list.filter((c) => enabled.includes(c.id)).length} of ${list.length} selected ` : `${list.length} ${list.length === 1 ? 'course ' : 'courses '}`}{open ? '▴' : '▾'}</span>
+                      </button>
+                      {open && <div style={{ padding: '4px 14px 8px' }}>
+                        {list.map((c) => (
+                          <label key={c.id} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '7px 0', fontSize: 16 }}>
+                            <input type="checkbox" checked={enabled.includes(c.id)} onChange={() => setEnabled(enabled.includes(c.id) ? enabled.filter((id) => id !== c.id) : [...enabled, c.id])} />
+                            <span style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 2 }}><span>{courseLabel(c)}</span>{courseNeedsTouch(c.id) && <Tag tone="review">Needs a touch screen</Tag>}</span>
+                          </label>
+                        ))}
+                      </div>}
+                    </div>
+                  ); });
+              })()}
             </div>
           )}
           <p style={{ margin: '10px 0 0', fontSize: 13, color: C.muted }}>Switching a course off hides it from the student. Their progress is kept.</p>
@@ -3875,7 +3957,7 @@ export default function EduSphereApp() {
           </div>
           {showProgressTip && <div style={{ padding: '0 16px' }}><TipText>Once you assign a course above, you can view or reset the student's progression within said course. See how they're doing or allow them to start fresh.</TipText></div>}
         </div>
-        {openProgress && assigned.map((course) => {
+        {(openProgress || printing) && assigned.map((course) => {
           const open = openSubjects.includes(course.id);
           const rows = rep.modules.filter((m) => m.courseId === course.id);
           const done = rows.filter((m) => m.mastered).length;
@@ -3891,7 +3973,7 @@ export default function EduSphereApp() {
                   <span style={{ fontSize: 14, color: C.muted, whiteSpace: 'nowrap' }}>{done} of {rows.length} {open ? '▴' : '▾'}</span>
                 </div>
               </button>
-              <div className="edu-collapsible" style={{ padding: '0 16px 14px', display: open ? 'block' : 'none' }}>
+              <div className="edu-collapsible" style={{ padding: '0 16px 14px', display: open || printing ? 'block' : 'none' }}>
                   {rows.map((m) => {
                     const state = m.mastered ? 'Mastered' : m.passed && m.firstPassedAt ? 'Passed once' : m.placed ? (m.quickCheck && m.quickCheck.passed ? 'Skipped by quick check' : 'Placed past') : m.pendingWriting ? 'Needs the educator\'s check' : m.attempts ? 'In progress' : 'Not started';
                     return (
@@ -3905,7 +3987,8 @@ export default function EduSphereApp() {
                           <p style={{ margin: '6px 0 0', fontSize: 13 }}>Locked by its prerequisites. <button type="button" onClick={async () => { const next = { ...educatorRecord, events: [...educatorRecord.events, makeUnlockEvent(m.id, new Date().toISOString())] }; await saveRecord(next); setEducatorRecord(next); }} style={{ ...linkBtn, fontSize: 13, padding: 0 }}>Unlock it anyway</button></p>
                         )}
                         {/* The story of this module opens over the page, so a long report never sprawls. */}
-                        <button type="button" style={linkBtn} onClick={() => setStoryModule(m.id)}>View progress for this module</button>
+                        <button type="button" className="edu-no-print" style={linkBtn} onClick={() => setStoryModule(m.id)}>View progress for this module</button>
+                        <p className="edu-print-only" style={{ margin: '6px 0 0', fontSize: 13, lineHeight: 1.6 }}>{moduleStory(shownName, educatorRecord.events, m.id)}</p>
                         {m.attempts > 0 && (confirmModuleReset === m.id ? (
                           <div style={{ background: C.claySoft, borderRadius: 10, padding: 12, marginTop: 8 }}>
                             <p style={{ margin: '0 0 10px', fontSize: 15 }}>Are you sure you want to erase all current progress for this module? Historical performance is still recorded.</p>
@@ -3968,20 +4051,21 @@ export default function EduSphereApp() {
               </div>
             );
           })}
-          <p style={{ margin: '4px 0 0', fontSize: 14, color: C.muted }}>We never store a numerical student score. We store, one line at a time, what happened. These ground truths are recounted each time you open this page.</p>
+          
         </div>
 
         <p style={{ fontSize: 14, color: C.muted, textAlign: 'center', margin: '0 0 14px' }}>
-          {stateCode ? `We measure against ${stateFor(stateCode).name}'s standards (${FRAMEWORKS[frameworkForState(stateCode)].name}).` : `We measure against the ${FRAMEWORKS.CCSS.name} until a state is chosen.`}<br />
+          {stateCode && frameworkForState(stateCode) !== 'CCSS' ? `We measure against ${stateFor(stateCode).name}'s standards (${FRAMEWORKS[frameworkForState(stateCode)].name}).` : `We measure against ${FRAMEWORKS.CCSS.name}.`}<br />
           {educator && <><button type="button" onClick={() => { rememberHere(); setStateDraft(stateCode || ''); setScreen('change-state'); }} style={{ ...linkBtn, fontSize: 14, padding: 0 }}>Change state</button>{' · '}</>}
           <button type="button" onClick={() => setScreen('standards-map')} style={{ ...linkBtn, fontSize: 14, padding: 0 }}>Standards map</button>
         </p>
-        <details style={{ marginBottom: 14 }}>
+        <details className="edu-no-print" style={{ marginBottom: 14 }}>
           <summary style={{ cursor: 'pointer', color: C.green, fontWeight: 600 }}>Raw data</summary>
           <p style={{ fontSize: 14, color: C.muted, margin: '8px 0' }}>Every line below records one thing that happened, in the order it happened. Lines are only ever added. Because nothing is changed or removed, any report from any date can be reproduced exactly as it was.</p>
           <textarea readOnly value={JSON.stringify(activeEvents(educatorRecord.events), null, 2)} style={{ width: '100%', boxSizing: 'border-box', height: 220, fontSize: 12, borderRadius: 10, border: `1px solid ${C.line}`, padding: 10 }} />
         </details>
 
+        <div className="edu-no-print">
         {confirmReset ? (
           <div style={{ ...card, borderColor: C.clay }}>
             <p style={{ margin: '0 0 10px' }}>Start {shownName} over in every subject? The record is kept, but nothing will count as mastered.</p>
@@ -3991,8 +4075,9 @@ export default function EduSphereApp() {
             </div>
           </div>
         ) : (
-          <div style={{ textAlign: 'center' }}><Btn kind="secondary" onClick={() => setConfirmReset(true)} style={{ width: 'min(300px, 100%)' }}>Reset {shownName}'s Progress</Btn></div>
+          <div className="edu-no-print" style={{ textAlign: 'center' }}><Btn kind="secondary" onClick={() => setConfirmReset(true)} style={{ width: 'min(300px, 100%)' }}>Reset {shownName}'s Progress</Btn></div>
         )}
+        </div>
         {saveNote && <p style={{ color: C.muted, fontSize: 13, textAlign: 'center', marginTop: 32 }}>{saveNote}</p>}
       </div></div>
     );

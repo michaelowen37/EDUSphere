@@ -39147,16 +39147,23 @@ const KID_ANIMATION = `
   .edu-student-body { display: block; }
   /* On a phone the picture sits above the name, so every name, grade and link starts at the card's left edge,
      with or without a picture; on a laptop the picture returns beside them. */
-  .edu-student-left { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; }
+  .edu-student-left { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 6px; }
+  .edu-student-left > div { width: 100%; }
   .edu-student-actions { text-align: left; }
   .edu-student-actions button { margin-right: 10px; }
   .edu-student-open { display: flex; justify-content: center; margin-top: 12px; }
   @media (min-width: 1000px) {
     .edu-student-body { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
     .edu-student-left { flex: 1 1 auto; min-width: 0; text-align: left; flex-direction: row; align-items: center; gap: 10px; }
+    .edu-student-left > div { width: auto; }
   }
   /* Section titles read centered at every width. A fold keeps its count and chevron pinned to its
      right edge while the title centers. */
+  /* A phone in dark mode was painting the inputs and buttons dark. This page has one palette. */
+  :root { color-scheme: light; }
+  input, textarea, select, button { color-scheme: light; }
+  input, textarea, select { background: #FFFFFF; color: #1F2D24; -webkit-text-fill-color: #1F2D24; }
+  input::placeholder, textarea::placeholder { color: #6B7A70; opacity: 1; }
   .edu-card-title { text-align: center; }
   .edu-fold-head { position: relative; justify-content: center !important; }
   .edu-fold-title { text-align: center; }
@@ -41789,17 +41796,8 @@ function EduSphereApp() {
                     activeOpen && visible.map((st) => (react_1.default.createElement("div", { key: st.id, style: { ...card, paddingBottom: 14 } }, renamingId === st.id ? (react_1.default.createElement(react_1.default.Fragment, null,
                         react_1.default.createElement("input", { value: renameInput, onChange: (e) => setRenameInput(e.target.value), placeholder: "Name shown to the student", maxLength: NAME_MAX, style: { fontFamily: FONT, fontSize: 17, padding: '10px 12px', width: '100%', boxSizing: 'border-box', border: `2px solid ${C.line}`, borderRadius: 10, marginBottom: 10 } }),
                         react_1.default.createElement("div", { style: { display: 'flex', gap: 10 } },
-                            react_1.default.createElement(Btn, { onClick: async () => {
-                                    const r = renameStudent(roster, st.id, renameInput);
-                                    await applyRoster(r.roster, r.error);
-                                    if (!r.error) {
-                                        setRenamingId(null);
-                                        // The ID becomes the first note, so the report still shows it; the educator can remove it.
-                                        const rec = await loadRecord(st.id);
-                                        if (rec && renameInput.trim() !== st.id && !teacherNotes(rec.events).some((n) => n.text.startsWith('Student ID:')))
-                                            await saveRecord({ ...rec, events: [...rec.events, makeNoteEvent(`Student ID: ${st.id}`, new Date().toISOString())] });
-                                    }
-                                } }, "Save name"),
+                            react_1.default.createElement(Btn, { onClick: async () => { const r = renameStudent(roster, st.id, renameInput); await applyRoster(r.roster, r.error); if (!r.error)
+                                    setRenamingId(null); } }, "Save name"),
                             react_1.default.createElement(Btn, { kind: "secondary", onClick: () => { setRenamingId(null); setRosterError(''); } }, "Cancel")),
                         react_1.default.createElement("p", { style: { color: C.muted, fontSize: 13, margin: '10px 0 0' } }, "The ID stays the same, so progress follows the new name."))) : (react_1.default.createElement(react_1.default.Fragment, null,
                         react_1.default.createElement("div", { className: "edu-student-body" },
@@ -42179,11 +42177,11 @@ function EduSphereApp() {
                             react_1.default.createElement("span", { className: "edu-fold-title", style: { fontSize: 17, fontWeight: 600 } }, "Summary"),
                             react_1.default.createElement("span", { className: "edu-fold-meta", style: { color: C.muted } }, openSummary ? '▴' : '▾')),
                         openSummary && (react_1.default.createElement("div", { style: { padding: '0 16px 16px' } },
-                            react_1.default.createElement("p", { style: { margin: '0 0 6px', fontSize: 16, lineHeight: 1.6 } }, parts.lead),
+                            react_1.default.createElement("p", { style: { margin: '0 0 6px', fontSize: 16, lineHeight: 1.6, textAlign: 'center' } }, parts.lead),
                             parts.items.length > 0 && react_1.default.createElement("ul", { style: { margin: '0 0 10px', padding: '10px 12px 10px 32px', listStyleType: 'disc', fontSize: 15, lineHeight: 1.7, borderRadius: 10, background: 'linear-gradient(135deg, #EAF2EC 0%, #F5F9F5 100%)', border: '1px solid #DCE8DF' } }, parts.items.map((it) => react_1.default.createElement("li", { key: it, style: { display: 'list-item' } }, it))),
                             parts.rest && react_1.default.createElement("div", { style: { margin: 0, fontSize: 16, lineHeight: 1.6, textAlign: 'center' } }, parts.rest.split(/(?<=\.)\s+/).filter(Boolean).map((line) => react_1.default.createElement("p", { key: line, style: { margin: '2px 0' } }, line))),
                             parts.tried && parts.tried.length > 0 && (react_1.default.createElement("div", { style: { margin: '8px 0 0' } },
-                                react_1.default.createElement("p", { style: { margin: '0 0 4px', fontSize: 16, lineHeight: 1.6 } }, "Tried but not passed yet:"),
+                                react_1.default.createElement("p", { style: { margin: '0 0 4px', fontSize: 16, lineHeight: 1.6, textAlign: 'center' } }, "Tried but not passed yet:"),
                                 react_1.default.createElement("ul", { style: { margin: 0, padding: '10px 12px 10px 32px', listStyleType: 'disc', fontSize: 15, lineHeight: 1.7, borderRadius: 10, background: 'linear-gradient(135deg, #EAF2EC 0%, #F5F9F5 100%)', border: '1px solid #DCE8DF' } }, parts.tried.map((t) => react_1.default.createElement("li", { key: t.id },
                                     react_1.default.createElement("button", { type: "button", style: { ...linkBtn, fontSize: 15, fontWeight: 600 }, onClick: () => setStoryModule(t.id) }, t.title),
                                     " (",
@@ -42214,7 +42212,7 @@ function EduSphereApp() {
                             react_1.default.createElement(Btn, { full: true, kind: "secondary", onClick: async () => { const at = new Date().toISOString(); const next = { ...educatorRecord, events: [...educatorRecord.events, makeWritingMark(w.moduleId, w.at, false, '', at)] }; await saveRecord(next); setEducatorRecord(next); }, disabled: busy }, "Not Yet"))))))),
                 react_1.default.createElement("div", { style: { ...card, background: C.greenSoft, borderColor: C.greenSoft } },
                     react_1.default.createElement("p", { className: "edu-card-title", style: { margin: '0 0 4px', fontWeight: 600 } }, "Assigned Now"),
-                    react_1.default.createElement("p", { style: { margin: '0 0 10px', fontSize: 14, color: C.muted } },
+                    react_1.default.createElement("p", { style: { margin: '0 0 10px', fontSize: 14, color: C.muted, textAlign: 'center' } },
                         "Assign courses by checking or unchecking the boxes below. Each student starts with the courses we recommend (based on a combination of ",
                         shownName,
                         "'s initial placement check, quick-check module skips and/or his or her actual progression through the modules) but you are free to edit how you see fit."),
@@ -42236,7 +42234,8 @@ function EduSphereApp() {
                         react_1.default.createElement("span", { style: { display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 2 } },
                             react_1.default.createElement("span", null, courseLabel(c)),
                             courseNeedsTouch(c.id) && react_1.default.createElement(Tag, { tone: "review" }, "Needs a touch screen"))))),
-                    !courseQuery.trim() && react_1.default.createElement("button", { type: "button", className: "edu-no-print", style: { ...linkBtn, marginTop: 6 }, onClick: () => setShowAllCourses(!showAllCourses) }, showAllCourses ? 'Hide other courses' : `Show other courses (${COURSES.length - recommended.length})`),
+                    !courseQuery.trim() && react_1.default.createElement("div", { className: "edu-no-print", style: { textAlign: 'center', marginTop: 6 } },
+                        react_1.default.createElement("button", { type: "button", style: linkBtn, onClick: () => setShowAllCourses(!showAllCourses) }, showAllCourses ? 'Hide other courses' : `Show other courses (${COURSES.length - recommended.length})`)),
                     !courseQuery.trim() && showAllCourses && (react_1.default.createElement("div", { className: "edu-no-print", style: { borderTop: `1px solid ${C.line}`, marginTop: 8, paddingTop: 8 } },
                         react_1.default.createElement("p", { style: { margin: '0 0 10px', fontSize: 14, color: C.muted, textAlign: 'center' } },
                             "Wish to stray from our recommendations? Select anything below for ",

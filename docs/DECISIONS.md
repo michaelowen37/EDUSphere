@@ -346,6 +346,10 @@ Approved by Mikey on 2026-09-04 unless marked "proposed".
 
 - (2026-09-15) The student report reads centered at every width: titles, closing lines, the note box and the course search, with a fold's count and chevron still pinned to its right edge. The notes i sits beside the Notes title and carries both sentences (what a note survives, and where to search notes), so nothing sits under the box.
 
+- (2026-09-15) Renaming a student no longer writes a "Student ID" note; a note is only ever something the educator wrote. The Assigned Now card reads centered, course rows included, with Show other courses centered under them, and the summary's "has mastered" line and its bulleted list are centered with the bullets sitting inside.
+
+- (2026-09-15) The page declares `color-scheme: light` and paints its own inputs: a phone in dark mode had been repainting every field dark gray, which is what Mikey saw on the PIN, the student ID and the note box. A browser check now reads the computed background and text color of a field so it cannot happen again. Course rows and the green bulleted lists read left again; on a phone a student's picture, name and grade center on the card, with the links still left and Open report centered below.
+
 ## Open items
 - Verify audio plays inside the chat artifact sandbox (works in a normal browser).
 - Common Core / TEKS codes on existing modules to be checked against the official lists.

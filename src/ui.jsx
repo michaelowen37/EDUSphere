@@ -757,16 +757,23 @@ const KID_ANIMATION = `
   .edu-student-body { display: block; }
   /* On a phone the picture sits above the name, so every name, grade and link starts at the card's left edge,
      with or without a picture; on a laptop the picture returns beside them. */
-  .edu-student-left { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; }
+  .edu-student-left { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 6px; }
+  .edu-student-left > div { width: 100%; }
   .edu-student-actions { text-align: left; }
   .edu-student-actions button { margin-right: 10px; }
   .edu-student-open { display: flex; justify-content: center; margin-top: 12px; }
   @media (min-width: 1000px) {
     .edu-student-body { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
     .edu-student-left { flex: 1 1 auto; min-width: 0; text-align: left; flex-direction: row; align-items: center; gap: 10px; }
+    .edu-student-left > div { width: auto; }
   }
   /* Section titles read centered at every width. A fold keeps its count and chevron pinned to its
      right edge while the title centers. */
+  /* A phone in dark mode was painting the inputs and buttons dark. This page has one palette. */
+  :root { color-scheme: light; }
+  input, textarea, select, button { color-scheme: light; }
+  input, textarea, select { background: #FFFFFF; color: #1F2D24; -webkit-text-fill-color: #1F2D24; }
+  input::placeholder, textarea::placeholder { color: #6B7A70; opacity: 1; }
   .edu-card-title { text-align: center; }
   .edu-fold-head { position: relative; justify-content: center !important; }
   .edu-fold-title { text-align: center; }
@@ -3450,9 +3457,7 @@ export default function EduSphereApp() {
                 <input value={renameInput} onChange={(e) => setRenameInput(e.target.value)} placeholder="Name shown to the student" maxLength={NAME_MAX}
                   style={{ fontFamily: FONT, fontSize: 17, padding: '10px 12px', width: '100%', boxSizing: 'border-box', border: `2px solid ${C.line}`, borderRadius: 10, marginBottom: 10 }} />
                 <div style={{ display: 'flex', gap: 10 }}>
-                  <Btn onClick={async () => { const r = renameStudent(roster, st.id, renameInput); await applyRoster(r.roster, r.error); if (!r.error) { setRenamingId(null);
-                    // The ID becomes the first note, so the report still shows it; the educator can remove it.
-                    const rec = await loadRecord(st.id); if (rec && renameInput.trim() !== st.id && !teacherNotes(rec.events).some((n) => n.text.startsWith('Student ID:'))) await saveRecord({ ...rec, events: [...rec.events, makeNoteEvent(`Student ID: ${st.id}`, new Date().toISOString())] }); } }}>Save name</Btn>
+                  <Btn onClick={async () => { const r = renameStudent(roster, st.id, renameInput); await applyRoster(r.roster, r.error); if (!r.error) setRenamingId(null); }}>Save name</Btn>
                   <Btn kind="secondary" onClick={() => { setRenamingId(null); setRosterError(''); }}>Cancel</Btn>
                 </div>
                 <p style={{ color: C.muted, fontSize: 13, margin: '10px 0 0' }}>The ID stays the same, so progress follows the new name.</p>
@@ -3893,12 +3898,12 @@ export default function EduSphereApp() {
               </button>
               {openSummary && (
                 <div style={{ padding: '0 16px 16px' }}>
-                  <p style={{ margin: '0 0 6px', fontSize: 16, lineHeight: 1.6 }}>{parts.lead}</p>
+                  <p style={{ margin: '0 0 6px', fontSize: 16, lineHeight: 1.6, textAlign: 'center' }}>{parts.lead}</p>
                   {parts.items.length > 0 && <ul style={{ margin: '0 0 10px', padding: '10px 12px 10px 32px', listStyleType: 'disc', fontSize: 15, lineHeight: 1.7, borderRadius: 10, background: 'linear-gradient(135deg, #EAF2EC 0%, #F5F9F5 100%)', border: '1px solid #DCE8DF' }}>{parts.items.map((it) => <li key={it} style={{ display: 'list-item' }}>{it}</li>)}</ul>}
                   {parts.rest && <div style={{ margin: 0, fontSize: 16, lineHeight: 1.6, textAlign: 'center' }}>{parts.rest.split(/(?<=\.)\s+/).filter(Boolean).map((line) => <p key={line} style={{ margin: '2px 0' }}>{line}</p>)}</div>}
                   {parts.tried && parts.tried.length > 0 && (
                     <div style={{ margin: '8px 0 0' }}>
-                      <p style={{ margin: '0 0 4px', fontSize: 16, lineHeight: 1.6 }}>Tried but not passed yet:</p>
+                      <p style={{ margin: '0 0 4px', fontSize: 16, lineHeight: 1.6, textAlign: 'center' }}>Tried but not passed yet:</p>
                       <ul style={{ margin: 0, padding: '10px 12px 10px 32px', listStyleType: 'disc', fontSize: 15, lineHeight: 1.7, borderRadius: 10, background: 'linear-gradient(135deg, #EAF2EC 0%, #F5F9F5 100%)', border: '1px solid #DCE8DF' }}>
                         {parts.tried.map((t) => <li key={t.id}><button type="button" style={{ ...linkBtn, fontSize: 15, fontWeight: 600 }} onClick={() => setStoryModule(t.id)}>{t.title}</button> ({t.subject ? `${t.subject}: ` : ''}{t.detail})</li>)}
                       </ul>
@@ -3930,7 +3935,7 @@ export default function EduSphereApp() {
         {/* Choose what this student works on. Recommended first, everything else tucked away. */}
         <div style={{ ...card, background: C.greenSoft, borderColor: C.greenSoft }}>
           <p className="edu-card-title" style={{ margin: '0 0 4px', fontWeight: 600 }}>Assigned Now</p>
-          <p style={{ margin: '0 0 10px', fontSize: 14, color: C.muted }}>Assign courses by checking or unchecking the boxes below. Each student starts with the courses we recommend (based on a combination of {shownName}'s initial placement check, quick-check module skips and/or his or her actual progression through the modules) but you are free to edit how you see fit.</p>
+          <p style={{ margin: '0 0 10px', fontSize: 14, color: C.muted, textAlign: 'center' }}>Assign courses by checking or unchecking the boxes below. Each student starts with the courses we recommend (based on a combination of {shownName}'s initial placement check, quick-check module skips and/or his or her actual progression through the modules) but you are free to edit how you see fit.</p>
           <input value={courseQuery} onChange={(e) => setCourseQuery(e.target.value)} placeholder="Search courses, for example: grade 1 math, kinder, fractions" aria-label="Search courses"
             style={{ fontFamily: FONT, fontSize: 15, padding: '10px 12px', width: '100%', boxSizing: 'border-box', border: `2px solid ${C.line}`, borderRadius: 10, marginBottom: 10, background: C.surface, textAlign: 'center' }} />
           {!courseQuery.trim() && (
@@ -3962,9 +3967,9 @@ export default function EduSphereApp() {
               <span style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 2 }}><span>{courseLabel(c)}</span>{courseNeedsTouch(c.id) && <Tag tone="review">Needs a touch screen</Tag>}</span>
             </label>
           ))}
-          {!courseQuery.trim() && <button type="button" className="edu-no-print" style={{ ...linkBtn, marginTop: 6 }} onClick={() => setShowAllCourses(!showAllCourses)}>
+          {!courseQuery.trim() && <div className="edu-no-print" style={{ textAlign: 'center', marginTop: 6 }}><button type="button" style={linkBtn} onClick={() => setShowAllCourses(!showAllCourses)}>
             {showAllCourses ? 'Hide other courses' : `Show other courses (${COURSES.length - recommended.length})`}
-          </button>}
+          </button></div>}
           {!courseQuery.trim() && showAllCourses && (
             <div className="edu-no-print" style={{ borderTop: `1px solid ${C.line}`, marginTop: 8, paddingTop: 8 }}>
               <p style={{ margin: '0 0 10px', fontSize: 14, color: C.muted, textAlign: 'center' }}>Wish to stray from our recommendations? Select anything below for {shownName} to complete.</p>

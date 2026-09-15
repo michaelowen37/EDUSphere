@@ -350,6 +350,8 @@ Approved by Mikey on 2026-09-04 unless marked "proposed".
 
 - (2026-09-15) The page declares `color-scheme: light` and paints its own inputs: a phone in dark mode had been repainting every field dark gray, which is what Mikey saw on the PIN, the student ID and the note box. A browser check now reads the computed background and text color of a field so it cannot happen again. Course rows and the green bulleted lists read left again; on a phone a student's picture, name and grade center on the card, with the links still left and Open report centered below.
 
+- (2026-09-15) Quick checks uses the same two-piece rectangle as the other toggles, On beside Off. "Tried but not passed yet:" is bold, the writing card's heading and each assignment's title are centered, and the note box is only tall on a phone.
+
 ## Open items
 - Verify audio plays inside the chat artifact sandbox (works in a normal browser).
 - Common Core / TEKS codes on existing modules to be checked against the official lists.

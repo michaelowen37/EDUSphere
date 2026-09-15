@@ -781,6 +781,7 @@ const KID_ANIMATION = `
   /* The note box: the field spans the card, tall enough for the example, with Save note centered below it. */
   .edu-note-box { margin-top: 8px; }
   .edu-note-box textarea { min-height: 96px; text-align: center; }
+  @media (min-width: 1000px) { .edu-note-box textarea { min-height: 0; } }
   .edu-note-save { display: flex; justify-content: center; margin-top: 8px; }
   @media (min-width: 1000px) {
     .edu-student-open { margin-top: 0; flex: 0 0 auto; }
@@ -3588,10 +3589,7 @@ export default function EduSphereApp() {
             <p style={{ margin: '0 0 4px', fontWeight: 600 }}>Quick checks</p>
             <p style={{ margin: '0 0 8px', fontSize: 14, color: C.muted, lineHeight: 1.5 }}>All new students (above grade 2) start by taking placement tests. Quick Checks allow for further refinement by allowing students to skip the material they already know through knowledge-based tests. <InfoButton onClick={() => setShowQuickTip(!showQuickTip)} label="About quick checks" open={showQuickTip} /></p>
             {showQuickTip && <TipText>Generically placing a student into grade 3 math (after failing grade 4 in a placement test) is an over-simplification. They may already understand some of the grade 3 material. Quick-checks are opportunities for students to skip individual modules (in this case, grade 3 math modules) through five-question knowledge tests and allow for less wasted time.<br /><br /><strong>Note:</strong> Successful skips lead to a transcript status of "placed" rather than "mastered." If they answer too quickly, it doesn't count. Future memory checks will further test their level of understanding of these skipped modules by integrating the concepts into new material, ensuring that nothing slips through the cracks. If necessary, we route them backwards.</TipText>}
-            <button type="button" role="switch" aria-checked={quickChecks} onClick={async () => { const next = !quickChecks; setQuickChecks(next); await saveQuickChecks(next); }}
-              style={{ fontFamily: FONT, fontSize: 15, fontWeight: 600, padding: '8px 14px', borderRadius: 999, border: `2px solid ${C.green}`, cursor: 'pointer', whiteSpace: 'nowrap', background: quickChecks ? C.green : C.surface, color: quickChecks ? '#fff' : C.green }}>
-              {quickChecks ? 'On' : 'Off'}
-            </button>
+            <SegToggle options={[['on', 'On'], ['off', 'Off']]} value={quickChecks ? 'on' : 'off'} onChange={async (key) => { const next = key === 'on'; setQuickChecks(next); await saveQuickChecks(next); }} ariaLabel="Quick checks on or off" />
           </div>
           <p style={{ margin: '0 0 6px', fontWeight: 600 }}>Walk through as a student</p>
           <p style={{ margin: '0 0 10px', fontSize: 15 }}>See exactly what a student sees. Every module is open, every question can be skipped, and nothing is recorded.</p>
@@ -3903,7 +3901,7 @@ export default function EduSphereApp() {
                   {parts.rest && <div style={{ margin: 0, fontSize: 16, lineHeight: 1.6, textAlign: 'center' }}>{parts.rest.split(/(?<=\.)\s+/).filter(Boolean).map((line) => <p key={line} style={{ margin: '2px 0' }}>{line}</p>)}</div>}
                   {parts.tried && parts.tried.length > 0 && (
                     <div style={{ margin: '8px 0 0' }}>
-                      <p style={{ margin: '0 0 4px', fontSize: 16, lineHeight: 1.6, textAlign: 'center' }}>Tried but not passed yet:</p>
+                      <p style={{ margin: '0 0 4px', fontSize: 16, lineHeight: 1.6, textAlign: 'center', fontWeight: 600 }}>Tried but not passed yet:</p>
                       <ul style={{ margin: 0, padding: '10px 12px 10px 32px', listStyleType: 'disc', fontSize: 15, lineHeight: 1.7, borderRadius: 10, background: 'linear-gradient(135deg, #EAF2EC 0%, #F5F9F5 100%)', border: '1px solid #DCE8DF' }}>
                         {parts.tried.map((t) => <li key={t.id}><button type="button" style={{ ...linkBtn, fontSize: 15, fontWeight: 600 }} onClick={() => setStoryModule(t.id)}>{t.title}</button> ({t.subject ? `${t.subject}: ` : ''}{t.detail})</li>)}
                       </ul>
@@ -3917,11 +3915,11 @@ export default function EduSphereApp() {
 
         {pendingWritings(educatorRecord.events).length > 0 && (
           <div style={{ ...card, background: C.goldSoft, borderColor: C.gold }}>
-            <p style={{ margin: '0 0 4px', fontWeight: 600 }}>Writing assignment that needs your check ({pendingWritings(educatorRecord.events).length})</p>
+            <p className="edu-card-title" style={{ margin: '0 0 4px', fontWeight: 600 }}>Writing assignment that needs your check ({pendingWritings(educatorRecord.events).length})</p>
             <p style={{ margin: '0 0 12px', fontSize: 14, color: C.muted, textAlign: 'center', lineHeight: 1.5 }}>{shownName} wrote this assignment on paper and marked it as finished. The requirements are outlined below and it's up to you to select "Pass" or "Not Yet". By selecting "Pass" you are unlocking the next writing module. "Not Yet" requires a retry. Students never receive numerical scores from us.</p>
             {pendingWritings(educatorRecord.events).map((w) => (
               <div key={w.at} style={{ borderTop: `1px solid ${C.line}`, padding: '10px 0' }}>
-                <p style={{ margin: '0 0 4px', fontWeight: 600 }}>{titleCase((getModule(w.moduleId) || { title: w.moduleId }).title)} · finished {fmtDate(w.at)}</p>
+                <p style={{ margin: '0 0 4px', fontWeight: 600, textAlign: 'center' }}>{titleCase((getModule(w.moduleId) || { title: w.moduleId }).title)} · finished {fmtDate(w.at)}</p>
                 <p style={{ margin: '0 0 6px', fontSize: 14, color: C.muted }}>{w.prompt}</p>
                 <ul style={{ margin: '0 0 8px', padding: '0 0 0 4px', listStyle: 'none', fontSize: 13, color: C.muted }}>{(w.checklist || []).map((c) => <li key={c.item} style={{ padding: '2px 0' }}>{c.ticked ? '✓' : '✗'} {c.item}</li>)}</ul>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>

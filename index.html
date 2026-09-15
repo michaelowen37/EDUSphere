@@ -39171,6 +39171,7 @@ const KID_ANIMATION = `
   /* The note box: the field spans the card, tall enough for the example, with Save note centered below it. */
   .edu-note-box { margin-top: 8px; }
   .edu-note-box textarea { min-height: 96px; text-align: center; }
+  @media (min-width: 1000px) { .edu-note-box textarea { min-height: 0; } }
   .edu-note-save { display: flex; justify-content: center; margin-top: 8px; }
   @media (min-width: 1000px) {
     .edu-student-open { margin-top: 0; flex: 0 0 auto; }
@@ -41895,7 +41896,7 @@ function EduSphereApp() {
                             react_1.default.createElement("br", null),
                             react_1.default.createElement("strong", null, "Note:"),
                             " Successful skips lead to a transcript status of \"placed\" rather than \"mastered.\" If they answer too quickly, it doesn't count. Future memory checks will further test their level of understanding of these skipped modules by integrating the concepts into new material, ensuring that nothing slips through the cracks. If necessary, we route them backwards."),
-                        react_1.default.createElement("button", { type: "button", role: "switch", "aria-checked": quickChecks, onClick: async () => { const next = !quickChecks; setQuickChecks(next); await saveQuickChecks(next); }, style: { fontFamily: FONT, fontSize: 15, fontWeight: 600, padding: '8px 14px', borderRadius: 999, border: `2px solid ${C.green}`, cursor: 'pointer', whiteSpace: 'nowrap', background: quickChecks ? C.green : C.surface, color: quickChecks ? '#fff' : C.green } }, quickChecks ? 'On' : 'Off')),
+                        react_1.default.createElement(SegToggle, { options: [['on', 'On'], ['off', 'Off']], value: quickChecks ? 'on' : 'off', onChange: async (key) => { const next = key === 'on'; setQuickChecks(next); await saveQuickChecks(next); }, ariaLabel: "Quick checks on or off" })),
                     react_1.default.createElement("p", { style: { margin: '0 0 6px', fontWeight: 600 } }, "Walk through as a student"),
                     react_1.default.createElement("p", { style: { margin: '0 0 10px', fontSize: 15 } }, "See exactly what a student sees. Every module is open, every question can be skipped, and nothing is recorded."),
                     react_1.default.createElement("div", { style: { display: 'flex', flexWrap: 'wrap', gap: 8, justifyContent: 'center' } }, LEVELS.map((lv) => react_1.default.createElement("button", { key: lv.id, type: "button", "aria-label": `Walk through ${lv.title.toLowerCase()}`, onClick: () => startPreview(lv.id), style: { fontFamily: FONT, fontSize: 15, fontWeight: 600, padding: '10px 16px', borderRadius: 10, background: C.surface, border: `2px solid ${C.green}`, color: C.green, cursor: 'pointer' } }, lv.title)))),
@@ -42181,7 +42182,7 @@ function EduSphereApp() {
                             parts.items.length > 0 && react_1.default.createElement("ul", { style: { margin: '0 0 10px', padding: '10px 12px 10px 32px', listStyleType: 'disc', fontSize: 15, lineHeight: 1.7, borderRadius: 10, background: 'linear-gradient(135deg, #EAF2EC 0%, #F5F9F5 100%)', border: '1px solid #DCE8DF' } }, parts.items.map((it) => react_1.default.createElement("li", { key: it, style: { display: 'list-item' } }, it))),
                             parts.rest && react_1.default.createElement("div", { style: { margin: 0, fontSize: 16, lineHeight: 1.6, textAlign: 'center' } }, parts.rest.split(/(?<=\.)\s+/).filter(Boolean).map((line) => react_1.default.createElement("p", { key: line, style: { margin: '2px 0' } }, line))),
                             parts.tried && parts.tried.length > 0 && (react_1.default.createElement("div", { style: { margin: '8px 0 0' } },
-                                react_1.default.createElement("p", { style: { margin: '0 0 4px', fontSize: 16, lineHeight: 1.6, textAlign: 'center' } }, "Tried but not passed yet:"),
+                                react_1.default.createElement("p", { style: { margin: '0 0 4px', fontSize: 16, lineHeight: 1.6, textAlign: 'center', fontWeight: 600 } }, "Tried but not passed yet:"),
                                 react_1.default.createElement("ul", { style: { margin: 0, padding: '10px 12px 10px 32px', listStyleType: 'disc', fontSize: 15, lineHeight: 1.7, borderRadius: 10, background: 'linear-gradient(135deg, #EAF2EC 0%, #F5F9F5 100%)', border: '1px solid #DCE8DF' } }, parts.tried.map((t) => react_1.default.createElement("li", { key: t.id },
                                     react_1.default.createElement("button", { type: "button", style: { ...linkBtn, fontSize: 15, fontWeight: 600 }, onClick: () => setStoryModule(t.id) }, t.title),
                                     " (",
@@ -42190,7 +42191,7 @@ function EduSphereApp() {
                                     ")")))))))));
                 })(),
                 pendingWritings(educatorRecord.events).length > 0 && (react_1.default.createElement("div", { style: { ...card, background: C.goldSoft, borderColor: C.gold } },
-                    react_1.default.createElement("p", { style: { margin: '0 0 4px', fontWeight: 600 } },
+                    react_1.default.createElement("p", { className: "edu-card-title", style: { margin: '0 0 4px', fontWeight: 600 } },
                         "Writing assignment that needs your check (",
                         pendingWritings(educatorRecord.events).length,
                         ")"),
@@ -42198,7 +42199,7 @@ function EduSphereApp() {
                         shownName,
                         " wrote this assignment on paper and marked it as finished. The requirements are outlined below and it's up to you to select \"Pass\" or \"Not Yet\". By selecting \"Pass\" you are unlocking the next writing module. \"Not Yet\" requires a retry. Students never receive numerical scores from us."),
                     pendingWritings(educatorRecord.events).map((w) => (react_1.default.createElement("div", { key: w.at, style: { borderTop: `1px solid ${C.line}`, padding: '10px 0' } },
-                        react_1.default.createElement("p", { style: { margin: '0 0 4px', fontWeight: 600 } },
+                        react_1.default.createElement("p", { style: { margin: '0 0 4px', fontWeight: 600, textAlign: 'center' } },
                             titleCase((getModule(w.moduleId) || { title: w.moduleId }).title),
                             " \u00B7 finished ",
                             fmtDate(w.at)),

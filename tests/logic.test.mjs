@@ -449,6 +449,7 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
     if (genId === 'hc-which-decade') { const y = Number(q.story.match(/\d+/)[0]); if (Number(q.answer) !== Math.floor(y / 10) * 10) problems.push('decade wrong'); }
     if (genId === 'c2-blocks-walked') { const [a, b] = q.story.match(/\d+/g).map(Number); if (Number(q.answer) !== a + b) problems.push('blocks wrong'); }
     if (genId === 'ck-more-votes') { const [a, b] = q.choices.map((c) => Number(c.split(':')[1])); if (q.answer !== `dots:${Math.max(a, b)}` || a === b) problems.push('more votes wrong'); }
+    if (genId === 'c2-weeks-to-save') { const [price, per] = q.story.match(/\d+/g).map(Number); if (Number(q.answer) !== price / per) problems.push('weeks to save wrong'); }
     // Kindergarten to grade 3 civics, re-derived from the story
     if (genId === 'c2-vote-winner') { const [a, b] = q.story.match(/\d+/g).map(Number); if (q.answer !== (a > b ? 'Pizza' : 'Tacos')) problems.push('vote winner wrong'); }
     if (genId === 'c2-vote-margin' || genId === 'c3-vote-margin') { const [a, b] = q.story.match(/\d+/g).map(Number); if (Number(q.answer) !== Math.abs(a - b)) problems.push('vote margin wrong'); }

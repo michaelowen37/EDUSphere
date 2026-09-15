@@ -36,5 +36,9 @@ if [ -n "$NEWIDS" ]; then
   node tools/shots.mjs /tmp/edu-shots/screenshots $NEWIDS || echo "screenshots skipped"
   (cd /tmp/edu-shots && zip -qr "$OUT/edusphere-changes.zip" screenshots)
 fi
+# The browser test leaves a phone-width picture of the report and of Who needs help; they ride along too.
+rm -rf /tmp/edu-pages/screenshots && mkdir -p /tmp/edu-pages/screenshots
+for f in tests/e2e/out/report.png tests/e2e/out/class-view.png; do [ -f "$f" ] && cp "$f" /tmp/edu-pages/screenshots/; done
+(cd /tmp/edu-pages && [ -n "$(ls screenshots)" ] && zip -qr "$OUT/edusphere-changes.zip" screenshots) || true
 cp dist/edusphere-prototype.jsx "$OUT/edusphere-prototype.jsx"
 echo "changed:$CHANGED"

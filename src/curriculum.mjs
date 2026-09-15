@@ -977,6 +977,30 @@ export const CURRICULUM = [
     ],
   },
   {
+    grade: '3', subject: 'Art', status: 'ready',
+    source: 'Texas Essential Knowledge and Skills for Fine Arts, Art, Grade 3 (§117.111, Adopted 2013), by knowledge statement; National Core Arts Standards, Visual Arts anchor standards, and the Common Core State Standards frameworks used by other states',
+    standards: [
+      { framework: 'TEKS', code: 'Art 3.1', text: 'Foundations: observation and perception. Develop and expand visual literacy by applying the elements of art and principles of design.', moduleIds: ['elements-of-art'] },
+      { framework: 'TEKS', code: 'Art 3.2', text: 'Creative expression. Communicate ideas through original artwork using a variety of media with appropriate skills.', moduleIds: ['the-color-wheel'] },
+      { framework: 'TEKS', code: 'Art 3.4', text: 'Critical evaluation and response. Respond to and analyze the artworks of self and others.', moduleIds: ['looking-at-a-picture'] },
+      { framework: 'CCSS', code: 'VA:Re7.2', text: 'Perceive and analyze artistic work.', moduleIds: ['elements-of-art'] },
+      { framework: 'CCSS', code: 'VA:Cr2.1', text: 'Organize and develop artistic ideas and work.', moduleIds: ['the-color-wheel'] },
+      { framework: 'CCSS', code: 'VA:Re8.1', text: 'Interpret intent and meaning in artistic work.', moduleIds: ['looking-at-a-picture'] },
+    ],
+  },
+  {
+    grade: '4', subject: 'Art', status: 'ready',
+    source: 'Texas Essential Knowledge and Skills for Fine Arts, Art, Grade 4 (§117.114, Adopted 2013), by knowledge statement; National Core Arts Standards, Visual Arts anchor standards, and the Common Core State Standards frameworks used by other states',
+    standards: [
+      { framework: 'TEKS', code: 'Art 4.1', text: 'Foundations: observation and perception. Apply the elements of art and principles of design.', moduleIds: ['balance-and-pattern'] },
+      { framework: 'TEKS', code: 'Art 4.2', text: 'Creative expression. Create original artwork using a variety of media and techniques.', moduleIds: ['making-space-on-paper'] },
+      { framework: 'TEKS', code: 'Art 4.3', text: 'Historical and cultural relevance. Demonstrate an understanding of art history and culture.', moduleIds: ['art-tells-a-story'] },
+      { framework: 'CCSS', code: 'VA:Cr1.1', text: 'Generate and conceptualize artistic ideas and work.', moduleIds: ['balance-and-pattern'] },
+      { framework: 'CCSS', code: 'VA:Cr2.1', text: 'Organize and develop artistic ideas and work.', moduleIds: ['making-space-on-paper'] },
+      { framework: 'CCSS', code: 'VA:Cn11.1', text: 'Relate artistic ideas and works with societal, cultural, and historical context.', moduleIds: ['art-tells-a-story'] },
+    ],
+  },
+  {
     grade: 'K', subject: 'History', status: 'ready',
     source: 'Texas Essential Knowledge and Skills, Social Studies, Kindergarten (§113.11, Adopted 2022), by knowledge statement; National Council for the Social Studies, National Curriculum Standards themes',
     standards: [
@@ -1014,11 +1038,12 @@ export const CURRICULUM = [
       { framework: 'TEKS', code: '2.7A', text: 'Distinguish between producing and consuming.', moduleIds: ['producers-and-consumers'] },
       { framework: 'TEKS', code: '2.3A', text: 'Identify and use information on maps and globes using basic map elements such as title, cardinal directions, and legend.', moduleIds: ['maps-of-our-town'] },
       { framework: 'TEKS', code: '2.8B', text: 'Identify governmental services in the community such as police and fire protection, libraries, schools, and parks and explain their value to the community.', moduleIds: ['services-in-our-town'] },
+      { framework: 'TEKS', code: '2.6B', text: 'Explain the choices people can make about earning, spending, and saving money and where to live and work.', moduleIds: ['saving-for-a-goal'] },
       { framework: 'CCSS', code: 'NCSS Theme VI', text: 'Power, Authority, and Governance.', moduleIds: ['services-in-our-town'] },
       { framework: 'CCSS', code: 'NCSS Theme III', text: 'People, Places, and Environments.', moduleIds: ['maps-of-our-town'] },
       { framework: 'CCSS', code: 'NCSS Theme II', text: 'Time, Continuity, and Change.', moduleIds: ['then-and-now'] },
       { framework: 'CCSS', code: 'NCSS Theme X', text: 'Civic Ideals and Practices.', moduleIds: ['good-citizens'] },
-      { framework: 'CCSS', code: 'NCSS Theme VII', text: 'Production, Distribution, and Consumption.', moduleIds: ['producers-and-consumers'] },
+      { framework: 'CCSS', code: 'NCSS Theme VII', text: 'Production, Distribution, and Consumption.', moduleIds: ['producers-and-consumers', 'saving-for-a-goal'] },
     ],
   },
   {

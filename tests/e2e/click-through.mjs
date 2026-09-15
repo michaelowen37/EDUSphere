@@ -453,6 +453,18 @@ await page.fill('textarea[aria-label="Teacher note"]', 'Reads well aloud; shy in
 await tap('Save note');
 await page.waitForTimeout(300);
 ok('a saved note shows on the report with its date', (await text()).includes('Reads well aloud; shy in groups.'));
+// Printing the report: every course fold opens with each module's story, and the other-courses, raw-data and reset parts stay off the page.
+await page.emulateMedia({ media: 'print' });
+await page.evaluate(() => window.dispatchEvent(new Event('beforeprint')));
+await page.waitForTimeout(400);
+{ await page.pdf({ path: 'tests/e2e/out/report.pdf', format: 'Letter', printBackground: true });
+  const pdfText = execSync('pdftotext tests/e2e/out/report.pdf -').toString();
+  ok('the report prints to a PDF with the student, their courses and each module story', pdfText.includes('Report generated') && /read through this lesson|practiced it|has not opened/.test(pdfText));
+  ok('the printed report leaves the raw data, reset and other-courses parts off the page', !pdfText.includes('Raw data') && !pdfText.includes('Show other courses') && !/Reset .* progress/.test(pdfText)); }
+await page.evaluate(() => window.dispatchEvent(new Event('afterprint')));
+await page.emulateMedia({ media: 'screen' });
+await page.waitForTimeout(200);
+await page.screenshot({ path: 'tests/e2e/out/report.png', fullPage: false });
 await tap('Standards map');
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'standards-map');
 t = await text();
@@ -580,6 +592,7 @@ await tap('Who needs help');
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'class-view');
 t = await text();
 ok('the class view explains its order in plain words', t.includes('To the top for you'));
+await page.screenshot({ path: 'tests/e2e/out/class-view.png', fullPage: true });
 ok('the class view leads with a one-breath summary', /(on track|keep an eye on|needs help now)/.test(t));
 await tap('Back to Classroom');
 await tap('Backup classroom');

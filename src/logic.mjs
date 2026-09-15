@@ -763,6 +763,26 @@ export const COURSES = [
     modules: PREK3_READING_MODULES(),
   },
   {
+    id: 'art-3',
+    grade: '3',
+    subject: 'Art',
+    title: 'Looking and making',
+    audience: 'Grade 3',
+    elective: true,
+    keywords: ['art', 'drawing', 'color', 'elective'],
+    modules: ART3_MODULES(),
+  },
+  {
+    id: 'art-4',
+    grade: '4',
+    subject: 'Art',
+    title: 'Color, shape and story',
+    audience: 'Grade 4',
+    elective: true,
+    keywords: ['art', 'painting', 'color', 'elective'],
+    modules: ART4_MODULES(),
+  },
+  {
     id: 'science-k',
     grade: 'K',
     subject: 'Science',
@@ -5963,6 +5983,25 @@ function GRADE2_CIVICS_MODULES() { return [
     sources: ['Aligned with Texas TEKS Grade 2 Social Studies 2.8B (identify governmental services in the community such as police and fire protection, libraries, schools, and parks) and NCSS Theme VI (Power, Authority, and Governance).'],
     generators: ['c2-service-or-business', 'c2-which-service', 'c2-service-or-business', 'c2-which-service', 'c2-service-or-business'],
   },
+  {
+    id: 'saving-for-a-goal',
+    order: 6,
+    title: 'Saving for a goal',
+    tagline: 'A little each week adds up',
+    requires: ['services-in-our-town'],
+    lesson: {
+      paragraphs: ['A ball costs 10 dollars. You save 2 dollars a week. In 5 weeks you have enough.', 'Saving means keeping some money back until you have enough for what you want.'],
+      keyIdea: 'Save a little each week. Weeks to save is the price divided by what you save each week.',
+      example: { kind: 'letters', text: '10 ÷ 2 = 5', caption: 'Five weeks to save for a ten-dollar ball.' },
+      script: [
+        { say: 'Look at the numbers. Ten dollars, two dollars a week. That is five weeks.', show: { kind: 'letters', text: '10 ÷ 2 = 5' } },
+        { say: 'Saving means keeping some money back for something you want later.', show: null },
+        { say: 'A little each week adds up. Then you can buy the thing you saved for.', show: null },
+      ],
+    },
+    sources: ['Aligned with Texas TEKS Grade 2 Social Studies 2.6B (explain the choices people can make about earning, spending, and saving money) and NCSS Theme VII (Production, Distribution, and Consumption).'],
+    generators: ['c2-weeks-to-save', 'c2-save-or-spend', 'c2-weeks-to-save', 'c2-money-left', 'c2-save-or-spend'],
+  },
 ]; }
 
 function GRADE3_CIVICS_MODULES() { return [
@@ -6021,6 +6060,120 @@ function GRADE3_CIVICS_MODULES() { return [
 
 // Grade 6 world cultures: where places are, what culture is, how people are governed, how they
 // make a living, why they move, and the regions of the world today.
+// Art, an elective: the elements of art, the color wheel, and looking at a picture on purpose.
+function ART3_MODULES() { return [
+  {
+    id: 'elements-of-art',
+    order: 1,
+    title: 'The elements of art',
+    tagline: 'The pieces every picture is made of',
+    lesson: {
+      paragraphs: [
+        "Every picture, from a scribble to a masterpiece, is built from the same few pieces. Artists call them the **elements of art**.\n**Line:** a mark that travels. Straight, curved, zigzag, thick, thin.\n**Shape:** a flat area with an edge around it. A circle, a square, a leaf.\n**Form:** a shape with thickness, like a ball or a box.\n**Color:** what light does to your eye.\n**Texture:** how a surface would feel, or looks like it would feel.\n**Space:** the room in a picture, including the empty parts.\n**Value:** how light or dark something is.",
+        "Let's look at line, because line does the most work.\nA thick line shouts. A thin line whispers. A wobbly line feels nervous, and a straight one feels calm.\n[[Line, shape, form, color, texture, space, value.]]\nSay them until you can name all seven, because every time you look at art from now on, you will be looking for them.",
+        "Artists arrange the elements using the **principles of design**: balance, pattern, contrast, emphasis, rhythm and unity.\nElements are the ingredients. Principles are the recipe.",
+      ],
+      keyIdea: 'The elements of art are line, shape, form, color, texture, space and value.\nThe principles of design are how an artist arranges them.\nElements are the ingredients; principles are the recipe.',
+      example: { kind: 'letters', text: '7', caption: 'Seven elements of art.' },
+    },
+    sources: ['Aligned with Texas TEKS Art, Grade 3 (§117.111) knowledge statement 1, foundations: observation and perception (identify and apply the elements of art and principles of design), and National Core Arts Standards VA:Re7.2 (perceive and analyze artistic work).'],
+    generators: ['art-which-element', 'art-element-or-principle', 'art-which-element', 'art-how-many-elements', 'art-element-or-principle'],
+  },
+  {
+    id: 'the-color-wheel',
+    order: 2,
+    title: 'The color wheel',
+    tagline: 'Three colors make all the others',
+    requires: ['elements-of-art'],
+    lesson: {
+      paragraphs: [
+        "Three colors cannot be mixed from anything else. They are the **primary colors**: red, yellow and blue.\nMix two primaries and you get a **secondary color**.\n[[Red + yellow = orange. Yellow + blue = green. Blue + red = purple.]]\nMix a primary with the secondary beside it and you get a **tertiary** color, like blue-green.",
+        "Let's look at the wheel as a circle of feelings.\n**Warm colors** are red, orange and yellow: fire, sun, shouting.\n**Cool colors** are green, blue and purple: water, shade, quiet.\nColors across the wheel from each other are **complementary**: red and green, blue and orange, yellow and purple. Side by side, each makes the other look brighter.",
+        "Adding white makes a **tint**, a lighter version. Adding black makes a **shade**, a darker one.\nRed plus white is pink, which is a tint of red, not its own color at all.",
+      ],
+      keyIdea: 'Red, yellow and blue are primary; orange, green and purple are secondary.\nWarm colors are red, orange and yellow; cool colors are green, blue and purple.\nWhite makes a tint and black makes a shade.',
+      example: { kind: 'swatch', colour: 'orange', caption: 'Red and yellow make orange.' },
+    },
+    sources: ['Aligned with Texas TEKS Art, Grade 3 (§117.111) knowledge statement 2, creative expression (communicate ideas through original artwork using a variety of media), and National Core Arts Standards VA:Cr2.1 (organize and develop artistic ideas and work).'],
+    generators: ['art-mix-colors', 'art-primary-or-secondary', 'art-warm-or-cool', 'art-mix-colors', 'art-tint-or-shade'],
+  },
+  {
+    id: 'looking-at-a-picture',
+    order: 3,
+    title: 'Looking at a picture',
+    tagline: 'What do you see, and how does it work?',
+    requires: ['the-color-wheel'],
+    lesson: {
+      paragraphs: [
+        "Looking at art is a skill, and it has an order.\n**First, describe.** Say only what is there: a boy, a blue coat, a window, thick paint.\n**Then, analyze.** Name the elements and principles: cool colors, a strong diagonal line, one bright spot against a dull background.\n**Then, interpret.** Say what you think it means, and why the first two steps make you think so.\n**Last, judge.** Say whether it works, and give your reason.",
+        "Let's look at the trap. Most people start at judging: I like it, I don't like it. That is the last step, not the first, and it is the least interesting thing you can say about a picture.\n[[Describe, analyze, interpret, judge.]]",
+        "The part of a picture your eye goes to first is the **focus**, and the artist put it there on purpose, usually with contrast: the brightest color, the sharpest edge, the one face looking out.\nFind the focus, then ask what the artist did to make you look there.",
+      ],
+      keyIdea: 'Describe, analyze, interpret, then judge.\nMost people start at judging, which is the least interesting step.\nThe focus is where your eye goes first, and the artist put it there on purpose.',
+      example: { kind: 'letters', text: 'Describe first', caption: 'Say what is there before you say what you think.' },
+    },
+    sources: ['Aligned with Texas TEKS Art, Grade 3 (§117.111) knowledge statement 4, critical evaluation and response (respond to and analyze artwork), and National Core Arts Standards VA:Re8.1 (interpret intent and meaning in artistic work).'],
+    generators: ['art-which-step', 'art-step-order', 'art-focus-how', 'art-which-step', 'art-focus-how'],
+  },
+]; }
+
+function ART4_MODULES() { return [
+  {
+    id: 'balance-and-pattern',
+    order: 1,
+    title: 'Balance and pattern',
+    tagline: 'How a picture holds together',
+    requires: ['looking-at-a-picture'],
+    lesson: {
+      paragraphs: [
+        "A picture has weight, and a good one is balanced.\n**Symmetrical balance:** the two halves match, like a butterfly or a cathedral front. It feels calm and formal.\n**Asymmetrical balance:** the halves differ but weigh the same, like a big quiet shape on one side and a small bright one on the other. It feels alive.\n**Radial balance:** everything spreads from a center, like a wheel, a flower or a rose window.",
+        "Let's look at pattern, which is repetition with a rule.\nA repeated shape makes a pattern. A repeated pattern with a beat makes **rhythm**, the same word music uses, and for the same reason.\nChange one thing in a repeating pattern and the eye goes straight to it. That is **emphasis**, made out of almost nothing.",
+        "**Contrast** is difference put side by side: light against dark, rough against smooth, big against small. Contrast is what makes a picture readable from across a room.\n[[Balance, pattern, rhythm, contrast, emphasis, unity.]]",
+      ],
+      keyIdea: 'Balance can be symmetrical, asymmetrical or radial.\nPattern is repetition with a rule, and rhythm is pattern with a beat.\nContrast is difference side by side, and breaking a pattern creates emphasis.',
+      example: { kind: 'shape', name: 'circle', caption: 'Radial balance spreads from a center.' },
+    },
+    sources: ['Aligned with Texas TEKS Art, Grade 4 (§117.114) knowledge statement 1, foundations: observation and perception (apply the elements of art and principles of design), and National Core Arts Standards VA:Cr1.1 (generate and conceptualize artistic ideas and work).'],
+    generators: ['art-which-balance', 'art-which-principle', 'art-which-balance', 'art-break-pattern', 'art-which-principle'],
+  },
+  {
+    id: 'making-space-on-paper',
+    order: 2,
+    title: 'Making space on paper',
+    tagline: 'Flat paper, deep picture',
+    requires: ['balance-and-pattern'],
+    lesson: {
+      paragraphs: [
+        "Paper is flat. A picture can look deep. Artists have a few old tricks for it.\n**Overlap:** the shape in front hides part of the shape behind. The simplest trick, and the strongest.\n**Size:** things drawn smaller look farther away.\n**Placement:** things drawn higher on the page look farther away.\n**Detail:** near things are sharp, far things are hazy and pale.",
+        "Let's look at the strongest trick of all, **perspective**.\nDraw a **horizon line** where the sky meets the ground, put a dot on it for the **vanishing point**, and run the edges of a road or a building toward that dot. Everything lines up, and the flat page opens.\n[[Horizon line. Vanishing point. Lines that meet there.]]",
+        "The empty parts count too. The shape of a thing is **positive space**; the shape of the gaps around it is **negative space**.\nDraw the gaps instead of the thing and your drawing usually improves, because the eye stops naming and starts seeing.",
+      ],
+      keyIdea: 'Overlap, size, placement and detail make a flat page look deep.\nPerspective uses a horizon line and a vanishing point.\nPositive space is the thing; negative space is the gaps around it.',
+      example: { kind: 'letters', text: 'Overlap', caption: 'The oldest trick for depth.' },
+    },
+    sources: ['Aligned with Texas TEKS Art, Grade 4 (§117.114) knowledge statement 2, creative expression (create original artwork using a variety of media and techniques), and National Core Arts Standards VA:Cr2.1 (organize and develop artistic ideas and work).'],
+    generators: ['art-depth-trick', 'art-positive-negative', 'art-depth-trick', 'art-perspective-part', 'art-positive-negative'],
+  },
+  {
+    id: 'art-tells-a-story',
+    order: 3,
+    title: 'Art tells a story',
+    tagline: 'Why people have always made pictures',
+    requires: ['making-space-on-paper'],
+    lesson: {
+      paragraphs: [
+        "People made art before they made writing. Painted animals on cave walls in France and Spain are about seventeen thousand years old, and nobody is sure why they were made: a record, a prayer, a lesson, a joy.\nEvery culture since has made art, and each made it for reasons of its own.\n**To record:** who we were, what we saw.\n**To honor:** a god, a leader, the dead.\n**To teach:** a story everyone should know.\n**To decorate:** a pot, a wall, a coat.\n**To question:** the way things are.",
+        "Let's look at how one idea changes across cultures.\nA mask in one place hides a face at a festival; in another it holds an ancestor's spirit; in another it is a portrait to be hung on a wall.\nSame object, three meanings. That is why you ask who made a thing, and when, and for whom, before deciding what it means.",
+        "An artist's choices are never only about beauty. They are about what the artist wanted you to look at, feel, remember or do.\nThe elements and principles you have learned are the tools. The reason for using them is the story.",
+      ],
+      keyIdea: 'People made art before writing, and every culture has made it since.\nArt records, honors, teaches, decorates and questions.\nAsk who made a work, when, and for whom before deciding what it means.',
+      example: { kind: 'letters', text: '17,000 years', caption: 'About how old the painted caves are.' },
+    },
+    sources: ['Aligned with Texas TEKS Art, Grade 4 (§117.114) knowledge statement 3, historical and cultural relevance (demonstrate an understanding of art history and culture), and National Core Arts Standards VA:Cn11.1 (relate artistic ideas and works with societal, cultural, and historical context).'],
+    generators: ['art-why-made', 'art-ask-first', 'art-why-made', 'art-caves', 'art-ask-first'],
+  },
+]; }
+
 function GRADE6_HISTORY_MODULES() { return [
   {
     id: 'maps-and-hemispheres',
@@ -7588,81 +7741,81 @@ export const GENERATORS = {
   },
 };
 
-// Pre-K colours, matching, patterns, first counting. Choices like 'swatch:red' and
+// Pre-K colors, matching, patterns, first counting. Choices like 'swatch:red' and
 // 'item:circle-red' are pictures the screen draws.
 const COLOURS = ['red', 'blue', 'yellow', 'green'];
-const pickColour = (rng) => COLOURS[randInt(rng, 0, COLOURS.length - 1)];
-const otherColours = (rng, not, n) => shuffle(rng, COLOURS.filter((c) => c !== not)).slice(0, n);
+const pickColor = (rng) => COLOURS[randInt(rng, 0, COLOURS.length - 1)];
+const otherColors = (rng, not, n) => shuffle(rng, COLOURS.filter((c) => c !== not)).slice(0, n);
 const PATTERN_SHAPES = ['circle', 'square', 'triangle'];
 Object.assign(GENERATORS, {
   'pc-tap-colour': (rng) => {
-    const c = pickColour(rng);
-    return { type: 'choice', story: null, prompt: `Tap ${c}.`, choices: shuffle(rng, [c, ...otherColours(rng, c, 2)].map((x) => `swatch:${x}`)), answer: `swatch:${c}`,
+    const c = pickColor(rng);
+    return { type: 'choice', story: null, prompt: `Tap ${c}.`, choices: shuffle(rng, [c, ...otherColors(rng, c, 2)].map((x) => `swatch:${x}`)), answer: `swatch:${c}`,
       explain: `This one is ${c}.`, visual: null, explainVisual: null };
   },
   'pc-name-colour': (rng) => {
-    const c = pickColour(rng);
-    return { type: 'choice', story: null, prompt: 'What color is this?', choices: shuffle(rng, [c, ...otherColours(rng, c, 2)]), answer: c,
+    const c = pickColor(rng);
+    return { type: 'choice', story: null, prompt: 'What color is this?', choices: shuffle(rng, [c, ...otherColors(rng, c, 2)]), answer: c,
       explain: `It is ${c}.`, visual: { kind: 'swatch', colour: c }, explainVisual: null };
   },
   'pc-same-colour': (rng) => {
-    const c = pickColour(rng); const other = otherColours(rng, c, 1)[0];
+    const c = pickColor(rng); const other = otherColors(rng, c, 1)[0];
     const shapeA = pick(rng, PATTERN_SHAPES); const shapeB = pick(rng, PATTERN_SHAPES);
     return { type: 'choice', story: `This color is ${c}.`, prompt: 'Tap the one that is the same color.', choices: shuffle(rng, [`item:${shapeA}-${c}`, `item:${shapeB}-${other}`]), answer: `item:${shapeA}-${c}`,
       explain: `Both are ${c}.`, visual: { kind: 'swatch', colour: c }, explainVisual: null };
   },
   'pc-different-colour': (rng) => {
-    const c = pickColour(rng); const other = otherColours(rng, c, 1)[0];
+    const c = pickColor(rng); const other = otherColors(rng, c, 1)[0];
     const choices = shuffle(rng, [`item:circle-${c}#0`, `item:circle-${c}#1`, `item:circle-${other}#2`]);
     return { type: 'choice', story: 'Two are the same color.', prompt: 'Tap the one that is different.', choices, answer: choices.find((x) => x.includes(`-${other}#`)),
       explain: `Two are ${c}. This one is ${other}.`, visual: null, explainVisual: null };
   },
   'ps-find-match': (rng) => {
-    const sh = pick(rng, PATTERN_SHAPES); const c = pickColour(rng);
-    const other = pick(rng, PATTERN_SHAPES.filter((x) => x !== sh)); const oc = otherColours(rng, c, 1)[0];
+    const sh = pick(rng, PATTERN_SHAPES); const c = pickColor(rng);
+    const other = pick(rng, PATTERN_SHAPES.filter((x) => x !== sh)); const oc = otherColors(rng, c, 1)[0];
     return { type: 'choice', story: `Here is a ${c} ${sh}.`, prompt: 'Tap the one that matches it.', choices: shuffle(rng, [`item:${sh}-${c}`, `item:${other}-${c}`, `item:${sh}-${oc}`]), answer: `item:${sh}-${c}`,
       explain: `Same shape, same color. It matches.`, visual: { kind: 'item', shape: sh, colour: c }, explainVisual: null };
   },
   'ps-odd-one-out': (rng) => {
-    const sh = pick(rng, PATTERN_SHAPES); const c = pickColour(rng);
+    const sh = pick(rng, PATTERN_SHAPES); const c = pickColor(rng);
     const other = pick(rng, PATTERN_SHAPES.filter((x) => x !== sh));
     const choices = shuffle(rng, [`item:${sh}-${c}#0`, `item:${sh}-${c}#1`, `item:${other}-${c}#2`]);
     return { type: 'choice', story: 'Two are the same.', prompt: 'Tap the one that is different.', choices, answer: choices.find((x) => x.startsWith(`item:${other}-`)),
       explain: `Two are ${sh}s. This one is a ${other}.`, visual: null, explainVisual: null };
   },
   'ps-same-colour-shape': (rng) => {
-    const sh = pick(rng, PATTERN_SHAPES); const c = pickColour(rng); const oc = otherColours(rng, c, 1)[0];
+    const sh = pick(rng, PATTERN_SHAPES); const c = pickColor(rng); const oc = otherColors(rng, c, 1)[0];
     return { type: 'choice', story: `Here is a ${c} ${sh}.`, prompt: 'Which one is exactly the same as this?', choices: shuffle(rng, [`item:${sh}-${c}`, `item:${sh}-${oc}`]), answer: `item:${sh}-${c}`,
       explain: `Same ${sh}, same ${c}. Exactly the same.`, visual: { kind: 'item', shape: sh, colour: c }, explainVisual: null };
   },
   'ps-bigger': (rng) => {
-    const sh = pick(rng, PATTERN_SHAPES); const c = pickColour(rng);
+    const sh = pick(rng, PATTERN_SHAPES); const c = pickColor(rng);
     return { type: 'choice', story: null, prompt: 'Tap the bigger one.', choices: shuffle(rng, [`item:${sh}-${c}-big`, `item:${sh}-${c}-small`]), answer: `item:${sh}-${c}-big`,
       explain: 'This one is bigger.', visual: null, explainVisual: null };
   },
   'ps-smaller': (rng) => {
-    const sh = pick(rng, PATTERN_SHAPES); const c = pickColour(rng);
+    const sh = pick(rng, PATTERN_SHAPES); const c = pickColor(rng);
     return { type: 'choice', story: null, prompt: 'Tap the smaller one.', choices: shuffle(rng, [`item:${sh}-${c}-big`, `item:${sh}-${c}-small`]), answer: `item:${sh}-${c}-small`,
       explain: 'This one is smaller.', visual: null, explainVisual: null };
   },
   'pp-what-next': (rng) => {
-    const [a, b] = shuffle(rng, PATTERN_SHAPES).slice(0, 2); const c = pickColour(rng);
+    const [a, b] = shuffle(rng, PATTERN_SHAPES).slice(0, 2); const c = pickColor(rng);
     const items = [a, b, a, b]; const next = a; const wrong = b;
     return { type: 'choice', story: null, prompt: 'What comes next?', choices: shuffle(rng, [`item:${next}-${c}`, `item:${wrong}-${c}`]), answer: `item:${next}-${c}`,
-      explain: `${a}, ${b}, ${a}, ${b}. Next comes ${a}.`, visual: { kind: 'pattern', items, colour: c }, explainVisual: null };
+      explain: `${a}, ${b}, ${a}, ${b}. Next comes ${a}.`, visual: { kind: 'pattern', items, color: c }, explainVisual: null };
   },
   'pp-which-repeats': (rng) => {
-    const [a, b, d] = shuffle(rng, PATTERN_SHAPES); const c = pickColour(rng);
+    const [a, b, d] = shuffle(rng, PATTERN_SHAPES); const c = pickColor(rng);
     const yes = randInt(rng, 0, 1) === 1;
     const items = yes ? [a, b, a, b, a, b] : [a, b, d, a, d, b];
     return { type: 'choice', story: null, prompt: 'Does this repeat the same way each time?', choices: ['Yes', 'No'], answer: yes ? 'Yes' : 'No',
-      explain: yes ? `${a}, ${b}, ${a}, ${b}. It repeats.` : 'The order keeps changing. It does not repeat.', visual: { kind: 'pattern', items, colour: c }, explainVisual: null };
+      explain: yes ? `${a}, ${b}, ${a}, ${b}. It repeats.` : 'The order keeps changing. It does not repeat.', visual: { kind: 'pattern', items, color: c }, explainVisual: null };
   },
   'pp-missing': (rng) => {
-    const [a, b] = shuffle(rng, PATTERN_SHAPES).slice(0, 2); const c = pickColour(rng);
+    const [a, b] = shuffle(rng, PATTERN_SHAPES).slice(0, 2); const c = pickColor(rng);
     const items = [a, b, '?', b, a, b]; const missing = a;
     return { type: 'choice', story: null, prompt: 'Which one is missing?', choices: shuffle(rng, [`item:${missing}-${c}`, `item:${b}-${c}`]), answer: `item:${missing}-${c}`,
-      explain: `${a}, ${b}, ${a}, ${b}. The missing one is ${a}.`, visual: { kind: 'pattern', items, colour: c }, explainVisual: null };
+      explain: `${a}, ${b}, ${a}, ${b}. The missing one is ${a}.`, visual: { kind: 'pattern', items, color: c }, explainVisual: null };
   },
   'p3-how-many': (rng) => {
     const n = randInt(rng, 1, 3);
@@ -7849,7 +8002,7 @@ Object.assign(GENERATORS, {
       explain: `It is ${c}.`, visual: { kind: 'swatch', colour: c }, explainVisual: null };
   },
   'p3-find-match': (rng) => {
-    const shape = pick(rng, PATTERN_SHAPES); const c = pickColour(rng); const otherShape = pick(rng, PATTERN_SHAPES.filter((x) => x !== shape));
+    const shape = pick(rng, PATTERN_SHAPES); const c = pickColor(rng); const otherShape = pick(rng, PATTERN_SHAPES.filter((x) => x !== shape));
     return { type: 'choice', story: `This is a ${c} ${shape}.`, prompt: 'Tap the one that is the same.', choices: shuffle(rng, [`item:${shape}-${c}`, `item:${otherShape}-${c}`]), answer: `item:${shape}-${c}`,
       explain: `Both are a ${c} ${shape}.`, visual: { kind: 'item', shape, colour: c }, explainVisual: null };
   },
@@ -7874,19 +8027,19 @@ Object.assign(GENERATORS, {
       explain: `${small} dots is fewer than ${big}.`, visual: null, explainVisual: null };
   },
   'p3-tap-yellow-green': (rng) => {
-    const colour = pick(rng, ['yellow', 'green']); const other = colour === 'yellow' ? 'green' : 'yellow';
-    return { type: 'choice', story: null, prompt: `Tap the ${colour} one.`, choices: shuffle(rng, [`swatch:${colour}`, `swatch:${other}`]), answer: `swatch:${colour}`,
-      explain: `This is ${colour}.`, visual: null, explainVisual: null };
+    const color = pick(rng, ['yellow', 'green']); const other = color === 'yellow' ? 'green' : 'yellow';
+    return { type: 'choice', story: null, prompt: `Tap the ${color} one.`, choices: shuffle(rng, [`swatch:${color}`, `swatch:${other}`]), answer: `swatch:${color}`,
+      explain: `This is ${color}.`, visual: null, explainVisual: null };
   },
   'p3-which-colour-four': (rng) => {
-    const colour = pick(rng, ['red', 'blue', 'yellow', 'green']);
-    return { type: 'choice', story: null, prompt: 'What color is this?', choices: shuffle(rng, ['red', 'blue', 'yellow', 'green']), answer: colour,
-      explain: `This is ${colour}.`, visual: { kind: 'swatch', colour }, explainVisual: null };
+    const color = pick(rng, ['red', 'blue', 'yellow', 'green']);
+    return { type: 'choice', story: null, prompt: 'What color is this?', choices: shuffle(rng, ['red', 'blue', 'yellow', 'green']), answer: color,
+      explain: `This is ${color}.`, visual: { kind: 'swatch', colour: color }, explainVisual: null };
   },
   'p3-tap-any-colour': (rng) => {
-    const colour = pick(rng, ['red', 'blue', 'yellow', 'green']); const others = shuffle(rng, ['red', 'blue', 'yellow', 'green'].filter((c) => c !== colour)).slice(0, 2);
-    return { type: 'choice', story: null, prompt: `Tap the ${colour} one.`, choices: shuffle(rng, [`swatch:${colour}`, ...others.map((c) => `swatch:${c}`)]), answer: `swatch:${colour}`,
-      explain: `This is ${colour}.`, visual: null, explainVisual: null };
+    const color = pick(rng, ['red', 'blue', 'yellow', 'green']); const others = shuffle(rng, ['red', 'blue', 'yellow', 'green'].filter((c) => c !== color)).slice(0, 2);
+    return { type: 'choice', story: null, prompt: `Tap the ${color} one.`, choices: shuffle(rng, [`swatch:${color}`, ...others.map((c) => `swatch:${c}`)]), answer: `swatch:${color}`,
+      explain: `This is ${color}.`, visual: null, explainVisual: null };
   },
   'p3-tap-three-shapes': (rng) => {
     const shape = pick(rng, ['circle', 'square', 'triangle']); const others = ['circle', 'square', 'triangle'].filter((x) => x !== shape);
@@ -7904,12 +8057,12 @@ Object.assign(GENERATORS, {
       explain: `This is ${name === 'sun' || name === 'moon' ? 'the' : 'a'} ${name}.`, visual: null, explainVisual: null };
   },
   'p3-tap-shape': (rng) => {
-    const shape = pick(rng, ['circle', 'square']); const other = shape === 'circle' ? 'square' : 'circle'; const c = pickColour(rng); const c2 = pickColour(rng);
+    const shape = pick(rng, ['circle', 'square']); const other = shape === 'circle' ? 'square' : 'circle'; const c = pickColor(rng); const c2 = pickColor(rng);
     return { type: 'choice', story: null, prompt: `Tap the ${shape}.`, choices: shuffle(rng, [`item:${shape}-${c}`, `item:${other}-${c2}`]), answer: `item:${shape}-${c}`,
       explain: `This is a ${shape}.`, visual: null, explainVisual: null };
   },
   'p3-name-shape': (rng) => {
-    const shape = pick(rng, ['circle', 'square']); const c = pickColour(rng);
+    const shape = pick(rng, ['circle', 'square']); const c = pickColor(rng);
     return { type: 'choice', story: null, prompt: 'What shape is this?', choices: shuffle(rng, ['circle', 'square']), answer: shape,
       explain: `It is a ${shape}.`, visual: { kind: 'item', shape, colour: c }, explainVisual: null };
   },
@@ -7924,9 +8077,9 @@ Object.assign(GENERATORS, {
       explain: `This is ${L}.`, visual: { kind: 'letters', text: L, highlight: 0 }, explainVisual: null };
   },
   'p3-odd-one': (rng) => {
-    const shape = pick(rng, PATTERN_SHAPES); const c = pickColour(rng); const otherShape = pick(rng, PATTERN_SHAPES.filter((x) => x !== shape)); const otherColour = otherColours(rng, c, 1)[0];
-    return { type: 'choice', story: `This is a ${c} ${shape}.`, prompt: 'Tap the one that is different.', choices: shuffle(rng, [`item:${shape}-${c}`, `item:${otherShape}-${otherColour}`]), answer: `item:${otherShape}-${otherColour}`,
-      explain: `This one is a ${otherColour} ${otherShape}. It is different.`, visual: { kind: 'item', shape, colour: c }, explainVisual: null };
+    const shape = pick(rng, PATTERN_SHAPES); const c = pickColor(rng); const otherShape = pick(rng, PATTERN_SHAPES.filter((x) => x !== shape)); const otherColor = otherColors(rng, c, 1)[0];
+    return { type: 'choice', story: `This is a ${c} ${shape}.`, prompt: 'Tap the one that is different.', choices: shuffle(rng, [`item:${shape}-${c}`, `item:${otherShape}-${otherColor}`]), answer: `item:${otherShape}-${otherColor}`,
+      explain: `This one is a ${otherColor} ${otherShape}. It is different.`, visual: { kind: 'item', shape, colour: c }, explainVisual: null };
   },
 });
 Object.assign(GENERATORS, {
@@ -8431,8 +8584,8 @@ Object.assign(GENERATORS, {
   },
   'r1-sentence-picture': (rng) => {
     const sh = pick(rng, ['circle', 'square', 'triangle']); const c = pick(rng, COLOUR_WORDS);
-    const wrongShape = pick(rng, ['circle', 'square', 'triangle'].filter((x) => x !== sh)); const wrongColour = pick(rng, COLOUR_WORDS.filter((x) => x !== c));
-    return { type: 'choice', story: null, prompt: 'Read the sentence. Tap what it says.', choices: shuffle(rng, [`item:${sh}-${c}`, `item:${wrongShape}-${c}`, `item:${sh}-${wrongColour}`]), answer: `item:${sh}-${c}`,
+    const wrongShape = pick(rng, ['circle', 'square', 'triangle'].filter((x) => x !== sh)); const wrongColor = pick(rng, COLOUR_WORDS.filter((x) => x !== c));
+    return { type: 'choice', story: null, prompt: 'Read the sentence. Tap what it says.', choices: shuffle(rng, [`item:${sh}-${c}`, `item:${wrongShape}-${c}`, `item:${sh}-${wrongColor}`]), answer: `item:${sh}-${c}`,
       explain: `The ${sh} is ${c}. This is the ${c} ${sh}.`, visual: { kind: 'letters', text: `The ${sh} is ${c}.` }, explainVisual: null };
   },
   'r1-sentence-which': (rng) => {
@@ -8454,9 +8607,9 @@ Object.assign(GENERATORS, {
   },
   'r1-sentence-yes-no': (rng) => {
     const sh = pick(rng, ['circle', 'square', 'triangle']); const c = pick(rng, COLOUR_WORDS); const yes = randInt(rng, 0, 1) === 1;
-    const shownColour = yes ? c : pick(rng, COLOUR_WORDS.filter((x) => x !== c));
+    const shownColor = yes ? c : pick(rng, COLOUR_WORDS.filter((x) => x !== c));
     return { type: 'choice', story: null, prompt: 'Read the sentence. Is it true about the picture?', choices: ['Yes', 'No'], answer: yes ? 'Yes' : 'No',
-      explain: yes ? `The ${sh} is ${c}. True.` : `The sentence says ${c}, but the ${sh} is ${shownColour}. Not true.`, visual: { kind: 'item', shape: sh, colour: shownColour }, explainVisual: { kind: 'letters', text: `The ${sh} is ${c}.` } };
+      explain: yes ? `The ${sh} is ${c}. True.` : `The sentence says ${c}, but the ${sh} is ${shownColor}. Not true.`, visual: { kind: 'item', shape: sh, colour: shownColor }, explainVisual: { kind: 'letters', text: `The ${sh} is ${c}.` } };
   },
   'r1-who': (rng) => {
     const name = pick(rng, STORY_NAMES); const animal = pick(rng, STORY_ANIMALS); const place = pick(rng, STORY_PLACES);
@@ -11865,6 +12018,51 @@ Object.assign(GENERATORS, {
     return { type: 'choice', story: `${c[0]}.`, prompt: 'How strongly may you put it?', choices: HEDGES.map((x) => x[1]), answer: c[1], explain: `${c[0]}: ${c[1].toLowerCase()}.\nMatch the strength of the words to the strength of the evidence, and you will be believed when it counts.`, visual: null, explainVisual: null }; },
 });
 
+// ---- Art, an elective.
+const ART_ELEMENTS = [['A mark that travels across the page', 'Line'], ['A flat area with an edge around it', 'Shape'], ['A shape with thickness, like a ball', 'Form'], ['How a surface would feel', 'Texture'], ['The room in a picture, including the empty parts', 'Space'], ['How light or dark something is', 'Value'], ['What light does to your eye', 'Color']];
+const ART_PRINCIPLES = [['Balance', 'Principle'], ['Pattern', 'Principle'], ['Contrast', 'Principle'], ['Emphasis', 'Principle'], ['Rhythm', 'Principle'], ['Unity', 'Principle'], ['Line', 'Element'], ['Shape', 'Element'], ['Color', 'Element'], ['Texture', 'Element'], ['Value', 'Element']];
+const ART_MIXES = [['red', 'yellow', 'orange'], ['yellow', 'blue', 'green'], ['blue', 'red', 'purple']];
+const ART_COLOUR_KIND = [['Red', 'Primary'], ['Yellow', 'Primary'], ['Blue', 'Primary'], ['Orange', 'Secondary'], ['Green', 'Secondary'], ['Purple', 'Secondary']];
+const ART_WARM_COOL = [['Red', 'Warm'], ['Orange', 'Warm'], ['Yellow', 'Warm'], ['Green', 'Cool'], ['Blue', 'Cool'], ['Purple', 'Cool']];
+const ART_STEPS = [['Say only what is there: a boy, a blue coat, a window', 'Describe'], ['Name the elements: cool colors, a strong diagonal', 'Analyze'], ['Say what you think it means, and why', 'Interpret'], ['Say whether it works, and give your reason', 'Judge']];
+const ART_BALANCE = [['The two halves match, like a butterfly', 'Symmetrical'], ['The halves differ but weigh the same', 'Asymmetrical'], ['Everything spreads from a center, like a wheel', 'Radial']];
+const ART_DEPTH = [['The shape in front hides part of the shape behind', 'Overlap'], ['Things drawn smaller look farther away', 'Size'], ['Things drawn higher on the page look farther away', 'Placement'], ['Near things are sharp and far things are hazy', 'Detail']];
+const ART_WHY = [['A painting of a king in his robes', 'To honor'], ['A picture of a battle as it happened', 'To record'], ['A window telling a story everyone should know', 'To teach'], ['A painted pattern around the rim of a pot', 'To decorate'], ['A picture that asks why things are as they are', 'To question']];
+Object.assign(GENERATORS, {
+  'art-which-element': (rng) => { const c = pick(rng, ART_ELEMENTS); const others = shuffle(rng, ART_ELEMENTS.filter((x) => x[1] !== c[1])).slice(0, 2).map((x) => x[1]);
+    return { type: 'choice', story: `${c[0]}.`, prompt: 'Which element of art is that?', choices: shuffle(rng, [c[1], ...others]), answer: c[1], explain: `${c[1]}: ${c[0].toLowerCase()}.`, visual: null, explainVisual: null }; },
+  'art-element-or-principle': (rng) => { const c = pick(rng, ART_PRINCIPLES);
+    return { type: 'choice', story: `${c[0]}.`, prompt: 'Element or principle?', choices: ['Element', 'Principle'], answer: c[1], explain: c[1] === 'Element' ? `${c[0]} is an element: one of the ingredients a picture is made of.` : `${c[0]} is a principle: a way of arranging the elements.`, visual: null, explainVisual: null }; },
+  'art-how-many-elements': (rng) => ({ type: 'number', story: 'Line, shape, form, color, texture, space, value.', prompt: 'How many elements of art is that?', answer: '7', explain: 'Seven elements: line, shape, form, color, texture, space and value.', visual: null, explainVisual: null }),
+  'art-mix-colors': (rng) => { const [a, b, made] = pick(rng, ART_MIXES); const others = ART_MIXES.filter((x) => x[2] !== made).map((x) => x[2]);
+    return { type: 'choice', story: `Mix ${a} and ${b}.`, prompt: 'What color do you get?', choices: shuffle(rng, [made, ...others]), answer: made, explain: `${a.charAt(0).toUpperCase()}${a.slice(1)} and ${b} make ${made}.`, visual: null, explainVisual: null }; },
+  'art-primary-or-secondary': (rng) => { const c = pick(rng, ART_COLOUR_KIND);
+    return { type: 'choice', story: `${c[0]}.`, prompt: 'Primary or secondary?', choices: ['Primary', 'Secondary'], answer: c[1], explain: c[1] === 'Primary' ? `${c[0]} cannot be mixed from other colors.` : `${c[0]} is mixed from two primary colors.`, visual: null, explainVisual: null }; },
+  'art-warm-or-cool': (rng) => { const c = pick(rng, ART_WARM_COOL);
+    return { type: 'choice', story: `${c[0]}.`, prompt: 'Warm or cool?', choices: ['Warm', 'Cool'], answer: c[1], explain: c[1] === 'Warm' ? `${c[0]} is warm: fire, sun, shouting.` : `${c[0]} is cool: water, shade, quiet.`, visual: null, explainVisual: null }; },
+  'art-tint-or-shade': (rng) => { const white = randInt(rng, 0, 1) === 1;
+    return { type: 'choice', story: white ? 'Red with white added.' : 'Red with black added.', prompt: 'Tint or shade?', choices: ['Tint', 'Shade'], answer: white ? 'Tint' : 'Shade', explain: white ? 'White makes a tint, a lighter version. Red plus white is pink.' : 'Black makes a shade, a darker version.', visual: null, explainVisual: null }; },
+  'art-which-step': (rng) => { const c = pick(rng, ART_STEPS);
+    return { type: 'choice', story: `${c[0]}.`, prompt: 'Which step of looking is that?', choices: ART_STEPS.map((x) => x[1]), answer: c[1], explain: `That is ${c[1].toLowerCase()}. The order is describe, analyze, interpret, judge.`, visual: null, explainVisual: null }; },
+  'art-step-order': (rng) => orderQuestion(rng, 'Looking at a picture.', 'Tap the steps in order, from first to last.', ART_STEPS.map((x) => x[1]), 'Describe what is there, analyze how it works, interpret what it means, then judge it.'),
+  'art-focus-how': (rng) => ({ type: 'choice', story: 'One face in a dark crowd is painted bright.', prompt: 'What makes your eye go there?', choices: shuffle(rng, ['Contrast', 'Texture', 'Pattern']), answer: 'Contrast', explain: 'Contrast, light against dark, makes the focus. The artist put it there on purpose.', visual: null, explainVisual: null }),
+  'art-which-balance': (rng) => { const c = pick(rng, ART_BALANCE);
+    return { type: 'choice', story: `${c[0]}.`, prompt: 'Which kind of balance is that?', choices: ART_BALANCE.map((x) => x[1]), answer: c[1], explain: `${c[1]} balance: ${c[0].toLowerCase()}.`, visual: null, explainVisual: null }; },
+  'art-which-principle': (rng) => { const c = pick(rng, [['Difference put side by side: light against dark', 'Contrast'], ['Repetition with a rule', 'Pattern'], ['The part the eye goes to first', 'Emphasis'], ['Everything looking like it belongs together', 'Unity']]);
+    return { type: 'choice', story: `${c[0]}.`, prompt: 'Which principle of design is that?', choices: shuffle(rng, ['Contrast', 'Pattern', 'Emphasis', 'Unity']), answer: c[1], explain: `${c[1]}: ${c[0].toLowerCase()}.`, visual: null, explainVisual: null }; },
+  'art-break-pattern': (rng) => ({ type: 'choice', story: 'A row of blue squares, and one red one.', prompt: 'What does the red square create?', choices: shuffle(rng, ['Emphasis', 'Balance', 'Texture']), answer: 'Emphasis', explain: 'Break a pattern and the eye goes straight to the break. That is emphasis, made out of almost nothing.', visual: null, explainVisual: null }),
+  'art-depth-trick': (rng) => { const c = pick(rng, ART_DEPTH);
+    return { type: 'choice', story: `${c[0]}.`, prompt: 'Which way of showing depth is that?', choices: ART_DEPTH.map((x) => x[1]), answer: c[1], explain: `${c[1]}: ${c[0].toLowerCase()}.`, visual: null, explainVisual: null }; },
+  'art-positive-negative': (rng) => { const positive = randInt(rng, 0, 1) === 1;
+    return { type: 'choice', story: positive ? 'The shape of the vase itself.' : 'The shape of the gaps around the vase.', prompt: 'Positive or negative space?', choices: ['Positive space', 'Negative space'], answer: positive ? 'Positive space' : 'Negative space', explain: positive ? 'Positive space is the thing itself.' : 'Negative space is the gaps around the thing. Draw the gaps and your drawing usually improves.', visual: null, explainVisual: null }; },
+  'art-perspective-part': (rng) => { const c = pick(rng, [['The line where the sky meets the ground', 'The horizon line'], ['The dot where the edges of a road seem to meet', 'The vanishing point']]);
+    return { type: 'choice', story: `${c[0]}.`, prompt: 'What is that called?', choices: shuffle(rng, ['The horizon line', 'The vanishing point']), answer: c[1], explain: `${c[1]}: ${c[0].toLowerCase()}.`, visual: null, explainVisual: null }; },
+  'art-why-made': (rng) => { const c = pick(rng, ART_WHY); const others = shuffle(rng, [...new Set(ART_WHY.filter((x) => x[1] !== c[1]).map((x) => x[1]))]).slice(0, 2);
+    return { type: 'choice', story: `${c[0]}.`, prompt: 'Why was it made?', choices: shuffle(rng, [c[1], ...others]), answer: c[1], explain: `${c[1]}. Art records, honors, teaches, decorates and questions.`, visual: null, explainVisual: null }; },
+  'art-ask-first': (rng) => ({ type: 'choice', story: 'You meet a mask from a culture you do not know.', prompt: 'What do you ask first?', choices: shuffle(rng, ['Who made it, when, and for whom', 'Whether you like it', 'How much it cost']), answer: 'Who made it, when, and for whom', explain: 'Same object, different meanings in different places. Ask who made it, when, and for whom before deciding what it means.', visual: null, explainVisual: null }),
+  'art-caves': (rng) => ({ type: 'choice', story: 'The painted animals on cave walls in France and Spain.', prompt: 'About how old are they?', choices: shuffle(rng, ['About 17,000 years', 'About 1,700 years', 'About 170 years']), answer: 'About 17,000 years', explain: 'About seventeen thousand years old: people made art long before they made writing.', visual: null, explainVisual: null }),
+});
+
 // ---- Kindergarten to grade 3 community and civics generators.
 const CIV_HELPERS = [['Who puts out fires?', 'Firefighter'], ['Who helps you when you are sick?', 'Doctor'], ['Who teaches you at school?', 'Teacher'], ['Who brings the mail?', 'Mail carrier'], ['Who keeps people safe on the street?', 'Police officer']];
 const CIV_HELPER_NAMES = CIV_HELPERS.map((h) => h[1]);
@@ -11962,6 +12160,10 @@ Object.assign(GENERATORS, {
     return { type: 'choice', story: `${d}.`, prompt: 'Which direction is the opposite?', choices: shuffle(rng, ['North', 'South', 'East', 'West']), answer: pairs[d], explain: `${d} and ${pairs[d].toLowerCase()} are opposites.`, visual: null, explainVisual: null }; },
   'c2-map-symbol': (rng) => { const c = pick(rng, [['a little book', 'The library'], ['a little slide', 'The park'], ['a little bell', 'The school'], ['a little cross', 'The hospital']]);
     return { type: 'choice', story: `On the map key, ${c[0]} means...`, prompt: 'Which place?', choices: shuffle(rng, ['The library', 'The park', 'The school', 'The hospital']), answer: c[1], explain: `${c[0].charAt(0).toUpperCase()}${c[0].slice(1)} on the key means ${c[1].toLowerCase()}.`, visual: null, explainVisual: null }; },
+  'c2-weeks-to-save': (rng) => { const perWeek = pick(rng, [1, 2, 3, 5]); const weeks = randInt(rng, 2, 8); const price = perWeek * weeks;
+    return { type: 'number', story: `A toy costs ${price} dollars. You save ${perWeek} ${perWeek === 1 ? 'dollar' : 'dollars'} a week.`, prompt: 'How many weeks until you have enough?', answer: String(weeks), explain: `Divide the price by what you save each week.\n[[${price} ÷ ${perWeek} = ${weeks} weeks]]`, visual: null, explainVisual: null }; },
+  'c2-save-or-spend': (rng) => { const c = pick(rng, [['You want a bike that costs more than you have.', 'Save a little each week'], ['You have exactly enough for lunch and you are hungry.', 'Spend it on lunch'], ['You want a game next month and have half the money now.', 'Save a little each week']]);
+    return { type: 'choice', story: c[0], prompt: 'What do you do?', choices: shuffle(rng, ['Save a little each week', 'Spend it on lunch']), answer: c[1], explain: c[1].startsWith('Save') ? 'Saving a little each week gets you there.' : 'A need you can pay for now is fine to spend on.', visual: null, explainVisual: null }; },
   'c2-service-or-business': (rng) => { const c = pick(rng, [['The library', 'Town service'], ['The fire department', 'Town service'], ['The public school', 'Town service'], ['The park', 'Town service'], ['A pizza shop', 'Business'], ['A shoe store', 'Business'], ['A car wash', 'Business']]);
     return { type: 'choice', story: `${c[0]}.`, prompt: 'Town service or business?', choices: ['Town service', 'Business'], answer: c[1], explain: c[1] === 'Town service' ? `${c[0]} is provided by the town for everyone.` : `${c[0]} is a business. Someone owns it and sells things.`, visual: null, explainVisual: null }; },
   'c2-which-service': (rng) => { const c = pick(rng, [['Who puts out fires?', 'The fire department'], ['Where do you borrow books for free?', 'The library'], ['Who keeps the streets safe?', 'The police'], ['Where do children go to learn?', 'The school'], ['Where can everyone play outside?', 'The park']]);
@@ -14657,6 +14859,21 @@ export const WONDER = [
       { voice: 'A skeptic', says: 'The word argument is doing honest work there. An argument can be checked, and a bad one can lose. That is better than a story that cannot be questioned. Prefer the historians who show you their footnotes and change their minds.' },
     ],
     closing: 'What is one thing about your own past that two people who were there would tell differently, and which of them would you trust on what?',
+  },
+  {
+    id: 'w-why-make-pictures',
+    theme: 'world',
+    stage: 'growing',
+    courseIds: ['art-3', 'art-4'],
+    answerMode: 'typed',
+    prompt: 'People painted animals on cave walls seventeen thousand years ago, long before anyone wrote anything down. Why do you think making pictures came first?',
+    perspectives: [
+      { voice: 'A scientist', says: 'A picture needs no shared language, only shared eyes. Writing had to wait for people to agree on what marks mean; a painted horse works the moment someone sees it.' },
+      { voice: 'An artist', says: 'Because a picture can hold a feeling that words go around the outside of. Ask someone to describe awe and watch them reach for their hands.' },
+      { voice: 'A grandparent of faith', says: 'The old caves are deep in the rock, hard to reach, lit by fire. Whatever those were, they were not decoration. People have always made images where they felt something larger than themselves.' },
+      { voice: 'A skeptic', says: 'We call it art because it survived on stone. Whatever was sung, danced or spoken that season is simply gone. Be careful deciding what came first from what happened to last.' },
+    ],
+    closing: 'What is something you would rather draw than explain?',
   },
   {
     id: 'w-who-made-the-rule',

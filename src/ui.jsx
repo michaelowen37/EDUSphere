@@ -761,6 +761,13 @@ const KID_ANIMATION = `
   @media (min-width: 1000px) {
     .edu-student-body { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
     .edu-student-left { flex: 1 1 auto; min-width: 0; text-align: left; }
+  }
+  /* The note box: on a phone the field spans the card and Save note sits centered below it. */
+  .edu-note-box { margin-top: 8px; }
+  .edu-note-save { display: flex; justify-content: center; margin-top: 8px; }
+  @media (min-width: 1000px) {
+    .edu-note-box { display: flex; gap: 8px; align-items: flex-start; }
+    .edu-note-save { margin-top: 0; flex: 0 0 auto; }
     .edu-student-open { margin-top: 0; flex: 0 0 auto; }
   }
   /* On a phone the logout countdown sits centered at the foot; on a laptop it stays bottom right. */
@@ -1003,6 +1010,19 @@ function RichText({ text, size = 17, color = null, center = false, lineGap = 10 
 // text, and every tip uses this so they all look the same.
 const tipStyle = { margin: '6px 0 10px', padding: '10px 12px', borderRadius: 10, fontSize: 13, color: C.ink, fontStyle: 'italic', lineHeight: 1.55, background: 'linear-gradient(135deg, #EAF2EC 0%, #F5F9F5 100%)', border: '1px solid #DCE8DF' };
 function TipText({ children }) { return <div style={tipStyle}>{children}</div>; }
+// Two halves of one rectangle, butted together: the same control on every screen that offers a choice of two.
+function SegToggle({ options, value, onChange, ariaLabel }) {
+  return (
+    <div role="group" aria-label={ariaLabel} className="edu-no-print" style={{ display: 'flex', justifyContent: 'center', margin: '0 0 14px' }}>
+      <div style={{ display: 'flex', width: 'min(340px, 100%)', border: `2px solid ${C.green}`, borderRadius: 6, overflow: 'hidden' }}>
+        {options.map(([key, label], i) => (
+          <button key={key} type="button" onClick={() => onChange(key)} aria-pressed={value === key}
+            style={{ fontFamily: FONT, fontSize: 15, fontWeight: 600, flex: '1 1 0', padding: '10px 0', cursor: 'pointer', border: 'none', borderLeft: i === 0 ? 'none' : `1px solid ${C.green}`, background: value === key ? C.green : C.surface, color: value === key ? '#fff' : C.green }}>{label}</button>
+        ))}
+      </div>
+    </div>
+  );
+}
 function InfoButton({ onClick, label, open = false }) {
   return (
     <button type="button" onClick={onClick} aria-label={label} aria-expanded={open}
@@ -1280,6 +1300,9 @@ async function loadEducator() { const raw = await storageGet(EDUCATOR_KEY); if (
 async function loadEducatorRaw() { const raw = await storageGet(EDUCATOR_KEY); if (raw) { try { return JSON.parse(raw); } catch (e) { /* fall through */ } } return null; }
 async function saveEducator(profile) { return storageSet(EDUCATOR_KEY, JSON.stringify(profile)); }
 const DEVICE_KEY = 'edusphere_v1_device_name';
+const QUICK_KEY = 'edusphere_v1_quickchecks';
+async function loadQuickChecks() { return (await storageGet(QUICK_KEY)) !== 'off'; }
+async function saveQuickChecks(on) { return storageSet(QUICK_KEY, on ? 'on' : 'off'); }
 const STATE_KEY = 'edusphere_v1_state';
 async function loadStateCode() { return (await storageGet(STATE_KEY)) || ''; }
 async function saveStateCode(c) { return storageSet(STATE_KEY, c); }
@@ -1385,6 +1408,8 @@ export default function EduSphereApp() {
   const [otherKind, setOtherKind] = useState('core');               // other courses: core or electives
   const [openOtherGrades, setOpenOtherGrades] = useState([]);        // other courses: which grade dropdowns are open
   const [openDoneGrades, setOpenDoneGrades] = useState([]);          // transcript: which completed-course grades are open
+  const [mapKind, setMapKind] = useState('core');                   // the standards map, by grade: core courses or electives
+  const [quickChecks, setQuickChecks] = useState(true);             // may a student skip a module by passing five questions?
   const [showRequirements, setShowRequirements] = useState(false);   // a writing assignment's requirements popup
   const [printing, setPrinting] = useState(false);                   // true while the report prints, so every course fold opens with its stories
   useEffect(() => { if (typeof window === 'undefined' || !window.matchMedia) return undefined; const before = () => setPrinting(true); const after = () => setPrinting(false); window.addEventListener('beforeprint', before); window.addEventListener('afterprint', after); return () => { window.removeEventListener('beforeprint', before); window.removeEventListener('afterprint', after); }; }, []);
@@ -1513,6 +1538,7 @@ export default function EduSphereApp() {
       setBackupAt(await loadBackupAt());
       setDeviceName(await loadDeviceName());
       setStateCode(await loadStateCode());
+      setQuickChecks(await loadQuickChecks());
       setEducator(await loadEducator());
       { const rawProfile = await loadEducatorRaw(); if (rawProfile && !rawProfile.pin) setPendingProfile(rawProfile); }
       setScreen('welcome');
@@ -1978,7 +2004,7 @@ export default function EduSphereApp() {
                               <div style={{ marginTop: 12 }}>
                                 <Btn halo={st === 'available'} kind={st === 'mastered' ? 'secondary' : 'primary'} onClick={() => openModule(m.id)} disabled={busy}>{st === 'mastered' ? 'Practice again' : st === 'passed' ? 'Pass it again' : 'Open'}</Btn>
                                 {/* One try per module: five questions, no lesson, and a pass places the module without the star. */}
-                                {st === 'available' && !(record && record.preview) && !((educator || pendingProfile || {}).quickChecks === false) && quickCheckAllowed(record.events, m.id) && (
+                                {st === 'available' && !(record && record.preview) && quickChecks && quickCheckAllowed(record.events, m.id) && (
                                   <div style={{ marginTop: 8 }}><button type="button" style={linkBtn} onClick={() => startQuickCheck(m.id)} disabled={busy}>I already know this</button></div>
                                 )}
                               </div>
@@ -2647,19 +2673,21 @@ export default function EduSphereApp() {
         </p>
         {/* Grouped by grade (each grade a heading, one light-green dropdown per subject) or by subject.
             The list grows by itself as courses are added, because it is read from the curriculum plan. */}
-        <div className="edu-no-print" style={{ display: 'flex', justifyContent: 'center', gap: 8, margin: '4px 0 14px' }}>
-          {[['grade', 'By grade'], ['subject', 'By subject']].map(([mode, label]) => (
-            <button key={mode} type="button" onClick={() => setMapOrder(mode)} aria-pressed={mapOrder === mode}
-              style={{ fontFamily: FONT, fontSize: 15, fontWeight: 600, padding: '8px 16px', borderRadius: 999, cursor: 'pointer', border: `2px solid ${C.green}`, background: mapOrder === mode ? C.green : C.surface, color: mapOrder === mode ? '#fff' : C.green }}>{label}</button>
-          ))}
-        </div>
+        <SegToggle options={[['grade', 'By grade'], ['subject', 'By subject']]} value={mapOrder} onChange={setMapOrder} ariaLabel="Group by grade or by subject" />
         {(() => {
           const subjectOrder = sortSubjects(plan.map((entry) => entry.subject));
-          const sorted = [...plan].sort((a, b) => GRADES.indexOf(a.grade) - GRADES.indexOf(b.grade) || subjectOrder.indexOf(a.subject) - subjectOrder.indexOf(b.subject));
+          // A plan is an elective when every module it names sits in an elective course.
+          const electiveEntry = (entry) => { const ids = [...new Set(entry.standards.flatMap((st) => st.moduleIds))]; return ids.length > 0 && ids.every((id) => { const m = getModule(id); const c = m && getCourse(m.courseId); return !!(c && c.elective); }); };
+          const anyElectives = plan.some(electiveEntry);
+          const shown = mapOrder === 'grade' && anyElectives ? plan.filter((entry) => (mapKind === 'electives' ? electiveEntry(entry) : !electiveEntry(entry))) : plan;
+          const sorted = [...shown].sort((a, b) => GRADES.indexOf(a.grade) - GRADES.indexOf(b.grade) || subjectOrder.indexOf(a.subject) - subjectOrder.indexOf(b.subject));
           const groups = mapOrder === 'grade'
             ? GRADES.filter((g) => sorted.some((e) => e.grade === g)).map((g) => ({ key: g, title: gradeLabel(g), entries: sorted.filter((e) => e.grade === g) }))
-            : subjectOrder.map((sub) => ({ key: sub, title: sub, entries: sorted.filter((e) => e.subject === sub) }));
-          return groups.map((group) => (
+            : subjectOrder.map((sub) => ({ key: sub, title: sub, entries: sorted.filter((e) => e.subject === sub) })).filter((group) => group.entries.length);
+          const kindToggle = mapOrder === 'grade' && anyElectives ? (
+            <SegToggle key="kind" options={[['core', 'Core'], ['electives', 'Electives']]} value={mapKind} onChange={setMapKind} ariaLabel="Core courses or electives" />
+          ) : null;
+          return [kindToggle, ...groups.map((group) => (
             <div key={group.key} style={{ marginBottom: 18 }}>
               <h2 style={{ fontSize: 19, margin: '0 0 8px', color: C.green, textAlign: 'center' }}>{group.title}</h2>
               {group.entries.map((entry) => {
@@ -2690,7 +2718,7 @@ export default function EduSphereApp() {
                 );
               })}
             </div>
-          ));
+          ))];
         })()}
         <div className="edu-no-print" style={{ textAlign: 'center', marginTop: 8 }}>
           <Btn onClick={() => { if (typeof window !== 'undefined' && window.print) window.print(); }}>Print standards map</Btn>
@@ -3422,14 +3450,11 @@ export default function EduSphereApp() {
             ) : (
               <>
                 <div className="edu-student-body">
-                <div className="edu-student-left">
-                <div className="edu-student-head" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                  {st.picture && <StudentPicture name={st.picture} tint={st.tint} size={40} />}
-                  <span>
-                    <span style={{ display: 'block', fontSize: 18, fontWeight: 600 }}>{keepTogether(st.label)}</span>
-                    {st.level && <span style={{ display: 'block', fontSize: 12, color: C.muted }}>{levelFor(st.level).title}{st.startGrade ? ` · ${gradeLabel(st.startGrade)}` : ''}</span>}
-                  </span>
-                </div>
+                <div className="edu-student-left" style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}>
+                {st.picture && <StudentPicture name={st.picture} tint={st.tint} size={40} />}
+                <div style={{ flex: '1 1 auto', minWidth: 0 }}>
+                  <span style={{ display: 'block', fontSize: 18, fontWeight: 600 }}>{keepTogether(st.label)}</span>
+                  {st.level && <span style={{ display: 'block', fontSize: 12, color: C.muted }}>{levelFor(st.level).title}{st.startGrade ? ` · ${gradeLabel(st.startGrade)}` : ''}</span>}
                 {/* On a laptop the name, grade and links stack on the left and Open report sits on the right, centered
                     on them; on a phone the name and links stay as they are and Open report sits below them, centered. */}
                 <div className="edu-student-actions" style={{ display: 'flow-root', marginTop: 8 }}>
@@ -3451,6 +3476,7 @@ export default function EduSphereApp() {
                       setMergeFrom('');
                     }} style={{ ...cardLink, color: C.gold }}>Merge here</button>
                   )}
+                </div>
                 </div>
                 </div>
                 <div className="edu-student-open"><Btn kind="secondary" disabled={busy} onClick={async () => {
@@ -3543,16 +3569,15 @@ export default function EduSphereApp() {
         })()}
         <RemembranceCard educator />
         <div style={{ ...card, marginTop: 22, textAlign: 'center' }}>
-          {(() => { const prof = educator || pendingProfile || {}; const off = prof.quickChecks === false; return (
           <div style={{ margin: '0 0 16px', padding: '12px 14px', borderRadius: 10, background: C.greenSoft, textAlign: 'center' }}>
             <p style={{ margin: '0 0 4px', fontWeight: 600 }}>Quick checks</p>
-            <p style={{ margin: '0 0 8px', fontSize: 14, color: C.muted, lineHeight: 1.5 }}>All new students (above grade 2) start by taking placement tests. This is how we match a student's skill level to a grade. However, generically placing a student in grade 3 math is a simplification. They may already have a solid understanding of some of the material so, instead of wasting time going over what they already know, they are presented with an opportunity to skip a module by passing five questions. <InfoButton onClick={() => setShowQuickTip(!showQuickTip)} label="About quick checks" open={showQuickTip} /></p>
-            {showQuickTip && <TipText>Successful skips lead to a transcript status of "placed" rather than "mastered." Future memory checks will further test their level of understanding even if they do successfully skip a module and, if necessary, route them backwards.<br /><br />Answering the five questions too quickly will prevent students from skipping to prevent potential advancements through guessing.</TipText>}
-            <button type="button" role="switch" aria-checked={!off} onClick={async () => { const next = { ...prof, quickChecks: !off }; await saveEducator(next); if (educator) setEducator(next); else setPendingProfile(next); }}
-              style={{ fontFamily: FONT, fontSize: 15, fontWeight: 600, padding: '8px 14px', borderRadius: 999, border: `2px solid ${C.green}`, cursor: 'pointer', whiteSpace: 'nowrap', background: off ? C.surface : C.green, color: off ? C.green : '#fff' }}>
-              {off ? 'Off' : 'On'}
+            <p style={{ margin: '0 0 8px', fontSize: 14, color: C.muted, lineHeight: 1.5 }}>All new students (above grade 2) start by taking placement tests. Quick Checks allow for further refinement by allowing students to skip the material they already know through knowledge-based tests. <InfoButton onClick={() => setShowQuickTip(!showQuickTip)} label="About quick checks" open={showQuickTip} /></p>
+            {showQuickTip && <TipText>Generically placing a student into grade 3 math (after failing grade 4 in a placement test) is an over-simplification. They may already understand some of the grade 3 material. Quick-checks are opportunities for students to skip individual modules (in this case, grade 3 math modules) through five-question knowledge tests and allow for less wasted time.<br /><br /><strong>Note:</strong> Successful skips lead to a transcript status of "placed" rather than "mastered." If they answer too quickly, it doesn't count. Future memory checks will further test their level of understanding of these skipped modules by integrating the concepts into new material, ensuring that nothing slips through the cracks. If necessary, we route them backwards.</TipText>}
+            <button type="button" role="switch" aria-checked={quickChecks} onClick={async () => { const next = !quickChecks; setQuickChecks(next); await saveQuickChecks(next); }}
+              style={{ fontFamily: FONT, fontSize: 15, fontWeight: 600, padding: '8px 14px', borderRadius: 999, border: `2px solid ${C.green}`, cursor: 'pointer', whiteSpace: 'nowrap', background: quickChecks ? C.green : C.surface, color: quickChecks ? '#fff' : C.green }}>
+              {quickChecks ? 'On' : 'Off'}
             </button>
-          </div>); })()}
+          </div>
           <p style={{ margin: '0 0 6px', fontWeight: 600 }}>Walk through as a student</p>
           <p style={{ margin: '0 0 10px', fontSize: 15 }}>See exactly what a student sees. Every module is open, every question can be skipped, and nothing is recorded.</p>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, justifyContent: 'center' }}>
@@ -3622,7 +3647,7 @@ export default function EduSphereApp() {
         </div>
         <div className="edu-no-print" style={{ margin: '0 0 14px' }}>
           <input value={noteSearch} onChange={(e) => setNoteSearch(e.target.value)} aria-label="Search notes" placeholder="Search your notes, for example: shy"
-            style={{ width: '100%', boxSizing: 'border-box', fontFamily: FONT, fontSize: 15, padding: '10px 12px', borderRadius: 10, border: `1px solid ${C.line}` }} />
+            style={{ width: '100%', boxSizing: 'border-box', fontFamily: FONT, fontSize: 15, padding: '10px 12px', borderRadius: 10, border: `1px solid ${C.line}`, textAlign: 'center' }} />
         </div>
         {classRows.filter((r) => (!noteSearch.trim() || r.notesText.toLowerCase().includes(noteSearch.trim().toLowerCase()))).length === 0 && (
           <p style={{ textAlign: 'center', color: C.muted, fontSize: 15 }}>{noteSearch.trim() ? 'No note says that.' : 'Nobody needs a look right now.'}</p>
@@ -3814,18 +3839,18 @@ export default function EduSphereApp() {
         {/* Teacher notes: written here, kept on the student's log, so they ride along in every backup. */}
         <div style={{ ...card, marginBottom: 14 }}>
           <p style={{ margin: '0 0 6px', fontWeight: 600 }}>Notes</p>
-          {rep.notes.length === 0 && <p style={{ margin: '0 0 8px', fontSize: 14, color: C.muted }}>Nothing yet. A note here stays with the student and can be restored through backups. Quickly search student notes through the "Who Needs Help" page.</p>}
           {rep.notes.map((n) => (
             <div key={n.id} style={{ borderTop: `1px solid ${C.line}`, padding: '8px 0' }}>
               <p style={{ margin: 0, fontSize: 15, whiteSpace: 'pre-wrap' }}>{n.text}</p>
               <p style={{ margin: '4px 0 0', fontSize: 13, color: C.muted }}>{fmtDate(n.at)} <button type="button" className="edu-no-print" style={{ ...linkBtn, fontSize: 13, marginLeft: 8 }} onClick={() => addToStudent(makeNoteRemovedEvent(n.id, new Date().toISOString()))}>Remove</button></p>
             </div>
           ))}
-          <div className="edu-no-print" style={{ display: 'flex', gap: 8, alignItems: 'flex-start', marginTop: 8 }}>
-            <textarea value={noteInput} onChange={(e) => setNoteInput(e.target.value)} aria-label="Teacher note" placeholder="Write a note about this student (i.e. reads well aloud, needs help focusing)" rows={2}
-              style={{ flex: 1, fontFamily: FONT, fontSize: 15, padding: 10, borderRadius: 10, border: `1px solid ${C.line}`, resize: 'vertical' }} />
-            <Btn kind="secondary" disabled={!noteInput.trim()} onClick={async () => { await addToStudent(makeNoteEvent(noteInput, new Date().toISOString())); setNoteInput(''); }}>Save note</Btn>
+          <div className="edu-note-box edu-no-print">
+            <textarea value={noteInput} onChange={(e) => setNoteInput(e.target.value)} aria-label="Teacher note" placeholder="Write a note about this student (i.e. needs quiet to focus, loves dinosaurs)" rows={2}
+              style={{ width: '100%', boxSizing: 'border-box', fontFamily: FONT, fontSize: 15, padding: 10, borderRadius: 10, border: `1px solid ${C.line}`, resize: 'vertical' }} />
+            <div className="edu-note-save"><Btn kind="secondary" disabled={!noteInput.trim()} onClick={async () => { await addToStudent(makeNoteEvent(noteInput, new Date().toISOString())); setNoteInput(''); }}>Save note</Btn></div>
           </div>
+          {rep.notes.length === 0 && <p style={{ margin: '10px 0 0', fontSize: 14, color: C.muted, textAlign: 'center' }}>Nothing yet. A note here stays with the student and can be restored through backups. Quickly search student notes through the "Who Needs Help" page.</p>}
         </div>
         {/* The summary a parent or principal can read without decoding anything: a list, then sentences */}
         {(() => {
@@ -3840,7 +3865,7 @@ export default function EduSphereApp() {
                 <div style={{ padding: '0 16px 16px' }}>
                   <p style={{ margin: '0 0 6px', fontSize: 16, lineHeight: 1.6 }}>{parts.lead}</p>
                   {parts.items.length > 0 && <ul style={{ margin: '0 0 10px', padding: '10px 12px 10px 32px', listStyleType: 'disc', fontSize: 15, lineHeight: 1.7, borderRadius: 10, background: 'linear-gradient(135deg, #EAF2EC 0%, #F5F9F5 100%)', border: '1px solid #DCE8DF' }}>{parts.items.map((it) => <li key={it} style={{ display: 'list-item' }}>{it}</li>)}</ul>}
-                  {parts.rest && <p style={{ margin: 0, fontSize: 16, lineHeight: 1.6 }}>{parts.rest}</p>}
+                  {parts.rest && <div style={{ margin: 0, fontSize: 16, lineHeight: 1.6, textAlign: 'center' }}>{parts.rest.split(/(?<=\.)\s+/).filter(Boolean).map((line) => <p key={line} style={{ margin: '2px 0' }}>{line}</p>)}</div>}
                   {parts.tried && parts.tried.length > 0 && (
                     <div style={{ margin: '8px 0 0' }}>
                       <p style={{ margin: '0 0 4px', fontSize: 16, lineHeight: 1.6 }}>Tried but not passed yet:</p>
@@ -3858,7 +3883,7 @@ export default function EduSphereApp() {
         {pendingWritings(educatorRecord.events).length > 0 && (
           <div style={{ ...card, background: C.goldSoft, borderColor: C.gold }}>
             <p style={{ margin: '0 0 4px', fontWeight: 600 }}>Writing assignment that needs your check ({pendingWritings(educatorRecord.events).length})</p>
-            <p style={{ margin: '0 0 12px', fontSize: 14, color: C.muted }}>The student wrote this assignment on paper and claims that it is finished. The requirements are outlined below and it is up to you to select "Pass" and "Not Yet". By selecting "Pass" you are unlocking the next writing module. "Not Yet" requires a retry. Student does not receive a numerical score from us.</p>
+            <p style={{ margin: '0 0 12px', fontSize: 14, color: C.muted, textAlign: 'center', lineHeight: 1.5 }}>{shownName} wrote this assignment on paper and marked it as finished. The requirements are outlined below and it's up to you to select "Pass" or "Not Yet". By selecting "Pass" you are unlocking the next writing module. "Not Yet" requires a retry. Students never receive numerical scores from us.</p>
             {pendingWritings(educatorRecord.events).map((w) => (
               <div key={w.at} style={{ borderTop: `1px solid ${C.line}`, padding: '10px 0' }}>
                 <p style={{ margin: '0 0 4px', fontWeight: 600 }}>{titleCase((getModule(w.moduleId) || { title: w.moduleId }).title)} · finished {fmtDate(w.at)}</p>
@@ -3914,12 +3939,7 @@ export default function EduSphereApp() {
             <div className="edu-no-print" style={{ borderTop: `1px solid ${C.line}`, marginTop: 8, paddingTop: 8 }}>
               <p style={{ margin: '0 0 10px', fontSize: 14, color: C.muted, textAlign: 'center' }}>Wish to stray from our recommendations? Select anything below for {shownName} to complete.</p>
               {/* Core courses or electives, then one closed dropdown per grade, so a long catalog stays quick to navigate. */}
-              <div style={{ display: 'flex', justifyContent: 'center', gap: 8, margin: '0 0 12px' }}>
-                {[['core', 'Core'], ['electives', 'Electives']].map(([key, label]) => (
-                  <button key={key} type="button" onClick={() => setOtherKind(key)} aria-pressed={otherKind === key}
-                    style={{ fontFamily: FONT, fontSize: 15, fontWeight: 600, padding: '8px 16px', borderRadius: 999, cursor: 'pointer', border: `2px solid ${C.green}`, background: otherKind === key ? C.green : C.surface, color: otherKind === key ? '#fff' : C.green }}>{label}</button>
-                ))}
-              </div>
+              <SegToggle options={[['core', 'Core'], ['electives', 'Electives']]} value={otherKind} onChange={setOtherKind} ariaLabel="Core courses or electives" />
               {(() => {
                 const others = COURSES.filter((c) => !recommended.includes(c.id) && (otherKind === 'electives' ? !!c.elective : !c.elective)).sort(byGradeOrder);
                 const grades = GRADES.filter((g) => others.some((c) => c.grade === g));
@@ -3945,7 +3965,7 @@ export default function EduSphereApp() {
               })()}
             </div>
           )}
-          <p style={{ margin: '10px 0 0', fontSize: 13, color: C.muted }}>Switching a course off hides it from the student. Their progress is kept.</p>
+          <p style={{ margin: '10px 0 0', fontSize: 13, color: C.muted, textAlign: 'center' }}>Switching a course off hides it from the student. Their progress is kept.</p>
         </div>
 
         {/* Progress by course, all of it behind one dropdown so the transcript is not pushed out of sight. */}

@@ -43,5 +43,9 @@ for (const c of L.COURSES) for (const fw of ['TEKS', 'CCSS']) {
   ok(`${c.id} has standards satisfied to show on a transcript (${fw})`, codes.length > 0);
 }
 
+// A plan never repeats a code: two lines with one code print twice on the map and split the modules that satisfy it.
+const repeats = [];
+for (const plan of CURRICULUM) { const seen = new Set(); for (const st of plan.standards) { const key = `${st.framework}:${st.code}`; if (seen.has(key)) repeats.push(`${plan.grade} ${plan.subject} ${key}`); seen.add(key); } }
+ok('no plan repeats a code', repeats.length === 0, repeats.join(', '));
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

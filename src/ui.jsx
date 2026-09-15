@@ -168,6 +168,53 @@ function TracePad({ letter, paths, onChange, disabled = false, tone = null }) {
   );
 }
 
+// A stroke that draws itself, for the tracing lessons. The guide sits in gray with the start dot
+// and the arrow of the first move, exactly as on the practice pad, and green ink draws each
+// stroke in turn, rests, and draws again. A dots picture shows its numbered dots and joins them.
+// Under reduced motion the finished shape simply sits there.
+const prefersReducedMotion = () => typeof window !== 'undefined' && !!window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const PACES = [26, 40, 65]; // units per second: slower on request, the pre-K pace, and the grade 1 pace
+function TraceDemo({ letter, animKey = 0, pace = 'slow', nudge = 0 }) {
+  const def = TRACE_LETTERS[letter];
+  if (!def) return null;
+  const strokes = def.strokes;
+  const lengths = strokes.map((st) => st.slice(1).reduce((acc, p, i) => acc + Math.hypot(p[0] - st[i][0], p[1] - st[i][1]), 0));
+  const speed = PACES[Math.max(0, Math.min(2, (pace === 'quick' ? 2 : 1) + nudge))]; // the lesson's own pace, nudged slower or faster by the student
+  const rest = 1.8; // seconds with the finished shape before it draws again
+  const cycle = lengths.reduce((a, b) => a + b, 0) / speed + 0.5 * strokes.length + rest;
+  const id = `edu-tr-${String(letter).replace(/[^a-z0-9]/gi, '')}`;
+  let t = 0.5;
+  const frames = strokes.map((st, i) => { const dur = lengths[i] / speed; const a = (t / cycle) * 100; const b = ((t + dur) / cycle) * 100; t += dur + 0.5; return { a, b }; });
+  const css = frames.map((f, i) => `@keyframes ${id}-${i} { 0%, ${f.a.toFixed(2)}% { stroke-dashoffset: ${lengths[i].toFixed(2)}; } ${f.b.toFixed(2)}%, 100% { stroke-dashoffset: 0; } }`).join('\n');
+  const points = (st) => st.map((pt) => pt.join(',')).join(' ');
+  const [a, b] = [strokes[0][0], strokes[0][1]];
+  const dx = b[0] - a[0]; const dy = b[1] - a[1]; const len = Math.hypot(dx, dy) || 1; const ux = dx / len; const uy = dy / len;
+  const tip = [a[0] + ux * 16, a[1] + uy * 16];
+  const wing = (side) => [tip[0] - ux * 5 + side * uy * 4, tip[1] - uy * 5 - side * ux * 4];
+  return (
+    <svg key={animKey} viewBox="0 0 100 100" role="img" aria-label={def.dots ? `Connect the dots to make a ${letter}` : def.line ? 'A line drawing itself' : `${letter} drawing itself`}
+      style={{ width: '100%', maxWidth: 230, aspectRatio: '1 / 1', display: 'block', margin: '0 auto', background: C.surface, border: `2px solid ${C.line}`, borderRadius: 16 }}>
+      <style>{css}</style>
+      {def.dots && strokes[0].map((pt, i) => (i === strokes[0].length - 1 && pt.join() === strokes[0][0].join() ? null : (
+        <g key={`dot-${i}`}><circle cx={pt[0]} cy={pt[1]} r="5" fill={C.gold} /><text x={pt[0]} y={pt[1] - 7} fontSize="7" textAnchor="middle" fill={C.ink} fontFamily={FONT}>{i + 1}</text></g>
+      )))}
+      {!def.dots && strokes.map((st, i) => <polyline key={`guide-${i}`} points={points(st)} fill="none" stroke={C.line} strokeWidth="9" strokeLinecap="round" strokeLinejoin="round" />)}
+      {strokes.map((st, i) => <polyline key={`ink-${i}`} className="edu-trace-draw" points={points(st)} fill="none" stroke={C.green} strokeWidth="6" strokeLinecap="round" strokeLinejoin="round"
+        style={{ strokeDasharray: lengths[i], strokeDashoffset: 0, animation: `${id}-${i} ${cycle.toFixed(2)}s linear infinite` }} />)}
+      <circle cx={a[0]} cy={a[1]} r="4.5" fill={C.green} />
+      {!def.dots && <polyline points={`${wing(1).join(',')} ${tip.join(',')} ${wing(-1).join(',')}`} fill="none" stroke={C.green} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />}
+      {/* The pen: a gold dot that rides the tip of the ink. SVG motion, so it needs no script, and it is
+          left out entirely when the device asks for reduced motion. */}
+      {!prefersReducedMotion() && strokes.map((st, i) => (
+        <circle key={`pen-${i}`} r="4" fill={C.gold} stroke="#fff" strokeWidth="1.5" opacity="0">
+          <animateMotion dur={`${cycle.toFixed(2)}s`} repeatCount="indefinite" calcMode="linear" keyPoints="0;0;1;1" keyTimes={`0;${(frames[i].a / 100).toFixed(4)};${(frames[i].b / 100).toFixed(4)};1`} path={`M ${st[0][0]} ${st[0][1]} ` + st.slice(1).map((pt) => `L ${pt[0]} ${pt[1]}`).join(' ')} />
+          <animate attributeName="opacity" dur={`${cycle.toFixed(2)}s`} repeatCount="indefinite" calcMode="discrete" values="0;1;0;0" keyTimes={`0;${(frames[i].a / 100).toFixed(4)};${(frames[i].b / 100).toFixed(4)};1`} />
+        </circle>
+      ))}
+    </svg>
+  );
+}
+
 // Pre-K pictures: a colour swatch, a coloured shape (optionally big or small), a pattern row.
 const SWATCH = { red: '#D9534F', blue: '#4A7FC1', yellow: '#F0C93A', green: '#5E9A62' };
 function Swatch({ colour, size = 90 }) {
@@ -380,11 +427,12 @@ function DotGroup({ count, size = 34, animate = false, animKey = 0 }) {
 }
 
 // Draws whichever picture a lesson or question asks for.
-function Picture({ visual, animate = false, animKey = 0 }) {
+function Picture({ visual, animate = false, animKey = 0, nudge = 0 }) {
   if (!visual) return null;
   if (visual.kind === 'dots') return <div style={{ padding: '6px 0' }}><DotGroup count={visual.count} animate={animate} animKey={animKey} /></div>;
+  if (visual.kind === 'trace') return <div style={{ padding: '6px 0' }}><TraceDemo letter={visual.text} animKey={animKey} pace={visual.pace} nudge={nudge} /></div>;
   if (visual.kind === 'icon') return <div key={animKey} className={animate ? 'edu-drift' : undefined} style={{ padding: '6px 0' }}><IconPic name={visual.name} size={110} /></div>;
-  if (visual.kind === 'shape') return <div key={animKey} className={animate ? 'edu-drift' : undefined} style={{ padding: '6px 0' }}><ShapePic name={visual.name} size={110} /></div>;
+  if (visual.kind === 'shape') return <div key={animKey} className={animate ? 'edu-drift' : undefined} style={{ padding: '6px 0' }}><ShapePic name={visual.name} size={visual.size === 'big' ? 140 : visual.size === 'small' ? 50 : 110} /></div>;
   if (visual.kind === 'tens') return <div style={{ padding: '6px 0' }}><TensGroup count={visual.count} animate={animate} animKey={animKey} /></div>;
   if (visual.kind === 'array') return <div style={{ padding: '6px 0' }}><ArrayPic rows={visual.rows} cols={visual.cols} /></div>;
   if (visual.kind === 'numberline') return <div style={{ padding: '6px 0' }}><NumberLine parts={visual.parts} mark={visual.mark} /></div>;
@@ -515,6 +563,10 @@ function speechPieces(text) {
 }
 const SPEECH_SHAPES = { key: { rate: 0.6, pitch: 1.25 }, question: { rate: 0.9, pitch: 1.22 }, plain: { rate: 0.86, pitch: 1.15 }, sound: { rate: 0.1, pitch: 1.15 } };
 
+// Slower and Faster on a tracing lesson move the voice with the drawing: -1 slows every line to
+// three quarters speed, +1 quickens it a little. Reset to 0 whenever a lesson opens.
+let SPEECH_NUDGE = 0;
+function setSpeechNudge(n) { SPEECH_NUDGE = n; }
 function speak(text) {
   if (typeof window === 'undefined' || !window.speechSynthesis || !text) return;
   try {
@@ -524,7 +576,7 @@ function speak(text) {
       const u = new SpeechSynthesisUtterance(piece.text);
       if (voice) u.voice = voice;
       const shape = SPEECH_SHAPES[piece.shape] || SPEECH_SHAPES.plain;
-      u.rate = shape.rate; u.pitch = shape.pitch;
+      u.rate = shape.rate * (SPEECH_NUDGE < 0 ? 0.75 : SPEECH_NUDGE > 0 ? 1.1 : 1); u.pitch = shape.pitch;
       window.speechSynthesis.speak(u);
     }
   } catch (e) { /* a broken voice must never stop a lesson */ }
@@ -641,10 +693,14 @@ function Logo({ width = 250, animate = false }) {
 // question feels like a treat rather than more work. Anyone who has asked their device
 // to reduce motion sees a plain button instead.
 const PRINT_STYLES = `
+.edu-print-only { display: none; }
 @media print {
   /* Everything folded away on screen is opened for the printer, so a printed report is complete. */
   .edu-collapsible { display: block !important; }
   .edu-no-print { display: none !important; }
+  .edu-print-only { display: block !important; }
+  /* On paper a button is just its words: no border, no fill, so a report reads as a report. */
+  .edu-wrap button { border: none !important; background: none !important; color: inherit !important; padding: 0 !important; box-shadow: none !important; }
   .edu-frame { display: none !important; }
   body { background: #fff; }
 }`;
@@ -777,7 +833,7 @@ html, body { overflow-x: hidden; }
 .edu-slide-in { animation: edu-slide-in 1.1s cubic-bezier(0.2, 0.9, 0.3, 1.2) both; background: linear-gradient(90deg, #3A6B58, #D9A83B, #3A6B58); background-size: 200% auto; -webkit-background-clip: text; background-clip: text; color: transparent !important; animation: edu-slide-in 1.1s cubic-bezier(0.2, 0.9, 0.3, 1.2) both, edu-shimmer 3s linear 1.1s infinite; }
 .edu-glow { animation: edu-glow 1.8s ease-in-out infinite; }
 @media (prefers-reduced-motion: reduce) {
-  .edu-glow, .edu-breathe, .edu-slide-in, .edu-pulse, .edu-stress, .edu-twinkle-star, .edu-side path { animation: none; }
+  .edu-glow, .edu-breathe, .edu-slide-in, .edu-pulse, .edu-stress, .edu-twinkle-star, .edu-trace-draw, .edu-side path { animation: none; }
   .edu-side path { stroke-dasharray: none; }
   .edu-halo, .edu-drift, .edu-cheer, .edu-wobble, .edu-burst, .edu-rise, .edu-sway, .edu-star-twinkle, .edu-grow, .edu-draw, .edu-settle, .edu-settle-late { animation: none; }
   .edu-draw { stroke-dasharray: none; }
@@ -1302,6 +1358,7 @@ export default function EduSphereApp() {
   const [openResourceGrades, setOpenResourceGrades] = useState([]); // which grade folds are open on the resource pages
   const [placementWalk, setPlacementWalk] = useState(null);           // { subject, grades, cleared } while a placement check runs
   const [placementResult, setPlacementResult] = useState(null);       // what the last placement check decided
+  const [quickResult, setQuickResult] = useState(null);               // what the last quick check decided
   const [showProgressTip, setShowProgressTip] = useState(false);
   const [openSummary, setOpenSummary] = useState(true);
   const [openAssigned, setOpenAssigned] = useState(false);
@@ -1310,6 +1367,9 @@ export default function EduSphereApp() {
   const [openApproved, setOpenApproved] = useState([]);
   const [openProgressGroups, setOpenProgressGroups] = useState([]);
   const [openMapGroups, setOpenMapGroups] = useState([]);           // the standards map's dropdowns, closed until opened
+  const [mapOrder, setMapOrder] = useState('grade');                // the standards map: grouped by grade, or by subject
+  const [classFilter, setClassFilter] = useState('all');            // who needs help: everyone, or only the flagged, or only missed quick checks
+  const [noteSearch, setNoteSearch] = useState('');                  // who needs help: find students by what you wrote about them
   const returnTo = useRef(null);                                     // { screen, scrollY } to go back to after Change state or a PIN unlock
   const goBackTo = () => { const r = returnTo.current; returnTo.current = null; if (r) { pendingScroll.current = r.scrollY; setScreen(r.screen); } else setScreen('educator-pick'); };
   const pendingScroll = useRef(null);
@@ -1364,6 +1424,9 @@ export default function EduSphereApp() {
   let renderModuleCard = null;
   const [wonderVoiceStep, setWonderVoiceStep] = useState(0);   // which spoken voice a young child is on
   const [tracePaths, setTracePaths] = useState([]);
+  const [replays, setReplays] = useState(0);                          // "Say it again" replays the lesson picture too
+  const [paceNudge, setPaceNudge] = useState(0);                      // Slower / Faster on a tracing demonstration: -1, 0 or 1 from the lesson's own pace
+  const [noteInput, setNoteInput] = useState('');                     // a teacher note being written on the report
   const [ticks, setTicks] = useState([]);              // the self-check boxes ticked on a writing question           // the finger's path on a tracing question
   const [cheer, setCheer] = useState(0);                      // bumped to replay the celebration
   const [record, setRecord] = useState(null);      // { name, events, ... } for the current learner
@@ -1486,6 +1549,18 @@ export default function EduSphereApp() {
   async function loopBack(fromId, toId) {
     await addEvent(makeLoopBackEvent(fromId, toId, new Date().toISOString()));
     setModuleId(toId); setLessonStep(0); setScreen('lesson');
+  }
+
+  // "I already know this": five questions from the module, no lesson, on the practice screen.
+  function startQuickCheck(id) {
+    const check = buildQuickCheck(id, (Date.now() % 2147483646) + 1);
+    if (!check) return;
+    setModuleId(id);
+    setAttempt(check);
+    setQIndex(0); setGiven(''); setChecked(false); setMisses(0); setCoreResults([]); setOrderPicked([]); setReviewResult(null); setReview2Result(null);
+    setStartedAt(new Date().toISOString());
+    setQShownAt(Date.now());
+    setScreen('practice');
   }
 
   async function openModule(id) {
@@ -1654,6 +1729,14 @@ export default function EduSphereApp() {
       setScreen('placement-result');
       return;
     }
+    if (attempt.quickCheck) {
+      const at = new Date().toISOString();
+      const qc = makeQuickCheckEvent(attempt.moduleId, coreResults, at);
+      await addEvents(qc.passed ? [qc, makeQuickPlacedEvent(attempt.moduleId, at)] : [qc]);
+      setQuickResult({ moduleId: attempt.moduleId, right: qc.right, total: qc.total, passed: qc.passed, guessed: qc.guessed });
+      setScreen('quick-result');
+      return;
+    }
     if (attempt.checkpoint) {
       const cpEvent = makeCheckpointEvent(attempt, coreResults, startedAt, new Date().toISOString());
       setLastEvent(cpEvent);
@@ -1678,7 +1761,7 @@ export default function EduSphereApp() {
   // Which module/course is open, and read-aloud for courses that use it.
   // (Hooks live here, above the first early return, so React sees the same hooks every render.)
   const currentFrom = attempt && (attempt.checkpoint || attempt.placement) && screen === 'practice' && attempt.core[qIndex] ? attempt.core[qIndex].fromModuleId : null;
-  const roundLabel = !attempt ? '' : attempt.checkpoint ? 'Checkpoint · ' : attempt.placement ? `Placement, ${gradeLabel(attempt.grade).toLowerCase()} · ` : '';
+  const roundLabel = !attempt ? '' : attempt.checkpoint ? 'Checkpoint · ' : attempt.placement ? `Placement, ${gradeLabel(attempt.grade).toLowerCase()} · ` : attempt.quickCheck ? 'Quick check · ' : '';
   // Answer sizes: a question's choices share one size, so 4 never towers over -3 or 1/6 beside it.
   const choiceFont = (choices) => {
     if (!choices || !choices.length) return 18;
@@ -1739,7 +1822,9 @@ export default function EduSphereApp() {
   useEffect(() => { if (screen === 'wonder' && readAloud && wonder) speak(wonder.prompt); }, [screen, readAloud, wonder]);
   const spokenVoice = screen === 'wonder-voices' && readAloud && wonder ? (wonder.simple || [])[Math.min(wonderVoiceStep, ((wonder.simple || []).length || 1) - 1)] : null;
   useEffect(() => { if (spokenVoice) speak(`${spokenVoice.voice}. ${spokenVoice.says}`); }, [spokenVoice]);
-  useEffect(() => { if (typeof window !== 'undefined') window.__eduTest = { screen, question: q || null, isReviewQ }; }, [screen, q, isReviewQ]);
+  // The test hook: what screen is up, which question, and a way to open a named module without
+  // hunting for its card, so a browser check can go straight to a lesson.
+  useEffect(() => { if (typeof window !== 'undefined') window.__eduTest = { screen, question: q || null, isReviewQ, openModule: (id) => openModule(id) }; }, [screen, q, isReviewQ]);
   // The learner list can change during a session (a new learner just started), so refresh it whenever a picker screen opens.
   useEffect(() => { if (screen === 'welcome' || screen === 'educator-pick') loadRoster().then(setRoster); }, [screen]);
   // A young learner who was wrong tries again, so the voice must not give the answer away.
@@ -1872,7 +1957,13 @@ export default function EduSphereApp() {
                                 <p style={{ margin: 0, width: '34%', minWidth: 150, textAlign: 'center', alignSelf: 'center', fontSize: 14, fontWeight: 600, color: C.clay }}>This needs a touch screen. An iPad or another large tablet with a stylus is best.</p>
                               </div>
                             ) : (
-                              <div style={{ marginTop: 12 }}><Btn halo={st === 'available'} kind={st === 'mastered' ? 'secondary' : 'primary'} onClick={() => openModule(m.id)} disabled={busy}>{st === 'mastered' ? 'Practice again' : st === 'passed' ? 'Pass it again' : 'Open'}</Btn></div>
+                              <div style={{ marginTop: 12 }}>
+                                <Btn halo={st === 'available'} kind={st === 'mastered' ? 'secondary' : 'primary'} onClick={() => openModule(m.id)} disabled={busy}>{st === 'mastered' ? 'Practice again' : st === 'passed' ? 'Pass it again' : 'Open'}</Btn>
+                                {/* One try per module: five questions, no lesson, and a pass places the module without the star. */}
+                                {st === 'available' && !(record && record.preview) && !(educator && educator.quickChecks === false) && quickCheckAllowed(record.events, m.id) && (
+                                  <div style={{ marginTop: 8 }}><button type="button" style={linkBtn} onClick={() => startQuickCheck(m.id)} disabled={busy}>I already know this</button></div>
+                                )}
+                              </div>
                             )}
                           </div>
                         ); return null; })()}
@@ -1962,13 +2053,20 @@ export default function EduSphereApp() {
           <svg viewBox="0 0 24 24" width="34" height="34" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke={C.green} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" /></svg>
         </button>
         <div key={lessonStep} className="edu-rise" style={{ ...card, textAlign: 'center', padding: '20px 18px' }}>
-          <Picture visual={step.show} animate animKey={lessonStep} />
+          <Picture visual={step.show} animate animKey={`${lessonStep}-${replays}-${paceNudge}`} nudge={paceNudge} />
+          {step.show && step.show.kind === 'trace' && (
+            <div style={{ display: 'flex', justifyContent: 'center', gap: 10, margin: '2px 0 8px' }}>
+              {[['Slower', -1], ['Faster', 1]].map(([label, dir]) => { const base = step.show.pace === 'quick' ? 2 : 1; const at = base + paceNudge; const off = (dir < 0 && at <= 0) || (dir > 0 && at >= 2);
+                return <button key={label} type="button" disabled={off} onClick={() => { const next = Math.max(-base, Math.min(2 - base, paceNudge + dir)); setPaceNudge(next); setSpeechNudge(next); speak(line); }} aria-label={`${label} drawing and voice`}
+                  style={{ fontFamily: FONT, fontSize: 14, fontWeight: 600, padding: '6px 12px', borderRadius: 999, border: `2px solid ${off ? C.line : C.green}`, background: C.surface, color: off ? C.muted : C.green, cursor: off ? 'default' : 'pointer' }}>{label}</button>; })}
+            </div>
+          )}
           <p style={{ fontSize: 22, lineHeight: 1.5, margin: '18px 0 0' }}>{line}</p>
         </div>
         {/* One tap repeats the line, in case they missed it. */}
         <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 14 }}>
           {canSpeak() ? (
-            <button type="button" onClick={() => speak(line)} aria-label="Say it again" className="edu-press edu-sway"
+            <button type="button" onClick={() => { speak(line); setReplays((n) => n + 1); }} aria-label="Say it again" className="edu-press edu-sway"
               style={{ width: 66, height: 66, borderRadius: 999, border: `3px solid ${C.gold}`, background: C.goldSoft, cursor: 'pointer', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <svg viewBox="0 0 24 24" width="34" height="34" aria-hidden="true">
                 <path d="M4 9.5h3.5L12 5.5v13L7.5 14.5H4z" fill={C.gold} />
@@ -2054,7 +2152,7 @@ export default function EduSphereApp() {
                 return (
                   <button key={c} type="button" data-choice={c} onClick={() => { if (!checked) { if (readAloud) playTap(); setGiven(c); } }}
                     style={{ opacity: ruledOut && !checked ? 0.45 : 1, fontFamily: FONT, fontSize: choiceFont(q.choices), textAlign: 'center', padding: '12px 10px', minWidth: 0, overflowWrap: 'anywhere', borderRadius: 10, background: bg, border: `2px solid ${border}`, color: C.ink, cursor: checked ? 'default' : 'pointer', minHeight: 48 }}>
-                    {/^dots:(\d+)$/.test(c) ? <DotGroup count={Number(c.split(':')[1])} size={28} /> : /^shape:/.test(c) ? <ShapePic name={c.slice(6)} size={64} /> : /^tens:(\d+)$/.test(c) ? <TensGroup count={Number(c.split(':')[1])} size={14} /> : /^bar:(\d+)$/.test(c) ? <BarPic length={Number(c.split(':')[1])} size={18} /> : /^tower:(\d+)$/.test(c) ? <BarPic length={Number(c.split(':')[1])} vertical size={14} /> : /^solid:/.test(c) ? <SolidPic name={c.slice(6)} size={64} /> : /^icon:/.test(c) ? <IconPic name={c.slice(5)} size={64} /> : /^swatch:/.test(c) ? <Swatch colour={c.slice(7)} size={64} /> : /^item:/.test(c) ? <Item spec={c.slice(5)} size={64} /> : /^clock:/.test(c) ? <ClockPic hour={Number(c.split(':')[1])} minute={Number(c.split(':')[2])} size={80} /> : /^array:/.test(c) ? <ArrayPic rows={Number(c.slice(6).split('x')[0])} cols={Number(c.slice(6).split('x')[1])} size={12} /> : c}
+                    {/^dots:(\d+)$/.test(c) ? <DotGroup count={Number(c.split(':')[1])} size={28} /> : /^shape:/.test(c) ? <ShapePic name={c.split(':')[1]} size={c.endsWith(':big') ? 88 : c.endsWith(':small') ? 34 : c.endsWith(':medium') ? 58 : 64} /> : /^tens:(\d+)$/.test(c) ? <TensGroup count={Number(c.split(':')[1])} size={14} /> : /^bar:(\d+)$/.test(c) ? <BarPic length={Number(c.split(':')[1])} size={18} /> : /^tower:(\d+)$/.test(c) ? <BarPic length={Number(c.split(':')[1])} vertical size={14} /> : /^solid:/.test(c) ? <SolidPic name={c.slice(6)} size={64} /> : /^icon:/.test(c) ? <IconPic name={c.slice(5)} size={64} /> : /^swatch:/.test(c) ? <Swatch colour={c.slice(7)} size={64} /> : /^item:/.test(c) ? <Item spec={c.slice(5)} size={64} /> : /^clock:/.test(c) ? <ClockPic hour={Number(c.split(':')[1])} minute={Number(c.split(':')[2])} size={80} /> : /^array:/.test(c) ? <ArrayPic rows={Number(c.slice(6).split('x')[0])} cols={Number(c.slice(6).split('x')[1])} size={12} /> : c}
                   </button>
                 );
               })}
@@ -2098,6 +2196,13 @@ export default function EduSphereApp() {
           ) : q.type === 'trace' ? (
             <div>
               {!hasTouchScreen() && <p style={{ margin: '0 0 8px', fontSize: 13, color: C.clay, textAlign: 'center', fontWeight: 600 }}>This needs a touch screen. An iPad or another large tablet with a stylus is best.</p>}
+              {/* Two misses on the same trace, and the stroke draws itself above the pad as a hint. */}
+              {misses >= 2 && !checked && (
+                <div style={{ marginBottom: 12 }}>
+                  <TraceDemo letter={q.answer} animKey={misses} nudge={paceNudge} />
+                  <p style={{ margin: '6px 0 0', fontSize: 16, textAlign: 'center' }}>Watch first. Then trace it.</p>
+                </div>
+              )}
               <TracePad letter={q.answer} paths={tracePaths} disabled={checked} tone={checked ? (wasCorrect ? 'good' : 'bad') : null}
                 onChange={(next) => { setTracePaths(next); setGiven(JSON.stringify(next)); }} />
               {!checked && tracePaths.length > 0 && (
@@ -2151,6 +2256,28 @@ export default function EduSphereApp() {
           <p style={{ fontSize: 16, margin: 0 }}>{String(lastEvent.prompt || '').startsWith('Typed') ? 'Now you just need to give your teacher your printed or sent file and the next module will open after they check it.' : 'Now you just need to give your teacher the paper and the next module will open after they check it.'}</p>
         </div>
         <div style={{ textAlign: 'center' }}><Btn halo onClick={() => setScreen('overview')}>Back to my courses</Btn></div>
+      </div></div>
+    );
+  }
+
+  if (screen === 'quick-result' && quickResult) {
+    const qr = quickResult; const mod = getModule(qr.moduleId);
+    return (
+      <div style={page}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={wrap}>
+        <div style={{ ...card, textAlign: 'center' }}>
+          <h1 style={{ fontSize: 24, margin: '12px 0 6px' }}>{qr.passed ? `You already know ${lowerTitle(mod.title)}` : `Not yet: ${lowerTitle(mod.title)}`}</h1>
+          {qr.passed
+            ? <p style={{ fontSize: 16, margin: '0 0 10px' }}>{qr.right} of {qr.total} right. The module is unlocked without the lesson, and the next one is open.</p>
+            : qr.guessed
+              ? <p style={{ fontSize: 16, margin: '0 0 10px' }}>That was too fast to count. The lesson is the way in from here, and it is a short one.</p>
+              : <p style={{ fontSize: 16, margin: '0 0 10px' }}>{qr.right} of {qr.total} right. Nothing you got wrong counts against you. The lesson is the way in from here.</p>}
+          <p style={{ fontSize: 15, margin: 0, color: C.muted }}>{qr.passed ? 'It is not counted as mastered. The star is still yours to earn, and memory checks will visit it along the way.' : 'The quick check is one try per module. Practice rounds work as usual.'}</p>
+        </div>
+        <div style={{ textAlign: 'center' }}>
+          {qr.passed
+            ? <Btn halo onClick={() => { setQuickResult(null); setScreen('overview'); }}>Back to my courses</Btn>
+            : <Btn halo onClick={() => { setQuickResult(null); openModule(qr.moduleId); }}>Open the lesson</Btn>}
+        </div>
       </div></div>
     );
   }
@@ -2481,46 +2608,53 @@ export default function EduSphereApp() {
         <p style={{ color: C.muted, marginTop: 0, fontSize: 15, textAlign: 'center' }}>
           Every module, matched to {stateCode ? `${stateFor(stateCode).name}'s` : 'the'} standards ({FRAMEWORKS[fw].name}). Print this page for a coverage record.
         </p>
-        {/* One closed dropdown per grade and subject. The list grows by itself as courses are added,
-            because it is read from the curriculum plan rather than written here. */}
-        {plan.map((entry) => {
-          const key = `${entry.grade}-${entry.subject}`;
-          const open = openMapGroups.includes(key);
-          const rows = entry.standards.filter((st) => st.framework === fw);
-          const covered = rows.filter((st) => st.moduleIds.length).length;
-          return (
-            <div key={key} style={{ ...card, padding: 0, overflow: 'hidden' }}>
-              <button type="button" onClick={() => setOpenMapGroups((list) => (list.includes(key) ? list.filter((x) => x !== key) : [...list, key]))} aria-expanded={open}
-                style={{ fontFamily: FONT, width: '100%', textAlign: 'left', background: 'transparent', border: 'none', padding: 16, cursor: 'pointer', color: C.ink, display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10 }}>
-                <span style={{ fontSize: 17, fontWeight: 600 }}>{gradeLabel(entry.grade)} {entry.subject}</span>
-                <span style={{ fontSize: 14, color: covered === rows.length ? C.green : C.muted, whiteSpace: 'nowrap' }}>{covered} of {rows.length} covered {open ? '▴' : '▾'}</span>
-              </button>
-              {/* Rendered whether open or closed, and shown when printing, so a printed map is always complete. */}
-              <div className="edu-collapsible" style={{ display: open ? 'block' : 'none', padding: '0 16px 12px' }}>
-                  <p style={{ margin: '0 0 6px', fontSize: 13, color: C.muted }}>{entry.source}</p>
-                  {rows.map((st) => (
-                    <div key={st.code} style={{ padding: '8px 0', borderTop: `1px solid ${C.line}` }}>
-                      <p style={{ margin: 0, fontSize: 15 }}><strong>{st.code}</strong> {st.text}</p>
-                      <p style={{ margin: '4px 0 0', fontSize: 14, color: st.moduleIds.length ? C.green : C.clay }}>
-                        {st.moduleIds.length ? `Covered by: ${st.moduleIds.map((id) => (getModule(id) ? getModule(id).title : id)).join(', ')}` : 'Not yet covered'}
-                      </p>
-                    </div>
-                  ))}
-              </div>
-            </div>
-          );
-        })}
-        {/* Reading lists: titles and authors per grade, a shelf to pull from. Closed by default like the grades above. */}
-        <details className="edu-collapsible" style={{ ...card, marginTop: 18 }}>
-          <summary style={{ cursor: 'pointer', fontWeight: 600, fontSize: 17 }}>Reading lists by grade</summary>
-          <p style={{ margin: '8px 0 10px', fontSize: 14, color: C.muted }}>A short shelf of well-known books for each grade, by title and author. Nothing from the books is stored here; these are pointers to a library, for you to choose from or ignore.</p>
-          {gradesWithCourses().map((g) => (
-            <div key={g} style={{ borderTop: `1px solid ${C.line}`, padding: '8px 0' }}>
-              <p style={{ margin: '0 0 4px', fontWeight: 600 }}>{gradeLabel(g)}</p>
-              <ul style={{ margin: 0, paddingLeft: 20, fontSize: 15 }}>{readingListFor(g).map((t) => <li key={t}>{t}</li>)}</ul>
-            </div>
+        {/* Grouped by grade (each grade a heading, one light-green dropdown per subject) or by subject.
+            The list grows by itself as courses are added, because it is read from the curriculum plan. */}
+        <div className="edu-no-print" style={{ display: 'flex', justifyContent: 'center', gap: 8, margin: '4px 0 14px' }}>
+          {[['grade', 'By grade'], ['subject', 'By subject']].map(([mode, label]) => (
+            <button key={mode} type="button" onClick={() => setMapOrder(mode)} aria-pressed={mapOrder === mode}
+              style={{ fontFamily: FONT, fontSize: 15, fontWeight: 600, padding: '8px 16px', borderRadius: 999, cursor: 'pointer', border: `2px solid ${C.green}`, background: mapOrder === mode ? C.green : C.surface, color: mapOrder === mode ? '#fff' : C.green }}>{label}</button>
           ))}
-        </details>
+        </div>
+        {(() => {
+          const subjectOrder = sortSubjects(plan.map((entry) => entry.subject));
+          const sorted = [...plan].sort((a, b) => GRADES.indexOf(a.grade) - GRADES.indexOf(b.grade) || subjectOrder.indexOf(a.subject) - subjectOrder.indexOf(b.subject));
+          const groups = mapOrder === 'grade'
+            ? GRADES.filter((g) => sorted.some((e) => e.grade === g)).map((g) => ({ key: g, title: gradeLabel(g), entries: sorted.filter((e) => e.grade === g) }))
+            : subjectOrder.map((sub) => ({ key: sub, title: sub, entries: sorted.filter((e) => e.subject === sub) }));
+          return groups.map((group) => (
+            <div key={group.key} style={{ marginBottom: 18 }}>
+              <h2 style={{ fontSize: 19, margin: '0 0 8px', color: C.green, textAlign: 'center' }}>{group.title}</h2>
+              {group.entries.map((entry) => {
+                const key = `${entry.grade}-${entry.subject}`;
+                const open = openMapGroups.includes(key);
+                const rows = entry.standards.filter((st) => st.framework === fw);
+                const covered = rows.filter((st) => st.moduleIds.length).length;
+                return (
+                  <div key={key} style={{ ...card, padding: 0, overflow: 'hidden', marginBottom: 10 }}>
+                    <button type="button" onClick={() => setOpenMapGroups((list) => (list.includes(key) ? list.filter((x) => x !== key) : [...list, key]))} aria-expanded={open} aria-label={`${gradeLabel(entry.grade)} ${entry.subject}`}
+                      style={{ fontFamily: FONT, width: '100%', textAlign: 'left', background: C.greenSoft, border: 'none', padding: 16, cursor: 'pointer', color: C.ink, display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10 }}>
+                      <span style={{ fontSize: 17, fontWeight: 600 }}>{mapOrder === 'grade' ? entry.subject : gradeLabel(entry.grade)}</span>
+                      <span style={{ fontSize: 14, color: covered === rows.length ? C.green : entry.status === 'ready' ? C.clay : C.muted, whiteSpace: 'nowrap' }}>{covered} of {rows.length} covered {open ? '▴' : '▾'}</span>
+                    </button>
+                    {/* Rendered whether open or closed, and shown when printing, so a printed map is always complete. The body stays white. */}
+                    <div className="edu-collapsible" style={{ display: open ? 'block' : 'none', padding: '10px 16px 12px', background: C.surface }}>
+                      <p style={{ margin: '0 0 6px', fontSize: 13, color: C.muted }}>{entry.source}</p>
+                      {rows.map((st) => (
+                        <div key={st.code} style={{ padding: '8px 0', borderTop: `1px solid ${C.line}` }}>
+                          <p style={{ margin: 0, fontSize: 15 }}><strong>{st.code}</strong> {st.text}</p>
+                          <p style={{ margin: '4px 0 0', fontSize: 14, color: st.moduleIds.length ? C.green : C.clay }}>
+                            {st.moduleIds.length ? `Covered by: ${st.moduleIds.map((id) => (getModule(id) ? getModule(id).title : id)).join(', ')}` : 'Not yet covered'}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          ));
+        })()}
         <div className="edu-no-print" style={{ textAlign: 'center', marginTop: 8 }}>
           <Btn onClick={() => { if (typeof window !== 'undefined' && window.print) window.print(); }}>Print standards map</Btn>
         </div>
@@ -2853,6 +2987,8 @@ export default function EduSphereApp() {
       const ids = (getCourse(courseId) || { modules: [] }).modules.map((m) => m.id);
       return CURRICULUM.flatMap((entry) => entry.standards.filter((st) => st.framework === fw && st.moduleIds.some((id) => ids.includes(id))).map((st) => st.code));
     };
+    // The codes one mastered module satisfies, in the state's framework, for the line under its title.
+    const codesForModule = (moduleId) => { const fw = frameworkForState(stateCode || 'CA'); return [...new Set(CURRICULUM.flatMap((entry) => entry.standards.filter((st) => st.framework === fw && st.moduleIds.includes(moduleId)).map((st) => st.code)))]; };
     const section = (title, list) => (
       <div style={{ marginBottom: 18 }}>
         <h2 style={{ fontSize: 18, margin: '0 0 10px', textAlign: 'center' }}>{title}</h2>
@@ -2876,9 +3012,9 @@ export default function EduSphereApp() {
               <tbody>
                 {c.modules.map((m) => (
                   <tr key={m.id} style={{ borderTop: `1px solid ${C.line}` }}>
-                    <td style={{ padding: '6px 0' }}>{m.title}</td>
+                    <td style={{ padding: '6px 0' }}>{m.title}{m.mastered && codesForModule(m.id).length > 0 && <span style={{ display: 'block', fontSize: 12, color: C.muted }}>Satisfies {codesForModule(m.id).join(', ')}</span>}</td>
                     <td style={{ padding: '6px 0 6px 12px', textAlign: 'right', color: C.muted }}>
-                      {m.mastered ? `Mastered ${fmtDate(m.masteredAt)}` : m.passed && m.firstPassedAt ? `Passed once ${fmtDate(m.firstPassedAt)}` : m.placed ? 'Placed past' : m.pendingWriting ? 'Needs your check' : m.attempts ? 'In progress' : 'Not started'}
+                      {m.mastered ? `Mastered ${fmtDate(m.masteredAt)}` : m.passed && m.firstPassedAt ? `Passed once ${fmtDate(m.firstPassedAt)}` : m.placed ? (m.quickCheck && m.quickCheck.passed ? 'Skipped by quick check' : 'Placed past') : m.pendingWriting ? 'Needs your check' : m.attempts ? 'In progress' : 'Not started'}
                     </td>
                   </tr>
                 ))}
@@ -2916,6 +3052,7 @@ export default function EduSphereApp() {
 
         <div className="edu-no-print" style={{ marginTop: 16 }}>
           <Btn full onClick={() => { if (typeof window !== 'undefined' && window.print) window.print(); }}>Print or save as PDF</Btn>
+          <p style={{ margin: '10px 0 0', fontSize: 13, color: C.muted, textAlign: 'center' }}>Placed past means the placement check cleared it; skipped by quick check means five questions were passed without the lesson. Neither counts as mastered, and both are still to be earned.</p>
         </div>
       </div></div>
     );
@@ -3342,6 +3479,16 @@ export default function EduSphereApp() {
         })()}
         <RemembranceCard educator />
         <div style={{ ...card, marginTop: 22, textAlign: 'center' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12, margin: '0 0 16px', padding: '12px 14px', borderRadius: 10, background: C.greenSoft }}>
+            <div>
+              <p style={{ margin: 0, fontWeight: 600 }}>Quick checks</p>
+              <p style={{ margin: '2px 0 0', fontSize: 14, color: C.muted }}>A student may skip a module by passing five questions on it. Placed, not mastered; memory checks still visit it.</p>
+            </div>
+            <button type="button" role="switch" aria-checked={!(educator && educator.quickChecks === false)} onClick={async () => { const next = { ...educator, quickChecks: educator.quickChecks === false }; await saveEducator(next); setEducator(next); }}
+              style={{ fontFamily: FONT, fontSize: 15, fontWeight: 600, padding: '8px 14px', borderRadius: 999, border: `2px solid ${C.green}`, cursor: 'pointer', whiteSpace: 'nowrap', background: educator && educator.quickChecks === false ? C.surface : C.green, color: educator && educator.quickChecks === false ? C.green : '#fff' }}>
+              {educator && educator.quickChecks === false ? 'Off' : 'On'}
+            </button>
+          </div>
           <p style={{ margin: '0 0 6px', fontWeight: 600 }}>Walk through as a student</p>
           <p style={{ margin: '0 0 10px', fontSize: 15 }}>See exactly what a student sees. Every module is open, every question can be skipped, and nothing is recorded.</p>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, justifyContent: 'center' }}>
@@ -3405,10 +3552,25 @@ export default function EduSphereApp() {
       <div style={page}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={wrap}>
         <button type="button" onClick={() => setScreen('educator-pick')} style={linkBtn}>Back to Classroom</button>
         <h1 style={{ fontSize: 24, margin: '12px 0 16px', textAlign: 'center' }}>Who needs help</h1>
+        <p className="edu-print-only" style={{ margin: '0 0 12px', textAlign: 'center', fontSize: 14, color: C.muted }}>{educator && educator.deviceName ? `${educator.deviceName}, ` : ''}{new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}. Ranked most in need first.</p>
         <div style={{ ...card, background: C.greenSoft, borderColor: C.greenSoft, marginBottom: 24 }}>
           {classSummary(classRows).split('\n').map((line, i) => <p key={i} style={{ margin: i === 0 ? '0 0 10px' : 0, fontSize: 16, lineHeight: 1.6, textAlign: 'center', fontWeight: i === 0 ? 400 : 700 }}>{line}</p>)}
         </div>
-        {classRows.map((r) => {
+        {/* Filters: everyone, only students flagged, or only students who missed a quick check. */}
+        <div className="edu-no-print" style={{ display: 'flex', justifyContent: 'center', gap: 8, flexWrap: 'wrap', margin: '0 0 16px' }}>
+          {[['all', 'Everyone'], ['flagged', 'Needs a look'], ['quick', 'Missed a quick check']].map(([key, label]) => (
+            <button key={key} type="button" onClick={() => setClassFilter(key)} aria-pressed={classFilter === key}
+              style={{ fontFamily: FONT, fontSize: 15, fontWeight: 600, padding: '8px 14px', borderRadius: 999, cursor: 'pointer', border: `2px solid ${C.green}`, background: classFilter === key ? C.green : C.surface, color: classFilter === key ? '#fff' : C.green }}>{label}{key === 'quick' && classRows.some((r) => r.missedQuickChecks) ? ` (${classRows.filter((r) => r.missedQuickChecks).length})` : ''}</button>
+          ))}
+        </div>
+        <div className="edu-no-print" style={{ margin: '0 0 14px' }}>
+          <input value={noteSearch} onChange={(e) => setNoteSearch(e.target.value)} aria-label="Search notes" placeholder="Search your notes, for example: shy"
+            style={{ width: '100%', boxSizing: 'border-box', fontFamily: FONT, fontSize: 15, padding: '10px 12px', borderRadius: 10, border: `1px solid ${C.line}` }} />
+        </div>
+        {classRows.filter((r) => (classFilter === 'all' || (classFilter === 'flagged' ? r.band !== 'on track' : r.missedQuickChecks > 0)) && (!noteSearch.trim() || r.notesText.toLowerCase().includes(noteSearch.trim().toLowerCase()))).length === 0 && (
+          <p style={{ textAlign: 'center', color: C.muted, fontSize: 15 }}>{noteSearch.trim() ? 'No note says that.' : classFilter === 'quick' ? 'Nobody has missed a quick check.' : 'Nobody needs a look right now.'}</p>
+        )}
+        {classRows.filter((r) => (classFilter === 'all' || (classFilter === 'flagged' ? r.band !== 'on track' : r.missedQuickChecks > 0)) && (!noteSearch.trim() || r.notesText.toLowerCase().includes(noteSearch.trim().toLowerCase()))).map((r) => {
           const st = findStudent(roster, r.id);
           return (
             <div key={r.id} style={{ ...card, borderColor: r.band === 'needs help now' ? C.clay : C.line }}>
@@ -3425,6 +3587,8 @@ export default function EduSphereApp() {
                 {' '}{r.total ? `${r.mastered} of ${r.total} assigned modules mastered.` : 'No courses assigned.'}
                 {r.next ? ` Next up: ${r.next}.` : ''}
               </p>
+              {r.practice && <p style={{ margin: '6px 0 0', fontSize: 14, color: C.muted }}>{r.practice}</p>}
+              {r.note && <p style={{ margin: '6px 0 0', fontSize: 14, fontStyle: 'italic' }}>Your note: {noteSearch.trim() && !r.note.toLowerCase().includes(noteSearch.trim().toLowerCase()) ? (r.notesAll.find((n) => n.toLowerCase().includes(noteSearch.trim().toLowerCase())) || r.note) : r.note}</p>}
               <div style={{ marginTop: 8, textAlign: 'right' }}>
                 <button type="button" style={linkBtn} onClick={async () => {
                   setBusy(true);
@@ -3437,6 +3601,10 @@ export default function EduSphereApp() {
           );
         })}
         <p style={{ fontSize: 13, color: C.muted, textAlign: 'center', padding: '0 24px' }}>Order is chosen by student metrics. Stuck on a module? Frequent loop backs? Guessing or low confidence? To the top for you.<br /><br />Students on track are ordered by how many tries it took them to get there.</p>
+        <div className="edu-no-print" style={{ textAlign: 'center', marginTop: 8 }}>
+          <Btn onClick={() => { if (typeof window !== 'undefined' && window.print) window.print(); }}>Print this list</Btn>
+          <p style={{ margin: '8px 0 0', fontSize: 13, color: C.muted }}>Prints the students shown, with their reasons and practice so far.</p>
+        </div>
       </div></div>
     );
   }
@@ -3555,6 +3723,8 @@ export default function EduSphereApp() {
 
   // ---------- One student's report: summary, what's assigned, course switches, progress, resets ----------
   if (screen === 'educator-report' && educatorRecord) {
+    // The codes a mastered module satisfies, in the state's framework, the same line the transcript prints.
+    const codesForModule = (moduleId) => { const fw = frameworkForState(stateCode || 'CA'); return [...new Set(CURRICULUM.flatMap((entry) => entry.standards.filter((st) => st.framework === fw && st.moduleIds.includes(moduleId)).map((st) => st.code)))]; };
     const student = findStudent(roster, educatorRecord.name);
     const shownName = student ? student.label : educatorRecord.name;
     const rep = buildReport(shownName, educatorRecord.events);
@@ -3581,7 +3751,24 @@ export default function EduSphereApp() {
         <button type="button" onClick={() => setScreen('educator-pick')} style={linkBtn}>Back to Classroom</button>
         <h1 style={{ fontSize: 26, margin: '10px 0 2px', textAlign: 'center' }}>{keepTogether(shownName)}</h1>
         <p style={{ color: C.muted, marginTop: 0, fontSize: 14, textAlign: 'center' }}>Report generated {fmtDate(rep.generatedAt)}</p>
+        <div className="edu-no-print" style={{ textAlign: 'center', margin: '0 0 12px' }}><Btn kind="secondary" onClick={() => { if (typeof window !== 'undefined' && window.print) window.print(); }}>Print this report</Btn></div>
 
+        {/* Teacher notes: written here, kept on the student's log, so they ride along in every backup. */}
+        <div style={{ ...card, marginBottom: 14 }}>
+          <p style={{ margin: '0 0 6px', fontWeight: 600 }}>Notes</p>
+          {rep.notes.length === 0 && <p style={{ margin: '0 0 8px', fontSize: 14, color: C.muted }}>Nothing yet. A note here stays with the student, in every backup.</p>}
+          {rep.notes.map((n) => (
+            <div key={n.id} style={{ borderTop: `1px solid ${C.line}`, padding: '8px 0' }}>
+              <p style={{ margin: 0, fontSize: 15, whiteSpace: 'pre-wrap' }}>{n.text}</p>
+              <p style={{ margin: '4px 0 0', fontSize: 13, color: C.muted }}>{fmtDate(n.at)} <button type="button" className="edu-no-print" style={{ ...linkBtn, fontSize: 13, marginLeft: 8 }} onClick={() => addToStudent(makeNoteRemovedEvent(n.id, new Date().toISOString()))}>Remove</button></p>
+            </div>
+          ))}
+          <div className="edu-no-print" style={{ display: 'flex', gap: 8, alignItems: 'flex-start', marginTop: 8 }}>
+            <textarea value={noteInput} onChange={(e) => setNoteInput(e.target.value)} aria-label="Teacher note" placeholder="Write a note about this student" rows={2}
+              style={{ flex: 1, fontFamily: FONT, fontSize: 15, padding: 10, borderRadius: 10, border: `1px solid ${C.line}`, resize: 'vertical' }} />
+            <Btn kind="secondary" disabled={!noteInput.trim()} onClick={async () => { await addToStudent(makeNoteEvent(noteInput, new Date().toISOString())); setNoteInput(''); }}>Save note</Btn>
+          </div>
+        </div>
         {/* The summary a parent or principal can read without decoding anything: a list, then sentences */}
         {(() => {
           const parts = summaryParts(rep);
@@ -3596,6 +3783,13 @@ export default function EduSphereApp() {
                   <p style={{ margin: '0 0 6px', fontSize: 16, lineHeight: 1.6 }}>{parts.lead}</p>
                   {parts.items.length > 0 && <ul style={{ margin: '0 0 10px', padding: '10px 12px 10px 32px', listStyleType: 'disc', fontSize: 15, lineHeight: 1.7, borderRadius: 10, background: 'linear-gradient(135deg, #EAF2EC 0%, #F5F9F5 100%)', border: '1px solid #DCE8DF' }}>{parts.items.map((it) => <li key={it} style={{ display: 'list-item' }}>{it}</li>)}</ul>}
                   {parts.rest && <p style={{ margin: 0, fontSize: 16, lineHeight: 1.6 }}>{parts.rest}</p>}
+                  {parts.tried && parts.tried.length > 0 && (
+                    <p style={{ margin: '8px 0 0', fontSize: 16, lineHeight: 1.6 }}>
+                      Tried but not passed yet: {parts.tried.map((t, i) => (
+                        <span key={t.id}>{i > 0 ? '; ' : ''}<button type="button" style={{ ...linkBtn, fontSize: 16 }} onClick={() => setStoryModule(t.id)}>{t.title}</button> ({t.detail})</span>
+                      ))}.
+                    </p>
+                  )}
                 </div>
               )}
             </div>
@@ -3699,13 +3893,14 @@ export default function EduSphereApp() {
               </button>
               <div className="edu-collapsible" style={{ padding: '0 16px 14px', display: open ? 'block' : 'none' }}>
                   {rows.map((m) => {
-                    const state = m.mastered ? 'Mastered' : m.passed && m.firstPassedAt ? 'Passed once' : m.placed ? 'Placed past' : m.pendingWriting ? 'Needs the educator\'s check' : m.attempts ? 'In progress' : 'Not started';
+                    const state = m.mastered ? 'Mastered' : m.passed && m.firstPassedAt ? 'Passed once' : m.placed ? (m.quickCheck && m.quickCheck.passed ? 'Skipped by quick check' : 'Placed past') : m.pendingWriting ? 'Needs the educator\'s check' : m.attempts ? 'In progress' : 'Not started';
                     return (
                       <div key={m.id} style={{ borderTop: `1px solid ${C.line}`, paddingTop: 10, marginTop: 10 }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10 }}>
                           <span style={{ fontSize: 16, fontWeight: 600 }}>{m.title}</span>
                           <Tag tone={m.mastered ? 'mastered' : m.attempts ? 'review' : 'locked'}>{state}</Tag>
                         </div>
+                        {m.mastered && codesForModule(m.id).length > 0 && <p style={{ margin: '4px 0 0', fontSize: 12, color: C.muted }}>Satisfies {codesForModule(m.id).join(', ')}</p>}
                         {!m.mastered && !m.passed && !m.attempts && moduleStatuses(deriveProgress(educatorRecord.events), enabled).find((x) => x.id === m.id) && moduleStatuses(deriveProgress(educatorRecord.events), enabled).find((x) => x.id === m.id).status === 'locked' && (
                           <p style={{ margin: '6px 0 0', fontSize: 13 }}>Locked by its prerequisites. <button type="button" onClick={async () => { const next = { ...educatorRecord, events: [...educatorRecord.events, makeUnlockEvent(m.id, new Date().toISOString())] }; await saveRecord(next); setEducatorRecord(next); }} style={{ ...linkBtn, fontSize: 13, padding: 0 }}>Unlock it anyway</button></p>
                         )}

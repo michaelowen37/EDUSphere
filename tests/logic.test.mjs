@@ -440,6 +440,37 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
     if (genId === 'e12-percent-of-income') { const [i, pct] = q.story.match(/\d+/g).map(Number); if (Number(q.answer) !== i * pct / 100) problems.push('percent of income wrong'); }
     if (genId === 'e12-rule-of-72') { const rate = Number(q.story.match(/\d+/)[0]); if (Number(q.answer) !== 72 / rate) problems.push('rule of 72 wrong'); }
     if (genId === 'e12-card-interest') { const [apr, bal] = q.story.match(/\d+/g).map(Number); if (Number(q.answer) !== bal * apr / 1200) problems.push('card interest wrong'); }
+    // College history and grade 2 maps, re-derived from the story
+    if (genId === 'hc-which-century') { const y = Number(q.story.match(/\d+/)[0]); if (Number(q.answer) !== Math.floor((y - 1) / 100) + 1) problems.push('century wrong'); }
+    if (genId === 'hc-years-between') { const [a, b] = q.story.match(/\d+/g).map(Number); const bc = /BC/.test(q.story); if (Number(q.answer) !== (bc ? a + b - 1 : b - a)) problems.push('years between wrong'); }
+    if (genId === 'hc-earlier') { const [a, b] = q.story.match(/\d+/g).map(Number); if (q.answer !== `${Math.max(a, b)} BC`) problems.push('earlier wrong'); }
+    if (genId === 'hc-which-decade') { const y = Number(q.story.match(/\d+/)[0]); if (Number(q.answer) !== Math.floor(y / 10) * 10) problems.push('decade wrong'); }
+    if (genId === 'c2-blocks-walked') { const [a, b] = q.story.match(/\d+/g).map(Number); if (Number(q.answer) !== a + b) problems.push('blocks wrong'); }
+    if (genId === 'ck-more-votes') { const [a, b] = q.choices.map((c) => Number(c.split(':')[1])); if (q.answer !== `dots:${Math.max(a, b)}` || a === b) problems.push('more votes wrong'); }
+    // Kindergarten to grade 3 civics, re-derived from the story
+    if (genId === 'c2-vote-winner') { const [a, b] = q.story.match(/\d+/g).map(Number); if (q.answer !== (a > b ? 'Pizza' : 'Tacos')) problems.push('vote winner wrong'); }
+    if (genId === 'c2-vote-margin' || genId === 'c3-vote-margin') { const [a, b] = q.story.match(/\d+/g).map(Number); if (Number(q.answer) !== Math.abs(a - b)) problems.push('vote margin wrong'); }
+    if (genId === 'c2-money-left' || genId === 'c3-money-left') { const [have, spend] = q.story.match(/\d+/g).map(Number); if (Number(q.answer) !== have - spend) problems.push('money left wrong'); }
+    if (genId === 'c3-can-afford') { const [have, a, b] = q.story.match(/\d+/g).map(Number); if (q.answer !== (a + b <= have ? 'Yes' : 'No')) problems.push('afford wrong'); }
+    if (genId === 'c3-vote-winner') { const nums = q.story.match(/\d+/g).map(Number); const total = nums[0]; const zoo = q.story.indexOf('zoo') < q.story.indexOf('museum') ? nums[1] : nums[2]; if (!(zoo > total / 2)) problems.push('zoo must hold the majority'); }
+    if (genId === 'c2-earlier-year') { const [a, b] = q.choices.map(Number); if (Number(q.answer) !== Math.min(a, b)) problems.push('earlier year wrong'); }
+    if (genId === 'c1-count-coins') { const n = ['Two', 'Three', 'Four', 'Five'].indexOf(q.story.split(' ')[0]) + 2; const cents = /dime/.test(q.story) ? 10 : /nickel/.test(q.story) ? 5 : 1; if (Number(q.answer) !== n * cents) problems.push('coins wrong'); }
+    // Explanations read cleanly too: no sentence runs past 32 words (the second run-on check).
+    for (const sent of String(q.explain || '').replace(/\[\[|\]\]|\*\*/g, '').split(/(?<=[.!?])\s+|\n/)) { if (sent.trim().split(/\s+/).filter(Boolean).length > 32) problems.push(`explanation sentence over 32 words: ${sent.trim().slice(0, 40)}`); }
+    // Science facts carry a story after the answer (the story rule, applied centrally)
+    if (L.SCIENCE_WHY_GENERATORS.includes(genId) && !q.explain.includes('\n')) problems.push('science fact has no story');
+    // Grades 6, 7 and 9 social studies, re-derived from the story
+    if (genId === 'wc6-hemisphere') { const [, ns, ew] = q.story.match(/degrees ([NS]), \d+ degrees ([EW])/); if (q.answer !== `${ns === 'N' ? 'Northern' : 'Southern'} and ${ew === 'E' ? 'Eastern' : 'Western'}`) problems.push('hemisphere wrong'); }
+    if (genId === 'wc6-gdp-per-person') { const [gdp, people] = q.story.match(/\d+/g).map(Number); if (Number(q.answer) !== gdp * 1000 / people) problems.push('gdp per person wrong'); }
+    if (genId === 'wc6-density' || genId === 'wg9-density') { const [people, area] = q.story.match(/\d+/g).map(Number); if (Number(q.answer) !== people / area) problems.push('density wrong'); }
+    if (genId === 'wc6-more-crowded') { const [a, b] = q.story.match(/\d+/g).map(Number); if (q.answer !== (a > b ? 'Town A' : 'Town B')) problems.push('crowded wrong'); }
+    if (genId === 'tx7-herd-math') { const [head, price] = q.story.match(/\d+/g).map(Number); if (Number(q.answer) !== head * price) problems.push('herd wrong'); }
+    if (genId === 'wg9-lapse') { const [base, m] = q.story.match(/\d+/g).map(Number); if (Number(q.answer) !== base - 6 * (m / 1000)) problems.push('lapse wrong'); }
+    if (genId === 'wg9-map-scale') { const [, per, cm] = q.story.match(/1 centimeter stands for (\d+) kilometers. Two towns are (\d+)/).map(Number); if (Number(q.answer) !== per * cm) problems.push('scale wrong'); }
+    if (genId === 'wg9-time-zones') { const [a, b] = q.story.match(/\d+/g).map(Number); if (Number(q.answer) !== (b - a) / 15) problems.push('time zone wrong'); }
+    if (genId === 'wg9-natural-increase') { const [births, deaths] = q.story.match(/\d+/g).map(Number); if (Number(q.answer) !== births - deaths) problems.push('increase wrong'); }
+    if (genId === 'wg9-urban-share') { const [total, urban] = q.story.match(/\d+/g).map(Number); if (Number(q.answer) !== urban / total * 100) problems.push('urban share wrong'); }
+    if (genId === 'wg9-trade-balance') { const [exp, imp] = q.story.match(/\d+/g).map(Number); if (Number(q.answer) !== exp - imp) problems.push('trade balance wrong'); }
     // Science, re-derived from the fixed lists
     if (genId === 's6-density') { const [m, v] = q.story.match(/\d+/g).map(Number); if (Number(q.answer.match(/\d+/)[0]) * v !== m) problems.push('density wrong'); }
     if (genId === 's6-float-or-sink') { const d = Number(q.story.match(/about ([\d.]+)/)[1]); if (q.answer !== (d < 1 ? 'Floats' : 'Sinks')) problems.push('float wrong'); }
@@ -725,7 +756,7 @@ ok('reset: history kept, but nothing counts as mastered afterwards', events.leng
   ok('approve all approves everything not removed', L.approveAllWonder(L.emptyWonderReview()).approved.length === L.WONDER.length);
   ok('approve all leaves removed questions removed', L.approveAllWonder(hiddenState).approved.includes('w-one-thing') === false);
   ok('un-approve all sends everything back to awaiting review and keeps removals', L.unapproveAllWonder(allApproved).approved.length === 0 && L.unapproveAllWonder(hiddenState).hidden.includes('w-one-thing'));
-  { const done = ['colours', 'same-and-different', 'patterns', 'count-to-3', 'first-strokes', 'connect-the-dots'].map((id, i) => ({ type: 'attempt_completed', at: `u${i}`, startedAt: 'u', moduleId: id, seed: 1, core: [], review: null, coreCorrect: 5, coreTotal: 5 }));
+  { const done = ['colours', 'same-and-different', 'patterns', 'count-to-3', 'first-strokes', 'connect-the-dots', 'draw-the-shapes', 'taking-turns', 'big-bigger-biggest', 'helpers-all-around'].map((id, i) => ({ type: 'attempt_completed', at: `u${i}`, startedAt: 'u', moduleId: id, seed: 1, core: [], review: null, coreCorrect: 5, coreTotal: 5 }));
     ok('finishing a course unlocks the next course up in that subject', JSON.stringify(L.coursesToUnlock([L.makeCoursesEnabledEvent(['first-steps-pk'], 't'), ...done])) === '["counting-k"]');
     ok('nothing unlocks while a course is unfinished', L.coursesToUnlock([L.makeCoursesEnabledEvent(['first-steps-pk'], 't'), ...done.slice(0, 2)]).length === 0); }
   // The cadence: one reflection after every two mastered modules, rotating through the pool
@@ -771,7 +802,7 @@ ok('reset: history kept, but nothing counts as mastered afterwards', events.leng
   ok('grade labels read plainly', L.gradeLabel('K') === 'Kindergarten' && L.gradeLabel('3') === 'Grade 3');
   ok('only grades that have courses are offered, in order', JSON.stringify(L.gradesWithCourses()) === '["PK3","PK4","K","1","2","3","4","5","6","7","8","9","10","11","12","C"]');
   const k = L.subjectsForGrade('K');
-  ok('kindergarten groups into Math, Reading and Science', k.length === 3 && k[0].subject === 'Math' && k[1].subject === 'Reading' && k[2].subject === 'Science');
+  ok('kindergarten groups into Math, Reading, Science and History, in that order', k.length === 4 && k[0].subject === 'Math' && k[1].subject === 'Reading' && k[2].subject === 'Science' && k[3].subject === 'History');
   ok('every grade now has courses', L.subjectsForGrade('PK3').length === 2);
   ok('science runs from kindergarten to grade 12', ['K', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'].every((g) => L.subjectsForGrade(g).some((x) => x.subject === 'Science')));
   ok('pre-K 3 is never a starter; a new early-years student begins at pre-K 4', L.recommendedCourseIds([L.makeCoursesEnabledEvent([], 't')], 'early').every((id) => L.getCourse(id).grade === 'PK4'));
@@ -791,6 +822,15 @@ ok('reset: history kept, but nothing counts as mastered afterwards', events.leng
   ok('renaming keeps the id, so progress cannot be lost', L.renameStudent(r, 'S-1042', 'Sam R.').roster.students[0].id === 's_1042' && L.renameStudent(r, 'S-1042', 'Sam R.').roster.students[0].label === 'Sam R.');
   ok('a blank name is refused', L.renameStudent(r, 'S-1042', ' ').error !== null);
   ok('a name of thirty characters fits', L.renameStudent(r, 'S-1042', 'Very Very Long Name (Grade 3)!').error === null && L.NAME_MAX === 30);
+  ok('pre-K 3 has the two magic words as a module', L.getModule('please-and-thank-you') && L.generateQuestion('pk3-magic-word', 3).choices.length === 2);
+  // Grade 7 carries every one of the TEKS 7.1B significant dates somewhere in its questions.
+  { const years = new Set(); for (const m of L.getCourse('history-7').modules) for (const g of new Set(m.generators)) for (let seed = 1; seed <= 60; seed++) { const q = L.generateQuestion(g, seed); for (const y of (JSON.stringify([q.story, q.answer, q.choices]).match(/\b1[5-9]\d\d\b/g) || [])) years.add(y); }
+    ok('grade 7 asks about all eight 7.1B dates: 1519, 1718, 1821, 1836, 1845, 1861, 1876, 1901', ['1519', '1718', '1821', '1836', '1845', '1861', '1876', '1901'].every((y) => years.has(y))); }
+  // The same holds where the TEKS name points of reference: grade 8 (8.1B) and US history since 1877 (11.2B).
+  { const yearsOf = (cid) => { const years = new Set(); for (const m of L.getCourse(cid).modules) for (const g of new Set(m.generators)) for (let seed = 1; seed <= 60; seed++) { const q = L.generateQuestion(g, seed); for (const y of (JSON.stringify([q.story, q.answer, q.choices]).match(/\b1[5-9]\d\d\b|\b20[0-2]\d\b/g) || [])) years.add(y); } return years; };
+    const y8 = yearsOf('history-8'); const y11 = yearsOf('history-11');
+    ok('grade 8 asks about all six 8.1B dates: 1607, 1620, 1776, 1787, 1803, 1861', ['1607', '1620', '1776', '1787', '1803', '1861'].every((y) => y8.has(y)));
+    ok('grade 11 asks about all ten 11.2B turning points', ['1898', '1914', '1918', '1929', '1939', '1945', '1957', '1968', '1969', '1991', '2001', '2008'].every((y) => y11.has(y))); }
   ok('a name of thirty-one characters is refused with a plain sentence', L.renameStudent(r, 'S-1042', 'A'.repeat(31)).error === 'Names can be up to 30 characters.');
   ok('the same cap holds when a student is added', L.addStudent(r, 'B'.repeat(31), 't', { level: 'elementary' }).error === 'Names can be up to 30 characters.' && L.addStudent(r, 'B'.repeat(30), 't', { level: 'elementary' }).error === null);
   ok('subjects sort Math, Reading, Writing, Science, History, then the rest', L.sortSubjects(['History', 'Science', 'Art', 'Math', 'Writing', 'Reading', 'Math']).join(',') === 'Math,Reading,Writing,Science,History,Art');
@@ -826,7 +866,7 @@ ok('reset: history kept, but nothing counts as mastered afterwards', events.leng
   ok('a picture can be added later, with a default colour', L.findStudent(withPic, 'S-7').picture === 'owl' && L.findStudent(withPic, 'S-7').tint === 'sun');
   ok('a picture can be removed again', L.findStudent(L.setStudentPicture(withPic, 'S-7', null), 'S-7').picture === null);
   ok('a level narrows recommendations to its band', JSON.stringify(L.recommendedCourseIds([L.makeCoursesEnabledEvent([], 't')], 'early')) === '["first-steps-pk","first-sounds-pk"]');
-  ok('a high school student starts on the grade 9 courses', JSON.stringify(L.recommendedCourseIds([L.makeCoursesEnabledEvent([], 't')], 'high')) === '["math-9","reading-9","science-9","writing-9"]');
+  ok('a high school student starts on the grade 9 courses', JSON.stringify(L.recommendedCourseIds([L.makeCoursesEnabledEvent([], 't')], 'high')) === '["history-9","math-9","reading-9","science-9","writing-9"]');
   ok('the letters course and now the counting course both have a touch module', L.courseNeedsTouch('letters-k') === true && L.courseNeedsTouch('counting-k') === true && L.courseNeedsTouch('fractions-intro') === false);
   ok('a wobbly hand passes, a wrong letter and a scribble do not', L.traceMatches('L', [[[34, 16], [31, 42], [28, 63], [33, 84]], [[31, 88], [52, 83], [74, 86]]]) && !L.traceMatches('L', [[[30, 15], [75, 15]], [[50, 15], [50, 85]]]) && !L.traceMatches('L', [Array.from({ length: 80 }, (_, i) => [(i * 37) % 100, (i * 53) % 100])]));
 }
@@ -1003,6 +1043,42 @@ ok('reset: history kept, but nothing counts as mastered afterwards', events.leng
   ok('a loop back event does not disturb mastery counts', L.deriveProgress([...twoMiss, loop]).masteredIds.includes('count-to-5'));
 }
 
+// ---- 18b. The quick check: one module, five questions, placed but never mastered ----
+{
+  const at = '2026-09-14T10:00:00.000Z';
+  const events = [L.makeCoursesEnabledEvent(['history-8'], '2026-09-14T09:00:00.000Z')];
+  const check = L.buildQuickCheck('founding-documents', 7);
+  ok('a quick check is five questions from the module, one per generator slot, no lesson', check.quickCheck && check.core.length === 5 && check.core.every((q) => q.fromModuleId === 'founding-documents') && check.review === null);
+  ok('the same seed gives the same check', JSON.stringify(L.buildQuickCheck('founding-documents', 7).core.map((q) => q.prompt)) === JSON.stringify(check.core.map((q) => q.prompt)));
+  ok('the next module offers it; a spoken course and Writing never do', L.quickCheckAllowed(events, 'founding-documents') && !L.quickCheckAllowed(events, 'count-to-5') && !L.quickCheckAllowed(events, L.COURSES.find((c) => c.subject === 'Writing').modules[0].id));
+  const res = (n, ms) => Array.from({ length: 5 }, (_, i) => ({ correct: i < n, timeMs: ms }));
+  const passEv = L.makeQuickCheckEvent('founding-documents', res(4, 9000), at);
+  ok('four of five at a normal pace passes', passEv.type === 'quick_check' && passEv.passed && passEv.right === 4 && !passEv.guessed);
+  ok('three of five does not pass', !L.makeQuickCheckEvent('founding-documents', res(3, 9000), at).passed);
+  const rushed = L.makeQuickCheckEvent('founding-documents', res(5, 900), at);
+  ok('five of five with every answer under two seconds is too fast to count', rushed.guessed && !rushed.passed);
+  const placed = L.makeQuickPlacedEvent('founding-documents', at);
+  const after = [...events, passEv, placed];
+  const p = L.deriveProgress(after).perModule['founding-documents'];
+  ok('a passed check places the module: passed for gating, never mastered', p.placed && p.passed && !p.mastered && L.moduleStatuses(L.deriveProgress(after), ['history-8']).find((x) => x.id === 'early-republic').status === 'available');
+  ok('a quick-check placement never counts as the placement check for the subject', !L.placementDone(after, 'History'));
+  ok('the link is one try per module', !L.quickCheckAllowed(after, 'founding-documents') && !L.quickCheckAllowed([...events, L.makeQuickCheckEvent('founding-documents', res(2, 9000), at)], 'founding-documents'));
+  ok('the report row and the module story tell the educator', L.buildReport('S-9', after).modules.find((m) => m.id === 'founding-documents').quickCheck.right === 4 && L.moduleStory('S-9', after, 'founding-documents').includes('took the quick check') && L.moduleStory('S-9', after, 'founding-documents').includes('4 of 5'));
+  const missStory = L.moduleStory('S-9', [...events, L.makeQuickCheckEvent('founding-documents', res(2, 9000), at), { type: 'attempt_completed', at: '2026-09-14T11:00:00.000Z', startedAt: '2026-09-14T11:00:00.000Z', moduleId: 'founding-documents', seed: 1, core: res(5, 8000), review: null, coreCorrect: 5, coreTotal: 5 }], 'founding-documents');
+  ok('a missed check is named in the story and never counts as a miss for the loop back', missStory.includes('first tried the quick check') && L.failedStreak([...events, L.makeQuickCheckEvent('founding-documents', res(2, 9000), at)], 'founding-documents') === 0);
+}
+
+// ---- 18c. Teacher notes: on the log, so they survive resets and ride in backups ----
+{
+  const at = '2026-09-15T10:00:00.000Z';
+  const note = L.makeNoteEvent('  Reads well aloud; shy in groups.  ', at);
+  const events = [L.makeCoursesEnabledEvent(['history-8'], '2026-09-15T09:00:00.000Z'), note];
+  ok('a note is an event with its text trimmed', note.type === 'note' && note.text === 'Reads well aloud; shy in groups.' && L.teacherNotes(events).length === 1 && L.teacherNotes(events)[0].text === note.text);
+  ok('the report carries the notes, newest first', L.buildReport('S-6', [...events, L.makeNoteEvent('Second', '2026-09-16T10:00:00.000Z')]).notes.map((n) => n.text).join('|') === 'Second|Reads well aloud; shy in groups.');
+  ok('a removed note is gone from the report and its removal stays on the log', L.buildReport('S-6', [...events, L.makeNoteRemovedEvent(note.noteId, '2026-09-16T10:00:00.000Z')]).notes.length === 0);
+  ok('a reset keeps the notes', L.teacherNotes([...events, L.makeResetEvent ? L.makeResetEvent('2026-09-17T10:00:00.000Z') : { type: 'reset', at: '2026-09-17T10:00:00.000Z' }]).length === 1);
+}
+
 // ---- 19. The class view: most in need first, reasons in words ----
 {
   const att = (id, at, ok, ms) => ({ type: 'attempt_completed', at, startedAt: at, moduleId: id, seed: 1, core: Array.from({ length: 5 }, (_, i) => ({ correct: i < ok, timeMs: ms })), review: null, coreCorrect: ok, coreTotal: 5 });
@@ -1014,6 +1090,27 @@ ok('reset: history kept, but nothing counts as mastered afterwards', events.leng
   const rows = L.classView(students, '2026-09-10T12:00:00.000Z');
   ok('the student who is stuck and guessing comes first', rows[0].label === 'S-1' && rows[0].band === 'needs help now');
   ok('a student who has not started is flagged, gently', rows.find((r) => r.label === 'S-3').reasons.includes('has not started'));
+  // One failed round, nothing else: the row says so instead of "nothing to flag" (Mikey's test student, 2026-09-14).
+  const oneMiss = { id: 's_4', label: 'S-4', events: [att('count-to-5', '2026-09-09T10:00:00.000Z', 2, 6000)] };
+  const missRow = L.classView([oneMiss], '2026-09-10T12:00:00.000Z')[0];
+  ok('one missed round is named, with its score, and what a second miss would bring', missRow.reasons.some((r) => r.includes('missed the last round of count to 5 (2 of 5 right)') && r.includes('second miss')));
+  ok('every class row carries the practice line the report summary shows', missRow.practice === 'Practice so far: 1 round, 0 passed. Tried but not passed yet: count to 5 (best 2 of 5, 1 try).' && rows.find((r) => r.label === 'S-3').practice === '');
+  const quickEvents = [L.makeCoursesEnabledEvent(['history-8'], '2026-09-09T09:00:00.000Z'), L.makeQuickCheckEvent('founding-documents', Array.from({ length: 5 }, (_, i) => ({ correct: i < 2, timeMs: 9000 })), '2026-09-09T10:00:00.000Z')];
+  const quickRow = L.classView([{ id: 's_5', label: 'S-5', events: quickEvents }], '2026-09-10T12:00:00.000Z')[0];
+  ok('a missed quick check shows on the class view practice line as a try to skip', quickRow.practice.includes('founding documents (quick check 2 of 5)') && quickRow.missedQuickChecks === 1 && missRow.missedQuickChecks === 0);
+  const notedRow = L.classView([{ id: 's_7', label: 'S-7', events: [...quickEvents, L.makeNoteEvent('Older note', '2026-09-08T10:00:00.000Z'), L.makeNoteEvent('Shy in groups; reads well aloud.\nSecond line.', '2026-09-09T11:00:00.000Z')] }], '2026-09-10T12:00:00.000Z')[0];
+  ok('a class row carries the first line of the latest note', notedRow.note === 'Shy in groups; reads well aloud.' && missRow.note === '');
+  ok('a class row carries every note for searching, first lines and full text', notedRow.notesAll.join('|') === 'Shy in groups; reads well aloud.|Older note' && notedRow.notesText.includes('Older note') && notedRow.notesText.includes('Second line.'));
+  ok('a middle-sized shape choice is described in words', L.describeChoice('shape:triangle:medium') === 'the middle-sized triangle');
+  ok('a big or little shape choice is described in words', L.describeChoice('shape:circle:big') === 'the big circle' && L.describeChoice('shape:square:small') === 'the little square' && L.describeChoice('shape:star') === 'shape:star');
+  const passedQuick = [...quickEvents.slice(0, 1), L.makeQuickCheckEvent('early-republic', Array.from({ length: 5 }, () => ({ correct: true, timeMs: 9000 })), '2026-09-09T10:00:00.000Z'), L.makeQuickPlacedEvent('early-republic', '2026-09-09T10:00:00.000Z')];
+  ok('a passed quick check shows as a module skipped', L.practiceLine(L.buildReport('S-5', passedQuick)).line.includes('Skipped by quick check: the early republic'));
+  ok('a module skipped by quick check is placed and carries the passed check, so paper can tell it from mastery', (() => { const m = L.buildReport('S-5', passedQuick).modules.find((x) => x.id === 'early-republic'); return m.placed && !m.mastered && m.quickCheck && m.quickCheck.passed; })());
+  ok('the stuck reason reads "best 1 of 5", never "best 1 of 5 of 5"', !rows[0].reasons.some((r) => /of \d+ of \d+/.test(r)) && rows[0].reasons.some((r) => r.includes('best 2 of 5')));
+  const missSummary = L.summaryParagraph(L.buildReport('S-4', [L.makeCoursesEnabledEvent(['counting-k'], '2026-09-09T09:00:00.000Z'), ...oneMiss.events]));
+  ok('the report summary names practice so far and what was tried but not passed', missSummary.includes('Practice so far: 1 round, 0 passed.') && missSummary.includes('Tried but not passed yet: count to 5 (best 2 of 5, 1 try).'));
+  const missParts = L.summaryParts(L.buildReport('S-4', [L.makeCoursesEnabledEvent(['counting-k'], '2026-09-09T09:00:00.000Z'), ...oneMiss.events]));
+  ok('the summary parts hand the screen each tried module as a link, and keep it out of the prose', missParts.tried.length === 1 && missParts.tried[0].id === 'count-to-5' && missParts.tried[0].detail === 'best 2 of 5, 1 try' && !missParts.rest.includes('Tried but not passed') && missParts.rest.includes('Practice so far: 1 round, 0 passed.'));
   ok('a student doing fine is on track and the reason says how quick they were', rows.find((r) => r.label === 'S-2').band === 'on track' && /on track/.test(rows.find((r) => r.label === 'S-2').reasons.join(' ')));
   { const quick = { id: 'q', label: 'Q', events: [att('count-to-5', '2026-09-09T10:00:00.000Z', 5, 6000)] };
     const slow = { id: 's', label: 'S', events: [att('count-to-5', '2026-09-08T10:00:00.000Z', 2, 6000), att('count-to-5', '2026-09-08T11:00:00.000Z', 3, 6000), att('count-to-5', '2026-09-09T10:00:00.000Z', 5, 6000)] };

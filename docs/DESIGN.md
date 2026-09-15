@@ -25,6 +25,7 @@ Learner extras: My progress. Educator: PIN → Learners → Report.
 - A pre-reader result screen shows a row of stars for the score, one spoken line, a speaker button and a single large arrow. Well done goes forward to the next module; not yet goes round again through the lesson. There is never a menu of choices, but a small back arrow always lets a child leave.
 - The module a pre-reader should open carries a thicker border and a soft green glow, and its button pulses, so nobody has to read to find where to go.
 - Letters swell one at a time as they are named. Dots drift in one at a time. Both are paced to the audio.
+- A tracing lesson never shows a still letter or a count of dots. It shows the stroke drawing itself (`TraceDemo`, picture kind `trace`): the gray guide, the start dot and arrow exactly as on the practice pad, then green ink that draws each stroke in turn, rests, and draws again. Dot pictures show their numbered dots and join them. A gold pen dot rides the tip of the ink (SVG motion, no script). "Say it again" replays the drawing with the voice. After two misses on the same trace, the same demonstration appears above the practice pad with "Watch first. Then trace it." Under reduced motion the finished shape simply sits there and the pen is left out. The scripts test insists every touch lesson has one.
 - A wrong answer offers Try again rather than Next, and the wrong choice greys out. Correct answers cheer, wrong ones wobble. All animation stops under reduced-motion settings.
 
 ## Words

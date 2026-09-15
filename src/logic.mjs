@@ -645,6 +645,38 @@ export const COURSES = [
     modules: GRADE4_HISTORY_MODULES(),
   },
   {
+    id: 'history-6',
+    grade: '6',
+    subject: 'History',
+    title: 'World cultures',
+    audience: 'Grade 6',
+    modules: GRADE6_HISTORY_MODULES(),
+  },
+  {
+    id: 'history-7',
+    grade: '7',
+    subject: 'History',
+    title: 'Texas history',
+    audience: 'Grade 7',
+    modules: GRADE7_HISTORY_MODULES(),
+  },
+  {
+    id: 'history-9',
+    grade: '9',
+    subject: 'History',
+    title: 'World geography',
+    audience: 'Grade 9',
+    modules: GRADE9_HISTORY_MODULES(),
+  },
+  {
+    id: 'history-college',
+    grade: 'C',
+    subject: 'History',
+    title: 'Thinking like a historian',
+    audience: 'College level',
+    modules: COLLEGE_HISTORY_MODULES(),
+  },
+  {
     id: 'history-8',
     grade: '8',
     subject: 'History',
@@ -747,6 +779,41 @@ export const COURSES = [
     audience: 'Grade 1',
     readAloud: true,
     modules: GRADE1_SCIENCE_MODULES(),
+  },
+  {
+    id: 'civics-k',
+    grade: 'K',
+    subject: 'History',
+    title: 'Me and my community',
+    audience: 'Kindergarten',
+    readAloud: true,
+    modules: KINDER_CIVICS_MODULES(),
+  },
+  {
+    id: 'civics-1',
+    grade: '1',
+    subject: 'History',
+    title: 'Our community',
+    audience: 'Grade 1',
+    readAloud: true,
+    modules: GRADE1_CIVICS_MODULES(),
+  },
+  {
+    id: 'civics-2',
+    grade: '2',
+    subject: 'History',
+    title: 'Our community\'s story',
+    audience: 'Grade 2',
+    readAloud: true,
+    modules: GRADE2_CIVICS_MODULES(),
+  },
+  {
+    id: 'civics-3',
+    grade: '3',
+    subject: 'History',
+    title: 'Communities and government',
+    audience: 'Grade 3',
+    modules: GRADE3_CIVICS_MODULES(),
   },
   {
     id: 'science-2',
@@ -1002,11 +1069,11 @@ function LETTER_MODULES() { return [
     lesson: {
       paragraphs: ['Every letter is made of a few strokes. Start at the dot and follow the arrow.', 'Go slowly. Lift your finger when the line ends, then start the next one at its dot.'],
       keyIdea: 'Start at the dot. Follow the arrow. Stay on the line.',
-      example: { kind: 'letters', text: 'L', caption: 'Down, then across. That is L.' },
+      example: { kind: 'trace', text: 'L', caption: 'Down, then across. That is L.' },
       script: [
-        { say: 'Start at the dot. Go down. That is one line.', show: { kind: 'letters', text: 'L' } },
-        { say: 'Now start at the new dot. Go across. That makes L.', show: { kind: 'letters', text: 'L' } },
-        { say: 'Start at the dot. Follow the arrow. Stay on the line.', show: { kind: 'letters', text: 'L' } },
+        { say: 'Start at the dot. Go down. That is one line.', show: { kind: 'trace', text: 'L' } },
+        { say: 'Now start at the new dot. Go across. That makes L.', show: { kind: 'trace', text: 'L' } },
+        { say: 'Start at the dot. Follow the arrow. Stay on the line.', show: { kind: 'trace', text: 'L' } },
       ],
     },
     sources: ['Aligned with Texas TEKS K.2E (develop handwriting by accurately forming all uppercase and lowercase letters) and Common Core L.K.1.A.'],
@@ -1022,11 +1089,11 @@ function LETTER_MODULES() { return [
     lesson: {
       paragraphs: ['Small letters sit lower and some reach up tall. Start at the dot and follow the arrow.', 'Go slowly. Lift your finger when the line ends.'],
       keyIdea: 'Small letters sit low. Start at the dot and follow the arrow.',
-      example: { kind: 'letters', text: 'l', caption: 'Straight down. That is small l.' },
+      example: { kind: 'trace', text: 'l', caption: 'Straight down. That is small l.' },
       script: [
-        { say: 'Start at the dot. Go straight down. That is small l.', show: { kind: 'letters', text: 'l' } },
-        { say: 'Start at the dot. Go around. That is small o.', show: { kind: 'letters', text: 'o' } },
-        { say: 'Start at the dot. Follow the arrow. Stay on the line.', show: { kind: 'letters', text: 'o' } },
+        { say: 'Start at the dot. Go straight down. That is small l.', show: { kind: 'trace', text: 'l' } },
+        { say: 'Start at the dot. Go around. That is small o.', show: { kind: 'trace', text: 'o' } },
+        { say: 'Start at the dot. Follow the arrow. Stay on the line.', show: { kind: 'trace', text: 'o' } },
       ],
     },
     sources: ['Aligned with Texas TEKS K.2E (develop handwriting by accurately forming all uppercase and lowercase letters) and Common Core L.K.1.A.'],
@@ -1042,11 +1109,11 @@ function LETTER_MODULES() { return [
     lesson: {
       paragraphs: ['Some letters zigzag. Some cross in the middle. Start at the dot and follow the arrow, one line at a time.', 'Lift your finger between lines.'],
       keyIdea: 'One line at a time. Lift your finger between lines.',
-      example: { kind: 'letters', text: 'Z', caption: 'Across, down and back, across. That is Z.' },
+      example: { kind: 'trace', text: 'Z', caption: 'Across, down and back, across. That is Z.' },
       script: [
-        { say: 'Start at the dot. Go across, then down and back, then across. That is Z.', show: { kind: 'letters', text: 'Z' } },
-        { say: 'Start at the dot. Go down. Then two lines that meet in the middle. That is K.', show: { kind: 'letters', text: 'K' } },
-        { say: 'K takes three lines. Lift your finger between lines.', show: { kind: 'letters', text: 'K' } },
+        { say: 'Start at the dot. Go across, then down and back, then across. That is Z.', show: { kind: 'trace', text: 'Z' } },
+        { say: 'Start at the dot. Go down. Then two lines that meet in the middle. That is K.', show: { kind: 'trace', text: 'K' } },
+        { say: 'K takes three lines. Lift your finger between lines.', show: { kind: 'trace', text: 'K' } },
       ],
     },
     sources: ['Aligned with Texas TEKS K.2E (develop handwriting by accurately forming all uppercase and lowercase letters) and Common Core L.K.1.A.'],
@@ -1152,7 +1219,7 @@ function PREK3_MODULES() { return [
         { say: 'Red and blue are colors.', show: { kind: 'swatch', colour: 'red' } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines V.D.1 (sorting objects by attributes such as color) and Head Start ELOF Goal P-MATH 5.'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines V.E.1 (sorts objects that are the same and different into groups) and Head Start ELOF Goal P-MATH 4 (compares numbers).'],
     generators: ['p3-tap-red-blue', 'p3-which-colour', 'p3-tap-red-blue', 'p3-which-colour', 'p3-tap-red-blue'],
   },
   {
@@ -1170,7 +1237,7 @@ function PREK3_MODULES() { return [
         { say: 'They are the same.', show: { kind: 'item', shape: 'circle', colour: 'red' } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines V.D.1 (sort objects that are the same and different) and Head Start ELOF Goal P-MATH 8.'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines V.E.1 (sorts objects that are the same and different into groups) and Head Start ELOF Goal P-MATH 8.'],
     generators: ['p3-find-match', 'p3-find-match', 'p3-find-match', 'p3-find-match', 'p3-find-match'],
   },
   {
@@ -1188,7 +1255,7 @@ function PREK3_MODULES() { return [
         { say: 'These are two dots.', show: { kind: 'dots', count: 2 } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines V.A.1 (know that objects can be counted) and Head Start ELOF Goal P-MATH 1.'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines V.A.2 (counts up to 5 objects with one-to-one correspondence) and Head Start ELOF Goal P-MATH 1.'],
     generators: ['p3-tap-count', 'p3-how-many', 'p3-tap-count', 'p3-how-many', 'p3-tap-count'],
   },
   {
@@ -1206,7 +1273,7 @@ function PREK3_MODULES() { return [
         { say: 'Three dots is more than one dot.', show: { kind: 'dots', count: 3 } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines V.A.8 (compare sets to determine which has more or fewer) and Head Start ELOF Goal P-MATH 5.'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines V.A.8 (compares sets of objects up to 5 using comparative language) and Head Start ELOF Goal P-MATH 4 (compares numbers).'],
     generators: ['p3-tap-more', 'p3-tap-more', 'p3-tap-fewer', 'p3-tap-more', 'p3-tap-fewer'],
   },
   {
@@ -1218,14 +1285,14 @@ function PREK3_MODULES() { return [
     lesson: {
       paragraphs: ['Hold the stylus. Start at the dot and draw along the line.', 'Down. Across. Round and round.'],
       keyIdea: 'Start at the dot and follow the line.',
-      example: { kind: 'dots', count: 1, caption: 'Start at the dot.' },
+      example: { kind: 'trace', text: 'line-down', caption: 'Start at the dot. Draw a line down.' },
       script: [
-        { say: 'Start at dot number 1. Draw a line down.', show: { kind: 'dots', count: 1 } },
-        { say: 'Now dot number 2. Draw a line across.', show: { kind: 'dots', count: 2 } },
-        { say: 'Now dot number 3. Draw round and round.', show: { kind: 'dots', count: 3 } },
+        { say: 'Watch the line. Start at the dot and draw a line down.', show: { kind: 'trace', text: 'line-down' } },
+        { say: 'Watch again. Start at the dot and draw a line across.', show: { kind: 'trace', text: 'line-across' } },
+        { say: 'One more. Start at the dot and go round and round.', show: { kind: 'trace', text: 'line-circle' } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines VI.B.1 (coordinate sequence of movements to perform tasks) and Head Start ELOF Goal P-PMP 3 (demonstrates increasing control, strength, and coordination of small muscles).'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines IX.B.2 (shows emerging proficiency in tasks requiring eye-hand coordination) and Head Start ELOF Goal P-PMP 3 (demonstrates increasing control, strength, and coordination of small muscles).'],
     generators: ['p3-trace-mark', 'p3-trace-mark', 'p3-trace-mark', 'p3-trace-mark', 'p3-trace-mark'],
   },
   {
@@ -1237,14 +1304,14 @@ function PREK3_MODULES() { return [
     lesson: {
       paragraphs: ['Start at dot 1. Draw to dot 2. Draw to dot 3.', 'A picture appears.'],
       keyIdea: 'Start at 1 and draw to each dot in order.',
-      example: { kind: 'dots', count: 3, caption: 'Three dots.' },
+      example: { kind: 'trace', text: 'triangle', caption: 'Start at 1. Draw to 2, then to 3.' },
       script: [
-        { say: 'Start at dot number 1.', show: { kind: 'dots', count: 1 } },
-        { say: 'Draw a line to dot number 2.', show: { kind: 'dots', count: 2 } },
-        { say: 'Draw a line to dot number 3. A picture appears.', show: { kind: 'dots', count: 3 } },
+        { say: 'Watch the line. Start at dot number 1.', show: { kind: 'trace', text: 'triangle' } },
+        { say: 'It draws a line to dot number 2.', show: { kind: 'trace', text: 'triangle' } },
+        { say: 'Then to dot number 3, and a picture appears.', show: { kind: 'trace', text: 'triangle' } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines VI.B.1 and Head Start ELOF Goal P-PMP 3.'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines IX.B.2 (shows emerging proficiency in tasks requiring eye-hand coordination) and Head Start ELOF Goal P-PMP 3.'],
     generators: ['p3-connect-few', 'p3-connect-few', 'p3-connect-few', 'p3-connect-few', 'p3-connect-few'],
   },
   {
@@ -1262,7 +1329,7 @@ function PREK3_MODULES() { return [
         { say: 'Yellow like the sun. Green like the grass.', show: { kind: 'swatch', colour: 'green' } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines V.D.1 (sort objects that are the same and different into groups) and Head Start ELOF Goal P-SCI 1.'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines V.E.1 (sorts objects that are the same and different into groups) and Head Start ELOF Goal P-SCI 1.'],
     generators: ['p3-tap-yellow-green', 'p3-which-colour-four', 'p3-tap-yellow-green', 'p3-which-colour-four', 'p3-tap-any-colour'],
   },
   {
@@ -1281,8 +1348,44 @@ function PREK3_MODULES() { return [
         { say: 'This is a square. It has four corners.', show: { kind: 'shape', name: 'square' } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines V.C.1 (name common shapes) and Head Start ELOF Goal P-MATH 9.'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines V.C.1 (names and describes common 2D shapes) and Head Start ELOF Goal P-MATH 9.'],
     generators: ['p3-tap-three-shapes', 'p3-name-three-shapes', 'p3-tap-three-shapes', 'p3-name-three-shapes', 'p3-tap-three-shapes'],
+  },
+  {
+    id: 'big-and-little',
+    order: 9,
+    title: 'Big and little',
+    tagline: 'Which one is bigger?',
+    lesson: {
+      paragraphs: ['Some things are big. Some things are little. Look, then point to the big one.'],
+      keyIdea: 'Big and little. Point to the big one.',
+      example: { kind: 'shape', name: 'circle', size: 'big', caption: 'A big circle.' },
+      script: [
+        { say: 'This is a big circle. Big.', show: { kind: 'shape', name: 'circle', size: 'big' } },
+        { say: 'This is a little circle. Little.', show: { kind: 'shape', name: 'circle', size: 'small' } },
+        { say: 'Now you find the big one.', show: null },
+      ],
+    },
+    sources: ['Aligned with Texas Prekindergarten Guidelines V.D.1 (understands that lengths of objects can vary and be compared) and Head Start ELOF Goal P-MATH 8 (measures objects by their attributes).'],
+    generators: ['pk3-tap-big', 'pk3-tap-little', 'pk3-tap-big', 'pk3-tap-little', 'pk3-tap-big'],
+  },
+  {
+    id: 'please-and-thank-you',
+    order: 10,
+    title: 'Please and thank you',
+    tagline: 'Two words that open doors',
+    lesson: {
+      paragraphs: ['When you want something, say please. When you get it, say thank you.'],
+      keyIdea: 'Please to ask. Thank you when you get it.',
+      example: { kind: 'letters', text: 'Please', caption: 'The word for asking.' },
+      script: [
+        { say: 'Please. That is the word for asking. May I have a cracker, please?', show: { kind: 'letters', text: 'Please' } },
+        { say: 'Thank you. That is the word for when you get it.', show: { kind: 'letters', text: 'Thank you' } },
+        { say: 'Please to ask. Thank you when you get it.', show: null },
+      ],
+    },
+    sources: ['Aligned with Texas Prekindergarten Guidelines I.C.1 (forms positive relationships with adults and peers) and Head Start ELOF Goal P-SE 2 (engages in prosocial and cooperative behavior with adults).'],
+    generators: ['pk3-magic-word', 'pk-turn-choice', 'pk3-magic-word', 'pk3-magic-word', 'pk-turn-choice'],
   },
 ]; }
 
@@ -1302,7 +1405,7 @@ function PREK3_READING_MODULES() { return [
         { say: 'A circle is round.', show: { kind: 'item', shape: 'circle', colour: 'blue' } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines V.C.1 (name common shapes) and Head Start ELOF Goal P-MATH 9.'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines V.C.1 (names and describes common 2D shapes) and Head Start ELOF Goal P-MATH 9.'],
     generators: ['p3-tap-shape', 'p3-name-shape', 'p3-tap-shape', 'p3-name-shape', 'p3-tap-shape'],
   },
   {
@@ -1320,7 +1423,7 @@ function PREK3_READING_MODULES() { return [
         { say: 'A is a letter.', show: { kind: 'letters', text: 'A', highlight: 0 } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines III.C.1 (name at least 20 upper case letters) and Head Start ELOF Goal P-LIT 3.'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines III.C.1 (shows awareness of letters and recognizes some frequently encountered letters) and Head Start ELOF Goal P-LIT 3.'],
     generators: ['p3-tap-ab', 'p3-name-ab', 'p3-tap-ab', 'p3-name-ab', 'p3-tap-ab'],
   },
   {
@@ -1338,7 +1441,7 @@ function PREK3_READING_MODULES() { return [
         { say: 'Here is a red circle. Different.', show: { kind: 'item', shape: 'circle', colour: 'red' } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines V.D.1 (describe how objects are similar and different) and Head Start ELOF Goal P-MATH 8.'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines V.E.1 (sorts objects that are the same and different into groups) and Head Start ELOF Goal P-MATH 8.'],
     generators: ['p3-odd-one', 'p3-odd-one', 'p3-odd-one', 'p3-odd-one', 'p3-odd-one'],
   },
   {
@@ -1356,7 +1459,7 @@ function PREK3_READING_MODULES() { return [
         { say: 'This is a tree.', show: { kind: 'icon', name: 'tree' } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines II.A.1 (show understanding by responding appropriately) and Head Start ELOF Goal P-LC 1.'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines II.A.1 (shows understanding by responding appropriately) and Head Start ELOF Goal P-LC 1.'],
     generators: ['p3-tap-picture', 'p3-tap-picture', 'p3-tap-picture', 'p3-tap-picture', 'p3-tap-picture'],
   },
 ]; }
@@ -1571,7 +1674,7 @@ function PREK_MODULES() { return [
         { say: 'This color is green.', show: { kind: 'swatch', colour: 'green' } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines V.D.1 (sorting objects by attributes such as color) and Head Start ELOF Goal P-MATH 5.'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines V.E.1 (sorts objects that are the same and different into groups and uses language to describe how the groups are similar and different) and Head Start ELOF Goal P-MATH 4 (compares numbers).'],
     generators: ['pc-tap-colour', 'pc-name-colour', 'pc-same-colour', 'pc-different-colour', 'pc-tap-colour'],
   },
   {
@@ -1589,7 +1692,7 @@ function PREK_MODULES() { return [
         { say: 'Look carefully. Find the one that matches.', show: { kind: 'pair', a: { shape: 'triangle', colour: 'blue' }, b: { shape: 'triangle', colour: 'blue' } } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines V.D.1 and V.E.1 (matching and sorting) and Head Start ELOF Goal P-MATH 8.'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines V.E.1 (sorts objects that are the same and different into groups and uses language to describe how the groups are similar and different) and Head Start ELOF Goal P-MATH 8.'],
     generators: ['ps-find-match', 'ps-odd-one-out', 'ps-same-colour-shape', 'ps-bigger', 'ps-smaller'],
   },
   {
@@ -1608,7 +1711,7 @@ function PREK_MODULES() { return [
         { say: 'A pattern repeats. Say it out loud.', show: { kind: 'pattern', items: ['triangle', 'circle', 'triangle', 'circle'] } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines V.E.3 (recognize and create patterns) and Head Start ELOF Goal P-MATH 7.'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines V.E.3 (recognizes, duplicates, extends, and creates patterns) and Head Start ELOF Goal P-MATH 7.'],
     generators: ['pp-what-next', 'pp-what-next', 'pp-which-repeats', 'pp-missing', 'pp-what-next'],
   },
   {
@@ -1627,7 +1730,7 @@ function PREK_MODULES() { return [
         { say: 'Touch each one and say the number.', show: { kind: 'dots', count: 3 } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines V.A.1 to V.A.3 (counting and cardinality to at least 3) and Head Start ELOF Goal P-MATH 1.'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines V.A.2 and V.A.3 (counting with one-to-one correspondence and cardinality) and Head Start ELOF Goal P-MATH 1.'],
     generators: ['p3-how-many', 'p3-tap-group', 'p3-tap-one', 'p3-more', 'p3-how-many'],
   },
   {
@@ -1639,14 +1742,14 @@ function PREK_MODULES() { return [
     lesson: {
       paragraphs: ['Hold the stylus like a crayon. Start at the dot and draw along the line.', 'Down, across, wavy, zigzag, round. Every letter is made of these.'],
       keyIdea: 'Start at the dot and follow the line.',
-      example: { kind: 'letters', text: '1 2 3', caption: 'Start at the dot.' },
+      example: { kind: 'trace', text: 'line-wave', caption: 'Start at the dot and draw along the wave.' },
       script: [
-        { say: 'Start at dot number 1. Draw a line down.', show: { kind: 'dots', count: 1 } },
-        { say: 'Now dot number 2. Draw a line across.', show: { kind: 'dots', count: 2 } },
-        { say: 'Keep going to dot number 3. Draw round and round.', show: { kind: 'dots', count: 3 } },
+        { say: 'Watch the line. Start at the dot and draw a line down.', show: { kind: 'trace', text: 'line-down' } },
+        { say: 'Watch again. Start at the dot and draw a line across.', show: { kind: 'trace', text: 'line-across' } },
+        { say: 'One more. Start at the dot and go round and round.', show: { kind: 'trace', text: 'line-circle' } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines VI.B.1 (coordinate sequence of movements to perform tasks) and Head Start ELOF Goal P-PMP 3.'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines IX.B.2 (shows increasing control of tasks that require eye-hand coordination) and Head Start ELOF Goal P-PMP 3.'],
     generators: ['pd-trace-line', 'pd-trace-line', 'pd-trace-line', 'pd-trace-line', 'pd-trace-line'],
   },
   {
@@ -1658,15 +1761,88 @@ function PREK_MODULES() { return [
     lesson: {
       paragraphs: ['Start at dot 1. Draw to dot 2. Then to dot 3. Keep going.', 'When you reach the last dot, a picture appears.'],
       keyIdea: 'Start at 1 and draw to each dot in order.',
-      example: { kind: 'letters', text: '1 2 3', caption: 'Go in order.' },
+      example: { kind: 'trace', text: 'house', caption: 'Go in order, and a picture appears.' },
       script: [
-        { say: 'Start at dot number 1.', show: { kind: 'dots', count: 1 } },
-        { say: 'Draw a line to dot number 2.', show: { kind: 'dots', count: 2 } },
-        { say: 'Keep going to dot number 3. A picture appears.', show: { kind: 'dots', count: 3 } },
+        { say: 'Watch the line. Start at dot number 1.', show: { kind: 'trace', text: 'house' } },
+        { say: 'It draws a line to dot number 2, then keeps going.', show: { kind: 'trace', text: 'house' } },
+        { say: 'At the last dot, a picture appears. It is a house.', show: { kind: 'trace', text: 'house' } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines VI.B.1 (coordinate sequence of movements to perform tasks) and Head Start ELOF Goal P-PMP 3 (demonstrates increasing control, strength, and coordination of small muscles).'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines IX.B.2 (shows increasing control of tasks that require eye-hand coordination) and Head Start ELOF Goal P-PMP 3 (demonstrates increasing control, strength, and coordination of small muscles).'],
     generators: ['pd-connect-dots', 'pd-connect-dots', 'pd-connect-dots', 'pd-connect-dots', 'pd-connect-dots'],
+  },
+  {
+    id: 'draw-the-shapes',
+    order: 7,
+    title: 'Draw the shapes',
+    tagline: 'A circle, a square, a triangle',
+    needsTouch: true,
+    lesson: {
+      paragraphs: ['A shape is a line that comes back to where it started. Start at the dot and go all the way around.', 'A circle goes round. A square has four corners. A triangle has three.'],
+      keyIdea: 'Start at the dot and go all the way around.',
+      example: { kind: 'trace', text: 'shape-circle', caption: 'Round and round. That is a circle.' },
+      script: [
+        { say: 'Watch the line. Start at the dot and go all the way around the circle.', show: { kind: 'trace', text: 'shape-circle' } },
+        { say: 'Watch again. Start at the dot. Turn at every corner. That is a square.', show: { kind: 'trace', text: 'shape-square' } },
+        { say: 'One more. Three corners, and back to the dot. That is a triangle.', show: { kind: 'trace', text: 'shape-triangle' } },
+      ],
+    },
+    sources: ['Aligned with Texas Prekindergarten Guidelines IX.B.2 (shows increasing control of tasks that require eye-hand coordination) and V.D.1 (recognizes and names common shapes) and Head Start ELOF Goal P-PMP 3.'],
+    generators: ["kn-trace-shape", "kn-trace-shape", "kn-trace-shape", "kn-trace-shape", "kn-trace-shape"],
+  },
+  {
+    id: 'taking-turns',
+    order: 8,
+    title: 'Taking turns',
+    tagline: 'Wait, then it is your turn',
+    lesson: {
+      paragraphs: ['When two people want the same thing, we take turns. You wait, and then it is your turn.', 'Sharing means both people get some.'],
+      keyIdea: 'Wait, and then it is your turn.',
+      example: { kind: 'dots', count: 2, caption: 'Two children, one swing. Take turns.' },
+      script: [
+        { say: 'Two children want one swing. Take turns.', show: { kind: 'dots', count: 2 } },
+        { say: 'First one child swings. The other one waits.', show: { kind: 'dots', count: 1 } },
+        { say: 'Then they swap. Now it is the other child\'s turn.', show: null },
+      ],
+    },
+    sources: ['Aligned with Texas Prekindergarten Guidelines I.C.4 (interacts with peers during cooperative play scenarios that share a common plan and goal) and Head Start ELOF Goal P-SE 3 (engages in and maintains positive interactions and relationships with other children).'],
+    generators: ['pk-turn-choice', 'ck-good-choice', 'pk-whose-turn', 'pk-turn-choice', 'pk-whose-turn'],
+  },
+  {
+    id: 'big-bigger-biggest',
+    order: 9,
+    title: 'Big, bigger, biggest',
+    tagline: 'Three sizes in a row',
+    lesson: {
+      paragraphs: ['Three circles. One is little. One is in the middle. One is the biggest of all.', 'Point to the biggest. Then point to the littlest.'],
+      keyIdea: 'Little, middle-sized, biggest. Three sizes in a row.',
+      example: { kind: 'shape', name: 'circle', size: 'big', caption: 'The biggest circle.' },
+      script: [
+        { say: 'Here is a little circle. It is the littlest.', show: { kind: 'shape', name: 'circle', size: 'small' } },
+        { say: 'Here is a middle-sized circle. Not little, not big.', show: { kind: 'shape', name: 'circle' } },
+        { say: 'Here is the biggest circle of all.', show: { kind: 'shape', name: 'circle', size: 'big' } },
+      ],
+    },
+    sources: ['Aligned with Texas Prekindergarten Guidelines V.D.1 (recognizes and compares heights or lengths of people or objects) and Head Start ELOF Goal P-MATH 8 (measures objects by their attributes).'],
+    generators: ['pk4-tap-biggest', 'pk4-tap-littlest', 'pk4-tap-middle', 'pk4-tap-biggest', 'pk4-tap-littlest'],
+  },
+  {
+    id: 'helpers-all-around',
+    order: 10,
+    title: 'Helpers all around',
+    tagline: 'Who helps, and how',
+    lesson: {
+      paragraphs: ['A firefighter puts out fires. A doctor helps when you are sick. A teacher helps you learn.', 'Helpers are all around us. Every helper has a job.'],
+      keyIdea: 'Helpers are all around. Every helper has a job.',
+      example: { kind: 'icon', name: 'fire', caption: 'A firefighter puts out the fire.' },
+      script: [
+        { say: 'Fire. A firefighter puts out the fire. That is a helper.', show: { kind: 'icon', name: 'fire' } },
+        { say: 'A doctor helps when you are sick. A teacher helps you learn.', show: null },
+        { say: 'Helpers are all around us. Every helper has a job.', show: null },
+      ],
+    },
+    sources: ['Aligned with Texas Prekindergarten Guidelines VII.B.3 (discusses the roles and responsibilities of family, school, and community helpers) and Head Start ELOF Goal P-SE 11 (has a sense of belonging to family, community, and other groups).'],
+    generators: ['ck-which-helper', 'ck-job-tool', 'ck-which-helper', 'ck-job-tool', 'ck-which-helper'],
   },
 ]; }
 
@@ -1688,7 +1864,7 @@ function PREK_READING_MODULES() { return [
         { say: 'Listen to the end of each word. Cat and hat both end in at.', show: { kind: 'letters', text: 'cat hat', highlight: 'at' } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines III.B.1 (rhyming) and Head Start ELOF Goal P-LIT 1.'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines III.B.1 (identifies the individual words in a spoken sentence) and Head Start ELOF Goal P-LIT 1.'],
     generators: ['rr-does-rhyme', 'rr-pick-rhyme', 'rr-does-rhyme', 'rr-pick-rhyme', 'rr-does-rhyme'],
   },
   {
@@ -1725,7 +1901,7 @@ function PREK_READING_MODULES() { return [
         { say: 'Find the letter when you hear its name.', show: { kind: 'letters', text: 'A B C' } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines III.C.1 (letter names) and Head Start ELOF Goal P-LIT 3.'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines III.C.1 (recognizes and names at least 20 letters) and Head Start ELOF Goal P-LIT 3.'],
     generators: ['pl-tap-letter', 'pl-name-letter', 'pl-tap-letter', 'pl-name-letter', 'pl-tap-letter'],
   },
   {
@@ -1738,11 +1914,11 @@ function PREK_READING_MODULES() { return [
     lesson: {
       paragraphs: ['Big letters are made of lines. Start at the dot and follow the arrow.', 'L goes down, then across. T goes across, then down. O goes round.'],
       keyIdea: 'Start at the dot. Follow the arrow.',
-      example: { kind: 'letters', text: 'L', caption: 'Down, then across. That is L.' },
+      example: { kind: 'trace', text: 'L', caption: 'Down, then across. That is L.' },
       script: [
-        { say: 'Start at the dot. Go down, then across. That is L.', show: { kind: 'letters', text: 'L' } },
-        { say: 'Start at the dot. Go across, then down. That is T.', show: { kind: 'letters', text: 'T' } },
-        { say: 'Start at the dot. Go round and round. That is O.', show: { kind: 'letters', text: 'O' } },
+        { say: 'Start at the dot. Go down, then across. That is L.', show: { kind: 'trace', text: 'L' } },
+        { say: 'Start at the dot. Go across, then down. That is T.', show: { kind: 'trace', text: 'T' } },
+        { say: 'Start at the dot. Go round and round. That is O.', show: { kind: 'trace', text: 'O' } },
       ],
     },
     sources: ['Aligned with Texas Prekindergarten Guidelines IV.A.1 (write own name or initial) and Head Start ELOF Goal P-LIT 6 (writes for a variety of purposes using increasingly sophisticated marks).'],
@@ -1800,11 +1976,11 @@ function COUNTING_MODULES() { return [
     lesson: {
       paragraphs: ['Every number has a shape. Start at the dot and follow the arrow.', 'Go slowly. A stylus helps.'],
       keyIdea: 'Start at the dot. Follow the arrow. That draws the number.',
-      example: { kind: 'letters', text: '3', caption: 'Around, and around again. That is 3.' },
+      example: { kind: 'trace', text: '3', caption: 'Around, and around again. That is 3.' },
       script: [
-        { say: 'Start at the dot. Go straight down. That is 1.', show: { kind: 'letters', text: '1' } },
-        { say: 'Start at the dot. Go around, then around again. That is 3.', show: { kind: 'letters', text: '3' } },
-        { say: 'Start at the dot. Follow the arrow. That draws the number.', show: { kind: 'letters', text: '3' } },
+        { say: 'Start at the dot. Go straight down. That is 1.', show: { kind: 'trace', text: '1' } },
+        { say: 'Start at the dot. Go around, then around again. That is 3.', show: { kind: 'trace', text: '3' } },
+        { say: 'Start at the dot. Follow the arrow. That draws the number.', show: { kind: 'trace', text: '3' } },
       ],
     },
     sources: ['Aligned with Texas TEKS K.2B (read, write, and represent whole numbers from 0 to at least 20) and Common Core K.CC.A.3 (write numbers from 0 to 20).'],
@@ -1899,11 +2075,11 @@ function COUNTING_MODULES() { return [
     lesson: {
       paragraphs: ['A shape is a line that comes back to where it started. Start at the dot and go all the way around.', 'Corners are where you turn. Circles have no corners.'],
       keyIdea: 'Start at the dot and go all the way around.',
-      example: { kind: 'shape', name: 'triangle', caption: 'Three corners.' },
+      example: { kind: 'trace', text: 'shape-triangle', caption: 'Three corners. Start at the dot and go all the way around.' },
       script: [
         { say: 'This is a triangle. It has three corners.', show: { kind: 'shape', name: 'triangle' } },
         { say: 'This is a circle. It has no corners at all.', show: { kind: 'shape', name: 'circle' } },
-        { say: 'Start at the dot and go all the way around the triangle.', show: { kind: 'shape', name: 'triangle' } },
+        { say: 'Watch. Start at the dot and go all the way around the triangle.', show: { kind: 'trace', text: 'shape-triangle' } },
       ],
     },
     sources: ['Aligned with Texas TEKS K.6A (identify two-dimensional shapes) and Common Core K.G.A.2 (correctly name shapes regardless of their orientations or overall size).'],
@@ -2092,7 +2268,7 @@ function GRADE1_MATH_MODULES() { return [
     lesson: {
       paragraphs: ['Numbers have shapes, and each one starts at a dot.', 'Trace them until your hand knows the way.'],
       keyIdea: 'Every number starts at its dot. Follow the arrow.',
-      example: { kind: 'letters', text: '7', caption: 'Across, then down at a slant. That is 7.' },
+      example: { kind: 'trace', text: '7', caption: 'Across, then down at a slant. That is 7.' },
     },
     sources: ['Aligned with Texas TEKS 1.2B (use concrete and pictorial models to compose and decompose numbers) and Common Core 1.NBT.A.1 (read and write numerals).'],
     generators: ['kn-trace-number', 'kn-trace-number', 'kn-trace-number', 'kn-trace-number', 'kn-trace-number'],
@@ -2182,12 +2358,12 @@ function GRADE1_READING_MODULES() { return [
     lesson: {
       paragraphs: ['Some small letters have a tall stick. Some have bumps. Some zigzag. Start at the dot and follow the arrow.', 'Go slowly. Lift your finger when the line ends.'],
       keyIdea: 'Tall sticks, bumps and zigzags. Start at the dot and follow the arrow.',
-      example: { kind: 'letters', text: 'h', caption: 'A tall stick and a bump. That is small h.' },
+      example: { kind: 'trace', text: 'h', caption: 'A tall stick and a bump. That is small h.' },
       script: [
-        { say: 'Start at the dot. Go down the tall stick, then over the bump. That is small h.', show: { kind: 'letters', text: 'h' } },
-        { say: 'Start at the dot. Down, then bump, then bump again. That is small m.', show: { kind: 'letters', text: 'm' } },
-        { say: 'Start at the dot. Across, down the slide, and across again. That is small z.', show: { kind: 'letters', text: 'z' } },
-        { say: 'Start at the dot. Follow the arrow. Stay on the line.', show: { kind: 'letters', text: 'w' } },
+        { say: 'Start at the dot. Go down the tall stick, then over the bump. That is small h.', show: { kind: 'trace', text: 'h', pace: 'quick' } },
+        { say: 'Start at the dot. Down, then bump, then bump again. That is small m.', show: { kind: 'trace', text: 'm', pace: 'quick' } },
+        { say: 'Start at the dot. Across, down the slide, and across again. That is small z.', show: { kind: 'trace', text: 'z', pace: 'quick' } },
+        { say: 'Start at the dot. Follow the arrow. Stay on the line.', show: { kind: 'trace', text: 'w', pace: 'quick' } },
       ],
     },
     sources: ['Aligned with Texas TEKS 1.2F (develop handwriting by printing words, sentences, and answers legibly) and Common Core L.1.1.A (print all upper- and lowercase letters).'],
@@ -5304,7 +5480,7 @@ function GRADE8_HISTORY_MODULES() { return [
       example: { kind: 'letters', text: '1776, 1787, 1791', caption: 'Three documents.' },
     },
     sources: ['Aligned with Texas TEKS 8.4C (explain the issues surrounding important events of the American Revolution) and 8.15C (identify colonial grievances listed in the Declaration of Independence and explain how they were addressed in the Constitution), and NCSS Theme VI.'],
-    generators: ['h8-which-document', 'h8-compromise', 'h8-which-document', 'h8-compromise', 'h8-we-the-people'],
+    generators: ['h8-which-document', 'h8-compromise', 'h8-reference-year', 'h8-reference-fact', 'h8-we-the-people'],
   },
   {
     id: 'early-republic',
@@ -5474,6 +5650,787 @@ function GRADE10_HISTORY_MODULES() { return [
 ]; }
 
 // Grade 11 United States history since 1877: six turns.
+// Kindergarten to grade 3 community and civics: rules and helpers, needs and wants, the flag,
+// leaders, goods and services, maps, then and now, good citizens, money, and the three levels of
+// government. Spoken through grade 2, like every early course.
+function KINDER_CIVICS_MODULES() { return [
+  {
+    id: 'rules-and-helpers',
+    order: 1,
+    title: 'Rules and helpers',
+    tagline: 'Rules keep us safe, and helpers keep us going',
+    lesson: {
+      paragraphs: ['A rule tells us what to do. Rules keep everyone safe.', 'Helpers do jobs for the whole town. A firefighter puts out fires. A doctor helps when you are sick.'],
+      keyIdea: 'Rules keep us safe. Helpers do jobs for everyone.',
+      example: { kind: 'letters', text: 'STOP', caption: 'Stop at the sign. That is a rule.' },
+      script: [
+        { say: 'Stop at the sign. That is a rule. Rules keep everyone safe.', show: { kind: 'letters', text: 'STOP' } },
+        { say: 'A firefighter puts out the fire. That is a helper.', show: { kind: 'icon', name: 'fire' } },
+        { say: 'A doctor helps when you are sick. A teacher helps you learn.', show: null },
+      ],
+    },
+    sources: ['Aligned with Texas TEKS Kindergarten Social Studies (citizenship: the purpose of rules; community helpers and their jobs) and NCSS Theme VI (Power, Authority, and Governance).'],
+    generators: ['ck-why-rule', 'ck-which-helper', 'ck-good-choice', 'ck-which-helper', 'ck-why-rule'],
+  },
+  {
+    id: 'needs-and-wants',
+    order: 2,
+    title: 'Needs and wants',
+    tagline: 'What we must have and what we would like',
+    requires: ['rules-and-helpers'],
+    lesson: {
+      paragraphs: ['A need is something you must have to live. Food, water, a home and clothes are needs.', 'A want is something you would like. A toy is a want.'],
+      keyIdea: 'Needs come first. Wants can wait.',
+      example: { kind: 'icon', name: 'drop', caption: 'A drop of water. Water is a need.' },
+      script: [
+        { say: 'A drop of water. Water is a need. You must have it to live.', show: { kind: 'icon', name: 'drop' } },
+        { say: 'A home and warm clothes are needs too.', show: null },
+        { say: 'A toy is a want. It is nice, but you can live without it.', show: null },
+      ],
+    },
+    sources: ['Aligned with Texas TEKS Kindergarten Social Studies (economics: the difference between needs and wants) and NCSS Theme VII (Production, Distribution, and Consumption).'],
+    generators: ['ck-need-or-want', 'ck-need-or-want', 'ck-which-is-need', 'ck-need-or-want', 'ck-which-is-need'],
+  },
+  {
+    id: 'our-flag-and-holidays',
+    order: 3,
+    title: 'Our flag and holidays',
+    tagline: 'Stars, stripes and days we celebrate',
+    requires: ['needs-and-wants'],
+    lesson: {
+      paragraphs: ['Our flag is red, white and blue. It has 50 stars, one for each state, and 13 stripes for the first 13 states.', 'On July 4 we celebrate Independence Day. In November we give thanks on Thanksgiving.'],
+      keyIdea: 'Fifty stars, thirteen stripes, red white and blue.',
+      example: { kind: 'letters', text: '50', caption: 'Fifty stars, one for each state.' },
+      script: [
+        { say: 'Our flag has 50 stars. One star for each state.', show: { kind: 'letters', text: '50' } },
+        { say: 'It has 13 stripes for the first 13 states.', show: { kind: 'letters', text: '13' } },
+        { say: 'Red is on our flag. So are white and blue.', show: { kind: 'swatch', colour: 'red' } },
+      ],
+    },
+    sources: ['Aligned with Texas TEKS Kindergarten Social Studies (patriotism: the flag of the United States and patriotic holidays) and NCSS Theme X (Civic Ideals and Practices).'],
+    generators: ['ck-flag-count', 'ck-not-on-flag', 'ck-holiday', 'ck-flag-count', 'ck-holiday'],
+  },
+  {
+    id: 'jobs-people-do',
+    order: 4,
+    title: 'Jobs people do',
+    tagline: 'Why grown-ups go to work',
+    requires: ['our-flag-and-holidays'],
+    lesson: {
+      paragraphs: ['Grown-ups go to work to earn money. Money pays for needs, like food and a home.', 'Every job has its tools. A firefighter has a hose. A doctor has a stethoscope. A teacher has a whiteboard.'],
+      keyIdea: 'People work to earn money for needs. Every job has its tools.',
+      example: { kind: 'icon', name: 'fire', caption: 'A firefighter fights the fire with a hose.' },
+      script: [
+        { say: 'Grown-ups go to work to earn money for food and a home.', show: null },
+        { say: 'A firefighter fights the fire with a hose.', show: { kind: 'icon', name: 'fire' } },
+        { say: 'A doctor listens with a stethoscope. A teacher writes on a whiteboard.', show: null },
+      ],
+    },
+    sources: ['Aligned with Texas TEKS Kindergarten Social Studies (economics: jobs people do and why people work) and NCSS Theme VII (Production, Distribution, and Consumption).'],
+    generators: ['ck-job-tool', 'ck-why-work', 'ck-which-helper', 'ck-job-tool', 'ck-why-work'],
+  },
+  {
+    id: 'voting-in-class',
+    order: 5,
+    title: 'Voting in class',
+    tagline: 'Everyone gets one vote, and more wins',
+    requires: ['jobs-people-do'],
+    lesson: {
+      paragraphs: ['When the class has to choose, everyone gets one vote. Count the votes. The choice with more votes wins.'],
+      keyIdea: 'One vote each. More votes wins.',
+      example: { kind: 'dots', count: 5, caption: 'Five votes for the story.' },
+      script: [
+        { say: 'Count these five dots. Five children voted for the story.', show: { kind: 'dots', count: 5 } },
+        { say: 'Count these three dots. Three children voted for the song.', show: { kind: 'dots', count: 3 } },
+        { say: 'Five is more than three. The story wins.', show: null },
+      ],
+    },
+    sources: ['Aligned with Texas TEKS Kindergarten Social Studies K.9C (use voting as a method for group decision making) and NCSS Theme X (Civic Ideals and Practices).'],
+    generators: ['ck-more-votes', 'ck-one-vote-each', 'ck-more-votes', 'ck-more-votes', 'ck-one-vote-each'],
+  },
+]; }
+
+function GRADE1_CIVICS_MODULES() { return [
+  {
+    id: 'leaders-near-and-far',
+    order: 1,
+    title: 'Leaders near and far',
+    tagline: 'Mayor, governor, president',
+    requires: ['our-flag-and-holidays'],
+    lesson: {
+      paragraphs: ['A mayor leads a city. A governor leads a state. A president leads the whole country.', 'The capital of Texas is Austin. The capital of the United States is Washington, D.C.'],
+      keyIdea: 'Mayor for the city, governor for the state, president for the country.',
+      example: { kind: 'letters', text: 'Austin', caption: 'The capital of Texas.' },
+      script: [
+        { say: 'A mayor leads a city. A governor leads a state. A president leads the whole country.', show: null },
+        { say: 'Austin is the capital of Texas.', show: { kind: 'letters', text: 'Austin' } },
+        { say: 'The president works in the White House, in Washington.', show: null },
+      ],
+    },
+    sources: ['Aligned with Texas TEKS Grade 1 Social Studies (government: the roles of public officials, including mayor, governor and president) and NCSS Theme VI (Power, Authority, and Governance).'],
+    generators: ['c1-which-leader', 'c1-where-they-work', 'c1-texas-capital', 'c1-which-leader', 'c1-where-they-work'],
+  },
+  {
+    id: 'goods-and-services',
+    order: 2,
+    title: 'Goods and services',
+    tagline: 'Things you buy and work done for you',
+    requires: ['leaders-near-and-far'],
+    lesson: {
+      paragraphs: ['A good is a thing you can hold, like bread or shoes.', 'A service is work someone does for you, like a haircut or a bus ride.', 'People earn money by working. Then they trade the money for goods and services.'],
+      keyIdea: 'Goods are things. Services are work done for you. Money comes from work.',
+      example: { kind: 'letters', text: '10 cents', caption: 'A dime is worth ten cents.' },
+      script: [
+        { say: 'Bread is a good. You can hold it.', show: null },
+        { say: 'A haircut is a service. Someone does the work for you.', show: null },
+        { say: 'A dime is worth 10 cents. Three dimes make 30 cents.', show: { kind: 'letters', text: '30' } },
+      ],
+    },
+    sources: ['Aligned with Texas TEKS Grade 1 Social Studies (economics: goods and services, and how people earn money and use it) and NCSS Theme VII (Production, Distribution, and Consumption).'],
+    generators: ['c1-good-or-service', 'c1-count-coins', 'c1-good-or-service', 'c1-money-from', 'c1-count-coins'],
+  },
+  {
+    id: 'maps-of-my-world',
+    order: 3,
+    title: 'Maps of my world',
+    tagline: 'A map, a globe and four directions',
+    requires: ['goods-and-services'],
+    lesson: {
+      paragraphs: ['A map is a flat drawing of a place. A globe is a round model of the whole earth.', 'A compass rose shows north, south, east and west. The sun rises in the east.', 'A map key tells you what the little pictures mean.'],
+      keyIdea: 'North, south, east, west. The sun rises in the east.',
+      example: { kind: 'letters', text: 'N S E W', caption: 'North, south, east, west.' },
+      script: [
+        { say: 'North, south, east and west. Those are the four directions.', show: { kind: 'letters', text: 'N S E W' } },
+        { say: 'The sun rises in the east every morning.', show: { kind: 'icon', name: 'sun' } },
+        { say: 'A map key tells you what the little pictures mean.', show: null },
+      ],
+    },
+    sources: ['Aligned with Texas TEKS Grade 1 Social Studies (geography: maps and globes, cardinal directions and map keys) and NCSS Theme III (People, Places, and Environments).'],
+    generators: ['c1-direction', 'c1-map-or-globe', 'c1-map-key', 'c1-direction', 'c1-map-or-globe'],
+  },
+  {
+    id: 'signs-around-town',
+    order: 4,
+    title: 'Signs around town',
+    tagline: 'Words that keep everyone safe',
+    requires: ['maps-of-my-world'],
+    lesson: {
+      paragraphs: ['Signs tell everyone the same thing at once. STOP means stop, every time. EXIT shows the way out.', 'A red sign means danger or stop. Read the sign, then do what it says.'],
+      keyIdea: 'Signs tell everyone the same thing at once. Read the sign, then do what it says.',
+      example: { kind: 'letters', text: 'STOP', caption: 'Stop, every time.' },
+      script: [
+        { say: 'STOP. This sign means stop, every single time.', show: { kind: 'letters', text: 'STOP' } },
+        { say: 'EXIT. This sign shows the way out of a building.', show: { kind: 'letters', text: 'EXIT' } },
+        { say: 'Red means stop or danger. Read the sign, then do what it says.', show: { kind: 'swatch', colour: 'red' } },
+      ],
+    },
+    sources: ['Aligned with Texas TEKS Grade 1 Social Studies (citizenship: rules and signs that keep the community safe) and NCSS Theme VI (Power, Authority, and Governance).'],
+    generators: ['c1-sign-means', 'c1-sign-color', 'c1-sign-means', 'c1-why-signs', 'c1-sign-means'],
+  },
+  {
+    id: 'symbols-of-our-country',
+    order: 5,
+    title: 'Symbols of our country',
+    tagline: 'A bell, a statue, a mission and a flag',
+    requires: ['signs-around-town'],
+    lesson: {
+      paragraphs: ['A symbol stands for something bigger. The Liberty Bell is a big bell with a crack, in Philadelphia. The Statue of Liberty is a green statue holding a torch, in New York.', 'The Alamo is an old mission in San Antonio where Texans fought. Our flag has 50 stars and 13 stripes.'],
+      keyIdea: 'The Liberty Bell, the Statue of Liberty, the Alamo and the flag stand for our country and our state.',
+      example: { kind: 'letters', text: '50', caption: 'Fifty stars on our flag.' },
+      script: [
+        { say: 'The Liberty Bell is a big bell with a crack. It rang for freedom.', show: null },
+        { say: 'The Statue of Liberty holds a torch to welcome people to New York.', show: null },
+        { say: 'Our flag has 50 stars, one for each state.', show: { kind: 'letters', text: '50' } },
+      ],
+    },
+    sources: ['Aligned with Texas TEKS Grade 1 Social Studies 1.13A (explain state and national patriotic symbols, including the United States and Texas flags, the Liberty Bell, the Statue of Liberty, and the Alamo) and NCSS Theme X (Civic Ideals and Practices).'],
+    generators: ['c1-which-symbol', 'ck-flag-count', 'c1-which-symbol', 'c1-texas-symbol', 'c1-which-symbol'],
+  },
+]; }
+
+function GRADE2_CIVICS_MODULES() { return [
+  {
+    id: 'then-and-now',
+    order: 1,
+    title: 'Then and now',
+    tagline: 'How life has changed',
+    requires: ['maps-of-my-world'],
+    lesson: {
+      paragraphs: ['Long ago, people rode in wagons and sent letters. Now we ride in cars and send messages in a second.', 'A timeline puts events in order, from the earliest to the latest. The smaller the year, the earlier it happened.'],
+      keyIdea: 'Then is the past. Now is today. A timeline puts them in order.',
+      example: { kind: 'letters', text: '2018, 2023, 2024', caption: 'A timeline: earliest year first.' },
+      script: [
+        { say: 'Long ago people rode in wagons. Now we ride in cars.', show: null },
+        { say: 'Look at the years. A timeline puts events in order, and the smaller year comes first.', show: { kind: 'letters', text: '2018, 2023, 2024' } },
+        { say: 'Born in 2018. Started school in 2023. That is the order.', show: null },
+      ],
+    },
+    sources: ['Aligned with Texas TEKS Grade 2 Social Studies (history: how life has changed over time; using timelines to order events) and NCSS Theme II (Time, Continuity, and Change).'],
+    generators: ['c2-then-or-now', 'c2-timeline-order', 'c2-then-or-now', 'c2-earlier-year', 'c2-timeline-order'],
+  },
+  {
+    id: 'good-citizens',
+    order: 2,
+    title: 'Good citizens',
+    tagline: 'Honesty, respect, and how a group decides',
+    requires: ['then-and-now'],
+    lesson: {
+      paragraphs: ['A good citizen tells the truth, does their share, and listens to others.', 'When a group has to choose, everyone votes. The choice with more votes wins. That is a majority.'],
+      keyIdea: 'Honesty, responsibility, respect. When we vote, more wins.',
+      example: { kind: 'letters', text: '12 to 9', caption: 'Twelve votes beat nine.' },
+      script: [
+        { say: 'Telling the truth is honesty. Doing your share is responsibility.', show: null },
+        { say: 'Look at the vote. 12 for pizza and 9 for tacos. Pizza wins.', show: { kind: 'letters', text: '12 to 9' } },
+        { say: 'Listening while someone else talks is respect.', show: null },
+      ],
+    },
+    sources: ['Aligned with Texas TEKS Grade 2 Social Studies (citizenship: characteristics of good citizenship; voting as a way of making decisions) and NCSS Theme X (Civic Ideals and Practices).'],
+    generators: ['c2-which-trait', 'c2-vote-winner', 'c2-vote-margin', 'c2-which-trait', 'c2-vote-winner'],
+  },
+  {
+    id: 'producers-and-consumers',
+    order: 3,
+    title: 'Producers and consumers',
+    tagline: 'Making, buying, and keeping some back',
+    requires: ['good-citizens'],
+    lesson: {
+      paragraphs: ['A producer makes or sells something. A consumer buys it. When you buy a muffin, the baker is the producer and you are the consumer.', 'If you have 10 dollars and spend 6, you have 4 left. Saving means keeping some back for later.'],
+      keyIdea: 'Producers make. Consumers buy. Money left is what you had minus what you spent.',
+      example: { kind: 'letters', text: '10 − 6 = 4', caption: 'Ten dollars, spend six, four left.' },
+      script: [
+        { say: 'The baker makes the muffin. The baker is the producer.', show: null },
+        { say: 'You buy the muffin. You are the consumer.', show: null },
+        { say: 'Look at the numbers. Ten dollars minus six dollars leaves four dollars.', show: { kind: 'letters', text: '10 − 6 = 4' } },
+      ],
+    },
+    sources: ['Aligned with Texas TEKS Grade 2 Social Studies (economics: producers and consumers; saving and spending) and NCSS Theme VII (Production, Distribution, and Consumption).'],
+    generators: ['c2-producer-or-consumer', 'c2-money-left', 'c2-natural-resource', 'c2-producer-or-consumer', 'c2-money-left'],
+  },
+  {
+    id: 'maps-of-our-town',
+    order: 4,
+    title: 'Maps of our town',
+    tagline: 'Blocks, directions and the map key',
+    requires: ['producers-and-consumers'],
+    lesson: {
+      paragraphs: ['A town map shows streets, the school, the library and the park. The key tells you what each little picture means.', 'Walk 3 blocks north, then 2 more blocks north. That is 5 blocks north in all.', 'North and south are opposites. So are east and west.'],
+      keyIdea: 'The key tells you what the pictures mean. Count the blocks. North and south are opposites.',
+      example: { kind: 'letters', text: '3 + 2 = 5', caption: 'Five blocks north in all.' },
+      script: [
+        { say: 'Look at the numbers. Walk 3 blocks north, then 2 more. That is 5 blocks.', show: { kind: 'letters', text: '3 + 2 = 5' } },
+        { say: 'North, south, east, west. North and south are opposites.', show: { kind: 'letters', text: 'N S E W' } },
+        { say: 'A little book on the map key means the library.', show: null },
+      ],
+    },
+    sources: ['Aligned with Texas TEKS Grade 2 Social Studies (geography: maps of the community, cardinal directions and map keys) and NCSS Theme III (People, Places, and Environments).'],
+    generators: ['c2-blocks-walked', 'c2-opposite-direction', 'c2-map-symbol', 'c2-blocks-walked', 'c2-opposite-direction'],
+  },
+  {
+    id: 'services-in-our-town',
+    order: 5,
+    title: 'Services in our town',
+    tagline: 'What the town does for everyone',
+    requires: ['maps-of-our-town'],
+    lesson: {
+      paragraphs: ['The town government does jobs for everyone: police, the fire department, the library, the school and the park.', 'A pizza shop is a business. The library is a service the town provides for all of us.'],
+      keyIdea: 'Police, fire, library, school, park. The town provides them for everyone.',
+      example: { kind: 'icon', name: 'fire', caption: 'The fire department is a town service.' },
+      script: [
+        { say: 'Fire. The fire department puts it out. That is a service the town provides.', show: { kind: 'icon', name: 'fire' } },
+        { say: 'The library, the school and the park are town services too.', show: null },
+        { say: 'A pizza shop is a business, not a town service.', show: null },
+      ],
+    },
+    sources: ['Aligned with Texas TEKS Grade 2 Social Studies 2.8B (identify governmental services in the community such as police and fire protection, libraries, schools, and parks) and NCSS Theme VI (Power, Authority, and Governance).'],
+    generators: ['c2-service-or-business', 'c2-which-service', 'c2-service-or-business', 'c2-which-service', 'c2-service-or-business'],
+  },
+]; }
+
+function GRADE3_CIVICS_MODULES() { return [
+  {
+    id: 'three-levels-of-government',
+    order: 1,
+    title: 'Three levels of government',
+    tagline: 'City, state, country',
+    requires: ['producers-and-consumers'],
+    lesson: {
+      paragraphs: [
+        "You live under three governments at once.\n**Local:** your city or town, led by a mayor and a city council. It fixes the streets, runs the library and sends the fire truck.\n**State:** Texas, led by a governor and a legislature in Austin. It runs the state parks, builds the highways and gives out driver's licenses.\n**National:** the United States, led by a president and Congress in Washington, D.C. It prints the money, runs the army and delivers the mail.",
+        "Let's look at one street.\nThe pothole is local. The highway it joins is state. The stamp on the letter in the mailbox is national.\n[[Local: mayor. State: governor. National: president.]]\nThe closer the government, the more likely you can walk into its office and be heard.",
+      ],
+      keyIdea: 'Local government is the city, led by a mayor.\nState government is Texas, led by a governor in Austin.\nNational government is the United States, led by a president in Washington, D.C.',
+      example: { kind: 'letters', text: 'City, state, country', caption: 'Three governments, three leaders.' },
+    },
+    sources: ['Aligned with Texas TEKS Grade 3 Social Studies (government: the structure and services of local, state and national government; the roles of public officials) and NCSS Theme VI (Power, Authority, and Governance).'],
+    generators: ['c3-which-level', 'c3-leader-title', 'c3-capital-city', 'c3-which-level', 'c3-leader-title'],
+  },
+  {
+    id: 'how-we-decide',
+    order: 2,
+    title: 'How we decide',
+    tagline: 'Rules, laws, votes and the three jobs',
+    requires: ['three-levels-of-government'],
+    lesson: {
+      paragraphs: [
+        "A **rule** is for one family, one class or one team. A **law** is a rule for everyone in a city, a state or the whole country, and breaking it has a set punishment.\nWho makes laws? At the national level, **Congress**. Who carries them out? The **President**. Who decides what they mean when people disagree? The **courts**.\n[[Make, carry out, judge: three jobs, three branches.]]",
+        "Let's look at how a group chooses.\nEveryone votes, and the choice with more than half the votes wins. That is **majority rule**.\nA class of 24 votes on a field trip: 14 for the zoo, 10 for the museum. The zoo wins by 4.\nThe ones who lost still get to go, and still get a vote next time. That is the deal that makes voting work.",
+      ],
+      keyIdea: 'A rule is for a small group; a law is for everyone.\nCongress makes laws, the President carries them out, and the courts judge them.\nMajority rule means more than half wins, and the losers keep their vote.',
+      example: { kind: 'letters', text: '14 to 10', caption: 'The zoo wins by four.' },
+    },
+    sources: ['Aligned with Texas TEKS Grade 3 Social Studies (government: the difference between rules and laws; the three branches; citizenship: voting and majority rule) and NCSS Theme X (Civic Ideals and Practices).'],
+    generators: ['c3-rule-or-law', 'c3-branch-job', 'c3-vote-winner', 'c3-vote-margin', 'c3-branch-job'],
+  },
+  {
+    id: 'earning-and-choosing',
+    order: 3,
+    title: 'Earning and choosing',
+    tagline: 'Money is limited, so every choice costs something',
+    requires: ['how-we-decide'],
+    lesson: {
+      paragraphs: [
+        "There is never enough money for everything. That is **scarcity**, and it is why every choice gives something up.\nYou have 10 dollars. A book costs 6 and a ball costs 5. You cannot have both, because 6 and 5 is 11.\n[[Choose the ball, and the book is what you gave up.]]\nThe thing you gave up is the **opportunity cost**.",
+        "Let's look at where money comes from.\nPeople earn it by working, and in the United States anyone may start a business: a lemonade stand, a lawn service, a bakery. That freedom is called **free enterprise**.\nEarn, then choose, then keep some back. Saving is the choice that pays you later.",
+      ],
+      keyIdea: 'Scarcity means there is never enough for everything, so every choice gives something up.\nThe thing you gave up is the opportunity cost.\nPeople earn money by working, and anyone may start a business.',
+      example: { kind: 'letters', text: '6 + 5 = 11', caption: 'More than ten. You must choose.' },
+    },
+    sources: ['Aligned with Texas TEKS Grade 3 Social Studies (economics: scarcity and opportunity cost; earning income; the free enterprise system) and NCSS Theme VII (Production, Distribution, and Consumption).'],
+    generators: ['c3-can-afford', 'c3-opportunity-cost', 'c3-money-left', 'c3-can-afford', 'c3-free-enterprise'],
+  },
+]; }
+
+// Grade 6 world cultures: where places are, what culture is, how people are governed, how they
+// make a living, why they move, and the regions of the world today.
+function GRADE6_HISTORY_MODULES() { return [
+  {
+    id: 'maps-and-hemispheres',
+    order: 1,
+    title: 'Maps and hemispheres',
+    tagline: 'Where everything is',
+    lesson: {
+      paragraphs: [
+        "The world has seven continents and five oceans, and every place on it can be named with two numbers.\n[[Seven continents: Africa, Antarctica, Asia, Australia, Europe, North America, South America.]]\n[[Five oceans: Pacific, Atlantic, Indian, Southern, Arctic.]]\n**Latitude** measures how far north or south of the equator a place is. **Longitude** measures how far east or west of the prime meridian.",
+        "Let's look at the two zero lines.\nThe **equator** is 0 degrees latitude. It cuts the world into the Northern and Southern Hemispheres.\nThe **prime meridian** is 0 degrees longitude. It runs through Greenwich, in London, and cuts the world into the Eastern and Western Hemispheres.\nSo every place is in two hemispheres at once: north or south, and east or west.",
+        "Let's look at Houston: about 30 degrees north, 95 degrees west.\nNorth of the equator: the Northern Hemisphere. West of the prime meridian: the Western Hemisphere.\n[[N or S comes from latitude. E or W comes from longitude.]]\nRead the two letters and you know which quarter of the world you are in before you know anything else.",
+      ],
+      keyIdea: 'The world has seven continents and five oceans.\nLatitude measures north or south of the equator, and longitude east or west of the prime meridian.\nEvery place sits in two hemispheres at once.',
+      example: { kind: 'letters', text: '30 N, 95 W', caption: 'Houston: Northern and Western Hemispheres.' },
+    },
+    sources: ['Aligned with Texas TEKS Grade 6 Social Studies (geography: maps, globes, latitude and longitude; the physical world) and NCSS Theme III (People, Places, and Environments).'],
+    generators: ['wc6-hemisphere', 'wc6-continent-of', 'wc6-how-many', 'wc6-which-line', 'wc6-hemisphere'],
+  },
+  {
+    id: 'what-culture-is',
+    order: 2,
+    title: 'What culture is',
+    tagline: 'The way of life a group shares',
+    requires: ['maps-and-hemispheres'],
+    lesson: {
+      paragraphs: [
+        "**Culture** is the way of life a group of people shares: what they speak, believe, eat, celebrate, make and expect of one another.\nIts pieces are easy to name.\n**Language:** the words people use.\n**Religion:** what they believe about the sacred.\n**Customs:** how they greet, marry, mourn and celebrate.\n**Food, arts and dress:** what they make and wear.\n**Government and rules:** who decides, and how.",
+        "Let's look at how culture travels. That is called **cultural diffusion**.\nNoodles reached Italy along trade routes. Spanish is spoken in Mexico because Spain ruled it for three centuries. Vietnamese food is everywhere in Houston because families moved there. Korean pop music is heard in Brazil through the internet.\n[[Trade, conquest, migration, media: the four roads culture travels.]]",
+        "Let's look at the world's largest religions and where each began.\nJudaism and Christianity began in the Middle East. Islam began in Arabia. Hinduism and Buddhism began in India.\nEach traveled the same four roads, which is why a religion born in one valley can be practiced on every continent today.",
+      ],
+      keyIdea: 'Culture is the way of life a group shares: language, religion, customs, food, arts and government.\nIt travels by trade, conquest, migration and media.\nThe largest religions each began in one place and now live everywhere.',
+      example: { kind: 'letters', text: 'Culture', caption: 'The way of life a group shares.' },
+    },
+    sources: ['Aligned with Texas TEKS Grade 6 Social Studies (culture: the elements of culture, cultural diffusion, and the major world religions) and NCSS Theme I (Culture).'],
+    generators: ['wc6-culture-part', 'wc6-how-it-spread', 'wc6-religion-origin', 'wc6-culture-part', 'wc6-how-it-spread'],
+  },
+  {
+    id: 'kinds-of-government',
+    order: 3,
+    title: 'Kinds of government',
+    tagline: 'Who decides, and who can stop them',
+    requires: ['what-culture-is'],
+    lesson: {
+      paragraphs: [
+        "Every country has to answer one question: who decides? The answers sort into a few kinds.\n**Democracy:** the people decide, usually by electing representatives.\n**Monarchy:** a king or queen rules, by birth.\n**Dictatorship:** one person rules, and no free election can remove them.\n**Oligarchy:** a small group rules.\n**Theocracy:** religious leaders rule by religious law.",
+        "Let's look at the question under the question: can anyone stop the ruler?\nA **limited government** is bound by a constitution and laws it cannot break. The United States is one. So is Britain, where the monarch reigns but Parliament rules.\nAn **unlimited government** answers to no law above itself. Most dictatorships are unlimited.\n[[Limited: the law is above the ruler. Unlimited: the ruler is above the law.]]",
+        "The label and the reality can differ. A country can hold elections and still be a dictatorship if only one candidate is allowed to win.\nSo ask two questions of any government: who decides, and what stops them. The second question tells you more.",
+      ],
+      keyIdea: 'Governments differ by who decides: the people, a monarch, one dictator, a small group or religious leaders.\nA limited government is bound by law above it, and an unlimited one is not.\nThe second question tells you more than the first.',
+      example: { kind: 'letters', text: 'Who decides?', caption: 'The question every kind of government answers.' },
+    },
+    sources: ['Aligned with Texas TEKS Grade 6 Social Studies (government: limited and unlimited governments, and the characteristics of democracies, monarchies, dictatorships, oligarchies and theocracies) and NCSS Theme VI (Power, Authority, and Governance).'],
+    generators: ['wc6-government-kind', 'wc6-limited-or-not', 'wc6-who-rules', 'wc6-government-kind', 'wc6-limited-or-not'],
+  },
+  {
+    id: 'kinds-of-economies',
+    order: 4,
+    title: 'Kinds of economies',
+    tagline: 'How a country makes its living',
+    requires: ['kinds-of-government'],
+    lesson: {
+      paragraphs: [
+        "Every economy answers what to make, how, and for whom. The kinds differ in who answers.\n**Traditional economy:** custom decides. People farm, herd or fish as their parents did.\n**Command economy:** the government decides what is made and what it costs.\n**Market economy:** buyers and sellers decide, through prices.\n**Mixed economy:** mostly market, with the government stepping in for some things. Almost every country today is mixed.",
+        "Let's look at one number that describes how well a country's people live: **GDP per person**.\nGDP is everything a country makes in a year. Divide it by the population, and you have the share for each person.\n[[GDP per person = GDP ÷ population]]\nA country with a GDP of 400 billion dollars and 20 million people has a GDP per person of 20,000 dollars.\nCountries with a high number are called **developed**; countries still building roads, schools and industries are called **developing**.",
+        "One number never tells the whole story. Two countries with the same GDP per person can share it very differently.\nBut it is the first number geographers reach for, and now you can compute it.",
+      ],
+      keyIdea: 'Economies differ by who decides: custom, the government, the market, or a mix.\nGDP per person is GDP divided by population.\nA high number marks a developed country, and a lower one a developing country.',
+      example: { kind: 'letters', text: 'GDP ÷ people', caption: 'GDP per person, the first number geographers reach for.' },
+    },
+    sources: ['Aligned with Texas TEKS Grade 6 Social Studies (economics: traditional, command, market and mixed economies; developed and developing countries) and NCSS Theme VII (Production, Distribution, and Consumption).'],
+    generators: ['wc6-economy-kind', 'wc6-gdp-per-person', 'wc6-who-decides', 'wc6-economy-kind', 'wc6-gdp-per-person'],
+  },
+  {
+    id: 'people-on-the-move',
+    order: 5,
+    title: 'People on the move',
+    tagline: 'Where people live and why they leave',
+    requires: ['kinds-of-economies'],
+    lesson: {
+      paragraphs: [
+        "Some places are crowded and some are nearly empty. **Population density** says which.\n[[Density = people ÷ area]]\nA town of 5,000 people on 10 square miles has a density of 500 people per square mile.\nRiver valleys, coasts and cities are dense. Deserts, mountains and the far north are not, and the reasons are water, food and work.",
+        "Let's look at why people move.\nA **push factor** drives people out: war, drought, flood, no work, no freedom.\nA **pull factor** draws people in: jobs, safety, family already there, the freedom to worship.\n[[Push: what makes you leave. Pull: what makes you choose where.]]\nMost moves have both. The war is the push. The cousin in Houston is the pull.",
+        "For most of history, most people lived in the countryside. Today more than half the world lives in cities, and the share is still rising. That move from farm to city is called **urbanization**.\nA city that passes ten million people is a **megacity**. There are dozens now, most of them in Asia.",
+      ],
+      keyIdea: 'Population density is people divided by area, and water, food and work decide it.\nPush factors drive people out, and pull factors draw them in.\nMore than half the world now lives in cities.',
+      example: { kind: 'letters', text: '5,000 ÷ 10', caption: 'Five hundred people per square mile.' },
+    },
+    sources: ['Aligned with Texas TEKS Grade 6 Social Studies (geography: population distribution, density, migration and urbanization) and NCSS Theme III (People, Places, and Environments).'],
+    generators: ['wc6-density', 'wc6-push-or-pull', 'wc6-more-crowded', 'wc6-density', 'wc6-push-or-pull'],
+  },
+  {
+    id: 'world-regions-today',
+    order: 6,
+    title: 'World regions today',
+    tagline: 'One feature and one language at a time',
+    requires: ['people-on-the-move'],
+    lesson: {
+      paragraphs: [
+        "Geographers divide the world into regions: places that share a landform, a climate, a language or a history.\nLet's look at one great feature on each continent.\n**Africa:** the Sahara, the largest hot desert, and the Nile.\n**Asia:** the Himalayas, the highest mountains, and the Gobi Desert.\n**Europe:** the Alps.\n**North America:** the Rocky Mountains and the Mississippi River.\n**South America:** the Amazon rainforest and the Andes.\n**Australia:** the Great Barrier Reef.",
+        "Language draws regions too.\nSpanish is spoken across most of Latin America, and Portuguese in Brazil. Arabic runs from Morocco to Iraq. Mandarin is spoken in China, Hindi in northern India, Japanese in Japan.\nFrench, German and Italian each mark a part of Europe.\n[[A region is a place that shares something.]]",
+        "Regions overlap. Egypt is in Africa by continent, in the Middle East by culture, and in the Arabic-speaking world by language, all at once.\nThat is not a problem to fix. It is how geographers see: one place, several maps.",
+      ],
+      keyIdea: 'A region is a place that shares a landform, a climate, a language or a history.\nEach continent has great features: the Sahara, the Himalayas, the Alps, the Rockies, the Amazon, the reef.\nRegions overlap, and one place can be on several maps.',
+      example: { kind: 'letters', text: 'Region', caption: 'A place that shares something.' },
+    },
+    sources: ['Aligned with Texas TEKS Grade 6 Social Studies (geography: physical and cultural regions of the world) and NCSS Theme IX (Global Connections).'],
+    generators: ['wc6-feature-continent', 'wc6-language-of', 'wc6-feature-kind', 'wc6-feature-continent', 'wc6-language-of'],
+  },
+]; }
+
+// Grade 7 Texas history: the first Texans, Spain and Mexico, the revolution and republic, statehood
+// and the Civil War, cattle and oil, and the Texas of the last century.
+function GRADE7_HISTORY_MODULES() { return [
+  {
+    id: 'the-first-texans',
+    order: 1,
+    title: 'The first Texans',
+    tagline: 'Four regions and the peoples who lived in them',
+    requires: ['first-texans'],
+    lesson: {
+      paragraphs: [
+        "Texas has four natural regions, and each shaped the people who lived there long before any flag flew over it.\n**The Gulf Coastal Plains:** the wet, flat southeast, from Houston to the Rio Grande.\n**The North Central Plains:** rolling prairie around Dallas and Fort Worth.\n**The Great Plains:** the high, dry Panhandle and Llano, around Amarillo and Lubbock.\n**Mountains and Basins:** the far west, around El Paso.",
+        "Let's look at who lived where.\nThe **Caddo** farmed corn and beans in the piney east and lived in villages of grass houses.\nThe **Karankawa** fished and gathered along the Gulf coast.\nThe **Jumano** farmed and traded along the Rio Grande.\nThe **Apache** and, after the horse arrived, the **Comanche** followed the buffalo across the plains and became the finest riders on the continent.",
+        "The horse changed everything on the plains. It came with the Spanish, escaped, and within a century the Comanche had built a whole way of life around it.\n[[Land shaped work, and work shaped the people.]]\nThat is the first pattern of Texas history, and it never stops being true.",
+      ],
+      keyIdea: 'Texas has four natural regions: the Gulf Coastal Plains, the North Central Plains, the Great Plains, and Mountains and Basins.\nThe Caddo farmed, the Karankawa fished, the Jumano traded, and the Apache and Comanche followed the buffalo.\nLand shaped work, and work shaped the people.',
+      example: { kind: 'letters', text: 'Four regions', caption: 'Coastal, prairie, high plains, mountains.' },
+    },
+    sources: ['Aligned with Texas TEKS Grade 7 Social Studies (the natural regions of Texas and the American Indian groups who lived in them before European contact) and NCSS Theme III (People, Places, and Environments).'],
+    generators: ['tx7-people-region', 'tx7-way-of-life', 'tx7-four-regions', 'tx7-people-region', 'tx7-four-regions'],
+  },
+  {
+    id: 'spain-and-mexico-in-texas',
+    order: 2,
+    title: 'Spanish and Mexican Texas',
+    tagline: 'Three hundred years under two flags',
+    requires: ['the-first-texans'],
+    lesson: {
+      paragraphs: [
+        "Spain claimed Texas for three centuries and settled almost none of it.\n[[1519: Piñeda maps the coast. 1682: the first mission, at Ysleta. 1718: San Antonio.]]\nThe missions were meant to make Native people Spanish subjects and Catholics. Most failed. San Antonio, with its mission, fort and town, was the one that took.",
+        "Let's look at the turn.\nIn 1821 Mexico won its independence from Spain, and Texas became a Mexican state.\nMexico wanted settlers, so it let **empresarios** bring in families. Stephen F. Austin brought the first three hundred that same year.\nThe settlers came from the United States, spoke English, and many brought enslaved people, which Mexican law forbade.",
+        "By 1830 Mexico saw the problem: Texas was filling with people who did not think of themselves as Mexican.\nThe **Law of April 6, 1830** closed the border to more Americans. It was too late to change who lived there, and just in time to make them angry.\n[[1821: Mexico independent, Austin's colony. 1830: the border closes.]]",
+      ],
+      keyIdea: 'Spain claimed Texas for three centuries and settled little of it beyond San Antonio.\nMexico won independence in 1821 and brought in settlers through empresarios like Stephen F. Austin.\nBy 1830 Mexico closed the border, too late to change who lived in Texas.',
+      example: { kind: 'letters', text: '1821', caption: 'Mexico is independent, and Austin\'s colony begins.' },
+    },
+    sources: ['Aligned with Texas TEKS Grade 7 Social Studies (the Spanish colonial and Mexican national eras: missions, empresarios, and the causes of the Texas Revolution) and NCSS Theme II (Time, Continuity, and Change).'],
+    generators: ['tx7-spanish-year', 'tx7-spanish-fact', 'h4-tx-year', 'tx7-empresario', 'tx7-spanish-year'],
+  },
+  {
+    id: 'revolution-and-republic',
+    order: 3,
+    title: 'Revolution and republic',
+    tagline: 'Seven months of war and nine years of a country',
+    requires: ['spain-and-mexico-in-texas'],
+    lesson: {
+      paragraphs: [
+        "The war lasted seven months.\n[[October 1835: Gonzales, the first shot. March 2, 1836: independence declared.]]\n[[March 6: the Alamo falls. March 27: Goliad. April 21: San Jacinto.]]\nAt Goliad, about 340 Texan prisoners were shot on Santa Anna's order. Remember the Alamo and Remember Goliad were both shouted at San Jacinto.",
+        "Let's look at the country that came out of it.\nThe **Republic of Texas** lasted from 1836 to 1845. **Sam Houston** was its first president. Austin became the capital in 1839.\nIt was broke, at war with the Comanche, and unrecognized by Mexico, which never signed a peace.\nMost Texans wanted to join the United States from the start. It took nine years, because adding a slave state upset the balance in Washington.",
+        "Nine years of a flag with one star, and then twenty-eight. The Lone Star stayed on the state flag, which is why Texans still call it that.\n[[1836: republic. 1839: Austin. 1845: the 28th state.]]",
+      ],
+      keyIdea: 'The revolution ran from Gonzales in October 1835 to San Jacinto in April 1836, with the Alamo and Goliad between.\nThe Republic of Texas lasted from 1836 to 1845, with Sam Houston its first president.\nJoining the United States took nine years because of slavery.',
+      example: { kind: 'letters', text: '1836 to 1845', caption: 'The Republic of Texas.' },
+    },
+    sources: ['Aligned with Texas TEKS Grade 7 Social Studies (the Texas Revolution and the Republic of Texas: key events, leaders and issues) and NCSS Theme II (Time, Continuity, and Change).'],
+    generators: ['h4-rev-year', 'h4-rev-fact', 'tx7-republic-year', 'tx7-republic-fact', 'tx7-rev-order'],
+  },
+  {
+    id: 'statehood-and-civil-war',
+    order: 4,
+    title: 'Statehood and the Civil War',
+    tagline: 'Into the Union, out, and back',
+    requires: ['revolution-and-republic'],
+    lesson: {
+      paragraphs: [
+        "Texas joined the Union on December 29, 1845, and the trouble Mexico had promised arrived within months.\n[[1846: the Mexican-American War begins. 1848: Mexico gives up its claim; the Rio Grande is the border.]]\nThe Compromise of 1850 then paid Texas ten million dollars to give up its claim to land in New Mexico, and drew the shape of the state you know.",
+        "Let's look at the break.\nIn 1861 Texans voted to leave the Union and join the Confederacy. Governor **Sam Houston** refused to swear loyalty to it and was removed from office.\nTexas sent men east to the war and cotton out through Mexico. Few battles reached it.\nOn June 19, 1865, General Granger read the order in Galveston: everyone enslaved in Texas was free. That day is **Juneteenth**.",
+        "Coming back was slow. Texas was readmitted to the Union in 1870, after Reconstruction governments, new constitutions and years of argument over who could vote.\nIn 1876 Texans wrote the constitution the state still uses, built to keep government small: a part-time legislature and a governor on a short leash.\n[[1845: in. 1861: out. 1870: back. 1876: the constitution.]]",
+      ],
+      keyIdea: 'Texas joined the Union in 1845, and war with Mexico followed in 1846.\nIn 1861 Texas left for the Confederacy over Sam Houston\'s objection, and on June 19, 1865, slavery ended in Texas.\nTexas was readmitted in 1870 and wrote its current constitution in 1876.',
+      example: { kind: 'letters', text: 'June 19', caption: 'Juneteenth, 1865.' },
+    },
+    sources: ['Aligned with Texas TEKS Grade 7 Social Studies (early statehood, the Mexican-American War, Texas in the Civil War, and Reconstruction) and NCSS Theme II (Time, Continuity, and Change).'],
+    generators: ['h4-union-year', 'h4-union-fact', 'tx7-state-year', 'tx7-state-fact', 'tx7-houston-stand'],
+  },
+  {
+    id: 'cattle-cotton-and-oil',
+    order: 5,
+    title: 'Cattle, cotton and oil',
+    tagline: 'How Texas got rich',
+    requires: ['statehood-and-civil-war'],
+    lesson: {
+      paragraphs: [
+        "After the war, Texas had millions of longhorn cattle and nobody to sell them to. The railroads in Kansas were the answer.\n[[1867: the first drives up the Chisholm Trail to the railhead at Abilene.]]\nA steer worth a few dollars in Texas sold for ten times that in Kansas. A herd of 2,500 head at 20 dollars a head was 50,000 dollars.\nThe drives lasted about twenty years, until railroads reached Texas and barbed wire, patented in 1874, fenced the open range.",
+        "Let's look at cotton, which was bigger than cattle. By 1900 Texas grew more cotton than any other state, and railroads carried it to the ports.\nThen came the day that changed everything.\n[[January 10, 1901: the Lucas gusher at Spindletop, near Beaumont.]]\nOil blew 150 feet into the air for nine days. Within a year, hundreds of companies had formed, and Texas stopped being mostly a farm.",
+        "One more date from that stretch: September 8, 1900, when a hurricane drowned Galveston and killed about 8,000 people, still the deadliest natural disaster in American history. Houston, inland and soon connected to the sea by a ship channel, took its place as the great port.",
+      ],
+      keyIdea: 'Cattle drives ran from Texas to the Kansas railroads from 1867 for about twenty years.\nCotton made Texas the biggest grower in the country by 1900.\nSpindletop in 1901 turned Texas into an oil state.',
+      example: { kind: 'letters', text: '1901', caption: 'Spindletop.' },
+    },
+    sources: ['Aligned with Texas TEKS Grade 7 Social Studies (cotton, cattle and railroads; the age of oil and the growth of the Texas economy) and NCSS Theme VII (Production, Distribution, and Consumption).'],
+    generators: ['tx7-growth-year', 'tx7-growth-fact', 'tx7-why-drive', 'tx7-herd-math', 'tx7-growth-year'],
+  },
+  {
+    id: 'modern-texas',
+    order: 6,
+    title: 'Modern Texas',
+    tagline: 'The last hundred years',
+    requires: ['cattle-cotton-and-oil'],
+    lesson: {
+      paragraphs: [
+        "In the twentieth century Texas grew from a farm state into the second-largest state in the country, by land and by people.\n[[1961: NASA chooses Houston. 1963: Kennedy is shot in Dallas. 1966: Barbara Jordan enters the Texas Senate.]]\nWhen Neil Armstrong landed on the moon in 1969, the first word he spoke was Houston.",
+        "Let's look at the Texas of today, in a few facts worth carrying.\nThe capital is **Austin**. The largest city is **Houston**. Only Alaska is bigger by land.\nOil and gas still matter, but so do medicine, computers, ports, farms and ranches, and the millions of people who moved here from every other state and dozens of countries.",
+        "Six flags have flown over Texas: Spain, France, Mexico, the Republic, the Confederacy, and the United States.\nThe land stayed the same through all six. That is the thread to hold on to.",
+      ],
+      keyIdea: 'In the twentieth century Texas became the second-largest state by land and people.\nNASA came to Houston in 1961, Kennedy was shot in Dallas in 1963, and Barbara Jordan entered the Texas Senate in 1966.\nThe capital is Austin, the largest city Houston, and six flags have flown here.',
+      example: { kind: 'letters', text: 'Six flags', caption: 'Spain, France, Mexico, the Republic, the Confederacy, the United States.' },
+    },
+    sources: ['Aligned with Texas TEKS Grade 7 Social Studies (Texas in the twentieth century: politics, economy and culture; Texas today) and NCSS Theme II (Time, Continuity, and Change).'],
+    generators: ['tx7-modern-year', 'tx7-modern-fact', 'tx7-texas-today', 'tx7-modern-year', 'tx7-texas-today'],
+  },
+]; }
+
+// Grade 9 world geography: the shape of the earth, climate, reading maps, people and places,
+// resources and work, and the regions of the world. Every number is computed.
+function GRADE9_HISTORY_MODULES() { return [
+  {
+    id: 'the-shape-of-the-earth',
+    order: 1,
+    title: 'The shape of the earth',
+    tagline: 'Plates, landforms and the biggest of everything',
+    lesson: {
+      paragraphs: [
+        "The earth's crust is broken into huge **plates** that drift a few centimeters a year, and almost everything dramatic about the surface happens where they meet.\n**Plates collide:** the crust folds up into mountains. The Himalayas are India pushing into Asia.\n**Plates pull apart:** the crust cracks and new ocean floor forms, as in the middle of the Atlantic.\n**Plates slide past:** the crust snags and lets go, which is an earthquake. California's San Andreas Fault is one.",
+        "Let's look at the shapes the land takes.\n**Mountain:** high, steep, often in a chain.\n**Plateau:** high and flat.\n**Plain:** low and flat.\n**Valley:** the low ground between hills, usually cut by a river.\n**Delta:** the fan of mud where a river meets the sea.",
+        "A few biggest things, worth knowing cold.\n[[Largest continent: Asia. Largest ocean: Pacific. Highest mountains: the Himalayas.]]\n[[Largest hot desert: the Sahara. Largest rainforest: the Amazon. Longest mountain range on land: the Andes.]]",
+      ],
+      keyIdea: 'The earth\'s crust is broken into plates, and mountains, earthquakes and new ocean floor happen where they meet.\nMountains, plateaus, plains, valleys and deltas are the shapes the land takes.\nAsia, the Pacific, the Himalayas, the Sahara and the Amazon are the biggest of their kinds.',
+      example: { kind: 'letters', text: 'Plates', caption: 'Where they meet, the earth moves.' },
+    },
+    sources: ['Aligned with Texas TEKS World Geography Studies (physical processes: plate tectonics, landforms, and the physical characteristics of places and regions) and NCSS Theme III (People, Places, and Environments).'],
+    generators: ['wg9-landform', 'wg9-plate-effect', 'wg9-biggest', 'wg9-landform', 'wg9-plate-effect'],
+  },
+  {
+    id: 'climate-and-biomes',
+    order: 2,
+    title: 'Climate and biomes',
+    tagline: 'Why places are hot, cold, wet or dry',
+    requires: ['the-shape-of-the-earth'],
+    lesson: {
+      paragraphs: [
+        "Three things decide a place's climate before anything else.\n**Latitude:** the nearer the equator, the more direct the sun, the warmer the year.\n**Elevation:** the higher you climb, the colder it gets, about 6 degrees Celsius for every 1,000 meters.\n**Water:** oceans warm slowly and cool slowly, so coasts have mild winters and mild summers. The middle of a continent gets both extremes.",
+        "Let's look at the elevation rule with numbers.\nA valley at sea level is 24 degrees. A town 2,000 meters up the mountain is about 12 degrees colder, so 12 degrees.\n[[Temperature drop = 6 × thousands of meters climbed]]\nThat is why snow sits on Kilimanjaro, three degrees from the equator.",
+        "Climate plus soil gives a **biome**, the community of plants and animals a place can support.\n**Tundra:** frozen, treeless, far north. **Taiga:** cold evergreen forest. **Temperate forest:** four seasons, leaves that fall.\n**Grassland:** too dry for forest, wet enough for grass. **Desert:** under 25 centimeters of rain a year. **Rainforest:** hot, wet, and home to more kinds of life than anywhere else.",
+      ],
+      keyIdea: 'Latitude, elevation and nearness to water decide climate.\nTemperature drops about 6 degrees Celsius for every 1,000 meters climbed.\nClimate and soil give a biome: tundra, taiga, temperate forest, grassland, desert or rainforest.',
+      example: { kind: 'letters', text: '6 per 1,000 m', caption: 'How much colder it gets as you climb.' },
+    },
+    sources: ['Aligned with Texas TEKS World Geography Studies (the factors that influence climate, and the characteristics of climate regions and biomes) and NCSS Theme III (People, Places, and Environments).'],
+    generators: ['wg9-biome', 'wg9-lapse', 'wg9-climate-factor', 'wg9-biome', 'wg9-lapse'],
+  },
+  {
+    id: 'reading-maps',
+    order: 3,
+    title: 'Reading maps',
+    tagline: 'Scale, time zones and what a map is for',
+    requires: ['climate-and-biomes'],
+    lesson: {
+      paragraphs: [
+        "A map is a drawing with a promise: a certain distance on the paper means a certain distance on the ground. That promise is the **scale**.\n[[Real distance = map distance × scale]]\nIf 1 centimeter stands for 50 kilometers and two towns are 3 centimeters apart, they are 150 kilometers apart.",
+        "Let's look at time zones, which are longitude with a clock.\nThe earth turns 360 degrees in 24 hours, so 15 degrees every hour.\n[[Hours apart = degrees of longitude apart ÷ 15]]\nNew York is near 75 degrees west and Denver near 105. That is 30 degrees, so two hours.\nEast of you it is later. West of you it is earlier.",
+        "Maps have jobs.\nA **political map** shows borders, countries and cities. A **physical map** shows land and water. A **thematic map** shows one thing, like rainfall or population, wherever it goes.\nAsk what a map is for before you ask what it says.",
+      ],
+      keyIdea: 'Scale turns a distance on the map into a distance on the ground.\nThe earth turns 15 degrees of longitude every hour, so hours apart is degrees apart divided by 15.\nPolitical, physical and thematic maps each answer a different question.',
+      example: { kind: 'letters', text: '360 ÷ 24 = 15', caption: 'Degrees of longitude in one hour.' },
+    },
+    sources: ['Aligned with Texas TEKS World Geography Studies (geographic tools: maps, scale, time zones, and map types) and NCSS Theme III (People, Places, and Environments).'],
+    generators: ['wg9-map-scale', 'wg9-time-zones', 'wg9-map-kind', 'wg9-map-scale', 'wg9-time-zones'],
+  },
+  {
+    id: 'people-and-places',
+    order: 4,
+    title: 'People and places',
+    tagline: 'Counting where people are and how fast they grow',
+    requires: ['reading-maps'],
+    lesson: {
+      paragraphs: [
+        "Geographers count people three ways.\n**Density** is people divided by area. A country of 20 million people on 100,000 square kilometers has 200 people per square kilometer.\n[[Density = people ÷ area]]\n**Natural increase** is births minus deaths, usually per thousand people a year. Twenty births and eight deaths per thousand is an increase of 12 per thousand, which is 1.2 percent.",
+        "Let's look at the third: how urban a place is.\nThe **urban share** is the people in cities divided by everyone, times 100. A country of 50 million with 40 million in cities is 80 percent urban.\n[[Urban share = city people ÷ all people × 100]]\nThe world crossed 50 percent urban around 2007. The richest countries are past 80.",
+        "The three numbers tell a story together. High density, fast increase and a low urban share means a crowded countryside about to move to the cities, which is the story of much of Africa and South Asia right now.",
+      ],
+      keyIdea: 'Density is people divided by area.\nNatural increase is births minus deaths per thousand.\nThe urban share is city people divided by all people, and the world passed half urban around 2007.',
+      example: { kind: 'letters', text: '20 − 8 = 12', caption: 'Natural increase per thousand people.' },
+    },
+    sources: ['Aligned with Texas TEKS World Geography Studies (population: distribution, density, growth and urbanization) and NCSS Theme III (People, Places, and Environments).'],
+    generators: ['wg9-density', 'wg9-natural-increase', 'wg9-urban-share', 'wg9-density', 'wg9-natural-increase'],
+  },
+  {
+    id: 'resources-and-work',
+    order: 5,
+    title: 'Resources and work',
+    tagline: 'What the land gives and what people do with it',
+    requires: ['people-and-places'],
+    lesson: {
+      paragraphs: [
+        "A **renewable** resource comes back: sunlight, wind, forests if you replant them, fish if you leave enough.\nA **nonrenewable** resource is used once: oil, coal, natural gas, iron, copper.\nThe difference is not good and bad. It is whether your grandchildren get any.",
+        "Let's look at the four kinds of work.\n**Primary:** taking from the land. Farming, fishing, mining, logging.\n**Secondary:** making things. Factories, mills, construction.\n**Tertiary:** services. Teaching, nursing, selling, driving.\n**Quaternary:** ideas and information. Research, software, design.\nA poor country works mostly in the first. A rich one works mostly in the last two.",
+        "Countries trade what they have for what they lack. **Exports** go out, **imports** come in.\n[[Trade balance = exports − imports]]\nA country that sells 80 billion dollars abroad and buys 60 billion has a balance of 20 billion in its favor.",
+      ],
+      keyIdea: 'Renewable resources come back, and nonrenewable ones are used once.\nWork is primary, secondary, tertiary or quaternary, and rich countries work mostly in services and ideas.\nThe trade balance is exports minus imports.',
+      example: { kind: 'letters', text: '80 − 60 = 20', caption: 'A trade balance of 20 billion in the country\'s favor.' },
+    },
+    sources: ['Aligned with Texas TEKS World Geography Studies (economics: renewable and nonrenewable resources, economic activities by sector, and international trade) and NCSS Theme VII (Production, Distribution, and Consumption).'],
+    generators: ['wg9-renewable', 'wg9-sector', 'wg9-trade-balance', 'wg9-sector', 'wg9-renewable'],
+  },
+  {
+    id: 'regions-of-the-world',
+    order: 6,
+    title: 'Regions of the world',
+    tagline: 'Continents, countries and capitals',
+    requires: ['resources-and-work'],
+    lesson: {
+      paragraphs: [
+        "A geographer carries a mental map: where the countries are, what their capitals are, and what feature marks each region.\nLet's look at a dozen capitals worth knowing cold.\n[[Mexico City, Ottawa, Brasília, Buenos Aires.]]\n[[Paris, Berlin, Cairo, Nairobi, Abuja.]]\n[[New Delhi, Beijing, Tokyo, Canberra.]]",
+        "And the feature that marks each continent, the same list from grade 6, because the earth has not moved.\nAfrica: the Sahara and the Nile. Asia: the Himalayas and the Gobi. Europe: the Alps.\nNorth America: the Rockies and the Mississippi. South America: the Amazon and the Andes. Australia: the Great Barrier Reef.",
+        "Every region is several regions at once. Egypt is African by continent, Middle Eastern by culture and Arabic-speaking by language.\nA good mental map keeps all three layers and never confuses them.",
+      ],
+      keyIdea: 'A geographer carries a mental map of countries, capitals and features.\nMexico City, Ottawa, Brasília, Paris, Berlin, Cairo, Nairobi, New Delhi, Beijing, Tokyo and Canberra are capitals worth knowing.\nEvery place sits in several regions at once.',
+      example: { kind: 'letters', text: 'Mental map', caption: 'Countries, capitals, features.' },
+    },
+    sources: ['Aligned with Texas TEKS World Geography Studies (regions of the world: physical, political and cultural characteristics) and NCSS Theme IX (Global Connections).'],
+    generators: ['wg9-capital', 'wc6-feature-continent', 'wc6-continent-of', 'wg9-capital', 'wc6-feature-continent'],
+  },
+]; }
+
+// College history: not another century of facts, but the craft. Sources, counting time, cause and
+// effect, the great turns of world history, and how to write a claim the evidence can carry.
+function COLLEGE_HISTORY_MODULES() { return [
+  {
+    id: 'primary-and-secondary-sources',
+    order: 1,
+    title: 'Primary and secondary sources',
+    tagline: 'Who was there, and who is telling you about it',
+    lesson: {
+      paragraphs: [
+        "History is not the past. It is an argument about the past, built from what survived.\nWhat survived comes in two kinds.\nA **primary source** was made at the time, by someone there: a letter, a diary, a photograph, a treaty, a tax roll, a tool.\nA **secondary source** was made later, by someone looking back: a textbook, a biography, a documentary.\n[[Primary: made then. Secondary: made about then.]]",
+        "Let's look at the question that matters more than the label: who made this, and why?\nA general's memoir is primary, and it was written to defend his decisions. A newspaper is primary, and it was printed to sell papers. A tax record is primary, and nobody wrote it to persuade anyone, which is exactly why historians love it.\nThe dullest sources are often the most honest.",
+        "Distance matters too. A soldier's letter written that week beats a history written sixty years later on what the soldier saw, and loses to it on what the whole war meant.\nRead every source twice: once for what it says, and once for what its maker wanted.",
+      ],
+      keyIdea: 'A primary source was made at the time by someone there; a secondary source was made later, looking back.\nAsk of every source who made it and why.\nThe dullest sources are often the most honest.',
+      example: { kind: 'letters', text: 'Who? Why?', caption: 'The two questions to ask of every source.' },
+    },
+    sources: ['Aligned with Texas College and Career Readiness Standards, Social Studies (evaluating sources: primary and secondary sources, point of view, bias) and NCSS Theme II (Time, Continuity, and Change).'],
+    generators: ['hc-source-kind', 'hc-why-made', 'hc-closer-witness', 'hc-source-kind', 'hc-why-made'],
+  },
+  {
+    id: 'counting-time',
+    order: 2,
+    title: 'Counting time',
+    tagline: 'Centuries, decades, and the missing year zero',
+    requires: ['primary-and-secondary-sources'],
+    lesson: {
+      paragraphs: [
+        "Historians count in centuries, and the count is off by one from what you would guess.\nThe first century ran from the year 1 to the year 100. So the years 1701 to 1800 are the **18th century**, and 1776 is in it.\n[[Century = the hundreds digit plus one (for years not ending in 00)]]\n1776: the hundreds are 17, so the 18th century. 1969: 19, so the 20th.",
+        "Let's look at the trap. There is no year zero. The calendar goes from 1 BC straight to 1 AD.\nSo the years between 44 BC and 476 AD are not 44 plus 476. They are 44 plus 476 minus 1.\n[[From a BC year to an AD year: add them, then take away one.]]\nCaesar's death to the fall of Rome: 44 + 476 − 1 = 519 years.",
+        "BC years run backward: 500 BC is earlier than 300 BC, because the count is down to the year 1.\nA decade is the ten years sharing a tens digit: 1968 is in the 1960s. The Sixties, historians say, though the decade that felt like the Sixties ran from about 1963 to 1974. Labels are tools, not facts.",
+      ],
+      keyIdea: 'The years 1701 to 1800 are the 18th century: hundreds digit plus one.\nThere is no year zero, so from a BC year to an AD year you add them and take away one.\nBC years run backward.',
+      example: { kind: 'letters', text: '44 + 476 − 1', caption: 'Years from Caesar\'s death to the fall of Rome: 519.' },
+    },
+    sources: ['Aligned with Texas College and Career Readiness Standards, Social Studies (chronological reasoning: periodization and calendar arithmetic) and NCSS Theme II (Time, Continuity, and Change).'],
+    generators: ['hc-which-century', 'hc-years-between', 'hc-earlier', 'hc-which-decade', 'hc-years-between'],
+  },
+  {
+    id: 'cause-and-effect',
+    order: 3,
+    title: 'Cause and effect',
+    tagline: 'The kinds of because',
+    requires: ['counting-time'],
+    lesson: {
+      paragraphs: [
+        "Every historical explanation is a chain of because, and the links come in kinds.\n**A long-term cause** builds for years: the alliances that split Europe into two armed camps before 1914.\n**A trigger** is the spark: an assassin in Sarajevo.\n**A short-term effect** follows within days or months: declarations of war across the continent.\n**A long-term effect** takes years to show: the resentment of the treaty that ended the war, which fed the next one.",
+        "Let's look at the mistake every beginner makes.\nIce cream sales and drownings both rise in July. Ice cream does not cause drowning; summer causes both.\nTwo things happening together is **correlation**. One thing making the other happen is **causation**. History is full of the first pretending to be the second.\n[[Together is not because.]]",
+        "The test for a cause is the counterfactual: without it, would the effect have happened anyway?\nWithout the assassination, would there have been a war in 1914? Probably a different one, later. Without the alliances, would the assassination have started a world war? Probably not.\nThat is why historians rank the alliances as the deeper cause and the shooting as the trigger.",
+      ],
+      keyIdea: 'Causes come in kinds: long-term causes build for years, a trigger is the spark, and effects can be short-term or long-term.\nTwo things happening together is correlation, not causation.\nThe test of a cause is the counterfactual: without it, would the effect have happened?',
+      example: { kind: 'letters', text: 'Because', caption: 'A word that comes in several kinds.' },
+    },
+    sources: ['Aligned with Texas College and Career Readiness Standards, Social Studies (historical causation: multiple causes, correlation and causation, counterfactual reasoning) and NCSS Theme II (Time, Continuity, and Change).'],
+    generators: ['hc-cause-kind', 'hc-correlation', 'hc-cause-kind', 'hc-counterfactual', 'hc-correlation'],
+  },
+  {
+    id: 'the-big-turns',
+    order: 4,
+    title: 'The big turns',
+    tagline: 'Eight moments the whole world bent around',
+    requires: ['cause-and-effect'],
+    lesson: {
+      paragraphs: [
+        "Zoom out far enough and human history has only a handful of turns.\n[[About 10,000 BC: farming begins in the Fertile Crescent.]]\n[[About 3200 BC: writing begins in Sumer.]]\n[[509 BC: the Roman republic; the same century, democracy in Athens.]]\n[[About 1450: printing with movable type.]]",
+        "[[1492: Columbus, and the Columbian exchange of plants, animals, people and disease.]]\n[[About 1760: the industrial revolution begins in Britain.]]\n[[1945: the atomic bomb and the United Nations.]]\n[[1991: the World Wide Web opens to the public.]]\nEach one changed how many people could live, how they could know things, or how fast the world could change.",
+        "Let's look at the pattern in the spacing.\nFrom farming to writing: about seven thousand years. From writing to printing: about four and a half thousand. From printing to the industrial revolution: three hundred. From industry to the web: about two hundred and thirty.\nThe turns come faster. That is the single most important fact about the time you live in.",
+      ],
+      keyIdea: 'Farming, writing, republics, printing, the Columbian exchange, industry, the atomic age and the web are the great turns.\nEach changed how many people could live, how they could know things, or how fast the world could change.\nThe turns come faster.',
+      example: { kind: 'letters', text: '8 turns', caption: 'From farming to the web.' },
+    },
+    sources: ['Aligned with Texas College and Career Readiness Standards, Social Studies (major developments and turning points in world history) and NCSS Theme IX (Global Connections).'],
+    generators: ['hc-turn-year', 'hc-turn-fact', 'hc-turns-order', 'hc-turn-year', 'hc-turn-fact'],
+  },
+  {
+    id: 'writing-history',
+    order: 5,
+    title: 'Writing history',
+    tagline: 'A claim the evidence can carry',
+    requires: ['the-big-turns'],
+    lesson: {
+      paragraphs: [
+        "A history essay makes a claim someone could disagree with, then carries it on evidence.\nA **fact** is not a claim: the Louisiana Purchase doubled the country. Nobody argues.\nA **thesis** is a claim: Jefferson bought Louisiana against his own reading of the Constitution because he judged the land worth more than the principle. That can be argued, and argued against.\n[[A thesis is a sentence somebody could disagree with.]]",
+        "Let's look at matching words to evidence.\nOne letter suggests. Three letters and a diary show. A decade of tax rolls establishes.\nWrite it is certain when it is certain, and the evidence suggests when it only suggests. A historian who overstates once is doubted forever.",
+        "Cite so the reader can check you. That is the whole point of a footnote: not decoration, but a promise that you did not make it up.\nClaim, evidence, citation. Three parts, every paragraph.",
+      ],
+      keyIdea: 'A fact is not a claim; a thesis is a sentence somebody could disagree with.\nMatch the strength of your words to the strength of the evidence.\nCite so the reader can check you.',
+      example: { kind: 'letters', text: 'Claim, evidence, citation', caption: 'Three parts, every paragraph.' },
+    },
+    sources: ['Aligned with Texas College and Career Readiness Standards, Social Studies (constructing an argument: thesis, evidence, appropriate qualification, and citation) and NCSS Theme II (Time, Continuity, and Change).'],
+    generators: ['hc-thesis-or-fact', 'hc-evidence-fits', 'hc-hedge', 'hc-thesis-or-fact', 'hc-evidence-fits'],
+  },
+]; }
+
 // Grade 12 government: the Constitution's principles, the three branches, federalism, the Bill of
 // Rights, how a bill becomes a law, and elections. Texas teaches government and economics as two
 // half-year courses in grade 12, so they are two courses here under the History subject.
@@ -5717,7 +6674,7 @@ function GRADE11_HISTORY_MODULES() { return [
       example: { kind: 'letters', text: '1920', caption: 'Women win the vote.' },
     },
     sources: ['Aligned with Texas TEKS US.3B and US.5A (analyze the impact of industrialization; evaluate the impact of Progressive Era reforms) and NCSS Theme VII (Production, Distribution, and Consumption).'],
-    generators: ['h11-gilded-year', 'h11-gilded-fact', 'h11-gilded-year', 'h11-progressive-law', 'h11-gilded-fact'],
+    generators: ['h11-gilded-year', 'h11-gilded-fact', 'h11-turning-year', 'h11-progressive-law', 'h11-gilded-fact'],
   },
   {
     id: 'depression-and-new-deal',
@@ -5753,7 +6710,7 @@ function GRADE11_HISTORY_MODULES() { return [
       example: { kind: 'letters', text: '1941 to 1945', caption: 'America at war.' },
     },
     sources: ['Aligned with Texas TEKS US.7A and US.7D (identify reasons for U.S. involvement in World War II; analyze major issues on the home front, including the internment of Japanese Americans) and NCSS Theme IX.'],
-    generators: ['h11-ww2-year', 'h11-ww2-fact', 'h11-ww2-year', 'h11-home-front', 'h11-ww2-fact'],
+    generators: ['h11-ww2-year', 'h11-ww2-fact', 'h11-turning-fact', 'h11-home-front', 'h11-ww2-fact'],
   },
   {
     id: 'cold-war',
@@ -10782,7 +11739,7 @@ const HISTORY_WHY = {
   'The Missouri Compromise': 'Missouri entered as a slave state and Maine as a free one, keeping the Senate balanced, with a line drawn across the west: no slavery north of it.',
   'The Compromise of 1850': 'California came in free, and a harsh new Fugitive Slave Act forced northerners to help return escaped people. It bought ten years of peace and a lot of anger.',
   'The Kansas-Nebraska Act': 'Each new territory would vote on slavery for itself. Settlers from both sides rushed to Kansas and fought, and the country called it Bleeding Kansas.',
-  'The Dred Scott decision': 'The Supreme Court ruled that Dred Scott, an enslaved man who had lived on free soil, was not a citizen and could not sue, and that Congress could not ban slavery in the territories.',
+  'The Dred Scott decision': 'Dred Scott, an enslaved man, had lived on free soil and sued for his freedom. The Supreme Court ruled that he was not a citizen and could not sue, and that Congress could not ban slavery in the territories.',
   'Lincoln is elected': 'Lincoln won without carrying a single southern state. Before he took office, seven states had left the Union.',
   'Rome becomes a republic': 'Romans drove out their last king and swore never to be ruled by a king again. Two elected consuls, one year each, took his place.',
   'Caesar crosses the Rubicon': 'Caesar led his army across the little Rubicon river into Italy, which the law forbade. The die is cast, he said, and civil war followed.',
@@ -10833,6 +11790,313 @@ const HISTORY_WHY = {
   'The pandemic closes schools and businesses': 'A new virus spread around the world. Schools closed, streets emptied, and by the end of the year more than 300,000 Americans had died.',
 };
 const withStory = (line, event) => (HISTORY_WHY[event] ? `${line}\n${HISTORY_WHY[event]}` : line);
+// ---- College history generators.
+const SOURCE_KINDS = [['A soldier\'s letter home, written that week', 'Primary'], ['A photograph taken on the day', 'Primary'], ['The text of the treaty', 'Primary'], ['A town\'s tax rolls from that year', 'Primary'], ['A diary kept during the siege', 'Primary'], ['A textbook chapter written last year', 'Secondary'], ['A biography written a century later', 'Secondary'], ['A documentary made in 2015', 'Secondary'], ['An encyclopedia article', 'Secondary']];
+const SOURCE_NOTES = { Primary: 'A primary source was made at the time, by someone there.', Secondary: 'A secondary source was made later, by someone looking back.' };
+const WHY_MADE = [['A general\'s memoir written after the war', 'To defend his decisions'], ['A newspaper front page', 'To sell papers'], ['A tax record', 'To collect taxes, not to persuade anyone'], ['A campaign poster', 'To win votes'], ['A letter from a soldier to his mother', 'To reassure her']];
+const WITNESS_PAIRS = [['A soldier\'s letter written that week', 'A history written sixty years later'], ['A photograph taken on the day', 'A painting made from memory a decade on'], ['The treaty text', 'A summary in a textbook']];
+const CAUSE_KINDS = [['Alliances that split Europe into two armed camps before 1914', 'Long-term cause'], ['Decades of rivalry over colonies and navies', 'Long-term cause'], ['An assassin shoots Archduke Franz Ferdinand in Sarajevo', 'Trigger'], ['Confederate guns fire on Fort Sumter', 'Trigger'], ['Declarations of war across Europe within weeks', 'Short-term effect'], ['Seven states leave the Union within months of an election', 'Short-term effect'], ['Resentment of the Treaty of Versailles that fed the next war', 'Long-term effect'], ['A century of segregation after Reconstruction ended', 'Long-term effect']];
+const CAUSE_NOTES = { 'Long-term cause': 'A long-term cause builds for years before anything happens.', Trigger: 'A trigger is the spark that sets the built-up causes off.', 'Short-term effect': 'A short-term effect follows within days or months.', 'Long-term effect': 'A long-term effect takes years to show.' };
+const CORRELATIONS = [['Ice cream sales and drownings both rise in July', 'Summer causes both'], ['Countries with more televisions live longer', 'Wealth causes both'], ['Towns with more churches have more crime', 'Bigger towns have more of both'], ['Students who eat breakfast score higher', 'Could be either; more evidence is needed']];
+const COUNTERFACTUALS = [['Without the alliances of 1914, would one assassination have started a world war?', 'Probably not, so the alliances are the deeper cause'], ['Without the assassination, would Europe have gone to war in 1914?', 'Probably a different war, later, so the shooting is the trigger'], ['Without the printing press, would the Reformation have spread as fast?', 'Probably not, so printing is a real cause of its speed']];
+const BIG_TURNS = [
+  { year: 'About 10,000 BC', event: 'Farming begins in the Fertile Crescent', why: 'People who had followed herds settled by their fields. Villages, then cities, then everything else followed from having more food than the day needed.' },
+  { year: 'About 3200 BC', event: 'Writing begins in Sumer', why: 'The first writing was accounting: marks on clay for grain and sheep. Once a mark could hold a thought, memory no longer died with the rememberer.' },
+  { year: '509 BC', event: 'Rome becomes a republic', why: 'Romans drove out their last king and swore never to be ruled by one again. In the same century Athens tried letting citizens vote. Both ideas were waiting two thousand years later.' },
+  { year: 'About 1450', event: 'Printing with movable type', why: 'Gutenberg\'s press made a page cost a coin instead of a day. Ideas, true and false, could now travel faster than the people who wanted to stop them.' },
+  { year: '1492', event: 'The Columbian exchange begins', why: 'Two halves of the world that had been apart for ten thousand years met. Horses, wheat and smallpox went west; potatoes, corn and tomatoes went east. Nothing on either side was the same after.' },
+  { year: 'About 1760', event: 'The industrial revolution begins in Britain', why: 'Coal and steam did the work of muscles. For the first time in history, a country could grow richer faster than its population grew.' },
+  { year: '1945', event: 'The atomic bomb and the United Nations', why: 'Within months the world learned that a war could end everything and built an organization to try to prevent the next one. Both facts have shaped every year since.' },
+  { year: '1991', event: 'The World Wide Web opens to the public', why: 'Tim Berners-Lee gave the web away free. Within a generation more people could reach more knowledge than every library in history combined.' },
+];
+const THESIS_OR_FACT = [['The Louisiana Purchase doubled the country', 'Fact'], ['The Civil War began in 1861', 'Fact'], ['The 19th Amendment was ratified in 1920', 'Fact'], ['Jefferson bought Louisiana against his own reading of the Constitution because he judged the land worth more than the principle', 'Thesis'], ['The North won the Civil War mainly because of its railroads, not its generals', 'Thesis'], ['Women won the vote in 1920 because the war had made their work impossible to ignore', 'Thesis']];
+const EVIDENCE_FITS = [['The North won mainly because of its railroads.', 'Union trains moved 25,000 men 1,200 miles in eleven days in 1863.', 'Lincoln was born in a log cabin.', 'The war began at Fort Sumter.'], ['Jefferson doubted the purchase was constitutional.', 'His 1803 letters propose an amendment to allow it.', 'The land cost fifteen million dollars.', 'Lewis and Clark set out in 1804.'], ['The 1900 hurricane pushed Galveston\'s trade to Houston.', 'Houston\'s port tonnage tripled in the ten years after the storm.', 'Galveston is an island.', 'The storm struck on September 8.']];
+const HEDGES = [['One letter mentions it', 'The evidence suggests'], ['Three letters and a diary describe it', 'The evidence shows'], ['A decade of tax rolls records it', 'The evidence establishes']];
+Object.assign(GENERATORS, {
+  'hc-source-kind': (rng) => kindQ(rng, SOURCE_KINDS, 'Primary or secondary?', SOURCE_NOTES),
+  'hc-why-made': (rng) => { const c = pick(rng, WHY_MADE); const others = shuffle(rng, WHY_MADE.filter((x) => x !== c)).slice(0, 2).map((x) => x[1]);
+    return { type: 'choice', story: `${c[0]}.`, prompt: 'Why was it made?', choices: shuffle(rng, [c[1], ...others]), answer: c[1], explain: `${c[0]}: ${c[1].charAt(0).toLowerCase()}${c[1].slice(1)}.\nRead it once for what it says and once for what its maker wanted.`, visual: null, explainVisual: null }; },
+  'hc-closer-witness': (rng) => { const c = pick(rng, WITNESS_PAIRS);
+    return { type: 'choice', story: null, prompt: 'Which was closer to the event?', choices: shuffle(rng, [c[0], c[1]]), answer: c[0], explain: `${c[0]} was made at the time. It wins on what was seen, and the later source wins on what it meant.`, visual: null, explainVisual: null }; },
+  'hc-which-century': (rng) => { const year = randInt(rng, 1001, 2099); const c = Math.floor((year - 1) / 100) + 1;
+    return { type: 'number', story: `The year ${year}.`, prompt: 'Which century is that?', answer: String(c), explain: `The hundreds digits are ${Math.floor(year / 100)}, so it is the ${c}th century, because the first century was the years 1 to 100.\n[[${year} is in the ${c}th century]]`, visual: null, explainVisual: null }; },
+  'hc-years-between': (rng) => {
+    if (randInt(rng, 0, 1) === 1) { const bc = pick(rng, [44, 100, 200, 300, 500]); const ad = pick(rng, [100, 476, 800, 1000, 1492]);
+      return { type: 'number', story: `From ${bc} BC to ${ad} AD.`, prompt: 'How many years is that?', answer: String(bc + ad - 1), explain: `There is no year zero, so add the two and take away one.\n[[${bc} + ${ad} − 1 = ${bc + ad - 1} years]]`, visual: null, explainVisual: null }; }
+    const a = randInt(rng, 1000, 1900); const b = a + randInt(rng, 5, 400);
+    return { type: 'number', story: `From ${a} to ${b}.`, prompt: 'How many years is that?', answer: String(b - a), explain: `Both are AD, so subtract.\n[[${b} − ${a} = ${b - a} years]]`, visual: null, explainVisual: null }; },
+  'hc-earlier': (rng) => { let a = pick(rng, [300, 500, 800, 1200]); let b = pick(rng, [300, 500, 800, 1200]); if (a === b) b = a + 200;
+    return { type: 'choice', story: `${a} BC and ${b} BC.`, prompt: 'Which came first?', choices: shuffle(rng, [`${a} BC`, `${b} BC`]), answer: `${Math.max(a, b)} BC`, explain: `BC years run backward toward the year 1, so the bigger number is earlier: ${Math.max(a, b)} BC.`, visual: null, explainVisual: null }; },
+  'hc-which-decade': (rng) => { const year = randInt(rng, 1800, 2019); const d = Math.floor(year / 10) * 10;
+    return { type: 'number', story: `The year ${year}.`, prompt: 'Which decade is that? Answer with its first year.', answer: String(d), explain: `A decade shares a tens digit, so ${year} is in the ${d}s.`, visual: null, explainVisual: null }; },
+  'hc-cause-kind': (rng) => kindQ(rng, CAUSE_KINDS, 'Which kind of because is that?', CAUSE_NOTES),
+  'hc-correlation': (rng) => { const c = pick(rng, CORRELATIONS); const others = shuffle(rng, CORRELATIONS.filter((x) => x !== c)).slice(0, 2).map((x) => x[1]);
+    return { type: 'choice', story: `${c[0]}.`, prompt: 'What is the best reading of that?', choices: shuffle(rng, [c[1], ...others]), answer: c[1], explain: `${c[1]}.\nTwo things rising together is correlation. It takes more to show that one causes the other.`, visual: null, explainVisual: null }; },
+  'hc-counterfactual': (rng) => { const c = pick(rng, COUNTERFACTUALS); const others = shuffle(rng, COUNTERFACTUALS.filter((x) => x !== c)).slice(0, 2).map((x) => x[1]);
+    return { type: 'choice', story: c[0], prompt: 'What does the counterfactual suggest?', choices: shuffle(rng, [c[1], ...others]), answer: c[1], explain: `${c[1]}.\nThe test of a cause is what would have happened without it.`, visual: null, explainVisual: null }; },
+  'hc-turn-year': (rng) => datedQuestion(rng, BIG_TURNS),
+  'hc-turn-fact': (rng) => datedFact(rng, BIG_TURNS),
+  'hc-turns-order': (rng) => { const four = shuffle(rng, BIG_TURNS).slice(0, 4).sort((a, b) => BIG_TURNS.indexOf(a) - BIG_TURNS.indexOf(b));
+    return orderQuestion(rng, 'Four of the great turns.', 'Tap them in order, from earliest to latest.', four.map((t) => t.event), four.map((t) => `${t.event}: ${t.year.toLowerCase()}.`).join('\n')); },
+  'hc-thesis-or-fact': (rng) => { const c = pick(rng, THESIS_OR_FACT);
+    return { type: 'choice', story: `${c[0]}.`, prompt: 'Thesis or fact?', choices: ['Thesis', 'Fact'], answer: c[1], explain: c[1] === 'Fact' ? 'Nobody argues with it, so it is a fact, not a claim.' : 'Somebody could disagree with it, so it is a thesis: a claim the essay has to carry.', visual: null, explainVisual: null }; },
+  'hc-evidence-fits': (rng) => { const c = pick(rng, EVIDENCE_FITS);
+    return { type: 'choice', story: `Claim: ${c[0]}`, prompt: 'Which evidence supports it?', choices: shuffle(rng, [c[1], c[2], c[3]]), answer: c[1], explain: `${c[1]}\nThe others are true and beside the point. Evidence has to bear on the claim.`, visual: null, explainVisual: null }; },
+  'hc-hedge': (rng) => { const c = pick(rng, HEDGES);
+    return { type: 'choice', story: `${c[0]}.`, prompt: 'How strongly may you put it?', choices: HEDGES.map((x) => x[1]), answer: c[1], explain: `${c[0]}: ${c[1].toLowerCase()}.\nMatch the strength of the words to the strength of the evidence, and you will be believed when it counts.`, visual: null, explainVisual: null }; },
+});
+
+// ---- Kindergarten to grade 3 community and civics generators.
+const CIV_HELPERS = [['Who puts out fires?', 'Firefighter'], ['Who helps you when you are sick?', 'Doctor'], ['Who teaches you at school?', 'Teacher'], ['Who brings the mail?', 'Mail carrier'], ['Who keeps people safe on the street?', 'Police officer']];
+const CIV_HELPER_NAMES = CIV_HELPERS.map((h) => h[1]);
+const CIV_RULE_WHYS = [['Why do we stop at a red light?', 'To stay safe'], ['Why do we wait our turn?', 'So it is fair for everyone'], ['Why do we walk in the hall?', 'So nobody gets hurt']];
+const CIV_GOOD_CHOICES = [['A friend drops their crayons.', 'Help pick them up', 'Walk away'], ['Someone is talking.', 'Listen', 'Talk over them'], ['You finish your snack.', 'Throw away the wrapper', 'Leave it on the floor']];
+const CIV_NEED_WANT = [['Water', 'Need'], ['A home', 'Need'], ['A warm coat', 'Need'], ['An apple', 'Need'], ['A toy car', 'Want'], ['Candy', 'Want'], ['A video game', 'Want'], ['A balloon', 'Want']];
+const CIV_FLAG_COUNTS = [['How many stars are on our flag?', 50], ['How many stripes are on our flag?', 13]];
+const CIV_HOLIDAYS = [['On July 4 we celebrate', 'Independence Day'], ['In November we give thanks on', 'Thanksgiving'], ['On the third Monday of January we honor', 'Martin Luther King Day']];
+const CIV_LEADERS = [['Who leads a city?', 'Mayor'], ['Who leads a state?', 'Governor'], ['Who leads the whole country?', 'President']];
+const CIV_WORKPLACES = [['Who works in the White House?', 'President'], ['Who works in the state capitol in Austin?', 'Governor'], ['Who works at city hall?', 'Mayor']];
+const CIV_GOOD_SERVICE = [['Bread', 'Good'], ['Shoes', 'Good'], ['A toy', 'Good'], ['A haircut', 'Service'], ['A bus ride', 'Service'], ['A visit to the doctor', 'Service']];
+const COIN_VALUES = [['dime', 10], ['nickel', 5], ['penny', 1]];
+const CIV_DIRECTIONS = [['The sun rises in the', 'East'], ['The sun sets in the', 'West'], ['The opposite of north is', 'South'], ['The opposite of east is', 'West']];
+const CIV_THEN_NOW = [['Riding in a wagon', 'Then'], ['Sending a letter by horse', 'Then'], ['Reading by candle', 'Then'], ['Riding in a car', 'Now'], ['Sending a message on a phone', 'Now'], ['Reading by electric light', 'Now']];
+const CIV_TRAITS = [['Telling the truth even when it is hard', 'Honesty'], ['Doing your chores without being asked', 'Responsibility'], ['Listening while someone else talks', 'Respect'], ['Taking turns on the swing', 'Fairness']];
+const CIV_TRAIT_NOTES = { Honesty: 'Honesty is telling the truth.', Responsibility: 'Responsibility is doing your share without being asked.', Respect: 'Respect is treating others the way you want to be treated.', Fairness: 'Fairness is everyone getting a turn.' };
+const CIV_PROD_CONS = [['The baker who makes the muffin', 'Producer'], ['The farmer who grows the corn', 'Producer'], ['The shop that sells shoes', 'Producer'], ['You, buying the muffin', 'Consumer'], ['A family buying groceries', 'Consumer']];
+const CIV_LEVELS3 = [['Fixes the potholes on your street', 'Local'], ['Runs the town library', 'Local'], ['Sends the fire truck', 'Local'], ['Runs the state parks', 'State'], ['Gives out driver\'s licenses', 'State'], ['Builds the highways', 'State'], ['Prints the money', 'National'], ['Runs the army', 'National'], ['Delivers the mail', 'National']];
+const CIV_LEVEL_NOTES = { Local: 'Local government is your city or town, led by a mayor.', State: 'State government is Texas, led by a governor in Austin.', National: 'National government is the United States, led by a president in Washington, D.C.' };
+const CIV_RULE_LAW = [['Bedtime at eight in one family', 'Rule'], ['No running in one classroom', 'Rule'], ['Wear a seat belt in every car in Texas', 'Law'], ['Stop at every red light', 'Law']];
+const CIV_BRANCH_JOBS = [['Makes the laws', 'Congress'], ['Carries out the laws', 'The President'], ['Decides what a law means', 'The courts']];
+const yesNo = (rng) => shuffle(rng, ['Yes', 'No']);
+const twoOf = (rng, list, answer) => shuffle(rng, [answer, ...shuffle(rng, [...new Set(list.filter((x) => x !== answer))]).slice(0, 2)]);
+Object.assign(GENERATORS, {
+  'pk4-tap-biggest': (rng) => { const sh = pick(rng, ['circle', 'square', 'triangle']);
+    return { type: 'choice', story: null, prompt: 'Tap the biggest one.', choices: shuffle(rng, [`shape:${sh}:big`, `shape:${sh}:medium`, `shape:${sh}:small`]), answer: `shape:${sh}:big`, explain: `That is the biggest ${sh}.`, visual: null, explainVisual: null }; },
+  'pk4-tap-littlest': (rng) => { const sh = pick(rng, ['circle', 'square', 'triangle']);
+    return { type: 'choice', story: null, prompt: 'Tap the littlest one.', choices: shuffle(rng, [`shape:${sh}:big`, `shape:${sh}:medium`, `shape:${sh}:small`]), answer: `shape:${sh}:small`, explain: `That is the littlest ${sh}.`, visual: null, explainVisual: null }; },
+  'pk4-tap-middle': (rng) => { const sh = pick(rng, ['circle', 'square', 'triangle']);
+    return { type: 'choice', story: null, prompt: 'Tap the middle-sized one.', choices: shuffle(rng, [`shape:${sh}:big`, `shape:${sh}:medium`, `shape:${sh}:small`]), answer: `shape:${sh}:medium`, explain: `That is the middle-sized ${sh}: not little, not big.`, visual: null, explainVisual: null }; },
+  'pk3-magic-word': (rng) => { const ask = randInt(rng, 0, 1) === 1;
+    return { type: 'choice', story: ask ? 'You want a cracker.' : 'Someone hands you a cracker.', prompt: 'What do you say?', choices: shuffle(rng, ask ? ['Please', 'Give me'] : ['Thank you', 'Nothing']), answer: ask ? 'Please' : 'Thank you', explain: ask ? 'Please is the word for asking.' : 'Thank you is the word for when you get it.', visual: null, explainVisual: null }; },
+  'pk3-tap-big': (rng) => { const sh = pick(rng, ['circle', 'square', 'triangle']);
+    return { type: 'choice', story: null, prompt: 'Tap the big one.', choices: shuffle(rng, [`shape:${sh}:big`, `shape:${sh}:small`]), answer: `shape:${sh}:big`, explain: `That is the big ${sh}.`, visual: null, explainVisual: null }; },
+  'pk3-tap-little': (rng) => { const sh = pick(rng, ['circle', 'square', 'triangle']);
+    return { type: 'choice', story: null, prompt: 'Tap the little one.', choices: shuffle(rng, [`shape:${sh}:big`, `shape:${sh}:small`]), answer: `shape:${sh}:small`, explain: `That is the little ${sh}.`, visual: null, explainVisual: null }; },
+  'pk-turn-choice': (rng) => { const c = pick(rng, [['You both want the swing.', 'Take turns', 'Grab it'], ['You both want the red crayon.', 'Take turns', 'Keep it all day'], ['Two friends, one ball.', 'Share it', 'Hide it']]);
+    return { type: 'choice', story: c[0], prompt: 'What do we do?', choices: shuffle(rng, [c[1], c[2]]), answer: c[1], explain: `${c[1]}. Then everybody gets a turn.`, visual: null, explainVisual: null }; },
+  'pk-whose-turn': (rng) => { const first = randInt(rng, 0, 1) === 1;
+    return { type: 'choice', story: first ? 'Sam had a turn. Now Sam is done.' : 'Ana is waiting. Sam is still swinging.', prompt: 'Whose turn is next?', choices: ['Sam', 'Ana'], answer: first ? 'Ana' : 'Ana', explain: first ? 'Sam had a turn, so Ana is next.' : 'Ana is waiting, so Ana is next when Sam is done.', visual: null, explainVisual: null }; },
+  'ck-more-votes': (rng) => { let a = randInt(rng, 1, 6); let b = randInt(rng, 1, 6); if (a === b) b = a === 6 ? 5 : a + 1;
+    return { type: 'choice', story: 'The story got the first votes. The song got the second votes.', prompt: 'Tap the one with more votes.', choices: [`dots:${a}`, `dots:${b}`], answer: `dots:${Math.max(a, b)}`, explain: `${Math.max(a, b)} is more than ${Math.min(a, b)}, so that one wins.`, visual: null, explainVisual: null }; },
+  'ck-one-vote-each': (rng) => ({ type: 'choice', story: 'The class is voting.', prompt: 'How many votes does each person get?', choices: shuffle(rng, ['One', 'As many as they want']), answer: 'One', explain: 'Everyone gets one vote. That is what makes it fair.', visual: null, explainVisual: null }),
+  'ck-job-tool': (rng) => { const c = pick(rng, [['Who uses a hose?', 'Firefighter'], ['Who uses a stethoscope?', 'Doctor'], ['Who writes on a whiteboard?', 'Teacher'], ['Who drives a mail truck?', 'Mail carrier']]);
+    return { type: 'choice', story: null, prompt: c[0], choices: twoOf(rng, CIV_HELPER_NAMES, c[1]), answer: c[1], explain: `${c[1]}.`, visual: null, explainVisual: null }; },
+  'ck-why-work': (rng) => ({ type: 'choice', story: null, prompt: 'Why do grown-ups go to work?', choices: shuffle(rng, ['To earn money for needs', 'Because school is closed', 'To stay away from home']), answer: 'To earn money for needs', explain: 'Work earns money, and money pays for food, a home and clothes.', visual: null, explainVisual: null }),
+  'ck-why-rule': (rng) => { const c = pick(rng, CIV_RULE_WHYS); const others = CIV_RULE_WHYS.filter((x) => x !== c).map((x) => x[1]);
+    return { type: 'choice', story: null, prompt: c[0], choices: shuffle(rng, [c[1], ...others]), answer: c[1], explain: `${c[0].replace(/\?$/, '')}: ${c[1].toLowerCase()}.`, visual: null, explainVisual: null }; },
+  'ck-which-helper': (rng) => { const c = pick(rng, CIV_HELPERS); return { type: 'choice', story: null, prompt: c[0], choices: twoOf(rng, CIV_HELPER_NAMES, c[1]), answer: c[1], explain: `${c[1]}.`, visual: null, explainVisual: null }; },
+  'ck-good-choice': (rng) => { const c = pick(rng, CIV_GOOD_CHOICES); return { type: 'choice', story: c[0], prompt: 'What is the good choice?', choices: shuffle(rng, [c[1], c[2]]), answer: c[1], explain: `${c[1]}. That is being kind.`, visual: null, explainVisual: null }; },
+  'ck-need-or-want': (rng) => { const c = pick(rng, CIV_NEED_WANT); return { type: 'choice', story: `${c[0]}.`, prompt: 'Need or want?', choices: ['Need', 'Want'], answer: c[1], explain: c[1] === 'Need' ? `${c[0]} is a need. You must have it.` : `${c[0]} is a want. It is nice, but you can live without it.`, visual: null, explainVisual: null }; },
+  'ck-which-is-need': (rng) => { const need = pick(rng, CIV_NEED_WANT.filter((x) => x[1] === 'Need'))[0]; const wants = shuffle(rng, CIV_NEED_WANT.filter((x) => x[1] === 'Want')).slice(0, 2).map((x) => x[0]);
+    return { type: 'choice', story: null, prompt: 'Which one is a need?', choices: shuffle(rng, [need, ...wants]), answer: need, explain: `${need} is a need. The others are wants.`, visual: null, explainVisual: null }; },
+  'ck-flag-count': (rng) => { const c = pick(rng, CIV_FLAG_COUNTS); return { type: 'choice', story: null, prompt: c[0], choices: shuffle(rng, ['50', '13', '10']), answer: String(c[1]), explain: c[1] === 50 ? 'Fifty stars, one for each state.' : 'Thirteen stripes, for the first thirteen states.', visual: null, explainVisual: null }; },
+  'ck-not-on-flag': (rng) => { const odd = pick(rng, ['green', 'yellow']); return { type: 'choice', story: null, prompt: 'Which color is not on our flag?', choices: shuffle(rng, [`swatch:${odd}`, 'swatch:red', 'swatch:blue']), answer: `swatch:${odd}`, explain: `Our flag is red, white and blue. There is no ${odd} on it.`, visual: null, explainVisual: null }; },
+  'ck-holiday': (rng) => { const c = pick(rng, CIV_HOLIDAYS); return { type: 'choice', story: null, prompt: `${c[0]}...`, choices: twoOf(rng, CIV_HOLIDAYS.map((x) => x[1]), c[1]), answer: c[1], explain: `${c[0]} ${c[1]}.`, visual: null, explainVisual: null }; },
+  'c1-which-symbol': (rng) => { const c = pick(rng, [['A big bell with a crack, in Philadelphia', 'The Liberty Bell'], ['A green statue holding a torch, in New York', 'The Statue of Liberty'], ['An old mission in San Antonio where Texans fought', 'The Alamo'], ['Fifty stars and thirteen stripes', 'The flag']]);
+    return { type: 'choice', story: `${c[0]}.`, prompt: 'Which symbol is that?', choices: shuffle(rng, [c[1], ...shuffle(rng, ['The Liberty Bell', 'The Statue of Liberty', 'The Alamo', 'The flag'].filter((x) => x !== c[1])).slice(0, 2)]), answer: c[1], explain: `${c[0]}: ${c[1].toLowerCase()}.`, visual: null, explainVisual: null }; },
+  'c1-texas-symbol': (rng) => ({ type: 'choice', story: null, prompt: 'Which one is a Texas symbol?', choices: shuffle(rng, ['The Alamo', 'The Liberty Bell', 'The Statue of Liberty']), answer: 'The Alamo', explain: 'The Alamo is in San Antonio, Texas. The bell is in Philadelphia and the statue is in New York.', visual: null, explainVisual: null }),
+  'c1-sign-means': (rng) => { const c = pick(rng, [['STOP', 'Stop'], ['EXIT', 'The way out'], ['WALK', 'Cross now'], ['ONE WAY', 'Cars go one direction']]);
+    return { type: 'choice', story: null, prompt: 'What does this sign mean?', choices: shuffle(rng, [c[1], ...shuffle(rng, ['Stop', 'The way out', 'Cross now', 'Cars go one direction'].filter((x) => x !== c[1])).slice(0, 2)]), answer: c[1], explain: `${c[0]} means ${c[1].toLowerCase()}.`, visual: { kind: 'letters', text: c[0] }, explainVisual: null }; },
+  'c1-sign-color': (rng) => ({ type: 'choice', story: null, prompt: 'Which color means stop or danger?', choices: shuffle(rng, ['swatch:red', 'swatch:green', 'swatch:blue']), answer: 'swatch:red', explain: 'Red means stop or danger, on signs and on traffic lights.', visual: null, explainVisual: null }),
+  'c1-why-signs': (rng) => ({ type: 'choice', story: null, prompt: 'Why do we have signs?', choices: shuffle(rng, ['So everyone knows the same thing at once', 'To make streets pretty', 'Because letters are fun']), answer: 'So everyone knows the same thing at once', explain: 'A sign tells everyone the same thing at once, so people stay safe without asking.', visual: null, explainVisual: null }),
+  'c1-which-leader': (rng) => { const c = pick(rng, CIV_LEADERS); return { type: 'choice', story: null, prompt: c[0], choices: shuffle(rng, CIV_LEADERS.map((x) => x[1])), answer: c[1], explain: `${c[0].replace(/\?$/, '')}: the ${c[1].toLowerCase()}.`, visual: null, explainVisual: null }; },
+  'c1-where-they-work': (rng) => { const c = pick(rng, CIV_WORKPLACES); return { type: 'choice', story: null, prompt: c[0], choices: shuffle(rng, CIV_WORKPLACES.map((x) => x[1])), answer: c[1], explain: `${c[0].replace(/\?$/, '')}: the ${c[1].toLowerCase()}.`, visual: null, explainVisual: null }; },
+  'c1-texas-capital': (rng) => ({ type: 'choice', story: null, prompt: 'What is the capital of Texas?', choices: shuffle(rng, ['Austin', 'Houston', 'Dallas']), answer: 'Austin', explain: 'Austin is the capital of Texas. The governor works there.', visual: null, explainVisual: null }),
+  'c1-good-or-service': (rng) => { const c = pick(rng, CIV_GOOD_SERVICE); return { type: 'choice', story: `${c[0]}.`, prompt: 'Good or service?', choices: ['Good', 'Service'], answer: c[1], explain: c[1] === 'Good' ? `${c[0]} is a good. You can hold it.` : `${c[0]} is a service. Someone does the work for you.`, visual: null, explainVisual: null }; },
+  'c1-money-from': (rng) => ({ type: 'choice', story: null, prompt: 'Where does money come from?', choices: shuffle(rng, ['Working', 'Wishing', 'Trees']), answer: 'Working', explain: 'People earn money by working. Then they trade it for goods and services.', visual: null, explainVisual: null }),
+  'c1-count-coins': (rng) => { const [coin, cents] = pick(rng, COIN_VALUES); const n = randInt(rng, 2, 5);
+    return { type: 'choice', story: `${['Two', 'Three', 'Four', 'Five'][n - 2]} ${coin === 'penny' ? 'pennies' : coin + 's'}.`, prompt: 'How many cents is that?', choices: shuffle(rng, [String(n * cents), String((n + 1) * cents), String(n * cents + 5)].filter((x, i, a) => a.indexOf(x) === i)).slice(0, 3), answer: String(n * cents), explain: `A ${coin} is ${cents} ${cents === 1 ? 'cent' : 'cents'}. ${n} of them make ${n * cents} cents.`, visual: null, explainVisual: null }; },
+  'c1-direction': (rng) => { const c = pick(rng, CIV_DIRECTIONS); return { type: 'choice', story: null, prompt: `${c[0]}...`, choices: shuffle(rng, ['North', 'South', 'East', 'West']), answer: c[1], explain: `${c[0]} ${c[1].toLowerCase()}.`, visual: null, explainVisual: null }; },
+  'c1-map-or-globe': (rng) => { const globe = randInt(rng, 0, 1) === 1; return { type: 'choice', story: globe ? 'A round model of the whole earth.' : 'A flat drawing of a place.', prompt: 'Map or globe?', choices: ['Map', 'Globe'], answer: globe ? 'Globe' : 'Map', explain: globe ? 'A globe is round, like the earth.' : 'A map is flat, like a drawing.', visual: null, explainVisual: null }; },
+  'c1-map-key': (rng) => ({ type: 'choice', story: null, prompt: 'What tells you what the little pictures on a map mean?', choices: shuffle(rng, ['The key', 'The title', 'The border']), answer: 'The key', explain: 'The map key tells you what each little picture means.', visual: null, explainVisual: null }),
+  'c2-then-or-now': (rng) => { const c = pick(rng, CIV_THEN_NOW); return { type: 'choice', story: `${c[0]}.`, prompt: 'Then or now?', choices: ['Then', 'Now'], answer: c[1], explain: c[1] === 'Then' ? `${c[0]}: that was long ago.` : `${c[0]}: that is today.`, visual: null, explainVisual: null }; },
+  'c2-timeline-order': (rng) => { const born = 2010 + randInt(rng, 0, 8); const school = born + 5; const bike = school + randInt(rng, 1, 2);
+    return orderQuestion(rng, 'Three events in a life.', 'Tap them in order, from earliest to latest.', [`Born in ${born}`, `Started school in ${school}`, `Learned to ride a bike in ${bike}`], `The smaller year comes first: ${born}, then ${school}, then ${bike}.`); },
+  'c2-earlier-year': (rng) => { const a = 1990 + randInt(rng, 0, 30); let b = 1990 + randInt(rng, 0, 30); if (b === a) b = a + 3;
+    return { type: 'choice', story: null, prompt: 'Which year came first?', choices: shuffle(rng, [String(a), String(b)]), answer: String(Math.min(a, b)), explain: `${Math.min(a, b)} is the smaller number, so it came first.`, visual: null, explainVisual: null }; },
+  'c2-which-trait': (rng) => { const c = pick(rng, CIV_TRAITS); return { type: 'choice', story: `${c[0]}.`, prompt: 'Which trait is that?', choices: CIV_TRAITS.map((x) => x[1]), answer: c[1], explain: CIV_TRAIT_NOTES[c[1]], choiceNotes: CIV_TRAIT_NOTES, visual: null, explainVisual: null }; },
+  'c2-vote-winner': (rng) => { let a = randInt(rng, 5, 15); let b = randInt(rng, 5, 15); if (a === b) b = a + 2;
+    return { type: 'choice', story: `${a} voted for pizza and ${b} voted for tacos.`, prompt: 'Which wins?', choices: ['Pizza', 'Tacos'], answer: a > b ? 'Pizza' : 'Tacos', explain: `${Math.max(a, b)} is more than ${Math.min(a, b)}, so ${a > b ? 'pizza' : 'tacos'} wins. That is majority rule.`, visual: null, explainVisual: null }; },
+  'c2-vote-margin': (rng) => { let a = randInt(rng, 5, 15); let b = randInt(rng, 5, 15); if (a === b) b = a + 2;
+    return { type: 'number', story: `${a} voted for pizza and ${b} voted for tacos.`, prompt: 'By how many votes did the winner win?', answer: String(Math.abs(a - b)), explain: `Take the smaller from the bigger.\n[[${Math.max(a, b)} − ${Math.min(a, b)} = ${Math.abs(a - b)}]]`, visual: null, explainVisual: null }; },
+  'c2-producer-or-consumer': (rng) => { const c = pick(rng, CIV_PROD_CONS); return { type: 'choice', story: `${c[0]}.`, prompt: 'Producer or consumer?', choices: ['Producer', 'Consumer'], answer: c[1], explain: c[1] === 'Producer' ? 'A producer makes or sells something.' : 'A consumer buys something.', visual: null, explainVisual: null }; },
+  'c2-money-left': (rng) => { const have = pick(rng, [10, 12, 15, 20]); const spend = randInt(rng, 3, have - 2);
+    return { type: 'number', story: `You have ${have} dollars and spend ${spend}.`, prompt: 'How much is left, in dollars?', answer: String(have - spend), explain: `What you had minus what you spent.\n[[${have} − ${spend} = ${have - spend} dollars]]`, visual: null, explainVisual: null }; },
+  'c2-natural-resource': (rng) => { const c = pick(rng, ['Water', 'Trees', 'Soil', 'Rocks']); return { type: 'choice', story: null, prompt: 'Which one is a natural resource?', choices: shuffle(rng, [c, 'A bicycle', 'A book']), answer: c, explain: `${c} come${c === 'Water' || c === 'Soil' ? 's' : ''} from nature. A bicycle and a book are made by people.`, visual: null, explainVisual: null }; },
+  'c2-blocks-walked': (rng) => { const a = randInt(rng, 1, 5); const b = randInt(rng, 1, 5); const dir = pick(rng, ['north', 'south', 'east', 'west']);
+    return { type: 'number', story: `Walk ${a} ${a === 1 ? 'block' : 'blocks'} ${dir}, then ${b} more ${b === 1 ? 'block' : 'blocks'} ${dir}.`, prompt: 'How many blocks in all?', answer: String(a + b), explain: `Both walks go ${dir}, so add them.
+[[${a} + ${b} = ${a + b} blocks]]`, visual: null, explainVisual: null }; },
+  'c2-opposite-direction': (rng) => { const pairs = { North: 'South', South: 'North', East: 'West', West: 'East' }; const d = pick(rng, Object.keys(pairs));
+    return { type: 'choice', story: `${d}.`, prompt: 'Which direction is the opposite?', choices: shuffle(rng, ['North', 'South', 'East', 'West']), answer: pairs[d], explain: `${d} and ${pairs[d].toLowerCase()} are opposites.`, visual: null, explainVisual: null }; },
+  'c2-map-symbol': (rng) => { const c = pick(rng, [['a little book', 'The library'], ['a little slide', 'The park'], ['a little bell', 'The school'], ['a little cross', 'The hospital']]);
+    return { type: 'choice', story: `On the map key, ${c[0]} means...`, prompt: 'Which place?', choices: shuffle(rng, ['The library', 'The park', 'The school', 'The hospital']), answer: c[1], explain: `${c[0].charAt(0).toUpperCase()}${c[0].slice(1)} on the key means ${c[1].toLowerCase()}.`, visual: null, explainVisual: null }; },
+  'c2-service-or-business': (rng) => { const c = pick(rng, [['The library', 'Town service'], ['The fire department', 'Town service'], ['The public school', 'Town service'], ['The park', 'Town service'], ['A pizza shop', 'Business'], ['A shoe store', 'Business'], ['A car wash', 'Business']]);
+    return { type: 'choice', story: `${c[0]}.`, prompt: 'Town service or business?', choices: ['Town service', 'Business'], answer: c[1], explain: c[1] === 'Town service' ? `${c[0]} is provided by the town for everyone.` : `${c[0]} is a business. Someone owns it and sells things.`, visual: null, explainVisual: null }; },
+  'c2-which-service': (rng) => { const c = pick(rng, [['Who puts out fires?', 'The fire department'], ['Where do you borrow books for free?', 'The library'], ['Who keeps the streets safe?', 'The police'], ['Where do children go to learn?', 'The school'], ['Where can everyone play outside?', 'The park']]);
+    return { type: 'choice', story: null, prompt: c[0], choices: shuffle(rng, [c[1], ...shuffle(rng, ['The fire department', 'The library', 'The police', 'The school', 'The park'].filter((x) => x !== c[1])).slice(0, 2)]), answer: c[1], explain: `${c[1]}. The town provides it for everyone.`, visual: null, explainVisual: null }; },
+  'c3-which-level': (rng) => { const c = pick(rng, CIV_LEVELS3); return { type: 'choice', story: `${c[0]}.`, prompt: 'Which level of government does that?', choices: ['Local', 'State', 'National'], answer: c[1], explain: CIV_LEVEL_NOTES[c[1]], choiceNotes: CIV_LEVEL_NOTES, visual: null, explainVisual: null }; },
+  'c3-leader-title': (rng) => { const c = pick(rng, CIV_LEADERS); return { type: 'choice', story: null, prompt: c[0], choices: shuffle(rng, CIV_LEADERS.map((x) => x[1])), answer: c[1], explain: `${c[0].replace(/\?$/, '')}: the ${c[1].toLowerCase()}.`, visual: null, explainVisual: null }; },
+  'c3-capital-city': (rng) => { const tx = randInt(rng, 0, 1) === 1; return { type: 'choice', story: null, prompt: tx ? 'What is the capital of Texas?' : 'What is the capital of the United States?', choices: shuffle(rng, tx ? ['Austin', 'Houston', 'Dallas'] : ['Washington, D.C.', 'New York', 'Austin']), answer: tx ? 'Austin' : 'Washington, D.C.', explain: tx ? 'Austin, where the governor and the legislature work.' : 'Washington, D.C., where the president and Congress work.', visual: null, explainVisual: null }; },
+  'c3-rule-or-law': (rng) => { const c = pick(rng, CIV_RULE_LAW); return { type: 'choice', story: `${c[0]}.`, prompt: 'Rule or law?', choices: ['Rule', 'Law'], answer: c[1], explain: c[1] === 'Rule' ? 'A rule is for one family, class or team.' : 'A law is for everyone in the city, state or country.', visual: null, explainVisual: null }; },
+  'c3-branch-job': (rng) => { const c = pick(rng, CIV_BRANCH_JOBS); return { type: 'choice', story: `${c[0]}.`, prompt: 'Who does that?', choices: shuffle(rng, CIV_BRANCH_JOBS.map((x) => x[1])), answer: c[1], explain: `${c[1]}: ${c[0].toLowerCase()}.`, visual: null, explainVisual: null }; },
+  'c3-vote-winner': (rng) => { const total = pick(rng, [20, 24, 30]); const a = randInt(rng, Math.floor(total / 2) + 1, total - 3); const b = total - a; const zooFirst = randInt(rng, 0, 1) === 1;
+    return { type: 'choice', story: zooFirst ? `A class of ${total} votes: ${a} for the zoo, ${b} for the museum.` : `A class of ${total} votes: ${b} for the museum, ${a} for the zoo.`, prompt: 'Which wins?', choices: ['The zoo', 'The museum'], answer: 'The zoo', explain: `${a} is more than half of ${total}, so the zoo wins. That is majority rule.`, visual: null, explainVisual: null }; },
+  'c3-vote-margin': (rng) => { const total = pick(rng, [20, 24, 30]); const a = randInt(rng, Math.floor(total / 2) + 1, total - 3); const b = total - a;
+    return { type: 'number', story: `${a} vote for the zoo and ${b} for the museum.`, prompt: 'By how many votes does the zoo win?', answer: String(a - b), explain: `Take the smaller from the bigger.\n[[${a} − ${b} = ${a - b}]]`, visual: null, explainVisual: null }; },
+  'c3-can-afford': (rng) => { const have = pick(rng, [10, 15, 20]); const a = randInt(rng, 3, 9); const b = randInt(rng, 3, 9); const both = a + b <= have;
+    return { type: 'choice', story: `You have ${have} dollars. A book costs ${a} and a ball costs ${b}.`, prompt: 'Can you buy both?', choices: yesNo(rng), answer: both ? 'Yes' : 'No', explain: `${a} + ${b} = ${a + b}, which is ${both ? 'not more' : 'more'} than ${have}.`, visual: null, explainVisual: null }; },
+  'c3-opportunity-cost': (rng) => { const [got, gave] = pick(rng, [['a ball', 'the book'], ['the movie', 'the game'], ['ice cream', 'the comic']]);
+    return { type: 'choice', story: `You spend your money on ${got} instead of ${gave}.`, prompt: 'What is the opportunity cost?', choices: shuffle(rng, [gave.replace(/^the /, 'The '), got.replace(/^(a|the) /, (m) => m.charAt(0).toUpperCase() + m.slice(1)), 'Nothing']), answer: gave.replace(/^the /, 'The '), explain: `The opportunity cost is what you gave up: ${gave}.`, visual: null, explainVisual: null }; },
+  'c3-money-left': (rng) => { const have = pick(rng, [10, 15, 20, 25]); const spend = randInt(rng, 4, have - 3);
+    return { type: 'number', story: `You have ${have} dollars and spend ${spend}.`, prompt: 'How much is left, in dollars?', answer: String(have - spend), explain: `What you had minus what you spent.\n[[${have} − ${spend} = ${have - spend} dollars]]`, visual: null, explainVisual: null }; },
+  'c3-free-enterprise': (rng) => ({ type: 'choice', story: 'A girl starts a lemonade stand and keeps what she earns.', prompt: 'What is that freedom called?', choices: shuffle(rng, ['Free enterprise', 'Majority rule', 'A law']), answer: 'Free enterprise', explain: 'Free enterprise means anyone may start a business and keep what they earn.', visual: null, explainVisual: null }),
+});
+
+// ---- Grade 6 world cultures, grade 7 Texas history and grade 9 world geography generators.
+const COUNTRY_CONTINENT = [['Brazil', 'South America'], ['Argentina', 'South America'], ['Peru', 'South America'], ['Nigeria', 'Africa'], ['Kenya', 'Africa'], ['Egypt', 'Africa'], ['South Africa', 'Africa'], ['Japan', 'Asia'], ['India', 'Asia'], ['China', 'Asia'], ['Vietnam', 'Asia'], ['France', 'Europe'], ['Germany', 'Europe'], ['Italy', 'Europe'], ['Spain', 'Europe'], ['Canada', 'North America'], ['Mexico', 'North America'], ['Australia', 'Australia']];
+const CONTINENTS7 = ['Africa', 'Antarctica', 'Asia', 'Australia', 'Europe', 'North America', 'South America'];
+const WORLD_FEATURES = [['The Sahara', 'Africa', 'Desert'], ['The Nile', 'Africa', 'River'], ['The Himalayas', 'Asia', 'Mountain range'], ['The Gobi', 'Asia', 'Desert'], ['The Alps', 'Europe', 'Mountain range'], ['The Rocky Mountains', 'North America', 'Mountain range'], ['The Mississippi', 'North America', 'River'], ['The Amazon rainforest', 'South America', 'Rainforest'], ['The Andes', 'South America', 'Mountain range'], ['The Great Barrier Reef', 'Australia', 'Reef']];
+const CULTURE_PARTS = [['The words people speak', 'Language'], ['What people believe about the sacred', 'Religion'], ['How people greet, marry and mourn', 'Customs'], ['What people cook and eat', 'Food'], ['The music, stories and pictures people make', 'Arts'], ['Who decides the rules', 'Government']];
+const CULTURE_NOTES = { Language: 'Language is the words a people speak.', Religion: 'Religion is what a people believe about the sacred.', Customs: 'Customs are how a people greet, marry, mourn and celebrate.', Food: 'Food is what a people cook and eat.', Arts: 'The arts are the music, stories and pictures a people make.', Government: 'Government is who decides the rules.' };
+const SPREADS = [['Noodles came to Italy along trade routes', 'Trade'], ['Spanish is spoken in Mexico because Spain ruled it', 'Conquest'], ['Vietnamese food is everywhere in Houston because families moved there', 'Migration'], ['Korean pop music is heard in Brazil through the internet', 'Media']];
+const RELIGION_ORIGIN = [['Christianity', 'The Middle East'], ['Judaism', 'The Middle East'], ['Islam', 'Arabia'], ['Hinduism', 'India'], ['Buddhism', 'India']];
+const GOVT_KINDS = [['The people elect representatives to decide', 'Democracy'], ['A king or queen rules by birth', 'Monarchy'], ['One person rules, and no free election can remove them', 'Dictatorship'], ['A small group rules', 'Oligarchy'], ['Religious leaders rule by religious law', 'Theocracy']];
+const GOVT_NOTES = { Democracy: 'In a democracy the people decide, usually through elected representatives.', Monarchy: 'In a monarchy a king or queen rules by birth.', Dictatorship: 'In a dictatorship one person rules and no free election can remove them.', Oligarchy: 'In an oligarchy a small group rules.', Theocracy: 'In a theocracy religious leaders rule by religious law.' };
+const LIMITED = [['The ruler must obey a constitution', 'Limited'], ['Courts can strike down what the ruler does', 'Limited'], ['Elections can remove the government', 'Limited'], ['No law stands above the ruler', 'Unlimited'], ['Elections are held but only one candidate may win', 'Unlimited'], ['The ruler can jail critics without a trial', 'Unlimited']];
+const ECON_KINDS = [['Custom decides; people farm and herd as their parents did', 'Traditional'], ['The government decides what is made and what it costs', 'Command'], ['Buyers and sellers decide through prices', 'Market'], ['Mostly market, with the government stepping in for some things', 'Mixed']];
+const ECON_NOTES = { Traditional: 'In a traditional economy custom decides.', Command: 'In a command economy the government decides.', Market: 'In a market economy buyers and sellers decide through prices.', Mixed: 'A mixed economy is mostly market with the government stepping in for some things.' };
+const PUSH_PULL = [['A war at home', 'Push'], ['A drought that kills the crops', 'Push'], ['No work in the village', 'Push'], ['A flood that takes the house', 'Push'], ['Jobs in a new city', 'Pull'], ['Family already living there', 'Pull'], ['The freedom to worship', 'Pull'], ['Good schools', 'Pull']];
+const LANGUAGE_OF = [['Brazil', 'Portuguese'], ['Mexico', 'Spanish'], ['Argentina', 'Spanish'], ['Egypt', 'Arabic'], ['Japan', 'Japanese'], ['France', 'French'], ['Germany', 'German'], ['China', 'Mandarin'], ['Italy', 'Italian']];
+const TX_PEOPLE = [['The Caddo', 'The piney east', 'Farmed corn and beans in villages'], ['The Karankawa', 'The Gulf coast', 'Fished and gathered along the shore'], ['The Jumano', 'The Rio Grande', 'Farmed and traded along the river'], ['The Comanche', 'The plains', 'Followed the buffalo on horseback']];
+const TX_REGIONS = [['Houston', 'Gulf Coastal Plains'], ['Corpus Christi', 'Gulf Coastal Plains'], ['Dallas', 'North Central Plains'], ['Fort Worth', 'North Central Plains'], ['Amarillo', 'Great Plains'], ['Lubbock', 'Great Plains'], ['El Paso', 'Mountains and Basins']];
+const TX_REGION_NAMES = ['Gulf Coastal Plains', 'North Central Plains', 'Great Plains', 'Mountains and Basins'];
+const TX_SPANISH = [
+  { year: '1519', event: 'Piñeda maps the Texas coast', why: 'Alonso Álvarez de Piñeda sailed the whole Gulf coast and drew the first map of it. Spain claimed the land from a boat and did not settle it for over a century.' },
+  { year: '1682', event: 'The first mission in Texas, at Ysleta', why: 'Spanish priests and Tigua people driven from New Mexico built the mission near El Paso. It is the oldest settlement in Texas that is still a town.' },
+  { year: '1821', event: 'Austin\'s colony brings the first three hundred families', why: 'Stephen F. Austin took over his father\'s grant and brought the Old Three Hundred to the Brazos and Colorado rivers, with a promise to be good Mexican citizens.' },
+  { year: '1830', event: 'The Law of April 6 closes Texas to American settlers', why: 'Mexico saw that Texas was filling with people who did not think of themselves as Mexican, and shut the border. It was too late, and the settlers were angry.' },
+];
+const TX_REPUBLIC = [
+  { year: '1836', event: 'Fannin\'s men are executed at Goliad', why: 'About 340 Texan prisoners were marched out and shot on Santa Anna\'s order on Palm Sunday. Remember Goliad joined Remember the Alamo as the battle cry.' },
+  { year: '1836', event: 'Sam Houston is elected the first president of the Republic', why: 'The hero of San Jacinto won by a landslide. His first job was a treasury with nothing in it and a Mexico that had never signed a peace.' },
+  { year: '1839', event: 'Austin becomes the capital', why: 'The new republic built its capital on the Colorado River at the edge of Comanche country, and named it for Stephen F. Austin.' },
+  { year: '1845', event: 'Texas becomes the 28th state', why: 'After nine years as its own republic, Texas joined the Union on December 29, 1845, as the 28th state.' },
+];
+const TX_STATE = [
+  { year: '1846', event: 'The Mexican-American War begins', why: 'Mexico had never accepted losing Texas. When American troops moved to the Rio Grande, fighting began, and two years later Mexico gave up its claim and half its land.' },
+  { year: '1850', event: 'The Compromise of 1850 draws the shape of Texas', why: 'Texas gave up its claim to land in New Mexico for ten million dollars, which paid the old republic\'s debts and drew the state\'s modern borders.' },
+  { year: '1870', event: 'Texas is readmitted to the Union', why: 'After Reconstruction governments, new constitutions and years of argument over who could vote, Congress seated Texas again in March 1870.' },
+  { year: '1876', event: 'Texas adopts its current constitution', why: 'Written after Reconstruction by people who wanted a weak government, it keeps the legislature part-time and the governor on a short leash. It is still in force, with hundreds of amendments.' },
+];
+const TX_GROWTH = [
+  { year: '1867', event: 'The first cattle drives up the Chisholm Trail', why: 'Longhorns worth a few dollars in Texas sold for ten times that at the railhead in Abilene, Kansas. For twenty years cowboys walked herds north.' },
+  { year: '1874', event: 'Barbed wire is patented', why: 'Joseph Glidden\'s cheap wire fenced the open range within a decade. The trail drives ended, and the ranch with a fence took their place.' },
+  { year: '1900', event: 'The Galveston hurricane', why: 'On September 8 a storm drowned the island city and killed about 8,000 people, still the deadliest natural disaster in American history. Houston became the great port.' },
+  { year: '1901', event: 'Oil at Spindletop', why: 'A well near Beaumont blew a gusher 150 feet into the air for nine days. Texas oil had begun, and with it a new Texas economy.' },
+];
+const TX_MODERN = [
+  { year: '1961', event: 'NASA chooses Houston for its spacecraft center', why: 'The Manned Spacecraft Center, later renamed for Lyndon Johnson, made Houston the first word spoken from the moon in 1969.' },
+  { year: '1963', event: 'President Kennedy is shot in Dallas', why: 'Kennedy was shot riding in an open car through Dealey Plaza on November 22. Lyndon Johnson, a Texan, took the oath on the plane home.' },
+  { year: '1966', event: 'Barbara Jordan is elected to the Texas Senate', why: 'Barbara Jordan of Houston became the first Black woman in the Texas Senate, and in 1972 the first Black Texan in Congress since Reconstruction.' },
+  { year: '1969', event: 'Houston is the first word spoken from the moon', why: 'Neil Armstrong\'s first words after landing were Houston, Tranquility Base here. Mission control was in Texas.' },
+];
+const TX_TODAY = [['What is the capital of Texas?', 'Austin', ['Houston', 'Dallas']], ['What is the largest city in Texas?', 'Houston', ['Austin', 'San Antonio']], ['Which state is larger than Texas by land?', 'Alaska', ['California', 'Montana']], ['How many flags have flown over Texas?', 'Six', ['Four', 'Eight']]];
+const LANDFORMS = [['High, steep, often in a chain', 'Mountain'], ['High and flat', 'Plateau'], ['Low and flat', 'Plain'], ['The low ground between hills, cut by a river', 'Valley'], ['The fan of mud where a river meets the sea', 'Delta']];
+const LANDFORM_NOTES = { Mountain: 'A mountain is high and steep, often in a chain.', Plateau: 'A plateau is high and flat.', Plain: 'A plain is low and flat.', Valley: 'A valley is the low ground between hills, usually cut by a river.', Delta: 'A delta is the fan of mud where a river meets the sea.' };
+const PLATE_EFFECTS = [['Two plates collide', 'Mountains fold up'], ['Two plates pull apart', 'New ocean floor forms'], ['Two plates slide past each other', 'An earthquake']];
+const BIGGEST = [['The largest continent', 'Asia', ['Africa', 'North America']], ['The largest ocean', 'The Pacific', ['The Atlantic', 'The Indian']], ['The highest mountains', 'The Himalayas', ['The Andes', 'The Alps']], ['The largest hot desert', 'The Sahara', ['The Gobi', 'The Mojave']], ['The largest rainforest', 'The Amazon', ['The Congo', 'Borneo']]];
+const BIOMES = [['Frozen and treeless, far north', 'Tundra'], ['Cold evergreen forest', 'Taiga'], ['Four seasons and leaves that fall', 'Temperate forest'], ['Too dry for forest, wet enough for grass', 'Grassland'], ['Under 25 centimeters of rain a year', 'Desert'], ['Hot, wet, and home to more kinds of life than anywhere', 'Rainforest']];
+const BIOME_NOTES = { Tundra: 'Tundra is frozen and treeless.', Taiga: 'Taiga is cold evergreen forest.', 'Temperate forest': 'A temperate forest has four seasons and leaves that fall.', Grassland: 'Grassland is too dry for forest and wet enough for grass.', Desert: 'A desert gets under 25 centimeters of rain a year.', Rainforest: 'A rainforest is hot and wet.' };
+const CLIMATE_WHY = [['Snow on Kilimanjaro, three degrees from the equator', 'Elevation'], ['Mild winters and mild summers in San Francisco', 'Nearness to the ocean'], ['A frozen year in northern Canada', 'Latitude'], ['Hot summers and cold winters in the middle of Kansas', 'Far from the ocean']];
+const MAP_KINDS = [['Borders, countries and cities', 'Political'], ['Land and water, mountains and rivers', 'Physical'], ['Rainfall across a continent', 'Thematic'], ['Population, shaded by county', 'Thematic']];
+const RESOURCE_KINDS = [['Sunlight', 'Renewable'], ['Wind', 'Renewable'], ['A forest that is replanted', 'Renewable'], ['Oil', 'Nonrenewable'], ['Coal', 'Nonrenewable'], ['Copper', 'Nonrenewable']];
+const SECTORS = [['A wheat farmer', 'Primary'], ['A coal miner', 'Primary'], ['A factory welder', 'Secondary'], ['A house builder', 'Secondary'], ['A nurse', 'Tertiary'], ['A bus driver', 'Tertiary'], ['A software designer', 'Quaternary'], ['A research scientist', 'Quaternary']];
+const SECTOR_NOTES = { Primary: 'Primary work takes from the land: farming, fishing, mining, logging.', Secondary: 'Secondary work makes things: factories, mills, construction.', Tertiary: 'Tertiary work is services: teaching, nursing, selling, driving.', Quaternary: 'Quaternary work is ideas and information: research, software, design.' };
+const CAPITALS = [['Mexico', 'Mexico City'], ['Canada', 'Ottawa'], ['Brazil', 'Brasília'], ['Argentina', 'Buenos Aires'], ['France', 'Paris'], ['Germany', 'Berlin'], ['Egypt', 'Cairo'], ['Kenya', 'Nairobi'], ['Nigeria', 'Abuja'], ['India', 'New Delhi'], ['China', 'Beijing'], ['Japan', 'Tokyo'], ['Australia', 'Canberra']];
+const kindQ = (rng, list, prompt, notes, story = (c) => `${c[0]}.`) => { const c = pick(rng, list); const kinds = [...new Set(list.map((x) => x[1]))];
+  return { type: 'choice', story: story(c), prompt, choices: kinds, answer: c[1], explain: notes ? notes[c[1]] : `${c[0]}: ${c[1].toLowerCase()}.`, choiceNotes: notes || undefined, visual: null, explainVisual: null }; };
+const threeQ = (rng, list, prompt) => { const c = pick(rng, list); const others = shuffle(rng, [...new Set(list.filter((x) => x[1] !== c[1]).map((x) => x[1]))]).slice(0, 2);
+  return { type: 'choice', story: `${c[0]}.`, prompt, choices: shuffle(rng, [c[1], ...others]), answer: c[1], explain: `${c[0]}: ${c[1]}.`, visual: null, explainVisual: null }; };
+Object.assign(GENERATORS, {
+  'wc6-hemisphere': (rng) => { const lat = randInt(rng, 5, 60); const lon = randInt(rng, 5, 150); const ns = pick(rng, ['N', 'S']); const ew = pick(rng, ['E', 'W']); const answer = `${ns === 'N' ? 'Northern' : 'Southern'} and ${ew === 'E' ? 'Eastern' : 'Western'}`;
+    return { type: 'choice', story: `A place at ${lat} degrees ${ns}, ${lon} degrees ${ew}.`, prompt: 'Which two hemispheres is it in?', choices: shuffle(rng, ['Northern and Eastern', 'Northern and Western', 'Southern and Eastern', 'Southern and Western']), answer, explain: `${ns} means ${ns === 'N' ? 'north' : 'south'} of the equator, and ${ew} means ${ew === 'E' ? 'east' : 'west'} of the prime meridian.\n[[${answer}]]`, visual: null, explainVisual: null }; },
+  'wc6-continent-of': (rng) => threeQ(rng, COUNTRY_CONTINENT, 'Which continent is it on?'),
+  'wc6-how-many': (rng) => { const c = pick(rng, [['continents', 7], ['oceans', 5]]); return { type: 'number', story: null, prompt: `How many ${c[0]} does the world have?`, answer: String(c[1]), explain: `There are ${c[1]} ${c[0]}.`, visual: null, explainVisual: null }; },
+  'wc6-which-line': (rng) => { const eq = randInt(rng, 0, 1) === 1; return { type: 'choice', story: eq ? 'Zero degrees latitude.' : 'Zero degrees longitude.', prompt: 'Which line is that?', choices: ['The equator', 'The prime meridian'], answer: eq ? 'The equator' : 'The prime meridian', explain: eq ? 'The equator is 0 degrees latitude, halfway between the poles.' : 'The prime meridian is 0 degrees longitude, through Greenwich.', visual: null, explainVisual: null }; },
+  'wc6-culture-part': (rng) => kindQ(rng, CULTURE_PARTS, 'Which part of culture is that?', CULTURE_NOTES),
+  'wc6-how-it-spread': (rng) => kindQ(rng, SPREADS, 'How did it spread?', null),
+  'wc6-religion-origin': (rng) => threeQ(rng, RELIGION_ORIGIN, 'Where did it begin?'),
+  'wc6-government-kind': (rng) => kindQ(rng, GOVT_KINDS, 'Which kind of government is that?', GOVT_NOTES),
+  'wc6-limited-or-not': (rng) => kindQ(rng, LIMITED, 'Limited or unlimited government?', null),
+  'wc6-who-rules': (rng) => { const c = pick(rng, GOVT_KINDS); return { type: 'choice', story: `In a ${c[1].toLowerCase()}.`, prompt: 'Who decides?', choices: shuffle(rng, ['The people', 'A king or queen', 'One ruler', 'A small group', 'Religious leaders']), answer: { Democracy: 'The people', Monarchy: 'A king or queen', Dictatorship: 'One ruler', Oligarchy: 'A small group', Theocracy: 'Religious leaders' }[c[1]], explain: GOVT_NOTES[c[1]], visual: null, explainVisual: null }; },
+  'wc6-economy-kind': (rng) => kindQ(rng, ECON_KINDS, 'Which kind of economy is that?', ECON_NOTES),
+  'wc6-who-decides': (rng) => { const c = pick(rng, ECON_KINDS.slice(0, 3)); return { type: 'choice', story: `In a ${c[1].toLowerCase()} economy.`, prompt: 'Who decides what is made?', choices: shuffle(rng, ['Custom', 'The government', 'Buyers and sellers']), answer: { Traditional: 'Custom', Command: 'The government', Market: 'Buyers and sellers' }[c[1]], explain: ECON_NOTES[c[1]], visual: null, explainVisual: null }; },
+  'wc6-gdp-per-person': (rng) => { const people = pick(rng, [10, 20, 25, 50]); const per = pick(rng, [2000, 5000, 10000, 20000, 40000]); const gdp = (people * per) / 1000;
+    return { type: 'number', story: `A country makes ${gdp} billion dollars a year and has ${people} million people.`, prompt: 'What is its GDP per person, in dollars?', answer: String(per), explain: `GDP per person is GDP divided by population.\n[[${gdp} billion ÷ ${people} million = ${per} dollars]]`, visual: null, explainVisual: null }; },
+  'wc6-density': (rng) => { const area = pick(rng, [10, 20, 50, 100]); const d = pick(rng, [20, 50, 200, 500]); const people = area * d;
+    return { type: 'number', story: `A town has ${people} people on ${area} square miles.`, prompt: 'How many people per square mile?', answer: String(d), explain: `Density is people divided by area.\n[[${people} ÷ ${area} = ${d} per square mile]]`, visual: null, explainVisual: null }; },
+  'wc6-push-or-pull': (rng) => kindQ(rng, PUSH_PULL, 'Push factor or pull factor?', null),
+  'wc6-more-crowded': (rng) => { let a = pick(rng, [50, 100, 200, 400]); let b = pick(rng, [50, 100, 200, 400]); if (a === b) b = a * 2;
+    return { type: 'choice', story: `Town A has ${a} people per square mile. Town B has ${b}.`, prompt: 'Which is more crowded?', choices: ['Town A', 'Town B'], answer: a > b ? 'Town A' : 'Town B', explain: `More people in the same space means more crowded: ${Math.max(a, b)} beats ${Math.min(a, b)}.`, visual: null, explainVisual: null }; },
+  'wc6-feature-continent': (rng) => { const c = pick(rng, WORLD_FEATURES); const others = shuffle(rng, CONTINENTS7.filter((x) => x !== c[1] && x !== 'Antarctica')).slice(0, 2);
+    return { type: 'choice', story: `${c[0]}.`, prompt: 'Which continent is it on?', choices: shuffle(rng, [c[1], ...others]), answer: c[1], explain: `${c[0]}: ${c[1]}.`, visual: null, explainVisual: null }; },
+  'wc6-language-of': (rng) => threeQ(rng, LANGUAGE_OF, 'What is the main language spoken there?'),
+  'wc6-feature-kind': (rng) => { const c = pick(rng, WORLD_FEATURES); return { type: 'choice', story: `${c[0]}.`, prompt: 'What kind of feature is it?', choices: ['Desert', 'River', 'Mountain range', 'Rainforest', 'Reef'], answer: c[2], explain: `${c[0]} is a ${c[2].toLowerCase()} in ${c[1]}.`, visual: null, explainVisual: null }; },
+  'tx7-people-region': (rng) => { const c = pick(rng, TX_PEOPLE); return { type: 'choice', story: `${c[0]}.`, prompt: 'Where did they live?', choices: TX_PEOPLE.map((x) => x[1]), answer: c[1], explain: `${c[0]}: ${c[1].toLowerCase()}. ${c[2]}.`, visual: null, explainVisual: null }; },
+  'tx7-way-of-life': (rng) => { const c = pick(rng, TX_PEOPLE); return { type: 'choice', story: `${c[0]}.`, prompt: 'How did they live?', choices: TX_PEOPLE.map((x) => x[2]), answer: c[2], explain: `${c[0]}: ${c[2].toLowerCase()}, on ${c[1].toLowerCase()}.`, visual: null, explainVisual: null }; },
+  'tx7-four-regions': (rng) => { const c = pick(rng, TX_REGIONS); return { type: 'choice', story: `${c[0]}.`, prompt: 'Which natural region of Texas is it in?', choices: TX_REGION_NAMES, answer: c[1], explain: `${c[0]} is in the ${c[1]}.`, visual: null, explainVisual: null }; },
+  'tx7-spanish-year': (rng) => datedQuestion(rng, TX_SPANISH),
+  'tx7-spanish-fact': (rng) => datedFact(rng, TX_SPANISH),
+  'tx7-empresario': (rng) => ({ type: 'choice', story: 'An empresario.', prompt: 'What was that?', choices: shuffle(rng, ['A person who brought settlers to Texas for Mexico', 'A Spanish priest who ran a mission', 'A Comanche war chief']), answer: 'A person who brought settlers to Texas for Mexico', explain: 'Mexico wanted settlers, so empresarios like Stephen F. Austin were given land to bring in families.', visual: null, explainVisual: null }),
+  'tx7-republic-year': (rng) => datedQuestion(rng, TX_REPUBLIC),
+  'tx7-republic-fact': (rng) => datedFact(rng, TX_REPUBLIC),
+  'tx7-rev-order': (rng) => orderQuestion(rng, 'The Texas Revolution.', 'Tap the events in order, from first to last.', ['Gonzales: the first shot', 'The Alamo falls', 'Goliad', 'San Jacinto'], 'Gonzales in October 1835, the Alamo on March 6, Goliad on March 27, San Jacinto on April 21, 1836.'),
+  'tx7-state-year': (rng) => datedQuestion(rng, TX_STATE),
+  'tx7-state-fact': (rng) => datedFact(rng, TX_STATE),
+  'tx7-houston-stand': (rng) => ({ type: 'choice', story: 'In 1861 Texas voted to join the Confederacy.', prompt: 'Which governor refused to swear loyalty to it?', choices: shuffle(rng, ['Sam Houston', 'Stephen F. Austin', 'Mirabeau Lamar']), answer: 'Sam Houston', explain: 'Sam Houston refused the oath and was removed from office. He had fought for Texas to join the Union and would not see it leave.', visual: null, explainVisual: null }),
+  'tx7-growth-year': (rng) => datedQuestion(rng, TX_GROWTH),
+  'tx7-growth-fact': (rng) => datedFact(rng, TX_GROWTH),
+  'tx7-why-drive': (rng) => ({ type: 'choice', story: 'After the Civil War, Texans walked their cattle hundreds of miles north to Kansas.', prompt: 'Why?', choices: shuffle(rng, ['The railroads and buyers were there, and prices were far higher', 'The grass was better in Kansas', 'Texas law required it']), answer: 'The railroads and buyers were there, and prices were far higher', explain: 'A steer worth a few dollars in Texas sold for ten times that at the railhead. The trail was the road to the market.', visual: null, explainVisual: null }),
+  'tx7-herd-math': (rng) => { const head = pick(rng, [500, 1000, 2000, 2500, 3000]); const price = pick(rng, [10, 20, 25, 30]);
+    return { type: 'number', story: `A herd of ${head} head sells at ${price} dollars a head.`, prompt: 'How much is that, in dollars?', answer: String(head * price), explain: `Head times price.\n[[${head} × ${price} = ${head * price} dollars]]`, visual: null, explainVisual: null }; },
+  'tx7-modern-year': (rng) => datedQuestion(rng, TX_MODERN),
+  'tx7-modern-fact': (rng) => datedFact(rng, TX_MODERN),
+  'tx7-texas-today': (rng) => { const c = pick(rng, TX_TODAY); return { type: 'choice', story: null, prompt: c[0], choices: shuffle(rng, [c[1], ...c[2]]), answer: c[1], explain: `${c[0].replace(/\?$/, '')}: ${c[1]}.`, visual: null, explainVisual: null }; },
+  'wg9-landform': (rng) => kindQ(rng, LANDFORMS, 'Which landform is that?', LANDFORM_NOTES),
+  'wg9-plate-effect': (rng) => kindQ(rng, PLATE_EFFECTS, 'What happens?', null),
+  'wg9-biggest': (rng) => { const c = pick(rng, BIGGEST); return { type: 'choice', story: `${c[0]}.`, prompt: 'Which is it?', choices: shuffle(rng, [c[1], ...c[2]]), answer: c[1], explain: `${c[0]}: ${c[1]}.`, visual: null, explainVisual: null }; },
+  'wg9-biome': (rng) => kindQ(rng, BIOMES, 'Which biome is that?', BIOME_NOTES),
+  'wg9-lapse': (rng) => { const base = pick(rng, [30, 36, 42]); const km = randInt(rng, 1, 4);
+    return { type: 'number', story: `It is ${base} degrees Celsius at sea level. A town sits ${km * 1000} meters up.`, prompt: 'About how warm is the town, in degrees?', answer: String(base - 6 * km), explain: `About 6 degrees colder for every 1,000 meters.\n[[${base} − 6 × ${km} = ${base - 6 * km} degrees]]`, visual: null, explainVisual: null }; },
+  'wg9-climate-factor': (rng) => kindQ(rng, CLIMATE_WHY, 'What explains it?', null),
+  'wg9-map-scale': (rng) => { const per = pick(rng, [10, 25, 50, 100]); const cm = randInt(rng, 2, 8);
+    return { type: 'number', story: `On the map, 1 centimeter stands for ${per} kilometers. Two towns are ${cm} centimeters apart.`, prompt: 'How far apart are they, in kilometers?', answer: String(per * cm), explain: `Real distance is map distance times scale.\n[[${cm} × ${per} = ${per * cm} kilometers]]`, visual: null, explainVisual: null }; },
+  'wg9-time-zones': (rng) => { const a = pick(rng, [15, 30, 45, 60, 75, 90]); const hours = randInt(rng, 1, 5); const b = a + 15 * hours;
+    return { type: 'number', story: `One city is at ${a} degrees west and another at ${b} degrees west.`, prompt: 'How many hours apart are their time zones?', answer: String(hours), explain: `Fifteen degrees of longitude is one hour.\n[[(${b} − ${a}) ÷ 15 = ${hours} hours]]`, visual: null, explainVisual: null }; },
+  'wg9-map-kind': (rng) => kindQ(rng, MAP_KINDS, 'Which kind of map shows that?', null),
+  'wg9-density': (rng) => { const area = pick(rng, [10, 50, 100, 200]); const d = pick(rng, [20, 50, 100, 200]); const people = area * d;
+    return { type: 'number', story: `A country has ${people} thousand people on ${area} thousand square kilometers.`, prompt: 'How many people per square kilometer?', answer: String(d), explain: `Density is people divided by area.\n[[${people} ÷ ${area} = ${d} per square kilometer]]`, visual: null, explainVisual: null }; },
+  'wg9-natural-increase': (rng) => { const births = pick(rng, [12, 16, 20, 30, 40]); const deaths = pick(rng, [5, 8, 10]);
+    return { type: 'number', story: `In a year there are ${births} births and ${deaths} deaths for every thousand people.`, prompt: 'What is the natural increase, per thousand?', answer: String(births - deaths), explain: `Births minus deaths.\n[[${births} − ${deaths} = ${births - deaths} per thousand]]`, visual: null, explainVisual: null }; },
+  'wg9-urban-share': (rng) => { const total = pick(rng, [10, 20, 50, 100]); const pct = pick(rng, [20, 40, 50, 60, 80, 90]); const urban = (total * pct) / 100;
+    return { type: 'number', story: `A country of ${total} million people has ${urban} million living in cities.`, prompt: 'What percent is urban?', answer: String(pct), explain: `City people divided by all people, times 100.\n[[${urban} ÷ ${total} × 100 = ${pct} percent]]`, visual: null, explainVisual: null }; },
+  'wg9-renewable': (rng) => kindQ(rng, RESOURCE_KINDS, 'Renewable or nonrenewable?', null),
+  'wg9-sector': (rng) => kindQ(rng, SECTORS, 'Which sector of work is that?', SECTOR_NOTES),
+  'wg9-trade-balance': (rng) => { const imports = pick(rng, [40, 60, 80, 100]); const exports = imports + pick(rng, [10, 20, 30, 50]);
+    return { type: 'number', story: `A country exports ${exports} billion dollars of goods and imports ${imports} billion.`, prompt: 'What is its trade balance, in billions?', answer: String(exports - imports), explain: `Exports minus imports.\n[[${exports} − ${imports} = ${exports - imports} billion]]`, visual: null, explainVisual: null }; },
+  'wg9-capital': (rng) => threeQ(rng, CAPITALS, 'What is its capital?'),
+});
+
 // ---- Grade 12 government and economics generators. Every number is computed; every dated fact carries its story.
 const PRINCIPLES = [
   { name: 'Popular sovereignty', clue: 'The people are the source of the government\'s power' },
@@ -10897,10 +12161,36 @@ const AMENDMENT_RIGHTS = [
 ];
 const FIRST_FREEDOMS = ['Religion', 'Speech', 'The press', 'Assembly', 'Petition'];
 const NOT_FIRST = ['The right to bear arms', 'A speedy trial', 'No cruel and unusual punishment', 'A warrant for a search'];
+// The dates the TEKS name as points of reference (8.1B and 11.2B), each with its story.
+const US_REFERENCE_8 = [
+  { year: '1607', event: 'Jamestown is founded', why: 'About a hundred men landed on a swampy river bank in Virginia. Most died of hunger and disease in the first years, but the colony hung on, and tobacco made it pay.' },
+  { year: '1620', event: 'The Pilgrims arrive and sign the Mayflower Compact', why: 'Before they landed, the men aboard the Mayflower signed a promise to make and obey their own laws. It was the first written self-government in the English colonies.' },
+  { year: '1776', event: 'The Declaration of Independence', why: 'Jefferson wrote it in Philadelphia, and Congress adopted it on July 4. It named the rights the king had broken and declared thirteen colonies free.' },
+  { year: '1787', event: 'The Constitution is written', why: 'Fifty-five delegates met behind closed doors through a hot Philadelphia summer. Washington presided, Madison took the notes, and 39 of them signed on September 17.' },
+  { year: '1803', event: 'The Louisiana Purchase', why: 'Jefferson bought 828,000 square miles from France for fifteen million dollars, about three cents an acre, and the country doubled overnight.' },
+  { year: '1861', event: 'The Civil War begins', why: 'Confederate guns fired on Fort Sumter in Charleston Harbor in April. Four years later, in 1865, Lee surrendered at Appomattox and slavery ended.' },
+];
+const US_TURNING_11 = [
+  { year: '1898', event: 'The Spanish-American War', why: 'A ten-week war with Spain left the United States holding Puerto Rico, Guam and the Philippines. A country that had stayed home now had an empire overseas.' },
+  { year: '1914', event: 'The First World War begins', why: 'An assassin in Sarajevo shot Archduke Franz Ferdinand of Austria. Alliances pulled in one country after another, and within weeks most of Europe was at war.' },
+  { year: '1918', event: 'The First World War ends', why: 'The guns stopped at 11 in the morning on November 11. About nine million soldiers had died, more than a hundred thousand of them American.' },
+  { year: '1929', event: 'The Great Depression begins', why: 'On Black Tuesday, October 29, stock prices collapsed. Fortunes vanished in days, and people who had borrowed to buy stocks lost everything.' },
+  { year: '1939', event: 'The Second World War begins', why: 'German tanks and planes crossed into Poland on September 1. Britain and France declared war two days later; the United States stayed out for two more years.' },
+  { year: '1957', event: 'Sputnik launches the space race', why: 'The Soviets launched Sputnik, the first satellite, a beeping metal ball the size of a beach ball. Americans looked up and worried, and the space race began.' },
+  { year: '1968', event: 'Martin Luther King Jr. is assassinated', why: 'Dr. King was shot on a motel balcony in Memphis on April 4. He was 39 years old.' },
+  { year: '1969', event: 'The United States lands on the moon', why: 'Neil Armstrong stepped onto the moon on July 20 and spoke of one small step for man. Hundreds of millions of people watched on television.' },
+  { year: '1991', event: 'The Cold War ends', why: 'The Soviet flag came down over the Kremlin on Christmas Day, and fifteen countries stood where one had been.' },
+  { year: '2001', event: 'The September 11 attacks', why: 'Hijacked planes hit the World Trade Center and the Pentagon, and a fourth crashed in Pennsylvania when its passengers fought back. Nearly 3,000 people died.' },
+  { year: '2008', event: 'Barack Obama is elected the first Black president', why: 'Obama won 365 electoral votes in November 2008 and took the oath the next January before a crowd of more than a million on the National Mall.' },
+];
 const BILL_STEPS = ['A member introduces the bill', 'A committee studies it and votes', 'The full house debates and votes', 'The other house does the same', 'Both houses agree on one text', 'The President signs or vetoes it'];
 const STATE_REPS = [['Texas', 38], ['California', 52], ['Florida', 28], ['New York', 26], ['Pennsylvania', 17], ['Ohio', 15], ['Georgia', 14], ['Colorado', 8], ['Wyoming', 1], ['Vermont', 1]];
 const VOTERS = [{ who: 'A citizen who is 18 and registered', can: 'Yes' }, { who: 'A citizen who is 17', can: 'No' }, { who: 'A citizen who is 18 but not registered', can: 'No' }, { who: 'A citizen who is 30 and registered', can: 'Yes' }, { who: 'A citizen who is 80 and registered', can: 'Yes' }];
 Object.assign(GENERATORS, {
+  'h8-reference-year': (rng) => datedQuestion(rng, US_REFERENCE_8),
+  'h8-reference-fact': (rng) => datedFact(rng, US_REFERENCE_8),
+  'h11-turning-year': (rng) => datedQuestion(rng, US_TURNING_11),
+  'h11-turning-fact': (rng) => datedFact(rng, US_TURNING_11),
   'g12-which-principle': (rng) => { const c = pick(rng, PRINCIPLES); const others = shuffle(rng, PRINCIPLES.filter((x) => x !== c)).slice(0, 2).map((x) => x.name);
     return { type: 'choice', story: `${c.clue}.`, prompt: 'Which principle is that?', choices: shuffle(rng, [c.name, ...others]), answer: c.name, explain: PRINCIPLE_NOTES[c.name], choiceNotes: PRINCIPLE_NOTES, visual: null, explainVisual: null }; },
   'g12-constitution-year': (rng) => datedQuestion(rng, GOV_DATES),
@@ -12287,14 +13577,76 @@ function explainCommonDenominator(x, y, bigger) {
 // Turns a choice like 'dots:4' into words a child can hear: "the group with 4".
 export function describeChoice(choice) {
   const m = /^dots:(\d+)$/.exec(choice);
-  return m ? `the group with ${m[1]}` : choice;
+  if (m) return `the group with ${m[1]}`;
+  const sh = /^shape:([a-z]+):(big|medium|small)$/.exec(choice);
+  return sh ? `the ${sh[2] === 'big' ? 'big' : sh[2] === 'medium' ? 'middle-sized' : 'little'} ${sh[1]}` : choice;
 }
 
+// The story rule, applied to science: a wrong answer on a fact question is followed by the fact
+// and a line that says why, so it sticks. Keyed by generator and answer, added centrally here so
+// no generator has to remember. Mikey's rule (2026-09-14): stories beat memorization.
+const SCIENCE_WHY = {
+  's3-which-state': { Solid: 'A solid keeps its shape because its particles are locked in place, like bricks in a wall.', Liquid: 'A liquid takes the shape of its cup because its particles slide past each other, like marbles in a bag.', Gas: 'A gas spreads out to fill any space because its particles fly free, bumping and bouncing.' },
+  's3-push-or-pull': { Push: 'A push moves something away from you, like kicking a ball down the field.', Pull: 'A pull brings something toward you, like a dog on a leash heading home.' },
+  's6-float-or-sink': { Floats: 'It floats because it weighs less than the water it pushes aside. That is why a steel ship floats and a steel bolt sinks: the ship pushes aside far more water.', Sinks: 'It sinks because it weighs more than the water it pushes aside. Squeeze it into less space and it sinks faster.' },
+  's7-dominant-or-recessive': { Dominant: 'A dominant trait shows up with just one copy of the gene, so it hides its partner, the way a loud voice covers a quiet one.', Recessive: 'A recessive trait shows only when both copies say the same thing. One copy stays hidden for a generation and can surprise the grandchildren.' },
+  's8-particle-charge': { Positive: 'Protons carry the positive charge and sit in the nucleus, which is why the nucleus is positive and pulls electrons in.', Negative: 'Electrons carry the negative charge and orbit outside, which is why they are the ones that jump between atoms and make electricity.', 'No charge': 'Neutrons have no charge and add weight to the nucleus without pushing anything away, which lets many protons crowd together.' },
+  's9-mitosis-or-meiosis': { Mitosis: 'Mitosis makes two identical copies for growth and repair. Your skin is doing it right now.', Meiosis: 'Meiosis makes sex cells with half the chromosomes, so two halves can make a whole new person.' },
+  's9-transcription-or-translation': { Transcription: 'Transcription copies a gene from DNA into RNA, like photocopying one page of a book you cannot take out of the library.', Translation: 'Translation reads the RNA copy and builds a protein from it, one amino acid per three letters.' },
+  's9-reactant-or-product': { 'Goes in': 'Reactants go in: they are what you start with, written on the left of the arrow.', 'Comes out': 'Products come out: they are what is made, written on the right of the arrow.' },
+  's10-metal-or-not': { Metal: 'Metals sit on the left and middle of the table. They give up electrons easily, which is why they conduct, bend and shine.', Nonmetal: 'Nonmetals sit on the right. They hold their electrons tight or grab more, which is why they are dull, brittle and often gases.' },
+  's11-series-or-parallel': { Series: 'In series there is one path, so every bulb shares the same current and one burnt bulb breaks the whole loop, like old Christmas lights.', Parallel: 'In parallel each bulb has its own path back to the battery, so one can burn out and the rest stay lit, like the lights in a house.' },
+  's11-reflect-or-refract': { Reflection: 'Reflection is light bouncing off a surface at the same angle it came in, which is how a mirror shows you your face.', Refraction: 'Refraction is light bending as it slows down entering water or glass, which is why a straw in a glass looks broken.' },
+  's12-weather-or-climate': { Weather: 'Weather is what the sky is doing today, and it can change by the hour.', Climate: 'Climate is what the weather usually does over many years. Weather is your mood; climate is your personality.' },
+  's10-solute-or-solvent': { Solute: 'The solute is what dissolves, like the sugar. There is less of it.', Solvent: 'The solvent does the dissolving, like the water. There is more of it.' },
+  's4-which-form': { Heat: 'Heat is energy in the jiggling of particles. Faster jiggling is hotter.', Sound: 'Sound is energy in vibrations moving through air, water or solids, which is why you can hear a train through the rail.', Light: 'Light is energy that travels in waves and needs nothing to carry it, which is how sunlight crosses empty space.', Mechanical: 'Mechanical energy is the energy of moving things and of things ready to move, like a stretched rubber band.', Electrical: 'Electrical energy is the energy of moving charge, which is why a wire can carry it from a dam to your lamp.' },
+  's5-which-is-inherited': { 'Eye color': 'Eye color comes from genes, passed from parents. No amount of practice changes it.', "A cat's whiskers": 'Every cat is born with whiskers because the plan for them is in every cat\'s genes.', 'Webbed feet on a duck': 'Webbed feet are in a duck\'s genes, which is why every duckling has them before it ever swims.', 'Brown fur on a puppy': 'Fur color is set by genes from the parents; the puppy did not choose it.', "A bird's feather color": 'Feather color comes from genes, which is why every male cardinal is red.' },
+  's3-which-force': { Friction: 'Friction is the rubbing between two surfaces that slows things down. Rough surfaces rub more, which is why a ball stops sooner on grass than on ice.', Gravity: 'Gravity pulls everything toward the center of the Earth. Drop anything and gravity is what brings it down.', 'A magnet': 'A magnet pulls on iron and steel without touching them, through air, paper or a tabletop.' },
+  's3-first-stage': { egg: 'Every life cycle with an egg starts there: the egg is the animal packed with everything it needs to begin.', seed: 'A plant starts as a seed, a tiny plant folded up with its first food, waiting for water and warmth.' },
+  's3-which-tool': { 'A rain gauge': 'A rain gauge is a cup with marks. The water level shows how much rain fell.', 'A wind vane': 'A wind vane swings to point into the wind, so it shows where the wind comes from.', 'A thermometer': 'A thermometer measures temperature. The liquid inside rises when it warms and falls when it cools.' },
+  's6-which-role': { Producer: 'A producer makes its own food from sunlight. Every food chain starts with one, usually a plant.', Consumer: 'A consumer eats other living things to get its energy, whether it eats plants, animals or both.', Decomposer: 'A decomposer breaks down dead things and returns their nutrients to the soil, where producers use them again.' },
+  's6-cell-part-job': { 'Holds the instructions': 'The nucleus holds the DNA, the instructions for everything the cell does.', 'Controls what goes in and out': 'The cell membrane is the gatekeeper, letting food in and waste out.', 'Turn food into energy': 'Mitochondria burn food to release energy, which is why busy cells have many of them.', 'Make food from sunlight': 'Chloroplasts catch sunlight and make sugar. Only plant cells have them.', 'Gives stiff support': 'The cell wall is a stiff box around a plant cell, which is why a plant can stand up without bones.' },
+  's4-which-step': { Weathering: 'Weathering breaks rock into pieces, by ice wedging into cracks, roots prying, or water dissolving it, without moving it anywhere.', Erosion: 'Erosion moves the broken pieces away, by water, wind or ice. The Grand Canyon is erosion by a river.', Deposition: 'Deposition drops the pieces somewhere new. A delta is a river setting down its load where it slows at the sea.' },
+  's4-what-caused': { Water: 'Moving water carries sand and pebbles and wears rock away, which is why river stones are round.', Wind: 'Wind carries sand that scours rock, carving arches and hollows in dry places.', Ice: 'Water in a crack freezes, swells, and pries the rock apart. A glacier does the same on a giant scale.', 'Plant roots': 'Roots grow into cracks and widen them as they thicken, splitting rock and sidewalks alike.' },
+  's4-which-adaptation': { 'huge ears': 'Big ears are full of blood vessels. Blood flowing through them cools in the air, which is how a desert fox sheds heat.', 'a long neck': 'A long neck reaches leaves no other animal can, so a giraffe eats where nobody competes.', 'sharp eyesight': 'Sharp eyes let a hawk spot a mouse from high above, so it can hunt without being seen.', 'webbed feet': 'Webbed feet push against more water with each stroke, like a paddle instead of a stick.', 'a thick stem': 'A thick stem stores water through the dry months, which is how a cactus survives without rain.', 'white fur': 'White fur disappears against snow, hiding a hare from the fox and a fox from the hare.' },
+  's4-what-it-is-for': { 'Letting heat escape': 'Big ears are full of blood vessels, and blood flowing through them cools in the air.', 'Reaching high leaves': 'A long neck reaches leaves no other animal can, so the giraffe eats where nobody competes.', 'Spotting prey from far away': 'Sharp eyes let a hawk spot a mouse from high above.', 'Pushing water to swim': 'Webbed feet push against more water with each stroke, like a paddle.', 'Storing water for dry months': 'A thick stem holds water through the dry months, which is how a cactus survives without rain.', 'Hiding on snow': 'White fur disappears against snow, hiding the animal from what hunts it and from what it hunts.' },
+  's4-find-the-break': { 'Replace the battery': 'A circuit needs a push. A dead battery gives none, so nothing moves even with a perfect loop.', 'Reconnect the loose wire': 'A circuit must be a complete loop. One gap anywhere, and the current stops everywhere.', 'Close the switch': 'A switch is a gap you control. Open, the loop is broken; closed, the loop is complete.' },
+  's5-which-motion': { 'The Earth spinning': 'The Earth spins once a day, and that turning is what gives us sunrise, noon and night.', 'The moon circling the Earth': 'The moon circles the Earth about once a month, and we see a different slice of its lit half each night. Those are the phases.', 'The Earth circling the sun, tilted': 'The Earth circles the sun once a year, tilted. When your half leans toward the sun it is summer; leaning away, winter.' },
+  's5-which-stage': { Evaporation: 'Evaporation is water turning to vapor and rising, mostly from the sea, warmed by the sun.', Condensation: 'Condensation is vapor cooling high up and turning back to droplets. That is a cloud.', Precipitation: 'Precipitation is the droplets growing heavy and falling as rain, snow or hail.', Collection: 'Collection is the water gathering in rivers, lakes and the sea, ready to evaporate again.' },
+  's5-state-change-in-cycle': { 'Liquid to gas': 'Liquid to gas is evaporation. The sun warms the water and it rises as vapor.', 'Gas to liquid': 'Gas to liquid is condensation. High up, the vapor cools into droplets and makes a cloud.' },
+  's7-organ-belongs': { 'the brain': 'The brain is the control center of the nervous system, sending and receiving signals along the nerves.', 'the nerves': 'Nerves are the wires of the nervous system, carrying signals to and from the brain.', 'the bones': 'Bones are the frame of the skeletal system, holding the body up and protecting what is inside.', 'the skull': 'The skull is the skeletal system\'s helmet, the bones that protect the brain.', 'the muscles': 'Muscles are the muscular system, pulling on bones to move the body.', 'the stomach': 'The stomach is part of the digestive system, mixing food with acid to break it down.', 'the intestines': 'The intestines are the digestive system\'s long tube, where food is absorbed into the blood.', 'the blood vessels': 'Blood vessels are the pipes of the circulatory system, carrying blood the heart pumps.', 'the heart': 'The heart is the pump of the circulatory system, pushing blood around the body about once a minute.', 'the lungs': 'The lungs are the respiratory system\'s sponges, where oxygen enters the blood and carbon dioxide leaves it.', 'the windpipe': 'The windpipe is the respiratory system\'s tube from the throat to the lungs.', 'the tendons': 'Tendons are the muscular system\'s cords, tying muscle to bone so a pull becomes a movement.' },
+  's7-where-it-happens': { 'In the chloroplasts': 'Chloroplasts are the green parts of a plant cell. They catch sunlight and turn water and carbon dioxide into sugar.' },
+  's7-pressure-sky': { 'Clouds and rain, because the air is rising': 'In low pressure, air rises, cools, and its vapor condenses into cloud. Low means wet.', 'Clear skies, because the air is sinking': 'In high pressure, air sinks and warms, and warm air holds its vapor. High means dry.' },
+  's7-air-rule': { 'Where two air masses meet': 'A front is the line where two air masses of different temperature meet. Weather happens at the meeting.', 'From high pressure to low pressure': 'Air flows from high pressure to low, like air rushing out of a balloon. That flow is wind.', Rises: 'Warm air is lighter than cold air, so it rises. Rising air is where clouds are made.' },
+  's7-which-shows': { Brown: 'Brown is dominant. One brown gene is enough to show, even with a blue gene hiding behind it.', Blue: 'Blue is recessive. It shows only when both genes are blue.' },
+  's9-shows-trait': { Brown: 'Brown is dominant. One brown gene is enough to show, even with a blue gene hiding behind it.', Blue: 'Blue is recessive. It shows only when both genes are blue.' },
+  's8-particle-where': { 'In the nucleus': 'Protons and neutrons are packed in the nucleus, the tiny heavy center of the atom.', 'In the cloud outside the nucleus': 'Electrons whirl in a cloud around the nucleus, so far out that the atom is mostly empty space.' },
+  's8-line-means': { 'Steady speed': 'A straight sloped line on a distance graph means the same distance every second: steady speed.', 'Speeding up': 'A line that curves upward, steeper and steeper, means more distance each second: speeding up.', 'Not moving': 'A flat line means the distance is not changing. The object is standing still.' },
+  's9-gene-or-chromosome': { Gene: 'A gene is one instruction, a stretch of DNA for one trait or one protein.', Chromosome: 'A chromosome is a whole bundle of DNA carrying thousands of genes, like a volume of an encyclopedia.' },
+  's9-which-process': { Photosynthesis: 'Photosynthesis stores the sun\'s energy in sugar: carbon dioxide and water in, sugar and oxygen out.', Respiration: 'Respiration releases that energy: sugar and oxygen in, carbon dioxide and water out. Every living cell does it, plants included.' },
+  's9-where-process': { 'In the chloroplasts': 'Chloroplasts catch sunlight, so photosynthesis happens there.', 'In the mitochondria': 'Mitochondria burn sugar for energy, so respiration happens there.' },
+  's9-which-evidence': { Fossils: 'Fossils show life changing over time, layer by layer, older below and newer above.', 'Homologous structures': 'A human arm, a whale flipper and a bat wing share the same bones in the same order, inherited from one ancestor and reshaped for different jobs.', DNA: 'DNA shows relatedness directly: the more letters two species share, the more recently they shared an ancestor.' },
+  's9-rna-letter': { U: 'RNA uses uracil, U, in place of thymine, T. So wherever DNA has an A, the RNA copy has a U.' },
+  's9-cycle-step': { 'A leaf, building it into sugar': 'Carbon enters life through a leaf: photosynthesis pulls carbon dioxide from the air and builds it into sugar.', 'Bacteria in the soil, fixing it': 'Nitrogen enters life through bacteria in the soil that fix it into a form roots can take up. Air is mostly nitrogen, but plants cannot use it straight.' },
+  's9-too-hot-or-cold': { 'Too hot': 'Sweating and flushed skin shed heat. The body is correcting too hot.', 'Too cold': 'Shivering makes heat by working the muscles. The body is correcting too cold.' },
+  's9-blood-sugar': { 'Insulin, so cells take sugar in': 'After a meal, blood sugar rises, and insulin tells cells to take the sugar in and store it.', 'A signal to the liver to release stored sugar': 'Between meals, blood sugar falls, and a signal tells the liver to release the sugar it stored.' },
+  's10-row-or-column': { Period: 'A period is a row across the table. Moving along it, each element has one more proton than the last.', Group: 'A group is a column down the table. Elements in a group behave alike because they have the same number of outer electrons.' },
+  's10-gives-or-shares': { 'One atom gives them to the other': 'An ionic bond: one atom gives up electrons, the other takes them, and the two charged ions cling together, like salt.', 'The two atoms share them': 'A covalent bond: two atoms share electrons between them, like the hydrogen and oxygen in water.' },
+  's11-which-energy': { Kinetic: 'Kinetic energy is the energy of motion. The faster and heavier, the more of it.', Potential: 'Potential energy is stored, waiting: a ball held high, a stretched spring, a charged battery.' },
+  's11-more-resistance': { 'It halves': 'Current is voltage divided by resistance. Double the resistance with the same push, and half as much current gets through.' },
+  's11-bulb-burns-out': { 'It goes dark too': 'In series there is one path. A burnt bulb breaks the loop, and nothing gets through to the other.', 'It stays lit': 'In parallel each bulb has its own path back to the battery. Losing one path leaves the other complete.' },
+  's5-moon-light': { 'Sunlight reflecting off it': 'The moon makes no light of its own. It is a gray rock, and the moonlight you see is sunlight bouncing off it toward you.' },
+  's9-pair-letter': { A: 'A pairs with T. The two fit together like a lock and key, which is what holds the DNA ladder together.', T: 'T pairs with A, always. That is why one strand can be rebuilt from the other.', G: 'G pairs with C, held by three bonds instead of two, which makes it the tighter pair.', C: 'C pairs with G, always, so a strand reading GATTACA has a partner reading CTAATGT.' },
+  's5-which-is-learned': { 'Riding a bicycle': 'Nobody is born knowing how to ride a bicycle. It takes practice, falls and a patient grown-up.', Reading: 'Reading is learned. A child raised without books never picks it up on their own.', 'A parrot saying hello': 'A parrot copies the sounds it hears. A parrot raised in silence says nothing.', 'A dog sitting on command': 'A dog learns to sit for a treat. It is trained, not born knowing the word.', 'A bird finding a feeder in a yard': 'The bird found the feeder by trying places and remembering. That is learning.' },
+};
 export function generateQuestion(genId, seed) {
   const generator = GENERATORS[genId];
   if (!generator) throw new Error(`Unknown question generator: ${genId}`);
-  return { genId, seed, ...generator(makeRng(seed)) };
+  const q = { genId, seed, ...generator(makeRng(seed)) };
+  const why = SCIENCE_WHY[genId] && SCIENCE_WHY[genId][q.answer];
+  return why && typeof q.explain === 'string' && !q.explain.includes(why) ? { ...q, explain: `${q.explain}\n${why}` } : q;
 }
+export const SCIENCE_WHY_GENERATORS = Object.keys(SCIENCE_WHY);
 
 // ---------------------------------------------------------------------
 // 5. WONDER — open questions with no right answer
@@ -13235,6 +14587,156 @@ export const WONDER = [
       { voice: 'A skeptic', says: 'Notice who benefits from you believing each version. That is not cynicism; it is the first question a historian asks of any source, and the present is a source like any other. Then look for the boring documents, the budgets and the court records, which lie less than the speeches.' },
     ],
     closing: 'What is happening now that you think a textbook will one day give a whole chapter?',
+  },
+  {
+    id: 'w-counting-from-somewhere',
+    theme: 'world',
+    stage: 'grown',
+    courseIds: ['history-college'],
+    answerMode: 'typed',
+    prompt: 'Our calendar counts from a birth most of the world does not celebrate, has no year zero, and is still the one the airlines use. Every count starts from something somebody chose. What does your own life count from, and who chose it?',
+    perspectives: [
+      { voice: 'A scientist', says: 'Physics has no privileged zero either. Every measurement is from a chosen origin, and the choice does not make the measurement false, only relative. A calendar is the same: arbitrary at the start, exact ever after, as long as everyone agrees.' },
+      { voice: 'An artist', says: 'People count from the day the band formed, the day they got sober, the day the child was born. A life has several year ones, and which one you use tells the listener what the story is about.' },
+      { voice: 'A grandparent of faith', says: 'A calendar counting from a birth is a whole civilization saying that one life was the hinge. You do not have to share the belief to see that every calendar is a confession of what its makers thought mattered most.' },
+      { voice: 'A skeptic', says: 'Notice how a count that began as one group\'s choice becomes everyone\'s furniture. The most durable power is the kind nobody remembers choosing. That is worth knowing before you accept anyone\'s year one, including your own.' },
+    ],
+    closing: 'If you had to pick a year one for your own life, which day would it be, and would the people who love you pick the same one?',
+  },
+  {
+    id: 'w-history-is-argument',
+    theme: 'world',
+    stage: 'grown',
+    courseIds: ['history-college'],
+    answerMode: 'typed',
+    prompt: 'History is not the past. It is an argument about the past, made from whatever happened to survive. Does that make it less true, or is that what truth about the past can only ever be?',
+    perspectives: [
+      { voice: 'A scientist', says: 'Every science works from a sample, never the whole. Astronomers see the light that reached them, not the sky. History is the same: honest about its sample, careful about its claims, and still able to know things. Partial is not the same as false.' },
+      { voice: 'An artist', says: 'A portrait leaves out most of the face and is still a likeness. The question is not whether history leaves things out but whether what it keeps is true to the shape. Some histories are good portraits and some are cartoons.' },
+      { voice: 'A grandparent of faith', says: 'Every family has a story of itself, told at the table, and it is both true and edited. We keep it anyway, because a people without a story of itself does not know what it owes or to whom.' },
+      { voice: 'A skeptic', says: 'The word argument is doing honest work there. An argument can be checked, and a bad one can lose. That is better than a story that cannot be questioned. Prefer the historians who show you their footnotes and change their minds.' },
+    ],
+    closing: 'What is one thing about your own past that two people who were there would tell differently, and which of them would you trust on what?',
+  },
+  {
+    id: 'w-who-made-the-rule',
+    theme: 'world',
+    stage: 'early',
+    courseIds: ['civics-k'],
+    answerMode: 'pick',
+    prompt: 'Who made the rules at your house?',
+    options: ['Grown-ups', 'Everybody together', 'Not sure'],
+    simple: [
+      { voice: 'A scientist says', says: 'Rules are made by people, so people can talk about them and change them.' },
+      { voice: 'An artist says', says: 'The best rules are the ones you would make yourself if you were in charge.' },
+    ],
+    perspectives: [
+      { voice: 'A scientist', says: 'Every rule was made by someone, for a reason. Ask what the reason is. A rule with a good reason is easy to follow, and a rule with no reason is worth asking about.' },
+      { voice: 'An artist', says: 'Think of a rule you like. Now think of one you do not. The difference is usually whether you can see who it helps.' },
+      { voice: 'A grandparent of faith', says: 'Old rules like be kind and tell the truth were not made by one person. They were kept because they worked, over and over, for a very long time.' },
+      { voice: 'A skeptic', says: 'Some rules are for keeping you safe. Some are just for keeping things quiet. It is fair to ask which is which, politely.' },
+    ],
+    closing: 'If you could make one rule for your house, what would it be?',
+  },
+  {
+    id: 'w-need-or-want-really',
+    theme: 'feelings',
+    stage: 'early',
+    courseIds: ['civics-1'],
+    answerMode: 'pick',
+    prompt: 'Is a friend a need or a want?',
+    options: ['A need', 'A want', 'Both'],
+    simple: [
+      { voice: 'A scientist says', says: 'People need other people. Even grown-ups get sad when they are alone too long.' },
+      { voice: 'An artist says', says: 'A friend is not food or a coat, but it is very hard to be happy without one.' },
+    ],
+    perspectives: [
+      { voice: 'A scientist', says: 'Food, water and shelter keep a body alive. Friends keep a person well. Doctors find that people with friends get sick less and live longer, so a friend is closer to a need than it looks.' },
+      { voice: 'An artist', says: 'Every story has a friend in it somewhere. Even the ones about being alone are really about missing one.' },
+      { voice: 'A grandparent of faith', says: 'The oldest wisdom says it is not good for a person to be alone. That was true before there were shops to buy wants in.' },
+      { voice: 'A skeptic', says: 'You can live without a particular friend. You cannot do well without any. So the honest answer is the one in the middle.' },
+    ],
+    closing: 'What is something a friend gives you that no shop sells?',
+  },
+  {
+    id: 'w-losing-the-vote',
+    theme: 'feelings',
+    stage: 'early',
+    courseIds: ['civics-2'],
+    answerMode: 'pick',
+    prompt: 'Your class voted, and your choice lost. How does that feel?',
+    options: ['Bad', 'Okay', 'It depends'],
+    simple: [
+      { voice: 'A scientist says', says: 'Losing a vote feels bad for a while. Getting to vote again next time makes it fair.' },
+      { voice: 'An artist says', says: 'Sometimes the thing you did not pick turns out to be good too.' },
+    ],
+    perspectives: [
+      { voice: 'A scientist', says: 'Voting works because everyone agrees ahead of time to accept the count. The feeling of losing is real, and the promise to try again next time is what keeps the whole thing running.' },
+      { voice: 'An artist', says: 'The museum you did not vote for might have the best thing you see all year. Losing a vote is a door you did not choose, and some of those doors are wonderful.' },
+      { voice: 'A grandparent of faith', says: 'Being a good loser is a skill grown-ups need every week. It is learned in second grade, over pizza and tacos, and it lasts a lifetime.' },
+      { voice: 'A skeptic', says: 'Notice that the winners still needed you to go along. In a fair vote the losers agree to help, and that is a kind of power too.' },
+    ],
+    closing: 'What could you say to a friend whose choice lost?',
+  },
+  {
+    id: 'w-three-governments',
+    theme: 'world',
+    stage: 'growing',
+    courseIds: ['civics-3'],
+    answerMode: 'typed',
+    prompt: 'You live under three governments at once: your town, your state and your country. If you could give one job to a different level than it has now, what would it be, and why?',
+    perspectives: [
+      { voice: 'A scientist', says: 'The rule of thumb is to put a job at the smallest level that can do it well. Potholes are local because the people who hit them are right there. The army is national because a town cannot build one. Test your choice against that rule.' },
+      { voice: 'An artist', says: 'The closer the government, the more it feels like people. A mayor is someone you might see at the grocery store. Moving a job closer makes it warmer and slower; moving it farther makes it bigger and colder.' },
+      { voice: 'A grandparent of faith', says: 'The people who set this up had just escaped a king who decided everything from far away. Three levels was their answer: keep most decisions close to home, and let the far one do only what the near ones cannot.' },
+      { voice: 'A skeptic', says: 'Whoever holds a job usually thinks they should keep it. So ask who benefits from your change, and who would lose, before you decide it is an improvement.' },
+    ],
+    closing: 'Which of the three governments have you seen at work with your own eyes this week?',
+  },
+  {
+    id: 'w-whose-manners',
+    theme: 'world',
+    stage: 'teen',
+    courseIds: ['history-6'],
+    answerMode: 'typed',
+    prompt: 'In one culture it is polite to finish every bite. In another, leaving a little shows you had enough. When two cultures disagree about what is polite, is either of them wrong?',
+    perspectives: [
+      { voice: 'A scientist', says: 'Manners are signals, and a signal only means what a group has agreed it means. Neither plate is wrong, the way neither a red light nor a green one is wrong. What matters is that the people at the table share a code, and learning a second code is exactly what travel is for.' },
+      { voice: 'An artist', says: 'The clean plate and the polite crumb are two poems about the same thing: gratitude. Once you see that, the difference stops being a mistake and starts being interesting, which is the best thing a difference can be.' },
+      { voice: 'A grandparent of faith', says: 'Every tradition I know teaches the same rule underneath the different manners: honor the host and the ones who have less. If you keep that rule, you will be forgiven the wrong fork anywhere on earth.' },
+      { voice: 'A skeptic', says: 'Careful with the easy answer that everything is just custom. Some customs hurt people, and the ones who are hurt rarely get asked. Manners about plates are harmless. The test is whether a custom would survive if the people it costs the most had a vote.' },
+    ],
+    closing: 'What custom of your own family would look strange to a visitor, and what does it mean underneath?',
+  },
+  {
+    id: 'w-same-land-six-flags',
+    theme: 'world',
+    stage: 'teen',
+    courseIds: ['history-7'],
+    answerMode: 'typed',
+    prompt: 'Six flags have flown over Texas, and the land did not change under any of them. What makes a place home: the land, the people on it, or the flag over it?',
+    perspectives: [
+      { voice: 'A scientist', says: 'The land is the constant in the experiment: same rivers, same soil, same weather. Everything the flags changed was rules about the people. So if you want to know what a place is, watch the variable that stays fixed and the one that keeps moving, and notice which one you are actually attached to.' },
+      { voice: 'An artist', says: 'A flag is a picture people agree to salute. The land needs no agreement; it was there before the first Caddo and will be there after the last of us. I paint the land and put the flag in the corner, small, because that is the honest proportion.' },
+      { voice: 'A grandparent of faith', says: 'Home is where your dead are buried and your children are raised. The flag over the courthouse changed six times; the graves under the live oaks did not move once. That is where I would look for the answer.' },
+      { voice: 'A skeptic', says: 'The flag decided who could own the land, who was free on it and who could vote. Say the land is home if you like, but for most of Texas history the flag decided whether it was your home or someone else\'s. Both answers are true, and the second one cost people more.' },
+    ],
+    closing: 'If you moved to a place with a different flag tomorrow, what would you carry that would make it home?',
+  },
+  {
+    id: 'w-every-map-leaves-out',
+    theme: 'world',
+    stage: 'teen',
+    courseIds: ['history-9'],
+    answerMode: 'typed',
+    prompt: 'Every map leaves almost everything out, or it would be the size of the world. What does that mean for the maps you carry in your head about places you have never been?',
+    perspectives: [
+      { voice: 'A scientist', says: 'A map is a model, and a model is useful precisely because it leaves things out. The danger is forgetting that you chose what to drop. Your mental map of a country you have never visited was drawn by whoever told you about it, and they left out what did not serve their story.' },
+      { voice: 'An artist', says: 'The blank parts of an old map were where the artists drew dragons. We still do that; we just call it assuming. The honest thing is to leave the blank blank until you have been there, and to enjoy how much of the world is still unlabeled in your own head.' },
+      { voice: 'A grandparent of faith', says: 'Every tradition warns against judging a people you have not sat with. A map cannot show a kitchen, a joke or a funeral, and those are most of what a place is. So hold the map lightly and go eat with someone.' },
+      { voice: 'A skeptic', says: 'Notice who makes the maps. For centuries Europe sat at the center and the top, and everyone grew up thinking that was simply how the world is shaped. Ask of every map, including the one in your head, who drew it and what they gained by drawing it that way.' },
+    ],
+    closing: 'Name a place you have opinions about but have never seen. Where did the map in your head come from?',
   },
   {
     id: 'w-ambition-counteracts',
@@ -15595,7 +17097,57 @@ export function makePlacementEvent(subject, startGrade, clearedModuleIds, at) {
 export function makeUnlockEvent(moduleId, at) { return { type: 'module_unlocked', at, moduleId }; }
 
 export function placementDone(events, subject) {
-  return activeEvents(events).some((e) => e.type === 'placed' && e.subject === subject);
+  return activeEvents(events).some((e) => e.type === 'placed' && e.subject === subject && !e.quickCheck);
+}
+
+// ---------------------------------------------------------------------
+// THE QUICK CHECK: "I already know this"
+// Placement settles the grade; this settles one module inside it. The next available module
+// (never a locked one, never one already tried) offers five questions, one from each of its
+// generator slots, with no lesson first. Pass at the module's own mark and the module is placed
+// through the same 'placed' event placement uses, so gating, the report, the transcript and the
+// memory checks all already know what that means: passed for gating, never mastered by the check,
+// the star still to be earned, and memory checks keep visiting it. A miss records the try and
+// opens the lesson; it never counts toward a loop back, because a student who tried to skip has
+// not yet tried to learn. Three answers in under two seconds mean nobody read the questions, and
+// such a check does not place whatever the score. Spoken courses and Writing never offer it.
+// ---------------------------------------------------------------------
+export const QUICK_CHECK_QUESTIONS = 5;
+const MONTHS_LONG = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+function niceDate(iso) { const d = new Date(iso); return isNaN(d) ? String(iso).slice(0, 10) : `${MONTHS_LONG[d.getUTCMonth()]} ${d.getUTCDate()}, ${d.getUTCFullYear()}`; }
+export function buildQuickCheck(moduleId, seed) {
+  const m = getModule(moduleId); if (!m) return null;
+  const rng = makeRng(seed);
+  const core = [];
+  for (let i = 0; i < QUICK_CHECK_QUESTIONS; i++) {
+    const genId = m.generators[i % m.generators.length];
+    let q = generateQuestion(genId, randInt(rng, 1, 2147483646));
+    for (let tries = 0; tries < 12 && core.some((c) => c.story === q.story && c.prompt === q.prompt); tries++) q = generateQuestion(genId, randInt(rng, 1, 2147483646));
+    core.push({ ...q, fromModuleId: m.id });
+  }
+  return { quickCheck: true, moduleId: m.id, seed, core, review: null, review2: null };
+}
+export function quickCheckAllowed(events, moduleId) {
+  const m = getModule(moduleId); if (!m) return false;
+  const course = getCourse(m.courseId);
+  if (!course || course.readAloud || course.subject === 'Writing') return false;
+  if (activeEvents(events).some((e) => (e.type === 'attempt_completed' || e.type === 'quick_check') && e.moduleId === moduleId)) return false;
+  const p = deriveProgress(events).perModule[moduleId];
+  return !!p && !p.mastered && !p.passed && !p.placed;
+}
+export function quickCheckOutcome(moduleId, results) {
+  const right = results.filter((r) => r.correct).length;
+  const rushed = results.filter((r) => typeof r.timeMs === 'number' && r.timeMs < 2000).length;
+  const guessed = rushed >= 3;
+  return { right, total: results.length, guessed, passed: right >= moduleRules(moduleId).toMaster && !guessed };
+}
+export function makeQuickCheckEvent(moduleId, results, at) {
+  const o = quickCheckOutcome(moduleId, results);
+  return { type: 'quick_check', at, moduleId, right: o.right, total: o.total, guessed: o.guessed, passed: o.passed };
+}
+export function makeQuickPlacedEvent(moduleId, at) {
+  const m = getModule(moduleId);
+  return { type: 'placed', at, subject: getCourse(m.courseId).subject, startGrade: null, moduleIds: [moduleId], quickCheck: true };
 }
 
 // ---------------------------------------------------------------------
@@ -16072,6 +17624,14 @@ export function checkPrerequisiteGraph() {
 export function makeCoursesEnabledEvent(courseIds, at) {
   return { type: 'courses_enabled', at, courseIds: [...courseIds] };
 }
+// Teacher notes live on the student's log as events, so they ride along in every backup and
+// survive a reset like the course settings do. A removed note stays in the log, hidden.
+export function makeNoteEvent(text, at) { return { type: 'note', at, noteId: `n_${at}`, text: String(text).trim() }; }
+export function makeNoteRemovedEvent(noteId, at) { return { type: 'note_removed', at, noteId }; }
+export function teacherNotes(events) {
+  const removed = new Set(events.filter((e) => e.type === 'note_removed').map((e) => e.noteId));
+  return events.filter((e) => e.type === 'note' && e.text && !removed.has(e.noteId)).map((e) => ({ id: e.noteId, at: e.at, text: e.text })).sort((a, b) => (a.at < b.at ? 1 : -1));
+}
 export function enabledCourseIds(events) {
   let ids = COURSES.map((c) => c.id);
   for (const e of events) if (e.type === 'courses_enabled') ids = e.courseIds.filter((id) => getCourse(id));
@@ -16238,12 +17798,15 @@ export function moduleStory(learnerName, events, moduleId) {
     const sizes = pieces.map((w) => `${w.words} words`).join(', ');
     return `${name} has sent ${pieces.length} ${pieces.length === 1 ? 'piece' : 'pieces'} of writing for ${lowerTitle(mod.title)} (${sizes}). ${metPart}${backPart}${waitPart}. Writing is marked by the educator, not the app, and the pieces themselves are kept in the record so they can be read again.`;
   }
+  const quick = active.filter((e) => e.type === 'quick_check' && e.moduleId === moduleId && String(e.at) > resetAt).pop();
+  if (quick && quick.passed) return `${name} took the quick check on ${lowerTitle(mod.title)} on ${niceDate(quick.at)} and got ${quick.right} of ${quick.total}, so the module was placed past without the lesson. It is not counted as mastered; the star is still to be earned, and memory checks will visit it.`;
+  const quickNote = quick ? ` ${name} first tried the quick check on ${niceDate(quick.at)} and got ${quick.right} of ${quick.total}${quick.guessed ? ', too fast to count' : ''}, so the lesson came next.` : '';
   if (attempts.length === 0 && reads === 0 && placedPast) return `The placement check placed past ${lowerTitle(mod.title)}, so it is unlocked without a practice round. It is not counted as mastered; the star still has to be earned, and memory checks will visit it.`;
   if (attempts.length === 0 && reads === 0) return `${name} has not opened ${lowerTitle(mod.title)} yet. There is nothing to report until they do.`;
   if (attempts.length === 0) return `${name} has read the ${lowerTitle(mod.title)} lesson ${reads === 1 ? 'once' : reads + ' times'} but has not practiced it yet. Nothing counts until a practice round is finished.`;
 
   const times = (n) => (n === 1 ? 'once' : n === 2 ? 'twice' : `${n} times`);
-  const parts = [`${name} read through this lesson ${times(reads || 1)} and practiced it ${times(attempts.length)}.`];
+  const parts = [`${name} read through this lesson ${times(reads || 1)} and practiced it ${times(attempts.length)}.${quickNote}`];
   const loops = mine.filter((e) => e.type === 'looped_back');
   if (loops.length) { const back = getModule(loops[loops.length - 1].toModuleId); parts.push(`After repeated misses, ${name} was sent back to ${back ? lowerTitle(back.title) : 'the module before'} for a quick check of the groundwork, then brought forward again.`); }
 
@@ -16313,7 +17876,11 @@ export function classView(students, now) {
 
     // Stuck: a module with two or more misses in a row and no pass since.
     const stuck = assigned.filter((m) => !m.mastered && failedStreak(events, m.id) >= 2);
-    if (stuck.length) { score += 3 * stuck.length; reasons.push(`stuck on ${stuck.map((m) => `${lowerTitle(m.title)} (${failedStreak(events, m.id)} misses in a row, best ${m.bestScore} of ${moduleRules(m.id).questions})`).join('; ')}`); }
+    if (stuck.length) { score += 3 * stuck.length; reasons.push(`stuck on ${stuck.map((m) => `${lowerTitle(m.title)} (${failedStreak(events, m.id)} misses in a row, best ${m.bestScore})`).join('; ')}`); }
+
+    // One miss is not a crisis, but it is not nothing either: the educator sees it, and sees what a second miss would bring.
+    const missedOnce = assigned.filter((m) => !m.passed && !m.mastered && m.attempts > 0 && failedStreak(events, m.id) === 1);
+    if (missedOnce.length) { score += 1; reasons.push(`missed the last round of ${missedOnce.map((m) => `${lowerTitle(m.title)} (${m.bestScore} right${m.attempts > 1 ? `, ${m.attempts} tries` : ''})`).join('; ')}; a second miss in a row would route back to the fundamentals`); }
 
     // Loop backs in the last while mean the platform already had to step in.
     const loops = active.filter((e) => e.type === 'looped_back').length;
@@ -16340,6 +17907,10 @@ export function classView(students, now) {
     // first, and the reason says so in words, so "on track" is never a flat list.
     const effort = mastered > 0 ? attempts.length / mastered : 0;
     if (score === 0 && mastered > 0) reasons.push(effort >= 2 ? `on track, but it took about ${effort.toFixed(1)} rounds per module to get there` : `on track and quick about it: about ${effort.toFixed(1)} rounds per module`);
+    // Every row carries the same practice line the report summary shows, so a row never reads as if nothing happened.
+    const practice = practiceLine(report);
+    const triedText = practice.tried.length ? ` Tried but not passed yet: ${practice.tried.map((t) => `${t.title} (${t.detail})`).join('; ')}.` : '';
+    const practiceText = practice.line ? practice.line + triedText : '';
     const next = assigned.find((m) => !m.mastered && moduleStatuses(deriveProgress(events), report.enabledCourseIds).find((x) => x.id === m.id).status === 'available');
     // One sentence that squares the good news with the flags: a student who has mastered a lot
     // can still top the list, and the educator should see why without decoding it.
@@ -16348,7 +17919,11 @@ export function classView(students, now) {
       ? `${masteredPhrase}, but ${flagged} ${flagged === 1 ? 'thing needs' : 'things need'} attention right now, which is why ${label || id} is near the top.`
       : score >= 2 ? `${mastered} mastered so far; a couple of small flags, nothing urgent.` : '';
     return {
-      id, label: label || id, score, reasons, why,
+      id, label: label || id, score, reasons, why, practice: practiceText,
+      missedQuickChecks: assigned.filter((m) => m.quickCheck && !m.quickCheck.passed).length,
+      note: report.notes.length ? report.notes[0].text.split('\n')[0].slice(0, 120) : '',
+      notesAll: report.notes.map((n) => n.text.split('\n')[0].slice(0, 120)),
+      notesText: report.notes.map((n) => n.text).join('\n'),
       mastered, total: assigned.length,
       next: next ? next.title : null,
       daysIdle,
@@ -16535,15 +18110,37 @@ export function summaryParagraph(report) {
   if (!strong.length && !building.length && groups.some((g) => g.confidences.length)) text += ' Confidence is steady across the board so far.';
   if (!groups.some((g) => g.confidences.length)) text += ' There has not been enough practice yet to say much about confidence.';
 
+  // Practice so far: rounds, passes, and anything tried but not passed yet, named with its best score.
+  const practice = practiceLine(report);
+  if (practice.line) text += ` ${practice.line}`;
+  if (practice.tried.length) text += ` Tried but not passed yet: ${practice.tried.map((t) => `${t.title} (${t.detail})`).join('; ')}.`;
+  parts.tried = practice.tried;
+
   // Reflections, in words rather than a fraction.
   if (report.reflectionsAvailable > 0) {
     if (report.reflections === 0) text += ' No reflections have been answered yet.';
     else if (report.reflections >= report.reflectionsAvailable) text += ' Every reflection has been completed.';
     else text += ` ${report.reflections} of ${report.reflectionsAvailable} reflections have been completed.`;
   }
-  parts.rest = text.slice(`${name} has mastered ${list}.`.length).trim();
+  // The tried-but-not-passed sentence is left out of the parts, because the screen draws it with
+  // each module name as a button that opens that module's story.
+  parts.rest = text.slice(`${name} has mastered ${list}.`.length).replace(/ Tried but not passed yet: [^]*?\.(?= [A-Z]|$)/, '').trim();
   summaryParagraph.lastParts = parts;
   return text;
+}
+
+// "Practice so far: 3 rounds, 1 passed." and the modules tried but not passed, each with its best
+// score and number of tries. The report summary and the class view both read this, so they agree.
+export function practiceLine(report) {
+  const assigned = report.modules.filter((m) => report.enabledCourseIds.includes(m.courseId));
+  if (report.totalAttempts === 0 && !assigned.some((m) => m.quickCheck)) return { line: '', tried: [] };
+  const passedRounds = assigned.reduce((a, m) => a + (m.passes || 0), 0);
+  const line = report.totalAttempts ? `Practice so far: ${report.totalAttempts} ${report.totalAttempts === 1 ? 'round' : 'rounds'}, ${passedRounds} passed.` : 'No practice rounds yet.';
+  const tried = assigned.filter((m) => m.attempts > 0 && !m.passed && !m.mastered).map((m) => ({ id: m.id, title: lowerTitle(m.title), detail: `best ${m.bestScore}, ${m.attempts} ${m.attempts === 1 ? 'try' : 'tries'}` }));
+  // Quick checks too: a missed one is a try to skip that did not work, and a passed one is a module skipped.
+  for (const m of assigned.filter((m) => m.quickCheck && !m.quickCheck.passed && !m.passed && !m.mastered && !tried.some((t) => t.id === m.id))) tried.push({ id: m.id, title: lowerTitle(m.title), detail: `quick check ${m.quickCheck.right} of ${m.quickCheck.total}${m.quickCheck.guessed ? ', too fast to count' : ''}` });
+  const skipped = assigned.filter((m) => m.quickCheck && m.quickCheck.passed).map((m) => lowerTitle(m.title));
+  return { line: skipped.length ? `${line} Skipped by quick check: ${skipped.join(', ')}.` : line, tried };
 }
 
 // The summary as a bulleted list plus the sentences that follow it.
@@ -16582,9 +18179,11 @@ export function buildReport(learnerName, events) {
       firstAttemptAt: p.firstAttemptAt,
       lastAttemptAt: p.lastAttemptAt,
       confidence: computeConfidence(m.id, events),
+      quickCheck: active.filter((e) => e.type === 'quick_check' && e.moduleId === m.id).map((e) => ({ at: e.at, right: e.right, total: e.total, passed: e.passed, guessed: e.guessed })).pop() || null,
     };
   });
   return {
+    notes: teacherNotes(events),
     learnerName,
     generatedAt: new Date().toISOString(),
     modulesMastered: progress.masteredIds.length,

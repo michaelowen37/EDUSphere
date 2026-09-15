@@ -11,7 +11,8 @@ const WONDER_COUNT = (await import('../../src/logic.mjs')).WONDER.length;
 let pass = 0, fail = 0;
 const ok = (label, cond) => { console.log((cond ? 'PASS' : 'FAIL') + ' - ' + label); cond ? pass++ : fail++; };
 const browser = await chromium.launch();
-const page = await browser.newPage({ viewport: { width: 390, height: 844 }, reducedMotion: 'reduce' });
+// A phone-sized touch screen, so tracing lessons open (they refuse a mouse-only device on purpose).
+const page = await browser.newPage({ viewport: { width: 390, height: 844 }, reducedMotion: 'reduce', hasTouch: true });
 const errors = [];
 page.on('pageerror', (e) => { errors.push(String(e)); console.log('PAGE ERROR:', String(e).slice(0, 300)); });
 page.on('console', (m) => { if (m.type() === 'error') errors.push(m.text()); });
@@ -443,6 +444,11 @@ ok('the classroom page carries a backup link at the foot', (await page.getByRole
 // The standards map: every module against the state's own standards, opened from a student's report
 await page.getByRole('button', { name: 'Open report' }).first().click();
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'educator-report');
+// A teacher note: written on the report, kept on the student's log.
+await page.fill('textarea[aria-label="Teacher note"]', 'Reads well aloud; shy in groups.');
+await tap('Save note');
+await page.waitForTimeout(300);
+ok('a saved note shows on the report with its date', (await text()).includes('Reads well aloud; shy in groups.'));
 await tap('Standards map');
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'standards-map');
 t = await text();
@@ -473,6 +479,38 @@ ok('learner progress uses plain words', t.includes("You haven't started a practi
 await page.getByRole('button', { name: /^Available Courses/ }).click();
 ok('a learner can open a module straight from My progress', (await page.getByRole('button', { name: /Open module|Practice again/ }).count()) > 0);
 ok('the progress page never shows the storage id and offers the three groups', !t.includes('s_3003') && t.includes("Courses I've Mastered") && t.includes('Available Courses') && t.includes('Locked Courses'));
+// The quick check: the next module offers "I already know this"; five questions, no lesson, and a pass places the module without the star.
+await tap('Back');
+await page.getByRole('button', { name: /^Math/ }).first().click();
+ok('the next available module offers a quick check', (await page.getByRole('button', { name: 'I already know this' }).count()) >= 1);
+await page.getByRole('button', { name: 'I already know this' }).first().click();
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'practice');
+t = await text();
+ok('the quick check runs on the practice screen as a labeled five-question round', t.includes('Quick check') && (await state()).question !== null);
+// Answering all five in under two seconds each is "too fast to count", so this run reads each question first.
+for (let i = 0; i < 5; i++) { await page.waitForTimeout(2100); await answer(true); if (i < 4) await next(); }
+await next();
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'quick-result');
+t = await text();
+ok('a passed quick check places the module and says the star is still to earn', t.includes('You already know') && t.includes('not counted as mastered'));
+await tap('Back to my courses');
+if ((await page.getByRole('button', { name: 'I already know this' }).count()) === 0) await page.getByRole('button', { name: /^Math/ }).first().click();
+ok('the placed module opens the next one, which offers its own quick check', (await page.getByRole('button', { name: 'I already know this' }).count()) >= 1 && (await page.getByRole('button', { name: /^Available Courses|Open/ }).count()) >= 1);
+// A missed quick check: answered too quickly and mostly wrong, it does not place, opens the lesson, and is one try only.
+const quickLinks = async () => { let n = await page.getByRole('button', { name: 'I already know this' }).count(); if (n === 0) { await page.getByRole('button', { name: /^Math/ }).first().click(); n = await page.getByRole('button', { name: 'I already know this' }).count(); } return n; };
+const linksBefore = await quickLinks();
+await page.getByRole('button', { name: 'I already know this' }).first().click();
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'practice');
+await runSet([true, false, false, false, false]);
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'quick-result');
+t = await text();
+ok('a missed quick check says nothing counts against you and offers the lesson', t.includes('Not yet') && (await page.getByRole('button', { name: 'Open the lesson' }).count()) === 1);
+await tap('Open the lesson');
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'lesson');
+await page.getByRole('button', { name: 'Back' }).first().click();
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview');
+ok('the missed module offers no second quick check', (await quickLinks()) < linksBefore);
+await tap('My progress');
 await tap('Back');
 await tap('Exit');
 await educatorLogin();
@@ -505,6 +543,42 @@ await tap('Who needs help');
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'class-view');
 t = await text();
 ok('the class view ranks students with reasons in words', t.includes('Who needs help') && /has not started/i.test(t) && t.includes('Next up:'));
+await page.fill('input[aria-label="Search notes"]', 'shy');
+t = await text();
+ok('searching the notes keeps only the student written about, and shows the line', t.includes('Reads well aloud; shy in groups.') && !t.includes('S-3003'));
+await page.fill('input[aria-label="Search notes"]', 'nobody wrote this');
+ok('a search no note matches says so', (await text()).includes('No note says that.'));
+await page.fill('input[aria-label="Search notes"]', '');
+await tap('Missed a quick check (1)');
+t = await text();
+ok('the missed-quick-check filter shows only the student who missed one', t.includes('S-3003') && !t.includes('S-1042') && t.includes('quick check'));
+await tap('Everyone');
+ok('the class view can be printed', (await page.getByRole('button', { name: 'Print this list' }).count()) === 1 && (await text()).includes('S-1042'));
+// Slower on a tracing demonstration lengthens the drawing's cycle (and slows the voice with it). The test hook opens the module by name.
+await tap('Back to Classroom');
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'educator-pick');
+await page.getByRole('button', { name: 'Walk through early years' }).click();
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview');
+await page.waitForTimeout(300);
+await page.evaluate(() => window.__eduTest.openModule('first-marks'));
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'lesson');
+await page.waitForTimeout(300);
+{
+  const cycle = async () => page.evaluate(() => { const el = document.querySelector('.edu-trace-draw'); return el ? parseFloat((el.style.animation.match(/([\d.]+)s/) || [])[1]) : 0; });
+  const before = await cycle();
+  await page.getByRole('button', { name: 'Slower drawing and voice' }).click();
+  await page.waitForTimeout(200);
+  const after = await cycle();
+  ok('Slower lengthens the drawing cycle on a tracing lesson', before > 0 && after > before);
+  ok('Slower cannot go below the slowest pace', await page.getByRole('button', { name: 'Slower drawing and voice' }).isDisabled());
+}
+await page.getByRole('button', { name: 'Back' }).first().click();
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview');
+await tap('Exit');
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'educator-pick');
+await tap('Who needs help');
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'class-view');
+
 ok('the class view explains its order in plain words', t.includes('To the top for you'));
 ok('the class view leads with a one-breath summary', /(on track|keep an eye on|needs help now)/.test(t));
 await tap('Back to Classroom');

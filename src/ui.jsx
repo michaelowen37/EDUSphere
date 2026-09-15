@@ -1428,6 +1428,7 @@ export default function EduSphereApp() {
   const [quickChecks, setQuickChecks] = useState(true);             // may a student skip a module by passing five questions?
   const [showRequirements, setShowRequirements] = useState(false);   // a writing assignment's requirements popup
   const [showNoteTip, setShowNoteTip] = useState(false);             // what a note is for, under the note box
+  const [editingNote, setEditingNote] = useState(null);              // the note being rewritten: { id, text }
   const [printing, setPrinting] = useState(false);                   // true while the report prints, so every course fold opens with its stories
   useEffect(() => { if (typeof window === 'undefined' || !window.matchMedia) return undefined; const before = () => setPrinting(true); const after = () => setPrinting(false); window.addEventListener('beforeprint', before); window.addEventListener('afterprint', after); return () => { window.removeEventListener('beforeprint', before); window.removeEventListener('afterprint', after); }; }, []);
   const returnTo = useRef(null);                                     // { screen, scrollY } to go back to after Change state or a PIN unlock
@@ -3831,8 +3832,9 @@ export default function EduSphereApp() {
     const enabled = rep.enabledCourseIds;
 
     // Writes one event onto this student's log and keeps the screen in step.
+    // One event or several, so an edit (the old note removed, the new one written) is a single save.
     const addToStudent = async (event) => {
-      const next = { ...educatorRecord, events: [...educatorRecord.events, event] };
+      const next = { ...educatorRecord, events: [...educatorRecord.events, ...(Array.isArray(event) ? event : [event])] };
       setEducatorRecord(next);
       if (record && record.name === next.name) setRecord(next);
       const outcome = await saveRecord(next);
@@ -3856,10 +3858,28 @@ export default function EduSphereApp() {
         {/* Teacher notes: written here, kept on the student's log, so they ride along in every backup. */}
         <div style={{ ...card, marginBottom: 14 }}>
           <p className="edu-card-title" style={{ margin: '0 0 6px', fontWeight: 600 }}>Notes</p>
+          {/* Each note sits on its own soft green card, centered, with Edit and Remove under it. An edit is
+              the old note removed and the new one written, so the log still says everything that happened. */}
           {rep.notes.map((n) => (
-            <div key={n.id} style={{ borderTop: `1px solid ${C.line}`, padding: '8px 0' }}>
-              <p style={{ margin: 0, fontSize: 15, whiteSpace: 'pre-wrap' }}>{n.text}</p>
-              <p style={{ margin: '4px 0 0', fontSize: 13, color: C.muted }}>{fmtDate(n.at)} <button type="button" className="edu-no-print" style={{ ...linkBtn, fontSize: 13, marginLeft: 8 }} onClick={() => addToStudent(makeNoteRemovedEvent(n.id, new Date().toISOString()))}>Remove</button></p>
+            <div key={n.id} style={{ margin: '0 0 8px', padding: '10px 12px', borderRadius: 10, background: 'linear-gradient(135deg, #EAF2EC 0%, #F5F9F5 100%)', border: '1px solid #DCE8DF', textAlign: 'center' }}>
+              {editingNote && editingNote.id === n.id ? (
+                <div className="edu-no-print">
+                  <textarea value={editingNote.text} onChange={(e) => setEditingNote({ id: n.id, text: e.target.value })} aria-label="Edit note" rows={3}
+                    style={{ width: '100%', boxSizing: 'border-box', fontFamily: FONT, fontSize: 15, padding: 10, borderRadius: 10, border: `1px solid ${C.line}`, resize: 'vertical' }} />
+                  <div style={{ display: 'flex', justifyContent: 'center', gap: 10, marginTop: 8 }}>
+                    <Btn kind="secondary" disabled={!editingNote.text.trim()} onClick={async () => { const at = new Date().toISOString(); await addToStudent([makeNoteRemovedEvent(n.id, at), makeNoteEvent(editingNote.text, at)]); setEditingNote(null); }}>Save</Btn>
+                    <Btn kind="secondary" onClick={() => setEditingNote(null)}>Cancel</Btn>
+                  </div>
+                </div>
+              ) : (
+                <>
+                  <p style={{ margin: 0, fontSize: 15, whiteSpace: 'pre-wrap' }}>{n.text}</p>
+                  <p style={{ margin: '4px 0 0', fontSize: 13, color: C.muted }}>{fmtDate(n.at)}
+                    <button type="button" className="edu-no-print" style={{ ...linkBtn, fontSize: 13, marginLeft: 8 }} onClick={() => setEditingNote({ id: n.id, text: n.text })}>Edit</button>
+                    <button type="button" className="edu-no-print" style={{ ...linkBtn, fontSize: 13, marginLeft: 8 }} onClick={() => addToStudent(makeNoteRemovedEvent(n.id, new Date().toISOString()))}>Remove</button>
+                  </p>
+                </>
+              )}
             </div>
           ))}
           <div className="edu-note-box edu-no-print">

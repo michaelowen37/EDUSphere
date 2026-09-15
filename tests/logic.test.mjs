@@ -1085,6 +1085,9 @@ ok('reset: history kept, but nothing counts as mastered afterwards', events.leng
   ok('a note is an event with its text trimmed', note.type === 'note' && note.text === 'Reads well aloud; shy in groups.' && L.teacherNotes(events).length === 1 && L.teacherNotes(events)[0].text === note.text);
   ok('the report carries the notes, newest first', L.buildReport('S-6', [...events, L.makeNoteEvent('Second', '2026-09-16T10:00:00.000Z')]).notes.map((n) => n.text).join('|') === 'Second|Reads well aloud; shy in groups.');
   ok('a removed note is gone from the report and its removal stays on the log', L.buildReport('S-6', [...events, L.makeNoteRemovedEvent(note.noteId, '2026-09-16T10:00:00.000Z')]).notes.length === 0);
+  // An edit is the old note removed and a new one written, in one save: the log keeps both, the report shows one.
+  const edited = [...events, L.makeNoteRemovedEvent(note.noteId, '2026-09-16T09:00:00.000Z'), L.makeNoteEvent('Reads well aloud; joining group work now.', '2026-09-16T09:00:00.000Z')];
+  ok('an edited note replaces the old one on the report and leaves both events on the log', L.teacherNotes(edited).length === 1 && L.teacherNotes(edited)[0].text === 'Reads well aloud; joining group work now.' && edited.filter((e) => e.type === 'note').length === 2);
   ok('a reset keeps the notes', L.teacherNotes([...events, L.makeResetEvent ? L.makeResetEvent('2026-09-17T10:00:00.000Z') : { type: 'reset', at: '2026-09-17T10:00:00.000Z' }]).length === 1);
 }
 

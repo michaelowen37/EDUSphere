@@ -338,6 +338,10 @@ Approved by Mikey on 2026-09-04 unless marked "proposed".
 - (2026-09-15) Art is the first elective subject: Looking and making (grade 3) and Color, shape and story (grade 4), three modules each, marked `elective: true`, cited against the Texas fine arts TEKS (§117.111 and §117.114, Adopted 2013) by knowledge statement and the National Core Arts Standards anchor codes. They exist so the Core / Electives toggles have something real to show, and because an elective is what the flag was built for.
 - (2026-09-15) More of Mikey's phone review: the report's closing lines centered one sentence per line; the note box spans the card with Save note centered below on a phone and the explanation under it, centered; the writing check names the student and is centered; "Switching a course off" centered; the notes search placeholder centered; the student card's name, grade and links now share one left edge beside the picture. The print check now reads the PDF, because the DOM's textContent shows print-hidden text too.
 
+- (2026-09-15) On a phone a student's picture sits above their name, so every name, grade and link starts at the card's left edge whether or not there is a picture; on a laptop the picture returns beside them and nothing else changes. Under the note box the visible line is the search hint, with "A note here stays with the student and can be restored through backups" behind an i.
+
+- (2026-09-15) On a phone every section title is centered (the classroom's Active and Inactive folds, and the report's Notes, Summary, Assigned Now, Progress by course, Transcript, Key Words and Raw data), with a fold's count and chevron pinned to the right edge; on a laptop they stay left. The note box is taller on a phone, so the example in the placeholder fits. Electives are never part of the recommended set: they exist to be chosen under "other courses", which is what the Core / Electives toggle is for.
+
 ## Open items
 - Verify audio plays inside the chat artifact sandbox (works in a normal browser).
 - Common Core / TEKS codes on existing modules to be checked against the official lists.

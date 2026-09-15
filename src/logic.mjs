@@ -968,6 +968,11 @@ export function byGradeOrder(a, b) { return GRADES.indexOf(a.grade) - GRADES.ind
 function gradeStartsHidden(grade) { const inGrade = COURSES.filter((c) => c.grade === grade); return inGrade.length > 0 && inGrade.every((c) => c.startsHidden); }
 
 export function recommendedCourseIds(events, level, startGrade = null) {
+  // Electives are never recommended: they are the whole point of "wish to stray from our recommendations".
+  const recommended = recommendedIncludingElectives(events, level, startGrade);
+  return recommended.filter((id) => !(getCourse(id) || {}).elective);
+}
+function recommendedIncludingElectives(events, level, startGrade = null) {
   const enabled = enabledCourseIds(events);
   const placed = COURSES.filter((c) => enabled.includes(c.id));
   if (placed.length > 0) {
@@ -18377,7 +18382,7 @@ export function summaryParagraph(report) {
 
   // Reflections, in words rather than a fraction.
   if (report.reflectionsAvailable > 0) {
-    if (report.reflections === 0) text += ' No reflections have been answered yet.';
+    if (report.reflections === 0) text += ' No reflection questions have been answered yet.';
     else if (report.reflections >= report.reflectionsAvailable) text += ' Every reflection has been completed.';
     else text += ` ${report.reflections} of ${report.reflectionsAvailable} reflections have been completed.`;
   }

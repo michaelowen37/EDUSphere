@@ -755,15 +755,31 @@ const KID_ANIMATION = `
   /* The student card: on a phone the name, grade and links stay left and Open report sits below them, centered;
      on a laptop the name, grade and links stack on the left and Open report sits on the right, centered on them. */
   .edu-student-body { display: block; }
+  /* On a phone the picture sits above the name, so every name, grade and link starts at the card's left edge,
+     with or without a picture; on a laptop the picture returns beside them. */
+  .edu-student-left { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; }
   .edu-student-actions { text-align: left; }
   .edu-student-actions button { margin-right: 10px; }
   .edu-student-open { display: flex; justify-content: center; margin-top: 12px; }
   @media (min-width: 1000px) {
     .edu-student-body { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
-    .edu-student-left { flex: 1 1 auto; min-width: 0; text-align: left; }
+    .edu-student-left { flex: 1 1 auto; min-width: 0; text-align: left; flex-direction: row; align-items: center; gap: 10px; }
   }
-  /* The note box: on a phone the field spans the card and Save note sits centered below it. */
+  /* Section titles read centered on a phone and stay left on a laptop. A fold keeps its count and
+     chevron pinned right while the title centers. */
+  .edu-card-title { text-align: center; }
+  .edu-fold-head { position: relative; justify-content: center !important; }
+  .edu-fold-title { text-align: center; }
+  .edu-fold-meta { position: absolute; right: 16px; top: 50%; transform: translateY(-50%); }
+  @media (min-width: 1000px) {
+    .edu-card-title { text-align: left; }
+    .edu-fold-head { justify-content: space-between !important; }
+    .edu-fold-meta { position: static; transform: none; }
+  }
+  /* The note box: on a phone the field spans the card, tall enough for the example, and Save note sits centered below it. */
   .edu-note-box { margin-top: 8px; }
+  .edu-note-box textarea { min-height: 96px; }
+  @media (min-width: 1000px) { .edu-note-box textarea { min-height: 0; } }
   .edu-note-save { display: flex; justify-content: center; margin-top: 8px; }
   @media (min-width: 1000px) {
     .edu-note-box { display: flex; gap: 8px; align-items: flex-start; }
@@ -1411,6 +1427,7 @@ export default function EduSphereApp() {
   const [mapKind, setMapKind] = useState('core');                   // the standards map, by grade: core courses or electives
   const [quickChecks, setQuickChecks] = useState(true);             // may a student skip a module by passing five questions?
   const [showRequirements, setShowRequirements] = useState(false);   // a writing assignment's requirements popup
+  const [showNoteTip, setShowNoteTip] = useState(false);             // what a note is for, under the note box
   const [printing, setPrinting] = useState(false);                   // true while the report prints, so every course fold opens with its stories
   useEffect(() => { if (typeof window === 'undefined' || !window.matchMedia) return undefined; const before = () => setPrinting(true); const after = () => setPrinting(false); window.addEventListener('beforeprint', before); window.addEventListener('afterprint', after); return () => { window.removeEventListener('beforeprint', before); window.removeEventListener('afterprint', after); }; }, []);
   const returnTo = useRef(null);                                     // { screen, scrollY } to go back to after Change state or a PIN unlock
@@ -3428,10 +3445,10 @@ export default function EduSphereApp() {
 
         {visible.length === 0 && <div style={{ ...card, background: C.greenSoft, borderColor: C.greenSoft, textAlign: 'center' }}><p style={{ margin: 0, color: C.muted }}>Nobody here yet. Add someone above.</p></div>}
         {visible.length > 0 && (<div style={{ ...card, padding: 10, background: 'linear-gradient(135deg, #E6F0E8 0%, #F3F8F4 100%)', borderColor: '#C9DCCF' }}>
-          <button type="button" onClick={() => setActiveOpen(!activeOpen)} aria-expanded={activeOpen}
+          <button type="button" className="edu-fold-head" onClick={() => setActiveOpen(!activeOpen)} aria-expanded={activeOpen}
             style={{ fontFamily: FONT, width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'linear-gradient(135deg, #D6E6DB 0%, #E6F0E8 100%)', border: '1px solid #C9DCCF', borderRadius: 12, padding: '14px 16px', marginBottom: 10, cursor: 'pointer', color: C.ink }}>
-            <span style={{ fontSize: 18, fontWeight: 600 }}>Active Students</span>
-            <span style={{ fontSize: 14, color: C.muted }}>{visible.length} {activeOpen ? '▴' : '▾'}</span>
+            <span className="edu-fold-title" style={{ fontSize: 18, fontWeight: 600 }}>Active Students</span>
+            <span className="edu-fold-meta" style={{ fontSize: 14, color: C.muted }}>{visible.length} {activeOpen ? '▴' : '▾'}</span>
           </button>
         {activeOpen && visible.map((st) => (
           <div key={st.id} style={{ ...card, paddingBottom: 14 }}>
@@ -3450,7 +3467,7 @@ export default function EduSphereApp() {
             ) : (
               <>
                 <div className="edu-student-body">
-                <div className="edu-student-left" style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}>
+                <div className="edu-student-left">
                 {st.picture && <StudentPicture name={st.picture} tint={st.tint} size={40} />}
                 <div style={{ flex: '1 1 auto', minWidth: 0 }}>
                   <span style={{ display: 'block', fontSize: 18, fontWeight: 600 }}>{keepTogether(st.label)}</span>
@@ -3516,10 +3533,10 @@ export default function EduSphereApp() {
         </div>)}
 
         {hidden.length > 0 && (
-          <button type="button" onClick={() => setHiddenOpen(!hiddenOpen)} aria-expanded={hiddenOpen}
+          <button type="button" className="edu-fold-head" onClick={() => setHiddenOpen(!hiddenOpen)} aria-expanded={hiddenOpen}
             style={{ fontFamily: FONT, width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: C.surface, border: `1px solid ${C.line}`, borderRadius: 12, padding: '14px 16px', marginBottom: 10, cursor: 'pointer', color: C.ink }}>
-            <span style={{ fontSize: 18, fontWeight: 600 }}>Inactive Students ({hidden.length})</span>
-            <span style={{ fontSize: 14, color: C.green, textDecoration: 'underline' }}>{hiddenOpen ? 'hide' : 'show'}</span>
+            <span className="edu-fold-title" style={{ fontSize: 18, fontWeight: 600 }}>Inactive Students ({hidden.length})</span>
+            <span className="edu-fold-meta" style={{ fontSize: 14, color: C.green, textDecoration: 'underline' }}>{hiddenOpen ? 'hide' : 'show'}</span>
           </button>
         )}
         {hidden.length > 0 && hiddenOpen && (
@@ -3838,7 +3855,7 @@ export default function EduSphereApp() {
 
         {/* Teacher notes: written here, kept on the student's log, so they ride along in every backup. */}
         <div style={{ ...card, marginBottom: 14 }}>
-          <p style={{ margin: '0 0 6px', fontWeight: 600 }}>Notes</p>
+          <p className="edu-card-title" style={{ margin: '0 0 6px', fontWeight: 600 }}>Notes</p>
           {rep.notes.map((n) => (
             <div key={n.id} style={{ borderTop: `1px solid ${C.line}`, padding: '8px 0' }}>
               <p style={{ margin: 0, fontSize: 15, whiteSpace: 'pre-wrap' }}>{n.text}</p>
@@ -3846,20 +3863,21 @@ export default function EduSphereApp() {
             </div>
           ))}
           <div className="edu-note-box edu-no-print">
-            <textarea value={noteInput} onChange={(e) => setNoteInput(e.target.value)} aria-label="Teacher note" placeholder="Write a note about this student (i.e. needs quiet to focus, loves dinosaurs)" rows={2}
+            <textarea value={noteInput} onChange={(e) => setNoteInput(e.target.value)} aria-label="Teacher note" placeholder="Write a note about this student (i.e. needs assistance with math, loves dinosaurs)" rows={2}
               style={{ width: '100%', boxSizing: 'border-box', fontFamily: FONT, fontSize: 15, padding: 10, borderRadius: 10, border: `1px solid ${C.line}`, resize: 'vertical' }} />
             <div className="edu-note-save"><Btn kind="secondary" disabled={!noteInput.trim()} onClick={async () => { await addToStudent(makeNoteEvent(noteInput, new Date().toISOString())); setNoteInput(''); }}>Save note</Btn></div>
           </div>
-          {rep.notes.length === 0 && <p style={{ margin: '10px 0 0', fontSize: 14, color: C.muted, textAlign: 'center' }}>Nothing yet. A note here stays with the student and can be restored through backups. Quickly search student notes through the "Who Needs Help" page.</p>}
+          <p style={{ margin: '10px 0 0', fontSize: 14, color: C.muted, textAlign: 'center' }}>Quickly search student notes through the "Who Needs Help" page. <InfoButton onClick={() => setShowNoteTip(!showNoteTip)} label="About notes" open={showNoteTip} /></p>
+          {showNoteTip && <TipText>A note here stays with the student and can be restored through backups.</TipText>}
         </div>
         {/* The summary a parent or principal can read without decoding anything: a list, then sentences */}
         {(() => {
           const parts = summaryParts(rep);
           return (
             <div style={{ ...card, padding: 0, overflow: 'hidden' }}>
-              <button type="button" onClick={() => setOpenSummary(!openSummary)} aria-expanded={openSummary}
+              <button type="button" className="edu-fold-head" onClick={() => setOpenSummary(!openSummary)} aria-expanded={openSummary}
                 style={{ fontFamily: FONT, width: '100%', textAlign: 'left', background: 'transparent', border: 'none', padding: 16, cursor: 'pointer', color: C.ink, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span style={{ fontSize: 17, fontWeight: 600 }}>Summary</span><span style={{ color: C.muted }}>{openSummary ? '▴' : '▾'}</span>
+                <span className="edu-fold-title" style={{ fontSize: 17, fontWeight: 600 }}>Summary</span><span className="edu-fold-meta" style={{ color: C.muted }}>{openSummary ? '▴' : '▾'}</span>
               </button>
               {openSummary && (
                 <div style={{ padding: '0 16px 16px' }}>
@@ -3899,7 +3917,7 @@ export default function EduSphereApp() {
         )}
         {/* Choose what this student works on. Recommended first, everything else tucked away. */}
         <div style={{ ...card, background: C.greenSoft, borderColor: C.greenSoft }}>
-          <p style={{ margin: '0 0 4px', fontWeight: 600 }}>Assigned Now</p>
+          <p className="edu-card-title" style={{ margin: '0 0 4px', fontWeight: 600 }}>Assigned Now</p>
           <p style={{ margin: '0 0 10px', fontSize: 14, color: C.muted }}>Assign courses by checking or unchecking the boxes below. Each student starts with the courses we recommend (based on a combination of {shownName}'s initial placement check, quick-check module skips and/or his or her actual progression through the modules) but you are free to edit how you see fit.</p>
           <input value={courseQuery} onChange={(e) => setCourseQuery(e.target.value)} placeholder="Search courses, for example: grade 1 math, kinder, fractions" aria-label="Search courses"
             style={{ fontFamily: FONT, fontSize: 15, padding: '10px 12px', width: '100%', boxSizing: 'border-box', border: `2px solid ${C.line}`, borderRadius: 10, marginBottom: 10, background: C.surface }} />
@@ -3970,10 +3988,10 @@ export default function EduSphereApp() {
 
         {/* Progress by course, all of it behind one dropdown so the transcript is not pushed out of sight. */}
         <div style={{ ...card, padding: 0, overflow: 'hidden' }}>
-          <div style={{ display: 'flex', alignItems: 'center', padding: '14px 16px' }}>
-            <span style={{ fontSize: 17, fontWeight: 600, display: 'inline-flex', alignItems: 'center' }}>Progress by course<InfoButton onClick={() => setShowProgressTip(!showProgressTip)} label="About progress by course" open={showProgressTip} /></span>
-            <button type="button" onClick={() => setOpenProgress(!openProgress)} aria-expanded={openProgress} aria-label="Progress by course"
-              style={{ fontFamily: FONT, flex: 1, textAlign: 'right', background: 'none', border: 'none', padding: 0, cursor: 'pointer', color: C.muted, fontSize: 16 }}>{openProgress ? '▴' : '▾'}</button>
+          <div className="edu-fold-head" style={{ display: 'flex', alignItems: 'center', padding: '14px 16px' }}>
+            <span className="edu-fold-title" style={{ fontSize: 17, fontWeight: 600, display: 'inline-flex', alignItems: 'center' }}>Progress by course<InfoButton onClick={() => setShowProgressTip(!showProgressTip)} label="About progress by course" open={showProgressTip} /></span>
+            <button type="button" className="edu-fold-meta" onClick={() => setOpenProgress(!openProgress)} aria-expanded={openProgress} aria-label="Progress by course"
+              style={{ fontFamily: FONT, textAlign: 'right', background: 'none', border: 'none', padding: 0, cursor: 'pointer', color: C.muted, fontSize: 16 }}>{openProgress ? '▴' : '▾'}</button>
           </div>
           {showProgressTip && <div style={{ padding: '0 16px' }}><TipText>Once you assign a course above, you can view or reset the student's progression within said course. See how they're doing or allow them to start fresh.</TipText></div>}
         </div>
@@ -4051,14 +4069,14 @@ export default function EduSphereApp() {
 
         {/* Everything the student has ever worked on, including courses since switched off. */}
         <div className="edu-no-print" style={{ ...card, background: C.goldSoft, borderColor: C.goldSoft }}>
-          <p style={{ margin: '0 0 6px', fontWeight: 600 }}>Transcript</p>
+          <p className="edu-card-title" style={{ margin: '0 0 6px', fontWeight: 600 }}>Transcript</p>
           <p style={{ margin: '0 0 10px', fontSize: 15 }}>A printable record of everything {shownName} has ever worked on, including courses that are no longer assigned. This is the clearest view of student progression.</p>
           <div style={{ textAlign: 'center' }}><Btn kind="secondary" onClick={() => setScreen('transcript')} style={{ width: 'min(300px, 100%)' }}>Open transcript</Btn></div>
         </div>
 
         {/* Plain-language explanations, written for someone who does not work in tech */}
         <div style={{ ...card, background: 'linear-gradient(135deg, #BFD6C7 0%, #D3E4D9 100%)', borderColor: '#A9C6B4' }}>
-          <p style={{ margin: '0 0 8px', fontWeight: 600 }}>Key Words - Explained</p>
+          <p className="edu-card-title" style={{ margin: '0 0 8px', fontWeight: 600 }}>Key Words - Explained</p>
           {EXPLANATIONS.map((x, i) => {
             const open = openTerms.includes(x.term);
             return (
@@ -4080,7 +4098,7 @@ export default function EduSphereApp() {
           <button type="button" onClick={() => setScreen('standards-map')} style={{ ...linkBtn, fontSize: 14, padding: 0 }}>Standards map</button>
         </p>
         <details className="edu-no-print" style={{ marginBottom: 14 }}>
-          <summary style={{ cursor: 'pointer', color: C.green, fontWeight: 600 }}>Raw data</summary>
+          <summary className="edu-card-title" style={{ cursor: 'pointer', color: C.green, fontWeight: 600 }}>Raw data</summary>
           <p style={{ fontSize: 14, color: C.muted, margin: '8px 0' }}>Every line below records one thing that happened, in the order it happened. Lines are only ever added. Because nothing is changed or removed, any report from any date can be reproduced exactly as it was.</p>
           <textarea readOnly value={JSON.stringify(activeEvents(educatorRecord.events), null, 2)} style={{ width: '100%', boxSizing: 'border-box', height: 220, fontSize: 12, borderRadius: 10, border: `1px solid ${C.line}`, padding: 10 }} />
         </details>

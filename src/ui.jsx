@@ -90,7 +90,6 @@ function ContactLine({ onOpen, inline = false }) {
       {onOpen
         ? <button type="button" onClick={onOpen} style={{ background: 'none', border: 'none', color: C.muted, fontFamily: FONT, fontSize: 12, cursor: 'pointer', padding: 0, textDecoration: 'underline' }}>Contact us</button>
         : <a href={`mailto:${CONTACT_EMAIL}`} style={{ color: C.muted, textDecoration: 'underline' }}>Contact us</a>}
-      <span style={{ display: 'block', marginTop: 6, fontSize: 11, opacity: 0.7 }}>Build {BUILD_STAMP}</span>
     </p>
   );
 }
@@ -1379,9 +1378,8 @@ function nameLines(name) {
   }
   if (!lines.length) lines.push('Name');
   const longest = Math.max(...lines.map((w) => w.length));
-  // A bold letter is about 0.62 of its size wide, plus the air we put between them so that no two
-  // letters touch on a device whose font sets them tight. The square is 88 units across with a margin.
-  const size = Math.max(6, Math.min(26, 88 / (0.72 * longest), 80 / (lines.length * 1.2)));
+  // A bold letter is about 0.62 of its size wide, and the square is 88 units across with a margin.
+  const size = Math.max(6, Math.min(26, 88 / (0.62 * longest), 80 / (lines.length * 1.2)));
   const step = size * 1.2;
   const y = (i) => 52 + (i - (lines.length - 1) / 2) * step + size * 0.34;
   return { lines, size, y };
@@ -1393,7 +1391,7 @@ function ColorThumb({ picture, name, size = 72 }) {
     return (
       <svg viewBox="0 0 100 100" {...box} preserveAspectRatio="xMidYMid meet" aria-hidden="true">
         {lines.map((line, i) => (
-          <text key={line + i} x="50" y={y(i)} textAnchor="middle" fontFamily={FONT} fontSize={fs} fontWeight="700" letterSpacing={fs * 0.09} fill="#FFFFFF" stroke="#2E2E2E" strokeWidth={fs * 0.05} paintOrder="stroke" strokeLinejoin="round">{line}</text>
+          <text key={line + i} x="50" y={y(i)} textAnchor="middle" fontFamily={FONT} fontSize={fs} fontWeight="700" fill="#FFFFFF" stroke="#2E2E2E" strokeWidth={fs * 0.055} paintOrder="stroke" strokeLinejoin="round">{line}</text>
         ))}
       </svg>
     );
@@ -1471,6 +1469,11 @@ function ColoringPad({ picture, name, secondsLeft, total, saved, onArt, onClose 
         style={{ width: '100%', aspectRatio: '1 / 1', display: 'block', background: '#fff', border: `2px solid ${C.line}`, borderRadius: 16, touchAction: freeDraw ? 'none' : 'auto' }}>
         {/* The square behind the picture is colorable too: a sky, a wall, whatever they decide it is. */}
         <rect x="-60" y="-60" width="220" height="220" fill={fills.bg || '#FFFFFF'} onClick={freeDraw ? undefined : () => setFills((f) => ({ ...f, bg: crayon }))} style={{ cursor: freeDraw ? 'default' : 'pointer' }} />
+        {/* The name, drawn once, white letters with their outline behind them. This is the drawing
+            Mikey approved: one element, no spacing of our own, no second copy over the ink. */}
+        {picture === 'my-name' && (() => { const n = nameLines(name); return n.lines.map((line, i) => (
+          <text key={line + i} x="50" y={n.y(i)} textAnchor="middle" fontFamily={FONT} fontSize={n.size} fontWeight="700" fill="#FFFFFF" stroke="#2E2E2E" strokeWidth={n.size * 0.055} paintOrder="stroke" strokeLinejoin="round" pointerEvents="none">{line}</text>
+        )); })()}
         {parts.map((p, i) => {
           const common = p.line
             ? { key: i, fill: 'none', stroke: '#2E2E2E', strokeWidth: 1.6, strokeLinecap: 'round', strokeLinejoin: 'round', pointerEvents: 'none' }
@@ -1492,11 +1495,7 @@ function ColoringPad({ picture, name, secondsLeft, total, saved, onArt, onClose 
           if (p.t === 'path') return <path {...line} d={p.d} />;
           return <polygon {...line} points={p.points} />;
         })}
-        {/* The name is one element, outline only, drawn last: there is no second copy to drift against,
-            and the letters stay visible over whatever has been colored. */}
-        {picture === 'my-name' && (() => { const n = nameLines(name); return n.lines.map((line, i) => (
-          <text key={line + i} x="50" y={n.y(i)} textAnchor="middle" fontFamily={FONT} fontSize={n.size} fontWeight="700" letterSpacing={n.size * 0.09} fill="none" stroke="#2E2E2E" strokeWidth={n.size * 0.05} strokeLinejoin="round" pointerEvents="none">{line}</text>
-        )); })()}
+
       </svg>
       {/* Zoom sits in the picture's own corners, over the top: color goes behind it, never onto it. */}
       {[['−', -1, { left: 10 }], ['+', 1, { right: 10 }]].map(([label, dir, side]) => {
@@ -2501,6 +2500,7 @@ export default function EduSphereApp() {
         </div>
         {/* The privacy note sits at the very foot of the page, padded evenly and never wider than the column. */}
         <p style={{ color: C.muted, fontSize: 13, margin: 'auto 0 0', padding: '72px 36px 12px', textAlign: 'center', maxWidth: '100%', boxSizing: 'border-box' }}>All of your school's important information lives entirely on this device (students, student progression, educator settings, transcripts etc).</p>
+        <p className="edu-no-print" style={{ color: C.muted, fontSize: 11, opacity: 0.7, margin: '0 0 14px', textAlign: 'center' }}>Build {BUILD_STAMP}</p>
         {showContact && <ContactPopup onClose={() => setShowContact(false)} />}
       </div></div>
     );

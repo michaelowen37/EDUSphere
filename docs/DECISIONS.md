@@ -430,6 +430,8 @@ Approved by Mikey on 2026-09-04 unless marked "proposed".
 
 - (2026-09-16) The login screen carries a build stamp under Contact us, written by build.sh at build time. Three passes were spent on a name-drawing fault that the sandbox never reproduced; a stamp settles in one glance whether the page on a device is the one that was just published.
 
+- (2026-09-16) The name page is back to the drawing Mikey approved: one text element, white letters with their outline painted behind them, no spacing of our own, drawn under the ink rather than over it. Everything tried in between — a second outline element, a `<use>` copy, letter spacing, outline only — made it worse on his devices and looked identical on mine. The build stamp moved to the very foot of the page, under the line about the device.
+
 ## Open items
 - Verify audio plays inside the chat artifact sandbox (works in a normal browser).
 - Common Core / TEKS codes on existing modules to be checked against the official lists.

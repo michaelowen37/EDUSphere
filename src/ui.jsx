@@ -783,6 +783,9 @@ const KID_ANIMATION = `
      crossing corner to corner so a child's eye lands on it. */
   @keyframes edu-colorwash { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
   .edu-colorwash { background: linear-gradient(115deg, #F7D154, #F4A259, #E4572E, #7D5BA6, #3E7CB1, #5BA84A, #F7D154); background-size: 400% 400%; animation: edu-colorwash 9s ease-in-out infinite; }
+  /* A picture ready to color: the drawing stays black and white, the square behind it drifts through
+     the crayons, paler than the fold so the outline still reads. */
+  .edu-colorwash-soft { background: linear-gradient(120deg, #FDF0C9, #FBE0C6, #F8D2C6, #E6D9F0, #CFE0EF, #D4EBCF, #FDF0C9); background-size: 400% 400%; animation: edu-colorwash 11s ease-in-out infinite; }
   @keyframes edu-sparkle-a { 0% { transform: translate(-10%, -120%) scale(0.6); opacity: 0; } 25% { opacity: 1; } 100% { transform: translate(560%, 320%) scale(1.1); opacity: 0; } }
   @keyframes edu-sparkle-b { 0% { transform: translate(600%, 320%) scale(0.7); opacity: 0; } 30% { opacity: 1; } 100% { transform: translate(-20%, -140%) scale(1); opacity: 0; } }
   .edu-sparkle { position: absolute; left: 12px; top: 50%; width: 12px; height: 12px; border-radius: 999px; background: #fff; box-shadow: 0 0 10px #fff; animation: edu-sparkle-a 5.5s linear infinite; }
@@ -880,7 +883,7 @@ html, body { overflow-x: hidden; }
 .edu-slide-in { animation: edu-slide-in 1.1s cubic-bezier(0.2, 0.9, 0.3, 1.2) both; background: linear-gradient(90deg, #3A6B58, #D9A83B, #3A6B58); background-size: 200% auto; -webkit-background-clip: text; background-clip: text; color: transparent !important; animation: edu-slide-in 1.1s cubic-bezier(0.2, 0.9, 0.3, 1.2) both, edu-shimmer 3s linear 1.1s infinite; }
 .edu-glow { animation: edu-glow 1.8s ease-in-out infinite; }
 @media (prefers-reduced-motion: reduce) {
-  .edu-glow, .edu-breathe, .edu-slide-in, .edu-pulse, .edu-stress, .edu-twinkle-star, .edu-trace-draw, .edu-rainbow, .edu-colorwash, .edu-sparkle, .edu-side path { animation: none; }
+  .edu-glow, .edu-breathe, .edu-slide-in, .edu-pulse, .edu-stress, .edu-twinkle-star, .edu-trace-draw, .edu-rainbow, .edu-colorwash, .edu-colorwash-soft, .edu-sparkle, .edu-side path { animation: none; }
   .edu-side path { stroke-dasharray: none; }
   .edu-halo, .edu-drift, .edu-cheer, .edu-wobble, .edu-burst, .edu-rise, .edu-sway, .edu-star-twinkle, .edu-grow, .edu-draw, .edu-settle, .edu-settle-late { animation: none; }
   .edu-draw { stroke-dasharray: none; }
@@ -1227,10 +1230,12 @@ function ColorThumb({ picture, name, size = 72 }) {
     </svg>
   );
 }
-function ColoringPad({ picture, name, onDone, secondsLeft, total }) {
+function ColoringPad({ picture, name, onDone, secondsLeft, total, saved, onArt }) {
   const [crayon, setCrayon] = useState(CRAYONS[0]);
-  const [fills, setFills] = useState({});
-  const [strokes, setStrokes] = useState([]);
+  const [fills, setFills] = useState((saved && saved.fills) || {});
+  const [strokes, setStrokes] = useState((saved && saved.strokes) || []);
+  // The work in progress is handed up as it happens, so leaving and coming back finds it as it was.
+  useEffect(() => { onArt({ fills, strokes }); }, [fills, strokes]);
   const drawing = useRef(false);
   const svgRef = useRef(null);
   const parts = COLORING_ART[picture] || [];
@@ -1251,6 +1256,8 @@ function ColoringPad({ picture, name, onDone, secondsLeft, total }) {
       <svg ref={svgRef} viewBox="0 0 100 100" role="img" aria-label={`A ${picture} to color`}
         onPointerDown={start} onPointerMove={move} onPointerUp={stop} onPointerLeave={stop}
         style={{ width: 'min(100%, 58vh)', aspectRatio: '1 / 1', display: 'block', margin: '0 auto', background: '#fff', border: `2px solid ${C.line}`, borderRadius: 16, touchAction: freeDraw ? 'none' : 'auto' }}>
+        {/* The square behind the picture is colorable too: a sky, a wall, whatever they decide it is. */}
+        <rect x="0" y="0" width="100" height="100" fill={fills.bg || '#FFFFFF'} onClick={freeDraw ? undefined : () => setFills((f) => ({ ...f, bg: crayon }))} style={{ cursor: freeDraw ? 'default' : 'pointer' }} />
         {parts.map((p, i) => {
           const common = { key: i, fill: fills[i] || '#FFFFFF', stroke: '#2E2E2E', strokeWidth: 1.6, strokeLinejoin: 'round', style: { cursor: 'pointer' }, onClick: freeDraw ? undefined : () => setFills((f) => ({ ...f, [i]: crayon })) };
           if (p.t === 'circle') return <circle {...common} cx={p.cx} cy={p.cy} r={p.r} />;
@@ -1270,7 +1277,7 @@ function ColoringPad({ picture, name, onDone, secondsLeft, total }) {
         ))}
       </div>
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10 }}>
-        <Btn kind="secondary" onClick={() => { setFills({}); setStrokes([]); }} style={{ width: 'min(320px, 100%)' }}>Start over</Btn>
+        <Btn kind="secondary" onClick={() => { setFills({}); setStrokes([]); onArt({ fills: {}, strokes: [] }); }} style={{ width: 'min(320px, 100%)' }}>Start over</Btn>
         <Btn onClick={onDone} style={{ width: 'min(320px, 100%)' }}>Back to my courses</Btn>
       </div>
     </div>
@@ -1734,6 +1741,7 @@ export default function EduSphereApp() {
   const [colorState, setColorState] = useState({});                  // per picture: seconds left, and when its rest ends
   const [colorLeft, setColorLeft] = useState(COLOR_BREAK_SECONDS);
   const [colorNow, setColorNow] = useState(Date.now());               // ticks while the overview is up, so a resting picture fills
+  const colorArt = useRef({ fills: {}, strokes: [] });                // the colors on the picture open right now
   useEffect(() => { if (!record || !record.name) return; loadColorState(record.name).then(setColorState); }, [record && record.name]);
   useEffect(() => { if (screen !== 'overview') return undefined; const id = setInterval(() => setColorNow(Date.now()), 5000); return () => clearInterval(id); }, [screen]);
   useEffect(() => {
@@ -1743,12 +1751,13 @@ export default function EduSphereApp() {
     const id = setInterval(() => setColorLeft((n) => {
       const next = n - 1;
       if (next <= 0) { // the five minutes are up: this picture rests, and the courses come back
-        const state = { ...colorState, [coloring]: { left: COLOR_BREAK_SECONDS, restUntil: Date.now() + COLOR_LOCKOUT_MINUTES * 60000 } };
+        // The five minutes are up: the picture rests, and next time it starts blank again.
+        const state = { ...colorState, [coloring]: { left: COLOR_BREAK_SECONDS, restUntil: Date.now() + COLOR_LOCKOUT_MINUTES * 60000, art: null } };
         setColorState(state); saveColorState(record.name, state);
         if (!record.preview) addEvent(makeColoredEvent(coloring, new Date().toISOString()));
         setColoring(null); setScreen('overview'); return COLOR_BREAK_SECONDS;
       }
-      if (next % 5 === 0) { const state = { ...colorState, [coloring]: { ...(colorState[coloring] || {}), left: next } }; setColorState(state); saveColorState(record.name, state); }
+      if (next % 5 === 0) { const state = { ...colorState, [coloring]: { ...(colorState[coloring] || {}), left: next, art: colorArt.current } }; setColorState(state); saveColorState(record.name, state); }
       return next;
     }), 1000);
     return () => clearInterval(id);
@@ -1756,7 +1765,7 @@ export default function EduSphereApp() {
   // Leaving early keeps the time that is left, so the picture is not handed back a fresh five minutes.
   const leaveColoring = () => {
     if (record && coloring) {
-      const state = { ...colorState, [coloring]: { ...(colorState[coloring] || {}), left: colorLeft } };
+      const state = { ...colorState, [coloring]: { ...(colorState[coloring] || {}), left: colorLeft, art: colorArt.current } };
       setColorState(state); saveColorState(record.name, state);
       if (!record.preview) addEvent(makeColoredEvent(coloring, new Date().toISOString()));
     }
@@ -2254,7 +2263,7 @@ export default function EduSphereApp() {
     return (
       <div style={page}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={wrap}>
         <h1 className="edu-rainbow" style={{ fontSize: 24, margin: '18px 0 10px', textAlign: 'center', textTransform: 'capitalize' }}>{coloring === 'my-name' ? 'My name' : coloring}</h1>
-        <ColoringPad picture={coloring} name={record && record.name} secondsLeft={colorLeft} total={COLOR_BREAK_SECONDS} onDone={leaveColoring} />
+        <ColoringPad key={coloring} picture={coloring} name={record && record.name} secondsLeft={colorLeft} total={COLOR_BREAK_SECONDS} saved={(colorState[coloring] || {}).art} onArt={(art) => { colorArt.current = art; }} onDone={leaveColoring} />
       </div></div>
     );
   }
@@ -2424,8 +2433,8 @@ export default function EduSphereApp() {
                       const filled = resting ? Math.round(100 - (restLeft(pic) / (COLOR_LOCKOUT_MINUTES * 60000)) * 100) : 100;
                       return (
                         <button key={pic} type="button" disabled={locked || resting} aria-label={locked ? 'Locked picture' : resting ? 'Resting picture' : `Color the ${pic === 'my-name' ? 'name' : pic}`}
-                          onClick={() => { setColoring(pic); setScreen('coloring'); }} className={!locked && !resting ? 'edu-press edu-breathe' : undefined}
-                          style={{ position: 'relative', overflow: 'hidden', aspectRatio: '1 / 1', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 6, borderRadius: 12, background: C.surface, border: `2px solid ${locked || resting ? C.line : C.green}`, cursor: locked || resting ? 'default' : 'pointer' }}>
+                          onClick={() => { setColoring(pic); setScreen('coloring'); }} className={!locked && !resting ? 'edu-press edu-breathe edu-colorwash-soft' : undefined}
+                          style={{ position: 'relative', overflow: 'hidden', aspectRatio: '1 / 1', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 6, borderRadius: 12, ...(locked || resting ? { background: C.surface } : {}), border: `2px solid ${locked || resting ? C.line : C.green}`, cursor: locked || resting ? 'default' : 'pointer' }}>
                           {locked ? (
                             <svg viewBox="0 0 24 24" width="34" height="34" aria-hidden="true"><path d="M7 10V8a5 5 0 0110 0v2" fill="none" stroke={C.muted} strokeWidth="2" strokeLinecap="round" /><rect x="5" y="10" width="14" height="10" rx="2" fill={C.line} stroke={C.muted} strokeWidth="1.5" /></svg>
                           ) : (
@@ -4028,7 +4037,10 @@ export default function EduSphereApp() {
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10 }}>
                 <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                   {st && st.picture && <StudentPicture name={st.picture} tint={st.tint} size={36} />}
-                  <span style={{ fontSize: 17, fontWeight: 600 }}>{r.label}</span>
+                  <span>
+                    <span style={{ display: 'block', fontSize: 17, fontWeight: 600 }}>{r.label}</span>
+                    {r.stage && <span style={{ display: 'block', fontSize: 12, fontWeight: 400, color: C.muted }}>{r.stage}</span>}
+                  </span>
                 </span>
                 <Tag tone={tone(r.band)}>{r.band}</Tag>
               </div>

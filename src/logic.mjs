@@ -18268,7 +18268,7 @@ export function classView(students, now) {
       ? `${masteredPhrase}, but ${flagged} ${flagged === 1 ? 'thing needs' : 'things need'} attention right now, which is why ${label || id} is near the top.`
       : score >= 2 ? `${mastered} mastered so far; a couple of small flags, nothing urgent.` : '';
     return {
-      id, label: label || id, score, reasons, why, practice: practiceText, nextTitle: next ? titleCase(next.title) : '',
+      id, label: label || id, score, reasons, why, practice: practiceText, nextTitle: next ? titleCase(next.title) : '', stage: bandTitle(events),
       missedQuickChecks: assigned.filter((m) => m.quickCheck && !m.quickCheck.passed).length,
       note: report.notes.length ? report.notes[0].text.split('\n')[0].slice(0, 120) : '',
       notesAll: report.notes.map((n) => n.text.split('\n')[0].slice(0, 120)),

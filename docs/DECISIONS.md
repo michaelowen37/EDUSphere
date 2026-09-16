@@ -377,6 +377,9 @@ Approved by Mikey on 2026-09-04 unless marked "proposed".
 
 - (2026-09-16) The class view was printing "Next up: [object Object]": the row was title-casing the module itself rather than its title. Named properly now, with a test that no row ever stringifies an object. The reasons, the practice line and the note are spaced apart, with a hairline above the practice line.
 
+- (2026-09-16) Who needs help names each student's stage under their name (Early years, Elementary, Middle school, High school, College), smaller and quieter, the same label the login screen shows. It is a separate field from the row's attention band, which still reads needs help now / keep an eye on / on track.
+- (2026-09-16) A coloring picture keeps its colors while its five minutes last, so leaving and coming back finds the work as it was; when the five minutes run out the picture rests and starts blank next time. The square behind the drawing can be colored too. A picture ready to color now wears a pale drift of the crayon colors behind its black-and-white drawing, the same idea as the Let's Color strip but quiet enough to keep the outline readable.
+
 ## Open items
 - Verify audio plays inside the chat artifact sandbox (works in a normal browser).
 - Common Core / TEKS codes on existing modules to be checked against the official lists.

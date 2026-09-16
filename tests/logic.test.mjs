@@ -1144,6 +1144,7 @@ ok('reset: history kept, but nothing counts as mastered afterwards', events.leng
   const oneMiss = { id: 's_4', label: 'S-4', events: [att('count-to-5', '2026-09-09T10:00:00.000Z', 2, 6000)] };
   const missRow = L.classView([oneMiss], '2026-09-10T12:00:00.000Z')[0];
   ok('one missed round is named, with its score, and what a second miss would bring', missRow.reasons.some((r) => r.includes('S-4 failed the last round of **Count to 5** (2 of 5 right, 1 attempt)') && r.includes('second miss')));
+  ok('a class row names the stage the student is working in, without disturbing its attention band', rows.every((r) => typeof r.stage === 'string') && rows.every((r) => ['needs help now', 'keep an eye on', 'on track'].includes(r.band)));
   ok('the next module is named, not stringified', rows.every((r) => !r.nextTitle.includes('[object')) && rows.some((r) => r.nextTitle.length > 0));
   ok('every class row carries the practice line the report summary shows', missRow.practice === 'Practice so far: 1 round, 0 passed.\nTried but not passed yet: **Count to 5** (best score 2 out of 5, 1 attempt).' && rows.find((r) => r.label === 'S-3').practice === '');
   const quickEvents = [L.makeCoursesEnabledEvent(['history-8'], '2026-09-09T09:00:00.000Z'), L.makeQuickCheckEvent('founding-documents', Array.from({ length: 5 }, (_, i) => ({ correct: i < 2, timeMs: 9000 })), '2026-09-09T10:00:00.000Z')];

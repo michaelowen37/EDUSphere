@@ -393,6 +393,9 @@ Approved by Mikey on 2026-09-04 unless marked "proposed".
 - (2026-09-16) A read-aloud answer speaks only when it is a word. A picture answer used to be read out, so "tap the middle-sized one" announced "the middle-sized square" and gave the answer away.
 - (2026-09-16) The coloring page carries Start over and Close as icons on the picture's own width, one at each end of the countdown bar, and the sentence under the picture is gone, which lifts the palette and the nibs onto the first screen. The name page drops anything in brackets (an educator's note, not the child's name) and outlines the letters behind the fill, so they no longer look scratched over. "Littlest" is "smallest" everywhere.
 
+- (2026-09-16) A read-aloud answer is spoken only when it holds no colon, which is what marks a picture choice. The earlier test missed `item:triangle-blue`, so tapping a picture announced "item triangle blue".
+- (2026-09-16) Fifteen crayons, five to a row. A resting picture goes grey behind a ring that empties over the fifteen minutes, rather than filling slowly with color, so it is plain at a glance that it is having a break.
+
 ## Open items
 - Verify audio plays inside the chat artifact sandbox (works in a normal browser).
 - Common Core / TEKS codes on existing modules to be checked against the official lists.

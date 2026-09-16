@@ -1069,7 +1069,11 @@ const colorKey = (studentId) => `edusphere_v1_coloring:${studentId}`;
 async function loadColorState(studentId) { try { return JSON.parse((await storageGet(colorKey(studentId))) || '{}'); } catch (e) { return {}; } }
 async function saveColorState(studentId, state) { return storageSet(colorKey(studentId), JSON.stringify(state)); }
 const NIBS = [2.5, 5, 9]; // how fat the line is: shown as three dots, thinnest first
-const CRAYONS = ['#E4572E', '#F4A259', '#F7D154', '#5BA84A', '#3E7CB1', '#7D5BA6', '#8C6239', '#2E2E2E'];
+const CRAYONS = [
+  '#D62828', '#E4572E', '#F4A259', '#F7D154', '#C9A227',
+  '#9ACD32', '#5BA84A', '#2FA5A0', '#3E7CB1', '#2B4C8C',
+  '#7D5BA6', '#C86FC9', '#F58FB0', '#8C6239', '#2E2E2E',
+];
 // Some pictures are filled by tapping a part; others are drawn on freely with a finger.
 // Half are filled in by tapping a part, half are drawn on with a finger. A name page is always drawn.
 const COLORING_MODE = { ball: 'fill', sun: 'fill', balloon: 'fill', 'my-name': 'draw', star: 'draw', tree: 'fill', house: 'fill', fish: 'fill', cat: 'draw', flower: 'fill', boat: 'fill', rocket: 'fill', butterfly: 'draw', train: 'fill', car: 'fill', robot: 'fill', fishbowl: 'draw', castle: 'fill', dinosaur: 'draw', city: 'fill', garden: 'fill', playground: 'draw', farm: 'fill', birthday: 'draw' };
@@ -1310,7 +1314,8 @@ function ColoringPad({ picture, name, secondsLeft, total, saved, onArt, onClose 
         )); })()}
         {strokes.map((st, i) => <polyline key={`s${i}`} points={st.points.map((pt) => pt.join(',')).join(' ')} fill="none" stroke={st.colour} strokeWidth={st.width || 5} strokeLinecap="round" strokeLinejoin="round" pointerEvents="none" />)}
       </svg>
-      <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 10, margin: '12px 0' }}>
+      {/* Fifteen crayons, five to a row, so the whole box sits under the picture on a phone. */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 10, justifyItems: 'center', width: 'min(340px, 100%)', margin: '12px auto' }}>
         {CRAYONS.map((colour) => (
           <button key={colour} type="button" aria-label="Use this color" aria-pressed={crayon === colour} onClick={() => setCrayon(colour)}
             style={{ width: 44, height: 44, borderRadius: 999, background: colour, border: crayon === colour ? `4px solid ${C.ink}` : `2px solid ${C.line}`, cursor: 'pointer' }} />
@@ -2482,7 +2487,7 @@ export default function EduSphereApp() {
                     {COLORING_PICTURES.map((pic, i) => {
                       const locked = i >= unlocked;
                       const resting = !locked && restLeft(pic) > 0;
-                      const filled = resting ? Math.round(100 - (restLeft(pic) / (COLOR_LOCKOUT_MINUTES * 60000)) * 100) : 100;
+                      const restFraction = resting ? restLeft(pic) / (COLOR_LOCKOUT_MINUTES * 60000) : 0;
                       return (
                         <button key={pic} type="button" disabled={locked || resting} aria-label={locked ? 'Locked picture' : resting ? 'Resting picture' : `Color the ${pic === 'my-name' ? 'name' : pic}`}
                           onClick={() => { setColoring(pic); setScreen('coloring'); }} className={`edu-breathe${!locked && !resting ? ' edu-press' : ''}`}
@@ -2491,8 +2496,14 @@ export default function EduSphereApp() {
                             <svg viewBox="0 0 24 24" width="34" height="34" aria-hidden="true"><path d="M7 10V8a5 5 0 0110 0v2" fill="none" stroke={C.muted} strokeWidth="2" strokeLinecap="round" /><rect x="5" y="10" width="14" height="10" rx="2" fill={C.line} stroke={C.muted} strokeWidth="1.5" /></svg>
                           ) : (
                             <>
-                              <ColorThumb picture={pic} name={displayName} size="86%" />
-                              {resting && <span aria-hidden="true" style={{ position: 'absolute', left: 0, bottom: 0, width: `${filled}%`, height: '100%', background: 'linear-gradient(90deg, rgba(228,87,46,0.25), rgba(62,124,177,0.25))', pointerEvents: 'none' }} />}
+                              <span style={{ opacity: resting ? 0.3 : 1, filter: resting ? 'grayscale(1)' : 'none', display: 'flex' }}><ColorThumb picture={pic} name={displayName} size="86%" /></span>
+                              {/* Resting: the picture goes grey and a ring empties over it, so it is plain that it is having a break. */}
+                              {resting && (
+                                <svg viewBox="0 0 36 36" aria-hidden="true" style={{ position: 'absolute', inset: '18%', pointerEvents: 'none' }}>
+                                  <circle cx="18" cy="18" r="15" fill="rgba(255,255,255,0.55)" stroke="rgba(46,46,46,0.25)" strokeWidth="3" />
+                                  <circle cx="18" cy="18" r="15" fill="none" stroke={C.green} strokeWidth="3" strokeLinecap="round" strokeDasharray={`${(restFraction * 94.2).toFixed(1)} 94.2`} transform="rotate(-90 18 18)" />
+                                </svg>
+                              )}
                             </>
                           )}
                         </button>
@@ -2632,7 +2643,9 @@ export default function EduSphereApp() {
                 else if (checked && picked) { bg = C.claySoft; border = C.clay; }
                 else if (picked) { border = C.green; }
                 return (
-                  <button key={c} type="button" data-choice={c} onClick={() => { if (!checked) { if (readAloud) { playTap(); if (!/^(dots|swatch|shape|icon|letters|trace):/.test(c)) speak(c); } setGiven(c); } }}
+                  // A word answer says itself for a child who cannot read; a picture answer never does,
+                  // because naming it would hand over the answer.
+                  <button key={c} type="button" data-choice={c} onClick={() => { if (!checked) { if (readAloud) { playTap(); if (!c.includes(':')) speak(c); } setGiven(c); } }}
                     style={{ opacity: ruledOut && !checked ? 0.45 : 1, fontFamily: FONT, fontSize: choiceFont(q.choices), textAlign: 'center', padding: '12px 10px', minWidth: 0, overflowWrap: 'anywhere', borderRadius: 10, background: bg, border: `2px solid ${border}`, color: C.ink, cursor: checked ? 'default' : 'pointer', minHeight: 48 }}>
                     {/^dots:(\d+)$/.test(c) ? <DotGroup count={Number(c.split(':')[1])} size={28} /> : /^shape:/.test(c) ? <ShapePic name={c.split(':')[1]} size={c.endsWith(':big') ? 88 : c.endsWith(':small') ? 34 : c.endsWith(':medium') ? 58 : 64} /> : /^tens:(\d+)$/.test(c) ? <TensGroup count={Number(c.split(':')[1])} size={14} /> : /^bar:(\d+)$/.test(c) ? <BarPic length={Number(c.split(':')[1])} size={18} /> : /^tower:(\d+)$/.test(c) ? <BarPic length={Number(c.split(':')[1])} vertical size={14} /> : /^solid:/.test(c) ? <SolidPic name={c.slice(6)} size={64} /> : /^icon:/.test(c) ? <IconPic name={c.slice(5)} size={64} /> : /^swatch:/.test(c) ? <Swatch colour={c.slice(7)} size={64} /> : /^item:/.test(c) ? <Item spec={c.slice(5)} size={64} /> : /^clock:/.test(c) ? <ClockPic hour={Number(c.split(':')[1])} minute={Number(c.split(':')[2])} size={80} /> : /^array:/.test(c) ? <ArrayPic rows={Number(c.slice(6).split('x')[0])} cols={Number(c.slice(6).split('x')[1])} size={12} /> : c}
                   </button>

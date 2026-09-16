@@ -581,7 +581,7 @@ await page.getByRole('button', { name: /^Color the / }).first().click({ force: t
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'coloring');
 await page.locator('svg[role=img] > *').first().click({ force: true });
 await page.waitForTimeout(150);
-ok('tapping a part fills it with the chosen color', await page.evaluate(() => [...document.querySelector('svg[role=img]').children].some((c) => c.getAttribute('fill') === '#E4572E')));
+ok('tapping a part fills it with the chosen color', await page.evaluate(() => [...document.querySelector('svg[role=img]').children].some((c) => c.getAttribute('fill') === '#D62828')));
 ok('a coloring break shows the five minute bar and its two icons', (await page.locator('svg[role=img]').first().isVisible()) && (await page.getByRole('button', { name: 'Start over' }).count()) === 1 && (await page.getByRole('button', { name: 'Close coloring' }).count()) === 1);
 await page.getByRole('button', { name: 'Close coloring' }).first().click({ force: true });
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview');
@@ -594,7 +594,7 @@ await page.waitForTimeout(200);
   await page.mouse.move(box.x + 60, box.y + 120); await page.mouse.down();
   await page.mouse.move(box.x + 160, box.y + 180, { steps: 8 }); await page.mouse.move(box.x + 220, box.y + 100, { steps: 8 }); await page.mouse.up();
   await page.waitForTimeout(200);
-  ok('a drawing picture takes a finger stroke in the chosen color', (await page.locator('svg[role=img] polyline').count()) >= 1 && (await page.locator('svg[role=img] polyline').first().getAttribute('stroke')) === '#E4572E'); }
+  ok('a drawing picture takes a finger stroke in the chosen color', (await page.locator('svg[role=img] polyline').count()) >= 1 && (await page.locator('svg[role=img] polyline').first().getAttribute('stroke')) === '#D62828'); }
 await page.getByRole('button', { name: 'Close coloring' }).first().click({ force: true });
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview');
 await tap('Exit');

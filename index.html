@@ -39562,7 +39562,11 @@ catch (e) {
 } }
 async function saveColorState(studentId, state) { return storageSet(colorKey(studentId), JSON.stringify(state)); }
 const NIBS = [2.5, 5, 9]; // how fat the line is: shown as three dots, thinnest first
-const CRAYONS = ['#E4572E', '#F4A259', '#F7D154', '#5BA84A', '#3E7CB1', '#7D5BA6', '#8C6239', '#2E2E2E'];
+const CRAYONS = [
+    '#D62828', '#E4572E', '#F4A259', '#F7D154', '#C9A227',
+    '#9ACD32', '#5BA84A', '#2FA5A0', '#3E7CB1', '#2B4C8C',
+    '#7D5BA6', '#C86FC9', '#F58FB0', '#8C6239', '#2E2E2E',
+];
 // Some pictures are filled by tapping a part; others are drawn on freely with a finger.
 // Half are filled in by tapping a part, half are drawn on with a finger. A name page is always drawn.
 const COLORING_MODE = { ball: 'fill', sun: 'fill', balloon: 'fill', 'my-name': 'draw', star: 'draw', tree: 'fill', house: 'fill', fish: 'fill', cat: 'draw', flower: 'fill', boat: 'fill', rocket: 'fill', butterfly: 'draw', train: 'fill', car: 'fill', robot: 'fill', fishbowl: 'draw', castle: 'fill', dinosaur: 'draw', city: 'fill', garden: 'fill', playground: 'draw', farm: 'fill', birthday: 'draw' };
@@ -39798,7 +39802,7 @@ function ColoringPad({ picture, name, secondsLeft, total, saved, onArt, onClose 
                 return n.lines.map((line, i) => (react_1.default.createElement("text", { key: line + i, x: "50", y: n.y(i), textAnchor: "middle", fontFamily: FONT, fontSize: n.size, fontWeight: "700", fill: "#FFFFFF", stroke: "#2E2E2E", strokeWidth: n.size * 0.055, paintOrder: "stroke", strokeLinejoin: "round", pointerEvents: "none" }, line)));
             })(),
             strokes.map((st, i) => react_1.default.createElement("polyline", { key: `s${i}`, points: st.points.map((pt) => pt.join(',')).join(' '), fill: "none", stroke: st.colour, strokeWidth: st.width || 5, strokeLinecap: "round", strokeLinejoin: "round", pointerEvents: "none" }))),
-        react_1.default.createElement("div", { style: { display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 10, margin: '12px 0' } }, CRAYONS.map((colour) => (react_1.default.createElement("button", { key: colour, type: "button", "aria-label": "Use this color", "aria-pressed": crayon === colour, onClick: () => setCrayon(colour), style: { width: 44, height: 44, borderRadius: 999, background: colour, border: crayon === colour ? `4px solid ${C.ink}` : `2px solid ${C.line}`, cursor: 'pointer' } })))),
+        react_1.default.createElement("div", { style: { display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 10, justifyItems: 'center', width: 'min(340px, 100%)', margin: '12px auto' } }, CRAYONS.map((colour) => (react_1.default.createElement("button", { key: colour, type: "button", "aria-label": "Use this color", "aria-pressed": crayon === colour, onClick: () => setCrayon(colour), style: { width: 44, height: 44, borderRadius: 999, background: colour, border: crayon === colour ? `4px solid ${C.ink}` : `2px solid ${C.line}`, cursor: 'pointer' } })))),
         freeDraw && (react_1.default.createElement("div", { style: { display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 14, margin: '0 0 14px' } }, NIBS.map((w) => (react_1.default.createElement("button", { key: w, type: "button", "aria-label": `${w === NIBS[0] ? 'Thin' : w === NIBS[1] ? 'Medium' : 'Thick'} line`, "aria-pressed": nib === w, onClick: () => setNib(w), style: { width: 52, height: 52, borderRadius: 999, display: 'flex', alignItems: 'center', justifyContent: 'center', background: C.surface, border: nib === w ? `3px solid ${C.ink}` : `2px solid ${C.line}`, cursor: 'pointer' } },
             react_1.default.createElement("span", { style: { display: 'block', width: w * 3.2, height: w * 3.2, borderRadius: 999, background: crayon } }))))))));
 }
@@ -41088,12 +41092,15 @@ function EduSphereApp() {
                             react_1.default.createElement("div", { style: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(96px, 1fr))', gap: 10 } }, COLORING_PICTURES.map((pic, i) => {
                                 const locked = i >= unlocked;
                                 const resting = !locked && restLeft(pic) > 0;
-                                const filled = resting ? Math.round(100 - (restLeft(pic) / (COLOR_LOCKOUT_MINUTES * 60000)) * 100) : 100;
+                                const restFraction = resting ? restLeft(pic) / (COLOR_LOCKOUT_MINUTES * 60000) : 0;
                                 return (react_1.default.createElement("button", { key: pic, type: "button", disabled: locked || resting, "aria-label": locked ? 'Locked picture' : resting ? 'Resting picture' : `Color the ${pic === 'my-name' ? 'name' : pic}`, onClick: () => { setColoring(pic); setScreen('coloring'); }, className: `edu-breathe${!locked && !resting ? ' edu-press' : ''}`, style: { position: 'relative', overflow: 'hidden', aspectRatio: '1 / 1', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 6, borderRadius: 12, background: locked ? 'rgba(255,255,255,0.55)' : '#FFFFFF', border: `2px solid ${locked || resting ? 'rgba(255,255,255,0.7)' : C.ink}`, cursor: locked || resting ? 'default' : 'pointer', '--beat': locked || resting ? 0 : 1, ...inBeat(2.2) } }, locked ? (react_1.default.createElement("svg", { viewBox: "0 0 24 24", width: "34", height: "34", "aria-hidden": "true" },
                                     react_1.default.createElement("path", { d: "M7 10V8a5 5 0 0110 0v2", fill: "none", stroke: C.muted, strokeWidth: "2", strokeLinecap: "round" }),
                                     react_1.default.createElement("rect", { x: "5", y: "10", width: "14", height: "10", rx: "2", fill: C.line, stroke: C.muted, strokeWidth: "1.5" }))) : (react_1.default.createElement(react_1.default.Fragment, null,
-                                    react_1.default.createElement(ColorThumb, { picture: pic, name: displayName, size: "86%" }),
-                                    resting && react_1.default.createElement("span", { "aria-hidden": "true", style: { position: 'absolute', left: 0, bottom: 0, width: `${filled}%`, height: '100%', background: 'linear-gradient(90deg, rgba(228,87,46,0.25), rgba(62,124,177,0.25))', pointerEvents: 'none' } })))));
+                                    react_1.default.createElement("span", { style: { opacity: resting ? 0.3 : 1, filter: resting ? 'grayscale(1)' : 'none', display: 'flex' } },
+                                        react_1.default.createElement(ColorThumb, { picture: pic, name: displayName, size: "86%" })),
+                                    resting && (react_1.default.createElement("svg", { viewBox: "0 0 36 36", "aria-hidden": "true", style: { position: 'absolute', inset: '18%', pointerEvents: 'none' } },
+                                        react_1.default.createElement("circle", { cx: "18", cy: "18", r: "15", fill: "rgba(255,255,255,0.55)", stroke: "rgba(46,46,46,0.25)", strokeWidth: "3" }),
+                                        react_1.default.createElement("circle", { cx: "18", cy: "18", r: "15", fill: "none", stroke: C.green, strokeWidth: "3", strokeLinecap: "round", strokeDasharray: `${(restFraction * 94.2).toFixed(1)} 94.2`, transform: "rotate(-90 18 18)" })))))));
                             }))))));
                 })(),
                 youngLearner ? (react_1.default.createElement("div", { style: { paddingTop: 16 } },
@@ -41195,7 +41202,7 @@ function EduSphereApp() {
                         return (react_1.default.createElement("button", { key: c, type: "button", "data-choice": c, onClick: () => { if (!checked) {
                                 if (readAloud) {
                                     playTap();
-                                    if (!/^(dots|swatch|shape|icon|letters|trace):/.test(c))
+                                    if (!c.includes(':'))
                                         speak(c);
                                 }
                                 setGiven(c);

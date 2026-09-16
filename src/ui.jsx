@@ -823,7 +823,7 @@ const KID_ANIMATION = `
     .edu-pad-head { grid-area: head; }
     .edu-pad-bar { grid-area: bar; }
     .edu-picture { grid-area: picture; }
-    .edu-nibs { grid-area: nibs; display: flex; flex-direction: column; flex-wrap: nowrap; align-self: end; gap: 10px; width: auto; margin: 0; }
+    .edu-nibs { grid-area: nibs; display: flex; flex-direction: column; flex-wrap: nowrap; align-self: center; gap: 10px; width: auto; margin: 0; }
     .edu-nib { width: 46px; height: 46px; }
     .edu-crayons { grid-area: crayons; grid-template-columns: repeat(7, 1fr); margin: 12px 0 0; }
     .edu-pad .edu-crayons { width: min(72vw, calc(100vh - 302px)); }
@@ -833,9 +833,10 @@ const KID_ANIMATION = `
   /* A phone on its side has width to spare and no height: the nibs stand at one side of the picture
      and the crayons at the other, so the picture itself can take nearly the whole height. */
   @media (max-height: 540px) {
-    .edu-pad { display: grid; grid-template-columns: auto auto auto; grid-template-areas: 'head head head' 'nibs bar crayons' 'nibs picture crayons'; align-items: center; justify-content: center; column-gap: 14px; }
-    .edu-pad .edu-pad-head { width: 100%; margin: 0 0 4px; }
-    .edu-pad-col { width: min(100%, 72dvh); }
+    .edu-pad { display: grid; grid-template-columns: auto auto auto; grid-template-areas: 'head nibs crayons' 'bar nibs crayons' 'picture nibs crayons'; align-items: center; justify-content: center; column-gap: 16px; }
+    .edu-pad .edu-pad-head { width: 100%; margin: 0 0 2px; }
+    .edu-pad-bar { margin: 4px 0 6px !important; }
+    .edu-pad-col { width: min(46vw, 78dvh); }
     .edu-pad .edu-crayons { grid-area: crayons; grid-template-columns: repeat(4, 1fr); width: auto; margin: 0; align-self: center; }
     .edu-nibs { grid-area: nibs; display: flex; flex-direction: column; flex-wrap: nowrap; gap: 8px; width: auto; margin: 0; align-self: center; }
     .edu-crayon { width: 30px; height: 30px; }

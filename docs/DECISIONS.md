@@ -436,6 +436,9 @@ Approved by Mikey on 2026-09-04 unless marked "proposed".
 
 - (2026-09-16) The coloring page is sized to the window rather than to the reading column: it may use the full width, drops the page's zoom and bottom padding, and the picture takes the height that is left once the title, the bar and the three rows of crayons are accounted for. Measured on a phone upright and sideways, a tablet both ways and a laptop: nothing runs off the bottom at any of them, and the picture is half as large again on a laptop as it was. The title is one line whatever the width, and when a phone is sideways the title bar runs the full width so the restart and close icons sit at the outer edges.
 
+- (2026-09-16) The build stamp reads in Central time, since that is where it is read.
+- (2026-09-16) A phone on its side splits down the middle: the title, the bar and the picture take the left, the nibs and the crayons the right. On a laptop or tablet the nibs sit level with the middle of the picture rather than its foot.
+
 ## Open items
 - Verify audio plays inside the chat artifact sandbox (works in a normal browser).
 - Common Core / TEKS codes on existing modules to be checked against the official lists.

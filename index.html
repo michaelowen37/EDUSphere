@@ -38511,7 +38511,7 @@ function PinInput({ value, onChange, placeholder, style, onEnter = null }) {
 }
 // A stamp of when this copy of the page was built, so a stale page in a cache can be told apart
 // from a fresh one at a glance. Written by the build, never by hand.
-const BUILD_STAMP = '2026-09-16 18:26 UTC';
+const BUILD_STAMP = '2026-09-16 01:39 PM CDT';
 function ContactLine({ onOpen, inline = false }) {
     return (react_1.default.createElement("p", { className: "edu-no-print", style: { textAlign: 'center', marginTop: inline ? 0 : 28, fontSize: inline ? 14 : 12, color: C.muted, margin: inline ? '0' : undefined } }, onOpen
         ? react_1.default.createElement("button", { type: "button", onClick: onOpen, style: { background: 'none', border: 'none', color: C.muted, fontFamily: FONT, fontSize: 12, cursor: 'pointer', padding: 0, textDecoration: 'underline' } }, "Contact us")
@@ -39302,7 +39302,7 @@ const KID_ANIMATION = `
     .edu-pad-head { grid-area: head; }
     .edu-pad-bar { grid-area: bar; }
     .edu-picture { grid-area: picture; }
-    .edu-nibs { grid-area: nibs; display: flex; flex-direction: column; flex-wrap: nowrap; align-self: end; gap: 10px; width: auto; margin: 0; }
+    .edu-nibs { grid-area: nibs; display: flex; flex-direction: column; flex-wrap: nowrap; align-self: center; gap: 10px; width: auto; margin: 0; }
     .edu-nib { width: 46px; height: 46px; }
     .edu-crayons { grid-area: crayons; grid-template-columns: repeat(7, 1fr); margin: 12px 0 0; }
     .edu-pad .edu-crayons { width: min(72vw, calc(100vh - 302px)); }
@@ -39312,9 +39312,10 @@ const KID_ANIMATION = `
   /* A phone on its side has width to spare and no height: the nibs stand at one side of the picture
      and the crayons at the other, so the picture itself can take nearly the whole height. */
   @media (max-height: 540px) {
-    .edu-pad { display: grid; grid-template-columns: auto auto auto; grid-template-areas: 'head head head' 'nibs bar crayons' 'nibs picture crayons'; align-items: center; justify-content: center; column-gap: 14px; }
-    .edu-pad .edu-pad-head { width: 100%; margin: 0 0 4px; }
-    .edu-pad-col { width: min(100%, 72dvh); }
+    .edu-pad { display: grid; grid-template-columns: auto auto auto; grid-template-areas: 'head nibs crayons' 'bar nibs crayons' 'picture nibs crayons'; align-items: center; justify-content: center; column-gap: 16px; }
+    .edu-pad .edu-pad-head { width: 100%; margin: 0 0 2px; }
+    .edu-pad-bar { margin: 4px 0 6px !important; }
+    .edu-pad-col { width: min(46vw, 78dvh); }
     .edu-pad .edu-crayons { grid-area: crayons; grid-template-columns: repeat(4, 1fr); width: auto; margin: 0; align-self: center; }
     .edu-nibs { grid-area: nibs; display: flex; flex-direction: column; flex-wrap: nowrap; gap: 8px; width: auto; margin: 0; align-self: center; }
     .edu-crayon { width: 30px; height: 30px; }

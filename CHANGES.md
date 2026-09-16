@@ -2,9 +2,11 @@
 
 Paste the lines below as the commit message. Unzip this file onto the repository folder; it overwrites only the files listed.
 
-- (2026-09-16) The nib row on a phone was left-aligned because an old rule from the earlier paint-box layout was still in the stylesheet and won over the new one. The dead rules are gone and the row centres itself on the picture's width, whether or not it happens to line up with the colors above.
+- (2026-09-16) The build stamp reads in Central time, since that is where it is read.
+- (2026-09-16) A phone on its side splits down the middle: the title, the bar and the picture take the left, the nibs and the crayons the right. On a laptop or tablet the nibs sit level with the middle of the picture rather than its foot.
 
 ## Files
 - src/ui.jsx
 - index.html
+- build.sh
 - docs/DECISIONS.md

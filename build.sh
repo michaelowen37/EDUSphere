@@ -14,7 +14,7 @@ mkdir -p dist
   echo
   sed 's/^export //' src/curriculum.mjs
   # The build writes its own timestamp into the page, so a cached copy can be told from a fresh one.
-  sed "s/__BUILD_STAMP__/$(date -u '+%Y-%m-%d %H:%M UTC')/" src/ui.jsx
+  sed "s/__BUILD_STAMP__/$(TZ=America/Chicago date '+%Y-%m-%d %I:%M %p %Z')/" src/ui.jsx
 } > "$OUT"
 echo "built $OUT ($(wc -l < "$OUT") lines)"
 # The standalone page for GitHub Pages and every other plain web host.

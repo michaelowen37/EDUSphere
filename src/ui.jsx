@@ -801,7 +801,34 @@ const KID_ANIMATION = `
   /* The note box: the field spans the card, tall enough for the example, with Save note centered below it. */
   /* The crayons: five to a row at any width, a little smaller on a phone so all three rows fit. */
   .edu-crayons { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; justify-items: center; width: min(300px, 100%); margin: 10px auto; }
+  .edu-wide-only { display: none; }
+  .edu-nib { width: 46px; height: 46px; border-radius: 999px; display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 0; }
+  .edu-nib.edu-wide-only { display: none; }
+  .edu-nibs { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin: 6px 0 0; }
+  @media (min-width: 700px) {
+    /* Nibs stand beside the picture and the crayons run the width of the card. */
+    .edu-pad { display: grid; grid-template-columns: auto auto; grid-template-areas: 'head head' 'bar bar' 'nibs picture' 'crayons crayons'; column-gap: 16px; justify-content: center; }
+    .edu-pad-head { grid-area: head; }
+    .edu-pad-bar { grid-area: bar; }
+    .edu-picture { grid-area: picture; }
+    .edu-nibs { grid-area: nibs; flex-direction: column; flex-wrap: nowrap; align-self: center; margin: 0; }
+    .edu-crayons { grid-area: crayons; grid-template-columns: repeat(7, 1fr); width: min(100%, 58vh); }
+    .edu-wide-only { display: flex; }
+    .edu-nib.edu-wide-only { display: flex; }
+  }
+  /* The paint box: crayons with the nibs beneath on a phone, one nib at each corner beside them on a laptop. */
+  .edu-paint { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 10px; }
+  .edu-paint .edu-crayons { flex-basis: 100%; }
+  .edu-nibs { display: flex; flex-direction: row; gap: 10px; }
+  @media (min-width: 700px) {
+    .edu-paint { flex-wrap: nowrap; gap: 18px; }
+    .edu-paint .edu-crayons { flex-basis: auto; order: 2; margin: 0; }
+    .edu-nibs { flex-direction: column; }
+    .edu-nibs-left { order: 1; }
+    .edu-nibs-right { order: 3; }
+  }
   .edu-crayon { width: 38px; height: 38px; border-radius: 999px; cursor: pointer; padding: 0; }
+  @media (min-width: 700px) { .edu-crayon.edu-wide-only { display: block; } }
   @media (min-width: 600px) {
     .edu-crayons { gap: 10px; width: min(340px, 100%); margin: 12px auto; }
     .edu-crayon { width: 44px; height: 44px; }
@@ -1077,13 +1104,17 @@ const COLOR_BREAK_SECONDS = 300;
 const colorKey = (studentId) => `edusphere_v1_coloring:${studentId}`;
 async function loadColorState(studentId) { try { return JSON.parse((await storageGet(colorKey(studentId))) || '{}'); } catch (e) { return {}; } }
 async function saveColorState(studentId, state) { return storageSet(colorKey(studentId), JSON.stringify(state)); }
-const NIBS = [1.2, 2.5, 5, 9]; // how fat the line is: shown as dots of that size, finest first
+// How fat the line is, finest first. A phone shows four; a wider screen has room for all six.
+const NIBS = [0.7, 1.1, 1.5, 2.2, 3, 5];
+const PHONE_NIBS = [0.7, 1.5, 3, 5];
 const ZOOMS = [1, 1.5, 2.2];  // how close in the picture is drawn, always about its middle
+// Fifteen crayons on a phone; a wider screen adds six more and lays all of them across the card.
 const CRAYONS = [
   '#D62828', '#E4572E', '#F4A259', '#F7D154', '#C9A227',
   '#9ACD32', '#5BA84A', '#2FA5A0', '#3E7CB1', '#2B4C8C',
   '#7D5BA6', '#C86FC9', '#F58FB0', '#8C6239', '#2E2E2E',
 ];
+const WIDE_CRAYONS = ['#7B1E1E', '#FFD9A0', '#1F7A5A', '#9FD8E8', '#4B3A8F', '#F2F2F2'];
 // Some pictures are filled by tapping a part; others are drawn on freely with a finger.
 // Half are filled in by tapping a part, half are drawn on with a finger. A name page is always drawn.
 const COLORING_MODE = { ball: 'fill', sun: 'fill', balloon: 'fill', 'my-name': 'draw', star: 'draw', tree: 'fill', house: 'fill', fish: 'fill', cat: 'draw', flower: 'fill', boat: 'fill', rocket: 'fill', butterfly: 'draw', train: 'fill', car: 'fill', robot: 'fill', fishbowl: 'draw', castle: 'fill', dinosaur: 'draw', city: 'fill', garden: 'fill', playground: 'draw', farm: 'fill', birthday: 'draw' };
@@ -1304,9 +1335,9 @@ function ColoringPad({ picture, name, secondsLeft, total, saved, onArt, onClose 
   const move = (e) => { if (!freeDraw || !drawing.current) return; e.preventDefault(); setStrokes((list) => { const rest = list.slice(0, -1); const last = list[list.length - 1]; return [...rest, { ...last, points: [...last.points, at(e)] }]; }); };
   const stop = () => { drawing.current = false; };
   return (
-    <div>
+    <div className="edu-pad">
       {/* Start over on the left, close on the right, both sitting on the picture's own width. */}
-      <div style={{ width: 'min(100%, 58vh)', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+      <div className="edu-pad-head" style={{ width: 'min(100%, 58vh)', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <button type="button" aria-label="Start over" onClick={() => { setFills({}); setStrokes([]); onArt({ fills: {}, strokes: [] }); }}
           style={{ background: 'none', border: 'none', padding: 6, cursor: 'pointer', color: C.green, lineHeight: 0 }}>
           <svg viewBox="0 0 24 24" width="32" height="32" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.6-5.9M20 4v5h-5" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" /></svg>
@@ -1318,13 +1349,13 @@ function ColoringPad({ picture, name, secondsLeft, total, saved, onArt, onClose 
         </button>
       </div>
       {typeof secondsLeft === 'number' && (
-        <div style={{ margin: '8px auto 12px', width: 'min(100%, 58vh)' }}>
+        <div className="edu-pad-bar" style={{ margin: '8px auto 12px', width: 'min(100%, 58vh)' }}>
           <div style={{ height: 14, borderRadius: 999, background: C.line, overflow: 'hidden' }}>
             <div style={{ height: '100%', width: `${Math.max(0, (secondsLeft / total) * 100)}%`, background: `linear-gradient(90deg, ${CRAYONS[0]}, ${CRAYONS[3]}, ${CRAYONS[4]})`, transition: 'width 1s linear' }} />
           </div>
         </div>
       )}
-      <div style={{ position: 'relative', width: 'min(100%, 58vh)', margin: '0 auto' }}>
+      <div className="edu-picture" style={{ position: 'relative', width: 'min(100%, 58vh)', margin: '0 auto' }}>
       <svg ref={svgRef} viewBox={`${view.x} ${view.y} ${span} ${span}`} role="img" aria-label={`A ${picture} to color`}
         onPointerDown={start} onPointerMove={move} onPointerUp={stop} onPointerLeave={stop}
         style={{ width: '100%', aspectRatio: '1 / 1', display: 'block', background: '#fff', border: `2px solid ${C.line}`, borderRadius: 16, touchAction: freeDraw ? 'none' : 'auto' }}>
@@ -1342,6 +1373,19 @@ function ColoringPad({ picture, name, secondsLeft, total, saved, onArt, onClose 
           <text key={line + i} x="50" y={n.y(i)} textAnchor="middle" fontFamily={FONT} fontSize={n.size} fontWeight="700" fill="#FFFFFF" stroke="#2E2E2E" strokeWidth={n.size * 0.055} paintOrder="stroke" strokeLinejoin="round" pointerEvents="none">{line}</text>
         )); })()}
         {strokes.map((st, i) => <polyline key={`s${i}`} points={st.points.map((pt) => pt.join(',')).join(' ')} fill="none" stroke={st.colour} strokeWidth={st.width || 5} strokeLinecap="round" strokeLinejoin="round" pointerEvents="none" />)}
+        {/* On a drawing picture the outline is laid over the ink, so coloring never buries the lines
+            they are trying to stay inside. */}
+        {freeDraw && parts.map((p, i) => {
+          const line = { key: `edge-${i}`, fill: 'none', stroke: '#2E2E2E', strokeWidth: 1.6, strokeLinejoin: 'round', pointerEvents: 'none' };
+          if (p.t === 'circle') return <circle {...line} cx={p.cx} cy={p.cy} r={p.r} />;
+          if (p.t === 'ellipse') return <ellipse {...line} cx={p.cx} cy={p.cy} rx={p.rx} ry={p.ry} />;
+          if (p.t === 'rect') return <rect {...line} x={p.x} y={p.y} width={p.width} height={p.height} rx={2} />;
+          if (p.t === 'path') return <path {...line} d={p.d} />;
+          return <polygon {...line} points={p.points} />;
+        })}
+        {freeDraw && picture === 'my-name' && (() => { const n = nameLines(name); return n.lines.map((line, i) => (
+          <text key={`edge-${line}-${i}`} x="50" y={n.y(i)} textAnchor="middle" fontFamily={FONT} fontSize={n.size} fontWeight="700" fill="none" stroke="#2E2E2E" strokeWidth={n.size * 0.055} strokeLinejoin="round" pointerEvents="none">{line}</text>
+        )); })()}
       </svg>
       {/* Zoom sits in the picture's own corners, over the top: color goes behind it, never onto it. */}
       {[['−', -1, { left: 10 }], ['+', 1, { right: 10 }]].map(([label, dir, side]) => {
@@ -1365,25 +1409,24 @@ function ColoringPad({ picture, name, secondsLeft, total, saved, onArt, onClose 
         </button>
       ))}
       </div>
-      {/* Fifteen crayons, five to a row, so the whole box sits under the picture on a phone. */}
+      {/* The crayons sit under the picture; on a wide screen they run the width of the card and the
+          nibs stand in a column beside the picture, so nothing needs scrolling to reach. */}
       <div className="edu-crayons">
-        {CRAYONS.map((colour) => (
-          <button key={colour} type="button" className="edu-crayon" aria-label="Use this color" aria-pressed={crayon === colour} onClick={() => setCrayon(colour)}
+        {[...CRAYONS, ...WIDE_CRAYONS].map((colour, i) => (
+          <button key={colour} type="button" className={`edu-crayon${i >= CRAYONS.length ? ' edu-wide-only' : ''}`} aria-label="Use this color" aria-pressed={crayon === colour} onClick={() => setCrayon(colour)}
             style={{ background: colour, border: crayon === colour ? `4px solid ${C.ink}` : `2px solid ${C.line}` }} />
         ))}
       </div>
-      {/* How fat the line is, shown as the dot itself: tap the small one for a thin line. */}
       {freeDraw && (
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 14, margin: '0 0 14px' }}>
-          {NIBS.map((w) => (
-            <button key={w} type="button" aria-label={`${w === NIBS[0] ? 'Thin' : w === NIBS[1] ? 'Medium' : 'Thick'} line`} aria-pressed={nib === w} onClick={() => setNib(w)}
-              style={{ width: 52, height: 52, borderRadius: 999, display: 'flex', alignItems: 'center', justifyContent: 'center', background: C.surface, border: nib === w ? `3px solid ${C.ink}` : `2px solid ${C.line}`, cursor: 'pointer' }}>
-              <span style={{ display: 'block', width: w * 3.2, height: w * 3.2, borderRadius: 999, background: crayon }} />
+        <div className="edu-nibs">
+          {NIBS.map((w, i) => (
+            <button key={w} type="button" className={`edu-nib${PHONE_NIBS.includes(w) ? '' : ' edu-wide-only'}`} aria-label={`Line ${i + 1} of ${NIBS.length}`} aria-pressed={nib === w} onClick={() => setNib(w)}
+              style={{ background: C.surface, border: nib === w ? `3px solid ${C.ink}` : `2px solid ${C.line}` }}>
+              <span style={{ display: 'block', width: Math.max(4, w * 4.5), height: Math.max(4, w * 4.5), borderRadius: 999, background: crayon }} />
             </button>
           ))}
         </div>
       )}
-
     </div>
   );
 }
@@ -2886,12 +2929,10 @@ export default function EduSphereApp() {
     // of this round shows whether it has already been answered, so it never repeats.
     const wonderHere = FEATURES.reflection && mastered ? nextWonder(record.events, mod.courseId, wonderReview, true) : null;
     const wonderDone = wonderHere && record.events.some((e) => e.type === 'wonder_answered' && e.wonderId === wonderHere.id && String(e.at) > String(lastEvent.at));
-    // A star earns a coloring break, offered here rather than hunted for: the first picture that is
-    // ready, if any is. The break ends itself after five minutes and the courses come back.
-    const readyPicture = COLORING_PICTURES.slice(0, coloringUnlocked(record.events)).find((pic) => (((colorState[pic] || {}).restUntil || 0) < Date.now()));
+    // Coloring is not offered here on purpose: a picture in the middle of a round pulls a student
+    // away from the work. The pictures wait in Let's Color, where they choose one themselves.
     const goOn = () => {
       if (wonderHere && !wonderDone) { setWonder(wonderHere); setWonderText(''); setWonderPick(''); setWonderStartedAt(Date.now()); setScreen('wonder'); return; }
-      if (mastered && readyPicture && stageForGrade(course.grade) === 'early') { setColoring(readyPicture); setScreen('coloring'); return; }
       if (mastered && nextMod) openModule(nextMod.id); else if (mastered) startPractice(); else if (backTo) loopBack(mod.id, backTo); else { setLessonStep(0); setScreen('lesson'); }
     };
     return (

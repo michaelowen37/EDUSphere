@@ -406,6 +406,13 @@ Approved by Mikey on 2026-09-04 unless marked "proposed".
 
 - (2026-09-16) Zoomed in, a small arrow appears on each edge that still has picture beyond it, and on no other edge, so a student can reach the corners without a permanent set of controls cluttering the square. Zooming keeps the middle of what they were looking at. The colorable background now extends well past the picture, so a filled background covers the square at any zoom.
 
+- (2026-09-16) A star no longer drops a student into a coloring picture. It pulled them out of a run of work, it always opened the same first picture, and it handed back whatever they had already colored on it. Pictures wait in Let's Color, where the student chooses one.
+
+- (2026-09-16) Every nib is finer: the old second-thickest is now the thickest and the thinnest is finer than anything offered before. On a laptop the four nibs sit beside the crayons, two at each side, finest top-left and thickest bottom-right, so nothing needs scrolling; on a phone they stay in their row beneath the colors.
+
+- (2026-09-16) On a drawing picture the outline is laid over the ink, so coloring never buries the lines a student is trying to stay inside. The name page does the same with its letters.
+- (2026-09-16) A wider screen gets six more crayons, twenty-one in three rows running the width of the picture, and the nibs stand in a column beside the picture with two more thicknesses, six in all. A phone keeps fifteen crayons and four nibs in the arrangement Mikey picked. The extras are hidden by class rather than by counting, so both layouts come from the same markup.
+
 ## Open items
 - Verify audio plays inside the chat artifact sandbox (works in a normal browser).
 - Common Core / TEKS codes on existing modules to be checked against the official lists.

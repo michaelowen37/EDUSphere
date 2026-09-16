@@ -404,6 +404,8 @@ Approved by Mikey on 2026-09-04 unless marked "proposed".
 
 - (2026-09-16) A resting picture is covered in flat grey that sweeps away like a clock hand as the fifteen minutes run down, so the drawing comes back into view rather than a ring counting at it. No green, no dimming of the picture itself.
 
+- (2026-09-16) Zoomed in, a small arrow appears on each edge that still has picture beyond it, and on no other edge, so a student can reach the corners without a permanent set of controls cluttering the square. Zooming keeps the middle of what they were looking at. The colorable background now extends well past the picture, so a filled background covers the square at any zoom.
+
 ## Open items
 - Verify audio plays inside the chat artifact sandbox (works in a normal browser).
 - Common Core / TEKS codes on existing modules to be checked against the official lists.

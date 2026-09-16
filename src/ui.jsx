@@ -1275,6 +1275,7 @@ function ColoringPad({ picture, name, secondsLeft, total, saved, onArt, onClose 
   const [crayon, setCrayon] = useState(CRAYONS[0]);
   const [nib, setNib] = useState(NIBS[0]);
   const [zoom, setZoom] = useState(1);
+  const [pan, setPan] = useState({ x: 0, y: 0 }); // the top-left corner of what is shown, in the picture's own units
   const [fills, setFills] = useState((saved && saved.fills) || {});
   const [strokes, setStrokes] = useState((saved && saved.strokes) || []);
   // The work in progress is handed up as it happens, so leaving and coming back finds it as it was.
@@ -1285,8 +1286,20 @@ function ColoringPad({ picture, name, secondsLeft, total, saved, onArt, onClose 
   const freeDraw = COLORING_MODE[picture] === 'draw';
   // Zoomed in, the picture is still drawn in its own coordinates, so color put on close up stays
   // exactly where it belongs when they zoom back out.
-  const span = 100 / zoom; const origin = 50 - span / 2;
-  const at = (e) => { const r = svgRef.current.getBoundingClientRect(); return [origin + ((e.clientX - r.left) / r.width) * span, origin + ((e.clientY - r.top) / r.height) * span]; };
+  const span = 100 / zoom;
+  const limit = 100 - span;
+  const clamp = (v) => Math.max(0, Math.min(limit, v));
+  const view = { x: clamp(pan.x), y: clamp(pan.y) };
+  const at = (e) => { const r = svgRef.current.getBoundingClientRect(); return [view.x + ((e.clientX - r.left) / r.width) * span, view.y + ((e.clientY - r.top) / r.height) * span]; };
+  // Zooming keeps the middle of what they were looking at, so the picture does not jump under them.
+  const changeZoom = (dir) => {
+    const next = ZOOMS[Math.max(0, Math.min(ZOOMS.length - 1, ZOOMS.indexOf(zoom) + dir))];
+    const nextSpan = 100 / next; const nextLimit = 100 - nextSpan;
+    const midX = view.x + span / 2; const midY = view.y + span / 2;
+    setPan({ x: Math.max(0, Math.min(nextLimit, midX - nextSpan / 2)), y: Math.max(0, Math.min(nextLimit, midY - nextSpan / 2)) });
+    setZoom(next);
+  };
+  const nudge = (dx, dy) => setPan({ x: clamp(view.x + dx * span * 0.45), y: clamp(view.y + dy * span * 0.45) });
   const start = (e) => { if (!freeDraw) return; drawing.current = true; setStrokes((list) => [...list, { colour: crayon, width: nib, points: [at(e)] }]); };
   const move = (e) => { if (!freeDraw || !drawing.current) return; e.preventDefault(); setStrokes((list) => { const rest = list.slice(0, -1); const last = list[list.length - 1]; return [...rest, { ...last, points: [...last.points, at(e)] }]; }); };
   const stop = () => { drawing.current = false; };
@@ -1312,11 +1325,11 @@ function ColoringPad({ picture, name, secondsLeft, total, saved, onArt, onClose 
         </div>
       )}
       <div style={{ position: 'relative', width: 'min(100%, 58vh)', margin: '0 auto' }}>
-      <svg ref={svgRef} viewBox={`${origin} ${origin} ${span} ${span}`} role="img" aria-label={`A ${picture} to color`}
+      <svg ref={svgRef} viewBox={`${view.x} ${view.y} ${span} ${span}`} role="img" aria-label={`A ${picture} to color`}
         onPointerDown={start} onPointerMove={move} onPointerUp={stop} onPointerLeave={stop}
         style={{ width: '100%', aspectRatio: '1 / 1', display: 'block', background: '#fff', border: `2px solid ${C.line}`, borderRadius: 16, touchAction: freeDraw ? 'none' : 'auto' }}>
         {/* The square behind the picture is colorable too: a sky, a wall, whatever they decide it is. */}
-        <rect x="0" y="0" width="100" height="100" fill={fills.bg || '#FFFFFF'} onClick={freeDraw ? undefined : () => setFills((f) => ({ ...f, bg: crayon }))} style={{ cursor: freeDraw ? 'default' : 'pointer' }} />
+        <rect x="-60" y="-60" width="220" height="220" fill={fills.bg || '#FFFFFF'} onClick={freeDraw ? undefined : () => setFills((f) => ({ ...f, bg: crayon }))} style={{ cursor: freeDraw ? 'default' : 'pointer' }} />
         {parts.map((p, i) => {
           const common = { key: i, fill: fills[i] || '#FFFFFF', stroke: '#2E2E2E', strokeWidth: 1.6, strokeLinejoin: 'round', style: { cursor: 'pointer' }, onClick: freeDraw ? undefined : () => setFills((f) => ({ ...f, [i]: crayon })) };
           if (p.t === 'circle') return <circle {...common} cx={p.cx} cy={p.cy} r={p.r} />;
@@ -1335,10 +1348,22 @@ function ColoringPad({ picture, name, secondsLeft, total, saved, onArt, onClose 
         const off = (dir < 0 && zoom === ZOOMS[0]) || (dir > 0 && zoom === ZOOMS[ZOOMS.length - 1]);
         return (
           <button key={label} type="button" disabled={off} aria-label={dir < 0 ? 'Zoom out' : 'Zoom in'}
-            onClick={() => setZoom((z) => ZOOMS[Math.max(0, Math.min(ZOOMS.length - 1, ZOOMS.indexOf(z) + dir))])}
+            onClick={() => changeZoom(dir)}
             style={{ position: 'absolute', bottom: 10, ...side, width: 46, height: 46, borderRadius: 999, background: '#FFFFFF', border: '3px solid #2E2E2E', color: '#2E2E2E', fontFamily: FONT, fontSize: 26, fontWeight: 700, lineHeight: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: off ? 'default' : 'pointer', opacity: off ? 0.35 : 1 }}>{label}</button>
         );
       })}
+      {/* Zoomed in, a small arrow appears on each edge that still has picture beyond it, and nowhere else. */}
+      {zoom > 1 && [
+        ['Move up', 0, -1, { top: 6, left: '50%', transform: 'translateX(-50%)' }, 'M12 8 L18 16 L6 16 Z', view.y > 0],
+        ['Move down', 0, 1, { bottom: 6, left: '50%', transform: 'translateX(-50%)' }, 'M12 16 L6 8 L18 8 Z', view.y < limit],
+        ['Move left', -1, 0, { left: 6, top: '50%', transform: 'translateY(-50%)' }, 'M8 12 L16 6 L16 18 Z', view.x > 0],
+        ['Move right', 1, 0, { right: 6, top: '50%', transform: 'translateY(-50%)' }, 'M16 12 L8 18 L8 6 Z', view.x < limit],
+      ].filter(([, , , , , can]) => can).map(([label, dx, dy, side, d]) => (
+        <button key={label} type="button" aria-label={label} onClick={() => nudge(dx, dy)}
+          style={{ position: 'absolute', ...side, width: 34, height: 34, borderRadius: 999, background: 'rgba(255,255,255,0.86)', border: '2px solid #2E2E2E', padding: 0, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d={d} fill="#2E2E2E" /></svg>
+        </button>
+      ))}
       </div>
       {/* Fifteen crayons, five to a row, so the whole box sits under the picture on a phone. */}
       <div className="edu-crayons">

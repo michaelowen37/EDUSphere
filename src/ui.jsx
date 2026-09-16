@@ -805,7 +805,7 @@ const KID_ANIMATION = `
   .edu-nib { width: 38px; height: 38px; border-radius: 999px; display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 0; }
   .edu-nib.edu-wide-only { display: none; }
   /* On a phone the nibs sit in the same five columns as the crayons, so the two rows line up. */
-  .edu-nibs { display: grid; grid-template-columns: repeat(5, 1fr); justify-items: center; gap: 8px; width: min(300px, 100%); margin: 8px auto 0; }
+  .edu-nibs { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; width: min(300px, 100%); margin: 10px auto 0; }
   @media (min-width: 700px) {
     /* Nibs stand beside the picture and the crayons run the width of the card. */
     .edu-pad { display: grid; grid-template-columns: auto auto; grid-template-areas: 'nibs head' 'nibs bar' 'nibs picture' '. crayons'; column-gap: 28px; justify-content: center; }
@@ -817,17 +817,6 @@ const KID_ANIMATION = `
     .edu-crayons { grid-area: crayons; grid-template-columns: repeat(7, 1fr); width: min(100%, 58vh); margin: 12px 0 0; }
     .edu-wide-only { display: flex; }
     .edu-nib.edu-wide-only { display: flex; }
-  }
-  /* The paint box: crayons with the nibs beneath on a phone, one nib at each corner beside them on a laptop. */
-  .edu-paint { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 10px; }
-  .edu-paint .edu-crayons { flex-basis: 100%; }
-  .edu-nibs { display: flex; flex-direction: row; gap: 10px; }
-  @media (min-width: 700px) {
-    .edu-paint { flex-wrap: nowrap; gap: 18px; }
-    .edu-paint .edu-crayons { flex-basis: auto; order: 2; margin: 0; }
-    .edu-nibs { flex-direction: column; }
-    .edu-nibs-left { order: 1; }
-    .edu-nibs-right { order: 3; }
   }
   .edu-crayon { width: 38px; height: 38px; border-radius: 999px; cursor: pointer; padding: 0; }
   @media (min-width: 700px) { .edu-crayon.edu-wide-only { display: block; } }

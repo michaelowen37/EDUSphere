@@ -420,6 +420,8 @@ Approved by Mikey on 2026-09-04 unless marked "proposed".
 
 - (2026-09-16) A phone shows five nibs, laid out in the same five columns as the crayons and at the same size as them, so the two rows line up under the picture instead of drifting. A wide screen keeps its column of six at the larger size.
 
+- (2026-09-16) The nib row on a phone was left-aligned because an old rule from the earlier paint-box layout was still in the stylesheet and won over the new one. The dead rules are gone and the row centres itself on the picture's width, whether or not it happens to line up with the colors above.
+
 ## Open items
 - Verify audio plays inside the chat artifact sandbox (works in a normal browser).
 - Common Core / TEKS codes on existing modules to be checked against the official lists.

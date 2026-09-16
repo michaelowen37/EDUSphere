@@ -808,11 +808,15 @@ const KID_ANIMATION = `
      by the height that is really there, so the crayons and the nibs stay on the first screen; turned
      on its side, or on a laptop, the picture takes the height instead. */
   /* The coloring page is its own thing: it may use more of the window than the reading columns do. */
-  .edu-wrap:has(.edu-pad) { max-width: none; padding-bottom: 10px; zoom: 1; }
+  .edu-wrap-wide { max-width: none !important; padding-bottom: 10px !important; zoom: 1 !important; }
   .edu-pad { max-width: 100%; }
-  .edu-pad-col { width: min(100%, 46dvh); }
+  .edu-pad-col { width: min(100%, 46vh); }
   @media (min-width: 700px) { .edu-pad-col { width: min(72vw, calc(100vh - 302px)); } }
   .edu-wide-only { display: none; }
+  /* A picture that is filled in rather than drawn on has no nibs, so it shows every crayon and
+     gives the picture the room the nibs would have taken. */
+  .edu-crayons-all .edu-crayon.edu-wide-only { display: block; }
+  .edu-pad-fill .edu-pad-col { width: min(100%, 54vh); }
   .edu-nib { width: 38px; height: 38px; border-radius: 999px; display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 0; }
   .edu-nib.edu-wide-only { display: none; }
   /* On a phone the nibs sit in the same five columns as the crayons, so the two rows line up. */
@@ -833,15 +837,22 @@ const KID_ANIMATION = `
   /* A phone on its side has width to spare and no height: the nibs stand at one side of the picture
      and the crayons at the other, so the picture itself can take nearly the whole height. */
   @media (max-height: 540px) {
-    .edu-pad { display: grid; grid-template-columns: auto auto auto; grid-template-areas: 'head nibs crayons' 'bar nibs crayons' 'picture nibs crayons'; align-items: center; justify-content: center; column-gap: 16px; }
-    .edu-pad .edu-pad-head { width: 100%; margin: 0 0 2px; }
-    .edu-pad-bar { margin: 4px 0 6px !important; }
-    .edu-pad-col { width: min(46vw, 78dvh); }
+    .edu-pad { display: grid; grid-template-columns: auto auto auto; grid-template-areas: 'head head head' 'bar bar bar' 'picture nibs crayons'; align-items: center; justify-content: center; column-gap: 14px; }
+    .edu-pad-bar { grid-area: bar; }
+    /* A filled picture is a little taller than it is wide, so it takes less width to fit the height. */
+    .edu-pad-fill .edu-pad-col { width: min(52vw, 62vh); }
+    .edu-pad .edu-pad-head, .edu-pad .edu-pad-bar { width: 100%; }
+    .edu-pad-bar { margin: 2px auto 8px !important; }
+    .edu-pad-col { width: min(52vw, 74vh); }
     .edu-pad .edu-crayons { grid-area: crayons; grid-template-columns: repeat(4, 1fr); width: auto; margin: 0; align-self: center; }
     .edu-nibs { grid-area: nibs; display: flex; flex-direction: column; flex-wrap: nowrap; gap: 8px; width: auto; margin: 0; align-self: center; }
-    .edu-crayon { width: 30px; height: 30px; }
-    .edu-nib { width: 36px; height: 36px; }
-    .edu-pad-head h1 { font-size: 18px; }
+    .edu-crayon { width: 26px; height: 26px; }
+    .edu-crayons { gap: 6px; }
+    .edu-nib { width: 30px; height: 30px; }
+    .edu-nibs { gap: 6px !important; }
+    .edu-pad-head h1 { font-size: 16px; }
+    .edu-picture button { width: 34px !important; height: 34px !important; }
+    .edu-picture button svg { width: 22px !important; height: 22px !important; }
   }
   .edu-crayon { width: 38px; height: 38px; border-radius: 999px; cursor: pointer; padding: 0; }
   @media (min-width: 700px) { .edu-crayon.edu-wide-only { display: block; } }
@@ -1130,7 +1141,7 @@ const CRAYONS = [
   '#9ACD32', '#5BA84A', '#2FA5A0', '#3E7CB1', '#2B4C8C',
   '#7D5BA6', '#C86FC9', '#F58FB0', '#8C6239', '#2E2E2E',
 ];
-const WIDE_CRAYONS = ['#7B1E1E', '#FFD9A0', '#1F7A5A', '#9FD8E8', '#4B3A8F', '#F2F2F2'];
+const WIDE_CRAYONS = ['#7B1E1E', '#FFD9A0', '#1F7A5A', '#9FD8E8', '#4B3A8F'];
 // Some pictures are filled by tapping a part; others are drawn on freely with a finger.
 // Half are filled in by tapping a part, half are drawn on with a finger. A name page is always drawn.
 const COLORING_MODE = { ball: 'fill', sun: 'fill', balloon: 'fill', 'my-name': 'draw', star: 'draw', tree: 'fill', house: 'fill', fish: 'fill', cat: 'draw', flower: 'fill', boat: 'fill', rocket: 'fill', butterfly: 'draw', train: 'fill', car: 'fill', robot: 'fill', fishbowl: 'draw', castle: 'fill', dinosaur: 'draw', city: 'fill', garden: 'fill', playground: 'draw', farm: 'fill', birthday: 'draw' };
@@ -1432,6 +1443,18 @@ function ColorThumb({ picture, name, size = 72 }) {
     </svg>
   );
 }
+// True when the window is short and wide: a phone on its side, where the timer stands upright.
+function useSideways() {
+  const [on, setOn] = useState(() => typeof window !== 'undefined' && window.matchMedia('(max-height: 540px)').matches);
+  useEffect(() => {
+    if (typeof window === 'undefined') return undefined;
+    const m = window.matchMedia('(max-height: 540px)');
+    const listen = () => setOn(m.matches);
+    m.addEventListener('change', listen);
+    return () => m.removeEventListener('change', listen);
+  }, []);
+  return on;
+}
 function ColoringPad({ picture, name, secondsLeft, total, saved, onArt, onClose }) {
   const [crayon, setCrayon] = useState(CRAYONS[0]);
   const [nib, setNib] = useState(NIBS[0]);
@@ -1448,10 +1471,14 @@ function ColoringPad({ picture, name, secondsLeft, total, saved, onArt, onClose 
   // Zoomed in, the picture is still drawn in its own coordinates, so color put on close up stays
   // exactly where it belongs when they zoom back out.
   const span = 100 / zoom;
+  // A picture that is filled in has a strip of paper below the drawing, so the zoom buttons sit
+  // under it rather than over it. A drawing picture keeps the square: the hand needs the room.
+  const tall = freeDraw ? 1 : 1.14;
+  const spanY = span * tall;
   const limit = 100 - span;
   const clamp = (v) => Math.max(0, Math.min(limit, v));
   const view = { x: clamp(pan.x), y: clamp(pan.y) };
-  const at = (e) => { const r = svgRef.current.getBoundingClientRect(); return [view.x + ((e.clientX - r.left) / r.width) * span, view.y + ((e.clientY - r.top) / r.height) * span]; };
+  const at = (e) => { const r = svgRef.current.getBoundingClientRect(); return [view.x + ((e.clientX - r.left) / r.width) * span, view.y + ((e.clientY - r.top) / r.height) * spanY]; };
   // Zooming keeps the middle of what they were looking at, so the picture does not jump under them.
   const changeZoom = (dir) => {
     const next = ZOOMS[Math.max(0, Math.min(ZOOMS.length - 1, ZOOMS.indexOf(zoom) + dir))];
@@ -1465,7 +1492,7 @@ function ColoringPad({ picture, name, secondsLeft, total, saved, onArt, onClose 
   const move = (e) => { if (!freeDraw || !drawing.current) return; e.preventDefault(); setStrokes((list) => { const rest = list.slice(0, -1); const last = list[list.length - 1]; return [...rest, { ...last, points: [...last.points, at(e)] }]; }); };
   const stop = () => { drawing.current = false; };
   return (
-    <div className="edu-pad">
+    <div className={`edu-pad${freeDraw ? '' : ' edu-pad-fill'}`}>
       {/* Start over on the left, close on the right, both sitting on the picture's own width. */}
       <div className="edu-pad-head edu-pad-col" style={{ margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <button type="button" aria-label="Start over" onClick={() => { setFills({}); setStrokes([]); onArt({ fills: {}, strokes: [] }); }}
@@ -1486,9 +1513,9 @@ function ColoringPad({ picture, name, secondsLeft, total, saved, onArt, onClose 
         </div>
       )}
       <div className="edu-picture edu-pad-col" style={{ position: 'relative', margin: '0 auto' }}>
-      <svg ref={svgRef} viewBox={`${view.x} ${view.y} ${span} ${span}`} role="img" aria-label={`A ${picture} to color`}
+      <svg ref={svgRef} viewBox={`${view.x} ${view.y} ${span} ${spanY}`} role="img" aria-label={`A ${picture} to color`}
         onPointerDown={start} onPointerMove={move} onPointerUp={stop} onPointerLeave={stop}
-        style={{ width: '100%', aspectRatio: '1 / 1', display: 'block', background: '#fff', border: `2px solid ${C.line}`, borderRadius: 16, touchAction: freeDraw ? 'none' : 'auto' }}>
+        style={{ width: '100%', aspectRatio: `1 / ${tall}`, display: 'block', background: '#fff', border: `2px solid ${C.line}`, borderRadius: 16, clipPath: 'inset(0 round 15px)', touchAction: freeDraw ? 'none' : 'auto' }}>
         {/* The square behind the picture is colorable too: a sky, a wall, whatever they decide it is. */}
         <rect x="-60" y="-60" width="220" height="220" fill={fills.bg || '#FFFFFF'} onClick={freeDraw ? undefined : () => setFills((f) => ({ ...f, bg: crayon }))} style={{ cursor: freeDraw ? 'default' : 'pointer' }} />
         {/* The name, drawn once, white letters with their outline behind them. This is the drawing
@@ -1543,7 +1570,7 @@ function ColoringPad({ picture, name, secondsLeft, total, saved, onArt, onClose 
       </div>
       {/* The crayons sit under the picture; on a wide screen they run the width of the card and the
           nibs stand in a column beside the picture, so nothing needs scrolling to reach. */}
-      <div className="edu-crayons">
+      <div className={`edu-crayons${freeDraw ? '' : ' edu-crayons-all'}`}>
         {[...CRAYONS, ...WIDE_CRAYONS].map((colour, i) => (
           <button key={colour} type="button" className={`edu-crayon${i >= CRAYONS.length ? ' edu-wide-only' : ''}`} aria-label="Use this color" aria-pressed={crayon === colour} onClick={() => setCrayon(colour)}
             style={{ background: colour, border: crayon === colour ? `4px solid ${C.ink}` : `2px solid ${C.line}` }} />
@@ -2546,7 +2573,7 @@ export default function EduSphereApp() {
   }
   if (screen === 'coloring' && coloring) {
     return (
-      <div style={page}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={wrap}>
+      <div style={page}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap edu-wrap-wide" style={wrap}>
         <ColoringPad key={`${coloring}-${displayName}`} picture={coloring} name={displayName} secondsLeft={colorLeft} total={COLOR_BREAK_SECONDS} saved={(colorState[coloring] || {}).art} onArt={(art) => { colorArt.current = art; }} onClose={leaveColoring} />
       </div></div>
     );

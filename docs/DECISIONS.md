@@ -439,6 +439,12 @@ Approved by Mikey on 2026-09-04 unless marked "proposed".
 - (2026-09-16) The build stamp reads in Central time, since that is where it is read.
 - (2026-09-16) A phone on its side splits down the middle: the title, the bar and the picture take the left, the nibs and the crayons the right. On a laptop or tablet the nibs sit level with the middle of the picture rather than its foot.
 
+- (2026-09-16) The countdown is one shape everywhere: a bar across the top. Standing it upright beside the picture on a sideways phone made it too thin to read, and the title ended up beside the picture rather than above it. Sideways now reads the same way as everywhere else: title across the top with its two icons at the edges, the bar beneath it, then the picture, the nibs and the crayons in one row.
+- (2026-09-16) A picture that is filled in rather than drawn on has no nibs, so it shows all twenty crayons in four rows and the paper runs a little below the drawing, which puts the zoom buttons under the picture instead of over it. A drawing picture keeps its square: the hand needs the room.
+
+- (2026-09-16) The coloring page stopped using `dvh` units and `:has()`; a browser a version or two behind ignores both, and when the height rule was ignored the picture fell back to the laptop size and ran off a phone held sideways. Plain `vh` and a class on the wrapper do the same job everywhere. Sideways, the crayons, nibs and zoom buttons are smaller again, and a filled picture (taller than it is wide) takes less width so its height still fits.
+- (2026-09-16) The picture's own edge is clipped round, so a filled background no longer paints over the card's border and corners.
+
 ## Open items
 - Verify audio plays inside the chat artifact sandbox (works in a normal browser).
 - Common Core / TEKS codes on existing modules to be checked against the official lists.

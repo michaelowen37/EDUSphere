@@ -2,11 +2,9 @@
 
 Paste the lines below as the commit message. Unzip this file onto the repository folder; it overwrites only the files listed.
 
-- (2026-09-16) The build stamp reads in Central time, since that is where it is read.
-- (2026-09-16) A phone on its side splits down the middle: the title, the bar and the picture take the left, the nibs and the crayons the right. On a laptop or tablet the nibs sit level with the middle of the picture rather than its foot.
+- (2026-09-16) The countdown is one shape everywhere: a bar across the top. Standing it upright beside the picture on a sideways phone made it too thin to read, and the title ended up beside the picture rather than above it. Sideways now reads the same way as everywhere else: title across the top with its two icons at the edges, the bar beneath it, then the picture, the nibs and the crayons in one row.
 
 ## Files
 - src/ui.jsx
 - index.html
-- build.sh
 - docs/DECISIONS.md

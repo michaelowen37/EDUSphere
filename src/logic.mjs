@@ -1904,17 +1904,17 @@ function PREK_MODULES() { return [
     title: 'Big, bigger, biggest',
     tagline: 'Three sizes in a row',
     lesson: {
-      paragraphs: ['Three circles. One is little. One is in the middle. One is the biggest of all.', 'Point to the biggest. Then point to the littlest.'],
+      paragraphs: ['Three circles. One is small. One is in the middle. One is the biggest of all.', 'Point to the biggest. Then point to the smallest.'],
       keyIdea: 'Little, middle-sized, biggest. Three sizes in a row.',
       example: { kind: 'shape', name: 'circle', size: 'big', caption: 'The biggest circle.' },
       script: [
-        { say: 'Here is a little circle. It is the littlest.', show: { kind: 'shape', name: 'circle', size: 'small' } },
+        { say: 'Here is a small circle. It is the smallest.', show: { kind: 'shape', name: 'circle', size: 'small' } },
         { say: 'Here is a middle-sized circle. Not little, not big.', show: { kind: 'shape', name: 'circle' } },
         { say: 'Here is the biggest circle of all.', show: { kind: 'shape', name: 'circle', size: 'big' } },
       ],
     },
     sources: ['Aligned with Texas Prekindergarten Guidelines V.D.1 (recognizes and compares heights or lengths of people or objects) and Head Start ELOF Goal P-MATH 8 (measures objects by their attributes).'],
-    generators: ['pk4-tap-biggest', 'pk4-tap-littlest', 'pk4-tap-middle', 'pk4-tap-biggest', 'pk4-tap-littlest'],
+    generators: ['pk4-tap-biggest', 'pk4-tap-smallest', 'pk4-tap-middle', 'pk4-tap-biggest', 'pk4-tap-smallest'],
   },
   {
     id: 'helpers-all-around',
@@ -12164,8 +12164,8 @@ const twoOf = (rng, list, answer) => shuffle(rng, [answer, ...shuffle(rng, [...n
 Object.assign(GENERATORS, {
   'pk4-tap-biggest': (rng) => { const sh = pick(rng, ['circle', 'square', 'triangle']);
     return { type: 'choice', story: null, prompt: 'Tap the biggest one.', choices: shuffle(rng, [`shape:${sh}:big`, `shape:${sh}:medium`, `shape:${sh}:small`]), answer: `shape:${sh}:big`, explain: `That is the biggest ${sh}.`, visual: null, explainVisual: null }; },
-  'pk4-tap-littlest': (rng) => { const sh = pick(rng, ['circle', 'square', 'triangle']);
-    return { type: 'choice', story: null, prompt: 'Tap the littlest one.', choices: shuffle(rng, [`shape:${sh}:big`, `shape:${sh}:medium`, `shape:${sh}:small`]), answer: `shape:${sh}:small`, explain: `That is the littlest ${sh}.`, visual: null, explainVisual: null }; },
+  'pk4-tap-smallest': (rng) => { const sh = pick(rng, ['circle', 'square', 'triangle']);
+    return { type: 'choice', story: null, prompt: 'Tap the smallest one.', choices: shuffle(rng, [`shape:${sh}:big`, `shape:${sh}:medium`, `shape:${sh}:small`]), answer: `shape:${sh}:small`, explain: `That is the smallest ${sh}.`, visual: null, explainVisual: null }; },
   'pk4-tap-middle': (rng) => { const sh = pick(rng, ['circle', 'square', 'triangle']);
     return { type: 'choice', story: null, prompt: 'Tap the middle-sized one.', choices: shuffle(rng, [`shape:${sh}:big`, `shape:${sh}:medium`, `shape:${sh}:small`]), answer: `shape:${sh}:medium`, explain: `That is the middle-sized ${sh}: not little, not big.`, visual: null, explainVisual: null }; },
   'pk3-magic-word': (rng) => { const ask = randInt(rng, 0, 1) === 1;
@@ -12173,7 +12173,7 @@ Object.assign(GENERATORS, {
   'pk3-tap-big': (rng) => { const sh = pick(rng, ['circle', 'square', 'triangle']);
     return { type: 'choice', story: null, prompt: 'Tap the big one.', choices: shuffle(rng, [`shape:${sh}:big`, `shape:${sh}:small`]), answer: `shape:${sh}:big`, explain: `That is the big ${sh}.`, visual: null, explainVisual: null }; },
   'pk3-tap-little': (rng) => { const sh = pick(rng, ['circle', 'square', 'triangle']);
-    return { type: 'choice', story: null, prompt: 'Tap the little one.', choices: shuffle(rng, [`shape:${sh}:big`, `shape:${sh}:small`]), answer: `shape:${sh}:small`, explain: `That is the little ${sh}.`, visual: null, explainVisual: null }; },
+    return { type: 'choice', story: null, prompt: 'Tap the small one.', choices: shuffle(rng, [`shape:${sh}:big`, `shape:${sh}:small`]), answer: `shape:${sh}:small`, explain: `That is the small ${sh}.`, visual: null, explainVisual: null }; },
   'pk-turn-choice': (rng) => { const c = pick(rng, [['You both want the swing.', 'Take turns', 'Grab it'], ['You both want the red crayon.', 'Take turns', 'Keep it all day'], ['Two friends, one ball.', 'Share it', 'Hide it']]);
     return { type: 'choice', story: c[0], prompt: 'What do we do?', choices: shuffle(rng, [c[1], c[2]]), answer: c[1], explain: `${c[1]}. Then everybody gets a turn.`, visual: null, explainVisual: null }; },
   'pk-whose-turn': (rng) => { const first = randInt(rng, 0, 1) === 1;
@@ -13907,7 +13907,7 @@ export function describeChoice(choice) {
   const m = /^dots:(\d+)$/.exec(choice);
   if (m) return `the group with ${m[1]}`;
   const sh = /^shape:([a-z]+):(big|medium|small)$/.exec(choice);
-  return sh ? `the ${sh[2] === 'big' ? 'big' : sh[2] === 'medium' ? 'middle-sized' : 'little'} ${sh[1]}` : choice;
+  return sh ? `the ${sh[2] === 'big' ? 'big' : sh[2] === 'medium' ? 'middle-sized' : 'small'} ${sh[1]}` : choice;
 }
 
 // The story rule, applied to science: a wrong answer on a fact question is followed by the fact

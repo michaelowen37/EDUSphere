@@ -582,7 +582,7 @@ await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen ===
 await page.locator('svg[role=img] > *').first().click({ force: true });
 await page.waitForTimeout(150);
 ok('tapping a part fills it with the chosen color', await page.evaluate(() => [...document.querySelector('svg[role=img]').children].some((c) => c.getAttribute('fill') === '#E4572E')));
-ok('a coloring break shows the five minute bar', (await page.locator('svg[role=img]').first().isVisible()) && (await text()).includes('tap a part of the picture'));
+ok('a coloring break shows the five minute bar and its two icons', (await page.locator('svg[role=img]').first().isVisible()) && (await page.getByRole('button', { name: 'Start over' }).count()) === 1 && (await page.getByRole('button', { name: 'Close coloring' }).count()) === 1);
 await page.getByRole('button', { name: 'Close coloring' }).first().click({ force: true });
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview');
 ok('coloring records nothing: the round count is untouched', (await state()).screen === 'overview');

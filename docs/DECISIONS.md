@@ -389,6 +389,10 @@ Approved by Mikey on 2026-09-04 unless marked "proposed".
 - (2026-09-16) The coloring page closes with a bold X at the top right instead of a worded button: clearer for a child who cannot read, and it keeps the picture, the palette and Start over on one screen without scrolling. The same X is used at every width.
 - (2026-09-16) The name page uses the name the educator gave the student, not their school ID, so renaming a student renames their picture; the grid's thumbnail follows too.
 
+- (2026-09-16) Breathing cards share one beat for good: the animation never stops now, and a card that is open simply turns it down with a `--beat` variable inside the keyframes. Stopping and restarting was what put a reopened card on its own clock; measured with `document.getAnimations()`, every card now reads the same phase before and after a fold is opened.
+- (2026-09-16) A read-aloud answer speaks only when it is a word. A picture answer used to be read out, so "tap the middle-sized one" announced "the middle-sized square" and gave the answer away.
+- (2026-09-16) The coloring page carries Start over and Close as icons on the picture's own width, one at each end of the countdown bar, and the sentence under the picture is gone, which lifts the palette and the nibs onto the first screen. The name page drops anything in brackets (an educator's note, not the child's name) and outlines the letters behind the fill, so they no longer look scratched over. "Littlest" is "smallest" everywhere.
+
 ## Open items
 - Verify audio plays inside the chat artifact sandbox (works in a normal browser).
 - Common Core / TEKS codes on existing modules to be checked against the official lists.

@@ -927,6 +927,18 @@ export function gradesWithCourses() { return GRADES.filter((g) => COURSES.some((
 // When every module of a course is mastered, the next course up in the same subject is
 // ready to be switched on. Returns the ids to add, so the screen can record it as an
 // event and tell the student. A placement check, once built, will jump further.
+// Coloring: pure play, no grade and no score. One picture is there from the start, and every
+// course the student finishes adds another. The pictures themselves are drawn by the screen.
+// Ordered simplest first: a ball of two parts for a three-year-old, a city of twenty for the end
+// of grade 2. One more picture is earned for every module passed, so they arrive steadily.
+export const COLORING_PICTURES = ['ball', 'sun', 'balloon', 'my-name', 'star', 'tree', 'house', 'fish', 'cat', 'flower', 'boat', 'rocket', 'butterfly', 'train', 'car', 'robot', 'fishbowl', 'castle', 'dinosaur', 'city', 'garden', 'playground', 'farm', 'birthday'];
+// A pre-K screen is grouped by the skill being practised rather than by subject: a three-year-old
+// knows what colors are, not what mathematics is. Every other grade groups by subject as before.
+export const SKILL_ORDER = ['Colors', 'Shapes', 'Sizes', 'Matching', 'Patterns', 'Counting', 'Comparing', 'Listening', 'Letters', 'Drawing', 'Getting along'];
+export const COLOR_LOCKOUT_MINUTES = 15;
+export function coloringUnlocked(events) {
+  return Math.min(COLORING_PICTURES.length, 1 + deriveProgress(events).passedIds.length);
+}
 export function coursesToUnlock(events) {
   const enabled = enabledCourseIds(events);
   const done = deriveProgress(events).passedIds; // a pass is enough to unlock the next course; the star is separate
@@ -988,6 +1000,14 @@ export function bandTitle(events) {
   }
   const done = [...PROGRESS_BANDS].reverse().find((b) => assigned.some((m) => b.grades.includes(gradeOf(m))));
   return done ? done.title : '';
+}
+// A module passed once is waiting for another day to be mastered. Young learners are shown that
+// plainly: it leaves the screen for the rest of the day and comes back tomorrow saying so.
+export function waitingForAnotherDay(events, moduleId, now) {
+  const p = deriveProgress(events).perModule[moduleId];
+  if (!p || p.mastered || !p.passed) return false;
+  const today = String(now).slice(0, 10);
+  return (p.passDays || []).includes(today);
 }
 export function recommendedCourseIds(events, level, startGrade = null) {
   // Electives are never recommended: they are the whole point of "wish to stray from our recommendations".
@@ -1253,6 +1273,7 @@ function LETTER_MODULES() { return [
 function PREK3_MODULES() { return [
   {
     id: 'red-and-blue',
+    skill: 'Colors',
     order: 1,
     title: 'Red and blue',
     tagline: 'Two colors',
@@ -1271,6 +1292,7 @@ function PREK3_MODULES() { return [
   },
   {
     id: 'find-the-match',
+    skill: 'Matching',
     order: 2,
     title: 'Find the match',
     tagline: 'The same one',
@@ -1289,6 +1311,7 @@ function PREK3_MODULES() { return [
   },
   {
     id: 'one-and-two',
+    skill: 'Counting',
     order: 3,
     title: 'One and two',
     tagline: 'Count to two',
@@ -1307,6 +1330,7 @@ function PREK3_MODULES() { return [
   },
   {
     id: 'more-or-fewer',
+    skill: 'Comparing',
     order: 4,
     title: 'More',
     tagline: 'Which has more?',
@@ -1325,6 +1349,7 @@ function PREK3_MODULES() { return [
   },
   {
     id: 'first-marks',
+    skill: 'Drawing',
     order: 5,
     title: 'First marks',
     tagline: 'Down, across, round',
@@ -1344,6 +1369,7 @@ function PREK3_MODULES() { return [
   },
   {
     id: 'three-dots',
+    skill: 'Drawing',
     order: 6,
     title: 'Three dots',
     tagline: 'Draw from 1 to 2 to 3',
@@ -1363,6 +1389,7 @@ function PREK3_MODULES() { return [
   },
   {
     id: 'yellow-and-green',
+    skill: 'Colors',
     order: 7,
     title: 'Yellow and green',
     tagline: 'Two more colors',
@@ -1381,6 +1408,7 @@ function PREK3_MODULES() { return [
   },
   {
     id: 'triangles-too',
+    skill: 'Shapes',
     order: 8,
     title: 'Triangles too',
     tagline: 'Three sides, three corners',
@@ -1400,6 +1428,7 @@ function PREK3_MODULES() { return [
   },
   {
     id: 'big-and-little',
+    skill: 'Sizes',
     order: 9,
     title: 'Big and little',
     tagline: 'Which one is bigger?',
@@ -1418,6 +1447,7 @@ function PREK3_MODULES() { return [
   },
   {
     id: 'please-and-thank-you',
+    skill: 'Getting along',
     order: 10,
     title: 'Please and thank you',
     tagline: 'Two words that open doors',
@@ -1439,6 +1469,7 @@ function PREK3_MODULES() { return [
 function PREK3_READING_MODULES() { return [
   {
     id: 'circle-and-square',
+    skill: 'Shapes',
     order: 1,
     title: 'Circle and square',
     tagline: 'Two shapes',
@@ -1457,6 +1488,7 @@ function PREK3_READING_MODULES() { return [
   },
   {
     id: 'a-and-b',
+    skill: 'Letters',
     order: 2,
     title: 'A and B',
     tagline: 'Two letters',
@@ -1475,6 +1507,7 @@ function PREK3_READING_MODULES() { return [
   },
   {
     id: 'not-the-same',
+    skill: 'Matching',
     order: 3,
     title: 'Which one is different?',
     tagline: 'Spot the odd one',
@@ -1493,6 +1526,7 @@ function PREK3_READING_MODULES() { return [
   },
   {
     id: 'listen-and-tap-pictures',
+    skill: 'Listening',
     order: 4,
     title: 'Listen and tap',
     tagline: 'Sun, fish, tree, cup',
@@ -1707,6 +1741,7 @@ function GRADE2_SCIENCE_MODULES() { return [
 function PREK_MODULES() { return [
   {
     id: 'colours',
+    skill: 'Colors',
     order: 1,
     title: 'Colors',
     tagline: 'Red, blue, yellow, green',
@@ -1726,6 +1761,7 @@ function PREK_MODULES() { return [
   },
   {
     id: 'same-and-different',
+    skill: 'Matching',
     order: 2,
     title: 'Same and different',
     tagline: 'Find the match',
@@ -1744,6 +1780,7 @@ function PREK_MODULES() { return [
   },
   {
     id: 'patterns',
+    skill: 'Patterns',
     order: 3,
     title: 'Patterns',
     tagline: 'What comes next?',
@@ -1763,6 +1800,7 @@ function PREK_MODULES() { return [
   },
   {
     id: 'count-to-3',
+    skill: 'Counting',
     order: 4,
     title: 'One, two, three',
     tagline: 'First counting',
@@ -1782,6 +1820,7 @@ function PREK_MODULES() { return [
   },
   {
     id: 'first-strokes',
+    skill: 'Drawing',
     order: 5,
     title: 'First strokes',
     tagline: 'Lines, waves and circles',
@@ -1801,6 +1840,7 @@ function PREK_MODULES() { return [
   },
   {
     id: 'connect-the-dots',
+    skill: 'Drawing',
     order: 6,
     title: 'Connect the dots',
     tagline: 'Draw from 1 to 2 to 3',
@@ -1820,6 +1860,7 @@ function PREK_MODULES() { return [
   },
   {
     id: 'draw-the-shapes',
+    skill: 'Shapes',
     order: 7,
     title: 'Draw the shapes',
     tagline: 'A circle, a square, a triangle',
@@ -1839,6 +1880,7 @@ function PREK_MODULES() { return [
   },
   {
     id: 'taking-turns',
+    skill: 'Getting along',
     order: 8,
     title: 'Taking turns',
     tagline: 'Wait, then it is your turn',
@@ -1857,6 +1899,7 @@ function PREK_MODULES() { return [
   },
   {
     id: 'big-bigger-biggest',
+    skill: 'Sizes',
     order: 9,
     title: 'Big, bigger, biggest',
     tagline: 'Three sizes in a row',
@@ -1875,6 +1918,7 @@ function PREK_MODULES() { return [
   },
   {
     id: 'helpers-all-around',
+    skill: 'Getting along',
     order: 10,
     title: 'Helpers all around',
     tagline: 'Who helps, and how',
@@ -1898,6 +1942,7 @@ function PREK_MODULES() { return [
 function PREK_READING_MODULES() { return [
   {
     id: 'listen-for-rhymes',
+    skill: 'Listening',
     order: 1,
     title: 'Rhyme time',
     tagline: 'Words that sound alike',
@@ -1916,6 +1961,7 @@ function PREK_READING_MODULES() { return [
   },
   {
     id: 'first-sounds',
+    skill: 'Listening',
     order: 2,
     title: 'First sounds',
     tagline: 'How a word starts',
@@ -1934,6 +1980,7 @@ function PREK_READING_MODULES() { return [
   },
   {
     id: 'big-letters',
+    skill: 'Letters',
     order: 3,
     title: 'Big letters',
     tagline: 'A, B, C',
@@ -1953,6 +2000,7 @@ function PREK_READING_MODULES() { return [
   },
   {
     id: 'first-letter-tracing',
+    skill: 'Letters',
     order: 4,
     title: 'Trace a big letter',
     tagline: 'L, T and O',
@@ -13624,6 +13672,17 @@ export function traceMatches(letter, paths, tolerance = 14) {
       for (const p of sample(stroke[i - 1], stroke[i], 6)) if (!near(p)) return false;
     }
   }
+  // A connect-the-dots picture is numbered, so the dots have to be joined in order: the drawing
+  // must reach dot 1 before dot 2, and so on. Covering them in any order is a different exercise.
+  if (def.dots) {
+    const dots = def.strokes[0].filter((p, i, list) => i === 0 || p[0] !== list[0][0] || p[1] !== list[0][1]);
+    let reached = -1;
+    for (const dot of dots) {
+      const at = drawn.findIndex(([x, y], i) => i > reached && Math.hypot(x - dot[0], y - dot[1]) <= tolerance);
+      if (at === -1) return false;
+      reached = at;
+    }
+  }
   // And the drawing must not be a scribble over everything: it should not wander far
   // from the letter. Most drawn points should be near some stroke.
   const strokePoints = def.strokes.flatMap((st) => st.flatMap((p, i) => (i === 0 ? [p] : sample(st[i - 1], p, 8))));
@@ -17910,6 +17969,10 @@ export function makeCoursesEnabledEvent(courseIds, at) {
 }
 // Teacher notes live on the student's log as events, so they ride along in every backup and
 // survive a reset like the course settings do. A removed note stays in the log, hidden.
+// A coloring break leaves a note of when and which picture: never a score, never on the transcript,
+// but an educator wondering where the time went should be able to see it.
+export function makeColoredEvent(picture, at) { return { type: 'colored', at, picture }; }
+export function coloringBreaks(events) { return activeEvents(events).filter((e) => e.type === 'colored').length; }
 export function makeNoteEvent(text, at) { return { type: 'note', at, noteId: `n_${at}`, text: String(text).trim() }; }
 export function makeNoteRemovedEvent(noteId, at) { return { type: 'note_removed', at, noteId }; }
 export function teacherNotes(events) {
@@ -18205,7 +18268,7 @@ export function classView(students, now) {
       ? `${masteredPhrase}, but ${flagged} ${flagged === 1 ? 'thing needs' : 'things need'} attention right now, which is why ${label || id} is near the top.`
       : score >= 2 ? `${mastered} mastered so far; a couple of small flags, nothing urgent.` : '';
     return {
-      id, label: label || id, score, reasons, why, practice: practiceText, nextTitle: next ? titleCase(next) : '',
+      id, label: label || id, score, reasons, why, practice: practiceText, nextTitle: next ? titleCase(next.title) : '',
       missedQuickChecks: assigned.filter((m) => m.quickCheck && !m.quickCheck.passed).length,
       note: report.notes.length ? report.notes[0].text.split('\n')[0].slice(0, 120) : '',
       notesAll: report.notes.map((n) => n.text.split('\n')[0].slice(0, 120)),
@@ -18485,6 +18548,7 @@ export function buildReport(learnerName, events) {
   });
   return {
     notes: teacherNotes(events),
+    coloringBreaks: coloringBreaks(events),
     learnerName,
     generatedAt: new Date().toISOString(),
     modulesMastered: progress.masteredIds.length,

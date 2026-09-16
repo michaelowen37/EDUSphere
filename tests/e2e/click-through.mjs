@@ -568,31 +568,40 @@ ok('searching the notes keeps only the student written about, and shows the line
 await page.fill('input[aria-label="Search notes"]', 'nobody wrote this');
 ok('a search no note matches says so', (await text()).includes('No note says that.'));
 await page.fill('input[aria-label="Search notes"]', '');
-ok('the class view can be printed', (await page.getByRole('button', { name: 'Print this list' }).count()) === 1 && (await text()).includes('S-1042'));
-// Slower on a tracing demonstration lengthens the drawing's cycle (and slows the voice with it). The test hook opens the module by name.
+// Coloring: play with no score. One picture from the start, opened and colored from the overview.
 await tap('Back to Classroom');
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'educator-pick');
 await page.getByRole('button', { name: 'Walk through early years' }).click();
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview');
 await page.waitForTimeout(300);
-await page.evaluate(() => window.__eduTest.openModule('first-marks'));
-await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'lesson');
-await page.waitForTimeout(300);
-{
-  const cycle = async () => page.evaluate(() => { const el = document.querySelector('.edu-trace-draw'); return el ? parseFloat((el.style.animation.match(/([\d.]+)s/) || [])[1]) : 0; });
-  const before = await cycle();
-  await page.getByRole('button', { name: 'Slower drawing and voice' }).click();
+await page.getByRole('button', { name: "Let's Color" }).first().click({ force: true });
+await page.waitForTimeout(200);
+ok('the coloring grid shows pictures, most of them still locked', (await page.getByRole('button', { name: 'Locked picture' }).count()) >= 15 && (await page.getByRole('button', { name: /^Color the / }).count()) >= 1);
+await page.getByRole('button', { name: /^Color the / }).first().click({ force: true });
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'coloring');
+await page.locator('svg[role=img] > *').first().click({ force: true });
+await page.waitForTimeout(150);
+ok('tapping a part fills it with the chosen color', await page.evaluate(() => [...document.querySelector('svg[role=img]').children].some((c) => c.getAttribute('fill') === '#E4572E')));
+ok('a coloring break shows the five minute bar', (await page.locator('svg[role=img]').first().isVisible()) && (await text()).includes('tap a part of the picture'));
+await tap('Back to my courses');
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview');
+ok('coloring records nothing: the round count is untouched', (await state()).screen === 'overview');
+// Some pictures are drawn on rather than filled in: a finger stroke leaves a line in the chosen color.
+await page.evaluate(() => window.__eduTest.openColoring('star'));
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'coloring');
+await page.waitForTimeout(200);
+{ const box = await page.locator('svg[role=img]').first().boundingBox();
+  await page.mouse.move(box.x + 60, box.y + 120); await page.mouse.down();
+  await page.mouse.move(box.x + 160, box.y + 180, { steps: 8 }); await page.mouse.move(box.x + 220, box.y + 100, { steps: 8 }); await page.mouse.up();
   await page.waitForTimeout(200);
-  const after = await cycle();
-  ok('Slower lengthens the drawing cycle on a tracing lesson', before > 0 && after > before);
-  ok('Slower cannot go below the slowest pace', await page.getByRole('button', { name: 'Slower drawing and voice' }).isDisabled());
-}
-await page.getByRole('button', { name: 'Back' }).first().click();
+  ok('a drawing picture takes a finger stroke in the chosen color', (await page.locator('svg[role=img] polyline').count()) >= 1 && (await page.locator('svg[role=img] polyline').first().getAttribute('stroke')) === '#E4572E'); }
+await tap('Back to my courses');
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview');
 await tap('Exit');
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'educator-pick');
 await tap('Who needs help');
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'class-view');
+ok('the class view can be printed', (await page.getByRole('button', { name: 'Print this list' }).count()) === 1 && (await text()).includes('S-1042'));
 t = await text();
 ok('the class view explains its order in plain words', t.includes('To the top for you'));
 await page.screenshot({ path: 'tests/e2e/out/class-view.png', fullPage: true });

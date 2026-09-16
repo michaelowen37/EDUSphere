@@ -596,7 +596,7 @@ function SpeakButton({ text, label, full = false, corner = false }) {
   if (corner) {
     return (
       <button type="button" onClick={press} aria-label={label} title={label} className="edu-press edu-sway"
-        style={{ position: 'absolute', top: 10, right: 10, width: 54, height: 54, borderRadius: 999, border: `3px solid ${C.gold}`, background: C.goldSoft, cursor: 'pointer', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        style={{ position: 'absolute', top: 12, right: 12, width: 48, height: 48, borderRadius: 999, border: `3px solid ${C.gold}`, background: C.goldSoft, cursor: 'pointer', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 2 }}>
         <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true">
           <path d="M4 9.5h3.5L12 5.5v13L7.5 14.5H4z" fill={C.gold} />
           <path d="M15.5 8.5a5 5 0 010 7M18 6a8.5 8.5 0 010 12" fill="none" stroke={C.gold} strokeWidth="2" strokeLinecap="round" />
@@ -776,6 +776,19 @@ const KID_ANIMATION = `
   input, textarea, select, button { color-scheme: light; }
   input, textarea, select { background: #FFFFFF; color: #1F2D24; -webkit-text-fill-color: #1F2D24; }
   input::placeholder, textarea::placeholder { color: #6B7A70; opacity: 1; }
+  /* The coloring title cycles through the crayon colors, so it catches a young eye. */
+  @keyframes edu-rainbow { 0% { color: #E4572E; } 20% { color: #F4A259; } 40% { color: #5BA84A; } 60% { color: #3E7CB1; } 80% { color: #7D5BA6; } 100% { color: #E4572E; } }
+  .edu-rainbow { animation: edu-rainbow 6s linear infinite; }
+  /* The coloring fold wears the crayons: the whole strip drifts through them, with two sparkles
+     crossing corner to corner so a child's eye lands on it. */
+  @keyframes edu-colorwash { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+  .edu-colorwash { background: linear-gradient(115deg, #F7D154, #F4A259, #E4572E, #7D5BA6, #3E7CB1, #5BA84A, #F7D154); background-size: 400% 400%; animation: edu-colorwash 9s ease-in-out infinite; }
+  @keyframes edu-sparkle-a { 0% { transform: translate(-10%, -120%) scale(0.6); opacity: 0; } 25% { opacity: 1; } 100% { transform: translate(560%, 320%) scale(1.1); opacity: 0; } }
+  @keyframes edu-sparkle-b { 0% { transform: translate(600%, 320%) scale(0.7); opacity: 0; } 30% { opacity: 1; } 100% { transform: translate(-20%, -140%) scale(1); opacity: 0; } }
+  .edu-sparkle { position: absolute; left: 12px; top: 50%; width: 12px; height: 12px; border-radius: 999px; background: #fff; box-shadow: 0 0 10px #fff; animation: edu-sparkle-a 5.5s linear infinite; }
+  .edu-sparkle-2 { animation: edu-sparkle-b 7s linear infinite; }
+  .edu-sparkle-3 { left: auto; right: 16px; top: 22%; animation: edu-sparkle-b 6.2s linear infinite 1.4s; }
+  .edu-sparkle-4 { left: auto; right: 34px; top: 74%; animation: edu-sparkle-a 8s linear infinite 2.6s; }
   .edu-card-title { text-align: center; }
   .edu-fold-head { position: relative; justify-content: center !important; }
   .edu-fold-title { text-align: center; }
@@ -867,7 +880,7 @@ html, body { overflow-x: hidden; }
 .edu-slide-in { animation: edu-slide-in 1.1s cubic-bezier(0.2, 0.9, 0.3, 1.2) both; background: linear-gradient(90deg, #3A6B58, #D9A83B, #3A6B58); background-size: 200% auto; -webkit-background-clip: text; background-clip: text; color: transparent !important; animation: edu-slide-in 1.1s cubic-bezier(0.2, 0.9, 0.3, 1.2) both, edu-shimmer 3s linear 1.1s infinite; }
 .edu-glow { animation: edu-glow 1.8s ease-in-out infinite; }
 @media (prefers-reduced-motion: reduce) {
-  .edu-glow, .edu-breathe, .edu-slide-in, .edu-pulse, .edu-stress, .edu-twinkle-star, .edu-trace-draw, .edu-side path { animation: none; }
+  .edu-glow, .edu-breathe, .edu-slide-in, .edu-pulse, .edu-stress, .edu-twinkle-star, .edu-trace-draw, .edu-rainbow, .edu-colorwash, .edu-sparkle, .edu-side path { animation: none; }
   .edu-side path { stroke-dasharray: none; }
   .edu-halo, .edu-drift, .edu-cheer, .edu-wobble, .edu-burst, .edu-rise, .edu-sway, .edu-star-twinkle, .edu-grow, .edu-draw, .edu-settle, .edu-settle-late { animation: none; }
   .edu-draw { stroke-dasharray: none; }
@@ -1037,6 +1050,228 @@ function SegToggle({ options, value, onChange, ariaLabel }) {
           <button key={key} type="button" onClick={() => onChange(key)} aria-pressed={value === key}
             style={{ fontFamily: FONT, fontSize: 15, fontWeight: 600, flex: '1 1 0', padding: '10px 0', cursor: 'pointer', border: 'none', borderLeft: i === 0 ? 'none' : `1px solid ${C.green}`, background: value === key ? C.green : C.surface, color: value === key ? '#fff' : C.green }}>{label}</button>
         ))}
+      </div>
+    </div>
+  );
+}
+// Coloring: play, not work. Tap a part to fill it with the color you picked. Nothing is scored,
+// nothing is recorded; a picture is simply there to enjoy once the student has earned it.
+const COLOR_BREAK_SECONDS = 300;
+// A picture's five minutes and its rest afterwards live on the device, next to the settings, never
+// in the student's record: coloring is play and leaves no history. Leaving and coming back picks up
+// where the timer stopped, and a picture that ran its five minutes rests for fifteen.
+const colorKey = (studentId) => `edusphere_v1_coloring:${studentId}`;
+async function loadColorState(studentId) { try { return JSON.parse((await storageGet(colorKey(studentId))) || '{}'); } catch (e) { return {}; } }
+async function saveColorState(studentId, state) { return storageSet(colorKey(studentId), JSON.stringify(state)); }
+const CRAYONS = ['#E4572E', '#F4A259', '#F7D154', '#5BA84A', '#3E7CB1', '#7D5BA6', '#8C6239', '#2E2E2E'];
+// Some pictures are filled by tapping a part; others are drawn on freely with a finger.
+// Half are filled in by tapping a part, half are drawn on with a finger. A name page is always drawn.
+const COLORING_MODE = { ball: 'fill', sun: 'fill', balloon: 'fill', 'my-name': 'draw', star: 'draw', tree: 'fill', house: 'fill', fish: 'fill', cat: 'draw', flower: 'fill', boat: 'fill', rocket: 'fill', butterfly: 'draw', train: 'fill', car: 'fill', robot: 'fill', fishbowl: 'draw', castle: 'fill', dinosaur: 'draw', city: 'fill', garden: 'fill', playground: 'draw', farm: 'fill', birthday: 'draw' };
+// A ray stands square on the sun: its base lies across the rim, its point straight out.
+const ray = (i) => {
+  const a = (i * Math.PI) / 4; const [cx, cy] = [Math.cos(a), Math.sin(a)]; const [px, py] = [-Math.sin(a), Math.cos(a)];
+  const at = (r, side) => `${(50 + cx * r + px * side).toFixed(1)},${(50 + cy * r + py * side).toFixed(1)}`;
+  return { t: 'polygon', points: `${at(23, 6)} ${at(23, -6)} ${at(45, 0)}` };
+};
+// One slice of the beach ball, from the middle out to the rim.
+const slice = (i, n = 6, r = 30) => {
+  const a1 = (i * 2 * Math.PI) / n - Math.PI / 2; const a2 = ((i + 1) * 2 * Math.PI) / n - Math.PI / 2;
+  const p = (a) => `${(50 + Math.cos(a) * r).toFixed(1)},${(52 + Math.sin(a) * r).toFixed(1)}`;
+  return { t: 'path', d: `M50,52 L${p(a1)} A${r},${r} 0 0,1 ${p(a2)} Z` };
+};
+const COLORING_ART = {
+  ball: [
+    { t: 'circle', cx: 50, cy: 52, r: 30 }, slice(0), slice(1), slice(2), slice(3), slice(4), slice(5),
+  ],
+  sun: [{ t: 'circle', cx: 50, cy: 50, r: 22 }, ...[0, 1, 2, 3, 4, 5, 6, 7].map(ray)],
+  balloon: [{ t: 'ellipse', cx: 50, cy: 36, rx: 24, ry: 28 }, { t: 'polygon', points: '45,63 55,63 50,71' }, { t: 'path', d: 'M50,71 C57,78 43,84 50,94' }, { t: 'circle', cx: 28, cy: 22, r: 6 }],
+  star: [
+    { t: 'polygon', points: '50,8 61,38 93,38 67,57 77,88 50,69 23,88 33,57 7,38 39,38' },
+    { t: 'circle', cx: 14, cy: 16, r: 5 }, { t: 'circle', cx: 88, cy: 74, r: 5 }, { t: 'circle', cx: 20, cy: 82, r: 4 },
+  ],
+  tree: [{ t: 'rect', x: 44, y: 58, width: 12, height: 32 }, { t: 'circle', cx: 50, cy: 34, r: 22 }, { t: 'circle', cx: 30, cy: 48, r: 14 }, { t: 'circle', cx: 70, cy: 48, r: 14 }, { t: 'ellipse', cx: 50, cy: 92, rx: 34, ry: 5 }],
+  house: [
+    { t: 'polygon', points: '50,12 88,42 12,42' }, { t: 'rect', x: 20, y: 42, width: 60, height: 44 },
+    { t: 'rect', x: 43, y: 60, width: 15, height: 26 }, { t: 'rect', x: 26, y: 50, width: 13, height: 13 },
+    { t: 'rect', x: 62, y: 50, width: 13, height: 13 }, { t: 'circle', cx: 80, cy: 18, r: 8 },
+  ],
+  fish: [
+    { t: 'ellipse', cx: 46, cy: 50, rx: 30, ry: 20 }, { t: 'polygon', points: '76,50 94,34 94,66' },
+    { t: 'polygon', points: '40,30 52,30 46,16' }, { t: 'circle', cx: 32, cy: 44, r: 4 },
+    { t: 'circle', cx: 84, cy: 20, r: 5 }, { t: 'circle', cx: 74, cy: 82, r: 4 },
+  ],
+  cat: [
+    { t: 'circle', cx: 50, cy: 54, r: 30 }, { t: 'polygon', points: '24,32 34,10 46,28' }, { t: 'polygon', points: '76,32 66,10 54,28' },
+    { t: 'circle', cx: 39, cy: 48, r: 5 }, { t: 'circle', cx: 61, cy: 48, r: 5 }, { t: 'polygon', points: '44,62 56,62 50,70' },
+  ],
+  flower: [
+    ...[0, 1, 2, 3, 4, 5].map((i) => { const a = (i * Math.PI) / 3; return { t: 'circle', cx: 50 + Math.cos(a) * 16, cy: 38 + Math.sin(a) * 16, r: 11 }; }),
+    { t: 'circle', cx: 50, cy: 38, r: 10 },
+    { t: 'rect', x: 47, y: 56, width: 6, height: 34 },
+    { t: 'path', d: 'M47,70 C34,62 26,70 30,78 C34,84 44,80 47,74 Z' },
+    { t: 'path', d: 'M53,78 C66,70 74,78 70,86 C66,92 56,88 53,82 Z' },
+  ],
+  boat: [
+    { t: 'polygon', points: '16,64 84,64 72,84 28,84' }, { t: 'rect', x: 48, y: 20, width: 4, height: 44 },
+    { t: 'polygon', points: '52,24 52,60 84,60' }, { t: 'polygon', points: '46,30 46,60 20,60' },
+    { t: 'circle', cx: 20, cy: 20, r: 8 }, { t: 'polygon', points: '8,88 92,88 92,94 8,94' },
+  ],
+  rocket: [
+    { t: 'ellipse', cx: 50, cy: 48, rx: 16, ry: 32 }, { t: 'polygon', points: '50,6 62,30 38,30' },
+    { t: 'polygon', points: '34,54 34,84 18,80' }, { t: 'polygon', points: '66,54 66,84 82,80' },
+    { t: 'circle', cx: 50, cy: 42, r: 8 }, { t: 'polygon', points: '44,80 56,80 50,94' },
+  ],
+  butterfly: [
+    { t: 'ellipse', cx: 32, cy: 34, rx: 20, ry: 16 }, { t: 'ellipse', cx: 68, cy: 34, rx: 20, ry: 16 },
+    { t: 'ellipse', cx: 34, cy: 66, rx: 17, ry: 14 }, { t: 'ellipse', cx: 66, cy: 66, rx: 17, ry: 14 },
+    { t: 'ellipse', cx: 50, cy: 50, rx: 6, ry: 26 }, { t: 'circle', cx: 50, cy: 22, r: 6 },
+    { t: 'circle', cx: 30, cy: 32, r: 5 }, { t: 'circle', cx: 70, cy: 32, r: 5 },
+  ],
+  train: [
+    { t: 'rect', x: 10, y: 44, width: 46, height: 30 }, { t: 'rect', x: 56, y: 30, width: 30, height: 44 },
+    { t: 'rect', x: 62, y: 38, width: 18, height: 14 }, { t: 'circle', cx: 24, cy: 82, r: 8 },
+    { t: 'circle', cx: 48, cy: 82, r: 8 }, { t: 'circle', cx: 74, cy: 82, r: 8 }, { t: 'rect', x: 20, y: 30, width: 10, height: 14 },
+  ],
+  car: [
+    { t: 'rect', x: 10, y: 52, width: 80, height: 22 }, { t: 'polygon', points: '26,52 38,32 66,32 78,52' },
+    { t: 'rect', x: 40, y: 36, width: 20, height: 14 }, { t: 'circle', cx: 28, cy: 78, r: 10 },
+    { t: 'circle', cx: 72, cy: 78, r: 10 }, { t: 'circle', cx: 14, cy: 60, r: 4 }, { t: 'circle', cx: 86, cy: 60, r: 4 },
+  ],
+  robot: [
+    { t: 'rect', x: 32, y: 24, width: 36, height: 28 }, { t: 'rect', x: 26, y: 54, width: 48, height: 30 },
+    { t: 'circle', cx: 42, cy: 36, r: 5 }, { t: 'circle', cx: 58, cy: 36, r: 5 }, { t: 'rect', x: 44, y: 44, width: 12, height: 4 },
+    { t: 'rect', x: 12, y: 58, width: 12, height: 6 }, { t: 'rect', x: 76, y: 58, width: 12, height: 6 },
+    { t: 'rect', x: 34, y: 86, width: 10, height: 10 }, { t: 'rect', x: 56, y: 86, width: 10, height: 10 },
+    { t: 'rect', x: 48, y: 12, width: 4, height: 12 }, { t: 'circle', cx: 50, cy: 10, r: 4 },
+  ],
+  fishbowl: [
+    { t: 'circle', cx: 50, cy: 56, r: 34 }, { t: 'polygon', points: '16,56 84,56 84,90 16,90' },
+    { t: 'ellipse', cx: 40, cy: 60, rx: 12, ry: 8 }, { t: 'polygon', points: '52,60 62,52 62,68' },
+    { t: 'ellipse', cx: 64, cy: 76, rx: 8, ry: 5 }, { t: 'polygon', points: '72,76 80,71 80,81' },
+    { t: 'circle', cx: 34, cy: 40, r: 4 }, { t: 'circle', cx: 44, cy: 32, r: 3 }, { t: 'rect', x: 24, y: 66, width: 6, height: 22 },
+  ],
+  castle: [
+    { t: 'rect', x: 22, y: 44, width: 56, height: 46 }, { t: 'rect', x: 10, y: 34, width: 18, height: 56 },
+    { t: 'rect', x: 72, y: 34, width: 18, height: 56 }, { t: 'polygon', points: '10,34 19,18 28,34' },
+    { t: 'polygon', points: '72,34 81,18 90,34' }, { t: 'rect', x: 42, y: 62, width: 16, height: 28 },
+    { t: 'rect', x: 30, y: 50, width: 10, height: 10 }, { t: 'rect', x: 60, y: 50, width: 10, height: 10 },
+    { t: 'polygon', points: '19,18 19,8 32,12 19,16' }, { t: 'polygon', points: '81,18 81,8 94,12 81,16' },
+  ],
+  dinosaur: [
+    { t: 'ellipse', cx: 44, cy: 62, rx: 26, ry: 16 },
+    { t: 'polygon', points: '56,54 64,28 74,32 66,60' },
+    { t: 'circle', cx: 74, cy: 26, r: 10 }, { t: 'circle', cx: 78, cy: 23, r: 2 },
+    { t: 'polygon', points: '18,60 4,50 6,74' },
+    { t: 'rect', x: 32, y: 74, width: 9, height: 16 }, { t: 'rect', x: 52, y: 74, width: 9, height: 16 },
+    { t: 'polygon', points: '28,50 32,40 36,50' }, { t: 'polygon', points: '40,47 44,36 48,47' }, { t: 'polygon', points: '52,48 56,38 60,48' },
+  ],
+  garden: [
+    { t: 'rect', x: 4, y: 78, width: 92, height: 18 },
+    { t: 'circle', cx: 82, cy: 18, r: 11 },
+    { t: 'path', d: 'M12,26 C12,18 22,16 26,21 C30,13 42,15 43,23 C50,24 49,32 42,32 L16,32 C10,32 9,27 12,26 Z' },
+    { t: 'rect', x: 20, y: 56, width: 4, height: 24 }, { t: 'circle', cx: 22, cy: 50, r: 9 },
+    { t: 'rect', x: 48, y: 48, width: 4, height: 32 }, { t: 'circle', cx: 50, cy: 42, r: 11 }, { t: 'circle', cx: 50, cy: 42, r: 4 },
+    { t: 'rect', x: 74, y: 60, width: 4, height: 20 }, { t: 'circle', cx: 76, cy: 54, r: 8 },
+    { t: 'path', d: 'M24,66 C16,60 10,66 14,72 C18,76 24,72 24,68 Z' },
+  ],
+  playground: [
+    { t: 'rect', x: 8, y: 26, width: 52, height: 6 },
+    { t: 'polygon', points: '8,32 4,84 12,84 14,32' }, { t: 'polygon', points: '54,32 56,84 64,84 60,32' },
+    { t: 'rect', x: 22, y: 32, width: 3, height: 28 }, { t: 'rect', x: 40, y: 32, width: 3, height: 28 },
+    { t: 'rect', x: 18, y: 60, width: 29, height: 6 },
+    { t: 'polygon', points: '70,40 96,40 88,84 78,84' }, { t: 'rect', x: 72, y: 34, width: 22, height: 7 },
+    { t: 'circle', cx: 84, cy: 16, r: 9 }, { t: 'rect', x: 2, y: 84, width: 96, height: 10 },
+  ],
+  farm: [
+    { t: 'rect', x: 10, y: 48, width: 46, height: 36 }, { t: 'polygon', points: '6,48 33,26 60,48' },
+    { t: 'rect', x: 26, y: 62, width: 14, height: 22 }, { t: 'rect', x: 14, y: 54, width: 9, height: 9 }, { t: 'rect', x: 43, y: 54, width: 9, height: 9 },
+    { t: 'rect', x: 66, y: 44, width: 18, height: 40 }, { t: 'path', d: 'M66,44 A9,9 0 0,1 84,44 Z' },
+    { t: 'circle', cx: 88, cy: 18, r: 9 }, { t: 'rect', x: 2, y: 84, width: 96, height: 12 },
+  ],
+  birthday: [
+    { t: 'rect', x: 18, y: 54, width: 64, height: 30 }, { t: 'rect', x: 14, y: 44, width: 72, height: 12 },
+    { t: 'rect', x: 30, y: 26, width: 4, height: 18 }, { t: 'rect', x: 48, y: 22, width: 4, height: 22 }, { t: 'rect', x: 66, y: 26, width: 4, height: 18 },
+    { t: 'ellipse', cx: 32, cy: 22, rx: 4, ry: 6 }, { t: 'ellipse', cx: 50, cy: 18, rx: 4, ry: 6 }, { t: 'ellipse', cx: 68, cy: 22, rx: 4, ry: 6 },
+    { t: 'circle', cx: 26, cy: 68, r: 4 }, { t: 'circle', cx: 50, cy: 68, r: 4 }, { t: 'circle', cx: 74, cy: 68, r: 4 },
+    { t: 'rect', x: 10, y: 84, width: 80, height: 8 },
+  ],
+  city: [
+    { t: 'rect', x: 8, y: 46, width: 22, height: 44 }, { t: 'rect', x: 34, y: 30, width: 24, height: 60 },
+    { t: 'rect', x: 62, y: 54, width: 20, height: 36 }, { t: 'rect', x: 84, y: 40, width: 10, height: 50 },
+    { t: 'rect', x: 13, y: 54, width: 6, height: 8 }, { t: 'rect', x: 21, y: 54, width: 6, height: 8 },
+    { t: 'rect', x: 40, y: 38, width: 6, height: 8 }, { t: 'rect', x: 48, y: 38, width: 6, height: 8 },
+    { t: 'rect', x: 40, y: 54, width: 6, height: 8 }, { t: 'rect', x: 48, y: 54, width: 6, height: 8 },
+    { t: 'rect', x: 67, y: 62, width: 6, height: 8 }, { t: 'circle', cx: 80, cy: 18, r: 9 }, { t: 'circle', cx: 22, cy: 20, r: 3 }, { t: 'circle', cx: 56, cy: 14, r: 3 },
+  ],
+};
+// The same drawing, small and in outline, for the grid of pictures. A name page shows the name.
+function ColorThumb({ picture, name, size = 72 }) {
+  if (picture === 'my-name') {
+    return (
+      <svg viewBox="0 0 100 100" width={size} height={size} aria-hidden="true">
+        <text x="50" y="58" textAnchor="middle" textLength="84" lengthAdjust="spacingAndGlyphs" fontFamily={FONT} fontSize="26" fontWeight="700" fill="#FFFFFF" stroke="#2E2E2E" strokeWidth="1.2">{(name || 'Name').split(' ')[0].slice(0, 10)}</text>
+      </svg>
+    );
+  }
+  const parts = COLORING_ART[picture] || [];
+  return (
+    <svg viewBox="0 0 100 100" width={size} height={size} aria-hidden="true">
+      {parts.map((p, i) => {
+        const common = { key: i, fill: '#FFFFFF', stroke: '#2E2E2E', strokeWidth: 2.4, strokeLinejoin: 'round' };
+        if (p.t === 'circle') return <circle {...common} cx={p.cx} cy={p.cy} r={p.r} />;
+        if (p.t === 'ellipse') return <ellipse {...common} cx={p.cx} cy={p.cy} rx={p.rx} ry={p.ry} />;
+        if (p.t === 'rect') return <rect {...common} x={p.x} y={p.y} width={p.width} height={p.height} rx={2} />;
+        if (p.t === 'path') return <path {...common} d={p.d} />;
+        return <polygon {...common} points={p.points} />;
+      })}
+    </svg>
+  );
+}
+function ColoringPad({ picture, name, onDone, secondsLeft, total }) {
+  const [crayon, setCrayon] = useState(CRAYONS[0]);
+  const [fills, setFills] = useState({});
+  const [strokes, setStrokes] = useState([]);
+  const drawing = useRef(false);
+  const svgRef = useRef(null);
+  const parts = COLORING_ART[picture] || [];
+  const freeDraw = COLORING_MODE[picture] === 'draw';
+  const at = (e) => { const r = svgRef.current.getBoundingClientRect(); return [((e.clientX - r.left) / r.width) * 100, ((e.clientY - r.top) / r.height) * 100]; };
+  const start = (e) => { if (!freeDraw) return; drawing.current = true; setStrokes((list) => [...list, { colour: crayon, points: [at(e)] }]); };
+  const move = (e) => { if (!freeDraw || !drawing.current) return; e.preventDefault(); setStrokes((list) => { const rest = list.slice(0, -1); const last = list[list.length - 1]; return [...rest, { ...last, points: [...last.points, at(e)] }]; }); };
+  const stop = () => { drawing.current = false; };
+  return (
+    <div>
+      {typeof secondsLeft === 'number' && (
+        <div style={{ margin: '0 auto 12px', maxWidth: 420 }}>
+          <div style={{ height: 14, borderRadius: 999, background: C.line, overflow: 'hidden' }}>
+            <div style={{ height: '100%', width: `${Math.max(0, (secondsLeft / total) * 100)}%`, background: `linear-gradient(90deg, ${CRAYONS[0]}, ${CRAYONS[3]}, ${CRAYONS[4]})`, transition: 'width 1s linear' }} />
+          </div>
+        </div>
+      )}
+      <svg ref={svgRef} viewBox="0 0 100 100" role="img" aria-label={`A ${picture} to color`}
+        onPointerDown={start} onPointerMove={move} onPointerUp={stop} onPointerLeave={stop}
+        style={{ width: 'min(100%, 58vh)', aspectRatio: '1 / 1', display: 'block', margin: '0 auto', background: '#fff', border: `2px solid ${C.line}`, borderRadius: 16, touchAction: freeDraw ? 'none' : 'auto' }}>
+        {parts.map((p, i) => {
+          const common = { key: i, fill: fills[i] || '#FFFFFF', stroke: '#2E2E2E', strokeWidth: 1.6, strokeLinejoin: 'round', style: { cursor: 'pointer' }, onClick: freeDraw ? undefined : () => setFills((f) => ({ ...f, [i]: crayon })) };
+          if (p.t === 'circle') return <circle {...common} cx={p.cx} cy={p.cy} r={p.r} />;
+          if (p.t === 'ellipse') return <ellipse {...common} cx={p.cx} cy={p.cy} rx={p.rx} ry={p.ry} />;
+          if (p.t === 'rect') return <rect {...common} x={p.x} y={p.y} width={p.width} height={p.height} rx={2} />;
+          if (p.t === 'path') return <path {...common} d={p.d} />;
+        return <polygon {...common} points={p.points} />;
+        })}
+        {picture === 'my-name' && <text x="50" y="58" textAnchor="middle" textLength="86" lengthAdjust="spacingAndGlyphs" fontFamily={FONT} fontSize="24" fontWeight="700" fill="#FFFFFF" stroke="#2E2E2E" strokeWidth="1" pointerEvents="none">{(name || 'Your name').split(' ')[0].slice(0, 12)}</text>}
+        {strokes.map((st, i) => <polyline key={`s${i}`} points={st.points.map((pt) => pt.join(',')).join(' ')} fill="none" stroke={st.colour} strokeWidth="6" strokeLinecap="round" strokeLinejoin="round" pointerEvents="none" />)}
+      </svg>
+      <p style={{ margin: '10px 0 0', textAlign: 'center', fontSize: 15, color: C.muted }}>{freeDraw ? 'Pick a color and draw with your finger.' : 'Pick a color, then tap a part of the picture.'}</p>
+      <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 10, margin: '14px 0' }}>
+        {CRAYONS.map((colour) => (
+          <button key={colour} type="button" aria-label="Use this color" aria-pressed={crayon === colour} onClick={() => setCrayon(colour)}
+            style={{ width: 44, height: 44, borderRadius: 999, background: colour, border: crayon === colour ? `4px solid ${C.ink}` : `2px solid ${C.line}`, cursor: 'pointer' }} />
+        ))}
+      </div>
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10 }}>
+        <Btn kind="secondary" onClick={() => { setFills({}); setStrokes([]); }} style={{ width: 'min(320px, 100%)' }}>Start over</Btn>
+        <Btn onClick={onDone} style={{ width: 'min(320px, 100%)' }}>Back to my courses</Btn>
       </div>
     </div>
   );
@@ -1428,6 +1663,9 @@ export default function EduSphereApp() {
   const [openDoneGrades, setOpenDoneGrades] = useState([]);          // transcript: which completed-course grades are open
   const [mapKind, setMapKind] = useState('core');                   // the standards map, by grade: core courses or electives
   const [quickChecks, setQuickChecks] = useState(true);             // may a student skip a module by passing five questions?
+  const [coloring, setColoring] = useState(null);                    // the picture being colored, when the coloring screen is up
+  // A coloring break lasts five minutes. The bar empties, then the courses come back; a student
+  // can leave earlier with the button, and start the picture over as often as they like.
   const [showRequirements, setShowRequirements] = useState(false);   // a writing assignment's requirements popup
   const [showNoteTip, setShowNoteTip] = useState(false);             // what a note is for, under the note box
   const [editingNote, setEditingNote] = useState(null);              // the note being rewritten: { id, text }
@@ -1493,6 +1731,37 @@ export default function EduSphereApp() {
   const [ticks, setTicks] = useState([]);              // the self-check boxes ticked on a writing question           // the finger's path on a tracing question
   const [cheer, setCheer] = useState(0);                      // bumped to replay the celebration
   const [record, setRecord] = useState(null);      // { name, events, ... } for the current learner
+  const [colorState, setColorState] = useState({});                  // per picture: seconds left, and when its rest ends
+  const [colorLeft, setColorLeft] = useState(COLOR_BREAK_SECONDS);
+  const [colorNow, setColorNow] = useState(Date.now());               // ticks while the overview is up, so a resting picture fills
+  useEffect(() => { if (!record || !record.name) return; loadColorState(record.name).then(setColorState); }, [record && record.name]);
+  useEffect(() => { if (screen !== 'overview') return undefined; const id = setInterval(() => setColorNow(Date.now()), 5000); return () => clearInterval(id); }, [screen]);
+  useEffect(() => {
+    if (screen !== 'coloring' || !coloring || !record) return undefined;
+    const start = (colorState[coloring] || {}).left;
+    setColorLeft(typeof start === 'number' ? start : COLOR_BREAK_SECONDS);
+    const id = setInterval(() => setColorLeft((n) => {
+      const next = n - 1;
+      if (next <= 0) { // the five minutes are up: this picture rests, and the courses come back
+        const state = { ...colorState, [coloring]: { left: COLOR_BREAK_SECONDS, restUntil: Date.now() + COLOR_LOCKOUT_MINUTES * 60000 } };
+        setColorState(state); saveColorState(record.name, state);
+        if (!record.preview) addEvent(makeColoredEvent(coloring, new Date().toISOString()));
+        setColoring(null); setScreen('overview'); return COLOR_BREAK_SECONDS;
+      }
+      if (next % 5 === 0) { const state = { ...colorState, [coloring]: { ...(colorState[coloring] || {}), left: next } }; setColorState(state); saveColorState(record.name, state); }
+      return next;
+    }), 1000);
+    return () => clearInterval(id);
+  }, [screen, coloring]);
+  // Leaving early keeps the time that is left, so the picture is not handed back a fresh five minutes.
+  const leaveColoring = () => {
+    if (record && coloring) {
+      const state = { ...colorState, [coloring]: { ...(colorState[coloring] || {}), left: colorLeft } };
+      setColorState(state); saveColorState(record.name, state);
+      if (!record.preview) addEvent(makeColoredEvent(coloring, new Date().toISOString()));
+    }
+    setColoring(null); setScreen('overview');
+  };
   const recordRef = useRef(null);                  // the newest record, for back-to-back writes
   useEffect(() => { recordRef.current = record; }, [record]);
   const [busy, setBusy] = useState(false);
@@ -1888,7 +2157,9 @@ export default function EduSphereApp() {
   useEffect(() => { if (spokenVoice) speak(`${spokenVoice.voice}. ${spokenVoice.says}`); }, [spokenVoice]);
   // The test hook: what screen is up, which question, and a way to open a named module without
   // hunting for its card, so a browser check can go straight to a lesson.
-  useEffect(() => { if (typeof window !== 'undefined') window.__eduTest = { screen, question: q || null, isReviewQ, openModule: (id) => openModule(id) }; }, [screen, q, isReviewQ]);
+  useEffect(() => { if (typeof window !== 'undefined') window.__eduTest = { screen, question: q || null, isReviewQ, openModule: (id) => openModule(id), openColoring: (pic) => { setColoring(pic); setScreen('coloring'); } }; }, [screen, q, isReviewQ]);
+  // A picture opens at the top of the page, so the palette and the buttons are where they were left.
+  useEffect(() => { if (screen === 'coloring' && typeof window !== 'undefined') window.scrollTo(0, 0); }, [screen, coloring]);
   // The learner list can change during a session (a new learner just started), so refresh it whenever a picker screen opens.
   useEffect(() => { if (screen === 'welcome' || screen === 'educator-pick') loadRoster().then(setRoster); }, [screen]);
   // The band under each name on the login screen, read from each student's own record.
@@ -1922,18 +2193,22 @@ export default function EduSphereApp() {
               )}
               {/* One name per row on a phone, so no name is ever squeezed; two per row from a tablet up,
                   which keeps a class of thirty on one or two screens. A single student always gets one column. */}
-              <div className={'edu-name-grid' + (activeStudents(roster).length > 1 ? ' edu-name-grid-two' : '')} style={{ display: 'grid', gridAutoRows: 84, gap: 10 }}>
+              <div className={'edu-name-grid' + (activeStudents(roster).length > 1 ? ' edu-name-grid-two' : '')} style={{ display: 'grid', gridAutoRows: 'minmax(84px, auto)', gap: 10 }}>
                 {activeStudents(roster)
                   .filter((st) => st.label.toLowerCase().includes(nameInput.trim().toLowerCase()))
                   .map((st) => (
                     <button key={st.id} type="button" aria-label={st.label} onClick={() => startWithName(st.id)} disabled={busy} className="edu-press edu-name"
-                      style={{ fontFamily: FONT, fontSize: 15, fontWeight: 600, borderRadius: 10, background: C.surface, border: `2px solid ${C.line}`, color: C.ink, cursor: 'pointer', height: 84, padding: '0 18px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, overflow: 'hidden', position: 'relative' }}>
-                      <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 6, maxWidth: '100%' }}>
-                        {st.picture && <span style={{ display: 'inline-flex', flexShrink: 0 }}><StudentPicture name={st.picture} tint={st.tint} size={40} /></span>}
-                        <span style={{ overflow: 'hidden', textAlign: 'center', lineHeight: 1.2, maxHeight: '3.6em', flex: '1 1 auto', minWidth: 0, overflowWrap: 'anywhere' }}>{keepTogether(st.label)}
-                          {/* On a phone a quieter second line says which grade, so the two lines stand about as tall as the picture. */}
+                      style={{ fontFamily: FONT, fontSize: 15, fontWeight: 600, borderRadius: 10, background: C.surface, border: `2px solid ${C.line}`, color: C.ink, cursor: 'pointer', minHeight: 84, padding: '12px 14px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, overflow: 'hidden', position: 'relative' }}>
+                      {/* Every button has the same three slots: a picture slot on the left, the name centred
+                          in the middle, and a matching empty slot on the right, so names line up across the
+                          grid whether or not a student has a picture. */}
+                      <span style={{ display: 'flex', alignItems: 'center', width: '100%', gap: 8 }}>
+                        <span style={{ width: 40, flexShrink: 0, display: 'inline-flex', justifyContent: 'center' }}>{st.picture && <StudentPicture name={st.picture} tint={st.tint} size={40} />}</span>
+                        <span style={{ textAlign: 'center', lineHeight: 1.2, flex: '1 1 auto', minWidth: 0, overflowWrap: 'anywhere' }}>{keepTogether(st.label)}
+                          {/* A quieter second line says which band they are working in, so the two lines stand about as tall as the picture. */}
                           <span className="edu-name-grade">{bands[st.id] || levelFor(st.level).title}</span>
                         </span>
+                        <span style={{ width: 40, flexShrink: 0 }} aria-hidden="true" />
                       </span>
                     </button>
                   ))}
@@ -1975,6 +2250,15 @@ export default function EduSphereApp() {
     const at = new Date().toISOString();
     await addEvents([makePlacementEvent(subject, outcome.startGrade, [], at), makeCoursesEnabledEvent([...new Set([...others, ...outcome.startCourseIds])], at)]);
   }
+  if (screen === 'coloring' && coloring) {
+    return (
+      <div style={page}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={wrap}>
+        <h1 className="edu-rainbow" style={{ fontSize: 24, margin: '18px 0 10px', textAlign: 'center', textTransform: 'capitalize' }}>{coloring === 'my-name' ? 'My name' : coloring}</h1>
+        <ColoringPad picture={coloring} name={record && record.name} secondsLeft={colorLeft} total={COLOR_BREAK_SECONDS} onDone={leaveColoring} />
+      </div></div>
+    );
+  }
+
   if (screen === 'overview') {
     const mastered = visibleModules.filter((m) => progress.masteredIds.includes(m.id)).length;
     return (
@@ -2020,6 +2304,7 @@ export default function EduSphereApp() {
                               </div>
                               {isPreReader(course.id) ? <StatusMark status={st} /> : <Tag tone={st}>{st === 'mastered' ? 'Mastered' : st === 'passed' ? 'Passed once' : st === 'available' ? 'Ready' : 'Locked'}</Tag>}
                             </div>
+                            {youngLearner && st === 'passed' && <p style={{ color: C.muted, fontSize: 15, margin: '8px 0 0' }}>Passed once. Pass again to master.</p>}
                             {p.attempts > 0 && !isPreReader(course.id) && <p style={{ color: C.muted, fontSize: 14, margin: '10px 0 0' }}>Best score {p.bestCore} of {moduleRules(m.id).questions}{st === 'passed' ? '. Pass it again on another day to master it.' : ''}</p>}
                             {refreshIds.includes(m.id) && <p style={{ color: C.clay, fontSize: 14, margin: '6px 0 0', fontWeight: 600 }}>Missed in the last checkpoint. A quick refresher round will help.</p>}
                             {p.pendingWriting && <p style={{ color: C.gold, fontSize: 14, margin: '6px 0 0', fontWeight: 600 }}>Handed in. Waiting for your teacher to check it.</p>}
@@ -2040,16 +2325,30 @@ export default function EduSphereApp() {
                             )}
                           </div>
                         ); return null; })()}
-        {shownSubjects.filter((sub) => !placementPending.includes(sub)).map((sub) => {
+        {/* Pre-K groups by the skill being practised (Colors, Shapes, Counting); every other grade
+            groups by subject. Only this screen changes: courses, transcripts and reports are untouched. */}
+        {(() => {
+          const preK = shownCourses.length > 0 && shownCourses.every((c) => c.grade === 'PK3' || c.grade === 'PK4');
+          if (!preK) return shownSubjects.filter((sub) => !placementPending.includes(sub)).map((sub) => ({ key: sub, courses: shownCourses.filter((c) => c.subject === sub).sort(byGradeOrder) }));
+          const bySkill = new Map();
+          shownCourses.forEach((c, ci) => c.modules.forEach((m) => { const k = m.skill || c.subject; if (!bySkill.has(k)) bySkill.set(k, []); bySkill.get(k).push({ ...m, order: ci * 100 + m.order }); }));
+          return SKILL_ORDER.filter((k) => bySkill.has(k)).map((k) => ({ key: k, courses: [{ id: `skill-${k}`, title: k, modules: bySkill.get(k).sort((a, b) => a.order - b.order) }] }));
+        })().filter((group) => {
+          // A skill or subject with nothing left to do today drops off a young learner's screen.
+          if (!youngLearner) return true;
+          const today = new Date().toISOString();
+          return group.courses.some((c) => c.modules.some((m) => statusOf(m.id) !== 'locked' && statusOf(m.id) !== 'mastered' && !waitingForAnotherDay(record.events, m.id, today)));
+        }).map((group) => {
+          const sub = group.key;
           const isOpen = openSubject === sub;
-          const subCourses = shownCourses.filter((c) => c.subject === sub).sort(byGradeOrder);
+          const subCourses = group.courses;
           const subModules = subCourses.flatMap((c) => c.modules);
           const done = subModules.filter((m) => progress.masteredIds.includes(m.id)).length;
           return (
             <div key={sub} style={{ ...card, padding: 0, overflow: 'visible', position: 'relative', borderColor: isOpen ? C.green : C.line }}>
               {/* A closed subject with something ready inside breathes gently, so a young child knows where to tap. */}
               <button type="button" onClick={() => setOpenSubject(isOpen ? null : sub)} aria-expanded={isOpen}
-                className={youngLearner && !isOpen && openSubject === null && subModules.some((m) => statusOf(m.id) === 'available') ? 'edu-breathe' : undefined}
+                className={youngLearner && !isOpen && subModules.some((m) => statusOf(m.id) === 'available') ? 'edu-breathe' : undefined}
                 style={{ fontFamily: FONT, width: '100%', textAlign: 'left', background: 'transparent', border: 'none', padding: 16, cursor: 'pointer', color: C.ink }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10 }}>
                   <span style={{ fontSize: 21, fontWeight: 600 }}>{sub}</span>
@@ -2073,8 +2372,10 @@ export default function EduSphereApp() {
                         const st = statusOf(m.id);
                         const p = progress.perModule[m.id];
                         const locked = st === 'locked';
-                        // Young learners see only what they can do now; locked work would only clutter the screen.
+                        // Young learners see only what they can do now: locked work would clutter the screen,
+                        // and a module passed today can only be mastered on another day, so it waits until then.
                         if (youngLearner && locked) return null;
+                        if (youngLearner && waitingForAnotherDay(record.events, m.id, new Date().toISOString())) return null;
                         if (isPreReader(course.id) && st === 'mastered' && (youngLearner || !showFinished)) return null;
                         return renderModuleCard(course, m, st, p, locked);
                       })}
@@ -2095,6 +2396,52 @@ export default function EduSphereApp() {
             </div>
           );
         })}
+        {/* Let's Color: a grid of drawings, no words. One more picture for every module passed.
+            A picture rests for fifteen minutes after its five, and fills with color while it rests. */}
+        {(() => {
+          // Coloring is for pre-K through grade 2. Once a student has graduated the early years it goes.
+          if (!youngLearner) return null;
+          const unlocked = coloringUnlocked(record.events); const open = openSubject === '__coloring';
+          const restLeft = (pic) => Math.max(0, ((colorState[pic] || {}).restUntil || 0) - colorNow);
+          const anyReady = COLORING_PICTURES.slice(0, unlocked).some((pic) => restLeft(pic) === 0);
+          return (
+            <div style={{ ...card, padding: 0, overflow: 'hidden', marginBottom: 12 }}>
+              <button type="button" aria-expanded={open} aria-label="Let's Color" onClick={() => setOpenSubject(open ? null : '__coloring')}
+                className={`edu-colorwash${anyReady ? ' edu-press' : ''}`}
+                style={{ fontFamily: FONT, width: '100%', border: 'none', padding: 16, cursor: 'pointer', color: C.ink, display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', overflow: 'hidden' }}>
+                <span className="edu-sparkle" aria-hidden="true" />
+                <span className="edu-sparkle edu-sparkle-2" aria-hidden="true" />
+                <span className="edu-sparkle edu-sparkle-3" aria-hidden="true" />
+                <span className="edu-sparkle edu-sparkle-4" aria-hidden="true" />
+                <span className={anyReady ? 'edu-breathe' : undefined} style={{ fontSize: 20, fontWeight: 700, position: 'relative' }}>Let's Color</span>
+              </button>
+              {open && (
+                <div style={{ padding: 14 }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(96px, 1fr))', gap: 10 }}>
+                    {COLORING_PICTURES.map((pic, i) => {
+                      const locked = i >= unlocked;
+                      const resting = !locked && restLeft(pic) > 0;
+                      const filled = resting ? Math.round(100 - (restLeft(pic) / (COLOR_LOCKOUT_MINUTES * 60000)) * 100) : 100;
+                      return (
+                        <button key={pic} type="button" disabled={locked || resting} aria-label={locked ? 'Locked picture' : resting ? 'Resting picture' : `Color the ${pic === 'my-name' ? 'name' : pic}`}
+                          onClick={() => { setColoring(pic); setScreen('coloring'); }} className={!locked && !resting ? 'edu-press edu-breathe' : undefined}
+                          style={{ position: 'relative', overflow: 'hidden', aspectRatio: '1 / 1', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 6, borderRadius: 12, background: C.surface, border: `2px solid ${locked || resting ? C.line : C.green}`, cursor: locked || resting ? 'default' : 'pointer' }}>
+                          {locked ? (
+                            <svg viewBox="0 0 24 24" width="34" height="34" aria-hidden="true"><path d="M7 10V8a5 5 0 0110 0v2" fill="none" stroke={C.muted} strokeWidth="2" strokeLinecap="round" /><rect x="5" y="10" width="14" height="10" rx="2" fill={C.line} stroke={C.muted} strokeWidth="1.5" /></svg>
+                          ) : (
+                            <>
+                              <ColorThumb picture={pic} name={record.name} size="86%" />
+                              {resting && <span aria-hidden="true" style={{ position: 'absolute', left: 0, bottom: 0, width: `${filled}%`, height: '100%', background: 'linear-gradient(90deg, rgba(228,87,46,0.25), rgba(62,124,177,0.25))', pointerEvents: 'none' }} />}
+                            </>
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+            </div>
+          ); })()}
         {youngLearner ? (
           <div style={{ paddingTop: 16 }}>
             <div style={{ ...card, background: C.goldSoft, borderColor: C.goldSoft, marginBottom: 0 }}>
@@ -2133,14 +2480,8 @@ export default function EduSphereApp() {
           <svg viewBox="0 0 24 24" width="34" height="34" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke={C.green} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" /></svg>
         </button>
         <div key={lessonStep} className="edu-rise" style={{ ...card, textAlign: 'center', padding: '20px 18px' }}>
-          <Picture visual={step.show} animate animKey={`${lessonStep}-${replays}-${paceNudge}`} nudge={paceNudge} />
-          {step.show && step.show.kind === 'trace' && (
-            <div style={{ display: 'flex', justifyContent: 'center', gap: 10, margin: '2px 0 8px' }}>
-              {[['Slower', -1], ['Faster', 1]].map(([label, dir]) => { const base = step.show.pace === 'quick' ? 2 : 1; const at = base + paceNudge; const off = (dir < 0 && at <= 0) || (dir > 0 && at >= 2);
-                return <button key={label} type="button" disabled={off} onClick={() => { const next = Math.max(-base, Math.min(2 - base, paceNudge + dir)); setPaceNudge(next); setSpeechNudge(next); speak(line); }} aria-label={`${label} drawing and voice`}
-                  style={{ fontFamily: FONT, fontSize: 14, fontWeight: 600, padding: '6px 12px', borderRadius: 999, border: `2px solid ${off ? C.line : C.green}`, background: C.surface, color: off ? C.muted : C.green, cursor: off ? 'default' : 'pointer' }}>{label}</button>; })}
-            </div>
-          )}
+          <Picture visual={step.show} animate animKey={`${lessonStep}-${replays}`} />
+
           <p style={{ fontSize: 22, lineHeight: 1.5, margin: '18px 0 0' }}>{line}</p>
         </div>
         {/* One tap repeats the line, in case they missed it. */}
@@ -2215,7 +2556,7 @@ export default function EduSphereApp() {
         </div>
         {!isReviewQ && <p style={{ margin: '10px 0 18px', fontSize: 18, fontWeight: 600, textAlign: 'center' }}>{mod.title}</p>}
         <div style={{ ...card, position: 'relative' }}>
-          <p style={{ fontSize: 20, fontWeight: 600, margin: '0 0 12px', textAlign: 'center', padding: readAloud ? '0 60px' : 0 }}>{q.prompt}</p>
+          <p style={{ fontSize: 20, fontWeight: 600, margin: readAloud ? '8px 0 12px' : '0 0 12px', textAlign: 'center', padding: readAloud ? '0 66px' : 0, minHeight: readAloud ? 48 : 0 }}>{q.prompt}</p>
           {q.story && <div style={{ margin: '0 0 14px', color: C.ink }}><RichText text={q.story} size={17} center lineGap={8} /></div>}
           {q.visual && <div style={{ margin: '0 0 14px' }}><Picture visual={q.visual} /></div>}
           {readAloud && <SpeakButton corner text={questionText} label="Hear it again" />}
@@ -2230,7 +2571,7 @@ export default function EduSphereApp() {
                 else if (checked && picked) { bg = C.claySoft; border = C.clay; }
                 else if (picked) { border = C.green; }
                 return (
-                  <button key={c} type="button" data-choice={c} onClick={() => { if (!checked) { if (readAloud) playTap(); setGiven(c); } }}
+                  <button key={c} type="button" data-choice={c} onClick={() => { if (!checked) { if (readAloud) { playTap(); if (/[a-z]/i.test(c)) speak(describeChoice(c)); } setGiven(c); } }}
                     style={{ opacity: ruledOut && !checked ? 0.45 : 1, fontFamily: FONT, fontSize: choiceFont(q.choices), textAlign: 'center', padding: '12px 10px', minWidth: 0, overflowWrap: 'anywhere', borderRadius: 10, background: bg, border: `2px solid ${border}`, color: C.ink, cursor: checked ? 'default' : 'pointer', minHeight: 48 }}>
                     {/^dots:(\d+)$/.test(c) ? <DotGroup count={Number(c.split(':')[1])} size={28} /> : /^shape:/.test(c) ? <ShapePic name={c.split(':')[1]} size={c.endsWith(':big') ? 88 : c.endsWith(':small') ? 34 : c.endsWith(':medium') ? 58 : 64} /> : /^tens:(\d+)$/.test(c) ? <TensGroup count={Number(c.split(':')[1])} size={14} /> : /^bar:(\d+)$/.test(c) ? <BarPic length={Number(c.split(':')[1])} size={18} /> : /^tower:(\d+)$/.test(c) ? <BarPic length={Number(c.split(':')[1])} vertical size={14} /> : /^solid:/.test(c) ? <SolidPic name={c.slice(6)} size={64} /> : /^icon:/.test(c) ? <IconPic name={c.slice(5)} size={64} /> : /^swatch:/.test(c) ? <Swatch colour={c.slice(7)} size={64} /> : /^item:/.test(c) ? <Item spec={c.slice(5)} size={64} /> : /^clock:/.test(c) ? <ClockPic hour={Number(c.split(':')[1])} minute={Number(c.split(':')[2])} size={80} /> : /^array:/.test(c) ? <ArrayPic rows={Number(c.slice(6).split('x')[0])} cols={Number(c.slice(6).split('x')[1])} size={12} /> : c}
                   </button>
@@ -2291,7 +2632,7 @@ export default function EduSphereApp() {
               {/* Two misses on the same trace, and the stroke draws itself above the pad as a hint. */}
               {misses >= 2 && !checked && (
                 <div style={{ marginBottom: 12 }}>
-                  <TraceDemo letter={q.answer} animKey={misses} nudge={paceNudge} />
+                  <TraceDemo letter={q.answer} animKey={misses} />
                   <p style={{ margin: '6px 0 0', fontSize: 16, textAlign: 'center' }}>Watch first. Then trace it.</p>
                 </div>
               )}
@@ -2422,8 +2763,12 @@ export default function EduSphereApp() {
     // of this round shows whether it has already been answered, so it never repeats.
     const wonderHere = FEATURES.reflection && mastered ? nextWonder(record.events, mod.courseId, wonderReview, true) : null;
     const wonderDone = wonderHere && record.events.some((e) => e.type === 'wonder_answered' && e.wonderId === wonderHere.id && String(e.at) > String(lastEvent.at));
+    // A star earns a coloring break, offered here rather than hunted for: the first picture that is
+    // ready, if any is. The break ends itself after five minutes and the courses come back.
+    const readyPicture = COLORING_PICTURES.slice(0, coloringUnlocked(record.events)).find((pic) => (((colorState[pic] || {}).restUntil || 0) < Date.now()));
     const goOn = () => {
       if (wonderHere && !wonderDone) { setWonder(wonderHere); setWonderText(''); setWonderPick(''); setWonderStartedAt(Date.now()); setScreen('wonder'); return; }
+      if (mastered && readyPicture && stageForGrade(course.grade) === 'early') { setColoring(readyPicture); setScreen('coloring'); return; }
       if (mastered && nextMod) openModule(nextMod.id); else if (mastered) startPractice(); else if (backTo) loopBack(mod.id, backTo); else { setLessonStep(0); setScreen('lesson'); }
     };
     return (
@@ -3688,14 +4033,14 @@ export default function EduSphereApp() {
                 <Tag tone={tone(r.band)}>{r.band}</Tag>
               </div>
               {r.why && <p style={{ margin: '8px 0 0', fontSize: 15, fontWeight: 600 }}>{r.why}</p>}
-              <div style={{ margin: '6px 0 0', fontSize: 15 }}>
+              <div style={{ margin: '10px 0 0', fontSize: 15 }}>
                 {(() => { const lines = r.reasons.length ? r.reasons.map((x) => x.replace(/^./, (c) => c.toUpperCase()) + '.') : ['Nothing to flag.'];
                   const tally = r.total ? `${r.mastered} out of ${r.total} assigned modules have been mastered.` : 'No courses assigned.';
                   const next = r.nextTitle ? ` Next up: **${r.nextTitle}**.` : '';
                   return <RichText text={[...lines, tally + next].join('\n')} size={15} lineGap={4} />; })()}
               </div>
-              {r.practice && <div style={{ margin: '6px 0 0', fontSize: 14, color: C.muted }}><RichText text={r.practice} size={14} lineGap={4} /></div>}
-              {r.note && <p style={{ margin: '6px 0 0', fontSize: 14, fontStyle: 'italic' }}>Your note: {noteSearch.trim() && !r.note.toLowerCase().includes(noteSearch.trim().toLowerCase()) ? (r.notesAll.find((n) => n.toLowerCase().includes(noteSearch.trim().toLowerCase())) || r.note) : r.note}</p>}
+              {r.practice && <div style={{ margin: '14px 0 0', paddingTop: 10, borderTop: `1px solid ${C.line}`, fontSize: 14, color: C.muted }}><RichText text={r.practice} size={14} lineGap={4} /></div>}
+              {r.note && <p style={{ margin: '10px 0 0', fontSize: 14, fontStyle: 'italic' }}>Your note: {noteSearch.trim() && !r.note.toLowerCase().includes(noteSearch.trim().toLowerCase()) ? (r.notesAll.find((n) => n.toLowerCase().includes(noteSearch.trim().toLowerCase())) || r.note) : r.note}</p>}
               <div style={{ marginTop: 8, textAlign: 'right' }}>
                 <button type="button" style={linkBtn} onClick={async () => {
                   setBusy(true);
@@ -3910,6 +4255,7 @@ export default function EduSphereApp() {
                   <p style={{ margin: '0 0 6px', fontSize: 16, lineHeight: 1.6, textAlign: 'center' }}>{parts.lead}</p>
                   {parts.items.length > 0 && <ul style={{ margin: '0 0 10px', padding: '10px 12px 10px 32px', listStyleType: 'disc', fontSize: 15, lineHeight: 1.7, borderRadius: 10, background: 'linear-gradient(135deg, #EAF2EC 0%, #F5F9F5 100%)', border: '1px solid #DCE8DF' }}>{parts.items.map((it) => <li key={it} style={{ display: 'list-item' }}>{it}</li>)}</ul>}
                   {parts.rest && <div style={{ margin: 0, fontSize: 16, lineHeight: 1.6, textAlign: 'center' }}>{parts.rest.split(/(?<=\.)\s+/).filter(Boolean).map((line) => <p key={line} style={{ margin: '2px 0' }}>{line}</p>)}</div>}
+                  {rep.coloringBreaks > 0 && <p style={{ margin: '6px 0 0', fontSize: 15, color: C.muted, textAlign: 'center' }}>Coloring breaks taken: {rep.coloringBreaks}. Coloring is play; it is never marked and never appears on the transcript.</p>}
                   {parts.tried && parts.tried.length > 0 && (
                     <div style={{ margin: '8px 0 0' }}>
                       <p style={{ margin: '0 0 4px', fontSize: 16, lineHeight: 1.6, textAlign: 'center', fontWeight: 600 }}>Tried but not passed yet:</p>

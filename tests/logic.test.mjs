@@ -884,6 +884,29 @@ ok('reset: history kept, but nothing counts as mastered afterwards', events.leng
     ok('it reads Elementary once every early years module is mastered', L.bandTitle(finished) === 'Elementary');
     ok('a student with no early years work assigned reads Elementary at once', L.bandTitle([L.makeCoursesEnabledEvent(['fractions-intro'], 't')]) === 'Elementary');
     ok('the college course reads College, and nothing assigned reads nothing', L.bandTitle([L.makeCoursesEnabledEvent(['history-college'], 't')]) === 'College' && L.bandTitle([L.makeCoursesEnabledEvent([], 't')]) === ''); }
+  // Coloring is play: one picture from the start, another for every course finished, and it is never a module.
+  { const ev = [L.makeCoursesEnabledEvent(['counting-k'], '2026-09-15T09:00:00.000Z')];
+    ok('one coloring picture is there from the start', L.coloringUnlocked(ev) === 1);
+    const passes = L.getCourse('counting-k').modules.flatMap((m, i) => { const at = `2026-09-${10 + (i % 5)}T10:00:00.000Z`; const n = L.moduleRules(m.id).questions; return [{ type: 'attempt_completed', at, startedAt: at, moduleId: m.id, seed: 1, core: Array.from({ length: n }, () => ({ correct: true, timeMs: 9000 })), review: null, coreCorrect: n, coreTotal: n }]; });
+    ok('every module passed adds one', L.coloringUnlocked([...ev, ...passes]) === 1 + L.getCourse('counting-k').modules.length);
+    ok('a coloring picture is never a module and never a course, and there are plenty', !L.MODULES.some((m) => L.COLORING_PICTURES.includes(m.id)) && L.COLORING_PICTURES.length >= 20 && L.COLORING_PICTURES[0] === 'ball'); }
+  // A module passed today is waiting for another day: a young learner's screen sets it aside until then.
+  { const n = L.moduleRules('count-to-5').questions;
+    const pass = (at) => ({ type: 'attempt_completed', at, startedAt: at, moduleId: 'count-to-5', seed: 1, core: Array.from({ length: n }, () => ({ correct: true, timeMs: 9000 })), review: null, coreCorrect: n, coreTotal: n });
+    const once = [L.makeCoursesEnabledEvent(['counting-k'], '2026-09-16T08:00:00.000Z'), pass('2026-09-16T09:00:00.000Z')];
+    ok('a module passed today waits for another day', L.waitingForAnotherDay(once, 'count-to-5', '2026-09-16T18:00:00.000Z'));
+    ok('the next day it is back to be passed again', !L.waitingForAnotherDay(once, 'count-to-5', '2026-09-17T08:00:00.000Z'));
+    ok('a module never passed is not waiting, and a mastered one is done', !L.waitingForAnotherDay(once, 'count-to-10', '2026-09-16T18:00:00.000Z') && !L.waitingForAnotherDay([...once, pass('2026-09-17T09:00:00.000Z')], 'count-to-5', '2026-09-17T18:00:00.000Z')); }
+  // A coloring break is noted for the educator, and stays out of progress and the transcript.
+  { const ev = [L.makeCoursesEnabledEvent(['counting-k'], '2026-09-16T09:00:00.000Z'), L.makeColoredEvent('house', '2026-09-16T10:00:00.000Z'), L.makeColoredEvent('star', '2026-09-16T10:30:00.000Z')];
+    ok('coloring breaks are counted for the report', L.coloringBreaks(ev) === 2 && L.buildReport('S-8', ev).coloringBreaks === 2);
+    ok('a coloring break is no kind of progress', L.deriveProgress(ev).masteredIds.length === 0 && L.deriveProgress(ev).passedIds.length === 0 && L.buildReport('S-8', ev).totalAttempts === 0);
+    ok('the transcript never mentions coloring', !JSON.stringify(L.buildTranscript('S-8', ev)).toLowerCase().includes('color')); }
+  // Pre-K is grouped by skill on the student's screen; every skill named is one the order knows.
+  { const preK = L.COURSES.filter((c) => c.grade === 'PK3' || c.grade === 'PK4').flatMap((c) => c.modules);
+    ok('every pre-K module names the skill it practises', preK.every((m) => m.skill && L.SKILL_ORDER.includes(m.skill)));
+    const preKIds = new Set(preK.map((m) => m.id));
+    ok('no other module carries a skill label', !L.MODULES.filter((m) => !preKIds.has(m.id)).some((m) => m.skill)); }
   ok('an elective is never recommended, only offered under other courses', !L.recommendedCourseIds([L.makeCoursesEnabledEvent([], 't')], 'elementary').some((id) => L.getCourse(id).elective) && L.COURSES.some((c) => c.elective));
   ok('a high school student starts on the grade 9 courses', JSON.stringify(L.recommendedCourseIds([L.makeCoursesEnabledEvent([], 't')], 'high')) === '["history-9","math-9","reading-9","science-9","writing-9"]');
   ok('the letters course and now the counting course both have a touch module', L.courseNeedsTouch('letters-k') === true && L.courseNeedsTouch('counting-k') === true && L.courseNeedsTouch('fractions-intro') === false);
@@ -1111,11 +1134,17 @@ ok('reset: history kept, but nothing counts as mastered afterwards', events.leng
   ];
   const rows = L.classView(students, '2026-09-10T12:00:00.000Z');
   ok('the student who is stuck and guessing comes first', rows[0].label === 'S-1' && rows[0].band === 'needs help now');
+  // Connect the dots is joined in order: the same points touched out of sequence is not the exercise.
+  { const inOrder = [[[22, 22], [50, 22], [78, 22], [78, 50], [78, 78], [50, 78], [22, 78], [22, 50], [22, 22]]];
+    const outOfOrder = [[[22, 22], [22, 78], [78, 78], [78, 22], [22, 22], [50, 22], [78, 50], [50, 78], [22, 50]]];
+    ok('a square joined in order is accepted', L.traceMatches('square', inOrder));
+    ok('the same dots joined backwards is not', !L.traceMatches('square', outOfOrder)); }
   ok('a student who has not started is flagged, gently', rows.find((r) => r.label === 'S-3').reasons.some((x) => x.endsWith('has not started')));
   // One failed round, nothing else: the row says so instead of "nothing to flag" (Mikey's test student, 2026-09-14).
   const oneMiss = { id: 's_4', label: 'S-4', events: [att('count-to-5', '2026-09-09T10:00:00.000Z', 2, 6000)] };
   const missRow = L.classView([oneMiss], '2026-09-10T12:00:00.000Z')[0];
   ok('one missed round is named, with its score, and what a second miss would bring', missRow.reasons.some((r) => r.includes('S-4 failed the last round of **Count to 5** (2 of 5 right, 1 attempt)') && r.includes('second miss')));
+  ok('the next module is named, not stringified', rows.every((r) => !r.nextTitle.includes('[object')) && rows.some((r) => r.nextTitle.length > 0));
   ok('every class row carries the practice line the report summary shows', missRow.practice === 'Practice so far: 1 round, 0 passed.\nTried but not passed yet: **Count to 5** (best score 2 out of 5, 1 attempt).' && rows.find((r) => r.label === 'S-3').practice === '');
   const quickEvents = [L.makeCoursesEnabledEvent(['history-8'], '2026-09-09T09:00:00.000Z'), L.makeQuickCheckEvent('founding-documents', Array.from({ length: 5 }, (_, i) => ({ correct: i < 2, timeMs: 9000 })), '2026-09-09T10:00:00.000Z')];
   const quickRow = L.classView([{ id: 's_5', label: 'S-5', events: quickEvents }], '2026-09-10T12:00:00.000Z')[0];

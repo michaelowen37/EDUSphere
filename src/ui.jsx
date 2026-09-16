@@ -807,12 +807,12 @@ const KID_ANIMATION = `
   .edu-nibs { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin: 6px 0 0; }
   @media (min-width: 700px) {
     /* Nibs stand beside the picture and the crayons run the width of the card. */
-    .edu-pad { display: grid; grid-template-columns: auto auto; grid-template-areas: 'head head' 'bar bar' 'nibs picture' 'crayons crayons'; column-gap: 16px; justify-content: center; }
+    .edu-pad { display: grid; grid-template-columns: auto auto; grid-template-areas: 'nibs head' 'nibs bar' 'nibs picture' '. crayons'; column-gap: 28px; justify-content: center; }
     .edu-pad-head { grid-area: head; }
     .edu-pad-bar { grid-area: bar; }
     .edu-picture { grid-area: picture; }
-    .edu-nibs { grid-area: nibs; flex-direction: column; flex-wrap: nowrap; align-self: center; margin: 0; }
-    .edu-crayons { grid-area: crayons; grid-template-columns: repeat(7, 1fr); width: min(100%, 58vh); }
+    .edu-nibs { grid-area: nibs; flex-direction: column; flex-wrap: nowrap; align-self: end; margin: 0; }
+    .edu-crayons { grid-area: crayons; grid-template-columns: repeat(7, 1fr); width: min(100%, 58vh); margin: 12px 0 0; }
     .edu-wide-only { display: flex; }
     .edu-nib.edu-wide-only { display: flex; }
   }
@@ -1362,7 +1362,7 @@ function ColoringPad({ picture, name, secondsLeft, total, saved, onArt, onClose 
         {/* The square behind the picture is colorable too: a sky, a wall, whatever they decide it is. */}
         <rect x="-60" y="-60" width="220" height="220" fill={fills.bg || '#FFFFFF'} onClick={freeDraw ? undefined : () => setFills((f) => ({ ...f, bg: crayon }))} style={{ cursor: freeDraw ? 'default' : 'pointer' }} />
         {parts.map((p, i) => {
-          const common = { key: i, fill: fills[i] || '#FFFFFF', stroke: '#2E2E2E', strokeWidth: 1.6, strokeLinejoin: 'round', style: { cursor: 'pointer' }, onClick: freeDraw ? undefined : () => setFills((f) => ({ ...f, [i]: crayon })) };
+          const common = { key: i, fill: fills[i] || '#FFFFFF', stroke: freeDraw ? 'none' : '#2E2E2E', strokeWidth: 1.6, strokeLinejoin: 'round', style: { cursor: 'pointer' }, onClick: freeDraw ? undefined : () => setFills((f) => ({ ...f, [i]: crayon })) };
           if (p.t === 'circle') return <circle {...common} cx={p.cx} cy={p.cy} r={p.r} />;
           if (p.t === 'ellipse') return <ellipse {...common} cx={p.cx} cy={p.cy} rx={p.rx} ry={p.ry} />;
           if (p.t === 'rect') return <rect {...common} x={p.x} y={p.y} width={p.width} height={p.height} rx={2} />;
@@ -1370,7 +1370,7 @@ function ColoringPad({ picture, name, secondsLeft, total, saved, onArt, onClose 
         return <polygon {...common} points={p.points} />;
         })}
         {picture === 'my-name' && (() => { const n = nameLines(name); return n.lines.map((line, i) => (
-          <text key={line + i} x="50" y={n.y(i)} textAnchor="middle" fontFamily={FONT} fontSize={n.size} fontWeight="700" fill="#FFFFFF" stroke="#2E2E2E" strokeWidth={n.size * 0.055} paintOrder="stroke" strokeLinejoin="round" pointerEvents="none">{line}</text>
+          <text key={line + i} x="50" y={n.y(i)} textAnchor="middle" fontFamily={FONT} fontSize={n.size} fontWeight="700" fill="#FFFFFF" pointerEvents="none">{line}</text>
         )); })()}
         {strokes.map((st, i) => <polyline key={`s${i}`} points={st.points.map((pt) => pt.join(',')).join(' ')} fill="none" stroke={st.colour} strokeWidth={st.width || 5} strokeLinecap="round" strokeLinejoin="round" pointerEvents="none" />)}
         {/* On a drawing picture the outline is laid over the ink, so coloring never buries the lines

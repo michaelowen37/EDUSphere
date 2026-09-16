@@ -2,7 +2,7 @@
 
 Paste the lines below as the commit message. Unzip this file onto the repository folder; it overwrites only the files listed.
 
-- (2026-09-16) On a laptop a student's picture sits to the right of their name rather than to its left, so every name, grade and link starts at the same edge whether or not the student has one. On a phone it still sits above the name, centered.
+- (2026-09-16) On a wide screen the picture, the countdown bar and the crayons share one width in the same grid column, and the nibs stand clear to their left, ending level with the top of the first row of colors. A drawing picture's shapes are filled without their own outline and the outline is drawn once over the ink, so the lines stay single width rather than doubling.
 
 ## Files
 - src/ui.jsx

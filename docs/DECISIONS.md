@@ -411,6 +411,7 @@ Approved by Mikey on 2026-09-04 unless marked "proposed".
 - (2026-09-16) Every nib is finer: the old second-thickest is now the thickest and the thinnest is finer than anything offered before. On a laptop the four nibs sit beside the crayons, two at each side, finest top-left and thickest bottom-right, so nothing needs scrolling; on a phone they stay in their row beneath the colors.
 
 - (2026-09-16) On a drawing picture the outline is laid over the ink, so coloring never buries the lines a student is trying to stay inside. The name page does the same with its letters.
+- (2026-09-16) On a wide screen the picture, the countdown bar and the crayons share one width in the same grid column, and the nibs stand clear to their left, ending level with the top of the first row of colors. A drawing picture's shapes are filled without their own outline and the outline is drawn once over the ink, so the lines stay single width rather than doubling.
 - (2026-09-16) A wider screen gets six more crayons, twenty-one in three rows running the width of the picture, and the nibs stand in a column beside the picture with two more thicknesses, six in all. A phone keeps fifteen crayons and four nibs in the arrangement Mikey picked. The extras are hidden by class rather than by counting, so both layouts come from the same markup.
 
 ## Open items

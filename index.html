@@ -39278,6 +39278,13 @@ const KID_ANIMATION = `
   .edu-fold-title { text-align: center; }
   .edu-fold-meta { position: absolute; right: 16px; top: 50%; transform: translateY(-50%); }
   /* The note box: the field spans the card, tall enough for the example, with Save note centered below it. */
+  /* The crayons: five to a row at any width, a little smaller on a phone so all three rows fit. */
+  .edu-crayons { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; justify-items: center; width: min(300px, 100%); margin: 10px auto; }
+  .edu-crayon { width: 38px; height: 38px; border-radius: 999px; cursor: pointer; padding: 0; }
+  @media (min-width: 600px) {
+    .edu-crayons { gap: 10px; width: min(340px, 100%); margin: 12px auto; }
+    .edu-crayon { width: 44px; height: 44px; }
+  }
   .edu-note-box { margin-top: 8px; }
   .edu-note-box textarea { min-height: 96px; text-align: center; }
   @media (min-width: 1000px) { .edu-note-box textarea { min-height: 0; } }
@@ -39563,7 +39570,8 @@ catch (e) {
     return {};
 } }
 async function saveColorState(studentId, state) { return storageSet(colorKey(studentId), JSON.stringify(state)); }
-const NIBS = [2.5, 5, 9]; // how fat the line is: shown as three dots, thinnest first
+const NIBS = [1.2, 2.5, 5, 9]; // how fat the line is: shown as dots of that size, finest first
+const ZOOMS = [1, 1.5, 2.2]; // how close in the picture is drawn, always about its middle
 const CRAYONS = [
     '#D62828', '#E4572E', '#F4A259', '#F7D154', '#C9A227',
     '#9ACD32', '#5BA84A', '#2FA5A0', '#3E7CB1', '#2B4C8C',
@@ -39738,12 +39746,13 @@ function nameLines(name) {
     return { lines, size, y };
 }
 function ColorThumb({ picture, name, size = 72 }) {
+    const box = { width: size, height: size, display: 'block' };
     if (picture === 'my-name') {
         const { lines, size: fs, y } = nameLines(name);
-        return (react_1.default.createElement("svg", { viewBox: "0 0 100 100", width: size, height: size, "aria-hidden": "true" }, lines.map((line, i) => (react_1.default.createElement("text", { key: line + i, x: "50", y: y(i), textAnchor: "middle", fontFamily: FONT, fontSize: fs, fontWeight: "700", fill: "#FFFFFF", stroke: "#2E2E2E", strokeWidth: fs * 0.055, paintOrder: "stroke", strokeLinejoin: "round" }, line)))));
+        return (react_1.default.createElement("svg", { viewBox: "0 0 100 100", ...box, preserveAspectRatio: "xMidYMid meet", "aria-hidden": "true" }, lines.map((line, i) => (react_1.default.createElement("text", { key: line + i, x: "50", y: y(i), textAnchor: "middle", fontFamily: FONT, fontSize: fs, fontWeight: "700", fill: "#FFFFFF", stroke: "#2E2E2E", strokeWidth: fs * 0.055, paintOrder: "stroke", strokeLinejoin: "round" }, line)))));
     }
     const parts = COLORING_ART[picture] || [];
-    return (react_1.default.createElement("svg", { viewBox: "0 0 100 100", width: size, height: size, "aria-hidden": "true" }, parts.map((p, i) => {
+    return (react_1.default.createElement("svg", { viewBox: "0 0 100 100", ...box, preserveAspectRatio: "xMidYMid meet", "aria-hidden": "true" }, parts.map((p, i) => {
         const common = { key: i, fill: '#FFFFFF', stroke: '#2E2E2E', strokeWidth: 2.4, strokeLinejoin: 'round' };
         if (p.t === 'circle')
             return react_1.default.createElement("circle", { ...common, cx: p.cx, cy: p.cy, r: p.r });
@@ -39759,6 +39768,7 @@ function ColorThumb({ picture, name, size = 72 }) {
 function ColoringPad({ picture, name, secondsLeft, total, saved, onArt, onClose }) {
     const [crayon, setCrayon] = (0, react_1.useState)(CRAYONS[0]);
     const [nib, setNib] = (0, react_1.useState)(NIBS[0]);
+    const [zoom, setZoom] = (0, react_1.useState)(1);
     const [fills, setFills] = (0, react_1.useState)((saved && saved.fills) || {});
     const [strokes, setStrokes] = (0, react_1.useState)((saved && saved.strokes) || []);
     // The work in progress is handed up as it happens, so leaving and coming back finds it as it was.
@@ -39767,7 +39777,11 @@ function ColoringPad({ picture, name, secondsLeft, total, saved, onArt, onClose 
     const svgRef = (0, react_1.useRef)(null);
     const parts = COLORING_ART[picture] || [];
     const freeDraw = COLORING_MODE[picture] === 'draw';
-    const at = (e) => { const r = svgRef.current.getBoundingClientRect(); return [((e.clientX - r.left) / r.width) * 100, ((e.clientY - r.top) / r.height) * 100]; };
+    // Zoomed in, the picture is still drawn in its own coordinates, so color put on close up stays
+    // exactly where it belongs when they zoom back out.
+    const span = 100 / zoom;
+    const origin = 50 - span / 2;
+    const at = (e) => { const r = svgRef.current.getBoundingClientRect(); return [origin + ((e.clientX - r.left) / r.width) * span, origin + ((e.clientY - r.top) / r.height) * span]; };
     const start = (e) => { if (!freeDraw)
         return; drawing.current = true; setStrokes((list) => [...list, { colour: crayon, width: nib, points: [at(e)] }]); };
     const move = (e) => { if (!freeDraw || !drawing.current)
@@ -39785,26 +39799,31 @@ function ColoringPad({ picture, name, secondsLeft, total, saved, onArt, onClose 
         typeof secondsLeft === 'number' && (react_1.default.createElement("div", { style: { margin: '8px auto 12px', width: 'min(100%, 58vh)' } },
             react_1.default.createElement("div", { style: { height: 14, borderRadius: 999, background: C.line, overflow: 'hidden' } },
                 react_1.default.createElement("div", { style: { height: '100%', width: `${Math.max(0, (secondsLeft / total) * 100)}%`, background: `linear-gradient(90deg, ${CRAYONS[0]}, ${CRAYONS[3]}, ${CRAYONS[4]})`, transition: 'width 1s linear' } })))),
-        react_1.default.createElement("svg", { ref: svgRef, viewBox: "0 0 100 100", role: "img", "aria-label": `A ${picture} to color`, onPointerDown: start, onPointerMove: move, onPointerUp: stop, onPointerLeave: stop, style: { width: 'min(100%, 58vh)', aspectRatio: '1 / 1', display: 'block', margin: '0 auto', background: '#fff', border: `2px solid ${C.line}`, borderRadius: 16, touchAction: freeDraw ? 'none' : 'auto' } },
-            react_1.default.createElement("rect", { x: "0", y: "0", width: "100", height: "100", fill: fills.bg || '#FFFFFF', onClick: freeDraw ? undefined : () => setFills((f) => ({ ...f, bg: crayon })), style: { cursor: freeDraw ? 'default' : 'pointer' } }),
-            parts.map((p, i) => {
-                const common = { key: i, fill: fills[i] || '#FFFFFF', stroke: '#2E2E2E', strokeWidth: 1.6, strokeLinejoin: 'round', style: { cursor: 'pointer' }, onClick: freeDraw ? undefined : () => setFills((f) => ({ ...f, [i]: crayon })) };
-                if (p.t === 'circle')
-                    return react_1.default.createElement("circle", { ...common, cx: p.cx, cy: p.cy, r: p.r });
-                if (p.t === 'ellipse')
-                    return react_1.default.createElement("ellipse", { ...common, cx: p.cx, cy: p.cy, rx: p.rx, ry: p.ry });
-                if (p.t === 'rect')
-                    return react_1.default.createElement("rect", { ...common, x: p.x, y: p.y, width: p.width, height: p.height, rx: 2 });
-                if (p.t === 'path')
-                    return react_1.default.createElement("path", { ...common, d: p.d });
-                return react_1.default.createElement("polygon", { ...common, points: p.points });
-            }),
-            picture === 'my-name' && (() => {
-                const n = nameLines(name);
-                return n.lines.map((line, i) => (react_1.default.createElement("text", { key: line + i, x: "50", y: n.y(i), textAnchor: "middle", fontFamily: FONT, fontSize: n.size, fontWeight: "700", fill: "#FFFFFF", stroke: "#2E2E2E", strokeWidth: n.size * 0.055, paintOrder: "stroke", strokeLinejoin: "round", pointerEvents: "none" }, line)));
-            })(),
-            strokes.map((st, i) => react_1.default.createElement("polyline", { key: `s${i}`, points: st.points.map((pt) => pt.join(',')).join(' '), fill: "none", stroke: st.colour, strokeWidth: st.width || 5, strokeLinecap: "round", strokeLinejoin: "round", pointerEvents: "none" }))),
-        react_1.default.createElement("div", { style: { display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 10, justifyItems: 'center', width: 'min(340px, 100%)', margin: '12px auto' } }, CRAYONS.map((colour) => (react_1.default.createElement("button", { key: colour, type: "button", "aria-label": "Use this color", "aria-pressed": crayon === colour, onClick: () => setCrayon(colour), style: { width: 44, height: 44, borderRadius: 999, background: colour, border: crayon === colour ? `4px solid ${C.ink}` : `2px solid ${C.line}`, cursor: 'pointer' } })))),
+        react_1.default.createElement("div", { style: { position: 'relative', width: 'min(100%, 58vh)', margin: '0 auto' } },
+            react_1.default.createElement("svg", { ref: svgRef, viewBox: `${origin} ${origin} ${span} ${span}`, role: "img", "aria-label": `A ${picture} to color`, onPointerDown: start, onPointerMove: move, onPointerUp: stop, onPointerLeave: stop, style: { width: '100%', aspectRatio: '1 / 1', display: 'block', background: '#fff', border: `2px solid ${C.line}`, borderRadius: 16, touchAction: freeDraw ? 'none' : 'auto' } },
+                react_1.default.createElement("rect", { x: "0", y: "0", width: "100", height: "100", fill: fills.bg || '#FFFFFF', onClick: freeDraw ? undefined : () => setFills((f) => ({ ...f, bg: crayon })), style: { cursor: freeDraw ? 'default' : 'pointer' } }),
+                parts.map((p, i) => {
+                    const common = { key: i, fill: fills[i] || '#FFFFFF', stroke: '#2E2E2E', strokeWidth: 1.6, strokeLinejoin: 'round', style: { cursor: 'pointer' }, onClick: freeDraw ? undefined : () => setFills((f) => ({ ...f, [i]: crayon })) };
+                    if (p.t === 'circle')
+                        return react_1.default.createElement("circle", { ...common, cx: p.cx, cy: p.cy, r: p.r });
+                    if (p.t === 'ellipse')
+                        return react_1.default.createElement("ellipse", { ...common, cx: p.cx, cy: p.cy, rx: p.rx, ry: p.ry });
+                    if (p.t === 'rect')
+                        return react_1.default.createElement("rect", { ...common, x: p.x, y: p.y, width: p.width, height: p.height, rx: 2 });
+                    if (p.t === 'path')
+                        return react_1.default.createElement("path", { ...common, d: p.d });
+                    return react_1.default.createElement("polygon", { ...common, points: p.points });
+                }),
+                picture === 'my-name' && (() => {
+                    const n = nameLines(name);
+                    return n.lines.map((line, i) => (react_1.default.createElement("text", { key: line + i, x: "50", y: n.y(i), textAnchor: "middle", fontFamily: FONT, fontSize: n.size, fontWeight: "700", fill: "#FFFFFF", stroke: "#2E2E2E", strokeWidth: n.size * 0.055, paintOrder: "stroke", strokeLinejoin: "round", pointerEvents: "none" }, line)));
+                })(),
+                strokes.map((st, i) => react_1.default.createElement("polyline", { key: `s${i}`, points: st.points.map((pt) => pt.join(',')).join(' '), fill: "none", stroke: st.colour, strokeWidth: st.width || 5, strokeLinecap: "round", strokeLinejoin: "round", pointerEvents: "none" }))),
+            [['−', -1, { left: 10 }], ['+', 1, { right: 10 }]].map(([label, dir, side]) => {
+                const off = (dir < 0 && zoom === ZOOMS[0]) || (dir > 0 && zoom === ZOOMS[ZOOMS.length - 1]);
+                return (react_1.default.createElement("button", { key: label, type: "button", disabled: off, "aria-label": dir < 0 ? 'Zoom out' : 'Zoom in', onClick: () => setZoom((z) => ZOOMS[Math.max(0, Math.min(ZOOMS.length - 1, ZOOMS.indexOf(z) + dir))]), style: { position: 'absolute', bottom: 10, ...side, width: 46, height: 46, borderRadius: 999, background: '#FFFFFF', border: '3px solid #2E2E2E', color: '#2E2E2E', fontFamily: FONT, fontSize: 26, fontWeight: 700, lineHeight: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: off ? 'default' : 'pointer', opacity: off ? 0.35 : 1 } }, label));
+            })),
+        react_1.default.createElement("div", { className: "edu-crayons" }, CRAYONS.map((colour) => (react_1.default.createElement("button", { key: colour, type: "button", className: "edu-crayon", "aria-label": "Use this color", "aria-pressed": crayon === colour, onClick: () => setCrayon(colour), style: { background: colour, border: crayon === colour ? `4px solid ${C.ink}` : `2px solid ${C.line}` } })))),
         freeDraw && (react_1.default.createElement("div", { style: { display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 14, margin: '0 0 14px' } }, NIBS.map((w) => (react_1.default.createElement("button", { key: w, type: "button", "aria-label": `${w === NIBS[0] ? 'Thin' : w === NIBS[1] ? 'Medium' : 'Thick'} line`, "aria-pressed": nib === w, onClick: () => setNib(w), style: { width: 52, height: 52, borderRadius: 999, display: 'flex', alignItems: 'center', justifyContent: 'center', background: C.surface, border: nib === w ? `3px solid ${C.ink}` : `2px solid ${C.line}`, cursor: 'pointer' } },
             react_1.default.createElement("span", { style: { display: 'block', width: w * 3.2, height: w * 3.2, borderRadius: 999, background: crayon } }))))))));
 }
@@ -41098,11 +41117,9 @@ function EduSphereApp() {
                                 return (react_1.default.createElement("button", { key: pic, type: "button", disabled: locked || resting, "aria-label": locked ? 'Locked picture' : resting ? 'Resting picture' : `Color the ${pic === 'my-name' ? 'name' : pic}`, onClick: () => { setColoring(pic); setScreen('coloring'); }, className: `edu-breathe${!locked && !resting ? ' edu-press' : ''}`, style: { position: 'relative', overflow: 'hidden', aspectRatio: '1 / 1', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 6, borderRadius: 12, background: locked ? 'rgba(255,255,255,0.55)' : '#FFFFFF', border: `2px solid ${locked || resting ? 'rgba(255,255,255,0.7)' : C.ink}`, cursor: locked || resting ? 'default' : 'pointer', '--beat': locked || resting ? 0 : 1, ...inBeat(2.2) } }, locked ? (react_1.default.createElement("svg", { viewBox: "0 0 24 24", width: "34", height: "34", "aria-hidden": "true" },
                                     react_1.default.createElement("path", { d: "M7 10V8a5 5 0 0110 0v2", fill: "none", stroke: C.muted, strokeWidth: "2", strokeLinecap: "round" }),
                                     react_1.default.createElement("rect", { x: "5", y: "10", width: "14", height: "10", rx: "2", fill: C.line, stroke: C.muted, strokeWidth: "1.5" }))) : (react_1.default.createElement(react_1.default.Fragment, null,
-                                    react_1.default.createElement("span", { style: { opacity: resting ? 0.3 : 1, filter: resting ? 'grayscale(1)' : 'none', display: 'flex' } },
-                                        react_1.default.createElement(ColorThumb, { picture: pic, name: displayName, size: "86%" })),
-                                    resting && (react_1.default.createElement("svg", { viewBox: "0 0 36 36", "aria-hidden": "true", style: { position: 'absolute', inset: '18%', pointerEvents: 'none' } },
-                                        react_1.default.createElement("circle", { cx: "18", cy: "18", r: "15", fill: "rgba(255,255,255,0.55)", stroke: "rgba(46,46,46,0.25)", strokeWidth: "3" }),
-                                        react_1.default.createElement("circle", { cx: "18", cy: "18", r: "15", fill: "none", stroke: C.green, strokeWidth: "3", strokeLinecap: "round", strokeDasharray: `${(restFraction * 94.2).toFixed(1)} 94.2`, transform: "rotate(-90 18 18)" })))))));
+                                    react_1.default.createElement("span", { style: { display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', height: '100%' } },
+                                        react_1.default.createElement(ColorThumb, { picture: pic, name: displayName, size: "100%" })),
+                                    resting && (react_1.default.createElement("span", { "aria-hidden": "true", style: { position: 'absolute', inset: 0, pointerEvents: 'none', background: `conic-gradient(from 0deg, rgba(150,158,152,0.92) 0 ${(restFraction * 100).toFixed(1)}%, rgba(150,158,152,0) ${(restFraction * 100).toFixed(1)}% 100%)` } }))))));
                             }))))));
                 })(),
                 youngLearner ? (react_1.default.createElement("div", { style: { paddingTop: 16 } },

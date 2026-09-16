@@ -398,6 +398,12 @@ Approved by Mikey on 2026-09-04 unless marked "proposed".
 
 - (2026-09-16) On a laptop a student's picture sits to the right of their name rather than to its left, so every name, grade and link starts at the same edge whether or not the student has one. On a phone it still sits above the name, centered.
 
+- (2026-09-16) A coloring picture zooms: a minus in its bottom-left corner and a plus in its bottom-right, white with a black edge and laid over the picture so color goes behind them and never onto them. Four steps, always about the middle, so no arrows are needed; the drawing keeps its own coordinates, so color put on close up sits exactly where it belongs when they zoom back out. A fourth, finer nib was added for a stylus, and the grid thumbnails now sit square in their tiles.
+
+- (2026-09-16) Zoom stops at 2.2, not 3.6: the deepest step filled the square with one region and lost the picture. The crayons are a little smaller on a phone so all three rows fit under the picture, and keep their old size from tablet width up.
+
+- (2026-09-16) A resting picture is covered in flat grey that sweeps away like a clock hand as the fifteen minutes run down, so the drawing comes back into view rather than a ring counting at it. No green, no dimming of the picture itself.
+
 ## Open items
 - Verify audio plays inside the chat artifact sandbox (works in a normal browser).
 - Common Core / TEKS codes on existing modules to be checked against the official lists.

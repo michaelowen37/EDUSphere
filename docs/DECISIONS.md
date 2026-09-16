@@ -432,6 +432,10 @@ Approved by Mikey on 2026-09-04 unless marked "proposed".
 
 - (2026-09-16) The name page is back to the drawing Mikey approved: one text element, white letters with their outline painted behind them, no spacing of our own, drawn under the ink rather than over it. Everything tried in between — a second outline element, a `<use>` copy, letter spacing, outline only — made it worse on his devices and looked identical on mine. The build stamp moved to the very foot of the page, under the line about the device.
 
+- (2026-09-16) The coloring page is sized by the height that is really there (`dvh`), so a phone held upright shows the picture, the crayons and the nibs without scrolling. Turned on its side, where there is width to spare and no height, the nibs stand at one side of the picture and the crayons at the other in four columns, and the picture takes nearly the whole height. Those rules sit after the wide-screen ones, because a phone on its side is also a wide screen and would otherwise take the laptop layout.
+
+- (2026-09-16) The coloring page is sized to the window rather than to the reading column: it may use the full width, drops the page's zoom and bottom padding, and the picture takes the height that is left once the title, the bar and the three rows of crayons are accounted for. Measured on a phone upright and sideways, a tablet both ways and a laptop: nothing runs off the bottom at any of them, and the picture is half as large again on a laptop as it was. The title is one line whatever the width, and when a phone is sideways the title bar runs the full width so the restart and close icons sit at the outer edges.
+
 ## Open items
 - Verify audio plays inside the chat artifact sandbox (works in a normal browser).
 - Common Core / TEKS codes on existing modules to be checked against the official lists.

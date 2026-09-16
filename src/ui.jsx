@@ -804,6 +804,14 @@ const KID_ANIMATION = `
   /* The note box: the field spans the card, tall enough for the example, with Save note centered below it. */
   /* The crayons: five to a row at any width, a little smaller on a phone so all three rows fit. */
   .edu-crayons { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; justify-items: center; width: min(300px, 100%); margin: 10px auto; }
+  /* How wide the picture and everything stacked with it may be. On a phone held upright it is sized
+     by the height that is really there, so the crayons and the nibs stay on the first screen; turned
+     on its side, or on a laptop, the picture takes the height instead. */
+  /* The coloring page is its own thing: it may use more of the window than the reading columns do. */
+  .edu-wrap:has(.edu-pad) { max-width: none; padding-bottom: 10px; zoom: 1; }
+  .edu-pad { max-width: 100%; }
+  .edu-pad-col { width: min(100%, 46dvh); }
+  @media (min-width: 700px) { .edu-pad-col { width: min(72vw, calc(100vh - 302px)); } }
   .edu-wide-only { display: none; }
   .edu-nib { width: 38px; height: 38px; border-radius: 999px; display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 0; }
   .edu-nib.edu-wide-only { display: none; }
@@ -817,9 +825,22 @@ const KID_ANIMATION = `
     .edu-picture { grid-area: picture; }
     .edu-nibs { grid-area: nibs; display: flex; flex-direction: column; flex-wrap: nowrap; align-self: end; gap: 10px; width: auto; margin: 0; }
     .edu-nib { width: 46px; height: 46px; }
-    .edu-crayons { grid-area: crayons; grid-template-columns: repeat(7, 1fr); width: min(100%, 58vh); margin: 12px 0 0; }
+    .edu-crayons { grid-area: crayons; grid-template-columns: repeat(7, 1fr); margin: 12px 0 0; }
+    .edu-pad .edu-crayons { width: min(72vw, calc(100vh - 302px)); }
     .edu-wide-only { display: flex; }
     .edu-nib.edu-wide-only { display: flex; }
+  }
+  /* A phone on its side has width to spare and no height: the nibs stand at one side of the picture
+     and the crayons at the other, so the picture itself can take nearly the whole height. */
+  @media (max-height: 540px) {
+    .edu-pad { display: grid; grid-template-columns: auto auto auto; grid-template-areas: 'head head head' 'nibs bar crayons' 'nibs picture crayons'; align-items: center; justify-content: center; column-gap: 14px; }
+    .edu-pad .edu-pad-head { width: 100%; margin: 0 0 4px; }
+    .edu-pad-col { width: min(100%, 72dvh); }
+    .edu-pad .edu-crayons { grid-area: crayons; grid-template-columns: repeat(4, 1fr); width: auto; margin: 0; align-self: center; }
+    .edu-nibs { grid-area: nibs; display: flex; flex-direction: column; flex-wrap: nowrap; gap: 8px; width: auto; margin: 0; align-self: center; }
+    .edu-crayon { width: 30px; height: 30px; }
+    .edu-nib { width: 36px; height: 36px; }
+    .edu-pad-head h1 { font-size: 18px; }
   }
   .edu-crayon { width: 38px; height: 38px; border-radius: 999px; cursor: pointer; padding: 0; }
   @media (min-width: 700px) { .edu-crayon.edu-wide-only { display: block; } }
@@ -1445,25 +1466,25 @@ function ColoringPad({ picture, name, secondsLeft, total, saved, onArt, onClose 
   return (
     <div className="edu-pad">
       {/* Start over on the left, close on the right, both sitting on the picture's own width. */}
-      <div className="edu-pad-head" style={{ width: 'min(100%, 58vh)', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+      <div className="edu-pad-head edu-pad-col" style={{ margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <button type="button" aria-label="Start over" onClick={() => { setFills({}); setStrokes([]); onArt({ fills: {}, strokes: [] }); }}
           style={{ background: 'none', border: 'none', padding: 6, cursor: 'pointer', color: C.green, lineHeight: 0 }}>
           <svg viewBox="0 0 24 24" width="32" height="32" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.6-5.9M20 4v5h-5" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" /></svg>
         </button>
-        <h1 className="edu-rainbow" style={{ fontSize: 22, margin: 0, textAlign: 'center', textTransform: 'capitalize' }}>{picture === 'my-name' ? 'My name' : picture}</h1>
+        <h1 className="edu-rainbow" style={{ fontSize: 20, margin: 0, textAlign: 'center', textTransform: 'capitalize', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{picture === 'my-name' ? 'My name' : picture}</h1>
         <button type="button" aria-label="Close coloring" onClick={onClose}
           style={{ background: 'none', border: 'none', padding: 6, cursor: 'pointer', color: C.green, lineHeight: 0 }}>
           <svg viewBox="0 0 24 24" width="32" height="32" aria-hidden="true"><path d="M5 5 L19 19 M19 5 L5 19" fill="none" stroke="currentColor" strokeWidth="3.4" strokeLinecap="round" /></svg>
         </button>
       </div>
       {typeof secondsLeft === 'number' && (
-        <div className="edu-pad-bar" style={{ margin: '8px auto 12px', width: 'min(100%, 58vh)' }}>
+        <div className="edu-pad-bar edu-pad-col" style={{ margin: '8px auto 12px' }}>
           <div style={{ height: 14, borderRadius: 999, background: C.line, overflow: 'hidden' }}>
             <div style={{ height: '100%', width: `${Math.max(0, (secondsLeft / total) * 100)}%`, background: `linear-gradient(90deg, ${CRAYONS[0]}, ${CRAYONS[3]}, ${CRAYONS[4]})`, transition: 'width 1s linear' }} />
           </div>
         </div>
       )}
-      <div className="edu-picture" style={{ position: 'relative', width: 'min(100%, 58vh)', margin: '0 auto' }}>
+      <div className="edu-picture edu-pad-col" style={{ position: 'relative', margin: '0 auto' }}>
       <svg ref={svgRef} viewBox={`${view.x} ${view.y} ${span} ${span}`} role="img" aria-label={`A ${picture} to color`}
         onPointerDown={start} onPointerMove={move} onPointerUp={stop} onPointerLeave={stop}
         style={{ width: '100%', aspectRatio: '1 / 1', display: 'block', background: '#fff', border: `2px solid ${C.line}`, borderRadius: 16, touchAction: freeDraw ? 'none' : 'auto' }}>

@@ -18170,6 +18170,29 @@ function matchesCourseSearch(course, query) {
 function byGradeOrder(a, b) { return GRADES.indexOf(a.grade) - GRADES.indexOf(b.grade) || a.subject.localeCompare(b.subject) || a.title.localeCompare(b.title); }
 // A grade whose courses all start hidden (pre-K 3) is never a starter; an educator switches it on for the children who need it.
 function gradeStartsHidden(grade) { const inGrade = COURSES.filter((c) => c.grade === grade); return inGrade.length > 0 && inGrade.every((c) => c.startsHidden); }
+// The band a student is working in, for the login screen. It only moves up when everything
+// assigned in the bands below is mastered, so a name never claims a stage that is not finished.
+// A student with no work assigned in a band skips it: a grade 3 start reads Elementary at once.
+const PROGRESS_BANDS = [
+    { id: 'early', title: 'Early years', grades: ['PK3', 'PK4', 'K', '1', '2'] },
+    { id: 'elementary', title: 'Elementary', grades: ['3', '4', '5'] },
+    { id: 'middle', title: 'Middle school', grades: ['6', '7', '8'] },
+    { id: 'high', title: 'High school', grades: ['9', '10', '11', '12'] },
+    { id: 'college', title: 'College', grades: ['C'] },
+];
+function bandTitle(events) {
+    const enabled = enabledCourseIds(events);
+    const mastered = deriveProgress(events).masteredIds;
+    const assigned = MODULES.filter((m) => enabled.includes(m.courseId));
+    const gradeOf = (m) => (getCourse(m.courseId) || {}).grade;
+    for (const band of PROGRESS_BANDS) {
+        const mine = assigned.filter((m) => band.grades.includes(gradeOf(m)));
+        if (mine.length && !mine.every((m) => mastered.includes(m.id)))
+            return band.title;
+    }
+    const done = [...PROGRESS_BANDS].reverse().find((b) => assigned.some((m) => b.grades.includes(gradeOf(m))));
+    return done ? done.title : '';
+}
 function recommendedCourseIds(events, level, startGrade = null) {
     // Electives are never recommended: they are the whole point of "wish to stray from our recommendations".
     const recommended = recommendedIncludingElectives(events, level, startGrade);
@@ -39141,6 +39164,8 @@ const KID_ANIMATION = `
   .edu-frame-bottom { display: none; }
   /* The login grid: one name per row on a phone, two per row from a tablet up (never for a single student). */
   .edu-name-grid { grid-template-columns: 1fr; }
+  .edu-name-grade { display: block; margin-top: 3px; font-size: 12px; font-weight: 400; line-height: 1.2; color: ${C.muted}; }
+  @media (min-width: 600px) { .edu-name-grade { display: none; } }
   @media (min-width: 600px) { .edu-name-grid-two { grid-template-columns: 1fr 1fr; } }
   /* The student card: on a phone the name, grade and links stay left and Open report sits below them, centered;
      on a laptop the name, grade and links stack on the left and Open report sits on the right, centered on them. */
@@ -40440,6 +40465,22 @@ function EduSphereApp() {
     // The learner list can change during a session (a new learner just started), so refresh it whenever a picker screen opens.
     (0, react_1.useEffect)(() => { if (screen === 'welcome' || screen === 'educator-pick')
         loadRoster().then(setRoster); }, [screen]);
+    // The band under each name on the login screen, read from each student's own record.
+    const [bands, setBands] = (0, react_1.useState)({});
+    (0, react_1.useEffect)(() => {
+        if (screen !== 'welcome')
+            return;
+        (async () => {
+            const pairs = await Promise.all(activeStudents(roster).map(async (st) => { try {
+                const rec = await loadRecord(st.id);
+                return [st.id, bandTitle(rec.events)];
+            }
+            catch (e) {
+                return [st.id, ''];
+            } }));
+            setBands(Object.fromEntries(pairs));
+        })();
+    }, [screen, roster]);
     // A young learner who was wrong tries again, so the voice must not give the answer away.
     (0, react_1.useEffect)(() => { if (screen === 'practice' && readAloud && checked && q)
         speak(wasCorrect ? 'Correct. ' + q.explain : 'Not that one. Have another try.'); }, [checked]);
@@ -40464,11 +40505,13 @@ function EduSphereApp() {
                         activeStudents(roster).length > 8 && (react_1.default.createElement("input", { value: nameInput, onChange: (e) => setNameInput(e.target.value), placeholder: "Find your name", style: { textAlign: 'center', fontFamily: FONT, fontSize: 17, padding: '10px 12px', width: '100%', boxSizing: 'border-box', border: `2px solid ${C.line}`, borderRadius: 10, marginBottom: 10 } })),
                         react_1.default.createElement("div", { className: 'edu-name-grid' + (activeStudents(roster).length > 1 ? ' edu-name-grid-two' : ''), style: { display: 'grid', gridAutoRows: 84, gap: 10 } }, activeStudents(roster)
                             .filter((st) => st.label.toLowerCase().includes(nameInput.trim().toLowerCase()))
-                            .map((st) => (react_1.default.createElement("button", { key: st.id, type: "button", onClick: () => startWithName(st.id), disabled: busy, className: "edu-press edu-name", style: { fontFamily: FONT, fontSize: 15, fontWeight: 600, borderRadius: 10, background: C.surface, border: `2px solid ${C.line}`, color: C.ink, cursor: 'pointer', height: 84, padding: '0 18px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, overflow: 'hidden', position: 'relative' } },
+                            .map((st) => (react_1.default.createElement("button", { key: st.id, type: "button", "aria-label": st.label, onClick: () => startWithName(st.id), disabled: busy, className: "edu-press edu-name", style: { fontFamily: FONT, fontSize: 15, fontWeight: 600, borderRadius: 10, background: C.surface, border: `2px solid ${C.line}`, color: C.ink, cursor: 'pointer', height: 84, padding: '0 18px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, overflow: 'hidden', position: 'relative' } },
                             react_1.default.createElement("span", { style: { display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 6, maxWidth: '100%' } },
                                 st.picture && react_1.default.createElement("span", { style: { display: 'inline-flex', flexShrink: 0 } },
                                     react_1.default.createElement(StudentPicture, { name: st.picture, tint: st.tint, size: 40 })),
-                                react_1.default.createElement("span", { style: { overflow: 'hidden', textAlign: 'center', lineHeight: 1.2, maxHeight: '3.6em', flex: '1 1 auto', minWidth: 0, overflowWrap: 'anywhere' } }, keepTogether(st.label))))))),
+                                react_1.default.createElement("span", { style: { overflow: 'hidden', textAlign: 'center', lineHeight: 1.2, maxHeight: '3.6em', flex: '1 1 auto', minWidth: 0, overflowWrap: 'anywhere' } },
+                                    keepTogether(st.label),
+                                    react_1.default.createElement("span", { className: "edu-name-grade" }, bands[st.id] || levelFor(st.level).title))))))),
                         activeStudents(roster).filter((st) => st.label.toLowerCase().includes(nameInput.trim().toLowerCase())).length === 0 && (react_1.default.createElement("p", { style: { margin: '10px 0 0', color: C.muted, fontSize: 15 } },
                             "No name matches \u201C",
                             nameInput.trim(),

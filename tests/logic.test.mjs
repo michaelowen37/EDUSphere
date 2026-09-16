@@ -874,6 +874,16 @@ ok('reset: history kept, but nothing counts as mastered afterwards', events.leng
   ok('a picture can be added later, with a default colour', L.findStudent(withPic, 'S-7').picture === 'owl' && L.findStudent(withPic, 'S-7').tint === 'sun');
   ok('a picture can be removed again', L.findStudent(L.setStudentPicture(withPic, 'S-7', null), 'S-7').picture === null);
   ok('a level narrows recommendations to its band', JSON.stringify(L.recommendedCourseIds([L.makeCoursesEnabledEvent([], 't')], 'early')) === '["first-steps-pk","first-sounds-pk"]');
+  // The band under a name on the login screen only moves up when everything below it is mastered.
+  { const early = L.getCourse('counting-k').modules.map((m) => m.id);
+    const assigned = [L.makeCoursesEnabledEvent(['counting-k', 'fractions-intro'], '2026-09-15T09:00:00.000Z')];
+    ok('a student with early years work unfinished reads Early years', L.bandTitle(assigned) === 'Early years');
+    // Two clean passes on different days master a module; the same for every early years module.
+    const pass = (id, at) => ({ type: 'attempt_completed', at, startedAt: at, moduleId: id, seed: 1, core: Array.from({ length: L.moduleRules(id).questions }, () => ({ correct: true, timeMs: 9000 })), review: null, coreCorrect: L.moduleRules(id).questions, coreTotal: L.moduleRules(id).questions });
+    const finished = [...assigned, ...early.flatMap((id, i) => [pass(id, `2026-09-${10 + (i % 5)}T10:00:00.000Z`), pass(id, `2026-09-${20 + (i % 5)}T10:00:00.000Z`)])];
+    ok('it reads Elementary once every early years module is mastered', L.bandTitle(finished) === 'Elementary');
+    ok('a student with no early years work assigned reads Elementary at once', L.bandTitle([L.makeCoursesEnabledEvent(['fractions-intro'], 't')]) === 'Elementary');
+    ok('the college course reads College, and nothing assigned reads nothing', L.bandTitle([L.makeCoursesEnabledEvent(['history-college'], 't')]) === 'College' && L.bandTitle([L.makeCoursesEnabledEvent([], 't')]) === ''); }
   ok('an elective is never recommended, only offered under other courses', !L.recommendedCourseIds([L.makeCoursesEnabledEvent([], 't')], 'elementary').some((id) => L.getCourse(id).elective) && L.COURSES.some((c) => c.elective));
   ok('a high school student starts on the grade 9 courses', JSON.stringify(L.recommendedCourseIds([L.makeCoursesEnabledEvent([], 't')], 'high')) === '["history-9","math-9","reading-9","science-9","writing-9"]');
   ok('the letters course and now the counting course both have a touch module', L.courseNeedsTouch('letters-k') === true && L.courseNeedsTouch('counting-k') === true && L.courseNeedsTouch('fractions-intro') === false);

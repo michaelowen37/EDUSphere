@@ -751,6 +751,8 @@ const KID_ANIMATION = `
   .edu-frame-bottom { display: none; }
   /* The login grid: one name per row on a phone, two per row from a tablet up (never for a single student). */
   .edu-name-grid { grid-template-columns: 1fr; }
+  .edu-name-grade { display: block; margin-top: 3px; font-size: 12px; font-weight: 400; line-height: 1.2; color: ${C.muted}; }
+  @media (min-width: 600px) { .edu-name-grade { display: none; } }
   @media (min-width: 600px) { .edu-name-grid-two { grid-template-columns: 1fr 1fr; } }
   /* The student card: on a phone the name, grade and links stay left and Open report sits below them, centered;
      on a laptop the name, grade and links stack on the left and Open report sits on the right, centered on them. */
@@ -1889,6 +1891,12 @@ export default function EduSphereApp() {
   useEffect(() => { if (typeof window !== 'undefined') window.__eduTest = { screen, question: q || null, isReviewQ, openModule: (id) => openModule(id) }; }, [screen, q, isReviewQ]);
   // The learner list can change during a session (a new learner just started), so refresh it whenever a picker screen opens.
   useEffect(() => { if (screen === 'welcome' || screen === 'educator-pick') loadRoster().then(setRoster); }, [screen]);
+  // The band under each name on the login screen, read from each student's own record.
+  const [bands, setBands] = useState({});
+  useEffect(() => { if (screen !== 'welcome') return; (async () => {
+    const pairs = await Promise.all(activeStudents(roster).map(async (st) => { try { const rec = await loadRecord(st.id); return [st.id, bandTitle(rec.events)]; } catch (e) { return [st.id, '']; } }));
+    setBands(Object.fromEntries(pairs));
+  })(); }, [screen, roster]);
   // A young learner who was wrong tries again, so the voice must not give the answer away.
   useEffect(() => { if (screen === 'practice' && readAloud && checked && q) speak(wasCorrect ? 'Correct. ' + q.explain : 'Not that one. Have another try.'); }, [checked]);
 
@@ -1918,11 +1926,14 @@ export default function EduSphereApp() {
                 {activeStudents(roster)
                   .filter((st) => st.label.toLowerCase().includes(nameInput.trim().toLowerCase()))
                   .map((st) => (
-                    <button key={st.id} type="button" onClick={() => startWithName(st.id)} disabled={busy} className="edu-press edu-name"
+                    <button key={st.id} type="button" aria-label={st.label} onClick={() => startWithName(st.id)} disabled={busy} className="edu-press edu-name"
                       style={{ fontFamily: FONT, fontSize: 15, fontWeight: 600, borderRadius: 10, background: C.surface, border: `2px solid ${C.line}`, color: C.ink, cursor: 'pointer', height: 84, padding: '0 18px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, overflow: 'hidden', position: 'relative' }}>
                       <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 6, maxWidth: '100%' }}>
                         {st.picture && <span style={{ display: 'inline-flex', flexShrink: 0 }}><StudentPicture name={st.picture} tint={st.tint} size={40} /></span>}
-                        <span style={{ overflow: 'hidden', textAlign: 'center', lineHeight: 1.2, maxHeight: '3.6em', flex: '1 1 auto', minWidth: 0, overflowWrap: 'anywhere' }}>{keepTogether(st.label)}</span>
+                        <span style={{ overflow: 'hidden', textAlign: 'center', lineHeight: 1.2, maxHeight: '3.6em', flex: '1 1 auto', minWidth: 0, overflowWrap: 'anywhere' }}>{keepTogether(st.label)}
+                          {/* On a phone a quieter second line says which grade, so the two lines stand about as tall as the picture. */}
+                          <span className="edu-name-grade">{bands[st.id] || levelFor(st.level).title}</span>
+                        </span>
                       </span>
                     </button>
                   ))}

@@ -967,6 +967,28 @@ export function byGradeOrder(a, b) { return GRADES.indexOf(a.grade) - GRADES.ind
 // A grade whose courses all start hidden (pre-K 3) is never a starter; an educator switches it on for the children who need it.
 function gradeStartsHidden(grade) { const inGrade = COURSES.filter((c) => c.grade === grade); return inGrade.length > 0 && inGrade.every((c) => c.startsHidden); }
 
+// The band a student is working in, for the login screen. It only moves up when everything
+// assigned in the bands below is mastered, so a name never claims a stage that is not finished.
+// A student with no work assigned in a band skips it: a grade 3 start reads Elementary at once.
+export const PROGRESS_BANDS = [
+  { id: 'early', title: 'Early years', grades: ['PK3', 'PK4', 'K', '1', '2'] },
+  { id: 'elementary', title: 'Elementary', grades: ['3', '4', '5'] },
+  { id: 'middle', title: 'Middle school', grades: ['6', '7', '8'] },
+  { id: 'high', title: 'High school', grades: ['9', '10', '11', '12'] },
+  { id: 'college', title: 'College', grades: ['C'] },
+];
+export function bandTitle(events) {
+  const enabled = enabledCourseIds(events);
+  const mastered = deriveProgress(events).masteredIds;
+  const assigned = MODULES.filter((m) => enabled.includes(m.courseId));
+  const gradeOf = (m) => (getCourse(m.courseId) || {}).grade;
+  for (const band of PROGRESS_BANDS) {
+    const mine = assigned.filter((m) => band.grades.includes(gradeOf(m)));
+    if (mine.length && !mine.every((m) => mastered.includes(m.id))) return band.title;
+  }
+  const done = [...PROGRESS_BANDS].reverse().find((b) => assigned.some((m) => b.grades.includes(gradeOf(m))));
+  return done ? done.title : '';
+}
 export function recommendedCourseIds(events, level, startGrade = null) {
   // Electives are never recommended: they are the whole point of "wish to stray from our recommendations".
   const recommended = recommendedIncludingElectives(events, level, startGrade);

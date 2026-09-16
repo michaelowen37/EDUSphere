@@ -352,6 +352,8 @@ Approved by Mikey on 2026-09-04 unless marked "proposed".
 
 - (2026-09-15) Quick checks uses the same two-piece rectangle as the other toggles, On beside Off. "Tried but not passed yet:" is bold, the writing card's heading and each assignment's title are centered, and the note box is only tall on a phone.
 
+- (2026-09-15) On a phone each name on the login screen carries a quieter second line naming the band the student is working in: Early years, Elementary, Middle school, High school or College (`bandTitle` in logic.mjs). It only moves up when every assigned module in the bands below is mastered, so a name never claims a stage that is not finished; a band with nothing assigned is skipped, so a grade 3 start reads Elementary at once. The two lines stand about as tall as the picture, and from a tablet up the line is left off.
+
 ## Open items
 - Verify audio plays inside the chat artifact sandbox (works in a normal browser).
 - Common Core / TEKS codes on existing modules to be checked against the official lists.

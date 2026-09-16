@@ -752,7 +752,7 @@ const KID_ANIMATION = `
   /* The login grid: one name per row on a phone, two per row from a tablet up (never for a single student). */
   .edu-name-grid { grid-template-columns: 1fr; }
   .edu-name-grade { display: block; margin-top: 3px; font-size: 12px; font-weight: 400; line-height: 1.2; color: ${C.muted}; }
-  @media (min-width: 600px) { .edu-name-grade { display: none; } }
+
   @media (min-width: 600px) { .edu-name-grid-two { grid-template-columns: 1fr 1fr; } }
   /* The student card: on a phone the name, grade and links stay left and Open report sits below them, centered;
      on a laptop the name, grade and links stack on the left and Open report sits on the right, centered on them. */
@@ -1066,6 +1066,7 @@ const COLOR_BREAK_SECONDS = 300;
 const colorKey = (studentId) => `edusphere_v1_coloring:${studentId}`;
 async function loadColorState(studentId) { try { return JSON.parse((await storageGet(colorKey(studentId))) || '{}'); } catch (e) { return {}; } }
 async function saveColorState(studentId, state) { return storageSet(colorKey(studentId), JSON.stringify(state)); }
+const NIBS = [2.5, 5, 9]; // how fat the line is: shown as three dots, thinnest first
 const CRAYONS = ['#E4572E', '#F4A259', '#F7D154', '#5BA84A', '#3E7CB1', '#7D5BA6', '#8C6239', '#2E2E2E'];
 // Some pictures are filled by tapping a part; others are drawn on freely with a finger.
 // Half are filled in by tapping a part, half are drawn on with a finger. A name page is always drawn.
@@ -1208,11 +1209,33 @@ const COLORING_ART = {
   ],
 };
 // The same drawing, small and in outline, for the grid of pictures. A name page shows the name.
+// A name is drawn at whatever size fits: two lines if it has a space in it, one if not, and never
+// stretched out of shape. Long names simply come out smaller.
+function nameLines(name) {
+  const words = String(name || 'Your name').trim().split(/[\s-]+/).filter(Boolean);
+  const lines = [];
+  for (const word of words) {
+    const last = lines[lines.length - 1];
+    if (last && (last + ' ' + word).length <= 12) lines[lines.length - 1] = `${last} ${word}`;
+    else if (lines.length < 3) lines.push(word);
+    else lines[2] = `${lines[2]} ${word}`;
+  }
+  if (!lines.length) lines.push('Name');
+  const longest = Math.max(...lines.map((w) => w.length));
+  // A bold letter is about 0.62 of its size wide, and the square is 90 units across with a margin.
+  const size = Math.max(6, Math.min(26, 88 / (0.62 * longest), 80 / (lines.length * 1.2)));
+  const step = size * 1.2;
+  const y = (i) => 52 + (i - (lines.length - 1) / 2) * step + size * 0.34;
+  return { lines, size, y };
+}
 function ColorThumb({ picture, name, size = 72 }) {
   if (picture === 'my-name') {
+    const { lines, size: fs, y } = nameLines(name);
     return (
       <svg viewBox="0 0 100 100" width={size} height={size} aria-hidden="true">
-        <text x="50" y="58" textAnchor="middle" textLength="84" lengthAdjust="spacingAndGlyphs" fontFamily={FONT} fontSize="26" fontWeight="700" fill="#FFFFFF" stroke="#2E2E2E" strokeWidth="1.2">{(name || 'Name').split(' ')[0].slice(0, 10)}</text>
+        {lines.map((line, i) => (
+          <text key={line + i} x="50" y={y(i)} textAnchor="middle" fontFamily={FONT} fontSize={fs} fontWeight="700" fill="#FFFFFF" stroke="#2E2E2E" strokeWidth="1.2">{line}</text>
+        ))}
       </svg>
     );
   }
@@ -1230,8 +1253,9 @@ function ColorThumb({ picture, name, size = 72 }) {
     </svg>
   );
 }
-function ColoringPad({ picture, name, onDone, secondsLeft, total, saved, onArt }) {
+function ColoringPad({ picture, name, secondsLeft, total, saved, onArt }) {
   const [crayon, setCrayon] = useState(CRAYONS[0]);
+  const [nib, setNib] = useState(NIBS[0]);
   const [fills, setFills] = useState((saved && saved.fills) || {});
   const [strokes, setStrokes] = useState((saved && saved.strokes) || []);
   // The work in progress is handed up as it happens, so leaving and coming back finds it as it was.
@@ -1241,7 +1265,7 @@ function ColoringPad({ picture, name, onDone, secondsLeft, total, saved, onArt }
   const parts = COLORING_ART[picture] || [];
   const freeDraw = COLORING_MODE[picture] === 'draw';
   const at = (e) => { const r = svgRef.current.getBoundingClientRect(); return [((e.clientX - r.left) / r.width) * 100, ((e.clientY - r.top) / r.height) * 100]; };
-  const start = (e) => { if (!freeDraw) return; drawing.current = true; setStrokes((list) => [...list, { colour: crayon, points: [at(e)] }]); };
+  const start = (e) => { if (!freeDraw) return; drawing.current = true; setStrokes((list) => [...list, { colour: crayon, width: nib, points: [at(e)] }]); };
   const move = (e) => { if (!freeDraw || !drawing.current) return; e.preventDefault(); setStrokes((list) => { const rest = list.slice(0, -1); const last = list[list.length - 1]; return [...rest, { ...last, points: [...last.points, at(e)] }]; }); };
   const stop = () => { drawing.current = false; };
   return (
@@ -1266,8 +1290,10 @@ function ColoringPad({ picture, name, onDone, secondsLeft, total, saved, onArt }
           if (p.t === 'path') return <path {...common} d={p.d} />;
         return <polygon {...common} points={p.points} />;
         })}
-        {picture === 'my-name' && <text x="50" y="58" textAnchor="middle" textLength="86" lengthAdjust="spacingAndGlyphs" fontFamily={FONT} fontSize="24" fontWeight="700" fill="#FFFFFF" stroke="#2E2E2E" strokeWidth="1" pointerEvents="none">{(name || 'Your name').split(' ')[0].slice(0, 12)}</text>}
-        {strokes.map((st, i) => <polyline key={`s${i}`} points={st.points.map((pt) => pt.join(',')).join(' ')} fill="none" stroke={st.colour} strokeWidth="6" strokeLinecap="round" strokeLinejoin="round" pointerEvents="none" />)}
+        {picture === 'my-name' && (() => { const n = nameLines(name); return n.lines.map((line, i) => (
+          <text key={line + i} x="50" y={n.y(i)} textAnchor="middle" fontFamily={FONT} fontSize={n.size} fontWeight="700" fill="#FFFFFF" stroke="#2E2E2E" strokeWidth="0.9" pointerEvents="none">{line}</text>
+        )); })()}
+        {strokes.map((st, i) => <polyline key={`s${i}`} points={st.points.map((pt) => pt.join(',')).join(' ')} fill="none" stroke={st.colour} strokeWidth={st.width || 5} strokeLinecap="round" strokeLinejoin="round" pointerEvents="none" />)}
       </svg>
       <p style={{ margin: '10px 0 0', textAlign: 'center', fontSize: 15, color: C.muted }}>{freeDraw ? 'Pick a color and draw with your finger.' : 'Pick a color, then tap a part of the picture.'}</p>
       <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 10, margin: '14px 0' }}>
@@ -1276,13 +1302,28 @@ function ColoringPad({ picture, name, onDone, secondsLeft, total, saved, onArt }
             style={{ width: 44, height: 44, borderRadius: 999, background: colour, border: crayon === colour ? `4px solid ${C.ink}` : `2px solid ${C.line}`, cursor: 'pointer' }} />
         ))}
       </div>
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10 }}>
+      {/* How fat the line is, shown as the dot itself: tap the small one for a thin line. */}
+      {freeDraw && (
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 14, margin: '0 0 14px' }}>
+          {NIBS.map((w) => (
+            <button key={w} type="button" aria-label={`${w === NIBS[0] ? 'Thin' : w === NIBS[1] ? 'Medium' : 'Thick'} line`} aria-pressed={nib === w} onClick={() => setNib(w)}
+              style={{ width: 52, height: 52, borderRadius: 999, display: 'flex', alignItems: 'center', justifyContent: 'center', background: C.surface, border: nib === w ? `3px solid ${C.ink}` : `2px solid ${C.line}`, cursor: 'pointer' }}>
+              <span style={{ display: 'block', width: w * 3.2, height: w * 3.2, borderRadius: 999, background: crayon }} />
+            </button>
+          ))}
+        </div>
+      )}
+      <div style={{ display: 'flex', justifyContent: 'center' }}>
         <Btn kind="secondary" onClick={() => { setFills({}); setStrokes([]); onArt({ fills: {}, strokes: [] }); }} style={{ width: 'min(320px, 100%)' }}>Start over</Btn>
-        <Btn onClick={onDone} style={{ width: 'min(320px, 100%)' }}>Back to my courses</Btn>
       </div>
     </div>
   );
 }
+// A CSS animation starts when its element does, so a card that comes back after being opened
+// would beat out of step with the rest. A negative delay, measured from when the page opened,
+// drops it back into the same rhythm as everything else.
+const PAGE_OPENED = typeof performance !== 'undefined' ? performance.now() : Date.now();
+const inBeat = (seconds) => ({ animationDelay: `-${((((typeof performance !== 'undefined' ? performance.now() : Date.now()) - PAGE_OPENED) / 1000) % seconds).toFixed(2)}s` });
 function InfoButton({ onClick, label, open = false }) {
   return (
     <button type="button" onClick={onClick} aria-label={label} aria-expanded={open}
@@ -2262,8 +2303,16 @@ export default function EduSphereApp() {
   if (screen === 'coloring' && coloring) {
     return (
       <div style={page}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={wrap}>
-        <h1 className="edu-rainbow" style={{ fontSize: 24, margin: '18px 0 10px', textAlign: 'center', textTransform: 'capitalize' }}>{coloring === 'my-name' ? 'My name' : coloring}</h1>
-        <ColoringPad key={coloring} picture={coloring} name={record && record.name} secondsLeft={colorLeft} total={COLOR_BREAK_SECONDS} saved={(colorState[coloring] || {}).art} onArt={(art) => { colorArt.current = art; }} onDone={leaveColoring} />
+        {/* A bold X rather than a worded button: clearer for a child who cannot read, and it keeps
+            the palette and the picture on one screen without scrolling. */}
+        <div style={{ position: 'relative', margin: '14px 0 10px' }}>
+          <h1 className="edu-rainbow" style={{ fontSize: 24, margin: 0, textAlign: 'center', textTransform: 'capitalize' }}>{coloring === 'my-name' ? 'My name' : coloring}</h1>
+          <button type="button" aria-label="Close coloring" onClick={leaveColoring}
+            style={{ position: 'absolute', top: '50%', right: 0, transform: 'translateY(-50%)', background: 'none', border: 'none', padding: 6, cursor: 'pointer', color: C.green, lineHeight: 0 }}>
+            <svg viewBox="0 0 24 24" width="34" height="34" aria-hidden="true"><path d="M5 5 L19 19 M19 5 L5 19" fill="none" stroke="currentColor" strokeWidth="3.4" strokeLinecap="round" /></svg>
+          </button>
+        </div>
+        <ColoringPad key={`${coloring}-${displayName}`} picture={coloring} name={displayName} secondsLeft={colorLeft} total={COLOR_BREAK_SECONDS} saved={(colorState[coloring] || {}).art} onArt={(art) => { colorArt.current = art; }} />
       </div></div>
     );
   }
@@ -2358,7 +2407,7 @@ export default function EduSphereApp() {
               {/* A closed subject with something ready inside breathes gently, so a young child knows where to tap. */}
               <button type="button" onClick={() => setOpenSubject(isOpen ? null : sub)} aria-expanded={isOpen}
                 className={youngLearner && !isOpen && subModules.some((m) => statusOf(m.id) === 'available') ? 'edu-breathe' : undefined}
-                style={{ fontFamily: FONT, width: '100%', textAlign: 'left', background: 'transparent', border: 'none', padding: 16, cursor: 'pointer', color: C.ink }}>
+                style={{ fontFamily: FONT, width: '100%', textAlign: 'left', background: 'transparent', border: 'none', padding: 16, cursor: 'pointer', color: C.ink, ...inBeat(2.2) }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10 }}>
                   <span style={{ fontSize: 21, fontWeight: 600 }}>{sub}</span>
                   <span style={{ fontSize: 14, color: C.muted, whiteSpace: 'nowrap' }}>{done} of {subModules.length} {isOpen ? '▴' : '▾'}</span>
@@ -2425,7 +2474,7 @@ export default function EduSphereApp() {
                 <span className={anyReady ? 'edu-breathe' : undefined} style={{ fontSize: 20, fontWeight: 700, position: 'relative' }}>Let's Color</span>
               </button>
               {open && (
-                <div style={{ padding: 14 }}>
+                <div className="edu-colorwash" style={{ padding: 14 }}>
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(96px, 1fr))', gap: 10 }}>
                     {COLORING_PICTURES.map((pic, i) => {
                       const locked = i >= unlocked;
@@ -2433,13 +2482,13 @@ export default function EduSphereApp() {
                       const filled = resting ? Math.round(100 - (restLeft(pic) / (COLOR_LOCKOUT_MINUTES * 60000)) * 100) : 100;
                       return (
                         <button key={pic} type="button" disabled={locked || resting} aria-label={locked ? 'Locked picture' : resting ? 'Resting picture' : `Color the ${pic === 'my-name' ? 'name' : pic}`}
-                          onClick={() => { setColoring(pic); setScreen('coloring'); }} className={!locked && !resting ? 'edu-press edu-breathe edu-colorwash-soft' : undefined}
-                          style={{ position: 'relative', overflow: 'hidden', aspectRatio: '1 / 1', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 6, borderRadius: 12, ...(locked || resting ? { background: C.surface } : {}), border: `2px solid ${locked || resting ? C.line : C.green}`, cursor: locked || resting ? 'default' : 'pointer' }}>
+                          onClick={() => { setColoring(pic); setScreen('coloring'); }} className={!locked && !resting ? 'edu-press edu-breathe' : undefined}
+                          style={{ position: 'relative', overflow: 'hidden', aspectRatio: '1 / 1', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 6, borderRadius: 12, background: locked ? 'rgba(255,255,255,0.55)' : '#FFFFFF', border: `2px solid ${locked || resting ? 'rgba(255,255,255,0.7)' : C.ink}`, cursor: locked || resting ? 'default' : 'pointer', ...inBeat(2.2) }}>
                           {locked ? (
                             <svg viewBox="0 0 24 24" width="34" height="34" aria-hidden="true"><path d="M7 10V8a5 5 0 0110 0v2" fill="none" stroke={C.muted} strokeWidth="2" strokeLinecap="round" /><rect x="5" y="10" width="14" height="10" rx="2" fill={C.line} stroke={C.muted} strokeWidth="1.5" /></svg>
                           ) : (
                             <>
-                              <ColorThumb picture={pic} name={record.name} size="86%" />
+                              <ColorThumb picture={pic} name={displayName} size="86%" />
                               {resting && <span aria-hidden="true" style={{ position: 'absolute', left: 0, bottom: 0, width: `${filled}%`, height: '100%', background: 'linear-gradient(90deg, rgba(228,87,46,0.25), rgba(62,124,177,0.25))', pointerEvents: 'none' }} />}
                             </>
                           )}

@@ -380,6 +380,15 @@ Approved by Mikey on 2026-09-04 unless marked "proposed".
 - (2026-09-16) Who needs help names each student's stage under their name (Early years, Elementary, Middle school, High school, College), smaller and quieter, the same label the login screen shows. It is a separate field from the row's attention band, which still reads needs help now / keep an eye on / on track.
 - (2026-09-16) A coloring picture keeps its colors while its five minutes last, so leaving and coming back finds the work as it was; when the five minutes run out the picture rests and starts blank next time. The square behind the drawing can be colored too. A picture ready to color now wears a pale drift of the crayon colors behind its black-and-white drawing, the same idea as the Let's Color strip but quiet enough to keep the outline readable.
 
+- (2026-09-16) The grade line under a name on the login screen shows at every width, not only on a phone. The card behind the coloring pictures wears the crayon wash, with the picture squares white so the black-and-white drawings still read against it; a locked square is translucent instead.
+- (2026-09-16) Breathing cards keep a common beat. A CSS animation starts with its element, so a fold that was opened and closed came back out of step with the others; every breathing card now carries a negative animation delay measured from when the page opened, which drops it straight back into the same rhythm.
+
+- (2026-09-16) The name page lays a name out instead of stretching it: words (and hyphenated parts) are packed into up to three lines of about twelve characters, and the letters are sized to fit the square, so "Michael-Rafael-Angelo" reads on three lines and "Jo" fills the page. It is never squeezed sideways.
+- (2026-09-16) A drawing picture has three nibs: thin, medium and thick, shown as dots of that very size in the color chosen, with thin as the default. The old single line was too fat for a name page.
+
+- (2026-09-16) The coloring page closes with a bold X at the top right instead of a worded button: clearer for a child who cannot read, and it keeps the picture, the palette and Start over on one screen without scrolling. The same X is used at every width.
+- (2026-09-16) The name page uses the name the educator gave the student, not their school ID, so renaming a student renames their picture; the grid's thumbnail follows too.
+
 ## Open items
 - Verify audio plays inside the chat artifact sandbox (works in a normal browser).
 - Common Core / TEKS codes on existing modules to be checked against the official lists.

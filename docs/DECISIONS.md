@@ -416,6 +416,10 @@ Approved by Mikey on 2026-09-04 unless marked "proposed".
 
 - (2026-09-16) The pictures were redrawn with curves instead of stacked shapes, and given scenes rather than single objects: the tree has a canopy, a trunk that flares at the ground, four apples, a cloud, a bird and a sun; the fish has fins, a smile, bubbles, weed and sand; the house has a chimney with smoke, a door knob and a path; the balloon has a second balloon and a curling string; the flower has real petals and leaves; the garden has three flowering plants, a cloud and a sun. More to color, and it looks like the thing it is.
 
+- (2026-09-16) Every remaining picture was redrawn the same way: curved silhouettes and a small scene around the subject (a car on a road under a cloud, a train with smoke, a castle with flags and battlements, a farm with a silo and a sheep, a city under a moon and stars). A part can now be a line rather than a filled region (`line: true`), which is what a balloon string, an antenna or a swing rope needs; filling them left white blobs where the color should have flowed past. From here, new pictures follow the same rule: curves, a few extra things to color, and lines drawn as lines.
+
+- (2026-09-16) A phone shows five nibs, laid out in the same five columns as the crayons and at the same size as them, so the two rows line up under the picture instead of drifting. A wide screen keeps its column of six at the larger size.
+
 ## Open items
 - Verify audio plays inside the chat artifact sandbox (works in a normal browser).
 - Common Core / TEKS codes on existing modules to be checked against the official lists.

@@ -802,16 +802,18 @@ const KID_ANIMATION = `
   /* The crayons: five to a row at any width, a little smaller on a phone so all three rows fit. */
   .edu-crayons { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; justify-items: center; width: min(300px, 100%); margin: 10px auto; }
   .edu-wide-only { display: none; }
-  .edu-nib { width: 46px; height: 46px; border-radius: 999px; display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 0; }
+  .edu-nib { width: 38px; height: 38px; border-radius: 999px; display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 0; }
   .edu-nib.edu-wide-only { display: none; }
-  .edu-nibs { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin: 6px 0 0; }
+  /* On a phone the nibs sit in the same five columns as the crayons, so the two rows line up. */
+  .edu-nibs { display: grid; grid-template-columns: repeat(5, 1fr); justify-items: center; gap: 8px; width: min(300px, 100%); margin: 8px auto 0; }
   @media (min-width: 700px) {
     /* Nibs stand beside the picture and the crayons run the width of the card. */
     .edu-pad { display: grid; grid-template-columns: auto auto; grid-template-areas: 'nibs head' 'nibs bar' 'nibs picture' '. crayons'; column-gap: 28px; justify-content: center; }
     .edu-pad-head { grid-area: head; }
     .edu-pad-bar { grid-area: bar; }
     .edu-picture { grid-area: picture; }
-    .edu-nibs { grid-area: nibs; flex-direction: column; flex-wrap: nowrap; align-self: end; margin: 0; }
+    .edu-nibs { grid-area: nibs; display: flex; flex-direction: column; flex-wrap: nowrap; align-self: end; gap: 10px; width: auto; margin: 0; }
+    .edu-nib { width: 46px; height: 46px; }
     .edu-crayons { grid-area: crayons; grid-template-columns: repeat(7, 1fr); width: min(100%, 58vh); margin: 12px 0 0; }
     .edu-wide-only { display: flex; }
     .edu-nib.edu-wide-only { display: flex; }
@@ -1106,7 +1108,7 @@ async function loadColorState(studentId) { try { return JSON.parse((await storag
 async function saveColorState(studentId, state) { return storageSet(colorKey(studentId), JSON.stringify(state)); }
 // How fat the line is, finest first. A phone shows four; a wider screen has room for all six.
 const NIBS = [0.7, 1.1, 1.5, 2.2, 3, 5];
-const PHONE_NIBS = [0.7, 1.5, 3, 5];
+const PHONE_NIBS = [0.7, 1.5, 2.2, 3, 5];
 const ZOOMS = [1, 1.5, 2.2];  // how close in the picture is drawn, always about its middle
 // Fifteen crayons on a phone; a wider screen adds six more and lays all of them across the card.
 const CRAYONS = [
@@ -1138,10 +1140,12 @@ const COLORING_ART = {
   balloon: [
     { t: 'path', d: 'M50,8 C65,8 76,20 76,33 C76,47 63,58 52,67 L48,67 C37,58 24,47 24,33 C24,20 35,8 50,8 Z' },
     { t: 'polygon', points: '45,66 55,66 50,74' },
-    { t: 'path', d: 'M50,74 C58,80 42,84 50,90 C54,93 50,96 48,97' },
+    { t: 'path', line: true, d: 'M50,74 C58,80 42,84 50,90 C54,93 50,96 48,97' },
     { t: 'path', d: 'M20,40 C28,40 33,47 33,54 C33,62 26,68 20,74 L18,74 C12,68 6,62 6,54 C6,47 12,40 20,40 Z' },
     { t: 'polygon', points: '16,73 23,73 19,79' },
+    { t: 'path', line: true, d: 'M19,79 C24,84 14,88 19,94' },
     { t: 'path', d: 'M66,84 C66,79 72,76 76,79 C78,73 87,72 90,78 C96,77 98,84 93,86 L70,86 C67,86 66,85 66,84 Z' },
+    { t: 'circle', cx: 86, cy: 16, r: 7 },
   ],
   star: [
     { t: 'polygon', points: '50,10 60,38 90,38 66,56 75,86 50,68 25,86 34,56 10,38 40,38' },
@@ -1203,58 +1207,104 @@ const COLORING_ART = {
     { t: 'ellipse', cx: 50, cy: 94, rx: 40, ry: 6 },
   ],
   boat: [
-    { t: 'polygon', points: '16,64 84,64 72,84 28,84' }, { t: 'rect', x: 48, y: 20, width: 4, height: 44 },
-    { t: 'polygon', points: '52,24 52,60 84,60' }, { t: 'polygon', points: '46,30 46,60 20,60' },
-    { t: 'circle', cx: 20, cy: 20, r: 8 }, { t: 'polygon', points: '8,88 92,88 92,94 8,94' },
+    { t: 'circle', cx: 84, cy: 14, r: 8 },
+    { t: 'path', d: 'M4,22 C4,16 10,13 14,16 C16,9 26,8 29,14 C35,13 38,20 33,23 L8,23 C4,23 3,22 4,22 Z' },
+    { t: 'rect', x: 48, y: 14, width: 4, height: 56 },
+    { t: 'path', d: 'M54,18 C66,32 72,50 74,66 L54,66 Z' },
+    { t: 'path', d: 'M46,30 C38,42 34,54 32,66 L46,66 Z' },
+    { t: 'polygon', points: '52,14 66,18 52,22' },
+    { t: 'path', d: 'M10,68 L90,68 C86,82 76,90 50,90 C24,90 14,82 10,68 Z' },
+    { t: 'path', line: true, d: 'M6,94 C14,90 22,98 30,94 C38,90 46,98 54,94 C62,90 70,98 78,94 C86,90 92,96 96,94' },
   ],
   rocket: [
-    { t: 'ellipse', cx: 50, cy: 48, rx: 16, ry: 32 }, { t: 'polygon', points: '50,6 62,30 38,30' },
-    { t: 'polygon', points: '34,54 34,84 18,80' }, { t: 'polygon', points: '66,54 66,84 82,80' },
-    { t: 'circle', cx: 50, cy: 42, r: 8 }, { t: 'polygon', points: '44,80 56,80 50,94' },
+    { t: 'path', d: 'M50,8 C60,18 66,34 66,50 C66,62 60,72 50,78 C40,72 34,62 34,50 C34,34 40,18 50,8 Z' },
+    { t: 'circle', cx: 50, cy: 38, r: 9 },
+    { t: 'path', d: 'M34,54 C26,60 20,70 18,80 L34,74 Z' },
+    { t: 'path', d: 'M66,54 C74,60 80,70 82,80 L66,74 Z' },
+    { t: 'path', d: 'M44,78 C46,86 48,92 50,96 C52,92 54,86 56,78 Z' },
+    { t: 'circle', cx: 16, cy: 18, r: 6 },
+    { t: 'path', d: 'M84,24 C84,28 87,31 91,31 C87,31 84,34 84,38 C84,34 81,31 77,31 C81,31 84,28 84,24 Z' },
+    { t: 'path', d: 'M20,60 C20,63 22,65 25,65 C22,65 20,67 20,70 C20,67 18,65 15,65 C18,65 20,63 20,60 Z' },
+    { t: 'path', d: 'M76,70 C76,73 78,75 81,75 C78,75 76,77 76,80 C76,77 74,75 71,75 C74,75 76,73 76,70 Z' },
   ],
   butterfly: [
-    { t: 'ellipse', cx: 32, cy: 34, rx: 20, ry: 16 }, { t: 'ellipse', cx: 68, cy: 34, rx: 20, ry: 16 },
-    { t: 'ellipse', cx: 34, cy: 66, rx: 17, ry: 14 }, { t: 'ellipse', cx: 66, cy: 66, rx: 17, ry: 14 },
-    { t: 'ellipse', cx: 50, cy: 50, rx: 6, ry: 26 }, { t: 'circle', cx: 50, cy: 22, r: 6 },
-    { t: 'circle', cx: 30, cy: 32, r: 5 }, { t: 'circle', cx: 70, cy: 32, r: 5 },
+    { t: 'path', d: 'M48,50 C36,30 18,24 12,34 C6,44 20,56 46,56 Z' },
+    { t: 'path', d: 'M52,50 C64,30 82,24 88,34 C94,44 80,56 54,56 Z' },
+    { t: 'path', d: 'M48,54 C38,68 24,78 18,70 C12,62 26,54 46,54 Z' },
+    { t: 'path', d: 'M52,54 C62,68 76,78 82,70 C88,62 74,54 54,54 Z' },
+    { t: 'path', d: 'M50,26 C54,26 56,32 56,44 C56,60 54,72 50,76 C46,72 44,60 44,44 C44,32 46,26 50,26 Z' },
+    { t: 'circle', cx: 50, cy: 22, r: 5 },
+    { t: 'path', line: true, d: 'M47,18 C42,10 36,8 32,10' },
+    { t: 'path', line: true, d: 'M53,18 C58,10 64,8 68,10' },
+    { t: 'circle', cx: 28, cy: 38, r: 5 }, { t: 'circle', cx: 72, cy: 38, r: 5 },
+    { t: 'circle', cx: 30, cy: 64, r: 4 }, { t: 'circle', cx: 70, cy: 64, r: 4 },
   ],
   train: [
-    { t: 'rect', x: 10, y: 44, width: 46, height: 30 }, { t: 'rect', x: 56, y: 30, width: 30, height: 44 },
-    { t: 'rect', x: 62, y: 38, width: 18, height: 14 }, { t: 'circle', cx: 24, cy: 82, r: 8 },
-    { t: 'circle', cx: 48, cy: 82, r: 8 }, { t: 'circle', cx: 74, cy: 82, r: 8 }, { t: 'rect', x: 20, y: 30, width: 10, height: 14 },
+    { t: 'circle', cx: 86, cy: 14, r: 7 },
+    { t: 'circle', cx: 30, cy: 14, r: 5 }, { t: 'circle', cx: 40, cy: 8, r: 4 }, { t: 'circle', cx: 50, cy: 12, r: 3 },
+    { t: 'path', d: 'M56,36 C56,30 60,28 66,28 L80,28 C86,28 88,32 88,38 L88,70 L56,70 Z' },
+    { t: 'rect', x: 62, y: 36, width: 20, height: 16, },
+    { t: 'path', d: 'M10,48 C10,44 12,42 16,42 L56,42 L56,70 L10,70 Z' },
+    { t: 'path', d: 'M18,42 L18,30 C18,28 20,26 24,26 L30,26 C34,26 36,28 36,30 L36,42 Z' },
+    { t: 'circle', cx: 24, cy: 76, r: 9 }, { t: 'circle', cx: 48, cy: 76, r: 9 }, { t: 'circle', cx: 74, cy: 76, r: 9 },
+    { t: 'circle', cx: 24, cy: 76, r: 3 }, { t: 'circle', cx: 48, cy: 76, r: 3 }, { t: 'circle', cx: 74, cy: 76, r: 3 },
+    { t: 'rect', x: 2, y: 88, width: 96, height: 8 },
   ],
   car: [
-    { t: 'rect', x: 10, y: 52, width: 80, height: 22 }, { t: 'polygon', points: '26,52 38,32 66,32 78,52' },
-    { t: 'rect', x: 40, y: 36, width: 20, height: 14 }, { t: 'circle', cx: 28, cy: 78, r: 10 },
-    { t: 'circle', cx: 72, cy: 78, r: 10 }, { t: 'circle', cx: 14, cy: 60, r: 4 }, { t: 'circle', cx: 86, cy: 60, r: 4 },
+    { t: 'circle', cx: 84, cy: 14, r: 7 },
+    { t: 'path', d: 'M6,22 C6,16 12,13 16,16 C18,9 28,8 31,14 C37,13 40,20 35,23 L10,23 C6,23 5,22 6,22 Z' },
+    { t: 'path', d: 'M8,68 C8,58 12,54 20,52 C26,40 34,34 50,34 C64,34 72,40 78,52 C86,54 92,58 92,68 C92,74 88,76 82,76 L18,76 C12,76 8,74 8,68 Z' },
+    { t: 'path', d: 'M32,50 C34,42 40,40 48,40 L48,52 L30,52 Z' },
+    { t: 'path', d: 'M52,40 C62,40 68,44 72,52 L52,52 Z' },
+    { t: 'circle', cx: 28, cy: 76, r: 11 }, { t: 'circle', cx: 72, cy: 76, r: 11 },
+    { t: 'circle', cx: 28, cy: 76, r: 4 }, { t: 'circle', cx: 72, cy: 76, r: 4 },
+    { t: 'circle', cx: 88, cy: 60, r: 3 },
+    { t: 'rect', x: 2, y: 88, width: 96, height: 8 },
   ],
   robot: [
-    { t: 'rect', x: 32, y: 24, width: 36, height: 28 }, { t: 'rect', x: 26, y: 54, width: 48, height: 30 },
-    { t: 'circle', cx: 42, cy: 36, r: 5 }, { t: 'circle', cx: 58, cy: 36, r: 5 }, { t: 'rect', x: 44, y: 44, width: 12, height: 4 },
-    { t: 'rect', x: 12, y: 58, width: 12, height: 6 }, { t: 'rect', x: 76, y: 58, width: 12, height: 6 },
-    { t: 'rect', x: 34, y: 86, width: 10, height: 10 }, { t: 'rect', x: 56, y: 86, width: 10, height: 10 },
-    { t: 'rect', x: 48, y: 12, width: 4, height: 12 }, { t: 'circle', cx: 50, cy: 10, r: 4 },
+    { t: 'path', d: 'M34,20 C34,16 37,14 41,14 L59,14 C63,14 66,16 66,20 L66,44 C66,48 63,50 59,50 L41,50 C37,50 34,48 34,44 Z' },
+    { t: 'circle', cx: 44, cy: 28, r: 5 }, { t: 'circle', cx: 56, cy: 28, r: 5 },
+    { t: 'path', d: 'M42,38 C46,42 54,42 58,38 C54,44 46,44 42,38 Z' },
+    { t: 'path', line: true, d: 'M50,14 L50,6' }, { t: 'circle', cx: 50, cy: 5, r: 4 },
+    { t: 'path', d: 'M28,54 C28,50 31,48 35,48 L65,48 C69,48 72,50 72,54 L72,80 C72,84 69,86 65,86 L35,86 C31,86 28,84 28,80 Z' },
+    { t: 'rect', x: 40, y: 58, width: 20, height: 14 },
+    { t: 'path', d: 'M14,58 L28,58 L28,66 L14,66 C11,66 10,64 10,62 C10,60 11,58 14,58 Z' },
+    { t: 'path', d: 'M86,58 L72,58 L72,66 L86,66 C89,66 90,64 90,62 C90,60 89,58 86,58 Z' },
+    { t: 'path', d: 'M36,86 L46,86 L46,94 C46,96 44,96 40,96 C36,96 34,96 34,94 Z' },
+    { t: 'path', d: 'M54,86 L64,86 L66,94 C66,96 64,96 60,96 C56,96 54,96 54,94 Z' },
   ],
   fishbowl: [
-    { t: 'circle', cx: 50, cy: 56, r: 34 }, { t: 'polygon', points: '16,56 84,56 84,90 16,90' },
-    { t: 'ellipse', cx: 40, cy: 60, rx: 12, ry: 8 }, { t: 'polygon', points: '52,60 62,52 62,68' },
-    { t: 'ellipse', cx: 64, cy: 76, rx: 8, ry: 5 }, { t: 'polygon', points: '72,76 80,71 80,81' },
-    { t: 'circle', cx: 34, cy: 40, r: 4 }, { t: 'circle', cx: 44, cy: 32, r: 3 }, { t: 'rect', x: 24, y: 66, width: 6, height: 22 },
+    { t: 'path', d: 'M22,46 C22,30 34,20 50,20 C66,20 78,30 78,46 C78,64 66,78 50,78 C34,78 22,64 22,46 Z' },
+    { t: 'path', d: 'M24,52 C34,58 66,58 76,52 C74,68 64,78 50,78 C36,78 26,68 24,52 Z' },
+    { t: 'path', d: 'M32,64 C36,58 46,56 54,60 L62,55 L60,64 L62,72 L54,68 C46,72 36,70 32,64 Z' },
+    { t: 'circle', cx: 38, cy: 62, r: 2 },
+    { t: 'path', d: 'M30,76 C28,68 34,62 32,56 C38,62 36,70 38,76 Z' },
+    { t: 'circle', cx: 44, cy: 34, r: 3 }, { t: 'circle', cx: 54, cy: 28, r: 2 }, { t: 'circle', cx: 62, cy: 38, r: 2 },
+    { t: 'path', d: 'M30,78 L70,78 C72,84 66,88 50,88 C34,88 28,84 30,78 Z' },
+    { t: 'rect', x: 2, y: 88, width: 96, height: 8 },
   ],
   castle: [
-    { t: 'rect', x: 22, y: 44, width: 56, height: 46 }, { t: 'rect', x: 10, y: 34, width: 18, height: 56 },
-    { t: 'rect', x: 72, y: 34, width: 18, height: 56 }, { t: 'polygon', points: '10,34 19,18 28,34' },
-    { t: 'polygon', points: '72,34 81,18 90,34' }, { t: 'rect', x: 42, y: 62, width: 16, height: 28 },
-    { t: 'rect', x: 30, y: 50, width: 10, height: 10 }, { t: 'rect', x: 60, y: 50, width: 10, height: 10 },
-    { t: 'polygon', points: '19,18 19,8 32,12 19,16' }, { t: 'polygon', points: '81,18 81,8 94,12 81,16' },
+    { t: 'circle', cx: 86, cy: 12, r: 7 },
+    { t: 'path', d: 'M4,22 C4,16 10,13 14,16 C16,9 26,8 29,14 C35,13 38,20 33,23 L8,23 C4,23 3,22 4,22 Z' },
+    { t: 'path', d: 'M24,44 L76,44 L76,88 L24,88 Z' },
+    { t: 'path', d: 'M24,44 L24,36 L32,36 L32,42 L40,42 L40,36 L48,36 L48,42 L56,42 L56,36 L64,36 L64,42 L72,42 L72,36 L76,36 L76,44 Z' },
+    { t: 'rect', x: 8, y: 40, width: 18, height: 48 }, { t: 'rect', x: 74, y: 40, width: 18, height: 48 },
+    { t: 'polygon', points: '6,40 17,22 28,40' }, { t: 'polygon', points: '72,40 83,22 94,40' },
+    { t: 'path', line: true, d: 'M17,22 L17,10' }, { t: 'polygon', points: '17,10 29,14 17,18' },
+    { t: 'path', line: true, d: 'M83,22 L83,10' }, { t: 'polygon', points: '83,10 95,14 83,18' },
+    { t: 'path', d: 'M42,88 L42,68 C42,60 58,60 58,68 L58,88 Z' },
+    { t: 'rect', x: 30, y: 52, width: 10, height: 12 }, { t: 'rect', x: 60, y: 52, width: 10, height: 12 },
+    { t: 'rect', x: 2, y: 88, width: 96, height: 10 },
   ],
   dinosaur: [
-    { t: 'ellipse', cx: 44, cy: 62, rx: 26, ry: 16 },
-    { t: 'polygon', points: '56,54 64,28 74,32 66,60' },
-    { t: 'circle', cx: 74, cy: 26, r: 10 }, { t: 'circle', cx: 78, cy: 23, r: 2 },
-    { t: 'polygon', points: '18,60 4,50 6,74' },
-    { t: 'rect', x: 32, y: 74, width: 9, height: 16 }, { t: 'rect', x: 52, y: 74, width: 9, height: 16 },
-    { t: 'polygon', points: '28,50 32,40 36,50' }, { t: 'polygon', points: '40,47 44,36 48,47' }, { t: 'polygon', points: '52,48 56,38 60,48' },
+    { t: 'circle', cx: 88, cy: 12, r: 7 },
+    { t: 'path', d: 'M4,22 C4,16 10,13 14,16 C16,9 26,8 29,14 C35,13 38,20 33,23 L8,23 C4,23 3,22 4,22 Z' },
+    { t: 'path', d: 'M20,64 C20,52 32,46 46,48 C50,38 56,30 64,28 C74,26 82,32 82,40 C82,48 76,52 70,52 C70,66 56,74 42,72 C30,74 20,72 20,64 Z' },
+    { t: 'path', d: 'M20,64 C12,58 4,62 2,72 C12,76 18,72 22,68 Z' },
+    { t: 'rect', x: 30, y: 70, width: 9, height: 18 }, { t: 'rect', x: 52, y: 70, width: 9, height: 18 },
+    { t: 'polygon', points: '28,48 32,38 36,48' }, { t: 'polygon', points: '40,44 44,34 48,44' }, { t: 'polygon', points: '52,44 56,34 60,44' },
+    { t: 'circle', cx: 74, cy: 38, r: 2 },
+    { t: 'rect', x: 2, y: 88, width: 96, height: 10 },
   ],
   garden: [
     { t: 'circle', cx: 86, cy: 12, r: 8 },
@@ -1273,33 +1323,52 @@ const COLORING_ART = {
     { t: 'rect', x: 2, y: 88, width: 96, height: 10 },
   ],
   playground: [
-    { t: 'rect', x: 8, y: 26, width: 52, height: 6 },
-    { t: 'polygon', points: '8,32 4,84 12,84 14,32' }, { t: 'polygon', points: '54,32 56,84 64,84 60,32' },
-    { t: 'rect', x: 22, y: 32, width: 3, height: 28 }, { t: 'rect', x: 40, y: 32, width: 3, height: 28 },
-    { t: 'rect', x: 18, y: 60, width: 29, height: 6 },
-    { t: 'polygon', points: '70,40 96,40 88,84 78,84' }, { t: 'rect', x: 72, y: 34, width: 22, height: 7 },
-    { t: 'circle', cx: 84, cy: 16, r: 9 }, { t: 'rect', x: 2, y: 84, width: 96, height: 10 },
+    { t: 'circle', cx: 86, cy: 12, r: 7 },
+    { t: 'path', d: 'M4,22 C4,16 10,13 14,16 C16,9 26,8 29,14 C35,13 38,20 33,23 L8,23 C4,23 3,22 4,22 Z' },
+    { t: 'path', d: 'M8,30 L54,30 L54,36 L8,36 Z' },
+    { t: 'polygon', points: '6,36 2,86 10,86 14,36' }, { t: 'polygon', points: '48,36 52,86 60,86 56,36' },
+    { t: 'path', line: true, d: 'M22,36 L22,62' }, { t: 'path', line: true, d: 'M40,36 L40,62' },
+    { t: 'path', d: 'M18,62 L44,62 C46,62 46,68 44,68 L18,68 C16,68 16,62 18,62 Z' },
+    { t: 'path', d: 'M68,44 C80,44 88,52 88,64 L88,86 L74,86 L74,64 C74,58 70,54 66,54 Z' },
+    { t: 'rect', x: 62, y: 38, width: 26, height: 8 },
+    { t: 'circle', cx: 30, cy: 80, r: 6 },
+    { t: 'rect', x: 2, y: 86, width: 96, height: 12 },
   ],
   farm: [
-    { t: 'rect', x: 10, y: 48, width: 46, height: 36 }, { t: 'polygon', points: '6,48 33,26 60,48' },
-    { t: 'rect', x: 26, y: 62, width: 14, height: 22 }, { t: 'rect', x: 14, y: 54, width: 9, height: 9 }, { t: 'rect', x: 43, y: 54, width: 9, height: 9 },
-    { t: 'rect', x: 66, y: 44, width: 18, height: 40 }, { t: 'path', d: 'M66,44 A9,9 0 0,1 84,44 Z' },
-    { t: 'circle', cx: 88, cy: 18, r: 9 }, { t: 'rect', x: 2, y: 84, width: 96, height: 12 },
+    { t: 'circle', cx: 88, cy: 12, r: 7 },
+    { t: 'path', d: 'M4,22 C4,16 10,13 14,16 C16,9 26,8 29,14 C35,13 38,20 33,23 L8,23 C4,23 3,22 4,22 Z' },
+    { t: 'path', d: 'M8,48 L20,34 L46,34 L58,48 Z' },
+    { t: 'rect', x: 10, y: 48, width: 46, height: 36 },
+    { t: 'path', d: 'M24,84 L24,62 C24,56 42,56 42,62 L42,84 Z' },
+    { t: 'rect', x: 14, y: 54, width: 9, height: 9 }, { t: 'rect', x: 43, y: 54, width: 9, height: 9 },
+    { t: 'path', d: 'M66,42 C66,34 84,34 84,42 L84,84 L66,84 Z' },
+    { t: 'path', d: 'M70,74 C74,70 82,70 86,74 C90,78 88,84 82,84 L74,84 C68,84 66,78 70,74 Z' },
+    { t: 'circle', cx: 66, cy: 74, r: 5 },
+    { t: 'rect', x: 2, y: 84, width: 96, height: 14 },
   ],
   birthday: [
-    { t: 'rect', x: 18, y: 54, width: 64, height: 30 }, { t: 'rect', x: 14, y: 44, width: 72, height: 12 },
-    { t: 'rect', x: 30, y: 26, width: 4, height: 18 }, { t: 'rect', x: 48, y: 22, width: 4, height: 22 }, { t: 'rect', x: 66, y: 26, width: 4, height: 18 },
-    { t: 'ellipse', cx: 32, cy: 22, rx: 4, ry: 6 }, { t: 'ellipse', cx: 50, cy: 18, rx: 4, ry: 6 }, { t: 'ellipse', cx: 68, cy: 22, rx: 4, ry: 6 },
-    { t: 'circle', cx: 26, cy: 68, r: 4 }, { t: 'circle', cx: 50, cy: 68, r: 4 }, { t: 'circle', cx: 74, cy: 68, r: 4 },
-    { t: 'rect', x: 10, y: 84, width: 80, height: 8 },
+    { t: 'path', d: 'M16,58 L84,58 L84,84 C84,88 80,90 74,90 L26,90 C20,90 16,88 16,84 Z' },
+    { t: 'path', d: 'M16,58 C20,50 24,54 28,50 C32,46 36,52 40,50 C44,48 48,54 52,50 C56,46 60,52 64,50 C68,48 72,54 76,50 C80,46 84,52 84,58 Z' },
+    { t: 'rect', x: 30, y: 30, width: 5, height: 20 }, { t: 'rect', x: 48, y: 26, width: 5, height: 24 }, { t: 'rect', x: 66, y: 30, width: 5, height: 20 },
+    { t: 'path', d: 'M32.5,18 C36,22 37,26 34,29 C31,31 28,28 30,24 Z' },
+    { t: 'path', d: 'M50.5,14 C54,18 55,22 52,25 C49,27 46,24 48,20 Z' },
+    { t: 'path', d: 'M68.5,18 C72,22 73,26 70,29 C67,31 64,28 66,24 Z' },
+    { t: 'circle', cx: 32, cy: 72, r: 4 }, { t: 'circle', cx: 50, cy: 72, r: 4 }, { t: 'circle', cx: 68, cy: 72, r: 4 },
+    { t: 'path', d: 'M8,90 C8,86 92,86 92,90 C92,94 8,94 8,90 Z' },
   ],
   city: [
-    { t: 'rect', x: 8, y: 46, width: 22, height: 44 }, { t: 'rect', x: 34, y: 30, width: 24, height: 60 },
-    { t: 'rect', x: 62, y: 54, width: 20, height: 36 }, { t: 'rect', x: 84, y: 40, width: 10, height: 50 },
+    { t: 'path', d: 'M78,14 C78,20 74,24 68,24 C74,26 80,22 82,16 C82,14 80,12 78,14 Z' },
+    { t: 'path', d: 'M20,14 C20,17 22,19 25,19 C22,19 20,21 20,24 C20,21 18,19 15,19 C18,19 20,17 20,14 Z' },
+    { t: 'path', d: 'M50,8 C50,11 52,13 55,13 C52,13 50,15 50,18 C50,15 48,13 45,13 C48,13 50,11 50,8 Z' },
+    { t: 'path', d: 'M8,46 L30,46 L30,88 L8,88 Z' },
+    { t: 'path', d: 'M34,30 L58,30 L58,88 L34,88 Z' }, { t: 'polygon', points: '34,30 46,20 58,30' },
+    { t: 'path', d: 'M62,54 L82,54 L82,88 L62,88 Z' },
+    { t: 'path', d: 'M84,40 C84,36 94,36 94,40 L94,88 L84,88 Z' },
     { t: 'rect', x: 13, y: 54, width: 6, height: 8 }, { t: 'rect', x: 21, y: 54, width: 6, height: 8 },
-    { t: 'rect', x: 40, y: 38, width: 6, height: 8 }, { t: 'rect', x: 48, y: 38, width: 6, height: 8 },
-    { t: 'rect', x: 40, y: 54, width: 6, height: 8 }, { t: 'rect', x: 48, y: 54, width: 6, height: 8 },
-    { t: 'rect', x: 67, y: 62, width: 6, height: 8 }, { t: 'circle', cx: 80, cy: 18, r: 9 }, { t: 'circle', cx: 22, cy: 20, r: 3 }, { t: 'circle', cx: 56, cy: 14, r: 3 },
+    { t: 'rect', x: 40, y: 40, width: 6, height: 8 }, { t: 'rect', x: 48, y: 40, width: 6, height: 8 },
+    { t: 'rect', x: 40, y: 56, width: 6, height: 8 }, { t: 'rect', x: 48, y: 56, width: 6, height: 8 },
+    { t: 'rect', x: 67, y: 62, width: 6, height: 8 }, { t: 'rect', x: 13, y: 70, width: 6, height: 8 },
+    { t: 'rect', x: 2, y: 88, width: 96, height: 10 },
   ],
 };
 // The same drawing, small and in outline, for the grid of pictures. A name page shows the name.
@@ -1339,7 +1408,7 @@ function ColorThumb({ picture, name, size = 72 }) {
   return (
     <svg viewBox="0 0 100 100" {...box} preserveAspectRatio="xMidYMid meet" aria-hidden="true">
       {parts.map((p, i) => {
-        const common = { key: i, fill: '#FFFFFF', stroke: '#2E2E2E', strokeWidth: 2.4, strokeLinejoin: 'round' };
+        const common = { key: i, fill: p.line ? 'none' : '#FFFFFF', stroke: '#2E2E2E', strokeWidth: 2.4, strokeLinecap: 'round', strokeLinejoin: 'round' };
         if (p.t === 'circle') return <circle {...common} cx={p.cx} cy={p.cy} r={p.r} />;
         if (p.t === 'ellipse') return <ellipse {...common} cx={p.cx} cy={p.cy} rx={p.rx} ry={p.ry} />;
         if (p.t === 'rect') return <rect {...common} x={p.x} y={p.y} width={p.width} height={p.height} rx={2} />;
@@ -1409,7 +1478,9 @@ function ColoringPad({ picture, name, secondsLeft, total, saved, onArt, onClose 
         {/* The square behind the picture is colorable too: a sky, a wall, whatever they decide it is. */}
         <rect x="-60" y="-60" width="220" height="220" fill={fills.bg || '#FFFFFF'} onClick={freeDraw ? undefined : () => setFills((f) => ({ ...f, bg: crayon }))} style={{ cursor: freeDraw ? 'default' : 'pointer' }} />
         {parts.map((p, i) => {
-          const common = { key: i, fill: fills[i] || '#FFFFFF', stroke: freeDraw ? 'none' : '#2E2E2E', strokeWidth: 1.6, strokeLinejoin: 'round', style: { cursor: 'pointer' }, onClick: freeDraw ? undefined : () => setFills((f) => ({ ...f, [i]: crayon })) };
+          const common = p.line
+            ? { key: i, fill: 'none', stroke: '#2E2E2E', strokeWidth: 1.6, strokeLinecap: 'round', strokeLinejoin: 'round', pointerEvents: 'none' }
+            : { key: i, fill: fills[i] || '#FFFFFF', stroke: freeDraw ? 'none' : '#2E2E2E', strokeWidth: 1.6, strokeLinejoin: 'round', style: { cursor: 'pointer' }, onClick: freeDraw ? undefined : () => setFills((f) => ({ ...f, [i]: crayon })) };
           if (p.t === 'circle') return <circle {...common} cx={p.cx} cy={p.cy} r={p.r} />;
           if (p.t === 'ellipse') return <ellipse {...common} cx={p.cx} cy={p.cy} rx={p.rx} ry={p.ry} />;
           if (p.t === 'rect') return <rect {...common} x={p.x} y={p.y} width={p.width} height={p.height} rx={2} />;
@@ -1423,7 +1494,7 @@ function ColoringPad({ picture, name, secondsLeft, total, saved, onArt, onClose 
         {/* On a drawing picture the outline is laid over the ink, so coloring never buries the lines
             they are trying to stay inside. */}
         {freeDraw && parts.map((p, i) => {
-          const line = { key: `edge-${i}`, fill: 'none', stroke: '#2E2E2E', strokeWidth: 1.6, strokeLinejoin: 'round', pointerEvents: 'none' };
+          const line = { key: `edge-${i}`, fill: 'none', stroke: '#2E2E2E', strokeWidth: 1.6, strokeLinecap: 'round', strokeLinejoin: 'round', pointerEvents: 'none' };
           if (p.t === 'circle') return <circle {...line} cx={p.cx} cy={p.cy} r={p.r} />;
           if (p.t === 'ellipse') return <ellipse {...line} cx={p.cx} cy={p.cy} rx={p.rx} ry={p.ry} />;
           if (p.t === 'rect') return <rect {...line} x={p.x} y={p.y} width={p.width} height={p.height} rx={2} />;

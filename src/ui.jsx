@@ -812,10 +812,18 @@ const KID_ANIMATION = `
   .edu-pad { max-width: 100%; }
   .edu-pad-col { width: min(100%, 46vh); }
   @media (min-width: 700px) { .edu-pad-col { width: min(72vw, calc(100vh - 302px)); } }
+  /* Upright only on a phone: sideways, everything is covered by a gentle ask to turn back. */
+  .edu-rotate { display: none; }
+  @media (max-height: 540px) and (pointer: coarse) {
+    .edu-rotate { display: flex; position: fixed; inset: 0; z-index: 9999; background: ${C.paper || '#F5F7F1'}; color: ${C.green}; align-items: center; justify-content: center; text-align: center; padding: 24px; font-family: ${FONT}; }
+    .edu-rotate p { font-size: 20px; font-weight: 600; margin: 12px 0 0; color: ${C.ink}; }
+  }
   .edu-wide-only { display: none; }
   /* A picture that is filled in rather than drawn on has no nibs, so it shows every crayon and
      gives the picture the room the nibs would have taken. */
   .edu-crayons-all .edu-crayon.edu-wide-only { display: block; }
+  .edu-crayon-wide { display: none; }
+  @media (min-width: 700px) { .edu-crayon-wide { display: block; } }
   .edu-pad-fill .edu-pad-col { width: min(100%, 54vh); }
   .edu-nib { width: 38px; height: 38px; border-radius: 999px; display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 0; }
   .edu-nib.edu-wide-only { display: none; }
@@ -833,26 +841,6 @@ const KID_ANIMATION = `
     .edu-pad .edu-crayons { width: min(72vw, calc(100vh - 302px)); }
     .edu-wide-only { display: flex; }
     .edu-nib.edu-wide-only { display: flex; }
-  }
-  /* A phone on its side has width to spare and no height: the nibs stand at one side of the picture
-     and the crayons at the other, so the picture itself can take nearly the whole height. */
-  @media (max-height: 540px) {
-    .edu-pad { display: grid; grid-template-columns: auto auto auto; grid-template-areas: 'head head head' 'bar bar bar' 'picture nibs crayons'; align-items: center; justify-content: center; column-gap: 14px; }
-    .edu-pad-bar { grid-area: bar; }
-    /* A filled picture is a little taller than it is wide, so it takes less width to fit the height. */
-    .edu-pad-fill .edu-pad-col { width: min(52vw, 62vh); }
-    .edu-pad .edu-pad-head, .edu-pad .edu-pad-bar { width: 100%; }
-    .edu-pad-bar { margin: 2px auto 8px !important; }
-    .edu-pad-col { width: min(52vw, 74vh); }
-    .edu-pad .edu-crayons { grid-area: crayons; grid-template-columns: repeat(4, 1fr); width: auto; margin: 0; align-self: center; }
-    .edu-nibs { grid-area: nibs; display: flex; flex-direction: column; flex-wrap: nowrap; gap: 8px; width: auto; margin: 0; align-self: center; }
-    .edu-crayon { width: 26px; height: 26px; }
-    .edu-crayons { gap: 6px; }
-    .edu-nib { width: 30px; height: 30px; }
-    .edu-nibs { gap: 6px !important; }
-    .edu-pad-head h1 { font-size: 16px; }
-    .edu-picture button { width: 34px !important; height: 34px !important; }
-    .edu-picture button svg { width: 22px !important; height: 22px !important; }
   }
   .edu-crayon { width: 38px; height: 38px; border-radius: 999px; cursor: pointer; padding: 0; }
   @media (min-width: 700px) { .edu-crayon.edu-wide-only { display: block; } }
@@ -1141,7 +1129,10 @@ const CRAYONS = [
   '#9ACD32', '#5BA84A', '#2FA5A0', '#3E7CB1', '#2B4C8C',
   '#7D5BA6', '#C86FC9', '#F58FB0', '#8C6239', '#2E2E2E',
 ];
+// Five more crayons for a picture that is filled in, and a twenty-first that fills out the three
+// rows of seven a wide screen shows.
 const WIDE_CRAYONS = ['#7B1E1E', '#FFD9A0', '#1F7A5A', '#9FD8E8', '#4B3A8F'];
+const EXTRA_CRAYON = '#B8B8B8';
 // Some pictures are filled by tapping a part; others are drawn on freely with a finger.
 // Half are filled in by tapping a part, half are drawn on with a finger. A name page is always drawn.
 const COLORING_MODE = { ball: 'fill', sun: 'fill', balloon: 'fill', 'my-name': 'draw', star: 'draw', tree: 'fill', house: 'fill', fish: 'fill', cat: 'draw', flower: 'fill', boat: 'fill', rocket: 'fill', butterfly: 'draw', train: 'fill', car: 'fill', robot: 'fill', fishbowl: 'draw', castle: 'fill', dinosaur: 'draw', city: 'fill', garden: 'fill', playground: 'draw', farm: 'fill', birthday: 'draw' };
@@ -1496,12 +1487,12 @@ function ColoringPad({ picture, name, secondsLeft, total, saved, onArt, onClose 
       {/* Start over on the left, close on the right, both sitting on the picture's own width. */}
       <div className="edu-pad-head edu-pad-col" style={{ margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <button type="button" aria-label="Start over" onClick={() => { setFills({}); setStrokes([]); onArt({ fills: {}, strokes: [] }); }}
-          style={{ background: 'none', border: 'none', padding: 6, cursor: 'pointer', color: C.green, lineHeight: 0 }}>
+          style={{ background: 'none', border: 'none', padding: 6, margin: '0 0 0 -10px', cursor: 'pointer', color: C.green, lineHeight: 0 }}>
           <svg viewBox="0 0 24 24" width="32" height="32" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.6-5.9M20 4v5h-5" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" /></svg>
         </button>
         <h1 className="edu-rainbow" style={{ fontSize: 20, margin: 0, textAlign: 'center', textTransform: 'capitalize', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{picture === 'my-name' ? 'My name' : picture}</h1>
         <button type="button" aria-label="Close coloring" onClick={onClose}
-          style={{ background: 'none', border: 'none', padding: 6, cursor: 'pointer', color: C.green, lineHeight: 0 }}>
+          style={{ background: 'none', border: 'none', padding: 6, margin: '0 -10px 0 0', cursor: 'pointer', color: C.green, lineHeight: 0 }}>
           <svg viewBox="0 0 24 24" width="32" height="32" aria-hidden="true"><path d="M5 5 L19 19 M19 5 L5 19" fill="none" stroke="currentColor" strokeWidth="3.4" strokeLinecap="round" /></svg>
         </button>
       </div>
@@ -1521,7 +1512,7 @@ function ColoringPad({ picture, name, secondsLeft, total, saved, onArt, onClose 
         {/* The name, drawn once, white letters with their outline behind them. This is the drawing
             Mikey approved: one element, no spacing of our own, no second copy over the ink. */}
         {picture === 'my-name' && (() => { const n = nameLines(name); return n.lines.map((line, i) => (
-          <text key={line + i} x="50" y={n.y(i)} textAnchor="middle" fontFamily={FONT} fontSize={n.size} fontWeight="700" fill="#FFFFFF" stroke="#2E2E2E" strokeWidth={n.size * 0.055} paintOrder="stroke" strokeLinejoin="round" pointerEvents="none">{line}</text>
+          <text key={line + i} id={`edu-name-line-${i}`} x="50" y={n.y(i)} textAnchor="middle" fontFamily={FONT} fontSize={n.size} fontWeight="700" fill="#FFFFFF" stroke="#2E2E2E" strokeWidth={n.size * 0.055} paintOrder="stroke" strokeLinejoin="round" pointerEvents="none">{line}</text>
         )); })()}
         {parts.map((p, i) => {
           const common = p.line
@@ -1536,6 +1527,11 @@ function ColoringPad({ picture, name, secondsLeft, total, saved, onArt, onClose 
         {strokes.map((st, i) => <polyline key={`s${i}`} points={st.points.map((pt) => pt.join(',')).join(' ')} fill="none" stroke={st.colour} strokeWidth={st.width || 5} strokeLinecap="round" strokeLinejoin="round" pointerEvents="none" />)}
         {/* On a drawing picture the outline is laid over the ink, so coloring never buries the lines
             they are trying to stay inside. */}
+        {/* The letters' edge, copied from the very element that drew them, laid over the ink. A copy
+            cannot come out at a different width the way a second piece of text could. */}
+        {freeDraw && picture === 'my-name' && (() => { const n = nameLines(name); return n.lines.map((line, i) => (
+          <use key={`name-edge-${i}`} href={`#edu-name-line-${i}`} fill="none" stroke="#2E2E2E" strokeWidth={n.size * 0.055} strokeLinejoin="round" pointerEvents="none" />
+        )); })()}
         {freeDraw && parts.map((p, i) => {
           const line = { key: `edge-${i}`, fill: 'none', stroke: '#2E2E2E', strokeWidth: 1.6, strokeLinecap: 'round', strokeLinejoin: 'round', pointerEvents: 'none' };
           if (p.t === 'circle') return <circle {...line} cx={p.cx} cy={p.cy} r={p.r} />;
@@ -1571,8 +1567,8 @@ function ColoringPad({ picture, name, secondsLeft, total, saved, onArt, onClose 
       {/* The crayons sit under the picture; on a wide screen they run the width of the card and the
           nibs stand in a column beside the picture, so nothing needs scrolling to reach. */}
       <div className={`edu-crayons${freeDraw ? '' : ' edu-crayons-all'}`}>
-        {[...CRAYONS, ...WIDE_CRAYONS].map((colour, i) => (
-          <button key={colour} type="button" className={`edu-crayon${i >= CRAYONS.length ? ' edu-wide-only' : ''}`} aria-label="Use this color" aria-pressed={crayon === colour} onClick={() => setCrayon(colour)}
+        {[...CRAYONS, ...WIDE_CRAYONS, EXTRA_CRAYON].map((colour, i) => (
+          <button key={colour} type="button" className={`edu-crayon${i >= CRAYONS.length + WIDE_CRAYONS.length ? ' edu-crayon-wide' : i >= CRAYONS.length ? ' edu-wide-only' : ''}`} aria-label="Use this color" aria-pressed={crayon === colour} onClick={() => setCrayon(colour)}
             style={{ background: colour, border: crayon === colour ? `4px solid ${C.ink}` : `2px solid ${C.line}` }} />
         ))}
       </div>
@@ -2477,6 +2473,17 @@ export default function EduSphereApp() {
   useEffect(() => { if (spokenVoice) speak(`${spokenVoice.voice}. ${spokenVoice.says}`); }, [spokenVoice]);
   // The test hook: what screen is up, which question, and a way to open a named module without
   // hunting for its card, so a browser check can go straight to a lesson.
+  // A phone held sideways is asked to turn upright rather than shown a squeezed layout. Tablets and
+  // laptops are unaffected: the ask only appears on a short, wide screen that is touched, not clicked.
+  useEffect(() => {
+    if (typeof document === 'undefined' || document.getElementById('edu-rotate')) return undefined;
+    const box = document.createElement('div');
+    box.id = 'edu-rotate';
+    box.className = 'edu-rotate';
+    box.innerHTML = '<div><svg viewBox="0 0 24 24" width="64" height="64" aria-hidden="true"><rect x="7" y="2" width="10" height="20" rx="2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M4 14a8 8 0 0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M4 14l-1 3 3 0.6z" fill="currentColor"/></svg><p>Please turn your phone upright.</p></div>';
+    document.body.appendChild(box);
+    return () => { if (box.parentNode) box.parentNode.removeChild(box); };
+  }, []);
   useEffect(() => { if (typeof window !== 'undefined') window.__eduTest = { screen, question: q || null, isReviewQ, openModule: (id) => openModule(id), openColoring: (pic) => { setColoring(pic); setScreen('coloring'); } }; }, [screen, q, isReviewQ]);
   // A picture opens at the top of the page, so the palette and the buttons are where they were left.
   useEffect(() => { if (screen === 'coloring' && typeof window !== 'undefined') window.scrollTo(0, 0); }, [screen, coloring]);

@@ -445,6 +445,9 @@ Approved by Mikey on 2026-09-04 unless marked "proposed".
 - (2026-09-16) The coloring page stopped using `dvh` units and `:has()`; a browser a version or two behind ignores both, and when the height rule was ignored the picture fell back to the laptop size and ran off a phone held sideways. Plain `vh` and a class on the wrapper do the same job everywhere. Sideways, the crayons, nibs and zoom buttons are smaller again, and a filled picture (taller than it is wide) takes less width so its height still fits.
 - (2026-09-16) The picture's own edge is clipped round, so a filled background no longer paints over the card's border and corners.
 
+- (2026-09-16) A phone held sideways is asked to turn upright rather than shown a squeezed layout, and every sideways rule is gone. The ask only appears on a screen that is short, wide and touched, so tablets and laptops never see it. This is Mikey's call: the app is designed upright, and chasing a sideways phone was costing more than it was worth.
+- (2026-09-16) The twenty-first crayon is back, so a wide screen shows three full rows of seven; a phone still shows fifteen, or twenty on a picture that is filled in. The close and start-over icons sit slightly outside the picture's width. On the name page the letters' edge is copied over the ink with `<use>`, so coloring no longer buries it, exactly as it already worked on the drawn pictures.
+
 ## Open items
 - Verify audio plays inside the chat artifact sandbox (works in a normal browser).
 - Common Core / TEKS codes on existing modules to be checked against the official lists.

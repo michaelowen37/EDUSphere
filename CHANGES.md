@@ -2,7 +2,8 @@
 
 Paste the lines below as the commit message. Unzip this file onto the repository folder; it overwrites only the files listed.
 
-- (2026-09-16) The countdown is one shape everywhere: a bar across the top. Standing it upright beside the picture on a sideways phone made it too thin to read, and the title ended up beside the picture rather than above it. Sideways now reads the same way as everywhere else: title across the top with its two icons at the edges, the bar beneath it, then the picture, the nibs and the crayons in one row.
+- (2026-09-16) A phone held sideways is asked to turn upright rather than shown a squeezed layout, and every sideways rule is gone. The ask only appears on a screen that is short, wide and touched, so tablets and laptops never see it. This is Mikey's call: the app is designed upright, and chasing a sideways phone was costing more than it was worth.
+- (2026-09-16) The twenty-first crayon is back, so a wide screen shows three full rows of seven; a phone still shows fifteen, or twenty on a picture that is filled in. The close and start-over icons sit slightly outside the picture's width. On the name page the letters' edge is copied over the ink with `<use>`, so coloring no longer buries it, exactly as it already worked on the drawn pictures.
 
 ## Files
 - src/ui.jsx

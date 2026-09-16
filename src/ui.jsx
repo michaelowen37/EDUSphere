@@ -1512,7 +1512,7 @@ function ColoringPad({ picture, name, secondsLeft, total, saved, onArt, onClose 
         {/* The name, drawn once, white letters with their outline behind them. This is the drawing
             Mikey approved: one element, no spacing of our own, no second copy over the ink. */}
         {picture === 'my-name' && (() => { const n = nameLines(name); return n.lines.map((line, i) => (
-          <text key={line + i} id={`edu-name-line-${i}`} x="50" y={n.y(i)} textAnchor="middle" fontFamily={FONT} fontSize={n.size} fontWeight="700" fill="#FFFFFF" stroke="#2E2E2E" strokeWidth={n.size * 0.055} paintOrder="stroke" strokeLinejoin="round" pointerEvents="none">{line}</text>
+          <text key={line + i} x="50" y={n.y(i)} textAnchor="middle" fontFamily={FONT} fontSize={n.size} fontWeight="700" fill="#FFFFFF" stroke="#2E2E2E" strokeWidth={n.size * 0.055} paintOrder="stroke" strokeLinejoin="round" pointerEvents="none">{line}</text>
         )); })()}
         {parts.map((p, i) => {
           const common = p.line
@@ -1524,14 +1524,19 @@ function ColoringPad({ picture, name, secondsLeft, total, saved, onArt, onClose 
           if (p.t === 'path') return <path {...common} d={p.d} />;
         return <polygon {...common} points={p.points} />;
         })}
-        {strokes.map((st, i) => <polyline key={`s${i}`} points={st.points.map((pt) => pt.join(',')).join(' ')} fill="none" stroke={st.colour} strokeWidth={st.width || 5} strokeLinecap="round" strokeLinejoin="round" pointerEvents="none" />)}
+        {picture === 'my-name' && (() => { const n = nameLines(name); return (
+          <mask id="edu-name-guard" maskUnits="userSpaceOnUse" x="-60" y="-60" width="220" height="220">
+            <rect x="-60" y="-60" width="220" height="220" fill="#FFFFFF" />
+            {n.lines.map((line, i) => (
+              <text key={`guard-${i}`} x="50" y={n.y(i)} textAnchor="middle" fontFamily={FONT} fontSize={n.size} fontWeight="700" fill="#FFFFFF" stroke="#000000" strokeWidth={n.size * 0.055} paintOrder="stroke" strokeLinejoin="round">{line}</text>
+            ))}
+          </mask>
+        ); })()}
+        <g mask={picture === 'my-name' ? 'url(#edu-name-guard)' : undefined}>
+          {strokes.map((st, i) => <polyline key={`s${i}`} points={st.points.map((pt) => pt.join(',')).join(' ')} fill="none" stroke={st.colour} strokeWidth={st.width || 5} strokeLinecap="round" strokeLinejoin="round" pointerEvents="none" />)}
+        </g>
         {/* On a drawing picture the outline is laid over the ink, so coloring never buries the lines
             they are trying to stay inside. */}
-        {/* The letters' edge, copied from the very element that drew them, laid over the ink. A copy
-            cannot come out at a different width the way a second piece of text could. */}
-        {freeDraw && picture === 'my-name' && (() => { const n = nameLines(name); return n.lines.map((line, i) => (
-          <use key={`name-edge-${i}`} href={`#edu-name-line-${i}`} fill="none" stroke="#2E2E2E" strokeWidth={n.size * 0.055} strokeLinejoin="round" pointerEvents="none" />
-        )); })()}
         {freeDraw && parts.map((p, i) => {
           const line = { key: `edge-${i}`, fill: 'none', stroke: '#2E2E2E', strokeWidth: 1.6, strokeLinecap: 'round', strokeLinejoin: 'round', pointerEvents: 'none' };
           if (p.t === 'circle') return <circle {...line} cx={p.cx} cy={p.cy} r={p.r} />;

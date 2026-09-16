@@ -38511,7 +38511,7 @@ function PinInput({ value, onChange, placeholder, style, onEnter = null }) {
 }
 // A stamp of when this copy of the page was built, so a stale page in a cache can be told apart
 // from a fresh one at a glance. Written by the build, never by hand.
-const BUILD_STAMP = '2026-09-16 02:32 PM CDT';
+const BUILD_STAMP = '2026-09-16 03:29 PM CDT';
 function ContactLine({ onOpen, inline = false }) {
     return (react_1.default.createElement("p", { className: "edu-no-print", style: { textAlign: 'center', marginTop: inline ? 0 : 28, fontSize: inline ? 14 : 12, color: C.muted, margin: inline ? '0' : undefined } }, onOpen
         ? react_1.default.createElement("button", { type: "button", onClick: onOpen, style: { background: 'none', border: 'none', color: C.muted, fontFamily: FONT, fontSize: 12, cursor: 'pointer', padding: 0, textDecoration: 'underline' } }, "Contact us")
@@ -40001,7 +40001,7 @@ function ColoringPad({ picture, name, secondsLeft, total, saved, onArt, onClose 
                 react_1.default.createElement("rect", { x: "-60", y: "-60", width: "220", height: "220", fill: fills.bg || '#FFFFFF', onClick: freeDraw ? undefined : () => setFills((f) => ({ ...f, bg: crayon })), style: { cursor: freeDraw ? 'default' : 'pointer' } }),
                 picture === 'my-name' && (() => {
                     const n = nameLines(name);
-                    return n.lines.map((line, i) => (react_1.default.createElement("text", { key: line + i, id: `edu-name-line-${i}`, x: "50", y: n.y(i), textAnchor: "middle", fontFamily: FONT, fontSize: n.size, fontWeight: "700", fill: "#FFFFFF", stroke: "#2E2E2E", strokeWidth: n.size * 0.055, paintOrder: "stroke", strokeLinejoin: "round", pointerEvents: "none" }, line)));
+                    return n.lines.map((line, i) => (react_1.default.createElement("text", { key: line + i, x: "50", y: n.y(i), textAnchor: "middle", fontFamily: FONT, fontSize: n.size, fontWeight: "700", fill: "#FFFFFF", stroke: "#2E2E2E", strokeWidth: n.size * 0.055, paintOrder: "stroke", strokeLinejoin: "round", pointerEvents: "none" }, line)));
                 })(),
                 parts.map((p, i) => {
                     const common = p.line
@@ -40017,11 +40017,13 @@ function ColoringPad({ picture, name, secondsLeft, total, saved, onArt, onClose 
                         return react_1.default.createElement("path", { ...common, d: p.d });
                     return react_1.default.createElement("polygon", { ...common, points: p.points });
                 }),
-                strokes.map((st, i) => react_1.default.createElement("polyline", { key: `s${i}`, points: st.points.map((pt) => pt.join(',')).join(' '), fill: "none", stroke: st.colour, strokeWidth: st.width || 5, strokeLinecap: "round", strokeLinejoin: "round", pointerEvents: "none" })),
-                freeDraw && picture === 'my-name' && (() => {
+                picture === 'my-name' && (() => {
                     const n = nameLines(name);
-                    return n.lines.map((line, i) => (react_1.default.createElement("use", { key: `name-edge-${i}`, href: `#edu-name-line-${i}`, fill: "none", stroke: "#2E2E2E", strokeWidth: n.size * 0.055, strokeLinejoin: "round", pointerEvents: "none" })));
+                    return (react_1.default.createElement("mask", { id: "edu-name-guard", maskUnits: "userSpaceOnUse", x: "-60", y: "-60", width: "220", height: "220" },
+                        react_1.default.createElement("rect", { x: "-60", y: "-60", width: "220", height: "220", fill: "#FFFFFF" }),
+                        n.lines.map((line, i) => (react_1.default.createElement("text", { key: `guard-${i}`, x: "50", y: n.y(i), textAnchor: "middle", fontFamily: FONT, fontSize: n.size, fontWeight: "700", fill: "#FFFFFF", stroke: "#000000", strokeWidth: n.size * 0.055, paintOrder: "stroke", strokeLinejoin: "round" }, line)))));
                 })(),
+                react_1.default.createElement("g", { mask: picture === 'my-name' ? 'url(#edu-name-guard)' : undefined }, strokes.map((st, i) => react_1.default.createElement("polyline", { key: `s${i}`, points: st.points.map((pt) => pt.join(',')).join(' '), fill: "none", stroke: st.colour, strokeWidth: st.width || 5, strokeLinecap: "round", strokeLinejoin: "round", pointerEvents: "none" }))),
                 freeDraw && parts.map((p, i) => {
                     const line = { key: `edge-${i}`, fill: 'none', stroke: '#2E2E2E', strokeWidth: 1.6, strokeLinecap: 'round', strokeLinejoin: 'round', pointerEvents: 'none' };
                     if (p.t === 'circle')

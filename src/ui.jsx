@@ -81,12 +81,16 @@ function PinInput({ value, onChange, placeholder, style, onEnter = null }) {
   );
 }
 
+// A stamp of when this copy of the page was built, so a stale page in a cache can be told apart
+// from a fresh one at a glance. Written by the build, never by hand.
+const BUILD_STAMP = '__BUILD_STAMP__';
 function ContactLine({ onOpen, inline = false }) {
   return (
     <p className="edu-no-print" style={{ textAlign: 'center', marginTop: inline ? 0 : 28, fontSize: inline ? 14 : 12, color: C.muted, margin: inline ? '0' : undefined }}>
       {onOpen
         ? <button type="button" onClick={onOpen} style={{ background: 'none', border: 'none', color: C.muted, fontFamily: FONT, fontSize: 12, cursor: 'pointer', padding: 0, textDecoration: 'underline' }}>Contact us</button>
         : <a href={`mailto:${CONTACT_EMAIL}`} style={{ color: C.muted, textDecoration: 'underline' }}>Contact us</a>}
+      <span style={{ display: 'block', marginTop: 6, fontSize: 11, opacity: 0.7 }}>Build {BUILD_STAMP}</span>
     </p>
   );
 }
@@ -1375,8 +1379,9 @@ function nameLines(name) {
   }
   if (!lines.length) lines.push('Name');
   const longest = Math.max(...lines.map((w) => w.length));
-  // A bold letter is about 0.62 of its size wide, and the square is 90 units across with a margin.
-  const size = Math.max(6, Math.min(26, 88 / (0.62 * longest), 80 / (lines.length * 1.2)));
+  // A bold letter is about 0.62 of its size wide, plus the air we put between them so that no two
+  // letters touch on a device whose font sets them tight. The square is 88 units across with a margin.
+  const size = Math.max(6, Math.min(26, 88 / (0.72 * longest), 80 / (lines.length * 1.2)));
   const step = size * 1.2;
   const y = (i) => 52 + (i - (lines.length - 1) / 2) * step + size * 0.34;
   return { lines, size, y };
@@ -1388,7 +1393,7 @@ function ColorThumb({ picture, name, size = 72 }) {
     return (
       <svg viewBox="0 0 100 100" {...box} preserveAspectRatio="xMidYMid meet" aria-hidden="true">
         {lines.map((line, i) => (
-          <text key={line + i} x="50" y={y(i)} textAnchor="middle" fontFamily={FONT} fontSize={fs} fontWeight="700" fill="#FFFFFF" stroke="#2E2E2E" strokeWidth={fs * 0.055} paintOrder="stroke" strokeLinejoin="round">{line}</text>
+          <text key={line + i} x="50" y={y(i)} textAnchor="middle" fontFamily={FONT} fontSize={fs} fontWeight="700" letterSpacing={fs * 0.09} fill="#FFFFFF" stroke="#2E2E2E" strokeWidth={fs * 0.05} paintOrder="stroke" strokeLinejoin="round">{line}</text>
         ))}
       </svg>
     );
@@ -1476,9 +1481,6 @@ function ColoringPad({ picture, name, secondsLeft, total, saved, onArt, onClose 
           if (p.t === 'path') return <path {...common} d={p.d} />;
         return <polygon {...common} points={p.points} />;
         })}
-        {picture === 'my-name' && (() => { const n = nameLines(name); return n.lines.map((line, i) => (
-          <text key={line + i} x="50" y={n.y(i)} textAnchor="middle" fontFamily={FONT} fontSize={n.size} fontWeight="700" fill="#FFFFFF" pointerEvents="none">{line}</text>
-        )); })()}
         {strokes.map((st, i) => <polyline key={`s${i}`} points={st.points.map((pt) => pt.join(',')).join(' ')} fill="none" stroke={st.colour} strokeWidth={st.width || 5} strokeLinecap="round" strokeLinejoin="round" pointerEvents="none" />)}
         {/* On a drawing picture the outline is laid over the ink, so coloring never buries the lines
             they are trying to stay inside. */}
@@ -1490,8 +1492,10 @@ function ColoringPad({ picture, name, secondsLeft, total, saved, onArt, onClose 
           if (p.t === 'path') return <path {...line} d={p.d} />;
           return <polygon {...line} points={p.points} />;
         })}
-        {freeDraw && picture === 'my-name' && (() => { const n = nameLines(name); return n.lines.map((line, i) => (
-          <text key={`edge-${line}-${i}`} x="50" y={n.y(i)} textAnchor="middle" fontFamily={FONT} fontSize={n.size} fontWeight="700" fill="none" stroke="#2E2E2E" strokeWidth={n.size * 0.055} strokeLinejoin="round" pointerEvents="none">{line}</text>
+        {/* The name is one element, outline only, drawn last: there is no second copy to drift against,
+            and the letters stay visible over whatever has been colored. */}
+        {picture === 'my-name' && (() => { const n = nameLines(name); return n.lines.map((line, i) => (
+          <text key={line + i} x="50" y={n.y(i)} textAnchor="middle" fontFamily={FONT} fontSize={n.size} fontWeight="700" letterSpacing={n.size * 0.09} fill="none" stroke="#2E2E2E" strokeWidth={n.size * 0.05} strokeLinejoin="round" pointerEvents="none">{line}</text>
         )); })()}
       </svg>
       {/* Zoom sits in the picture's own corners, over the top: color goes behind it, never onto it. */}

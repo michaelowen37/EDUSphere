@@ -422,6 +422,14 @@ Approved by Mikey on 2026-09-04 unless marked "proposed".
 
 - (2026-09-16) The nib row on a phone was left-aligned because an old rule from the earlier paint-box layout was still in the stylesheet and won over the new one. The dead rules are gone and the row centres itself on the picture's width, whether or not it happens to line up with the colors above.
 
+- (2026-09-16) The name page puts air between its letters (letter spacing of about a tenth of the size, counted in the width that decides the size) and thins the outline slightly. Sandbox fonts set the glyphs apart, but the phone's does not, so without the spacing the outlines of neighbouring letters crossed each other on Mikey's screen and not on mine.
+
+- (2026-09-16) The doubled name was two text elements, the fill and the outline, laid out separately: they matched in the sandbox and came out at different widths on Mikey's phone, so the outline drifted across the letters. The name is laid out once now and the outline is a `<use>` copy of that very element, which cannot measure differently. Lesson: never draw the same text twice and expect the two to line up.
+
+- (2026-09-16) The name is now a single outline element drawn last: no white fill underneath, no copy of any kind. Two text elements could drift on a device whose font measures differently from the sandbox's, and a `<use>` copy did not settle it either, so the safest thing is to draw the letters once. Their insides take whatever color the background is given, which is fine and lets a child color inside them.
+
+- (2026-09-16) The login screen carries a build stamp under Contact us, written by build.sh at build time. Three passes were spent on a name-drawing fault that the sandbox never reproduced; a stamp settles in one glance whether the page on a device is the one that was just published.
+
 ## Open items
 - Verify audio plays inside the chat artifact sandbox (works in a normal browser).
 - Common Core / TEKS codes on existing modules to be checked against the official lists.

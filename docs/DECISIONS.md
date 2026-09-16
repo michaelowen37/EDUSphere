@@ -414,6 +414,8 @@ Approved by Mikey on 2026-09-04 unless marked "proposed".
 - (2026-09-16) On a wide screen the picture, the countdown bar and the crayons share one width in the same grid column, and the nibs stand clear to their left, ending level with the top of the first row of colors. A drawing picture's shapes are filled without their own outline and the outline is drawn once over the ink, so the lines stay single width rather than doubling.
 - (2026-09-16) A wider screen gets six more crayons, twenty-one in three rows running the width of the picture, and the nibs stand in a column beside the picture with two more thicknesses, six in all. A phone keeps fifteen crayons and four nibs in the arrangement Mikey picked. The extras are hidden by class rather than by counting, so both layouts come from the same markup.
 
+- (2026-09-16) The pictures were redrawn with curves instead of stacked shapes, and given scenes rather than single objects: the tree has a canopy, a trunk that flares at the ground, four apples, a cloud, a bird and a sun; the fish has fins, a smile, bubbles, weed and sand; the house has a chimney with smoke, a door knob and a path; the balloon has a second balloon and a curling string; the flower has real petals and leaves; the garden has three flowering plants, a cloud and a sun. More to color, and it looks like the thing it is.
+
 ## Open items
 - Verify audio plays inside the chat artifact sandbox (works in a normal browser).
 - Common Core / TEKS codes on existing modules to be checked against the official lists.

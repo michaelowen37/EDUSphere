@@ -39239,13 +39239,15 @@ const KID_ANIMATION = `
   /* On a phone the picture sits above the name, so every name, grade and link starts at the card's left edge,
      with or without a picture; on a laptop the picture returns beside them. */
   .edu-student-left { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 6px; }
+  .edu-student-name-row { display: flex; flex-direction: column-reverse; align-items: center; gap: 6px; }
   .edu-student-left > div { width: 100%; }
   .edu-student-actions { text-align: left; }
   .edu-student-actions button { margin-right: 10px; }
   .edu-student-open { display: flex; justify-content: center; margin-top: 12px; }
   @media (min-width: 1000px) {
     .edu-student-body { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
-    .edu-student-left { flex: 1 1 auto; min-width: 0; text-align: left; flex-direction: row; align-items: center; gap: 10px; }
+    .edu-student-left { flex: 1 1 auto; min-width: 0; text-align: left; flex-direction: column; align-items: flex-start; gap: 4px; }
+    .edu-student-name-row { flex-direction: row; align-items: center; gap: 12px; }
     .edu-student-left > div { width: auto; }
   }
   /* Section titles read centered at every width. A fold keeps its count and chevron pinned to its
@@ -42307,12 +42309,14 @@ function EduSphereApp() {
                         react_1.default.createElement("p", { style: { color: C.muted, fontSize: 13, margin: '10px 0 0' } }, "The ID stays the same, so progress follows the new name."))) : (react_1.default.createElement(react_1.default.Fragment, null,
                         react_1.default.createElement("div", { className: "edu-student-body" },
                             react_1.default.createElement("div", { className: "edu-student-left" },
-                                st.picture && react_1.default.createElement(StudentPicture, { name: st.picture, tint: st.tint, size: 40 }),
+                                react_1.default.createElement("div", { className: "edu-student-name-row" },
+                                    react_1.default.createElement("div", { style: { minWidth: 0 } },
+                                        react_1.default.createElement("span", { style: { display: 'block', fontSize: 18, fontWeight: 600 } }, keepTogether(st.label)),
+                                        st.level && react_1.default.createElement("span", { style: { display: 'block', fontSize: 12, color: C.muted } },
+                                            levelFor(st.level).title,
+                                            st.startGrade ? ` · ${gradeLabel(st.startGrade)}` : '')),
+                                    st.picture && react_1.default.createElement(StudentPicture, { name: st.picture, tint: st.tint, size: 40 })),
                                 react_1.default.createElement("div", { style: { flex: '1 1 auto', minWidth: 0 } },
-                                    react_1.default.createElement("span", { style: { display: 'block', fontSize: 18, fontWeight: 600 } }, keepTogether(st.label)),
-                                    st.level && react_1.default.createElement("span", { style: { display: 'block', fontSize: 12, color: C.muted } },
-                                        levelFor(st.level).title,
-                                        st.startGrade ? ` · ${gradeLabel(st.startGrade)}` : ''),
                                     react_1.default.createElement("div", { className: "edu-student-actions", style: { display: 'flow-root', marginTop: 8 } },
                                         react_1.default.createElement("button", { type: "button", onClick: () => { setRenamingId(st.id); setRenameInput(st.label); setRosterError(''); }, style: cardLink }, "Rename"),
                                         react_1.default.createElement("button", { type: "button", onClick: () => setPictureFor(pictureFor === st.id ? null : st.id), style: cardLink }, st.picture ? 'Change picture' : 'Add picture'),

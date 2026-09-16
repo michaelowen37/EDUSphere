@@ -396,6 +396,8 @@ Approved by Mikey on 2026-09-04 unless marked "proposed".
 - (2026-09-16) A read-aloud answer is spoken only when it holds no colon, which is what marks a picture choice. The earlier test missed `item:triangle-blue`, so tapping a picture announced "item triangle blue".
 - (2026-09-16) Fifteen crayons, five to a row. A resting picture goes grey behind a ring that empties over the fifteen minutes, rather than filling slowly with color, so it is plain at a glance that it is having a break.
 
+- (2026-09-16) On a laptop a student's picture sits to the right of their name rather than to its left, so every name, grade and link starts at the same edge whether or not the student has one. On a phone it still sits above the name, centered.
+
 ## Open items
 - Verify audio plays inside the chat artifact sandbox (works in a normal browser).
 - Common Core / TEKS codes on existing modules to be checked against the official lists.

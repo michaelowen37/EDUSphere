@@ -760,13 +760,15 @@ const KID_ANIMATION = `
   /* On a phone the picture sits above the name, so every name, grade and link starts at the card's left edge,
      with or without a picture; on a laptop the picture returns beside them. */
   .edu-student-left { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 6px; }
+  .edu-student-name-row { display: flex; flex-direction: column-reverse; align-items: center; gap: 6px; }
   .edu-student-left > div { width: 100%; }
   .edu-student-actions { text-align: left; }
   .edu-student-actions button { margin-right: 10px; }
   .edu-student-open { display: flex; justify-content: center; margin-top: 12px; }
   @media (min-width: 1000px) {
     .edu-student-body { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
-    .edu-student-left { flex: 1 1 auto; min-width: 0; text-align: left; flex-direction: row; align-items: center; gap: 10px; }
+    .edu-student-left { flex: 1 1 auto; min-width: 0; text-align: left; flex-direction: column; align-items: flex-start; gap: 4px; }
+    .edu-student-name-row { flex-direction: row; align-items: center; gap: 12px; }
     .edu-student-left > div { width: auto; }
   }
   /* Section titles read centered at every width. A fold keeps its count and chevron pinned to its
@@ -3897,10 +3899,16 @@ export default function EduSphereApp() {
               <>
                 <div className="edu-student-body">
                 <div className="edu-student-left">
-                {st.picture && <StudentPicture name={st.picture} tint={st.tint} size={40} />}
+                {/* The picture sits beside the name, to its right on a laptop so that every name and link
+                    starts at the same edge, with or without one; on a phone it moves above the name. */}
+                <div className="edu-student-name-row">
+                  <div style={{ minWidth: 0 }}>
+                    <span style={{ display: 'block', fontSize: 18, fontWeight: 600 }}>{keepTogether(st.label)}</span>
+                    {st.level && <span style={{ display: 'block', fontSize: 12, color: C.muted }}>{levelFor(st.level).title}{st.startGrade ? ` · ${gradeLabel(st.startGrade)}` : ''}</span>}
+                  </div>
+                  {st.picture && <StudentPicture name={st.picture} tint={st.tint} size={40} />}
+                </div>
                 <div style={{ flex: '1 1 auto', minWidth: 0 }}>
-                  <span style={{ display: 'block', fontSize: 18, fontWeight: 600 }}>{keepTogether(st.label)}</span>
-                  {st.level && <span style={{ display: 'block', fontSize: 12, color: C.muted }}>{levelFor(st.level).title}{st.startGrade ? ` · ${gradeLabel(st.startGrade)}` : ''}</span>}
                 {/* On a laptop the name, grade and links stack on the left and Open report sits on the right, centered
                     on them; on a phone the name and links stay as they are and Open report sits below them, centered. */}
                 <div className="edu-student-actions" style={{ display: 'flow-root', marginTop: 8 }}>

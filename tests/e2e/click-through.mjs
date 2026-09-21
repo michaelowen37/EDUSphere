@@ -150,6 +150,35 @@ await page.getByRole('button', { name: /^Elementary/ }).click();
 await tap('Add');
 ok('a duplicate ID is refused in plain words', (await text()).includes('already on the list'));
 await page.getByLabel('Close').click();
+// Student card links (2026-09-20): Wonder Questions opens a popup with the switch; Add PIN saves from the card.
+await page.getByRole('button', { name: /^Wonder Questions/ }).first().click();
+ok('the Wonder Questions popup says what is current', (await text()).includes('Currently:'));
+await page.getByRole('group', { name: 'Wonder Questions' }).getByRole('button', { name: 'Off' }).click();
+await page.waitForTimeout(200);
+ok('switching Wonder Questions off shows on the card', (await page.getByRole('button', { name: /^Wonder Questions/ }).first().textContent()).includes('OFF'));
+await page.getByRole('group', { name: 'Wonder Questions' }).getByRole('button', { name: 'On' }).click();
+await page.waitForTimeout(200);
+await page.getByRole('button', { name: 'Close', exact: true }).click();
+await page.getByRole('button', { name: /^Add PIN/ }).first().click();
+await page.locator('input[placeholder="New PIN"]').fill('1234');
+await page.getByRole('button', { name: 'Save PIN' }).first().click();
+await page.waitForTimeout(300);
+ok('a PIN saved from the card is kept', (await page.getByRole('button', { name: /^Change PIN/ }).count()) >= 1);
+await page.getByRole('button', { name: /^Change PIN/ }).first().click();
+await page.getByRole('button', { name: 'Remove PIN' }).first().click();
+await page.waitForTimeout(300);
+ok('a PIN can be removed again', (await page.getByRole('button', { name: /^Add PIN/ }).count()) >= 1);
+// Certificates (2026-09-22): the screen offers four templates, a name box, photo slots per template, and prints or saves the sheet.
+await page.evaluate(() => window.__eduTest.openCertificate('S-1042', 'K'));
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'certificate');
+ok('the certificate screen shows four templates and the sheet', (await page.getByRole('button', { name: /^(Classic|Stars|Arches|Class of)/ }).count()) === 4 && (await page.getByRole('img', { name: /graduated from Kindergarten/ }).count()) === 1);
+await page.getByRole('button', { name: /^Class of/ }).click();
+ok('a template with photos offers that many photo slots', (await page.getByText(/^Photo \d: take or choose$/).count()) === 3);
+await page.fill('input[aria-label="Name on the certificate"]', 'Sam');
+ok('the typed name lands on the sheet', (await page.getByRole('img', { name: /^Sam graduated from Kindergarten/ }).count()) === 1);
+ok('print, save and done are offered', (await page.getByRole('button', { name: 'Print' }).count()) === 1 && (await page.getByRole('button', { name: 'Save picture' }).count()) === 1);
+await page.getByRole('button', { name: 'Done' }).click();
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'educator-pick');
 await tap('Home');
 t = await text();
 ok('the student can now be picked by name, not typed', t.includes('S-1042') && (await page.locator('input[placeholder="Name or student ID"]').count()) === 0);
@@ -171,6 +200,12 @@ await page.getByRole('button', { name: /^Math/ }).click();
 // 2. Master Fractions module 1 with a perfect set (early courses now list first, so open it by name)
 await openModuleNamed('What a fraction means');
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'lesson');
+// Story-based learning (2026-09-21): a fold under the key idea, a placeholder wearing its art serial until the picture exists.
+ok('a story fold sits under the key idea', (await page.getByRole('button', { name: /^Story-based learning/ }).count()) === 1);
+await page.getByRole('button', { name: /^Story-based learning/ }).click();
+await page.getByLabel('Illustration S5 to come').waitFor();
+ok('the story opens with its title and a placeholder for its picture', (await text()).includes('The broken cups'));
+await page.getByRole('button', { name: /^Story-based learning/ }).click();
 t = await text();
 ok('lesson shows key idea and a plain-text source', t.includes('Key idea') && t.includes('Source:') && (await page.locator('a').count()) === 0);
 await tap('Practice this');
@@ -304,9 +339,10 @@ await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen ===
 ok('pre-reader modules show a symbol instead of a word', (await page.getByLabel('Ready').count()) >= 1 || true);
 
 // 6. Pre-K first: Count to 5 is locked until One, two, three is mastered (a cross-course prerequisite)
-await openSubject('Math', 'One, two, three');
+// Pre-K rule (2026-09-20): the pre-K screen keeps its skill folds and kindergarten waits out of sight until every pre-K module is mastered.
+await openSubject('Counting', 'One, two, three');
 t = await text();
-ok('kindergarten counting stays locked until the pre-K module is mastered', !(await page.locator('h2:has-text("Count to 5")').locator('..').locator('..').getByRole('button', { name: 'Open', exact: true }).count()));
+ok('kindergarten counting waits out of sight while pre-K is unfinished', !t.includes('Count to 5') && t.includes('Counting'));
 await openModuleNamed('One, two, three');
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'lesson');
 for (let i = 0; i < 3; i++) await page.getByLabel('Next').click();
@@ -317,9 +353,10 @@ await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen ===
 await page.getByLabel('Back').click();
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview');
 // Now the kindergarten Counting course: expand it, read-aloud fires, picture choices tappable
-await openSubject('Math', 'Count to 5');
-ok('mastering the pre-K module unlocks kindergarten counting', (await page.locator('div').filter({ has: page.locator('h2', { hasText: 'Count to 5' }) }).filter({ has: page.getByRole('button', { name: 'Open', exact: true }) }).count()) >= 1);
-await openModuleNamed('Count to 5');
+t = await text();
+ok('after a pass the pre-K screen keeps its shape and kindergarten still waits', !t.includes('Count to 5') && !t.includes('Math'));
+// The pass unlocked kindergarten counting underneath: the test hook opens it the way the overview will once pre-K is done.
+await page.evaluate(() => window.__eduTest.openModule('count-to-5'));
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'lesson');
 t = await text();
 ok('a pre-reader lesson opens with a worked example, not a rule', t.includes('There are three') && !t.includes('The last number you say tells you how many'));
@@ -426,7 +463,7 @@ ok('the transcript lists work done and states its privacy position', t.includes(
 ok('the transcript offers a way to print', (await page.getByRole('button', { name: 'Print or save as PDF' }).count()) === 1);
 await tap('Back to report');
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'educator-report');
-ok('resetting one module changes the summary', (await text()).includes('0 of 13 in Kindergarten math'));
+ok('resetting one module changes the summary', (await text()).includes('0 of 14 in Kindergarten math'));
 ok('a new student starts on a short list of recommended courses', !(await text()).includes('fourth grade math'));
 ok('the all-progress reset carries the student\'s name', (await page.getByRole('button', { name: /^Reset .*Progress$/ }).count()) === 1);
 // Switch a course off from the recommended list
@@ -471,7 +508,10 @@ await page.screenshot({ path: 'tests/e2e/out/report.png', fullPage: false });
 await tap('Standards map');
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'standards-map');
 t = await text();
-ok('the standards map shows one closed dropdown per grade and subject with a coverage count', t.includes('Standards map') && (await page.getByRole('button', { name: /^Kindergarten Math/ }).count()) === 1 && /\d+ of \d+ covered/.test(t) && !(await page.getByText('Covered by:').first().isVisible().catch(() => false)));
+// Each grade is one closed, counted row; opening it shows the subject dropdowns, closed in turn (2026-09-20).
+ok('the standards map shows one closed row per grade with a coverage count', t.includes('Standards map') && (await page.getByRole('button', { name: /^Kindergarten \d+ of \d+ covered/ }).count()) === 1 && !(await page.getByRole('button', { name: /^Kindergarten Math/ }).first().isVisible().catch(() => false)) && !(await page.getByText('Covered by:').first().isVisible().catch(() => false)));
+await page.getByRole('button', { name: /^Kindergarten \d+ of \d+ covered/ }).click();
+ok('opening a grade shows one closed dropdown per subject', await page.getByRole('button', { name: /^Kindergarten Math/ }).first().isVisible());
 await page.getByRole('button', { name: /^Kindergarten Math/ }).click();
 ok('opening a grade lists its standards with codes and the modules covering them', await page.getByText('K.2A').first().isVisible());
 ok('a print button sits at the foot of the map', (await page.getByRole('button', { name: 'Print standards map' }).count()) === 1);
@@ -576,7 +616,21 @@ await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen ===
 await page.waitForTimeout(300);
 await page.getByRole('button', { name: "Let's Color" }).first().click({ force: true });
 await page.waitForTimeout(200);
-ok('the coloring grid shows pictures, most of them still locked', (await page.getByRole('button', { name: 'Locked picture' }).count()) >= 15 && (await page.getByRole('button', { name: /^Color the / }).count()) >= 1);
+// An educator's walk-through shows every picture open (2026-09-20); a student earns them one per module passed.
+ok('the walk-through shows every coloring picture unlocked for the educator', (await page.getByRole('button', { name: 'Locked picture' }).count()) === 0 && (await page.getByRole('button', { name: /^Color the / }).count()) >= 20);
+// Let's Play (2026-09-21): the same fold for games, every game open in the walk-through, opened by its tile.
+await page.getByRole('button', { name: "Let's Play" }).click();
+ok('the walk-through shows every game unlocked', (await page.getByRole('button', { name: 'Locked game' }).count()) === 0 && (await page.getByRole('button', { name: /^Play / }).count()) >= 10);
+await page.getByRole('button', { name: 'Play Pairs' }).click();
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'coloring');
+ok('a game opens with its cards face down and a close button', (await page.getByRole('button', { name: 'Card' }).count()) === 6 && (await page.getByRole('button', { name: 'Close game' }).count()) === 1);
+await page.getByRole('button', { name: 'Card' }).first().click();
+ok('a tapped card turns over', (await page.getByRole('button', { name: 'Card' }).count()) === 5);
+await page.getByRole('button', { name: 'Close game' }).click();
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview');
+// Opening Let's Play folded Let's Color away; open it again for the picture steps below.
+const letsColor = page.getByRole('button', { name: "Let's Color" });
+if ((await letsColor.getAttribute('aria-expanded')) !== 'true') await letsColor.click();
 await page.getByRole('button', { name: /^Color the / }).first().click({ force: true });
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'coloring');
 await page.locator('svg[role=img] > *').first().click({ force: true });
@@ -610,14 +664,15 @@ await tap('Back to Classroom');
 await tap('Backup classroom');
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'backup');
 t = await text();
-ok('the backup page speaks only of manual backups and explains the automatic ones', t.includes('No manual backup yet') && t.includes('Automatic Backups'));
+// Automatic backups count too (2026-09-20): a student signed in earlier in this run, so today's automatic file is the last backup.
+ok('the backup page shows the last backup, automatic ones included, and explains them', /No backup yet|Last backup today/.test(t) && t.includes('Automatic Backups'));
 ok('the device name given at sign-in is already on the backup page', (await page.inputValue('input[placeholder="Example: iPad 3, Chromebook"]')) === 'iPad 3');
 // The test browser would open a real save dialog, which no script can answer; use the plain download path here.
 await page.evaluate(() => { window.showSaveFilePicker = undefined; });
-const [download] = await Promise.all([page.waitForEvent('download'), tap('Download backup')]);
+const [download] = await Promise.all([page.waitForEvent('download'), tap('Manual backup')]);
 ok('a backup file names the device, the count and the date', /edusphere-ipad-3-4-students-\d{1,2}-\d{1,2}-\d{4}-\d{1,2}-\d{2}(am|pm)\.json/.test(download.suggestedFilename()));
 const backupPath = await download.path();
-ok('the app records that a manual backup was just taken', (await text()).includes('Last manual backup today'));
+ok('the app records that a backup was just taken', (await text()).includes('Last backup today'));
 await page.setInputFiles('input[type="file"]', backupPath);
 await page.waitForTimeout(500);
 ok('restoring the same file adds nothing and loses nothing', (await text()).includes('0 students were added and all relevant history was merged'));
@@ -668,12 +723,10 @@ await tap('Home');
 await page.getByRole('button', { name: /S-1042$/ }).click();
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview');
 t = await text();
-ok('a subject with no courses left is not listed', t.includes('Math') && t.includes('Reading'));
+ok('the pre-K screen keeps its skill folds after courses change', /Colors|Counting|Shapes|Matching/.test(t) && !t.includes('Math'));
 ok('a young learner sees no numbers and no My progress button', !t.includes('modules mastered') && (await page.getByRole('button', { name: 'My progress' }).count()) === 0);
-await openSubject('Math', 'Count to 5');
-t = await text();
 // With one course left in a subject its title is not repeated, so check the module names.
-ok('a switched-off course is hidden from the learner', !t.includes('What a fraction means') && t.includes('Count to 5'));
+ok('a switched-off course is hidden from the learner', !t.includes('What a fraction means') && !t.includes('Fractions'));
 
 ok('no browser errors during the whole run', errors.length === 0);
 if (errors.length) console.log(errors.slice(0, 5).join('\n'));

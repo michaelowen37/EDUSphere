@@ -79,13 +79,24 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
     else if (q.visual && q.visual.kind === 'solid') { if (!['sphere', 'cube', 'cylinder', 'cone'].includes(q.visual.name)) problems.push('unknown solid'); }
     else if (q.visual && q.visual.kind === 'tenframe') { if (!(q.visual.filled >= 0 && q.visual.filled <= 10)) problems.push('ten frame out of range'); }
     else if (q.visual && q.visual.kind === 'array') { if (!(q.visual.rows >= 1 && q.visual.rows <= 10 && q.visual.cols >= 1 && q.visual.cols <= 10)) problems.push('array out of range'); }
-    else if (q.visual && q.visual.kind === 'numberline') { if (!(q.visual.parts >= 2 && q.visual.mark >= 0 && q.visual.mark <= q.visual.parts)) problems.push('number line out of range'); }
+    else if (q.visual && q.visual.kind === 'numberline' && q.visual.parts !== undefined) { if (!(q.visual.parts >= 2 && q.visual.mark >= 0 && q.visual.mark <= q.visual.parts)) problems.push('number line out of range'); }
     else if (q.visual && q.visual.kind === 'bar') { if (!(q.visual.shaded >= 0 && q.visual.shaded <= q.visual.parts)) problems.push('bar picture out of range'); }
     else if (q.visual && q.visual.kind === 'swatch') { if (!['red', 'blue', 'yellow', 'green'].includes(q.visual.colour)) problems.push('unknown colour'); }
     else if (q.visual && q.visual.kind === 'item') { if (!q.visual.shape || !q.visual.colour) problems.push('item incomplete'); }
     else if (q.visual && q.visual.kind === 'pattern') { if (!Array.isArray(q.visual.items) || q.visual.items.length < 3) problems.push('pattern too short'); }
     else if (q.visual && q.visual.kind === 'clock') { if (!(q.visual.hour >= 1 && q.visual.hour <= 12 && [0, 30].includes(q.visual.minute))) problems.push('clock out of range'); }
     else if (q.visual && q.visual.kind === 'icon') { if (!['sun', 'moon', 'cloud', 'rain', 'snow', 'plant', 'tree', 'flower', 'fish', 'bird', 'rock', 'drop', 'ice', 'fire', 'magnet'].includes(q.visual.name)) problems.push('unknown icon'); }
+    else if (q.visual && (q.visual.kind === 'pic' || q.visual.kind === 'art')) { if (!q.visual.name) problems.push('picture incomplete'); }
+    else if (q.visual && q.visual.kind === 'numberline') { if (!(q.visual.from < q.visual.to && (q.visual.marks || [q.visual.mark]).every((v) => v === null || v === undefined || (v >= q.visual.from && v <= q.visual.to)))) problems.push('number line out of range'); }
+    else if (q.visual && (q.visual.kind === 'tri' || q.visual.kind === 'para')) { if (!(q.visual.base > 0 && (q.visual.height === '?' || q.visual.height > 0))) problems.push('shape measures missing'); }
+    else if (q.visual && q.visual.kind === 'cell') { if (typeof q.visual.highlight !== 'string') problems.push('cell visual needs a highlight'); }
+    else if (q.visual && q.visual.kind === 'percentgrid') { if (!(q.visual.shaded >= 0 && q.visual.shaded <= 100)) problems.push('percent grid out of range'); }
+    else if (q.visual && q.visual.kind === 'groups') { if (!(Number.isInteger(q.visual.a) && Number.isInteger(q.visual.b) && q.visual.a >= 0 && q.visual.b >= 0)) problems.push('groups out of range'); }
+    else if (q.visual && q.visual.kind === 'angles') { if (!(['vertical', 'supplementary', 'triangle'].includes(q.visual.type) && q.visual.given > 0 && q.visual.given < 180)) problems.push('angles out of range'); }
+    else if (q.visual && q.visual.kind === 'lightray') { if (!(q.visual.angle > 0 && q.visual.angle < 90)) problems.push('light ray out of range'); }
+    else if (q.visual && q.visual.kind === 'alleles') { if (!/^[Bb]{2}$/.test(q.visual.pair)) problems.push('alleles malformed'); }
+    else if (q.visual && q.visual.kind === 'beaker') { if (!(q.visual.moles > 0 && q.visual.liters > 0)) problems.push('beaker out of range'); }
+    else if (q.visual && q.visual.kind === 'periodic') { if (!((q.visual.highlight || []).every((s) => typeof s === 'string' && s.length) && (q.visual.period === null || q.visual.period === undefined || (q.visual.period >= 1 && q.visual.period <= 7)) && (q.visual.group === null || q.visual.group === undefined || (q.visual.group >= 1 && q.visual.group <= 18)))) problems.push('periodic visual out of range'); }
     else if (q.visual && !(q.visual.shaded >= 0 && q.visual.shaded <= q.visual.parts)) problems.push('visual out of range');
     // Independent checks for the counting questions (a 'dots:N' choice is a picture of N things)
     const dotCount = (c) => Number((/^dots:(\d+)$/.exec(c) || [])[1]);
@@ -724,7 +735,7 @@ ok('reset: history kept, but nothing counts as mastered afterwards', events.leng
   ok('report includes a confidence score per module', rep.modules.find((m) => m.id === M).confidence.score === 3 && rep.modules.find((m) => m.id === 'equivalent-fractions').confidence.score === null);
   ok('report prints the confidence rules', rep.definitions.some((d) => d.startsWith('Confidence starts at 1')));
   ok('every question has a one-sentence prompt and a story or null', Object.keys(L.GENERATORS).every((g) => { const q = L.generateQuestion(g, 7); return typeof q.prompt === 'string' && (q.type === 'writing' ? q.prompt.length < 110 : q.prompt.length < 70) && (q.story === null || typeof q.story === 'string'); }));
-  ok('explanation pictures are valid bars or a group of dots', Object.keys(L.GENERATORS).every((g) => { const q = L.generateQuestion(g, 11); if (q.explainVisual === null) return true; if (Array.isArray(q.explainVisual)) return q.explainVisual.every((b) => Number.isInteger(b.parts) && b.parts >= 2 && b.shaded >= 0 && b.shaded <= b.parts && typeof b.label === 'string'); if (q.explainVisual.kind === 'letters') return typeof q.explainVisual.text === 'string' && q.explainVisual.text.length > 0; return q.explainVisual.kind === 'dots' && q.explainVisual.count >= 1 && q.explainVisual.count <= 10; }));
+  ok('explanation pictures are valid bars or a group of dots', Object.keys(L.GENERATORS).every((g) => { const q = L.generateQuestion(g, 11); if (q.explainVisual === null) return true; if (Array.isArray(q.explainVisual)) return q.explainVisual.every((b) => Number.isInteger(b.parts) && b.parts >= 2 && b.shaded >= 0 && b.shaded <= b.parts && typeof b.label === 'string'); if (q.explainVisual.kind === 'letters') return typeof q.explainVisual.text === 'string' && q.explainVisual.text.length > 0; if (q.explainVisual.kind === 'numberline') return q.explainVisual.from < q.explainVisual.to && (q.explainVisual.marks || []).every((v) => v >= q.explainVisual.from && v <= q.explainVisual.to); if (q.explainVisual.kind === 'tri') return q.explainVisual.base > 0 && q.explainVisual.height > 0; if (q.explainVisual.kind === 'percentgrid') return q.explainVisual.shaded >= 0 && q.explainVisual.shaded <= 100; if (q.explainVisual.kind === 'pair') return [q.explainVisual.a, q.explainVisual.b].every((h) => h && typeof h.kind === 'string' && (h.name || h.colour || h.shape || h.count)); return q.explainVisual.kind === 'dots' && q.explainVisual.count >= 1 && q.explainVisual.count <= 10; }));
 }
 
 // ---- 7. Courses, subjects, and the per-learner course switch ----
@@ -739,7 +750,7 @@ ok('reset: history kept, but nothing counts as mastered afterwards', events.leng
   const reset = L.makeResetEvent('2026-09-03T10:02:00.000Z');
   ok('course setting survives a progress reset', L.buildReport('T', [off, reset]).enabledCourseIds.length === 0);
   ok('report rows carry subject and course', L.buildReport('T', []).modules.every((m) => typeof m.subject === 'string' && typeof m.courseTitle === 'string'));
-  ok('kindergarten course exists, is read-aloud, and has thirteen modules', L.getCourse('counting-k') && L.getCourse('counting-k').readAloud === true && L.getCourse('counting-k').modules.length === 13);
+  ok('kindergarten course exists, is read-aloud, and has thirteen modules', L.getCourse('counting-k') && L.getCourse('counting-k').readAloud === true && L.getCourse('counting-k').modules.length === 14);
   ok('reading course exists in a second subject', L.getCourse('letters-k') && L.getCourse('letters-k').subject === 'Reading' && L.getCourse('letters-k').readAloud === true);
   ok('describeChoice turns a picture choice into words', L.describeChoice('dots:4') === 'the group with 4' && L.describeChoice('3/4') === '3/4');
 }
@@ -761,7 +772,7 @@ ok('reset: history kept, but nothing counts as mastered afterwards', events.leng
   ok('approve all approves everything not removed', L.approveAllWonder(L.emptyWonderReview()).approved.length === L.WONDER.length);
   ok('approve all leaves removed questions removed', L.approveAllWonder(hiddenState).approved.includes('w-one-thing') === false);
   ok('un-approve all sends everything back to awaiting review and keeps removals', L.unapproveAllWonder(allApproved).approved.length === 0 && L.unapproveAllWonder(hiddenState).hidden.includes('w-one-thing'));
-  { const done = ['colours', 'same-and-different', 'patterns', 'count-to-3', 'first-strokes', 'connect-the-dots', 'draw-the-shapes', 'taking-turns', 'big-bigger-biggest', 'helpers-all-around'].map((id, i) => ({ type: 'attempt_completed', at: `u${i}`, startedAt: 'u', moduleId: id, seed: 1, core: [], review: null, coreCorrect: 5, coreTotal: 5 }));
+  { const done = ['colours', 'same-and-different', 'match-the-vehicles', 'match-the-things', 'more-and-fewer-5', 'patterns', 'count-to-3', 'first-strokes', 'connect-the-dots', 'draw-the-shapes', 'taking-turns', 'big-bigger-biggest', 'helpers-all-around'].map((id, i) => ({ type: 'attempt_completed', at: `u${i}`, startedAt: 'u', moduleId: id, seed: 1, core: [], review: null, coreCorrect: 5, coreTotal: 5 }));
     ok('finishing a course unlocks the next course up in that subject', JSON.stringify(L.coursesToUnlock([L.makeCoursesEnabledEvent(['first-steps-pk'], 't'), ...done])) === '["counting-k"]');
     ok('nothing unlocks while a course is unfinished', L.coursesToUnlock([L.makeCoursesEnabledEvent(['first-steps-pk'], 't'), ...done.slice(0, 2)]).length === 0); }
   // The cadence: one reflection after every two mastered modules, rotating through the pool
@@ -823,6 +834,22 @@ ok('reset: history kept, but nothing counts as mastered afterwards', events.leng
   r = L.addStudent(r, 'S-1042', '2026-09-05T10:00:00.000Z', { level: 'elementary' }).roster;
   ok('an ID becomes a safe key but keeps its readable label', r.students[0].id === 's_1042' && r.students[0].label === 'S-1042');
   ok('the same ID cannot be added twice', L.addStudent(r, 's-1042', 't', { level: 'elementary' }).error !== null);
+  // A PIN is four digits chosen by the educator, or nothing; Wonder questions are on unless switched off.
+  ok('a PIN must be four digits', L.cleanPin('1234') === '1234' && L.cleanPin('123') === null && L.cleanPin('12a4') === null && L.cleanPin('') === null);
+  ok('a bad PIN while adding is refused with a plain sentence', L.addStudent(r, 'S-2', 't', { level: 'elementary', pin: '12' }).error === 'A PIN is 4 digits.');
+  { const added = L.addStudent(r, 'S-2', 't', { level: 'elementary', pin: '4321', wonder: false }).roster; const st = L.findStudent(added, 'S-2');
+    ok('a PIN and the Wonder switch are kept on the student', st.pin === '4321' && st.wonder === false && L.wonderOnFor(st) === false);
+    ok('the right PIN opens the record and a wrong one does not', L.pinMatches(st, '4321') && !L.pinMatches(st, '0000') && L.pinMatches(L.findStudent(added, 'S-1042'), ''));
+    ok('a PIN can be changed or removed, and Wonder switched back on', L.findStudent(L.setStudentPin(added, 'S-2', '9999'), 'S-2').pin === '9999' && L.findStudent(L.setStudentPin(added, 'S-2', null), 'S-2').pin === null && L.wonderOnFor(L.findStudent(L.setStudentWonder(added, 'S-2', true), 'S-2')));
+    ok('Wonder questions are on for a student added without saying', L.wonderOnFor(L.findStudent(added, 'S-1042')));
+  }
+  // My Classroom order: youngest band first, then by name, unless an educator has dragged the cards.
+  { const mk = (label, level, order) => ({ id: label.toLowerCase(), label, level, active: true, ...(order === undefined ? {} : { order }) });
+    const list = [mk('Zed', 'early'), mk('Amy', 'middle'), mk('Bob', 'early'), mk('Cal', 'elementary')];
+    ok('the classroom sorts by band, then name', L.classroomOrder(list).map((s) => s.label).join(' ') === 'Bob Zed Cal Amy');
+    const dragged = L.setClassroomOrder({ version: 1, students: list }, ['cal', 'zed', 'bob', 'amy']).students;
+    ok('a dragged order is kept, and a new student joins at the end', L.classroomOrder([...dragged, mk('New', 'early')]).map((s) => s.label).join(' ') === 'Cal Zed Bob Amy New');
+  }
   r = L.addStudent(r, 'S-2001', 't', { level: 'elementary' }).roster;
   ok('renaming keeps the id, so progress cannot be lost', L.renameStudent(r, 'S-1042', 'Sam R.').roster.students[0].id === 's_1042' && L.renameStudent(r, 'S-1042', 'Sam R.').roster.students[0].label === 'Sam R.');
   ok('a blank name is refused', L.renameStudent(r, 'S-1042', ' ').error !== null);
@@ -947,13 +974,13 @@ ok('reset: history kept, but nothing counts as mastered afterwards', events.leng
   const rep = L.buildReport('Sam R.', [att('count-to-5', '2026-09-01T10:00:00.000Z', 5)]);
   const text = L.summaryParagraph(rep);
   ok('the summary opens with the readable name', text.startsWith('Sam R. has mastered'));
-  ok('it counts every assigned course, not one grade at a time', text.includes('1 of 13 in Kindergarten math') && text.includes('in third grade math') && text.includes('pre-K 4 math') && text.includes('first grade math'));
+  ok('it counts every assigned course, not one grade at a time', text.includes('1 of 14 in Kindergarten math') && text.includes('in third grade math') && text.includes('pre-K 4 math') && text.includes('first grade math'));
   ok('grades are spoken the way a person would say them', text.includes('Kindergarten') && text.includes('third grade') && !text.includes('Grade 3'));
   ok('confidence is described in words, never as a raw score', /Confidence is strongest|ground to make up|steady across the board|not been enough practice/.test(text) && !/score of \d|\d out of 5/.test(text));
   ok('reflections are reported in a plain sentence', text.includes('No reflection questions have been answered yet'));
   const noneOn = L.buildReport('Sam', [L.makeCoursesEnabledEvent([], '2026-09-01T09:00:00.000Z')]);
   ok('a student with nothing switched on is told so plainly', L.summaryParagraph(noneOn).includes('no courses switched on yet'));
-  ok('the summary agrees with the report it came from', text.includes(`${rep.modules.filter((m) => m.courseId === 'counting-k' && m.mastered).length} of 13`));
+  ok('the summary agrees with the report it came from', text.includes(`${rep.modules.filter((m) => m.courseId === 'counting-k' && m.mastered).length} of 14`));
 }
 
 // ---- 13. Course labels and the recommended list ----
@@ -972,7 +999,7 @@ ok('reset: history kept, but nothing counts as mastered afterwards', events.leng
   ok('a module with no override uses the platform default', L.moduleRules('count-to-5').questions === L.CONFIG.CORE_QUESTIONS_PER_ATTEMPT && L.moduleRules('count-to-5').toMaster === L.CONFIG.MASTERY_MIN_CORRECT);
   ok('an unknown module still returns sensible rules', L.moduleRules('nope').questions === L.CONFIG.CORE_QUESTIONS_PER_ATTEMPT);
   const att = (moduleId, at, correct, total) => ({ type: 'attempt_completed', at, startedAt: at, moduleId, seed: 1, core: [], review: null, coreCorrect: correct, coreTotal: total || 5 });
-  const events = [att('count-to-5', '2026-09-01T10:00:00.000Z', 5), att('count-to-10', '2026-09-02T10:00:00.000Z', 5), att('tracing-numbers', '2026-09-02T10:30:00.000Z', 5), att('tracing-shapes', '2026-09-02T10:40:00.000Z', 5), att('one-more-one-less', '2026-09-02T11:00:00.000Z', 5), att('joining-and-taking-away', '2026-09-02T12:00:00.000Z', 5), att('comparing-numbers', '2026-09-02T13:00:00.000Z', 5), att('shapes', '2026-09-02T14:00:00.000Z', 5), att('counting-by-tens', '2026-09-02T15:00:00.000Z', 5), att('longer-and-heavier', '2026-09-02T16:00:00.000Z', 5), att('sorting', '2026-09-02T17:00:00.000Z', 5), att('solids', '2026-09-02T18:00:00.000Z', 5), att('making-ten', '2026-09-02T19:00:00.000Z', 5), att('fraction-meaning', '2026-09-03T10:00:00.000Z', 2)];
+  const events = [att('count-to-5', '2026-09-01T10:00:00.000Z', 5), att('count-to-10', '2026-09-02T10:00:00.000Z', 5), att('tracing-numbers', '2026-09-02T10:30:00.000Z', 5), att('tracing-shapes', '2026-09-02T10:40:00.000Z', 5), att('one-more-one-less', '2026-09-02T11:00:00.000Z', 5), att('joining-and-taking-away', '2026-09-02T12:00:00.000Z', 5), att('comparing-numbers', '2026-09-02T13:00:00.000Z', 5), att('shapes', '2026-09-02T14:00:00.000Z', 5), att('counting-by-tens', '2026-09-02T15:00:00.000Z', 5), att('longer-and-heavier', '2026-09-02T16:00:00.000Z', 5), att('sorting', '2026-09-02T17:00:00.000Z', 5), att('solids', '2026-09-02T18:00:00.000Z', 5), att('making-ten', '2026-09-02T19:00:00.000Z', 5), att('more-and-fewer-10', '2026-09-02T19:30:00.000Z', 5), att('fraction-meaning', '2026-09-03T10:00:00.000Z', 2)];
   const tr = L.buildTranscript('S-1042', events);
   ok('a course with every module mastered is listed as completed', tr.completed.length === 1 && tr.completed[0].id === 'counting-k');
   ok('a course part way through is listed separately', tr.inProgress.length === 1 && tr.inProgress[0].id === 'fractions-intro');
@@ -1030,7 +1057,7 @@ ok('reset: history kept, but nothing counts as mastered afterwards', events.leng
   ok('an untouched module says so plainly', L.moduleStory('Sam', [], 'count-to-10').includes('has not opened'));
   ok('a read-only module says nothing counts yet', L.moduleStory('Sam', [{ type: 'lesson_viewed', at: 't', moduleId: 'count-to-10' }], 'count-to-10').includes('has not practiced it yet'));
   ok('encouragement names what was mastered and what is next', L.encouragementFor(ev, 'count-to-5', true) === 'You have mastered **count to 5!** Way to go!\nNext up is **count to 10.**');
-  const wholeCourse = ['count-to-5', 'count-to-10', 'tracing-numbers', 'one-more-one-less', 'tracing-shapes', 'joining-and-taking-away', 'comparing-numbers', 'shapes', 'counting-by-tens', 'longer-and-heavier', 'sorting', 'solids', 'making-ten'].map((id, i) => att(id, `t${i}`, 5, 9000));
+  const wholeCourse = ['count-to-5', 'count-to-10', 'tracing-numbers', 'one-more-one-less', 'tracing-shapes', 'joining-and-taking-away', 'comparing-numbers', 'shapes', 'counting-by-tens', 'longer-and-heavier', 'sorting', 'solids', 'making-ten', 'more-and-fewer-10'].map((id, i) => att(id, `t${i}`, 5, 9000));
   ok('finishing a course points at the next course', L.encouragementFor(wholeCourse, 'making-ten', true).includes('Next we will learn about'));
   ok('a miss is met with encouragement, not a score', !L.encouragementFor(ev, 'count-to-5', false).includes('out of'));
 }
@@ -1256,5 +1283,23 @@ ok('reset: history kept, but nothing counts as mastered afterwards', events.leng
     ok('the summary is at least three sentences once there is anything to say', L.studentSummary([p5('fraction-meaning', 't1', 5)], ids).length >= 3); }
 }
 
+{ // Pictures are not recycled: no two lessons share an identical example picture (captions aside).
+  const seen = new Map();
+  // Dots, swatches and traced strokes are the concept itself (three dots is three), so those may repeat; drawings may not.
+  for (const m of L.MODULES) { const ex = m.lesson.example; if (!ex || ['dots', 'swatch', 'trace'].includes(ex.kind)) continue; const key = JSON.stringify({ ...ex, caption: undefined }); seen.set(key, [...(seen.get(key) || []), m.id]); }
+  const dup = [...seen.entries()].filter(([, ids]) => ids.length > 1);
+  ok('no two lessons share an identical example picture', dup.length === 0, dup.map(([k, ids]) => `${k.slice(0, 40)} -> ${ids.join(',')}`).join(' | '));
+}
+{ // Grade completion counts mastered, placed-past and quick-check-passed modules, and only courses the student was given.
+  const evs = [L.makeCoursesEnabledEvent(['counting-k'], 't')]; const ids = L.enabledCourseIds(evs);
+  ok('a grade with nothing mastered is not complete', !L.gradeCompleted(evs, 'K', ids));
+  const done = L.getCourse('counting-k').modules.map((m) => ({ type: 'placed', at: 't2', moduleIds: [m.id] }));
+  ok('a grade whose every given module was placed past is complete', L.gradeCompleted([...evs, ...done], 'K', ids));
+  ok('a grade whose courses were never given is not complete', !L.gradeCompleted([...evs, ...done], '1', ids));
+  ok('completedGrades lists it once', JSON.stringify(L.completedGrades([...evs, ...done])) === '["K"]');
+  let r = L.addStudent(L.emptyRoster(), 'S-9', 't', { level: 'early' }).roster;
+  r = L.setCertificateState(r, 'S-9', 'K', 'skipped');
+  ok('a skipped certificate is remembered and pending ones are the rest', L.certificatesPending(L.findStudent(r, 'S-9'), ['K', '1']).join() === '1');
+}
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

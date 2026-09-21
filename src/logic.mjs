@@ -931,7 +931,57 @@ export function gradesWithCourses() { return GRADES.filter((g) => COURSES.some((
 // course the student finishes adds another. The pictures themselves are drawn by the screen.
 // Ordered simplest first: a ball of two parts for a three-year-old, a city of twenty for the end
 // of grade 2. One more picture is earned for every module passed, so they arrive steadily.
-export const COLORING_PICTURES = ['ball', 'sun', 'balloon', 'my-name', 'star', 'tree', 'house', 'fish', 'cat', 'flower', 'boat', 'rocket', 'butterfly', 'train', 'car', 'robot', 'fishbowl', 'castle', 'dinosaur', 'city', 'garden', 'playground', 'farm', 'birthday'];
+const DRAWINGS = ['ball', 'sun', 'balloon', 'my-name', 'star', 'tree', 'house', 'fish', 'cat', 'flower', 'boat', 'rocket', 'butterfly', 'train', 'car', 'robot', 'fishbowl', 'castle', 'dinosaur', 'city', 'garden', 'playground', 'farm', 'birthday'];
+// Letter pages: a capital beside its lowercase, with a few circles around them to color too, and the
+// letter's name spoken on opening. They take turns with the drawings, so the alphabet arrives one
+// letter at a time from the very first pictures.
+export const LETTER_PICTURES = 'abcdefghijklmnopqrstuvwxyz'.split('').map((ch) => `letter-${ch}`);
+export const COLORING_PICTURES = DRAWINGS.flatMap((pic, i) => (LETTER_PICTURES[i] ? [pic, LETTER_PICTURES[i]] : [pic])).concat(LETTER_PICTURES.slice(DRAWINGS.length));
+export function pictureTitle(pic) { return pic === 'my-name' ? 'My name' : pic.startsWith('letter-') ? `Letter ${pic.slice(-1).toUpperCase()}` : pic; }
+
+// Let's Play: small games that need no words, one to start with and one more for every course
+// mastered. A game keeps the coloring clock: five minutes, then a fifteen-minute rest. The list is
+// in the order they unlock; a game with a minGrade waits for a student whose courses reach it.
+export const GAMES = [
+  { id: 'dots-star', kind: 'dots', title: 'Star', shape: 'star' },
+  { id: 'pairs-shapes', kind: 'pairs', title: 'Pairs', pairs: 3 },
+  { id: 'sort-size', kind: 'sort', title: 'Big and small', by: 'size' },
+  { id: 'maze-small', kind: 'maze', title: 'Maze', cells: 6 },
+  { id: 'jigsaw-4', kind: 'jigsaw', title: 'Puzzle', side: 2 },
+  { id: 'dots-name', kind: 'dots', title: 'My name', shape: 'name' },
+  { id: 'pairs-more', kind: 'pairs', title: 'More pairs', pairs: 4 },
+  { id: 'sort-color', kind: 'sort', title: 'Red and blue', by: 'color' },
+  { id: 'dots-house', kind: 'dots', title: 'House', shape: 'house' },
+  { id: 'maze-big', kind: 'maze', title: 'Big maze', cells: 9, minGrade: 'K' },
+  { id: 'dots-boat', kind: 'dots', title: 'Boat', shape: 'boat' },
+  { id: 'jigsaw-9', kind: 'jigsaw', title: 'Big puzzle', side: 3, minGrade: '1' },
+  { id: 'pairs-many', kind: 'pairs', title: 'Many pairs', pairs: 6, minGrade: '1' },
+  { id: 'dots-kite', kind: 'dots', title: 'Kite', shape: 'kite' },
+  { id: 'maze-huge', kind: 'maze', title: 'Huge maze', cells: 12, minGrade: '2' },
+  { id: 'pong', kind: 'pong', title: 'Pong', minGrade: '2' },
+];
+export function gamesFor(topGrade) { const at = GRADES.indexOf(topGrade); return GAMES.filter((g) => !g.minGrade || GRADES.indexOf(g.minGrade) <= at); }
+export function gamesUnlocked(events) {
+  const per = deriveProgress(events).perModule;
+  const mastered = COURSES.filter((c) => c.modules.length > 0 && c.modules.every((m) => (per[m.id] || {}).mastered)).length;
+  return Math.min(GAMES.length, 1 + mastered);
+}
+// Dots to join, in order, in a 100 by 100 box. Joining the last one back to the first closes the shape.
+export const DOT_SHAPES = {
+  star: [[50, 8], [61, 38], [93, 38], [67, 57], [77, 88], [50, 70], [23, 88], [33, 57], [7, 38], [39, 38]],
+  house: [[15, 50], [50, 18], [85, 50], [85, 88], [15, 88]],
+  boat: [[20, 62], [80, 62], [68, 84], [32, 84], [20, 62], [50, 62], [50, 14], [78, 56]],
+  kite: [[50, 10], [82, 42], [50, 90], [18, 42]],
+};
+// A student's name as dots: each letter's strokes from TRACE_LETTERS, laid side by side.
+export function nameDots(name) {
+  const letters = String(name || '').toUpperCase().replace(/[^A-Z]/g, '').split('').filter((ch) => TRACE_LETTERS[ch]).slice(0, 5);
+  if (!letters.length) return DOT_SHAPES.star;
+  // Each letter gets a slot across the box with a little air on each side, and stands in the middle band.
+  const w = 100 / letters.length; const out = [];
+  letters.forEach((ch, i) => { for (const stroke of TRACE_LETTERS[ch].strokes) for (const [x, y] of stroke) { const pt = [Math.round((i * w + w * 0.15 + (x / 100) * w * 0.7) * 10) / 10, Math.round((30 + y * 0.4) * 10) / 10]; const last = out[out.length - 1]; if (!last || last[0] !== pt[0] || last[1] !== pt[1]) out.push(pt); } });
+  return out;
+}
 // A pre-K screen is grouped by the skill being practised rather than by subject: a three-year-old
 // knows what colors are, not what mathematics is. Every other grade groups by subject as before.
 export const SKILL_ORDER = ['Colors', 'Shapes', 'Sizes', 'Matching', 'Patterns', 'Counting', 'Comparing', 'Listening', 'Letters', 'Drawing', 'Getting along'];
@@ -1097,7 +1147,7 @@ function LETTER_MODULES() { return [
     lesson: {
       paragraphs: ['Every letter makes a sound. M says mmm, like the start of moon. S says sss, like the start of sun.', 'Say the word slowly and listen for the first sound. That sound tells you the first letter.'],
       keyIdea: 'Letters make sounds. The first sound of a word is its first letter.',
-      example: { kind: 'letters', text: 'M', caption: 'M says mmm. Moon starts with M.' },
+      example: { kind: 'letters', text: 'S', caption: 'M says mmm. Moon starts with M.' },
       script: [
         { say: 'This is the letter M. It says mmm, like the start of moon.', show: { kind: 'letters', text: 'moon', highlight: 'm' } },
         { say: 'This is the letter S. It says sss, like the start of sun.', show: { kind: 'letters', text: 'sun', highlight: 's' } },
@@ -1116,7 +1166,7 @@ function LETTER_MODULES() { return [
     lesson: {
       paragraphs: ['Words rhyme when their endings sound the same. Cat and hat rhyme. Dog and log rhyme.', 'Say the words out loud and listen to how they end.'],
       keyIdea: 'Rhyming words end with the same sound.',
-      example: { kind: 'letters', text: 'cat hat', caption: 'Cat, hat. They rhyme.' },
+      example: { kind: 'letters', text: 'dog log', caption: 'Cat, hat. They rhyme.' },
       script: [
         { say: 'Cat. Hat. These two words end the same way, so they rhyme.', show: { kind: 'letters', text: 'cat hat', highlight: 'at' } },
         { say: 'Dog. Log. These two words rhyme as well.', show: { kind: 'letters', text: 'dog log', highlight: 'og' } },
@@ -1252,7 +1302,7 @@ function LETTER_MODULES() { return [
     lesson: {
       paragraphs: ['A picture can tell you what a word means. If the word says dog and the picture shows a dog, they match.', 'When you meet a new word, look at the picture for a clue.'],
       keyIdea: 'Match the word to the picture.',
-      example: { kind: 'shape', name: 'circle', caption: 'Circle. The picture shows a circle.' },
+      example: { kind: 'shape', name: 'triangle', size: 'small', caption: 'Circle. The picture shows a circle.' },
       script: [
         { say: 'This word says circle. The picture shows a circle. They match.', show: { kind: 'shape', name: 'circle' } },
         { say: 'A picture of a square is a clue that the word means square.', show: { kind: 'shape', name: 'square' } },
@@ -1261,6 +1311,26 @@ function LETTER_MODULES() { return [
     },
     sources: ['Aligned with Texas TEKS K.3B (use illustrations and text to learn or clarify word meanings) and Common Core RI.K.7.'],
     generators: ['rm-match-picture', 'rm-pick-word', 'rm-does-match', 'rm-count-word', 'rm-shape-word'],
+  },
+  {
+    id: 'trace-slant-letters',
+    order: 12,
+    title: 'Trace V, A and N',
+    tagline: 'Slanted lines',
+    requires: ['tracing-more-letters'],
+    needsTouch: true,
+    lesson: {
+      paragraphs: ['Some letters lean. Their lines go down at a slant. Start at the dot and follow the arrow.', 'V goes down one way, then up the other. A is two slants and a bar. N is down, slant, up.'],
+      keyIdea: 'Slanted lines make V, A and N. Start at the dot.',
+      example: { kind: 'trace', text: 'V', caption: 'Down one way, up the other. That is V.' },
+      script: [
+        { say: 'Start at the dot. Slant down, then slant up. That is V.', show: { kind: 'trace', text: 'V' } },
+        { say: 'Start at the dot. Slant up, slant down, then a bar across. That is A.', show: { kind: 'trace', text: 'A' } },
+        { say: 'Start at the dot. Down, slant down, then up. That is N.', show: { kind: 'trace', text: 'N' } },
+      ],
+    },
+    sources: ['Aligned with TEKS §110.2(b)(2)(E) (develops handwriting by accurately forming all uppercase and lowercase letters) and CCSS L.K.1.a (prints many upper- and lowercase letters).'],
+    generators: ['pk-trace-van', 'pk-trace-van', 'pk-trace-van', 'pk-trace-van', 'pk-trace-van'],
   },
 ]; }
 
@@ -1280,11 +1350,11 @@ function PREK3_MODULES() { return [
     lesson: {
       paragraphs: ['This color is red. This color is blue.', 'Tap the color you hear.'],
       keyIdea: 'Red and blue are colors.',
-      example: { kind: 'swatch', colour: 'red', caption: 'Red.' },
+      example: { kind: 'pair', a: { kind: 'swatch', colour: 'red' }, b: { kind: 'swatch', colour: 'blue' }, caption: 'Red and blue.' },
       script: [
         { say: 'This color is red.', show: { kind: 'swatch', colour: 'red' } },
         { say: 'This color is blue.', show: { kind: 'swatch', colour: 'blue' } },
-        { say: 'Red and blue are colors.', show: { kind: 'swatch', colour: 'red' } },
+        { say: 'Red and blue are colors.', show: { kind: 'pair', a: { kind: 'swatch', colour: 'red' }, b: { kind: 'swatch', colour: 'blue' } } },
       ],
     },
     sources: ['Aligned with Texas Prekindergarten Guidelines V.E.1 (sorts objects that are the same and different into groups) and Head Start ELOF Goal P-MATH 4 (compares numbers).'],
@@ -1302,12 +1372,32 @@ function PREK3_MODULES() { return [
       example: { kind: 'item', shape: 'circle', colour: 'red', caption: 'A red circle.' },
       script: [
         { say: 'Look at this red circle.', show: { kind: 'item', shape: 'circle', colour: 'red' } },
-        { say: 'Here is another red circle.', show: { kind: 'item', shape: 'circle', colour: 'red' } },
-        { say: 'They are the same.', show: { kind: 'item', shape: 'circle', colour: 'red' } },
+        { say: 'Here is another red circle.', show: { kind: 'pair', a: { kind: 'item', shape: 'circle', colour: 'red' }, b: { kind: 'item', shape: 'circle', colour: 'red' } } },
+        { say: 'They are the same. Two red circles.', show: { kind: 'pair', a: { kind: 'item', shape: 'circle', colour: 'red' }, b: { kind: 'item', shape: 'circle', colour: 'red' } } },
       ],
     },
     sources: ['Aligned with Texas Prekindergarten Guidelines V.E.1 (sorts objects that are the same and different into groups) and Head Start ELOF Goal P-MATH 8.'],
     generators: ['p3-find-match', 'p3-find-match', 'p3-find-match', 'p3-find-match', 'p3-find-match'],
+  },
+  {
+    id: 'match-the-animals',
+    skill: 'Matching',
+    order: 11,
+    title: 'Match the animals',
+    tagline: 'Which is the same?',
+    requires: ['find-the-match'],
+    lesson: {
+      paragraphs: ['Look at the animals. Two that look just alike are the same. One that looks different is not.', 'Find the one that matches, or find the odd one out.'],
+      keyIdea: 'The same means just alike.',
+      example: { kind: 'pair', a: { kind: 'pic', name: 'fox' }, b: { kind: 'pic', name: 'fox' }, caption: 'Two foxs. They are the same.' },
+      script: [
+        { say: 'Look at this fox.', show: { kind: 'pic', name: 'fox' } },
+        { say: 'Here is another fox. They are the same.', show: { kind: 'pair', a: { kind: 'pic', name: 'fox' }, b: { kind: 'pic', name: 'fox' } } },
+        { say: 'This is a owl. The owl is different from the fox.', show: { kind: 'pair', a: { kind: 'pic', name: 'fox' }, b: { kind: 'pic', name: 'owl' } } },
+      ],
+    },
+    sources: ['Aligned with Texas Prekindergarten Guidelines V.E.1 (sorts objects that are the same and different into groups) and Head Start ELOF Goal P-MATH 8.'],
+    generators: ['pm-same-animals', 'pm-different-animals', 'pm-same-animals', 'pm-different-animals', 'pm-same-animals'],
   },
   {
     id: 'one-and-two',
@@ -1337,11 +1427,11 @@ function PREK3_MODULES() { return [
     lesson: {
       paragraphs: ['This side has more dots. This side has fewer dots.', 'More means a bigger group.'],
       keyIdea: 'More means a bigger group.',
-      example: { kind: 'dots', count: 3, caption: 'Three dots. That is more than one.' },
+      example: { kind: 'pair', a: { kind: 'dots', count: 3 }, b: { kind: 'dots', count: 1 }, caption: 'Three dots. That is more than one.' },
       script: [
         { say: 'Here is one dot.', show: { kind: 'dots', count: 1 } },
-        { say: 'Here are three dots. That is more.', show: { kind: 'dots', count: 3 } },
-        { say: 'Three dots is more than one dot.', show: { kind: 'dots', count: 3 } },
+        { say: 'Here are three dots. That is more.', show: { kind: 'pair', a: { kind: 'dots', count: 3 }, b: { kind: 'dots', count: 1 } } },
+        { say: 'Three dots is more than one dot.', show: { kind: 'pair', a: { kind: 'dots', count: 3 }, b: { kind: 'dots', count: 1 } } },
       ],
     },
     sources: ['Aligned with Texas Prekindergarten Guidelines V.A.8 (compares sets of objects up to 5 using comparative language) and Head Start ELOF Goal P-MATH 4 (compares numbers).'],
@@ -1396,11 +1486,11 @@ function PREK3_MODULES() { return [
     lesson: {
       paragraphs: ['This is yellow, like the sun. This is green, like the grass.', 'Tap the yellow one. Tap the green one.'],
       keyIdea: 'Yellow like the sun. Green like the grass.',
-      example: { kind: 'swatch', colour: 'yellow', caption: 'Yellow.' },
+      example: { kind: 'pair', a: { kind: 'swatch', colour: 'yellow' }, b: { kind: 'swatch', colour: 'green' }, caption: 'Yellow and green.' },
       script: [
         { say: 'This is yellow. Yellow like the sun.', show: { kind: 'swatch', colour: 'yellow' } },
         { say: 'This is green. Green like the grass.', show: { kind: 'swatch', colour: 'green' } },
-        { say: 'Yellow like the sun. Green like the grass.', show: { kind: 'swatch', colour: 'green' } },
+        { say: 'Yellow like the sun. Green like the grass.', show: { kind: 'pair', a: { kind: 'swatch', colour: 'yellow' }, b: { kind: 'swatch', colour: 'green' } } },
       ],
     },
     sources: ['Aligned with Texas Prekindergarten Guidelines V.E.1 (sorts objects that are the same and different into groups) and Head Start ELOF Goal P-SCI 1.'],
@@ -1410,7 +1500,7 @@ function PREK3_MODULES() { return [
     id: 'triangles-too',
     skill: 'Shapes',
     order: 8,
-    title: 'Triangles too',
+    title: 'Triangles',
     tagline: 'Three sides, three corners',
     requires: ['find-the-match'],
     lesson: {
@@ -1454,7 +1544,7 @@ function PREK3_MODULES() { return [
     lesson: {
       paragraphs: ['When you want something, say please. When you get it, say thank you.'],
       keyIdea: 'Please to ask. Thank you when you get it.',
-      example: { kind: 'letters', text: 'Please', caption: 'The word for asking.' },
+      example: { kind: 'pair', a: { kind: 'pic', name: 'bear' }, b: { kind: 'pic', name: 'rabbit' }, caption: 'Please. Thank you.' },
       script: [
         { say: 'Please. That is the word for asking. May I have a cracker, please?', show: { kind: 'letters', text: 'Please' } },
         { say: 'Thank you. That is the word for when you get it.', show: { kind: 'letters', text: 'Thank you' } },
@@ -1533,7 +1623,7 @@ function PREK3_READING_MODULES() { return [
     lesson: {
       paragraphs: ['Listen to the word. Tap the picture.', 'Sun. Fish. Tree. Cup.'],
       keyIdea: 'Listen to the word and tap its picture.',
-      example: { kind: 'icon', name: 'sun', caption: 'The sun.' },
+      example: { kind: 'icon', name: 'bird', caption: 'The sun.' },
       script: [
         { say: 'This is the sun.', show: { kind: 'icon', name: 'sun' } },
         { say: 'This is a fish.', show: { kind: 'icon', name: 'fish' } },
@@ -1555,11 +1645,12 @@ function K_SCIENCE_MODULES() { return [
     lesson: {
       paragraphs: ['The sun shines in the day. The moon shines at night.', 'Look up and see which one it is.'],
       keyIdea: 'Sun in the day, moon at night.',
-      example: { kind: 'icon', name: 'sun', caption: 'The sun.' },
+      example: { kind: 'daynight', caption: 'The side facing the sun has day. The side facing away has night. The Earth turns.' , formula: 'the Earth turns'},
       script: [
         { say: 'This is the sun. It shines in the day.', show: { kind: 'icon', name: 'sun' } },
         { say: 'This is the moon. It shines at night.', show: { kind: 'icon', name: 'moon' } },
         { say: 'The sun is for the day.', show: { kind: 'icon', name: 'sun' } },
+        { say: 'The Earth turns. The side facing the sun has day. The side facing away has night.', show: { kind: 'daynight' } },
       ],
     },
     sources: ['Aligned with Texas TEKS K.8B (identify and observe objects in the sky, including the Sun, the Moon, and stars) and NGSS K-ESS2-1 (observe and describe patterns of the sun and the moon).'],
@@ -1779,6 +1870,67 @@ function PREK_MODULES() { return [
     generators: ['ps-find-match', 'ps-odd-one-out', 'ps-same-colour-shape', 'ps-bigger', 'ps-smaller'],
   },
   {
+    id: 'match-the-vehicles',
+    skill: 'Matching',
+    order: 11,
+    title: 'Match the vehicles',
+    tagline: 'Cars, trains, boats',
+    requires: ['same-and-different'],
+    lesson: {
+      paragraphs: ['Look at the vehicles. Two that look just alike are the same. One that looks different is not.', 'Find the one that matches, or find the odd one out.'],
+      keyIdea: 'The same means just alike.',
+      example: { kind: 'pair', a: { kind: 'art', name: 'car' }, b: { kind: 'art', name: 'car' }, caption: 'Two cars. They are the same.' },
+      script: [
+        { say: 'Look at this car.', show: { kind: 'art', name: 'car' } },
+        { say: 'Here is another car. They are the same.', show: { kind: 'pair', a: { kind: 'art', name: 'car' }, b: { kind: 'art', name: 'car' } } },
+        { say: 'This is a train. The train is different from the car.', show: { kind: 'pair', a: { kind: 'art', name: 'car' }, b: { kind: 'art', name: 'train' } } },
+      ],
+    },
+    sources: ['Aligned with Texas Prekindergarten Guidelines V.E.1 (sorts objects that are the same and different into groups) and Head Start ELOF Goal P-MATH 8.'],
+    generators: ['pm-same-vehicles', 'pm-different-vehicles', 'pm-same-vehicles', 'pm-different-vehicles', 'pm-same-vehicles'],
+  },
+  {
+    id: 'match-the-things',
+    skill: 'Matching',
+    order: 12,
+    title: 'Match the things',
+    tagline: 'Balls, balloons, robots',
+    requires: ['match-the-vehicles'],
+    lesson: {
+      paragraphs: ['Look at the things. Two that look just alike are the same. One that looks different is not.', 'Find the one that matches, or find the odd one out.'],
+      keyIdea: 'The same means just alike.',
+      example: { kind: 'pair', a: { kind: 'art', name: 'ball' }, b: { kind: 'art', name: 'ball' }, caption: 'Two balls. They are the same.' },
+      script: [
+        { say: 'Look at this ball.', show: { kind: 'art', name: 'ball' } },
+        { say: 'Here is another ball. They are the same.', show: { kind: 'pair', a: { kind: 'art', name: 'ball' }, b: { kind: 'art', name: 'ball' } } },
+        { say: 'This is a balloon. The balloon is different from the ball.', show: { kind: 'pair', a: { kind: 'art', name: 'ball' }, b: { kind: 'art', name: 'balloon' } } },
+      ],
+    },
+    sources: ['Aligned with Texas Prekindergarten Guidelines V.E.1 (sorts objects that are the same and different into groups) and Head Start ELOF Goal P-MATH 8.'],
+    generators: ['pm-same-things', 'pm-different-things', 'pm-same-things', 'pm-different-things', 'pm-same-things'],
+  },
+  {
+    id: 'more-and-fewer-5',
+    skill: 'Comparing',
+    order: 13,
+    title: 'More and fewer',
+    tagline: 'Up to five',
+    requires: ['count-to-3'],
+    lesson: {
+      paragraphs: ['Look at both groups. The bigger group has more. The smaller group has fewer.', 'Count each group to check.'],
+      keyIdea: 'More is the bigger group. Fewer is the smaller group.',
+      example: { kind: 'pair', a: { kind: 'dots', count: 5 }, b: { kind: 'dots', count: 2 }, caption: 'Five dots and two dots. Five is more.' },
+      script: [
+        { say: 'Here are five dots, and here are two dots.', show: { kind: 'pair', a: { kind: 'dots', count: 5 }, b: { kind: 'dots', count: 2 } } },
+        { say: 'Five is more than two. This group has more.', show: { kind: 'pair', a: { kind: 'dots', count: 5 }, b: { kind: 'dots', count: 2 } } },
+        { say: 'Two is fewer than five. This group has fewer.', show: { kind: 'pair', a: { kind: 'dots', count: 2 }, b: { kind: 'dots', count: 5 } } },
+        { say: 'Count each group. The bigger number has more.', show: { kind: 'pair', a: { kind: 'dots', count: 4 }, b: { kind: 'dots', count: 3 } } },
+      ],
+    },
+    sources: ['Aligned with Texas Prekindergarten Guidelines V.A.8 (compares sets of objects up to five using comparative language) and Head Start ELOF Goal P-MATH 4.'],
+    generators: ['p4-tap-more-5', 'p4-tap-fewer-5', 'p4-tap-more-5', 'p4-tap-fewer-5', 'p4-tap-more-5'],
+  },
+  {
     id: 'patterns',
     skill: 'Patterns',
     order: 3,
@@ -1887,7 +2039,7 @@ function PREK_MODULES() { return [
     lesson: {
       paragraphs: ['When two people want the same thing, we take turns. You wait, and then it is your turn.', 'Sharing means both people get some.'],
       keyIdea: 'Wait, and then it is your turn.',
-      example: { kind: 'dots', count: 2, caption: 'Two children, one swing. Take turns.' },
+      example: { kind: 'dots', count: 3, caption: 'Two children, one swing. Take turns.' },
       script: [
         { say: 'Two children want one swing. Take turns.', show: { kind: 'dots', count: 2 } },
         { say: 'First one child swings. The other one waits.', show: { kind: 'dots', count: 1 } },
@@ -1906,7 +2058,7 @@ function PREK_MODULES() { return [
     lesson: {
       paragraphs: ['Three circles. One is small. One is in the middle. One is the biggest of all.', 'Point to the biggest. Then point to the smallest.'],
       keyIdea: 'Little, middle-sized, biggest. Three sizes in a row.',
-      example: { kind: 'shape', name: 'circle', size: 'big', caption: 'The biggest circle.' },
+      example: { kind: 'shape', name: 'square', size: 'big', caption: 'The biggest circle.' },
       script: [
         { say: 'Here is a small circle. It is the smallest.', show: { kind: 'shape', name: 'circle', size: 'small' } },
         { say: 'Here is a middle-sized circle. Not little, not big.', show: { kind: 'shape', name: 'circle' } },
@@ -1925,7 +2077,7 @@ function PREK_MODULES() { return [
     lesson: {
       paragraphs: ['A firefighter puts out fires. A doctor helps when you are sick. A teacher helps you learn.', 'Helpers are all around us. Every helper has a job.'],
       keyIdea: 'Helpers are all around. Every helper has a job.',
-      example: { kind: 'icon', name: 'fire', caption: 'A firefighter puts out the fire.' },
+      example: { kind: 'icon', name: 'flower', caption: 'A firefighter puts out the fire.' },
       script: [
         { say: 'Fire. A firefighter puts out the fire. That is a helper.', show: { kind: 'icon', name: 'fire' } },
         { say: 'A doctor helps when you are sick. A teacher helps you learn.', show: null },
@@ -1987,7 +2139,7 @@ function PREK_READING_MODULES() { return [
     lesson: {
       paragraphs: ['Letters have names. This is A. This is B.', 'Find the letter when you hear its name.'],
       keyIdea: 'Every letter has a name.',
-      example: { kind: 'letters', text: 'A', caption: 'A.' },
+      example: { kind: 'letters', text: 'B', caption: 'A.' },
       script: [
         { say: 'This is the letter A.', show: { kind: 'letters', text: 'A' } },
         { say: 'This is the letter B.', show: { kind: 'letters', text: 'B' } },
@@ -2018,6 +2170,48 @@ function PREK_READING_MODULES() { return [
     },
     sources: ['Aligned with Texas Prekindergarten Guidelines IV.A.1 (write own name or initial) and Head Start ELOF Goal P-LIT 6 (writes for a variety of purposes using increasingly sophisticated marks).'],
     generators: ['pl-trace-first', 'pl-trace-first', 'pl-trace-first', 'pl-trace-first', 'pl-trace-first'],
+  },
+  {
+    id: 'more-big-letters',
+    skill: 'Letters',
+    order: 5,
+    title: 'Trace more big letters',
+    tagline: 'I, H and E',
+    requires: ['first-letter-tracing'],
+    needsTouch: true,
+    lesson: {
+      paragraphs: ['These big letters are all straight lines. Start at the dot and follow the arrow.', 'I goes straight down. H is two lines down and one across. E is one line down and three across.'],
+      keyIdea: 'Straight lines make letters. Start at the dot.',
+      example: { kind: 'trace', text: 'I', caption: 'Straight down. That is I.' },
+      script: [
+        { say: 'Start at the dot. Go straight down. That is I.', show: { kind: 'trace', text: 'I' } },
+        { say: 'Start at the dot. Down, down again, then across the middle. That is H.', show: { kind: 'trace', text: 'H' } },
+        { say: 'Start at the dot. Down, then three lines across. That is E.', show: { kind: 'trace', text: 'E' } },
+      ],
+    },
+    sources: ['Aligned with Texas Prekindergarten Guidelines IV.C.1 (writes first name using legible letters) and Head Start ELOF Goal P-LIT 6 (writes for a variety of purposes using increasingly sophisticated marks).'],
+    generators: ['pl-trace-more', 'pl-trace-more', 'pl-trace-more', 'pl-trace-more', 'pl-trace-more'],
+  },
+  {
+    id: 'trace-straight-letters',
+    skill: 'Letters',
+    order: 6,
+    title: 'Trace L, T and F',
+    tagline: 'Three more straight letters',
+    requires: ['more-big-letters'],
+    needsTouch: true,
+    lesson: {
+      paragraphs: ['Three more letters made of straight lines. Start at the dot and follow the arrow.', 'L goes down and then across the bottom. T is one line across the top and one down. F is one line down and two across.'],
+      keyIdea: 'Down, then across. Start at the dot.',
+      example: { kind: 'trace', text: 'L', caption: 'Down, then across the bottom. That is L.' },
+      script: [
+        { say: 'Start at the dot. Go down, then across the bottom. That is L.', show: { kind: 'trace', text: 'L' } },
+        { say: 'Start at the dot. Across the top, then straight down the middle. That is T.', show: { kind: 'trace', text: 'T' } },
+        { say: 'Start at the dot. Down, then two lines across. That is F.', show: { kind: 'trace', text: 'F' } },
+      ],
+    },
+    sources: ['Aligned with Texas Prekindergarten Guidelines IV.C.1 (writes first name using legible letters) and Head Start ELOF Goal P-LIT 6 (writes for a variety of purposes using increasingly sophisticated marks).'],
+    generators: ['pl-trace-ltf', 'pl-trace-ltf', 'pl-trace-ltf', 'pl-trace-ltf', 'pl-trace-ltf'],
   },
 ]; }
 
@@ -2149,7 +2343,7 @@ function COUNTING_MODULES() { return [
     lesson: {
       paragraphs: ['A circle is round with no corners. A triangle has three sides and three corners.', 'A square has four sides that are all the same. A rectangle has four sides too, but two are longer.'],
       keyIdea: 'Count the sides and corners to tell shapes apart.',
-      example: { kind: 'shape', name: 'triangle', caption: 'A triangle. Three sides, three corners.' },
+      example: { kind: 'shape', name: 'square', caption: 'A triangle. Three sides, three corners.' },
       script: [
         { say: 'This is a circle. It is round. It has no corners.', show: { kind: 'shape', name: 'circle' } },
         { say: 'This is a triangle. One, two, three sides. Three corners.', show: { kind: 'shape', name: 'triangle' } },
@@ -2275,6 +2469,25 @@ function COUNTING_MODULES() { return [
     },
     sources: ['Aligned with Common Core K.OA.A.3 and K.OA.A.4 (decompose numbers; find the number that makes 10) and Texas TEKS K.3B.'],
     generators: ['kn-partner', 'kn-frame', 'kn-two-ways', 'kn-take-from-ten', 'kn-is-ten'],
+  },
+  {
+    id: 'more-and-fewer-10',
+    order: 14,
+    title: 'More and fewer to ten',
+    tagline: 'Bigger groups',
+    requires: ['comparing-numbers'],
+    lesson: {
+      paragraphs: ['Two groups. Which has more? Count each one, or look for the bigger crowd.', 'The group with the bigger number has more. The other has fewer.'],
+      keyIdea: 'Count both. The bigger number has more.',
+      example: { kind: 'pair', a: { kind: 'dots', count: 8 }, b: { kind: 'dots', count: 6 }, caption: 'Eight dots and six dots. Eight is more.' },
+      script: [
+        { say: 'Here are eight dots, and here are six dots.', show: { kind: 'pair', a: { kind: 'dots', count: 8 }, b: { kind: 'dots', count: 6 } } },
+        { say: 'Eight is more than six. This group has more.', show: { kind: 'pair', a: { kind: 'dots', count: 8 }, b: { kind: 'dots', count: 6 } } },
+        { say: 'Six is fewer than eight. This group has fewer.', show: { kind: 'pair', a: { kind: 'dots', count: 6 }, b: { kind: 'dots', count: 8 } } },
+      ],
+    },
+    sources: ['Aligned with TEKS K.2G (compares sets of objects up to at least 20 using comparative language) and CCSS K.CC.C.6.'],
+    generators: ['k-tap-more-10', 'k-tap-fewer-10', 'k-tap-more-10', 'k-tap-fewer-10', 'k-tap-more-10'],
   },
 ]; }
 
@@ -2464,6 +2677,66 @@ function GRADE1_READING_MODULES() { return [
     sources: ['Aligned with Texas TEKS 1.2F (develop handwriting by printing words, sentences, and answers legibly) and Common Core L.1.1.A (print all upper- and lowercase letters).'],
     generators: ['r1-trace-tall', 'r1-trace-bumps', 'r1-trace-zigzag', 'r1-trace-any-small', 'r1-trace-any-small'],
   },
+  {
+    id: 'trace-small-letters-3',
+    order: 7,
+    title: 'Trace i, t and k',
+    tagline: 'Three more small letters',
+    requires: ['tracing-more-small-letters'],
+    needsTouch: true,
+    lesson: {
+      paragraphs: ['Three more small letters. Each starts with one line down.', 'The letter i is a short line with a dot on top. The letter t is taller, with a bar across. The letter k is a tall line with two slants.'],
+      keyIdea: 'One line down, then the rest. Start at the dot.',
+      example: { kind: 'trace', text: 'i', caption: 'A short line, then a dot. That is i.' },
+      script: [
+        { say: 'Start at the dot. A short line down, then a dot on top. That is i.', show: { kind: 'trace', text: 'i' } },
+        { say: 'Start at the dot. A line down, then a short bar across. That is t.', show: { kind: 'trace', text: 't' } },
+        { say: 'Start at the dot. A tall line down, then two slants. That is k.', show: { kind: 'trace', text: 'k' } },
+      ],
+    },
+    sources: ['Aligned with TEKS §110.3(b)(2)(F) (develops handwriting by printing words, sentences, and answers legibly) and CCSS L.1.1.a (prints all upper- and lowercase letters).'],
+    generators: ['p1-trace-itk', 'p1-trace-itk', 'p1-trace-itk', 'p1-trace-itk', 'p1-trace-itk'],
+  },
+  {
+    id: 'trace-small-letters-4',
+    order: 8,
+    title: 'Trace c, v and x',
+    tagline: 'Curves and slants',
+    requires: ['trace-small-letters-3'],
+    needsTouch: true,
+    lesson: {
+      paragraphs: ['Three small letters that are not straight lines. Start at the dot and follow the arrow.', 'The letter c is one curve, open on the right. The letter v is two slants that meet at the bottom. The letter x is two slants that cross.'],
+      keyIdea: 'A curve, a point, a cross. Start at the dot.',
+      example: { kind: 'trace', text: 'c', caption: 'One curve, open on the right. That is c.' },
+      script: [
+        { say: 'Start at the dot. Curve around and stop. That is c.', show: { kind: 'trace', text: 'c' } },
+        { say: 'Start at the dot. Slant down, then slant up. That is v.', show: { kind: 'trace', text: 'v' } },
+        { say: 'Start at the dot. Slant down, then cross it with another slant. That is x.', show: { kind: 'trace', text: 'x' } },
+      ],
+    },
+    sources: ['Aligned with TEKS §110.3(b)(2)(F) (develops handwriting by printing words, sentences, and answers legibly) and CCSS L.1.1.a (prints all upper- and lowercase letters).'],
+    generators: ['p1-trace-cvx', 'p1-trace-cvx', 'p1-trace-cvx', 'p1-trace-cvx', 'p1-trace-cvx'],
+  },
+  {
+    id: 'trace-small-letters-5',
+    order: 9,
+    title: 'Trace n, u and r',
+    tagline: 'Little arches',
+    requires: ['trace-small-letters-4'],
+    needsTouch: true,
+    lesson: {
+      paragraphs: ['Three small letters with a little arch. Start at the dot and follow the arrow.', 'The letter n is a line and an arch. The letter u is an arch turned over. The letter r is a line and the start of an arch.'],
+      keyIdea: 'A line, then a little arch. Start at the dot.',
+      example: { kind: 'trace', text: 'n', caption: 'A line down, then over the arch. That is n.' },
+      script: [
+        { say: 'Start at the dot. Down, then up and over the arch. That is n.', show: { kind: 'trace', text: 'n' } },
+        { say: 'Start at the dot. Down, around the bottom, and up. That is u.', show: { kind: 'trace', text: 'u' } },
+        { say: 'Start at the dot. Down, then up and a small curve. That is r.', show: { kind: 'trace', text: 'r' } },
+      ],
+    },
+    sources: ['Aligned with TEKS §110.3(b)(2)(F) (develops handwriting by printing words, sentences, and answers legibly) and CCSS L.1.1.a (prints all upper- and lowercase letters).'],
+    generators: ['p1-trace-nur', 'p1-trace-nur', 'p1-trace-nur', 'p1-trace-nur', 'p1-trace-nur'],
+  },
 ]; }
 
 // Grade 2 math. Reading is expected now, so questions are written and some answers typed.
@@ -2609,7 +2882,7 @@ function GRADE2_READING_MODULES() { return [
         'Compound words are two whole words stuck together:\n[[sun + set = sunset]]\n[[cup + cake = cupcake]]\nIf you can read each little word, you can read the big one.',
       ],
       keyIdea: 'Long words are short parts joined together.\nSplit between the two middle consonants.\nRead each part, then push them together.',
-      example: { kind: 'letters', text: 'rab bit', caption: 'Rab. Bit. Rabbit.' },
+      example: { kind: 'letters', text: 'gar den', caption: 'Rab. Bit. Rabbit.' },
     },
     sources: ['Aligned with Texas TEKS 2.2B.iii and 2.2B.vi (decode multisyllabic words and compound words) and Common Core RF.2.3.C.'],
     generators: ['r2-split-word', 'r2-join-parts', 'r2-compound', 'r2-compound-parts', 'r2-count-parts'],
@@ -2890,7 +3163,7 @@ function GRADE6_MATH_MODULES() { return [
         'Order matters. **3:2** is not the same as **2:3**. Always read which amount comes first in the question, and put it first in the ratio.',
       ],
       keyIdea: 'A ratio compares two amounts.\nBoth sides scale by the same number.\nThe order of the ratio follows the order of the question.',
-      example: { kind: 'letters', text: '12:8 = 3:2', caption: 'Divide both sides by four.' },
+      example: { kind: 'groups', a: 2, b: 1, aLabel: 'blue', bLabel: 'yellow', caption: 'Two to one: for every two blue, one yellow. Double both and the mix is the same.' , formula: '2 to 1'},
     },
     sources: ['Aligned with Texas TEKS 6.4B (apply qualitative and quantitative reasoning to solve prediction and comparison of real-world problems involving ratios and rates) and Common Core 6.RP.A.1 (understand the concept of a ratio).'],
     generators: ['g6-simplify-ratio', 'g6-scale-ratio', 'g6-simplify-ratio', 'g6-scale-ratio', 'g6-ratio-from-words'],
@@ -2907,7 +3180,7 @@ function GRADE6_MATH_MODULES() { return [
         'Check with common sense. Dividing by something smaller than 1 makes the answer bigger, because more small pieces fit. Four sixths fit in two thirds, and 4 is bigger than 2/3.',
       ],
       keyIdea: 'To divide by a fraction, flip it and multiply.\nDividing by something smaller than 1 makes the answer bigger.',
-      example: { kind: 'letters', text: '3 / 1/2 = 6', caption: 'Six halves fit in three wholes.' },
+      example: { kind: 'fracpieces', wholes: 3, per: 2, caption: 'Three wholes cut into halves make six pieces: 3 divided by one half is 6.' , formula: '3 ÷ 1/2 = 6'},
     },
     sources: ['Aligned with Texas TEKS 6.3E (multiply and divide positive rational numbers fluently) and Common Core 6.NS.A.1 (interpret and compute quotients of fractions).'],
     generators: ['g6-divide-by-fraction', 'g6-whole-by-fraction', 'g6-divide-by-fraction', 'g6-whole-by-fraction', 'g6-divide-by-fraction'],
@@ -2924,7 +3197,7 @@ function GRADE6_MATH_MODULES() { return [
         'The opposite of a number sits the same distance from zero on the other side.\n[[The opposite of 4 is -4]]\n[[The opposite of -4 is 4]]',
       ],
       keyIdea: 'Negatives sit to the left of zero.\nFurther left is smaller.\nThe opposite of a number is the same distance from zero on the other side.',
-      example: { kind: 'letters', text: '-7 < -2', caption: 'Further left on the line is smaller.' },
+      example: { kind: 'numberline', from: -5, to: 5, mark: -3, caption: 'Zero in the middle. Minus three sits three steps to the left of it.' , formula: '−3 is three below zero'},
     },
     sources: ['Aligned with Texas TEKS 6.2B (identify a number, its opposite, and its absolute value) and 6.2D (order a set of rational numbers), and Common Core 6.NS.C.6 (understand a rational number as a point on the number line) and 6.NS.C.7 (order rational numbers).'],
     generators: ['g6-compare-negatives', 'g6-opposite', 'g6-order-negatives', 'g6-compare-negatives', 'g6-temperature'],
@@ -2941,7 +3214,7 @@ function GRADE6_MATH_MODULES() { return [
         'Always use the height that meets the base at a right angle. A slanted side will give you the wrong answer every time.',
       ],
       keyIdea: 'Parallelogram: base times height.\nTriangle: half of that.\nUse only the straight-up height.',
-      example: { kind: 'letters', text: '6 x 4 / 2 = 12', caption: 'A triangle is half of a parallelogram.' },
+      example: { kind: 'tri', base: 6, height: 4, caption: 'Base 6, height 4: half of the 6 by 4 rectangle, so 12.' , formula: '6 × 4 ÷ 2 = 12'},
     },
     sources: ['Aligned with Texas TEKS 6.8D (determine solutions for problems involving the area of rectangles, parallelograms, trapezoids, and triangles) and Common Core 6.G.A.1 (find the area of triangles, special quadrilaterals, and polygons).'],
     generators: ['g6-triangle-area', 'g6-parallelogram-area', 'g6-triangle-area', 'g6-missing-height', 'g6-parallelogram-area'],
@@ -2959,7 +3232,7 @@ function GRADE6_MATH_MODULES() { return [
         'When the number is multiplied, undo it by dividing:\n[[3x = 21]]\nDivide both sides by 3:\n[[x = 7]]\nAlways check by putting the answer back in. 7 + 5 is 12, and 3 x 7 is 21. Both work.',
       ],
       keyIdea: 'Do the same thing to both sides.\nUndo adding by subtracting, and undo multiplying by dividing.\nCheck by putting the answer back in.',
-      example: { kind: 'letters', text: 'x + 5 = 12', caption: 'Subtract 5 from both sides: x is 7.' },
+      example: { kind: 'balance', left: 'x + 5', right: '12', caption: 'A balanced scale: take 5 from both pans and x is alone with 7.' , formula: 'x + 5 = 12'},
     },
     sources: ['Aligned with Texas TEKS 6.10A (model and solve one-variable, one-step equations and inequalities) and Common Core 6.EE.B.7 (solve real-world and mathematical problems by writing and solving equations of the form x + p = q and px = q).'],
     generators: ['g6-solve-add', 'g6-solve-multiply', 'g6-solve-add', 'g6-solve-multiply', 'g6-check-solution'],
@@ -3056,7 +3329,7 @@ function GRADE7_MATH_MODULES() { return [
         'Check by cross-multiplying. In a true proportion, the tops and bottoms multiply to the same number:\n[[3 x 100 = 300]]\n[[5 x 60 = 300]]\nThey match, so the proportion is true.',
       ],
       keyIdea: 'Find what one unit is worth, then multiply.\nCross-multiply to check.',
-      example: { kind: 'letters', text: '3:60 = 5:100', caption: 'Twenty cents each, either way.' },
+      example: { kind: 'percentgrid', shaded: 5, caption: 'Five of one hundred is the same share as three of sixty.' , formula: '3 of 60 = 5 of 100'},
     },
     sources: ['Aligned with Texas TEKS 7.4D (solve problems involving ratios, rates, and percents) and Common Core 7.RP.A.2 (recognize and represent proportional relationships between quantities).'],
     generators: ['g7-unit-rate', 'g7-solve-proportion', 'g7-unit-rate', 'g7-solve-proportion', 'g7-is-proportional'],
@@ -3073,7 +3346,7 @@ function GRADE7_MATH_MODULES() { return [
         'A discount takes a percent off the price. A 20% discount on 40 dollars:\nFirst, find 20% of 40, which is **8** dollars.\nThen, take it off the price: 40 - 8.\n[[You pay 32 dollars]]',
       ],
       keyIdea: 'Percent means out of a hundred.\nTurn the percent into a fraction and multiply.\nA discount is a percent taken off the price.',
-      example: { kind: 'letters', text: '25% of 80', caption: 'A quarter of eighty is twenty.' },
+      example: { kind: 'percentgrid', shaded: 25, caption: 'A percent is out of one hundred: 25 of the 100 squares are shaded, so 25%.' , formula: '25 of 100 = 25%'},
     },
     sources: ['Aligned with Texas TEKS 7.4D (solve problems involving ratios, rates, and percents, including multi-step problems involving percent increase and decrease) and Common Core 7.RP.A.3 (use proportional relationships to solve multistep ratio and percent problems).'],
     generators: ['g7-percent-of', 'g7-discount', 'g7-percent-of', 'g7-what-percent', 'g7-discount'],
@@ -3091,7 +3364,7 @@ function GRADE7_MATH_MODULES() { return [
         'Two negatives added together stay negative and grow bigger:\n[[-4 + (-6) = -10]]\nA negative and a positive fight it out, and the bigger one decides the sign:\n[[-9 + 4 = -5]]\nPicture money or temperature. Owing 4 and owing 6 more is owing 10. Being 9 below and warming by 4 leaves you 5 below.',
       ],
       keyIdea: 'Adding a negative moves left.\nSubtracting a negative moves right.\nWhen a negative and a positive meet, the bigger one decides the sign.',
-      example: { kind: 'letters', text: '5 - (-3) = 8', caption: 'Taking away a debt is gaining.' },
+      example: { kind: 'numberline', from: -4, to: 9, marks: [5, 8], caption: 'Subtracting negative three moves right: from 5 to 8.' , formula: '5 − (−3) = 8'},
     },
     sources: ['Aligned with Texas TEKS 7.3A (add, subtract, multiply, and divide rational numbers fluently) and Common Core 7.NS.A.1 (apply properties of operations to add and subtract rational numbers).'],
     generators: ['g7-add-integers', 'g7-subtract-integers', 'g7-add-integers', 'g7-subtract-integers', 'g7-integer-story'],
@@ -3109,7 +3382,7 @@ function GRADE7_MATH_MODULES() { return [
         'Check by putting the answer back in. 2 times 4 is 8, plus 3 is 11. It works.\n[[2(4) + 3 = 11]]\nUndo the last step first, every time.',
       ],
       keyIdea: 'Undo the steps in reverse order: the last thing done to x is the first thing you undo.\nThen check by putting the answer back in.',
-      example: { kind: 'letters', text: '2x + 3 = 11', caption: 'Subtract three, then divide by two: x is four.' },
+      example: { kind: 'balance', left: '2x + 3', right: '11', caption: 'Undo the plus 3 first, then the times 2: x is 4.' , formula: '2x + 3 = 11'},
     },
     sources: ['Aligned with Texas TEKS 7.11A (model and solve one-variable, two-step equations and inequalities) and Common Core 7.EE.B.4 (use variables to represent quantities and construct simple equations to solve problems).'],
     generators: ['g7-two-step', 'g7-two-step-subtract', 'g7-two-step', 'g7-two-step-subtract', 'g7-first-step'],
@@ -3127,7 +3400,7 @@ function GRADE7_MATH_MODULES() { return [
         'The area of a circle uses the radius, twice:\n[[Area = 3.14 x radius x radius]]\nA circle with a radius of 3:\n[[3.14 x 3 x 3 = 28.26]]\nAlways check whether a problem gives you the radius or the diameter. Mixing them up is the most common mistake there is.',
       ],
       keyIdea: 'Circumference is 3.14 times the diameter.\nArea is 3.14 times the radius times the radius.\nCheck whether you were given the radius or the diameter.',
-      example: { kind: 'letters', text: 'C = 3.14 x d', caption: 'Around a circle is about three times across it.' },
+      example: { kind: 'circlepic', d: 4, caption: 'A circle across is d; all the way around is about 3.14 times d.' , formula: 'C = 3.14 × d'},
     },
     sources: ['Aligned with Texas TEKS 7.9B (determine the circumference and area of circles) and Common Core 7.G.B.4 (know the formulas for the area and circumference of a circle and use them to solve problems).'],
     generators: ['g7-circumference', 'g7-circle-area', 'g7-circumference', 'g7-radius-or-diameter', 'g7-circle-area'],
@@ -3224,7 +3497,7 @@ function GRADE8_MATH_MODULES() { return [
         'A positive slope climbs to the right. A negative slope falls. A slope of zero is flat.\nEvery straight line can be written as:\n[[y = mx + b]]\nThe **m** is the slope. The **b** is where the line crosses the y-axis. In y = 3x + 1, the slope is 3 and the line crosses at 1.',
       ],
       keyIdea: 'Slope is rise over run.\nIn y = mx + b, m is the slope and b is where the line crosses the y-axis.',
-      example: { kind: 'letters', text: 'rise / run', caption: 'Up six, across two: a slope of three.' },
+      example: { kind: 'plot', fn: 'slope', caption: 'Rise over run: up 2 for every 1 across, so the slope is 2.' , formula: 'slope = rise ÷ run'},
     },
     sources: ['Aligned with Texas TEKS 8.4C (use data from a table or graph to determine the rate of change or slope and y-intercept) and Common Core 8.EE.B.6 (derive the equation y = mx + b for a line).'],
     generators: ['g8-slope-points', 'g8-slope-from-equation', 'g8-slope-points', 'g8-intercept-from-equation', 'g8-slope-points'],
@@ -3242,7 +3515,7 @@ function GRADE8_MATH_MODULES() { return [
         'Two special cases to remember.\nAnything to the power 0 is 1:\n[[5^0 = 1]]\nA negative exponent means one over the positive power:\n[[2^-3 = 1/8]]',
       ],
       keyIdea: 'An exponent counts the multiplying.\nSame base: add exponents to multiply, subtract to divide.\nAnything to the power 0 is 1.',
-      example: { kind: 'letters', text: '2^5 = 32', caption: 'Two multiplied by itself five times.' },
+      example: { kind: 'doubling', base: 2, times: 5, caption: 'Two multiplied by itself five times: 1, 2, 4, 8, 16, 32.' , formula: '2⁵ = 32'},
     },
     sources: ['Aligned with Texas TEKS 8.2C (convert between standard decimal notation and scientific notation) and Common Core 8.EE.A.1 (know and apply the properties of integer exponents).'],
     generators: ['g8-power-value', 'g8-multiply-powers', 'g8-power-value', 'g8-divide-powers', 'g8-zero-negative-power'],
@@ -3259,7 +3532,7 @@ function GRADE8_MATH_MODULES() { return [
         'A root that is not a whole number sits between two perfect squares.\nThe square root of 50 is a little more than 7, because 49 is 7 squared and 64 is 8 squared.\n[[49 < 50 < 64, so the root is between 7 and 8]]',
       ],
       keyIdea: 'A square root asks which number times itself gives this.\nKnow the perfect squares, and a root you cannot find exactly sits between two of them.',
-      example: { kind: 'letters', text: 'root 49 = 7', caption: 'Seven times seven is forty-nine.' },
+      example: { kind: 'array', rows: 7, cols: 7, caption: 'Forty-nine dots make a seven by seven square: the square root of 49 is 7.' , formula: '√49 = 7'},
     },
     sources: ['Aligned with Texas TEKS 8.2B (approximate the value of an irrational number, including pi and square roots of numbers less than 225) and Common Core 8.EE.A.2 (use square root and cube root symbols to represent solutions to equations).'],
     generators: ['g8-square-root', 'g8-root-between', 'g8-square-root', 'g8-root-between', 'g8-square-of'],
@@ -3277,7 +3550,7 @@ function GRADE8_MATH_MODULES() { return [
         'To find a short side, work backward by subtracting.\nA hypotenuse of 13 and a side of 5:\n[[13² - 5² = 169 - 25 = 144]]\nThe root of 144 is 12, so the other side is 12.\nThe rule works only for right triangles, and it works for every one of them.',
       ],
       keyIdea: 'a squared plus b squared equals c squared, in every right triangle.\nTo find a short side, subtract instead of adding.',
-      example: { kind: 'letters', text: '3 4 5', caption: 'Nine plus sixteen is twenty-five.' },
+      example: { kind: 'pythag', caption: 'The squares on the two short sides, 9 and 16, add up to the square on the long side, 25.' , formula: '3² + 4² = 5²'},
     },
     sources: ['Aligned with Texas TEKS 8.7C (use the Pythagorean theorem and its converse to solve problems) and Common Core 8.G.B.7 (apply the Pythagorean theorem to determine unknown side lengths in right triangles).'],
     generators: ['g8-hypotenuse', 'g8-missing-leg', 'g8-hypotenuse', 'g8-is-right-triangle', 'g8-missing-leg'],
@@ -3294,7 +3567,7 @@ function GRADE8_MATH_MODULES() { return [
         'It makes comparing easy.\n[[2 x 10^8 is a hundred times bigger than 2 x 10^6]]\nThe exponents differ by two, and each step is ten times, so two steps is a hundred times.',
       ],
       keyIdea: 'A number from 1 to 10, times a power of ten.\nThe exponent counts how many places the decimal point moved.',
-      example: { kind: 'letters', text: '3.4 x 10^6', caption: 'Three million, four hundred thousand.' },
+      example: { kind: 'growthbars', values: [3.4, 34, 340, 3400], labels: ['x 1', 'x 10', 'x 100', 'x 1000'], caption: 'Each power of ten moves the point one place: 3.4 times ten to the sixth is 3,400,000.' , formula: '3.4 × 10⁶'},
     },
     sources: ['Aligned with Texas TEKS 8.2C (convert between standard decimal notation and scientific notation) and Common Core 8.EE.A.3 (use numbers expressed in the form of a single digit times an integer power of 10).'],
     generators: ['g8-to-scientific', 'g8-from-scientific', 'g8-to-scientific', 'g8-from-scientific', 'g8-compare-scientific'],
@@ -3392,7 +3665,7 @@ function GRADE9_MATH_MODULES() { return [
         'Brackets come first. Before you gather anything, multiply out the bracket:\n[[3(x + 2) = 21]]\nbecomes\n[[3x + 6 = 21]]\nThen subtract **6** from both sides:\n[[3x = 15]]\nThen divide both sides by **3**:\n[[x = 5]]',
       ],
       keyIdea: 'Whatever the shape of the equation, the moves are always the same.\nFirst, clear any brackets.\nThen, gather every **x** on the left.\nThen, gather every plain number on the right.\nThen, divide so that a single **x** stands alone.\nFinally, check by putting the answer back in.',
-      example: { kind: 'letters', text: '5x + 3 = 2x + 15', caption: 'Gather the x terms: three x is twelve.' },
+      example: { kind: 'balance', left: '5x + 3', right: '2x + 15', caption: 'Take 2x and 3 from both pans: 3x is 12, so x is 4.' , formula: '5x + 3 = 2x + 15'},
     },
     sources: ['Aligned with Texas TEKS A.5A (solve linear equations in one variable, including those for which the application of the distributive property is necessary and for which variables are included on both sides) and Common Core A-REI.B.3 (solve linear equations in one variable).'],
     generators: ['g9-both-sides', 'g9-distribute-solve', 'g9-both-sides', 'g9-distribute-solve', 'g9-both-sides'],
@@ -3409,7 +3682,7 @@ function GRADE9_MATH_MODULES() { return [
         'A table is a function only if no input appears twice with different outputs.\n[[One input, one output, always.]]\nTwo inputs sharing the same output is fine. One input giving two different outputs is not.',
       ],
       keyIdea: 'One input, one output, always.\nf(3) means the rule applied to 3.',
-      example: { kind: 'letters', text: 'f(3) = 7', caption: 'Two times three, plus one.' },
+      example: { kind: 'plot', fn: 'line', point: 3, caption: 'A function is a rule: put 3 in, get 7 out, and every input has one output.' , formula: 'f(3) = 7'},
     },
     sources: ['Aligned with Texas TEKS A.12B (evaluate functions, expressed in function notation, given one or more elements in their domains) and Common Core F-IF.A.2 (use function notation, evaluate functions for inputs in their domains).'],
     generators: ['g9-evaluate-function', 'g9-is-function', 'g9-evaluate-function', 'g9-find-input', 'g9-evaluate-function'],
@@ -3426,7 +3699,7 @@ function GRADE9_MATH_MODULES() { return [
         'Now find y by putting x back into either equation:\n[[y = 3 + 2 = 5]]\nThe answer is the pair x = 3, y = 5. Check it in **both** equations. If either fails, something slipped.',
       ],
       keyIdea: 'Substitute one equation into the other and solve.\nThen find the second unknown.\nCheck the pair in both equations.',
-      example: { kind: 'letters', text: 'x = 3, y = 5', caption: 'The one pair that fits both rules.' },
+      example: { kind: 'plot', fn: 'cross', caption: 'Two lines, one crossing: the pair that satisfies both rules at once.' , formula: 'x = 2, y = 3'},
     },
     sources: ['Aligned with Texas TEKS A.5C (solve systems of two linear equations with two variables for mathematical and real-world problems) and Common Core A-REI.C.6 (solve systems of linear equations exactly and approximately).'],
     generators: ['g9-system-substitute', 'g9-check-pair', 'g9-system-substitute', 'g9-check-pair', 'g9-system-substitute'],
@@ -3444,7 +3717,7 @@ function GRADE9_MATH_MODULES() { return [
         'Factoring solves equations. If a product is zero, one of the brackets must be zero:\n[[(x + 2)(x + 3) = 0]]\nSo x is -2 or x is -3.',
       ],
       keyIdea: 'Find two numbers that multiply to c and add to b.\nIf a product is zero, one of the brackets is zero.',
-      example: { kind: 'letters', text: 'x^2 + 5x + 6', caption: 'Two and three: they multiply to six and add to five.' },
+      example: { kind: 'tiles', p: 2, q: 3, caption: 'A rectangle x + 2 wide and x + 3 tall has area x² + 5x + 6.' , formula: 'x² + 5x + 6 = (x + 2)(x + 3)'},
     },
     sources: ['Aligned with Texas TEKS A.10E (factor, if possible, trinomials with real factors in the form ax^2 + bx + c) and Common Core A-SSE.B.3a (factor a quadratic expression to reveal the zeros of the function it defines).'],
     generators: ['g9-factor-pair', 'g9-factor-trinomial', 'g9-factor-pair', 'g9-zeros', 'g9-factor-trinomial'],
@@ -3462,7 +3735,7 @@ function GRADE9_MATH_MODULES() { return [
         'Tell the two kinds apart by the pattern.\nSame **difference** between steps means linear.\nSame **ratio** between steps means exponential.',
       ],
       keyIdea: 'Adding the same amount each step is linear.\nMultiplying by the same amount each step is exponential.',
-      example: { kind: 'letters', text: '5 10 20 40', caption: 'Doubling: the same ratio every step.' },
+      example: { kind: 'plot', fn: 'exp', caption: 'Doubling: slow at first, then it explodes.' , formula: '5, 10, 20, 40'},
     },
     sources: ['Aligned with Texas TEKS A.9A (determine the domain and range of exponential functions of the form f(x) = ab^x) and Common Core F-LE.A.1 (distinguish between situations that can be modeled with linear functions and with exponential functions).'],
     generators: ['g9-linear-or-exponential', 'g9-growth-value', 'g9-linear-or-exponential', 'g9-growth-value', 'g9-next-term'],
@@ -3559,7 +3832,7 @@ function GRADE10_MATH_MODULES() { return [
         'The angles inside any triangle add to 180 as well:\n[[The three angles of a triangle add to 180.]]\nSo if you know two of them, say 60 and 45, the third is:\n[[180 - 60 - 45 = 75]]',
       ],
       keyIdea: 'Opposite angles are equal.\nAngles on a straight line add to 180.\nThe three angles of a triangle add to 180.',
-      example: { kind: 'letters', text: '180', caption: 'A straight line, and also a triangle.' },
+      example: { kind: 'angles', type: 'supplementary', given: 117, caption: 'Two angles on a straight line add to 180: 117 and 63.' , formula: '117 + 63 = 180'},
     },
     sources: ['Aligned with Texas TEKS G.5A (investigate patterns to make conjectures about geometric relationships, including angles formed by parallel lines cut by a transversal) and Common Core G-CO.C.9 (prove theorems about lines and angles).'],
     generators: ['g10-vertical-angle', 'g10-supplementary', 'g10-triangle-angle', 'g10-supplementary', 'g10-triangle-angle'],
@@ -3577,7 +3850,7 @@ function GRADE10_MATH_MODULES() { return [
         'Similar triangles let you measure what you cannot reach.\nA stick and its shadow make one triangle. A tree and its shadow make another, with the same angles because the sun is in the same place.\nIf a 1-meter stick casts a 2-meter shadow, and the tree casts a 12-meter shadow, the tree is:\n[[12 ÷ 2 = 6 meters tall]]',
       ],
       keyIdea: 'Same angles means the same shape.\nFind the scale factor, then multiply every side by it.',
-      example: { kind: 'letters', text: '3 4 5 to 9 12 15', caption: 'A scale factor of three.' },
+      example: { kind: 'similar', caption: 'Same shape, three times the size: 3-4-5 becomes 9-12-15.' , formula: '3 4 5 to 9 12 15'},
     },
     sources: ['Aligned with Texas TEKS G.7B (apply the Angle-Angle criterion to verify similar triangles and apply the proportionality of the corresponding sides to solve problems) and Common Core G-SRT.B.5 (use similarity criteria for triangles to solve problems).'],
     generators: ['g10-scale-factor', 'g10-missing-side', 'g10-scale-factor', 'g10-shadow', 'g10-missing-side'],
@@ -3594,7 +3867,7 @@ function GRADE10_MATH_MODULES() { return [
         'A rotation turns a shape around a point. A quarter turn counterclockwise about the origin swaps the coordinates and flips one sign:\n[[(x, y) becomes (-y, x)]]\nSo (2, 3) becomes (-3, 2). None of the three moves changes the size of the shape.',
       ],
       keyIdea: 'Translate: add to the coordinates.\nReflect: flip one sign.\nRotate a quarter turn: (x, y) becomes (-y, x).',
-      example: { kind: 'letters', text: '(2, 3) to (-2, 3)', caption: 'Reflected over the y-axis.' },
+      example: { kind: 'reflect', point: [2, 3], caption: 'Reflecting across the y-axis sends (2, 3) to (-2, 3).' , formula: '(2, 3) to (−2, 3)'},
     },
     sources: ['Aligned with Texas TEKS G.3A (describe and perform transformations of figures in a plane using coordinate notation) and Common Core G-CO.A.5 (given a geometric figure and a transformation, draw the transformed figure).'],
     generators: ['g10-translate', 'g10-reflect', 'g10-translate', 'g10-rotate', 'g10-reflect'],
@@ -3612,7 +3885,7 @@ function GRADE10_MATH_MODULES() { return [
         'These ratios depend only on the angle, not on the size of the triangle. Double every side and the ratios stay the same. That is why one angle and one side are enough to find heights and distances you cannot measure directly.',
       ],
       keyIdea: 'Sine: opposite over hypotenuse.\nCosine: adjacent over hypotenuse.\nTangent: opposite over adjacent.\nSOH CAH TOA.',
-      example: { kind: 'letters', text: 'SOH CAH TOA', caption: 'The memory hook for the three ratios.' },
+      example: { kind: 'trigtri', caption: 'Opposite, adjacent, hypotenuse: which two you know decides sine, cosine or tangent.' , formula: 'SOH CAH TOA'},
     },
     sources: ['Aligned with Texas TEKS G.9A (determine the lengths of sides and measures of angles in a right triangle by applying the trigonometric ratios) and Common Core G-SRT.C.6 (understand that side ratios in right triangles are properties of the angles).'],
     generators: ['g10-sine', 'g10-cosine', 'g10-tangent', 'g10-sine', 'g10-cosine'],
@@ -3630,7 +3903,7 @@ function GRADE10_MATH_MODULES() { return [
         'Always work in fractions first, then multiply.\n[[Angle ÷ 360 = the fraction]]\nThat one line unlocks every arc and sector problem there is.',
       ],
       keyIdea: 'Angle over 360 is the fraction of the circle.\nMultiply the circumference or the area by that fraction.',
-      example: { kind: 'letters', text: '90 / 360', caption: 'A quarter of the circle.' },
+      example: { kind: 'sector', degrees: 90, caption: 'A quarter turn is 90 of 360 degrees, so the arc is a quarter of the way around.' , formula: '90 ÷ 360'},
     },
     sources: ['Aligned with Texas TEKS G.12B (apply the proportional relationship between the measure of an arc length of a circle and the circumference of the circle) and Common Core G-C.B.5 (derive the formula for the area of a sector).'],
     generators: ['g10-sector-fraction', 'g10-arc-length', 'g10-sector-area', 'g10-sector-fraction', 'g10-arc-length'],
@@ -3728,7 +4001,7 @@ function GRADE11_MATH_MODULES() { return [
         "The part under the root, b² - 4ac, is called the discriminant, and it tells you how many answers to expect before you finish:\nPositive means two answers.\nZero means one answer.\nNegative means no real answer.",
       ],
       keyIdea: 'x = (-b ± √(b² - 4ac)) ÷ 2a solves every quadratic.\nThe part under the root tells you how many answers to expect.',
-      example: { kind: 'letters', text: 'b² - 4ac', caption: 'The discriminant: positive, zero or negative.' },
+      example: { kind: 'plot', fn: 'parabola', caption: 'The formula finds where the curve crosses the axis; the part under the root says how many times.' , formula: 'b² − 4ac'},
     },
     sources: ['Aligned with Texas TEKS 2A.4F (solve quadratic and square root equations) and Common Core A-REI.B.4b (solve quadratic equations by the quadratic formula).'],
     generators: ['g11-quadratic-roots', 'g11-discriminant', 'g11-quadratic-roots', 'g11-how-many-roots', 'g11-quadratic-roots'],
@@ -3746,7 +4019,7 @@ function GRADE11_MATH_MODULES() { return [
         "The memory hook is FOIL: First, Outer, Inner, Last. It is only a reminder that every piece meets every piece. When a bracket has three pieces, the same rule holds, with more multiplying.",
       ],
       keyIdea: 'Every piece of the first bracket multiplies every piece of the second.\nFirst, Outer, Inner, Last, then join the like terms.',
-      example: { kind: 'letters', text: 'FOIL', caption: 'First, Outer, Inner, Last.' },
+      example: { kind: 'tiles', p: 1, q: 4, caption: 'x + 1 by x + 4: four tiles, x², 4x, x and 4, so x² + 5x + 4.' , formula: 'FOIL'},
     },
     sources: ['Aligned with Texas TEKS 2A.7B (add, subtract, and multiply polynomials) and Common Core A-APR.A.1 (multiply polynomials).'],
     generators: ['g11-multiply-binomials', 'g11-middle-term', 'g11-multiply-binomials', 'g11-square-binomial', 'g11-middle-term'],
@@ -3764,7 +4037,7 @@ function GRADE11_MATH_MODULES() { return [
         "For a geometric sequence with first term a and common ratio r, the nth term is:\n[[a × r^(n - 1)]]\nThe 10th term of 3, 6, 12, 24 is 3 x 2 to the 9, which is 3 x 512, which is **1,536**.",
       ],
       keyIdea: 'Arithmetic: add the same amount each time, nth term is a + (n - 1)d.\nGeometric: multiply by the same amount, nth term is a times r to the n minus 1.',
-      example: { kind: 'letters', text: 'a + (n - 1)d', caption: 'Jump straight to any term.' },
+      example: { kind: 'growthbars', values: [3, 5, 7, 9, 11], labels: ['1st', '2nd', '3rd', '4th', '5th'], caption: 'Add the same 2 each time: the nth term is 3 plus 2 times n minus 1.' , formula: 'a + (n − 1)d'},
     },
     sources: ['Aligned with Texas TEKS A.12D (write a formula for the nth term of arithmetic and geometric sequences) and Common Core F-BF.A.2 (write arithmetic and geometric sequences with an explicit formula).'],
     generators: ['g11-arithmetic-term', 'g11-geometric-term', 'g11-arithmetic-term', 'g11-sequence-kind', 'g11-geometric-term'],
@@ -3782,7 +4055,7 @@ function GRADE11_MATH_MODULES() { return [
         "Two facts follow straight from the definition:\n[[log_b 1 = 0]]\nBecause anything to the power 0 is 1.\n[[log_b b = 1]]\nBecause anything to the power 1 is itself.",
       ],
       keyIdea: 'A logarithm is the exponent you were looking for.\nb to the x equals y means log base b of y equals x.',
-      example: { kind: 'letters', text: 'log₂ 32 = 5', caption: 'Because two to the five is thirty-two.' },
+      example: { kind: 'doubling', base: 2, times: 5, ask: true, caption: 'A logarithm asks how many doublings: 2 to what power is 32? Five.' , formula: 'log₂ 32 = 5'},
     },
     sources: ['Aligned with Texas TEKS 2A.5C (rewrite exponential equations as their corresponding logarithmic equations and logarithmic equations as their corresponding exponential equations) and Common Core F-LE.A.4 (express as a logarithm the solution to an exponential equation).'],
     generators: ['g11-log-value', 'g11-exp-to-log', 'g11-log-value', 'g11-log-to-exp', 'g11-log-value'],
@@ -3800,7 +4073,7 @@ function GRADE11_MATH_MODULES() { return [
         "Check both by putting them back in. 7 - 3 is 4, and |4| is 4. Also, -1 - 3 is -4, and |-4| is 4. Both work.\nIf an absolute value is set equal to a negative number, there is no answer at all, because a distance is never negative.",
       ],
       keyIdea: 'Absolute value is distance from zero.\nSplit into a positive case and a negative case, solve both, check both.',
-      example: { kind: 'letters', text: '|x - 3| = 4', caption: 'Two cases: 4 and -4.' },
+      example: { kind: 'numberline', from: -3, to: 9, marks: [-1, 7], caption: 'Four steps from 3 in either direction: -1 and 7.' , formula: '|x − 3| = 4'},
     },
     sources: ['Aligned with Texas TEKS 2A.6D (solve absolute value linear equations) and Common Core A-CED.A.1 (create equations in one variable and use them to solve problems).'],
     generators: ['g11-absolute-solve', 'g11-absolute-value-of', 'g11-absolute-solve', 'g11-absolute-none', 'g11-absolute-solve'],
@@ -3898,7 +4171,7 @@ function GRADE12_MATH_MODULES() { return [
         "Let's look at an example. If f(x) = x², then:\n[[x² + 3 is the parabola moved up 3]]\n[[(x - 2)² is the parabola moved right 2]]\n[[(x + 4)² - 1 is moved left 4 and down 1]]",
       ],
       keyIdea: 'Outside the brackets moves up or down.\nInside the brackets moves sideways, and minus goes right.',
-      example: { kind: 'letters', text: '(x - 2)² + 3', caption: 'Right two, up three.' },
+      example: { kind: 'plot', fn: 'shift', caption: 'The same curve, moved 2 right and 3 up.' , formula: '(x − 2)² + 3'},
     },
     sources: ['Aligned with Texas TEKS P.2G (graph functions, including transformations) and Common Core F-BF.B.3 (identify the effect on the graph of replacing f(x) by f(x) + k, k f(x), f(kx), and f(x + k)).'],
     generators: ['g12-shift-direction', 'g12-shifted-point', 'g12-shift-direction', 'g12-shifted-point', 'g12-write-shift'],
@@ -3916,7 +4189,7 @@ function GRADE12_MATH_MODULES() { return [
         "Compositions are everywhere. A price with tax applied, then a discount, is one rule inside another, and the order changes what you pay.",
       ],
       keyIdea: 'f(g(x)) means apply g first, then f.\nWork from the inside out, and the order matters.',
-      example: { kind: 'letters', text: 'f(g(3))', caption: 'Do g to 3, then do f to the answer.' },
+      example: { kind: 'plot', fn: 'composite', caption: 'Inside first: g turns 3 into 4, then f turns 4 into 9.' , formula: 'f(g(3))'},
     },
     sources: ['Aligned with Texas TEKS P.2A (use the composition of two functions to model and solve real-world problems) and Common Core F-BF.A.1c (compose functions).'],
     generators: ['g12-compose-value', 'g12-compose-order', 'g12-compose-value', 'g12-compose-order', 'g12-compose-value'],
@@ -3934,7 +4207,7 @@ function GRADE12_MATH_MODULES() { return [
         "Angles past 90 degrees keep the same values with signs that follow the quarter of the circle they land in. In the second quarter, cosine turns negative and sine stays positive. In the third, both are negative. In the fourth, sine is negative and cosine is positive.",
       ],
       keyIdea: 'On the unit circle, x is cosine and y is sine.\nKnow 0, 30, 45, 60 and 90 degrees, and let the quarter set the signs.',
-      example: { kind: 'letters', text: '(cos, sin)', caption: 'Every point on the circle.' },
+      example: { kind: 'unitcircle', deg: 45, caption: 'On the unit circle, cosine is how far across and sine is how far up.' , formula: '(cos θ, sin θ)'},
     },
     sources: ['Aligned with Texas TEKS P.4A (determine the relationship between the unit circle and the definition of a periodic function) and Common Core F-TF.A.2 (explain how the unit circle enables the extension of trigonometric functions to all real numbers).'],
     generators: ['g12-unit-value', 'g12-quadrant-sign', 'g12-unit-value', 'g12-quadrant-sign', 'g12-unit-value'],
@@ -3952,7 +4225,7 @@ function GRADE12_MATH_MODULES() { return [
         "Half-life never reaches zero on paper; it only gets closer. In practice the amount becomes too small to matter, which is why doctors talk about how many half-lives until a drug is effectively gone.",
       ],
       keyIdea: 'Count the half-lives, then halve that many times.\nAmount left is the start times one half to the power of the number of half-lives.',
-      example: { kind: 'letters', text: '80, 40, 20, 10', caption: 'Three half-lives.' },
+      example: { kind: 'plot', fn: 'decay', caption: 'Halving each step: 80, 40, 20, 10, and never quite zero.' , formula: '80, 40, 20, 10'},
     },
     sources: ['Aligned with Texas TEKS P.5I (determine the value of a sequence or series and apply exponential models) and Common Core F-LE.A.2 (construct exponential functions, including from a description of a relationship).'],
     generators: ['g12-half-life-left', 'g12-half-lives-count', 'g12-half-life-left', 'g12-half-lives-count', 'g12-half-life-left'],
@@ -3970,7 +4243,7 @@ function GRADE12_MATH_MODULES() { return [
         "Let's look at an example. For -2x³ + 5x - 1, the highest power is 3, which is odd, and the number in front is -2, which is negative. So the graph rises on the left and falls on the right.",
       ],
       keyIdea: 'The highest power rules the ends.\nEven or odd, positive or negative: those two facts settle the shape.',
-      example: { kind: 'letters', text: '-2x³', caption: 'Odd and negative: up on the left, down on the right.' },
+      example: { kind: 'plot', fn: 'cubeneg', caption: 'Far to the right the curve dives; far to the left it climbs. The sign and the highest power decide.' , formula: '−2x³'},
     },
     sources: ['Aligned with Texas TEKS P.2I (determine and analyze the key features of polynomial functions, including end behavior) and Common Core F-IF.C.7c (graph polynomial functions, showing end behavior).'],
     generators: ['g12-end-behavior', 'g12-leading-term', 'g12-end-behavior', 'g12-leading-term', 'g12-end-behavior'],
@@ -4068,7 +4341,7 @@ function COLLEGE_MATH_MODULES() { return [
         "That is the rule of thumb. When a few values are extreme, the median tells the truer story. When the values are evenly spread, the mean does. A careful reader asks which one a report chose, and why.",
       ],
       keyIdea: 'Mean adds and divides. Median is the middle. Mode is the most common.\nExtreme values pull the mean; the median ignores them.',
-      example: { kind: 'letters', text: '352 vs 220', caption: 'One mansion moved the mean, not the median.' },
+      example: { kind: 'dotplot', values: [2, 3, 3, 4, 5, 9], caption: 'One far value drags the mean; the median stays put.' , formula: 'mean, median, mode'},
     },
     sources: ['Aligned with Texas College and Career Readiness Standards VI.B.1 (determine measures of center) and Common Core S-ID.A.2 (use statistics appropriate to the shape of the data distribution to compare center).'],
     generators: ['gc-mean', 'gc-median', 'gc-mode', 'gc-mean', 'gc-median'],
@@ -4086,7 +4359,7 @@ function COLLEGE_MATH_MODULES() { return [
         "Statisticians use a finer measure called the standard deviation, which asks how far a typical value sits from the mean. The idea is the same as the range: a bigger number means a wider spread. Always ask for the spread alongside the average.",
       ],
       keyIdea: 'The average hides the spread.\nRange is biggest minus smallest, and a bigger spread means a more varied set.',
-      example: { kind: 'letters', text: 'same mean, different spread', caption: 'Two classes, one average, two rooms.' },
+      example: { kind: 'dotplot', values: [4, 5, 5, 6, 6, 7], compare: [1, 3, 5, 6, 8, 10], caption: 'Same middle, different spread.' , formula: 'same mean, different spread'},
     },
     sources: ['Aligned with Texas College and Career Readiness Standards VI.B.2 (determine measures of spread) and Common Core S-ID.A.2 (use statistics appropriate to the shape of the data distribution to compare spread).'],
     generators: ['gc-range', 'gc-more-spread', 'gc-range', 'gc-more-spread', 'gc-same-mean'],
@@ -4104,7 +4377,7 @@ function COLLEGE_MATH_MODULES() { return [
         "Probability describes the long run, not the next try. A coin that has landed heads five times is still one half to land heads again. The coin has no memory, and neither does the dice.",
       ],
       keyIdea: 'Probability is favorable outcomes over all outcomes.\nIndependent events multiply, and not happening is one minus happening.',
-      example: { kind: 'letters', text: '3/8', caption: 'Three red marbles out of eight.' },
+      example: { kind: 'spinner', sectors: 8, win: 3, caption: 'Three winning sectors out of eight: the chance is 3/8.' , formula: '3/8'},
     },
     sources: ['Aligned with Texas College and Career Readiness Standards VI.C.1 (understand and apply probability) and Common Core S-CP.A.1 (describe events as subsets of a sample space).'],
     generators: ['gc-simple-probability', 'gc-not-probability', 'gc-two-independent', 'gc-simple-probability', 'gc-two-independent'],
@@ -4122,7 +4395,7 @@ function COLLEGE_MATH_MODULES() { return [
         "The same rule runs a debt. A credit card balance compounds against you exactly as savings compound for you. Time is the whole trick: start early and the growth does most of the work.",
       ],
       keyIdea: 'Compound interest pays interest on the interest.\nAmount is principal times one plus the rate, to the power of the years.',
-      example: { kind: 'letters', text: '1.1 x 1.1 x 1.1', caption: 'Ten percent, three years.' },
+      example: { kind: 'growthbars', values: [100, 110, 121, 133], labels: ['now', '1 yr', '2 yr', '3 yr'], caption: 'Interest on the interest: each year grows the year before.' , formula: '1.1 × 1.1 × 1.1'},
     },
     sources: ['Aligned with Texas College and Career Readiness Standards II.D.1 (apply exponential models to real situations) and Common Core F-LE.A.1c (recognize situations in which a quantity grows by a constant percent rate).'],
     generators: ['gc-compound-amount', 'gc-simple-vs-compound', 'gc-compound-amount', 'gc-years-to-grow', 'gc-compound-amount'],
@@ -4140,7 +4413,7 @@ function COLLEGE_MATH_MODULES() { return [
         "The way to tell is an experiment: change one thing on purpose and watch the other. Without that, a correlation is a reason to look closer, not a proof.",
       ],
       keyIdea: 'Together is not because.\nA causes B, B causes A, something causes both, or coincidence: hold all four open.',
-      example: { kind: 'letters', text: 'ice cream and drowning', caption: 'Both rise in summer. Heat causes both.' },
+      example: { kind: 'scatter', caption: 'Ice cream sales and swimming accidents rise together. Neither causes the other; hot days cause both.' , formula: 'together is not because'},
     },
     sources: ['Aligned with Texas College and Career Readiness Standards VI.A.1 (interpret correlation and distinguish it from causation) and Common Core S-ID.C.9 (distinguish between correlation and causation).'],
     generators: ['gc-cause-or-correlate', 'gc-third-factor', 'gc-cause-or-correlate', 'gc-third-factor', 'gc-cause-or-correlate'],
@@ -4237,7 +4510,7 @@ function GRADE3_SCIENCE_MODULES() { return [
         "Heat moves matter from one state to the next. Warm ice and it melts into a liquid. Boil the liquid and it becomes a gas. Cool the gas and it turns back into drops of liquid. Same water, the whole way through.",
       ],
       keyIdea: 'A solid keeps its shape, a liquid takes the shape of its container, and a gas fills its space.\nHeating and cooling move matter between them.',
-      example: { kind: 'letters', text: 'ice water steam', caption: 'One thing, three states.' },
+      example: { kind: 'states', caption: 'The same water: packed and still as ice, sliding as water, flying apart as steam.' , formula: 'ice, water, steam'},
     },
     sources: ['Aligned with Texas TEKS 3.5B (describe and classify samples of matter as solids, liquids, and gases) and NGSS 2-PS1-1 and 5-PS1-3 (observe and describe properties of matter).'],
     generators: ['s3-which-state', 's3-state-change', 's3-which-state', 's3-state-change', 's3-state-property'],
@@ -4271,7 +4544,7 @@ function GRADE3_SCIENCE_MODULES() { return [
         "Animals have life cycles too. A frog begins as an egg, hatches into a tadpole with a tail, grows legs, and becomes a frog that lays eggs. A butterfly goes egg, caterpillar, chrysalis, butterfly. Different stages, same idea: each living thing makes the next one.",
       ],
       keyIdea: 'A life cycle is the circle of stages a living thing goes through.\nEach stage leads to the next, and the last one makes the first one again.',
-      example: { kind: 'letters', text: 'egg tadpole frog', caption: 'A frog\'s life cycle.' },
+      example: { kind: 'loop', steps: ['egg', 'tadpole', 'frog'], caption: 'Egg, tadpole, frog, and the frog lays eggs: a life cycle goes around.' , formula: 'egg → tadpole → frog'},
     },
     sources: ['Aligned with Texas TEKS 3.10C (investigate and compare how animals and plants undergo a series of orderly changes in their diverse life cycles) and NGSS 3-LS1-1 (develop models to describe that organisms have unique and diverse life cycles).'],
     generators: ['s3-next-stage', 's3-what-a-seed-needs', 'ord-life-cycle', 's3-first-stage', 's3-what-a-seed-needs'],
@@ -4288,7 +4561,7 @@ function GRADE3_SCIENCE_MODULES() { return [
         "Weather changes day to day. Seasons change slowly and come back in order. When someone asks about the weather, they mean today. When someone asks about the season, they mean the pattern.",
       ],
       keyIdea: 'Weather is what the sky is doing today, measured with tools.\nSeasons are the yearly pattern, and they always come back in order.',
-      example: { kind: 'letters', text: 'thermometer', caption: 'The tool that measures temperature.' },
+      example: { kind: 'thermometer', c: 30, caption: 'A thermometer reads the air: thirty degrees Celsius is a hot day.' , formula: 'thermometer'},
     },
     sources: ['Aligned with Texas TEKS 3.8A (observe, measure, record, and compare day-to-day weather changes) and NGSS 3-ESS2-1 (represent data in tables and graphs to describe typical weather conditions during a season).'],
     generators: ['s3-which-tool', 's3-next-season', 's3-which-tool', 's3-next-season', 's3-weather-or-season'],
@@ -4309,7 +4582,7 @@ function GRADE6_SCIENCE_MODULES() { return [
         "A compound is not a mix. Salt is not sodium sitting next to chlorine; it is a new substance with its own properties. Sodium alone burns in water. Chlorine alone is a poison gas. Joined, they season your food.",
       ],
       keyIdea: 'An element is one kind of atom. A compound is two or more kinds joined.\nRead the formula: the letters name the kinds, the small numbers count them.',
-      example: { kind: 'letters', text: 'H₂O', caption: 'Two kinds of atom, joined: a compound.' },
+      example: { kind: 'molecule', formulaText: 'H₂O', caption: 'Two hydrogen atoms bonded to one oxygen atom: a compound, water.' , formula: 'H₂O'},
     },
     sources: ['Aligned with Texas TEKS 6.5A (know that an element is a pure substance represented by a chemical symbol and that a compound is a pure substance represented by a chemical formula) and NGSS MS-PS1-1 (develop models to describe the atomic composition of simple molecules).'],
     generators: ['s6-element-or-compound', 's6-count-kinds', 's6-element-or-compound', 's6-count-kinds', 's6-element-or-compound'],
@@ -4326,7 +4599,7 @@ function GRADE6_SCIENCE_MODULES() { return [
         "The sun warms the Earth by radiation, across ninety-three million miles of empty space. A metal spoon left in the soup gets hot by conduction. The wind is convection on the scale of a whole planet.",
       ],
       keyIdea: 'Heat moves from warmer to cooler.\nConduction is by touch, convection is by a moving liquid or gas, radiation is by rays.',
-      example: { kind: 'letters', text: 'touch flow rays', caption: 'The three ways heat travels.' },
+      example: { kind: 'heat', caption: 'Touch (conduction), flow (convection), rays (radiation): three ways heat moves.' , formula: 'touch, flow, rays'},
     },
     sources: ['Aligned with Texas TEKS 6.9A (investigate methods of thermal energy transfer, including conduction, convection, and radiation) and NGSS MS-PS3-3 (apply scientific principles to design a device that minimizes or maximizes thermal energy transfer).'],
     generators: ['s6-which-transfer', 's6-transfer-example', 's6-which-transfer', 's6-transfer-example', 's6-warm-to-cool'],
@@ -4343,7 +4616,7 @@ function GRADE6_SCIENCE_MODULES() { return [
         "A map of earthquakes and volcanoes is a map of plate edges. The edges are where the action is, and the middles of plates are mostly quiet.",
       ],
       keyIdea: 'The Earth\'s shell is plates that move.\nPushing together makes mountains, pulling apart makes new floor, sliding past makes earthquakes.',
-      example: { kind: 'letters', text: 'push pull slide', caption: 'Three kinds of plate edge.' },
+      example: { kind: 'plates', caption: 'Plates push together, pull apart, or slide past: mountains, rifts, earthquakes.' , formula: 'push, pull, slide'},
     },
     sources: ['Aligned with Texas TEKS 6.10D (describe how plate tectonics causes major geological events such as ocean basin formation, earthquakes, volcanic eruptions, and mountain building) and NGSS MS-ESS2-2 (construct an explanation for how geoscience processes have changed Earth\'s surface).'],
     generators: ['s6-boundary-result', 's6-which-boundary', 's6-boundary-result', 's6-which-boundary', 's6-where-quakes'],
@@ -4360,7 +4633,7 @@ function GRADE6_SCIENCE_MODULES() { return [
         "Let's look at what happens when you eat a salad. The plant cells you chew had walls and chloroplasts. Your own cells, which use that food, have neither. Both kinds have a nucleus, a membrane and mitochondria, because those jobs belong to every cell.",
       ],
       keyIdea: 'Every cell has a nucleus, a membrane and mitochondria.\nPlant cells add a wall and chloroplasts, which is why plants stand up and make their own food.',
-      example: { kind: 'letters', text: 'nucleus', caption: 'The part that holds the instructions.' },
+      example: { kind: 'cell', caption: 'A cell: the membrane around it, the nucleus holding the instructions, and, in a plant cell, chloroplasts.' , formula: 'the nucleus holds the instructions'},
     },
     sources: ['Aligned with Texas TEKS 6.12B (recognize that the presence of a nucleus is a key factor used to determine whether a cell is prokaryotic or eukaryotic) and 6.12A, and NGSS MS-LS1-2 (develop and use a model to describe the function of a cell as a whole and ways parts of cells contribute to the function).'],
     generators: ['s6-cell-part-job', 's6-plant-or-both', 's6-cell-part-job', 's6-plant-or-both', 's6-cell-part-job'],
@@ -4377,7 +4650,7 @@ function GRADE6_SCIENCE_MODULES() { return [
         "Take out one link and the chain changes. Fewer grasshoppers means hungry birds. More birds means fewer grasshoppers and more grass. Everything in an ecosystem is holding something else up.",
       ],
       keyIdea: 'Producers make food, consumers eat, decomposers break things down.\nEnergy flows from the sun through the chain and back to the soil.',
-      example: { kind: 'letters', text: 'grass grasshopper bird', caption: 'A food chain in a meadow.' },
+      example: { kind: 'flow', steps: ['grass', 'grasshopper', 'bird'], caption: 'Energy passes along a food chain: grass to grasshopper to bird.' , formula: 'grass → grasshopper → bird'},
     },
     sources: ['Aligned with Texas TEKS 6.12C (identify the roles of producers, consumers, and decomposers in ecosystems) and NGSS MS-LS2-3 (develop a model to describe the cycling of matter and flow of energy among living and nonliving parts of an ecosystem).'],
     generators: ['s6-which-role', 's6-chain-order', 's6-which-role', 's6-chain-order', 's6-remove-a-link'],
@@ -4395,7 +4668,7 @@ function GRADE6_SCIENCE_MODULES() { return [
         "Size is not the point. A huge log floats and a tiny pebble sinks. It is the density, mass per volume, that decides, which is why a steel ship floats: the hull encloses so much air that the whole ship is less dense than water.",
       ],
       keyIdea: 'Density is mass divided by volume.\nDenser than water sinks; less dense floats, whatever the size.',
-      example: { kind: 'letters', text: 'D = m ÷ V', caption: 'Density.' },
+      example: { kind: 'densitypic', caption: 'Same size, more packed in: the denser block has more mass in the same space.' , formula: 'D = m ÷ V'},
     },
     sources: ['Aligned with Texas TEKS 6.6B (calculate density to identify an unknown substance) and NGSS MS-PS1-2 (analyze and interpret data on the properties of substances).'],
     generators: ['s6-density', 's6-float-or-sink', 's6-density', 's6-float-or-sink', 's6-why-ship-floats'],
@@ -4417,7 +4690,7 @@ function GRADE4_SCIENCE_MODULES() { return [
         "Energy changes form all the time, and that is usually the point of a machine. A drum turns the motion of your hand into sound. A toaster turns electricity into heat. A flashlight turns the energy stored in a battery into light. Ask of any device: what form goes in, and what form comes out?",
       ],
       keyIdea: 'Energy comes in forms: light, heat, sound, electrical and mechanical.\nMachines change one form into another.',
-      example: { kind: 'letters', text: 'electricity to light', caption: 'What a lamp does.' },
+      example: { kind: 'flow', steps: ['electricity', 'bulb', 'light and heat'], caption: 'Energy changes form: electricity becomes light and heat in a bulb.' , formula: 'electricity to light'},
     },
     sources: ['Aligned with Texas TEKS 4.8A (investigate and identify the transfer of energy by objects in motion, waves in water, and sound) and NGSS 4-PS3-2 (make observations to provide evidence that energy can be transferred by sound, light, heat, and electric currents).'],
     generators: ['s4-which-form', 's4-form-change', 's4-which-form', 's4-form-change', 's4-form-example'],
@@ -4435,7 +4708,7 @@ function GRADE4_SCIENCE_MODULES() { return [
         "Let's look at a flashlight that will not light. The bulb, the battery and the wires may all be fine. If the loop is broken anywhere, by a dead battery, a loose wire or an open switch, nothing flows. Find the break and you fix the light.",
       ],
       keyIdea: 'Electricity flows only around a complete loop.\nConductors let it through; insulators stop it.',
-      example: { kind: 'letters', text: 'complete loop', caption: 'What every working circuit has.' },
+      example: { kind: 'circuit', mode: 'single', caption: 'A complete loop: battery, wire, bulb, and back to the battery. Break it anywhere and the light goes out.' , formula: 'complete loop'},
     },
     sources: ['Aligned with Texas TEKS 4.8C (demonstrate and describe how electrical energy travels in a closed path) and NGSS 4-PS3-4 (apply scientific ideas to design a device that converts energy from one form to another).'],
     generators: ['s4-conductor-or-insulator', 's4-will-it-light', 's4-conductor-or-insulator', 's4-will-it-light', 's4-find-the-break'],
@@ -4452,7 +4725,7 @@ function GRADE4_SCIENCE_MODULES() { return [
         "Water does most of the work, but wind, ice and plant roots all weather and erode. The Grand Canyon is a river's work. A sand dune is the wind's. When you see a landform, ask what moved the pieces and where they came from.",
       ],
       keyIdea: 'Weathering breaks rock. Erosion carries it. Deposition drops it.\nWater, wind, ice and roots all do the work, slowly.',
-      example: { kind: 'letters', text: 'break carry drop', caption: 'The three steps that reshape land.' },
+      example: { kind: 'flow', steps: ['break', 'carry', 'drop'], caption: 'Weathering breaks rock, erosion carries it, deposition drops it somewhere new.' , formula: 'break, carry, drop'},
     },
     sources: ['Aligned with Texas TEKS 4.10B (model and describe slow changes to Earth\'s surface caused by weathering, erosion, and deposition) and NGSS 4-ESS2-1 (make observations to provide evidence of the effects of weathering or the rate of erosion).'],
     generators: ['s4-which-step', 's4-what-caused', 's4-which-step', 's4-what-caused', 's4-order-steps'],
@@ -4470,7 +4743,7 @@ function GRADE4_SCIENCE_MODULES() { return [
         "To read an adaptation, ask two questions. What problem does this animal or plant face where it lives? How does this part or habit solve it? Move the animal to a new place and the adaptation may stop helping. White fur is no help in a forest.",
       ],
       keyIdea: 'An adaptation solves a problem of the place a living thing lives.\nAsk what the problem is and how the part or habit solves it.',
-      example: { kind: 'letters', text: 'webbed feet', caption: 'Built for pushing water.' },
+      example: { kind: 'pic', name: 'duck', caption: 'Webbed feet push water: a duck is built for the pond.' , formula: 'webbed feet'},
     },
     sources: ['Aligned with Texas TEKS 4.13A (explore and explain how structures and functions of plants and animals allow them to survive in a particular environment) and NGSS 4-LS1-1 (construct an argument that plants and animals have internal and external structures that function to support survival).'],
     generators: ['s4-what-it-is-for', 's4-which-adaptation', 's4-what-it-is-for', 's4-which-adaptation', 's4-what-problem'],
@@ -4492,7 +4765,7 @@ function GRADE5_SCIENCE_MODULES() { return [
         "A mixture is not a new substance. The salt is still salt and the water is still water. That is the difference from a compound, where the parts are joined and cannot simply be taken back apart.",
       ],
       keyIdea: 'A mixture keeps the properties of its parts and can be separated.\nA solution is a mixture where one part dissolves into the other.',
-      example: { kind: 'letters', text: 'salt in water', caption: 'A solution: still there, spread too small to see.' },
+      example: { kind: 'mixture', caption: 'Sand in water settles: a mixture. Salt in water disappears into it: a solution.' , formula: 'salt in water'},
     },
     sources: ['Aligned with Texas TEKS 5.6B (investigate and describe that matter can be made of mixtures and solutions) and NGSS 5-PS1-4 (conduct an investigation to determine whether the mixing of two or more substances results in new substances).'],
     generators: ['s5-mixture-or-solution', 's5-how-to-separate', 's5-mixture-or-solution', 's5-how-to-separate', 's5-still-there'],
@@ -4509,7 +4782,7 @@ function GRADE5_SCIENCE_MODULES() { return [
         "The sun does not really rise or set. The Earth turns you toward it in the morning and away from it at night. Once that clicks, the sky stops being a mystery and becomes a clock.",
       ],
       keyIdea: 'The Earth spins for day and night, circles the sun for the year, and the moon circles the Earth for its phases.\nThe moon shines by reflected sunlight.',
-      example: { kind: 'letters', text: 'spin circle circle', caption: 'One day, one year, one month.' },
+      example: { kind: 'orbits', caption: 'The Earth spins once a day and circles the sun once a year; the moon circles the Earth about once a month.' , formula: 'spin, circle, circle'},
     },
     sources: ['Aligned with Texas TEKS 5.9A (analyze the cyclical relationship between the Sun, Earth, and Moon and describe the patterns of day, night, seasons, and phases) and NGSS 5-ESS1-2 (represent data to reveal patterns of daily changes and seasonal appearance of stars).'],
     generators: ['s5-which-motion', 's5-moon-phase', 's5-which-motion', 's5-moon-phase', 's5-moon-light'],
@@ -4527,7 +4800,7 @@ function GRADE5_SCIENCE_MODULES() { return [
         "Every part of the cycle is a state change you already know. Evaporation is liquid to gas. Condensation is gas to liquid. Freezing turns rain to snow. The water cycle is the states of matter, happening to the whole planet at once.",
       ],
       keyIdea: 'Evaporation up, condensation into clouds, precipitation down, collection, and around again.\nEach step is a change of state.',
-      example: { kind: 'letters', text: 'up over down', caption: 'The trip every drop makes.' },
+      example: { kind: 'cycle', caption: 'Up as vapor, over as cloud, down as rain, and back to the lake. The trip every drop makes.' , formula: 'up, over, down'},
     },
     sources: ['Aligned with Texas TEKS 5.10A (explain the interactions of the water cycle including evaporation, condensation, and precipitation) and NGSS 5-ESS2-1 (develop a model to describe ways the geosphere, biosphere, hydrosphere, and atmosphere interact).'],
     generators: ['s5-which-stage', 's5-next-stage', 's5-which-stage', 's5-next-stage', 's5-state-change-in-cycle'],
@@ -4545,7 +4818,7 @@ function GRADE5_SCIENCE_MODULES() { return [
         "A quick test: could the living thing have been born with it, before it experienced anything? If yes, it is inherited. If it took practice or experience, it is learned. Some things, like a person's height, are inherited but shaped by learning-free things such as food. That is fine; the test still works for behaviors.",
       ],
       keyIdea: 'Inherited traits come from parents. Learned traits come from practice or experience.\nAsk: could it have been born with this?',
-      example: { kind: 'letters', text: 'born with it', caption: 'The test for an inherited trait.' },
+      example: { kind: 'pair', a: { kind: 'pic', name: 'fox' }, b: { kind: 'pic', name: 'cat' }, caption: 'Fur color is inherited. Coming when called is learned.' , formula: 'born with it, or learned'},
     },
     sources: ['Aligned with Texas TEKS 5.13A (analyze and describe how inherited traits are passed from parents to offspring and how learned behaviors are acquired) and NGSS 3-LS3-1 (analyze and interpret data to provide evidence that plants and animals have traits inherited from parents).'],
     generators: ['s5-inherited-or-learned', 's5-which-is-inherited', 's5-inherited-or-learned', 's5-which-is-learned', 's5-inherited-or-learned'],
@@ -4567,7 +4840,7 @@ function GRADE7_SCIENCE_MODULES() { return [
         "The systems depend on each other. Stop the lungs and the blood has no oxygen to carry. Stop the heart and the oxygen goes nowhere. When you name a system, ask what it does and which other systems it needs.",
       ],
       keyIdea: 'Each body system is a team of organs with one main job.\nThe systems depend on each other, and one bite of food uses several at once.',
-      example: { kind: 'letters', text: 'heart and blood', caption: 'The circulatory system.' },
+      example: { kind: 'loop', steps: ['heart', 'lungs', 'heart', 'body'], caption: 'Blood loops: heart to lungs for oxygen, back to the heart, out to the body, and home.' , formula: 'heart and blood'},
     },
     sources: ['Aligned with Texas TEKS 7.12B (identify the main functions of the systems of the human organism) and NGSS MS-LS1-3 (use argument supported by evidence for how the body is a system of interacting subsystems).'],
     generators: ['s7-which-system', 's7-system-job', 's7-which-system', 's7-system-job', 's7-organ-belongs'],
@@ -4585,7 +4858,7 @@ function GRADE7_SCIENCE_MODULES() { return [
         "Every breath you take is oxygen a plant let out. Every calorie you eat traces back to sugar a plant built from light. Photosynthesis is the start of nearly every food chain and the source of the air, which is why it is worth knowing the equation by heart.",
       ],
       keyIdea: 'Sunlight, water and carbon dioxide in; sugar and oxygen out.\nIt happens in the chloroplasts, and it feeds nearly everything.',
-      example: { kind: 'letters', text: 'light water CO₂', caption: 'What goes in.' },
+      example: { kind: 'leaf', caption: 'In: sunlight, water and carbon dioxide. Out: sugar and oxygen.' , formula: 'light + water + CO₂ → sugar + O₂'},
     },
     sources: ['Aligned with Texas TEKS 7.5A (recognize that radiant energy from the Sun is transformed into chemical energy through the process of photosynthesis) and NGSS MS-LS1-6 (construct an explanation for the role of photosynthesis in the cycling of matter and flow of energy).'],
     generators: ['s7-in-or-out', 's7-photo-missing', 's7-in-or-out', 's7-photo-missing', 's7-where-it-happens'],
@@ -4603,7 +4876,7 @@ function GRADE7_SCIENCE_MODULES() { return [
         "A warm front does the opposite, sliding gently over cold air, with hours of steady rain and then warmer weather. High pressure usually means clear skies, because the air is sinking. Low pressure means clouds, because the air is rising. A forecast is mostly reading which is coming.",
       ],
       keyIdea: 'Warm air rises and cool air sinks; wind blows from high pressure to low.\nA front is where two air masses meet, and fronts bring the change.',
-      example: { kind: 'letters', text: 'high to low', caption: 'Which way the wind blows.' },
+      example: { kind: 'flow', steps: ['high pressure', 'wind', 'low pressure'], caption: 'Air moves from high pressure to low. That movement is wind.' , formula: 'high to low'},
     },
     sources: ['Aligned with Texas TEKS 7.8A (describe how energy from the Sun drives convection in the atmosphere and produces weather) and NGSS MS-ESS2-5 (collect data to provide evidence for how the motions and complex interactions of air masses result in changes in weather conditions).'],
     generators: ['s7-front-result', 's7-pressure-sky', 's7-front-result', 's7-pressure-sky', 's7-air-rule'],
@@ -4621,7 +4894,7 @@ function GRADE7_SCIENCE_MODULES() { return [
         "Three things are needed: differences within the group, a reason some survive better, and the difference being inherited. Take away any one and nothing changes. Ask of any example: what varied, what selected, and was it passed on?",
       ],
       keyIdea: 'Variation, survival and inheritance: helpful differences get passed on more, and over generations the group changes.\nNobody chooses; the environment selects.',
-      example: { kind: 'letters', text: 'pale moth, dark moth', caption: 'The trees and the birds did the selecting.' },
+      example: { kind: 'moths', caption: 'On a soot-dark trunk the pale moth is seen and eaten; the dark moth survives and breeds.' , formula: 'pale moth, dark moth'},
     },
     sources: ['Aligned with Texas TEKS 7.11C (identify some changes in genetic traits that have occurred over several generations through natural selection) and NGSS MS-LS4-4 (construct an explanation for how genetic variations of traits in a population increase some individuals\' probability of surviving and reproducing).'],
     generators: ['s7-what-selected', 's7-selection-parts', 's7-what-selected', 's7-selection-parts', 's7-selection-order'],
@@ -4639,7 +4912,7 @@ function GRADE7_SCIENCE_MODULES() { return [
         "That is why two brown-eyed parents can have a blue-eyed child. Each carried a hidden blue version and passed it on. Genes are shuffled every generation, which is why brothers and sisters differ.",
       ],
       keyIdea: 'Traits come from genes, half from each parent.\nA dominant version shows with one copy; a recessive version needs two.',
-      example: { kind: 'letters', text: 'dominant or recessive', caption: 'Which version shows.' },
+      example: { kind: 'punnett', caption: 'Two brown-eyed parents who each carry a blue version: three squares show brown, one shows blue.' , formula: 'dominant or recessive'},
     },
     sources: ['Aligned with Texas TEKS 7.14C (recognize that inherited traits of individuals are governed in the genetic material found in the genes within chromosomes in the nucleus) and NGSS MS-LS3-2 (develop and use a model to describe why asexual reproduction results in offspring with identical genetic information and sexual reproduction results in offspring with genetic variation).'],
     generators: ['s7-dominant-or-recessive', 's7-which-shows', 's7-dominant-or-recessive', 's7-which-shows', 's7-why-blue-child'],
@@ -4657,7 +4930,7 @@ function GRADE7_SCIENCE_MODULES() { return [
         "Draw the levels as a pyramid and you can see it: a wide base of plants, and a narrow tip of top predators. Every ecosystem is shaped this way, because the energy runs out. A world of only lions could not exist; there would be nothing left to feed them.",
       ],
       keyIdea: 'Only about a tenth of the energy passes to the next level of a food chain.\nThat is why there is much grass and few top predators.',
-      example: { kind: 'letters', text: '1,000, 100, 10, 1', caption: 'Energy up a food chain.' },
+      example: { kind: 'pyramid', levels: [1000, 100, 10, 1], caption: 'About a tenth passes up each level: 1,000 units of grass feed 100 of grasshopper, 10 of bird, 1 of hawk.' , formula: '1,000, 100, 10, 1'},
     },
     sources: ['Aligned with Texas TEKS 7.5C (diagram the flow of energy through living systems, including food chains, food webs, and energy pyramids) and NGSS MS-LS2-3 (develop a model to describe the cycling of matter and flow of energy among living and nonliving parts of an ecosystem).'],
     generators: ['s7-tenth-rule', 's7-pyramid-level', 's7-tenth-rule', 's7-pyramid-level', 's7-why-few-lions'],
@@ -4679,7 +4952,7 @@ function GRADE8_SCIENCE_MODULES() { return [
         "Let's look at carbon. Six protons in the nucleus, usually six neutrons with them, and six electrons in the cloud, so the charges balance. Every carbon atom in every living thing has those six protons. That is what makes it carbon.",
       ],
       keyIdea: 'Protons and neutrons in the nucleus, electrons in the cloud.\nThe number of protons is the atomic number, and it decides the element.',
-      example: { kind: 'letters', text: '6 protons = carbon', caption: 'The count that names the element.' },
+      example: { kind: 'atom', caption: 'A carbon atom: six protons and six neutrons packed in the nucleus, six electrons in shells around it.' , formula: 'protons, neutrons, electrons'},
     },
     sources: ['Aligned with Texas TEKS 8.5A (describe the structure of atoms, including the masses, electrical charges, and locations of protons and neutrons in the nucleus and electrons in the electron cloud) and NGSS MS-PS1-1.'],
     generators: ['s8-particle-charge', 's8-particle-where', 's8-atomic-number', 's8-particle-charge', 's8-atomic-number'],
@@ -4697,7 +4970,7 @@ function GRADE8_SCIENCE_MODULES() { return [
         "The second law has a formula worth knowing:\n[[Force = mass x acceleration]]\nDouble the force on the same mass and it accelerates twice as fast. Double the mass with the same force and it accelerates half as fast. A rocket and a shopping cart obey exactly the same rule.",
       ],
       keyIdea: 'Things keep doing what they are doing until a force acts.\nForce equals mass times acceleration.\nEvery push has an equal push back.',
-      example: { kind: 'letters', text: 'F = m x a', caption: 'The second law.' },
+      example: { kind: 'forces', caption: 'The same push moves the light cart faster than the heavy one: force equals mass times acceleration.' , formula: 'F = m × a'},
     },
     sources: ['Aligned with Texas TEKS 8.6C (investigate and describe applications of Newton\'s three laws of motion) and NGSS MS-PS2-2 (plan an investigation to provide evidence that the change in an object\'s motion depends on the sum of the forces and the mass).'],
     generators: ['s8-which-law', 's8-f-equals-ma', 's8-which-law', 's8-f-equals-ma', 's8-more-mass'],
@@ -4715,7 +4988,7 @@ function GRADE8_SCIENCE_MODULES() { return [
         "Let's look at the rule that never breaks. In a chemical reaction, atoms are rearranged, not created or destroyed. Burn a log and the atoms of the wood are all still there, in the ash, the smoke and the air. Weigh everything that goes in and everything that comes out, and the two are equal.\n[[Atoms are rearranged, never lost.]]",
       ],
       keyIdea: 'A chemical change makes a new substance; a physical change does not.\nAtoms are rearranged, never created or destroyed.',
-      example: { kind: 'letters', text: 'burning', caption: 'A chemical change: ash, smoke and gas from wood.' },
+      example: { kind: 'reaction', left: ['wood', 'oxygen'], right: ['ash', 'smoke', 'heat'], caption: 'Burning: wood and oxygen become ash, smoke and heat. New substances, not a change of shape.' , formula: 'burning'},
     },
     sources: ['Aligned with Texas TEKS 8.5E (investigate how evidence of chemical reactions indicates that new substances with different properties are formed) and NGSS MS-PS1-2 and MS-PS1-5 (analyze data to determine if a chemical reaction has occurred; the law of conservation of mass).'],
     generators: ['s8-physical-or-chemical', 's8-reaction-sign', 's8-physical-or-chemical', 's8-reaction-sign', 's8-mass-conserved'],
@@ -4733,7 +5006,7 @@ function GRADE8_SCIENCE_MODULES() { return [
         "Let's check the order with one question: which is bigger, and which is inside which? The moon is inside the Earth\'s neighborhood, the Earth inside the solar system, the solar system inside the galaxy, the galaxy inside the universe. Every layer contains the one before it.",
       ],
       keyIdea: 'Moon, planet, solar system, galaxy, universe: each layer is inside the next.\nDistances are measured in light-years, so looking far is looking back in time.',
-      example: { kind: 'letters', text: '8 light minutes', caption: 'How far the sun is.' },
+      example: { kind: 'flow', steps: ['Sun', '8 light minutes', 'Earth'], caption: 'Sunlight takes eight minutes to reach us. You see the sun as it was eight minutes ago.' , formula: '8 light minutes'},
     },
     sources: ['Aligned with Texas TEKS 8.8A (describe components of the universe, including stars, nebulae, and galaxies) and NGSS MS-ESS1-2 (develop and use a model to describe the role of gravity in the motions within galaxies and the solar system).'],
     generators: ['s8-inside-which', 's8-light-time', 's8-inside-which', 's8-light-time', 's8-biggest-of'],
@@ -4751,7 +5024,7 @@ function GRADE8_SCIENCE_MODULES() { return [
         "Average speed for the whole trip is total distance over total time: 90 meters in 30 seconds, 3 meters per second, even though the cyclist was never going exactly that for long. A graph shows the parts; the average hides them.",
       ],
       keyIdea: 'On a distance-time graph, flat is still, sloped is moving, steeper is faster.\nThe slope is the speed, and average speed is total distance over total time.',
-      example: { kind: 'letters', text: 'steeper is faster', caption: 'Reading the slope.' },
+      example: { kind: 'plot', fn: 'steeper', caption: 'On a distance-time graph the steeper line covers more distance in the same time: it is faster.' , formula: 'steeper is faster'},
     },
     sources: ['Aligned with Texas TEKS 8.6B (differentiate between speed, velocity, and acceleration; represent motion on a distance-time graph) and NGSS MS-PS2-2 (plan an investigation to provide evidence that the change in an object\'s motion depends on the sum of the forces on the object and the mass of the object).'],
     generators: ['s8-read-slope', 's8-line-means', 's8-read-slope', 's8-line-means', 's8-average-speed'],
@@ -4769,7 +5042,7 @@ function GRADE8_SCIENCE_MODULES() { return [
         "A fossil in a layer of sea floor tells you the land was once under water. A layer of coal tells you it was once a swamp. Tilted or folded layers tell you the ground moved after they formed. Every layer is a page, and the pile is a history book read from the bottom up.",
       ],
       keyIdea: 'Layers pile up over time, so deeper is older.\nFossils and the layers around them tell what a place was like and when.',
-      example: { kind: 'letters', text: 'deeper is older', caption: 'The rule for reading layers.' },
+      example: { kind: 'layers', caption: 'Layers pile up over time, so deeper is older; a fossil in a deep layer is an old one.' , formula: 'deeper is older'},
     },
     sources: ['Aligned with Texas TEKS 8.9A (describe the historical development of evidence that supports plate tectonic theory) and 8.9C, and NGSS MS-ESS1-4 (construct a scientific explanation based on evidence from rock strata for how the geologic time scale is used to organize Earth\'s history).'],
     generators: ['s8-which-older', 's8-layer-tells', 's8-which-older', 's8-layer-tells', 's8-tilted-layers'],
@@ -4791,7 +5064,7 @@ function GRADE9_SCIENCE_MODULES() { return [
         "A gene is a stretch of DNA that carries one instruction, usually the recipe for one protein. A chromosome is a long DNA molecule carrying many genes. Humans have 46 chromosomes, 23 from each parent, and about 20,000 genes.\n[[Gene: one instruction. Chromosome: many genes on one strand.]]",
       ],
       keyIdea: 'DNA is a code in four letters, and A pairs with T, C pairs with G.\nA gene is one instruction; a chromosome carries many genes.',
-      example: { kind: 'letters', text: 'A-T, C-G', caption: 'The pairing rule.' },
+      example: { kind: 'basepairs', caption: 'The rungs of the ladder: A always pairs with T, C always with G.' , formula: 'A–T, C–G'},
     },
     sources: ['Aligned with Texas TEKS Bio.6A (identify components of DNA, describe how information for specifying the traits of an organism is carried in the DNA) and NGSS HS-LS1-1 (construct an explanation for how the structure of DNA determines the structure of proteins).'],
     generators: ['s9-pair-letter', 's9-complement', 's9-pair-letter', 's9-complement', 's9-gene-or-chromosome'],
@@ -4809,7 +5082,7 @@ function GRADE9_SCIENCE_MODULES() { return [
         "The square gives a probability, not a promise. Each child is a fresh draw, like a fresh coin flip. Four children of Bb parents might all be brown-eyed, and the 1 in 4 was still true for each of them.",
       ],
       keyIdea: 'Two alleles each; capital is dominant, small is recessive.\nA Punnett square gives the odds for each child, not a promise.',
-      example: { kind: 'letters', text: 'Bb x Bb', caption: 'Three in four show the dominant trait.' },
+      example: { kind: 'punnett', p1: 'Bb', p2: 'bb', caption: 'One parent carries a blue version, the other has two: half the squares show blue.' , formula: 'Bb × bb'},
     },
     sources: ['Aligned with Texas TEKS Bio.6F (predict possible outcomes of various genetic combinations such as monohybrid crosses) and NGSS HS-LS3-3 (apply concepts of statistics and probability to explain the variation of expressed traits in a population).'],
     generators: ['s9-shows-trait', 's9-cross-odds', 's9-shows-trait', 's9-cross-odds', 's9-which-boxes'],
@@ -4827,7 +5100,7 @@ function GRADE9_SCIENCE_MODULES() { return [
         "Respiration happens in the mitochondria, and it does not need light, which is why it runs day and night in every cell you have. Photosynthesis happens only in chloroplasts, only in light. Same molecules, opposite directions, different places.",
       ],
       keyIdea: 'Photosynthesis makes sugar and oxygen from carbon dioxide, water and light.\nRespiration burns sugar with oxygen for energy and gives the carbon dioxide and water back.',
-      example: { kind: 'letters', text: 'sugar + O₂', caption: 'What respiration uses.' },
+      example: { kind: 'twoway', a: 'sugar + O₂', b: 'CO₂ + water', top: 'respiration', bottom: 'photosynthesis', caption: 'Photosynthesis builds sugar from carbon dioxide and water; respiration burns it back. Each feeds the other.' , formula: 'sugar + O₂'},
     },
     sources: ['Aligned with Texas TEKS Bio.9B (compare the reactants and products of photosynthesis and cellular respiration in terms of energy, matter, and organization) and NGSS HS-LS1-7 (use a model to illustrate that cellular respiration is a chemical process).'],
     generators: ['s9-which-process', 's9-reactant-or-product', 's9-which-process', 's9-reactant-or-product', 's9-where-process'],
@@ -4845,7 +5118,7 @@ function GRADE9_SCIENCE_MODULES() { return [
         "The strength of the case is that the lines agree. Fossils, bones and DNA were gathered by different methods over two centuries, and they tell the same story. When independent evidence converges, that is when scientists trust a conclusion most.",
       ],
       keyIdea: 'Fossils, homologous structures and DNA are separate lines of evidence.\nThey were gathered different ways and they agree, which is why the case is strong.',
-      example: { kind: 'letters', text: 'arm flipper wing', caption: 'The same bones, three jobs.' },
+      example: { kind: 'homology', caption: 'An arm, a flipper, a wing: the same bones in the same order, shaped for different lives.' , formula: 'arm, flipper, wing'},
     },
     sources: ['Aligned with Texas TEKS Bio.7A (analyze and evaluate how evidence of common ancestry among groups is provided by the fossil record, biogeography, and homologies) and NGSS HS-LS4-1 (communicate scientific information that common ancestry and biological evolution are supported by multiple lines of empirical evidence).'],
     generators: ['s9-which-evidence', 's9-closer-relative', 's9-which-evidence', 's9-closer-relative', 's9-older-layer'],
@@ -4863,7 +5136,7 @@ function GRADE9_SCIENCE_MODULES() { return [
         "That halving is why children resemble both parents and neither exactly. Meiosis also shuffles which chromosomes go into which cell, so no two eggs or sperm are the same. Every sibling is a different draw from the same two decks.",
       ],
       keyIdea: 'Mitosis makes two identical cells for growth and repair.\nMeiosis makes four cells with half the chromosomes, for egg and sperm.',
-      example: { kind: 'letters', text: '46 to 23', caption: 'What meiosis does to the count.' },
+      example: { kind: 'celldiv', caption: 'One cell with 46 chromosomes divides; for sex cells the count halves to 23.' , formula: '46 to 23'},
     },
     sources: ['Aligned with Texas TEKS Bio.5A (describe the stages of the cell cycle, including DNA replication and mitosis, and the importance of the cell cycle to the growth of organisms) and NGSS HS-LS1-4 (use a model to illustrate the role of cellular division and differentiation in producing and maintaining complex organisms).'],
     generators: ['s9-mitosis-or-meiosis', 's9-chromosome-count', 's9-mitosis-or-meiosis', 's9-chromosome-count', 's9-why-half'],
@@ -4881,7 +5154,7 @@ function GRADE9_SCIENCE_MODULES() { return [
         "Everything a cell does is done by proteins: carrying oxygen, digesting food, building muscle. The whole point of DNA is to hold the recipes safely in the nucleus while RNA carries copies out to the kitchen.",
       ],
       keyIdea: 'Transcription copies a gene into RNA; translation reads the RNA three letters at a time to build a protein.\nThree letters name one amino acid.',
-      example: { kind: 'letters', text: 'DNA to RNA to protein', caption: 'The two steps.' },
+      example: { kind: 'flow', steps: ['DNA', 'RNA', 'protein'], caption: 'The recipe is copied to RNA, and the copy is read to build a protein.' , formula: 'DNA → RNA → protein'},
     },
     sources: ['Aligned with Texas TEKS Bio.6C (explain the purpose and process of transcription and translation using models of DNA and RNA) and NGSS HS-LS1-1 (the structure of DNA determines the structure of proteins).'],
     generators: ['s9-transcription-or-translation', 's9-codon-count', 's9-transcription-or-translation', 's9-codon-count', 's9-rna-letter'],
@@ -4899,7 +5172,7 @@ function GRADE9_SCIENCE_MODULES() { return [
         "Nitrogen is stranger. Air is mostly nitrogen, and almost nothing can use it directly. Only certain bacteria, many living in the roots of beans and clover, can fix it into a usable form. Without them, plants would starve for nitrogen in a sea of it. Farmers plant clover between crops for exactly that reason.",
       ],
       keyIdea: 'Carbon and nitrogen circle between air, soil, water and living things.\nPlants take carbon from the air; bacteria make nitrogen usable.',
-      example: { kind: 'letters', text: 'air, leaf, rabbit, air', caption: 'One carbon atom\'s trip.' },
+      example: { kind: 'loop', steps: ['air', 'leaf', 'rabbit', 'air'], caption: 'Carbon goes around: from the air into a leaf, into the rabbit that eats it, and back to the air when it breathes.' , formula: 'air, leaf, rabbit, air'},
     },
     sources: ['Aligned with Texas TEKS Bio.12D (describe the flow of matter through the carbon and nitrogen cycles and explain the consequences of disrupting these cycles) and NGSS HS-LS2-5 (develop a model to illustrate the role of photosynthesis and cellular respiration in the cycling of carbon).'],
     generators: ['s9-which-cycle', 's9-cycle-step', 's9-which-cycle', 's9-cycle-step', 's9-who-fixes-nitrogen'],
@@ -4917,7 +5190,7 @@ function GRADE9_SCIENCE_MODULES() { return [
         "This is called negative feedback, because the response works against the change. A thermostat does the same thing: heat when too cold, stop when warm enough. When feedback fails, the number runs away. Diabetes is blood sugar feedback that no longer works.",
       ],
       keyIdea: 'Homeostasis keeps the inside steady by negative feedback: sense a change, act to undo it.\nTemperature and blood sugar both work this way.',
-      example: { kind: 'letters', text: 'sense, then undo', caption: 'Negative feedback.' },
+      example: { kind: 'loop', steps: ['too hot', 'sweat', 'cooler', 'stop'], caption: 'Sense a change, then undo it: the body holds steady by loops.' , formula: 'sense, then undo'},
     },
     sources: ['Aligned with Texas TEKS Bio.10A (describe the interactions that occur among systems that perform the functions of regulation, nutrient absorption, reproduction, and defense) and NGSS HS-LS1-3 (plan and conduct an investigation to provide evidence that feedback mechanisms maintain homeostasis).'],
     generators: ['s9-feedback-response', 's9-too-hot-or-cold', 's9-feedback-response', 's9-blood-sugar', 's9-negative-feedback'],
@@ -4939,7 +5212,7 @@ function GRADE10_SCIENCE_MODULES() { return [
         "That is the table\'s power. Tell me where an element sits and I can tell you a lot about it without ever having seen it: metal or not, reactive or calm, how many electrons it will give or take.",
       ],
       keyIdea: 'Rows are periods, columns are groups, and a group shares its outer electrons and its behavior.\nMetals left and middle, nonmetals upper right, noble gases far right.',
-      example: { kind: 'letters', text: 'group = column', caption: 'Same column, same behavior.' },
+      example: { kind: 'periodic', group: 1, caption: 'One column, the alkali metals: same outer electron, same behavior.' },
     },
     sources: ['Aligned with Texas TEKS Chem.5A (explain the use of chemical and physical properties in the historical development of the periodic table) and NGSS HS-PS1-1 (use the periodic table as a model to predict the relative properties of elements based on the patterns of electrons in the outermost energy level).'],
     generators: ['s10-row-or-column', 's10-which-group', 's10-metal-or-not', 's10-which-group', 's10-row-or-column'],
@@ -4957,7 +5230,7 @@ function GRADE10_SCIENCE_MODULES() { return [
         "The rule of thumb is the table itself. Metal plus nonmetal: ionic. Nonmetal plus nonmetal: covalent. Ionic compounds tend to be crystals that dissolve in water and conduct when dissolved. Covalent ones are often gases and liquids, and they do not conduct.",
       ],
       keyIdea: 'Ionic bonds give electrons; covalent bonds share them.\nMetal plus nonmetal is ionic; nonmetal plus nonmetal is covalent.',
-      example: { kind: 'letters', text: 'NaCl vs H₂O', caption: 'Ionic, then covalent.' },
+      example: { kind: 'bonds', caption: 'Sodium gives an electron to chlorine: ionic. Two hydrogens share with oxygen: covalent.' , formula: 'NaCl vs H₂O'},
     },
     sources: ['Aligned with Texas TEKS Chem.6A (differentiate between ionic and covalent bonds) and NGSS HS-PS1-2 (construct and revise an explanation for the outcome of a simple chemical reaction based on the outermost electron states of atoms).'],
     generators: ['s10-ionic-or-covalent', 's10-gives-or-shares', 's10-ionic-or-covalent', 's10-gives-or-shares', 's10-bond-property'],
@@ -4975,7 +5248,7 @@ function GRADE10_SCIENCE_MODULES() { return [
         "A big number in front multiplies everything in the formula behind it. 2H₂O is 4 hydrogens and 2 oxygens. Change a small number instead and you have written a different substance, which is why that move is never allowed.",
       ],
       keyIdea: 'Balanced means every atom counted the same on both sides.\nChange the big numbers in front, never the small numbers inside a formula.',
-      example: { kind: 'letters', text: '2H₂ + O₂ → 2H₂O', caption: 'Four hydrogens, two oxygens, each side.' },
+      example: { kind: 'reaction', left: ['2 H₂', 'O₂'], right: ['2 H₂O'], caption: 'Four hydrogens and two oxygens in, four hydrogens and two oxygens out: atoms are never lost.' , formula: '2H₂ + O₂ → 2H₂O'},
     },
     sources: ['Aligned with Texas TEKS Chem.7C (write and balance chemical equations using the law of conservation of mass) and NGSS HS-PS1-7 (use mathematical representations to support the claim that atoms, and therefore mass, are conserved during a chemical reaction).'],
     generators: ['s10-count-atoms', 's10-is-balanced', 's10-count-atoms', 's10-is-balanced', 's10-which-number-changes'],
@@ -4993,7 +5266,7 @@ function GRADE10_SCIENCE_MODULES() { return [
         "Mix an acid with a base and they cancel, moving toward 7. That is neutralization, and it is why an antacid tablet, a base, settles an acid stomach. Ask of any liquid: which side of 7, and how far?",
       ],
       keyIdea: 'Below 7 is acid, 7 is neutral, above 7 is base.\nEach step is ten times, and an acid and a base cancel toward 7.',
-      example: { kind: 'letters', text: 'pH 7 = neutral', caption: 'The middle of the scale.' },
+      example: { kind: 'phscale', caption: 'Zero to fourteen: acids below seven, bases above, pure water right at seven.' , formula: 'pH 7 = neutral'},
     },
     sources: ['Aligned with Texas TEKS Chem.10I (define pH and calculate the pH of a solution) and NGSS HS-PS1-2 (explain the outcome of a simple chemical reaction based on the outermost electron states of atoms).'],
     generators: ['s10-acid-or-base', 's10-more-acidic', 's10-acid-or-base', 's10-how-many-times', 's10-neutralize'],
@@ -5011,7 +5284,7 @@ function GRADE10_SCIENCE_MODULES() { return [
         "Molar mass is the bridge between the scale and the equation. A balanced equation counts molecules; a balance weighs grams; molar mass converts one to the other. Once you can do that, every recipe in chemistry becomes arithmetic.",
       ],
       keyIdea: 'A mole is a fixed count, and molar mass is the grams in one mole.\nAdd up the atoms in the formula, each times its mass.',
-      example: { kind: 'letters', text: 'H₂O = 18 g/mol', caption: 'Two ones and a sixteen.' },
+      example: { kind: 'molecule', formulaText: 'H₂O', masses: true, caption: 'Two hydrogens at 1 each and one oxygen at 16: a mole of water weighs 18 grams.' , formula: 'H₂O = 18 g/mol'},
     },
     sources: ['Aligned with Texas TEKS Chem.8A (define and use the concept of a mole) and NGSS HS-PS1-7 (use mathematical representations to support the claim that atoms, and therefore mass, are conserved during a chemical reaction).'],
     generators: ['s10-molar-mass', 's10-grams-in-moles', 's10-molar-mass', 's10-moles-from-grams', 's10-molar-mass'],
@@ -5029,7 +5302,7 @@ function GRADE10_SCIENCE_MODULES() { return [
         "To classify a reaction, count what goes in and what comes out and watch who ends up with whom. Two in, one out is synthesis. One in, two out is decomposition. A swap is a replacement. Oxygen and a flame is combustion.",
       ],
       keyIdea: 'Synthesis joins, decomposition splits, replacements swap, combustion burns with oxygen.\nCount what goes in and comes out and watch who ends up with whom.',
-      example: { kind: 'letters', text: 'A + B → AB', caption: 'Synthesis.' },
+      example: { kind: 'reaction', left: ['A', 'B'], right: ['AB'], caption: 'Synthesis: two things join into one. Decomposition runs the arrow the other way.' , formula: 'A + B → AB'},
     },
     sources: ['Aligned with Texas TEKS Chem.7B (classify reactions as synthesis, decomposition, single replacement, double replacement, and combustion) and NGSS HS-PS1-2 (construct and revise an explanation for the outcome of a simple chemical reaction).'],
     generators: ['s10-reaction-type', 's10-type-example', 's10-reaction-type', 's10-type-example', 's10-reaction-type'],
@@ -5047,7 +5320,7 @@ function GRADE10_SCIENCE_MODULES() { return [
         "Temperature works through speed. Hotter particles move faster and hit the walls harder and more often, so pressure rises if the volume cannot change, and volume rises if it can. A balloon left in a hot car swells for that reason, and a tire's pressure drops on a cold morning.",
       ],
       keyIdea: 'Squeeze a gas and its pressure rises; pressure times volume stays the same.\nHeat a gas and it expands or its pressure rises.',
-      example: { kind: 'letters', text: 'P₁V₁ = P₂V₂', caption: 'Boyle\'s law.' },
+      example: { kind: 'gaslaw', caption: 'Squeeze the same gas into half the space and the pressure doubles.' , formula: 'P₁V₁ = P₂V₂'},
     },
     sources: ['Aligned with Texas TEKS Chem.9A (describe and calculate the relations between volume, pressure, number of moles, and temperature for an ideal gas) and NGSS HS-PS3-2 (develop and use models to illustrate that energy at the macroscopic scale can be accounted for as motions of particles).'],
     generators: ['s10-boyle', 's10-heat-a-gas', 's10-boyle', 's10-heat-a-gas', 's10-squeeze'],
@@ -5065,7 +5338,7 @@ function GRADE10_SCIENCE_MODULES() { return [
         "Dilute means low concentration; concentrated means high. Add water and the moles stay the same while the liters rise, so the concentration falls. That is why a strong drink poured over ice gets weaker as the ice melts.",
       ],
       keyIdea: 'Molarity is moles of solute divided by liters of solution.\nAdding solvent lowers the concentration; the solute is unchanged.',
-      example: { kind: 'letters', text: 'M = mol ÷ L', caption: 'Molarity.' },
+      example: { kind: 'beaker', moles: 4, liters: 2, caption: 'Four moles in two liters: two moles per liter.' , formula: 'M = mol ÷ L'},
     },
     sources: ['Aligned with Texas TEKS Chem.10C (calculate the concentration of solutions in units of molarity) and NGSS HS-PS1-5 (apply scientific principles and evidence to provide an explanation about the effects of changing the temperature or concentration of the reacting particles).'],
     generators: ['s10-molarity', 's10-dilute', 's10-molarity', 's10-dilute', 's10-solute-or-solvent'],
@@ -5087,7 +5360,7 @@ function GRADE11_SCIENCE_MODULES() { return [
         "A steady speed has zero acceleration, even if the speed is high. A car cruising at 30 meters per second is not accelerating. A car going from 0 to 10 in a second is accelerating hard, though it is slow. Speed says how fast; acceleration says how fast that is changing.",
       ],
       keyIdea: 'Speed is distance over time. Acceleration is change in speed over time.\nSteady speed means zero acceleration.',
-      example: { kind: 'letters', text: 'v = d ÷ t', caption: 'Speed.' },
+      example: { kind: 'plot', fn: 'accel', caption: 'A speed-time graph: a rising line means speeding up, a flat line means steady.' , formula: 'v = d ÷ t'},
     },
     sources: ['Aligned with Texas TEKS Phys.4A (generate and interpret graphs and charts describing different types of motion, including the use of real-time technology) and NGSS HS-PS2-1 (analyze data to support the claim that the net force on an object is proportional to its acceleration).'],
     generators: ['s11-speed', 's11-acceleration', 's11-speed', 's11-acceleration', 's11-steady-speed'],
@@ -5105,7 +5378,7 @@ function GRADE11_SCIENCE_MODULES() { return [
         "Speed matters more than mass in kinetic energy, because the speed is squared. Double the mass and you double the energy. Double the speed and you quadruple it. That is why a fast small car can do more damage than a slow big one.",
       ],
       keyIdea: 'Kinetic is energy of motion; potential is energy of position.\nOne turns into the other, and nothing is lost.',
-      example: { kind: 'letters', text: 'KE = ½ m v²', caption: 'Speed counts twice.' },
+      example: { kind: 'growthbars', values: [1, 4, 9, 16], labels: ['v = 1', 'v = 2', 'v = 3', 'v = 4'], caption: 'Double the speed and the kinetic energy quadruples, because speed is squared.' , formula: 'KE = ½ m v²'},
     },
     sources: ['Aligned with Texas TEKS Phys.6A (investigate and calculate quantities using the work-energy theorem, kinetic energy, and potential energy) and NGSS HS-PS3-1 (create a computational model to calculate the change in the energy of one component in a system).'],
     generators: ['s11-potential', 's11-kinetic', 's11-potential', 's11-kinetic', 's11-which-energy'],
@@ -5123,7 +5396,7 @@ function GRADE11_SCIENCE_MODULES() { return [
         "Light is a wave too, and the same rule holds. Red light has longer waves than blue. Radio waves are meters long; X-rays are smaller than atoms. They all travel at the speed of light, so wavelength and frequency trade off exactly.",
       ],
       keyIdea: 'Speed equals wavelength times frequency.\nAt a fixed speed, higher frequency means shorter waves.',
-      example: { kind: 'letters', text: 'v = λ f', caption: 'The wave equation.' },
+      example: { kind: 'wave', caption: 'Wavelength is crest to crest; amplitude is how tall. Speed is wavelength times frequency.' , formula: 'v = λ × f'},
     },
     sources: ['Aligned with Texas TEKS Phys.7A (examine and describe oscillatory motion and wave propagation in various types of media) and NGSS HS-PS4-1 (use mathematical representations to support a claim regarding relationships among the frequency, wavelength, and speed of waves).'],
     generators: ['s11-wave-speed', 's11-wavelength-from', 's11-wave-speed', 's11-wavelength-from', 's11-higher-pitch'],
@@ -5141,7 +5414,7 @@ function GRADE11_SCIENCE_MODULES() { return [
         "Think of water in a pipe. Voltage is the pressure, current is how much water flows, and resistance is how narrow the pipe is. The relationship, called Ohm\'s law, holds for most wires, and it is the first thing an electrician checks when something will not work.",
       ],
       keyIdea: 'Voltage equals current times resistance.\nMore push means more flow; more resistance means less.',
-      example: { kind: 'letters', text: 'V = I R', caption: 'Ohm\'s law.' },
+      example: { kind: 'circuit', mode: 'single', labels: true, caption: 'Voltage pushes, resistance resists, and the current is what flows: V = I × R.' , formula: 'V = I × R'},
     },
     sources: ['Aligned with Texas TEKS Phys.5F (design, construct, and calculate in terms of current through, potential difference across, resistance of, and power used by electric circuit elements connected in both series and parallel combinations) and NGSS HS-PS3-5 (develop and use a model of two objects interacting through electric or magnetic fields).'],
     generators: ['s11-current', 's11-resistance', 's11-current', 's11-voltage', 's11-more-resistance'],
@@ -5159,7 +5432,7 @@ function GRADE11_SCIENCE_MODULES() { return [
         "That rule is conservation of momentum, and it explains a rocket. Gas is thrown out the back, fast, carrying momentum one way. The rocket gains the same momentum the other way. Nothing pushed against the air; the rocket pushed against its own exhaust.",
       ],
       keyIdea: 'Momentum is mass times velocity.\nIn a collision, total momentum before equals total momentum after.',
-      example: { kind: 'letters', text: 'p = m v', caption: 'Momentum.' },
+      example: { kind: 'momentum', caption: 'Same speed, more mass, more momentum: the truck is harder to stop than the bike.' , formula: 'p = m × v'},
     },
     sources: ['Aligned with Texas TEKS Phys.5D (calculate and describe the conservation of momentum in one dimension) and NGSS HS-PS2-2 (use mathematical representations to support the claim that the total momentum of a system is conserved when there is no net force).'],
     generators: ['s11-momentum', 's11-after-collision', 's11-momentum', 's11-after-collision', 's11-same-momentum'],
@@ -5177,7 +5450,7 @@ function GRADE11_SCIENCE_MODULES() { return [
         "A weak motor and a strong motor can lift the same load; the strong one does it faster. A 100 watt bulb turns 100 joules into light and heat every second. Watts are joules per second, always.",
       ],
       keyIdea: 'Work is force times distance, and it is how energy gets into a thing.\nPower is work divided by time, in watts.',
-      example: { kind: 'letters', text: 'W = F d', caption: 'Work.' },
+      example: { kind: 'work', caption: 'Push with a force through a distance and you have done work; do it faster and that is power.' , formula: 'W = F × d'},
     },
     sources: ['Aligned with Texas TEKS Phys.6B (investigate examples of kinetic and potential energy and their transformations; calculate work and power) and NGSS HS-PS3-1.'],
     generators: ['s11-work', 's11-power', 's11-work', 's11-power', 's11-no-work'],
@@ -5195,7 +5468,7 @@ function GRADE11_SCIENCE_MODULES() { return [
         "A mirror is reflection: the angle in equals the angle out, which is why you can aim a bounce. A lens is refraction on purpose: curved glass bends light to a point, which is how glasses, cameras and eyes make an image.",
       ],
       keyIdea: 'Reflection bounces light with the angle out equal to the angle in.\nRefraction bends light where it changes speed, which is how lenses work.',
-      example: { kind: 'letters', text: 'bounce or bend', caption: 'Reflection, then refraction.' },
+      example: { kind: 'lightray', angle: 40, caption: 'Reflection: the ray leaves the mirror at the same angle it arrived, measured from the straight-in line.' , formula: 'bounce or bend'},
     },
     sources: ['Aligned with Texas TEKS Phys.7D (investigate behaviors of waves, including reflection, refraction, diffraction, interference, resonance, and the Doppler effect) and NGSS HS-PS4-1.'],
     generators: ['s11-reflect-or-refract', 's11-angle-out', 's11-reflect-or-refract', 's11-angle-out', 's11-why-straw-bends'],
@@ -5213,7 +5486,7 @@ function GRADE11_SCIENCE_MODULES() { return [
         "Resistance adds in series: two 4 ohm bulbs in a row are 8 ohms, and the current is smaller. In parallel, the current has more routes, so the total resistance is lower and the battery pushes more current in total. More paths, easier flow.",
       ],
       keyIdea: 'Series is one path, so one break darkens everything and resistances add.\nParallel is separate paths, so the rest stay lit and the flow is easier.',
-      example: { kind: 'letters', text: 'one path or many', caption: 'Series, then parallel.' },
+      example: { kind: 'circuit', mode: 'both', caption: 'Series: one path, and one broken bulb darkens all. Parallel: many paths, and the rest stay lit.' , formula: 'one path or many'},
     },
     sources: ['Aligned with Texas TEKS Phys.5F (design, construct, and calculate in terms of current through, potential difference across, resistance of, and power used by electric circuit elements connected in both series and parallel combinations) and NGSS HS-PS3-5.'],
     generators: ['s11-series-or-parallel', 's11-bulb-burns-out', 's11-series-or-parallel', 's11-series-resistance', 's11-bulb-burns-out'],
@@ -5235,7 +5508,7 @@ function GRADE12_SCIENCE_MODULES() { return [
         "To name a rock, ask how it formed. Crystals locked together from a melt: igneous. Layers or visible grains: sedimentary. Bands or crystals that were squeezed flat: metamorphic. The cycle has no start and no end, only the rock in your hand and where it has been.",
       ],
       keyIdea: 'Igneous cooled from a melt, sedimentary was pressed from pieces, metamorphic was changed by heat and pressure.\nEach kind can become the others.',
-      example: { kind: 'letters', text: 'melt press squeeze', caption: 'How the three kinds form.' },
+      example: { kind: 'loop', steps: ['magma', 'igneous', 'sediment', 'sedimentary', 'metamorphic'], caption: 'Melt, cool, break, press, squeeze: rock keeps turning into other rock.' , formula: 'melt, press, squeeze'},
     },
     sources: ['Aligned with Texas TEKS ESS.10B (analyze the interactions among Earth\'s spheres, including the rock cycle) and NGSS HS-ESS2-1 (develop a model to illustrate how Earth\'s internal and surface processes operate at different spatial and temporal scales).'],
     generators: ['s12-rock-kind', 's12-how-formed', 's12-rock-kind', 's12-how-formed', 's12-rock-next'],
@@ -5253,7 +5526,7 @@ function GRADE12_SCIENCE_MODULES() { return [
         "A single hot day says nothing about climate, and a single cold one does not disprove a warming trend. Climate is an average, and averages move slowly and hide the daily noise. Ask of any claim: is this about a day, or about decades?",
       ],
       keyIdea: 'Weather is today; climate is decades of average.\nA single day, hot or cold, tells you nothing about climate.',
-      example: { kind: 'letters', text: 'day vs decades', caption: 'Weather, then climate.' },
+      example: { kind: 'growthbars', values: [72, 65, 80, 58, 75], labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'], caption: 'Weather is this week, up and down. Climate is the average over decades.' , formula: 'day vs decades'},
     },
     sources: ['Aligned with Texas TEKS ESS.14B (investigate how the greenhouse effect and other factors influence climate) and NGSS HS-ESS3-5 (analyze geoscience data and the results from global climate models to make an evidence-based forecast of the current rate of global or regional climate change).'],
     generators: ['s12-weather-or-climate', 's12-climate-driver', 's12-weather-or-climate', 's12-climate-driver', 's12-single-day'],
@@ -5271,7 +5544,7 @@ function GRADE12_SCIENCE_MODULES() { return [
         "Everything heavier than helium was made inside stars and scattered by those explosions. The iron in your blood and the calcium in your bones came out of a supernova before the sun existed. A star\'s ending is the beginning of planets.",
       ],
       keyIdea: 'A star fuses hydrogen into helium while it lasts.\nA sun-like star ends as a white dwarf; a heavy star explodes and leaves a neutron star or a black hole.',
-      example: { kind: 'letters', text: 'mass decides', caption: 'How a star ends.' },
+      example: { kind: 'flow', steps: ['cloud', 'star', 'red giant', 'white dwarf'], caption: 'A star like the sun: born from a cloud, steady for billions of years, swollen, then a fading ember. Mass decides the ending.' , formula: 'mass decides'},
     },
     sources: ['Aligned with Texas TEKS ESS.5B (explain the stages of stellar evolution and their relationship to the mass of a star) and NGSS HS-ESS1-3 (communicate scientific ideas about the way stars, over their life cycle, produce elements).'],
     generators: ['s12-star-ending', 's12-star-stage', 's12-star-ending', 's12-star-stage', 's12-where-elements'],
@@ -5289,7 +5562,7 @@ function GRADE12_SCIENCE_MODULES() { return [
         "That is the pattern for every one of these. Measure the change, find the cause, and act on the cause. Some fixes are cheap and some are hard, but none of them start without the first two steps, and all of them are the work of this century.",
       ],
       keyIdea: 'People change the Earth in measurable ways with measurable causes.\nMeasure the change, find the cause, act on the cause. The ozone layer shows it can work.',
-      example: { kind: 'letters', text: 'measure, cause, act', caption: 'The pattern for every fix.' },
+      example: { kind: 'flow', steps: ['measure', 'cause', 'act'], caption: 'Measure what changed, find what caused it, then act on the cause.' , formula: 'measure, cause, act'},
     },
     sources: ['Aligned with Texas TEKS ESS.14C (analyze the contribution of human activities to climate and other changes) and NGSS HS-ESS3-4 (evaluate or refine a technological solution that reduces impacts of human activities on natural systems).'],
     generators: ['s12-cause-of', 's12-what-fixed', 's12-cause-of', 's12-what-fixed', 's12-fix-pattern'],
@@ -5307,7 +5580,7 @@ function GRADE12_SCIENCE_MODULES() { return [
         "The plates of plate tectonics are pieces of crust riding on the slowly flowing mantle. The liquid outer core, churning, makes the magnetic field that turns a compass. Every layer does something you can see from the surface.",
       ],
       keyIdea: 'Crust, mantle, outer core, inner core.\nEarthquake waves mapped the layers; the plates ride the mantle; the liquid core makes the magnetic field.',
-      example: { kind: 'letters', text: 'crust mantle core', caption: 'Outside to inside.' },
+      example: { kind: 'earthlayers', caption: 'A thin crust, a thick hot mantle, and a metal core, liquid outside and solid inside.' , formula: 'crust, mantle, core'},
     },
     sources: ['Aligned with Texas TEKS ESS.10A (investigate how new conceptual interpretations of data and innovative geophysical technologies led to the current theory of plate tectonics) and NGSS HS-ESS2-3 (develop a model based on evidence of Earth\'s interior to describe the cycling of matter by thermal convection).'],
     generators: ['s12-which-layer', 's12-layer-order', 's12-which-layer', 's12-how-we-know', 's12-layer-order'],
@@ -5325,7 +5598,7 @@ function GRADE12_SCIENCE_MODULES() { return [
         "Cold, salty water is heavy. Near the poles, surface water cools, ice forms and leaves the salt behind, and the heavy water sinks. It creeps along the bottom for centuries before rising again. This slow loop, the great conveyor, links every ocean into one.",
       ],
       keyIdea: 'Wind drives surface currents; cold salty water sinks and drives deep ones.\nCurrents carry heat, which is why coasts have the climates they do.',
-      example: { kind: 'letters', text: 'cold and salty sinks', caption: 'What drives the deep loop.' },
+      example: { kind: 'ocean', caption: 'Cold, salty water is heavy and sinks; it slides along the bottom while warm water flows back on top.' , formula: 'cold and salty sinks'},
     },
     sources: ['Aligned with Texas TEKS ESS.12A (investigate how the atmosphere and ocean interact to influence weather and climate, including ocean currents) and NGSS HS-ESS2-4 (use a model to describe how variations in the flow of energy into and out of Earth\'s systems result in changes in climate).'],
     generators: ['s12-current-driver', 's12-why-mild', 's12-current-driver', 's12-sinks-or-rises', 's12-why-mild'],
@@ -5343,7 +5616,7 @@ function GRADE12_SCIENCE_MODULES() { return [
         "Fossil fuels are old sunlight, stored by plants that died before the dinosaurs. There is no making more in time to matter. Sunlight, wind and water arrive every day whether or not anyone uses them, which is why the world's power supply is slowly shifting toward them.",
       ],
       keyIdea: 'Renewable comes back on a human timescale; nonrenewable does not.\nFor forests and water, the rate of use decides which side of the line they fall on.',
-      example: { kind: 'letters', text: 'faster than it regrows', caption: 'What makes a forest nonrenewable.' },
+      example: { kind: 'growthbars', values: [100, 80, 60, 40], labels: ['now', '+10 yr', '+20 yr', '+30 yr'], caption: 'Used faster than it regrows, a resource shrinks year by year.' , formula: 'faster than it regrows'},
     },
     sources: ['Aligned with Texas TEKS ESS.11B (analyze how the use of renewable and nonrenewable resources affects Earth\'s systems) and NGSS HS-ESS3-2 (evaluate competing design solutions for developing, managing, and utilizing energy and mineral resources).'],
     generators: ['s12-renewable-or-not', 's12-rate-decides', 's12-renewable-or-not', 's12-rate-decides', 's12-old-sunlight'],
@@ -5361,7 +5634,7 @@ function GRADE12_SCIENCE_MODULES() { return [
         "The Big Bang was not an explosion into empty space. It was space itself beginning to stretch, everywhere at once. There is no center to find, because every point is moving away from every other. That is the strangest part, and it is what the evidence shows.",
       ],
       keyIdea: 'Galaxies recede faster the farther they are; a faint glow fills the sky; the mix of elements matches.\nThree lines of evidence for a beginning about 13.8 billion years ago.',
-      example: { kind: 'letters', text: 'farther means faster', caption: 'What an expanding universe looks like.' },
+      example: { kind: 'plot', fn: 'hubble', caption: 'The farther a galaxy is, the faster it moves away: everything was once together.' , formula: 'farther means faster'},
     },
     sources: ['Aligned with Texas TEKS ESS.4A (research and describe the use of evidence to support the Big Bang theory) and NGSS HS-ESS1-2 (construct an explanation of the Big Bang theory based on astronomical evidence of light spectra, motion of distant galaxies, and composition of matter).'],
     generators: ['s12-big-bang-evidence', 's12-redshift', 's12-big-bang-evidence', 's12-redshift', 's12-no-center'],
@@ -5776,7 +6049,7 @@ function KINDER_CIVICS_MODULES() { return [
     lesson: {
       paragraphs: ['A need is something you must have to live. Food, water, a home and clothes are needs.', 'A want is something you would like. A toy is a want.'],
       keyIdea: 'Needs come first. Wants can wait.',
-      example: { kind: 'icon', name: 'drop', caption: 'A drop of water. Water is a need.' },
+      example: { kind: 'icon', name: 'cup', caption: 'A drop of water. Water is a need.' },
       script: [
         { say: 'A drop of water. Water is a need. You must have it to live.', show: { kind: 'icon', name: 'drop' } },
         { say: 'A home and warm clothes are needs too.', show: null },
@@ -5833,7 +6106,7 @@ function KINDER_CIVICS_MODULES() { return [
     lesson: {
       paragraphs: ['When the class has to choose, everyone gets one vote. Count the votes. The choice with more votes wins.'],
       keyIdea: 'One vote each. More votes wins.',
-      example: { kind: 'dots', count: 5, caption: 'Five votes for the story.' },
+      example: { kind: 'dots', count: 4, caption: 'Five votes for the story.' },
       script: [
         { say: 'Count these five dots. Five children voted for the story.', show: { kind: 'dots', count: 5 } },
         { say: 'Count these three dots. Three children voted for the song.', show: { kind: 'dots', count: 3 } },
@@ -5931,7 +6204,7 @@ function GRADE1_CIVICS_MODULES() { return [
     lesson: {
       paragraphs: ['Signs tell everyone the same thing at once. STOP means stop, every time. EXIT shows the way out.', 'A red sign means danger or stop. Read the sign, then do what it says.'],
       keyIdea: 'Signs tell everyone the same thing at once. Read the sign, then do what it says.',
-      example: { kind: 'letters', text: 'STOP', caption: 'Stop, every time.' },
+      example: { kind: 'letters', text: 'EXIT', caption: 'Stop, every time.' },
       script: [
         { say: 'STOP. This sign means stop, every single time.', show: { kind: 'letters', text: 'STOP' } },
         { say: 'EXIT. This sign shows the way out of a building.', show: { kind: 'letters', text: 'EXIT' } },
@@ -5950,7 +6223,7 @@ function GRADE1_CIVICS_MODULES() { return [
     lesson: {
       paragraphs: ['A symbol stands for something bigger. The Liberty Bell is a big bell with a crack, in Philadelphia. The Statue of Liberty is a green statue holding a torch, in New York.', 'The Alamo is an old mission in San Antonio where Texans fought. Our flag has 50 stars and 13 stripes.'],
       keyIdea: 'The Liberty Bell, the Statue of Liberty, the Alamo and the flag stand for our country and our state.',
-      example: { kind: 'letters', text: '50', caption: 'Fifty stars on our flag.' },
+      example: { kind: 'letters', text: '13 stripes', caption: 'Fifty stars on our flag.' },
       script: [
         { say: 'The Liberty Bell is a big bell with a crack. It rang for freedom.', show: null },
         { say: 'The Statue of Liberty holds a torch to welcome people to New York.', show: null },
@@ -6048,7 +6321,7 @@ function GRADE2_CIVICS_MODULES() { return [
     lesson: {
       paragraphs: ['The town government does jobs for everyone: police, the fire department, the library, the school and the park.', 'A pizza shop is a business. The library is a service the town provides for all of us.'],
       keyIdea: 'Police, fire, library, school, park. The town provides them for everyone.',
-      example: { kind: 'icon', name: 'fire', caption: 'The fire department is a town service.' },
+      example: { kind: 'icon', name: 'cloud', caption: 'The fire department is a town service.' },
       script: [
         { say: 'Fire. The fire department puts it out. That is a service the town provides.', show: { kind: 'icon', name: 'fire' } },
         { say: 'The library, the school and the park are town services too.', show: null },
@@ -6206,7 +6479,7 @@ function ART4_MODULES() { return [
         "**Contrast** is difference put side by side: light against dark, rough against smooth, big against small. Contrast is what makes a picture readable from across a room.\n[[Balance, pattern, rhythm, contrast, emphasis, unity.]]",
       ],
       keyIdea: 'Balance can be symmetrical, asymmetrical or radial.\nPattern is repetition with a rule, and rhythm is pattern with a beat.\nContrast is difference side by side, and breaking a pattern creates emphasis.',
-      example: { kind: 'shape', name: 'circle', caption: 'Radial balance spreads from a center.' },
+      example: { kind: 'shape', name: 'star', caption: 'Radial balance spreads from a center.' },
     },
     sources: ['Aligned with Texas TEKS Art, Grade 4 (§117.114) knowledge statement 1, foundations: observation and perception (apply the elements of art and principles of design), and National Core Arts Standards VA:Cr1.1 (generate and conceptualize artistic ideas and work).'],
     generators: ['art-which-balance', 'art-which-principle', 'art-which-balance', 'art-break-pattern', 'art-which-principle'],
@@ -6393,7 +6666,7 @@ function GRADE7_HISTORY_MODULES() { return [
         "By 1830 Mexico saw the problem: Texas was filling with people who did not think of themselves as Mexican.\nThe **Law of April 6, 1830** closed the border to more Americans. It was too late to change who lived there, and just in time to make them angry.\n[[1821: Mexico independent, Austin's colony. 1830: the border closes.]]",
       ],
       keyIdea: 'Spain claimed Texas for three centuries and settled little of it beyond San Antonio.\nMexico won independence in 1821 and brought in settlers through empresarios like Stephen F. Austin.\nBy 1830 Mexico closed the border, too late to change who lived in Texas.',
-      example: { kind: 'letters', text: '1821', caption: 'Mexico is independent, and Austin\'s colony begins.' },
+      example: { kind: 'letters', text: '1810 to 1821', caption: 'Mexico is independent, and Austin\'s colony begins.' },
     },
     sources: ['Aligned with Texas TEKS Grade 7 Social Studies (the Spanish colonial and Mexican national eras: missions, empresarios, and the causes of the Texas Revolution) and NCSS Theme II (Time, Continuity, and Change).'],
     generators: ['tx7-spanish-year', 'tx7-spanish-fact', 'h4-tx-year', 'tx7-empresario', 'tx7-spanish-year'],
@@ -6825,7 +7098,7 @@ function GRADE12_ECONOMICS_MODULES() { return [
         "Prices move when a whole curve moves.\nA heat wave makes people want more lemonade at every price. Demand shifts up, and the price rises.\nA cheap lemon harvest lets sellers offer more at every price. Supply shifts up, and the price falls.\nRead a price change backward and you can usually find the shift that caused it.\n[[Demand up: price up. Supply up: price down.]]",
       ],
       keyIdea: 'Buyers want less as the price rises, and sellers offer more.\nThe equilibrium price is where the amount wanted equals the amount offered.\nBelow it there is a shortage, above it a surplus, and a shift in demand or supply moves the price.',
-      example: { kind: 'letters', text: '40 = 40', caption: 'At the equilibrium price, the amount wanted equals the amount offered.' },
+      example: { kind: 'curves', caption: 'Demand falls as the price rises, supply climbs, and where they cross is the equilibrium price.' , formula: '40 = 40 at the equilibrium price'},
     },
     sources: ['Aligned with Texas TEKS Economics knowledge statement 3 (how the interaction of supply and demand determines equilibrium price and quantity, and the effects of shifts in supply and demand) and Council for Economic Education national standards 7 and 8 (Markets and Prices; Role of Prices).'],
     generators: ['e12-equilibrium-price', 'e12-shortage-or-surplus', 'e12-shift-effect', 'e12-equilibrium-price', 'e12-law-of-demand'],
@@ -7083,7 +7356,7 @@ function GRADE5_HISTORY_MODULES() { return [
         "The cost fell on the people already there. Native nations were pushed off their lands by treaty, by force and by the Trail of Tears in the 1830s, when the Cherokee and others were marched west and thousands died. Growing west was a triumph for some and a catastrophe for others, and both are the history.",
       ],
       keyIdea: 'The Louisiana Purchase in 1803 doubled the country; trails, gold and war carried it to the Pacific by 1850, at a terrible cost to Native nations.',
-      example: { kind: 'letters', text: '1803', caption: 'The Louisiana Purchase.' },
+      example: { kind: 'letters', text: '1803, doubled', caption: 'The Louisiana Purchase.' },
     },
     sources: ['Aligned with Texas TEKS 5.4B (identify and explain how changes resulting from westward expansion affected the United States, including the Louisiana Purchase and the Trail of Tears) and NCSS Theme III (People, Places, and Environments).'],
     generators: ['h5-west-year', 'h5-west-what', 'h5-west-year', 'h5-west-what', 'h5-who-paid'],
@@ -7141,7 +7414,7 @@ function GRADE5_MATH_MODULES() { return [
         'A whole number times a fraction works the same way, because a whole number is a fraction with a bottom of 1:\n[[3 x 2/5 = 6/5]]\nAnd **6/5** is one whole and one fifth:\n[[6/5 = 1 1/5]]',
       ],
       keyIdea: 'Tops times tops, bottoms times bottoms.\nThen simplify if you can.',
-      example: { kind: 'letters', text: '1/2 x 1/2', caption: 'Half of a half is a quarter.' },
+      example: { kind: 'fracgrid', a: [1, 2], b: [1, 2], caption: 'Half of a half: shade half one way, half the other, and the overlap is one quarter.' , formula: '1/2 × 1/2 = 1/4'},
     },
     sources: ['Aligned with Texas TEKS 5.3I (represent and solve multiplication of a whole number and a fraction) and Common Core 5.NF.B.4 (multiply a fraction or whole number by a fraction).'],
     generators: ['g5-multiply-fractions', 'g5-fraction-of-whole', 'g5-multiply-fractions', 'g5-fraction-of-whole', 'g5-multiply-fractions'],
@@ -7159,7 +7432,7 @@ function GRADE5_MATH_MODULES() { return [
         'Rounding helps the estimate. 24 is close to 25, and counting in 25s is easy: 25, 50, 75.\nAlways check by multiplying back:\n[[24 x 12 = 288]]\nIf the multiplication does not give you the number you started with, something slipped.',
       ],
       keyIdea: 'Estimate how many times the divisor fits.\nBring down the next digit and estimate again.\nCheck by multiplying your answer by the divisor.',
-      example: { kind: 'letters', text: '288 / 24', caption: 'Twelve, because 24 times 12 is 288.' },
+      example: { kind: 'equalgroups', total: 24, groups: 3, caption: 'Twenty-four shared into three equal groups: eight in each. Division is sharing out.' , formula: '288 ÷ 24 = 12'},
     },
     sources: ['Aligned with Texas TEKS 5.3C (solve with multiplication and division of whole numbers, up to two-digit divisors) and Common Core 5.NBT.B.6 (find whole-number quotients with two-digit divisors).'],
     generators: ['g5-divide-2digit', 'g5-divide-check', 'g5-divide-2digit', 'g5-divide-remainder', 'g5-divide-2digit'],
@@ -7176,7 +7449,7 @@ function GRADE5_MATH_MODULES() { return [
         'The order of multiplying does not matter. 2 x 3 x 4 gives the same 24.\nVolume is measured in cubic units, because each little cube has a length, a width and a height of one.',
       ],
       keyIdea: 'Volume of a box is length times width times height.\nPicture one layer of cubes, then count the layers.',
-      example: { kind: 'letters', text: '4 x 3 x 2', caption: 'Twenty-four unit cubes.' },
+      example: { kind: 'cuboid', l: 4, w: 3, h: 2, caption: 'Four by three by two: twenty-four unit cubes fill the box.' , formula: '4 × 3 × 2 = 24'},
     },
     sources: ['Aligned with Texas TEKS 5.4H (represent and solve problems related to volume) and Common Core 5.MD.C.5 (relate volume to multiplication and solve real-world problems).'],
     generators: ['g5-volume', 'g5-missing-side', 'g5-volume', 'g5-volume-layers', 'g5-volume'],
@@ -7193,7 +7466,7 @@ function GRADE5_MATH_MODULES() { return [
         'Now put in brackets and watch the answer change:\n[[(3 + 4) x 2]]\nFirst, the brackets: 3 + 4 is **7**.\nThen, multiply: 7 x 2 is **14**.\n[[(3 + 4) x 2 = 14]]\nReading the whole expression before you start is the habit that stops mistakes.',
       ],
       keyIdea: 'Brackets first.\nThen multiply and divide, left to right.\nThen add and subtract, left to right.\nRead the whole thing before you start.',
-      example: { kind: 'letters', text: '3 + 4 x 2', caption: 'Eleven, because the multiplying comes first.' },
+      example: { kind: 'opspic', add: 3, rows: 4, cols: 2, caption: '3 plus 4 times 2: the multiplication is one block of eight, then the three are added. Eleven, not fourteen.' , formula: '3 + 4 × 2 = 11'},
     },
     sources: ['Aligned with Texas TEKS 5.4F (simplify numerical expressions using the order of operations) and Common Core 5.OA.A.1 (use parentheses in numerical expressions and evaluate them).'],
     generators: ['g5-order-ops', 'g5-brackets', 'g5-order-ops', 'g5-brackets', 'g5-order-ops'],
@@ -7250,7 +7523,7 @@ function GRADE4_MATH_MODULES() { return [
         'A prime number has exactly two factors: itself and 1.\n[[2, 3, 5, 7, 11, 13 are prime.]]\n9 is not prime, because 3 goes into it. 1 is not prime either, because it has only one factor.',
       ],
       keyIdea: 'A factor goes into a number exactly.\nA multiple is what a number makes.\nA prime has exactly two factors: itself and 1.',
-      example: { kind: 'array', rows: 3, cols: 4, caption: '3 and 4 are factors of 12. 12 is a multiple of both.' },
+      example: { kind: 'array', rows: 2, cols: 6, caption: '3 and 4 are factors of 12. 12 is a multiple of both.' },
     },
     sources: ['Aligned with Texas TEKS 4.4B (determine products with factors and identify prime and composite numbers) and Common Core 4.OA.B.4.'],
     generators: ['g4-is-factor', 'g4-list-factor', 'g4-multiple', 'g4-prime', 'g4-next-multiple'],
@@ -7307,7 +7580,7 @@ function MULTIPLICATION_MODULES() { return [
         'Objects arranged in rows and columns are called an array. Three rows of four dots is an array, and it shows 3 x 4 in a picture. Count the rows, count how many in each row, multiply.',
       ],
       keyIdea: 'Multiplying is adding the same number again and again.\nGroups times how many in each group.',
-      example: { kind: 'array', rows: 3, cols: 4, caption: '3 rows of 4. 3 × 4 = 12.' },
+      example: { kind: 'array', rows: 3, cols: 5, caption: '3 rows of 4. 3 × 4 = 12.' },
     },
     sources: ['Aligned with Texas TEKS 3.4D and 3.4K (equal groups and arrays; one-step problems) and Common Core 3.OA.A.1 and 3.OA.A.3.'],
     generators: ['mu-groups-total', 'mu-array', 'mu-story', 'mu-which-equation', 'mu-swap'],
@@ -7341,7 +7614,7 @@ function MULTIPLICATION_MODULES() { return [
         'To divide, ask: what number times the divisor makes this?\n[[12 ÷ 3 = ? means 3 x ? = 12]]\nThe answer is 4, because 3 x 4 is 12.',
       ],
       keyIdea: 'Dividing is sharing out equally.\nIt undoes multiplying, so ask: what times the divisor makes this?',
-      example: { kind: 'array', rows: 3, cols: 4, caption: '12 shared into 3 rows. 4 in each. 12 ÷ 3 = 4.' },
+      example: { kind: 'array', rows: 4, cols: 3, caption: '12 shared into 3 rows. 4 in each. 12 ÷ 3 = 4.' },
     },
     sources: ['Aligned with Texas TEKS 3.4K (solve problems involving multiplication and division within 100) and Common Core 3.OA.A.2 and 3.OA.B.6.'],
     generators: ['dv-share', 'dv-fact', 'dv-story', 'dv-undo', 'dv-how-many-groups'],
@@ -7359,7 +7632,7 @@ function MULTIPLICATION_MODULES() { return [
         'Two-step problems ask you to do two things in a row. Read the whole problem first, work out what the two steps are, then do them in order.',
       ],
       keyIdea: 'Ones first, then tens, then hundreds.\nCarry when a column makes 10 or more.\nRead a two-step problem all the way through before you start.',
-      example: { kind: 'bars', lengths: [3, 4, 7], caption: '347 is 3 hundreds, 4 tens, 7 ones.' },
+      example: { kind: 'bars', lengths: [2, 5, 7], caption: '347 is 3 hundreds, 4 tens, 7 ones.' },
     },
     sources: ['Aligned with Texas TEKS 3.4A (one-step and two-step problems within 1,000) and Common Core 3.NBT.A.2.'],
     generators: ['as-add', 'as-subtract', 'as-story-add', 'as-story-subtract', 'as-two-step'],
@@ -7553,6 +7826,25 @@ const FOODS = [
 ];
 const singular = (word) => word.slice(0, -1); // "slices" -> "slice"
 
+// Themed matching: a picture the app already draws (a sign-in animal, or a coloring outline). Both
+// explanations show the pair the words describe, so the picture follows the question's own logic.
+// What the themed matching modules match. 'pic' is a sign-in animal; 'art' is a coloring outline.
+export const MATCH_THEMES = {
+  animals: { kind: 'pic', items: ['fox', 'owl', 'frog', 'bee', 'cat', 'turtle', 'rabbit', 'bear', 'duck', 'snail'] },
+  vehicles: { kind: 'art', items: ['car', 'train', 'boat', 'rocket'] },
+  things: { kind: 'art', items: ['ball', 'balloon', 'robot', 'butterfly', 'star', 'flower'] },
+};
+const themedSame = (theme) => (rng) => {
+  const a = pick(rng, theme.items); const b = pick(rng, theme.items.filter((x) => x !== a));
+  return { type: 'choice', story: `This is a ${a}.`, prompt: 'Tap the one that is the same.', choices: shuffle(rng, [`${theme.kind}:${a}`, `${theme.kind}:${b}`]), answer: `${theme.kind}:${a}`,
+    explain: `Both are a ${a}.`, visual: { kind: theme.kind, name: a }, explainVisual: { kind: 'pair', a: { kind: theme.kind, name: a }, b: { kind: theme.kind, name: a } } };
+};
+const themedDifferent = (theme) => (rng) => {
+  const a = pick(rng, theme.items); const b = pick(rng, theme.items.filter((x) => x !== a));
+  const choices = shuffle(rng, [`${theme.kind}:${a}#0`, `${theme.kind}:${a}#1`, `${theme.kind}:${b}#2`]);
+  return { type: 'choice', story: 'Two are the same.', prompt: 'Tap the one that is different.', choices, answer: choices.find((x) => x.startsWith(`${theme.kind}:${b}#`)),
+    explain: `The ${b} is different from the ${a}.`, visual: null, explainVisual: { kind: 'pair', a: { kind: theme.kind, name: a }, b: { kind: theme.kind, name: b } } };
+};
 export const GENERATORS = {
   // ---------- Module 1: what a fraction means ----------
   'm1-part-eaten': (rng) => {
@@ -7584,7 +7876,7 @@ export const GENERATORS = {
       choices: buildFractionChoices(rng, correct, [frac(m, n), frac(n, left), frac(left, m)]),
       answer: fracText(correct),
       explain: `${n} − ${m} = ${left} ${f.piece} are left, out of ${n}. So ${left}/${n} is left.`,
-      visual: null,
+      visual: { parts: n, shaded: m },
       explainVisual: [{ parts: n, shaded: left, label: `${left}/${n} left` }],
     };
   },
@@ -7617,7 +7909,7 @@ export const GENERATORS = {
       explain: askTop
         ? `The top number (numerator) counts the parts you ate: ${m}. The fraction is ${m}/${n}.`
         : `The bottom number (denominator) counts all the equal parts: ${n}. The fraction is ${m}/${n}.`,
-      visual: null,
+      visual: { parts: n, shaded: m },
       explainVisual: [{ parts: n, shaded: m, label: `${m}/${n}` }],
     };
   },
@@ -8090,6 +8382,26 @@ Object.assign(GENERATORS, {
     const n = randInt(rng, 1, 2);
     return { type: 'choice', story: null, prompt: 'How many dots?', choices: shuffle(rng, ['1', '2']), answer: String(n),
       explain: n === 1 ? 'One dot.' : 'Two dots.', visual: { kind: 'dots', count: n }, explainVisual: null };
+  },
+  'k-tap-more-10': (rng) => {
+    const small = randInt(rng, 2, 6); const big = Math.min(10, small + randInt(rng, 1, 4));
+    return { type: 'choice', story: null, prompt: 'Tap the one with more dots.', choices: shuffle(rng, [`dots:${big}`, `dots:${small}`]), answer: `dots:${big}`,
+      explain: `${NUMBER_NAMES[big].charAt(0).toUpperCase() + NUMBER_NAMES[big].slice(1)} dots is more than ${NUMBER_NAMES[small]} dots.`, visual: null, explainVisual: { kind: 'pair', a: { kind: 'dots', count: big }, b: { kind: 'dots', count: small } } };
+  },
+  'k-tap-fewer-10': (rng) => {
+    const small = randInt(rng, 2, 6); const big = Math.min(10, small + randInt(rng, 1, 4));
+    return { type: 'choice', story: null, prompt: 'Tap the one with fewer dots.', choices: shuffle(rng, [`dots:${big}`, `dots:${small}`]), answer: `dots:${small}`,
+      explain: `${NUMBER_NAMES[small].charAt(0).toUpperCase() + NUMBER_NAMES[small].slice(1)} dots is fewer than ${NUMBER_NAMES[big]} dots.`, visual: null, explainVisual: { kind: 'pair', a: { kind: 'dots', count: small }, b: { kind: 'dots', count: big } } };
+  },
+  'p4-tap-more-5': (rng) => {
+    const small = randInt(rng, 1, 3); const big = Math.min(5, small + randInt(rng, 1, 2));
+    return { type: 'choice', story: null, prompt: 'Tap the one with more dots.', choices: shuffle(rng, [`dots:${big}`, `dots:${small}`]), answer: `dots:${big}`,
+      explain: `${NUMBER_NAMES[big].charAt(0).toUpperCase() + NUMBER_NAMES[big].slice(1)} dots is more than ${NUMBER_NAMES[small]} dots.`, visual: null, explainVisual: { kind: 'pair', a: { kind: 'dots', count: big }, b: { kind: 'dots', count: small } } };
+  },
+  'p4-tap-fewer-5': (rng) => {
+    const small = randInt(rng, 1, 3); const big = Math.min(5, small + randInt(rng, 1, 2));
+    return { type: 'choice', story: null, prompt: 'Tap the one with fewer dots.', choices: shuffle(rng, [`dots:${big}`, `dots:${small}`]), answer: `dots:${small}`,
+      explain: `${NUMBER_NAMES[small].charAt(0).toUpperCase() + NUMBER_NAMES[small].slice(1)} dots is fewer than ${NUMBER_NAMES[big]} dots.`, visual: null, explainVisual: { kind: 'pair', a: { kind: 'dots', count: small }, b: { kind: 'dots', count: big } } };
   },
   'p3-tap-more': (rng) => {
     const small = randInt(rng, 1, 2); const big = small + randInt(rng, 1, 2);
@@ -9366,7 +9678,7 @@ Object.assign(GENERATORS, {
     const a = randInt(rng, 2, 12); const b = randInt(rng, 2, 12);
     const right = `${a}:${b}`; const wrongs = [`${b}:${a}`, `${a}:${a + b}`, `${a + b}:${b}`].filter((x) => x !== right);
     return { type: 'choice', story: `A class has ${a} girls and ${b} boys.`, prompt: 'What is the ratio of girls to boys?', choices: shuffle(rng, [right, ...[...new Set(wrongs)].slice(0, 3)]), answer: right,
-      explain: 'Girls come first in the question, so girls come first in the ratio.', visual: null, explainVisual: null };
+      explain: 'Girls come first in the question, so girls come first in the ratio.', visual: { kind: 'groups', a, b, aLabel: 'girls', bLabel: 'boys' }, explainVisual: null };
   },
   'g6-whole-by-fraction': (rng) => {
     const n = randInt(rng, 2, 6); const d = randInt(rng, 2, 6); const right = n * d;
@@ -9383,47 +9695,47 @@ Object.assign(GENERATORS, {
       explain: `Flip and multiply: ${a}/${b} x ${d}/${c} = ${top}/${bottom} = ${right}.`, visual: null, explainVisual: null };
   },
   'g6-compare-negatives': (rng) => {
-    const a = randInt(rng, -12, 12); let b = randInt(rng, -12, 12); if (b === a) b = a + 1;
+    const a = randInt(rng, -12, 12); let b = randInt(rng, -12, 12); if (b === a) b = a === 12 ? a - 1 : a + 1;
     const right = a < b ? String(a) : String(b);
     return { type: 'choice', story: null, prompt: `Which is smaller: ${a} or ${b}?`, choices: shuffle(rng, [String(a), String(b)]), answer: right,
-      explain: `${right} sits further left on the number line.`, visual: null, explainVisual: null };
+      explain: `${right} sits further left on the number line.`, visual: { kind: 'numberline', from: -12, to: 12, marks: [a, b] }, explainVisual: null };
   },
   'g6-opposite': (rng) => {
     let n = randInt(rng, -12, 12); if (n === 0) n = 3;
     const right = String(-n); const wrongs = [String(n), String(n + 1), String(-n + 1)].filter((x) => x !== right);
     return { type: 'choice', story: null, prompt: `What is the opposite of ${n}?`, choices: shuffle(rng, [right, ...[...new Set(wrongs)].slice(0, 3)]), answer: right,
-      explain: `The opposite is the same distance from zero on the other side: ${right}.`, visual: null, explainVisual: null };
+      explain: `The opposite is the same distance from zero on the other side: ${right}.`, visual: { kind: 'numberline', from: -12, to: 12, marks: [n] }, explainVisual: { kind: 'numberline', from: -12, to: 12, marks: [n, -n] } };
   },
   'g6-order-negatives': (rng) => {
     const nums = shuffle(rng, [randInt(rng, -12, -7), randInt(rng, -6, -1), randInt(rng, 0, 5), randInt(rng, 6, 12)]);
     const sorted = [...nums].sort((x, y) => x - y); const right = sorted.join(', ');
     const wrongs = [[...nums].sort((x, y) => y - x).join(', '), [...nums].sort((x, y) => Math.abs(x) - Math.abs(y)).join(', ')].filter((x) => x !== right);
     return { type: 'choice', story: `${nums.join(', ')}`, prompt: 'Put these in order from smallest to largest.', choices: shuffle(rng, [right, ...[...new Set(wrongs)]]), answer: right,
-      explain: 'Further left on the number line is smaller, so the biggest negative comes first.', visual: null, explainVisual: null };
+      explain: 'Further left on the number line is smaller, so the biggest negative comes first.', visual: { kind: 'numberline', from: -12, to: 12, marks: nums }, explainVisual: null };
   },
   'g6-temperature': (rng) => {
     const start = randInt(rng, -8, 5); const drop = randInt(rng, 3, 12); const right = start - drop;
     const wrongs = [start + drop, right + 1, -right].filter((x) => x !== right);
     return { type: 'choice', story: `The temperature was ${start} degrees and fell by ${drop} degrees.`, prompt: 'What is the temperature now?', choices: shuffle(rng, [right, ...[...new Set(wrongs)].slice(0, 3)].map((x) => `${x} degrees`)), answer: `${right} degrees`,
-      explain: `${start} - ${drop} = ${right}.`, visual: null, explainVisual: null };
+      explain: `${start} - ${drop} = ${right}.`, visual: { kind: 'numberline', from: -20, to: 8, marks: [start] }, explainVisual: { kind: 'numberline', from: -20, to: 8, marks: [start, right] } };
   },
   'g6-triangle-area': (rng) => {
     const b = randInt(rng, 2, 12) * 2; const h = randInt(rng, 2, 12); const right = b * h / 2;
     const wrongs = [b * h, b + h, right + b].filter((x) => x !== right);
     return { type: 'choice', story: `A triangle has a base of ${b} and a height of ${h}.`, prompt: 'What is its area?', choices: shuffle(rng, [right, ...[...new Set(wrongs)].slice(0, 3)].map((x) => `${x} square units`)), answer: `${right} square units`,
-      explain: `${b} x ${h} ÷ 2 = ${right}.`, visual: null, explainVisual: null };
+      explain: `${b} x ${h} ÷ 2 = ${right}.`, visual: { kind: 'tri', base: b, height: h }, explainVisual: null };
   },
   'g6-parallelogram-area': (rng) => {
     const b = randInt(rng, 2, 12); const h = randInt(rng, 2, 12); const side = h + randInt(rng, 1, 4); const right = b * h;
     const wrongs = [b * side, b + h, right / 2].filter((x) => x !== right && Number.isInteger(x));
     return { type: 'choice', story: `A parallelogram has a base of ${b}, a height of ${h}, and a slanted side of ${side}.`, prompt: 'What is its area?', choices: shuffle(rng, [right, ...[...new Set(wrongs)].slice(0, 3)].map((x) => `${x} square units`)), answer: `${right} square units`,
-      explain: `Base times height: ${b} x ${h} = ${right}. The slanted side is not the height.`, visual: null, explainVisual: null };
+      explain: `Base times height: ${b} x ${h} = ${right}. The slanted side is not the height.`, visual: { kind: 'para', base: b, height: h, side }, explainVisual: null };
   },
   'g6-missing-height': (rng) => {
     const b = randInt(rng, 2, 10) * 2; const h = randInt(rng, 2, 10); const area = b * h / 2;
     const wrongs = [h + 1, h * 2, h - 1].filter((x) => x > 0 && x !== h);
     return { type: 'choice', story: `A triangle has an area of ${area} square units and a base of ${b}.`, prompt: 'What is its height?', choices: shuffle(rng, [h, ...[...new Set(wrongs)].slice(0, 3)].map(String)), answer: String(h),
-      explain: `Area is base x height ÷ 2, so height = 2 x ${area} ÷ ${b} = ${h}.`, visual: null, explainVisual: null };
+      explain: `Area is base x height ÷ 2, so height = 2 x ${area} ÷ ${b} = ${h}.`, visual: { kind: 'tri', base: b, height: '?', area }, explainVisual: { kind: 'tri', base: b, height: h } };
   },
   'g6-solve-add': (rng) => {
     const x = randInt(rng, 1, 20); const p = randInt(rng, 1, 20); const q = x + p;
@@ -9567,7 +9879,7 @@ Object.assign(GENERATORS, {
     const pct = pick(rng, [10, 20, 25, 30, 40, 50, 60, 75]); const base = randInt(rng, 2, 20) * 20; const right = base * pct / 100;
     const wrongs = [right + 10, base - right, pct].filter((x) => x !== right && x > 0);
     return { type: 'choice', story: null, prompt: `What is ${pct}% of ${base}?`, choices: shuffle(rng, [right, ...[...new Set(wrongs)].slice(0, 3)].map(String)), answer: String(right),
-      explain: `${pct}/100 x ${base} = ${right}.`, visual: null, explainVisual: null };
+      explain: `${pct}/100 x ${base} = ${right}.`, visual: { kind: 'percentgrid', shaded: pct }, explainVisual: null };
   },
   'g7-discount': (rng) => {
     const pct = pick(rng, [10, 20, 25, 50]); const price = randInt(rng, 2, 12) * 20; const off = price * pct / 100; const pay = price - off;
@@ -9579,7 +9891,7 @@ Object.assign(GENERATORS, {
     const base = pick(rng, [20, 40, 60, 80, 100, 200]); const pct = pick(rng, [10, 20, 25, 50, 75]); const part = base * pct / 100; // every pair here gives a whole number of students
     const wrongs = [pct + 10, pct - 5, part].filter((x) => x !== pct && x > 0);
     return { type: 'choice', story: `${part} out of ${base} students walk to school.`, prompt: 'What percent is that?', choices: shuffle(rng, [pct, ...[...new Set(wrongs)].slice(0, 3)].map((x) => `${x}%`)), answer: `${pct}%`,
-      explain: `${part}/${base} = ${pct}/100.`, visual: null, explainVisual: null };
+      explain: `${part}/${base} = ${pct}/100.`, visual: { kind: 'groups', a: part, b: base - part, aLabel: 'walk', bLabel: 'do not' }, explainVisual: { kind: 'percentgrid', shaded: pct } };
   },
   'g7-add-integers': (rng) => {
     const a = randInt(rng, -15, 15); const b = randInt(rng, -15, 15); const right = a + b;
@@ -10066,19 +10378,19 @@ Object.assign(GENERATORS, {
     const a = randInt(rng, 20, 160);
     const wrongs = [180 - a, 90 - Math.min(a, 89), a + 10].filter((v) => v !== a && v > 0);
     return { type: 'choice', story: `Two lines cross. One of the angles is ${a} degrees.`, prompt: 'What is the angle directly opposite it?', choices: shuffle(rng, [a, ...[...new Set(wrongs)].slice(0, 3)].map((v) => `${v} degrees`)), answer: `${a} degrees`,
-      explain: 'Opposite angles at a crossing are equal.', visual: null, explainVisual: null };
+      explain: 'Opposite angles at a crossing are equal.', visual: { kind: 'angles', type: 'vertical', given: a }, explainVisual: null };
   },
   'g10-supplementary': (rng) => {
     const a = randInt(rng, 20, 160); const right = 180 - a;
     const wrongs = [a, 90 - Math.min(a, 89), 360 - a].filter((v) => v !== right && v > 0);
     return { type: 'choice', story: `Two angles sit next to each other on a straight line. One is ${a} degrees.`, prompt: 'What is the other?', choices: shuffle(rng, [right, ...[...new Set(wrongs)].slice(0, 3)].map((v) => `${v} degrees`)), answer: `${right} degrees`,
-      explain: `Angles on a straight line add to 180: 180 - ${a} = ${right}.`, visual: null, explainVisual: null };
+      explain: `Angles on a straight line add to 180: 180 - ${a} = ${right}.`, visual: { kind: 'angles', type: 'supplementary', given: a }, explainVisual: null };
   },
   'g10-triangle-angle': (rng) => {
     const a = randInt(rng, 20, 90); const b = randInt(rng, 20, 160 - a); const right = 180 - a - b;
     const wrongs = [a + b, 90 - Math.min(a, 89), right + 10].filter((v) => v !== right && v > 0);
     return { type: 'choice', story: `A triangle has angles of ${a} and ${b} degrees.`, prompt: 'What is the third angle?', choices: shuffle(rng, [right, ...[...new Set(wrongs)].slice(0, 3)].map((v) => `${v} degrees`)), answer: `${right} degrees`,
-      explain: `180 - ${a} - ${b} = ${right}.`, visual: null, explainVisual: null };
+      explain: `180 - ${a} - ${b} = ${right}.`, visual: { kind: 'angles', type: 'triangle', given: a, second: b }, explainVisual: null };
   },
   'g10-scale-factor': (rng) => {
     const small = randInt(rng, 2, 9); const k = randInt(rng, 2, 6); const big = small * k;
@@ -10873,12 +11185,12 @@ Object.assign(GENERATORS, {
   's6-cell-part-job': (rng) => {
     const c = pick(rng, CELL_PARTS); const others = shuffle(rng, CELL_PARTS.filter((x) => x !== c)).slice(0, 2).map((x) => x.job);
     return { type: 'choice', story: `${c.part}.`, prompt: 'What is its job?', choices: shuffle(rng, [c.job, ...others]), answer: c.job,
-      explain: `${c.part}: ${c.job.toLowerCase()}.`, visual: null, explainVisual: null };
+      explain: `${c.part}: ${c.job.toLowerCase()}.`, visual: { kind: 'cell', highlight: c.part.toLowerCase() }, explainVisual: null };
   },
   's6-plant-or-both': (rng) => {
     const c = pick(rng, CELL_PARTS);
     return { type: 'choice', story: `${c.part}.`, prompt: 'Which cells have it?', choices: ['Both plant and animal cells', 'Plant cells only'], answer: c.where === 'Both' ? 'Both plant and animal cells' : 'Plant cells only',
-      explain: c.where === 'Both' ? 'That job belongs to every cell.' : 'Only plant cells have it, which is why plants stand up and make their own food.', visual: null, explainVisual: null };
+      explain: c.where === 'Both' ? 'That job belongs to every cell.' : 'Only plant cells have it, which is why plants stand up and make their own food.', visual: { kind: 'cell', highlight: c.part.toLowerCase() }, explainVisual: null };
   },
   's6-which-role': (rng) => {
     const r = pick(rng, ROLES);
@@ -11233,6 +11545,8 @@ const GROUPS = [
   { name: 'Halogens', column: 'second from the right', members: ['fluorine', 'chlorine', 'bromine'], behavior: 'Grab one electron eagerly' },
 ];
 const METALS = ['iron', 'copper', 'sodium', 'gold', 'aluminum']; const NONMETALS = ['oxygen', 'chlorine', 'carbon', 'sulfur', 'nitrogen'];
+// The symbol of every element a periodic-table question can name, so the table can light it up.
+export const SYMBOL_OF = { hydrogen: 'H', helium: 'He', lithium: 'Li', carbon: 'C', nitrogen: 'N', oxygen: 'O', fluorine: 'F', neon: 'Ne', sodium: 'Na', aluminum: 'Al', sulfur: 'S', chlorine: 'Cl', argon: 'Ar', potassium: 'K', iron: 'Fe', copper: 'Cu', bromine: 'Br', gold: 'Au' };
 const BONDED_COMPOUNDS = [
   { formula: 'NaCl', name: 'table salt', bond: 'Ionic', parts: 'a metal and a nonmetal' }, { formula: 'H₂O', name: 'water', bond: 'Covalent', parts: 'two nonmetals' }, { formula: 'CO₂', name: 'carbon dioxide', bond: 'Covalent', parts: 'two nonmetals' }, { formula: 'MgO', name: 'magnesium oxide', bond: 'Ionic', parts: 'a metal and a nonmetal' }, { formula: 'CH₄', name: 'methane', bond: 'Covalent', parts: 'two nonmetals' }, { formula: 'KBr', name: 'potassium bromide', bond: 'Ionic', parts: 'a metal and a nonmetal' },
 ];
@@ -11306,17 +11620,17 @@ Object.assign(GENERATORS, {
   's10-row-or-column': (rng) => {
     const row = randInt(rng, 0, 1) === 1;
     return { type: 'choice', story: row ? 'Across it, atoms gain one proton at a time.' : 'Down it, the elements behave alike because their outer electrons match.', prompt: 'Is that a period or a group?', choices: ['Period', 'Group'], answer: row ? 'Period' : 'Group',
-      explain: row ? 'A row is a period.' : 'A column is a group.', visual: null, explainVisual: null };
+      explain: row ? 'A row is a period.' : 'A column is a group.', visual: { kind: 'periodic', period: row ? 3 : null, group: row ? null : 1 }, explainVisual: null };
   },
   's10-which-group': (rng) => {
     const g = pick(rng, GROUPS); const member = pick(rng, g.members);
     return { type: 'choice', story: `${member.charAt(0).toUpperCase() + member.slice(1)}.`, prompt: 'Which group is it in?', choices: shuffle(rng, GROUPS.map((x) => x.name)), answer: g.name,
-      explain: `${member.charAt(0).toUpperCase() + member.slice(1)} is one of the ${g.name.toLowerCase()}, in the ${g.column} column. They ${g.behavior.toLowerCase()}.`, visual: null, explainVisual: null };
+      explain: `${member.charAt(0).toUpperCase() + member.slice(1)} is one of the ${g.name.toLowerCase()}, in the ${g.column} column. They ${g.behavior.toLowerCase()}.`, visual: { kind: 'periodic', highlight: [SYMBOL_OF[member]] }, explainVisual: null };
   },
   's10-metal-or-not': (rng) => {
     const metal = randInt(rng, 0, 1) === 1; const el = pick(rng, metal ? METALS : NONMETALS);
     return { type: 'choice', story: `${el.charAt(0).toUpperCase() + el.slice(1)}.`, prompt: 'Metal or nonmetal?', choices: ['Metal', 'Nonmetal'], answer: metal ? 'Metal' : 'Nonmetal',
-      explain: metal ? `${el.charAt(0).toUpperCase() + el.slice(1)} is a metal, on the left or middle of the table.` : `${el.charAt(0).toUpperCase() + el.slice(1)} is a nonmetal, in the upper right.`, visual: null, explainVisual: null };
+      explain: metal ? `${el.charAt(0).toUpperCase() + el.slice(1)} is a metal, on the left or middle of the table.` : `${el.charAt(0).toUpperCase() + el.slice(1)} is a nonmetal, in the upper right.`, visual: { kind: 'periodic', highlight: [SYMBOL_OF[el]] }, explainVisual: null };
   },
   's10-ionic-or-covalent': (rng) => {
     const c = pick(rng, BONDED_COMPOUNDS);
@@ -11651,7 +11965,7 @@ Object.assign(GENERATORS, {
     const liters = pick(rng, [1, 2, 4, 5]); const molarity = pick(rng, [0.5, 1, 2]); const moles = liters * molarity;
     const wrongs = [moles, moles * liters, molarity * 2].filter((v) => v !== molarity);
     return { type: 'choice', story: `${moles} moles of salt are dissolved to make ${liters} liters of solution.`, prompt: 'What is the concentration?', choices: shuffle(rng, [molarity, ...[...new Set(wrongs)].slice(0, 3)].map((v) => `${v} moles per liter`)), answer: `${molarity} moles per liter`,
-      explain: `${moles} ÷ ${liters} = **${molarity} moles per liter**.`, visual: null, explainVisual: null };
+      explain: `${moles} ÷ ${liters} = **${molarity} moles per liter**.`, visual: { kind: 'beaker', moles, liters }, explainVisual: null };
   },
   's10-dilute': (rng) => {
     const start = pick(rng, [2, 4]); const factor = 2;
@@ -11712,7 +12026,7 @@ Object.assign(GENERATORS, {
   's11-angle-out': (rng) => {
     const a = randInt(rng, 10, 80);
     return { type: 'choice', story: `Light hits a mirror at ${a} degrees from the straight-in line.`, prompt: 'At what angle does it bounce off?', choices: shuffle(rng, [a, 90 - a, a * 2].filter((x, i, arr) => arr.indexOf(x) === i).map((x) => `${x} degrees`)), answer: `${a} degrees`,
-      explain: 'The angle out equals the angle in.', visual: null, explainVisual: null };
+      explain: 'The angle out equals the angle in.', visual: { kind: 'lightray', angle: a }, explainVisual: null };
   },
   's11-why-straw-bends': (rng) => {
     return { type: 'choice', story: 'A straw in a glass of water looks bent at the surface.', prompt: 'Why?', choices: shuffle(rng, ['Light bends as it leaves the water', 'The water bends the straw', 'The glass is curved']), answer: 'Light bends as it leaves the water',
@@ -11820,7 +12134,7 @@ Object.assign(GENERATORS, {
   's7-which-shows': (rng) => {
     const combo = pick(rng, ['two brown versions', 'one brown and one blue version', 'two blue versions']);
     return { type: 'choice', story: `Brown is dominant and blue is recessive. A child has ${combo}.`, prompt: 'What eye color shows?', choices: ['Brown', 'Blue'], answer: combo === 'two blue versions' ? 'Blue' : 'Brown',
-      explain: combo === 'two blue versions' ? 'No brown version, so blue shows.' : 'One brown version is enough for brown to show.', visual: null, explainVisual: null };
+      explain: combo === 'two blue versions' ? 'No brown version, so blue shows.' : 'One brown version is enough for brown to show.', visual: { kind: 'alleles', pair: combo === 'two brown versions' ? 'BB' : combo === 'two blue versions' ? 'bb' : 'Bb' }, explainVisual: null };
   },
   's7-why-blue-child': (rng) => {
     return { type: 'choice', story: 'Two brown-eyed parents have a blue-eyed child.', prompt: 'How?', choices: shuffle(rng, ['Each parent carried a hidden blue version and passed it on', 'The child\'s eyes will turn brown later', 'One parent must have blue eyes']), answer: 'Each parent carried a hidden blue version and passed it on',
@@ -13529,6 +13843,7 @@ const MEANING_ITEMS = [
   { word: 'can', visual: { kind: 'solid', name: 'cylinder' } }, { word: 'cone', visual: { kind: 'solid', name: 'cone' } },
 ];
 const NUMBER_WORDS = ['one', 'two', 'three', 'four', 'five', 'six'];
+const NUMBER_NAMES = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten'];   // by value, so five is at 5
 Object.assign(GENERATORS, {
   'rm-match-picture': (rng) => {
     const it = pick(rng, MEANING_ITEMS);
@@ -13719,6 +14034,42 @@ Object.assign(GENERATORS, {
     return { type: 'trace', story: null, prompt: `Trace the letter ${L}.`, choices: [], answer: L,
       explain: `That is ${L}. Start at the dot and follow the arrow.`, visual: { kind: 'letters', text: L }, explainVisual: null };
   },
+  'pl-trace-more': (rng) => {
+    const L = pick(rng, ['I', 'H', 'E']);
+    return { type: 'trace', story: null, prompt: `Trace the letter ${L}.`, choices: [], answer: L,
+      explain: `That is ${L}. Straight lines, start at the dot.`, visual: { kind: 'letters', text: L }, explainVisual: null };
+  },
+  'p1-trace-nur': (rng) => {
+    const L = pick(rng, ['n', 'u', 'r']);
+    return { type: 'trace', story: null, prompt: `Trace the small letter ${L}.`, choices: [], answer: L,
+      explain: `That is small ${L}. Start at the dot.`, visual: { kind: 'letters', text: L }, explainVisual: null };
+  },
+  'p1-trace-cvx': (rng) => {
+    const L = pick(rng, ['c', 'v', 'x']);
+    return { type: 'trace', story: null, prompt: `Trace the small letter ${L}.`, choices: [], answer: L,
+      explain: `That is small ${L}. Start at the dot.`, visual: { kind: 'letters', text: L }, explainVisual: null };
+  },
+  'p1-trace-itk': (rng) => {
+    const L = pick(rng, ['i', 't', 'k']);
+    return { type: 'trace', story: null, prompt: `Trace the small letter ${L}.`, choices: [], answer: L,
+      explain: `That is small ${L}. Start at the dot.`, visual: { kind: 'letters', text: L }, explainVisual: null };
+  },
+  'pk-trace-van': (rng) => {
+    const L = pick(rng, ['V', 'A', 'N']);
+    return { type: 'trace', story: null, prompt: `Trace the letter ${L}.`, choices: [], answer: L,
+      explain: `That is ${L}. Slanted lines, start at the dot.`, visual: { kind: 'letters', text: L }, explainVisual: null };
+  },
+  'pl-trace-ltf': (rng) => {
+    const L = pick(rng, ['L', 'T', 'F']);
+    return { type: 'trace', story: null, prompt: `Trace the letter ${L}.`, choices: [], answer: L,
+      explain: `That is ${L}. Down and across, start at the dot.`, visual: { kind: 'letters', text: L }, explainVisual: null };
+  },
+  'pm-same-animals': themedSame(MATCH_THEMES.animals),
+  'pm-different-animals': themedDifferent(MATCH_THEMES.animals),
+  'pm-same-vehicles': themedSame(MATCH_THEMES.vehicles),
+  'pm-different-vehicles': themedDifferent(MATCH_THEMES.vehicles),
+  'pm-same-things': themedSame(MATCH_THEMES.things),
+  'pm-different-things': themedDifferent(MATCH_THEMES.things),
   'pd-trace-line': (rng) => {
     const name = pick(rng, FIRST_LINES);
     return { type: 'trace', traceKind: 'line', story: null, prompt: `Draw ${LINE_WORDS[name]}. Start at the dot.`, choices: [], answer: name,
@@ -16597,8 +16948,40 @@ export function addStudent(roster, rawId, at, extras = {}) {
   const picture = PICTURES.includes(extras.picture) ? extras.picture : null;
   const tint = picture && tintFor(extras.tint) ? extras.tint : picture ? TINTS[0].id : null;
   const startGrade = extras.startGrade && gradesWithCourses().includes(extras.startGrade) && levelFor(level).grades.includes(extras.startGrade) ? extras.startGrade : null;
-  const student = { id, label: String(rawId).trim(), createdAt: at, active: true, level, picture, tint, startGrade };
+  if (String(extras.pin || '').trim() && !cleanPin(extras.pin)) return { roster, error: `A PIN is ${PIN_LENGTH} digits.` };
+  const student = { id, label: String(rawId).trim(), createdAt: at, active: true, level, picture, tint, startGrade, pin: cleanPin(extras.pin), wonder: extras.wonder !== false };
   return { roster: { ...roster, students: [...roster.students, student] }, error: null };
+}
+
+// A PIN keeps classmates out of each other's records on a shared screen: four digits chosen by
+// the educator, asked for when that name is tapped. Empty means no PIN. It is a mix-up guard, not
+// a lock on the device, and it is never typed by the child anywhere else.
+export const PIN_LENGTH = 4;
+export function cleanPin(raw) { const p = String(raw || '').trim(); return p.length === PIN_LENGTH && /^\d+$/.test(p) ? p : null; }
+export function setStudentPin(roster, id, pin) {
+  return { ...roster, students: roster.students.map((s) => (s.id === normalizeStudentId(id) ? { ...s, pin: cleanPin(pin) } : s)) };
+}
+export function pinMatches(student, typed) { return !student || !student.pin || student.pin === String(typed || '').trim(); }
+
+// Wonder questions can be switched off for one student. On is the default, and approval still
+// gates every question, so switching one on never shows anything the school has not approved.
+export function setStudentWonder(roster, id, on) {
+  return { ...roster, students: roster.students.map((s) => (s.id === normalizeStudentId(id) ? { ...s, wonder: on !== false } : s)) };
+}
+export function wonderOnFor(student) { return !student || student.wonder !== false; }
+
+// My Classroom order: the band a student started in, youngest first, then the name, unless an
+// educator has dragged the cards into an order of their own, which is kept as `order`.
+export function classroomOrder(students) {
+  const band = (s) => Math.max(0, LEVELS.findIndex((l) => l.id === s.level));
+  return [...students].sort((a, b) => {
+    const ao = typeof a.order === 'number' ? a.order : Infinity; const bo = typeof b.order === 'number' ? b.order : Infinity;
+    return ao - bo || band(a) - band(b) || a.label.localeCompare(b.label, 'en', { sensitivity: 'base' });
+  });
+}
+export function setClassroomOrder(roster, ids) {
+  const want = ids.map(normalizeStudentId);
+  return { ...roster, students: roster.students.map((s) => (want.includes(s.id) ? { ...s, order: want.indexOf(s.id) } : s)) };
 }
 
 // Changes the name shown on screen. The id never changes, so progress is never lost.
@@ -17979,6 +18362,22 @@ export function teacherNotes(events) {
   const removed = new Set(events.filter((e) => e.type === 'note_removed').map((e) => e.noteId));
   return events.filter((e) => e.type === 'note' && e.text && !removed.has(e.noteId)).map((e) => ({ id: e.noteId, at: e.at, text: e.text })).sort((a, b) => (a.at < b.at ? 1 : -1));
 }
+// A grade is complete when every module of every course the student was given in that grade is
+// mastered, placed past, or passed on its quick check. Courses never switched on are not required,
+// so a student who skipped a course through placement still finishes the grade.
+export function gradeCompleted(events, grade, courseIds) {
+  const per = deriveProgress(events).perModule; const active = activeEvents(events);
+  const quickPassed = new Set(active.filter((e) => e.type === 'quick_check' && e.passed).map((e) => e.moduleId));
+  const courses = COURSES.filter((c) => c.grade === grade && courseIds.includes(c.id) && c.modules.length);
+  return courses.length > 0 && courses.every((c) => c.modules.every((m) => { const pm = per[m.id] || {}; return pm.mastered || pm.placed || quickPassed.has(m.id); }));
+}
+export function completedGrades(events) { const ids = enabledCourseIds(events); return GRADES.filter((g) => gradeCompleted(events, g, ids)); }
+// The certificate for a grade is offered once on the student's card, then remembered as made or
+// skipped; the report keeps a way back to it either way.
+export function setCertificateState(roster, id, grade, state) {
+  return { ...roster, students: roster.students.map((s) => (s.id === normalizeStudentId(id) ? { ...s, certificates: { ...(s.certificates || {}), [grade]: state } } : s)) };
+}
+export function certificatesPending(student, grades) { return grades.filter((g) => !((student && student.certificates) || {})[g]); }
 export function enabledCourseIds(events) {
   let ids = COURSES.map((c) => c.id);
   for (const e of events) if (e.type === 'courses_enabled') ids = e.courseIds.filter((id) => getCourse(id));
@@ -18157,14 +18556,16 @@ export function moduleStory(learnerName, events, moduleId) {
   const loops = mine.filter((e) => e.type === 'looped_back');
   if (loops.length) { const back = getModule(loops[loops.length - 1].toModuleId); parts.push(`After repeated misses, ${name} was sent back to ${back ? lowerTitle(back.title) : 'the module before'} for a quick check of the groundwork, then brought forward again.`); }
 
-  // Each attempt in order, without turning into a table.
+  // Each attempt in order, without turning into a table. A pass is called a pass; the star is
+  // mentioned once, below, because mastery takes two passes on different days.
   attempts.forEach((a, i) => {
     const passed = a.coreCorrect >= rules.toMaster;
-    const label = attempts.length === 1 ? 'That attempt' : i === 0 ? 'The first attempt' : i === attempts.length - 1 ? 'The most recent attempt' : `Attempt ${i + 1}`;
     const which = attempts.length === 1 ? 'the single practice attempt' : i === 0 ? 'the first attempt' : i === attempts.length - 1 ? 'the most recent attempt' : `attempt ${i + 1}`;
-    if (passed) parts.push(`By answering ${a.coreCorrect} out of ${a.coreTotal} correctly on ${which}, the content is considered mastered.`);
-    else parts.push(`On ${which}, ${a.coreCorrect} out of ${a.coreTotal} were answered correctly, which is not yet enough to count as mastered, so the module stayed open for more practice.`);
+    if (passed) parts.push(`On ${which}, ${a.coreCorrect} out of ${a.coreTotal} were answered correctly, which is a pass.`);
+    else parts.push(`On ${which}, ${a.coreCorrect} out of ${a.coreTotal} were answered correctly, which is not yet a pass, so the module stayed open for more practice.`);
   });
+  const storyProgress = deriveProgress(events).perModule[moduleId];
+  if (storyProgress && storyProgress.mastered && storyProgress.masteredAt) parts.push(`${storyProgress.passDays.length >= 2 ? 'Two passes on different days' : 'That pass'} earned the star on ${niceDate(storyProgress.masteredAt)}, so the content counts as mastered.`);
 
   // Timing: their pace on this module against their pace everywhere else.
   const answerTimes = (list) => list.flatMap((a) => (a.core || []).map((r) => r.timeMs)).filter((t) => typeof t === 'number' && t > 0);

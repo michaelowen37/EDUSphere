@@ -39,9 +39,15 @@ for (const mod of L.MODULES) {
     if (show.kind === 'shape' && !said.includes(show.name)) mismatches.push(`${mod.id}: "${line.say}" shows a ${show.name}`);
     if (show.kind === 'icon' && !said.includes(show.name)) mismatches.push(`${mod.id}: "${line.say}" shows a ${show.name}`);
     if (show.kind === 'solid' && !said.includes(show.name) && !said.includes({ sphere: 'ball', cube: 'box', cylinder: 'can', cone: 'cone' }[show.name])) mismatches.push(`${mod.id}: "${line.say}" shows a ${show.name}`);
-    if (show.kind === 'pair' && (!said.includes(show.a.shape) || !said.includes(show.b.shape))) mismatches.push(`${mod.id}: "${line.say}" shows ${show.a.shape} and ${show.b.shape}`);
-    if (show.kind === 'swatch' && !said.includes(show.colour)) mismatches.push(`${mod.id}: "${line.say}" shows ${show.colour}`);
-    if (show.kind === 'dots' && !(said.includes(NUMBER_WORDS[show.count]) || said.includes(String(show.count)) || /count|one, two|more|less|away|left|dots|tap|group/.test(said))) mismatches.push(`${mod.id}: "${line.say}" shows ${show.count} dots`);
+    // A pair is two pictures side by side; each half must be named by the words, by its own kind.
+    const halves = show.kind === 'pair' ? [show.a, show.b] : [show];
+    for (const h of halves) {
+      if (show.kind === 'pair' && !h.kind && !said.includes(h.shape)) mismatches.push(`${mod.id}: "${line.say}" shows a ${h.shape}`);
+      if (h.kind === 'swatch' && !said.includes(h.colour)) mismatches.push(`${mod.id}: "${line.say}" shows ${h.colour}`);
+      if (h.kind === 'item' && !said.includes(h.shape) && !said.includes(h.colour)) mismatches.push(`${mod.id}: "${line.say}" shows a ${h.colour} ${h.shape}`);
+      if (h.kind === 'dots' && !(said.includes(NUMBER_WORDS[h.count]) || said.includes(String(h.count)) || /count|one, two|more|less|fewer|away|left|dots|tap|group/.test(said))) mismatches.push(`${mod.id}: "${line.say}" shows ${h.count} dots`);
+      if (show.kind === 'pair' && h.kind === 'shape' && !said.includes(h.name)) mismatches.push(`${mod.id}: "${line.say}" shows a ${h.name}`);
+    }
   }
 }
 // Questions too: in every read-aloud course, the picture beside a question must be named or
@@ -61,7 +67,7 @@ for (const c of L.COURSES.filter((x) => x.readAloud)) for (const m of c.modules)
     else if (v.kind === 'dots') fine = text.includes(NUMBER_WORDS[v.count]) || text.includes(String(v.count)) || /how many|count/.test(text);
     else if (v.kind === 'tens') fine = text.includes(String(v.count * 10)) || /how many|count|tens/.test(text);
     else if (v.kind === 'tenframe') fine = /ten|frame|make 10|empty|spaces|left|more/.test(text) || text.includes(String(v.filled));
-    else if (v.kind === 'pair') fine = text.includes(v.a.shape) && text.includes(v.b.shape);
+    else if (v.kind === 'pair') fine = [v.a, v.b].every((h) => (h.kind ? text.includes(h.colour || '') || text.includes(h.shape || h.name || '') || (h.kind === 'dots' && (text.includes(NUMBER_WORDS[h.count]) || /more|fewer|how many|count/.test(text))) : text.includes(h.shape)));
     else if (v.kind === 'item') fine = text.includes(v.shape) || text.includes(v.colour);
     else if (v.kind === 'pattern') fine = /pattern|next|missing|repeat/.test(text);
     else if (v.kind === 'bars' || v.kind === 'bar') fine = /line|long|short|bar|same/.test(text) || (v.shaded !== undefined && text.includes(String(v.shaded)));

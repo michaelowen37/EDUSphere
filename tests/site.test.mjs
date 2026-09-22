@@ -13,7 +13,10 @@ await page.fill('input[placeholder="PIN again"]', '2468');
 await page.fill('input[placeholder="This device\'s name"]', 'Front desk');
 await page.selectOption('select[aria-label="Your state"]', 'CA');
 await page.getByRole('button', { name: 'Create account', exact: true }).click();
+{ const skip = page.getByRole('button', { name: 'Skip tour' }); if (await skip.count()) await skip.click({ force: true }); }
 { const later = page.getByRole('button', { name: 'Later' }); if (await later.count()) await later.click(); }
+// The what's-new pop-up appears once per build on the real page; dismiss it the way an educator would.
+{ const got = page.getByRole('button', { name: 'Got it' }); if (await got.count()) await got.click(); }
 await page.getByRole('button', { name: 'Add someone new' }).click();
 await page.fill('input[placeholder="School-issued ID"]', 'S-777');
 await page.getByRole('button', { name: /^Elementary/ }).click();

@@ -15,7 +15,7 @@ const browser = await chromium.launch();
 const page = await browser.newPage({ viewport: { width: 390, height: 844 }, reducedMotion: 'reduce', hasTouch: true });
 const errors = [];
 page.on('pageerror', (e) => { errors.push(String(e)); console.log('PAGE ERROR:', String(e).slice(0, 300)); });
-page.on('console', (m) => { if (m.type() === 'error') errors.push(m.text()); });
+page.on('console', (m) => { if (m.type() === 'error') { errors.push(m.text()); console.log('CONSOLE ERROR:', m.text().slice(0, 300)); } });
 await page.goto(pathToFileURL('tests/e2e/page.html').href);
 
 const text = async () => (await page.textContent('#root')) || ''; // #root only: the page's own scripts contain these words too
@@ -42,7 +42,9 @@ const createAccountIfNeeded = async () => {
   return true;
 };
 // The first-backup popup shows once per session on the Classroom page; the test answers Later.
-const dismissBackupNudge = async () => { await page.waitForTimeout(150); const later = page.getByRole('button', { name: 'Later' }); if (await later.count()) { await later.click(); await page.waitForTimeout(150); } };
+// From a lesson to its practice: through the story page when the module has one.
+const practice = async () => { const v = page.getByRole('button', { name: 'View story' }); if (await v.count()) { await v.click(); await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'story'); } await page.getByRole('button', { name: 'Practice this', exact: true }).first().click(); };
+const dismissBackupNudge = async () => { await page.waitForTimeout(150); for (const name of ['Skip tour', 'Later', 'Got it']) { const b = page.getByRole('button', { name }); if (await b.count()) { await b.first().click({ force: true }); await page.waitForTimeout(150); } } };
 const educatorLogin = async () => {
   if (await createAccountIfNeeded()) { await dismissBackupNudge(); return; }
   await tap('Educator Login');
@@ -200,15 +202,16 @@ await page.getByRole('button', { name: /^Math/ }).click();
 // 2. Master Fractions module 1 with a perfect set (early courses now list first, so open it by name)
 await openModuleNamed('What a fraction means');
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'lesson');
-// Story-based learning (2026-09-21): a fold under the key idea, a placeholder wearing its art serial until the picture exists.
-ok('a story fold sits under the key idea', (await page.getByRole('button', { name: /^Story-based learning/ }).count()) === 1);
-await page.getByRole('button', { name: /^Story-based learning/ }).click();
-await page.getByLabel('Illustration S5 to come').waitFor();
-ok('the story opens with its title and a placeholder for its picture', (await text()).includes('The broken cups'));
-await page.getByRole('button', { name: /^Story-based learning/ }).click();
+// Story-based learning (2026-09-22): the lesson's green button opens the story page; its own Practice button leads on.
 t = await text();
 ok('lesson shows key idea and a plain-text source', t.includes('Key idea') && t.includes('Source:') && (await page.locator('a').count()) === 0);
-await tap('Practice this');
+ok('a lesson with a story offers View story in place of Practice', (await page.getByRole('button', { name: 'View story' }).count()) === 1 && (await page.getByRole('button', { name: 'Practice this' }).count()) === 0);
+await tap('View story');
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'story');
+await page.getByLabel('Illustration S5 to come').waitFor();
+t = await text();
+ok('the story page shows the title, its pictures in order, and no wonder question', t.includes('The broken cups') && (await page.getByLabel(/Illustration S3[78] to come/).count()) === 2 && !t.includes('Something to wonder about'));
+await practice();
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'practice');
 let r = await runSet([true, true, true, true, true]);
 ok('five core questions, all marked correct', r.length === 5 && r.every(Boolean));
@@ -273,7 +276,7 @@ await openSubject('Math', 'What a fraction means');
 // Module one is already mastered, so its button reads Practice again rather than Open.
 await page.getByRole('button', { name: /^(Practice again|Pass it again)$/ }).first().click();
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'lesson');
-await tap('Practice this');
+await practice();
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'practice');
 await runSet([true, true, true, true, true]);
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'result');
@@ -297,7 +300,7 @@ ok('module 2 now ready', (t.includes('Mastered') || t.includes('Passed once')) &
 ok('a pass opens the next module without the star', t.includes('Passed once'));
 await openModuleNamed('Equivalent fractions');
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'lesson');
-await tap('Practice this');
+await practice();
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'practice');
 r = await runSet([true, true, false, false, false]);
 ok('review question appeared as a sixth question', r.length === 6);

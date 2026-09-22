@@ -43,7 +43,7 @@ const CONTACT_EMAIL = 'michaelowen37@gmail.com';
 // The contact popup, shared by the welcome page and the Classroom page.
 function ContactPopup({ onClose }) {
   return (
-    <div className="edu-no-print" style={{ position: 'fixed', inset: 0, background: 'rgba(36, 41, 31, 0.55)', zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
+    <div className="edu-no-print" style={{ position: 'fixed', top: 0, right: 0, bottom: 0, left: 0, background: 'rgba(36, 41, 31, 0.55)', zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
       <div className="edu-rise" style={{ maxWidth: 420, width: '100%', background: C.surface, borderRadius: 14, padding: 20, position: 'relative', textAlign: 'center' }}>
         <button type="button" onClick={onClose} aria-label="Close" style={{ position: 'absolute', top: 8, right: 10, background: 'none', border: 'none', width: 36, height: 36, fontSize: 30, lineHeight: '34px', cursor: 'pointer', color: C.ink, fontFamily: FONT, padding: 0 }}>×</button>
         <p style={{ margin: '0 0 6px', fontSize: 18, fontWeight: 600 }}>Contact us</p>
@@ -137,6 +137,14 @@ function FractionBar({ parts, shaded, color = C.green, height = 44 }) {
 // green starting dot and a small arrow on each. The finger's path is collected in the
 // pad's own 100 by 100 coordinates, so a check can be done by arithmetic regardless of
 // screen size. Works with a mouse too, but it is built for glass.
+// The letter's real shape, faint, fitted to the guide strokes' box, so a child traces inside a letter.
+function TraceShape({ letter, def }) {
+  const g = LETTER_GLYPHS[letter];
+  if (!def || def.dots || def.line || !g) return null;
+  const pts = def.strokes.flat(); const top = Math.min(...pts.map((q) => q[1])); const bottom = Math.max(...pts.map((q) => q[1]));
+  const s = (bottom - top) / (g.box[3] - g.box[1]); const cx = (Math.min(...pts.map((q) => q[0])) + Math.max(...pts.map((q) => q[0]))) / 2;
+  return <path d={g.d} transform={`translate(${(cx - ((g.box[0] + g.box[2]) / 2) * s).toFixed(2)} ${(bottom + g.box[1] * s).toFixed(2)}) scale(${s.toFixed(4)} ${(-s).toFixed(4)})`} fill="#E3E9DE" stroke="#C4CEBE" strokeWidth={1.4 / s} pointerEvents="none" />;
+}
 function TracePad({ letter, paths, onChange, disabled = false, tone = null }) {
   const ref = useRef(null);
   const drawing = useRef(false);
@@ -156,6 +164,7 @@ function TracePad({ letter, paths, onChange, disabled = false, tone = null }) {
       {def && def.dots && def.strokes[0].map((p, i) => (i === def.strokes[0].length - 1 && p.join() === def.strokes[0][0].join() ? null : (
         <g key={`dot-${i}`}><circle cx={p[0]} cy={p[1]} r="5" fill={C.gold} /><text x={p[0]} y={p[1] - 7} fontSize="7" textAnchor="middle" fill={C.ink} fontFamily={FONT}>{i + 1}</text></g>
       )))}
+      <TraceShape letter={letter} def={def} />
       {def && !def.dots && def.strokes.map((st, i) => (
         <g key={i}>
           <polyline points={st.map((p) => p.join(',')).join(' ')} fill="none" stroke={C.line} strokeWidth="9" strokeLinecap="round" strokeLinejoin="round" />
@@ -197,6 +206,7 @@ function TraceDemo({ letter, animKey = 0, pace = 'slow', nudge = 0 }) {
   return (
     <svg key={animKey} viewBox="0 0 100 100" role="img" aria-label={def.dots ? `Connect the dots to make a ${letter}` : def.line ? 'A line drawing itself' : `${letter} drawing itself`}
       style={{ width: '100%', maxWidth: 230, aspectRatio: '1 / 1', display: 'block', margin: '0 auto', background: C.surface, border: `2px solid ${C.line}`, borderRadius: 16 }}>
+      <TraceShape letter={letter} def={TRACE_LETTERS[letter]} />
       <style>{css}</style>
       {def.dots && strokes[0].map((pt, i) => (i === strokes[0].length - 1 && pt.join() === strokes[0][0].join() ? null : (
         <g key={`dot-${i}`}><circle cx={pt[0]} cy={pt[1]} r="5" fill={C.gold} /><text x={pt[0]} y={pt[1] - 7} fontSize="7" textAnchor="middle" fill={C.ink} fontFamily={FONT}>{i + 1}</text></g>
@@ -636,20 +646,75 @@ function speak(text) {
   setTimeout(() => { if (ticket === speechTicket && ss.speaking === false && ss.pending === false) { try { ss.cancel(); } catch (e) { /* as above */ } setTimeout(send, 80); } }, 700);
 }
 
+// A lesson's ways: the caption is way 0 and each `another` entry, a string or { text, visual }, is one more.
+// The picture for a way is its own when it has one, else the lesson's example drawing.
+function wayText(w) { return typeof w === 'string' ? w : (w && w.text) || ''; }
+function wayVisual(example, at) { const w = at > 0 ? [].concat(example.another || [])[at - 1] : null; return w && typeof w === 'object' && w.visual ? { ...w.visual, caption: example.caption } : example; }
+// A line split into its sentences, for reading along.
+function sentencesOf(text) { return String(text || '').split(/(?<=[.!?])\s+/).filter(Boolean); }
+// Speaks a list of texts one after another and reports which one is playing, so a page can
+// light the paragraph being read. Returns a stop function. Uses the same ticket as speak().
+// Purchased audio: when the build lists a clip for a key (audio/<key>.mp3, keys like S7-0 for a story's
+// title, S7-3 for its third paragraph, or counting-k:tracing-letters:2:1 for a lesson line's sentence),
+// the clip plays in place of the device voice and the same read-along lighting follows it.
+function clipFor(key) { return typeof window !== 'undefined' && Array.isArray(window.__eduAudio) && key && window.__eduAudio.includes(key) ? `audio/${key}.mp3` : null; }
+function speakSequence(texts, onIndex, onDone, keys = []) {
+  if (typeof window === 'undefined' || !texts.length) return () => {};
+  if (keys.length && keys.every((k) => clipFor(k))) {
+    let stopped = false; let current = null;
+    const play = (i) => {
+      if (stopped) return; if (i >= texts.length) { onDone && onDone(); return; }
+      onIndex(i); current = new Audio(clipFor(keys[i])); current.onended = () => play(i + 1); current.onerror = () => play(i + 1);
+      current.play().catch(() => play(i + 1));
+    };
+    play(0);
+    return () => { stopped = true; if (current) { try { current.pause(); } catch (e) { /* a broken clip must never stop a story */ } } onDone && onDone(); };
+  }
+  if (!window.speechSynthesis) return () => {};
+  const ticket = ++speechTicket; const ss = window.speechSynthesis;
+  const stop = () => { if (ticket === speechTicket) speechTicket += 1; try { ss.cancel(); } catch (e) { /* a broken voice must never stop a story */ } onDone && onDone(); };
+  const say = (i) => {
+    if (ticket !== speechTicket) return;
+    if (i >= texts.length) { onDone && onDone(); return; }
+    onIndex(i);
+    const pieces = speechPieces(texts[i]); if (!pieces.length) { say(i + 1); return; }
+    const voice = pickVoice(); let left = pieces.length;
+    pieces.forEach((piece) => {
+      const u = new SpeechSynthesisUtterance(piece.text); if (voice) u.voice = voice;
+      const shape = SPEECH_SHAPES[piece.shape] || SPEECH_SHAPES.plain; u.rate = shape.rate * (SPEECH_NUDGE < 0 ? 0.75 : SPEECH_NUDGE > 0 ? 1.1 : 1); u.pitch = shape.pitch;
+      u.onend = () => { left -= 1; if (left === 0) say(i + 1); }; u.onerror = () => { left -= 1; if (left === 0) say(i + 1); };
+      try { ss.speak(u); } catch (e) { left -= 1; if (left === 0) say(i + 1); }
+    });
+  };
+  if (ss.speaking || ss.pending) { try { ss.cancel(); } catch (e) { /* as above */ } setTimeout(() => say(0), 80); } else say(0);
+  return stop;
+}
 // One button for every read-aloud spot. If the device or preview has no speech, the
 // button is replaced by a short note, so nothing on screen looks broken or unresponsive.
 // Every read-aloud spot has one of these. `corner` puts a small speaker button in the top
 // right of the card it sits in; otherwise it is a full button. The "on silent" note is
 // shown by the page, at its foot, once anything has been spoken.
 let onSpoke = null;
-function SpeakButton({ text, label, full = false, corner = false }) {
+function SpeakButton({ text, label, full = false, corner = false, mini = false }) {
+  // Tapping while it reads stops it; the button watches the voice so the label follows what is happening.
+  const [reading, setReading] = useState(false);
+  useEffect(() => { if (!reading) return undefined; const t = setInterval(() => { if (!window.speechSynthesis.speaking && !window.speechSynthesis.pending) setReading(false); }, 300); return () => clearInterval(t); }, [reading]);
   if (!canSpeak()) {
-    return corner ? null : <p style={{ margin: '0 0 12px', fontSize: 14, color: C.muted }}>Reading aloud is not available on this device or in this preview. The words are all on screen.</p>;
+    return corner || mini ? null : <p style={{ margin: '0 0 12px', fontSize: 14, color: C.muted }}>Reading aloud is not available on this device or in this preview. The words are all on screen.</p>;
   }
-  const press = () => { speak(text); if (onSpoke) onSpoke(); };
+  const press = () => { if (reading) { speechTicket += 1; window.speechSynthesis.cancel(); setReading(false); return; } speak(text); setReading(true); if (onSpoke) onSpoke(); };
+  const shownLabel = reading ? 'Stop reading' : label;
+  if (mini) {
+    return (
+      <button type="button" onClick={press} aria-label={shownLabel} title={shownLabel} className="edu-press"
+        style={{ width: 44, height: 44, borderRadius: 999, border: `3px solid ${C.gold}`, background: reading ? C.gold : C.goldSoft, cursor: 'pointer', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4z" fill={C.ink} /><path d="M16 8.5a4.5 4.5 0 0 1 0 7M18.5 6a8 8 0 0 1 0 12" fill="none" stroke={C.ink} strokeWidth="1.8" strokeLinecap="round" /></svg>
+      </button>
+    );
+  }
   if (corner) {
     return (
-      <button type="button" onClick={press} aria-label={label} title={label} className="edu-press edu-sway"
+      <button type="button" onClick={press} aria-label={shownLabel} title={shownLabel} className="edu-press edu-sway"
         style={{ position: 'absolute', top: 12, right: 12, width: 48, height: 48, borderRadius: 999, border: `3px solid ${C.gold}`, background: C.goldSoft, cursor: 'pointer', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 2 }}>
         <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true">
           <path d="M4 9.5h3.5L12 5.5v13L7.5 14.5H4z" fill={C.gold} />
@@ -660,7 +725,7 @@ function SpeakButton({ text, label, full = false, corner = false }) {
   }
   return (
     <div style={{ marginBottom: 12, textAlign: 'center' }}>
-      <Btn full={full} kind="secondary" onClick={press}>{label}</Btn>
+      <Btn full={full} kind="secondary" onClick={press}>{shownLabel}</Btn>
     </div>
   );
 }
@@ -757,6 +822,20 @@ const PRINT_STYLES = `
   @page cert { size: landscape; margin: 8mm; }
   body.edu-cert-mode:has(.edu-cert-portrait) { page: certup; }
   @page certup { size: portrait; margin: 8mm; }
+  /* On the story page only the story prints: its title, pictures and words, upright. */
+  body.edu-story-mode * { visibility: hidden; }
+  body.edu-story-mode .edu-story-sheet, body.edu-story-mode .edu-story-sheet * { visibility: visible; }
+  body.edu-story-mode .edu-story-sheet { position: absolute; left: 0; top: 0; width: 100%; }
+  body.edu-story-mode .edu-story-sheet button { display: none; }
+  /* The weekly note prints alone, from its own Print link. */
+  body.edu-note-mode * { visibility: hidden; }
+  body.edu-note-mode .edu-weekly-note, body.edu-note-mode .edu-weekly-note * { visibility: visible; }
+  body.edu-note-mode .edu-weekly-note { position: absolute; left: 0; top: 0; width: 100%; }
+  body.edu-note-mode .edu-weekly-note button, body.edu-note-mode .edu-weekly-note textarea { display: none; }
+  /* The class's weekly notes print alone from the Who Needs Help page. */
+  body.edu-classnotes-mode * { visibility: hidden; }
+  body.edu-classnotes-mode .edu-class-notes, body.edu-classnotes-mode .edu-class-notes * { visibility: visible; }
+  body.edu-classnotes-mode .edu-class-notes { position: absolute; left: 0; top: 0; width: 100%; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; padding: 16px; }
   /* Everything folded away on screen is opened for the printer, so a printed report is complete. */
   .edu-collapsible { display: block !important; }
   .edu-no-print { display: none !important; }
@@ -875,18 +954,27 @@ const KID_ANIMATION = `
   /* Upright only on a phone: sideways, everything is covered by a gentle ask to turn back. */
   .edu-rotate { display: none; }
   {
-    .edu-rotate.edu-rotate-on { display: flex; position: fixed; inset: 0; z-index: 9999; background: ${C.paper || '#F5F7F1'}; color: ${C.green}; align-items: center; justify-content: center; text-align: center; padding: 24px; font-family: ${FONT}; }
+    .edu-rotate.edu-rotate-on { display: flex; position: fixed; top: 0; right: 0; bottom: 0; left: 0; z-index: 9999; background: ${C.paper || '#F5F7F1'}; color: ${C.green}; align-items: center; justify-content: center; text-align: center; padding: 24px; font-family: ${FONT}; }
     .edu-rotate p { font-size: 20px; font-weight: 600; margin: 12px 0 0; color: ${C.ink}; }
   }
   .edu-wide-only { display: none; }
   /* A mouse becomes a paintbrush over a drawing picture, and only there; a finger or a stylus needs no cursor. */
   @media (hover: hover) and (pointer: fine) { .edu-pad:not(.edu-pad-fill) .edu-picture svg { cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'><path d='M4 28l4-1 15-15-3-3L5 24z' fill='%23E4A23A' stroke='%232E2E2E' stroke-width='1.5' stroke-linejoin='round'/><path d='M21 8l3-3 3 3-3 3z' fill='%232F5D4F' stroke='%232E2E2E' stroke-width='1.5' stroke-linejoin='round'/></svg>") 4 28, crosshair; } }
-  .edu-loading .edu-draw { animation: edu-draw 1.4s ease-in-out infinite alternate; }
+  .edu-boot-word { display: flex; gap: 2px; font-size: 34px; font-weight: 800; color: ${C.green}; letter-spacing: 1px; }
+  .edu-boot-word span { display: inline-block; animation: edu-bob 1.2s ease-in-out infinite; }
+  .edu-boot-word .edu-boot-dots { color: ${C.gold}; }
+  @keyframes edu-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+  @media (prefers-reduced-motion: reduce) { .edu-boot-word span { animation: none; } }
   .edu-bullets { list-style: disc; }
+  /* Letters on a coloring page are drawings, never text to select: a finger dragging across them must not
+     start a selection, which on a phone paints a second, highlighted copy of the glyph. */
+  .edu-picture svg, .edu-picture svg text { user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
+  .edu-picture svg text { pointer-events: none; }
   .edu-bullets li::marker { color: ${C.green}; }
   /* A picture that is filled in rather than drawn on has no nibs, so it shows every crayon and
      gives the picture the room the nibs would have taken. */
   .edu-crayons-all .edu-crayon.edu-wide-only { display: block; }
+  .edu-note-quiet::placeholder { font-weight: 400; color: #8A9188; opacity: 1; }
   .edu-crayon-wide { display: none; }
   @media (min-width: 700px) { .edu-crayon-wide { display: block; } }
   .edu-pad-fill .edu-pad-col { width: min(100%, 50vh); }
@@ -932,7 +1020,7 @@ const KID_ANIMATION = `
 .edu-side { display: none; }
 .edu-page-stars { display: none; }
 @media (min-width: 700px) {
-  .edu-page-stars { display: block; position: fixed; inset: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 0; opacity: 0.55; }
+  .edu-page-stars { display: block; position: fixed; top: 0; right: 0; bottom: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 0; opacity: 0.55; }
   /* Loose text outside the tiles carries a backing in the page's own color, so no star ever
      sits behind a heading, a paragraph or a text link. Inside a tile the tile already covers it. */
   .edu-wrap :is(p, h1, h2, h3, li, label) { background: #F5F7F1; }
@@ -1037,8 +1125,8 @@ function WonderButton({ onClick, children }) {
     <button type="button" onClick={onClick}
       style={{ position: 'relative', overflow: 'hidden', fontFamily: FONT, fontSize: 17, fontWeight: 700, color: '#fff', background: C.green, border: `2px solid ${C.green}`, borderRadius: 12, padding: '14px 18px', minHeight: 52, width: '100%', cursor: 'pointer' }}>
       <span className="edu-wonder-shine" aria-hidden="true"
-        style={{ position: 'absolute', inset: 0, background: `linear-gradient(100deg, transparent 35%, ${C.gold}66 50%, transparent 65%)`, backgroundSize: '220% 100%', pointerEvents: 'none' }} />
-      <svg viewBox="0 0 120 40" aria-hidden="true" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', pointerEvents: 'none' }} preserveAspectRatio="none">
+        style={{ position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, background: `linear-gradient(100deg, transparent 35%, ${C.gold}66 50%, transparent 65%)`, backgroundSize: '220% 100%', pointerEvents: 'none' }} />
+      <svg viewBox="0 0 120 40" aria-hidden="true" style={{ position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none' }} preserveAspectRatio="none">
         <Spark x={14} y={11} size={4.5} className="edu-spark" />
         <Spark x={104} y={27} size={5.5} className="edu-spark edu-spark-2" />
         <Spark x={92} y={9} size={3.5} className="edu-spark edu-spark-3" />
@@ -1130,7 +1218,7 @@ function BigTap({ onClick, label, dir = 'next', disabled = false }) {
 function StarBurst() {
   const bits = [[-70, -40], [70, -46], [-46, 34], [52, 40], [0, -74], [-88, -4], [88, 8], [12, 62]];
   return (
-    <span aria-hidden="true" style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', pointerEvents: 'none' }}>
+    <span aria-hidden="true" style={{ position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', pointerEvents: 'none' }}>
       {bits.map(([dx, dy], i) => (
         <svg key={i} className="edu-burst" viewBox="0 0 24 24" width="22" height="22"
           style={{ position: 'absolute', '--dx': `${dx}px`, '--dy': `${dy}px`, animationDelay: `${i * 0.05}s` }}>
@@ -1156,6 +1244,9 @@ function RichText({ text, size = 17, color = null, center = false, lineGap = 10 
       {lines.map((line, i) => {
         const trimmed = line.trim();
         if (!trimmed) return <div key={i} style={{ height: 6 }} />;
+        // A bullet line: hanging indent, always left-aligned, sitting as a narrow block in the middle when the text is centered.
+        const labelled = /^\*\*[^*]{1,40}:\*\*\s/.test(trimmed);
+        if (trimmed.startsWith('• ') || labelled) return <p key={i} style={{ margin: center ? '0 auto 6px' : '0 0 6px', maxWidth: center ? '32ch' : undefined, fontSize: size, lineHeight: 1.6, textAlign: 'left', paddingLeft: 18, textIndent: -18, color: color || undefined }}>{'• '}{inlineRich(labelled ? trimmed : trimmed.slice(2), i)}</p>;
         const centered = /^\[\[.*\]\]$/.test(trimmed);
         if (centered) return <p key={i} style={{ margin: '14px 0', fontSize: size + 3, fontWeight: 700, textAlign: 'center', letterSpacing: 0.3, color: color || C.ink }}>{inlineRich(trimmed.slice(2, -2).trim(), i)}</p>;
         return <p key={i} style={{ margin: `0 0 ${lineGap}px`, fontSize: size, lineHeight: 1.6, textAlign: center ? 'center' : 'left', color: color || undefined }}>{inlineRich(trimmed, i)}</p>;
@@ -1245,7 +1336,8 @@ function PercentGridPic({ shaded = 25 }) {
   );
 }
 function GroupsPic({ a = 2, b = 1, aLabel = '', bLabel = '' }) {
-  const row = (n, y, color) => Array.from({ length: Math.min(n, 12) }, (_, i) => <circle key={i} cx={40 + i * 9.5} cy={y} r="3.6" fill={color} stroke="#2E2E2E" strokeWidth="0.6" />);
+  const big = Math.max(a, b) <= 4; const r = big ? 9 : 3.6; const step = big ? 24 : 9.5;
+  const row = (n, y, color) => Array.from({ length: Math.min(n, 12) }, (_, i) => <circle key={i} cx={46 + i * step} cy={y} r={r} fill={color} stroke="#2E2E2E" strokeWidth={big ? 1.2 : 0.6} />);
   return (
     <Diagram label={`${a} and ${b}`}>
       {row(a, 34, '#3E7CB1')}{row(b, 64, C.gold)}
@@ -1292,10 +1384,11 @@ function PunnettPic({ p1 = 'Bb', p2 = 'Bb' }) {
   const cells = [0, 1].flatMap((r) => [0, 1].map((c) => `${p1[c]}${p2[r]}`.split('').sort().join('')));
   return (
     <Diagram label="A Punnett square">
-      {[0, 1].map((c) => <text key={`t${c}`} x={70 + c * 34} y="14" {...DIAGRAM_TEXT}>{p1[c]}</text>)}
-      {[0, 1].map((r) => <text key={`l${r}`} x="44" y={38 + r * 34} {...DIAGRAM_TEXT}>{p2[r]}</text>)}
-      {cells.map((g, i) => { const brown = g.includes('B'); return <g key={i}><rect x={54 + (i % 2) * 34} y={20 + Math.floor(i / 2) * 34} width="32" height="32" fill={brown ? '#E8D2B8' : '#C9DDF5'} stroke="#2E2E2E" strokeWidth="1" /><text x={70 + (i % 2) * 34} y={38 + Math.floor(i / 2) * 34} {...DIAGRAM_TEXT}>{g}</text></g>; })}
-      <text x="128" y="40" {...DIAGRAM_TEXT}>B = brown</text><text x="128" y="52" {...DIAGRAM_TEXT}>b = blue</text><text x="80" y="96" {...DIAGRAM_TEXT}>three of four show brown</text>
+      {[0, 1].map((c) => <text key={`t${c}`} x={52 + c * 34} y="14" {...DIAGRAM_TEXT}>{p1[c]}</text>)}
+      {[0, 1].map((r) => <text key={`l${r}`} x="26" y={38 + r * 34} {...DIAGRAM_TEXT}>{p2[r]}</text>)}
+      {cells.map((g, i) => { const brown = g.includes('B'); return <g key={i}><rect x={36 + (i % 2) * 34} y={20 + Math.floor(i / 2) * 34} width="32" height="32" fill={brown ? '#E8D2B8' : '#C9DDF5'} stroke="#2E2E2E" strokeWidth="1" /><text x={52 + (i % 2) * 34} y={38 + Math.floor(i / 2) * 34} {...DIAGRAM_TEXT}>{g}</text></g>; })}
+      <text x="112" y="40" {...DIAGRAM_TEXT} textAnchor="start">B = brown</text><text x="112" y="52" {...DIAGRAM_TEXT} textAnchor="start">b = blue</text>
+      <text x="80" y="96" {...DIAGRAM_TEXT}>{['none', 'one', 'two', 'three', 'all four'][cells.filter((g) => g.includes('B')).length]} of the four show brown</text>
     </Diagram>
   );
 }
@@ -1528,10 +1621,13 @@ function SpinnerPic({ sectors = 8, win = 3 }) {
   const arc = (i) => { const a0 = (i / sectors) * Math.PI * 2; const a1 = ((i + 1) / sectors) * Math.PI * 2; return `M80 50 L${80 + Math.cos(a0) * 36} ${50 + Math.sin(a0) * 36} A36 36 0 0 1 ${80 + Math.cos(a1) * 36} ${50 + Math.sin(a1) * 36} Z`; };
   return <Diagram label={`${win} of ${sectors} sectors win`}>{Array.from({ length: sectors }, (_, i) => <path key={i} d={arc(i)} fill={i < win ? C.gold : '#FFFFFF'} stroke="#2E2E2E" strokeWidth="0.8" />)}<polygon points="80,50 76,20 84,20" fill="#2E2E2E" /><text x="80" y="96" {...DIAGRAM_TEXT}>{win} of {sectors} = {win}/{sectors}</text></Diagram>;
 }
-const Box = ({ x, y, w, h, text, fill = '#FFFFFF' }) => { const [X, Y, W, H] = [x, y, w, h].map(Number); return <g><rect x={X} y={Y} width={W} height={H} rx="6" fill={fill} stroke="#2E2E2E" strokeWidth="1" /><text x={X + W / 2} y={Y + H / 2} {...DIAGRAM_TEXT} fontSize={text.length > 12 ? 4.2 : 5.2}>{text}</text></g>; };
+const Box = ({ x, y, w, h, text, fill = '#FFFFFF' }) => { const [X, Y, W, H] = [x, y, w, h].map(Number); const size = Math.min(5.2, Math.max(3.2, (W * 1.5) / Math.max(4, text.length))); return <g><rect x={X} y={Y} width={W} height={H} rx="6" fill={fill} stroke="#2E2E2E" strokeWidth="1" /><text x={X + W / 2} y={Y + H / 2} {...DIAGRAM_TEXT} fontSize={size}>{text}</text></g>; };
 function FlowPic({ steps = [] }) {
-  const n = steps.length; const w = Math.min(40, (150 - (n - 1) * 12) / n); const gap = (160 - n * w) / (n + 1);
-  return <Diagram label={steps.join(', then ')}>{steps.map((t, i) => <g key={i}><Box x={gap + i * (w + gap)} y="38" w={w} h="24" text={t} fill={i === n - 1 ? C.goldSoft : '#FFFFFF'} />{i < n - 1 && <Arrow d={`M${gap + i * (w + gap) + w + 2} 50 L${gap + (i + 1) * (w + gap) - 2} 50`} />}</g>)}</Diagram>;
+  // Up to four boxes in a row; a longer chain wraps to a second row and the arrow turns the corner.
+  const per = steps.length > 4 ? Math.ceil(steps.length / 2) : steps.length; const rows = Math.ceil(steps.length / per);
+  const w = Math.min(40, (150 - (per - 1) * 12) / per); const gap = (160 - per * w) / (per + 1); const y0 = rows > 1 ? 18 : 38;
+  const at = (i) => [gap + (i % per) * (w + gap), y0 + Math.floor(i / per) * 40];
+  return <Diagram label={steps.join(', then ')}>{steps.map((t, i) => { const [x, y] = at(i); const nxt = i < steps.length - 1 ? at(i + 1) : null; return <g key={i}><Box x={x} y={y} w={w} h={24} text={t} fill={i === steps.length - 1 ? C.goldSoft : '#FFFFFF'} />{nxt && (nxt[1] === y ? <Arrow d={`M${x + w + 2} ${y + 12} L${nxt[0] - 2} ${y + 12}`} /> : <Arrow d={`M${x + w / 2} ${y + 26} C${x + w / 2} ${y + 40} ${nxt[0] + w / 2} ${y + 26} ${nxt[0] + w / 2} ${nxt[1] - 2}`} />)}</g>; })}</Diagram>;
 }
 function LoopPic({ steps = [] }) {
   const n = steps.length; const cx = 80; const cy = 50; const r = 34;
@@ -1628,7 +1724,56 @@ function OceanPic() {
 function HeatPic() {
   return <Diagram label="Conduction, convection, radiation"><rect x="8" y="34" width="44" height="14" fill="#D9534F" /><rect x="8" y="48" width="44" height="14" fill="#F4A259" /><text x="30" y="76" {...DIAGRAM_TEXT}>touch</text><path d="M62 70 V32 H102 V70" fill="none" stroke="#2E2E2E" strokeWidth="1.2" /><path d="M72 62 C72 44 92 44 92 62" fill="none" stroke="#D9534F" strokeWidth="1.4" markerEnd="url(#eduArrow)" /><text x="82" y="82" {...DIAGRAM_TEXT}>flow</text><circle cx="130" cy="42" r="10" fill={C.gold} />{[0, 1, 2].map((i) => <line key={i} x1={118 + i * 12} y1="58" x2={114 + i * 12} y2="70" stroke={C.gold} strokeWidth="1.4" />)}<text x="130" y="82" {...DIAGRAM_TEXT}>rays</text></Diagram>;
 }
-const DIAGRAMS = { flow: FlowPic, loop: LoopPic, states: StatesPic, thermometer: ThermometerPic, circuit: CircuitPic, orbits: OrbitsPic, mixture: MixturePic, densitypic: DensityPic, pyramid: PyramidPic, molecule: MoleculePic, plates: PlatesPic, moths: MothsPic, layers: LayersPic, celldiv: CellDivPic, basepairs: BasePairsPic, homology: HomologyPic, twoway: TwoWayPic, phscale: PhScalePic, reaction: ReactionPic, gaslaw: GasLawPic, bonds: BondsPic, momentum: MomentumPic, wave: WavePic, work: WorkPic, earthlayers: EarthLayersPic, ocean: OceanPic, heat: HeatPic, equalgroups: EqualGroupsPic, fracgrid: FracGridPic, opspic: OpsPic, cuboid: CuboidPic, fracpieces: FracPiecesPic, balance: BalancePic, circlepic: CirclePic, doubling: DoublingPic, growthbars: GrowthBarsPic, plot: PlotPic, tiles: TilesPic, sector: SectorPic, trigtri: TrigTriPic, similar: SimilarPic, reflect: ReflectPic, unitcircle: UnitCirclePic, scatter: ScatterPic, dotplot: DotPlotPic, spinner: SpinnerPic, cycle: CyclePic, leaf: LeafPic, pythag: PythagPic, cell: CellPic, forces: ForcesPic, curves: CurvesPic, atom: AtomPic, daynight: DayNightPic, percentgrid: PercentGridPic, groups: GroupsPic, angles: AnglesPic, lightray: LightRayPic, punnett: PunnettPic, alleles: AllelesPic, beaker: BeakerPic };
+function TimelinePic({ events = [] }) {
+  const years = events.map((e) => e[0]); const lo = Math.min(...years); const hi = Math.max(...years); const span = Math.max(1, hi - lo);
+  const X = (y) => 16 + ((y - lo) / span) * 128; const label = (y) => (y < 0 ? `${-y} BC` : `${y}`);
+  return (
+    <Diagram label={events.map((e) => `${label(e[0])} ${e[1]}`).join(', ')}>
+      <line x1="10" y1="52" x2="150" y2="52" stroke="#2E2E2E" strokeWidth="1.4" /><polygon points="150,48 156,52 150,56" fill="#2E2E2E" />
+      {(() => {
+        // Dots sit at their true years; labels spread out so close years do not pile up, joined by a thin leader.
+        let last = -100; const placed = events.map(([y, t], i) => { const x = X(y); const lx = Math.max(x, last + 22); last = lx; return { x, lx, y, t, up: i % 2 === 0 }; });
+        return placed.map(({ x, lx, y, t, up }, i) => <g key={i}><line x1={x} y1="46" x2={x} y2="58" stroke="#2E2E2E" strokeWidth="1.2" /><circle cx={x} cy="52" r="3" fill={C.gold} stroke="#2E2E2E" strokeWidth="0.8" />{lx !== x && <line x1={x} y1={up ? 46 : 58} x2={lx} y2={up ? 44 : 64} stroke={C.muted} strokeWidth="0.6" />}<text x={lx} y={up ? 34 : 72} {...DIAGRAM_TEXT} fontSize="5.4" fontWeight="700">{label(y)}</text><text x={lx} y={up ? 42 : 80} {...DIAGRAM_TEXT} fontSize="4.4">{t}</text></g>);
+      })()}
+    </Diagram>
+  );
+}
+const MAP_SHAPES = {
+  texas: [[52, 6], [74, 6], [74, 36], [120, 36], [126, 60], [124, 76], [80, 96], [50, 64], [24, 44], [52, 44]],
+  us: [[8, 30], [40, 22], [80, 18], [120, 22], [150, 30], [152, 48], [136, 58], [128, 72], [104, 74], [96, 86], [80, 72], [60, 74], [36, 70], [12, 56]],
+};
+const WORLD_SHAPES = [[[10, 14], [50, 10], [64, 30], [46, 52], [28, 48], [14, 30]], [[40, 54], [56, 52], [60, 70], [48, 92], [40, 72]], [[76, 16], [96, 14], [100, 32], [84, 36], [76, 28]], [[78, 38], [100, 38], [104, 60], [92, 80], [80, 66]], [[98, 10], [152, 12], [156, 40], [130, 56], [104, 42], [100, 30]], [[126, 66], [148, 66], [150, 84], [128, 84]]];
+function MapPic({ region = 'texas', spots = [] }) {
+  const land = { fill: '#DCEBD3', stroke: '#2E2E2E', strokeWidth: 1.2, strokeLinejoin: 'round' };
+  return (
+    <Diagram label={`${region} map${spots.length ? ': ' + spots.map((s) => s[2]).join(', ') : ''}`}>
+      <rect x="0" y="0" width="160" height="100" fill={region === 'town' ? '#F5F7F1' : '#C9DDF5'} />
+      {region === 'town' ? <g stroke="#FFFFFF" strokeWidth="6">{[20, 60, 100, 140].map((x) => <line key={`v${x}`} x1={x} y1="0" x2={x} y2="100" />)}{[16, 52, 88].map((y) => <line key={`h${y}`} x1="0" y1={y} x2="160" y2={y} />)}</g>
+        : region === 'world' ? WORLD_SHAPES.map((pts, i) => <polygon key={i} points={pts.map((p) => p.join(',')).join(' ')} {...land} />)
+        : <polygon points={MAP_SHAPES[region].map((p) => p.join(',')).join(' ')} {...land} />}
+      {spots.map(([x, y, t], i) => <g key={i}><circle cx={x} cy={y} r="3.4" fill={C.gold} stroke="#2E2E2E" strokeWidth="0.9" /><text x={x} y={y - 6} {...DIAGRAM_TEXT} fontSize="4.6" fontWeight="700">{t}</text></g>)}
+    </Diagram>
+  );
+}
+function BranchesPic({ checks = false }) {
+  return <Diagram label="Three branches of government"><Box x="6" y="36" w="44" h="26" text="Congress" fill="#C9DDF5" /><Box x="58" y="36" w="44" h="26" text="President" fill="#FFF3C8" /><Box x="110" y="36" w="44" h="26" text="Courts" fill="#DCEBD3" /><text x="28" y="76" {...DIAGRAM_TEXT}>makes laws</text><text x="80" y="76" {...DIAGRAM_TEXT}>carries out</text><text x="132" y="76" {...DIAGRAM_TEXT}>judges</text>{checks && <><Arrow d="M28 34 C40 12 68 12 80 34" color={C.gold} /><Arrow d="M80 64 C92 88 120 88 132 64" color={C.gold} /><Arrow d="M132 34 C110 6 50 6 28 34" color={C.gold} /><text x="80" y="10" {...DIAGRAM_TEXT}>each checks the others</text></>}</Diagram>;
+}
+function StackPic({ levels = [] }) {
+  return <Diagram label={levels.join(' over ')}>{levels.map((t, i) => <Box key={i} x={30 + i * 10} y={12 + i * 26} w={100 - i * 20} h={20} text={t} fill={['#C9DDF5', '#FFF3C8', '#DCEBD3', '#F6C9C4'][i % 4]} />)}</Diagram>;
+}
+function CompassPic() {
+  return <Diagram label="A compass rose"><circle cx="80" cy="50" r="34" fill="#FFFFFF" stroke="#2E2E2E" strokeWidth="1.2" /><polygon points="80,18 86,50 80,82 74,50" fill={C.gold} stroke="#2E2E2E" strokeWidth="0.8" /><polygon points="48,50 80,44 112,50 80,56" fill="#C9DDF5" stroke="#2E2E2E" strokeWidth="0.8" /><text x="80" y="10" {...DIAGRAM_TEXT} fontSize="7">N</text><text x="80" y="94" {...DIAGRAM_TEXT} fontSize="7">S</text><text x="122" y="52" {...DIAGRAM_TEXT} fontSize="7">E</text><text x="38" y="52" {...DIAGRAM_TEXT} fontSize="7">W</text></Diagram>;
+}
+function FlagPic({ stars = false, texas = false }) {
+  if (texas) return <Diagram label="The Texas flag"><rect x="20" y="16" width="120" height="68" fill="#FFFFFF" stroke="#2E2E2E" strokeWidth="1" /><rect x="20" y="16" width="40" height="68" fill="#2B4C8C" /><rect x="60" y="50" width="80" height="34" fill="#D9534F" /><BigStarSmall x={40} y={50} /></Diagram>;
+  return <Diagram label="The United States flag">{Array.from({ length: 13 }, (_, i) => <rect key={i} x="20" y={16 + i * 5.2} width="120" height="5.2" fill={i % 2 ? '#FFFFFF' : '#D9534F'} />)}<rect x="20" y="16" width="48" height="36.4" fill="#2B4C8C" />{stars && Array.from({ length: 50 }, (_, i) => <circle key={`s${i}`} cx={24 + (i % 10) * 4.4} cy={19 + Math.floor(i / 10) * 7} r="1.1" fill="#FFFFFF" />)}<rect x="20" y="16" width="120" height="67.6" fill="none" stroke="#2E2E2E" strokeWidth="1" /><text x="80" y="94" {...DIAGRAM_TEXT}>{stars ? 'fifty stars, thirteen stripes' : 'thirteen stripes'}</text></Diagram>;
+}
+function BigStarSmall({ x, y }) { const pts = Array.from({ length: 10 }, (_, i) => { const a = -Math.PI / 2 + (i * Math.PI) / 5; const r = i % 2 ? 5 : 12; return `${x + Math.cos(a) * r},${y + Math.sin(a) * r}`; }).join(' '); return <polygon points={pts} fill="#FFFFFF" />; }
+function SignPic({ text = 'STOP', color = '#D9534F' }) {
+  const oct = text === 'STOP';
+  return <Diagram label={`A ${text} sign`}>{oct ? <polygon points="62,22 98,22 116,40 116,60 98,78 62,78 44,60 44,40" fill={color} stroke="#2E2E2E" strokeWidth="1.2" /> : <rect x="44" y="30" width="72" height="40" rx="4" fill={color} stroke="#2E2E2E" strokeWidth="1.2" />}<text x="80" y="50" {...DIAGRAM_TEXT} fontSize="12" fontWeight="800" fill="#FFFFFF">{text}</text></Diagram>;
+}
+const DIAGRAMS = { timeline: TimelinePic, map: MapPic, branches: BranchesPic, stack: StackPic, compass: CompassPic, flag: FlagPic, sign: SignPic, flow: FlowPic, loop: LoopPic, states: StatesPic, thermometer: ThermometerPic, circuit: CircuitPic, orbits: OrbitsPic, mixture: MixturePic, densitypic: DensityPic, pyramid: PyramidPic, molecule: MoleculePic, plates: PlatesPic, moths: MothsPic, layers: LayersPic, celldiv: CellDivPic, basepairs: BasePairsPic, homology: HomologyPic, twoway: TwoWayPic, phscale: PhScalePic, reaction: ReactionPic, gaslaw: GasLawPic, bonds: BondsPic, momentum: MomentumPic, wave: WavePic, work: WorkPic, earthlayers: EarthLayersPic, ocean: OceanPic, heat: HeatPic, equalgroups: EqualGroupsPic, fracgrid: FracGridPic, opspic: OpsPic, cuboid: CuboidPic, fracpieces: FracPiecesPic, balance: BalancePic, circlepic: CirclePic, doubling: DoublingPic, growthbars: GrowthBarsPic, plot: PlotPic, tiles: TilesPic, sector: SectorPic, trigtri: TrigTriPic, similar: SimilarPic, reflect: ReflectPic, unitcircle: UnitCirclePic, scatter: ScatterPic, dotplot: DotPlotPic, spinner: SpinnerPic, cycle: CyclePic, leaf: LeafPic, pythag: PythagPic, cell: CellPic, forces: ForcesPic, curves: CurvesPic, atom: AtomPic, daynight: DayNightPic, percentgrid: PercentGridPic, groups: GroupsPic, angles: AnglesPic, lightray: LightRayPic, punnett: PunnettPic, alleles: AllelesPic, beaker: BeakerPic };
 // The periodic table, drawn here so a lesson can show it and a question can light up the element it
 // names. Cells are tinted by family; a highlighted element, period or group gets a gold edge.
 const PT_SYMBOLS = 'H He Li Be B C N O F Ne Na Mg Al Si P S Cl Ar K Ca Sc Ti V Cr Mn Fe Co Ni Cu Zn Ga Ge As Se Br Kr Rb Sr Y Zr Nb Mo Tc Ru Rh Pd Ag Cd In Sn Sb Te I Xe Cs Ba La Ce Pr Nd Pm Sm Eu Gd Tb Dy Ho Er Tm Yb Lu Hf Ta W Re Os Ir Pt Au Hg Tl Pb Bi Po At Rn Fr Ra Ac Th Pa U Np Pu Am Cm Bk Cf Es Fm Md No Lr Rf Db Sg Bh Hs Mt Ds Rg Cn Nh Fl Mc Lv Ts Og'.split(' ');
@@ -1647,9 +1792,9 @@ function ptFamily(z, row, col) {
   if (col >= 3 && col <= 12) return '#F3E8C8'; return '#DDE3EB';
 }
 function PeriodicPic({ highlight = [], period = null, group = null }) {
-  const cell = 20; const gap = 1.4; const w = 18 * (cell + gap); const h = 10 * (cell + gap) + 6;
+  const cell = 20; const gap = 1.4; const w = 18 * (cell + gap); const h = 10 * (cell + gap) + 6; const H = h + 26;
   return (
-    <svg viewBox={`0 0 ${w} ${h}`} width="100%" role="img" aria-label="The periodic table" style={{ display: 'block', maxWidth: 720, margin: '0 auto' }}>
+    <svg viewBox={`0 0 ${w} ${H}`} width="100%" role="img" aria-label="The periodic table" style={{ display: 'block', maxWidth: 720, margin: '0 auto' }}>
       {PT_SYMBOLS.map((sym, i) => {
         const z = i + 1; const [row, col] = ptPlace(z); const x = (col - 1) * (cell + gap); const y = (row - 1) * (cell + gap) + (row >= 9 ? 6 : 0);
         const lit = highlight.includes(sym) || (period && row === period) || (group && col === group && row <= 7);
@@ -1660,6 +1805,8 @@ function PeriodicPic({ highlight = [], period = null, group = null }) {
           </g>
         );
       })}
+      {/* The legend: the family colors, so the table itself says what a question asks. */}
+      {[['#F6C9C4', 'alkali metals'], ['#F9DDB7', 'alkaline earth'], ['#F3E8C8', 'transition metals'], ['#DDE3EB', 'other metals'], ['#E3E9C6', 'metalloids'], ['#DCEBD3', 'nonmetals'], ['#CFE7E5', 'halogens'], ['#C9DDF5', 'noble gases']].map(([fill, name], i) => <g key={name}><rect x={4 + (i % 4) * 96} y={h - 2 + Math.floor(i / 4) * 12} width="9" height="9" rx="1.5" fill={fill} stroke="#A9B1AA" strokeWidth="0.5" /><text x={16 + (i % 4) * 96} y={h + 5.5 + Math.floor(i / 4) * 12} fontSize="7" fontFamily={FONT} fill={C.ink}>{name}</text></g>)}
     </svg>
   );
 }
@@ -1775,9 +1922,14 @@ async function certificatePng(svgEl, w = 1600, h = 1100) {
   } finally { URL.revokeObjectURL(url); }
 }
 function saveBlob(name, blob) { const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000); }
+// The loading word: each letter bobs in turn, the same in the page shell and on the app's loading screen.
+Object.assign(STORY_TITLES, Object.fromEntries(Object.entries(STORIES).map(([id, st]) => [id, { title: st.title, about: st.about || '' }])));
+function LoadingWord() {
+  return <div className="edu-boot-word" aria-hidden="true">{'Loading'.split('').map((ch, i) => <span key={i} style={{ animationDelay: `${i * 0.12}s` }}>{ch}</span>)}<span className="edu-boot-dots" style={{ animationDelay: '0.9s' }}>...</span></div>;
+}
 // A centered heading with an i hanging off its right, so the word itself never shifts.
 // A story's illustration, or a placeholder wearing its serial until Mikey has made the picture.
-function StoryArt({ serial, alt }) {
+function StoryArt({ serial, alt, fallback = null }) {
   // The page knows which pictures exist (the build lists art/stories), so a missing one shows its
   // placeholder at once, with no request going out for a file that is not there.
   const present = typeof window !== 'undefined' && Array.isArray(window.__eduArt) && window.__eduArt.includes(serial);
@@ -1785,7 +1937,8 @@ function StoryArt({ serial, alt }) {
   return (
     <div style={{ margin: '0 0 14px' }}>
       {!missing && <img src={`art/stories/${serial}.webp`} alt={alt} loading="lazy" onError={() => setMissing(true)} style={{ display: 'block', width: '100%', borderRadius: 12 }} />}
-      {missing && (
+      {missing && fallback && <div style={{ padding: '4px 0 0' }}><Picture visual={fallback} /><p style={{ margin: '4px 0 0', fontSize: 12, color: C.muted, textAlign: 'center' }}>Illustration {serial} to come</p></div>}
+      {missing && !fallback && (
         <div aria-label={`Illustration ${serial} to come`} style={{ aspectRatio: '4 / 3', borderRadius: 12, border: `2px dashed ${C.muted}`, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 6, color: C.muted, background: 'rgba(255,255,255,0.5)' }}>
           <svg viewBox="0 0 24 24" width="34" height="34" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2" fill="none" stroke="currentColor" strokeWidth="1.6" /><circle cx="8.5" cy="9.5" r="1.8" fill="currentColor" /><path d="M4 18l5-5 4 4 3-3 4 4" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" /></svg>
           <span style={{ fontSize: 13, fontWeight: 600, letterSpacing: 0.5 }}>Illustration {serial}</span>
@@ -1794,38 +1947,42 @@ function StoryArt({ serial, alt }) {
     </div>
   );
 }
-function StoryFold({ story, open, onToggle, wonder }) {
-  const spoken = [`${story.title}.`, ...story.words, wonder ? `Something to wonder about. ${wonder.prompt}` : ''].join(' ').trim();
+// The story page body: title, pictures where they fall in the text, the words, one speaker.
+function StoryBody({ story }) {
+  // Read-along: the title, then each paragraph in turn, the one being read lit until the voice moves on.
+  const [readingAt, setReadingAt] = useState(-1); const stopRef = useRef(null);
+  useEffect(() => () => { if (stopRef.current) stopRef.current(); }, []);
+  const toggle = () => {
+    if (stopRef.current) { stopRef.current(); stopRef.current = null; setReadingAt(-1); return; }
+    stopRef.current = speakSequence([`${story.title}.`, ...story.words], (i) => setReadingAt(i - 1), () => { stopRef.current = null; setReadingAt(-1); }, [`${story.art}-0`, ...story.words.map((_, i) => `${story.art}-${i + 1}`)]);
+  };
+  const reading = stopRef.current !== null && readingAt >= -1 && stopRef.current;
   return (
     <div style={{ ...card, background: '#FFF8E8', borderColor: '#F1E3BE' }}>
-      <button type="button" onClick={onToggle} aria-expanded={open} style={{ fontFamily: FONT, width: '100%', background: 'none', border: 'none', padding: 0, cursor: 'pointer', color: C.ink, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, fontSize: 16, fontWeight: 700 }}>
-        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M4 5h6a3 3 0 0 1 3 3v11a2 2 0 0 0-2-2H4zM20 5h-6a3 3 0 0 0-3 3v11a2 2 0 0 1 2-2h7z" fill="none" stroke={C.gold} strokeWidth="1.8" strokeLinejoin="round" /></svg>
-        Story-based learning <span aria-hidden="true" style={{ fontSize: 13, color: C.muted }}>{open ? '▴' : '▾'}</span>
-      </button>
-      {open && (
-        <div style={{ marginTop: 12 }}>
-          <p style={{ margin: '0 0 4px', fontSize: 19, fontWeight: 700, textAlign: 'center' }}>{story.title}</p>
-          {/* Where the character stands in their life, one quiet line, only when the core cast is here. */}
-          <StoryArt serial={story.art} alt={story.alt} />
-          {story.words.map((t, i) => (
-            <React.Fragment key={i}>
-              <RichText text={t} size={17} lineGap={12} />
-              {(story.more || []).filter((m) => m.after === i).map((m) => <StoryArt key={m.serial} serial={m.serial} alt={m.alt} />)}
-            </React.Fragment>
-          ))}
-          {/* One approved wonder question, the same one for this story every time; nothing is typed or kept. */}
-          {wonder && (
-            <div style={{ marginTop: 14, padding: '12px 14px', borderRadius: 10, background: C.greenSoft }}>
-              <p style={{ margin: '0 0 4px', fontSize: 13, fontWeight: 700, color: C.green }}>Something to wonder about</p>
-              <p style={{ margin: 0, fontSize: 16 }}>{wonder.prompt}</p>
-            </div>
-          )}
-          <SpeakButton full text={spoken} label="Read the story to me" />
-        </div>
-      )}
+      <p style={{ margin: '0 0 8px', fontSize: 22, fontWeight: 700, textAlign: 'center' }}>{story.title}</p>
+      <StoryArt serial={story.art} alt={story.alt} fallback={story.diagram || null} />
+      {story.words.map((t, i) => (
+        <React.Fragment key={i}>
+          <div style={{ borderRadius: 10, padding: readingAt === i ? '6px 10px' : 0, margin: readingAt === i ? '0 -10px' : 0, background: readingAt === i ? C.goldSoft : 'transparent', transition: 'background 200ms' }}><RichText text={t} size={17} lineGap={12} /></div>
+          {(story.more || []).filter((m) => m.after === i).map((m) => <StoryArt key={m.serial} serial={m.serial} alt={m.alt} />)}
+        </React.Fragment>
+      ))}
+      {canSpeak()
+        ? <Btn full kind={reading ? 'secondary' : 'primary'} onClick={toggle}>{reading ? 'Stop reading' : 'Read the story to me'}</Btn>
+        : <p style={{ margin: '0 0 12px', fontSize: 14, color: C.muted }}>Reading aloud is not available on this device or in this preview. The words are all on screen.</p>}
     </div>
   );
 }
+// The since-you-last-looked line, built from pieces so the punctuation stays clean.
+function sinceLine(since) {
+  const bits = [];
+  if (since.mastered.length) bits.push(['mastered ', since.mastered.slice(0, 3).join(', '), since.mastered.length > 3 ? [' and ', String(since.mastered.length - 3), ' more'].join('') : ''].join(''));
+  if (since.questions) bits.push([String(since.questions), ' questions answered'].join(''));
+  if (since.stories) bits.push([String(since.stories), since.stories === 1 ? ' story read' : ' stories read'].join(''));
+  if (since.colored) bits.push([String(since.colored), since.colored === 1 ? ' picture colored' : ' pictures colored'].join(''));
+  return bits.join('; ');
+}
+function niceDateShort(iso) { const d = new Date(iso); return isNaN(d) ? '' : d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }); }
 function HeadWithInfo({ children, onClick, label, open }) {
   return <p style={{ margin: '0 0 8px', fontSize: 15, fontWeight: 600, textAlign: 'center' }}><span style={{ position: 'relative', display: 'inline-block' }}>{children}<span style={{ position: 'absolute', left: '100%', top: '50%', transform: 'translateY(-50%)', marginLeft: 8, lineHeight: 0 }}><InfoButton onClick={onClick} label={label} open={open} /></span></span></p>;
 }
@@ -1854,7 +2011,7 @@ function boxPoint(el, e) { const b = el.getBoundingClientRect(); return [((e.cli
 function Done({ show }) {
   if (!show) return null;
   return (
-    <div className="edu-cheer" style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', pointerEvents: 'none' }}>
+    <div className="edu-cheer" style={{ position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', pointerEvents: 'none' }}>
       <StarBurst />
       <svg viewBox="0 0 24 24" width="120" height="120" role="img" aria-label="Done"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4l-5.9 3.1 1.2-6.5L2.5 9.4l6.6-.9z" fill={C.gold} stroke="#2E2E2E" strokeWidth="1.2" strokeLinejoin="round" /></svg>
     </div>
@@ -2070,8 +2227,12 @@ function GamePad({ game, name, secondsLeft, total, onClose }) {
   );
 }
 // A tile's picture in the Let's Play grid: one small drawing per kind of game, no words.
-function GameThumb({ kind }) {
+function GameThumb({ kind, game = null }) {
   const k = '#2E2E2E';
+  // A connect-the-dots tile draws its own shape from the game's points; the name game shows a few dotted letters.
+  const dotShape = game && game.kind === 'dots' ? (game.shape && DOT_SHAPES[game.shape] ? DOT_SHAPES[game.shape].map(([x, y]) => [4 + (x * 32) / 100, 4 + (y * 32) / 100]) : null) : null;
+  if (dotShape) return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><polyline points={[...dotShape, dotShape[0]].map((pt) => pt.join(',')).join(' ')} fill="none" stroke={C.green} strokeWidth="2" strokeLinejoin="round" />{dotShape.map(([x, y], i) => <circle key={i} cx={x} cy={y} r="2.6" fill="#fff" stroke={k} strokeWidth="1.4" />)}</svg>;
+  if (game && game.kind === 'dots') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><text x="20" y="27" fontFamily={FONT} fontSize="18" fontWeight="700" textAnchor="middle" fill={C.green} stroke={k} strokeWidth="0.6" strokeDasharray="1.5 1.5">Ab</text></svg>;
   const body = {
     dots: <g><polyline points="8,32 20,8 32,32 6,17 34,17 8,32" fill="none" stroke={C.green} strokeWidth="2" strokeLinejoin="round" />{[[8, 32], [20, 8], [32, 32], [6, 17], [34, 17]].map(([x, y], i) => <circle key={i} cx={x} cy={y} r="3" fill={i === 0 ? C.gold : '#fff'} stroke={k} strokeWidth="1" />)}</g>,
     pairs: <g><rect x="5" y="9" width="16" height="22" rx="3" fill={C.greenSoft} stroke={k} strokeWidth="1.4" /><rect x="19" y="9" width="16" height="22" rx="3" fill="#fff" stroke={k} strokeWidth="1.4" /><circle cx="27" cy="20" r="5" fill={C.gold} /></g>,
@@ -2109,7 +2270,11 @@ const WIDE_CRAYONS = ['#7B1E1E', '#FFD9A0', '#1F7A5A', '#9FD8E8', '#4B3A8F'];
 const EXTRA_CRAYON = '#B8B8B8';
 // Some pictures are filled by tapping a part; others are drawn on freely with a finger.
 // Half are filled in by tapping a part, half are drawn on with a finger. A name page is always drawn.
-const COLORING_MODE = { ball: 'fill', sun: 'fill', balloon: 'fill', 'my-name': 'draw', star: 'draw', tree: 'fill', house: 'fill', fish: 'fill', cat: 'draw', flower: 'fill', boat: 'fill', rocket: 'fill', butterfly: 'draw', train: 'fill', car: 'fill', robot: 'fill', fishbowl: 'draw', castle: 'fill', dinosaur: 'draw', city: 'fill', garden: 'fill', playground: 'draw', farm: 'fill', birthday: 'draw' };
+const COLORING_MODE = { ball: 'fill', sun: 'fill', balloon: 'fill', 'my-name': 'draw', star: 'draw', tree: 'fill', house: 'fill', fish: 'draw', cat: 'draw', flower: 'draw', boat: 'fill', rocket: 'draw', butterfly: 'draw', train: 'fill', car: 'fill', robot: 'fill', fishbowl: 'draw', castle: 'fill', dinosaur: 'draw', city: 'draw', garden: 'fill', playground: 'draw', farm: 'draw', birthday: 'draw',
+  // Letter pages are colored by hand, crayon over the outline, like the drawings.
+  ...Object.fromEntries('abcdefghijklmnopqrstuvwxyz'.split('').map((ch) => [`letter-${ch}`, 'draw'])),
+  ...Object.fromEntries(['kite', 'ladybug', 'ice-cream', 'snowman', 'hot-air-balloon', 'lighthouse', 'treehouse', 'submarine', 'pirate-ship', 'dragon', 'space-station', 'jungle-waterfall'].map((pic) => [pic, 'draw'])),
+};
 // A ray stands square on the sun: its base lies across the rim, its point straight out.
 const ray = (i) => {
   const a = (i * Math.PI) / 4; const [cx, cy] = [Math.cos(a), Math.sin(a)]; const [px, py] = [-Math.sin(a), Math.cos(a)];
@@ -2139,7 +2304,7 @@ const COLORING_ART = {
   ],
   star: [
     { t: 'polygon', points: '50,10 60,38 90,38 66,56 75,86 50,68 25,86 34,56 10,38 40,38' },
-    { t: 'path', d: 'M20,14 C14,18 14,28 20,32 C12,32 6,26 6,22 C6,18 12,13 20,14 Z' },
+    { t: 'path', d: 'M12,14 C18,18 18,28 12,32 C20,32 26,26 26,22 C26,18 20,13 12,14 Z' },
     { t: 'path', d: 'M86,64 C86,68 89,70 92,70 C89,70 86,73 86,77 C86,73 83,70 80,70 C83,70 86,68 86,64 Z' },
     { t: 'path', d: 'M16,78 C16,82 19,84 22,84 C19,84 16,87 16,91 C16,87 13,84 10,84 C13,84 16,82 16,78 Z' },
     { t: 'path', d: 'M74,14 C74,17 76,19 79,19 C76,19 74,21 74,24 C74,21 72,19 69,19 C72,19 74,17 74,14 Z' },
@@ -2150,8 +2315,8 @@ const COLORING_ART = {
     { t: 'ellipse', cx: 50, cy: 92, rx: 42, ry: 7 },
     { t: 'path', d: 'M44,60 C44,72 42,82 38,91 L62,91 C58,82 56,72 56,60 Z' },
     { t: 'path', d: 'M50,16 C63,16 74,24 75,35 C84,40 83,54 72,58 C67,65 57,68 50,64 C43,68 33,65 28,58 C17,54 16,40 25,35 C26,24 37,16 50,16 Z' },
-    { t: 'circle', cx: 37, cy: 36, r: 5 }, { t: 'circle', cx: 61, cy: 32, r: 5 }, { t: 'circle', cx: 50, cy: 48, r: 5 }, { t: 'circle', cx: 64, cy: 48, r: 5 },
-    { t: 'path', d: 'M12,62 C15,57 19,61 21,63 C23,61 27,57 30,62 C26,65 22,66 21,65 C20,66 16,65 12,62 Z' },
+    { t: 'circle', cx: 31, cy: 41, r: 5 }, { t: 'circle', cx: 47, cy: 26, r: 5 }, { t: 'circle', cx: 69, cy: 36, r: 5 }, { t: 'circle', cx: 41, cy: 56, r: 5 }, { t: 'circle', cx: 62, cy: 53, r: 5 }, { t: 'circle', cx: 56, cy: 40, r: 4 },
+    { t: 'path', d: 'M56,14 C59,9 63,13 65,15 C67,13 71,9 74,14 C70,17 66,18 65,17 C64,18 60,17 56,14 Z' },
   ],
   house: [
     { t: 'circle', cx: 84, cy: 14, r: 9 },
@@ -2274,8 +2439,8 @@ const COLORING_ART = {
     { t: 'rect', x: 2, y: 88, width: 96, height: 8 },
   ],
   castle: [
-    { t: 'circle', cx: 86, cy: 12, r: 7 },
-    { t: 'path', d: 'M4,22 C4,16 10,13 14,16 C16,9 26,8 29,14 C35,13 38,20 33,23 L8,23 C4,23 3,22 4,22 Z' },
+    { t: 'circle', cx: 36, cy: 9, r: 6 },
+    { t: 'path', d: 'M34,27 C34,21 40,18 44,21 C46,14 56,13 59,19 C65,18 68,25 63,28 L38,28 C34,28 33,27 34,27 Z' },
     { t: 'path', d: 'M24,44 L76,44 L76,88 L24,88 Z' },
     { t: 'path', d: 'M24,44 L24,36 L32,36 L32,42 L40,42 L40,36 L48,36 L48,42 L56,42 L56,36 L64,36 L64,42 L72,42 L72,36 L76,36 L76,44 Z' },
     { t: 'rect', x: 8, y: 40, width: 18, height: 48 }, { t: 'rect', x: 74, y: 40, width: 18, height: 48 },
@@ -2394,12 +2559,13 @@ function ColorThumb({ picture, name, size = 72 }) {
       </svg>
     );
   }
-  const parts = COLORING_ART[picture] || [];
+  const parts = layoutLetterParts(COLORING_ART[picture] || []);
   return (
     <svg viewBox="0 0 100 100" {...box} preserveAspectRatio="xMidYMid meet" aria-hidden="true">
       {parts.map((p, i) => {
         const common = { key: i, fill: p.line ? 'none' : '#FFFFFF', stroke: '#2E2E2E', strokeWidth: 2.4, strokeLinecap: 'round', strokeLinejoin: 'round' };
-        if (p.t === 'text') return <text {...common} x={p.x} y={p.y} fontSize={p.size} fontFamily={FONT} fontWeight={800} textAnchor="middle" dominantBaseline="central" paintOrder="stroke" strokeWidth={3.2}>{p.text}</text>;
+        if (p.t === 'art') return <ArtPart key={i} p={p} thumb />;
+        if (p.t === 'text') { const g = letterPath(p); return g ? <path {...common} d={g.d} transform={g.transform} paintOrder="stroke" strokeWidth={1.5 / g.s} strokeLinejoin="round" /> : <text {...common} x={p.x} y={p.y} fontSize={p.size} fontFamily={FONT} fontWeight={400} textAnchor="middle" dominantBaseline="central" paintOrder="stroke" strokeWidth={3.6}>{p.text}</text>; }
         if (p.t === 'circle') return <circle {...common} cx={p.cx} cy={p.cy} r={p.r} />;
         if (p.t === 'ellipse') return <ellipse {...common} cx={p.cx} cy={p.cy} rx={p.rx} ry={p.ry} />;
         if (p.t === 'rect') return <rect {...common} x={p.x} y={p.y} width={p.width} height={p.height} rx={2} />;
@@ -2422,12 +2588,119 @@ function useSideways() {
   return on;
 }
 // The letter pages: the capital on the left, its lowercase on the right, and five circles of
+// Letter outlines baked from DejaVu Sans at build time (tools/glyphs.py), so a coloring letter is a
+// path, the same on every device: no font, no fake bold, no autosizing, and real widths for the layout.
+const GLYPH_UPM = 2048; const GLYPH_CAP = 1493;
+const LETTER_GLYPHS = {"A":{"d":"M700 1294 426 551H975ZM586 1493H815L1384 0H1174L1038 383H365L229 0H16Z","adv":1401,"box":[16,0,1384,1493]},"B":{"d":"M403 713V166H727Q890 166 968 234Q1047 301 1047 440Q1047 580 968 646Q890 713 727 713ZM403 1327V877H702Q850 877 922 932Q995 988 995 1102Q995 1215 922 1271Q850 1327 702 1327ZM201 1493H717Q948 1493 1073 1397Q1198 1301 1198 1124Q1198 987 1134 906Q1070 825 946 805Q1095 773 1178 672Q1260 570 1260 418Q1260 218 1124 109Q988 0 737 0H201Z","adv":1405,"box":[201,0,1260,1493]},"C":{"d":"M1319 1378V1165Q1217 1260 1102 1307Q986 1354 856 1354Q600 1354 464 1198Q328 1041 328 745Q328 450 464 294Q600 137 856 137Q986 137 1102 184Q1217 231 1319 326V115Q1213 43 1094 7Q976 -29 844 -29Q505 -29 310 178Q115 386 115 745Q115 1105 310 1312Q505 1520 844 1520Q978 1520 1096 1484Q1215 1449 1319 1378Z","adv":1430,"box":[115,-29,1319,1520]},"D":{"d":"M403 1327V166H647Q956 166 1100 306Q1243 446 1243 748Q1243 1048 1100 1188Q956 1327 647 1327ZM201 1493H616Q1050 1493 1253 1312Q1456 1132 1456 748Q1456 362 1252 181Q1048 0 616 0H201Z","adv":1577,"box":[201,0,1456,1493]},"E":{"d":"M201 1493H1145V1323H403V881H1114V711H403V170H1163V0H201Z","adv":1294,"box":[201,0,1163,1493]},"F":{"d":"M201 1493H1059V1323H403V883H995V713H403V0H201Z","adv":1178,"box":[201,0,1059,1493]},"G":{"d":"M1219 213V614H889V780H1419V139Q1302 56 1161 14Q1020 -29 860 -29Q510 -29 312 176Q115 380 115 745Q115 1111 312 1316Q510 1520 860 1520Q1006 1520 1138 1484Q1269 1448 1380 1378V1163Q1268 1258 1142 1306Q1016 1354 877 1354Q603 1354 466 1201Q328 1048 328 745Q328 443 466 290Q603 137 877 137Q984 137 1068 156Q1152 174 1219 213Z","adv":1587,"box":[115,-29,1419,1520]},"H":{"d":"M201 1493H403V881H1137V1493H1339V0H1137V711H403V0H201Z","adv":1540,"box":[201,0,1339,1493]},"I":{"d":"M201 1493H403V0H201Z","adv":604,"box":[201,0,403,1493]},"J":{"d":"M201 1493H403V104Q403 -166 300 -288Q198 -410 -29 -410H-106V-240H-43Q91 -240 146 -165Q201 -90 201 104Z","adv":604,"box":[-106,-410,403,1493]},"K":{"d":"M201 1493H403V862L1073 1493H1333L592 797L1386 0H1120L403 719V0H201Z","adv":1343,"box":[201,0,1386,1493]},"L":{"d":"M201 1493H403V170H1130V0H201Z","adv":1141,"box":[201,0,1130,1493]},"M":{"d":"M201 1493H502L883 477L1266 1493H1567V0H1370V1311L985 287H782L397 1311V0H201Z","adv":1767,"box":[201,0,1567,1493]},"N":{"d":"M201 1493H473L1135 244V1493H1331V0H1059L397 1249V0H201Z","adv":1532,"box":[201,0,1331,1493]},"O":{"d":"M807 1356Q587 1356 458 1192Q328 1028 328 745Q328 463 458 299Q587 135 807 135Q1027 135 1156 299Q1284 463 1284 745Q1284 1028 1156 1192Q1027 1356 807 1356ZM807 1520Q1121 1520 1309 1310Q1497 1099 1497 745Q1497 392 1309 182Q1121 -29 807 -29Q492 -29 304 181Q115 391 115 745Q115 1099 304 1310Q492 1520 807 1520Z","adv":1612,"box":[115,-29,1497,1520]},"P":{"d":"M403 1327V766H657Q798 766 875 839Q952 912 952 1047Q952 1181 875 1254Q798 1327 657 1327ZM201 1493H657Q908 1493 1036 1380Q1165 1266 1165 1047Q1165 826 1036 713Q908 600 657 600H403V0H201Z","adv":1235,"box":[201,0,1165,1493]},"Q":{"d":"M807 1356Q587 1356 458 1192Q328 1028 328 745Q328 463 458 299Q587 135 807 135Q1027 135 1156 299Q1284 463 1284 745Q1284 1028 1156 1192Q1027 1356 807 1356ZM1090 27 1356 -264H1112L891 -25Q858 -27 840 -28Q823 -29 807 -29Q492 -29 304 182Q115 392 115 745Q115 1099 304 1310Q492 1520 807 1520Q1121 1520 1309 1310Q1497 1099 1497 745Q1497 485 1392 300Q1288 115 1090 27Z","adv":1612,"box":[115,-264,1497,1520]},"R":{"d":"M909 700Q974 678 1036 606Q1097 534 1159 408L1364 0H1147L956 383Q882 533 812 582Q743 631 623 631H403V0H201V1493H657Q913 1493 1039 1386Q1165 1279 1165 1063Q1165 922 1100 829Q1034 736 909 700ZM403 1327V797H657Q803 797 878 864Q952 932 952 1063Q952 1194 878 1260Q803 1327 657 1327Z","adv":1423,"box":[201,0,1364,1493]},"S":{"d":"M1096 1444V1247Q981 1302 879 1329Q777 1356 682 1356Q517 1356 428 1292Q338 1228 338 1110Q338 1011 398 960Q457 910 623 879L745 854Q971 811 1078 702Q1186 594 1186 412Q1186 195 1040 83Q895 -29 614 -29Q508 -29 388 -5Q269 19 141 66V274Q264 205 382 170Q500 135 614 135Q787 135 881 203Q975 271 975 397Q975 507 908 569Q840 631 686 662L563 686Q337 731 236 827Q135 923 135 1094Q135 1292 274 1406Q414 1520 659 1520Q764 1520 873 1501Q982 1482 1096 1444Z","adv":1300,"box":[135,-29,1186,1520]},"T":{"d":"M-6 1493H1257V1323H727V0H524V1323H-6Z","adv":1251,"box":[-6,0,1257,1493]},"U":{"d":"M178 1493H381V586Q381 346 468 240Q555 135 750 135Q944 135 1031 240Q1118 346 1118 586V1493H1321V561Q1321 269 1176 120Q1032 -29 750 -29Q467 -29 322 120Q178 269 178 561Z","adv":1499,"box":[178,-29,1321,1493]},"V":{"d":"M586 0 16 1493H227L700 236L1174 1493H1384L815 0Z","adv":1401,"box":[16,0,1384,1493]},"W":{"d":"M68 1493H272L586 231L899 1493H1126L1440 231L1753 1493H1958L1583 0H1329L1014 1296L696 0H442Z","adv":2025,"box":[68,0,1958,1493]},"X":{"d":"M129 1493H346L717 938L1090 1493H1307L827 776L1339 0H1122L702 635L279 0H61L594 797Z","adv":1403,"box":[61,0,1339,1493]},"Y":{"d":"M-4 1493H213L627 879L1038 1493H1255L727 711V0H524V711Z","adv":1251,"box":[-4,0,1255,1493]},"Z":{"d":"M115 1493H1288V1339L344 170H1311V0H92V154L1036 1323H115Z","adv":1403,"box":[92,0,1311,1493]},"a":{"d":"M702 563Q479 563 393 512Q307 461 307 338Q307 240 372 182Q436 125 547 125Q700 125 792 234Q885 342 885 522V563ZM1069 639V0H885V170Q822 68 728 20Q634 -29 498 -29Q326 -29 224 68Q123 164 123 326Q123 515 250 611Q376 707 627 707H885V725Q885 852 802 922Q718 991 567 991Q471 991 380 968Q289 945 205 899V1069Q306 1108 401 1128Q496 1147 586 1147Q829 1147 949 1021Q1069 895 1069 639Z","adv":1255,"box":[123,-29,1069,1147]},"b":{"d":"M997 559Q997 762 914 878Q830 993 684 993Q538 993 454 878Q371 762 371 559Q371 356 454 240Q538 125 684 125Q830 125 914 240Q997 356 997 559ZM371 950Q429 1050 518 1098Q606 1147 729 1147Q933 1147 1060 985Q1188 823 1188 559Q1188 295 1060 133Q933 -29 729 -29Q606 -29 518 20Q429 68 371 168V0H186V1556H371Z","adv":1300,"box":[186,-29,1188,1556]},"c":{"d":"M999 1077V905Q921 948 842 970Q764 991 684 991Q505 991 406 878Q307 764 307 559Q307 354 406 240Q505 127 684 127Q764 127 842 148Q921 170 999 213V43Q922 7 840 -11Q757 -29 664 -29Q411 -29 262 130Q113 289 113 559Q113 833 264 990Q414 1147 676 1147Q761 1147 842 1130Q923 1112 999 1077Z","adv":1126,"box":[113,-29,999,1147]},"d":{"d":"M930 950V1556H1114V0H930V168Q872 68 784 20Q695 -29 571 -29Q368 -29 240 133Q113 295 113 559Q113 823 240 985Q368 1147 571 1147Q695 1147 784 1098Q872 1050 930 950ZM303 559Q303 356 386 240Q470 125 616 125Q762 125 846 240Q930 356 930 559Q930 762 846 878Q762 993 616 993Q470 993 386 878Q303 762 303 559Z","adv":1300,"box":[113,-29,1114,1556]},"e":{"d":"M1151 606V516H305Q317 326 420 226Q522 127 705 127Q811 127 910 153Q1010 179 1108 231V57Q1009 15 905 -7Q801 -29 694 -29Q426 -29 270 127Q113 283 113 549Q113 824 262 986Q410 1147 662 1147Q888 1147 1020 1002Q1151 856 1151 606ZM967 660Q965 811 882 901Q800 991 664 991Q510 991 418 904Q325 817 311 659Z","adv":1260,"box":[113,-29,1151,1147]},"f":{"d":"M760 1556V1403H584Q485 1403 446 1363Q408 1323 408 1219V1120H711V977H408V0H223V977H47V1120H223V1198Q223 1385 310 1470Q397 1556 586 1556Z","adv":721,"box":[47,0,760,1556]},"g":{"d":"M930 573Q930 773 848 883Q765 993 616 993Q468 993 386 883Q303 773 303 573Q303 374 386 264Q468 154 616 154Q765 154 848 264Q930 374 930 573ZM1114 139Q1114 -147 987 -286Q860 -426 598 -426Q501 -426 415 -412Q329 -397 248 -367V-188Q329 -232 408 -253Q487 -274 569 -274Q750 -274 840 -180Q930 -85 930 106V197Q873 98 784 49Q695 0 571 0Q365 0 239 157Q113 314 113 573Q113 833 239 990Q365 1147 571 1147Q695 1147 784 1098Q873 1049 930 950V1120H1114Z","adv":1300,"box":[113,-426,1114,1147]},"h":{"d":"M1124 676V0H940V670Q940 829 878 908Q816 987 692 987Q543 987 457 892Q371 797 371 633V0H186V1556H371V946Q437 1047 526 1097Q616 1147 733 1147Q926 1147 1025 1028Q1124 908 1124 676Z","adv":1298,"box":[186,0,1124,1556]},"i":{"d":"M193 1120H377V0H193ZM193 1556H377V1323H193Z","adv":569,"box":[193,0,377,1556]},"j":{"d":"M193 1120H377V-20Q377 -234 296 -330Q214 -426 33 -426H-37V-270H12Q117 -270 155 -222Q193 -173 193 -20ZM193 1556H377V1323H193Z","adv":569,"box":[-37,-426,377,1556]},"k":{"d":"M186 1556H371V637L920 1120H1155L561 596L1180 0H940L371 547V0H186Z","adv":1186,"box":[186,0,1180,1556]},"l":{"d":"M193 1556H377V0H193Z","adv":569,"box":[193,0,377,1556]},"m":{"d":"M1065 905Q1134 1029 1230 1088Q1326 1147 1456 1147Q1631 1147 1726 1024Q1821 902 1821 676V0H1636V670Q1636 831 1579 909Q1522 987 1405 987Q1262 987 1179 892Q1096 797 1096 633V0H911V670Q911 832 854 910Q797 987 678 987Q537 987 454 892Q371 796 371 633V0H186V1120H371V946Q434 1049 522 1098Q610 1147 731 1147Q853 1147 938 1085Q1024 1023 1065 905Z","adv":1995,"box":[186,0,1821,1147]},"n":{"d":"M1124 676V0H940V670Q940 829 878 908Q816 987 692 987Q543 987 457 892Q371 797 371 633V0H186V1120H371V946Q437 1047 526 1097Q616 1147 733 1147Q926 1147 1025 1028Q1124 908 1124 676Z","adv":1298,"box":[186,0,1124,1147]},"o":{"d":"M627 991Q479 991 393 876Q307 760 307 559Q307 358 392 242Q478 127 627 127Q774 127 860 243Q946 359 946 559Q946 758 860 874Q774 991 627 991ZM627 1147Q867 1147 1004 991Q1141 835 1141 559Q1141 284 1004 128Q867 -29 627 -29Q386 -29 250 128Q113 284 113 559Q113 835 250 991Q386 1147 627 1147Z","adv":1253,"box":[113,-29,1141,1147]},"p":{"d":"M371 168V-426H186V1120H371V950Q429 1050 518 1098Q606 1147 729 1147Q933 1147 1060 985Q1188 823 1188 559Q1188 295 1060 133Q933 -29 729 -29Q606 -29 518 20Q429 68 371 168ZM997 559Q997 762 914 878Q830 993 684 993Q538 993 454 878Q371 762 371 559Q371 356 454 240Q538 125 684 125Q830 125 914 240Q997 356 997 559Z","adv":1300,"box":[186,-426,1188,1147]},"q":{"d":"M303 559Q303 356 386 240Q470 125 616 125Q762 125 846 240Q930 356 930 559Q930 762 846 878Q762 993 616 993Q470 993 386 878Q303 762 303 559ZM930 168Q872 68 784 20Q695 -29 571 -29Q368 -29 240 133Q113 295 113 559Q113 823 240 985Q368 1147 571 1147Q695 1147 784 1098Q872 1050 930 950V1120H1114V-426H930Z","adv":1300,"box":[113,-426,1114,1147]},"r":{"d":"M842 948Q811 966 774 974Q738 983 694 983Q538 983 454 882Q371 780 371 590V0H186V1120H371V946Q429 1048 522 1098Q615 1147 748 1147Q767 1147 790 1144Q813 1142 841 1137Z","adv":842,"box":[186,0,842,1147]},"s":{"d":"M907 1087V913Q829 953 745 973Q661 993 571 993Q434 993 366 951Q297 909 297 825Q297 761 346 724Q395 688 543 655L606 641Q802 599 884 522Q967 446 967 309Q967 153 844 62Q720 -29 504 -29Q414 -29 316 -12Q219 6 111 41V231Q213 178 312 152Q411 125 508 125Q638 125 708 170Q778 214 778 295Q778 370 728 410Q677 450 506 487L442 502Q271 538 195 612Q119 687 119 817Q119 975 231 1061Q343 1147 549 1147Q651 1147 741 1132Q831 1117 907 1087Z","adv":1067,"box":[111,-29,967,1147]},"t":{"d":"M375 1438V1120H754V977H375V369Q375 232 412 193Q450 154 565 154H754V0H565Q352 0 271 80Q190 159 190 369V977H55V1120H190V1438Z","adv":803,"box":[55,0,754,1438]},"u":{"d":"M174 442V1120H358V449Q358 290 420 210Q482 131 606 131Q755 131 842 226Q928 321 928 485V1120H1112V0H928V172Q861 70 772 20Q684 -29 567 -29Q374 -29 274 91Q174 211 174 442ZM637 1147Z","adv":1298,"box":[174,-29,1112,1147]},"v":{"d":"M61 1120H256L606 180L956 1120H1151L731 0H481Z","adv":1212,"box":[61,0,1151,1120]},"w":{"d":"M86 1120H270L500 246L729 1120H946L1176 246L1405 1120H1589L1296 0H1079L838 918L596 0H379Z","adv":1675,"box":[86,0,1589,1120]},"x":{"d":"M1124 1120 719 575 1145 0H928L602 440L276 0H59L494 586L96 1120H313L610 721L907 1120Z","adv":1212,"box":[59,0,1145,1120]},"y":{"d":"M659 -104Q581 -304 507 -365Q433 -426 309 -426H162V-272H270Q346 -272 388 -236Q430 -200 481 -66L514 18L61 1120H256L606 244L956 1120H1151Z","adv":1212,"box":[61,-426,1151,1120]},"z":{"d":"M113 1120H987V952L295 147H987V0H88V168L780 973H113Z","adv":1075,"box":[88,0,987,1120]}};
+// Scales and moves the parts of a drawing (circles, ellipses, rects, polygons, and paths of M, L, C, Z)
+// so a picture can sit in a corner of another page.
+function scaleParts(parts, k, dx, dy) {
+  const num = (x, y) => [x * k + dx, y * k + dy];
+  return parts.map((p) => {
+    if (p.t === 'circle') { const [cx, cy] = num(p.cx, p.cy); return { ...p, cx, cy, r: p.r * k }; }
+    if (p.t === 'ellipse') { const [cx, cy] = num(p.cx, p.cy); return { ...p, cx, cy, rx: p.rx * k, ry: p.ry * k }; }
+    if (p.t === 'rect') { const [x, y] = num(p.x, p.y); return { ...p, x, y, w: p.w * k, h: p.h * k, width: p.width !== undefined ? p.width * k : undefined, height: p.height !== undefined ? p.height * k : undefined }; }
+    if (p.t === 'polygon') return { ...p, points: String(p.points).trim().split(/\s+/).map((pt) => { const [x, y] = pt.split(',').map(Number); return num(x, y).map((v) => v.toFixed(2)).join(','); }).join(' ') };
+    if (p.t === 'path') return { ...p, d: scalePath(String(p.d), k, dx, dy) };
+    if (p.t === 'art') { const [x, y] = num(p.x, p.y); return { ...p, x, y, w: p.w * k, h: p.h * k }; }
+    return p;
+  });
+}
+// Path data through a scale and a shift, command by command: absolute points move and scale, relative
+// points only scale, arc radii scale and arc flags are left alone.
+function scalePath(d, k, dx, dy) {
+  const tokens = d.match(/[A-Za-z]|-?\d*\.?\d+(?:e-?\d+)?/g) || []; const out = []; let cmd = 'M'; let i = 0;
+  const arity = { M: 2, L: 2, T: 2, C: 6, S: 4, Q: 4, A: 7, H: 1, V: 1, Z: 0 };
+  while (i < tokens.length) {
+    const t = tokens[i];
+    if (/[A-Za-z]/.test(t)) { cmd = t; out.push(t); i += 1; if (cmd.toUpperCase() === 'Z') continue; }
+    const abs = cmd === cmd.toUpperCase(); const n = arity[cmd.toUpperCase()]; if (!n) { i += 1; continue; }
+    const nums = tokens.slice(i, i + n).map(Number); i += n;
+    const up = cmd.toUpperCase(); let vals;
+    if (up === 'A') vals = [nums[0] * k, nums[1] * k, nums[2], nums[3], nums[4], abs ? nums[5] * k + dx : nums[5] * k, abs ? nums[6] * k + dy : nums[6] * k];
+    else if (up === 'H') vals = [abs ? nums[0] * k + dx : nums[0] * k];
+    else if (up === 'V') vals = [abs ? nums[0] * k + dy : nums[0] * k];
+    else vals = nums.map((v, j) => (abs ? v * k + (j % 2 === 0 ? dx : dy) : v * k));
+    out.push(vals.map((v, j) => (up === 'A' && (j === 3 || j === 4) ? String(v) : Number(v.toFixed(2)).toString())).join(' '));
+  }
+  return out.join(' ');
+}
+// A word laid out in coloring letters along a line, by real widths.
+function wordParts(word, y, size) {
+  const sx = (size / GLYPH_UPM) * GLYPH_WIDE; const gap = 3;
+  const w = word.split('').map((ch) => (LETTER_GLYPHS[ch] ? LETTER_GLYPHS[ch].adv * sx : size * 0.5)); const total = w.reduce((a, b) => a + b, 0) + gap * (word.length - 1);
+  let x = 50 - total / 2; return word.split('').map((ch, i) => { const part = { t: 'text', text: ch, x: x + w[i] / 2, y, size }; x += w[i] + gap; return part; });
+}
+// A coloring page drawn by Mikey: the image when art/coloring/<serial>.webp exists, else a dashed
+// frame wearing the serial so everyone can see what is still to be made.
+function ArtPart({ p, thumb = false }) {
+  const have = typeof window !== 'undefined' && Array.isArray(window.__eduColoringArt) && window.__eduColoringArt.includes(p.serial);
+  if (have) return <image href={`art/coloring/${p.serial}.webp`} x={p.x} y={p.y} width={p.w} height={p.h} preserveAspectRatio="xMidYMid meet" style={{ pointerEvents: 'none' }} />;
+  return (
+    <g style={{ pointerEvents: 'none' }}>
+      <rect x={p.x} y={p.y} width={p.w} height={p.h} rx="4" fill="#FAFBF8" stroke={C.muted} strokeWidth={thumb ? 1.2 : 0.8} strokeDasharray="3 2" />
+      <text x={p.x + p.w / 2} y={p.y + p.h / 2 - (thumb ? 0 : 4)} fontFamily={FONT} fontSize={thumb ? 16 : 9} fontWeight="700" fill={C.muted} textAnchor="middle" dominantBaseline="central">{p.serial}</text>
+      {!thumb && <text x={p.x + p.w / 2} y={p.y + p.h / 2 + 8} fontFamily={FONT} fontSize="4.6" fill={C.muted} textAnchor="middle" dominantBaseline="central">{p.alt}</text>}
+    </g>
+  );
+}
+// A letter part as a path: centered on p.x like anchored text, its baseline set so capitals sit
+// centered on p.y. Stroke widths are given in picture units and divided by the scale.
+const GLYPH_WIDE = 2.2;   // coloring letters are stretched sideways: wider is friendlier to color
+function letterPath(p) {
+  const g = LETTER_GLYPHS[p.text]; if (!g) return null;
+  const s = p.size / GLYPH_UPM; const sx = s * GLYPH_WIDE;
+  return { d: g.d, s, transform: `translate(${(p.x - (g.adv * sx) / 2).toFixed(2)} ${(p.y + (GLYPH_CAP * s) / 2).toFixed(2)}) scale(${sx.toFixed(4)} ${(-s).toFixed(4)})` };
+}
+// Letter pages: the capital and the small letter sit side by side by their real widths, centered,
+// and the bubbles stay out of the two bottom corners where the zoom buttons live.
+function layoutLetterParts(parts) {
+  const texts = parts.filter((p) => p.t === 'text' && LETTER_GLYPHS[p.text]);
+  if (parts.some((p) => p.t === 'art')) {
+    // An art page: bubbles take the top band and the bottom middle, clear of the frame and the zoom buttons.
+    const artSpots = [[12, 12], [38, 9], [62, 9], [88, 12], [50, 91]]; let b = 0;
+    return parts.map((p) => (p.t === 'circle' ? { ...p, cx: artSpots[b % 5][0], cy: artSpots[b++ % 5][1], r: Math.min(p.r, 5.5) } : p));
+  }
+  if (texts.length !== 2 || parts.some((p) => p.t === 'text' && p.y >= 78)) return parts;
+  const gap = 5; const fit = (size) => { const s = (size / GLYPH_UPM) * GLYPH_WIDE; return texts.map((p) => LETTER_GLYPHS[p.text].adv * s); };
+  let size = texts[0].size; let w = fit(size); if (w[0] + gap + w[1] > 96) { size = size * (96 / (w[0] + gap + w[1])); w = fit(size); }
+  const total = w[0] + gap + w[1]; let x = 50 - total / 2;
+  const placed = texts.map((p, i) => { const out = { ...p, size, x: x + w[i] / 2, y: 48 }; x += w[i] + gap; return out; });
+  // Bubbles spread over the whole card: two along the top, two along the bottom between the zoom
+  // buttons, and one at a side when the letters leave room (else a third across the top). Which
+  // spots, the letter decides, so every page differs; none sits on a letter or a zoom button.
+  const left = placed[0].x - w[0] / 2; const right = placed[1].x + w[1] / 2; const k = texts[0].text.charCodeAt(0);
+  const top = k % 2 ? [[12, 12], [62, 9]] : [[38, 9], [88, 12]]; const bottom = k % 3 ? [[30, 91], [70, 91]] : [[50, 90], [30, 91]];
+  const side = left >= 15 && k % 2 ? [7, 48] : right <= 85 ? [93, 48] : left >= 15 ? [7, 48] : (k % 2 ? [88, 12] : [12, 12]);
+  const spots = [...top, ...bottom, side];
+  let bubble = 0;
+  return parts.map((p) => {
+    if (p.t === 'text') return placed[texts.indexOf(p)];
+    if (p.t === 'circle') { const [cx, cy] = spots[bubble % spots.length]; bubble += 1; return { ...p, cx, cy, r: Math.min(p.r, cy > 80 ? 4.5 : 6) }; }
+    return p;
+  });
+}
 // different sizes around them, placed by the letter itself so every page is a little different.
+// Drawing pages that Mikey makes in Leonardo (D1 to D10 in the ledger): until the image exists the card
+// wears a placeholder with its serial; the child colors over the image by hand once it is there.
+const DRAWN_PAGES = {
+  fishbowl: ['D1', 'A goldfish bowl on a table'], fish: ['D2', 'One fish with sea plants behind it'], cat: ['D3', 'A sitting cat'], flower: ['D4', 'One flower, and three flowers together'],
+  rocket: ['D5', 'A rocket taking off'], butterfly: ['D6', 'A butterfly with open wings'], dinosaur: ['D7', 'A friendly dinosaur'], farm: ['D8', 'A barn, a fence and a cow'],
+  birthday: ['D9', 'A birthday cake with candles'], playground: ['D10', 'A slide and a swing'], city: ['D11', 'A city street with tall buildings'],
+  // New pages, simplest first: the further down the list, the busier the scene.
+  kite: ['D12', 'A kite on a string in the sky'], ladybug: ['D13', 'A ladybug on a leaf'], 'ice-cream': ['D14', 'An ice cream cone with two scoops'], snowman: ['D15', 'A snowman with a scarf and a hat'],
+  'hot-air-balloon': ['D16', 'A hot air balloon over hills'], lighthouse: ['D17', 'A lighthouse on rocks by the sea'], treehouse: ['D18', 'A treehouse with a rope ladder'], submarine: ['D19', 'A submarine among fish and coral'],
+  'pirate-ship': ['D20', 'A pirate ship on rolling waves'], dragon: ['D21', 'A friendly dragon over a village'], 'space-station': ['D22', 'A space station with planets behind it'], 'jungle-waterfall': ['D23', 'A jungle waterfall with animals'],
+};
+for (const [pic, [serial, alt]] of Object.entries(DRAWN_PAGES)) COLORING_ART[pic] = [{ t: 'art', serial, x: 4, y: 4, w: 92, h: 92, alt }];
+// Letter pages are art now: a coloring page Mikey makes in Leonardo (L1 to L26 in the ledger), shown
+// as an image the child colors over; until it exists the card wears a placeholder with its serial.
+const LETTER_SERIAL = (ch) => `L${ch.charCodeAt(0) - 96}`;
 for (const ch of 'abcdefghijklmnopqrstuvwxyz') {
   const k = ch.charCodeAt(0) - 96;
   const spots = [[12, 13], [88, 12], [10, 88], [90, 87], [50, 8], [50, 92], [6, 50], [94, 50]];
   const circles = [0, 1, 2, 3, 4].map((i) => { const [cx, cy] = spots[(k * 3 + i * 5) % spots.length]; return { t: 'circle', cx, cy, r: 3.5 + ((k + i * 7) % 5) * 1.1 }; });
-  COLORING_ART[`letter-${ch}`] = [{ t: 'text', text: ch.toUpperCase(), x: 29, y: 52, size: 60 }, { t: 'text', text: ch, x: 71, y: 54, size: 60 }, ...circles];
+  COLORING_ART[`letter-${ch}`] = [{ t: 'art', serial: LETTER_SERIAL(ch), x: 4, y: 4, w: 92, h: 92, alt: `A capital ${ch.toUpperCase()} beside a small ${ch}` }];
 }
 // The sound of a crayon on paper, made on the device: soft noise through a band-pass filter, louder
 // as the hand moves faster and silent when it stops. Starts on the first touch (which is also what
@@ -2462,12 +2735,12 @@ function ColoringPad({ picture, name, secondsLeft, total, saved, onArt, onClose 
   useEffect(() => { onArt({ fills, strokes }); }, [fills, strokes]);
   const drawing = useRef(false);
   // A letter page says its letter when it opens; the speaker in the header says it again.
-  const letterSay = picture.startsWith('letter-') ? `Capital ${picture.slice(-1).toUpperCase()}. Lowercase ${picture.slice(-1).toUpperCase()}.` : null;
+  const letterSay = picture.startsWith('letter-') ? `On the left is a capital ${picture.slice(-1).toUpperCase()}. On the right is a lower case ${picture.slice(-1).toUpperCase()}.` : null;
   useEffect(() => { if (letterSay) speak(letterSay); }, [picture]);
   const lastPt = useRef([0, 0, 0]);                                  // where the pointer was last, in screen pixels, and when
   const svgRef = useRef(null);
   useEffect(() => paperStop, []);
-  const parts = COLORING_ART[picture] || [];
+  const parts = layoutLetterParts(COLORING_ART[picture] || []);
   const freeDraw = COLORING_MODE[picture] === 'draw';
   // Zoomed in, the picture is still drawn in its own coordinates, so color put on close up stays
   // exactly where it belongs when they zoom back out.
@@ -2502,7 +2775,6 @@ function ColoringPad({ picture, name, secondsLeft, total, saved, onArt, onClose 
           <svg viewBox="0 0 24 24" width="32" height="32" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.6-5.9M20 4v5h-5" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" /></svg>
         </button>
         <h1 className="edu-rainbow" style={{ fontSize: 20, margin: 0, textAlign: 'center', textTransform: 'capitalize', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{pictureTitle(picture)}</h1>
-        {letterSay && <SpeakButton text={letterSay} label="Say the letter again" />}
         <button type="button" aria-label="Close coloring" onClick={onClose}
           style={{ background: 'none', border: 'none', padding: 6, margin: '0 -10px 0 0', cursor: 'pointer', color: C.green, lineHeight: 0 }}>
           <svg viewBox="0 0 24 24" width="32" height="32" aria-hidden="true"><path d="M5 5 L19 19 M19 5 L5 19" fill="none" stroke="currentColor" strokeWidth="3.4" strokeLinecap="round" /></svg>
@@ -2529,8 +2801,9 @@ function ColoringPad({ picture, name, secondsLeft, total, saved, onArt, onClose 
         {parts.map((p, i) => {
           const common = p.line
             ? { key: i, fill: 'none', stroke: '#2E2E2E', strokeWidth: 1.6, strokeLinecap: 'round', strokeLinejoin: 'round', pointerEvents: 'none' }
-            : { key: i, fill: fills[i] || '#FFFFFF', stroke: freeDraw ? 'none' : '#2E2E2E', strokeWidth: 1.6, strokeLinejoin: 'round', style: { cursor: 'pointer' }, onClick: freeDraw ? undefined : () => setFills((f) => ({ ...f, [i]: crayon })) };
-          if (p.t === 'text') return <text {...common} x={p.x} y={p.y} fontSize={p.size} fontFamily={FONT} fontWeight={800} textAnchor="middle" dominantBaseline="central" paintOrder="stroke" strokeWidth={3.2}>{p.text}</text>;
+            : { key: i, fill: fills[i] || '#FFFFFF', stroke: '#2E2E2E', strokeWidth: 1.6, strokeLinejoin: 'round', style: { cursor: freeDraw ? 'default' : 'pointer' }, onClick: freeDraw ? undefined : () => setFills((f) => ({ ...f, [i]: crayon })) };
+          if (p.t === 'art') return <ArtPart key={i} p={p} />;
+          if (p.t === 'text') { const g = letterPath(p); return g ? <path {...common} stroke={freeDraw ? 'none' : '#2E2E2E'} d={g.d} transform={g.transform} paintOrder="stroke" strokeWidth={1.5 / g.s} strokeLinejoin="round" /> : <text {...common} stroke={freeDraw ? 'none' : '#2E2E2E'} x={p.x} y={p.y} fontSize={p.size} fontFamily={FONT} fontWeight={400} textAnchor="middle" dominantBaseline="central" paintOrder="stroke" strokeWidth={3.6}>{p.text}</text>; }
         if (p.t === 'circle') return <circle {...common} cx={p.cx} cy={p.cy} r={p.r} />;
           if (p.t === 'ellipse') return <ellipse {...common} cx={p.cx} cy={p.cy} rx={p.rx} ry={p.ry} />;
           if (p.t === 'rect') return <rect {...common} x={p.x} y={p.y} width={p.width} height={p.height} rx={2} />;
@@ -2545,20 +2818,32 @@ function ColoringPad({ picture, name, secondsLeft, total, saved, onArt, onClose 
             ))}
           </mask>
         ); })()}
-        <g mask={picture === 'my-name' ? 'url(#edu-name-guard)' : undefined}>
+        {/* On a drawing page the ink is kept off every outline by a mask: the lines are drawn once, under
+            the color, and stay visible because the color cannot land on them. The name page has its own
+            guard that keeps the whole name clear. */}
+        {freeDraw && picture !== 'my-name' && (
+          <mask id="edu-edge-guard" maskUnits="userSpaceOnUse" x="-60" y="-60" width="220" height="220">
+            <rect x="-60" y="-60" width="220" height="220" fill="#FFFFFF" />
+            {parts.map((p, i) => {
+              // The band is the drawn outline plus a hair, so no white shows around the lines. The glyph must match the visible one exactly: same weight, same size.
+              const band = { key: `band-${i}`, fill: 'none', stroke: '#000000', strokeWidth: p.t === 'text' ? 4 : 2, strokeLinecap: 'round', strokeLinejoin: 'round' };
+              if (p.t === 'text' || p.t === 'art') return null;   // letters and art pages are not guarded
+              if (p.t === 'circle') return <circle {...band} cx={p.cx} cy={p.cy} r={p.r} />;
+              if (p.t === 'ellipse') return <ellipse {...band} cx={p.cx} cy={p.cy} rx={p.rx} ry={p.ry} />;
+              if (p.t === 'rect') return <rect {...band} x={p.x} y={p.y} width={p.width} height={p.height} rx={2} />;
+              if (p.t === 'path') return <path {...band} d={p.d} />;
+              return <polygon {...band} points={p.points} />;
+            })}
+          </mask>
+        )}
+        <g mask={picture === 'my-name' ? 'url(#edu-name-guard)' : freeDraw ? 'url(#edu-edge-guard)' : undefined} style={parts.some((p) => p.t === 'art') ? { mixBlendMode: 'multiply' } : undefined}>
           {strokes.map((st, i) => <polyline key={`s${i}`} points={st.points.map((pt) => pt.join(',')).join(' ')} fill="none" stroke={st.colour} strokeWidth={st.width || 5} strokeLinecap="round" strokeLinejoin="round" pointerEvents="none" />)}
         </g>
-        {/* On a drawing picture the outline is laid over the ink, so coloring never buries the lines
-            they are trying to stay inside. */}
-        {freeDraw && parts.map((p, i) => {
-          const line = { key: `edge-${i}`, fill: 'none', stroke: '#2E2E2E', strokeWidth: 1.6, strokeLinecap: 'round', strokeLinejoin: 'round', pointerEvents: 'none' };
-          if (p.t === 'text') return <text {...line} x={p.x} y={p.y} fontSize={p.size} fontFamily={FONT} fontWeight={800} textAnchor="middle" dominantBaseline="central" paintOrder="stroke" strokeWidth={3.2}>{p.text}</text>;
-          if (p.t === 'circle') return <circle {...line} cx={p.cx} cy={p.cy} r={p.r} />;
-          if (p.t === 'ellipse') return <ellipse {...line} cx={p.cx} cy={p.cy} rx={p.rx} ry={p.ry} />;
-          if (p.t === 'rect') return <rect {...line} x={p.x} y={p.y} width={p.width} height={p.height} rx={2} />;
-          if (p.t === 'path') return <path {...line} d={p.d} />;
-          return <polygon {...line} points={p.points} />;
-        })}
+        {/* Letters: the outline is drawn once, over the ink, at normal weight, so the line is never
+            buried and never doubled. The body underneath is plain white and takes the color. */}
+        {freeDraw && parts.map((p, i) => (p.t === 'text'
+          ? (() => { const g = letterPath(p); return g ? <path key={`edge-${i}`} d={g.d} transform={g.transform} fill="none" stroke="#2E2E2E" strokeWidth={1.5 / g.s} strokeLinejoin="round" pointerEvents="none" /> : <text key={`edge-${i}`} x={p.x} y={p.y} fontSize={p.size} fontFamily={FONT} fontWeight={400} textAnchor="middle" dominantBaseline="central" fill="none" stroke="#2E2E2E" strokeWidth={3.6} strokeLinejoin="round" pointerEvents="none">{p.text}</text>; })()
+          : null))}
 
       </svg>
       {/* Zoom sits in the picture's own corners, over the top: color goes behind it, never onto it. */}
@@ -2590,6 +2875,7 @@ function ColoringPad({ picture, name, secondsLeft, total, saved, onArt, onClose 
           <button key={colour} type="button" className={`edu-crayon${i >= CRAYONS.length + WIDE_CRAYONS.length ? ' edu-crayon-wide' : i >= CRAYONS.length ? ' edu-wide-only' : ''}`} aria-label="Use this color" aria-pressed={crayon === colour && !eraser} onClick={() => { setCrayon(colour); setEraser(null); }}
             style={{ background: colour, border: crayon === colour ? `4px solid ${C.ink}` : `2px solid ${C.line}` }} />
         ))}
+        {letterSay && <div style={{ flexBasis: '100%', gridColumn: '1 / -1', display: 'flex', justifyContent: 'center', marginTop: 4 }}><SpeakButton mini text={letterSay} label="Say the letters again" /></div>}
       </div>
       {freeDraw && (
         <div className="edu-nibs">
@@ -3004,11 +3290,15 @@ export default function EduSphereApp() {
   const [dragId, setDragId] = useState(null);                  // the student card being dragged
   const [dragOver, setDragOver] = useState(null);              // the row index it is held over
   const dragTimer = useRef(null); const dragStart = useRef(null); const cardEls = useRef(new Map());
+  const dragY = useRef(null);                                  // where the finger is while a card is held
   useEffect(() => {
     if (!dragId || typeof document === 'undefined') return undefined;
     const stop = (e) => e.preventDefault();   // the page must not scroll under a dragged card
     document.addEventListener('touchmove', stop, { passive: false });
-    return () => document.removeEventListener('touchmove', stop);
+    // Near the top or bottom edge the page creeps along on its own, so the card can reach any row.
+    let raf = 0; const creep = () => { const y = dragY.current; if (y !== null) { const h = window.innerHeight; if (y < 90) window.scrollBy(0, -Math.ceil((90 - y) / 6)); else if (y > h - 90) window.scrollBy(0, Math.ceil((y - (h - 90)) / 6)); } raf = requestAnimationFrame(creep); };
+    raf = requestAnimationFrame(creep);
+    return () => { document.removeEventListener('touchmove', stop); cancelAnimationFrame(raf); dragY.current = null; };
   }, [dragId]);
   const [backupAt, setBackupAt] = useState(null);              // when this device was last backed up
   const [backupNote, setBackupNote] = useState('');
@@ -3065,10 +3355,20 @@ export default function EduSphereApp() {
   const [certPhotos, setCertPhotos] = useState([]);                // data URLs for the sheet; never saved anywhere by the app
   const [certNote, setCertNote] = useState('');
   const [certLang, setCertLang] = useState('en');                  // English or Spanish on the sheet
+  const [missed, setMissed] = useState({});
+  const [anotherWay, setAnotherWay] = useState(0);              // the example's second explanation, when the lesson has one                        // moduleId -> lesson sentences behind answers missed this session (memory only)
+  const news = typeof window !== 'undefined' && window.__eduNews && window.__eduNews.items && window.__eduNews.items.length ? window.__eduNews : null;
+  const [newsOpen, setNewsOpen] = useState(false);
+  const [tourStep, setTourStep] = useState(-1);                    // -1 closed; 0 to 4 the card showing
   const [readyGrades, setReadyGrades] = useState({});              // studentId -> grades completed in full, read on the welcome screen
   const certSheetRef = useRef(null);
   const [bioNote, setBioNote] = useState('');                        // what the fingerprint or face step said last
-  const [noteFocus, setNoteFocus] = useState(false);                 // the note box has the cursor, so its example text steps aside
+  const [noteFocus, setNoteFocus] = useState(false);
+  const [showNoteWhy, setShowNoteWhy] = useState(false);            // the i beside Notes
+  const [weeklyEdit, setWeeklyEdit] = useState(null);               // the weekly note's text once the educator has edited it (memory only)
+  const [weeklyEditing, setWeeklyEditing] = useState(false);        // the note box is open
+  const [reportOpenedFrom, setReportOpenedFrom] = useState(null);   // the previous visit's time, kept for this opening only
+  const [wrongWay, setWrongWay] = useState(false);                  // the other explanation, opened on a wrong answer                 // the note box has the cursor, so its example text steps aside
   const [showRecTip, setShowRecTip] = useState(false);               // the i beside the recommendations line on the report
   const [showNoteTip, setShowNoteTip] = useState(false);             // what a note is for, under the note box
   const [editingNote, setEditingNote] = useState(null);              // the note being rewritten: { id, text }
@@ -3118,6 +3418,8 @@ export default function EduSphereApp() {
   const [hideCovered, setHideCovered] = useState(false);
   const [openStages, setOpenStages] = useState([]);           // stages start closed, so the page opens as four rows
   const [wonderReview, setWonderReview] = useState(emptyWonderReview());
+  // In a walk-through every wonder question counts as approved, so the educator sees what students would.
+  const previewReview = () => (record && record.preview ? { ...wonderReview, approved: WONDER.map((w) => w.id), hidden: [] } : wonderReview);
   const [openWonder, setOpenWonder] = useState([]);
   const [openWonderStages, setOpenWonderStages] = useState([]);
   const [reviewing, setReviewing] = useState(null);           // the question open in the overlay
@@ -3374,7 +3676,7 @@ export default function EduSphereApp() {
   async function autoBackup(reason = 'course') {
     const rec = recordRef.current || record;
     if (rec && rec.preview) return;
-    if (reason !== 'course' && !changedSinceBackup.current) return;
+    if (!changedSinceBackup.current) return;
     try {
       const everything = await gatherEverything(roster);
       const at = new Date().toISOString();
@@ -3416,6 +3718,12 @@ export default function EduSphereApp() {
     setScreen('practice');
   }
 
+  // The module a student missed most this week; null when nothing was missed.
+  function mostMissedModule() {
+    if (!record) return null; const week = Date.now() - 7 * 24 * 3600 * 1000; const count = {};
+    for (const e of record.events || []) if (e.type === 'attempt_completed' && e.at && new Date(e.at).getTime() >= week) for (const r of (e.core || [])) if (r && r.correct === false) count[e.moduleId] = (count[e.moduleId] || 0) + 1;
+    const best = Object.entries(count).sort((a, b) => b[1] - a[1])[0]; return best && getModule(best[0]) && visibleCourses.some((c) => c.id === getModule(best[0]).courseId) ? best[0] : null;
+  }
   function startPractice() {
     const seed = (Date.now() % 2147483646) + 1;
     setAttempt(buildAttempt(moduleId, seed, progress.passedIds));
@@ -3465,8 +3773,9 @@ export default function EduSphereApp() {
     if (isReviewQ && qIndex === attempt.core.length) setReviewResult({ moduleId: attempt.review.moduleId, ...result });
     else if (isReviewQ) setReview2Result({ moduleId: attempt.review2.moduleId, ...result });
     else setCoreResults((r) => [...r, result]);
-    setWasCorrect(correct); setChecked(true);
+    setWasCorrect(correct); setChecked(true); setWrongWay(false);
     if (correct) setCheer((n) => n + 1);
+    else { const line = taughtLine(mod.id, q.answer); if (line) setMissed((m) => ({ ...m, [mod.id]: [...new Set([...(m[mod.id] || []), line])].slice(-3) })); }
   }
 
   // Clears the feedback so the child can have another go at the same question.
@@ -3539,7 +3848,6 @@ export default function EduSphereApp() {
     // A backup goes to the downloads folder when this round finished a whole course. Per round was too many files.
     const before = new Set(courseProgressFinished(record.events));
     const after = courseProgressFinished([...record.events, event]);
-    if (after.some((id) => !before.has(id))) await autoBackup('course');
   }
 
 
@@ -3605,9 +3913,19 @@ export default function EduSphereApp() {
   // Each line of a pre-reader lesson is spoken as it appears, without waiting to be asked.
   const lessonLines = mod && readAloud ? (mod.lesson.script || []).map((x) => x.say) : [];
   const currentLessonLine = lessonLines[Math.min(lessonStep, Math.max(0, lessonLines.length - 1))] || '';
-  useEffect(() => { if (screen === 'lesson' && readAloud && currentLessonLine) speak(currentLessonLine); }, [screen, readAloud, currentLessonLine]);
-  useEffect(() => { setStoryOpen(false); }, [screen === 'lesson' ? (mod && mod.id) : null]);
-  useEffect(() => { if (typeof document !== 'undefined') document.body.classList.toggle('edu-cert-mode', screen === 'certificate'); }, [screen]);
+  const [litSentence, setLitSentence] = useState(-1);               // which sentence of a read-aloud line the voice is on
+  useEffect(() => {
+    if (!(screen === 'lesson' && readAloud && currentLessonLine)) { setLitSentence(-1); return undefined; }
+    const parts = sentencesOf(currentLessonLine); setLitSentence(-1);
+    const stop = speakSequence(parts, (i) => setLitSentence(i), () => setLitSentence(-1), parts.map((_, i) => `${mod ? mod.id : 'lesson'}-${lessonStep}-${i}`));
+    return () => { stop(); };
+  }, [screen, readAloud, currentLessonLine]);
+  useEffect(() => { setStoryOpen(false); setAnotherWay(0); }, [screen === 'lesson' ? (mod && mod.id) : null]);
+  // Opening a report remembers the visit on the roster, after noting when the last one was.
+  useEffect(() => { if (screen !== 'educator-report' || !educatorRecord || !roster) return; const st = findStudent(roster, educatorRecord.name); setReportOpenedFrom(st && st.reportSeenAt ? st.reportSeenAt : null); const next = setReportSeen(roster, educatorRecord.name, new Date().toISOString()); setRoster(next); saveRoster(next); setWeeklyEdit(null); setWeeklyEditing(false); }, [screen === 'educator-report' ? (educatorRecord && educatorRecord.name) : null]);
+  useEffect(() => { if (typeof document !== 'undefined') { document.body.classList.toggle('edu-cert-mode', screen === 'certificate'); document.body.classList.toggle('edu-story-mode', screen === 'story'); } }, [screen]);
+  // The what's-new pop-up: once per build, the first time an educator lands on the classroom after it.
+  useEffect(() => { if (screen === 'educator-pick' && educator && !educator.tourSeen) { setTourStep(0); return; } if (screen === 'educator-pick' && news && educator && educator.newsSeen !== news.stamp && educator.tourSeen) setNewsOpen(true); }, [screen, educator && educator.newsSeen, educator && educator.tourSeen]);
   useEffect(() => { if (screen === 'wonder' && readAloud && wonder) speak(wonder.prompt); }, [screen, readAloud, wonder]);
   const spokenVoice = screen === 'wonder-voices' && readAloud && wonder ? (wonder.simple || [])[Math.min(wonderVoiceStep, ((wonder.simple || []).length || 1) - 1)] : null;
   useEffect(() => { if (spokenVoice) speak(`${spokenVoice.voice}. ${spokenVoice.says}`); }, [spokenVoice]);
@@ -3666,7 +3984,7 @@ export default function EduSphereApp() {
     const cameUp = progress.masteredIds.some((id) => { const c = getCourse((getModule(id) || {}).courseId); return c && stageForGrade(c.grade) === 'early'; });
     if (cameUp && placementPending.length) skipPlacement(placementPending[0]);
   }, [screen, record, youngLearner, busy]);
-  if (screen === 'loading') return <div style={page}><PageChrome idleWarning={idleWarning} stars={false} /><div className="edu-wrap" style={wrap}><div className="edu-loading" style={{ display: 'flex', justifyContent: 'center', padding: '60px 0' }} aria-label="Loading"><Logo width={220} animate /></div></div></div>;
+  if (screen === 'loading') return <div style={page}><PageChrome idleWarning={idleWarning} stars={false} /><div className="edu-wrap" style={wrap}><div className="edu-loading" style={{ display: 'flex', justifyContent: 'center', padding: '80px 0' }} aria-label="Loading"><LoadingWord /></div></div></div>;
 
   if (screen === 'welcome') {
     return (
@@ -3727,7 +4045,7 @@ export default function EduSphereApp() {
         {showContact && <ContactPopup onClose={() => setShowContact(false)} />}
         {/* A PIN keeps classmates out of each other's records on a shared screen. Four digits, then Go. */}
         {pinAsk && (() => { const st = findStudent(roster, pinAsk); if (!st) return null; const tryIt = () => { if (pinMatches(st, pinTry)) { setPinAsk(null); startWithName(st.id); } else { setPinWrong(true); setPinTry(''); } }; return (
-          <div style={{ position: 'fixed', inset: 0, background: 'rgba(36, 41, 31, 0.55)', zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
+          <div style={{ position: 'fixed', top: 0, right: 0, bottom: 0, left: 0, background: 'rgba(36, 41, 31, 0.55)', zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
             <div className="edu-rise" style={{ width: '100%', maxWidth: 340, background: C.surface, borderRadius: 14, padding: 20, textAlign: 'center' }}>
               {st.picture && <StudentPicture name={st.picture} tint={st.tint} size={56} />}
               <p style={{ margin: '8px 0 12px', fontSize: 18, fontWeight: 600 }}>{keepTogether(st.label)}</p>
@@ -3935,7 +4253,7 @@ export default function EduSphereApp() {
                               {/* Resting: grey covers the whole square and sweeps away like a clock hand, so the
                                   drawing comes back into view as its break runs down. */}
                               {resting && (
-                                <span aria-hidden="true" style={{ position: 'absolute', inset: 0, pointerEvents: 'none', background: `conic-gradient(from 0deg, rgba(150,158,152,0.92) 0 ${(restFraction * 100).toFixed(1)}%, rgba(150,158,152,0) ${(restFraction * 100).toFixed(1)}% 100%)` }} />
+                                <span aria-hidden="true" style={{ position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, pointerEvents: 'none', background: `conic-gradient(from 0deg, rgba(150,158,152,0.92) 0 ${(restFraction * 100).toFixed(1)}%, rgba(150,158,152,0) ${(restFraction * 100).toFixed(1)}% 100%)` }} />
                               )}
                             </>
                           )}
@@ -3982,9 +4300,9 @@ export default function EduSphereApp() {
                             <svg viewBox="0 0 24 24" width="34" height="34" aria-hidden="true"><path d="M7 10V8a5 5 0 0110 0v2" fill="none" stroke={C.muted} strokeWidth="2" strokeLinecap="round" /><rect x="5" y="10" width="14" height="10" rx="2" fill={C.line} stroke={C.muted} strokeWidth="1.5" /></svg>
                           ) : (
                             <>
-                              <GameThumb kind={g.kind} />
+                              <GameThumb kind={g.kind} game={g} />
                               {resting && (
-                                <span aria-hidden="true" style={{ position: 'absolute', inset: 0, pointerEvents: 'none', background: `conic-gradient(from 0deg, rgba(150,158,152,0.92) 0 ${(restFraction * 100).toFixed(1)}%, rgba(150,158,152,0) ${(restFraction * 100).toFixed(1)}% 100%)` }} />
+                                <span aria-hidden="true" style={{ position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, pointerEvents: 'none', background: `conic-gradient(from 0deg, rgba(150,158,152,0.92) 0 ${(restFraction * 100).toFixed(1)}%, rgba(150,158,152,0) ${(restFraction * 100).toFixed(1)}% 100%)` }} />
                               )}
                             </>
                           )}
@@ -4044,7 +4362,7 @@ export default function EduSphereApp() {
         <div key={lessonStep} className="edu-rise" style={{ ...card, textAlign: 'center', padding: '20px 18px' }}>
           <Picture visual={step.show} animate animKey={`${lessonStep}-${replays}`} />
 
-          <p style={{ fontSize: 22, lineHeight: 1.5, margin: '18px 0 0' }}>{line}</p>
+          <p style={{ fontSize: 22, lineHeight: 1.5, margin: '18px 0 0' }}>{sentencesOf(line).map((sentence, i) => <span key={i} style={{ background: litSentence === i ? C.goldSoft : 'transparent', borderRadius: 6, padding: litSentence === i ? '0 4px' : 0, transition: 'background 150ms' }}>{sentence}{i < sentencesOf(line).length - 1 ? ' ' : ''}</span>)}</p>
         </div>
         {/* One tap repeats the line, in case they missed it. */}
         <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 14 }}>
@@ -4080,6 +4398,18 @@ export default function EduSphereApp() {
     );
   }
 
+  if (screen === 'story' && mod && storyFor(mod.id)) {
+    return (
+      <div style={page}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={wrap}>
+        <div className="edu-no-print" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+          <button type="button" onClick={() => setScreen('lesson')} style={{ background: 'none', border: 'none', color: C.green, fontFamily: FONT, fontSize: 15, cursor: 'pointer', padding: 0 }}>Back to the lesson</button>
+          <button type="button" onClick={() => window.print()} style={{ background: 'none', border: 'none', color: C.muted, fontFamily: FONT, fontSize: 13, cursor: 'pointer', padding: 0 }}>Print</button>
+        </div>
+        <div className="edu-story-sheet"><StoryBody story={storyFor(mod.id)} /></div>
+        <div style={{ marginTop: 16 }}><Btn full onClick={startPractice}>Practice this</Btn></div>
+      </div></div>
+    );
+  }
   if (screen === 'lesson' && mod) {
     return (
       <div style={page}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={wrap}>
@@ -4089,18 +4419,31 @@ export default function EduSphereApp() {
         <div style={card}>
           {mod.lesson.paragraphs.map((t, i) => <RichText key={i} text={formatTeachingText(t)} size={17} lineGap={12} />)}
           <div style={{ background: C.greenSoft, borderRadius: 10, padding: 14 }}>
-            <Picture visual={mod.lesson.example} />
+            <Picture visual={wayVisual(mod.lesson.example, anotherWay)} />
             {mod.lesson.example.formula && <p style={{ margin: '10px 0 0', fontSize: 17, fontWeight: 700, textAlign: 'center' }}>{mod.lesson.example.formula}</p>}
-            <p style={{ margin: '10px 0 0', fontSize: 15, textAlign: 'center' }}>{mod.lesson.example.caption}</p>
+            {(() => {
+              const ways = [mod.lesson.example.caption, ...[].concat(mod.lesson.example.another || []).map((w) => (typeof w === 'string' ? w : w.text))].filter(Boolean).slice(0, 4); const at = Math.min(anotherWay, ways.length - 1);
+              return (<>
+                <div style={{ margin: '10px 0 0' }}><RichText text={ways[at]} size={15} center lineGap={6} /></div>
+                {ways.length > 1 && <p style={{ margin: '8px 0 0', textAlign: 'center' }}><button type="button" style={{ ...linkBtn, fontSize: 14 }} onClick={() => setAnotherWay((at + 1) % ways.length)}>{at === ways.length - 1 ? 'Show me the first way' : at === 0 ? 'Show me another way' : 'Show me one more way'}</button>{ways.length > 2 && <span style={{ marginLeft: 8, fontSize: 12, color: C.muted }}>{at + 1} of {ways.length}</span>}</p>}
+              </>);
+            })()}
           </div>
         </div>
+        {(missed[mod.id] || []).length > 0 && (
+          <div style={{ ...card, borderColor: C.gold }}>
+            <p style={{ margin: '0 0 6px', fontWeight: 600 }}>Look again</p>
+            {missed[mod.id].map((line, i) => <p key={i} style={{ margin: '4px 0', fontSize: 15 }}>“{line}”</p>)}
+          </div>
+        )}
         <div style={{ ...card, background: C.goldSoft, borderColor: C.goldSoft }}>
           <p style={{ margin: 0, fontWeight: 600 }}>Key idea</p>
           <div style={{ marginTop: 6 }}><RichText text={formatTeachingText(mod.lesson.keyIdea)} size={16} /></div>
         </div>
-        {storyFor(mod.id) && <StoryFold story={storyFor(mod.id)} open={storyOpen} onToggle={() => setStoryOpen(!storyOpen)} wonder={FEATURES.reflection && record && wonderOnFor(findStudent(roster, record.name)) ? wonderFor(mod.courseId, [...mod.id].reduce((h, ch) => (h * 31 + ch.charCodeAt(0)) >>> 0, 7), wonderReview) : null} />}
-        {course && course.readAloud && <SpeakButton full text={[...mod.lesson.paragraphs, mod.lesson.example.caption, mod.lesson.keyIdea].join(' ')} label="Read it to me" />}
-        <Btn full onClick={startPractice}>Practice this</Btn>
+        {<SpeakButton full text={[...mod.lesson.paragraphs, mod.lesson.example.formula || '', mod.lesson.example.caption, mod.lesson.keyIdea].join(' ')} label="Read it to me" />}
+        {storyFor(mod.id)
+          ? <Btn full onClick={() => { if (record && !record.preview && !record.events.some((e) => e.type === 'story_read' && e.moduleId === mod.id)) addEvent(makeStoryReadEvent(mod.id, new Date().toISOString())); setScreen('story'); }}>View story</Btn>
+          : <Btn full onClick={startPractice}>Practice this</Btn>}
         <p style={{ color: C.muted, fontSize: 13, marginTop: 48, textAlign: 'center' }}>Source: {mod.sources.join(' ')}</p>
       </div></div>
     );
@@ -4123,7 +4466,7 @@ export default function EduSphereApp() {
           <p style={{ fontSize: 20, fontWeight: 600, margin: readAloud ? '8px 0 12px' : '0 0 12px', textAlign: 'center', padding: readAloud ? '0 66px' : 0, minHeight: readAloud ? 48 : 0 }}>{q.prompt}</p>
           {q.story && <div style={{ margin: '0 0 14px', color: C.ink }}><RichText text={q.story} size={17} center lineGap={8} /></div>}
           {q.visual && <div style={{ margin: '0 0 14px' }}><Picture visual={q.visual} /></div>}
-          {readAloud && <SpeakButton corner text={questionText} label="Hear it again" />}
+          <SpeakButton corner text={questionText} label={readAloud ? 'Hear it again' : 'Read it to me'} />
           {q.type === 'choice' ? (
             <div style={{ display: 'grid', gap: 10, gridTemplateColumns: q.choices.every((c) => /^(\d+|[A-Za-z])$/.test(c)) ? 'repeat(auto-fit, minmax(70px, 1fr))' : '1fr' }}>
               {q.choices.map((c) => {
@@ -4155,7 +4498,7 @@ export default function EduSphereApp() {
                 <button type="button" style={linkBtn} onClick={() => setShowRequirements(true)}>Requirements</button>
               </div>
               {showRequirements && (
-                <div role="dialog" aria-label="Requirements" style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.35)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16, zIndex: 40 }} onClick={() => setShowRequirements(false)}>
+                <div role="dialog" aria-label="Requirements" style={{ position: 'fixed', top: 0, right: 0, bottom: 0, left: 0, background: 'rgba(0,0,0,0.35)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16, zIndex: 40 }} onClick={() => setShowRequirements(false)}>
                   <div style={{ ...card, maxWidth: 520, width: '100%', maxHeight: '80vh', overflowY: 'auto' }} onClick={(e) => e.stopPropagation()}>
                     <p style={{ margin: '0 0 10px', fontWeight: 600, fontSize: 17 }}>Requirements</p>
                     <p style={{ margin: '0 0 10px', fontSize: 14, color: C.muted }}>Check each one against your work before you hand it in.</p>
@@ -4223,7 +4566,7 @@ export default function EduSphereApp() {
             <div key={cheer} className={wasCorrect ? 'edu-cheer' : 'edu-wobble'} style={{ position: 'relative', marginTop: 14, padding: 14, borderRadius: 10, background: wasCorrect ? C.greenSoft : C.claySoft }}>
               {wasCorrect && <StarBurst />}
               <p style={{ margin: 0, fontWeight: 600, color: wasCorrect ? C.green : C.clay }}>{wasCorrect ? 'Correct' : readAloud ? 'Not that one. Have another try.' : `Not quite. The answer is ${describeChoice(q.answer)}.`}</p>
-              {(wasCorrect || !readAloud) && <div style={{ margin: '8px 0 0' }}><RichText text={formatTeachingText(q.explain)} size={15} lineGap={6} />{!wasCorrect && q.choiceNotes && q.choiceNotes[given] && <p style={{ margin: '6px 0 0', fontSize: 15, color: C.muted }}>{q.choiceNotes[given]}</p>}</div>}
+              {(wasCorrect || !readAloud) && <div style={{ margin: '8px 0 0' }}><RichText text={formatTeachingText(q.explain)} size={15} lineGap={6} />{!wasCorrect && !readAloud && taughtLine(mod.id, q.answer) && <p style={{ margin: '8px 0 0', fontSize: 14, color: C.muted }}>From the lesson: “{taughtLine(mod.id, q.answer)}”</p>}{!wasCorrect && !readAloud && mod.lesson.example && mod.lesson.example.another && (wrongWay ? <div style={{ margin: '8px 0 0', padding: '10px 12px', borderRadius: 10, background: C.goldSoft }}><div style={{ maxWidth: 240, margin: '0 auto 8px' }}><Picture visual={wayVisual(mod.lesson.example, 1)} /></div><RichText text={wayText([].concat(mod.lesson.example.another)[0])} size={14} lineGap={6} /></div> : <p style={{ margin: '8px 0 0' }}><button type="button" style={{ ...linkBtn, fontSize: 14 }} onClick={() => setWrongWay(true)}>Show me another way</button></p>)}{!wasCorrect && q.choiceNotes && q.choiceNotes[given] && <p style={{ margin: '6px 0 0', fontSize: 15, color: C.muted }}>{q.choiceNotes[given]}</p>}</div>}
               {/* An explanation picture is either a set of fraction bars or one group of dots. */}
               {(wasCorrect || !readAloud) && Array.isArray(q.explainVisual) && q.explainVisual.map((b, i) => <LabeledBar key={i} parts={b.parts} shaded={b.shaded} label={b.label} color={wasCorrect ? C.green : C.clay} />)}
               {(wasCorrect || !readAloud) && q.explainVisual && !Array.isArray(q.explainVisual) && q.explainVisual.kind === 'dots' && <div style={{ marginTop: 8 }}><DotGroup count={q.explainVisual.count} size={28} animate animKey={cheer} /></div>}
@@ -4320,20 +4663,22 @@ export default function EduSphereApp() {
 
   if (screen === 'result' && lastEvent && mod && course && course.readAloud) {
     const mastered = isMasteredAttempt(lastEvent);
-    const nextMod = sortedModules.find((m) => m.courseId === mod.courseId && m.order === mod.order + 1);
+    // The next module in this course by order, skipping any already mastered.
+    const nextMod = sortedModules.filter((m) => m.courseId === mod.courseId && m.order > mod.order && !(progress.perModule[m.id] || {}).mastered).sort((a, b) => a.order - b.order)[0] || null;
     const rules = moduleRules(mod.id);
     // One thing to do next, never a menu. Well done goes forward; not yet goes round again
     // through the lesson, because a child who struggled should see it explained once more.
     const backTo = mastered ? null : loopBackTarget(record.events, mod.id);
     // After mastery, an approved reflection is offered once, spoken and tap-only. The record
     // of this round shows whether it has already been answered, so it never repeats.
-    const wonderHere = FEATURES.reflection && mastered && wonderOnFor(findStudent(roster, record.name)) ? nextWonder(record.events, mod.courseId, wonderReview, true) : null;
+    const wonderHere = FEATURES.reflection && mastered && wonderOnFor(findStudent(roster, record.name)) ? nextWonder(record.events, mod.courseId, previewReview(), true) : null;
     const wonderDone = wonderHere && record.events.some((e) => e.type === 'wonder_answered' && e.wonderId === wonderHere.id && String(e.at) > String(lastEvent.at));
     // Coloring is not offered here on purpose: a picture in the middle of a round pulls a student
     // away from the work. The pictures wait in Let's Color, where they choose one themselves.
     const goOn = () => {
       if (wonderHere && !wonderDone) { setWonder(wonderHere); setWonderText(''); setWonderPick(''); setWonderStartedAt(Date.now()); setScreen('wonder'); return; }
-      if (mastered && nextMod) openModule(nextMod.id); else if (mastered) startPractice(); else if (backTo) loopBack(mod.id, backTo); else { setLessonStep(0); setScreen('lesson'); }
+      // Well done goes on to the next module; at the end of a course it goes home, never round the same module again.
+      if (mastered && nextMod) openModule(nextMod.id); else if (mastered) setScreen('overview'); else if (backTo) loopBack(mod.id, backTo); else { setLessonStep(0); setScreen('lesson'); }
     };
     return (
       <div style={page}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={wrap}>
@@ -4379,7 +4724,8 @@ export default function EduSphereApp() {
 
   if (screen === 'result' && lastEvent && mod) {
     const mastered = isMasteredAttempt(lastEvent);
-    const nextMod = sortedModules.find((m) => m.courseId === mod.courseId && m.order === mod.order + 1);
+    // The next module in this course by order, skipping any already mastered.
+    const nextMod = sortedModules.filter((m) => m.courseId === mod.courseId && m.order > mod.order && !(progress.perModule[m.id] || {}).mastered).sort((a, b) => a.order - b.order)[0] || null;
     return (
       <div style={page}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={wrap}>
         <div style={{ ...card, borderColor: mastered ? C.gold : C.clay }}>
@@ -4502,7 +4848,7 @@ export default function EduSphereApp() {
         <p style={{ color: C.muted, fontSize: 14, margin: '0 0 10px', textAlign: 'center' }}>No right answer</p>
         <div style={{ ...card, position: 'relative' }}>
           <p style={{ fontSize: 20, fontWeight: 600, margin: '0 0 14px', paddingRight: readAloud ? 60 : 0 }}>{wonder.prompt}</p>
-          {readAloud && <SpeakButton corner text={wonder.prompt} label="Hear it again" />}
+          <SpeakButton corner text={wonder.prompt} label={readAloud ? 'Hear it again' : 'Read it to me'} />
           {wonder.answerMode === 'pick' ? (
             <div style={{ display: 'grid', gap: 10 }}>
               {wonder.options.map((o) => (
@@ -4532,7 +4878,7 @@ export default function EduSphereApp() {
         <div style={{ ...card, background: C.greenSoft, borderColor: C.greenSoft }}>
           <p style={{ margin: 0, fontSize: 17, fontWeight: 600 }}>{wonder.prompt}</p>
         </div>
-        {readAloud && <SpeakButton text={allText} label="Read it to me" />}
+        <SpeakButton text={allText} label="Read it to me" />
         {wonder.perspectives.map((p) => (
           <div key={p.voice} style={card}>
             <p style={{ margin: '0 0 4px', fontWeight: 600, color: C.green }}>{p.voice}</p>
@@ -4594,6 +4940,13 @@ export default function EduSphereApp() {
             </div>
           );
         })}
+        {/* Practice the missed ones: the module missed most this week, one tap, centered at the very foot. */}
+        {mostMissedModule() && (
+          <div style={{ textAlign: 'center', marginTop: 40 }}>
+            <Btn kind="secondary" onClick={() => openModule(mostMissedModule())} style={{ width: 'min(320px, 100%)' }}>Practice the missed ones</Btn>
+            <p style={{ margin: '8px 0 0', fontSize: 13, color: C.muted }}>{getModule(mostMissedModule()).title}, where the most answers went wrong this week.</p>
+          </div>
+        )}
       </div></div>
     );
   }
@@ -4824,7 +5177,7 @@ export default function EduSphereApp() {
         {/* Reviewing one question opens over the page rather than pushing everything down.
             With a hundred questions to work through, expanding in place would mean endless scrolling. */}
         {reviewingQuestion && (
-          <div className="edu-no-print" style={{ position: 'fixed', inset: 0, background: 'rgba(36, 41, 31, 0.55)', zIndex: 100, overflowY: 'auto', padding: '24px 12px' }}>
+          <div className="edu-no-print" style={{ position: 'fixed', top: 0, right: 0, bottom: 0, left: 0, background: 'rgba(36, 41, 31, 0.55)', zIndex: 100, overflowY: 'auto', padding: '24px 12px' }}>
             <div style={{ maxWidth: 560, margin: '0 auto', background: C.surface, borderRadius: 14, padding: 18, position: 'relative' }}>
               <button type="button" onClick={() => setReviewing(null)} aria-label="Close"
                 style={{ position: 'absolute', top: 8, right: 10, background: 'none', border: 'none', width: 36, height: 36, fontSize: 30, fontWeight: 400, lineHeight: '34px', cursor: 'pointer', color: C.ink, fontFamily: FONT, padding: 0 }}>×</button>
@@ -5268,11 +5621,44 @@ export default function EduSphereApp() {
     };
     const holdProps = (st) => ({
       onPointerDown: (e) => { if (isControl(e.target) || renamingId) return; dragStart.current = { x: e.clientX, y: e.clientY }; dragTimer.current = setTimeout(() => { setDragId(st.id); setDragOver(visible.findIndex((x) => x.id === st.id)); }, 450); },
-      onPointerMove: (e) => { if (dragTimer.current && dragStart.current && Math.hypot(e.clientX - dragStart.current.x, e.clientY - dragStart.current.y) > 8) { clearTimeout(dragTimer.current); dragTimer.current = null; } if (dragId === st.id) setDragOver(rowUnder(e.clientY)); },
+      onPointerMove: (e) => { if (dragTimer.current && dragStart.current && Math.hypot(e.clientX - dragStart.current.x, e.clientY - dragStart.current.y) > 8) { clearTimeout(dragTimer.current); dragTimer.current = null; } if (dragId === st.id) { dragY.current = e.clientY; setDragOver(rowUnder(e.clientY)); } },
       onPointerUp: dragEnd, onPointerCancel: dragEnd, onContextMenu: (e) => { if (dragId) e.preventDefault(); },
     });
+    const TOUR = [
+      ['Welcome to your classroom', 'Add a student with their school ID and pick a sign-in picture. Students tap their picture on the first screen; no names or photos are ever stored.'],
+      ['Lessons, practice, mastery', 'Every module is a short lesson, five questions, and a star once it is mastered on two different days. Walk through any grade yourself with the buttons below the roster.'],
+      ['Backups live on this device', 'A backup file downloads when a student taps Exit and when you sign out after changes. Save one to a shared drive now and then; one file restores everything on any device.'],
+      ['Wonder questions', 'Optional questions between modules that reframe failure and grow curiosity. Students only see the ones you approve, at the bottom of this page.'],
+      ['Certificates', 'When a student finishes every module of a grade, a card appears here to make a certificate: four templates, photos if you like, print or save.'],
+    ];
+    const endTour = async () => { setTourStep(-1); const next = { ...educator, tourSeen: true, newsSeen: news ? news.stamp : educator.newsSeen }; setEducator(next); await saveEducator(next); };
+    const tourPopup = tourStep >= 0 && educator ? (
+      <div className="edu-no-print" style={{ position: 'fixed', top: 0, right: 0, bottom: 0, left: 0, background: 'rgba(36, 41, 31, 0.55)', zIndex: 130, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
+        <div className="edu-rise" style={{ width: 'min(440px, 100%)', background: C.surface, borderRadius: 14, padding: '24px 22px', textAlign: 'center' }} role="dialog" aria-label="First week tour">
+          <p style={{ margin: '0 0 4px', fontSize: 13, color: C.muted }}>{tourStep + 1} of {TOUR.length}</p>
+          <p style={{ margin: '0 0 10px', fontSize: 19, fontWeight: 700 }}>{TOUR[tourStep][0]}</p>
+          <p style={{ margin: '0 0 18px', fontSize: 15, lineHeight: 1.6 }}>{TOUR[tourStep][1]}</p>
+          <div style={{ display: 'flex', justifyContent: 'center', gap: 10 }}>
+            <Btn kind="secondary" onClick={endTour}>Skip tour</Btn>
+            {tourStep < TOUR.length - 1 ? <Btn onClick={() => setTourStep(tourStep + 1)}>Next</Btn> : <Btn onClick={endTour}>Done</Btn>}
+          </div>
+        </div>
+      </div>
+    ) : null;
+    const newsPopup = newsOpen && news ? (
+      <div className="edu-no-print" style={{ position: 'fixed', top: 0, right: 0, bottom: 0, left: 0, background: 'rgba(36, 41, 31, 0.55)', zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
+        <div className="edu-rise" style={{ width: 'min(440px, 100%)', background: C.surface, borderRadius: 14, padding: '24px 22px', textAlign: 'center' }} role="dialog" aria-label="What's new">
+          <p style={{ margin: '0 0 4px', fontSize: 19, fontWeight: 700 }}>What's new</p>
+          <p style={{ margin: '0 0 14px', fontSize: 13, color: C.muted }}>{news.date}</p>
+          <ul style={{ margin: '0 0 18px', padding: '0 0 0 22px', textAlign: 'left', fontSize: 15, lineHeight: 1.6 }}>{news.items.map((t, k) => <li key={k}>{t}</li>)}</ul>
+          <Btn onClick={async () => { setNewsOpen(false); const next = { ...educator, newsSeen: news.stamp }; setEducator(next); await saveEducator(next); }}>Got it</Btn>
+        </div>
+      </div>
+    ) : null;
     return (
       <div style={page}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={wrap}>
+        {tourPopup}
+        {newsPopup}
         {(() => {
           const days = daysSinceBackup(backupAt, new Date().toISOString());
           const overdue = visible.length > 0 && (days === null || days >= 1);
@@ -5286,7 +5672,7 @@ export default function EduSphereApp() {
         })()}
         <h1 style={{ fontSize: 24, margin: '12px 0 4px', textAlign: 'center' }}>My Classroom</h1>
         {educator && backupAt === null && !backupNudgeSeen && (
-          <div className="edu-no-print" style={{ position: 'fixed', inset: 0, background: 'rgba(36, 41, 31, 0.55)', zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
+          <div className="edu-no-print" style={{ position: 'fixed', top: 0, right: 0, bottom: 0, left: 0, background: 'rgba(36, 41, 31, 0.55)', zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
             <div className="edu-rise" style={{ maxWidth: 420, width: '100%', background: C.surface, borderRadius: 14, padding: 22, textAlign: 'center' }}>
               <p style={{ margin: '0 0 8px', fontSize: 18, fontWeight: 600 }}>Make your first backup soon</p>
               <p style={{ margin: '0 0 18px', fontSize: 15, color: C.muted }}>A forgotten PIN can only be reset with a backup file.</p>
@@ -5330,7 +5716,7 @@ export default function EduSphereApp() {
           </div>
         )}
         {adding && (
-          <div style={{ position: 'fixed', inset: 0, background: 'rgba(36, 41, 31, 0.55)', zIndex: 100, overflowY: 'auto', padding: '24px 12px' }}>
+          <div style={{ position: 'fixed', top: 0, right: 0, bottom: 0, left: 0, background: 'rgba(36, 41, 31, 0.55)', zIndex: 100, overflowY: 'auto', padding: '24px 12px' }}>
             <div className="edu-rise" style={{ maxWidth: 560, margin: '0 auto', background: C.surface, borderRadius: 14, padding: 22, position: 'relative', textAlign: 'center' }}>
               <button type="button" onClick={() => setAdding(false)} aria-label="Close"
                 style={{ position: 'absolute', top: 8, right: 10, background: 'none', border: 'none', width: 36, height: 36, fontSize: 30, lineHeight: '34px', cursor: 'pointer', color: C.ink, fontFamily: FONT, padding: 0 }}>×</button>
@@ -5502,7 +5888,7 @@ export default function EduSphereApp() {
                 </div>
                 {mergeFrom === st.id && <p style={{ color: C.gold, fontSize: 13, margin: '8px 0 0' }}>Now tap “Merge here” on the student to keep. Both histories are joined; nothing is deleted.</p>}
                 {wonderPopupFor === st.id && (
-                  <div style={{ position: 'fixed', inset: 0, background: 'rgba(36, 41, 31, 0.55)', zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }} onClick={() => setWonderPopupFor(null)}>
+                  <div style={{ position: 'fixed', top: 0, right: 0, bottom: 0, left: 0, background: 'rgba(36, 41, 31, 0.55)', zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }} onClick={() => setWonderPopupFor(null)}>
                     <div className="edu-rise" style={{ width: 'min(420px, 100%)', background: C.surface, borderRadius: 14, padding: '26px 22px', textAlign: 'center' }} onClick={(e) => e.stopPropagation()}>
                       <p style={{ margin: '0 0 6px', fontSize: 19, fontWeight: 700 }}>Wonder Questions</p>
                       <p style={{ margin: '0 0 18px', fontSize: 15, color: C.muted }}>Currently: <strong style={{ color: wonderOnFor(st) ? C.green : C.ink }}>{wonderOnFor(st) ? 'On' : 'Off'}</strong></p>
@@ -5587,7 +5973,7 @@ export default function EduSphereApp() {
             setConfirmDelete(null);
           };
           return (
-            <div role="dialog" aria-modal="true" onClick={() => setConfirmDelete(null)} style={{ position: 'fixed', inset: 0, background: 'rgba(36, 41, 31, 0.55)', zIndex: 80, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20 }}>
+            <div role="dialog" aria-modal="true" onClick={() => setConfirmDelete(null)} style={{ position: 'fixed', top: 0, right: 0, bottom: 0, left: 0, background: 'rgba(36, 41, 31, 0.55)', zIndex: 80, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20 }}>
               <div onClick={(e) => e.stopPropagation()} style={{ ...card, maxWidth: 420, width: '100%', textAlign: 'center', padding: 22, boxShadow: '0 12px 40px rgba(0,0,0,0.25)' }}>
                 <p style={{ margin: '0 0 8px', fontSize: 19, fontWeight: 700 }}>{all ? `Delete every record for all ${targets.length} inactive students?` : `Delete every record for ${targets[0].label}?`}</p>
                 <p style={{ margin: '0 0 18px', fontSize: 15, color: C.muted }}>Their history and progress leave this device for good. Old backup files still hold them.</p>
@@ -5717,8 +6103,16 @@ export default function EduSphereApp() {
         })}
         {!noteSearch.trim() && <p style={{ fontSize: 13, color: C.muted, textAlign: 'center', padding: '0 24px' }}>Order is chosen by student metrics. Stuck on a module? Frequent loop backs? Guessing or low confidence? To the top for you. <InfoButton onClick={() => setShowOrderTip(!showOrderTip)} label="About the order" open={showOrderTip} /></p>}
         {!noteSearch.trim() && showOrderTip && <TipText>If students share an "on track" status, they are ordered by the number of attempts required to remain on track (more attempts on top).</TipText>}
-        <div className="edu-no-print" style={{ textAlign: 'center', marginTop: 8 }}>
+        <div className="edu-no-print" style={{ textAlign: 'center', marginTop: 40 }}>
           <Btn onClick={() => { if (typeof window !== 'undefined' && window.print) window.print(); }}>Print this list</Btn>
+          {/* The class's weekly notes print from a sheet built only for the printer, so the page itself carries nothing extra. */}
+          <p className="edu-no-print" style={{ textAlign: 'center', margin: '10px 0 0' }}><button type="button" onClick={() => {
+            const esc = (t) => String(t).replace(/[&<>]/g, (ch) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[ch]));
+            const sheet = document.createElement('div'); sheet.className = 'edu-class-notes';
+            sheet.innerHTML = `<p style="font-size:20px;font-weight:700;margin:0 0 12px">Weekly notes</p>${classRows.map((r) => `<div style="margin:0 0 14px;padding-bottom:10px;border-bottom:1px solid #D9DED4"><p style="margin:0 0 4px;font-weight:600">${esc(r.label)}</p><p style="margin:0;font-size:15px;line-height:1.6;white-space:pre-wrap">${esc(r.weekly)}</p></div>`).join('')}<p style="margin:0;font-size:12px;color:#6B7266">EDUSphere: The Smart Way to Learn. ${esc(new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }))}</p>`;
+            document.body.appendChild(sheet); document.body.classList.add('edu-classnotes-mode'); window.print();
+            setTimeout(() => { document.body.classList.remove('edu-classnotes-mode'); sheet.remove(); }, 500);
+          }} style={{ ...linkBtn, fontSize: 13, color: C.muted }}>Print weekly notes</button></p>
         </div>
       </div></div>
     );
@@ -5816,7 +6210,6 @@ export default function EduSphereApp() {
           <p style={{ margin: '0 0 8px', fontSize: 14, color: C.muted, textAlign: 'center' }}>An automatic backup is generated within your downloads folder when:</p>
           <div style={{ display: 'flex', justifyContent: 'center' }}>
             <ul className="edu-bullets" style={{ margin: 0, padding: '0 0 0 24px', fontSize: 15, fontWeight: 600, color: C.ink, textAlign: 'left', lineHeight: 2, display: 'inline-block' }}>
-              <li>A student completes a course.</li>
               <li>An educator makes changes and signs out.</li>
               <li>A student taps <em>Exit</em>.</li>
             </ul>
@@ -5899,6 +6292,7 @@ export default function EduSphereApp() {
           {restoreNote && <p style={{ margin: '10px 0 0', fontSize: 14, color: C.green, fontWeight: 600, textAlign: 'center' }}>{restoreNote}</p>}
         </div>
         <p style={{ color: C.muted, fontSize: 13, textAlign: 'center', margin: '52px 0 8px' }}>We send nothing anywhere. You choose where the file lives. Choose wisely.</p>
+        {educator && <p style={{ textAlign: 'center', margin: '0 0 8px' }}><button type="button" style={{ ...linkBtn, fontSize: 13 }} onClick={async () => { const next = { ...educator, tourSeen: false }; setEducator(next); await saveEducator(next); setScreen('educator-pick'); }}>Show the first week tour again</button></p>}
       </div></div>
     );
   }
@@ -5911,6 +6305,7 @@ export default function EduSphereApp() {
     const shownName = student ? student.label : educatorRecord.name;
     const rep = buildReport(shownName, educatorRecord.events);
     const enabled = rep.enabledCourseIds;
+    const since = reportOpenedFrom && student && student.reportSeenAt ? changesSince(educatorRecord.events, reportOpenedFrom) : null;
 
     // Writes one event onto this student's log and keeps the screen in step.
     // One event or several, so an edit (the old note removed, the new one written) is a single save.
@@ -5933,13 +6328,17 @@ export default function EduSphereApp() {
       <div style={page}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={wrap}>
         <button type="button" onClick={() => setScreen('educator-pick')} style={linkBtn}>Back to Classroom</button>
         <h1 style={{ fontSize: 26, margin: '10px 0 2px', textAlign: 'center' }}>{keepTogether(shownName)}</h1>
-        <p style={{ color: C.muted, marginTop: 0, fontSize: 14, textAlign: 'center' }}>Report generated {fmtDate(rep.generatedAt)}</p>
+        {since && (since.attempts || since.mastered.length || since.stories || since.colored) ? (
+          <p style={{ margin: '0 0 14px', fontSize: 14, color: C.muted, textAlign: 'center' }}>
+            Since you last looked: {sinceLine(since)}.<br />({niceDateShort(reportOpenedFrom)})
+          </p>
+        ) : since ? <p style={{ margin: '0 0 14px', fontSize: 14, color: C.muted, textAlign: 'center' }}>Nothing new since you last looked.<br />({niceDateShort(reportOpenedFrom)})</p> : null}
         <div className="edu-no-print" style={{ textAlign: 'center', margin: '0 0 12px' }}><Btn kind="secondary" onClick={() => { if (typeof window !== 'undefined' && window.print) window.print(); }}>Print this report</Btn></div>
 
         {/* Teacher notes: written here, kept on the student's log, so they ride along in every backup. */}
         <div style={{ ...card, marginBottom: 14 }}>
-          <p className="edu-card-title" style={{ margin: '0 0 6px', fontWeight: 600, textAlign: 'center' }}>Notes</p>
-          <p style={{ margin: '0 0 12px', fontSize: 13, color: C.muted, textAlign: 'center' }}>A note here stays with the student and can be restored through backups. Quickly search student notes through the "Who Needs Help" page.</p>
+          <HeadWithInfo onClick={() => setShowNoteWhy(!showNoteWhy)} label="About notes" open={showNoteWhy}>Notes</HeadWithInfo>
+          {showNoteWhy && <p style={{ margin: '0 0 12px', fontSize: 13, color: C.muted, textAlign: 'center' }}>A note here stays with the student and can be restored through backups. Quickly search student notes through the Who Needs Help page.</p>}
           {/* Each note sits on its own soft green card, centered, with Edit and Remove under it. An edit is
               the old note removed and the new one written, so the log still says everything that happened. */}
           {rep.notes.map((n) => (
@@ -5965,11 +6364,10 @@ export default function EduSphereApp() {
             </div>
           ))}
           <div className="edu-note-box edu-no-print" style={{ position: 'relative' }}>
-            <textarea value={noteInput} onChange={(e) => setNoteInput(e.target.value)} onFocus={() => setNoteFocus(true)} onBlur={() => setNoteFocus(false)} aria-label="Teacher note" placeholder="Write a note about this student (i.e. needs assistance with math, loves dinosaurs)" rows={3}
-              style={{ width: '100%', boxSizing: 'border-box', fontFamily: FONT, fontSize: 15, padding: 10, borderRadius: 10, border: `1px solid ${C.line}`, resize: 'vertical', display: 'block' }} className="edu-note-quiet" />
+            <textarea value={noteInput} onChange={(e) => { setNoteInput(e.target.value); e.target.style.height = 'auto'; e.target.style.height = `${Math.max(44, e.target.scrollHeight)}px`; }} onFocus={() => setNoteFocus(true)} onBlur={() => setNoteFocus(false)} aria-label="Teacher note" placeholder="Write a note about this student" rows={1}
+              style={{ width: '100%', minHeight: 44, height: 44, boxSizing: 'border-box', fontFamily: FONT, fontSize: 15, lineHeight: '22px', padding: '10px 14px', borderRadius: 10, border: `1px solid ${C.line}`, resize: 'none', display: 'block', textAlign: 'center', overflow: 'hidden' }} className="edu-note-quiet" />
             {/* The example sits in the middle of the box, lightly, until there is a note or a cursor. */}
-            {!noteInput && !noteFocus && <span aria-hidden="true" style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '0 24px', fontSize: 14, color: C.muted, opacity: 0.7, pointerEvents: 'none' }}>Write a note about this student (i.e. needs assistance with math, loves dinosaurs)</span>}
-            <div className="edu-note-save"><Btn kind="secondary" disabled={!noteInput.trim()} onClick={async () => { await addToStudent(makeNoteEvent(noteInput, new Date().toISOString())); setNoteInput(''); }}>Save note</Btn></div>
+            <div className="edu-note-save"><Btn kind="secondary" disabled={!noteInput.trim()} onClick={async () => { await addToStudent(makeNoteEvent(noteInput, new Date().toISOString())); setNoteInput(''); const box = document.querySelector('textarea[aria-label="Teacher note"]'); if (box) box.style.height = '44px'; }}>Save note</Btn></div>
           </div>
 
         </div>
@@ -6152,7 +6550,7 @@ export default function EduSphereApp() {
         })}
 
         {storyModule && (
-          <div className="edu-no-print" style={{ position: 'fixed', inset: 0, background: 'rgba(36, 41, 31, 0.55)', zIndex: 100, overflowY: 'auto', padding: '24px 12px' }}>
+          <div className="edu-no-print" style={{ position: 'fixed', top: 0, right: 0, bottom: 0, left: 0, background: 'rgba(36, 41, 31, 0.55)', zIndex: 100, overflowY: 'auto', padding: '24px 12px' }}>
             <div className="edu-rise" style={{ maxWidth: 560, margin: '0 auto', background: C.surface, borderRadius: 14, padding: 18, position: 'relative' }}>
               <button type="button" onClick={() => setStoryModule(null)} aria-label="Close"
                 style={{ position: 'absolute', top: 8, right: 10, background: 'none', border: 'none', width: 36, height: 36, fontSize: 30, lineHeight: '34px', cursor: 'pointer', color: C.ink, fontFamily: FONT, padding: 0 }}>×</button>
@@ -6175,9 +6573,44 @@ export default function EduSphereApp() {
         {/* Everything the student has ever worked on, including courses since switched off. */}
         <div className="edu-no-print" style={{ ...card, background: C.goldSoft, borderColor: C.goldSoft }}>
           <p className="edu-card-title" style={{ margin: '0 0 6px', fontWeight: 600 }}>Transcript</p>
-          <p style={{ margin: '0 0 10px', fontSize: 15 }}>A printable record of everything {shownName} has ever worked on, including courses that are no longer assigned. This is the clearest view of student progression.</p>
+          <p style={{ margin: '0 0 10px', fontSize: 15, textAlign: 'center' }}>A printable record of everything {shownName} has ever worked on, including courses that are no longer assigned. This is the clearest view of student progression.</p>
           <div style={{ textAlign: 'center' }}><Btn kind="secondary" onClick={() => setScreen('transcript')} style={{ width: 'min(300px, 100%)' }}>Open transcript</Btn></div>
         </div>
+        {(() => {
+          const generated = weeklyNote(shownName, educatorRecord.events, new Date().toISOString()); const shown = weeklyEdit === null ? generated : weeklyEdit;
+          return (
+            <div className="edu-weekly-note" style={card}>
+              <div className="edu-no-print" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
+                <p className="edu-card-title" style={{ margin: '0 0 6px', fontWeight: 600 }}>Weekly note</p>
+                <span>
+                  {weeklyEditing
+                    ? <button type="button" onClick={() => setWeeklyEditing(false)} style={{ ...linkBtn, fontSize: 13, color: C.muted }}>Save</button>
+                    : <>
+                      <button type="button" onClick={() => { if (weeklyEdit === null) setWeeklyEdit(generated); setWeeklyEditing(true); }} style={{ ...linkBtn, fontSize: 13, color: C.muted, marginRight: 12 }}>Edit</button>
+                      <button type="button" onClick={() => { document.body.classList.add('edu-note-mode'); window.print(); setTimeout(() => document.body.classList.remove('edu-note-mode'), 500); }} style={{ ...linkBtn, fontSize: 13, color: C.muted }}>Print</button>
+                    </>}
+                </span>
+              </div>
+              <p className="edu-print-only" style={{ margin: '0 0 6px', fontWeight: 600 }}>Weekly note</p>
+              {!weeklyEditing
+                ? <p style={{ margin: 0, fontSize: 15, lineHeight: 1.6, whiteSpace: 'pre-wrap', textAlign: 'center' }}>{shown}</p>
+                : <textarea value={weeklyEdit} onChange={(e) => setWeeklyEdit(e.target.value)} aria-label="Weekly note" rows={5} style={{ width: '100%', boxSizing: 'border-box', fontFamily: FONT, fontSize: 15, padding: 10, borderRadius: 10, border: `1px solid ${C.line}`, resize: 'vertical', display: 'block' }} />}
+              {weeklyEditing && <p className="edu-print-only" style={{ margin: 0, fontSize: 15, lineHeight: 1.6, whiteSpace: 'pre-wrap' }}>{weeklyEdit}</p>}
+              <p style={{ margin: '8px 0 0', fontSize: 12, color: C.muted, textAlign: 'center' }}>EDUSphere: The Smart Way to Learn. {new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</p>
+            </div>
+          );
+        })()}
+        {storiesRead(educatorRecord.events).length > 0 && (() => {
+          const read = storiesRead(educatorRecord.events).map((r) => ({ ...r, story: storyFor(r.moduleId), mod: getModule(r.moduleId) })).filter((r) => r.story && r.mod);
+          const cast = [...new Set(read.flatMap((r) => r.story.cast || []))];
+          return (
+            <div style={card}>
+              <p className="edu-card-title" style={{ margin: '0 0 6px', fontWeight: 600 }}>Stories</p>
+              <p style={{ margin: '0 0 10px', fontSize: 13, color: C.muted }}>{read.length === 1 ? 'One story opened' : `${read.length} stories opened`}{cast.length ? `, and met ${cast.join(', ')}` : ''}.</p>
+              {read.map((r) => <p key={r.moduleId} style={{ margin: '4px 0', fontSize: 14 }}>{r.story.title} <span style={{ color: C.muted }}>({r.mod.title}, {niceDateShort(r.at)})</span></p>)}
+            </div>
+          );
+        })()}
 
         {/* Plain-language explanations, written for someone who does not work in tech */}
         <div style={{ ...card, background: 'linear-gradient(135deg, #BFD6C7 0%, #D3E4D9 100%)', borderColor: '#A9C6B4' }}>
@@ -6232,6 +6665,7 @@ export default function EduSphereApp() {
         )}
         </div>
         {saveNote && <p style={{ color: C.muted, fontSize: 13, textAlign: 'center', marginTop: 32 }}>{saveNote}</p>}
+        <p style={{ color: C.muted, margin: '32px 0 0', fontSize: 13, textAlign: 'center' }}>Report generated {fmtDate(rep.generatedAt)}</p>
       </div></div>
     );
   }

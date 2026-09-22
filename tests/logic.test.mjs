@@ -269,7 +269,7 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
     if (genId === 'g1-more-less-same') { const [a, b] = g1; if (q.answer !== (a > b ? 'More' : a < b ? 'Less' : 'The same')) problems.push('grade 1 more/less/same wrong'); }
     // Grade 1 reading, re-derived from the shown word or sentence
     const shown = q.visual && q.visual.kind === 'letters' ? q.visual.text : '';
-    const PICW = { 'solid:cube': 'box', 'solid:cylinder': 'can', 'solid:sphere': 'ball', 'solid:cone': 'cone' };
+    const PICW = { 'solid:cube': 'box', 'solid:cylinder': 'can', 'art:ball': 'ball', 'solid:cone': 'cone', 'pic:cat': 'cat', 'icon:sun': 'sun', 'pic:fish': 'fish', 'art:boat': 'boat', 'art:car': 'car', 'icon:tree': 'tree' };
     const NUMW = ['one', 'two', 'three', 'four', 'five', 'six'];
     const DIG = (w) => (['sh', 'ch', 'th'].find((d) => w.startsWith(d)) || ['sh', 'ch', 'th'].find((d) => w.endsWith(d)));
     if (genId === 'r1-word-picture' && PICW[q.answer] !== shown) problems.push('word picture wrong');
@@ -498,7 +498,7 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
     if (genId === 's11-power') { const [w, t] = q.story.match(/\d+/g).map(Number); if (Number(q.answer.match(/\d+/)[0]) * t !== w) problems.push('power wrong'); }
     if (genId === 's11-angle-out') { const a = Number(q.story.match(/\d+/)[0]); if (Number(q.answer.match(/\d+/)[0]) !== a) problems.push('angle wrong'); }
     if (genId === 's11-series-resistance') { const [a, b] = q.story.match(/\d+/g).map(Number); if (Number(q.answer.match(/\d+/)[0]) !== a + b) problems.push('series resistance wrong'); }
-    if (genId === 's12-layer-order') { const order = ['Crust', 'Mantle', 'Outer core', 'Inner core']; const i = order.findIndex((x) => q.story.startsWith(x)); if (q.answer !== order[i + 1]) problems.push('layer order wrong'); }
+    if (genId === 's12-layer-order') { const order = ['Crust', 'Mantle', 'Outer core', 'Inner core']; const i = order.findIndex((x) => q.prompt.toLowerCase().includes(`the ${x.toLowerCase()}?`)); if (i < 0 || q.answer !== order[i + 1]) problems.push('layer order wrong'); }
     if (genId === 's12-redshift' && q.answer !== 'Galaxy B') problems.push('redshift wrong');
     if (genId === 's9-chromosome-count') { const full = Number(q.story.match(/\d+/)[0]); const meiosis = /meiosis/.test(q.story); if (Number(q.answer) !== (meiosis ? full / 2 : full)) problems.push('chromosome count wrong'); }
     if (genId === 's9-codon-count') { const letters = Number(q.story.match(/\d+/)[0]); if (Number(q.answer) * 3 !== letters) problems.push('codon count wrong'); }
@@ -523,7 +523,7 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
     if (genId === 's10-count-atoms') { const mm = q.story.match(/^(\d+)/); const mult = Number(mm[1]); const atom = q.prompt.match(/many (\w+) atoms/)[1]; const sub = { hydrogen: { '2H₂O': 2, '4NH₃': 3, '2CH₄': 4 }, oxygen: { '2H₂O': 1, '3CO₂': 2 }, carbon: { '3CO₂': 1 }, chlorine: { '2NaCl': 1 } }[atom][q.story]; if (Number(q.answer) !== mult * sub) problems.push('atom count wrong'); }
     if (genId === 's10-acid-or-base') { const ph = Number(q.story.match(/pH of about (\d+)/)[1]); if (q.answer !== (ph < 7 ? 'Acid' : ph === 7 ? 'Neutral' : 'Base')) problems.push('acid or base wrong'); }
     if (genId === 's10-how-many-times') { const [low, high] = q.story.match(/pH (\d+)/g).map((x) => Number(x.slice(3))); if (Number(q.answer.match(/\d+/)[0]) !== 10 ** (high - low)) problems.push('ten times wrong'); }
-    if (genId === 's10-metal-or-not') { const el = q.story.replace('.', '').toLowerCase(); const metals = ['iron', 'copper', 'sodium', 'gold', 'aluminum']; if ((metals.includes(el) ? 'Metal' : 'Nonmetal') !== q.answer) problems.push('metal wrong'); }
+    if (genId === 's10-metal-or-not') { const el = (q.prompt.match(/^Is (\w+) a metal/) || [])[1]; const metals = ['iron', 'copper', 'sodium', 'gold', 'aluminum']; if (!el || (metals.includes(el) ? 'Metal' : 'Nonmetal') !== q.answer) problems.push('metal wrong'); }
     if (genId === 's8-f-equals-ma') { const [m, a] = q.story.match(/\d+/g).map(Number); if (Number(q.answer.match(/\d+/)[0]) !== m * a) problems.push('force wrong'); }
     if (genId === 's8-mass-conserved') { const [a, b] = q.story.match(/\d+/g).map(Number); if (Number(q.answer.match(/\d+/)[0]) !== a + b) problems.push('conservation wrong'); }
     if (genId === 's8-more-mass') { const [light] = q.story.match(/\d+/g).map(Number); if (q.answer !== `The ${light} kg ball`) problems.push('more mass wrong'); }
@@ -735,7 +735,7 @@ ok('reset: history kept, but nothing counts as mastered afterwards', events.leng
   ok('report includes a confidence score per module', rep.modules.find((m) => m.id === M).confidence.score === 3 && rep.modules.find((m) => m.id === 'equivalent-fractions').confidence.score === null);
   ok('report prints the confidence rules', rep.definitions.some((d) => d.startsWith('Confidence starts at 1')));
   ok('every question has a one-sentence prompt and a story or null', Object.keys(L.GENERATORS).every((g) => { const q = L.generateQuestion(g, 7); return typeof q.prompt === 'string' && (q.type === 'writing' ? q.prompt.length < 110 : q.prompt.length < 70) && (q.story === null || typeof q.story === 'string'); }));
-  ok('explanation pictures are valid bars or a group of dots', Object.keys(L.GENERATORS).every((g) => { const q = L.generateQuestion(g, 11); if (q.explainVisual === null) return true; if (Array.isArray(q.explainVisual)) return q.explainVisual.every((b) => Number.isInteger(b.parts) && b.parts >= 2 && b.shaded >= 0 && b.shaded <= b.parts && typeof b.label === 'string'); if (q.explainVisual.kind === 'letters') return typeof q.explainVisual.text === 'string' && q.explainVisual.text.length > 0; if (q.explainVisual.kind === 'numberline') return q.explainVisual.from < q.explainVisual.to && (q.explainVisual.marks || []).every((v) => v >= q.explainVisual.from && v <= q.explainVisual.to); if (q.explainVisual.kind === 'tri') return q.explainVisual.base > 0 && q.explainVisual.height > 0; if (q.explainVisual.kind === 'percentgrid') return q.explainVisual.shaded >= 0 && q.explainVisual.shaded <= 100; if (q.explainVisual.kind === 'pair') return [q.explainVisual.a, q.explainVisual.b].every((h) => h && typeof h.kind === 'string' && (h.name || h.colour || h.shape || h.count)); return q.explainVisual.kind === 'dots' && q.explainVisual.count >= 1 && q.explainVisual.count <= 10; }));
+  ok('explanation pictures are valid bars or a group of dots', Object.keys(L.GENERATORS).every((g) => { const q = L.generateQuestion(g, 11); if (q.explainVisual === null) return true; if (Array.isArray(q.explainVisual)) return q.explainVisual.every((b) => Number.isInteger(b.parts) && b.parts >= 2 && b.shaded >= 0 && b.shaded <= b.parts && typeof b.label === 'string'); if (q.explainVisual.kind === 'letters') return typeof q.explainVisual.text === 'string' && q.explainVisual.text.length > 0; if (q.explainVisual.kind === 'numberline') return q.explainVisual.from < q.explainVisual.to && (q.explainVisual.marks || []).every((v) => v >= q.explainVisual.from && v <= q.explainVisual.to); if (q.explainVisual.kind === 'tri') return q.explainVisual.base > 0 && q.explainVisual.height > 0; if (q.explainVisual.kind === 'percentgrid') return q.explainVisual.shaded >= 0 && q.explainVisual.shaded <= 100; if (q.explainVisual.kind === 'pic') return typeof q.explainVisual.name === 'string' && q.explainVisual.name.length > 0; if (q.explainVisual.kind === 'pair') return [q.explainVisual.a, q.explainVisual.b].every((h) => h && typeof h.kind === 'string' && (h.name || h.colour || h.shape || h.count)); return q.explainVisual.kind === 'dots' && q.explainVisual.count >= 1 && q.explainVisual.count <= 10; }));
 }
 
 // ---- 7. Courses, subjects, and the per-learner course switch ----
@@ -772,7 +772,7 @@ ok('reset: history kept, but nothing counts as mastered afterwards', events.leng
   ok('approve all approves everything not removed', L.approveAllWonder(L.emptyWonderReview()).approved.length === L.WONDER.length);
   ok('approve all leaves removed questions removed', L.approveAllWonder(hiddenState).approved.includes('w-one-thing') === false);
   ok('un-approve all sends everything back to awaiting review and keeps removals', L.unapproveAllWonder(allApproved).approved.length === 0 && L.unapproveAllWonder(hiddenState).hidden.includes('w-one-thing'));
-  { const done = ['colours', 'same-and-different', 'match-the-vehicles', 'match-the-things', 'more-and-fewer-5', 'patterns', 'count-to-3', 'first-strokes', 'connect-the-dots', 'draw-the-shapes', 'taking-turns', 'big-bigger-biggest', 'helpers-all-around'].map((id, i) => ({ type: 'attempt_completed', at: `u${i}`, startedAt: 'u', moduleId: id, seed: 1, core: [], review: null, coreCorrect: 5, coreTotal: 5 }));
+  { const done = ['colours', 'same-and-different', 'match-the-vehicles', 'match-the-things', 'match-the-water-animals', 'match-the-land-animals', 'match-the-shapes', 'match-the-solids', 'more-and-fewer-5', 'bigger-and-smaller', 'patterns', 'count-to-3', 'first-strokes', 'connect-the-dots', 'draw-the-shapes', 'taking-turns', 'big-bigger-biggest', 'helpers-all-around'].map((id, i) => ({ type: 'attempt_completed', at: `u${i}`, startedAt: 'u', moduleId: id, seed: 1, core: [], review: null, coreCorrect: 5, coreTotal: 5 }));
     ok('finishing a course unlocks the next course up in that subject', JSON.stringify(L.coursesToUnlock([L.makeCoursesEnabledEvent(['first-steps-pk'], 't'), ...done])) === '["counting-k"]');
     ok('nothing unlocks while a course is unfinished', L.coursesToUnlock([L.makeCoursesEnabledEvent(['first-steps-pk'], 't'), ...done.slice(0, 2)]).length === 0); }
   // The cadence: one reflection after every two mastered modules, rotating through the pool
@@ -1300,6 +1300,22 @@ ok('reset: history kept, but nothing counts as mastered afterwards', events.leng
   let r = L.addStudent(L.emptyRoster(), 'S-9', 't', { level: 'early' }).roster;
   r = L.setCertificateState(r, 'S-9', 'K', 'skipped');
   ok('a skipped certificate is remembered and pending ones are the rest', L.certificatesPending(L.findStudent(r, 'S-9'), ['K', '1']).join() === '1');
+}
+{ // Taught before asked: a ratchet on tools/untaught.mjs. History is clean; the rest may only shrink.
+  const STOP = new Set(['yes', 'no', 'true', 'false', 'same', 'different', 'more', 'fewer', 'less', 'bigger', 'smaller', 'both', 'neither', 'none', 'all']);
+  const wordy = (a) => typeof a === 'string' && !/\d/.test(a) && a.trim().split(/\s+/).length <= 3 && !STOP.has(a.toLowerCase().replace(/[.!]$/, '')) && !/^(dots|shape|item|pic|art|icon|swatch|letters|solid):/.test(a) && a.length > 1;
+  const untaught = (m) => { const ex = m.lesson.example || {}; const taught = [...m.lesson.paragraphs, m.lesson.keyIdea, ex.caption || '', ex.formula || '', ex.text || '', ...(m.lesson.script || []).map((x) => x.say)].join(' ').toLowerCase();
+    for (const g of new Set(m.generators)) for (let seed = 1; seed <= 40; seed++) { const q = L.generateQuestion(g, seed); if (q.type !== 'choice' || !wordy(q.answer)) continue; const a = String(q.answer).toLowerCase().replace(/[.!]$/, ''); if (!taught.includes(a) && !`${q.story || ''} ${q.prompt || ''}`.toLowerCase().includes(a)) return true; } return false; };
+  const flagged = L.MODULES.filter((m) => L.getCourse(m.courseId).subject !== 'Reading' && untaught(m)); const history = flagged.filter((m) => ['History', 'Science'].includes(L.getCourse(m.courseId).subject));
+  ok('every history and science question asks only what its lesson said', history.length === 0, history.map((m) => m.id).join(','));
+  ok('no lesson, in any subject, lets a question ask a recall answer it never said', flagged.length === 0, flagged.map((m) => m.id).join(','));
+  ok('a wrong answer can point back to its lesson sentence', /halogens/i.test(L.taughtLine('periodic-table', 'Halogens') || '') && L.taughtLine('fraction-meaning', '3/4') === null);
+}
+{ // Stories met: one line per module, first opening counts, nothing about the child.
+  const evs = [L.makeStoryReadEvent('cells', '2026-09-20T10:00:00.000Z'), L.makeStoryReadEvent('cells', '2026-09-21T10:00:00.000Z'), L.makeStoryReadEvent('ratios', '2026-09-22T10:00:00.000Z')];
+  const read = L.storiesRead(evs);
+  ok('a story is listed once, at its first opening', read.length === 2 && read[0].moduleId === 'cells' && read[0].at.startsWith('2026-09-20'));
+  ok('a story event carries only the module and the time', Object.keys(L.makeStoryReadEvent('cells', 't')).sort().join() === 'at,moduleId,type');
 }
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

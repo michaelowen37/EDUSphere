@@ -29,8 +29,13 @@ mods.app = readFileSync('tests/e2e/out/edusphere-prototype.js', 'utf8');
 const iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><circle cx="32" cy="32" r="30" fill="#3A6B58"/><path d="M8 40 C 20 22, 44 22, 56 40" fill="none" stroke="#D9A83B" stroke-width="6" stroke-linecap="round"/><path d="M22 18 h20 M22 18 v28 M22 32 h15 M22 46 h20" fill="none" stroke="#FFFFFF" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 const favicon = 'data:image/svg+xml,' + encodeURIComponent(iconSvg);
 // The story pictures that exist, so the page shows a placeholder for the rest without asking the server.
+// The newest block of docs/WHATS-NEW.md becomes the one-time pop-up educators see after an update.
+const newsDoc = existsSync('docs/WHATS-NEW.md') ? readFileSync('docs/WHATS-NEW.md', 'utf8') : '';
+const newsBlock = (newsDoc.match(/^## (\S+)\s*\n([\s\S]*?)(?=\n## |$)/m) || []);
+const news = newsBlock[1] ? { stamp: newsBlock[1], date: newsBlock[1], items: newsBlock[2].split('\n').filter((ln) => ln.startsWith('- ')).map((ln) => ln.slice(2).trim()) } : null;
 const artList = existsSync('art/stories') ? readdirSync('art/stories').filter((f) => f.endsWith('.webp')).map((f) => f.slice(0, -5)) : [];
-const bootLogo = readFileSync('docs/logo.svg', 'utf8').replace(/<polyline /g, '<polyline pathLength="1" ').replace(/width="\d+" height="\d+"/, '');
+const audioList = existsSync('audio') ? readdirSync('audio').filter((f) => f.endsWith('.mp3')).map((f) => f.slice(0, -4)) : [];
+const coloringList = existsSync('art/coloring') ? readdirSync('art/coloring').filter((f) => f.endsWith('.webp')).map((f) => f.slice(0, -5)) : [];
 
 const wrap = (name, code) => `__def(${JSON.stringify(name)}, function(module, exports, require){${code}\n});`;
 const html = `<!doctype html>
@@ -51,18 +56,22 @@ const html = `<!doctype html>
 <style>html, body { margin: 0; padding: 0; background: #F5F7F1; }
 /* Until the app has loaded, the logo draws itself forward and back. It sits after #root and shows only while #root is empty. */
 #edu-boot { display: none; }
-#root:empty + #edu-boot { display: flex; justify-content: center; padding: 70px 24px; }
-#edu-boot svg { width: min(220px, 60vw); height: auto; }
-#edu-boot polyline { stroke-dasharray: 1; animation: edu-boot 1.4s ease-in-out infinite alternate; }
-@keyframes edu-boot { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
-@media (prefers-reduced-motion: reduce) { #edu-boot polyline { animation: none; stroke-dasharray: none; } }
+#root:empty + #edu-boot { display: flex; justify-content: center; padding: 90px 24px; }
+.edu-boot-word { display: flex; gap: 2px; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 34px; font-weight: 800; color: #2F5D4F; letter-spacing: 1px; }
+.edu-boot-word span { display: inline-block; animation: edu-bob 1.2s ease-in-out infinite; }
+.edu-boot-word .edu-boot-dots { color: #C9A227; }
+@keyframes edu-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+@media (prefers-reduced-motion: reduce) { .edu-boot-word span { animation: none; } }
 </style>
 </head>
 <body>
 <div id="root"></div>
-<div id="edu-boot" aria-hidden="true">${bootLogo}</div>
+<div id="edu-boot" aria-hidden="true"><div class="edu-boot-word">${'Loading'.split('').map((ch, i) => `<span style="animation-delay:${(i * 0.12).toFixed(2)}s">${ch}</span>`).join('')}<span class="edu-boot-dots" style="animation-delay:0.9s">...</span></div></div>
 <script>
 window.__eduArt = ${JSON.stringify(artList)};
+window.__eduColoringArt = ${JSON.stringify(coloringList)};
+window.__eduAudio = ${JSON.stringify(audioList)};
+window.__eduNews = ${JSON.stringify(news)};
 // Installable app: the worker keeps a copy of the page for offline use and asks the network first, so a fresh build always wins.
 if ('serviceWorker' in navigator && /^https?:/.test(location.protocol)) { navigator.serviceWorker.register('sw.js').catch(function () {}); }
 var process = { env: { NODE_ENV: 'production' } };

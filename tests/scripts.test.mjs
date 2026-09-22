@@ -39,6 +39,9 @@ for (const mod of L.MODULES) {
     if (show.kind === 'shape' && !said.includes(show.name)) mismatches.push(`${mod.id}: "${line.say}" shows a ${show.name}`);
     if (show.kind === 'icon' && !said.includes(show.name)) mismatches.push(`${mod.id}: "${line.say}" shows a ${show.name}`);
     if (show.kind === 'solid' && !said.includes(show.name) && !said.includes({ sphere: 'ball', cube: 'box', cylinder: 'can', cone: 'cone' }[show.name])) mismatches.push(`${mod.id}: "${line.say}" shows a ${show.name}`);
+    // Every sign-in animal the words name must be on screen too, so a line never mentions a creature the child cannot see.
+    { const shownPics = (show.kind === 'pair' ? [show.a, show.b] : [show]).filter((h) => h && h.kind === 'pic').map((h) => h.name);
+      if (shownPics.length) { const named = L.PICTURES.filter((n) => new RegExp(`\\b${n}s?\\b`).test(said)); const missing = named.filter((n) => !shownPics.includes(n)); if (missing.length) mismatches.push(`${mod.id}: "${line.say}" names ${missing.join(', ')} but shows ${shownPics.join(', ')}`); } }
     // A pair is two pictures side by side; each half must be named by the words, by its own kind.
     const halves = show.kind === 'pair' ? [show.a, show.b] : [show];
     for (const h of halves) {

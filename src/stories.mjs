@@ -9,7 +9,8 @@
 // most stories belong to someone else, or to no one at all.
 export const STORIES = {
   'count-to-3': {
-    where: 'Mike, before he could count past three.', title: 'Three stones', art: 'S1', cast: ['Mike'],
+  about: 'a boy counting three river stones',
+    title: 'Three stones', art: 'S1', more: [{ serial: 'S29', after: 0, alt: 'Three river stones lined up on a wooden porch step, a small hand reaching for the third' }, { serial: 'S30', after: 2, alt: 'A jar with three fireflies glowing at dusk, held up in two small hands' }], cast: ['Mike'],
     alt: 'A small boy crouched at the edge of a creek, three smooth stones lined up on a flat rock',
     words: [
       'Mike had a job. Three stones from the creek. Not a pile. Three.',
@@ -19,7 +20,8 @@ export const STORIES = {
     ],
   },
   'count-to-5': {
-    title: 'Five ducklings', art: 'S2', cast: [],
+  about: 'five ducklings and the one that fell behind',
+    title: 'Five ducklings', art: 'S2', more: [{ serial: 'S31', after: 0, alt: 'Five ducklings following a mother duck along a muddy pond edge' }, { serial: 'S32', after: 3, alt: 'One duckling stuck behind a reed while the other four go ahead, the mother looking back' }], cast: [],
     alt: 'A mother duck on a pond with five ducklings in a wobbly line behind her',
     words: [
       'A mother duck swam across the pond every morning. Behind her came her ducklings, in a wobbly line.',
@@ -30,7 +32,8 @@ export const STORIES = {
     ],
   },
   'magnets': {
-    title: 'The needle that knew', art: 'S3', cast: [],
+  about: 'a toy boat pulled across a pond by a magnet',
+    title: 'The needle that knew', art: 'S3', more: [{ serial: 'S33', after: 0, alt: 'A toy boat with a magnet on its bow drifting on a pond, a child on the bank holding a magnet on a string' }, { serial: 'S34', after: 3, alt: 'Two bar magnets on a table, one flipped, pushing apart with a tiny gap between them' }], cast: [],
     alt: 'A small wooden fishing boat in thick fog, a compass needle glowing on its deck',
     words: [
       'A little fishing boat went out one morning and the fog rolled in behind it. Thick fog. The sea looked the same in every direction.',
@@ -41,7 +44,8 @@ export const STORIES = {
     ],
   },
   'telling-time': {
-    title: 'The clock that ran the town', art: 'S4', cast: [],
+  about: 'a town that ran on the clock tower',
+    title: 'The clock that ran the town', art: 'S4', more: [{ serial: 'S35', after: 0, alt: 'A town square with a clock tower reading three o\'clock, market stalls below' }, { serial: 'S36', after: 3, alt: 'The same clock face at half past, the long hand straight down, pigeons on the ledge' }], cast: [],
     alt: 'A tall clock tower above a small town square at sunrise, birds circling the clock face',
     words: [
       'In one small town, nobody owned a watch. There was one clock, high on the tower, and everybody looked up at it.',
@@ -52,7 +56,8 @@ export const STORIES = {
     ],
   },
   'fraction-meaning': {
-    title: 'The broken cups', art: 'S5', cast: [],
+  about: 'a girl and a pizza cut into equal slices',
+    title: 'The broken cups', art: 'S5', more: [{ serial: 'S37', after: 0, alt: 'A round pizza cut into four equal slices on a checkered table, one slice lifted' }, { serial: 'S38', after: 3, alt: 'Two pizzas side by side, one cut in four and one in eight, a girl comparing slices' }], cast: [],
     alt: 'A young baker in a warm kitchen holding one small measuring cup over a bowl, broken cups on the floor',
     words: [
       'Maya baked for the whole street. The morning of the harvest fair, she reached for her measuring cups and knocked the set off the shelf. Clink, clink, crack. Every cup broke but one: the smallest, marked one quarter.',
@@ -63,7 +68,8 @@ export const STORIES = {
     ],
   },
   'water-cycle': {
-    where: 'Chloe, the year of three hundred and sixty five paintings.', title: 'The lake that would not stay', art: 'S6', cast: ['Chloe'],
+  about: 'a painter watching a lake rise into mist and fall as rain',
+    diagram: { kind: 'cycle' }, title: 'The lake that would not stay', art: 'S6', more: [{ serial: 'S39', after: 0, alt: 'A teenage girl painting a lake at sunrise, mist rising off the water' }, { serial: 'S40', after: 3, alt: 'Rain falling on the same lake, the painter under an umbrella, puddles gathering' }], cast: ['Chloe'],
     alt: 'A teenage girl in a bright paint-splashed jacket painting a lake at dawn, mist lifting off the water',
     words: [
       'Chloe had decided to paint the lake once a day for a year. Same spot, same hour, sunrise. She wanted to see if a place could hold still.',
@@ -74,7 +80,8 @@ export const STORIES = {
     ],
   },
   'cells': {
-    where: 'Frederick, years after the jar of pond water, still holding it.', title: 'The pond that moved', art: 'S7', cast: ['Frederick'],
+  about: 'a jar of pond water seen through a microscope',
+    diagram: { kind: 'cell' }, title: 'The pond that moved', art: 'S7', more: [{ serial: 'S41', after: 0, alt: 'A digital microscope on a kitchen table beside a jar of green pond water, a kitchen with a window behind' }, { serial: 'S42', after: 3, alt: 'A zoom illustration of a leaf surface magnified: walls of cells connected, each with similar structures inside, together forming part of the whole leaf' }], cast: ['Frederick'],
     alt: 'A young man in a university lab looking into a microscope, a jar of pond water beside him, remembering a boy at a kitchen table with the same jar',
     words: [
       'Frederick stood in a lab that smelled of pond water, thinking about a kitchen table from years before.',
@@ -85,7 +92,8 @@ export const STORIES = {
     ],
   },
   'photosynthesis': {
-    title: 'The flower in the basement', art: 'S8', cast: [],
+  about: 'a boy whose plant leaned toward the window',
+    diagram: { kind: 'leaf' }, title: 'The flower in the basement', art: 'S8', more: [{ serial: 'S43', after: 0, alt: 'A boy watering a potted plant on a sunny windowsill, light streaming in' }, { serial: 'S44', after: 4, alt: 'The same plant leaning toward the window, a soft cutaway of one leaf drinking light' }], cast: [],
     alt: 'A teenager in a dim basement holding a drooping yellow-leaved flower in a pot, a bright window high above',
     words: [
       'Silas won the flower at the county fair, a prize-winning orange lily, and he wanted to keep it safe. So he put it in the basement, where it was cool and nothing could knock it over.',
@@ -97,7 +105,8 @@ export const STORIES = {
     ],
   },
   'pythagorean-theorem': {
-    where: 'Mike, the summer of his first deck. The family comes later.', title: 'The rope with twelve knots', art: 'S9', cast: ['Mike'],
+  about: 'a deck that would not square up until three, four and five',
+    diagram: { kind: 'pythag' }, title: 'The rope with twelve knots', art: 'S9', more: [{ serial: 'S45', after: 0, alt: 'A young man measuring a deck frame with a tape measure, lumber on sawhorses' }, { serial: 'S46', after: 3, alt: 'A chalk drawing on plywood of a right triangle with squares on its sides, the lengths shown as tiles' }], cast: ['Mike'],
     alt: 'A young man kneeling at the corner of a half-built wooden deck, stretching a knotted rope into a triangle',
     words: [
       'Mike was building his first deck alone. The boards were good, the posts were set, and the corner was wrong. He could feel it. Not by much. Just enough that every board after it would be a little more wrong than the last.',
@@ -108,7 +117,8 @@ export const STORIES = {
     ],
   },
   'newtons-laws': {
-    where: 'Savanah, still on the farm. The city is a few years off.', title: 'The cart that would not start', art: 'S10', cast: ['Savanah'],
+  about: 'a girl and the carts on the farm',
+    diagram: { kind: 'forces' }, title: 'The cart that would not start', art: 'S10', more: [{ serial: 'S47', after: 0, alt: 'A young woman pushing a heavy wheelbarrow across a farmyard, chickens scattering' }, { serial: 'S48', after: 4, alt: 'An empty cart rolling downhill on a dirt track while a full cart barely moves, a barn behind' }], cast: ['Savanah'],
     alt: 'A young woman on a farm road at dusk, shoulder against a heavy loaded cart, a barn behind her',
     words: [
       'The truck was broken, so Savanah had to get the feed to the barn by cart. Six sacks. She put her shoulder to it and pushed. Nothing.',
@@ -120,7 +130,8 @@ export const STORIES = {
     ],
   },
   'periodic-table': {
-    where: 'Frederick, the professor, a lifetime after the microscope.', title: 'The professor who guessed', art: 'S11', cast: ['Frederick'],
+  about: 'a professor who found the pattern in the elements',
+    diagram: { kind: 'periodic', group: 1 }, title: 'The professor who guessed', art: 'S11', more: [{ serial: 'S49', after: 0, alt: 'An older professor at a chalkboard with a hand-drawn grid of squares behind him, a lecture hall' }, { serial: 'S50', after: 3, alt: 'A lab bench close up: a jar of shiny metal shavings, a glass tube of pale gas, a wooden tray of rock samples' }], cast: ['Frederick'],
     alt: 'An older professor with a large gray handlebar mustache in a white lab coat, gesturing at a periodic table poster in a lecture hall',
     words: [
       'On the first day of class, Professor Frederick wrote the name of an element on the board that none of his students had heard of. Then he described it: a soft metal, cut with a knife, that catches fire in water. He had never touched it either.',
@@ -131,7 +142,8 @@ export const STORIES = {
     ],
   },
   'supply-demand-and-price': {
-    where: 'Savanah, first year in the city, first business.', title: 'The day it rained', art: 'S12', cast: ['Savanah'],
+  about: 'a jam stall and what happened to its price',
+    diagram: { kind: 'curves' }, title: 'The day it rained', art: 'S12', more: [{ serial: 'S51', after: 0, alt: 'A woman behind a market stall of jam jars with a handwritten sign, a line of customers' }, { serial: 'S52', after: 3, alt: 'The same stall late in the day, few jars left, the sign changed, no line' }], cast: ['Savanah'],
     alt: 'A confident woman in a smart coat under a market awning in a city street, rain falling, a stack of umbrellas beside her',
     words: [
       'Savanah\'s first business in the city was a market stall, and the stall sold umbrellas, badly. On sunny days nobody stopped. She dropped the price twice. Still nobody.',
@@ -142,7 +154,8 @@ export const STORIES = {
     ],
   },
   'budgets-saving-and-credit': {
-    where: 'Mike and Jaxon. The red bike comes back in physics.', title: 'The bike jar', art: 'S13', cast: ['Mike', 'Jaxon'],
+  about: 'a boy saving coins for a red bicycle',
+    title: 'The bike jar', art: 'S13', more: [{ serial: 'S53', after: 0, alt: 'A father and a small boy at a kitchen table with a jar of coins and a paper list' }, { serial: 'S54', after: 3, alt: 'A red bicycle in a shop window with a price tag, a boy pressing his nose to the glass' }], cast: ['Mike', 'Jaxon'],
     alt: 'A father and a six-year-old boy at a kitchen table, coins sorted into three labeled jars, a drawing of a red bicycle taped to the wall',
     words: [
       'Jaxon wanted the red bike in the shop window. Mike said yes. Then he put three jars on the table.',
@@ -154,9 +167,10 @@ export const STORIES = {
   },
 };
 STORIES['texas-revolution'] = {
-  where: 'Georgette and Mike, at the kitchen table where he asked his hardest questions.', title: 'The battle that was lost on purpose', art: 'S14', cast: ['Georgette', 'Mike'],
+  about: 'a battle that was lost on purpose',
+  diagram: { kind: 'map', region: 'texas', spots: [[86, 80, 'San Antonio'], [112, 76, 'San Jacinto']] }, title: 'The battle that was lost on purpose', art: 'S14', cast: ['Georgette', 'Mike'],
   alt: 'An older woman in a red coat and a teenage boy at a kitchen table, an old map of Texas spread between them and a teacup at its corner',
-  more: [{ serial: 'S15', after: 2, alt: 'The stone walls of the Alamo at dawn, a single flag above them, quiet and golden' }],
+  more: [{ serial: 'S55', after: 0, alt: 'An elderly woman and a boy at a kitchen table over a hand-drawn map of Texas rivers' }, { serial: 'S56', after: 3, alt: 'A wide field at dawn with a lone oak and morning mist, a distant line of tents' }, { serial: 'S15', after: 2, alt: 'The stone walls of the Alamo at dawn, a single flag above them, quiet and golden' }],
   words: [
     'Mike wanted to know why the famous battle was the one Texas lost. Georgette poured the tea, spread the old map on the table, and put her finger on San Antonio.',
     '"Two hundred or so men held the Alamo for thirteen days," she said. "On the sixth of March, 1836, it fell. Nearly all of them died." She moved her finger east, a long way, to a bend in a river. "Six weeks later, here, Sam Houston won Texas in eighteen minutes."',
@@ -166,7 +180,8 @@ STORIES['texas-revolution'] = {
   ],
 };
 STORIES['inside-the-atom'] = {
-  title: 'The balloon on the wall', art: 'S16', cast: [],
+  about: 'a marble in the middle of an empty stadium',
+  diagram: { kind: 'atom' }, title: 'The balloon on the wall', art: 'S16', more: [{ serial: 'S57', after: 0, alt: 'A science classroom: a tiny marble in the center of a huge chalk circle on the floor, students standing at the edge' }, { serial: 'S58', after: 3, alt: 'A soft illustration of a fuzzy electron cloud around a bright dense center, drawn as light' }], cast: [],
   alt: 'A child at a birthday party pressing a rubbed balloon to a wall, where it hangs by itself, hair standing up',
   words: [
     'At a birthday party, a boy rubbed a balloon on his hair, pressed it to the wall, and let go. It stayed. The room went quiet. Then everybody tried it.',
@@ -177,7 +192,8 @@ STORIES['inside-the-atom'] = {
   ],
 };
 STORIES['negative-numbers'] = {
-  title: 'The elevator that counted backward', art: 'S17', cast: [],
+  about: 'a thermometer that went below zero',
+  diagram: { kind: 'numberline', from: -3, to: 2, mark: -3 }, title: 'The elevator that counted backward', art: 'S17', more: [{ serial: 'S59', after: 0, alt: 'An outdoor thermometer on a frosty barn wall reading below zero, icicles' }, { serial: 'S60', after: 3, alt: 'A stairwell with floors above and below ground, an elevator door open at a lower level' }], cast: [],
   alt: 'An elevator panel with buttons from minus 3 up to 5, a hand pressing minus 3, a parking garage glimpsed through the door',
   words: [
     'Lena parked on level minus three. She knew because the sign said so, in big white paint, and because the elevator button for it sat below the button marked 0.',
@@ -188,7 +204,8 @@ STORIES['negative-numbers'] = {
   ],
 };
 STORIES['ratios'] = {
-  where: 'Chloe, far from home, mixing the colors she came for.', title: 'Two blues to one yellow', art: 'S18', cast: ['Chloe'],
+  about: 'a painter mixing blue and yellow into the same green',
+  diagram: { kind: 'groups', a: 2, b: 1, aLabel: 'blue', bLabel: 'yellow' }, title: 'Two blues to one yellow', art: 'S18', more: [{ serial: 'S61', after: 0, alt: 'A young woman in a paint shop mixing blue and yellow into a pot, shelves of pigments' }, { serial: 'S62', after: 3, alt: 'A row of green paint samples, each mixed from a different number of spoonfuls, on a workbench' }], cast: ['Chloe'],
   alt: 'A young woman in bright clothes at a market stall abroad, mixing paint on a palette, jars of blue and yellow beside her',
   words: [
     'Chloe found the green in a market far from home: a deep, wet, leaf green that she mixed by accident on a scrap of card. Two blobs of blue, one blob of yellow. She wanted a whole jar of it.',
@@ -199,7 +216,8 @@ STORIES['ratios'] = {
   ],
 };
 STORIES['industrial-revolution'] = {
-  title: 'The loom in the valley', art: 'S19', cast: [],
+  about: 'a water wheel and the town of chimneys that replaced it',
+  title: 'The loom in the valley', art: 'S19', more: [{ serial: 'S63', after: 0, alt: 'A river with a water wheel turning beside a stone mill, a quiet village' }, { serial: 'S64', after: 3, alt: 'A smoky mill town with tall chimneys, rows of brick houses and a steam engine' }], cast: [],
   alt: 'A weaver at a hand loom in a cottage window, and beyond the window a tall brick mill with a water wheel and smoke',
   words: [
     'In one English valley in 1790, a weaver named Tom made cloth at a hand loom in his front room. He was good. A piece of cloth took him a week, and it fed his family for a week.',
@@ -210,7 +228,8 @@ STORIES['industrial-revolution'] = {
   ],
 };
 STORIES['main-idea'] = {
-  title: 'The movie in one sentence', art: 'S20', cast: [],
+  about: 'a reader finding the one sentence that mattered',
+  title: 'The movie in one sentence', art: 'S20', more: [{ serial: 'S65', after: 0, alt: 'A child reading a picture book inside a blanket fort with a flashlight' }, { serial: 'S66', after: 3, alt: 'An open notebook with one big sentence circled and small notes branching from it' }], cast: [],
   alt: 'A boy on a porch step telling a story with his hands to an old woman in a rocking chair, a paper cinema ticket in his lap',
   words: [
     'Sam came home from the cinema bursting. His grandmother, who had not been, asked what the film was about.',
@@ -221,7 +240,8 @@ STORIES['main-idea'] = {
   ],
 };
 STORIES['weather-and-seasons'] = {
-  title: 'Cold in July', art: 'S21', cast: [],
+  about: 'a tree through four seasons',
+  diagram: { kind: 'thermometer', c: 38 }, title: 'Cold in July', art: 'S21', more: [{ serial: 'S67', after: 0, alt: 'One hillside tree shown across four seasons in a single wide picture, snow to summer leaves' }, { serial: 'S68', after: 3, alt: 'A globe tilted on its stand with a lamp shining on it, a child\'s hands turning it' }], cast: [],
   alt: 'A girl in a sunny backyard reading a letter, and in a thought bubble, a boy in a scarf under a gray winter sky',
   words: [
     'In July, Ava got a letter from her pen pal in Australia. He wrote about snow. In July.',
@@ -232,7 +252,8 @@ STORIES['weather-and-seasons'] = {
   ],
 };
 STORIES['dna-and-genes'] = {
-  title: 'The recipe book', art: 'S22', cast: [],
+  about: 'a pale fox cub among red ones',
+  diagram: { kind: 'basepairs' }, title: 'The recipe book', art: 'S22', more: [{ serial: 'S69', after: 0, alt: 'A family of foxes at a den entrance, one pale cub among red cubs' }, { serial: 'S70', after: 3, alt: 'A twisted ladder rising like a spiral staircase, rungs in two colors, glowing softly' }], cast: [],
   alt: 'Two sisters in a bakery kitchen each holding an identical old handwritten recipe book, two slightly different cakes on the counter',
   words: [
     'Two sisters ran two bakeries in two towns, and every so often a customer swore their honey cakes tasted the same. They had never baked together. They did not even like each other much.',
@@ -243,7 +264,8 @@ STORIES['dna-and-genes'] = {
   ],
 };
 STORIES['day-and-night'] = {
-  title: 'The rooster and the sun', art: 'S23', cast: [],
+  about: 'a child watching the sun go down and the Earth turn',
+  diagram: { kind: 'daynight' }, title: 'The rooster and the sun', art: 'S23', more: [{ serial: 'S71', after: 0, alt: 'A child at a bedroom window at sunset, the sky orange, a streetlight flickering on' }, { serial: 'S72', after: 3, alt: 'The Earth from space, half lit by the sun and half dark, a tiny house marker on the edge of night' }], cast: [],
   alt: 'A proud rooster on a fence post crowing at a rising sun, a small farm behind him',
   words: [
     'Every morning the rooster crowed, and every morning the sun came up. The rooster was sure he did it.',
@@ -254,7 +276,8 @@ STORIES['day-and-night'] = {
   ],
 };
 STORIES['speed-and-acceleration'] = {
-  where: 'Jaxon and the red bike from the jar. Mike, running.', title: 'The red bike, part two', art: 'S24', cast: ['Mike', 'Jaxon'],
+  about: 'a red bike on a hill and a father with a stopwatch',
+  diagram: { kind: 'plot', fn: 'accel' }, title: 'The red bike, part two', art: 'S24', more: [{ serial: 'S73', after: 0, alt: 'A boy on a red bicycle at the top of a gentle hill, a father beside him with a stopwatch' }, { serial: 'S74', after: 3, alt: 'The same bicycle at the bottom of the hill, spokes blurred, the father\'s arms raised' }], cast: ['Mike', 'Jaxon'],
   alt: 'A small boy wobbling on a red bicycle down a gentle grassy slope, a bald bearded man jogging beside him with one hand out',
   words: [
     'The red bike from the jar was finally on the grass, and Jaxon was on it, and Mike was running beside him with one hand near the seat. Every time Jaxon pedaled, Mike had to run faster. Then the grass sloped down, and Jaxon stopped pedaling, and Mike still had to run faster.',
@@ -265,7 +288,8 @@ STORIES['speed-and-acceleration'] = {
   ],
 };
 STORIES['percents'] = {
-  title: 'Half off what?', art: 'S25', cast: [],
+  about: 'a shopkeeper whose half-off sale was not what it seemed',
+  diagram: { kind: 'percentgrid', shaded: 50 }, title: 'Half off what?', art: 'S25', more: [{ serial: 'S75', after: 0, alt: 'A small clothes shop with winter coats on a rack and a paper sale sign in the window' }, { serial: 'S76', after: 3, alt: 'Two price tags on one coat sleeve, one crossed out and one circled, close up' }], cast: [],
   alt: 'A shopkeeper flipping a sale sign in a small clothes shop window, a customer squinting at two price tags',
   words: [
     'Rosa ran a small clothes shop, and every spring she put the winter coats on sale. One year she tried something: she raised every price by fifty percent on Monday, and on Tuesday put up a sign that said half off.',
@@ -276,7 +300,8 @@ STORIES['percents'] = {
   ],
 };
 STORIES['genes-and-traits'] = {
-  title: 'The kittens that did not match', art: 'S26', cast: [],
+  about: 'two gray cats and their orange kitten',
+  diagram: { kind: 'punnett' }, title: 'The kittens that did not match', art: 'S26', more: [{ serial: 'S77', after: 0, alt: 'A barn loft with two gray cats and four kittens in a basket, one bright orange' }, { serial: 'S78', after: 3, alt: 'The orange kitten grown up, sitting on a fence post in the sun, the barn behind' }], cast: [],
   alt: 'Two gray cats on a barn floor with a basket of kittens, three gray and one bright orange',
   words: [
     'Two gray barn cats had four kittens. Three were gray. One was orange, bright as a marmalade jar, and nobody could say where it came from.',
@@ -287,8 +312,8 @@ STORIES['genes-and-traits'] = {
   ],
 };
 STORIES['light-and-optics'] = {
-  title: 'The straw that broke', art: 'S27', cast: ['Chloe'],
-  where: 'Chloe, sketching everything, as always. The lake was years ago.',
+  about: 'a straw that looked broken in a glass of water',
+  diagram: { kind: 'lightray', angle: 40 }, title: 'The straw that broke', art: 'S27', more: [{ serial: 'S79', after: 0, alt: 'A glass of water with a straw that looks bent at the surface, on a cafe table in sunlight' }, { serial: 'S80', after: 3, alt: 'A still lake at sunset reflecting the sky like a mirror, a young woman sketching on the shore' }], cast: ['Chloe'],
   alt: 'A woman in bright clothes sketching a glass of water with a straw that looks bent at the surface, sunlight on a cafe table',
   words: [
     'Chloe was sketching a glass of water at a cafe table, because she sketches everything, and the straw would not draw right. Above the water it stood straight. Below the water it leaned, as if it had snapped at the surface.',
@@ -299,7 +324,8 @@ STORIES['light-and-optics'] = {
   ],
 };
 STORIES['habitats'] = {
-  title: 'The crab with no shell', art: 'S28', cast: [],
+  about: 'a hermit crab looking for a shell that fit',
+  title: 'The crab with no shell', art: 'S28', more: [{ serial: 'S81', after: 0, alt: 'A hermit crab crawling across wet sand toward a tide pool, gulls above' }, { serial: 'S82', after: 3, alt: 'A tide pool close up: an empty spiral shell, small fish, anemones, the crab backing into the shell' }], cast: [],
   alt: 'A small hermit crab on a sandy beach peeking out of a borrowed spiral shell, a tide pool behind it',
   words: [
     'A little hermit crab had grown too big for its shell. It crawled out onto the sand with nothing on its back.',
@@ -307,6 +333,148 @@ STORIES['habitats'] = {
     'It tried a bottle cap. Too flat. It tried a pebble. Too hard. Then it found an empty spiral shell in the tide pool, backed in, and fit just right.',
     'A habitat is the place where a living thing has what it needs: food, water, shelter, and room. For the crab, that is the shore, with its tide pools and its spare shells.',
     'Every animal is looking for the place that fits it. The crab just does it more often.',
+  ],
+};
+STORIES['kinds-of-weather'] = {
+  about: "a puddle that came and went with the weather",
+  diagram: { kind: 'thermometer', c: 22 },
+  more: [{ serial: 'S84', after: 0, alt: 'The same puddle under a bright sun, half dried, a small dog sniffing at it' }, { serial: 'S85', after: 2, alt: 'The yard in falling snow, the puddle a patch of ice, small boots beside it' }],
+  title: 'The puddle by the gate', art: 'S83', cast: [],
+  alt: 'Rain falling into a big puddle by a garden gate, a child in a yellow raincoat looking down at it',
+  words: [
+    'Rain came in the night. In the morning there was a puddle by the gate.',
+    'Then the sun came out. The puddle got smaller and smaller. By lunch it was gone.',
+    'The wind blew. The clouds came back. Rain fell, and the puddle was there again.',
+    'One cold day, the puddle turned hard. It was ice. You could tap it with a stick.',
+    'Rain, sun, wind, snow. The weather changes, and the puddle shows you.',
+  ],
+};
+STORIES['living-or-not'] = {
+  about: "a rock and a snail that looked alike but were not",
+  more: [{ serial: 'S87', after: 1, alt: 'The snail stretching out of its shell and creeping across a wet leaf, the rock behind it' }, { serial: 'S88', after: 3, alt: 'A child watering a small plant in a pot while the rock sits on the windowsill' }],
+  title: 'The rock and the snail', art: 'S86', cast: [],
+  alt: 'A gray rock and a snail with a spiral shell side by side on a garden path, a child crouching to look',
+  words: [
+    'On the path there was a rock. Next to it was a snail. They were the same size and the same gray.',
+    'The rock did not move. The snail moved. Slowly, but it moved.',
+    'The rock did not eat. The snail ate a leaf. The rock did not grow. The snail was bigger by summer.',
+    'A plant in a pot is alive too. It drinks, it grows, it turns to the light.',
+    'Alive things eat, grow and move. A rock does none of those. That is how you tell.',
+  ],
+};
+STORIES['what-plants-need'] = {
+  about: "a bean seed on a windowsill that would not grow until it had light",
+  more: [{ serial: 'S90', after: 1, alt: 'The pot moved into a dark cupboard, the sprout pale and bent toward the crack of light' }, { serial: 'S91', after: 3, alt: 'The bean plant tall and green on the sunny windowsill with a child measuring it against a ruler' }],
+  title: 'The bean on the windowsill', art: 'S89', cast: [],
+  alt: 'A small clay pot on a sunny windowsill with a bean seed pushed into the soil, a child watering it with a tiny cup',
+  words: [
+    'A bean seed went into a pot of soil. It got a drink of water every morning.',
+    'One day a green sprout came up. It grew toward the window.',
+    'Then the pot went into a dark cupboard by mistake. The sprout went pale and thin. It bent toward the crack of light under the door.',
+    'Back on the windowsill, it turned green again and grew tall.',
+    'A plant needs three things: water, light, and soil to hold its roots. Take one away and it shows you.',
+  ],
+};
+STORIES['hot-and-cold'] = {
+  about: "a cup of cocoa and a snow cone, and which one to hold with mittens",
+  more: [{ serial: 'S93', after: 1, alt: 'A snow cone in a paper cup, a child holding it and pulling a face at the cold' }, { serial: 'S94', after: 3, alt: 'Both cups side by side on a table, steam rising from one, frost on the other' }],
+  title: 'Two cups', art: 'S92', cast: [],
+  alt: 'A steaming cup of cocoa on a table with a child blowing on it, a window with sun outside',
+  words: [
+    'The cocoa was hot. Steam came up from the cup. You had to blow on it and wait.',
+    'The snow cone was cold. It made your teeth hurt. You had to eat it slowly.',
+    'The cocoa stood in the sun and got cooler. The snow cone stood in the sun and melted into a puddle.',
+    'Hot things cool down. Cold things warm up. Everything ends up like the room.',
+    'Hot and cold are how something feels next to you. Be careful with hot. Be slow with cold.',
+  ],
+};
+// Pre-K stories: the fewest words that still make a story, three pictures each, read aloud.
+STORIES['red-and-blue'] = {
+  about: "a red ball and a blue ball that got mixed up at the park",
+  more: [{ serial: 'S96', after: 1, alt: 'Two toddlers each holding up a ball, one red, one blue, the balls side by side' }, { serial: 'S97', after: 2, alt: 'The red ball rolling back to its red bucket, the blue ball to its blue bucket' }],
+  title: 'Red ball, blue ball', art: 'S95', cast: [],
+  alt: 'A red ball and a blue ball rolling toward each other on green park grass, two toddlers watching',
+  words: [
+    'A red ball rolled. A blue ball rolled. They bumped and stopped together.',
+    'Which one is mine? Look. Red is red. Blue is blue.',
+    'The red ball went to the red bucket. The blue ball went to the blue bucket. Everyone was happy.',
+  ],
+};
+STORIES['big-and-small'] = {
+  about: "a big dog and a small dog and the one bed between them",
+  more: [{ serial: 'S99', after: 0, alt: 'The big dog squeezed into the tiny bed, paws hanging over the sides' }, { serial: 'S100', after: 2, alt: 'The big dog in the big bed and the small dog in the small bed, both asleep' }],
+  title: 'Big dog, small dog', art: 'S98', cast: [],
+  alt: 'A big fluffy dog and a small dog standing beside one small dog bed, looking at each other',
+  words: [
+    'Big dog was big. Small dog was small. There was one small bed.',
+    'Big dog tried the small bed. His legs hung out. It did not fit.',
+    'Then a big bed came. Big dog took the big bed. Small dog took the small bed. Big for big, small for small.',
+  ],
+};
+STORIES['one-and-two'] = {
+  about: "one duck on a pond, and then a friend",
+  more: [{ serial: 'S102', after: 0, alt: 'A second duck landing on the pond with a splash next to the first' }, { serial: 'S103', after: 2, alt: 'Two ducks swimming side by side, two little wakes behind them' }],
+  title: 'One duck, two ducks', art: 'S101', cast: [],
+  alt: 'One yellow duck alone on a still pond, reeds at the edge, morning light',
+  words: [
+    'One duck swam on the pond. One. All by itself.',
+    'Splash. Another duck landed. Now there were two. One, two.',
+    'Two ducks swam together. Two is more fun than one.',
+  ],
+};
+STORIES['please-and-thank-you'] = {
+  about: "a cookie that only came out when the magic word did",
+  more: [{ serial: 'S105', after: 0, alt: 'A child at the kitchen counter reaching toward a plate of cookies, a grown-up hand holding the plate still' }, { serial: 'S106', after: 2, alt: 'The child holding a cookie with both hands and smiling up' }],
+  title: 'The magic word', art: 'S104', cast: [],
+  alt: 'A plate of cookies on a kitchen counter, a small hand reaching, a grown-up smiling and waiting',
+  words: [
+    'Cookie! said the child, and grabbed. The plate did not move.',
+    'Cookie, please? said the child. The plate came closer. A cookie came out.',
+    'Thank you, said the child. Please opens the door. Thank you closes it nicely.',
+  ],
+};
+STORIES['colours'] = {
+  about: "a rainbow that came out one color at a time after the rain",
+  more: [{ serial: 'S108', after: 0, alt: 'The rainbow half drawn in the sky, red and orange and yellow showing, the rest still faint' }, { serial: 'S109', after: 2, alt: 'The full rainbow over the houses with a child pointing and naming the colors' }],
+  title: 'One color at a time', art: 'S107', cast: [],
+  alt: 'A child at a window watching the rain stop and the sun come out, a faint rainbow beginning',
+  words: [
+    'The rain stopped. The sun came out. A rainbow began.',
+    'First red. Then orange. Then yellow. Then green. Then blue. Then purple.',
+    'Six colors, in a row, every time. Say them, and the rainbow is yours.',
+  ],
+};
+STORIES['patterns'] = {
+  about: "a necklace of beads that went red, blue, red, blue",
+  more: [{ serial: 'S111', after: 0, alt: 'A child threading beads onto a string, a bowl of red beads and a bowl of blue beads' }, { serial: 'S112', after: 2, alt: 'The finished necklace around the child\'s neck, red blue red blue all the way round' }],
+  title: 'Red, blue, red, blue', art: 'S110', cast: [],
+  alt: 'A string of beads half finished on a table, red, blue, red, blue, a small hand holding the next bead',
+  words: [
+    'Red bead. Blue bead. Red bead. Blue bead.',
+    'What comes next? Look back. Red, blue, red, blue. Red comes next.',
+    'A pattern tells you what comes next. Say it out loud and you can never lose your place.',
+  ],
+};
+STORIES['taking-turns'] = {
+  about: "one swing and two children who found the fair way",
+  more: [{ serial: 'S114', after: 0, alt: 'Two children both holding the swing chains, neither one sitting, both frowning' }, { serial: 'S115', after: 2, alt: 'One child swinging high while the other counts on fingers, both laughing' }],
+  title: 'One swing', art: 'S113', cast: [],
+  alt: 'A single swing on a playground, two children standing on either side of it',
+  words: [
+    'One swing. Two children. Both wanted it now.',
+    'You go, then I go. Count to ten. Then swap.',
+    'Ten pushes each, again and again. Taking turns means everyone gets a go.',
+  ],
+};
+STORIES['listen-for-rhymes'] = {
+  about: "a cat on a mat with a hat, and the words that sound alike",
+  more: [{ serial: 'S117', after: 0, alt: 'The cat wearing a tall hat, sitting up straight on the mat' }, { serial: 'S118', after: 2, alt: 'The cat, the hat and the mat in a row, each with a word bubble of the same shape' }],
+  title: 'Cat, hat, mat', art: 'S116', cast: [],
+  alt: 'A striped cat sitting on a round mat, a small hat on the floor beside it',
+  words: [
+    'A cat sat on a mat. Cat. Mat. Hear it? They end the same.',
+    'The cat put on a hat. Hat. Cat. Mat. Three words, one sound at the end.',
+    'Words that end the same are rhymes. Say cat, and listen for what rhymes.',
   ],
 };
 export const STORY_WORD_LIMIT = { early: 200, older: 350 };

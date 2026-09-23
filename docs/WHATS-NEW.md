@@ -10,6 +10,10 @@ The newest block is what educators see once, in a pop-up on the classroom page, 
 - Let's Play: games beside Let's Color, one more for every course mastered.
 - Sign in with fingerprint or face, and reset a forgotten PIN the same way.
 - Another way can bring its own picture, explanations that list things read as lists, and dragging a student card scrolls the page for you.
+- A new subject, Technology: how computers think, programs that decide, bits and networks. Every science module has an experiment to try, and finishing a course unlocks its story on the spot.
+- Let's Read: finish a course and its own longer story unlocks. Games rest longer as students get older, every game has Instructions, science lessons end with an experiment to try.
+- Four more modules (quarter hours, sound, the microscope, where things come from), three more matching games, and every game says how to play.
+- Four new modules, 75 more experiments, 18 more life skills, matching games for older students, and the tour's cards sit beside what they describe.
 - Every module has a story now, and the Story Log can mark one as read.
 - Story Log, the last link on My Classroom, shows what each student has read, what is waiting, and opens any story in its own window. Every module through grade 12 has a story.
 - Every module through grade 8 has a story, and reading lessons draw their third way.

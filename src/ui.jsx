@@ -921,6 +921,7 @@ const KID_ANIMATION = `
   .edu-recovery-code { font-size: 22px; }
   @media (max-width: 480px) { .edu-recovery-code { font-size: 17px; letter-spacing: 0.5px; } }
   .edu-student-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 2px 16px; }
+  @media (min-width: 700px) { .edu-student-actions { justify-content: flex-start; } }
   .edu-student-actions button { margin-right: 0 !important; font-size: 15px !important; white-space: nowrap; }
   .edu-student-wonder { text-align: center; margin-top: 10px; }
   .edu-student-open { display: flex; justify-content: center; margin-top: 12px; }
@@ -1579,8 +1580,22 @@ function GrowthBarsPic({ values = [100, 110, 121, 133], labels = [] }) {
     </Diagram>
   );
 }
-function PlotPic({ fn = 'line', point = null }) {
+function PlotPic({ fn = 'line', point = null, px = null, py = null }) {
   const X = (x) => 80 + x * 12; const Y = (y) => 52 - y * 8;
+  // A single point on the grid: 'point' with px across and py up, for the coordinate plane.
+  if (fn === 'point') {
+    return (
+      <Diagram label={`The point (${px}, ${py})`}>
+        {[1, 2, 3, 4, 5].map((k) => <g key={k}><line x1={16 + k * 12.8} y1="8" x2={16 + k * 12.8} y2="96" stroke="#E2E6DE" strokeWidth="0.6" /><line x1="16" y1={96 - k * 14} x2="144" y2={96 - k * 14} stroke="#E2E6DE" strokeWidth="0.6" /></g>)}
+        <line x1="16" y1="96" x2="144" y2="96" stroke="#2E2E2E" strokeWidth="1" /><line x1="16" y1="8" x2="16" y2="96" stroke="#2E2E2E" strokeWidth="1" />
+        {[1, 2, 3, 4, 5, 6].map((k) => <text key={`x${k}`} x={16 + k * 12.8} y="104" {...DIAGRAM_TEXT} textAnchor="middle">{k}</text>)}
+        {[1, 2, 3, 4, 5, 6].map((k) => <text key={`y${k}`} x="9" y={99 - k * 14} {...DIAGRAM_TEXT} textAnchor="middle">{k}</text>)}
+        <line x1="16" y1={96 - py * 14} x2={16 + px * 12.8} y2={96 - py * 14} stroke={C.gold} strokeWidth="1.2" strokeDasharray="2 2" /><line x1={16 + px * 12.8} y1="96" x2={16 + px * 12.8} y2={96 - py * 14} stroke={C.gold} strokeWidth="1.2" strokeDasharray="2 2" />
+        <circle cx={16 + px * 12.8} cy={96 - py * 14} r="3.2" fill={C.gold} stroke="#2E2E2E" strokeWidth="0.8" />
+        <text x={Math.min(16 + px * 12.8 + 6, 120)} y={96 - py * 14 - 6} {...DIAGRAM_TEXT}>({px}, {py})</text>
+      </Diagram>
+    );
+  }
   const curves = { line: [(x) => 2 * x + 1], slope: [(x) => 2 * x], exp: [(x) => 2 ** x / 4], decay: [(x) => 5 * 0.5 ** (x + 2)], parabola: [(x) => (x * x) / 3 - 3], shift: [(x) => (x * x) / 3, (x) => ((x - 2) * (x - 2)) / 3 + 3], cubeneg: [(x) => -(x * x * x) / 12], steeper: [(x) => x, (x) => 2.5 * x], accel: [(x) => (x + 5) * 0.7], hubble: [(x) => 0.7 * x], cross: [(x) => x + 1, (x) => -x + 5], composite: [(x) => x + 1, (x) => x * x / 3] };
   const path = (f) => { const pts = []; for (let x = -5; x <= 5; x += 0.25) { const y = f(x); if (Number.isFinite(y) && y > -6 && y < 6) pts.push(`${X(x).toFixed(1)},${Y(y).toFixed(1)}`); } return pts.join(' '); };
   return (
@@ -1940,18 +1955,19 @@ async function certificatePng(svgEl, w = 1600, h = 1100) {
 }
 function saveBlob(name, blob) { const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000); }
 // The loading word: each letter bobs in turn, the same in the page shell and on the app's loading screen.
-Object.assign(STORY_TITLES, Object.fromEntries(Object.entries(STORIES).map(([id, st]) => [id, { title: st.title, about: st.about || '' }])));
+Object.assign(STORY_TITLES, Object.fromEntries(Object.entries(STORIES).map(([id, st]) => [id, { title: st.title, about: st.about || '' }])), Object.fromEntries(Object.entries(COURSE_STORIES).map(([id, st]) => [`course:${id}`, { title: st.title, about: st.about || '' }])));
 // The first-week tour: title, the element it points at (a data-tour name, or null), and the words.
 const TOUR = [
-  ['Welcome to your classroom', 'add', null, <>Add a student by using their school ID. Then, you'll have an option to create nicknames, assign fun sign-in pictures and more!<br /><br />No names or photos are ever stored.</>],
-  ['Lessons, Stories, Practice, Mastery', 'summary', 'report', <>We combine mastery-based learning, spaced repetition, story-based learning, reflection questions, images and games to help information stick.<br /><br />Mastery requires continuous proof of competence over time. Modules are presented multiple times across multiple days and even when a student masters a subject, they'll continue to be exposed through "memory checks."<br /><br />Educators see detailed summaries along the way.</>],
-  ['Backups live on this device', 'backup', null, <>A backup file automatically downloads to your device when a student taps <em>Exit</em> or, when an educator makes changes and <em>signs out</em>.<br /><br />We still recommend periodic manual backups to a shared drive folder which insures you against lost or broken devices.<br /><br />One file restores everything on any device.</>],
-  ['Wonder Questions', 'wonder', null, <>Wonder questions are deep, thought-provoking questions sprinkled between learning modules. They're designed to promote curiosity, reflection and critical thinking and once a student finds themselves failing modules, the questions are re-prioritized to cover emotional resilience and frame failure as an effective way to learn.<br /><br />Students only see the questions you approve.</>],
-  ['Life skills', 'life', null, <>EDUSphere is designed to make learning more efficient. Our curated list of practical life skills is a perfect way to fill the time you gain back.<br /><br />You'll find helpful skills for every age group!</>],
-  ['Reading', 'reading', null, <>Need direction finding books for various age groups? We've got you covered! Our reading list is quite extensive.</>],
-  ['Experiments', 'experiments', null, <>Science is way more fun when it's tangible. We've got experiment ideas for every age group!</>],
-  ['Student Summaries', 'help', 'class', <>Every student has a personalized report. Whether you want to see what they've done that day, that week or from the very beginning, we've got you covered! Every module they practice, every story they read, every attempt they make, even their level of confidence on any given topic is continually updated in plain English.<br /><br />Print weekly summaries, add personalized notes, practice missed questions and more!<br /><br />Have more than one student? <strong>Who Needs Help</strong> let's you know who might need a little guidance.</>],
-  ['Transcripts', 'transcript', 'report', <>Every student has a printable transcript covering everything they've ever worked on. While weekly summaries are helpful, this is the clearest view of progression across the years.</>],
+  ['Welcome to your classroom', 'add', null, 'below-help', <>Add a student by using their school ID. Then, you'll have an option to create nicknames, assign fun sign-in pictures and more!<br /><br />No names or photos are ever stored.</>],
+  ['Lessons, Stories, Practice, Mastery', 'example', 'lesson', 'over-right', <>We combine mastery-based learning, spaced repetition, story-based learning, reflection questions, images and games to help information stick.<br /><br />Mastery requires continuous proof of competence over time. Modules are presented multiple times across multiple days and even when a student masters a subject, they'll continue to be exposed through "memory checks."<br /><br />Educators see detailed summaries along the way.</>],
+  ['Backups live on this device', 'backup', null, 'above-cards', <>A backup file automatically downloads to your device when a student taps <em>Exit</em> or, when an educator makes changes and <em>signs out</em>.<br /><br />We still recommend periodic manual backups to a shared drive folder which insures you against lost or broken devices.<br /><br />One file restores everything on any device.</>],
+  ['Wonder Questions', 'wonder', null, 'right-mid', <>Wonder questions are deep, thought-provoking questions sprinkled between learning modules. They're designed to promote curiosity, reflection and critical thinking and once a student finds themselves failing modules, the questions are re-prioritized to cover emotional resilience and frame failure as an effective way to learn.<br /><br />Students only see the questions you approve.</>],
+  ['Life skills', 'life', null, 'left', <>EDUSphere is designed to make learning more efficient. Our curated list of practical life skills is a perfect way to fill the time you gain back.<br /><br />You'll find helpful skills for every age group!</>],
+  ['Reading', 'reading', null, 'left', <>Need direction finding books for various age groups? We've got you covered! Our reading list is quite extensive.</>],
+  ['Experiments', 'experiments', null, 'right', <>Science is way more fun when it's tangible. We've got experiment ideas for every age group!</>],
+  ['Student Summaries', 'rows', 'class', 'right-top', <>Every student has a personalized report. Whether you want to see what they've done that day, that week or from the very beginning, we've got you covered! Every module they practice, every story they read, every attempt they make, even their level of confidence on any given topic is continually updated in plain English.<br /><br />Print weekly summaries, add personalized notes, practice missed questions and more!<br /><br />Have more than one student? <strong>Who Needs Help</strong> let's you know who might need a little guidance.</>],
+  ['Story Log', 'storylog', null, 'above-cards', <>Every module comes with a story, and the Story Log is where you see who has read what. Open any story from there to read it together, print it, or mark it as read.</>],
+  ['Transcripts', 'transcript', 'report', 'below', <>Every student has a printable transcript covering everything they've ever worked on. While weekly summaries are helpful, this is the clearest view of progression across the years.</>],
 ];
 // Three made-up students for the tour's sample Who needs help view. Nothing is saved.
 function sampleClass() {
@@ -1979,6 +1995,15 @@ function LoadingWord() {
 }
 // A centered heading with an i hanging off its right, so the word itself never shifts.
 // A story's illustration, or a placeholder wearing its serial until Mikey has made the picture.
+// A small square of a story's first picture for a list row; until the art lands, its serial in a soft frame.
+function StoryThumb({ serial }) {
+  const present = typeof window !== 'undefined' && Array.isArray(window.__eduArt) && serial && window.__eduArt.includes(serial);
+  return (
+    <div aria-hidden="true" style={{ width: 52, height: 52, flex: '0 0 52px', borderRadius: 10, overflow: 'hidden', border: `1px solid ${C.line}`, background: '#FAFBF8', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      {present ? <img src={`art/stories/${serial}.webp`} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <span style={{ fontSize: 11, fontWeight: 700, color: C.muted }}>{serial || ''}</span>}
+    </div>
+  );
+}
 function StoryArt({ serial, alt, fallback = null }) {
   // The page knows which pictures exist (the build lists art/stories), so a missing one shows its
   // placeholder at once, with no request going out for a file that is not there.
@@ -2093,22 +2118,24 @@ function DotsGame({ game, name, round }) {
 }
 // Pairs: cards face down, two turn over at a time, a match stays.
 function PairsGame({ game, round }) {
-  const cards = useMemo(() => { const rnd = lcg(round * 7919 + 13); const icons = shuffle(rnd, PAIR_ICONS).slice(0, game.pairs); return shuffle(rnd, icons.flatMap((ic) => [ic, ic])); }, [game, round]);
+  // Picture pairs for the youngest; text pairs (a fraction and its twin, a symbol and its element) for older students.
+  const cards = useMemo(() => { const rnd = lcg(round * 7919 + 13); if (game.deck) { const pairs = shuffle(rnd, PAIR_DECKS[game.deck]).slice(0, game.pairs); return shuffle(rnd, pairs.flatMap((pr, k) => [{ key: k, text: pr[0] }, { key: k, text: pr[1] }])); } const icons = shuffle(rnd, PAIR_ICONS).slice(0, game.pairs); return shuffle(rnd, icons.flatMap((ic) => [ic, ic])); }, [game, round]);
   const [up, setUp] = useState([]); const [found, setFound] = useState([]);
   useEffect(() => { setUp([]); setFound([]); }, [round]);
   const flip = (i) => {
     if (found.includes(i) || up.includes(i) || up.length === 2) return;
     const pair = [...up, i]; setUp(pair);
-    if (pair.length === 2) { if (cards[pair[0]] === cards[pair[1]]) { setFound([...found, ...pair]); setUp([]); } else setTimeout(() => setUp([]), 700); }
+    const same = (a, b) => (typeof a === 'string' ? a === b : a.key === b.key);
+    if (pair.length === 2) { if (same(cards[pair[0]], cards[pair[1]])) { setFound([...found, ...pair]); setUp([]); } else setTimeout(() => setUp([]), 700); }
   };
   const cols = game.pairs <= 3 ? 3 : 4;
   return (
     <div style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 12 }}>
       <div style={{ display: 'grid', gridTemplateColumns: `repeat(${cols}, 1fr)`, gap: 10 }}>
         {cards.map((ic, i) => { const shown = up.includes(i) || found.includes(i); return (
-          <button key={i} type="button" onClick={() => flip(i)} aria-label={shown ? ic : 'Card'} className="edu-press"
+          <button key={i} type="button" onClick={() => flip(i)} aria-label={shown ? (typeof ic === 'string' ? ic : ic.text) : 'Card'} className="edu-press"
             style={{ aspectRatio: '1 / 1', borderRadius: 12, border: `2px solid ${shown ? C.green : C.ink}`, background: shown ? '#FFFFFF' : C.greenSoft, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 6 }}>
-            {shown ? <IconPic name={ic} size={60} /> : <span style={{ width: 26, height: 26, borderRadius: 13, background: C.green, opacity: 0.35 }} />}
+            {shown ? (typeof ic === 'string' ? <IconPic name={ic} size={60} /> : <span style={{ fontFamily: FONT, fontSize: ic.text.length > 10 ? 13 : 17, fontWeight: 700, color: C.ink, padding: 4, textAlign: 'center', lineHeight: 1.2 }}>{ic.text}</span>) : <span style={{ width: 26, height: 26, borderRadius: 13, background: C.green, opacity: 0.35 }} />}
           </button>); })}
       </div>
       <Done show={found.length === cards.length} />
@@ -2254,8 +2281,17 @@ function PongGame({ round }) {
 }
 // The frame around a game: play again, the title, close, and the same countdown bar as a picture.
 const GAME_OF = { dots: DotsGame, pairs: PairsGame, sort: SortGame, maze: MazeGame, jigsaw: JigsawGame, pong: PongGame };
+// How to play, in a line or two, by kind of game (and by deck for the matching games).
+function gameInstructions(game) {
+  if (game.deck) {
+    const byDeck = { fractions: 'Every card has a twin that says the same amount another way: 1/2 and 2/4.', roots: 'Match each root to what it means: port and carry.', elements: 'Match each symbol to its element: Na and sodium.', dates: 'Match each year to what happened then.', formulas: 'Match each formula to what it finds: F = ma and force.', times: 'Match each multiplication to its answer: 6 × 7 and 42.', vocabulary: 'Match each word to its meaning.', capitals: 'Match each place to its capital.' };
+    return `${byDeck[game.deck] || (String(game.deck).startsWith('science-') ? 'Match each science word to what it means: density and mass over volume.' : 'Match each card to the one that belongs with it.')} Tap two cards. A true pair stays up; a wrong pair turns back over. Find every pair.`;
+  }
+  return { dots: 'Tap the dots in order, 1, 2, 3, and a picture appears. Tap the wrong dot and nothing happens; find the next number.', pairs: 'Tap two cards. If the pictures match, they stay up. If not, they turn back over. Find every pair.', sort: 'Drag each thing to the side it belongs on. When every one is sorted, the round is done.', maze: 'Drag the dot from the start to the star without crossing a wall.', jigsaw: 'Drag each piece to where it belongs until the picture is whole.', pong: 'Slide the paddle to hit the ball back. Miss, and the ball resets. See how many hits you can keep going.' }[game.kind] || 'Tap to play.';
+}
 function GamePad({ game, name, secondsLeft, total, onClose }) {
   const [round, setRound] = useState(1);
+  const [showHow, setShowHow] = useState(false);
   const Game = GAME_OF[game.kind];
   const iconBtn = { background: 'none', border: 'none', padding: 6, cursor: 'pointer', color: C.green, lineHeight: 0 };
   return (
@@ -2273,6 +2309,16 @@ function GamePad({ game, name, secondsLeft, total, onClose }) {
         <div style={{ height: '100%', width: `${Math.max(0, (secondsLeft / total) * 100)}%`, background: `linear-gradient(90deg, ${CRAYONS[0]}, ${CRAYONS[3]}, ${CRAYONS[4]})`, transition: 'width 1s linear' }} />
       </div>
       <Game game={game} name={name} round={round} />
+      <p style={{ margin: '12px 0 0', textAlign: 'center' }}><button type="button" onClick={() => setShowHow(true)} style={{ background: 'none', border: 'none', color: C.green, fontFamily: FONT, fontSize: 15, textDecoration: 'underline', cursor: 'pointer' }}>Instructions</button></p>
+      {showHow && (
+        <div style={{ position: 'fixed', top: 0, right: 0, bottom: 0, left: 0, background: 'rgba(36, 41, 31, 0.55)', zIndex: 120, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }} onClick={(e) => { if (e.target === e.currentTarget) setShowHow(false); }}>
+          <div className="edu-rise" style={{ width: 'min(420px, 100%)', background: C.surface, borderRadius: 14, padding: '20px 20px 18px', textAlign: 'center' }} role="dialog" aria-label="Instructions">
+            <p style={{ margin: '0 0 8px', fontSize: 18, fontWeight: 700 }}>{game.title}</p>
+            <p style={{ margin: '0 0 16px', fontSize: 15, lineHeight: 1.6 }}>{gameInstructions(game)}</p>
+            <Btn onClick={() => setShowHow(false)}>Got it</Btn>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -2283,6 +2329,7 @@ function GameThumb({ kind, game = null }) {
   const dotShape = game && game.kind === 'dots' ? (game.shape && DOT_SHAPES[game.shape] ? DOT_SHAPES[game.shape].map(([x, y]) => [4 + (x * 32) / 100, 4 + (y * 32) / 100]) : null) : null;
   if (dotShape) return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><polyline points={[...dotShape, dotShape[0]].map((pt) => pt.join(',')).join(' ')} fill="none" stroke={C.green} strokeWidth="2" strokeLinejoin="round" />{dotShape.map(([x, y], i) => <circle key={i} cx={x} cy={y} r="2.6" fill="#fff" stroke={k} strokeWidth="1.4" />)}</svg>;
   if (game && game.kind === 'dots') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><text x="20" y="27" fontFamily={FONT} fontSize="18" fontWeight="700" textAnchor="middle" fill={C.green} stroke={k} strokeWidth="0.6" strokeDasharray="1.5 1.5">Ab</text></svg>;
+  if (game && game.deck) { const label = { fractions: '½', roots: 'port', elements: 'Na', dates: '1776', formulas: 'F=ma', times: '6×7', vocabulary: 'Aa', capitals: 'TX' }[game.deck] || 'Aa'; return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="4" y="6" width="14" height="18" rx="2" fill="#fff" stroke={k} strokeWidth="1.5" /><rect x="22" y="16" width="14" height="18" rx="2" fill={C.greenSoft} stroke={k} strokeWidth="1.5" /><text x="11" y="18" fontFamily={FONT} fontSize={label.length > 3 ? 5 : 8} fontWeight="700" textAnchor="middle" fill={C.ink}>{label}</text></svg>; }
   const body = {
     dots: <g><polyline points="8,32 20,8 32,32 6,17 34,17 8,32" fill="none" stroke={C.green} strokeWidth="2" strokeLinejoin="round" />{[[8, 32], [20, 8], [32, 32], [6, 17], [34, 17]].map(([x, y], i) => <circle key={i} cx={x} cy={y} r="3" fill={i === 0 ? C.gold : '#fff'} stroke={k} strokeWidth="1" />)}</g>,
     pairs: <g><rect x="5" y="9" width="16" height="22" rx="3" fill={C.greenSoft} stroke={k} strokeWidth="1.4" /><rect x="19" y="9" width="16" height="22" rx="3" fill="#fff" stroke={k} strokeWidth="1.4" /><circle cx="27" cy="20" r="5" fill={C.gold} /></g>,
@@ -2323,7 +2370,7 @@ const EXTRA_CRAYON = '#B8B8B8';
 const COLORING_MODE = { ball: 'fill', sun: 'fill', balloon: 'fill', 'my-name': 'draw', star: 'draw', tree: 'fill', house: 'fill', fish: 'draw', cat: 'draw', flower: 'draw', boat: 'fill', rocket: 'draw', butterfly: 'draw', train: 'fill', car: 'fill', robot: 'fill', fishbowl: 'draw', castle: 'fill', dinosaur: 'draw', city: 'draw', garden: 'fill', playground: 'draw', farm: 'draw', birthday: 'draw',
   // Letter pages are colored by hand, crayon over the outline, like the drawings.
   ...Object.fromEntries('abcdefghijklmnopqrstuvwxyz'.split('').map((ch) => [`letter-${ch}`, 'draw'])),
-  ...Object.fromEntries(['kite', 'ladybug', 'ice-cream', 'snowman', 'hot-air-balloon', 'lighthouse', 'treehouse', 'submarine', 'pirate-ship', 'dragon', 'space-station', 'jungle-waterfall'].map((pic) => [pic, 'draw'])),
+  ...Object.fromEntries(['kite', 'ladybug', 'ice-cream', 'snowman', 'hot-air-balloon', 'lighthouse', 'treehouse', 'submarine', 'pirate-ship', 'dragon', 'space-station', 'jungle-waterfall', 'aquarium', 'race-track', 'busy-harbor', 'dinosaur-valley'].map((pic) => [pic, 'draw'])),
 };
 // A ray stands square on the sun: its base lies across the rim, its point straight out.
 const ray = (i) => {
@@ -2741,6 +2788,7 @@ const DRAWN_PAGES = {
   kite: ['D12', 'A kite on a string in the sky'], ladybug: ['D13', 'A ladybug on a leaf'], 'ice-cream': ['D14', 'An ice cream cone with two scoops'], snowman: ['D15', 'A snowman with a scarf and a hat'],
   'hot-air-balloon': ['D16', 'A hot air balloon over hills'], lighthouse: ['D17', 'A lighthouse on rocks by the sea'], treehouse: ['D18', 'A treehouse with a rope ladder'], submarine: ['D19', 'A submarine among fish and coral'],
   'pirate-ship': ['D20', 'A pirate ship on rolling waves'], dragon: ['D21', 'A friendly dragon over a village'], 'space-station': ['D22', 'A space station with planets behind it'], 'jungle-waterfall': ['D23', 'A jungle waterfall with animals'],
+  aquarium: ['D24', 'A big aquarium tank with a diver'], 'race-track': ['D25', 'Race cars on a winding track'], 'busy-harbor': ['D26', 'A harbor with boats, cranes and a lighthouse'], 'dinosaur-valley': ['D27', 'A valley of dinosaurs with a volcano'],
 };
 for (const [pic, [serial, alt]] of Object.entries(DRAWN_PAGES)) COLORING_ART[pic] = [{ t: 'art', serial, x: 4, y: 4, w: 92, h: 92, alt }];
 // Letter pages are art now: a coloring page Mikey makes in Leonardo (L1 to L26 in the ledger), shown
@@ -3418,7 +3466,7 @@ export default function EduSphereApp() {
   const [anotherWay, setAnotherWay] = useState(0);              // the example's second explanation, when the lesson has one                        // moduleId -> lesson sentences behind answers missed this session (memory only)
   const news = typeof window !== 'undefined' && window.__eduNews && window.__eduNews.items && window.__eduNews.items.length ? window.__eduNews : null;
   const [newsOpen, setNewsOpen] = useState(false);
-  const [tourCardAt, setTourCardAt] = useState('bottom');           // the tour sheet sits opposite its target
+  const [tourBox, setTourBox] = useState(null);                     // where the tour sheet sits: { left, top, width } from the placement engine
   const [tourStep, setTourStep] = useState(-1);                    // -1 closed; 0 to 4 the card showing
   const [readyGrades, setReadyGrades] = useState({});              // studentId -> grades completed in full, read on the welcome screen
   const certSheetRef = useRef(null);
@@ -3428,7 +3476,8 @@ export default function EduSphereApp() {
   const [weeklyEdit, setWeeklyEdit] = useState(null);               // the weekly note's text once the educator has edited it (memory only)
   const [weeklyEditing, setWeeklyEditing] = useState(false);        // the note box is open
   const [reportOpenedFrom, setReportOpenedFrom] = useState(null);   // the previous visit's time, kept for this opening only
-  const [wrongWay, setWrongWay] = useState(false);                  // the other explanation, opened on a wrong answer                 // the note box has the cursor, so its example text steps aside
+  const [wrongWay, setWrongWay] = useState(false);                  // the other explanation, opened on a wrong answer
+  const [courseStoryId, setCourseStoryId] = useState(null);         // the course whose story is open                 // the note box has the cursor, so its example text steps aside
   const [showRecTip, setShowRecTip] = useState(false);               // the i beside the recommendations line on the report
   const [showNoteTip, setShowNoteTip] = useState(false);             // what a note is for, under the note box
   const [editingNote, setEditingNote] = useState(null);              // the note being rewritten: { id, text }
@@ -3504,16 +3553,18 @@ export default function EduSphereApp() {
   useEffect(() => { if (screen !== 'overview') return undefined; const id = setInterval(() => setColorNow(Date.now()), 5000); return () => clearInterval(id); }, [screen]);
   useEffect(() => {
     if (screen !== 'coloring' || !coloring || !record) return undefined;
+    const topGrade = visibleCourses.reduce((best, c) => (GRADES.indexOf(c.grade) > GRADES.indexOf(best) ? c.grade : best), 'PK3');
+    const playSecs = playSecondsFor(topGrade); const restMins = restMinutesFor(topGrade);
     const start = (colorState[coloring] || {}).left;
-    setColorLeft(typeof start === 'number' ? start : COLOR_BREAK_SECONDS);
+    setColorLeft(typeof start === 'number' ? start : playSecs);
     const id = setInterval(() => setColorLeft((n) => {
       const next = n - 1;
       if (next <= 0) { // the five minutes are up: this picture rests, and the courses come back
         // The five minutes are up: the picture rests, and next time it starts blank again.
-        const state = { ...colorState, [coloring]: { left: COLOR_BREAK_SECONDS, restUntil: Date.now() + COLOR_LOCKOUT_MINUTES * 60000, art: null } };
+        const state = { ...colorState, [coloring]: { left: playSecs, restUntil: Date.now() + restMins * 60000, art: null } };
         setColorState(state); saveColorState(record.name, state);
         if (!record.preview && !coloring.startsWith('play:')) addEvent(makeColoredEvent(coloring, new Date().toISOString()));
-        setColoring(null); setScreen('overview'); return COLOR_BREAK_SECONDS;
+        setColoring(null); setScreen('overview'); return playSecs;
       }
       if (next % 5 === 0) { const state = { ...colorState, [coloring]: { ...(colorState[coloring] || {}), left: next, art: colorArt.current } }; setColorState(state); saveColorState(record.name, state); }
       return next;
@@ -3984,7 +4035,7 @@ export default function EduSphereApp() {
   useEffect(() => { setStoryOpen(false); setAnotherWay(0); }, [screen === 'lesson' ? (mod && mod.id) : null]);
   // Opening a report remembers the visit on the roster, after noting when the last one was.
   useEffect(() => { if (screen !== 'educator-report' || !educatorRecord || !roster || educatorRecord.preview) return; const st = findStudent(roster, educatorRecord.name); setReportOpenedFrom(st && st.reportSeenAt ? st.reportSeenAt : null); const next = setReportSeen(roster, educatorRecord.name, new Date().toISOString()); setRoster(next); saveRoster(next); setWeeklyEdit(null); setWeeklyEditing(false); }, [screen === 'educator-report' ? (educatorRecord && educatorRecord.name) : null]);
-  useEffect(() => { if (typeof document !== 'undefined') { document.body.classList.toggle('edu-cert-mode', screen === 'certificate'); document.body.classList.toggle('edu-story-mode', screen === 'story'); } }, [screen]);
+  useEffect(() => { if (typeof document !== 'undefined') { document.body.classList.toggle('edu-cert-mode', screen === 'certificate'); document.body.classList.toggle('edu-story-mode', screen === 'story' || screen === 'course-story'); } }, [screen]);
   // The what's-new pop-up: once per build, the first time an educator lands on the classroom after it.
   const tourSheetRef = useRef(null);                               // the sheet, scrolled back to its top on every card
   const tourBegun = useRef(false);                                 // the tour starts once per sign-in, not every time the classroom page shows
@@ -4011,14 +4062,14 @@ export default function EduSphereApp() {
     return () => { window.removeEventListener('resize', check); window.removeEventListener('orientationchange', check); if (box.parentNode) box.parentNode.removeChild(box); };
   }, []);
   useEffect(() => { if (typeof window !== 'undefined') window.__eduTest = { screen, question: q || null, isReviewQ, openModule: (id) => openModule(id), openColoring: (pic) => { setColoring(pic); setScreen('coloring'); }, openCertificate: (id, grade) => { setCertFor({ id, grade }); setCertTemplate('classic'); setCertName(''); setCertPhotos([]); setScreen('certificate'); } }; }, [screen, q, isReviewQ]);
-  const endTour = async () => { setTourStep(-1); if ((screen === 'educator-report' && educatorRecord && educatorRecord.preview) || screen === 'class-view') { setEducatorRecord(null); setClassRows(null); setScreen('educator-pick'); } const next = { ...educator, tourSeen: true, newsSeen: news ? news.stamp : educator.newsSeen }; setEducator(next); await saveEducator(next); };
-  const tourPopup = tourStep >= 0 && educator && (screen === 'educator-pick' || (screen === 'educator-report' && educatorRecord && educatorRecord.preview) || screen === 'class-view') ? (
-    <div className="edu-no-print" style={{ position: 'fixed', right: 0, left: 0, ...(tourCardAt === 'top' ? { top: 0 } : { bottom: 0 }), zIndex: 130, display: 'flex', justifyContent: 'center', padding: tourCardAt === 'top' ? '10px 12px 0' : '0 12px 10px', pointerEvents: 'none' }}>
-      {/* A small sheet at the top or the bottom, whichever leaves the thing being described in view; never a curtain. */}
-      <div className="edu-rise" ref={tourSheetRef} style={{ width: 'min(420px, 100%)', background: C.surface, borderRadius: 14, padding: '12px 16px', textAlign: 'center', boxShadow: '0 4px 30px rgba(36, 41, 31, 0.3)', border: `1px solid ${C.line}`, pointerEvents: 'auto', maxHeight: '36vh', overflowY: 'auto' }} role="dialog" aria-label="First week tour">
+  const endTour = async () => { setTourStep(-1); if ((screen === 'educator-report' && educatorRecord && educatorRecord.preview) || screen === 'class-view' || (screen === 'lesson' && record && record.preview)) { setEducatorRecord(null); setClassRows(null); if (record && record.preview) { setRecord(null); setModuleId(null); } setScreen('educator-pick'); } const next = { ...educator, tourSeen: true, newsSeen: news ? news.stamp : educator.newsSeen }; setEducator(next); await saveEducator(next); };
+  const tourPopup = tourStep >= 0 && educator && (screen === 'educator-pick' || (screen === 'educator-report' && educatorRecord && educatorRecord.preview) || screen === 'class-view' || (screen === 'lesson' && record && record.preview)) ? (
+    <div className="edu-no-print" style={{ position: 'fixed', zIndex: 130, pointerEvents: 'none', ...(tourBox ? { left: tourBox.left, top: tourBox.top, width: tourBox.width } : { right: 0, left: 0, bottom: 0, display: 'flex', justifyContent: 'center', padding: '0 12px 10px' }) }}>
+      {/* Each card sits where its words say: beside, above or below the thing it points at, whole, never scrolling. */}
+      <div className="edu-rise" ref={tourSheetRef} style={{ width: tourBox ? '100%' : 'min(420px, 100%)', boxSizing: 'border-box', background: C.surface, borderRadius: 14, padding: '14px 18px', textAlign: 'center', boxShadow: '0 4px 30px rgba(36, 41, 31, 0.3)', border: `1px solid ${C.line}`, pointerEvents: 'auto' }} role="dialog" aria-label="First week tour">
       <p style={{ margin: '0 0 4px', fontSize: 13, color: C.muted }}>{tourStep + 1} of {TOUR.length}</p>
       <p style={{ margin: '0 0 6px', fontSize: 17, fontWeight: 700 }}>{TOUR[tourStep][0]}</p>
-      <p style={{ margin: '0 0 12px', fontSize: 14, lineHeight: 1.55 }}>{TOUR[tourStep][3]}</p>
+      <p style={{ margin: '0 0 12px', fontSize: 14, lineHeight: 1.55 }}>{TOUR[tourStep][4]}</p>
       <div style={{ display: 'flex', justifyContent: 'center', gap: 10 }}>
         <Btn kind="secondary" onClick={endTour}>Skip tour</Btn>
         {tourStep < TOUR.length - 1 ? <Btn onClick={() => setTourStep(tourStep + 1)}>Next</Btn> : <Btn onClick={endTour}>Done</Btn>}
@@ -4029,19 +4080,39 @@ export default function EduSphereApp() {
   // While a tour card is up, the element it talks about glows: data-tour on the element, the target name on the body.
   useEffect(() => {
     if (typeof document === 'undefined' || tourStep < 0 || !TOUR[tourStep]) { if (typeof document !== 'undefined') for (const el of document.querySelectorAll('.edu-tour-target')) el.classList.remove('edu-tour-target'); return undefined; }
-    const [, target, sample] = TOUR[tourStep];
-    if (tourSheetRef.current) tourSheetRef.current.scrollTop = 0;
+    const [, target, sample, where] = TOUR[tourStep];
     // A card with a sample screen opens it with made-up students; the others come back to the classroom page.
     if (sample === 'report' && screen !== 'educator-report') { setEducatorRecord(sampleRecord()); setOpenSubjects([]); setShowAllCourses(false); setConfirmReset(false); setScreen('educator-report'); return undefined; }
     if (sample === 'class' && screen !== 'class-view') { setClassRows(classView(sampleClass(), new Date().toISOString())); setScreen('class-view'); return undefined; }
-    if (!sample && screen !== 'educator-pick') { setScreen('educator-pick'); return undefined; }
-    // The target is marked, scrolled into view, and the sheet takes the other end of the screen.
+    if (sample === 'lesson' && screen !== 'lesson') { const band = levelFor('elementary'); const ids = COURSES.filter((c) => band && band.grades.includes(c.grade)).map((c) => c.id); setRecord({ name: 'Walk-through', events: [makeCoursesEnabledEvent(ids, new Date().toISOString())], preview: true, level: 'elementary' }); setModuleId('fraction-meaning'); setAnotherWay(0); setScreen('lesson'); return undefined; }
+    if (!sample && screen !== 'educator-pick') { if (record && record.preview && screen === 'lesson') { setRecord(null); setModuleId(null); } setScreen('educator-pick'); return undefined; }
+    // The targets glow; the page scrolls so they show; the sheet takes the place the card asks for, whole, on screen.
     const place = () => {
-      const el = target ? document.querySelector(`[data-tour="${target}"]`) : null;
-      if (!el) { setTourCardAt('bottom'); return; }
-      el.classList.add('edu-tour-target');
-      el.scrollIntoView({ block: 'center' });
-      const r = el.getBoundingClientRect(); setTourCardAt(r.top + r.height / 2 > window.innerHeight / 2 ? 'top' : 'bottom');
+      const els = target ? [...document.querySelectorAll(`[data-tour="${target}"]`)] : [];
+      for (const el of els) el.classList.add('edu-tour-target');
+      // The page is zoomed a little on laptops (.edu-wrap), and the sheet lives inside it, so its fixed position is
+      // in zoomed units: measure in screen pixels, then divide by the zoom when writing the style.
+      const sheet = tourSheetRef.current; const wrapEl = sheet ? sheet.closest('.edu-wrap') : null; const z = (wrapEl && parseFloat(getComputedStyle(wrapEl).zoom)) || 1;
+      const W = window.innerWidth; const H = window.innerHeight;
+      const cardW = Math.min(400, W - 24); const cardH = (sheet ? sheet.offsetHeight : 260) * z; const gap = 14;
+      if (!els.length) { setTourBox({ left: (W - cardW) / 2 / z, top: (H - cardH - 12) / z, width: cardW / z }); return; }
+      if (where === 'right-top') window.scrollTo(0, 0); else els[0].scrollIntoView({ block: 'center' });
+      const r = els[0].getBoundingClientRect(); const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+      const mid = clamp((H - cardH) / 2, 12, H - cardH - 12);
+      let box = null;
+      const roomRight = W - r.right - gap - 12; const roomLeft = r.left - gap - 12;
+      if (where === 'over-right') box = { left: clamp(r.left + r.width * 0.55, 12, W - cardW - 12), top: mid, width: cardW };   // over the right part of a wide card, its left edge past the middle
+      else if (where === 'right-top') box = { left: W - cardW - 12, top: mid, width: cardW };                                     // flush right, the page left readable, scrolled to its top
+      else if (where === 'right-mid' || where === 'right') {
+        if (roomRight >= 260) box = { left: r.right + gap, top: where === 'right' ? clamp(r.top + r.height / 2 - cardH / 2, 12, H - cardH - 12) : mid, width: Math.min(cardW, roomRight) };
+      } else if (where === 'left') {
+        if (roomLeft >= 260) box = { left: r.left - gap - Math.min(cardW, roomLeft), top: clamp(r.top + r.height / 2 - cardH / 2, 12, H - cardH - 12), width: Math.min(cardW, roomLeft) };
+      }
+      if (!box && where === 'above-cards') box = { left: (W - cardW) / 2, top: clamp(r.top - 110 - cardH, 12, H - cardH - 12), width: cardW };
+      if (!box && where === 'below-help') { const help = document.querySelector('[data-tour="help"]'); const hr = help ? help.getBoundingClientRect() : r; box = { left: (W - cardW) / 2, top: clamp(hr.bottom + 8, 12, H - cardH - 12), width: cardW }; }
+      if (!box && where === 'below') box = { left: (W - cardW) / 2, top: clamp(r.bottom + gap, 12, H - cardH - 12), width: cardW };
+      if (!box) box = { left: (W - cardW) / 2, top: r.top + r.height / 2 > H / 2 ? 12 : H - cardH - 12, width: cardW };   // a narrow screen: the end away from the target
+      setTourBox({ left: box.left / z, top: box.top / z, width: box.width / z });
     };
     const t1 = setTimeout(place, 60); const t2 = setTimeout(place, 450);
     return () => { clearTimeout(t1); clearTimeout(t2); for (const el of document.querySelectorAll('.edu-tour-target')) el.classList.remove('edu-tour-target'); };
@@ -4164,8 +4235,8 @@ export default function EduSphereApp() {
   if (screen === 'coloring' && coloring) {
     return (
       <div style={page}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap edu-wrap-wide" style={wrap}>
-        {coloring.startsWith('play:') ? <GamePad key={coloring} game={GAMES.find((g) => `play:${g.id}` === coloring) || GAMES[0]} name={displayName} secondsLeft={colorLeft} total={COLOR_BREAK_SECONDS} onClose={leaveColoring} /> : (
-          <ColoringPad key={`${coloring}-${displayName}`} picture={coloring} name={displayName} secondsLeft={colorLeft} total={COLOR_BREAK_SECONDS} saved={(colorState[coloring] || {}).art} onArt={(art) => { colorArt.current = art; }} onClose={leaveColoring} />
+        {coloring.startsWith('play:') ? <GamePad key={coloring} game={GAMES.find((g) => `play:${g.id}` === coloring) || GAMES[0]} name={displayName} secondsLeft={colorLeft} total={playSecondsFor(visibleCourses.reduce((best, c) => (GRADES.indexOf(c.grade) > GRADES.indexOf(best) ? c.grade : best), 'PK3'))} onClose={leaveColoring} /> : (
+          <ColoringPad key={`${coloring}-${displayName}`} picture={coloring} name={displayName} secondsLeft={colorLeft} total={playSecondsFor(visibleCourses.reduce((best, c) => (GRADES.indexOf(c.grade) > GRADES.indexOf(best) ? c.grade : best), 'PK3'))} saved={(colorState[coloring] || {}).art} onArt={(art) => { colorArt.current = art; }} onClose={leaveColoring} />
         )}
 
       </div></div>
@@ -4323,6 +4394,7 @@ export default function EduSphereApp() {
         {(() => {
           // Coloring is for pre-K through grade 2. Once a student has graduated the early years it goes.
           if (!youngLearner) return null;
+          const top = visibleCourses.reduce((best, c) => (GRADES.indexOf(c.grade) > GRADES.indexOf(best) ? c.grade : best), 'PK3');
           // An educator's walk-through sees every picture, unlocked and rested, so they can look at all of them.
           const unlocked = record.preview ? COLORING_PICTURES.length : coloringUnlocked(record.events); const open = openSubject === '__coloring';
           const restLeft = (pic) => (record.preview ? 0 : Math.max(0, ((colorState[pic] || {}).restUntil || 0) - colorNow));
@@ -4345,7 +4417,7 @@ export default function EduSphereApp() {
                     {COLORING_PICTURES.map((pic, i) => {
                       const locked = i >= unlocked;
                       const resting = !locked && restLeft(pic) > 0;
-                      const restFraction = resting ? restLeft(pic) / (COLOR_LOCKOUT_MINUTES * 60000) : 0;
+                      const restFraction = resting ? restLeft(pic) / (restMinutesFor(top) * 60000) : 0;
                       return (
                         <button key={pic} type="button" disabled={locked || resting} aria-label={locked ? 'Locked picture' : resting ? 'Resting picture' : `Color the ${pic === 'my-name' ? 'name' : pictureTitle(pic).toLowerCase()}`}
                           onClick={() => { setColoring(pic); setScreen('coloring'); }} className={`edu-breathe${!locked && !resting ? ' edu-press' : ''}`}
@@ -4370,12 +4442,51 @@ export default function EduSphereApp() {
               )}
             </div>
           ); })()}
+        {/* Let's Read: for students past the early years, one longer story per course, unlocked when the whole
+            course is mastered. Locked ones show how many modules are still to go. */}
+        {(() => {
+          if (youngLearner) return null;
+          const withStory = visibleCourses.filter((c) => courseStoryFor(c.id));
+          if (!withStory.length) return null;
+          const open = openSubject === '__read';
+          const readIds = new Set(storiesRead(record.events).map((r) => r.moduleId));
+          return (
+            <div style={{ ...card, padding: 0, overflow: 'hidden', marginTop: 18 }}>
+              <button type="button" aria-expanded={open} aria-label="Let's Read" onClick={() => setOpenSubject(open ? null : '__read')}
+                style={{ fontFamily: FONT, width: '100%', textAlign: 'left', background: 'transparent', border: 'none', padding: 16, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'space-between', color: C.ink }}>
+                <span style={{ fontSize: 20, fontWeight: 700 }}>Let's Read</span>
+                <span style={{ color: C.muted, fontSize: 14 }}>{withStory.filter((c) => record.preview || c.modules.every((m) => progress.masteredIds.includes(m.id))).length} of {withStory.length} unlocked <span aria-hidden="true" style={{ display: 'inline-block', marginLeft: 8, transform: open ? 'rotate(180deg)' : 'none', transition: 'transform 200ms' }}>▾</span></span>
+              </button>
+              {open && (
+                <div style={{ padding: '0 16px 12px' }}>
+                  <p style={{ margin: '0 0 10px', fontSize: 14, color: C.muted }}>Finish every module in a course and its story unlocks: one longer story that ties the whole course together.</p>
+                  {withStory.map((c) => {
+                    const left = c.modules.filter((m) => !progress.masteredIds.includes(m.id)).length; const unlocked = record.preview || left === 0; const cs = courseStoryFor(c.id); const read = readIds.has(`course:${c.id}`);
+                    return (
+                      <div key={c.id} style={{ display: 'flex', gap: 12, alignItems: 'center', padding: '10px 0', borderTop: `1px solid ${C.line}` }}>
+                        <StoryThumb serial={cs.art} />
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <p style={{ margin: 0, fontWeight: 600 }}>{cs.title}</p>
+                          <p style={{ margin: '2px 0 0', fontSize: 13, color: C.muted }}>{c.title}{unlocked ? (read ? ' · read' : '') : ` · ${left} ${left === 1 ? 'module' : 'modules'} to go`}</p>
+                        </div>
+                        <Btn kind="secondary" disabled={!unlocked || busy} onClick={() => { if (record && !record.preview && !read) addEvent(makeStoryReadEvent(`course:${c.id}`, new Date().toISOString())); setCourseStoryId(c.id); setScreen('course-story'); }} style={{ padding: '8px 14px', minHeight: 38, fontSize: 14 }}>{unlocked ? (read ? 'Read again' : 'Read') : 'Locked'}</Btn>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          );
+        })()}
         {/* Let's Play: the same fold as Let's Color, for games. One more game for every course
             mastered; a game rests like a picture does. Harder games wait for the grade that suits them. */}
         {(() => {
-          if (!youngLearner) return null;
+          // Young learners get every game their grade allows; older students get the matching-pairs decks (fractions, roots,
+          // elements, dates, formulas) and Pong, so play reaches every age without the pre-K games following them up.
           const top = visibleCourses.reduce((best, c) => (GRADES.indexOf(c.grade) > GRADES.indexOf(best) ? c.grade : best), 'PK3');
-          const games = record.preview ? GAMES : gamesFor(top);
+          const enrolled = new Set(visibleCourses.map((c) => c.id));
+          const games = (record.preview ? GAMES : gamesFor(top)).filter((g) => (youngLearner || g.deck || g.kind === 'pong') && (!g.courseId || record.preview || enrolled.has(g.courseId)));
+          if (!games.length) return null;
           const unlocked = record.preview ? games.length : Math.min(games.length, gamesUnlocked(record.events)); const open = openSubject === '__play';
           const restLeft = (g) => (record.preview ? 0 : Math.max(0, ((colorState[`play:${g.id}`] || {}).restUntil || 0) - colorNow));
           const anyReady = games.slice(0, unlocked).some((g) => restLeft(g) === 0);
@@ -4396,7 +4507,7 @@ export default function EduSphereApp() {
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(96px, 1fr))', gap: 10 }}>
                     {games.map((g, i) => {
                       const locked = i >= unlocked; const resting = !locked && restLeft(g) > 0;
-                      const restFraction = resting ? restLeft(g) / (COLOR_LOCKOUT_MINUTES * 60000) : 0;
+                      const restFraction = resting ? restLeft(g) / (restMinutesFor(top) * 60000) : 0;
                       return (
                         <button key={g.id} type="button" disabled={locked || resting} aria-label={locked ? 'Locked game' : resting ? 'Resting game' : `Play ${g.title}`}
                           onClick={() => { setColoring(`play:${g.id}`); setScreen('coloring'); }} className={`edu-breathe${!locked && !resting ? ' edu-press' : ''}`}
@@ -4503,6 +4614,20 @@ export default function EduSphereApp() {
     );
   }
 
+  // ---------- A course story: one longer story for a whole course, once every module in it is mastered ----------
+  if (screen === 'course-story' && courseStoryId && courseStoryFor(courseStoryId)) {
+    const cs = courseStoryFor(courseStoryId); const cc = getCourse(courseStoryId);
+    return (
+      <div style={page}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={wrap}>
+        <div className="edu-no-print" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+          <button type="button" onClick={() => setScreen('overview')} style={{ background: 'none', border: 'none', color: C.green, fontFamily: FONT, fontSize: 15, cursor: 'pointer', padding: 0 }}>Back to my courses</button>
+          <button type="button" onClick={() => window.print()} style={{ background: 'none', border: 'none', color: C.muted, fontFamily: FONT, fontSize: 13, cursor: 'pointer', padding: 0 }}>Print</button>
+        </div>
+        <p style={{ margin: '0 0 4px', fontSize: 14, color: C.muted, textAlign: 'center' }}>The story of {cc ? cc.title : 'this course'}</p>
+        <div className="edu-story-sheet"><StoryBody story={cs} /></div>
+      </div></div>
+    );
+  }
   if (screen === 'story' && mod && storyFor(mod.id)) {
     return (
       <div style={page}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={wrap}>
@@ -4523,7 +4648,7 @@ export default function EduSphereApp() {
         <h1 style={{ fontSize: 26, margin: '14px 0 22px', textAlign: 'center' }}>{mod.title}</h1>
         <div style={card}>
           {mod.lesson.paragraphs.map((t, i) => <RichText key={i} text={formatTeachingText(t)} size={17} lineGap={12} />)}
-          <div style={{ background: C.greenSoft, borderRadius: 10, padding: 14 }}>
+          <div style={{ background: C.greenSoft, borderRadius: 10, padding: 14 }} data-tour="example">
             <Picture visual={wayVisual(mod.lesson.example, anotherWay)} />
             {mod.lesson.example.formula && <p style={{ margin: '10px 0 0', fontSize: 17, fontWeight: 700, textAlign: 'center' }}>{mod.lesson.example.formula}</p>}
             {(() => {
@@ -4549,7 +4674,21 @@ export default function EduSphereApp() {
         {storyFor(mod.id)
           ? <Btn full onClick={() => { if (record && !record.preview && !record.events.some((e) => e.type === 'story_read' && e.moduleId === mod.id)) addEvent(makeStoryReadEvent(mod.id, new Date().toISOString())); setScreen('story'); }}>View story</Btn>
           : <Btn full onClick={startPractice}>Practice this</Btn>}
+        {experimentsForModule(mod.id).length > 0 && (
+          <div style={{ ...card, marginTop: 18, background: '#FAECE6', borderColor: '#E6C4B6' }}>
+            <p className="edu-card-title" style={{ margin: '0 0 8px', fontWeight: 600, textAlign: 'center' }}>Try this</p>
+            {experimentsForModule(mod.id).slice(0, 2).map((e) => (
+              <div key={e.title} style={{ margin: '0 0 10px' }}>
+                <p style={{ margin: 0, fontWeight: 600 }}>{e.title}</p>
+                <p style={{ margin: '2px 0 0', fontSize: 15 }}><strong>Ask:</strong> {e.ask}</p>
+                <p style={{ margin: '2px 0 0', fontSize: 15 }}><strong>Do:</strong> {e.do}</p>
+                <p style={{ margin: '2px 0 0', fontSize: 15 }}><strong>See:</strong> {e.see}</p>
+              </div>
+            ))}
+          </div>
+        )}
         <p style={{ color: C.muted, fontSize: 13, marginTop: 48, textAlign: 'center' }}>Source: {mod.sources.join(' ')}</p>
+        {tourPopup}
       </div></div>
     );
   }
@@ -4805,6 +4944,7 @@ export default function EduSphereApp() {
           </div>
           <p style={{ fontSize: 22, margin: 0 }}>{mastered ? (courseDone ? 'Well done! That was the whole course.' : 'Well done!') : 'Good try. Let us go again.'}</p>
           {passedToday && <p style={{ fontSize: 15, margin: '8px 0 0', color: C.muted }}>Passed today. Pass it again another day and the star is yours.</p>}
+          {courseDone && courseStoryFor(mod.courseId) && <p style={{ fontSize: 17, margin: '10px 0 0', fontWeight: 600, color: C.green }}>You've unlocked a story related to this course!</p>}
           {courseDone && <p style={{ fontSize: 15, margin: '8px 0 0', color: C.muted }}>{nextCourse ? `Next: ${nextCourse.title}.` : 'Every course here is finished.'}</p>}
         </div>
         <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 14 }}>
@@ -4818,6 +4958,9 @@ export default function EduSphereApp() {
             </button>
           )}
         </div>
+        {courseDone && courseStoryFor(mod.courseId) && (
+          <div style={{ margin: '0 0 14px' }}><Btn full onClick={() => { if (record && !record.preview && !record.events.some((e) => e.type === 'story_read' && e.moduleId === `course:${mod.courseId}`)) addEvent(makeStoryReadEvent(`course:${mod.courseId}`, new Date().toISOString())); setCourseStoryId(mod.courseId); setScreen('course-story'); }}>Let's Read!</Btn></div>
+        )}
         <div style={{ display: 'flex', justifyContent: 'center' }}>
           <span style={{ position: 'relative', display: 'inline-flex' }}>
             <button type="button" onClick={goOn} disabled={busy} aria-label={mastered ? 'Keep going' : 'Go again'} className="edu-press edu-pulse"
@@ -5057,6 +5200,24 @@ export default function EduSphereApp() {
             <p style={{ margin: '8px 0 0', fontSize: 13, color: C.muted }}>{getModule(mostMissedModule()).title}, where the most answers went wrong this week.</p>
           </div>
         )}
+        {/* My stories: the ones this student has read, a shelf to reopen, and how many wait. */}
+        {(() => {
+          const read = storiesRead(record.events).filter((r) => storyFor(r.moduleId));
+          const waiting = visibleModules.filter((m) => storyFor(m.id) && !read.some((r) => r.moduleId === m.id)).length;
+          if (!read.length && !waiting) return null;
+          return (
+            <div style={{ ...card, marginTop: 24 }}>
+              <p className="edu-card-title" style={{ margin: '0 0 6px', fontWeight: 600, textAlign: 'center' }}>My Stories</p>
+              <p style={{ margin: '0 0 10px', fontSize: 14, color: C.muted, textAlign: 'center' }}>{read.length ? `${read.length} read` : 'None read yet'}{waiting ? ` · ${waiting} waiting` : ''}</p>
+              {read.slice(0, 12).map((r) => { const st = storyFor(r.moduleId); return (
+                <div key={r.moduleId} style={{ display: 'flex', gap: 10, alignItems: 'center', padding: '8px 0', borderTop: `1px solid ${C.line}` }}>
+                  <StoryThumb serial={st.art} />
+                  <div style={{ flex: 1, minWidth: 0 }}><p style={{ margin: 0, fontWeight: 600 }}>{st.title}</p><p style={{ margin: '1px 0 0', fontSize: 13, color: C.muted }}>{niceDateShort(r.at)}</p></div>
+                  <Btn kind="secondary" onClick={() => { setModuleId(r.moduleId); setScreen('story'); }} style={{ padding: '8px 14px', minHeight: 38, fontSize: 14 }}>Read again</Btn>
+                </div>); })}
+            </div>
+          );
+        })()}
       </div></div>
     );
   }
@@ -5549,6 +5710,16 @@ export default function EduSphereApp() {
         <p style={{ fontSize: 13, color: C.muted, lineHeight: 1.6, textAlign: 'center' }}>{tr.note}</p>
         <p style={{ fontSize: 13, color: C.muted, textAlign: 'center' }}>Untouched courses are left off of this record for obvious reasons.</p>
 
+        {(() => {
+          const read = storiesRead(educatorRecord.events).filter((r) => String(r.moduleId).startsWith('course:') && courseStoryFor(r.moduleId.slice(7)));
+          if (!read.length) return null;
+          return (
+            <div style={{ ...card, marginTop: 14 }}>
+              <p className="edu-card-title" style={{ margin: '0 0 6px', fontWeight: 600 }}>Course stories read</p>
+              {read.map((r) => { const cid = r.moduleId.slice(7); const cc = getCourse(cid); return <p key={r.moduleId} style={{ margin: '0 0 4px', fontSize: 15 }}>{courseStoryFor(cid).title}, the story of {cc ? cc.title : cid}, read {niceDateShort(r.at)}.</p>; })}
+            </div>
+          );
+        })()}
         <div className="edu-no-print" style={{ marginTop: 16 }}>
           <Btn full onClick={() => { if (typeof window !== 'undefined' && window.print) window.print(); }}>Print or save as PDF</Btn>
 
@@ -5760,7 +5931,6 @@ export default function EduSphereApp() {
             </div>
           );
         })()}
-        <h1 style={{ fontSize: 24, margin: '12px 0 4px', textAlign: 'center' }}>My Classroom</h1>
         {educator && backupAt === null && !backupNudgeSeen && tourStep < 0 && (
           <div className="edu-no-print" style={{ position: 'fixed', top: 0, right: 0, bottom: 0, left: 0, background: 'rgba(36, 41, 31, 0.55)', zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
             <div className="edu-rise" style={{ maxWidth: 420, width: '100%', background: C.surface, borderRadius: 14, padding: 22, textAlign: 'center' }}>
@@ -5773,9 +5943,7 @@ export default function EduSphereApp() {
             </div>
           </div>
         )}
-        {educator && (educator.resets || []).length > 0 && (
-          <p style={{ margin: '0 0 10px', fontSize: 13, color: C.muted }}>PIN last reset {fmtDate((educator.resets || []).slice(-1)[0])}.</p>
-        )}
+        <h1 style={{ fontSize: 24, margin: '26px 0 4px', textAlign: 'center' }}>My Classroom</h1>
         <p className="edu-classroom-intro" style={{ color: C.muted, marginTop: 0, fontSize: 15, textAlign: 'center' }}>
           Input student ID, add, then assign a nickname. Students will login by selecting their name to avoid <span style={{ whiteSpace: 'nowrap' }}>typos.
           <button type="button" onClick={() => setShowRosterTip(!showRosterTip)} aria-label="More about nicknames"
@@ -6136,7 +6304,7 @@ export default function EduSphereApp() {
         })()}
         {/* The story log: the very last link on the page, a page of its own. */}
         {roster.students.some((st) => st.active) && (
-          <p className="edu-no-print" style={{ textAlign: 'center', margin: '18px 0 0' }}>
+          <p className="edu-no-print" style={{ textAlign: 'center', margin: '18px 0 0' }} data-tour="storylog">
             <button type="button" onClick={async () => {
               setBusy(true);
               const rows = [];
@@ -6172,7 +6340,9 @@ export default function EduSphereApp() {
       const available = enabledCourseIds(row.events).flatMap((cid) => { const c = getCourse(cid); return c ? c.modules.map((m) => m.id) : []; }).filter((id) => storyFor(id));
       return { read: available.filter((id) => readIds.has(id)).length, total: available.length };
     };
-    const openStory = openStoryId ? storyFor(openStoryId) : null;
+    const openStory = openStoryId ? (String(openStoryId).startsWith('course:') ? courseStoryFor(openStoryId.slice(7)) : storyFor(openStoryId)) : null;
+    // Course stories per student: unlocked when every module of the course is mastered; read when logged.
+    const courseRows = (row) => { const pg = deriveProgress(row.events); const readIds = new Set(storiesRead(row.events).map((r) => r.moduleId)); return enabledCourseIds(row.events).map((cid) => getCourse(cid)).filter((c) => c && courseStoryFor(c.id)).map((c) => ({ id: `course:${c.id}`, title: courseStoryFor(c.id).title, course: c.title, unlocked: c.modules.every((m) => pg.masteredIds.includes(m.id)), left: c.modules.filter((m) => !pg.masteredIds.includes(m.id)).length, read: readIds.has(`course:${c.id}`), art: courseStoryFor(c.id).art })); };
     const SHOW = 5;   // a long list shows five rows, then offers the rest
     const markRead = async (studentId, moduleId) => {
       const rec = await loadRecord(studentId); const next = { ...rec, events: [...(rec.events || []), makeStoryReadEvent(moduleId, new Date().toISOString())] };
@@ -6203,6 +6373,7 @@ export default function EduSphereApp() {
                 {items.length === 0 && <p style={{ margin: '10px 0 0', fontSize: 14, color: C.muted }}>{view === 'unread' ? 'Nothing waiting: every assigned story has been read.' : 'No stories read yet.'}</p>}
                 {shown.map((it, i) => (
                   <div key={`${it.moduleId}-${i}`} style={{ display: 'flex', gap: 12, alignItems: 'center', padding: '10px 0', borderTop: i === 0 ? 'none' : `1px solid ${C.line}` }}>
+                    <StoryThumb serial={(storyFor(it.moduleId) || {}).art} />
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <p style={{ margin: 0, fontWeight: 600 }}>{it.title}</p>
                       {it.at && <p style={{ margin: '1px 0 0', fontSize: 13, color: C.muted }}>{niceDateShort(it.at)}</p>}
@@ -6211,6 +6382,18 @@ export default function EduSphereApp() {
                     <Btn kind="secondary" onClick={() => { setOpenStoryId(it.moduleId); setOpenStoryFor(row.id); }} style={{ padding: '8px 14px', minHeight: 38, fontSize: 14 }}>Open</Btn>
                   </div>
                 ))}
+                {courseRows(row).length > 0 && (
+                  <div style={{ marginTop: 10, paddingTop: 8, borderTop: `2px solid ${C.line}` }}>
+                    <p style={{ margin: '0 0 4px', fontSize: 13, fontWeight: 600, color: C.muted }}>Course stories</p>
+                    {courseRows(row).map((cr) => (
+                      <div key={cr.id} style={{ display: 'flex', gap: 12, alignItems: 'center', padding: '8px 0' }}>
+                        <StoryThumb serial={cr.art} />
+                        <div style={{ flex: 1, minWidth: 0 }}><p style={{ margin: 0, fontWeight: 600 }}>{cr.title}</p><p style={{ margin: '2px 0 0', fontSize: 13, color: C.muted }}>{cr.course}{cr.unlocked ? (cr.read ? ' · read' : ' · unlocked') : ` · ${cr.left} to go`}</p></div>
+                        <Btn kind="secondary" onClick={() => { setOpenStoryId(cr.id); setOpenStoryFor(row.id); }} style={{ padding: '8px 14px', minHeight: 38, fontSize: 14 }}>Open</Btn>
+                      </div>
+                    ))}
+                  </div>
+                )}
                 {items.length > SHOW && (
                   <p className="edu-no-print" style={{ margin: '6px 0 0', textAlign: 'center' }}>
                     <button type="button" onClick={() => setStoryExpanded({ ...storyExpanded, [row.id]: !expanded })} style={{ ...linkBtn, fontSize: 14 }}>{expanded ? 'Show fewer' : `Show ${items.length - SHOW} more`}</button>
@@ -6245,7 +6428,7 @@ export default function EduSphereApp() {
     return (
       <div style={page}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={wrap}>
         <button type="button" onClick={() => setScreen('educator-pick')} style={linkBtn}>Back to Classroom</button>
-        <h1 style={{ fontSize: 24, margin: '12px 0 16px', textAlign: 'center' }} data-tour="help">Who needs help</h1>
+        <h1 style={{ fontSize: 24, margin: '12px 0 16px', textAlign: 'center' }}>Who needs help</h1>
         <p className="edu-print-only" style={{ margin: '0 0 12px', textAlign: 'center', fontSize: 14, color: C.muted }}>{educator && educator.deviceName ? `${educator.deviceName}, ` : ''}{new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}. Ranked most in need first.</p>
         <div style={{ ...card, background: C.greenSoft, borderColor: C.greenSoft, marginBottom: 24 }}>
           {classSummary(classRows).split('\n').map((line, i) => <p key={i} style={{ margin: i === 0 ? '0 0 10px' : 0, fontSize: 16, lineHeight: 1.6, textAlign: 'center', fontWeight: i === 0 ? 400 : 700 }}>{line}</p>)}
@@ -6257,10 +6440,10 @@ export default function EduSphereApp() {
         {classRows.filter((r) => (!noteSearch.trim() || r.notesText.toLowerCase().includes(noteSearch.trim().toLowerCase()))).length === 0 && (
           <p style={{ textAlign: 'center', color: C.muted, fontSize: 15 }}>{noteSearch.trim() ? 'No note says that.' : 'Nobody needs a look right now.'}</p>
         )}
-        {classRows.filter((r) => (!noteSearch.trim() || r.notesText.toLowerCase().includes(noteSearch.trim().toLowerCase()))).map((r) => {
+        {classRows.filter((r) => (!noteSearch.trim() || r.notesText.toLowerCase().includes(noteSearch.trim().toLowerCase()))).map((r, idx) => {
           const st = findStudent(roster, r.id);
           return (
-            <div key={r.id} style={{ ...card, borderColor: r.band === 'needs help now' ? C.clay : C.line }}>
+            <div key={r.id} data-tour={idx === 1 || idx === 2 ? 'rows' : undefined} style={{ ...card, borderColor: r.band === 'needs help now' ? C.clay : C.line }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10 }}>
                 <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                   {st && st.picture && <StudentPicture name={st.picture} tint={st.tint} size={36} />}

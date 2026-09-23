@@ -140,3 +140,8 @@ Add its standards to src/curriculum.mjs (every code, with the module ids that co
 - New coloring pages (2026-09-22): placeholders with D serials, prompts in the ledger; scenes get busier down the list. A drawing that a reading question shows must be a real picture (pic, icon, solid or a code drawing), never a placeholder.
 - Hooks (2026-09-22): never call useEffect or useState inside a screen branch (`if (screen === ...)`); React error 310. Put the effect at the top of the component and gate it on `screen`.
 - Tour (2026-09-22): TOUR entries are [title, target, sample, words]; a target is a data-tour name on one small element (never a wrapper of the page); a sample of 'report' shows sampleRecord() on the report screen. The tour marks its one target with the class edu-tour-target (no body attribute).
+- Tour placement (2026-09-23): TOUR entries are [title, target, sample, where, words]; the engine measures in screen pixels and divides by the .edu-wrap zoom before writing fixed positions. Anything fixed inside .edu-wrap must do the same.
+- Games (2026-09-23): a Pairs game with `deck` uses PAIR_DECKS text pairs; the Let's Play fold shows decks and Pong to older students.
+- Course stories (2026-09-23): COURSE_STORIES[courseId] in stories.mjs with CS serials; unlock is every module mastered; reads log story_read with moduleId course:<id>. Courses without one yet: everything outside the twelve listed in DECISIONS; write them a few at a time.
+- Drawings (2026-09-23): kind 'branches' draws Congress, President and Courts; never use it for anything else. Subjects: SUBJECT_RANK orders the folds (Technology last); a new subject needs a plan per course in curriculum.mjs with a source naming TEKS and a national framework, and a Wonder question per course.
+

@@ -4359,5 +4359,222 @@ STORIES['ending-sounds'] = {
     'Say the word slowly. The last sound you hear is the ending sound.',
   ],
 };
+// Four modules added on 2026-09-23.
+STORIES['dictionary-skills'] = {
+  about: 'a word that hid on the wrong page',
+  more: [{ serial: 'S1176', after: 0, alt: 'A finger sliding down a column of J words' }, { serial: 'S1177', after: 2, alt: 'The guide words at the top of the page, jug and jump' }],
+  title: 'The wrong page', art: 'S1175', cast: [],
+  alt: 'A child flipping through a big dictionary on a library table, a slip of paper with a word on it',
+  words: [
+    'I looked for jungle under G. Nothing.',
+    'First letter: J. Then the second: U. The guide words said jug and jump. Between them.',
+    'First letter, then second letter. Guide words say what a page holds.',
+  ],
+};
+STORIES['simple-machines'] = {
+  about: 'a piano and a ramp',
+  more: [{ serial: 'S1179', after: 0, alt: 'The piano halfway up the ramp' }, { serial: 'S1180', after: 2, alt: 'A seesaw with a child near the middle and an adult at the end, balanced' }],
+  title: 'The piano', art: 'S1178', cast: [],
+  alt: 'Two people at the foot of a ramp with a piano on a dolly, a truck above',
+  words: [
+    'The piano would not lift. It rolled up the ramp.',
+    'Less force, more distance. The ramp is longer than the truck is tall.',
+    'A simple machine trades force for distance. The work is the same.',
+  ],
+};
+STORIES['coordinate-plane'] = {
+  about: 'three blocks east, two blocks north',
+  more: [{ serial: 'S1182', after: 0, alt: 'The route drawn on the map' }, { serial: 'S1183', after: 2, alt: 'The corner marked with a gold dot' }],
+  title: 'Three east, two north', art: 'S1181', cast: [],
+  alt: 'A child on a city street map with numbered streets, finger on a corner',
+  words: [
+    'Walk three blocks east. Then two blocks north. The corner you reach is (3, 2).',
+    'Walk north first, east second, and you reach a different corner.',
+    'Across first, then up. Two numbers, one point.',
+  ],
+};
+STORIES['watersheds'] = {
+  about: 'a cup of water on a crumpled bag',
+  more: [{ serial: 'S1185', after: 0, alt: 'Water running along the folds of the bag' }, { serial: 'S1186', after: 2, alt: 'The low corner of the tray, a small pool' }],
+  title: 'The crumpled bag', art: 'S1184', cast: [],
+  alt: 'A student pouring water over a crumpled paper bag on a tray',
+  words: [
+    'The creases were ridges. The folds were creeks.',
+    'Every drop ran downhill to the same low corner.',
+    'A watershed is all the land that drains to one river. Upstream becomes downstream.',
+  ],
+};
+// Four modules added on 2026-09-23, second batch.
+STORIES['quarter-hours'] = {
+  about: 'a bus that came at quarter past',
+  more: [{ serial: 'S1188', after: 0, alt: 'The bus arriving, the clock showing the long hand on the 3' }, { serial: 'S1189', after: 2, alt: 'The same clock later with the long hand on the 9, quarter to nine' }],
+  title: 'Quarter past', art: 'S1187', cast: [],
+  alt: 'A child at a bus stop looking at a big clock on a post, the long hand on the 3',
+  words: [
+    'The bus comes at quarter past eight. The long hand was on the 3.',
+    'Quarter of the way round. Quarter past. Right on time.',
+    'The long hand on the 3, 6 or 9 says quarter past, half past, quarter to.',
+  ],
+};
+STORIES['sound'] = {
+  about: 'a rubber band on a cup',
+  more: [{ serial: 'S1191', after: 0, alt: 'The band blurred mid-shake' }, { serial: 'S1192', after: 2, alt: 'The child with an ear on the table, tapping the far end' }],
+  title: 'The rubber band', art: 'S1190', cast: [],
+  alt: 'A child plucking a rubber band stretched over a plastic cup',
+  words: [
+    'Pluck it. It buzzes. The buzz is the band shaking.',
+    'Pluck harder: louder. Stretch it tighter: higher.',
+    'Sound is a vibration. Bigger means louder; faster means higher.',
+  ],
+};
+STORIES['microscopes'] = {
+  about: 'a piece of cork and the rooms inside it',
+  more: [{ serial: 'S1194', after: 0, alt: 'The eyepiece view: rows of tiny boxes' }, { serial: 'S1195', after: 2, alt: 'The focus knob being turned, the image sharpening' }],
+  title: 'The rooms in the cork', art: 'S1193', cast: [],
+  alt: 'A student looking into a microscope, a slice of cork on the slide',
+  words: [
+    'Cork under the lens. Rows of tiny boxes, like little rooms.',
+    'Hooke saw the same thing in 1665 and called them cells.',
+    'Lenses magnify; magnifications multiply; focus makes it sharp.',
+  ],
+};
+STORIES['where-things-come-from'] = {
+  about: 'the tag on a shirt and the road behind it',
+  more: [{ serial: 'S1197', after: 0, alt: 'The four places marked on the map with a line between' }, { serial: 'S1198', after: 2, alt: 'A container ship stacked with boxes' }],
+  title: 'The tag', art: 'S1196', cast: [],
+  alt: 'A student reading the tag inside a shirt collar, a world map on the wall',
+  words: [
+    'Cotton from one country. Thread from another. Cloth from a third. Sewn in a fourth.',
+    'The tag said one place. The shirt had been to four.',
+    'A supply chain is the steps and places between a raw material and you.',
+  ],
+};
+// Course stories: one longer story for a whole course, unlocked when every module in it is mastered.
+export const COURSE_STORIES = {
+  'fractions-intro': { title: 'The pizza that fed the whole street', about: 'a block party, three pizzas, and every fraction on the block', art: 'CS1', alt: 'A street block party with three pizzas on a folding table, children with paper plates, chalk marks on the sidewalk', cast: [], words: ['The pizzas arrived at noon: three of them, the same size, for a street with more mouths than slices. Someone had to cut them, and cutting is where fractions live. The first pizza went into halves. Two people, two halves, done. The second went into fourths, because four kids were standing there with plates, and a fourth is smaller than a half only if the pizza is the same size, which it was.', 'Then the arguments started. A boy said his two fourths were less than his sister\'s half. They laid the slices on one plate: they covered the same space. Two fourths and one half are the same fraction wearing different clothes. A girl with a third of a pizza was sure the boy with an eighth had more, because eight is bigger than three. They held them up. The third was the big one. More cuts, smaller pieces.', 'By the end of the afternoon the last pizza was gone in eighths, and someone had drawn a line on the sidewalk from 0 to 1 with chalk, marking where each slice would sit. A fraction is a share of one whole, it has a place on a line, and every one of them is built from little unit pieces. The street had eaten the lesson.'] },
+  'reading-3': { title: 'The day the newspaper came to school', about: 'a class that wrote its own newspaper and learned to read like editors', art: 'CS2', alt: 'A classroom with a printed one-page newspaper held up, children at desks with red pens and headlines on the board', cast: [], words: ['The class was going to make a newspaper. One page, real stories, printed for the whole school. The first job was the hardest: every article needed a headline, and a headline is the main idea in five words. The story about the leaky roof had twelve facts in it. The headline was Roof Leaks Again.', 'The second job was words. The sports report used the word unbeatable, and half the class did not know it. Un means not; able means can be. Unbeatable: cannot be beaten. Prefixes and suffixes are handles on a word, and once you can see them, long words open. The third job was the trickiest: the lunch review said the pizza was the best in the world. Fact or opinion? Nobody could weigh the world\'s pizzas. Opinion, and it stayed, but it got a byline.', 'The last job was order. The story of the field trip had to go first, then, because, so: the bus was late because of the rain, so lunch moved indoors, then the sun came out. When the page was printed, every reader in the school found the main ideas, understood the long words, knew what was checked and what was argued, and followed each story in order. That is reading to understand.'] },
+  'reading-4': { title: 'The letter with the missing lines', about: 'a letter from a grandmother, and everything it said without saying', art: 'CS3', alt: 'A child at a kitchen table reading a two-page handwritten letter, a dictionary open beside it, a garden photo tucked in the envelope', cast: [], words: ['The letter was two pages long and said almost nothing directly. That was the point. It began with the weather, which is how you know someone has something else to say. The grandchild who read it had learned to summarize: keep the big events, drop the details. The big events were three: a move, a new garden, and a question about visiting.', 'Then came the reading between the lines. The letter never said she was lonely. It said the house was quiet at night and that the garden was slow to grow when there was nobody to show it to. That is an inference: a guess with a clue behind it. She wrote that the new town was as strange as a shoe on the wrong foot, a simile, and later that the days were a long gray hallway, a metaphor, and both told the truth better than plain words would have.', 'The letter had a shape too: first the move, then the garden, then the question, signal words holding it together. And one word the reader did not know, disconsolate, sent them to the dictionary, past the D guide words, to a page that held it. Disconsolate: unable to be comforted. The reply went out that afternoon, and the visit was arranged for June.'] },
+  'science-3': { title: 'The storm that came to the science fair', about: 'a science fair afternoon when the weather did the demonstrating', art: 'CS4', alt: 'A school science fair on a lawn with folding tables, dark clouds rolling in, a wagon rolling down a ramp, children grabbing posters', cast: [], words: ['The fair was set up outside, which everyone later agreed was a mistake. The first table had ice, water and a kettle: solid, liquid, gas, the three states, with a sign saying that heat moves things from one to the next. The second table had a wagon on a ramp for pushes and pulls. The third had a jar of tadpoles halfway to being frogs, and the fourth had a rain gauge that had never seen rain.', 'Then the sky went dark. The wind pushed the wagon down the ramp all by itself, which was the best demonstration of a force anyone gave all day. The rain filled the gauge to the second mark in ten minutes. The ice on the first table was gone, the kettle was cold, and the tadpoles did not mind at all, because a tadpole lives in the wet and was on its way to a frog either way.', 'The thunder came last, and a boy with his hand on the table felt it before he heard it. Sound is a vibration, and a big one shakes the ground. When the sun came out the tables were wet and the ribbons were soaked, but the judges had seen matter change state, forces move things, a life cycle turn, weather arrive, and sound travel, in one afternoon, without anyone pressing a button.'] },
+  'science-4': { title: 'The night the lights went out', about: 'a family evening in a blackout, and everything that still worked', art: 'CS5', alt: 'A family in a dark kitchen with a flashlight beam, a candle, rain on the window, a hand pump in the corner', cast: [], words: ['At seven the lights went out on the whole street. The first thing anyone learned was which energy was which: the lamp had been light, the heater heat, the radio sound, the fridge motion, and all of it had been electrical until the line went down. The second thing was a circuit: a flashlight only lit when the switch closed the loop, and when the batteries were turned the wrong way, nothing.', 'Outside, the storm that had cut the line was doing other work. Rain was carrying the garden soil down the path: erosion, said the oldest child, who had done it in a tray at school. At the bottom, by the gate, it was piling into a small bank: deposition. The moths on the porch had gone quiet, and the owl in the pine did not care about the dark at all, because its eyes and its silent feathers were built for exactly this.', 'The last thing was the pump. The basement was taking on water, and the hand pump was a lever with a long handle: a lot of pulling to lift a little water, but lifting it. When the lights came back at midnight nobody was scared of the dark anymore. They had seen energy in five forms, a loop that must be closed, land moving, animals fitted to the night, and a machine that trades distance for force.'] },
+  'science-5': { title: 'The trip to the lake', about: 'a weekend at the lake and the science that came along', art: 'CS6', alt: 'A family campsite by a lake at dusk, a tent, a campfire, a full moon rising over the water', cast: [], words: ['The lake trip started with lemonade. Sugar in water: it vanished but the drink was sweet. Sand from the shore in the bucket: it sank and could be poured off. A solution and a mixture, before the tent was even up. That night the moon came up over the water, and the youngest wanted to know why it changed shape. A ball, a flashlight, a slow walk around the campfire: the moon circles the Earth, and we see the lit side from different angles.', 'In the morning the tent was wet on the inside. Nobody had spilled anything. The night air had cooled and the water in it had turned to drops: condensation. By noon the drops were gone again, up into the air, and the clouds building over the far hills were the same water on its way back. The lake was one stop on a loop that never ends.', 'On the last day the cousins compared: two had brown eyes like their fathers, inherited; all of them could now skip a stone, learned. The drive home passed a field of sunflowers turned toward the sun, and the youngest, who had been paying attention, said that was inherited too. Nobody argued.'] },
+  'science-6': { title: 'The kitchen laboratory', about: 'a rainy Saturday when a kitchen turned into a lab', art: 'CS7', alt: 'A kitchen counter with a microscope, a layered density tower in a glass, graham crackers on frosting, a pot of soup steaming', cast: [], words: ['It rained all Saturday, so the kitchen became a laboratory. First, the salt: a compound, two elements joined, sodium and chlorine, neither of which you would want on a table alone. Then the soup: the metal spoon got hot by conduction, the broth swirled by convection, and the face over the pot warmed by radiation. Three ways heat moves, one pot.', 'The graham crackers came out for plate tectonics. Two crackers on a layer of frosting, pushed together: they buckled. Pulled apart: the frosting showed, a rift. Slid past each other: they caught and jerked. The onion skin went under the microscope after that, a slice so thin the light came through, and there were the cells in rows, the same boxes Hooke saw in cork.', 'By evening the density tower was standing in a glass: honey, dish soap, water, oil, four layers that would not mix, the heaviest at the bottom. The last experiment was dinner, which was a food chain on a plate: the chicken had eaten the grain, the grain had eaten the sun. The rain stopped at eight. Nobody had noticed.'] },
+  'math-6': { title: 'The paint job', about: 'two friends painting a fence, and every kind of number they needed', art: 'CS8', alt: 'Two teenagers painting a long wooden fence green, paint cans on the grass, a triangular gate, a neighbor holding a mug', cast: [], words: ['The fence needed painting, and the paint was a mix: two parts blue to one part yellow made the green the neighbor wanted. A ratio. Double the batch, four to two, and it is the same green. The paint came in half-gallon cans, and the fence needed three gallons: how many cans? Three divided by a half is six. Dividing by a small piece counts the pieces.', 'The money got complicated. They had been paid twenty dollars up front and had spent twenty-three on paint. Minus three. Then the neighbor added a tip and forgave the extra: subtracting a negative, and suddenly they were up. The fence had a triangular gate, and the paint can said it covered so many square feet, so they measured the gate: base six, height four, half of twenty-four, twelve square feet.', 'At the end the neighbor asked how many hours they had worked, and they only knew the total pay and the rate: forty-two dollars at seven an hour, x times seven equals forty-two, x equals six. One-step equations, said the older one, who had done them that week, and the younger one said that was just the fence backwards.'] },
+  'history-4': { title: 'Six flags over one town', about: 'one Texas town, and the flags that flew over it', art: 'CS9', alt: 'A Texas town square with six flags on poles in front of a courthouse, children walking past', cast: [], words: ['The town had been a town for a very long time. Before the roads, the Caddo farmed corn on the river flats to the east, and the Comanche rode the plains beyond. Then a mission bell rang, and Spain called the place its own for a hundred years, though the priests were few and the settlers fewer. In 1821 a new flag went up: Mexico, and the door opened to families from the north.', 'More came than anyone planned. The arguments turned into a war. In October 1835 a cannon at Gonzales fired under a flag that said come and take it. In March 1836 the Alamo fell. In April, at San Jacinto, the fight took eighteen minutes, and the town belonged to a new country, the Republic of Texas, with a single star on its flag.', 'Nine years later the star joined twenty-seven others. Texas was the 28th state. The flags in the town square today tell the whole story in cloth: Spain, France, Mexico, the Republic, the Confederacy, and the United States. The children who walk past them are walking the same ground the Caddo farmed.'] },
+  'history-5': { title: 'The road from the coast', about: 'a family who arrived in 1620 and the country that grew around their descendants', art: 'CS10', alt: 'An old wooden house on a rocky New England coast, a road running inland, a family group in period clothes on the step', cast: [], words: ['The first of them came off a ship in 1620 and built a house on the coast, in the New England row of what became thirteen colonies. Their grandchildren farmed. Their great-grandchildren paid a tax on tea they had no vote about, and in 1773 one of them was on a dark harbor tipping crates into the water.', 'In 1776 the family signed nothing but heard the Declaration read aloud in a market square. In 1787 they argued about the Constitution at the dinner table: a stronger plan than the first one, three branches, each able to stop the others. In 1803 a cousin went west into the Louisiana Purchase, fifteen million dollars for half a continent, and did not come back.', 'In 1861 two brothers of the family fought on opposite sides. In 1865 the one who lived came home to a country that had ended slavery at the cost of six hundred thousand lives. The house on the coast is a museum now, and the road from its door runs all the way to Texas.'] },
+  'science-7': { title: 'The garden that taught everything', about: 'a school garden, one growing season, and seven lessons in the soil', art: 'CS11', alt: 'A school vegetable garden in full growth, staked beans, red and yellow tomatoes, a hawk circling above, students with a hose', cast: [], words: ['The school garden started as a rectangle of dirt in March. The first lesson was the body: the students who dug it went home tired and hungry, and the teacher drew a city on the board, roads for blood, a kitchen for the stomach, phone lines for the nerves. The second lesson was the leaves that came up in April: photosynthesis, light and water and air into sugar, and oxygen given away.', 'In May the weather turned. High pressure, cool sinking air, then a low, and wind that flattened the beans. The beans that were staked survived and set seed; the flat ones did not. Natural selection in one bed, said the teacher. The tomatoes came red and yellow from the same packet, and the class drew Punnett squares to see why.', 'By June the garden was feeding grasshoppers, which were feeding a pair of birds, which were feeding a hawk that came once a week, and everyone could see why there was one hawk and a thousand grasshoppers. The last lesson was the hose: the water came from the river the whole town drank, which came from the hills, which is where the rain went. A watershed, ending in a school bean.'] },
+  'science-8': { title: 'The night sky over the quarry', about: 'a night at an old quarry with a telescope and a stopwatch', art: 'CS12', alt: 'An old quarry at night with layered rock walls, a telescope on a tripod, a small campfire, stars overhead', cast: [], words: ['They drove to the quarry because the sky was darkest there. The quarry walls were the first lesson: layers, the oldest at the bottom, a fossil shell halfway up that had been the sea floor before there were dinosaurs. The telescope went up on the flat ground. The first thing in it was the moon, then Jupiter, then a smudge that was a galaxy, and each was unimaginably farther than the last.', 'While they waited for full dark, the physics teacher rolled a marble down the quarry ramp and timed it with a stopwatch: distance against time, a curve on the graph, faster every second. A push started it; nothing stopped it but the gravel. Newton\'s first law, then the second when a heavier marble needed a bigger push for the same speed, then the third when the marble hit the wall and the wall pushed back.', 'The campfire was the last lesson: wood and air becoming ash and smoke and heat, a chemical change, nothing you could fold back. The atoms in the smoke had been in the tree, and before that in the air, and before that in a star. Everyone looked up again. The scale of it was the point.'] },
+  'tech-3': { title: 'The robot birthday', about: 'a birthday party run by a toy robot that did exactly what it was told', art: 'CS13', alt: 'A birthday table with a small toy robot holding a cake slice on a plate, children laughing, a card with steps propped against a cup', cast: [], words: ['The robot came in a box on the morning of the party, and the first thing it did was nothing, because nobody had told it anything. Its buttons were inputs. Its little screen and its beep were outputs. In between it waited for steps. The birthday girl wrote the first program on a card: forward two, turn, beep. It did exactly that, and stopped, because that was the end of the card.', 'Serving the cake needed more steps than anyone expected. Cut, lift, put on a plate, hand it over: four steps, in order, once for every guest. Written out, that was forty lines. Then someone noticed the same four steps were repeating, and the card became one line: repeat the four steps ten times. The robot served ten plates without a mistake, and the card fit in a pocket.', 'The only disaster was the candles. The card said light the candles, and nobody had said find the matches first, so the robot stood by the cake holding nothing. Every step must be there, and in order. The girl added one line at the top, and the candles were lit, and the robot beeped once, which was the closest it could get to singing.'] },
+  'tech-5': { title: 'The game that kept score', about: 'a class that built a game and learned what a program remembers and decides', art: 'CS14', alt: 'A classroom with a projected simple game, a paddle and ball, a scoreboard, students pointing at one line of code on a whiteboard', cast: [], words: ['The class built a game in a week. On Monday it had a ball and a paddle and no memory: every point was forgotten the moment it was scored. Tuesday brought variables: a box named score, a box named lives, and the game began to remember. Score went from 0 to 5 to 8, and lives went down from 3 to 2 when the ball got past.', 'Wednesday was for deciding. IF the ball touches the paddle THEN bounce, ELSE lose a life. IF lives is 0 THEN show the end. The game did not decide anything by itself; it asked yes-or-no questions the class had written and took whichever road the answer pointed down.', 'Thursday, the game was wrong. It ended after two lost balls, not three. Nobody deleted anything. They read the steps one at a time, and found the line that checked lives before taking one away instead of after. One line moved, and Friday was for playing.'] },
+  'tech-7': { title: 'The message across the ocean', about: 'a photo that crossed the ocean in pieces and the lock that guarded the account it came from', art: 'CS15', alt: 'A teenager at a laptop with a beach sunset photo on screen, a world map behind with a dotted route across the ocean, a phone showing a code', cast: [], words: ['The photo was a sunset on a beach in Portugal, sent to a cousin in Texas. It did not travel as a photo. It was cut into packets, a few thousand of them, each stamped with an address that was a number, and each took whatever route was open: an undersea cable, a switch in London, a tower outside Dallas. They arrived out of order and were put back together in the right one.', 'The cousin\'s name for the site was words; the address the packets used was numbers, and a directory called DNS had turned one into the other before the first packet left. Underneath everything, the sunset was ones and zeros: every color a pattern of switches, on and off, in places worth 8, 4, 2, 1.', 'The next morning a message arrived saying the account was locked and to click now. The cousin did not click. He went to the site the usual way, typed the long password that was four unrelated words, answered the code on his phone, and found nothing locked at all. The sunset was still there. The scam was not.'] },
+  'math-5': { title: 'The bake sale', about: 'a bake sale where every decimal, fraction and box counted', art: 'CS16', alt: 'A school bake sale table with brownies, lemonade, boxes of cookies, a handwritten price list and a cash box', cast: [], words: ['The bake sale needed a table, a cash box and a price list, and the price list was where the decimals lived. Brownies were 1.25, lemonade 0.75. A brownie and a lemonade: line up the points, add the cents, add the dollars, 2.00. The first customer paid with a five, and the change was decimals in reverse.', 'The brownies came from a recipe that made a tray, and half the tray had been eaten by breakfast. Half of what was left, for the sale: half of a half, a quarter of the tray. The cookies came in boxes of 24, and 288 cookies had been baked: how many boxes? Ten boxes used 240, two more used the 48, twelve boxes on the table.', 'The table was a grid, and the lemonade stand was three across and two up from the corner. The cash box was a box: four cookies long, three wide, two layers high, twenty-four cookies fit. At the end, the total came from a long sum with brackets in it, and the brackets went first, and the sale had made 143 dollars and 50 cents.'] },
+  'reading-5': { title: 'The play', about: 'a class play, and everything the script did not say out loud', art: 'CS17', alt: 'A school stage with two children and a bicycle prop, a narrator at the side, an audience of families', cast: [], words: ['The class was putting on a play about two friends who fight over a bicycle and make up. The topic was two friends. The theme, which took a week of rehearsal to find, was that friendship survives a fight. The topic was two words; the theme was a sentence.', 'The script was in first person for one scene, the narrator saying I, and the audience only knew what she knew. Then the camera moved to the corner: third person, she and he, and suddenly the audience could see the bicycle hidden behind the shed that neither friend could. That was the whole trick of the play.', 'One line said the older friend had cold feet. A first grader in the front row asked why nobody brought him socks. An idiom, said the narrator, not skipping a beat. It means he was nervous. And when a parent asked afterward how they knew the ending was happy, the cast pointed to the last line, because a claim about a story needs a line behind it.'] },
+  'reading-6': { title: 'The editorial', about: 'a student newspaper editorial and the week it took to write one honest argument', art: 'CS18', alt: 'A student at a laptop with a printed draft covered in red marks, a newspaper page on the wall behind', cast: [], words: ['The claim was simple: the school should start an hour later. The first draft had five reasons and three of them were the writer\'s cousin liking it. A reason has to hold the claim up, said the editor, and the cousin held nothing. Two reasons stayed: teenagers sleep late by biology, and rested students learn more.', 'The tone was the next fight. The first draft sounded angry, and angry writers get skipped. The second draft was warm and a little funny, and the mood a reader was left with was that the writer could be trusted. Along the way a word had to be looked up: somnolent, from the root somn, sleep, the same root as insomnia.', 'The last read-through asked one question of every paragraph: is it working the same job? One paragraph about the cafeteria was not, and it went. What was left was one central idea, held up by reasons that held, in a voice a reader would sit with. It ran on the front page.'] },
+  'math-7': { title: 'The road trip', about: 'a family road trip with proportions, percents, negatives and one round pizza', art: 'CS19', alt: 'A family car on a highway with a map on the dashboard, a pizza box, a gas station sign with prices', cast: [], words: ['The map said 420 miles, and the car used a gallon every 30 miles, so 14 gallons: a proportion, the price of one mile scaled up. Gas was 20 percent more expensive than at home, which turned a 50-dollar fill-up into 60. The trip budget was 200 dollars, and by lunch it was minus 12, which is what happens when you subtract more than you have.', 'Lunch was pizza, and the pizza was a circle. A 14-inch pizza is 7 inches to the edge from the middle, and the area is pi times seven squared, about 154 square inches, which the youngest wanted to know in slices and the oldest wanted to know in inches of crust: pi times 14, about 44.', 'The last stretch was an equation. They had driven for x hours at 60 miles an hour plus a 30-mile detour, and the total was 210 miles. 60x plus 30 equals 210. Take the 30 away, divide by 60, three hours. Nobody was sure who had started the math, but nobody wanted to stop.'] },
+  'math-8': { title: 'The treehouse', about: 'a treehouse built with slope, squares, roots and a right triangle', art: 'CS20', alt: 'A treehouse in a big tree with a long gentle ramp, a diagonal brace, a rope ladder, two teenagers with a tape measure', cast: [], words: ['The ramp up to the treehouse had to be gentle enough for a wagon: rise over run, and they settled on 1 to 4, one foot up for every four along. The floor was a square of 49 tiles, seven by seven, because the square root of 49 is 7 and nobody wanted to cut tiles. The rope ladder doubled its knots on every trial, 2, 4, 8, 16, 32: two to the fifth.', 'The brace was the hard part. A diagonal from the floor corner to the trunk had to be cut before anyone climbed: 6 feet along, 8 feet up, and the brace was the hypotenuse, 36 plus 64, the square root of 100, exactly 10 feet. The lumber yard had a 10-foot board.', 'When it was done they counted the nails in scientific notation as a joke, 3.4 times ten to the second, three hundred and forty, and wrote it on the wall. The wagon rolled up the ramp on the first try.'] },
+  'history-6': { title: 'The market at the crossroads', about: 'one market town, and the whole world passing through it', art: 'CS21', alt: 'A busy market at a crossroads with stalls, people in varied dress, goods in crates, a signpost pointing four ways', cast: [], words: ['The market sat where two roads crossed, and you could find it on a map by two numbers, so many degrees north of the equator, so many east of Greenwich. On market day the town was a lesson in culture: the food, the words, the way people greeted each other, everything a newcomer would have to be taught.', 'The town had been governed three ways in living memory: once by a lord who decided everything, once by a small council, and now by everyone who voted. Its economy had changed too, from farms that made what their grandparents made, to a plan handed down from far away, to a market where buyers and sellers decided.', 'The people at the stalls had come from four directions, pushed by drought and pulled by work, and the goods had come from farther: cotton grown in one country, spun in another, sewn in a third, sold at the crossroads. A region, the schoolteacher said, is a neighborhood on a bigger map. The market was where the neighborhoods met.'] },
+  'history-7': { title: 'The land under the highway', about: 'one Texas highway and the six centuries beneath it', art: 'CS22', alt: 'A long Texas highway running from the coast toward a city skyline, a mission, a longhorn and an oil derrick along the way', cast: [], words: ['The highway runs from the coast to the plains, and every mile of it is a chapter. The first miles cross the wet coastal plain where the Karankawa fished and the Caddo farmed corn to the east. Then a mission with a bell, Spain\'s claim for a century, and a town at San Antonio that Mexico inherited in 1821 and opened to settlers from the north.', 'The road passes Gonzales, where a cannon fired under a flag in October 1835, and the Alamo, which fell in March, and San Jacinto, where eighteen minutes made a country. The country lasted nine years, joined the Union in 1845, left it in 1861, and heard of freedom on June 19, 1865.', 'The last miles are cattle country that walked its herds to Kansas from 1867, then cotton, then, at Spindletop in 1901, oil a hundred feet in the air. The highway ends in a city that did not exist when the road began. Six flags have flown over the land beneath it, and a seventh thing, the skyline, is newer than any of them.'] },
+  'history-8': { title: 'Four papers on the wall', about: 'a family\'s four framed papers and the republic they describe', art: 'CS23', alt: 'A hallway wall with four framed old documents, a family looking at them, a drawer half open below', cast: [], words: ['On the wall of the house hang four papers. The first is a copy of the Declaration of 1776, which says why they left. The second is the Constitution of 1787, which says how the country runs: three branches, each able to stop the others. The third is the Bill of Rights of 1791, the fence around the government.', 'The fourth paper is a land deed from 1804, from the Louisiana Purchase, when a president bought half a continent and a great-great-grandfather went west into it. The family\'s history runs through the early republic: two terms and go home, a war in 1812 the country survived, and then the slow arithmetic of new states, slave or free, and the compromises that kept the count even until 1860 broke it.', 'There is a fifth paper in a drawer, a letter from 1865. A son who had fought for the Union came home to three promises: no more slavery, everyone born here a citizen, no one losing the vote for their race. The letter says the promises were made. The rest of the wall is about how long they took to keep.'] },
+};
+export function courseStoryFor(courseId) { return COURSE_STORIES[courseId] || null; }
+// Technology, added on 2026-09-23.
+STORIES['inputs-and-outputs'] = {
+  about: 'a talking toaster that only knew three things',
+  more: [{ serial: 'S1200', after: 0, alt: 'The dial being turned to 3' }, { serial: 'S1201', after: 2, alt: 'Two slices of toast popping up' }],
+  title: 'The toaster', art: 'S1199', cast: [],
+  alt: 'A child pressing the lever on a toaster, the toast popping up, a cartoon speech bubble with no words',
+  words: [
+    'The toaster had a lever, a dial and a slot. Push, turn: inputs.',
+    'Toast popped up: the output. In between, the toaster followed its steps: heat, wait, pop.',
+    'Inputs tell a computer. Outputs show you. A program is the steps in between.',
+  ],
+};
+STORIES['steps-in-order'] = {
+  about: 'a sandwich made by someone who did exactly what she was told',
+  more: [{ serial: 'S1203', after: 0, alt: 'The lid being unscrewed at last' }, { serial: 'S1204', after: 2, alt: 'A finished sandwich, the child laughing' }],
+  title: 'Exactly as told', art: 'S1202', cast: [],
+  alt: 'A child reading instructions aloud while a grown-up follows them literally, a knife stuck in a jar lid',
+  words: [
+    'Put the knife in the jar, the child said. The grown-up pushed the knife into the lid. Nobody had said open the jar.',
+    'Start over. Open the jar. Then the knife. Then the bread. In order, with nothing skipped.',
+    'An algorithm is steps in order. The order matters and every step must be there.',
+  ],
+};
+STORIES['patterns-and-loops'] = {
+  about: 'a necklace of beads that only needed one instruction',
+  more: [{ serial: 'S1206', after: 0, alt: 'The two beads that repeat, held up' }, { serial: 'S1207', after: 2, alt: 'The finished necklace, red and blue all the way round' }],
+  title: 'Repeat six times', art: 'S1205', cast: [],
+  alt: 'A child threading red and blue beads, a card beside them reading repeat with no words',
+  words: [
+    'Red, blue, red, blue. Twelve beads, one pattern.',
+    'Instead of twelve instructions: repeat red, blue six times.',
+    'A loop repeats the same steps. Find the part that repeats.',
+  ],
+};
+STORIES['variables'] = {
+  about: 'a scoreboard at the park',
+  more: [{ serial: 'S1209', after: 0, alt: 'The chalk number wiped and rewritten' }, { serial: 'S1210', after: 2, alt: 'The final scoreboard, home 7, away 5' }],
+  title: 'The scoreboard', art: 'S1208', cast: [],
+  alt: 'A park game with a chalk scoreboard, a child changing a number',
+  words: [
+    'Home: 0. Away: 0. Two boxes with names.',
+    'Home scored. The number in the home box became 1, then 3. The box stayed; what was in it changed.',
+    'A variable is a named box that holds a value and can change.',
+  ],
+};
+STORIES['if-then'] = {
+  about: 'a thermostat that never sleeps',
+  more: [{ serial: 'S1212', after: 0, alt: 'The heater glowing as the room cools' }, { serial: 'S1213', after: 2, alt: 'The heater dark, the room warm' }],
+  title: 'The little decider', art: 'S1211', cast: [],
+  alt: 'A child looking at a thermostat on a wall, a small speech bubble drawn beside it with no words',
+  words: [
+    'IF the room is colder than 68 THEN heat on, ELSE heat off.',
+    'All night it asked the same yes-or-no question and took one road or the other.',
+    'IF a condition is true THEN a step runs. ELSE is the other road.',
+  ],
+};
+STORIES['finding-the-bug'] = {
+  about: 'a robot that ended up facing the wall',
+  more: [{ serial: 'S1215', after: 0, alt: 'The child pacing out the steps with their own feet' }, { serial: 'S1216', after: 2, alt: 'The robot facing the door, the sheet corrected' }],
+  title: 'The robot and the wall', art: 'S1214', cast: [],
+  alt: 'A child with a toy robot facing a wall, a sheet of steps in hand',
+  words: [
+    'Turn right, walk three, turn left. The robot faced the wall.',
+    'Walk the steps yourself. Right, three, left: the bug was the last turn. It should have been right.',
+    'Debugging is reading the steps one at a time and checking each.',
+  ],
+};
+STORIES['binary'] = {
+  about: 'four light switches worth 8, 4, 2 and 1',
+  more: [{ serial: 'S1218', after: 0, alt: 'The 8 and 2 switches up, the others down' }, { serial: 'S1219', after: 2, alt: 'All four up: 15' }],
+  title: 'Four switches', art: 'S1217', cast: [],
+  alt: 'A child at a row of four light switches, some up and some down',
+  words: [
+    'Four switches, worth 8, 4, 2 and 1.',
+    'Flip on the 8 and the 2. The row says 10.',
+    'Binary counts with places worth 8, 4, 2, 1. Add the places that are on.',
+  ],
+};
+STORIES['how-the-internet-works'] = {
+  about: 'a puzzle mailed one piece at a time',
+  more: [{ serial: 'S1221', after: 0, alt: 'Envelopes arriving out of order on a doormat' }, { serial: 'S1222', after: 2, alt: 'The finished puzzle on a table' }],
+  title: 'One piece per envelope', art: 'S1220', cast: [],
+  alt: 'A child dropping envelopes into a mailbox, each with a puzzle piece drawn on it',
+  words: [
+    'A jigsaw puzzle, mailed one piece per envelope, each with the address and a number.',
+    'The envelopes took different trucks and arrived out of order. The friend rebuilt the picture from the numbers.',
+    'Messages travel as addressed packets; DNS turns names into number addresses.',
+  ],
+};
+STORIES['passwords-and-privacy'] = {
+  about: 'the message that said now',
+  more: [{ serial: 'S1224', after: 0, alt: 'The phone set face down on the table' }, { serial: 'S1225', after: 2, alt: 'The real site open on a laptop, everything normal' }],
+  title: 'Now, it said', art: 'S1223', cast: [],
+  alt: 'A teenager looking at a phone with an urgent message, a thoughtful pause',
+  words: [
+    'Your account is locked. Click now. The message was in a hurry.',
+    'The teenager did not click. She opened the site the usual way. Nothing was locked.',
+    'Long passwords, a second proof, and never through the link.',
+  ],
+};
 export const STORY_WORD_LIMIT = { early: 200, older: 350 };
 export function storyFor(moduleId) { return STORIES[moduleId] || null; }

@@ -693,7 +693,8 @@ if ((await state()).screen === 'educator-pin') {
   await page.fill('input[placeholder="PIN again"]', '2468');
   await page.getByRole('button', { name: 'Create account', exact: true }).click();
   await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'educator-pick');
-  ok('a backup of this classroom resets the PIN, and the reset is shown', (await text()).includes('PIN last reset'));
+  // The reset line left the classroom page on 2026-09-23 (Mikey); the reset is recorded on the educator and the page opens as usual.
+  ok('a backup of this classroom resets the PIN and opens the classroom', (await text()).includes('My Classroom') && (await page.evaluate(() => window.__eduTest.screen)) === 'educator-pick');
 } else {
   ok('a backup of this classroom resets the PIN (skipped: still signed in)', true);
 }

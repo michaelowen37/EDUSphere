@@ -84,7 +84,7 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
     else if (q.visual && q.visual.kind === 'swatch') { if (!['red', 'blue', 'yellow', 'green'].includes(q.visual.colour)) problems.push('unknown colour'); }
     else if (q.visual && q.visual.kind === 'item') { if (!q.visual.shape || !q.visual.colour) problems.push('item incomplete'); }
     else if (q.visual && q.visual.kind === 'pattern') { if (!Array.isArray(q.visual.items) || q.visual.items.length < 3) problems.push('pattern too short'); }
-    else if (q.visual && q.visual.kind === 'clock') { if (!(q.visual.hour >= 1 && q.visual.hour <= 12 && [0, 30].includes(q.visual.minute))) problems.push('clock out of range'); }
+    else if (q.visual && q.visual.kind === 'clock') { if (!(q.visual.hour >= 1 && q.visual.hour <= 12 && [0, 15, 30, 45].includes(q.visual.minute))) problems.push('clock out of range'); }
     else if (q.visual && q.visual.kind === 'icon') { if (!['sun', 'moon', 'cloud', 'rain', 'snow', 'plant', 'tree', 'flower', 'fish', 'bird', 'rock', 'drop', 'ice', 'fire', 'magnet'].includes(q.visual.name)) problems.push('unknown icon'); }
     else if (q.visual && (q.visual.kind === 'pic' || q.visual.kind === 'art')) { if (!q.visual.name) problems.push('picture incomplete'); }
     else if (q.visual && q.visual.kind === 'numberline') { if (!(q.visual.from < q.visual.to && (q.visual.marks || [q.visual.mark]).every((v) => v === null || v === undefined || (v >= q.visual.from && v <= q.visual.to)))) problems.push('number line out of range'); }
@@ -97,6 +97,7 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
     else if (q.visual && q.visual.kind === 'alleles') { if (!/^[Bb]{2}$/.test(q.visual.pair)) problems.push('alleles malformed'); }
     else if (q.visual && q.visual.kind === 'beaker') { if (!(q.visual.moles > 0 && q.visual.liters > 0)) problems.push('beaker out of range'); }
     else if (q.visual && q.visual.kind === 'periodic') { if (!((q.visual.highlight || []).every((s) => typeof s === 'string' && s.length) && (q.visual.period === null || q.visual.period === undefined || (q.visual.period >= 1 && q.visual.period <= 7)) && (q.visual.group === null || q.visual.group === undefined || (q.visual.group >= 1 && q.visual.group <= 18)))) problems.push('periodic visual out of range'); }
+    else if (q.visual && q.visual.kind === 'plot') { if (!(q.visual.fn !== 'point' || (q.visual.px >= 0 && q.visual.px <= 6 && q.visual.py >= 0 && q.visual.py <= 6))) problems.push('plot point out of range'); }
     else if (q.visual && !(q.visual.shaded >= 0 && q.visual.shaded <= q.visual.parts)) problems.push('visual out of range');
     // Independent checks for the counting questions (a 'dots:N' choice is a picture of N things)
     const dotCount = (c) => Number((/^dots:(\d+)$/.exec(c) || [])[1]);
@@ -1317,5 +1318,6 @@ ok('reset: history kept, but nothing counts as mastered afterwards', events.leng
   ok('a story is listed once, at its first opening', read.length === 2 && read[0].moduleId === 'cells' && read[0].at.startsWith('2026-09-20'));
   ok('a story event carries only the module and the time', Object.keys(L.makeStoryReadEvent('cells', 't')).sort().join() === 'at,moduleId,type');
 }
+ok('no pairs deck repeats a card, so every card has exactly one twin', Object.entries(L.PAIR_DECKS).every(([, deck]) => { const texts = deck.flat(); return new Set(texts).size === texts.length && deck.every((pr) => pr.length === 2); }), Object.entries(L.PAIR_DECKS).filter(([, deck]) => { const texts = deck.flat(); return new Set(texts).size !== texts.length; }).map(([k]) => k).join(','));
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

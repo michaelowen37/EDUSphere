@@ -828,6 +828,30 @@ export const COURSES = [
     modules: GRADE2_CIVICS_MODULES(),
   },
   {
+    id: 'tech-3',
+    grade: '3',
+    subject: 'Technology',
+    title: 'How computers think',
+    audience: 'Grade 3',
+    modules: TECH3_MODULES(),
+  },
+  {
+    id: 'tech-5',
+    grade: '5',
+    subject: 'Technology',
+    title: 'Programs that decide',
+    audience: 'Grade 5',
+    modules: TECH5_MODULES(),
+  },
+  {
+    id: 'tech-7',
+    grade: '7',
+    subject: 'Technology',
+    title: 'Bits, networks and safety',
+    audience: 'Grade 7',
+    modules: TECH7_MODULES(),
+  },
+  {
     id: 'civics-3',
     grade: '3',
     subject: 'History',
@@ -931,7 +955,7 @@ export function gradesWithCourses() { return GRADES.filter((g) => COURSES.some((
 // course the student finishes adds another. The pictures themselves are drawn by the screen.
 // Ordered simplest first: a ball of two parts for a three-year-old, a city of twenty for the end
 // of grade 2. One more picture is earned for every module passed, so they arrive steadily.
-const DRAWINGS = ['ball', 'sun', 'balloon', 'my-name', 'star', 'tree', 'house', 'fish', 'cat', 'flower', 'boat', 'rocket', 'butterfly', 'train', 'car', 'robot', 'fishbowl', 'castle', 'dinosaur', 'city', 'playground', 'farm', 'birthday', 'kite', 'ladybug', 'ice-cream', 'snowman', 'hot-air-balloon', 'lighthouse', 'treehouse', 'submarine', 'pirate-ship', 'dragon', 'space-station', 'jungle-waterfall'];
+const DRAWINGS = ['ball', 'sun', 'balloon', 'my-name', 'star', 'tree', 'house', 'fish', 'cat', 'flower', 'boat', 'rocket', 'butterfly', 'train', 'car', 'robot', 'fishbowl', 'castle', 'dinosaur', 'city', 'playground', 'farm', 'birthday', 'kite', 'ladybug', 'ice-cream', 'snowman', 'hot-air-balloon', 'lighthouse', 'treehouse', 'submarine', 'pirate-ship', 'dragon', 'space-station', 'jungle-waterfall', 'aquarium', 'race-track', 'busy-harbor', 'dinosaur-valley'];
 // Letter pages: a capital beside its lowercase, with a few circles around them to color too, and the
 // letter's name spoken on opening. They take turns with the drawings, so the alphabet arrives one
 // letter at a time from the very first pictures.
@@ -956,10 +980,46 @@ export const GAMES = [
   { id: 'dots-boat', kind: 'dots', title: 'Boat', shape: 'boat' },
   { id: 'jigsaw-9', kind: 'jigsaw', title: 'Big puzzle', side: 3, minGrade: '1' },
   { id: 'pairs-many', kind: 'pairs', title: 'Many pairs', pairs: 6, minGrade: '1' },
+  // Matching pairs for older students: each card's twin says the same thing another way.
+  { id: 'pairs-times', kind: 'pairs', title: 'Times table', pairs: 6, minGrade: '3', deck: 'times' },
+  { id: 'pairs-fractions', kind: 'pairs', title: 'Fraction twins', pairs: 6, minGrade: '3', deck: 'fractions' },
+  { id: 'pairs-vocabulary', kind: 'pairs', title: 'Word meanings', pairs: 6, minGrade: '4', deck: 'vocabulary' },
+  { id: 'pairs-capitals', kind: 'pairs', title: 'Capitals', pairs: 6, minGrade: '6', deck: 'capitals' },
+  { id: 'pairs-roots', kind: 'pairs', title: 'Word roots', pairs: 6, minGrade: '6', deck: 'roots' },
+  { id: 'pairs-elements', kind: 'pairs', title: 'Element symbols', pairs: 6, minGrade: '8', deck: 'elements' },
+  { id: 'pairs-dates', kind: 'pairs', title: 'Dates and events', pairs: 6, minGrade: '8', deck: 'dates' },
+  { id: 'pairs-formulas', kind: 'pairs', title: 'Formulas', pairs: 6, minGrade: '9', deck: 'formulas' },
+  // A review game for every science course from grade 3 up, shown once that course is on a student's list.
+  { id: 'pairs-technology', kind: 'pairs', title: 'Computer words', pairs: 6, minGrade: '3', deck: 'technology' },
+  ...['3', '4', '5', '6', '7', '8', '9', '10', '11', '12'].map((g) => ({ id: `pairs-science-${g}`, kind: 'pairs', title: `Grade ${g} science words`, pairs: 6, minGrade: g, deck: `science-${g}`, courseId: `science-${g}` })),
   { id: 'dots-kite', kind: 'dots', title: 'Kite', shape: 'kite' },
   { id: 'maze-huge', kind: 'maze', title: 'Huge maze', cells: 12, minGrade: '2' },
   { id: 'pong', kind: 'pong', title: 'Pong', minGrade: '2' },
 ];
+// Decks for the text pairs games: each entry is a pair of cards that belong together.
+export const PAIR_DECKS = {
+  // No card text appears twice in a deck: two 3/4 cards from different pairs would fail to match each other.
+  fractions: [['1/2', '2/4'], ['1/3', '2/6'], ['1/4', '3/12'], ['2/3', '4/6'], ['3/4', '6/8'], ['1/5', '2/10'], ['5/10', '0.5'], ['25/100', '0.25'], ['3/8', '6/16'], ['1/10', '0.1'], ['2/5', '4/10'], ['7/10', '0.7']],
+  roots: [['port', 'carry'], ['aqua', 'water'], ['bio', 'life'], ['geo', 'earth'], ['tele', 'far'], ['photo', 'light'], ['scrib', 'write'], ['dict', 'say'], ['auto', 'self'], ['chron', 'time'], ['micro', 'small'], ['therm', 'heat']],
+  elements: [['H', 'hydrogen'], ['O', 'oxygen'], ['C', 'carbon'], ['N', 'nitrogen'], ['Na', 'sodium'], ['Fe', 'iron'], ['Au', 'gold'], ['Ag', 'silver'], ['He', 'helium'], ['Cl', 'chlorine'], ['Ca', 'calcium'], ['K', 'potassium']],
+  dates: [['1776', 'Declaration'], ['1787', 'Constitution'], ['1803', 'Louisiana'], ['1836', 'San Jacinto'], ['1845', 'Texas a state'], ['1861', 'Civil War begins'], ['1865', 'Juneteenth'], ['1914', 'WWI begins'], ['1929', 'the Crash'], ['1941', 'Pearl Harbor'], ['1954', 'Brown'], ['1969', 'Moon landing']],
+  formulas: [['F = ma', 'force'], ['V = IR', 'voltage'], ['p = mv', 'momentum'], ['W = Fd', 'work'], ['A = πr²', 'circle area'], ['C = πd', 'circumference'], ['a² + b² = c²', 'right triangle'], ['y = mx + b', 'a line'], ['d = m/V', 'density'], ['v = λf', 'wave speed']],
+  times: [['3 × 4', '12'], ['6 × 7', '42'], ['8 × 8', '64'], ['9 × 6', '54'], ['7 × 8', '56'], ['5 × 9', '45'], ['4 × 7', '28'], ['9 × 9', '81'], ['6 × 6', '36'], ['8 × 3', '24'], ['7 × 7', '49'], ['4 × 8', '32']],
+  vocabulary: [['enormous', 'very big'], ['fragile', 'breaks easily'], ['ancient', 'very old'], ['rapid', 'fast'], ['vacant', 'empty'], ['brief', 'short'], ['exhausted', 'very tired'], ['furious', 'very angry'], ['cautious', 'careful'], ['abundant', 'plenty'], ['reluctant', 'unwilling'], ['transparent', 'see-through']],
+  capitals: [['Texas', 'Austin'], ['France', 'Paris'], ['Japan', 'Tokyo'], ['Mexico', 'Mexico City'], ['Canada', 'Ottawa'], ['Egypt', 'Cairo'], ['Brazil', 'Brasília'], ['Kenya', 'Nairobi'], ['Australia', 'Canberra'], ['India', 'New Delhi'], ['Italy', 'Rome'], ['United States', 'Washington']],
+  technology: [['input', 'you tell the computer'], ['output', 'it shows you'], ['algorithm', 'steps in order'], ['loop', 'steps that repeat'], ['variable', 'a named box'], ['condition', 'a yes or no question'], ['bug', 'a mistake in the steps'], ['binary', 'ones and zeros'], ['packet', 'a piece of a message'], ['DNS', 'the internet phone book'], ['password', 'a key to a door'], ['debug', 'find and fix the bug']],
+  // Science review decks, one per course: a key word and what it means, from that course's modules.
+  'science-3': [['solid', 'keeps its shape'], ['liquid', 'takes the shape of its container'], ['gas', 'fills its container'], ['friction', 'slows a slide'], ['gravity', 'pulls things down'], ['tadpole', 'a young frog'], ['season', 'part of the year'], ['vibration', 'what makes sound']],
+  'science-4': [['circuit', 'a complete loop'], ['insulator', 'blocks electricity'], ['conductor', 'carries electricity'], ['erosion', 'carries soil away'], ['deposition', 'drops soil somewhere'], ['adaptation', 'a tool for a place'], ['lever', 'a bar on a pivot'], ['inclined plane', 'a ramp']],
+  'science-5': [['solution', 'dissolved and mixed'], ['mixture', 'can be separated'], ['orbit', 'a path around'], ['evaporation', 'liquid to vapor'], ['condensation', 'vapor to drops'], ['inherited', 'from your parents'], ['learned', 'from practice'], ['rotation', 'one spin, one day']],
+  'science-6': [['element', 'one kind of atom'], ['compound', 'atoms joined'], ['conduction', 'heat by touch'], ['convection', 'heat by flow'], ['radiation', 'heat by rays'], ['plate', 'a piece of crust'], ['nucleus', 'the control center of a cell'], ['density', 'mass over volume']],
+  'science-7': [['photosynthesis', 'a leaf makes sugar'], ['chlorophyll', 'the green in a leaf'], ['high pressure', 'cool sinking air'], ['natural selection', 'the fit survive'], ['dominant', 'the trait that shows'], ['producer', 'makes its own food'], ['watershed', 'land that drains to a river'], ['organ', 'a body part with a job']],
+  'science-8': [['proton', 'positive, in the nucleus'], ['electron', 'negative, at the edge'], ['inertia', 'keeps doing what it does'], ['reaction', 'new substances form'], ['galaxy', 'billions of stars'], ['slope on a graph', 'speed'], ['fossil', 'a trace in rock'], ['neutron', 'no charge']],
+  'science-9': [['DNA', 'the recipe book'], ['allele', 'one version of a gene'], ['mitosis', 'a full copy of a cell'], ['meiosis', 'a half copy'], ['ribosome', 'builds proteins'], ['homeostasis', 'keeping steady inside'], ['carbon cycle', 'carbon rides around'], ['respiration', 'cells burn sugar']],
+  'science-10': [['ionic bond', 'electrons given'], ['covalent bond', 'electrons shared'], ['acid', 'below 7 on the scale'], ['base', 'above 7 on the scale'], ['mole', 'a dozen for chemists'], ['synthesis', 'two become one'], ['pressure', 'particles hitting walls'], ['molarity', 'moles per liter']],
+  'science-11': [['acceleration', 'speed changing'], ['kinetic energy', 'moving energy'], ['potential energy', 'stored energy'], ['wavelength', 'crest to crest'], ['frequency', 'crests per second'], ['voltage', 'the push'], ['resistance', 'the narrow pipe'], ['momentum', 'mass times velocity']],
+  'science-12': [['igneous', 'cooled from lava'], ['sedimentary', 'pressed from layers'], ['metamorphic', 'changed by heat'], ['climate', 'decades of weather'], ['supernova', 'the end of a big star'], ['mantle', 'the hot middle layer'], ['deep current', 'cold salty water sinking'], ['half-life', 'time to halve']],
+};
 export function gamesFor(topGrade) { const at = GRADES.indexOf(topGrade); return GAMES.filter((g) => !g.minGrade || GRADES.indexOf(g.minGrade) <= at); }
 export function gamesUnlocked(events) {
   const per = deriveProgress(events).perModule;
@@ -986,6 +1046,12 @@ export function nameDots(name) {
 // knows what colors are, not what mathematics is. Every other grade groups by subject as before.
 export const SKILL_ORDER = ['Colors', 'Shapes', 'Sizes', 'Matching', 'Patterns', 'Counting', 'Comparing', 'Listening', 'Letters', 'Drawing', 'Getting along'];
 export const COLOR_LOCKOUT_MINUTES = 15;
+// Play and rest by age: the youngest fill more of their time with coloring and games; older students play
+// for less and wait longer before a game or a picture comes back, so the day tilts toward the lessons.
+// The experiments that belong under a lesson: those marked with its module id.
+export function experimentsForModule(moduleId) { return Object.values(EXPERIMENTS).flat().filter((e) => e.moduleId === moduleId); }
+export function playSecondsFor(topGrade) { const at = GRADES.indexOf(topGrade); return at <= GRADES.indexOf('2') ? 300 : at <= GRADES.indexOf('5') ? 240 : at <= GRADES.indexOf('8') ? 180 : 150; }
+export function restMinutesFor(topGrade) { const at = GRADES.indexOf(topGrade); return at <= GRADES.indexOf('2') ? 15 : at <= GRADES.indexOf('5') ? 30 : at <= GRADES.indexOf('8') ? 45 : 60; }
 export function coloringUnlocked(events) {
   return Math.min(COLORING_PICTURES.length, 1 + deriveProgress(events).passedIds.length);
 }
@@ -1093,7 +1159,7 @@ function recommendedIncludingElectives(events, level, startGrade = null) {
 
 // Subjects always read Math, Reading, Writing, Science, History, then anything else alphabetically,
 // whatever order the courses were written in. Every screen that lists subjects sorts with this.
-const SUBJECT_RANK = { Math: 0, Reading: 1, Writing: 2, Science: 3, History: 4 };
+const SUBJECT_RANK = { Math: 0, Reading: 1, Writing: 2, Science: 3, History: 4, Art: 5, Technology: 6 };
 export function sortSubjects(subjects) {
   return [...new Set(subjects)].sort((a, b) => (SUBJECT_RANK[a] ?? 9) - (SUBJECT_RANK[b] ?? 9) || a.localeCompare(b));
 }
@@ -3101,6 +3167,23 @@ function GRADE2_MATH_MODULES() { return [
     sources: ['Aligned with Texas TEKS 2.6A (model, create, and describe contextual multiplication situations with equal groups) and Common Core 2.OA.C.4.'],
     generators: ['g2-array-total', 'g2-repeated-add', 'g2-rows-in', 'g2-which-array', 'g2-even-odd'],
   },
+  {
+    id: 'quarter-hours',
+    order: 7,
+    title: 'Quarter past, half past, quarter to',
+    tagline: 'The long hand on the 3, the 6 and the 9',
+    requires: ['telling-time'],
+    lesson: {
+      paragraphs: ['The long hand goes round once an hour. On the 3 it has gone a quarter of the way: quarter past.\nOn the 6 it has gone halfway: half past. On the 9 there is a quarter still to go: quarter to the next hour.', 'The short hand creeps between numbers as the hour passes. At quarter to 4, it is nearly at the 4.', 'Quarter past, half past, quarter to. Three positions of the long hand, three names.'],
+      keyIdea: 'The long hand on the 3, 6 or 9 says quarter past, half past, quarter to.',
+      example: { kind: 'clock', hour: 3, minute: 15, caption: 'The long hand is on the 3. A quarter of the way round: quarter past 3.',
+        another: [{ text: 'The clock face is a pizza cut in four. The long hand at the 3 has eaten one slice: a quarter past. At the 6, two slices: half past. At the 9, three slices, one left: a quarter to.', visual: { kind: 'sector', degrees: 90 } },
+          { text: 'Count by fives around the clock: 5, 10, 15 at the 3. Fifteen minutes is a quarter of sixty. That is why the 3 means quarter past.', visual: { kind: 'clock', hour: 3, minute: 30 } },
+          'Say the hour that is coming, not the one that is gone, when the long hand passes the 6. Quarter to 4, not three forty-five, the way you say almost there.'] },
+    },
+    sources: ['Aligned with TEKS 2.9G (read and write time to the nearest one-minute increment using analog and digital clocks) and CCSS 2.MD.C.7.'],
+    generators: ['m2-read-quarter', 'm2-read-quarter', 'm2-read-quarter', 'm2-read-quarter', 'm2-read-quarter'],
+  },
 ]; }
 
 // Grade 2 reading. Written questions now. Word lists carry every fact the checker needs.
@@ -3325,6 +3408,23 @@ function GRADE4_READING_MODULES() { return [
     sources: ['Aligned with Texas TEKS 4.9D.iii (recognize organizational patterns such as compare and contrast, cause and effect, and problem and solution) and Common Core RI.4.5 (describe the overall structure of a text).'],
     generators: ['r4-structure', 'r4-signal-word', 'r4-structure', 'r4-signal-word', 'r4-structure'],
   },
+  {
+    id: 'dictionary-skills',
+    order: 5,
+    title: 'Finding a word',
+    tagline: 'Alphabetical order and guide words',
+    requires: ['text-structure'],
+    lesson: {
+      paragraphs: ['A dictionary lists words in alphabetical order. Apple before bench, bench before candle.\nWhen two words start with the same letter, look at the second letter: bat, bed, bin.', 'Every page has two guide words at the top: the first word on the page and the last. If your word falls between them, it is on that page.', 'The same order runs an index, a phone list and a library shelf.'],
+      keyIdea: 'First letter, then second letter. Guide words say what a page holds.',
+      example: { kind: 'flow', steps: ['bat', 'bed', 'bin'], caption: 'Three words that start with b, in order by their second letter: a, e, i.',
+        another: ['Think of a hallway of doors labeled A to Z. Behind the B door is another hallway of doors, A to Z again. Bat is in room A of the B hallway; bin is in room I.',
+          { text: 'Guide words are the first and last houses on a street. If your address falls between them, you are on the right street.', visual: { kind: 'sign', text: 'cabin to candle' } },
+          'When you look up a word and cannot find it, check the second letter. Nine misses out of ten are second-letter misses.'] },
+    },
+    sources: ['Aligned with TEKS 4.3A (use print or digital resources to determine meaning, syllabication, pronunciation, word origin, and part of speech) and CCSS L.4.4c.'],
+    generators: ['r4-alpha-first', 'r4-same-letter-order', 'r4-guide-words', 'r4-alpha-first', 'r4-guide-words'],
+  },
 ]; }
 
 // Grade 5 reading: theme, point of view, idioms, and backing a claim with the text.
@@ -3508,7 +3608,7 @@ function GRADE6_READING_MODULES() { return [
         'When you read an argument, find the claim first. Then, ask:\n[[Does this support the claim, or is it just next to it?]]\n[[Claim = The Point]]\n[[Reason = The support for it]]',
       ],
       keyIdea: 'Find the claim first.\nThen test whether each reason really supports it.',
-      example: { kind: 'letters', text: 'claim reason', caption: 'The point, and the support for it.' , another: ['A claim is the thing being argued: we should have longer recess. A reason is the because. Test each reason: does it really hold the claim up, or is it just nearby?', { text: 'Draw the claim as the trunk and each reason as a branch. A branch that does not join the trunk is not holding anything up.', visual: { kind: 'branches' } }]},
+      example: { kind: 'letters', text: 'claim reason', caption: 'The point, and the support for it.' , another: ['A claim is the thing being argued: we should have longer recess. A reason is the because. Test each reason: does it really hold the claim up, or is it just nearby?', { text: 'Draw the claim as the trunk and each reason as a branch. A branch that does not join the trunk is not holding anything up.', visual: { kind: 'stack', levels: ['claim', 'reason', 'reason', 'reason'] } }]},
     },
     sources: ['Aligned with Texas TEKS 6.9E.i (identify the claim in an argumentative text) and Common Core RI.6.8 (trace and evaluate the argument and specific claims in a text).'],
     generators: ['r6-find-claim', 'r6-supports-claim', 'r6-find-claim', 'r6-weak-reason', 'r6-supports-claim'],
@@ -4011,7 +4111,7 @@ function GRADE9_READING_MODULES() { return [
         'None of these three by themselves are considered a cheat when it comes to persuasive writing, they must be relevant for the context.\nThe question is whether the appeal fits the claim. A sad photo cannot prove that a budget works; a chart cannot make you care.\nGood writing knows which job each appeal can do.\n[[Ethos = Trust]]\n[[Pathos = Feeling]]\n[[Logos = Reason]]',
       ],
       keyIdea: 'Ethos is credibility, pathos is feeling, logos is reasoning.\nAsk whether the appeal fits the claim.',
-      example: { kind: 'letters', text: 'ethos pathos logos', caption: 'Trust, feeling, reason.' , another: ['Three ways to convince:\n• **Ethos:** trust me, I am a doctor.\n• **Pathos:** think of the children.\n• **Logos:** here are the numbers.\n\nGood arguments use the one that fits.', { text: 'Three branches from one claim: ethos leans on trust, pathos on feeling, logos on numbers. A speech usually leans on one more than the others.', visual: { kind: 'branches' } }]},
+      example: { kind: 'letters', text: 'ethos pathos logos', caption: 'Trust, feeling, reason.' , another: ['Three ways to convince:\n• **Ethos:** trust me, I am a doctor.\n• **Pathos:** think of the children.\n• **Logos:** here are the numbers.\n\nGood arguments use the one that fits.', { text: 'Three branches from one claim: ethos leans on trust, pathos on feeling, logos on numbers. A speech usually leans on one more than the others.', visual: { kind: 'flow', steps: ['ethos: trust', 'pathos: feeling', 'logos: reason'] } }]},
     },
     sources: ['Aligned with Texas TEKS E1.9E.ii (analyze the use of rhetorical devices, such as appeals to ethos, pathos, and logos) and Common Core RI.9-10.6 (determine an author\'s point of view or purpose and analyze how an author uses rhetoric to advance it).'],
     generators: ['r9-which-appeal', 'r9-appeal-fits', 'r9-which-appeal', 'r9-appeal-fits', 'r9-which-appeal'],
@@ -4823,6 +4923,23 @@ function GRADE3_SCIENCE_MODULES() { return [
     sources: ['Aligned with Texas TEKS 3.8A (observe, measure, record, and compare day-to-day weather changes) and NGSS 3-ESS2-1 (represent data in tables and graphs to describe typical weather conditions during a season).'],
     generators: ['s3-which-tool', 's3-next-season', 's3-which-tool', 's3-next-season', 's3-weather-or-season'],
   },
+  {
+    id: 'sound',
+    order: 5,
+    title: 'Sound is a vibration',
+    tagline: 'Loud, soft, high, low',
+    requires: ['forces-and-motion'],
+    lesson: {
+      paragraphs: ['Touch your throat and hum. It buzzes. Sound is something vibrating: a drum skin, a guitar string, your vocal cords.\nThe vibration shakes the air, and the shaking air reaches your ear.', 'A bigger vibration makes a louder sound. A faster vibration makes a higher pitch. Slower, and the pitch goes lower.', 'Sound needs something to travel through: air, water or a wall. In empty space there is no sound at all.'],
+      keyIdea: 'Sound is a vibration. Bigger means louder; faster means higher.',
+      example: { kind: 'wave', wavelength: 40, amplitude: 14, caption: 'A sound drawn as a wave: how tall is how loud, how close the waves are is how high.',
+        another: [{ text: 'Pluck a rubber band stretched over a cup. Pluck it harder: louder, the same note. Stretch it tighter and pluck: higher. Louder is bigger shaking; higher is faster shaking.', visual: { kind: 'wave', wavelength: 24, amplitude: 8 } },
+          'Put your ear on the table and tap the far end. The tap comes through the wood, louder than through the air. Sound travels through solids well.',
+          { text: 'Three questions about any sound: what is vibrating, how big is the vibration, how fast. The answers are the source, the loudness and the pitch.', visual: { kind: 'flow', steps: ['something vibrates', 'the air shakes', 'your ear hears'] } }] },
+    },
+    sources: ['Aligned with TEKS 3.6A (explore different forms of energy, including mechanical, light, sound, and thermal) and NGSS 1-PS4-1.'],
+    generators: ['sc3-sound', 'sc3-sound', 'sc3-sound', 'sc3-sound', 'sc3-sound'],
+  },
 ]; }
 
 // Grade 6 science: atoms and compounds, how heat moves, the moving Earth, cells, and who eats whom.
@@ -4934,6 +5051,23 @@ function GRADE6_SCIENCE_MODULES() { return [
     sources: ['Aligned with Texas TEKS 6.6B (calculate density to identify an unknown substance) and NGSS MS-PS1-2 (analyze and interpret data on the properties of substances).'],
     generators: ['s6-density', 's6-float-or-sink', 's6-density', 's6-float-or-sink', 's6-why-ship-floats'],
   },
+  {
+    id: 'microscopes',
+    order: 7,
+    title: 'The microscope',
+    tagline: 'Lenses, magnification and focus',
+    requires: ['cells'],
+    lesson: {
+      paragraphs: ['A microscope makes tiny things look bigger. A lens bends light so that something too small to see fills your eye.\nThe eyepiece lens and the objective lens each magnify, and their magnifications multiply: a 10x eyepiece with a 40x objective shows the sample 400 times bigger.', 'The focus knob moves the lens until the image is sharp: coarse first, then fine. The light underneath shines up through the sample.', 'In 1665 Robert Hooke looked at cork through a microscope, saw little boxes, and named them cells.'],
+      keyIdea: 'Lenses magnify; magnifications multiply; focus makes it sharp.',
+      example: { kind: 'flow', steps: ['light', 'sample', 'objective lens', 'eyepiece', 'your eye'], caption: 'Light comes up through the sample, two lenses magnify it in turn, and the image reaches your eye 400 times bigger.',
+        another: ['A magnifying glass is one lens. A microscope is two in a row, and the second magnifies what the first already magnified. That is why the numbers multiply.',
+          'Focusing is like adjusting binoculars: the lens moves until the blur becomes an edge. Coarse gets close; fine gets sharp.',
+          { text: 'Hooke saw cork as rows of tiny rooms and borrowed the word for a monk\'s room: cell. Every cell you will ever study wears the name he gave a piece of cork.', visual: { kind: 'cell' } }] },
+    },
+    sources: ['Aligned with TEKS 6.1A (demonstrate safe practices and use of laboratory equipment, including microscopes) and NGSS MS-LS1-1.'],
+    generators: ['sc6-microscope', 'sc6-microscope', 'sc6-microscope', 'sc6-microscope', 'sc6-microscope'],
+  },
 ]; }
 
 // Grade 4 science: forms of energy, circuits, how land changes, and adaptations.
@@ -5013,6 +5147,23 @@ function GRADE4_SCIENCE_MODULES() { return [
     },
     sources: ['Aligned with Texas TEKS 4.13A (explore and explain how structures and functions of plants and animals allow them to survive in a particular environment) and NGSS 4-LS1-1 (construct an argument that plants and animals have internal and external structures that function to support survival).'],
     generators: ['s4-what-it-is-for', 's4-which-adaptation', 's4-what-it-is-for', 's4-which-adaptation', 's4-what-problem'],
+  },
+  {
+    id: 'simple-machines',
+    order: 5,
+    title: 'Simple machines',
+    tagline: 'Ramps, levers, pulleys and wheels',
+    requires: ['adaptations'],
+    lesson: {
+      paragraphs: ['A simple machine makes work easier without an engine. There are six: the inclined plane, the wedge, the screw, the lever, the wheel and axle, and the pulley.\nA ramp is an inclined plane. A seesaw is a lever. A flagpole rope runs on a pulley. A doorknob is a wheel and axle.', 'None of them gives you something for nothing. A ramp lets you push with less force, but over a longer distance. A long lever handle moves far to move the load a little.', 'Machines trade force for distance. The work stays the same.'],
+      keyIdea: 'A simple machine trades force for distance. The work is the same.',
+      example: { kind: 'flow', steps: ['less force', 'more distance', 'same work'], caption: 'A ramp: push with less force over a longer path. The work does not change.',
+        another: ['Try lifting a box straight up onto a truck, then rolling it up a ramp. The ramp feels easier because the push is spread along the whole slope.',
+          { text: 'A seesaw with a child near the middle and a grown-up at the far end can balance. The long arm trades distance for force: the grown-up moves far to lift the child a little.', visual: { kind: 'balance', left: 'child, near', right: 'adult, far' } },
+          'Every complicated machine is simple machines in a row: a bicycle is wheels, levers (the brakes) and a screw (the seat post).'] },
+    },
+    sources: ['Aligned with TEKS 4.6D (design an experiment that tests the effect of force on an object) and NGSS 4-PS3-4 (energy and simple machines).'],
+    generators: ['sc4-which-machine', 'sc4-machine-trade', 'sc4-which-machine', 'sc4-machine-trade', 'sc4-which-machine'],
   },
 ]; }
 
@@ -5209,6 +5360,23 @@ function GRADE7_SCIENCE_MODULES() { return [
     },
     sources: ['Aligned with Texas TEKS 7.5C (diagram the flow of energy through living systems, including food chains, food webs, and energy pyramids) and NGSS MS-LS2-3 (develop a model to describe the cycling of matter and flow of energy among living and nonliving parts of an ecosystem).'],
     generators: ['s7-tenth-rule', 's7-pyramid-level', 's7-tenth-rule', 's7-pyramid-level', 's7-why-few-lions'],
+  },
+  {
+    id: 'watersheds',
+    order: 7,
+    title: 'Where the water comes from',
+    tagline: 'From the hills to your tap',
+    requires: ['energy-in-ecosystems'],
+    lesson: {
+      paragraphs: ['Rain that falls on a hillside runs downhill into the nearest creek. All the land that drains into one river is its watershed.\nWhat happens upstream shows up downstream: the upstream town\'s spill is in the downstream town\'s water within days.', 'Most cities drink from a river or a lake that their watershed fills. A treatment plant settles the mud out, filters the water and adds a disinfectant before it reaches a tap.', 'Where your water comes from is a place you can stand in.'],
+      keyIdea: 'A watershed is all the land that drains to one river. Upstream becomes downstream.',
+      example: { kind: 'flow', steps: ['rain on the hills', 'creeks', 'the river', 'treatment plant', 'your tap'], caption: 'Rain to creek to river to plant to tap: one path, and everything on the land along it rides along.',
+        another: ['A watershed is a bathtub. Every drop that lands anywhere in the tub ends up at the same drain. The drain is the river\'s mouth.',
+          { text: 'Picture the land as a roof. Each slope sends its rain to a different gutter. The ridge between two slopes is the divide between two watersheds.', visual: { kind: 'stack', levels: ['ridge: the divide', 'slope: rain runs down', 'creek: the gutter'] } },
+          'Pour a cup of water on a crumpled paper bag and watch where it goes. The creases are ridges; the low folds are creeks. That is a watershed in your hands.'] },
+    },
+    sources: ['Aligned with TEKS 7.8B (analyze the effects of weathering, erosion, and deposition on the environment in ecoregions of Texas) and NGSS MS-ESS2-4.'],
+    generators: ['sc7-watershed', 'sc7-watershed', 'sc7-watershed', 'sc7-watershed', 'sc7-watershed'],
   },
 ]; }
 
@@ -6651,6 +6819,165 @@ function GRADE2_CIVICS_MODULES() { return [
   },
 ]; }
 
+function TECH3_MODULES() { return [
+  {
+    id: 'inputs-and-outputs',
+    order: 1,
+    title: 'Inputs and outputs',
+    tagline: 'You tell, it shows',
+    requires: [],
+    lesson: {
+      paragraphs: ['A computer has parts you use to tell it things and parts it uses to show you things.\nThe keyboard, the mouse and a touch screen are inputs: you tell. The screen, the speaker and a printer are outputs: it shows.', 'In between is the part that follows instructions. A program is a list of steps a computer follows exactly, in order.', 'Tell, follow, show. Every computer, from a watch to a car, does those three things.'],
+      keyIdea: 'Inputs tell a computer. Outputs show you. A program is the steps in between.',
+      example: { kind: 'flow', steps: ['input: keyboard', 'the program runs', 'output: screen'], caption: 'You type; the program follows its steps; the screen shows the result.',
+        another: ['A computer is a very fast, very obedient helper with no imagination. It does exactly the steps it is given, nothing more, and it needs to be told everything.',
+          { text: 'Think of a vending machine: the buttons are inputs, the snack is the output, and the machine\'s rules in between are its program.', visual: { kind: 'flow', steps: ['press B4', 'the rules run', 'the snack drops'] } },
+          'Your body works the same way: eyes and ears are inputs, your voice and hands are outputs, and your brain follows the steps in between.'] },
+    },
+    sources: ['Aligned with TEKS Technology Applications 126.7(b)(1)(A) (identify and use components of a computer system) and CSTA K-12 CS Standards 1B-CS-01.'],
+    generators: ['t3-parts', 't3-parts', 't3-parts', 't3-parts', 't3-parts'],
+  },
+  {
+    id: 'steps-in-order',
+    order: 2,
+    title: 'Steps in order',
+    tagline: 'An algorithm is a recipe',
+    requires: ['inputs-and-outputs'],
+    lesson: {
+      paragraphs: ['An algorithm is a list of steps in order that gets something done. A recipe is an algorithm. So is the way you brush your teeth.\nPick up the brush, put on toothpaste, brush, rinse. Swap two steps and it goes wrong.', 'Making toast: put bread in, push the lever, wait, take it out. Planting a seed: dig a hole, drop the seed in, cover it, water it.', 'A computer follows an algorithm exactly, so the order and every small step must be there.', 'Say the steps out loud for anything you do, and you have written an algorithm.'],
+      keyIdea: 'An algorithm is steps in order. The order matters and every step must be there.',
+      example: { kind: 'flow', steps: ['pick up the brush', 'put on toothpaste', 'brush', 'rinse'], caption: 'Brushing your teeth as an algorithm: four steps, in this order.',
+        another: ['Try telling a friend how to make a sandwich with no steps skipped. They will do exactly what you say. If you forgot to say open the jar, the knife goes into the lid.',
+          { text: 'A recipe card is an algorithm on paper: ingredients first, then numbered steps, and you never do step 4 before step 3.', visual: { kind: 'flow', steps: ['ingredients', 'step 1', 'step 2', 'step 3'] } },
+          'Directions to a friend\'s house are an algorithm too: left, then right, then the blue door. Say them in the wrong order and you end up somewhere else.'] },
+    },
+    sources: ['Aligned with TEKS Technology Applications 126.7(b)(4)(A) (create and follow step-by-step directions) and CSTA 1B-AP-08.'],
+    generators: ['t3-steps', 't3-steps', 't3-steps', 't3-steps', 't3-steps'],
+  },
+  {
+    id: 'patterns-and-loops',
+    order: 3,
+    title: 'Patterns and loops',
+    tagline: 'Say it once, repeat it',
+    requires: ['steps-in-order'],
+    lesson: {
+      paragraphs: ['Red, blue, red, blue: a pattern. Instead of writing red, blue twelve times, a program says repeat red, blue six times. That is a loop.\nA loop is steps that run again and again. Find the part that repeats, and you can write the whole thing in one line.', 'Clap, stomp, clap, stomp: the part that repeats is clap, stomp. Up, up, down: three steps that repeat.', 'Loops are how programs do a lot with a little.'],
+      keyIdea: 'A loop repeats the same steps. Find the part that repeats.',
+      example: { kind: 'flow', steps: ['red', 'blue', 'repeat'], caption: 'Repeat red, blue: a two-step pattern in a loop.',
+        another: ['A song with a chorus is a loop: the verse changes, the chorus repeats. The songwriter wrote it once and marked repeat.',
+          { text: 'Stairs are a loop of the same step. Nobody describes a staircase step by step; they say twelve steps, and you know what to do.', visual: { kind: 'loop', steps: ['step up', 'step up', 'step up'] } },
+          'Ask what changes and what stays the same. What stays the same goes inside the loop; what changes is how many times.'] },
+    },
+    sources: ['Aligned with TEKS Technology Applications 126.7(b)(4)(B) (use loops in an algorithm) and CSTA 1B-AP-10.'],
+    generators: ['t3-loops', 't3-loops', 't3-loops', 't3-loops', 't3-loops'],
+  },
+]; }
+function TECH5_MODULES() { return [
+  {
+    id: 'variables',
+    order: 1,
+    title: 'Variables',
+    tagline: 'A named box that can change',
+    requires: [],
+    lesson: {
+      paragraphs: ['A game keeps track of your score. The number lives in a variable: a named box that holds a value and can change.\nThe score starts at 0. You earn 5, then 3. The box now holds 8.', 'Name a variable for what it holds: score, lives, name. Someone reading the program should not have to guess.', 'Every program that remembers anything uses variables.'],
+      keyIdea: 'A variable is a named box that holds a value and can change.',
+      example: { kind: 'stack', levels: ['score: 8', 'lives: 3', 'name: Sam'], caption: 'Three variables, each a labeled box holding a value.',
+        another: ['A variable is a jar with a label. The label stays; what is in the jar changes. Score is the label; 8 is what is in it right now.',
+          { text: 'A scoreboard at a game is a set of variables: home, away, quarter, time. Each has a name and a value that changes as the game goes on.', visual: { kind: 'stack', levels: ['home: 21', 'away: 14', 'quarter: 3'] } },
+          'When a program says score = score + 5, it means: take what is in the score box, add 5, and put the answer back in the same box.'] },
+    },
+    sources: ['Aligned with TEKS Technology Applications 126.9(b)(4)(C) (use variables) and CSTA 1B-AP-09.'],
+    generators: ['t5-variables', 't5-variables', 't5-variables', 't5-variables', 't5-variables'],
+  },
+  {
+    id: 'if-then',
+    order: 2,
+    title: 'If, then, else',
+    tagline: 'A program that decides',
+    requires: ['variables'],
+    lesson: {
+      paragraphs: ['A program can decide. IF it is raining THEN take an umbrella. The step runs only when the condition is true; when it is false, the step is skipped.\nELSE is the other road: IF the door is open THEN close it, ELSE open it.', 'IF score is more than 10 THEN say You win. Score is 12: true, so it runs. Score is 7: false, skipped.', 'Every choice a program makes is an if with a condition.'],
+      keyIdea: 'IF a condition is true THEN a step runs. ELSE is the other road.',
+      example: { kind: 'twoway', a: 'condition true', b: 'condition false', top: 'THEN: the step runs', bottom: 'ELSE: the other road', caption: 'One yes-or-no question; two roads: the THEN road when it is true, the ELSE road when it is not.',
+        another: ['A fork in a path with a sign: IF the bridge is out THEN take the long way, ELSE cross. You read the sign, check the bridge, and take one road, never both.',
+          { text: 'A thermostat is an if-then that never sleeps: IF the room is colder than 68 THEN heat on, ELSE heat off.', visual: { kind: 'twoway', a: 'colder than 68', b: 'warm enough', top: 'heat on', bottom: 'heat off' } },
+          'The condition is a yes-or-no question. If you cannot answer it yes or no, it is not a condition yet.'] },
+    },
+    sources: ['Aligned with TEKS Technology Applications 126.9(b)(4)(B) (use conditional statements) and CSTA 1B-AP-10.'],
+    generators: ['t5-if-then', 't5-if-then', 't5-if-then', 't5-if-then', 't5-if-then'],
+  },
+  {
+    id: 'finding-the-bug',
+    order: 3,
+    title: 'Finding the bug',
+    tagline: 'Read the steps one at a time',
+    requires: ['if-then'],
+    lesson: {
+      paragraphs: ['When a program does the wrong thing, the mistake is called a bug. Debugging is reading the steps slowly and checking each one against what should happen.\nA program that should count 1, 2, 3, 4 but prints 1, 2, 3 stops one step early. Off-by-one is the most common bug there is.', 'A robot told to turn right, walk 3, turn left ends up facing backward: walk the steps yourself, one at a time, and the bug is where your walk and the plan part ways.', 'The first move is never to delete everything. It is to read.'],
+      keyIdea: 'Debugging is reading the steps one at a time and checking each.',
+      example: { kind: 'flow', steps: ['expected: 1, 2, 3, 4', 'got: 1, 2, 3', 'the loop stops one early'], caption: 'Compare what you expected with what you got; the difference points at the bug.',
+        another: ['A bug is a wrong turn on a route you wrote yourself. You do not throw away the map; you walk it again and find the turn.',
+          'Say what should happen, then what did happen. The gap between the two sentences is where to look.',
+          { text: 'Detectives and coders work the same way: the evidence is the output, the suspects are the steps, and you question them one at a time.', visual: { kind: 'flow', steps: ['read a step', 'check it', 'next step', 'found it'] } }] },
+    },
+    sources: ['Aligned with TEKS Technology Applications 126.9(b)(4)(E) (debug and revise an algorithm) and CSTA 1B-AP-15.'],
+    generators: ['t5-debug', 't5-debug', 't5-debug', 't5-debug', 't5-debug'],
+  },
+]; }
+function TECH7_MODULES() { return [
+  {
+    id: 'binary',
+    order: 1,
+    title: 'Counting in binary',
+    tagline: 'Two symbols, every number',
+    requires: [],
+    lesson: {
+      paragraphs: ['A computer stores everything as switches that are on or off: 1 or 0. That is binary.\nWith four switches you count in places worth 8, 4, 2 and 1. Add the places that are on: 1010 is 8 + 2, which is 10.', 'Every number, letter, picture and sound is stored this way, in enough switches.', 'Two symbols, every number.'],
+      keyIdea: 'Binary counts with places worth 8, 4, 2, 1. Add the places that are on.',
+      example: { kind: 'stack', levels: ['8: on', '4: off', '2: on', '1: off'], caption: '1010 in binary: the 8 and the 2 are on, so it is 10.',
+        another: ['Four light switches in a row are worth 8, 4, 2 and 1. Flip on the 8 and the 2 and the room is showing 10. Every number up to 15 is some pattern of the four.',
+          'Our usual numbers use ten symbols and places worth 1, 10, 100. Binary uses two symbols and places worth 1, 2, 4, 8. Same idea, smaller alphabet.',
+          { text: 'A hand can count to 31 in binary: each finger is a place, thumb 1, up to 16 on the pinky. Five fingers, thirty-two patterns.', visual: { kind: 'stack', levels: ['16', '8', '4', '2', '1'] } }] },
+    },
+    sources: ['Aligned with TEKS Technology Applications 126.15(b)(6)(A) (explain how binary represents data) and CSTA 2-DA-07.'],
+    generators: ['t7-binary', 't7-binary', 't7-binary', 't7-binary', 't7-binary'],
+  },
+  {
+    id: 'how-the-internet-works',
+    order: 2,
+    title: 'How the internet moves a message',
+    tagline: 'Packets, addresses and a phone book',
+    requires: ['binary'],
+    lesson: {
+      paragraphs: ['You send a photo across the world. It is cut into packets that take their own routes, each addressed like a letter, and put back together at the end.\nEvery device on the internet has a number address, like 192.168.1.4, so packets know where to go.', 'A website\'s name is turned into a number address by a directory called DNS: the phone book of the internet.', 'Packets, addresses, and a phone book. That is most of it.'],
+      keyIdea: 'Messages travel as addressed packets; DNS turns names into number addresses.',
+      example: { kind: 'flow', steps: ['your photo', 'cut into packets', 'routed by address', 'put back together'], caption: 'One photo becomes many packets, each finding its own way, joined again at the far end.',
+        another: ['Mailing a jigsaw puzzle one piece per envelope: each envelope has the address, they travel different trucks, and the friend rebuilds the picture from the piece numbers.',
+          { text: 'DNS is the phone book: you know the name of the pizza place, the book gives you the number, and the number is what actually connects.', visual: { kind: 'twoway', a: 'school.edu', b: '93.184.216.34', top: 'DNS looks it up', bottom: 'the address that connects' } },
+          'A road network with no single road: if one route is blocked, the packets take another. That is why the internet is hard to break.'] },
+    },
+    sources: ['Aligned with TEKS Technology Applications 126.15(b)(5)(A) (explain how information is transmitted across networks) and CSTA 2-NI-04.'],
+    generators: ['t7-internet', 't7-internet', 't7-internet', 't7-internet', 't7-internet'],
+  },
+  {
+    id: 'passwords-and-privacy',
+    order: 3,
+    title: 'Passwords and privacy',
+    tagline: 'Length beats cleverness',
+    requires: ['how-the-internet-works'],
+    lesson: {
+      paragraphs: ['A password protects a door. Length beats cleverness: a long phrase of four unrelated words is easy to remember and hard to guess; your birthday and password123 are neither.\nTwo-step sign-in adds a second proof, like a code on your phone, so a stolen password alone is not enough.', 'A message that says your account is locked and asks you to click a link now is using urgency as the trick. The safest move: go to the site yourself, not through the link, and check there.', 'Slow down, and the tricks stop working.'],
+      keyIdea: 'Long passwords, a second proof, and never through the link.',
+      example: { kind: 'stack', levels: ['correct horse battery staple: strong', 'Sam2014: weak', 'password123: weakest'], caption: 'Three passwords ranked: the long phrase wins by length alone.',
+        another: ['A password is a key. A short key has few teeth and a thief can try them all in seconds; a long key has too many patterns to try.',
+          { text: 'Two-step sign-in is a door with a key and a doorbell: even with the key, someone still has to be let in by the phone in your pocket.', visual: { kind: 'flow', steps: ['password', 'code on your phone', 'in'] } },
+          'Urgent, secret, now: those three words in one message are the fingerprint of a scam. Real accounts do not rush you.'] },
+    },
+    sources: ['Aligned with TEKS Technology Applications 126.15(b)(3)(B) (practice safe and ethical behavior online) and CSTA 2-NI-05.'],
+    generators: ['t7-safety', 't7-safety', 't7-safety', 't7-safety', 't7-safety'],
+  },
+]; }
 function GRADE3_CIVICS_MODULES() { return [
   {
     id: 'three-levels-of-government',
@@ -6932,6 +7259,23 @@ function GRADE6_HISTORY_MODULES() { return [
     },
     sources: ['Aligned with Texas TEKS Grade 6 Social Studies (geography: physical and cultural regions of the world) and NCSS Theme IX (Global Connections).'],
     generators: ['wc6-feature-continent', 'wc6-language-of', 'wc6-feature-kind', 'wc6-feature-continent', 'wc6-language-of'],
+  },
+  {
+    id: 'where-things-come-from',
+    order: 7,
+    title: 'Where things come from',
+    tagline: 'From a field to your shirt',
+    requires: ['kinds-of-economies'],
+    lesson: {
+      paragraphs: ['Cotton grows in a field. Before it is a shirt there is spinning, weaving, sewing: spun into thread, woven into cloth, sewn into a shirt, and each step may happen in a different country.\nThat chain of steps and places is a supply chain.', 'Places specialize: each makes what its land, skills and tools suit, and trades for the rest. One country grows coffee, another builds computers.', 'Goods travel in standard steel boxes that fit ships, trains and trucks the same way, which is why shipping got cheap. When a ship is delayed, fewer goods arrive while people still want them, and prices tend to rise.'],
+      keyIdea: 'A supply chain is the steps and places between a raw material and you. Places specialize and trade.',
+      example: { kind: 'flow', steps: ['cotton field', 'spinning mill', 'weaving', 'sewing', 'store'], caption: 'A shirt\'s road: field, thread, cloth, stitches, shelf, often across four countries.',
+        another: ['Look at the tag on your shirt, then at the sticker on an apple. Two products, two roads, and neither started where you bought it.',
+          { text: 'Specialization is a class project: one person draws, one writes, one presents, and the result beats three people each doing all three. Countries do the same with land and skills.', visual: { kind: 'flow', steps: ['one draws', 'one writes', 'one presents', 'a better project'] } },
+          'A delayed ship is a traffic jam for goods. The stores still have customers; they just have fewer boxes. Fewer boxes, same wanting: the price climbs until the ship arrives.'] },
+    },
+    sources: ['Aligned with TEKS 6.7A (describe ways in which the factors of production influence the economies of various contemporary societies) and NCSS Theme VII (Production, Distribution, and Consumption).'],
+    generators: ['h6-supply-chain', 'h6-supply-chain', 'h6-supply-chain', 'h6-supply-chain', 'h6-supply-chain'],
   },
 ]; }
 
@@ -7769,6 +8113,23 @@ function GRADE5_MATH_MODULES() { return [
     },
     sources: ['Aligned with Texas TEKS 5.4H (represent and solve problems related to volume) and Common Core 5.MD.C.5 (relate volume to multiplication and solve real-world problems).'],
     generators: ['g5-volume', 'g5-missing-side', 'g5-volume', 'g5-volume-layers', 'g5-volume'],
+  },
+  {
+    id: 'coordinate-plane',
+    order: 6,
+    title: 'The coordinate plane',
+    tagline: 'Across, then up',
+    requires: ['volume'],
+    lesson: {
+      paragraphs: ['Two number lines crossed make a grid. The one going across is the x-axis. The one going up is the y-axis. They cross at the origin, (0, 0).\nA point is named by two numbers in brackets: the first number says how far across, the second says how far up. (3, 2) is three across and two up.', 'The order matters. (3, 2) and (2, 3) are different points.', 'Maps, game boards and graphs all use the same idea: two numbers find one spot.'],
+      keyIdea: 'Across first, then up. Two numbers, one point.',
+      example: { kind: 'plot', fn: 'point', px: 3, py: 2, caption: '(3, 2): three across on the x-axis, then two up on the y-axis.',
+        another: ['Think of a city with numbered streets. Walk three blocks east, then two blocks north. The corner you reach is (3, 2). Walk north first and east second and you reach a different corner.',
+          'A chess board names squares the same way: a letter across, a number up. e4 is across to e, up to 4. The coordinate plane just uses numbers for both.',
+          { text: 'Battleship: you call a column and a row, and a peg lands on one square. Two numbers, one square, every time.', visual: { kind: 'plot', fn: 'point', px: 5, py: 4 } }] },
+    },
+    sources: ['Aligned with TEKS 5.8A (describe the key attributes of the coordinate plane) and CCSS 5.G.A.1.'],
+    generators: ['m5-read-point', 'm5-which-axis', 'm5-read-point', 'm5-read-point', 'm5-which-axis'],
   },
   {
     id: 'order-of-operations',
@@ -10208,6 +10569,159 @@ Object.assign(GENERATORS, {
     const t = pick(rng, TONES); const others = shuffle(rng, TONE_NAMES.filter((x) => x !== t.tone)).slice(0, 2);
     return { type: 'choice', story: t.text, prompt: 'What is the writer\'s tone?', choices: shuffle(rng, [t.tone, ...others]), answer: t.tone,
       explain: 'Tone is the writer\'s attitude, shown by the words they chose.', visual: null, explainVisual: null };
+  },
+  // Grade 4 reading: dictionary skills, words in alphabetical order and guide words.
+  // Grade 2 math: quarter past, half past, quarter to.
+  // Technology, grade 3: what a computer is, steps in order, patterns that repeat.
+  't3-parts': (rng) => {
+    const Q = [['Which part of a computer shows you pictures and words?', ['the screen', 'the keyboard', 'the mouse'], 'the screen', 'The screen is the output: it shows. The keyboard and mouse are inputs: you tell.'],
+      ['Which part do you use to tell a computer what to do?', ['the keyboard', 'the screen', 'the speaker'], 'the keyboard', 'Inputs tell the computer: keyboard, mouse, touch. Outputs show: screen, speaker, printer.'],
+      ['What is a program?', ['a list of steps a computer follows', 'a kind of screen', 'a picture'], 'a list of steps a computer follows', 'A program is a list of steps in order, written so a computer can follow it exactly.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  't3-steps': (rng) => {
+    const TASKS = [['brushing your teeth', ['pick up the brush', 'put on toothpaste', 'brush', 'rinse']], ['making toast', ['put bread in', 'push the lever', 'wait', 'take it out']], ['planting a seed', ['dig a hole', 'drop the seed in', 'cover it', 'water it']]];
+    const [task, steps] = pick(rng, TASKS); const k = 1 + Math.floor(rng() * (steps.length - 1));
+    return { type: 'choice', story: null, prompt: `${task.charAt(0).toUpperCase() + task.slice(1)}: after "${steps[k - 1]}", what is next?`, choices: shuffle(rng, [steps[k], ...shuffle(rng, steps.filter((x, i) => i !== k && i !== k - 1)).slice(0, 2)]), answer: steps[k],
+      explain: `An algorithm is steps in order: ${steps.join(', then ')}.`, visual: null, explainVisual: null };
+  },
+  't3-loops': (rng) => {
+    const P = [['red, blue, red, blue, red, ...', 'blue'], ['clap, stomp, clap, stomp, clap, ...', 'stomp'], ['up, up, down, up, up, down, up, up, ...', 'down'], ['star, moon, sun, star, moon, sun, star, ...', 'moon']];
+    const [pattern, next] = pick(rng, P); const parts = [...new Set(pattern.replace(', ...', '').split(', '))];
+    return { type: 'choice', story: null, prompt: `The pattern goes ${pattern} What comes next?`, choices: shuffle(rng, parts.slice(0, 3)), answer: next,
+      explain: `A loop repeats the same steps. Find the part that repeats and the next step follows.`, visual: null, explainVisual: null };
+  },
+  // Technology, grade 5: variables, if-then choices, and finding the bug.
+  't5-variables': (rng) => {
+    const Q = [['A game keeps track of your score. What holds the number?', ['a variable', 'a loop', 'a screen'], 'a variable', 'A variable is a named box that holds a value and can change: score, lives, name.'],
+      ['score starts at 0. You earn 5, then 3. What is score now?', ['8', '5', '0'], '8', 'Each change updates the box: 0, then 5, then 8.'],
+      ['Which is a good name for a variable that holds how many lives you have left?', ['lives', 'x1', 'thing'], 'lives', 'Name a variable for what it holds. Someone reading the program should not have to guess.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  't5-if-then': (rng) => {
+    const Q = [['IF it is raining THEN take an umbrella. It is sunny. What happens?', ['nothing, the condition is false', 'take an umbrella', 'the program stops'], 'nothing, the condition is false', 'An if-then runs its step only when the condition is true. False, and it is skipped.'],
+      ['IF score is more than 10 THEN say "You win". Score is 12. What happens?', ['it says You win', 'nothing', 'score becomes 10'], 'it says You win', 'Twelve is more than ten, so the condition is true and the step runs.'],
+      ['A program says: IF the door is open THEN close it, ELSE open it. The door is closed. What happens?', ['it opens the door', 'it closes the door', 'nothing'], 'it opens the door', 'ELSE is the other road: when the IF is false, the ELSE step runs.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  't5-debug': (rng) => {
+    const Q = [['It should count 1, 2, 3, 4 but prints 1, 2, 3. What went wrong?', ['it stops one step early', 'it starts too late', 'it never starts'], 'it stops one step early', 'The loop ended one turn too soon. Off-by-one is the most common bug there is.'],
+      ['A robot is told: turn right, walk 3, turn left. It ends up facing backward. Which step is wrong?', ['turn left', 'walk 3', 'none'], 'turn left', 'Walk the steps yourself, one at a time. The bug is where your walk and the plan part ways.'],
+      ['What is the first thing to do when a program does the wrong thing?', ['read the steps one at a time and check each', 'delete everything', 'add more steps'], 'read the steps one at a time and check each', 'Debugging is reading the steps slowly and checking each one against what should happen.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  // Technology, grade 7: binary, how the internet moves a message, and what a password protects.
+  't7-binary': (rng) => {
+    const n = 1 + Math.floor(rng() * 15); const bits = n.toString(2).padStart(4, '0');
+    const wrong = [((n + 1) % 16 || 1).toString(2).padStart(4, '0'), ((n + 3) % 16 || 2).toString(2).padStart(4, '0')].filter((w) => w !== bits);
+    return { type: 'choice', story: null, prompt: `Which is ${n} in binary, using the places 8, 4, 2, 1?`, choices: shuffle(rng, [bits, ...wrong]), answer: bits,
+      explain: `Read the places 8, 4, 2, 1 and add the ones that are on: ${bits.split('').map((b, i) => (b === '1' ? [8, 4, 2, 1][i] : null)).filter((x) => x !== null).join(' + ') || '0'} = ${n}.`, visual: null, explainVisual: null };
+  },
+  't7-internet': (rng) => {
+    const Q = [['You send a photo across the world. How does it travel?', ['cut into packets that take their own routes', 'as one piece down one wire', 'by radio straight to the other phone'], 'cut into packets that take their own routes', 'A message is chopped into packets, each addressed and routed on its own, and put back together at the end.'],
+      ['What does an address like 192.168.1.4 name?', ['a device on a network', 'a person', 'a website\'s color'], 'a device on a network', 'Every device on the internet has a number address so packets know where to go.'],
+      ['A website\'s name, like a school\'s address, is turned into a number address by what?', ['a directory called DNS', 'a search engine', 'the keyboard'], 'a directory called DNS', 'DNS is the phone book: it turns names into number addresses.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  't7-safety': (rng) => {
+    const Q = [['Which password is strongest?', ['a long phrase of four unrelated words', 'your birthday', 'password123'], 'a long phrase of four unrelated words', 'Length beats cleverness. Four unrelated words are long, easy to remember and hard to guess.'],
+      ['A message says your account is locked and asks you to click a link now. What is the safest move?', ['go to the site yourself, not through the link', 'click the link quickly', 'reply with your password'], 'go to the site yourself, not through the link', 'Urgency is the trick. Open the site the way you always do and check there.'],
+      ['What does two-step sign-in add?', ['a second proof, like a code on your phone', 'a second password', 'nothing'], 'a second proof, like a code on your phone', 'A stolen password alone is not enough when a second proof is needed.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'm2-read-quarter': (rng) => {
+    const hour = 1 + Math.floor(rng() * 12); const minute = pick(rng, [15, 30, 45]); const next = hour === 12 ? 1 : hour + 1;
+    const say = minute === 15 ? `quarter past ${hour}` : minute === 30 ? `half past ${hour}` : `quarter to ${next}`;
+    const choices = shuffle(rng, [`quarter past ${hour}`, `half past ${hour}`, `quarter to ${next}`]);
+    return { type: 'choice', story: null, prompt: 'What time does the clock show?', choices, answer: say,
+      explain: minute === 15 ? `The long hand is on the 3: a quarter of the way round. Quarter past ${hour}.` : minute === 30 ? `The long hand is on the 6: halfway round. Half past ${hour}.` : `The long hand is on the 9: a quarter still to go before ${next}. Quarter to ${next}.`,
+      visual: { kind: 'clock', hour, minute }, explainVisual: null };
+  },
+  // Grade 3 science: sound is a vibration.
+  'sc3-sound': (rng) => {
+    const Q = [['What makes a sound?', ['something vibrating', 'something shining', 'something melting'], 'something vibrating', 'A drum skin, a string, your vocal cords: sound is a vibration you can hear.'],
+      ['A guitar string shakes faster. What changes?', ['the pitch goes higher', 'the sound gets louder', 'nothing'], 'the pitch goes higher', 'Faster vibrations make a higher pitch; slower ones make a lower pitch.'],
+      ['You hit a drum harder. What changes?', ['the sound gets louder', 'the pitch goes higher', 'the drum gets warmer'], 'the sound gets louder', 'A bigger vibration makes a louder sound. Pitch stays the same.'],
+      ['Sound travels from a bell to your ear through what?', ['the air', 'the light', 'nothing'], 'the air', 'Sound needs something to travel through: air, water or a wall. In empty space there is no sound.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  // Grade 6 science: the microscope.
+  'sc6-microscope': (rng) => {
+    const Q = [['What does a microscope do?', ['makes tiny things look bigger', 'makes far things look closer', 'makes dark things bright'], 'makes tiny things look bigger', 'Lenses bend light so a tiny thing fills your eye. That is magnification.'],
+      ['The eyepiece is 10x and the objective is 40x. How much bigger does the sample look?', ['400 times', '50 times', '30 times'], '400 times', 'Magnifications multiply: 10 × 40 = 400.'],
+      ['The image is blurry. What do you turn?', ['the focus knob', 'the light switch', 'the eyepiece'], 'the focus knob', 'Focus moves the lens until the image is sharp. Coarse first, then fine.'],
+      ['Who first named cells, looking at cork through a microscope?', ['Robert Hooke', 'Isaac Newton', 'Marie Curie'], 'Robert Hooke', 'In 1665 Hooke saw little boxes in cork and called them cells.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  // Grade 6 history: where things come from.
+  'h6-supply-chain': (rng) => {
+    const Q = [['Cotton grows in a field. What happens before it is a shirt?', ['spinning, weaving, sewing', 'nothing, it is picked as a shirt', 'painting'], 'spinning, weaving, sewing', 'Raw cotton is spun into thread, woven into cloth and sewn. Each step may happen in a different country.'],
+      ['Why does one country grow coffee and another build computers?', ['each makes what it does best and trades', 'a law says so', 'they cannot talk to each other'], 'each makes what it does best and trades', 'Specialization: a place makes what its land, skills and tools suit, and trades for the rest.'],
+      ['A ship carrying phone parts is delayed. What happens to phone prices?', ['they tend to rise', 'they fall', 'nothing changes'], 'they tend to rise', 'Fewer phones arrive while people still want them. Scarcity pushes prices up.'],
+      ['What does a container ship carry?', ['many goods in standard boxes', 'only one kind of thing', 'passengers'], 'many goods in standard boxes', 'Standard steel boxes fit ships, trains and trucks the same way. That is why shipping got cheap.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'r4-alpha-first': (rng) => {
+    const WORDS = ['apple', 'bench', 'candle', 'dragon', 'engine', 'forest', 'garden', 'harbor', 'island', 'jungle', 'kettle', 'lantern', 'meadow', 'needle', 'orange', 'pebble', 'quilt', 'river', 'saddle', 'tunnel'];
+    const pair = shuffle(rng, WORDS).slice(0, 3).sort(); const first = pair[0];
+    return { type: 'choice', story: null, prompt: `Which comes first in the dictionary: ${shuffle(rng, [...pair]).join(', ')}?`, choices: shuffle(rng, [...pair]), answer: first,
+      explain: `Dictionaries go by the first letter: ${pair.join(' comes before ')}.`, visual: null, explainVisual: null };
+  },
+  'r4-same-letter-order': (rng) => {
+    const SETS = [['bat', 'bed', 'bin'], ['cap', 'cot', 'cup'], ['dam', 'den', 'dip'], ['fan', 'fig', 'fox'], ['man', 'met', 'mop'], ['pan', 'pen', 'pig'], ['sad', 'set', 'sit'], ['tan', 'ten', 'tin']];
+    const set = pick(rng, SETS); const asked = shuffle(rng, [...set]);
+    return { type: 'choice', story: null, prompt: `Same first letter: ${asked.join(', ')}. Which comes first?`, choices: asked, answer: set[0],
+      explain: `When the first letters match, look at the second: ${set.map((w) => w[1]).join(', then ')}. So ${set[0]} comes first.`, visual: null, explainVisual: null };
+  },
+  'r4-guide-words': (rng) => {
+    const PAGES = [['cabin', 'candle', ['camel', 'cactus'], ['dragon', 'boat']], ['garden', 'gentle', ['gate', 'gem'], ['ghost', 'fox']], ['marble', 'melon', ['mask', 'meadow'], ['mouse', 'lamp']], ['pencil', 'pillow', ['pepper', 'pickle'], ['plum', 'oven']], ['saddle', 'sand', ['salt', 'salad'], ['seed', 'road']]];
+    const [a, b, ins, outs] = pick(rng, PAGES); const yes = pick(rng, ins); const no = pick(rng, outs);
+    return { type: 'choice', story: null, prompt: `The guide words are ${a} and ${b}. Which word is on that page?`, choices: shuffle(rng, [yes, no]), answer: yes,
+      explain: `Guide words are the first and last words on the page. ${yes} falls between ${a} and ${b}; ${no} does not.`, visual: null, explainVisual: null };
+  },
+  // Grade 4 science: simple machines.
+  'sc4-which-machine': (rng) => {
+    const M = [['a ramp up to a truck', 'inclined plane'], ['a seesaw', 'lever'], ['a flagpole rope', 'pulley'], ['a doorknob', 'wheel and axle'], ['an axe blade', 'wedge'], ['a jar lid', 'screw'], ['a wheelbarrow', 'lever'], ['a bike wheel', 'wheel and axle']];
+    const [thing, kind] = pick(rng, M); const others = shuffle(rng, [...new Set(M.map((x) => x[1]))].filter((k) => k !== kind)).slice(0, 2);
+    return { type: 'choice', story: null, prompt: `Which simple machine is ${thing}?`, choices: shuffle(rng, [kind, ...others]), answer: kind,
+      explain: `${thing.charAt(0).toUpperCase() + thing.slice(1)} is ${kind === 'inclined plane' ? 'an' : 'a'} ${kind}.`, visual: null, explainVisual: null };
+  },
+  'sc4-machine-trade': (rng) => {
+    const Q = [['A ramp lets you push with less force. What do you trade for that?', ['a longer distance', 'less time', 'a lighter box'], 'a longer distance', 'The ramp is longer than the height. Less force over more distance: the same work.'],
+      ['A lever with a long handle lifts a rock easily. What is the price?', ['the handle moves farther', 'the rock gets lighter', 'nothing'], 'the handle moves farther', 'Your end moves a long way to move the rock a little. Same work, spread out.'],
+      ['A pulley lets you lift a bucket by pulling down. What does it change?', ['the direction of the pull', 'the weight of the bucket', 'the length of the rope'], 'the direction of the pull', 'One fixed pulley changes direction, not effort. Add pulleys and it cuts the effort too.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  // Grade 5 math: the coordinate plane, read as across then up.
+  'm5-read-point': (rng) => {
+    const x = 1 + Math.floor(rng() * 6); const y = 1 + Math.floor(rng() * 6);
+    const wrong = [`(${y}, ${x})`, `(${x}, ${y + 1 > 6 ? y - 1 : y + 1})`].filter((w) => w !== `(${x}, ${y})`);
+    return { type: 'choice', story: null, prompt: `A point sits ${x} across and ${y} up. What are its coordinates?`, choices: shuffle(rng, [`(${x}, ${y})`, ...wrong]), answer: `(${x}, ${y})`,
+      explain: `Across first, then up: (${x}, ${y}).`, visual: { kind: 'plot', fn: 'point', px: x, py: y }, explainVisual: null };
+  },
+  'm5-which-axis': (rng) => {
+    const across = rng() < 0.5;
+    return { type: 'choice', story: null, prompt: across ? 'In (4, 2), what does the 4 tell you?' : 'In (4, 2), what does the 2 tell you?', choices: shuffle(rng, ['how far across', 'how far up']), answer: across ? 'how far across' : 'how far up',
+      explain: 'The first number is across (the x-axis); the second is up (the y-axis).', visual: null, explainVisual: null };
+  },
+  // Grade 7 science: the water we drink, from watershed to tap.
+  'sc7-watershed': (rng) => {
+    const Q = [['Rain falls on a hillside. Where does it go first?', ['downhill into the nearest stream', 'straight to the ocean', 'up into the clouds'], 'downhill into the nearest stream', 'Water runs downhill. A watershed is all the land that drains to one stream or river.'],
+      ['Two towns sit on the same river, one upstream. Whose pollution reaches the other?', ['the upstream town\'s', 'the downstream town\'s', 'neither'], 'the upstream town\'s', 'Water carries what it picks up downstream. Upstream choices become downstream water.'],
+      ['Where does most of Austin\'s drinking water come from?', ['a river and its lakes', 'the ocean', 'rain barrels'], 'a river and its lakes', 'Most cities drink from a river or a lake fed by their watershed, cleaned at a treatment plant.'],
+      ['What does a treatment plant do before water reaches a tap?', ['filters and disinfects it', 'adds salt', 'warms it'], 'filters and disinfects it', 'Settling, filtering and a disinfectant make river water safe to drink.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
   'r6-root-meaning': (rng) => {
     const r = pick(rng, ROOTS); const others = shuffle(rng, ROOTS.filter((x) => x !== r)).slice(0, 2).map((x) => x.meaning);
@@ -15758,6 +16272,36 @@ export const WONDER = [
     closing: 'What could you say to a friend whose choice lost?',
   },
   {
+    id: 'w-obedient-helper',
+    theme: 'world',
+    stage: 'growing',
+    courseIds: ['tech-3', 'tech-5'],
+    answerMode: 'typed',
+    prompt: 'A computer does exactly what it is told and nothing more. What is one job you would want done exactly, and one job you would not trust to something with no imagination?',
+    perspectives: [
+      { voice: 'A scientist', says: 'Exactness is the whole gift. A calculator that sometimes rounded when it felt like it would be useless. The trick is to give exact jobs to exact tools.' },
+      { voice: 'An artist', says: 'Drawing is a job with no exact steps, which is why a person is still better at it. The interesting work is often the part nobody can write down.' },
+      { voice: 'A grandparent of faith', says: 'Kindness cannot be a list of steps, because every person needs a different one. Some jobs need a heart in the loop.' },
+      { voice: 'A skeptic', says: 'Ask who wrote the steps. A computer only seems to have no opinion; it has the opinions of whoever wrote its program.' },
+    ],
+    closing: 'What is one thing you do every day that could be written as steps, and one that could not?',
+  },
+  {
+    id: 'w-long-password',
+    theme: 'ups-and-downs',
+    stage: 'teen',
+    courseIds: ['tech-7'],
+    answerMode: 'typed',
+    prompt: 'A long password is stronger than a clever one. Where else in your life does slow and long beat quick and clever?',
+    perspectives: [
+      { voice: 'A scientist', says: 'A muscle, a language, a friendship: all of them are built by many small repetitions, and none of them can be rushed by being smart about it.' },
+      { voice: 'An artist', says: 'A quick sketch can be clever. A finished painting is mostly patience. Most people quit in the gap between the two.' },
+      { voice: 'A grandparent of faith', says: 'Trust is the longest password there is. It takes years to type and one bad day to reset.' },
+      { voice: 'A skeptic', says: 'Sometimes clever really is better, and slow is just slow. The skill is telling the two apart, and it only comes from having been wrong both ways.' },
+    ],
+    closing: 'What is one thing you are building slowly right now?',
+  },
+  {
     id: 'w-three-governments',
     theme: 'world',
     stage: 'growing',
@@ -17516,6 +18060,9 @@ export const LIFE_SKILLS = [
     why: 'To a small child a bad feeling can seem permanent. Watching one arrive and then leave, over and over, teaches otherwise. That single idea prevents an enormous amount of later distress.',
     ways: ['Afterwards, ask how long the feeling lasted. They are usually surprised.', 'Name the ending as clearly as the beginning. "That one has gone now."', 'Avoid rushing them out of it, since the lesson is in the waiting.'],
   },
+  { id: "ls-crossing", stage: "early", title: "Crossing a street safely", why: "Stopping at a curb, looking both ways and waiting for the grown-up's hand is the first time a child holds a rule inside their own body instead of hearing it from outside. That habit becomes every later habit of pausing before acting.", ways: ["Stop at every curb, even quiet ones, so the stop is the habit and not the traffic.", "Say the steps out loud together: stop, look left, look right, look left again.", "Let them decide when it is safe and tell you why, and correct the reason rather than the answer."] },
+  { id: "ls-water", stage: "early", title: "Being safe around water", why: "Water is the one place where a moment of curiosity can end everything. A child who knows the rules near a pool, a bath and a river carries a calm respect for it that lasts a lifetime.", ways: ["Never near water without a grown-up watching, and say it as a rule that never changes.", "Learn to float on the back before learning to swim; floating is what saves a tired swimmer.", "Practice climbing out at the side of a pool until it is easy and boring."] },
+  { id: "ls-name-and-number", stage: "early", title: "Knowing your own name, address and a grown-up's number", why: "A lost child who can say a full name and a phone number is found in minutes. It is a small memory job with an outsized payoff.", ways: ["Turn the phone number into a song or a clapping rhythm.", "Practice with a pretend lost moment at home: who would you tell, and what would you say?", "Check it every few months; numbers change and so do memories."] },
 
   // ---- Growing up ----
   {
@@ -17631,6 +18178,11 @@ export const LIFE_SKILLS = [
     why: 'It takes no effort to notice what is wrong, and real effort to notice what is fine. Attention is a habit, and it can be pointed either way. Children who practice this are measurably steadier.',
     ways: ['Name three ordinary good things at the same time each day.', 'Keep it small and specific rather than grand and vague.', 'Say yours too, since it is far more persuasive than instructing them.'],
   },
+  { id: "ls-swimming", stage: "growing", title: "Swimming a length", why: "Swimming is the rare skill that is both a safety net and a lifelong pleasure. A child who can swim a length calmly can also stay calm when something goes wrong in water.", ways: ["Lessons with someone patient beat lessons with someone fast.", "Float, then kick, then arms; one thing at a time until it is automatic.", "Celebrate the first full length like a birthday. It is one."] },
+  { id: "ls-telling-time", stage: "growing", title: "Telling time and keeping to it", why: "A child who can read a clock can be trusted with a promise: be back at four. Being on time is how other people learn they can count on you.", ways: ["An analog clock in the kitchen, and ask the time out loud several times a day.", "Give a real deadline with a real consequence for missing it, and keep it small.", "Set a timer together for the things that always run late."] },
+  { id: "ls-laundry", stage: "growing", title: "Doing a load of laundry", why: "Laundry is the first chore where a mistake is visible and reversible, and where doing it well needs no talent, only attention. It teaches that most of adult life is like that.", ways: ["Sort by color together the first three times, then let them sort alone and check.", "One setting for nearly everything; teach the exceptions later.", "Fold straight from the dryer, and show why the wrinkles are worth the five minutes."] },
+  { id: "ls-bike-repair", stage: "growing", title: "Fixing a flat tire on a bike", why: "A flat tire is the first breakdown a child can fix with their own hands. Fixing it turns a bad afternoon into proof that broken things can be mended.", ways: ["Take the wheel off and put it back on twice before there is a real flat.", "A patch kit and a pump in a small bag on the bike, always.", "Find the hole with a bowl of water; the bubbles make it a game."] },
+  { id: "ls-first-phone-call", stage: "growing", title: "Making a phone call to a stranger", why: "Ordering a pizza, booking a haircut or asking a shop if something is in stock: a call to a stranger is a small act of courage, and it gets easier only by doing it.", ways: ["Write the three things to say before dialing, and cross them off while talking.", "Start with calls where nothing can go wrong: opening hours, is the pool open today.", "Let them hang up without help even if it goes badly; the next one goes better."] },
 
   // ---- Teen ----
   {
@@ -17704,6 +18256,11 @@ export const LIFE_SKILLS = [
     why: 'Every mind has hard stretches, and there is no medal for handling one alone. Knowing the difference between a rough week and something that needs help is a skill worth having early. So is knowing who to ask.',
     ways: ['Agree who they would talk to before there is anything to talk about.', 'Treat it as ordinary maintenance rather than an emergency measure.', 'Say plainly that asking for help is a sign of judgement, not weakness.'],
   },
+  { id: "ls-cooking-dinner", stage: "teen", title: "Planning and cooking a week of dinners", why: "Cooking one meal is a trick; cooking a week of them is a system. Planning, shopping, cooking and using leftovers is the first real experience of running something.", ways: ["Five dinners, one shopping list, one trip to the store, all written before the store.", "Two of the five can be the same meal cooked twice; that is what adults do.", "Cost it out afterward. The number per plate is more useful than any lecture about money."] },
+  { id: "ls-first-aid-advanced", stage: "teen", title: "Handling an emergency", why: "Knowing how to call for help, what to say, and how to keep someone safe until it arrives is the difference between a bystander and the person who acted.", ways: ["Learn the address of every place you spend time; emergency calls start with where.", "A CPR class, in person, before sixteen.", "Practice saying calmly what happened, where, and how many people."] },
+  { id: "ls-job-application", stage: "teen", title: "Applying for a first job", why: "A first application is a first time saying, in writing, why someone should choose you. Most people never learn to do it well; a teenager who does has an advantage for decades.", ways: ["One page, no lies, two things you have actually done.", "Ask an adult who hires people to read it and say the one thing they would change.", "Follow up once, politely, a week later. Most applicants never do."] },
+  { id: "ls-public-transport", stage: "teen", title: "Getting somewhere by bus or train", why: "Reading a timetable, buying a ticket and getting off at the right stop is independence you can measure in miles.", ways: ["Plan the trip on paper first, with the fallback if the bus is missed.", "Ride it with them once, then let them ride alone to somewhere they want to go.", "Keep a small emergency fare in a pocket that is never spent on anything else."] },
+  { id: "ls-difficult-conversation", stage: "teen", title: "Having a hard conversation", why: "Telling a friend they hurt you, or a coach you are quitting, or a parent you disagree, is a skill. Done badly it costs a relationship; done well it deepens one.", ways: ["Say what happened, how it landed, and what you want, in that order, in under a minute.", "Do it in person or by voice; text turns a hard conversation into a fight.", "Decide beforehand what you will do if the answer is no."] },
 
   // ---- Nearly grown ----
   {
@@ -17748,6 +18305,11 @@ export const LIFE_SKILLS = [
     why: 'Most people talk to themselves in a way they would never accept from a friend. Noticing that gap, and closing it a little, changes how much energy is left for everything else. It is a habit rather than a personality.',
     ways: ['Ask whether they would say that sentence to someone they cared about.', 'Rewrite the harshest line into something merely honest.', 'Notice it out loud rather than trying to argue it away.'],
   },
+  { id: "ls-negotiating", stage: "grown", title: "Negotiating a price or a salary", why: "The first offer is a starting point, not a verdict. People who know that earn and save more over a lifetime than people who do not, and the difference is a single sentence: is there any flexibility on that?", ways: ["Know the number you would walk away at before you start.", "Ask, then be quiet. Silence does most of the work.", "Negotiate small things first: a phone plan, a used bike. The stakes are low and the practice is real."] },
+  { id: "ls-contracts", stage: "grown", title: "Reading a contract before signing", why: "A lease, a phone plan, a loan: the parts that matter are short, and they are the parts people skip. Reading them once, slowly, is worth more than most of a year of school.", ways: ["Find three things: what you pay, when it ends, and what it costs to leave.", "Anything you were told out loud that is not on the page does not exist.", "Sleep on it once. A deal that cannot wait a day is not a deal."] },
+  { id: "ls-cooking-on-a-budget", stage: "grown", title: "Feeding yourself well on little", why: "Eating well on a small budget is a skill that pays every single day. Rice, beans, eggs, onions and whatever is cheap this week can be dinner for years without being sad.", ways: ["Learn five cheap meals cold, so you never have to think when tired.", "Shop the edges of the store: produce, dairy, meat. The middle is where the money goes.", "Cook double and freeze half; future you is a person worth feeding."] },
+  { id: "ls-voting", stage: "grown", title: "Registering and voting", why: "Voting is the smallest unit of citizenship, and the habit is set by the first two or three times. People who vote once tend to vote for life.", ways: ["Register the week you are eligible, before there is an election to think about.", "Read the whole ballot beforehand; the down-ballot items affect your street more than the top.", "Go with someone the first time. It is more ordinary and more moving than expected."] },
+  { id: "ls-mending", stage: "grown", title: "Fixing things instead of replacing them", why: "A loose button, a wobbly chair, a dripping tap: most household breakage is a ten-minute fix and a small, real satisfaction. Knowing that changes how a person sees every broken thing.", ways: ["A sewing kit and a screwdriver set in the same drawer, always.", "Watch one video, then try before watching a second.", "Keep a list of what you fixed this year. It grows faster than you expect."] },
   {
     id: 'ls-meaning',
     stage: 'grown',
@@ -18322,6 +18884,11 @@ export const EXPERIMENTS = {
     { title: 'Sorting by color', ask: 'Which pile does it go in?', do: 'A bowl of colored buttons or blocks, sorted into cups.', see: 'Things can be grouped by what they look like.' },
     { title: 'Fizzing colors', ask: 'What happens when they meet?', do: 'Baking soda on a tray, colored vinegar dripped on with a dropper.', see: 'It fizzes. Two things met and made a gas.' },
     { title: 'Bird watching', ask: 'Who lives outside?', do: 'Sit quietly by a window or outside for five minutes. Count what moves.', see: 'Living things are everywhere when you are still enough to notice.' },
+    { title: "Shadow tag", ask: "Can you catch your shadow?", do: "Go outside on a sunny day. Try to step on your own shadow, then a friend's.", see: "A shadow moves when you move and stretches when the sun is low." },
+    { title: "Bubble breath", ask: "What is inside a bubble?", do: "Dip a wand in soapy water and blow slowly, then fast.", see: "Air. Slow breath makes big bubbles; fast breath makes many small ones." },
+    { title: "Magnet hunt", ask: "What will the magnet stick to?", do: "Carry a fridge magnet around the room. Try a spoon, a door, a book, a coin.", see: "It sticks to some metal things and nothing else." },
+    { title: "Warm hands", ask: "Can rubbing make warmth?", do: "Rub your palms together fast for ten seconds, then touch your cheeks.", see: "Rubbing makes heat. Friction is warm." },
+    { title: "Sink the boat", ask: "How many pennies can a foil boat hold?", do: "Shape a piece of foil into a boat. Add pennies one at a time.", see: "It floats until it is too heavy, then it sinks all at once." },
   ],
   PK4: [
     { title: 'Grow a bean', ask: 'What does a seed need?', do: 'A bean in a damp paper towel in a clear cup by a window. Keep it damp.', see: 'A sprout, then a root, then leaves.' },
@@ -18340,6 +18907,11 @@ export const EXPERIMENTS = {
     { title: 'Living things need water', ask: 'What happens to a plant without water?', do: 'Two potted plants, one watered, one not, for a week.', see: 'The dry one droops. Plants need water.' },
     { title: 'Magnet fishing', ask: 'Which fish will the magnet catch?', do: 'Paper fish, some with paper clips, on a string with a magnet.', see: 'Only the fish with metal get caught.' },
     { title: 'Sound through the table', ask: 'Can you hear through wood?', do: 'Put your ear on the table while a friend taps the far end.', see: 'Sound travels through wood, and loudly.' },
+    { title: "Rain in a jar", ask: "Where does rain come from?", do: "Hot water in a jar, a plate of ice on top. Wait.", see: "Drops form under the plate and fall. Warm wet air meets cold and rains." },
+    { title: "Seeds in the dark", ask: "Do seeds need light to start?", do: "Two wet paper towels with beans, one in a dark cupboard, one in the light.", see: "Both sprout. Seeds need water first; light comes later." },
+    { title: "Salt and pepper", ask: "Can a balloon pick up pepper?", do: "Mix salt and pepper. Rub a balloon on hair and hold it close.", see: "The pepper jumps up. Static pulls the light grains." },
+    { title: "Sound through a string", ask: "Can sound travel down a string?", do: "Two cups joined by a long string, pulled tight. One talks, one listens.", see: "The voice comes through the string, not the air." },
+    { title: "Melting race", ask: "Which melts fastest, ice, chocolate or butter?", do: "A cube of each on a warm plate in the sun.", see: "Each has its own melting point. Butter first, ice last on a warm day." },
   ],
   K: [
     { title: 'Sound through a string', ask: 'Can sound travel through a string?', do: 'Two paper cups and a long string pulled tight.', see: 'A whisper comes through the string.' },
@@ -18358,6 +18930,16 @@ export const EXPERIMENTS = {
     { title: 'Which soil drains?', ask: 'Where does water go fastest?', do: 'Cups of sand, soil and clay with holes; pour water and time it.', see: 'Sand drains fast; clay holds water.' },
     { title: 'Ladybug or ant?', ask: 'How many legs?', do: 'Look closely at a bug outside and count its legs.', see: 'Insects have six legs. Spiders have eight.' },
     { title: 'Plant in the dark', ask: 'Does a plant need light?', do: 'Two bean sprouts, one in a dark box for a week.', see: 'The dark one grows pale and thin, reaching for light.' },
+    { title: "Rainbow in a glass", ask: "Can water make a rainbow?", do: "A glass of water on a sunny windowsill, white paper on the floor.", see: "Colors on the paper. Sunlight is all the colors mixed." },
+    { title: "Plant maze", ask: "Will a plant find the light?", do: "A bean in a pot inside a shoebox with a hole cut in one end. Cardboard walls inside.", see: "The sprout bends and turns toward the hole. Plants grow toward light." },
+    { title: "Egg in vinegar", ask: "What happens to a shell in vinegar?", do: "An egg in a jar of vinegar for two days.", see: "The shell fizzes away and the egg turns rubbery. Acid dissolves shell." },
+    { title: "Float a paper clip", ask: "Can metal float?", do: "A dry paper clip laid gently on still water with a fork.", see: "It floats on the water's skin. Surface tension holds it up." },
+    { title: "Ice fishing", ask: "Can you lift an ice cube with a string?", do: "A string laid on an ice cube in water. Sprinkle salt on it. Wait a minute.", see: "The salt melts and refreezes the ice around the string. Lift." },
+    { title: "Flashlight day and night", ask: "Why is it dark at night?", do: "A ball for the Earth, a flashlight for the sun. Turn the ball slowly.", see: "One side is lit and one is dark; turning is what changes them.", moduleId: "day-and-night" },
+    { title: "Weather window", ask: "What is the weather doing?", do: "Look out the same window every morning for a week and draw it.", see: "Sun, cloud, rain, wind: the weather changes and the drawings show it.", moduleId: "kinds-of-weather" },
+    { title: "Alive or not", ask: "Which things are alive?", do: "Put a plant, a rock, a toy and a snail on a tray. Watch for an hour.", see: "The living things move, eat or grow; the rock and the toy do nothing.", moduleId: "living-or-not" },
+    { title: "Bean in the cupboard", ask: "What does a plant need?", do: "Two bean pots: one on the windowsill, one in a dark cupboard, both watered.", see: "The dark one grows pale and thin. Plants need light as well as water.", moduleId: "what-plants-need" },
+    { title: "Two cups", ask: "Which cools and which warms?", do: "A cup of warm water and a cup of ice water side by side. Touch both every ten minutes.", see: "Both end up like the room. Hot cools down; cold warms up.", moduleId: "hot-and-cold" },
   ],
   1: [
     { title: 'Day and night in a room', ask: 'Why do we have night?', do: 'A flashlight and a ball. Turn the ball slowly in front of the light.', see: 'Half the ball is dark. The turning makes night.' },
@@ -18374,8 +18956,16 @@ export const EXPERIMENTS = {
     { title: 'Fruit or vegetable?', ask: 'Does it have seeds inside?', do: 'Cut open a tomato, a cucumber, a carrot, an apple.', see: 'Fruits have seeds inside; roots and stems do not.' },
     { title: 'Egg drop', ask: 'Can you protect an egg?', do: 'An egg wrapped in a small package of your design, dropped from a chair.', see: 'Cushioning and slowing the fall protect it.' },
     { title: 'Which freezes first?', ask: 'Salt water or fresh?', do: 'Two cups in the freezer, one salty.', see: 'Fresh water freezes first.' },
-    { title: 'Sound vibrations', ask: 'Can you feel a sound?', do: 'Hum with a hand on your throat; a ruler twanged on a table edge.', see: 'Sound is something vibrating.' },
+    { title: 'Sound vibrations', moduleId: 'sound', ask: 'Can you feel a sound?', do: 'Hum with a hand on your throat; a ruler twanged on a table edge.', see: 'Sound is something vibrating.' },
     { title: 'Ant watching', ask: 'Where do ants go?', do: 'A crumb on the sidewalk; watch for ten minutes.', see: 'Ants follow trails and work together.' },
+    { title: "Shadow clock", ask: "Does a shadow move by the hour?", do: "A stick in the ground. Mark the tip of its shadow every hour.", see: "The shadow swings around like a clock hand as the sun crosses the sky." },
+    { title: "Celery drinks", ask: "How does water climb a plant?", do: "A celery stalk in colored water overnight.", see: "The color climbs the tubes inside. Plants pull water up." },
+    { title: "Sound jars", moduleId: 'sound', ask: "Can water change a sound?", do: "Four glasses with different water levels. Tap each with a spoon.", see: "More water, lower note. The water changes what rings." },
+    { title: "Mold garden", ask: "What grows on old bread?", do: "A slice of bread, a few drops of water, sealed in a bag for a week.", see: "Fuzzy spots appear and spread. Mold is alive and it grows." },
+    { title: "Bridge of paper", ask: "How strong is a folded sheet?", do: "A flat sheet between two books, then the same sheet folded like a fan.", see: "The fan holds far more. Shape adds strength." },
+    { title: "Sun and moon chart", ask: "Where does the sun come up?", do: "Mark where the sun rises and sets for a week; draw the moon each night.", see: "The sun keeps its side; the moon changes shape a little each night.", moduleId: "sun-moon-patterns" },
+    { title: "Ice to water to ice", ask: "Can water change and change back?", do: "An ice cube in a cup on a warm table, then the water back in the freezer.", see: "It melts, then freezes again. The same water, twice.", moduleId: "water-changes" },
+    { title: "Bird visitors", ask: "What do animals need?", do: "Put out water and seed. Watch which birds come and when.", see: "They come to eat and drink. Animals need food, water and a safe place.", moduleId: "animal-needs" },
   ],
   2: [
     { title: 'Hard, soft, wet, dry', ask: 'How can we sort things?', do: 'A tray of objects; sort by one property, then another.', see: 'The same things sort differently by different properties.' },
@@ -18394,68 +18984,91 @@ export const EXPERIMENTS = {
     { title: 'Evaporation race', ask: 'Where does water disappear fastest?', do: 'Equal water in a wide dish and a narrow cup, for a day.', see: 'More surface, faster evaporation.' },
     { title: 'Bean in the dark and light', ask: 'Which way does it grow?', do: 'A bean sprout in a box with one hole for light.', see: 'It bends toward the light.' },
     { title: 'Oil and water', ask: 'Will they mix?', do: 'Oil and water in a jar, shaken hard, then left.', see: 'They separate again. Oil floats.' },
+    { title: "Erosion tray", ask: "What does rain do to a hill?", do: "A tray of soil shaped into a hill. Pour water from a cup at the top.", see: "Channels cut and soil washes to the bottom. Water moves land." },
+    { title: "Static butterfly", ask: "Can you move paper without touching it?", do: "A tissue-paper butterfly on a card. Rub a balloon on hair and hover it.", see: "The wings lift toward the balloon. Static pulls." },
+    { title: "Sugar crystals", ask: "Can sugar grow?", do: "Very sweet hot water in a jar, a string hanging in. Wait a week.", see: "Crystals grow on the string as the water leaves." },
+    { title: "Heartbeat", ask: "Does exercise change your pulse?", do: "Count heartbeats for ten seconds sitting, then after twenty jumping jacks.", see: "Faster after. Muscles at work want more blood." },
+    { title: "Air has weight", ask: "Does a balloon weigh anything?", do: "Two balloons on a stick balance. Blow one up.", see: "The full one tips down. Air weighs something." },
+    { title: "Sorting table", ask: "Hard or soft, wet or dry?", do: "A tray of everyday things. Sort them twice: hard and soft, then wet and dry.", see: "Each thing has properties, and one thing can be in two groups.", moduleId: "hard-or-soft" },
+    { title: "Magnet fishing", ask: "What does a magnet pull?", do: "A magnet on a string. Dip it into a bowl of paper clips, coins, buttons and beads.", see: "Only some metal things come up. Magnets pull iron and steel.", moduleId: "magnets" },
+    { title: "Habitat box", ask: "What does a home need?", do: "Make a shoebox home for a toy animal: food, water, shelter, space.", see: "A habitat is the place that gives an animal what it needs.", moduleId: "habitats" },
   ],
   3: [
     { title: 'Balloon on a bottle', ask: 'Can a gas blow up a balloon?', do: 'Baking soda in a balloon, vinegar in a bottle, stretch and tip.', see: 'A new gas fills the balloon.' },
-    { title: 'Friction race', ask: 'Which surface slows a toy car most?', do: 'The same ramp onto tile, carpet, a towel, sandpaper. Measure how far it rolls.', see: 'Rougher surfaces stop it sooner.' },
-    { title: 'Life cycle jar', ask: 'How does a caterpillar change?', do: 'A caterpillar kit, or watch a bean go seed to sprout to leaves to flower.', see: 'Stages, in order, every time.' },
-    { title: 'Homemade rain gauge', ask: 'How much did it rain?', do: 'A clear bottle with centimeter marks, outside for a week.', see: 'Weather can be measured and compared.' },
-    { title: 'Lever lifting', ask: 'Can a small push lift a big weight?', do: 'A ruler over a pencil; a book on one end, push the other. Move the pencil.', see: 'The farther the pencil from the load, the easier the lift.' },
+    { title: 'Friction race', moduleId: 'forces-and-motion', ask: 'Which surface slows a toy car most?', do: 'The same ramp onto tile, carpet, a towel, sandpaper. Measure how far it rolls.', see: 'Rougher surfaces stop it sooner.' },
+    { title: 'Life cycle jar', moduleId: 'life-cycles', ask: 'How does a caterpillar change?', do: 'A caterpillar kit, or watch a bean go seed to sprout to leaves to flower.', see: 'Stages, in order, every time.' },
+    { title: 'Homemade rain gauge', moduleId: 'weather-and-seasons', ask: 'How much did it rain?', do: 'A clear bottle with centimeter marks, outside for a week.', see: 'Weather can be measured and compared.' },
+    { title: 'Lever lifting', moduleId: 'simple-machines', ask: 'Can a small push lift a big weight?', do: 'A ruler over a pencil; a book on one end, push the other. Move the pencil.', see: 'The farther the pencil from the load, the easier the lift.' },
     { title: 'Static electricity race', ask: 'Which material makes the most static?', do: 'A balloon rubbed on wool, cotton, hair; test on paper bits.', see: 'Some materials give up more charge.' },
     { title: 'Fossil casts', ask: 'How does a fossil form?', do: 'A shell pressed into clay, then filled with plaster.', see: 'A print, then a cast: the two kinds of fossil.' },
     { title: 'Plant parts', ask: 'What does each part do?', do: 'Pull up a weed; find root, stem, leaf, flower.', see: 'Root drinks, stem carries, leaf makes food, flower makes seeds.' },
-    { title: 'Sound tubes', ask: 'Does length change pitch?', do: 'Blow across bottles with different water levels.', see: 'More air in the bottle, lower note.' },
+    { title: 'Sound tubes', moduleId: 'sound', ask: 'Does length change pitch?', do: 'Blow across bottles with different water levels.', see: 'More air in the bottle, lower note.' },
     { title: 'Which insulator?', ask: 'What keeps ice from melting?', do: 'Ice cubes wrapped in foil, paper, cloth, nothing. Time them.', see: 'Cloth and paper trap air and slow melting.' },
     { title: 'Puddle map', ask: 'Where does the puddle go?', do: 'Chalk around a puddle every hour on a sunny day.', see: 'It shrinks as water evaporates.' },
-    { title: 'Simple pulley', ask: 'Does a pulley make lifting easier?', do: 'A rope over a broom handle; lift a bag straight up, then with the rope.', see: 'Same weight, different direction, easier pull.' },
+    { title: 'Simple pulley', moduleId: 'simple-machines', ask: 'Does a pulley make lifting easier?', do: 'A rope over a broom handle; lift a bag straight up, then with the rope.', see: 'Same weight, different direction, easier pull.' },
     { title: 'Camouflage hunt', ask: 'Which colors hide best?', do: 'Colored toothpicks scattered in grass; a partner has 30 seconds to find them.', see: 'The ones that match the grass survive.' },
-    { title: 'Weather station', ask: 'Can you predict tomorrow?', do: 'Record clouds, wind and temperature at the same time daily for two weeks.', see: 'Patterns appear, and some days you guess right.' },
+    { title: 'Weather station', moduleId: 'weather-and-seasons', ask: 'Can you predict tomorrow?', do: 'Record clouds, wind and temperature at the same time daily for two weeks.', see: 'Patterns appear, and some days you guess right.' },
     { title: 'Frozen bubbles', ask: 'What happens to a bubble in the cold?', do: 'Blow bubbles on a freezing morning.', see: 'They freeze into crystal balls.' },
-    { title: 'Ladybug life', ask: 'How many spots?', do: 'Look at a ladybug closely, then a picture of its larva.', see: 'The young looks nothing like the adult.' },
+    { title: 'Ladybug life', moduleId: 'life-cycles', ask: 'How many spots?', do: 'Look at a ladybug closely, then a picture of its larva.', see: 'The young looks nothing like the adult.' },
+    { title: "Balloon rocket", moduleId: 'forces-and-motion', ask: "What pushes a rocket?", do: "A straw on a string, a balloon taped to it, let the air out.", see: "The balloon shoots along the string. Air pushed out pushes back." },
+    { title: "Freeze and expand", moduleId: 'states-of-matter', ask: "Does water grow when it freezes?", do: "A plastic bottle filled to the brim, capped loosely, in the freezer.", see: "The ice bulges out. Water takes more room as ice." },
+    { title: "Mystery powders", moduleId: 'states-of-matter', ask: "Which powder fizzes?", do: "Baking soda, flour, sugar, salt in four cups. A drop of vinegar on each.", see: "Only one fizzes. A reaction tells the powders apart." },
+    { title: "Insulation test", ask: "Which keeps ice longest?", do: "Ice cubes wrapped in foil, cloth, paper and nothing. Check every ten minutes.", see: "Cloth wins. Trapped air slows heat." },
+    { title: "Pendulum", moduleId: 'forces-and-motion', ask: "What changes a swing?", do: "A washer on a string. Time ten swings with a short string, then a long one.", see: "The long string swings slower. Weight does not matter; length does." },
   ],
   4: [
-    { title: 'Circuit with a bulb', ask: 'What makes a bulb light?', do: 'A battery, two wires and a small bulb. Try a broken loop, then a closed one.', see: 'Only a complete loop lights it.' },
-    { title: 'Conductor or insulator', ask: 'Which materials let electricity through?', do: 'Put a coin, a key, an eraser, a paper clip into the circuit gap.', see: 'Metals conduct; rubber and plastic do not.' },
+    { title: 'Circuit with a bulb', moduleId: 'circuits', ask: 'What makes a bulb light?', do: 'A battery, two wires and a small bulb. Try a broken loop, then a closed one.', see: 'Only a complete loop lights it.' },
+    { title: 'Conductor or insulator', moduleId: 'circuits', ask: 'Which materials let electricity through?', do: 'Put a coin, a key, an eraser, a paper clip into the circuit gap.', see: 'Metals conduct; rubber and plastic do not.' },
     { title: 'Paper bridge', ask: 'Which fold holds the most?', do: 'A sheet between two books; add coins flat, then folded like an accordion.', see: 'Shape matters more than material.' },
     { title: 'Rock, sand, water', ask: 'What happens when rock is shaken?', do: 'Sugar cubes in a jar, shaken for a minute.', see: 'Corners wear off. That is weathering, fast.' },
-    { title: 'Series and parallel bulbs', ask: 'Which stays lit?', do: 'Two bulbs in a row, then side by side; unscrew one.', see: 'In a row both go out; side by side one stays lit.' },
+    { title: 'Series and parallel bulbs', moduleId: 'circuits', ask: 'Which stays lit?', do: 'Two bulbs in a row, then side by side; unscrew one.', see: 'In a row both go out; side by side one stays lit.' },
     { title: 'Electromagnet', ask: 'Can a battery make a magnet?', do: 'Wire coiled around a nail, connected to a battery; test on paper clips.', see: 'The coil makes the nail magnetic while current flows.' },
-    { title: 'Sand dune in a box', ask: 'What does wind do to sand?', do: 'A tray of dry sand and a hair dryer on cool.', see: 'Sand piles up in dunes and moves.' },
+    { title: 'Sand dune in a box', moduleId: 'changing-land', ask: 'What does wind do to sand?', do: 'A tray of dry sand and a hair dryer on cool.', see: 'Sand piles up in dunes and moves.' },
     { title: 'Owl pellets', ask: 'What did the owl eat?', do: 'A store-bought owl pellet pulled apart with tweezers.', see: 'Tiny bones sort into skulls and legs: a whole food chain.' },
     { title: 'Sound speed in a rope', ask: 'Can you see a wave?', do: 'A long rope tied to a post; flick it once, then faster.', see: 'A hump travels down the rope. Faster flicks, closer humps.' },
     { title: 'Water filter', ask: 'Can you clean muddy water?', do: 'A bottle with gravel, sand and cotton; pour muddy water through.', see: 'Clearer, though not safe to drink.' },
-    { title: 'Erosion with a hose', ask: 'What slows erosion?', do: 'Two soil hills, one with grass or a mat of leaves; water each.', see: 'Plants hold soil in place.' },
-    { title: 'Bird beak tools', ask: 'Which beak eats what?', do: 'Tweezers, a spoon, a clothespin; pick up rice, marbles, water.', see: 'Each beak shape suits a food.' },
+    { title: 'Erosion with a hose', moduleId: 'changing-land', ask: 'What slows erosion?', do: 'Two soil hills, one with grass or a mat of leaves; water each.', see: 'Plants hold soil in place.' },
+    { title: 'Bird beak tools', moduleId: 'adaptations', ask: 'Which beak eats what?', do: 'Tweezers, a spoon, a clothespin; pick up rice, marbles, water.', see: 'Each beak shape suits a food.' },
     { title: 'Hot air rises', ask: 'Which way does warm air go?', do: 'A paper spiral hung over a warm lamp with an adult.', see: 'It spins in the rising air.' },
     { title: 'Lemon battery', ask: 'Can fruit make electricity?', do: 'A lemon with a copper coin and a zinc nail, wires to a small LED.', see: 'A faint glow: chemistry making current.' },
     { title: 'Rock cycle candy', ask: 'Can you make three kinds of rock?', do: 'Grated crayon layered, pressed, then warmed with an adult.', see: 'Sedimentary, then metamorphic, then melted and cooled.' },
     { title: 'Leaf rubbings', ask: 'Are leaf veins all the same?', do: 'Paper over leaves, rubbed with a crayon.', see: 'Veins branch in patterns; each kind of tree has its own.' },
+    { title: "Ramp and marble", moduleId: 'forms-of-energy', ask: "Does a higher ramp make a faster marble?", do: "A marble down a book ramp at three heights. Measure how far it rolls.", see: "Higher ramp, farther roll. Height stores energy." },
+    { title: "Electromagnet", moduleId: 'circuits', ask: "Can electricity make a magnet?", do: "Wire wrapped around a nail, ends on a battery. Try paper clips.", see: "The nail picks up clips while the current flows." },
+    { title: "Water filter", moduleId: 'watersheds', ask: "Can dirt be filtered out?", do: "A cut bottle with layers of gravel, sand and cloth. Pour muddy water through.", see: "Clearer water comes out. Layers catch different sizes." },
+    { title: "Owl pellet", moduleId: 'ecosystems', ask: "What did the owl eat?", do: "Soak an owl pellet and pick it apart with toothpicks.", see: "Tiny bones and skulls. A food chain in one lump." },
+    { title: "Solar oven", moduleId: 'forms-of-energy', ask: "Can a box cook a marshmallow?", do: "A pizza box lined with foil, a plastic window, a marshmallow inside in the sun.", see: "It softens. Sunlight trapped is heat." },
   ],
   5: [
     { title: 'Salt water evaporation', ask: 'Where does the salt go?', do: 'Salt in warm water until it disappears; leave the cup in the sun for days.', see: 'The water leaves; the salt stays.' },
-    { title: 'Moon phases with a lamp', ask: 'Why does the moon change shape?', do: 'A lamp, a ball on a stick, a dark room. Walk the ball around your head.', see: 'You see more or less of the lit side. That is the phase.' },
-    { title: 'Water cycle in a bag', ask: 'Can you make rain?', do: 'Water in a zip bag taped to a sunny window for a day.', see: 'Drops form at the top and run down: evaporation, condensation, rain.' },
-    { title: 'Inherited or learned', ask: 'Which traits are you born with?', do: 'List ten traits of a pet or a person; sort into born-with and learned.', see: 'Some come from parents; some take practice.' },
+    { title: 'Moon phases with a lamp', moduleId: 'earth-sun-moon', ask: 'Why does the moon change shape?', do: 'A lamp, a ball on a stick, a dark room. Walk the ball around your head.', see: 'You see more or less of the lit side. That is the phase.' },
+    { title: 'Water cycle in a bag', moduleId: 'water-cycle', ask: 'Can you make rain?', do: 'Water in a zip bag taped to a sunny window for a day.', see: 'Drops form at the top and run down: evaporation, condensation, rain.' },
+    { title: 'Inherited or learned', moduleId: 'inherited-and-learned', ask: 'Which traits are you born with?', do: 'List ten traits of a pet or a person; sort into born-with and learned.', see: 'Some come from parents; some take practice.' },
     { title: 'Chromatography flowers', ask: 'What colors hide in black ink?', do: 'A marker dot on a coffee filter, the tip in water.', see: 'The ink separates into colors as water climbs.' },
     { title: 'Sundial', ask: 'Can a stick tell time?', do: 'A stick in the ground; mark the shadow tip every hour.', see: 'The shadow sweeps like a clock hand.' },
     { title: 'Clouds in a jar', ask: 'How does a cloud form?', do: 'Warm water in a jar, hairspray puff, ice on top, with an adult.', see: 'A cloud swirls when vapor meets cold and something to cling to.' },
-    { title: 'Which dissolves faster?', ask: 'Does temperature matter?', do: 'Sugar cubes in cold, warm and hot water, timed.', see: 'Hot water dissolves fastest.' },
+    { title: 'Which dissolves faster?', moduleId: 'mixtures-and-solutions', ask: 'Does temperature matter?', do: 'Sugar cubes in cold, warm and hot water, timed.', see: 'Hot water dissolves fastest.' },
     { title: 'Balloon lung', ask: 'How do lungs fill?', do: 'A bottle with a balloon inside and a balloon skin on the cut bottom; pull the skin.', see: 'The inner balloon fills when the space grows. That is breathing.' },
     { title: 'Iron in cereal', ask: 'Is there metal in your food?', do: 'Fortified cereal crushed in water; stir with a strong magnet in a bag.', see: 'Tiny iron flecks cling to the magnet.' },
     { title: 'Solar oven', ask: 'Can the sun cook?', do: 'A pizza box lined with foil and black paper under plastic; a marshmallow inside.', see: 'It softens in an hour of sun.' },
     { title: 'Fingerprint patterns', ask: 'Are yours loops, whorls or arches?', do: 'Pencil-rubbed fingertips pressed on tape, stuck to paper.', see: 'Everyone has a pattern; no two match.' },
-    { title: 'Layers of the earth model', ask: 'What is inside?', do: 'A clay ball built in layers, then cut in half.', see: 'Crust, mantle, core, in order.' },
+    { title: 'Layers of the earth model', moduleId: 'earths-layers', ask: 'What is inside?', do: 'A clay ball built in layers, then cut in half.', see: 'Crust, mantle, core, in order.' },
     { title: 'Seed dispersal', ask: 'How do seeds travel?', do: 'Dandelion, burr, maple key, berry: test each for wind, fur, water.', see: 'Each seed has a way to leave home.' },
     { title: 'Vinegar volcano', ask: 'Why does it erupt?', do: 'Baking soda in a bottle inside a clay cone; add vinegar and soap.', see: 'Gas pushes the foam out. A model, not a volcano.' },
-    { title: 'Stream table', ask: 'How does a river bend?', do: 'Sand in a tray, tilted; a slow trickle of water.', see: 'The stream wanders and cuts bends.' },
+    { title: 'Stream table', moduleId: 'watersheds', ask: 'How does a river bend?', do: 'Sand in a tray, tilted; a slow trickle of water.', see: 'The stream wanders and cuts bends.' },
+    { title: "Density tower", moduleId: 'density', ask: "Can liquids stack?", do: "Honey, dish soap, water, oil poured slowly into one glass.", see: "Four layers. Heavier liquids sink under lighter ones." },
+    { title: "Bean growth graph", ask: "How fast does a bean grow?", do: "Measure a sprout every day for two weeks. Graph it.", see: "A curve, not a line. Growth speeds up, then slows." },
+    { title: "Invisible ink", ask: "Can lemon juice hide a message?", do: "Write with lemon juice on paper. Hold it near a warm bulb.", see: "The letters brown. Heat changes the juice." },
+    { title: "Cloud in a bottle", moduleId: 'water-cycle', ask: "Can you make a cloud?", do: "A little warm water in a bottle, a match blown out inside, squeeze and release.", see: "A cloud appears when you release. Pressure drops, water condenses." },
+    { title: "Salt water eggs", moduleId: 'density', ask: "Can salt make an egg float?", do: "An egg in fresh water, then stir in salt spoon by spoon.", see: "It rises. Salt water is denser than the egg." },
   ],
   6: [
-    { title: 'Density column', ask: 'Which liquid sits on top?', do: 'Honey, dish soap, water, oil, poured slowly. Drop in a grape and a cork.', see: 'Liquids stack by density; objects settle at their match.' },
-    { title: 'Heat transfer three ways', ask: 'How does heat move?', do: 'A metal spoon in hot water (touch), warm water rising in a clear pot with food coloring (flow), a lamp on your hand (rays).', see: 'Conduction, convection, radiation, each seen.' },
-    { title: 'Food chain web', ask: 'Who eats whom?', do: 'Cards for grass, grasshopper, bird, hawk, fungus; string between eaters and eaten.', see: 'Remove one card and count the strings that fall.' },
-    { title: 'Plate edges with graham crackers', ask: 'What happens where plates meet?', do: 'Two crackers on frosting; push together, pull apart, slide past.', see: 'Mountains, gaps, and crumbling edges.' },
-    { title: 'Convection currents', ask: 'Can you see heat move?', do: 'A clear pan of water, a drop of food coloring, a candle under one corner with an adult.', see: 'The color rises over the heat and sinks elsewhere.' },
-    { title: 'Osmosis egg', ask: 'Can water pass through a shell?', do: 'An egg soaked in vinegar for two days, then in corn syrup, then in water.', see: 'The egg shrinks, then swells. Water moves through the membrane.' },
+    { title: 'Density column', moduleId: 'density', ask: 'Which liquid sits on top?', do: 'Honey, dish soap, water, oil, poured slowly. Drop in a grape and a cork.', see: 'Liquids stack by density; objects settle at their match.' },
+    { title: 'Heat transfer three ways', moduleId: 'heat-transfer', ask: 'How does heat move?', do: 'A metal spoon in hot water (touch), warm water rising in a clear pot with food coloring (flow), a lamp on your hand (rays).', see: 'Conduction, convection, radiation, each seen.' },
+    { title: 'Food chain web', moduleId: 'ecosystems', ask: 'Who eats whom?', do: 'Cards for grass, grasshopper, bird, hawk, fungus; string between eaters and eaten.', see: 'Remove one card and count the strings that fall.' },
+    { title: 'Plate edges with graham crackers', moduleId: 'plate-tectonics', ask: 'What happens where plates meet?', do: 'Two crackers on frosting; push together, pull apart, slide past.', see: 'Mountains, gaps, and crumbling edges.' },
+    { title: 'Convection currents', moduleId: 'heat-transfer', ask: 'Can you see heat move?', do: 'A clear pan of water, a drop of food coloring, a candle under one corner with an adult.', see: 'The color rises over the heat and sinks elsewhere.' },
+    { title: 'Osmosis egg', moduleId: 'cells', ask: 'Can water pass through a shell?', do: 'An egg soaked in vinegar for two days, then in corn syrup, then in water.', see: 'The egg shrinks, then swells. Water moves through the membrane.' },
     { title: 'Homemade compass', ask: 'Can a needle find north?', do: 'A magnetized needle on a cork in water.', see: 'It swings to point north.' },
     { title: 'Buoyancy and salt', ask: 'Does salt water hold you up better?', do: 'An egg in fresh water, then salt water.', see: 'It sinks, then floats. Denser water holds more.' },
     { title: 'Cell model', ask: 'What is inside a cell?', do: 'A zip bag of gel with candy parts labeled as organelles.', see: 'A model of the parts and their jobs.' },
@@ -18466,6 +19079,13 @@ export const EXPERIMENTS = {
     { title: 'Water hardness', ask: 'Does soap lather the same everywhere?', do: 'Tap water and distilled water shaken with the same soap.', see: 'Minerals in hard water fight the lather.' },
     { title: 'Composting jar', ask: 'What breaks down?', do: 'Soil, food scraps and a leaf in a clear jar, watched for three weeks.', see: 'Decomposers turn scraps into soil.' },
     { title: 'Ecosystem in a bottle', ask: 'Can a jar keep itself alive?', do: 'A sealed bottle with soil, a plant and water, in indirect light.', see: 'It cycles water and gas for weeks.' },
+    { title: "Lever measurements", ask: "Where should the fulcrum go?", do: "A ruler on a pencil. Move the pencil and lift a book with a finger.", see: "Closer to the load, easier the lift. A lever trades distance for force." },
+    { title: "Conduction race", ask: "Which spoon warms fastest?", do: "Metal, wood and plastic spoons in hot water, butter on each handle.", see: "The metal spoon's butter melts first. Metal conducts." },
+    { title: "Yeast balloons", moduleId: 'cells', ask: "Does yeast need sugar?", do: "Yeast and warm water in three bottles: no sugar, some, lots. Balloons on top.", see: "More sugar, bigger balloon. Yeast eats sugar and breathes out gas." },
+    { title: "Soil layers", moduleId: 'weathering-to-fossils', ask: "What is soil made of?", do: "Soil and water shaken in a jar. Let it settle overnight.", see: "Sand, silt and clay in layers. Soil is a mixture." },
+    { title: "Pinhole camera", moduleId: 'light-and-optics', ask: "Can a hole make a picture?", do: "A box with a pinhole and wax paper at the back, aimed at a bright window.", see: "An upside-down image. Light travels in straight lines." },
+    { title: "Salt from a solution", ask: "Can you get the parts back?", do: "Dissolve salt in water, then leave the dish in the sun for a day.", see: "The water leaves and the salt stays. A compound can be separated from a mixture, not from itself.", moduleId: "elements-and-compounds" },
+    { title: "Onion skin slide", ask: "Can you see cells?", do: "A thin piece of onion skin on a slide with a drop of water under a microscope.", see: "Rows of boxes: cells, the same shapes Hooke saw in cork.", moduleId: "microscopes" },
   ],
   7: [
     { title: 'Yeast and sugar', ask: 'Is yeast alive?', do: 'Warm water, sugar, yeast in a bottle; a balloon over the neck.', see: 'The yeast breathes out gas. Living things do that.' },
@@ -18484,6 +19104,14 @@ export const EXPERIMENTS = {
     { title: 'Tornado in a bottle', ask: 'How does spinning air behave?', do: 'Two bottles joined at the neck, one with water; swirl.', see: 'A funnel forms as water spins down.' },
     { title: 'Digestion in a bag', ask: 'What does the stomach do?', do: 'Crackers, water and vinegar squished in a zip bag.', see: 'Mashing plus acid breaks food down.' },
     { title: 'Fingerprint classification', ask: 'Can you sort a class?', do: 'Everyone prints a thumb; tally loops, whorls and arches.', see: 'Loops are common; arches are rare.' },
+    { title: "Sweat and cooling", moduleId: 'homeostasis', ask: "Does evaporation cool?", do: "A wet cotton ball on one wrist, dry on the other. Wave your arms.", see: "The wet wrist feels cold. Evaporation takes heat." },
+    { title: "Enzyme in pineapple", ask: "Why won't gelatin set with fresh pineapple?", do: "Gelatin with fresh pineapple, canned pineapple, and none.", see: "Fresh stays liquid. An enzyme breaks the gelatin; heat killed it in the can." },
+    { title: "Weather log", moduleId: 'weather-systems', ask: "Can you predict tomorrow?", do: "Record temperature, clouds and wind every day for two weeks.", see: "Patterns appear. Falling pressure often means rain." },
+    { title: "Camouflage hunt", moduleId: 'natural-selection', ask: "Does color help prey survive?", do: "Colored toothpicks scattered on grass. Time a partner collecting them.", see: "Green ones are found last. Matching the background hides." },
+    { title: "Osmosis gummy bears", moduleId: 'cells', ask: "Do gummy bears drink?", do: "Gummy bears in plain water, salt water and none, overnight.", see: "Plain water swells them; salt water shrinks them. Water moves toward salt." },
+    { title: "Pulse and breath", ask: "How do body systems work together?", do: "Count pulse and breaths at rest, then after a minute of stairs.", see: "Both rise together. Heart and lungs work as one team.", moduleId: "body-systems" },
+    { title: "Family traits", ask: "Which traits run in a family?", do: "Chart earlobes, tongue rolling and hair color across your family.", see: "Some traits show up down the generations. Genes pass them on.", moduleId: "genes-and-traits" },
+    { title: "Energy pyramid with beans", ask: "Why are there so few hawks?", do: "A thousand beans for grass, a hundred for grasshoppers, ten for birds, one for a hawk, in stacked cups.", see: "Each level holds a tenth of the one below. Energy is lost at every step.", moduleId: "energy-in-ecosystems" },
   ],
   8: [
     { title: 'Pendulum timing', ask: 'What changes a pendulum\'s swing?', do: 'A washer on a string; time ten swings; change length, weight, and pull.', see: 'Only length changes the timing.' },
@@ -18502,6 +19130,13 @@ export const EXPERIMENTS = {
     { title: 'Lever classes', ask: 'Where is the fulcrum?', do: 'A seesaw, a wheelbarrow, tongs: find the pivot, the load, the push.', see: 'Three classes of lever, all around you.' },
     { title: 'Ocean acidification', ask: 'What does carbon dioxide do to shells?', do: 'Chalk in plain water and in fizzy water for a day.', see: 'The fizzy-water chalk pits and fizzes.' },
     { title: 'Fossil layers', ask: 'Which is older?', do: 'Play dough layers with buttons; cut a cross section.', see: 'Deeper is older.' },
+    { title: "Rust race", moduleId: 'chemical-reactions', ask: "What makes iron rust fastest?", do: "Steel wool in dry air, tap water, salt water and oil.", see: "Salt water wins. Rust needs water and oxygen; salt speeds it." },
+    { title: "Pendulum periods", moduleId: 'newtons-laws', ask: "Does mass change a swing?", do: "Same string, heavy washer then light washer. Time ten swings.", see: "Same time. Period depends on length, not mass." },
+    { title: "Reaction speed", moduleId: 'chemical-reactions', ask: "Does temperature speed a fizz?", do: "An antacid tablet in cold water, then hot. Time the fizz.", see: "Hot finishes first. Warm particles collide more." },
+    { title: "Crater making", moduleId: 'scale-of-the-universe', ask: "What shapes a crater?", do: "Marbles dropped from different heights into flour with cocoa on top.", see: "Higher drops make wider craters. Energy scales the hole." },
+    { title: "Spectrum with a CD", moduleId: 'light-and-optics', ask: "What is in white light?", do: "A CD in sunlight, tilted to throw a rainbow on the wall.", see: "All the colors. White light is a mix." },
+    { title: "Atom model", ask: "What is inside an atom?", do: "Build an atom with a marble for the nucleus in the middle of a gym; electrons are dots on the seats.", see: "Almost all of an atom is empty space.", moduleId: "inside-the-atom" },
+    { title: "Walk and graph", ask: "What does a walk look like on paper?", do: "Walk, stop, then run along a hallway while a partner times each ten meters. Graph distance against time.", see: "Flat while stopped, gentle while walking, steep while running.", moduleId: "speed-and-graphs" },
   ],
   9: [
     { title: 'Extract DNA from a strawberry', ask: 'Can you see DNA?', do: 'Mash with salt, water and dish soap; strain; cold rubbing alcohol on top.', see: 'A white cloud of DNA rises.' },
@@ -18520,6 +19155,15 @@ export const EXPERIMENTS = {
     { title: 'Antibiotic soap test', ask: 'Which soap works?', do: 'Handprints on agar plates, with an adult, before and after washing.', see: 'Fewer colonies after washing.' },
     { title: 'Homologous chicken wing', ask: 'Same bones as your arm?', do: 'Dissect a chicken wing with an adult; name the bones.', see: 'Upper, two lower, wrist, fingers.' },
     { title: 'Ecosystem sampling', ask: 'How many plants per square meter?', do: 'A string square in a lawn; count species inside.', see: 'Sampling estimates a whole field.' },
+    { title: "Catalase and liver", moduleId: 'protein-synthesis', ask: "What breaks down hydrogen peroxide?", do: "Peroxide on raw liver, cooked liver, and a potato.", see: "Raw liver foams most. Enzymes work fast and heat destroys them." },
+    { title: "Transpiration bags", moduleId: 'photosynthesis', ask: "Do leaves breathe out water?", do: "A plastic bag tied over a living branch for a day.", see: "Water collects in the bag. Leaves release water vapor." },
+    { title: "DNA from a strawberry", moduleId: 'dna-and-genes', ask: "Can you see DNA?", do: "Mashed strawberry with soap and salt, filtered, cold alcohol on top.", see: "White strands rise. That is DNA." },
+    { title: "Population in a jar", moduleId: 'carbon-and-nitrogen-cycles', ask: "How fast does yeast grow?", do: "Yeast in sugar water. Count cells under a microscope each hour.", see: "Fast at first, then it levels off. Resources limit growth." },
+    { title: "Heart rate recovery", moduleId: 'homeostasis', ask: "How fit is a heart?", do: "Pulse at rest, after two minutes of stairs, and each minute after.", see: "A fit heart returns to rest faster." },
+    { title: "Coin Punnett square", ask: "What are the odds of blue eyes?", do: "Two coins, heads for B and tails for b. Flip both a hundred times and tally.", see: "About one in four comes up tails-tails. The square predicts the odds.", moduleId: "punnett-squares" },
+    { title: "Leaf in a jar", ask: "Does a leaf give off gas in the light?", do: "A leaf in a jar of water in the sun, another in the dark.", see: "Bubbles form on the sunlit leaf: oxygen from photosynthesis.", moduleId: "respiration-and-photosynthesis" },
+    { title: "Bone comparison", ask: "Do a wing and an arm share a plan?", do: "Trace a chicken wing, a cat foreleg and your own arm from pictures. Count the bones.", see: "The same bones in the same order, sized differently. A shared plan.", moduleId: "evidence-for-evolution" },
+    { title: "Yeast budding", ask: "Can you watch a cell divide?", do: "A drop of yeast in warm sugar water under a microscope every ten minutes.", see: "Buds grow and pinch off. One cell becomes two.", moduleId: "cell-division" },
   ],
   10: [
     { title: 'Red cabbage indicator', ask: 'How acidic is it?', do: 'Boil red cabbage; add the juice to vinegar, water, baking soda, soap.', see: 'Red to purple to green, mapping the pH scale.' },
@@ -18538,6 +19182,16 @@ export const EXPERIMENTS = {
     { title: 'Ionic conductivity', ask: 'Which solutions conduct?', do: 'A conductivity tester in salt, sugar, vinegar, tap water.', see: 'Ions carry current; sugar does not.' },
     { title: 'Rate and temperature', ask: 'Does heat speed a reaction?', do: 'Glow sticks in hot, room and ice water.', see: 'Hot glows brightest and dies fastest.' },
     { title: 'Precipitation reaction', ask: 'Can two clear liquids make a solid?', do: 'Epsom salt solution and ammonia, with an adult.', see: 'A white cloud of solid forms.' },
+    { title: "Titration with cabbage", moduleId: 'acids-and-bases', ask: "How much base neutralizes an acid?", do: "Red cabbage juice as an indicator. Add baking soda solution to vinegar drop by drop.", see: "The color flips at the balance point. That is neutralization." },
+    { title: "Electrolysis of water", moduleId: 'balancing-equations', ask: "Can electricity split water?", do: "Two pencils in salt water on a battery.", see: "Bubbles at both tips, twice as many at one. Hydrogen and oxygen." },
+    { title: "Conservation of mass", moduleId: 'balancing-equations', ask: "Does a reaction lose weight?", do: "Vinegar and baking soda in a sealed bag on a scale, before and after.", see: "Same mass. Atoms rearrange; none leave." },
+    { title: "Rate and surface area", moduleId: 'reaction-types', ask: "Does crushing speed a reaction?", do: "A whole tablet and a crushed tablet in water. Time both.", see: "Crushed finishes first. More surface, more collisions." },
+    { title: "Endothermic or exothermic", moduleId: 'reaction-types', ask: "Does a reaction warm or cool?", do: "A thermometer in water; add baking soda and vinegar, then calcium chloride.", see: "One cools, one warms. Reactions move heat both ways." },
+    { title: "Periodic table scavenger hunt", ask: "Where are the elements at home?", do: "Find ten elements in your kitchen and garage and mark them on a table.", see: "Metals cluster left, nonmetals right; the table is a map of what things are made of.", moduleId: "periodic-table" },
+    { title: "Conductivity test", ask: "Which solutions carry a current?", do: "Salt water, sugar water and tap water with a battery and a bulb.", see: "Salt water lights the bulb. Ionic compounds split into charges that carry current.", moduleId: "ionic-and-covalent" },
+    { title: "Counting by weighing", ask: "How do you count a mole?", do: "Weigh 100 paper clips, then weigh a big pile and divide.", see: "You count by weight when there are too many to count. A mole is counted the same way.", moduleId: "moles-and-molar-mass" },
+    { title: "Balloon in the freezer", ask: "What does cold do to a gas?", do: "Blow up a balloon, measure it, put it in the freezer for ten minutes.", see: "It shrinks. Cold particles move less and push less.", moduleId: "gas-laws" },
+    { title: "Dilution ladder", ask: "How does concentration change?", do: "Food coloring in water, then half of it into an equal amount of water, five times.", see: "Each cup is half as strong. Concentration is amount over volume.", moduleId: "concentration" },
   ],
   11: [
     { title: 'Measure the speed of sound', ask: 'How fast is sound?', do: 'Clap two boards 100 meters away while a partner times see-to-hear.', see: 'About 340 meters per second.' },
@@ -18556,6 +19210,14 @@ export const EXPERIMENTS = {
     { title: 'Static charge and distance', ask: 'Does the force fade with distance?', do: 'A charged balloon near hanging foil at several distances.', see: 'Force drops fast as distance grows.' },
     { title: 'Sound resonance tube', ask: 'Where does the tube sing?', do: 'A tube in water with a tuning fork above; raise until loud.', see: 'Resonance at a quarter wavelength.' },
     { title: 'Lens focal length', ask: 'Where does the image form?', do: 'A magnifying glass, a window, a wall; find the sharp image.', see: 'That distance is the focal length.' },
+    { title: "Projectile range", moduleId: 'speed-and-acceleration', ask: "What angle throws farthest?", do: "A rubber band launcher at 30, 45 and 60 degrees. Measure.", see: "45 degrees wins. Height and distance trade off." },
+    { title: "Hooke's law", moduleId: 'energy-kinds', ask: "Does a spring stretch evenly?", do: "Hang weights on a spring one at a time. Measure each stretch.", see: "Equal weights, equal stretches. Stretch is proportional to force." },
+    { title: "Ohm's law", moduleId: 'electricity', ask: "Does more voltage mean more current?", do: "A resistor on one, two, then three batteries with a meter.", see: "Current rises in step. V = IR." },
+    { title: "Speed of sound", moduleId: 'waves', ask: "How fast is sound?", do: "Clap by a far wall and time the echo, or use two phones apart.", see: "About 340 meters a second." },
+    { title: "Coffee cup calorimeter", moduleId: 'energy-kinds', ask: "How much heat is in a nut?", do: "Burn a nut under a can of water. Measure the temperature rise.", see: "Food is stored energy, and the water counts it." },
+    { title: "Cart collisions", ask: "Where does momentum go?", do: "Two toy carts on a smooth floor, one rolling into one at rest.", see: "The still cart moves off, the moving one slows. Momentum passes along.", moduleId: "momentum" },
+    { title: "Stairs and a stopwatch", ask: "What is your power?", do: "Time a climb up a flight of stairs; weight times height divided by time.", see: "The same work done faster is more power.", moduleId: "work-and-power" },
+    { title: "Two bulbs, two ways", ask: "Series or parallel?", do: "Wire two bulbs in a row, then side by side. Unscrew one bulb each time.", see: "In series the other goes dark; in parallel it stays lit.", moduleId: "series-and-parallel" },
   ],
   12: [
     { title: 'Rock cycle in a bag', ask: 'Can you make sedimentary rock?', do: 'Sand, gravel and a little glue pressed in a bag under books for a week.', see: 'Pieces pressed into one rock: sedimentary.' },
@@ -18574,6 +19236,14 @@ export const EXPERIMENTS = {
     { title: 'Plate boundary with foam', ask: 'What happens at each edge?', do: 'Foam slabs on honey; push, pull, slide.', see: 'Mountains, gaps, quakes.' },
     { title: 'Moon phase calendar', ask: 'Can you predict the next full moon?', do: 'Track the moon for a month; predict the next.', see: 'About 29.5 days, and you can be right.' },
     { title: 'Carbon footprint audit', ask: 'Where does your energy go?', do: 'Read a month of electricity and gas bills; list the biggest uses.', see: 'Heating and cooling usually top the list.' },
+    { title: "Rock identification", moduleId: 'rock-cycle', ask: "What kind of rock is this?", do: "A handful of rocks, a nail, vinegar, a hand lens.", see: "Fizz, scratch and grain tell igneous from sedimentary from metamorphic." },
+    { title: "Ocean currents in a tank", moduleId: 'ocean-currents', ask: "Where does cold salty water go?", do: "A clear tank, cold dyed salt water poured at one end.", see: "It sinks and creeps along the bottom. That drives the deep ocean." },
+    { title: "Half-life with coins", moduleId: 'half-life', ask: "How does decay count down?", do: "A hundred coins shaken and tipped out; remove the heads. Repeat.", see: "About half go each round. That is a half-life." },
+    { title: "Albedo", moduleId: 'climate-and-weather', ask: "Does color change how much heat is absorbed?", do: "Black and white cards with thermometers under them in the sun.", see: "Black warms more. Dark surfaces absorb light." },
+    { title: "Star brightness and distance", moduleId: 'life-of-a-star', ask: "Why do far stars look dim?", do: "A flashlight at one, two and three meters; measure the light on paper.", see: "Brightness falls with the square of distance." },
+    { title: "Litter transect", ask: "What has changed a place?", do: "Walk a line across a park and count what is not natural every ten steps.", see: "A map of human impact, measured rather than guessed.", moduleId: "human-impact" },
+    { title: "Renewable or not", ask: "Which resources come back?", do: "List everything used to make breakfast. Sort into renewable and not.", see: "The list shows which parts of a day are borrowed from the past.", moduleId: "natural-resources" },
+    { title: "Balloon universe", ask: "Why do galaxies move apart?", do: "Dots on a balloon with a marker. Blow it up slowly.", see: "Every dot moves away from every other, and the far ones fastest.", moduleId: "the-big-bang" },
   ],
 };
 export function experimentsFor(grade) { return EXPERIMENTS[grade] || []; }
@@ -19035,7 +19705,7 @@ export function weeklyNote(shownName, events, now) {
   const touched = [...new Set(attempts.map((e) => (getModule(e.moduleId) || {}).title).filter(Boolean))];
   const masteredNow = rows.filter((m) => m.mastered && m.masteredAt && new Date(m.masteredAt).getTime() >= week).map((m) => m.title);
   const colored = recent.filter((e) => e.type === 'colored').length;
-  const met = storiesRead(events).filter((r) => new Date(r.at).getTime() >= week).map((r) => STORY_TITLES[r.moduleId] ? { ...STORY_TITLES[r.moduleId], goal: (getModule(r.moduleId) || {}).title || '' } : null).filter(Boolean);
+  const met = storiesRead(events).filter((r) => new Date(r.at).getTime() >= week).map((r) => STORY_TITLES[r.moduleId] ? { ...STORY_TITLES[r.moduleId], goal: String(r.moduleId).startsWith('course:') ? ((getCourse(r.moduleId.slice(7)) || {}).title || '') : ((getModule(r.moduleId) || {}).title || '') } : null).filter(Boolean);
   const next = rows.find((m) => !m.mastered && m.attempts > 0) || rows.find((m) => !m.mastered);
   const listOf = (xs, cap) => xs.slice(0, cap).join(', ') + (xs.length > cap ? ` and ${xs.length - cap} more` : '');
   const parts = [];

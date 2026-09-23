@@ -1203,7 +1203,7 @@ ok('reset: history kept, but nothing counts as mastered afterwards', events.leng
   ok('an empty class says so', L.classSummary([]) === 'No students yet.');
   ok('September 11 and Veterans Day are remembered in any year, and ordinary days are not', L.remembranceFor('2026-09-11').id === 'september-11' && L.remembranceFor('2031-11-11').id === 'veterans-day' && !L.isRemembranceDay('2026-09-12') && !L.isRemembranceDay('2026-11-09'));
   ok('Memorial Day is the last Monday of May', L.remembranceFor('2026-05-25').id === 'memorial-day' && L.remembranceFor('2027-05-31').id === 'memorial-day' && !L.isRemembranceDay('2026-05-18') && !L.isRemembranceDay('2026-05-26'));
-  ok('every remembrance card has a title and three plain lines', L.REMEMBRANCE_DAYS.every((d) => d.title && d.lines.length === 3 && d.lines.every((l) => l.length > 40)));
+  ok('every remembrance card has a title and three or four plain lines', L.REMEMBRANCE_DAYS.every((d) => d.title && d.lines.length >= 3 && d.lines.length <= 4 && d.lines.every((l) => l.length > 30)));   // four lines in Mikey's words (2026-09-23)
   // Writing, marked by the educator
   { const wq = L.generateQuestion('wr4-topic-paragraph', 2);
     const sent = L.makeWritingEvent('topic-sentences', wq.prompt, 'Dogs make good pets. They are easy to feed. They love a walk. They sit with you.', [{ item: 'x', ticked: true }], '2026-09-14T10:00:00.000Z', '2026-09-14T10:05:00.000Z');
@@ -1345,5 +1345,52 @@ ok('no pairs deck repeats a card, so every card has exactly one twin', Object.en
   ok('recent misses count core and memory-check misses by module', miss.sound === 1 && miss['life-cycles'] === 1);
 }
 ok('remembrance days fire on their dates and stay quiet otherwise', L.remembranceFor('2026-05-25').id === 'memorial-day' && L.remembranceFor('2026-11-11').id === 'veterans-day' && L.remembranceFor('2026-09-11').id === 'september-11' && !L.remembranceFor('2026-05-18') && !L.remembranceFor('2026-03-03'));
+{
+  // Every read-aloud lesson yields a script with at least one spoken line and at least one card to show.
+  const bad = L.MODULES.filter((m) => (L.getCourse(m.courseId) || {}).readAloud).map((m) => [m.id, L.readAloudScript(m)]).filter(([, sc]) => !sc.length || !sc.some((st) => st.say && st.say.trim()) || !sc.some((st) => st.show));
+  ok('every read-aloud lesson has a script with a spoken line and a shown card', bad.length === 0, bad.map(([id]) => id).join(','));
+}
+ok('older students get longer rounds at the same bar', L.moduleRules('fraction-meaning').questions === 5 && L.moduleRules('ratios').questions === 8 && L.moduleRules('ratios').toMaster === 7 && L.moduleRules('functions').questions === 10 && L.moduleRules('functions').toMaster === 8 && L.buildAttempt('functions', 3, []).core.length === 10);
+{
+  // Let's Play rules (2026-09-23, Mikey): dots never overlap, connect-the-dots pictures grow down the list, the early
+  // list never puts two of a kind side by side, and older students' games are spread so the kinds take turns.
+  const close = Object.entries(L.DOT_SHAPES).map(([k, pts]) => [k, L.dotsTooClose(pts)]).filter(([, bad]) => bad.length);
+  ok('no connect-the-dots picture has two dots closer than the gap', close.length === 0, close.map(([k, bad]) => `${k}:${JSON.stringify(bad)}`).join(' '));
+  const dotGames = L.GAMES.filter((g) => g.kind === 'dots');
+  ok('every dots game draws a listed picture and none is the name', dotGames.every((g) => L.DOT_SHAPES[g.shape]) && !dotGames.some((g) => g.shape === 'name'));
+  const counts = dotGames.map((g) => L.DOT_SHAPES[g.shape].length);
+  ok('connect-the-dots pictures get more dots down the list', counts.every((n, i) => i === 0 || n >= counts[i - 1]), counts.join(','));
+  const early = L.gamesFor('2');   // what the oldest young learner sees, in list order
+  ok('the early games never put two of a kind side by side', early.every((g, i) => i === 0 || g.kind !== early[i - 1].kind), early.map((g) => g.kind[0]).join(''));
+  const older = L.GAMES.filter((g) => g.deck || g.kind === 'pong' || g.kind === 'sprint' || g.kind === 'order' || ((g.rule || g.jump || g.map || g.balance) && !g.young));
+  // Rule decks (2026-09-23): two named groups, nothing in both, every word short enough for a chip, and every rule game names one.
+  const deckBad = Object.entries(L.RULE_DECKS).flatMap(([id, d]) => [...(d.a.items.length < 4 || d.b.items.length < 4 ? [`${id} is short`] : []), ...d.a.items.filter((x) => d.b.items.includes(x)).map((x) => `${id} has ${x} in both`), ...[...d.a.items, ...d.b.items].filter((x) => !/^shape:/.test(x) && x.length > 11).map((x) => `${id}: ${x} is too long`)]);
+  ok('every rule deck has two clean groups of short chips', deckBad.length === 0, deckBad.join(', '));
+  ok('every rule game names a rule deck and the kinds are catch, path or buckets', L.GAMES.filter((g) => g.rule).every((g) => L.RULE_DECKS[g.rule] && ['catch', 'path', 'buckets'].includes(g.kind)));
+  ok('older lists take a rule, jump or map game only when it is not for the youngest', L.GAMES.filter((g) => (g.jump || g.map || g.balance) && !g.young).every((g) => L.GRADES.indexOf(g.minGrade) >= L.GRADES.indexOf('3')));
+  ok('the older list holds at least ten kinds of game', new Set(older.map((g) => g.kind)).size >= 10, [...new Set(older.map((g) => g.kind))].join(','));
+  // Frog jumps (2026-09-23): every deck's questions land on a tick of its own line, over many seeds.
+  const jumpBad = Object.entries(L.JUMP_DECKS).flatMap(([id, d]) => { const out = []; const rng = L.makeRng ? L.makeRng(7) : null; for (let sd = 1; sd <= 200; sd += 1) { let x = sd * 2654435761 % 4294967296; const r = () => { x = (x * 1664525 + 1013904223) % 4294967296; return x / 4294967296; }; const q = d.make(r); const steps = Math.round((q.answer - d.lo) / d.step); if (q.answer < d.lo || q.answer > d.hi || Math.abs(d.lo + steps * d.step - q.answer) > 1e-9 || q.from < d.lo || q.from > d.hi) out.push(`${id}: ${q.ask} = ${q.answer}`); } return out; });
+  ok('every frog jump lands on a tick of its line', jumpBad.length === 0, jumpBad.slice(0, 4).join(', '));
+  ok('every map region is a polygon of at least four points with a name, and every map game names a map', Object.values(L.MAPS).every((m) => m.regions.length >= 4 && m.regions.every((r) => (r.parts || [r.points]).every((pts) => pts.length >= 4) && r.name)) && L.GAMES.filter((g) => g.map).every((g) => L.MAPS[g.map]));
+  ok('the oceans and the hemispheres draw the continents behind them', Array.isArray(L.MAPS.oceans.land) && L.MAPS.oceans.land.length === 6 && Array.isArray(L.MAPS.hemispheres.land));
+  // A region's corners never sit inside another region of the same map (Europe and the states must tile, not overlap).
+  const overlapBad = ['europe', 'us-states', 'asia', 'africa', 'south-america'].flatMap((id) => { const rs = L.MAPS[id].regions; const out = []; rs.forEach((a, i) => rs.forEach((b, j) => { if (i !== j && (a.parts || [a.points]).some((pa) => pa.some((pt) => (b.parts || [b.points]).some((pb) => L.insidePolygon(pb, pt[0] + 0.01, pt[1] + 0.01))))) out.push(`${id}: ${a.id} in ${b.id}`); })); return out; });
+  ok('Europe, Asia, Africa and South America hold twelve countries each, the states map twenty-five, and no region corner lies inside another', [L.MAPS.europe, L.MAPS.asia, L.MAPS.africa, L.MAPS['south-america']].every((m) => m.regions.length === 12) && L.MAPS['us-states'].regions.length === 25 && overlapBad.length === 0, overlapBad.slice(0, 6).join(', '));
+  ok('a point in the top left of the world is in the Northern and Western hemispheres only', L.insidePolygon(L.MAPS.hemispheres.regions[0].points, 20, 10) && L.insidePolygon(L.MAPS.hemispheres.regions[2].points, 20, 10) && !L.insidePolygon(L.MAPS.hemispheres.regions[1].points, 20, 10));
+  ok('a point is found inside its own region and not in another', L.insidePolygon(L.MAPS.continents.regions[3].points, 50, 34) && !L.insidePolygon(L.MAPS.continents.regions[2].points, 50, 34));
+  ok('every map has an art serial, and the world maps share one', L.MAP_SERIALS.every((x) => /^M\d+$/.test(x)) && L.MAPS.oceans.art === L.MAPS.continents.art);
+  // Balance the scale: every target a deck makes can be built from its tray, over many seeds.
+  const balBad = Object.entries(L.BALANCE_DECKS).flatMap(([id, d]) => { const out = []; for (let sd = 1; sd <= 200; sd += 1) { let x = sd * 2654435761 % 4294967296; const r = () => { x = (x * 1664525 + 1013904223) % 4294967296; return x / 4294967296; }; const t = d.make(r); if (!L.balanceReachable(d.weights, t.value)) out.push(`${id}: ${t.show}`); } return out; });
+  ok('every balance target can be made from its weights', balBad.length === 0, balBad.slice(0, 4).join(', '));
+  ok('a balance game names a deck, and the young one is for the youngest only', L.GAMES.filter((g) => g.balance).every((g) => L.BALANCE_DECKS[g.balance]) && L.GAMES.filter((g) => g.balance && g.young).every((g) => L.GRADES.indexOf(g.minGrade) <= L.GRADES.indexOf('2')));
+  const spread = L.spreadKinds(older);
+  ok('spreading keeps every game exactly once', spread.length === older.length && new Set(spread.map((g) => g.id)).size === older.length);
+  const grade5 = L.spreadKinds(L.gamesFor('5').filter((g) => (g.deck || g.kind === 'pong' || g.kind === 'sprint' || g.kind === 'order') && (!g.courseId || g.courseId === 'science-5')));
+  ok('a grade 5 list alternates kinds with no run longer than two', grade5.every((g, i) => i < 2 || !(g.kind === grade5[i - 1].kind && g.kind === grade5[i - 2].kind)), grade5.map((g) => g.kind[0]).join(''));
+  const runs = spread.reduce((acc, g, i) => (i && g.kind === spread[i - 1].kind ? [...acc.slice(0, -1), acc[acc.length - 1] + 1] : [...acc, 1]), []);
+  ok('even the full walk-through list never runs one kind more than five deep', Math.max(...runs) <= 5, runs.join(','));
+  ok('titles of the early games are capitalized words', early.every((g) => g.title.split(' ').filter((w) => !['and', 'the', 'on'].includes(w)).every((w) => /^[A-Z]/.test(w))), early.map((g) => g.title).join(' | '));
+}
 console.log(`\n${pass} passed, ${fail} failed`);
-process.exit(fail ? 1 : 0);
+process.exitCode = fail ? 1 : 0;   // never process.exit(): it can drop the last lines of a piped stdout (2026-09-23)

@@ -70,4 +70,4 @@ ok('no key idea runs a sentence past 28 words', runOn.length === 0, runOn.slice(
 ok('every lesson sentence ends with a mark', noEnd.length === 0, noEnd.slice(0, 3).join(' | '));
 ok('every lesson sentence starts with a capital', lower.length === 0, lower.slice(0, 3).join(' | '));
 console.log(`\n${pass} passed, ${fail} failed`);
-process.exit(fail ? 1 : 0);
+process.exitCode = fail ? 1 : 0;   // never process.exit(): it can drop the last lines of a piped stdout (2026-09-23)

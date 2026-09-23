@@ -31,4 +31,4 @@ for (const [id, cs] of Object.entries(COURSE_STORIES)) {
   ok(`${id}: course story stays under 350 words and has three paragraphs, a title and a scene`, words <= 350 && cs.words.length === 3 && !!cs.title && !!cs.alt && /^CS\d+$/.test(cs.art), `${words} words`);
 }
 console.log(`\n${pass} passed, ${fail} failed`);
-process.exit(fail ? 1 : 0);
+process.exitCode = fail ? 1 : 0;   // never process.exit(): it can drop the last lines of a piped stdout (2026-09-23)

@@ -31,4 +31,4 @@ for (const f of files) {
   ok(`${f}: the certificate helpers accept a restored student with no certificate field`, Array.isArray(L.certificatesPending(both.roster.students.find((s) => s.id !== 'S-new'), ['K'])));
 }
 console.log(`\n${pass} passed, ${fail} failed`);
-process.exit(fail ? 1 : 0);
+process.exitCode = fail ? 1 : 0;   // never process.exit(): it can drop the last lines of a piped stdout (2026-09-23)

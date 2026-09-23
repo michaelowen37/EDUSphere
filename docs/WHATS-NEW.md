@@ -2,6 +2,22 @@
 
 The newest block is what educators see once, in a pop-up on the classroom page, after each update. Keep each item one plain sentence. The date line is the version stamp.
 
+## 2026-09-23
+
+- Maps wait for their paintings now (a map appears once its picture is in place); Africa and South America are added; every grade 5 math and science story is a real story.
+- Where is it? reaches Asia and twenty-five states, and every grade 4 story is now a real story.
+- Where is it? reaches Europe and the ten biggest states; every grade 4 math and science story is now a real story.
+- Where is it? gained the oceans and the hemispheres; every grade 3 story is now a real story; the Story log shows fewer rows before Show more and says plainly when a student has no long stories yet.
+- Balance the scale, a new game, and a map of the United States regions; sixteen grade 3 stories retold as real stories.
+- Two more games: Frog jumps along a number line (sums, take away, fractions, negatives) and Where is it? on a map (the continents, the Texas regions).
+- The Story log has one student picker and one toggle, with Short Stories and Long Stories on every view.
+- Three new kinds of game for every age: Catch (a basket under falling chips), Path (stepping stones through a grid) and Buckets (drag each chip to its group), twenty games from circles to acids and bases.
+- A full PIN opens the door on its own, for students and educators.
+- Let's Read wears the crayon strip like Let's Play, and the story log keeps course stories to three with Show more.
+- Games: puzzle pieces drag, the maze has its star, the pictures to join grow from a kite to a rocket, and pairs never spill off a phone.
+- Quick fire costs a point for a wrong answer and keeps your longest streak; In order lets you take a number back; Pong only ever speeds up.
+- Life skills: breathing exercises for calming down.
+
 ## 2026-09-22
 
 - Certificates: four templates, photos, and Spanish, from a student's card or their report when a grade is finished.
@@ -10,6 +26,8 @@ The newest block is what educators see once, in a pop-up on the classroom page, 
 - Let's Play: games beside Let's Color, one more for every course mastered.
 - Sign in with fingerprint or face, and reset a forgotten PIN the same way.
 - Another way can bring its own picture, explanations that list things read as lists, and dragging a student card scrolls the page for you.
+- Sixteen more lessons deepen the other eight core courses, older students get longer rounds, and every experiment is told the fun way.
+- Sixteen new lessons deepen eight core courses, from area and perimeter to fossils and the Industrial Revolution.
 - A repair pass: every grade 1 lesson opens, every drawing fits its card, and memory checks go where a student has missed most.
 - Every course has its own story now, told through four characters growing up. A repeat round asks new questions, and Practice the missed ones gives a triple dose with its own celebration.
 - A Music subject for grades 1 and 4, best scores on the game tiles, and a Story log from each student's report.

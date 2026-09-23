@@ -51,11 +51,13 @@ const educatorLogin = async () => {
   await page.waitForTimeout(150);
   if ((await state()).screen === 'educator-pin') {
     await page.fill('input[placeholder="PIN"]', '2468');
-    await tap('Open');
+    await openIfStill();
   }
   await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'educator-pick');
   await dismissBackupNudge();
 };
+// A full, right PIN opens the classroom on its own (2026-09-23); Open is only there to tap if it did not.
+const openIfStill = async () => { await page.waitForTimeout(120); if ((await state()).screen === 'educator-pin') await tap('Open'); };
 const openSubject = async (name, marker) => { if (!(await text()).includes(marker)) await page.getByRole('button', { name: new RegExp('^' + name) }).click(); };
 
 // Answers the current question right or wrong using the page's own question object.
@@ -166,6 +168,22 @@ await page.locator('input[placeholder="New PIN"]').fill('1234');
 await page.getByRole('button', { name: 'Save PIN' }).first().click();
 await page.waitForTimeout(300);
 ok('a PIN saved from the card is kept', (await page.getByRole('button', { name: /^Change PIN/ }).count()) >= 1);
+// Student PIN sign-in (2026-09-23): the student with the PIN is found from the welcome grid; four right digits open
+// the record on their own, and four wrong ones clear the box and say so.
+await page.getByRole('button', { name: 'Sign out' }).click();
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'welcome');
+{
+  const names = await page.locator('button.edu-name').evaluateAll((els) => els.map((b) => b.getAttribute('aria-label')));
+  let asked = false;
+  for (const nm of names) { await page.getByRole('button', { name: nm, exact: true }).click(); await page.waitForTimeout(150); if (await page.locator('input[placeholder="Your PIN"]').count()) { asked = true; break; } await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview'); await tap('Exit'); await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'welcome'); }
+  ok('a student with a PIN is asked for it on sign-in', asked);
+  await page.fill('input[placeholder="Your PIN"]', '9999'); await page.waitForTimeout(200);
+  ok('a wrong student PIN clears the box and says so', (await text()).includes('That is not the PIN') && (await page.inputValue('input[placeholder="Your PIN"]')) === '');
+  await page.fill('input[placeholder="Your PIN"]', '1234');
+  ok('a full, right student PIN opens the record without a tap', await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview', null, { timeout: 3000 }).then(() => true).catch(() => false));
+  await tap('Exit'); await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'welcome');
+}
+await educatorLogin();
 await page.getByRole('button', { name: /^Change PIN/ }).first().click();
 await page.getByRole('button', { name: 'Remove PIN' }).first().click();
 await page.waitForTimeout(300);
@@ -423,7 +441,8 @@ if (!(await createAccountIfNeeded())) {
     ok('the reset asks for a backup of this classroom', (await text()).includes('select a backup file or type the recovery code'));
     await page.getByRole('button', { name: 'Cancel' }).click();
     await page.fill('input[placeholder="PIN"]', '2468');
-    await tap('Open');
+    ok('a full, right PIN opens the classroom without a tap', await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'educator-pick', null, { timeout: 3000 }).then(() => true).catch(() => false));
+    await openIfStill();
   } else {
     ok('coming back within five minutes skips the PIN', true);
   }
@@ -736,4 +755,4 @@ ok('no browser errors during the whole run', errors.length === 0);
 if (errors.length) console.log(errors.slice(0, 5).join('\n'));
 await browser.close();
 console.log(`\n${pass} passed, ${fail} failed`);
-process.exit(fail ? 1 : 0);
+process.exitCode = fail ? 1 : 0;   // never process.exit(): it can drop the last lines of a piped stdout (2026-09-23)

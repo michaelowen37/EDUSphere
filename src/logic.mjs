@@ -967,12 +967,24 @@ export function isPreReader(courseId) {
 // How many questions a module asks, and how many must be right. A course can override
 // both, because five quick questions suit counting while a physics module may want three
 // long ones. Everything downstream reads these rather than assuming the default.
+// The script a read-aloud lesson speaks: the lesson's own script, or one line per example caption, or one line per
+// paragraph with the words inside [[ ]] shown on a card and never spoken. Every read-aloud lesson must yield one.
+export function readAloudScript(mod) {
+  if (!mod || !mod.lesson) return [];
+  if (Array.isArray(mod.lesson.script) && mod.lesson.script.length) return mod.lesson.script;
+  if (mod.lesson.example) return [{ say: mod.lesson.example.caption, show: mod.lesson.example }];
+  return (mod.lesson.paragraphs || []).map((t) => { const shown = [...t.matchAll(/\[\[(.*?)\]\]/g)].map((m) => m[1].trim()); const say = t.replace(/\[\[.*?\]\]/g, ' ').replace(/\s+/g, ' ').trim(); return { say, show: shown.length ? { kind: 'letters', text: shown.join('   ') } : null }; });
+}
 export function moduleRules(moduleId) {
   const mod = getModule(moduleId);
   const course = mod ? getCourse(mod.courseId) : null;
+  // Older students get longer rounds at the same bar: eight questions from grade 6 (seven to master), ten from grade 9
+  // (eight to master). A module or course that sets its own numbers keeps them.
+  const at = course ? GRADES.indexOf(course.grade) : -1;
+  const byGrade = at >= GRADES.indexOf('9') ? { questions: 10, toMaster: 8 } : at >= GRADES.indexOf('6') ? { questions: 8, toMaster: 7 } : null;
   return {
-    questions: (mod && mod.questions) || (course && course.questionsPerAttempt) || CONFIG.CORE_QUESTIONS_PER_ATTEMPT,
-    toMaster: (mod && mod.toMaster) || (course && course.questionsToMaster) || CONFIG.MASTERY_MIN_CORRECT,
+    questions: (mod && mod.questions) || (course && course.questionsPerAttempt) || (byGrade && byGrade.questions) || CONFIG.CORE_QUESTIONS_PER_ATTEMPT,
+    toMaster: (mod && mod.toMaster) || (course && course.questionsToMaster) || (byGrade && byGrade.toMaster) || CONFIG.MASTERY_MIN_CORRECT,
   };
 }
 
@@ -1002,19 +1014,64 @@ export function pictureTitle(pic) { return pic === 'my-name' ? 'My name' : pic.s
 // mastered. A game keeps the coloring clock: five minutes, then a fifteen-minute rest. The list is
 // in the order they unlock; a game with a minGrade waits for a student whose courses reach it.
 export const GAMES = [
-  { id: 'dots-star', kind: 'dots', title: 'Star', shape: 'star' },
+  // The early games (2026-09-23, Mikey): titles in capitals, no two of a kind side by side, and the connect-the-dots
+  // pictures grow from four dots to twelve down the list, so the last is the most complex. The name game is gone.
+  { id: 'dots-kite', kind: 'dots', title: 'Kite', shape: 'kite' },
   { id: 'pairs-shapes', kind: 'pairs', title: 'Pairs', pairs: 3 },
-  { id: 'sort-size', kind: 'sort', title: 'Big and small', by: 'size' },
+  { id: 'sort-size', kind: 'sort', title: 'Big and Small', by: 'size' },
+  { id: 'catch-circles', kind: 'catch', title: 'Catch the Circles', rule: 'circles', young: true },
   { id: 'maze-small', kind: 'maze', title: 'Maze', cells: 6 },
   { id: 'jigsaw-4', kind: 'jigsaw', title: 'Puzzle', side: 2 },
-  { id: 'dots-name', kind: 'dots', title: 'My name', shape: 'name' },
-  { id: 'pairs-more', kind: 'pairs', title: 'More pairs', pairs: 4 },
-  { id: 'sort-color', kind: 'sort', title: 'Red and blue', by: 'color' },
-  { id: 'dots-house', kind: 'dots', title: 'House', shape: 'house' },
-  { id: 'maze-big', kind: 'maze', title: 'Big maze', cells: 9, minGrade: 'K' },
   { id: 'dots-boat', kind: 'dots', title: 'Boat', shape: 'boat' },
-  { id: 'jigsaw-9', kind: 'jigsaw', title: 'Big puzzle', side: 3, minGrade: '1' },
-  { id: 'pairs-many', kind: 'pairs', title: 'Many pairs', pairs: 6, minGrade: '1' },
+  { id: 'pairs-more', kind: 'pairs', title: 'More Pairs', pairs: 4 },
+  { id: 'path-circles', kind: 'path', title: 'Step on the Circles', rule: 'circles', young: true, minGrade: 'K' },
+  { id: 'sort-color', kind: 'sort', title: 'Red and Blue', by: 'color' },
+  { id: 'dots-house', kind: 'dots', title: 'House', shape: 'house' },
+  { id: 'maze-big', kind: 'maze', title: 'Big Maze', cells: 9, minGrade: 'K' },
+  { id: 'dots-star', kind: 'dots', title: 'Star', shape: 'star' },
+  { id: 'catch-red', kind: 'catch', title: 'Catch the Red Ones', rule: 'red', young: true, minGrade: '1' },
+  { id: 'jump-sums', kind: 'jump', title: 'Frog Jumps: Sums', jump: 'sums', young: true, minGrade: '1' },
+  { id: 'jigsaw-9', kind: 'jigsaw', title: 'Big Puzzle', side: 3, minGrade: '1' },
+  { id: 'pairs-many', kind: 'pairs', title: 'Many Pairs', pairs: 6, minGrade: '1' },
+  // Three kinds that work on any topic (2026-09-23, Mikey: visual, hands-on games over decks): Catch (a basket under
+  // falling chips), Path (stepping stones through a grid) and Buckets (drag every chip to its group). Each is paired
+  // with the rule deck and grade it teaches best; see RULE_DECKS.
+  { id: 'path-even', kind: 'path', title: 'Step on the even numbers', rule: 'even-odd', minGrade: '3' },
+  { id: 'catch-multiples-3', kind: 'catch', title: 'Catch the multiples of 3', rule: 'multiples-3', minGrade: '3' },
+  { id: 'buckets-solid-liquid', kind: 'buckets', title: 'Solid or liquid', rule: 'solid-liquid', minGrade: '3' },
+  { id: 'buckets-noun-verb', kind: 'buckets', title: 'Noun or verb', rule: 'noun-verb', minGrade: '3' },
+  { id: 'catch-living', kind: 'catch', title: 'Catch the living things', rule: 'living', minGrade: '3' },
+  { id: 'path-multiples-4', kind: 'path', title: 'Step on the multiples of 4', rule: 'multiples-4', minGrade: '4' },
+  { id: 'buckets-conductors', kind: 'buckets', title: 'Conductor or insulator', rule: 'conductor-insulator', minGrade: '4' },
+  { id: 'catch-halves', kind: 'catch', title: 'Catch the halves', rule: 'halves', minGrade: '4' },
+  { id: 'buckets-mammals', kind: 'buckets', title: 'Mammal or not', rule: 'mammals', minGrade: '4' },
+  { id: 'path-primes', kind: 'path', title: 'Step on the primes', rule: 'primes', minGrade: '5' },
+  { id: 'buckets-adjective-adverb', kind: 'buckets', title: 'Adjective or adverb', rule: 'adjective-adverb', minGrade: '5' },
+  { id: 'catch-multiples-7', kind: 'catch', title: 'Catch the multiples of 7', rule: 'multiples-7', minGrade: '5' },
+  { id: 'buckets-element-compound', kind: 'buckets', title: 'Element or compound', rule: 'element-compound', minGrade: '6' },
+  { id: 'catch-renewable', kind: 'catch', title: 'Catch the renewable ones', rule: 'renewable', minGrade: '6' },
+  { id: 'buckets-state-country', kind: 'buckets', title: 'State or country', rule: 'state-country', minGrade: '6' },
+  { id: 'path-squares', kind: 'path', title: 'Step on the square numbers', rule: 'squares', minGrade: '7' },
+  { id: 'catch-acids', kind: 'catch', title: 'Catch the acids', rule: 'acid-base', minGrade: '10' },
+  // Number line jumps and Where is it? (2026-09-23): a frog dragged to the answer's tick, and a map to tap.
+  { id: 'jump-fractions', kind: 'jump', title: 'Frog jumps: fractions', jump: 'fractions', minGrade: '4' },
+  { id: 'jump-integers', kind: 'jump', title: 'Frog jumps: negative numbers', jump: 'integers', minGrade: '6' },
+  { id: 'map-continents', kind: 'map', title: 'Where is it? The continents', map: 'continents', minGrade: '3' },
+  { id: 'map-texas', kind: 'map', title: 'Where is it? Texas regions', map: 'texas', minGrade: '4' },
+  { id: 'map-us-regions', kind: 'map', title: 'Where is it? The United States', map: 'us-regions', minGrade: '5' },
+  { id: 'map-oceans', kind: 'map', title: 'Where is it? The oceans', map: 'oceans', minGrade: '3' },
+  { id: 'map-hemispheres', kind: 'map', title: 'Where is it? The hemispheres', map: 'hemispheres', minGrade: '4' },
+  { id: 'map-us-states', kind: 'map', title: 'Where is it? The biggest states', map: 'us-states', minGrade: '5' },
+  { id: 'map-europe', kind: 'map', title: 'Where is it? Europe', map: 'europe', minGrade: '6' },
+  { id: 'map-asia', kind: 'map', title: 'Where is it? Asia', map: 'asia', minGrade: '6' },
+  { id: 'map-africa', kind: 'map', title: 'Where is it? Africa', map: 'africa', minGrade: '6' },
+  { id: 'map-south-america', kind: 'map', title: 'Where is it? South America', map: 'south-america', minGrade: '6' },
+  // Balance the scale (2026-09-23): weights dragged onto the right pan until it matches the left.
+  { id: 'balance-ten', kind: 'balance', title: 'Balance the Scale', balance: 'ten', young: true, minGrade: '1' },
+  { id: 'balance-times', kind: 'balance', title: 'Balance the scale: times', balance: 'times', minGrade: '3' },
+  { id: 'balance-fractions', kind: 'balance', title: 'Balance the scale: fractions', balance: 'fractions', minGrade: '4' },
+  { id: 'balance-expressions', kind: 'balance', title: 'Balance the scale: expressions', balance: 'expressions', minGrade: '6' },
+  { id: 'buckets-acid-base', kind: 'buckets', title: 'Acid or base', rule: 'acid-base', minGrade: '10' },
   // Matching pairs for older students: each card's twin says the same thing another way.
   { id: 'pairs-fractions', kind: 'pairs', title: 'Fraction twins', pairs: 6, minGrade: '3', deck: 'fractions' },
   { id: 'pairs-vocabulary', kind: 'pairs', title: 'Word meanings', pairs: 6, minGrade: '4', deck: 'vocabulary' },
@@ -1034,10 +1091,225 @@ export const GAMES = [
   { id: 'order-timeline', kind: 'order', title: 'In order: timeline', minGrade: '5', deck: 'timeline' },
   { id: 'order-math', kind: 'order', title: 'In order: the math way', minGrade: '5', deck: 'mathsteps' },
   ...['3', '4', '5', '6', '7', '8', '9', '10', '11', '12'].map((g) => ({ id: `pairs-science-${g}`, kind: 'pairs', title: `Grade ${g} science words`, pairs: 6, minGrade: g, deck: `science-${g}`, courseId: `science-${g}` })),
-  { id: 'dots-kite', kind: 'dots', title: 'Kite', shape: 'kite' },
-  { id: 'maze-huge', kind: 'maze', title: 'Huge maze', cells: 12, minGrade: '2' },
+  { id: 'dots-fish', kind: 'dots', title: 'Fish', shape: 'fish' },
+  { id: 'jump-differences', kind: 'jump', title: 'Frog Jumps: Take Away', jump: 'differences', young: true, minGrade: '2' },
+  { id: 'maze-huge', kind: 'maze', title: 'Huge Maze', cells: 12, minGrade: '2' },
+  { id: 'dots-rocket', kind: 'dots', title: 'Rocket', shape: 'rocket' },
   { id: 'pong', kind: 'pong', title: 'Pong', minGrade: '2' },
 ];
+// Older students' games in a spread order (2026-09-23, Mikey): the same kind never sits beside itself while another kind
+// is still waiting, so a list of decks and Quick fire rounds alternates instead of landing in blocks. Once only one kind
+// is left, its games simply follow one another.
+export function spreadKinds(games) {
+  // Each kind is spread evenly along the list (a kind with three games lands about a third of the way apart), and
+  // when the kind that is due next is the one just placed, another kind that is nearly due goes first instead.
+  const byKind = new Map();
+  for (const g of games) { if (!byKind.has(g.kind)) byKind.set(g.kind, []); byKind.get(g.kind).push(g); }
+  const queues = [...byKind.values()].map((items) => ({ items, stride: games.length / items.length, due: games.length / items.length / 2 }));
+  const out = []; let last = null;
+  while (out.length < games.length) {
+    const ready = queues.filter((q) => q.items.length).sort((a, b) => a.due - b.due);
+    const other = ready.find((q) => q.items[0].kind !== last && q.due - ready[0].due < 1.5);
+    const q = ready[0].items[0].kind === last && other ? other : ready[0];
+    out.push(q.items.shift()); q.due += q.stride; last = q.items.length || true ? out[out.length - 1].kind : last;
+  }
+  return out;
+}
+// Rule decks: two named groups of short things a student tells apart by eye and hand. Catch catches group A and lets
+// group B fall; Path steps only on group A; Buckets drags every chip to its group. Number groups are computed; a word
+// never runs past eleven characters, so it fits a chip; 'shape:kind:color' items are drawn, for the youngest.
+const numbersWhere = (test, lo, hi) => { const out = []; for (let n = lo; n <= hi; n += 1) if (test(n)) out.push(String(n)); return out; };
+const isPrime = (n) => n > 1 && numbersWhere((d) => n % d === 0, 2, Math.floor(Math.sqrt(n))).length === 0;
+const shapesOf = (kinds, colors) => kinds.flatMap((k) => colors.map((c) => `shape:${k}:${c}`));
+export const RULE_DECKS = {
+  circles: { a: { label: 'Circles', items: shapesOf(['circle'], ['red', 'blue', 'green', 'yellow']) }, b: { label: 'Other shapes', items: shapesOf(['square', 'triangle'], ['red', 'blue', 'green', 'yellow']) } },
+  red: { a: { label: 'Red ones', items: shapesOf(['circle', 'square', 'triangle', 'diamond'], ['red']) }, b: { label: 'Blue ones', items: shapesOf(['circle', 'square', 'triangle', 'diamond'], ['blue']) } },
+  'even-odd': { a: { label: 'Even numbers', items: numbersWhere((n) => n % 2 === 0, 2, 40) }, b: { label: 'Odd numbers', items: numbersWhere((n) => n % 2 === 1, 1, 39) } },
+  'multiples-3': { a: { label: 'Multiples of 3', items: numbersWhere((n) => n % 3 === 0, 3, 36) }, b: { label: 'Other numbers', items: numbersWhere((n) => n % 3 !== 0, 1, 40) } },
+  'multiples-4': { a: { label: 'Multiples of 4', items: numbersWhere((n) => n % 4 === 0, 4, 48) }, b: { label: 'Other numbers', items: numbersWhere((n) => n % 4 !== 0, 1, 50) } },
+  'multiples-7': { a: { label: 'Multiples of 7', items: numbersWhere((n) => n % 7 === 0, 7, 84) }, b: { label: 'Other numbers', items: numbersWhere((n) => n % 7 !== 0, 1, 90) } },
+  primes: { a: { label: 'Prime numbers', items: numbersWhere(isPrime, 2, 60) }, b: { label: 'Not prime', items: numbersWhere((n) => !isPrime(n), 4, 60) } },
+  squares: { a: { label: 'Square numbers', items: numbersWhere((n) => Number.isInteger(Math.sqrt(n)), 1, 144) }, b: { label: 'Not square', items: numbersWhere((n) => !Number.isInteger(Math.sqrt(n)), 2, 99) } },
+  halves: { a: { label: 'Equal to one half', items: ['2/4', '3/6', '4/8', '5/10', '6/12', '7/14', '8/16', '10/20'] }, b: { label: 'Not one half', items: ['2/3', '3/4', '1/3', '2/5', '3/5', '5/8', '1/4', '4/6'] } },
+  'noun-verb': { a: { label: 'Nouns', items: ['dog', 'city', 'river', 'teacher', 'apple', 'bridge', 'pencil', 'garden', 'ocean', 'doctor'] }, b: { label: 'Verbs', items: ['run', 'jump', 'think', 'sing', 'build', 'swim', 'read', 'climb', 'cook', 'laugh'] } },
+  'adjective-adverb': { a: { label: 'Adjectives', items: ['quick', 'tall', 'bright', 'soft', 'angry', 'tiny', 'loud', 'brave', 'cold', 'sweet'] }, b: { label: 'Adverbs', items: ['quickly', 'softly', 'loudly', 'bravely', 'gently', 'slowly', 'rarely', 'boldly', 'calmly', 'sadly'] } },
+  'solid-liquid': { a: { label: 'Solids', items: ['rock', 'ice', 'wood', 'spoon', 'brick', 'coin', 'book', 'bone', 'chalk', 'nail'] }, b: { label: 'Liquids', items: ['milk', 'water', 'juice', 'oil', 'honey', 'rain', 'syrup', 'soup', 'tea', 'lava'] } },
+  living: { a: { label: 'Living things', items: ['tree', 'fish', 'moss', 'ant', 'bird', 'mushroom', 'frog', 'grass', 'snake', 'bee'] }, b: { label: 'Not living', items: ['rock', 'cloud', 'spoon', 'fire', 'river', 'car', 'wind', 'sand', 'chair', 'coin'] } },
+  'conductor-insulator': { a: { label: 'Conductors', items: ['copper', 'iron', 'silver', 'gold', 'steel', 'aluminum', 'nickel', 'tin'] }, b: { label: 'Insulators', items: ['rubber', 'wood', 'glass', 'plastic', 'cloth', 'paper', 'cork', 'wax'] } },
+  mammals: { a: { label: 'Mammals', items: ['whale', 'bat', 'dog', 'cow', 'horse', 'dolphin', 'mouse', 'bear', 'deer', 'goat'] }, b: { label: 'Not mammals', items: ['shark', 'frog', 'snake', 'eagle', 'ant', 'trout', 'lizard', 'crab', 'owl', 'bee'] } },
+  'element-compound': { a: { label: 'Elements', items: ['gold', 'oxygen', 'iron', 'helium', 'carbon', 'sodium', 'copper', 'neon', 'silver', 'zinc'] }, b: { label: 'Compounds', items: ['water', 'salt', 'sugar', 'rust', 'ammonia', 'methane', 'glucose', 'quartz', 'chalk', 'ethanol'] } },
+  renewable: { a: { label: 'Renewable', items: ['sunlight', 'wind', 'wood', 'tides', 'rain', 'corn', 'wool', 'waves', 'bamboo', 'cotton'] }, b: { label: 'Not renewable', items: ['coal', 'oil', 'gas', 'copper', 'gold', 'uranium', 'diamond', 'tin', 'silver', 'iron ore'] } },
+  'state-country': { a: { label: 'US states', items: ['Texas', 'Ohio', 'Maine', 'Utah', 'Iowa', 'Idaho', 'Nevada', 'Kansas', 'Oregon', 'Alaska'] }, b: { label: 'Countries', items: ['Peru', 'Kenya', 'Japan', 'Spain', 'Chile', 'Cuba', 'Egypt', 'Italy', 'India', 'Ghana'] } },
+  'acid-base': { a: { label: 'Acids', items: ['lemon', 'vinegar', 'soda', 'tomato', 'coffee', 'orange', 'lime', 'battery'] }, b: { label: 'Bases', items: ['soap', 'bleach', 'ammonia', 'antacid', 'lye', 'egg white', 'seawater', 'toothpaste'] } },
+};
+export function ruleDeck(id) { return RULE_DECKS[id] || null; }
+// Number line jumps (2026-09-23): a frog on a drawn line; each round asks eight small sums and the frog is dragged to
+// the answer's tick. A deck names the line (lo, hi, step, how ticks are labelled) and how a question is made.
+export const JUMP_DECKS = {
+  sums: { title: 'Sums to 10', lo: 0, hi: 10, step: 1, make: (rng) => { const a = randInt(rng, 0, 7); const b = randInt(rng, 1, 10 - a); return { ask: `${a} + ${b}`, answer: a + b, from: a }; } },
+  differences: { title: 'Take away within 20', lo: 0, hi: 20, step: 1, make: (rng) => { const a = randInt(rng, 5, 20); const b = randInt(rng, 1, a); return { ask: `${a} − ${b}`, answer: a - b, from: a }; } },
+  integers: { title: 'Negative numbers', lo: -10, hi: 10, step: 1, make: (rng) => { const a = randInt(rng, -8, 8); const b = randInt(rng, 1, 6) * (rng() < 0.5 ? -1 : 1); const ans = a + b; if (ans < -10 || ans > 10) return { ask: `${a} − ${b}`, answer: a - b, from: a }; return { ask: `${a} ${b < 0 ? '−' : '+'} ${Math.abs(b)}`, answer: ans, from: a }; } },
+  fractions: { title: 'Fractions on a line', lo: 0, hi: 2, step: 0.25, label: (v) => ({ 0: '0', 0.25: '¼', 0.5: '½', 0.75: '¾', 1: '1', 1.25: '1¼', 1.5: '1½', 1.75: '1¾', 2: '2' })[v] || '', make: (rng) => { const a = randInt(rng, 1, 5) * 0.25; const b = randInt(rng, 1, 3) * 0.25; const l = (v) => ({ 0.25: '¼', 0.5: '½', 0.75: '¾', 1: '1', 1.25: '1¼', 1.5: '1½', 1.75: '1¾' })[v]; return a + b <= 2 ? { ask: `${l(a)} + ${l(b)}`, answer: a + b, from: a } : { ask: `${l(a)} − ${l(b)}`, answer: a - b, from: a }; } },
+};
+export const JUMPS_PER_ROUND = 8;
+// Maps for Where is it? (2026-09-23): regions drawn as simple polygons in a box, named for the courses that teach them.
+// The shapes are schematic on purpose; what matters is that each region is where it really is, relative to the others.
+export const MAPS = {
+  texas: { title: 'Texas regions', art: 'M2', box: [0, 0, 100, 100], water: false, regions: [
+    { id: 'mountains', name: 'Mountains and Basins', points: [[2, 56], [26, 56], [30, 78], [26, 74], [20, 70], [14, 66], [8, 64], [4, 60]] },
+    { id: 'great-plains', name: 'the Great Plains', points: [[26, 2], [44, 2], [44, 32], [48, 44], [52, 62], [48, 72], [34, 80], [30, 78], [26, 56]] },
+    { id: 'north-central', name: 'the North Central Plains', points: [[44, 32], [66, 33], [60, 46], [56, 58], [52, 62], [48, 44]] },
+    { id: 'coastal', name: 'the Coastal Plains', points: [[66, 33], [84, 33], [85, 44], [84, 54], [86, 62], [82, 68], [74, 74], [66, 80], [58, 86], [52, 92], [48, 98], [44, 96], [40, 90], [34, 84], [48, 72], [52, 62], [56, 58], [60, 46]] },
+  ] },
+  continents: { title: 'The continents', art: 'M1', box: [0, 0, 100, 62], water: true, regions: [
+    { id: 'north-america', name: 'North America', points: [[8, 6], [30, 4], [36, 10], [32, 18], [26, 24], [22, 30], [16, 26], [10, 20], [6, 12]] },
+    { id: 'south-america', name: 'South America', points: [[20, 32], [28, 32], [33, 38], [30, 48], [26, 58], [21, 54], [18, 44]] },
+    { id: 'europe', name: 'Europe', points: [[44, 8], [56, 6], [58, 14], [52, 20], [46, 20], [42, 14]] },
+    { id: 'africa', name: 'Africa', points: [[42, 22], [56, 22], [60, 32], [56, 44], [50, 50], [46, 44], [42, 32]] },
+    { id: 'asia', name: 'Asia', points: [[58, 6], [90, 4], [94, 14], [88, 26], [76, 30], [66, 32], [60, 28], [59, 16]] },
+    { id: 'australia', name: 'Australia', points: [[76, 40], [88, 40], [92, 48], [84, 54], [76, 50]] },
+  ] },
+  // The oceans and the hemispheres share the world painting (M1); the continents are drawn as plain land behind them.
+  // Regions here may be several polygons (parts) and may overlap; the game judges a tap against the asked region first.
+  oceans: { title: 'The oceans', art: 'M1', box: [0, 0, 100, 62], water: true, blueRegions: true, land: 'continents', regions: [
+    { id: 'pacific', name: 'the Pacific Ocean', parts: [[[0, 4], [7, 4], [5, 12], [9, 22], [16, 28], [19, 34], [17, 44], [20, 56], [16, 58], [0, 58]], [[95, 4], [100, 4], [100, 58], [94, 58], [94, 50], [95, 32], [96, 20]]] },
+    { id: 'atlantic', name: 'the Atlantic Ocean', points: [[36, 10], [42, 10], [42, 22], [42, 32], [46, 44], [48, 52], [40, 58], [26, 58], [26, 56], [32, 44], [33, 38], [30, 30], [36, 22]] },
+    { id: 'indian', name: 'the Indian Ocean', points: [[60, 32], [76, 32], [76, 40], [76, 52], [70, 58], [54, 58], [56, 46], [60, 40]] },
+    { id: 'arctic', name: 'the Arctic Ocean', points: [[0, 0], [100, 0], [100, 4], [0, 4]] },
+    { id: 'southern', name: 'the Southern Ocean', points: [[0, 58], [100, 58], [100, 62], [0, 62]] },
+  ] },
+  hemispheres: { title: 'The hemispheres', art: 'M1', box: [0, 0, 100, 62], water: true, land: 'continents', translucent: true, regions: [
+    { id: 'northern', name: 'the Northern Hemisphere', points: [[0, 0], [100, 0], [100, 31], [0, 31]] },
+    { id: 'southern', name: 'the Southern Hemisphere', points: [[0, 31], [100, 31], [100, 62], [0, 62]] },
+    { id: 'western', name: 'the Western Hemisphere', points: [[0, 0], [50, 0], [50, 62], [0, 62]] },
+    { id: 'eastern', name: 'the Eastern Hemisphere', points: [[50, 0], [100, 0], [100, 62], [50, 62]] },
+  ] },
+  // Europe (2026-09-23): the twelve largest countries, placed where they really are on a box from 12 degrees west to 45 east
+  // and 72 north to 35 south. Schematic shapes; the painting M4 will carry the real coastlines.
+  europe: { title: 'Europe', art: 'M4', box: [0, 0, 100, 80], water: true, regions: [
+    { id: 'russia', name: 'Russia', points: [[78, 4], [100, 2], [100, 50], [90, 50], [86, 44], [80, 38], [76, 30], [74, 22], [76, 12]] },
+    { id: 'ukraine', name: 'Ukraine', points: [[66, 44], [78, 42], [86, 47], [86, 54], [76, 58], [75, 52]] },
+    { id: 'france', name: 'France', points: [[15, 53], [27, 49], [34, 51], [35, 57], [30, 66], [20, 64], [14, 60]] },
+    { id: 'spain', name: 'Spain', points: [[6, 68], [20, 67], [26, 71], [22, 78], [12, 79], [6, 74]] },
+    { id: 'sweden', name: 'Sweden', points: [[42, 32], [43, 22], [47, 15], [55, 11], [56, 16], [54, 23], [50, 31], [46, 38], [43, 37]] },
+    { id: 'norway', name: 'Norway', points: [[30, 28], [34, 22], [36, 14], [44, 6], [62, 2], [72, 2], [68, 4], [57, 9], [45, 13], [41, 21], [38, 30]] },
+    { id: 'germany', name: 'Germany', points: [[37, 40], [47, 39], [49, 47], [45, 56], [37, 56], [36, 49]] },
+    { id: 'finland', name: 'Finland', points: [[58, 10], [64, 6], [73, 4], [74, 12], [70, 22], [65, 26], [58, 24], [56, 17]] },
+    { id: 'poland', name: 'Poland', points: [[49, 39], [62, 38], [64, 48], [57, 50], [51, 49]] },
+    { id: 'italy', name: 'Italy', points: [[38, 58], [46, 57], [50, 62], [54, 70], [52, 78], [47, 74], [43, 66], [38, 62]] },
+    { id: 'united-kingdom', name: 'the United Kingdom', points: [[10, 30], [20, 28], [24, 36], [24, 46], [16, 50], [10, 46], [8, 38]] },
+    { id: 'romania', name: 'Romania', points: [[58, 53], [72, 51], [74, 59], [64, 63], [58, 60]] },
+  ] },
+  // The ten largest states of the lower 48 (2026-09-23), the first stage of a states map; the rest of the country is drawn
+  // plain behind them from the regions map. Michigan is two parts.
+  'us-states': { title: 'The biggest states', art: 'M3', box: [0, 0, 100, 64], water: true, land: 'us-regions', regions: [
+    // The twenty-five largest states of the lower 48 (2026-09-23), in two stages: the ten biggest, then fifteen more.
+    { id: 'texas', name: 'Texas', points: [[37, 42], [37, 36], [43, 36], [43, 38], [52, 38], [54, 44], [54, 50], [50, 54], [44, 62], [40, 58], [37, 52]] },
+    { id: 'california', name: 'California', points: [[1, 19], [9, 19], [9, 27], [17, 38], [19, 44], [8, 44], [2, 32]] },
+    { id: 'montana', name: 'Montana', points: [[16, 0], [36, 0], [36, 11], [20, 11], [16, 6]] },
+    { id: 'new-mexico', name: 'New Mexico', points: [[28, 33], [36, 33], [36, 47], [30, 47], [28, 44]] },
+    { id: 'arizona', name: 'Arizona', points: [[20, 33], [27, 33], [27, 47], [21, 45], [20, 40]] },
+    { id: 'nevada', name: 'Nevada', points: [[10, 19], [19, 19], [19, 37], [18, 37], [10, 27]] },
+    { id: 'colorado', name: 'Colorado', points: [[28, 21], [40, 21], [40, 32], [28, 32]] },
+    { id: 'oregon', name: 'Oregon', points: [[1, 7], [15, 7], [15, 18], [1, 18]] },
+    { id: 'wyoming', name: 'Wyoming', points: [[24, 11], [36, 11], [36, 20], [24, 20]] },
+    { id: 'michigan', name: 'Michigan', parts: [[[60, 4], [71, 4], [71, 9], [60, 9]], [[65, 8], [73, 8], [73, 19], [65, 19]]] },
+    { id: 'minnesota', name: 'Minnesota', points: [[49.5, 0], [58, 0], [59.5, 4], [58, 8], [59.5, 14], [49.5, 14]] },
+    { id: 'utah', name: 'Utah', points: [[19.5, 19], [23.5, 19], [23.5, 20.5], [27.5, 20.5], [27.5, 32], [19.5, 32]] },
+    { id: 'idaho', name: 'Idaho', points: [[14, 0], [15.5, 0], [15.5, 6], [19.5, 11], [20.5, 11.5], [23, 11.5], [23, 18], [16, 18], [16, 6.5], [14, 6.5]] },
+    { id: 'kansas', name: 'Kansas', points: [[40.5, 24], [52, 24], [52, 32], [40.5, 32]] },
+    { id: 'nebraska', name: 'Nebraska', points: [[36.5, 16], [51, 16], [51, 23.5], [41, 23.5], [41, 20.5], [36.5, 20.5]] },
+    { id: 'south-dakota', name: 'South Dakota', points: [[36.5, 8.5], [49, 8.5], [49, 15.5], [36.5, 15.5]] },
+    { id: 'washington', name: 'Washington', points: [[1, 0], [13, 0], [13, 6], [1, 6]] },
+    { id: 'north-dakota', name: 'North Dakota', points: [[36.5, 0], [49, 0], [49, 8], [36.5, 8]] },
+    { id: 'oklahoma', name: 'Oklahoma', points: [[37, 32.5], [52, 32.5], [52, 37.5], [43.5, 37.5], [43.5, 35.5], [37, 35.5]] },
+    { id: 'missouri', name: 'Missouri', points: [[52.5, 24], [62, 24], [62, 34], [52.5, 34]] },
+    { id: 'florida', name: 'Florida', points: [[65, 50.5], [70, 50.5], [70, 51], [77, 51], [78, 56], [75, 64], [71, 62], [69, 52], [65, 52]] },
+    { id: 'wisconsin', name: 'Wisconsin', points: [[60.5, 9.5], [64.5, 9.5], [64.5, 17.5], [52, 17.5], [52, 15], [60.5, 15]] },
+    { id: 'georgia', name: 'Georgia', points: [[68, 38], [75, 38], [77, 44], [76, 50], [70, 50], [68, 44]] },
+    { id: 'illinois', name: 'Illinois', points: [[60.5, 19.5], [64.5, 19.5], [64.5, 32], [62.5, 32], [62.5, 23.5], [60.5, 23.5]] },
+    { id: 'iowa', name: 'Iowa', points: [[51.5, 18], [60, 18], [60, 23], [51.5, 23]] },
+  ] },
+  // Asia (2026-09-23): the twelve largest countries, on a box from 25 degrees east to 150 east and 75 north to 10 south.
+  asia: { title: 'Asia', art: 'M5', box: [0, 0, 100, 80], water: true, regions: [
+    { id: 'russia', name: 'Russia', points: [[10, 0], [100, 0], [100, 20], [74, 22], [62, 22], [50, 18], [10, 18]] },
+    { id: 'china', name: 'China', points: [[36, 33], [50.5, 33], [50.5, 31], [75, 31], [78, 24], [88, 24], [88, 40], [82, 48], [74, 52], [62, 50], [56, 44], [46, 40], [36, 38]] },
+    { id: 'india', name: 'India', points: [[38, 42], [46, 41], [52, 45], [58, 48], [54, 52], [48, 62], [40, 50], [35.5, 45]] },
+    { id: 'kazakhstan', name: 'Kazakhstan', points: [[18, 19], [50, 19], [50, 30], [36, 32], [18, 30]] },
+    { id: 'saudi-arabia', name: 'Saudi Arabia', points: [[8, 44], [18, 46], [24, 51], [16, 57], [8, 53]] },
+    { id: 'iran', name: 'Iran', points: [[15, 34], [28, 34], [28, 44], [22, 47], [15, 42]] },
+    { id: 'mongolia', name: 'Mongolia', points: [[51, 23], [74, 23], [74, 30], [51, 30]] },
+    { id: 'indonesia', name: 'Indonesia', points: [[56, 66], [70, 68], [84, 70], [93, 74], [90, 80], [60, 80], [56, 74]] },
+    { id: 'pakistan', name: 'Pakistan', points: [[29, 36], [35, 36], [36, 41], [34, 45], [31, 48], [29, 44]] },
+    { id: 'turkey', name: 'Turkey', points: [[1, 31], [14, 32], [14, 36], [1, 37]] },
+    { id: 'japan', name: 'Japan', points: [[91, 28], [95, 30], [97, 36], [93, 41], [90, 38], [90, 32]] },
+    { id: 'thailand', name: 'Thailand', points: [[60, 52], [65, 52], [65, 58], [62, 66], [59, 62], [58, 56]] },
+  ] },
+  // Africa and South America (2026-09-23): the twelve largest countries of each. Africa's box runs from 20 degrees west to
+  // 55 east and 38 north to 35 south; South America's from 82 west to 34 west and 13 north to 56 south. Like every map,
+  // the regions are hit areas only; the painting is Mikey's.
+  africa: { title: 'Africa', art: 'M6', box: [0, 0, 100, 80], water: true, regions: [
+    { id: 'algeria', name: 'Algeria', points: [[16, 3], [36, 2], [42, 9], [40, 19], [30, 23.5], [19, 18]] },
+    { id: 'dr-congo', name: 'the Democratic Republic of the Congo', points: [[46, 38], [62, 36], [66, 46], [60, 56], [46, 54]] },
+    { id: 'sudan', name: 'Sudan', points: [[59, 21], [75, 21], [75, 32], [59, 32]] },
+    { id: 'libya', name: 'Libya', points: [[43, 4], [58, 4], [58, 22], [43, 22]] },
+    { id: 'chad', name: 'Chad', points: [[49, 24], [58, 23], [58, 33], [49, 33]] },
+    { id: 'niger', name: 'Niger', points: [[34, 23], [43, 23.5], [48, 24], [47, 30], [33, 31], [32, 26]] },
+    { id: 'angola', name: 'Angola', points: [[44, 56], [59, 57.5], [59, 63], [44, 63]] },
+    { id: 'mali', name: 'Mali', points: [[19, 25], [30, 24.5], [31, 28], [26, 33], [12, 33], [12, 28], [19, 28]] },
+    { id: 'south-africa', name: 'South Africa', points: [[50, 68], [70, 66], [71, 76], [60, 80], [50, 76]] },
+    { id: 'ethiopia', name: 'Ethiopia', points: [[76, 26], [88, 28], [90, 36], [80, 40], [76, 34]] },
+    { id: 'mauritania', name: 'Mauritania', points: [[4, 12], [16, 12], [17, 20], [16, 26], [4, 24]] },
+    { id: 'egypt', name: 'Egypt', points: [[59, 4], [70, 4], [70, 20], [59, 20]] },
+  ] },
+  'south-america': { title: 'South America', art: 'M7', box: [0, 0, 100, 80], water: true, regions: [
+    { id: 'brazil', name: 'Brazil', points: [[34, 16], [58, 16], [64, 12], [72, 10], [98, 22], [92, 36], [80, 46], [64, 56], [48, 50], [36, 42], [31, 28]] },
+    { id: 'argentina', name: 'Argentina', points: [[24, 43], [33, 50], [34, 56], [46, 58], [52, 61], [50, 68], [44, 78], [30, 78], [24, 66], [22, 54]] },
+    { id: 'peru', name: 'Peru', points: [[13, 22], [26, 20], [30, 26], [24, 36], [16, 34], [4, 24]] },
+    { id: 'colombia', name: 'Colombia', points: [[8, 3], [26, 2], [30, 10], [26, 19], [12, 18], [6, 10]] },
+    { id: 'bolivia', name: 'Bolivia', points: [[28.5, 31], [31, 34], [33, 40], [35, 46], [30.5, 47], [26, 41]] },
+    { id: 'venezuela', name: 'Venezuela', points: [[31, 2], [44, 3], [46, 12], [34, 15], [31, 10]] },
+    { id: 'chile', name: 'Chile', points: [[19, 40], [23, 40], [21, 54], [23, 66], [29, 78], [26, 80], [16, 80], [16, 60]] },
+    { id: 'paraguay', name: 'Paraguay', points: [[38, 44], [42, 46], [46, 52], [40, 56], [38, 50]] },
+    { id: 'ecuador', name: 'Ecuador', points: [[3, 15], [9, 16], [13, 21], [4, 23]] },
+    { id: 'guyana', name: 'Guyana', points: [[47, 4], [52, 5], [52, 14], [47, 14]] },
+    { id: 'uruguay', name: 'Uruguay', points: [[54, 58], [62, 57], [62, 63], [54, 63]] },
+    { id: 'suriname', name: 'Suriname', points: [[53, 6], [58, 6], [58, 13], [53, 13]] },
+  ] },
+  'us-regions': { title: 'Regions of the United States', art: 'M3', box: [0, 0, 100, 64], water: true, regions: [
+    { id: 'west', name: 'the West', points: [[6, 10], [34, 8], [36, 22], [34, 40], [22, 44], [10, 40], [4, 26]] },
+    { id: 'southwest', name: 'the Southwest', points: [[22, 44], [34, 40], [50, 40], [52, 56], [40, 60], [30, 52]] },
+    { id: 'midwest', name: 'the Midwest', points: [[34, 8], [64, 6], [72, 20], [68, 34], [56, 40], [50, 40], [34, 40], [36, 22]] },
+    { id: 'southeast', name: 'the Southeast', points: [[50, 40], [56, 40], [68, 34], [82, 32], [88, 44], [84, 56], [70, 52], [60, 58], [52, 56]] },
+    { id: 'northeast', name: 'the Northeast', points: [[72, 20], [78, 8], [92, 4], [96, 16], [90, 26], [82, 32], [68, 34]] },
+  ] },
+};
+export const MAP_SERIALS = [...new Set(Object.values(MAPS).map((m) => m.art))];
+// A map that names another map as its land draws that map's regions plain behind its own.
+for (const m of Object.values(MAPS)) if (typeof m.land === 'string') m.land = MAPS[m.land].regions.flatMap((r) => r.parts || [r.points]);
+export function mapFor(id) { return MAPS[id] || null; }
+// Balance the scale (2026-09-23): the left pan shows a value; weights from a tray go on the right pan until the beam
+// levels. A deck makes the target and names the weights; a weight shows its label and carries its value.
+const W = (label, value) => ({ label, value });
+export const BALANCE_DECKS = {
+  ten: { title: 'Make the number', weights: [W('1', 1), W('2', 2), W('3', 3), W('4', 4), W('5', 5), W('6', 6)], make: (rng) => { const n = randInt(rng, 4, 12); return { show: String(n), value: n }; } },
+  times: { title: 'Times tables', weights: [W('2', 2), W('3', 3), W('4', 4), W('5', 5), W('6', 6), W('8', 8), W('10', 10), W('12', 12)], make: (rng) => { const a = randInt(rng, 2, 6); const b = randInt(rng, 2, 6); return { show: `${a} × ${b}`, value: a * b }; } },
+  fractions: { title: 'Fractions', weights: [W('¼', 0.25), W('¼', 0.25), W('½', 0.5), W('½', 0.5), W('¾', 0.75), W('⅛', 0.125), W('⅛', 0.125), W('1', 1)], make: (rng) => { const v = pick(rng, [0.5, 0.75, 1, 1.25, 1.5]); const l = { 0.5: '½', 0.75: '¾', 1: '1', 1.25: '1¼', 1.5: '1½' }[v]; return { show: l, value: v }; } },
+  expressions: { title: 'Expressions', weights: [W('1', 1), W('2', 2), W('4', 4), W('5', 5), W('10', 10), W('20', 20), W('25', 25), W('50', 50)], make: (rng) => { const k = randInt(rng, 0, 3); const a = randInt(rng, 2, 6); const b = randInt(rng, 2, 9); return k === 0 ? { show: `${a} × (${b} + 2)`, value: a * (b + 2) } : k === 1 ? { show: `${a}² + ${b}`, value: a * a + b } : k === 2 ? { show: `${a * 10} − ${b}`, value: a * 10 - b } : { show: `${a} × ${b} + ${a}`, value: a * b + a }; } },
+};
+export const BALANCES_PER_ROUND = 6;
+// Can these weights make the target at all? The game asks only targets its tray can balance.
+export function balanceReachable(weights, target) {
+  const sums = new Set([0]);
+  for (const w of weights) for (const v of [...sums]) sums.add(Math.round((v + w.value) * 1000) / 1000);
+  return sums.has(Math.round(target * 1000) / 1000);
+}
+// A point inside a polygon (ray casting), for a tap on a map.
+export function insidePolygon(points, x, y) {
+  let inside = false;
+  for (let i = 0, j = points.length - 1; i < points.length; j = i, i += 1) { const [xi, yi] = points[i]; const [xj, yj] = points[j]; if (yi > y !== yj > y && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi) inside = !inside; }
+  return inside;
+}
 // Decks for the text pairs games: each entry is a pair of cards that belong together.
 export const PAIR_DECKS = {
   // No card text appears twice in a deck: two 3/4 cards from different pairs would fail to match each other.
@@ -1097,20 +1369,21 @@ export function gamesUnlocked(events) {
   return Math.min(GAMES.length, 1 + mastered);
 }
 // Dots to join, in order, in a 100 by 100 box. Joining the last one back to the first closes the shape.
+// Rule (2026-09-23, Mikey): no two dots of one picture may sit closer than DOT_GAP units, so numbers never overlap; the
+// rules test holds every shape to it. The pictures are listed from the fewest dots to the most.
+export const DOT_GAP = 11;
 export const DOT_SHAPES = {
-  star: [[50, 8], [61, 38], [93, 38], [67, 57], [77, 88], [50, 70], [23, 88], [33, 57], [7, 38], [39, 38]],
-  house: [[15, 50], [50, 18], [85, 50], [85, 88], [15, 88]],
-  boat: [[20, 62], [32, 84], [68, 84], [80, 62], [52, 62], [52, 14], [80, 48], [56, 48]],
   kite: [[50, 10], [82, 42], [50, 90], [18, 42]],
+  boat: [[20, 62], [32, 84], [68, 84], [80, 62], [52, 62], [52, 14], [80, 48], [56, 48]],
+  house: [[15, 50], [50, 18], [85, 50], [85, 88], [62, 88], [62, 64], [48, 64], [48, 88], [15, 88]],   // the door is between 4 and 5
+  star: [[50, 8], [61, 38], [93, 38], [67, 57], [77, 88], [50, 70], [23, 88], [33, 57], [7, 38], [39, 38]],
+  fish: [[12, 50], [28, 30], [52, 24], [72, 32], [84, 44], [92, 30], [94, 70], [84, 56], [72, 68], [52, 76], [28, 70]],
+  rocket: [[50, 6], [62, 22], [68, 44], [68, 66], [80, 84], [62, 78], [50, 92], [38, 78], [20, 84], [32, 66], [32, 44], [38, 22]],
 };
-// A student's name as dots: each letter's strokes from TRACE_LETTERS, laid side by side.
-export function nameDots(name) {
-  const letters = String(name || '').toUpperCase().replace(/[^A-Z]/g, '').split('').filter((ch) => TRACE_LETTERS[ch]).slice(0, 5);
-  if (!letters.length) return DOT_SHAPES.star;
-  // Each letter gets a slot across the box with a little air on each side, and stands in the middle band.
-  const w = 100 / letters.length; const out = [];
-  letters.forEach((ch, i) => { for (const stroke of TRACE_LETTERS[ch].strokes) for (const [x, y] of stroke) { const pt = [Math.round((i * w + w * 0.15 + (x / 100) * w * 0.7) * 10) / 10, Math.round((30 + y * 0.4) * 10) / 10]; const last = out[out.length - 1]; if (!last || last[0] !== pt[0] || last[1] !== pt[1]) out.push(pt); } });
-  return out;
+export function dotsTooClose(points, gap = DOT_GAP) {
+  const bad = [];
+  for (let i = 0; i < points.length; i += 1) for (let j = i + 1; j < points.length; j += 1) { const d = Math.hypot(points[i][0] - points[j][0], points[i][1] - points[j][1]); if (d < gap) bad.push([i + 1, j + 1, Math.round(d * 10) / 10]); }
+  return bad;
 }
 // A pre-K screen is grouped by the skill being practised rather than by subject: a three-year-old
 // knows what colors are, not what mathematics is. Every other grade groups by subject as before.
@@ -2043,11 +2316,13 @@ function GRADE2_SCIENCE_MODULES() { return [
     title: 'Magnets',
     tagline: 'What a magnet pulls',
     lesson: {
-      paragraphs: ['A magnet pulls some metal things. It does not pull a rock or a flower.', 'Try it and see.'],
+      paragraphs: ['A magnet pulls some metal things, like a paper clip or a nail. It does not pull a rock or a flower.', 'Try it and see.'],
       keyIdea: 'A magnet pulls iron and steel, not rocks or plants.',
       example: { kind: 'icon', name: 'magnet', caption: 'A magnet.' },
       script: [
         { say: 'This is a magnet. It can pull.', show: { kind: 'icon', name: 'magnet' } },
+        { say: 'A magnet pulls a paper clip. A paper clip is metal.', show: { kind: 'icon', name: 'clip' } },
+        { say: 'A magnet pulls a nail. A nail is metal too.', show: { kind: 'icon', name: 'nail' } },
         { say: 'A magnet does not pull a rock.', show: { kind: 'icon', name: 'rock' } },
         { say: 'A magnet does not pull a flower.', show: { kind: 'icon', name: 'flower' } },
       ],
@@ -3403,6 +3678,34 @@ function GRADE3_READING_MODULES() { return [
     sources: ['Aligned with Texas TEKS 3.9D.iii (organizational patterns such as cause and effect and chronological order) and Common Core RI.3.3.'],
     generators: ['r3-cause', 'r3-effect', 'ord-story-steps', 'r3-signal-word', 'r3-what-next'],
   },
+  {
+    id: 'context-clues',
+    order: 5,
+    title: 'Clues around a word',
+    tagline: 'The words nearby tell you',
+    requires: ['sequence-and-cause'],
+    lesson: {
+      paragraphs: ['When a word is unfamiliar, look first at the words around it. The frigid wind made her shiver: shiver is the clue, so frigid means very cold. He was famished, so he ate three plates: famished means very hungry.\nWords like or and in other words introduce a meaning of the word. An example after a word is a context clue too.', 'If the clues run out, use a dictionary.', 'Clues around the word first, then the dictionary.'],
+      keyIdea: 'The words around a new word often say what it means; when they do not, the dictionary does.',
+      example: { kind: 'letters', text: 'frigid: shiver', caption: 'The word next door, shiver, tells you frigid is cold.', another: ['A new word is a stranger at a party. You do not know them, but you know who they came with. The words beside a new word are the friends it came with, and they tell you what it is like.', { text: 'Four kinds of clue: a definition after or; an example; a word that means the same nearby; a word that means the opposite nearby.', visual: { kind: 'stack', levels: ['a definition', 'an example', 'a twin word', 'an opposite'] } }, 'Cover the word with a finger and read the sentence. Whatever word you would put in the gap is close to what the word means.'] },
+    },
+    sources: ['Aligned with TEKS 3.3B (use context within and beyond a sentence to determine the meaning of unfamiliar words) and CCSS L.3.4a.'],
+    generators: ['r3-context', 'r3-context', 'r3-context', 'r3-context', 'r3-context'],
+  },
+  {
+    id: 'character-and-setting',
+    order: 6,
+    title: 'Characters and setting',
+    tagline: 'Who, and where and when',
+    requires: ['context-clues'],
+    lesson: {
+      paragraphs: ['Setting is the where and the when: a snowy village at night is a setting. Characters are the people or animals, and you learn what they are like from what they say and do. A character who keeps helping others is showing kindness.\nA trait is a way of being: brave, honest, shy. Tall and red are not traits.', 'You learn what a character wants from what they say and do. When a character changes from scared to brave, that is character growth.', 'Setting: where and when. Character: shown by words and actions.'],
+      keyIdea: 'Setting is where and when; characters show who they are by what they say and do.',
+      example: { kind: 'twoway', a: 'setting', b: 'character', top: 'where and when', bottom: 'what they say and do', caption: 'Two questions to ask of any story: where and when is it, and what do the people do?', another: ['Setting is the stage and characters are the actors. Change the stage and the same actors would act differently; that is why setting matters.', { text: 'Watch a character the way you watch a new classmate: not what they say about themselves, what they do at recess.', visual: { kind: 'flow', steps: ['what they say', 'what they do', 'what they want'] } }, 'Traits are not looks. Tall, red-haired and small are descriptions; brave, patient and sneaky are traits.'] },
+    },
+    sources: ['Aligned with TEKS 3.8B (explain the relationships among the major and minor characters) and CCSS RL.3.3.'],
+    generators: ['r3-character', 'r3-character', 'r3-character', 'r3-character', 'r3-character'],
+  },
 ]; }
 
 // Grade 4 math. Multi-digit work, long division, factors, and fractions with decimals.
@@ -3495,6 +3798,34 @@ function GRADE4_READING_MODULES() { return [
     sources: ['Aligned with TEKS 4.3A (use print or digital resources to determine meaning, syllabication, pronunciation, word origin, and part of speech) and CCSS L.4.4c.'],
     generators: ['r4-alpha-first', 'r4-same-letter-order', 'r4-guide-words', 'r4-alpha-first', 'r4-guide-words'],
   },
+  {
+    id: 'cause-and-effect-4',
+    order: 6,
+    title: 'Cause and effect',
+    tagline: 'Because, and so',
+    requires: ['dictionary-skills'],
+    lesson: {
+      paragraphs: ['A cause makes something happen; the effect is what happened because of it. The road was icy, so the bus was late: the icy road is the cause, the late bus is the effect.\nBecause signals a cause and points back at the reason; so signals an effect and points forward to the result. She studied every night; therefore she passed: the studying came first. One cause can have many effects: a storm can close roads, flood fields and cancel school.', 'Find the cause by asking why; find the effect by asking what happened.', 'Why is the cause; what happened is the effect.'],
+      keyIdea: 'A cause makes something happen and an effect is what happened; because points back, so points forward.',
+      example: { kind: 'flow', steps: ['icy road', 'late bus'], caption: 'Cause, then effect: the road came first and made the bus late.', another: ['Dominoes: the first one falling is the cause, and every domino after it is an effect. Some causes tip one domino; some tip a whole row.', { text: 'Try the sentence both ways. The bus was late because the road was icy. The road was icy, so the bus was late. Same two events, two signal words, same cause.', visual: { kind: 'twoway', a: 'because', b: 'so', top: 'points back at the cause', bottom: 'points forward to the effect' } }, 'Not every then is a because. The rooster crowed and then the sun rose, but the rooster did not cause the morning.'] },
+    },
+    sources: ['Aligned with TEKS 4.7C (use text evidence to support an appropriate response; cause and effect relationships) and CCSS RI.4.5.'],
+    generators: ['r4-cause-effect', 'r4-cause-effect', 'r4-cause-effect', 'r4-cause-effect', 'r4-cause-effect'],
+  },
+  {
+    id: 'text-features',
+    order: 7,
+    title: 'Text features',
+    tagline: 'Headings, bold words and captions',
+    requires: ['cause-and-effect-4'],
+    lesson: {
+      paragraphs: ['A textbook is full of signposts. A heading tells you what a section is about. Words in bold are important terms to learn. A caption sits under a picture and explains what it shows.\nThe table of contents at the front lists chapters in order. The index at the back lists topics with their pages, in alphabetical order. The glossary gives meanings of key words: a small dictionary for that book.', 'Use the features before you read and you will know where you are going.', 'Headings, bold, captions; contents, index, glossary.'],
+      keyIdea: 'Headings, bold words and captions guide you through a page; the contents, index and glossary guide you through the book.',
+      example: { kind: 'stack', levels: ['heading', 'bold term', 'caption'], caption: 'Three signposts on one page, each doing a different job.', another: ['A textbook is a building with signs: the table of contents is the directory by the door, the headings are the room names, the bold words are what is written on the whiteboard, the index is the map on the wall.', { text: 'Before you read a chapter, read only the headings and the captions. In two minutes you know the shape of the chapter and the pictures it wants you to remember.', visual: { kind: 'flow', steps: ['headings', 'captions', 'bold words', 'then the text'] } }, 'Looking something up is a skill: index for where, glossary for what, contents for the order.'] },
+    },
+    sources: ['Aligned with TEKS 4.9D.ii (recognize characteristics and structures of informational text, including features such as headings and captions) and CCSS RI.4.7.'],
+    generators: ['r4-text-features', 'r4-text-features', 'r4-text-features', 'r4-text-features', 'r4-text-features'],
+  },
 ]; }
 
 // Grade 5 reading: theme, point of view, idioms, and backing a claim with the text.
@@ -3569,6 +3900,34 @@ function GRADE5_READING_MODULES() { return [
     },
     sources: ['Aligned with Texas TEKS 5.6F (make inferences and use evidence to support understanding) and Common Core RL.5.1 (quote accurately from a text when explaining what the text says explicitly and when drawing inferences).'],
     generators: ['r5-evidence', 'r5-claim-supported', 'r5-evidence', 'r5-claim-supported', 'r5-evidence'],
+  },
+  {
+    id: 'comparing-texts',
+    order: 5,
+    title: 'Comparing two texts',
+    tagline: 'Alike, different, and why',
+    requires: ['text-evidence'],
+    lesson: {
+      paragraphs: ['Two texts about one thing rarely say the same thing. A poem and an article about a storm differ because the poem uses images and feeling and the article uses facts. Find what they agree on first; the differences stand out after.\nA shared idea across texts is a common theme. A chart with alike and different columns makes a comparison visible. When two authors give different numbers for the same fact, check a third source. Comparing a story and its movie means asking what each kept and changed.', 'Alike first, then different, then what the difference shows.', 'Agree, differ, and why.'],
+      keyIdea: 'Compare texts by what they share, how they differ, and what the difference shows; a third source breaks a tie.',
+      example: { kind: 'twoway', a: 'the poem', b: 'the article', top: 'images and feeling', bottom: 'facts and numbers', caption: 'One storm, two texts, two purposes.', another: ['Two friends describing the same party will tell you different things, and the differences tell you about the friends. Two texts work the same way.', { text: 'Draw two columns, alike and different, and fill them before you write a sentence. The comparison is already there; you only have to read it off.', visual: { kind: 'stack', levels: ['alike', 'different', 'what it shows'] } }, 'When sources disagree on a fact, neither is automatically right. A third source, and the one that shows its work, wins.'] },
+    },
+    sources: ['Aligned with TEKS 5.6H (synthesize information to create new understanding across texts) and CCSS RI.5.9.'],
+    generators: ['r5-compare-texts', 'r5-compare-texts', 'r5-compare-texts', 'r5-compare-texts', 'r5-compare-texts'],
+  },
+  {
+    id: 'reading-an-argument',
+    order: 6,
+    title: 'Reading an argument',
+    tagline: 'Claim, reasons, evidence',
+    requires: ['comparing-texts'],
+    lesson: {
+      paragraphs: ['An author who says schools should start later is making a claim: what they want to convince you of. A reason is why the claim is true, and evidence, like a study or numbers, holds the reasons up.\nOne story about a cousin is weak evidence; one story is an example, not proof. Pizza is the best food is an opinion, because best cannot be checked. An argument with no evidence is just an opinion.', 'Claim, then reasons, then evidence for each.', 'Find the claim, test the reasons, weigh the evidence.'],
+      keyIdea: 'A claim is held up by reasons and reasons by evidence; without evidence an argument is only an opinion.',
+      example: { kind: 'stack', levels: ['claim', 'reasons', 'evidence'], caption: 'An argument stacks: the claim on top, held up by reasons, held up by evidence.', another: ['An argument is a table. The claim is the top, the reasons are the legs, and the evidence is the floor the legs stand on. A missing leg wobbles; a missing floor falls.', { text: 'Weigh the evidence by asking two questions: could I check this, and how many cases is it? A study of thousands outweighs a cousin.', visual: { kind: 'twoway', a: 'one cousin', b: 'a study of thousands', top: 'an example', bottom: 'evidence' } }, 'Circle the should sentences. Every one is the author\'s opinion, and the rest of the text is the case for it.'] },
+    },
+    sources: ['Aligned with TEKS 5.9E.iii (identify the claim and the evidence in argumentative text) and CCSS RI.5.8.'],
+    generators: ['r5-argument', 'r5-argument', 'r5-argument', 'r5-argument', 'r5-argument'],
   },
 ]; }
 
@@ -3661,6 +4020,34 @@ function GRADE6_MATH_MODULES() { return [
     sources: ['Aligned with Texas TEKS 6.10A (model and solve one-variable, one-step equations and inequalities) and Common Core 6.EE.B.7 (solve real-world and mathematical problems by writing and solving equations of the form x + p = q and px = q).'],
     generators: ['g6-solve-add', 'g6-solve-multiply', 'g6-solve-add', 'g6-solve-multiply', 'g6-check-solution'],
   },
+  {
+    id: 'mean-median-mode-6',
+    order: 6,
+    title: 'Mean, median, mode and range',
+    tagline: 'Four ways to describe a set',
+    requires: ['one-step-equations'],
+    lesson: {
+      paragraphs: ['Scores of 4, 6 and 8. The mean adds them, 18, and shares among the three: 6. The median lines them up and takes the middle. The mode is the most common value, and range is highest minus lowest.\nFor 2, 9, 4 the median is 4; for 5, 5, 7, 9 the mode is 5; for 3, 5, 10 the range is 7.', 'One huge score added to a set drags the mean up while the median stays near the middle of the pack.', 'Mean shares, median is the middle, mode is most common, range is the spread.'],
+      keyIdea: 'Mean: add and share. Median: the middle. Mode: most common. Range: highest minus lowest.',
+      example: { kind: 'stack', levels: ['mean: add and share', 'median: the middle', 'mode: most common', 'range: high minus low'], caption: 'Four numbers that each describe a set a different way.', another: ['Six friends and their allowances. The mean pretends everyone gets the same. The median is the friend in the middle of the line. The mode is the amount most of them get. The range is the gap between the richest and the poorest.', { text: 'A rich friend joins: the mean jumps, the median barely moves. That is why house prices are reported as medians.', visual: { kind: 'twoway', a: 'one huge value', b: 'the rest', top: 'mean jumps', bottom: 'median stays' } }, 'Line the numbers up before anything: the median and the range fall out of an ordered list, and the mode is easy to spot.'] },
+    },
+    sources: ['Aligned with TEKS 6.12C (summarize numeric data with numerical summaries, including the mean and median) and CCSS 6.SP.B.5c.'],
+    generators: ['m6-mean', 'm6-mean', 'm6-mean', 'm6-mean', 'm6-mean'],
+  },
+  {
+    id: 'four-quadrants',
+    order: 7,
+    title: 'The four quadrants',
+    tagline: 'Across, then up or down, with negatives',
+    requires: ['mean-median-mode-6'],
+    lesson: {
+      paragraphs: ['The coordinate plane has four quadrants around the origin, (0, 0), where the axes cross. The first number is across: positive is right, negative is left. The second number is up or down: negative goes down.\n(3, -2) is 3 right and 2 down. (-4, 5) is left and up, the second quadrant. (2, 2) is right and up, the first quadrant. On the x-axis the up-or-down number is zero: (5, 0).', 'The quadrants are counted counterclockwise from the top right: first, second, third, fourth.', 'Across then up, with signs. Four quadrants, counted counterclockwise.'],
+      keyIdea: 'Positive across is right, negative is left; positive up, negative down; quadrants count counterclockwise from top right.',
+      example: { kind: 'plot', fn: 'point', px: 3, py: 2, caption: '(3, 2) sits in the first quadrant: right and up. Flip the signs and it moves to the other quadrants.', another: ['A city with streets numbered from a center: east is positive, west is negative, north is positive, south is negative. Every address is a point, and the four neighborhoods are the quadrants.', { text: 'A mirror across the y-axis flips the sign of x; a mirror across the x-axis flips the sign of y. (3, 2), (-3, 2), (-3, -2), (3, -2): the same point reflected into all four quadrants.', visual: { kind: 'flow', steps: ['(3, 2) I', '(-3, 2) II', '(-3, -2) III', '(3, -2) IV'] } }, 'Say the signs out loud before you plot: right or left, up or down. The word comes first, then the number.'] },
+    },
+    sources: ['Aligned with TEKS 6.11A (graph points in all four quadrants using ordered pairs of rational numbers) and CCSS 6.NS.C.6b.'],
+    generators: ['m6-quadrants', 'm6-quadrants', 'm6-quadrants', 'm6-quadrants', 'm6-quadrants'],
+  },
 ]; }
 
 // Grade 6 reading: claims and their reasons, tone, word roots, and the central idea of a longer text.
@@ -3735,6 +4122,34 @@ function GRADE6_READING_MODULES() { return [
     },
     sources: ['Aligned with Texas TEKS 6.9D.i (recognize the central idea with supporting evidence) and Common Core RI.6.2 (determine a central idea of a text and how it is conveyed through particular details).'],
     generators: ['r6-central-idea', 'r6-detail-not-central', 'r6-central-idea', 'r6-detail-not-central', 'r6-central-idea'],
+  },
+  {
+    id: 'plot-and-conflict',
+    order: 5,
+    title: 'Plot and conflict',
+    tagline: 'The problem a story turns on',
+    requires: ['central-idea'],
+    lesson: {
+      paragraphs: ['A plot has a shape. The exposition introduces characters and setting. Then the conflict, the problem the story turns on, builds through the rising action to the climax, the moment of highest tension. The resolution is where the conflict settles.\nConflicts come in kinds: character versus nature, like a storm; character versus self, like deciding whether to lie; character versus character; character versus society.', 'Find the conflict and you have found the story.', 'Exposition, conflict, climax, resolution. Name the kind of conflict.'],
+      keyIdea: 'A plot rises from exposition through conflict to a climax and settles in the resolution.',
+      example: { kind: 'flow', steps: ['exposition', 'rising action', 'climax', 'resolution'], caption: 'The shape of a plot: set the stage, raise the stakes, peak, settle.', another: ['A plot is a hill. You start at the bottom with the introductions, climb through the trouble, reach the top where everything is at stake, and come down the other side to the ending.', { text: 'Ask who or what the character is up against. A storm: nature. A rival: character. A rule: society. A fear: self.', visual: { kind: 'stack', levels: ['versus nature', 'versus self', 'versus character', 'versus society'] } }, 'The climax is the page you cannot put down. If you can find that page, you have found the shape of the whole book.'] },
+    },
+    sources: ['Aligned with TEKS 6.8C (analyze plot elements, including rising action, climax, falling action, and resolution) and CCSS RL.6.3.'],
+    generators: ['r6-plot', 'r6-plot', 'r6-plot', 'r6-plot', 'r6-plot'],
+  },
+  {
+    id: 'poetry-elements',
+    order: 6,
+    title: 'How a poem is built',
+    tagline: 'Stanzas, rhythm, rhyme',
+    requires: ['plot-and-conflict'],
+    lesson: {
+      paragraphs: ['A poem is built from stanzas, groups of lines that are its paragraphs. Rhymes are words that end with the same sound, cat and hat. Rhythm is the beat you can tap.\nAlliteration repeats a beginning sound, silver spoons. Onomatopoeia is a word that sounds like its meaning: buzz, hiss, crash. Free verse follows the sense instead of a set rhyme or beat.', 'Read a poem aloud and the rhythm tells you where the poem breathes.', 'Stanza, rhyme, rhythm, alliteration, onomatopoeia, free verse.'],
+      keyIdea: 'Stanzas are a poem\'s paragraphs; rhyme matches endings, rhythm is the beat, and free verse keeps neither.',
+      example: { kind: 'letters', text: 'cat hat', caption: 'A rhyme: the endings match.', another: ['A poem is a song with the music taken out. The rhythm is the drum, the rhyme is the chorus, the stanzas are the verses.', { text: 'Clap the beat of a nursery rhyme and you have found its rhythm. Now clap a paragraph from a textbook: nothing. That difference is what a poem is.', visual: { kind: 'flow', steps: ['clap', 'clap', 'clap', 'clap'] } }, 'Free verse is not lazy. It gives up rhyme and beat so every line break can do work instead.'] },
+    },
+    sources: ['Aligned with TEKS 6.8B (analyze the effect of rhyme scheme, meter, and graphical elements in poems) and CCSS RL.6.5.'],
+    generators: ['r6-poetry', 'r6-poetry', 'r6-poetry', 'r6-poetry', 'r6-poetry'],
   },
 ]; }
 
@@ -3829,6 +4244,34 @@ function GRADE7_MATH_MODULES() { return [
     sources: ['Aligned with Texas TEKS 7.9B (determine the circumference and area of circles) and Common Core 7.G.B.4 (know the formulas for the area and circumference of a circle and use them to solve problems).'],
     generators: ['g7-circumference', 'g7-circle-area', 'g7-circumference', 'g7-radius-or-diameter', 'g7-circle-area'],
   },
+  {
+    id: 'probability-7',
+    order: 6,
+    title: 'Probability',
+    tagline: 'How likely, as a fraction',
+    requires: ['circles'],
+    lesson: {
+      paragraphs: ['Probability is the share of outcomes that count. A coin lands heads about half the time. A bag with 3 red and 1 blue marble gives a chance of red of 3 out of 4. A spinner with 5 equal parts, 2 shaded, gives 2 out of 5.\nThe sun rising tomorrow is certain, probability 1. Rolling a 7 on a die is impossible, probability 0. Roll a die 60 times and you get about 10 sixes: one in six of sixty.', 'Count the outcomes that count, over all the outcomes.', 'Wanted outcomes over all outcomes; 0 is impossible, 1 is certain.'],
+      keyIdea: 'Probability is wanted outcomes over all outcomes, from 0 (impossible) to 1 (certain).',
+      example: { kind: 'bar', parts: 4, shaded: 3, caption: 'Three red marbles out of four: the chance of red is 3 out of 4.', another: ['A probability is a fraction with a story. The bottom is everything that could happen; the top is the part you are rooting for.', { text: 'Flip a coin a hundred times and tally. You will not get exactly fifty heads, but you will be close, and the more flips the closer. That is what half the time means.', visual: { kind: 'twoway', a: 'ten flips', b: 'a thousand flips', top: 'anywhere near half', bottom: 'very near half' } }, 'A one in six chance does not mean every sixth roll. It means sixes arrive at that rate on average, with streaks and droughts along the way.'] },
+    },
+    sources: ['Aligned with TEKS 7.6C (make predictions and determine solutions using theoretical probability for simple events) and CCSS 7.SP.C.5.'],
+    generators: ['m7-probability', 'm7-probability', 'm7-probability', 'm7-probability', 'm7-probability'],
+  },
+  {
+    id: 'scale-drawings',
+    order: 7,
+    title: 'Scale drawings',
+    tagline: 'The same shape, a different size',
+    requires: ['probability-7'],
+    lesson: {
+      paragraphs: ['A scale drawing keeps the shape and changes the size: every length changes by the same factor. A map scale where 1 inch is 10 miles makes towns 3 inches apart 30 miles apart. A drawing at 1 to 4 makes a wall drawn 5 inches long 20 inches in the room.\nA photo enlarged by a factor of 3 turns a 2-inch nose into 6 inches. A model car at 1 to 20 for a 4-meter car, 400 centimeters, is 20 centimeters. From a 2 cm square to an 8 cm square the scale factor is 4.', 'Find the factor, then multiply or divide every length by it.', 'One factor for every length; the shape never changes.'],
+      keyIdea: 'A scale drawing multiplies every length by the same factor, so the shape stays and only the size changes.',
+      example: { kind: 'twoway', a: 'on paper: 3 inches', b: 'on the ground: 30 miles', top: '1 inch is 10 miles', bottom: 'multiply by the scale', caption: 'The scale is the bridge between the drawing and the real thing.', another: ['A photocopier with a zoom button makes scale drawings all day. Set it to 200 percent and every line doubles; the picture is the same picture, bigger.', { text: 'Architects draw a house at 1 to 50 so it fits on a desk. Every inch on the page is fifty in the world, and a door drawn a quarter inch wide is a real door.', visual: { kind: 'flow', steps: ['measure on paper', 'times the scale', 'the real length'] } }, 'Check the units before you multiply. A map in inches and a scale in miles is fine; a scale in centimeters with a ruler in inches will send you the wrong way.'] },
+    },
+    sources: ['Aligned with TEKS 7.5C (solve mathematical and real-world problems involving similar shape and scale drawings) and CCSS 7.G.A.1.'],
+    generators: ['m7-scale', 'm7-scale', 'm7-scale', 'm7-scale', 'm7-scale'],
+  },
 ]; }
 
 // Grade 7 reading: author's purpose, evidence quality, connotation, and a character's motive.
@@ -3903,6 +4346,34 @@ function GRADE7_READING_MODULES() { return [
     },
     sources: ['Aligned with Texas TEKS 7.7B (analyze how characters\' qualities influence events and resolution of the conflict) and Common Core RL.7.3 (analyze how particular elements of a story interact).'],
     generators: ['r7-motive', 'r7-motive-clue', 'r7-motive', 'r7-motive-clue', 'r7-motive'],
+  },
+  {
+    id: 'figurative-language-7',
+    order: 5,
+    title: 'Figurative language',
+    tagline: 'Pictures made of words',
+    requires: ['character-motive'],
+    lesson: {
+      paragraphs: ['Writers use figurative language to make a picture in the mind. A simile compares with like or as: he ran like the wind. A metaphor says one thing is another: her smile was sunshine.\nPersonification gives a human action to something that is not human: the wind whispered through the trees, the clock glared at me. Hyperbole exaggerates for effect: I have told you a million times.', 'Each figure of speech shows instead of tells.', 'Simile, metaphor, personification, hyperbole: four ways to show.'],
+      keyIdea: 'Similes compare with like or as, metaphors say one thing is another, personification gives human actions, hyperbole exaggerates.',
+      example: { kind: 'stack', levels: ['simile: like the wind', 'metaphor: was sunshine', 'personification: the wind whispered', 'hyperbole: a million times'], caption: 'Four figures of speech, one line each.', another: ['A figure of speech is a shortcut to a feeling. Her smile was sunshine tells you in four words what a paragraph of description would fumble.', { text: 'Test a metaphor by adding like: her smile was like sunshine is a simile and still true. Test personification by asking whether the thing could really do that: clocks do not glare.', visual: { kind: 'twoway', a: 'was sunshine', b: 'like sunshine', top: 'metaphor', bottom: 'simile' } }, 'Hyperbole is a wink. Nobody has been told a million times, and the writer knows you know.'] },
+    },
+    sources: ['Aligned with TEKS 7.9F (explain the use of figurative language, including similes, metaphors, personification, and hyperbole) and CCSS L.7.5a.'],
+    generators: ['r7-figurative', 'r7-figurative', 'r7-figurative', 'r7-figurative', 'r7-figurative'],
+  },
+  {
+    id: 'text-structures-7',
+    order: 6,
+    title: 'How a text is organized',
+    tagline: 'Sequence, compare, problem, cause',
+    requires: ['figurative-language-7'],
+    lesson: {
+      paragraphs: ['Informational texts come in shapes. Events in the order they happened are chronological. Alike and different side by side is compare and contrast, signaled by however and similarly. A problem then a fix is problem and solution, signaled by the trouble was and one answer.\nStructure matters because it tells you what to look for next: know the shape and you know where the next idea will be.', 'Read the signal words and the shape appears.', 'Chronological, compare and contrast, problem and solution, cause and effect.'],
+      keyIdea: 'A text has a structure, and its signal words tell you which one: time order, comparison, problem and solution, cause and effect.',
+      example: { kind: 'flow', steps: ['spot the signal words', 'name the structure', 'know what comes next'], caption: 'Signal words first; the structure follows; the next idea is where you expect it.', another: ['Structure is the floor plan of a text. Walk into a compare-and-contrast piece and you know there are two rooms; walk into a problem-and-solution piece and you know there is a door at the end.', { text: 'Four structures, four sets of signals: first and then; however and similarly; the trouble was and one answer; because and so.', visual: { kind: 'stack', levels: ['first, then: sequence', 'however: compare', 'the trouble was: problem', 'because: cause'] } }, 'Writers pick a structure on purpose. If an article about a flood is organized by cause and effect instead of time, the author wants you to think about why, not when.'] },
+    },
+    sources: ['Aligned with TEKS 7.9D.i (analyze characteristics and structural elements of informational text, including organizational patterns) and CCSS RI.7.5.'],
+    generators: ['r7-structure', 'r7-structure', 'r7-structure', 'r7-structure', 'r7-structure'],
   },
 ]; }
 
@@ -3996,6 +4467,34 @@ function GRADE8_MATH_MODULES() { return [
     sources: ['Aligned with Texas TEKS 8.2C (convert between standard decimal notation and scientific notation) and Common Core 8.EE.A.3 (use numbers expressed in the form of a single digit times an integer power of 10).'],
     generators: ['g8-to-scientific', 'g8-from-scientific', 'g8-to-scientific', 'g8-from-scientific', 'g8-compare-scientific'],
   },
+  {
+    id: 'linear-functions',
+    order: 6,
+    title: 'Linear functions',
+    tagline: 'A line is a rule',
+    requires: ['scientific-notation'],
+    lesson: {
+      paragraphs: ['A line on a graph is a rule: y = mx + b. The slope m is how steep, rise over run; b is where the line crosses the y-axis. y = 3x + 2 has slope 3 and crosses at 2.\nA line rising 4 for every 2 across has slope 2. A slope of 0 stays flat. Two lines with the same slope are parallel.', 'y = 2x - 1 is a line. y = x squared is not, and neither is y = 2 to the x: a line has x to the first power, times a number, plus a number.', 'Slope is the steepness; b is the start; same slope means parallel.'],
+      keyIdea: 'y = mx + b: m is the slope, b is where the line starts on the y-axis.',
+      example: { kind: 'plot', fn: 'line', caption: 'A line: it starts at b on the y-axis and climbs m for every step across.', another: ['A taxi fare is a line: a flat starting charge, b, plus so much per mile, m. Read the meter at two points and you can find both.', { text: 'Slope is a staircase: rise over run. A slope of 2 climbs two for every one across; a slope of a half climbs one for every two.', visual: { kind: 'plot', fn: 'steeper' } }, 'If two rules have the same m, their lines never meet. If they have the same b, they start at the same place. Change m and you turn the line; change b and you slide it.'] },
+    },
+    sources: ['Aligned with TEKS 8.5I (write an equation in the form y = mx + b to model a linear relationship) and CCSS 8.F.A.3.'],
+    generators: ['m8-linear', 'm8-linear', 'm8-linear', 'm8-linear', 'm8-linear'],
+  },
+  {
+    id: 'volume-of-cylinders',
+    order: 7,
+    title: 'Volume of cylinders and cones',
+    tagline: 'A circle, stacked up',
+    requires: ['linear-functions'],
+    lesson: {
+      paragraphs: ['A cylinder is a circle stacked up: its base is a circle, and its volume is the base area, pi times r squared, times the height: pi times r squared times h. A can with radius 2 and height 5 holds pi times 4 times 5, which is 20 pi.\nDoubling the height doubles it. Doubling the radius quadruples it, because the radius is squared.', 'A cone that shares a base and height with a cylinder holds one third of it.', 'Base area times height. The radius is squared, so it matters twice.'],
+      keyIdea: 'Volume of a cylinder is pi r squared times h; a cone with the same base and height is a third of it.',
+      example: { kind: 'sector', degrees: 360, caption: 'The base is a whole circle, pi r squared; stack it h high and that is the can.', another: ['Stack coins: one coin is the base, and the stack holds the coin\'s area times how many coins high. That is every cylinder.', { text: 'Fill a cone with sand and pour it into a cylinder of the same base and height: it takes three cones to fill it.', visual: { kind: 'flow', steps: ['cone 1', 'cone 2', 'cone 3', 'cylinder full'] } }, 'When a formula squares something, small changes get big fast. A can twice as wide holds four times as much; that is why the wide cup costs so much more.'] },
+    },
+    sources: ['Aligned with TEKS 8.7A (solve problems involving the volume of cylinders, cones, and spheres) and CCSS 8.G.C.9.'],
+    generators: ['m8-cylinder', 'm8-cylinder', 'm8-cylinder', 'm8-cylinder', 'm8-cylinder'],
+  },
 ]; }
 
 // Grade 8 reading: flawed reasoning, irony, allusions, and an objective summary.
@@ -4071,6 +4570,34 @@ function GRADE8_READING_MODULES() { return [
     },
     sources: ['Aligned with Texas TEKS 8.7D (paraphrase and summarize texts in ways that maintain meaning and logical order) and Common Core RI.8.2 (provide an objective summary of the text).'],
     generators: ['r8-objective-summary', 'r8-loaded-word', 'r8-objective-summary', 'r8-loaded-word', 'r8-objective-summary'],
+  },
+  {
+    id: 'purpose-and-bias',
+    order: 5,
+    title: 'Purpose and bias',
+    tagline: 'Why it was written, and what it leaves out',
+    requires: ['objective-summary'],
+    lesson: {
+      paragraphs: ['A pamphlet urging you to vote for a candidate is written to persuade; an encyclopedia entry on volcanoes, to inform; a comic about a cat who cannot find its bed, to entertain. A word like should signals an opinion.\nAn author who leaves out the costs of a plan may be showing a bias: leaving out the other side leans the text. When two accounts of one event disagree, ask who wrote each and why.', 'Purpose explains what a text includes; bias explains what it leaves out.', 'Inform, persuade, entertain; then ask what is missing.'],
+      keyIdea: 'Every text has a purpose, and a bias is a lean you can see in what a text leaves out.',
+      example: { kind: 'twoway', a: 'what it says', b: 'what it leaves out', top: 'the purpose', bottom: 'the lean', caption: 'Read both columns: what is there and what is missing.', another: ['A photograph is true and still has a frame. Bias is the frame: everything outside it is left out on purpose or by habit, and a good reader asks what was just outside the edge.', { text: 'Three purposes, three shapes: to inform has facts and dates; to persuade has should and must; to entertain has a plot.', visual: { kind: 'stack', levels: ['inform: facts', 'persuade: should', 'entertain: a plot'] } }, 'Two honest accounts can disagree. Who wrote each, and what they wanted from you, explains most of the gap.'] },
+    },
+    sources: ['Aligned with TEKS 8.9E.i (identify the claim and analyze the argument, including the author\'s purpose) and CCSS RI.8.6.'],
+    generators: ['r8-author-purpose', 'r8-author-purpose', 'r8-author-purpose', 'r8-author-purpose', 'r8-author-purpose'],
+  },
+  {
+    id: 'theme-across-texts',
+    order: 6,
+    title: 'Theme across texts',
+    tagline: 'The same message in different stories',
+    requires: ['purpose-and-bias'],
+    lesson: {
+      paragraphs: ['Two stories that both show friendship surviving a fight share a theme. A theme is best stated as a sentence: honesty costs something but is worth it is a theme; honesty alone is a topic.\nA fable ends with a moral, the theme stated plainly. To find a theme, track what changes for the character: what the character learns is what the story says. A poem shares a theme faster than a story, in fewer words.', 'One message, many stories.', 'A theme is a sentence, and different texts can say the same one.'],
+      keyIdea: 'A theme is a sentence about what a story says; different texts can share one, and a fable states it as a moral.',
+      example: { kind: 'twoway', a: 'topic', b: 'theme', top: 'honesty', bottom: 'honesty costs something but is worth it', caption: 'The topic is a word; the theme is a sentence.', another: ['A theme is a song that many stories can sing. The words of each story differ; the tune underneath is the same.', { text: 'Follow the character from the first page to the last and write one sentence about what changed. That sentence is usually the theme, and it will fit another story too.', visual: { kind: 'flow', steps: ['first page', 'what changes', 'last page', 'the theme'] } }, 'Fables cheat kindly: they say their theme out loud. Novels make you earn it.'] },
+    },
+    sources: ['Aligned with TEKS 8.7A (infer multiple themes within and across texts using text evidence) and CCSS RL.8.2.'],
+    generators: ['r8-theme-across', 'r8-theme-across', 'r8-theme-across', 'r8-theme-across', 'r8-theme-across'],
   },
 ]; }
 
@@ -5010,6 +5537,34 @@ function GRADE3_SCIENCE_MODULES() { return [
     sources: ['Aligned with TEKS 3.6A (explore different forms of energy, including mechanical, light, sound, and thermal) and NGSS 1-PS4-1.'],
     generators: ['sc3-sound', 'sc3-sound', 'sc3-sound', 'sc3-sound', 'sc3-sound'],
   },
+  {
+    id: 'soil-and-rocks',
+    order: 6,
+    title: 'Soil and rocks',
+    tagline: 'What the ground is made of',
+    requires: ['sound'],
+    lesson: {
+      paragraphs: ['Soil is bits of rock and rotted plants: broken rock mixed with what plants and animals leave behind. Water, wind and roots, with ice, crack rock apart over time; that is weathering.\nClay is fine and packs tight, so it holds water best. Sand has big grains with gaps, so it drains fastest. Loam is a mix of sand, silt and clay, and gardens love it.', 'Shake soil in a jar of water and let it settle: the sand sinks first, and the dark rotted material settles near the top, dark against the rest.', 'Rock plus rotted life makes soil. Clay holds, sand drains, loam grows.'],
+      keyIdea: 'Soil is broken rock and rotted life; clay holds water, sand drains, loam is the mix gardens love.',
+      example: { kind: 'stack', levels: ['dark rotted material', 'silt', 'sand'], caption: 'A jar of soil after it settles: sand at the bottom, silt above, the dark rotted material on top.', another: ['Soil is a very slow recipe: a mountain crumbles for a million years, leaves rot for a hundred, and the two mix into the ground you dig in.', { text: 'Squeeze a wet handful. Clay makes a ball that holds. Sand falls apart. Loam holds a little and crumbles a little: the one you want.', visual: { kind: 'twoway', a: 'clay', b: 'sand', top: 'holds water', bottom: 'drains fast' } }, 'Roots are rock breakers too. A tree growing in a crack pushes it wider every year, and the flakes become soil.'] },
+    },
+    sources: ['Aligned with TEKS 3.10A (compare and describe properties of soils, including color, texture, and capacity to retain water) and NGSS 4-ESS2-1.'],
+    generators: ['sc3-soil', 'sc3-soil', 'sc3-soil', 'sc3-soil', 'sc3-soil'],
+  },
+  {
+    id: 'food-chains-3',
+    order: 7,
+    title: 'Food chains',
+    tagline: 'From the sun to the hawk',
+    requires: ['soil-and-rocks'],
+    lesson: {
+      paragraphs: ['Every food chain starts with the sun. Plants catch sunlight and make their own food; a plant is a producer. A rabbit eating grass is a consumer, and so is the fox that eats the rabbit.\nGrass, grasshopper, bird, hawk: the hawk eats and is not eaten, the top of this chain. Mushrooms breaking down a dead log are decomposers, turning it back into soil.', 'If the grass dies, everyone in the chain goes hungry. Every link depends on the one below.', 'Sun, producer, consumers, decomposers. Break a link and the chain feels it.'],
+      keyIdea: 'Producers catch sunlight, consumers eat, decomposers recycle; every link depends on the one below.',
+      example: { kind: 'flow', steps: ['sun', 'grass', 'grasshopper', 'bird', 'hawk'], caption: 'Energy passes up the chain from the sun; the hawk sits at the top.', another: ['A food chain is a line of people passing a bucket of water. The sun fills the bucket, the grass hands it on, and by the hawk only a splash is left; that is why hawks are rare.', { text: 'Decomposers close the loop: the hawk dies, the fungi take it apart, the soil feeds the grass. The chain is really a circle.', visual: { kind: 'loop', steps: ['grass', 'rabbit', 'fox', 'decomposers'] } }, 'Pull one card out of a food chain and count who loses a meal. In a real meadow it is everyone.'] },
+    },
+    sources: ['Aligned with TEKS 3.9B (identify and describe the flow of energy in a food chain) and NGSS 5-LS2-1.'],
+    generators: ['sc3-food-chain', 'sc3-food-chain', 'sc3-food-chain', 'sc3-food-chain', 'sc3-food-chain'],
+  },
 ]; }
 
 // Grade 6 science: atoms and compounds, how heat moves, the moving Earth, cells, and who eats whom.
@@ -5235,6 +5790,34 @@ function GRADE4_SCIENCE_MODULES() { return [
     sources: ['Aligned with TEKS 4.6D (design an experiment that tests the effect of force on an object) and NGSS 4-PS3-4 (energy and simple machines).'],
     generators: ['sc4-which-machine', 'sc4-machine-trade', 'sc4-which-machine', 'sc4-machine-trade', 'sc4-which-machine'],
   },
+  {
+    id: 'properties-of-matter-4',
+    order: 6,
+    title: 'Properties of matter',
+    tagline: 'What you can measure and test',
+    requires: ['simple-machines'],
+    lesson: {
+      paragraphs: ['Matter has properties you can measure: mass, volume and temperature, and a thermometer measures temperature. Other properties you test. A metal spoon conducts heat fastest; wood and plastic insulate. A cork floats on water because it is less dense; a coin and a marble sink.\nIron is a magnetic material: magnets pull iron and steel, not paper or glass. Sugar stirred into water dissolves: it spreads through the water and disappears from sight.', 'Measure what you can, test the rest.', 'Mass, volume, temperature; conducts, floats, magnetic, dissolves.'],
+      keyIdea: 'Matter has properties you can measure, like mass and temperature, and properties you test, like conducting, floating, magnetism and dissolving.',
+      example: { kind: 'stack', levels: ['measure: mass, volume, temperature', 'test: conducts heat', 'test: floats or sinks', 'test: magnetic', 'test: dissolves'], caption: 'Five ways to describe any object on the table.', another: ['Give a child a box of objects and four tests, a magnet, a bowl of water, a cup of hot water, a cup of cold water, and they will sort the world into properties in ten minutes.', { text: 'A property is a question with a testable answer. Does it float? Does a magnet grab it? Does it disappear in water? Yes or no, every time, for that material.', visual: { kind: 'flow', steps: ['pick an object', 'run a test', 'record yes or no'] } }, 'Properties belong to the material, not the size. A steel nail and a steel ship both sink as lumps; the ship floats only because of its shape and the air inside.'] },
+    },
+    sources: ['Aligned with TEKS 4.6A (compare and contrast a variety of mixtures and the physical properties of matter) and NGSS 5-PS1-3.'],
+    generators: ['sc4-matter', 'sc4-matter', 'sc4-matter', 'sc4-matter', 'sc4-matter'],
+  },
+  {
+    id: 'food-webs-4',
+    order: 7,
+    title: 'Food webs',
+    tagline: 'Chains that cross',
+    requires: ['properties-of-matter-4'],
+    lesson: {
+      paragraphs: ['A food web is many food chains linked together, because animals eat more than one thing. A hawk that eats mice and snakes has at least two arrows pointing to it, and arrows run from the eaten to the eater, showing where the energy goes.\nPlants are the base of every food web. Decomposers return dead matter to the soil and close the loop. If mice disappear, the hawk eats more snakes or goes hungry: a web bends where a chain would break.', 'More links means more ways to survive a loss, and more ways for a loss to spread.', 'Chains cross into webs; arrows follow the energy; plants at the base, decomposers closing the loop.'],
+      keyIdea: 'A food web links many chains; arrows run from the eaten to the eater, plants sit at the base, and a web bends where a chain would break.',
+      example: { kind: 'flow', steps: ['grass', 'mouse', 'hawk'], caption: 'One chain inside the web; the same hawk has another chain through the snake.', another: ['Write every animal in a meadow on a card and connect them with string, eater to eaten. The strings cross everywhere. Pull one card and watch how many strings sag.', { text: 'A chain has one road from grass to hawk; a web has many. Close one road and the traffic finds another, until too many roads close at once.', visual: { kind: 'twoway', a: 'a chain', b: 'a web', top: 'one road', bottom: 'many roads' } }, 'The arrows point the way the energy travels, which is toward the mouth. Get the direction right and the web reads itself.'] },
+    },
+    sources: ['Aligned with TEKS 4.9B (describe the flow of energy through food webs) and NGSS 5-LS2-1.'],
+    generators: ['sc4-food-webs', 'sc4-food-webs', 'sc4-food-webs', 'sc4-food-webs', 'sc4-food-webs'],
+  },
 ]; }
 
 // Grade 5 science: mixtures and solutions, the Earth, sun and moon, the water cycle, and inherited traits.
@@ -5312,6 +5895,34 @@ function GRADE5_SCIENCE_MODULES() { return [
     },
     sources: ['Aligned with Texas TEKS 5.13A (analyze and describe how inherited traits are passed from parents to offspring and how learned behaviors are acquired) and NGSS 3-LS3-1 (analyze and interpret data to provide evidence that plants and animals have traits inherited from parents).'],
     generators: ['s5-inherited-or-learned', 's5-which-is-inherited', 's5-inherited-or-learned', 's5-which-is-learned', 's5-inherited-or-learned'],
+  },
+  {
+    id: 'forces-and-motion-5',
+    order: 5,
+    title: 'Balanced and unbalanced forces',
+    tagline: 'When a push wins',
+    requires: ['inherited-and-learned'],
+    lesson: {
+      paragraphs: ['A force is a push or a pull, and what it changes is its motion: starting, stopping, speeding, slowing, turning. Gravity pulls everything toward the Earth. Friction is the rubbing that slows a ball on the grass.\nWhen two people push a box equally from opposite sides, the forces are balanced and it stays still. Unbalanced forces change motion. A heavier cart needs a bigger push to speed up the same amount.', 'Balanced: nothing changes. Unbalanced: something moves differently.', 'A force changes motion. Balanced forces cancel; unbalanced forces win.'],
+      keyIdea: 'A force is a push or pull that changes motion; balanced forces cancel, unbalanced forces change motion.',
+      example: { kind: 'twoway', a: 'balanced', b: 'unbalanced', top: 'the box stays still', bottom: 'the box moves', caption: 'Equal pushes cancel; a bigger push on one side wins.', another: ['Tug of war is the whole lesson: two teams pulling equally and the rope does not move; one team pulls harder and it does.', { text: 'A rolling ball would roll forever on a floor with no friction. The grass is what stops it, and the rougher the grass the sooner.', visual: { kind: 'flow', steps: ['push', 'rolling', 'friction', 'stopped'] } }, 'A shopping cart is a force meter: empty, a fingertip moves it; full, you lean into it. More mass, more push for the same change.'] },
+    },
+    sources: ['Aligned with TEKS 5.6D (design a simple experimental investigation that tests the effect of force on an object) and NGSS 3-PS2-1.'],
+    generators: ['sc5-forces', 'sc5-forces', 'sc5-forces', 'sc5-forces', 'sc5-forces'],
+  },
+  {
+    id: 'fossils-and-earth-5',
+    order: 6,
+    title: 'Fossils and what they tell',
+    tagline: 'A message left in rock',
+    requires: ['forces-and-motion-5'],
+    lesson: {
+      paragraphs: ['A fossil is a trace of a living thing kept in rock: a bone, a shell, a footprint pressed in long ago. Sedimentary rock holds most of them, because sediment buries things gently while lava and heat destroy them.\nRock layers pile up, so deeper is older: the oldest fossils are at the bottom. A shell fossil on a mountain means the rock was once under water. Ferns fossilized in a desert mean the climate was once wet. A fossil footprint can show how the animal moved.', 'Fossils are messages about a place: what lived there, how it moved, and what the weather was.', 'Deeper is older. Sea shells mean sea floor. Ferns mean wet.'],
+      keyIdea: 'Fossils are traces kept in layered rock: deeper is older, and each one says what the place was like.',
+      example: { kind: 'stack', levels: ['newest layer', 'middle layer', 'oldest layer: a shell'], caption: 'Rock layers stack like laundry: the shell at the bottom went in first.', another: ['A fossil is a letter from a place to itself, mailed millions of years ago. The address is the layer; the news is what lived there.', { text: 'Reading a cliff top to bottom is reading forward in time backward: the top is yesterday\'s beach, the bottom is a sea nobody saw.', visual: { kind: 'flow', steps: ['top: newest', 'middle', 'bottom: oldest'] } }, 'Footprints are the liveliest fossils: no bones, but a stride, a direction, sometimes a hurry.'] },
+    },
+    sources: ['Aligned with TEKS 5.7D (identify fossils as evidence of past living organisms and the nature of the environments at the time) and NGSS 3-LS4-1.'],
+    generators: ['sc5-fossils', 'sc5-fossils', 'sc5-fossils', 'sc5-fossils', 'sc5-fossils'],
   },
 ]; }
 
@@ -6556,11 +7167,12 @@ function KINDER_CIVICS_MODULES() { return [
     title: 'Rules and helpers',
     tagline: 'Rules keep us safe, and helpers keep us going',
     lesson: {
-      paragraphs: ['A rule tells us what to do. Rules keep everyone safe.', 'Helpers do jobs for the whole town. A firefighter puts out fires. A doctor helps when you are sick.'],
+      paragraphs: ['A rule tells us what to do. Rules keep everyone safe.', 'We stop at a red light to let the other cars go. We wait our turn so it is fair for everyone. We walk in the hall so nobody bumps or falls.', 'Helpers do jobs for the whole town. A firefighter puts out fires. A doctor helps when you are sick.'],
       keyIdea: 'Rules keep us safe. Helpers do jobs for everyone.',
       example: { kind: 'sign', text: 'STOP', color: '#D9534F', caption: 'A red sign means stop. Rules keep everyone safe.' , formula: 'STOP' },
       script: [
         { say: 'Stop at the sign. That is a rule. Rules keep everyone safe.', show: { kind: 'letters', text: 'STOP' } },
+        { say: 'We stop at a red light to let the other cars go. We wait our turn so it is fair for everyone. We walk in the hall so nobody bumps or falls.', show: { kind: 'sign', text: 'STOP', color: '#D9534F' } },
         { say: 'A firefighter puts out the fire. That is a helper.', show: { kind: 'icon', name: 'fire' } },
         { say: 'A doctor helps when you are sick. A teacher helps you learn.', show: null },
         { say: 'Rules help us to stay safe. A police officer and a mail carrier are helpers. When a helper talks, we listen.', show: { kind: 'sign', text: 'STOP', color: '#D9534F' } },
@@ -7249,8 +7861,8 @@ function TECH7_MODULES() { return [
     tagline: 'Two symbols, every number',
     requires: [],
     lesson: {
-      paragraphs: ['A computer stores everything as switches that are on or off: 1 or 0. That is binary.\nWith four switches you count in places worth 8, 4, 2 and 1. Add the places that are on: 1010 is 8 + 2, which is 10.', 'Every number, letter, picture and sound is stored this way, in enough switches.', 'Two symbols, every number.'],
-      keyIdea: 'Binary counts with places worth 8, 4, 2, 1. Add the places that are on.',
+      paragraphs: ['A computer stores everything as switches that are on or off. A **1** means on. A **0** means off. That is binary.\nA binary number is a row of four switches. From left to right the switches are worth **8**, **4**, **2** and **1**.\nTo read the number, add up the values of the switches that show a 1.', 'Let\'s look at **1010**.\nThe first switch is on, so count **8**.\nThe second is off, so skip 4.\nThe third is on, so count **2**.\nThe last is off, so skip 1.\n[[8 + 2 = 10]]\nSo 1010 is 10.', 'Every number, letter, picture and sound is stored this way, in enough switches.'],
+      keyIdea: 'A binary number is a row of switches worth 8, 4, 2 and 1. Add up the ones that show a 1.',
       example: { kind: 'stack', levels: ['8: on', '4: off', '2: on', '1: off'], caption: '1010 in binary: the 8 and the 2 are on, so it is 10.',
         another: ['Four light switches in a row are worth 8, 4, 2 and 1. Flip on the 8 and the 2 and the room is showing 10. Every number up to 15 is some pattern of the four.',
           'Our usual numbers use ten symbols and places worth 1, 10, 100. Binary uses two symbols and places worth 1, 2, 4, 8. Same idea, smaller alphabet.',
@@ -8355,6 +8967,34 @@ function GRADE5_HISTORY_MODULES() { return [
     sources: ['Aligned with Texas TEKS 5.4E (identify the causes and effects of the Civil War, including slavery, and the contributions of Abraham Lincoln) and NCSS Theme II (Time, Continuity, and Change).'],
     generators: ['h5-war-year', 'h5-war-fact', 'h5-war-year', 'h5-war-fact', 'h5-war-settled'],
   },
+  {
+    id: 'immigration-and-cities',
+    order: 6,
+    title: 'Immigrants and growing cities',
+    tagline: 'Ellis Island and the tenements',
+    requires: ['civil-war'],
+    lesson: {
+      paragraphs: ['Around 1900 most immigrants to the United States arrived at Ellis Island in New York. Jobs in factories and farmland pulled them; hunger and war pushed them.\nMany lived in crowded city neighborhoods, in tenements: a tenement is a crowded apartment building that packed many families into small rooms. The factory pulled people into cities, and cities grew around it.', 'Immigrants brought foods, words and traditions that changed American life: pizza, bagels, new words and new holidays.', 'Pushed by hunger, pulled by work, arriving at Ellis Island, living in tenements, changing the country.'],
+      keyIdea: 'Around 1900 immigrants arrived through Ellis Island, worked in factories, lived in tenements and reshaped American life.',
+      example: { kind: 'flow', steps: ['a hard life at home', 'a ship', 'Ellis Island', 'a tenement', 'a factory job'], caption: 'The road most immigrants walked around 1900.', another: ['Every family tree in America has a ship in it somewhere. Around 1900 the ships came faster than ever, and the cities had to grow around the people who stepped off.', { text: 'Push and pull: hunger and war pushed; jobs and land pulled. Draw two arrows on a map and you have explained the century.', visual: { kind: 'twoway', a: 'push', b: 'pull', top: 'hunger, war', bottom: 'jobs, land' } }, 'Look at a menu in any city. Half of it arrived on a ship with someone\'s grandmother.'] },
+    },
+    sources: ['Aligned with TEKS 5.4C (identify reasons people moved to the United States in the late 1800s) and NCSS Theme IV.'],
+    generators: ['h5-immigration', 'h5-immigration', 'h5-immigration', 'h5-immigration', 'h5-immigration'],
+  },
+  {
+    id: 'industry-and-invention',
+    order: 7,
+    title: 'Industry and invention',
+    tagline: 'From the farm to the factory',
+    requires: ['immigration-and-cities'],
+    lesson: {
+      paragraphs: ['The Industrial Revolution moved work from homes and farms to factories, where machines did what hands had done. Water wheels and steam powered them: rivers turned the first wheels, then steam engines took over.\nThe telegraph sent messages by wire in minutes. The transcontinental railroad connected the coasts in 1869, meeting in Utah. Thomas Edison made a practical light bulb in 1879, and it lit homes and factories.', 'Early factories had a common problem: long hours and unsafe work, even for children. Laws came later.', 'Machines, steam, wires, rails and light: the century that sped everything up.'],
+      keyIdea: 'Factories, steam, the telegraph, the railroad and the light bulb moved work and life faster than ever.',
+      example: { kind: 'flow', steps: ['water wheel', 'steam engine', 'telegraph', 'railroad 1869', 'light bulb 1879'], caption: 'Five inventions in a row, each one shrinking the country a little more.', another: ['Before the factory, a shirt took a family a week. After, a machine made a hundred in a day, and the family moved to the city to run the machine.', { text: 'The railroad was a clock as well as a road: before 1869 a letter crossed the country in months; after, a week.', visual: { kind: 'twoway', a: 'before 1869', b: 'after 1869', top: 'months', bottom: 'a week' } }, 'Every invention had a cost somebody paid: the smoke of the steam engine, the hours of the factory, the land of the railroad. Progress is a ledger with two columns.'] },
+    },
+    sources: ['Aligned with TEKS 5.4A (describe the causes and effects of the Industrial Revolution) and NCSS Theme VIII.'],
+    generators: ['h5-industry', 'h5-industry', 'h5-industry', 'h5-industry', 'h5-industry'],
+  },
 ]; }
 
 // Grade 5 math: decimals, fractions of fractions, big division, volume, and order of operations.
@@ -8464,6 +9104,34 @@ function GRADE5_MATH_MODULES() { return [
     sources: ['Aligned with Texas TEKS 5.4F (simplify numerical expressions using the order of operations) and Common Core 5.OA.A.1 (use parentheses in numerical expressions and evaluate them).'],
     generators: ['g5-order-ops', 'g5-brackets', 'g5-order-ops', 'g5-brackets', 'g5-order-ops'],
   },
+  {
+    id: 'multiplying-decimals',
+    order: 7,
+    title: 'Multiplying decimals',
+    tagline: 'Count the places',
+    requires: ['order-of-operations'],
+    lesson: {
+      paragraphs: ['Multiplying by 0.5 halves: 0.5 times 4 is 2. Multiplying by 0.1 is the same as dividing by 10. Times ten slides the point one place right: 2.5 times 10 is 25.\nFor 0.3 times 0.2, multiply as if there were no points, three times two is six, then count the decimal places in the question: two in all, so 0.06. 1.2 times 3: twelve times three is thirty-six, with one place, 3.6. 0.25 times 0.4 has three decimal places: 0.100, which is 0.1.', 'Multiply the digits, then count the places.', 'Digits first, places second.'],
+      keyIdea: 'Multiply the digits as whole numbers, then give the answer as many decimal places as the question has.',
+      example: { kind: 'letters', text: '0.3 × 0.2 = 0.06', caption: 'Three times two is six; two decimal places in the question, so two in the answer.', another: ['Decimals are money. A tenth of a dollar is a dime, so 0.1 times 5 dollars is 5 dimes, fifty cents. If the answer would not make sense as money, count the places again.', { text: 'A number smaller than one shrinks what it multiplies. Half of something is smaller; a tenth is smaller still. If your answer got bigger, a point moved.', visual: { kind: 'twoway', a: 'times 0.5', b: 'times 10', top: 'halves', bottom: 'grows tenfold' } }, 'Estimate first: 1.2 times 3 is about 1 times 3, so the answer is near 3. Then 3.6 looks right and 36 looks wrong.'] },
+    },
+    sources: ['Aligned with TEKS 5.3E (solve for products of decimals to the hundredths) and CCSS 5.NBT.B.7.'],
+    generators: ['m5-decimal-mult', 'm5-decimal-mult', 'm5-decimal-mult', 'm5-decimal-mult', 'm5-decimal-mult'],
+  },
+  {
+    id: 'data-and-line-plots',
+    order: 8,
+    title: 'Data and line plots',
+    tagline: 'Every dot is one measurement',
+    requires: ['multiplying-decimals'],
+    lesson: {
+      paragraphs: ['A line plot stacks dots above numbers; each dot is one measurement. Three dots at 4 and one at 5 means 4 is the most common value.\nA line graph joins points over time so you can see a change: steep and rising means a fast increase. The x-axis, across, usually shows what is being measured, like time; up is how much. A pair on a coordinate grid is written (2, 3): across, then up.', 'Dots for counts, lines for change.', 'Line plots stack measurements; line graphs show change over time.'],
+      keyIdea: 'A line plot stacks one dot per measurement; a line graph joins points to show change over time.',
+      example: { kind: 'plot', fn: 'line', caption: 'A line graph rising over time: each point is a moment, and the line between them is the story.', another: ['Measure something ten times, the height of ten beans, and stack a dot for each: a line plot. The tall stacks are the usual answer; the lonely dots are the surprises.', { text: 'A line graph is a hike drawn on paper. Flat is a rest, gentle is a stroll, steep is a climb, and down is down.', visual: { kind: 'plot', fn: 'steeper' } }, 'Read the axes before the line. If across is time and up is money, a rising line is good news; if up is cost, the same line is bad.'] },
+    },
+    sources: ['Aligned with TEKS 5.9A (represent categorical data with bar graphs or frequency tables and numerical data with dot plots) and CCSS 5.MD.B.2.'],
+    generators: ['m5-data', 'm5-data', 'm5-data', 'm5-data', 'm5-data'],
+  },
 ]; }
 
 function GRADE4_MATH_MODULES() { return [
@@ -8557,6 +9225,34 @@ function GRADE4_MATH_MODULES() { return [
     sources: ['Aligned with Texas TEKS 4.3E (add and subtract fractions with equal denominators) and Common Core 4.NF.B.3.'],
     generators: ['g4-add-fraction', 'g4-sub-fraction', 'g4-mixed-number', 'g4-fraction-story', 'g4-simplify'],
   },
+  {
+    id: 'area-and-perimeter',
+    order: 6,
+    title: 'Area and perimeter',
+    tagline: 'Cover it, or walk around it',
+    requires: ['add-fractions'],
+    lesson: {
+      paragraphs: ['Perimeter is the walk around the edge of a shape. A rug 4 feet by 3 feet has a perimeter of 4 + 3 + 4 + 3 = 14 feet.\nArea is how much surface the shape covers, counted in squares: 4 times 3 is 12 square feet. A square with sides of 5 inches has an area of 25 square inches and a perimeter of 20 inches.', 'A fence around a yard, or ribbon around a box, needs perimeter. Paint to cover a wall, carpet for a room, or tiles for a floor need area.', 'Around the edge is perimeter. Covering the inside is area.'],
+      keyIdea: 'Perimeter is the walk around the edge; area is the surface covered, in squares.',
+      example: { kind: 'bar', parts: 4, shaded: 4, caption: 'A row of four squares: the area of a 4 by 1 strip is 4 squares, and its perimeter walks 4 + 1 + 4 + 1 = 10 units.', another: ['Walk the edge of a room, counting steps: that is perimeter. Now imagine laying tiles across the floor: counting the tiles is area. Same room, two questions.', { text: 'A picture frame is perimeter; the picture is area. The frame goes around, the picture fills.', visual: { kind: 'twoway', a: 'the frame', b: 'the picture', top: 'perimeter: around', bottom: 'area: inside' } }, 'Units tell you which is which: feet for perimeter, square feet for area. If the answer has square in it, you covered something.'] },
+    },
+    sources: ['Aligned with TEKS 4.5D (solve problems related to perimeter and area of rectangles) and CCSS 4.MD.A.3.'],
+    generators: ['m4-area-perimeter', 'm4-area-perimeter', 'm4-area-perimeter', 'm4-area-perimeter', 'm4-area-perimeter'],
+  },
+  {
+    id: 'angles-and-lines',
+    order: 7,
+    title: 'Angles and lines',
+    tagline: 'Right, acute, obtuse; parallel, perpendicular',
+    requires: ['area-and-perimeter'],
+    lesson: {
+      paragraphs: ['A square corner is a right angle: 90 degrees. Smaller than that is acute, like the tip of a pizza slice. Wider than a right angle but less than a straight line is obtuse, like a reclined chair.\nA straight line is 180 degrees, two right angles side by side.', 'Lines that never meet, like railroad tracks, are parallel. Lines that cross at a right angle are perpendicular.', 'Right, acute, obtuse. Parallel, perpendicular.'],
+      keyIdea: 'A right angle is 90 degrees; acute is smaller, obtuse is wider; parallel never meet, perpendicular cross square.',
+      example: { kind: 'clock', hour: 3, minute: 0, caption: 'The hands at three make a right angle: a square corner, 90 degrees.', another: ['Open a door. Barely open is acute. Straight out from the wall is a right angle. Pushed back farther is obtuse. Flat against the other wall is a straight angle.', { text: 'The hour hand and minute hand are an angle machine: 3:00 is a right angle, 1:00 is acute, 5:00 is obtuse, 6:00 is a straight line.', visual: { kind: 'clock', hour: 5, minute: 0 } }, 'Parallel lines are the two rails of a track; the ties across them are perpendicular to both. One picture, both words.'] },
+    },
+    sources: ['Aligned with TEKS 4.6C (apply knowledge of right angles to identify acute, right, and obtuse triangles) and CCSS 4.G.A.1.'],
+    generators: ['m4-angles', 'm4-angles', 'm4-angles', 'm4-angles', 'm4-angles'],
+  },
 ]; }
 
 function MULTIPLICATION_MODULES() { return [
@@ -8629,6 +9325,34 @@ function MULTIPLICATION_MODULES() { return [
     },
     sources: ['Aligned with Texas TEKS 3.4A (one-step and two-step problems within 1,000) and Common Core 3.NBT.A.2.'],
     generators: ['as-add', 'as-subtract', 'as-story-add', 'as-story-subtract', 'as-two-step'],
+  },
+  {
+    id: 'measuring-things',
+    order: 5,
+    title: 'Measuring things',
+    tagline: 'Inches, pounds and cups',
+    requires: ['add-subtract-1000'],
+    lesson: {
+      paragraphs: ['Length is measured in inches, feet and centimeters: a pencil is measured in inches, and a rope 3 feet long is 36 inches, because there are 12 inches in a foot. A meter is a little more than a yard, about a doorknob high.\nWeight is pounds or kilograms: how heavy a dog is. Liquid is cups, gallons and liters, measured with a measuring cup; sixteen cups fill a gallon, so a gallon holds more than a cup.', 'The tool matches the question: a ruler for length, a scale for weight, a measuring cup for liquid.', 'Length, weight, liquid: each has its units and its tool.'],
+      keyIdea: 'Inches and feet for length, pounds for weight, cups and gallons for liquid; pick the unit that fits the question.',
+      example: { kind: 'flow', steps: ['length: a ruler', 'weight: a scale', 'liquid: a cup'], caption: 'Three questions, three tools.', another: ['Ask what you want to know before you pick a tool. How long: ruler. How heavy: scale. How much will it hold: cup. The wrong tool gives a number that means nothing.', { text: 'Twelve inches in a foot, three feet in a yard, sixteen cups in a gallon. The numbers are the bridges between units.', visual: { kind: 'stack', levels: ['1 gallon', '16 cups', '1 foot', '12 inches'] } }, 'Estimate first, then measure. A door is about a meter wide and a bag of sugar about two pounds; guessing before measuring makes the number mean something.'] },
+    },
+    sources: ['Aligned with TEKS 3.7B (determine the perimeter of a polygon or a missing length; measurement units) and CCSS 3.MD.A.2.'],
+    generators: ['m3-measure', 'm3-measure', 'm3-measure', 'm3-measure', 'm3-measure'],
+  },
+  {
+    id: 'graphs-and-tallies',
+    order: 6,
+    title: 'Graphs and tallies',
+    tagline: 'A picture of the counts',
+    requires: ['measuring-things'],
+    lesson: {
+      paragraphs: ['A tally mark group of five is four lines with one across. A bar graph turns counts into bars: 4 red cars and 6 blue cars, and the blue bar is taller by 2. A pictograph uses pictures with a key: if one picture equals 2 books, three pictures mean 6 books.\nEvery graph needs labels and a title so a reader knows what the bars are and what the graph is about.', 'Two bars of 3 and 8: the taller is 5 more.', 'Count with tallies, show with bars or pictures, and always label.'],
+      keyIdea: 'Tallies count in fives; bar graphs and pictographs show the counts; labels and a title say what they mean.',
+      example: { kind: 'growthbars', values: [4, 6], labels: ['red', 'blue'], caption: 'Four red cars and six blue: the blue bar stands taller by two.', another: ['A graph is a photograph of the counting. You could read the numbers in a list, but the picture lets your eye compare in a blink.', { text: 'The key on a pictograph is a promise: one picture, this many things. Break the promise and the graph lies.', visual: { kind: 'sign', text: '1 picture = 2 books' } }, 'Make a tally of something today, the cars that pass in five minutes by color, then draw the bars. The bars will surprise you the way the tallies did not.'] },
+    },
+    sources: ['Aligned with TEKS 3.8A (summarize a data set with multiple categories using a frequency table, dot plot, pictograph, or bar graph) and CCSS 3.MD.B.3.'],
+    generators: ['m3-graphs', 'm3-graphs', 'm3-graphs', 'm3-graphs', 'm3-graphs'],
   },
 ]; }
 
@@ -9328,9 +10052,10 @@ Object.assign(GENERATORS, {
       explain: `A magnet does not pull a ${t.n}. It pulls iron and steel.`, visual: { kind: 'icon', name: t.n }, explainVisual: null };
   },
   's2-tap-not-pulled': (rng) => {
-    const not = pick(rng, ['rock', 'flower']);
-    return { type: 'choice', story: null, prompt: `Tap the ${not}. A magnet does not pull it.`, choices: shuffle(rng, [`icon:${not}`, 'icon:magnet']), answer: `icon:${not}`,
-      explain: `A magnet does not pull a ${not}.`, visual: null, explainVisual: null };
+    // Reworded 2026-09-23 (Mikey): the pair is a metal thing and a not-metal thing, never the magnet itself.
+    const not = pick(rng, ['rock', 'flower']); const metal = pick(rng, ['clip', 'nail']);
+    return { type: 'choice', story: null, prompt: 'Which object cannot be moved with a magnet?', choices: shuffle(rng, [`icon:${not}`, `icon:${metal}`]), answer: `icon:${not}`,
+      explain: `A magnet does not pull a ${not}. It pulls the ${metal === 'clip' ? 'paper clip' : 'nail'}, because that is metal.`, visual: null, explainVisual: null };
   },
   's2-tap-magnet': (rng) => {
     const other = pick(rng, ['rock', 'flower', 'fish']);
@@ -10891,6 +11616,166 @@ Object.assign(GENERATORS, {
   // Technology, grade 3: what a computer is, steps in order, patterns that repeat.
   // Health, kindergarten and grade 1 (read aloud): hands, teeth, sleep, plates.
   // Music, grade 1 (read aloud): the beat, high and low, loud and soft.
+  'm4-area-perimeter': (rng) => {
+    const Q = [['A rug is 4 feet by 3 feet. What is its area?', ['12 square feet', '7 square feet', '14 feet'], '12 square feet', 'Area is length times width: 4 times 3 is 12 square feet.'], ['A rug is 4 feet by 3 feet. What is its perimeter?', ['14 feet', '12 feet', '7 feet'], '14 feet', 'Perimeter is the walk around the edge: 4 + 3 + 4 + 3 = 14 feet.'], ['Which needs area, not perimeter?', ['paint to cover a wall', 'fence around a yard', 'ribbon around a box'], 'paint to cover a wall', 'Covering a surface is area. Going around an edge is perimeter.'], ['Which needs perimeter?', ['fence around a yard', 'carpet for a room', 'tiles for a floor'], 'fence around a yard', 'A fence goes around the edge. That is perimeter.'], ['A square has sides of 5 inches. What is its area?', ['25 square inches', '20 inches', '10 square inches'], '25 square inches', '5 times 5 is 25 square inches.'], ['A square has sides of 5 inches. What is its perimeter?', ['20 inches', '25 inches', '10 inches'], '20 inches', 'Four sides of 5: 20 inches around.'], ];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'm4-angles': (rng) => {
+    const Q = [['A corner of a square is what kind of angle?', ['a right angle', 'an acute angle', 'an obtuse angle'], 'a right angle', 'A square corner is a right angle: 90 degrees.'], ['An angle smaller than a right angle is called what?', ['acute', 'obtuse', 'straight'], 'acute', 'Acute angles are less than 90 degrees, like a pizza slice tip.'], ['An angle wider than a right angle but less than a line is what?', ['obtuse', 'acute', 'right'], 'obtuse', 'Obtuse angles are between 90 and 180 degrees, like a reclined chair.'], ['How many degrees are in a straight line?', ['180', '90', '360'], '180', 'A straight line is a straight angle: 180 degrees, two right angles.'], ['Two lines that never meet are called what?', ['parallel', 'perpendicular', 'crossed'], 'parallel', 'Parallel lines run side by side forever, like railroad tracks.'], ['Two lines that cross at a right angle are called what?', ['perpendicular', 'parallel', 'curved'], 'perpendicular', 'Perpendicular lines make square corners where they cross.'], ];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'm6-mean': (rng) => {
+    const Q = [['Scores: 4, 6, 8. What is the mean?', ['6', '8', '4'], '6', 'Add them, 18, and share among 3: the mean is 6.'], ['Scores: 2, 9, 4. What is the median?', ['4', '2', '9'], '4', 'Put them in order, 2, 4, 9, and take the middle: 4.'], ['Scores: 5, 5, 7, 9. What is the mode?', ['5', '7', '9'], '5', 'The mode is the most common value. Five appears twice.'], ['Scores: 3, 5, 10. What is the range?', ['7', '3', '10'], '7', 'Range is highest minus lowest: 10 minus 3 is 7.'], ['One huge score is added to a set. Which moves most?', ['the mean', 'the median', 'the mode'], 'the mean', 'An outlier drags the mean; the median stays near the middle of the pack.'], ['Which is the middle value of an ordered list?', ['the median', 'the mean', 'the range'], 'the median', 'Median means middle. Line the numbers up and find the center.'], ];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'm6-quadrants': (rng) => {
+    const Q = [['The point (3, -2) is how far across and which way?', ['3 right', '3 left', '2 up'], '3 right', 'The first number is across: positive is right, negative is left.'], ['The point (3, -2) is how far up or down?', ['2 down', '2 up', '3 down'], '2 down', 'The second number is up or down: negative goes down.'], ['In which quadrant is (-4, 5)?', ['the second', 'the first', 'the fourth'], 'the second', 'Left and up is the second quadrant, counting counterclockwise from top right.'], ['In which quadrant is (2, 2)?', ['the first', 'the second', 'the third'], 'the first', 'Right and up is the first quadrant.'], ['Which point is on the x-axis?', ['(5, 0)', '(0, 5)', '(5, 5)'], '(5, 0)', 'On the x-axis the up-or-down number is zero.'], ['What is the point (0, 0) called?', ['the origin', 'the center line', 'the quadrant'], 'the origin', 'The origin is where the two axes cross.'], ];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'm8-linear': (rng) => {
+    const Q = [['y = 3x + 2. What is the slope?', ['3', '2', '5'], '3', 'In y = mx + b, m is the slope: 3.'], ['y = 3x + 2. Where does the line cross the y-axis?', ['at 2', 'at 3', 'at 0'], 'at 2', 'b is the y-intercept: the line starts at 2.'], ['A line rises 4 for every 2 across. What is its slope?', ['2', '4', '8'], '2', 'Rise over run: 4 over 2 is 2.'], ['Which equation is a line?', ['y = 2x - 1', 'y = x squared', 'y = 2 to the x'], 'y = 2x - 1', 'A line has x to the first power, times a number, plus a number.'], ['A line with slope 0 does what?', ['stays flat', 'goes up', 'goes down'], 'stays flat', 'Zero rise: the line is horizontal.'], ['Two lines with the same slope are what?', ['parallel', 'crossing', 'the same length'], 'parallel', 'Same steepness, never meeting: parallel.'], ];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'm8-cylinder': (rng) => {
+    const Q = [['A can has radius 2 and height 5. Its volume, in terms of pi?', ['20 pi', '10 pi', '7 pi'], '20 pi', 'Volume of a cylinder is pi times radius squared times height: pi times 4 times 5.'], ['What is the base of a cylinder?', ['a circle', 'a square', 'a triangle'], 'a circle', 'A cylinder is a circle stacked up: base area times height.'], ['Doubling the height of a can does what to its volume?', ['doubles it', 'quadruples it', 'halves it'], 'doubles it', 'Height is multiplied once, so the volume doubles.'], ['Doubling the radius of a can does what to its volume?', ['quadruples it', 'doubles it', 'halves it'], 'quadruples it', 'Radius is squared, so doubling it multiplies the volume by four.'], ['Which formula is the volume of a cylinder?', ['pi times r squared times h', '2 times pi times r', 'pi times r times h'], 'pi times r squared times h', 'Base area, pi r squared, times height.'], ['A cone and a cylinder share a base and height. The cone holds?', ['one third', 'one half', 'the same'], 'one third', 'A cone is a third of the cylinder around it.'], ];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'r3-context': (rng) => {
+    const Q = [['The word is unfamiliar. Where do you look first?', ['at the words around it', 'at the cover', 'at the page number'], 'at the words around it', 'Context clues: the nearby words often say what the new word means.'], ['The frigid wind made her shiver. What does frigid mean?', ['very cold', 'very warm', 'very loud'], 'very cold', 'Shiver is the clue: frigid means very cold.'], ['He was famished, so he ate three plates. Famished means?', ['very hungry', 'very tired', 'very happy'], 'very hungry', 'Three plates is the clue. Famished means very hungry.'], ['A sentence says a word, then or in other words. What follows?', ['a meaning of the word', 'a new topic', 'a question'], 'a meaning of the word', 'Words like or and in other words introduce a definition.'], ['What kind of clue is an example after a word?', ['a context clue', 'a picture clue', 'a title clue'], 'a context clue', 'Examples nearby show what a word covers.'], ['If the clues run out, what do you use?', ['a dictionary', 'a guess', 'nothing'], 'a dictionary', 'Clues first, then the dictionary for the exact meaning.'], ];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'r3-character': (rng) => {
+    const Q = [['Where and when a story happens is called what?', ['the setting', 'the plot', 'the theme'], 'the setting', 'Setting is the where and the when.'], ['A character keeps helping others. What is that telling you?', ['what the character is like', 'the setting', 'the ending'], 'what the character is like', 'Actions show character traits. Helping shows kindness.'], ['Which is a character trait?', ['brave', 'tall', 'red'], 'brave', 'A trait is a way of acting or being: brave, honest, shy.'], ['A story opens in a snowy village at night. Snowy and night are?', ['the setting', 'a character', 'the moral'], 'the setting', 'Place and time: the setting.'], ['How do you learn what a character wants?', ['from what they say and do', 'from the title', 'from the page count'], 'from what they say and do', 'Words and actions reveal what a character wants.'], ['A character changes from scared to brave. What is that called?', ['character growth', 'setting', 'rhyme'], 'character growth', 'Characters grow when the story changes them.'], ];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'r6-plot': (rng) => {
+    const Q = [['The problem a character faces is called what?', ['the conflict', 'the setting', 'the resolution'], 'the conflict', 'Conflict is the problem the story turns on.'], ['The moment of highest tension is called what?', ['the climax', 'the exposition', 'the theme'], 'the climax', 'The climax is the peak, where the conflict comes to a head.'], ['The part that introduces characters and setting is what?', ['the exposition', 'the climax', 'the resolution'], 'the exposition', 'Exposition sets the stage before the action rises.'], ['A character struggles against a storm. What kind of conflict?', ['character versus nature', 'character versus self', 'character versus society'], 'character versus nature', 'Nature is the opponent: a storm, a mountain, a sea.'], ['A character cannot decide whether to lie. What kind of conflict?', ['character versus self', 'character versus nature', 'character versus character'], 'character versus self', 'The struggle is inside one person.'], ['How a story ties up is called what?', ['the resolution', 'the rising action', 'the setting'], 'the resolution', 'Resolution is where the conflict settles.'], ];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'r6-poetry': (rng) => {
+    const Q = [['A group of lines in a poem is called what?', ['a stanza', 'a paragraph', 'a chapter'], 'a stanza', 'Stanzas are the paragraphs of a poem.'], ['Words that end with the same sound are what?', ['rhymes', 'stanzas', 'metaphors'], 'rhymes', 'Cat and hat rhyme: the ending sounds match.'], ['The beat pattern of a poem is called what?', ['rhythm', 'rhyme', 'setting'], 'rhythm', 'Rhythm is the beat you can tap.'], ['Repeating the same starting sound, like silver spoons, is what?', ['alliteration', 'rhyme', 'simile'], 'alliteration', 'Alliteration repeats a beginning sound.'], ['A poem with no rhyme or set beat is called what?', ['free verse', 'a sonnet', 'a limerick'], 'free verse', 'Free verse follows the sense, not a pattern.'], ['A word that sounds like its meaning, like buzz, is what?', ['onomatopoeia', 'rhythm', 'a stanza'], 'onomatopoeia', 'Buzz, hiss, crash: the sound is the meaning.'], ];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'sc3-soil': (rng) => {
+    const Q = [['Soil is made of what?', ['bits of rock and rotted plants', 'only sand', 'only water'], 'bits of rock and rotted plants', 'Soil is broken rock mixed with rotted plants and animals.'], ['Which soil holds water best?', ['clay', 'sand', 'gravel'], 'clay', 'Clay is fine and packs tight, so water stays.'], ['Which soil drains fastest?', ['sand', 'clay', 'loam'], 'sand', 'Sand has big grains with gaps, so water runs through.'], ['What is loam?', ['a mix of sand, silt and clay', 'pure sand', 'a rock'], 'a mix of sand, silt and clay', 'Loam mixes the three, and gardens love it.'], ['What breaks rock into soil over time?', ['water, wind and roots', 'paint', 'sound'], 'water, wind and roots', 'Weathering: water, wind, ice and roots crack rock apart.'], ['Where is the richest soil in a shaken jar?', ['near the top, dark', 'at the bottom', 'in the water'], 'near the top, dark', 'The dark rotted material settles above the sand.'], ];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'sc3-food-chain': (rng) => {
+    const Q = [['What does every food chain start with?', ['the sun', 'a rabbit', 'a hawk'], 'the sun', 'Plants catch sunlight. Everything eats down from there.'], ['A plant is called what in a food chain?', ['a producer', 'a consumer', 'a decomposer'], 'a producer', 'Producers make their own food from sunlight.'], ['A rabbit eating grass is what?', ['a consumer', 'a producer', 'a decomposer'], 'a consumer', 'Consumers eat producers or other consumers.'], ['Mushrooms breaking down a log are what?', ['decomposers', 'producers', 'predators'], 'decomposers', 'Decomposers break dead things down into soil.'], ['Grass, grasshopper, bird, hawk. Which is at the top?', ['the hawk', 'the grass', 'the grasshopper'], 'the hawk', 'The hawk eats and is not eaten: the top of this chain.'], ['If the grass dies, who goes hungry?', ['everyone in the chain', 'only the hawk', 'no one'], 'everyone in the chain', 'Every link depends on the one below.'], ];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'sc5-forces': (rng) => {
+    const Q = [['A ball rolls and slows on the grass. What slowed it?', ['friction', 'gravity pulling up', 'magnetism'], 'friction', 'Rough grass rubs against the ball: friction slows it.'], ['You push a cart and it speeds up. What did the push change?', ['its motion', 'its color', 'its weight'], 'its motion', 'A force changes motion: starts, stops, speeds, slows, turns.'], ['Two people push a box equally from opposite sides. Then?', ['it stays still', 'it moves left', 'it spins'], 'it stays still', 'Balanced forces cancel. No change in motion.'], ['Which force pulls everything toward the Earth?', ['gravity', 'friction', 'a magnet'], 'gravity', 'Gravity pulls down, everywhere, all the time.'], ['A heavier cart needs what to speed up the same amount?', ['a bigger push', 'a smaller push', 'the same push'], 'a bigger push', 'More mass takes more force for the same change.'], ['Unbalanced forces do what?', ['change motion', 'keep things still', 'only slow things'], 'change motion', 'When one side wins, motion changes.'], ];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'sc5-fossils': (rng) => {
+    const Q = [['A fossil is what?', ['a trace of a living thing kept in rock', 'a kind of magnet', 'a young plant'], 'a trace of a living thing kept in rock', 'Bones, shells and footprints pressed into rock long ago.'], ['In rock layers, where are the oldest fossils?', ['at the bottom', 'at the top', 'in the middle'], 'at the bottom', 'Layers pile up, so deeper is older.'], ['A shell fossil on a mountain tells you what?', ['the rock was once under water', 'the shell climbed', 'nothing'], 'the rock was once under water', 'Sea creatures mean sea floor, later lifted up.'], ['Which rock holds most fossils?', ['sedimentary', 'igneous', 'metamorphic'], 'sedimentary', 'Sediment buries things gently; lava and heat destroy them.'], ['What can a fossil footprint show?', ['how the animal moved', 'what it dreamed', 'its color'], 'how the animal moved', 'Stride and shape show walking, running, size.'], ['Fossils of ferns in a desert mean what?', ['the climate was once wet', 'ferns like sand', 'fossils lie'], 'the climate was once wet', 'Ferns need water: the place was wetter long ago.'], ];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'h5-immigration': (rng) => {
+    const Q = [['Around 1900, most immigrants arrived where?', ['Ellis Island in New York', 'Texas ranches', 'the moon'], 'Ellis Island in New York', 'Ellis Island processed millions of arrivals.'], ['Why did many people come around 1900?', ['jobs in factories and farmland', 'free cars', 'the weather only'], 'jobs in factories and farmland', 'Work pulled them; hunger and war pushed them.'], ['Where did many new arrivals live?', ['crowded city neighborhoods', 'castles', 'on ships'], 'crowded city neighborhoods', 'Tenements in cities near the factories.'], ['What is a tenement?', ['a crowded apartment building', 'a farm', 'a train'], 'a crowded apartment building', 'Tenements packed many families into small rooms.'], ['Which invention pulled people into cities?', ['the factory', 'the plow', 'the canoe'], 'the factory', 'Factories needed workers, and cities grew around them.'], ['What did immigrants bring that changed American life?', ['foods, words and traditions', 'nothing', 'only money'], 'foods, words and traditions', 'Pizza, bagels, words and holidays came with them.'], ];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'h5-industry': (rng) => {
+    const Q = [['The Industrial Revolution moved work from where to where?', ['from homes and farms to factories', 'from cities to farms', 'from ships to trains'], 'from homes and farms to factories', 'Machines in factories replaced work by hand at home.'], ['What powered early factories?', ['water wheels and steam', 'electricity from the sun', 'horses only'], 'water wheels and steam', 'Rivers turned wheels; then steam engines took over.'], ['What connected the coasts in 1869?', ['the transcontinental railroad', 'the interstate highway', 'the telephone'], 'the transcontinental railroad', 'Rails from east and west met in Utah.'], ['Who invented a practical light bulb?', ['Thomas Edison', 'George Washington', 'Sam Houston'], 'Thomas Edison', 'The Edison bulb of 1879 lit homes and factories.'], ['What was a common problem in early factories?', ['long hours and unsafe work', 'too much rest', 'no products'], 'long hours and unsafe work', 'Children worked long days; laws came later.'], ['What did the telegraph do?', ['sent messages by wire in minutes', 'carried people', 'made steel'], 'sent messages by wire in minutes', 'Dots and dashes crossed the country faster than any horse.'], ];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'm3-measure': (rng) => {
+    const Q = [['Which unit measures the length of a pencil?', ['inches', 'pounds', 'gallons'], 'inches', 'Length is inches, feet, centimeters. Pounds weigh; gallons pour.'], ['Which unit measures how heavy a dog is?', ['pounds', 'inches', 'hours'], 'pounds', 'Weight is pounds or kilograms.'], ['Which holds more, a cup or a gallon?', ['a gallon', 'a cup', 'the same'], 'a gallon', 'Sixteen cups fill a gallon.'], ['A rope is 3 feet long. How many inches is that?', ['36', '12', '30'], '36', 'Twelve inches in a foot: 3 times 12 is 36.'], ['Which tool measures liquid?', ['a measuring cup', 'a ruler', 'a scale'], 'a measuring cup', 'Cups and liters are for liquid. Rulers measure length; scales weigh.'], ['A meter is about the height of what?', ['a doorknob', 'an ant', 'a mountain'], 'a doorknob', 'A meter is a little more than a yard: doorknob high.'], ];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'm3-graphs': (rng) => {
+    const Q = [['A bar graph shows 4 red cars and 6 blue cars. Which bar is taller?', ['blue', 'red', 'the same'], 'blue', 'Taller bar, bigger number: six blue is more than four red.'], ['One picture equals 2 books. Three pictures mean how many books?', ['6', '3', '5'], '6', 'Each picture stands for 2, so three pictures are 6 books.'], ['Which graph uses bars to compare amounts?', ['a bar graph', 'a map', 'a clock'], 'a bar graph', 'Bars side by side make comparing easy.'], ['A tally mark group of five looks like what?', ['four lines with one across', 'five dots', 'a circle'], 'four lines with one across', 'Four marks and a slash: a bundle of five.'], ['What must every graph have so you can read it?', ['labels and a title', 'a rainbow', 'a picture'], 'labels and a title', 'The labels say what the bars are; the title says what the graph is about.'], ['Two bars are 3 and 8. How many more is the taller?', ['5 more', '11 more', '3 more'], '5 more', 'Eight minus three is five.'], ];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'm5-decimal-mult': (rng) => {
+    const Q = [['0.5 times 4 is what?', ['2', '20', '0.2'], '2', 'Half of four is two. Multiplying by 0.5 halves.'], ['0.3 times 0.2 is what?', ['0.06', '0.6', '6'], '0.06', 'Three times two is six, and two decimal places in all: 0.06.'], ['2.5 times 10 is what?', ['25', '2.5', '250'], '25', 'Times ten slides the point one place right.'], ['Which is the same as multiplying by 0.1?', ['dividing by 10', 'multiplying by 10', 'adding 0.1'], 'dividing by 10', 'A tenth of a number is the number divided by ten.'], ['1.2 times 3 is what?', ['3.6', '36', '0.36'], '3.6', 'Twelve times three is thirty-six, with one decimal place: 3.6.'], ['How many decimal places does 0.25 times 0.4 have?', ['three', 'two', 'one'], 'three', 'Two places plus one place: three. 0.100, which is 0.1.'], ];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'm5-data': (rng) => {
+    const Q = [['A line plot shows dots above numbers. What does each dot mean?', ['one measurement', 'a mistake', 'a star'], 'one measurement', 'Each dot is one piece of data stacked over its value.'], ['Three dots at 4 and one at 5. Which value is most common?', ['4', '5', '3'], '4', 'Three dots at 4: the tallest stack.'], ['Which graph shows a change over time?', ['a line graph', 'a bar graph', 'a pictograph'], 'a line graph', 'A line graph joins points over time so you can see it rise or fall.'], ['A line graph goes up steeply. What is happening?', ['a fast increase', 'a slow decrease', 'nothing'], 'a fast increase', 'Steep and rising means growing fast.'], ['The x-axis of a graph usually shows what?', ['what is being measured, like time', 'the answer', 'the title'], 'what is being measured, like time', 'Across is the thing you are tracking; up is how much.'], ['Which is a pair on a coordinate grid?', ['(2, 3)', '2 + 3', '2/3'], '(2, 3)', 'Two numbers in brackets: across, then up.'], ];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'm7-probability': (rng) => {
+    const Q = [['A coin flip lands heads how often, in the long run?', ['about half the time', 'always', 'never'], 'about half the time', 'Two equal outcomes: heads is one of two.'], ['A bag has 3 red and 1 blue marble. What is the chance of red?', ['3 out of 4', '1 out of 4', '1 out of 3'], '3 out of 4', 'Three red out of four marbles.'], ['Which event is certain?', ['the sun rising tomorrow', 'rolling a 7 on a die', 'rain today'], 'the sun rising tomorrow', 'Certain means it will happen: probability 1.'], ['Which event is impossible?', ['rolling a 7 on a die', 'rolling a 1', 'rain today'], 'rolling a 7 on a die', 'A die has 1 to 6. Seven never comes: probability 0.'], ['You roll a die 60 times. About how many sixes?', ['about 10', 'about 30', 'about 60'], 'about 10', 'One in six of sixty rolls is ten.'], ['A spinner has 5 equal parts, 2 shaded. Chance of shaded?', ['2 out of 5', '5 out of 2', '2 out of 3'], '2 out of 5', 'Two shaded parts out of five equal parts.'], ];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'm7-scale': (rng) => {
+    const Q = [['1 inch is 10 miles. Two towns are 3 inches apart. How far?', ['30 miles', '3 miles', '13 miles'], '30 miles', 'Each inch is ten miles: 3 times 10.'], ['A drawing is at scale 1 to 4. A wall drawn 5 inches long is how long?', ['20 inches', '5 inches', '9 inches'], '20 inches', 'Every inch on paper is four in the room: 5 times 4.'], ['A scale drawing keeps what the same?', ['the shape', 'the size', 'the color'], 'the shape', 'Every length changes by the same factor, so the shape stays.'], ['A photo is enlarged by a factor of 3. A 2-inch nose becomes?', ['6 inches', '5 inches', '2 inches'], '6 inches', 'Every length times three.'], ['A model car is 1 to 20. The real car is 4 meters long. The model?', ['20 centimeters', '80 centimeters', '4 centimeters'], '20 centimeters', 'Four meters is 400 centimeters; divide by 20.'], ['What is the scale factor from a 2 cm square to an 8 cm square?', ['4', '2', '6'], '4', 'Eight is four times two.'], ];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'r4-cause-effect': (rng) => {
+    const Q = [['The road was icy, so the bus was late. What is the cause?', ['the icy road', 'the late bus', 'the driver'], 'the icy road', 'The cause comes first and makes the effect happen.'], ['The road was icy, so the bus was late. What is the effect?', ['the late bus', 'the icy road', 'the morning'], 'the late bus', 'The effect is what happened because of the cause.'], ['Which word signals a cause?', ['because', 'then', 'and'], 'because', 'Because points back at the reason.'], ['Which word signals an effect?', ['so', 'but', 'or'], 'so', 'So points forward to the result.'], ['She studied every night. Therefore she passed. Which came first?', ['the studying', 'the passing', 'they were the same time'], 'the studying', 'Therefore means the second thing followed from the first.'], ['One cause can have how many effects?', ['many', 'only one', 'none'], 'many', 'A storm can close roads, flood fields and cancel school: one cause, three effects.'], ];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'r4-text-features': (rng) => {
+    const Q = [['What does a heading tell you?', ['what a section is about', 'the page number', 'the author'], 'what a section is about', 'Headings are signposts for the part below them.'], ['Words in bold in a textbook are usually what?', ['important terms', 'mistakes', 'names of the author'], 'important terms', 'Bold means stop and learn this word.'], ['A caption is found where?', ['under a picture', 'on the cover', 'in the index'], 'under a picture', 'Captions explain what a picture shows.'], ['Where do you look to find which page a topic is on?', ['the index', 'the caption', 'the heading'], 'the index', 'The index lists topics with their pages, in alphabetical order.'], ['A glossary gives you what?', ['meanings of key words', 'the story', 'pictures'], 'meanings of key words', 'A glossary is a small dictionary for that book.'], ['The table of contents is at what part of a book?', ['the front', 'the back', 'the middle'], 'the front', 'It lists chapters in order, before they begin.'], ];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'r5-compare-texts': (rng) => {
+    const Q = [['Two articles about bees say different things. What do you do first?', ['find what they agree on', 'pick the shorter one', 'ignore both'], 'find what they agree on', 'Start with what both say; the differences stand out after.'], ['A poem and an article both describe a storm. How do they differ?', ['the poem uses images and feeling; the article uses facts', 'they are the same', 'the poem has more facts'], 'the poem uses images and feeling; the article uses facts', 'Different purposes make different texts about one event.'], ['What is a topic two texts share called?', ['a common theme', 'a caption', 'an index'], 'a common theme', 'A shared idea across texts is a common theme.'], ['Which helps compare two texts?', ['a chart with alike and different columns', 'a coin flip', 'a map'], 'a chart with alike and different columns', 'Two columns make the comparison visible.'], ['Two authors give different numbers for the same fact. What next?', ['check a third source', 'trust the louder one', 'stop reading'], 'check a third source', 'A third source breaks the tie.'], ['A story and its movie: what do you compare?', ['what each kept and changed', 'the price', 'the length only'], 'what each kept and changed', 'Kept, changed, and why: the comparison that shows something.'], ];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'r5-argument': (rng) => {
+    const Q = [['An author says: schools should start later. What is that?', ['a claim', 'a fact', 'a caption'], 'a claim', 'A claim is what the author is trying to convince you of.'], ['Which supports a claim best?', ['evidence like a study or numbers', 'a feeling', 'a loud voice'], 'evidence like a study or numbers', 'Evidence is checkable support.'], ['An author gives one story about a cousin. Is that strong evidence?', ['no, one story is weak', 'yes, very strong', 'it depends on the cousin'], 'no, one story is weak', 'One story is an example, not proof.'], ['What is a reason?', ['why the claim is true', 'the title', 'a picture'], 'why the claim is true', 'Reasons hold the claim up; evidence holds the reasons up.'], ['Which sentence is an opinion?', ['Pizza is the best food', 'Pizza has cheese', 'Pizza is baked'], 'Pizza is the best food', 'Best cannot be checked. It is what someone thinks.'], ['An argument with no evidence is what?', ['just an opinion', 'a strong case', 'a fact'], 'just an opinion', 'Without evidence, a claim is only a wish.'], ];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'r7-figurative': (rng) => {
+    const Q = [['The wind whispered through the trees. What is that?', ['personification', 'a simile', 'a fact'], 'personification', 'Wind cannot whisper; giving it a human action is personification.'], ['I have told you a million times. What is that?', ['hyperbole', 'a metaphor', 'a fact'], 'hyperbole', 'An exaggeration for effect.'], ['Her smile was sunshine. What is that?', ['a metaphor', 'a simile', 'hyperbole'], 'a metaphor', 'It says one thing is another, without like or as.'], ['He ran like the wind. What is that?', ['a simile', 'a metaphor', 'personification'], 'a simile', 'Like or as makes a simile.'], ['Why do writers use figurative language?', ['to make a picture in the mind', 'to confuse', 'to fill space'], 'to make a picture in the mind', 'A figure of speech shows instead of tells.'], ['The clock glared at me. Which word makes it personification?', ['glared', 'clock', 'me'], 'glared', 'Glaring is a human look, given to a clock.'], ];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'r7-structure': (rng) => {
+    const Q = [['An article lists events in the order they happened. What structure?', ['chronological', 'compare and contrast', 'problem and solution'], 'chronological', 'Time order, first to last.'], ['An article describes a problem, then a fix. What structure?', ['problem and solution', 'description', 'chronological'], 'problem and solution', 'A problem, then what was done about it.'], ['An article says how two cities are alike and different. Structure?', ['compare and contrast', 'cause and effect', 'sequence'], 'compare and contrast', 'Alike and different, side by side.'], ['Which words signal compare and contrast?', ['however, similarly', 'first, next', 'because, so'], 'however, similarly', 'However contrasts; similarly compares.'], ['Which words signal problem and solution?', ['the trouble was, one answer', 'then, after', 'like, unlike'], 'the trouble was, one answer', 'Trouble, then answer.'], ['Why does structure matter to a reader?', ['it tells you what to look for next', 'it makes the text longer', 'it does not'], 'it tells you what to look for next', 'Know the shape and you know where the next idea will be.'], ];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'r8-author-purpose': (rng) => {
+    const Q = [['A pamphlet urges you to vote for a candidate. Purpose?', ['to persuade', 'to inform', 'to entertain'], 'to persuade', 'It wants you to do something.'], ['An encyclopedia entry on volcanoes. Purpose?', ['to inform', 'to persuade', 'to entertain'], 'to inform', 'Facts, laid out to teach.'], ['A comic about a cat who cannot find its bed. Purpose?', ['to entertain', 'to inform', 'to persuade'], 'to entertain', 'A story for the fun of it.'], ['An author leaves out the costs of a plan. What might that show?', ['a bias', 'a mistake in printing', 'nothing'], 'a bias', 'Leaving out the other side leans the text.'], ['Two accounts of one event disagree. What should a reader ask?', ['who wrote each and why', 'which is shorter', 'which has pictures'], 'who wrote each and why', 'The author and purpose explain the difference.'], ['A word like should in an article signals what?', ['an opinion', 'a fact', 'a date'], 'an opinion', 'Should tells you what the author wants, not what is.'], ];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'r8-theme-across': (rng) => {
+    const Q = [['Two stories both show friendship surviving a fight. What is shared?', ['a theme', 'a setting', 'a character'], 'a theme', 'The same message across different stories is a shared theme.'], ['A theme is best stated as what?', ['a sentence', 'one word', 'a name'], 'a sentence', 'A topic is a word; a theme is a sentence about it.'], ['A fable ends with a moral. What is the moral?', ['the theme stated plainly', 'a character', 'the setting'], 'the theme stated plainly', 'Fables say their theme out loud at the end.'], ['Which is a theme, not a topic?', ['Honesty costs something but is worth it', 'honesty', 'a lie'], 'Honesty costs something but is worth it', 'A full sentence with a message.'], ['How do you find a theme?', ['track what changes for the character', 'count the pages', 'read the title'], 'track what changes for the character', 'What the character learns is what the story says.'], ['A poem and a story share a theme. Which shows it faster?', ['the poem, in fewer words', 'the story', 'neither'], 'the poem, in fewer words', 'Poems compress; the same message arrives in a few lines.'], ];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'sc4-matter': (rng) => {
+    const Q = [['Which is a property of matter you can measure?', ['mass', 'happiness', 'luck'], 'mass', 'Mass, volume, temperature: properties you can measure.'], ['Which will conduct heat fastest?', ['a metal spoon', 'a wooden spoon', 'a plastic spoon'], 'a metal spoon', 'Metal conducts heat; wood and plastic insulate.'], ['Which floats on water?', ['a cork', 'a coin', 'a marble'], 'a cork', 'Less dense than water floats.'], ['Which is a magnetic material?', ['iron', 'paper', 'glass'], 'iron', 'Magnets pull iron and steel.'], ['Sugar stirred into water does what?', ['dissolves', 'floats', 'turns solid'], 'dissolves', 'It spreads through the water and disappears from sight.'], ['Which property does a thermometer measure?', ['temperature', 'mass', 'volume'], 'temperature', 'Temperature is how hot or cold.'], ];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'sc4-food-webs': (rng) => {
+    const Q = [['A food web is what?', ['many food chains linked together', 'one chain', 'a spider web'], 'many food chains linked together', 'Animals eat more than one thing, so chains cross into a web.'], ['A hawk eats mice and snakes. In the web it has how many arrows in?', ['at least two', 'one', 'none'], 'at least two', 'Each food it eats is an arrow pointing to it.'], ['If mice disappear, what happens to the hawk?', ['it eats more snakes or goes hungry', 'nothing', 'it becomes a mouse'], 'it eats more snakes or goes hungry', 'A web bends where a chain would break.'], ['Which are the base of every food web?', ['plants', 'hawks', 'mice'], 'plants', 'Producers feed everything above them.'], ['What do decomposers do in a web?', ['return dead matter to the soil', 'hunt', 'make sunlight'], 'return dead matter to the soil', 'Fungi and bacteria close the loop.'], ['Which arrow direction is right in a food web?', ['from the eaten to the eater', 'from the eater to the eaten', 'both ways'], 'from the eaten to the eater', 'Arrows show where the energy goes.'], ];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
   'mu1-beat': (rng) => {
     const Q = [['Which body part can keep a beat?', ['your hands, clapping', 'your eyes', 'your nose'], 'your hands, clapping', 'Clap it, tap it, march to it. Hands and feet keep a beat.'], ['Does the beat change when the words change?', ['no, it stays even', 'yes, it stops', 'yes, it gets higher'], 'no, it stays even', 'Words and tune change; the beat stays even underneath.'],['What is the steady beat of a song?', ['the even pulse you can clap', 'the words', 'the loud part'], 'the even pulse you can clap', 'The beat is the steady pulse under a song, like a clock. You can clap it, tap it or march to it.'],
       ['Which keeps a steady beat?', ['a ticking clock', 'a barking dog', 'a page turning'], 'a ticking clock', 'A clock ticks evenly. That evenness is what a beat is.'],
@@ -13764,7 +14649,7 @@ Object.assign(GENERATORS, {
 // ---- Kindergarten to grade 3 community and civics generators.
 const CIV_HELPERS = [['Who puts out fires?', 'Firefighter'], ['Who helps you when you are sick?', 'Doctor'], ['Who teaches you at school?', 'Teacher'], ['Who brings the mail?', 'Mail carrier'], ['Who keeps people safe on the street?', 'Police officer']];
 const CIV_HELPER_NAMES = CIV_HELPERS.map((h) => h[1]);
-const CIV_RULE_WHYS = [['Why do we stop at a red light?', 'To stay safe'], ['Why do we wait our turn?', 'So it is fair for everyone'], ['Why do we walk in the hall?', 'So nobody gets hurt']];
+const CIV_RULE_WHYS = [['Why do we stop at a red light?', 'To let the other cars go'], ['Why do we wait our turn?', 'So it is fair for everyone'], ['Why do we walk in the hall?', 'So nobody bumps or falls']];
 const CIV_GOOD_CHOICES = [['A friend drops their crayons.', 'Help pick them up', 'Walk away'], ['Someone is talking.', 'Listen', 'Talk over them'], ['You finish your snack.', 'Throw away the wrapper', 'Leave it on the floor']];
 const CIV_NEED_WANT = [['Water', 'Need'], ['A home', 'Need'], ['A warm coat', 'Need'], ['An apple', 'Need'], ['A toy car', 'Want'], ['Candy', 'Want'], ['A video game', 'Want'], ['A balloon', 'Want']];
 const CIV_FLAG_COUNTS = [['How many stars are on our flag?', 50], ['How many stripes are on our flag?', 13]];
@@ -13799,8 +14684,8 @@ Object.assign(GENERATORS, {
     return { type: 'choice', story: null, prompt: 'Tap the small one.', choices: shuffle(rng, [`shape:${sh}:big`, `shape:${sh}:small`]), answer: `shape:${sh}:small`, explain: `That is the small ${sh}.`, visual: null, explainVisual: null }; },
   'pk-turn-choice': (rng) => { const c = pick(rng, [['You both want the swing.', 'Take turns', 'Grab it'], ['You both want the red crayon.', 'Take turns', 'Keep it all day'], ['Two friends, one ball.', 'Share it', 'Hide it']]);
     return { type: 'choice', story: c[0], prompt: 'What do we do?', choices: shuffle(rng, [c[1], c[2]]), answer: c[1], explain: `${c[1]}. Then everybody gets a turn.`, visual: null, explainVisual: null }; },
-  'pk-whose-turn': (rng) => { const first = randInt(rng, 0, 1) === 1;
-    return { type: 'choice', story: first ? 'Sam had a turn. Now Sam is done.' : 'Ana is waiting. Sam is still swinging.', prompt: 'Whose turn is next?', choices: ['Sam', 'Ana'], answer: first ? 'Ana' : 'Ana', explain: first ? 'Sam had a turn, so Ana is next.' : 'Ana is waiting, so Ana is next when Sam is done.', visual: null, explainVisual: null }; },
+  'pk-whose-turn': (rng) => { const first = randInt(rng, 0, 1) === 1; const done = first ? 'Sam' : 'Ana'; const next = first ? 'Ana' : 'Sam';
+    return { type: 'choice', story: null, prompt: `${done} had a turn and is done, so whose turn is next?`, choices: ['Sam', 'Ana'], answer: next, explain: `${done} had a turn, so ${next} is next.`, visual: null, explainVisual: null }; },
   'ck-which-flag': (rng) => { const tx = randInt(rng, 0, 1) === 1;
     return { type: 'choice', story: tx ? 'A flag with one big star.' : 'A flag with 50 stars.', prompt: 'Which flag is that?', choices: ['The Texas flag', 'The United States flag'], answer: tx ? 'The Texas flag' : 'The United States flag', explain: tx ? 'One star is the Texas flag. Texas is the Lone Star State.' : 'Fifty stars is the United States flag, one star for each state.', visual: null, explainVisual: null }; },
   'ck-lone-star': (rng) => ({ type: 'choice', story: null, prompt: 'How many stars does the Texas flag have?', choices: shuffle(rng, ['One', 'Fifty', 'Thirteen']), answer: 'One', explain: 'One big star. That is why Texas is the Lone Star State.', visual: null, explainVisual: null }),
@@ -13814,7 +14699,7 @@ Object.assign(GENERATORS, {
     return { type: 'choice', story: null, prompt: c[0], choices: shuffle(rng, [c[1], ...others]), answer: c[1], explain: `${c[0].replace(/\?$/, '')}: ${c[1].toLowerCase()}.`, visual: null, explainVisual: null }; },
   'ck-which-helper': (rng) => { const c = pick(rng, CIV_HELPERS); return { type: 'choice', story: null, prompt: c[0], choices: twoOf(rng, CIV_HELPER_NAMES, c[1]), answer: c[1], explain: `${c[1]}.`, visual: null, explainVisual: null }; },
   'ck-good-choice': (rng) => { const c = pick(rng, CIV_GOOD_CHOICES); return { type: 'choice', story: c[0], prompt: 'What is the good choice?', choices: shuffle(rng, [c[1], c[2]]), answer: c[1], explain: `${c[1]}. That is being kind.`, visual: null, explainVisual: null }; },
-  'ck-need-or-want': (rng) => { const c = pick(rng, CIV_NEED_WANT); return { type: 'choice', story: `${c[0]}.`, prompt: 'Need or want?', choices: ['Need', 'Want'], answer: c[1], explain: c[1] === 'Need' ? `${c[0]} is a need. You must have it.` : `${c[0]} is a want. It is nice, but you can live without it.`, visual: null, explainVisual: null }; },
+  'ck-need-or-want': (rng) => { const c = pick(rng, CIV_NEED_WANT); return { type: 'choice', story: null, prompt: `Is ${c[0].charAt(0).toLowerCase() + c[0].slice(1)} a need or a want?`, choices: ['Need', 'Want'], answer: c[1], explain: c[1] === 'Need' ? `${c[0]} is a need. You must have it.` : `${c[0]} is a want. It is nice, but you can live without it.`, visual: null, explainVisual: null }; },
   'ck-which-is-need': (rng) => { const need = pick(rng, CIV_NEED_WANT.filter((x) => x[1] === 'Need'))[0]; const wants = shuffle(rng, CIV_NEED_WANT.filter((x) => x[1] === 'Want')).slice(0, 2).map((x) => x[0]);
     return { type: 'choice', story: null, prompt: 'Which one is a need?', choices: shuffle(rng, [need, ...wants]), answer: need, explain: `${need} is a need. The others are wants.`, visual: null, explainVisual: null }; },
   'ck-flag-count': (rng) => { const c = pick(rng, CIV_FLAG_COUNTS); return { type: 'choice', story: null, prompt: c[0], choices: shuffle(rng, ['50', '13', '10']), answer: String(c[1]), explain: c[1] === 50 ? 'Fifty stars, one for each state.' : 'Thirteen stripes, for the first thirteen states.', visual: null, explainVisual: null }; },
@@ -14247,7 +15132,7 @@ Object.assign(GENERATORS, {
   'e12-card-interest': (rng) => { const balance = pick(rng, [600, 1200, 2400, 3000]); const apr = pick(rng, [12, 18, 24]); const monthly = (balance * apr) / 1200;
     return { type: 'number', story: `A card charges ${apr} percent a year. The unpaid balance is ${balance} dollars.`, prompt: 'How much interest this month, in dollars?', answer: String(monthly), explain: `First, the monthly rate is ${apr} ÷ 12 = ${apr / 12} percent.\nThen, ${apr / 12} percent of ${balance}.\n[[Interest = ${monthly} dollars this month]]`, visual: null, explainVisual: null }; },
   'e12-need-or-want': (rng) => { const c = pick(rng, NEEDS_WANTS);
-    return { type: 'choice', story: `${c.item}.`, prompt: 'Need or want?', choices: ['Need', 'Want'], answer: c.kind, explain: c.kind === 'Need' ? 'A need comes first in a budget: a roof, food, power.' : 'A want comes after the needs and after the saving.', visual: null, explainVisual: null }; },
+    return { type: 'choice', story: null, prompt: `Is ${c.item.charAt(0).toLowerCase() + c.item.slice(1)} a need or a want?`, choices: ['Need', 'Want'], answer: c.kind, explain: c.kind === 'Need' ? 'A need comes first in a budget: a roof, food, power.' : 'A want comes after the needs and after the saving.', visual: null, explainVisual: null }; },
 });
 
 function yearQuestion(rng, list, story) {
@@ -15067,7 +15952,7 @@ Object.assign(GENERATORS, {
     while (nb === na && guard++ < 20) [b, nb] = sylWord(rng);
     if (nb === na) [b, nb] = sylWord(rng, na === 1 ? 3 : 1);
     const answer = na > nb ? a : b;
-    return { type: 'choice', story: `${a[0].toUpperCase() + a.slice(1)} and ${b}.`, prompt: 'Which word has more claps?', choices: shuffle(rng, [a, b]), answer,
+    return { type: 'choice', story: null, prompt: `Which word has more claps, ${a} or ${b}?`, choices: shuffle(rng, [a, b]), answer,
       explain: `${answer} has ${Math.max(na, nb)} claps.`, visual: null, explainVisual: null };
   },
   'ry-same-claps': (rng) => {
@@ -18502,6 +19387,19 @@ export const LIFE_SKILLS = [
     ways: ['Breathe out for longer than you breathe in, and count it together.', 'Practice when they are calm, so the skill is there when they are not.', 'Do it alongside them rather than instructing from across the room.'],
   },
   {
+    id: 'ls-breathing',
+    stage: 'early',
+    title: 'Breathing exercises for calming down',
+    why: 'A slow breath out is the one calming tool a child always has with them. It settles the heart on its own, so it works in the moment before any talking can. A child who has practiced a few named exercises will reach for one without being told.',
+    ways: [
+      'Smell the flower, blow out the candle: breathe in through the nose as if smelling a flower, then out through the mouth so slowly that a candle would flicker but not go out. Five times.',
+      'Five-finger breathing: hold one hand up and trace it with a finger of the other. Breathe in going up each finger and out coming down. By the time the hand is traced, ten slow breaths have happened.',
+      'Box breathing, for older children: in for four counts, hold for four, out for four, hold for four, drawing a square in the air. Four rounds.',
+      'Balloon belly: lie down with a small toy on the tummy and make it rise on the breath in and sink slowly on the breath out.',
+      'Practice at calm times, like bedtime or before a story, so the exercise is already familiar when it is needed.',
+    ],
+  },
+  {
     id: 'ls-feelings-pass',
     stage: 'early',
     title: 'Noticing that feelings pass',
@@ -19286,7 +20184,9 @@ export function quickCheckOutcome(moduleId, results) {
   const right = results.filter((r) => r.correct).length;
   const rushed = results.filter((r) => typeof r.timeMs === 'number' && r.timeMs < 2000).length;
   const guessed = rushed >= 3;
-  return { right, total: results.length, guessed, passed: right >= moduleRules(moduleId).toMaster && !guessed };
+  // A quick check is always five questions, so it passes at four of five whatever the module's round size is.
+  const need = Math.max(1, Math.round(QUICK_CHECK_QUESTIONS * CONFIG.MASTERY_MIN_CORRECT / CONFIG.CORE_QUESTIONS_PER_ATTEMPT));   // four of five
+  return { right, total: results.length, guessed, passed: right >= need && !guessed };
 }
 export function makeQuickCheckEvent(moduleId, results, at) {
   const o = quickCheckOutcome(moduleId, results);
@@ -19638,15 +20538,15 @@ export const EXPERIMENTS = {
     { title: 'Antibiotic soap test', ask: 'Which soap works?', do: 'Handprints on agar plates, with an adult, before and after washing.', see: 'Fewer colonies after washing.' },
     { title: 'Homologous chicken wing', ask: 'Same bones as your arm?', do: 'Dissect a chicken wing with an adult; name the bones.', see: 'Upper, two lower, wrist, fingers.' },
     { title: 'Ecosystem sampling', ask: 'How many plants per square meter?', do: 'A string square in a lawn; count species inside.', see: 'Sampling estimates a whole field.' },
-    { title: "Catalase and liver", moduleId: 'protein-synthesis', ask: "What breaks down hydrogen peroxide?", do: "Peroxide on raw liver, cooked liver, and a potato.", see: "Raw liver foams most. Enzymes work fast and heat destroys them." },
-    { title: "Transpiration bags", moduleId: 'photosynthesis', ask: "Do leaves breathe out water?", do: "A plastic bag tied over a living branch for a day.", see: "Water collects in the bag. Leaves release water vapor." },
-    { title: "DNA from a strawberry", moduleId: 'dna-and-genes', ask: "Can you see DNA?", do: "Mashed strawberry with soap and salt, filtered, cold alcohol on top.", see: "White strands rise. That is DNA." },
-    { title: "Population in a jar", moduleId: 'carbon-and-nitrogen-cycles', ask: "How fast does yeast grow?", do: "Yeast in sugar water. Count cells under a microscope each hour.", see: "Fast at first, then it levels off. Resources limit growth." },
-    { title: "Heart rate recovery", moduleId: 'homeostasis', ask: "How fit is a heart?", do: "Pulse at rest, after two minutes of stairs, and each minute after.", see: "A fit heart returns to rest faster." },
-    { title: "Coin Punnett square", ask: "What are the odds of blue eyes?", do: "Two coins, heads for B and tails for b. Flip both a hundred times and tally.", see: "About one in four comes up tails-tails. The square predicts the odds.", moduleId: "punnett-squares" },
-    { title: "Leaf in a jar", ask: "Does a leaf give off gas in the light?", do: "A leaf in a jar of water in the sun, another in the dark.", see: "Bubbles form on the sunlit leaf: oxygen from photosynthesis.", moduleId: "respiration-and-photosynthesis" },
-    { title: "Bone comparison", ask: "Do a wing and an arm share a plan?", do: "Trace a chicken wing, a cat foreleg and your own arm from pictures. Count the bones.", see: "The same bones in the same order, sized differently. A shared plan.", moduleId: "evidence-for-evolution" },
-    { title: "Yeast budding", ask: "Can you watch a cell divide?", do: "A drop of yeast in warm sugar water under a microscope every ten minutes.", see: "Buds grow and pinch off. One cell becomes two.", moduleId: "cell-division" },
+    { title: "Catalase and liver", tell: "Pour a little hydrogen peroxide onto a piece of raw liver and it foams like it's angry; do the same on cooked liver and almost nothing happens. Try a potato, and you get a slower fizz. The foam is oxygen, freed by an enzyme called catalase that the liver is packed with. Cooking wrecked the enzyme, which is the whole story of why heat and enzymes don't get along.", moduleId: 'protein-synthesis', ask: "What breaks down hydrogen peroxide?", do: "Peroxide on raw liver, cooked liver, and a potato.", see: "Raw liver foams most. Enzymes work fast and heat destroys them." },
+    { title: "Transpiration bags", tell: "Tie a clear plastic bag over a leafy branch on a living plant, seal it loosely at the stem, and come back at the end of the day. There's water in the bag that wasn't there before. The leaves breathed it out, one tiny pore at a time. A big tree does this by the hundreds of gallons, which is why a forest feels cooler than a parking lot.", moduleId: 'photosynthesis', ask: "Do leaves breathe out water?", do: "A plastic bag tied over a living branch for a day.", see: "Water collects in the bag. Leaves release water vapor." },
+    { title: "DNA from a strawberry", tell: "Mash a strawberry in a zip bag with a spoonful of dish soap and a pinch of salt, strain it through a coffee filter, and gently pour cold rubbing alcohol down the side of the glass. Wait a minute. White threads rise out of the pink and clump at the boundary. That's DNA, the recipe book of the strawberry, and you can wind it onto a toothpick like cotton candy.", moduleId: 'dna-and-genes', ask: "Can you see DNA?", do: "Mashed strawberry with soap and salt, filtered, cold alcohol on top.", see: "White strands rise. That is DNA." },
+    { title: "Population in a jar", tell: "Stir yeast into warm sugar water and put a drop under a microscope every hour, counting the cells you see in one square. Early on the count leaps; later it levels off and then creeps. That flattening is what happens to every population when the food runs low and the waste piles up, and the graph you draw will have the same shape as one for rabbits, or people.", moduleId: 'carbon-and-nitrogen-cycles', ask: "How fast does yeast grow?", do: "Yeast in sugar water. Count cells under a microscope each hour.", see: "Fast at first, then it levels off. Resources limit growth." },
+    { title: "Heart rate recovery", tell: "Take your pulse sitting still, then climb stairs hard for two minutes and take it again, then once a minute after that until it's back to the start. Write the numbers down. How fast the pulse comes back down is a better measure of fitness than how high it went, and after three weeks of stairs you'll see the recovery time shrink.", moduleId: 'homeostasis', ask: "How fit is a heart?", do: "Pulse at rest, after two minutes of stairs, and each minute after.", see: "A fit heart returns to rest faster." },
+    { title: "Coin Punnett square", tell: "Two coins, heads for the big B and tails for the little b, flipped together a hundred times while a friend tallies. About a quarter of the flips come up tails and tails, the only combination with no dominant B in it. That's the one-in-four odds for blue eyes when both parents carry a hidden blue, and you just proved the square with your thumbs.", ask: "What are the odds of blue eyes?", do: "Two coins, heads for B and tails for b. Flip both a hundred times and tally.", see: "About one in four comes up tails-tails. The square predicts the odds.", moduleId: "punnett-squares" },
+    { title: "Leaf in a jar", tell: "Push a fresh leaf under water in a clear jar and set it in the sun; put a second one in a dark cupboard. In an hour, tiny bubbles cling to the sunlit leaf and the other has none. The bubbles are oxygen, the leaf's side product from turning light into sugar. Cover the sunny jar and the bubbling stops within the hour.", ask: "Does a leaf give off gas in the light?", do: "A leaf in a jar of water in the sun, another in the dark.", see: "Bubbles form on the sunlit leaf: oxygen from photosynthesis.", moduleId: "respiration-and-photosynthesis" },
+    { title: "Bone comparison", tell: "Find pictures of a chicken wing, a cat's front leg, a whale's flipper and your own arm, and trace them. Count the bones from shoulder to fingertip. One upper bone, two lower bones, a cluster of wrist bones, then digits, in every one, stretched or squashed to fit the job. The same plan in four animals is a clue that they share a very old ancestor.", ask: "Do a wing and an arm share a plan?", do: "Trace a chicken wing, a cat foreleg and your own arm from pictures. Count the bones.", see: "The same bones in the same order, sized differently. A shared plan.", moduleId: "evidence-for-evolution" },
+    { title: "Yeast budding", tell: "Put a drop of yeast in warm sugar water on a slide and look at it every ten minutes. Some cells grow a little bump on one side; the bump swells until it's nearly the size of its parent and then pinches off. One cell has become two, and if you keep watching, four. It's the slowest fireworks show in the world and the most important.", ask: "Can you watch a cell divide?", do: "A drop of yeast in warm sugar water under a microscope every ten minutes.", see: "Buds grow and pinch off. One cell becomes two.", moduleId: "cell-division" },
   ],
   10: [
     { title: 'Red cabbage indicator', ask: 'How acidic is it?', do: 'Boil red cabbage; add the juice to vinegar, water, baking soda, soap.', see: 'Red to purple to green, mapping the pH scale.' },
@@ -19665,16 +20565,16 @@ export const EXPERIMENTS = {
     { title: 'Ionic conductivity', ask: 'Which solutions conduct?', do: 'A conductivity tester in salt, sugar, vinegar, tap water.', see: 'Ions carry current; sugar does not.' },
     { title: 'Rate and temperature', ask: 'Does heat speed a reaction?', do: 'Glow sticks in hot, room and ice water.', see: 'Hot glows brightest and dies fastest.' },
     { title: 'Precipitation reaction', ask: 'Can two clear liquids make a solid?', do: 'Epsom salt solution and ammonia, with an adult.', see: 'A white cloud of solid forms.' },
-    { title: "Titration with cabbage", moduleId: 'acids-and-bases', ask: "How much base neutralizes an acid?", do: "Red cabbage juice as an indicator. Add baking soda solution to vinegar drop by drop.", see: "The color flips at the balance point. That is neutralization." },
-    { title: "Electrolysis of water", moduleId: 'balancing-equations', ask: "Can electricity split water?", do: "Two pencils in salt water on a battery.", see: "Bubbles at both tips, twice as many at one. Hydrogen and oxygen." },
-    { title: "Conservation of mass", moduleId: 'balancing-equations', ask: "Does a reaction lose weight?", do: "Vinegar and baking soda in a sealed bag on a scale, before and after.", see: "Same mass. Atoms rearrange; none leave." },
-    { title: "Rate and surface area", moduleId: 'reaction-types', ask: "Does crushing speed a reaction?", do: "A whole tablet and a crushed tablet in water. Time both.", see: "Crushed finishes first. More surface, more collisions." },
-    { title: "Endothermic or exothermic", moduleId: 'reaction-types', ask: "Does a reaction warm or cool?", do: "A thermometer in water; add baking soda and vinegar, then calcium chloride.", see: "One cools, one warms. Reactions move heat both ways." },
-    { title: "Periodic table scavenger hunt", ask: "Where are the elements at home?", do: "Find ten elements in your kitchen and garage and mark them on a table.", see: "Metals cluster left, nonmetals right; the table is a map of what things are made of.", moduleId: "periodic-table" },
-    { title: "Conductivity test", ask: "Which solutions carry a current?", do: "Salt water, sugar water and tap water with a battery and a bulb.", see: "Salt water lights the bulb. Ionic compounds split into charges that carry current.", moduleId: "ionic-and-covalent" },
-    { title: "Counting by weighing", ask: "How do you count a mole?", do: "Weigh 100 paper clips, then weigh a big pile and divide.", see: "You count by weight when there are too many to count. A mole is counted the same way.", moduleId: "moles-and-molar-mass" },
-    { title: "Balloon in the freezer", ask: "What does cold do to a gas?", do: "Blow up a balloon, measure it, put it in the freezer for ten minutes.", see: "It shrinks. Cold particles move less and push less.", moduleId: "gas-laws" },
-    { title: "Dilution ladder", ask: "How does concentration change?", do: "Food coloring in water, then half of it into an equal amount of water, five times.", see: "Each cup is half as strong. Concentration is amount over volume.", moduleId: "concentration" },
+    { title: "Titration with cabbage", tell: "Boil red cabbage, save the purple water, and pour a little into a cup of vinegar: it turns pink. Now add baking soda dissolved in water, a spoonful at a time, stirring. Pink to purple to blue. The moment it hits purple, the acid and base have exactly canceled, and the number of spoonfuls it took is a measurement, not a guess.", moduleId: 'acids-and-bases', ask: "How much base neutralizes an acid?", do: "Red cabbage juice as an indicator. Add baking soda solution to vinegar drop by drop.", see: "The color flips at the balance point. That is neutralization." },
+    { title: "Electrolysis of water", tell: "Sharpen both ends of two pencils, stand them in a glass of salty water, and connect the tops to a 9-volt battery. Bubbles stream off both tips, but one tip makes about twice as many. That side is hydrogen and the other is oxygen, and the two-to-one ratio is the H2 and the O in H2O, written in bubbles.", moduleId: 'balancing-equations', ask: "Can electricity split water?", do: "Two pencils in salt water on a battery.", see: "Bubbles at both tips, twice as many at one. Hydrogen and oxygen." },
+    { title: "Conservation of mass", tell: "Put baking soda in a sealed bag with a small cup of vinegar tucked upright inside, weigh the whole thing, then tip the cup and let it fizz. The bag puffs up hard. Weigh it again: the same. Atoms rearranged into a gas but not one of them left, and the bag had to stay sealed for the scale to tell the truth.", moduleId: 'balancing-equations', ask: "Does a reaction lose weight?", do: "Vinegar and baking soda in a sealed bag on a scale, before and after.", see: "Same mass. Atoms rearrange; none leave." },
+    { title: "Rate and surface area", tell: "Drop a whole antacid tablet into a glass of water and time the fizz to the last bubble. Crush a second tablet to powder and time that one. The powder finishes far faster. Same stuff, same water, but the powder has vastly more surface touching the liquid, and reactions happen at surfaces.", moduleId: 'reaction-types', ask: "Does crushing speed a reaction?", do: "A whole tablet and a crushed tablet in water. Time both.", see: "Crushed finishes first. More surface, more collisions." },
+    { title: "Endothermic or exothermic", tell: "Stand a thermometer in a cup of water and stir in baking soda, then vinegar: the temperature drops a few degrees, and the cup feels cold. Now try calcium chloride, the stuff in ice-melt pellets: the water warms up fast. One reaction pulls heat in and the other pushes it out, and your thermometer just sorted them.", moduleId: 'reaction-types', ask: "Does a reaction warm or cool?", do: "A thermometer in water; add baking soda and vinegar, then calcium chloride.", see: "One cools, one warms. Reactions move heat both ways." },
+    { title: "Periodic table scavenger hunt", tell: "Print a periodic table and go hunting through the kitchen and garage: sodium in the salt, iron in the skillet, aluminum in the foil, carbon in the pencil, helium in a balloon if you have one. Circle each one on the table. By ten you'll notice the metals bunch on the left and the gases on the right, because the table is a map of how atoms behave, not a list.", ask: "Where are the elements at home?", do: "Find ten elements in your kitchen and garage and mark them on a table.", see: "Metals cluster left, nonmetals right; the table is a map of what things are made of.", moduleId: "periodic-table" },
+    { title: "Conductivity test", tell: "Wire a small bulb to a battery with a gap in the circuit, then dip the two loose ends into salt water, sugar water and plain tap water in turn. Salt water lights the bulb; sugar water leaves it dark. Salt breaks into charged pieces in water that carry current; sugar dissolves but stays in one piece, and one piece can't carry a charge.", ask: "Which solutions carry a current?", do: "Salt water, sugar water and tap water with a battery and a bulb.", see: "Salt water lights the bulb. Ionic compounds split into charges that carry current.", moduleId: "ionic-and-covalent" },
+    { title: "Counting by weighing", tell: "Weigh exactly one hundred paper clips, then weigh a big pile of them and divide. You just counted a pile without counting. Chemists count atoms the same way, because a mole of anything is far too many to tally, and a mole of water weighs 18 grams while a mole of hydrogen weighs 2.", ask: "How do you count a mole?", do: "Weigh 100 paper clips, then weigh a big pile and divide.", see: "You count by weight when there are too many to count. A mole is counted the same way.", moduleId: "moles-and-molar-mass" },
+    { title: "Balloon in the freezer", tell: "Blow up a balloon, wrap a string around its fattest part and mark the length, then leave it in the freezer for ten minutes. It comes out visibly smaller. Warm it in your hands and it swells back. Cold gas particles slow down and push on the walls less, and the balloon simply follows the pushing.", ask: "What does cold do to a gas?", do: "Blow up a balloon, measure it, put it in the freezer for ten minutes.", see: "It shrinks. Cold particles move less and push less.", moduleId: "gas-laws" },
+    { title: "Dilution ladder", tell: "Drop food coloring into a cup of water, then pour half of it into a second cup and top that one up with plain water, and repeat five times. Line the cups up. Each is half the strength of the one before, and by the fifth the color is a ghost. Concentration is how much stuff per how much water, and you just halved it five times.", ask: "How does concentration change?", do: "Food coloring in water, then half of it into an equal amount of water, five times.", see: "Each cup is half as strong. Concentration is amount over volume.", moduleId: "concentration" },
   ],
   11: [
     { title: 'Measure the speed of sound', ask: 'How fast is sound?', do: 'Clap two boards 100 meters away while a partner times see-to-hear.', see: 'About 340 meters per second.' },
@@ -19693,14 +20593,14 @@ export const EXPERIMENTS = {
     { title: 'Static charge and distance', ask: 'Does the force fade with distance?', do: 'A charged balloon near hanging foil at several distances.', see: 'Force drops fast as distance grows.' },
     { title: 'Sound resonance tube', ask: 'Where does the tube sing?', do: 'A tube in water with a tuning fork above; raise until loud.', see: 'Resonance at a quarter wavelength.' },
     { title: 'Lens focal length', ask: 'Where does the image form?', do: 'A magnifying glass, a window, a wall; find the sharp image.', see: 'That distance is the focal length.' },
-    { title: "Projectile range", moduleId: 'speed-and-acceleration', ask: "What angle throws farthest?", do: "A rubber band launcher at 30, 45 and 60 degrees. Measure.", see: "45 degrees wins. Height and distance trade off." },
-    { title: "Hooke's law", moduleId: 'energy-kinds', ask: "Does a spring stretch evenly?", do: "Hang weights on a spring one at a time. Measure each stretch.", see: "Equal weights, equal stretches. Stretch is proportional to force." },
-    { title: "Ohm's law", moduleId: 'electricity', ask: "Does more voltage mean more current?", do: "A resistor on one, two, then three batteries with a meter.", see: "Current rises in step. V = IR." },
-    { title: "Speed of sound", moduleId: 'waves', ask: "How fast is sound?", do: "Clap by a far wall and time the echo, or use two phones apart.", see: "About 340 meters a second." },
-    { title: "Coffee cup calorimeter", moduleId: 'energy-kinds', ask: "How much heat is in a nut?", do: "Burn a nut under a can of water. Measure the temperature rise.", see: "Food is stored energy, and the water counts it." },
-    { title: "Cart collisions", ask: "Where does momentum go?", do: "Two toy carts on a smooth floor, one rolling into one at rest.", see: "The still cart moves off, the moving one slows. Momentum passes along.", moduleId: "momentum" },
-    { title: "Stairs and a stopwatch", ask: "What is your power?", do: "Time a climb up a flight of stairs; weight times height divided by time.", see: "The same work done faster is more power.", moduleId: "work-and-power" },
-    { title: "Two bulbs, two ways", ask: "Series or parallel?", do: "Wire two bulbs in a row, then side by side. Unscrew one bulb each time.", see: "In series the other goes dark; in parallel it stays lit.", moduleId: "series-and-parallel" },
+    { title: "Projectile range", tell: "Launch a rubber band from a homemade launcher at thirty degrees, forty-five and sixty, measuring where it lands each time. Forty-five wins, and the other two land in nearly the same spot. Low angles run out of air time; high angles waste their speed going up. Forty-five splits the difference, which is why a long throw arcs the way it does.", moduleId: 'speed-and-acceleration', ask: "What angle throws farthest?", do: "A rubber band launcher at 30, 45 and 60 degrees. Measure.", see: "45 degrees wins. Height and distance trade off." },
+    { title: "Hooke's law", tell: "Hang a spring from a hook and add identical weights one at a time, measuring how far it stretches after each. Every added weight stretches it by the same amount, and the graph is a straight line. Until, that is, you overload it and the line bends. That bend is the spring giving up, and engineers spend careers staying to the left of it.", moduleId: 'energy-kinds', ask: "Does a spring stretch evenly?", do: "Hang weights on a spring one at a time. Measure each stretch.", see: "Equal weights, equal stretches. Stretch is proportional to force." },
+    { title: "Ohm's law", tell: "Put a resistor in a circuit with one battery and read the current on a meter, then add a second battery, then a third. The current climbs in step with the batteries: double the push, double the flow. That's V = IR in three readings, and the resistor is the narrow pipe that keeps the flow from running away.", moduleId: 'electricity', ask: "Does more voltage mean more current?", do: "A resistor on one, two, then three batteries with a meter.", see: "Current rises in step. V = IR." },
+    { title: "Speed of sound", tell: "Stand far from a big wall, clap, and time the echo with a stopwatch; or have two friends stand a known distance apart with phones and measure the delay. Divide distance by time. You'll land near 340 meters a second, which means thunder that arrives five seconds after the flash was about a mile away.", moduleId: 'waves', ask: "How fast is sound?", do: "Clap by a far wall and time the echo, or use two phones apart.", see: "About 340 meters a second." },
+    { title: "Coffee cup calorimeter", tell: "Skewer a nut, light it, and hold it under a can of water with a thermometer in it until the nut burns out. The water warms by several degrees. The nut's stored energy became heat you can count, and a bigger nut warms it more. Every Calorie on a food label was measured this way, only with better insulation than a can.", moduleId: 'energy-kinds', ask: "How much heat is in a nut?", do: "Burn a nut under a can of water. Measure the temperature rise.", see: "Food is stored energy, and the water counts it." },
+    { title: "Cart collisions", tell: "Set two toy carts on a smooth floor, roll one into the other at rest, and watch what happens: the moving cart slows and the still cart takes off. Now put a book on the rolling cart and try again; the still cart takes off harder. Momentum passes from one to the other, and the heavier cart had more to give.", ask: "Where does momentum go?", do: "Two toy carts on a smooth floor, one rolling into one at rest.", see: "The still cart moves off, the moving one slows. Momentum passes along.", moduleId: "momentum" },
+    { title: "Stairs and a stopwatch", tell: "Weigh yourself, measure the height of a flight of stairs, and time yourself climbing it once at a walk and once at a run. Multiply weight by height for the work: the same both times. Divide by the seconds for power: much bigger at a run. That is the whole difference between work and power, in your legs.", ask: "What is your power?", do: "Time a climb up a flight of stairs; weight times height divided by time.", see: "The same work done faster is more power.", moduleId: "work-and-power" },
+    { title: "Two bulbs, two ways", tell: "Wire two bulbs in a single loop and unscrew one: both go dark. Rewire them side by side, each on its own path from the battery, and unscrew one: the other stays lit. The first is series and the second is parallel, and the second is how every house is wired, which is why one dead lamp doesn't black out the kitchen.", ask: "Series or parallel?", do: "Wire two bulbs in a row, then side by side. Unscrew one bulb each time.", see: "In series the other goes dark; in parallel it stays lit.", moduleId: "series-and-parallel" },
   ],
   12: [
     { title: 'Rock cycle in a bag', ask: 'Can you make sedimentary rock?', do: 'Sand, gravel and a little glue pressed in a bag under books for a week.', see: 'Pieces pressed into one rock: sedimentary.' },
@@ -19719,14 +20619,14 @@ export const EXPERIMENTS = {
     { title: 'Plate boundary with foam', ask: 'What happens at each edge?', do: 'Foam slabs on honey; push, pull, slide.', see: 'Mountains, gaps, quakes.' },
     { title: 'Moon phase calendar', ask: 'Can you predict the next full moon?', do: 'Track the moon for a month; predict the next.', see: 'About 29.5 days, and you can be right.' },
     { title: 'Carbon footprint audit', ask: 'Where does your energy go?', do: 'Read a month of electricity and gas bills; list the biggest uses.', see: 'Heating and cooling usually top the list.' },
-    { title: "Rock identification", moduleId: 'rock-cycle', ask: "What kind of rock is this?", do: "A handful of rocks, a nail, vinegar, a hand lens.", see: "Fizz, scratch and grain tell igneous from sedimentary from metamorphic." },
-    { title: "Ocean currents in a tank", moduleId: 'ocean-currents', ask: "Where does cold salty water go?", do: "A clear tank, cold dyed salt water poured at one end.", see: "It sinks and creeps along the bottom. That drives the deep ocean." },
-    { title: "Half-life with coins", moduleId: 'half-life', ask: "How does decay count down?", do: "A hundred coins shaken and tipped out; remove the heads. Repeat.", see: "About half go each round. That is a half-life." },
-    { title: "Albedo", moduleId: 'climate-and-weather', ask: "Does color change how much heat is absorbed?", do: "Black and white cards with thermometers under them in the sun.", see: "Black warms more. Dark surfaces absorb light." },
-    { title: "Star brightness and distance", moduleId: 'life-of-a-star', ask: "Why do far stars look dim?", do: "A flashlight at one, two and three meters; measure the light on paper.", see: "Brightness falls with the square of distance." },
-    { title: "Litter transect", ask: "What has changed a place?", do: "Walk a line across a park and count what is not natural every ten steps.", see: "A map of human impact, measured rather than guessed.", moduleId: "human-impact" },
-    { title: "Renewable or not", ask: "Which resources come back?", do: "List everything used to make breakfast. Sort into renewable and not.", see: "The list shows which parts of a day are borrowed from the past.", moduleId: "natural-resources" },
-    { title: "Balloon universe", ask: "Why do galaxies move apart?", do: "Dots on a balloon with a marker. Blow it up slowly.", see: "Every dot moves away from every other, and the far ones fastest.", moduleId: "the-big-bang" },
+    { title: "Rock identification", tell: "Lay out a handful of rocks with a nail, a dropper of vinegar and a hand lens. Scratch each with the nail, drop vinegar on it, look for grains or layers or crystals. Fizzing means limestone, layers mean sediment, interlocking crystals mean it cooled from melt. Three tests, and the rock tells you where it came from.", moduleId: 'rock-cycle', ask: "What kind of rock is this?", do: "A handful of rocks, a nail, vinegar, a hand lens.", see: "Fizz, scratch and grain tell igneous from sedimentary from metamorphic." },
+    { title: "Ocean currents in a tank", tell: "Fill a clear tank with warm water and pour ice-cold salty water, dyed blue, slowly in at one end. The blue sinks straight to the bottom and creeps along it to the far end, under the warm water. That creeping is the deep ocean's conveyor belt, and the cold salty water sinking near the poles is what drives it around the globe.", moduleId: 'ocean-currents', ask: "Where does cold salty water go?", do: "A clear tank, cold dyed salt water poured at one end.", see: "It sinks and creeps along the bottom. That drives the deep ocean." },
+    { title: "Half-life with coins", tell: "Tip a hundred pennies onto a table, remove every one showing heads, and count what's left. Shake and tip again, remove heads, count. Fifty, twenty-five, twelve, six. Each round is a half-life, and the pile decays the way a radioactive sample does: you can't say which penny will go, but you can say how many.", moduleId: 'half-life', ask: "How does decay count down?", do: "A hundred coins shaken and tipped out; remove the heads. Repeat.", see: "About half go each round. That is a half-life." },
+    { title: "Albedo", tell: "Tape a thermometer under a black card and another under a white card and set both in the sun for fifteen minutes. The black one reads warmer, sometimes by ten degrees. Dark surfaces swallow light and turn it into heat; white ones bounce it away. That is why a dark roof heats a house and why melting sea ice makes the ocean warm faster.", moduleId: 'climate-and-weather', ask: "Does color change how much heat is absorbed?", do: "Black and white cards with thermometers under them in the sun.", see: "Black warms more. Dark surfaces absorb light." },
+    { title: "Star brightness and distance", tell: "Shine a flashlight on a sheet of paper from one meter, two meters and three, and measure the size of the lit patch each time. At two meters the patch is four times the area and a quarter as bright; at three, nine times and a ninth. Brightness falls with the square of distance, which is how astronomers turn how faint a star looks into how far away it is.", moduleId: 'life-of-a-star', ask: "Why do far stars look dim?", do: "A flashlight at one, two and three meters; measure the light on paper.", see: "Brightness falls with the square of distance." },
+    { title: "Litter transect", tell: "Walk a straight line across a park or a block, stopping every ten steps to count everything within arm's reach that a person made and left. Write down the counts. You'll have a graph of human impact along a line, measured rather than felt, and a second walk next month will show whether anything changed.", ask: "What has changed a place?", do: "Walk a line across a park and count what is not natural every ten steps.", see: "A map of human impact, measured rather than guessed.", moduleId: "human-impact" },
+    { title: "Renewable or not", tell: "List everything that went into your breakfast, from the wheat in the toast to the natural gas in the stove to the plastic around the cheese, and sort the list into two columns: comes back on a human timescale, or doesn't. The second column is longer than most people expect, and it is the part of your morning borrowed from the past.", ask: "Which resources come back?", do: "List everything used to make breakfast. Sort into renewable and not.", see: "The list shows which parts of a day are borrowed from the past.", moduleId: "natural-resources" },
+    { title: "Balloon universe", tell: "Dot a deflated balloon with a marker, pick one dot to be home, and blow the balloon up slowly while watching it. Every dot moves away from home, and the far dots move away fastest. Nobody is at the center; every dot sees the same thing. That is the expanding universe, and the balloon is the best model of it that fits in a pocket.", ask: "Why do galaxies move apart?", do: "Dots on a balloon with a marker. Blow it up slowly.", see: "Every dot moves away from every other, and the far ones fastest.", moduleId: "the-big-bang" },
   ],
 };
 export function experimentsFor(grade) { return EXPERIMENTS[grade] || []; }
@@ -19738,20 +20638,24 @@ export function experimentsFor(grade) { return EXPERIMENTS[grade] || []; }
 // Memorial Day is the last Monday of May; the others are fixed dates.
 // ---------------------------------------------------------------------
 export const REMEMBRANCE_DAYS = [
+  // The words are Mikey's (2026-09-23); each line is one paragraph on the card.
   { id: 'september-11', title: 'September 11', when: (y, m, d) => m === 9 && d === 11, lines: [
-    'On this day in 2001, nearly three thousand people were killed in attacks on New York City, at the Pentagon, and in a field near Shanksville, Pennsylvania.',
-    'Firefighters, police officers and ordinary people ran toward the danger to help others, and many of them did not come home.',
-    'Each year the country pauses to remember them, and the families who still miss them. Take a quiet moment before you begin today.',
+    'On this day in 2001, nearly three thousand people were killed in attacks on New York City, the Pentagon, and in a field near Shanksville, Pennsylvania.',
+    'Firefighters, police officers and ordinary people ran toward the danger to help and many of them did not come home.',
+    'Every year, on this day, our country pauses to remember them.',
+    'Take a quiet moment before you begin today. Think about the people, their families and even your own. Cherish the moments with those closest to you because, at the end of the day, this is what life is all about.',
   ] },
   { id: 'veterans-day', title: 'Veterans Day', when: (y, m, d) => m === 11 && d === 11, lines: [
-    'Today is Veterans Day. It began as the day the fighting of the First World War ended, at eleven in the morning on November 11, 1918.',
-    'It honors everyone who has served in the armed forces of the United States, in war and in peace, and the families who waited for them.',
-    'If you know someone who served, today is a good day to say thank you. Take a quiet moment before you begin.',
+    'Today is Veterans Day. On this day, at eleven in the morning on November 11, 1918, World War 1 had ended.',
+    'Veterans Day honors everyone, and their families, who have served in the armed forces of the United States whether it be in war or in peace.',
+    'If you know someone who has served in the armed forces, today is a good day to say thank you.',
+    'Take a quiet moment before you begin.',
   ] },
   { id: 'memorial-day', title: 'Memorial Day', when: (y, m, d) => m === 5 && d > 24 && new Date(y, 4, d).getDay() === 1, lines: [
-    'Today is Memorial Day. It is set aside for the people who died serving in the armed forces of the United States, from the first wars to the most recent.',
-    'Flags fly at half-staff until noon, and many families visit graves and leave flowers.',
-    'It is a day for remembering, more than celebrating. Take a quiet moment before you begin.',
+    'Today is Memorial Day. It is set aside for the people who have died serving in the armed forces of the United States. We honor and remember every member from the first wars all the way up to the present.',
+    'Flags fly at half-staff until noon and many families will visit the graves of loved ones to honor them and leave flowers.',
+    'Today is a day for remembering more than celebrating.',
+    'Take a quiet moment before you begin.',
   ] },
 ];
 export function remembranceFor(isoLocalDate) {

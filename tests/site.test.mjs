@@ -35,4 +35,4 @@ ok('the account, device name and state are remembered too', !createOffered);
 ok('no browser errors on the standalone page', errors.length === 0);
 await b.close();
 console.log(`\n${pass} passed, ${fail} failed`);
-process.exit(fail ? 1 : 0);
+process.exitCode = fail ? 1 : 0;   // never process.exit(): it can drop the last lines of a piped stdout (2026-09-23)

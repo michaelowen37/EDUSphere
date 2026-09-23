@@ -36,6 +36,7 @@ const news = newsBlock[1] ? { stamp: newsBlock[1], date: newsBlock[1], items: ne
 const artList = existsSync('art/stories') ? readdirSync('art/stories').filter((f) => f.endsWith('.webp')).map((f) => f.slice(0, -5)) : [];
 const audioList = existsSync('audio') ? readdirSync('audio').filter((f) => f.endsWith('.mp3')).map((f) => f.slice(0, -4)) : [];
 const coloringList = existsSync('art/coloring') ? readdirSync('art/coloring').filter((f) => f.endsWith('.webp')).map((f) => f.slice(0, -5)) : [];
+const mapList = existsSync('art/maps') ? readdirSync('art/maps').filter((f) => f.endsWith('.webp')).map((f) => f.slice(0, -5)) : [];
 
 const wrap = (name, code) => `__def(${JSON.stringify(name)}, function(module, exports, require){${code}\n});`;
 const html = `<!doctype html>
@@ -71,6 +72,7 @@ const html = `<!doctype html>
 <script>
 window.__eduArt = ${JSON.stringify(artList)};
 window.__eduColoringArt = ${JSON.stringify(coloringList)};
+window.__eduMapArt = ${JSON.stringify(mapList)};
 window.__eduAudio = ${JSON.stringify(audioList)};
 window.__eduNews = ${JSON.stringify(news)};
 // Installable app: the worker keeps a copy of the page for offline use and asks the network first, so a fresh build always wins.

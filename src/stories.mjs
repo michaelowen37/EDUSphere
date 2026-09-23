@@ -477,5 +477,3887 @@ STORIES['listen-for-rhymes'] = {
     'Words that end the same are rhymes. Say cat, and listen for what rhymes.',
   ],
 };
+// The rest of pre-K, in the fewest words that still make a story.
+STORIES['find-the-match'] = {
+  about: 'two red mittens and the one that got lost',
+  more: [{ serial: 'S120', after: 0, alt: 'The child checking a blue mitten against the red one and shaking their head' }, { serial: 'S121', after: 2, alt: 'Two red mittens held together, matching, the child smiling' }],
+  title: 'The lost mitten', art: 'S119', cast: [],
+  alt: 'A child holding up one red mitten, looking around the hallway, boots and coats behind',
+  words: [
+    'One red mitten. Where is the other? A mitten needs its match.',
+    'A blue one? No. A big black one? No. Same means just alike.',
+    'There, under the coat: a red mitten, just the same. Two mittens, one pair.',
+  ],
+};
+STORIES['match-the-animals'] = {
+  about: 'a duckling looking for another duckling in the yard',
+  more: [{ serial: 'S123', after: 0, alt: 'The duckling face to face with a goat, both puzzled' }, { serial: 'S124', after: 2, alt: 'Two ducklings waddling together toward the pond' }],
+  title: 'Which one is like me?', art: 'S122', cast: [],
+  alt: 'A yellow duckling standing in a farmyard looking at a hen, a goat and a cat',
+  words: [
+    'A duckling looked around. Is that one like me? A hen. No.',
+    'A goat? No. A cat? No. Not the same.',
+    'Another duckling! Same yellow, same waddle. That is the match.',
+  ],
+};
+STORIES['more-or-fewer'] = {
+  about: 'two bowls of grapes and the one with more',
+  more: [{ serial: 'S126', after: 0, alt: 'A child pointing at the heaped bowl' }, { serial: 'S127', after: 2, alt: 'Both bowls with the same number of grapes after sharing, the children eating' }],
+  title: 'Two bowls', art: 'S125', cast: [],
+  alt: 'Two bowls of grapes on a table, one heaped high, one nearly empty, two children looking',
+  words: [
+    'Two bowls of grapes. This one is full. That one has three.',
+    'Which has more? The full one. More means a bigger group.',
+    'Share them out, and now both bowls have the same.',
+  ],
+};
+STORIES['first-marks'] = {
+  about: 'a crayon that made its very first line',
+  more: [{ serial: 'S129', after: 0, alt: 'The crayon partway along a curvy line, following a faint dotted path' }, { serial: 'S130', after: 2, alt: 'A finished squiggly line across the page, the child holding the crayon up proudly' }],
+  title: 'The first line', art: 'S128', cast: [],
+  alt: 'A big crayon starting a wobbly line on a large sheet of paper, a small hand holding it',
+  words: [
+    'A crayon touched the paper. It made a dot.',
+    'The crayon moved. The dot became a line. Wobbly, but a line.',
+    'Start at the dot. Follow the line. Every drawing starts this way.',
+  ],
+};
+STORIES['three-dots'] = {
+  about: 'three dots that turned into a triangle',
+  more: [{ serial: 'S132', after: 0, alt: 'The pencil drawing a line from dot two to dot three' }, { serial: 'S133', after: 2, alt: 'A finished triangle drawn through the three dots' }],
+  title: 'Three dots', art: 'S131', cast: [],
+  alt: 'Three numbered dots on a page, a pencil at dot one',
+  words: [
+    'One. Two. Three. Three dots on the page.',
+    'From one to two. From two to three. From three back to one.',
+    'The dots became a triangle. Dots in order make a picture.',
+  ],
+};
+STORIES['yellow-and-green'] = {
+  about: 'the sun and the grass on a bright morning',
+  more: [{ serial: 'S135', after: 0, alt: 'A child holding a yellow flower up to the yellow sun' }, { serial: 'S136', after: 2, alt: 'The child rolling in the green grass, green everywhere' }],
+  title: 'Sun and grass', art: 'S134', cast: [],
+  alt: 'A bright yellow sun above a field of green grass, a child lying in the grass looking up',
+  words: [
+    'The sun came up. Yellow. Bright yellow.',
+    'The grass was under me. Green. Cool green.',
+    'Yellow like the sun. Green like the grass. Two colors, one morning.',
+  ],
+};
+STORIES['triangles-too'] = {
+  about: 'a slice of pizza and its three corners',
+  more: [{ serial: 'S138', after: 0, alt: 'The child counting the corners of a house roof drawn on paper' }, { serial: 'S139', after: 2, alt: 'A sailboat with a triangle sail, the child pointing' }],
+  title: 'Three corners', art: 'S137', cast: [],
+  alt: 'A slice of pizza on a plate, a child touching one corner with a finger',
+  words: [
+    'A slice of pizza. One corner. Two corners. Three corners.',
+    'A triangle has three corners. The slice is a triangle.',
+    'A roof is a triangle. A sail is a triangle. Count the corners: three.',
+  ],
+};
+STORIES['big-and-little'] = {
+  about: 'a big shoe and a little shoe by the door',
+  more: [{ serial: 'S141', after: 0, alt: 'A small foot inside the huge shoe, lost in it' }, { serial: 'S142', after: 2, alt: 'The child wearing the little shoe, standing next to the big shoe' }],
+  title: 'Two shoes', art: 'S140', cast: [],
+  alt: 'A big grown-up shoe next to a tiny child shoe by a front door',
+  words: [
+    'By the door, two shoes. One big. One little.',
+    'The big shoe was too big. My foot swam in it.',
+    'The little shoe fit. Big for big feet. Little for little feet.',
+  ],
+};
+STORIES['circle-and-square'] = {
+  about: 'a ball that rolled and a block that would not',
+  more: [{ serial: 'S144', after: 0, alt: 'The ball rolling away down the ramp, the block still at the top' }, { serial: 'S145', after: 2, alt: 'A child stacking blocks into a tower next to the ball' }],
+  title: 'Round and cornered', art: 'S143', cast: [],
+  alt: 'A red ball and a wooden block at the top of a small ramp',
+  words: [
+    'A ball is round. It rolled down the ramp.',
+    'A block has corners. It sat there. It did not roll.',
+    'Round rolls. Corners stay. A circle is round. A square has corners.',
+  ],
+};
+STORIES['a-and-b'] = {
+  about: 'the first two letters on a birthday banner',
+  more: [{ serial: 'S147', after: 0, alt: 'A close look at a big letter A on the banner' }, { serial: 'S148', after: 2, alt: 'The letters A and B side by side, the child tracing them in the air' }],
+  title: 'A and B', art: 'S146', cast: [],
+  alt: 'A colorful banner with big letters on it, a child pointing at the first letter',
+  words: [
+    'On the banner were letters. The first was A.',
+    'Next to it was B. A, then B.',
+    'A and B are letters. Letters make words. Words make banners.',
+  ],
+};
+STORIES['not-the-same'] = {
+  about: 'three red apples and one green one',
+  more: [{ serial: 'S150', after: 0, alt: 'A child pointing at the green apple' }, { serial: 'S151', after: 2, alt: 'The child taking a bite of the green apple, smiling' }],
+  title: 'The green one', art: 'S149', cast: [],
+  alt: 'Four apples in a row on a table, three red and one green',
+  words: [
+    'Four apples in a row. Red. Red. Red. Green.',
+    'Which one is different? The green one. It is not alike.',
+    'Different means not the same. The green apple was the odd one out, and it was delicious.',
+  ],
+};
+STORIES['listen-and-tap-pictures'] = {
+  about: 'a game of point to the picture',
+  more: [{ serial: 'S153', after: 0, alt: 'The child\'s finger on the picture of the dog' }, { serial: 'S154', after: 2, alt: 'The child\'s finger on the picture of the cup, the grown-up clapping' }],
+  title: 'Point to it', art: 'S152', cast: [],
+  alt: 'A child sitting with a picture book open, a grown-up saying a word, pictures of a dog, a cup and a hat',
+  words: [
+    'Dog. Where is the dog? There. Tap.',
+    'Cup. Where is the cup? There. Tap.',
+    'Listen to the word. Find its picture. Tap it. That is the whole game.',
+  ],
+};
+STORIES['animal-sounds'] = {
+  about: 'a walk past the farm and every animal that spoke',
+  more: [{ serial: 'S156', after: 0, alt: 'The duck with its beak open, the child laughing' }, { serial: 'S157', after: 2, alt: 'The cat on the fence post, the child listening with a hand to one ear' }],
+  title: 'Who said that?', art: 'S155', cast: [],
+  alt: 'A child walking past a farm fence, a cow, a duck and a cat looking over it',
+  words: [
+    'Moo. Who said that? The cow.',
+    'Quack. Who said that? The duck.',
+    'Meow. Who said that? The cat. Every animal has its own sound.',
+  ],
+};
+STORIES['same-and-different'] = {
+  about: 'two socks that looked the same until you looked',
+  more: [{ serial: 'S159', after: 0, alt: 'A close look at the sock with a small hole in the toe' }, { serial: 'S160', after: 2, alt: 'The child holding up the matching pair, both without holes' }],
+  title: 'Two socks', art: 'S158', cast: [],
+  alt: 'Two striped socks laid side by side on a bed, a child looking closely',
+  words: [
+    'Two socks. Stripes and stripes. The same?',
+    'Look again. This one has a hole. That one does not.',
+    'Same looks alike. Different does not. Look twice before you say.',
+  ],
+};
+STORIES['match-the-vehicles'] = {
+  about: 'a toy garage and the cars that belong in pairs',
+  more: [{ serial: 'S162', after: 0, alt: 'The child holding two identical red toy cars' }, { serial: 'S163', after: 2, alt: 'All the vehicles lined up in pairs on the garage floor' }],
+  title: 'Two of each', art: 'S161', cast: [],
+  alt: 'A toy garage with cars, trucks and a bus lined up, a child sorting them',
+  words: [
+    'Red car. Where is the other red car? There.',
+    'Truck. Where is the other truck? There.',
+    'Two of each, side by side. The same means just alike.',
+  ],
+};
+STORIES['match-the-things'] = {
+  about: 'tidying up when everything has a twin',
+  more: [{ serial: 'S165', after: 0, alt: 'Two cups placed side by side on a shelf' }, { serial: 'S166', after: 2, alt: 'The tidy shelf with everything in pairs, the child sitting down happy' }],
+  title: 'Everything has a twin', art: 'S164', cast: [],
+  alt: 'A messy floor with cups, spoons and blocks, two of each, a child starting to sort',
+  words: [
+    'Cup. Another cup. Together.',
+    'Spoon. Another spoon. Together.',
+    'Every thing had a twin. Match them and the floor is tidy.',
+  ],
+};
+STORIES['match-the-water-animals'] = {
+  about: 'a pond where every swimmer had a friend just like it',
+  more: [{ serial: 'S168', after: 0, alt: 'Two identical fish swimming side by side' }, { serial: 'S169', after: 2, alt: 'Two frogs on one lily pad' }],
+  title: 'Pond pairs', art: 'S167', cast: [],
+  alt: 'A pond with fish, ducks and frogs, two of each',
+  words: [
+    'A fish. Another fish, just the same.',
+    'A frog. Another frog, just the same.',
+    'In the pond, every swimmer had a match.',
+  ],
+};
+STORIES['match-the-land-animals'] = {
+  about: 'a field where the animals stood in twos',
+  more: [{ serial: 'S171', after: 0, alt: 'Two rabbits hopping together' }, { serial: 'S172', after: 2, alt: 'Two spotted cows walking side by side' }],
+  title: 'Two by two', art: 'S170', cast: [],
+  alt: 'A field with rabbits, cows and sheep, two of each',
+  words: [
+    'Two rabbits. The same ears. The same hop.',
+    'Two cows. The same spots.',
+    'Two by two, the animals crossed the field. Same means just alike.',
+  ],
+};
+STORIES['match-the-shapes'] = {
+  about: 'a shape sorter and the hole that fit',
+  more: [{ serial: 'S174', after: 0, alt: 'The triangle block pressed against the round hole, not going in' }, { serial: 'S175', after: 2, alt: 'The triangle block dropping into the triangle hole' }],
+  title: 'The hole that fits', art: 'S173', cast: [],
+  alt: 'A wooden shape sorter box with a circle, square and triangle hole, a child holding a triangle block',
+  words: [
+    'A triangle block. A round hole? No fit.',
+    'A square hole? No fit.',
+    'A triangle hole. Yes. Same shape, same fit.',
+  ],
+};
+STORIES['match-the-solids'] = {
+  about: 'blocks and balls in the toy box',
+  more: [{ serial: 'S177', after: 0, alt: 'Two cubes stacked, a child adding a third' }, { serial: 'S178', after: 2, alt: 'Two balls rolling across the floor together' }],
+  title: 'Blocks and balls', art: 'S176', cast: [],
+  alt: 'A toy box with cubes, balls, cones and cans spilling out',
+  words: [
+    'A cube. Another cube, just the same. Stack them.',
+    'A ball. Another ball. Roll them.',
+    'Cubes stack. Balls roll. Match the solid to its twin.',
+  ],
+};
+STORIES['more-and-fewer-5'] = {
+  about: 'five ducks on the pond and three that flew away',
+  more: [{ serial: 'S180', after: 0, alt: 'Three ducks flying up, two still on the water' }, { serial: 'S181', after: 2, alt: 'Two ducks left on the pond, the child holding up two fingers' }],
+  title: 'Five, then two', art: 'S179', cast: [],
+  alt: 'Five ducks on a pond, a child counting on fingers',
+  words: [
+    'Five ducks on the pond. One, two, three, four, five.',
+    'Three flew away. Now two. Two is fewer than five.',
+    'More is the bigger group. Fewer is the smaller. The pond went from more to fewer.',
+  ],
+};
+STORIES['bigger-and-smaller'] = {
+  about: 'a pumpkin patch and the pumpkin that fit in a wagon',
+  more: [{ serial: 'S183', after: 0, alt: 'The child trying to lift the huge pumpkin' }, { serial: 'S184', after: 2, alt: 'The middle pumpkin sitting neatly in the wagon' }],
+  title: 'The right pumpkin', art: 'S182', cast: [],
+  alt: 'A pumpkin patch with big and small pumpkins, a child pulling a small wagon',
+  words: [
+    'A huge pumpkin. Too big. It did not fit the wagon.',
+    'A tiny pumpkin. Too small. It rolled around.',
+    'A middle one. Just right. Bigger takes more room; smaller takes less.',
+  ],
+};
+STORIES['first-strokes'] = {
+  about: 'a rainy window and the lines a finger drew',
+  more: [{ serial: 'S186', after: 0, alt: 'A wavy line drawn across the fogged glass' }, { serial: 'S187', after: 2, alt: 'A window covered in lines and a smiling face drawn at the end' }],
+  title: 'Lines on the window', art: 'S185', cast: [],
+  alt: 'A child drawing with a finger on a fogged window, a line going down',
+  words: [
+    'The window was fogged. My finger went down. A line.',
+    'Across. Another line. Then a wavy one.',
+    'Start at the dot. Follow the line. Down, across, wavy: the first strokes of every letter.',
+  ],
+};
+STORIES['connect-the-dots'] = {
+  about: 'dots that became a boat when you went in order',
+  more: [{ serial: 'S189', after: 0, alt: 'Half the dots joined, the hull of a boat appearing' }, { serial: 'S190', after: 2, alt: 'The finished boat with a sail, the child coloring it' }],
+  title: 'The dot boat', art: 'S188', cast: [],
+  alt: 'A page of numbered dots, a pencil starting at one',
+  words: [
+    'One to two. Two to three. What is it?',
+    'Four, five, six. A shape is coming.',
+    'Seven, eight. A boat! Go in order and the dots show you.',
+  ],
+};
+STORIES['draw-the-shapes'] = {
+  about: 'a circle drawn all the way round',
+  more: [{ serial: 'S192', after: 0, alt: 'The circle half drawn on the board' }, { serial: 'S193', after: 2, alt: 'A finished circle, a square and a triangle on the board' }],
+  title: 'All the way round', art: 'S191', cast: [],
+  alt: 'A child drawing a circle on a chalkboard, starting at a dot',
+  words: [
+    'Start at the dot. Go round. Keep going.',
+    'Almost there. Do not stop early.',
+    'Back to the dot. A circle. Start at the dot and go all the way around.',
+  ],
+};
+STORIES['big-bigger-biggest'] = {
+  about: 'three bears and three bowls',
+  more: [{ serial: 'S195', after: 0, alt: 'The little bear with the little bowl' }, { serial: 'S196', after: 2, alt: 'All three bears eating from the right bowls' }],
+  title: 'Three bowls', art: 'S194', cast: [],
+  alt: 'Three bowls in a row on a table, small, medium and large, three bears behind them',
+  words: [
+    'A little bowl. A middle bowl. A big bowl.',
+    'Little bear, middle bear, big bear. Each one found its own.',
+    'Little, middle-sized, biggest. Three sizes in a row.',
+  ],
+};
+STORIES['helpers-all-around'] = {
+  about: 'a walk to school and everyone who helped',
+  more: [{ serial: 'S198', after: 0, alt: 'A bus driver smiling as children climb aboard' }, { serial: 'S199', after: 2, alt: 'A teacher at the classroom door welcoming children in' }],
+  title: 'Helpers', art: 'S197', cast: [],
+  alt: 'A crossing guard holding up a sign at a street corner, children crossing',
+  words: [
+    'The crossing guard stopped the cars. We crossed.',
+    'The bus driver opened the door. We climbed in.',
+    'The teacher opened the classroom. Helpers are all around. Every helper has a job.',
+  ],
+};
+STORIES['first-sounds'] = {
+  about: 'the sound at the start of every name in the room',
+  more: [{ serial: 'S201', after: 0, alt: 'A child saying buh with a hand on their chest' }, { serial: 'S202', after: 2, alt: 'Two name cards side by side, the children pointing at the first letters' }],
+  title: 'Start sounds', art: 'S200', cast: [],
+  alt: 'A classroom circle, a teacher pointing at a child, name cards on the floor',
+  words: [
+    'Ben. Buh. Ben starts with buh.',
+    'Sam. Sss. Sam starts with sss.',
+    'Listen to the start of the word. Every word begins with a sound.',
+  ],
+};
+STORIES['which-came-first'] = {
+  about: 'two sounds at the zoo',
+  more: [{ serial: 'S204', after: 0, alt: 'The lion mid-roar' }, { serial: 'S205', after: 2, alt: 'The parrot squawking on a branch, the child pointing back at the lion' }],
+  title: 'Two sounds', art: 'S203', cast: [],
+  alt: 'A child at a zoo fence with a lion and a parrot behind it',
+  words: [
+    'Roar. Then squawk. Which came first?',
+    'The roar. That was the lion.',
+    'Hold the first sound in your head while you hear the second.',
+  ],
+};
+STORIES['which-came-second'] = {
+  about: 'three sounds in the kitchen',
+  more: [{ serial: 'S207', after: 0, alt: 'The kettle whistling with steam' }, { serial: 'S208', after: 2, alt: 'The dog barking at the back door, the clock on the wall behind' }],
+  title: 'Three sounds', art: 'S206', cast: [],
+  alt: 'A kitchen with a kettle, a clock and a dog, a child listening',
+  words: [
+    'Whistle. Tick. Woof. Three sounds.',
+    'Which came second? Tick. The clock.',
+    'Which came last? Woof. The dog. Keep the sounds in a row in your head.',
+  ],
+};
+STORIES['big-letters'] = {
+  about: 'the letters on the big red bus',
+  more: [{ serial: 'S210', after: 0, alt: 'A close look at the big letter B on the bus' }, { serial: 'S211', after: 2, alt: 'The child saying the letters while the bus pulls away' }],
+  title: 'Letters on the bus', art: 'S209', cast: [],
+  alt: 'A big red bus with letters on its side, a child reading them from the sidewalk',
+  words: [
+    'On the bus were big letters. B. U. S.',
+    'B says its name. U says its name. S says its name.',
+    'Every letter has a name. Say them and you can read the bus.',
+  ],
+};
+STORIES['first-letter-tracing'] = {
+  about: 'a letter drawn in the sand',
+  more: [{ serial: 'S213', after: 0, alt: 'The stick halfway down the first line of a letter' }, { serial: 'S214', after: 2, alt: 'A finished big letter L in the sand, the waves nearby' }],
+  title: 'A letter in the sand', art: 'S212', cast: [],
+  alt: 'A child on a beach drawing a big letter in wet sand with a stick',
+  words: [
+    'Start at the dot. Follow the arrow. Down.',
+    'Across. Lift the stick.',
+    'A letter in the sand. Start at the dot, follow the arrow, and any letter is yours.',
+  ],
+};
+STORIES['more-big-letters'] = {
+  about: 'letters built from sticks',
+  more: [{ serial: 'S216', after: 0, alt: 'The stick T on the table' }, { serial: 'S217', after: 2, alt: 'Four stick letters in a row, the child clapping' }],
+  title: 'Stick letters', art: 'S215', cast: [],
+  alt: 'A child laying craft sticks on a table to make letters',
+  words: [
+    'One stick down. One stick across. An L.',
+    'One stick down. One stick across the top. A T.',
+    'Straight lines make letters. Start at the dot and lay the line.',
+  ],
+};
+STORIES['trace-straight-letters'] = {
+  about: 'L, T and F drawn on the steamy mirror',
+  more: [{ serial: 'S219', after: 0, alt: 'The letter T drawn beside the L on the mirror' }, { serial: 'S220', after: 2, alt: 'L, T and F all drawn on the mirror, a smiling child behind' }],
+  title: 'L, T and F', art: 'S218', cast: [],
+  alt: 'A steamy bathroom mirror with a big L drawn on it by a small finger',
+  words: [
+    'Down, then across. L.',
+    'Down, then across the top. T.',
+    'Down, across the top, across the middle. F. Down, then across: three letters from two moves.',
+  ],
+};
+// Kindergarten, in the fewest words that still make a story.
+STORIES['rules-and-helpers'] = {
+  about: 'a line at the slide and the grown-up who kept it fair',
+  more: [{ serial: 'S222', after: 0, alt: 'Two children colliding at the bottom of the slide, both surprised' }, { serial: 'S223', after: 2, alt: 'A neat line at the top of the slide, one child sliding down alone, smiling' }],
+  title: 'One at a time', art: 'S221', cast: [],
+  alt: 'A playground slide with children waiting in a line, a grown-up at the bottom',
+  words: [
+    'Everyone wanted the slide at once. Bump. Ouch.',
+    'A rule: one at a time. Wait at the top. Go when the slide is empty.',
+    'Rules keep us safe. The helper at the bottom kept the rule, and nobody bumped again.',
+  ],
+};
+STORIES['needs-and-wants'] = {
+  about: 'a trip to the store with only enough for one',
+  more: [{ serial: 'S225', after: 0, alt: 'The child looking at the toy on the shelf' }, { serial: 'S226', after: 2, alt: 'The family eating toast at the table, the child smiling anyway' }],
+  title: 'The one thing', art: 'S224', cast: [],
+  alt: 'A child and a grown-up in a store aisle, a loaf of bread in one hand, a toy in the other',
+  words: [
+    'Bread, or the toy? There was money for one.',
+    'We need to eat. We want to play. Needs come first.',
+    'The bread came home. The toy stayed. Next time, maybe. Wants can wait.',
+  ],
+};
+STORIES['our-flag-and-holidays'] = {
+  about: 'a flag going up the pole on a holiday morning',
+  more: [{ serial: 'S228', after: 0, alt: 'A close look at the stars in the corner of the flag' }, { serial: 'S229', after: 2, alt: 'Children saluting the flag, the sun behind it' }],
+  title: 'Up the pole', art: 'S227', cast: [],
+  alt: 'A flag rising up a flagpole outside a school on a bright morning, children watching',
+  words: [
+    'Up went the flag. Red. White. Blue.',
+    'Count the stripes: thirteen. Count the stars: fifty, one for each state.',
+    'On a holiday the flag goes up and we remember why. Fifty stars, thirteen stripes.',
+  ],
+};
+STORIES['jobs-people-do'] = {
+  about: 'a morning when every grown-up went to a different job',
+  more: [{ serial: 'S231', after: 0, alt: 'The baker holding out a loaf at the bakery door' }, { serial: 'S232', after: 2, alt: 'The nurse with a bandage, helping a child with a scraped knee' }],
+  title: 'Off to work', art: 'S230', cast: [],
+  alt: 'A street in the morning with a baker, a mail carrier, a bus driver and a nurse all heading out',
+  words: [
+    'The baker went to bake bread. The nurse went to help the sick.',
+    'The mail carrier carried the mail. The driver drove the bus.',
+    'Every job helps someone. People work to earn money for what they need.',
+  ],
+};
+STORIES['voting-in-class'] = {
+  about: 'a class that could not agree on a story until they voted',
+  more: [{ serial: 'S234', after: 0, alt: 'The teacher counting raised hands' }, { serial: 'S235', after: 2, alt: 'The class listening to the whale story, the dragon book waiting on the shelf' }],
+  title: 'Hands up', art: 'S233', cast: [],
+  alt: 'A classroom with children raising hands, a teacher holding two books',
+  words: [
+    'Two books. Half wanted one. Half wanted the other.',
+    'Hands up for the dragon. Hands up for the whale. One vote each.',
+    'Eleven for the whale, nine for the dragon. More votes wins. The whale it was, and the dragon tomorrow.',
+  ],
+};
+STORIES['our-two-flags'] = {
+  about: 'two flags on one pole outside the courthouse',
+  more: [{ serial: 'S237', after: 0, alt: 'A close look at the lone star on the Texas flag' }, { serial: 'S238', after: 2, alt: 'A child pointing up at both flags in the wind' }],
+  title: 'Two flags', art: 'S236', cast: [],
+  alt: 'A flagpole with two flags, the American flag above the Texas flag, a courthouse behind',
+  words: [
+    'Two flags on one pole. The top one had fifty stars.',
+    'The one below had one big star. Red, white and blue too.',
+    'Fifty stars for the country. One star for Texas. Both are ours.',
+  ],
+};
+STORIES['count-to-10'] = {
+  about: 'ten steps to the top of the slide',
+  more: [{ serial: 'S240', after: 0, alt: 'The child halfway up, holding up five fingers' }, { serial: 'S241', after: 2, alt: 'The child at the top of the slide, ten fingers up, about to go' }],
+  title: 'Ten steps', art: 'S239', cast: [],
+  alt: 'A child climbing the ladder of a tall slide, counting each rung',
+  words: [
+    'One. Two. Three. Each step, one number.',
+    'Four, five, six, seven. Higher and higher.',
+    'Eight, nine, ten. The top. The last number says how many steps there were.',
+  ],
+};
+STORIES['tracing-numbers'] = {
+  about: 'a number 2 drawn in the frosting',
+  more: [{ serial: 'S243', after: 0, alt: 'The finger halfway through the curve of the 2' }, { serial: 'S244', after: 2, alt: 'A finished 2 on the cake, two candles beside it' }],
+  title: 'Two in the frosting', art: 'S242', cast: [],
+  alt: 'A cake with a big 2 being drawn in the frosting with a finger',
+  words: [
+    'Start at the dot. Curve round, then down.',
+    'Along the bottom. Stop. A two.',
+    'Start at the dot, follow the arrow, and the number draws itself.',
+  ],
+};
+STORIES['one-more-one-less'] = {
+  about: 'cookies on a plate, one added and one eaten',
+  more: [{ serial: 'S246', after: 0, alt: 'The plate with five cookies' }, { serial: 'S247', after: 2, alt: 'A child with crumbs on their face, four cookies left' }],
+  title: 'One more, one less', art: 'S245', cast: [],
+  alt: 'A plate with four cookies and a hand adding one',
+  words: [
+    'Four cookies. One more. Now five.',
+    'Someone ate one. One less. Now four.',
+    'One more is the next number. One less is the number before.',
+  ],
+};
+STORIES['joining-and-taking-away'] = {
+  about: 'two toy cars, three toy cars, and one that drove away',
+  more: [{ serial: 'S249', after: 0, alt: 'Five cars parked in a row' }, { serial: 'S250', after: 2, alt: 'One car driving off, four left behind' }],
+  title: 'Cars in the garage', art: 'S248', cast: [],
+  alt: 'A toy garage with two cars inside and three more arriving',
+  words: [
+    'Two cars in the garage. Three drove in. Joining. Now five.',
+    'One drove away. Taking away. Now four.',
+    'Joining makes more. Taking away leaves fewer. Count to see.',
+  ],
+};
+STORIES['comparing-numbers'] = {
+  about: 'two towers of blocks and the taller one',
+  more: [{ serial: 'S252', after: 0, alt: 'The child counting the taller tower block by block' }, { serial: 'S253', after: 2, alt: 'The child holding up six fingers next to the taller tower' }],
+  title: 'Which is bigger?', art: 'S251', cast: [],
+  alt: 'Two block towers side by side, one of six blocks and one of four, a child comparing',
+  words: [
+    'Six blocks. Four blocks. Which is bigger?',
+    'Count up: four, five, six. Six comes later.',
+    'The number you say later when counting is the bigger one. Six is bigger than four.',
+  ],
+};
+STORIES['shapes'] = {
+  about: 'a walk where every shape had a name',
+  more: [{ serial: 'S255', after: 0, alt: 'The child touching the four corners of the square window' }, { serial: 'S256', after: 2, alt: 'The child counting the three corners of the roof' }],
+  title: 'Shape walk', art: 'S254', cast: [],
+  alt: 'A street with a round clock, a square window and a triangle roof, a child pointing',
+  words: [
+    'A round clock. No corners. A circle.',
+    'A window. Four sides, four corners. A square.',
+    'A roof. Three sides, three corners. A triangle. Count the sides and corners and the shape tells you its name.',
+  ],
+};
+STORIES['tracing-shapes'] = {
+  about: 'a square drawn on the sidewalk in chalk',
+  more: [{ serial: 'S258', after: 0, alt: 'The square half drawn, two sides done' }, { serial: 'S259', after: 2, alt: 'The finished square with the child standing inside it' }],
+  title: 'Chalk square', art: 'S257', cast: [],
+  alt: 'A child drawing a big square on the sidewalk with chalk, starting at a dot',
+  words: [
+    'Start at the dot. Across. Down.',
+    'Back across. Up.',
+    'All the way around to the dot. A square. Start at the dot and go all the way around.',
+  ],
+};
+STORIES['counting-by-tens'] = {
+  about: 'counting fingers on ten friends',
+  more: [{ serial: 'S261', after: 0, alt: 'A child counting along the line, pointing at each pair of hands' }, { serial: 'S262', after: 2, alt: 'The whole line with hands up, a big 100 in the air' }],
+  title: 'Ten friends, ten fingers', art: 'S260', cast: [],
+  alt: 'Ten children in a line holding up both hands',
+  words: [
+    'One friend: ten fingers. Two friends: twenty.',
+    'Thirty. Forty. Fifty. Every friend adds ten.',
+    'Sixty, seventy, eighty, ninety, one hundred. Ten friends, one hundred fingers. Count by tens.',
+  ],
+};
+STORIES['longer-and-heavier'] = {
+  about: 'a long stick and a heavy rock at the creek',
+  more: [{ serial: 'S264', after: 0, alt: 'The stick laid across the water from bank to bank' }, { serial: 'S265', after: 2, alt: 'The child straining to lift the rock with both hands' }],
+  title: 'Long and heavy', art: 'S263', cast: [],
+  alt: 'A child at a creek holding a long stick, a big rock on the bank',
+  words: [
+    'The stick was long. It reached across the creek.',
+    'The rock was heavy. It took two hands to lift.',
+    'Longer reaches further. Heavier is harder to lift.',
+  ],
+};
+STORIES['sorting'] = {
+  about: 'a drawer of socks, sorted',
+  more: [{ serial: 'S267', after: 0, alt: 'Three neat piles of socks' }, { serial: 'S268', after: 2, alt: 'The child counting the blue pile on their fingers' }],
+  title: 'The sock drawer', art: 'S266', cast: [],
+  alt: 'A pile of socks of different colors on a bed, a child sorting them into groups',
+  words: [
+    'Red socks here. Blue socks there. White socks in the middle.',
+    'Alike with alike. Three piles.',
+    'Then count each pile. Four red, six blue, two white. Sort first, count second.',
+  ],
+};
+STORIES['solids'] = {
+  about: 'shapes you can hold, in the toy box',
+  more: [{ serial: 'S270', after: 0, alt: 'The child rolling the ball and stacking the block' }, { serial: 'S271', after: 2, alt: 'The four solids in a row on the table' }],
+  title: 'Shapes you can hold', art: 'S269', cast: [],
+  alt: 'A toy box with a ball, a block, a party hat and a can',
+  words: [
+    'A ball rolls. A sphere.',
+    'A block stacks. A cube. A party hat comes to a point. A cone.',
+    'A can rolls and stacks. A cylinder. Solid shapes are things you can hold.',
+  ],
+};
+STORIES['making-ten'] = {
+  about: 'ten fingers and the partner every number has',
+  more: [{ serial: 'S273', after: 0, alt: 'Hands with six up and four down' }, { serial: 'S274', after: 2, alt: 'Hands with all ten up, the child grinning' }],
+  title: 'Partners of ten', art: 'S272', cast: [],
+  alt: 'A child holding up both hands, three fingers folded down',
+  words: [
+    'Ten fingers. Fold three down. Seven up.',
+    'Three and seven make ten. Partners.',
+    'Every number up to nine has a partner that makes ten. Fold and count to find it.',
+  ],
+};
+STORIES['more-and-fewer-10'] = {
+  about: 'two buckets of shells at the beach',
+  more: [{ serial: 'S276', after: 0, alt: 'The shells from one bucket laid out in a line of eight' }, { serial: 'S277', after: 2, alt: 'The two lines of shells side by side, one longer' }],
+  title: 'Two buckets', art: 'S275', cast: [],
+  alt: 'Two buckets of shells on the sand, a child looking into both',
+  words: [
+    'Count this bucket: eight shells.',
+    'Count that bucket: six shells.',
+    'Eight is bigger than six. Count both, and the bigger number has more.',
+  ],
+};
+STORIES['letter-names'] = {
+  about: 'the alphabet song on the way to school',
+  more: [{ serial: 'S279', after: 0, alt: 'The child singing with a big open mouth' }, { serial: 'S280', after: 2, alt: 'A row of letter blocks in order on a shelf' }],
+  title: 'The alphabet song', art: 'S278', cast: [],
+  alt: 'A child singing in the back seat of a car, letters floating around',
+  words: [
+    'A, B, C, D. The song goes in order.',
+    'E, F, G. Every letter has a name.',
+    'All the way to Z. Letters have names and an order, and the song keeps them in line.',
+  ],
+};
+STORIES['big-and-small-letters'] = {
+  about: 'a big G and a small g that were the same letter',
+  more: [{ serial: 'S282', after: 0, alt: 'The child tracing the big G with a finger' }, { serial: 'S283', after: 2, alt: 'The child tracing the small g beside it' }],
+  title: 'Big and small', art: 'S281', cast: [],
+  alt: 'A page with a big letter and a small letter side by side, a child comparing them',
+  words: [
+    'Big G. Small g. They look different.',
+    'But they are the same letter. Both say guh.',
+    'Big and small are the same letter, dressed two ways.',
+  ],
+};
+STORIES['letter-sounds'] = {
+  about: 'the sound a letter makes when a word starts',
+  more: [{ serial: 'S285', after: 0, alt: 'The child pointing at the B card' }, { serial: 'S286', after: 2, alt: 'A ball, a bat and a bear all lined up, each with a B' }],
+  title: 'Buh for ball', art: 'S284', cast: [],
+  alt: 'A child holding a ball, a big letter B on a card beside it',
+  words: [
+    'Ball. Buh. The word starts with buh.',
+    'B is the letter. Buh is its sound.',
+    'Letters make sounds. The first sound of a word is the letter it starts with.',
+  ],
+};
+STORIES['beginning-sounds'] = {
+  about: 'a game of what starts with',
+  more: [{ serial: 'S288', after: 0, alt: 'The child picking up the mitten' }, { serial: 'S289', after: 2, alt: 'The mitten next to the letter M card' }],
+  title: 'What starts with M?', art: 'S287', cast: [],
+  alt: 'A child at a table with a mitten, a cup and a hat, a grown-up holding a letter M',
+  words: [
+    'M. Mmm. What starts with mmm?',
+    'Cup? No. Hat? No. Mitten? Mmm-itten. Yes.',
+    'Say the name. Hear the first sound. Match it to the letter.',
+  ],
+};
+STORIES['rhymes'] = {
+  about: 'a cat, a hat and a bat in a rhyme',
+  more: [{ serial: 'S291', after: 0, alt: 'The cat and the hat side by side' }, { serial: 'S292', after: 2, alt: 'The bat swooping over, a word bubble with no words' }],
+  title: 'Cat, hat, bat', art: 'S290', cast: [],
+  alt: 'A cat wearing a hat with a bat flying above, cartoon and playful',
+  words: [
+    'Cat. Hat. They end the same. At, at.',
+    'Bat. At again. Three words, one ending.',
+    'Rhyming words end with the same sound. Say them and hear the match.',
+  ],
+};
+STORIES['tracing-letters'] = {
+  about: 'the letter T on the wet window',
+  more: [{ serial: 'S294', after: 0, alt: 'The finger halfway down the first stroke' }, { serial: 'S295', after: 2, alt: 'A finished T with a smiley face beside it' }],
+  title: 'T on the window', art: 'S293', cast: [],
+  alt: 'A child drawing a letter T on a fogged window with one finger',
+  words: [
+    'Start at the dot. Down.',
+    'Lift. Across the top.',
+    'A T. Start at the dot, follow the arrow, stay on the line.',
+  ],
+};
+STORIES['tracing-small-letters'] = {
+  about: 'a small a that sat low on the line',
+  more: [{ serial: 'S297', after: 0, alt: 'The pencil going round the bowl of the small a' }, { serial: 'S298', after: 2, alt: 'A row of small a letters on the line' }],
+  title: 'Small letters sit low', art: 'S296', cast: [],
+  alt: 'A lined page with a small letter a being traced, a big A above it',
+  words: [
+    'The big A stood tall. The small a sat low.',
+    'Start at the dot. Round, then down.',
+    'Small letters sit low. Start at the dot and follow the arrow.',
+  ],
+};
+STORIES['tracing-more-letters'] = {
+  about: 'the letter E, one line at a time',
+  more: [{ serial: 'S300', after: 0, alt: 'The pencil lifted above the paper between strokes' }, { serial: 'S301', after: 2, alt: 'A finished E, bold and straight' }],
+  title: 'One line at a time', art: 'S299', cast: [],
+  alt: 'A child tracing a big E on paper, lifting the pencil between lines',
+  words: [
+    'Down. Lift.',
+    'Across the top. Lift. Across the middle. Lift.',
+    'Across the bottom. An E. One line at a time. Lift your finger between lines.',
+  ],
+};
+STORIES['syllables'] = {
+  about: 'clapping the beats in everyone\'s name',
+  more: [{ serial: 'S303', after: 0, alt: 'A child clapping twice with a big smile' }, { serial: 'S304', after: 2, alt: 'Three children holding up one, two and three fingers' }],
+  title: 'Clap your name', art: 'S302', cast: [],
+  alt: 'A circle of children clapping, a teacher saying a name',
+  words: [
+    'Ben. Clap. One beat.',
+    'Ma-ya. Clap, clap. Two beats.',
+    'E-li-jah. Clap, clap, clap. Three. Say the word slowly and clap each beat.',
+  ],
+};
+STORIES['sounding-out'] = {
+  about: 'the word on the door, sounded out',
+  more: [{ serial: 'S306', after: 0, alt: 'The child pointing at each letter in turn' }, { serial: 'S307', after: 2, alt: 'The door opening to show a cat inside' }],
+  title: 'The word on the door', art: 'S305', cast: [],
+  alt: 'A child in front of a door with a short word on a sign, reading it slowly',
+  words: [
+    'C. A. T. Cuh. A. Tuh.',
+    'Say them slowly. Then faster. Cuh-a-tuh. Cat.',
+    'Say each sound. Then say them fast together. That is reading.',
+  ],
+};
+STORIES['which-way-we-read'] = {
+  about: 'a finger that learned which way to go',
+  more: [{ serial: 'S309', after: 0, alt: 'The finger sweeping along a line of text' }, { serial: 'S310', after: 2, alt: 'The finger dropping down to the start of the next line' }],
+  title: 'Left to right', art: 'S308', cast: [],
+  alt: 'A child with a finger on the first word of a page, a book open on a table',
+  words: [
+    'Start on the left. The finger goes right.',
+    'End of the line. Down to the next. Left again.',
+    'Start on the left. Go right. Then down to the next line. Every page, the same road.',
+  ],
+};
+STORIES['word-meanings'] = {
+  about: 'words on cards and the pictures they belong to',
+  more: [{ serial: 'S312', after: 0, alt: 'The dog card placed on the dog picture' }, { serial: 'S313', after: 2, alt: 'All the words matched to their pictures in pairs' }],
+  title: 'Word to picture', art: 'S311', cast: [],
+  alt: 'A table with word cards and picture cards, a child matching a word to a picture of a dog',
+  words: [
+    'A card said dog. Where is the dog? There.',
+    'A card said sun. Where is the sun? There.',
+    'Match the word to the picture. A word means the thing it points to.',
+  ],
+};
+STORIES['trace-slant-letters'] = {
+  about: 'the letters with slanted lines, drawn in the sand',
+  more: [{ serial: 'S315', after: 0, alt: 'A finished A in the sand next to the V' }, { serial: 'S316', after: 2, alt: 'V, A and N in a row in the sand, the tide coming in' }],
+  title: 'V, A and N', art: 'S314', cast: [],
+  alt: 'A child drawing a big V in the sand with a stick at the beach',
+  words: [
+    'Down a slant, up a slant. V.',
+    'Up, down, across. A. Down, slant, up. N.',
+    'Slanted lines make V, A and N. Start at the dot.',
+  ],
+};
+// Grade 1, in the fewest words that still make a story.
+STORIES['teen-numbers'] = {
+  about: 'ten eggs in a carton and the ones that would not fit',
+  more: [{ serial: 'S318', after: 0, alt: 'A child pointing at the three eggs outside the full carton' }, { serial: 'S319', after: 2, alt: 'Two full cartons and one egg beside them, the child holding up fingers' }],
+  title: 'Ten and some more', art: 'S317', cast: [],
+  alt: 'An egg carton full of ten eggs with three more eggs beside it on the counter',
+  words: [
+    'Ten eggs filled the carton. Three more sat beside it.',
+    'Ten and three. Thirteen.',
+    'Every teen number is ten and some more. Fill the ten, then count the rest.',
+  ],
+};
+STORIES['adding-to-20'] = {
+  about: 'two pockets of marbles poured into one jar',
+  more: [{ serial: 'S321', after: 0, alt: 'The marbles piled in the jar, the child counting them' }, { serial: 'S322', after: 2, alt: 'A row of fourteen marbles laid out on the table' }],
+  title: 'Two pockets', art: 'S320', cast: [],
+  alt: 'A child emptying two pockets of marbles into a jar on a table',
+  words: [
+    'Left pocket: eight marbles. Right pocket: six.',
+    'Into the jar together. Eight, then nine, ten, eleven, twelve, thirteen, fourteen.',
+    'Fourteen marbles. Adding is putting together and counting on.',
+  ],
+};
+STORIES['subtracting-to-20'] = {
+  about: 'fifteen birds on a wire and the ones that flew',
+  more: [{ serial: 'S324', after: 0, alt: 'Six birds lifting off the wire together' }, { serial: 'S325', after: 2, alt: 'Nine birds left on the wire, the sun going down' }],
+  title: 'Birds on a wire', art: 'S323', cast: [],
+  alt: 'Fifteen small birds sitting on a wire between two poles',
+  words: [
+    'Fifteen birds on the wire.',
+    'Six flew away. Count back: fourteen, thirteen, twelve, eleven, ten, nine.',
+    'Nine birds left. Taking away is counting back.',
+  ],
+};
+STORIES['tens-and-ones'] = {
+  about: 'bundles of ten sticks and the loose ones',
+  more: [{ serial: 'S327', after: 0, alt: 'A child tying ten sticks into a bundle' }, { serial: 'S328', after: 2, alt: 'Three bundles in a row with four loose sticks, a card that reads nothing, just the sticks' }],
+  title: 'Bundles and loose', art: 'S326', cast: [],
+  alt: 'Bundles of ten craft sticks tied with rubber bands, some loose sticks beside them',
+  words: [
+    'Ten sticks. A rubber band. One bundle.',
+    'Three bundles and four loose. Three tens and four ones. Thirty-four.',
+    'Every number is bundles and loose sticks: tens and ones.',
+  ],
+};
+STORIES['comparing-to-100'] = {
+  about: 'two jars of buttons and the fuller one',
+  more: [{ serial: 'S330', after: 0, alt: 'The jars side by side with the fuller one taller' }, { serial: 'S331', after: 2, alt: 'A child pointing at the fuller jar' }],
+  title: 'Two jars', art: 'S329', cast: [],
+  alt: 'Two jars of buttons on a shelf, one holding more than the other',
+  words: [
+    'This jar: 62 buttons. That jar: 48.',
+    'Look at the tens first. Six tens is more than four tens.',
+    '62 is bigger than 48. Compare the tens, then the ones.',
+  ],
+};
+STORIES['writing-numbers'] = {
+  about: 'a number 5 written on a birthday card',
+  more: [{ serial: 'S333', after: 0, alt: 'The marker halfway through the round belly of the 5' }, { serial: 'S334', after: 2, alt: 'The finished card with a bold 5 and five candles drawn' }],
+  title: 'Five on the card', art: 'S332', cast: [],
+  alt: 'A child writing a big 5 on a birthday card with a marker',
+  words: [
+    'Start at the dot. Down. Round.',
+    'Lift. Across the top.',
+    'A five. Every number starts at its dot. Follow the arrow.',
+  ],
+};
+STORIES['read-the-word'] = {
+  about: 'the word on the cereal box',
+  more: [{ serial: 'S336', after: 0, alt: 'The child pointing at each letter in turn' }, { serial: 'S337', after: 2, alt: 'The child smiling and pointing at a map picture on the box' }],
+  title: 'On the box', art: 'S335', cast: [],
+  alt: 'A child at breakfast reading a short word on a cereal box',
+  words: [
+    'Three letters on the box. M. A. P.',
+    'Mmm. Aaa. Puh. Map.',
+    'Say each sound. Push them together. That is reading a word.',
+  ],
+};
+STORIES['sh-ch-th'] = {
+  about: 'two letters that make one sound',
+  more: [{ serial: 'S339', after: 0, alt: 'The shell card with the letters sh beside it' }, { serial: 'S340', after: 2, alt: 'The three cards in a row: shell, chair, thumb' }],
+  title: 'Two letters, one sound', art: 'S338', cast: [],
+  alt: 'A child at a table with a shell, a chair and a thumb drawn on cards',
+  words: [
+    'S and H together say shh. Shell.',
+    'C and H together say ch. Chair. T and H together say th. Thumb.',
+    'Two letters, one sound. Sh, ch, th.',
+  ],
+};
+STORIES['silent-e'] = {
+  about: 'the e at the end that changed a word',
+  more: [{ serial: 'S342', after: 0, alt: 'The cap picture beside the cape picture' }, { serial: 'S343', after: 2, alt: 'The child covering the e with a finger, then uncovering it' }],
+  title: 'The quiet e', art: 'S341', cast: [],
+  alt: 'A child with two word cards, cap and cape, a picture of each',
+  words: [
+    'Cap. A hat. Add an e at the end.',
+    'Cape. The a says its name now. The e is silent.',
+    'A silent e at the end makes the vowel say its name.',
+  ],
+};
+STORIES['read-the-sentence'] = {
+  about: 'a note on the fridge, read word by word',
+  more: [{ serial: 'S345', after: 0, alt: 'The child\'s finger under the first word of the note' }, { serial: 'S346', after: 2, alt: 'The dog outside the back door, wagging' }],
+  title: 'The note on the fridge', art: 'S344', cast: [],
+  alt: 'A child reading a short note stuck on a fridge with a magnet',
+  words: [
+    'The. Dog. Is. Out.',
+    'Start at the capital letter. Stop at the period.',
+    'The dog is out. Four words, one sentence, one idea.',
+  ],
+};
+STORIES['what-happened'] = {
+  about: 'a kite in a tree, retold in order',
+  more: [{ serial: 'S348', after: 0, alt: 'The kite stuck in the tree' }, { serial: 'S349', after: 2, alt: 'Dad on a ladder handing the kite back' }],
+  title: 'What happened first', art: 'S347', cast: [],
+  alt: 'A child telling a story with three pictures on a table: a kite, a tree, a rescue',
+  words: [
+    'First, the kite went up. Then it caught in a tree.',
+    'Last, Dad got it down.',
+    'First, then, last. That is what happened, in order.',
+  ],
+};
+STORIES['tracing-more-small-letters'] = {
+  about: 'the letters with tails and bumps',
+  more: [{ serial: 'S351', after: 0, alt: 'The pencil drawing the tail of a g below the line' }, { serial: 'S352', after: 2, alt: 'A row of finished small letters on the line' }],
+  title: 'Tails and bumps', art: 'S350', cast: [],
+  alt: 'A lined page with small letters being traced, some with tails below the line',
+  words: [
+    'A g has a tail that hangs below the line.',
+    'An m has two bumps. A z zigzags.',
+    'Tall sticks, bumps and zigzags. Start at the dot and follow the arrow.',
+  ],
+};
+STORIES['trace-small-letters-3'] = {
+  about: 'i, t and k, one line down then the rest',
+  more: [{ serial: 'S354', after: 0, alt: 'The dot going on top of the i' }, { serial: 'S355', after: 2, alt: 'i, t and k finished in a row' }],
+  title: 'One line down', art: 'S353', cast: [],
+  alt: 'A child tracing the letter k on paper, the first stroke done',
+  words: [
+    'One line down. Then a dot. An i.',
+    'One line down. Then across. A t.',
+    'One line down, then two slants. A k. One line down, then the rest.',
+  ],
+};
+STORIES['trace-small-letters-4'] = {
+  about: 'c, v and x drawn in the frost',
+  more: [{ serial: 'S357', after: 0, alt: 'The v drawn beside the c' }, { serial: 'S358', after: 2, alt: 'c, v and x on the frosty glass' }],
+  title: 'Curve, point, cross', art: 'S356', cast: [],
+  alt: 'A child drawing letters on a frosty car window',
+  words: [
+    'A curve. Round like a cup on its side. C.',
+    'Down to a point and up. V.',
+    'Two lines that cross. X. A curve, a point, a cross.',
+  ],
+};
+STORIES['trace-small-letters-5'] = {
+  about: 'n, u and r with their little arches',
+  more: [{ serial: 'S360', after: 0, alt: 'The finger making the arch of the n' }, { serial: 'S361', after: 2, alt: 'n, u and r drawn in the sand tray' }],
+  title: 'Little arches', art: 'S359', cast: [],
+  alt: 'A child tracing the letter n with a finger on a sandy tray',
+  words: [
+    'A line down, then up and over. An arch. N.',
+    'Down, round the bottom, up. U.',
+    'Down, then a little hook. R. A line, then a little arch.',
+  ],
+};
+STORIES['sun-moon-patterns'] = {
+  about: 'a week of watching the sky',
+  more: [{ serial: 'S363', after: 0, alt: 'The sun rising over the same roofs in the morning' }, { serial: 'S364', after: 2, alt: 'A row of moon shapes drawn in a notebook, crescent to full' }],
+  title: 'The sky keeps time', art: 'S362', cast: [],
+  alt: 'A child at a window at dusk, the moon rising over the roofs',
+  words: [
+    'The sun came up in the east. It went down in the west. Again the next day.',
+    'The moon grew a little each night. Then it shrank.',
+    'The sun and moon follow patterns that repeat. Watch a week and you will see.',
+  ],
+};
+STORIES['water-changes'] = {
+  about: 'an ice cube that went away and came back',
+  more: [{ serial: 'S366', after: 0, alt: 'The glass with only water in it, a puddle where the cube was' }, { serial: 'S367', after: 2, alt: 'The child holding a new ice cube from the freezer tray' }],
+  title: 'The ice cube', art: 'S365', cast: [],
+  alt: 'An ice cube in a glass on a sunny table, a child watching it',
+  words: [
+    'The ice cube was hard. The sun warmed it. It melted into water.',
+    'The water went into the freezer. It got cold. It turned back to ice.',
+    'Cold makes ice. Heat melts it back to water. The same water, twice.',
+  ],
+};
+STORIES['animal-needs'] = {
+  about: 'a new puppy and the three things it needed',
+  more: [{ serial: 'S369', after: 0, alt: 'The puppy drinking from the water bowl' }, { serial: 'S370', after: 2, alt: 'The puppy curled up asleep in its bed' }],
+  title: 'What the puppy needed', art: 'S368', cast: [],
+  alt: 'A puppy with a food bowl, a water bowl and a soft bed',
+  words: [
+    'The puppy was hungry. Food.',
+    'The puppy was thirsty. Water. The puppy was tired. A home to sleep in.',
+    'Animals need food, water and a home. So does the puppy.',
+  ],
+};
+STORIES['leaders-near-and-far'] = {
+  about: 'three leaders, three sizes of place',
+  more: [{ serial: 'S372', after: 0, alt: 'The mayor cutting a ribbon at a new park' }, { serial: 'S373', after: 2, alt: 'The state capitol with its dome' }],
+  title: 'Three leaders', art: 'S371', cast: [],
+  alt: 'A child looking at three framed photos: a mayor at city hall, a governor at the capitol, a president at the White House',
+  words: [
+    'The mayor leads the city.',
+    'The governor leads the state.',
+    'The president leads the country. Mayor, governor, president: near to far.',
+  ],
+};
+STORIES['goods-and-services'] = {
+  about: 'a haircut and a hat, and which one you could hold',
+  more: [{ serial: 'S375', after: 0, alt: 'The child holding up the hat' }, { serial: 'S376', after: 2, alt: 'The barber holding up a mirror to show the haircut' }],
+  title: 'A haircut and a hat', art: 'S374', cast: [],
+  alt: 'A child at a barbershop holding a new hat while getting a haircut',
+  words: [
+    'The hat was a thing. You could hold it. A good.',
+    'The haircut was work done for you. You could not hold it. A service.',
+    'Goods are things. Services are work done for you. Both cost money.',
+  ],
+};
+STORIES['maps-of-my-world'] = {
+  about: 'a map of the yard, drawn from above',
+  more: [{ serial: 'S378', after: 0, alt: 'The finished map with a compass rose in the corner' }, { serial: 'S379', after: 2, alt: 'The child pointing east toward the rising sun' }],
+  title: 'The yard from above', art: 'S377', cast: [],
+  alt: 'A child drawing a map of the backyard on paper, the yard visible through the window',
+  words: [
+    'The sun rose over the fence. That way is east.',
+    'North at the top. The tree to the west. The gate to the south.',
+    'North, south, east, west. A map is the yard seen from above.',
+  ],
+};
+STORIES['signs-around-town'] = {
+  about: 'a red sign that everyone obeyed',
+  more: [{ serial: 'S381', after: 0, alt: 'The child pointing at a green street sign' }, { serial: 'S382', after: 2, alt: 'A blue hospital sign with an H' }],
+  title: 'The red sign', art: 'S380', cast: [],
+  alt: 'A child at a corner looking up at a red stop sign, cars stopping',
+  words: [
+    'A red sign with eight sides. STOP. Every car stopped.',
+    'A green sign said the street name. A blue sign showed the hospital.',
+    'Signs tell everyone the same thing at once. Read the shape and the color.',
+  ],
+};
+STORIES['symbols-of-our-country'] = {
+  about: 'a bell, a statue and a fort',
+  more: [{ serial: 'S384', after: 0, alt: 'The Statue of Liberty with her torch up' }, { serial: 'S385', after: 2, alt: 'The front of the Alamo under a blue sky' }],
+  title: 'Bell, statue, fort', art: 'S383', cast: [],
+  alt: 'A child looking at pictures of the Liberty Bell, the Statue of Liberty and the Alamo',
+  words: [
+    'A bell with a crack. The Liberty Bell.',
+    'A green statue holding a torch. The Statue of Liberty.',
+    'An old stone fort in Texas. The Alamo. Symbols stand for the country and its story.',
+  ],
+};
+// Grade 2, in the fewest words that still make a story.
+STORIES['hundreds-tens-ones'] = {
+  about: 'a jar of 342 pennies, counted in stacks',
+  more: [{ serial: 'S387', after: 0, alt: 'Ten stacks of ten pushed together into one big square of a hundred' }, { serial: 'S388', after: 2, alt: 'Three hundred-squares, four ten-stacks and two pennies laid out in order' }],
+  title: 'Stacks of pennies', art: 'S386', cast: [],
+  alt: 'A child at a table with stacks of pennies in rows, some stacks of ten, and a pile of loose ones',
+  words: [
+    'Pennies everywhere. Stack ten. Stack ten more. Ten stacks make a hundred.',
+    'Three hundreds. Four stacks of ten. Two loose. 342.',
+    'To compare two jars, look at the hundreds first, then the tens, then the ones.',
+  ],
+};
+STORIES['adding-with-regrouping'] = {
+  about: '27 stickers and 15 more, bundled by tens',
+  more: [{ serial: 'S390', after: 0, alt: 'Twelve loose stickers being pressed into a new strip of ten with two left over' }, { serial: 'S391', after: 2, alt: 'Four strips of ten and two loose stickers in a row' }],
+  title: 'Bundles of stickers', art: 'S389', cast: [],
+  alt: 'A child with sheets of stickers in strips of ten and a few loose ones',
+  words: [
+    '27 stickers: two strips of ten and seven loose. 15 more: one strip and five loose.',
+    'Seven and five loose is twelve. That is a new strip of ten and two left.',
+    'Two strips, one strip, and the new strip: four. Four tens and two. 42. Carry the ten.',
+  ],
+};
+STORIES['subtracting-with-regrouping'] = {
+  about: '42 beads and the 18 that went on a necklace',
+  more: [{ serial: 'S393', after: 0, alt: 'One string of ten snipped open, beads spilling loose' }, { serial: 'S394', after: 2, alt: 'Two strings of ten and four loose beads beside the finished necklace' }],
+  title: 'Borrow a ten', art: 'S392', cast: [],
+  alt: 'A child with strings of ten beads and loose beads, threading a necklace',
+  words: [
+    '42 beads: four strings of ten, two loose. Take 18 for the necklace.',
+    'Eight loose from two? Cannot. Cut open a string. Now three strings and twelve loose.',
+    'Twelve take eight leaves four. Three strings take one leaves two. 24 beads left. Borrow a ten when you must.',
+  ],
+};
+STORIES['money'] = {
+  about: 'the coins in a pocket, counted like a cashier',
+  more: [{ serial: 'S396', after: 0, alt: 'The child pointing at the quarter first' }, { serial: 'S397', after: 2, alt: 'All the coins in a line from biggest to smallest' }],
+  title: 'Counting the change', art: 'S395', cast: [],
+  alt: 'A child laying coins on a counter: a quarter, two dimes, a nickel and pennies',
+  words: [
+    'A quarter. Twenty-five. A dime. Thirty-five. Another dime. Forty-five.',
+    'A nickel. Fifty. Three pennies. Fifty-one, fifty-two, fifty-three.',
+    'Start with the biggest coin and count on. Fifty-three cents.',
+  ],
+};
+STORIES['rows-and-columns'] = {
+  about: 'eggs in a carton, counted the fast way',
+  more: [{ serial: 'S399', after: 0, alt: 'The child tapping along the top row of six' }, { serial: 'S400', after: 2, alt: 'A tray of cupcakes in three rows of four, the child grinning' }],
+  title: 'Rows of eggs', art: 'S398', cast: [],
+  alt: 'An open egg carton with two rows of six, a child counting',
+  words: [
+    'Two rows. Six in each row.',
+    'Six and six. Twelve. No need to count every egg.',
+    'Count the rows, count how many in each row, and add that number once per row.',
+  ],
+};
+STORIES['vowel-teams'] = {
+  about: 'two vowels that went for a walk',
+  more: [{ serial: 'S402', after: 0, alt: 'The word rain on a weather chart, the a speaking and the i silent' }, { serial: 'S403', after: 2, alt: 'A row of vowel-team words on cards: boat, rain, tree, pie' }],
+  title: 'Two vowels walking', art: 'S401', cast: [],
+  alt: 'A child reading the word boat on a sign by a lake',
+  words: [
+    'B, o, a, t. Two vowels together: o and a.',
+    'The first one talks. The o says its name. The a stays quiet. Boat.',
+    'Two vowels together often make one long sound, and the first one does the talking.',
+  ],
+};
+STORIES['two-syllable-words'] = {
+  about: 'a long word clapped into two parts',
+  more: [{ serial: 'S405', after: 0, alt: 'The card cut in two: rab and bit' }, { serial: 'S406', after: 2, alt: 'The two halves pushed back together, the child reading the whole word' }],
+  title: 'Clap it in two', art: 'S404', cast: [],
+  alt: 'A child clapping while reading the word rabbit on a card',
+  words: [
+    'Rabbit. Clap, clap. Two parts.',
+    'Rab. Bit. Read each part, then push them together.',
+    'Long words are short parts joined together. Split between the middle letters.',
+  ],
+};
+STORIES['reading-for-meaning'] = {
+  about: 'reading like a detective, with four questions',
+  more: [{ serial: 'S408', after: 0, alt: 'A notebook page with four short answers' }, { serial: 'S409', after: 2, alt: 'The dog chasing a seagull down the beach, the girl running after' }],
+  title: 'The four questions', art: 'S407', cast: [],
+  alt: 'A child with a magnifying glass over a storybook, notes beside it',
+  words: [
+    'Who is in the story? A girl and her dog. Where? At the beach.',
+    'What happened? The dog ran off. Why? It saw a seagull.',
+    'Who, where, what, why. Answer those four and you understood the story.',
+  ],
+};
+STORIES['word-meaning-from-context'] = {
+  about: 'a new word figured out from its neighbors',
+  more: [{ serial: 'S411', after: 0, alt: 'A very big dog stuck in a doorway' }, { serial: 'S412', after: 2, alt: 'The child writing the word enormous under a drawing of the dog' }],
+  title: 'The word around it', art: 'S410', cast: [],
+  alt: 'A child covering a word in a book with a thumb and reading the rest of the sentence',
+  words: [
+    'A new word. Do not stop. Read the sentence around it.',
+    'The enormous dog could not fit through the door. Enormous must mean very big.',
+    'The words around a new word tell you what it means. Ask what would fit.',
+  ],
+};
+STORIES['complete-sentences'] = {
+  about: 'a note that was not a sentence yet',
+  more: [{ serial: 'S414', after: 0, alt: 'The note with the crossed-out first try and the fixed sentence below' }, { serial: 'S415', after: 2, alt: 'The dog running fast across the yard' }],
+  title: 'Who and what', art: 'S413', cast: [],
+  alt: 'A child writing a note on paper, a first try crossed out',
+  words: [
+    'Ran fast. Who ran? It is not a sentence yet.',
+    'The dog ran fast. A who and a what. Now it is a sentence.',
+    'A capital letter at the start. A period at the end. A who and a what in the middle.',
+  ],
+};
+STORIES['describing-sentences'] = {
+  about: 'the same sentence, dressed up',
+  more: [{ serial: 'S417', after: 0, alt: 'A fluffy cat sitting on a sunny step' }, { serial: 'S418', after: 2, alt: 'The whiteboard with the plain sentence and the dressed-up one' }],
+  title: 'Dressing up a sentence', art: 'S416', cast: [],
+  alt: 'A child adding words to a sentence on a whiteboard',
+  words: [
+    'The cat sat. True, but plain.',
+    'The fluffy cat sat quietly on the warm step. Now you can see it.',
+    'Add words that say what it was like and how it happened.',
+  ],
+};
+STORIES['tell-a-story-2'] = {
+  about: 'the lost tooth, told in order',
+  more: [{ serial: 'S420', after: 0, alt: 'A wobbly tooth being pushed with a tongue' }, { serial: 'S421', after: 2, alt: 'A small tooth under a pillow, a child asleep' }],
+  title: 'The tooth story', art: 'S419', cast: [],
+  alt: 'A child telling a story to a friend, three pictures on the table in a row',
+  words: [
+    'First, my tooth wobbled. Next, it fell out at lunch.',
+    'Last, I put it under my pillow.',
+    'First, next, last. Tell what happened in order and everyone can follow.',
+  ],
+};
+STORIES['then-and-now'] = {
+  about: 'grandma\'s school and mine',
+  more: [{ serial: 'S423', after: 0, alt: 'The old one-room schoolhouse with a bell' }, { serial: 'S424', after: 2, alt: 'The new school with a big screen in the classroom' }],
+  title: 'Then and now', art: 'S422', cast: [],
+  alt: 'A child and a grandmother looking at an old black-and-white school photo beside a new one',
+  words: [
+    'Then: a chalkboard, a bell on a rope, one room.',
+    'Now: a screen, a buzzer, many rooms.',
+    'Then is the past. Now is today. A timeline puts them in order.',
+  ],
+};
+STORIES['good-citizens'] = {
+  about: 'a found wallet and what a good citizen did',
+  more: [{ serial: 'S426', after: 0, alt: 'The wallet being handed to a smiling adult at a desk' }, { serial: 'S427', after: 2, alt: 'A class raising hands to vote' }],
+  title: 'The found wallet', art: 'S425', cast: [],
+  alt: 'A child holding up a wallet found on the sidewalk, an adult nearby',
+  words: [
+    'A wallet on the ground. Money inside.',
+    'Honesty: give it back. Responsibility: take it to the office. Respect: say nothing unkind about who dropped it.',
+    'Honesty, responsibility, respect. That is a good citizen. And when we vote, more wins.',
+  ],
+};
+STORIES['producers-and-consumers'] = {
+  about: 'the lemonade stand and the lemons it needed',
+  more: [{ serial: 'S429', after: 0, alt: 'A bag of lemons and sugar on the counter' }, { serial: 'S430', after: 2, alt: 'A jar of coins and bills, the children counting' }],
+  title: 'The lemonade stand', art: 'S428', cast: [],
+  alt: 'Two children at a lemonade stand, a customer holding coins',
+  words: [
+    'We made lemonade. Producers. Neighbors bought it. Consumers.',
+    'We spent six dollars on lemons and sugar. We took in fifteen.',
+    'Producers make. Consumers buy. Money left is what you had minus what you spent: nine dollars.',
+  ],
+};
+STORIES['maps-of-our-town'] = {
+  about: 'the walk to the library, on a map',
+  more: [{ serial: 'S432', after: 0, alt: 'The map key with small pictures: library, school, park' }, { serial: 'S433', after: 2, alt: 'The child arriving at the library steps' }],
+  title: 'Three blocks north', art: 'S431', cast: [],
+  alt: 'A child tracing a route on a town map with a finger, a key in the corner',
+  words: [
+    'A little book on the map. The key says that means library.',
+    'From home, three blocks north, then one block east.',
+    'The key tells you what the pictures mean. Count the blocks. Follow the map.',
+  ],
+};
+STORIES['services-in-our-town'] = {
+  about: 'a day when the town helped',
+  more: [{ serial: 'S435', after: 0, alt: 'A firefighter with a hose, the child watching' }, { serial: 'S436', after: 2, alt: 'The library steps with a stack of borrowed books' }],
+  title: 'The town helps', art: 'S434', cast: [],
+  alt: 'A fire truck, a library, a school and a park on one street, a child waving',
+  words: [
+    'A fire on the corner. The fire truck came. The town sent it.',
+    'A book to borrow. The library had it. A field to run in. The park was open.',
+    'Police, fire, library, school, park. The town provides them for everyone.',
+  ],
+};
+STORIES['saving-for-a-goal'] = {
+  about: 'a jar and a twelve-dollar kite',
+  more: [{ serial: 'S438', after: 0, alt: 'The jar half full with a mark for each week' }, { serial: 'S439', after: 2, alt: 'The child flying the kite in a field' }],
+  title: 'The kite jar', art: 'S437', cast: [],
+  alt: 'A child dropping coins into a jar with a drawing of a kite taped to it',
+  words: [
+    'The kite cost twelve dollars. The jar had nothing.',
+    'Two dollars a week. One, two, three, four, five, six weeks.',
+    'Twelve divided by two is six. Save a little each week. Weeks to save is the price divided by the weekly saving.',
+  ],
+};
+STORIES['hard-or-soft'] = {
+  about: 'four things on a table and how they felt',
+  more: [{ serial: 'S441', after: 0, alt: 'The child squeezing the wet sponge, water dripping' }, { serial: 'S442', after: 2, alt: 'The four things sorted into hard and soft, wet and dry' }],
+  title: 'Hard, soft, wet, dry', art: 'S440', cast: [],
+  alt: 'A child touching four things on a table: a rock, a pillow, a wet sponge and a dry towel',
+  words: [
+    'The rock: hard. The pillow: soft.',
+    'The sponge: wet. The towel: dry.',
+    'Things have properties: hard or soft, wet or dry. Touch, and you know.',
+  ],
+};
+// Grade 3, in the fewest words that still make a story.
+STORIES['equivalent-fractions'] = {
+  about: 'two pizzas, one cut in halves and one in quarters',
+  more: [{ serial: 'S444', after: 0, alt: 'A half slice laid over two quarter slices, matching exactly' }, { serial: 'S445', after: 2, alt: 'The child writing 1/2 = 2/4 on a napkin' }],
+  title: 'Two pizzas', art: 'S443', cast: [],
+  alt: 'Two pizzas on a counter, one cut into two, one cut into four, a child comparing slices',
+  words: [
+    'One pizza cut in two. One cut in four. Same size pizzas.',
+    'A half. Two quarters. Put them side by side. The same amount.',
+    'One half equals two quarters. Multiply the top and the bottom by the same number and the fraction only changes its clothes.',
+  ],
+};
+STORIES['comparing-fractions'] = {
+  about: 'a third of a cake and an eighth of a cake',
+  more: [{ serial: 'S447', after: 0, alt: 'The big third slice next to the thin eighth slice' }, { serial: 'S448', after: 2, alt: 'The child happily holding the third' }],
+  title: 'Which slice is bigger?', art: 'S446', cast: [],
+  alt: 'Two cakes, one cut into three slices and one into eight, a child choosing',
+  words: [
+    'A third of the cake, or an eighth? Eight is bigger than three. But look at the slices.',
+    'The third is a big slice. The eighth is thin. More cuts, smaller pieces.',
+    'Same top: the smaller bottom wins. One third is more cake than one eighth.',
+  ],
+};
+STORIES['fractions-on-a-line'] = {
+  about: 'a ruler with a fraction on it',
+  more: [{ serial: 'S450', after: 0, alt: 'A close look at the four quarter marks in one inch' }, { serial: 'S451', after: 2, alt: 'The child measuring a leaf: three quarters of an inch' }],
+  title: 'Marks on the ruler', art: 'S449', cast: [],
+  alt: 'A child holding a ruler, finger on the three-quarter mark of the first inch',
+  words: [
+    'Zero to one inch. Four little steps between.',
+    'One step: one quarter. Two: two quarters. Three: three quarters.',
+    'Cut 0 to 1 into equal steps. The bottom number is how many steps make a whole; the top is how many you walk.',
+  ],
+};
+STORIES['building-fractions'] = {
+  about: 'five blocks that made a whole and the three that made a fraction',
+  more: [{ serial: 'S453', after: 0, alt: 'Three blocks forward and two behind' }, { serial: 'S454', after: 2, alt: 'All five blocks back in a row, one whole' }],
+  title: 'Blocks of a fifth', art: 'S452', cast: [],
+  alt: 'Five equal blocks in a row on a table, three pulled forward',
+  words: [
+    'Five blocks make one whole. Each block is one fifth.',
+    'Pull three forward. One fifth, one fifth, one fifth. Three fifths.',
+    'A fraction is built from unit pieces. Take one away: two fifths. Add two: five fifths, a whole.',
+  ],
+};
+STORIES['prefixes-and-suffixes'] = {
+  about: 'the word happy and its costumes',
+  more: [{ serial: 'S456', after: 0, alt: 'The un card snapped onto the front of happy' }, { serial: 'S457', after: 2, alt: 'The ly card snapped onto the end' }],
+  title: 'Happy, unhappy, happily', art: 'S455', cast: [],
+  alt: 'A child with word cards: happy, un, ly, moving them around',
+  words: [
+    'Happy. Put un in front. Unhappy. The front changed the meaning.',
+    'Happy. Put ly at the end. Happily. The end changed the job.',
+    'A prefix changes the front. A suffix changes the end. Take them off and the base word is still there.',
+  ],
+};
+STORIES['fact-or-opinion'] = {
+  about: 'the dog show and two kinds of sentences',
+  more: [{ serial: 'S459', after: 0, alt: 'The dog standing on a scale' }, { serial: 'S460', after: 2, alt: 'Two children arguing about which dog is best, both smiling' }],
+  title: 'Check it or argue it', art: 'S458', cast: [],
+  alt: 'A child at a dog show with a notebook, writing two sentences',
+  words: [
+    'The dog weighs thirty pounds. You could put it on a scale. A fact.',
+    'That dog is the best. You could argue all day. An opinion.',
+    'A fact can be checked. An opinion is what someone thinks. Best, should and I think are opinion flags.',
+  ],
+};
+STORIES['sequence-and-cause'] = {
+  about: 'a muddy floor and the reason for it',
+  more: [{ serial: 'S462', after: 0, alt: 'The wet dog shaking by the door' }, { serial: 'S463', after: 2, alt: 'The child mopping, the dog watching' }],
+  title: 'Because and so', art: 'S461', cast: [],
+  alt: 'A child looking at muddy footprints on a kitchen floor, a dog by the door',
+  words: [
+    'The floor was muddy because the dog came in from the rain.',
+    'The dog was wet, so the floor got muddy. Same story, two words.',
+    'Because points back to the reason. So points forward to the result. Then just says what came next.',
+  ],
+};
+STORIES['states-of-matter'] = {
+  about: 'an ice cube, a glass of water and a kettle',
+  more: [{ serial: 'S465', after: 0, alt: 'The ice cube sitting square on the counter' }, { serial: 'S466', after: 2, alt: 'Steam rising from the kettle and spreading' }],
+  title: 'Three states in the kitchen', art: 'S464', cast: [],
+  alt: 'A child at a kitchen counter with an ice cube, a glass of water and a steaming kettle',
+  words: [
+    'The ice cube kept its shape. A solid.',
+    'The water took the shape of the glass. A liquid. The steam spread through the whole room. A gas.',
+    'A solid keeps its shape, a liquid takes the shape of its container, a gas fills whatever holds it.',
+  ],
+};
+STORIES['forces-and-motion'] = {
+  about: 'a wagon on a hill and the pushes that moved it',
+  more: [{ serial: 'S468', after: 0, alt: 'The wagon slowing in the thick grass' }, { serial: 'S469', after: 2, alt: 'The wagon rolling back down the hill on its own' }],
+  title: 'Pushes and pulls', art: 'S467', cast: [],
+  alt: 'A child pulling a wagon up a grassy hill',
+  words: [
+    'The wagon would not move by itself. A pull. It rolled.',
+    'On the grass it slowed. Friction. At the top, let go, and gravity pulled it back down.',
+    'A force is a push or a pull. Friction slows moving things. Gravity pulls things down.',
+  ],
+};
+STORIES['life-cycles'] = {
+  about: 'a jar of pond water and what the eggs became',
+  more: [{ serial: 'S471', after: 0, alt: 'Tadpoles with tiny legs in the jar' }, { serial: 'S472', after: 2, alt: 'A small frog on the rim of the jar, ready to leave' }],
+  title: 'The jar of eggs', art: 'S470', cast: [],
+  alt: 'A child looking into a jar of pond water with a cluster of frog eggs',
+  words: [
+    'Eggs in the jar. A week later, tadpoles.',
+    'Tadpoles grew legs. Then they were small frogs.',
+    'The frogs went back to the pond and laid eggs. A life cycle is a circle of stages, and it comes round again.',
+  ],
+};
+STORIES['paragraph-shape'] = {
+  about: 'a paragraph about a dog, built one sentence at a time',
+  more: [{ serial: 'S474', after: 0, alt: 'The dog carrying a newspaper' }, { serial: 'S475', after: 2, alt: 'The finished paragraph with the first sentence underlined' }],
+  title: 'The shape of it', art: 'S473', cast: [],
+  alt: 'A child writing a paragraph on lined paper, the first sentence underlined',
+  words: [
+    'My dog is the best helper. That is the idea. First sentence.',
+    'He brings the paper. He finds my shoes. He waits at the door. Details.',
+    'One idea in the first sentence. Details in the sentences after it. A new idea means a new paragraph.',
+  ],
+};
+STORIES['explain-how'] = {
+  about: 'how to make a paper boat, written for a friend',
+  more: [{ serial: 'S477', after: 0, alt: 'The half-folded paper with the corners turned down' }, { serial: 'S478', after: 2, alt: 'The finished paper boat floating in a sink' }],
+  title: 'The paper boat', art: 'S476', cast: [],
+  alt: 'A child folding a paper boat while writing steps on a card',
+  words: [
+    'What you need: one sheet of paper. That comes first.',
+    'Fold in half. Fold the corners down. Fold the flaps up. Open it out. In order, or it will not float.',
+    'Say what is needed, then give the steps in order. If a friend can follow it and end up with a boat, you explained it.',
+  ],
+};
+STORIES['give-a-reason'] = {
+  about: 'why the class should get a pet, said properly',
+  more: [{ serial: 'S480', after: 0, alt: 'A fish in a bowl on a classroom shelf' }, { serial: 'S481', after: 2, alt: 'The class raising hands to agree' }],
+  title: 'I think, because', art: 'S479', cast: [],
+  alt: 'A child standing at the front of a class holding a card that says nothing, gesturing',
+  words: [
+    'I think our class should get a fish.',
+    'Because we would learn to care for it. Because it is quiet. Two reasons.',
+    'Say what you think, then say because. Two reasons, then say it again a new way: a fish would be a good classmate.',
+  ],
+};
+STORIES['equal-groups'] = {
+  about: 'three bags of apples, counted the fast way',
+  more: [{ serial: 'S483', after: 0, alt: 'The apples tipped out into three rows of five' }, { serial: 'S484', after: 2, alt: 'The child writing 3 × 5 = 15 on the bag' }],
+  title: 'Three bags', art: 'S482', cast: [],
+  alt: 'A child with three paper bags of apples, five in each, on a table',
+  words: [
+    'Three bags. Five apples in each.',
+    'Five, ten, fifteen. Three groups of five.',
+    'Multiplying is adding the same number again and again. Groups times how many in each group: 3 × 5 = 15.',
+  ],
+};
+STORIES['times-tables'] = {
+  about: 'the seven times table and the trick that saved it',
+  more: [{ serial: 'S486', after: 0, alt: 'The dot rectangle turned on its side' }, { serial: 'S487', after: 2, alt: 'The child covering half the times-table grid with a hand' }],
+  title: 'Seven times eight', art: 'S485', cast: [],
+  alt: 'A child at a table with a grid of dots, six across and seven down',
+  words: [
+    'Six times seven. A rectangle, six wide, seven tall. Forty-two dots.',
+    'Seven times six is the same rectangle turned. Forty-two again.',
+    'The facts to 10 × 10 are the tools every bigger multiplication uses. Learn half the table and you have the whole.',
+  ],
+};
+STORIES['sharing-equally'] = {
+  about: 'twelve cookies and four friends',
+  more: [{ serial: 'S489', after: 0, alt: 'Four plates with three cookies each' }, { serial: 'S490', after: 2, alt: 'Everyone eating, the empty box in the middle' }],
+  title: 'Deal them out', art: 'S488', cast: [],
+  alt: 'Four children at a table, one dealing cookies one at a time onto four plates',
+  words: [
+    'Twelve cookies. Four friends. One each. Round again. Round again.',
+    'Three on every plate. Twelve divided by four is three.',
+    'Dividing is sharing out equally. It undoes multiplying: three cookies times four plates is twelve.',
+  ],
+};
+STORIES['add-subtract-1000'] = {
+  about: '256 marbles and 378 more in one jar',
+  more: [{ serial: 'S492', after: 0, alt: 'The column sum on paper with the carried digits' }, { serial: 'S493', after: 2, alt: 'The full jar of marbles' }],
+  title: 'Column by column', art: 'S491', cast: [],
+  alt: 'A child pouring two bags of marbles into a jar, a tally on paper beside',
+  words: [
+    'Ones first: six and eight, fourteen. Write the 4, carry the ten.',
+    'Tens: five and seven and the carried one, thirteen. Write the 3, carry the hundred. Hundreds: two and three and one, six.',
+    '634 marbles. Ones, then tens, then hundreds. Carry when a column makes ten or more.',
+  ],
+};
+STORIES['elements-of-art'] = {
+  about: 'a cup drawn seven ways',
+  more: [{ serial: 'S495', after: 0, alt: 'A close look at the shading on the cup' }, { serial: 'S496', after: 2, alt: 'The finished drawing beside the real cup' }],
+  title: 'Seven ingredients', art: 'S494', cast: [],
+  alt: 'A child drawing a cup, the drawing showing an outline, shading and a shadow',
+  words: [
+    'Line: the edge of the cup. Shape: the outline. Form: its roundness.',
+    'Color: blue. Value: the dark side. Texture: the smooth glaze. Space: where it sits on the table.',
+    'Seven ingredients in every picture: line, shape, form, color, texture, space and value.',
+  ],
+};
+STORIES['the-color-wheel'] = {
+  about: 'three jars of paint and the colors they made',
+  more: [{ serial: 'S498', after: 0, alt: 'Three puddles of mixed paint on the plate' }, { serial: 'S499', after: 2, alt: 'A painted color wheel drying on the table' }],
+  title: 'Three jars', art: 'S497', cast: [],
+  alt: 'A child at a table with jars of red, yellow and blue paint, mixing on a plate',
+  words: [
+    'Red, yellow, blue. You cannot mix them from anything. Primary.',
+    'Red and yellow made orange. Yellow and blue made green. Blue and red made purple. Secondary.',
+    'Colors across the wheel from each other make each other look brighter. Red beside green, blue beside orange.',
+  ],
+};
+STORIES['looking-at-a-picture'] = {
+  about: 'a painting looked at four times',
+  more: [{ serial: 'S501', after: 0, alt: 'A close look at the bright sail against the dark sky' }, { serial: 'S502', after: 2, alt: 'The child and grown-up talking in front of the painting' }],
+  title: 'Four looks', art: 'S500', cast: [],
+  alt: 'A child in front of a painting in a gallery, a grown-up beside them',
+  words: [
+    'First look: what is in it? A boat, a storm, two people.',
+    'Second: how is it arranged? Dark sky, bright sail in the middle. Third: what might it mean? Hope in a storm.',
+    'Describe, analyze, interpret, and only then judge. Most people start at judging. Slow down.',
+  ],
+};
+STORIES['three-levels-of-government'] = {
+  about: 'a pothole, a highway and a stamp',
+  more: [{ serial: 'S504', after: 0, alt: 'A city crew filling the pothole' }, { serial: 'S505', after: 2, alt: 'A letter with a stamp dropped in the mailbox' }],
+  title: 'Three levels', art: 'S503', cast: [],
+  alt: 'A child on a street with a pothole, a highway sign in the distance and a mailbox',
+  words: [
+    'The pothole? The city fixes it. A mayor leads the city.',
+    'The highway? The state builds it. A governor leads Texas.',
+    'The stamp on the letter? The country prints it. A president leads the United States. Three levels, three jobs.',
+  ],
+};
+STORIES['how-we-decide'] = {
+  about: 'a classroom rule and a real law',
+  more: [{ serial: 'S507', after: 0, alt: 'The rules poster with a few pictures' }, { serial: 'S508', after: 2, alt: 'A red light with cars stopped' }],
+  title: 'Rule or law?', art: 'S506', cast: [],
+  alt: 'A child looking at a classroom rules poster, a police officer outside the window',
+  words: [
+    'No running in the hall. A rule. For our school.',
+    'Stop at a red light. A law. For everyone.',
+    'A rule is for a small group. A law is for everyone. Congress makes laws, and everyone must follow them.',
+  ],
+};
+STORIES['earning-and-choosing'] = {
+  about: 'eleven dollars and two things wanted',
+  more: [{ serial: 'S510', after: 0, alt: 'The child counting the bills' }, { serial: 'S511', after: 2, alt: 'The child walking out with the book, looking back at the ball' }],
+  title: 'The eleven dollars', art: 'S509', cast: [],
+  alt: 'A child at a store counter with eleven dollars, a book and a ball on the counter',
+  words: [
+    'Six dollars from chores. Five from a gift. Eleven.',
+    'The book costs eight. The ball costs seven. Not enough for both.',
+    'Scarcity means there is never enough for everything. The book came home; the ball was the cost of choosing it.',
+  ],
+};
+// Grades 4 and 5, in the fewest words that still make a story.
+STORIES['summarizing'] = {
+  about: 'a long movie told in one minute',
+  more: [{ serial: 'S513', after: 0, alt: 'A drawing of the three big events in three boxes' }, { serial: 'S514', after: 2, alt: 'The friend nodding, the clock showing one minute gone' }],
+  title: 'One minute', art: 'S512', cast: [],
+  alt: 'A child telling a friend about a movie, gesturing, a clock on the wall',
+  words: [
+    'The movie was two hours. My friend had one minute.',
+    'The hero lost the map, crossed the desert, found the city. That is the story.',
+    'Keep the big events. Drop the small details. Stay in order, and it still makes sense.',
+  ],
+};
+STORIES['making-inferences'] = {
+  about: 'muddy boots and a sigh',
+  more: [{ serial: 'S516', after: 0, alt: 'The child mid-jump over a puddle' }, { serial: 'S517', after: 2, alt: 'The boots drying by the door' }],
+  title: 'The muddy boots', art: 'S515', cast: [],
+  alt: 'A child in muddy boots at the door, a parent sighing, a puddle outside',
+  words: [
+    'The boots were muddy. Mom sighed. Nobody said what happened.',
+    'But I knew: puddle jumping.',
+    'An inference is something the text shows without saying. A guess with a clue behind it.',
+  ],
+};
+STORIES['similes-and-metaphors'] = {
+  about: 'a brave friend described two ways',
+  more: [{ serial: 'S519', after: 0, alt: 'The child roaring playfully' }, { serial: 'S520', after: 2, alt: 'The two sentences written on a board' }],
+  title: 'Brave as a lion', art: 'S518', cast: [],
+  alt: 'Two children, one standing tall, a lion drawn on the wall behind',
+  words: [
+    'She is as brave as a lion. That is a simile. It keeps the word as.',
+    'She is a lion. That is a metaphor. It says it straight.',
+    'Like or as makes a simile. Saying one thing is another makes a metaphor.',
+  ],
+};
+STORIES['text-structure'] = {
+  about: 'signal words as road signs',
+  more: [{ serial: 'S522', after: 0, alt: 'A signpost with first, next, then' }, { serial: 'S523', after: 2, alt: 'A signpost with because and so' }],
+  title: 'Road signs', art: 'S521', cast: [],
+  alt: 'A child reading a page, road signs drawn in the margin',
+  words: [
+    'First, next, then: a sequence. The text is a road.',
+    'Because and so: cause and effect. But and however: a comparison.',
+    'Signal words tell you how a text is built. Read the signs and you know the shape of the road.',
+  ],
+};
+STORIES['forms-of-energy'] = {
+  about: 'one morning, five kinds of energy',
+  more: [{ serial: 'S525', after: 0, alt: 'The toaster glowing orange inside' }, { serial: 'S526', after: 2, alt: 'The fan blades spinning' }],
+  title: 'Five kinds before breakfast', art: 'S524', cast: [],
+  alt: 'A kitchen at morning: a lamp on, a toaster glowing, a radio playing, a fan turning',
+  words: [
+    'The lamp: light. The toaster: heat. The radio: sound.',
+    'The outlet: electrical. The fan blades: mechanical.',
+    'Energy comes in forms: light, heat, sound, electrical and mechanical. One kitchen, five kinds.',
+  ],
+};
+STORIES['circuits'] = {
+  about: 'a bulb that lit only when the loop closed',
+  more: [{ serial: 'S528', after: 0, alt: 'The bulb lit, the loop closed' }, { serial: 'S529', after: 2, alt: 'A paper clip in the loop, the bulb still lit; a plastic ruler in the loop, dark' }],
+  title: 'The loop', art: 'S527', cast: [],
+  alt: 'A child with a battery, a wire and a bulb, the wire not yet connected',
+  words: [
+    'Battery, wire, bulb. Nothing. The loop was open.',
+    'Touch the last wire. Light. The loop was closed.',
+    'Electricity flows only around a complete loop. Cut it anywhere and it stops.',
+  ],
+};
+STORIES['changing-land'] = {
+  about: 'a sandcastle and a week of weather',
+  more: [{ serial: 'S531', after: 0, alt: 'The walls crumbling in the rain' }, { serial: 'S532', after: 2, alt: 'A new sandbar down the beach where the sand landed' }],
+  title: 'The sandcastle', art: 'S530', cast: [],
+  alt: 'A sandcastle on a beach, waves approaching',
+  words: [
+    'Rain crumbled the walls. Weathering.',
+    'The waves carried the sand away. Erosion. Down the beach, the sand piled up in a new bank. Deposition.',
+    'Weathering breaks rock. Erosion carries it. Deposition drops it. Break, carry, drop.',
+  ],
+};
+STORIES['adaptations'] = {
+  about: 'a duck\'s feet and a cactus\'s spines',
+  more: [{ serial: 'S534', after: 0, alt: 'A close look at the duck\'s webbed foot' }, { serial: 'S535', after: 2, alt: 'A close look at the cactus spines' }],
+  title: 'The right tools', art: 'S533', cast: [],
+  alt: 'A duck paddling on a pond beside a cactus in a pot on the bank',
+  words: [
+    'The duck had webbed feet. Paddles for the water.',
+    'The cactus had spines. A fence against thirsty animals.',
+    'An adaptation solves a problem of the place a living thing lives. The right tools for the place.',
+  ],
+};
+STORIES['topic-sentences'] = {
+  about: 'a paragraph that said the big thing first',
+  more: [{ serial: 'S537', after: 0, alt: 'A dog leading a person across a street' }, { serial: 'S538', after: 2, alt: 'The finished paragraph with the first sentence boxed' }],
+  title: 'The big thing first', art: 'S536', cast: [],
+  alt: 'A child writing a paragraph, the first sentence in a box',
+  words: [
+    'Dogs make good helpers. The big thing, first.',
+    'They fetch. They guard. They guide. Every sentence after belongs to the first.',
+    'The topic sentence says the big thing first. Every sentence after it helps.',
+  ],
+};
+STORIES['opinion-paragraph'] = {
+  about: 'a case for a longer recess',
+  more: [{ serial: 'S540', after: 0, alt: 'Children running on the playground' }, { serial: 'S541', after: 2, alt: 'The paragraph with its four parts marked' }],
+  title: 'Longer recess', art: 'S539', cast: [],
+  alt: 'A child at a desk writing, a playground visible through the window',
+  words: [
+    'Opinion: recess should be longer.',
+    'Reason one: we think better after running. Reason two: we get along better after playing.',
+    'Opinion, then two reasons, then a closing sentence. Say the same thing a new way at the end.',
+  ],
+};
+STORIES['narrative-paragraph'] = {
+  about: 'the day the bird got into the house',
+  more: [{ serial: 'S543', after: 0, alt: 'The bird on the curtain rod' }, { serial: 'S544', after: 2, alt: 'The bird flying out the open window' }],
+  title: 'The bird in the house', art: 'S542', cast: [],
+  alt: 'A small bird flying in a living room, a family ducking',
+  words: [
+    'Beginning: the door was open and a bird flew in.',
+    'Middle: it circled the lamp, landed on the curtain, and everyone froze.',
+    'End: Dad opened the window and it found its way out. Beginning, middle, end, and words a reader can picture.',
+  ],
+};
+STORIES['first-texans'] = {
+  about: 'three peoples, three ways to eat',
+  more: [{ serial: 'S546', after: 0, alt: 'A Caddo cornfield near a river' }, { serial: 'S547', after: 2, alt: 'A Comanche rider on the open plain' }],
+  title: 'Three kitchens', art: 'S545', cast: [],
+  alt: 'A map of Texas with three regions marked, a child looking at it',
+  words: [
+    'In the wet east, the Caddo farmed corn.',
+    'On the dry plains, the Comanche followed the buffalo. On the coast, the Karankawa fished.',
+    'Many peoples lived in Texas first, and the land shaped how each one lived.',
+  ],
+};
+STORIES['spanish-and-mexican-texas'] = {
+  about: 'a mission bell and a new flag',
+  more: [{ serial: 'S549', after: 0, alt: 'The town of San Antonio in 1718, a few buildings by a river' }, { serial: 'S550', after: 2, alt: 'Settlers arriving in wagons under the Mexican flag' }],
+  title: 'The mission bell', art: 'S548', cast: [],
+  alt: 'A stone mission with a bell tower under a big Texas sky',
+  words: [
+    'Spain built missions from the 1690s. A bell, a church, a few families.',
+    'In 1821 Mexico won its freedom. A new flag over the same mission.',
+    'Mexico opened the door to settlers, and more came than anyone planned.',
+  ],
+};
+STORIES['texas-joins-the-union'] = {
+  about: 'a country of its own, then a state',
+  more: [{ serial: 'S552', after: 0, alt: 'A star being sewn onto a flag' }, { serial: 'S553', after: 2, alt: 'A Juneteenth celebration under the trees' }],
+  title: 'The 28th star', art: 'S551', cast: [],
+  alt: 'A Texas flag and an American flag side by side on a courthouse',
+  words: [
+    'For nine years Texas was its own country. Then in 1845, the 28th state.',
+    'In 1861 it left to join the Confederacy.',
+    'On June 19, 1865, freedom reached Texas. Juneteenth.',
+  ],
+};
+STORIES['multi-digit-multiplication'] = {
+  about: '23 boxes of 4 crayons, counted in pieces',
+  more: [{ serial: 'S555', after: 0, alt: 'The boxes stacked in two piles, twenty and three' }, { serial: 'S556', after: 2, alt: 'The sum on paper: 80 + 12 = 92' }],
+  title: 'Twenty-three boxes', art: 'S554', cast: [],
+  alt: 'A child with a stack of small crayon boxes, working on paper',
+  words: [
+    '23 boxes, 4 crayons each. Break 23 into 20 and 3.',
+    '20 boxes: 80 crayons. 3 boxes: 12 crayons.',
+    '80 and 12: 92. Break a number into tens and ones, multiply each piece, add the pieces.',
+  ],
+};
+STORIES['long-division'] = {
+  about: '96 stickers for 4 friends, in rounds',
+  more: [{ serial: 'S558', after: 0, alt: 'Four piles of twenty stickers' }, { serial: 'S559', after: 2, alt: 'Four piles of twenty-four, the box empty' }],
+  title: 'Sharing in rounds', art: 'S557', cast: [],
+  alt: 'A child dealing stickers onto four piles',
+  words: [
+    '96 stickers, 4 friends. Give each 20. That used 80.',
+    'Sixteen left. Give each 4 more. Everyone has 24.',
+    'Divide one digit at a time, bringing the next digit down. Long division is sharing in rounds.',
+  ],
+};
+STORIES['factors-and-multiples'] = {
+  about: 'twelve chairs and the ways to arrange them',
+  more: [{ serial: 'S561', after: 0, alt: 'Three rows of four chairs' }, { serial: 'S562', after: 2, alt: 'Two rows of six chairs' }],
+  title: 'Twelve chairs', art: 'S560', cast: [],
+  alt: 'A child arranging twelve chairs in rows in a hall',
+  words: [
+    'One row of twelve. Two rows of six. Three rows of four.',
+    'Those are the factors of twelve: 1, 2, 3, 4, 6, 12.',
+    'A factor goes into a number exactly. A multiple is what a number counts up to: 12, 24, 36.',
+  ],
+};
+STORIES['equivalent-and-decimals'] = {
+  about: 'a quarter that was also 0.25',
+  more: [{ serial: 'S564', after: 0, alt: 'Four quarters laid on a dollar' }, { serial: 'S565', after: 2, alt: 'The child writing 1/4 = 0.25' }],
+  title: 'The quarter', art: 'S563', cast: [],
+  alt: 'A child holding a quarter next to a dollar bill',
+  words: [
+    'A quarter is one fourth of a dollar. It is also 25 cents.',
+    'Twenty-five out of a hundred. 0.25.',
+    'A decimal is a fraction with 10 or 100 on the bottom. One fourth and 0.25 are the same money.',
+  ],
+};
+STORIES['add-fractions'] = {
+  about: 'a half pizza and a quarter pizza put together',
+  more: [{ serial: 'S567', after: 0, alt: 'The half cut into two quarter slices' }, { serial: 'S568', after: 2, alt: 'Three quarter slices lined up' }],
+  title: 'Half and a quarter', art: 'S566', cast: [],
+  alt: 'A pizza box with half a pizza and a quarter of another, a child counting slices',
+  words: [
+    'Half a pizza and a quarter of a pizza. How much altogether?',
+    'Cut the half into two quarters. Now count quarters: three.',
+    'Same bottoms: add the tops, keep the bottom. Different bottoms: make them the same first.',
+  ],
+};
+STORIES['balance-and-pattern'] = {
+  about: 'a face, a flower and a fence',
+  more: [{ serial: 'S570', after: 0, alt: 'The flower sketch with petals spreading from the center' }, { serial: 'S571', after: 2, alt: 'The fence sketch with its repeating posts' }],
+  title: 'Three kinds of balance', art: 'S569', cast: [],
+  alt: 'A child sketching a face, a flower and a fence in a notebook',
+  words: [
+    'A face: the same on both sides. Symmetrical.',
+    'A flower: spreading from the middle. Radial. A fence: a post, a post, a post. Pattern.',
+    'Balance can be symmetrical, asymmetrical or radial. Pattern is a thing repeated.',
+  ],
+};
+STORIES['making-space-on-paper'] = {
+  about: 'a road that ran into the distance',
+  more: [{ serial: 'S573', after: 0, alt: 'The two trees, big near and small far' }, { serial: 'S574', after: 2, alt: 'The finished drawing with the vanishing point marked' }],
+  title: 'The road to the horizon', art: 'S572', cast: [],
+  alt: 'A child drawing a road that narrows toward a point on the horizon',
+  words: [
+    'The road was wide at the bottom of the page and thin at the top.',
+    'The near tree was big and detailed. The far tree was small and plain.',
+    'Overlap, size, placement and detail make a flat page look deep. The lines meet at a vanishing point.',
+  ],
+};
+STORIES['art-tells-a-story'] = {
+  about: 'a handprint on a cave wall',
+  more: [{ serial: 'S576', after: 0, alt: 'A close look at the painted horses' }, { serial: 'S577', after: 2, alt: 'The child pressing a painted hand to paper' }],
+  title: 'The handprint', art: 'S575', cast: [],
+  alt: 'A child looking at a photo of ancient cave paintings, a handprint among the animals',
+  words: [
+    'Someone pressed a hand to a cave wall thousands of years ago.',
+    'Around it, horses and bison. A story with no words.',
+    'People made art before writing, and every culture since has told its stories in pictures.',
+  ],
+};
+STORIES['adding-decimals'] = {
+  about: 'two prices added like money',
+  more: [{ serial: 'S579', after: 0, alt: 'The two prices written one above the other with the points aligned' }, { serial: 'S580', after: 2, alt: 'The child handing over the money' }],
+  title: 'Two prices', art: 'S578', cast: [],
+  alt: 'A child at a shop counter with two price tags, 2.50 and 1.35, and a calculator',
+  words: [
+    'Two dollars fifty. One dollar thirty-five.',
+    'Line up the decimal points. Cents under cents, dollars under dollars.',
+    'Add column by column: 3.85. Decimals are money, and money lines up.',
+  ],
+};
+STORIES['multiplying-fractions'] = {
+  about: 'half of a half of a pizza',
+  more: [{ serial: 'S582', after: 0, alt: 'The half pizza cut into two quarters' }, { serial: 'S583', after: 2, alt: 'One quarter left in the box' }],
+  title: 'Half of a half', art: 'S581', cast: [],
+  alt: 'A pizza with one half remaining, a child cutting that half again',
+  words: [
+    'Half a pizza left. I ate half of it.',
+    'Half of a half. A quarter.',
+    'Tops times tops, bottoms times bottoms: 1 × 1 over 2 × 2. Of means multiply.',
+  ],
+};
+STORIES['dividing-by-two-digits'] = {
+  about: '288 eggs and cartons of 24',
+  more: [{ serial: 'S585', after: 0, alt: 'Ten full cartons stacked' }, { serial: 'S586', after: 2, alt: 'Twelve cartons and an empty crate' }],
+  title: 'Cartons of 24', art: 'S584', cast: [],
+  alt: 'A child at a farm stand with a crate of eggs and empty cartons',
+  words: [
+    '288 eggs. Cartons hold 24. How many cartons?',
+    'Ten cartons: 240. Forty-eight left: two more cartons.',
+    'Twelve cartons. Estimate how many times the divisor fits, then bring down the next digit.',
+  ],
+};
+STORIES['volume'] = {
+  about: 'sugar cubes in a box',
+  more: [{ serial: 'S588', after: 0, alt: 'The box with two full layers' }, { serial: 'S589', after: 2, alt: 'The child writing 4 × 3 × 2 = 24 on the box' }],
+  title: 'Sugar cubes', art: 'S587', cast: [],
+  alt: 'A child filling a small box with sugar cubes, one layer done',
+  words: [
+    'One layer: four across, three deep. Twelve cubes.',
+    'Two layers high. Twelve twice. Twenty-four.',
+    'Volume of a box is length times width times height. Count the cubes that fit.',
+  ],
+};
+STORIES['order-of-operations'] = {
+  about: 'a math sentence read like a recipe',
+  more: [{ serial: 'S591', after: 0, alt: 'The package labeled 8 drawn around 4 × 2' }, { serial: 'S592', after: 2, alt: 'The two answers side by side, eleven circled' }],
+  title: 'The package', art: 'S590', cast: [],
+  alt: 'A child looking at 3 + 4 × 2 on a whiteboard, a wrapped package drawn beside it',
+  words: [
+    '3 + 4 × 2. The 4 × 2 is a package. It arrives already wrapped: eight.',
+    'Then add the 3. Eleven, not fourteen.',
+    'Brackets first, then multiply and divide, then add and subtract. To add first, you need brackets.',
+  ],
+};
+STORIES['theme'] = {
+  about: 'two friends, a fight, and what the story was really about',
+  more: [{ serial: 'S594', after: 0, alt: 'The two friends arguing' }, { serial: 'S595', after: 2, alt: 'The two friends walking together again' }],
+  title: 'What it was really about', art: 'S593', cast: [],
+  alt: 'A child closing a book, thinking, two friends pictured on the cover',
+  words: [
+    'The story was about two friends. That is the topic.',
+    'They fought and made up. The story said friendship survives a fight.',
+    'The topic is what the story is about. The theme is what it says about it. The topic is a word; the theme is a sentence.',
+  ],
+};
+STORIES['point-of-view'] = {
+  about: 'the same afternoon told twice',
+  more: [{ serial: 'S597', after: 0, alt: 'A storm cloud seen from a window' }, { serial: 'S598', after: 2, alt: 'A camera on a tripod in the corner of a room' }],
+  title: 'Two cameras', art: 'S596', cast: [],
+  alt: 'A child holding two books open, one saying I, one saying she',
+  words: [
+    'I saw the storm coming. First person. The camera is on my head.',
+    'She saw the storm coming. Third person. The camera is on a tripod in the corner.',
+    'I and we mean first person. He, she and they mean third. The camera decides what you are allowed to know.',
+  ],
+};
+STORIES['idioms'] = {
+  about: 'break a leg, and no one got hurt',
+  more: [{ serial: 'S600', after: 0, alt: 'The child on stage, smiling, taking a bow' }, { serial: 'S601', after: 2, alt: 'A list of idioms on a poster: raining cats and dogs, piece of cake' }],
+  title: 'Break a leg', art: 'S599', cast: [],
+  alt: 'A child backstage before a play, a friend whispering to them',
+  words: [
+    'Break a leg, said my friend. I was scared.',
+    'It means good luck. Nobody breaks anything.',
+    'An idiom means something its words do not say. You learn it the way you learn a nickname.',
+  ],
+};
+STORIES['text-evidence'] = {
+  about: 'a claim with a line behind it',
+  more: [{ serial: 'S603', after: 0, alt: 'The line underlined in the book' }, { serial: 'S604', after: 2, alt: 'The notebook with the claim and the page number' }],
+  title: 'Point to the line', art: 'S602', cast: [],
+  alt: 'A child with a book open, finger on one sentence, a notebook beside',
+  words: [
+    'I think the boy was scared. Prove it.',
+    'Page 12: his hands shook. There is the line.',
+    'A claim about a text needs a line from the text behind it. Point to it.',
+  ],
+};
+STORIES['mixtures-and-solutions'] = {
+  about: 'sand in one glass, salt in the other',
+  more: [{ serial: 'S606', after: 0, alt: 'Sand settled at the bottom of the glass' }, { serial: 'S607', after: 2, alt: 'The child tasting the clear salty water' }],
+  title: 'Two glasses', art: 'S605', cast: [],
+  alt: 'Two glasses of water on a table, one cloudy with sand, one clear',
+  words: [
+    'Sand in water. It sank. I poured the water off. A mixture.',
+    'Salt in water. It vanished. I could not pick it out, but I could taste it. A solution.',
+    'A mixture keeps the properties of its parts and can be separated. A solution dissolves.',
+  ],
+};
+STORIES['earth-sun-moon'] = {
+  about: 'a spinning top, a lamp and a marble',
+  more: [{ serial: 'S609', after: 0, alt: 'The top lit on one side by the lamp' }, { serial: 'S610', after: 2, alt: 'The marble on its path around the top' }],
+  title: 'Top, lamp, marble', art: 'S608', cast: [],
+  alt: 'A child with a lamp, a spinning top and a marble on a dark table',
+  words: [
+    'The top spins. One spin is a day.',
+    'The top circles the lamp. One lap is a year. The marble circles the top. Once a month.',
+    'The Earth spins for day and night, circles the sun for the year, and the moon circles the Earth.',
+  ],
+};
+STORIES['inherited-and-learned'] = {
+  about: 'brown eyes and a bicycle',
+  more: [{ serial: 'S612', after: 0, alt: 'A close look at the matching brown eyes' }, { serial: 'S613', after: 2, alt: 'The child wobbling on the bike, then riding straight' }],
+  title: 'Eyes and wheels', art: 'S611', cast: [],
+  alt: 'A child with brown eyes riding a bicycle, a parent with the same eyes watching',
+  words: [
+    'Brown eyes, like my dad. Inherited.',
+    'Riding a bike. I fell twenty times first. Learned.',
+    'Inherited traits come from parents. Learned traits come from practice.',
+  ],
+};
+STORIES['informational-piece'] = {
+  about: 'a tour of the school, written down',
+  more: [{ serial: 'S615', after: 0, alt: 'The school library with tall shelves' }, { serial: 'S616', after: 2, alt: 'The finished piece with its parts labeled' }],
+  title: 'The tour', art: 'S614', cast: [],
+  alt: 'A child writing at a desk, a map of the school beside the paper',
+  words: [
+    'Introduction: this is our school. The entrance.',
+    'One paragraph for the gym, one for the library, one for the garden. The rooms.',
+    'Conclusion: come and see it. The exit. Introduction, a paragraph for each part, a conclusion.',
+  ],
+};
+STORIES['opinion-essay-5'] = {
+  about: 'five paragraphs for a class pet',
+  more: [{ serial: 'S618', after: 0, alt: 'A hamster in a cage on a classroom shelf' }, { serial: 'S619', after: 2, alt: 'The five boxes filled in' }],
+  title: 'Five paragraphs', art: 'S617', cast: [],
+  alt: 'A child writing a long essay, five boxes sketched in the margin',
+  words: [
+    'Paragraph one: our class should have a pet.',
+    'Two, three, four: one reason each. It teaches care. It calms us. It is fun.',
+    'Five: say it again, with the reasons behind it. Introduction, one paragraph per reason, a conclusion.',
+  ],
+};
+STORIES['personal-narrative-5'] = {
+  about: 'the moment the training wheels came off',
+  more: [{ serial: 'S621', after: 0, alt: 'The parent\'s hand letting go of the seat' }, { serial: 'S622', after: 2, alt: 'The child riding to the end of the driveway alone' }],
+  title: 'The moment', art: 'S620', cast: [],
+  alt: 'A child on a bike at the top of a driveway, training wheels on the grass',
+  words: [
+    'Set the scene: a Saturday, a driveway, wheels off.',
+    'Build to the moment: the wobble, the hand letting go, the balance.',
+    'Say what changed: I was a rider now. Slow down at the moment that mattered.',
+  ],
+};
+STORIES['thirteen-colonies'] = {
+  about: 'thirteen colonies in three rows',
+  more: [{ serial: 'S624', after: 0, alt: 'A New England fishing village' }, { serial: 'S625', after: 2, alt: 'A Southern tobacco field' }],
+  title: 'Three rows', art: 'S623', cast: [],
+  alt: 'A child looking at a map of the east coast with thirteen colonies in three colors',
+  words: [
+    'New England up top. The Middle colonies. The South.',
+    'Settled from 1607 to 1732 by people wanting land, faith or a fresh start.',
+    'Thirteen colonies in three regions, each with its own way to live.',
+  ],
+};
+STORIES['road-to-revolution'] = {
+  about: 'taxes, tea, shots, a declaration',
+  more: [{ serial: 'S627', after: 0, alt: 'Tea crates splashing into the harbor' }, { serial: 'S628', after: 2, alt: 'The declaration being signed' }],
+  title: 'Four steps to a war', art: 'S626', cast: [],
+  alt: 'A child looking at a timeline with four pictures: a tax stamp, tea in a harbor, a musket, a signed page',
+  words: [
+    '1765: taxes with no vote. 1773: tea in the harbor.',
+    '1775: shots at Lexington. 1776: a declaration.',
+    'Taxes without a vote, then protests, then shots, then a declaration. Each step made the next one likelier.',
+  ],
+};
+STORIES['the-constitution'] = {
+  about: 'a plan too weak, then a plan that worked',
+  more: [{ serial: 'S630', after: 0, alt: 'Three columns drawn on paper: Congress, President, courts' }, { serial: 'S631', after: 2, alt: 'The child tracing the signatures' }],
+  title: 'The second plan', art: 'S629', cast: [],
+  alt: 'A child looking at an old document under glass in a museum',
+  words: [
+    'The first plan, the Articles, could not even pay the bills.',
+    'In 1787 the founders wrote a stronger one. Three branches.',
+    'Each branch can stop the others. That is the point.',
+  ],
+};
+STORIES['growing-west'] = {
+  about: 'a purchase that doubled the map',
+  more: [{ serial: 'S633', after: 0, alt: 'A wagon on a trail across the plains' }, { serial: 'S634', after: 2, alt: 'A railroad spike being hammered' }],
+  title: 'Doubling the map', art: 'S632', cast: [],
+  alt: 'A child with a map of the United States, coloring the middle third',
+  words: [
+    '1803: the Louisiana Purchase. Fifteen million dollars. The country doubled.',
+    'Trails west. Gold in 1848. Railroads.',
+    'Purchases, trails, gold and rails pulled people west, and the map filled in.',
+  ],
+};
+STORIES['civil-war'] = {
+  about: 'a country split, and a war to mend it',
+  more: [{ serial: 'S636', after: 0, alt: 'A field after the fighting, quiet' }, { serial: 'S637', after: 2, alt: 'People celebrating freedom under a big tree' }],
+  title: 'The split', art: 'S635', cast: [],
+  alt: 'A child looking at a map with the country divided in two colors',
+  words: [
+    '1861: a country split over slavery went to war.',
+    '1863: emancipation. 1865: surrender.',
+    'Six hundred thousand dead, and slavery ended. A split over slavery, war from 1861 to 1865.',
+  ],
+};
+// Middle school, in the fewest words that still make a story.
+STORIES['dividing-fractions'] = {
+  about: 'three pizzas and the halves inside them',
+  more: [{ serial: 'S639', after: 0, alt: 'The three pizzas each cut in two' }, { serial: 'S640', after: 2, alt: 'Six half-slices lined up' }],
+  title: 'How many halves', art: 'S638', cast: [],
+  alt: 'Three whole pizzas on a counter, a child with a knife',
+  words: [
+    'Three pizzas. How many halves?',
+    'Six. Each pizza holds two. So 3 ÷ 1/2 = 6.',
+    'To divide by a fraction, flip it and multiply. Dividing by a small piece counts the pieces.',
+  ],
+};
+STORIES['area-of-triangles'] = {
+  about: 'a triangular garden bed and the rectangle around it',
+  more: [{ serial: 'S642', after: 0, alt: 'The string stretched along the base and up the height' }, { serial: 'S643', after: 2, alt: 'The chalk rectangle with the triangle inside' }],
+  title: 'Half a rectangle', art: 'S641', cast: [],
+  alt: 'A child measuring a triangular garden bed with string, a rectangle chalked around it',
+  words: [
+    'The bed was a triangle. Base 6, height 4.',
+    'The rectangle around it: 24. The triangle was exactly half.',
+    'Twelve. Parallelogram: base times height. Triangle: half of that.',
+  ],
+};
+STORIES['one-step-equations'] = {
+  about: 'a mystery box on a balance',
+  more: [{ serial: 'S645', after: 0, alt: 'Five weights lifted off each pan' }, { serial: 'S646', after: 2, alt: 'The box and seven weights level' }],
+  title: 'The mystery box', art: 'S644', cast: [],
+  alt: 'A balance scale with a box on one pan and weights on the other',
+  words: [
+    'A box and five weights balanced twelve weights.',
+    'Take five off both pans. The box alone balanced seven.',
+    'Do the same thing to both sides. Undo adding by subtracting. x = 7.',
+  ],
+};
+STORIES['claims-and-reasons'] = {
+  about: 'a case for a later start, and the reason that did not hold',
+  more: [{ serial: 'S648', after: 0, alt: 'The card that reads nothing but is crossed out' }, { serial: 'S649', after: 2, alt: 'The student holding the two strong cards' }],
+  title: 'The reason that fell', art: 'S647', cast: [],
+  alt: 'A student at a podium with three cards, one of them crossed out',
+  words: [
+    'Claim: school should start later.',
+    'Reason one: teenagers sleep late. Holds. Reason two: my cousin likes it. Does not hold it up.',
+    'Find the claim first. Then test whether each reason really supports it.',
+  ],
+};
+STORIES['tone-and-mood'] = {
+  about: 'the same rain described two ways',
+  more: [{ serial: 'S651', after: 0, alt: 'The cozy version, a lamp on inside' }, { serial: 'S652', after: 2, alt: 'The gray version, an empty street' }],
+  title: 'Two rains', art: 'S650', cast: [],
+  alt: 'A window with rain, a student writing two short paragraphs',
+  words: [
+    'The rain drummed happily on the roof. The writer is warm. Tone.',
+    'The rain would not stop. The reader feels trapped. Mood.',
+    'Tone is the writer\'s attitude. Mood is the feeling you are left with.',
+  ],
+};
+STORIES['word-roots'] = {
+  about: 'one root, five words',
+  more: [{ serial: 'S654', after: 0, alt: 'The branches of the word tree with the five words' }, { serial: 'S655', after: 2, alt: 'A truck, a ship and a backpack, each carrying' }],
+  title: 'The root port', art: 'S653', cast: [],
+  alt: 'A student with a word tree drawn on paper, port at the trunk',
+  words: [
+    'Port means carry. Transport: carry across.',
+    'Import: carry in. Export: carry out. Portable: able to be carried.',
+    'A root you know unlocks every word built on it.',
+  ],
+};
+STORIES['central-idea'] = {
+  about: 'every paragraph on the same job',
+  more: [{ serial: 'S657', after: 0, alt: 'A bee on a flower' }, { serial: 'S658', after: 2, alt: 'The three notes joined by arrows to one sentence' }],
+  title: 'The same job', art: 'S656', cast: [],
+  alt: 'A student with a printed article, each paragraph marked with a short note',
+  words: [
+    'Paragraph one: bees pollinate. Two: bees are dying. Three: what farmers can do.',
+    'All three work the same job: we need bees.',
+    'The central idea is what every paragraph is helping to say.',
+  ],
+};
+STORIES['elements-and-compounds'] = {
+  about: 'letters and words',
+  more: [{ serial: 'S660', after: 0, alt: 'The tiles H, H and O separated' }, { serial: 'S661', after: 2, alt: 'The tiles pushed together as water' }],
+  title: 'Letters and words', art: 'S659', cast: [],
+  alt: 'A student with letter tiles spelling H2O on a table',
+  words: [
+    'H is a letter. O is a letter. Each one an element.',
+    'H2O is a word spelled from them. A compound.',
+    'An element is one kind of atom. A compound is two or more joined.',
+  ],
+};
+STORIES['heat-transfer'] = {
+  about: 'a pan, a pot and a campfire',
+  more: [{ serial: 'S663', after: 0, alt: 'The swirl in the soup pot' }, { serial: 'S664', after: 2, alt: 'The child\'s face lit by the fire' }],
+  title: 'Three ways', art: 'S662', cast: [],
+  alt: 'A campsite with a pan on a fire, a pot of soup, a child warming hands',
+  words: [
+    'The pan handle got hot. Touch. Conduction.',
+    'The soup swirled as the hot broth rose. Convection.',
+    'The fire warmed my face from a distance. Radiation. Heat moves from warmer to cooler.',
+  ],
+};
+STORIES['plate-tectonics'] = {
+  about: 'two rugs on a floor',
+  more: [{ serial: 'S666', after: 0, alt: 'The rugs pulled apart with a gap between' }, { serial: 'S667', after: 2, alt: 'The rugs sliding past each other, edges catching' }],
+  title: 'Two rugs', art: 'S665', cast: [],
+  alt: 'A student pushing two rugs together on a floor, one buckling',
+  words: [
+    'Push two rugs together. They buckle. Mountains.',
+    'Pull them apart. The floor shows. A rift. Slide them past each other. They catch and jerk. An earthquake.',
+    'The Earth\'s shell is plates that move. Push, pull, slide.',
+  ],
+};
+STORIES['ecosystems'] = {
+  about: 'grass, grasshopper, bird, hawk',
+  more: [{ serial: 'S669', after: 0, alt: 'The bird with the grasshopper' }, { serial: 'S670', after: 2, alt: 'Mushrooms on a fallen log' }],
+  title: 'Follow the energy', art: 'S668', cast: [],
+  alt: 'A meadow with grass, a grasshopper, a bird and a hawk overhead',
+  words: [
+    'Grass makes food from sunlight. A producer.',
+    'A grasshopper eats the grass. A bird eats the grasshopper. Consumers.',
+    'When the bird dies, fungi break it down. Decomposers. Take away the grass and the whole chain goes hungry.',
+  ],
+};
+STORIES['density'] = {
+  about: 'two boxes the same size',
+  more: [{ serial: 'S672', after: 0, alt: 'The two boxes on a scale, one side down' }, { serial: 'S673', after: 2, alt: 'A rock sinking and a feather floating in a tub' }],
+  title: 'Feathers and rocks', art: 'S671', cast: [],
+  alt: 'Two identical boxes on a table, one open with feathers, one with rocks',
+  words: [
+    'Same size. One full of feathers, one full of rocks.',
+    'Same space, different mass. The rock box is denser.',
+    'Density is mass divided by volume. Denser than water sinks; lighter floats.',
+  ],
+};
+STORIES['argument-with-evidence'] = {
+  about: 'a claim that finally got its numbers',
+  more: [{ serial: 'S675', after: 0, alt: 'The nurse\'s log on a clipboard' }, { serial: 'S676', after: 2, alt: 'A new fountain in the hallway' }],
+  title: 'Show the numbers', art: 'S674', cast: [],
+  alt: 'A student at a desk with a claim written large and a graph beside it',
+  words: [
+    'Claim: our school needs more water fountains.',
+    'Reason: students get thirsty. Evidence: the nurse logged forty headaches last month.',
+    'A claim, reasons, and evidence for each reason. A reason without evidence is a louder opinion.',
+  ],
+};
+STORIES['compare-and-contrast'] = {
+  about: 'two towns, side by side',
+  more: [{ serial: 'S678', after: 0, alt: 'The bridge town from above' }, { serial: 'S679', after: 2, alt: 'The ferry crossing the river' }],
+  title: 'Two towns', art: 'S677', cast: [],
+  alt: 'A student with two columns on a page: alike, different',
+  words: [
+    'Alike: both towns sit on a river. Both have a market.',
+    'Different: one has a bridge, one has a ferry.',
+    'How they are alike, how they differ, and what that shows: the bridge town grew faster.',
+  ],
+};
+STORIES['narrative-with-dialogue'] = {
+  about: 'two lines of talk that moved the story',
+  more: [{ serial: 'S681', after: 0, alt: 'The bus pulling away' }, { serial: 'S682', after: 2, alt: 'The two walking off together' }],
+  title: 'Let them talk', art: 'S680', cast: [],
+  alt: 'Two characters at a bus stop, speech bubbles above them',
+  words: [
+    '"You\'re late," she said. "The bus was early," he said.',
+    'Two lines, and you know them both.',
+    'Dialogue moves the story and shows character. Quotation marks, a new line for each speaker.',
+  ],
+};
+STORIES['maps-and-hemispheres'] = {
+  about: 'an orange with lines drawn on it',
+  more: [{ serial: 'S684', after: 0, alt: 'The orange with the equator drawn' }, { serial: 'S685', after: 2, alt: 'A globe beside the orange' }],
+  title: 'The orange globe', art: 'S683', cast: [],
+  alt: 'A student drawing lines on an orange with a marker',
+  words: [
+    'Rings around the orange, counted from the middle. Latitude.',
+    'Segments top to bottom, counted from one line. Longitude.',
+    'Seven continents, five oceans, and two numbers to find any place on Earth.',
+  ],
+};
+STORIES['what-culture-is'] = {
+  about: 'everything a newcomer would need to be taught',
+  more: [{ serial: 'S687', after: 0, alt: 'The three sharing food at a table' }, { serial: 'S688', after: 2, alt: 'A calendar with holidays marked' }],
+  title: 'What we would have to teach', art: 'S686', cast: [],
+  alt: 'A new student being shown around a lunchroom by two others',
+  words: [
+    'The words we use. The food we eat. The holidays we keep.',
+    'What is polite. What is rude. What everyone already knows.',
+    'Culture is the way of life a group shares. You did not choose it; you soaked it up.',
+  ],
+};
+STORIES['kinds-of-government'] = {
+  about: 'who holds the remote',
+  more: [{ serial: 'S690', after: 0, alt: 'Three people huddled over the remote' }, { serial: 'S691', after: 2, alt: 'Everyone raising a hand' }],
+  title: 'The remote', art: 'S689', cast: [],
+  alt: 'A family on a couch, one person holding the remote',
+  words: [
+    'One person holds the remote. A monarchy or a dictatorship.',
+    'A small circle passes it around. An oligarchy. Everyone votes on the channel. A democracy.',
+    'Governments differ by who decides.',
+  ],
+};
+STORIES['kinds-of-economies'] = {
+  about: 'who decides what gets made',
+  more: [{ serial: 'S693', after: 0, alt: 'A family workshop making the same craft for generations' }, { serial: 'S694', after: 2, alt: 'A busy market with prices on chalkboards' }],
+  title: 'Who decides', art: 'S692', cast: [],
+  alt: 'A market street with stalls, a student looking at the stalls',
+  words: [
+    'Grandparents and tradition decide. A traditional economy.',
+    'The government decides. A command economy. Buyers and sellers decide. A market economy.',
+    'Economies differ by who decides. Most countries mix them.',
+  ],
+};
+STORIES['people-on-the-move'] = {
+  about: 'why the family moved, and how crowded the city was',
+  more: [{ serial: 'S696', after: 0, alt: 'The empty main street they left' }, { serial: 'S697', after: 2, alt: 'The crowded city block they arrived at' }],
+  title: 'Push and pull', art: 'S695', cast: [],
+  alt: 'A family loading a car, a city skyline in the distance',
+  words: [
+    'No work at home. That pushed.',
+    'A job in the city. That pulled.',
+    'People move away from what pushes and toward what pulls. Density is how crowded the destination gets.',
+  ],
+};
+STORIES['world-regions-today'] = {
+  about: 'what makes a region a region',
+  more: [{ serial: 'S699', after: 0, alt: 'A coastline shared by several countries' }, { serial: 'S700', after: 2, alt: 'A desert region shaded across borders' }],
+  title: 'The neighborhood on the map', art: 'S698', cast: [],
+  alt: 'A student with a world map, a region shaded in one color',
+  words: [
+    'A region is a neighborhood on a bigger map.',
+    'The neighbors share something: a language, a climate, a coastline.',
+    'That shared thing is what draws the line around them.',
+  ],
+};
+STORIES['proportions'] = {
+  about: 'the price of one pen',
+  more: [{ serial: 'S702', after: 0, alt: 'One pen and two dimes' }, { serial: 'S703', after: 2, alt: 'Five pens and a dollar bill' }],
+  title: 'The price of one', art: 'S701', cast: [],
+  alt: 'A student at a shop counter with a pack of three pens',
+  words: [
+    'Three pens cost sixty cents. What is one?',
+    'Twenty. So five pens are a dollar.',
+    'Find what one unit is worth, then multiply. Or cross-multiply.',
+  ],
+};
+STORIES['integers'] = {
+  about: 'money owed, and a debt forgiven',
+  more: [{ serial: 'S705', after: 0, alt: 'The IOU torn in half' }, { serial: 'S706', after: 2, alt: 'A number line with the jump to 8' }],
+  title: 'The debt', art: 'S704', cast: [],
+  alt: 'A student with a jar of coins and a note that says nothing, an IOU drawn',
+  words: [
+    'Five dollars in the jar. Three owed. Owing is negative.',
+    'The three-dollar debt was forgiven. Better off by three. 5 - (-3) = 8.',
+    'Adding a negative moves left. Subtracting a negative moves right.',
+  ],
+};
+STORIES['two-step-equations'] = {
+  about: 'shoes and socks, in reverse',
+  more: [{ serial: 'S708', after: 0, alt: 'The shoes off, socks next' }, { serial: 'S709', after: 2, alt: 'The equation with two arrows undoing it' }],
+  title: 'Shoes then socks', art: 'S707', cast: [],
+  alt: 'A student pulling off shoes, socks still on',
+  words: [
+    'Socks on first, shoes on last. To undo: shoes off first.',
+    '2x + 3 = 11. The plus 3 was last. Subtract 3 first: 2x = 8. Then undo the times 2: x = 4.',
+    'Undo the steps in reverse order.',
+  ],
+};
+STORIES['circles'] = {
+  about: 'a string around a can',
+  more: [{ serial: 'S711', after: 0, alt: 'The string laid straight beside three cans' }, { serial: 'S712', after: 2, alt: 'The can standing on paper with its circle traced' }],
+  title: 'The string and the can', art: 'S710', cast: [],
+  alt: 'A student wrapping a string around a can, then laying it flat beside it',
+  words: [
+    'String around the can. Lay it flat.',
+    'A little more than three cans across. 3.14.',
+    'Circumference is 3.14 times the diameter. Area is 3.14 times the radius squared.',
+  ],
+};
+STORIES['authors-purpose'] = {
+  about: 'three pages, three purposes',
+  more: [{ serial: 'S714', after: 0, alt: 'The advertisement with bold claims' }, { serial: 'S715', after: 2, alt: 'The comic strip' }],
+  title: 'Why was it written', art: 'S713', cast: [],
+  alt: 'A student with three pages: a weather report, an advertisement, a comic',
+  words: [
+    'The weather report: facts and dates. To inform.',
+    'The advertisement: should, must, best. To persuade. The comic: a plot and a joke. To entertain.',
+    'Inform, persuade or entertain. The shape gives it away.',
+  ],
+};
+STORIES['evidence-quality'] = {
+  about: 'one story against ten thousand',
+  more: [{ serial: 'S717', after: 0, alt: 'The friend\'s note' }, { serial: 'S718', after: 2, alt: 'The report open to a chart' }],
+  title: 'One story', art: 'S716', cast: [],
+  alt: 'A student with a friend\'s note in one hand and a thick report in the other',
+  words: [
+    'My friend says the vitamin works. One story.',
+    'The study of ten thousand people says it does not. Evidence.',
+    'Many cases from a checkable source beat one story.',
+  ],
+};
+STORIES['connotation'] = {
+  about: 'slim, thin, skinny',
+  more: [{ serial: 'S720', after: 0, alt: 'A scale with the three cards balanced' }, { serial: 'S721', after: 2, alt: 'A face reacting to each word' }],
+  title: 'Three words, one size', art: 'S719', cast: [],
+  alt: 'Three word cards on a table, a student weighing them',
+  words: [
+    'Slim. Thin. Skinny. The same on a scale.',
+    'They feel different. Slim is a compliment. Skinny is not.',
+    'Connotation is the feeling a word carries beyond its meaning.',
+  ],
+};
+STORIES['character-motive'] = {
+  about: 'what she wanted and what she feared',
+  more: [{ serial: 'S723', after: 0, alt: 'The character at a door, hand on the knob' }, { serial: 'S724', after: 2, alt: 'Two words in the margin: want, fear' }],
+  title: 'Want and fear', art: 'S722', cast: [],
+  alt: 'A student reading a novel, a character sketched in the margin',
+  words: [
+    'She lied to her brother. Why?',
+    'She wanted his respect. She feared losing the house.',
+    'Motive is what a character wants or fears. It is shown, not told.',
+  ],
+};
+STORIES['body-systems'] = {
+  about: 'the body as a city',
+  more: [{ serial: 'S726', after: 0, alt: 'The road system drawn over the chest' }, { serial: 'S727', after: 2, alt: 'The phone lines drawn from the head' }],
+  title: 'The city inside', art: 'S725', cast: [],
+  alt: 'A student drawing a city map over an outline of a body',
+  words: [
+    'Heart and vessels: roads and trucks. Lungs: the air supply.',
+    'Stomach and intestines: the kitchen. Brain and nerves: the phone lines.',
+    'Each body system is a team of organs with one main job.',
+  ],
+};
+STORIES['weather-systems'] = {
+  about: 'air like water on a slope',
+  more: [{ serial: 'S729', after: 0, alt: 'A kite pulling in the wind' }, { serial: 'S730', after: 2, alt: 'The map arrows from H to L' }],
+  title: 'The slope of the air', art: 'S728', cast: [],
+  alt: 'A student with a weather map, arrows from H to L',
+  words: [
+    'Cool air is heavy. It piles up. High pressure.',
+    'Warm air is light. It rises. Low pressure. The heavy air slides toward the light. Wind.',
+    'Warm air rises and cool air sinks; wind blows from high to low.',
+  ],
+};
+STORIES['natural-selection'] = {
+  about: 'pale moths on a sooty tree',
+  more: [{ serial: 'S732', after: 0, alt: 'A bird taking a pale moth' }, { serial: 'S733', after: 2, alt: 'A trunk covered in dark moths' }],
+  title: 'The moths', art: 'S731', cast: [],
+  alt: 'A sooty tree trunk with a pale moth and a dark moth on it',
+  words: [
+    'Pale moths on a dark trunk were easy to see. Birds ate them.',
+    'Dark moths hid. They had dark children.',
+    'No moth changed color. The population changed because of who survived.',
+  ],
+};
+STORIES['energy-in-ecosystems'] = {
+  about: 'a thousand blades of grass and one hawk',
+  more: [{ serial: 'S735', after: 0, alt: 'A field of grass with a few grasshoppers' }, { serial: 'S736', after: 2, alt: 'One hawk circling high' }],
+  title: 'The pyramid', art: 'S734', cast: [],
+  alt: 'A pyramid drawn on paper: grass, grasshoppers, birds, one hawk',
+  words: [
+    'A thousand units of grass. A hundred of grasshopper.',
+    'Ten of bird. One of hawk.',
+    'Only about a tenth of the energy passes to the next level. That is why there are more blades than hawks.',
+  ],
+};
+STORIES['summary-and-response'] = {
+  about: 'the summary that gave nothing away',
+  more: [{ serial: 'S738', after: 0, alt: 'The first paragraph, plain' }, { serial: 'S739', after: 2, alt: 'The second paragraph with an opinion' }],
+  title: 'Fair first', art: 'S737', cast: [],
+  alt: 'A student writing two paragraphs, a line drawn between them',
+  words: [
+    'First: the article says cities should plant more trees, for shade and air.',
+    'Nothing about what I think. A reader could not tell.',
+    'Then: I agree, and here is why. Summarize fairly first, then respond.',
+  ],
+};
+STORIES['argument-with-a-counterclaim'] = {
+  about: 'the objection said out loud',
+  more: [{ serial: 'S741', after: 0, alt: 'The opponent listening' }, { serial: 'S742', after: 2, alt: 'The team practicing in afternoon light' }],
+  title: 'Say it first', art: 'S740', cast: [],
+  alt: 'A student at a lectern, an opponent nodding',
+  words: [
+    'Some say a later start would cut practice time.',
+    'True, but practice could shift, and rested players play better.',
+    'Name the best objection and answer it. A fair counterclaim wins trust.',
+  ],
+};
+STORIES['explanatory-essay'] = {
+  about: 'starting where the reader is',
+  more: [{ serial: 'S744', after: 0, alt: 'The younger child moving a piece' }, { serial: 'S745', after: 2, alt: 'The rulebook with words underlined and explained' }],
+  title: 'One idea at a time', art: 'S743', cast: [],
+  alt: 'A student explaining a board game to a younger child, piece by piece',
+  words: [
+    'Start with what they know. A board, a die, a piece.',
+    'Add one rule. Then the next. Define each new word when it appears.',
+    'Start where the reader is and add one idea at a time.',
+  ],
+};
+STORIES['the-first-texans'] = {
+  about: 'four regions, four ways of life',
+  more: [{ serial: 'S747', after: 0, alt: 'The flat coast with tall grass' }, { serial: 'S748', after: 2, alt: 'The desert mountains at sunset' }],
+  title: 'Four Texases', art: 'S746', cast: [],
+  alt: 'A map of Texas with four natural regions, a student pointing',
+  words: [
+    'The Gulf Coastal Plains, wet and flat. The North Central Plains, rolling.',
+    'The Great Plains, high and dry. The Mountains and Basins, desert.',
+    'Four regions, and each one grew a different way of living.',
+  ],
+};
+STORIES['spain-and-mexico-in-texas'] = {
+  about: 'three centuries, a few missions, then a door opened',
+  more: [{ serial: 'S750', after: 0, alt: 'The plaza at San Antonio' }, { serial: 'S751', after: 2, alt: 'Settlers\' wagons arriving' }],
+  title: 'The empty attic', art: 'S749', cast: [],
+  alt: 'A mission church with a bell under a wide sky, a few houses beside it',
+  words: [
+    'Spain claimed Texas for three centuries and settled little. Missions from the 1690s. San Antonio in 1718.',
+    'Mexico took over in 1821 and invited Americans in.',
+    'More came than anyone planned for.',
+  ],
+};
+STORIES['revolution-and-republic'] = {
+  about: 'from a cannon to eighteen minutes',
+  more: [{ serial: 'S753', after: 0, alt: 'The Alamo at dawn' }, { serial: 'S754', after: 2, alt: 'The republic\'s lone star flag' }],
+  title: 'Come and take it', art: 'S752', cast: [],
+  alt: 'A small cannon and a flag on a field, October light',
+  words: [
+    'Gonzales, October 1835. A cannon and a flag: come and take it.',
+    'The Alamo fell in March. San Jacinto in April took eighteen minutes.',
+    'Then nine years as a republic of its own.',
+  ],
+};
+STORIES['statehood-and-civil-war'] = {
+  about: 'a state, a war, and the day freedom arrived',
+  more: [{ serial: 'S756', after: 0, alt: 'The Union flag raised over a courthouse' }, { serial: 'S757', after: 2, alt: 'A family hearing the news at last' }],
+  title: 'Juneteenth', art: 'S755', cast: [],
+  alt: 'A crowd under trees celebrating, June light',
+  words: [
+    'Texas joined the Union in 1845. War with Mexico followed within a year.',
+    'In 1861 Texas left to join the Confederacy.',
+    'On June 19, 1865, freedom reached Texas, two years after it was declared. Juneteenth.',
+  ],
+};
+STORIES['cattle-cotton-and-oil'] = {
+  about: 'three fortunes',
+  more: [{ serial: 'S759', after: 0, alt: 'The cattle drive on the trail' }, { serial: 'S760', after: 2, alt: 'The gusher at Spindletop' }],
+  title: 'Three fortunes', art: 'S758', cast: [],
+  alt: 'A longhorn, a cotton field and an oil derrick in one landscape',
+  words: [
+    'Cattle walked to the Kansas railroads from 1867.',
+    'Cotton filled the fields.',
+    'In 1901 Spindletop blew oil a hundred feet into the air, and everything changed.',
+  ],
+};
+STORIES['modern-texas'] = {
+  about: 'from farms to skylines',
+  more: [{ serial: 'S762', after: 0, alt: 'The six flags on their poles' }, { serial: 'S763', after: 2, alt: 'A highway into a city at dusk' }],
+  title: 'Six flags and a skyline', art: 'S761', cast: [],
+  alt: 'A city skyline with six flags in front of it',
+  words: [
+    'Spain, France, Mexico, the Republic, the Confederacy, the United States. Six flags.',
+    'The twentieth century added a seventh thing: cities.',
+    'Farms gave way to Houston and Dallas, and Texas became the second-largest state.',
+  ],
+};
+STORIES['slope'] = {
+  about: 'a gentle hill and a steep one',
+  more: [{ serial: 'S765', after: 0, alt: 'The steep hill with a rise and run marked' }, { serial: 'S766', after: 2, alt: 'The gentle hill' }],
+  title: 'Two hills', art: 'S764', cast: [],
+  alt: 'A student on a bike at the foot of two hills, one gentle, one steep',
+  words: [
+    'One across, two up. Steep. Slope 2.',
+    'Four across, two up. Gentle. Slope one half.',
+    'Slope is rise over run. In y = mx + b, m is the slope and b is where it starts.',
+  ],
+};
+STORIES['exponents'] = {
+  about: 'a sheet of paper folded five times',
+  more: [{ serial: 'S768', after: 0, alt: 'The stack of layers at the edge' }, { serial: 'S769', after: 2, alt: 'The exponent written beside the folded sheet' }],
+  title: 'Five folds', art: 'S767', cast: [],
+  alt: 'A student folding a sheet of paper, layers visible at the edge',
+  words: [
+    'Fold once: two layers. Twice: four.',
+    'Five folds: 2 × 2 × 2 × 2 × 2. Thirty-two layers.',
+    'An exponent counts the multiplying. 2⁵.',
+  ],
+};
+STORIES['square-roots'] = {
+  about: 'a carpet of forty-nine tiles',
+  more: [{ serial: 'S771', after: 0, alt: 'The finished seven-by-seven square' }, { serial: 'S772', after: 2, alt: 'A row of seven tiles measured against the side' }],
+  title: 'The square carpet', art: 'S770', cast: [],
+  alt: 'A student laying square tiles into a bigger square, seven by seven',
+  words: [
+    'Forty-nine tiles. Lay them square.',
+    'Seven by seven.',
+    'A square root asks which number times itself gives this. The square root of 49 is 7.',
+  ],
+};
+STORIES['scientific-notation'] = {
+  about: 'sliding the decimal point',
+  more: [{ serial: 'S774', after: 0, alt: 'The point sliding past the zeros' }, { serial: 'S775', after: 2, alt: 'The short form beside the long one' }],
+  title: 'The slide', art: 'S773', cast: [],
+  alt: 'A student writing a very large number and sliding a decimal point along it',
+  words: [
+    '3,400,000. Too many zeros.',
+    'Slide the point six places. 3.4 × 10⁶.',
+    'A number from 1 to 10, times a power of ten. The exponent is the number of slides.',
+  ],
+};
+STORIES['flawed-reasoning'] = {
+  about: 'the rain and the washed car',
+  more: [{ serial: 'S777', after: 0, alt: 'The rain falling on the clean car' }, { serial: 'S778', after: 2, alt: 'A friendly dog that does not bite' }],
+  title: 'The washed car', art: 'S776', cast: [],
+  alt: 'A student washing a car, dark clouds arriving',
+  words: [
+    'I washed the car. It rained. Washing causes rain? False cause.',
+    'All dogs I met bite, so all dogs bite. Overgeneralizing.',
+    'Learn the names of the tricks and they stop working on you.',
+  ],
+};
+STORIES['irony'] = {
+  about: 'the fire station that burned',
+  more: [{ serial: 'S780', after: 0, alt: 'The firefighters with their hoses aimed at their own station' }, { serial: 'S781', after: 2, alt: 'The woman soaked in the storm, smiling' }],
+  title: 'The gap', art: 'S779', cast: [],
+  alt: 'A fire station with smoke coming out of its own roof, firefighters staring',
+  words: [
+    'The fire station burned down.',
+    'Great weather, she said, in the storm.',
+    'Irony is a gap: expected against actual, said against meant.',
+  ],
+};
+STORIES['allusions'] = {
+  about: 'one word that told a whole story',
+  more: [{ serial: 'S783', after: 0, alt: 'The friend clutching a bag of candy' }, { serial: 'S784', after: 2, alt: 'The book open to the old miser' }],
+  title: 'A Scrooge', art: 'S782', cast: [],
+  alt: 'A student pointing at a friend who will not share, a book on the desk',
+  words: [
+    'Do not be such a Scrooge, she said.',
+    'One word, and the whole story of the miser came with it.',
+    'An allusion borrows a whole story in a few words. It only works if the reader knows the story.',
+  ],
+};
+STORIES['objective-summary'] = {
+  about: 'a mirror, not a review',
+  more: [{ serial: 'S786', after: 0, alt: 'The park gate at dusk' }, { serial: 'S787', after: 2, alt: 'The summary with a red pen striking out an opinion' }],
+  title: 'The mirror', art: 'S785', cast: [],
+  alt: 'A student writing a summary with a mirror drawn in the margin',
+  words: [
+    'The article argues that the park should close at dusk, for safety.',
+    'That is all. No liked, no hated.',
+    'Say what the text says, in neutral words. Leave your opinion out.',
+  ],
+};
+STORIES['chemical-reactions'] = {
+  about: 'a folded paper and a burned one',
+  more: [{ serial: 'S789', after: 0, alt: 'The paper folded into a crane' }, { serial: 'S790', after: 2, alt: 'The match touching the paper' }],
+  title: 'Fold or burn', art: 'S788', cast: [],
+  alt: 'A student with a folded paper in one hand and ash in a dish',
+  words: [
+    'Fold it. Still paper. A physical change.',
+    'Burn it. Ash and smoke. You cannot fold it back.',
+    'A chemical change makes a new substance; a physical change does not.',
+  ],
+};
+STORIES['scale-of-the-universe'] = {
+  about: 'nesting boxes',
+  more: [{ serial: 'S792', after: 0, alt: 'The smallest box open with a moon inside' }, { serial: 'S793', after: 2, alt: 'All the boxes in a row from small to huge' }],
+  title: 'Nesting boxes', art: 'S791', cast: [],
+  alt: 'A student opening a set of nesting boxes, each labeled with a picture',
+  words: [
+    'The moon circles the Earth. The Earth circles the sun.',
+    'The sun is one star in the galaxy. The galaxy is one of billions.',
+    'Moon, planet, solar system, galaxy, universe: each layer unimaginably bigger than the last.',
+  ],
+};
+STORIES['speed-and-graphs'] = {
+  about: 'a walk drawn as a line',
+  more: [{ serial: 'S795', after: 0, alt: 'The flat part of the line and the shoe' }, { serial: 'S796', after: 2, alt: 'The steep part and the school door' }],
+  title: 'The walk on paper', art: 'S794', cast: [],
+  alt: 'A student drawing a distance-time graph of a walk to school',
+  words: [
+    'Flat: I stopped to tie my shoe.',
+    'Gentle slope: strolling. Steep: running for the bell.',
+    'On a distance-time graph, flat is still, sloped is moving, steeper is faster.',
+  ],
+};
+STORIES['weathering-to-fossils'] = {
+  about: 'a laundry pile and a cliff',
+  more: [{ serial: 'S798', after: 0, alt: 'The striped cliff with a fossil marked low down' }, { serial: 'S799', after: 2, alt: 'The laundry pile with the oldest shirt at the bottom' }],
+  title: 'The laundry pile', art: 'S797', cast: [],
+  alt: 'A student comparing a pile of laundry to a photo of a striped cliff',
+  words: [
+    'The shirt at the bottom went in first.',
+    'Rock layers pile up the same way. Deeper is older.',
+    'A fossil buried deep is older than one near the top.',
+  ],
+};
+STORIES['thesis-and-outline'] = {
+  about: 'a fight worth picking',
+  more: [{ serial: 'S801', after: 0, alt: 'The three reasons listed beneath' }, { serial: 'S802', after: 2, alt: 'A reason crossed out that did not hold' }],
+  title: 'Pick the fight', art: 'S800', cast: [],
+  alt: 'A student writing one bold sentence at the top of a page, three lines beneath',
+  words: [
+    'Dogs are pets. That is a topic. Nobody argues.',
+    'Dogs make better pets than cats for busy families. Now someone could argue.',
+    'Write the thesis first, then list the reasons. If a reason does not hold the thesis up, it is not a reason.',
+  ],
+};
+STORIES['evidence-paragraph'] = {
+  about: 'the sentence most writers skip',
+  more: [{ serial: 'S804', after: 0, alt: 'The corner with cars and a child waiting' }, { serial: 'S805', after: 2, alt: 'The three colors labeled in the margin' }],
+  title: 'The warrant', art: 'S803', cast: [],
+  alt: 'A student with a paragraph in three colors: claim, evidence, warrant',
+  words: [
+    'Claim: the town needs a crosswalk here. Evidence: twelve near-misses this year.',
+    'Warrant: twelve near-misses mean the next one may not miss.',
+    'Claim, evidence, warrant. The warrant says why the evidence counts.',
+  ],
+};
+STORIES['full-essay'] = {
+  about: 'five paragraphs, one skeleton',
+  more: [{ serial: 'S807', after: 0, alt: 'The three middle boxes filled in' }, { serial: 'S808', after: 2, alt: 'The finished essay with the thesis underlined twice' }],
+  title: 'The skeleton', art: 'S806', cast: [],
+  alt: 'A student with five boxes sketched, the first and last shaded',
+  words: [
+    'Introduction with the thesis.',
+    'Three body paragraphs, one reason each.',
+    'A conclusion that says the thesis again, in the light of what was shown.',
+  ],
+};
+STORIES['founding-documents'] = {
+  about: 'why, how, and what may not',
+  more: [{ serial: 'S810', after: 0, alt: 'The Declaration with its signatures' }, { serial: 'S811', after: 2, alt: 'The first amendment\'s four freedoms drawn as four pictures' }],
+  title: 'Three papers', art: 'S809', cast: [],
+  alt: 'A student looking at three documents under glass',
+  words: [
+    'The Declaration, 1776: why we left.',
+    'The Constitution, 1787: how we run things.',
+    'The Bill of Rights, 1791: what the government may not do.',
+  ],
+};
+STORIES['early-republic'] = {
+  about: 'a new country learning to drive',
+  more: [{ serial: 'S813', after: 0, alt: 'Washington leaving office' }, { serial: 'S814', after: 2, alt: 'The Louisiana territory shaded on the map' }],
+  title: 'Learning to drive', art: 'S812', cast: [],
+  alt: 'A student looking at a map of the United States doubling in size',
+  words: [
+    'Washington set the habits: two terms, then go home.',
+    'Jefferson bought Louisiana in 1803 and doubled the map.',
+    'The War of 1812 proved the country could survive a fight.',
+  ],
+};
+STORIES['sectional-crisis'] = {
+  about: 'every new state a coin toss',
+  more: [{ serial: 'S816', after: 0, alt: 'The map with the line of 1820 drawn across' }, { serial: 'S817', after: 2, alt: 'Lincoln\'s election on a newspaper front' }],
+  title: 'The coin toss', art: 'S815', cast: [],
+  alt: 'A student with a map of the states in two colors, a coin on the table',
+  words: [
+    'Every new state: slave or free? Compromises in 1820, 1850 and 1854 kept the score even.',
+    'In 1860 Lincoln won without a single Southern state.',
+    'The South left, and the compromises were over.',
+  ],
+};
+STORIES['reconstruction'] = {
+  about: 'three promises, and a century to keep them',
+  more: [{ serial: 'S819', after: 0, alt: 'A voter at a ballot box in 1870' }, { serial: 'S820', after: 2, alt: 'A march a century later' }],
+  title: 'Three promises', art: 'S818', cast: [],
+  alt: 'A student reading three amendments on a poster',
+  words: [
+    'The 13th: no more slavery. The 14th: everyone born here is a citizen.',
+    'The 15th: no one loses the vote for their race.',
+    'Three promises in five years. Keeping them took a century.',
+  ],
+};
+// Grades 9 and 10, told for readers.
+STORIES['multi-step-equations'] = {
+  about: 'laundry sorted into two baskets',
+  more: [{ serial: 'S822', after: 0, alt: 'One basket filling up, the other emptying' }, { serial: 'S823', after: 2, alt: 'The equation solved beside the folded socks' }],
+  title: 'Sorting laundry', art: 'S821', cast: [],
+  alt: 'A teenager sorting socks into two baskets on a bed, an equation on a notebook beside',
+  words: [
+    'Socks on both sides of the bed. Gather them on one side. 5x + 3 = 2x + 15.',
+    'Take 2x from both sides. Take 3 from both. 3x = 12.',
+    'Divide by 3. x = 4. Whatever the shape of the equation, the moves are the same.',
+  ],
+};
+STORIES['functions'] = {
+  about: 'a vending machine that never lied',
+  more: [{ serial: 'S825', after: 0, alt: 'The snack dropping into the tray' }, { serial: 'S826', after: 2, alt: 'A table of buttons and snacks on the machine' }],
+  title: 'The vending machine', art: 'S824', cast: [],
+  alt: 'A teenager at a vending machine pressing a button, a snack dropping',
+  words: [
+    'Press 3. Get a pretzel. Every single time.',
+    'The rule inside is f(x) = 2x + 1. Press 3, get 7.',
+    'One input, one output, always. One button never gives two different snacks.',
+  ],
+};
+STORIES['systems-of-equations'] = {
+  about: 'two clues, one pair of numbers',
+  more: [{ serial: 'S828', after: 0, alt: 'The two notes side by side' }, { serial: 'S829', after: 2, alt: 'The pair written large: 3 and 2' }],
+  title: 'Two clues', art: 'S827', cast: [],
+  alt: 'A teenager with two sticky notes on a desk, each with a clue',
+  words: [
+    'Two numbers add to 5. That is one clue. Their difference is 1. That is the other.',
+    'Only 3 and 2 fit both.',
+    'Substitute one equation into the other and solve. Two clues, one answer.',
+  ],
+};
+STORIES['factoring'] = {
+  about: 'un-multiplying a rectangle',
+  more: [{ serial: 'S831', after: 0, alt: 'The tiles split into two strips' }, { serial: 'S832', after: 2, alt: 'The two factors labeled on the sides' }],
+  title: 'The rectangle undone', art: 'S830', cast: [],
+  alt: 'A teenager with algebra tiles arranged in a rectangle',
+  words: [
+    'x² + 5x + 6 came from a rectangle: (x + 2) by (x + 3).',
+    'Two numbers that multiply to 6 and add to 5: 2 and 3.',
+    'Factoring is un-multiplying. Find the pair, and the rectangle appears.',
+  ],
+};
+STORIES['exponential-growth'] = {
+  about: 'a rumor that doubled',
+  more: [{ serial: 'S834', after: 0, alt: 'The whisper spreading in a tree shape' }, { serial: 'S835', after: 2, alt: 'A graph curving up beside a flat line' }],
+  title: 'The rumor', art: 'S833', cast: [],
+  alt: 'A hallway with one student whispering to two, who each turn to two more',
+  words: [
+    'One person told two. They told four. Then eight.',
+    'After ten rounds: a thousand people. Adding two each round would have reached twenty-one.',
+    'Adding the same amount each step is linear. Multiplying is exponential.',
+  ],
+};
+STORIES['rhetorical-appeals'] = {
+  about: 'three ways to sell a bicycle',
+  more: [{ serial: 'S837', after: 0, alt: 'A friend pointing at the gears' }, { serial: 'S838', after: 2, alt: 'The bicycle sold, a handshake' }],
+  title: 'Selling the bicycle', art: 'S836', cast: [],
+  alt: 'A teenager holding a bicycle for sale, three friends offering different pitches',
+  words: [
+    'Trust me, I have ridden it for years. Ethos.',
+    'Imagine the wind on the hill. Pathos. It has twenty-one gears and new brakes. Logos.',
+    'Ethos is credibility, pathos is feeling, logos is reason. Good arguments use the one that fits.',
+  ],
+};
+STORIES['theme-development'] = {
+  about: 'a character who changed her mind',
+  more: [{ serial: 'S840', after: 0, alt: 'The character alone at the start' }, { serial: 'S841', after: 2, alt: 'The key passed across a table' }],
+  title: 'The seed and the tree', art: 'S839', cast: [],
+  alt: 'A teenager reading a novel, two sticky notes: page one, last page',
+  words: [
+    'Page one: she trusted no one.',
+    'Last page: she handed him the key.',
+    'A theme grows through a text. Track what changes between the first page and the last.',
+  ],
+};
+STORIES['word-choice-effect'] = {
+  about: 'sprinted, or ran',
+  more: [{ serial: 'S843', after: 0, alt: 'A figure sprinting, blurred' }, { serial: 'S844', after: 2, alt: 'The two sentences side by side' }],
+  title: 'The swap', art: 'S842', cast: [],
+  alt: 'A teenager crossing out a word in a sentence and writing a plainer one',
+  words: [
+    'She sprinted to the door. Swap it: she ran to the door.',
+    'What was lost? The speed. The fear.',
+    'Swap the word for a plainer one. What is lost is what the writer\'s word was doing.',
+  ],
+};
+STORIES['credible-sources'] = {
+  about: 'a website with no name on it',
+  more: [{ serial: 'S846', after: 0, alt: 'The page with its author line highlighted' }, { serial: 'S847', after: 2, alt: 'The blank page with question marks' }],
+  title: 'Who wrote this?', art: 'S845', cast: [],
+  alt: 'A teenager at a laptop looking at two pages, one with an author and date, one without',
+  words: [
+    'This page had an author, a date, and sources you could follow.',
+    'That page had none of them. A rumor with a website.',
+    'A credible source shows its work.',
+  ],
+};
+STORIES['punnett-squares'] = {
+  about: 'a raffle with four tickets',
+  more: [{ serial: 'S849', after: 0, alt: 'The square filled in' }, { serial: 'S850', after: 2, alt: 'A family with one blue-eyed child' }],
+  title: 'Four tickets', art: 'S848', cast: [],
+  alt: 'A teenager drawing a two-by-two square on paper, a brown-eyed and a blue-eyed parent sketched',
+  words: [
+    'Each parent gives one card at random. Two Bb parents.',
+    'Four tickets: BB, Bb, Bb, bb.',
+    'Three show brown, one shows blue. A one in four chance of blue eyes.',
+  ],
+};
+STORIES['respiration-and-photosynthesis'] = {
+  about: 'a leaf and a lung, running opposite ways',
+  more: [{ serial: 'S852', after: 0, alt: 'The leaf in sunlight' }, { serial: 'S853', after: 2, alt: 'A runner breathing hard' }],
+  title: 'The leaf and the lung', art: 'S851', cast: [],
+  alt: 'A leaf and a pair of lungs drawn facing each other with arrows between',
+  words: [
+    'The leaf takes carbon dioxide and water and makes sugar and oxygen.',
+    'The lung takes that oxygen, the cells burn the sugar, and out come carbon dioxide and water.',
+    'Photosynthesis and respiration run in opposite directions.',
+  ],
+};
+STORIES['evidence-for-evolution'] = {
+  about: 'three witnesses telling the same story',
+  more: [{ serial: 'S855', after: 0, alt: 'The three limbs side by side' }, { serial: 'S856', after: 2, alt: 'Two DNA strands with matching letters' }],
+  title: 'Three witnesses', art: 'S854', cast: [],
+  alt: 'A teenager with three cards: a fossil, a bone diagram, a DNA strand',
+  words: [
+    'Fossils show older forms.',
+    'An arm, a flipper and a wing share one bone plan. DNA shows close relatives share more letters.',
+    'Fossils, homologous structures and DNA are separate lines of evidence pointing the same way.',
+  ],
+};
+STORIES['cell-division'] = {
+  about: 'a recipe book, copied two ways',
+  more: [{ serial: 'S858', after: 0, alt: 'The full copy and the half copy' }, { serial: 'S859', after: 2, alt: 'Two half-books joined' }],
+  title: 'Copying the book', art: 'S857', cast: [],
+  alt: 'A teenager at a copier with a thick book, two stacks of pages',
+  words: [
+    'Mitosis photocopies all forty-six pages. A new cell just like the old.',
+    'Meiosis makes a half-book of twenty-three.',
+    'Two half-books from two parents make a whole.',
+  ],
+};
+STORIES['protein-synthesis'] = {
+  about: 'the recipe that never leaves the library',
+  more: [{ serial: 'S861', after: 0, alt: 'The photocopy in hand' }, { serial: 'S862', after: 2, alt: 'A kitchen with the dish made' }],
+  title: 'The library recipe', art: 'S860', cast: [],
+  alt: 'A teenager in a library copying one page from a reference book that cannot be checked out',
+  words: [
+    'DNA is the book that never leaves the nucleus.',
+    'RNA is a photocopy of one recipe. Transcription.',
+    'The ribosome reads the copy and cooks the protein. Translation.',
+  ],
+};
+STORIES['carbon-and-nitrogen-cycles'] = {
+  about: 'a carbon atom that never got off the bus',
+  more: [{ serial: 'S864', after: 0, alt: 'The rabbit eating the leaf' }, { serial: 'S865', after: 2, alt: 'The atom back in the air above the field' }],
+  title: 'The bus that never stops', art: 'S863', cast: [],
+  alt: 'A bus drawn on a loop through air, a leaf, a rabbit and soil',
+  words: [
+    'A carbon atom rode the air. A leaf picked it up.',
+    'A rabbit ate the leaf. The rabbit breathed it out. Back on the bus.',
+    'Carbon and nitrogen circle between air, soil, water and living things, never used up.',
+  ],
+};
+STORIES['homeostasis'] = {
+  about: 'a body that works like a thermostat',
+  more: [{ serial: 'S867', after: 0, alt: 'The runner shivering in the shade afterward' }, { serial: 'S868', after: 2, alt: 'The loop drawn: sense, undo, stop' }],
+  title: 'The thermostat', art: 'S866', cast: [],
+  alt: 'A teenager on a run, sweating, a thermostat drawn beside',
+  words: [
+    'Too hot: sweat. The sweat cools.',
+    'Too cold: shiver. The shivering warms. Then stop.',
+    'Homeostasis keeps the inside steady by negative feedback: sense the change, undo it, stop.',
+  ],
+};
+STORIES['analysis-paragraph'] = {
+  about: 'the sentence after the quote',
+  more: [{ serial: 'S870', after: 0, alt: 'The quotation copied out' }, { serial: 'S871', after: 2, alt: 'The explaining sentence underlined' }],
+  title: 'After the quote', art: 'S869', cast: [],
+  alt: 'A teenager writing under a quotation, an arrow from the quote to the next line',
+  words: [
+    'Claim: the narrator is lonely.',
+    'Quote: "the house held its breath."',
+    'Then the sentence that says what the quote shows: even the house feels empty to him. The quote never speaks for itself.',
+  ],
+};
+STORIES['narrative-with-a-turn'] = {
+  about: 'the moment the phone rang',
+  more: [{ serial: 'S873', after: 0, alt: 'The phone ringing, everyone frozen' }, { serial: 'S874', after: 2, alt: 'The last line of the story, quiet' }],
+  title: 'The turn', art: 'S872', cast: [],
+  alt: 'A teenager writing, a phone drawn in the margin',
+  words: [
+    'Everything was ordinary. Dinner, homework.',
+    'Then the phone rang. Slow down here.',
+    'Build toward a turn, slow down at it, and let the ending show what the turn changed.',
+  ],
+};
+STORIES['rhetorical-analysis'] = {
+  about: 'a speech taken apart',
+  more: [{ serial: 'S876', after: 0, alt: 'The speech highlighted in three colors' }, { serial: 'S877', after: 2, alt: 'The three questions answered in the margin' }],
+  title: 'Taking a speech apart', art: 'S875', cast: [],
+  alt: 'A teenager with a printed speech, three colored highlighters',
+  words: [
+    'What does it argue? Fund the library.',
+    'Which appeals? A librarian\'s credibility, a child\'s story, the numbers.',
+    'Do the appeals fit the claim? Yes. That is a rhetorical analysis.',
+  ],
+};
+STORIES['the-shape-of-the-earth'] = {
+  about: 'a cracked shell on a soft egg',
+  more: [{ serial: 'S879', after: 0, alt: 'Two shell pieces pushed into a ridge' }, { serial: 'S880', after: 2, alt: 'A map with plate edges drawn' }],
+  title: 'The cracked shell', art: 'S878', cast: [],
+  alt: 'A teenager holding a hard-boiled egg with a cracked shell',
+  words: [
+    'The shell is cracked into pieces. Plates.',
+    'Where pieces push together, they crumple. Mountains. Where they scrape past, the ground shakes.',
+    'The earth\'s crust is broken into plates, and mountains, quakes and volcanoes happen at the edges.',
+  ],
+};
+STORIES['climate-and-biomes'] = {
+  about: 'three dials that set a climate',
+  more: [{ serial: 'S882', after: 0, alt: 'A rainforest at one setting' }, { serial: 'S883', after: 2, alt: 'A tundra at another' }],
+  title: 'Three dials', art: 'S881', cast: [],
+  alt: 'A teenager turning three dials on a drawn control panel labeled with pictures',
+  words: [
+    'How far from the equator. How high up. How close to the sea.',
+    'Turn them and you get rainforest, desert or tundra.',
+    'Latitude, elevation and nearness to water decide climate. A biome is what lives there.',
+  ],
+};
+STORIES['reading-maps'] = {
+  about: 'a map as a shrunken photograph',
+  more: [{ serial: 'S885', after: 0, alt: 'The ruler on the map' }, { serial: 'S886', after: 2, alt: 'The campsite symbol in the key' }],
+  title: 'The shrunken photograph', art: 'S884', cast: [],
+  alt: 'A teenager with a hiking map, a ruler laid across it',
+  words: [
+    'One centimeter on the map. Ten kilometers on the ground. Scale.',
+    'The key says the little tent means a campsite. The compass says which way is north.',
+    'Scale turns a distance on the map into a distance you would walk.',
+  ],
+};
+STORIES['people-and-places'] = {
+  about: 'a city block and a ranch',
+  more: [{ serial: 'S888', after: 0, alt: 'The city block from above' }, { serial: 'S889', after: 2, alt: 'The ranch from above' }],
+  title: 'The block and the ranch', art: 'S887', cast: [],
+  alt: 'A teenager with two photos: a crowded city block, a wide ranch',
+  words: [
+    'Two thousand people on one block. Density high.',
+    'Ten people on a ranch of a thousand acres. Density low.',
+    'Density is people divided by area. Natural increase is births minus deaths.',
+  ],
+};
+STORIES['resources-and-work'] = {
+  about: 'a paycheck and a jar of coins',
+  more: [{ serial: 'S891', after: 0, alt: 'A wind turbine and a young forest' }, { serial: 'S892', after: 2, alt: 'An oil barrel, half empty' }],
+  title: 'Paycheck and jar', art: 'S890', cast: [],
+  alt: 'A teenager with a paycheck in one hand and a jar of coins in the other',
+  words: [
+    'Trees regrow. Wind keeps blowing. A paycheck that keeps coming. Renewable.',
+    'Oil and coal: a jar of coins. Spend it and it is gone.',
+    'Renewable resources come back, and nonrenewable ones do not.',
+  ],
+};
+STORIES['regions-of-the-world'] = {
+  about: 'a map drawn with eyes closed',
+  more: [{ serial: 'S894', after: 0, alt: 'The rough sketch with the Mediterranean labeled' }, { serial: 'S895', after: 2, alt: 'The sketch compared to a real map' }],
+  title: 'The map in your head', art: 'S893', cast: [],
+  alt: 'A teenager drawing a world map from memory on a whiteboard',
+  words: [
+    'Where is Egypt? Which sea is between Italy and Africa?',
+    'A geographer can sketch it with eyes closed.',
+    'A geographer carries a mental map of countries, capitals and features. The point is that you can too.',
+  ],
+};
+STORIES['angle-relationships'] = {
+  about: 'two sticks crossed on a table',
+  more: [{ serial: 'S897', after: 0, alt: 'The bow tie pair shaded' }, { serial: 'S898', after: 2, alt: 'The two angles on one stick labeled' }],
+  title: 'Two sticks', art: 'S896', cast: [],
+  alt: 'A teenager crossing two sticks on a table, angles marked with chalk',
+  words: [
+    'Cross two sticks. The angles across from each other match. A bow tie.',
+    'Angles side by side on one stick add to 180.',
+    'A straight stick is half a turn. Opposite angles equal; angles on a line add to 180.',
+  ],
+};
+STORIES['similar-triangles'] = {
+  about: 'a photo and its enlargement',
+  more: [{ serial: 'S900', after: 0, alt: 'The two triangles side by side' }, { serial: 'S901', after: 2, alt: 'The scale factor written between' }],
+  title: 'The enlargement', art: 'S899', cast: [],
+  alt: 'A teenager holding a small photo of a triangle sign next to a poster-sized print',
+  words: [
+    'Same shape, every length multiplied by the same number.',
+    'The 3-4-5 triangle, three times bigger: 9-12-15.',
+    'Same angles means the same shape. Find the scale factor and every side follows.',
+  ],
+};
+STORIES['transformations'] = {
+  about: 'a picture moved on a wall',
+  more: [{ serial: 'S903', after: 0, alt: 'The picture and its mirror image' }, { serial: 'S904', after: 2, alt: 'The picture turned a quarter' }],
+  title: 'Moving the picture', art: 'S902', cast: [],
+  alt: 'A teenager sliding, flipping and turning a framed picture on a wall grid',
+  words: [
+    'Slide it: add to the coordinates.',
+    'Flip it across the mirror: change the sign of x. (2, 3) becomes (-2, 3).',
+    'Turn it a quarter: swap and flip. Translate, reflect, rotate.',
+  ],
+};
+STORIES['right-triangle-trig'] = {
+  about: 'standing at the corner',
+  more: [{ serial: 'S906', after: 0, alt: 'The three sides labeled from the corner' }, { serial: 'S907', after: 2, alt: 'The three ratios written in chalk' }],
+  title: 'At the corner', art: 'S905', cast: [],
+  alt: 'A teenager standing at the corner of a right triangle chalked on a playground',
+  words: [
+    'Across from me: opposite. Beside me: adjacent. The long slant: hypotenuse.',
+    'Sine is across over slant. Cosine is next over slant.',
+    'Tangent is across over next. Stand at the angle and the names follow.',
+  ],
+};
+STORIES['arcs-and-sectors'] = {
+  about: 'a quarter of a pizza',
+  more: [{ serial: 'S909', after: 0, alt: 'The slice held up' }, { serial: 'S910', after: 2, alt: 'The fraction written on the box' }],
+  title: 'The quarter slice', art: 'S908', cast: [],
+  alt: 'A teenager cutting a pizza into a ninety-degree slice',
+  words: [
+    'Ninety degrees. A quarter of the pizza.',
+    'A quarter of the crust. A quarter of the area.',
+    'Angle over 360 is the fraction of the circle. Multiply it by the circumference or the area.',
+  ],
+};
+STORIES['spotting-bias'] = {
+  about: 'true facts with the middle missing',
+  more: [{ serial: 'S912', after: 0, alt: 'The article with holes cut in it' }, { serial: 'S913', after: 2, alt: 'A list of the missing facts' }],
+  title: 'The missing middle', art: 'S911', cast: [],
+  alt: 'A teenager reading an article with a gap drawn through it',
+  words: [
+    'Every fact in the article was true.',
+    'The facts that would change the picture were missing. Loaded words filled the gap.',
+    'Bias is a lean, not a lie. Look for missing facts and loaded words.',
+  ],
+};
+STORIES['paraphrasing'] = {
+  about: 'the same cargo in a different truck',
+  more: [{ serial: 'S915', after: 0, alt: 'The boxes counted in both trucks' }, { serial: 'S916', after: 2, alt: 'The two versions side by side' }],
+  title: 'The same cargo', art: 'S914', cast: [],
+  alt: 'Two trucks drawn side by side, the same boxes in each',
+  words: [
+    'A paraphrase moves the cargo to a new truck. Every box rides along.',
+    'Nothing new climbs in.',
+    'A paraphrase keeps every fact and adds none. Check it against the original line by line.',
+  ],
+};
+STORIES['complex-characters'] = {
+  about: 'a character who wanted two things',
+  more: [{ serial: 'S918', after: 0, alt: 'The character at a crossroads' }, { serial: 'S919', after: 2, alt: 'The two arrows on the sketch' }],
+  title: 'Two wants', art: 'S917', cast: [],
+  alt: 'A teenager reading, a character sketched with two arrows pulling opposite ways',
+  words: [
+    'She wanted to be honest. She wanted to be liked.',
+    'The two pulled against each other. That was the story.',
+    'A complex character wants two things that pull against each other.',
+  ],
+};
+STORIES['symbols'] = {
+  about: 'a green light mentioned four times',
+  more: [{ serial: 'S921', after: 0, alt: 'The light seen across the water' }, { serial: 'S922', after: 2, alt: 'The four page numbers listed' }],
+  title: 'The green light', art: 'S920', cast: [],
+  alt: 'A teenager underlining the same phrase on four pages of a novel',
+  words: [
+    'A green light across the water. Page 21. Page 92. Page 180.',
+    'A writer does not mention a light four times because of the light.',
+    'A symbol is a thing that stands for an idea. Repetition is the clue.',
+  ],
+};
+STORIES['ionic-and-covalent'] = {
+  about: 'two ways to share a toy',
+  more: [{ serial: 'S924', after: 0, alt: 'The ball handed over' }, { serial: 'S925', after: 2, alt: 'The ball held by both' }],
+  title: 'Two ways to share', art: 'S923', cast: [],
+  alt: 'Two pairs of children with a ball: one handing it over, one holding it together',
+  words: [
+    'Sodium hands its electron to chlorine. They stick because opposites attract. Ionic.',
+    'Two hydrogens and an oxygen hold their electrons in the middle. Covalent.',
+    'Ionic bonds give electrons; covalent bonds share them.',
+  ],
+};
+STORIES['balancing-equations'] = {
+  about: 'bricks in, bricks out',
+  more: [{ serial: 'S927', after: 0, alt: 'The bricks before' }, { serial: 'S928', after: 2, alt: 'The bricks after, rearranged' }],
+  title: 'The same bricks', art: 'S926', cast: [],
+  alt: 'A teenager with plastic bricks arranged as molecules on a table',
+  words: [
+    'Two H₂ and one O₂: four hydrogen bricks, two oxygen bricks.',
+    'Rearrange. Two H₂O. Four hydrogens, two oxygens.',
+    'Balanced means every atom counted the same on both sides. No brick appears or vanishes.',
+  ],
+};
+STORIES['acids-and-bases'] = {
+  about: 'lemon juice, soap and water',
+  more: [{ serial: 'S930', after: 0, alt: 'The pH strip dipped in lemon juice, red' }, { serial: 'S931', after: 2, alt: 'The strip in soapy water, blue' }],
+  title: 'Lemon, soap, water', art: 'S929', cast: [],
+  alt: 'Three cups on a table: lemon juice, soapy water, plain water, pH strips beside',
+  words: [
+    'Lemon juice bites. Below 7. Acid.',
+    'Soap feels slippery. Above 7. Base.',
+    'Water is neither. 7. Neutral. Each step on the scale is ten times stronger.',
+  ],
+};
+STORIES['moles-and-molar-mass'] = {
+  about: 'a dozen for chemists',
+  more: [{ serial: 'S933', after: 0, alt: 'The two dozens on the scale' }, { serial: 'S934', after: 2, alt: 'Two beakers labeled by mass' }],
+  title: 'A dozen for chemists', art: 'S932', cast: [],
+  alt: 'A teenager weighing a dozen eggs and a dozen grapes on a scale',
+  words: [
+    'A dozen eggs weighs more than a dozen grapes. Same count, different mass.',
+    'A mole is a dozen for chemists, only much bigger.',
+    'A mole of water, 18 grams, weighs more than a mole of hydrogen, 2 grams.',
+  ],
+};
+STORIES['reaction-types'] = {
+  about: 'snapping together, splitting apart',
+  more: [{ serial: 'S936', after: 0, alt: 'The two blocks joined' }, { serial: 'S937', after: 2, alt: 'A block swapping partners' }],
+  title: 'Snap and split', art: 'S935', cast: [],
+  alt: 'A teenager snapping two blocks together, then pulling one apart',
+  words: [
+    'A and B snap into AB. Synthesis.',
+    'AB splits into A and B. Decomposition, the same picture run backward.',
+    'Synthesis joins, decomposition splits, replacement swaps a partner.',
+  ],
+};
+STORIES['gas-laws'] = {
+  about: 'squeezing a balloon',
+  more: [{ serial: 'S939', after: 0, alt: 'The balloon at full size' }, { serial: 'S940', after: 2, alt: 'The balloon squeezed small' }],
+  title: 'The balloon', art: 'S938', cast: [],
+  alt: 'A teenager squeezing a balloon between two hands',
+  words: [
+    'Squeeze the balloon. It pushes back harder.',
+    'Halve its space and its pressure doubles.',
+    'The same particles hit the walls twice as often. Squeeze a gas and its pressure rises.',
+  ],
+};
+STORIES['concentration'] = {
+  about: 'how strong the lemonade is',
+  more: [{ serial: 'S942', after: 0, alt: 'The spoons counted' }, { serial: 'S943', after: 2, alt: 'The two glasses, equally sweet' }],
+  title: 'Strong lemonade', art: 'S941', cast: [],
+  alt: 'A teenager stirring sugar into two glasses of lemonade',
+  words: [
+    'Four spoons of sugar in two glasses. Two spoons per glass.',
+    'Moles per liter is the same idea.',
+    'Molarity is moles of solute divided by liters of solution. How much stuff in how much water.',
+  ],
+};
+STORIES['literary-analysis'] = {
+  about: 'a thesis about the whole book',
+  more: [{ serial: 'S945', after: 0, alt: 'Three sticky notes in three colors' }, { serial: 'S946', after: 2, alt: 'The thesis written across the top of a page' }],
+  title: 'The whole book', art: 'S944', cast: [],
+  alt: 'A teenager with a novel bristling with sticky notes at the beginning, middle and end',
+  words: [
+    'A claim someone could dispute: the house is the real villain.',
+    'Quotations from page 3, page 150, page 300.',
+    'A sentence after each quotation saying what it shows. One scene proves a moment; three prove a pattern.',
+  ],
+};
+STORIES['sourced-argument'] = {
+  about: 'an argument that named its sources',
+  more: [{ serial: 'S948', after: 0, alt: 'A citation written after a sentence' }, { serial: 'S949', after: 2, alt: 'The list of sources at the end' }],
+  title: 'Named sources', art: 'S947', cast: [],
+  alt: 'A teenager writing with three books open and a citation after each fact',
+  words: [
+    'Every fact had a name behind it.',
+    'The reader could check each one.',
+    'Every piece of evidence names its source. That is what separates an argument from an opinion with confidence.',
+  ],
+};
+STORIES['reflective-essay'] = {
+  about: 'before and after, and the gap between',
+  more: [{ serial: 'S951', after: 0, alt: 'The counter with a customer smiling' }, { serial: 'S952', after: 2, alt: 'The two columns filled in' }],
+  title: 'The gap', art: 'S950', cast: [],
+  alt: 'A teenager writing, two columns on the page: before, after',
+  words: [
+    'Before: I thought the job was about money.',
+    'After: it was about the people at the counter.',
+    'Tell what happened, then what it meant. The gap between what you believed before and after is the essay.',
+  ],
+};
+STORIES['ancient-civilizations'] = {
+  about: 'a river that flooded on schedule',
+  more: [{ serial: 'S954', after: 0, alt: 'A granary with clay tablets' }, { serial: 'S955', after: 2, alt: 'A scribe pressing marks into clay' }],
+  title: 'The river that flooded', art: 'S953', cast: [],
+  alt: 'A river flooding fields, farmers watching from a hill',
+  words: [
+    'The river flooded. The soil was rich. There was extra grain.',
+    'Extra grain let some people stop farming: priests, builders, scribes.',
+    'Counting the grain invented writing. Civilization began on flooding rivers.',
+  ],
+};
+STORIES['greece-and-rome'] = {
+  about: 'everyone votes, then some vote, then one rules',
+  more: [{ serial: 'S957', after: 0, alt: 'The assembly on a hillside' }, { serial: 'S958', after: 2, alt: 'The senate in session' }],
+  title: 'Three ways to run a city', art: 'S956', cast: [],
+  alt: 'A drawing of an Athenian assembly, a Roman senate and an emperor on a throne',
+  words: [
+    'Athens: every citizen voted on everything. Direct democracy.',
+    'Rome: elected representatives. A republic.',
+    'Rome grew so large that one man, an emperor, took over.',
+  ],
+};
+STORIES['middle-ages-and-renaissance'] = {
+  about: 'land for loyalty, then a plague',
+  more: [{ serial: 'S960', after: 0, alt: 'The knight kneeling before the lord' }, { serial: 'S961', after: 2, alt: 'A market with more coins changing hands after the plague' }],
+  title: 'Land and plague', art: 'S959', cast: [],
+  alt: 'A castle on a hill with fields below, a lord and a knight at the gate',
+  words: [
+    'After Rome fell, land was the only wealth. A lord gave land for loyalty; a knight gave service for land.',
+    'The Black Death of 1347 killed a third of Europe.',
+    'The survivors\' wages rose, and the old order cracked.',
+  ],
+};
+STORIES['age-of-revolutions'] = {
+  about: 'one idea, three revolutions',
+  more: [{ serial: 'S963', after: 0, alt: 'The Declaration signed' }, { serial: 'S964', after: 2, alt: 'Haiti\'s flag raised' }],
+  title: 'One idea', art: 'S962', cast: [],
+  alt: 'Three flags being raised in three places: America, France, Haiti',
+  words: [
+    'The Enlightenment said rights come first and governments from consent.',
+    'America tried it in 1776. France in 1789. Haiti in 1804.',
+    'One idea, three revolutions, three different endings.',
+  ],
+};
+STORIES['world-wars'] = {
+  about: 'twenty years apart',
+  more: [{ serial: 'S966', after: 0, alt: 'Trenches in 1916' }, { serial: 'S967', after: 2, alt: 'A treaty table in 1919' }],
+  title: 'Twenty years', art: 'S965', cast: [],
+  alt: 'A timeline on a classroom wall from 1914 to 1945, a student pointing at the gap',
+  words: [
+    '1914 to 1918. Then a peace so harsh it planted the next war.',
+    '1939 to 1945. Far worse.',
+    'The First World War made the peace that made the Second.',
+  ],
+};
+// Grades 11 and 12, told for readers.
+STORIES['quadratic-formula'] = {
+  about: 'a machine that finds where the arch touches the ground',
+  more: [{ serial: 'S969', after: 0, alt: 'The formula written beside the arch' }, { serial: 'S970', after: 2, alt: 'A parabola that never touches the floor' }],
+  title: 'The arch', art: 'S968', cast: [],
+  alt: 'A teenager sketching a parabola over a doorway, two points marked where it meets the floor',
+  words: [
+    'The arch crossed the floor in two places. Where?',
+    'Feed a, b and c into the formula. Out come the two crossings.',
+    'The part under the root says first whether there are two, one or none.',
+  ],
+};
+STORIES['multiplying-binomials'] = {
+  about: 'a garden bed with four patches',
+  more: [{ serial: 'S972', after: 0, alt: 'The four patches labeled' }, { serial: 'S973', after: 2, alt: 'The sum written on a stake' }],
+  title: 'Four patches', art: 'S971', cast: [],
+  alt: 'A rectangular garden bed split into four patches with a string, a teenager measuring',
+  words: [
+    'The bed was x + 1 wide and x + 4 tall. Four patches.',
+    'x², 4x, x and 4.',
+    'Every piece of the first bracket multiplies every piece of the second. Add the patches: x² + 5x + 4.',
+  ],
+};
+STORIES['sequences'] = {
+  about: 'a staircase with even steps',
+  more: [{ serial: 'S975', after: 0, alt: 'The rises marked on the stairs' }, { serial: 'S976', after: 2, alt: 'A second staircase that doubles' }],
+  title: 'The staircase', art: 'S974', cast: [],
+  alt: 'A teenager on a staircase, each step the same height, counting',
+  words: [
+    'Three, five, seven, nine. Each step adds two.',
+    'The fifth step: the first plus four rises. 3 + 4 × 2 = 11.',
+    'Arithmetic: add the same amount each time. Geometric: multiply by the same amount.',
+  ],
+};
+STORIES['logarithms'] = {
+  about: 'how many doublings',
+  more: [{ serial: 'S978', after: 0, alt: 'The strip at thirty-two layers' }, { serial: 'S979', after: 2, alt: 'The equation written on the strip' }],
+  title: 'How many doublings', art: 'S977', cast: [],
+  alt: 'A teenager folding a paper strip and counting layers',
+  words: [
+    'Two doublings make four. Five make thirty-two.',
+    'So log₂ 32 = 5.',
+    'A logarithm is the exponent you were looking for.',
+  ],
+};
+STORIES['absolute-value'] = {
+  about: 'four steps from three',
+  more: [{ serial: 'S981', after: 0, alt: 'The teenager at 7' }, { serial: 'S982', after: 2, alt: 'The teenager at -1' }],
+  title: 'Four steps', art: 'S980', cast: [],
+  alt: 'A number line chalked on a sidewalk, a teenager standing at 3',
+  words: [
+    'Four steps from 3. Which way?',
+    'Right: 7. Left: -1.',
+    'Absolute value is distance from zero, and distance has no direction. Two answers, always.',
+  ],
+};
+STORIES['counterclaims'] = {
+  about: 'the objection that got there first',
+  more: [{ serial: 'S984', after: 0, alt: 'The opponent nodding' }, { serial: 'S985', after: 2, alt: 'The cost chart over three years' }],
+  title: 'Getting there first', art: 'S983', cast: [],
+  alt: 'A teenager at a debate table, the opponent\'s card already on the table',
+  words: [
+    'Some say the plan costs too much.',
+    'It does cost more up front. It pays for itself in three years.',
+    'Name the best objection, then answer it. A rebuttal that hides the objection loses.',
+  ],
+};
+STORIES['satire'] = {
+  about: 'praise with a straight face',
+  more: [{ serial: 'S987', after: 0, alt: 'The phone dead on the table at noon' }, { serial: 'S988', after: 2, alt: 'The ad with a deadpan slogan and no words' }],
+  title: 'The straight face', art: 'S986', cast: [],
+  alt: 'A teenager reading a mock advertisement praising a terrible product',
+  words: [
+    'The ad praised the phone that dies at noon. Best phone ever.',
+    'Nobody meant it. That was the point.',
+    'Satire criticizes by exaggerating in a straight face. Find the exaggeration and you find the target.',
+  ],
+};
+STORIES['sentence-structure'] = {
+  about: 'a long sentence, then a short one',
+  more: [{ serial: 'S990', after: 0, alt: 'The path down the hill' }, { serial: 'S991', after: 2, alt: 'The door, closed' }],
+  title: 'Long, then short', art: 'S989', cast: [],
+  alt: 'A teenager writing, one long line, then one word on its own',
+  words: [
+    'The long sentence carried the reader down the hill, past the barn, through the gate, to the door.',
+    'Stop.',
+    'Long sentences flow and build. Short sentences stop. Writers switch between them on purpose.',
+  ],
+};
+STORIES['enough-evidence'] = {
+  about: 'a big claim on a small pile',
+  more: [{ serial: 'S993', after: 0, alt: 'The big sign leaning on the small pile' }, { serial: 'S994', after: 2, alt: 'A taller pile beside it' }],
+  title: 'The small pile', art: 'S992', cast: [],
+  alt: 'A teenager holding a large sign next to a tiny stack of papers',
+  words: [
+    'Relevant: is the evidence about the claim?',
+    'Sufficient: is there enough of it?',
+    'A big claim needs a big pile. Two different questions.',
+  ],
+};
+STORIES['energy-kinds'] = {
+  about: 'a ball held high, then dropped',
+  more: [{ serial: 'S996', after: 0, alt: 'The ball at the top of its drop' }, { serial: 'S997', after: 2, alt: 'The ball a blur near the ground' }],
+  title: 'Held, then dropped', art: 'S995', cast: [],
+  alt: 'A teenager holding a ball above the ground, then the ball falling',
+  words: [
+    'Held high: stored energy. Potential.',
+    'Falling: moving energy. Kinetic.',
+    'Double the speed and the kinetic energy quadruples, because speed is squared.',
+  ],
+};
+STORIES['waves'] = {
+  about: 'a rope shaken at one end',
+  more: [{ serial: 'S999', after: 0, alt: 'Long slow waves on the rope' }, { serial: 'S1000', after: 2, alt: 'Short fast waves on the rope' }],
+  title: 'The rope', art: 'S998', cast: [],
+  alt: 'A teenager shaking a rope tied to a fence, waves running along it',
+  words: [
+    'Crest to crest: the wavelength. How tall: the amplitude.',
+    'How many crests a second: the frequency.',
+    'Speed equals wavelength times frequency. Shake faster and the waves get shorter.',
+  ],
+};
+STORIES['electricity'] = {
+  about: 'a water pipe',
+  more: [{ serial: 'S1002', after: 0, alt: 'The hose pinched, the flow thin' }, { serial: 'S1003', after: 2, alt: 'The hose open, the flow full' }],
+  title: 'The pipe', art: 'S1001', cast: [],
+  alt: 'A garden hose with a pump, a teenager watching the flow',
+  words: [
+    'The pump pushes: voltage. The pipe narrows: resistance.',
+    'How much flows: current.',
+    'Voltage equals current times resistance. Push harder or widen the pipe and more flows.',
+  ],
+};
+STORIES['momentum'] = {
+  about: 'a bike and a truck at the same speed',
+  more: [{ serial: 'S1005', after: 0, alt: 'The truck\'s long stopping distance drawn' }, { serial: 'S1006', after: 2, alt: 'Two carts colliding on a track' }],
+  title: 'The bike and the truck', art: 'S1004', cast: [],
+  alt: 'A cyclist and a truck side by side at a light',
+  words: [
+    'Same speed. Far more mass in the truck.',
+    'Far more momentum. Far harder to stop.',
+    'Momentum is mass times velocity. In a collision it is passed along, never lost.',
+  ],
+};
+STORIES['work-and-power'] = {
+  about: 'the same box, carried and then run',
+  more: [{ serial: 'S1008', after: 0, alt: 'The box on the top step' }, { serial: 'S1009', after: 2, alt: 'A stopwatch beside the stairs' }],
+  title: 'The same box', art: 'S1007', cast: [],
+  alt: 'A teenager carrying a box up stairs, then running up with it',
+  words: [
+    'Carry the box up the stairs. Force through a distance. Work.',
+    'Run up with it. The same work, faster.',
+    'Work is force times distance. Power is work divided by time.',
+  ],
+};
+STORIES['series-and-parallel'] = {
+  about: 'two strings of holiday lights',
+  more: [{ serial: 'S1011', after: 0, alt: 'The dark section on the old string' }, { serial: 'S1012', after: 2, alt: 'The new string lit around a dead bulb' }],
+  title: 'Two strings of lights', art: 'S1010', cast: [],
+  alt: 'Two strings of lights on a porch, one with a dark section',
+  words: [
+    'The old string: one bulb died, the whole line went dark. Series, one path.',
+    'The new string: one bulb died, the rest stayed lit. Parallel, many paths.',
+    'Series is one path; parallel is many.',
+  ],
+};
+STORIES['synthesis-essay'] = {
+  about: 'organized by reasons, not by sources',
+  more: [{ serial: 'S1014', after: 0, alt: 'The outline with sources under reasons' }, { serial: 'S1015', after: 2, alt: 'Two sources circled where they disagree' }],
+  title: 'By reason', art: 'S1013', cast: [],
+  alt: 'A teenager with three sources and one outline organized under three reasons',
+  words: [
+    'Not source one, source two, source three.',
+    'Reason one, with whichever sources support it. Reason two. Reason three.',
+    'Organize by your reasons, not by your sources. Where sources disagree, say so.',
+  ],
+};
+STORIES['literary-argument'] = {
+  about: 'a claim about the whole book, proved three times',
+  more: [{ serial: 'S1017', after: 0, alt: 'The river scene at the start' }, { serial: 'S1018', after: 2, alt: 'The river scene at the end' }],
+  title: 'Proved three times', art: 'S1016', cast: [],
+  alt: 'A teenager with a novel open to three flagged pages',
+  words: [
+    'The claim: the river is the book\'s conscience.',
+    'Beginning, middle, end: three scenes where the river judges.',
+    'A disputable claim about the whole work, with evidence from start to finish. Three scenes prove a pattern.',
+  ],
+};
+STORIES['op-ed'] = {
+  about: 'thirty seconds of a stranger\'s attention',
+  more: [{ serial: 'S1020', after: 0, alt: 'The reader looking up from the page' }, { serial: 'S1021', after: 2, alt: 'The single ask circled' }],
+  title: 'Thirty seconds', art: 'S1019', cast: [],
+  alt: 'A teenager reading an opinion page on a bus, a stopwatch drawn beside',
+  words: [
+    'First line: the hook.',
+    'Then the position, the evidence, and one specific ask.',
+    'Hook, position, evidence, ask, all for a reader who gives you thirty seconds.',
+  ],
+};
+STORIES['gilded-age-and-progressives'] = {
+  about: 'gold on the outside',
+  more: [{ serial: 'S1023', after: 0, alt: 'The tenement stairs' }, { serial: 'S1024', after: 2, alt: 'A new law posted on a factory door' }],
+  title: 'Gold on the outside', art: 'S1022', cast: [],
+  alt: 'A mansion beside a tenement, a railroad between them',
+  words: [
+    'Railroads made fortunes. The workers who built them lived in slums.',
+    'Gilded means gold on the outside.',
+    'The Progressives, from about 1890 to 1920, wrote the rules that reined it in.',
+  ],
+};
+STORIES['depression-and-new-deal'] = {
+  about: 'one worker in four',
+  more: [{ serial: 'S1026', after: 0, alt: 'Workers building a dam' }, { serial: 'S1027', after: 2, alt: 'A bank with a new insurance sign in the window' }],
+  title: 'One in four', art: 'S1025', cast: [],
+  alt: 'A breadline in 1932, four men in a row, one holding a sign',
+  words: [
+    'In 1929 the market crashed. By 1933 one worker in four had no job.',
+    'The New Deal was the government hiring people, insuring banks, starting Social Security.',
+    'The crash left a quarter of workers jobless; the New Deal put the government to work.',
+  ],
+};
+STORIES['america-in-world-war-two'] = {
+  about: 'a morning that ended the argument',
+  more: [{ serial: 'S1029', after: 0, alt: 'Landing craft at dawn' }, { serial: 'S1030', after: 2, alt: 'A factory line of planes' }],
+  title: 'The morning', art: 'S1028', cast: [],
+  alt: 'A radio on a kitchen table, a family gathered around it, December',
+  words: [
+    'Pearl Harbor, December 7, 1941. The argument about staying out was over.',
+    'D-Day, June 6, 1944, opened the road to Berlin.',
+    'Factories at home built the ships and planes that won.',
+  ],
+};
+STORIES['cold-war'] = {
+  about: 'two powers that never fired directly',
+  more: [{ serial: 'S1032', after: 0, alt: 'A rocket on the pad' }, { serial: 'S1033', after: 2, alt: 'The Berlin Wall coming down in 1989' }],
+  title: 'The stare', art: 'S1031', cast: [],
+  alt: 'Two chess players staring across a board, no piece moving',
+  words: [
+    'From 1945 to 1991, two nuclear powers stared at each other.',
+    'They fought through others, raced to the moon, and came closest to war over Cuba in 1962.',
+    'Two powers, never a direct shot, and the whole world holding its breath.',
+  ],
+};
+STORIES['civil-rights-movement'] = {
+  about: 'courts, feet, crowds, laws',
+  more: [{ serial: 'S1035', after: 0, alt: 'A bus with an empty seat' }, { serial: 'S1036', after: 2, alt: 'A pen signing a law' }],
+  title: 'Courts, feet, crowds, laws', art: 'S1034', cast: [],
+  alt: 'A march on a wide avenue, signs held high',
+  words: [
+    'Courts first: Brown, 1954. Then feet: Montgomery, 1955.',
+    'Then a crowd: Washington, 1963.',
+    'Then laws: the Civil Rights Act of 1964 and the Voting Rights Act of 1965.',
+  ],
+};
+STORIES['recent-america'] = {
+  about: 'the shocks a generation was born into',
+  more: [{ serial: 'S1038', after: 0, alt: 'A first dial-up connection' }, { serial: 'S1039', after: 2, alt: 'A crowd on election night 2008' }],
+  title: 'The shocks', art: 'S1037', cast: [],
+  alt: 'A teenager looking at a wall of photos from the last thirty years',
+  words: [
+    'The internet. September 11, 2001.',
+    'The 2008 crash. The first Black president.',
+    'Each changed what Americans argued about.',
+  ],
+};
+STORIES['function-shifts'] = {
+  about: 'a picture moved on the wall',
+  more: [{ serial: 'S1041', after: 0, alt: 'The graph lifted' }, { serial: 'S1042', after: 2, alt: 'The graph slid right' }],
+  title: 'The picture, moved', art: 'S1040', cast: [],
+  alt: 'A teenager moving a framed graph on a grid wall',
+  words: [
+    'Adding outside the brackets lifts it up.',
+    'Subtracting inside slides it right.',
+    '(x - 2)² + 3 is x² moved 2 right and 3 up. Outside moves up or down; inside moves sideways.',
+  ],
+};
+STORIES['composite-functions'] = {
+  about: 'two machines in a row',
+  more: [{ serial: 'S1044', after: 0, alt: 'The ball leaving the first machine' }, { serial: 'S1045', after: 2, alt: 'The ball leaving the second' }],
+  title: 'Two machines', art: 'S1043', cast: [],
+  alt: 'Two boxes in a row with a ball going in one side and out the other',
+  words: [
+    'g turns 3 into 4.',
+    'f takes that 4 and turns it into 9.',
+    'f(g(x)) means apply g first, then f. Work from the inside out.',
+  ],
+};
+STORIES['unit-circle'] = {
+  about: 'a walk around a circle of radius one',
+  more: [{ serial: 'S1047', after: 0, alt: 'The walker at 45 degrees' }, { serial: 'S1048', after: 2, alt: 'The walker at 90, straight up' }],
+  title: 'The walk', art: 'S1046', cast: [],
+  alt: 'A teenager walking a circle chalked on a court, a flag at the center',
+  words: [
+    'However far you turn, your position across is the cosine.',
+    'Your position up is the sine.',
+    'At 45 degrees you are equally across and up. On the unit circle, x is cosine and y is sine.',
+  ],
+};
+STORIES['half-life'] = {
+  about: 'a halving clock',
+  more: [{ serial: 'S1050', after: 0, alt: 'The stack at forty' }, { serial: 'S1051', after: 2, alt: 'The stack at ten' }],
+  title: 'The halving clock', art: 'S1049', cast: [],
+  alt: 'A teenager with a stack of 80 coins, removing half each time a timer rings',
+  words: [
+    'Eighty grams. One tick: forty.',
+    'Two ticks: twenty. Three: ten.',
+    'Count the half-lives that fit in the time, then halve that many times.',
+  ],
+};
+STORIES['end-behavior'] = {
+  about: 'what the ends do',
+  more: [{ serial: 'S1053', after: 0, alt: 'The right end diving' }, { serial: 'S1054', after: 2, alt: 'An even-power curve with both ends up' }],
+  title: 'The ends', art: 'S1052', cast: [],
+  alt: 'A teenager sketching a curve that dives on one side and climbs on the other',
+  words: [
+    'Far from the middle, only the biggest power matters.',
+    '-2x³: negative for big x, the right end dives. Positive for big negative x, the left end climbs.',
+    'The highest power rules the ends. Odd power, opposite ends.',
+  ],
+};
+STORIES['two-sources'] = {
+  about: 'two witnesses to one event',
+  more: [{ serial: 'S1056', after: 0, alt: 'The two headlines' }, { serial: 'S1057', after: 2, alt: 'A note listing what each left out' }],
+  title: 'Two witnesses', art: 'S1055', cast: [],
+  alt: 'Two newspaper front pages side by side on a table',
+  words: [
+    'Both agreed the bridge closed on March 3.',
+    'One said shops lost trade. The other said the money was cut years ago.',
+    'Hold both sources in mind. Where they differ is where the thinking starts.',
+  ],
+};
+STORIES['assumptions'] = {
+  about: 'the step the writer skipped',
+  more: [{ serial: 'S1059', after: 0, alt: 'The missing step drawn in dashed lines' }, { serial: 'S1060', after: 2, alt: 'The assumption written on the step' }],
+  title: 'The skipped step', art: 'S1058', cast: [],
+  alt: 'A teenager drawing a staircase with one step missing',
+  words: [
+    'The argument jumped from more homework to better grades.',
+    'It assumed the homework would be done.',
+    'An assumption is the step the writer skipped. Ask what would have to be true.',
+  ],
+};
+STORIES['precise-words'] = {
+  about: 'walk, stroll, march, trudge',
+  more: [{ serial: 'S1062', after: 0, alt: 'The trudging figure' }, { serial: 'S1063', after: 2, alt: 'The marching figure' }],
+  title: 'Four walks', art: 'S1061', cast: [],
+  alt: 'Four figures walking differently along a road, a teenager choosing a word',
+  words: [
+    'Walk. Stroll. March. Trudge. All walking, none the same.',
+    'The tired one is trudging.',
+    'Near-synonyms name slightly different things. The precise word names exactly this walk.',
+  ],
+};
+STORIES['author-choices'] = {
+  about: 'why the story starts here',
+  more: [{ serial: 'S1065', after: 0, alt: 'The funeral scene' }, { serial: 'S1066', after: 2, alt: 'The wedding scene' }],
+  title: 'Why here', art: 'S1064', cast: [],
+  alt: 'A teenager holding a book open at the first page, a question mark drawn',
+  words: [
+    'The story could have started anywhere. It started at the funeral.',
+    'It ended at the wedding.',
+    'Where a story begins, where it ends, and the order in between are choices. Ask why.',
+  ],
+};
+STORIES['rock-cycle'] = {
+  about: 'rock that is never finished',
+  more: [{ serial: 'S1068', after: 0, alt: 'Layers in a riverbank' }, { serial: 'S1069', after: 2, alt: 'A folded band of rock in a cliff' }],
+  title: 'Never finished', art: 'S1067', cast: [],
+  alt: 'A volcano, a riverbed and a mountain range in one landscape',
+  words: [
+    'Lava cooled: igneous.',
+    'Rain ground it to sand that pressed into layers: sedimentary. Heat and squeezing: metamorphic.',
+    'Melt it, and around it goes again. Rock is never finished.',
+  ],
+};
+STORIES['climate-and-weather'] = {
+  about: 'one rainy Tuesday and thirty years of them',
+  more: [{ serial: 'S1071', after: 0, alt: 'The rain on the window' }, { serial: 'S1072', after: 2, alt: 'The long chart with its average line' }],
+  title: 'Thirty years of Tuesdays', art: 'S1070', cast: [],
+  alt: 'A teenager looking out at rain, a chart of thirty years pinned beside the window',
+  words: [
+    'One rainy Tuesday tells you nothing about a place.',
+    'Thirty years of Tuesdays does.',
+    'Weather is today; climate is decades of averages.',
+  ],
+};
+STORIES['life-of-a-star'] = {
+  about: 'a campfire that lasts billions of years',
+  more: [{ serial: 'S1074', after: 0, alt: 'A red giant beside a small star' }, { serial: 'S1075', after: 2, alt: 'A supernova remnant' }],
+  title: 'The long campfire', art: 'S1073', cast: [],
+  alt: 'A teenager by a campfire looking up at the stars',
+  words: [
+    'It lit from a collapsing cloud.',
+    'It burned steadily, swelled as the fuel ran low, and faded to an ember.',
+    'A star fuses hydrogen into helium while it lasts. The biggest end in an explosion instead.',
+  ],
+};
+STORIES['human-impact'] = {
+  about: 'fixing a problem the way a doctor does',
+  more: [{ serial: 'S1077', after: 0, alt: 'The sample held up to the light' }, { serial: 'S1078', after: 2, alt: 'A pipe upstream, found' }],
+  title: 'The doctor\'s way', art: 'S1076', cast: [],
+  alt: 'A teenager with a clipboard by a stream, taking a sample',
+  words: [
+    'Measure it, so you know it is real.',
+    'Find the cause, so you know what to change.',
+    'Act on the cause, not the symptom. People change the Earth in measurable ways, and the measurements guide the fix.',
+  ],
+};
+STORIES['earths-layers'] = {
+  about: 'a peach',
+  more: [{ serial: 'S1080', after: 0, alt: 'The peach half with layers labeled' }, { serial: 'S1081', after: 2, alt: 'A seismograph trace' }],
+  title: 'The peach', art: 'S1079', cast: [],
+  alt: 'A teenager cutting a peach in half, the pit showing',
+  words: [
+    'The thin skin: crust.',
+    'The thick flesh: the hot mantle.',
+    'The pit: the core, liquid outside, solid inside. Earthquake waves told us so.',
+  ],
+};
+STORIES['ocean-currents'] = {
+  about: 'a conveyor belt of heavy water',
+  more: [{ serial: 'S1083', after: 0, alt: 'The dye sinking and spreading' }, { serial: 'S1084', after: 2, alt: 'A world map with the belt drawn' }],
+  title: 'The conveyor belt', art: 'S1082', cast: [],
+  alt: 'A teenager pouring cold salty water into a tank of warm water, dye showing the flow',
+  words: [
+    'Cold, salty water is heavy. It sinks and creeps along the bottom.',
+    'Warm water flows back along the top.',
+    'Wind drives surface currents; cold salty water sinking drives the deep ones. A slow belt around the world.',
+  ],
+};
+STORIES['natural-resources'] = {
+  about: 'a forest cut slower than it grows',
+  more: [{ serial: 'S1086', after: 0, alt: 'Saplings among stumps' }, { serial: 'S1087', after: 2, alt: 'The pump with a gauge near empty' }],
+  title: 'The forest and the bank', art: 'S1085', cast: [],
+  alt: 'A young forest on one side of a road, an oil pump on the other',
+  words: [
+    'Cut the forest slower than it grows and it lasts forever. Renewable.',
+    'Oil is a bank account with no deposits.',
+    'Renewable comes back on a human timescale; nonrenewable does not.',
+  ],
+};
+STORIES['the-big-bang'] = {
+  about: 'raisins in rising dough',
+  more: [{ serial: 'S1089', after: 0, alt: 'The dough small with the raisins close' }, { serial: 'S1090', after: 2, alt: 'The dough risen with the raisins far apart' }],
+  title: 'The rising dough', art: 'S1088', cast: [],
+  alt: 'A teenager watching bread dough rise, raisins moving apart',
+  words: [
+    'Every raisin sees every other raisin moving away.',
+    'The far ones move away fastest.',
+    'Galaxies recede faster the farther they are; run the film backward and they were once together.',
+  ],
+};
+STORIES['research-paper'] = {
+  about: 'a question, the sources, your answer',
+  more: [{ serial: 'S1092', after: 0, alt: 'The books open with notes' }, { serial: 'S1093', after: 2, alt: 'The answer written above the sources' }],
+  title: 'The question first', art: 'S1091', cast: [],
+  alt: 'A teenager with a question written on a card, books stacked beneath it',
+  words: [
+    'Start with a question.',
+    'Report what the sources say.',
+    'Build your own answer on top, saying which sources hold which part.',
+  ],
+};
+STORIES['personal-essay'] = {
+  about: 'one small true moment',
+  more: [{ serial: 'S1095', after: 0, alt: 'The counter, the customer, the moment' }, { serial: 'S1096', after: 2, alt: 'The single photo' }],
+  title: 'One true moment', art: 'S1094', cast: [],
+  alt: 'A teenager writing about a single afternoon, one photo beside the page',
+  words: [
+    'Not the whole year. One afternoon at the counter.',
+    'Told well, it showed who I was.',
+    'One story, told well, that shows who you are. A small true moment beats a big vague one.',
+  ],
+};
+STORIES['letter-to-an-editor'] = {
+  about: 'one point, one ask, one page',
+  more: [{ serial: 'S1098', after: 0, alt: 'The crossing at dusk' }, { serial: 'S1099', after: 2, alt: 'The letter printed in the paper' }],
+  title: 'One page', art: 'S1097', cast: [],
+  alt: 'A teenager sealing a short letter, a newspaper on the table',
+  words: [
+    'One point: the crossing needs a light.',
+    'Backed by evidence: twelve near-misses.',
+    'One specific ask, on one page. A busy stranger is reading.',
+  ],
+};
+STORIES['principles-of-the-constitution'] = {
+  about: 'a handful of ideas under everything',
+  more: [{ serial: 'S1101', after: 0, alt: 'We the People carved in stone' }, { serial: 'S1102', after: 2, alt: 'Three columns drawn holding a roof' }],
+  title: 'The handful', art: 'S1100', cast: [],
+  alt: 'A teenager reading the preamble on a wall, a few words underlined',
+  words: [
+    'The people are the boss.',
+    'Power is split so no one holds it all.',
+    'The government may do only what the paper allows. Written in 1787, it rests on a handful of ideas.',
+  ],
+};
+STORIES['three-branches'] = {
+  about: 'three teams, three jobs',
+  more: [{ serial: 'S1104', after: 0, alt: 'A veto stamp' }, { serial: 'S1105', after: 2, alt: 'A gavel' }],
+  title: 'Three teams', art: 'S1103', cast: [],
+  alt: 'A teenager sketching three buildings: the Capitol, the White House, the Supreme Court',
+  words: [
+    'Congress writes the rules.',
+    'The President carries them out. The courts referee.',
+    'Each can block the others, which is the point.',
+  ],
+};
+STORIES['federalism'] = {
+  about: 'a school and a school district',
+  more: [{ serial: 'S1107', after: 0, alt: 'A dollar bill and a schoolhouse' }, { serial: 'S1108', after: 2, alt: 'The shared band shaded' }],
+  title: 'Two governments', art: 'S1106', cast: [],
+  alt: 'A teenager with a chart: national on top, state below, shared in the middle',
+  words: [
+    'Only the national government prints money or declares war.',
+    'Only the states run schools and elections. Both can tax.',
+    'Power is shared between the national government and the states, with a band in the middle they share.',
+  ],
+};
+STORIES['bill-of-rights'] = {
+  about: 'a fence around the government',
+  more: [{ serial: 'S1110', after: 0, alt: 'Four pictures for the four freedoms' }, { serial: 'S1111', after: 2, alt: 'A courtroom with a jury' }],
+  title: 'The fence', art: 'S1109', cast: [],
+  alt: 'A teenager reading ten short amendments on a poster, a fence drawn around a small building',
+  words: [
+    'The first amendment alone protects four freedoms: speech, religion, press and assembly.',
+    'The rest guard your home, your trial and your vote.',
+    'The first ten amendments, ratified in 1791, are a fence around the government.',
+  ],
+};
+STORIES['how-a-bill-becomes-law'] = {
+  about: 'an obstacle course',
+  more: [{ serial: 'S1113', after: 0, alt: 'The bill at the committee table' }, { serial: 'S1114', after: 2, alt: 'A veto and the two-thirds override drawn' }],
+  title: 'The obstacle course', art: 'S1112', cast: [],
+  alt: 'A teenager tracing a bill\'s path on a chart with hurdles',
+  words: [
+    'A committee. A vote in the House. A vote in the Senate.',
+    'The President\'s desk. A veto sends it back.',
+    'Two thirds of Congress can vote it through anyway. Introduced, studied, passed, signed.',
+  ],
+};
+STORIES['elections-parties-and-voting'] = {
+  about: 'two rounds, 270 to win',
+  more: [{ serial: 'S1116', after: 0, alt: 'A primary ballot' }, { serial: 'S1117', after: 2, alt: 'The map colored in with the tally' }],
+  title: 'Two rounds', art: 'S1115', cast: [],
+  alt: 'A teenager at a table with a map of states and a tally of 270',
+  words: [
+    'In the primary each party picks its runner.',
+    'In the general election the runners race.',
+    'For president, states cast electoral votes, and 270 of 538 wins.',
+  ],
+};
+STORIES['scarcity-and-opportunity-cost'] = {
+  about: 'sixty dollars and two wants',
+  more: [{ serial: 'S1119', after: 0, alt: 'The game chosen' }, { serial: 'S1120', after: 2, alt: 'The shoes left on the shelf' }],
+  title: 'Sixty dollars', art: 'S1118', cast: [],
+  alt: 'A teenager with sixty dollars, a game and a pair of shoes on a counter',
+  words: [
+    'The game or the shoes. Not both.',
+    'Whichever you buy, the other is what it cost you.',
+    'Scarcity means there is never enough of everything; opportunity cost is the next best thing given up.',
+  ],
+};
+STORIES['competition-and-markets'] = {
+  about: 'two lemonade stands on one street',
+  more: [{ serial: 'S1122', after: 0, alt: 'The price sign being changed' }, { serial: 'S1123', after: 2, alt: 'A line at the stand with ice' }],
+  title: 'Two stands', art: 'S1121', cast: [],
+  alt: 'Two lemonade stands across a street from each other, a customer between',
+  words: [
+    'Two stands. One dropped its price. The other added ice.',
+    'The customer chose. Both got better.',
+    'Free enterprise means private property, free choice and competition. Profit is what a seller keeps after costs.',
+  ],
+};
+STORIES['money-banking-and-the-fed'] = {
+  about: 'a promise everyone accepts',
+  more: [{ serial: 'S1125', after: 0, alt: 'A loan being signed' }, { serial: 'S1126', after: 2, alt: 'The thermostat turned down' }],
+  title: 'The promise', art: 'S1124', cast: [],
+  alt: 'A teenager depositing cash at a bank, a thermostat drawn on the wall',
+  words: [
+    'Money is a promise everyone accepts.',
+    'Banks lend the promises out and pay you for the loan.',
+    'The Fed is the referee: it raises rates to cool prices and lowers them to warm a slow economy.',
+  ],
+};
+STORIES['gdp-inflation-and-unemployment'] = {
+  about: 'the country\'s paycheck',
+  more: [{ serial: 'S1128', after: 0, alt: 'A grocery receipt from two years apart' }, { serial: 'S1129', after: 2, alt: 'A help-wanted sign' }],
+  title: 'The paycheck', art: 'S1127', cast: [],
+  alt: 'A teenager reading three numbers on a news screen',
+  words: [
+    'GDP is the size of the country\'s paycheck.',
+    'Inflation is prices creeping up so the paycheck buys less.',
+    'Unemployment is the share of people who want work and cannot find it.',
+  ],
+};
+// College, and the last kindergarten one.
+STORIES['mean-median-mode'] = {
+  about: 'six allowances and one rich friend',
+  more: [{ serial: 'S1131', after: 0, alt: 'The coins shared out evenly' }, { serial: 'S1132', after: 2, alt: 'The nine-dollar pile beside the three-dollar piles' }],
+  title: 'The rich friend', art: 'S1130', cast: [],
+  alt: 'Six friends at a table with their weekly allowances laid out as coins, one pile much bigger',
+  words: [
+    'Two, three, three, four, five, nine dollars. The mean shares it out: about 4.3 each.',
+    'The median is the middle pair: 3.5. The mode is the most common: 3.',
+    'One rich friend pulls the mean and leaves the median where it was.',
+  ],
+};
+STORIES['spread'] = {
+  about: 'two classes with the same average',
+  more: [{ serial: 'S1134', after: 0, alt: 'The tight cluster of scores' }, { serial: 'S1135', after: 2, alt: 'The wide scatter of scores' }],
+  title: 'Same average, different classes', art: 'S1133', cast: [],
+  alt: 'Two score sheets on a desk, both averaging 70, one tight and one wide',
+  words: [
+    'Both classes averaged 70.',
+    'In one, everyone scored near 70. In the other, scores ran from 40 to 100.',
+    'The mean cannot tell them apart. The spread can.',
+  ],
+};
+STORIES['probability'] = {
+  about: 'a spinner with three winning slices',
+  more: [{ serial: 'S1137', after: 0, alt: 'A tally sheet after a hundred spins' }, { serial: 'S1138', after: 2, alt: 'The three winning slices shaded' }],
+  title: 'The spinner', art: 'S1136', cast: [],
+  alt: 'A spinner with eight equal slices, three shaded, a student spinning it',
+  words: [
+    'Eight slices. Three winners.',
+    'Spin it a hundred times: about thirty-seven wins.',
+    'Probability is the share of outcomes that count: 3 out of 8.',
+  ],
+};
+STORIES['compound-interest'] = {
+  about: 'a snowball rolled downhill',
+  more: [{ serial: 'S1140', after: 0, alt: 'The snowball small at the top' }, { serial: 'S1141', after: 2, alt: 'The snowball large at the bottom' }],
+  title: 'The snowball', art: 'S1139', cast: [],
+  alt: 'A student rolling a snowball down a hill, it growing as it goes',
+  words: [
+    'A hundred dollars at ten percent. A year later: 110.',
+    'The next ten percent lands on 110, not 100. Then 121. Then 133.',
+    'The interest earns interest. That is the snowball.',
+  ],
+};
+STORIES['correlation-causation'] = {
+  about: 'ice cream and the pool',
+  more: [{ serial: 'S1143', after: 0, alt: 'The line at the ice cream stand' }, { serial: 'S1144', after: 2, alt: 'The lifeguard watching the crowded water' }],
+  title: 'Ice cream and the pool', art: 'S1142', cast: [],
+  alt: 'A crowded beach with an ice cream stand and a lifeguard tower',
+  words: [
+    'Ice cream sales rose. So did swimming accidents. Both in July.',
+    'Ice cream did not cause drowning.',
+    'Hot weather sent people to both the stand and the pool. Look for the third thing.',
+  ],
+};
+STORIES['thesis-statements'] = {
+  about: 'a fight worth picking',
+  more: [{ serial: 'S1146', after: 0, alt: 'The plain sentence crossed out' }, { serial: 'S1147', after: 2, alt: 'The bold one underlined' }],
+  title: 'A fight worth picking', art: 'S1145', cast: [],
+  alt: 'A student writing one bold sentence at the top of a page',
+  words: [
+    'Dogs are pets. Nobody argues. A topic.',
+    'Dogs make better pets than cats for busy families. Now someone could argue.',
+    'A thesis is a fight you are picking, in one sentence.',
+  ],
+};
+STORIES['academic-structure'] = {
+  about: 'the sentence that explains why',
+  more: [{ serial: 'S1149', after: 0, alt: 'The corner with cars' }, { serial: 'S1150', after: 2, alt: 'The three colors in the margin' }],
+  title: 'Claim, evidence, warrant', art: 'S1148', cast: [],
+  alt: 'A student with a paragraph marked in three colors',
+  words: [
+    'Claim: the town needs a crosswalk here.',
+    'Evidence: twelve near-misses this year.',
+    'Warrant: twelve near-misses mean the next one may not miss. The warrant says why the evidence counts.',
+  ],
+};
+STORIES['numbers-in-prose'] = {
+  about: 'a number with no clothes on',
+  more: [{ serial: 'S1152', after: 0, alt: 'The headline with a question mark' }, { serial: 'S1153', after: 2, alt: 'The same number with its base written beside' }],
+  title: 'Forty percent of what', art: 'S1151', cast: [],
+  alt: 'A student squinting at a headline with a big percentage and no context',
+  words: [
+    'Forty percent. Of what?',
+    'Up compared with when? Out of how many?',
+    'A number is naked without its clothes. Dress it before you trust it.',
+  ],
+};
+STORIES['logical-consistency'] = {
+  about: 'cheap, and also the most expensive ever',
+  more: [{ serial: 'S1155', after: 0, alt: 'The two sentences side by side' }, { serial: 'S1156', after: 2, alt: 'A list of claims with one crossed out' }],
+  title: 'Cheap and expensive', art: 'S1154', cast: [],
+  alt: 'A student with two sentences from one article circled on a page',
+  words: [
+    'Paragraph two: the plan is cheap.',
+    'Paragraph six: it costs more than anything before.',
+    'List the claims and check whether they can all be true at once. These cannot.',
+  ],
+};
+STORIES['primary-and-secondary-sources'] = {
+  about: 'a letter from the trenches and a textbook',
+  more: [{ serial: 'S1158', after: 0, alt: 'The letter\'s faded ink' }, { serial: 'S1159', after: 2, alt: 'The textbook\'s chapter heading' }],
+  title: 'The letter and the textbook', art: 'S1157', cast: [],
+  alt: 'A student holding an old handwritten letter beside an open textbook',
+  words: [
+    'The letter was written in the trenches. It was there. Primary.',
+    'The textbook was written eighty years later. Secondary.',
+    'A primary source was there; a secondary source tells you about it.',
+  ],
+};
+STORIES['counting-time'] = {
+  about: 'why 1750 is the eighteenth century',
+  more: [{ serial: 'S1161', after: 0, alt: 'The first century marked on the line' }, { serial: 'S1162', after: 2, alt: 'The year 1750 with an 18 above it' }],
+  title: 'One century ahead', art: 'S1160', cast: [],
+  alt: 'A student counting centuries on a timeline with fingers',
+  words: [
+    'Years 1 to 100 were the first century.',
+    'So 1701 to 1800 is the eighteenth.',
+    'Take the hundreds digit and add one. Centuries are named one ahead of their years.',
+  ],
+};
+STORIES['cause-and-effect'] = {
+  about: 'dry wood and a match',
+  more: [{ serial: 'S1164', after: 0, alt: 'The stacked wood' }, { serial: 'S1165', after: 2, alt: 'The match striking' }],
+  title: 'Dry wood, then a match', art: 'S1163', cast: [],
+  alt: 'A student building a campfire, dry wood stacked, a match in hand',
+  words: [
+    'The dry wood had been building for years. The long-term cause.',
+    'The match was the trigger.',
+    'Historians name both: the fuse and the spark.',
+  ],
+};
+STORIES['the-big-turns'] = {
+  about: 'eight hinges the world swung on',
+  more: [{ serial: 'S1167', after: 0, alt: 'The printing press' }, { serial: 'S1168', after: 2, alt: 'The first internet connection' }],
+  title: 'Eight hinges', art: 'S1166', cast: [],
+  alt: 'A student in front of eight framed pictures in a hallway',
+  words: [
+    'Farming. Writing. Republics. Printing.',
+    'The Columbian exchange. Industry. The atom. The internet.',
+    'After each hinge, life could not swing back.',
+  ],
+};
+STORIES['writing-history'] = {
+  about: 'bricks and a house',
+  more: [{ serial: 'S1170', after: 0, alt: 'The bricks in a pile' }, { serial: 'S1171', after: 2, alt: 'The house built' }],
+  title: 'Bricks and a house', art: 'S1169', cast: [],
+  alt: 'A student stacking bricks labeled with dates into the shape of a house',
+  words: [
+    'A fact is a brick: the war began in 1861.',
+    'A thesis is a house someone could argue with: the war was about slavery.',
+    'History writing builds houses from bricks.',
+  ],
+};
+STORIES['ending-sounds'] = {
+  about: 'the sound at the end of a word',
+  more: [{ serial: 'S1173', after: 0, alt: 'The child pointing at the end of the word cat' }, { serial: 'S1174', after: 2, alt: 'The three cards with their last letters circled' }],
+  title: 'The last sound', art: 'S1172', cast: [],
+  alt: 'A child with a cat, a bus and a sun drawn on cards, saying each word slowly',
+  words: [
+    'Cat. Say it slowly. C, a, t. The last sound is t.',
+    'Bus. B, u, s. The last sound is s.',
+    'Say the word slowly. The last sound you hear is the ending sound.',
+  ],
+};
 export const STORY_WORD_LIMIT = { early: 200, older: 350 };
 export function storyFor(moduleId) { return STORIES[moduleId] || null; }

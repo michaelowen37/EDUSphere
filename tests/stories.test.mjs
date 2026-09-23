@@ -15,6 +15,9 @@ for (const [id, s] of Object.entries(STORIES)) {
   const words = s.words.join(' ').split(/\s+/).length; const limit = early.has(course.grade) ? STORY_WORD_LIMIT.early : STORY_WORD_LIMIT.older;
   ok(`${id}: ${words} words is under ${limit}`, words <= limit);
   ok(`${id}: three or more paragraphs, a title, an alt line`, s.words.length >= 3 && !!s.title && !!s.alt);
+  // The about line feeds the weekly note: "read “Title”, a story about {about}." It must read as a phrase there:
+  // lowercase start (a name is fine), no closing punctuation, no "a story" of its own, no double spaces.
+  if (s.about !== undefined) ok(`${id}: the about line reads inside the weekly note sentence`, typeof s.about === 'string' && s.about.length > 4 && !/[.!?]$/.test(s.about) && !/^(A|An|The) story/i.test(s.about) && !/  /.test(s.about) && (s.about[0] === s.about[0].toLowerCase() || /^[A-Z][a-z]*[, ]/.test(s.about)), JSON.stringify(s.about));
   ok(`${id}: no em dashes and no sentence over 32 words`, !s.words.some((p) => p.includes('\u2014')) && s.words.every((p) => p.split(/[.!?]\s/).every((sent) => sent.split(/\s+/).length <= 32)));
   ok(`${id}: cast names are core characters`, s.cast.every((n) => CORE.includes(n)));
   ok(`${id}: a where line only when the core cast is here, one short line`, !s.where || (s.cast.length > 0 && s.where.length <= 90 && !/\b(was|is|turned) (four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|\d+)\b/.test(s.where)));

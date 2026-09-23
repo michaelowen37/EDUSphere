@@ -10,6 +10,15 @@ The newest block is what educators see once, in a pop-up on the classroom page, 
 - Let's Play: games beside Let's Color, one more for every course mastered.
 - Sign in with fingerprint or face, and reset a forgotten PIN the same way.
 - Another way can bring its own picture, explanations that list things read as lists, and dragging a student card scrolls the page for you.
+- Every module has a story now, and the Story Log can mark one as read.
+- Story Log, the last link on My Classroom, shows what each student has read, what is waiting, and opens any story in its own window. Every module through grade 12 has a story.
+- Every module through grade 8 has a story, and reading lessons draw their third way.
+- Every module through grade 5 has a story, and a student's first button wears a circling spot.
+- Every grade 3 module has a story; the tour never signs you out and its glow circles what it points at.
+- On a phone the tour waits to be asked for; on a laptop it shows a sample report and a sample Who needs help. Every grade 2 module has a story.
+- The tour shows a sample report, every grade 1 module has a story, and a student's first visit says where to tap.
+- Every pre-K and kindergarten module has a little story, the tour points at what it describes, and an educator can start over without losing a student.
+- Every pre-K module has a little story, the first-week tour sits at the bottom of the screen so you can see the page, and the result screen explains when the star comes.
 - Eight little stories for the youngest, and history's third ways come with timelines and maps.
 - Kindergarten has Beginning sounds and four new stories; pre-K 4 has Which came first?; twelve new coloring scenes are on their way.
 - Practice the missed ones on My progress, Animal sounds for the youngest, and game tiles that show their shape.

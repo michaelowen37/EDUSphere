@@ -147,7 +147,7 @@ export const CURRICULUM = [
     source: 'Texas Prekindergarten Guidelines (2022), Domain III Emergent Literacy: Reading; Head Start Early Learning Outcomes Framework, Literacy',
     standards: [
       { framework: 'TEKS', code: 'PK4.III.B.1', text: 'Child identifies the individual words in a spoken sentence.', moduleIds: ['listen-for-rhymes'] },
-      { framework: 'TEKS', code: 'PK4.III.B.7', text: 'Child identifies alliterative words with pictorial support.', moduleIds: ['first-sounds', 'which-came-first'] },
+      { framework: 'TEKS', code: 'PK4.III.B.7', text: 'Child identifies alliterative words with pictorial support.', moduleIds: ['first-sounds', 'which-came-first', 'which-came-second'] },
       { framework: 'TEKS', code: 'PK4.III.C.1', text: 'Child recognizes and names at least 20 letters (upper- or lower-case letters).', moduleIds: ['big-letters'] },
       { framework: 'CCSS', code: 'ELOF.P-LIT.1', text: 'Demonstrates awareness that spoken language is composed of smaller segments of sound.', moduleIds: ['listen-for-rhymes', 'first-sounds'] },
       { framework: 'CCSS', code: 'ELOF.P-LIT.3', text: 'Identifies letters of the alphabet and produces correct sounds associated with letters.', moduleIds: ['big-letters'] },
@@ -203,7 +203,7 @@ export const CURRICULUM = [
     source: 'Texas Essential Knowledge and Skills, Kindergarten English Language Arts and Reading (TEKS §110.2); Common Core Kindergarten Reading: Foundational Skills',
     standards: [
       { framework: 'TEKS', code: 'K.2A.i', text: 'Identify and produce rhyming words.', moduleIds: ['rhymes'] },
-      { framework: 'TEKS', code: 'K.2A.ii', text: 'Recognize spoken alliteration or groups of words that begin with the same sound.', moduleIds: ['letter-sounds', 'beginning-sounds'] },
+      { framework: 'TEKS', code: 'K.2A.ii', text: 'Recognize spoken alliteration or groups of words that begin with the same sound.', moduleIds: ['letter-sounds', 'beginning-sounds', 'ending-sounds'] },
       { framework: 'TEKS', code: 'K.2A.iv', text: 'Identify syllables in spoken words.', moduleIds: ['syllables'] },
       { framework: 'TEKS', code: 'K.2B.i', text: 'Identify and match the common sounds that letters represent.', moduleIds: ['letter-sounds'] },
       { framework: 'TEKS', code: 'K.2B.ii', text: 'Use letter-sound relationships to decode, including VC, CVC, CCVC, and CVCC words.', moduleIds: ['sounding-out'] },

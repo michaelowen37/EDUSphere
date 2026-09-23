@@ -138,4 +138,5 @@ Add its standards to src/curriculum.mjs (every code, with the module ids that co
 - Ways with pictures (2026-09-22): an `another` entry may be { text, visual } when the words describe a different scene than the lesson's drawing; the picture must be accurate and fill the box (a drawn kind with the words' own numbers), never decoration.
 - Lists (2026-09-22): when an explanation enumerates, write it as lines that start with `• ` and bold the label (`• **Ethos:** ...`); RichText renders them as a hanging-indent list. Never cram an enumeration into one paragraph.
 - New coloring pages (2026-09-22): placeholders with D serials, prompts in the ledger; scenes get busier down the list. A drawing that a reading question shows must be a real picture (pic, icon, solid or a code drawing), never a placeholder.
-
+- Hooks (2026-09-22): never call useEffect or useState inside a screen branch (`if (screen === ...)`); React error 310. Put the effect at the top of the component and gate it on `screen`.
+- Tour (2026-09-22): TOUR entries are [title, target, sample, words]; a target is a data-tour name on one small element (never a wrapper of the page); a sample of 'report' shows sampleRecord() on the report screen. The tour marks its one target with the class edu-tour-target (no body attribute).

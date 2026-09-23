@@ -1,7 +1,7 @@
 // Every story belongs to a real module, fits its band's word limit, has a unique serial, names only
 // the core cast, and reads like a story: at least three paragraphs, no em dashes.
 import * as L from '../src/logic.mjs';
-import { STORIES, STORY_WORD_LIMIT } from '../src/stories.mjs';
+import { COURSE_STORIES, STORIES, STORY_WORD_LIMIT } from '../src/stories.mjs';
 let pass = 0; let fail = 0;
 const ok = (label, cond, detail = '') => { console.log((cond ? 'PASS' : 'FAIL') + ' - ' + label + (cond ? '' : '  ' + detail)); cond ? pass++ : fail++; };
 const CORE = ['Mike', 'Chloe', 'Frederick', 'Georgette', 'Savanah', 'Jaxon', 'Harlow'];
@@ -24,6 +24,11 @@ for (const [id, s] of Object.entries(STORIES)) {
   ok(`${id}: no ages in the text (they live in the art prompts)`, !/\b(Mike|Chloe|Frederick|Georgette|Savanah|Jaxon|Harlow) (was|is|turned) (four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|\d+)\b/.test(s.words.join(' ')));
   ok(`${id}: extra pictures point at a paragraph`, (s.more || []).every((m) => /^S\d+$/.test(m.serial) && m.alt && m.after >= 0 && m.after < s.words.length));
   ok(`${id}: at most two core characters in one story`, s.cast.length <= 2);
+}
+// Course stories: one longer story per course, still under the Gladwell ceiling for older readers, with three paragraphs and a scene.
+for (const [id, cs] of Object.entries(COURSE_STORIES)) {
+  const words = cs.words.join(' ').split(/\s+/).length;
+  ok(`${id}: course story stays under 350 words and has three paragraphs, a title and a scene`, words <= 350 && cs.words.length === 3 && !!cs.title && !!cs.alt && /^CS\d+$/.test(cs.art), `${words} words`);
 }
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

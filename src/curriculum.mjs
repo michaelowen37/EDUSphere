@@ -1,3 +1,4 @@
+// EduSphere. Copyright (c) 2026. Source-available; not for reuse. See LICENSE.md.
 // ---------------------------------------------------------------------
 // THE CURRICULUM PLAN
 //
@@ -1056,6 +1057,50 @@ export const CURRICULUM = [
       { framework: 'CCSS', code: 'NCSS Theme II', text: 'Time, Continuity, and Change.', moduleIds: ['then-and-now'] },
       { framework: 'CCSS', code: 'NCSS Theme X', text: 'Civic Ideals and Practices.', moduleIds: ['good-citizens'] },
       { framework: 'CCSS', code: 'NCSS Theme VII', text: 'Production, Distribution, and Consumption.', moduleIds: ['producers-and-consumers', 'saving-for-a-goal'] },
+    ],
+  },
+  {
+    grade: '1', subject: 'Music', status: 'ready',
+    source: 'Texas Essential Knowledge and Skills, Fine Arts, Music, Grade 1 (§117.106, Adopted 2013); National Core Arts Standards, Music (NCAS), shown in the Common Core column.',
+    standards: [
+      { framework: 'TEKS', code: '117.106(b)(1)(A)', text: 'Identify the steady beat in musical performances.', moduleIds: ['the-steady-beat'] },
+      { framework: 'TEKS', code: '117.106(b)(1)(B)', text: 'Identify higher and lower pitches and louder and softer dynamics.', moduleIds: ['high-and-low', 'loud-and-soft'] },
+      { framework: 'CCSS', code: 'NCAS MU:Re7.2.1a', text: 'With limited guidance, demonstrate and identify how specific music concepts are used in various styles of music.', moduleIds: ['the-steady-beat', 'high-and-low', 'loud-and-soft'] },
+    ],
+  },
+  {
+    grade: '4', subject: 'Music', status: 'ready',
+    source: 'Texas Essential Knowledge and Skills, Fine Arts, Music, Grade 4 (§117.115, Adopted 2013); National Core Arts Standards, Music (NCAS), shown in the Common Core column.',
+    standards: [
+      { framework: 'TEKS', code: '117.115(b)(1)(B)', text: 'Identify and read whole, half, quarter and eighth notes and rests.', moduleIds: ['note-lengths'] },
+      { framework: 'TEKS', code: '117.115(b)(1)(C)', text: 'Identify and read notes on the treble staff.', moduleIds: ['the-staff'] },
+      { framework: 'TEKS', code: '117.115(b)(1)(D)', text: 'Identify tempo and dynamic markings.', moduleIds: ['tempo-and-dynamics'] },
+      { framework: 'CCSS', code: 'NCAS MU:Pr4.2.4a', text: 'Demonstrate understanding of the structure and the elements of music in music selected for performance.', moduleIds: ['note-lengths'] },
+      { framework: 'CCSS', code: 'NCAS MU:Pr4.2.4b', text: 'When analyzing selected music, read and perform using iconic and standard notation.', moduleIds: ['the-staff'] },
+      { framework: 'CCSS', code: 'NCAS MU:Re7.2.4a', text: 'Demonstrate and explain how responses to music are informed by the structure and the elements of music.', moduleIds: ['tempo-and-dynamics'] },
+    ],
+  },
+  {
+    grade: 'K', subject: 'Health', status: 'ready',
+    source: 'Texas Essential Knowledge and Skills, Health Education, Kindergarten (§115.12, Adopted 2020); national guidance from the CDC, the American Dental Association and USDA MyPlate, shown in the Common Core column.',
+    standards: [
+      { framework: 'TEKS', code: 'K.1A', text: 'Identify and demonstrate healthy habits, including hand washing, dental care and sleep.', moduleIds: ['washing-hands', 'brushing-teeth', 'sleep-k'] },
+      { framework: 'TEKS', code: 'K.1B', text: 'Identify healthy food choices.', moduleIds: ['my-plate'] },
+      { framework: 'CCSS', code: 'NHES 1.2.1', text: 'Identify that healthy behaviors impact personal health.', moduleIds: ['washing-hands', 'brushing-teeth', 'sleep-k'] },
+      { framework: 'CCSS', code: 'NHES 7.2.1', text: 'Demonstrate healthy practices and behaviors to maintain or improve personal health.', moduleIds: ['my-plate'] },
+    ],
+  },
+  {
+    grade: '4', subject: 'Health', status: 'ready',
+    source: 'Texas Essential Knowledge and Skills, Health Education, Grade 4 (§115.16, Adopted 2020); National Health Education Standards (NHES), shown in the Common Core column.',
+    standards: [
+      { framework: 'TEKS', code: '4.1A', text: 'Describe the importance of sleep for health.', moduleIds: ['sleep-and-the-brain'] },
+      { framework: 'TEKS', code: '4.1B', text: 'Identify and use information on food labels to make healthy choices.', moduleIds: ['reading-a-food-label'] },
+      { framework: 'TEKS', code: '4.1C', text: 'Describe the benefits of physical activity for the heart and body.', moduleIds: ['the-heart-at-work'] },
+      { framework: 'TEKS', code: '4.6A', text: 'Explain the importance of balancing screen time with physical activity and sleep.', moduleIds: ['screens-and-you'] },
+      { framework: 'CCSS', code: 'NHES 1.5.1', text: 'Describe the relationship between healthy behaviors and personal health.', moduleIds: ['sleep-and-the-brain', 'the-heart-at-work'] },
+      { framework: 'CCSS', code: 'NHES 3.5.2', text: 'Locate resources from home, school, and community that provide valid health information.', moduleIds: ['reading-a-food-label'] },
+      { framework: 'CCSS', code: 'NHES 7.5.2', text: 'Demonstrate a variety of behaviors that avoid or reduce health risks.', moduleIds: ['screens-and-you'] },
     ],
   },
   {

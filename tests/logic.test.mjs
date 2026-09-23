@@ -819,7 +819,8 @@ ok('reset: history kept, but nothing counts as mastered afterwards', events.leng
   ok('grade labels read plainly', L.gradeLabel('K') === 'Kindergarten' && L.gradeLabel('3') === 'Grade 3');
   ok('only grades that have courses are offered, in order', JSON.stringify(L.gradesWithCourses()) === '["PK3","PK4","K","1","2","3","4","5","6","7","8","9","10","11","12","C"]');
   const k = L.subjectsForGrade('K');
-  ok('kindergarten groups into Math, Reading, Science and History, in that order', k.length === 4 && k[0].subject === 'Math' && k[1].subject === 'Reading' && k[2].subject === 'Science' && k[3].subject === 'History');
+  // Health joined kindergarten on 2026-09-23; it sorts last.
+  ok('kindergarten groups into Math, Reading, Science, History and Health, in that order', k.length === 5 && k[0].subject === 'Math' && k[1].subject === 'Reading' && k[2].subject === 'Science' && k[3].subject === 'History' && k[4].subject === 'Health');
   ok('every grade now has courses', L.subjectsForGrade('PK3').length === 2);
   ok('science runs from kindergarten to grade 12', ['K', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'].every((g) => L.subjectsForGrade(g).some((x) => x.subject === 'Science')));
   ok('pre-K 3 is never a starter; a new early-years student begins at pre-K 4', L.recommendedCourseIds([L.makeCoursesEnabledEvent([], 't')], 'early').every((id) => L.getCourse(id).grade === 'PK4'));
@@ -1319,5 +1320,30 @@ ok('reset: history kept, but nothing counts as mastered afterwards', events.leng
   ok('a story event carries only the module and the time', Object.keys(L.makeStoryReadEvent('cells', 't')).sort().join() === 'at,moduleId,type');
 }
 ok('no pairs deck repeats a card, so every card has exactly one twin', Object.entries(L.PAIR_DECKS).every(([, deck]) => { const texts = deck.flat(); return new Set(texts).size === texts.length && deck.every((pr) => pr.length === 2); }), Object.entries(L.PAIR_DECKS).filter(([, deck]) => { const texts = deck.flat(); return new Set(texts).size !== texts.length; }).map(([k]) => k).join(','));
+// Variety: every module that is not a tracing page yields at least four different questions across many seeds,
+// so a repeat round is not the same round; a triple dose is three times the questions at the same scaled bar.
+{
+  const thin = L.MODULES.filter((m) => !m.generators.some((g) => /trace|mark/.test(g))).map((m) => { const set = new Set(); for (let s = 1; s <= 80; s++) { const q = L.generateQuestion(m.generators[s % m.generators.length], s * 7919 + 13); set.add(`${q.story}|${q.prompt}|${q.answer}`); } return [m.id, set.size]; }).filter(([, n]) => n < 4);
+  ok('every non-tracing module has at least four different questions', thin.length === 0, thin.map(([id, n]) => `${id}:${n}`).join(','));
+  const a = L.buildAttempt('fraction-meaning', 5, [], { dose: 3 });
+  ok('a triple dose asks three times the questions', a.core.length === L.moduleRules('fraction-meaning').questions * 3 && a.dose === 3);
+  const ev = { type: 'attempt_completed', moduleId: 'fraction-meaning', coreCorrect: 11, coreTotal: 15 };
+  ok('a triple dose keeps the same bar, scaled', !L.isMasteredAttempt(ev) && L.isMasteredAttempt({ ...ev, coreCorrect: 12 }));
+  const avoid = L.buildAttempt('sound', 9, [], { avoid: ['What makes a sound?'] });
+  ok('a round avoids the prompts of the last rounds when it can', !avoid.core.some((q) => q.prompt === 'What makes a sound?'));
+}
+{
+  // The memory check favors a mastered module with recent misses: over many seeds it is chosen far more often than chance.
+  const mastered = ['count-to-10', 'shapes', 'sorting'].filter((id) => L.getModule(id));
+  if (mastered.length >= 2) {
+    const target = mastered[0]; let hits = 0; const N = 60;
+    for (let s = 1; s <= N; s++) { const a = L.buildAttempt('making-ten', s, mastered, { missed: { [target]: 3 } }); if (a.review && a.review.moduleId === target) hits += 1; }
+    ok('the memory check favors the most-missed mastered module', hits >= N * 0.45, `${hits} of ${N}`);
+  }
+  const ev = [{ type: 'attempt_completed', at: new Date().toISOString(), moduleId: 'sound', core: [{ correct: false }, { correct: true }], review: { moduleId: 'life-cycles', correct: false } }];
+  const miss = L.recentMisses(ev);
+  ok('recent misses count core and memory-check misses by module', miss.sound === 1 && miss['life-cycles'] === 1);
+}
+ok('remembrance days fire on their dates and stay quiet otherwise', L.remembranceFor('2026-05-25').id === 'memorial-day' && L.remembranceFor('2026-11-11').id === 'veterans-day' && L.remembranceFor('2026-09-11').id === 'september-11' && !L.remembranceFor('2026-05-18') && !L.remembranceFor('2026-03-03'));
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

@@ -22,5 +22,8 @@ for (const m of L.MODULES) {
 }
 for (const g of Object.keys(L.GENERATORS)) { const q = L.generateQuestion(g, 7); check(q.visual, `${g} visual`); check(q.explainVisual, `${g} explanation`); }
 ok('every lesson, way, script and question picture is a kind the app can draw', bad.length === 0, bad.slice(0, 8).join('; '));
+// A stack drawing holds at most eight levels; more would run off the card.
+ok('no stack drawing has more than eight levels', L.MODULES.every((m) => { const vis = []; const walk = (v) => { if (v && typeof v === 'object') { if (v.kind === 'stack') vis.push(v); for (const k of Object.keys(v)) if (typeof v[k] === 'object') walk(v[k]); } }; walk(m.lesson); return vis.every((v) => (v.levels || []).length <= 8); }));
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);
+

@@ -1,3 +1,4 @@
+// EduSphere. Copyright (c) 2026. Source-available; not for reuse. See LICENSE.md.
 // =====================================================================
 //  EduSphere — Phase 0 prototype
 //  FILE: src/logic.mjs
@@ -80,153 +81,153 @@ const WRITING_LADDER = {
     { id: 'complete-sentences', another: 'A sentence needs a who and a did. The dog barked. Take away the who or the did and it is only a piece.', title: 'Complete sentences', tagline: 'A who and a what', teks: '2.11D', ccss: 'L.2.1f', words: 15,
       lines: ["A sentence has a **who** and a **what**.\n[[The dog ran.]]\nThe dog is the **who**. Ran is the **what**.", "Sentences also start with a **capital letter** and end with a **period**.", "Let's try to fix an example that is not a sentence.\n[[ran to the park]]\nWho was it that ran?\nLet's add a who:\n[[My sister ran to the park.]]\nNow that there is a who and a what, a capital letter at the beginning and a period at the end, it is a **complete sentence**."],
       key: 'Complete sentences require a who and a what.',
-      prompts: ['Write three sentences about what you did this morning.', 'Write three sentences about your favorite animal.', 'Write three sentences about a game you like.'],
+      prompts: ['Write three sentences about what you did this morning.', 'Write three sentences about your favorite animal.', 'Write three sentences about a game you like.', 'Write three sentences about someone in your family.', 'Write three sentences about what you would do with a free afternoon.'],
       checks: ['Each sentence has a who and a what.', 'Each one starts with a capital letter.', 'Each one ends with a period.'] },
     { id: 'describing-sentences', another: 'The dog ran is a report. The muddy dog ran fast is a picture. Add words that say what it was like and how it happened.', title: 'Sentences that describe', tagline: 'Add a word that paints', teks: '2.11D', ccss: 'W.2.3', words: 25,
       lines: ["A describing word paints a picture in the reader's mind.\n[[The dog ran.]]\n[[The muddy dog ran fast.]]\n**Muddy** tells what the dog was like. **Fast** tells how it ran.", "Ask two questions of any sentence.\n[[What was it like?]]\n[[How did it happen?]]\nEach answer is a describing word you can add.", "Let's try one.\n[[The cat sat.]]\nWhat was the cat like? Fluffy.\nHow did it sit? Quietly.\n[[The fluffy cat sat quietly.]]\nSame cat, same sitting, and now the reader can see it."],
       key: 'Add words that say what it was like and how it happened.',
-      prompts: ['Write four sentences about the weather today, with a describing word in each.', 'Write four sentences about your lunch, with a describing word in each.', 'Write four sentences about a pet or a toy, with a describing word in each.'],
+      prompts: ['Write four sentences about the weather today, with a describing word in each.', 'Write four sentences about your lunch, with a describing word in each.', 'Write four sentences about a pet or a toy, with a describing word in each.', 'Write four sentences about your bedroom, with a describing word in each.', 'Write four sentences about a pet or an animal you have watched, with a describing word in each.'],
       checks: ['Each sentence has a describing word.', 'Each one is a complete sentence.', 'I wrote four sentences.'] },
     { id: 'tell-a-story-2', another: 'First, next, last. Tell it the way it happened, in order, so the reader arrives where you did.', title: 'Tell what happened', tagline: 'First, next, last', teks: '2.12A', ccss: 'W.2.3', words: 40,
       lines: ["A story tells what happened **in order**.\n[[First, I woke up.]]\n[[Next, I ate breakfast.]]\n[[Last, I walked to school.]]", "The words **first**, **next** and **last** keep it in order. They tell the reader where they are in the story.", "Write what happened first.\nThen write what happened next.\nThen write how it ended.\nThree parts, in order, and a reader can follow you the whole way."],
       key: 'First, next, last.\nTell what happened in order.',
-      prompts: ['Tell what happened yesterday after school, in order.', 'Tell what happened the last time you played outside, in order.', 'Tell what happened on a trip you took, in order.'],
+      prompts: ['Tell what happened yesterday after school, in order.', 'Tell what happened the last time you played outside, in order.', 'Tell what happened on a trip you took, in order.', 'Tell what happened the last time you helped cook or make something, in order.', 'Tell what happened on your last birthday, in order.'],
       checks: ['I used first, next and last.', 'The story is in order.', 'Every sentence is complete.'] },
   ],
   3: [
     { id: 'paragraph-shape', another: 'One idea per paragraph. The first sentence names it. The rest add details. A new idea means a new paragraph.', title: 'The shape of a paragraph', tagline: 'One idea, several sentences', teks: '3.11B', ccss: 'W.3.2a', words: 50,
       lines: ["A paragraph is a group of sentences about **one idea**.\n[[The first sentence says the idea.]]\n[[The other sentences give details about it.]]", "Let's look at one.\n[[Fall is my favorite season.]]\nThat is the idea.\nThe leaves turn red and gold. (**detail**)\nThe air is cool. (**detail**)\nWe carve pumpkins. (**detail**)\nThree details, one idea, one paragraph.", "Here is the test for every sentence you add: is it about the same idea?\nIf a sentence is about winter, it does not belong in a paragraph about fall. Start a new paragraph for a new idea."],
       key: 'One idea in the first sentence.\nDetails in the sentences after it.',
-      prompts: ['Write a paragraph about your favorite season with three details.', 'Write a paragraph about a place you know well with three details.', 'Write a paragraph about something you are good at with three details.'],
+      prompts: ['Write a paragraph about your favorite season with three details.', 'Write a paragraph about a place you know well with three details.', 'Write a paragraph about something you are good at with three details.', 'Write a paragraph about a person you admire with three details.', 'Write a paragraph about the best meal you have eaten with three details.'],
       checks: ['My first sentence says the idea.', 'I gave three details.', 'Every sentence is about the same idea.'] },
     { id: 'explain-how', another: 'Explain like a recipe. What you need, then the steps in the order you do them. If a reader could follow it and end up with the thing, you explained it.', title: 'Explain how to do something', tagline: 'Steps a reader can follow', teks: '3.12B', ccss: 'W.3.2', words: 60,
       lines: ["To explain how to do something, give the **steps in order**, and say what is needed **first**.\n[[What you need.]]\n[[Step one.]]\n[[Step two.]]\n[[Step three.]]", "Let's look at one.\nTo make a paper airplane you need one sheet of paper. (**what you need**)\nFirst, fold it in half the long way. (**step one**)\nNext, fold the top corners to the middle. (**step two**)\nThen fold the wings down. (**step three**)", "The test is simple: could someone who has never done it follow your steps and end up with the thing?\nIf a step is missing, they get stuck. If the steps are out of order, they get a mess. Read your steps back and picture a stranger doing them."],
       key: 'Say what is needed, then give the steps in order.',
-      prompts: ['Explain how to make your favorite snack, step by step.', 'Explain how to play a game you know, step by step.', 'Explain how to get ready for school, step by step.'],
+      prompts: ['Explain how to make your favorite snack, step by step.', 'Explain how to play a game you know, step by step.', 'Explain how to get ready for school, step by step.', 'Explain how to get from your classroom to the office, step by step.', 'Explain how to take care of a plant or a pet, step by step.'],
       checks: ['I said what is needed.', 'The steps are in order.', 'Someone could follow my steps.'] },
     { id: 'give-a-reason', another: 'I think, because. Then a second because. Then say what you think once more. Two reasons make an opinion sturdier than one.', title: 'Give a reason', tagline: 'What you think, and because', teks: '3.12C', ccss: 'W.3.1', words: 60,
       lines: ["When you say what you think, say **why**.\n[[I think dogs are the best pets.]]\n[[I think dogs are the best pets **because** they are loyal.]]\nThe word **because** turns an opinion into a reason.", "One opinion, two reasons, and a last sentence that says the opinion again.\n[[Opinion: I think dogs are the best pets.]]\n[[Reason one: because they are loyal.]]\n[[Reason two: because they love to play.]]\n[[Closing: That is why a dog is the pet I would choose.]]", "Say the opinion at the start. Give two reasons with because. Say the opinion again at the end, in new words. That is the whole shape, and it works for any opinion you will ever have."],
       key: 'Say what you think, then say because.\nTwo reasons, then say it again at the end.',
-      prompts: ['What is the best thing to do on a rainy day? Say why, with two reasons.', 'Should your class have a pet? Say why, with two reasons.', 'What is the best month of the year? Say why, with two reasons.'],
+      prompts: ['What is the best thing to do on a rainy day? Say why, with two reasons.', 'Should your class have a pet? Say why, with two reasons.', 'What is the best month of the year? Say why, with two reasons.', 'What is the best animal to have as a class helper? Say why, with two reasons.', 'Should recess be longer? Say why, with two reasons.'],
       checks: ['My first sentence says what I think.', 'I used because.', 'I gave two reasons.'] },
   ],
   5: [
     { id: 'informational-piece', another: 'An introduction says what the topic is. One paragraph per part. A conclusion says it again, shorter. Think of a tour: the entrance, the rooms, the exit.', title: 'An informational piece', tagline: 'Teach the reader something', teks: '5.12B', ccss: 'W.5.2', words: 150,
       lines: ["An informational piece **teaches** the reader something.\n[[An introduction that says the topic.]]\n[[Two or three paragraphs that each explain one part.]]\n[[A conclusion.]]", "Let's look at a piece about bees.\nIntroduction: bees matter more than most people think. (**the topic**)\nParagraph one: how they pollinate. (**one part**)\nParagraph two: what happens when they vanish. (**another part**)\nConclusion: why they are worth protecting. (**the closing**)", "Each paragraph has **one idea** and **its own facts**.\nAn informational piece gives facts, not opinions. Bees pollinate a third of the food we eat is a fact. Bees are cool is an opinion. Keep the facts and save the opinions for an opinion essay."],
       key: 'Introduction with the topic, a paragraph for each part, a conclusion.\nEach paragraph has one idea and its own facts.',
-      prompts: ['Write an informational piece about an animal, with three paragraphs of facts.', 'Write an informational piece about how something works, with three paragraphs.', 'Write an informational piece about a place, with three paragraphs of facts.'],
+      prompts: ['Write an informational piece about an animal, with three paragraphs of facts.', 'Write an informational piece about how something works, with three paragraphs.', 'Write an informational piece about a place, with three paragraphs of facts.', 'Write an informational piece about how something in your kitchen works, with three paragraphs.', 'Write an informational piece about a job you find interesting, with three paragraphs.'],
       checks: ['My introduction says the topic.', 'Each paragraph explains one part.', 'I gave facts, not opinions.', 'I have a conclusion.'] },
     { id: 'opinion-essay-5', another: 'The five-paragraph shape: one paragraph to say your opinion, one for each of three reasons, one to close. Each reason paragraph is its own little argument.', title: 'An opinion essay', tagline: 'Three reasons, each in its own paragraph', teks: '5.12C', ccss: 'W.5.1', words: 180,
       lines: ["An opinion essay is an opinion paragraph **grown up**.\n[[The opinion gets an introduction.]]\n[[Each reason gets a whole paragraph.]]\n[[The conclusion says the opinion again and why it matters.]]", "Let's look at the shape.\nIntroduction: I think students should not have homework on weekends. (**the opinion**)\nParagraph one: First, families need time together. (**reason one, with details**)\nParagraph two: Also, rest helps kids learn better on Monday. (**reason two, with details**)\nParagraph three: Finally, weekends are for sports, chores and play. (**reason three, with details**)\nConclusion: For all these reasons, weekends should be homework-free. (**the opinion again**)", "Link the paragraphs with words like **first**, **also** and **finally**, so a reader always knows where they are. Without those words, the essay is a pile of paragraphs. With them, it is a path."],
       key: 'Introduction with the opinion, one paragraph per reason, a conclusion.\nLinking words carry the reader along.',
-      prompts: ['Should students have homework on weekends? Write an opinion essay with three reasons.', 'Should your school have a longer lunch? Write an opinion essay with three reasons.', 'Is it better to grow up in a city or the country? Write an opinion essay with three reasons.'],
+      prompts: ['Should students have homework on weekends? Write an opinion essay with three reasons.', 'Should your school have a longer lunch? Write an opinion essay with three reasons.', 'Is it better to grow up in a city or the country? Write an opinion essay with three reasons.', 'Should every student learn an instrument? Write an opinion essay with three reasons.', 'Should your town build more bike lanes? Write an opinion essay with three reasons.'],
       checks: ['My introduction states the opinion.', 'Each reason has its own paragraph.', 'I used linking words.', 'My conclusion restates the opinion.'] },
     { id: 'personal-narrative-5', another: 'Set the scene fast. Build toward the moment that mattered. Slow down there and show it. End by saying what changed in you.', title: 'A personal narrative', tagline: 'A true story, told well', teks: '5.12A', ccss: 'W.5.3', words: 180,
       lines: ["A personal narrative is a **true story about you**, with a beginning, a middle and an end, and **one moment that mattered**.\n[[Set the scene.]]\n[[Build to the moment.]]\n[[Say what changed.]]", "Let's look at the shape.\nSet the scene: where you were, who was there, what was normal. (**beginning**)\nBuild to the moment: what happened, step by step, getting closer. (**middle**)\nThe moment itself: told slowly, with what you saw, heard and felt.\nSay what changed: what you knew after that you did not know before. (**end**)", "Slow down at the moment that mattered. Give it details a reader can see and hear.\nRush the parts that do not matter. Nobody needs the whole car ride.\nThat is the whole craft of telling a story: slow where it counts, fast where it does not."],
       key: 'Set the scene, build to the moment, say what changed.\nSlow down at the moment that mattered.',
-      prompts: ['Write about a time you were braver than you expected.', 'Write about a time something went wrong and what you learned.', 'Write about a day you will not forget.'],
+      prompts: ['Write about a time you were braver than you expected.', 'Write about a time something went wrong and what you learned.', 'Write about a day you will not forget.', 'Write about a time you helped someone and what it was like.', 'Write about the first day of something new, and what you noticed.'],
       checks: ['I set the scene.', 'One moment is told slowly with details.', 'I said what changed.'] },
   ],
   6: [
     { id: 'argument-with-evidence', another: 'A claim, then reasons, then evidence for each reason. A reason without evidence is just a louder opinion.', title: 'An argument with evidence', tagline: 'Reasons backed by facts', teks: '6.12C', ccss: 'W.6.1', words: 220,
       lines: ["An argument is essentially an **opinion essay** with some kind of **evidence**.", "Arguments are underpinned by **reasons**, and reasons need **facts** to support them, **examples** to demonstrate them, and **quotations** to show what an expert or a witness actually said.", "A reason without evidence is merely a feeling.\n[[Recess helps kids focus. (**reason**)]]\n[[A study found students paid better attention after recess. (**evidence**)]]\nThe first sentence tells the reader what you think. The second one gives them a way to check.", "So an argument is built in layers.\n[[Your claim: the one thing you are arguing for.]]\n[[Your reasons: why the claim is true.]]\n[[Your evidence: a fact, an example or a quotation under every reason.]]\nWrite the claim. Give two or three reasons. Then, under each reason, put the evidence that backs it up."],
       key: 'A claim, reasons, and evidence for each reason.\nA reason without evidence is only a feeling.',
-      prompts: ['Argue for or against a later school start, with evidence for each reason.', 'Argue for or against phones in class, with evidence for each reason.', 'Argue for or against year-round school, with evidence for each reason.'],
+      prompts: ['Argue for or against a later school start, with evidence for each reason.', 'Argue for or against phones in class, with evidence for each reason.', 'Argue for or against year-round school, with evidence for each reason.', 'Argue for or against a four-day school week, with evidence for each reason.', 'Argue for or against a school garden, with evidence for each reason.'],
       checks: ['My claim is clear.', 'Each reason has evidence behind it.', 'I said where the evidence came from.'] },
     { id: 'compare-and-contrast', another: 'Two columns in your head: alike, different. Write the alike, write the different, then say what the comparison shows.', title: 'Compare and contrast', tagline: 'Alike, different, so what', teks: '6.12B', ccss: 'W.6.2', words: 200,
       lines: ["To compare two things, say how they are **alike**, how they **differ**, and what the comparison **shows**.\n[[Alike.]]\n[[Different.]]\n[[So what.]]", "Let's look at one.\nSoccer and basketball are alike: both are team games with a ball and a goal. (**alike**)\nThey differ: soccer uses feet on a huge field, basketball uses hands on a small court. (**different**)\nSo what: the size of the field changes everything about how each game feels. (**what it shows**)", "Do not stop at the list. The point is the last part: what does the comparison tell a reader that they did not know before?\nA comparison without a so-what is a table. A comparison with one is an essay."],
       key: 'How they are alike, how they differ, and what that shows.',
-      prompts: ['Compare two sports, then say what the comparison shows.', 'Compare a book and its movie, then say what the comparison shows.', 'Compare two places you have lived or visited, then say what the comparison shows.'],
+      prompts: ['Compare two sports, then say what the comparison shows.', 'Compare a book and its movie, then say what the comparison shows.', 'Compare two places you have lived or visited, then say what the comparison shows.', 'Compare two places you have lived or visited, then say what the comparison shows.', 'Compare two ways of getting to school, then say what the comparison shows.'],
       checks: ['I said how they are alike.', 'I said how they differ.', 'I said what the comparison shows.'] },
     { id: 'narrative-with-dialogue', another: 'Let people talk. Dialogue moves the story and shows who someone is. Quotation marks around the words, a new line for each speaker.', title: 'A narrative with dialogue', tagline: 'Let the characters speak', teks: '6.12A', ccss: 'W.6.3', words: 220,
       lines: ["Dialogue is people **speaking** in a story. It moves the story and shows who people are.\n[[\"We should go back,\" Sam said.]]\nQuotation marks around the words. A comma before the tag.", "Let's look at what dialogue does.\n[[Sam was scared.]] (**telling**)\n[[\"We should go back,\" Sam said, looking at the dark trail.]] (**showing**)\nThe second one lets the reader hear Sam and see him. The first one just reports.", "Use dialogue for the moments that matter and skip the small talk.\nEvery line someone says should tell the reader something new: what a person wants, what they fear, what they are about to do.\nIf a line does none of those, cut it."],
       key: 'Dialogue moves the story and shows character.\nQuotation marks around the words, a comma before the tag.',
-      prompts: ['Write a story in which two people disagree, with dialogue.', 'Write a story about a lost thing being found, with dialogue.', 'Write a story about a first meeting, with dialogue.'],
+      prompts: ['Write a story in which two people disagree, with dialogue.', 'Write a story about a lost thing being found, with dialogue.', 'Write a story about a first meeting, with dialogue.', 'Write a story about a surprise gift, with dialogue that shows how each person feels.', 'Write a story in which someone has to admit a mistake, with dialogue.'],
       checks: ['My story has dialogue.', 'Quotation marks and commas are in the right places.', 'Each line of dialogue tells the reader something.'] },
   ],
   7: [
     { id: 'summary-and-response', another: 'First, say fairly what it said, with no opinion. Then respond. A reader should not be able to tell your view from the summary alone.', title: 'A summary and a response', tagline: 'What it said, then what you think', teks: '7.12B', ccss: 'W.7.2', words: 250,
       lines: ["Half of school writing starts with something you read.\n[[First, say what it said, fairly and briefly. (**summary**)]]\n[[Then, say what you think of it. (**response**)]]", "Let's look at a summary of an article about later school starts.\nThe article argues that schools should start later because teenagers need more sleep, and it gives three districts that tried it. (**summary, in your own words, no opinion**)\nThen the response.\nI find the argument convincing, mostly because of the three districts, though I would want to know what happened to after-school sports. (**what you think, and why**)", "The summary is **not** the place for opinion. Save it.\nA reader who sees a fair summary trusts the response that follows. A reader who sees your opinion sneaking into the summary stops trusting both."],
       key: 'Summarize fairly first, then respond.\nKeep your opinion out of the summary.',
-      prompts: ['Summarize an article your teacher assigns in one paragraph, then respond to it in a second.', 'Summarize a chapter you read this week, then say what you think of it.', 'Summarize a speech or a talk, then respond to its main point.'],
+      prompts: ['Summarize an article your teacher assigns in one paragraph, then respond to it in a second.', 'Summarize a chapter you read this week, then say what you think of it.', 'Summarize a speech or a talk, then respond to its main point.', 'Summarize a video your teacher assigns in one paragraph, then respond to it in a second.', 'Summarize a news story from this week in one paragraph, then respond to it in a second.'],
       checks: ['My summary is fair and in my own words.', 'My opinion stays out of the summary.', 'My response says what I think and why.'] },
     { id: 'argument-with-a-counterclaim', another: "Say the other side's best point out loud, then answer it. A reader who thought of the objection trusts you more when you got there first.", title: 'An argument with a counterclaim', tagline: 'Answer the other side', teks: '7.12C', ccss: 'W.7.1', words: 300,
       lines: ["An argument gets **stronger** when it names the best objection and answers it.\n[[Claim.]]\n[[Reasons, with evidence.]]\n[[The counterclaim: what a thoughtful opponent would say.]]\n[[Your answer to it.]]", "Let's look at one.\nClaim: phones should stay in lockers during class.\nReason: students learn more without them, and a study of ten schools found grades rose after phone bans. (**reason with evidence**)\nCounterclaim: some say phones are needed for emergencies. (**the best objection, stated fairly**)\nAnswer: the school office can reach any student in a minute, so the emergency case is covered without phones in pockets. (**your answer**)", "Answering the other side is not the same as insulting it.\nSay what a thoughtful opponent would say, in words they would accept. Then say why you still hold your claim.\nAn argument that never mentions the other side looks like it is hiding something."],
       key: 'Name the best objection and answer it.\nA fair counterclaim makes your argument stronger, not weaker.',
-      prompts: ['Argue a position on a school rule, including the best objection and your answer to it.', 'Argue a position on screen time, including the best objection and your answer to it.', 'Argue a position on a change your town should make, including the best objection and your answer.'],
+      prompts: ['Argue a position on a school rule, including the best objection and your answer to it.', 'Argue a position on screen time, including the best objection and your answer to it.', 'Argue a position on a change your town should make, including the best objection and your answer.', 'Argue a position on homework, including the best objection and your answer to it.', 'Argue a position on school uniforms, including the best objection and your answer to it.'],
       checks: ['My claim and reasons are clear.', 'I stated the best objection fairly.', 'I answered the objection.'] },
     { id: 'explanatory-essay', another: 'Start where the reader is and add one idea at a time. Define each new word when it appears. Never assume what you did not say.', title: 'An explanatory essay', tagline: 'Make something complicated clear', teks: '7.12B', ccss: 'W.7.2', words: 300,
       lines: ["An explanatory essay makes something complicated **clear**. It works by order: what the reader needs first, then what builds on it.\n[[Start where the reader is.]]\n[[Add one idea at a time.]]", "Let's look at explaining how a bill becomes a law.\nStart where the reader is: a bill is a written idea for a new law. (**the first thing**)\nThen one idea: a member of Congress introduces it. (**next**)\nThen the next: a committee studies it and votes. (**next**)\nAnd so on, one step at a time, to the president's signature.", "Define every word the reader might not know, the first time you use it.\nGive an example for every idea.\nThe test is whether someone who knew nothing could follow it from the first sentence to the last."],
       key: 'Start where the reader is and add one idea at a time.\nDefine new words and give an example for every idea.',
-      prompts: ['Explain how something works to a reader who has never heard of it.', 'Explain a process from science or history in order.', 'Explain a game, a hobby or a skill to a complete beginner.'],
+      prompts: ['Explain how something works to a reader who has never heard of it.', 'Explain a process from science or history in order.', 'Explain a game, a hobby or a skill to a complete beginner.', 'Explain how a game you know is played, to a reader who has never seen it.', 'Explain how to prepare for a test, one idea at a time.'],
       checks: ['I started where a beginner is.', 'Ideas come one at a time, in order.', 'I defined new words and gave examples.'] },
   ],
   9: [
     { id: 'analysis-paragraph', another: 'Claim, quotation, then a sentence that says what the quotation shows. The quotation never speaks for itself; you must say what it proves.', title: 'An analysis paragraph', tagline: 'Quote it, then explain it', teks: 'E1.11B', ccss: 'W.9-10.9', words: 200,
       lines: ["When you write about a text, every quotation needs a sentence after it that says **what the quotation shows**.\n[[Claim.]]\n[[Quotation.]]\n[[What it shows.]]", "Let's look at one.\nClaim: the narrator is more frightened than he admits. (**claim**)\nQuotation: he says the house was \"perfectly ordinary,\" three times in one page. (**quotation, only the words that matter**)\nWhat it shows: nobody insists something is ordinary three times unless they are trying to convince themselves. (**the sentence that does the work**)", "Quote only the words that matter, a phrase or a sentence, not a paragraph.\nThen explain. A quotation left alone proves nothing. The sentence after it is where the thinking lives."],
       key: 'Claim, quotation, then a sentence saying what it shows.\nA quotation alone proves nothing.',
-      prompts: ['Write one analysis paragraph about a character in a story your teacher assigns, with two quotations.', 'Write one analysis paragraph about the mood of a passage, with two quotations.', 'Write one analysis paragraph about a poem\'s central image, with two quotations.'],
+      prompts: ['Write one analysis paragraph about a character in a story your teacher assigns, with two quotations.', 'Write one analysis paragraph about the mood of a passage, with two quotations.', 'Write one analysis paragraph about a poem\'s central image, with two quotations.', 'Write one analysis paragraph about the setting of a story your teacher assigns, with two quotations.', 'Write one analysis paragraph about a poem\'s opening lines, with two quotations.'],
       checks: ['My first sentence is a claim about the text.', 'I quoted only the words that matter.', 'After each quotation I said what it shows.'] },
     { id: 'narrative-with-a-turn', another: 'Build toward the turn, the moment when things change. Slow down there. Let the ending show what the turn changed, without announcing it.', title: 'A narrative with a turn', tagline: 'The moment everything changed', teks: 'E1.12A', ccss: 'W.9-10.3', words: 350,
       lines: ["A strong narrative has a **turn**: a moment after which things are different.\n[[Build toward it.]]\n[[Slow down at it.]]\n[[Let the ending show what changed.]]", "Let's look at the shape.\nBuild: the ordinary morning, the errand, the ride. (**getting closer**)\nThe turn: the sentence someone said, the door that was open, the decision made in a second. (**told slowly**)\nAftermath: the same street looked different on the way home. (**what changed**)", "The turn does not have to be dramatic. What matters is that the reader feels the before and the after.\nIf a reader cannot say what changed, there was no turn, and you have an anecdote instead of a story."],
       key: 'Build toward a turn, slow down at it, and let the ending show what changed.',
-      prompts: ['Write a narrative, true or invented, with a moment after which things were different.', 'Write a narrative about a decision made in a second.', 'Write a narrative about a conversation that changed something.'],
+      prompts: ['Write a narrative, true or invented, with a moment after which things were different.', 'Write a narrative about a decision made in a second.', 'Write a narrative about a conversation that changed something.', 'Write a narrative about a conversation that changed something, slowing down at the turn.', 'Write a narrative about an ordinary day that stopped being ordinary.'],
       checks: ['My narrative builds toward a turn.', 'I slowed down at the turn with details.', 'The ending shows what changed.'] },
     { id: 'rhetorical-analysis', another: 'Ask three questions of a speech: what does it argue, which appeals does it use, and do those appeals fit the claim. Then write your answers.', title: 'A rhetorical analysis', tagline: 'How a speech works on you', teks: 'E1.9E', ccss: 'W.9-10.2', words: 350,
       lines: ["A rhetorical analysis explains **how a piece of persuasion works**: which appeals it uses, where, and to what effect.\n[[What it argues.]]\n[[Which appeals it uses.]]\n[[Whether they fit.]]", "Let's look at a speech asking a town to build a park.\nWhat it argues: the town needs a park. (**the claim**)\nAn appeal to feeling: the speaker describes children with nowhere to play. (**pathos**)\nAn appeal to reason: a survey shows most residents want one. (**logos**)\nAn appeal to trust: the speaker has lived in the town forty years. (**ethos**)\nDo they fit? A park is a community feeling as much as a budget line, so the appeal to feeling fits here.", "Judge the fit, not the cause.\nA speech you disagree with can be brilliantly made, and one you agree with can be a mess.\nThe analysis is about the making."],
       key: 'What it argues, which appeals it uses, and whether they fit the claim.\nJudge the making, not whether you agree.',
-      prompts: ['Analyze a speech your teacher assigns: its claim, its appeals and their fit.', 'Analyze an advertisement: what it argues and how.', 'Analyze an editorial: its claim, its appeals and their fit.'],
+      prompts: ['Analyze a speech your teacher assigns: its claim, its appeals and their fit.', 'Analyze an advertisement: what it argues and how.', 'Analyze an editorial: its claim, its appeals and their fit.', 'Analyze a campaign flyer or poster: its claim, its appeals and their fit.', 'Analyze a commencement speech: its claim, its appeals and their fit.'],
       checks: ['I named what the piece argues.', 'I named the appeals and where they appear.', 'I judged whether each appeal fits the claim.'] },
   ],
   11: [
     { id: 'synthesis-essay', another: 'Organize by your reasons, not by your sources. Each paragraph pulls from whichever sources support that reason. Where sources disagree, say so.', title: 'A synthesis essay', tagline: 'Several sources, one argument', teks: 'E3.12C', ccss: 'W.11-12.1', words: 600,
       lines: ["A synthesis essay builds **one argument out of several sources**.\n[[The sources do not each get a paragraph.]]\n[[The reasons do, and the sources appear where they help.]]", "Let's look at the shape.\nYour claim: the town should build the park.\nReason one: the town needs green space, and here is what source A and source C say about that. (**a reason, then the sources that support it**)\nReason two: the cost is manageable, and here is what source B says, with source D's objection. (**another reason, sources on both sides**)\nYour judgment: source B's numbers are more recent than D's, so I find them stronger.", "Where sources disagree, say so, and say which you find stronger and **why**.\nThat judgment is the part that is yours. Without it, the essay is a report on what other people think."],
       key: 'Organize by your reasons, not by your sources.\nWhere sources disagree, judge between them.',
-      prompts: ['Write a synthesis essay on a question your teacher assigns, using at least three sources.', 'Write a synthesis essay on a local issue, using at least three sources that do not all agree.', 'Write a synthesis essay on a question from science or history, using at least three sources.'],
+      prompts: ['Write a synthesis essay on a question your teacher assigns, using at least three sources.', 'Write a synthesis essay on a local issue, using at least three sources that do not all agree.', 'Write a synthesis essay on a question from science or history, using at least three sources.', 'Write a synthesis essay on whether cities should ban cars downtown, using three sources.', 'Write a synthesis essay on the value of learning a second language, using three sources.'],
       checks: ['My essay is organized by my reasons.', 'I used at least three sources and cited each.', 'Where sources disagreed, I judged between them.', 'My conclusion is my own argument.'] },
     { id: 'literary-argument', another: 'A claim about the whole work that someone could dispute, with evidence pulled from beginning, middle and end. One scene proves a moment; three prove a pattern.', title: 'A literary argument', tagline: 'A claim about a whole work', teks: 'E3.11B', ccss: 'W.11-12.9', words: 700,
       lines: ["A literary argument makes a claim about a **whole work** and proves it across the work, not from one scene.\n[[A claim about the whole.]]\n[[Evidence from the beginning, the middle and the end.]]", "Let's look at the shape.\nClaim: the novel treats money as a kind of weather that nobody controls.\nFrom the beginning: the first chapter's storm arrives the same day as the inheritance. (**evidence**)\nFrom the middle: the fortune is lost in a paragraph about clouds. (**evidence**)\nFrom the end: the last line is about the sky clearing, and the money is gone. (**evidence**)\nThe strongest reading against mine: that the weather is just weather. My answer: it appears at every turn of the money and nowhere else.", "The best claims are ones a smart reader could dispute. If nobody would argue, it is a summary.\nAnticipate the strongest reading against yours and answer it, because a good reader will think of it whether you mention it or not."],
       key: 'A disputable claim about the whole work, with evidence from across it.\nAnswer the strongest reading against yours.',
-      prompts: ['Write a literary argument about a novel or play your class read, with evidence from across the work.', 'Write a literary argument about how a work changes its reader\'s view of a character.', 'Write a literary argument about what a work says about its central theme.'],
+      prompts: ['Write a literary argument about a novel or play your class read, with evidence from across the work.', 'Write a literary argument about how a work changes its reader\'s view of a character.', 'Write a literary argument about what a work says about its central theme.', 'Write a literary argument about how a setting shapes the characters in a work your class read.', 'Write a literary argument about a minor character who matters more than they seem.'],
       checks: ['My claim is about the whole work and could be disputed.', 'My evidence comes from the beginning, middle and end.', 'I answered the strongest reading against mine.'] },
     { id: 'op-ed', another: 'You have a reader who gives you thirty seconds. Hook them in the first line, state your position, back it, and end with one specific ask.', title: 'An op-ed', tagline: 'Persuade the public in 600 words', teks: 'E3.12C', ccss: 'W.11-12.1', words: 600,
       lines: ["An op-ed is an argument **for the public**: one clear position, a hook in the first lines, evidence a general reader can follow, and an ending that asks for something.\n[[Hook.]]\n[[Position.]]\n[[Evidence.]]\n[[Ask.]]", "Let's look at the shape.\nHook: last Tuesday, forty kids played soccer in a parking lot. (**a picture, in one sentence**)\nPosition: our town needs a park, and it needs one this year. (**clear by the end of the first paragraph**)\nEvidence: the nearest park is four miles away; three nearby towns built one for less than a fire truck costs. (**things a stranger can check**)\nAsk: come to the council meeting on the twelfth and say so. (**one specific thing**)", "Write for the reader who will give you thirty seconds.\nIf the position is not clear by the end of the first paragraph, they are gone, and no amount of evidence after that will bring them back."],
       key: 'Hook, position, evidence, ask, all for a reader who gives you thirty seconds.',
-      prompts: ['Write an op-ed for a local paper on an issue you care about.', 'Write an op-ed responding to a recent news story.', 'Write an op-ed arguing for one specific change at your school or in your town.'],
+      prompts: ['Write an op-ed for a local paper on an issue you care about.', 'Write an op-ed responding to a recent news story.', 'Write an op-ed arguing for one specific change at your school or in your town.', 'Write an op-ed about a rule at your school that should change.', 'Write an op-ed making the case for a place in your town that deserves more attention.'],
       checks: ['My position is clear by the end of the first paragraph.', 'A general reader can follow my evidence.', 'I asked for something specific at the end.', 'It is about 600 words.'] },
   ],
   10: [
     { id: 'literary-analysis', another: 'A thesis about the text, quotations as evidence, and a sentence after each quotation saying what it shows. Analysis is the sentence after the quote.', title: 'A literary analysis', tagline: 'What a text does and how', teks: 'E2.11B', ccss: 'W.9-10.2', words: 400,
       lines: ["A literary analysis argues something about a text and proves it with the text's **own words**.\n[[A thesis about the text.]]\n[[Quotations.]]\n[[What each quotation shows.]]", "The thesis is **not** a summary.\n[[The story is about a boy and a dog.]] (**a summary; nobody would argue**)\n[[The story uses the dog to show what the boy cannot say.]] (**a thesis; a reader could push back**)\nEvery quotation you pick should serve the thesis, and every quotation needs the sentence after it that says what it shows.", "Let's look at one body paragraph.\nClaim: the dog says what the boy cannot.\nQuotation: when the boy's father leaves, the dog \"would not stop howling.\" (**the text's own words**)\nWhat it shows: the boy never cries in the whole story; the dog does it for him. (**the thinking**)\nThree quotations like that, and a conclusion that says why the claim matters, and you have an analysis."],
       key: 'A thesis about the text, quotations as evidence, and what each one shows.\nThe thesis is a claim, not a summary.',
-      prompts: ['Write a literary analysis of a story your teacher assigns, with a thesis and three quotations.', 'Write a literary analysis of a poem, with a thesis and three quotations.', 'Write a literary analysis of a character, with a thesis and three quotations.'],
+      prompts: ['Write a literary analysis of a story your teacher assigns, with a thesis and three quotations.', 'Write a literary analysis of a poem, with a thesis and three quotations.', 'Write a literary analysis of a character, with a thesis and three quotations.', 'Write a literary analysis of a poem, with a thesis and three quotations.', 'Write a literary analysis of a short story\'s ending, with a thesis and three quotations.'],
       checks: ['My thesis makes a claim, not a summary.', 'I used three quotations.', 'After each quotation I said what it shows.', 'My conclusion says why the claim matters.'] },
     { id: 'sourced-argument', another: 'Every piece of evidence names where it came from. That is what separates an argument from an opinion with confidence.', title: 'An argument with sources', tagline: 'Evidence you can point to', teks: 'E2.12C', ccss: 'W.9-10.1', words: 450,
       lines: ["A sourced argument names **where every piece of evidence came from**, so a reader can check it.\n[[Claim.]]\n[[Evidence.]]\n[[Source.]]\n[[Warrant: why the evidence counts.]]", "Let's look at one paragraph.\nClaim: later school starts improve attendance.\nEvidence: attendance rose four percent in the year after the change. (**a fact**)\nSource: the district's own report, published the following spring. (**where it came from**)\nWarrant: since nothing else about the schedule changed that year, the later start is the likeliest cause. (**why it counts**)", "Naming the source is not decoration. It is what separates an argument from an opinion.\nAuthor, title, year, in whatever form your teacher asks for. And answer the best objection, because a sourced argument that ignores the other side has only done half the work."],
       key: 'Every piece of evidence names its source.\nThat is what separates an argument from an opinion.',
-      prompts: ['Argue a position on a local issue, with three sources named.', 'Argue a position on a school policy, with three sources named.', 'Argue a position on a question from science or history, with three sources named.'],
+      prompts: ['Argue a position on a local issue, with three sources named.', 'Argue a position on a school policy, with three sources named.', 'Argue a position on a question from science or history, with three sources named.', 'Argue a position on a science question in the news, with three sources named.', 'Argue a position on a change to public transit, with three sources named.'],
       checks: ['My claim is clear.', 'Every piece of evidence names its source.', 'I explained why each piece of evidence counts.', 'I answered the best objection.'] },
     { id: 'reflective-essay', another: 'Tell what happened, then what it meant. What did you believe before? What do you believe now? The gap between them is the essay.', title: 'A reflective essay', tagline: 'What an experience meant', teks: 'E2.12A', ccss: 'W.9-10.3', words: 400,
       lines: ["A reflective essay tells an experience and then **thinks about it**.\n[[Half is what happened.]]\n[[Half is what it meant, and what you understand now that you did not then.]]", "Let's look at the shape.\nWhat happened: the week I was sure I was right, and the day I found out I was not. (**told with details**)\nWhat I believed before: that being right mattered more than anything. (**the old belief**)\nWhat I believe now: that being willing to be wrong is what lets you learn. (**the new one**)\nWhat changed it: one conversation, which I can quote almost word for word. (**the hinge**)", "The second half is the hard part and the point.\nAsk three questions: what did I believe before, what do I believe now, and what changed it?\nIf you can answer all three, the essay is already written; you only have to put it in order."],
       key: 'Tell what happened, then what it meant.\nWhat did you believe before, and what changed it?',
-      prompts: ['Write a reflective essay about a time you changed your mind.', 'Write a reflective essay about a failure that taught you something.', 'Write a reflective essay about a person who changed how you see things.'],
+      prompts: ['Write a reflective essay about a time you changed your mind.', 'Write a reflective essay about a failure that taught you something.', 'Write a reflective essay about a person who changed how you see things.', 'Write a reflective essay about a skill that took longer to learn than you expected.', 'Write a reflective essay about a piece of advice you ignored and later understood.'],
       checks: ['I told what happened with details.', 'I said what it meant.', 'I said what I believed before and what changed.'] },
   ],
   12: [
     { id: 'research-paper', another: 'Start with a question. Report what the sources say. Then build your own answer on top of them, saying which sources hold which part.', title: 'A research paper', tagline: 'A question, sources, and an answer', teks: 'E4.12H', ccss: 'W.11-12.7', words: 900,
       lines: ["A research paper begins with a **question**, gathers what sources say, and ends with the writer's **own answer**, built on them.\n[[Question.]]\n[[Sources.]]\n[[Your answer.]]", "Let's look at the shape.\nThe question: why did the town's river flood more often after 1990?\nWhat the sources say: a county report on new pavement, a university study of rainfall, a newspaper series on the old levee. (**each one doing a job**)\nWhere they disagree: the report blames pavement; the study blames rain. (**you notice, and you judge**)\nYour answer: both, and the levee made each worse, which is what the sources together show and none of them says alone.", "The paper is not a pile of quotations.\nEvery source is there to help answer the question, and the writer says how.\nCite every source in the form your teacher asks for, so a reader could walk the same path you did."],
       key: 'A question, what the sources say, and your own answer built on them.\nEvery source cited, every source doing a job.',
-      prompts: ['Write a research paper on a question you choose with your teacher, using at least five sources.', 'Write a research paper on a question from history or science, using at least five sources.', 'Write a research paper on a local issue, using at least five sources.'],
+      prompts: ['Write a research paper on a question you choose with your teacher, using at least five sources.', 'Write a research paper on a question from history or science, using at least five sources.', 'Write a research paper on a local issue, using at least five sources.', 'Write a research paper on how one technology changed a job, using at least five sources.', 'Write a research paper on a local history question, using at least five sources.'],
       checks: ['My paper answers one clear question.', 'I used at least five sources and cited each one.', 'I said how each source helps answer the question.', 'My conclusion is my own answer, built on the sources.'] },
     { id: 'personal-essay', another: 'One story, told well, that shows who you are. A small true moment beats a big vague one.', title: 'A personal essay', tagline: 'Who you are, in a page', teks: 'E4.12A', ccss: 'W.11-12.3', words: 650,
       lines: ["A personal essay, the kind a college or an employer asks for, shows **who you are** through one story told well, rather than by listing your qualities.\n[[One story.]]\n[[Told well.]]\n[[That shows rather than tells.]]", "Pick a small moment over a big one.\n[[I am hardworking and I never give up.]] (**telling; every essay says this**)\n[[The chain came off my bike two miles from home, and I spent an hour in the rain putting it back with a stick and a bandana.]] (**showing; only you can say this**)\nThe reader learns more from the bike than from a list of trophies.", "End with what you carry forward.\nNot a moral, and not a promise to work hard in college. One sentence about what that small moment left in you that is still there.\nThat sentence is the essay's reason for existing."],
       key: 'One story, told well, that shows who you are.\nA small moment beats a list of achievements.',
-      prompts: ['Write a personal essay for a college application, in about 650 words.', 'Write a personal essay about a moment that shaped how you think.', 'Write a personal essay about something you built, fixed or started.'],
+      prompts: ['Write a personal essay for a college application, in about 650 words.', 'Write a personal essay about a moment that shaped how you think.', 'Write a personal essay about something you built, fixed or started.', 'Write a personal essay about a place that made you who you are, in about 650 words.', 'Write a personal essay about a small habit that says something large about you, in about 650 words.'],
       checks: ['I told one story rather than listing qualities.', 'The story shows something about me.', 'I ended with what I carry forward.', 'It is about 650 words.'] },
     { id: 'letter-to-an-editor', another: 'One point, backed by evidence, and one specific ask. Keep it to a page; a busy stranger is reading.', title: 'A letter to an editor', tagline: 'Persuade a stranger in a page', teks: 'E4.12C', ccss: 'W.11-12.1', words: 350,
       lines: ["A letter to an editor or an official makes **one point**, backs it, and asks for **one thing**, all in a page a busy stranger will read.\n[[Who you are.]]\n[[Your point.]]\n[[The strongest evidence.]]\n[[One specific ask.]]", "Let's look at the shape.\nWho you are: I am a senior at the high school and I ride the number 4 bus. (**one sentence**)\nYour point: the bus should run until six, not five. (**the next sentence**)\nEvidence: forty students in after-school programs have no way home; three of us counted them last week. (**the strongest thing you have**)\nThe ask: add one bus at six, starting in January. (**specific**)\nSign it.", "Long letters are not read.\nSay who you are in a sentence. Say the point in the next. Give the strongest evidence. Ask for something specific. Sign it.\nThat is a page, and a page gets read."],
       key: 'One point, backed by evidence, and one specific ask.\nA page a busy stranger will read.',
-      prompts: ['Write a letter to your local paper about a change your town should make.', 'Write a letter to a school official about a policy you want changed.', 'Write a letter to a company about a product or a practice, asking for one change.'],
+      prompts: ['Write a letter to your local paper about a change your town should make.', 'Write a letter to a school official about a policy you want changed.', 'Write a letter to a company about a product or a practice, asking for one change.', 'Write a letter to your local paper in support of something your town did well.', 'Write a letter to a company about a product that could be better, with one specific ask.'],
       checks: ['I said who I am and my point in the first two sentences.', 'I gave evidence.', 'I asked for one specific thing.', 'It fits on a page.'] },
   ],
 };
@@ -828,6 +829,40 @@ export const COURSES = [
     modules: GRADE2_CIVICS_MODULES(),
   },
   {
+    id: 'music-1',
+    grade: '1',
+    subject: 'Music',
+    title: 'Beat, high, low, loud, soft',
+    audience: 'Grade 1',
+    readAloud: true,
+    modules: MUSIC1_MODULES(),
+  },
+  {
+    id: 'music-4',
+    grade: '4',
+    subject: 'Music',
+    title: 'Reading music',
+    audience: 'Grade 4',
+    modules: MUSIC4_MODULES(),
+  },
+  {
+    id: 'health-k',
+    grade: 'K',
+    subject: 'Health',
+    title: 'Taking care of me',
+    audience: 'Kindergarten',
+    readAloud: true,
+    modules: HEALTHK_MODULES(),
+  },
+  {
+    id: 'health-4',
+    grade: '4',
+    subject: 'Health',
+    title: 'A body that works well',
+    audience: 'Grade 4',
+    modules: HEALTH4_MODULES(),
+  },
+  {
     id: 'tech-3',
     grade: '3',
     subject: 'Technology',
@@ -981,16 +1016,23 @@ export const GAMES = [
   { id: 'jigsaw-9', kind: 'jigsaw', title: 'Big puzzle', side: 3, minGrade: '1' },
   { id: 'pairs-many', kind: 'pairs', title: 'Many pairs', pairs: 6, minGrade: '1' },
   // Matching pairs for older students: each card's twin says the same thing another way.
-  { id: 'pairs-times', kind: 'pairs', title: 'Times table', pairs: 6, minGrade: '3', deck: 'times' },
   { id: 'pairs-fractions', kind: 'pairs', title: 'Fraction twins', pairs: 6, minGrade: '3', deck: 'fractions' },
   { id: 'pairs-vocabulary', kind: 'pairs', title: 'Word meanings', pairs: 6, minGrade: '4', deck: 'vocabulary' },
   { id: 'pairs-capitals', kind: 'pairs', title: 'Capitals', pairs: 6, minGrade: '6', deck: 'capitals' },
   { id: 'pairs-roots', kind: 'pairs', title: 'Word roots', pairs: 6, minGrade: '6', deck: 'roots' },
   { id: 'pairs-elements', kind: 'pairs', title: 'Element symbols', pairs: 6, minGrade: '8', deck: 'elements' },
-  { id: 'pairs-dates', kind: 'pairs', title: 'Dates and events', pairs: 6, minGrade: '8', deck: 'dates' },
   { id: 'pairs-formulas', kind: 'pairs', title: 'Formulas', pairs: 6, minGrade: '9', deck: 'formulas' },
   // A review game for every science course from grade 3 up, shown once that course is on a student's list.
   { id: 'pairs-technology', kind: 'pairs', title: 'Computer words', pairs: 6, minGrade: '3', deck: 'technology' },
+  { id: 'pairs-health', kind: 'pairs', title: 'Healthy words', pairs: 6, minGrade: '3', deck: 'health' },
+  { id: 'pairs-music', kind: 'pairs', title: 'Music words', pairs: 6, minGrade: '3', deck: 'music' },
+  // Quick fire and In order: two more kinds for older students, so play is not all matching.
+  { id: 'sprint-math', kind: 'sprint', title: 'Quick fire: math', minGrade: '3', subject: 'Math' },
+  { id: 'sprint-science', kind: 'sprint', title: 'Quick fire: science', minGrade: '3', subject: 'Science' },
+  { id: 'sprint-all', kind: 'sprint', title: 'Quick fire: everything', minGrade: '4' },
+  { id: 'order-steps', kind: 'order', title: 'In order: how things happen', minGrade: '3', deck: 'processes' },
+  { id: 'order-timeline', kind: 'order', title: 'In order: timeline', minGrade: '5', deck: 'timeline' },
+  { id: 'order-math', kind: 'order', title: 'In order: the math way', minGrade: '5', deck: 'mathsteps' },
   ...['3', '4', '5', '6', '7', '8', '9', '10', '11', '12'].map((g) => ({ id: `pairs-science-${g}`, kind: 'pairs', title: `Grade ${g} science words`, pairs: 6, minGrade: g, deck: `science-${g}`, courseId: `science-${g}` })),
   { id: 'dots-kite', kind: 'dots', title: 'Kite', shape: 'kite' },
   { id: 'maze-huge', kind: 'maze', title: 'Huge maze', cells: 12, minGrade: '2' },
@@ -1007,6 +1049,8 @@ export const PAIR_DECKS = {
   times: [['3 × 4', '12'], ['6 × 7', '42'], ['8 × 8', '64'], ['9 × 6', '54'], ['7 × 8', '56'], ['5 × 9', '45'], ['4 × 7', '28'], ['9 × 9', '81'], ['6 × 6', '36'], ['8 × 3', '24'], ['7 × 7', '49'], ['4 × 8', '32']],
   vocabulary: [['enormous', 'very big'], ['fragile', 'breaks easily'], ['ancient', 'very old'], ['rapid', 'fast'], ['vacant', 'empty'], ['brief', 'short'], ['exhausted', 'very tired'], ['furious', 'very angry'], ['cautious', 'careful'], ['abundant', 'plenty'], ['reluctant', 'unwilling'], ['transparent', 'see-through']],
   capitals: [['Texas', 'Austin'], ['France', 'Paris'], ['Japan', 'Tokyo'], ['Mexico', 'Mexico City'], ['Canada', 'Ottawa'], ['Egypt', 'Cairo'], ['Brazil', 'Brasília'], ['Kenya', 'Nairobi'], ['Australia', 'Canberra'], ['India', 'New Delhi'], ['Italy', 'Rome'], ['United States', 'Washington']],
+  music: [['beat', 'the pulse under a song'], ['pitch', 'high or low'], ['dynamics', 'loud or soft'], ['tempo', 'the speed'], ['forte', 'loud'], ['piano', 'soft'], ['allegro', 'fast'], ['adagio', 'slow'], ['whole note', 'four beats'], ['quarter note', 'one beat'], ['staff', 'five lines'], ['FACE', 'the spaces']],
+  health: [['sleep', 'when the brain files the day'], ['protein', 'builds muscle'], ['serving size', 'read this first'], ['pulse', 'the heart\'s beat'], ['cavity', 'a hole a germ made'], ['twenty seconds', 'a proper hand wash'], ['vegetables', 'half the plate'], ['recovery', 'the pulse settling'], ['water', 'the everyday drink'], ['screen light', 'a small sun'], ['an hour', 'play each day'], ['twenty-twenty-twenty', 'rest for the eyes']],
   technology: [['input', 'you tell the computer'], ['output', 'it shows you'], ['algorithm', 'steps in order'], ['loop', 'steps that repeat'], ['variable', 'a named box'], ['condition', 'a yes or no question'], ['bug', 'a mistake in the steps'], ['binary', 'ones and zeros'], ['packet', 'a piece of a message'], ['DNS', 'the internet phone book'], ['password', 'a key to a door'], ['debug', 'find and fix the bug']],
   // Science review decks, one per course: a key word and what it means, from that course's modules.
   'science-3': [['solid', 'keeps its shape'], ['liquid', 'takes the shape of its container'], ['gas', 'fills its container'], ['friction', 'slows a slide'], ['gravity', 'pulls things down'], ['tadpole', 'a young frog'], ['season', 'part of the year'], ['vibration', 'what makes sound']],
@@ -1019,6 +1063,32 @@ export const PAIR_DECKS = {
   'science-10': [['ionic bond', 'electrons given'], ['covalent bond', 'electrons shared'], ['acid', 'below 7 on the scale'], ['base', 'above 7 on the scale'], ['mole', 'a dozen for chemists'], ['synthesis', 'two become one'], ['pressure', 'particles hitting walls'], ['molarity', 'moles per liter']],
   'science-11': [['acceleration', 'speed changing'], ['kinetic energy', 'moving energy'], ['potential energy', 'stored energy'], ['wavelength', 'crest to crest'], ['frequency', 'crests per second'], ['voltage', 'the push'], ['resistance', 'the narrow pipe'], ['momentum', 'mass times velocity']],
   'science-12': [['igneous', 'cooled from lava'], ['sedimentary', 'pressed from layers'], ['metamorphic', 'changed by heat'], ['climate', 'decades of weather'], ['supernova', 'the end of a big star'], ['mantle', 'the hot middle layer'], ['deep current', 'cold salty water sinking'], ['half-life', 'time to halve']],
+};
+// Ordered sets for the In order game: steps or events a student taps first to last.
+export const ORDER_DECKS = {
+  processes: [
+    { title: 'The water cycle', steps: ['the sun warms the sea', 'water evaporates', 'vapor cools into clouds', 'rain falls', 'rivers carry it back'] },
+    { title: 'A frog\'s life', steps: ['an egg in the pond', 'a tadpole', 'a tadpole with legs', 'a small frog', 'a frog that lays eggs'] },
+    { title: 'A seed to a plant', steps: ['the seed is planted', 'roots grow down', 'a shoot comes up', 'leaves open', 'flowers, then seeds'] },
+    { title: 'Making toast', steps: ['put the bread in', 'push the lever', 'wait', 'it pops up', 'butter it'] },
+    { title: 'A sound reaching you', steps: ['a string vibrates', 'the air shakes', 'the wave travels', 'your ear catches it', 'your brain hears'] },
+    { title: 'From cotton to shirt', steps: ['cotton grows', 'it is spun into thread', 'thread is woven into cloth', 'cloth is sewn', 'the shirt is sold'] },
+    { title: 'Rain on a hill', steps: ['rain falls on the hill', 'it runs downhill', 'it reaches a creek', 'the creek joins a river', 'the river reaches the sea'] },
+  ],
+  timeline: [
+    { title: 'Texas', steps: ['Spain builds missions', 'Mexico takes over, 1821', 'the Alamo falls, 1836', 'a republic for nine years', 'the 28th state, 1845', 'Juneteenth, 1865'] },
+    { title: 'The United States', steps: ['the Declaration, 1776', 'the Constitution, 1787', 'the Louisiana Purchase, 1803', 'the Civil War begins, 1861', 'Juneteenth, 1865'] },
+    { title: 'The twentieth century', steps: ['World War I begins, 1914', 'the Crash, 1929', 'Pearl Harbor, 1941', 'Brown v. Board, 1954', 'the moon landing, 1969'] },
+    { title: 'Big hinges', steps: ['farming', 'writing', 'printing', 'industry', 'the internet'] },
+    { title: 'Ancient to modern', steps: ['rivers flood and cities begin', 'Athens votes', 'Rome builds an empire', 'the Black Death', 'the age of revolutions'] },
+  ],
+  mathsteps: [
+    { title: 'Order of operations', steps: ['brackets', 'exponents', 'multiply and divide', 'add and subtract'] },
+    { title: 'Solving 2x + 3 = 11', steps: ['see the plus 3 was done last', 'subtract 3 from both sides', '2x = 8', 'divide both sides by 2', 'x = 4'] },
+    { title: 'Long division, 96 by 4', steps: ['how many 4s in 9: two', 'write 2, subtract 8', 'bring down the 6', 'how many 4s in 16: four', 'the answer is 24'] },
+    { title: 'Adding fractions with different bottoms', steps: ['find a common bottom', 'change each fraction to it', 'add the tops', 'keep the bottom', 'simplify if you can'] },
+    { title: 'Reading a coordinate', steps: ['start at the origin', 'go across the first number', 'go up the second number', 'mark the point', 'name it (x, y)'] },
+  ],
 };
 export function gamesFor(topGrade) { const at = GRADES.indexOf(topGrade); return GAMES.filter((g) => !g.minGrade || GRADES.indexOf(g.minGrade) <= at); }
 export function gamesUnlocked(events) {
@@ -1159,7 +1229,7 @@ function recommendedIncludingElectives(events, level, startGrade = null) {
 
 // Subjects always read Math, Reading, Writing, Science, History, then anything else alphabetically,
 // whatever order the courses were written in. Every screen that lists subjects sorts with this.
-const SUBJECT_RANK = { Math: 0, Reading: 1, Writing: 2, Science: 3, History: 4, Art: 5, Technology: 6 };
+const SUBJECT_RANK = { Math: 0, Reading: 1, Writing: 2, Science: 3, History: 4, Art: 5, Music: 6, Technology: 7, Health: 8 };
 export function sortSubjects(subjects) {
   return [...new Set(subjects)].sort((a, b) => (SUBJECT_RANK[a] ?? 9) - (SUBJECT_RANK[b] ?? 9) || a.localeCompare(b));
 }
@@ -5058,7 +5128,7 @@ function GRADE6_SCIENCE_MODULES() { return [
     tagline: 'Lenses, magnification and focus',
     requires: ['cells'],
     lesson: {
-      paragraphs: ['A microscope makes tiny things look bigger. A lens bends light so that something too small to see fills your eye.\nThe eyepiece lens and the objective lens each magnify, and their magnifications multiply: a 10x eyepiece with a 40x objective shows the sample 400 times bigger.', 'The focus knob moves the lens until the image is sharp: coarse first, then fine. The light underneath shines up through the sample.', 'In 1665 Robert Hooke looked at cork through a microscope, saw little boxes, and named them cells.'],
+      paragraphs: ['A microscope makes tiny things look bigger. A lens bends light so that something too small to see fills your eye.\nThe eyepiece lens and the objective lens each magnify, and their magnifications multiply: a 10x eyepiece with a 40x objective shows the sample 400 times bigger.', 'The focus knob moves the lens until the image is sharp: the coarse knob first, then the fine knob. The light underneath shines up through the sample.', 'In 1665 Robert Hooke looked at cork through a microscope, saw little boxes, and named them cells.'],
       keyIdea: 'Lenses magnify; magnifications multiply; focus makes it sharp.',
       example: { kind: 'flow', steps: ['light', 'sample', 'objective lens', 'eyepiece', 'your eye'], caption: 'Light comes up through the sample, two lenses magnify it in turn, and the image reaches your eye 400 times bigger.',
         another: ['A magnifying glass is one lens. A microscope is two in a row, and the second magnifies what the first already magnified. That is why the numbers multiply.',
@@ -6819,6 +6889,252 @@ function GRADE2_CIVICS_MODULES() { return [
   },
 ]; }
 
+function MUSIC1_MODULES() { return [
+  {
+    id: 'the-steady-beat',
+    order: 1,
+    title: 'The steady beat',
+    tagline: 'The pulse under every song',
+    requires: [],
+    lesson: {
+      paragraphs: ['Every song has a steady pulse under it, like a ticking clock. That is the beat.\nYou can keep it with your hands, clapping, or tap it or march to it: left, right, left, right, on the pulse.', 'The words change and the tune goes up and down, but the beat stays even underneath.', 'Find the beat and you can join any song.'],
+      keyIdea: 'The beat is the even pulse under a song, like a clock. Clap it, tap it, march to it.',
+      example: { kind: 'flow', steps: ['tick', 'tick', 'tick', 'tick'], caption: 'Four even beats, like a clock: the pulse a song is built on.',
+        another: ['Put a hand on your chest and feel your heartbeat. That steady thump is a beat too, and a song has one just like it.',
+          { text: 'Walking is a beat: left, right, left, right, always even. Walk to a song and your feet find its pulse by themselves.', visual: { kind: 'loop', steps: ['left', 'right', 'left', 'right'] } },
+          'The beat is not the words and not the tune. Hum a song with your mouth closed and tap the table: the tapping is the beat.'] },
+    },
+    sources: ['Aligned with TEKS Fine Arts, Music, Grade 1, 117.106(b)(1)(A) (identify the steady beat) and National Core Arts Standards MU:Re7.2.1a.'],
+    generators: ['mu1-beat', 'mu1-beat', 'mu1-beat', 'mu1-beat', 'mu1-beat'],
+  },
+  {
+    id: 'high-and-low',
+    order: 2,
+    title: 'High and low',
+    tagline: 'A bird and a cow',
+    requires: ['the-steady-beat'],
+    lesson: {
+      paragraphs: ['A bird sings high. A cow moos low. Thunder rumbles low; a whistle and a squeak are high.\nHigh and low is called pitch.', 'On a piano, the keys go from low to high, left to right: the high notes are to the right. Walk your fingers right and the notes climb.', 'Every tune is a walk up and down between high and low.'],
+      keyIdea: 'High and low is pitch. On a piano, right is higher.',
+      example: { kind: 'twoway', a: 'a bird', b: 'a cow', top: 'high', bottom: 'low', caption: 'Two animals, two pitches: the bird high, the cow low.',
+        another: ['Slide your voice from a growl to a squeak. That slide is pitch going from low to high, and you just played every note in between.',
+          { text: 'A piano is a staircase lying on its side: each key to the right is one step up. A tune climbs and descends the stairs.', visual: { kind: 'stack', levels: ['high: the right end', 'middle', 'low: the left end'] } },
+          'Big things sound low and small things sound high: a tuba and a piccolo, a cow and a bird, a drum and a bell.'] },
+    },
+    sources: ['Aligned with TEKS Fine Arts, Music, Grade 1, 117.106(b)(1)(B) (identify higher and lower pitches) and National Core Arts Standards MU:Re7.2.1a.'],
+    generators: ['mu1-high-low', 'mu1-high-low', 'mu1-high-low', 'mu1-high-low', 'mu1-high-low'],
+  },
+  {
+    id: 'loud-and-soft',
+    order: 3,
+    title: 'Loud and soft',
+    tagline: 'A lullaby and a parade',
+    requires: ['high-and-low'],
+    lesson: {
+      paragraphs: ['A lullaby is sung softly so a baby can drift off. A drum in a parade is loud so it can be heard down the street.\nLoud and soft is called dynamics.', 'A song can change: growing louder and louder toward the end, or fading to a whisper. Fading is the loudness getting softer: a change in dynamics, not in pitch or speed.', 'Loud, soft, growing, fading: the volume of a song is one of its tools.'],
+      keyIdea: 'Loud and soft is dynamics. A song can grow louder or fade.',
+      example: { kind: 'twoway', a: 'a lullaby', b: 'a parade drum', top: 'soft', bottom: 'loud', caption: 'Two songs, two dynamics: soft for sleeping, loud for the street.',
+        another: ['Turn the volume knob on a radio slowly up. The song does not change; only how loud it is. That knob is dynamics.',
+          { text: 'A whisper and a shout are the same words at two dynamics. Sing a line both ways and hear that the tune never moved.', visual: { kind: 'flow', steps: ['whisper', 'talk', 'shout'] } },
+          'Growing louder builds excitement; fading out says goodbye. Listen for how a song ends and you will hear the dynamics doing the talking.'] },
+    },
+    sources: ['Aligned with TEKS Fine Arts, Music, Grade 1, 117.106(b)(1)(B) (identify louder and softer dynamics) and National Core Arts Standards MU:Re7.2.1a.'],
+    generators: ['mu1-loud-soft', 'mu1-loud-soft', 'mu1-loud-soft', 'mu1-loud-soft', 'mu1-loud-soft'],
+  },
+]; }
+function MUSIC4_MODULES() { return [
+  {
+    id: 'note-lengths',
+    order: 1,
+    title: 'How long a note lasts',
+    tagline: 'Whole, half, quarter, eighth',
+    requires: [],
+    lesson: {
+      paragraphs: ['A whole note lasts four beats. Each note after it is half the one before: a half note two beats, a quarter note one beat, an eighth note half a beat.\nFour quarter notes fill a measure of four beats. Two eighth notes make one beat.', 'Notes are fractions of a measure, and they add up the same way fractions do.', 'Whole, half, quarter, eighth: four, two, one, a half.'],
+      keyIdea: 'Whole four beats, half two, quarter one, eighth a half. They add up like fractions.',
+      example: { kind: 'bar', parts: 4, shaded: 2, caption: 'A measure of four beats with a half note filling two of them: half the bar.',
+        another: ['A note is a slice of pizza. A whole note is the whole pizza, a half note is half, a quarter note is a quarter. The measure is the pizza and the slices must add up to one.',
+          { text: 'Clap it: a long clap and hold for a whole note, two claps for two half notes, four for quarters, and eight quick ones for eighths, all in the same four beats.', visual: { kind: 'flow', steps: ['1 whole', '2 halves', '4 quarters', '8 eighths'] } },
+          'Count out loud: one, two, three, four for the whole note; one-two, three-four for halves; one, two, three, four for quarters; one-and-two-and for eighths.'] },
+    },
+    sources: ['Aligned with TEKS Fine Arts, Music, Grade 4, 117.115(b)(1)(B) (identify and read whole, half, quarter and eighth notes) and National Core Arts Standards MU:Pr4.2.4a.'],
+    generators: ['mu4-lengths', 'mu4-lengths', 'mu4-lengths', 'mu4-lengths', 'mu4-lengths'],
+  },
+  {
+    id: 'the-staff',
+    order: 2,
+    title: 'The staff',
+    tagline: 'Five lines and FACE',
+    requires: ['note-lengths'],
+    lesson: {
+      paragraphs: ['Music is written on a staff: five lines and four spaces, and every note sits on a line or in a space. Higher on the staff is higher in pitch.\nOn the treble staff, the lines from the bottom up are E, G, B, D, F: Every Good Boy Does Fine. The spaces spell FACE: F, A, C, E.', 'Learn the two sayings and you can name any note on the staff.', 'Five lines, four spaces, two sayings.'],
+      keyIdea: 'Five lines and four spaces; lines E G B D F, spaces F A C E; higher on the staff is higher in pitch.',
+      example: { kind: 'stack', levels: ['F: top line', 'D', 'B', 'G', 'E: bottom line'], caption: 'The five lines of the treble staff, top to bottom: F, D, B, G, E. The spaces between them spell FACE from the bottom up.',
+        another: ['The staff is a ladder. Each rung and each gap between rungs is a note, and the higher you climb, the higher the note.',
+          { text: 'Say the two sayings while you point: Every Good Boy Does Fine up the lines, then FACE up the spaces. After a week you will not need the sayings.', visual: { kind: 'twoway', a: 'lines', b: 'spaces', top: 'E G B D F', bottom: 'F A C E' } },
+          'The letters go A to G and start over, so the note above G is A again. The staff is that alphabet, climbing.'] },
+    },
+    sources: ['Aligned with TEKS Fine Arts, Music, Grade 4, 117.115(b)(1)(C) (identify and read notes on the treble staff) and National Core Arts Standards MU:Pr4.2.4b.'],
+    generators: ['mu4-staff', 'mu4-staff', 'mu4-staff', 'mu4-staff', 'mu4-staff'],
+  },
+  {
+    id: 'tempo-and-dynamics',
+    order: 3,
+    title: 'Fast, slow, loud, soft',
+    tagline: 'The Italian words',
+    requires: ['the-staff'],
+    lesson: {
+      paragraphs: ['Musicians share a few Italian words. Forte means loud, and a piece marked piano is played softly; the instrument got its name because it could play both.\nTempo is a piece\'s speed: allegro is fast, adagio is slow.', 'A composer writes the words on the page so every player plays the same way. A lullaby is usually marked piano and adagio; a march is forte and allegro.', 'Forte, piano, allegro, adagio: loud, soft, fast, slow.'],
+      keyIdea: 'Forte loud, piano soft; tempo is speed: allegro fast, adagio slow.',
+      example: { kind: 'twoway', a: 'forte', b: 'piano', top: 'loud', bottom: 'soft', caption: 'Two words for the volume of a piece, written on the page so everyone agrees.',
+        another: ['Dynamics is the volume knob and tempo is the speed dial. Every piece of music has both set somewhere, and the Italian words are the labels.',
+          { text: 'Say the words with the feeling: FORTE big and loud, piano small and gentle, allegro quick and bright, a-da-gio slow and wide. The sound of the word teaches the meaning.', visual: { kind: 'flow', steps: ['adagio: slow', 'allegro: fast'] } },
+          'A lullaby is piano and adagio. A parade march is forte and allegro. Try naming the dynamics and tempo of the next song you hear.'] },
+    },
+    sources: ['Aligned with TEKS Fine Arts, Music, Grade 4, 117.115(b)(1)(D) (identify tempo and dynamic markings) and National Core Arts Standards MU:Re7.2.4a.'],
+    generators: ['mu4-words', 'mu4-words', 'mu4-words', 'mu4-words', 'mu4-words'],
+  },
+]; }
+function HEALTHK_MODULES() { return [
+  {
+    id: 'washing-hands',
+    order: 1,
+    title: 'Washing hands',
+    tagline: 'Soap, water, count to twenty',
+    requires: [],
+    lesson: {
+      paragraphs: ['Germs are too small to see, and they ride on hands. Wash your hands before eating, and after the bathroom the next thing you do is wash your hands.\nSoap, water, and scrub while you count to twenty. Between the fingers too, and under the nails.', 'Twenty seconds is a short song. Sing it and you are done.', 'Clean hands keep the germs off your food and out of your mouth.'],
+      keyIdea: 'Wash before eating and after the bathroom: soap, water, count to twenty.',
+      example: { kind: 'flow', steps: ['wet', 'soap', 'scrub to twenty', 'rinse', 'dry'], caption: 'Five steps, and the germs go down the drain.',
+        another: ['Put a little glitter on your hands and wash with water only. Some stays. Now wash with soap: it goes. Germs are like glitter you cannot see.',
+          { text: 'Between the fingers is where germs hide, like crumbs in the cracks of a couch. Scrub there on purpose.', visual: { kind: 'letters', text: 'between the fingers' } },
+          'Sing the birthday song twice while you scrub. That is twenty seconds, every time.'] },
+    },
+    sources: ['Aligned with TEKS Health Education K.1A (identify healthy habits, including hand washing) and CDC handwashing guidance.'],
+    generators: ['hk-hands', 'hk-hands', 'hk-hands', 'hk-hands', 'hk-hands'],
+  },
+  {
+    id: 'brushing-teeth',
+    order: 2,
+    title: 'Brushing teeth',
+    tagline: 'Two times, two minutes',
+    requires: ['washing-hands'],
+    lesson: {
+      paragraphs: ['Germs eat leftover sugar on teeth and make tiny holes called cavities. Brushing sweeps them away.\nBrush two times a day, morning and night, for two minutes each: front, back and the tops where you chew.', 'A timer or a two-minute song keeps you honest. Water is the best drink for teeth; the most important brushing is at night, because germs work all night on whatever you leave them.', 'Two times, two minutes, and the sugar bugs lose.'],
+      keyIdea: 'Brush two times a day for two minutes, front, back and tops.',
+      example: { kind: 'flow', steps: ['fronts', 'backs', 'chewing tops', 'tongue', 'rinse'], caption: 'Around the mouth in two minutes: every side of every tooth.',
+        another: ['Your teeth are like a fence with a picket for every tooth. Paint every picket, both sides, or the unpainted ones rot.',
+          { text: 'Two minutes feels long. Split it: thirty seconds for each corner of your mouth, top right, top left, bottom left, bottom right.', visual: { kind: 'flow', steps: ['top right', 'top left', 'bottom left', 'bottom right'] } },
+          'Morning brushing cleans up breakfast. Night brushing matters more: germs work all night on whatever you leave them.'] },
+    },
+    sources: ['Aligned with TEKS Health Education K.1A (identify healthy habits, including dental care) and American Dental Association guidance.'],
+    generators: ['hk-teeth', 'hk-teeth', 'hk-teeth', 'hk-teeth', 'hk-teeth'],
+  },
+  {
+    id: 'sleep-k',
+    order: 3,
+    title: 'Sleep',
+    tagline: 'When your body grows',
+    requires: ['brushing-teeth'],
+    lesson: {
+      paragraphs: ['Sleep is when your body grows and your brain files the day away. A five-year-old needs ten to twelve hours.\nWithout enough, you feel grumpy and forget things. A tired brain drops things; a rested one remembers.', 'The same quiet routine each night tells your body it is time: bath, book, bed.', 'Ten to twelve hours, the same way every night.'],
+      keyIdea: 'Ten to twelve hours of sleep, with the same quiet routine each night.',
+      example: { kind: 'flow', steps: ['bath', 'book', 'bed', 'sleep'], caption: 'The same steps each night, and your body knows what comes next.',
+        another: ['Your brain is a desk. All day, papers pile up. At night, while you sleep, someone files them. Skip the night and the desk is a mess in the morning.',
+          { text: 'A phone charges overnight. So do you. Wake up at fifty percent and the whole day runs slow.', visual: { kind: 'letters', text: 'charge to 100' } },
+          'Grumpy in the morning is not a bad mood. It is a body that did not finish its work.'] },
+    },
+    sources: ['Aligned with TEKS Health Education K.1A (identify healthy habits, including sleep) and American Academy of Sleep Medicine guidance for children.'],
+    generators: ['hk-sleep', 'hk-sleep', 'hk-sleep', 'hk-sleep', 'hk-sleep'],
+  },
+  {
+    id: 'my-plate',
+    order: 4,
+    title: 'My plate',
+    tagline: 'Half fruits and vegetables',
+    requires: ['sleep-k'],
+    lesson: {
+      paragraphs: ['Half your plate is fruits and vegetables: a carrot, peas, broccoli, spinach, an apple. Then grains, like bread and rice, and protein, like eggs and beans.\nColors on the plate mean vitamins.', 'Drink water most of the time. Milk is good too. Soda is sugar with bubbles. Sweets are for sometimes, not for every day.', 'Half the plate green and orange and red, and a glass of water beside it.'],
+      keyIdea: 'Half the plate fruits and vegetables; water to drink.',
+      example: { kind: 'bar', parts: 4, shaded: 2, caption: 'A plate in four parts: two for fruits and vegetables, one for grains, one for protein.',
+        another: ['Think of a rainbow on the plate. Red tomatoes, orange carrots, green peas, purple grapes. Each color brings something different.',
+          { text: 'A plate is a pizza cut in four: two slices of vegetables and fruit, one of grains, one of protein. Same idea, every meal.', visual: { kind: 'bar', parts: 4, shaded: 2 } },
+          'Sweets are for sometimes, not for every day. Water is for every day.'] },
+    },
+    sources: ['Aligned with TEKS Health Education K.1B (identify healthy foods) and USDA MyPlate guidance.'],
+    generators: ['hk-plate', 'hk-plate', 'hk-plate', 'hk-plate', 'hk-plate'],
+  },
+]; }
+function HEALTH4_MODULES() { return [
+  {
+    id: 'sleep-and-the-brain',
+    order: 1,
+    title: 'Sleep and the brain',
+    tagline: 'Where the day gets filed',
+    requires: [],
+    lesson: {
+      paragraphs: ['A nine-year-old needs nine to eleven hours of sleep. Growing bodies and busy brains need the time.\nSleep is when the brain sorts and stores what you learned. Study, then sleep, and more of it stays.', 'A screen before bed makes sleep harder: its light tells the brain it is daytime. Put screens away an hour before bed.', 'Nine to eleven hours, and the screen off first.'],
+      keyIdea: 'Nine to eleven hours; the brain files the day while you sleep; screens off an hour before.',
+      example: { kind: 'flow', steps: ['learn it', 'sleep on it', 'remember it'], caption: 'The middle step is the one people skip, and it is the one that makes the third step happen.',
+        another: ['Your brain is a library with one librarian, and she only works nights. Everything you read today sits in a pile until she files it while you sleep.',
+          { text: 'A bright screen is a small sun. Hold it up at ten at night and your brain thinks it is noon. Dim the sun and the night comes back.', visual: { kind: 'twoway', a: 'screen on', b: 'screen off', top: 'brain thinks day', bottom: 'brain gets sleepy' } },
+          'Test it yourself: study a list of ten words at night and check it in the morning after a full sleep, then try a short sleep. Count what stayed.'] },
+    },
+    sources: ['Aligned with TEKS Health Education 4.1A (describe the importance of sleep) and CDC sleep guidance for school-age children.'],
+    generators: ['h4-sleep', 'h4-sleep', 'h4-sleep', 'h4-sleep', 'h4-sleep'],
+  },
+  {
+    id: 'reading-a-food-label',
+    order: 2,
+    title: 'Reading a food label',
+    tagline: 'Serving first, then sugar',
+    requires: ['sleep-and-the-brain'],
+    lesson: {
+      paragraphs: ['A cereal box says 12 grams of sugar per serving. Grams per serving means nothing until you know how big a serving is; a bowl might be two.\nIngredients are listed most to least: if sugar is first, the food is mostly sugar.', 'Protein, like beans, eggs, fish and meat, builds and repairs muscle. Fruits and vegetables bring the vitamins.', 'Serving size first, then sugar, then the first three ingredients.'],
+      keyIdea: 'Check the serving size first; ingredients are listed most to least.',
+      example: { kind: 'stack', levels: ['serving size', 'sugar per serving', 'first three ingredients'], caption: 'Read a label top to bottom in that order and it cannot fool you.',
+        another: ['A label is a receipt for what is inside. Serving size is the fine print: the price looks low until you notice it is per half a bowl.',
+          { text: 'The ingredient list is a race result: first place is the most of anything in the box. If sugar wins, that is what you are eating.', visual: { kind: 'stack', levels: ['1st: whole oats', '2nd: sugar', '3rd: salt'] } },
+          'Compare two cereals at the store using only serving size and sugar. The lower sugar per real bowl wins.'] },
+    },
+    sources: ['Aligned with TEKS Health Education 4.1B (identify information on food labels) and FDA Nutrition Facts label guidance.'],
+    generators: ['h4-label', 'h4-label', 'h4-label', 'h4-label', 'h4-label'],
+  },
+  {
+    id: 'the-heart-at-work',
+    order: 3,
+    title: 'The heart at work',
+    tagline: 'An hour of play a day',
+    requires: ['reading-a-food-label'],
+    lesson: {
+      paragraphs: ['Your pulse goes up when you run because working muscles need more blood: blood carries oxygen, so the heart pumps faster.\nA fit heart slows back down quickly afterward. Recovery is the sign of fitness.', 'A child needs about an hour of active play each day, in any pieces: running, biking, a game of tag, all of it counts.', 'An hour a day, and a heart that settles fast.'],
+      keyIdea: 'Muscles at work need more blood; an hour of play a day; a fit heart settles quickly.',
+      example: { kind: 'flow', steps: ['run', 'muscles want oxygen', 'heart beats faster', 'rest', 'heart settles'], caption: 'The heart answers the muscles, and how fast it settles afterward is how fit it is.',
+        another: ['Your heart is a pump with a dial. Running turns the dial up because the muscles are shouting for more. Fitness is how quickly the dial turns back down.',
+          { text: 'Count your pulse for ten seconds sitting still, then after a minute of jumping jacks, then again each minute after. The numbers tell the story.', visual: { kind: 'flow', steps: ['rest: 12', 'after: 25', 'one minute: 18', 'two minutes: 13'] } },
+          'An hour does not have to be one hour. Ten minutes of tag at recess, twenty on a bike, thirty at practice: it adds up.'] },
+    },
+    sources: ['Aligned with TEKS Health Education 4.1C (describe the benefits of physical activity) and CDC physical activity guidelines for children.'],
+    generators: ['h4-heart', 'h4-heart', 'h4-heart', 'h4-heart', 'h4-heart'],
+  },
+  {
+    id: 'screens-and-you',
+    order: 4,
+    title: 'Screens and you',
+    tagline: 'Twenty, twenty, twenty',
+    requires: ['the-heart-at-work'],
+    lesson: {
+      paragraphs: ['Screens are useful and fun, and they have costs. The light keeps the brain awake, so off an hour before bed.\nSore eyes and a stiff neck are the first signs of too long: every twenty minutes, look twenty feet away for twenty seconds.', 'What goes online stays online. You decide what you share, with a trusted adult, and never your address or your school.', 'Off before bed, a break every twenty minutes, and nothing shared alone.'],
+      keyIdea: 'Screens off an hour before bed; a twenty-second break every twenty minutes; share only with a trusted adult.',
+      example: { kind: 'flow', steps: ['twenty minutes on', 'look twenty feet away', 'twenty seconds', 'back'], caption: 'The twenty-twenty-twenty rule rests the eyes before they complain.',
+        another: ['Eyes have muscles, and staring close is a plank for them. Looking far away is the rest between sets.',
+          { text: 'A photo online is a letter you cannot get back from the mailbox. Decide before you post, with someone you trust, not after.', visual: { kind: 'sign', text: 'DECIDE BEFORE' } },
+          'Make the last hour before bed a screen-free hour and see what happens to falling asleep in a week.'] },
+    },
+    sources: ['Aligned with TEKS Health Education 4.6A (explain the importance of balancing screen time and physical activity) and American Academy of Pediatrics media guidance.'],
+    generators: ['h4-screens', 'h4-screens', 'h4-screens', 'h4-screens', 'h4-screens'],
+  },
+]; }
 function TECH3_MODULES() { return [
   {
     id: 'inputs-and-outputs',
@@ -6827,7 +7143,7 @@ function TECH3_MODULES() { return [
     tagline: 'You tell, it shows',
     requires: [],
     lesson: {
-      paragraphs: ['A computer has parts you use to tell it things and parts it uses to show you things.\nThe keyboard, the mouse and a touch screen are inputs: you tell. The screen, the speaker and a printer are outputs: it shows.', 'In between is the part that follows instructions. A program is a list of steps a computer follows exactly, in order.', 'Tell, follow, show. Every computer, from a watch to a car, does those three things.'],
+      paragraphs: ['A computer has parts you use to tell it things and parts it uses to show you things.\nThe keyboard, the mouse and a touch screen are each an input: you tell. The screen, the speaker and a printer are each an output: it shows.', 'In between is the part that follows instructions. A program is a list of steps a computer follows exactly, in order.', 'Tell, follow, show. Every computer, from a watch to a car, does those three things.'],
       keyIdea: 'Inputs tell a computer. Outputs show you. A program is the steps in between.',
       example: { kind: 'flow', steps: ['input: keyboard', 'the program runs', 'output: screen'], caption: 'You type; the program follows its steps; the screen shows the result.',
         another: ['A computer is a very fast, very obedient helper with no imagination. It does exactly the steps it is given, nothing more, and it needs to be told everything.',
@@ -6897,7 +7213,7 @@ function TECH5_MODULES() { return [
     tagline: 'A program that decides',
     requires: ['variables'],
     lesson: {
-      paragraphs: ['A program can decide. IF it is raining THEN take an umbrella. The step runs only when the condition is true; when it is false, the step is skipped.\nELSE is the other road: IF the door is open THEN close it, ELSE open it.', 'IF score is more than 10 THEN say You win. Score is 12: true, so it runs. Score is 7: false, skipped.', 'Every choice a program makes is an if with a condition.'],
+      paragraphs: ['A program can decide. IF it is raining THEN take an umbrella. The step runs only when the condition is true; when it is false, the step is skipped.\nELSE is the other road: IF the door is open THEN close it, ELSE open it.', 'IF score is more than 10 THEN say You win. Score is 12: true, so it runs. Score is 7: false, skipped.', 'Every choice a program makes is an if with a condition, and a condition is a yes or no question.'],
       keyIdea: 'IF a condition is true THEN a step runs. ELSE is the other road.',
       example: { kind: 'twoway', a: 'condition true', b: 'condition false', top: 'THEN: the step runs', bottom: 'ELSE: the other road', caption: 'One yes-or-no question; two roads: the THEN road when it is true, the ELSE road when it is not.',
         another: ['A fork in a path with a sign: IF the bridge is out THEN take the long way, ELSE cross. You read the sign, check the bridge, and take one road, never both.',
@@ -6914,7 +7230,7 @@ function TECH5_MODULES() { return [
     tagline: 'Read the steps one at a time',
     requires: ['if-then'],
     lesson: {
-      paragraphs: ['When a program does the wrong thing, the mistake is called a bug. Debugging is reading the steps slowly and checking each one against what should happen.\nA program that should count 1, 2, 3, 4 but prints 1, 2, 3 stops one step early. Off-by-one is the most common bug there is.', 'A robot told to turn right, walk 3, turn left ends up facing backward: walk the steps yourself, one at a time, and the bug is where your walk and the plan part ways.', 'The first move is never to delete everything. It is to read.'],
+      paragraphs: ['When a program does the wrong thing, the mistake is called a bug. Debugging is reading the steps slowly and checking each one against what should happen.\nA program that should count 1, 2, 3, 4 but prints 1, 2, 3 stops one step early, and one step too many is the same family: off by one, the most common bug there is.', 'A robot told to turn right, walk 3, turn left ends up facing backward: walk the steps yourself, one at a time, and the bug is where your walk and the plan part ways.', 'The first move is never to delete everything. It is to read, and then to fix that one step.'],
       keyIdea: 'Debugging is reading the steps one at a time and checking each.',
       example: { kind: 'flow', steps: ['expected: 1, 2, 3, 4', 'got: 1, 2, 3', 'the loop stops one early'], caption: 'Compare what you expected with what you got; the difference points at the bug.',
         another: ['A bug is a wrong turn on a route you wrote yourself. You do not throw away the map; you walk it again and find the turn.',
@@ -6950,7 +7266,7 @@ function TECH7_MODULES() { return [
     tagline: 'Packets, addresses and a phone book',
     requires: ['binary'],
     lesson: {
-      paragraphs: ['You send a photo across the world. It is cut into packets that take their own routes, each addressed like a letter, and put back together at the end.\nEvery device on the internet has a number address, like 192.168.1.4, so packets know where to go.', 'A website\'s name is turned into a number address by a directory called DNS: the phone book of the internet.', 'Packets, addresses, and a phone book. That is most of it.'],
+      paragraphs: ['You send a photo across the world. It is cut into packets that take their own routes, each addressed like a letter, and put back together at the end.\nEvery device on the internet has a number address, like 192.168.1.4, so packets know where to go.', 'A website\'s name is turned into a number address by a directory called DNS: the phone book of the internet.', 'If one route is blocked, the packets take another route. Packets, addresses, and a phone book. That is most of it.'],
       keyIdea: 'Messages travel as addressed packets; DNS turns names into number addresses.',
       example: { kind: 'flow', steps: ['your photo', 'cut into packets', 'routed by address', 'put back together'], caption: 'One photo becomes many packets, each finding its own way, joined again at the far end.',
         another: ['Mailing a jigsaw puzzle one piece per envelope: each envelope has the address, they travel different trucks, and the friend rebuilds the picture from the piece numbers.',
@@ -6967,7 +7283,7 @@ function TECH7_MODULES() { return [
     tagline: 'Length beats cleverness',
     requires: ['how-the-internet-works'],
     lesson: {
-      paragraphs: ['A password protects a door. Length beats cleverness: a long phrase of four unrelated words is easy to remember and hard to guess; your birthday and password123 are neither.\nTwo-step sign-in adds a second proof, like a code on your phone, so a stolen password alone is not enough.', 'A message that says your account is locked and asks you to click a link now is using urgency as the trick. The safest move: go to the site yourself, not through the link, and check there.', 'Slow down, and the tricks stop working.'],
+      paragraphs: ['A password protects a door. Length beats cleverness: a long phrase of four unrelated words is easy to remember and hard to guess; your birthday and password123 are neither.\nTwo-step sign-in adds a second proof, like a code on your phone, so a stolen password alone is not enough.', 'A message that says your account is locked and asks you to click a link now is using urgency as the trick. The safest move: go to the site yourself, not through the link, and check there.', 'Urgent, secret, now: those three words together are the fingerprint of a scam. Slow down, and the tricks stop working.'],
       keyIdea: 'Long passwords, a second proof, and never through the link.',
       example: { kind: 'stack', levels: ['correct horse battery staple: strong', 'Sam2014: weak', 'password123: weakest'], caption: 'Three passwords ranked: the long phrase wins by length alone.',
         another: ['A password is a key. A short key has few teeth and a thief can try them all in seconds; a long key has too many patterns to try.',
@@ -7267,7 +7583,7 @@ function GRADE6_HISTORY_MODULES() { return [
     tagline: 'From a field to your shirt',
     requires: ['kinds-of-economies'],
     lesson: {
-      paragraphs: ['Cotton grows in a field. Before it is a shirt there is spinning, weaving, sewing: spun into thread, woven into cloth, sewn into a shirt, and each step may happen in a different country.\nThat chain of steps and places is a supply chain.', 'Places specialize: each makes what its land, skills and tools suit, and trades for the rest. One country grows coffee, another builds computers.', 'Goods travel in standard steel boxes that fit ships, trains and trucks the same way, which is why shipping got cheap. When a ship is delayed, fewer goods arrive while people still want them, and prices tend to rise.'],
+      paragraphs: ['Cotton grows in a field. Before it is a shirt there is spinning, weaving, sewing: spun into thread, woven into cloth, sewn into a shirt, and each step may happen in a different country.\nThat chain of steps and places is a supply chain. The tag names only the last place; how many places has a shirt visited? Often several.', 'Places specialize: each makes what its land, skills and tools suit, and trades for the rest. One country grows coffee, another builds computers.', 'Goods travel in standard steel boxes that fit ships, trains and trucks the same way, which is why shipping got cheap. When a ship is delayed, fewer goods arrive while people still want them, and prices tend to rise.'],
       keyIdea: 'A supply chain is the steps and places between a raw material and you. Places specialize and trade.',
       example: { kind: 'flow', steps: ['cotton field', 'spinning mill', 'weaving', 'sewing', 'store'], caption: 'A shirt\'s road: field, thread, cloth, stitches, shelf, often across four countries.',
         another: ['Look at the tag on your shirt, then at the sticker on an apple. Two products, two roads, and neither started where you bought it.',
@@ -10573,8 +10889,110 @@ Object.assign(GENERATORS, {
   // Grade 4 reading: dictionary skills, words in alphabetical order and guide words.
   // Grade 2 math: quarter past, half past, quarter to.
   // Technology, grade 3: what a computer is, steps in order, patterns that repeat.
+  // Health, kindergarten and grade 1 (read aloud): hands, teeth, sleep, plates.
+  // Music, grade 1 (read aloud): the beat, high and low, loud and soft.
+  'mu1-beat': (rng) => {
+    const Q = [['Which body part can keep a beat?', ['your hands, clapping', 'your eyes', 'your nose'], 'your hands, clapping', 'Clap it, tap it, march to it. Hands and feet keep a beat.'], ['Does the beat change when the words change?', ['no, it stays even', 'yes, it stops', 'yes, it gets higher'], 'no, it stays even', 'Words and tune change; the beat stays even underneath.'],['What is the steady beat of a song?', ['the even pulse you can clap', 'the words', 'the loud part'], 'the even pulse you can clap', 'The beat is the steady pulse under a song, like a clock. You can clap it, tap it or march to it.'],
+      ['Which keeps a steady beat?', ['a ticking clock', 'a barking dog', 'a page turning'], 'a ticking clock', 'A clock ticks evenly. That evenness is what a beat is.'],
+      ['You march to a song. What are your feet keeping?', ['the beat', 'the melody', 'the words'], 'the beat', 'Left, right, left, right on the pulse: your feet are keeping the beat.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'mu1-high-low': (rng) => {
+    const Q = [['Which sound is high?', ['a whistle', 'thunder', 'a truck engine'], 'a whistle', 'A whistle is high; thunder and engines are low.'], ['Big things usually sound how?', ['low', 'high', 'silent'], 'low', 'A tuba, a cow and a drum are big and low. Small things are high.'],['A bird sings and a cow moos. Which sound is higher?', ['the bird', 'the cow', 'they are the same'], 'the bird', 'A bird\'s song is high; a cow\'s moo is low. High and low is called pitch.'],
+      ['Which is a low sound?', ['thunder', 'a whistle', 'a squeak'], 'thunder', 'Thunder rumbles low. Whistles and squeaks are high.'],
+      ['On a piano, where are the high notes?', ['to the right', 'to the left', 'in the middle only'], 'to the right', 'Piano keys go low to high from left to right. Walk your fingers right and the notes climb.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'mu1-loud-soft': (rng) => {
+    const Q = [['Which is a soft sound?', ['a whisper', 'a fire truck', 'a cheering crowd'], 'a whisper', 'A whisper is soft. Sirens and crowds are loud.'], ['A song fades away at the end. What is fading?', ['the loudness', 'the pitch', 'the words'], 'the loudness', 'Fading is getting softer: a change in dynamics.'],['A lullaby should be sung how?', ['softly', 'loudly', 'as fast as possible'], 'softly', 'A lullaby is soft so a baby can drift off. Loud and soft is called dynamics.'],
+      ['Which is a loud sound?', ['a drum in a parade', 'a whisper', 'a cat purring'], 'a drum in a parade', 'A parade drum is loud on purpose: it must be heard down the street.'],
+      ['A song gets louder and louder. What is that called?', ['growing louder', 'getting higher', 'getting faster'], 'growing louder', 'Growing louder is a change in dynamics, not pitch or speed.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  // Music, grade 4: note lengths, the staff, tempo and dynamics words.
+  'mu4-lengths': (rng) => {
+    const Q = [['A quarter note lasts how many beats?', ['one', 'two', 'four'], 'one', 'A quarter note is one beat: four of them fill a measure of four.'], ['Which note lasts longest?', ['a whole note', 'a half note', 'an eighth note'], 'a whole note', 'Whole four beats, half two, quarter one, eighth a half.'],['A whole note lasts four beats. How long is a half note?', ['two beats', 'one beat', 'four beats'], 'two beats', 'Each note is half the one before: whole four, half two, quarter one.'],
+      ['How many quarter notes fill a measure of four beats?', ['four', 'two', 'eight'], 'four', 'A quarter note is one beat; four of them fill four beats.'],
+      ['Two eighth notes take up how many beats?', ['one', 'two', 'four'], 'one', 'An eighth note is half a beat, so two of them make one beat.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'mu4-staff': (rng) => {
+    const Q = [['A note higher on the staff sounds how?', ['higher', 'lower', 'louder'], 'higher', 'Up the staff is up in pitch. The staff is a ladder.'], ['What is the saying for the treble lines?', ['Every Good Boy Does Fine', 'FACE', 'Do Re Mi'], 'Every Good Boy Does Fine', 'E, G, B, D, F: Every Good Boy Does Fine, bottom line up.'],['How many lines does a staff have?', ['five', 'four', 'seven'], 'five', 'Five lines, four spaces, and every note sits on a line or in a space.'],
+      ['The lines of the treble staff, bottom to top, spell what?', ['E G B D F', 'F A C E', 'A B C D E'], 'E G B D F', 'Every Good Boy Does Fine: E, G, B, D, F from the bottom line up.'],
+      ['The spaces of the treble staff spell what word?', ['FACE', 'BEAD', 'CAGE'], 'FACE', 'F, A, C, E from the bottom space up. The spaces spell FACE.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'mu4-words': (rng) => {
+    const Q = [['Allegro means what?', ['fast', 'slow', 'soft'], 'fast', 'Allegro is fast. Adagio is slow.'], ['A lullaby is usually marked how?', ['piano and adagio', 'forte and allegro', 'forte and adagio'], 'piano and adagio', 'Soft and slow, so a baby can drift off.'],['What does forte mean?', ['loud', 'soft', 'fast'], 'loud', 'Forte is loud and piano is soft. They are Italian words, and every musician uses them.'],
+      ['A piece marked piano should be played how?', ['softly', 'loudly', 'quickly'], 'softly', 'Piano means soft. The instrument got its name because it could play soft and loud.'],
+      ['Tempo is a piece\'s what?', ['speed', 'loudness', 'key'], 'speed', 'Tempo is how fast the beat goes. Allegro is fast, adagio is slow.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'hk-hands': (rng) => {
+    const Q = [['What should you use besides water to wash your hands?', ['soap', 'sand', 'nothing'], 'soap', 'Water alone slides off. Soap grabs the germs and the water carries them away.'], ['After the bathroom, what comes next?', ['wash your hands', 'go play', 'eat a snack'], 'wash your hands', 'Every time. After the bathroom, before food.'],['When should you wash your hands?', ['before eating', 'never', 'only on Sundays'], 'before eating', 'Before eating and after the bathroom. Soap, water, and count to twenty.'],
+      ['How long should you scrub with soap?', ['while you count to twenty', 'one second', 'all afternoon'], 'while you count to twenty', 'Twenty seconds gets the germs off. Sing a short song and you are there.'],
+      ['Which part of your hand do people forget?', ['between the fingers', 'the palm', 'the top'], 'between the fingers', 'Germs hide between fingers and under nails. Scrub there too.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'hk-teeth': (rng) => {
+    const Q = [['Which drink is best for your teeth?', ['water', 'soda', 'juice all day'], 'water', 'Water rinses sugar away. Soda and juice leave sugar for the germs.'], ['When is the most important brushing?', ['at night', 'at noon', 'before lunch'], 'at night', 'Germs work all night on whatever you leave them. Brush before bed.'],['How many times a day should you brush your teeth?', ['two', 'zero', 'ten'], 'two', 'Morning and night, two minutes each. That is what keeps the sugar bugs away.'],
+      ['How long should you brush?', ['two minutes', 'five seconds', 'an hour'], 'two minutes', 'Two minutes is long enough to reach every tooth, front and back.'],
+      ['What likes to live on teeth that are not brushed?', ['germs that make holes', 'butterflies', 'nothing'], 'germs that make holes', 'Germs eat leftover sugar and make tiny holes called cavities. Brushing sweeps them away.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'hk-sleep': (rng) => {
+    const Q = [['What is a good last step before sleep?', ['a story in bed', 'a video game', 'a big dinner'], 'a story in bed', 'A quiet story tells your body it is time. Bath, book, bed.'], ['Sleep is when your body does what?', ['grows', 'shrinks', 'nothing'], 'grows', 'Growing happens while you sleep, and so does remembering.'],['About how many hours of sleep does a five-year-old need?', ['ten to twelve', 'two', 'twenty'], 'ten to twelve', 'Ten to twelve hours. Sleep is when your body grows and your brain files the day away.'],
+      ['What happens when you do not sleep enough?', ['you feel grumpy and forget things', 'you get taller', 'nothing'], 'you feel grumpy and forget things', 'A tired brain drops things. A rested one remembers.'],
+      ['What helps you fall asleep?', ['the same quiet routine each night', 'a bright screen', 'a big snack'], 'the same quiet routine each night', 'Bath, book, bed. The same steps tell your body it is time.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'hk-plate': (rng) => {
+    const Q = [['Which is a fruit?', ['an apple', 'a cookie', 'bread'], 'an apple', 'Apples, bananas, grapes and berries are fruits. Sweet, and from a plant.'], ['Sweets are for when?', ['sometimes', 'every meal', 'never'], 'sometimes', 'Sweets are for sometimes, not for every day. Water is for every day.'],['Which should fill half your plate?', ['fruits and vegetables', 'candy', 'nothing'], 'fruits and vegetables', 'Half the plate is fruits and vegetables, then grains and protein. Colors on the plate mean vitamins.'],
+      ['Which is a vegetable?', ['a carrot', 'a cookie', 'a cracker'], 'a carrot', 'Carrots, peas, broccoli and spinach are vegetables. They grow in the ground or on a plant.'],
+      ['What should you drink most?', ['water', 'soda', 'juice all day'], 'water', 'Water, most of the time. Milk is good too. Soda is sugar with bubbles.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  // Health, grades 3 to 6: sleep, food labels, the heart at work, and screens.
+  'h4-sleep': (rng) => {
+    const Q = [['You study a list at night. When should you check it?', ['after a full night of sleep', 'right away', 'never'], 'after a full night of sleep', 'Study, then sleep, then check. More of it stays after the night.'], ['Which helps sleep come?', ['the same bedtime each night', 'a late snack', 'a bright room'], 'the same bedtime each night', 'A steady bedtime sets the body clock. The room should be dark and cool.'],['About how much sleep does a nine-year-old need?', ['nine to eleven hours', 'four hours', 'sixteen hours'], 'nine to eleven hours', 'Nine to eleven hours. Growing bodies and busy brains need the time.'],
+      ['Why does a screen before bed make sleep harder?', ['its light tells the brain it is daytime', 'it is too heavy', 'it is too quiet'], 'its light tells the brain it is daytime', 'Bright light, especially blue light, tells the brain the sun is up. Put screens away an hour before bed.'],
+      ['What does the brain do during sleep?', ['sorts and stores what you learned', 'switches off', 'grows teeth'], 'sorts and stores what you learned', 'Sleep is when the day gets filed. Study, then sleep, and more of it stays.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'h4-label': (rng) => {
+    const Q = [['A snack lists sugar first. What does that tell you?', ['it is mostly sugar', 'it has no sugar', 'it is healthy'], 'it is mostly sugar', 'First on the list means the most of anything in the package.'], ['Which food group gives vitamins?', ['fruits and vegetables', 'candy', 'soda'], 'fruits and vegetables', 'Fruits and vegetables carry the vitamins. Colors on the plate mean vitamins.'],['A box says 12 grams of sugar per serving. What must you check next?', ['how big a serving is', 'the color of the box', 'the price'], 'how big a serving is', 'Grams per serving means nothing until you know the serving. A bowl might be two.'],
+      ['Ingredients are listed in what order?', ['most to least', 'alphabetical', 'random'], 'most to least', 'The first ingredient is the biggest part. If sugar is first, the food is mostly sugar.'],
+      ['Which is the food group that builds muscle?', ['protein', 'sugar', 'water'], 'protein', 'Protein, like beans, eggs, fish and meat, builds and repairs muscle.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'h4-heart': (rng) => {
+    const Q = [['What does blood carry to working muscles?', ['oxygen', 'sugar only', 'nothing'], 'oxygen', 'Blood carries oxygen, and muscles at work want more of it.'], ['Which counts as active play?', ['a game of tag', 'watching a game', 'reading about running'], 'a game of tag', 'Running, biking, tag: anything that gets the heart going counts.'],['Your pulse goes up when you run. Why?', ['muscles need more blood', 'the heart is scared', 'blood gets heavier'], 'muscles need more blood', 'Working muscles want more oxygen, and blood carries it, so the heart pumps faster.'],
+      ['About how much active play does a child need each day?', ['an hour', 'five minutes', 'none'], 'an hour', 'About an hour a day, in any pieces: running, biking, a game of tag, all of it counts.'],
+      ['A fit heart, after running, does what?', ['slows back down quickly', 'stays fast all day', 'stops'], 'slows back down quickly', 'Recovery is the sign of fitness: the faster the pulse settles, the fitter the heart.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'h4-screens': (rng) => {
+    const Q = [['Every twenty minutes on a screen, look how far away?', ['twenty feet', 'two inches', 'at the screen'], 'twenty feet', 'Twenty feet away for twenty seconds. Far focus rests the eyes.'], ['Which should never be shared online?', ['your address', 'a drawing you made', 'your favorite color'], 'your address', 'Never an address or a school. Those tell a stranger where to find you.'],['What is a good rule for screens and sleep?', ['off an hour before bed', 'on all night', 'only in bed'], 'off an hour before bed', 'The light keeps the brain awake. An hour off before bed helps sleep come.'],
+      ['Which is a sign you have been on a screen too long?', ['sore eyes and a stiff neck', 'feeling rested', 'being hungry for vegetables'], 'sore eyes and a stiff neck', 'Eyes and neck complain first. Every twenty minutes, look far away for twenty seconds.'],
+      ['Who should decide what you share online?', ['you, with a trusted adult', 'anyone who asks', 'the app'], 'you, with a trusted adult', 'What goes online stays online. Decide with someone you trust, and never share an address or a school.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
   't3-parts': (rng) => {
-    const Q = [['Which part of a computer shows you pictures and words?', ['the screen', 'the keyboard', 'the mouse'], 'the screen', 'The screen is the output: it shows. The keyboard and mouse are inputs: you tell.'],
+    const Q = [['A speaker is which kind of part?', ['an output', 'an input', 'a program'], 'an output', 'A speaker shows you sound. Outputs show; inputs tell.'], ['A touch screen you tap is which kind of part?', ['an input', 'an output', 'a program'], 'an input', 'Tapping tells the computer something. That is input.'],['Which part of a computer shows you pictures and words?', ['the screen', 'the keyboard', 'the mouse'], 'the screen', 'The screen is the output: it shows. The keyboard and mouse are inputs: you tell.'],
       ['Which part do you use to tell a computer what to do?', ['the keyboard', 'the screen', 'the speaker'], 'the keyboard', 'Inputs tell the computer: keyboard, mouse, touch. Outputs show: screen, speaker, printer.'],
       ['What is a program?', ['a list of steps a computer follows', 'a kind of screen', 'a picture'], 'a list of steps a computer follows', 'A program is a list of steps in order, written so a computer can follow it exactly.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
@@ -10587,29 +11005,29 @@ Object.assign(GENERATORS, {
       explain: `An algorithm is steps in order: ${steps.join(', then ')}.`, visual: null, explainVisual: null };
   },
   't3-loops': (rng) => {
-    const P = [['red, blue, red, blue, red, ...', 'blue'], ['clap, stomp, clap, stomp, clap, ...', 'stomp'], ['up, up, down, up, up, down, up, up, ...', 'down'], ['star, moon, sun, star, moon, sun, star, ...', 'moon']];
+    const P = [['red, blue, red, blue, red, ...', 'blue'], ['clap, stomp, clap, stomp, clap, ...', 'stomp'], ['up, up, down, up, up, down, up, up, ...', 'down'], ['star, moon, sun, star, moon, sun, star, ...', 'moon'], ['hop, hop, skip, hop, hop, skip, hop, ...', 'hop'], ['green, green, yellow, green, green, ...', 'yellow'], ['A, B, A, B, A, ...', 'B']];
     const [pattern, next] = pick(rng, P); const parts = [...new Set(pattern.replace(', ...', '').split(', '))];
-    return { type: 'choice', story: null, prompt: `The pattern goes ${pattern} What comes next?`, choices: shuffle(rng, parts.slice(0, 3)), answer: next,
+    return { type: 'choice', story: null, prompt: `${pattern} What comes next?`, choices: shuffle(rng, parts.slice(0, 3)), answer: next,
       explain: `A loop repeats the same steps. Find the part that repeats and the next step follows.`, visual: null, explainVisual: null };
   },
   // Technology, grade 5: variables, if-then choices, and finding the bug.
   't5-variables': (rng) => {
-    const Q = [['A game keeps track of your score. What holds the number?', ['a variable', 'a loop', 'a screen'], 'a variable', 'A variable is a named box that holds a value and can change: score, lives, name.'],
+    const Q = [['lives starts at 3. You miss once. What is lives now?', ['2', '3', '4'], '2', 'A miss takes one from the box: 3 becomes 2.'], ['Which is a variable in a game?', ['the score', 'the screen', 'the power button'], 'the score', 'The score is a named value that changes. That is a variable.'],['A game keeps track of your score. What holds the number?', ['a variable', 'a loop', 'a screen'], 'a variable', 'A variable is a named box that holds a value and can change: score, lives, name.'],
       ['score starts at 0. You earn 5, then 3. What is score now?', ['8', '5', '0'], '8', 'Each change updates the box: 0, then 5, then 8.'],
-      ['Which is a good name for a variable that holds how many lives you have left?', ['lives', 'x1', 'thing'], 'lives', 'Name a variable for what it holds. Someone reading the program should not have to guess.']];
+      ['Which is a good name for a box that holds your lives left?', ['lives', 'x1', 'thing'], 'lives', 'Name a variable for what it holds. Someone reading the program should not have to guess.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
   't5-if-then': (rng) => {
-    const Q = [['IF it is raining THEN take an umbrella. It is sunny. What happens?', ['nothing, the condition is false', 'take an umbrella', 'the program stops'], 'nothing, the condition is false', 'An if-then runs its step only when the condition is true. False, and it is skipped.'],
-      ['IF score is more than 10 THEN say "You win". Score is 12. What happens?', ['it says You win', 'nothing', 'score becomes 10'], 'it says You win', 'Twelve is more than ten, so the condition is true and the step runs.'],
-      ['A program says: IF the door is open THEN close it, ELSE open it. The door is closed. What happens?', ['it opens the door', 'it closes the door', 'nothing'], 'it opens the door', 'ELSE is the other road: when the IF is false, the ELSE step runs.']];
+    const Q = [['IF it is cold THEN wear a coat. It is cold. What happens?', ['wear a coat', 'nothing', 'take the coat off'], 'wear a coat', 'The condition is true, so the THEN step runs.'], ['A condition must be what kind of question?', ['yes or no', 'a long one', 'a math one only'], 'yes or no', 'If you cannot answer it yes or no, it is not a condition yet.'],['IF it is raining THEN take an umbrella. It is sunny. What happens?', ['nothing, the condition is false', 'take an umbrella', 'the program stops'], 'nothing, the condition is false', 'An if-then runs its step only when the condition is true. False, and it is skipped.'],
+      ['IF score is more than 10 THEN say You win. Score is 12. Then?', ['it says You win', 'nothing', 'score becomes 10'], 'it says You win', 'Twelve is more than ten, so the condition is true and the step runs.'],
+      ['IF the door is open THEN close it, ELSE open it. It is closed. Then?', ['it opens the door', 'it closes the door', 'nothing'], 'it opens the door', 'ELSE is the other road: when the IF is false, the ELSE step runs.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
   't5-debug': (rng) => {
-    const Q = [['It should count 1, 2, 3, 4 but prints 1, 2, 3. What went wrong?', ['it stops one step early', 'it starts too late', 'it never starts'], 'it stops one step early', 'The loop ended one turn too soon. Off-by-one is the most common bug there is.'],
-      ['A robot is told: turn right, walk 3, turn left. It ends up facing backward. Which step is wrong?', ['turn left', 'walk 3', 'none'], 'turn left', 'Walk the steps yourself, one at a time. The bug is where your walk and the plan part ways.'],
+    const Q = [['A robot should walk 5 steps but walks 6. What kind of bug is that?', ['off by one', 'a loop that never ends', 'no bug'], 'off by one', 'One step too many is the same family as one step too few: off by one.'], ['You found the wrong step. What do you fix?', ['that one step', 'the whole program', 'the robot'], 'that one step', 'Fix the step that was wrong and run it again. Not the whole page.'],['It should count 1, 2, 3, 4 but prints 1, 2, 3. What went wrong?', ['it stops one step early', 'it starts too late', 'it never starts'], 'it stops one step early', 'The loop ended one turn too soon. Off-by-one is the most common bug there is.'],
+      ['Right, walk 3, left: the robot faces backward. Which step is wrong?', ['turn left', 'walk 3', 'none'], 'turn left', 'Walk the steps yourself, one at a time. The bug is where your walk and the plan part ways.'],
       ['What is the first thing to do when a program does the wrong thing?', ['read the steps one at a time and check each', 'delete everything', 'add more steps'], 'read the steps one at a time and check each', 'Debugging is reading the steps slowly and checking each one against what should happen.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
@@ -10622,15 +11040,15 @@ Object.assign(GENERATORS, {
       explain: `Read the places 8, 4, 2, 1 and add the ones that are on: ${bits.split('').map((b, i) => (b === '1' ? [8, 4, 2, 1][i] : null)).filter((x) => x !== null).join(' + ') || '0'} = ${n}.`, visual: null, explainVisual: null };
   },
   't7-internet': (rng) => {
-    const Q = [['You send a photo across the world. How does it travel?', ['cut into packets that take their own routes', 'as one piece down one wire', 'by radio straight to the other phone'], 'cut into packets that take their own routes', 'A message is chopped into packets, each addressed and routed on its own, and put back together at the end.'],
+    const Q = [['Packets arrive out of order. How is the photo rebuilt?', ['by the numbers on each packet', 'by luck', 'it cannot be'], 'by the numbers on each packet', 'Each packet is numbered, so the far end puts them back in order.'], ['One route is blocked. What do the packets do?', ['take another route', 'wait forever', 'disappear'], 'take another route', 'The internet is a web of routes. Blocked one way, the packets go another.'],['You send a photo across the world. How does it travel?', ['cut into packets that take their own routes', 'as one piece down one wire', 'by radio straight to the other phone'], 'cut into packets that take their own routes', 'A message is chopped into packets, each addressed and routed on its own, and put back together at the end.'],
       ['What does an address like 192.168.1.4 name?', ['a device on a network', 'a person', 'a website\'s color'], 'a device on a network', 'Every device on the internet has a number address so packets know where to go.'],
-      ['A website\'s name, like a school\'s address, is turned into a number address by what?', ['a directory called DNS', 'a search engine', 'the keyboard'], 'a directory called DNS', 'DNS is the phone book: it turns names into number addresses.']];
+      ['What turns a website\'s name into a number address?', ['a directory called DNS', 'a search engine', 'the keyboard'], 'a directory called DNS', 'DNS is the phone book: it turns names into number addresses.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
   't7-safety': (rng) => {
-    const Q = [['Which password is strongest?', ['a long phrase of four unrelated words', 'your birthday', 'password123'], 'a long phrase of four unrelated words', 'Length beats cleverness. Four unrelated words are long, easy to remember and hard to guess.'],
-      ['A message says your account is locked and asks you to click a link now. What is the safest move?', ['go to the site yourself, not through the link', 'click the link quickly', 'reply with your password'], 'go to the site yourself, not through the link', 'Urgency is the trick. Open the site the way you always do and check there.'],
+    const Q = [['Which message is the fingerprint of a scam?', ['urgent, secret, now', 'a birthday note', 'a homework reminder'], 'urgent, secret, now', 'Urgency and secrecy together are the trick. Real accounts do not rush you.'], ['Why is a longer password stronger?', ['there are too many patterns to try', 'it looks nicer', 'it is easier to type'], 'there are too many patterns to try', 'Every letter multiplies the patterns. Length beats cleverness.'],['Which password is strongest?', ['a long phrase of four unrelated words', 'your birthday', 'password123'], 'a long phrase of four unrelated words', 'Length beats cleverness. Four unrelated words are long, easy to remember and hard to guess.'],
+      ['A message says click now, your account is locked. Safest move?', ['go to the site yourself, not through the link', 'click the link quickly', 'reply with your password'], 'go to the site yourself, not through the link', 'Urgency is the trick. Open the site the way you always do and check there.'],
       ['What does two-step sign-in add?', ['a second proof, like a code on your phone', 'a second password', 'nothing'], 'a second proof, like a code on your phone', 'A stolen password alone is not enough when a second proof is needed.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
@@ -10645,7 +11063,7 @@ Object.assign(GENERATORS, {
   },
   // Grade 3 science: sound is a vibration.
   'sc3-sound': (rng) => {
-    const Q = [['What makes a sound?', ['something vibrating', 'something shining', 'something melting'], 'something vibrating', 'A drum skin, a string, your vocal cords: sound is a vibration you can hear.'],
+    const Q = [['Which vibrates to make your voice?', ['your vocal cords', 'your teeth', 'your ears'], 'your vocal cords', 'Hum with a hand on your throat and feel them buzz.'], ['A slower vibration makes what kind of pitch?', ['lower', 'higher', 'louder'], 'lower', 'Slower is lower; faster is higher.'],['What makes a sound?', ['something vibrating', 'something shining', 'something melting'], 'something vibrating', 'A drum skin, a string, your vocal cords: sound is a vibration you can hear.'],
       ['A guitar string shakes faster. What changes?', ['the pitch goes higher', 'the sound gets louder', 'nothing'], 'the pitch goes higher', 'Faster vibrations make a higher pitch; slower ones make a lower pitch.'],
       ['You hit a drum harder. What changes?', ['the sound gets louder', 'the pitch goes higher', 'the drum gets warmer'], 'the sound gets louder', 'A bigger vibration makes a louder sound. Pitch stays the same.'],
       ['Sound travels from a bell to your ear through what?', ['the air', 'the light', 'nothing'], 'the air', 'Sound needs something to travel through: air, water or a wall. In empty space there is no sound.']];
@@ -10654,8 +11072,8 @@ Object.assign(GENERATORS, {
   },
   // Grade 6 science: the microscope.
   'sc6-microscope': (rng) => {
-    const Q = [['What does a microscope do?', ['makes tiny things look bigger', 'makes far things look closer', 'makes dark things bright'], 'makes tiny things look bigger', 'Lenses bend light so a tiny thing fills your eye. That is magnification.'],
-      ['The eyepiece is 10x and the objective is 40x. How much bigger does the sample look?', ['400 times', '50 times', '30 times'], '400 times', 'Magnifications multiply: 10 × 40 = 400.'],
+    const Q = [['Which part of a microscope shines light up through the sample?', ['the light underneath', 'the eyepiece', 'the knob'], 'the light underneath', 'Light comes from below, through the sample, up the lenses to your eye.'], ['You turn the coarse knob, then what?', ['the fine knob', 'the light off', 'the eyepiece'], 'the fine knob', 'Coarse gets close; fine gets sharp.'],['What does a microscope do?', ['makes tiny things look bigger', 'makes far things look closer', 'makes dark things bright'], 'makes tiny things look bigger', 'Lenses bend light so a tiny thing fills your eye. That is magnification.'],
+      ['A 10x eyepiece and a 40x objective: how much bigger?', ['400 times', '50 times', '30 times'], '400 times', 'Magnifications multiply: 10 × 40 = 400.'],
       ['The image is blurry. What do you turn?', ['the focus knob', 'the light switch', 'the eyepiece'], 'the focus knob', 'Focus moves the lens until the image is sharp. Coarse first, then fine.'],
       ['Who first named cells, looking at cork through a microscope?', ['Robert Hooke', 'Isaac Newton', 'Marie Curie'], 'Robert Hooke', 'In 1665 Hooke saw little boxes in cork and called them cells.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
@@ -10663,7 +11081,7 @@ Object.assign(GENERATORS, {
   },
   // Grade 6 history: where things come from.
   'h6-supply-chain': (rng) => {
-    const Q = [['Cotton grows in a field. What happens before it is a shirt?', ['spinning, weaving, sewing', 'nothing, it is picked as a shirt', 'painting'], 'spinning, weaving, sewing', 'Raw cotton is spun into thread, woven into cloth and sewn. Each step may happen in a different country.'],
+    const Q = [['What is a supply chain?', ['the steps and places between a raw material and you', 'a kind of ship', 'a store'], 'the steps and places between a raw material and you', 'Field, thread, cloth, stitches, shelf: the chain of steps and places.'], ['A tag on a shirt names one country. How many did the shirt visit?', ['often several', 'exactly one', 'none'], 'often several', 'Each step may happen somewhere else. The tag names the last one.'],['Cotton grows in a field. What happens before it is a shirt?', ['spinning, weaving, sewing', 'nothing, it is picked as a shirt', 'painting'], 'spinning, weaving, sewing', 'Raw cotton is spun into thread, woven into cloth and sewn. Each step may happen in a different country.'],
       ['Why does one country grow coffee and another build computers?', ['each makes what it does best and trades', 'a law says so', 'they cannot talk to each other'], 'each makes what it does best and trades', 'Specialization: a place makes what its land, skills and tools suit, and trades for the rest.'],
       ['A ship carrying phone parts is delayed. What happens to phone prices?', ['they tend to rise', 'they fall', 'nothing changes'], 'they tend to rise', 'Fewer phones arrive while people still want them. Scarcity pushes prices up.'],
       ['What does a container ship carry?', ['many goods in standard boxes', 'only one kind of thing', 'passengers'], 'many goods in standard boxes', 'Standard steel boxes fit ships, trains and trucks the same way. That is why shipping got cheap.']];
@@ -10716,8 +11134,8 @@ Object.assign(GENERATORS, {
   },
   // Grade 7 science: the water we drink, from watershed to tap.
   'sc7-watershed': (rng) => {
-    const Q = [['Rain falls on a hillside. Where does it go first?', ['downhill into the nearest stream', 'straight to the ocean', 'up into the clouds'], 'downhill into the nearest stream', 'Water runs downhill. A watershed is all the land that drains to one stream or river.'],
-      ['Two towns sit on the same river, one upstream. Whose pollution reaches the other?', ['the upstream town\'s', 'the downstream town\'s', 'neither'], 'the upstream town\'s', 'Water carries what it picks up downstream. Upstream choices become downstream water.'],
+    const Q = [['The ridge between two slopes is called what?', ['the divide between two watersheds', 'a creek', 'a treatment plant'], 'the divide between two watersheds', 'The ridge sends rain to one side or the other. It divides watersheds.'], ['What settles the mud out of river water?', ['a treatment plant', 'the creek', 'the rain'], 'a treatment plant', 'Settling, filtering and a disinfectant, in that order, at the plant.'],['Rain falls on a hillside. Where does it go first?', ['downhill into the nearest stream', 'straight to the ocean', 'up into the clouds'], 'downhill into the nearest stream', 'Water runs downhill. A watershed is all the land that drains to one stream or river.'],
+      ['Two towns on one river. Whose pollution reaches the other?', ['the upstream town\'s', 'the downstream town\'s', 'neither'], 'the upstream town\'s', 'Water carries what it picks up downstream. Upstream choices become downstream water.'],
       ['Where does most of Austin\'s drinking water come from?', ['a river and its lakes', 'the ocean', 'rain barrels'], 'a river and its lakes', 'Most cities drink from a river or a lake fed by their watershed, cleaned at a treatment plant.'],
       ['What does a treatment plant do before water reaches a tap?', ['filters and disinfects it', 'adds salt', 'warms it'], 'filters and disinfects it', 'Settling, filtering and a disinfectant make river water safe to drink.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
@@ -13123,22 +13541,22 @@ Object.assign(GENERATORS, {
   // handwritten piece per year. Typing is proved in the student's own word processor, never inside the app.
   ...Object.fromEntries(Object.keys(WRITING_LADDER).flatMap((grade) => WRITING_LADDER[grade].map((m, i) => [`wr-${m.id}`, (rng) => writingQuestion(rng, m.prompts, m.checks, m.words, Number(grade) <= 4 ? 'handwritten' : Number(grade) <= 8 ? (i % 2 === 1 ? 'typed' : 'handwritten') : (i === 2 ? 'handwritten' : 'typed'))]))),
   'wr4-topic-paragraph': (rng) => writingQuestion(rng,
-    ['Write a paragraph about your favorite season. Start with a topic sentence.', 'Write a paragraph about a place you like to go. Start with a topic sentence.', 'Write a paragraph about an animal you know well. Start with a topic sentence.', 'Write a paragraph about a game you are good at. Start with a topic sentence.'],
+    ['Write a paragraph about your favorite season. Start with a topic sentence.', 'Write a paragraph about a place you like to go. Start with a topic sentence.', 'Write a paragraph about an animal you know well. Start with a topic sentence.', 'Write a paragraph about a game you are good at. Start with a topic sentence.', 'Write a paragraph about a job you would like to try. Start with a topic sentence.', 'Write a paragraph about the best day of the week. Start with a topic sentence.'],
     ['My first sentence says the big thing.', 'Every other sentence backs it up.', 'I wrote at least four sentences.'], 40),
   'wr4-opinion': (rng) => writingQuestion(rng,
-    ['Should recess be longer? Write an opinion paragraph with two reasons.', 'Is it better to have a cat or a dog? Write an opinion paragraph with two reasons.', 'Should students pick their own seats? Write an opinion paragraph with two reasons.', 'Is summer or winter better? Write an opinion paragraph with two reasons.'],
+    ['Should recess be longer? Write an opinion paragraph with two reasons.', 'Is it better to have a cat or a dog? Write an opinion paragraph with two reasons.', 'Should students pick their own seats? Write an opinion paragraph with two reasons.', 'Is summer or winter better? Write an opinion paragraph with two reasons.', 'Should your class take more field trips? Write an opinion paragraph with two reasons.', 'Is it better to read a book or watch the movie? Write an opinion paragraph with two reasons.'],
     ['My first sentence says what I think.', 'I gave two reasons.', 'My last sentence says my opinion again in new words.'], 50),
   'wr4-story': (rng) => writingQuestion(rng,
-    ['Write a small story about finding something on a rainy day.', 'Write a small story about the first day at a new place.', 'Write a small story about a plan that went wrong.', 'Write a small story about a surprise in the backyard.'],
+    ['Write a small story about finding something on a rainy day.', 'Write a small story about the first day at a new place.', 'Write a small story about a plan that went wrong.', 'Write a small story about a surprise in the backyard.', 'Write a small story about finding something unexpected, with a beginning, a middle and an end.', 'Write a small story about a rainy day plan that changed, with a beginning, a middle and an end.'],
     ['My story has a beginning, a middle and an end.', 'I said who and where.', 'I used words a reader can see.'], 60),
   'wr8-thesis-outline': (rng) => writingQuestion(rng,
-    ['Write a thesis about whether schools should start later, then list three reasons.', 'Write a thesis about whether homework should be limited, then list three reasons.', 'Write a thesis about whether phones belong in class, then list three reasons.', 'Write a thesis about whether your town needs more parks, then list three reasons.'],
+    ['Write a thesis about whether schools should start later, then list three reasons.', 'Write a thesis about whether homework should be limited, then list three reasons.', 'Write a thesis about whether phones belong in class, then list three reasons.', 'Write a thesis about whether your town needs more parks, then list three reasons.', 'Write a thesis and an outline arguing which school subject matters most, with three reasons.', 'Write a thesis and an outline about whether your town needs a new park, with three reasons.'],
     ['My thesis is one sentence someone could disagree with.', 'I listed three reasons.', 'Each reason is different from the others.'], 40),
   'wr8-evidence-paragraph': (rng) => writingQuestion(rng,
-    ['Write one body paragraph arguing that later school starts help students.', 'Write one body paragraph arguing that reading every day improves writing.', 'Write one body paragraph arguing that a team sport teaches something a class cannot.'],
+    ['Write one body paragraph arguing that later school starts help students.', 'Write one body paragraph arguing that reading every day improves writing.', 'Write one body paragraph arguing that a team sport teaches something a class cannot.', 'Write one paragraph proving that a rule at your school works or fails, with evidence and a warrant.', 'Write one paragraph proving that a change at home improved something, with evidence and a warrant.'],
     ['My first sentence is the claim.', 'I gave a fact, an example or a quotation as evidence.', 'I wrote a sentence saying why the evidence supports the claim.'], 70, 'typed'),
   'wr8-full-essay': (rng) => writingQuestion(rng,
-    ['Write a five-paragraph essay defending a thesis about school start times.', 'Write a five-paragraph essay defending a thesis about limits on homework.', 'Write a five-paragraph essay defending a thesis about phones in class.'],
+    ['Write a five-paragraph essay defending a thesis about school start times.', 'Write a five-paragraph essay defending a thesis about limits on homework.', 'Write a five-paragraph essay defending a thesis about phones in class.', 'Write a five-paragraph essay on whether students should have jobs, with a thesis and three reasons.', 'Write a five-paragraph essay on the best way to spend a summer, with a thesis and three reasons.'],
     ['My introduction ends with the thesis.', 'I have three body paragraphs, each with a claim, evidence and a warrant.', 'My conclusion restates the thesis in new words and says why it matters.', 'I cut sentences that did not defend the thesis.'], 250, 'typed'),
 });
 
@@ -16272,6 +16690,36 @@ export const WONDER = [
     closing: 'What could you say to a friend whose choice lost?',
   },
   {
+    id: 'w-same-song',
+    theme: 'feelings',
+    stage: 'early',
+    courseIds: ['music-1', 'music-4'],
+    answerMode: 'typed',
+    prompt: 'The same song can be sung soft and slow or loud and fast, and it feels like two different songs. If you were a song today, how would you be played, and why?',
+    perspectives: [
+      { voice: 'A scientist', says: 'Loud and fast makes a heart beat faster, and soft and slow settles it down. Music reaches the body before it reaches the mind.' },
+      { voice: 'An artist', says: 'A musician chooses the dynamics on purpose. You choose yours too, every morning, whether you notice the choice or not.' },
+      { voice: 'A grandparent of faith', says: 'Every tradition has its lullabies and its marches. People have always known that the same words need different music on different days.' },
+      { voice: 'A skeptic', says: 'Sometimes you are played loud by the room around you, not by yourself. It is worth asking who is holding the volume knob today.' },
+    ],
+    closing: 'What song would you play for a friend who had a hard day?',
+  },
+  {
+    id: 'w-sleep-trade',
+    theme: 'ups-and-downs',
+    stage: 'early',
+    courseIds: ['health-k', 'health-4'],
+    answerMode: 'typed',
+    prompt: 'Staying up late feels like winning. The next morning feels like losing. What is one thing you would trade an hour of sleep for, and one thing you would not?',
+    perspectives: [
+      { voice: 'A scientist', says: 'Sleep is when the brain files the day. Trade it away and the day is half lost, so the question is really what is worth losing half a day for.' },
+      { voice: 'An artist', says: 'Some late nights are worth it: a meteor shower, a book you cannot put down. The trick is knowing them from the ordinary ones.' },
+      { voice: 'A grandparent of faith', says: 'Rest is not the same as laziness. Every tradition I know sets aside time to stop, because people who never stop wear thin.' },
+      { voice: 'A skeptic', says: 'Notice who benefits when you stay up: usually a screen that wants your attention, not you. Ask whether the thing keeping you up would miss you.' },
+    ],
+    closing: 'What would you tell a younger friend who wants to stay up all night?',
+  },
+  {
     id: 'w-obedient-helper',
     theme: 'world',
     stage: 'growing',
@@ -18481,39 +18929,60 @@ export function daysSinceBackup(lastAt, now) {
 // Builds one practice set for a module. Same (moduleId, seed, masteredIds) => same set.
 //   core:   the questions that count toward mastery
 //   review: one question from an EARLIER, already-mastered module (retention check only)
-export function buildAttempt(moduleId, seed, masteredIds) {
+// options.dose: 1 for a normal round, 3 for a triple dose on a module the student keeps missing.
+// options.avoid: prompts asked in recent rounds, so a repeat round reaches for questions not yet seen;
+// the memory checks avoid their own module's recent prompts the same way (the alternate stack).
+export function buildAttempt(moduleId, seed, masteredIds, options = {}) {
+  const dose = options.dose && options.dose > 1 ? options.dose : 1;
+  const avoid = new Set(options.avoid || []);
   const mod = getModule(moduleId);
   if (!mod) throw new Error(`Unknown module: ${moduleId}`);
   const rng = makeRng(seed);
   const order = shuffle(rng, mod.generators);
   const core = [];
-  const howMany = moduleRules(moduleId).questions;
-  for (let i = 0; i < howMany; i++) {
-    // Never the same question twice in one round: on a repeat of the story and prompt, roll again a few times.
-    let q = generateQuestion(order[i % order.length], randInt(rng, 1, 2147483646));
-    for (let tries = 0; tries < 12 && core.some((c) => c.story === q.story && c.prompt === q.prompt); tries++) q = generateQuestion(order[i % order.length], randInt(rng, 1, 2147483646));
-    core.push(q);
-  }
+  const howMany = moduleRules(moduleId).questions * dose;
+  const fresh = (gen, taken) => {
+    // Never the same question twice in one round, and not one from the last rounds if another can be found.
+    let q = generateQuestion(gen, randInt(rng, 1, 2147483646));
+    for (let tries = 0; tries < 16 && (taken.some((c) => c.story === q.story && c.prompt === q.prompt) || (tries < 10 && avoid.has(q.prompt))); tries++) q = generateQuestion(gen, randInt(rng, 1, 2147483646));
+    return q;
+  };
+  for (let i = 0; i < howMany; i++) core.push(fresh(order[i % order.length], core));
   let review = null;
   // The memory check can come from any module the student has mastered, in any course, so
   // old skills keep resurfacing where they are least expected. Nearer modules in the same
   // course are more likely, but nothing mastered is ever out of the pool.
   const inCourse = MODULES.filter((m) => m.courseId === mod.courseId && m.order < mod.order && masteredIds.includes(m.id));
   const anywhere = MODULES.filter((m) => m.id !== mod.id && masteredIds.includes(m.id));
-  const earlierMastered = inCourse.length && rng() < 0.6 ? inCourse : anywhere;
+  // The memory check favors the mastered modules a student has missed most lately (options.missed: id to miss count),
+  // so the alternate stack goes where it is needed; otherwise nearer modules in the same course are more likely.
+  const missed = anywhere.filter((m) => (options.missed || {})[m.id] > 0);
+  const earlierMastered = missed.length && rng() < 0.6 ? missed : inCourse.length && rng() < 0.6 ? inCourse : anywhere;
   let review2 = null;
   if (CONFIG.REVIEW_QUESTIONS_PER_ATTEMPT > 0 && earlierMastered.length > 0) {
     const rm = pick(rng, earlierMastered);
-    review = { moduleId: rm.id, question: generateQuestion(pick(rng, rm.generators), randInt(rng, 1, 2147483646)) };
+    review = { moduleId: rm.id, question: fresh(pick(rng, rm.generators), []) };
     // A second check, from a different passed module when there is one, so two old skills
     // resurface in every round rather than one.
     const others = anywhere.filter((m) => m.id !== rm.id);
     if (CONFIG.REVIEW_QUESTIONS_PER_ATTEMPT > 1 && others.length > 0) {
       const rm2 = pick(rng, others);
-      review2 = { moduleId: rm2.id, question: generateQuestion(pick(rng, rm2.generators), randInt(rng, 1, 2147483646)) };
+      review2 = { moduleId: rm2.id, question: fresh(pick(rng, rm2.generators), []) };
     }
   }
-  return { moduleId, seed, core, review, review2 };
+  return { moduleId, seed, core, review, review2, dose };
+}
+
+// The prompts a student met in their last rounds on a module (and, for memory checks, on any module).
+// Misses per mastered module over the last month, for the memory check to favor.
+export function recentMisses(events, days = 30) {
+  const since = Date.now() - days * 24 * 3600 * 1000; const count = {};
+  for (const e of events) if (e.type === 'attempt_completed' && e.at && new Date(e.at).getTime() >= since) { for (const r of (e.core || [])) if (r && r.correct === false) count[e.moduleId] = (count[e.moduleId] || 0) + 1; if (e.review && e.review.correct === false) count[e.review.moduleId] = (count[e.review.moduleId] || 0) + 1; if (e.review2 && e.review2.correct === false) count[e.review2.moduleId] = (count[e.review2.moduleId] || 0) + 1; }
+  return count;
+}
+export function recentPrompts(events, moduleId, rounds = 2) {
+  const seen = events.filter((e) => e.type === 'attempt_completed' && (!moduleId || e.moduleId === moduleId)).slice(-rounds);
+  return seen.flatMap((e) => (e.core || []).map((r) => r.prompt).filter(Boolean));
 }
 
 // Decides whether a typed or tapped answer is right.
@@ -18552,6 +19021,7 @@ export function makeAttemptEvent(attempt, coreResults, reviewResult, startedAt, 
     review2: review2Result,
     coreCorrect,
     coreTotal: coreResults.length,
+    dose: attempt.dose || 1,
   };
 }
 
@@ -18583,7 +19053,11 @@ export function activeEvents(events) {
 
 export function isMasteredAttempt(event) {
   if (event.type === 'writing_marked') return event.meets === true;
-  return event.type === 'attempt_completed' && event.coreCorrect >= moduleRules(event.moduleId).toMaster;
+  if (event.type !== 'attempt_completed') return false;
+  const rules = moduleRules(event.moduleId);
+  // A triple dose holds the same bar, scaled: 4 of 5 becomes 12 of 15.
+  const need = event.coreTotal && event.coreTotal !== rules.questions ? Math.ceil(rules.toMaster * event.coreTotal / rules.questions) : rules.toMaster;
+  return event.coreCorrect >= need;
 }
 // Writing: the submission event, the mark event, and what is waiting for an educator.
 export function makeWritingEvent(moduleId, prompt, text, checklist, startedAt, finishedAt) {
@@ -18935,11 +19409,11 @@ export const EXPERIMENTS = {
     { title: "Egg in vinegar", ask: "What happens to a shell in vinegar?", do: "An egg in a jar of vinegar for two days.", see: "The shell fizzes away and the egg turns rubbery. Acid dissolves shell." },
     { title: "Float a paper clip", ask: "Can metal float?", do: "A dry paper clip laid gently on still water with a fork.", see: "It floats on the water's skin. Surface tension holds it up." },
     { title: "Ice fishing", ask: "Can you lift an ice cube with a string?", do: "A string laid on an ice cube in water. Sprinkle salt on it. Wait a minute.", see: "The salt melts and refreezes the ice around the string. Lift." },
-    { title: "Flashlight day and night", ask: "Why is it dark at night?", do: "A ball for the Earth, a flashlight for the sun. Turn the ball slowly.", see: "One side is lit and one is dark; turning is what changes them.", moduleId: "day-and-night" },
-    { title: "Weather window", ask: "What is the weather doing?", do: "Look out the same window every morning for a week and draw it.", see: "Sun, cloud, rain, wind: the weather changes and the drawings show it.", moduleId: "kinds-of-weather" },
-    { title: "Alive or not", ask: "Which things are alive?", do: "Put a plant, a rock, a toy and a snail on a tray. Watch for an hour.", see: "The living things move, eat or grow; the rock and the toy do nothing.", moduleId: "living-or-not" },
-    { title: "Bean in the cupboard", ask: "What does a plant need?", do: "Two bean pots: one on the windowsill, one in a dark cupboard, both watered.", see: "The dark one grows pale and thin. Plants need light as well as water.", moduleId: "what-plants-need" },
-    { title: "Two cups", ask: "Which cools and which warms?", do: "A cup of warm water and a cup of ice water side by side. Touch both every ten minutes.", see: "Both end up like the room. Hot cools down; cold warms up.", moduleId: "hot-and-cold" },
+    { title: "Flashlight day and night", tell: "Grab a ball for the Earth and a flashlight for the sun, then turn off the room lights. Shine the flashlight at the ball and turn the ball slowly. Watch how one side is always lit and the other side is always dark, and how a spot on the ball goes from day to night and back just by turning. That's all a day is: the Earth spinning past the sun.", ask: "Why is it dark at night?", do: "A ball for the Earth, a flashlight for the sun. Turn the ball slowly.", see: "One side is lit and one is dark; turning is what changes them.", moduleId: "day-and-night" },
+    { title: "Weather window", tell: "Pick one window and look out of it every morning for a week, then draw what the sky is doing in a little box each day. By Friday you'll have a row of drawings, and no two are quite the same. Sun, cloud, rain, wind: the weather changes, and your drawings prove it.", ask: "What is the weather doing?", do: "Look out the same window every morning for a week and draw it.", see: "Sun, cloud, rain, wind: the weather changes and the drawings show it.", moduleId: "kinds-of-weather" },
+    { title: "Alive or not", tell: "Put a plant, a rock, a toy and a snail on a tray and just watch for a while. The snail will wander, the plant leans toward the window, and the rock and the toy sit there doing exactly nothing. Living things move, eat or grow; the others never will, no matter how long you wait.", ask: "Which things are alive?", do: "Put a plant, a rock, a toy and a snail on a tray. Watch for an hour.", see: "The living things move, eat or grow; the rock and the toy do nothing.", moduleId: "living-or-not" },
+    { title: "Bean in the cupboard", tell: "Plant two beans in two pots, water them both, and put one on the windowsill and one in a dark cupboard. Check them every day. The windowsill bean grows green and sturdy; the cupboard bean comes up pale and stringy, reaching for light it can't find. Plants need light as well as water, and the cupboard bean will tell you so.", ask: "What does a plant need?", do: "Two bean pots: one on the windowsill, one in a dark cupboard, both watered.", see: "The dark one grows pale and thin. Plants need light as well as water.", moduleId: "what-plants-need" },
+    { title: "Two cups", tell: "Fill one cup with warm water and one with ice water, set them side by side, and touch both every ten minutes. The warm one cools and the cold one warms until, after a while, they feel the same. Hot things cool down and cold things warm up until everything matches the room.", ask: "Which cools and which warms?", do: "A cup of warm water and a cup of ice water side by side. Touch both every ten minutes.", see: "Both end up like the room. Hot cools down; cold warms up.", moduleId: "hot-and-cold" },
   ],
   1: [
     { title: 'Day and night in a room', ask: 'Why do we have night?', do: 'A flashlight and a ball. Turn the ball slowly in front of the light.', see: 'Half the ball is dark. The turning makes night.' },
@@ -18956,16 +19430,16 @@ export const EXPERIMENTS = {
     { title: 'Fruit or vegetable?', ask: 'Does it have seeds inside?', do: 'Cut open a tomato, a cucumber, a carrot, an apple.', see: 'Fruits have seeds inside; roots and stems do not.' },
     { title: 'Egg drop', ask: 'Can you protect an egg?', do: 'An egg wrapped in a small package of your design, dropped from a chair.', see: 'Cushioning and slowing the fall protect it.' },
     { title: 'Which freezes first?', ask: 'Salt water or fresh?', do: 'Two cups in the freezer, one salty.', see: 'Fresh water freezes first.' },
-    { title: 'Sound vibrations', moduleId: 'sound', ask: 'Can you feel a sound?', do: 'Hum with a hand on your throat; a ruler twanged on a table edge.', see: 'Sound is something vibrating.' },
+    { title: 'Sound vibrations', tell: "Hum with a hand on your throat and feel the buzz. Then hold a ruler over the edge of a table and twang the free end: it blurs and hums. Sound is something shaking, whether it's your throat or the ruler.", moduleId: 'sound', ask: 'Can you feel a sound?', do: 'Hum with a hand on your throat; a ruler twanged on a table edge.', see: 'Sound is something vibrating.' },
     { title: 'Ant watching', ask: 'Where do ants go?', do: 'A crumb on the sidewalk; watch for ten minutes.', see: 'Ants follow trails and work together.' },
     { title: "Shadow clock", ask: "Does a shadow move by the hour?", do: "A stick in the ground. Mark the tip of its shadow every hour.", see: "The shadow swings around like a clock hand as the sun crosses the sky." },
     { title: "Celery drinks", ask: "How does water climb a plant?", do: "A celery stalk in colored water overnight.", see: "The color climbs the tubes inside. Plants pull water up." },
-    { title: "Sound jars", moduleId: 'sound', ask: "Can water change a sound?", do: "Four glasses with different water levels. Tap each with a spoon.", see: "More water, lower note. The water changes what rings." },
+    { title: "Sound jars", tell: "Line up four glasses with different amounts of water and tap each one with a spoon. The fuller the glass, the lower the note. Try playing a tune. What rings is the glass and the water together, so changing the water changes the sound.", moduleId: 'sound', ask: "Can water change a sound?", do: "Four glasses with different water levels. Tap each with a spoon.", see: "More water, lower note. The water changes what rings." },
     { title: "Mold garden", ask: "What grows on old bread?", do: "A slice of bread, a few drops of water, sealed in a bag for a week.", see: "Fuzzy spots appear and spread. Mold is alive and it grows." },
     { title: "Bridge of paper", ask: "How strong is a folded sheet?", do: "A flat sheet between two books, then the same sheet folded like a fan.", see: "The fan holds far more. Shape adds strength." },
-    { title: "Sun and moon chart", ask: "Where does the sun come up?", do: "Mark where the sun rises and sets for a week; draw the moon each night.", see: "The sun keeps its side; the moon changes shape a little each night.", moduleId: "sun-moon-patterns" },
-    { title: "Ice to water to ice", ask: "Can water change and change back?", do: "An ice cube in a cup on a warm table, then the water back in the freezer.", see: "It melts, then freezes again. The same water, twice.", moduleId: "water-changes" },
-    { title: "Bird visitors", ask: "What do animals need?", do: "Put out water and seed. Watch which birds come and when.", see: "They come to eat and drink. Animals need food, water and a safe place.", moduleId: "animal-needs" },
+    { title: "Sun and moon chart", tell: "For a week, mark where the sun comes up and goes down from the same spot, and each night draw the moon. The sun keeps to its side of the sky, while the moon changes shape a little every night. Two patterns, both worth knowing.", ask: "Where does the sun come up?", do: "Mark where the sun rises and sets for a week; draw the moon each night.", see: "The sun keeps its side; the moon changes shape a little each night.", moduleId: "sun-moon-patterns" },
+    { title: "Ice to water to ice", tell: "Set an ice cube in a cup on a warm table and watch it turn into a puddle. Then pour the puddle into the freezer and check back later. Same water, twice: solid to liquid and back again, and nothing was lost along the way.", ask: "Can water change and change back?", do: "An ice cube in a cup on a warm table, then the water back in the freezer.", see: "It melts, then freezes again. The same water, twice.", moduleId: "water-changes" },
+    { title: "Bird visitors", tell: "Put out a dish of water and a handful of seed, then watch from a window. Birds arrive to eat and drink and leave when they feel safe. Food, water and a safe spot are what animals need, and the birds will show you all three.", ask: "What do animals need?", do: "Put out water and seed. Watch which birds come and when.", see: "They come to eat and drink. Animals need food, water and a safe place.", moduleId: "animal-needs" },
   ],
   2: [
     { title: 'Hard, soft, wet, dry', ask: 'How can we sort things?', do: 'A tray of objects; sort by one property, then another.', see: 'The same things sort differently by different properties.' },
@@ -18989,86 +19463,92 @@ export const EXPERIMENTS = {
     { title: "Sugar crystals", ask: "Can sugar grow?", do: "Very sweet hot water in a jar, a string hanging in. Wait a week.", see: "Crystals grow on the string as the water leaves." },
     { title: "Heartbeat", ask: "Does exercise change your pulse?", do: "Count heartbeats for ten seconds sitting, then after twenty jumping jacks.", see: "Faster after. Muscles at work want more blood." },
     { title: "Air has weight", ask: "Does a balloon weigh anything?", do: "Two balloons on a stick balance. Blow one up.", see: "The full one tips down. Air weighs something." },
-    { title: "Sorting table", ask: "Hard or soft, wet or dry?", do: "A tray of everyday things. Sort them twice: hard and soft, then wet and dry.", see: "Each thing has properties, and one thing can be in two groups.", moduleId: "hard-or-soft" },
-    { title: "Magnet fishing", ask: "What does a magnet pull?", do: "A magnet on a string. Dip it into a bowl of paper clips, coins, buttons and beads.", see: "Only some metal things come up. Magnets pull iron and steel.", moduleId: "magnets" },
-    { title: "Habitat box", ask: "What does a home need?", do: "Make a shoebox home for a toy animal: food, water, shelter, space.", see: "A habitat is the place that gives an animal what it needs.", moduleId: "habitats" },
+    { title: "Sorting table", tell: "Spread a tray of everyday things out and sort them twice: first into hard and soft, then into wet and dry. Notice that a wet sponge lands in one group the first time and a different group the second. A thing can have more than one property, and sorting is how you find them.", ask: "Hard or soft, wet or dry?", do: "A tray of everyday things. Sort them twice: hard and soft, then wet and dry.", see: "Each thing has properties, and one thing can be in two groups.", moduleId: "hard-or-soft" },
+    { title: "Magnet fishing", tell: "Tie a magnet to a string and go fishing in a bowl of paper clips, coins, buttons and beads. Only some of the metal things come up on the line. Magnets pull iron and steel and leave everything else in the bowl.", ask: "What does a magnet pull?", do: "A magnet on a string. Dip it into a bowl of paper clips, coins, buttons and beads.", see: "Only some metal things come up. Magnets pull iron and steel.", moduleId: "magnets" },
+    { title: "Habitat box", tell: "Turn a shoebox into a home for a toy animal: something for food, a bottle cap of water, a corner for shelter and a bit of room to move. When you're done, you've built a habitat, which is any place that gives an animal what it needs.", ask: "What does a home need?", do: "Make a shoebox home for a toy animal: food, water, shelter, space.", see: "A habitat is the place that gives an animal what it needs.", moduleId: "habitats" },
   ],
   3: [
     { title: 'Balloon on a bottle', ask: 'Can a gas blow up a balloon?', do: 'Baking soda in a balloon, vinegar in a bottle, stretch and tip.', see: 'A new gas fills the balloon.' },
-    { title: 'Friction race', moduleId: 'forces-and-motion', ask: 'Which surface slows a toy car most?', do: 'The same ramp onto tile, carpet, a towel, sandpaper. Measure how far it rolls.', see: 'Rougher surfaces stop it sooner.' },
-    { title: 'Life cycle jar', moduleId: 'life-cycles', ask: 'How does a caterpillar change?', do: 'A caterpillar kit, or watch a bean go seed to sprout to leaves to flower.', see: 'Stages, in order, every time.' },
-    { title: 'Homemade rain gauge', moduleId: 'weather-and-seasons', ask: 'How much did it rain?', do: 'A clear bottle with centimeter marks, outside for a week.', see: 'Weather can be measured and compared.' },
-    { title: 'Lever lifting', moduleId: 'simple-machines', ask: 'Can a small push lift a big weight?', do: 'A ruler over a pencil; a book on one end, push the other. Move the pencil.', see: 'The farther the pencil from the load, the easier the lift.' },
+    { title: 'Friction race', tell: "Slide the same toy car down a book propped on a pillow, then across a wooden floor, then on the carpet, and measure how far it goes each time. It rolls farthest on the smooth surface. Rough surfaces grab and slow things down, and that grab is friction.", moduleId: 'forces-and-motion', ask: 'Which surface slows a toy car most?', do: 'The same ramp onto tile, carpet, a towel, sandpaper. Measure how far it rolls.', see: 'Rougher surfaces stop it sooner.' },
+    { title: 'Life cycle jar', tell: "Scoop a few frog eggs from a pond into a jar of pond water and keep it somewhere cool. In a week, tadpoles. Then legs, then smaller tails, then tiny frogs ready to go back where they came from. You'll have watched a whole life cycle turn in one jar.", moduleId: 'life-cycles', ask: 'How does a caterpillar change?', do: 'A caterpillar kit, or watch a bean go seed to sprout to leaves to flower.', see: 'Stages, in order, every time.' },
+    { title: 'Homemade rain gauge', tell: "Cut the top off a plastic bottle, flip it into the bottom like a funnel, mark centimeters up the side and leave it outside. After each rain, read the line. Now you know what the weather did while you were asleep.", moduleId: 'weather-and-seasons', ask: 'How much did it rain?', do: 'A clear bottle with centimeter marks, outside for a week.', see: 'Weather can be measured and compared.' },
+    { title: 'Lever lifting', tell: "Lay a ruler across a pencil and put a book on one end. Push down on the other end, then move the pencil closer to the book and push again. The closer the pencil sits to the book, the easier the lift. A lever trades a long push for a strong one.", moduleId: 'simple-machines', ask: 'Can a small push lift a big weight?', do: 'A ruler over a pencil; a book on one end, push the other. Move the pencil.', see: 'The farther the pencil from the load, the easier the lift.' },
     { title: 'Static electricity race', ask: 'Which material makes the most static?', do: 'A balloon rubbed on wool, cotton, hair; test on paper bits.', see: 'Some materials give up more charge.' },
     { title: 'Fossil casts', ask: 'How does a fossil form?', do: 'A shell pressed into clay, then filled with plaster.', see: 'A print, then a cast: the two kinds of fossil.' },
     { title: 'Plant parts', ask: 'What does each part do?', do: 'Pull up a weed; find root, stem, leaf, flower.', see: 'Root drinks, stem carries, leaf makes food, flower makes seeds.' },
-    { title: 'Sound tubes', moduleId: 'sound', ask: 'Does length change pitch?', do: 'Blow across bottles with different water levels.', see: 'More air in the bottle, lower note.' },
+    { title: 'Sound tubes', tell: "Cut cardboard tubes to different lengths and hum into each one. The longer the tube, the lower the note. A longer column of air shakes more slowly, and slower shaking is a lower sound.", moduleId: 'sound', ask: 'Does length change pitch?', do: 'Blow across bottles with different water levels.', see: 'More air in the bottle, lower note.' },
     { title: 'Which insulator?', ask: 'What keeps ice from melting?', do: 'Ice cubes wrapped in foil, paper, cloth, nothing. Time them.', see: 'Cloth and paper trap air and slow melting.' },
     { title: 'Puddle map', ask: 'Where does the puddle go?', do: 'Chalk around a puddle every hour on a sunny day.', see: 'It shrinks as water evaporates.' },
-    { title: 'Simple pulley', moduleId: 'simple-machines', ask: 'Does a pulley make lifting easier?', do: 'A rope over a broom handle; lift a bag straight up, then with the rope.', see: 'Same weight, different direction, easier pull.' },
+    { title: 'Simple pulley', tell: "Hang a spool on a rope over a door and tie a bucket to one end. Pull down, and the bucket goes up. You haven't made it lighter, but pulling down is a lot easier than lifting up, and that change of direction is what one pulley gives you.", moduleId: 'simple-machines', ask: 'Does a pulley make lifting easier?', do: 'A rope over a broom handle; lift a bag straight up, then with the rope.', see: 'Same weight, different direction, easier pull.' },
     { title: 'Camouflage hunt', ask: 'Which colors hide best?', do: 'Colored toothpicks scattered in grass; a partner has 30 seconds to find them.', see: 'The ones that match the grass survive.' },
-    { title: 'Weather station', moduleId: 'weather-and-seasons', ask: 'Can you predict tomorrow?', do: 'Record clouds, wind and temperature at the same time daily for two weeks.', see: 'Patterns appear, and some days you guess right.' },
+    { title: 'Weather station', tell: "Set up a rain gauge, a thermometer in the shade and a ribbon on a stick for the wind, and write down all three every day for two weeks. Patterns show up faster than you'd think, and you'll start guessing tomorrow before the forecast does.", moduleId: 'weather-and-seasons', ask: 'Can you predict tomorrow?', do: 'Record clouds, wind and temperature at the same time daily for two weeks.', see: 'Patterns appear, and some days you guess right.' },
     { title: 'Frozen bubbles', ask: 'What happens to a bubble in the cold?', do: 'Blow bubbles on a freezing morning.', see: 'They freeze into crystal balls.' },
-    { title: 'Ladybug life', moduleId: 'life-cycles', ask: 'How many spots?', do: 'Look at a ladybug closely, then a picture of its larva.', see: 'The young looks nothing like the adult.' },
-    { title: "Balloon rocket", moduleId: 'forces-and-motion', ask: "What pushes a rocket?", do: "A straw on a string, a balloon taped to it, let the air out.", see: "The balloon shoots along the string. Air pushed out pushes back." },
-    { title: "Freeze and expand", moduleId: 'states-of-matter', ask: "Does water grow when it freezes?", do: "A plastic bottle filled to the brim, capped loosely, in the freezer.", see: "The ice bulges out. Water takes more room as ice." },
-    { title: "Mystery powders", moduleId: 'states-of-matter', ask: "Which powder fizzes?", do: "Baking soda, flour, sugar, salt in four cups. A drop of vinegar on each.", see: "Only one fizzes. A reaction tells the powders apart." },
+    { title: 'Ladybug life', tell: "Look under leaves for a cluster of tiny yellow eggs, then check back every few days. Out come little black larvae, then a still pupa, then a ladybug. Four stages in a few weeks, right there in the garden.", moduleId: 'life-cycles', ask: 'How many spots?', do: 'Look at a ladybug closely, then a picture of its larva.', see: 'The young looks nothing like the adult.' },
+    { title: "Balloon rocket", tell: "Thread a straw onto a long string, tie the string tight across a room, tape a blown-up balloon to the straw and let go. The balloon shoots along the string. Air pushed out one way pushes the balloon the other, which is exactly how a real rocket works.", moduleId: 'forces-and-motion', ask: "What pushes a rocket?", do: "A straw on a string, a balloon taped to it, let the air out.", see: "The balloon shoots along the string. Air pushed out pushes back." },
+    { title: "Freeze and expand", tell: "Fill a plastic bottle all the way to the top with water, cap it loosely and put it in the freezer overnight. In the morning the ice will have bulged past the top. Water takes up more room as ice, which is why pipes burst in winter.", moduleId: 'states-of-matter', ask: "Does water grow when it freezes?", do: "A plastic bottle filled to the brim, capped loosely, in the freezer.", see: "The ice bulges out. Water takes more room as ice." },
+    { title: "Mystery powders", tell: "Put baking soda, flour, sugar and salt in four cups and drop a little vinegar on each. Only one of them fizzes. A reaction is a fingerprint: it tells the powders apart when your eyes can't.", moduleId: 'states-of-matter', ask: "Which powder fizzes?", do: "Baking soda, flour, sugar, salt in four cups. A drop of vinegar on each.", see: "Only one fizzes. A reaction tells the powders apart." },
     { title: "Insulation test", ask: "Which keeps ice longest?", do: "Ice cubes wrapped in foil, cloth, paper and nothing. Check every ten minutes.", see: "Cloth wins. Trapped air slows heat." },
-    { title: "Pendulum", moduleId: 'forces-and-motion', ask: "What changes a swing?", do: "A washer on a string. Time ten swings with a short string, then a long one.", see: "The long string swings slower. Weight does not matter; length does." },
+    { title: "Pendulum", tell: "Tie a washer to a string and time ten swings with a short string, then ten swings with a long one. The long string swings slower every single time. Try a heavier washer: no change. Length is what matters, and now you've measured it.", moduleId: 'forces-and-motion', ask: "What changes a swing?", do: "A washer on a string. Time ten swings with a short string, then a long one.", see: "The long string swings slower. Weight does not matter; length does." },
+    { title: "Unplugged: the sandwich robot", tell: "Pick a friend to be the robot and give them bread, a jar and a knife. Now tell them how to make a sandwich, one step at a time, and here's the rule: they do exactly what you say and not one thing more. Watch the knife go straight into the closed jar because nobody said open it. Start over, say every step, and the sandwich gets made. That's what a computer needs from you: everything, in order.", ask: "Can you give directions with nothing skipped?", do: "Tell a friend how to make a sandwich, and they do exactly what you say and nothing more.", see: "The knife goes into the lid, or the bread never gets opened. Every step must be there, in order.", moduleId: "steps-in-order" },
+    { title: "Unplugged: human loop", tell: "Clap, stomp, clap, stomp, and keep going for twelve beats. Now try to write it down. The long way takes the whole page. The short way is one line: repeat clap, stomp six times. Try it with a trickier pattern, up, up, down, and find the part that repeats. Once you can spot the repeating part, you can write any pattern in one line.", ask: "Can you say a pattern once?", do: "Clap, stomp, clap, stomp, twelve times, then write it as one line.", see: "Repeat clap, stomp six times. The part that repeats is the loop.", moduleId: "patterns-and-loops" },
+    { title: "Unplugged: inputs and outputs hunt", tell: "Go on a hunt around the house with a piece of paper split into two columns: tells and shows. A remote's buttons: tells. The TV picture: shows. A doorbell button tells, the chime shows. By the time you reach the kitchen you'll notice that everything with a chip in it has both, and the microwave beeping at you is an output too.", ask: "Which part tells and which part shows?", do: "Walk through the house and sort every gadget's parts into tells and shows.", see: "Buttons and touch screens tell; screens, speakers and printers show.", moduleId: "inputs-and-outputs" },
   ],
   4: [
-    { title: 'Circuit with a bulb', moduleId: 'circuits', ask: 'What makes a bulb light?', do: 'A battery, two wires and a small bulb. Try a broken loop, then a closed one.', see: 'Only a complete loop lights it.' },
-    { title: 'Conductor or insulator', moduleId: 'circuits', ask: 'Which materials let electricity through?', do: 'Put a coin, a key, an eraser, a paper clip into the circuit gap.', see: 'Metals conduct; rubber and plastic do not.' },
+    { title: 'Circuit with a bulb', tell: "Connect a battery, a wire and a small bulb, and leave the last wire loose. Nothing. Touch it to the bulb and the light comes on. Electricity only flows around a complete loop, and your finger just closed it.", moduleId: 'circuits', ask: 'What makes a bulb light?', do: 'A battery, two wires and a small bulb. Try a broken loop, then a closed one.', see: 'Only a complete loop lights it.' },
+    { title: 'Conductor or insulator', tell: "Build the loop from the last experiment, then put different things in the gap: a paper clip, a coin, a plastic ruler, an eraser. The bulb lights for metal and stays dark for the rest. Metals conduct; plastic and rubber insulate.", moduleId: 'circuits', ask: 'Which materials let electricity through?', do: 'Put a coin, a key, an eraser, a paper clip into the circuit gap.', see: 'Metals conduct; rubber and plastic do not.' },
     { title: 'Paper bridge', ask: 'Which fold holds the most?', do: 'A sheet between two books; add coins flat, then folded like an accordion.', see: 'Shape matters more than material.' },
     { title: 'Rock, sand, water', ask: 'What happens when rock is shaken?', do: 'Sugar cubes in a jar, shaken for a minute.', see: 'Corners wear off. That is weathering, fast.' },
-    { title: 'Series and parallel bulbs', moduleId: 'circuits', ask: 'Which stays lit?', do: 'Two bulbs in a row, then side by side; unscrew one.', see: 'In a row both go out; side by side one stays lit.' },
+    { title: 'Series and parallel bulbs', tell: "Wire two bulbs in a row, then unscrew one. Both go dark. Now wire them side by side and unscrew one again. The other stays lit. That's the whole difference between series and parallel, and it's why your house is wired the second way.", moduleId: 'circuits', ask: 'Which stays lit?', do: 'Two bulbs in a row, then side by side; unscrew one.', see: 'In a row both go out; side by side one stays lit.' },
     { title: 'Electromagnet', ask: 'Can a battery make a magnet?', do: 'Wire coiled around a nail, connected to a battery; test on paper clips.', see: 'The coil makes the nail magnetic while current flows.' },
-    { title: 'Sand dune in a box', moduleId: 'changing-land', ask: 'What does wind do to sand?', do: 'A tray of dry sand and a hair dryer on cool.', see: 'Sand piles up in dunes and moves.' },
+    { title: 'Sand dune in a box', tell: "Fill a shallow box with sand and blow across it through a straw. Watch a little dune build up and creep across the box. Wind moves land, and you just did it with your own breath.", moduleId: 'changing-land', ask: 'What does wind do to sand?', do: 'A tray of dry sand and a hair dryer on cool.', see: 'Sand piles up in dunes and moves.' },
     { title: 'Owl pellets', ask: 'What did the owl eat?', do: 'A store-bought owl pellet pulled apart with tweezers.', see: 'Tiny bones sort into skulls and legs: a whole food chain.' },
     { title: 'Sound speed in a rope', ask: 'Can you see a wave?', do: 'A long rope tied to a post; flick it once, then faster.', see: 'A hump travels down the rope. Faster flicks, closer humps.' },
     { title: 'Water filter', ask: 'Can you clean muddy water?', do: 'A bottle with gravel, sand and cotton; pour muddy water through.', see: 'Clearer, though not safe to drink.' },
-    { title: 'Erosion with a hose', moduleId: 'changing-land', ask: 'What slows erosion?', do: 'Two soil hills, one with grass or a mat of leaves; water each.', see: 'Plants hold soil in place.' },
-    { title: 'Bird beak tools', moduleId: 'adaptations', ask: 'Which beak eats what?', do: 'Tweezers, a spoon, a clothespin; pick up rice, marbles, water.', see: 'Each beak shape suits a food.' },
+    { title: 'Erosion with a hose', tell: "Build a hill of soil and let a hose trickle onto the top of it. Channels appear, the soil washes down, and it piles up at the bottom. Erosion carries, deposition drops, and the river you just made did both.", moduleId: 'changing-land', ask: 'What slows erosion?', do: 'Two soil hills, one with grass or a mat of leaves; water each.', see: 'Plants hold soil in place.' },
+    { title: 'Bird beak tools', tell: "Put tweezers, a spoon, pliers and a clothespin on a table with a bowl of seeds, a bowl of water and some gummy worms. Try to pick up each food with each tool. Some pairs are easy and some are hopeless. Bird beaks are tools, shaped for what that bird eats.", moduleId: 'adaptations', ask: 'Which beak eats what?', do: 'Tweezers, a spoon, a clothespin; pick up rice, marbles, water.', see: 'Each beak shape suits a food.' },
     { title: 'Hot air rises', ask: 'Which way does warm air go?', do: 'A paper spiral hung over a warm lamp with an adult.', see: 'It spins in the rising air.' },
     { title: 'Lemon battery', ask: 'Can fruit make electricity?', do: 'A lemon with a copper coin and a zinc nail, wires to a small LED.', see: 'A faint glow: chemistry making current.' },
     { title: 'Rock cycle candy', ask: 'Can you make three kinds of rock?', do: 'Grated crayon layered, pressed, then warmed with an adult.', see: 'Sedimentary, then metamorphic, then melted and cooled.' },
     { title: 'Leaf rubbings', ask: 'Are leaf veins all the same?', do: 'Paper over leaves, rubbed with a crayon.', see: 'Veins branch in patterns; each kind of tree has its own.' },
-    { title: "Ramp and marble", moduleId: 'forms-of-energy', ask: "Does a higher ramp make a faster marble?", do: "A marble down a book ramp at three heights. Measure how far it rolls.", see: "Higher ramp, farther roll. Height stores energy." },
-    { title: "Electromagnet", moduleId: 'circuits', ask: "Can electricity make a magnet?", do: "Wire wrapped around a nail, ends on a battery. Try paper clips.", see: "The nail picks up clips while the current flows." },
-    { title: "Water filter", moduleId: 'watersheds', ask: "Can dirt be filtered out?", do: "A cut bottle with layers of gravel, sand and cloth. Pour muddy water through.", see: "Clearer water comes out. Layers catch different sizes." },
-    { title: "Owl pellet", moduleId: 'ecosystems', ask: "What did the owl eat?", do: "Soak an owl pellet and pick it apart with toothpicks.", see: "Tiny bones and skulls. A food chain in one lump." },
-    { title: "Solar oven", moduleId: 'forms-of-energy', ask: "Can a box cook a marshmallow?", do: "A pizza box lined with foil, a plastic window, a marshmallow inside in the sun.", see: "It softens. Sunlight trapped is heat." },
+    { title: "Ramp and marble", tell: "Roll a marble down a book ramp from three different heights and measure how far it rolls across the floor each time. Higher start, longer roll. Height stores energy, and the marble spends it on the way down.", moduleId: 'forms-of-energy', ask: "Does a higher ramp make a faster marble?", do: "A marble down a book ramp at three heights. Measure how far it rolls.", see: "Higher ramp, farther roll. Height stores energy." },
+    { title: "Electromagnet", tell: "Wrap wire around an iron nail about thirty times and touch the ends to a battery. Dip the nail into a pile of paper clips. They come up. Let go of the battery and they drop. Electricity made a magnet, and it turns off when the current does.", moduleId: 'circuits', ask: "Can electricity make a magnet?", do: "Wire wrapped around a nail, ends on a battery. Try paper clips.", see: "The nail picks up clips while the current flows." },
+    { title: "Water filter", tell: "Cut the bottom off a bottle, turn it over and layer in cloth, sand and gravel. Pour muddy water through the top. Clearer water drips out below. Each layer catches something the one above missed, which is how a water plant works.", moduleId: 'watersheds', ask: "Can dirt be filtered out?", do: "A cut bottle with layers of gravel, sand and cloth. Pour muddy water through.", see: "Clearer water comes out. Layers catch different sizes." },
+    { title: "Owl pellet", tell: "Soak an owl pellet in warm water and pick it apart with toothpicks. Tiny bones, a jaw, maybe a skull. An owl's dinner, and a food chain, in one lump.", moduleId: 'ecosystems', ask: "What did the owl eat?", do: "Soak an owl pellet and pick it apart with toothpicks.", see: "Tiny bones and skulls. A food chain in one lump." },
+    { title: "Solar oven", tell: "Line a pizza box with foil, tape plastic wrap over a flap and aim the flap so it bounces sunlight inside. Put a marshmallow in and wait. It goes soft. Sunlight caught in a box turns into heat, and the marshmallow proves it.", moduleId: 'forms-of-energy', ask: "Can a box cook a marshmallow?", do: "A pizza box lined with foil, a plastic window, a marshmallow inside in the sun.", see: "It softens. Sunlight trapped is heat." },
   ],
   5: [
     { title: 'Salt water evaporation', ask: 'Where does the salt go?', do: 'Salt in warm water until it disappears; leave the cup in the sun for days.', see: 'The water leaves; the salt stays.' },
-    { title: 'Moon phases with a lamp', moduleId: 'earth-sun-moon', ask: 'Why does the moon change shape?', do: 'A lamp, a ball on a stick, a dark room. Walk the ball around your head.', see: 'You see more or less of the lit side. That is the phase.' },
-    { title: 'Water cycle in a bag', moduleId: 'water-cycle', ask: 'Can you make rain?', do: 'Water in a zip bag taped to a sunny window for a day.', see: 'Drops form at the top and run down: evaporation, condensation, rain.' },
-    { title: 'Inherited or learned', moduleId: 'inherited-and-learned', ask: 'Which traits are you born with?', do: 'List ten traits of a pet or a person; sort into born-with and learned.', see: 'Some come from parents; some take practice.' },
+    { title: 'Moon phases with a lamp', tell: "Put a lamp in the middle of a dark room and hold a ball at arm's length. Turn slowly in a circle and watch how much of the ball is lit from where you stand. Crescent, half, full, half, crescent. You're the Earth, the ball is the moon, and you just ran a month in a minute.", moduleId: 'earth-sun-moon', ask: 'Why does the moon change shape?', do: 'A lamp, a ball on a stick, a dark room. Walk the ball around your head.', see: 'You see more or less of the lit side. That is the phase.' },
+    { title: 'Water cycle in a bag', tell: "Draw a sun and a cloud on a zip bag, pour in a little water, seal it and tape it to a sunny window. By afternoon there are drops on the inside of the bag and streaks running down. The water went up, cooled and came down again, without ever leaving the bag.", moduleId: 'water-cycle', ask: 'Can you make rain?', do: 'Water in a zip bag taped to a sunny window for a day.', see: 'Drops form at the top and run down: evaporation, condensation, rain.' },
+    { title: 'Inherited or learned', tell: "Make two lists for yourself: things you were born with, like eye color and dimples, and things you had to practice, like riding a bike or whistling. Then compare with a family member. The born-with list matches theirs surprisingly often; the practiced list is yours.", moduleId: 'inherited-and-learned', ask: 'Which traits are you born with?', do: 'List ten traits of a pet or a person; sort into born-with and learned.', see: 'Some come from parents; some take practice.' },
     { title: 'Chromatography flowers', ask: 'What colors hide in black ink?', do: 'A marker dot on a coffee filter, the tip in water.', see: 'The ink separates into colors as water climbs.' },
     { title: 'Sundial', ask: 'Can a stick tell time?', do: 'A stick in the ground; mark the shadow tip every hour.', see: 'The shadow sweeps like a clock hand.' },
     { title: 'Clouds in a jar', ask: 'How does a cloud form?', do: 'Warm water in a jar, hairspray puff, ice on top, with an adult.', see: 'A cloud swirls when vapor meets cold and something to cling to.' },
-    { title: 'Which dissolves faster?', moduleId: 'mixtures-and-solutions', ask: 'Does temperature matter?', do: 'Sugar cubes in cold, warm and hot water, timed.', see: 'Hot water dissolves fastest.' },
+    { title: 'Which dissolves faster?', tell: "Drop a sugar cube into cold water and a crushed one into another cup, then stir both. The crushed sugar vanishes first. More surface touching the water means faster dissolving.", moduleId: 'mixtures-and-solutions', ask: 'Does temperature matter?', do: 'Sugar cubes in cold, warm and hot water, timed.', see: 'Hot water dissolves fastest.' },
     { title: 'Balloon lung', ask: 'How do lungs fill?', do: 'A bottle with a balloon inside and a balloon skin on the cut bottom; pull the skin.', see: 'The inner balloon fills when the space grows. That is breathing.' },
     { title: 'Iron in cereal', ask: 'Is there metal in your food?', do: 'Fortified cereal crushed in water; stir with a strong magnet in a bag.', see: 'Tiny iron flecks cling to the magnet.' },
     { title: 'Solar oven', ask: 'Can the sun cook?', do: 'A pizza box lined with foil and black paper under plastic; a marshmallow inside.', see: 'It softens in an hour of sun.' },
     { title: 'Fingerprint patterns', ask: 'Are yours loops, whorls or arches?', do: 'Pencil-rubbed fingertips pressed on tape, stuck to paper.', see: 'Everyone has a pattern; no two match.' },
-    { title: 'Layers of the earth model', moduleId: 'earths-layers', ask: 'What is inside?', do: 'A clay ball built in layers, then cut in half.', see: 'Crust, mantle, core, in order.' },
+    { title: 'Layers of the earth model', tell: "Press a marble into a ball of clay, then wrap that in a thicker layer of a second color, then a thin skin of a third. Cut it in half. Core, mantle, crust, and the crust is thinner than you expected.", moduleId: 'earths-layers', ask: 'What is inside?', do: 'A clay ball built in layers, then cut in half.', see: 'Crust, mantle, core, in order.' },
     { title: 'Seed dispersal', ask: 'How do seeds travel?', do: 'Dandelion, burr, maple key, berry: test each for wind, fur, water.', see: 'Each seed has a way to leave home.' },
     { title: 'Vinegar volcano', ask: 'Why does it erupt?', do: 'Baking soda in a bottle inside a clay cone; add vinegar and soap.', see: 'Gas pushes the foam out. A model, not a volcano.' },
-    { title: 'Stream table', moduleId: 'watersheds', ask: 'How does a river bend?', do: 'Sand in a tray, tilted; a slow trickle of water.', see: 'The stream wanders and cuts bends.' },
-    { title: "Density tower", moduleId: 'density', ask: "Can liquids stack?", do: "Honey, dish soap, water, oil poured slowly into one glass.", see: "Four layers. Heavier liquids sink under lighter ones." },
+    { title: 'Stream table', tell: "Fill a tray with sand, tilt it a little and pour water in at the top. A stream forms, bends, cuts a channel and drops sand at the bottom. Rivers do exactly this, only slower, and your tray just did it in a minute.", moduleId: 'watersheds', ask: 'How does a river bend?', do: 'Sand in a tray, tilted; a slow trickle of water.', see: 'The stream wanders and cuts bends.' },
+    { title: "Density tower", tell: "Pour honey, then dish soap, then water, then oil slowly into one tall glass. They stack in layers and refuse to mix. Heavier liquids sink under lighter ones, and you've built a tower to prove it.", moduleId: 'density', ask: "Can liquids stack?", do: "Honey, dish soap, water, oil poured slowly into one glass.", see: "Four layers. Heavier liquids sink under lighter ones." },
     { title: "Bean growth graph", ask: "How fast does a bean grow?", do: "Measure a sprout every day for two weeks. Graph it.", see: "A curve, not a line. Growth speeds up, then slows." },
     { title: "Invisible ink", ask: "Can lemon juice hide a message?", do: "Write with lemon juice on paper. Hold it near a warm bulb.", see: "The letters brown. Heat changes the juice." },
-    { title: "Cloud in a bottle", moduleId: 'water-cycle', ask: "Can you make a cloud?", do: "A little warm water in a bottle, a match blown out inside, squeeze and release.", see: "A cloud appears when you release. Pressure drops, water condenses." },
-    { title: "Salt water eggs", moduleId: 'density', ask: "Can salt make an egg float?", do: "An egg in fresh water, then stir in salt spoon by spoon.", see: "It rises. Salt water is denser than the egg." },
+    { title: "Cloud in a bottle", tell: "Put a splash of warm water in a clear bottle, drop in a blown-out match and cap it. Squeeze hard, then let go. A cloud appears in the bottle. Letting go dropped the pressure, and the water in the air turned into a cloud right in your hands.", moduleId: 'water-cycle', ask: "Can you make a cloud?", do: "A little warm water in a bottle, a match blown out inside, squeeze and release.", see: "A cloud appears when you release. Pressure drops, water condenses." },
+    { title: "Salt water eggs", tell: "Set an egg in a glass of fresh water and watch it sink. Stir in salt, a spoonful at a time. Somewhere around the sixth spoon it rises and floats. Salt water is denser than the egg, so the egg floats on it.", moduleId: 'density', ask: "Can salt make an egg float?", do: "An egg in fresh water, then stir in salt spoon by spoon.", see: "It rises. Salt water is denser than the egg." },
+    { title: "Unplugged: the variable jar", tell: "Find a jar and stick a label on it that says score. Play any game and drop in a marble for every point. The label never changes; the marbles do. Now add a second jar labeled lives and take a marble out when you miss. You've built two variables, and score = score + 1 is just dropping in a marble.", ask: "What does a variable do?", do: "Label a jar score and drop in marbles as you earn points in a game.", see: "The label stays; what's inside changes. That's a variable.", moduleId: "variables" },
+    { title: "Unplugged: the if-then walk", tell: "Find a hallway or a sidewalk with a pattern of tiles or cracks and give yourself one rule: IF the tile is dark THEN hop, ELSE step. Walk it. Every tile is a yes-or-no question and you answer with your feet. Now change the rule to IF it's a crack THEN say a color, ELSE stay quiet. That's every if-then a program ever runs, and you can feel it in your legs.", ask: "Can you follow a rule with a condition?", do: "Walk down a hallway with one rule: IF the floor tile is dark THEN hop, ELSE step.", see: "Every tile asks a yes-or-no question and you take one road or the other.", moduleId: "if-then" },
+    { title: "Unplugged: bug hunt", tell: "Write directions from the front door to the fridge, step by step, then hand them to a friend who follows them exactly and freezes the moment something doesn't work. Where they freeze is the bug. Don't rewrite the whole page. Fix that one step, hand it back, and watch how far they get this time.", ask: "Can you find the wrong step?", do: "Write directions from the door to the fridge; a friend follows them exactly and stops where they go wrong.", see: "The bug is the step where the walk and the plan part ways. Fix that one, not the whole page.", moduleId: "finding-the-bug" },
   ],
   6: [
-    { title: 'Density column', moduleId: 'density', ask: 'Which liquid sits on top?', do: 'Honey, dish soap, water, oil, poured slowly. Drop in a grape and a cork.', see: 'Liquids stack by density; objects settle at their match.' },
-    { title: 'Heat transfer three ways', moduleId: 'heat-transfer', ask: 'How does heat move?', do: 'A metal spoon in hot water (touch), warm water rising in a clear pot with food coloring (flow), a lamp on your hand (rays).', see: 'Conduction, convection, radiation, each seen.' },
-    { title: 'Food chain web', moduleId: 'ecosystems', ask: 'Who eats whom?', do: 'Cards for grass, grasshopper, bird, hawk, fungus; string between eaters and eaten.', see: 'Remove one card and count the strings that fall.' },
-    { title: 'Plate edges with graham crackers', moduleId: 'plate-tectonics', ask: 'What happens where plates meet?', do: 'Two crackers on frosting; push together, pull apart, slide past.', see: 'Mountains, gaps, and crumbling edges.' },
-    { title: 'Convection currents', moduleId: 'heat-transfer', ask: 'Can you see heat move?', do: 'A clear pan of water, a drop of food coloring, a candle under one corner with an adult.', see: 'The color rises over the heat and sinks elsewhere.' },
-    { title: 'Osmosis egg', moduleId: 'cells', ask: 'Can water pass through a shell?', do: 'An egg soaked in vinegar for two days, then in corn syrup, then in water.', see: 'The egg shrinks, then swells. Water moves through the membrane.' },
+    { title: 'Density column', tell: "Layer honey, syrup, water and oil in a tall glass, then drop in a grape, a cork and a coin. Each one sinks until it reaches a liquid denser than itself and stops there. The column sorts things by density without you doing a thing.", moduleId: 'density', ask: 'Which liquid sits on top?', do: 'Honey, dish soap, water, oil, poured slowly. Drop in a grape and a cork.', see: 'Liquids stack by density; objects settle at their match.' },
+    { title: 'Heat transfer three ways', tell: "Hold a metal spoon in hot water and feel the handle warm: conduction. Drop food coloring in a pan of heating water and watch it swirl: convection. Hold your hand near a warm lamp without touching it: radiation. Three ways heat moves, and you felt all three.", moduleId: 'heat-transfer', ask: 'How does heat move?', do: 'A metal spoon in hot water (touch), warm water rising in a clear pot with food coloring (flow), a lamp on your hand (rays).', see: 'Conduction, convection, radiation, each seen.' },
+    { title: 'Food chain web', tell: "Write plants and animals from one place on cards and connect them with string, eater to eaten. Then pull one card out. Count how many strings go slack. That's how much one missing animal matters.", moduleId: 'ecosystems', ask: 'Who eats whom?', do: 'Cards for grass, grasshopper, bird, hawk, fungus; string between eaters and eaten.', see: 'Remove one card and count the strings that fall.' },
+    { title: 'Plate edges with graham crackers', tell: "Spread frosting on a plate and lay two graham crackers on it. Push them together and they buckle up into a ridge. Pull them apart and the frosting shows through. Slide them past each other and they catch and jump. Mountains, rifts and earthquakes, on a plate.", moduleId: 'plate-tectonics', ask: 'What happens where plates meet?', do: 'Two crackers on frosting; push together, pull apart, slide past.', see: 'Mountains, gaps, and crumbling edges.' },
+    { title: 'Convection currents', tell: "Drop a few drops of food coloring into a clear pan of water sitting on a warm burner. The color rises over the heat, spreads across the top and sinks at the edges. That loop is a convection current, and it's the same loop that moves air and ocean water.", moduleId: 'heat-transfer', ask: 'Can you see heat move?', do: 'A clear pan of water, a drop of food coloring, a candle under one corner with an adult.', see: 'The color rises over the heat and sinks elsewhere.' },
+    { title: 'Osmosis egg', tell: "Leave an egg in vinegar for two days until the shell is gone, then put it in corn syrup. It shrivels. Move it to water. It plumps up. Water moves through the membrane toward wherever there's more dissolved in it.", moduleId: 'cells', ask: 'Can water pass through a shell?', do: 'An egg soaked in vinegar for two days, then in corn syrup, then in water.', see: 'The egg shrinks, then swells. Water moves through the membrane.' },
     { title: 'Homemade compass', ask: 'Can a needle find north?', do: 'A magnetized needle on a cork in water.', see: 'It swings to point north.' },
     { title: 'Buoyancy and salt', ask: 'Does salt water hold you up better?', do: 'An egg in fresh water, then salt water.', see: 'It sinks, then floats. Denser water holds more.' },
     { title: 'Cell model', ask: 'What is inside a cell?', do: 'A zip bag of gel with candy parts labeled as organelles.', see: 'A model of the parts and their jobs.' },
@@ -19081,11 +19561,11 @@ export const EXPERIMENTS = {
     { title: 'Ecosystem in a bottle', ask: 'Can a jar keep itself alive?', do: 'A sealed bottle with soil, a plant and water, in indirect light.', see: 'It cycles water and gas for weeks.' },
     { title: "Lever measurements", ask: "Where should the fulcrum go?", do: "A ruler on a pencil. Move the pencil and lift a book with a finger.", see: "Closer to the load, easier the lift. A lever trades distance for force." },
     { title: "Conduction race", ask: "Which spoon warms fastest?", do: "Metal, wood and plastic spoons in hot water, butter on each handle.", see: "The metal spoon's butter melts first. Metal conducts." },
-    { title: "Yeast balloons", moduleId: 'cells', ask: "Does yeast need sugar?", do: "Yeast and warm water in three bottles: no sugar, some, lots. Balloons on top.", see: "More sugar, bigger balloon. Yeast eats sugar and breathes out gas." },
-    { title: "Soil layers", moduleId: 'weathering-to-fossils', ask: "What is soil made of?", do: "Soil and water shaken in a jar. Let it settle overnight.", see: "Sand, silt and clay in layers. Soil is a mixture." },
-    { title: "Pinhole camera", moduleId: 'light-and-optics', ask: "Can a hole make a picture?", do: "A box with a pinhole and wax paper at the back, aimed at a bright window.", see: "An upside-down image. Light travels in straight lines." },
-    { title: "Salt from a solution", ask: "Can you get the parts back?", do: "Dissolve salt in water, then leave the dish in the sun for a day.", see: "The water leaves and the salt stays. A compound can be separated from a mixture, not from itself.", moduleId: "elements-and-compounds" },
-    { title: "Onion skin slide", ask: "Can you see cells?", do: "A thin piece of onion skin on a slide with a drop of water under a microscope.", see: "Rows of boxes: cells, the same shapes Hooke saw in cork.", moduleId: "microscopes" },
+    { title: "Yeast balloons", tell: "Mix yeast with warm water in three bottles: no sugar, a spoonful, and three spoonfuls, and stretch a balloon over each neck. The more sugar, the bigger the balloon. Yeast eats sugar and breathes out gas.", moduleId: 'cells', ask: "Does yeast need sugar?", do: "Yeast and warm water in three bottles: no sugar, some, lots. Balloons on top.", see: "More sugar, bigger balloon. Yeast eats sugar and breathes out gas." },
+    { title: "Soil layers", tell: "Fill a jar halfway with garden soil, top it with water, shake hard and leave it overnight. Sand settles first, silt next, clay last, and the layers show you what your soil is really made of.", moduleId: 'weathering-to-fossils', ask: "What is soil made of?", do: "Soil and water shaken in a jar. Let it settle overnight.", see: "Sand, silt and clay in layers. Soil is a mixture." },
+    { title: "Pinhole camera", tell: "Poke a pinhole in one end of a box and tape wax paper over the other, then aim the pinhole at a bright window in a dark room. An upside-down picture of the window appears on the paper. Light travels in straight lines, and the tiny hole just proved it.", moduleId: 'light-and-optics', ask: "Can a hole make a picture?", do: "A box with a pinhole and wax paper at the back, aimed at a bright window.", see: "An upside-down image. Light travels in straight lines." },
+    { title: "Salt from a solution", tell: "Dissolve salt in warm water until it disappears, pour it into a shallow dish and leave it in the sun. A day later the water is gone and the salt is back, crystals and all. You can pull a compound out of a mixture; you can't pull salt apart into sodium and chlorine with a dish.", ask: "Can you get the parts back?", do: "Dissolve salt in water, then leave the dish in the sun for a day.", see: "The water leaves and the salt stays. A compound can be separated from a mixture, not from itself.", moduleId: "elements-and-compounds" },
+    { title: "Onion skin slide", tell: "Peel the thin skin from the inside of an onion layer, lay it flat on a slide with a drop of water and look through a microscope. Rows of little boxes, each one a cell. Hooke saw the same shapes in cork more than three hundred years ago.", ask: "Can you see cells?", do: "A thin piece of onion skin on a slide with a drop of water under a microscope.", see: "Rows of boxes: cells, the same shapes Hooke saw in cork.", moduleId: "microscopes" },
   ],
   7: [
     { title: 'Yeast and sugar', ask: 'Is yeast alive?', do: 'Warm water, sugar, yeast in a bottle; a balloon over the neck.', see: 'The yeast breathes out gas. Living things do that.' },
@@ -19104,14 +19584,17 @@ export const EXPERIMENTS = {
     { title: 'Tornado in a bottle', ask: 'How does spinning air behave?', do: 'Two bottles joined at the neck, one with water; swirl.', see: 'A funnel forms as water spins down.' },
     { title: 'Digestion in a bag', ask: 'What does the stomach do?', do: 'Crackers, water and vinegar squished in a zip bag.', see: 'Mashing plus acid breaks food down.' },
     { title: 'Fingerprint classification', ask: 'Can you sort a class?', do: 'Everyone prints a thumb; tally loops, whorls and arches.', see: 'Loops are common; arches are rare.' },
-    { title: "Sweat and cooling", moduleId: 'homeostasis', ask: "Does evaporation cool?", do: "A wet cotton ball on one wrist, dry on the other. Wave your arms.", see: "The wet wrist feels cold. Evaporation takes heat." },
+    { title: "Sweat and cooling", tell: "Wet one wrist with water and leave the other dry, then wave both arms. The wet wrist feels cold. Evaporating water takes heat with it, which is why sweat works.", moduleId: 'homeostasis', ask: "Does evaporation cool?", do: "A wet cotton ball on one wrist, dry on the other. Wave your arms.", see: "The wet wrist feels cold. Evaporation takes heat." },
     { title: "Enzyme in pineapple", ask: "Why won't gelatin set with fresh pineapple?", do: "Gelatin with fresh pineapple, canned pineapple, and none.", see: "Fresh stays liquid. An enzyme breaks the gelatin; heat killed it in the can." },
-    { title: "Weather log", moduleId: 'weather-systems', ask: "Can you predict tomorrow?", do: "Record temperature, clouds and wind every day for two weeks.", see: "Patterns appear. Falling pressure often means rain." },
-    { title: "Camouflage hunt", moduleId: 'natural-selection', ask: "Does color help prey survive?", do: "Colored toothpicks scattered on grass. Time a partner collecting them.", see: "Green ones are found last. Matching the background hides." },
-    { title: "Osmosis gummy bears", moduleId: 'cells', ask: "Do gummy bears drink?", do: "Gummy bears in plain water, salt water and none, overnight.", see: "Plain water swells them; salt water shrinks them. Water moves toward salt." },
-    { title: "Pulse and breath", ask: "How do body systems work together?", do: "Count pulse and breaths at rest, then after a minute of stairs.", see: "Both rise together. Heart and lungs work as one team.", moduleId: "body-systems" },
-    { title: "Family traits", ask: "Which traits run in a family?", do: "Chart earlobes, tongue rolling and hair color across your family.", see: "Some traits show up down the generations. Genes pass them on.", moduleId: "genes-and-traits" },
-    { title: "Energy pyramid with beans", ask: "Why are there so few hawks?", do: "A thousand beans for grass, a hundred for grasshoppers, ten for birds, one for a hawk, in stacked cups.", see: "Each level holds a tenth of the one below. Energy is lost at every step.", moduleId: "energy-in-ecosystems" },
+    { title: "Weather log", tell: "Write down the temperature, the clouds and the wind every day for two weeks, and add the pressure if you can find it online. Falling pressure tends to mean rain is coming. By the end you'll be predicting tomorrow, and sometimes you'll be right.", moduleId: 'weather-systems', ask: "Can you predict tomorrow?", do: "Record temperature, clouds and wind every day for two weeks.", see: "Patterns appear. Falling pressure often means rain." },
+    { title: "Camouflage hunt", tell: "Scatter a handful of green, brown and red toothpicks across a lawn and time a friend collecting them for a minute. Count what they found. The red ones go first and the green ones last. Matching your background keeps you alive.", moduleId: 'natural-selection', ask: "Does color help prey survive?", do: "Colored toothpicks scattered on grass. Time a partner collecting them.", see: "Green ones are found last. Matching the background hides." },
+    { title: "Osmosis gummy bears", tell: "Drop one gummy bear in plain water, one in salty water and keep one dry overnight. The plain-water bear swells up huge; the salt-water bear shrinks. Water moves toward where there's more salt, in and out of a bear.", moduleId: 'cells', ask: "Do gummy bears drink?", do: "Gummy bears in plain water, salt water and none, overnight.", see: "Plain water swells them; salt water shrinks them. Water moves toward salt." },
+    { title: "Pulse and breath", tell: "Count your pulse and your breaths for ten seconds while sitting, then again after a minute of stairs. Both go up together. Your heart and lungs are one team, and exercise calls them both.", ask: "How do body systems work together?", do: "Count pulse and breaths at rest, then after a minute of stairs.", see: "Both rise together. Heart and lungs work as one team.", moduleId: "body-systems" },
+    { title: "Family traits", tell: "Check earlobes, tongue rolling and hair color across everyone in your family and put it in a chart. Some traits show up generation after generation. Genes pass them along.", ask: "Which traits run in a family?", do: "Chart earlobes, tongue rolling and hair color across your family.", see: "Some traits show up down the generations. Genes pass them on.", moduleId: "genes-and-traits" },
+    { title: "Energy pyramid with beans", tell: "Count out a thousand beans for grass, a hundred for grasshoppers, ten for birds and one for a hawk, and stack them in four cups. Each cup holds a tenth of the one below. That's how much energy is lost at every step, and it's why hawks are rare.", ask: "Why are there so few hawks?", do: "A thousand beans for grass, a hundred for grasshoppers, ten for birds, one for a hawk, in stacked cups.", see: "Each level holds a tenth of the one below. Energy is lost at every step.", moduleId: "energy-in-ecosystems" },
+    { title: "Unplugged: binary fingers", tell: "Hold up a hand. Your thumb is worth 1, the next finger 2, then 4, 8 and 16. To show a number, raise the fingers that add up to it: 5 is thumb and the 4 finger. Count from 0 to 31 on one hand and notice you never run out. Two symbols, up and down, and every number fits.", ask: "Can a hand count to 31?", do: "Thumb is 1, then 2, 4, 8, 16 across the fingers. Raise the ones that add up to a number.", see: "Five fingers make thirty-two patterns. Every number to 31 is one of them.", moduleId: "binary" },
+    { title: "Unplugged: packet post", tell: "Draw a picture, cut it into eight pieces and number them on the back. Now have each piece carried across the room by a different person, some walking around the table, some straight across. They'll arrive out of order. Rebuild the picture from the numbers. Congratulations: you just sent a photo the way the internet does, in packets, each finding its own way.", ask: "How does a picture cross the internet?", do: "Cut a drawing into eight pieces, number them, and mail them across the room by different people.", see: "They arrive out of order and get rebuilt from the numbers. That's a message in packets.", moduleId: "how-the-internet-works" },
+    { title: "Unplugged: crack the password", tell: "Write a four-letter password on a card and let a friend guess it with yes-or-no questions about each letter. It falls in a few minutes. Now write a password of four unrelated words, like correct horse battery staple, and let them try again. They give up. That's the whole lesson about passwords: length beats cleverness, and a phrase you can picture is easy to remember.", ask: "How long does a short password last?", do: "Write a four-letter password and have a friend guess with hints; then try a four-word one.", see: "Four letters fall in minutes. Four unrelated words don't fall at all. Length wins.", moduleId: "passwords-and-privacy" },
   ],
   8: [
     { title: 'Pendulum timing', ask: 'What changes a pendulum\'s swing?', do: 'A washer on a string; time ten swings; change length, weight, and pull.', see: 'Only length changes the timing.' },
@@ -19130,13 +19613,13 @@ export const EXPERIMENTS = {
     { title: 'Lever classes', ask: 'Where is the fulcrum?', do: 'A seesaw, a wheelbarrow, tongs: find the pivot, the load, the push.', see: 'Three classes of lever, all around you.' },
     { title: 'Ocean acidification', ask: 'What does carbon dioxide do to shells?', do: 'Chalk in plain water and in fizzy water for a day.', see: 'The fizzy-water chalk pits and fizzes.' },
     { title: 'Fossil layers', ask: 'Which is older?', do: 'Play dough layers with buttons; cut a cross section.', see: 'Deeper is older.' },
-    { title: "Rust race", moduleId: 'chemical-reactions', ask: "What makes iron rust fastest?", do: "Steel wool in dry air, tap water, salt water and oil.", see: "Salt water wins. Rust needs water and oxygen; salt speeds it." },
-    { title: "Pendulum periods", moduleId: 'newtons-laws', ask: "Does mass change a swing?", do: "Same string, heavy washer then light washer. Time ten swings.", see: "Same time. Period depends on length, not mass." },
-    { title: "Reaction speed", moduleId: 'chemical-reactions', ask: "Does temperature speed a fizz?", do: "An antacid tablet in cold water, then hot. Time the fizz.", see: "Hot finishes first. Warm particles collide more." },
-    { title: "Crater making", moduleId: 'scale-of-the-universe', ask: "What shapes a crater?", do: "Marbles dropped from different heights into flour with cocoa on top.", see: "Higher drops make wider craters. Energy scales the hole." },
-    { title: "Spectrum with a CD", moduleId: 'light-and-optics', ask: "What is in white light?", do: "A CD in sunlight, tilted to throw a rainbow on the wall.", see: "All the colors. White light is a mix." },
-    { title: "Atom model", ask: "What is inside an atom?", do: "Build an atom with a marble for the nucleus in the middle of a gym; electrons are dots on the seats.", see: "Almost all of an atom is empty space.", moduleId: "inside-the-atom" },
-    { title: "Walk and graph", ask: "What does a walk look like on paper?", do: "Walk, stop, then run along a hallway while a partner times each ten meters. Graph distance against time.", see: "Flat while stopped, gentle while walking, steep while running.", moduleId: "speed-and-graphs" },
+    { title: "Rust race", tell: "Put steel wool in four jars: dry, in tap water, in salt water and in oil. Check them each day. The salt water one rusts fastest, the oil one hardly at all. Rust needs water and air, and salt hurries it along.", moduleId: 'chemical-reactions', ask: "What makes iron rust fastest?", do: "Steel wool in dry air, tap water, salt water and oil.", see: "Salt water wins. Rust needs water and oxygen; salt speeds it." },
+    { title: "Pendulum periods", tell: "Hang a heavy washer on a string and time ten swings. Swap in a light washer on the same string and time ten more. Same time. The period depends on the length of the string, not on what's swinging.", moduleId: 'newtons-laws', ask: "Does mass change a swing?", do: "Same string, heavy washer then light washer. Time ten swings.", see: "Same time. Period depends on length, not mass." },
+    { title: "Reaction speed", tell: "Drop an antacid tablet into cold water and time the fizz, then do it again in hot water. The hot one finishes first. Warm particles bump into each other more often, so the reaction hurries.", moduleId: 'chemical-reactions', ask: "Does temperature speed a fizz?", do: "An antacid tablet in cold water, then hot. Time the fizz.", see: "Hot finishes first. Warm particles collide more." },
+    { title: "Crater making", tell: "Fill a tray with flour and dust cocoa on top, then drop a marble from knee height, waist height and over your head. Measure each crater. Higher drops make wider craters, and the moon's craters tell the same story.", moduleId: 'scale-of-the-universe', ask: "What shapes a crater?", do: "Marbles dropped from different heights into flour with cocoa on top.", see: "Higher drops make wider craters. Energy scales the hole." },
+    { title: "Spectrum with a CD", tell: "Hold a CD in a sunbeam and tilt it until a rainbow lands on the wall. Every color that makes white light is there, spread out in order. White light was never white; it was all of them at once.", moduleId: 'light-and-optics', ask: "What is in white light?", do: "A CD in sunlight, tilted to throw a rainbow on the wall.", see: "All the colors. White light is a mix." },
+    { title: "Atom model", tell: "Put a marble in the middle of a gym floor for the nucleus, then stick a few dots on the seats for electrons. Stand back and look at all that empty space. That's an atom, and almost all of it is nothing.", ask: "What is inside an atom?", do: "Build an atom with a marble for the nucleus in the middle of a gym; electrons are dots on the seats.", see: "Almost all of an atom is empty space.", moduleId: "inside-the-atom" },
+    { title: "Walk and graph", tell: "Have a friend time you at every ten meters along a hallway while you walk, then stop, then run. Graph the distance against the time. The line is gentle while you walk, flat while you stand still and steep while you run, and it's your walk drawn as a picture.", ask: "What does a walk look like on paper?", do: "Walk, stop, then run along a hallway while a partner times each ten meters. Graph distance against time.", see: "Flat while stopped, gentle while walking, steep while running.", moduleId: "speed-and-graphs" },
   ],
   9: [
     { title: 'Extract DNA from a strawberry', ask: 'Can you see DNA?', do: 'Mash with salt, water and dish soap; strain; cold rubbing alcohol on top.', see: 'A white cloud of DNA rises.' },
@@ -19710,10 +20193,9 @@ export function weeklyNote(shownName, events, now) {
   const listOf = (xs, cap) => xs.slice(0, cap).join(', ') + (xs.length > cap ? ` and ${xs.length - cap} more` : '');
   const parts = [];
   parts.push(attempts.length ? ['This week ', shownName, ' answered ', String(asked), ' questions and got ', String(right), ' right, working on ', listOf(touched, 3), '.'].join('') : ['This week ', shownName, ' did not practice on this device.'].join(''));
-  if (masteredNow.length) parts.push([shownName, ' mastered ', listOf(masteredNow, 4), '.'].join(''));
+  if (masteredNow.length) parts.push([shownName, ' mastered:', ...masteredNow.map((t) => `\n• **${t}**`)].join(''));
   if (colored) parts.push([shownName, ' colored ', colored === 1 ? 'a picture' : `${colored} pictures`, '.'].join(''));
-  const storyLines = met.map((m) => [shownName, ' read \u201c', m.title, '\u201d', m.about ? [', a story about ', m.about].join('') : '', '.', m.goal ? [' Through this story, the goal was to learn about ', m.goal.charAt(0).toLowerCase() + m.goal.slice(1), '.'].join('') : ''].join(''));
-  for (const line of storyLines) parts.push(line);
+  if (met.length) parts.push([shownName, ' read:', ...met.map((m) => ['\n• **', m.title, '**', m.about ? [', a story about ', m.about].join('') : '', '.', m.goal ? [' Through this story, the goal was to learn about ', m.goal.charAt(0).toLowerCase() + m.goal.slice(1), '.'].join('') : ''].join(''))].join(''));
   parts.push(next ? 'Next up: ' + next.title + '.' : 'Every assigned module is mastered.');
   return parts.join('\n\n');
 }

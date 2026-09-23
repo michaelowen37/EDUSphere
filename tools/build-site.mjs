@@ -39,6 +39,7 @@ const coloringList = existsSync('art/coloring') ? readdirSync('art/coloring').fi
 
 const wrap = (name, code) => `__def(${JSON.stringify(name)}, function(module, exports, require){${code}\n});`;
 const html = `<!doctype html>
+<!-- EduSphere. Copyright (c) 2026. Source-available; not for reuse. See LICENSE.md. -->
 <html lang="en">
 <head>
 <meta charset="utf-8">

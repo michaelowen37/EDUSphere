@@ -924,8 +924,8 @@ const KID_ANIMATION = `
   @media (prefers-reduced-motion: reduce) { .edu-tour-target { animation: none; box-shadow: 0 0 0 5px #E6B84B, 0 0 18px 6px rgba(230, 184, 75, 0.55); } .edu-tour-target::after { animation: none; } }
   .edu-recovery-code { font-size: 22px; }
   @media (max-width: 480px) { .edu-recovery-code { font-size: 17px; letter-spacing: 0.5px; } }
-  .edu-student-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 2px 16px; }
-  @media (min-width: 700px) { .edu-student-actions { justify-content: flex-start; } }
+  /* The three lines of links center at every width (2026-09-23, Mikey), under the name on a phone and across the card on a laptop. */
+  .edu-student-left .edu-student-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 2px 16px; width: 100%; }
   .edu-student-actions button { margin-right: 0 !important; font-size: 15px !important; white-space: nowrap; }
   .edu-student-open { display: flex; justify-content: center; margin-top: 12px; }
   @media (min-width: 1000px) {

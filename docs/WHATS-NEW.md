@@ -4,7 +4,7 @@ The newest block is what educators see once, in a pop-up on the classroom page, 
 
 ## 2026-09-24
 
-- The stories got a big upgrade. Every lesson from 3rd grade up through 11th grade math and science now ends with a real short story: a kid with a problem, the idea from the lesson that gets them out of it, and a line to remember it by. We're working through the rest of the older grades next.
+- The stories got a big upgrade. Every math, science, reading, writing and history lesson from 3rd grade all the way through college now ends with a real short story: a kid with a problem, the idea from the lesson that gets them out of it, and a line to remember it by. The art, music, technology and health lessons are next.
 - The little ones got the same treatment in miniature. Every pre-K through 2nd grade story is now a tiny story with short sentences and simple words, so it sounds right when you read it out loud.
 - Under every early-years story you'll see a snail and a hare. Tap the snail and the story is read slowly. Tap the hare for normal speed. Pre-K starts on the snail, and the device remembers whichever one you picked last.
 - There's a new life skill for the youngest kids called "Finding an aww moment wherever you go." The idea is simple: on every outing, look for one small good thing (a cool bug, a stranger being kind, a pretty plant) and say it out loud. Kids who learn to notice the small stuff learn to enjoy the trip, not just the destination.

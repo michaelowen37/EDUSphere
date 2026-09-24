@@ -33,7 +33,7 @@ window.__eduArt = [];
 window.__eduColoringArt = [];
 window.__eduMapArt = [];
 window.__eduAudio = [];
-window.__eduNews = {"stamp":"2026-09-24","date":"2026-09-24","items":["The stories got a big upgrade. Every lesson from 3rd grade up through 11th grade math and science now ends with a real short story: a kid with a problem, the idea from the lesson that gets them out of it, and a line to remember it by. We're working through the rest of the older grades next.","The little ones got the same treatment in miniature. Every pre-K through 2nd grade story is now a tiny story with short sentences and simple words, so it sounds right when you read it out loud.","Under every early-years story you'll see a snail and a hare. Tap the snail and the story is read slowly. Tap the hare for normal speed. Pre-K starts on the snail, and the device remembers whichever one you picked last.","There's a new life skill for the youngest kids called \"Finding an aww moment wherever you go.\" The idea is simple: on every outing, look for one small good thing (a cool bug, a stranger being kind, a pretty plant) and say it out loud. Kids who learn to notice the small stuff learn to enjoy the trip, not just the destination.","A few smaller fixes: the frog in Frog Jumps shows you exactly where it will land before you let go, closing a game or a story takes you right back to where you were on the page, and the Wonder Questions link is a third line under each student's name so it's easy to find."]};
+window.__eduNews = {"stamp":"2026-09-24","date":"2026-09-24","items":["The stories got a big upgrade. Every math, science, reading, writing and history lesson from 3rd grade all the way through college now ends with a real short story: a kid with a problem, the idea from the lesson that gets them out of it, and a line to remember it by. The art, music, technology and health lessons are next.","The little ones got the same treatment in miniature. Every pre-K through 2nd grade story is now a tiny story with short sentences and simple words, so it sounds right when you read it out loud.","Under every early-years story you'll see a snail and a hare. Tap the snail and the story is read slowly. Tap the hare for normal speed. Pre-K starts on the snail, and the device remembers whichever one you picked last.","There's a new life skill for the youngest kids called \"Finding an aww moment wherever you go.\" The idea is simple: on every outing, look for one small good thing (a cool bug, a stranger being kind, a pretty plant) and say it out loud. Kids who learn to notice the small stuff learn to enjoy the trip, not just the destination.","A few smaller fixes: the frog in Frog Jumps shows you exactly where it will land before you let go, closing a game or a story takes you right back to where you were on the page, and the Wonder Questions link is a third line under each student's name so it's easy to find."]};
 // Installable app: the worker keeps a copy of the page for offline use and asks the network first, so a fresh build always wins.
 if ('serviceWorker' in navigator && /^https?:/.test(location.protocol)) { navigator.serviceWorker.register('sw.js').catch(function () {}); }
 var process = { env: { NODE_ENV: 'production' } };
@@ -45884,47 +45884,51 @@ STORIES['end-behavior'] = {
     ],
 };
 STORIES['two-sources'] = {
-    about: 'two witnesses to one event',
-    more: [{ serial: 'S1056', after: 0, alt: 'The two headlines' }, { serial: 'S1057', after: 2, alt: 'A note listing what each left out' }],
+    about: 'two witnesses to one event, and the reader who stopped asking which was lying',
+    more: [{ serial: 'S1056', after: 1, alt: 'Two columns: where they agree, where they differ, what each adds' }, { serial: 'S1057', after: 3, alt: 'One event seen from two windows of the same house' }],
     title: 'Two witnesses', art: 'S1055', cast: [],
-    alt: 'Two newspaper front pages side by side on a table',
+    alt: 'A girl at a table with two accounts of the same event side by side, a line drawn where they overlap',
     words: [
-        'Both agreed the bridge closed on March 3.',
-        'One said shops lost trade. The other said the money was cut years ago.',
-        'Hold both sources in mind. Where they differ is where the thinking starts.',
+        'Maya read two accounts of the same factory fire, one by a worker and one by the owner, and they disagreed about how many exits were open. She decided one of them was lying and spent an hour trying to work out which.',
+        'Her teacher asked her to hold both in mind instead of picking. Where did they agree? The date, the floor, the smoke. Where did they differ? The exits. What did each add that the other could not? The worker knew the stairwell; the owner knew the building plans.',
+        'The difference was not a lie. The worker had run for the door she knew, found it locked, and remembered one exit. The owner counted the doors on the plans and remembered four. Two views of one fire, from the stairwell and from the office, and the truth needed both.',
+        'Hold both sources in mind. Ask where they agree, where they differ, and what each adds. A difference is often two views of one thing, and the job is to stand where each witness stood.',
     ],
 };
 STORIES['assumptions'] = {
-    about: 'the step the writer skipped',
-    more: [{ serial: 'S1059', after: 0, alt: 'The missing step drawn in dashed lines' }, { serial: 'S1060', after: 2, alt: 'The assumption written on the step' }],
+    about: 'the step the writer skipped, found by asking what would have to be true',
+    more: [{ serial: 'S1059', after: 1, alt: 'The claim at the top, the reason below, a gap between' }, { serial: 'S1060', after: 3, alt: 'The missing stair drawn in dotted lines, labeled' }],
     title: 'The skipped step', art: 'S1058', cast: [],
-    alt: 'A teenager drawing a staircase with one step missing',
+    alt: 'A boy at a desk with an argument written as stairs, one stair missing between two others',
     words: [
-        'The argument jumped from more homework to better grades.',
-        'It assumed the homework would be done.',
-        'An assumption is the step the writer skipped. Ask what would have to be true.',
+        'The letter argued that the town should close the skate park because there had been two injuries there this year. Marcus felt something was wrong with the argument and could not find the bad sentence. Every sentence was true. Two injuries, one park.',
+        'His teacher told him to stop hunting for a false sentence and hunt for a missing one. What would have to be true for two injuries to prove the park should close?',
+        'It would have to be true that two injuries in a year is a lot. Marcus looked it up: the football field had had nine. That was the assumption, the step the writer skipped, and once it was written down it collapsed. The letter was not lying. It was standing on a stair that was not there.',
+        'An assumption is the step the writer skipped. Ask what would have to be true for the reason to support the claim, write that step down, and see whether it holds. The weakest part of an argument is usually the sentence nobody wrote.',
     ],
 };
 STORIES['precise-words'] = {
-    about: 'walk, stroll, march, trudge',
-    more: [{ serial: 'S1062', after: 0, alt: 'The trudging figure' }, { serial: 'S1063', after: 2, alt: 'The marching figure' }],
-    title: 'Four walks', art: 'S1061', cast: [],
-    alt: 'Four figures walking differently along a road, a teenager choosing a word',
+    about: 'four ways to cross a room, and the one word that said which',
+    more: [{ serial: 'S1062', after: 1, alt: 'Four figures: a stroll, a march, a trudge, a plain walk' }, { serial: 'S1063', after: 3, alt: 'One sentence with the word swapped four times, four different men' }],
+    title: 'Walk, stroll, march, trudge', art: 'S1061', cast: [],
+    alt: 'A girl watching four people cross a hallway in four different ways',
     words: [
-        'Walk. Stroll. March. Trudge. All walking, none the same.',
-        'The tired one is trudging.',
-        'Near-synonyms name slightly different things. The precise word names exactly this walk.',
+        'Rosa wrote that her character walked to the principal\'s office. Her teacher asked how. Rosa said he walked. It was in the sentence. Her teacher said the sentence told her he had gone from one place to another and nothing else.',
+        'Was he strolling, in no hurry, sure it was nothing? Marching, angry, ready to argue? Trudging, dreading every step? Each was a walk. Each was a different boy and a different story.',
+        'Near-synonyms are not the same word wearing different clothes. Each one names a slightly different thing. Rosa chose trudged, and the sentence now carried his dread all the way down the hall without a word about how he felt. The precise word did the feeling\'s job.',
+        'Near-synonyms name slightly different things. The precise word names exactly what happened, and it can carry a paragraph of feeling in one verb. Walk is a category; trudge is a boy.',
     ],
 };
 STORIES['author-choices'] = {
-    about: 'why the story starts here',
-    more: [{ serial: 'S1065', after: 0, alt: 'The funeral scene' }, { serial: 'S1066', after: 2, alt: 'The wedding scene' }],
-    title: 'Why here', art: 'S1064', cast: [],
-    alt: 'A teenager holding a book open at the first page, a question mark drawn',
+    about: 'a novel that began after the war instead of before it, and what that choice decided',
+    more: [{ serial: 'S1065', after: 1, alt: 'The same story sketched with an earlier starting point' }, { serial: 'S1066', after: 3, alt: 'The last chapter and the one before it swapped, arrows showing the change' }],
+    title: 'Why it starts here', art: 'S1064', cast: [],
+    alt: 'A boy holding a novel open at the first page, a faint timeline behind him with the story starting late along it',
     words: [
-        'The story could have started anywhere. It started at the funeral.',
-        'It ended at the wedding.',
-        'Where a story begins, where it ends, and the order in between are choices. Ask why.',
+        'Kai noticed that the novel began the day the soldier came home and never showed the war at all. He thought the author had skipped the interesting part. His teacher asked what the book would have been if it had started at the front.',
+        'A war story. Battles, fear, the friends who did not come back. Instead it was a story about a kitchen, a wife who did not know what to say, and a man who flinched at the kettle. Starting late made the war a shadow instead of a subject.',
+        'Every choice worked that way. Ending at the first good night\'s sleep instead of a year later said the story was about the first step, not the recovery. Putting the letter from the dead friend in the middle instead of at the start had its own effect. The reader learned the reason for the flinching only after watching it for a hundred pages. Where a story begins, where it ends, and the order of its parts are the author deciding what it means.',
+        'Where a story begins, where it ends, and the order of its parts all shape its meaning. Ask what it would mean if the choice had gone the other way, and the author\'s reasons come into view.',
     ],
 };
 STORIES['rock-cycle'] = {
@@ -46024,301 +46028,328 @@ STORIES['the-big-bang'] = {
     ],
 };
 STORIES['research-paper'] = {
-    about: 'a question, the sources, your answer',
-    more: [{ serial: 'S1092', after: 0, alt: 'The books open with notes' }, { serial: 'S1093', after: 2, alt: 'The answer written above the sources' }],
-    title: 'The question first', art: 'S1091', cast: [],
-    alt: 'A teenager with a question written on a card, books stacked beneath it',
+    about: 'a question, what the sources say, and the answer that was the writer\'s own',
+    more: [{ serial: 'S1092', after: 1, alt: 'Each source with a job written beside it: background, data, counterpoint' }, { serial: 'S1093', after: 3, alt: 'The final answer paragraph, built on the sources but in her own voice' }],
+    title: 'The question, the sources, the answer', art: 'S1091', cast: [],
+    alt: 'A girl at a library table with a question written large on a card and a fan of sources below it',
     words: [
-        'Start with a question.',
-        'Report what the sources say.',
-        'Build your own answer on top, saying which sources hold which part.',
+        'Ana had twelve sources for her paper on the town\'s water and no idea what the paper was about. She had read everything. She had highlighted everything. She had a pile, and a pile is not a paper.',
+        'Her teacher asked what her question was. Ana did not have one; she had a topic. Water. A topic is a pile. A question is a spine: is the town\'s tap water safe to drink, and by whose standard?',
+        'With a question, every source suddenly had a job or did not. Three gave background. Four gave the measurements. Two disagreed about the standard, and she judged between them. Three had no job and went back on the shelf. The last section was her own answer, built on the sources but hers: yes, by the federal standard, and no, by the stricter one, and here is what the gap means.',
+        'A research paper is a question, what the sources say, and your own answer built on them. Every source is cited and every source does a job. A pile becomes a paper the moment it has a question.',
     ],
 };
 STORIES['personal-essay'] = {
-    about: 'one small true moment',
-    more: [{ serial: 'S1095', after: 0, alt: 'The counter, the customer, the moment' }, { serial: 'S1096', after: 2, alt: 'The single photo' }],
-    title: 'One true moment', art: 'S1094', cast: [],
-    alt: 'A teenager writing about a single afternoon, one photo beside the page',
+    about: 'one small true moment that showed who a boy was, better than a list of everything he had done',
+    more: [{ serial: 'S1095', after: 1, alt: 'A trophy shelf, faded, with one small photo in focus' }, { serial: 'S1096', after: 3, alt: 'A boy and his grandfather at a workbench, fixing a radio' }],
+    title: 'One small moment', art: 'S1094', cast: [],
+    alt: 'A boy at a desk with a long list of achievements crossed out and one short paragraph beside it',
     words: [
-        'Not the whole year. One afternoon at the counter.',
-        'Told well, it showed who I was.',
-        'One story, told well, that shows who you are. A small true moment beats a big vague one.',
+        'Sam\'s college essay listed everything: captain, honor roll, volunteer hours, the robotics award. It was all true, and his English teacher said she had learned nothing about him. She could have read the same list on a form.',
+        'She asked him what he did on Saturday mornings. He fixed old radios with his grandfather, and had for six years, and had never once put that on a list because it was not an achievement.',
+        'He wrote about one Saturday: the radio that would not come back, his grandfather\'s hands slowing down, the moment Sam realized he was now the one holding the soldering iron. Four hundred words, no awards. His teacher said now she knew who he was. The list had been what he had done; the radio was who he was.',
+        'A personal essay is one story, told well, that shows who you are. A small moment beats a list of achievements, because the list says what you did and the moment shows how you are.',
     ],
 };
 STORIES['letter-to-an-editor'] = {
-    about: 'one point, one ask, one page',
-    more: [{ serial: 'S1098', after: 0, alt: 'The crossing at dusk' }, { serial: 'S1099', after: 2, alt: 'The letter printed in the paper' }],
-    title: 'One page', art: 'S1097', cast: [],
-    alt: 'A teenager sealing a short letter, a newspaper on the table',
+    about: 'one point, one ask, one page, for a stranger with a coffee going cold',
+    more: [{ serial: 'S1098', after: 1, alt: 'A three-page draft with six points, marked down to one' }, { serial: 'S1099', after: 3, alt: 'The final page with its evidence and one bold ask at the end' }],
+    title: 'One point, one ask', art: 'S1097', cast: [],
+    alt: 'A girl folding a single typed page at a kitchen table, an envelope addressed to a newspaper',
     words: [
-        'One point: the crossing needs a light.',
-        'Backed by evidence: twelve near-misses.',
-        'One specific ask, on one page. A busy stranger is reading.',
+        'Lena\'s letter to the editor made six points about the new bus schedule and ran three pages. She was proud of its completeness. Her teacher said the editor would print none of it, and if he did, nobody would finish it.',
+        'A letter to the editor is read by a busy stranger with a coffee going cold. That stranger will give it one page and will remember one thing. Six points is zero points.',
+        'Lena picked the strongest: the last bus now leaves before the night shift ends. She backed it with one piece of evidence, the shift times at the hospital and the timetable side by side. She ended with one specific ask: move the last departure to 11:40. One page. The paper printed it, and the transit board read it aloud at its next meeting.',
+        'One point, backed by evidence, and one specific ask, on a page a busy stranger will read. A letter that makes one point can win it; a letter that makes six is a letter about the writer.',
     ],
 };
 STORIES['principles-of-the-constitution'] = {
-    about: 'a handful of ideas under everything',
-    more: [{ serial: 'S1101', after: 0, alt: 'We the People carved in stone' }, { serial: 'S1102', after: 2, alt: 'Three columns drawn holding a roof' }],
-    title: 'The handful', art: 'S1100', cast: [],
-    alt: 'A teenager reading the preamble on a wall, a few words underlined',
+    about: 'a handful of ideas under everything, found by asking why each rule was there',
+    more: [{ serial: 'S1101', after: 1, alt: 'The words We the People with an arrow pointing up at the whole document' }, { serial: 'S1102', after: 3, alt: 'A short list: popular sovereignty, limited government, separation of powers, checks and balances, federalism, individual rights' }],
+    title: 'The ideas underneath', art: 'S1100', cast: [],
+    alt: 'A boy in a museum looking at the Constitution in its case, a few large words glowing behind the glass',
     words: [
-        'The people are the boss.',
-        'Power is split so no one holds it all.',
-        'The government may do only what the paper allows. Written in 1787, it rests on a handful of ideas.',
+        'Theo tried to memorize the Constitution the way he had memorized state capitals and gave up around Article Two. There were too many rules and they did not seem to belong to each other.',
+        'His teacher asked him to stop reading the rules and ask, of each one, why it was there. Why does Congress have two houses? Why can the President veto? Why does the whole thing start with We the People?',
+        'The answers kept coming back to a handful of ideas. The people are the source of power. The government is limited to what the document allows. Power is split three ways and each part can check the others. Power is shared with the states. And some rights belong to individuals and cannot be voted away. Six ideas, written in 1787. Every rule was one of them wearing a specific coat.',
+        'The Constitution rests on a few principles. The people are the source of power, the government is limited, power is separated and checked, shared with the states, and some rights are the person\'s own. Learn the six ideas and the rules explain themselves.',
     ],
 };
 STORIES['three-branches'] = {
-    about: 'three teams, three jobs',
-    more: [{ serial: 'S1104', after: 0, alt: 'A veto stamp' }, { serial: 'S1105', after: 2, alt: 'A gavel' }],
+    about: 'three teams with three jobs, and what happens when one of them reaches too far',
+    more: [{ serial: 'S1104', after: 1, alt: 'A veto stamped on a bill, then a two-thirds vote overriding it' }, { serial: 'S1105', after: 3, alt: 'A court striking a law, and a Senate confirming a judge' }],
     title: 'Three teams', art: 'S1103', cast: [],
-    alt: 'A teenager sketching three buildings: the Capitol, the White House, the Supreme Court',
+    alt: 'A girl at a whiteboard with three circles labeled by their jobs, arrows running between them',
     words: [
-        'Congress writes the rules.',
-        'The President carries them out. The courts referee.',
-        'Each can block the others, which is the point.',
+        'Rosa thought the President ran the country. Her teacher asked her to try to pass a law as President. Rosa could not; only Congress could. Then, as Congress, to enforce one. She could not; that was the President\'s. Then to decide what one meant. The courts.',
+        'Three teams, three jobs. Congress makes the laws, the President carries them out, and the courts decide what they mean. No team could do another\'s job, and that was the first half of the design.',
+        'The second half was reach. The President can veto a law; Congress can override with two thirds. The courts can strike a law down; the President appoints the judges and the Senate confirms them. Congress can impeach either. Each team can stop the others from going too far, which means nobody gets to run the country alone.',
+        'Congress makes the laws, the President carries them out, and the courts decide what they mean. Each branch can check the others, so no one branch can take over. The design is three teams that need each other.',
     ],
 };
 STORIES['federalism'] = {
-    about: 'a school and a school district',
-    more: [{ serial: 'S1107', after: 0, alt: 'A dollar bill and a schoolhouse' }, { serial: 'S1108', after: 2, alt: 'The shared band shaded' }],
-    title: 'Two governments', art: 'S1106', cast: [],
-    alt: 'A teenager with a chart: national on top, state below, shared in the middle',
+    about: 'a school and a school district, and which one decides what',
+    more: [{ serial: 'S1107', after: 1, alt: 'A list of powers only the national government holds: coining money, the army, treaties' }, { serial: 'S1108', after: 3, alt: 'A list held by the states: schools, police, licenses' }],
+    title: 'The school and the district', art: 'S1106', cast: [],
+    alt: 'A boy in a school office looking at two signs: one from the district office and one from the principal',
     words: [
-        'Only the national government prints money or declares war.',
-        'Only the states run schools and elections. Both can tax.',
-        'Power is shared between the national government and the states, with a band in the middle they share.',
+        'Owen\'s school could set its own dress code but could not change the school year, and he wanted to know who decided which decisions were whose. His principal said the district set some things, the school set others, and a few were shared.',
+        'The country works the same way. The national government holds the enumerated powers, the ones the Constitution names: coining money, raising an army, making treaties, running the mail. Everything not named is reserved to the states: schools, police, marriage, driver\'s licenses.',
+        'Some powers overlap. Both can tax; both can build roads; both can make laws, and when they conflict, the national law wins. That is federalism: power shared between the national government and the states, with a list for one, the rest for the other, and a rule for the overlap.',
+        'Power is shared between the national government and the states. The national government holds the enumerated powers, the states hold the reserved ones, and some are concurrent. A school and its district are the same arrangement in miniature.',
     ],
 };
 STORIES['bill-of-rights'] = {
-    about: 'a fence around the government',
-    more: [{ serial: 'S1110', after: 0, alt: 'Four pictures for the four freedoms' }, { serial: 'S1111', after: 2, alt: 'A courtroom with a jury' }],
+    about: 'a fence around the government, and which side of it a person stands on',
+    more: [{ serial: 'S1110', after: 1, alt: 'The First Amendment as five gates: speech, press, religion, assembly, petition' }, { serial: 'S1111', after: 3, alt: 'A police officer at a door with a warrant, the Fourth Amendment' }],
     title: 'The fence', art: 'S1109', cast: [],
-    alt: 'A teenager reading ten short amendments on a poster, a fence drawn around a small building',
+    alt: 'A girl on courthouse steps, a low fence drawn around the building with her standing outside it',
     words: [
-        'The first amendment alone protects four freedoms: speech, religion, press and assembly.',
-        'The rest guard your home, your trial and your vote.',
-        'The first ten amendments, ratified in 1791, are a fence around the government.',
+        'Maya thought the Bill of Rights was a list of things people were allowed to do. Her teacher said to read the first words of the First Amendment. Congress shall make no law. It was a list of things the government could not do.',
+        'That flipped it. A fence around the government, not a permission slip for the citizen. Ratified in 1791, ten amendments, each one a rail.',
+        'The First protects religion, speech, press, assembly and petition. The Fourth stops searches without a warrant. The Fifth and Sixth guarantee due process and a fair, speedy, public trial with a lawyer. The Eighth forbids cruel punishment. Maya stood on the outside of the fence, where the rules did not reach her, and that was the point of building it.',
+        'The first ten amendments, ratified in 1791, list what the government may never do to a person. The First Amendment protects religion, speech, press, assembly and petition; the Fourth through Eighth protect the accused. The fence is around the government, and the person is outside it.',
     ],
 };
 STORIES['how-a-bill-becomes-law'] = {
-    about: 'an obstacle course',
-    more: [{ serial: 'S1113', after: 0, alt: 'The bill at the committee table' }, { serial: 'S1114', after: 2, alt: 'A veto and the two-thirds override drawn' }],
+    about: 'an obstacle course with seven stations, and the bill that had to clear every one',
+    more: [{ serial: 'S1113', after: 1, alt: 'A committee table with the bill under study, most bills stopping here' }, { serial: 'S1114', after: 3, alt: 'A conference table agreeing one text, then a pen and a veto stamp' }],
     title: 'The obstacle course', art: 'S1112', cast: [],
-    alt: 'A teenager tracing a bill\'s path on a chart with hurdles',
+    alt: 'A boy on capitol steps holding a rolled bill, a course of seven hurdles drawn behind him',
     words: [
-        'A committee. A vote in the House. A vote in the Senate.',
-        'The President\'s desk. A veto sends it back.',
-        'Two thirds of Congress can vote it through anyway. Introduced, studied, passed, signed.',
+        'Kai had an idea for a law and assumed a bill was a form you filled in. His civics teacher drew an obstacle course on the board with seven stations and said most bills fall at the second one.',
+        'Introduced by a member. Studied in committee, where most die quietly. Passed by one house. Passed by the other, usually in a slightly different form. Agreed as one text by a conference of both. Sent to the President, who signs or vetoes. And a veto overridden only by two thirds of each house.',
+        'Seven stations, and the course was slow on purpose. A law that would bind everyone had to survive everyone\'s objections first. Kai\'s idea got to the second station in the class simulation and stopped there, which his teacher said was the most realistic thing that happened all week.',
+        'A bill is introduced, studied in committee, passed by one house and then the other, agreed as one text, and signed or vetoed, with a veto overridden by two thirds. The course is long by design, and the committee is where most bills end.',
     ],
 };
 STORIES['elections-parties-and-voting'] = {
-    about: 'two rounds, 270 to win',
-    more: [{ serial: 'S1116', after: 0, alt: 'A primary ballot' }, { serial: 'S1117', after: 2, alt: 'The map colored in with the tally' }],
-    title: 'Two rounds', art: 'S1115', cast: [],
-    alt: 'A teenager at a table with a map of states and a tally of 270',
+    about: 'two rounds, 270 to win, and the map that decides the second',
+    more: [{ serial: 'S1116', after: 1, alt: 'A primary ballot with several names from one party' }, { serial: 'S1117', after: 3, alt: 'The Electoral College map with 270 marked as the line' }],
+    title: 'Two rounds, 270', art: 'S1115', cast: [],
+    alt: 'A girl watching election returns on a living room television, a map of states filling in with two colors',
     words: [
-        'In the primary each party picks its runner.',
-        'In the general election the runners race.',
-        'For president, states cast electoral votes, and 270 of 538 wins.',
+        'Ana watched the election returns and could not understand why the anchor kept saying 270 when the vote counts were in the millions. Her father said she was watching the second round of a two-round contest.',
+        'The first round was the primaries, months earlier, when each party\'s voters chose that party\'s candidate from several. The second was the general election, when everyone chose between the winners.',
+        'And for President the second round is counted by state. Each state has electors, its House seats plus two, and in most states whoever wins the state takes all of them. 270 is a majority of the 538. The millions were real votes, but the map was the scoreboard, and the map had to reach 270.',
+        'Primaries choose each party\'s candidate, and the general election chooses the winner. A president is chosen by the Electoral College, 270 of 538, mostly state by state, which is why the night is a map.',
     ],
 };
 STORIES['scarcity-and-opportunity-cost'] = {
-    about: 'sixty dollars and two wants',
-    more: [{ serial: 'S1119', after: 0, alt: 'The game chosen' }, { serial: 'S1120', after: 2, alt: 'The shoes left on the shelf' }],
-    title: 'Sixty dollars', art: 'S1118', cast: [],
-    alt: 'A teenager with sixty dollars, a game and a pair of shoes on a counter',
+    about: 'sixty dollars, two wants, and the cost that was not on the price tag',
+    more: [{ serial: 'S1119', after: 1, alt: 'The shoes bought, the concert poster fading behind' }, { serial: 'S1120', after: 3, alt: 'A price tag that reads: the concert' }],
+    title: 'Sixty dollars, two wants', art: 'S1118', cast: [],
+    alt: 'A boy at a shop counter with sixty dollars, a pair of shoes on one side and concert tickets on the other',
     words: [
-        'The game or the shoes. Not both.',
-        'Whichever you buy, the other is what it cost you.',
-        'Scarcity means there is never enough of everything; opportunity cost is the next best thing given up.',
+        'Marcus had sixty dollars and two things he wanted: the shoes and the concert. Each cost sixty. He bought the shoes and told his sister they were a good deal. She asked what they had cost him. Sixty dollars, he said. She said no.',
+        'Scarcity means there is never enough of everything. Sixty dollars could not be both. So every choice gives something up, and the thing given up is a cost that does not appear on any tag.',
+        'The opportunity cost of the shoes was the concert, the best thing he did not choose. Not everything he could have bought, just the next best. When his sister asked whether the shoes were worth a concert, he found the question harder than when she had asked whether they were worth sixty dollars.',
+        'Scarcity means there is never enough of everything, so every choice gives something up. The opportunity cost of a choice is the next best thing you did not choose. Sixty dollars was the price; the concert was the cost.',
     ],
 };
 STORIES['competition-and-markets'] = {
-    about: 'two lemonade stands on one street',
-    more: [{ serial: 'S1122', after: 0, alt: 'The price sign being changed' }, { serial: 'S1123', after: 2, alt: 'A line at the stand with ice' }],
-    title: 'Two stands', art: 'S1121', cast: [],
-    alt: 'Two lemonade stands across a street from each other, a customer between',
+    about: 'two lemonade stands on one street, and what the second one did to the first',
+    more: [{ serial: 'S1122', after: 1, alt: 'One stand alone, a high price on its sign' }, { serial: 'S1123', after: 3, alt: 'Two stands, prices lower and cups bigger on both' }],
+    title: 'Two stands on one street', art: 'S1121', cast: [],
+    alt: 'A girl at a lemonade stand looking down the block at a rival stand with a bigger sign',
     words: [
-        'Two stands. One dropped its price. The other added ice.',
-        'The customer chose. Both got better.',
-        'Free enterprise means private property, free choice and competition. Profit is what a seller keeps after costs.',
+        'Rosa ran the only lemonade stand on her street and charged two dollars a cup. Then a boy opened a stand at the other end for one dollar. Rosa was furious. Her father said the street had just gotten a market.',
+        'With one stand, Rosa set the price and the customers took it. With two, the customers had a choice, and the choice was a vote. Rosa dropped to a dollar fifty and added ice. The boy added lemons. Both stands got better, and the price stayed down.',
+        'That is what competition does inside free enterprise: private property, free choice, the profit motive that made both of them try, and limited government that let them. Competition keeps prices down and quality up because every customer can walk to the other end of the block.',
+        'Free enterprise means private property, free choice, the profit motive, competition and limited government. Competition keeps prices honest and quality rising, because the customer can always walk. Two stands are a market; one is a toll.',
     ],
 };
 STORIES['money-banking-and-the-fed'] = {
-    about: 'a promise everyone accepts',
-    more: [{ serial: 'S1125', after: 0, alt: 'A loan being signed' }, { serial: 'S1126', after: 2, alt: 'The thermostat turned down' }],
-    title: 'The promise', art: 'S1124', cast: [],
-    alt: 'A teenager depositing cash at a bank, a thermostat drawn on the wall',
+    about: 'a promise everyone accepts, a bank that lends it out, and the Fed that sets its price',
+    more: [{ serial: 'S1125', after: 1, alt: 'A dollar with three labels: exchange, account, store' }, { serial: 'S1126', after: 3, alt: 'A deposit lent out at interest, and a dial marked by the Fed' }],
+    title: 'A promise everyone accepts', art: 'S1124', cast: [],
+    alt: 'A boy at a bank counter handing over a bill, a faint drawing of a barter trade fading behind him',
     words: [
-        'Money is a promise everyone accepts.',
-        'Banks lend the promises out and pay you for the loan.',
-        'The Fed is the referee: it raises rates to cool prices and lowers them to warm a slow economy.',
+        'Owen asked why a piece of paper was worth anything. His grandfather said it was a promise everyone accepted, and that a promise everyone accepts is the most useful invention in the world.',
+        'Money does three jobs. It is a medium of exchange, so a farmer does not need a barber who wants eggs. It is a unit of account, so a car and a pencil are measured on one scale. It is a store of value, so today\'s work can buy next year\'s food.',
+        'Banks take the promises in as deposits and lend most of them out, charging interest, the price of borrowing. And the Federal Reserve sets the basic level of that price: lower it and borrowing gets cheap and the economy speeds up; raise it and things cool. A dial on the price of a promise.',
+        'Money is a medium of exchange, a unit of account and a store of value. Banks lend deposits and charge interest, the price of borrowing, and the Fed moves that price to speed up or cool the economy. The paper is a promise, and the Fed sets its rent.',
     ],
 };
 STORIES['gdp-inflation-and-unemployment'] = {
-    about: 'the country\'s paycheck',
-    more: [{ serial: 'S1128', after: 0, alt: 'A grocery receipt from two years apart' }, { serial: 'S1129', after: 2, alt: 'A help-wanted sign' }],
-    title: 'The paycheck', art: 'S1127', cast: [],
-    alt: 'A teenager reading three numbers on a news screen',
+    about: 'the country\'s paycheck, the price of a sandwich, and the people who wanted work',
+    more: [{ serial: 'S1128', after: 1, alt: 'A paycheck labeled GDP with this year and last year side by side' }, { serial: 'S1129', after: 3, alt: 'A sandwich menu with the price rising, and a line of people at a job board' }],
+    title: 'The country\'s paycheck', art: 'S1127', cast: [],
+    alt: 'A girl in a diner with a newspaper showing three numbers, a menu with an old price crossed out beside her',
     words: [
-        'GDP is the size of the country\'s paycheck.',
-        'Inflation is prices creeping up so the paycheck buys less.',
-        'Unemployment is the share of people who want work and cannot find it.',
+        'The news gave three numbers in one breath, GDP up two percent, inflation at four, unemployment at five, and Ana\'s uncle said the country was doing fine. Ana did not know whether any of the three was good.',
+        'GDP is the country\'s paycheck: the value of everything it produces in a year, and its growth rate is this year\'s change divided by last year\'s total. Two percent meant the paycheck grew a little.',
+        'Inflation is the sandwich. Four percent meant the same sandwich cost four percent more than last year, so a paycheck that grew two percent bought less. And unemployment counts people who want work and cannot find it, as a share of those working or looking. Five in a hundred wanted a job and had none. Three numbers, three stories, and fine depended on which one you were living in.',
+        'GDP is the value of everything a country produces in a year, and its growth rate is the change divided by last year. Inflation is the rise in prices, and unemployment is the share of the labor force looking for work. The paycheck, the sandwich and the line at the job board.',
     ],
 };
 // College, and the last kindergarten one.
 STORIES['mean-median-mode'] = {
-    about: 'six allowances and one rich friend',
-    more: [{ serial: 'S1131', after: 0, alt: 'The coins shared out evenly' }, { serial: 'S1132', after: 2, alt: 'The nine-dollar pile beside the three-dollar piles' }],
+    about: 'six roommates, one rich friend, and three honest averages that disagreed',
+    more: [{ serial: 'S1131', after: 1, alt: 'Six monthly budgets in a row, one far taller' }, { serial: 'S1132', after: 3, alt: 'The same six sorted, a finger on the middle two' }],
     title: 'The rich friend', art: 'S1130', cast: [],
-    alt: 'Six friends at a table with their weekly allowances laid out as coins, one pile much bigger',
+    alt: 'Six young adults around an apartment kitchen table, receipts spread out, one of them holding a much thicker wallet',
     words: [
-        'Two, three, three, four, five, nine dollars. The mean shares it out: about 4.3 each.',
-        'The median is the middle pair: 3.5. The mode is the most common: 3.',
-        'One rich friend pulls the mean and leaves the median where it was.',
+        'Six roommates compared what they spent on food in a month: 180, 200, 200, 220, 250 and 900. Jamal announced the average was 325 and said nobody was overspending. The four people under 250 disagreed with him loudly.',
+        'The 900 belonged to Dev, who ate out every night. One number had dragged the mean to a place where nobody actually lived. Jamal was right about the arithmetic and wrong about the roommates.',
+        'The median told a different truth. Sort them, take the middle: 210. Dev could spend nine thousand and the median would not move. The mode, the most common, was 200. Three honest averages, and the mean was the only one Dev could pull.',
+        'Mean adds and divides. Median is the middle. Mode is the most common. Extreme values pull the mean toward them, and the median ignores them, which is why a rich friend makes the mean lie and leaves the median alone.',
     ],
 };
 STORIES['spread'] = {
-    about: 'two classes with the same average',
-    more: [{ serial: 'S1134', after: 0, alt: 'The tight cluster of scores' }, { serial: 'S1135', after: 2, alt: 'The wide scatter of scores' }],
-    title: 'Same average, different classes', art: 'S1133', cast: [],
-    alt: 'Two score sheets on a desk, both averaging 70, one tight and one wide',
+    about: 'two classes with the same average and nothing else in common',
+    more: [{ serial: 'S1134', after: 1, alt: 'One row of scores bunched tightly around 75' }, { serial: 'S1135', after: 3, alt: 'Another row scattered from 40 to 100, the same 75 underneath' }],
+    title: 'Same average, different rooms', art: 'S1133', cast: [],
+    alt: 'A young woman at a lecture hall door looking at two rows of test scores with the same average written under each',
     words: [
-        'Both classes averaged 70.',
-        'In one, everyone scored near 70. In the other, scores ran from 40 to 100.',
-        'The mean cannot tell them apart. The spread can.',
+        'Priya taught two sections and both averaged 75 on the midterm, so she planned the same review for each. The first class nodded through it. The second class was half lost and half bored, and she could not understand why the same lesson had landed so differently.',
+        'She looked past the average. The first section\'s scores ran from 70 to 80: everyone in the same place. The second ran from 40 to 100: a few who needed everything and a few who needed nothing. The average had hidden the room.',
+        'The spread is what the average hides. Range is biggest minus smallest, ten in one room and sixty in the other. A bigger spread means a more varied set, and a more varied set needs a different kind of teaching, not a better version of the same one.',
+        'The average hides the spread. Range is biggest minus smallest, and a bigger spread means a more varied set. Two rooms with the same average can be two different problems.',
     ],
 };
 STORIES['probability'] = {
-    about: 'a spinner with three winning slices',
-    more: [{ serial: 'S1137', after: 0, alt: 'A tally sheet after a hundred spins' }, { serial: 'S1138', after: 2, alt: 'The three winning slices shaded' }],
-    title: 'The spinner', art: 'S1136', cast: [],
-    alt: 'A spinner with eight equal slices, three shaded, a student spinning it',
+    about: 'a spinner with three winning slices, two spins, and the odds of getting nothing',
+    more: [{ serial: 'S1137', after: 1, alt: 'The spinner with three of eight slices shaded' }, { serial: 'S1138', after: 3, alt: 'Two spins side by side, both landing on unshaded slices' }],
+    title: 'Three slices', art: 'S1136', cast: [],
+    alt: 'A young man at a game night table spinning a wheel with eight slices, three shaded as winners',
     words: [
-        'Eight slices. Three winners.',
-        'Spin it a hundred times: about thirty-seven wins.',
-        'Probability is the share of outcomes that count: 3 out of 8.',
+        'The spinner at game night had eight slices and three won a prize. Marcus figured his chance was three in eight and spun. Nothing. His friend said he was due. Marcus spun again. Nothing. He was starting to believe in due.',
+        'The spinner had no memory. Three in eight, every spin, no matter what the last one did. The two spins were independent, and being due was a feeling, not a probability.',
+        'So what were the odds of two losses in a row? Not winning was one minus three eighths: five eighths. Two independent events multiply: five eighths times five eighths, about 39 percent. Two misses was not bad luck. It was the single most likely thing that could happen.',
+        'Probability is favorable outcomes over all outcomes. Independent events multiply, and not happening is one minus happening. The spinner is never due, and two misses were the favorite all along.',
     ],
 };
 STORIES['compound-interest'] = {
-    about: 'a snowball rolled downhill',
-    more: [{ serial: 'S1140', after: 0, alt: 'The snowball small at the top' }, { serial: 'S1141', after: 2, alt: 'The snowball large at the bottom' }],
+    about: 'a snowball rolled downhill, and the account that grew the same way',
+    more: [{ serial: 'S1140', after: 1, alt: 'A statement: interest paid on the balance, then on the balance plus interest' }, { serial: 'S1141', after: 3, alt: 'Two lines on a chart, one straight and one curving upward' }],
     title: 'The snowball', art: 'S1139', cast: [],
-    alt: 'A student rolling a snowball down a hill, it growing as it goes',
+    alt: 'A young woman rolling a snowball down a hill, it growing with every turn, a bank statement drawn beside it',
     words: [
-        'A hundred dollars at ten percent. A year later: 110.',
-        'The next ten percent lands on 110, not 100. Then 121. Then 133.',
-        'The interest earns interest. That is the snowball.',
+        'Lena put a thousand dollars in an account paying five percent and expected fifty dollars a year, forever. After year one she had 1,050. After year two she had 1,102.50, and the extra two-fifty confused her. Where had it come from?',
+        'From the fifty. In year two the account paid five percent on 1,050, not on 1,000. The interest had earned interest. She thought of a snowball rolled downhill: it picks up snow in proportion to how big it already is, so the bigger it gets, the faster it grows.',
+        'That is compound interest. The amount is the principal times one plus the rate, raised to the number of years. At five percent, a thousand dollars is about 1,629 after ten years and 4,322 after thirty. The last ten years add more than the first twenty, because by then the snowball is large.',
+        'Compound interest pays interest on the interest. Amount is principal times one plus the rate, to the power of the years. The snowball\'s secret is time, not the hill.',
     ],
 };
 STORIES['correlation-causation'] = {
-    about: 'ice cream and the pool',
-    more: [{ serial: 'S1143', after: 0, alt: 'The line at the ice cream stand' }, { serial: 'S1144', after: 2, alt: 'The lifeguard watching the crowded water' }],
+    about: 'ice cream sales and drownings that rose together every summer, and the four ways that can happen',
+    more: [{ serial: 'S1143', after: 1, alt: 'Four small diagrams: A to B, B to A, a third thing to both, and a shrug' }, { serial: 'S1144', after: 3, alt: 'A sun drawn above both the ice cream cart and the crowded pool' }],
     title: 'Ice cream and the pool', art: 'S1142', cast: [],
-    alt: 'A crowded beach with an ice cream stand and a lifeguard tower',
+    alt: 'A young man at a poolside snack bar looking at a chart where two lines rise together',
     words: [
-        'Ice cream sales rose. So did swimming accidents. Both in July.',
-        'Ice cream did not cause drowning.',
-        'Hot weather sent people to both the stand and the pool. Look for the third thing.',
+        'Kai found a chart where ice cream sales and pool drownings rose and fell together across the year, and he wrote that ice cream causes drowning. His professor wrote back one word: how?',
+        'Kai could not say how. He tried it the other way: drownings cause ice cream sales. That was worse. But the lines really did move together; that part was not in dispute.',
+        'Together is not because. There are four doors. A causes B. B causes A. Something else causes both. Or coincidence. The third door had a name here: summer. Hot weather sells ice cream and fills pools, and pools with more people in them have more accidents. Ice cream was innocent.',
+        'Correlation is not causation. When two things move together, hold four doors open: A causes B, B causes A, something causes both, or coincidence. The ice cream was standing next to the real cause.',
     ],
 };
 STORIES['thesis-statements'] = {
-    about: 'a fight worth picking',
-    more: [{ serial: 'S1146', after: 0, alt: 'The plain sentence crossed out' }, { serial: 'S1147', after: 2, alt: 'The bold one underlined' }],
+    about: 'a fight worth picking, between a thesis too broad to hold and one too obvious to matter',
+    more: [{ serial: 'S1146', after: 1, alt: 'A thesis that says technology changed society, drawn as an ocean' }, { serial: 'S1147', after: 3, alt: 'A thesis that says phones are common, drawn as a pebble' }],
     title: 'A fight worth picking', art: 'S1145', cast: [],
-    alt: 'A student writing one bold sentence at the top of a page',
+    alt: 'A young woman at a dorm desk with three thesis drafts, the first too big, the second too small, the third circled',
     words: [
-        'Dogs are pets. Nobody argues. A topic.',
-        'Dogs make better pets than cats for busy families. Now someone could argue.',
-        'A thesis is a fight you are picking, in one sentence.',
+        'Rosa\'s first thesis was that technology has changed society. Her professor said she could not prove it in a lifetime. Her second was that most students own phones. He said nobody would argue and nobody would care. She had gone from an ocean to a pebble.',
+        'A thesis is a claim someone could dispute. Too broad and it cannot be proved; too obvious and there is nothing to prove. The good one lived in between, where a reader would say prove it and mean it.',
+        'Her third: phone bans in lecture halls raise attendance but not grades, and the university is measuring the wrong thing. Now there was a fight. A dean would argue. The data would have to be found. The essay had somewhere to go.',
+        'A thesis is a claim someone could dispute, not a topic. Too broad and too obvious are both weak, in opposite directions. Find the sentence a smart reader would push back on, and write toward the pushback.',
     ],
 };
 STORIES['academic-structure'] = {
-    about: 'the sentence that explains why',
-    more: [{ serial: 'S1149', after: 0, alt: 'The corner with cars' }, { serial: 'S1150', after: 2, alt: 'The three colors in the margin' }],
-    title: 'Claim, evidence, warrant', art: 'S1148', cast: [],
-    alt: 'A student with a paragraph marked in three colors',
+    about: 'the sentence that explains why the evidence counts, and how often it goes missing',
+    more: [{ serial: 'S1149', after: 1, alt: 'Claim, evidence, and an empty slot labeled warrant' }, { serial: 'S1150', after: 3, alt: 'The slot filled, the paragraph now standing' }],
+    title: 'The sentence that explains why', art: 'S1148', cast: [],
+    alt: 'A young man at a seminar table with a paragraph on his laptop, a blank line highlighted between a quotation and the next claim',
     words: [
-        'Claim: the town needs a crosswalk here.',
-        'Evidence: twelve near-misses this year.',
-        'Warrant: twelve near-misses mean the next one may not miss. The warrant says why the evidence counts.',
+        'Theo\'s paper claimed that the city\'s new bike lanes had cut traffic deaths, and his evidence was a table showing deaths down eleven percent. He moved on to the next point. His professor circled the gap between them and wrote: why does this count?',
+        'Theo thought the table spoke for itself. It did not. Deaths had fallen eleven percent in the whole city, and the bike lanes ran on twelve streets. Nothing on the page connected the number to the lanes.',
+        'The missing sentence was the warrant. He went back to the data and found that deaths on the twelve streets fell thirty percent while the rest of the city fell four. Now he could write it: the drop was concentrated where the lanes went in, which is what you would see if the lanes were the cause. Claim, evidence, warrant. The third one had done all the work.',
+        'An academic argument is a claim, evidence, and a warrant that says why the evidence counts. The warrant is the part most often missing, because the writer already believes it and forgets the reader does not.',
     ],
 };
 STORIES['numbers-in-prose'] = {
-    about: 'a number with no clothes on',
-    more: [{ serial: 'S1152', after: 0, alt: 'The headline with a question mark' }, { serial: 'S1153', after: 2, alt: 'The same number with its base written beside' }],
-    title: 'Forty percent of what', art: 'S1151', cast: [],
-    alt: 'A student squinting at a headline with a big percentage and no context',
+    about: 'a number with no clothes on, and the three questions that dress it',
+    more: [{ serial: 'S1152', after: 1, alt: 'The headline: crime up 50 percent, and beneath it, from 2 to 3' }, { serial: 'S1153', after: 3, alt: 'Three questions on a sticky note: of what, compared with when, out of how many' }],
+    title: 'A number with no clothes on', art: 'S1151', cast: [],
+    alt: 'A young woman at a newsroom desk reading a headline with a large percentage and no base',
     words: [
-        'Forty percent. Of what?',
-        'Up compared with when? Out of how many?',
-        'A number is naked without its clothes. Dress it before you trust it.',
+        'The headline said burglaries in the neighborhood were up fifty percent, and Ana\'s roommates started talking about locks. Ana asked one question: fifty percent of what?',
+        'She found the numbers. Two burglaries last year, three this year. Fifty percent, and also one more house. The headline was true, and it had walked into the room with no clothes on.',
+        'A number needs three things to be judged. Percent of what: the base. Compared with when: last year, or a bad year chosen to flatter? Out of how many: three burglaries among four thousand homes. Dressed, the number was quiet. Naked, it had sounded like a wave.',
+        'Percent of what, compared with when, out of how many. A number without its base cannot be judged, and a headline that leaves the base out is asking you not to.',
     ],
 };
 STORIES['logical-consistency'] = {
-    about: 'cheap, and also the most expensive ever',
-    more: [{ serial: 'S1155', after: 0, alt: 'The two sentences side by side' }, { serial: 'S1156', after: 2, alt: 'A list of claims with one crossed out' }],
-    title: 'Cheap and expensive', art: 'S1154', cast: [],
-    alt: 'A student with two sentences from one article circled on a page',
+    about: 'a speech that called a plan the cheapest option and the most expensive ever, four minutes apart',
+    more: [{ serial: 'S1155', after: 1, alt: 'A list of a speech\'s main claims, numbered' }, { serial: 'S1156', after: 3, alt: 'Two of the claims joined by a line and a question mark' }],
+    title: 'Cheap, and the most expensive ever', art: 'S1154', cast: [],
+    alt: 'A young man in a town hall audience with a notebook, two contradictory quotes written side by side',
     words: [
-        'Paragraph two: the plan is cheap.',
-        'Paragraph six: it costs more than anything before.',
-        'List the claims and check whether they can all be true at once. These cannot.',
+        'At the town hall, the speaker said the new bridge was the cheapest option on the table. Four minutes later he called it the most expensive project in the county\'s history. Owen wrote both down and nobody else seemed to notice.',
+        'Each sentence sounded fine on its own. The speaker was fluent, confident and applauded. But the two claims could not both be true at once, and an argument that contradicts itself has not proved anything, however good it sounds a sentence at a time.',
+        'Owen listed the speech\'s main claims and held them side by side. Cheapest option; most expensive ever. Safe for a century; must be replaced in thirty years. Three pairs that could not coexist. He asked about the first pair during questions, and the speaker had no answer, because there was none.',
+        'Consistent means every claim can be true at once. List the main claims, then hold them side by side, because a contradiction hides easily across four minutes and not at all across one line.',
     ],
 };
 STORIES['primary-and-secondary-sources'] = {
-    about: 'a letter from the trenches and a textbook',
-    more: [{ serial: 'S1158', after: 0, alt: 'The letter\'s faded ink' }, { serial: 'S1159', after: 2, alt: 'The textbook\'s chapter heading' }],
+    about: 'a letter from the trenches and a textbook about the trenches, and what each one knows',
+    more: [{ serial: 'S1158', after: 1, alt: 'The letter, mud-stained, dated 1916' }, { serial: 'S1159', after: 3, alt: 'The textbook page with a map and a casualty table' }],
     title: 'The letter and the textbook', art: 'S1157', cast: [],
-    alt: 'A student holding an old handwritten letter beside an open textbook',
+    alt: 'A young woman in an archive holding an old handwritten letter, a modern textbook open on the table beside it',
     words: [
-        'The letter was written in the trenches. It was there. Primary.',
-        'The textbook was written eighty years later. Secondary.',
-        'A primary source was there; a secondary source tells you about it.',
+        'Maya had a letter from her great-great-grandfather written in the trenches in 1916 and a textbook chapter on the same battle, and they did not agree about the weather. The textbook said the day was dry. The letter complained of mud to the knees.',
+        'The letter was a primary source: made at the time, by someone there. The textbook was secondary: made a century later by someone looking back over hundreds of letters and maps. Each knew something the other could not.',
+        'The letter knew the mud in one trench on one morning. The textbook knew the whole front and the whole month, and the average day had been dry. Neither was wrong. Maya learned to ask of every source who made it, when, and from where they were standing, and to want both kinds in the room.',
+        'A primary source was made at the time by someone there; a secondary source was made later, looking back. Ask of every source who made it, when, and why. The letter knows the mud; the textbook knows the month.',
     ],
 };
 STORIES['counting-time'] = {
-    about: 'why 1750 is the eighteenth century',
-    more: [{ serial: 'S1161', after: 0, alt: 'The first century marked on the line' }, { serial: 'S1162', after: 2, alt: 'The year 1750 with an 18 above it' }],
-    title: 'One century ahead', art: 'S1160', cast: [],
-    alt: 'A student counting centuries on a timeline with fingers',
+    about: 'why 1750 is the eighteenth century, and the year that does not exist',
+    more: [{ serial: 'S1161', after: 1, alt: 'The years 1701 to 1800 bracketed and labeled 18th century' }, { serial: 'S1162', after: 3, alt: 'A timeline crossing from 1 BC straight to AD 1 with no zero' }],
+    title: 'The century off by one', art: 'S1160', cast: [],
+    alt: 'A young man at a library table with a long timeline, a gap drawn where year zero would be',
     words: [
-        'Years 1 to 100 were the first century.',
-        'So 1701 to 1800 is the eighteenth.',
-        'Take the hundreds digit and add one. Centuries are named one ahead of their years.',
+        'Sam wrote that 1750 was in the seventeenth century, because it started with seventeen. His professor circled it. Sam was sure, and he was wrong by exactly one century, the way everyone is once.',
+        'The first century was the years 1 to 100. So the second began in 101, and the eighteenth ran from 1701 to 1800. The hundreds digit plus one. 1750 was the eighteenth century, and so was 1800, and 1801 began the nineteenth.',
+        'Then Sam tried to count from 50 BC to AD 50 and got a hundred years. There is no year zero; 1 BC steps straight to AD 1. So the count is the two numbers added, minus one: ninety-nine years. Two small traps, and every date in the course had walked past both.',
+        'The years 1701 to 1800 are the 18th century: hundreds digit plus one. There is no year zero, so from a BC year to an AD year you add the two and subtract one. Time counts differently than a ruler does.',
     ],
 };
 STORIES['cause-and-effect'] = {
-    about: 'dry wood and a match',
-    more: [{ serial: 'S1164', after: 0, alt: 'The stacked wood' }, { serial: 'S1165', after: 2, alt: 'The match striking' }],
-    title: 'Dry wood, then a match', art: 'S1163', cast: [],
-    alt: 'A student building a campfire, dry wood stacked, a match in hand',
+    about: 'dry wood and a match, and why the match gets all the credit',
+    more: [{ serial: 'S1164', after: 1, alt: 'Years of drought drawn as a stack of dry seasons' }, { serial: 'S1165', after: 3, alt: 'One spark at the top of the stack, and a forest fire on the horizon' }],
+    title: 'Dry wood and a match', art: 'S1163', cast: [],
+    alt: 'A young woman crouched at a campfire, a stack of dry wood and a single struck match',
     words: [
-        'The dry wood had been building for years. The long-term cause.',
-        'The match was the trigger.',
-        'Historians name both: the fuse and the spark.',
+        'Lena\'s essay said the war started because an archduke was shot. Her professor asked whether every shooting starts a war. Lena said this one did. He asked what the wood had been doing for the twenty years before the match.',
+        'Long-term causes build for years: alliances that tied every country to a fight, arms races, empires rubbing at the edges. Those were the dry wood. The shooting was the trigger, the spark that would have gone out on a wet pile.',
+        'And effects come in kinds too. Short-term: mobilization within weeks. Long-term: empires gone, borders redrawn, a peace that grew the next war. Lena rewrote her thesis. The match lit the fire; the wood decided how big it would be.',
+        'Causes come in kinds: long-term causes build for years, a trigger is the spark, and effects can be short-term or long-term. Give the match its due and the wood its share.',
     ],
 };
 STORIES['the-big-turns'] = {
-    about: 'eight hinges the world swung on',
-    more: [{ serial: 'S1167', after: 0, alt: 'The printing press' }, { serial: 'S1168', after: 2, alt: 'The first internet connection' }],
+    about: 'eight hinges the world swung on, and how to tell a hinge from a headline',
+    more: [{ serial: 'S1167', after: 1, alt: 'A plow, a clay tablet, a ballot, a printing press' }, { serial: 'S1168', after: 3, alt: 'A ship, a steam engine, a mushroom cloud, a glowing screen' }],
     title: 'Eight hinges', art: 'S1166', cast: [],
-    alt: 'A student in front of eight framed pictures in a hallway',
+    alt: 'A young man walking a museum hall with eight doorways, each opening on a different age',
     words: [
-        'Farming. Writing. Republics. Printing.',
-        'The Columbian exchange. Industry. The atom. The internet.',
-        'After each hinge, life could not swing back.',
+        'Marcus asked what made an event important enough for the course, since the world had thousands of events a year. His professor said most events are weather. A few are hinges: after them, the door does not swing the same way again.',
+        'Farming turned wanderers into villagers. Writing let a thought outlive its thinker. Republics put power in more hands. Printing made a book cheaper than a horse. The Columbian exchange traded crops, animals and diseases across an ocean. Industry moved work from muscle to engine. The atomic age put the end of the world within reach. The web put every library in every pocket.',
+        'The test for a hinge was the same each time: did people afterward live in a way that was impossible before? A battle changes who rules. A hinge changes what a life is. Marcus started sorting the headlines of his own decade with the same question.',
+        'Farming, writing, republics, printing, the Columbian exchange, industry, the atomic age and the web are the great turns. Each changed what a human life could be, which is the test that separates a hinge from a headline.',
     ],
 };
 STORIES['writing-history'] = {
-    about: 'bricks and a house',
-    more: [{ serial: 'S1170', after: 0, alt: 'The bricks in a pile' }, { serial: 'S1171', after: 2, alt: 'The house built' }],
+    about: 'bricks and a house, and the difference between a fact and a claim',
+    more: [{ serial: 'S1170', after: 1, alt: 'A stack of bricks labeled facts, no shape yet' }, { serial: 'S1171', after: 3, alt: 'The bricks built into a small house with one sentence over the door' }],
     title: 'Bricks and a house', art: 'S1169', cast: [],
-    alt: 'A student stacking bricks labeled with dates into the shape of a house',
+    alt: 'A young woman at a study desk with a pile of index cards on one side and a single sentence pinned above them',
     words: [
-        'A fact is a brick: the war began in 1861.',
-        'A thesis is a house someone could argue with: the war was about slavery.',
-        'History writing builds houses from bricks.',
+        'Rosa\'s history paper was twelve pages of facts, all of them correct, in date order. Her professor gave it back and said it was a pile of bricks. Rosa asked what was wrong with bricks. He said nothing, and that nobody lives in a pile.',
+        'A fact is not a claim. A thesis is a sentence somebody could disagree with, and the facts are what you build it out of. Rosa had the materials and no house.',
+        'She wrote the sentence: the famine was a policy failure before it was a crop failure. Now the bricks had somewhere to go, and some of them did not belong. Then she matched her words to her evidence: certainly where the record was thick, probably where it was thin, and one paragraph that said plainly what could not be known. The house stood, and it was honest about its weak wall.',
+        'A fact is not a claim; a thesis is a sentence somebody could disagree with. Match the strength of your words to the strength of the evidence, so the house stands on what the bricks can hold.',
     ],
 };
 STORIES['ending-sounds'] = {
@@ -47224,7 +47255,7 @@ function PinInput({ value, onChange, placeholder, style, onEnter = null }) {
 }
 // A stamp of when this copy of the page was built, so a stale page in a cache can be told apart
 // from a fresh one at a glance. Written by the build, never by hand.
-const BUILD_STAMP = '2026-09-23 08:38 PM CDT';
+const BUILD_STAMP = '2026-09-23 09:02 PM CDT';
 function ContactLine({ onOpen, inline = false }) {
     return (react_1.default.createElement("p", { className: "edu-no-print", style: { textAlign: 'center', marginTop: inline ? 0 : 28, fontSize: inline ? 14 : 12, color: C.muted, margin: inline ? '0' : undefined } }, onOpen
         ? react_1.default.createElement("button", { type: "button", onClick: onOpen, style: { background: 'none', border: 'none', color: C.muted, fontFamily: FONT, fontSize: 12, cursor: 'pointer', padding: 0, textDecoration: 'underline' } }, "Contact us")
@@ -48234,8 +48265,8 @@ const KID_ANIMATION = `
   @media (prefers-reduced-motion: reduce) { .edu-tour-target { animation: none; box-shadow: 0 0 0 5px #E6B84B, 0 0 18px 6px rgba(230, 184, 75, 0.55); } .edu-tour-target::after { animation: none; } }
   .edu-recovery-code { font-size: 22px; }
   @media (max-width: 480px) { .edu-recovery-code { font-size: 17px; letter-spacing: 0.5px; } }
-  .edu-student-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 2px 16px; }
-  @media (min-width: 700px) { .edu-student-actions { justify-content: flex-start; } }
+  /* The three lines of links center at every width (2026-09-23, Mikey), under the name on a phone and across the card on a laptop. */
+  .edu-student-left .edu-student-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 2px 16px; width: 100%; }
   .edu-student-actions button { margin-right: 0 !important; font-size: 15px !important; white-space: nowrap; }
   .edu-student-open { display: flex; justify-content: center; margin-top: 12px; }
   @media (min-width: 1000px) {

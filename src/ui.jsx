@@ -927,8 +927,6 @@ const KID_ANIMATION = `
   .edu-student-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 2px 16px; }
   @media (min-width: 700px) { .edu-student-actions { justify-content: flex-start; } }
   .edu-student-actions button { margin-right: 0 !important; font-size: 15px !important; white-space: nowrap; }
-  .edu-student-wonder { text-align: center; margin-top: 10px; }
-  @media (min-width: 1000px) { .edu-student-left .edu-student-wonder { align-self: center; width: 100%; text-align: center; } }
   .edu-student-open { display: flex; justify-content: center; margin-top: 12px; }
   @media (min-width: 1000px) {
     .edu-student-body { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
@@ -946,6 +944,13 @@ const KID_ANIMATION = `
   /* The coloring title cycles through the crayon colors, so it catches a young eye. */
   @keyframes edu-rainbow { 0% { color: #E4572E; } 20% { color: #F4A259; } 40% { color: #5BA84A; } 60% { color: #3E7CB1; } 80% { color: #7D5BA6; } 100% { color: #E4572E; } }
   .edu-rainbow { animation: edu-rainbow 6s linear infinite; }
+  /* Story cards above 500px (2026-09-23, Mikey): picture on the left filling the height, words in the middle, Open centered on the right. */
+  @media (min-width: 501px) {
+    .edu-story-card { grid-template-columns: auto minmax(0, 1fr) auto !important; grid-template-rows: auto !important; align-items: center; }
+    .edu-story-thumb { grid-column: 1; grid-row: 1; justify-self: start !important; align-self: stretch; display: flex; align-items: center; }
+    .edu-story-words { grid-column: 2; grid-row: 1 !important; }
+    .edu-story-open { grid-column: 3; grid-row: 1; align-self: center !important; }
+  }
   /* Pairs cards: pinned columns so a long word can never widen the grid past its box; text decks go three wide on a phone. */
   .edu-pairs-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
   .edu-pairs-three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
@@ -1038,9 +1043,6 @@ const KID_ANIMATION = `
   .edu-note-box textarea { min-height: 96px; text-align: center; }
   @media (min-width: 1000px) { .edu-note-box textarea { min-height: 0; } }
   .edu-note-save { display: flex; justify-content: center; margin-top: 8px; }
-  @media (min-width: 1000px) {
-    .edu-student-open { margin-top: 0; flex: 0 0 auto; }
-  }
   /* On a phone the logout countdown sits centered at the foot; on a laptop it stays bottom right. */
   @media (max-width: 999px) { .edu-logout-chip { right: auto !important; left: 50% !important; transform: translateX(-50%); } }
   @media (hover: hover) and (pointer: fine) { .edu-frame-bottom { display: block; position: fixed; left: 0; right: 0; bottom: 0; height: 6px; background: ${C.green}; pointer-events: none; z-index: 50; } }
@@ -2034,12 +2036,26 @@ function StoryArt({ serial, alt, fallback = null }) {
   );
 }
 // The story page body: title, pictures where they fall in the text, the words, one speaker.
-function StoryBody({ story }) {
+// The snail and the hare (2026-09-23, Mikey): an early-years story is read at three quarters speed on the snail and at the
+// usual pace on the hare. Pre-K starts on the snail, K to 2 on the hare, and the last choice is remembered on this device.
+const PACE_KEY = 'edusphere-story-pace';
+// Pre-K stories start on the snail, kindergarten to grade 2 on the hare, older stories have no control.
+function storyPaceFor(mod) { const c = mod && mod.courseId ? getCourse(mod.courseId) : null; if (!c) return null; if (c.grade === 'PK3' || c.grade === 'PK4') return 'slow'; return ['K', '1', '2'].includes(c.grade) ? 'normal' : null; }
+function loadPace(fallback) { try { const v = window.localStorage.getItem(PACE_KEY); return v === 'slow' || v === 'normal' ? v : fallback; } catch (e) { return fallback; } }
+function savePace(v) { try { window.localStorage.setItem(PACE_KEY, v); } catch (e) { /* private mode: the choice lasts for the page */ } }
+function PaceGlyph({ kind }) {
+  return kind === 'slow'
+    ? <svg viewBox="0 0 32 20" width="34" height="21" aria-hidden="true"><circle cx="20" cy="11" r="7" fill="none" stroke="currentColor" strokeWidth="2" /><circle cx="20" cy="11" r="3" fill="none" stroke="currentColor" strokeWidth="1.5" /><path d="M13 16 L3 16 Q1 16 2 13 L5 8 M5 8 L4 3 M5 8 L8 4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /><path d="M2 18 L30 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /></svg>
+    : <svg viewBox="0 0 32 20" width="34" height="21" aria-hidden="true"><path d="M6 15 Q10 9 18 10 L26 9 M26 9 L28 3 M25 9 L23 3" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /><circle cx="27" cy="12" r="3" fill="none" stroke="currentColor" strokeWidth="2" /><path d="M6 15 L3 18 M12 14 L10 18 M18 13 L20 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /></svg>;
+}
+function StoryBody({ story, pace: paceDefault = null }) {
   // Read-along: the title, then each paragraph in turn, the one being read lit until the voice moves on.
   const [readingAt, setReadingAt] = useState(-1); const stopRef = useRef(null);
+  const [pace, setPace] = useState(() => (paceDefault ? loadPace(paceDefault) : 'normal'));
   useEffect(() => () => { if (stopRef.current) stopRef.current(); }, []);
   const toggle = () => {
     if (stopRef.current) { stopRef.current(); stopRef.current = null; setReadingAt(-1); return; }
+    setSpeechNudge(paceDefault && pace === 'slow' ? -1 : 0);
     stopRef.current = speakSequence([`${story.title}.`, ...story.words], (i) => setReadingAt(i - 1), () => { stopRef.current = null; setReadingAt(-1); }, [`${story.art}-0`, ...story.words.map((_, i) => `${story.art}-${i + 1}`)]);
   };
   const reading = stopRef.current !== null && readingAt >= -1 && stopRef.current;
@@ -2056,6 +2072,16 @@ function StoryBody({ story }) {
       {canSpeak()
         ? <Btn full kind={reading ? 'secondary' : 'primary'} onClick={toggle}>{reading ? 'Stop reading' : 'Read the story to me'}</Btn>
         : <p style={{ margin: '0 0 12px', fontSize: 14, color: C.muted }}>Reading aloud is not available on this device or in this preview. The words are all on screen.</p>}
+      {paceDefault && canSpeak() && (
+        <div style={{ display: 'flex', justifyContent: 'center', gap: 14, marginTop: 10 }}>
+          {[['slow', 'Read slowly'], ['normal', 'Read at the usual speed']].map(([v, label]) => (
+            <button key={v} type="button" aria-label={label} aria-pressed={pace === v} onClick={() => { setPace(v); savePace(v); if (stopRef.current) { stopRef.current(); stopRef.current = null; setReadingAt(-1); } }}
+              style={{ width: 56, height: 40, borderRadius: 999, border: `2px solid ${C.green}`, background: pace === v ? C.green : C.surface, color: pace === v ? '#FFFFFF' : C.green, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', padding: 0 }}>
+              <PaceGlyph kind={v} />
+            </button>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
@@ -2321,7 +2347,7 @@ function PongGame({ round, onScore = null }) {
 function SprintGame({ game, round, modules = [], onScore = null, best = null }) {
   // The modules come from the courses on the student's list. Only readers' lessons from grade 3 up are drawn on
   // (2026-09-23, Mikey): a spoken pre-K question with picture answers has no place in a timed text round.
-  const pool = useMemo(() => { const seen = new Set(); return modules.map((m) => getModule(m.id) || m).filter((m) => { if (seen.has(m.id)) return false; seen.add(m.id); const c = m.courseId ? getCourse(m.courseId) : null; return c && !c.readAloud && GRADES.indexOf(c.grade) >= GRADES.indexOf('3') && (!game.subject || c.subject === game.subject); }).flatMap((m) => [...new Set(m.generators)].map((g) => ({ g, m }))); }, [modules, game]);
+  const pool = useMemo(() => sprintPool(modules, game), [modules, game]);
   const [left, setLeft] = useState(60); const [i, setI] = useState(0); const [points, setPoints] = useState(0); const [right, setRight] = useState(0); const [streak, setStreak] = useState(0); const [bestStreak, setBestStreak] = useState(0); const [flash, setFlash] = useState(null); const [ended, setEnded] = useState(null);
   const asked = useRef([]);   // every prompt asked this round: nothing comes back while there is anything else to ask
   // The generators take turns in a shuffled cycle, so a module with two questions is not asked twice before the others
@@ -2342,7 +2368,7 @@ function SprintGame({ game, round, modules = [], onScore = null, best = null }) 
   useEffect(() => { if (left <= 0) return undefined; const t = setTimeout(() => setLeft(left - 1), 1000); return () => clearTimeout(t); }, [left]);
   // Time is up: a higher score is a new best; the right count and the longest streak are kept beside it.
   useEffect(() => { if (left > 0) return; setEnded({ newHigh: points > 0 && (best === null || best === undefined || points > best) }); if (onScore && points > 0) onScore(points, 'high', { right, streak: bestStreak }); }, [left]);
-  if (!pool.length) return <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 16 }}><p style={{ margin: 0, textAlign: 'center', color: C.muted }}>Nothing to ask yet. Open a lesson first.</p></div>;
+  if (!pool.length) return <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 16 }}><p style={{ margin: 0, textAlign: 'center', color: C.muted }}>Nothing to ask yet. Quick fire uses lessons from grade 3 up, so open one of those first.</p></div>;
   if (left <= 0 || !q) return (
     <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 16, textAlign: 'center' }}>
       <p style={{ margin: '0 0 4px', fontSize: 22, fontWeight: 700 }}>{points} {points === 1 ? 'point' : 'points'}</p>
@@ -2581,6 +2607,8 @@ function JumpGame({ game, round, onScore = null }) {
         <line x1={X0 - 3} y1={LINE_Y} x2={X1 + 3} y2={LINE_Y} stroke="#2E2E2E" strokeWidth="1" strokeLinecap="round" />
         {ticks.map((v, k) => <g key={v}><line x1={xOf(v)} y1={LINE_Y - (wide && k % 5 ? 1.6 : 2.6)} x2={xOf(v)} y2={LINE_Y + (wide && k % 5 ? 1.6 : 2.6)} stroke="#2E2E2E" strokeWidth="0.7" />{(!wide || k % 5 === 0 || k === ticks.length - 1) && <text x={xOf(v)} y={LINE_Y + 7.5} fontSize={wide ? 3.2 : 3.8} fontFamily={FONT} textAnchor="middle" fill={C.ink}>{labelOf(v)}</text>}</g>)}
         {q && <circle cx={xOf(q.from)} cy={LINE_Y} r="1.6" fill={C.gold} stroke="#2E2E2E" strokeWidth="0.5" />}
+        {/* Where the frog will land if let go (2026-09-23, Mikey): the nearest tick lights up and follows the drag. */}
+        {drag && <g><circle cx={xOf(nearest(drag.x))} cy={LINE_Y} r="4" fill={C.gold} opacity="0.35" /><line x1={xOf(nearest(drag.x))} y1={LINE_Y - 4} x2={xOf(nearest(drag.x))} y2={LINE_Y + 4} stroke={C.gold} strokeWidth="1.6" strokeLinecap="round" /><text x={xOf(nearest(drag.x))} y={LINE_Y + 13} fontSize="4.6" fontWeight="800" fontFamily={FONT} textAnchor="middle" fill={C.green}>{labelOf(nearest(drag.x))}</text></g>}
         <g className={wrong ? 'edu-wobble' : undefined} style={{ cursor: 'grab' }}><Frog x={frogX} y={LINE_Y - (drag ? 12 : 6)} /></g>
       </svg>
     </div>
@@ -4007,8 +4035,11 @@ export default function EduSphereApp() {
       setColorState(state); saveColorState(record.name, state);
       if (!record.preview && !coloring.startsWith('play:')) addEvent(makeColoredEvent(coloring, new Date().toISOString()));
     }
-    setColoring(null); setScreen('overview');
+    // Back to the overview where the student left it (2026-09-23, Mikey): the fold stays open and the page scrolls back to the tiles.
+    pendingScroll.current = overviewScroll.current; setColoring(null); setScreen('overview');
   };
+  const overviewScroll = useRef(0);                                   // where the overview was scrolled when a game, a picture or a long story opened
+  const leaveOverviewTo = (fn) => { if (typeof window !== 'undefined') overviewScroll.current = window.scrollY; fn(); };
   // The phone's back button goes up one level inside the app instead of leaving it: a lesson or a
   // picture goes back to the courses, the courses go back to the sign-in screen, an educator page
   // goes back to the educator's list. One guard entry sits on the browser's history whenever the
@@ -4450,6 +4481,7 @@ export default function EduSphereApp() {
     if (typeof window !== 'undefined' && window.scrollTo) {
       if (pendingScroll.current !== null) { const y = pendingScroll.current; pendingScroll.current = null; setTimeout(() => window.scrollTo(0, y), 0); }
       else window.scrollTo(0, 0);
+      if (window.requestAnimationFrame) window.requestAnimationFrame(() => { void document.body.offsetHeight; });
     }
     closeTips(); setHeardNote(false);
   }, [screen]);
@@ -4495,7 +4527,7 @@ export default function EduSphereApp() {
     check(); window.addEventListener('resize', check); window.addEventListener('orientationchange', check);
     return () => { window.removeEventListener('resize', check); window.removeEventListener('orientationchange', check); if (box.parentNode) box.parentNode.removeChild(box); };
   }, []);
-  useEffect(() => { if (typeof window !== 'undefined') window.__eduTest = { screen, question: q || null, isReviewQ, openModule: (id) => openModule(id), openColoring: (pic) => { setColoring(pic); setScreen('coloring'); }, openCertificate: (id, grade) => { setCertFor({ id, grade }); setCertTemplate('classic'); setCertName(''); setCertPhotos([]); setScreen('certificate'); }, visibleModuleIds: () => visibleModules.map((m) => m.id), goHome: () => { setRecord(null); setModuleId(null); setScreen(educator ? 'educator-pick' : 'welcome'); } }; }, [screen, q, isReviewQ, visibleModules, educator]);
+  useEffect(() => { if (typeof window !== 'undefined') window.__eduTest = { screen, question: q || null, isReviewQ, openModule: (id) => openModule(id), openColoring: (pic) => { setColoring(pic); setScreen('coloring'); }, openCertificate: (id, grade) => { setCertFor({ id, grade }); setCertTemplate('classic'); setCertName(''); setCertPhotos([]); setScreen('certificate'); }, visibleModuleIds: () => visibleModules.map((m) => m.id), openStory: (id) => { setModuleId(id); setScreen('story'); }, goHome: () => { setRecord(null); setModuleId(null); setScreen(educator ? 'educator-pick' : 'welcome'); } }; }, [screen, q, isReviewQ, visibleModules, educator]);
   // A full PIN opens the door on its own (2026-09-23, Mikey): nobody has to lower the phone keypad to reach Go or Open.
   // A student's wrong PIN clears the box and says so; an educator's wrong PIN just sits there with its line under it.
   useEffect(() => { if (!pinAsk || pinTry.length !== PIN_LENGTH) return; const st = findStudent(roster, pinAsk); if (!st) return; if (pinMatches(st, pinTry)) { setPinAsk(null); startWithName(st.id); } else { setPinWrong(true); setPinTry(''); } }, [pinTry, pinAsk]);
@@ -4869,7 +4901,7 @@ export default function EduSphereApp() {
                       const restFraction = resting ? restLeft(pic) / (restMinutesFor(top) * 60000) : 0;
                       return (
                         <button key={pic} type="button" disabled={locked || resting} aria-label={locked ? 'Locked picture' : resting ? 'Resting picture' : `Color the ${pic === 'my-name' ? 'name' : pictureTitle(pic).toLowerCase()}`}
-                          onClick={() => { setColoring(pic); setScreen('coloring'); }} className={`edu-breathe${!locked && !resting ? ' edu-press' : ''}`}
+                          onClick={() => leaveOverviewTo(() => { setColoring(pic); setScreen('coloring'); })} className={`edu-breathe${!locked && !resting ? ' edu-press' : ''}`}
                           style={{ position: 'relative', overflow: 'hidden', aspectRatio: '1 / 1', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 6, borderRadius: 12, background: locked ? 'rgba(255,255,255,0.55)' : '#FFFFFF', border: `2px solid ${locked || resting ? 'rgba(255,255,255,0.7)' : C.ink}`, cursor: locked || resting ? 'default' : 'pointer', '--beat': locked || resting ? 0 : 1, ...inBeat(2.2) }}>
                           {locked ? (
                             <svg viewBox="0 0 24 24" width="34" height="34" aria-hidden="true"><path d="M7 10V8a5 5 0 0110 0v2" fill="none" stroke={C.muted} strokeWidth="2" strokeLinecap="round" /><rect x="5" y="10" width="14" height="10" rx="2" fill={C.line} stroke={C.muted} strokeWidth="1.5" /></svg>
@@ -4895,7 +4927,7 @@ export default function EduSphereApp() {
             course is mastered. Locked ones show how many modules are still to go. */}
         {(() => {
           if (youngLearner) return null;
-          const withStory = visibleCourses.filter((c) => courseStoryFor(c.id));
+          const withStory = spreadLeads(visibleCourses.filter((c) => courseStoryFor(c.id)), (c) => courseStoryFor(c.id).title);
           if (!withStory.length) return null;
           const open = openSubject === '__read';
           const readIds = new Set(storiesRead(record.events).map((r) => r.moduleId));
@@ -4914,9 +4946,12 @@ export default function EduSphereApp() {
                 <span aria-hidden="true" style={{ position: 'absolute', right: 16, top: '50%', transform: 'translateY(-50%)', fontSize: 14, color: C.muted }}>{open ? '▴' : '▾'}</span>
               </button>
               {open && (
-                <div style={{ padding: '12px 16px 12px' }}>
-                  <p style={{ margin: '0 0 6px', fontSize: 14, color: C.muted, textAlign: 'center' }}>Finishing every module within a course unlocks a story which ties all of the concepts together.</p>
-                  <p style={{ margin: '0 0 10px', fontSize: 14, color: C.muted, textAlign: 'center' }}>{unlockedCount} of {withStory.length} unlocked</p>
+                <div style={{ padding: '0 0 12px' }}>
+                  <div style={{ background: C.greenSoft, padding: '12px 16px' }}>
+                    <p style={{ margin: '0 0 6px', fontSize: 14, color: C.ink, textAlign: 'center' }}>Finishing every module within a course unlocks a story which ties all of the concepts together.</p>
+                    <p style={{ margin: 0, fontSize: 14, color: C.muted, textAlign: 'center' }}>{unlockedCount} of {withStory.length} unlocked</p>
+                  </div>
+                  <div style={{ padding: '0 16px' }}>
                   {withStory.map((c) => {
                     const left = c.modules.filter((m) => !progress.masteredIds.includes(m.id)).length; const unlocked = record.preview || left === 0; const cs = courseStoryFor(c.id); const read = readIds.has(`course:${c.id}`);
                     return (
@@ -4926,10 +4961,11 @@ export default function EduSphereApp() {
                           <p style={{ margin: 0, fontWeight: 600 }}>{cs.title}</p>
                           <p style={{ margin: '2px 0 0', fontSize: 13, color: C.muted }}>{c.title}{unlocked ? (read ? ' · read' : '') : ` · ${left} ${left === 1 ? 'module' : 'modules'} to go`}</p>
                         </div>
-                        <Btn kind="secondary" disabled={!unlocked || busy} onClick={() => { if (record && !record.preview && !read) addEvent(makeStoryReadEvent(`course:${c.id}`, new Date().toISOString())); setCourseStoryId(c.id); setScreen('course-story'); }} style={{ padding: '8px 14px', minHeight: 38, fontSize: 14 }}>{unlocked ? (read ? 'Read again' : 'Read') : 'Locked'}</Btn>
+                        <Btn kind="secondary" disabled={!unlocked || busy} onClick={() => leaveOverviewTo(() => { if (record && !record.preview && !read) addEvent(makeStoryReadEvent(`course:${c.id}`, new Date().toISOString())); setCourseStoryId(c.id); setScreen('course-story'); })} style={{ padding: '8px 14px', minHeight: 38, fontSize: 14 }}>{unlocked ? (read ? 'Read again' : 'Read') : 'Locked'}</Btn>
                       </div>
                     );
                   })}
+                  </div>
                 </div>
               )}
             </div>
@@ -4943,7 +4979,7 @@ export default function EduSphereApp() {
           const top = visibleCourses.reduce((best, c) => (GRADES.indexOf(c.grade) > GRADES.indexOf(best) ? c.grade : best), 'PK3');
           const enrolled = new Set(visibleCourses.map((c) => c.id));
           const mapArt = typeof window !== 'undefined' && Array.isArray(window.__eduMapArt) ? window.__eduMapArt : [];
-          const listed = (record.preview ? GAMES : gamesFor(top)).filter((g) => (youngLearner || g.deck || g.kind === 'pong' || g.kind === 'sprint' || g.kind === 'order' || ((g.rule || g.jump || g.map || g.balance) && !g.young)) && (!g.courseId || record.preview || enrolled.has(g.courseId)) && (!g.map || record.preview || mapArt.includes((mapFor(g.map) || {}).art)));
+          const listed = gamesFor(top).filter((g) => (youngLearner || g.deck || g.kind === 'pong' || g.kind === 'sprint' || g.kind === 'order' || ((g.rule || g.jump || g.map || g.balance) && !g.young)) && (!g.courseId || record.preview || enrolled.has(g.courseId)) && (!g.map || record.preview || mapArt.includes((mapFor(g.map) || {}).art)) && (g.kind !== 'sprint' || sprintPool(visibleModules, g).length > 0));
           const games = youngLearner ? listed : spreadKinds(listed);   // older lists take turns between kinds (2026-09-23, Mikey)
           if (!games.length) return null;
           const unlocked = record.preview ? games.length : Math.min(games.length, gamesUnlocked(record.events)); const open = openSubject === '__play';
@@ -4969,7 +5005,7 @@ export default function EduSphereApp() {
                       const restFraction = resting ? restLeft(g) / (restMinutesFor(top) * 60000) : 0;
                       return (
                         <button key={g.id} type="button" disabled={locked || resting} aria-label={locked ? 'Locked game' : resting ? 'Resting game' : `Play ${g.title}`}
-                          onClick={() => { setColoring(`play:${g.id}`); setScreen('coloring'); }} className={`edu-breathe${!locked && !resting ? ' edu-press' : ''}`}
+                          onClick={() => leaveOverviewTo(() => { setColoring(`play:${g.id}`); setScreen('coloring'); })} className={`edu-breathe${!locked && !resting ? ' edu-press' : ''}`}
                           style={{ position: 'relative', overflow: 'hidden', aspectRatio: '1 / 1', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 10, borderRadius: 12, background: locked ? 'rgba(255,255,255,0.55)' : '#FFFFFF', border: `2px solid ${locked || resting ? 'rgba(255,255,255,0.7)' : C.ink}`, cursor: locked || resting ? 'default' : 'pointer', '--beat': locked || resting ? 0 : 1, ...inBeat(2.2) }}>
                           {locked ? (
                             <svg viewBox="0 0 24 24" width="34" height="34" aria-hidden="true"><path d="M7 10V8a5 5 0 0110 0v2" fill="none" stroke={C.muted} strokeWidth="2" strokeLinecap="round" /><rect x="5" y="10" width="14" height="10" rx="2" fill={C.line} stroke={C.muted} strokeWidth="1.5" /></svg>
@@ -5082,7 +5118,7 @@ export default function EduSphereApp() {
     return (
       <div style={page}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={wrap}>
         <div className="edu-no-print" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-          <button type="button" onClick={() => setScreen('overview')} style={{ background: 'none', border: 'none', color: C.green, fontFamily: FONT, fontSize: 15, cursor: 'pointer', padding: 0 }}>Back to my courses</button>
+          <button type="button" onClick={() => { pendingScroll.current = overviewScroll.current; setScreen('overview'); }} style={{ background: 'none', border: 'none', color: C.green, fontFamily: FONT, fontSize: 15, cursor: 'pointer', padding: 0 }}>Back to my courses</button>
           <button type="button" onClick={() => window.print()} style={{ background: 'none', border: 'none', color: C.muted, fontFamily: FONT, fontSize: 13, cursor: 'pointer', padding: 0 }}>Print</button>
         </div>
         <p style={{ margin: '0 0 4px', fontSize: 14, color: C.muted, textAlign: 'center' }}>The story of {cc ? cc.title : 'this course'}</p>
@@ -5097,7 +5133,7 @@ export default function EduSphereApp() {
           <button type="button" onClick={() => setScreen('lesson')} style={{ background: 'none', border: 'none', color: C.green, fontFamily: FONT, fontSize: 15, cursor: 'pointer', padding: 0 }}>Back to the lesson</button>
           <button type="button" onClick={() => window.print()} style={{ background: 'none', border: 'none', color: C.muted, fontFamily: FONT, fontSize: 13, cursor: 'pointer', padding: 0 }}>Print</button>
         </div>
-        <div className="edu-story-sheet"><StoryBody story={storyFor(mod.id)} /></div>
+        <div className="edu-story-sheet"><StoryBody story={storyFor(mod.id)} pace={storyPaceFor(mod)} /></div>
         <div style={{ marginTop: 16 }}><Btn full onClick={startPractice}>Practice this</Btn></div>
       </div></div>
     );
@@ -6591,6 +6627,10 @@ export default function EduSphereApp() {
                       setMergeFrom('');
                     }} style={{ ...cardLink, color: C.gold }}>Merge here</button>
                   )}
+                  <span aria-hidden="true" style={{ flexBasis: '100%', height: 0 }} />{/* Wonder Questions is the third line of links (2026-09-23, Mikey), left aligned with the others; it opens a popup rather than acting at once. */}
+                  <button type="button" onClick={() => setWonderPopupFor(st.id)} style={{ ...cardLink, marginRight: 0, display: 'inline-flex', alignItems: 'center', gap: 8 }}>Wonder Questions
+                    <span aria-hidden="true" style={{ display: 'inline-block', fontSize: 12, fontWeight: 700, letterSpacing: 0.5, padding: '2px 10px', borderRadius: 999, background: wonderOnFor(st) ? C.green : C.line, color: wonderOnFor(st) ? '#FFFFFF' : C.muted, textDecoration: 'none' }}>{wonderOnFor(st) ? 'ON' : 'OFF'}</span>
+                  </button>
                 </div>
                 {certificatesPending(st, readyGrades[st.id] || []).map((g) => (
                   <div key={g} className="edu-rise" style={{ margin: '10px auto 0', maxWidth: 360, padding: '10px 12px', borderRadius: 12, background: '#FFF8E8', border: `2px solid ${C.gold}`, textAlign: 'center' }}>
@@ -6599,14 +6639,10 @@ export default function EduSphereApp() {
                     <button type="button" style={{ ...cardLink, marginRight: 0 }} onClick={() => applyRoster(setCertificateState(roster, st.id, g, 'skipped'))}>Not now</button>
                   </div>
                 ))}
-                {/* Wonder Questions stands on its own line, last, because it opens a popup rather than acting at once. */}
-                <div className="edu-student-wonder">
-                  <button type="button" onClick={() => setWonderPopupFor(st.id)} style={{ ...cardLink, marginRight: 0, display: 'inline-flex', alignItems: 'center', gap: 8 }}>Wonder Questions
-                    <span aria-hidden="true" style={{ display: 'inline-block', fontSize: 12, fontWeight: 700, letterSpacing: 0.5, padding: '2px 10px', borderRadius: 999, background: wonderOnFor(st) ? C.green : C.line, color: wonderOnFor(st) ? '#FFFFFF' : C.muted, textDecoration: 'none' }}>{wonderOnFor(st) ? 'ON' : 'OFF'}</span>
-                  </button>
                 </div>
                 </div>
                 </div>
+                {/* Open report sits centered at the foot of the card at every width (2026-09-23, Mikey). */}
                 <div className="edu-student-open" data-tour={i === 0 ? 'report' : undefined}><Btn kind="secondary" disabled={busy} onClick={async () => {
                     setBusy(true);
                     const rec = await withStarterCourses(await loadRecord(st.id));
@@ -6614,7 +6650,6 @@ export default function EduSphereApp() {
                     setRecommendedIds(recommendedCourseIds(rec.events, st.level));
                     setOpenSubjects([]); setShowAllCourses(false); setConfirmReset(false); setBusy(false); setScreen('educator-report');
                   }}>Open report</Btn></div>
-                </div>
                 {mergeFrom === st.id && <p style={{ color: C.gold, fontSize: 13, margin: '8px 0 0' }}>Now tap “Merge here” on the student to keep. Both histories are joined; nothing is deleted.</p>}
                 {wonderPopupFor === st.id && (
                   <div style={{ position: 'fixed', top: 0, right: 0, bottom: 0, left: 0, background: 'rgba(36, 41, 31, 0.55)', zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }} onClick={() => setWonderPopupFor(null)}>
@@ -6833,7 +6868,7 @@ export default function EduSphereApp() {
         {/* One picker for the student and one toggle for the view (2026-09-23, Mikey), instead of a select on every card. */}
         {storyRows.length > 1 && (
           <div className="edu-no-print" style={{ display: 'flex', justifyContent: 'center', margin: '10px 0 10px' }}>
-            <select aria-label="Student" value={who} onChange={(e) => { setStoryView({ ...storyView, student: e.target.value }); setStoryExpanded({}); }} style={{ fontFamily: FONT, fontSize: 15, padding: '8px 12px', borderRadius: 8, border: `1px solid ${C.line}`, background: C.surface, color: C.ink, width: 'min(340px, 100%)', textAlign: 'center', textAlignLast: 'center' }}>
+            <select aria-label="Student" value={who} onChange={(e) => { setStoryView({ ...storyView, student: e.target.value }); setStoryExpanded({}); }} style={{ fontFamily: FONT, fontSize: 15, padding: '8px 12px', borderRadius: 8, border: `1px solid ${C.line}`, background: C.greenSoft, color: C.ink, width: 'min(340px, 100%)', textAlign: 'center', textAlignLast: 'center' }}>
               <option value="all">All students</option>
               {storyRows.map((r) => <option key={r.id} value={r.id}>{r.label}</option>)}
             </select>
@@ -6852,14 +6887,14 @@ export default function EduSphereApp() {
                 <p style={{ margin: '8px 0 0', fontSize: 13, fontWeight: 600, color: C.muted }}>{label}</p>
                 {list.length === 0 && <p style={{ margin: '10px 0 0', fontSize: 14, color: C.muted }}>{empty}</p>}
                 {shown.map((it, i) => (
-                  <div key={`${it.moduleId}-${i}`} style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) auto', columnGap: 12, rowGap: 6, padding: '10px 0', borderTop: i === 0 ? 'none' : `1px solid ${C.line}` }}>
-                    <div style={{ gridRow: '1 / span 2', minWidth: 0 }}>
+                  <div key={`${it.moduleId}-${i}`} className="edu-story-card" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) auto', columnGap: 12, rowGap: 6, padding: '10px 0', borderTop: i === 0 ? 'none' : `1px solid ${C.line}` }}>
+                    <div className="edu-story-words" style={{ gridRow: '1 / span 2', minWidth: 0 }}>
                       <p style={{ margin: 0, fontWeight: 600 }}>{it.title}</p>
                       {it.at && <p style={{ margin: '1px 0 0', fontSize: 13, color: C.muted }}>{niceDateShort(it.at)}</p>}
                       <p style={{ margin: '2px 0 0', fontSize: 14, color: C.muted }}>{it.about ? `A story about ${it.about}. ` : ''}{it.goal ? (it.isCourse ? `The ${it.goal} course.` : `It teaches ${it.goal.charAt(0).toLowerCase() + it.goal.slice(1)}.`) : ''}{it.note ? ` ${it.note.charAt(0).toUpperCase() + it.note.slice(1)}.` : ''}</p>
                     </div>
-                    <div style={{ justifySelf: 'end' }}><StoryThumb serial={it.isCourse ? (courseStoryFor(it.moduleId.slice(7)) || {}).art : (storyFor(it.moduleId) || {}).art} /></div>
-                    <div style={{ justifySelf: 'end', alignSelf: 'end' }}><Btn kind="secondary" onClick={() => { setOpenStoryId(it.moduleId); setOpenStoryFor(row.id); }} style={{ padding: '8px 14px', minHeight: 38, fontSize: 14 }}>Open</Btn></div>
+                    <div className="edu-story-thumb" style={{ justifySelf: 'end' }}><StoryThumb serial={it.isCourse ? (courseStoryFor(it.moduleId.slice(7)) || {}).art : (storyFor(it.moduleId) || {}).art} /></div>
+                    <div className="edu-story-open" style={{ justifySelf: 'end', alignSelf: 'end' }}><Btn kind="secondary" onClick={() => { setOpenStoryId(it.moduleId); setOpenStoryFor(row.id); }} style={{ padding: '8px 14px', minHeight: 38, fontSize: 14 }}>Open</Btn></div>
                   </div>
                 ))}
                 {list.length > limit && (
@@ -6901,7 +6936,7 @@ export default function EduSphereApp() {
                     : <span style={{ fontSize: 13, color: C.muted }}>Read</span>}
                 </p>
               )}
-              <StoryBody story={openStory} />
+              <StoryBody story={openStory} pace={String(openStoryId).startsWith('course:') ? null : storyPaceFor(getModule(openStoryId))} />
             </div>
           </div>
         )}

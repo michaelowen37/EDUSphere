@@ -31,7 +31,8 @@ const favicon = 'data:image/svg+xml,' + encodeURIComponent(iconSvg);
 // The story pictures that exist, so the page shows a placeholder for the rest without asking the server.
 // The newest block of docs/WHATS-NEW.md becomes the one-time pop-up educators see after an update.
 const newsDoc = existsSync('docs/WHATS-NEW.md') ? readFileSync('docs/WHATS-NEW.md', 'utf8') : '';
-const newsBlock = (newsDoc.match(/^## (\S+)\s*\n([\s\S]*?)(?=\n## |$)/m) || []);
+// The first dated block, whole: the old regex stopped at the first line end (multiline $), so the pop-up showed one item.
+const newsBlock = (/^## (\S+)\s*\n([\s\S]*)$/.exec((newsDoc.split(/\n(?=## )/).find((b) => b.startsWith('## ')) || '')) || []);
 const news = newsBlock[1] ? { stamp: newsBlock[1], date: newsBlock[1], items: newsBlock[2].split('\n').filter((ln) => ln.startsWith('- ')).map((ln) => ln.slice(2).trim()) } : null;
 const artList = existsSync('art/stories') ? readdirSync('art/stories').filter((f) => f.endsWith('.webp')).map((f) => f.slice(0, -5)) : [];
 const audioList = existsSync('audio') ? readdirSync('audio').filter((f) => f.endsWith('.mp3')).map((f) => f.slice(0, -4)) : [];

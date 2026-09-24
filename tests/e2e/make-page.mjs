@@ -35,7 +35,7 @@ window.storage = {
   list: async function (p) { return { keys: Object.keys(__store).filter(function (k) { return k.startsWith(p || ''); }), prefix: p, shared: false }; },
 };
 window.__spoken = [];
-Object.defineProperty(window, 'speechSynthesis', { configurable: true, value: { cancel: function(){}, getVoices: function(){ return []; }, speak: function (u) { window.__spoken.push(u.text); } } });
+Object.defineProperty(window, 'speechSynthesis', { configurable: true, value: { cancel: function(){}, getVoices: function(){ return []; }, speak: function (u) { window.__spoken.push(u.text); (window.__rates = window.__rates || []).push(u.rate); setTimeout(function () { if (u.onend) u.onend({}); }, 30); } } });
 Object.defineProperty(window, 'SpeechSynthesisUtterance', { configurable: true, value: function (t) { this.text = t; } });
 </script>
 <script>${Object.entries(mods).map(([n, c]) => wrap(n, c)).join('\n')}</script>

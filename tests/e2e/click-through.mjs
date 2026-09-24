@@ -751,6 +751,38 @@ ok('a young learner sees no numbers and no My progress button', !t.includes('mod
 // With one course left in a subject its title is not repeated, so check the module names.
 ok('a switched-off course is hidden from the learner', !t.includes('What a fraction means') && !t.includes('Fractions'));
 
+// Spoken stories (2026-09-23, Mikey): an early-years story read aloud speaks its title and every paragraph in order, and the
+// paragraph being read lights up as the voice moves on. The test page's voice ends each line after thirty milliseconds.
+{
+  const S = await import('../../src/stories.mjs');
+  const story = S.STORIES['letter-names'];
+  await page.evaluate(() => window.__eduTest.goHome());
+  await page.waitForFunction(() => window.__eduTest && (window.__eduTest.screen === 'educator-pick' || window.__eduTest.screen === 'welcome'));
+  if ((await state()).screen === 'educator-pick') { await page.getByLabel('Walk through early years').click({ force: true }); await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview'); }
+  await page.evaluate(() => window.__eduTest.openStory('letter-names')); await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'story');
+  await page.evaluate(() => { window.__spoken = []; });
+  const readBtn = page.getByRole('button', { name: 'Read the story to me' });
+  if (await readBtn.count()) {
+    // The snail and the hare (2026-09-23): the snail reads at three quarters speed, the hare at the usual pace, and the choice sticks.
+    await page.getByRole('button', { name: 'Read slowly' }).click(); await page.evaluate(() => { window.__rates = []; });
+    await readBtn.click();
+    // The test page's voice ends each line in thirty milliseconds, so the whole story is spoken before the hare is tapped.
+    await page.waitForFunction((n) => window.__spoken.length >= n && !document.querySelector('button') !== null && [...document.querySelectorAll('button')].some((b) => b.textContent.trim() === 'Read the story to me'), story.words.length + 1);
+    const slowRates = await page.evaluate(() => (window.__rates || []).slice());
+    await page.getByRole('button', { name: 'Read at the usual speed' }).click(); await page.evaluate(() => { window.__rates = []; window.__spoken = []; });
+    await readBtn.click();
+    const lit = await page.waitForFunction(() => [...document.querySelectorAll('div')].some((d) => d.style && d.style.background && d.style.background.indexOf('rgb(') === 0 && d.textContent && d.textContent.length > 20 && getComputedStyle(d).backgroundColor !== 'rgba(0, 0, 0, 0)' && d.querySelector('p')), null, { timeout: 3000 }).then(() => true).catch(() => false);
+    await page.waitForTimeout(400);
+    const spoken = await page.evaluate(() => window.__spoken.slice());
+    const normalRates = await page.evaluate(() => (window.__rates || []).slice());
+    ok('the snail reads an early story slower than the hare', slowRates.length > 0 && normalRates.length > 0 && slowRates[0] < normalRates[0] && Math.abs(slowRates[0] / normalRates[0] - 0.75) < 0.02, `${slowRates[0]} vs ${normalRates[0]}`);
+    ok('the pace choice is remembered on the device', (await page.evaluate(() => { try { return window.localStorage.getItem('edusphere-story-pace'); } catch (e) { return 'n/a'; } })) === 'normal');
+    // The voice takes a story one sentence at a time, so the sentences joined back up must equal the title and every paragraph in order.
+    const tidy = (t) => t.replace(/\s+/g, ' ').trim();
+    ok('a spoken story reads its title and every paragraph in order', tidy(spoken.join(' ')) === tidy([`${story.title}.`, ...story.words].join(' ')));
+    ok('the paragraph being read lights up', lit);
+  } else ok('a spoken story reads its title and every paragraph in order (skipped: no voice on this page)', true);
+}
 ok('no browser errors during the whole run', errors.length === 0);
 if (errors.length) console.log(errors.slice(0, 5).join('\n'));
 await browser.close();

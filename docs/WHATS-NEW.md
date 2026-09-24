@@ -1,9 +1,23 @@
 # What's new
 
-The newest block is what educators see once, in a pop-up on the classroom page, after each update. Keep each item one plain sentence. The date line is the version stamp.
+The newest block is what educators see once, in a pop-up on the classroom page, after each update. Write it the way Mikey talks to a teacher: conversational, complete sentences, say what changed and why it matters, and skip the shorthand (2026-09-23). Two to four items. The date line is the version stamp.
+
+## 2026-09-24
+
+- The stories got a big upgrade. Every lesson from 3rd grade up through 11th grade math and science now ends with a real short story: a kid with a problem, the idea from the lesson that gets them out of it, and a line to remember it by. We're working through the rest of the older grades next.
+- The little ones got the same treatment in miniature. Every pre-K through 2nd grade story is now a tiny story with short sentences and simple words, so it sounds right when you read it out loud.
+- Under every early-years story you'll see a snail and a hare. Tap the snail and the story is read slowly. Tap the hare for normal speed. Pre-K starts on the snail, and the device remembers whichever one you picked last.
+- There's a new life skill for the youngest kids called "Finding an aww moment wherever you go." The idea is simple: on every outing, look for one small good thing (a cool bug, a stranger being kind, a pretty plant) and say it out loud. Kids who learn to notice the small stuff learn to enjoy the trip, not just the destination.
+- A few smaller fixes: the frog in Frog Jumps shows you exactly where it will land before you let go, closing a game or a story takes you right back to where you were on the page, and the Wonder Questions link is a third line under each student's name so it's easy to find.
 
 ## 2026-09-23
 
+- Every grade 1 and grade 2 story is a small story now, and grade 8 has its stories.
+- Every kindergarten story is a small story now, and the grade 8 math and science lessons have theirs.
+- Frog jumps show where the frog will land, games and stories return you to where you were, and every kindergarten math story is a small story now.
+- Every kindergarten reading story is a small story now, made to be read aloud, and the grade 7 math and science lessons have theirs.
+- Every grade 6 story is a real story now, and five grade 2 stories try the same shape in miniature.
+- Forty more stories are real stories now: all of grade 5 and the grade 6 math and science lessons.
 - Maps wait for their paintings now (a map appears once its picture is in place); Africa and South America are added; every grade 5 math and science story is a real story.
 - Where is it? reaches Asia and twenty-five states, and every grade 4 story is now a real story.
 - Where is it? reaches Europe and the ten biggest states; every grade 4 math and science story is now a real story.

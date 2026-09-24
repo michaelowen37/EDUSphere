@@ -30,5 +30,27 @@ for (const [id, cs] of Object.entries(COURSE_STORIES)) {
   const words = cs.words.join(' ').split(/\s+/).length;
   ok(`${id}: course story stays under 350 words and has three paragraphs, a title and a scene`, words <= 350 && cs.words.length === 3 && !!cs.title && !!cs.alt && /^CS\d+$/.test(cs.art), `${words} words`);
 }
+// Read-aloud rule for the early years (2026-09-23, Mikey): pre-K to grade 2 stories are spoken to five-year-olds, so no
+// sentence runs past twelve words and no word past three syllables (vowel groups, a silent e dropped).
+{
+  const L = await import('../src/logic.mjs');
+  const early = new Set(['PK3', 'PK4', 'K', '1', '2']);
+  const syl = (w) => { const x = w.toLowerCase().replace(/[^a-z]/g, ''); if (!x) return 0; let n = (x.match(/[aeiouy]+/g) || []).length; if (/[^aeiouy]e$/.test(x) && !/le$/.test(x) && n > 1) n -= 1; return Math.max(1, n); };
+  const bad = [];
+  for (const m of L.MODULES) { const st = STORIES[m.id]; const c = L.getCourse(m.courseId); if (!st || !c || !early.has(c.grade)) continue;
+    for (const par of st.words) for (const sent of par.split(/(?<=[.!?])\s+/)) { const ws = sent.split(/\s+/).filter(Boolean); if (ws.length > 12) bad.push(`${m.id}: ${ws.length} words`); for (const w of ws) if (syl(w) > 3) bad.push(`${m.id}: ${w}`); } }
+  ok('early-years stories read aloud kindly: sentences of twelve words or fewer, words of three syllables or fewer', bad.length === 0, bad.slice(0, 6).join(' | '));
+}
+// Course stories spread the cast (2026-09-23, Mikey): in a grade's Let's Read list, two stories side by side never lead
+// with the same core character, so nobody meets Georgette three times in a row.
+{
+  const L = await import('../src/logic.mjs');
+  const lead = (title) => (/^(Mike|Chloe|Frederick|Georgette|Savanah)\b/.exec(title) || [])[1] || null;
+  const bad = [];
+  for (const g of L.GRADES) { const titles = L.spreadLeads(L.COURSES.filter((c) => c.grade === g && COURSE_STORIES[c.id]), (c) => COURSE_STORIES[c.id].title).map((c) => COURSE_STORIES[c.id].title); titles.forEach((t, i) => { if (i && lead(t) && lead(t) === lead(titles[i - 1])) bad.push(`${g}: ${titles[i - 1]} / ${t}`); }); }
+  ok('course stories side by side never lead with the same core character, in the order Let\'s Read shows them', bad.length === 0, bad.join(' | '));
+  const heavy = []; for (const g of L.GRADES) { const leads = L.COURSES.filter((c) => c.grade === g && COURSE_STORIES[c.id]).map((c) => lead(COURSE_STORIES[c.id].title)).filter(Boolean); const counts = {}; leads.forEach((n) => { counts[n] = (counts[n] || 0) + 1; }); for (const [n, k] of Object.entries(counts)) if (leads.length >= 3 && k > Math.ceil(leads.length / 2)) heavy.push(`${g}: ${n} ${k} of ${leads.length}`); }
+  ok('no grade gives one core character more than half of its named course stories', heavy.length === 0, heavy.join(' | '));
+}
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exitCode = fail ? 1 : 0;   // never process.exit(): it can drop the last lines of a piped stdout (2026-09-23)

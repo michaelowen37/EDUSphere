@@ -1100,20 +1100,43 @@ export const GAMES = [
 // Older students' games in a spread order (2026-09-23, Mikey): the same kind never sits beside itself while another kind
 // is still waiting, so a list of decks and Quick fire rounds alternates instead of landing in blocks. Once only one kind
 // is left, its games simply follow one another.
-export function spreadKinds(games) {
-  // Each kind is spread evenly along the list (a kind with three games lands about a third of the way apart), and
-  // when the kind that is due next is the one just placed, another kind that is nearly due goes first instead.
-  const byKind = new Map();
-  for (const g of games) { if (!byKind.has(g.kind)) byKind.set(g.kind, []); byKind.get(g.kind).push(g); }
-  const queues = [...byKind.values()].map((items) => ({ items, stride: games.length / items.length, due: games.length / items.length / 2 }));
-  const out = []; let last = null;
-  while (out.length < games.length) {
-    const ready = queues.filter((q) => q.items.length).sort((a, b) => a.due - b.due);
-    const other = ready.find((q) => q.items[0].kind !== last && q.due - ready[0].due < 1.5);
-    const q = ready[0].items[0].kind === last && other ? other : ready[0];
-    out.push(q.items.shift()); q.due += q.stride; last = q.items.length || true ? out[out.length - 1].kind : last;
+// Let's Read spreads the cast (2026-09-23, Mikey): the course stories of a grade are listed so that two side by side never
+// lead with the same core character when another order is possible; otherwise the course order stands.
+export function storyLead(title) { const m = /^(Mike|Chloe|Frederick|Georgette|Savanah)\b/.exec(String(title || '')); return m ? m[1] : null; }
+export function spreadLeads(items, titleOf) {
+  // At each step the most frequent remaining character goes next when allowed, so two of a kind are not left for the end.
+  const left = [...items]; const out = [];
+  while (left.length) {
+    const last = out.length ? storyLead(titleOf(out[out.length - 1])) : null;
+    const counts = {}; for (const it of left) { const l = storyLead(titleOf(it)); if (l) counts[l] = (counts[l] || 0) + 1; }
+    const allowed = left.filter((it) => !last || storyLead(titleOf(it)) !== last);
+    const pool = allowed.length ? allowed : left; let best = pool[0];
+    for (const it of pool) if ((counts[storyLead(titleOf(it))] || 0) > (counts[storyLead(titleOf(best))] || 0)) best = it;
+    out.push(best); left.splice(left.indexOf(best), 1);
   }
   return out;
+}
+export function spreadKinds(games) { return spreadBy(games, (g) => g.kind); }
+// Spread a list so items with the same key take turns (2026-09-23): each key is spread evenly along the list, and when
+// the key due next is the one just placed, another key that is nearly due goes first instead. Used for game kinds and
+// for the course stories' characters, so no character carries several stories in a row.
+export function spreadBy(items, keyOf) {
+  const byKey = new Map();
+  for (const it of items) { const k = keyOf(it); if (!byKey.has(k)) byKey.set(k, []); byKey.get(k).push(it); }
+  const queues = [...byKey.entries()].map(([key, list]) => ({ key, items: list, stride: items.length / list.length, due: items.length / list.length / 2 }));
+  const out = []; let last = null;
+  while (out.length < items.length) {
+    const ready = queues.filter((q) => q.items.length).sort((a, b) => a.due - b.due);
+    const other = ready.find((q) => q.key !== last && q.due - ready[0].due < 1.5);
+    const q = ready[0].key === last && other ? other : ready[0];
+    out.push(q.items.shift()); q.due += q.stride; last = q.key;
+  }
+  return out;
+}
+// Quick fire draws only readers' lessons from grade 3 up; a student (or a walk-through) with none gets no Quick fire tile.
+export function sprintPool(modules, game) {
+  const seen = new Set();
+  return modules.map((m) => getModule(m.id) || m).filter((m) => { if (seen.has(m.id)) return false; seen.add(m.id); const c = m.courseId ? getCourse(m.courseId) : null; return c && !c.readAloud && GRADES.indexOf(c.grade) >= GRADES.indexOf('3') && (!game.subject || c.subject === game.subject); }).flatMap((m) => [...new Set(m.generators)].map((g) => ({ g, m })));
 }
 // Rule decks: two named groups of short things a student tells apart by eye and hand. Catch catches group A and lets
 // group B fall; Path steps only on group A; Buckets drags every chip to its group. Number groups are computed; a word
@@ -19385,6 +19408,20 @@ export const LIFE_SKILLS = [
     title: 'Calming your body down',
     why: 'Big feelings land in the body before they reach words. A child who can slow their own breathing has a way out of a moment that would otherwise run away with them. It works because it is physical, not because they understand it.',
     ways: ['Breathe out for longer than you breathe in, and count it together.', 'Practice when they are calm, so the skill is there when they are not.', 'Do it alongside them rather than instructing from across the room.'],
+  },
+  {
+    id: 'ls-aww-moments',
+    stage: 'early',
+    title: 'Finding an aww moment wherever you go',
+    why: 'A child who looks for one small good thing on every outing, a beetle crossing the path, a stranger holding a door, a flower growing out of a wall, learns to notice. Noticing is the root of wonder, and wonder is what makes a walk to the store a walk instead of a wait. A child who can find the small thing in an ordinary afternoon grows into someone who enjoys the road, not just the place it ends.',
+    ways: [
+      'On every outing, everyone looks for one aww moment: something small that makes you stop. A cool insect, a kind stranger, a pretty plant, a dog with a job. Say it out loud when you see it.',
+      'Ask at dinner: what was your aww moment today? Take turns. A day with none is not a failure, it is a day to look harder tomorrow.',
+      'Keep it small on purpose. A ladybug counts. A sunset counts, but so does the way rain runs down a window. Big things find you; small things have to be found.',
+      'Let the child lead. Crouch when they crouch. The moment they choose is the one that teaches them to look, even when it is a bottle cap.',
+      'Point out the kindness ones by name: that man let the lady go first. Children copy what they are shown to notice.',
+      'Over a year, the child stops waiting for the arrival and starts enjoying the going. That is the whole point, and it cannot be taught with a sentence.',
+    ],
   },
   {
     id: 'ls-breathing',

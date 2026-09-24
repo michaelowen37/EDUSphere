@@ -4,14 +4,26 @@ A standing brief to paste into Leonardo's assistant or agent, or to keep beside 
 
 ## The brief
 
-You are illustrating EduSphere, a children's learning app for pre-K through high school. Every image follows one template and one look:
+You are illustrating EduSphere, a children's learning app for pre-K through high school. Every image follows one template and one look, so a math picture and a history picture sit side by side as one family:
 
-`[Core Subject Concept], [Playful Modifier]. Style: Clean 3D vector illustration, vibrant and engaging color palette, minimalist background, balanced lighting. Professional educational graphic style, clear focal point, uncluttered layout, [Visual Anchor].`
+`[Core Subject Concept], [Playful Modifier]. Style: Clean 3D vector illustration, vibrant and engaging color palette, minimalist [scene] background, balanced lighting. Professional educational graphic style, clear focal point, uncluttered layout, [Visual Anchor].`
+
+The modifier and the anchor change with the subject, and nothing else does:
+
+| Subject | Playful modifier | Visual anchor and composition | Background |
+|---|---|---|---|
+| Science | wonder-filled and vibrant, stylized, curious | dynamic close-up, glowing elements, soft shadows | minimalist lab or field background |
+| History | friendly and whimsical yet respectful, stylized historical accuracy | heroic composition, soft cinematic lighting, simple period elements | minimalist period background |
+| Math | cheerful and neat, colorful, geometric | distinct geometric shapes, high-contrast axes, no text labels | minimalist solid background |
+| Reading and Writing | imaginative and expressive, storybook style | character-focused, dreamy lighting, central framing | minimalist library or storybook background |
+| Art, Music, Technology, Health | as Reading for people, as Science for things | character-focused or dynamic close-up | minimalist background |
+
+Sample prompts in this voice: a baking soda volcano erupting with colorful foam, wonder-filled and vibrant, minimalist lab background, dynamic close-up. George Washington crossing the Delaware, friendly and whimsical yet respectful, minimalist river background, heroic composition. A 3D pie chart of a pizza cut into parts, cheerful and neat, minimalist solid background, distinct geometric shapes. A friendly owl in oversized glasses reading a giant glowing book, imaginative and expressive, minimalist library background, character-focused.
 
 Rules that never change:
-1. No text of any kind in the image: no words, letters, labels, numbers, signs, logos. Anything that needs writing (a periodic table, a chart, a clock face) is drawn by the app, not by you. Negative prompt, always: `text, words, letters, labels, numbers, logos, watermark, signature, blurry, extra fingers, extra limbs, deformed hands, photorealistic skin`.
-2. One model pipeline for the whole set (Leonardo Vision XL or Diffusion XL with the 3D Render or Cute 3D style), the same aspect ratio for story scenes (4:3), minimalist or solid backgrounds, one clear focal point.
-3. Wholesome always: kind faces, warm light, nothing frightening, no violence shown even in history scenes (show the walls of the Alamo, not the battle).
+1. No text of any kind in the image: no words, letters, labels, numbers, signs, logos. Anything that needs writing (a periodic table, a chart, a clock face, a map's names) is drawn by the app, not by you. Negative prompt, always: `text, words, letters, labels, numbers, logos, watermark, signature, blurry, extra fingers, extra limbs, deformed hands, photorealistic skin`.
+2. One model pipeline for the whole set: Leonardo Vision XL or Leonardo Diffusion XL with the 3D Render or Cute 3D style, the same aspect ratio for story scenes (4:3), minimalist or solid backgrounds, one clear focal point. Never switch models between subjects; the template gives the variety.
+3. Keep backgrounds minimalist so the eye lands on the concept. Wholesome always: kind faces, warm light, nothing frightening, no violence shown even in history scenes (show the walls of the Alamo, not the battle; show the torn map, not the field).
 4. Recurring characters must be recognizable across years. Each has a character sheet (C serial). When a scene names a sheet, use that sheet as the character reference at high strength, keep the face, eye color, skin tone, hair color and build exactly, and change only what the scene asks for (age, clothes, setting). Never redesign a character to fit a scene.
 
 ## The cast, as they age (same person, features kept)

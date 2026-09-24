@@ -836,6 +836,14 @@ const PRINT_STYLES = `
   body.edu-story-mode .edu-story-sheet { position: absolute; left: 0; top: 0; width: 100%; }
   body.edu-story-mode .edu-no-print { display: block !important; }   /* the story window is inside a no-print overlay; the mode shows only the sheet anyway */
   body.edu-story-mode .edu-story-sheet button { display: none; }
+  /* A story book prints alone: the cover, then one story per page, the long story last. */
+  body.edu-book-mode * { visibility: hidden; }
+  body.edu-book-mode .edu-book-sheet, body.edu-book-mode .edu-book-sheet * { visibility: visible; }
+  body.edu-book-mode .edu-book-sheet { position: absolute; left: 0; top: 0; width: 100%; }
+  body.edu-book-mode .edu-book-story { page-break-before: always; break-before: page; }
+  body.edu-book-mode .edu-book-sheet button { display: none; }
+  /* A book or a story with no painting yet prints as words alone (2026-09-23, Mikey): the dashed frames stay on screen only. */
+  body.edu-book-mode .edu-art-placeholder, body.edu-story-mode .edu-art-placeholder { display: none !important; }
   /* The weekly note prints alone, from its own Print link. */
   body.edu-note-mode * { visibility: hidden; }
   body.edu-note-mode .edu-weekly-note, body.edu-note-mode .edu-weekly-note * { visibility: visible; }
@@ -904,11 +912,9 @@ const KID_ANIMATION = `
   .edu-name-grade { display: block; margin-top: 3px; font-size: 12px; font-weight: 400; line-height: 1.2; color: ${C.muted}; }
 
   @media (min-width: 600px) { .edu-name-grid-two { grid-template-columns: 1fr 1fr; } }
-  /* The student card: on a phone the name, grade and links stay left and Open report sits below them, centered;
-     on a laptop the name, grade and links stack on the left and Open report sits on the right, centered on them. */
+  /* The student card (2026-09-23, Mikey): one centered column at every width. The picture sits above the name,
+     the name and grade under it, three lines of links, then Open report, all on the card's center line. */
   .edu-student-body { display: block; }
-  /* On a phone the picture sits above the name, so every name, grade and link starts at the card's left edge,
-     with or without a picture; on a laptop the picture returns beside them. */
   .edu-student-left { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 6px; }
   .edu-student-name-row { display: flex; flex-direction: column-reverse; align-items: center; gap: 6px; }
   .edu-student-left > div { width: 100%; }
@@ -928,12 +934,6 @@ const KID_ANIMATION = `
   .edu-student-left .edu-student-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 2px 16px; width: 100%; }
   .edu-student-actions button { margin-right: 0 !important; font-size: 15px !important; white-space: nowrap; }
   .edu-student-open { display: flex; justify-content: center; margin-top: 12px; }
-  @media (min-width: 1000px) {
-    .edu-student-body { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
-    .edu-student-left { flex: 1 1 auto; min-width: 0; text-align: left; flex-direction: column; align-items: flex-start; gap: 4px; }
-    .edu-student-name-row { flex-direction: row; align-items: center; gap: 12px; }
-    .edu-student-left > div { width: auto; }
-  }
   /* Section titles read centered at every width. A fold keeps its count and chevron pinned to its
      right edge while the title centers. */
   /* A phone in dark mode was painting the inputs and buttons dark. This page has one palette. */
@@ -2027,7 +2027,7 @@ function StoryArt({ serial, alt, fallback = null }) {
       {!missing && <img src={`art/stories/${serial}.webp`} alt={alt} loading="lazy" onError={() => setMissing(true)} style={{ display: 'block', width: '100%', borderRadius: 12 }} />}
       {missing && fallback && <div style={{ padding: '4px 0 0' }}><Picture visual={fallback} /><p style={{ margin: '4px 0 0', fontSize: 12, color: C.muted, textAlign: 'center' }}>Illustration {serial} to come</p></div>}
       {missing && !fallback && (
-        <div aria-label={`Illustration ${serial} to come`} style={{ aspectRatio: '4 / 3', borderRadius: 12, border: `2px dashed ${C.muted}`, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 6, color: C.muted, background: 'rgba(255,255,255,0.5)' }}>
+        <div className="edu-art-placeholder" aria-label={`Illustration ${serial} to come`} style={{ aspectRatio: '4 / 3', borderRadius: 12, border: `2px dashed ${C.muted}`, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 6, color: C.muted, background: 'rgba(255,255,255,0.5)' }}>
           <svg viewBox="0 0 24 24" width="34" height="34" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2" fill="none" stroke="currentColor" strokeWidth="1.6" /><circle cx="8.5" cy="9.5" r="1.8" fill="currentColor" /><path d="M4 18l5-5 4 4 3-3 4 4" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" /></svg>
           <span style={{ fontSize: 13, fontWeight: 600, letterSpacing: 0.5 }}>Illustration {serial}</span>
         </div>
@@ -3912,6 +3912,7 @@ export default function EduSphereApp() {
   // can leave earlier with the button, and start the picture over as often as they like.
   const [showRequirements, setShowRequirements] = useState(false);   // a writing assignment's requirements popup
   const [storyOpen, setStoryOpen] = useState(false);                // the story fold under a lesson's key idea
+  const [bookCourseId, setBookCourseId] = useState('');             // the course whose printable story book is open (2026-09-23, Mikey)
   const [certFor, setCertFor] = useState(null);                    // { id, grade } while the certificate screen is open
   const [certTemplate, setCertTemplate] = useState('classic');
   const [certName, setCertName] = useState('');                    // the name the educator types for the sheet; kept only in memory
@@ -4501,7 +4502,7 @@ export default function EduSphereApp() {
   useEffect(() => { setStoryOpen(false); setAnotherWay(0); }, [screen === 'lesson' ? (mod && mod.id) : null]);
   // Opening a report remembers the visit on the roster, after noting when the last one was.
   useEffect(() => { if (screen !== 'educator-report' || !educatorRecord || !roster || educatorRecord.preview) return; const st = findStudent(roster, educatorRecord.name); setReportOpenedFrom(st && st.reportSeenAt ? st.reportSeenAt : null); const next = setReportSeen(roster, educatorRecord.name, new Date().toISOString()); setRoster(next); saveRoster(next); setWeeklyEdit(null); setWeeklyEditing(false); }, [screen === 'educator-report' ? (educatorRecord && educatorRecord.name) : null]);
-  useEffect(() => { if (typeof document !== 'undefined') { document.body.classList.toggle('edu-cert-mode', screen === 'certificate'); document.body.classList.toggle('edu-story-mode', screen === 'story' || screen === 'course-story'); } }, [screen]);
+  useEffect(() => { if (typeof document !== 'undefined') { document.body.classList.toggle('edu-cert-mode', screen === 'certificate'); document.body.classList.toggle('edu-story-mode', screen === 'story' || screen === 'course-story'); document.body.classList.toggle('edu-book-mode', screen === 'story-book'); } }, [screen]);
   // The what's-new pop-up: once per build, the first time an educator lands on the classroom after it.
   const tourSheetRef = useRef(null);                               // the sheet, scrolled back to its top on every card
   const tourBegun = useRef(false);                                 // the tour starts once per sign-in, not every time the classroom page shows
@@ -6940,6 +6941,50 @@ export default function EduSphereApp() {
             </div>
           </div>
         )}
+        {/* A printable story book per course (2026-09-23, Mikey): every module story in order, the long story last, one story a page. */}
+        {(() => { const withBook = COURSES.filter((c) => courseStoryFor(c.id)); const chosen = bookCourseId || (withBook[0] ? withBook[0].id : ''); return withBook.length ? (
+          <div style={{ ...card, marginTop: 18, textAlign: 'center' }}>
+            <p style={{ margin: '0 0 6px', fontWeight: 600 }}>Story book</p>
+            <p style={{ margin: '0 0 12px', fontSize: 14, color: C.muted }}>Every story in a course, in order, with the long story at the end. Open it, then print it or save it as a PDF for a class that reads on paper.</p>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, justifyContent: 'center', alignItems: 'center' }}>
+              <select aria-label="Story book course" value={chosen} onChange={(e) => setBookCourseId(e.target.value)} style={{ fontFamily: FONT, fontSize: 15, padding: '8px 12px', borderRadius: 8, border: `1px solid ${C.line}`, background: C.greenSoft, color: C.ink, width: 'min(340px, 100%)' }}>
+                {withBook.map((c) => <option key={c.id} value={c.id}>{gradeLabel(c.grade)}: {c.title}</option>)}
+              </select>
+              <Btn kind="secondary" onClick={() => { setBookCourseId(chosen); setScreen('story-book'); }}>Open the book</Btn>
+            </div>
+          </div>
+        ) : null; })()}
+      </div></div>
+    );
+  }
+  if (screen === 'story-book' && bookCourseId && getCourse(bookCourseId)) {
+    const c = getCourse(bookCourseId); const cs = courseStoryFor(c.id);
+    const chapters = c.modules.map((m) => ({ m, st: storyFor(m.id) })).filter((x) => x.st);
+    return (
+      <div style={page}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} /><div className="edu-wrap" style={wrap}>
+        <div className="edu-no-print" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10, marginBottom: 8 }}>
+          <button type="button" onClick={() => setScreen('story-log')} style={linkBtn}>Back to Story Log</button>
+          <Btn kind="secondary" onClick={() => { if (typeof window !== 'undefined' && window.print) window.print(); }}>Print or save as PDF</Btn>
+        </div>
+        <div className="edu-book-sheet">
+          <div style={{ ...card, textAlign: 'center', padding: '48px 22px' }}>
+            <p style={{ margin: '0 0 6px', fontSize: 14, color: C.muted, letterSpacing: 1, textTransform: 'uppercase' }}>EduSphere story book</p>
+            <h1 style={{ fontSize: 30, margin: '0 0 8px' }}>{c.title}</h1>
+            <p style={{ margin: 0, fontSize: 16, color: C.muted }}>{gradeLabel(c.grade)}. {chapters.length} short {chapters.length === 1 ? 'story' : 'stories'}{cs ? ' and one long story' : ''}.</p>
+          </div>
+          {chapters.map(({ m, st }, i) => (
+            <div key={m.id} className="edu-book-story" style={{ marginTop: 18 }}>
+              <p style={{ margin: '0 0 2px', fontSize: 13, color: C.muted, textAlign: 'center' }}>Story {i + 1}. {m.title}</p>
+              <StoryBody story={st} />
+            </div>
+          ))}
+          {cs && (
+            <div className="edu-book-story" style={{ marginTop: 18 }}>
+              <p style={{ margin: '0 0 2px', fontSize: 13, color: C.muted, textAlign: 'center' }}>The long story</p>
+              <StoryBody story={cs} />
+            </div>
+          )}
+        </div>
       </div></div>
     );
   }

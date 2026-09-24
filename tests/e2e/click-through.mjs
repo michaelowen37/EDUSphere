@@ -503,7 +503,38 @@ await page.waitForTimeout(400);
   ok('switching a course off unticks it and leaves the others ticked', !(await fractionsBox.first().isChecked()) && (await countingBox.first().isChecked())); }
 // Backup: the file is the backup, and restoring never loses anything
 await tap('Back to Classroom');
+// The story book (2026-09-23, Mikey): from the Story Log, one course's stories in order with the long story last, ready to print.
+{
+  await tap('Story Log'); await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'story-log');
+  const L = await import('../../src/logic.mjs'); const S = await import('../../src/stories.mjs');
+  await page.selectOption('select[aria-label="Story book course"]', 'math-4');
+  await tap('Open the book'); await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'story-book');
+  const expected = L.getCourse('math-4').modules.filter((m) => S.STORIES[m.id]).length + 1;
+  const n = await page.evaluate(() => document.querySelectorAll('.edu-book-story').length);
+  ok('the story book holds every module story and the long story', n === expected);
+  const t = await text();
+  ok('the book opens on a cover with the course title and a print button', t.includes('EduSphere story book') && t.includes('The long story') && (await page.getByRole('button', { name: 'Print or save as PDF' }).count()) === 1);
+  await tap('Back to Story Log'); await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'story-log');
+  await tap('Back to Classroom');
+}
 ok('the classroom page carries a backup link at the foot', (await page.getByRole('button', { name: 'Backup classroom' }).count()) === 1);
+// The classroom at laptop width (2026-09-23, Mikey): on every student card the name, each row of links and Open report sit on one
+// center line, within four pixels; a screenshot lands in tests/e2e/out for the release checklist's own eyes.
+{
+  await page.setViewportSize({ width: 1280, height: 800 }); await page.waitForTimeout(250);
+  const off = await page.evaluate(() => {
+    const mid = (el) => { const r = el.getBoundingClientRect(); return r.left + r.width / 2; };
+    const out = [];
+    for (const btn of document.querySelectorAll('.edu-student-open')) {
+      const cardEl = btn.parentElement; const center = mid(cardEl); const items = [btn.querySelector('button'), ...cardEl.querySelectorAll('.edu-student-name-row, .edu-student-actions')];
+      for (const el of items) if (el && Math.abs(mid(el) - center) > 4) out.push(`${(el.className || el.textContent.slice(0, 12)).toString().slice(0, 30)} off by ${Math.round(mid(el) - center)}`);
+    }
+    return out;
+  });
+  ok('at laptop width every student card is one centered column', off.length === 0, off.slice(0, 3).join(' | '));
+  await page.screenshot({ path: 'tests/e2e/out/classroom-1280.png', fullPage: false });
+  await page.setViewportSize({ width: 360, height: 780 }); await page.waitForTimeout(250);
+}
 // The standards map: every module against the state's own standards, opened from a student's report
 await page.getByRole('button', { name: 'Open report' }).first().click();
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'educator-report');

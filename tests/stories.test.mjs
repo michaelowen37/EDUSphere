@@ -52,5 +52,15 @@ for (const [id, cs] of Object.entries(COURSE_STORIES)) {
   const heavy = []; for (const g of L.GRADES) { const leads = L.COURSES.filter((c) => c.grade === g && COURSE_STORIES[c.id]).map((c) => lead(COURSE_STORIES[c.id].title)).filter(Boolean); const counts = {}; leads.forEach((n) => { counts[n] = (counts[n] || 0) + 1; }); for (const [n, k] of Object.entries(counts)) if (leads.length >= 3 && k > Math.ceil(leads.length / 2)) heavy.push(`${g}: ${n} ${k} of ${leads.length}`); }
   ok('no grade gives one core character more than half of its named course stories', heavy.length === 0, heavy.join(' | '));
 }
+// The story arc is a hard rule now (2026-09-23, Mikey): every module story has at least four beats, and a story from
+// grade 3 up runs eighty words or more (the four-step arc), an early-years story twenty-five or more (the small arc).
+{
+  const L = await import('../src/logic.mjs');
+  const bad = [];
+  for (const m of L.MODULES) { const st = STORIES[m.id]; const c = L.getCourse(m.courseId); if (!st || !c) continue;
+    const early = ['PK3', 'PK4', 'K', '1', '2'].includes(c.grade); const words = st.words.join(' ').split(/\s+/).filter(Boolean).length;
+    if (st.words.length < 4 || words < (early ? 25 : 80)) bad.push(`${m.id}: ${st.words.length} paragraphs, ${words} words`); }
+  ok('every module story keeps the arc: four beats, eighty words from grade 3 up, twenty-five in the early years', bad.length === 0, bad.slice(0, 5).join(' | '));
+}
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exitCode = fail ? 1 : 0;   // never process.exit(): it can drop the last lines of a piped stdout (2026-09-23)

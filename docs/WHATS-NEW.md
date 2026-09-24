@@ -4,7 +4,9 @@ The newest block is what educators see once, in a pop-up on the classroom page, 
 
 ## 2026-09-24
 
-- The stories got a big upgrade. Every math, science, reading, writing and history lesson from 3rd grade all the way through college now ends with a real short story: a kid with a problem, the idea from the lesson that gets them out of it, and a line to remember it by. The art, music, technology and health lessons are next.
+- The stories got a big upgrade. Every lesson in the app, from pre-K through college, now ends with a real short story: a kid with a problem, the idea from the lesson that gets them out of it, and a line to remember it by. That's all 454 of them.
+- A story book for a course that doesn't have its paintings yet prints clean, just the words, with no empty picture frames.
+- You can print a story book for any course. Open the Story Log, pick a course at the bottom of the page, and tap Open the book. You'll get a cover, every story in order, and the long story at the end, one story per page, ready to print or save as a PDF for a class that reads on paper.
 - The little ones got the same treatment in miniature. Every pre-K through 2nd grade story is now a tiny story with short sentences and simple words, so it sounds right when you read it out loud.
 - Under every early-years story you'll see a snail and a hare. Tap the snail and the story is read slowly. Tap the hare for normal speed. Pre-K starts on the snail, and the device remembers whichever one you picked last.
 - There's a new life skill for the youngest kids called "Finding an aww moment wherever you go." The idea is simple: on every outing, look for one small good thing (a cool bug, a stranger being kind, a pretty plant) and say it out loud. Kids who learn to notice the small stuff learn to enjoy the trip, not just the destination.

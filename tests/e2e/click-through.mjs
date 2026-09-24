@@ -507,13 +507,23 @@ await tap('Back to Classroom');
 {
   await tap('Story Log'); await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'story-log');
   const L = await import('../../src/logic.mjs'); const S = await import('../../src/stories.mjs');
+  // The picker lists every course with any story, youngest grade first (2026-09-24, Mikey): a pre-K course comes before a grade 3 one.
+  const options = await page.evaluate(() => [...document.querySelector('select[aria-label="Story book course"]').options].map((o) => o.value));
+  ok('the book picker lists every course with a story, pre-K first', options.length > 40 && options.indexOf('math-4') > options.findIndex((v) => /^(math|reading)-k$|^(math|reading)-pk/.test(v)) && options.every((v, i) => i === 0 || L.GRADES.indexOf(L.getCourse(v).grade) >= L.GRADES.indexOf(L.getCourse(options[i - 1]).grade)), options.slice(0, 4).join(','));
   await page.selectOption('select[aria-label="Story book course"]', 'math-4');
-  await tap('Open the book'); await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'story-book');
+  await tap('Open Book'); await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'story-book');
   const expected = L.getCourse('math-4').modules.filter((m) => S.STORIES[m.id]).length + 1;
   const n = await page.evaluate(() => document.querySelectorAll('.edu-book-story').length);
   ok('the story book holds every module story and the long story', n === expected);
   const t = await text();
-  ok('the book opens on a cover with the course title and a print button', t.includes('EduSphere story book') && t.includes('The long story') && (await page.getByRole('button', { name: 'Print or save as PDF' }).count()) === 1);
+  ok('the book opens on a cover with the course title and a print button', t.includes('EduSphere') && t.includes('The long story') && (await page.getByRole('button', { name: 'Print or Save' }).count()) === 1);
+  // Printed, the book is many pages: the cover alone on the first, then one story a page (a long story may take two).
+  await page.emulateMedia({ media: 'print' });
+  await page.pdf({ path: 'tests/e2e/out/story-book.pdf', format: 'Letter', printBackground: false });
+  await page.emulateMedia({ media: 'screen' });
+  const pages = Number((execSync('pdfinfo tests/e2e/out/story-book.pdf').toString().match(/Pages:\s+(\d+)/) || [])[1] || 0);
+  const firstPage = execSync('pdftotext -f 1 -l 1 tests/e2e/out/story-book.pdf -').toString();
+  ok('the printed book runs one story a page after a cover of its own', pages >= expected + 1 && /edusphere/i.test(firstPage) && !firstPage.includes('Story 1.'), `${pages} pages`);
   // The phone's back button (2026-09-24, Mikey): from the book it goes to the Story Log, from the Story Log to the classroom,
   // never to the loading screen that the courses page becomes with no student signed in.
   await page.goBack(); await page.waitForTimeout(300);

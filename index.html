@@ -33,7 +33,7 @@ window.__eduArt = [];
 window.__eduColoringArt = [];
 window.__eduMapArt = [];
 window.__eduAudio = [];
-window.__eduNews = {"stamp":"2026-09-24","date":"2026-09-24","items":["The stories got a big upgrade. Every lesson in the app, from pre-K through college, now ends with a real short story: a kid with a problem, the idea from the lesson that gets them out of it, and a line to remember it by. That's all 454 of them.","A story book for a course that doesn't have its paintings yet prints clean, just the words, with no empty picture frames.","You can print a story book for any course. Open the Story Log, pick a course at the bottom of the page, and tap Open the book. You'll get a cover, every story in order, and the long story at the end, one story per page, ready to print or save as a PDF for a class that reads on paper.","The little ones got the same treatment in miniature. Every pre-K through 2nd grade story is now a tiny story with short sentences and simple words, so it sounds right when you read it out loud.","Under every early-years story you'll see a snail and a hare. Tap the snail and the story is read slowly. Tap the hare for normal speed. Pre-K starts on the snail, and the device remembers whichever one you picked last.","There's a new life skill for the youngest kids called \"Finding an aww moment wherever you go.\" The idea is simple: on every outing, look for one small good thing (a cool bug, a stranger being kind, a pretty plant) and say it out loud. Kids who learn to notice the small stuff learn to enjoy the trip, not just the destination.","If you pressed your phone's back button on the Story Log page and got stuck on a loading screen, that's fixed. Back takes you to the classroom now.","If a page ever breaks on your phone, you'll see a short message and a Go home button instead of a blank screen. Nothing you did is lost; the app just opens fresh.","A few smaller fixes: the frog in Frog Jumps shows you exactly where it will land before you let go, closing a game or a story takes you right back to where you were on the page, and the Wonder Questions link is a third line under each student's name so it's easy to find."]};
+window.__eduNews = {"stamp":"2026-09-24","date":"2026-09-24","items":["The stories got a big upgrade. Every lesson in the app, from pre-K through college, now ends with a real short story: a kid with a problem, the idea from the lesson that gets them out of it, and a line to remember it by. That's all 454 of them.","A story book for a course that doesn't have its paintings yet prints clean, just the words, with no empty picture frames.","You can print a story book for any course, pre-K through college. Open the Story Log, pick a course in the Let's Read! card at the bottom of the page, and tap Open Book. You'll get a cover, every story in order, and the long story at the end, one story per page, ready to print or save as a PDF for a class that reads on paper.","The little ones got the same treatment in miniature. Every pre-K through 2nd grade story is now a tiny story with short sentences and simple words, so it sounds right when you read it out loud.","Under every early-years story you'll see a snail and a hare. Tap the snail and the story is read slowly. Tap the hare for normal speed. Pre-K starts on the snail, and the device remembers whichever one you picked last.","There's a new life skill for the youngest kids called \"Finding an aww moment wherever you go.\" The idea is simple: on every outing, look for one small good thing (a cool bug, a stranger being kind, a pretty plant) and say it out loud. Kids who learn to notice the small stuff learn to enjoy the trip, not just the destination.","If you pressed your phone's back button on the Story Log page and got stuck on a loading screen, that's fixed. Back takes you to the classroom now.","If a page ever breaks on your phone, you'll see a short message and a Go home button instead of a blank screen. Nothing you did is lost; the app just opens fresh.","A few smaller fixes: the frog in Frog Jumps shows you exactly where it will land before you let go, closing a game or a story takes you right back to where you were on the page, and the Wonder Questions link is a third line under each student's name so it's easy to find."]};
 // Installable app: the worker keeps a copy of the page for offline use and asks the network first, so a fresh build always wins.
 if ('serviceWorker' in navigator && /^https?:/.test(location.protocol)) { navigator.serviceWorker.register('sw.js').catch(function () {}); }
 var process = { env: { NODE_ENV: 'production' } };
@@ -47280,7 +47280,7 @@ function PinInput({ value, onChange, placeholder, style, onEnter = null }) {
 }
 // A stamp of when this copy of the page was built, so a stale page in a cache can be told apart
 // from a fresh one at a glance. Written by the build, never by hand.
-const BUILD_STAMP = '2026-09-24 06:20 AM CDT';
+const BUILD_STAMP = '2026-09-24 06:56 AM CDT';
 function ContactLine({ onOpen, inline = false }) {
     return (react_1.default.createElement("p", { className: "edu-no-print", style: { textAlign: 'center', marginTop: inline ? 0 : 28, fontSize: inline ? 14 : 12, color: C.muted, margin: inline ? '0' : undefined } }, onOpen
         ? react_1.default.createElement("button", { type: "button", onClick: onOpen, style: { background: 'none', border: 'none', color: C.muted, fontFamily: FONT, fontSize: 12, cursor: 'pointer', padding: 0, textDecoration: 'underline' } }, "Contact us")
@@ -48204,10 +48204,13 @@ const PRINT_STYLES = `
   body.edu-story-mode .edu-no-print { display: block !important; }   /* the story window is inside a no-print overlay; the mode shows only the sheet anyway */
   body.edu-story-mode .edu-story-sheet button { display: none; }
   /* A story book prints alone: the cover, then one story per page, the long story last. */
-  body.edu-book-mode * { visibility: hidden; }
-  body.edu-book-mode .edu-book-sheet, body.edu-book-mode .edu-book-sheet * { visibility: visible; }
-  body.edu-book-mode .edu-book-sheet { position: absolute; left: 0; top: 0; width: 100%; }
-  body.edu-book-mode .edu-book-story { page-break-before: always; break-before: page; }
+  /* The book prints in place, not lifted out of the flow (an absolute sheet printed one page with the cover pushed down):
+     the chrome is hidden by the rules below, the page and wrap lose their screen height and background, and every
+     story starts a fresh page after the cover. */
+  body.edu-book-mode .edu-book-page { min-height: 0 !important; background: none !important; padding: 0 !important; }
+  body.edu-book-mode .edu-book-page .edu-wrap { min-height: 0 !important; max-width: none !important; padding: 0 !important; }
+  body.edu-book-mode .edu-book-cover { border: none !important; padding: 30vh 12px 0 !important; }
+  body.edu-book-mode .edu-book-story { page-break-before: always; break-before: page; margin-top: 0 !important; }
   body.edu-book-mode .edu-book-sheet button { display: none; }
   /* A book or a story with no painting yet prints as words alone (2026-09-23, Mikey): the dashed frames stay on screen only. */
   body.edu-book-mode .edu-art-placeholder, body.edu-story-mode .edu-art-placeholder { display: none !important; }
@@ -55526,42 +55529,36 @@ function EduSphereScreens() {
                             : react_1.default.createElement("span", { style: { fontSize: 13, color: C.muted } }, "Read"))),
                         react_1.default.createElement(StoryBody, { story: openStory, pace: String(openStoryId).startsWith('course:') ? null : storyPaceFor(getModule(openStoryId)) })))),
                 (() => {
-                    const withBook = COURSES.filter((c) => courseStoryFor(c.id));
+                    // Every course with any story, youngest grade first and then in the order the grade's courses appear (2026-09-24, Mikey).
+                    const withBook = COURSES.map((c, i) => ({ c, i })).filter(({ c }) => courseStoryFor(c.id) || c.modules.some((m) => storyFor(m.id))).sort((a, b) => (GRADES.indexOf(a.c.grade) - GRADES.indexOf(b.c.grade)) || (a.i - b.i)).map(({ c }) => c);
                     const chosen = bookCourseId || (withBook[0] ? withBook[0].id : '');
                     return withBook.length ? (react_1.default.createElement("div", { style: { ...card, marginTop: 18, textAlign: 'center' } },
-                        react_1.default.createElement("p", { style: { margin: '0 0 6px', fontWeight: 600 } }, "Story book"),
+                        react_1.default.createElement("p", { style: { margin: '0 0 6px', fontWeight: 600 } }, "Let's Read!"),
                         react_1.default.createElement("p", { style: { margin: '0 0 12px', fontSize: 14, color: C.muted } }, "Every story in a course, in order, with the long story at the end. Open it, then print it or save it as a PDF for a class that reads on paper."),
                         react_1.default.createElement("div", { style: { display: 'flex', flexWrap: 'wrap', gap: 10, justifyContent: 'center', alignItems: 'center' } },
-                            react_1.default.createElement("select", { "aria-label": "Story book course", value: chosen, onChange: (e) => setBookCourseId(e.target.value), style: { fontFamily: FONT, fontSize: 15, padding: '8px 12px', borderRadius: 8, border: `1px solid ${C.line}`, background: C.greenSoft, color: C.ink, width: 'min(340px, 100%)' } }, withBook.map((c) => react_1.default.createElement("option", { key: c.id, value: c.id },
+                            react_1.default.createElement("select", { "aria-label": "Story book course", value: chosen, onChange: (e) => setBookCourseId(e.target.value), style: { fontFamily: FONT, fontSize: 15, padding: '8px 12px', borderRadius: 8, border: `1px solid ${C.line}`, background: C.greenSoft, color: C.ink, width: 'min(340px, 100%)', textAlign: 'center', textAlignLast: 'center' } }, withBook.map((c) => react_1.default.createElement("option", { key: c.id, value: c.id },
                                 gradeLabel(c.grade),
                                 ": ",
                                 c.title))),
-                            react_1.default.createElement(Btn, { kind: "secondary", onClick: () => { setBookCourseId(chosen); setScreen('story-book'); } }, "Open the book")))) : null;
+                            react_1.default.createElement(Btn, { kind: "secondary", onClick: () => { setBookCourseId(chosen); setScreen('story-book'); } }, "Open Book")))) : null;
                 })())));
     }
     if (screen === 'story-book' && bookCourseId && getCourse(bookCourseId)) {
         const c = getCourse(bookCourseId);
         const cs = courseStoryFor(c.id);
         const chapters = c.modules.map((m) => ({ m, st: storyFor(m.id) })).filter((x) => x.st);
-        return (react_1.default.createElement("div", { style: page },
+        return (react_1.default.createElement("div", { className: "edu-book-page", style: page },
             react_1.default.createElement(PageChrome, { idleWarning: idleWarning, logoutIn: logoutIn }),
             react_1.default.createElement("div", { className: "edu-wrap", style: wrap },
                 react_1.default.createElement("div", { className: "edu-no-print", style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10, marginBottom: 8 } },
                     react_1.default.createElement("button", { type: "button", onClick: () => setScreen('story-log'), style: linkBtn }, "Back to Story Log"),
                     react_1.default.createElement(Btn, { kind: "secondary", onClick: () => { if (typeof window !== 'undefined' && window.print)
-                            window.print(); } }, "Print or save as PDF")),
+                            window.print(); } }, "Print or Save")),
                 react_1.default.createElement("div", { className: "edu-book-sheet" },
-                    react_1.default.createElement("div", { style: { ...card, textAlign: 'center', padding: '48px 22px' } },
-                        react_1.default.createElement("p", { style: { margin: '0 0 6px', fontSize: 14, color: C.muted, letterSpacing: 1, textTransform: 'uppercase' } }, "EduSphere story book"),
+                    react_1.default.createElement("div", { className: "edu-book-cover", style: { ...card, textAlign: 'center', padding: '48px 22px' } },
+                        react_1.default.createElement("p", { style: { margin: '0 0 6px', fontSize: 14, color: C.muted, letterSpacing: 1, textTransform: 'uppercase' } }, "EduSphere"),
                         react_1.default.createElement("h1", { style: { fontSize: 30, margin: '0 0 8px' } }, c.title),
-                        react_1.default.createElement("p", { style: { margin: 0, fontSize: 16, color: C.muted } },
-                            gradeLabel(c.grade),
-                            ". ",
-                            chapters.length,
-                            " short ",
-                            chapters.length === 1 ? 'story' : 'stories',
-                            cs ? ' and one long story' : '',
-                            ".")),
+                        react_1.default.createElement("p", { style: { margin: 0, fontSize: 16, color: C.muted } }, gradeLabel(c.grade))),
                     chapters.map(({ m, st }, i) => (react_1.default.createElement("div", { key: m.id, className: "edu-book-story", style: { marginTop: 18 } },
                         react_1.default.createElement("p", { style: { margin: '0 0 2px', fontSize: 13, color: C.muted, textAlign: 'center' } },
                             "Story ",

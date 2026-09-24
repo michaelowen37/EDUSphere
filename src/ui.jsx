@@ -837,10 +837,13 @@ const PRINT_STYLES = `
   body.edu-story-mode .edu-no-print { display: block !important; }   /* the story window is inside a no-print overlay; the mode shows only the sheet anyway */
   body.edu-story-mode .edu-story-sheet button { display: none; }
   /* A story book prints alone: the cover, then one story per page, the long story last. */
-  body.edu-book-mode * { visibility: hidden; }
-  body.edu-book-mode .edu-book-sheet, body.edu-book-mode .edu-book-sheet * { visibility: visible; }
-  body.edu-book-mode .edu-book-sheet { position: absolute; left: 0; top: 0; width: 100%; }
-  body.edu-book-mode .edu-book-story { page-break-before: always; break-before: page; }
+  /* The book prints in place, not lifted out of the flow (an absolute sheet printed one page with the cover pushed down):
+     the chrome is hidden by the rules below, the page and wrap lose their screen height and background, and every
+     story starts a fresh page after the cover. */
+  body.edu-book-mode .edu-book-page { min-height: 0 !important; background: none !important; padding: 0 !important; }
+  body.edu-book-mode .edu-book-page .edu-wrap { min-height: 0 !important; max-width: none !important; padding: 0 !important; }
+  body.edu-book-mode .edu-book-cover { border: none !important; padding: 30vh 12px 0 !important; }
+  body.edu-book-mode .edu-book-story { page-break-before: always; break-before: page; margin-top: 0 !important; }
   body.edu-book-mode .edu-book-sheet button { display: none; }
   /* A book or a story with no painting yet prints as words alone (2026-09-23, Mikey): the dashed frames stay on screen only. */
   body.edu-book-mode .edu-art-placeholder, body.edu-story-mode .edu-art-placeholder { display: none !important; }
@@ -6979,15 +6982,19 @@ function EduSphereScreens() {
           </div>
         )}
         {/* A printable story book per course (2026-09-23, Mikey): every module story in order, the long story last, one story a page. */}
-        {(() => { const withBook = COURSES.filter((c) => courseStoryFor(c.id)); const chosen = bookCourseId || (withBook[0] ? withBook[0].id : ''); return withBook.length ? (
+        {(() => {
+          // Every course with any story, youngest grade first and then in the order the grade's courses appear (2026-09-24, Mikey).
+          const withBook = COURSES.map((c, i) => ({ c, i })).filter(({ c }) => courseStoryFor(c.id) || c.modules.some((m) => storyFor(m.id))).sort((a, b) => (GRADES.indexOf(a.c.grade) - GRADES.indexOf(b.c.grade)) || (a.i - b.i)).map(({ c }) => c);
+          const chosen = bookCourseId || (withBook[0] ? withBook[0].id : '');
+          return withBook.length ? (
           <div style={{ ...card, marginTop: 18, textAlign: 'center' }}>
-            <p style={{ margin: '0 0 6px', fontWeight: 600 }}>Story book</p>
+            <p style={{ margin: '0 0 6px', fontWeight: 600 }}>Let's Read!</p>
             <p style={{ margin: '0 0 12px', fontSize: 14, color: C.muted }}>Every story in a course, in order, with the long story at the end. Open it, then print it or save it as a PDF for a class that reads on paper.</p>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, justifyContent: 'center', alignItems: 'center' }}>
-              <select aria-label="Story book course" value={chosen} onChange={(e) => setBookCourseId(e.target.value)} style={{ fontFamily: FONT, fontSize: 15, padding: '8px 12px', borderRadius: 8, border: `1px solid ${C.line}`, background: C.greenSoft, color: C.ink, width: 'min(340px, 100%)' }}>
+              <select aria-label="Story book course" value={chosen} onChange={(e) => setBookCourseId(e.target.value)} style={{ fontFamily: FONT, fontSize: 15, padding: '8px 12px', borderRadius: 8, border: `1px solid ${C.line}`, background: C.greenSoft, color: C.ink, width: 'min(340px, 100%)', textAlign: 'center', textAlignLast: 'center' }}>
                 {withBook.map((c) => <option key={c.id} value={c.id}>{gradeLabel(c.grade)}: {c.title}</option>)}
               </select>
-              <Btn kind="secondary" onClick={() => { setBookCourseId(chosen); setScreen('story-book'); }}>Open the book</Btn>
+              <Btn kind="secondary" onClick={() => { setBookCourseId(chosen); setScreen('story-book'); }}>Open Book</Btn>
             </div>
           </div>
         ) : null; })()}
@@ -6998,16 +7005,16 @@ function EduSphereScreens() {
     const c = getCourse(bookCourseId); const cs = courseStoryFor(c.id);
     const chapters = c.modules.map((m) => ({ m, st: storyFor(m.id) })).filter((x) => x.st);
     return (
-      <div style={page}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} /><div className="edu-wrap" style={wrap}>
+      <div className="edu-book-page" style={page}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} /><div className="edu-wrap" style={wrap}>
         <div className="edu-no-print" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10, marginBottom: 8 }}>
           <button type="button" onClick={() => setScreen('story-log')} style={linkBtn}>Back to Story Log</button>
-          <Btn kind="secondary" onClick={() => { if (typeof window !== 'undefined' && window.print) window.print(); }}>Print or save as PDF</Btn>
+          <Btn kind="secondary" onClick={() => { if (typeof window !== 'undefined' && window.print) window.print(); }}>Print or Save</Btn>
         </div>
         <div className="edu-book-sheet">
-          <div style={{ ...card, textAlign: 'center', padding: '48px 22px' }}>
-            <p style={{ margin: '0 0 6px', fontSize: 14, color: C.muted, letterSpacing: 1, textTransform: 'uppercase' }}>EduSphere story book</p>
+          <div className="edu-book-cover" style={{ ...card, textAlign: 'center', padding: '48px 22px' }}>
+            <p style={{ margin: '0 0 6px', fontSize: 14, color: C.muted, letterSpacing: 1, textTransform: 'uppercase' }}>EduSphere</p>
             <h1 style={{ fontSize: 30, margin: '0 0 8px' }}>{c.title}</h1>
-            <p style={{ margin: 0, fontSize: 16, color: C.muted }}>{gradeLabel(c.grade)}. {chapters.length} short {chapters.length === 1 ? 'story' : 'stories'}{cs ? ' and one long story' : ''}.</p>
+            <p style={{ margin: 0, fontSize: 16, color: C.muted }}>{gradeLabel(c.grade)}</p>
           </div>
           {chapters.map(({ m, st }, i) => (
             <div key={m.id} className="edu-book-story" style={{ marginTop: 18 }}>

@@ -1,7 +1,7 @@
 // Every picture the app expects from Mikey has a row in the art ledger, so no photo is ever forgotten:
 // story serials (S), coloring page serials (L), and nothing in the ledger that the app does not use.
 import { readFileSync } from 'node:fs';
-import { STORIES, COURSE_STORIES } from '../src/stories.mjs';
+import { STORIES, COURSE_STORIES, COLOR_PAGES } from '../src/stories.mjs';
 import { MAP_SERIALS } from '../src/logic.mjs';
 let pass = 0; let fail = 0;
 const ok = (label, cond, detail = '') => { console.log((cond ? 'PASS' : 'FAIL') + ' - ' + label + (cond ? '' : '  ' + detail)); cond ? pass++ : fail++; };
@@ -9,8 +9,8 @@ const ledger = readFileSync('docs/ART-REQUESTS.md', 'utf8');
 const rows = new Set([...ledger.matchAll(/^\| ((?:CS|[SLDM])\d+) \|/gm)].map((m) => m[1]));
 const storySerials = Object.values(STORIES).flatMap((s) => [s.art, ...(s.more || []).map((m) => m.serial)]);
 const letterSerials = 'abcdefghijklmnopqrstuvwxyz'.split('').map((ch, i) => `L${i + 1}`);
-const drawingSerials = Array.from({ length: 27 }, (_, i) => `D${i + 1}`);
-const courseSerials = Object.values(COURSE_STORIES).map((s) => s.art);
+const drawingSerials = [...Array.from({ length: 27 }, (_, i) => `D${i + 1}`), ...Object.values(COLOR_PAGES).map(([serial]) => serial)];   // lesson pages D28 on (2026-09-24)
+const courseSerials = Object.values(COURSE_STORIES).flatMap((s) => [s.art, ...(s.more || []).map((m) => m.serial)]);   // doubled long stories carry five more (2026-09-24)
 const missing = [...storySerials, ...letterSerials, ...drawingSerials, ...courseSerials, ...MAP_SERIALS].filter((x) => !rows.has(x));
 ok('every story picture has a ledger row', missing.filter((x) => x.startsWith('S')).length === 0, missing.filter((x) => x.startsWith('S')).join(','));
 ok('every letter coloring page has a ledger row', missing.filter((x) => x.startsWith('L')).length === 0, missing.filter((x) => x.startsWith('L')).join(','));

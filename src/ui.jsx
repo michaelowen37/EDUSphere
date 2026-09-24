@@ -3319,6 +3319,8 @@ const DRAWN_PAGES = {
   aquarium: ['D24', 'A big aquarium tank with a diver'], 'race-track': ['D25', 'Race cars on a winding track'], 'busy-harbor': ['D26', 'A harbor with boats, cranes and a lighthouse'], 'dinosaur-valley': ['D27', 'A valley of dinosaurs with a volcano'],
 };
 for (const [pic, [serial, alt]] of Object.entries(DRAWN_PAGES)) COLORING_ART[pic] = [{ t: 'art', serial, x: 4, y: 4, w: 92, h: 92, alt }];
+// Lesson pages (2026-09-24): one Leonardo page per early-years lesson, drawn the same way as the pages above.
+for (const [mid, [serial, alt]] of Object.entries(COLOR_PAGES)) COLORING_ART[`lesson-${mid}`] = [{ t: 'art', serial, x: 4, y: 4, w: 92, h: 92, alt }];
 // Letter pages are art now: a coloring page Mikey makes in Leonardo (L1 to L26 in the ledger), shown
 // as an image the child colors over; until it exists the card wears a placeholder with its serial.
 const LETTER_SERIAL = (ch) => `L${ch.charCodeAt(0) - 96}`;
@@ -5075,6 +5077,30 @@ function EduSphereScreens() {
                       );
                     })}
                   </div>
+                  {(() => {
+                    // Pages from lessons (2026-09-24, Mikey): each early-years lesson has its own coloring page, and it joins
+                    // here once the lesson is passed and its painting has arrived. Until the paintings come, nothing shows.
+                    const hasArt = (serial) => typeof window !== 'undefined' && Array.isArray(window.__eduColoringArt) && window.__eduColoringArt.includes(serial);
+                    const pages = lessonColorPages(record.preview ? Object.keys(COLOR_PAGES) : deriveProgress(record.events).passedIds, hasArt, COLOR_PAGES);
+                    if (!pages.length) return null;
+                    return (
+                      <>
+                        <p style={{ margin: '16px 0 8px', fontSize: 14, fontWeight: 700, color: C.muted, textAlign: 'center' }}>From your lessons</p>
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(96px, 1fr))', gap: 10 }}>
+                          {pages.map((pic) => {
+                            const resting = restLeft(pic) > 0;
+                            return (
+                              <button key={pic} type="button" disabled={resting} aria-label={resting ? 'Resting picture' : `Color ${pictureTitle(pic)}`}
+                                onClick={() => leaveOverviewTo(() => { setColoring(pic); setScreen('coloring'); })} className={`edu-breathe${resting ? '' : ' edu-press'}`}
+                                style={{ position: 'relative', overflow: 'hidden', aspectRatio: '1 / 1', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 6, borderRadius: 12, background: '#FFFFFF', border: `2px solid ${C.line}` }}>
+                                <ColorThumb picture={pic} name={displayName} size="100%" />
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </>
+                    );
+                  })()}
                 </div>
               )}
             </div>
@@ -7137,8 +7163,10 @@ function EduSphereScreens() {
     const standardsFor = (moduleId) => CURRICULUM.flatMap((e) => e.standards).filter((st) => st.framework === fw && (st.moduleIds || []).includes(moduleId));
     const standardRows = chapters.map(({ m, st }, i) => ({ i, m, list: standardsFor(m.id) })).filter((r) => r.list.length);
     const groups = [];
-    chapters.forEach((ch, i) => { if (painted(ch.st)) { partsOf(ch.st).forEach((part) => groups.push({ per: 1, items: [{ ...ch, i, part }] })); return; } const per = fit(ch.st); const last = groups[groups.length - 1]; if (per > 1 && last && last.per === per && last.items.length < per) last.items.push({ ...ch, i }); else groups.push({ per, items: [{ ...ch, i }] }); });
-    const csParts = cs ? (painted(cs) ? partsOf(cs) : [null]) : [];
+    // A story that needs more than one sheet, painted or not (a doubled story in the older grades can), splits between
+    // paragraphs across as many sheets as it needs, so nothing is ever cut off the bottom of a page (2026-09-24).
+    chapters.forEach((ch, i) => { const parts = partsOf(ch.st); if (painted(ch.st) || parts.length > 1) { parts.forEach((part) => groups.push({ per: 1, items: [{ ...ch, i, part }] })); return; } const per = fit(ch.st); const last = groups[groups.length - 1]; if (per > 1 && last && last.per === per && last.items.length < per) last.items.push({ ...ch, i }); else groups.push({ per, items: [{ ...ch, i }] }); });
+    const csParts = cs ? partsOf(cs) : [];   // a doubled long story runs onto a second sheet when it needs one
     const pageTotal = 1 + groups.length + csParts.length + (standardRows.length ? 1 : 0);
     // Every painting loads before the printer sees the page (2026-09-24): pictures load lazily on screen, and a lazy one
     // further down the book could print as a blank.

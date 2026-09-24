@@ -360,7 +360,7 @@ STORIES['habitats'] = {
 };
 STORIES['kinds-of-weather'] = {
   about: 'a puddle by the gate, and the weather that made it, took it, and brought it back',
-  more: [{ serial: 'S84', after: 0, alt: 'Rain falling in the dark on the gate' }, { serial: 'S1580', after: 1, alt: 'The sun out, the puddle shrinking' }, { serial: 'S1581', after: 4, alt: 'Wind blowing leaves across a dry patch' }, { serial: 'S1582', after: 5, alt: 'Snowflakes falling on the gate' }],
+  more: [{ serial: 'S84', after: 0, alt: 'Rain falling in the dark on the gate' }, { serial: 'S1580', after: 1, alt: 'The sun out, the puddle shrinking' }, { serial: 'S1581', after: 4, alt: 'Wind blowing leaves across a dry patch' }, { serial: 'S1582', after: 5, alt: 'A puddle by the gate three ways: rained into, dried by the sun, then covered in white snow' }],
   title: 'The puddle by the gate', art: 'S83', cast: [],
   alt: 'A small girl in boots looking at a puddle by a wooden gate under a clearing sky',
   words: [
@@ -390,7 +390,7 @@ STORIES['living-or-not'] = {
 };
 STORIES['what-plants-need'] = {
   about: 'a bean seed on a windowsill, and the two things it drank',
-  more: [{ serial: 'S90', after: 0, alt: 'A bean seed going into dark soil' }, { serial: 'S1586', after: 1, alt: 'A green sprout pushing up' }, { serial: 'S1587', after: 4, alt: 'The plant leaning toward the window' }, { serial: 'S1588', after: 5, alt: 'A pot moved into a dark cupboard, the plant drooping' }],
+  more: [{ serial: 'S90', after: 0, alt: 'A bean seed going into dark soil' }, { serial: 'S1586', after: 1, alt: 'A green sprout pushing up' }, { serial: 'S1587', after: 4, alt: 'The plant standing tall and green again on the sunny windowsill' }, { serial: 'S1588', after: 5, alt: 'A pot moved into a dark cupboard, the plant drooping' }],
   title: 'The bean on the windowsill', art: 'S89', cast: [],
   alt: 'A small girl watering a bean sprout in a pot on a sunny windowsill',
   words: [
@@ -511,7 +511,7 @@ STORIES['patterns'] = {
 };
 STORIES['taking-turns'] = {
   about: 'one swing, two children, and counting to ten so both could fly',
-  more: [{ serial: 'S114', after: 0, alt: 'Two children both holding the swing, pulling' }, { serial: 'S1460', after: 3, alt: 'One child swinging high, the other counting' }, { serial: 'S1462', after: 4, alt: 'The children swapping places at the swing' }],
+  more: [{ serial: 'S114', after: 0, alt: 'Two children both holding the swing, pulling' }, { serial: 'S1460', after: 3, alt: 'One child swinging high, the other counting' }, { serial: 'S1462', after: 4, alt: 'A boy jumping off the swing as a girl sits down, the boy starting to count' }],
   title: 'Count to ten', art: 'S113', cast: [],
   alt: 'Two small children at one swing on a playground, one on it and one counting on her fingers',
   words: [
@@ -647,7 +647,7 @@ STORIES['triangles-too'] = {
 };
 STORIES['big-and-little'] = {
   about: 'two shoes by the door, one that swallowed a foot and one that fit',
-  more: [{ serial: 'S141', after: 0, alt: 'Two shoes by the door, one big and one little' }, { serial: 'S1394', after: 2, alt: 'The girl wobbling in the big boot' }, { serial: 'S1396', after: 5, alt: 'Dad putting on the big boot, the girl in her little shoe' }],
+  more: [{ serial: 'S141', after: 0, alt: 'Two shoes by the door, one big and one little' }, { serial: 'S1394', after: 2, alt: 'The girl wobbling as the big shoe slips off her foot' }, { serial: 'S1396', after: 5, alt: 'Dad putting on the big boot, the girl in her little shoe' }],
   title: 'Two shoes', art: 'S140', cast: [],
   alt: 'A small girl by a front door with one foot in a huge boot and one in a tiny sneaker',
   words: [
@@ -677,7 +677,7 @@ STORIES['circle-and-square'] = {
 };
 STORIES['a-and-b'] = {
   about: 'big letters on a party banner, and the two Grandma named first',
-  more: [{ serial: 'S147', after: 0, alt: 'The banner across the room, letters big and bright' }, { serial: 'S1403', after: 2, alt: 'Grandma pointing at the first letter' }, { serial: 'S1405', after: 4, alt: 'A and B side by side on the banner' }],
+  more: [{ serial: 'S147', after: 0, alt: 'The banner across the room, letters big and bright' }, { serial: 'S1403', after: 2, alt: 'Grandma pointing at the first letter' }, { serial: 'S1405', after: 4, alt: 'Grandma pointing at the next big letter on a birthday banner while a small boy watches' }],
   title: 'A, then B', art: 'S146', cast: [],
   alt: 'A small boy looking up at a birthday banner with big colorful letters, balloons around it',
   words: [
@@ -949,7 +949,7 @@ STORIES['first-sounds'] = {
   about: 'Ben, Sam, and Mia, and the sounds their names start with',
   more: [{ serial: 'S201', after: 0, alt: 'Ben with his lips pressed together for buh' }, { serial: 'S202', after: 2, alt: 'Sam hissing like a snake, sss' }, { serial: 'S1473', after: 4, alt: 'A ball, a sun and a moon drawn beside each child' }],
   title: 'Buh and sss', art: 'S200', cast: [],
-  alt: 'Three small children on a classroom rug saying the first sounds of their names',
+  alt: 'A teacher on a classroom rug asking a small boy the first sound of his name, the boy pressing his lips together',
   words: [
     'Ben, said the teacher. What does Ben start with? Ben pressed his lips. Buh. Ben starts with buh.',
     'Sam, said the teacher. Sam thought. He said his name slowly. Sss-am.',
@@ -962,7 +962,7 @@ STORIES['first-sounds'] = {
 };
 STORIES['which-came-first'] = {
   about: 'a roar, a squawk, and remembering which one came first',
-  more: [{ serial: 'S204', after: 0, alt: 'The lion with its mouth wide, roaring' }, { serial: 'S1476', after: 4, alt: 'The lion, then the parrot, drawn one before the other' }, { serial: 'S1477', after: 5, alt: 'The boy pointing at the lion' }],
+  more: [{ serial: 'S204', after: 0, alt: 'The lion with its mouth wide, roaring' }, { serial: 'S1476', after: 4, alt: 'A boy listening hard as a duck quacks first and a cow moos after' }, { serial: 'S1477', after: 5, alt: 'The boy playing the sound game all day, pointing at animals in the order he hears them' }],
   title: 'The roar came first', art: 'S203', cast: [],
   alt: 'A small boy at a zoo with a lion and a parrot, his hand cupped to his ear',
   words: [
@@ -1053,7 +1053,7 @@ STORIES['trace-straight-letters'] = {
 // Kindergarten, in the fewest words that still make a story.
 STORIES['rules-and-helpers'] = {
   about: 'a slide that hurt until the class made a rule, and the helper who fixed the rest',
-  more: [{ serial: 'S222', after: 0, alt: 'A traffic jam of children on the slide, all going at once' }, { serial: 'S1592', after: 2, alt: 'The teacher holding up one finger' }, { serial: 'S1593', after: 3, alt: 'Children waiting in a neat line at the top' }, { serial: 'S1594', after: 4, alt: 'A fire truck going by, the driver waving' }],
+  more: [{ serial: 'S222', after: 0, alt: 'A traffic jam of children on the slide, all going at once' }, { serial: 'S1592', after: 2, alt: 'The teacher holding up one finger' }, { serial: 'S1593', after: 3, alt: 'Children taking turns down the slide one at a time, laughing' }, { serial: 'S1594', after: 4, alt: 'A fire truck going by, the driver waving' }],
   title: 'One at a time', art: 'S221', cast: [],
   alt: 'Children lining up at the top of a slide, a small boy rubbing his elbow, a teacher nearby',
   words: [
@@ -1068,7 +1068,7 @@ STORIES['rules-and-helpers'] = {
 };
 STORIES['needs-and-wants'] = {
   about: 'bread or a toy, money for one, and the girl who picked',
-  more: [{ serial: 'S225', after: 0, alt: 'The toy on the shelf, bright and shiny' }, { serial: 'S1595', after: 1, alt: 'The girl holding her tummy' }, { serial: 'S1596', after: 4, alt: 'Mom asking, which one do we need?' }, { serial: 'S1597', after: 5, alt: 'The girl walking out with the bread, waving to the toy' }],
+  more: [{ serial: 'S225', after: 0, alt: 'The toy on the shelf, bright and shiny' }, { serial: 'S1595', after: 1, alt: 'The girl holding her tummy' }, { serial: 'S1596', after: 4, alt: 'A girl at the kitchen table eating warm bread with butter, smiling' }, { serial: 'S1597', after: 5, alt: 'The girl walking out with the bread, waving to the toy' }],
   title: 'Bread or the toy', art: 'S224', cast: [],
   alt: 'A small girl at a store counter looking from a loaf of bread to a toy, a few coins in her hand',
   words: [
@@ -1098,7 +1098,7 @@ STORIES['our-flag-and-holidays'] = {
 };
 STORIES['jobs-people-do'] = {
   about: 'a morning when everyone went to work, and the tools they carried',
-  more: [{ serial: 'S231', after: 0, alt: 'The baker with a big bowl and a spoon' }, { serial: 'S1601', after: 3, alt: 'The mail carrier with a full bag' }, { serial: 'S1602', after: 4, alt: 'Dad explaining, coins on the table' }, { serial: 'S1603', after: 5, alt: 'Lena pretending to be a baker with a toy bowl' }],
+  more: [{ serial: 'S231', after: 0, alt: 'The baker with a big bowl and a spoon' }, { serial: 'S1601', after: 3, alt: 'The mail carrier with a full bag' }, { serial: 'S1602', after: 4, alt: 'A girl playing baker with a toy bowl and a wooden spoon' }, { serial: 'S1603', after: 5, alt: 'The girl playing mail carrier with a paper bag of letters, handing one to her dad for a hug' }],
   title: 'Off to work', art: 'S230', cast: [],
   alt: 'A street at morning with a baker, a nurse and a mail carrier heading off, each with their tools',
   words: [
@@ -1113,7 +1113,7 @@ STORIES['jobs-people-do'] = {
 };
 STORIES['voting-in-class'] = {
   about: 'two books, one story time, and the fair way to pick',
-  more: [{ serial: 'S234', after: 0, alt: 'Half the class pointing at a dragon book, half at a dog book' }, { serial: 'S1604', after: 2, alt: 'Hands up for the dragon, the teacher counting' }, { serial: 'S1605', after: 3, alt: 'A tally on the board, one side with more marks' }, { serial: 'S1606', after: 4, alt: 'The dragon book being read, the dog book waiting on the shelf' }],
+  more: [{ serial: 'S234', after: 0, alt: 'Half the class pointing at a dragon book, half at a dog book' }, { serial: 'S1604', after: 2, alt: 'Hands up for the dragon, the teacher counting' }, { serial: 'S1605', after: 3, alt: 'A class cheering as a stuffed dragon wins the vote, a stuffed dog waiting for next week' }, { serial: 'S1606', after: 4, alt: 'The dragon book being read, the dog book waiting on the shelf' }],
   title: 'Hands up', art: 'S233', cast: [],
   alt: 'Children on a classroom rug with their hands up, a teacher holding two picture books',
   words: [
@@ -1143,7 +1143,7 @@ STORIES['our-two-flags'] = {
 };
 STORIES['count-to-10'] = {
   about: 'ten steps up to a slide, and the boy who kept losing count halfway',
-  more: [{ serial: 'S240', after: 0, alt: 'The tall slide with its long ladder' }, { serial: 'S1496', after: 2, alt: 'The boy stopped halfway, frowning' }, { serial: 'S1497', after: 4, alt: 'The boy back at the bottom, finger on the first step' }, { serial: 'S1498', after: 5, alt: 'The boy at the top with both arms up' }],
+  more: [{ serial: 'S240', after: 0, alt: 'The tall slide with its long ladder' }, { serial: 'S1496', after: 2, alt: 'The boy looking back down at his row of toys, lost and frowning' }, { serial: 'S1497', after: 4, alt: 'The boy back at the bottom, finger on the first step' }, { serial: 'S1498', after: 5, alt: 'The boy at the top with both arms up' }],
   title: 'Ten steps', art: 'S239', cast: [],
   alt: 'A small boy climbing the ladder of a tall slide, counting each step out loud',
   words: [
@@ -1158,7 +1158,7 @@ STORIES['count-to-10'] = {
 };
 STORIES['tracing-numbers'] = {
   about: 'a number two that came out as a snake, until Lena started at the dot',
-  more: [{ serial: 'S243', after: 0, alt: 'A wobbly snake shape where a 2 should be' }, { serial: 'S1499', after: 1, alt: 'The girl staring at the number, not sure where to begin' }, { serial: 'S1500', after: 4, alt: 'A finger on the dot, then curving round and down' }, { serial: 'S1501', after: 5, alt: 'A finished 2 with a flat bottom, the girl proud' }],
+  more: [{ serial: 'S243', after: 0, alt: 'A wobbly snake shape where a 2 should be' }, { serial: 'S1499', after: 1, alt: 'The girl starting to trace in the middle of a big number two, unsure' }, { serial: 'S1500', after: 4, alt: 'A finger on the dot, then curving round and down' }, { serial: 'S1501', after: 5, alt: 'A row of big numbers, each with its own green starting dot, the girl tracing them proudly' }],
   title: 'Start at the dot', art: 'S242', cast: [],
   alt: 'A small girl tracing a big number 2 on paper, a green dot at the top of the curve',
   words: [
@@ -1173,7 +1173,7 @@ STORIES['tracing-numbers'] = {
 };
 STORIES['one-more-one-less'] = {
   about: 'four cookies on a plate, one more, one less, and a boy who kept count',
-  more: [{ serial: 'S246', after: 0, alt: 'Four cookies on a blue plate' }, { serial: 'S1502', after: 1, alt: 'The boy counting on his fingers' }, { serial: 'S1503', after: 4, alt: 'Five cookies on the plate' }, { serial: 'S1504', after: 5, alt: 'A sister taking one, four left and a cookie in her hand' }],
+  more: [{ serial: 'S246', after: 0, alt: 'Four cookies on a blue plate' }, { serial: 'S1502', after: 1, alt: 'The boy counting on his fingers' }, { serial: 'S1503', after: 4, alt: 'A boy watching cookies come and go on a plate, keeping track in his head' }, { serial: 'S1504', after: 5, alt: 'A sister taking one, four left and a cookie in her hand' }],
   title: 'One more, one less', art: 'S245', cast: [],
   alt: 'A small boy at a kitchen table watching a plate of cookies, one hand reaching',
   words: [
@@ -1338,7 +1338,7 @@ STORIES['more-and-fewer-10'] = {
 };
 STORIES['letter-names'] = {
   about: 'a boy who kept losing his place in the alphabet, and the song that held it',
-  more: [{ serial: 'S279', after: 0, alt: 'The boy stuck on the letter D, the rest of the letters faded' }, { serial: 'S1535', after: 3, alt: 'The boy singing, letters lighting up one by one' }, { serial: 'S1536', after: 4, alt: 'The letters from A to Z in a long line' }, { serial: 'S1537', after: 5, alt: 'The boy at the front of the bus singing for everyone' }],
+  more: [{ serial: 'S279', after: 0, alt: 'The boy stuck on the letter D, the rest of the letters faded' }, { serial: 'S1535', after: 3, alt: 'The boy singing, letters lighting up one by one' }, { serial: 'S1536', after: 4, alt: 'A boy singing all the way to the end of the alphabet song while his big sister claps' }, { serial: 'S1537', after: 5, alt: 'The boy at the front of the bus singing for everyone' }],
   title: 'The song that holds them', art: 'S278', cast: [],
   alt: 'A small boy on a school bus singing with his mouth open, letters floating in a line above his head',
   words: [
@@ -1353,7 +1353,7 @@ STORIES['letter-names'] = {
 };
 STORIES['big-and-small-letters'] = {
   about: 'a big G and a small g that looked like strangers, until they said the same sound',
-  more: [{ serial: 'S282', after: 0, alt: 'The two cards side by side, one tall and one with a tail' }, { serial: 'S1538', after: 2, alt: 'The teacher pointing at her own mouth, saying guh' }, { serial: 'S1539', after: 3, alt: 'The girl saying guh with both cards held up' }, { serial: 'S1540', after: 5, alt: 'A row of pairs: B and b, D and d, G and g' }],
+  more: [{ serial: 'S282', after: 0, alt: 'The two cards side by side, one tall and one with a tail' }, { serial: 'S1538', after: 2, alt: 'The teacher pointing at her own mouth, saying guh' }, { serial: 'S1539', after: 3, alt: 'A tall letter and a small letter dressed in different clothes, holding hands like twins' }, { serial: 'S1540', after: 5, alt: 'A row of pairs: B and b, D and d, G and g' }],
   title: 'Big G, small g', art: 'S281', cast: [],
   alt: 'A small girl holding two cards, a big G in one hand and a small g in the other',
   words: [
@@ -1398,7 +1398,7 @@ STORIES['beginning-sounds'] = {
 };
 STORIES['rhymes'] = {
   about: 'a cat, a hat and a bat, and the ending they all shared',
-  more: [{ serial: 'S291', after: 0, alt: 'A cat sitting on a hat in the picture book' }, { serial: 'S1550', after: 1, alt: 'The girl listening hard, a hand at her ear' }, { serial: 'S1551', after: 2, alt: 'A bat flying into the picture' }, { serial: 'S1552', after: 4, alt: 'The girl clapping at each matching sound' }],
+  more: [{ serial: 'S291', after: 0, alt: 'A cat sitting on a hat in the picture book' }, { serial: 'S1550', after: 1, alt: 'The girl listening hard, puzzled at how two words sound alike' }, { serial: 'S1551', after: 2, alt: 'A bat flying into the picture' }, { serial: 'S1552', after: 4, alt: 'The girl clapping at each matching sound' }],
   title: 'Cat, hat, bat', art: 'S290', cast: [],
   alt: 'A small girl in bed with a picture book, a cat, a hat and a bat drawn in the air above her',
   words: [
@@ -1413,7 +1413,7 @@ STORIES['rhymes'] = {
 };
 STORIES['tracing-letters'] = {
   about: 'a wet window, a finger, and the first T a boy ever made',
-  more: [{ serial: 'S294', after: 0, alt: 'A foggy window, a finger pressed to it' }, { serial: 'S1553', after: 2, alt: 'Mom drawing a dot at the top' }, { serial: 'S1554', after: 3, alt: 'A finger pulling straight down from the dot' }, { serial: 'S1555', after: 5, alt: 'A finished T on the glass, dripping a little' }],
+  more: [{ serial: 'S294', after: 0, alt: 'A foggy window, a finger pressed to it' }, { serial: 'S1553', after: 2, alt: 'Mom drawing a dot at the top' }, { serial: 'S1554', after: 3, alt: 'A finger pulling straight down from the dot' }, { serial: 'S1555', after: 5, alt: 'A foggy window full of traced letters, the morning sun starting to melt them away' }],
   title: 'The T on the window', art: 'S293', cast: [],
   alt: 'A small boy drawing a letter T on a foggy window with one finger, rain outside',
   words: [
@@ -1428,7 +1428,7 @@ STORIES['tracing-letters'] = {
 };
 STORIES['tracing-small-letters'] = {
   about: 'a small a that would not stand up tall, and why it did not need to',
-  more: [{ serial: 'S297', after: 0, alt: 'A tall big A on the line' }, { serial: 'S298', after: 1, alt: 'A small a drawn too tall, tipping over' }, { serial: 'S1557', after: 4, alt: 'A finger going round in a circle, then down' }, { serial: 'S1558', after: 5, alt: 'A big A and a small a on the line, one tall and one low' }],
+  more: [{ serial: 'S297', after: 0, alt: 'A girl tracing a tall capital letter, then a small letter drawn much too tall beside it' }, { serial: 'S298', after: 1, alt: 'A small letter drawn too tall, tipping over like a bent stick' }, { serial: 'S1557', after: 4, alt: 'A finger going round in a circle, then down' }, { serial: 'S1558', after: 5, alt: 'A big A and a small a on the line, one tall and one low' }],
   title: 'The small a sits low', art: 'S296', cast: [],
   alt: 'A small girl tracing a small letter a on lined paper, a big A standing tall beside it',
   words: [
@@ -1473,7 +1473,7 @@ STORIES['syllables'] = {
 };
 STORIES['sounding-out'] = {
   about: 'three sounds on a door, and the word they made when said fast',
-  more: [{ serial: 'S306', after: 0, alt: 'Three letters on a door, C A T' }, { serial: 'S1565', after: 2, alt: 'Her brother beside her, pointing at the first letter' }, { serial: 'S1566', after: 4, alt: 'Her finger under the C, then the A, then the T' }, { serial: 'S1567', after: 5, alt: 'The door open, a cat sitting in the doorway' }],
+  more: [{ serial: 'S306', after: 0, alt: 'Three letters on a door, C A T' }, { serial: 'S1565', after: 2, alt: 'Her brother beside her, pointing at the first letter' }, { serial: 'S1566', after: 4, alt: 'A girl opening a little door to find a cat sitting on a mat, looking up at her' }, { serial: 'S1567', after: 5, alt: 'The door open, a cat sitting in the doorway' }],
   title: 'The word on the door', art: 'S305', cast: [],
   alt: 'A small girl standing at a door with three letters on it, sounding them out with her finger under each',
   words: [
@@ -1518,7 +1518,7 @@ STORIES['word-meanings'] = {
 };
 STORIES['trace-slant-letters'] = {
   about: 'a stick in the sand, and the slanted lines that made V, A and N',
-  more: [{ serial: 'S315', after: 0, alt: 'A line straight down and a line across in the sand' }, { serial: 'S1574', after: 2, alt: 'Down a slant, up a slant, a V' }, { serial: 'S1575', after: 3, alt: 'Up, down, and across the middle, an A' }, { serial: 'S1576', after: 4, alt: 'V, A and N in a row in the sand' }],
+  more: [{ serial: 'S315', after: 0, alt: 'A line straight down and a line across in the sand' }, { serial: 'S1574', after: 2, alt: 'Down a slant, up a slant, a V' }, { serial: 'S1575', after: 3, alt: 'Up, down, and across the middle, an A' }, { serial: 'S1576', after: 4, alt: 'A boy drawing slanted lines in the wet sand with a stick' }],
   title: 'Slants in the sand', art: 'S314', cast: [],
   alt: 'A small boy drawing a big letter V in wet sand with a stick, waves behind him',
   words: [
@@ -1579,7 +1579,7 @@ STORIES['subtracting-to-20'] = {
 };
 STORIES['tens-and-ones'] = {
   about: 'sticks in bundles of ten, and the number a boy read without counting',
-  more: [{ serial: 'S327', after: 0, alt: 'A big pile of craft sticks' }, { serial: 'S1631', after: 2, alt: 'Three bundles standing in a row' }, { serial: 'S1632', after: 4, alt: 'Four loose sticks beside the bundles' }, { serial: 'S1633', after: 5, alt: 'The boy holding up three fingers, then four' }],
+  more: [{ serial: 'S327', after: 0, alt: 'A big pile of craft sticks' }, { serial: 'S1631', after: 2, alt: 'Three bundles standing in a row' }, { serial: 'S1632', after: 4, alt: 'Four loose sticks beside the bundles' }, { serial: 'S1633', after: 5, alt: 'Bundles of ten sticks tied with rubber bands beside a few loose sticks on the table' }],
   title: 'Bundles of ten', art: 'S326', cast: [],
   alt: 'A small boy at a craft table with bundles of sticks held by rubber bands and a few loose sticks',
   words: [
@@ -1611,7 +1611,7 @@ STORIES['writing-numbers'] = {
   about: 'a five that kept coming out backward, until Lena found its dot',
   more: [{ serial: 'S333', after: 0, alt: 'A five that looks like an S' }, { serial: 'S1637', after: 2, alt: 'A finger on the dot at the top' }, { serial: 'S1638', after: 3, alt: 'Down, round the belly, the five taking shape' }, { serial: 'S1639', after: 5, alt: 'A row of numbers each with its own dot' }],
   title: 'The five', art: 'S332', cast: [],
-  alt: 'A small girl tracing a big number 5 on lined paper, a dot at the top',
+  alt: 'A small girl frowning at her wobbly five on lined paper while her little brother wiggles his arm like a snake',
   words: [
     'Lena wrote a five. It looked like an S. She wrote it again. An S with a hat. Her brother said it was a snake.',
     'A five has a place to start. Lena kept starting in the wrong spot. In the middle. At the bottom.',
@@ -1639,7 +1639,7 @@ STORIES['read-the-word'] = {
 };
 STORIES['sh-ch-th'] = {
   about: 'two letters that make one sound, and the shell that said shh',
-  more: [{ serial: 'S339', after: 0, alt: 'A sign on the beach with the word shell' }, { serial: 'S1643', after: 2, alt: 'S and H drawn together with a finger to the lips, shh' }, { serial: 'S1644', after: 4, alt: 'C and H with a beach chair' }, { serial: 'S1645', after: 5, alt: 'T and H with a thumb' }],
+  more: [{ serial: 'S339', after: 0, alt: 'A sign on the beach with the word shell' }, { serial: 'S1643', after: 2, alt: 'S and H drawn together with a finger to the lips, shh' }, { serial: 'S1644', after: 4, alt: 'A girl on the beach holding up her thumb and grinning' }, { serial: 'S1645', after: 5, alt: 'T and H with a thumb' }],
   title: 'Shell, chair, thumb', art: 'S338', cast: [],
   alt: 'A small girl holding a shell to her ear on a beach, a folding chair beside her',
   words: [
@@ -1654,7 +1654,7 @@ STORIES['sh-ch-th'] = {
 };
 STORIES['silent-e'] = {
   about: 'a cap that became a cape when one letter joined and said nothing',
-  more: [{ serial: 'S342', after: 0, alt: 'The word cap on a tag, a baseball cap' }, { serial: 'S1646', after: 2, alt: 'An e sliding onto the end of cap' }, { serial: 'S1647', after: 3, alt: 'The a glowing, saying its name' }, { serial: 'S1648', after: 5, alt: 'The boy in the cape, flying around the room' }],
+  more: [{ serial: 'S342', after: 0, alt: 'The word cap on a tag, a baseball cap' }, { serial: 'S1646', after: 2, alt: 'An e sliding onto the end of cap' }, { serial: 'S1647', after: 3, alt: 'A shy little letter e staying silent with a finger to its lips, reaching back to change the letter beside it' }, { serial: 'S1648', after: 5, alt: 'The boy in the cape, flying around the room' }],
   title: 'The quiet e', art: 'S341', cast: [],
   alt: 'A small boy holding a cap in one hand and a superhero cape in the other',
   words: [
@@ -1669,7 +1669,7 @@ STORIES['silent-e'] = {
 };
 STORIES['read-the-sentence'] = {
   about: 'four words that were only a list until a girl found the capital and the period',
-  more: [{ serial: 'S345', after: 0, alt: 'Four words on a page, read one at a time' }, { serial: 'S346', after: 1, alt: 'The girl unsure where to stop' }, { serial: 'S1649', after: 2, alt: 'A big capital T at the start, glowing' }, { serial: 'S1651', after: 4, alt: 'The girl reading a whole page, finger sliding' }],
+  more: [{ serial: 'S345', after: 0, alt: 'Four words on a page, read one at a time' }, { serial: 'S346', after: 1, alt: 'A girl looking at a long line of words in her book, one finger at the start and one at the end' }, { serial: 'S1649', after: 2, alt: 'A big capital T at the start, glowing' }, { serial: 'S1651', after: 4, alt: 'The girl reading a whole page, finger sliding' }],
   title: 'From the capital to the period', art: 'S344', cast: [],
   alt: 'A small girl on a rug reading a sentence in a book, her finger at the first capital letter',
   words: [
@@ -1684,7 +1684,7 @@ STORIES['read-the-sentence'] = {
 };
 STORIES['what-happened'] = {
   about: 'a kite in a tree, and the three words that put the day in order',
-  more: [{ serial: 'S348', after: 0, alt: 'The kite flying high on a windy day' }, { serial: 'S1652', after: 1, alt: 'Mom looking confused at the mixed-up story' }, { serial: 'S1653', after: 3, alt: 'Dad on tiptoe pulling the kite loose' }, { serial: 'S1654', after: 5, alt: 'The boy telling the story in order, three fingers up' }],
+  more: [{ serial: 'S348', after: 0, alt: 'The kite flying high on a windy day' }, { serial: 'S1652', after: 1, alt: 'Picture cards of a kite story laid out in the wrong order, the ending card first' }, { serial: 'S1653', after: 3, alt: 'Dad on tiptoe pulling the kite loose' }, { serial: 'S1654', after: 5, alt: 'The boy telling the story in order, three fingers up' }],
   title: 'First, then, last', art: 'S347', cast: [],
   alt: 'A small boy and his dad at a park with a kite stuck high in a tree',
   words: [
@@ -1714,7 +1714,7 @@ STORIES['tracing-more-small-letters'] = {
 };
 STORIES['trace-small-letters-3'] = {
   about: 'one line down, and the dot, the bar or the kick that made i, t and k',
-  more: [{ serial: 'S354', after: 0, alt: 'An i and a t that both look like an l' }, { serial: 'S1658', after: 2, alt: 'A dot added on top, an i' }, { serial: 'S1659', after: 4, alt: 'A bar across, a t' }, { serial: 'S1660', after: 5, alt: 'A kick out to the side, a k' }],
+  more: [{ serial: 'S354', after: 0, alt: 'An i and a t that both look like an l' }, { serial: 'S1658', after: 2, alt: 'A dot added on top, an i' }, { serial: 'S1659', after: 4, alt: 'A bar across, a t' }, { serial: 'S1660', after: 5, alt: 'A boy tracing a whole row of small letters with a fat crayon, smiling at the finished row' }],
   title: 'One line, then the rest', art: 'S353', cast: [],
   alt: 'A small boy tracing i, t and k on lined paper, one line down first each time',
   words: [
@@ -1744,7 +1744,7 @@ STORIES['trace-small-letters-4'] = {
 };
 STORIES['trace-small-letters-5'] = {
   about: 'a line and a little arch, and the n, u and r that share it',
-  more: [{ serial: 'S360', after: 0, alt: 'The three letters n, u and r on the page' }, { serial: 'S1664', after: 2, alt: 'A line down, then up and over, an n' }, { serial: 'S1665', after: 3, alt: 'Down, round the bottom, and up, a u' }, { serial: 'S1666', after: 5, alt: 'A line down and a small arch that stops, an r' }],
+  more: [{ serial: 'S360', after: 0, alt: 'A boy tracing three small letters in a row while his teacher leans in with a question' }, { serial: 'S1664', after: 2, alt: 'A line down, then up and over, an n' }, { serial: 'S1665', after: 3, alt: 'Down, round the bottom, and up, a u' }, { serial: 'S1666', after: 5, alt: 'A line down and a small arch that stops, an r' }],
   title: 'Line and arch', art: 'S359', cast: [],
   alt: 'A small boy tracing n, u and r on lined paper, an arch drawn beside them',
   words: [
@@ -1774,7 +1774,7 @@ STORIES['sun-moon-patterns'] = {
 };
 STORIES['water-changes'] = {
   about: 'an ice cube that turned into a puddle, and the puddle that turned back',
-  more: [{ serial: 'S366', after: 0, alt: 'A hard ice cube on a sunny step' }, { serial: 'S1670', after: 2, alt: 'The boy pouring the puddle into a tray' }, { serial: 'S1671', after: 4, alt: 'The tray going into the freezer' }, { serial: 'S1672', after: 5, alt: 'A hard ice cube again in the morning' }],
+  more: [{ serial: 'S366', after: 0, alt: 'A hard ice cube on a sunny step' }, { serial: 'S1670', after: 2, alt: 'The boy pouring the puddle into a tray' }, { serial: 'S1671', after: 4, alt: 'Ice melting into water in a warm hand and water freezing into ice in a tray, arrows going round' }, { serial: 'S1672', after: 5, alt: 'A hard ice cube again in the morning' }],
   title: 'Ice, water, ice', art: 'S365', cast: [],
   alt: 'A small boy watching an ice cube melt into a puddle on a sunny step',
   words: [
@@ -1804,7 +1804,7 @@ STORIES['animal-needs'] = {
 };
 STORIES['leaders-near-and-far'] = {
   about: 'three leaders, three sizes of place, and the boy who put them in order',
-  more: [{ serial: 'S372', after: 0, alt: 'A mayor at the town hall steps' }, { serial: 'S373', after: 2, alt: 'A governor at a capitol with a flag' }, { serial: 'S1677', after: 4, alt: 'Three circles, small, medium and large, one inside the next' }, { serial: 'S1678', after: 5, alt: 'The boy pointing at each circle in turn' }],
+  more: [{ serial: 'S372', after: 0, alt: 'A mayor at the town hall steps' }, { serial: 'S373', after: 2, alt: 'A mayor cutting a ribbon at a new city park while children watch' }, { serial: 'S1677', after: 4, alt: 'Three circles, small, medium and large, one inside the next' }, { serial: 'S1678', after: 5, alt: 'The boy pointing at each circle in turn' }],
   title: 'Near and far', art: 'S371', cast: [],
   alt: 'A small boy in a town square with three drawn circles behind him: a town, a state, a country',
   words: [
@@ -1819,7 +1819,7 @@ STORIES['leaders-near-and-far'] = {
 };
 STORIES['goods-and-services'] = {
   about: 'a hat you could hold and a haircut you could not, and the money that paid for both',
-  more: [{ serial: 'S375', after: 0, alt: 'The girl buying a hat, coins on the counter' }, { serial: 'S1679', after: 2, alt: 'The hat in a paper bag' }, { serial: 'S1680', after: 4, alt: 'The girl touching her new haircut, nothing to hold' }, { serial: 'S1681', after: 5, alt: 'Mom at work, earning the money' }],
+  more: [{ serial: 'S375', after: 0, alt: 'The girl buying a hat, coins on the counter' }, { serial: 'S1679', after: 2, alt: 'The hat in a paper bag' }, { serial: 'S1680', after: 4, alt: 'The girl touching her new haircut, nothing to hold' }, { serial: 'S1681', after: 5, alt: 'A street with a toy shop on one side and a car wash on the other, a girl looking from one to the other' }],
   title: 'The hat and the haircut', art: 'S374', cast: [],
   alt: 'A small girl outside a shop holding a new hat, a barber pole next door',
   words: [
@@ -1955,7 +1955,7 @@ STORIES['rows-and-columns'] = {
 };
 STORIES['vowel-teams'] = {
   about: 'a boat with two vowels, and the one that did the talking',
-  more: [{ serial: 'S402', after: 0, alt: 'The word boat with the o and a side by side' }, { serial: 'S403', after: 1, alt: 'The girl trying bo-at, puzzled' }, { serial: 'S1714', after: 3, alt: 'The o glowing and the a quiet' }, { serial: 'S1715', after: 4, alt: 'A rain cloud and a train, more vowel teams' }],
+  more: [{ serial: 'S402', after: 0, alt: 'The word boat with the o and a side by side' }, { serial: 'S403', after: 1, alt: 'The girl sounding out a word stiffly like a robot, her dad trying not to laugh' }, { serial: 'S1714', after: 3, alt: 'The o glowing and the a quiet' }, { serial: 'S1715', after: 4, alt: 'A rain cloud and a train, more vowel teams' }],
   title: 'The o that talked', art: 'S401', cast: [],
   alt: 'A girl reading the word boat on a sign by a pond, a small boat floating behind her',
   words: [
@@ -2015,7 +2015,7 @@ STORIES['word-meaning-from-context'] = {
 };
 STORIES['complete-sentences'] = {
   about: 'two words that were not a sentence yet, and the who that fixed them',
-  more: [{ serial: 'S414', after: 0, alt: 'The words ran fast alone on a line' }, { serial: 'S415', after: 1, alt: 'The teacher asking who ran' }, { serial: 'S1722', after: 3, alt: 'The dog ran fast, with a capital and a period' }, { serial: 'S1723', after: 5, alt: 'A row of sentences each with a who and a what' }],
+  more: [{ serial: 'S414', after: 0, alt: 'The words ran fast alone on a line' }, { serial: 'S415', after: 1, alt: 'The teacher asking who ran' }, { serial: 'S1722', after: 3, alt: 'The dog ran fast, with a capital and a period' }, { serial: 'S1723', after: 5, alt: 'A teacher reading a page of sentences and smiling while the girl waits proudly' }],
   title: 'Who ran?', art: 'S413', cast: [],
   alt: 'A girl at a desk with the words ran fast on her paper, a teacher pointing at the empty space before them',
   words: [
@@ -2030,7 +2030,7 @@ STORIES['complete-sentences'] = {
 };
 STORIES['describing-sentences'] = {
   about: 'a cat that sat, and the words that showed what it was like',
-  more: [{ serial: 'S417', after: 0, alt: 'The words the cat sat on a page, plain' }, { serial: 'S418', after: 2, alt: 'Her brother shrugging' }, { serial: 'S1724', after: 3, alt: 'The same sentence with fluffy, quietly and warm added' }, { serial: 'S1725', after: 5, alt: 'The brother reading the new sentence and nodding' }],
+  more: [{ serial: 'S417', after: 0, alt: 'The words the cat sat on a page, plain' }, { serial: 'S418', after: 2, alt: 'A fluffy cat sitting very still on a warm sunny step, a girl studying it closely' }, { serial: 'S1724', after: 3, alt: 'The same sentence with fluffy, quietly and warm added' }, { serial: 'S1725', after: 5, alt: 'The brother reading the new sentence and nodding' }],
   title: 'The fluffy cat', art: 'S416', cast: [],
   alt: 'A girl on a porch step writing while a fluffy cat sits beside her in the sun',
   words: [
@@ -2075,7 +2075,7 @@ STORIES['then-and-now'] = {
 };
 STORIES['good-citizens'] = {
   about: 'a wallet on the ground with money in it, and the boy who gave it back',
-  more: [{ serial: 'S426', after: 0, alt: 'The wallet on the sidewalk, money showing' }, { serial: 'S427', after: 1, alt: 'The boy looking around, nobody watching' }, { serial: 'S1730', after: 3, alt: 'The boy thinking about the person who lost it' }, { serial: 'S1731', after: 4, alt: 'The boy handing the wallet to a grateful man' }],
+  more: [{ serial: 'S426', after: 0, alt: 'The wallet on the sidewalk, money showing' }, { serial: 'S427', after: 1, alt: 'The boy looking around, nobody watching' }, { serial: 'S1730', after: 3, alt: 'A boy holding out a lost wallet to a worried man checking his pockets at the corner' }, { serial: 'S1731', after: 4, alt: 'The boy handing the wallet to a grateful man' }],
   title: 'The wallet', art: 'S425', cast: [],
   alt: 'A boy holding a found wallet on a sidewalk, looking around for its owner',
   words: [
@@ -2120,7 +2120,7 @@ STORIES['maps-of-our-town'] = {
 };
 STORIES['services-in-our-town'] = {
   about: 'a fire truck, a library book and a park swing, and who sent them all',
-  more: [{ serial: 'S435', after: 0, alt: 'The fire truck at a smoky corner' }, { serial: 'S436', after: 2, alt: 'The girl asking who sent it' }, { serial: 'S1736', after: 4, alt: 'The library, the school and the park in a row' }, { serial: 'S1737', after: 6, alt: 'A police officer helping at a crossing' }],
+  more: [{ serial: 'S435', after: 0, alt: 'The fire truck at a smoky corner' }, { serial: 'S436', after: 2, alt: 'A fire truck, a library and a park on one busy town street' }, { serial: 'S1736', after: 4, alt: 'The library, the school and the park in a row' }, { serial: 'S1737', after: 6, alt: 'A police officer helping at a crossing' }],
   title: 'Who sent the truck', art: 'S434', cast: [],
   alt: 'A girl watching a fire truck pass a library and a park on a town street',
   words: [
@@ -2311,158 +2311,191 @@ STORIES['life-cycles'] = {
 };
 STORIES['paragraph-shape'] = {
   about: 'a paragraph about a dog that a girl built one sentence at a time',
-  more: [{ serial: 'S474', after: 1, alt: 'A notebook page with one sentence at the top and a stack of shorter sentences under it' }, { serial: 'S475', after: 2, alt: 'The dog waiting at the front door with a pair of shoes' }],
+  more: [{ serial: 'S474', after: 0, alt: 'A long messy heap of scribbled sentences on a notebook page beside a sleeping dog' }, { serial: 'S475', after: 2, alt: 'The scruffy dog trotting in with a pair of lost shoes in its mouth' }, { serial: 'S1800', after: 3, alt: 'The girl reading her sentences one at a time, pointing at each with her pencil' }, { serial: 'S1801', after: 4, alt: 'The dog sneaking a slice of birthday cake off the kitchen counter' }, { serial: 'S1802', after: 5, alt: 'A wooden table with a wide top resting on four sturdy legs' }],
   title: 'The shape of it', art: 'S473', cast: [],
   alt: 'A girl at a desk writing, a scruffy dog beside her holding a newspaper in its mouth',
   words: [
-    'Lily had to write a paragraph about her dog, and she had a hundred things to say. He brings the paper. He finds her shoes. He waits at the door. She wrote them all down in a heap and read it back. It sounded like a shopping list.',
-    'Her teacher asked one question. What is the paragraph about? Lily said, my dog. The teacher said, yes, but what about him? Lily looked at her heap of sentences. They were all true. None of them said the big thing.',
-    'So she wrote the big thing first. My dog is the best helper. That was the idea, and it went in the first sentence. Then the heap became the proof. He brings the paper. He finds my shoes. He waits at the door. Every detail pointed back at the idea.',
-    'That is the shape of a paragraph. One idea in the first sentence, details in the sentences after it, all of them holding the idea up. When a new idea shows up, it gets a new paragraph of its own.',
+    'Lily had to write a paragraph about her dog, Pepper, and she had a hundred things to say. He brings in the newspaper. He finds her lost shoes. He once ate a whole birthday cake. She wrote it all in one heap, and it sounded like a shopping list.',
+    'Her teacher asked one question. What is this paragraph about? My dog, said Lily. Yes, said the teacher, but what about him? Every sentence in the heap was true. Not one of them said the big thing.',
+    'So she wrote the big thing first. Pepper is the best helper in our house. That was the idea, and it went in the first sentence. Then the heap became proof. He brings in the newspaper. He finds my lost shoes.',
+    'Then she read each sentence and asked the test question: is this about the same idea? The newspaper, yes. The shoes, yes. The birthday cake? That was not helping. That was stealing.',
+    'The cake did not get thrown away. It got a paragraph of its own, with its own first sentence. Pepper is also a thief. Now Lily had two paragraphs, two ideas, and nothing in the wrong place.',
+    'Her teacher drew it as a table. The first sentence is the tabletop, the idea everything rests on. The details are the legs, and a leg from a different table makes it wobble.',
+    'That is the shape of a paragraph. One idea in the first sentence, details after it holding it up, and a new paragraph for every new idea.',
   ],
 };
 STORIES['explain-how'] = {
-  about: 'a paper boat and the steps that only worked in one order',
-  more: [{ serial: 'S477', after: 1, alt: 'A numbered list of folds on a page beside a sheet of paper' }, { serial: 'S478', after: 3, alt: 'A paper boat floating in a bathtub' }],
+  about: 'a paper boat, a card of steps and the two folds that went missing',
+  more: [{ serial: 'S477', after: 1, alt: 'A boy holding a torn paper hat, stuck and puzzled' }, { serial: 'S478', after: 2, alt: 'Hands opening a folded paper hat at the bottom and flattening it into a diamond' }, { serial: 'S1803', after: 3, alt: 'The boy folding paper slowly and writing a line on a card after each fold' }, { serial: 'S1804', after: 4, alt: 'A little paper boat floating in a sink full of water' }, { serial: 'S1805', after: 5, alt: 'A stranger\'s hands following a card of steps, a paper boat taking shape' }],
   title: 'The paper boat', art: 'S476', cast: [],
-  alt: 'Two children at a table with sheets of paper, one holding a finished paper boat, the other a crumpled fold',
+  alt: 'Two boys at a kitchen table with sheets of paper, one writing folding steps on a card for the other',
   words: [
-    'Marcus could fold a paper boat with his eyes closed. His friend Eli could not, so Marcus wrote it down for him. Fold the corners. Fold in half. Fold the flaps. Open it out. Eli followed the note and ended up with a paper hat that sank.',
-    'Marcus was annoyed. All the steps were there. He had not left one out. Eli held up the soggy hat and said, you said fold the corners before fold in half. Marcus looked at his note. He had.',
-    'He wrote it again, slowly, the way his hands actually did it. What you need: one sheet of paper. Then the steps, in order. Fold in half. Fold the corners down. Fold the flaps up. Open it out. Eli followed it and the boat floated in the sink.',
-    'Explaining how to do something has two parts. Say what is needed, then give the steps in the order they really happen. The test is simple. If a friend can follow your words and end up with a boat, you explained it.',
+    'Marcus could fold a paper boat with his eyes closed. His friend Eli could not, so Marcus wrote the steps on a card for him. Fold the paper in half. Fold the top corners down. Fold the bottom strips up. Pull it open. Easy.',
+    'Eli tried it at the kitchen table. He got a paper hat, and then he got stuck. Pull what open? Every way he pulled, the hat tore. He brought Marcus the ripped hat and the card.',
+    'Marcus read his card and frowned. Every step on it was right, but his hands did more than it said. After the hat, you open it at the bottom and flatten it into a diamond. Then you fold the bottom corners up and flatten it again. He had skipped what he no longer noticed doing.',
+    'So he folded one slowly and wrote down every move as his hands made it. What you need: one sheet of paper. Then seven steps, in the order they really happen. Seven, not four.',
+    'Eli followed the new card without asking a single question. Hat. Diamond. Smaller diamond. Pull the top corners apart. The boat popped open, and it floated in the sink.',
+    'Explaining how to do something has two parts: say what is needed, then give every step in order. The test is to picture a stranger following your words. A missing step leaves them stuck, and steps out of order leave them with a mess.',
   ],
 };
 STORIES['give-a-reason'] = {
   about: 'a class that wanted a pet, and the girl who said why properly',
-  more: [{ serial: 'S480', after: 2, alt: 'A poster with I think at the top and two because lines under it' }, { serial: 'S481', after: 3, alt: 'A goldfish in the tank on the classroom windowsill' }],
+  more: [{ serial: 'S480', after: 0, alt: 'A classroom of children shouting with their hands in the air while the teacher waits calmly' }, { serial: 'S481', after: 2, alt: 'A boy standing at his desk with his mouth open, stuck on his second reason' }, { serial: 'S1806', after: 4, alt: 'A teacher writing four lines on the board while the girl watches' }, { serial: 'S1807', after: 5, alt: 'A little orange fish swimming in its new tank on the classroom windowsill' }, { serial: 'S1808', after: 6, alt: 'The class cheering around the new fish tank' }],
   title: 'I think, because', art: 'S479', cast: [],
   alt: 'A girl standing in front of her class beside an empty fish tank, classmates listening',
   words: [
-    'Mia\'s class wanted a pet. When the teacher asked why, twelve kids shouted at once. Because pets are cool. Because. Just because. The teacher waited for the noise to stop and said, that is not a reason, that is a wish.',
+    'Mia\'s class wanted a pet. When the teacher asked why, twelve kids shouted at once. Because pets are cool! Because! Just because! The teacher waited for the noise to stop. That is not a reason, she said. That is a wish.',
     'Mia wanted the pet more than anyone. But she could hear that the shouting was not working. Wanting something was not the same as making a case for it. What did a case even look like?',
-    'She put up her hand and said it in order. I think our class should get a fish. Because we would learn to care for something. Because a fish is quiet and will not bother the class next door. Then she said it again a new way: a fish would be a good classmate. The teacher wrote it on the board.',
-    'That is how to give a reason. Say what you think. Then say because, twice, with two real reasons. Then say it again at the end in fresh words. The class got a fish, and the fish got a name.',
+    'Then Leo stood up for a hamster. I think we should get a hamster, because hamsters are fun. The class clapped. The teacher nodded and asked him for a second reason. Leo opened his mouth, closed it and sat down.',
+    'Mia put up her hand and said it in order. I think our class should get a fish. Because a fish would teach us to take care of something every day. Because a fish is quiet and will not bother the class next door.',
+    'Then she said it again, in new words. A fish would be the perfect classmate. The teacher wrote it on the board in four lines: what I think, a reason, a reason, and what I think again.',
+    'They voted, and the fish won. It got a name, Captain Bubbles, and a job chart.',
+    'That is how to give a reason. Say what you think. Say because, with two real reasons. Then say it again at the end in fresh words. A wish only gets clapped for. A reason gets a fish.',
   ],
 };
 STORIES['equal-groups'] = {
   about: 'three bags of apples and the boy who was too slow counting them',
-  more: [{ serial: 'S483', after: 1, alt: 'Apples tipped out into three neat rows of five' }, { serial: 'S484', after: 2, alt: 'The boy holding up three fingers on one hand and five on the other, grinning' }],
+  more: [{ serial: 'S483', after: 1, alt: 'The aunt answering with a smile while her nephew is still counting, the line of customers growing' }, { serial: 'S484', after: 2, alt: 'Apples tipped out onto the table in three neat rows of five' }, { serial: 'S1809', after: 3, alt: 'A tray of apples in rows and columns, a finger counting down one column' }, { serial: 'S1810', after: 4, alt: 'The boy turning a tray of twelve apples sideways, four rows becoming three' }, { serial: 'S1811', after: 5, alt: 'Equal groups all over the market: egg cartons, bundles of carrots and baskets of peaches' }],
   title: 'Three bags', art: 'S482', cast: [],
   alt: 'Three paper bags of apples on a market stall, a boy counting with his finger, a line of customers waiting',
   words: [
-    'Ben helped at his aunt\'s market stall. Three bags of apples, five in each, and a customer asking how many in all. Ben counted every apple with his finger. One, two, three. The customer sighed. Ben lost his place and started over.',
-    'His aunt could say the answer before he had opened the second bag. Fifteen. Every time. Was she guessing? The apples smelled sweet and the line was getting longer.',
-    'She tipped the apples into three rows of five. Five, ten, fifteen, she said, tapping each row. Three groups of five is three fives added together. That is all multiplying is. The same number, again and again, counted the fast way. Three times five is fifteen.',
-    'Whenever things come in equal groups, you do not have to count them one by one. Groups times how many in each group. It works for bags of apples, rows of chairs and wheels on cars. Once you see the groups, the counting is already done.',
+    'Ben was helping at his aunt\'s apple stall at the farmers market. A customer pointed at three paper bags, five apples in each, and asked how many apples that was. Ben counted every apple with his finger. One, two, three. The customer sighed. Ben lost his place and started over.',
+    'His aunt could say the answer before he opened the second bag. Fifteen. Every time. Was she guessing? The apples smelled sweet, and the line was getting longer.',
+    'She tipped the apples onto the table in three rows of five. Five, ten, fifteen, she said, tapping one row at a time. Three groups of five is three fives added together: five plus five plus five. That is all multiplying is. Three times five is fifteen.',
+    'Rows and columns like that have a name, she said. An array. Count the rows, count how many are in each row, and multiply.',
+    'The next customer wanted four bags with three apples in each. Ben made four rows of three. Twelve. Then he turned the tray sideways, and the rows became three rows of four. Still twelve. Four groups of three and three groups of four were the same apples, seen from a new side.',
+    'The first number says how many groups. The second says how many are in each one. Whenever things come in equal groups, you do not have to count them one by one. Groups times how many in each group, and the counting is already done.',
   ],
 };
 STORIES['times-tables'] = {
   about: 'the fact that would not stick, and the rectangle that made it stay',
-  more: [{ serial: 'S486', after: 1, alt: 'The same rectangle of dots turned on its side, eight across and seven down' }, { serial: 'S487', after: 3, alt: 'A times table chart with the bottom half shaded, the girl pointing at the empty half' }],
+  more: [{ serial: 'S486', after: 1, alt: 'A grandfather and his granddaughter at a kitchen table, a paper napkin and a pen between them' }, { serial: 'S487', after: 2, alt: 'A napkin covered in dots in a rectangle, turned sideways on the table' }, { serial: 'S1812', after: 3, alt: 'The girl counting by fives on her fingers while her grandfather smiles' }, { serial: 'S1813', after: 4, alt: 'The rectangle of dots split down the middle, five columns on one side and two on the other' }, { serial: 'S1814', after: 5, alt: 'The girl marching to school in the morning, saying numbers in time with her steps' }],
   title: 'Seven times eight', art: 'S485', cast: [],
   alt: 'A girl at a table with a grid of colored dots on paper, seven across and eight down, tracing the rows',
   words: [
-    'Every fact in the times table stuck for Lena except one. Seven times eight. She would learn it at night and lose it by morning. It was like a sock that kept disappearing in the wash.',
-    'Her grandfather asked her what seven times eight even meant. She said, fifty-six. He said no, what does it mean. She did not know. She had been memorizing a sound, not a thing.',
-    'He drew a rectangle of dots on a napkin, seven across and eight down. Fifty-six dots. Then he turned the napkin. Eight across and seven down. The same fifty-six. Seven eights and eight sevens were one rectangle looked at two ways. Lena counted the rows and the fact finally had a shape.',
-    'The facts up to ten times ten are the tools every bigger multiplication uses. Every fact works both ways, so learn half the table and you own the whole thing. And a fact you can picture is a fact you keep.',
+    'Every fact in the times table stuck for Lena except one. Seven times eight. She learned it every night and lost it every morning, like a sock that kept vanishing in the wash.',
+    'Her grandfather asked what seven times eight even meant. Fifty-six, she said. No, he said, what does it mean? Lena did not know. She had been memorizing a sound, not a thing.',
+    'He drew a rectangle of dots on a napkin, seven across and eight down. Then he turned the napkin sideways. Eight across and seven down. Seven eights and eight sevens were one rectangle, looked at two ways. Every fact works both ways, so learning half the table gets you the whole thing.',
+    'Then he showed her how to build the hard fact from easy ones. She already knew her fives: every fact ends in five or zero. Five eights are forty. She knew her twos, because twos just double. Two eights are sixteen. Forty and sixteen make fifty-six.',
+    'The rectangle split right down the middle to prove it: five columns on one side, two on the other, seven columns in all.',
+    'He had one more trick. Say five, six, seven, eight. Fifty-six is seven times eight. The numbers march in order. Lena said it all the way to school.',
+    'The facts up to ten times ten are the tools every bigger problem uses. Practice a few at a time, a little each day. A fact you can picture, and build from facts you know, is a fact you keep.',
   ],
 };
 STORIES['sharing-equally'] = {
   about: 'twelve cookies, four friends and a fight that ended with a deal',
-  more: [{ serial: 'S489', after: 1, alt: 'Three cookies on every plate, all four plates matching' }, { serial: 'S490', after: 3, alt: 'A girl checking her work: three cookies, four plates, twelve fingers held up' }],
+  more: [{ serial: 'S489', after: 0, alt: 'Four children grabbing cookies from one plate and arguing' }, { serial: 'S490', after: 2, alt: 'Four plates with three cookies on each, all matching' }, { serial: 'S1815', after: 3, alt: 'The girl holding up three fingers and then four, checking her work' }, { serial: 'S1816', after: 4, alt: 'Two more friends coming through the door, everyone turning to the girl with the plate' }, { serial: 'S1817', after: 5, alt: 'Six children at the table, two cookies on every plate' }],
   title: 'Deal them out', art: 'S488', cast: [],
   alt: 'Four children around a table with four plates, a girl dealing cookies out one at a time from a plate of twelve',
   words: [
-    'Twelve cookies, four friends, and nobody wanted to be the one who got fewer. Everyone grabbed. Somebody got four, somebody got two, and the arguing started before anyone had taken a bite.',
-    'Grace took the plate back. There had to be a fair way. Twelve was too many to just see. She could feel the warm cookies through the plate and everyone was staring at her.',
-    'She dealt them out like cards. One for each friend, round the table. Then another round. Then another. The plate was empty and every plate had three. Twelve divided by four is three. And she could check it backward: three cookies times four friends is twelve.',
-    'Dividing is sharing out equally, one round at a time. It undoes multiplying, so when a division looks hard, ask the backward question. What times four makes twelve? The answer to that is the answer to this.',
+    'Twelve cookies, four friends, and nobody wanted to be the one who got fewer. Everyone grabbed. Somebody got five, somebody got just two, and the arguing started before anyone took a bite.',
+    'Grace took the plate back. There had to be a fair way. Twelve was too many to split by just looking. She could feel the warm cookies through the plate, and everyone was staring at her.',
+    'She dealt them out like cards. One for each friend, around the table. Then another round. Then another. No favorites, no grabbing, no arguing. The plate was empty, and every plate had three. Twelve divided by four is three.',
+    'She could check it backward, too. Three cookies on each of four plates is three times four, and three times four is twelve. Dividing undoes multiplying. The same three numbers make both facts.',
+    'Then the doorbell rang. Two more friends, and now there were six. Nobody grabbed this time. Everyone looked at Grace. She asked herself the backward question: what times six makes twelve? Two. So each of the first four gave one cookie back, and all six had two.',
+    'Dividing is sharing out equally, one round at a time, like dealing cards. When a division looks hard, flip it around and ask the multiplying question: what times the divisor makes the total? The answer to that is the answer to this. Twelve divided by six is two, because six times two is twelve.',
   ],
 };
 STORIES['add-subtract-1000'] = {
   about: 'two jars of marbles and the column that overflowed',
-  more: [{ serial: 'S492', after: 1, alt: 'A close look at the ones column: 6 and 8 making 14, the 4 written and a small 1 carried' }, { serial: 'S493', after: 2, alt: 'The finished sum, 634, and the marbles poured together into one big jar' }],
+  more: [{ serial: 'S492', after: 0, alt: 'A boy with his eyes squeezed shut, trying to add two jars of marbles in his head' }, { serial: 'S493', after: 1, alt: 'A crowded sum on paper with one column squeezed too full, the boy scratching his head' }, { serial: 'S1818', after: 2, alt: 'A teacher pointing at the ones column while the boy carries a small one to the next column' }, { serial: 'S1819', after: 3, alt: 'Marbles sorted into bags of a hundred, cups of ten and loose ones' }, { serial: 'S1820', after: 4, alt: 'The boy counting marbles into a bag for his cousin' }],
   title: 'Column by column', art: 'S491', cast: [],
-  alt: 'Two jars of marbles on a desk, one with 256 and one with 378, a boy writing the sum in columns',
+  alt: 'Two big jars of marbles on a desk, a boy writing a sum in neat columns on paper',
   words: [
-    'Marcus had 256 marbles in one jar and 378 in another. He wanted one number for the whole collection. He tried adding it in his head and got a different answer every time. The marbles clicked as he shook the jars, as if they were laughing.',
-    'The trouble was the ones. Six and eight made fourteen, and fourteen would not fit in one column. Where did the extra ten go? He wrote it in the ones place and the answer came out enormous and wrong.',
-    'His teacher showed him to go column by column, ones first. Six and eight is fourteen. Write the 4, carry the ten to the tens column. Tens: five and seven and the carried one is thirteen. Write the 3, carry the hundred. Hundreds: two and three and one is six. 634 marbles.',
-    'Adding big numbers is just adding small columns in order, ones then tens then hundreds. When a column makes ten or more, carry the ten to the next column, where it belongs. Subtracting works the same way backward, borrowing instead of carrying.',
+    'Hugo had 256 marbles in one jar and 378 in another, and he wanted one number for the whole collection. He added them in his head and got a different answer every time.',
+    'The trouble was the ones. Six and eight make fourteen, and fourteen will not fit in one column. He wrote the whole 14 there anyway, and the answer came out enormous and wrong. Where was the extra ten supposed to go?',
+    'His teacher showed him to go column by column, ones first. Six and eight is fourteen. Write the 4, and carry the ten to the tens column. Tens: five and seven and the carried one make thirteen. Write the 3, and carry the hundred. Hundreds: two and three and one make six. 634 marbles.',
+    'Every number up to a thousand is built the same way, from hundreds, tens and ones. 634 is six hundreds, three tens and four ones. Each column holds one kind, and a ten that spills over belongs next door.',
+    'Then his cousin asked for 125 marbles. Two steps: put the jars together, then give some away. Ones first again. Four ones are not enough to take away five, so Hugo borrowed a ten, and fourteen take away five is nine. Two tens take away two is zero. Six hundreds take away one is five. 509 left.',
+    'Adding and subtracting big numbers is small columns, in order. Carry when a column makes ten or more. Borrow when a column runs short. And read a two-step problem all the way through before you start.',
   ],
 };
 STORIES['elements-of-art'] = {
   about: 'one cup drawn seven ways, once for each element',
-  more: [{ serial: 'S495', after: 1, alt: 'The cup as outline only, then as a solid shape, then shaded' }, { serial: 'S496', after: 3, alt: 'The cup in color, then with rough texture, then floating in space' }],
+  more: [{ serial: 'S495', after: 0, alt: 'A girl drawing a cup again and again, a pile of cup drawings growing beside her' }, { serial: 'S496', after: 2, alt: 'A cup drawn three ways: as an outline, as a flat cutout shape and shaded round' }, { serial: 'S1827', after: 3, alt: 'The cup drawn three more ways: bright red, rough with a dry brush, and tiny on a wide empty table' }, { serial: 'S1828', after: 4, alt: 'The same cup drawn with a thick bold line beside one drawn with a thin wobbly line' }, { serial: 'S1829', after: 5, alt: 'Seven cup drawings pinned in a row on a classroom wall' }],
   title: 'A cup, seven ways', art: 'S494', cast: [],
   alt: 'A girl at an art table with seven small drawings of the same cup in a row, each done differently',
   words: [
-    'Rosa drew a cup and her art teacher said, again. Rosa drew it again. Again, the teacher said, but this time only lines. Then only shapes. By the fourth cup Rosa was sure she was being punished.',
-    'She was not. Each cup was made from one element. Line: just the edges. Shape: the flat outline filled. Form: shaded so it looked round. Color. Texture, rough with a dry brush. Space, with the cup small and far away. Value, only light and dark.',
-    'Seven cups on the table, and none of them looked like the others. The teacher said every picture ever made was built from those seven, and the principles of design, balance, contrast, rhythm, were how an artist arranged them. Rosa had thought art was talent. It was ingredients.',
-    'The elements of art are line, shape, form, color, texture, space and value. The principles of design are how an artist arranges them. One cup drawn seven ways is the whole kit laid out on a table.',
+    'Ines drew a cup, and her art teacher said, again. Ines drew it again. Again, said the teacher, but this time only lines. Then only a flat shape. By the fourth cup, Ines was sure she was being punished.',
+    'She was not. Each cup was built from just one of the seven elements of art, the pieces every picture is made of. The teacher lined them up across the table so Ines could see them side by side.',
+    'Line was just the edges, a mark traveling around the cup. Shape was the outline filled in flat, like a paper cutout. Form was shaded on one side, so the cup looked round enough to pick up.',
+    'Color turned it red. Texture made it rough, dragged on with a dry brush. Space put the cup small and far away, with a whole empty table around it. Value used no color at all, only light, dark and every gray between.',
+    'Then the teacher took the line cup and drew it twice more. Once with a thick, heavy line, and the cup looked loud and sure of itself. Once with a thin, wobbly line, and the same cup looked nervous. Ines laughed. One element had changed the mood.',
+    'Seven cups, and none looked like the others. Ines had thought art was talent. It turned out to be ingredients.',
+    'The elements of art are line, shape, form, color, texture, space and value. Look for them in any picture, from a scribble to a masterpiece, and you will see how it was built.',
   ],
 };
 STORIES['the-color-wheel'] = {
   about: 'three jars of paint and every color that came out of them',
-  more: [{ serial: 'S498', after: 1, alt: 'Red and yellow puddles meeting in orange' }, { serial: 'S499', after: 3, alt: 'A wheel of colors with the warm half glowing and the cool half in shade' }],
+  more: [{ serial: 'S498', after: 1, alt: 'Red and yellow paint puddles meeting and swirling into orange' }, { serial: 'S499', after: 2, alt: 'A brush mixing blue and green paint into a blue-green swirl' }, { serial: 'S1830', after: 3, alt: 'A painted color wheel with the warm half glowing and the cool half in shade' }, { serial: 'S1831', after: 4, alt: 'A painting of a warm sunset over a calm blue sea with a small orange boat' }, { serial: 'S1832', after: 5, alt: 'A pink sky fading into deep blue night at the edges of the painting' }],
   title: 'Three jars', art: 'S497', cast: [],
   alt: 'A boy at an art table with three jars of red, yellow and blue paint, mixed puddles between them',
   words: [
-    'Kai had three jars of paint, red, yellow and blue, and a picture in his head that needed orange, green and purple. He asked for more jars. The teacher said the three jars had everything.',
-    'He did not believe her until he mixed. Red and yellow made orange. Yellow and blue made green. Blue and red made purple. Three primaries, three secondaries, six colors from three jars.',
-    'She had him arrange them in a circle. One half glowed: red, orange, yellow, the warm colors, fire and sun. The other half sat back: green, blue, purple, the cool colors, water and shade. Kai painted a sunset with the warm half and the sea under it with the cool half, and the picture in his head came out of three jars.',
-    'Red, yellow and blue are primary; orange, green and purple are secondary, each mixed from two primaries. Warm colors are red, orange and yellow; cool colors are green, blue and purple. Three jars hold the wheel.',
+    'Ravi had three jars of paint, red, yellow and blue, and a picture in his head that needed orange, green and purple. He asked for more jars. His art teacher said the three jars already held everything.',
+    'He did not believe her until he mixed. Red and yellow made orange. Yellow and blue made green. Blue and red made purple. Three primary colors had made three secondary colors, and he had not opened a new jar.',
+    'Then he mixed blue with a little green and got blue-green, a color between the two. That kind is called tertiary: a primary mixed with the secondary beside it.',
+    'The teacher had him set the colors in a circle. One half glowed: red, orange and yellow, the warm colors, like fire and sun. The other half sat back: green, blue and purple, the cool colors, like water and shade.',
+    'Ravi painted a sunset with the warm half and a calm sea with the cool half. Then he put a small orange boat on the blue water, and it jumped off the page. Orange and blue sit across the wheel from each other. Complementary colors make each other look brighter.',
+    'For the sky he added white to red and got pink, a tint. For the night coming in at the edges he added black to blue, a shade.',
+    'Red, yellow and blue are the primaries, and every other color on the wheel can be mixed from them. Three jars hold the whole wheel.',
   ],
 };
 STORIES['looking-at-a-picture'] = {
   about: 'a painting looked at four times, in the order most people get backward',
-  more: [{ serial: 'S501', after: 2, alt: 'Her finger listing what is in the painting, plainly' }, { serial: 'S502', after: 3, alt: 'The same painting, now with arrows showing where the eye is led' }],
+  more: [{ serial: 'S501', after: 0, alt: 'The girl frowning and turning away from the painting after a quick glance' }, { serial: 'S502', after: 1, alt: 'A painting of a woman at a window holding a letter, gray light and one red chair' }, { serial: 'S1833', after: 2, alt: 'Light pouring in from the left of the painting and landing brightest on the letter' }, { serial: 'S1834', after: 4, alt: 'The girl pointing at the red chair in the painting while explaining to her teacher' }, { serial: 'S1835', after: 5, alt: 'The girl and her teacher standing back from the painting, the girl nodding thoughtfully' }],
   title: 'Four looks', art: 'S500', cast: [],
-  alt: 'A girl in front of a large painting in a museum, four numbered footprints on the floor in front of it',
+  alt: 'A girl standing in front of a large painting in a museum, her teacher beside her, four footprints on the floor leading up to it',
   words: [
-    'Maya looked at the painting for three seconds and said she did not like it. Her teacher said that was step four, and asked her to start at step one.',
-    'Step one, describe: a woman at a window, a letter, gray light, a red chair. Step two, analyze: the light came from the left and led the eye to the letter; the chair was the only warm color. Step three, interpret: the letter mattered, and the red chair meant the room was not as cold as it looked.',
-    'Step four, judge, and now the judging had something under it. Maya still did not love the painting. But she could say what it was doing and how, and that the red chair was a small good decision. Most people start at judging, which is the least interesting step, and stop there.',
-    'Describe, analyze, interpret, then judge. Most people start at judging, which is the least interesting step. Three looks before the verdict, and the verdict gets better.',
+    'Zoe looked at the painting for three seconds and said she did not like it. Her teacher said that was step four, and asked her to go back to step one.',
+    'Step one: describe. Say only what is there. A woman at a window. A letter in her hands. Gray light. A red chair. Zoe was not allowed to say whether any of it was good. Just what was there.',
+    'Step two: analyze. How is it made? The light comes in from the left and lands brightest on the letter. The chair is the only warm color in a room full of gray and blue.',
+    'Where did your eye go first, the teacher asked. To the letter. That is the focus, she said, and the painter put it there on purpose, with the brightest light in the whole picture.',
+    'Step three: interpret. What does it mean, and why do you think so? The letter matters to her. The red chair says the room is not as cold as it looks. Zoe had to point at the painting to prove each idea.',
+    'Step four: judge. Now the judging had something under it. Zoe still did not love the painting. But she could say what it was doing and how, and that the red chair was a small, smart choice.',
+    'Describe, analyze, interpret, then judge. Most people start at judging, the least interesting step, and stop there. Three looks before the verdict, and the verdict gets better.',
   ],
 };
 STORIES['three-levels-of-government'] = {
   about: 'a pothole, a highway and a stamp, and the three governments a boy met in one morning',
-  more: [{ serial: 'S504', after: 1, alt: 'A city truck filling the pothole, a worker in an orange vest' }, { serial: 'S505', after: 2, alt: 'The boy dropping a stamped letter into a blue mailbox' }],
+  more: [{ serial: 'S504', after: 0, alt: 'A crew in orange vests working on a highway overpass as a boy rides by' }, { serial: 'S505', after: 2, alt: 'A city hall with a library, a fire truck and a street crew in front of it' }, { serial: 'S1845', after: 3, alt: 'The pink granite capitol in Austin and, far behind it, the white Capitol dome in Washington' }, { serial: 'S1846', after: 4, alt: 'A boy standing at a microphone at a city council meeting, council members listening' }, { serial: 'S1847', after: 5, alt: 'A three-story building with local, state and national governments on its floors, a small boy at the front door' }],
   title: 'Three levels', art: 'S503', cast: [],
-  alt: 'A boy on a bike beside a pothole on a city street, a highway sign in the distance, a letter with a stamp in his basket',
+  alt: 'A boy on a bike beside a pothole on a city street, a highway overpass in the distance, a letter with a stamp in his basket',
   words: [
-    'On Saturday, Tomas hit a pothole on his bike, rode past the highway crew fixing the overpass, and mailed a birthday card to his grandmother. Three ordinary things. Then his uncle asked who fixes the pothole, who builds the highway and who prints the stamp.',
-    'Tomas said, the government. His uncle said, which one? Tomas did not know there was more than one. It felt like a trick question, and the pothole was still there.',
-    'There are three, stacked like floors in a building. The city fills the pothole, and a mayor leads the city. The state builds the highway, and a governor leads Texas from Austin. The country prints the stamp, and a president leads the United States. Each level does the jobs that fit its size.',
-    'Local, state and national. Three levels, three leaders, three sets of jobs. The next time something in your town gets fixed, built or mailed, ask which floor of the building did it.',
+    'On Saturday, Tomas hit a pothole on his bike, rode past a crew fixing the highway overpass and mailed a birthday card to his grandmother. Three ordinary things. Then his uncle asked him who fixes the pothole, who fixes the highway and who delivers the card.',
+    'The government, Tomas said. His uncle asked, which one? Tomas did not know there was more than one. It felt like a trick question, and the pothole was still there.',
+    'There are three, his uncle said, stacked like floors in a building. The ground floor is local: your city, led by a mayor and a city council. It fixes streets, runs the library and sends the fire truck. The pothole belongs to them.',
+    'The middle floor is the state: Texas, led by a governor and a legislature in Austin. It builds the highways, runs the state parks and gives out driver\'s licenses. The top floor is national: the United States, led by a president and Congress in Washington, D.C. It prints the money and delivers the mail.',
+    'Tomas wanted the pothole gone, so his uncle took him to a city council meeting. Tomas stood up and described the hole, how deep it was and where. A council member wrote it down. Two weeks later, a city truck filled it.',
+    'Local, state and national. Three levels, three leaders, three sets of jobs. The closer the level, the easier it is to walk in and be heard, even when you are nine.',
   ],
 };
 STORIES['how-we-decide'] = {
-  about: 'a classroom rule and a red light, and why one of them was a law',
-  more: [{ serial: 'S507', after: 1, alt: 'A crosswalk with cars stopped at a red light, a police officer nearby' }, { serial: 'S508', after: 2, alt: 'The Capitol building in Washington with three drawn figures for Congress, the President and the courts' }],
+  about: 'a school rule, a walk signal and a class vote, and who each one covers',
+  more: [{ serial: 'S507', after: 0, alt: 'A dad holding his son back at a crosswalk, the pedestrian signal showing a red hand' }, { serial: 'S508', after: 2, alt: 'A family, a class and a team, each gathered in its own small circle' }, { serial: 'S1848', after: 3, alt: 'Lawmakers in a grand chamber at the Texas Capitol in Austin raising their hands to vote' }, { serial: 'S1849', after: 4, alt: 'A class of children raising their hands in a field trip vote, the zoo side a little bigger' }, { serial: 'S1850', after: 5, alt: 'The whole class at the zoo, the museum fans grinning at a giraffe' }],
   title: 'Rule or law?', art: 'S506', cast: [],
-  alt: 'A boy walking calmly down a school hallway past a No Running sign, a red traffic light visible through the window',
+  alt: 'A boy slowing to a walk in a school hallway, a crosswalk signal glowing red through the window',
   words: [
-    'Kai got told off twice in one day. Once for running in the hall, and once, on the way home, for starting to cross before the light turned. His dad said one of those was a rule and one was a law. Kai said they felt exactly the same.',
-    'They both told him what to do. They both had someone watching. But when he asked why running in the hall was not a law, his dad laughed. Would a police officer pull over a kid for running in a hallway in another town?',
-    'No. A rule is for a small group, like a school, and the school makes it. A law is for everyone, everywhere in the country, and it takes a whole system to make one. Congress writes the law. The President carries it out. The courts decide what it means when people disagree.',
-    'Rule or law, the question is always the same: who does it cover? The hall rule stops at the school door. The red light follows you to every town in the country, because everyone had a say in making it.',
+    'Noah got told off twice in one day. Once at school for running in the hall, and once on the way home for stepping into the street before the walk signal came on. His dad said one of those was a rule and one was a law. Noah said they felt exactly the same.',
+    'They both told him what to do. They both had someone watching. But would a police officer ever stop a kid for running down a school hallway? Noah laughed. Of course not. So what made them different?',
+    'Who they cover, his dad said. A rule is for one group: a family, a class, a team. The school made the hall rule, and it stops at the school door. A law is for everyone in a city, a state or the whole country, and breaking it has a set punishment.',
+    'The walk signal law covers everyone in Texas. The state legislature in Austin made it. Laws for the whole country come from Congress. The President carries them out, and the courts decide what they mean when people disagree.',
+    'The next day, Noah\'s class voted on a field trip. Fourteen kids chose the zoo and ten chose the museum. More than half picked the zoo, so the zoo won by four. That is majority rule.',
+    'The museum kids groaned, but they still got to go, and they still get a vote next time. That is the deal that makes voting work.',
+    'Rule or law, ask who it covers.',
   ],
 };
 STORIES['earning-and-choosing'] = {
   about: 'eleven dollars, a book and a ball, and the thing that got left on the shelf',
-  more: [{ serial: 'S510', after: 1, alt: 'Six dollars from chores and five from a card laid out on a bed and counted' }, { serial: 'S511', after: 2, alt: 'The girl walking out of the store with the book, glancing back at the ball' }],
+  more: [{ serial: 'S510', after: 0, alt: 'Six dollars from chores and five from a birthday card laid out on a bed and counted' }, { serial: 'S511', after: 1, alt: 'A kind cashier shaking her head at the counter while the girl holds up her money' }, { serial: 'S1851', after: 2, alt: 'The girl walking out of the store with the book, glancing back at the ball on the shelf' }, { serial: 'S1852', after: 3, alt: 'A lemonade stand at the end of a driveway on a sunny Saturday' }, { serial: 'S1853', after: 4, alt: 'The girl dropping a dollar into a glass savings jar, a new ball under her arm' }],
   title: 'The eleven dollars', art: 'S509', cast: [],
   alt: 'A girl at a store counter with coins and bills in her hand, a book and a ball on the shelf in front of her',
   words: [
-    'Rosa had eleven dollars. Six from chores, five from a birthday card. At the store she found the book she wanted for eight dollars and the ball she wanted for seven. She counted the money twice. It did not get bigger.',
-    'She tried every trick. Maybe the ball was on sale. It was not. Maybe she could pay the rest next week. The cashier smiled and said no. Eleven dollars was eleven dollars, and fifteen was fifteen.',
-    'That is scarcity. There is never enough for everything, so every choice gives something up. Rosa chose the book. The ball stayed on the shelf, and the ball was the real cost of the book. Not eight dollars. The ball. Economists call the thing you gave up the opportunity cost.',
-    'Every time you spend money, time or attention, you are also not spending it on something else. Grown-ups make this choice all day long. The trick is not to avoid it. It is to know what you are giving up, and to choose on purpose.',
+    'Hana had eleven dollars. Six came from chores and five from a birthday card. At the store she found the book she wanted for eight dollars and the ball she wanted for seven. She counted her money twice. It did not get any bigger.',
+    'She tried every trick. Maybe the ball was on sale. It was not. Maybe she could pay the rest next week. The cashier smiled and shook her head. Eight and seven make fifteen, and eleven is not fifteen.',
+    'That is scarcity. There is never enough for everything, so every choice gives something up. Hana chose the book. The ball stayed on the shelf, and the ball was the real cost of the book. The thing you give up has a name: the opportunity cost.',
+    'She still had three dollars, and she still wanted that ball. So on Saturday she set up a lemonade stand at the end of the driveway. Anyone in the country is free to start a business like that. It is called free enterprise.',
+    'She sold twelve cups at fifty cents each, six dollars in all, and paid her mom back one dollar for the sugar and cups. Now she had eight. She bought the ball for seven and dropped the last dollar into her savings jar.',
+    'Every time you spend money, time or attention, you are not spending it on something else. The trick is not to avoid that. It is to know what you are giving up, and to choose on purpose.',
   ],
 };
 // Grades 4 and 5, in the fewest words that still make a story.
@@ -5112,7 +5145,7 @@ STORIES['writing-history'] = {
 };
 STORIES['ending-sounds'] = {
   about: 'a cat said very slowly, and the little tuh at the end',
-  more: [{ serial: 'S1173', after: 0, alt: 'The boy saying cat fast, the end sound blurred' }, { serial: 'S1547', after: 2, alt: 'The boy with his tongue tapping behind his teeth' }, { serial: 'S1548', after: 4, alt: 'The letters C, A and T, the last one glowing' }, { serial: 'S1549', after: 5, alt: 'A bus drawn with a hissing sss at its end' }],
+  more: [{ serial: 'S1173', after: 0, alt: 'The boy saying cat fast, the end sound blurred' }, { serial: 'S1547', after: 2, alt: 'The boy with his tongue tapping behind his teeth' }, { serial: 'S1548', after: 4, alt: 'A boy saying the end of a word with his lips popping, a toy dog and a cup on the kitchen table' }, { serial: 'S1549', after: 5, alt: 'A bus drawn with a hissing sss at its end' }],
   title: 'The sound at the end', art: 'S1172', cast: [],
   alt: 'A small boy saying a word slowly with a cat on his lap, three letters floating from his mouth',
   words: [
@@ -5177,7 +5210,7 @@ STORIES['watersheds'] = {
 // Four modules added on 2026-09-23, second batch.
 STORIES['quarter-hours'] = {
   about: 'a bus at quarter past eight, and the long hand that told a boy how long he had',
-  more: [{ serial: 'S1188', after: 0, alt: 'The clock with the long hand on the 3' }, { serial: 'S1189', after: 1, alt: 'The boy with his cereal, not sure how long he has' }, { serial: 'S1712', after: 3, alt: 'The long hand on the 6, half past' }, { serial: 'S1713', after: 4, alt: 'The long hand on the 9, the boy grabbing his bag' }],
+  more: [{ serial: 'S1188', after: 0, alt: 'The clock with the long hand on the 3' }, { serial: 'S1189', after: 1, alt: 'A boy running for the school bus with one shoe untied, the bus pulling away' }, { serial: 'S1712', after: 3, alt: 'The long hand on the 6, half past' }, { serial: 'S1713', after: 4, alt: 'The long hand on the 9, the boy grabbing his bag' }],
   title: 'Quarter past', art: 'S1187', cast: [],
   alt: 'A boy in a kitchen looking at a wall clock, the long hand on the 3, a school bag by the door',
   words: [
@@ -5230,10 +5263,10 @@ STORIES['where-things-come-from'] = {
 };
 // Course stories: one longer story for a whole course, unlocked when every module in it is mastered.
 export const COURSE_STORIES = {
-  'fractions-intro': { title: 'The pizza that fed the whole street', about: 'a block party, three pizzas, and every fraction on the block', art: 'CS1', alt: 'A street block party with three pizzas on a folding table, children with paper plates, chalk marks on the sidewalk', cast: [], words: ['The pizzas arrived at noon: three of them, the same size, for a street with more mouths than slices. Someone had to cut them, and cutting is where fractions live. The first pizza went into halves. Two people, two halves, done. The second went into fourths, because four kids were standing there with plates, and a fourth is smaller than a half only if the pizza is the same size, which it was.', 'Then the arguments started. A boy said his two fourths were less than his sister\'s half. They laid the slices on one plate: they covered the same space. Two fourths and one half are the same fraction wearing different clothes. A girl with a third of a pizza was sure the boy with an eighth had more, because eight is bigger than three. They held them up. The third was the big one. More cuts, smaller pieces.', 'By the end of the afternoon the last pizza was gone in eighths, and someone had drawn a line on the sidewalk from 0 to 1 with chalk, marking where each slice would sit. A fraction is a share of one whole, it has a place on a line, and every one of them is built from little unit pieces. The street had eaten the lesson.'] },
-  'reading-3': { title: 'The day the newspaper came to school', about: 'a class that wrote its own newspaper and learned to read like editors', art: 'CS2', alt: 'A classroom with a printed one-page newspaper held up, children at desks with red pens and headlines on the board', cast: [], words: ['The class was going to make a newspaper. One page, real stories, printed for the whole school. The first job was the hardest: every article needed a headline, and a headline is the main idea in five words. The story about the leaky roof had twelve facts in it. The headline was Roof Leaks Again.', 'The second job was words. The sports report used the word unbeatable, and half the class did not know it. Un means not; able means can be. Unbeatable: cannot be beaten. Prefixes and suffixes are handles on a word, and once you can see them, long words open. The third job was the trickiest: the lunch review said the pizza was the best in the world. Fact or opinion? Nobody could weigh the world\'s pizzas. Opinion, and it stayed, but it got a byline.', 'The last job was order. The story of the field trip had to go first, then, because, so: the bus was late because of the rain, so lunch moved indoors, then the sun came out. When the page was printed, every reader in the school found the main ideas, understood the long words, knew what was checked and what was argued, and followed each story in order. That is reading to understand.'] },
+  'fractions-intro': { title: 'The pizza that fed the whole street', about: 'a block party, three pizzas, and every fraction on the block', art: 'CS1', alt: 'A street block party with three pizzas on a folding table, children with paper plates, chalk marks on the sidewalk', cast: [], words: ['The pizzas arrived at noon: three of them, all the same size, for a street with more mouths than slices. The air smelled of cut grass and charcoal. Mrs. Okafor from number twelve picked up the knife. Somebody had to cut them, she said, and cutting is where fractions live.', 'The first pizza went into two equal pieces, halves, and Malik\'s sister took one. The second went into four equal pieces, fourths, and Malik took two. Equal pieces are the whole rule. Cut a pizza into four lopsided chunks, and the word fourth stops meaning anything.', 'Then the arguments started. Malik said his two fourths were less than his sister\'s one half, because a half was one big slice and he had two little ones. Mrs. Okafor laid the slices on one plate, crust to crust. Two fourths covered exactly the same space as one half. Same pizza, different cuts.', 'The third pizza had to reach everyone else, so it went into eighths. Wren got one and was sure it beat one of Malik\'s fourths, because eight is bigger than four. They held the slices side by side. Her eighth was half the size of his fourth. The bottom number counts the cuts, and more cuts make smaller pieces.', 'Wren\'s little brother took his eighths one at a time, grinning with sauce on his chin. One eighth, two eighths, three eighths. A fraction is built from unit pieces like that, and three eighths is simply three of them.', 'Then three latecomers ran up, and only two fourths were left. Mrs. Okafor did not flip a coin. She cut each slice into three equal pieces and gave every latecomer one piece of each. Two slices shared by three people is two thirds of a slice apiece. Nobody argued, which was a first for the afternoon.', 'When the pizzas were gone, Wren drew a chalk line on the sidewalk from 0 to 1 and cut it into eight equal steps. Her friends hopped behind her as she walked it: one eighth, two eighths, three eighths, four eighths. Four eighths landed exactly halfway, right where one half would be.', 'A fraction is a share of one whole, cut into equal parts. The bottom number says how many parts, the top says how many you have, and every fraction has its own spot on the line from 0 to 1. The street had eaten the lesson.'], more: [{ serial: 'CS63', after: 1, alt: 'A woman cutting one pizza into two halves and another into four fourths on a folding table' }, { serial: 'CS64', after: 2, alt: 'Two fourth slices and one half slice laid crust to crust on one plate, covering the same space' }, { serial: 'CS65', after: 3, alt: 'A girl holding up a thin eighth slice beside a boy with a wider fourth slice' }, { serial: 'CS66', after: 5, alt: 'One slice cut into three equal pieces as three latecomers run up the sidewalk' }, { serial: 'CS67', after: 6, alt: 'A girl hopping along a chalk number line on the sidewalk, eight equal steps from end to end' }] },
+  'reading-3': { title: 'The day the newspaper came to school', about: 'a class that wrote its own newspaper and learned to read like editors', art: 'CS2', alt: 'A classroom holding up a freshly printed one-page newspaper, children at desks with red pens', cast: [], words: ['The class was going to make a newspaper. One page, real stories, printed for the whole school, with real bylines. Ms. Reyes handed out red pens and made one rule: every reader must understand every story on the first try.', 'The first job was headlines. A headline is the main idea in a few words. The story about the leaky gym roof had twelve facts in it, from the drip on the free-throw line to the bucket everyone called Gerald. The headline was four words long. Gym Roof Leaks Again.', 'The second job was hard words. The sports report called the fifth grade team unbeatable, and half the class stopped reading. So they took the word apart. Un means not. Able means can be. Unbeatable: cannot be beaten. Once you can see the pieces, a long word opens like a door.', 'Another story said the rain had been torrential. Nobody knew that word either, but the next sentence helped: the gutters overflowed, and the parking lot turned into a lake. Torrential rain is very heavy rain. The words around a stranger usually give it away, so the class left it in.', 'The lunch review was the trickiest. It said the Friday pizza was the best in the world. Fact or opinion? Nobody could check every pizza in the world, so it was an opinion. It stayed in the paper, but now it said whose opinion it was: the writer\'s.', 'The field trip story had its events in a jumble, like a puzzle dumped on a table. So the writers put them in order and showed the causes. The bus was late because of the rain, so lunch moved indoors, and then the sun came out just in time for the walk home.', 'The best story of all was a profile of Mr. Bell, the custodian. The writer never called him kind. She wrote what he did: he dried the gym floor with his own towels before the big game, and he knew every kid\'s name by October. Readers could see who he was from what he did.', 'When the page was printed, every reader in the school found the main ideas and opened the long words. They knew what was checked and what was only felt, followed each story in order and met Mr. Bell. That is reading to understand, and the class had learned it by working from the other side of the page.'], more: [{ serial: 'CS68', after: 1, alt: 'A bucket catching a drip on the free-throw line of a school gym' }, { serial: 'CS69', after: 2, alt: 'Children pulling a long word apart like puzzle pieces on a classroom table' }, { serial: 'CS70', after: 3, alt: 'Heavy rain overflowing the gutters and turning a school parking lot into a lake' }, { serial: 'CS71', after: 5, alt: 'A school bus in the rain, children eating lunch indoors, then sunshine on the walk home' }, { serial: 'CS72', after: 6, alt: 'A school custodian drying a gym floor with his own towels while children wave hello' }] },
   'reading-4': { title: 'The letter with the missing lines', about: 'a letter from a grandmother, and everything it said without saying', art: 'CS3', alt: 'A child at a kitchen table reading a two-page handwritten letter, a dictionary open beside it, a garden photo tucked in the envelope', cast: [], words: ['The letter was two pages long and said almost nothing directly. That was the point. It began with the weather, which is how you know someone has something else to say. The grandchild who read it had learned to summarize: keep the big events, drop the details. The big events were three: a move, a new garden, and a question about visiting.', 'Then came the reading between the lines. The letter never said she was lonely. It said the house was quiet at night and that the garden was slow to grow when there was nobody to show it to. That is an inference: a guess with a clue behind it. She wrote that the new town was as strange as a shoe on the wrong foot, a simile, and later that the days were a long gray hallway, a metaphor, and both told the truth better than plain words would have.', 'The letter had a shape too: first the move, then the garden, then the question, signal words holding it together. And one word the reader did not know, disconsolate, sent them to the dictionary, past the D guide words, to a page that held it. Disconsolate: unable to be comforted. The reply went out that afternoon, and the visit was arranged for June.'] },
-  'science-3': { title: 'The storm that came to the science fair', about: 'a science fair afternoon when the weather did the demonstrating', art: 'CS4', alt: 'A school science fair on a lawn with folding tables, dark clouds rolling in, a wagon rolling down a ramp, children grabbing posters', cast: [], words: ['The fair was set up outside, which everyone later agreed was a mistake. The first table had ice, water and a kettle: solid, liquid, gas, the three states, with a sign saying that heat moves things from one to the next. The second table had a wagon on a ramp for pushes and pulls. The third had a jar of tadpoles halfway to being frogs, and the fourth had a rain gauge that had never seen rain.', 'Then the sky went dark. The wind pushed the wagon down the ramp all by itself, which was the best demonstration of a force anyone gave all day. The rain filled the gauge to the second mark in ten minutes. The ice on the first table was gone, the kettle was cold, and the tadpoles did not mind at all, because a tadpole lives in the wet and was on its way to a frog either way.', 'The thunder came last, and a boy with his hand on the table felt it before he heard it. Sound is a vibration, and a big one shakes the ground. When the sun came out the tables were wet and the ribbons were soaked, but the judges had seen matter change state, forces move things, a life cycle turn, weather arrive, and sound travel, in one afternoon, without anyone pressing a button.'] },
+  'science-3': { title: 'The storm that came to the science fair', about: 'a science fair afternoon when the weather did the demonstrating', art: 'CS4', alt: 'A school science fair on a sunny lawn with folding tables and ribbons, dark clouds rolling in at the edge of the sky', cast: [], words: ['The science fair was set up outside on the lawn, which everyone later agreed was a mistake. Table one had an ice cube melting on a plate, a glass of water and a thermos of hot water puffing steam: solid, liquid, gas. Table two had a wagon on a wooden ramp for pushes and pulls.', 'Table three had a jar of tadpoles with tiny back legs, halfway to being frogs. Table four had a rain gauge that had never seen rain. Table five had a jar of garden dirt settled into layers, sand at the bottom, and table six had a poster of a food chain: grass, grasshopper, bird, hawk.', 'Then the sky went dark, and thunder rumbled far off. The principal did not wait. When thunder roars, she called, go indoors! Everyone grabbed a poster and ran for the gym, because thunder means lightning is close enough to be dangerous.', 'They watched the rest through the gym windows. The wind shoved the wagon down its ramp with nobody touching it, and gravity pulled it faster down the slope. It was the best demonstration of a force anyone gave all day. Out on the grass, the rubbing of friction slowed it until it stopped by the flagpole.', 'The rain came down so hard that the gauge filled past its first line in ten minutes. Nobody had ever seen the gauge move that fast. On table one, the ice cube had melted into a puddle, and the thermos had stopped steaming. Rain on the windows ran together into little streams.', 'When the thunder cracked close, the gym windows buzzed under a boy\'s hand. He felt it and heard it at the same moment. Sound is a vibration, and a big one can shake the glass it passes through.', 'The storm moved on in half an hour. The posters were soaked, but the tadpoles did not mind at all. A tadpole lives in water and was on its way to becoming a frog either way. A robin hopped onto the wet grass to hunt for insects, the food chain from the poster back at work.', 'The judges gave every table a ribbon. In one afternoon they had seen matter change state, forces move things, a life cycle turning, weather arriving and sound shaking a window. The weather had done the demonstrating, and the judges had the good sense to watch it from indoors.'], more: [{ serial: 'CS73', after: 0, alt: 'Science fair tables on a school lawn: a melting ice cube, a glass of water and a steaming thermos beside a wagon on a ramp' }, { serial: 'CS74', after: 1, alt: 'A jar of tadpoles with tiny back legs, a rain gauge, a jar of layered dirt and a food chain poster on folding tables' }, { serial: 'CS75', after: 2, alt: 'Children running into the school gym with their posters as dark clouds roll in, the principal holding the door' }, { serial: 'CS76', after: 3, alt: 'The wagon rolling down its ramp in the wind and across the grass toward the flagpole' }, { serial: 'CS77', after: 5, alt: 'A boy with his hand on a rain-streaked gym window as thunder cracks outside' }] },
   'science-4': { title: 'The night the lights went out', about: 'a family evening in a blackout, and everything that still worked', art: 'CS5', alt: 'A family in a dark kitchen with a flashlight beam, a candle, rain on the window, a hand pump in the corner', cast: [], words: ['At seven the lights went out on the whole street. The first thing anyone learned was which energy was which: the lamp had been light, the heater heat, the radio sound, the fridge motion, and all of it had been electrical until the line went down. The second thing was a circuit: a flashlight only lit when the switch closed the loop, and when the batteries were turned the wrong way, nothing.', 'Outside, the storm that had cut the line was doing other work. Rain was carrying the garden soil down the path: erosion, said the oldest child, who had done it in a tray at school. At the bottom, by the gate, it was piling into a small bank: deposition. The moths on the porch had gone quiet, and the owl in the pine did not care about the dark at all, because its eyes and its silent feathers were built for exactly this.', 'The last thing was the pump. The basement was taking on water, and the hand pump was a lever with a long handle: a lot of pulling to lift a little water, but lifting it. When the lights came back at midnight nobody was scared of the dark anymore. They had seen energy in five forms, a loop that must be closed, land moving, animals fitted to the night, and a machine that trades distance for force.'] },
   'science-5': { title: 'The trip to the lake', about: 'a weekend at the lake and the science that came along', art: 'CS6', alt: 'A family campsite by a lake at dusk, a tent, a campfire, a full moon rising over the water', cast: [], words: ['The lake trip started with lemonade. Sugar in water: it vanished but the drink was sweet. Sand from the shore in the bucket: it sank and could be poured off. A solution and a mixture, before the tent was even up. That night the moon came up over the water, and the youngest wanted to know why it changed shape. A ball, a flashlight, a slow walk around the campfire: the moon circles the Earth, and we see the lit side from different angles.', 'In the morning the tent was wet on the inside. Nobody had spilled anything. The night air had cooled and the water in it had turned to drops: condensation. By noon the drops were gone again, up into the air, and the clouds building over the far hills were the same water on its way back. The lake was one stop on a loop that never ends.', 'On the last day the cousins compared: two had brown eyes like their fathers, inherited; all of them could now skip a stone, learned. The drive home passed a field of sunflowers turned toward the sun, and the youngest, who had been paying attention, said that was inherited too. Nobody argued.'] },
   'science-6': { title: 'The kitchen laboratory', about: 'a rainy Saturday when a kitchen turned into a lab', art: 'CS7', alt: 'A kitchen counter with a microscope, a layered density tower in a glass, graham crackers on frosting, a pot of soup steaming', cast: [], words: ['It rained all Saturday, so the kitchen became a laboratory. First, the salt: a compound, two elements joined, sodium and chlorine, neither of which you would want on a table alone. Then the soup: the metal spoon got hot by conduction, the broth swirled by convection, and the face over the pot warmed by radiation. Three ways heat moves, one pot.', 'The graham crackers came out for plate tectonics. Two crackers on a layer of frosting, pushed together: they buckled. Pulled apart: the frosting showed, a rift. Slid past each other: they caught and jerked. The onion skin went under the microscope after that, a slice so thin the light came through, and there were the cells in rows, the same boxes Hooke saw in cork.', 'By evening the density tower was standing in a glass: honey, dish soap, water, oil, four layers that would not mix, the heaviest at the bottom. The last experiment was dinner, which was a food chain on a plate: the chicken had eaten the grain, the grain had eaten the sun. The rain stopped at eight. Nobody had noticed.'] },
@@ -5242,7 +5275,7 @@ export const COURSE_STORIES = {
   'history-5': { title: 'The road from the coast', about: 'a family who arrived in 1620 and the country that grew around their descendants', art: 'CS10', alt: 'An old wooden house on a rocky New England coast, a road running inland, a family group in period clothes on the step', cast: [], words: ['The first of them came off a ship in 1620 and built a house on the coast, in the New England row of what became thirteen colonies. Their grandchildren farmed. Their great-grandchildren paid a tax on tea they had no vote about, and in 1773 one of them was on a dark harbor tipping crates into the water.', 'In 1776 the family signed nothing but heard the Declaration read aloud in a market square. In 1787 they argued about the Constitution at the dinner table: a stronger plan than the first one, three branches, each able to stop the others. In 1803 a cousin went west into the Louisiana Purchase, fifteen million dollars for half a continent, and did not come back.', 'In 1861 two brothers of the family fought on opposite sides. In 1865 the one who lived came home to a country that had ended slavery at the cost of six hundred thousand lives. The house on the coast is a museum now, and the road from its door runs all the way to Texas.'] },
   'science-7': { title: 'The garden that taught everything', about: 'a school garden, one growing season, and seven lessons in the soil', art: 'CS11', alt: 'A school vegetable garden in full growth, staked beans, red and yellow tomatoes, a hawk circling above, students with a hose', cast: [], words: ['The school garden started as a rectangle of dirt in March. The first lesson was the body: the students who dug it went home tired and hungry, and the teacher drew a city on the board, roads for blood, a kitchen for the stomach, phone lines for the nerves. The second lesson was the leaves that came up in April: photosynthesis, light and water and air into sugar, and oxygen given away.', 'In May the weather turned. High pressure, cool sinking air, then a low, and wind that flattened the beans. The beans that were staked survived and set seed; the flat ones did not. Natural selection in one bed, said the teacher. The tomatoes came red and yellow from the same packet, and the class drew Punnett squares to see why.', 'By June the garden was feeding grasshoppers, which were feeding a pair of birds, which were feeding a hawk that came once a week, and everyone could see why there was one hawk and a thousand grasshoppers. The last lesson was the hose: the water came from the river the whole town drank, which came from the hills, which is where the rain went. A watershed, ending in a school bean.'] },
   'science-8': { title: 'The night sky over the quarry', about: 'a night at an old quarry with a telescope and a stopwatch', art: 'CS12', alt: 'An old quarry at night with layered rock walls, a telescope on a tripod, a small campfire, stars overhead', cast: [], words: ['They drove to the quarry because the sky was darkest there. The quarry walls were the first lesson: layers, the oldest at the bottom, a fossil shell halfway up that had been the sea floor before there were dinosaurs. The telescope went up on the flat ground. The first thing in it was the moon, then Jupiter, then a smudge that was a galaxy, and each was unimaginably farther than the last.', 'While they waited for full dark, the physics teacher rolled a marble down the quarry ramp and timed it with a stopwatch: distance against time, a curve on the graph, faster every second. A push started it; nothing stopped it but the gravel. Newton\'s first law, then the second when a heavier marble needed a bigger push for the same speed, then the third when the marble hit the wall and the wall pushed back.', 'The campfire was the last lesson: wood and air becoming ash and smoke and heat, a chemical change, nothing you could fold back. The atoms in the smoke had been in the tree, and before that in the air, and before that in a star. Everyone looked up again. The scale of it was the point.'] },
-  'tech-3': { title: 'The robot birthday', about: 'a birthday party run by a toy robot that did exactly what it was told', art: 'CS13', alt: 'A birthday table with a small toy robot holding a cake slice on a plate, children laughing, a card with steps propped against a cup', cast: [], words: ['The robot came in a box on the morning of the party, and the first thing it did was nothing, because nobody had told it anything. Its buttons were inputs. Its little screen and its beep were outputs. In between it waited for steps. The birthday girl wrote the first program on a card: forward two, turn, beep. It did exactly that, and stopped, because that was the end of the card.', 'Serving the cake needed more steps than anyone expected. Cut, lift, put on a plate, hand it over: four steps, in order, once for every guest. Written out, that was forty lines. Then someone noticed the same four steps were repeating, and the card became one line: repeat the four steps ten times. The robot served ten plates without a mistake, and the card fit in a pocket.', 'The only disaster was the candles. The card said light the candles, and nobody had said find the matches first, so the robot stood by the cake holding nothing. Every step must be there, and in order. The girl added one line at the top, and the candles were lit, and the robot beeped once, which was the closest it could get to singing.'] },
+  'tech-3': { title: 'The robot birthday', about: 'a birthday party run by a robot that did exactly what it was told', art: 'CS13', alt: 'A birthday table with a small white robot carrying a slice of cake on a plate, children laughing', cast: [], words: ['The robot came in a box on the morning of June\'s birthday party. It was small and white, with two blue lights for eyes, and her aunt had built it. The first thing it did was nothing at all. Nobody had told it anything. It sat on the table like a guest who had forgotten why it came.', 'June\'s aunt, who built robots for a living, showed her the three parts. The buttons on its back were inputs: you press them to tell the robot something. The little screen and the beep were outputs: that is how it shows you something. In between, a program waits for steps. No steps, no robot.', 'June wrote her first program on an index card and typed it in with the buttons. Forward two. Turn left. Beep. The robot rolled two squares across the checkered tablecloth, turned, beeped and stopped dead, because that was the end of the card. It did exactly what it was told, and not one thing more.', 'Serving the cake needed more steps than anyone expected. Pick up a plate. Put a slice on it. Drive to the next guest. Hand it over. Four steps, in order, once for every guest, and there were ten guests. Written out, that was forty lines, and June\'s hand hurt by line twelve.', 'Then her cousin noticed that the same four steps kept repeating. So June wrote them once, inside a loop: repeat ten times. Forty lines became five. The robot served ten plates without a single mistake, and the whole program fit on a card small enough for a pocket.', 'The only disaster was the juice. The card said pour the juice, and nobody had said take the cap off first. The robot tipped the bottle over every cup, very politely, and not a drop came out. Everyone laughed so hard that June\'s grandpa had to sit down.', 'June added one line above the pour: take off the cap. The juice poured, and the robot beeped once, which was the closest it could get to singing. Her aunt said June had just debugged her first program: she found the missing step and fixed it.', 'Every computer works like that robot. Inputs tell it, outputs show you, and a program is the steps in between. The order matters, every step must be there, and a loop lets a few lines do a lot of work.'], more: [{ serial: 'CS93', after: 1, alt: 'A small white robot on a party table, an aunt pointing to its buttons, its screen and its speaker' }, { serial: 'CS94', after: 2, alt: 'The robot rolling two squares across a checkered tablecloth, turning left and beeping' }, { serial: 'CS95', after: 3, alt: 'A girl writing a long list of steps on index cards, her hand tired, the birthday cake waiting' }, { serial: 'CS96', after: 5, alt: 'The robot politely tipping a capped juice bottle over a cup while everyone laughs' }, { serial: 'CS97', after: 6, alt: 'Juice pouring into cups as the girl adds one line to her card and the robot beeps' }] },
   'tech-5': { title: 'The game that kept score', about: 'a class that built a game and learned what a program remembers and decides', art: 'CS14', alt: 'A classroom with a projected simple game, a paddle and ball, a scoreboard, students pointing at one line of code on a whiteboard', cast: [], words: ['The class built a game in a week. On Monday it had a ball and a paddle and no memory: every point was forgotten the moment it was scored. Tuesday brought variables: a box named score, a box named lives, and the game began to remember. Score went from 0 to 5 to 8, and lives went down from 3 to 2 when the ball got past.', 'Wednesday was for deciding. IF the ball touches the paddle THEN bounce, ELSE lose a life. IF lives is 0 THEN show the end. The game did not decide anything by itself; it asked yes-or-no questions the class had written and took whichever road the answer pointed down.', 'Thursday, the game was wrong. It ended after two lost balls, not three. Nobody deleted anything. They read the steps one at a time, and found the line that checked lives before taking one away instead of after. One line moved, and Friday was for playing.'] },
   'tech-7': { title: 'The message across the ocean', about: 'a photo that crossed the ocean in pieces and the lock that guarded the account it came from', art: 'CS15', alt: 'A teenager at a laptop with a beach sunset photo on screen, a world map behind with a dotted route across the ocean, a phone showing a code', cast: [], words: ['The photo was a sunset on a beach in Portugal, sent to a cousin in Texas. It did not travel as a photo. It was cut into packets, a few thousand of them, each stamped with an address that was a number, and each took whatever route was open: an undersea cable, a switch in London, a tower outside Dallas. They arrived out of order and were put back together in the right one.', 'The cousin\'s name for the site was words; the address the packets used was numbers, and a directory called DNS had turned one into the other before the first packet left. Underneath everything, the sunset was ones and zeros: every color a pattern of switches, on and off, in places worth 8, 4, 2, 1.', 'The next morning a message arrived saying the account was locked and to click now. The cousin did not click. He went to the site the usual way, typed the long password that was four unrelated words, answered the code on his phone, and found nothing locked at all. The sunset was still there. The scam was not.'] },
   'math-5': { title: 'The bake sale', about: 'a bake sale where every decimal, fraction and box counted', art: 'CS16', alt: 'A school bake sale table with brownies, lemonade, boxes of cookies, a handwritten price list and a cash box', cast: [], words: ['The bake sale needed a table, a cash box and a price list, and the price list was where the decimals lived. Brownies were 1.25, lemonade 0.75. A brownie and a lemonade: line up the points, add the cents, add the dollars, 2.00. The first customer paid with a five, and the change was decimals in reverse.', 'The brownies came from a recipe that made a tray, and half the tray had been eaten by breakfast. Half of what was left, for the sale: half of a half, a quarter of the tray. The cookies came in boxes of 24, and 288 cookies had been baked: how many boxes? Ten boxes used 240, two more used the 48, twelve boxes on the table.', 'The table was a grid, and the lemonade stand was three across and two up from the corner. The cash box was a box: four cookies long, three wide, two layers high, twenty-four cookies fit. At the end, the total came from a long sum with brackets in it, and the brackets went first, and the sale had made 143 dollars and 50 cents.'] },
@@ -5265,12 +5298,12 @@ export const COURSE_STORIES = {
   'government-12': { title: 'The pothole', about: 'one pothole on one street, and every level of government that touched it', art: 'CS34', alt: 'A city street with a pothole surrounded by orange cones, a city crew, a state engineer with a clipboard, a resident speaking to a council', cast: [], words: ['The pothole opened in March on a street that belonged to the city. Filling it was the mayor\'s job, and the city council voted the money in April, which was the principle of the whole system in a small size: the people\'s representatives decide, and no one person holds the purse. The crew came in May and found a pipe under the pothole that belonged to the state.', 'The state\'s engineers had their own rules, and their own legislature, and a governor who signed a bill that summer moving the money. Under the state pipe ran a federal fiber line, and the national government had a say too. Three levels, three jobs, one hole in the road: federalism with orange cones around it.', 'A resident who complained loudly at the council meeting was protected by the first amendment while she did it. The council could not silence her; the courts would have said so. The pothole was filled in August. It had taken three governments, one bill, a veto that did not happen and a citizen who would not stop talking. That is how it is supposed to work.'] },
   'economics-12': { title: 'The first paycheck', about: 'a first paycheck, and every economic idea that came with it', art: 'CS35', alt: 'A teenager at a kitchen table with a first paycheck, a phone and a bike advertisement, a budget sheet, a bank app on a laptop', cast: [], words: ['The first paycheck was smaller than the wage times the hours, which was the first lesson: taxes, and the second lesson was scarcity, because it could buy the phone or the bike but not both, and the bike was the cost of choosing the phone. The phone\'s price had risen since spring, because a ship of parts was late while people still wanted phones. Supply, demand, and a number that moved between them.', 'The store across the street had matched the price the week before, and the store on the corner had thrown in a case. Competition, and both got better. The paycheck went into a bank that lent it out and paid a little for the privilege, and the news said the Fed had raised rates, which meant the loan for the bike would cost more and prices might cool.', 'The last lesson was a budget on a sheet of paper: rent someday, a small savings goal now, and a rule to spend less than came in. The paycheck was 312 dollars. The economy that had produced it, taxed it, priced its phone and paid interest on it was the whole course, and the paper was the thing to keep.'] },
   'music-4': { title: 'The school concert', about: 'one spring concert, from the first tick of the beat to the last soft note', art: 'CS36', alt: 'A school stage with a small band of children in rows, a conductor with a raised pencil, music stands, parents in the dark', cast: [], words: ['The concert began the way every rehearsal had, with the teacher tapping a pencil on the stand: tick, tick, tick, tick. The beat came first, before any note, and the twenty-two players found it the way you find a heartbeat, without looking. The first piece was all quarter notes, one beat each, four to a measure, and nobody rushed.', 'The second piece had a solo, and the soloist read it off the staff the way she had learned in September: Every Good Boy Does Fine up the lines, FACE up the spaces, and the notes climbed the ladder as she played. The half notes held for two, the eighth notes came in pairs, and a whole note at the end sat for four full beats while the room held still.', 'The last piece was marked forte and allegro, loud and fast, and the drums took it at a run. Then, on the final page, a word nobody had noticed in rehearsal: piano. The whole band dropped to a whisper and the piece ended soft and slow, adagio, on one long note. The applause was forte. Nobody had told it to be.'] },
-  'multiplication-3': { title: 'Frederick and the ants', about: 'eight-year-old Frederick, an ant farm, and the day counting stopped being enough', art: 'CS37', alt: 'A boy of eight at a windowsill with a glass ant farm, a times table taped above it, a digital microscope in its box beside him', cast: [], words: ['Frederick was eight and had an ant farm on his windowsill, a birthday present from his dad along with a digital microscope he was not yet allowed to touch without help. He counted the ants every morning. On the third morning there were too many to count one by one, so he counted the rows: four tunnels, six ants in each. Four groups of six. Twenty-four, without touching a single ant.', 'By the second week he had the times tables to ten taped above the farm, and he used them the way other kids used a calculator: seven tunnels of eight was fifty-six, and he could say it before his sister finished asking. When the ants had to be split into two farms, he divided: twenty-four ants, two farms, twelve each. Dividing was sharing out equally, and it undid the multiplying exactly.', 'The last thing he learned that spring was addition with big numbers, because the ant book said a colony could reach 1,000 and he wanted to know how far he had to go: 256 ants now, 378 more to hatch, 634, ones then tens then hundreds, carrying when a column overflowed. His dad found the sums penciled on the side of the farm and did not erase them. Frederick would be a biology professor one day. It started with a windowsill.'] },
+  'multiplication-3': { title: 'Frederick and the ants', about: 'eight-year-old Frederick, an ant farm, and the day counting stopped being enough', art: 'CS37', alt: 'A boy of eight at a windowsill with a glass ant farm, a digital microscope in its box beside him', cast: [], words: ['Frederick was eight and had an ant farm on his windowsill, a birthday present from his dad, along with a digital microscope he was not allowed to touch without help. Twenty-four harvester ants came in a tube. His dad said they had come without a queen, so the farm would not grow, but it would be busy.', 'On the third morning the ants had dug four tunnels, and they would not hold still to be counted. So Frederick stopped counting ants and counted groups. Four tunnels, six ants resting in each. Four groups of six. Twenty-four, without touching a single ant.', 'By the second week he had the times tables to ten taped above the farm, and he used them the way other kids used a calculator. Six groups of four was the same twenty-four ants seen sideways, because every fact works both ways. His sister asked what seven eights were. Fifty-six, he said, before she finished asking.', 'When his dad brought home a second, bigger farm, Frederick split the colony fairly. Twenty-four ants, two farms, twelve in each. Dividing was sharing out equally, and it undid the multiplying exactly: two groups of twelve made twenty-four again.', 'Every morning he held a ruler against the glass and measured the longest tunnel in inches. One morning the bigger farm\'s longest tunnel reached seven inches. He kept a tally chart of which farm dug farther each day, in bundles of five, and turned it into a bar graph. The bigger farm won by a lot. More room, more digging.', 'Then he read that a wild harvester ant colony can hold thousands of ants, and he wanted real numbers. He and his sister sat a careful step back from two anthills in the backyard, because harvester ants sting, and tallied every ant that went in for ten minutes at each hill. The first hill got 256. The second got 378.', 'He added them in columns, ones first. Six and eight is fourteen, so write the 4 and carry the ten. Five and seven and the carried one is thirteen, so write the 3 and carry the hundred. Two and three and one is six. 634 trips into the two hills in twenty minutes.', 'His dad found the sums penciled on the side of the farm and did not erase them. Frederick would be a biology professor one day. It started with a windowsill and a tally chart.'], more: [{ serial: 'CS83', after: 1, alt: 'A boy peering at ants resting in four tunnels behind the glass of his ant farm' }, { serial: 'CS84', after: 2, alt: 'A sister asking a question while her brother answers fast, an ant farm on the sill between them' }, { serial: 'CS85', after: 3, alt: 'The boy gently tipping half the ants into a second, bigger ant farm' }, { serial: 'CS86', after: 5, alt: 'A brother and sister sitting a careful step back from a red anthill in the backyard, tallying on a clipboard' }, { serial: 'CS87', after: 7, alt: 'A dad smiling at sums penciled on the side of an ant farm' }] },
   'math-4': { title: 'Chloe and the mural', about: 'nine-year-old Chloe, a wall to paint, and every number a mural needs', art: 'CS38', alt: 'A girl of nine on a stepladder at a long community-center wall, graph paper in hand, ninety-two small birds sketched in rows across the wall', cast: [], words: ['Chloe was nine and had been given a wall. The community center wanted a mural, her art teacher had said she could plan it, and planning turned out to be arithmetic. The wall was 23 feet wide and she wanted a row of 4 birds per foot: 23 times 4, broken into 20 times 4 and 3 times 4, eighty plus twelve, ninety-two birds. She drew ninety-two birds on graph paper and lost count twice.', 'The paint came in cans that covered 96 square feet, and the wall was 4 feet high, so each can covered 24 feet of wall length, shared out in rounds the way you deal cards. The birds needed to be arranged in equal rows: twelve chairs could go one by twelve, two by six or three by four, and so could ninety-two birds, in a few more ways than she had expected. Factors, her teacher called them.', 'The sky took a quarter of the wall and the grass a fourth, which she wrote as 0.25 twice, and together they were a half. Chloe had never cared about fractions and decimals until they told her where the horizon went. The mural is still on the wall of the center. The birds are a little uneven, and she likes that now.'] },
-  'civics-3': { title: 'Mike and the crosswalk', about: 'eight-year-old Mike, a dangerous corner, and three governments in a row', art: 'CS39', alt: 'A boy of eight in an ironed shirt standing at a microphone at a city council meeting, a hand-drawn map of a street corner held up', cast: [], words: ['Mike was eight and walked to school past a corner where cars did not stop. His big brother had been clipped by a mirror there. Mike did what nobody in his house did: he went to a city council meeting, in a shirt his mom ironed, and said the corner needed a crosswalk. The mayor was there. The city, it turned out, owned the street.', 'The council took a vote, and the vote is how a group decides: hands up, count, the most wins, and the losers help anyway. Then the crosswalk needed a light, and the light needed money, and the money came from the state, which also had a governor and a legislature, and a stamp on the letter that came back was printed by the country. Three levels, three jobs, one corner.', 'While they waited, Mike did chores for eleven dollars and had to choose between a book and a ball, and the ball was the cost of the book. He was learning early that there is never enough for everything, and that things get fixed by people who show up. The crosswalk went in the next spring. His brother crossed it first.'] },
-  'art-3': { title: 'Chloe looks at a picture', about: 'eight-year-old Chloe at a museum, and the four looks she learned to take', art: 'CS40', alt: 'A girl of eight in a bright yellow coat standing before a large painting of a boat in a storm, an older woman beside her, a museum bench behind', cast: [], words: ['Chloe was eight and already wore the brightest thing in any room. At the museum she stopped in front of a painting of a boat in a storm and said, before anyone asked, that she liked it. Her grandmother, who was not Georgette but might as well have been, told her that liking it was the last thing to say, not the first, and made her look four times.', 'First look: what is in it? A boat, a storm, two people, a bright sail. Second look: how is it built? A dark sky, and the sail placed in the middle where the eye goes. Line, shape, color, value: the seven ingredients of every picture, her teacher had said, and she could find them all. The sail was the lightest value in the whole painting, which was why she had seen it first.', 'Third look: what might it mean? Hope in a storm, she said, and her grandmother nodded. Fourth look: do I like it? Yes, still, and now she knew why. On the way home she mixed the storm in her head from the color wheel: blue and yellow made the sea green, and red across from it made the sail burn. She has been looking four times ever since.'] },
+  'civics-3': { title: 'Mike and the crosswalk', about: 'eight-year-old Mike, a dangerous corner, and three governments in a row', art: 'CS39', alt: 'A boy of eight in an ironed shirt standing at a microphone at a city council meeting, a hand-drawn map of a street corner held up', cast: [], words: ['Mike was eight and walked to school past a corner where cars did not stop. There were no stripes and no light, just a sign nobody seemed to see. His big brother had been clipped there by a car\'s side mirror, and his arm was bruised for a week.', 'Mike did what nobody in his house had ever done. He went to a city council meeting in a shirt his mom ironed, stood at the microphone and held up a map he had drawn of the corner. His voice shook on the first sentence and steadied by the third. The corner needs a crosswalk, he said. The mayor listened from the long table.', 'The street belonged to the city, so the city could paint the stripes. The council talked it over for an hour and took a vote. Five hands went up for the crosswalk and two against. Five is more than half of seven, so the crosswalk won. That is majority rule, and the two who voted no still had to help make it happen.', 'The light was harder. The corner sat on a state highway, and a traffic light there needed the state\'s permission. That meant Texas, with its governor and its legislature in Austin. The city wrote to the state highway office, and then everyone waited.', 'When the answer came, Mike noticed the stamp on the envelope. The mail is run by the national government, the United States, led by a president and Congress in Washington, D.C. Three levels of government, three sets of jobs, and it took all three to fix one corner.', 'While he waited, Mike did chores and saved eleven dollars. At the store he wanted a book for eight dollars and a ball for seven. Eleven was not fifteen. He chose the book, and the ball was its real cost, the thing he gave up. That is called the opportunity cost.', 'He was learning early that there is never enough for everything. His teacher called that scarcity. Even eleven dollars had to choose. He was also learning that things get fixed by the people who show up, and that one did not have a fancy name.', 'The crosswalk went in the next spring, stripes first and the light a few months after. Mike watched the painters from the sidewalk. His brother crossed it first. Mike crossed it second, holding the new book. Nobody had to run.'], more: [{ serial: 'CS98', after: 0, alt: 'A busy street corner with no crosswalk stripes, cars rushing past a boy waiting with his backpack' }, { serial: 'CS99', after: 2, alt: 'Council members raising their hands in a vote, most of the hands up' }, { serial: 'CS100', after: 3, alt: 'A letter traveling from a city hall to the pink granite Texas Capitol in Austin' }, { serial: 'CS101', after: 5, alt: 'The boy at a store counter choosing a book, a ball left on the shelf behind him' }, { serial: 'CS102', after: 7, alt: 'Two brothers crossing a freshly painted crosswalk under a new traffic light' }] },
+  'art-3': { title: 'Chloe looks at a picture', about: 'eight-year-old Chloe at a museum, and the four looks she learned to take', art: 'CS40', alt: 'A girl of eight in a bright yellow raincoat standing before a large painting of a boat in a storm, her grandmother beside her, a museum bench behind', cast: [], words: ['Chloe was eight and already wore the brightest thing in any room, that day a yellow raincoat on a dry afternoon. Her grandmother had brought her to the museum for her birthday. In front of a big painting of a boat in a storm, Chloe said, before anyone asked, that she liked it.', 'Her grandmother, who was not Georgette but might as well have been, smiled and said that liking it was the last thing to say, not the first. Then she made Chloe look four times, one look at a time.', 'First look: what is in it? Chloe was only allowed to name what was there, like a detective taking notes. A small boat. Two people. A tall mast. Dark waves, a gray-green sea, a black sky and one bright red sail. No opinions yet. Just the list.', 'Second look: how is it built? The mast made a diagonal line, and diagonal lines feel like motion, which is why the boat seemed to tip. The waves were thick paint you could almost feel, which is texture. The red sail was the brightest color in the painting, the only warm one against all that cool gray-green. That was why her eye had gone there first. The painter had made it the focus on purpose.', 'Third look: what might it mean? Chloe thought about the two tiny people and the one bright sail. Hope in a storm, she said. Her grandmother asked why, and Chloe pointed. Because the only warm color in the painting is the thing that keeps them going. Her grandmother nodded slowly.', 'Fourth look: do I like it? Yes, still. But now she could say why, and the why was better than the yes. Her grandmother said most grown-ups never get past the yes.', 'At home Chloe tried to paint the storm from memory with three jars of paint. Blue and yellow made the green sea. Red, straight across the color wheel from green, made the sail burn, because complementary colors make each other look brighter. For the sky she added black to blue, a shade. Her painting was smaller and messier than the museum\'s, but it was hers.', 'Line, shape, form, color, texture, space and value: every picture is built from those seven. Chloe has looked four times ever since, and she still wears the brightest thing in the room, now that she knows how a bright spot pulls the eye.'], more: [{ serial: 'CS88', after: 1, alt: 'A grandmother smiling and holding up four fingers beside the girl in the museum' }, { serial: 'CS89', after: 2, alt: 'A painting of a small boat with two people and a red sail on dark waves under a black sky' }, { serial: 'CS90', after: 3, alt: 'The same painting with its diagonal mast and thick textured waves, the red sail glowing' }, { serial: 'CS91', after: 4, alt: 'The girl pointing at the tiny people in the boat while explaining to her grandmother' }, { serial: 'CS92', after: 6, alt: 'The girl at home painting a stormy sea from three jars of paint, a red sail on green waves' }] },
   'art-4': { title: 'Chloe draws the road home', about: 'nine-year-old Chloe, a flat page, and the trick that made it deep', art: 'CS41', alt: 'A girl of nine at a desk drawing a road that narrows to a vanishing point, a near tree large and a far tree small, her traced handprint in the corner', cast: [], words: ['Chloe was nine and could not make the road home look like a road. It sat on the page like a ribbon. Her teacher drew a dot on the horizon and said everything runs to it: the road wide at the bottom, thin at the top, the near tree big and detailed, the far tree small and plain. Overlap, size, placement, detail. The page was suddenly deep enough to walk into.', 'The next lesson was balance. Her own face was symmetrical, the same on both sides; a flower spread from the middle, radial; the fence along the road was a pattern, a post, a post, a post. She had been drawing all three for years without knowing they had names, and knowing the names made her choose them on purpose.', 'The last lesson was the oldest picture in the world, a handprint on a cave wall with horses around it, a story told with no words thousands of years before writing. Chloe put her own hand on the road drawing and traced it. Art tells a story, her teacher had said. Hers was about the way home, and the hand said who had walked it.'] },
-  'writing-3': { title: 'Georgette and the letter', about: 'eight-year-old Georgette, a grandmother far away, and her first real paragraph', art: 'CS42', alt: 'A girl of eight at a kitchen table writing a letter in careful print, a paper boat floating in a bowl beside her, an envelope with a distant address', cast: [], words: ['Georgette was eight, read everything, and had never written a letter. Her grandmother lived a day\'s drive away and wrote every week in a hand like lace. Georgette wanted to answer with something worth reading. Her teacher taught her the shape first: the big idea in one sentence, then the details that hold it up. My dog is the best helper. He brings the paper. He finds my shoes. He waits at the door.', 'The second letter explained how to make the paper boats she had learned at school, and the first draft left out a step, so her grandmother\'s boat sank in the sink. What you need, then the steps in order, or the boat does not float. The third draft floated.', 'The third letter was a case: Georgette thought the family should visit at Christmas instead of summer, and she gave two reasons and said it again a new way at the end. I think, because, because, and so. Her grandmother came at Christmas. Georgette kept the letters in a shoebox, and years later, when she was the grandmother people wrote to, she still had them.'] },
+  'writing-3': { title: 'Georgette and the letter', about: 'eight-year-old Georgette, a grandmother far away, and her first real paragraph', art: 'CS42', alt: 'A girl of eight at a kitchen table writing a letter in careful print, a paper boat and a stamped envelope beside her', cast: [], words: ['Georgette was eight, read everything, and had never written a real letter. Her grandmother lived a day\'s drive away and wrote every week in handwriting like lace. Georgette wanted to answer with something worth reading. Her first try was a page of loose facts that wandered like a lost cat. She had a lot to say and no idea where to put it.', 'Her teacher showed her the shape of a paragraph. Say the big idea in the first sentence. Then give details that hold it up. Georgette started over. Our new house is small, but it is perfect. My room has a window seat. The kitchen smells like toast. The yard has a tree made for climbing.', 'Then she read each sentence and asked the test question: is this about the same idea? The neighbor\'s dog barks at the mailman. That one was about the dog, not the house. It moved to a paragraph of its own, with its own first sentence.', 'Her second letter explained how to fold a paper boat. Fold in half, corners down, strips up, pull it open. Two weeks later her grandmother wrote back that she had made a very nice paper hat and worn it to the grocery store. Georgette laughed until her stomach hurt. She had skipped the steps her hands did without thinking.', 'So she folded a boat slowly and wrote down every move. What you need: one sheet of paper. Then all seven steps, in order, from the first fold to pulling the top corners apart. The next letter from her grandmother had a photo inside: a paper boat floating in her kitchen sink.', 'The third letter was a case. Georgette thought the family should visit at Christmas instead of summer. I think we should come at Christmas, she wrote, because the whole family is off school and work at once, and because you have never seen me in the Christmas play.', 'Then she said it again in new words, the way her teacher had shown her. Christmas is the one time we can all be at your table. Her grandmother read it twice and said yes the same afternoon.', 'Georgette kept every letter her grandmother sent in a shoebox under her bed. Some of them had paper boats tucked inside. Years later, when she was the grandmother people wrote to, she still had them, and she still answered every one in paragraphs.'], more: [{ serial: 'CS78', after: 0, alt: 'A girl of eight reading a letter in lacy handwriting, a stack of envelopes beside her' }, { serial: 'CS79', after: 1, alt: 'A small cozy house with a window seat and a big climbing tree in the yard' }, { serial: 'CS80', after: 3, alt: 'A grandmother wearing a folded paper hat at the grocery store, smiling' }, { serial: 'CS81', after: 4, alt: 'An old photograph of a paper boat floating in a kitchen sink' }, { serial: 'CS82', after: 6, alt: 'A grandmother reading a letter at her table by a snowy window, smiling' }] },
   'writing-4': { title: 'Mike writes it down', about: 'nine-year-old Mike, a summer of hard work, and the paragraphs that came out of it', art: 'CS43', alt: 'A boy of nine at a school desk writing, a scrap truck visible through the window behind him, calloused hands on the paper', cast: [], words: ['Mike was nine and spent the summer hauling scrap with his uncle for money the house needed. When school started, the first assignment was a paragraph with a topic sentence, and he wrote the only big thing he knew: hard work is not the same as hard. Then the details: the truck, the weight, the way his hands stopped hurting in July.', 'The opinion paragraph was harder, because Mike had opinions and no practice saying them nicely. Recess should be longer. Reason one: kids think better after running. Reason two: kids get along better after playing. Say it again a new way at the end. His teacher wrote good in the margin, and he kept the page.', 'The small story was about the bird that got into the house that August: beginning, the door left open; middle, the bird on the curtain rod and everyone frozen; end, his uncle opening the window and the bird finding its way out. Mike had not known a summer of scrap could be a story. It turned out everything could, if you gave it a beginning, a middle and an end.'] },
   'writing-5': { title: 'Georgette and the class pet', about: 'ten-year-old Georgette, a five-paragraph case, and a hamster named after a poet', art: 'CS44', alt: 'A girl of ten at the front of a classroom holding a five-page essay, a hamster in a cage on the shelf behind her', cast: [], words: ['Georgette was ten and had decided the class needed a pet. She wrote an informational piece first, three paragraphs on how hamsters live, with an introduction that walked the reader in and a conclusion that walked them out. Her teacher said it read like a tour of a house. That was the idea.', 'Then the opinion essay: paragraph one, our class should have a pet; paragraphs two, three and four, one reason each, it teaches care, it calms us, it is fun; paragraph five, all of it again with the reasons behind it. The class voted. The hamster arrived in October and was named after a poet Georgette liked, which nobody else in the room had heard of.', 'The personal narrative came last, and it was about the moment the hamster escaped and she found it in her coat pocket after an hour of everyone searching. Set the scene, build to the moment, say what changed. What changed was that Georgette learned she could make a room of people do something with five paragraphs. She never forgot it.'] },
   'writing-6': { title: 'Mike argues for the later start', about: 'eleven-year-old Mike, an argument he almost lost, and the evidence that saved it', art: 'CS45', alt: 'A boy of eleven at a library table with a printed argument covered in notes, a nurse\'s log photocopy beside it', cast: [], words: ['Mike was eleven and wanted school to start later, mostly because he was up late doing dishes. His first draft argued from feeling. His teacher, a woman who did not care for feeling in an argument, sent it back with one word: evidence. So Mike found it: the nurse\'s log of morning headaches, a study of a school that had moved its bell, numbers that could be checked.', 'The compare-and-contrast came next, two towns on a river, one with a bridge and one with a ferry, and the last paragraph had to say what the comparison showed. The bridge town grew faster. Mike liked that the essay ended with a finding instead of a feeling.', 'The narrative with dialogue was the one he did not want to write, because it was about the night his mother said they might have to move and he said they would not. "You\'re late," she said. "The bus was early," he said. Two lines, and a reader knew both of them. He turned it in with his hands shaking. It was the best thing in the class.'] },
@@ -5297,38 +5330,47 @@ export function courseStoryFor(courseId) { return COURSE_STORIES[courseId] || nu
 // Technology, added on 2026-09-23.
 STORIES['inputs-and-outputs'] = {
   about: 'a talking toaster that only knew three things, and what happened in between',
-  more: [{ serial: 'S1200', after: 1, alt: 'The lever and the dial: inputs' }, { serial: 'S1201', after: 3, alt: 'Toast popping up and a ding: outputs' }],
+  more: [{ serial: 'S1200', after: 0, alt: 'A shiny toaster popping up two slices of toast, a little speaker glowing on its side' }, { serial: 'S1201', after: 1, alt: 'A hand pushing down a toaster lever beside a dial and a small bagel button' }, { serial: 'S1836', after: 2, alt: 'Golden toast popping up out of the toaster, warm air rising' }, { serial: 'S1837', after: 4, alt: 'A slice of black, burnt toast held up by a surprised boy' }, { serial: 'S1838', after: 5, alt: 'A boy touching a tablet screen, music and pictures coming out of it' }],
   title: 'The talking toaster', art: 'S1199', cast: [],
   alt: 'A boy pressing the lever on a toaster with a cartoon face, arrows in and out of it',
   words: [
-    'Theo\'s uncle had a toaster that talked, and Theo wanted to know how it decided what to say. His uncle said it only knew three things, and Theo could learn every computer from them.',
-    'Inputs: the lever going down, the dial set to four, the button for bagels. Those tell the toaster something. Outputs: the heat, the ding, the toast popping up, the voice saying done. Those show you something.',
-    'In between was a program: the steps that turned a dial at four into exactly this much heat for exactly this long. Theo pushed the lever and watched the whole thing happen. Input, steps, output. His tablet was the same toaster with more buttons.',
-    'Inputs tell a computer. Outputs show you. A program is the steps in between, and every machine from a toaster to a tablet runs on the three.',
+    'Arjun\'s uncle had a toaster that talked. When the toast was ready, it said, done, and the bread popped up. Arjun wanted to know how it decided what to say. His uncle said the toaster only knew three things, and those three explained every computer in the world.',
+    'The first thing was inputs. The lever going down, the dial set to four, the little button for bagels. Each one tells the toaster something. You do the telling.',
+    'The second thing was outputs. The heat, the ding, the toast popping up, the voice saying done. Each one shows you something. The toaster does the showing.',
+    'In between was a program, a list of steps the toaster follows exactly, in order. Dial at four means this much heat for this long. Then pop. Then ding. Then done.',
+    'Arjun turned the dial all the way to nine to see what would happen. The toaster did exactly what it was told, and the bread came out black. It never wondered whether he meant it. A program cannot guess. It follows the steps it is given, with the inputs it is given.',
+    'Then Arjun looked at his tablet. Touching the screen was an input. The picture on the screen and the sound from the speaker were outputs. The games were programs. It was the same toaster with more buttons.',
+    'Inputs tell a computer. Outputs show you. A program is the steps in between. Watch, car or toaster, every computer runs on those three.',
   ],
 };
 STORIES['steps-in-order'] = {
   about: 'a sandwich made by someone who did exactly what she was told, and nothing more',
-  more: [{ serial: 'S1203', after: 1, alt: 'The instructions with a missing step circled' }, { serial: 'S1204', after: 2, alt: 'The same instructions rewritten, numbered, a proper sandwich beside them' }],
+  more: [{ serial: 'S1203', after: 1, alt: 'The younger sister shrieking and pointing at a jam-covered bread bag' }, { serial: 'S1204', after: 2, alt: 'A closed, empty sandwich with jam spread across its top slice' }, { serial: 'S1839', after: 3, alt: 'The girl swapping two steps on her page with a pencil arrow' }, { serial: 'S1840', after: 4, alt: 'A perfect jam sandwich cut in half on a plate, the big sister bowing' }, { serial: 'S1841', after: 5, alt: 'A friendly robot carefully following a list of steps, one arm holding a butter knife' }],
   title: 'Exactly what she was told', art: 'S1202', cast: [],
-  alt: 'A girl following written sandwich instructions with a straight face, jam on the outside of the bread',
+  alt: 'A girl following written sandwich instructions with a straight face, jam on the outside of the bread bag',
   words: [
-    'Rosa wrote instructions for a jam sandwich and gave them to her older sister, who agreed to follow them exactly and add nothing. Step one: put jam on the bread. Her sister spread jam on the outside of the loaf.',
-    'Rosa had never said to take out a slice. Or two. Or to open the jar. Every step she had skipped, her sister skipped too, and the sandwich got stranger with each one.',
-    'The second try had eleven steps in order: open the bag, take out two slices, lay them flat, open the jar. Nothing left out, nothing out of order. Her sister made a perfect sandwich without a single decision. That is an algorithm.',
-    'An algorithm is steps in order. The order matters and every step must be there, because the one following it will do exactly what it says and nothing else.',
+    'Nina wrote instructions for a jam sandwich and handed them to her big sister, who promised to follow them exactly and add nothing. Step one: put jam on the bread. Her sister picked up the whole loaf, still in its bag, and smeared jam on the outside.',
+    'Nina shrieked. That was not what she meant! Her sister shrugged. It was what she wrote. Nina had never said to open the bag, or take out a slice, or open the jar. Every step she skipped, her sister skipped too.',
+    'The second try was longer. Open the bag. Take out two slices. Lay them flat. Open the jar. Spread jam on one slice. But Nina put the slices together before the jam step, and her sister spread jam on the top of a closed, empty sandwich.',
+    'Two steps in the wrong order, and the whole sandwich went wrong. Nina swapped them back.',
+    'The third try had eleven steps, every one in its place. Her sister followed them without making a single decision, and out came a perfect sandwich. Nina had written an algorithm: a list of steps, in order, that gets something done.',
+    'A computer follows an algorithm the way her sister did. It never guesses what you meant. If a step is missing, it skips it. If two steps are swapped, it swaps them.',
+    'An algorithm is steps in order. The order matters, and every small step must be there, because whoever follows it will do exactly what it says and nothing else.',
   ],
 };
 STORIES['patterns-and-loops'] = {
   about: 'a necklace of beads that only needed one instruction, repeated',
-  more: [{ serial: 'S1206', after: 1, alt: 'A long list of instructions, red blue red blue, running off the page' }, { serial: 'S1207', after: 3, alt: 'One line: repeat red then blue, forty times' }],
+  more: [{ serial: 'S1206', after: 0, alt: 'A long page of instructions running off the edge of the desk, the boy shaking his tired hand' }, { serial: 'S1207', after: 1, alt: 'Red and blue beads laid out in matching pairs across the table' }, { serial: 'S1842', after: 3, alt: 'A little girl holding up a bracelet of red, red and yellow beads repeating' }, { serial: 'S1843', after: 4, alt: 'A longer bracelet stretched between two small hands' }, { serial: 'S1844', after: 5, alt: 'A staircase of identical steps curling upward, music notes floating along the rail' }],
   title: 'One instruction, repeated', art: 'S1205', cast: [],
   alt: 'A boy threading a long necklace of red and blue beads, a card beside him with one short rule',
   words: [
-    'Kai wrote instructions for a necklace: red bead, blue bead, red bead, blue bead. Eighty lines for eighty beads. His hand hurt and he had made two mistakes somewhere in the middle.',
-    'His teacher asked what the instructions had in common. Every pair was the same. Red, then blue. Eighty lines were one line, forty times.',
-    'That is a loop: repeat the same steps a set number of times. Repeat forty times: red bead, blue bead. Two lines instead of eighty, no place for a mistake to hide, and changing the necklace to fifty beads meant changing one number.',
-    'A loop repeats the same steps. Find the part that repeats, write it once, and say how many times. The necklace is one instruction and a number.',
+    'Felix wrote instructions for a bead necklace: red bead, blue bead, red bead, blue bead. Eighty lines for eighty beads. His hand ached, and somewhere in the middle he had written blue twice in a row.',
+    'His teacher asked what all those lines had in common. Felix looked. Every pair was the same, red then blue, over and over. Eighty lines were really one pair of lines, forty times.',
+    'So he rewrote the whole thing in two lines. Repeat forty times: red bead, blue bead. That is a loop, a set of steps that runs again and again. Two lines instead of eighty, and no place for a mistake to hide.',
+    'Then his little sister wanted a bracelet: red, red, yellow, red, red, yellow. Felix hunted for the part that repeats. Not red, red. Not red, yellow. The part was three beads long: red, red, yellow. Repeat it six times, and she had eighteen beads.',
+    'A loop is also easy to change. When his sister wanted a longer bracelet, Felix did not rewrite anything. He changed six to eight, and the bracelet grew to twenty-four beads.',
+    'Loops are everywhere once you look. A song writes its chorus once and marks it to repeat. A staircase is one step, repeated. Even a clap, stomp, clap, stomp dance is a loop of two moves. Programs use loops to do a lot with very little.',
+    'Find the part that repeats. Write it once. Say how many times. That is a loop.',
   ],
 };
 STORIES['variables'] = {
@@ -5406,7 +5448,7 @@ STORIES['passwords-and-privacy'] = {
 // Health, added on 2026-09-23.
 STORIES['washing-hands'] = {
   about: 'glitter that would not come off with water alone',
-  more: [{ serial: 'S1227', after: 0, alt: 'Hands covered in gold glitter' }, { serial: 'S1610', after: 1, alt: 'Glitter hiding between the fingers' }, { serial: 'S1611', after: 4, alt: 'Soapy hands, scrubbing' }, { serial: 'S1612', after: 5, alt: 'Clean hands held up, no glitter left' }],
+  more: [{ serial: 'S1227', after: 0, alt: 'Hands covered in gold glitter' }, { serial: 'S1610', after: 1, alt: 'Glitter hiding between the fingers' }, { serial: 'S1611', after: 4, alt: 'A girl washing her soapy hands at the sink before lunch' }, { serial: 'S1612', after: 5, alt: 'Clean hands held up, no glitter left' }],
   title: 'The glitter', art: 'S1226', cast: [],
   alt: 'A small girl at a bathroom sink with glitter on both hands, soap bubbles starting to form',
   words: [
@@ -5436,7 +5478,7 @@ STORIES['brushing-teeth'] = {
 };
 STORIES['sleep-k'] = {
   about: 'a phone that charged all night, and a boy who did not',
-  more: [{ serial: 'S1233', after: 0, alt: 'The phone plugged in, charging' }, { serial: 'S1616', after: 1, alt: 'The phone at one hundred, the boy at fifty and grumpy' }, { serial: 'S1617', after: 3, alt: 'The boy asleep early, curled up' }, { serial: 'S1618', after: 4, alt: 'The boy bouncing out of bed in the morning' }],
+  more: [{ serial: 'S1233', after: 0, alt: 'The phone plugged in, charging' }, { serial: 'S1616', after: 1, alt: 'The phone at one hundred, the boy at fifty and grumpy' }, { serial: 'S1617', after: 3, alt: 'That night, a boy tucked into bed early after his bath and a book, the lights going out' }, { serial: 'S1618', after: 4, alt: 'The boy bouncing out of bed in the morning' }],
   title: 'The phone and the boy', art: 'S1232', cast: [],
   alt: 'A small boy yawning in bed while his phone on the dresser shows a full battery',
   words: [
@@ -5451,7 +5493,7 @@ STORIES['sleep-k'] = {
 };
 STORIES['my-plate'] = {
   about: 'a plate that was all one color, and the rainbow that fixed it',
-  more: [{ serial: 'S1236', after: 0, alt: 'A plate with only beige food on it' }, { serial: 'S1619', after: 2, alt: 'Red tomatoes and orange carrots on the plate' }, { serial: 'S1620', after: 4, alt: 'Green peas and purple grapes joining them' }, { serial: 'S1621', after: 5, alt: 'A glass of water beside a colorful plate' }],
+  more: [{ serial: 'S1236', after: 0, alt: 'A plate with only beige food on it' }, { serial: 'S1619', after: 2, alt: 'Red tomatoes and orange carrots on the plate' }, { serial: 'S1620', after: 4, alt: 'A girl crunching a rainbow of fruits and vegetables, then running off full of energy' }, { serial: 'S1621', after: 5, alt: 'A glass of water beside a colorful plate' }],
   title: 'The rainbow plate', art: 'S1235', cast: [],
   alt: 'A small girl at a table with a plate half full of colorful fruits and greens, a glass of water beside it',
   words: [
@@ -5515,7 +5557,7 @@ STORIES['screens-and-you'] = {
 // Music, added on 2026-09-23.
 STORIES['the-steady-beat'] = {
   about: 'a clock that kept time, and the song that had a clock inside it',
-  more: [{ serial: 'S1251', after: 0, alt: 'The clock on the wall, tick tick' }, { serial: 'S1691', after: 1, alt: 'The teacher playing the piano' }, { serial: 'S1692', after: 2, alt: 'The girl listening for the pulse under the notes' }, { serial: 'S1693', after: 4, alt: 'Children clapping together in time' }],
+  more: [{ serial: 'S1251', after: 0, alt: 'The clock on the wall, tick tick' }, { serial: 'S1691', after: 1, alt: 'Music notes swirling fast and slow around a puzzled girl, her finger ready to tap' }, { serial: 'S1692', after: 2, alt: 'The girl listening for the pulse under the notes' }, { serial: 'S1693', after: 4, alt: 'The girl tapping a steady beat on her knee while music notes dance above her' }],
   title: 'The clock in the song', art: 'S1250', cast: [],
   alt: 'A small girl tapping a steady beat on her knees while a clock ticks on the wall',
   words: [
@@ -5799,26 +5841,31 @@ STORIES['industry-and-invention'] = {
 // Depth modules, second batch, 2026-09-23.
 STORIES['measuring-things'] = {
   about: 'a puppy measured three ways, and why one ruler was never going to be enough',
-  more: [{ serial: 'S1317', after: 1, alt: 'The puppy standing on a kitchen scale, the needle at six pounds' }, { serial: 'S1318', after: 3, alt: 'A measuring cup of water being poured into the puppy\'s bowl' }],
+  more: [{ serial: 'S1317', after: 1, alt: 'The girl holding the ruler against the puppy again and stopping, puzzled' }, { serial: 'S1318', after: 2, alt: 'A mom standing on a bathroom scale holding a small puppy' }, { serial: 'S1821', after: 3, alt: 'Water poured from a puppy bowl back into a measuring cup at bedtime' }, { serial: 'S1822', after: 4, alt: 'A dad pointing at a big gallon jug of water on a garage shelf' }, { serial: 'S1823', after: 5, alt: 'A ruler, a scale and a measuring cup lined up beside a sleepy puppy' }],
   title: 'Three ways to measure a puppy', art: 'S1316', cast: [],
-  alt: 'A wriggling puppy on a rug with a girl holding a tape measure along its back, a kitchen scale nearby',
+  alt: 'A wriggling puppy on a rug with a girl holding a ruler along its back',
   words: [
-    'The vet\'s form had three blanks for the new puppy. How long. How heavy. How much water each day. Ellie grabbed the ruler and started with the puppy, who did not want to be measured at all.',
-    'Fourteen inches, nose to tail, after four tries. Then she held the ruler against the puppy again for the second blank and stopped. A ruler cannot tell you how heavy something is. She needed a different tool.',
-    'The kitchen scale said six pounds. The measuring cup said two cups of water a day. Three questions, three tools. Inches and feet for how long. Pounds for how heavy. Cups and gallons for how much liquid. The trick was matching the unit to the question.',
-    'Every measurement starts with the question. Are you asking how long, how heavy or how much? Pick the unit that answers it, and the tool comes with it. A ruler on a puppy will only ever tell you one of the three.',
+    'The shelter sent Ellie home with a new puppy named Noodle and a chart to fill in. How long is she? How heavy is she? How much water does she drink in a day? Ellie grabbed a ruler and started with the puppy, who did not want to be measured at all.',
+    'Fourteen inches, nose to tail, after four tries. Twelve inches make a foot, so Noodle was one foot and two inches long. Then Ellie held the ruler against the puppy again for the second question and stopped. A ruler cannot tell you how heavy something is.',
+    'She needed a different tool. The kitchen scale was too small, so her mom stood on the bathroom scale holding Noodle, then without her. The difference was six pounds. Pounds answer how heavy.',
+    'For the water, Ellie poured two cups into the bowl with a measuring cup in the morning. At bedtime she poured what was left back into the cup. One cup. So Noodle drank one cup that day. Cups answer how much liquid.',
+    'Her dad pointed at the gallon jug in the garage. Sixteen cups fill a gallon, he said, so that jug holds sixteen days of Noodle\'s water.',
+    'Three questions, three tools. A ruler for how long, a scale for how heavy, a measuring cup for how much. Every measurement starts with the question. Pick the unit that answers it, and the tool comes with it. A ruler on a puppy only ever answers one of the three.',
   ],
 };
 STORIES['graphs-and-tallies'] = {
-  about: 'five minutes of cars, counted twice, and the picture that ended an argument',
-  more: [{ serial: 'S1320', after: 1, alt: 'A page of tally marks in bundles of five under the words red, blue and white' }, { serial: 'S1321', after: 3, alt: 'A bar graph on the page with the blue bar standing tallest' }],
+  about: 'ten minutes of cars, counted twice, and the picture that ended an argument',
+  more: [{ serial: 'S1320', after: 0, alt: 'A blue car and a red car passing a house while two children point and argue on the porch' }, { serial: 'S1321', after: 1, alt: 'Tally marks on a clipboard in bundles of five, one line slanting across four' }, { serial: 'S1824', after: 3, alt: 'A hand-drawn bar graph with three bars, the blue one standing tallest' }, { serial: 'S1825', after: 4, alt: 'A mom holding the graph and looking puzzled, a bird and a bike in a thought bubble' }, { serial: 'S1826', after: 5, alt: 'A pictograph of little car drawings in rows, one row ending with half a car' }],
   title: 'The cars', art: 'S1319', cast: [],
   alt: 'Two children on a front porch with a clipboard, counting the cars going by, a red car passing',
   words: [
-    'Kai said most cars on their street were red. His sister Ana said blue. They sat on the porch for five minutes to settle it and called out colors. Red, blue, blue, white, red, blue. By the end, neither could remember the count.',
-    'They tried again, this time writing every car as a word. The list got long fast, and counting the list took longer than watching the cars. There had to be a quicker way to keep score.',
-    'Ana drew a mark for each car under its color, and every fifth mark crossed the bundle. Tallies, in fives. Then she turned the tallies into bars. The blue bar stood tallest by two, and nobody had to count again. The picture said it.',
-    'Tallies count in fives so a long count stays easy. Bar graphs and pictographs turn the counts into a picture, and a good title and labels say what the picture means. Show the data well and the argument ends by itself.',
+    'Kai said most cars on their street were red. His sister Ana said blue. They sat on the porch for ten minutes to settle it and called out colors as cars went by. Red, blue, blue, white, red, blue. By the end, neither could remember the count.',
+    'So they tried again. Ana drew a line for every car under its color, and when a color reached five, she drew the fifth line across the other four. Bundles of five. Counting a bundle takes one look.',
+    'This time the tallies said red four, blue six and white three. Blue had one bundle and one more line. Red had four lines and no bundle at all.',
+    'Then Ana turned the tallies into a bar graph. One bar for each color, as tall as its count. The blue bar stood tallest, taller than red by two, and nobody had to count anything again. The picture said it.',
+    'They showed their mom, and she asked what the bars were counting. Birds? Bikes? A graph with no labels is a riddle. So Ana wrote a title across the top and a color under each bar.',
+    'Kai made a pictograph too, with one little car standing for two real ones. Blue got three little cars. Red got two. White got one and a half.',
+    'Tallies count in fives so a long count stays easy. Bar graphs and pictographs turn counts into pictures, and a title and labels say what the pictures mean.',
   ],
 };
 STORIES['multiplying-decimals'] = {
@@ -6076,4 +6123,145 @@ export const COURSE_GOALS = {
   'math-college': 'Reasoning with statistics: averages, spread, chance, interest and cause',
   'reading-college': 'Reading academic work: theses, arguments, numbers and consistency',
   'history-college': 'Thinking like a historian: sources, time, cause and the big turns',
+};
+
+// Coloring pages from lessons (2026-09-24, Mikey): every pre-K to grade 2 lesson has its own Leonardo coloring page,
+// [serial, scene]. A page joins Let's Color once its lesson is passed and its art exists in art/coloring/<serial>.webp;
+// without art it is never listed. Prompts and what to count before saving are in docs/ART-REQUESTS.md.
+export const COLOR_PAGES = {
+  'red-and-blue': ['D28', 'Two big balls side by side on the grass, ready to color one red and one blue'],
+  'find-the-match': ['D29', 'Two matching mittens side by side, just alike'],
+  'match-the-animals': ['D30', 'Two ducklings that look just alike, standing side by side'],
+  'big-and-small': ['D31', 'A big dog and a small dog sitting side by side'],
+  'one-and-two': ['D32', 'One duck on the left side of a pond and two ducks on the right side'],
+  'more-or-fewer': ['D33', 'Two bowls of grapes, one heaped full and one with just a few'],
+  'first-marks': ['D34', 'A fat crayon lying on a sheet of paper with a few big happy scribbles'],
+  'three-dots': ['D35', 'Three big dots joined by straight lines into a triangle'],
+  'yellow-and-green': ['D36', 'A big round sun shining over a grassy hill'],
+  'triangles-too': ['D37', 'A slice of pizza, a party hat and a sailboat, each shaped like a triangle'],
+  'big-and-little': ['D38', 'A huge boot beside a tiny sneaker'],
+  'please-and-thank-you': ['D39', 'A small child holding out a hand for a cookie from a smiling grown-up'],
+  'circle-and-square': ['D40', 'A round ball and a square block at the top of a little ramp'],
+  'a-and-b': ['D41', 'An apple and a ball side by side'],
+  'not-the-same': ['D42', 'Three apples and one banana in a row'],
+  'listen-and-tap-pictures': ['D43', 'A dog, a cup and a hat in a row'],
+  'animal-sounds': ['D44', 'A cow, a duck and a cat looking over a farm fence'],
+  'colours': ['D45', 'A rainbow arching over a backyard with puddles'],
+  'same-and-different': ['D46', 'Two striped socks side by side'],
+  'match-the-vehicles': ['D47', 'Two toy cars that look just alike, and one toy truck'],
+  'match-the-things': ['D48', 'Two cups, two spoons and two plates set in matching pairs on a table'],
+  'match-the-water-animals': ['D49', 'Two fish and two frogs in a pond'],
+  'match-the-land-animals': ['D50', 'Two rabbits, two cows and one pig behind a farm fence'],
+  'match-the-shapes': ['D51', 'A wooden shape sorter with a triangle, a circle and a square block beside it'],
+  'match-the-solids': ['D52', 'Two cubes and two balls on the floor'],
+  'more-and-fewer-5': ['D53', 'Five ducks on one side of a pond and two ducks on the other'],
+  'bigger-and-smaller': ['D54', 'Pumpkins of many sizes in a pumpkin patch with a little wagon'],
+  'patterns': ['D55', 'A string of beads in a repeating pattern: round, square, round, square'],
+  'count-to-3': ['D56', 'Three smooth stones in a row on a flat rock by a creek'],
+  'first-strokes': ['D57', 'A rainy window with a few finger-drawn lines on the foggy glass'],
+  'connect-the-dots': ['D58', 'A friendly fish with small dots along its outline'],
+  'draw-the-shapes': ['D59', 'A big circle, a big square and a big triangle to color'],
+  'taking-turns': ['D60', 'Two children at one swing, one swinging high and one waiting with a smile'],
+  'big-bigger-biggest': ['D61', 'Three bears in a row, little, middle-sized and big, each holding a bowl'],
+  'helpers-all-around': ['D62', 'A crossing guard helping a child across the street by a school bus'],
+  'listen-for-rhymes': ['D63', 'A frog on a log and a dog on a rug'],
+  'first-sounds': ['D64', 'A bear, a ball and a bee'],
+  'which-came-first': ['D65', 'A duck and a cow in a farmyard, the duck quacking'],
+  'which-came-second': ['D66', 'A kettle, a clock and a dog in a cozy kitchen'],
+  'big-letters': ['D67', 'A school bus at a bus stop with a small boy pointing at it'],
+  'first-letter-tracing': ['D68', 'A child drawing in wet sand with a stick, waves rolling in behind'],
+  'more-big-letters': ['D69', 'Colored craft sticks laid out in straight lines on a table'],
+  'trace-straight-letters': ['D70', 'A ladder, a table and a flag, all made of straight lines'],
+  'day-and-night': ['D71', 'A farm split down the middle: a rooster under the sun on one side, the moon and stars on the other'],
+  'kinds-of-weather': ['D72', 'A sun, a rain cloud and a snowflake above a garden gate'],
+  'living-or-not': ['D73', 'A snail beside a rock on a garden path'],
+  'what-plants-need': ['D74', 'A bean plant in a pot on a sunny windowsill, a watering can beside it'],
+  'hot-and-cold': ['D75', 'A steaming cup of cocoa beside a snow cone'],
+  'rules-and-helpers': ['D76', 'Children waiting their turn in a line at the top of a slide'],
+  'needs-and-wants': ['D77', 'A loaf of bread and a toy robot side by side on a store counter'],
+  'our-flag-and-holidays': ['D78', 'Fireworks bursting over a small town while a family watches from a picnic blanket'],
+  'jobs-people-do': ['D79', 'A baker with a rolling pin, a nurse with a stethoscope and a mail carrier with a bag of letters'],
+  'voting-in-class': ['D80', 'Children on a classroom rug raising their hands to vote'],
+  'our-two-flags': ['D81', 'The Texas flag waving on a pole: a tall band with one star on the left and two wide stripes on the right'],
+  'washing-hands': ['D82', 'Two soapy hands scrubbing under a running faucet, bubbles floating up'],
+  'brushing-teeth': ['D83', 'A toothbrush with toothpaste beside a big smiling tooth'],
+  'sleep-k': ['D84', 'A child asleep in bed hugging a teddy bear, the moon in the window'],
+  'my-plate': ['D85', 'A plate half filled with fruits and vegetables, a glass of water beside it'],
+  'count-to-5': ['D86', 'A mother duck with five ducklings in a line behind her'],
+  'count-to-10': ['D87', 'A tall slide with a child climbing the ladder'],
+  'tracing-numbers': ['D88', 'A child tracing big curvy lines on paper with a fat crayon'],
+  'one-more-one-less': ['D89', 'A plate of cookies with one more cookie on the way from a hand'],
+  'joining-and-taking-away': ['D90', 'A toy garage with little cars driving in and out'],
+  'comparing-numbers': ['D91', 'Two towers of blocks on a rug, one much taller than the other'],
+  'shapes': ['D92', 'A round clock with a plain face and a square window in a bedroom'],
+  'tracing-shapes': ['D93', 'A big square and a big circle with a crayon lying beside them'],
+  'counting-by-tens': ['D94', 'Children in a row holding up all ten fingers'],
+  'longer-and-heavier': ['D95', 'A long stick lying across a creek and a big heavy rock on the bank'],
+  'sorting': ['D96', 'A pile of socks sorted into three small piles'],
+  'solids': ['D97', 'A ball, a block, a can and a party hat in a row'],
+  'making-ten': ['D98', 'Two open hands held up, fingers spread, ready to count'],
+  'more-and-fewer-10': ['D99', 'Two buckets of seashells on the beach, one fuller than the other'],
+  'letter-names': ['D100', 'Children on a school bus singing together'],
+  'big-and-small-letters': ['D101', 'A big mother goose and a small gosling walking side by side'],
+  'letter-sounds': ['D102', 'A boy bouncing a big ball beside a bear and a bus'],
+  'beginning-sounds': ['D103', 'A mitten, a moon and a mouse'],
+  'ending-sounds': ['D104', 'A cat, a boat and a kite'],
+  'rhymes': ['D105', 'A sleepy cat, a floppy hat and a baseball bat'],
+  'tracing-letters': ['D106', 'A tall tree and a toy train'],
+  'tracing-small-letters': ['D107', 'An apple and an alligator'],
+  'tracing-more-letters': ['D108', 'An elephant beside a big egg'],
+  'syllables': ['D109', 'Children clapping in a circle with a drum in the middle'],
+  'sounding-out': ['D110', 'A cat sitting on a mat behind a little open door'],
+  'which-way-we-read': ['D111', 'A child reading a big book on a rug, one finger following along the line'],
+  'word-meanings': ['D112', 'A dog, a sun and a fish'],
+  'trace-slant-letters': ['D113', 'A van, an apple and a bird nest'],
+  'teen-numbers': ['D114', 'Two rows of five apples in a wooden crate, ten in all, and three more apples beside the crate'],
+  'adding-to-20': ['D115', 'Marbles pouring from two pockets into one big glass jar'],
+  'subtracting-to-20': ['D116', 'Birds sitting on a wire, a few of them flying away'],
+  'tens-and-ones': ['D117', 'Bundles of ten sticks tied with bands, and a few loose sticks beside them'],
+  'comparing-to-100': ['D118', 'Two big jars of buttons side by side, one much fuller than the other'],
+  'writing-numbers': ['D119', 'A child at a small desk writing with a fat pencil, tongue poking out in concentration'],
+  'read-the-word': ['D120', 'A big folded map spread open on a garage floor beside its cardboard box'],
+  'sh-ch-th': ['D121', 'A seashell, a beach chair and a hand giving a thumbs up'],
+  'silent-e': ['D122', 'A baseball cap and a superhero cape hanging side by side on hooks'],
+  'read-the-sentence': ['D123', 'A child reading a big book, one finger at the start of the line'],
+  'what-happened': ['D124', 'A kite caught high in a tree while a dad stands on tiptoe reaching for it'],
+  'tracing-more-small-letters': ['D125', 'A goat, a mouse and a zebra standing in a row'],
+  'trace-small-letters-3': ['D126', 'An igloo, a turtle and a kite'],
+  'trace-small-letters-4': ['D127', 'A cat, a violin and a xylophone'],
+  'trace-small-letters-5': ['D128', 'A bird nest, an open umbrella and a rabbit'],
+  'sun-moon-patterns': ['D129', 'The sun rising over a backyard fence'],
+  'water-changes': ['D130', 'An ice cube melting into a little puddle on a sunny step'],
+  'animal-needs': ['D131', 'A puppy with a food bowl, a water dish and a soft bed'],
+  'leaders-near-and-far': ['D132', 'A small town hall, a bigger state capitol and the White House in a row'],
+  'goods-and-services': ['D133', 'A hat shop beside a barber shop with a striped barber pole'],
+  'maps-of-my-world': ['D134', 'A simple map of a backyard seen from above, with a compass rose of four points in the corner'],
+  'signs-around-town': ['D135', 'An eight-sided street sign on a corner with a car stopped in front of it'],
+  'symbols-of-our-country': ['D136', 'The Liberty Bell with its crack beside the front of the Alamo'],
+  'the-steady-beat': ['D137', 'A drum and a ticking clock side by side'],
+  'high-and-low': ['D138', 'A little bird singing on a high branch above a big cow in a field'],
+  'loud-and-soft': ['D139', 'A big marching drum beside a baby sleeping in a stroller'],
+  'hundreds-tens-ones': ['D140', 'A big jar of pennies tipped over, with neat stacks of coins beside it'],
+  'adding-with-regrouping': ['D141', 'Sheets of stickers in long strips and a handful of loose stickers'],
+  'subtracting-with-regrouping': ['D142', 'Strings of beads and a half-made necklace on a craft table'],
+  'telling-time': ['D143', 'A tall clock tower with a plain clock face and two hands, standing in a small town square'],
+  'money': ['D144', 'Coins in a row on a store counter beside a smiling piggy bank'],
+  'rows-and-columns': ['D145', 'An open egg carton with two neat rows of eggs'],
+  'quarter-hours': ['D146', 'A kitchen wall clock with a plain face above a table with a cereal bowl and a school bag'],
+  'vowel-teams': ['D147', 'A little boat on a pond and a goat on the grassy shore'],
+  'two-syllable-words': ['D148', 'A rabbit peeking out of a vegetable garden'],
+  'reading-for-meaning': ['D149', 'A dog digging a hole on a sunny beach beside a sand bucket'],
+  'word-meaning-from-context': ['D150', 'An enormous shaggy dog stretched across a boy on a couch'],
+  'complete-sentences': ['D151', 'A girl running fast across a field, her hair flying'],
+  'describing-sentences': ['D152', 'A fluffy cat sitting very still on a warm sunny step'],
+  'tell-a-story-2': ['D153', 'A boy holding up a tiny tooth in his palm, a pillow behind him'],
+  'then-and-now': ['D154', 'An old one-room schoolhouse with a bell on the roof'],
+  'good-citizens': ['D155', 'A boy handing a lost wallet back to a grateful man on a sidewalk'],
+  'producers-and-consumers': ['D156', 'A lemonade stand where a child hands a cup to a smiling neighbor'],
+  'maps-of-our-town': ['D157', 'A simple town map seen from above: little houses, a library, a park and straight streets'],
+  'services-in-our-town': ['D158', 'A fire truck driving past a library and a park'],
+  'saving-for-a-goal': ['D159', 'A glass jar of coins with a kite leaning beside it'],
+  'hard-or-soft': ['D160', 'A rock, a pillow, a sponge and a towel laid out on a mat'],
+  'magnets': ['D161', 'A horseshoe magnet lifting a chain of paper clips'],
+  'habitats': ['D162', 'A hermit crab beside a spiral shell in a tide pool'],
 };

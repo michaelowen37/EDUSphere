@@ -1008,7 +1008,7 @@ const DRAWINGS = ['ball', 'sun', 'balloon', 'my-name', 'star', 'tree', 'house', 
 // letter at a time from the very first pictures.
 export const LETTER_PICTURES = 'abcdefghijklmnopqrstuvwxyz'.split('').map((ch) => `letter-${ch}`);
 export const COLORING_PICTURES = DRAWINGS.flatMap((pic, i) => (LETTER_PICTURES[i] ? [pic, LETTER_PICTURES[i]] : [pic])).concat(LETTER_PICTURES.slice(DRAWINGS.length));
-export function pictureTitle(pic) { return pic === 'my-name' ? 'My name' : pic.startsWith('letter-') ? `Letter ${pic.slice(-1).toUpperCase()}` : pic.replace(/-/g, ' '); }
+export function pictureTitle(pic) { if (pic.startsWith('lesson-')) { const mod = MODULES.find((x) => x.id === pic.slice(7)); return mod ? mod.title : 'Picture'; } return pic === 'my-name' ? 'My name' : pic.startsWith('letter-') ? `Letter ${pic.slice(-1).toUpperCase()}` : pic.replace(/-/g, ' '); }
 
 // Let's Play: small games that need no words, one to start with and one more for every course
 // mastered. A game keeps the coloring clock: five minutes, then a fifteen-minute rest. The list is
@@ -21645,4 +21645,11 @@ export function printParts(words, paintedAfter = [], mainPainted = false) {
   });
   parts.push(part);
   return parts.map(({ head, from, to }) => ({ head, from, to }));
+}
+
+// ---------- Coloring pages from lessons (2026-09-24, Mikey) ----------
+// Given the lessons a student has passed, a way to ask whether a page's art exists, and the pages themselves
+// (COLOR_PAGES), this returns the picture ids to show in Let's Color, in the order the lessons were passed.
+export function lessonColorPages(passedIds, hasArt, pages) {
+  return passedIds.filter((id) => pages[id] && hasArt(pages[id][0])).map((id) => `lesson-${id}`);
 }

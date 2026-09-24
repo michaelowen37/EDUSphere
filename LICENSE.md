@@ -21,7 +21,9 @@ They are not published for reuse.
   examples, questions, stories, course stories, experiments, life skills, reading lists, Wonder
   questions, curriculum mappings, artwork, prompts and audio.
 - Remove or change this notice, or present any of this work as your own.
-- Train a machine learning model on the content.
+- Use any part of the code or the content to train, fine-tune, test, evaluate or prompt a machine learning or artificial
+  intelligence system, or to build a dataset for one.
+- Scrape, crawl, mirror or bulk-download this repository, the published app or its content, by hand or by machine.
 
 ## Content
 

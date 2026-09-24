@@ -1,7 +1,7 @@
 // Every story belongs to a real module, fits its band's word limit, has a unique serial, names only
 // the core cast, and reads like a story: at least three paragraphs, no em dashes.
 import * as L from '../src/logic.mjs';
-import { COURSE_STORIES, STORIES, STORY_WORD_LIMIT } from '../src/stories.mjs';
+import { COURSE_STORIES, STORIES, STORY_WORD_LIMIT, COLOR_PAGES } from '../src/stories.mjs';
 let pass = 0; let fail = 0;
 const ok = (label, cond, detail = '') => { console.log((cond ? 'PASS' : 'FAIL') + ' - ' + label + (cond ? '' : '  ' + detail)); cond ? pass++ : fail++; };
 const CORE = ['Mike', 'Chloe', 'Frederick', 'Georgette', 'Savanah', 'Jaxon', 'Harlow'];
@@ -28,7 +28,11 @@ for (const [id, s] of Object.entries(STORIES)) {
 // Course stories: one longer story per course, still under the Gladwell ceiling for older readers, with three paragraphs and a scene.
 for (const [id, cs] of Object.entries(COURSE_STORIES)) {
   const words = cs.words.join(' ').split(/\s+/).length;
-  ok(`${id}: course story stays under 350 words and has three paragraphs, a title and a scene`, words <= 350 && cs.words.length === 3 && !!cs.title && !!cs.alt && /^CS\d+$/.test(cs.art), `${words} words`);
+  // A long story is either the original (three paragraphs, under 350 words) or doubled (2026-09-24, Mikey): six or more
+  // paragraphs up to 460 words, with five more pictures after five different paragraphs, spread over both halves.
+  const doubled = words > 350; const af = (cs.more || []).map((m) => m.after); const half = cs.words.length / 2;
+  ok(`${id}: course story has a title, a scene and its length (three paragraphs under 350 words, or doubled to six or more up to 460)`, (doubled ? words <= 460 && cs.words.length >= 6 : words <= 350 && cs.words.length === 3) && !!cs.title && !!cs.alt && /^CS\d+$/.test(cs.art), `${words} words`);
+  if (doubled) ok(`${id}: a doubled long story has five more pictures after five different paragraphs in both halves`, af.length === 5 && new Set(af).size === 5 && af.some((a) => a < half) && af.some((a) => a >= half) && af.every((a) => a >= 0 && a < cs.words.length) && cs.more.every((m) => /^CS\d+$/.test(m.serial) && m.alt), af.join(','));
 }
 // Read-aloud rule for the early years (2026-09-23, Mikey): pre-K to grade 2 stories are spoken to five-year-olds, so no
 // sentence runs past twelve words and no word past three syllables (vowel groups, a silent e dropped).
@@ -70,6 +74,19 @@ for (const [id, cs] of Object.entries(COURSE_STORIES)) {
     const spots = new Set(more.map((m) => m.after)); const half = st.words.length / 2;
     if (spots.size < more.length || !more.some((m) => m.after < half) || !more.some((m) => m.after >= half)) bad.push(`${id}: after ${more.map((m) => m.after).join(',')}`); }
   ok('a story with six pictures spreads them through its paragraphs', bad.length === 0, bad.slice(0, 5).join(' | '));
+}
+// Coloring pages from lessons (2026-09-24, Mikey): exactly one page for every pre-K to grade 2 lesson and none for older
+// ones, serials D28 upward with no gaps or repeats, a plain scene with no numbers in it, and the listing rule: a page shows
+// only when its lesson is passed and its art exists.
+{
+  const earlyIds = L.MODULES.filter((m) => ['PK3', 'PK4', 'K', '1', '2'].includes((L.getCourse(m.courseId) || {}).grade)).map((m) => m.id);
+  const pageIds = Object.keys(COLOR_PAGES); const serials = Object.values(COLOR_PAGES).map(([s]) => s);
+  ok('every early-years lesson has one coloring page and no older lesson has one', pageIds.length === earlyIds.length && earlyIds.every((id) => COLOR_PAGES[id]), `${pageIds.length} pages, ${earlyIds.length} lessons`);
+  ok('lesson coloring pages run D28 upward with no gaps or repeats', serials.every((s, i) => s === `D${28 + i}`), serials.slice(0, 3).join(','));
+  ok('every lesson coloring page has a plain scene with no numbers in it', Object.values(COLOR_PAGES).every(([, scene]) => scene && !/\d/.test(scene) && scene.split(/\s+/).length >= 4));
+  const first = earlyIds[0]; const has = (s) => s === COLOR_PAGES[first][0];
+  ok('a lesson page shows only once its lesson is passed and its art exists', L.lessonColorPages([], has, COLOR_PAGES).length === 0 && L.lessonColorPages([first], has, COLOR_PAGES).join() === `lesson-${first}` && L.lessonColorPages([earlyIds[1]], has, COLOR_PAGES).length === 0);
+  ok('a lesson page is titled by its lesson', L.pictureTitle(`lesson-${first}`) === L.MODULES.find((m) => m.id === first).title);
 }
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exitCode = fail ? 1 : 0;   // never process.exit(): it can drop the last lines of a piped stdout (2026-09-23)

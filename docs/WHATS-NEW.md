@@ -2,6 +2,20 @@
 
 The newest block is what educators see once, in a pop-up on the classroom page, after each update. Write it the way Mikey talks to a teacher: conversational, complete sentences, say what changed and why it matters, and skip the shorthand (2026-09-23). Two to four items. The date line is the version stamp.
 
+## September 24, 2026 (late night)
+
+- Every pre-K through second grade lesson now has its own coloring page waiting in the wings. As soon as its artwork arrives, a student who passes the lesson will find that page in Let's Color, under From your lessons.
+
+## September 24, 2026 (night)
+
+- Third grade's eight long stories, the ones that unlock when a whole course is mastered, are now twice as long, with six pictures each.
+- A story too long for one printed page now carries on to the next page instead of getting cut off at the bottom.
+
+## September 24, 2026 (evening)
+
+- Every third grade story is now twice as long, with six pictures. The last eighteen cover writing, multiplication and division, measuring, graphs, art, coding and government.
+- The pictures in the pre-K through second grade stories were checked one by one, and nearly fifty were changed so each one shows exactly what its paragraph says.
+
 ## September 24, 2026 (later)
 
 - The Let's Read card on the Story Log is now deep green, so it stands out from the student cards. The option to print a copy for each student is gone from the top of the story book.

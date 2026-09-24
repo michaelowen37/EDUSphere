@@ -514,10 +514,30 @@ await tap('Back to Classroom');
   ok('the story book holds every module story and the long story', n === expected);
   const t = await text();
   ok('the book opens on a cover with the course title and a print button', t.includes('EduSphere story book') && t.includes('The long story') && (await page.getByRole('button', { name: 'Print or save as PDF' }).count()) === 1);
-  await tap('Back to Story Log'); await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'story-log');
-  await tap('Back to Classroom');
+  // The phone's back button (2026-09-24, Mikey): from the book it goes to the Story Log, from the Story Log to the classroom,
+  // never to the loading screen that the courses page becomes with no student signed in.
+  await page.goBack(); await page.waitForTimeout(300);
+  ok('the back button leaves the story book for the Story Log', await page.evaluate(() => window.__eduTest.screen === 'story-log'));
+  await page.goBack(); await page.waitForTimeout(300);
+  ok('the back button leaves the Story Log for the classroom, not a loading screen', await page.evaluate(() => window.__eduTest.screen === 'educator-pick'));
 }
 ok('the classroom page carries a backup link at the foot', (await page.getByRole('button', { name: 'Backup classroom' }).count()) === 1);
+// The crash guard (2026-09-24, Mikey): a render that throws shows a way home instead of a blank page, and home works.
+{
+  await page.evaluate(() => window.__eduTest.crash()); await page.waitForTimeout(400);
+  // the crash is on purpose: its own console lines are not browser errors for the run's tally
+  const keep = errors.filter((e) => !/test crash|crash guard/.test(e)); errors.splice(0, errors.length, ...keep);
+  const t = await text();
+  ok('a crashed screen shows the guard instead of a blank page', t.includes('Something went wrong on this page') && (await page.getByRole('button', { name: 'Go home' }).count()) === 1);
+  await tap('Go home'); await page.waitForTimeout(600);
+  const after = await page.evaluate(() => ({ screen: window.__eduTest ? window.__eduTest.screen : 'gone', blank: !(document.querySelector('#root').textContent || '').trim() }));
+  ok('Go home brings the app back with nothing lost', !after.blank && after.screen !== 'gone' && after.screen !== 'loading' && !(await text()).includes('Something went wrong on this page'), JSON.stringify(after));
+  // back to where the test was: the fresh app opens on the sign-in screen, and the educator signs in again
+  await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'welcome');
+  await tap('Educator Login'); await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'educator-pin');
+  await page.fill('input[placeholder="PIN"]', '2468'); await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'educator-pick', null, { timeout: 15000 });
+  for (const name of ['Skip tour', 'Later', 'Got it']) { const b = page.getByRole('button', { name }); if (await b.count()) { await b.first().click({ force: true }); await page.waitForTimeout(150); } }
+}
 // The classroom at laptop width (2026-09-23, Mikey): on every student card the name, each row of links and Open report sit on one
 // center line, within four pixels; a screenshot lands in tests/e2e/out for the release checklist's own eyes.
 {

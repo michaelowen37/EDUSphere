@@ -33,7 +33,7 @@ window.__eduArt = [];
 window.__eduColoringArt = [];
 window.__eduMapArt = [];
 window.__eduAudio = [];
-window.__eduNews = {"stamp":"2026-09-24","date":"2026-09-24","items":["The stories got a big upgrade. Every lesson in the app, from pre-K through college, now ends with a real short story: a kid with a problem, the idea from the lesson that gets them out of it, and a line to remember it by. That's all 454 of them.","A story book for a course that doesn't have its paintings yet prints clean, just the words, with no empty picture frames.","You can print a story book for any course. Open the Story Log, pick a course at the bottom of the page, and tap Open the book. You'll get a cover, every story in order, and the long story at the end, one story per page, ready to print or save as a PDF for a class that reads on paper.","The little ones got the same treatment in miniature. Every pre-K through 2nd grade story is now a tiny story with short sentences and simple words, so it sounds right when you read it out loud.","Under every early-years story you'll see a snail and a hare. Tap the snail and the story is read slowly. Tap the hare for normal speed. Pre-K starts on the snail, and the device remembers whichever one you picked last.","There's a new life skill for the youngest kids called \"Finding an aww moment wherever you go.\" The idea is simple: on every outing, look for one small good thing (a cool bug, a stranger being kind, a pretty plant) and say it out loud. Kids who learn to notice the small stuff learn to enjoy the trip, not just the destination.","A few smaller fixes: the frog in Frog Jumps shows you exactly where it will land before you let go, closing a game or a story takes you right back to where you were on the page, and the Wonder Questions link is a third line under each student's name so it's easy to find."]};
+window.__eduNews = {"stamp":"2026-09-24","date":"2026-09-24","items":["The stories got a big upgrade. Every lesson in the app, from pre-K through college, now ends with a real short story: a kid with a problem, the idea from the lesson that gets them out of it, and a line to remember it by. That's all 454 of them.","A story book for a course that doesn't have its paintings yet prints clean, just the words, with no empty picture frames.","You can print a story book for any course. Open the Story Log, pick a course at the bottom of the page, and tap Open the book. You'll get a cover, every story in order, and the long story at the end, one story per page, ready to print or save as a PDF for a class that reads on paper.","The little ones got the same treatment in miniature. Every pre-K through 2nd grade story is now a tiny story with short sentences and simple words, so it sounds right when you read it out loud.","Under every early-years story you'll see a snail and a hare. Tap the snail and the story is read slowly. Tap the hare for normal speed. Pre-K starts on the snail, and the device remembers whichever one you picked last.","There's a new life skill for the youngest kids called \"Finding an aww moment wherever you go.\" The idea is simple: on every outing, look for one small good thing (a cool bug, a stranger being kind, a pretty plant) and say it out loud. Kids who learn to notice the small stuff learn to enjoy the trip, not just the destination.","If you pressed your phone's back button on the Story Log page and got stuck on a loading screen, that's fixed. Back takes you to the classroom now.","If a page ever breaks on your phone, you'll see a short message and a Go home button instead of a blank screen. Nothing you did is lost; the app just opens fresh.","A few smaller fixes: the frog in Frog Jumps shows you exactly where it will land before you let go, closing a game or a story takes you right back to where you were on the page, and the Wonder Questions link is a third line under each student's name so it's easy to find."]};
 // Installable app: the worker keeps a copy of the page for offline use and asks the network first, so a fresh build always wins.
 if ('serviceWorker' in navigator && /^https?:/.test(location.protocol)) { navigator.serviceWorker.register('sw.js').catch(function () {}); }
 var process = { env: { NODE_ENV: 'production' } };
@@ -47280,7 +47280,7 @@ function PinInput({ value, onChange, placeholder, style, onEnter = null }) {
 }
 // A stamp of when this copy of the page was built, so a stale page in a cache can be told apart
 // from a fresh one at a glance. Written by the build, never by hand.
-const BUILD_STAMP = '2026-09-23 09:52 PM CDT';
+const BUILD_STAMP = '2026-09-24 06:20 AM CDT';
 function ContactLine({ onOpen, inline = false }) {
     return (react_1.default.createElement("p", { className: "edu-no-print", style: { textAlign: 'center', marginTop: inline ? 0 : 28, fontSize: inline ? 14 : 12, color: C.muted, margin: inline ? '0' : undefined } }, onOpen
         ? react_1.default.createElement("button", { type: "button", onClick: onOpen, style: { background: 'none', border: 'none', color: C.muted, fontFamily: FONT, fontSize: 12, cursor: 'pointer', padding: 0, textDecoration: 'underline' } }, "Contact us")
@@ -52275,8 +52275,36 @@ async function downloadFile(name, text) {
     return true;
 }
 // ---------- The app ----------
+// The crash guard (2026-09-24, Mikey): a screen that throws while drawing shows a way home instead of a blank page.
+// Go home remounts the app fresh, which reloads everything from storage, so nothing a student or educator did is lost.
+class CrashGuard extends react_1.default.Component {
+    constructor(props) { super(props); this.state = { error: null }; }
+    static getDerivedStateFromError(error) { return { error }; }
+    componentDidCatch(error) { try {
+        console.error('EduSphere crash guard:', error);
+    }
+    catch (e) { /* a console is not guaranteed */ } }
+    render() {
+        if (!this.state.error)
+            return this.props.children;
+        return (react_1.default.createElement("div", { style: page },
+            react_1.default.createElement("div", { className: "edu-wrap", style: wrap },
+                react_1.default.createElement("div", { style: { ...card, textAlign: 'center', marginTop: 40 } },
+                    react_1.default.createElement("p", { style: { fontWeight: 600, fontSize: 18, margin: '0 0 8px' } }, "Something went wrong on this page."),
+                    react_1.default.createElement("p", { style: { margin: '0 0 16px', color: C.muted } }, "Nothing you did was lost. Tap the button to go home."),
+                    react_1.default.createElement(Btn, { onClick: () => { this.setState({ error: null }); this.props.onHome(); } }, "Go home")))));
+    }
+}
 function EduSphereApp() {
+    const [gen, setGen] = (0, react_1.useState)(0);
+    return react_1.default.createElement(CrashGuard, { onHome: () => setGen(gen + 1) },
+        react_1.default.createElement(EduSphereScreens, { key: gen }));
+}
+function EduSphereScreens() {
     const [screen, setScreen] = (0, react_1.useState)('loading');
+    const [boom, setBoom] = (0, react_1.useState)(false); // test-only: a render that throws on purpose, for the crash guard's check
+    if (boom)
+        throw new Error('test crash');
     const [nameInput, setNameInput] = (0, react_1.useState)('');
     const [roster, setRoster] = (0, react_1.useState)(emptyRoster());
     const [rosterInput, setRosterInput] = (0, react_1.useState)(''); // the ID box on the roster screen
@@ -52552,11 +52580,17 @@ function EduSphereApp() {
             return record && record.preview ? 'educator-pick' : 'welcome';
         if (['educator-pin', 'educator-setup', 'educator-pick'].includes(screen))
             return 'welcome';
-        if (['class-view', 'backup', 'standards-map', 'experiments', 'reading-lists', 'wonder-review', 'life-skills', 'transcript', 'change-state', 'educator-report'].includes(screen))
+        if (screen === 'story-book')
+            return 'story-log';
+        if (screen === 'certificate')
+            return educatorRecord ? 'educator-report' : record ? 'overview' : 'educator-pick';
+        if (['class-view', 'backup', 'standards-map', 'experiments', 'reading-lists', 'wonder-review', 'life-skills', 'transcript', 'change-state', 'educator-report', 'story-log'].includes(screen))
             return 'educator-pick';
         if (screen === 'welcome' || screen === 'loading')
             return null;
-        return 'overview';
+        // A student page goes back to the courses; with no student signed in (an educator page this list does not name yet),
+        // the classroom, never the courses, because the courses with no record is the loading screen forever (2026-09-24, Mikey).
+        return record ? 'overview' : 'educator-pick';
     };
     const upRef = (0, react_1.useRef)(upScreen);
     upRef.current = upScreen;
@@ -53180,8 +53214,38 @@ function EduSphereApp() {
         return () => { window.removeEventListener('resize', check); window.removeEventListener('orientationchange', check); if (box.parentNode)
             box.parentNode.removeChild(box); };
     }, []);
-    (0, react_1.useEffect)(() => { if (typeof window !== 'undefined')
-        window.__eduTest = { screen, question: q || null, isReviewQ, openModule: (id) => openModule(id), openColoring: (pic) => { setColoring(pic); setScreen('coloring'); }, openCertificate: (id, grade) => { setCertFor({ id, grade }); setCertTemplate('classic'); setCertName(''); setCertPhotos([]); setScreen('certificate'); }, visibleModuleIds: () => visibleModules.map((m) => m.id), openStory: (id) => { setModuleId(id); setScreen('story'); }, goHome: () => { setRecord(null); setModuleId(null); setScreen(educator ? 'educator-pick' : 'welcome'); } }; }, [screen, q, isReviewQ, visibleModules, educator]);
+    (0, react_1.useEffect)(() => {
+        if (typeof window !== 'undefined')
+            window.__eduTest = { screen, question: q || null, isReviewQ, openModule: (id) => openModule(id), openColoring: (pic) => { setColoring(pic); setScreen('coloring'); }, openCertificate: (id, grade) => { setCertFor({ id, grade }); setCertTemplate('classic'); setCertName(''); setCertPhotos([]); setScreen('certificate'); }, visibleModuleIds: () => visibleModules.map((m) => m.id), openStory: (id) => { setModuleId(id); setScreen('story'); }, crash: () => setBoom(true), goTo: (name) => {
+                    // Test-only: land on a screen with enough state for it to render, so the back-button sweep can press back from every screen.
+                    if (name === 'story' || name === 'lesson') {
+                        if (!moduleId && visibleModules[0])
+                            setModuleId(visibleModules[0].id);
+                    }
+                    if (name === 'course-story') {
+                        const c = COURSES.find((x) => courseStoryFor(x.id));
+                        if (c)
+                            setCourseStoryId(c.id);
+                    }
+                    if (name === 'story-book') {
+                        const c = COURSES.find((x) => courseStoryFor(x.id));
+                        if (c)
+                            setBookCourseId(c.id);
+                    }
+                    if (name === 'coloring')
+                        setColoring(COLORING_PICTURES[0].id);
+                    if (name === 'certificate') {
+                        const st = (roster && roster.students && roster.students[0]) || record;
+                        if (st) {
+                            setCertFor({ id: st.id, grade: '3' });
+                            setCertTemplate('classic');
+                            setCertName('');
+                            setCertPhotos([]);
+                        }
+                    }
+                    setScreen(name);
+                }, goHome: () => { setRecord(null); setModuleId(null); setScreen(educator ? 'educator-pick' : 'welcome'); } };
+    }, [screen, q, isReviewQ, visibleModules, educator]);
     // A full PIN opens the door on its own (2026-09-23, Mikey): nobody has to lower the phone keypad to reach Go or Open.
     // A student's wrong PIN clears the box and says so; an educator's wrong PIN just sits there with its line under it.
     (0, react_1.useEffect)(() => { if (!pinAsk || pinTry.length !== PIN_LENGTH)

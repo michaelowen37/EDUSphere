@@ -3813,8 +3813,33 @@ async function downloadFile(name, text) {
 }
 
 // ---------- The app ----------
+// The crash guard (2026-09-24, Mikey): a screen that throws while drawing shows a way home instead of a blank page.
+// Go home remounts the app fresh, which reloads everything from storage, so nothing a student or educator did is lost.
+class CrashGuard extends React.Component {
+  constructor(props) { super(props); this.state = { error: null }; }
+  static getDerivedStateFromError(error) { return { error }; }
+  componentDidCatch(error) { try { console.error('EduSphere crash guard:', error); } catch (e) { /* a console is not guaranteed */ } }
+  render() {
+    if (!this.state.error) return this.props.children;
+    return (
+      <div style={page}><div className="edu-wrap" style={wrap}>
+        <div style={{ ...card, textAlign: 'center', marginTop: 40 }}>
+          <p style={{ fontWeight: 600, fontSize: 18, margin: '0 0 8px' }}>Something went wrong on this page.</p>
+          <p style={{ margin: '0 0 16px', color: C.muted }}>Nothing you did was lost. Tap the button to go home.</p>
+          <Btn onClick={() => { this.setState({ error: null }); this.props.onHome(); }}>Go home</Btn>
+        </div>
+      </div></div>
+    );
+  }
+}
 export default function EduSphereApp() {
+  const [gen, setGen] = useState(0);
+  return <CrashGuard onHome={() => setGen(gen + 1)}><EduSphereScreens key={gen} /></CrashGuard>;
+}
+function EduSphereScreens() {
   const [screen, setScreen] = useState('loading');
+  const [boom, setBoom] = useState(false);                             // test-only: a render that throws on purpose, for the crash guard's check
+  if (boom) throw new Error('test crash');
   const [nameInput, setNameInput] = useState('');
   const [roster, setRoster] = useState(emptyRoster());
   const [rosterInput, setRosterInput] = useState('');         // the ID box on the roster screen
@@ -4050,9 +4075,13 @@ export default function EduSphereApp() {
   const upScreen = () => {
     if (screen === 'overview') return record && record.preview ? 'educator-pick' : 'welcome';
     if (['educator-pin', 'educator-setup', 'educator-pick'].includes(screen)) return 'welcome';
-    if (['class-view', 'backup', 'standards-map', 'experiments', 'reading-lists', 'wonder-review', 'life-skills', 'transcript', 'change-state', 'educator-report'].includes(screen)) return 'educator-pick';
+    if (screen === 'story-book') return 'story-log';
+    if (screen === 'certificate') return educatorRecord ? 'educator-report' : record ? 'overview' : 'educator-pick';
+    if (['class-view', 'backup', 'standards-map', 'experiments', 'reading-lists', 'wonder-review', 'life-skills', 'transcript', 'change-state', 'educator-report', 'story-log'].includes(screen)) return 'educator-pick';
     if (screen === 'welcome' || screen === 'loading') return null;
-    return 'overview';
+    // A student page goes back to the courses; with no student signed in (an educator page this list does not name yet),
+    // the classroom, never the courses, because the courses with no record is the loading screen forever (2026-09-24, Mikey).
+    return record ? 'overview' : 'educator-pick';
   };
   const upRef = useRef(upScreen); upRef.current = upScreen;
   const leaveRef = useRef(leaveColoring); leaveRef.current = leaveColoring;
@@ -4528,7 +4557,15 @@ export default function EduSphereApp() {
     check(); window.addEventListener('resize', check); window.addEventListener('orientationchange', check);
     return () => { window.removeEventListener('resize', check); window.removeEventListener('orientationchange', check); if (box.parentNode) box.parentNode.removeChild(box); };
   }, []);
-  useEffect(() => { if (typeof window !== 'undefined') window.__eduTest = { screen, question: q || null, isReviewQ, openModule: (id) => openModule(id), openColoring: (pic) => { setColoring(pic); setScreen('coloring'); }, openCertificate: (id, grade) => { setCertFor({ id, grade }); setCertTemplate('classic'); setCertName(''); setCertPhotos([]); setScreen('certificate'); }, visibleModuleIds: () => visibleModules.map((m) => m.id), openStory: (id) => { setModuleId(id); setScreen('story'); }, goHome: () => { setRecord(null); setModuleId(null); setScreen(educator ? 'educator-pick' : 'welcome'); } }; }, [screen, q, isReviewQ, visibleModules, educator]);
+  useEffect(() => { if (typeof window !== 'undefined') window.__eduTest = { screen, question: q || null, isReviewQ, openModule: (id) => openModule(id), openColoring: (pic) => { setColoring(pic); setScreen('coloring'); }, openCertificate: (id, grade) => { setCertFor({ id, grade }); setCertTemplate('classic'); setCertName(''); setCertPhotos([]); setScreen('certificate'); }, visibleModuleIds: () => visibleModules.map((m) => m.id), openStory: (id) => { setModuleId(id); setScreen('story'); }, crash: () => setBoom(true), goTo: (name) => {
+    // Test-only: land on a screen with enough state for it to render, so the back-button sweep can press back from every screen.
+    if (name === 'story' || name === 'lesson') { if (!moduleId && visibleModules[0]) setModuleId(visibleModules[0].id); }
+    if (name === 'course-story') { const c = COURSES.find((x) => courseStoryFor(x.id)); if (c) setCourseStoryId(c.id); }
+    if (name === 'story-book') { const c = COURSES.find((x) => courseStoryFor(x.id)); if (c) setBookCourseId(c.id); }
+    if (name === 'coloring') setColoring(COLORING_PICTURES[0].id);
+    if (name === 'certificate') { const st = (roster && roster.students && roster.students[0]) || record; if (st) { setCertFor({ id: st.id, grade: '3' }); setCertTemplate('classic'); setCertName(''); setCertPhotos([]); } }
+    setScreen(name);
+  }, goHome: () => { setRecord(null); setModuleId(null); setScreen(educator ? 'educator-pick' : 'welcome'); } }; }, [screen, q, isReviewQ, visibleModules, educator]);
   // A full PIN opens the door on its own (2026-09-23, Mikey): nobody has to lower the phone keypad to reach Go or Open.
   // A student's wrong PIN clears the box and says so; an educator's wrong PIN just sits there with its line under it.
   useEffect(() => { if (!pinAsk || pinTry.length !== PIN_LENGTH) return; const st = findStudent(roster, pinAsk); if (!st) return; if (pinMatches(st, pinTry)) { setPinAsk(null); startWithName(st.id); } else { setPinWrong(true); setPinTry(''); } }, [pinTry, pinAsk]);

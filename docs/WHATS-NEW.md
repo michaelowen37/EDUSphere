@@ -10,6 +10,8 @@ The newest block is what educators see once, in a pop-up on the classroom page, 
 - The little ones got the same treatment in miniature. Every pre-K through 2nd grade story is now a tiny story with short sentences and simple words, so it sounds right when you read it out loud.
 - Under every early-years story you'll see a snail and a hare. Tap the snail and the story is read slowly. Tap the hare for normal speed. Pre-K starts on the snail, and the device remembers whichever one you picked last.
 - There's a new life skill for the youngest kids called "Finding an aww moment wherever you go." The idea is simple: on every outing, look for one small good thing (a cool bug, a stranger being kind, a pretty plant) and say it out loud. Kids who learn to notice the small stuff learn to enjoy the trip, not just the destination.
+- If you pressed your phone's back button on the Story Log page and got stuck on a loading screen, that's fixed. Back takes you to the classroom now.
+- If a page ever breaks on your phone, you'll see a short message and a Go home button instead of a blank screen. Nothing you did is lost; the app just opens fresh.
 - A few smaller fixes: the frog in Frog Jumps shows you exactly where it will land before you let go, closing a game or a story takes you right back to where you were on the page, and the Wonder Questions link is a third line under each student's name so it's easy to find.
 
 ## 2026-09-23

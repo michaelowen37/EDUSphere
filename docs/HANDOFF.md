@@ -22,7 +22,7 @@ What is next on my list: I will be adding variety to the older students' games, 
 - docs/ART-REQUESTS.md: every serial with its Leonardo prompt; tests/ledger.test.mjs fails if a serial has no row.
 - Before a commit: ./check.sh, then tools/sweep.sh (every module and page in a browser at phone and laptop widths), then docs/RELEASE-CHECKLIST.md by hand.
 
-## Numbers at handoff (2026-09-24, pass BU)
+## Numbers at handoff (2026-09-24, pass BX)
 
 454 modules in 9 subjects (Math, Reading, Writing, Science, History, Art, Music, Technology, Health), 454 module stories, 62 course stories, 357 experiments and unplugged activities, 64 life skills, 81 games in fourteen kinds, 1,556 rule checks, 170 browser checks. Roughly 8 to 20 hours of lesson time per grade today (older grades now run eight or ten questions a round); a full school year at half an hour a day is about 90 hours per grade, so each grade wants roughly ten times its current modules (see docs/AUDIT-2026-09-23.md for the table and the plan).
 

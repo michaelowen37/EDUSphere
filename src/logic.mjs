@@ -21415,9 +21415,12 @@ export function summaryParagraph(report) {
 // "Practice so far: 3 rounds, 1 passed." and the modules tried but not passed, each with its best
 // score and number of tries. The report summary and the class view both read this, so they agree.
 // Module titles are written in sentence case; educator lists show them in title case, small words aside.
-const SMALL_WORDS = new Set(['and', 'or', 'of', 'the', 'a', 'an', 'to', 'in', 'on', 'for', 'with', 'by', 'at']);
+// Story titles too (2026-09-24, Mikey), in the Chicago and AP habit: every word capitalized except the short articles,
+// conjunctions and prepositions in the middle; the first and last words always capitalized; a word already in capitals kept.
+const SMALL_WORDS = new Set(['a', 'an', 'the', 'and', 'but', 'or', 'nor', 'for', 'so', 'yet', 'at', 'by', 'in', 'of', 'on', 'to', 'up', 'as', 'off', 'per', 'via', 'vs', 'into', 'onto', 'from', 'with']);
 export function titleCase(text) {
-  return String(text).split(' ').map((w, i) => (i > 0 && SMALL_WORDS.has(w.toLowerCase()) ? w.toLowerCase() : w.charAt(0).toUpperCase() + w.slice(1))).join(' ');
+  const words = String(text || '').split(' ');
+  return words.map((w, i) => { const core = w.toLowerCase().replace(/[^a-z]/g, ''); if (i > 0 && i < words.length - 1 && SMALL_WORDS.has(core) && w === w.toLowerCase()) return w; return w.charAt(0).toUpperCase() + w.slice(1); }).join(' ');
 }
 // The module a loop back returns to: the module before it in its course, else its first named prerequisite.
 export function fundamentalsOf(moduleId) {
@@ -21623,4 +21626,23 @@ export function buildAccentArc(x0, x1, y, lift) {
     pts.push(`${(x0 + (x1 - x0) * t).toFixed(1)},${(y + lift * Math.sin(Math.PI * t)).toFixed(1)}`);
   }
   return pts.join(' ');
+}
+
+// ---------- The printed book with paintings (2026-09-24, Mikey) ----------
+// A painted story may need more than one sheet. The book splits it between paragraphs, never between a paragraph and its
+// picture, so a sentence about the ball and the painting of the ball always share a page. Sizes are in inches on a letter
+// page: the room left inside the padding and above the footer, a line of 17px story text, how many words fit a line at full
+// width and beside a picture, the title block, the main painting (about half wide) and a side painting (two fifths wide),
+// measured from a real print so a grade 3 story with six paintings fills two sheets rather than three.
+export const PRINT_PAGE = { room: 8.95, line: 0.27, perLine: 12, perSideLine: 6, head: 1.0, main: 2.65, side: 2.05, gap: 0.12, more: 0.6 };
+export function printParts(words, paintedAfter = [], mainPainted = false) {
+  const P = PRINT_PAGE; const count = (t) => String(t).split(/\s+/).filter(Boolean).length;
+  const cost = (i) => (paintedAfter.includes(i) ? Math.max(Math.ceil(count(words[i]) / P.perSideLine) * P.line, P.side) : Math.ceil(count(words[i]) / P.perLine) * P.line) + P.gap;
+  const parts = []; let part = { head: true, from: 0, to: -1, used: P.head + (mainPainted ? P.main : 0) };
+  words.forEach((_, i) => {
+    if (part.to >= part.from && part.used + cost(i) > P.room) { parts.push(part); part = { head: false, from: i, to: i - 1, used: P.more }; }
+    part.to = i; part.used += cost(i);
+  });
+  parts.push(part);
+  return parts.map(({ head, from, to }) => ({ head, from, to }));
 }

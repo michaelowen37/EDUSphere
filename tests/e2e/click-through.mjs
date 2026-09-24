@@ -228,7 +228,7 @@ await tap('View story');
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'story');
 await page.getByLabel('Illustration S5 to come').waitFor();
 t = await text();
-ok('the story page shows the title, its pictures in order, and no wonder question', t.includes('The broken cups') && (await page.getByLabel(/Illustration S3[78] to come/).count()) === 2 && !t.includes('Something to wonder about'));
+ok('the story page shows the title, its pictures in order, and no wonder question', t.includes('The Broken Cups') && (await page.getByLabel(/Illustration S3[78] to come/).count()) === 2 && !t.includes('Something to wonder about'));
 await practice();
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'practice');
 let r = await runSet([true, true, true, true, true]);
@@ -507,6 +507,9 @@ await tap('Back to Classroom');
 {
   await tap('Story Log'); await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'story-log');
   const L = await import('../../src/logic.mjs'); const S = await import('../../src/stories.mjs');
+  // The Let's Read card is the deep green (2026-09-24, Mikey), darker than the students' light green name bands above it.
+  const bookCard = await page.evaluate(() => { const el = document.querySelector('.edu-book-card'); return el ? getComputedStyle(el).backgroundColor : ''; });
+  ok('the Let\'s Read card on the Story Log is the deep green', bookCard === 'rgb(47, 93, 79)', bookCard);
   // The picker lists every course with any story, youngest grade first (2026-09-24, Mikey): a pre-K course comes before a grade 3 one.
   const options = await page.evaluate(() => [...document.querySelector('select[aria-label="Story book course"]').options].map((o) => o.value));
   ok('the book picker lists every course with a story, pre-K first', options.length > 40 && options.indexOf('math-4') > options.findIndex((v) => /^(math|reading)-k$|^(math|reading)-pk/.test(v)) && options.every((v, i) => i === 0 || L.GRADES.indexOf(L.getCourse(v).grade) >= L.GRADES.indexOf(L.getCourse(options[i - 1]).grade)), options.slice(0, 4).join(','));
@@ -523,7 +526,75 @@ await tap('Back to Classroom');
   await page.emulateMedia({ media: 'screen' });
   const pages = Number((execSync('pdfinfo tests/e2e/out/story-book.pdf').toString().match(/Pages:\s+(\d+)/) || [])[1] || 0);
   const firstPage = execSync('pdftotext -f 1 -l 1 tests/e2e/out/story-book.pdf -').toString();
-  ok('the printed book runs one story a page after a cover of its own', pages >= expected + 1 && /edusphere/i.test(firstPage) && !firstPage.includes('Story 1.'), `${pages} pages`);
+  // Older unpainted stories go two to a page (2026-09-24, Mikey): the grade 4 math book's page two carries stories 1 and 2.
+  const pageTwoOlder = execSync('pdftotext -f 2 -l 2 tests/e2e/out/story-book.pdf -').toString();
+  ok('the printed book puts two older stories a page after a cover of its own', pages >= Math.ceil((expected - 1) / 2) + 2 && /edusphere/i.test(firstPage) && !firstPage.includes('Story 1.') && pageTwoOlder.includes('Story 1.') && pageTwoOlder.includes('Story 2.') && !pageTwoOlder.includes('Story 3.'), `${pages} pages`);
+  // The last page lists the state's standards each story serves (2026-09-24, Mikey).
+  const lastOlder = execSync(`pdftotext -f ${pages} -l ${pages} tests/e2e/out/story-book.pdf -`).toString();
+  ok('the book ends on a page of the standards each story serves', lastOlder.includes('What these stories teach') && /TEKS/.test(lastOlder) && /Story 1\./.test(lastOlder), lastOlder.slice(0, 80));
+  // The class set is gone (2026-09-24, Mikey): the book prints one copy, with no name on the cover or in the footers.
+  ok('the book offers no print-one-for-each-student option', (await page.getByLabel(/Print one for each student/).count()) === 0 && !(await text()).includes('This book belongs to'));
+  // Read the whole book (2026-09-24): the voice starts with the first story's title and the page says which story it is on.
+  await page.evaluate(() => { window.__spoken = []; });
+  await tap('Read the whole book to me'); await page.waitForTimeout(500);
+  const bookSpoken = await page.evaluate(() => window.__spoken.slice());
+  const firstStory = S.STORIES[L.getCourse('math-4').modules.find((m) => S.STORIES[m.id]).id];
+  ok('the book reads itself from the first story', bookSpoken[0] === `${firstStory.title}.` && (await text()).includes('Reading story'), bookSpoken.slice(0, 1).join(''));
+  const stopRead = page.getByRole('button', { name: 'Stop reading' }); if (await stopRead.count()) await stopRead.click();
+  // Paintings in the printed book (2026-09-24, Mikey): with every picture of the grade 3 fractions book painted, each picture
+  // sits in the same sheet as its paragraph, a story may take a second sheet, and no sheet is cut off at the bottom.
+  {
+    const { createRequire: cr } = await import('node:module'); const sharp = cr(import.meta.url)('/home/claude/.npm-global/lib/node_modules/sharp');
+    const fs = await import('node:fs'); const artDir = 'tests/e2e/art/stories'; fs.mkdirSync(artDir, { recursive: true });
+    const fr = L.getCourse('fractions-intro').modules.filter((m) => S.STORIES[m.id]).map((m) => S.STORIES[m.id]);
+    const frSerials = fr.flatMap((st) => [st.art, ...(st.more || []).map((x) => x.serial)]);
+    for (const serial of frSerials) await sharp({ create: { width: 800, height: 600, channels: 3, background: { r: 120, g: 170, b: 150 } } }).webp().toFile(`${artDir}/${serial}.webp`);
+    await page.evaluate((list) => { window.__eduArt = [...(window.__eduArt || []), ...list]; }, frSerials);
+    await tap('Back to Story Log'); await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'story-log');
+    await page.selectOption('select[aria-label="Story book course"]', 'fractions-intro');
+    await tap('Open Book'); await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'story-book');
+    await page.evaluate(() => document.querySelectorAll('.edu-book-sheet img').forEach((im) => { im.loading = 'eager'; }));
+    await page.waitForFunction(() => [...document.querySelectorAll('.edu-book-sheet img')].every((im) => im.complete && im.naturalWidth > 0), null, { timeout: 15000 }).catch(() => {});
+    await page.setViewportSize({ width: 816, height: 1056 }); await page.emulateMedia({ media: 'print' });
+    const sheets = await page.evaluate(() => [...document.querySelectorAll('.edu-book-group')].map((g) => ({ cut: g.scrollHeight > g.clientHeight + 1, cont: /continued/.test((g.querySelector('.edu-book-story p') || {}).textContent || '') })));
+    const loose = await page.evaluate(() => [...document.querySelectorAll('.edu-story-pic')].filter((pic) => !pic.closest('.edu-story-par')).length);
+    const allPics = await page.evaluate(() => document.querySelectorAll('.edu-book-sheet .edu-story-pic img, .edu-book-sheet .edu-story-main img').length);
+    await page.pdf({ path: 'tests/e2e/out/story-book-painted.pdf', format: 'Letter', printBackground: false });
+    await page.emulateMedia({ media: 'screen' }); await page.setViewportSize({ width: 360, height: 780 });
+    const paintedPages = Number((execSync('pdfinfo tests/e2e/out/story-book-painted.pdf').toString().match(/Pages:\s+(\d+)/) || [])[1] || 0);
+    ok('a painted book keeps every picture beside its paragraph, runs a story onto a second sheet and cuts nothing off', allPics === frSerials.length && loose === 0 && sheets.some((x) => x.cont) && !sheets.some((x) => x.cut) && paintedPages === sheets.length, `${allPics} pictures, ${sheets.length} sheets, ${paintedPages} pages, cut ${sheets.filter((x) => x.cut).length}`);
+    await page.evaluate((list) => { window.__eduArt = (window.__eduArt || []).filter((x) => !list.includes(x)); }, frSerials);
+    fs.rmSync('tests/e2e/art', { recursive: true, force: true });
+  }
+  // A book of short stories prints three to a page (2026-09-24, Mikey): page two of the first pre-K book carries stories 1, 2 and 3.
+  await tap('Back to Story Log'); await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'story-log');
+  const firstPk = options.find((v) => L.getCourse(v).grade === 'PK3');
+  await page.selectOption('select[aria-label="Story book course"]', firstPk);
+  await tap('Open Book'); await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'story-book');
+  await page.emulateMedia({ media: 'print' });
+  await page.pdf({ path: 'tests/e2e/out/story-book-prek.pdf', format: 'Letter', printBackground: false });
+  await page.emulateMedia({ media: 'screen' });
+  const pageTwo = execSync('pdftotext -f 2 -l 2 tests/e2e/out/story-book-prek.pdf -').toString();
+  ok('short stories print two to a page', pageTwo.includes('Story 1.') && pageTwo.includes('Story 2.') && !pageTwo.includes('Story 3.'));
+  // Every printed page after the cover carries the course title and its page number in a footer (2026-09-24, Mikey).
+  const pkPages = Number((execSync('pdfinfo tests/e2e/out/story-book-prek.pdf').toString().match(/Pages:\s+(\d+)/) || [])[1] || 0);
+  const lastPage = execSync(`pdftotext -f ${pkPages} -l ${pkPages} tests/e2e/out/story-book-prek.pdf -`).toString();
+  ok('printed pages carry the course title and a page number', pageTwo.includes(`${L.titleCase(L.getCourse(firstPk).title)} · Page 2 of ${pkPages}`) && lastPage.includes(`Page ${pkPages} of ${pkPages}`), `${pkPages} pages`);
+  // When a story's painting arrives it prints by default and takes a page of its own (2026-09-24, Mikey): pretend the first story's painting exists.
+  const firstSerial = S.STORIES[L.getCourse(firstPk).modules.find((m) => S.STORIES[m.id]).id].art;
+  await tap('Back to Story Log'); await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'story-log');
+  await page.evaluate((serial) => { window.__eduArt = [...(window.__eduArt || []), serial]; }, firstSerial);
+  await page.selectOption('select[aria-label="Story book course"]', firstPk);
+  await tap('Open Book'); await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'story-book');
+  await page.emulateMedia({ media: 'print' });
+  await page.pdf({ path: 'tests/e2e/out/story-book-painted.pdf', format: 'Letter', printBackground: false });
+  await page.emulateMedia({ media: 'screen' });
+  const paintedTwo = execSync('pdftotext -f 2 -l 2 tests/e2e/out/story-book-painted.pdf -').toString();
+  const paintedThree = execSync('pdftotext -f 3 -l 3 tests/e2e/out/story-book-painted.pdf -').toString();
+  ok('a painted story prints on a page of its own and the rest still share', paintedTwo.includes('Story 1.') && !paintedTwo.includes('Story 2.') && paintedThree.includes('Story 2.') && paintedThree.includes('Story 3.'));
+  await page.evaluate((serial) => { window.__eduArt = (window.__eduArt || []).filter((x) => x !== serial); }, firstSerial);
+  // the pretend painting has no file on the test page, so its one missing-file line is not a browser error for the tally
+  const kept = errors.filter((e) => !/ERR_FILE_NOT_FOUND/.test(e)); errors.splice(0, errors.length, ...kept);
   // The phone's back button (2026-09-24, Mikey): from the book it goes to the Story Log, from the Story Log to the classroom,
   // never to the loading screen that the courses page becomes with no student signed in.
   await page.goBack(); await page.waitForTimeout(300);

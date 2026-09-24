@@ -2,10 +2,18 @@
 
 The newest block is what educators see once, in a pop-up on the classroom page, after each update. Write it the way Mikey talks to a teacher: conversational, complete sentences, say what changed and why it matters, and skip the shorthand (2026-09-23). Two to four items. The date line is the version stamp.
 
+## September 24, 2026 (later)
+
+- The Let's Read card on the Story Log is now deep green, so it stands out from the student cards. The option to print a copy for each student is gone from the top of the story book.
+- Eighteen more third grade stories are twice as long, with six pictures each: fractions, reading skills and science.
+- On a tablet or computer, story pictures now sit right beside the paragraph they belong to, trading sides as you read down the page, and each one slides gently into place as you reach it. The printed book does the same, so a sentence and its picture always share a page.
+- Every story's pictures were checked against the words beside them, and more than 150 pictures moved to sit with the paragraph they show.
+
 ## 2026-09-24
 
 - The stories got a big upgrade. Every lesson in the app, from pre-K through college, now ends with a real short story: a kid with a problem, the idea from the lesson that gets them out of it, and a line to remember it by. That's all 454 of them.
 - A story book for a course that doesn't have its paintings yet prints clean, just the words, with no empty picture frames.
+- The story book can read itself out loud, story after story, for a class listening together. And if you have students on your list, you can print one copy per student with their name on the cover, all in one job.
 - You can print a story book for any course, pre-K through college. Open the Story Log, pick a course in the Let's Read! card at the bottom of the page, and tap Open Book. You'll get a cover, every story in order, and the long story at the end, one story per page, ready to print or save as a PDF for a class that reads on paper.
 - The little ones got the same treatment in miniature. Every pre-K through 2nd grade story is now a tiny story with short sentences and simple words, so it sounds right when you read it out loud.
 - Under every early-years story you'll see a snail and a hare. Tap the snail and the story is read slowly. Tap the hare for normal speed. Pre-K starts on the snail, and the device remembers whichever one you picked last.

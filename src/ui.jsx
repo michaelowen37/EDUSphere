@@ -831,19 +831,48 @@ const PRINT_STYLES = `
   body.edu-cert-mode:has(.edu-cert-portrait) { page: certup; }
   @page certup { size: portrait; margin: 8mm; }
   /* On the story page only the story prints: its title, pictures and words, upright. */
-  body.edu-story-mode * { visibility: hidden; }
-  body.edu-story-mode .edu-story-sheet, body.edu-story-mode .edu-story-sheet * { visibility: visible; }
-  body.edu-story-mode .edu-story-sheet { position: absolute; left: 0; top: 0; width: 100%; }
-  body.edu-story-mode .edu-no-print { display: block !important; }   /* the story window is inside a no-print overlay; the mode shows only the sheet anyway */
+  /* One story prints in place, so a painted story can run onto a second sheet (2026-09-24, Mikey): everything beside the
+     sheet leaves the flow, and the Story Log's story window stops being a fixed overlay. */
+  body.edu-story-mode .edu-wrap > :not(.edu-story-sheet):not(.edu-story-overlay) { display: none !important; }
+  body.edu-story-mode .edu-story-overlay { display: block !important; position: static !important; background: none !important; padding: 0 !important; overflow: visible !important; }
+  body.edu-story-mode .edu-story-sheet { width: 100% !important; margin: 0 !important; }
+  body.edu-story-mode .edu-frame, body.edu-story-mode .edu-frame-bottom { display: none !important; }
   body.edu-story-mode .edu-story-sheet button { display: none; }
+  /* Pictures on paper (2026-09-24, Mikey): a painted picture sits beside the paragraph it belongs to, just under half the
+     width, sides alternating, and a paragraph never parts from its picture; the main painting prints about half wide. */
+  .edu-story-par { display: flow-root !important; break-inside: avoid; page-break-inside: avoid; }
+  .edu-story-pic { float: right; width: 40%; margin: 4px 0 8px 14px; }
+  .edu-story-pic.edu-pic-left { float: left; margin: 4px 14px 8px 0; }
+  .edu-story-pic > div, .edu-story-main > div { margin: 0 !important; }
+  .edu-story-main { width: 52%; margin: 0 auto 12px; }
+  /* Every painting prints at the house shape, four by three, whatever shape it arrives in, so the page estimate holds. */
+  .edu-story-pic img, .edu-story-main img { aspect-ratio: 4 / 3; object-fit: cover; height: auto; }
   /* A story book prints alone: the cover, then one story per page, the long story last. */
   /* The book prints in place, not lifted out of the flow (an absolute sheet printed one page with the cover pushed down):
      the chrome is hidden by the rules below, the page and wrap lose their screen height and background, and every
      story starts a fresh page after the cover. */
+  body.edu-book-mode { page: book; }
+  @page book { margin: 0; }
+  /* Every page is one group sized to the sheet, padded inside, so the sky behind it runs to the paper's edge (2026-09-24, Mikey). */
+  body.edu-book-mode .edu-book-group { box-sizing: border-box; height: 10.8in; padding: 0.85in 0.85in 0.6in; margin: 0 !important; overflow: hidden; }
+  body.edu-book-mode, body.edu-book-mode #root, body.edu-book-mode .edu-book-page, body.edu-book-mode .edu-book-sheet { margin: 0 !important; padding: 0 !important; }
+  body.edu-book-mode .edu-book-cover-group { break-before: auto; page-break-before: auto; justify-content: center !important; padding-bottom: 1.6in !important; }
+  body.edu-book-mode .edu-book-cover { padding: 48px 22px !important; }
+  body.edu-book-mode .edu-book-story p, body.edu-book-mode .edu-book-standards p { text-align: center !important; }
   body.edu-book-mode .edu-book-page { min-height: 0 !important; background: none !important; padding: 0 !important; }
   body.edu-book-mode .edu-book-page .edu-wrap { min-height: 0 !important; max-width: none !important; padding: 0 !important; }
-  body.edu-book-mode .edu-book-cover { border: none !important; padding: 30vh 12px 0 !important; }
-  body.edu-book-mode .edu-book-story { page-break-before: always; break-before: page; margin-top: 0 !important; }
+  body.edu-book-mode .edu-frame, body.edu-book-mode .edu-frame-bottom { display: none !important; }
+  /* The sky prints behind the pages (2026-09-24, Mikey); the story cards are opaque, so no dot reaches the words. */
+  body.edu-book-mode .edu-page-stars { display: block !important; position: fixed; top: 0; right: 0; bottom: 0; left: 0; width: 100vw; height: 100vh; opacity: 0.5; z-index: 0; }
+  body.edu-book-mode .edu-book-sheet { position: relative; z-index: 1; }
+  body.edu-book-mode .edu-book-foot { display: block !important; margin: 0; padding-top: 6px; font-size: 11px; color: #6B7466; text-align: center; }
+  body.edu-book-mode .edu-book-cover { border: none !important; overflow: visible !important; }
+  body.edu-book-mode .edu-book-group { page-break-before: always; break-before: page; display: flex; flex-direction: column; justify-content: flex-start; gap: 0.32in; }
+  body.edu-book-mode .edu-book-story { break-inside: avoid; page-break-inside: avoid; margin-top: 0 !important; }
+  body.edu-book-mode .edu-book-foot { margin-top: auto !important; }
+  body.edu-book-mode .edu-book-dense .edu-book-story p { font-size: 13.5px !important; line-height: 1.4 !important; margin-bottom: 8px !important; }
+  body.edu-book-mode .edu-book-dense .edu-book-story p:first-child { font-size: 12px !important; }
+  body.edu-book-mode .edu-book-dense .edu-book-story > div > p:first-of-type { font-size: 18px !important; margin-bottom: 6px !important; }
   body.edu-book-mode .edu-book-sheet button { display: none; }
   /* A book or a story with no painting yet prints as words alone (2026-09-23, Mikey): the dashed frames stay on screen only. */
   body.edu-book-mode .edu-art-placeholder, body.edu-story-mode .edu-art-placeholder { display: none !important; }
@@ -888,6 +917,26 @@ const KID_ANIMATION = `
 .edu-wobble { animation: edu-wobble 0.55s ease-in-out; }
 .edu-burst { animation: edu-burst 0.9s ease-out forwards; }
 .edu-rise { animation: edu-rise 0.5s ease-out both; }
+/* Story pictures on screen (2026-09-24, Mikey). On a tablet or computer each picture sits beside the paragraph it belongs to,
+   two fifths of the width, sides alternating down the page, while paragraphs without a picture run the full width. On a phone
+   the picture stays under its paragraph: a column of words beside a picture would be too narrow for a young reader. */
+@media screen and (min-width: 720px) {
+  .edu-story-par { display: flow-root !important; }
+  .edu-par-pic { float: right; width: 42%; margin: 4px 0 10px 18px; }
+  .edu-par-pic.edu-pic-left { float: left; margin: 4px 18px 10px 0; }
+  .edu-par-pic > div { margin: 0 !important; }
+}
+/* The reveal: a picture waits a little below (or, beside words, a little off to its side) and eases into place once. */
+@media screen and (prefers-reduced-motion: no-preference) {
+  .edu-reveal { opacity: 0; transform: translateY(18px); transition: opacity 0.5s ease-out, transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1); }
+  .edu-reveal.edu-in { opacity: 1; transform: none; }
+}
+@media screen and (min-width: 720px) and (prefers-reduced-motion: no-preference) {
+  .edu-reveal.edu-pic-right { transform: translateX(32px); }
+  .edu-reveal.edu-pic-left { transform: translateX(-32px); }
+  .edu-reveal.edu-in { transform: none; }
+}
+@media print { .edu-reveal { opacity: 1 !important; transform: none !important; transition: none !important; } }
 .edu-sway { animation: edu-sway 3.2s ease-in-out infinite; }
 .edu-grow { animation: edu-grow 2.2s ease-in-out both; }
 .edu-draw { stroke-dasharray: 400; animation: edu-draw 1.4s ease-out both; }
@@ -937,6 +986,7 @@ const KID_ANIMATION = `
   .edu-student-left .edu-student-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 2px 16px; width: 100%; }
   .edu-student-actions button { margin-right: 0 !important; font-size: 15px !important; white-space: nowrap; }
   .edu-student-open { display: flex; justify-content: center; margin-top: 12px; }
+  .edu-book-foot { display: none; }   /* the printed page's footer: the course and the page number, paper only */
   /* Section titles read centered at every width. A fold keeps its count and chevron pinned to its
      right edge while the title centers. */
   /* A phone in dark mode was painting the inputs and buttons dark. This page has one palette. */
@@ -1971,7 +2021,7 @@ async function certificatePng(svgEl, w = 1600, h = 1100) {
 }
 function saveBlob(name, blob) { const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000); }
 // The loading word: each letter bobs in turn, the same in the page shell and on the app's loading screen.
-Object.assign(STORY_TITLES, Object.fromEntries(Object.entries(STORIES).map(([id, st]) => [id, { title: st.title, about: st.about || '' }])), Object.fromEntries(Object.entries(COURSE_STORIES).map(([id, st]) => [`course:${id}`, { title: st.title, about: st.about || '' }])));
+Object.assign(STORY_TITLES, Object.fromEntries(Object.entries(STORIES).map(([id, st]) => [id, { title: titleCase(st.title), about: st.about || '' }])), Object.fromEntries(Object.entries(COURSE_STORIES).map(([id, st]) => [`course:${id}`, { title: st.title, about: st.about || '' }])));
 // The first-week tour: title, the element it points at (a data-tour name, or null), and the words.
 const TOUR = [
   ['Welcome to your classroom', 'add', null, 'below-help', <>Add a student by using their school ID. Then, you'll have an option to create nicknames, assign fun sign-in pictures and more!<br /><br />No names or photos are ever stored.</>],
@@ -2051,7 +2101,23 @@ function PaceGlyph({ kind }) {
     ? <svg viewBox="0 0 32 20" width="34" height="21" aria-hidden="true"><circle cx="20" cy="11" r="7" fill="none" stroke="currentColor" strokeWidth="2" /><circle cx="20" cy="11" r="3" fill="none" stroke="currentColor" strokeWidth="1.5" /><path d="M13 16 L3 16 Q1 16 2 13 L5 8 M5 8 L4 3 M5 8 L8 4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /><path d="M2 18 L30 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /></svg>
     : <svg viewBox="0 0 32 20" width="34" height="21" aria-hidden="true"><path d="M6 15 Q10 9 18 10 L26 9 M26 9 L28 3 M25 9 L23 3" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /><circle cx="27" cy="12" r="3" fill="none" stroke="currentColor" strokeWidth="2" /><path d="M6 15 L3 18 M12 14 L10 18 M18 13 L20 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /></svg>;
 }
-function StoryBody({ story, pace: paceDefault = null }) {
+function StoryBody({ story, pace: paceDefault = null, part = null }) {
+  // A printed book may split a painted story across sheets (2026-09-24, Mikey): part = { head, from, to } names the paragraphs
+  // this card holds; the title, the main picture and the reading controls ride with the first part.
+  const head = !part || part.head; const from = part ? part.from : 0; const to = part ? part.to : story.words.length - 1;
+  const hasArt = (serial) => typeof window !== 'undefined' && Array.isArray(window.__eduArt) && window.__eduArt.includes(serial);
+  // Pictures slide into place as the reader reaches them (2026-09-24, Mikey). Each picture starts a little off to its side
+  // and eases in once, the moment it scrolls into view, which quietly points the eye at the picture that goes with the words
+  // just read. It never loops, and anyone whose device asks for less motion sees every picture in place from the start.
+  const cardRef = useRef(null);
+  useEffect(() => {
+    const card = cardRef.current; if (!card) return undefined;
+    const items = [...card.querySelectorAll('.edu-reveal')];
+    if (prefersReducedMotion() || typeof IntersectionObserver === 'undefined') { items.forEach((x) => x.classList.add('edu-in')); return undefined; }
+    const watcher = new IntersectionObserver((seen) => seen.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('edu-in'); watcher.unobserve(e.target); } }), { threshold: 0.15 });
+    items.forEach((x) => watcher.observe(x));
+    return () => watcher.disconnect();
+  }, [story, from, to]);
   // Read-along: the title, then each paragraph in turn, the one being read lit until the voice moves on.
   const [readingAt, setReadingAt] = useState(-1); const stopRef = useRef(null);
   const [pace, setPace] = useState(() => (paceDefault ? loadPace(paceDefault) : 'normal'));
@@ -2063,19 +2129,23 @@ function StoryBody({ story, pace: paceDefault = null }) {
   };
   const reading = stopRef.current !== null && readingAt >= -1 && stopRef.current;
   return (
-    <div style={{ ...card, background: '#FFF8E8', borderColor: '#F1E3BE' }}>
-      <p style={{ margin: '0 0 8px', fontSize: 22, fontWeight: 700, textAlign: 'center' }}>{story.title}</p>
-      <StoryArt serial={story.art} alt={story.alt} fallback={story.diagram || null} />
-      {story.words.map((t, i) => (
-        <React.Fragment key={i}>
-          <div style={{ borderRadius: 10, padding: readingAt === i ? '6px 10px' : 0, margin: readingAt === i ? '0 -10px' : 0, background: readingAt === i ? C.goldSoft : 'transparent', transition: 'background 200ms' }}><RichText text={t} size={17} lineGap={12} /></div>
-          {(story.more || []).filter((m) => m.after === i).map((m) => <StoryArt key={m.serial} serial={m.serial} alt={m.alt} />)}
-        </React.Fragment>
-      ))}
-      {canSpeak()
+    <div ref={cardRef} style={{ ...card, background: '#FFF8E8', borderColor: '#F1E3BE' }}>
+      {head && <p style={{ margin: '0 0 8px', fontSize: 22, fontWeight: 700, textAlign: 'center' }}>{titleCase(story.title)}</p>}
+      {head && <div className={`edu-reveal${hasArt(story.art) ? ' edu-story-main' : ''}`}><StoryArt serial={story.art} alt={story.alt} fallback={story.diagram || null} /></div>}
+      {story.words.map((t, i) => (i < from || i > to ? null : (
+        // A paragraph and its picture are one piece (2026-09-24, Mikey). On screen the picture follows the words; on paper a
+        // painted picture sits beside them, sides alternating, and the two never land on different pages.
+        <div key={i} className="edu-story-par" style={{ display: 'flex', flexDirection: 'column' }}>
+          {(story.more || []).filter((m) => m.after === i).map((m) => (
+            <div key={m.serial} className={`edu-par-pic edu-reveal ${story.more.indexOf(m) % 2 ? 'edu-pic-left' : 'edu-pic-right'}${hasArt(m.serial) ? ' edu-story-pic' : ''}`} style={{ order: 2 }}><StoryArt serial={m.serial} alt={m.alt} /></div>
+          ))}
+          <div style={{ order: 1, borderRadius: 10, padding: readingAt === i ? '6px 10px' : 0, margin: readingAt === i ? '0 -10px' : 0, background: readingAt === i ? C.goldSoft : 'transparent', transition: 'background 200ms' }}><RichText text={t} size={17} lineGap={12} /></div>
+        </div>
+      )))}
+      {!head ? null : canSpeak()
         ? <Btn full kind={reading ? 'secondary' : 'primary'} onClick={toggle}>{reading ? 'Stop reading' : 'Read the story to me'}</Btn>
         : <p style={{ margin: '0 0 12px', fontSize: 14, color: C.muted }}>Reading aloud is not available on this device or in this preview. The words are all on screen.</p>}
-      {paceDefault && canSpeak() && (
+      {head && paceDefault && canSpeak() && (
         <div style={{ display: 'flex', justifyContent: 'center', gap: 14, marginTop: 10 }}>
           {[['slow', 'Read slowly'], ['normal', 'Read at the usual speed']].map(([v, label]) => (
             <button key={v} type="button" aria-label={label} aria-pressed={pace === v} onClick={() => { setPace(v); savePace(v); if (stopRef.current) { stopRef.current(); stopRef.current = null; setReadingAt(-1); } }}
@@ -3586,6 +3656,51 @@ function SideArcs({ side }) {
 
 // The stylesheet rides along with the frame, so every screen has the animations.
 let PAGE_STARS = null;
+// The story book's cover (2026-09-24, Mikey): arcs and scattered dots in the theme's colors, like the home page's sky, behind the title.
+function CoverArt() {
+  let seed = 7; const rnd = () => { seed = (seed * 9301 + 49297) % 233280; return seed / 233280; };
+  const dots = Array.from({ length: 110 }, () => ({ x: rnd() * 600, y: rnd() * 260, r: 0.8 + rnd() * 2.2, gold: rnd() < 0.3, a: 0.25 + rnd() * 0.5 }));
+  return (
+    <svg viewBox="0 0 600 260" preserveAspectRatio="xMidYMid slice" aria-hidden="true" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }}>
+      <path d="M-40 250 C 120 40, 300 40, 460 250" fill="none" stroke={C.green} strokeWidth="1.2" strokeOpacity="0.35" />
+      <path d="M140 270 C 300 70, 480 70, 640 270" fill="none" stroke={C.gold} strokeWidth="1.2" strokeOpacity="0.45" />
+      <path d="M-60 120 C 100 -40, 260 -40, 420 120" fill="none" stroke={C.green} strokeWidth="0.9" strokeOpacity="0.25" />
+      {dots.map((d, i) => <circle key={i} cx={d.x} cy={d.y} r={d.r} fill={d.gold ? C.gold : C.green} opacity={d.a} />)}
+    </svg>
+  );
+}
+// Read the whole book (2026-09-24): every story in order, the one being read scrolled into view and lit, with the snail and
+// the hare when the course is an early-years one, for a classroom listening together.
+function BookReader({ items, pace: paceDefault }) {
+  const [at, setAt] = useState(-1); const stopRef = useRef(null);
+  const [pace, setPace] = useState(() => (paceDefault ? loadPace(paceDefault) : 'normal'));
+  useEffect(() => () => { if (stopRef.current) stopRef.current(); }, []);
+  useEffect(() => { if (at >= 0 && typeof document !== 'undefined') { const el = document.querySelector(`[data-book-story="${at}"]`); if (el && el.scrollIntoView) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); } }, [at]);
+  const stop = () => { if (stopRef.current) { stopRef.current(); stopRef.current = null; } setAt(-1); };
+  const start = () => {
+    setSpeechNudge(paceDefault && pace === 'slow' ? -1 : 0);
+    const texts = []; const owner = [];
+    items.forEach((st, i) => { [`${st.title}.`, ...st.words].forEach((t) => { texts.push(t); owner.push(i); }); });
+    stopRef.current = speakSequence(texts, (i) => setAt(owner[i]), () => { stopRef.current = null; setAt(-1); });
+  };
+  if (!canSpeak()) return null;
+  return (
+    <div className="edu-no-print" style={{ margin: '0 0 12px', textAlign: 'center' }}>
+      <Btn kind={at >= 0 ? 'secondary' : 'primary'} onClick={() => (at >= 0 ? stop() : start())}>{at >= 0 ? 'Stop reading' : 'Read the whole book to me'}</Btn>
+      {paceDefault && (
+        <div style={{ display: 'flex', justifyContent: 'center', gap: 14, marginTop: 10 }}>
+          {[['slow', 'Read slowly'], ['normal', 'Read at the usual speed']].map(([v, label]) => (
+            <button key={v} type="button" aria-label={label} aria-pressed={pace === v} onClick={() => { setPace(v); savePace(v); stop(); }}
+              style={{ width: 56, height: 40, borderRadius: 999, border: `2px solid ${C.green}`, background: pace === v ? C.green : C.surface, color: pace === v ? '#FFFFFF' : C.green, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', padding: 0 }}>
+              <PaceGlyph kind={v} />
+            </button>
+          ))}
+        </div>
+      )}
+      {at >= 0 && <p style={{ margin: '8px 0 0', fontSize: 14, color: C.muted }}>Reading story {at + 1} of {items.length}</p>}
+    </div>
+  );
+}
 function PageStars() {
   if (!PAGE_STARS) {
     // Stars fizzle out toward the middle rather than stopping at a line: full density at the
@@ -4999,7 +5114,7 @@ function EduSphereScreens() {
                       <div key={c.id} style={{ display: 'flex', gap: 12, alignItems: 'center', padding: '10px 0', borderTop: `1px solid ${C.line}` }}>
                         <StoryThumb serial={cs.art} />
                         <div style={{ flex: 1, minWidth: 0 }}>
-                          <p style={{ margin: 0, fontWeight: 600 }}>{cs.title}</p>
+                          <p style={{ margin: 0, fontWeight: 600 }}>{titleCase(cs.title)}</p>
                           <p style={{ margin: '2px 0 0', fontSize: 13, color: C.muted }}>{c.title}{unlocked ? (read ? ' · read' : '') : ` · ${left} ${left === 1 ? 'module' : 'modules'} to go`}</p>
                         </div>
                         <Btn kind="secondary" disabled={!unlocked || busy} onClick={() => leaveOverviewTo(() => { if (record && !record.preview && !read) addEvent(makeStoryReadEvent(`course:${c.id}`, new Date().toISOString())); setCourseStoryId(c.id); setScreen('course-story'); })} style={{ padding: '8px 14px', minHeight: 38, fontSize: 14 }}>{unlocked ? (read ? 'Read again' : 'Read') : 'Locked'}</Btn>
@@ -6869,7 +6984,7 @@ function EduSphereScreens() {
   // ---------- Story-based Learning: every student's stories, read, unread or most recent, each opening in its own window ----------
   if (screen === 'story-log' && storyRows) {
     const goalOf = (moduleId) => { const m = getModule(moduleId); return m ? m.title : ''; };
-    const line = (moduleId) => { const st = storyFor(moduleId); if (!st) return null; return { moduleId, title: st.title, about: st.about || '', goal: goalOf(moduleId) }; };
+    const line = (moduleId) => { const st = storyFor(moduleId); if (!st) return null; return { moduleId, title: titleCase(st.title), about: st.about || '', goal: goalOf(moduleId) }; };
     const viewAll = storyView.all || 'recent'; const who = storyView.student || 'all';
     const listFor = (row) => {
       const view = viewAll;
@@ -6963,7 +7078,7 @@ function EduSphereScreens() {
           );
         })}
         {openStory && (
-          <div className="edu-no-print" style={{ position: 'fixed', top: 0, right: 0, bottom: 0, left: 0, background: 'rgba(36, 41, 31, 0.55)', zIndex: 140, display: 'flex', alignItems: 'flex-start', justifyContent: 'center', padding: 16, overflowY: 'auto' }} onClick={(e) => { if (e.target === e.currentTarget) setOpenStoryId(null); }}>
+          <div className="edu-no-print edu-story-overlay" style={{ position: 'fixed', top: 0, right: 0, bottom: 0, left: 0, background: 'rgba(36, 41, 31, 0.55)', zIndex: 140, display: 'flex', alignItems: 'flex-start', justifyContent: 'center', padding: 16, overflowY: 'auto' }} onClick={(e) => { if (e.target === e.currentTarget) setOpenStoryId(null); }}>
             <div className="edu-rise edu-story-sheet" style={{ width: 'min(560px, 100%)', background: C.surface, borderRadius: 14, padding: '18px 18px 22px', position: 'relative', marginTop: 12 }} role="dialog" aria-label={openStory.title}>
               <button type="button" onClick={() => setOpenStoryId(null)} aria-label="Close" style={{ position: 'absolute', top: 8, right: 10, background: 'none', border: 'none', color: C.green, fontFamily: FONT, fontSize: 26, cursor: 'pointer', lineHeight: 1 }}>×</button>
               <p style={{ margin: '0 0 2px' }}>
@@ -6987,9 +7102,11 @@ function EduSphereScreens() {
           const withBook = COURSES.map((c, i) => ({ c, i })).filter(({ c }) => courseStoryFor(c.id) || c.modules.some((m) => storyFor(m.id))).sort((a, b) => (GRADES.indexOf(a.c.grade) - GRADES.indexOf(b.c.grade)) || (a.i - b.i)).map(({ c }) => c);
           const chosen = bookCourseId || (withBook[0] ? withBook[0].id : '');
           return withBook.length ? (
-          <div style={{ ...card, marginTop: 18, textAlign: 'center' }}>
-            <p style={{ margin: '0 0 6px', fontWeight: 600 }}>Let's Read!</p>
-            <p style={{ margin: '0 0 12px', fontSize: 14, color: C.muted }}>Every story in a course, in order, with the long story at the end. Open it, then print it or save it as a PDF for a class that reads on paper.</p>
+          // The book card wears the deep green (2026-09-24, Mikey), so it reads as its own tool under the students' light green bands.
+          // It is a picker and a button, nothing to read on paper, so a printed Story Log leaves it out.
+          <div className="edu-no-print edu-book-card" style={{ ...card, marginTop: 18, textAlign: 'center', background: C.green, borderColor: C.green, color: '#FFFFFF' }}>
+            <p style={{ margin: '0 0 6px', fontSize: 18, fontWeight: 700 }}>Let's Read!</p>
+            <p style={{ margin: '0 0 12px', fontSize: 14, color: C.greenSoft }}>Every story in a course, in order, with the long story at the end. Open it, print it or save as a PDF for a class that likes to read on paper.</p>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, justifyContent: 'center', alignItems: 'center' }}>
               <select aria-label="Story book course" value={chosen} onChange={(e) => setBookCourseId(e.target.value)} style={{ fontFamily: FONT, fontSize: 15, padding: '8px 12px', borderRadius: 8, border: `1px solid ${C.line}`, background: C.greenSoft, color: C.ink, width: 'min(340px, 100%)', textAlign: 'center', textAlignLast: 'center' }}>
                 {withBook.map((c) => <option key={c.id} value={c.id}>{gradeLabel(c.grade)}: {c.title}</option>)}
@@ -7004,28 +7121,80 @@ function EduSphereScreens() {
   if (screen === 'story-book' && bookCourseId && getCourse(bookCourseId)) {
     const c = getCourse(bookCourseId); const cs = courseStoryFor(c.id);
     const chapters = c.modules.map((m) => ({ m, st: storyFor(m.id) })).filter((x) => x.st);
+    // Printed pages (2026-09-24, Mikey): short stories go three to a page, close enough to read as one book and far enough
+    // apart to read as three stories; a long story keeps a page of its own, and so does any story whose painting has arrived,
+    // since a picture is half a page and the pictures print by default.
+    const hasArt = (serial) => typeof window !== 'undefined' && Array.isArray(window.__eduArt) && window.__eduArt.includes(serial);
+    const painted = (st) => [st.art, ...(st.more || []).map((m) => m.serial)].some(hasArt);
+    // A painted story runs onto as many sheets as its pictures need, each paragraph with its own picture (2026-09-24, Mikey).
+    const partsOf = (st) => printParts(st.words, (st.more || []).filter((m) => hasArt(m.serial)).map((m) => m.after), hasArt(st.art));
+    // One or two stories a page (2026-09-24, Mikey): a story under 130 words shares a page with one more, an older one under
+    // 260 shares in a slightly smaller face, anything longer or painted stands alone.
+    const words = (st) => st.words.join(' ').split(/\s+/).length;
+    const fit = (st) => (painted(st) ? 1 : words(st) <= 260 ? 2 : 1);
+    // The last page: which of the state's standards each story serves, from the standards map (2026-09-24, Mikey).
+    const fw = frameworkForState(stateCode || 'CA');
+    const standardsFor = (moduleId) => CURRICULUM.flatMap((e) => e.standards).filter((st) => st.framework === fw && (st.moduleIds || []).includes(moduleId));
+    const standardRows = chapters.map(({ m, st }, i) => ({ i, m, list: standardsFor(m.id) })).filter((r) => r.list.length);
+    const groups = [];
+    chapters.forEach((ch, i) => { if (painted(ch.st)) { partsOf(ch.st).forEach((part) => groups.push({ per: 1, items: [{ ...ch, i, part }] })); return; } const per = fit(ch.st); const last = groups[groups.length - 1]; if (per > 1 && last && last.per === per && last.items.length < per) last.items.push({ ...ch, i }); else groups.push({ per, items: [{ ...ch, i }] }); });
+    const csParts = cs ? (painted(cs) ? partsOf(cs) : [null]) : [];
+    const pageTotal = 1 + groups.length + csParts.length + (standardRows.length ? 1 : 0);
+    // Every painting loads before the printer sees the page (2026-09-24): pictures load lazily on screen, and a lazy one
+    // further down the book could print as a blank.
+    const printBook = () => {
+      if (typeof window === 'undefined' || !window.print) return;
+      const imgs = [...document.querySelectorAll('.edu-book-sheet img')]; imgs.forEach((im) => { im.loading = 'eager'; });
+      const loaded = Promise.all(imgs.map((im) => (im.complete ? null : new Promise((done) => { im.addEventListener('load', done, { once: true }); im.addEventListener('error', done, { once: true }); }))));
+      Promise.race([loaded, new Promise((done) => setTimeout(done, 8000))]).then(() => window.print());
+    };
     return (
       <div className="edu-book-page" style={page}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} /><div className="edu-wrap" style={wrap}>
         <div className="edu-no-print" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10, marginBottom: 8 }}>
           <button type="button" onClick={() => setScreen('story-log')} style={linkBtn}>Back to Story Log</button>
-          <Btn kind="secondary" onClick={() => { if (typeof window !== 'undefined' && window.print) window.print(); }}>Print or Save</Btn>
+          <button type="button" onClick={printBook} style={linkBtn}>Print or Save</button>
         </div>
+        <BookReader items={[...chapters.map((ch) => ch.st), ...(cs ? [cs] : [])]} pace={storyPaceFor(chapters[0] ? chapters[0].m : null)} />
         <div className="edu-book-sheet">
-          <div className="edu-book-cover" style={{ ...card, textAlign: 'center', padding: '48px 22px' }}>
-            <p style={{ margin: '0 0 6px', fontSize: 14, color: C.muted, letterSpacing: 1, textTransform: 'uppercase' }}>EduSphere</p>
-            <h1 style={{ fontSize: 30, margin: '0 0 8px' }}>{c.title}</h1>
-            <p style={{ margin: 0, fontSize: 16, color: C.muted }}>{gradeLabel(c.grade)}</p>
-          </div>
-          {chapters.map(({ m, st }, i) => (
-            <div key={m.id} className="edu-book-story" style={{ marginTop: 18 }}>
-              <p style={{ margin: '0 0 2px', fontSize: 13, color: C.muted, textAlign: 'center' }}>Story {i + 1}. {m.title}</p>
-              <StoryBody story={st} />
+          <div className="edu-book-group edu-book-cover-group"><div className="edu-book-cover" style={{ ...card, textAlign: 'center', padding: '48px 22px', position: 'relative', overflow: 'hidden' }}>
+            <CoverArt />
+            <div style={{ position: 'relative' }}>
+              <p style={{ margin: '0 0 6px', fontSize: 14, color: C.muted, letterSpacing: 1, textTransform: 'uppercase' }}>EduSphere</p>
+              <h1 style={{ fontSize: 30, margin: '0 0 8px' }}>{titleCase(c.title)}</h1>
+              {COURSE_GOALS[c.id] && <p style={{ margin: '0 auto 12px', fontSize: 15, color: C.ink, maxWidth: 420, lineHeight: 1.45 }}>{COURSE_GOALS[c.id]}</p>}
+              <p style={{ margin: 0, fontSize: 16, color: C.muted }}>{gradeLabel(c.grade)}</p>
+            </div>
+          </div></div>
+          {groups.map((g, gi) => (
+            <div key={gi} className={`edu-book-group${g.per === 2 ? ' edu-book-dense' : ''}`}>
+              {g.items.map(({ m, st, i, part }) => (
+                <div key={`${m.id}-${part ? part.from : 0}`} className="edu-book-story" data-book-story={!part || part.head ? i : undefined} style={{ marginTop: 18 }}>
+                  <p style={{ margin: '0 0 2px', fontSize: 13, color: C.muted, textAlign: 'center' }}>{!part || part.head ? `Story ${i + 1}. ${titleCase(m.title)}` : `Story ${i + 1}, continued`}</p>
+                  <StoryBody story={st} part={part} />
+                </div>
+              ))}
+              <p className="edu-book-foot">{titleCase(c.title)} · Page {gi + 2} of {pageTotal}</p>
             </div>
           ))}
-          {cs && (
-            <div className="edu-book-story" style={{ marginTop: 18 }}>
-              <p style={{ margin: '0 0 2px', fontSize: 13, color: C.muted, textAlign: 'center' }}>The long story</p>
-              <StoryBody story={cs} />
+          {csParts.map((part, k) => (
+            <div key={`cs-${k}`} className="edu-book-group"><div className="edu-book-story" data-book-story={k === 0 ? chapters.length : undefined} style={{ marginTop: 18 }}>
+              <p style={{ margin: '0 0 2px', fontSize: 13, color: C.muted, textAlign: 'center' }}>{k === 0 ? 'The long story' : 'The long story, continued'}</p>
+              <StoryBody story={cs} part={part} />
+            </div><p className="edu-book-foot">{titleCase(c.title)} · Page {groups.length + 2 + k} of {pageTotal}</p></div>
+          ))}
+          {standardRows.length > 0 && (
+            <div className="edu-book-group edu-book-standards">
+              <div style={{ ...card, marginTop: 18 }}>
+                <p style={{ margin: '0 0 4px', fontSize: 18, fontWeight: 700, textAlign: 'center' }}>What these stories teach</p>
+                <p style={{ margin: '0 0 12px', fontSize: 13, color: C.muted, textAlign: 'center' }}>{fw} standards served by each story</p>
+                {standardRows.map((r) => (
+                  <div key={r.m.id} style={{ marginBottom: 10 }}>
+                    <p style={{ margin: 0, fontSize: 14, fontWeight: 600, textAlign: 'center' }}>Story {r.i + 1}. {titleCase(r.m.title)}</p>
+                    {r.list.map((st) => <p key={st.code} style={{ margin: '2px 0 0', fontSize: 13, color: C.muted, textAlign: 'center' }}><strong style={{ color: C.ink }}>{st.code}</strong> {st.text}</p>)}
+                  </div>
+                ))}
+              </div>
+              <p className="edu-book-foot">{titleCase(c.title)} · Page {pageTotal} of {pageTotal}</p>
             </div>
           )}
         </div>

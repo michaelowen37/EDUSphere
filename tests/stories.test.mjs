@@ -22,7 +22,7 @@ for (const [id, s] of Object.entries(STORIES)) {
   ok(`${id}: cast names are core characters`, s.cast.every((n) => CORE.includes(n)));
   ok(`${id}: a where line only when the core cast is here, one short line`, !s.where || (s.cast.length > 0 && s.where.length <= 90 && !/\b(was|is|turned) (four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|\d+)\b/.test(s.where)));
   ok(`${id}: no ages in the text (they live in the art prompts)`, !/\b(Mike|Chloe|Frederick|Georgette|Savanah|Jaxon|Harlow) (was|is|turned) (four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|\d+)\b/.test(s.words.join(' ')));
-  ok(`${id}: extra pictures point at a paragraph`, (s.more || []).every((m) => /^S\d+$/.test(m.serial) && m.alt && m.after >= 0 && m.after < s.words.length));
+  ok(`${id}: extra pictures point at a paragraph, never two back to back`, (s.more || []).every((m) => /^S\d+$/.test(m.serial) && m.alt && m.after >= 0 && m.after < s.words.length) && new Set((s.more || []).map((m) => m.after)).size === (s.more || []).length);
   ok(`${id}: at most two core characters in one story`, s.cast.length <= 2);
 }
 // Course stories: one longer story per course, still under the Gladwell ceiling for older readers, with three paragraphs and a scene.
@@ -61,6 +61,15 @@ for (const [id, cs] of Object.entries(COURSE_STORIES)) {
     const early = ['PK3', 'PK4', 'K', '1', '2'].includes(c.grade); const words = st.words.join(' ').split(/\s+/).filter(Boolean).length;
     if (st.words.length < 4 || words < (early ? 25 : 80)) bad.push(`${m.id}: ${st.words.length} paragraphs, ${words} words`); }
   ok('every module story keeps the arc: four beats, eighty words from grade 3 up, twenty-five in the early years', bad.length === 0, bad.slice(0, 5).join(' | '));
+}
+// Pictures spread through the story (2026-09-24, Mikey): a story done under the doubling program (three or more extra
+// pictures: pre-K four in all, K to 2 five, grade 3 up six) keeps them on different paragraphs with one in each half.
+{
+  const bad = [];
+  for (const [id, st] of Object.entries(STORIES)) { const more = st.more || []; if (more.length < 3) continue;
+    const spots = new Set(more.map((m) => m.after)); const half = st.words.length / 2;
+    if (spots.size < more.length || !more.some((m) => m.after < half) || !more.some((m) => m.after >= half)) bad.push(`${id}: after ${more.map((m) => m.after).join(',')}`); }
+  ok('a story with six pictures spreads them through its paragraphs', bad.length === 0, bad.slice(0, 5).join(' | '));
 }
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exitCode = fail ? 1 : 0;   // never process.exit(): it can drop the last lines of a piped stdout (2026-09-23)

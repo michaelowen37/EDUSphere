@@ -6922,7 +6922,7 @@ function GRADE4_HISTORY_MODULES() { return [
     tagline: 'Peoples of the land before any flag',
     lesson: {
       paragraphs: [
-        "Long before any flag flew over Texas, many peoples lived here, each shaped by the land they lived on.\n[[The Caddo in the wet east: farmers, in villages, growing corn.]]\n[[The Comanche on the plains: horse riders following the buffalo.]]\n[[The Karankawa on the coast: fishers and gatherers who moved with the seasons.]]",
+        "Long before any flag flew over Texas, many peoples lived here, each shaped by the land they lived on.\n[[The Caddo in the wet east: farmers, in villages, growing corn.]]\n[[The Comanche on the plains, from the 1700s: horse riders following the buffalo.]]\n[[The Karankawa on the coast: fishers and gatherers who moved with the seasons.]]",
         "Let's look at why they lived so differently. East Texas has rain and forests, so farming works and people settle. The plains are dry and open, so the buffalo roam, and the people who follow them must move. The coast gives fish and shellfish. Land decides a way of life.",
         "These nations traded, fought and made peace with each other for centuries. When Spain, Mexico and the United States arrived, each of them found peoples already home, and Texas history is the story of all of them.",
       ],

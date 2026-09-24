@@ -2,6 +2,15 @@
 
 The newest block is what educators see once, in a pop-up on the classroom page, after each update. Write it the way Mikey talks to a teacher: conversational, complete sentences, say what changed and why it matters, and skip the shorthand (2026-09-23). Two to four items. The date line is the version stamp.
 
+## September 24, 2026 (fourth grade)
+
+- Every fourth grade story is now twice as long, with six pictures. The last twenty-one cover Texas history, big multiplication and division, fractions and decimals, art, music and health.
+- A few facts in the older versions were wrong, and they are fixed. The one teachers will like most: the notes in the music story now really do add up to four beats.
+
+## September 24, 2026 (latest)
+
+- Seventeen fourth grade stories in reading, science and writing are now twice as long, with six pictures each.
+
 ## September 24, 2026 (late night)
 
 - Every pre-K through second grade lesson now has its own coloring page waiting in the wings. As soon as its artwork arrives, a student who passes the lesson will find that page in Let's Color, under From your lessons.

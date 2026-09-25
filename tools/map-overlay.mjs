@@ -1,4 +1,4 @@
-// EduSphere. Copyright (c) 2026. Source-available; not for reuse. See LICENSE.md.
+// The Wise Human. Copyright (c) 2026. Source-available; not for reuse. See LICENSE.md.
 // Draws a map's hit regions over its painting so they can be traced to match it (2026-09-23): writes an SVG with the
 // painting (art/maps/<serial>.webp) behind the polygons, each labelled. Run: node tools/map-overlay.mjs <map id> > /tmp/map.svg
 import { MAPS } from '../src/logic.mjs';

@@ -1,4 +1,4 @@
-// EduSphere. Copyright (c) 2026. Source-available; not for reuse. See LICENSE.md.
+// The Wise Human. Copyright (c) 2026. Source-available; not for reuse. See LICENSE.md.
 // Pictures that match their words (2026-09-24, Mikey): every picture should show what the paragraph beside it says, so a
 // sentence about a ball never sits a page away from the painting of the ball. This lists every picture whose description
 // shares no word that matters with the paragraph it follows (for the main picture: the title and first two paragraphs).

@@ -1,4 +1,4 @@
-// EduSphere. Copyright (c) 2026. Source-available; not for reuse. See LICENSE.md.
+// The Wise Human. Copyright (c) 2026. Source-available; not for reuse. See LICENSE.md.
 // The doubling program (2026-09-24, Mikey): every module story twice its old length, still the Gladwell arc, with up to six
 // pictures. Targets by band: pre-K 60 words and four pictures, K to 2 100 and five, grade 3 up 240 and six; a story
 // below its target is listed here.

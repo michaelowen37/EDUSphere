@@ -13,6 +13,8 @@ const ok = (label, cond) => { console.log((cond ? 'PASS' : 'FAIL') + ' - ' + lab
 const browser = await chromium.launch();
 // A phone-sized touch screen, so tracing lessons open (they refuse a mouse-only device on purpose).
 const page = await browser.newPage({ viewport: { width: 390, height: 844 }, reducedMotion: 'reduce', hasTouch: true });
+// These checks were written for the light theme; the dark theme has its own check (dark-contrast.mjs).
+await page.addInitScript(() => { try { if (!window.localStorage.getItem('edusphere_v1_theme')) window.localStorage.setItem('edusphere_v1_theme', 'light'); } catch (e) { /* storage may be off */ } });
 const errors = [];
 page.on('pageerror', (e) => { errors.push(String(e)); console.log('PAGE ERROR:', String(e).slice(0, 300)); });
 page.on('console', (m) => { if (m.type() === 'error') { errors.push(m.text()); console.log('CONSOLE ERROR:', m.text().slice(0, 300)); } });
@@ -273,11 +275,11 @@ await page.getByRole('button', { name: 'Approve', exact: true }).click();
 await page.waitForTimeout(300);
 ok('approving two leaves two fewer waiting', (await text()).includes(`${WONDER_COUNT - 2} to review`));
 ok('reviewed questions fold away under a Reviewed row', (await page.getByRole('button', { name: /^Reviewed \(/ }).count()) >= 1);
-// Everything reviewed brings an Un-approve all link; using it brings the two we need back
+// Everything reviewed brings a Remove All link (it was called Un-approve all until 2026-09-25); using it brings the two we need back
 await page.getByRole('button', { name: /^Approve all/ }).click();
 await page.waitForTimeout(300);
-ok('once everything is reviewed an Un-approve all link appears', (await page.getByRole('button', { name: 'Un-approve all' }).count()) === 1);
-await tap('Un-approve all');
+ok('once everything is reviewed a Remove All link appears', (await page.getByRole('button', { name: 'Remove All' }).count()) === 1);
+await tap('Remove All');
 await page.waitForTimeout(300);
 ok('un-approving sends questions back to review', (await text()).includes(`${WONDER_COUNT} to review`));
 await page.getByRole('button', { name: /If you cut a cookie/ }).click();
@@ -519,7 +521,7 @@ await tap('Back to Classroom');
   const n = await page.evaluate(() => document.querySelectorAll('.edu-book-story').length);
   ok('the story book holds every module story and the long story', n === expected);
   const t = await text();
-  ok('the book opens on a cover with the course title and a print button', t.includes('EduSphere') && t.includes('The long story') && (await page.getByRole('button', { name: 'Print or Save' }).count()) === 1);
+  ok('the book opens on a cover with the course title and a print button', /the wise human/i.test(t) && t.includes('The long story') && (await page.getByRole('button', { name: 'Print or Save' }).count()) === 1);
   // Printed, the book is many pages: the cover alone on the first, then one story a page (a long story may take two).
   await page.emulateMedia({ media: 'print' });
   await page.pdf({ path: 'tests/e2e/out/story-book.pdf', format: 'Letter', printBackground: false });
@@ -528,7 +530,7 @@ await tap('Back to Classroom');
   const firstPage = execSync('pdftotext -f 1 -l 1 tests/e2e/out/story-book.pdf -').toString();
   // Older unpainted stories go two to a page (2026-09-24, Mikey): the grade 4 math book's page two carries stories 1 and 2.
   const pageTwoOlder = execSync('pdftotext -f 2 -l 2 tests/e2e/out/story-book.pdf -').toString();
-  ok('the printed book puts two older stories a page after a cover of its own', pages >= Math.ceil((expected - 1) / 2) + 2 && /edusphere/i.test(firstPage) && !firstPage.includes('Story 1.') && pageTwoOlder.includes('Story 1.') && pageTwoOlder.includes('Story 2.') && !pageTwoOlder.includes('Story 3.'), `${pages} pages`);
+  ok('the printed book puts two older stories a page after a cover of its own', pages >= Math.ceil((expected - 1) / 2) + 2 && /the wise human/i.test(firstPage) && !firstPage.includes('Story 1.') && pageTwoOlder.includes('Story 1.') && pageTwoOlder.includes('Story 2.') && !pageTwoOlder.includes('Story 3.'), `${pages} pages`);
   // The last page lists the state's standards each story serves (2026-09-24, Mikey).
   const lastOlder = execSync(`pdftotext -f ${pages} -l ${pages} tests/e2e/out/story-book.pdf -`).toString();
   ok('the book ends on a page of the standards each story serves', lastOlder.includes('What these stories teach') && /TEKS/.test(lastOlder) && /Story 1\./.test(lastOlder), lastOlder.slice(0, 80));
@@ -824,7 +826,7 @@ ok('the device name given at sign-in is already on the backup page', (await page
 // The test browser would open a real save dialog, which no script can answer; use the plain download path here.
 await page.evaluate(() => { window.showSaveFilePicker = undefined; });
 const [download] = await Promise.all([page.waitForEvent('download'), tap('Manual backup')]);
-ok('a backup file names the device, the count and the date', /edusphere-ipad-3-4-students-\d{1,2}-\d{1,2}-\d{4}-\d{1,2}-\d{2}(am|pm)\.json/.test(download.suggestedFilename()));
+ok('a backup file names the device, the count and the date', /wise-human-ipad-3-4-students-\d{1,2}-\d{1,2}-\d{4}-\d{1,2}-\d{2}(am|pm)\.json/.test(download.suggestedFilename()));
 const backupPath = await download.path();
 ok('the app records that a backup was just taken', (await text()).includes('Last backup today'));
 await page.setInputFiles('input[type="file"]', backupPath);

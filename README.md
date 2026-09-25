@@ -1,6 +1,6 @@
-# EduSphere
+# The Wise Human
 
-EduSphere is an adaptive learning platform with a twist. Students master one module
+The Wise Human is an adaptive learning platform with a twist. Students master one module
 before the next one unlocks. Old material comes back at widening intervals, so it
 sticks. And between lessons, a "Wonder" question invites them to think about
 something with no right answer at all.
@@ -205,7 +205,7 @@ outperform anyone. That is a result to be earned with data from real classrooms.
 
 ## Devices
 
-EduSphere runs in any modern browser. For pre-K and kindergarten, an iPad or another large
+The Wise Human runs in any modern browser. For pre-K and kindergarten, an iPad or another large
 tablet with a stylus is the right device: the youngest modules are tracing, connect-the-dots
 and first strokes, and they require a touch screen. They refuse a mouse on purpose, because the
 point of those modules is practice holding a stylus. Readers can use anything.
@@ -264,4 +264,4 @@ Questions or problems: michaelowen37@gmail.com
 
 ## License
 
-EduSphere is source-available, not open source: you may read and evaluate it, and you may not reuse the code or copy the content. See LICENSE.md and NOTICE.md. The content (lessons, stories, experiments, life skills, curriculum mappings, artwork and audio) is copyrighted creative work.
+The Wise Human is source-available, not open source: you may read and evaluate it, and you may not reuse the code or copy the content. See LICENSE.md and NOTICE.md. The content (lessons, stories, experiments, life skills, curriculum mappings, artwork and audio) is copyrighted creative work.

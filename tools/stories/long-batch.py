@@ -1,4 +1,4 @@
-# EduSphere. Copyright (c) 2026. Source-available; not for reuse. See LICENSE.md.
+# The Wise Human. Copyright (c) 2026. Source-available; not for reuse. See LICENSE.md.
 # Long-story batch driver (2026-09-24): doubles course stories. Run: python3 tools/stories/long-batch.py <batch.py>
 # The batch file holds NEW = { courseId: dict(about, alt, more=[(scene, after) x5], words=[...]) } and BG = { courseId: 'background' },
 # apostrophes written APOS. It rewrites each one-line entry in COURSE_STORIES (about, scene, words, five more pictures with

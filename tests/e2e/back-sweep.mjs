@@ -1,4 +1,4 @@
-// EduSphere. Copyright (c) 2026. Source-available; not for reuse. See LICENSE.md.
+// The Wise Human. Copyright (c) 2026. Source-available; not for reuse. See LICENSE.md.
 // The back-button sweep (2026-09-24, Mikey): land on every screen the app can be on, press the phone's back button, and
 // fail if any lands on the loading screen, stays where it was, or leaves the app. Run: node tests/e2e/make-page.mjs && node tests/e2e/back-sweep.mjs
 import { createRequire } from 'node:module';
@@ -15,6 +15,8 @@ const screens = [...new Set([...src.matchAll(/setScreen\('([a-z-]+)'\)/g)].map((
 const studentScreens = new Set(['overview', 'lesson', 'story', 'coloring', 'course-story', 'my-progress']);
 const browser = await chromium.launch();
 const page = await browser.newPage({ viewport: { width: 360, height: 780 }, reducedMotion: 'reduce', hasTouch: true });
+// These checks were written for the light theme; the dark theme has its own check (dark-contrast.mjs).
+await page.addInitScript(() => { try { if (!window.localStorage.getItem('edusphere_v1_theme')) window.localStorage.setItem('edusphere_v1_theme', 'light'); } catch (e) { /* storage may be off */ } });
 const url = pathToFileURL('tests/e2e/page.html').href;
 await page.goto(url);
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'welcome');

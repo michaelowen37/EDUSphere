@@ -1,4 +1,4 @@
-// EduSphere. Copyright (c) 2026. Source-available; not for reuse. See LICENSE.md.
+// The Wise Human. Copyright (c) 2026. Source-available; not for reuse. See LICENSE.md.
 // Story-based learning. One story per module, written ahead of time because the app is static and
 // offline: nothing is generated while a student is reading. Each story is a Miniature Gladwell arc,
 // a specific person (or thing) with a concrete problem, a friction point that common sense cannot

@@ -2,6 +2,44 @@
 
 The newest block is what educators see once, in a pop-up on the classroom page, after each update. Write it the way Mikey talks to a teacher: conversational, complete sentences, say what changed and why it matters, and skip the shorthand (2026-09-23). Two to four items. The date line is the version stamp.
 
+## September 24, 2026 (a helping hand)
+
+- Young learners get a clearer nudge now. Everything they can open on their course list glows softly in a light, bright green, and once a subject is open, every lesson ready to start pulses with a gentle green ring. The lessons slide in one after another so little eyes can follow along.
+- Anything they can't open yet simply steps aside, so the screen only shows what's ready for them.
+- Nothing flashes or shouts. On a device set to reduce motion, the green ring simply stays still around each thing to tap.
+- The book picker on the Story Log now reads clearly in the dark theme.
+
+## September 24, 2026 (dark theme)
+
+- The Wise Human now opens in a dark theme, easy on the eyes in the evening and in dim rooms. Prefer light? Tap the sun at the top of the welcome page or the Classroom page, and that device remembers your choice.
+- The colored cards on the Classroom page keep their colors in the dark, just deeper, and every word on them reads clearly. The student pickers read clearly too.
+- Each science experiment now sits in its own card, so the ideas are easy to tell apart.
+- The rainbow behind Let's Color, Let's Read and Let's Play is a touch softer, so its words read on every color.
+- Anything you print still comes out as dark words on white paper.
+- The dark theme got a final polish. The warm cards (Transcript, Life Skills, Science Experiments) are night green with a soft gold or coral edge instead of a dark brown, the weekly note has a header strip of its own, and the panels inside a Wonder Question stand apart from the card around them.
+- The cards now wear a soft green edge in the dark theme, the reading list's grade titles stand apart from the books under them, and pop-ups like Add someone new and the Wonder Question review stand out clearly from the page behind them.
+- In the dark theme, Let's Color, Let's Play and Let's Read show just their changing colors with no frame around them, and the recovery code card has a soft yellow glow so it's easy to find. The light theme looks exactly as it always has.
+- On a laptop or other wide screen, titles, links and notes in the dark theme no longer sit on white bars. The reading list and science experiment rows get their gold edge only once they're opened.
+- The Wonder Questions, Reading Lists, Science Experiments and Life Skills cards on the Classroom page are soft, playful colors in the dark theme, each with a button in a deeper shade of its own color, and the recovery code card is a soft yellow.
+- In the dark theme, games, coloring pages, their thumbnails and the pictures in lessons sit on soft almond paper instead of bright white, and every label on a drawing reads clearly. The Step on... grids sit centered on their boards.
+- A few more touches in the dark theme: the Transcript card is a light peach, the list of what a student has mastered and the Let's Read note are a light green, the weekly note and the course rows stand out a little from their cards, and a story whose painting is still to come shows a quiet dark placeholder.
+- At the end of a Let's Read story there's now a Back to my courses link, so nobody has to scroll to the top to leave.
+- PIN boxes and the device name box now keep their words centered, and the note that appears after Merge into... is centered too.
+- The Wonder Question review is easier to scan: everything is centered except the four voices' names, with thin lines between the parts the youngest children hear. The link that takes every approval back is now called Remove All; it still sends every approved question back to waiting for review, hidden from students.
+- Small touches: the i notes are centered, typing boxes are a soft almond in the dark theme, the weekly note is light green under its dark header, and the Story Log breathes a little more around its toggle and picker.
+
+## September 24, 2026 (a new name)
+
+- EduSphere has a new name: The Wise Human. It comes from our own species name, Homo sapiens, which means wise human, and it fits what we are here to do. The tagline says the rest: Where Knowledge Meets Wisdom.
+- There is a new logo too, with a planet that circles it on the welcome screen. Every student's progress, every class and every setting is exactly where you left it.
+- The app has a new icon for browser tabs and home screens: a gold ring and planet around a bold W on night green, easy to spot even at its smallest.
+- The logo's words are now set in Fraunces, the typeface it was designed in. It's built right into the app, so it works offline and nothing is fetched from anywhere.
+
+## September 24, 2026 (games)
+
+- Every course now has its own game, and finishing the course unlocks it. Some are brand new quick fire games built from that course's own lessons, so the fun and the learning line up.
+- Let's Play now shows the games for the courses a student is actually taking, so nobody scrolls past games meant for someone else.
+
 ## September 24, 2026 (fourth grade)
 
 - Every fourth grade story is now twice as long, with six pictures. The last twenty-one cover Texas history, big multiplication and division, fractions and decimals, art, music and health.

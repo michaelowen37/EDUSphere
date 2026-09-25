@@ -1,4 +1,4 @@
-# EduSphere. Copyright (c) 2026. Source-available; not for reuse. See LICENSE.md.
+# The Wise Human. Copyright (c) 2026. Source-available; not for reuse. See LICENSE.md.
 # The story batch driver for the doubling program (2026-09-24). Usage:
 #   1. Copy tools/stories/batch-example.py to /tmp/batch.py and replace NEW with a dict per module id:
 #        dict(about=..., title=..., alt=<main picture>, bg=<minimalist scene word>,

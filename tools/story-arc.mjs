@@ -1,4 +1,4 @@
-// EduSphere. Copyright (c) 2026. Source-available; not for reuse. See LICENSE.md.
+// The Wise Human. Copyright (c) 2026. Source-available; not for reuse. See LICENSE.md.
 // Lists the module stories that fall short of the Miniature Gladwell Method (2026-09-23, Mikey): from grade 3 up a story
 // needs the four-step arc (an anchor, a friction point, the insight, the echo), so at least four paragraphs and eighty
 // words; early years stories may stay short. Run: node tools/story-arc.mjs > docs/THIN-STORIES.md

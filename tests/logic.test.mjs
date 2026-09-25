@@ -886,10 +886,10 @@ ok('reset: history kept, but nothing counts as mastered afterwards', events.leng
   ok('a student can be added with a level and a picture', young.level === 'early' && young.picture === 'fox');
   ok('an unknown level is refused, a level is required', L.addStudent(L.emptyRoster(), 'S-8', 't', { level: 'genius' }).error === 'Choose a starting level first.');
   ok('an unknown picture is dropped rather than stored', L.addStudent(L.emptyRoster(), 'S-8', 't', { level: 'middle', picture: 'selfie.jpg' }).roster.students[0].picture === null);
-  ok('a backup file name names the device, the count, the date and the time', /^edusphere-ipad-3-12-students-\d{1,2}-\d{1,2}-2026-\d{1,2}-\d{2}(am|pm)\.json$/.test(L.backupFileName('iPad 3', 12, '2026-09-10T15:00:00.000Z')));
+  ok('a backup file name names the device, the count, the date and the time', /^wise-human-ipad-3-12-students-\d{1,2}-\d{1,2}-2026-\d{1,2}-\d{2}(am|pm)\.json$/.test(L.backupFileName('iPad 3', 12, '2026-09-10T15:00:00.000Z')));
   ok('a backup file says when it was saved in plain words, in the device\'s own time zone', /^[A-Z][a-z]+day, [A-Z][a-z]+ \d{1,2}, \d{4} at \d{1,2}:\d{2} [AP]M .+/.test(L.describeMoment('2026-09-12T05:35:00.000Z')) && L.buildBackup({ roster: { students: [] }, records: [], wonderReview: null, covered: [], deviceName: 'x', recovery: null }, '2026-09-12T05:35:00.000Z').saved === L.describeMoment('2026-09-12T05:35:00.000Z'));
   ok('the stamp reads month, day, year, then the time', L.backupStamp(new Date(2026, 8, 11, 22, 43).toISOString()) === '9-11-2026-10-43pm' && L.backupStamp(new Date(2026, 0, 5, 0, 7).toISOString()) === '1-5-2026-12-07am');
-  ok('a missing device name still gives a sensible file name', /^edusphere-device-1-student-/.test(L.backupFileName('', 1, '2026-09-10T15:00:00.000Z')));
+  ok('a missing device name still gives a sensible file name', /^wise-human-device-1-student-/.test(L.backupFileName('', 1, '2026-09-10T15:00:00.000Z')));
   ok('pictures are a fixed drawn set, never an upload', L.PICTURES.length === 12 && L.PICTURES.every((p) => /^[a-z]+$/.test(p)));
   ok('twelve animals and six colours give seventy-two pictures', L.PICTURES.length * L.TINTS.length === 72);
   let big = L.emptyRoster();
@@ -1070,8 +1070,8 @@ ok('reset: history kept, but nothing counts as mastered afterwards', events.leng
   const records = [{ name: 's_1', events: [{ type: 'lesson_viewed', at: '2026-09-01T10:00:00.000Z', moduleId: 'count-to-5' }] }];
   const state = { roster, records, wonderReview: L.emptyWonderReview(), covered: L.emptyCoveredSkills() };
   const file = L.buildBackup(state, '2026-09-02T00:00:00.000Z');
-  ok('a backup names the app and a version and carries every record', file.app === 'EduSphere' && file.version === 1 && file.records.length === 1);
-  ok('a random file is refused with a plain sentence', L.checkBackup({ hello: 1 }) === 'That file is not an EduSphere backup.');
+  ok('a backup names the app and a version and carries every record', file.app === 'The Wise Human' && file.version === 1 && file.records.length === 1);
+  ok('a random file is refused with a plain sentence', L.checkBackup({ hello: 1 }) === 'That file is not a backup from The Wise Human.');
   ok('a backup from the future is refused rather than misread', L.checkBackup({ ...file, version: 99 }).includes('newer version'));
   ok('a good backup passes the check', L.checkBackup(file) === null);
   // Restore onto an empty device
@@ -1391,6 +1391,27 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
   const runs = spread.reduce((acc, g, i) => (i && g.kind === spread[i - 1].kind ? [...acc.slice(0, -1), acc[acc.length - 1] + 1] : [...acc, 1]), []);
   ok('even the full walk-through list never runs one kind more than five deep', Math.max(...runs) <= 5, runs.join(','));
   ok('titles of the early games are capitalized words', early.every((g) => g.title.split(' ').filter((w) => !['and', 'the', 'on'].includes(w)).every((w) => /^[A-Z]/.test(w))), early.map((g) => g.title).join(' | '));
+}
+// A game for every course (2026-09-24, Mikey, pass CO). Every course has at least one game its grade can play and students
+// can see today; every game belongs to one course or is the starter; a course's games are different kinds; a new student
+// has the starter and the first game open and nothing else; a course's quick fire draws only on that course's lessons.
+// The two counts below are ceilings: new kinds must bring them down, never up (docs/GAMES-PLAN.md lists what to build).
+{
+  const ids = new Set(L.GAMES.map((g) => g.id)); const kindOf = (id) => L.GAMES.find((g) => g.id === id).kind;
+  const attached = Object.values(L.COURSE_GAMES).flat();
+  ok('every course has at least one game, and every one of them exists', L.COURSES.every((c) => (L.COURSE_GAMES[c.id] || []).length > 0) && attached.every((id) => ids.has(id)));
+  ok('every game belongs to exactly one course or is the starter', L.GAMES.every((g) => attached.filter((id) => id === g.id).length + (L.STARTER_GAMES.includes(g.id) ? 1 : 0) === 1));
+  ok('a course only gets games its grade can play', L.COURSES.every((c) => L.COURSE_GAMES[c.id].every((id) => { const g = L.GAMES.find((x) => x.id === id); return !g.minGrade || L.GRADES.indexOf(g.minGrade) <= L.GRADES.indexOf(c.grade); })));
+  ok('every course has a game students can see today, not only a map waiting for its painting', L.COURSES.every((c) => L.COURSE_GAMES[c.id].some((id) => kindOf(id) !== 'map')));
+  const twoOfAKind = L.COURSES.filter((c) => new Set(L.COURSE_GAMES[c.id].map(kindOf)).size < L.COURSE_GAMES[c.id].length).length;
+  ok('courses holding two games of one kind stay at or under 1', twoOfAKind <= 1, `${twoOfAKind}`);
+  let repeats = 0; for (const gr of L.GRADES) { const ks = L.COURSES.filter((c) => c.grade === gr).flatMap((c) => L.COURSE_GAMES[c.id].map(kindOf)); repeats += ks.length - new Set(ks).size; }
+  ok('kinds repeated inside a grade stay at or under 28', repeats <= 28, `${repeats}`);
+  const list = L.GAMES.filter((g) => ['counting-k', 'letters-k'].includes(L.gameCourse(g.id)) || L.STARTER_GAMES.includes(g.id));
+  const fresh = L.unlockedGameIds([], list);
+  ok('a new student has the starter and the first game open, and nothing from an unfinished course', fresh.size === new Set([...L.STARTER_GAMES, list[0].id]).size && list.slice(1).every((g) => L.STARTER_GAMES.includes(g.id) || !fresh.has(g.id)));
+  const qf = L.GAMES.filter((g) => g.course);
+  ok('a course quick fire draws only on its own course, and always has questions', qf.length > 0 && qf.every((g) => { const pool = L.sprintPool(L.MODULES, g); return pool.length > 0 && pool.length === L.sprintPool(L.MODULES.filter((m) => m.courseId === g.course), g).length; }));
 }
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exitCode = fail ? 1 : 0;   // never process.exit(): it can drop the last lines of a piped stdout (2026-09-23)

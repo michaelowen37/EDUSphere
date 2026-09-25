@@ -1,4 +1,4 @@
-// EduSphere. Copyright (c) 2026. Source-available; not for reuse. See LICENSE.md.
+// The Wise Human. Copyright (c) 2026. Source-available; not for reuse. See LICENSE.md.
 
 // =====================================================================
 //  FILE: src/ui.jsx — the screens
@@ -21,20 +21,70 @@
 // =====================================================================
 
 // ---------- Colors and shared styles (one palette, used everywhere) ----------
-const C = {
-  bg: '#F5F7F1', surface: '#FFFFFF', ink: '#24291F', muted: '#5C6355', line: '#DCE3D6',
-  green: '#2F5D4F', greenSoft: '#E4EEE8', gold: '#B8862B', goldSoft: '#F7EAD1',
-  clay: '#B9634A', claySoft: '#F6E4DB',
+// Two themes (2026-09-24, Mikey). Light is the palette the app always had. Dark is the night green of the logo, with
+// ivory words and brighter green, gold and clay so they still read on it. Every pair was contrast checked: body text
+// is at least 4.5 to 1 against what it sits on, in both themes. onAccent is the text on a green, gold or clay button.
+// frame is the app's outer edge, paper the story pages, glass the see-through welcome card, tip the tip boxes, and
+// the logo words, orbit and tagline have their own colors so the dark logo matches the night design.
+// The tints are the soft colored cards (mint, sage, blue, rose and amber). In the dark theme each is a deep version of
+// the same color, so the cards keep their colors and ivory words still read on them (Mikey's phone, 2026-09-24).
+// Warm colors are the exception: dark gold or dark coral fills read as muddy brown (Mikey, 2026-09-24), so in the dark
+// theme the amber and rose cards are night green with a faint warm glow and a warm edge, gold cards get a gold edge
+// (goldEdge), and panels inside a card are lifted a shade with a hairline (panel, panelLine).
+// Mikey (2026-09-24): in the dark theme every card edge is the Let's Read card's light green (#7CC3A6), the logo keeps its gold,
+// and the Classroom's four feature cards are light playful colors (feat*) with dark words and no contrasting edge.
+// paperBoard is the paper that games, coloring pages and lesson pictures sit on: white in light, almond in dark.
+// Mikey (2026-09-24): the light theme stays exactly as it was before the dark theme; anything that changes a look for the
+// dark theme alone checks C.mode, and tabEdge is the Active Students tab's own edge (never gold).
+const THEMES = {
+  light: {
+    mode: 'light', bg: '#F5F7F1', surface: '#FFFFFF', ink: '#24291F', muted: '#5C6355', line: '#DCE3D6',
+    green: '#2F5D4F', greenSoft: '#E4EEE8', gold: '#B8862B', goldSoft: '#F7EAD1',
+    clay: '#B9634A', claySoft: '#F6E4DB', onAccent: '#FFFFFF', frame: '#2F5D4F',
+    paper: '#FFF8E8', paperLine: '#F1E3BE', glass: 'rgba(249, 251, 247, 0.9)',
+    tipBg: 'linear-gradient(135deg, #EAF2EC 0%, #F5F9F5 100%)', tipLine: '#DCE8DF',
+    logoInk: '#2F5D4F', logoOrbit: '#2F5D4F', logoTag: '#8A6424', veil: 'rgba(255, 255, 255, 0.5)', panel: 'rgb(240, 248, 238)', panelLine: 'transparent', goldEdge: '#F7EAD1', cardEdge: '#DCE3D6', softEdge: '#E4EEE8', tabEdge: '#C9DCCF',
+    featWonder: 'linear-gradient(135deg, #DCEBE1 0%, #EEF5F0 100%)', featWonderLine: '#C9DCCF', featReading: 'linear-gradient(135deg, #E3E9F3 0%, #F1F4F9 100%)', featReadingLine: '#C9D3E3',
+    featExperiments: 'linear-gradient(135deg, #F3DCD2 0%, #FAECE6 100%)', featExperimentsLine: '#E6C4B6', featLife: 'linear-gradient(135deg, #F3E7C9 0%, #FAF3E1 100%)', featLifeLine: '#E6D4A6', featInk: '#24291F',
+    paperBoard: '#FFFFFF', transcriptFill: '#F7EAD1', transcriptLine: '#F7EAD1', transcriptInk: '#24291F', listBody: '#E4EEE8', scrim: 'rgba(36, 41, 31, 0.55)',
+    tintMint: 'linear-gradient(135deg, #DCEBE1 0%, #EEF5F0 100%)', tintSage: 'linear-gradient(135deg, #E6F0E8 0%, #F3F8F4 100%)', tintMintLine: '#C9DCCF',
+    tintBlue: 'linear-gradient(135deg, #E3E9F3 0%, #F1F4F9 100%)', tintBlueLine: '#C9D3E3', tintRose: 'linear-gradient(135deg, #F3DCD2 0%, #FAECE6 100%)', tintRoseLine: '#E6C4B6',
+    tintAmber: 'linear-gradient(135deg, #F3E7C9 0%, #FAF3E1 100%)', tintAmberLine: '#E6D4A6', roseSoft: '#FAECE6', mist: '#F4F6F4', mistLine: '#B9C4BF',
+    tintHead: 'linear-gradient(135deg, #D6E6DB 0%, #E6F0E8 100%)', tintDeep: 'linear-gradient(135deg, #BFD6C7 0%, #D3E4D9 100%)', tintDeepLine: '#A9C6B4',
+  },
+  dark: {
+    mode: 'dark', bg: '#14231E', surface: '#1D302A', ink: '#F1EDE3', muted: '#B3C1B9', line: '#34503F',
+    green: '#7CC3A6', greenSoft: '#22413A', gold: '#D9A441', goldSoft: '#233B31',
+    clay: '#E08A6E', claySoft: '#3D2620', onAccent: '#0E1A16', frame: '#2F5D4F',
+    paper: '#1F2D27', paperLine: '#7CC3A6', glass: 'rgba(29, 48, 42, 0.92)',
+    tipBg: 'linear-gradient(135deg, #1F3A31 0%, #1D302A 100%)', tipLine: '#34503F',
+    logoInk: '#F1EDE3', logoOrbit: '#F1EDE3', logoTag: '#D9A441', veil: 'rgba(0, 0, 0, 0.18)', panel: '#2A4C40', panelLine: '#7CC3A6', goldEdge: '#7CC3A6', cardEdge: '#7CC3A6', softEdge: '#7CC3A6', tabEdge: '#2F5A48',
+    featWonder: '#DCD1F5', featWonderLine: '#DCD1F5', featReading: '#C7DFF8', featReadingLine: '#C7DFF8',
+    featExperiments: '#FAD1C2', featExperimentsLine: '#FAD1C2', featLife: '#F9EDC2', featLifeLine: '#F9EDC2', featInk: '#16201B',
+    paperBoard: '#EFE8DC', transcriptFill: '#FAD1C2', transcriptLine: '#FAD1C2', transcriptInk: '#16201B', listBody: '#1A2B25', scrim: 'rgba(4, 10, 8, 0.72)',
+    tintMint: 'linear-gradient(135deg, #1F3B31 0%, #1A322A 100%)', tintSage: 'linear-gradient(135deg, #1C352C 0%, #182D26 100%)', tintMintLine: '#7CC3A6',
+    tintBlue: 'linear-gradient(135deg, #1F2C42 0%, #1A2537 100%)', tintBlueLine: '#7CC3A6', tintRose: 'linear-gradient(135deg, rgba(238, 123, 91, 0.09) 0%, rgba(238, 123, 91, 0.03) 70%), #1D302A', tintRoseLine: '#7CC3A6',
+    tintAmber: 'linear-gradient(135deg, rgba(217, 164, 65, 0.10) 0%, rgba(217, 164, 65, 0.03) 70%), #1D302A', tintAmberLine: '#7CC3A6', roseSoft: 'linear-gradient(135deg, rgba(238, 123, 91, 0.09) 0%, rgba(238, 123, 91, 0.03) 70%), #1D302A', mist: '#1F2C27', mistLine: '#7CC3A6',
+    tintHead: 'linear-gradient(135deg, #24463A 0%, #1F3B31 100%)', tintDeep: 'linear-gradient(135deg, #274A3D 0%, #213F34 100%)', tintDeepLine: '#7CC3A6',
+  },
 };
+// The palette every screen reads while it draws. applyTheme swaps its colors in place, so nothing else has to change.
+const C = { ...THEMES.light };
+// B is the light palette, for everything drawn on paper: games, lesson pictures and diagrams (they sit on paperBoard).
+const B = THEMES.light;
+// Style objects shared across screens copy colors from C when they are made, so each is made from a recipe that
+// applyTheme runs again after a switch.
+const THEMED = [];
+function themed(recipe) { const made = recipe(); THEMED.push([made, recipe]); return made; }
 const FONT = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif';
 // Every screen sits inside a bold green frame — the app's outer edge.
 // The frame is fixed to the window rather than drawn around the content, so it stays
 // in place while the page scrolls behind it.
-const page = { fontFamily: FONT, background: C.bg, color: C.ink, minHeight: '100vh', boxSizing: 'border-box', padding: '22px 16px 40px', lineHeight: 1.5, position: 'relative', isolation: 'isolate' };
+const page = themed(() => ({ fontFamily: FONT, background: C.bg, color: C.ink, minHeight: '100vh', boxSizing: 'border-box', padding: '22px 16px 40px', lineHeight: 1.5, position: 'relative', isolation: 'isolate' }));
 // The frame is fixed to the viewport. On phones the bottom edge chased the address bar as it hid and
 // showed during fast scrolling, so the bottom bar is drawn by the page's own padding instead (see
 // .edu-page-foot), and the fixed frame carries only the top and sides.
-const frame = { position: 'fixed', top: 0, left: 0, right: 0, height: '100lvh', borderTop: `6px solid ${C.green}`, borderLeft: `6px solid ${C.green}`, borderRight: `6px solid ${C.green}`, boxSizing: 'border-box', pointerEvents: 'none', zIndex: 50 };
+const frame = themed(() => ({ position: 'fixed', top: 0, left: 0, right: 0, height: '100lvh', borderTop: `6px solid ${C.frame}`, borderLeft: `6px solid ${C.frame}`, borderRight: `6px solid ${C.frame}`, boxSizing: 'border-box', pointerEvents: 'none', zIndex: 50 }));
 // Width comes from the .edu-wrap class, so a wide screen can be given more room.
 const wrap = { margin: '0 auto', minHeight: 'calc(100vh - 62px)' };
 // Where 'Contact us' goes. One place to change it later.
@@ -44,13 +94,13 @@ const CONTACT_EMAIL = 'michaelowen37@gmail.com';
 // The contact popup, shared by the welcome page and the Classroom page.
 function ContactPopup({ onClose }) {
   return (
-    <div className="edu-no-print" style={{ position: 'fixed', top: 0, right: 0, bottom: 0, left: 0, background: 'rgba(36, 41, 31, 0.55)', zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
-      <div className="edu-rise" style={{ maxWidth: 420, width: '100%', background: C.surface, borderRadius: 14, padding: 20, position: 'relative', textAlign: 'center' }}>
+    <div className="edu-no-print" style={{ position: 'fixed', top: 0, right: 0, bottom: 0, left: 0, background: C.scrim, zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
+      <div className="edu-rise" style={{ maxWidth: 420, width: '100%', background: C.surface, ...(C.mode === 'dark' ? { border: `1px solid ${C.cardEdge}` } : {}), borderRadius: 14, padding: 20, position: 'relative', textAlign: 'center' }}>
         <button type="button" onClick={onClose} aria-label="Close" style={{ position: 'absolute', top: 8, right: 10, background: 'none', border: 'none', width: 36, height: 36, fontSize: 30, lineHeight: '34px', cursor: 'pointer', color: C.ink, fontFamily: FONT, padding: 0 }}>×</button>
         <p style={{ margin: '0 0 6px', fontSize: 18, fontWeight: 600 }}>Contact us</p>
         <p style={{ margin: '0 0 14px', fontSize: 15, color: C.muted }}>Questions, problems, or an idea. We read everything.</p>
         <p style={{ margin: '0 0 14px', fontSize: 16, fontWeight: 600 }}>{CONTACT_EMAIL}</p>
-        <a href={`mailto:${CONTACT_EMAIL}`} style={{ display: 'inline-block', fontFamily: FONT, fontSize: 16, fontWeight: 600, padding: '12px 18px', borderRadius: 10, background: C.green, color: '#fff', textDecoration: 'none' }}>Open in your email app</a>
+        <a href={`mailto:${CONTACT_EMAIL}`} style={{ display: 'inline-block', fontFamily: FONT, fontSize: 16, fontWeight: 600, padding: '12px 18px', borderRadius: 10, background: C.green, color: C.onAccent, textDecoration: 'none' }}>Open in your email app</a>
       </div>
     </div>
   );
@@ -62,7 +112,7 @@ function PinInput({ value, onChange, placeholder, style, onEnter = null }) {
   const timer = useRef(null);
   const shown = value.split('').map((ch, i) => (i === value.length - 1 && reveal ? ch : '•')).join('');
   return (
-    <input value={shown} inputMode="numeric" autoComplete="off" placeholder={placeholder} aria-label={placeholder} style={style}
+    <input value={shown} inputMode="numeric" autoComplete="off" placeholder={placeholder} aria-label={placeholder} style={{ ...(style || {}), textAlign: 'center' }}
       onKeyDown={(e) => { if (e.key === 'Enter' && onEnter) onEnter(); }}
       onChange={(e) => {
         // Rebuild the real PIN from what the box now shows: a dot keeps the digit already there,
@@ -99,21 +149,23 @@ function ContactLine({ onOpen, inline = false }) {
 // wherever the name is shown: the spaces inside the parentheses become non-breaking. Display only;
 // the stored name never changes.
 const keepTogether = (s) => String(s).replace(/\(([^)]*)\)/g, (m) => m.replace(/ /g, '\u00A0').replace(/-/g, '\u2011'));
-const linkBtn = { background: 'none', border: 'none', color: '#2F5D4F', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif', fontSize: 15, cursor: 'pointer', padding: '6px 0', textDecoration: 'underline' };
+const linkBtn = themed(() => ({ background: 'none', border: 'none', color: C.green, fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif', fontSize: 15, cursor: 'pointer', padding: '6px 0', textDecoration: 'underline' }));
 // Cards are solid, so stars show only in the open space between them and never behind text.
-const cardLink = { ...linkBtn, marginRight: 12 };
-const card = { background: C.surface, border: `1px solid ${C.line}`, borderRadius: 14, padding: 18, marginBottom: 14 };
+const cardLink = themed(() => ({ ...linkBtn, marginRight: 12 }));
+// Cards carry the logo's gold edge in the dark theme (cardEdge) and the quiet line in the light theme.
+const card = themed(() => ({ background: C.surface, border: `1px solid ${C.cardEdge}`, borderRadius: 14, padding: 18, marginBottom: 14 }));
 
 // ---------- Small building blocks ----------
-function Btn({ children, onClick, kind = 'primary', disabled = false, full = false, halo = false, orbit = false, style: extra = null }) {
+function Btn({ children, onClick, kind = 'primary', disabled = false, full = false, halo = false, orbit = false, pal = null, style: extra = null }) {
+  const P = pal || C;   // a button on a game's paper board passes the light palette
   const base = {
     fontFamily: FONT, fontSize: 16, fontWeight: 600, padding: '12px 18px', borderRadius: 10,
-    cursor: disabled ? 'default' : 'pointer', border: `2px solid ${C.green}`, minHeight: 46,
+    cursor: disabled ? 'default' : 'pointer', border: `2px solid ${P.green}`, minHeight: 46,
     width: full ? '100%' : 'auto', opacity: disabled ? 0.5 : 1,
   };
   const looks = kind === 'primary'
-    ? { background: C.green, color: '#fff' }
-    : { background: C.surface, color: C.green };
+    ? { background: P.green, color: P.onAccent }
+    : { background: P.surface, color: P.green };
   // An inviting button pulses itself, gently, rather than casting a ring around it.
   return <button type="button" className={[halo && !disabled ? 'edu-press edu-pulse' : 'edu-press', orbit && !disabled ? 'edu-orbit' : ''].filter(Boolean).join(' ')} style={{ ...base, ...looks, ...(extra || {}), ...(orbit ? { position: 'relative' } : {}) }} onClick={onClick} disabled={disabled}>{children}</button>;
 }
@@ -244,8 +296,8 @@ function PatternRow({ items, colour }) {
   return (
     <div style={{ display: 'flex', gap: 10, justifyContent: 'center', alignItems: 'center', flexWrap: 'wrap' }}>
       {items.map((it, i) => it === '?'
-        ? <span key={i} style={{ width: 52, height: 52, borderRadius: 12, border: `3px dashed ${C.muted}`, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: 26, color: C.muted, fontWeight: 700 }}>?</span>
-        : <ShapePic key={i} name={it} size={52} color={SWATCH[colour] || C.green} />)}
+        ? <span key={i} style={{ width: 52, height: 52, borderRadius: 12, border: `3px dashed ${B.muted}`, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: 26, color: B.muted, fontWeight: 700 }}>?</span>
+        : <ShapePic key={i} name={it} size={52} color={SWATCH[colour] || B.green} />)}
     </div>
   );
 }
@@ -277,14 +329,14 @@ function NumberLine({ parts, mark }) {
   const w = 300; const pad = 16; const y = 26; const step = (w - pad * 2) / parts;
   return (
     <svg viewBox={`0 0 ${w} 56`} width="100%" role="img" aria-label={`number line with ${parts} steps, dot at ${mark}`} style={{ display: 'block', maxWidth: 320, margin: '0 auto', height: 'auto' }}>
-      <line x1={pad} y1={y} x2={w - pad} y2={y} stroke={C.ink} strokeWidth="2.5" />
+      <line x1={pad} y1={y} x2={w - pad} y2={y} stroke={B.ink} strokeWidth="2.5" />
       {Array.from({ length: parts + 1 }).map((_, i) => (
         <g key={i}>
-          <line x1={pad + i * step} y1={y - 8} x2={pad + i * step} y2={y + 8} stroke={C.ink} strokeWidth={i === 0 || i === parts ? 2.5 : 1.5} />
-          {(i === 0 || i === parts) && <text x={pad + i * step} y={y + 24} textAnchor="middle" fontSize="13" fill={C.ink} fontFamily={FONT}>{i === 0 ? '0' : '1'}</text>}
+          <line x1={pad + i * step} y1={y - 8} x2={pad + i * step} y2={y + 8} stroke={B.ink} strokeWidth={i === 0 || i === parts ? 2.5 : 1.5} />
+          {(i === 0 || i === parts) && <text x={pad + i * step} y={y + 24} textAnchor="middle" fontSize="13" fill={B.ink} fontFamily={FONT}>{i === 0 ? '0' : '1'}</text>}
         </g>
       ))}
-      {mark > 0 && <circle cx={pad + mark * step} cy={y} r="7" fill={C.gold} stroke={C.ink} strokeWidth="1.5" />}
+      {mark > 0 && <circle cx={pad + mark * step} cy={y} r="7" fill={B.gold} stroke={B.ink} strokeWidth="1.5" />}
     </svg>
   );
 }
@@ -384,7 +436,7 @@ function RemembranceCard({ educator = false }) {
   const [hidden, setHidden] = useState(() => { try { return key ? localStorage.getItem(key) === '1' : false; } catch (e) { return false; } });
   if (!day || hidden) return null;
   return (
-    <div style={{ ...card, borderColor: '#B9C4BF', background: '#F4F6F4', textAlign: 'center' }}>
+    <div style={{ ...card, borderColor: C.mistLine, background: C.mist, textAlign: 'center' }}>
       <p style={{ margin: '0 0 8px', fontWeight: 700, fontSize: 18 }}>{day.title}</p>
       {day.lines.map((line) => <p key={line} style={{ margin: '0 0 8px', fontSize: 15 }}>{line}</p>)}
       {educator && <p style={{ margin: '4px 0 0', fontSize: 13 }}><button type="button" onClick={() => { try { localStorage.setItem(key, '1'); } catch (e) { /* fine */ } setHidden(true); }} style={{ ...linkBtn, fontSize: 13, padding: 0 }}>Hide this on this device for the rest of the year</button></p>}
@@ -465,7 +517,13 @@ function SkillIcon({ skill, size = 40 }) {
 }
 
 // Draws whichever picture a lesson or question asks for.
-function Picture({ visual, animate = false, animKey = 0, nudge = 0 }) {
+// Lesson pictures and diagrams are drawn for paper (dark labels, white shapes), so in the dark theme they sit on the
+// almond paper and draw with the light palette, where every label reads (Mikey, 2026-09-24: hard-to-read diagram text).
+function Picture(props) {
+  if (!props.visual) return null;
+  return C.mode === 'dark' ? <div className="edu-paper-picture" style={{ background: C.paperBoard, borderRadius: 12, padding: '4px 10px', color: B.ink }}><PictureInner {...props} /></div> : <PictureInner {...props} />;
+}
+function PictureInner({ visual, animate = false, animKey = 0, nudge = 0 }) {
   if (!visual) return null;
   if (visual.kind === 'dots') return <div style={{ padding: '6px 0' }}><DotGroup count={visual.count} animate={animate} animKey={animKey} /></div>;
   if (visual.kind === 'trace') return <div style={{ padding: '6px 0' }}><TraceDemo letter={visual.text} animKey={animKey} pace={visual.pace} nudge={nudge} /></div>;
@@ -652,7 +710,7 @@ function speak(text) {
 
 // A small round i that sits inside a sentence, after the last word it explains.
 function inlineInfoStyle(open) {
-  return { display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 20, height: 20, borderRadius: '50%', border: `1.5px solid ${C.green}`, background: open ? C.green : 'none', color: open ? '#fff' : C.green, fontFamily: FONT, fontSize: 12, fontWeight: 700, cursor: 'pointer', verticalAlign: 'middle', padding: 0, marginLeft: 4 };
+  return { display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 20, height: 20, borderRadius: '50%', border: `1.5px solid ${C.green}`, background: open ? C.green : 'none', color: open ? C.onAccent : C.green, fontFamily: FONT, fontSize: 12, fontWeight: 700, cursor: 'pointer', verticalAlign: 'middle', padding: 0, marginLeft: 4 };
 }
 // A lesson's ways: the caption is way 0 and each `another` entry, a string or { text, visual }, is one more.
 // The picture for a way is its own when it has one, else the lesson's example drawing.
@@ -715,7 +773,7 @@ function SpeakButton({ text, label, full = false, corner = false, mini = false }
   if (mini) {
     return (
       <button type="button" onClick={press} aria-label={shownLabel} title={shownLabel} className="edu-press"
-        style={{ width: 44, height: 44, borderRadius: 999, border: `3px solid ${C.gold}`, background: reading ? C.gold : C.goldSoft, cursor: 'pointer', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        style={{ width: 44, height: 44, borderRadius: 999, border: C.mode === 'dark' ? 'none' : `3px solid ${C.gold}`, background: C.mode === 'dark' ? 'transparent' : (reading ? C.gold : C.goldSoft), cursor: 'pointer', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4z" fill={C.ink} /><path d="M16 8.5a4.5 4.5 0 0 1 0 7M18.5 6a8 8 0 0 1 0 12" fill="none" stroke={C.ink} strokeWidth="1.8" strokeLinecap="round" /></svg>
       </button>
     );
@@ -723,7 +781,7 @@ function SpeakButton({ text, label, full = false, corner = false, mini = false }
   if (corner) {
     return (
       <button type="button" onClick={press} aria-label={shownLabel} title={shownLabel} className="edu-press edu-sway"
-        style={{ position: 'absolute', top: 12, right: 12, width: 48, height: 48, borderRadius: 999, border: `3px solid ${C.gold}`, background: C.goldSoft, cursor: 'pointer', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 2 }}>
+        style={{ position: 'absolute', top: 12, right: 12, width: 48, height: 48, borderRadius: 999, border: C.mode === 'dark' ? 'none' : `3px solid ${C.gold}`, background: C.mode === 'dark' ? 'transparent' : C.goldSoft, cursor: 'pointer', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 2 }}>
         <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true">
           <path d="M4 9.5h3.5L12 5.5v13L7.5 14.5H4z" fill={C.gold} />
           <path d="M15.5 8.5a5 5 0 010 7M18 6a8.5 8.5 0 010 12" fill="none" stroke={C.gold} strokeWidth="2" strokeLinecap="round" />
@@ -774,52 +832,58 @@ const LOGO = (() => {
 // costs nothing and gives people something to play with. Every part of this is CSS
 // transform, opacity and stroke-dashoffset, so it runs the same on an old Chromebook as
 // on a new iPad, and none of it delays anything: the buttons work from the first frame.
-function Logo({ width = 250, animate = false }) {
-  const svgRef = useRef(null);
-  const [clearing, setClearing] = useState(null); // pointer position in viewBox units, or null
-  const onMove = (e) => {
-    const svg = svgRef.current;
-    if (!svg) return;
-    const box = svg.getBoundingClientRect();
-    setClearing({ x: ((e.clientX - box.left) / box.width) * 320, y: ((e.clientY - box.top) / box.height) * 280 });
-  };
-  // Distance from the pointer to the middle of an arc decides how faded it is.
-  const fadeFor = (points) => {
-    if (!clearing) return 1;
-    const nums = points.split(/[ ,]/).map(Number);
-    const mid = Math.floor(nums.length / 4) * 2;
-    const d = Math.hypot(nums[mid] - clearing.x, nums[mid + 1] - clearing.y);
-    return d < 24 ? 0.08 : d < 38 ? 0.45 : 1;
-  };
-  // A letter near the pointer thins out and comes back, the same way the arcs do.
-  const letterFade = (p) => { if (!clearing) return 1; const d = Math.hypot(p.cx - clearing.x, p.cy - clearing.y); return d < 18 ? 0.06 : d < 30 ? 0.4 : 1; };
-  const letters = (word, fill, halo) => (
-    <>
-      {halo ? <g fill={C.bg} stroke={C.bg} strokeWidth={halo} strokeLinejoin="round" strokeLinecap="round">{word.paths.map((p, i) => <path key={i} d={p.d} transform={p.transform} />)}</g> : null}
-      <g fill={fill} stroke={fill} strokeWidth={9} strokeLinejoin="round" strokeLinecap="round">{word.paths.map((p, i) => <path key={i} d={p.d} transform={p.transform} style={{ opacity: letterFade(p), transition: 'opacity 0.35s ease' }} />)}</g>
-    </>
+// The Wise Human logo (2026-09-24, Mikey chose the night version with motion): a gold sphere, a tilted orbit and the
+// three words stepping down to the right, The, Wise, Human, with the tagline under them on the welcome screen.
+// On arrival the sphere draws itself, the words land one after another on the old logo's timing, the tagline slides in
+// last, and a small planet then circles the orbit, dimmer while it passes behind. Only the welcome screen moves, and
+// never for anyone whose device asks for less motion. The words use the reader's own serif fonts, so the logo needs
+// no downloaded font and nothing leaves the device.
+// The logo's words are set in Fraunces (© 2018 The Fraunces Project Authors, SIL Open Font License 1.1; the license is in
+// licenses/Fraunces-OFL.txt), built into the app from the files Mikey downloaded (2026-09-25), so it works offline and
+// nothing is fetched. Only the logo's letters are kept: Wise and Human at weight 600 and optical size 100, The in italic at
+// weight 400 and optical size 38, soft and wonk both off, as in the design. They ride inside the logo drawing itself, so a
+// saved certificate picture keeps them too. The reader's own serif fonts stay behind them as a fallback.
+const LOGO_FONT_ROMAN = 'data:font/woff;base64,d09GRgABAAAAAAsYAA8AAAAAEIwAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAABHUE9TAAAJ8AAAAIMAAAD2K3YkAEdTVUIAAAp0AAAAKQAAACq4+rj0T1MvMgAAAcgAAABGAAAAYHUQb79TVEFUAAAKoAAAAHgAAACUB4RW02NtYXAAAAI8AAAAUgAAAHQBvgJ5Z2FzcAAACegAAAAIAAAACAAAABBnbHlmAAACsAAABTAAAAfISqfpiWhlYWQAAAFYAAAANgAAADYpEn2laGhlYQAAAZAAAAAeAAAAJA8KBTVobXR4AAACEAAAACwAAAAsLN4Bx2xvY2EAAAKYAAAAGAAAABgJMAs6bWF4cAAAAbAAAAAYAAAAIAAPAG1uYW1lAAAH4AAAAfEAAARMfjWj/nBvc3QAAAnUAAAAEwAAACD+1wAycHJlcAAAApAAAAAHAAAAB2gGjIUAAQAAAAEAAOpW1oNfDzz1AAMH0AAAAADbvLM9AAAAAObbgaAADv4WB1UF5wAAAAYAAgAAAAAAAHicY2BkYGBf8o8JSNox8P1/yR7KABRBAdwAawUEUAAAeJxjYGRgYOBmyGFgZgABRgY0AAAMSgB9eJxjYGH+zRTBwMrAwCrCsoGBgWEahGbaw2DE5MSAChiROaHOIQwMBxgUGErZl/xjYmDgVGFKhKlhPsJaAaQUGJgBD3oKqwAAA+gAZAFGAAAF7QBMBz4ADgOYACwDdAAkAecAJwZJACMEGgAjAxcALQQYAB94nGNgYGBiYGBgBmIRIMkIplkYEsC0AFCEhUGBwYMhnCGRIZUhkyGPoZih9P9/oCyyaC5E9P/D/7v+r/m/+P+C/3P/z/o/7f9UsHkYAAB/HhooAAC4Af+FsASNAAAAABUAFQCOASkBiAHGAhICrAMZA4AD5HiclVVrbFNlGP7u3+m59XbWsoFsXS9nVzbWtV2RXQrFshRo1w3duIkyWOQWCCNOiFMuUyRGCBr/kLgYIxLFxHiJ//hjCBqBRGNi4h+MMTEmEv8QUbd2fud0HWAM6vfnnPd739PvfZ7nfb4CBEZLPnyS/gQw4AAMugPucMAdGMV1xTQaLl4s+fhXv7eNcofIrwOAvkknxFszGAQgFagKeA2f3++rMlgwUB+JdSYS8XjM3RkxTRHEo4EOkeKcsSr4X+u2Y//sz6cNb15jrPgbY1re8HoNK0KyFXkNHLWylFtZPWeIldOtLKdWFk37ix9rGtYQJ5QSjsSrRoG9I2FKsWTvzIB/rwEI6ADwjQJxA9gl8Pqh6LCCISa6hxELwV0IQQHBDzmsxMzCxP/tK7vK+ixu7+PLRuk2JISVZkRzuPQlkdVugimGPxDCR5wOAtsW4z2UwjgVqz7cp5XuICzq/xSti3oqKw9TyjD8nhBKBlwSgS010Ke2phqYiPXZRupWeinntFfRFXLdpWEdEvELBHMde50z0VYatWggBKl6pmtmmrnuqb82X0/EQhRq2OOaaTPJuc61bgciQLDWMncLn8QvgCaQBmBnjAuhg/VlDizx4/GogO02fNGOeKLTDgxmpcJ24OcRu7yc99sZFFNWJnt6Ml0NnRsvHHn7rWqPZ4k4HePQhlX5bPHOp5/15Oul+kxLdmBDT1NhsdpyfuTgmW2yAx3PrO8xCx1rlrfHdq0+PVn8I1jrqyYYU2+iuff1/VOLPLLLs2PT8OaGsGP12gkAQWjuF5yzuwcpS7VYoCNmA6i0VO5fR6KvChofzml68TU45Xk83TW47P2Xx16RIbVEHHt397OXd++9cvLQO1uQJGuG8cHFdW9M3Lh+YDsllD15fmT/51Nnvn1mxyWLORMAeIOGxDMqTnfbprnrmnjFNsEyj4mwfbhpB2Ua4biqxZkYi9I+wihLagqTUmIYKKxWHITzyb78QG9foYAPz17VXdgBxYRZU0OhjF06+ppLVMgK8xhKp4ZWdg8Nda8cEn4PAsCyeAqEQQbsWehMDPyD+uJmYkHqSvVd6wtCOZ2v8Ht99yAt15jYHgMOD+hqXFZLB4WTWELg4WnMGIM1DplyZqjBsQuZHZO6bip66YSiLPeqhVTrYBNyK7W5M9ltE+5+rGumRUFpXFbavU7UJ6e7Q+kQHp+9qnqwAwnMZQKcCvpGcoi5pxYBjmty4Ins0ePFD50uzEWVxJFEFrmROTQcbKyVw8P5oyeKn7g8mENroOx0jQeFhoZDIaGl4IwEbc76/y9jD+ZDKKwopf0L+vaxeX0p44YaGn01tXXM1Y81Z7sYBFYaU9Qul4ZSclcy3N9UER4voP6b7Ne1uk35w0eKl9xVSIyHDUyUVznRikI2EhEDClrnbqGb+JSYBbCzIy7METGXofIIWgaZRyDksvbLVvb5l6J5l9tWEk9x1wkv+QRMOL0mH96ce/pU8r2z3blmpixvk6gE41jcQBwn9x5ctW7QHN2851gy/+KjiYF2zptaHFRGzQhRzEhumqxd0ZhKVJtbxvsnX/L7/YuoVPrRoWCI6b7n49nexnSyZunIoUcKE6mltUsekpXbqoIRpWcnhE61c7/iIj4G6su3lWn9Ld2nStX9Pgz/Y4F1MST8vHxbfQQXXCfLQpWKJ286XcUrXOqz7m1YYwuWX930WHNQDT11ITN6LPgcRTs5F6xTAnMYSWz2iwWXer5DdffliueGC6GGWq1u6/qjfwHBNkx6eJydUtsuA1EUXWcGiQapiOvTRDyQuJQIwYtLIiSNoi4P4mFU1VAz0hmEb/ANPsEXePLsM3yA+ALr7O6mLR5EJmfOOmuvfTn7bAC9xoEL09IO4Imrig3SPFWxgy48K3YxhxfFLRjBp+JWzJg+xW0YNhuKO82wuVDchTnnUXG6IX43Us6r4sE6b4AB502xQYfzrthB2vlQ7CLlas0mhbSbUtxDfkhxH/kRxf3ocGcVD1CzjDVEuMY9KghQwjkSeJhBRpaHPTJF7uu0+7hBiALPMZltMhEueCqIzwqtCdUReWsfZbRAmBucYJKqCFeYkhin9KqQ8aksUnPPCoq0fc8y9oPZ5b/Ec5lsBdOMm5FvCfu8yR737x4TWGD0BKviU8DlL3epKrwGzYFUGPMGEXVeU6Yj3meec2D/GepnaT3+Q17by0DyrUtUmzFPdEZ0J/exna4qytxtnFA6dEqm3jdPuloU701kueekf2FT5GxThHEyv93JLq+hsua8tWp83HIFcpMT/q3lTl/XWm3eFewITrDI3c5Rwqpinqb4xYxqJ8x2JGbOWKJNyrSUaM8xQvafXvUO50QZyGSVpT8BHljtIVdtumsdD+WVYtpsNy45g3kyV9Stkimz13nq7atcY0s0deUm/X3t1a7MtY/wCy8opLIAAAB4nGNgZgCDf1cYjBiwAAAvcwIIAAABAAH//wAPeJxjYGRgYOBiUGEwYmBycfMJYeDLSSzJY+BjYAGKM/z/zwCSZ8xOLcpj4ACxwJiFgQlMcwDpBrDKLoYFDOxgFUjg/3kGvOD/XzT+GTT+WWz8/7P/bwDijf/XATlMQFcwAd3PAKY5gCQbAzPYdaxAyAIW5QSS7GA3M4MhGwMrAFYwGrQAeJxjYGRgYOBiUGPQYGBycfMJYeDLSSzJY5BgYAGKM/z/zwAHAG2XBV0AAAB4nGNgZGBk4GBgZWBgEGFgAZI2DEz5BcVVjEBmsL9bCCMTA2N5ekYJIyMDU7i/nzcjMwNzZkliDqM4UDUHgwyDAYMLA1ANAxOjMAMMSAIxExAyMHIxRQDJL0BuF1iMGcgTg6tjaACJsQD1SkB5DPX///8HAEw0D6o=';
+const LOGO_FONT_ITALIC = 'data:font/woff;base64,d09GRgABAAAAAAgQAA8AAAAACrgAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAABHUE9TAAAHBAAAAGIAAACIK3AkUUdTVUIAAAdoAAAAKQAAACq4+rj0T1MvMgAAAcwAAABJAAAAYHQ7cDFTVEFUAAAHlAAAAHkAAACUBYJW12NtYXAAAAIsAAAAOwAAAEwBDQDEZ2FzcAAABvwAAAAIAAAACAAAABBnbHlmAAACfAAAAoMAAAKeQwvS1GhlYWQAAAFYAAAANgAAADYna33IaGhlYQAAAZAAAAAiAAAAJA6ABXFobXR4AAACGAAAABQAAAAUEgIBs2xvY2EAAAJwAAAADAAAAAwA+QHtbWF4cAAAAbQAAAAYAAAAIAAIAFJuYW1lAAAFAAAAAeQAAARae/2h73Bvc3QAAAbkAAAAFwAAACD+xwAycHJlcAAAAmgAAAAHAAAAB2gGjIUAAQAAAAEAAE/RRCNfDzz1AAMH0AAAAADbvLNNAAAAAObbgaEAOv4WBYAF+QACAAYAAgAAAAAAAHicY2BkYGBf8o+JgYGlkcHqPyNrA/MLRnkGZMAKAHafBQEAAHicY2BkYGBgZQhkYGIAAUYGNAAACO4AW3icY2BhMWacwMDKwMAqwrLh/1WGaSCa4STTHgYjJhMGVMCIzAl1DmFgaGRQYMhgX/KPiYGBU4UpEaaGeQ1rBZBSYGAGAJsGDEYAAAAD6ABkAYkAAASBANcDsAA6BGAAPnicY2BgYGJgYGAGYhEgyQimWRgsgDQXAwdQjolBgSGEIZUh4/9/oBic/f/h/3X/5/2fA9YBBQBJ+g3IALgB/4WwBI0AAAAAFQAVAIkA5AFPeJw1kU1PE1EYhe/MdO4U6EyZaXtvKdTSGZhSKf3uHT4HlEYRpEKqwoKgCQ0UEmvQYNxoEJEg0YjRgC7EBIwxJsS9mkB0awwLlYV7VvwAJVK8YFy8i5O8i/OcB7AgV0TcLL8DOCAAkJX9cq1f9ue46v00O7j/poiErV/RnGAFLNgGgJ/mf4N60AfAifgxLhEnBkkahCTiSHBCTQ1zmgoFiA5TQNUNk3VAhDESINT8NBNiHJ4JDSxBVknNP56/4qsNCpCFoeM1EWbqcmhmaXk2nD3DcnY7Ew9GGi1c1/1NQXad81vYqopiN3YxDHb0YF+pGEq1tJB66Ys9RJqb4gF+0enzOd3YUeesaUgmsqNuTcMk4gnoWIsyvR3p8ba9PY+Hl8qQLCtiucKLvK86tLz5Y/vzi1hdbOXT9633jwADmg92uUVuFXTQPaImZwiEpJK6pkosRaPMFJpgSiyxmqpTSLoDQhihBEEuJxQkPvau5+bCTBhZSxojkZGBVqutMNZ2fahSdNqkcqhMbcxMPjlpLbm0vJHPjBscK4miiNWa28+eT2eYlaqGVEz24vb69MDpW29Hni5FhjqdElNR2ffgwsXVaze+vRo28+12hbGViW6b2GAY4Sra2jzYtTzkX4Iu6uaoksBREUeKSECHhwqoAQchlARCATtMNhE/Ru8fnAX+/6cxlSSEOa+PTU4EU0hd8HBtrf33akuZshKH3RtQPOXeOZ+Q7u/+8PGssuLNjreoZmuHmmzOT6wXD9bDOxKj6b1DYqmLGb76umBkcsVCd55kOl2VPG+VvNjsZ+YG75zKbq4JLBm9a6ohlQSj7YWfa3++RjvVaMCtVShNvX8B+OuTiQB4nJ1T2y4DURRdp4MgJRUiJB4mfSKhqpGKywuSJpJGXYoHkagaNVqdpjMIH+ETfIJ49kE+wZOIdfacasflgUxOzzprr73P3vvsAhjBKyyorj4AD1whVkjwFOIY4ng02MIang3uQgZvBncjo1IG9yCljg0eUEl1b/AgsrEngxMd8YcwFnsxeLzNK5B/N1ghbo0aHEPCShpsod/KGNzbzlMNk18xeAyDVs7gCfoWsQ4PDdyiCRcVnCOAzVrSsmwUyTjcc7SXcIU6yjz7ZLbIeLjgqSw+q7QGVHvktX2S0VxhrnCCFFUeLjErMU7p1SRTotKh5pYZOLR9vWXqG7NBdQk1Ri5jjlHT8i1jj3UUuX/Vz2CRsQO+VI18GdVIhO9VhWq7Q29HPPYlc5/Yo5cdyeGQdS4gK79peszTevTHjHS/XckkJzfoXHaJzohuqGrKa4SK0MOhSnfxlEy7t7Z03hHvDeS5F6TH9UjkfCTCNJmf6tPL7sgsem8rmxKuuVyp6oS/2nJjJkBb9b2r2BYcYIm7nrWAWfk8zfLzGVVPoe6Ozzt9iZaSiarQXmCE/D+9fnvPgvi5Mos16ZaLO+Z+wNX6P7T6X5f382nTvalyandp12/SwA5tFfa/JudNUXzqPgC/WqpheJxjYGZg+P+BgeHfFQYjBiwAAGSnA/cAAAEAAf//AA94nGNgZGBg4GJQYTBiYHJx8wlh4MtJLMlj4GNgAYoz/P/PAJJnzE4tymPgALHAmIWBCUxzAGkNsEojBjsGZqiel/87wfQbMLns/xUGF6BaZqBakApGMA3RD2Ezg2gA2UwRBAAAeJxjYGRgYOBiUGPQYGBycfMJYeDLSSzJY5BgYAGKM/z/zwAHAG2XBV0AAAB4nGNgZGBk4GBgZWBgEGFgAZI2DEz5BcVVjEBmsL9bCCMTA2N5ekYJIyMDU7i/nzcjMwNzZkliDiMHUDUHgwyDAYMLA1ANAxOjMAMMSAIxEwgySjBOYGBgjAPiL2AxZiBLBq6OoQEkBrQVaBojmMdQ////fwBLIg+qAAAA';
+const LOGO_FONT_CSS = `@font-face { font-family: 'Fraunces Logo'; src: url(${LOGO_FONT_ROMAN}) format('woff'); font-weight: 600; font-style: normal; } @font-face { font-family: 'Fraunces Logo'; src: url(${LOGO_FONT_ITALIC}) format('woff'); font-weight: 400; font-style: italic; }`;
+const LOGO_SERIF = "'Fraunces Logo', 'Iowan Old Style', 'Palatino Linotype', Palatino, 'Book Antiqua', Georgia, serif";
+const LOGO_ORBIT = { back: 'M28.9 377.6 A300 170 -14 0 1 611.1 232.4', front: 'M28.9 377.6 A300 170 -14 0 0 611.1 232.4', loop: 'M28.9 377.6 A300 170 -14 0 0 611.1 232.4 A300 170 -14 0 0 28.9 377.6' };
+function Logo({ width = 250, animate = false, tagline = false }) {
+  const moving = animate && !prefersReducedMotion();
+  const ink = C.logoInk || C.green; const orbit = C.logoOrbit || C.green; const gold = C.gold;
+  // One word of the stack: centered on x, sitting on the baseline y, landing after its delay when the logo moves.
+  const word = (text, x, y, size, delay, italic) => (
+    <text x={x} y={y} textAnchor="middle" className={moving ? 'twh-word' : undefined}
+      style={{ fontFamily: LOGO_SERIF, fontSize: size, fontWeight: italic ? 400 : 600, fontStyle: italic ? 'italic' : 'normal', letterSpacing: italic ? 0 : -2, fill: ink, animationDelay: moving ? `${delay}s` : undefined }}>{text}</text>
   );
   return (
-    <svg ref={svgRef} viewBox="0 0 320 280" width={width} role="img" aria-label="EduSphere"
-      onMouseMove={onMove} onMouseLeave={() => setClearing(null)}
-      style={{ display: 'block', margin: '0 auto', maxWidth: '100%', height: 'auto' }}>
-      {LOGO.arcs.map((a, i) => (
-        <polyline key={`a${i}`} points={a.points} fill="none" stroke={a.gold ? C.gold : C.green} strokeWidth={a.width} strokeLinecap="round"
-          className={animate ? 'edu-draw' : undefined}
-          style={{ strokeOpacity: a.opacity * fadeFor(a.points), transition: 'stroke-opacity 0.35s ease', animationDelay: animate ? `${(i % 23) * 0.05}s` : undefined }} />
-      ))}
-      {LOGO.flecks.map((f, i) => <polyline key={`f${i}`} points={f.points} fill="none" stroke={C.gold} strokeWidth={1.3} strokeOpacity={f.opacity} strokeLinecap="round" className={animate ? 'edu-draw' : undefined} style={{ animationDelay: animate ? '1.1s' : undefined }} />)}
-      <polyline points={LOGO.accent} fill="none" stroke={C.gold} strokeWidth={2.1} strokeOpacity={0.85} strokeLinecap="round" className={animate ? 'edu-draw' : undefined} style={{ animationDelay: animate ? '0.9s' : undefined }} />
-      <g className={animate ? 'edu-settle' : undefined} style={{ transformOrigin: '160px 150px' }}>{letters(LOGO.edu, C.green, 0)}</g>
-      <g className={animate ? 'edu-settle-late' : undefined} style={{ transformOrigin: '160px 190px' }}>{letters(LOGO.sphere, C.gold, 18)}</g>
+    <svg viewBox={tagline ? '10 60 620 530' : '10 60 620 490'} width={width} role="img" aria-label="The Wise Human"
+      style={{ display: 'block', margin: '0 auto', maxWidth: '100%', height: 'auto', overflow: 'visible' }}>
+      <defs><style>{LOGO_FONT_CSS}</style></defs>
+      <circle cx="320" cy="305" r="228" pathLength="1" fill="none" stroke={gold} strokeWidth="3" className={moving ? 'twh-draw' : undefined} />
+      <path d={LOGO_ORBIT.back} pathLength="1" fill="none" stroke={orbit} strokeWidth="2.5" strokeOpacity="0.22" className={moving ? 'twh-draw' : undefined} style={{ animationDelay: moving ? '0.2s' : undefined }} />
+      <path d={LOGO_ORBIT.front} pathLength="1" fill="none" stroke={orbit} strokeWidth="3" strokeOpacity="0.5" strokeLinecap="round" className={moving ? 'twh-draw' : undefined} style={{ animationDelay: moving ? '0.35s' : undefined }} />
+      {/* The planet: still on the near side of the orbit, or, when the logo moves, circling once every sixteen seconds. */}
+      {moving ? (
+        <circle r="11" fill={gold} opacity="0">
+          <animate attributeName="opacity" values="1;1;0.35;0.35;1" keyTimes="0;0.4;0.55;0.9;1" dur="16s" begin="1.6s" repeatCount="indefinite" />
+          <animateMotion dur="16s" begin="1.6s" repeatCount="indefinite" path={LOGO_ORBIT.loop} />
+        </circle>
+      ) : <circle cx="582" cy="340" r="11" fill={gold} />}
+      {word('The', 250, 224, 38, 0.5, true)}
+      {word('Wise', 306, 307, 100, 0.75, false)}
+      {word('Human', 348, 399, 100, 1.0, false)}
+      {tagline ? (
+        <text x="320" y="562" textAnchor="middle" className={moving ? 'twh-tag' : undefined}
+          style={{ fontFamily: FONT, fontSize: 17, fontWeight: 700, letterSpacing: 3.4, fill: C.logoTag || '#8A6424' }}>WHERE KNOWLEDGE MEETS WISDOM</text>
+      ) : null}
     </svg>
   );
 }
-
 // The Wonder button gets a gentle shimmer and a few twinkling sparks, so an open
 // question feels like a treat rather than more work. Anyone who has asked their device
 // to reduce motion sees a plain button instead.
-const PRINT_STYLES = `
+const PRINT_STYLES = () => `
 .edu-print-only { display: none; }
 @media print {
   /* On the certificate screen only the sheet prints, on a sideways page. */
@@ -895,7 +959,7 @@ const PRINT_STYLES = `
   body { background: #fff; }
 }`;
 
-const KID_ANIMATION = `
+const KID_ANIMATION = () => `
 /* Transform and opacity only. Both are hardware accelerated, work in every browser worth
    supporting, and never move an element's real position, so a tap target stays tappable. */
 @keyframes edu-halo { 0%, 100% { transform: scale(1); opacity: 0.45; } 50% { transform: scale(1.28); opacity: 0; } }
@@ -917,6 +981,14 @@ const KID_ANIMATION = `
 .edu-wobble { animation: edu-wobble 0.55s ease-in-out; }
 .edu-burst { animation: edu-burst 0.9s ease-out forwards; }
 .edu-rise { animation: edu-rise 0.5s ease-out both; }
+/* The Wise Human logo (2026-09-24): the sphere and orbit draw themselves, each word lands on the old logo's settle, and
+   the tagline slides in last. It runs once; anyone who asks for less motion sees it finished. */
+@keyframes twh-draw { to { stroke-dashoffset: 0; } }
+@keyframes twh-slide { from { transform: translateX(28px); opacity: 0; } to { transform: none; opacity: 1; } }
+.twh-draw { stroke-dasharray: 1; stroke-dashoffset: 1; animation: twh-draw 1.4s ease-out both; }
+.twh-word { transform-box: fill-box; transform-origin: center; animation: edu-settle 1.1s ease-out both; }
+.twh-tag { transform-box: fill-box; animation: twh-slide 0.8s ease-out 1.9s both; }
+@media (prefers-reduced-motion: reduce) { .twh-draw, .twh-word, .twh-tag { animation: none; stroke-dashoffset: 0; } }
 /* Story pictures on screen (2026-09-24, Mikey). On a tablet or computer each picture sits beside the paragraph it belongs to,
    two fifths of the width, sides alternating down the page, while paragraphs without a picture run the full width. On a phone
    the picture stays under its paragraph: a column of words beside a picture would be too narrow for a young reader. */
@@ -992,6 +1064,9 @@ const KID_ANIMATION = `
   /* A phone in dark mode was painting the inputs and buttons dark. This page has one palette. */
   :root { color-scheme: light; }
   input, textarea, select, button { color-scheme: light; }
+  html[data-theme="dark"] input, html[data-theme="dark"] textarea, html[data-theme="dark"] select, html[data-theme="dark"] button { color-scheme: dark; }
+  /* Typing boxes sit on the same almond paper as games and pictures in the dark theme, instead of bright white (Mikey, 2026-09-25). */
+  html[data-theme="dark"] input:not([type="checkbox"]):not([type="radio"]):not([type="range"]), html[data-theme="dark"] textarea { background: #EFE8DC; }
   input, textarea, select { background: #FFFFFF; color: #1F2D24; -webkit-text-fill-color: #1F2D24; }
   input::placeholder, textarea::placeholder { color: #6B7A70; opacity: 1; }
   /* The coloring title cycles through the crayon colors, so it catches a young eye. */
@@ -1011,7 +1086,11 @@ const KID_ANIMATION = `
   /* The coloring fold wears the crayons: the whole strip drifts through them, with two sparkles
      crossing corner to corner so a child's eye lands on it. */
   @keyframes edu-colorwash { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-  .edu-colorwash { background: linear-gradient(115deg, #F7D154, #F4A259, #E4572E, #7D5BA6, #3E7CB1, #5BA84A, #F7D154); background-size: 400% 400%; animation: edu-colorwash 9s ease-in-out infinite; }
+  .edu-colorwash { background: linear-gradient(115deg, #F7D154, #F4A259, #E4572E, #7D5BA6, #3E7CB1, #5BA84A, #F7D154); background-size: 400% 400%; animation: edu-colorwash 9s ease-in-out infinite; color: #24291F; }
+  /* The dark theme's rainbow is a touch softer, so its dark words read on every color (the light theme keeps its own). */
+  html[data-theme="dark"] .edu-colorwash { background-image: linear-gradient(115deg, #F7D154, #F4A259, #EE7B5B, #A58BD1, #6FA8DC, #7CC26B, #F7D154); }
+  html[data-theme="dark"] .edu-colorwash-soft { background-image: linear-gradient(120deg, #3D3417, #43291E, #432329, #30264A, #1C2E45, #1E3827, #3D3417); }
+  @media print { html[data-theme="dark"] body { background: #FFFFFF !important; } html[data-theme="dark"] body * { color: #24291F !important; background-color: transparent !important; } }
   /* A picture ready to color: the drawing stays black and white, the square behind it drifts through
      the crayons, paler than the fold so the outline still reads. */
   .edu-colorwash-soft { background: linear-gradient(120deg, #FDF0C9, #FBE0C6, #F8D2C6, #E6D9F0, #CFE0EF, #D4EBCF, #FDF0C9); background-size: 400% 400%; animation: edu-colorwash 11s ease-in-out infinite; }
@@ -1098,16 +1177,19 @@ const KID_ANIMATION = `
   .edu-note-save { display: flex; justify-content: center; margin-top: 8px; }
   /* On a phone the logout countdown sits centered at the foot; on a laptop it stays bottom right. */
   @media (max-width: 999px) { .edu-logout-chip { right: auto !important; left: 50% !important; transform: translateX(-50%); } }
-  @media (hover: hover) and (pointer: fine) { .edu-frame-bottom { display: block; position: fixed; left: 0; right: 0; bottom: 0; height: 6px; background: ${C.green}; pointer-events: none; z-index: 50; } }
+  @media (hover: hover) and (pointer: fine) { .edu-frame-bottom { display: block; position: fixed; left: 0; right: 0; bottom: 0; height: 6px; background: ${C.frame}; pointer-events: none; z-index: 50; } }
 .edu-side { display: none; }
 .edu-page-stars { display: none; }
 @media (min-width: 700px) {
   .edu-page-stars { display: block; position: fixed; top: 0; right: 0; bottom: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 0; opacity: 0.55; }
   /* Loose text outside the tiles carries a backing in the page's own color, so no star ever
      sits behind a heading, a paragraph or a text link. Inside a tile the tile already covers it. */
-  .edu-wrap :is(p, h1, h2, h3, li, label) { background: #F5F7F1; }
+  /* The backing is the page's own color in each theme (Mikey's laptop, 2026-09-24: a light backing under ivory words
+     made white bars in the dark theme). */
+  :root { --edu-plate: #F5F7F1; } html[data-theme="dark"] { --edu-plate: #14231E; }
+  .edu-wrap :is(p, h1, h2, h3, li, label) { background: var(--edu-plate); }
   .edu-wrap :is([style*="border-radius: 14px"], [style*="border-radius: 12px"], [style*="border-radius: 10px"], button) :is(p, h1, h2, h3, li, label) { background: transparent; }
-  .edu-wrap :is(button, a)[style*="background: none"] { background: #F5F7F1 !important; }
+  .edu-wrap :is(button, a)[style*="background: none"] { background: var(--edu-plate) !important; }
   .edu-wrap [style*="border-radius: 14px"] :is(button, a)[style*="background: none"] { background: transparent !important; }
 }
 .edu-flank { display: none; }
@@ -1162,6 +1244,8 @@ html, body { overflow-x: hidden; }
 @media (min-width: 1500px) { .edu-side { width: 420px; opacity: 0.7; } }
 /* A name lifts a little under the pointer, where there is one. */
 @media (hover: hover) { .edu-name { transition: background 0.18s ease, border-color 0.18s ease; } .edu-name:hover { background: #E4F0E8 !important; border-color: #3A6B58 !important; } .edu-login-btn button { transition: transform 0.18s ease, filter 0.18s ease; } .edu-login-btn button:hover { transform: scale(1.04); filter: brightness(1.1); } }
+/* In the dark theme a name under the pointer lifts to a deeper green instead of a pale one. */
+@media (hover: hover) { html[data-theme="dark"] .edu-name:hover { background: #24463A !important; border-color: #7CC3A6 !important; } }
 @keyframes edu-glow { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
 @keyframes edu-stress { 0%, 100% { transform: scale(1.12); } 25% { transform: scale(1.55); } 50% { transform: scale(1.12); } 75% { transform: scale(1.55); } }
 .edu-stress { animation: edu-stress 1.6s ease-in-out both; }
@@ -1169,8 +1253,25 @@ html, body { overflow-x: hidden; }
 .edu-pulse { animation: edu-pulse 1.6s ease-in-out infinite; }
 /* The beat never stops: a card that is open simply turns it down to nothing with --beat, so it
    is still on the same stroke as every other card when it comes back. */
-@keyframes edu-breathe { 0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(58, 107, 88, 0); } 50% { transform: scale(calc(1 + 0.015 * var(--beat, 1))); box-shadow: 0 0 0 calc(6px * var(--beat, 1)) rgba(58, 107, 88, calc(0.18 * var(--beat, 1))); } }
+/* The ring is a light, bright green (Mikey, 2026-09-24), deeper in the light theme so it still shows on ivory. */
+:root { --edu-ring: 26, 186, 110; } html[data-theme="dark"] { --edu-ring: 107, 255, 184; }
+@keyframes edu-breathe { 0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(var(--edu-ring), 0); } 50% { transform: scale(calc(1 + 0.01 * var(--beat, 1))); box-shadow: 0 0 0 calc(4px * var(--beat, 1)) rgba(var(--edu-ring), calc(0.5 * var(--beat, 1))); } }
 .edu-breathe { animation: edu-breathe 2.2s ease-in-out infinite; border-radius: 12px; }
+/* Young learners (2026-09-24, Mikey: hold their hand and make it obvious, but never booming). The one thing to tap next
+   pulses a little more and sends out a soft gold ring every two seconds, and a subject's modules rise in one after
+   another when it opens. With less motion asked for, nothing moves and the ring simply stays around the button. */
+@keyframes edu-pulse-kid { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.025); } }
+@keyframes edu-ripple { 0% { transform: scale(0.98); opacity: 0.8; } 70%, 100% { transform: scale(1.07); opacity: 0; } }
+html[data-young="1"] .edu-pulse { position: relative; animation: edu-pulse-kid 2s ease-in-out infinite; }
+html[data-young="1"] .edu-pulse::after { content: ''; position: absolute; top: -5px; right: -5px; bottom: -5px; left: -5px; border-radius: 14px; border: 3px solid rgba(var(--edu-ring), 0.9); pointer-events: none; animation: edu-ripple 2s ease-out infinite; }
+html[data-young="1"] .edu-mod-card { animation: edu-rise 0.55s cubic-bezier(0.2, 0.8, 0.3, 1.15) both; }
+html[data-young="1"] .edu-mod-card:nth-child(2) { animation-delay: 0.12s; }
+html[data-young="1"] .edu-mod-card:nth-child(3) { animation-delay: 0.24s; }
+html[data-young="1"] .edu-mod-card:nth-child(n+4) { animation-delay: 0.36s; }
+@media (prefers-reduced-motion: reduce) {
+  html[data-young="1"] .edu-pulse, html[data-young="1"] .edu-mod-card { animation: none; }
+  html[data-young="1"] .edu-pulse::after { animation: none; opacity: 0.85; transform: none; }
+}
 @keyframes edu-side-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
 .edu-side path { stroke-dasharray: 1; animation: edu-side-draw 1.6s ease-out both; }
 @keyframes edu-slide-in { 0% { transform: translateY(-70px) scale(0.5) rotate(-6deg); opacity: 0; } 55% { transform: translateY(10px) scale(1.12) rotate(2deg); opacity: 1; } 78% { transform: translateY(-4px) scale(0.96) rotate(0deg); } 100% { transform: translateY(0) scale(1); } }
@@ -1184,7 +1285,7 @@ html, body { overflow-x: hidden; }
   .edu-press { transition: none; }
 }`;
 
-const WONDER_ANIMATION = `
+const WONDER_ANIMATION = () => `
 @keyframes edu-shimmer { 0% { background-position: -160% 0; } 100% { background-position: 260% 0; } }
 @keyframes edu-twinkle { 0%, 100% { opacity: 0; transform: scale(0.6) rotate(0deg); } 50% { opacity: 1; transform: scale(1) rotate(90deg); } }
 .edu-wonder-shine { animation: edu-shimmer 3.4s ease-in-out infinite; }
@@ -1205,7 +1306,7 @@ function Spark({ x, y, size, className }) {
 function WonderButton({ onClick, children }) {
   return (
     <button type="button" onClick={onClick}
-      style={{ position: 'relative', overflow: 'hidden', fontFamily: FONT, fontSize: 17, fontWeight: 700, color: '#fff', background: C.green, border: `2px solid ${C.green}`, borderRadius: 12, padding: '14px 18px', minHeight: 52, width: '100%', cursor: 'pointer' }}>
+      style={{ position: 'relative', overflow: 'hidden', fontFamily: FONT, fontSize: 17, fontWeight: 700, color: C.onAccent, background: C.green, border: `2px solid ${C.green}`, borderRadius: 12, padding: '14px 18px', minHeight: 52, width: '100%', cursor: 'pointer' }}>
       <span className="edu-wonder-shine" aria-hidden="true"
         style={{ position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, background: `linear-gradient(100deg, transparent 35%, ${C.gold}66 50%, transparent 65%)`, backgroundSize: '220% 100%', pointerEvents: 'none' }} />
       <svg viewBox="0 0 120 40" aria-hidden="true" style={{ position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none' }} preserveAspectRatio="none">
@@ -1339,8 +1440,52 @@ function RichText({ text, size = 17, color = null, center = false, lineGap = 10 
 
 // The text behind an i button. A soft green gradient sets it apart from the page's own
 // text, and every tip uses this so they all look the same.
-const tipStyle = { margin: '6px 0 10px', padding: '10px 12px', borderRadius: 10, fontSize: 13, color: C.ink, fontStyle: 'italic', lineHeight: 1.55, background: 'linear-gradient(135deg, #EAF2EC 0%, #F5F9F5 100%)', border: '1px solid #DCE8DF' };
-function TipText({ children }) { return <div style={tipStyle}>{children}</div>; }
+const tipStyle = themed(() => ({ margin: '6px 0 10px', padding: '10px 12px', borderRadius: 10, fontSize: 13, color: C.ink, fontStyle: 'italic', lineHeight: 1.55, textAlign: 'center', background: C.tipBg, border: `1px solid ${C.tipLine}` }));
+// The light and dark switch (2026-09-24, Mikey). Until someone taps it, the app is dark (Mikey's choice); after
+// that it remembers the choice on this device. Paper screens (the printed book, certificates and transcripts) always
+// use the light palette, so anything printed is dark ink on white paper.
+const THEME_KEY = 'edusphere_v1_theme';
+const PAPER_SCREENS = new Set(['certificate', 'story-book', 'transcript']);
+function savedTheme() {
+  try { const t = window.localStorage.getItem(THEME_KEY); if (t === 'light' || t === 'dark') return t; } catch (e) { /* storage may be off */ }
+  return 'dark';   // dark unless someone chose light on the welcome page (Mikey, 2026-09-24)
+}
+// Swap the palette, refresh the few shared style objects that copied a color when the app loaded, and tell the page
+// (so the browser's own scroll bars and form controls match, and the style sheet can tell the themes apart).
+function applyTheme(name) {
+  const t = THEMES[name] ? name : 'light';
+  if (C.bg === THEMES[t].bg && C.ink === THEMES[t].ink) return;
+  Object.assign(C, THEMES[t]);
+  THEMED.forEach(([made, recipe]) => Object.assign(made, recipe()));
+  try { document.documentElement.dataset.theme = t; document.documentElement.style.colorScheme = t; } catch (e) { /* no page yet */ }
+}
+// The switch itself: a sun and a moon in one small pill at the top corner of the main pages.
+// On the welcome page it floats in the top corner; on the Classroom page, whose popups and buttons reach that corner,
+// it sits in a row of its own above the page instead (inline).
+function ThemeSwitch({ theme, onChange, inline = false, compact = false }) {
+  const option = (name, label, icon) => (
+    <button type="button" aria-label={label} aria-pressed={theme === name} onClick={() => onChange(name)}
+      style={{ width: compact ? 36 : 42, height: compact ? 28 : 34, border: 'none', borderRadius: compact ? 14 : 17, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', padding: 0,
+        background: theme === name ? C.green : 'transparent', color: theme === name ? C.onAccent : C.muted }}>{icon}</button>
+  );
+  const sun = <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.5" fill="currentColor" />{[0, 45, 90, 135, 180, 225, 270, 315].map((a) => <line key={a} x1="12" y1="2.5" x2="12" y2="5.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" transform={`rotate(${a} 12 12)`} />)}</svg>;
+  const moon = <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z" fill="currentColor" /></svg>;
+  return (
+    <div className="edu-no-print" style={compact ? { display: 'flex', justifyContent: 'center' } : inline ? { display: 'flex', justifyContent: 'flex-end', margin: '-6px 0 8px' } : { position: 'absolute', top: 14, right: 14, zIndex: 6 }}>
+      <div role="group" aria-label="Light or dark" style={{ display: 'flex', gap: 2, padding: 3, borderRadius: 20, background: C.surface, border: `1px solid ${C.line}` }}>
+        {option('light', 'Light theme', sun)}{option('dark', 'Dark theme', moon)}
+      </div>
+    </div>
+  );
+}
+// A picker draws its own words, ground and arrow, so no phone paints its words in the wrong color (Mikey's phone,
+// 2026-09-24: the book picker's words came out dark on dark).
+function pickerLook() {
+  if (!(C.mode === 'dark')) return {};   // the light theme keeps the phone's own picker, as it always had
+  const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'><path d='M1 1.5l5 5 5-5' fill='none' stroke='${C.ink}' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/></svg>`;
+  return { appearance: 'none', WebkitAppearance: 'none', color: C.ink, WebkitTextFillColor: C.ink, backgroundImage: `url("data:image/svg+xml,${encodeURIComponent(svg)}")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 12px center', backgroundSize: '12px 8px', paddingRight: 34 };
+}
+function TipText({ children }) { return <div style={{ ...tipStyle }}>{children}</div>; }
 // Two halves of one rectangle, butted together: the same control on every screen that offers a choice of two.
 // Diagrams drawn by the app for lessons whose picture has structure: a cycle, a leaf, a triangle
 // with its squares, a cell, two carts, two curves, an atom, a number line, the turning Earth.
@@ -1358,7 +1503,7 @@ function Diagram({ children, label }) {
 function CyclePic() {
   return (
     <Diagram label="The water cycle">
-      <circle cx="26" cy="20" r="11" fill={C.gold} /><rect x="0" y="72" width="160" height="28" fill="#9ACD32" /><path d="M0 84 Q40 70 80 84 T160 84 V100 H0z" fill="#8FC4E8" />
+      <circle cx="26" cy="20" r="11" fill={B.gold} /><rect x="0" y="72" width="160" height="28" fill="#9ACD32" /><path d="M0 84 Q40 70 80 84 T160 84 V100 H0z" fill="#8FC4E8" />
       <ellipse cx="112" cy="26" rx="26" ry="11" fill="#FFFFFF" stroke="#A9B1AA" strokeWidth="1" /><ellipse cx="98" cy="30" rx="16" ry="9" fill="#FFFFFF" />
       <Arrow d="M60 78 C62 60 70 44 86 34" /><Arrow d="M124 38 C132 52 134 62 130 74" color="#3E7CB1" /><Arrow d="M128 88 C110 92 80 92 44 86" color="#3E7CB1" />
       {[[116, 46], [122, 56], [128, 66]].map(([x, y], i) => <path key={i} d={`M${x} ${y} q3 3 0 6 q-3 -3 0 -6`} fill="#3E7CB1" />)}
@@ -1370,10 +1515,10 @@ function LeafPic() {
   return (
     <Diagram label="Photosynthesis">
       <path d="M80 86 C40 80 30 40 60 18 C100 10 118 40 100 70 C94 80 88 84 80 86z" fill="#5BA84A" stroke="#2E2E2E" strokeWidth="1.2" /><path d="M80 86 C74 62 72 44 66 26" fill="none" stroke="#2E2E2E" strokeWidth="1" />
-      <circle cx="22" cy="18" r="9" fill={C.gold} /><Arrow d="M32 24 L52 36" color={C.gold} />
+      <circle cx="22" cy="18" r="9" fill={B.gold} /><Arrow d="M32 24 L52 36" color={B.gold} />
       <text x="20" y="52" {...DIAGRAM_TEXT}>water</text><Arrow d="M32 56 L54 62" color="#3E7CB1" />
-      <text x="24" y="80" {...DIAGRAM_TEXT}>carbon dioxide</text><Arrow d="M46 76 L58 72" color={C.muted} />
-      <Arrow d="M110 30 L134 22" color={C.gold} /><text x="140" y="16" {...DIAGRAM_TEXT}>sugar</text>
+      <text x="24" y="80" {...DIAGRAM_TEXT}>carbon dioxide</text><Arrow d="M46 76 L58 72" color={B.muted} />
+      <Arrow d="M110 30 L134 22" color={B.gold} /><text x="140" y="16" {...DIAGRAM_TEXT}>sugar</text>
       <Arrow d="M108 56 L134 60" color="#3E7CB1" /><text x="144" y="70" {...DIAGRAM_TEXT}>oxygen</text>
       <text x="80" y="96" {...DIAGRAM_TEXT}>sunlight in, sugar and oxygen out</text>
     </Diagram>
@@ -1383,7 +1528,7 @@ function PythagPic() {
   // Right angle at (70, 62); legs of 4 and 3 units of 7; the square on each side sits outside the triangle.
   return (
     <Diagram label="A 3-4-5 right triangle with the squares on its sides">
-      <rect x="70" y="62" width="28" height="28" fill={C.goldSoft} stroke={C.gold} strokeWidth="1" />
+      <rect x="70" y="62" width="28" height="28" fill="#F7EAD1" stroke={B.gold} strokeWidth="1" />
       <rect x="49" y="41" width="21" height="21" fill="#CFE7E5" stroke="#2FA5A0" strokeWidth="1" />
       <polygon points="98,62 70,41 91,13 119,34" fill="#F6C9C4" stroke="#D9534F" strokeWidth="1" />
       <polygon points="70,62 98,62 70,41" fill="#FFFFFF" stroke="#2E2E2E" strokeWidth="1.4" strokeLinejoin="round" />
@@ -1395,7 +1540,7 @@ function PythagPic() {
 }
 function CellPic({ highlight = '' }) {
   const lit = (name) => highlight.includes(name);
-  const edge = (name, base) => (lit(name) ? { stroke: C.gold, strokeWidth: 2.6 } : base);
+  const edge = (name, base) => (lit(name) ? { stroke: B.gold, strokeWidth: 2.6 } : base);
   return (
     <Diagram label="A plant cell">
       <rect x="24" y="4" width="112" height="92" rx="18" fill="#DCE6CF" {...edge('wall', { stroke: '#6B8F5E', strokeWidth: 2.2 })} />
@@ -1412,7 +1557,7 @@ function CellPic({ highlight = '' }) {
 function PercentGridPic({ shaded = 25 }) {
   return (
     <Diagram label={`${shaded} of 100 squares shaded`}>
-      {Array.from({ length: 100 }, (_, i) => <rect key={i} x={30 + (i % 10) * 10} y={2 + Math.floor(i / 10) * 9.6} width="9" height="8.6" rx="1" fill={i < shaded ? C.gold : '#FFFFFF'} stroke="#A9B1AA" strokeWidth="0.5" />)}
+      {Array.from({ length: 100 }, (_, i) => <rect key={i} x={30 + (i % 10) * 10} y={2 + Math.floor(i / 10) * 9.6} width="9" height="8.6" rx="1" fill={i < shaded ? B.gold : '#FFFFFF'} stroke="#A9B1AA" strokeWidth="0.5" />)}
       <text x="80" y="99" {...DIAGRAM_TEXT}>{shaded} of 100 = {shaded}%</text>
     </Diagram>
   );
@@ -1422,7 +1567,7 @@ function GroupsPic({ a = 2, b = 1, aLabel = '', bLabel = '' }) {
   const row = (n, y, color) => Array.from({ length: Math.min(n, 12) }, (_, i) => <circle key={i} cx={46 + i * step} cy={y} r={r} fill={color} stroke="#2E2E2E" strokeWidth={big ? 1.2 : 0.6} />);
   return (
     <Diagram label={`${a} and ${b}`}>
-      {row(a, 34, '#3E7CB1')}{row(b, 64, C.gold)}
+      {row(a, 34, '#3E7CB1')}{row(b, 64, B.gold)}
       <text x="18" y="36" {...DIAGRAM_TEXT}>{a}{aLabel ? ` ${aLabel}` : ''}</text><text x="18" y="66" {...DIAGRAM_TEXT}>{b}{bLabel ? ` ${bLabel}` : ''}</text>
       {(a > 12 || b > 12) && <text x="80" y="92" {...DIAGRAM_TEXT}>(twelve shown of each row at most)</text>}
     </Diagram>
@@ -1444,7 +1589,7 @@ function AnglesPic({ type = 'vertical', given = 50, second = 60 }) {
     <Diagram label={type === 'vertical' ? 'Two lines crossing' : 'Two angles on a straight line'}>
       <line x1="10" y1={cy} x2="150" y2={cy} stroke="#2E2E2E" strokeWidth="1.4" />
       <line x1={type === 'vertical' ? cx - 60 * Math.cos(th) : cx} y1={type === 'vertical' ? cy + 60 * Math.sin(th) : cy} x2={cx + 60 * Math.cos(th)} y2={cy - 60 * Math.sin(th)} stroke="#2E2E2E" strokeWidth="1.4" />
-      <path d={`M${cx + 14} ${cy} A14 14 0 0 0 ${cx + 14 * Math.cos(th)} ${cy - 14 * Math.sin(th)}`} fill="none" stroke={C.gold} strokeWidth="2" />
+      <path d={`M${cx + 14} ${cy} A14 14 0 0 0 ${cx + 14 * Math.cos(th)} ${cy - 14 * Math.sin(th)}`} fill="none" stroke={B.gold} strokeWidth="2" />
       <text x={cx + 22 * Math.cos(th / 2) + 8} y={cy - 22 * Math.sin(th / 2) + 2} {...DIAGRAM_TEXT}>{given}°</text>
       {type === 'vertical'
         ? <text x={cx - 22 * Math.cos(th / 2) - 8} y={cy + 22 * Math.sin(th / 2) + 4} {...DIAGRAM_TEXT}>?</text>
@@ -1456,8 +1601,8 @@ function LightRayPic({ angle = 40 }) {
   const th = (angle * Math.PI) / 180; const cx = 80; const cy = 78;
   return (
     <Diagram label="A ray bouncing off a mirror">
-      <rect x="20" y={cy} width="120" height="6" fill="#C9DDF5" stroke="#2E2E2E" strokeWidth="1" /><line x1={cx} y1={cy} x2={cx} y2="14" stroke={C.muted} strokeWidth="1" strokeDasharray="3 2" />
-      <Arrow d={`M${cx - 66 * Math.sin(th)} ${cy - 66 * Math.cos(th)} L${cx} ${cy}`} color={C.gold} /><Arrow d={`M${cx} ${cy} L${cx + 66 * Math.sin(th)} ${cy - 66 * Math.cos(th)}`} color={C.gold} />
+      <rect x="20" y={cy} width="120" height="6" fill="#C9DDF5" stroke="#2E2E2E" strokeWidth="1" /><line x1={cx} y1={cy} x2={cx} y2="14" stroke={B.muted} strokeWidth="1" strokeDasharray="3 2" />
+      <Arrow d={`M${cx - 66 * Math.sin(th)} ${cy - 66 * Math.cos(th)} L${cx} ${cy}`} color={B.gold} /><Arrow d={`M${cx} ${cy} L${cx + 66 * Math.sin(th)} ${cy - 66 * Math.cos(th)}`} color={B.gold} />
       <text x={cx - 24} y="30" {...DIAGRAM_TEXT}>{angle}° in</text><text x={cx + 26} y="30" {...DIAGRAM_TEXT}>{angle}° out</text><text x="80" y="96" {...DIAGRAM_TEXT}>mirror</text>
     </Diagram>
   );
@@ -1487,7 +1632,7 @@ function BeakerPic({ moles = 4, liters = 2 }) {
   return (
     <Diagram label={`${moles} moles in ${liters} liters`}>
       <path d={`M56 10 V${90} H104 V10`} fill="none" stroke="#2E2E2E" strokeWidth="1.6" /><rect x="57" y={90 - level} width="46" height={level} fill="#C9DDF5" opacity="0.9" />
-      {Array.from({ length: Math.min(moles, 12) }, (_, i) => <circle key={i} cx={64 + (i % 4) * 11} cy={84 - Math.floor(i / 4) * 12} r="3" fill={C.gold} stroke="#2E2E2E" strokeWidth="0.6" />)}
+      {Array.from({ length: Math.min(moles, 12) }, (_, i) => <circle key={i} cx={64 + (i % 4) * 11} cy={84 - Math.floor(i / 4) * 12} r="3" fill={B.gold} stroke="#2E2E2E" strokeWidth="0.6" />)}
       <text x="130" y="40" {...DIAGRAM_TEXT}>{moles} moles</text><text x="130" y="52" {...DIAGRAM_TEXT}>{liters} liters</text><text x="80" y="99" {...DIAGRAM_TEXT}>concentration = moles per liter</text>
     </Diagram>
   );
@@ -1508,7 +1653,7 @@ function CurvesPic() {
     <Diagram label="Supply and demand curves crossing at the equilibrium price">
       <line x1="24" y1="10" x2="24" y2="84" stroke="#2E2E2E" strokeWidth="1.2" /><line x1="24" y1="84" x2="150" y2="84" stroke="#2E2E2E" strokeWidth="1.2" />
       <path d="M34 20 L134 76" fill="none" stroke="#D9534F" strokeWidth="2" /><path d="M34 76 L134 20" fill="none" stroke="#3E7CB1" strokeWidth="2" />
-      <circle cx="84" cy="48" r="3.5" fill={C.gold} stroke="#2E2E2E" strokeWidth="1" /><line x1="24" y1="48" x2="84" y2="48" stroke={C.muted} strokeWidth="0.8" strokeDasharray="2 2" /><line x1="84" y1="48" x2="84" y2="84" stroke={C.muted} strokeWidth="0.8" strokeDasharray="2 2" />
+      <circle cx="84" cy="48" r="3.5" fill={B.gold} stroke="#2E2E2E" strokeWidth="1" /><line x1="24" y1="48" x2="84" y2="48" stroke={B.muted} strokeWidth="0.8" strokeDasharray="2 2" /><line x1="84" y1="48" x2="84" y2="84" stroke={B.muted} strokeWidth="0.8" strokeDasharray="2 2" />
       <text x="140" y="80" {...DIAGRAM_TEXT} fill="#D9534F">demand</text><text x="140" y="18" {...DIAGRAM_TEXT} fill="#3E7CB1">supply</text><text x="108" y="44" {...DIAGRAM_TEXT}>equilibrium</text>
       <text x="14" y="14" {...DIAGRAM_TEXT}>price</text><text x="120" y="94" {...DIAGRAM_TEXT}>amount</text>
     </Diagram>
@@ -1519,8 +1664,8 @@ function AtomPic() {
     <Diagram label="A carbon atom: nucleus and electron shells">
       <circle cx="80" cy="50" r="18" fill="none" stroke="#A9B1AA" strokeWidth="1" /><circle cx="80" cy="50" r="38" fill="none" stroke="#A9B1AA" strokeWidth="1" />
       {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map((i) => { const a = (i / 12) * Math.PI * 2; return <circle key={i} cx={80 + Math.cos(a) * 6} cy={50 + Math.sin(a) * 6} r="3.2" fill={i % 2 ? '#D9534F' : '#3E7CB1'} stroke="#2E2E2E" strokeWidth="0.6" />; })}
-      {[0, 1].map((i) => <circle key={`i${i}`} cx={80 + (i ? 18 : -18)} cy="50" r="2.6" fill={C.gold} stroke="#2E2E2E" strokeWidth="0.6" />)}
-      {[0, 1, 2, 3].map((i) => { const a = (i / 4) * Math.PI * 2 + 0.6; return <circle key={`o${i}`} cx={80 + Math.cos(a) * 38} cy={50 + Math.sin(a) * 38} r="2.6" fill={C.gold} stroke="#2E2E2E" strokeWidth="0.6" />; })}
+      {[0, 1].map((i) => <circle key={`i${i}`} cx={80 + (i ? 18 : -18)} cy="50" r="2.6" fill={B.gold} stroke="#2E2E2E" strokeWidth="0.6" />)}
+      {[0, 1, 2, 3].map((i) => { const a = (i / 4) * Math.PI * 2 + 0.6; return <circle key={`o${i}`} cx={80 + Math.cos(a) * 38} cy={50 + Math.sin(a) * 38} r="2.6" fill={B.gold} stroke="#2E2E2E" strokeWidth="0.6" />; })}
       <text x="20" y="20" {...DIAGRAM_TEXT}>nucleus:</text><text x="20" y="28" {...DIAGRAM_TEXT}>6 protons</text><text x="20" y="36" {...DIAGRAM_TEXT}>6 neutrons</text>
       <text x="140" y="88" {...DIAGRAM_TEXT}>6 electrons</text>
     </Diagram>
@@ -1533,17 +1678,17 @@ function NumberLinePic({ from = -5, to = 5, mark = null, marks = [] }) {
     <Diagram label={`A number line from ${from} to ${to}`}>
       <line x1="8" y1="50" x2="152" y2="50" stroke="#2E2E2E" strokeWidth="1.4" />
       {Array.from({ length: n + 1 }, (_, i) => from + i).map((v) => <g key={v}><line x1={x(v)} y1={v === 0 ? 40 : 44} x2={x(v)} y2={v === 0 ? 60 : 56} stroke="#2E2E2E" strokeWidth={v === 0 ? 1.6 : 1} />{(v % every === 0 || dots.includes(v)) && <text x={x(v)} y="70" {...DIAGRAM_TEXT} fontSize={n > 14 ? 4.4 : 5.2}>{v}</text>}</g>)}
-      {dots.map((v, i) => <circle key={i} cx={x(v)} cy="50" r="4" fill={i === 0 ? C.gold : '#3E7CB1'} stroke="#2E2E2E" strokeWidth="1" />)}
+      {dots.map((v, i) => <circle key={i} cx={x(v)} cy="50" r="4" fill={i === 0 ? B.gold : '#3E7CB1'} stroke="#2E2E2E" strokeWidth="1" />)}
     </Diagram>
   );
 }
 function DayNightPic() {
   return (
     <Diagram label="The sun lighting one side of the turning Earth">
-      <circle cx="26" cy="50" r="16" fill={C.gold} />{[0, 1, 2, 3, 4].map((i) => <line key={i} x1="46" y1={26 + i * 12} x2="66" y2={26 + i * 12} stroke={C.gold} strokeWidth="1.4" />)}
+      <circle cx="26" cy="50" r="16" fill={B.gold} />{[0, 1, 2, 3, 4].map((i) => <line key={i} x1="46" y1={26 + i * 12} x2="66" y2={26 + i * 12} stroke={B.gold} strokeWidth="1.4" />)}
       <circle cx="110" cy="50" r="28" fill="#8FC4E8" stroke="#2E2E2E" strokeWidth="1.2" /><path d="M110 22 A28 28 0 0 1 110 78 Z" fill="#2B4C8C" opacity="0.75" />
       <path d="M96 40 q8 -6 14 2 q-6 6 -14 -2" fill="#5BA84A" /><path d="M120 60 q6 6 -2 10 q-8 -2 2 -10" fill="#5BA84A" opacity="0.6" />
-      <Arrow d="M100 8 C120 0 140 6 146 20" color={C.muted} />
+      <Arrow d="M100 8 C120 0 140 6 146 20" color={B.muted} />
       <text x="88" y="92" {...DIAGRAM_TEXT}>day</text><text x="132" y="92" {...DIAGRAM_TEXT} fill="#FFFFFF" stroke="#2B4C8C" strokeWidth="0.3">night</text>
     </Diagram>
   );
@@ -1571,7 +1716,7 @@ function EqualGroupsPic({ total = 24, groups = 3 }) {
   const per = Math.floor(total / groups); const w = 140 / groups;
   return (
     <Diagram label={`${total} shared into ${groups} groups`}>
-      {Array.from({ length: groups }, (_, g) => <g key={g}><rect x={12 + g * w} y="14" width={w - 6} height="62" rx="8" fill="#FFFFFF" stroke={C.muted} strokeWidth="1" strokeDasharray="3 2" />{Array.from({ length: per }, (_, i) => <circle key={i} cx={20 + g * w + (i % 3) * ((w - 24) / 2)} cy={24 + Math.floor(i / 3) * 12} r="3.4" fill={C.gold} stroke="#2E2E2E" strokeWidth="0.6" />)}</g>)}
+      {Array.from({ length: groups }, (_, g) => <g key={g}><rect x={12 + g * w} y="14" width={w - 6} height="62" rx="8" fill="#FFFFFF" stroke={B.muted} strokeWidth="1" strokeDasharray="3 2" />{Array.from({ length: per }, (_, i) => <circle key={i} cx={20 + g * w + (i % 3) * ((w - 24) / 2)} cy={24 + Math.floor(i / 3) * 12} r="3.4" fill={B.gold} stroke="#2E2E2E" strokeWidth="0.6" />)}</g>)}
       <text x="80" y="94" {...DIAGRAM_TEXT}>{total} ÷ {groups} = {per}</text>
     </Diagram>
   );
@@ -1581,7 +1726,7 @@ function FracGridPic({ a = [1, 2], b = [1, 2] }) {
   return (
     <Diagram label="A fraction of a fraction">
       {Array.from({ length: b[1] }, (_, c) => <rect key={`c${c}`} x={40 + c * cw} y="10" width={cw} height="64" fill={c < b[0] ? '#C9DDF5' : '#FFFFFF'} stroke="#2E2E2E" strokeWidth="0.8" />)}
-      {Array.from({ length: a[1] }, (_, r) => <rect key={`r${r}`} x="40" y={10 + r * rh} width="80" height={rh} fill={r < a[0] ? C.gold : 'none'} opacity="0.55" stroke="#2E2E2E" strokeWidth="0.8" />)}
+      {Array.from({ length: a[1] }, (_, r) => <rect key={`r${r}`} x="40" y={10 + r * rh} width="80" height={rh} fill={r < a[0] ? B.gold : 'none'} opacity="0.55" stroke="#2E2E2E" strokeWidth="0.8" />)}
       <text x="80" y="92" {...DIAGRAM_TEXT}>{a[0]}/{a[1]} of {b[0]}/{b[1]} = {a[0] * b[0]}/{a[1] * b[1]}</text>
     </Diagram>
   );
@@ -1589,23 +1734,23 @@ function FracGridPic({ a = [1, 2], b = [1, 2] }) {
 function OpsPic({ add = 3, rows = 4, cols = 2 }) {
   return (
     <Diagram label={`${add} plus ${rows} times ${cols}`}>
-      {Array.from({ length: add }, (_, i) => <circle key={i} cx={22 + i * 12} cy="44" r="4" fill={C.gold} stroke="#2E2E2E" strokeWidth="0.6" />)}
+      {Array.from({ length: add }, (_, i) => <circle key={i} cx={22 + i * 12} cy="44" r="4" fill={B.gold} stroke="#2E2E2E" strokeWidth="0.6" />)}
       <text x="70" y="47" {...DIAGRAM_TEXT}>+</text>
-      <rect x="80" y="14" width={cols * 14 + 6} height={rows * 14 + 6} rx="4" fill="none" stroke={C.green} strokeWidth="1.2" />
+      <rect x="80" y="14" width={cols * 14 + 6} height={rows * 14 + 6} rx="4" fill="none" stroke={B.green} strokeWidth="1.2" />
       {Array.from({ length: rows * cols }, (_, i) => <circle key={`a${i}`} cx={90 + (i % cols) * 14} cy={24 + Math.floor(i / cols) * 14} r="4" fill="#3E7CB1" stroke="#2E2E2E" strokeWidth="0.6" />)}
       <text x="80" y="94" {...DIAGRAM_TEXT}>{add} + {rows} × {cols} = {add + rows * cols}</text>
     </Diagram>
   );
 }
 function CuboidPic({ l = 4, w = 3, h = 2 }) {
-  const u = 10; const ox = 40; const oy = 78; const cube = (x, y, z) => { const px = ox + x * u + z * u * 0.5; const py = oy - y * u - z * u * 0.5; return <g key={`${x}${y}${z}`}><rect x={px} y={py - u} width={u} height={u} fill={C.gold} stroke="#2E2E2E" strokeWidth="0.5" /><polygon points={`${px},${py - u} ${px + u * 0.5},${py - u * 1.5} ${px + u * 1.5},${py - u * 1.5} ${px + u},${py - u}`} fill="#FFF3C8" stroke="#2E2E2E" strokeWidth="0.5" /><polygon points={`${px + u},${py - u} ${px + u * 1.5},${py - u * 1.5} ${px + u * 1.5},${py - u * 0.5} ${px + u},${py}`} fill="#C9A227" stroke="#2E2E2E" strokeWidth="0.5" /></g>; };
+  const u = 10; const ox = 40; const oy = 78; const cube = (x, y, z) => { const px = ox + x * u + z * u * 0.5; const py = oy - y * u - z * u * 0.5; return <g key={`${x}${y}${z}`}><rect x={px} y={py - u} width={u} height={u} fill={B.gold} stroke="#2E2E2E" strokeWidth="0.5" /><polygon points={`${px},${py - u} ${px + u * 0.5},${py - u * 1.5} ${px + u * 1.5},${py - u * 1.5} ${px + u},${py - u}`} fill="#FFF3C8" stroke="#2E2E2E" strokeWidth="0.5" /><polygon points={`${px + u},${py - u} ${px + u * 1.5},${py - u * 1.5} ${px + u * 1.5},${py - u * 0.5} ${px + u},${py}`} fill="#C9A227" stroke="#2E2E2E" strokeWidth="0.5" /></g>; };
   const cubes = []; for (let z = w - 1; z >= 0; z--) for (let y = 0; y < h; y++) for (let x = 0; x < l; x++) cubes.push(cube(x, y, z));
   return <Diagram label={`${l} by ${w} by ${h}`}>{cubes}<text x="118" y="60" {...DIAGRAM_TEXT}>{l} × {w} × {h} = {l * w * h}</text></Diagram>;
 }
 function FracPiecesPic({ wholes = 3, per = 2 }) {
   return (
     <Diagram label={`${wholes} wholes in ${per === 2 ? 'halves' : 'pieces'}`}>
-      {Array.from({ length: wholes }, (_, k) => <g key={k}>{Array.from({ length: per }, (_, i) => <rect key={i} x={16 + k * 46 + i * (40 / per)} y="24" width={40 / per} height="36" fill={C.goldSoft} stroke="#2E2E2E" strokeWidth="1" />)}</g>)}
+      {Array.from({ length: wholes }, (_, k) => <g key={k}>{Array.from({ length: per }, (_, i) => <rect key={i} x={16 + k * 46 + i * (40 / per)} y="24" width={40 / per} height="36" fill="#F7EAD1" stroke="#2E2E2E" strokeWidth="1" />)}</g>)}
       <text x="80" y="84" {...DIAGRAM_TEXT}>{wholes} ÷ 1/{per} = {wholes * per} pieces</text>
     </Diagram>
   );
@@ -1613,7 +1758,7 @@ function FracPiecesPic({ wholes = 3, per = 2 }) {
 function BalancePic({ left = 'x + 5', right = '12' }) {
   return (
     <Diagram label="A balanced scale">
-      <polygon points="70,90 90,90 80,62" fill={C.muted} /><line x1="14" y1="60" x2="146" y2="60" stroke="#2E2E2E" strokeWidth="2.4" />
+      <polygon points="70,90 90,90 80,62" fill={B.muted} /><line x1="14" y1="60" x2="146" y2="60" stroke="#2E2E2E" strokeWidth="2.4" />
       <path d="M14 60 L20 40 L50 40 L56 60" fill="#FFF3C8" stroke="#2E2E2E" strokeWidth="1.2" /><path d="M104 60 L110 40 L140 40 L146 60" fill="#C9DDF5" stroke="#2E2E2E" strokeWidth="1.2" />
       <text x="35" y="33" {...DIAGRAM_TEXT} fontSize="7">{left}</text><text x="125" y="33" {...DIAGRAM_TEXT} fontSize="7">{right}</text><text x="80" y="98" {...DIAGRAM_TEXT}>whatever you do to one pan, do to the other</text>
     </Diagram>
@@ -1622,7 +1767,7 @@ function BalancePic({ left = 'x + 5', right = '12' }) {
 function CirclePic({ d = 4 }) {
   return (
     <Diagram label="A circle with its diameter">
-      <circle cx="80" cy="50" r="36" fill="#EEF4FB" stroke="#2E2E2E" strokeWidth="1.6" /><line x1="44" y1="50" x2="116" y2="50" stroke={C.gold} strokeWidth="2" /><circle cx="80" cy="50" r="2" fill="#2E2E2E" />
+      <circle cx="80" cy="50" r="36" fill="#EEF4FB" stroke="#2E2E2E" strokeWidth="1.6" /><line x1="44" y1="50" x2="116" y2="50" stroke={B.gold} strokeWidth="2" /><circle cx="80" cy="50" r="2" fill="#2E2E2E" />
       <text x="80" y="45" {...DIAGRAM_TEXT}>d = {d}</text><text x="80" y="96" {...DIAGRAM_TEXT}>around ≈ 3.14 × {d} = {(3.14 * d).toFixed(2)}</text>
     </Diagram>
   );
@@ -1631,7 +1776,7 @@ function DoublingPic({ base = 2, times = 5, ask = false }) {
   const counts = Array.from({ length: times + 1 }, (_, i) => base ** i);
   return (
     <Diagram label={`Powers of ${base}`}>
-      {counts.map((n, k) => <g key={k}><text x={14 + k * 25} y="12" {...DIAGRAM_TEXT}>{k === 0 ? '1' : `${base}^${k}`}</text>{Array.from({ length: Math.min(n, 32) }, (_, i) => <circle key={i} cx={8 + k * 25 + (i % 4) * 5} cy={20 + Math.floor(i / 4) * 5} r="1.8" fill={C.gold} />)}<text x={14 + k * 25} y="74" {...DIAGRAM_TEXT}>{n}</text></g>)}
+      {counts.map((n, k) => <g key={k}><text x={14 + k * 25} y="12" {...DIAGRAM_TEXT}>{k === 0 ? '1' : `${base}^${k}`}</text>{Array.from({ length: Math.min(n, 32) }, (_, i) => <circle key={i} cx={8 + k * 25 + (i % 4) * 5} cy={20 + Math.floor(i / 4) * 5} r="1.8" fill={B.gold} />)}<text x={14 + k * 25} y="74" {...DIAGRAM_TEXT}>{n}</text></g>)}
       <text x="80" y="94" {...DIAGRAM_TEXT}>{ask ? `${base} to what power is ${counts[times]}? ${times}.` : `${base}^${times} = ${counts[times]}`}</text>
     </Diagram>
   );
@@ -1640,7 +1785,7 @@ function GrowthBarsPic({ values = [100, 110, 121, 133], labels = [] }) {
   const max = Math.max(...values); const w = Math.min(28, 120 / values.length);
   return (
     <Diagram label="Bars growing">
-      {values.map((v, i) => <g key={i}><rect x={20 + i * (w + 8)} y={80 - (v / max) * 60} width={w} height={(v / max) * 60} rx="3" fill={i % 2 ? C.gold : '#3E7CB1'} stroke="#2E2E2E" strokeWidth="0.8" /><text x={20 + i * (w + 8) + w / 2} y={76 - (v / max) * 60} {...DIAGRAM_TEXT} fontSize="4.6">{v}</text><text x={20 + i * (w + 8) + w / 2} y="92" {...DIAGRAM_TEXT} fontSize="4.6">{labels[i] || ''}</text></g>)}
+      {values.map((v, i) => <g key={i}><rect x={20 + i * (w + 8)} y={80 - (v / max) * 60} width={w} height={(v / max) * 60} rx="3" fill={i % 2 ? B.gold : '#3E7CB1'} stroke="#2E2E2E" strokeWidth="0.8" /><text x={20 + i * (w + 8) + w / 2} y={76 - (v / max) * 60} {...DIAGRAM_TEXT} fontSize="4.6">{v}</text><text x={20 + i * (w + 8) + w / 2} y="92" {...DIAGRAM_TEXT} fontSize="4.6">{labels[i] || ''}</text></g>)}
     </Diagram>
   );
 }
@@ -1654,8 +1799,8 @@ function PlotPic({ fn = 'line', point = null, px = null, py = null }) {
         <line x1="16" y1="96" x2="144" y2="96" stroke="#2E2E2E" strokeWidth="1" /><line x1="16" y1="8" x2="16" y2="96" stroke="#2E2E2E" strokeWidth="1" />
         {[1, 2, 3, 4, 5, 6].map((k) => <text key={`x${k}`} x={16 + k * 12.8} y="104" {...DIAGRAM_TEXT} textAnchor="middle">{k}</text>)}
         {[1, 2, 3, 4, 5, 6].map((k) => <text key={`y${k}`} x="9" y={99 - k * 14} {...DIAGRAM_TEXT} textAnchor="middle">{k}</text>)}
-        <line x1="16" y1={96 - py * 14} x2={16 + px * 12.8} y2={96 - py * 14} stroke={C.gold} strokeWidth="1.2" strokeDasharray="2 2" /><line x1={16 + px * 12.8} y1="96" x2={16 + px * 12.8} y2={96 - py * 14} stroke={C.gold} strokeWidth="1.2" strokeDasharray="2 2" />
-        <circle cx={16 + px * 12.8} cy={96 - py * 14} r="3.2" fill={C.gold} stroke="#2E2E2E" strokeWidth="0.8" />
+        <line x1="16" y1={96 - py * 14} x2={16 + px * 12.8} y2={96 - py * 14} stroke={B.gold} strokeWidth="1.2" strokeDasharray="2 2" /><line x1={16 + px * 12.8} y1="96" x2={16 + px * 12.8} y2={96 - py * 14} stroke={B.gold} strokeWidth="1.2" strokeDasharray="2 2" />
+        <circle cx={16 + px * 12.8} cy={96 - py * 14} r="3.2" fill={B.gold} stroke="#2E2E2E" strokeWidth="0.8" />
         <text x={Math.min(16 + px * 12.8 + 6, 120)} y={96 - py * 14 - 6} {...DIAGRAM_TEXT}>({px}, {py})</text>
       </Diagram>
     );
@@ -1665,10 +1810,10 @@ function PlotPic({ fn = 'line', point = null, px = null, py = null }) {
   return (
     <Diagram label="A graph">
       <line x1="16" y1="52" x2="144" y2="52" stroke="#2E2E2E" strokeWidth="1" /><line x1="80" y1="8" x2="80" y2="96" stroke="#2E2E2E" strokeWidth="1" />
-      {(curves[fn] || curves.line).map((f, i) => <polyline key={i} points={path(f)} fill="none" stroke={i ? C.gold : '#3E7CB1'} strokeWidth="2" strokeLinejoin="round" />)}
-      {fn === 'slope' && <g><line x1={X(1)} y1={Y(2)} x2={X(2)} y2={Y(2)} stroke={C.gold} strokeWidth="1.6" /><line x1={X(2)} y1={Y(2)} x2={X(2)} y2={Y(4)} stroke={C.gold} strokeWidth="1.6" /><text x={X(1.5)} y={Y(2) + 6} {...DIAGRAM_TEXT}>run 1</text><text x={X(2) + 10} y={Y(3)} {...DIAGRAM_TEXT}>rise 2</text></g>}
-      {fn === 'line' && point !== null && <g><circle cx={X(point)} cy={Y(2 * point + 1)} r="3" fill={C.gold} stroke="#2E2E2E" strokeWidth="0.8" /><text x={X(point) + 16} y={Y(2 * point + 1) - 4} {...DIAGRAM_TEXT}>({point}, {2 * point + 1})</text></g>}
-      {fn === 'cross' && <circle cx={X(2)} cy={Y(3)} r="3" fill={C.gold} stroke="#2E2E2E" strokeWidth="0.8" />}
+      {(curves[fn] || curves.line).map((f, i) => <polyline key={i} points={path(f)} fill="none" stroke={i ? B.gold : '#3E7CB1'} strokeWidth="2" strokeLinejoin="round" />)}
+      {fn === 'slope' && <g><line x1={X(1)} y1={Y(2)} x2={X(2)} y2={Y(2)} stroke={B.gold} strokeWidth="1.6" /><line x1={X(2)} y1={Y(2)} x2={X(2)} y2={Y(4)} stroke={B.gold} strokeWidth="1.6" /><text x={X(1.5)} y={Y(2) + 6} {...DIAGRAM_TEXT}>run 1</text><text x={X(2) + 10} y={Y(3)} {...DIAGRAM_TEXT}>rise 2</text></g>}
+      {fn === 'line' && point !== null && <g><circle cx={X(point)} cy={Y(2 * point + 1)} r="3" fill={B.gold} stroke="#2E2E2E" strokeWidth="0.8" /><text x={X(point) + 16} y={Y(2 * point + 1) - 4} {...DIAGRAM_TEXT}>({point}, {2 * point + 1})</text></g>}
+      {fn === 'cross' && <circle cx={X(2)} cy={Y(3)} r="3" fill={B.gold} stroke="#2E2E2E" strokeWidth="0.8" />}
       {fn === 'shift' && <text x="120" y="20" {...DIAGRAM_TEXT}>moved 2 right, 3 up</text>}
       {fn === 'cubeneg' && <><text x="30" y="14" {...DIAGRAM_TEXT}>up on the left</text><text x="128" y="92" {...DIAGRAM_TEXT}>down on the right</text></>}
     </Diagram>
@@ -1679,8 +1824,8 @@ function TilesPic({ p = 2, q = 3 }) {
   return (
     <Diagram label={`x + ${p} by x + ${q}`}>
       <rect x={ox} y={oy} width={xw} height={xw} fill="#C9DDF5" stroke="#2E2E2E" strokeWidth="0.8" /><text x={ox + xw / 2} y={oy + xw / 2} {...DIAGRAM_TEXT}>x²</text>
-      {Array.from({ length: p }, (_, i) => <rect key={`r${i}`} x={ox + xw + i * u} y={oy} width={u} height={xw} fill={C.goldSoft} stroke="#2E2E2E" strokeWidth="0.8" />)}
-      {Array.from({ length: q }, (_, i) => <rect key={`b${i}`} x={ox} y={oy + xw + i * u} width={xw} height={u} fill={C.goldSoft} stroke="#2E2E2E" strokeWidth="0.8" />)}
+      {Array.from({ length: p }, (_, i) => <rect key={`r${i}`} x={ox + xw + i * u} y={oy} width={u} height={xw} fill="#F7EAD1" stroke="#2E2E2E" strokeWidth="0.8" />)}
+      {Array.from({ length: q }, (_, i) => <rect key={`b${i}`} x={ox} y={oy + xw + i * u} width={xw} height={u} fill="#F7EAD1" stroke="#2E2E2E" strokeWidth="0.8" />)}
       {Array.from({ length: p * q }, (_, i) => <rect key={`u${i}`} x={ox + xw + (i % p) * u} y={oy + xw + Math.floor(i / p) * u} width={u} height={u} fill="#DCEBD3" stroke="#2E2E2E" strokeWidth="0.8" />)}
       <text x={ox + xw / 2} y={oy - 6} {...DIAGRAM_TEXT}>x</text><text x={ox + xw + (p * u) / 2} y={oy - 6} {...DIAGRAM_TEXT}>{p}</text><text x={ox - 8} y={oy + xw / 2} {...DIAGRAM_TEXT}>x</text><text x={ox - 8} y={oy + xw + (q * u) / 2} {...DIAGRAM_TEXT}>{q}</text>
       <text x="118" y="60" {...DIAGRAM_TEXT}>x² + {p + q}x + {p * q}</text>
@@ -1689,33 +1834,33 @@ function TilesPic({ p = 2, q = 3 }) {
 }
 function SectorPic({ degrees = 90 }) {
   const a = (degrees * Math.PI) / 180; const ex = 80 + Math.cos(-a) * 36; const ey = 50 + Math.sin(-a) * 36;
-  return <Diagram label={`${degrees} degrees of a circle`}><circle cx="80" cy="50" r="36" fill="#FFFFFF" stroke="#2E2E2E" strokeWidth="1.4" /><path d={`M80 50 L116 50 A36 36 0 ${degrees > 180 ? 1 : 0} 0 ${ex.toFixed(1)} ${ey.toFixed(1)} Z`} fill={C.goldSoft} stroke={C.gold} strokeWidth="1.6" /><text x="80" y="96" {...DIAGRAM_TEXT}>{degrees} of 360 = {(degrees / 360).toFixed(2)} of the way around</text></Diagram>;
+  return <Diagram label={`${degrees} degrees of a circle`}><circle cx="80" cy="50" r="36" fill="#FFFFFF" stroke="#2E2E2E" strokeWidth="1.4" /><path d={`M80 50 L116 50 A36 36 0 ${degrees > 180 ? 1 : 0} 0 ${ex.toFixed(1)} ${ey.toFixed(1)} Z`} fill="#F7EAD1" stroke={B.gold} strokeWidth="1.6" /><text x="80" y="96" {...DIAGRAM_TEXT}>{degrees} of 360 = {(degrees / 360).toFixed(2)} of the way around</text></Diagram>;
 }
 function TrigTriPic() {
-  return <Diagram label="A right triangle with its sides named"><polygon points="30,84 130,84 130,20" fill="#FFFFFF" stroke="#2E2E2E" strokeWidth="1.4" strokeLinejoin="round" /><rect x="120" y="74" width="8" height="8" fill="none" stroke="#2E2E2E" strokeWidth="0.8" /><path d="M44 84 A14 14 0 0 0 42 78" fill="none" stroke={C.gold} strokeWidth="1.6" /><text x="80" y="94" {...DIAGRAM_TEXT}>adjacent</text><text x="144" y="52" {...DIAGRAM_TEXT}>opposite</text><text x="66" y="44" {...DIAGRAM_TEXT}>hypotenuse</text><text x="52" y="80" {...DIAGRAM_TEXT}>θ</text></Diagram>;
+  return <Diagram label="A right triangle with its sides named"><polygon points="30,84 130,84 130,20" fill="#FFFFFF" stroke="#2E2E2E" strokeWidth="1.4" strokeLinejoin="round" /><rect x="120" y="74" width="8" height="8" fill="none" stroke="#2E2E2E" strokeWidth="0.8" /><path d="M44 84 A14 14 0 0 0 42 78" fill="none" stroke={B.gold} strokeWidth="1.6" /><text x="80" y="94" {...DIAGRAM_TEXT}>adjacent</text><text x="144" y="52" {...DIAGRAM_TEXT}>opposite</text><text x="66" y="44" {...DIAGRAM_TEXT}>hypotenuse</text><text x="52" y="80" {...DIAGRAM_TEXT}>θ</text></Diagram>;
 }
 function SimilarPic() {
   return <Diagram label="Two similar triangles"><polygon points="14,80 38,80 14,62" fill="#C9DDF5" stroke="#2E2E2E" strokeWidth="1.2" /><polygon points="60,88 132,88 60,34" fill="#FFF3C8" stroke="#2E2E2E" strokeWidth="1.2" /><text x="26" y="90" {...DIAGRAM_TEXT}>4</text><text x="8" y="72" {...DIAGRAM_TEXT}>3</text><text x="32" y="68" {...DIAGRAM_TEXT}>5</text><text x="96" y="96" {...DIAGRAM_TEXT}>12</text><text x="52" y="62" {...DIAGRAM_TEXT}>9</text><text x="104" y="58" {...DIAGRAM_TEXT}>15</text><text x="80" y="14" {...DIAGRAM_TEXT}>every side times 3</text></Diagram>;
 }
 function ReflectPic({ point = [2, 3] }) {
   const X = (x) => 80 + x * 12; const Y = (y) => 52 - y * 9;
-  return <Diagram label="A point and its reflection"><line x1="16" y1="52" x2="144" y2="52" stroke="#2E2E2E" strokeWidth="1" /><line x1="80" y1="8" x2="80" y2="96" stroke="#2E2E2E" strokeWidth="1.6" /><circle cx={X(point[0])} cy={Y(point[1])} r="3" fill={C.gold} stroke="#2E2E2E" strokeWidth="0.8" /><circle cx={X(-point[0])} cy={Y(point[1])} r="3" fill="#3E7CB1" stroke="#2E2E2E" strokeWidth="0.8" /><line x1={X(point[0])} y1={Y(point[1])} x2={X(-point[0])} y2={Y(point[1])} stroke={C.muted} strokeWidth="0.8" strokeDasharray="2 2" /><text x={X(point[0]) + 14} y={Y(point[1]) - 4} {...DIAGRAM_TEXT}>({point[0]}, {point[1]})</text><text x={X(-point[0]) - 16} y={Y(point[1]) - 4} {...DIAGRAM_TEXT}>({-point[0]}, {point[1]})</text></Diagram>;
+  return <Diagram label="A point and its reflection"><line x1="16" y1="52" x2="144" y2="52" stroke="#2E2E2E" strokeWidth="1" /><line x1="80" y1="8" x2="80" y2="96" stroke="#2E2E2E" strokeWidth="1.6" /><circle cx={X(point[0])} cy={Y(point[1])} r="3" fill={B.gold} stroke="#2E2E2E" strokeWidth="0.8" /><circle cx={X(-point[0])} cy={Y(point[1])} r="3" fill="#3E7CB1" stroke="#2E2E2E" strokeWidth="0.8" /><line x1={X(point[0])} y1={Y(point[1])} x2={X(-point[0])} y2={Y(point[1])} stroke={B.muted} strokeWidth="0.8" strokeDasharray="2 2" /><text x={X(point[0]) + 14} y={Y(point[1]) - 4} {...DIAGRAM_TEXT}>({point[0]}, {point[1]})</text><text x={X(-point[0]) - 16} y={Y(point[1]) - 4} {...DIAGRAM_TEXT}>({-point[0]}, {point[1]})</text></Diagram>;
 }
 function UnitCirclePic({ deg = 45 }) {
   const a = (deg * Math.PI) / 180; const x = 80 + Math.cos(a) * 36; const y = 50 - Math.sin(a) * 36;
-  return <Diagram label="The unit circle"><circle cx="80" cy="50" r="36" fill="none" stroke="#2E2E2E" strokeWidth="1.2" /><line x1="36" y1="50" x2="124" y2="50" stroke={C.muted} strokeWidth="0.8" /><line x1="80" y1="6" x2="80" y2="94" stroke={C.muted} strokeWidth="0.8" /><line x1="80" y1="50" x2={x} y2={y} stroke={C.gold} strokeWidth="1.8" /><line x1={x} y1={y} x2={x} y2="50" stroke="#3E7CB1" strokeWidth="1.4" strokeDasharray="2 2" /><circle cx={x} cy={y} r="3" fill={C.gold} stroke="#2E2E2E" strokeWidth="0.8" /><text x={x + 18} y={y - 4} {...DIAGRAM_TEXT}>(cos, sin)</text><text x={(80 + x) / 2} y="58" {...DIAGRAM_TEXT}>cos</text><text x={x + 10} y={(y + 50) / 2} {...DIAGRAM_TEXT}>sin</text><text x="80" y="96" {...DIAGRAM_TEXT}>radius 1, angle {deg}°</text></Diagram>;
+  return <Diagram label="The unit circle"><circle cx="80" cy="50" r="36" fill="none" stroke="#2E2E2E" strokeWidth="1.2" /><line x1="36" y1="50" x2="124" y2="50" stroke={B.muted} strokeWidth="0.8" /><line x1="80" y1="6" x2="80" y2="94" stroke={B.muted} strokeWidth="0.8" /><line x1="80" y1="50" x2={x} y2={y} stroke={B.gold} strokeWidth="1.8" /><line x1={x} y1={y} x2={x} y2="50" stroke="#3E7CB1" strokeWidth="1.4" strokeDasharray="2 2" /><circle cx={x} cy={y} r="3" fill={B.gold} stroke="#2E2E2E" strokeWidth="0.8" /><text x={x + 18} y={y - 4} {...DIAGRAM_TEXT}>(cos, sin)</text><text x={(80 + x) / 2} y="58" {...DIAGRAM_TEXT}>cos</text><text x={x + 10} y={(y + 50) / 2} {...DIAGRAM_TEXT}>sin</text><text x="80" y="96" {...DIAGRAM_TEXT}>radius 1, angle {deg}°</text></Diagram>;
 }
 function ScatterPic() {
   const rnd = lcg(11); const pts = Array.from({ length: 18 }, () => { const t = rnd(); return [20 + t * 120, 82 - t * 60 + (rnd() - 0.5) * 16]; });
-  return <Diagram label="Two things that rise together"><line x1="16" y1="86" x2="150" y2="86" stroke="#2E2E2E" strokeWidth="1" /><line x1="16" y1="86" x2="16" y2="10" stroke="#2E2E2E" strokeWidth="1" />{pts.map(([x, y], i) => <circle key={i} cx={x} cy={y} r="2.6" fill={C.gold} stroke="#2E2E2E" strokeWidth="0.6" />)}<text x="86" y="96" {...DIAGRAM_TEXT}>ice cream sold</text><text x="14" y="6" {...DIAGRAM_TEXT} textAnchor="start">swimming accidents</text><text x="118" y="24" {...DIAGRAM_TEXT}>hot days cause both</text></Diagram>;
+  return <Diagram label="Two things that rise together"><line x1="16" y1="86" x2="150" y2="86" stroke="#2E2E2E" strokeWidth="1" /><line x1="16" y1="86" x2="16" y2="10" stroke="#2E2E2E" strokeWidth="1" />{pts.map(([x, y], i) => <circle key={i} cx={x} cy={y} r="2.6" fill={B.gold} stroke="#2E2E2E" strokeWidth="0.6" />)}<text x="86" y="96" {...DIAGRAM_TEXT}>ice cream sold</text><text x="14" y="6" {...DIAGRAM_TEXT} textAnchor="start">swimming accidents</text><text x="118" y="24" {...DIAGRAM_TEXT}>hot days cause both</text></Diagram>;
 }
 function DotPlotPic({ values = [], compare = null }) {
   const row = (vals, y, color) => { const counts = {}; return vals.map((v, i) => { counts[v] = (counts[v] || 0) + 1; return <circle key={i} cx={20 + v * 12} cy={y - (counts[v] - 1) * 7} r="3" fill={color} stroke="#2E2E2E" strokeWidth="0.6" />; }); };
-  return <Diagram label="A dot plot"><line x1="12" y1="46" x2="150" y2="46" stroke="#2E2E2E" strokeWidth="1" />{Array.from({ length: 11 }, (_, v) => <text key={v} x={20 + v * 12} y="54" {...DIAGRAM_TEXT} fontSize="4.4">{v}</text>)}{row(values, 40, C.gold)}{compare && <><line x1="12" y1="92" x2="150" y2="92" stroke="#2E2E2E" strokeWidth="1" />{row(compare, 86, '#3E7CB1')}</>}</Diagram>;
+  return <Diagram label="A dot plot"><line x1="12" y1="46" x2="150" y2="46" stroke="#2E2E2E" strokeWidth="1" />{Array.from({ length: 11 }, (_, v) => <text key={v} x={20 + v * 12} y="54" {...DIAGRAM_TEXT} fontSize="4.4">{v}</text>)}{row(values, 40, B.gold)}{compare && <><line x1="12" y1="92" x2="150" y2="92" stroke="#2E2E2E" strokeWidth="1" />{row(compare, 86, '#3E7CB1')}</>}</Diagram>;
 }
 function SpinnerPic({ sectors = 8, win = 3 }) {
   const arc = (i) => { const a0 = (i / sectors) * Math.PI * 2; const a1 = ((i + 1) / sectors) * Math.PI * 2; return `M80 50 L${80 + Math.cos(a0) * 36} ${50 + Math.sin(a0) * 36} A36 36 0 0 1 ${80 + Math.cos(a1) * 36} ${50 + Math.sin(a1) * 36} Z`; };
-  return <Diagram label={`${win} of ${sectors} sectors win`}>{Array.from({ length: sectors }, (_, i) => <path key={i} d={arc(i)} fill={i < win ? C.gold : '#FFFFFF'} stroke="#2E2E2E" strokeWidth="0.8" />)}<polygon points="80,50 76,20 84,20" fill="#2E2E2E" /><text x="80" y="96" {...DIAGRAM_TEXT}>{win} of {sectors} = {win}/{sectors}</text></Diagram>;
+  return <Diagram label={`${win} of ${sectors} sectors win`}>{Array.from({ length: sectors }, (_, i) => <path key={i} d={arc(i)} fill={i < win ? B.gold : '#FFFFFF'} stroke="#2E2E2E" strokeWidth="0.8" />)}<polygon points="80,50 76,20 84,20" fill="#2E2E2E" /><text x="80" y="96" {...DIAGRAM_TEXT}>{win} of {sectors} = {win}/{sectors}</text></Diagram>;
 }
 const Box = ({ x, y, w, h, text, fill = '#FFFFFF' }) => { const [X, Y, W, H] = [x, y, w, h].map(Number); const size = Math.min(5.2, Math.max(3.2, (W * 1.5) / Math.max(4, text.length))); return <g><rect x={X} y={Y} width={W} height={H} rx="6" fill={fill} stroke="#2E2E2E" strokeWidth="1" /><text x={X + W / 2} y={Y + H / 2} {...DIAGRAM_TEXT} fontSize={size}>{text}</text></g>; };
 function FlowPic({ steps = [] }) {
@@ -1723,12 +1868,12 @@ function FlowPic({ steps = [] }) {
   const per = steps.length > 4 ? Math.ceil(steps.length / 2) : steps.length; const rows = Math.ceil(steps.length / per);
   const w = Math.min(40, (150 - (per - 1) * 12) / per); const gap = (160 - per * w) / (per + 1); const y0 = rows > 1 ? 18 : 38;
   const at = (i) => [gap + (i % per) * (w + gap), y0 + Math.floor(i / per) * 40];
-  return <Diagram label={steps.join(', then ')}>{steps.map((t, i) => { const [x, y] = at(i); const nxt = i < steps.length - 1 ? at(i + 1) : null; return <g key={i}><Box x={x} y={y} w={w} h={24} text={t} fill={i === steps.length - 1 ? C.goldSoft : '#FFFFFF'} />{nxt && (nxt[1] === y ? <Arrow d={`M${x + w + 2} ${y + 12} L${nxt[0] - 2} ${y + 12}`} /> : <Arrow d={`M${x + w / 2} ${y + 26} C${x + w / 2} ${y + 40} ${nxt[0] + w / 2} ${y + 26} ${nxt[0] + w / 2} ${nxt[1] - 2}`} />)}</g>; })}</Diagram>;
+  return <Diagram label={steps.join(', then ')}>{steps.map((t, i) => { const [x, y] = at(i); const nxt = i < steps.length - 1 ? at(i + 1) : null; return <g key={i}><Box x={x} y={y} w={w} h={24} text={t} fill={i === steps.length - 1 ? B.goldSoft : '#FFFFFF'} />{nxt && (nxt[1] === y ? <Arrow d={`M${x + w + 2} ${y + 12} L${nxt[0] - 2} ${y + 12}`} /> : <Arrow d={`M${x + w / 2} ${y + 26} C${x + w / 2} ${y + 40} ${nxt[0] + w / 2} ${y + 26} ${nxt[0] + w / 2} ${nxt[1] - 2}`} />)}</g>; })}</Diagram>;
 }
 function LoopPic({ steps = [] }) {
   const n = steps.length; const cx = 80; const cy = 50; const r = 34;
   const at = (i) => { const a = -Math.PI / 2 + (i / n) * Math.PI * 2; return [cx + Math.cos(a) * r, cy + Math.sin(a) * r]; };
-  return <Diagram label={steps.join(' around to ')}>{steps.map((t, i) => { const [x1, y1] = at(i); const [x2, y2] = at((i + 1) % n); const mx = (x1 + x2) / 2; const my = (y1 + y2) / 2; const dx = mx - cx; const dy = my - cy; const k = 1.25; return <path key={`a${i}`} d={`M${x1} ${y1} Q${cx + dx * k} ${cy + dy * k} ${x2} ${y2}`} fill="none" stroke={C.green} strokeWidth="1.4" markerEnd="url(#eduArrow)" />; })}{steps.map((t, i) => { const [x, y] = at(i); return <Box key={i} x={x - 17} y={y - 7} w={34} h={14} text={t} />; })}</Diagram>;
+  return <Diagram label={steps.join(' around to ')}>{steps.map((t, i) => { const [x1, y1] = at(i); const [x2, y2] = at((i + 1) % n); const mx = (x1 + x2) / 2; const my = (y1 + y2) / 2; const dx = mx - cx; const dy = my - cy; const k = 1.25; return <path key={`a${i}`} d={`M${x1} ${y1} Q${cx + dx * k} ${cy + dy * k} ${x2} ${y2}`} fill="none" stroke={B.green} strokeWidth="1.4" markerEnd="url(#eduArrow)" />; })}{steps.map((t, i) => { const [x, y] = at(i); return <Box key={i} x={x - 17} y={y - 7} w={34} h={14} text={t} />; })}</Diagram>;
 }
 function StatesPic() {
   const rnd = lcg(4); const panel = (x, label, mode) => <g><rect x={x} y="12" width="44" height="60" rx="5" fill="#EEF4FB" stroke="#2E2E2E" strokeWidth="1" />{Array.from({ length: mode === 'gas' ? 6 : 16 }, (_, i) => { const gx = mode === 'solid' ? x + 8 + (i % 4) * 9.5 : mode === 'liquid' ? x + 8 + (i % 4) * 9.5 + (rnd() - 0.5) * 4 : x + 6 + rnd() * 32; const gy = mode === 'solid' ? 20 + Math.floor(i / 4) * 12 : mode === 'liquid' ? 34 + Math.floor(i / 4) * 9 + (rnd() - 0.5) * 3 : 16 + rnd() * 50; return <circle key={i} cx={gx} cy={gy} r="3" fill="#3E7CB1" stroke="#2E2E2E" strokeWidth="0.5" />; })}<text x={x + 22} y="84" {...DIAGRAM_TEXT}>{label}</text></g>;
@@ -1739,13 +1884,13 @@ function ThermometerPic({ c = 30 }) {
   return <Diagram label={`${c} degrees Celsius`}><rect x="74" y={top} width="12" height={bottom - top} rx="6" fill="#FFFFFF" stroke="#2E2E2E" strokeWidth="1.2" /><rect x="77" y={y} width="6" height={bottom - y} fill="#D9534F" /><circle cx="80" cy="82" r="9" fill="#D9534F" stroke="#2E2E2E" strokeWidth="1.2" />{[-10, 0, 10, 20, 30, 40].map((v) => <g key={v}><line x1="86" y1={bottom - ((v + 10) / 50) * (bottom - top)} x2="92" y2={bottom - ((v + 10) / 50) * (bottom - top)} stroke="#2E2E2E" strokeWidth="0.8" /><text x="100" y={bottom - ((v + 10) / 50) * (bottom - top) + 2} {...DIAGRAM_TEXT}>{v}°C</text></g>)}</Diagram>;
 }
 function CircuitPic({ mode = 'single', labels = false }) {
-  const bulb = (x, y, lit = true) => <g><circle cx={x} cy={y} r="6" fill={lit ? C.gold : '#FFFFFF'} stroke="#2E2E2E" strokeWidth="1" /><rect x={x - 3} y={y + 5} width="6" height="4" fill="#2E2E2E" /></g>;
+  const bulb = (x, y, lit = true) => <g><circle cx={x} cy={y} r="6" fill={lit ? B.gold : '#FFFFFF'} stroke="#2E2E2E" strokeWidth="1" /><rect x={x - 3} y={y + 5} width="6" height="4" fill="#2E2E2E" /></g>;
   const battery = (x, y) => <g><rect x={x - 4} y={y - 8} width="8" height="16" fill="#2E2E2E" /><rect x={x - 2} y={y - 11} width="4" height="3" fill="#2E2E2E" /></g>;
   if (mode === 'both') return <Diagram label="Series and parallel"><rect x="12" y="20" width="56" height="50" fill="none" stroke="#2E2E2E" strokeWidth="1.2" />{battery(12, 45)}{bulb(30, 20)}{bulb(52, 20)}<text x="40" y="84" {...DIAGRAM_TEXT}>series: one path</text><rect x="92" y="20" width="56" height="50" fill="none" stroke="#2E2E2E" strokeWidth="1.2" /><line x1="120" y1="20" x2="120" y2="70" stroke="#2E2E2E" strokeWidth="1.2" />{battery(92, 45)}{bulb(120, 38)}{bulb(148, 45)}<text x="120" y="84" {...DIAGRAM_TEXT}>parallel: many paths</text></Diagram>;
   return <Diagram label="A circuit"><rect x="36" y="18" width="88" height="56" fill="none" stroke="#2E2E2E" strokeWidth="1.4" />{battery(36, 46)}{bulb(80, 18)}{labels && <><text x="18" y="46" {...DIAGRAM_TEXT}>V</text><text x="80" y="8" {...DIAGRAM_TEXT}>R</text><Arrow d="M50 74 L110 74" /><text x="80" y="86" {...DIAGRAM_TEXT}>I, the current</text></>}{!labels && <text x="80" y="88" {...DIAGRAM_TEXT}>battery, wire, bulb, and back</text>}</Diagram>;
 }
 function OrbitsPic() {
-  return <Diagram label="The sun, the Earth and the moon"><circle cx="50" cy="50" r="16" fill={C.gold} /><ellipse cx="50" cy="50" rx="66" ry="36" fill="none" stroke={C.muted} strokeWidth="0.8" strokeDasharray="3 2" /><circle cx="116" cy="50" r="7" fill="#8FC4E8" stroke="#2E2E2E" strokeWidth="0.8" /><circle cx="116" cy="50" r="14" fill="none" stroke={C.muted} strokeWidth="0.6" strokeDasharray="2 2" /><circle cx="130" cy="50" r="2.5" fill="#DDE3EB" stroke="#2E2E2E" strokeWidth="0.5" /><Arrow d="M108 34 A16 16 0 0 1 128 38" color={C.green} /><text x="80" y="94" {...DIAGRAM_TEXT}>spin a day, circle a year, moon circles a month</text></Diagram>;
+  return <Diagram label="The sun, the Earth and the moon"><circle cx="50" cy="50" r="16" fill={B.gold} /><ellipse cx="50" cy="50" rx="66" ry="36" fill="none" stroke={B.muted} strokeWidth="0.8" strokeDasharray="3 2" /><circle cx="116" cy="50" r="7" fill="#8FC4E8" stroke="#2E2E2E" strokeWidth="0.8" /><circle cx="116" cy="50" r="14" fill="none" stroke={B.muted} strokeWidth="0.6" strokeDasharray="2 2" /><circle cx="130" cy="50" r="2.5" fill="#DDE3EB" stroke="#2E2E2E" strokeWidth="0.5" /><Arrow d="M108 34 A16 16 0 0 1 128 38" color={B.green} /><text x="80" y="94" {...DIAGRAM_TEXT}>spin a day, circle a year, moon circles a month</text></Diagram>;
 }
 function MixturePic() {
   const rnd = lcg(21);
@@ -1756,7 +1901,7 @@ function DensityPic() {
   return <Diagram label="Two blocks the same size">{block(24, 8, 'light')}{block(92, 24, 'dense')}<text x="80" y="94" {...DIAGRAM_TEXT}>density = mass ÷ volume</text></Diagram>;
 }
 function PyramidPic({ levels = [1000, 100, 10, 1] }) {
-  return <Diagram label="An energy pyramid">{levels.map((v, i) => { const w = 130 - i * 30; return <g key={i}><rect x={80 - w / 2} y={78 - i * 18} width={w} height="16" fill={['#9ACD32', '#5BA84A', C.gold, '#D9534F'][i]} stroke="#2E2E2E" strokeWidth="0.8" /><text x="80" y={86 - i * 18 - 0.5} {...DIAGRAM_TEXT}>{v.toLocaleString('en-US')}</text></g>; })}<text x="80" y="98" {...DIAGRAM_TEXT}>about a tenth moves up each level</text></Diagram>;
+  return <Diagram label="An energy pyramid">{levels.map((v, i) => { const w = 130 - i * 30; return <g key={i}><rect x={80 - w / 2} y={78 - i * 18} width={w} height="16" fill={['#9ACD32', '#5BA84A', B.gold, '#D9534F'][i]} stroke="#2E2E2E" strokeWidth="0.8" /><text x="80" y={86 - i * 18 - 0.5} {...DIAGRAM_TEXT}>{v.toLocaleString('en-US')}</text></g>; })}<text x="80" y="98" {...DIAGRAM_TEXT}>about a tenth moves up each level</text></Diagram>;
 }
 function MoleculePic({ formulaText = 'H₂O', masses = false }) {
   return <Diagram label={formulaText}><circle cx="80" cy="44" r="16" fill="#D9534F" stroke="#2E2E2E" strokeWidth="1" /><circle cx="56" cy="62" r="10" fill="#FFFFFF" stroke="#2E2E2E" strokeWidth="1" /><circle cx="104" cy="62" r="10" fill="#FFFFFF" stroke="#2E2E2E" strokeWidth="1" /><text x="80" y="44" {...DIAGRAM_TEXT} fill="#FFFFFF" fontSize="7">O</text><text x="56" y="62" {...DIAGRAM_TEXT} fontSize="6">H</text><text x="104" y="62" {...DIAGRAM_TEXT} fontSize="6">H</text>{masses ? <text x="80" y="92" {...DIAGRAM_TEXT}>1 + 1 + 16 = 18 grams per mole</text> : <text x="80" y="92" {...DIAGRAM_TEXT}>{formulaText}: two hydrogens bonded to one oxygen</text>}</Diagram>;
@@ -1777,14 +1922,14 @@ function CellDivPic() {
 }
 function BasePairsPic() {
   const pairs = [['A', 'T'], ['C', 'G'], ['T', 'A'], ['G', 'C']];
-  return <Diagram label="DNA base pairs"><line x1="50" y1="10" x2="50" y2="90" stroke="#2E2E2E" strokeWidth="3" /><line x1="110" y1="10" x2="110" y2="90" stroke="#2E2E2E" strokeWidth="3" />{pairs.map(([a, b], i) => <g key={i}><rect x="50" y={18 + i * 18} width="30" height="8" fill={a === 'A' || a === 'T' ? C.goldSoft : '#C9DDF5'} stroke="#2E2E2E" strokeWidth="0.6" /><rect x="80" y={18 + i * 18} width="30" height="8" fill={b === 'A' || b === 'T' ? C.goldSoft : '#C9DDF5'} stroke="#2E2E2E" strokeWidth="0.6" /><text x="65" y={22 + i * 18} {...DIAGRAM_TEXT}>{a}</text><text x="95" y={22 + i * 18} {...DIAGRAM_TEXT}>{b}</text></g>)}</Diagram>;
+  return <Diagram label="DNA base pairs"><line x1="50" y1="10" x2="50" y2="90" stroke="#2E2E2E" strokeWidth="3" /><line x1="110" y1="10" x2="110" y2="90" stroke="#2E2E2E" strokeWidth="3" />{pairs.map(([a, b], i) => <g key={i}><rect x="50" y={18 + i * 18} width="30" height="8" fill={a === 'A' || a === 'T' ? B.goldSoft : '#C9DDF5'} stroke="#2E2E2E" strokeWidth="0.6" /><rect x="80" y={18 + i * 18} width="30" height="8" fill={b === 'A' || b === 'T' ? B.goldSoft : '#C9DDF5'} stroke="#2E2E2E" strokeWidth="0.6" /><text x="65" y={22 + i * 18} {...DIAGRAM_TEXT}>{a}</text><text x="95" y={22 + i * 18} {...DIAGRAM_TEXT}>{b}</text></g>)}</Diagram>;
 }
 function HomologyPic() {
   const limb = (x, label, scale) => <g><line x1={x} y1="20" x2={x + 4 * scale} y2="52" stroke="#2E2E2E" strokeWidth="4" strokeLinecap="round" /><line x1={x + 4 * scale} y1="52" x2={x - 2 * scale} y2="72" stroke="#2E2E2E" strokeWidth="3" strokeLinecap="round" /><line x1={x + 4 * scale} y1="52" x2={x + 8 * scale} y2="72" stroke="#2E2E2E" strokeWidth="3" strokeLinecap="round" /><text x={x + 3} y="88" {...DIAGRAM_TEXT}>{label}</text></g>;
   return <Diagram label="An arm, a flipper, a wing">{limb(30, 'arm', 1)}{limb(80, 'flipper', 0.6)}{limb(128, 'wing', 1.4)}</Diagram>;
 }
 function TwoWayPic({ a = '', b = '', top = '', bottom = '' }) {
-  return <Diagram label={`${a} and ${b}, each way`}><Box x="6" y="38" w="56" h="24" text={a} /><Box x="98" y="38" w="56" h="24" text={b} /><Arrow d="M64 44 L96 44" /><Arrow d="M96 56 L64 56" color={C.gold} /><text x="80" y="32" {...DIAGRAM_TEXT}>{top}</text><text x="80" y="72" {...DIAGRAM_TEXT}>{bottom}</text></Diagram>;
+  return <Diagram label={`${a} and ${b}, each way`}><Box x="6" y="38" w="56" h="24" text={a} /><Box x="98" y="38" w="56" h="24" text={b} /><Arrow d="M64 44 L96 44" /><Arrow d="M96 56 L64 56" color={B.gold} /><text x="80" y="32" {...DIAGRAM_TEXT}>{top}</text><text x="80" y="72" {...DIAGRAM_TEXT}>{bottom}</text></Diagram>;
 }
 function PhScalePic() {
   return <Diagram label="The pH scale"><defs><linearGradient id="eduPh" x1="0" x2="1"><stop offset="0" stopColor="#D9534F" /><stop offset="0.5" stopColor="#5BA84A" /><stop offset="1" stopColor="#4B3A8F" /></linearGradient></defs><rect x="14" y="40" width="132" height="14" rx="4" fill="url(#eduPh)" stroke="#2E2E2E" strokeWidth="0.8" />{[0, 7, 14].map((v) => <text key={v} x={14 + (v / 14) * 132} y="66" {...DIAGRAM_TEXT}>{v}</text>)}<text x="34" y="30" {...DIAGRAM_TEXT}>acid</text><text x="80" y="30" {...DIAGRAM_TEXT}>neutral</text><text x="128" y="30" {...DIAGRAM_TEXT}>base</text><text x="80" y="88" {...DIAGRAM_TEXT}>lemon near 2, water at 7, soap near 10</text></Diagram>;
@@ -1792,24 +1937,24 @@ function PhScalePic() {
 function ReactionPic({ left = [], right = [] }) {
   const row = (items, x0, fill) => items.map((t, i) => <g key={t + i}><Box x={x0 + i * 32} y="36" w="26" h="20" text={t} fill={fill} />{i < items.length - 1 && <text x={x0 + i * 32 + 29} y="47" {...DIAGRAM_TEXT}>+</text>}</g>);
   const lw = left.length * 32 - 6; const rw = right.length * 32 - 6; const x0 = Math.max(4, (150 - lw - rw - 24) / 2);
-  return <Diagram label="A reaction">{row(left, x0, '#FFFFFF')}<Arrow d={`M${x0 + lw + 3} 46 L${x0 + lw + 22} 46`} />{row(right, x0 + lw + 26, C.goldSoft)}<text x="80" y="80" {...DIAGRAM_TEXT}>what goes in becomes what comes out</text></Diagram>;
+  return <Diagram label="A reaction">{row(left, x0, '#FFFFFF')}<Arrow d={`M${x0 + lw + 3} 46 L${x0 + lw + 22} 46`} />{row(right, x0 + lw + 26, B.goldSoft)}<text x="80" y="80" {...DIAGRAM_TEXT}>what goes in becomes what comes out</text></Diagram>;
 }
 function GasLawPic() {
   const cyl = (x, h, n, label) => <g><rect x={x} y={80 - h} width="40" height={h} fill="#EEF4FB" stroke="#2E2E2E" strokeWidth="1.2" /><rect x={x - 3} y={78 - h} width="46" height="4" fill="#2E2E2E" />{Array.from({ length: n }, (_, i) => <circle key={i} cx={x + 8 + (i % 4) * 8} cy={74 - Math.floor(i / 4) * (h / 3)} r="2.2" fill="#3E7CB1" />)}<text x={x + 20} y="92" {...DIAGRAM_TEXT}>{label}</text></g>;
   return <Diagram label="The same gas in two volumes">{cyl(28, 56, 8, 'big, low pressure')}{cyl(96, 28, 8, 'half, double')}</Diagram>;
 }
 function BondsPic() {
-  return <Diagram label="Ionic and covalent"><circle cx="34" cy="44" r="13" fill="#F6C9C4" stroke="#2E2E2E" strokeWidth="1" /><circle cx="66" cy="44" r="13" fill="#CFE7E5" stroke="#2E2E2E" strokeWidth="1" /><text x="34" y="44" {...DIAGRAM_TEXT}>Na⁺</text><text x="66" y="44" {...DIAGRAM_TEXT}>Cl⁻</text><Arrow d="M40 28 C50 20 58 22 62 30" color={C.gold} /><text x="50" y="72" {...DIAGRAM_TEXT}>gives: ionic</text><circle cx="120" cy="40" r="12" fill="#D9534F" stroke="#2E2E2E" strokeWidth="1" /><circle cx="104" cy="56" r="7" fill="#FFFFFF" stroke="#2E2E2E" strokeWidth="1" /><circle cx="136" cy="56" r="7" fill="#FFFFFF" stroke="#2E2E2E" strokeWidth="1" /><circle cx="110" cy="49" r="2" fill={C.gold} /><circle cx="130" cy="49" r="2" fill={C.gold} /><text x="120" y="72" {...DIAGRAM_TEXT}>shares: covalent</text></Diagram>;
+  return <Diagram label="Ionic and covalent"><circle cx="34" cy="44" r="13" fill="#F6C9C4" stroke="#2E2E2E" strokeWidth="1" /><circle cx="66" cy="44" r="13" fill="#CFE7E5" stroke="#2E2E2E" strokeWidth="1" /><text x="34" y="44" {...DIAGRAM_TEXT}>Na⁺</text><text x="66" y="44" {...DIAGRAM_TEXT}>Cl⁻</text><Arrow d="M40 28 C50 20 58 22 62 30" color={B.gold} /><text x="50" y="72" {...DIAGRAM_TEXT}>gives: ionic</text><circle cx="120" cy="40" r="12" fill="#D9534F" stroke="#2E2E2E" strokeWidth="1" /><circle cx="104" cy="56" r="7" fill="#FFFFFF" stroke="#2E2E2E" strokeWidth="1" /><circle cx="136" cy="56" r="7" fill="#FFFFFF" stroke="#2E2E2E" strokeWidth="1" /><circle cx="110" cy="49" r="2" fill={B.gold} /><circle cx="130" cy="49" r="2" fill={B.gold} /><text x="120" y="72" {...DIAGRAM_TEXT}>shares: covalent</text></Diagram>;
 }
 function MomentumPic() {
   return <Diagram label="A bike and a truck at the same speed"><circle cx="40" cy="60" r="8" fill="#3E7CB1" stroke="#2E2E2E" strokeWidth="1" /><Arrow d="M52 60 L76 60" /><text x="40" y="82" {...DIAGRAM_TEXT}>small mass</text><rect x="90" y="40" width="40" height="30" rx="4" fill="#8C6239" stroke="#2E2E2E" strokeWidth="1" /><Arrow d="M134 55 L158 55" /><text x="110" y="82" {...DIAGRAM_TEXT}>big mass</text><text x="80" y="96" {...DIAGRAM_TEXT}>same speed, more mass, more momentum</text></Diagram>;
 }
 function WavePic({ wavelength = 40, amplitude = 14 }) {
   const pts = []; for (let x = 10; x <= 150; x += 2) pts.push(`${x},${50 - Math.sin(((x - 10) / wavelength) * Math.PI * 2) * amplitude}`);
-  return <Diagram label="A wave"><line x1="10" y1="50" x2="150" y2="50" stroke={C.muted} strokeWidth="0.8" /><polyline points={pts.join(' ')} fill="none" stroke="#3E7CB1" strokeWidth="2" /><line x1="20" y1="22" x2="60" y2="22" stroke={C.gold} strokeWidth="1.4" /><text x="40" y="16" {...DIAGRAM_TEXT}>wavelength λ</text><line x1="130" y1="50" x2="130" y2={50 - amplitude} stroke={C.gold} strokeWidth="1.4" /><text x="140" y="40" {...DIAGRAM_TEXT}>amplitude</text></Diagram>;
+  return <Diagram label="A wave"><line x1="10" y1="50" x2="150" y2="50" stroke={B.muted} strokeWidth="0.8" /><polyline points={pts.join(' ')} fill="none" stroke="#3E7CB1" strokeWidth="2" /><line x1="20" y1="22" x2="60" y2="22" stroke={B.gold} strokeWidth="1.4" /><text x="40" y="16" {...DIAGRAM_TEXT}>wavelength λ</text><line x1="130" y1="50" x2="130" y2={50 - amplitude} stroke={B.gold} strokeWidth="1.4" /><text x="140" y="40" {...DIAGRAM_TEXT}>amplitude</text></Diagram>;
 }
 function WorkPic() {
-  return <Diagram label="A push through a distance"><line x1="10" y1="70" x2="150" y2="70" stroke="#2E2E2E" strokeWidth="1" /><rect x="30" y="44" width="30" height="26" fill="#F7D154" stroke="#2E2E2E" strokeWidth="1" /><Arrow d="M8 57 L28 57" color="#D9534F" /><text x="18" y="50" {...DIAGRAM_TEXT}>F</text><rect x="100" y="44" width="30" height="26" fill="#F7D154" stroke="#2E2E2E" strokeWidth="1" opacity="0.45" /><line x1="45" y1="82" x2="115" y2="82" stroke={C.gold} strokeWidth="1.4" /><text x="80" y="92" {...DIAGRAM_TEXT}>distance d</text></Diagram>;
+  return <Diagram label="A push through a distance"><line x1="10" y1="70" x2="150" y2="70" stroke="#2E2E2E" strokeWidth="1" /><rect x="30" y="44" width="30" height="26" fill="#F7D154" stroke="#2E2E2E" strokeWidth="1" /><Arrow d="M8 57 L28 57" color="#D9534F" /><text x="18" y="50" {...DIAGRAM_TEXT}>F</text><rect x="100" y="44" width="30" height="26" fill="#F7D154" stroke="#2E2E2E" strokeWidth="1" opacity="0.45" /><line x1="45" y1="82" x2="115" y2="82" stroke={B.gold} strokeWidth="1.4" /><text x="80" y="92" {...DIAGRAM_TEXT}>distance d</text></Diagram>;
 }
 function EarthLayersPic() {
   return <Diagram label="The Earth in layers"><circle cx="80" cy="50" r="44" fill="#8C6239" stroke="#2E2E2E" strokeWidth="1.2" /><circle cx="80" cy="50" r="40" fill="#E4572E" /><circle cx="80" cy="50" r="22" fill="#F4A259" /><circle cx="80" cy="50" r="11" fill="#FFF3C8" stroke="#2E2E2E" strokeWidth="0.6" /><text x="80" y="10" {...DIAGRAM_TEXT}>crust</text><text x="80" y="24" {...DIAGRAM_TEXT}>mantle</text><text x="80" y="38" {...DIAGRAM_TEXT}>outer core</text><text x="80" y="52" {...DIAGRAM_TEXT}>inner</text></Diagram>;
@@ -1818,7 +1963,7 @@ function OceanPic() {
   return <Diagram label="Cold salty water sinking"><rect x="10" y="20" width="140" height="66" fill="#C9DDF5" /><rect x="10" y="20" width="140" height="8" fill="#FFFFFF" opacity="0.5" /><Arrow d="M30 30 C26 50 26 66 40 78" color="#2B4C8C" /><Arrow d="M50 80 L120 80" color="#2B4C8C" /><Arrow d="M130 72 C136 50 132 36 110 30" color="#D9534F" /><Arrow d="M100 28 L44 28" color="#D9534F" /><text x="34" y="16" {...DIAGRAM_TEXT}>cold, salty: sinks</text><text x="120" y="16" {...DIAGRAM_TEXT}>warm: rises</text></Diagram>;
 }
 function HeatPic() {
-  return <Diagram label="Conduction, convection, radiation"><rect x="8" y="34" width="44" height="14" fill="#D9534F" /><rect x="8" y="48" width="44" height="14" fill="#F4A259" /><text x="30" y="76" {...DIAGRAM_TEXT}>touch</text><path d="M62 70 V32 H102 V70" fill="none" stroke="#2E2E2E" strokeWidth="1.2" /><path d="M72 62 C72 44 92 44 92 62" fill="none" stroke="#D9534F" strokeWidth="1.4" markerEnd="url(#eduArrow)" /><text x="82" y="82" {...DIAGRAM_TEXT}>flow</text><circle cx="130" cy="42" r="10" fill={C.gold} />{[0, 1, 2].map((i) => <line key={i} x1={118 + i * 12} y1="58" x2={114 + i * 12} y2="70" stroke={C.gold} strokeWidth="1.4" />)}<text x="130" y="82" {...DIAGRAM_TEXT}>rays</text></Diagram>;
+  return <Diagram label="Conduction, convection, radiation"><rect x="8" y="34" width="44" height="14" fill="#D9534F" /><rect x="8" y="48" width="44" height="14" fill="#F4A259" /><text x="30" y="76" {...DIAGRAM_TEXT}>touch</text><path d="M62 70 V32 H102 V70" fill="none" stroke="#2E2E2E" strokeWidth="1.2" /><path d="M72 62 C72 44 92 44 92 62" fill="none" stroke="#D9534F" strokeWidth="1.4" markerEnd="url(#eduArrow)" /><text x="82" y="82" {...DIAGRAM_TEXT}>flow</text><circle cx="130" cy="42" r="10" fill={B.gold} />{[0, 1, 2].map((i) => <line key={i} x1={118 + i * 12} y1="58" x2={114 + i * 12} y2="70" stroke={B.gold} strokeWidth="1.4" />)}<text x="130" y="82" {...DIAGRAM_TEXT}>rays</text></Diagram>;
 }
 function TimelinePic({ events = [] }) {
   const years = events.map((e) => e[0]); const lo = Math.min(...years); const hi = Math.max(...years); const span = Math.max(1, hi - lo);
@@ -1829,7 +1974,7 @@ function TimelinePic({ events = [] }) {
       {(() => {
         // Dots sit at their true years; labels spread out so close years do not pile up, joined by a thin leader.
         let last = -100; const placed = events.map(([y, t], i) => { const x = X(y); const lx = Math.max(x, last + 22); last = lx; return { x, lx, y, t, up: i % 2 === 0 }; });
-        return placed.map(({ x, lx, y, t, up }, i) => <g key={i}><line x1={x} y1="46" x2={x} y2="58" stroke="#2E2E2E" strokeWidth="1.2" /><circle cx={x} cy="52" r="3" fill={C.gold} stroke="#2E2E2E" strokeWidth="0.8" />{lx !== x && <line x1={x} y1={up ? 46 : 58} x2={lx} y2={up ? 44 : 64} stroke={C.muted} strokeWidth="0.6" />}<text x={lx} y={up ? 34 : 72} {...DIAGRAM_TEXT} fontSize="5.4" fontWeight="700">{label(y)}</text><text x={lx} y={up ? 42 : 80} {...DIAGRAM_TEXT} fontSize="4.4">{t}</text></g>);
+        return placed.map(({ x, lx, y, t, up }, i) => <g key={i}><line x1={x} y1="46" x2={x} y2="58" stroke="#2E2E2E" strokeWidth="1.2" /><circle cx={x} cy="52" r="3" fill={B.gold} stroke="#2E2E2E" strokeWidth="0.8" />{lx !== x && <line x1={x} y1={up ? 46 : 58} x2={lx} y2={up ? 44 : 64} stroke={B.muted} strokeWidth="0.6" />}<text x={lx} y={up ? 34 : 72} {...DIAGRAM_TEXT} fontSize="5.4" fontWeight="700">{label(y)}</text><text x={lx} y={up ? 42 : 80} {...DIAGRAM_TEXT} fontSize="4.4">{t}</text></g>);
       })()}
     </Diagram>
   );
@@ -1847,12 +1992,12 @@ function MapPic({ region = 'texas', spots = [] }) {
       {region === 'town' ? <g stroke="#FFFFFF" strokeWidth="6">{[20, 60, 100, 140].map((x) => <line key={`v${x}`} x1={x} y1="0" x2={x} y2="100" />)}{[16, 52, 88].map((y) => <line key={`h${y}`} x1="0" y1={y} x2="160" y2={y} />)}</g>
         : region === 'world' ? WORLD_SHAPES.map((pts, i) => <polygon key={i} points={pts.map((p) => p.join(',')).join(' ')} {...land} />)
         : <polygon points={MAP_SHAPES[region].map((p) => p.join(',')).join(' ')} {...land} />}
-      {spots.map(([x, y, t], i) => <g key={i}><circle cx={x} cy={y} r="3.4" fill={C.gold} stroke="#2E2E2E" strokeWidth="0.9" /><text x={x} y={y - 6} {...DIAGRAM_TEXT} fontSize="4.6" fontWeight="700">{t}</text></g>)}
+      {spots.map(([x, y, t], i) => <g key={i}><circle cx={x} cy={y} r="3.4" fill={B.gold} stroke="#2E2E2E" strokeWidth="0.9" /><text x={x} y={y - 6} {...DIAGRAM_TEXT} fontSize="4.6" fontWeight="700">{t}</text></g>)}
     </Diagram>
   );
 }
 function BranchesPic({ checks = false }) {
-  return <Diagram label="Three branches of government"><Box x="6" y="36" w="44" h="26" text="Congress" fill="#C9DDF5" /><Box x="58" y="36" w="44" h="26" text="President" fill="#FFF3C8" /><Box x="110" y="36" w="44" h="26" text="Courts" fill="#DCEBD3" /><text x="28" y="76" {...DIAGRAM_TEXT}>makes laws</text><text x="80" y="76" {...DIAGRAM_TEXT}>carries out</text><text x="132" y="76" {...DIAGRAM_TEXT}>judges</text>{checks && <><Arrow d="M28 34 C40 12 68 12 80 34" color={C.gold} /><Arrow d="M80 64 C92 88 120 88 132 64" color={C.gold} /><Arrow d="M132 34 C110 6 50 6 28 34" color={C.gold} /><text x="80" y="10" {...DIAGRAM_TEXT}>each checks the others</text></>}</Diagram>;
+  return <Diagram label="Three branches of government"><Box x="6" y="36" w="44" h="26" text="Congress" fill="#C9DDF5" /><Box x="58" y="36" w="44" h="26" text="President" fill="#FFF3C8" /><Box x="110" y="36" w="44" h="26" text="Courts" fill="#DCEBD3" /><text x="28" y="76" {...DIAGRAM_TEXT}>makes laws</text><text x="80" y="76" {...DIAGRAM_TEXT}>carries out</text><text x="132" y="76" {...DIAGRAM_TEXT}>judges</text>{checks && <><Arrow d="M28 34 C40 12 68 12 80 34" color={B.gold} /><Arrow d="M80 64 C92 88 120 88 132 64" color={B.gold} /><Arrow d="M132 34 C110 6 50 6 28 34" color={B.gold} /><text x="80" y="10" {...DIAGRAM_TEXT}>each checks the others</text></>}</Diagram>;
 }
 function StackPic({ levels = [] }) {
   // Up to eight levels fit: the boxes shrink a little with each level and never go below 40 wide or off the bottom.
@@ -1860,7 +2005,7 @@ function StackPic({ levels = [] }) {
   return <Diagram label={levels.join(' over ')}>{levels.map((t, i) => <Box key={i} x={30 + i * (shrink / 2)} y={8 + i * gap} w={Math.max(40, 100 - i * shrink)} h={h} text={t} fill={['#C9DDF5', '#FFF3C8', '#DCEBD3', '#F6C9C4'][i % 4]} />)}</Diagram>;
 }
 function CompassPic() {
-  return <Diagram label="A compass rose"><circle cx="80" cy="50" r="34" fill="#FFFFFF" stroke="#2E2E2E" strokeWidth="1.2" /><polygon points="80,18 86,50 80,82 74,50" fill={C.gold} stroke="#2E2E2E" strokeWidth="0.8" /><polygon points="48,50 80,44 112,50 80,56" fill="#C9DDF5" stroke="#2E2E2E" strokeWidth="0.8" /><text x="80" y="10" {...DIAGRAM_TEXT} fontSize="7">N</text><text x="80" y="94" {...DIAGRAM_TEXT} fontSize="7">S</text><text x="122" y="52" {...DIAGRAM_TEXT} fontSize="7">E</text><text x="38" y="52" {...DIAGRAM_TEXT} fontSize="7">W</text></Diagram>;
+  return <Diagram label="A compass rose"><circle cx="80" cy="50" r="34" fill="#FFFFFF" stroke="#2E2E2E" strokeWidth="1.2" /><polygon points="80,18 86,50 80,82 74,50" fill={B.gold} stroke="#2E2E2E" strokeWidth="0.8" /><polygon points="48,50 80,44 112,50 80,56" fill="#C9DDF5" stroke="#2E2E2E" strokeWidth="0.8" /><text x="80" y="10" {...DIAGRAM_TEXT} fontSize="7">N</text><text x="80" y="94" {...DIAGRAM_TEXT} fontSize="7">S</text><text x="122" y="52" {...DIAGRAM_TEXT} fontSize="7">E</text><text x="38" y="52" {...DIAGRAM_TEXT} fontSize="7">W</text></Diagram>;
 }
 function FlagPic({ stars = false, texas = false }) {
   if (texas) return <Diagram label="The Texas flag"><rect x="20" y="16" width="120" height="68" fill="#FFFFFF" stroke="#2E2E2E" strokeWidth="1" /><rect x="20" y="16" width="40" height="68" fill="#2B4C8C" /><rect x="60" y="50" width="80" height="34" fill="#D9534F" /><BigStarSmall x={40} y={50} /></Diagram>;
@@ -1909,7 +2054,7 @@ function PeriodicPic({ highlight = [], period = null, group = null }) {
   );
 }
 // ---- Graduation certificates. Four templates drawn in code on one landscape sheet (1600 by 1100):
-// the EduSphere mark, the student's name as the educator types it, the grade, and room for 0 to 3
+// The Wise Human mark, the student's name as the educator types it, the grade, and room for 0 to 3
 // photos. A photo is read into memory for the sheet and never written anywhere by the app; the
 // educator prints or saves the finished sheet and that is the only copy.
 const CERT_TEMPLATES = [
@@ -2028,7 +2173,7 @@ const TOUR = [
   ['Lessons, Stories, Practice, Mastery', 'lesson-card', 'lesson', 'right-edge-top', <>We combine mastery-based learning, spaced repetition, story-based learning, reflection questions, images and games to help information stick.<br /><br />Mastery requires continuous proof of competence over time. Modules are presented multiple times across multiple days and even when a student masters a subject, they'll continue to be exposed through "memory checks."<br /><br />Educators see detailed summaries along the way.</>],
   ['Backups live on this device', 'backup', null, 'over-buttons', <>A backup file automatically downloads to your device when a student taps <em>Exit</em> or, when an educator makes changes and <em>signs out</em>.<br /><br />We still recommend periodic manual backups to a shared drive folder which protects you against lost or broken devices.<br /><br />One file restores everything on any device.</>],
   ['Wonder Questions', 'wonder', null, 'right-mid', <>Wonder questions are deep, thought-provoking questions sprinkled between learning modules. They're designed to promote curiosity, reflection and critical thinking and once a student finds themselves failing modules, the questions are re-prioritized to cover emotional resilience and frame failure as an effective way to learn.<br /><br />Students only see the questions you approve.</>],
-  ['Life skills', 'life', null, 'left', <>EDUSphere is designed to make learning more efficient. Our curated list of practical life skills is a perfect way to fill the time you gain back.<br /><br />You'll find helpful skills for every age group!</>],
+  ['Life skills', 'life', null, 'left', <>The Wise Human is designed to make learning more efficient. Our curated list of practical life skills is a perfect way to fill the time you gain back.<br /><br />You'll find helpful skills for every age group!</>],
   ['Reading', 'reading', null, 'left', <>Need direction finding books for various age groups? We've got you covered! Our reading list is quite extensive.</>],
   ['Experiments', 'experiments', null, 'right', <>Science is way more fun when it's tangible. We've got experiment ideas for every age group!</>],
   ['Student Summaries', 'rows', 'class', 'over-second', <>Every student has a personalized report. Whether you want to see what they've done that day, that week or from the very beginning, we've got you covered! Every module they practice, every story they read, every attempt they make, even their level of confidence on any given topic is continually updated in plain English.<br /><br />Print weekly summaries, add personalized notes, practice missed questions and more!<br /><br />Have more than one student? <strong>Who Needs Help</strong> let's you know who might need a little guidance.</>],
@@ -2065,7 +2210,7 @@ function LoadingWord() {
 function StoryThumb({ serial }) {
   const present = typeof window !== 'undefined' && Array.isArray(window.__eduArt) && serial && window.__eduArt.includes(serial);
   return (
-    <div aria-hidden="true" style={{ width: 52, height: 52, flex: '0 0 52px', borderRadius: 10, overflow: 'hidden', border: `1px solid ${C.line}`, background: '#FAFBF8', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+    <div aria-hidden="true" style={{ width: 52, height: 52, flex: '0 0 52px', borderRadius: 10, overflow: 'hidden', border: `1px solid ${C.line}`, background: C.surface, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
       {present ? <img src={`art/stories/${serial}.webp`} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <span style={{ fontSize: 11, fontWeight: 700, color: C.muted }}>{serial || ''}</span>}
     </div>
   );
@@ -2078,9 +2223,9 @@ function StoryArt({ serial, alt, fallback = null }) {
   return (
     <div style={{ margin: '0 0 14px' }}>
       {!missing && <img src={`art/stories/${serial}.webp`} alt={alt} loading="lazy" onError={() => setMissing(true)} style={{ display: 'block', width: '100%', borderRadius: 12 }} />}
-      {missing && fallback && <div style={{ padding: '4px 0 0' }}><Picture visual={fallback} /><p style={{ margin: '4px 0 0', fontSize: 12, color: C.muted, textAlign: 'center' }}>Illustration {serial} to come</p></div>}
-      {missing && !fallback && (
-        <div className="edu-art-placeholder" aria-label={`Illustration ${serial} to come`} style={{ aspectRatio: '4 / 3', borderRadius: 12, border: `2px dashed ${C.muted}`, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 6, color: C.muted, background: 'rgba(255,255,255,0.5)' }}>
+      {missing && fallback && !(C.mode === 'dark') && <div style={{ padding: '4px 0 0' }}><Picture visual={fallback} /><p style={{ margin: '4px 0 0', fontSize: 12, color: C.muted, textAlign: 'center' }}>Illustration {serial} to come</p></div>}
+      {missing && (!fallback || C.mode === 'dark') && (
+        <div className="edu-art-placeholder" aria-label={`Illustration ${serial} to come`} style={{ aspectRatio: '4 / 3', borderRadius: 12, border: `2px dashed ${C.muted}`, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 6, color: C.muted, background: C.veil }}>
           <svg viewBox="0 0 24 24" width="34" height="34" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2" fill="none" stroke="currentColor" strokeWidth="1.6" /><circle cx="8.5" cy="9.5" r="1.8" fill="currentColor" /><path d="M4 18l5-5 4 4 3-3 4 4" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" /></svg>
           <span style={{ fontSize: 13, fontWeight: 600, letterSpacing: 0.5 }}>Illustration {serial}</span>
         </div>
@@ -2129,7 +2274,7 @@ function StoryBody({ story, pace: paceDefault = null, part = null }) {
   };
   const reading = stopRef.current !== null && readingAt >= -1 && stopRef.current;
   return (
-    <div ref={cardRef} style={{ ...card, background: '#FFF8E8', borderColor: '#F1E3BE' }}>
+    <div ref={cardRef} style={{ ...card, background: C.paper, borderColor: C.paperLine }}>
       {head && <p style={{ margin: '0 0 8px', fontSize: 22, fontWeight: 700, textAlign: 'center' }}>{titleCase(story.title)}</p>}
       {head && <div className={`edu-reveal${hasArt(story.art) ? ' edu-story-main' : ''}`}><StoryArt serial={story.art} alt={story.alt} fallback={story.diagram || null} /></div>}
       {story.words.map((t, i) => (i < from || i > to ? null : (
@@ -2149,7 +2294,7 @@ function StoryBody({ story, pace: paceDefault = null, part = null }) {
         <div style={{ display: 'flex', justifyContent: 'center', gap: 14, marginTop: 10 }}>
           {[['slow', 'Read slowly'], ['normal', 'Read at the usual speed']].map(([v, label]) => (
             <button key={v} type="button" aria-label={label} aria-pressed={pace === v} onClick={() => { setPace(v); savePace(v); if (stopRef.current) { stopRef.current(); stopRef.current = null; setReadingAt(-1); } }}
-              style={{ width: 56, height: 40, borderRadius: 999, border: `2px solid ${C.green}`, background: pace === v ? C.green : C.surface, color: pace === v ? '#FFFFFF' : C.green, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', padding: 0 }}>
+              style={{ width: 56, height: 40, borderRadius: 999, border: `2px solid ${C.green}`, background: pace === v ? C.green : C.surface, color: pace === v ? C.onAccent : C.green, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', padding: 0 }}>
               <PaceGlyph kind={v} />
             </button>
           ))}
@@ -2177,7 +2322,7 @@ function SegToggle({ options, value, onChange, ariaLabel, size = 'normal' }) {
       <div style={{ display: 'flex', width: 'min(340px, 100%)', border: `2px solid ${C.green}`, borderRadius: 6, overflow: 'hidden' }}>
         {options.map(([key, label], i) => (
           <button key={key} type="button" onClick={() => onChange(key)} aria-pressed={value === key}
-            style={{ fontFamily: FONT, fontSize: size === 'big' ? 18 : size === 'small' ? 13 : 15, fontWeight: 600, flex: '1 1 0', padding: size === 'big' ? '15px 0' : '10px 0', cursor: 'pointer', border: 'none', borderLeft: i === 0 ? 'none' : `1px solid ${C.green}`, background: value === key ? C.green : C.surface, color: value === key ? '#fff' : C.green }}>{label}</button>
+            style={{ fontFamily: FONT, fontSize: size === 'big' ? 18 : size === 'small' ? 13 : 15, fontWeight: 600, flex: '1 1 0', padding: size === 'big' ? '15px 0' : '10px 0', cursor: 'pointer', border: 'none', borderLeft: i === 0 ? 'none' : `1px solid ${C.green}`, background: value === key ? C.green : C.surface, color: value === key ? C.onAccent : C.green }}>{label}</button>
         ))}
       </div>
     </div>
@@ -2186,19 +2331,21 @@ function SegToggle({ options, value, onChange, ariaLabel, size = 'normal' }) {
 
 // ---- Let's Play. Small games that need no words: each is a square drawn to fit, played with a
 // finger, a stylus or a mouse (pointer events only), and says "done" with a shower of stars.
-const GAME_BOX = { width: 'min(520px, 100%)', aspectRatio: '1 / 1', margin: '0 auto', position: 'relative', background: '#FFFFFF', border: `2px solid ${C.ink}`, borderRadius: 14, overflow: 'hidden', touchAction: 'none', userSelect: 'none', boxSizing: 'border-box' };
+const GAME_BOX = themed(() => ({ width: 'min(520px, 100%)', aspectRatio: '1 / 1', margin: '0 auto', position: 'relative', background: C.paperBoard, color: THEMES.light.ink, border: `2px solid ${C.mode === 'dark' ? C.green : C.ink}`, borderRadius: 14, overflow: 'hidden', touchAction: 'none', userSelect: 'none', boxSizing: 'border-box' }));
 const PAIR_ICONS = ['sun', 'fish', 'tree', 'flower', 'moon', 'bird', 'cup', 'drop'];
 // A small seeded random so a round is the same shuffle on every device, and "play again" is a new one.
 // (shuffle itself comes from logic.mjs: shuffle(rng, list).)
 function lcg(seed) { let x = seed >>> 0; return () => { x = (x * 1664525 + 1013904223) >>> 0; return x / 4294967296; }; }
 // Where a pointer is inside an element, in that element's own 0 to 100 box.
 function boxPoint(el, e) { const b = el.getBoundingClientRect(); return [((e.clientX - b.left) / b.width) * 100, ((e.clientY - b.top) / b.height) * 100]; }
+// Games are played on a paper board (white in both themes), so everything drawn on it uses the light palette, B (Mikey's
+// laptop, 2026-09-24: in the dark theme the board's words had turned ivory on white).
 function Done({ show }) {
   if (!show) return null;
   return (
     <div className="edu-cheer" style={{ position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', pointerEvents: 'none' }}>
       <StarBurst />
-      <svg viewBox="0 0 24 24" width="120" height="120" role="img" aria-label="Done"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4l-5.9 3.1 1.2-6.5L2.5 9.4l6.6-.9z" fill={C.gold} stroke="#2E2E2E" strokeWidth="1.2" strokeLinejoin="round" /></svg>
+      <svg viewBox="0 0 24 24" width="120" height="120" role="img" aria-label="Done"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4l-5.9 3.1 1.2-6.5L2.5 9.4l6.6-.9z" fill={B.gold} stroke="#2E2E2E" strokeWidth="1.2" strokeLinejoin="round" /></svg>
     </div>
   );
 }
@@ -2212,12 +2359,12 @@ function DotsGame({ game, round }) {
   const drawn = dots.slice(0, next).concat(done ? [dots[0]] : []);
   const small = 1;                                                    // every picture keeps its dots DOT_GAP apart, so nothing needs to shrink
   return (
-    <div className="edu-game-box" style={GAME_BOX}>
+    <div className="edu-game-box" style={{ ...GAME_BOX }}>
       <svg viewBox="0 0 100 100" width="100%" height="100%" style={{ display: 'block' }}>
-        <polyline points={drawn.map((d) => d.join(',')).join(' ')} fill="none" stroke={C.green} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+        <polyline points={drawn.map((d) => d.join(',')).join(' ')} fill="none" stroke={B.green} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
         {dots.map(([x, y], i) => (
           <g key={i} onPointerDown={() => tap(i)} style={{ cursor: 'pointer' }} className={wrong === i ? 'edu-wobble' : undefined}>
-            <circle cx={x} cy={y} r={(i === next ? 5.2 : 4.2) * small} fill={i < next ? C.green : i === next ? C.gold : '#FFFFFF'} stroke="#2E2E2E" strokeWidth="0.9" />
+            <circle cx={x} cy={y} r={(i === next ? 5.2 : 4.2) * small} fill={i < next ? B.green : i === next ? B.gold : '#FFFFFF'} stroke="#2E2E2E" strokeWidth="0.9" />
             <text x={x} y={y} fontSize={4.6 * small} fontWeight="700" fontFamily={FONT} textAnchor="middle" dominantBaseline="central" fill={i < next ? '#FFFFFF' : '#2E2E2E'}>{i + 1}</text>
           </g>
         ))}
@@ -2247,8 +2394,8 @@ function PairsGame({ game, round }) {
       <div className={`edu-pairs-grid${cols === 3 ? ' edu-pairs-three' : ''}${game.deck ? ' edu-pairs-text' : ''}`} style={{ display: 'grid', gap: 10 }}>
         {cards.map((ic, i) => { const shown = up.includes(i) || found.includes(i); return (
           <button key={i} type="button" onClick={() => flip(i)} aria-label={shown ? (typeof ic === 'string' ? ic : ic.text) : 'Card'} className="edu-press"
-            style={{ aspectRatio: '1 / 1', minWidth: 0, minHeight: 64, borderRadius: 12, border: `2px solid ${shown ? C.green : C.ink}`, background: shown ? '#FFFFFF' : C.greenSoft, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 4, overflowWrap: 'anywhere' }}>
-            {shown ? (typeof ic === 'string' ? <IconPic name={ic} size={60} /> : <span style={{ fontFamily: FONT, fontSize: ic.text.length > 10 ? 13 : 16, fontWeight: 700, color: C.ink, padding: 2, textAlign: 'center', lineHeight: 1.2 }}>{ic.text}</span>) : <span style={{ width: 26, height: 26, borderRadius: 13, background: C.green, opacity: 0.35 }} />}
+            style={{ aspectRatio: '1 / 1', minWidth: 0, minHeight: 64, borderRadius: 12, border: `2px solid ${shown ? B.green : B.ink}`, background: shown ? '#FFFFFF' : B.greenSoft, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 4, overflowWrap: 'anywhere' }}>
+            {shown ? (typeof ic === 'string' ? <IconPic name={ic} size={60} /> : <span style={{ fontFamily: FONT, fontSize: ic.text.length > 10 ? 13 : 16, fontWeight: 700, color: B.ink, padding: 2, textAlign: 'center', lineHeight: 1.2 }}>{ic.text}</span>) : <span style={{ width: 26, height: 26, borderRadius: 13, background: B.green, opacity: 0.35 }} />}
           </button>); })}
       </div>
       <Done show={found.length === cards.length} />
@@ -2259,7 +2406,7 @@ function PairsGame({ game, round }) {
 function SortGame({ game, round }) {
   const items = useMemo(() => {
     const rnd = lcg(round * 104729 + 5); const shapes = ['circle', 'square', 'triangle'];
-    const list = [0, 1, 2, 3, 4, 5].map((i) => (game.by === 'size' ? { id: i, bin: i % 2, shape: shapes[i % 3], colour: C.green, big: i % 2 === 0 } : { id: i, bin: i % 2, shape: shapes[i % 3], colour: i % 2 === 0 ? SWATCH.red : SWATCH.blue, big: false }));
+    const list = [0, 1, 2, 3, 4, 5].map((i) => (game.by === 'size' ? { id: i, bin: i % 2, shape: shapes[i % 3], colour: B.green, big: i % 2 === 0 } : { id: i, bin: i % 2, shape: shapes[i % 3], colour: i % 2 === 0 ? SWATCH.red : SWATCH.blue, big: false }));
     return shuffle(rnd, list).map((it, k) => ({ ...it, x: 18 + (k % 3) * 32, y: 16 + Math.floor(k / 3) * 24 }));
   }, [game, round]);
   const [placed, setPlaced] = useState({}); const [drag, setDrag] = useState(null); const boxRef = useRef(null);
@@ -2270,10 +2417,10 @@ function SortGame({ game, round }) {
   const inBin = (bin) => items.filter((it) => placed[it.id] === bin);
   const spot = (it) => { const p = placed[it.id]; if (p !== undefined) return [(p === 0 ? 12 : 60) + inBin(p).indexOf(it) * 12, 84]; if (drag && drag.id === it.id) return [drag.x, drag.y]; return [it.x, it.y]; };
   return (
-    <div ref={boxRef} className="edu-game-box" style={GAME_BOX} onPointerMove={move} onPointerUp={drop} onPointerCancel={drop}>
+    <div ref={boxRef} className="edu-game-box" style={{ ...GAME_BOX }} onPointerMove={move} onPointerUp={drop} onPointerCancel={drop}>
       {[0, 1].map((bin) => (
-        <div key={bin} style={{ position: 'absolute', left: bin === 0 ? '4%' : '52%', top: '66%', width: '44%', height: '30%', border: `3px dashed ${C.muted}`, borderRadius: 14, boxSizing: 'border-box' }}>
-          <span style={{ position: 'absolute', left: 6, top: 4, opacity: 0.55, lineHeight: 0 }}>{game.by === 'size' ? <ShapePic name="circle" size={bin === 0 ? 30 : 16} color={C.muted} /> : <Swatch colour={bin === 0 ? 'red' : 'blue'} size={22} />}</span>
+        <div key={bin} style={{ position: 'absolute', left: bin === 0 ? '4%' : '52%', top: '66%', width: '44%', height: '30%', border: `3px dashed ${B.muted}`, borderRadius: 14, boxSizing: 'border-box' }}>
+          <span style={{ position: 'absolute', left: 6, top: 4, opacity: 0.55, lineHeight: 0 }}>{game.by === 'size' ? <ShapePic name="circle" size={bin === 0 ? 30 : 16} color={B.muted} /> : <Swatch colour={bin === 0 ? 'red' : 'blue'} size={22} />}</span>
         </div>
       ))}
       {items.map((it) => { const [x, y] = spot(it); const stuck = placed[it.id] !== undefined; return (
@@ -2311,10 +2458,10 @@ function MazeGame({ game, round }) {
   };
   const s = 100 / n; const mid = (i) => i * s + s / 2;
   return (
-    <div ref={boxRef} className="edu-game-box" style={GAME_BOX} onPointerDown={(e) => { boxRef.current.setPointerCapture(e.pointerId); move(e); }} onPointerMove={move}>
+    <div ref={boxRef} className="edu-game-box" style={{ ...GAME_BOX }} onPointerDown={(e) => { boxRef.current.setPointerCapture(e.pointerId); move(e); }} onPointerMove={move}>
       <svg viewBox="0 0 100 100" width="100%" height="100%" style={{ display: 'block' }}>
         {/* A small gold star marks the way out (2026-09-23, Mikey): the instructions always said star, and now there is one. */}
-        <g transform={`translate(${(n - 1) * s + s / 2} ${(n - 1) * s + s / 2}) scale(${(s / 24) * 0.78})`}><path d="M0-9.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L0 5.4l-5.9 3.1 1.2-6.5L-9.5-2.6l6.6-.9z" fill={C.gold} stroke="#2E2E2E" strokeWidth="1.4" strokeLinejoin="round" /></g>
+        <g transform={`translate(${(n - 1) * s + s / 2} ${(n - 1) * s + s / 2}) scale(${(s / 24) * 0.78})`}><path d="M0-9.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L0 5.4l-5.9 3.1 1.2-6.5L-9.5-2.6l6.6-.9z" fill={B.gold} stroke="#2E2E2E" strokeWidth="1.4" strokeLinejoin="round" /></g>
         {cells.map((row, r) => row.map((cell, c) => (
           <g key={`${r}-${c}`} stroke="#2E2E2E" strokeWidth={n > 9 ? 1 : 1.4} strokeLinecap="round">
             {cell.t && <line x1={c * s} y1={r * s} x2={(c + 1) * s} y2={r * s} />}
@@ -2323,8 +2470,8 @@ function MazeGame({ game, round }) {
             {cell.r && <line x1={(c + 1) * s} y1={r * s} x2={(c + 1) * s} y2={(r + 1) * s} />}
           </g>
         )))}
-        <polyline points={trail.map(([r, c]) => `${mid(c)},${mid(r)}`).join(' ')} fill="none" stroke={C.green} strokeWidth={s * 0.3} strokeOpacity="0.4" strokeLinecap="round" strokeLinejoin="round" />
-        <circle cx={mid(pc)} cy={mid(pr)} r={s * 0.3} fill={C.gold} stroke="#2E2E2E" strokeWidth="0.9" />
+        <polyline points={trail.map(([r, c]) => `${mid(c)},${mid(r)}`).join(' ')} fill="none" stroke={B.green} strokeWidth={s * 0.3} strokeOpacity="0.4" strokeLinecap="round" strokeLinejoin="round" />
+        <circle cx={mid(pc)} cy={mid(pr)} r={s * 0.3} fill={B.gold} stroke="#2E2E2E" strokeWidth="0.9" />
       </svg>
       <Done show={done} />
     </div>
@@ -2334,7 +2481,7 @@ function MazeGame({ game, round }) {
 function Scene() {
   return (
     <g>
-      <rect x="0" y="0" width="100" height="100" fill="#DDEFF8" /><circle cx="78" cy="22" r="11" fill={C.gold} />
+      <rect x="0" y="0" width="100" height="100" fill="#DDEFF8" /><circle cx="78" cy="22" r="11" fill={B.gold} />
       <rect x="0" y="66" width="100" height="34" fill="#9ACD32" />
       <rect x="26" y="40" width="34" height="30" fill="#F4A259" stroke="#2E2E2E" strokeWidth="1.2" /><polygon points="22,42 43,22 64,42" fill="#C9573E" stroke="#2E2E2E" strokeWidth="1.2" />
       <rect x="38" y="52" width="10" height="18" fill="#8B5A2B" /><rect x="72" y="50" width="8" height="24" fill="#8B5A2B" /><circle cx="76" cy="42" r="14" fill="#5BA84A" stroke="#2E2E2E" strokeWidth="1.2" />
@@ -2358,16 +2505,16 @@ function JigsawGame({ game, round }) {
   const move = (e) => { if (!drag) return; const [x, y] = boxPoint(boxRef.current, e); setDrag({ ...drag, x, y, moved: drag.moved || Math.hypot(x - drag.x0, y - drag.y0) > 3 }); };
   const drop = () => { if (!drag) return; if (drag.moved) { swap(drag.from, slotAt(drag.x, drag.y)); setPick(-1); } else if (pick < 0) setPick(drag.from); else { swap(pick, drag.from); setPick(-1); } setDrag(null); };
   return (
-    <div ref={boxRef} className="edu-game-box" style={GAME_BOX} onPointerMove={move} onPointerUp={drop} onPointerCancel={drop}>
+    <div ref={boxRef} className="edu-game-box" style={{ ...GAME_BOX }} onPointerMove={move} onPointerUp={drop} onPointerCancel={drop}>
       <div style={{ display: 'grid', gridTemplateColumns: `repeat(${n}, 1fr)`, gap: 3, padding: 3, height: '100%', boxSizing: 'border-box' }}>
         {order.map((piece, slot) => (
-          <button key={slot} type="button" aria-label={`Piece ${piece + 1}`} onPointerDown={(e) => start(slot, e)} style={{ padding: 0, border: `3px solid ${pick === slot ? C.gold : C.ink}`, borderRadius: 6, background: '#FFFFFF', cursor: 'grab', overflow: 'hidden', touchAction: 'none', opacity: drag && drag.moved && drag.from === slot ? 0.3 : 1 }}>
+          <button key={slot} type="button" aria-label={`Piece ${piece + 1}`} onPointerDown={(e) => start(slot, e)} style={{ padding: 0, border: `3px solid ${pick === slot ? B.gold : B.ink}`, borderRadius: 6, background: '#FFFFFF', cursor: 'grab', overflow: 'hidden', touchAction: 'none', opacity: drag && drag.moved && drag.from === slot ? 0.3 : 1 }}>
             <svg viewBox={`${(piece % n) * s} ${Math.floor(piece / n) * s} ${s} ${s}`} width="100%" height="100%" style={{ display: 'block', pointerEvents: 'none' }} preserveAspectRatio="none"><Scene /></svg>
           </button>
         ))}
       </div>
       {drag && drag.moved && (
-        <div aria-hidden="true" style={{ position: 'absolute', left: `${drag.x}%`, top: `${drag.y}%`, width: `${s}%`, height: `${s}%`, transform: 'translate(-50%, -50%)', pointerEvents: 'none', border: `3px solid ${C.gold}`, borderRadius: 6, background: '#FFFFFF', boxSizing: 'border-box', overflow: 'hidden', boxShadow: '0 6px 14px rgba(0,0,0,0.25)' }}>
+        <div aria-hidden="true" style={{ position: 'absolute', left: `${drag.x}%`, top: `${drag.y}%`, width: `${s}%`, height: `${s}%`, transform: 'translate(-50%, -50%)', pointerEvents: 'none', border: `3px solid ${B.gold}`, borderRadius: 6, background: '#FFFFFF', boxSizing: 'border-box', overflow: 'hidden', boxShadow: '0 6px 14px rgba(0,0,0,0.25)' }}>
           <svg viewBox={`${(order[drag.from] % n) * s} ${Math.floor(order[drag.from] / n) * s} ${s} ${s}`} width="100%" height="100%" style={{ display: 'block' }} preserveAspectRatio="none"><Scene /></svg>
         </div>
       )}
@@ -2404,13 +2551,13 @@ function PongGame({ round, onScore = null }) {
   }, [round]);
   const move = (e) => { if (!state.current) return; const [x] = boxPoint(boxRef.current, e); state.current.paddle = Math.max(12, Math.min(88, x)); };
   return (
-    <div ref={boxRef} className="edu-game-box" style={GAME_BOX} onPointerMove={move} onPointerDown={move}>
+    <div ref={boxRef} className="edu-game-box" style={{ ...GAME_BOX }} onPointerMove={move} onPointerDown={move}>
       <svg viewBox="0 0 100 100" width="100%" height="100%" style={{ display: 'block' }}>
-        <text x="50" y="16" fontSize="14" fontWeight="800" fontFamily={FONT} textAnchor="middle" fill={C.line}>{score}</text>
-        <circle className="edu-pong-ball" cx="50" cy="30" r="2.6" fill={C.gold} stroke="#2E2E2E" strokeWidth="0.8" />
-        <rect className="edu-pong-paddle" x="38" y="93" width="24" height="3.5" rx="1.75" fill={C.green} />
+        <text x="50" y="16" fontSize="14" fontWeight="800" fontFamily={FONT} textAnchor="middle" fill={B.line}>{score}</text>
+        <circle className="edu-pong-ball" cx="50" cy="30" r="2.6" fill={B.gold} stroke="#2E2E2E" strokeWidth="0.8" />
+        <rect className="edu-pong-paddle" x="38" y="93" width="24" height="3.5" rx="1.75" fill={B.green} />
       </svg>
-      {best > 0 && <div style={{ position: 'absolute', top: 8, right: 12, fontSize: 15, color: C.muted }}>★ {best}</div>}
+      {best > 0 && <div style={{ position: 'absolute', top: 8, right: 12, fontSize: 15, color: B.muted }}>★ {best}</div>}
     </div>
   );
 }
@@ -2441,23 +2588,23 @@ function SprintGame({ game, round, modules = [], onScore = null, best = null }) 
   useEffect(() => { if (left <= 0) return undefined; const t = setTimeout(() => setLeft(left - 1), 1000); return () => clearTimeout(t); }, [left]);
   // Time is up: a higher score is a new best; the right count and the longest streak are kept beside it.
   useEffect(() => { if (left > 0) return; setEnded({ newHigh: points > 0 && (best === null || best === undefined || points > best) }); if (onScore && points > 0) onScore(points, 'high', { right, streak: bestStreak }); }, [left]);
-  if (!pool.length) return <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 16 }}><p style={{ margin: 0, textAlign: 'center', color: C.muted }}>Nothing to ask yet. Quick fire uses lessons from grade 3 up, so open one of those first.</p></div>;
+  if (!pool.length) return <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 16 }}><p style={{ margin: 0, textAlign: 'center', color: B.muted }}>Nothing to ask yet. Quick fire uses lessons from grade 3 up, so open one of those first.</p></div>;
   if (left <= 0 || !q) return (
     <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 16, textAlign: 'center' }}>
       <p style={{ margin: '0 0 4px', fontSize: 22, fontWeight: 700 }}>{points} {points === 1 ? 'point' : 'points'}</p>
-      <p style={{ margin: '0 0 10px', color: C.muted }}>{right} right · longest streak {bestStreak}</p>
-      {ended && ended.newHigh && <p style={{ margin: '0 0 10px', fontSize: 17, fontWeight: 700, color: C.green }}>New High Score! See if you can beat it by trying again.</p>}
-      <p style={{ margin: 0, color: C.muted }}>Time. Tap the round arrow to go again.</p>
+      <p style={{ margin: '0 0 10px', color: B.muted }}>{right} right · longest streak {bestStreak}</p>
+      {ended && ended.newHigh && <p style={{ margin: '0 0 10px', fontSize: 17, fontWeight: 700, color: B.green }}>New High Score! See if you can beat it by trying again.</p>}
+      <p style={{ margin: 0, color: B.muted }}>Time. Tap the round arrow to go again.</p>
     </div>
   );
   // A right answer is a point and a wrong one costs a point (never below zero), so tapping fast at random earns nothing.
   const answer = (choice) => { const ok = choice === q.answer; setFlash(ok ? 'right' : 'wrong'); setTimeout(() => setFlash(null), 250); asked.current = [...asked.current, q.prompt]; if (ok) { setPoints(points + 1); setRight(right + 1); setStreak(streak + 1); setBestStreak(Math.max(bestStreak, streak + 1)); } else { setPoints(Math.max(0, points - 1)); setStreak(0); } setI(i + 1); };
   return (
     <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14, background: flash === 'right' ? '#EEF5F0' : flash === 'wrong' ? '#FAECE6' : '#fff', transition: 'background 200ms' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: C.muted, marginBottom: 8 }}><span>{left}s</span><span>{points} {points === 1 ? 'point' : 'points'}{streak >= 3 ? ` · streak ${streak}` : ''}</span></div>
-      {q.story && <p style={{ margin: '0 0 4px', fontSize: 15, color: C.muted, textAlign: 'center' }}>{q.story}</p>}
+      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>{left}s</span><span>{points} {points === 1 ? 'point' : 'points'}{streak >= 3 ? ` · streak ${streak}` : ''}</span></div>
+      {q.story && <p style={{ margin: '0 0 4px', fontSize: 15, color: B.muted, textAlign: 'center' }}>{q.story}</p>}
       <p style={{ margin: '0 0 10px', fontSize: 17, fontWeight: 600, textAlign: 'center' }}>{q.prompt}</p>
-      <div style={{ display: 'grid', gap: 8 }}>{q.choices.map((c) => <Btn key={c} kind="secondary" onClick={() => answer(c)} style={{ minHeight: 42, fontSize: 15 }}>{c}</Btn>)}</div>
+      <div style={{ display: 'grid', gap: 8 }}>{q.choices.map((c) => <Btn pal={B} key={c} kind="secondary" onClick={() => answer(c)} style={{ minHeight: 42, fontSize: 15 }}>{c}</Btn>)}</div>
     </div>
   );
 }
@@ -2489,12 +2636,12 @@ function OrderGame({ game, round, onScore = null }) {
   };
   return (
     <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: C.muted, marginBottom: 6 }}><span>{seq.title}</span><span>{ticks}s · {Math.min(k + 1, sets)} of {sets}</span></div>
+      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 6 }}><span>{seq.title}</span><span>{ticks}s · {Math.min(k + 1, sets)} of {sets}</span></div>
       {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>All in order in {ticks} seconds. Tap the round arrow for a new set.</p> : (
         <div style={{ display: 'grid', gap: 8 }}>
           {items.map((it) => { const at = placed.indexOf(it.idx); const isPlaced = at >= 0; const shake = wrong.includes(it.idx); return (
-            <button key={it.idx} type="button" onClick={() => tap(it)} aria-pressed={isPlaced} className={`edu-press${shake ? ' edu-wobble' : ''}`} style={{ fontFamily: FONT, fontSize: 15, textAlign: 'left', padding: '10px 12px', borderRadius: 10, border: `2px solid ${isPlaced ? C.green : shake ? C.clay : C.line}`, background: isPlaced ? C.greenSoft : '#fff', color: C.ink, cursor: 'pointer', display: 'flex', gap: 10, alignItems: 'center' }}>
-              <span style={{ width: 24, height: 24, borderRadius: 12, background: isPlaced ? C.green : C.line, color: '#fff', fontSize: 13, fontWeight: 700, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flex: '0 0 24px' }}>{isPlaced ? at + 1 : ''}</span>{it.t}
+            <button key={it.idx} type="button" onClick={() => tap(it)} aria-pressed={isPlaced} className={`edu-press${shake ? ' edu-wobble' : ''}`} style={{ fontFamily: FONT, fontSize: 15, textAlign: 'left', padding: '10px 12px', borderRadius: 10, border: `2px solid ${isPlaced ? B.green : shake ? B.clay : B.line}`, background: isPlaced ? B.greenSoft : '#fff', color: B.ink, cursor: 'pointer', display: 'flex', gap: 10, alignItems: 'center' }}>
+              <span style={{ width: 24, height: 24, borderRadius: 12, background: isPlaced ? B.green : B.line, color: B.onAccent, fontSize: 13, fontWeight: 700, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flex: '0 0 24px' }}>{isPlaced ? at + 1 : ''}</span>{it.t}
             </button>); })}
         </div>
       )}
@@ -2504,7 +2651,7 @@ function OrderGame({ game, round, onScore = null }) {
 // A chip inside an SVG game: a drawn shape ('shape:kind:color') for the youngest, or a word in a rounded box.
 function SvgChip({ text, x, y, tone = null }) {
   const m = /^shape:([a-z]+):([a-z]+)$/.exec(text);
-  if (m) { const col = SWATCH[m[2]] || C.green; const r = 4.2; return m[1] === 'circle' ? <circle cx={x} cy={y} r={r} fill={col} /> : m[1] === 'square' ? <rect x={x - r} y={y - r} width={r * 2} height={r * 2} fill={col} /> : m[1] === 'diamond' ? <rect x={x - r} y={y - r} width={r * 2} height={r * 2} fill={col} transform={`rotate(45 ${x} ${y})`} /> : <polygon points={`${x},${y - r} ${x + r},${y + r} ${x - r},${y + r}`} fill={col} />; }
+  if (m) { const col = SWATCH[m[2]] || B.green; const r = 4.2; return m[1] === 'circle' ? <circle cx={x} cy={y} r={r} fill={col} /> : m[1] === 'square' ? <rect x={x - r} y={y - r} width={r * 2} height={r * 2} fill={col} /> : m[1] === 'diamond' ? <rect x={x - r} y={y - r} width={r * 2} height={r * 2} fill={col} transform={`rotate(45 ${x} ${y})`} /> : <polygon points={`${x},${y - r} ${x + r},${y + r} ${x - r},${y + r}`} fill={col} />; }
   const w = Math.max(9, text.length * 2.15 + 4);
   return <g><rect x={x - w / 2} y={y - 3.6} width={w} height={7.2} rx={2.4} fill={tone || '#FFFFFF'} stroke="#2E2E2E" strokeWidth="0.6" /><text x={x} y={y} fontSize="3.6" fontWeight="700" fontFamily={FONT} textAnchor="middle" dominantBaseline="central" fill="#2E2E2E">{text}</text></g>;
 }
@@ -2544,17 +2691,17 @@ function CatchGame({ game, round, onScore = null }) {
   if (done) return (
     <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 16, textAlign: 'center' }}>
       <p style={{ margin: '0 0 4px', fontSize: 22, fontWeight: 700 }}>{done.score} {done.score === 1 ? 'point' : 'points'}</p>
-      <p style={{ margin: '0 0 10px', color: C.muted }}>{done.caught} of {done.of} caught</p>
-      <p style={{ margin: 0, color: C.muted }}>Tap the round arrow to go again.</p>
+      <p style={{ margin: '0 0 10px', color: B.muted }}>{done.caught} of {done.of} caught</p>
+      <p style={{ margin: 0, color: B.muted }}>Tap the round arrow to go again.</p>
     </div>
   );
   return (
-    <div ref={boxRef} className="edu-game-box" style={GAME_BOX} onPointerMove={move} onPointerDown={move}>
+    <div ref={boxRef} className="edu-game-box" style={{ ...GAME_BOX }} onPointerMove={move} onPointerDown={move}>
       <svg viewBox="0 0 100 100" width="100%" height="100%" style={{ display: 'block' }}>
-        <text x="4" y="7" fontSize="4" fontWeight="700" fontFamily={FONT} fill={C.muted}>{score}</text>
-        <text x="96" y="7" fontSize="3.4" fontFamily={FONT} fill={C.muted} textAnchor="end">{deck.a.label}</text>
+        <text x="4" y="7" fontSize="4" fontWeight="700" fontFamily={FONT} fill={B.muted}>{score}</text>
+        <text x="96" y="7" fontSize="3.4" fontFamily={FONT} fill={B.muted} textAnchor="end">{deck.a.label}</text>
         {items.map((it) => <SvgChip key={it.id} text={it.text} x={it.x} y={it.y} />)}
-        <g className={shake ? 'edu-wobble' : undefined}><path d={`M${basket - 14} 88 L${basket - 11} 97 L${basket + 11} 97 L${basket + 14} 88`} fill={C.gold} stroke="#2E2E2E" strokeWidth="1" strokeLinejoin="round" /><rect x={basket - 15} y="86.5" width="30" height="3" rx="1.5" fill={C.green} /></g>
+        <g className={shake ? 'edu-wobble' : undefined}><path d={`M${basket - 14} 88 L${basket - 11} 97 L${basket + 11} 97 L${basket + 14} 88`} fill={B.gold} stroke="#2E2E2E" strokeWidth="1" strokeLinejoin="round" /><rect x={basket - 15} y="86.5" width="30" height="3" rx="1.5" fill={B.green} /></g>
       </svg>
     </div>
   );
@@ -2578,27 +2725,27 @@ function PathGame({ game, round, onScore = null }) {
   useEffect(() => { if (done) return undefined; const t = setInterval(() => setTicks((k) => k + 1), 1000); return () => clearInterval(t); }, [done]);
   useEffect(() => { if (done && onScore) onScore(ticks, 'low'); }, [done]);
   useEffect(() => { if (!bad) return undefined; const t = setTimeout(() => setBad(null), 450); return () => clearTimeout(t); }, [bad]);
-  const top = 6; const s = (100 - top) / n; const mid = (i) => i * s + s / 2; const midY = (i) => top + i * s + s / 2;
+  const top = 6; const s = (100 - top) / n; const left = (100 - n * s) / 2; const mid = (i) => left + i * s + s / 2; const midY = (i) => top + i * s + s / 2;   // centered across the board (it had hugged the left edge)
   const move = (e) => {
     if (done || !(e.buttons & 1)) return;
-    const [x, y] = boxPoint(boxRef.current, e); const c = Math.floor(x / s); const r = Math.floor((y - top) / s);
+    const [x, y] = boxPoint(boxRef.current, e); const c = Math.floor((x - left) / s); const r = Math.floor((y - top) / s);
     if (r < 0 || c < 0 || r >= n || c >= n || Math.abs(r - pr) + Math.abs(c - pc) !== 1) return;
     if (cells[r][c].yes) setTrail([...trail, [r, c]]); else setBad([r, c]);
   };
   const stepped = (r, c) => trail.some(([tr, tc]) => tr === r && tc === c);
   return (
-    <div ref={boxRef} className="edu-game-box" style={GAME_BOX} onPointerDown={(e) => { boxRef.current.setPointerCapture(e.pointerId); move(e); }} onPointerMove={move}>
+    <div ref={boxRef} className="edu-game-box" style={{ ...GAME_BOX }} onPointerDown={(e) => { boxRef.current.setPointerCapture(e.pointerId); move(e); }} onPointerMove={move}>
       <svg viewBox="0 0 100 100" width="100%" height="100%" style={{ display: 'block' }}>
         {cells.map((row, r) => row.map((cell, c) => (
           <g key={`${r}-${c}`}>
-            <rect x={c * s + 0.6} y={top + r * s + 0.6} width={s - 1.2} height={s - 1.2} rx="2" fill={bad && bad[0] === r && bad[1] === c ? '#F3C9BC' : stepped(r, c) ? C.greenSoft : '#F6F8F4'} stroke={C.line} strokeWidth="0.5" />
-            {r === n - 1 && c === n - 1 ? <g transform={`translate(${mid(c)} ${midY(r)}) scale(${(s / 24) * 0.7})`}><path d="M0-9.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L0 5.4l-5.9 3.1 1.2-6.5L-9.5-2.6l6.6-.9z" fill={C.gold} stroke="#2E2E2E" strokeWidth="1.4" strokeLinejoin="round" /></g> : <SvgChip text={cell.text} x={mid(c)} y={midY(r)} tone={stepped(r, c) ? C.greenSoft : null} />}
+            <rect x={left + c * s + 0.6} y={top + r * s + 0.6} width={s - 1.2} height={s - 1.2} rx="2" fill={bad && bad[0] === r && bad[1] === c ? '#F3C9BC' : stepped(r, c) ? B.greenSoft : '#F6F8F4'} stroke={B.line} strokeWidth="0.5" />
+            {r === n - 1 && c === n - 1 ? <g transform={`translate(${mid(c)} ${midY(r)}) scale(${(s / 24) * 0.7})`}><path d="M0-9.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L0 5.4l-5.9 3.1 1.2-6.5L-9.5-2.6l6.6-.9z" fill={B.gold} stroke="#2E2E2E" strokeWidth="1.4" strokeLinejoin="round" /></g> : <SvgChip text={cell.text} x={mid(c)} y={midY(r)} tone={stepped(r, c) ? B.greenSoft : null} />}
           </g>
         )))}
-        <polyline points={trail.map(([r, c]) => `${mid(c)},${midY(r)}`).join(' ')} fill="none" stroke={C.green} strokeWidth={s * 0.14} strokeOpacity="0.5" strokeLinecap="round" strokeLinejoin="round" />
-        <circle cx={mid(pc)} cy={midY(pr)} r={s * 0.17} fill={C.gold} stroke="#2E2E2E" strokeWidth="0.9" />
-        <text x="98" y="3.6" fontSize="3" fontFamily={FONT} fill={C.muted} textAnchor="end" dominantBaseline="central">{ticks}s</text>
-        <text x="2" y="3.6" fontSize="3" fontFamily={FONT} fill={C.muted} dominantBaseline="central">{deck.a.label}</text>
+        <polyline points={trail.map(([r, c]) => `${mid(c)},${midY(r)}`).join(' ')} fill="none" stroke={B.green} strokeWidth={s * 0.14} strokeOpacity="0.5" strokeLinecap="round" strokeLinejoin="round" />
+        <circle cx={mid(pc)} cy={midY(pr)} r={s * 0.17} fill={B.gold} stroke="#2E2E2E" strokeWidth="0.9" />
+        <text x="98" y="3.6" fontSize="3" fontFamily={FONT} fill={B.muted} textAnchor="end" dominantBaseline="central">{ticks}s</text>
+        <text x="2" y="3.6" fontSize="3" fontFamily={FONT} fill={B.muted} dominantBaseline="central">{deck.a.label}</text>
       </svg>
       <Done show={done} />
     </div>
@@ -2620,17 +2767,17 @@ function BucketsGame({ game, round, onScore = null }) {
   const inBin = (bin) => chips.filter((ch) => placed[ch.id] === bin);
   const spot = (ch) => { const p = placed[ch.id]; if (p !== undefined) { const k = inBin(p).indexOf(ch); return [(p === 0 ? 15 : 63) + (k % 2) * 20, 79 + Math.floor(k / 2) * 11]; } if (drag && drag.id === ch.id) return [drag.x, drag.y]; return [ch.x, ch.y]; };
   return (
-    <div ref={boxRef} className="edu-game-box" style={GAME_BOX} onPointerMove={move} onPointerUp={drop} onPointerCancel={drop}>
+    <div ref={boxRef} className="edu-game-box" style={{ ...GAME_BOX }} onPointerMove={move} onPointerUp={drop} onPointerCancel={drop}>
       {[0, 1].map((bin) => (
-        <div key={bin} style={{ position: 'absolute', left: bin === 0 ? '3%' : '52%', top: '66%', width: '45%', height: '31%', border: `3px dashed ${C.muted}`, borderRadius: 14, boxSizing: 'border-box' }}>
-          <span style={{ position: 'absolute', left: 0, right: 0, top: -22, textAlign: 'center', fontSize: 13, fontWeight: 700, color: C.muted }}>{bin === 0 ? deck.a.label : deck.b.label}</span>
+        <div key={bin} style={{ position: 'absolute', left: bin === 0 ? '3%' : '52%', top: '66%', width: '45%', height: '31%', border: `3px dashed ${B.muted}`, borderRadius: 14, boxSizing: 'border-box' }}>
+          <span style={{ position: 'absolute', left: 0, right: 0, top: -22, textAlign: 'center', fontSize: 13, fontWeight: 700, color: B.muted }}>{bin === 0 ? deck.a.label : deck.b.label}</span>
         </div>
       ))}
       {chips.map((ch) => { const [x, y] = spot(ch); const stuck = placed[ch.id] !== undefined; return (
-        <div key={ch.id} onPointerDown={(e) => start(ch, e)} className={wrong === ch.id ? 'edu-wobble' : undefined} style={{ position: 'absolute', left: `${x}%`, top: `${y}%`, transform: 'translate(-50%, -50%)', cursor: stuck ? 'default' : 'grab', touchAction: 'none', padding: '5px 9px', borderRadius: 10, border: `2px solid ${stuck ? C.green : wrong === ch.id ? C.clay : C.ink}`, background: stuck ? C.greenSoft : '#FFFFFF', fontFamily: FONT, fontSize: 13, fontWeight: 700, whiteSpace: 'nowrap', userSelect: 'none', transition: drag && drag.id === ch.id ? 'none' : 'left 0.2s ease, top 0.2s ease', zIndex: drag && drag.id === ch.id ? 2 : 1 }}>
-          {chipIsShape(ch.t) ? <ShapePic name={ch.t.split(':')[1]} size={26} color={SWATCH[ch.t.split(':')[2]] || C.green} /> : ch.t}
+        <div key={ch.id} onPointerDown={(e) => start(ch, e)} className={wrong === ch.id ? 'edu-wobble' : undefined} style={{ position: 'absolute', left: `${x}%`, top: `${y}%`, transform: 'translate(-50%, -50%)', cursor: stuck ? 'default' : 'grab', touchAction: 'none', padding: '5px 9px', borderRadius: 10, border: `2px solid ${stuck ? B.green : wrong === ch.id ? B.clay : B.ink}`, background: stuck ? B.greenSoft : '#FFFFFF', fontFamily: FONT, fontSize: 13, fontWeight: 700, whiteSpace: 'nowrap', userSelect: 'none', transition: drag && drag.id === ch.id ? 'none' : 'left 0.2s ease, top 0.2s ease', zIndex: drag && drag.id === ch.id ? 2 : 1 }}>
+          {chipIsShape(ch.t) ? <ShapePic name={ch.t.split(':')[1]} size={26} color={SWATCH[ch.t.split(':')[2]] || B.green} /> : ch.t}
         </div>); })}
-      <div style={{ position: 'absolute', top: 6, right: 10, fontSize: 13, color: C.muted }}>{ticks}s</div>
+      <div style={{ position: 'absolute', top: 6, right: 10, fontSize: 13, color: B.muted }}>{ticks}s</div>
       <Done show={done} />
     </div>
   );
@@ -2668,20 +2815,20 @@ function JumpGame({ game, round, onScore = null }) {
   if (done) return (
     <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 16, textAlign: 'center' }}>
       <p style={{ margin: '0 0 6px', fontSize: 22, fontWeight: 700 }}>Eight jumps in {ticks2} seconds.</p>
-      <p style={{ margin: 0, color: C.muted }}>Tap the round arrow for eight more.</p>
+      <p style={{ margin: 0, color: B.muted }}>Tap the round arrow for eight more.</p>
     </div>
   );
   return (
     <div ref={boxRef} className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: '1 / 0.8' }} onPointerDown={start} onPointerMove={move} onPointerUp={drop} onPointerCancel={drop}>
       <svg viewBox="0 0 100 80" width="100%" height="100%" style={{ display: 'block' }}>
-        <text x="50" y="16" fontSize="11" fontWeight="800" fontFamily={FONT} textAnchor="middle" fill={C.ink}>{q.ask}</text>
-        <text x="50" y="27" fontSize="4" fontFamily={FONT} textAnchor="middle" fill={C.muted}>Drag the frog to the answer</text>
-        <text x="96" y="6" fontSize="3.4" fontFamily={FONT} textAnchor="end" fill={C.muted}>{i} of {qs.length} · {ticks2}s</text>
+        <text x="50" y="16" fontSize="11" fontWeight="800" fontFamily={FONT} textAnchor="middle" fill={B.ink}>{q.ask}</text>
+        <text x="50" y="27" fontSize="4" fontFamily={FONT} textAnchor="middle" fill={B.muted}>Drag the frog to the answer</text>
+        <text x="96" y="6" fontSize="3.4" fontFamily={FONT} textAnchor="end" fill={B.muted}>{i} of {qs.length} · {ticks2}s</text>
         <line x1={X0 - 3} y1={LINE_Y} x2={X1 + 3} y2={LINE_Y} stroke="#2E2E2E" strokeWidth="1" strokeLinecap="round" />
-        {ticks.map((v, k) => <g key={v}><line x1={xOf(v)} y1={LINE_Y - (wide && k % 5 ? 1.6 : 2.6)} x2={xOf(v)} y2={LINE_Y + (wide && k % 5 ? 1.6 : 2.6)} stroke="#2E2E2E" strokeWidth="0.7" />{(!wide || k % 5 === 0 || k === ticks.length - 1) && <text x={xOf(v)} y={LINE_Y + 7.5} fontSize={wide ? 3.2 : 3.8} fontFamily={FONT} textAnchor="middle" fill={C.ink}>{labelOf(v)}</text>}</g>)}
-        {q && <circle cx={xOf(q.from)} cy={LINE_Y} r="1.6" fill={C.gold} stroke="#2E2E2E" strokeWidth="0.5" />}
+        {ticks.map((v, k) => <g key={v}><line x1={xOf(v)} y1={LINE_Y - (wide && k % 5 ? 1.6 : 2.6)} x2={xOf(v)} y2={LINE_Y + (wide && k % 5 ? 1.6 : 2.6)} stroke="#2E2E2E" strokeWidth="0.7" />{(!wide || k % 5 === 0 || k === ticks.length - 1) && <text x={xOf(v)} y={LINE_Y + 7.5} fontSize={wide ? 3.2 : 3.8} fontFamily={FONT} textAnchor="middle" fill={B.ink}>{labelOf(v)}</text>}</g>)}
+        {q && <circle cx={xOf(q.from)} cy={LINE_Y} r="1.6" fill={B.gold} stroke="#2E2E2E" strokeWidth="0.5" />}
         {/* Where the frog will land if let go (2026-09-23, Mikey): the nearest tick lights up and follows the drag. */}
-        {drag && <g><circle cx={xOf(nearest(drag.x))} cy={LINE_Y} r="4" fill={C.gold} opacity="0.35" /><line x1={xOf(nearest(drag.x))} y1={LINE_Y - 4} x2={xOf(nearest(drag.x))} y2={LINE_Y + 4} stroke={C.gold} strokeWidth="1.6" strokeLinecap="round" /><text x={xOf(nearest(drag.x))} y={LINE_Y + 13} fontSize="4.6" fontWeight="800" fontFamily={FONT} textAnchor="middle" fill={C.green}>{labelOf(nearest(drag.x))}</text></g>}
+        {drag && <g><circle cx={xOf(nearest(drag.x))} cy={LINE_Y} r="4" fill={B.gold} opacity="0.35" /><line x1={xOf(nearest(drag.x))} y1={LINE_Y - 4} x2={xOf(nearest(drag.x))} y2={LINE_Y + 4} stroke={B.gold} strokeWidth="1.6" strokeLinecap="round" /><text x={xOf(nearest(drag.x))} y={LINE_Y + 13} fontSize="4.6" fontWeight="800" fontFamily={FONT} textAnchor="middle" fill={B.green}>{labelOf(nearest(drag.x))}</text></g>}
         <g className={wrong ? 'edu-wobble' : undefined} style={{ cursor: 'grab' }}><Frog x={frogX} y={LINE_Y - (drag ? 12 : 6)} /></g>
       </svg>
     </div>
@@ -2715,9 +2862,9 @@ function MapGame({ game, round, onScore = null }) {
   const poly = (pts) => pts.map((pt) => pt.join(',')).join(' ');
   if (!painted) return (
     <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: `${bw} / ${bh}`, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
-      <div style={{ position: 'absolute', top: 8, right: 8, bottom: 8, left: 8, border: `2px dashed ${C.muted}`, borderRadius: 10, pointerEvents: 'none' }} />
-      <div style={{ textAlign: 'center', color: C.muted }}>
-        <p style={{ margin: '0 0 6px', fontSize: 17, fontWeight: 700, color: C.ink }}>{map.title}</p>
+      <div style={{ position: 'absolute', top: 8, right: 8, bottom: 8, left: 8, border: `2px dashed ${B.muted}`, borderRadius: 10, pointerEvents: 'none' }} />
+      <div style={{ textAlign: 'center', color: B.muted }}>
+        <p style={{ margin: '0 0 6px', fontSize: 17, fontWeight: 700, color: B.ink }}>{map.title}</p>
         <p style={{ margin: 0, fontSize: 14 }}>This map is being painted.</p>
         <p style={{ margin: '6px 0 0', fontSize: 12 }}>{map.art}</p>
       </div>
@@ -2728,11 +2875,11 @@ function MapGame({ game, round, onScore = null }) {
       <svg ref={boxRef} viewBox={`${bx} ${by - 14} ${bw} ${bh + 14}`} width="100%" height="100%" style={{ display: 'block', cursor: done ? 'default' : 'pointer' }} onPointerDown={tap}>
         <rect x={bx} y={by} width={bw} height={bh} fill={map.water ? '#DDEFF8' : '#FFFFFF'} />
         <image href={`art/maps/${map.art}.webp`} x={bx} y={by} width={bw} height={bh} preserveAspectRatio="none" style={{ pointerEvents: 'none' }} />
-        <text x={bx + bw / 2} y={by - 7} fontSize="5" fontWeight="700" fontFamily={FONT} textAnchor="middle" fill={C.ink}>{done ? 'All found.' : `Tap ${target.name}`}</text>
-        <text x={bx + bw - 2} y={by - 11} fontSize="3.2" fontFamily={FONT} textAnchor="end" fill={C.muted}>{found.length} of {order.length} · {ticks}s</text>
+        <text x={bx + bw / 2} y={by - 7} fontSize="5" fontWeight="700" fontFamily={FONT} textAnchor="middle" fill={B.ink}>{done ? 'All found.' : `Tap ${target.name}`}</text>
+        <text x={bx + bw - 2} y={by - 11} fontSize="3.2" fontFamily={FONT} textAnchor="end" fill={B.muted}>{found.length} of {order.length} · {ticks}s</text>
         {/* The regions are invisible over the painting; a found one tints green, a wrong tap tints red for a moment. */}
         {map.regions.map((r) => polys(r).map((pts, k) => <polygon key={`${r.id}-${k}`} points={poly(pts)} className={wrong === r.id ? 'edu-wobble' : undefined} fill={found.includes(r.id) ? 'rgba(94, 154, 98, 0.45)' : wrong === r.id ? 'rgba(217, 83, 79, 0.45)' : 'rgba(255,255,255,0.01)'} stroke={map.translucent ? 'rgba(46,46,46,0.5)' : 'none'} strokeWidth="0.8" strokeDasharray={map.translucent ? '2 1.5' : undefined} />))}
-        {pin && <g transform={`translate(${pin[0]} ${pin[1]})`}><path d="M0 0 L-2.2 -5 A2.6 2.6 0 1 1 2.2 -5 Z" fill={C.gold} stroke="#2E2E2E" strokeWidth="0.5" /><circle cx="0" cy="-5.8" r="1" fill="#fff" /></g>}
+        {pin && <g transform={`translate(${pin[0]} ${pin[1]})`}><path d="M0 0 L-2.2 -5 A2.6 2.6 0 1 1 2.2 -5 Z" fill={B.gold} stroke="#2E2E2E" strokeWidth="0.5" /><circle cx="0" cy="-5.8" r="1" fill="#fff" /></g>}
       </svg>
       <Done show={done} />
     </div>
@@ -2755,28 +2902,28 @@ function BalanceGame({ game, round, onScore = null }) {
   const start = (k, e) => { if (done || level) return; boxRef.current.setPointerCapture(e.pointerId); const [x, y] = boxPoint(boxRef.current, e); setDrag({ k, x, y, from: onPan.includes(k) ? 'pan' : 'tray' }); };
   const move = (e) => { if (!drag) return; const [x, y] = boxPoint(boxRef.current, e); setDrag({ ...drag, x, y }); };
   const drop = () => { if (!drag) return; const overPan = drag.x > 52 && drag.y < 72; if (overPan && drag.from === 'tray') setOnPan([...onPan, drag.k]); if (!overPan && drag.from === 'pan') setOnPan(onPan.filter((k) => k !== drag.k)); setDrag(null); };
-  const chip = (k, x, y, key, faded) => <div key={key} onPointerDown={(e) => start(k, e)} style={{ position: 'absolute', left: `${x}%`, top: `${y}%`, transform: 'translate(-50%, -50%)', width: 36, height: 30, borderRadius: 8, border: `2px solid ${C.ink}`, background: faded ? '#EEF1EC' : C.goldSoft, color: faded ? C.muted : C.ink, fontFamily: FONT, fontSize: 15, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'grab', touchAction: 'none', userSelect: 'none', transition: drag && drag.k === k ? 'none' : 'left 0.2s ease, top 0.2s ease', zIndex: drag && drag.k === k ? 3 : 2 }}>{deck.weights[k].label}</div>;
+  const chip = (k, x, y, key, faded) => <div key={key} onPointerDown={(e) => start(k, e)} style={{ position: 'absolute', left: `${x}%`, top: `${y}%`, transform: 'translate(-50%, -50%)', width: 36, height: 30, borderRadius: 8, border: `2px solid ${B.ink}`, background: faded ? '#EEF1EC' : B.goldSoft, color: faded ? B.muted : B.ink, fontFamily: FONT, fontSize: 15, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'grab', touchAction: 'none', userSelect: 'none', transition: drag && drag.k === k ? 'none' : 'left 0.2s ease, top 0.2s ease', zIndex: drag && drag.k === k ? 3 : 2 }}>{deck.weights[k].label}</div>;
   if (done) return (
     <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 16, textAlign: 'center' }}>
       <p style={{ margin: '0 0 6px', fontSize: 22, fontWeight: 700 }}>Six balanced in {ticks} seconds.</p>
-      <p style={{ margin: 0, color: C.muted }}>Tap the round arrow for six more.</p>
+      <p style={{ margin: 0, color: B.muted }}>Tap the round arrow for six more.</p>
     </div>
   );
   return (
-    <div ref={boxRef} className="edu-game-box" style={GAME_BOX} onPointerMove={move} onPointerUp={drop} onPointerCancel={drop}>
+    <div ref={boxRef} className="edu-game-box" style={{ ...GAME_BOX }} onPointerMove={move} onPointerUp={drop} onPointerCancel={drop}>
       <svg viewBox="0 0 100 100" width="100%" height="100%" style={{ display: 'block' }}>
-        <text x="96" y="6" fontSize="3.4" fontFamily={FONT} textAnchor="end" fill={C.muted}>{i} of {targets.length} · {ticks}s</text>
-        <text x="4" y="6" fontSize="3.4" fontFamily={FONT} fill={C.muted}>{deck.title}</text>
+        <text x="96" y="6" fontSize="3.4" fontFamily={FONT} textAnchor="end" fill={B.muted}>{i} of {targets.length} · {ticks}s</text>
+        <text x="4" y="6" fontSize="3.4" fontFamily={FONT} fill={B.muted}>{deck.title}</text>
         <rect x="47" y="44" width="6" height="26" fill="#8A9086" /><rect x="34" y="68" width="32" height="4" rx="2" fill="#8A9086" />
         <g transform={`rotate(${tilt} 50 44)`}>
           <rect x="12" y="42.5" width="76" height="3" rx="1.5" fill="#2E2E2E" />
           <line x1="22" y1="44" x2="22" y2="58" stroke="#2E2E2E" strokeWidth="0.8" /><line x1="78" y1="44" x2="78" y2="58" stroke="#2E2E2E" strokeWidth="0.8" />
-          <path d="M8 58 L36 58 L33 66 L11 66 Z" fill={C.greenSoft} stroke="#2E2E2E" strokeWidth="0.8" /><path d="M64 58 L92 58 L89 66 L67 66 Z" fill={level ? C.goldSoft : '#F6F8F4'} stroke="#2E2E2E" strokeWidth="0.8" />
-          <text x="22" y="63.5" fontSize={t.show.length > 6 ? 5 : 7} fontWeight="800" fontFamily={FONT} textAnchor="middle" fill={C.ink}>{t.show}</text>
+          <path d="M8 58 L36 58 L33 66 L11 66 Z" fill={B.greenSoft} stroke="#2E2E2E" strokeWidth="0.8" /><path d="M64 58 L92 58 L89 66 L67 66 Z" fill={level ? B.goldSoft : '#F6F8F4'} stroke="#2E2E2E" strokeWidth="0.8" />
+          <text x="22" y="63.5" fontSize={t.show.length > 6 ? 5 : 7} fontWeight="800" fontFamily={FONT} textAnchor="middle" fill={B.ink}>{t.show}</text>
         </g>
-        <circle cx="50" cy="44" r="2.2" fill={C.gold} stroke="#2E2E2E" strokeWidth="0.6" />
-        <text x="50" y="14" fontSize="4.2" fontFamily={FONT} textAnchor="middle" fill={C.ink}>{level ? 'Balanced!' : right > t.value + 1e-9 ? 'Too heavy. Drag one off.' : 'Drag weights onto the right pan.'}</text>
-        <rect x="4" y="78" width="92" height="18" rx="3" fill="#F6F8F4" stroke={C.line} strokeWidth="0.6" />
+        <circle cx="50" cy="44" r="2.2" fill={B.gold} stroke="#2E2E2E" strokeWidth="0.6" />
+        <text x="50" y="14" fontSize="4.2" fontFamily={FONT} textAnchor="middle" fill={B.ink}>{level ? 'Balanced!' : right > t.value + 1e-9 ? 'Too heavy. Drag one off.' : 'Drag weights onto the right pan.'}</text>
+        <rect x="4" y="78" width="92" height="18" rx="3" fill="#F6F8F4" stroke={B.line} strokeWidth="0.6" />
       </svg>
       {deck.weights.map((w, k) => { const dragging = drag && drag.k === k; if (dragging) return chip(k, drag.x, drag.y, k, false); const at = onPan.indexOf(k); if (at >= 0) return chip(k, 68 + (at % 4) * 8, 54 + Math.floor(at / 4) * -7, k, false); return chip(k, 10 + k * (80 / Math.max(1, deck.weights.length - 1)), 87, k, false); })}
       <Done show={false} />
@@ -2826,8 +2973,8 @@ function GamePad({ game, name, secondsLeft, total, onClose, modules = [], onScor
       {/* The youngest can hear the instructions (2026-09-23, Mikey): a speaker under the link, played only when tapped. */}
       {young && <div style={{ display: 'flex', justifyContent: 'center', marginTop: 8 }}><SpeakButton mini text={`${game.title}. ${gameInstructions(game)}`} label="Hear the instructions" /></div>}
       {showHow && (
-        <div style={{ position: 'fixed', top: 0, right: 0, bottom: 0, left: 0, background: 'rgba(36, 41, 31, 0.55)', zIndex: 120, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }} onClick={(e) => { if (e.target === e.currentTarget) setShowHow(false); }}>
-          <div className="edu-rise" style={{ width: 'min(420px, 100%)', background: C.surface, borderRadius: 14, padding: '20px 20px 18px', textAlign: 'center' }} role="dialog" aria-label="Instructions">
+        <div style={{ position: 'fixed', top: 0, right: 0, bottom: 0, left: 0, background: C.scrim, zIndex: 120, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }} onClick={(e) => { if (e.target === e.currentTarget) setShowHow(false); }}>
+          <div className="edu-rise" style={{ width: 'min(420px, 100%)', background: C.surface, ...(C.mode === 'dark' ? { border: `1px solid ${C.cardEdge}` } : {}), borderRadius: 14, padding: '20px 20px 18px', textAlign: 'center' }} role="dialog" aria-label="Instructions">
             <p style={{ margin: '0 0 8px', fontSize: 18, fontWeight: 700 }}>{game.title}</p>
             <p style={{ margin: '0 0 16px', fontSize: 15, lineHeight: 1.6 }}>{gameInstructions(game)}</p>
             <Btn onClick={() => setShowHow(false)}>Got it</Btn>
@@ -2848,19 +2995,19 @@ function GameThumb({ kind, game = null }) {
   const k = '#2E2E2E';
   // A connect-the-dots tile draws its own shape from the game's points; the name game shows a few dotted letters.
   const dotShape = game && game.kind === 'dots' ? (game.shape && DOT_SHAPES[game.shape] ? DOT_SHAPES[game.shape].map(([x, y]) => [4 + (x * 32) / 100, 4 + (y * 32) / 100]) : null) : null;
-  if (dotShape) return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><polyline points={[...dotShape, dotShape[0]].map((pt) => pt.join(',')).join(' ')} fill="none" stroke={C.green} strokeWidth="2" strokeLinejoin="round" />{dotShape.map(([x, y], i) => <circle key={i} cx={x} cy={y} r="2.6" fill="#fff" stroke={k} strokeWidth="1.4" />)}</svg>;
-  if (game && game.kind === 'balance') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="19" y="14" width="2.4" height="16" fill="#8A9086" /><rect x="12" y="30" width="16" height="3" rx="1.5" fill="#8A9086" /><rect x="6" y="13" width="28" height="2.4" rx="1.2" fill={k} transform="rotate(-6 20 14)" /><path d="M4 22h10l-1.5 5h-7z" fill={C.greenSoft} stroke={k} strokeWidth="1" /><path d="M26 20h10l-1.5 5h-7z" fill={C.goldSoft} stroke={k} strokeWidth="1" /><rect x="28" y="15" width="5" height="4" rx="1" fill={C.gold} stroke={k} strokeWidth="0.8" /></svg>;
-  if (game && game.kind === 'jump') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><line x1="4" y1="30" x2="36" y2="30" stroke={k} strokeWidth="1.5" strokeLinecap="round" />{[8, 15, 22, 29].map((x) => <line key={x} x1={x} y1="27.5" x2={x} y2="32.5" stroke={k} strokeWidth="1.2" />)}<ellipse cx="14" cy="18" rx="7" ry="5" fill="#5BA84A" stroke={k} strokeWidth="1.2" /><circle cx="11.5" cy="14.5" r="2" fill="#fff" stroke={k} strokeWidth="0.8" /><circle cx="16.5" cy="14.5" r="2" fill="#fff" stroke={k} strokeWidth="0.8" /><circle cx="12" cy="14.7" r="0.8" fill={k} /><circle cx="17" cy="14.7" r="0.8" fill={k} /><path d="M22 20q6-8 12 0" fill="none" stroke={C.gold} strokeWidth="1.6" strokeDasharray="2 1.5" /></svg>;
+  if (dotShape) return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><polyline points={[...dotShape, dotShape[0]].map((pt) => pt.join(',')).join(' ')} fill="none" stroke={C.green} strokeWidth="2" strokeLinejoin="round" />{dotShape.map(([x, y], i) => <circle key={i} cx={x} cy={y} r="2.6" fill={C.paperBoard} stroke={k} strokeWidth="1.4" />)}</svg>;
+  if (game && game.kind === 'balance') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="19" y="14" width="2.4" height="16" fill="#8A9086" /><rect x="12" y="30" width="16" height="3" rx="1.5" fill="#8A9086" /><rect x="6" y="13" width="28" height="2.4" rx="1.2" fill={k} transform="rotate(-6 20 14)" /><path d="M4 22h10l-1.5 5h-7z" fill={C.greenSoft} stroke={k} strokeWidth="1" /><path d="M26 20h10l-1.5 5h-7z" fill="#F7EAD1" stroke={k} strokeWidth="1" /><rect x="28" y="15" width="5" height="4" rx="1" fill={C.gold} stroke={k} strokeWidth="0.8" /></svg>;
+  if (game && game.kind === 'jump') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><line x1="4" y1="30" x2="36" y2="30" stroke={k} strokeWidth="1.5" strokeLinecap="round" />{[8, 15, 22, 29].map((x) => <line key={x} x1={x} y1="27.5" x2={x} y2="32.5" stroke={k} strokeWidth="1.2" />)}<ellipse cx="14" cy="18" rx="7" ry="5" fill="#5BA84A" stroke={k} strokeWidth="1.2" /><circle cx="11.5" cy="14.5" r="2" fill={C.paperBoard} stroke={k} strokeWidth="0.8" /><circle cx="16.5" cy="14.5" r="2" fill={C.paperBoard} stroke={k} strokeWidth="0.8" /><circle cx="12" cy="14.7" r="0.8" fill={k} /><circle cx="17" cy="14.7" r="0.8" fill={k} /><path d="M22 20q6-8 12 0" fill="none" stroke={C.gold} strokeWidth="1.6" strokeDasharray="2 1.5" /></svg>;
   if (game && game.kind === 'map') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="4" y="6" width="32" height="26" rx="3" fill="#DDEFF8" stroke={k} strokeWidth="1.3" /><path d="M9 12q6-4 10 1t-2 8q-8 2-8-9z" fill="#F1E8CF" stroke={k} strokeWidth="1" /><path d="M24 16q8-4 9 3t-6 7q-5-1-3-10z" fill={C.greenSoft} stroke={k} strokeWidth="1" /><path d="M27 21 L24.5 15 A3 3 0 1 1 29.5 15 Z" fill={C.gold} stroke={k} strokeWidth="0.8" /></svg>;
-  if (game && game.kind === 'catch') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><circle cx="17" cy="11" r="3.5" fill={C.gold} stroke={k} strokeWidth="1" /><rect x="24" y="17" width="9" height="6" rx="2" fill="#fff" stroke={k} strokeWidth="1.2" /><path d="M8 27h24l-3 9H11z" fill={C.gold} stroke={k} strokeWidth="1.4" strokeLinejoin="round" /><rect x="7" y="25" width="26" height="3" rx="1.5" fill={C.green} /></svg>;
-  if (game && game.kind === 'path') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true">{[0, 1, 2].map((r) => [0, 1, 2].map((c) => <rect key={`${r}${c}`} x={5 + c * 10.5} y={5 + r * 10.5} width="9" height="9" rx="2" fill={(r === 0 && c <= 1) || (r >= 1 && c === 1) || (r === 2 && c === 2) ? C.greenSoft : '#fff'} stroke={k} strokeWidth="1.1" />))}<circle cx="9.5" cy="9.5" r="2.6" fill={C.gold} stroke={k} strokeWidth="0.8" /><path d="M30 26.5l1.4 2.9 3.2.5-2.3 2.2.6 3.2-2.9-1.5-2.9 1.5.6-3.2-2.3-2.2 3.2-.5z" fill={C.gold} stroke={k} strokeWidth="0.8" strokeLinejoin="round" /></svg>;
-  if (game && game.kind === 'buckets') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="12" y="6" width="16" height="8" rx="3" fill="#fff" stroke={k} strokeWidth="1.3" /><path d="M4 20h14l-2 14H6z" fill={C.greenSoft} stroke={k} strokeWidth="1.3" strokeLinejoin="round" /><path d="M22 20h14l-2 14H24z" fill="#fff" stroke={k} strokeWidth="1.3" strokeLinejoin="round" /><path d="M20 15v4" stroke={C.green} strokeWidth="1.6" strokeLinecap="round" /></svg>;
+  if (game && game.kind === 'catch') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><circle cx="17" cy="11" r="3.5" fill={C.gold} stroke={k} strokeWidth="1" /><rect x="24" y="17" width="9" height="6" rx="2" fill={C.paperBoard} stroke={k} strokeWidth="1.2" /><path d="M8 27h24l-3 9H11z" fill={C.gold} stroke={k} strokeWidth="1.4" strokeLinejoin="round" /><rect x="7" y="25" width="26" height="3" rx="1.5" fill={C.green} /></svg>;
+  if (game && game.kind === 'path') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true">{[0, 1, 2].map((r) => [0, 1, 2].map((c) => <rect key={`${r}${c}`} x={5 + c * 10.5} y={5 + r * 10.5} width="9" height="9" rx="2" fill={(r === 0 && c <= 1) || (r >= 1 && c === 1) || (r === 2 && c === 2) ? C.greenSoft : C.paperBoard} stroke={k} strokeWidth="1.1" />))}<circle cx="9.5" cy="9.5" r="2.6" fill={C.gold} stroke={k} strokeWidth="0.8" /><path d="M30 26.5l1.4 2.9 3.2.5-2.3 2.2.6 3.2-2.9-1.5-2.9 1.5.6-3.2-2.3-2.2 3.2-.5z" fill={C.gold} stroke={k} strokeWidth="0.8" strokeLinejoin="round" /></svg>;
+  if (game && game.kind === 'buckets') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="12" y="6" width="16" height="8" rx="3" fill={C.paperBoard} stroke={k} strokeWidth="1.3" /><path d="M4 20h14l-2 14H6z" fill={C.greenSoft} stroke={k} strokeWidth="1.3" strokeLinejoin="round" /><path d="M22 20h14l-2 14H24z" fill={C.paperBoard} stroke={k} strokeWidth="1.3" strokeLinejoin="round" /><path d="M20 15v4" stroke={C.green} strokeWidth="1.6" strokeLinecap="round" /></svg>;
   if (game && game.kind === 'sprint') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><path d="M22 4 L10 22 h9 l-3 14 L30 18 h-9 z" fill={C.gold} stroke={k} strokeWidth="1.5" strokeLinejoin="round" /></svg>;
-  if (game && game.kind === 'order') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true">{[0, 1, 2].map((r) => <g key={r}><rect x="6" y={6 + r * 11} width="28" height="8" rx="2" fill={r === 0 ? C.greenSoft : '#fff'} stroke={k} strokeWidth="1.5" /><text x="11" y={12.5 + r * 11} fontFamily={FONT} fontSize="6" fontWeight="700" fill={C.ink}>{r + 1}</text></g>)}</svg>;
-  if (game && game.deck) { const label = { fractions: '½', roots: 'port', elements: 'Na', dates: '1776', formulas: 'F=ma', times: '6×7', vocabulary: 'Aa', capitals: 'TX' }[game.deck] || 'Aa'; return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="4" y="6" width="14" height="18" rx="2" fill="#fff" stroke={k} strokeWidth="1.5" /><rect x="22" y="16" width="14" height="18" rx="2" fill={C.greenSoft} stroke={k} strokeWidth="1.5" /><text x="11" y="18" fontFamily={FONT} fontSize={label.length > 3 ? 5 : 8} fontWeight="700" textAnchor="middle" fill={C.ink}>{label}</text></svg>; }
+  if (game && game.kind === 'order') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true">{[0, 1, 2].map((r) => <g key={r}><rect x="6" y={6 + r * 11} width="28" height="8" rx="2" fill={r === 0 ? C.greenSoft : C.paperBoard} stroke={k} strokeWidth="1.5" /><text x="11" y={12.5 + r * 11} fontFamily={FONT} fontSize="6" fontWeight="700" fill={C.ink}>{r + 1}</text></g>)}</svg>;
+  if (game && game.deck) { const label = { fractions: '½', roots: 'port', elements: 'Na', dates: '1776', formulas: 'F=ma', times: '6×7', vocabulary: 'Aa', capitals: 'TX' }[game.deck] || 'Aa'; return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="4" y="6" width="14" height="18" rx="2" fill={C.paperBoard} stroke={k} strokeWidth="1.5" /><rect x="22" y="16" width="14" height="18" rx="2" fill={C.greenSoft} stroke={k} strokeWidth="1.5" /><text x="11" y="18" fontFamily={FONT} fontSize={label.length > 3 ? 5 : 8} fontWeight="700" textAnchor="middle" fill={C.ink}>{label}</text></svg>; }
   const body = {
-    dots: <g><polyline points="8,32 20,8 32,32 6,17 34,17 8,32" fill="none" stroke={C.green} strokeWidth="2" strokeLinejoin="round" />{[[8, 32], [20, 8], [32, 32], [6, 17], [34, 17]].map(([x, y], i) => <circle key={i} cx={x} cy={y} r="3" fill={i === 0 ? C.gold : '#fff'} stroke={k} strokeWidth="1" />)}</g>,
-    pairs: <g><rect x="5" y="9" width="16" height="22" rx="3" fill={C.greenSoft} stroke={k} strokeWidth="1.4" /><rect x="19" y="9" width="16" height="22" rx="3" fill="#fff" stroke={k} strokeWidth="1.4" /><circle cx="27" cy="20" r="5" fill={C.gold} /></g>,
+    dots: <g><polyline points="8,32 20,8 32,32 6,17 34,17 8,32" fill="none" stroke={C.green} strokeWidth="2" strokeLinejoin="round" />{[[8, 32], [20, 8], [32, 32], [6, 17], [34, 17]].map(([x, y], i) => <circle key={i} cx={x} cy={y} r="3" fill={i === 0 ? C.gold : C.paperBoard} stroke={k} strokeWidth="1" />)}</g>,
+    pairs: <g><rect x="5" y="9" width="16" height="22" rx="3" fill={C.greenSoft} stroke={k} strokeWidth="1.4" /><rect x="19" y="9" width="16" height="22" rx="3" fill={C.paperBoard} stroke={k} strokeWidth="1.4" /><circle cx="27" cy="20" r="5" fill={C.gold} /></g>,
     sort: <g><circle cx="13" cy="18" r="9" fill={C.green} /><circle cx="29" cy="24" r="4.5" fill={C.green} /><rect x="3" y="30" width="34" height="6" rx="2" fill="none" stroke={C.muted} strokeWidth="1.6" strokeDasharray="3 2" /></g>,
     maze: <g fill="none" stroke={k} strokeWidth="1.6"><rect x="5" y="5" width="30" height="30" rx="2" /><path d="M15 5v12M25 13v14M5 25h10M25 35v-4M15 17h10" /><circle cx="10" cy="10" r="2.5" fill={C.gold} stroke="none" /></g>,
     jigsaw: <g><path d="M8 8h9a4 4 0 0 1 6 0h9v9a4 4 0 0 0 0 6v9h-9a4 4 0 0 1-6 0H8v-9a4 4 0 0 0 0-6z" fill={C.gold} stroke={k} strokeWidth="1.4" strokeLinejoin="round" /></g>,
@@ -3188,7 +3335,7 @@ function ColorThumb({ picture, name, size = 72 }) {
   return (
     <svg viewBox="0 0 100 100" {...box} preserveAspectRatio="xMidYMid meet" aria-hidden="true">
       {parts.map((p, i) => {
-        const common = { key: i, fill: p.line ? 'none' : '#FFFFFF', stroke: '#2E2E2E', strokeWidth: 2.4, strokeLinecap: 'round', strokeLinejoin: 'round' };
+        const common = { key: i, fill: p.line ? 'none' : C.paperBoard, stroke: '#2E2E2E', strokeWidth: 2.4, strokeLinecap: 'round', strokeLinejoin: 'round' };
         if (p.t === 'art') return <ArtPart key={i} p={p} thumb />;
         if (p.t === 'text') { const g = letterPath(p); return g ? <path {...common} d={g.d} transform={g.transform} paintOrder="stroke" strokeWidth={1.5 / g.s} strokeLinejoin="round" /> : <text {...common} x={p.x} y={p.y} fontSize={p.size} fontFamily={FONT} fontWeight={400} textAnchor="middle" dominantBaseline="central" paintOrder="stroke" strokeWidth={3.6}>{p.text}</text>; }
         if (p.t === 'circle') return <circle {...common} cx={p.cx} cy={p.cy} r={p.r} />;
@@ -3418,9 +3565,9 @@ function ColoringPad({ picture, name, secondsLeft, total, saved, onArt, onClose 
       <div className="edu-picture edu-pad-col" style={{ position: 'relative', margin: '0 auto' }}>
       <svg ref={svgRef} viewBox={`${view.x} ${view.y} ${span} ${spanY}`} role="img" aria-label={`A ${picture} to color`}
         onPointerDown={start} onPointerMove={move} onPointerUp={stop} onPointerLeave={stop}
-        style={{ width: '100%', aspectRatio: `1 / ${tall}`, display: 'block', background: '#fff', border: `2px solid ${C.line}`, borderRadius: 16, clipPath: 'inset(0 round 15px)', touchAction: freeDraw ? 'none' : 'auto' }}>
+        style={{ width: '100%', aspectRatio: `1 / ${tall}`, display: 'block', background: C.paperBoard, border: `2px solid ${C.line}`, borderRadius: 16, clipPath: 'inset(0 round 15px)', touchAction: freeDraw ? 'none' : 'auto' }}>
         {/* The square behind the picture is colorable too: a sky, a wall, whatever they decide it is. */}
-        <rect x="-60" y="-60" width="220" height="220" fill={fills.bg || '#FFFFFF'} onClick={freeDraw ? undefined : () => setFills((f) => ({ ...f, bg: crayon }))} style={{ cursor: freeDraw ? 'default' : 'pointer' }} />
+        <rect x="-60" y="-60" width="220" height="220" fill={fills.bg || C.paperBoard} onClick={freeDraw ? undefined : () => setFills((f) => ({ ...f, bg: crayon }))} style={{ cursor: freeDraw ? 'default' : 'pointer' }} />
         {/* The name, drawn once, white letters with their outline behind them. This is the drawing
             Mikey approved: one element, no spacing of our own, no second copy over the ink. */}
         {picture === 'my-name' && (() => { const n = nameLines(name); return n.lines.map((line, i) => (
@@ -3429,7 +3576,7 @@ function ColoringPad({ picture, name, secondsLeft, total, saved, onArt, onClose 
         {parts.map((p, i) => {
           const common = p.line
             ? { key: i, fill: 'none', stroke: '#2E2E2E', strokeWidth: 1.6, strokeLinecap: 'round', strokeLinejoin: 'round', pointerEvents: 'none' }
-            : { key: i, fill: fills[i] || '#FFFFFF', stroke: '#2E2E2E', strokeWidth: 1.6, strokeLinejoin: 'round', style: { cursor: freeDraw ? 'default' : 'pointer' }, onClick: freeDraw ? undefined : () => setFills((f) => ({ ...f, [i]: crayon })) };
+            : { key: i, fill: fills[i] || C.paperBoard, stroke: '#2E2E2E', strokeWidth: 1.6, strokeLinejoin: 'round', style: { cursor: freeDraw ? 'default' : 'pointer' }, onClick: freeDraw ? undefined : () => setFills((f) => ({ ...f, [i]: crayon })) };
           if (p.t === 'art') return <ArtPart key={i} p={p} />;
           if (p.t === 'text') { const g = letterPath(p); return g ? <path {...common} stroke={freeDraw ? 'none' : '#2E2E2E'} d={g.d} transform={g.transform} paintOrder="stroke" strokeWidth={1.5 / g.s} strokeLinejoin="round" /> : <text {...common} stroke={freeDraw ? 'none' : '#2E2E2E'} x={p.x} y={p.y} fontSize={p.size} fontFamily={FONT} fontWeight={400} textAnchor="middle" dominantBaseline="central" paintOrder="stroke" strokeWidth={3.6}>{p.text}</text>; }
         if (p.t === 'circle') return <circle {...common} cx={p.cx} cy={p.cy} r={p.r} />;
@@ -3440,7 +3587,7 @@ function ColoringPad({ picture, name, secondsLeft, total, saved, onArt, onClose 
         })}
         {picture === 'my-name' && (() => { const n = nameLines(name); return (
           <mask id="edu-name-guard" maskUnits="userSpaceOnUse" x="-60" y="-60" width="220" height="220">
-            <rect x="-60" y="-60" width="220" height="220" fill="#FFFFFF" />
+            <rect x="-60" y="-60" width="220" height="220" fill={C.paperBoard} />
             {n.lines.map((line, i) => (
               <text key={`guard-${i}`} x="50" y={n.y(i)} textAnchor="middle" fontFamily={FONT} fontSize={n.size} fontWeight="700" fill="#FFFFFF" stroke="#000000" strokeWidth={n.size * 0.055} paintOrder="stroke" strokeLinejoin="round">{line}</text>
             ))}
@@ -3451,7 +3598,7 @@ function ColoringPad({ picture, name, secondsLeft, total, saved, onArt, onClose 
             guard that keeps the whole name clear. */}
         {freeDraw && picture !== 'my-name' && (
           <mask id="edu-edge-guard" maskUnits="userSpaceOnUse" x="-60" y="-60" width="220" height="220">
-            <rect x="-60" y="-60" width="220" height="220" fill="#FFFFFF" />
+            <rect x="-60" y="-60" width="220" height="220" fill={C.paperBoard} />
             {parts.map((p, i) => {
               // The band is the drawn outline plus a hair, so no white shows around the lines. The glyph must match the visible one exactly: same weight, same size.
               const band = { key: `band-${i}`, fill: 'none', stroke: '#000000', strokeWidth: p.t === 'text' ? 4 : 2, strokeLinecap: 'round', strokeLinejoin: 'round' };
@@ -3537,7 +3684,7 @@ const inBeat = (seconds) => ({ animationDelay: `-${((((typeof performance !== 'u
 function InfoButton({ onClick, label, open = false }) {
   return (
     <button type="button" onClick={onClick} aria-label={label} aria-expanded={open}
-      style={{ background: open ? C.green : 'none', border: `1.5px solid ${C.green}`, color: open ? '#fff' : C.green, fontFamily: FONT, fontSize: 12, fontWeight: 700, lineHeight: '15px', width: 18, height: 18, borderRadius: 999, cursor: 'pointer', padding: 0, marginLeft: 8, verticalAlign: 'middle', flexShrink: 0 }}>i</button>
+      style={{ background: open ? C.green : 'none', border: `1.5px solid ${C.green}`, color: open ? C.onAccent : C.green, fontFamily: FONT, fontSize: 12, fontWeight: 700, lineHeight: '15px', width: 18, height: 18, borderRadius: 999, cursor: 'pointer', padding: 0, marginLeft: 8, verticalAlign: 'middle', flexShrink: 0 }}>i</button>
   );
 }
 
@@ -3693,7 +3840,7 @@ function BookReader({ items, pace: paceDefault }) {
         <div style={{ display: 'flex', justifyContent: 'center', gap: 14, marginTop: 10 }}>
           {[['slow', 'Read slowly'], ['normal', 'Read at the usual speed']].map(([v, label]) => (
             <button key={v} type="button" aria-label={label} aria-pressed={pace === v} onClick={() => { setPace(v); savePace(v); stop(); }}
-              style={{ width: 56, height: 40, borderRadius: 999, border: `2px solid ${C.green}`, background: pace === v ? C.green : C.surface, color: pace === v ? '#FFFFFF' : C.green, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', padding: 0 }}>
+              style={{ width: 56, height: 40, borderRadius: 999, border: `2px solid ${C.green}`, background: pace === v ? C.green : C.surface, color: pace === v ? C.onAccent : C.green, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', padding: 0 }}>
               <PaceGlyph kind={v} />
             </button>
           ))}
@@ -3728,12 +3875,13 @@ function PageStars() {
 
 const EDUCATOR_IDLE_MS = 60 * 1000; // an educator stays signed in for a quiet minute; the chip counts the whole minute down as a reminder not to hand the device over too soon
 
-function PageChrome({ idleWarning = false, stars = true, logoutIn = null, walkthrough = false }) {
+function PageChrome({ idleWarning = false, stars = true, logoutIn = null, walkthrough = false, themeSwitch = null }) {
   return (
     <>
-      <style>{WONDER_ANIMATION + PRINT_STYLES + KID_ANIMATION}</style>
-      <div className="edu-frame" style={frame} aria-hidden="true" />
+      <style>{WONDER_ANIMATION() + PRINT_STYLES() + KID_ANIMATION()}</style>
+      <div className="edu-frame" style={{ ...frame }} aria-hidden="true" />
       <div className="edu-frame-bottom" aria-hidden="true" />
+      {themeSwitch && <ThemeSwitch {...themeSwitch} />}
       {stars && <PageStars />}
       {/* While an educator is signed in, a small chip counts down to sign-out on every screen. Moving the mouse, typing or clicking resets it to sixty. */}
       {logoutIn !== null && (
@@ -3865,7 +4013,7 @@ const toB64 = (buf) => btoa(String.fromCharCode(...new Uint8Array(buf)));
 const fromB64 = (str) => Uint8Array.from(atob(str), (ch) => ch.charCodeAt(0));
 async function enrollBiometric() {
   const cred = await navigator.credentials.create({ publicKey: {
-    challenge: crypto.getRandomValues(new Uint8Array(32)), rp: { name: 'EduSphere' },
+    challenge: crypto.getRandomValues(new Uint8Array(32)), rp: { name: 'The Wise Human' },
     user: { id: crypto.getRandomValues(new Uint8Array(16)), name: 'educator', displayName: 'Educator' },
     pubKeyCredParams: [{ type: 'public-key', alg: -7 }, { type: 'public-key', alg: -257 }],
     authenticatorSelection: { authenticatorAttachment: 'platform', userVerification: 'required', residentKey: 'discouraged' }, timeout: 60000, attestation: 'none',
@@ -3919,7 +4067,7 @@ async function downloadFile(name, text) {
   // Chrome and Edge on a laptop can ask where to save. Other browsers save to their downloads folder.
   if (typeof window !== 'undefined' && window.showSaveFilePicker) {
     try {
-      const handle = await window.showSaveFilePicker({ suggestedName: name, types: [{ description: 'EduSphere backup', accept: { 'application/json': ['.json'] } }] });
+      const handle = await window.showSaveFilePicker({ suggestedName: name, types: [{ description: 'The Wise Human backup', accept: { 'application/json': ['.json'] } }] });
       const w = await handle.createWritable(); await w.write(text); await w.close();
       return true;
     } catch (err) { if (err && err.name === 'AbortError') return 'canceled'; /* fall through to a plain download */ }
@@ -3938,11 +4086,11 @@ async function downloadFile(name, text) {
 class CrashGuard extends React.Component {
   constructor(props) { super(props); this.state = { error: null }; }
   static getDerivedStateFromError(error) { return { error }; }
-  componentDidCatch(error) { try { console.error('EduSphere crash guard:', error); } catch (e) { /* a console is not guaranteed */ } }
+  componentDidCatch(error) { try { console.error('The Wise Human crash guard:', error); } catch (e) { /* a console is not guaranteed */ } }
   render() {
     if (!this.state.error) return this.props.children;
     return (
-      <div style={page}><div className="edu-wrap" style={wrap}>
+      <div style={{ ...page }}><div className="edu-wrap" style={{ ...wrap }}>
         <div style={{ ...card, textAlign: 'center', marginTop: 40 }}>
           <p style={{ fontWeight: 600, fontSize: 18, margin: '0 0 8px' }}>Something went wrong on this page.</p>
           <p style={{ margin: '0 0 16px', color: C.muted }}>Nothing you did was lost. Tap the button to go home.</p>
@@ -3957,7 +4105,11 @@ export default function EduSphereApp() {
   return <CrashGuard onHome={() => setGen(gen + 1)}><EduSphereScreens key={gen} /></CrashGuard>;
 }
 function EduSphereScreens() {
+  // Light or dark (2026-09-24): dark until someone taps the sun on the welcome page, then the remembered choice.
+  const [theme, setThemeState] = useState(() => savedTheme());
+  const themeSwitch = { theme, onChange: (t) => { try { window.localStorage.setItem(THEME_KEY, t); } catch (e) { /* storage may be off */ } setThemeState(t); } };
   const [screen, setScreen] = useState('loading');
+  applyTheme(PAPER_SCREENS.has(screen) ? 'light' : theme);
   const [boom, setBoom] = useState(false);                             // test-only: a render that throws on purpose, for the crash guard's check
   if (boom) throw new Error('test crash');
   const [nameInput, setNameInput] = useState('');
@@ -4279,6 +4431,8 @@ function EduSphereScreens() {
   // the regular screens.
   const earlyModuleIds = useMemo(() => visibleCourses.filter((c) => stageForGrade(c.grade) === 'early').flatMap((c) => c.modules.map((m) => m.id)), [visibleCourses]);
   const youngLearner = earlyModuleIds.length > 0 && earlyModuleIds.some((id) => !progress.masteredIds.includes(id));
+  // The page knows when a young learner is at it, so the style sheet can make their next step more obvious.
+  try { document.documentElement.dataset.young = youngLearner ? '1' : ''; } catch (e) { /* no page yet */ }
   // Young learners see only their early-years courses; anything above grade 2 waits until they graduate.
   const shownCourses = useMemo(() => (earlyModuleIds.length > 0 && earlyModuleIds.some((id) => !progress.masteredIds.includes(id)) ? visibleCourses.filter((c) => stageForGrade(c.grade) === 'early') : visibleCourses), [visibleCourses, earlyModuleIds, progress]);
   const shownSubjects = useMemo(() => sortSubjects(shownCourses.map((c) => c.subject)), [shownCourses]);
@@ -4694,7 +4848,7 @@ function EduSphereScreens() {
   const tourPopup = tourStep >= 0 && educator && (screen === 'educator-pick' || (screen === 'educator-report' && educatorRecord && educatorRecord.preview) || screen === 'class-view' || (screen === 'lesson' && record && record.preview)) ? (
     <div className="edu-no-print" style={{ position: 'fixed', zIndex: 130, pointerEvents: 'none', ...(tourBox ? { left: tourBox.left, top: tourBox.top, width: tourBox.width } : { right: 0, left: 0, bottom: 0, display: 'flex', justifyContent: 'center', padding: '0 12px 10px' }) }}>
       {/* Each card sits where its words say: beside, above or below the thing it points at, whole, never scrolling. */}
-      <div className="edu-rise" ref={tourSheetRef} style={{ width: tourBox ? '100%' : 'min(420px, 100%)', boxSizing: 'border-box', background: C.surface, borderRadius: 14, padding: '14px 18px', textAlign: 'center', boxShadow: '0 4px 30px rgba(36, 41, 31, 0.3)', border: `1px solid ${C.line}`, pointerEvents: 'auto' }} role="dialog" aria-label="First week tour">
+      <div className="edu-rise" ref={tourSheetRef} style={{ width: tourBox ? '100%' : 'min(420px, 100%)', boxSizing: 'border-box', background: C.surface, ...(C.mode === 'dark' ? { border: `1px solid ${C.cardEdge}` } : {}), borderRadius: 14, padding: '14px 18px', textAlign: 'center', boxShadow: '0 4px 30px rgba(36, 41, 31, 0.3)', border: `1px solid ${C.line}`, pointerEvents: 'auto' }} role="dialog" aria-label="First week tour">
       <p style={{ margin: '0 0 4px', fontSize: 13, color: C.muted }}>{tourStep + 1} of {TOUR.length}</p>
       <p style={{ margin: '0 0 6px', fontSize: 17, fontWeight: 700 }}>{TOUR[tourStep][0]}</p>
       <p style={{ margin: '0 0 12px', fontSize: 14, lineHeight: 1.55 }}>{TOUR[tourStep][4]}</p>
@@ -4793,16 +4947,16 @@ function EduSphereScreens() {
     const cameUp = progress.masteredIds.some((id) => { const c = getCourse((getModule(id) || {}).courseId); return c && stageForGrade(c.grade) === 'early'; });
     if (cameUp && placementPending.length) skipPlacement(placementPending[0]);
   }, [screen, record, youngLearner, busy]);
-  if (screen === 'loading') return <div style={page}><PageChrome idleWarning={idleWarning} stars={false} /><div className="edu-wrap" style={wrap}><div className="edu-loading" style={{ display: 'flex', justifyContent: 'center', padding: '80px 0' }} aria-label="Loading"><LoadingWord /></div></div></div>;
+  if (screen === 'loading') return <div style={{ ...page }}><PageChrome idleWarning={idleWarning} stars={false} /><div className="edu-wrap" style={{ ...wrap }}><div className="edu-loading" style={{ display: 'flex', justifyContent: 'center', padding: '80px 0' }} aria-label="Loading"><LoadingWord /></div></div></div>;
 
   if (screen === 'welcome') {
     return (
-      <div style={page}><PageChrome idleWarning={idleWarning} stars={false} /><div className="edu-wrap edu-welcome" style={wrap}>
+      <div style={{ ...page }}><PageChrome themeSwitch={themeSwitch} idleWarning={idleWarning} stars={false} /><div className="edu-wrap edu-welcome" style={{ ...wrap }}>
         <Galaxy />
         <div className="edu-welcome-logo" style={{ margin: '10px 0 8px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 28 }}>
-          <FlankSphere side="left" /><Logo width={250} animate /><FlankSphere side="right" />
+          <FlankSphere side="left" /><Logo width={280} animate tagline /><FlankSphere side="right" />
         </div>
-        <div className="edu-welcome-card" style={{ ...card, background: 'rgba(249, 251, 247, 0.9)', borderColor: '#E3EBE2' }}>
+        <div className="edu-welcome-card" style={{ ...card, background: C.glass, borderColor: C.mode === 'dark' ? C.cardEdge : '#E3EBE2' }}>
           <h2 style={{ fontSize: 20, margin: '0 0 14px', textAlign: 'center' }}>Who's learning today?</h2>
           {activeStudents(roster).length === 0 ? (
             <p style={{ margin: 0, color: C.muted, fontSize: 15, textAlign: 'center' }}>No students have been added. An educator can add students by logging in below.</p>
@@ -4855,14 +5009,14 @@ function EduSphereScreens() {
         {/* A PIN keeps classmates out of each other's records on a shared screen. Four digits, and the door opens on its own
             (the effect above the screens checks it), so the keypad never has to come down for a button. */}
         {pinAsk && (() => { const st = findStudent(roster, pinAsk); if (!st) return null; return (
-          <div style={{ position: 'fixed', top: 0, right: 0, bottom: 0, left: 0, background: 'rgba(36, 41, 31, 0.55)', zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
-            <div className="edu-rise" style={{ width: '100%', maxWidth: 340, background: C.surface, borderRadius: 14, padding: 20, textAlign: 'center' }}>
+          <div style={{ position: 'fixed', top: 0, right: 0, bottom: 0, left: 0, background: C.scrim, zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
+            <div className="edu-rise" style={{ width: '100%', maxWidth: 340, background: C.surface, ...(C.mode === 'dark' ? { border: `1px solid ${C.cardEdge}` } : {}), borderRadius: 14, padding: 20, textAlign: 'center' }}>
               {st.picture && <StudentPicture name={st.picture} tint={st.tint} size={56} />}
               <p style={{ margin: '8px 0 12px', fontSize: 18, fontWeight: 600 }}>{keepTogether(st.label)}</p>
               <PinInput value={pinTry} onChange={setPinTry} placeholder="Your PIN"
                 style={{ fontFamily: FONT, fontSize: 24, letterSpacing: 8, textAlign: 'center', padding: '12px 14px', width: '100%', boxSizing: 'border-box', border: `2px solid ${pinWrong ? C.clay : C.line}`, borderRadius: 10, marginBottom: 10 }} />
               {pinWrong && <p style={{ margin: '0 0 10px', fontSize: 14, color: C.clay }}>That is not the PIN. Try again.</p>}
-              <div style={{ marginTop: 4 }}><button type="button" style={linkBtn} onClick={() => setPinAsk(null)}>Not me</button></div>
+              <div style={{ marginTop: 4 }}><button type="button" style={{ ...linkBtn }} onClick={() => setPinAsk(null)}>Not me</button></div>
             </div>
           </div>
         ); })()}
@@ -4872,7 +5026,7 @@ function EduSphereScreens() {
 
   if (screen === 'coloring' && coloring) {
     return (
-      <div style={page}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap edu-wrap-wide" style={wrap}>
+      <div style={{ ...page }}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap edu-wrap-wide" style={{ ...wrap }}>
         {coloring.startsWith('play:') ? <GamePad key={coloring} game={GAMES.find((g) => `play:${g.id}` === coloring) || GAMES[0]} modules={visibleModules} best={(colorState[coloring] || {}).best === undefined ? null : colorState[coloring].best} young={youngLearner} onScore={(value, better, extra = null) => {
           // The best score is kept per game on this device; Quick fire also keeps its most right and longest streak (2026-09-23).
           const cur = colorState[coloring] || {}; const isBest = cur.best === undefined || (better === 'high' ? value > cur.best : value < cur.best);
@@ -4905,7 +5059,7 @@ function EduSphereScreens() {
       return group.courses.some((c) => c.modules.some((m) => statusOf(m.id) !== 'locked' && statusOf(m.id) !== 'mastered' && !waitingForAnotherDay(record.events, m.id, today)));
         });
     return (
-      <div style={page}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={wrap}>
+      <div style={{ ...page }}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={{ ...wrap }}>
         <div style={{ position: 'relative', paddingTop: 6 }}>
           <h1 style={{ fontSize: 26, margin: '18px 0 8px', textAlign: 'center' }}>Your courses</h1>
           <button type="button" onClick={async () => { if (record && record.preview) { setRecord(null); setScreen('educator-pick'); } else { await autoBackup('sign-out'); setScreen('welcome'); } }} style={{ position: 'absolute', top: 0, right: 0, background: 'none', border: 'none', color: C.green, fontFamily: FONT, fontSize: 15, cursor: 'pointer' }}>Exit</button>
@@ -4928,18 +5082,18 @@ function EduSphereScreens() {
           </div>
         )}
         {!youngLearner && placementPending.length === 0 && (
-          <div style={card}>
+          <div style={{ ...card }}>
             <p style={{ margin: '0 0 8px', fontWeight: 600 }}>{mastered} of {visibleModules.length} modules mastered</p>
             <FractionBar parts={Math.max(1, visibleModules.length)} shaded={mastered} color={C.gold} height={36} />
           </div>
         )}
-        {visibleCourses.length === 0 && <div style={card}><p style={{ margin: 0, color: C.muted }}>No courses are switched on for you yet. Ask your educator.</p></div>}
+        {visibleCourses.length === 0 && <div style={{ ...card }}><p style={{ margin: 0, color: C.muted }}>No courses are switched on for you yet. Ask your educator.</p></div>}
 
         {/* Subjects stack vertically at the same width, so ten of them look as tidy as two.
             Only one opens at a time, and the modules appear underneath it. */}
         {/* One module card, drawn the same way whether it comes before or after the finished fold. */}
                       {(() => { renderModuleCard = (course, m, st, p, locked) => (
-                          <div key={m.id} style={{ ...card, marginBottom: 10, opacity: locked || (m.needsTouch && !hasTouchScreen()) ? 0.6 : 1, borderColor: st === 'mastered' ? C.gold : st === 'available' ? C.green : C.line, borderWidth: isPreReader(course.id) && st === 'available' ? 3 : 1, boxShadow: isPreReader(course.id) && st === 'available' ? `0 0 0 4px ${C.greenSoft}` : 'none' }}>
+                          <div key={m.id} className="edu-mod-card" style={{ ...card, marginBottom: 10, opacity: locked || (m.needsTouch && !hasTouchScreen()) ? 0.6 : 1, borderColor: st === 'mastered' ? C.gold : st === 'available' ? C.green : C.line, borderWidth: isPreReader(course.id) && st === 'available' ? 3 : 1, boxShadow: isPreReader(course.id) && st === 'available' ? `0 0 0 4px ${C.greenSoft}` : 'none' }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10 }}>
                               <div>
                                 <h2 style={{ fontSize: 18, margin: '0 0 2px' }}>{m.title}</h2>
@@ -4962,7 +5116,7 @@ function EduSphereScreens() {
                                 <Btn halo={st === 'available'} kind={st === 'mastered' ? 'secondary' : 'primary'} onClick={() => openModule(m.id)} disabled={busy}>{st === 'mastered' ? 'Practice again' : st === 'passed' ? 'Pass it again' : 'Open'}</Btn>
                                 {/* One try per module: five questions, no lesson, and a pass places the module without the star. */}
                                 {st === 'available' && !(record && record.preview) && quickChecks && quickCheckAllowed(record.events, m.id) && (
-                                  <div style={{ marginTop: 8 }}><button type="button" style={linkBtn} onClick={() => startQuickCheck(m.id)} disabled={busy}>I already know this</button></div>
+                                  <div style={{ marginTop: 8 }}><button type="button" style={{ ...linkBtn }} onClick={() => startQuickCheck(m.id)} disabled={busy}>I already know this</button></div>
                                 )}
                               </div>
                             )}
@@ -5038,17 +5192,18 @@ function EduSphereScreens() {
           const unlocked = record.preview ? COLORING_PICTURES.length : coloringUnlocked(record.events); const open = openSubject === '__coloring';
           const restLeft = (pic) => (record.preview ? 0 : Math.max(0, ((colorState[pic] || {}).restUntil || 0) - colorNow));
           const anyReady = COLORING_PICTURES.slice(0, unlocked).some((pic) => restLeft(pic) === 0);
+          if (!anyReady) return null;   // nothing to color right now: a young learner sees only what they can open (Mikey, 2026-09-24)
           return (
-            <div style={{ ...card, padding: 0, overflow: 'hidden', marginBottom: 12 }}>
+            <div style={{ ...card, padding: 0, overflow: 'hidden', marginBottom: 12, ...(C.mode === 'dark' ? { border: 'none' } : {}) }}>
               <button type="button" aria-expanded={open} aria-label="Let's Color" onClick={() => setOpenSubject(open ? null : '__coloring')}
                 className={`edu-colorwash${anyReady ? ' edu-press' : ''}`}
-                style={{ fontFamily: FONT, width: '100%', border: 'none', padding: 16, cursor: 'pointer', color: C.ink, display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', overflow: 'hidden' }}>
+                style={{ fontFamily: FONT, width: '100%', border: 'none', padding: 16, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', overflow: 'hidden' }}>
                 <span className="edu-sparkle" aria-hidden="true" />
                 <span className="edu-sparkle edu-sparkle-2" aria-hidden="true" />
                 <span className="edu-sparkle edu-sparkle-3" aria-hidden="true" />
                 <span className="edu-sparkle edu-sparkle-4" aria-hidden="true" />
                 <span style={{ fontSize: 20, fontWeight: 700, position: 'relative' }}>Let's Color</span>
-                <span aria-hidden="true" style={{ position: 'absolute', right: 16, top: '50%', transform: 'translateY(-50%)', fontSize: 14, color: C.muted }}>{open ? '▴' : '▾'}</span>
+                <span aria-hidden="true" style={{ position: 'absolute', right: 16, top: '50%', transform: 'translateY(-50%)', fontSize: 14, color: C.mode === 'dark' ? '#24291F' : C.muted }}>{open ? '▴' : '▾'}</span>
               </button>
               {open && (
                 <div className="edu-colorwash" style={{ padding: 14 }}>
@@ -5060,7 +5215,7 @@ function EduSphereScreens() {
                       return (
                         <button key={pic} type="button" disabled={locked || resting} aria-label={locked ? 'Locked picture' : resting ? 'Resting picture' : `Color the ${pic === 'my-name' ? 'name' : pictureTitle(pic).toLowerCase()}`}
                           onClick={() => leaveOverviewTo(() => { setColoring(pic); setScreen('coloring'); })} className={`edu-breathe${!locked && !resting ? ' edu-press' : ''}`}
-                          style={{ position: 'relative', overflow: 'hidden', aspectRatio: '1 / 1', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 6, borderRadius: 12, background: locked ? 'rgba(255,255,255,0.55)' : '#FFFFFF', border: `2px solid ${locked || resting ? 'rgba(255,255,255,0.7)' : C.ink}`, cursor: locked || resting ? 'default' : 'pointer', '--beat': locked || resting ? 0 : 1, ...inBeat(2.2) }}>
+                          style={{ position: 'relative', overflow: 'hidden', aspectRatio: '1 / 1', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 6, borderRadius: 12, background: locked ? 'rgba(255,255,255,0.55)' : C.paperBoard, border: `2px solid ${locked || resting ? 'rgba(255,255,255,0.7)' : C.ink}`, cursor: locked || resting ? 'default' : 'pointer', '--beat': locked || resting ? 0 : 1, ...inBeat(2.2) }}>
                           {locked ? (
                             <svg viewBox="0 0 24 24" width="34" height="34" aria-hidden="true"><path d="M7 10V8a5 5 0 0110 0v2" fill="none" stroke={C.muted} strokeWidth="2" strokeLinecap="round" /><rect x="5" y="10" width="14" height="10" rx="2" fill={C.line} stroke={C.muted} strokeWidth="1.5" /></svg>
                           ) : (
@@ -5092,7 +5247,7 @@ function EduSphereScreens() {
                             return (
                               <button key={pic} type="button" disabled={resting} aria-label={resting ? 'Resting picture' : `Color ${pictureTitle(pic)}`}
                                 onClick={() => leaveOverviewTo(() => { setColoring(pic); setScreen('coloring'); })} className={`edu-breathe${resting ? '' : ' edu-press'}`}
-                                style={{ position: 'relative', overflow: 'hidden', aspectRatio: '1 / 1', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 6, borderRadius: 12, background: '#FFFFFF', border: `2px solid ${C.line}` }}>
+                                style={{ position: 'relative', overflow: 'hidden', aspectRatio: '1 / 1', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 6, borderRadius: 12, background: C.paperBoard, border: `2px solid ${C.line}` }}>
                                 <ColorThumb picture={pic} name={displayName} size="100%" />
                               </button>
                             );
@@ -5115,23 +5270,23 @@ function EduSphereScreens() {
           const readIds = new Set(storiesRead(record.events).map((r) => r.moduleId));
           const unlockedCount = withStory.filter((c) => record.preview || c.modules.every((m) => progress.masteredIds.includes(m.id))).length;
           return (
-            <div style={{ ...card, padding: 0, overflow: 'hidden', marginTop: 18 }}>
+            <div style={{ ...card, padding: 0, overflow: 'hidden', marginTop: 18, ...(C.mode === 'dark' ? { border: 'none' } : {}) }}>
               {/* The same crayon strip as Let's Play and Let's Color (2026-09-23, Mikey): the title centered, only a chevron at the edge. */}
               <button type="button" aria-expanded={open} aria-label="Let's Read" onClick={() => setOpenSubject(open ? null : '__read')}
                 className={`edu-colorwash${unlockedCount > 0 ? ' edu-press' : ''}`}
-                style={{ fontFamily: FONT, width: '100%', border: 'none', padding: 16, cursor: 'pointer', color: C.ink, display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', overflow: 'hidden' }}>
+                style={{ fontFamily: FONT, width: '100%', border: 'none', padding: 16, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', overflow: 'hidden' }}>
                 <span className="edu-sparkle" aria-hidden="true" />
                 <span className="edu-sparkle edu-sparkle-2" aria-hidden="true" />
                 <span className="edu-sparkle edu-sparkle-3" aria-hidden="true" />
                 <span className="edu-sparkle edu-sparkle-4" aria-hidden="true" />
                 <span style={{ fontSize: 20, fontWeight: 700, position: 'relative' }}>Let's Read</span>
-                <span aria-hidden="true" style={{ position: 'absolute', right: 16, top: '50%', transform: 'translateY(-50%)', fontSize: 14, color: C.muted }}>{open ? '▴' : '▾'}</span>
+                <span aria-hidden="true" style={{ position: 'absolute', right: 16, top: '50%', transform: 'translateY(-50%)', fontSize: 14, color: C.mode === 'dark' ? '#24291F' : C.muted }}>{open ? '▴' : '▾'}</span>
               </button>
               {open && (
                 <div style={{ padding: '0 0 12px' }}>
-                  <div style={{ background: C.greenSoft, padding: '12px 16px' }}>
-                    <p style={{ margin: '0 0 6px', fontSize: 14, color: C.ink, textAlign: 'center' }}>Finishing every module within a course unlocks a story which ties all of the concepts together.</p>
-                    <p style={{ margin: 0, fontSize: 14, color: C.muted, textAlign: 'center' }}>{unlockedCount} of {withStory.length} unlocked</p>
+                  <div style={{ background: C.mode === 'dark' ? '#AAD8C5' : C.greenSoft, color: C.mode === 'dark' ? '#16201B' : undefined, padding: '12px 16px' }}>
+                    <p style={{ margin: '0 0 6px', fontSize: 14, color: C.mode === 'dark' ? '#16201B' : C.ink, textAlign: 'center' }}>Finishing every module within a course unlocks a story which ties all of the concepts together.</p>
+                    <p style={{ margin: 0, fontSize: 14, color: C.mode === 'dark' ? '#2E4A3E' : C.muted, textAlign: 'center' }}>{unlockedCount} of {withStory.length} unlocked</p>
                   </div>
                   <div style={{ padding: '0 16px' }}>
                   {withStory.map((c) => {
@@ -5161,34 +5316,37 @@ function EduSphereScreens() {
           const top = visibleCourses.reduce((best, c) => (GRADES.indexOf(c.grade) > GRADES.indexOf(best) ? c.grade : best), 'PK3');
           const enrolled = new Set(visibleCourses.map((c) => c.id));
           const mapArt = typeof window !== 'undefined' && Array.isArray(window.__eduMapArt) ? window.__eduMapArt : [];
-          const listed = gamesFor(top).filter((g) => (youngLearner || g.deck || g.kind === 'pong' || g.kind === 'sprint' || g.kind === 'order' || ((g.rule || g.jump || g.map || g.balance) && !g.young)) && (!g.courseId || record.preview || enrolled.has(g.courseId)) && (!g.map || record.preview || mapArt.includes((mapFor(g.map) || {}).art)) && (g.kind !== 'sprint' || sprintPool(visibleModules, g).length > 0));
+          const listed = gamesFor(top).filter((g) => (youngLearner || g.deck || g.kind === 'pong' || g.kind === 'sprint' || g.kind === 'order' || ((g.rule || g.jump || g.map || g.balance) && !g.young)) && (record.preview || STARTER_GAMES.includes(g.id) || enrolled.has(gameCourse(g.id))) && (!g.map || record.preview || mapArt.includes((mapFor(g.map) || {}).art)) && (g.kind !== 'sprint' || sprintPool(visibleModules, g).length > 0));
           const games = youngLearner ? listed : spreadKinds(listed);   // older lists take turns between kinds (2026-09-23, Mikey)
           if (!games.length) return null;
-          const unlocked = record.preview ? games.length : Math.min(games.length, gamesUnlocked(record.events)); const open = openSubject === '__play';
+          // A game opens when its course is finished (2026-09-24, Mikey): each course has its own, so finishing one always brings
+          // something new, and the walk-through opens them all.
+          const openIds = unlockedGameIds(record.events, games); const isOpen = (g) => record.preview || openIds.has(g.id); const open = openSubject === '__play';
           const restLeft = (g) => (record.preview ? 0 : Math.max(0, ((colorState[`play:${g.id}`] || {}).restUntil || 0) - colorNow));
-          const anyReady = games.slice(0, unlocked).some((g) => restLeft(g) === 0);
+          const anyReady = games.filter(isOpen).some((g) => restLeft(g) === 0);
+          if (youngLearner && !anyReady) return null;   // a young learner sees only what they can open (Mikey, 2026-09-24)
           return (
-            <div style={{ ...card, padding: 0, overflow: 'hidden', marginBottom: 12 }}>
+            <div style={{ ...card, padding: 0, overflow: 'hidden', marginBottom: 12, ...(C.mode === 'dark' ? { border: 'none' } : {}) }}>
               <button type="button" aria-expanded={open} aria-label="Let's Play" onClick={() => setOpenSubject(open ? null : '__play')}
                 className={`edu-colorwash${anyReady ? ' edu-press' : ''}`}
-                style={{ fontFamily: FONT, width: '100%', border: 'none', padding: 16, cursor: 'pointer', color: C.ink, display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', overflow: 'hidden' }}>
+                style={{ fontFamily: FONT, width: '100%', border: 'none', padding: 16, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', overflow: 'hidden' }}>
                 <span className="edu-sparkle" aria-hidden="true" />
                 <span className="edu-sparkle edu-sparkle-2" aria-hidden="true" />
                 <span className="edu-sparkle edu-sparkle-3" aria-hidden="true" />
                 <span className="edu-sparkle edu-sparkle-4" aria-hidden="true" />
                 <span style={{ fontSize: 20, fontWeight: 700, position: 'relative' }}>Let's Play</span>
-                <span aria-hidden="true" style={{ position: 'absolute', right: 16, top: '50%', transform: 'translateY(-50%)', fontSize: 14, color: C.muted }}>{open ? '▴' : '▾'}</span>
+                <span aria-hidden="true" style={{ position: 'absolute', right: 16, top: '50%', transform: 'translateY(-50%)', fontSize: 14, color: C.mode === 'dark' ? '#24291F' : C.muted }}>{open ? '▴' : '▾'}</span>
               </button>
               {open && (
                 <div className="edu-colorwash" style={{ padding: 14 }}>
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(96px, 1fr))', gap: 10 }}>
                     {games.map((g, i) => {
-                      const locked = i >= unlocked; const resting = !locked && restLeft(g) > 0;
+                      const locked = !isOpen(g); const resting = !locked && restLeft(g) > 0;
                       const restFraction = resting ? restLeft(g) / (restMinutesFor(top) * 60000) : 0;
                       return (
                         <button key={g.id} type="button" disabled={locked || resting} aria-label={locked ? 'Locked game' : resting ? 'Resting game' : `Play ${g.title}`}
                           onClick={() => leaveOverviewTo(() => { setColoring(`play:${g.id}`); setScreen('coloring'); })} className={`edu-breathe${!locked && !resting ? ' edu-press' : ''}`}
-                          style={{ position: 'relative', overflow: 'hidden', aspectRatio: '1 / 1', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 10, borderRadius: 12, background: locked ? 'rgba(255,255,255,0.55)' : '#FFFFFF', border: `2px solid ${locked || resting ? 'rgba(255,255,255,0.7)' : C.ink}`, cursor: locked || resting ? 'default' : 'pointer', '--beat': locked || resting ? 0 : 1, ...inBeat(2.2) }}>
+                          style={{ position: 'relative', overflow: 'hidden', aspectRatio: '1 / 1', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 10, borderRadius: 12, background: locked ? 'rgba(255,255,255,0.55)' : C.paperBoard, border: `2px solid ${locked || resting ? 'rgba(255,255,255,0.7)' : C.ink}`, cursor: locked || resting ? 'default' : 'pointer', '--beat': locked || resting ? 0 : 1, ...inBeat(2.2) }}>
                           {locked ? (
                             <svg viewBox="0 0 24 24" width="34" height="34" aria-hidden="true"><path d="M7 10V8a5 5 0 0110 0v2" fill="none" stroke={C.muted} strokeWidth="2" strokeLinecap="round" /><rect x="5" y="10" width="14" height="10" rx="2" fill={C.line} stroke={C.muted} strokeWidth="1.5" /></svg>
                           ) : (
@@ -5220,7 +5378,7 @@ function EduSphereScreens() {
         )}
         {youngLearner ? (
           <div style={{ paddingTop: 16 }}>
-            <div style={{ ...card, background: C.goldSoft, borderColor: C.goldSoft, marginBottom: 0 }}>
+            <div style={{ ...card, background: C.goldSoft, borderColor: C.goldEdge, marginBottom: 0 }}>
               {/* A row of stars says how far they have come, without a number to read. Filled ones
                   come first, from the left, the way counting goes. Finished modules are not offered
                   again here: memory checks bring old work back inside later rounds by themselves. */}
@@ -5251,7 +5409,7 @@ function EduSphereScreens() {
     const line = step.say;
     const last = lessonStep >= script.length - 1;
     return (
-      <div style={page}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={wrap}>
+      <div style={{ ...page }}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={{ ...wrap }}>
         <button type="button" onClick={() => setScreen('overview')} aria-label="Back" style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>
           <svg viewBox="0 0 24 24" width="34" height="34" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke={C.green} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" /></svg>
         </button>
@@ -5298,19 +5456,21 @@ function EduSphereScreens() {
   if (screen === 'course-story' && courseStoryId && courseStoryFor(courseStoryId)) {
     const cs = courseStoryFor(courseStoryId); const cc = getCourse(courseStoryId);
     return (
-      <div style={page}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={wrap}>
+      <div style={{ ...page }}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={{ ...wrap }}>
         <div className="edu-no-print" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
           <button type="button" onClick={() => { pendingScroll.current = overviewScroll.current; setScreen('overview'); }} style={{ background: 'none', border: 'none', color: C.green, fontFamily: FONT, fontSize: 15, cursor: 'pointer', padding: 0 }}>Back to my courses</button>
           <button type="button" onClick={() => window.print()} style={{ background: 'none', border: 'none', color: C.muted, fontFamily: FONT, fontSize: 13, cursor: 'pointer', padding: 0 }}>Print</button>
         </div>
         <p style={{ margin: '0 0 4px', fontSize: 14, color: C.muted, textAlign: 'center' }}>The story of {cc ? cc.title : 'this course'}</p>
         <div className="edu-story-sheet"><StoryBody story={cs} /></div>
+        {/* The same way back at the end, so a reader who finished need not scroll to the top (Mikey, 2026-09-24). */}
+        <p className="edu-no-print" style={{ textAlign: 'center', margin: '18px 0 6px' }}><button type="button" onClick={() => { pendingScroll.current = overviewScroll.current; setScreen('overview'); }} style={{ ...linkBtn, fontSize: 15 }}>Back to my courses</button></p>
       </div></div>
     );
   }
   if (screen === 'story' && mod && storyFor(mod.id)) {
     return (
-      <div style={page}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={wrap}>
+      <div style={{ ...page }}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={{ ...wrap }}>
         <div className="edu-no-print" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
           <button type="button" onClick={() => setScreen('lesson')} style={{ background: 'none', border: 'none', color: C.green, fontFamily: FONT, fontSize: 15, cursor: 'pointer', padding: 0 }}>Back to the lesson</button>
           <button type="button" onClick={() => window.print()} style={{ background: 'none', border: 'none', color: C.muted, fontFamily: FONT, fontSize: 13, cursor: 'pointer', padding: 0 }}>Print</button>
@@ -5322,11 +5482,11 @@ function EduSphereScreens() {
   }
   if (screen === 'lesson' && mod) {
     return (
-      <div style={page}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={wrap}>
+      <div style={{ ...page }}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={{ ...wrap }}>
         <button type="button" onClick={() => setScreen('overview')} style={{ background: 'none', border: 'none', color: C.green, fontFamily: FONT, fontSize: 15, cursor: 'pointer', padding: 0 }}>Back to overview</button>
         <p style={{ color: C.muted, margin: '-22px 0 0', fontSize: 14, textAlign: 'right' }}>Module {mod.order} of {course.modules.length}</p>
         <h1 style={{ fontSize: 26, margin: '14px 0 22px', textAlign: 'center' }}>{mod.title}</h1>
-        <div style={card} data-tour="lesson-card">
+        <div style={{ ...card }} data-tour="lesson-card">
           {mod.lesson.paragraphs.map((t, i) => <RichText key={i} text={formatTeachingText(t)} size={17} lineGap={12} />)}
           <div style={{ background: C.greenSoft, borderRadius: 10, padding: 14 }}>
             <Picture visual={wayVisual(mod.lesson.example, anotherWay)} />
@@ -5346,7 +5506,7 @@ function EduSphereScreens() {
             {missed[mod.id].map((line, i) => <p key={i} style={{ margin: '4px 0', fontSize: 15 }}>“{line}”</p>)}
           </div>
         )}
-        <div style={{ ...card, background: C.goldSoft, borderColor: C.goldSoft }}>
+        <div style={{ ...card, background: C.goldSoft, borderColor: C.goldEdge }}>
           <p style={{ margin: 0, fontWeight: 600 }}>Key idea</p>
           <div style={{ marginTop: 6 }}><RichText text={formatTeachingText(mod.lesson.keyIdea)} size={16} /></div>
         </div>
@@ -5355,7 +5515,7 @@ function EduSphereScreens() {
           <div style={{ textAlign: 'center', margin: '14px 0 4px' }}>
             <button type="button" onClick={() => setShowExperiment(!showExperiment)} aria-expanded={showExperiment} style={{ ...linkBtn, fontSize: 16 }}>Experiment</button>
             {showExperiment && (
-              <div style={{ ...card, marginTop: 10, textAlign: 'left', background: '#FAECE6', borderColor: '#E6C4B6' }}>
+              <div style={{ ...card, marginTop: 10, textAlign: 'left', background: C.roseSoft, borderColor: C.tintRoseLine }}>
                 {experimentsForModule(mod.id).slice(0, 2).map((e, idx) => (
                   <div key={e.title} style={{ margin: idx ? '14px 0 0' : 0 }}>
                     <p style={{ margin: '0 0 4px', fontWeight: 600 }}>{e.title}</p>
@@ -5381,7 +5541,7 @@ function EduSphereScreens() {
 
   if (screen === 'practice' && q) {
     return (
-      <div style={page}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={wrap}>
+      <div style={{ ...page }}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={{ ...wrap }}>
         {/* Module name on the left, the question count in the middle, and a bold green X on the
             right that leaves the round. Leaving mid-round records nothing, so nobody is locked in. */}
         <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', alignItems: 'center', gap: 10, margin: '4px 0 0' }}>
@@ -5426,7 +5586,7 @@ function EduSphereScreens() {
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10 }}>
                 <p style={{ margin: 0, fontWeight: 600, fontSize: 15 }}>{ticks.length} of {q.checklist.length} requirements checked</p>
-                <button type="button" style={linkBtn} onClick={() => setShowRequirements(true)}>Requirements</button>
+                <button type="button" style={{ ...linkBtn }} onClick={() => setShowRequirements(true)}>Requirements</button>
               </div>
               {showRequirements && (
                 <div role="dialog" aria-label="Requirements" style={{ position: 'fixed', top: 0, right: 0, bottom: 0, left: 0, background: 'rgba(0,0,0,0.35)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16, zIndex: 40 }} onClick={() => setShowRequirements(false)}>
@@ -5479,7 +5639,7 @@ function EduSphereScreens() {
               <TracePad letter={q.answer} paths={tracePaths} disabled={checked} tone={checked ? (wasCorrect ? 'good' : 'bad') : null}
                 onChange={(next) => { setTracePaths(next); setGiven(JSON.stringify(next)); }} />
               {!checked && tracePaths.length > 0 && (
-                <div style={{ textAlign: 'center', marginTop: 8 }}><button type="button" style={linkBtn} onClick={() => { setTracePaths([]); setGiven(''); }}>Start again</button></div>
+                <div style={{ textAlign: 'center', marginTop: 8 }}><button type="button" style={{ ...linkBtn }} onClick={() => { setTracePaths([]); setGiven(''); }}>Start again</button></div>
               )}
             </div>
           ) : (
@@ -5523,7 +5683,7 @@ function EduSphereScreens() {
 
   if (screen === 'writing-sent' && lastEvent && lastEvent.type === 'writing_submitted') {
     return (
-      <div style={page}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={wrap}>
+      <div style={{ ...page }}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={{ ...wrap }}>
         <div style={{ ...card, textAlign: 'center' }}>
           <h1 style={{ fontSize: 24, margin: '12px 0 6px' }}>Great job!</h1>
           <p style={{ fontSize: 16, margin: 0 }}>{String(lastEvent.prompt || '').startsWith('Typed') ? 'Now you just need to give your teacher your printed or sent file and the next module will open after they check it.' : 'Now you just need to give your teacher the paper and the next module will open after they check it.'}</p>
@@ -5536,7 +5696,7 @@ function EduSphereScreens() {
   if (screen === 'quick-result' && quickResult) {
     const qr = quickResult; const mod = getModule(qr.moduleId);
     return (
-      <div style={page}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={wrap}>
+      <div style={{ ...page }}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={{ ...wrap }}>
         <div style={{ ...card, textAlign: 'center' }}>
           <h1 style={{ fontSize: 24, margin: '12px 0 6px' }}>{qr.passed ? `You already know ${lowerTitle(mod.title)}` : `Not yet: ${lowerTitle(mod.title)}`}</h1>
           {qr.passed
@@ -5558,7 +5718,7 @@ function EduSphereScreens() {
   if (screen === 'placement-result' && placementResult) {
     const pr = placementResult;
     return (
-      <div style={page}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={wrap}>
+      <div style={{ ...page }}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={{ ...wrap }}>
         <div style={{ ...card, textAlign: 'center' }}>
           <h1 style={{ fontSize: 24, margin: '12px 0 6px' }}>You start at {gradeLabel(pr.startGrade).toLowerCase()} {pr.subject.toLowerCase()}</h1>
           {pr.cleared.length
@@ -5575,7 +5735,7 @@ function EduSphereScreens() {
     const missed = [...new Set(lastEvent.results.filter((r) => !r.correct).map((r) => r.moduleId))].map((id) => getModule(id)).filter(Boolean);
     const strong = lastEvent.correct === lastEvent.total;
     return (
-      <div style={page}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={wrap}>
+      <div style={{ ...page }}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={{ ...wrap }}>
         <div style={{ ...card, textAlign: 'center' }}>
           <h1 style={{ fontSize: 24, margin: '12px 0 6px' }}>{strong ? 'It all stuck!' : 'Checkpoint done'}</h1>
           <p style={{ fontSize: 17, margin: '0 0 12px' }}>{lastEvent.correct} of {lastEvent.total} correct.</p>
@@ -5615,7 +5775,7 @@ function EduSphereScreens() {
       if (mastered && nextMod) openModule(nextMod.id); else if (mastered && nextCourse) openModule(sortedModules.filter((m) => m.courseId === nextCourse.id && !(progress.perModule[m.id] || {}).mastered).sort((a, b) => a.order - b.order)[0].id); else if (mastered) setScreen('overview'); else if (backTo) loopBack(mod.id, backTo); else { setLessonStep(0); setScreen('lesson'); }
     };
     return (
-      <div style={page}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={wrap}>
+      <div style={{ ...page }}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={{ ...wrap }}>
         <button type="button" onClick={() => setScreen('overview')} aria-label="Back" style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>
           <svg viewBox="0 0 24 24" width="34" height="34" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke={C.green} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" /></svg>
         </button>
@@ -5667,7 +5827,7 @@ function EduSphereScreens() {
     // The next module in this course by order, skipping any already mastered.
     const nextMod = sortedModules.filter((m) => m.courseId === mod.courseId && m.order > mod.order && !(progress.perModule[m.id] || {}).mastered).sort((a, b) => a.order - b.order)[0] || null;
     return (
-      <div style={page}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={wrap}>
+      <div style={{ ...page }}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={{ ...wrap }}>
         <div style={{ ...card, borderColor: mastered ? C.gold : C.clay }}>
           <Tag tone={mastered ? 'mastered' : 'review'}>{mastered ? 'Mastered' : 'Keep practicing'}</Tag>
           {mastered && lastEvent.dose > 1 && <p style={{ margin: '10px 0 0', fontSize: 15, color: C.green, fontWeight: 600, textAlign: 'center' }}>You overcame it. {lastEvent.coreTotal} questions on the one that kept getting away, and {lastEvent.coreCorrect} right. That is what practice looks like.</p>}
@@ -5709,7 +5869,7 @@ function EduSphereScreens() {
       setScreen('wonder-voices');
     };
     return (
-      <div style={page}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={wrap}>
+      <div style={{ ...page }}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={{ ...wrap }}>
         <h1 className="edu-slide-in" style={{ fontSize: 30, margin: '8px 0 12px', textAlign: 'center', color: C.green }}>Let's Wonder!</h1>
         <div className="edu-rise" style={{ ...card, textAlign: 'center', padding: '22px 18px', position: 'relative' }}>
           <p style={{ fontSize: 22, lineHeight: 1.5, margin: 0 }}>{wonder.prompt}</p>
@@ -5745,7 +5905,7 @@ function EduSphereScreens() {
     const v = voices[step];
     const last = step >= voices.length - 1;
     return (
-      <div style={page}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={wrap}>
+      <div style={{ ...page }}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={{ ...wrap }}>
         <div key={step} className="edu-rise" style={{ ...card, textAlign: 'center', padding: '22px 18px' }}>
           <p style={{ fontSize: 15, color: C.muted, margin: '0 0 8px' }}>{v.voice}</p>
           <p style={{ fontSize: 22, lineHeight: 1.5, margin: 0 }}>{v.says}</p>
@@ -5784,7 +5944,7 @@ function EduSphereScreens() {
       setScreen('wonder-voices');
     };
     return (
-      <div style={page}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={wrap}>
+      <div style={{ ...page }}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={{ ...wrap }}>
         <h1 className="edu-slide-in" style={{ fontSize: 30, margin: '8px 0 4px', textAlign: 'center', color: C.green }}>Let's Wonder!</h1>
         <p style={{ color: C.muted, fontSize: 14, margin: '0 0 10px', textAlign: 'center' }}>No right answer</p>
         <div style={{ ...card, position: 'relative' }}>
@@ -5813,20 +5973,20 @@ function EduSphereScreens() {
   if (screen === 'wonder-voices' && wonder) {
     const allText = wonder.perspectives.map((p) => `${p.voice} says: ${p.says}`).join(' ') + ' ' + wonder.closing;
     return (
-      <div style={page}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={wrap}>
+      <div style={{ ...page }}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={{ ...wrap }}>
         <p style={{ color: C.muted, fontSize: 14, margin: '4px 0 6px' }}>How others might see it</p>
         {/* The question is repeated here so nobody has to remember what they were asked. */}
-        <div style={{ ...card, background: C.greenSoft, borderColor: C.greenSoft }}>
+        <div style={{ ...card, background: C.greenSoft, borderColor: C.softEdge }}>
           <p style={{ margin: 0, fontSize: 17, fontWeight: 600 }}>{wonder.prompt}</p>
         </div>
         <SpeakButton text={allText} label="Read it to me" />
         {wonder.perspectives.map((p) => (
-          <div key={p.voice} style={card}>
+          <div key={p.voice} style={{ ...card }}>
             <p style={{ margin: '0 0 4px', fontWeight: 600, color: C.green }}>{p.voice}</p>
             <p style={{ margin: 0, fontSize: 16 }}>{p.says}</p>
           </div>
         ))}
-        <div style={{ ...card, background: C.goldSoft, borderColor: C.goldSoft }}>
+        <div style={{ ...card, background: C.goldSoft, borderColor: C.goldEdge }}>
           <p style={{ margin: 0, fontSize: 16 }}>{wonder.closing}</p>
         </div>
         <Btn full onClick={() => setScreen('overview')}>Back to overview</Btn>
@@ -5846,10 +6006,10 @@ function EduSphereScreens() {
     ];
     const sentences = studentSummary(record.events, visibleModules.map((m) => m.id));
     return (
-      <div style={page}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={wrap}>
+      <div style={{ ...page }}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={{ ...wrap }}>
         <button type="button" onClick={() => setScreen('overview')} style={{ background: 'none', border: 'none', color: C.green, fontFamily: FONT, fontSize: 15, cursor: 'pointer', padding: 0 }}>Back</button>
         <h1 style={{ fontSize: 26, margin: '12px 0 12px', textAlign: 'center' }}>My progress</h1>
-        <div style={{ ...card, background: 'linear-gradient(135deg, #DCEBE1 0%, #EEF5F0 100%)', borderColor: '#C9DCCF' }}>
+        <div style={{ ...card, background: C.tintMint, borderColor: C.tintMintLine }}>
           {sentences.map((line, i) => <div key={i} style={{ margin: '0 0 6px' }}><RichText text={line} size={17} center lineGap={6} /></div>)}
           <FractionBar parts={Math.max(1, mine.length)} shaded={mine.filter((m) => m.mastered).length} color={C.gold} height={30} />
           <p style={{ margin: '10px 0 0', color: C.muted, fontSize: 14, textAlign: 'center' }}>{mine.filter((m) => m.mastered).length} of {mine.length} modules mastered</p>
@@ -5915,8 +6075,8 @@ function EduSphereScreens() {
     const fw = frameworkForState(stateCode || 'CA');
     const plan = CURRICULUM.filter((entry) => entry.standards.some((st) => st.framework === fw));
     return (
-      <div style={page}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={wrap}>
-        <button type="button" onClick={() => setScreen('educator-pick')} style={linkBtn}>Back to Classroom</button>
+      <div style={{ ...page }}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={{ ...wrap }}>
+        <button type="button" onClick={() => setScreen('educator-pick')} style={{ ...linkBtn }}>Back to Classroom</button>
         <h1 style={{ fontSize: 24, margin: '12px 0 4px', textAlign: 'center' }}>Standards map</h1>
         <p style={{ color: C.muted, marginTop: 0, fontSize: 15, textAlign: 'center' }}>
           {stateCode && fw !== 'CCSS' ? `Every module, matched to ${stateFor(stateCode).name}'s standards (${FRAMEWORKS[fw].name}).` : `Every module, matched to ${FRAMEWORKS.CCSS.name}.`}<br />Print this page for a coverage record.
@@ -5945,7 +6105,7 @@ function EduSphereScreens() {
             return (
             <div key={group.key} style={{ marginBottom: 12 }}>
               <button type="button" onClick={() => setOpenMapHeads((list) => (list.includes(group.key) ? list.filter((x) => x !== group.key) : [...list, group.key]))} aria-expanded={headOpen}
-                style={{ fontFamily: FONT, width: '100%', background: headOpen ? C.green : C.surface, color: headOpen ? '#FFFFFF' : C.green, border: `2px solid ${C.green}`, borderRadius: 12, padding: '12px 16px', cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10, marginBottom: headOpen ? 8 : 0 }}>
+                style={{ fontFamily: FONT, width: '100%', background: headOpen ? C.green : C.surface, color: headOpen ? C.onAccent : C.green, border: `2px solid ${C.green}`, borderRadius: 12, padding: '12px 16px', cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10, marginBottom: headOpen ? 8 : 0 }}>
                 <span style={{ fontSize: 19, fontWeight: 700 }}>{group.title}</span>
                 <span style={{ fontSize: 14, fontWeight: 600, whiteSpace: 'nowrap' }}>{tally.covered} of {tally.total} covered {headOpen ? '▴' : '▾'}</span>
               </button>
@@ -5992,7 +6152,7 @@ function EduSphereScreens() {
   if (screen === 'reading-lists' || screen === 'experiments') {
     const lists = screen === 'reading-lists';
     return (
-      <div style={page}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={wrap}>
+      <div style={{ ...page }}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={{ ...wrap }}>
         <button type="button" onClick={() => setScreen('educator-pick')} style={{ ...linkBtn, marginBottom: 6 }}>Back</button>
         <h1 style={{ fontSize: 24, margin: '12px 0 4px', textAlign: 'center' }}>{lists ? 'Reading List Ideas' : 'Science Experiment Ideas'}</h1>
         <p style={{ color: C.muted, margin: '0 0 26px', fontSize: 15, textAlign: 'center' }}>{lists ? 'Here\'s a comprehensive list of books you might consider incorporating into your curriculum. Regular reading is fantastic for growing brains!' : 'Science is way more fun when it\'s tangible. Here are some ideas for every age group!'}</p>
@@ -6001,7 +6161,7 @@ function EduSphereScreens() {
           const title = g === 'grown' ? 'For parents, educators and advanced readers' : gradeLabel(g);
           const count = lists ? readingListFor(g).length : experimentsFor(g).length;
           return (
-            <div key={g} style={{ borderRadius: 12, overflow: 'hidden', marginBottom: 10, background: 'rgb(26, 71, 58)' }}>
+            <div key={g} style={{ borderRadius: 12, overflow: 'hidden', marginBottom: 10, background: 'rgb(26, 71, 58)', ...(C.mode === 'dark' && open ? { border: `1px solid ${C.cardEdge}` } : {}) }}>
               <button type="button" onClick={() => setOpenResourceGrades((list) => (list.includes(g) ? list.filter((x) => x !== g) : [...list, g]))} aria-expanded={open}
                 style={{ fontFamily: FONT, width: '100%', textAlign: 'left', background: 'transparent', border: 'none', padding: '14px 16px', cursor: 'pointer', color: '#fff' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10 }}>
@@ -6009,11 +6169,11 @@ function EduSphereScreens() {
                   <span style={{ fontSize: 14, opacity: 0.85, whiteSpace: 'nowrap' }}>{count} {lists ? (count === 1 ? 'book' : 'books') : 'ideas'} {open ? '▴' : '▾'}</span>
                 </div>
               </button>
-              <div className="edu-collapsible" style={{ display: open ? 'block' : 'none', background: C.greenSoft, padding: '14px 18px' }}>
+              <div className="edu-collapsible" style={{ display: open ? 'block' : 'none', background: C.listBody, ...(C.mode === 'dark' ? { borderTop: `1px solid ${C.cardEdge}` } : {}), padding: '14px 18px' }}>
                 {lists
                   ? <ul style={{ margin: 0, paddingLeft: 20, fontSize: 15 }}>{readingListFor(g).map((t) => <li key={t} style={{ margin: '3px 0' }}>{t}</li>)}</ul>
                   : experimentsFor(g).map((x) => (
-                    <div key={x.title} style={{ borderTop: `1px solid rgba(26, 71, 58, 0.15)`, padding: '8px 0' }}>
+                    <div key={x.title} className="edu-experiment" style={C.mode === 'dark' ? { background: C.surface, border: `1px solid ${C.cardEdge}`, borderRadius: 12, padding: '12px 14px', margin: '0 0 12px' } : { borderTop: `1px solid rgba(26, 71, 58, 0.15)`, padding: '8px 0' }}>
                       <p style={{ margin: '0 0 2px', fontWeight: 600 }}>{x.title}</p>
                       <p style={{ margin: '0 0 4px', fontSize: 15 }}><strong>Ask first:</strong> {x.ask}</p>
                       <p style={{ margin: '0 0 4px', fontSize: 15 }}>{x.do}</p>
@@ -6047,17 +6207,17 @@ function EduSphereScreens() {
       return `rgb(${mix(214, 26)}, ${mix(233, 71)}, ${mix(211, 58)})`;
     };
     // The pale green used for the small panels inside a question.
-    const PANEL = 'rgb(240, 248, 238)';
+    const PANEL = C.panel;
 
     return (
-      <div style={page}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={wrap}>
-        <button type="button" onClick={() => setScreen('educator-pick')} style={linkBtn}>Back to Classroom</button>
+      <div style={{ ...page }}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={{ ...wrap }}>
+        <button type="button" onClick={() => setScreen('educator-pick')} style={{ ...linkBtn }}>Back to Classroom</button>
         <h1 style={{ fontSize: 24, margin: '12px 0 4px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Wonder Questions <InfoButton onClick={() => setShowWonderTip(!showWonderTip)} label="How reflection questions work" open={showWonderTip} /></h1>
         {showWonderTip && (
           <TipText>
             <p style={{ margin: '0 0 8px' }}>After every two practice rounds, whether it went well or not, a reflection question is introduced. Each question is written toward one of four aims: curiosity about the world, failure as the way learning happens, naming and handling feelings, and the idea that hard days are normal yet, we always get through them.</p>
             <p style={{ margin: '0 0 8px' }}>These questions rotate. A student never sees the same question more than twice and after a bad practice round, questions about failure and feelings are prioritized. Student answers are never stored and only questions you approve will ever appear.</p>
-            <p style={{ margin: 0 }}>Note: By never storing student answers, there is no pressure for them to answer a certain way. They are free to answer as themselves then they'll see other perspectives to expand their way of thinking. This also keeps EDUSphere compliant with privacy laws.</p>
+            <p style={{ margin: 0 }}>Note: By never storing student answers, there is no pressure for them to answer a certain way. They are free to answer as themselves then they'll see other perspectives to expand their way of thinking. This also keeps The Wise Human compliant with privacy laws.</p>
           </TipText>
         )}
         <p style={{ color: C.muted, marginTop: 0, marginBottom: 26, fontSize: 15, textAlign: 'center' }}>Thought-provoking questions sprinkled between learning modules. Wonder Questions are designed not only to help information stick, but to promote emotional intelligence, curiosity, critical thinking and positive views of failure.</p>
@@ -6067,7 +6227,7 @@ function EduSphereScreens() {
             {waiting > 0 ? `${waiting} to review` : `All ${WONDER.length} reviewed`}
           </p>
           <p style={{ margin: '6px 0 10px', fontSize: 15, textAlign: 'center' }}>Students only see what you approve. Responses are never recorded for privacy reasons.</p>
-          {waiting === 0 && WONDER.length > 0 && <p style={{ margin: '0 0 10px', fontSize: 13, textAlign: 'center' }}><button type="button" onClick={() => apply(unapproveAllWonder(wonderReview))} style={{ ...linkBtn, fontSize: 13, padding: 0 }}>Un-approve all</button></p>}
+          {waiting === 0 && WONDER.length > 0 && <p style={{ margin: '0 0 10px', fontSize: 13, textAlign: 'center' }}><button type="button" onClick={() => apply(unapproveAllWonder(wonderReview))} style={{ ...linkBtn, fontSize: 13, padding: 0 }}>Remove All</button></p>}
           {waiting > 0 && <Btn full kind="secondary" onClick={() => apply(approveAllWonder(wonderReview))}>Approve all</Btn>}
         </div>
 
@@ -6081,7 +6241,7 @@ function EduSphereScreens() {
             <div key={stage.id}>
               {/* Four rows to begin with. The questions inside wait until a stage is opened. */}
               <button type="button" onClick={() => setOpenWonderStages((list) => (list.includes(stage.id) ? list.filter((x) => x !== stage.id) : [...list, stage.id]))} aria-expanded={stageOpen}
-                style={{ fontFamily: FONT, width: '100%', textAlign: 'left', background: stageBg, border: 'none', borderRadius: 12, padding: '14px 16px', cursor: 'pointer', color: stageLight ? C.ink : '#fff', marginBottom: 10 }}>
+                style={{ fontFamily: FONT, width: '100%', textAlign: 'left', background: stageBg, border: 'none', borderRadius: 12, padding: '14px 16px', cursor: 'pointer', color: stageLight ? '#24291F' : '#fff', marginBottom: 10 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10 }}>
                   <span style={{ fontSize: 18, fontWeight: 600 }}>{stage.title}</span>
                   <span style={{ fontSize: 14, opacity: 0.85, whiteSpace: 'nowrap' }}>{inStage.length === 0 ? 'none yet' : waitingHere > 0 ? `${waitingHere} to review` : 'all reviewed'} {stageOpen ? '▴' : '▾'}</span>
@@ -6100,7 +6260,7 @@ function EduSphereScreens() {
                   const state = hidden ? 'Removed' : approved ? 'Approved' : 'Awaiting review';
                   return (
                     <button key={w.id} type="button" onClick={() => { setReviewing(w.id); setOpenVoices([]); }}
-                      style={{ ...card, display: 'block', width: '100%', textAlign: 'left', padding: 14, cursor: 'pointer', border: `1px solid ${C.line}`, opacity: hidden ? 0.7 : 1, background: hidden ? '#EDEFEA' : C.surface, fontFamily: FONT, color: C.ink }}>
+                      style={{ ...card, display: 'block', width: '100%', textAlign: 'center', padding: 14, cursor: 'pointer', border: `1px solid ${C.line}`, opacity: hidden ? 0.7 : 1, background: hidden ? (C.mode === 'dark' ? C.panel : '#EDEFEA') : C.surface, fontFamily: FONT, color: C.ink }}>
                       <span style={{ display: 'block', fontSize: 16, fontWeight: 600, lineHeight: 1.4 }}>{w.prompt}</span>
                       <span style={{ display: 'block', marginTop: 8 }}><Tag tone={tone}>{state}</Tag></span>
                     </button>
@@ -6113,10 +6273,10 @@ function EduSphereScreens() {
                 return (
                   <>
                     {reviewed.length > 0 && (
-                      <div style={{ ...card, padding: 0, overflow: 'hidden', background: C.greenSoft, borderColor: C.greenSoft }}>
+                      <div style={{ ...card, padding: 0, overflow: 'hidden', background: C.greenSoft, borderColor: C.softEdge }}>
                         <button type="button" onClick={() => setOpenApproved((list) => (list.includes(stage.id) ? list.filter((x) => x !== stage.id) : [...list, stage.id]))} aria-expanded={foldOpen}
                           style={{ fontFamily: FONT, width: '100%', textAlign: 'left', background: 'transparent', border: 'none', padding: 14, cursor: 'pointer', color: C.ink, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                          <span style={{ fontSize: 15, fontWeight: 600 }}>Reviewed ({reviewed.length})</span>
+                          <span style={{ fontSize: 15, fontWeight: 600, flex: 1, textAlign: 'center', paddingLeft: 18 }}>Reviewed ({reviewed.length})</span>
                           <span style={{ color: C.muted }}>{foldOpen ? '▴' : '▾'}</span>
                         </button>
                         {foldOpen && <div style={{ padding: '0 10px 6px' }}>{reviewed.map(row)}</div>}
@@ -6136,31 +6296,37 @@ function EduSphereScreens() {
         {/* Reviewing one question opens over the page rather than pushing everything down.
             With a hundred questions to work through, expanding in place would mean endless scrolling. */}
         {reviewingQuestion && (
-          <div className="edu-no-print" style={{ position: 'fixed', top: 0, right: 0, bottom: 0, left: 0, background: 'rgba(36, 41, 31, 0.55)', zIndex: 100, overflowY: 'auto', padding: '24px 12px' }}>
-            <div style={{ maxWidth: 560, margin: '0 auto', background: C.surface, borderRadius: 14, padding: 18, position: 'relative' }}>
+          <div className="edu-no-print" style={{ position: 'fixed', top: 0, right: 0, bottom: 0, left: 0, background: C.scrim, zIndex: 100, overflowY: 'auto', padding: '24px 12px' }}>
+            <div style={{ maxWidth: 560, margin: '0 auto', background: C.surface, ...(C.mode === 'dark' ? { border: `1px solid ${C.cardEdge}` } : {}), borderRadius: 14, padding: 18, position: 'relative' }}>
               <button type="button" onClick={() => setReviewing(null)} aria-label="Close"
                 style={{ position: 'absolute', top: 8, right: 10, background: 'none', border: 'none', width: 36, height: 36, fontSize: 30, fontWeight: 400, lineHeight: '34px', cursor: 'pointer', color: C.ink, fontFamily: FONT, padding: 0 }}>×</button>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10, paddingRight: 40 }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, padding: '0 40px' }}>
                 <Tag tone={isWonderHidden(wonderReview, reviewingQuestion.id) ? 'locked' : isWonderApproved(wonderReview, reviewingQuestion.id) ? 'mastered' : 'review'}>
                   {isWonderHidden(wonderReview, reviewingQuestion.id) ? 'Removed' : isWonderApproved(wonderReview, reviewingQuestion.id) ? 'Approved' : 'Awaiting review'}
                 </Tag>
 
               </div>
-              <p style={{ margin: '12px 0 14px', fontSize: 18, fontWeight: 600, lineHeight: 1.4 }}>{reviewingQuestion.prompt}</p>
+              <p style={{ margin: '12px 0 14px', fontSize: 18, fontWeight: 600, lineHeight: 1.4, textAlign: 'center' }}>{reviewingQuestion.prompt}</p>
 
               {Array.isArray(reviewingQuestion.simple) && (
-                <div style={{ background: PANEL, borderRadius: 10, padding: '10px 12px', marginBottom: 12 }}>
-                  <p style={{ margin: '0 0 6px', fontSize: 14, fontWeight: 600 }}>What the youngest children hear</p>
-                  <p style={{ margin: '0 0 6px', fontSize: 13, color: C.muted }}>Children who cannot read yet hear the question spoken, tap one of the choices, and then hear only these two short voices. The four voices below are for readers.</p>
-                  {reviewingQuestion.simple.map((v) => <p key={v.voice} style={{ margin: '0 0 4px', fontSize: 14 }}><strong>{v.voice}</strong> {v.says}</p>)}
+                <div style={{ background: PANEL, ...(C.mode === 'dark' ? { border: `1px solid ${C.panelLine}` } : {}), borderRadius: 10, padding: '10px 12px', marginBottom: 12 }}>
+                  <p style={{ margin: '0 0 6px', fontSize: 14, fontWeight: 600, textAlign: 'center' }}>What the youngest children hear</p>
+                  <p style={{ margin: '0 0 8px', paddingBottom: 8, borderBottom: `1px solid ${C.mode === 'dark' ? 'rgba(124, 195, 166, 0.45)' : C.line}`, fontSize: 13, color: C.muted, textAlign: 'center' }}>Children who cannot read yet hear the question spoken, tap one of the choices, and then hear only these two short voices. The four voices below are for readers.</p>
+                  {/* Each voice: its name on a line of its own, the sentence under it, and a gap before the next voice (Mikey, 2026-09-25). */}
+                  {reviewingQuestion.simple.map((v, i) => (
+                    <div key={v.voice} style={{ margin: i === 0 ? 0 : '14px 0 0', textAlign: 'center' }}>
+                      <p style={{ margin: '0 0 3px', fontSize: 14, fontWeight: 700 }}>{/:$/.test(v.voice) ? v.voice : `${v.voice}:`}</p>
+                      <p style={{ margin: 0, fontSize: 14 }}>{v.says}</p>
+                    </div>
+                  ))}
                 </div>
               )}
-              <div style={{ background: PANEL, borderRadius: 10, padding: '10px 12px', marginBottom: 12 }}>
-                <p style={{ margin: '0 0 2px', fontSize: 14, fontWeight: 600 }}>Answered by</p>
+              <div style={{ background: PANEL, ...(C.mode === 'dark' ? { border: `1px solid ${C.panelLine}` } : {}), borderRadius: 10, padding: '10px 12px', marginBottom: 12 }}>
+                <p style={{ margin: '0 0 2px', fontSize: 14, fontWeight: 600, textAlign: 'center' }}>Answered by</p>
                 {reviewingQuestion.answerMode === 'typed' ? (
-                  <p style={{ margin: 0, fontSize: 14, color: C.muted }}>Typing in their own words. Nothing they write is saved.</p>
+                  <p style={{ margin: 0, fontSize: 14, color: C.muted, textAlign: 'center' }}>Typing in their own words. Nothing they write is saved.</p>
                 ) : (
-                  <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginTop: 4 }}>
+                  <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginTop: 4, justifyContent: 'center' }}>
                     {(reviewingQuestion.options || []).map((o) => (
                       <span key={o} style={{ fontSize: 14, fontWeight: 600, color: C.green, background: C.surface, border: `2px solid ${C.line}`, borderRadius: 10, padding: '7px 14px' }}>{o}</span>
                     ))}
@@ -6168,29 +6334,29 @@ function EduSphereScreens() {
                 )}
               </div>
 
-              <p style={{ margin: '0 0 6px', fontSize: 14, fontWeight: 600 }}>The four voices:</p>
+              <p style={{ margin: '0 0 6px', fontSize: 14, fontWeight: 600, textAlign: 'center' }}>The four voices:</p>
               {reviewingQuestion.perspectives.map((p) => {
                 const shown = openVoices.includes(p.voice);
                 return (
                   <div key={p.voice} style={{ borderTop: `1px solid ${C.line}` }}>
                     <button type="button" onClick={() => setOpenVoices((list) => (list.includes(p.voice) ? list.filter((x) => x !== p.voice) : [...list, p.voice]))} aria-expanded={shown}
                       style={{ fontFamily: FONT, width: '100%', textAlign: 'left', background: 'transparent', border: 'none', padding: '10px 0', cursor: 'pointer', color: C.green, fontSize: 15, fontWeight: 600, display: 'flex', justifyContent: 'space-between', gap: 10 }}>
-                      <span>{p.voice}</span>
+                      <span style={{ flex: 1, textAlign: 'center', paddingLeft: 18 }}>{p.voice}</span>
                       <span style={{ color: C.muted, fontWeight: 400 }}>{shown ? '▴' : '▾'}</span>
                     </button>
                     <div className="edu-collapsible" style={{ display: shown ? 'block' : 'none', paddingBottom: 10 }}>
-                      <p style={{ margin: 0, fontSize: 15, lineHeight: 1.6 }}>{p.says}</p>
+                      <p style={{ margin: 0, fontSize: 15, lineHeight: 1.6, textAlign: 'center' }}>{p.says}</p>
                     </div>
                   </div>
                 );
               })}
 
-              <div style={{ background: PANEL, borderRadius: 10, padding: '10px 12px', marginTop: 12 }}>
-                <p style={{ margin: 0, fontSize: 14, fontWeight: 600 }}>Closing question</p>
-                <p style={{ margin: '2px 0 0', fontSize: 15 }}>{reviewingQuestion.closing}</p>
+              <div style={{ background: C.mode === 'dark' ? '#AAD8C5' : PANEL, color: C.mode === 'dark' ? '#16201B' : undefined, borderRadius: 10, padding: '10px 12px', marginTop: 12 }}>
+                <p style={{ margin: 0, fontSize: 14, fontWeight: 600, textAlign: 'center' }}>Closing question</p>
+                <p style={{ margin: '2px 0 0', fontSize: 15, textAlign: 'center' }}>{reviewingQuestion.closing}</p>
               </div>
 
-              <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginTop: 16 }}>
+              <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginTop: 16, justifyContent: 'center' }}>
                 {isWonderHidden(wonderReview, reviewingQuestion.id) ? (
                   <Btn kind="secondary" onClick={() => apply(restoreWonder(wonderReview, reviewingQuestion.id))}>Put it back for review</Btn>
                 ) : isWonderApproved(wonderReview, reviewingQuestion.id) ? (
@@ -6231,12 +6397,12 @@ function EduSphereScreens() {
     };
 
     return (
-      <div style={page}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={wrap}>
-        <button type="button" onClick={() => setScreen('educator-pick')} style={linkBtn}>Back to Classroom</button>
+      <div style={{ ...page }}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={{ ...wrap }}>
+        <button type="button" onClick={() => setScreen('educator-pick')} style={{ ...linkBtn }}>Back to Classroom</button>
         <h1 style={{ fontSize: 24, margin: '12px 0 4px', textAlign: 'center' }}>Practical Life Skills</h1>
         <p style={{ color: C.muted, marginTop: 0, fontSize: 15 }}>Making the academic work efficient frees up hours. These are ideas for what to do with them, listed from the earliest skills at the top to the most mature at the bottom. Nothing here is graded, tracked, or shown to a student.</p>
 
-        <div style={{ ...card, marginTop: 22, background: C.greenSoft, borderColor: C.greenSoft }}>
+        <div style={{ ...card, marginTop: 22, background: C.greenSoft, borderColor: C.softEdge }}>
           <p style={{ margin: '0 0 8px', fontSize: 16, fontWeight: 600 }}>My Completed Skills: {doneCount} out of {ordered.length}</p>
           <label style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 15 }}>
             <input type="checkbox" checked={hideCovered} onChange={() => setHideCovered(!hideCovered)} />
@@ -6274,7 +6440,7 @@ function EduSphereScreens() {
                         <span style={{ fontSize: 14, opacity: 0.8, whiteSpace: 'nowrap' }}>{open ? '▴' : '▾'}</span>
                       </div>
                     </button>
-                    <div className="edu-collapsible" style={{ display: open ? 'block' : 'none', background: C.greenSoft, padding: '14px 18px' }}>
+                    <div className="edu-collapsible" style={{ display: open ? 'block' : 'none', background: C.listBody, ...(C.mode === 'dark' ? { borderTop: `1px solid ${C.cardEdge}` } : {}), padding: '14px 18px' }}>
                       <p style={{ margin: 0, fontSize: 15, lineHeight: 1.6 }}>{sk.why}</p>
                       {sk.ways.length > 0 && (
                         <>
@@ -6295,7 +6461,7 @@ function EduSphereScreens() {
           );
         })}
 
-        {shown.length === 0 && <div style={card}><p style={{ margin: 0, color: C.muted }}>Everything is marked as covered. Untick the box above to see the list again.</p></div>}
+        {shown.length === 0 && <div style={{ ...card }}><p style={{ margin: 0, color: C.muted }}>Everything is marked as covered. Untick the box above to see the list again.</p></div>}
 
         <p style={{ color: C.muted, fontSize: 13, marginTop: 14, textAlign: 'center' }}>The order is a sequence rather than a schedule. Younger children start at the top, and there is no wrong moment to try one further down. Most of these are never really finished, which is why they are marked as covered rather than complete.</p>
         {saveNote && <p style={{ color: C.muted, fontSize: 13, textAlign: 'center', marginTop: 32 }}>{saveNote}</p>}
@@ -6352,9 +6518,9 @@ function EduSphereScreens() {
       </div>
     );
     return (
-      <div style={page}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={wrap}>
+      <div style={{ ...page }}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={{ ...wrap }}>
         <div className="edu-no-print">
-          <button type="button" onClick={() => setScreen('educator-report')} style={linkBtn}>Back to report</button>
+          <button type="button" onClick={() => setScreen('educator-report')} style={{ ...linkBtn }}>Back to report</button>
         </div>
         <div style={{ margin: '12px 0 6px' }}><Logo width={180} /></div>
         <h1 style={{ fontSize: 24, margin: '10px 0 2px', textAlign: 'center' }}>Transcript</h1>
@@ -6422,13 +6588,13 @@ function EduSphereScreens() {
 
   if (screen === 'change-state') {
     return (
-      <div style={page}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={wrap}>
-        <button type="button" onClick={() => setScreen('educator-pick')} style={linkBtn}>Back to Classroom</button>
-        <h1 style={{ fontSize: 24, margin: '12px 0 8px' }}>Your state</h1>
-        <p style={{ color: C.muted, marginTop: 0, fontSize: 15 }}>Each state publishes its own learning standards. Your reports show coverage against the standards that apply to you.</p>
-        <div style={card}>
+      <div style={{ ...page }}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={{ ...wrap }}>
+        <button type="button" onClick={() => setScreen('educator-pick')} style={{ ...linkBtn }}>Back to Classroom</button>
+        <h1 style={{ fontSize: 24, margin: '12px 0 8px', textAlign: 'center' }}>Your state</h1>
+        <p style={{ color: C.muted, marginTop: 0, fontSize: 15, textAlign: 'center' }}>Each state publishes its own learning standards. Your reports show coverage against the standards that apply to you.</p>
+        <div style={{ ...card }}>
           <select value={stateDraft} onChange={(e) => setStateDraft(e.target.value)} aria-label="Your state"
-            style={{ fontFamily: FONT, fontSize: 16, padding: '10px 12px', width: '100%', boxSizing: 'border-box', border: `2px solid ${C.line}`, borderRadius: 10, background: C.surface, marginBottom: 12 }}>
+            style={{ textAlign: 'center', textAlignLast: 'center', fontFamily: FONT, fontSize: 16, padding: '10px 12px', width: '100%', boxSizing: 'border-box', border: `2px solid ${C.line}`, borderRadius: 10, background: C.surface, marginBottom: 12 , ...pickerLook() }}>
             {STATES.map((st) => <option key={st.code} value={st.code}>{st.name}</option>)}
           </select>
           <Btn full onClick={async () => { setStateCode(stateDraft); await saveStateCode(stateDraft); goBackTo(); }}>Save</Btn>
@@ -6440,11 +6606,11 @@ function EduSphereScreens() {
   // ---------- Creating the educator account: PIN, device name and state, asked once ----------
   if (screen === 'educator-setup') {
     return (
-      <div style={page}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={wrap}>
+      <div style={{ ...page }}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={{ ...wrap }}>
         <button type="button" onClick={() => setScreen('welcome')} style={{ background: 'none', border: 'none', color: C.green, fontFamily: FONT, fontSize: 15, cursor: 'pointer', padding: 0 }}>Back</button>
         <h1 style={{ fontSize: 24, margin: '12px 0 8px', textAlign: 'center' }}>Create your educator account</h1>
         <p style={{ color: C.muted, marginTop: 0, fontSize: 15, textAlign: 'center' }}>Credentials live on this device only. Nothing is sent anywhere.</p>
-        <div style={card}>
+        <div style={{ ...card }}>
           <HeadWithInfo onClick={() => setShowPinTip(!showPinTip)} label="About the PIN" open={showPinTip}>Choose a PIN</HeadWithInfo>
           <p style={{ margin: '0 0 8px', fontSize: 14, color: C.muted, textAlign: 'center' }}>Four to six digits.</p>
           {showPinTip && <p style={{ ...tipStyle, textAlign: 'center' }}>A PIN is important for keeping students out of the educator pages.<br /><br />Don't worry, lost PINs are easy to recover!</p>}
@@ -6453,20 +6619,20 @@ function EduSphereScreens() {
           <PinInput value={newPin2} onChange={setNewPin2} placeholder="PIN again"
             style={{ fontFamily: FONT, fontSize: 18, padding: '12px 14px', width: '100%', boxSizing: 'border-box', border: `2px solid ${C.line}`, borderRadius: 10, letterSpacing: 4 }} />
         </div>
-        <div style={card}>
+        <div style={{ ...card }}>
           <p style={{ margin: '0 0 6px', fontWeight: 600, textAlign: 'center' }}>This device's name</p>
           <p style={{ margin: '0 0 8px', fontSize: 14, color: C.muted, textAlign: 'center' }}>Student progress should be backed up regularly. The name you choose here becomes part of the backup file so multiple device classrooms are easier to restore.<br /><br />(for example iPad 3, laptop, Chromebook 4).</p>
           <input value={deviceDraft} onChange={(e) => setDeviceDraft(e.target.value)} placeholder="This device's name"
-            style={{ fontFamily: FONT, fontSize: 16, padding: '10px 12px', width: '100%', boxSizing: 'border-box', border: `2px solid ${C.line}`, borderRadius: 10 }} />
+            style={{ textAlign: 'center', fontFamily: FONT, fontSize: 16, padding: '10px 12px', width: '100%', boxSizing: 'border-box', border: `2px solid ${C.line}`, borderRadius: 10 }} />
         </div>
-        <div style={card}>
+        <div style={{ ...card }}>
           <p style={{ margin: '0 0 6px', fontWeight: 600, textAlign: 'center' }}>Your state
             <button type="button" onClick={() => setShowStateTip(!showStateTip)} aria-label="Why we ask for your state"
               style={{ background: 'none', border: `1.5px solid ${C.green}`, color: C.green, fontFamily: FONT, fontSize: 12, fontWeight: 700, lineHeight: '15px', width: 18, height: 18, borderRadius: 999, cursor: 'pointer', padding: 0, marginLeft: 8, verticalAlign: 'middle' }}>i</button>
           </p>
           {showStateTip && <p style={{ ...tipStyle, textAlign: 'center' }}>Each state publishes its own learning standards. Most use the Common Core; Texas uses its own. Our courses are mapped to both!<br /><br />Choosing a state mildly alters the course flow and you can change this later from the <strong>My Classroom</strong> page.</p>}
           <select value={stateDraft} onChange={(e) => setStateDraft(e.target.value)} aria-label="Your state"
-            style={{ fontFamily: FONT, fontSize: 16, padding: '10px 12px', width: '100%', boxSizing: 'border-box', border: `2px solid ${C.line}`, borderRadius: 10, background: C.surface }}>
+            style={{ fontFamily: FONT, fontSize: 16, padding: '10px 12px', width: '100%', boxSizing: 'border-box', border: `2px solid ${C.line}`, borderRadius: 10, background: C.surface , ...pickerLook() }}>
             <option value="">Choose a state</option>
             {STATES.map((st) => <option key={st.code} value={st.code}>{st.name}</option>)}
           </select>
@@ -6495,12 +6661,12 @@ function EduSphereScreens() {
     // With an account on this device, its PIN is the key. Without one, the prototype PIN still opens the door.
     const ok = educator ? scramble(pinInput) === educator.pin : pinInput === EDUCATOR_PIN;
     return (
-      <div style={page}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap edu-welcome" style={wrap}>
+      <div style={{ ...page }}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap edu-welcome" style={{ ...wrap }}>
         <button type="button" onClick={() => setScreen('welcome')} style={{ background: 'none', border: 'none', color: C.green, fontFamily: FONT, fontSize: 15, cursor: 'pointer', padding: 0, alignSelf: 'flex-start' }}>Back</button>
         <div className="edu-login-body">
         <h1 style={{ fontSize: 24, margin: '12px 0 22px', textAlign: 'center' }}>Please log in to continue:</h1>
-        <div style={card}>
-          <p style={{ margin: '0 0 10px' }}>Enter your PIN.</p>
+        <div style={{ ...card }}>
+          <p style={{ margin: '0 0 10px', textAlign: 'center' }}>Enter your PIN.</p>
           <PinInput value={pinInput} onChange={setPinInput} placeholder="PIN" onEnter={() => { if (ok) goBackTo(); }}
             style={{ fontFamily: FONT, fontSize: 18, padding: '12px 14px', width: '100%', boxSizing: 'border-box', border: `2px solid ${C.line}`, borderRadius: 10, marginBottom: 12, letterSpacing: 4 }} />
           <div style={{ paddingBottom: 10 }}><Btn full onClick={goBackTo} disabled={!ok}>Open</Btn></div>
@@ -6511,7 +6677,7 @@ function EduSphereScreens() {
             </div>
           )}
           {!educator && <p style={{ margin: '12px 0 0', fontSize: 14, color: C.muted, textAlign: 'center' }}>No educator account created on this device. <button type="button" onClick={() => { setNewPin(''); setNewPin2(''); setDeviceDraft(''); setStateDraft(''); setSetupError(''); setScreen('educator-setup'); }} style={{ ...linkBtn, fontSize: 14, padding: 0 }}>Create one here</button><br />Starter PIN still works and data can be merged later.</p>}
-          {educator && !forgotPin && <p style={{ margin: '12px 0 0', fontSize: 14, color: C.muted }}><button type="button" onClick={() => setForgotPin(true)} style={{ ...linkBtn, fontSize: 14, padding: 0 }}>Forgot my PIN</button></p>}
+          {educator && !forgotPin && <p style={{ margin: '12px 0 0', fontSize: 14, color: C.muted, textAlign: 'center' }}><button type="button" onClick={() => setForgotPin(true)} style={{ ...linkBtn, fontSize: 14, padding: 0 }}>Forgot my PIN</button></p>}
           {educator && forgotPin && (
             <div style={{ marginTop: 12, padding: 12, borderRadius: 10, background: C.goldSoft }}>
               <p style={{ margin: '0 0 10px', fontSize: 14, textAlign: 'center' }}>To reset your pin, select a backup file or type the recovery code into the field below.</p>
@@ -6540,7 +6706,7 @@ function EduSphereScreens() {
               {setupError && <p style={{ margin: '0 0 10px', fontSize: 14, color: C.clay }}>{setupError}</p>}
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, maxWidth: 360, margin: '0 auto' }}>
                 <label style={{ display: 'block' }}>
-                  <span style={{ display: 'block', textAlign: 'center', fontFamily: FONT, fontSize: 15, fontWeight: 600, padding: '9px 14px', borderRadius: 10, background: C.green, color: '#fff', cursor: 'pointer' }}>Choose File</span>
+                  <span style={{ display: 'block', textAlign: 'center', fontFamily: FONT, fontSize: 15, fontWeight: 600, padding: '9px 14px', borderRadius: 10, background: C.green, color: C.onAccent, cursor: 'pointer' }}>Choose File</span>
                   <input type="file" accept="application/json,.json" style={{ display: 'none' }} onChange={async (e) => {
                     const f = e.target.files && e.target.files[0];
                     if (!f) return;
@@ -6595,8 +6761,8 @@ function EduSphereScreens() {
       onPointerUp: dragEnd, onPointerCancel: dragEnd, onContextMenu: (e) => { if (dragId) e.preventDefault(); },
     });
     const newsPopup = newsOpen && news ? (
-      <div className="edu-no-print" style={{ position: 'fixed', top: 0, right: 0, bottom: 0, left: 0, background: 'rgba(36, 41, 31, 0.55)', zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
-        <div className="edu-rise" style={{ width: 'min(440px, 100%)', background: C.surface, borderRadius: 14, padding: '24px 22px', textAlign: 'center' }} role="dialog" aria-label="What's new">
+      <div className="edu-no-print" style={{ position: 'fixed', top: 0, right: 0, bottom: 0, left: 0, background: C.scrim, zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
+        <div className="edu-rise" style={{ width: 'min(440px, 100%)', background: C.surface, ...(C.mode === 'dark' ? { border: `1px solid ${C.cardEdge}` } : {}), borderRadius: 14, padding: '24px 22px', textAlign: 'center' }} role="dialog" aria-label="What's new">
           <p style={{ margin: '0 0 4px', fontSize: 19, fontWeight: 700 }}>What's new</p>
           <p style={{ margin: '0 0 14px', fontSize: 13, color: C.muted }}>{news.date}</p>
           <ul style={{ margin: '0 0 18px', padding: '0 0 0 22px', textAlign: 'left', fontSize: 15, lineHeight: 1.6 }}>{news.items.map((t, k) => <li key={k}>{t}</li>)}</ul>
@@ -6605,23 +6771,25 @@ function EduSphereScreens() {
       </div>
     ) : null;
     return (
-      <div style={page}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={wrap}>
+      <div style={{ ...page }}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={{ ...wrap }}>
         {tourPopup}
         {newsPopup}
         {(() => {
           const days = daysSinceBackup(backupAt, new Date().toISOString());
           const overdue = visible.length > 0 && (days === null || days >= 1);
           return (
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10 }}>
-              <button type="button" onClick={() => { if (record && record.preview) { setRecord(null); setScreen('educator-pick'); } else setScreen('welcome'); }} style={{ background: 'none', border: 'none', color: C.green, fontFamily: FONT, fontSize: 15, cursor: 'pointer', padding: 0 }}>Home</button>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr auto 1fr', alignItems: 'center', gap: 10 }}>
+              <button type="button" onClick={() => { if (record && record.preview) { setRecord(null); setScreen('educator-pick'); } else setScreen('welcome'); }} style={{ background: 'none', justifySelf: 'start', border: 'none', color: C.green, fontFamily: FONT, fontSize: 15, cursor: 'pointer', padding: 0 }}>Home</button>
+              {/* The light and dark switch, top center between Home and Sign out (Mikey, 2026-09-24). */}
+              <ThemeSwitch {...themeSwitch} compact />
               {/* Ends the session now, so the next person at a shared device meets the PIN screen. */}
-              <button type="button" onClick={async () => { await autoBackup('sign-out'); setLastActive(0); setIdleWarning(false); closeTips(); setScreen('welcome'); }} style={{ background: 'none', border: 'none', color: C.muted, fontFamily: FONT, fontSize: 14, cursor: 'pointer', padding: 0, textDecoration: 'underline' }}>Sign out</button>
+              <button type="button" onClick={async () => { await autoBackup('sign-out'); setLastActive(0); setIdleWarning(false); closeTips(); setScreen('welcome'); }} style={{ background: 'none', justifySelf: 'end', border: 'none', color: C.muted, fontFamily: FONT, fontSize: 14, cursor: 'pointer', padding: 0, textDecoration: 'underline' }}>Sign out</button>
             </div>
           );
         })()}
         {educator && backupAt === null && !backupNudgeSeen && tourStep < 0 && (
-          <div className="edu-no-print" style={{ position: 'fixed', top: 0, right: 0, bottom: 0, left: 0, background: 'rgba(36, 41, 31, 0.55)', zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
-            <div className="edu-rise" style={{ maxWidth: 420, width: '100%', background: C.surface, borderRadius: 14, padding: 22, textAlign: 'center' }}>
+          <div className="edu-no-print" style={{ position: 'fixed', top: 0, right: 0, bottom: 0, left: 0, background: C.scrim, zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
+            <div className="edu-rise" style={{ maxWidth: 420, width: '100%', background: C.surface, ...(C.mode === 'dark' ? { border: `1px solid ${C.cardEdge}` } : {}), borderRadius: 14, padding: 22, textAlign: 'center' }}>
               <p style={{ margin: '0 0 8px', fontSize: 18, fontWeight: 600 }}>Make your first backup soon</p>
               <p style={{ margin: '0 0 18px', fontSize: 15, color: C.muted }}>A forgotten PIN can only be reset with a backup file.</p>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
@@ -6662,11 +6830,11 @@ function EduSphereScreens() {
           </div>
         )}
         {adding && (
-          <div style={{ position: 'fixed', top: 0, right: 0, bottom: 0, left: 0, background: 'rgba(36, 41, 31, 0.55)', zIndex: 100, overflowY: 'auto', padding: '24px 12px' }}>
-            <div className="edu-rise" style={{ maxWidth: 560, margin: '0 auto', background: C.surface, borderRadius: 14, padding: 22, position: 'relative', textAlign: 'center' }}>
+          <div style={{ position: 'fixed', top: 0, right: 0, bottom: 0, left: 0, background: C.scrim, zIndex: 100, overflowY: 'auto', padding: '24px 12px' }}>
+            <div className="edu-rise" style={{ maxWidth: 560, margin: '0 auto', background: C.surface, ...(C.mode === 'dark' ? { border: `1px solid ${C.cardEdge}` } : {}), borderRadius: 14, padding: 22, position: 'relative', textAlign: 'center' }}>
               <button type="button" onClick={() => setAdding(false)} aria-label="Close"
                 style={{ position: 'absolute', top: 8, right: 10, background: 'none', border: 'none', width: 36, height: 36, fontSize: 30, lineHeight: '34px', cursor: 'pointer', color: C.ink, fontFamily: FONT, padding: 0 }}>×</button>
-              <p style={{ margin: '0 0 14px', fontWeight: 600, fontSize: 18 }}>Add someone new</p>
+              <p style={C.mode === 'dark' ? { margin: '-22px -22px 16px', padding: '14px 22px', fontWeight: 700, fontSize: 18, background: C.tintHead, borderRadius: '13px 13px 0 0', borderBottom: `1px solid ${C.cardEdge}` } : { margin: '0 0 14px', fontWeight: 600, fontSize: 18 }}>Add someone new</p>
 
           <input value={rosterInput} onChange={(e) => setRosterInput(e.target.value)} placeholder="School-issued ID" maxLength={NAME_MAX}
             style={{ fontFamily: FONT, fontSize: 17, padding: '12px 14px', width: '100%', boxSizing: 'border-box', border: `2px solid ${C.line}`, borderRadius: 10, marginBottom: 14, textAlign: 'center' }} />
@@ -6751,10 +6919,10 @@ function EduSphereScreens() {
           </div>
         )}
 
-        {visible.length === 0 && <div style={{ ...card, background: C.greenSoft, borderColor: C.greenSoft, textAlign: 'center' }}><p style={{ margin: 0, color: C.muted }}>Nobody here yet. Add someone above.</p></div>}
-        {visible.length > 0 && (<div style={{ ...card, padding: 10, background: 'linear-gradient(135deg, #E6F0E8 0%, #F3F8F4 100%)', borderColor: '#C9DCCF' }}>
+        {visible.length === 0 && <div style={{ ...card, background: C.greenSoft, borderColor: C.softEdge, textAlign: 'center' }}><p style={{ margin: 0, color: C.muted }}>Nobody here yet. Add someone above.</p></div>}
+        {visible.length > 0 && (<div style={{ ...card, padding: 10, background: C.tintSage, borderColor: C.tintMintLine }}>
           <button type="button" className="edu-fold-head" onClick={() => setActiveOpen(!activeOpen)} aria-expanded={activeOpen}
-            style={{ fontFamily: FONT, width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'linear-gradient(135deg, #D6E6DB 0%, #E6F0E8 100%)', border: '1px solid #C9DCCF', borderRadius: 12, padding: '14px 16px', marginBottom: 10, cursor: 'pointer', color: C.ink }}>
+            style={{ fontFamily: FONT, width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: C.tintHead, border: `1px solid ${C.tabEdge}`, borderRadius: 12, padding: '14px 16px', marginBottom: 10, cursor: 'pointer', color: C.ink }}>
             <span className="edu-fold-title" style={{ fontSize: 18, fontWeight: 600 }}>Active Students</span>
             <span className="edu-fold-meta" style={{ fontSize: 14, color: C.muted }}>{visible.length} {activeOpen ? '▴' : '▾'}</span>
           </button>
@@ -6789,15 +6957,15 @@ function EduSphereScreens() {
                 {/* On a laptop the name, grade and links stack on the left and Open report sits on the right, centered
                     on them; on a phone the name and links stay as they are and Open report sits below them, centered. */}
                 <div className="edu-student-actions" style={{ marginTop: 8 }}>
-                  <button type="button" onClick={() => { setRenamingId(st.id); setRenameInput(st.label); setRosterError(''); }} style={cardLink}>Rename</button>
-                  <button type="button" onClick={() => setPictureFor(pictureFor === st.id ? null : st.id)} style={cardLink}>{st.picture ? 'Change picture' : 'Add picture'}</button>
-                  <button type="button" onClick={() => { setPinFor(pinFor === st.id ? null : st.id); setPinDraft(''); }} style={cardLink}>{st.pin ? 'Change PIN' : 'Add PIN'}</button>
+                  <button type="button" onClick={() => { setRenamingId(st.id); setRenameInput(st.label); setRosterError(''); }} style={{ ...cardLink }}>Rename</button>
+                  <button type="button" onClick={() => setPictureFor(pictureFor === st.id ? null : st.id)} style={{ ...cardLink }}>{st.picture ? 'Change picture' : 'Add picture'}</button>
+                  <button type="button" onClick={() => { setPinFor(pinFor === st.id ? null : st.id); setPinDraft(''); }} style={{ ...cardLink }}>{st.pin ? 'Change PIN' : 'Add PIN'}</button>
                   <span aria-hidden="true" style={{ flexBasis: '100%', height: 0 }} />{/* the second row starts here, whatever the first row's labels */}
-                  <button type="button" onClick={() => applyRoster(setStudentActive(roster, st.id, false))} style={cardLink}>Hide</button>
+                  <button type="button" onClick={() => applyRoster(setStudentActive(roster, st.id, false))} style={{ ...cardLink }}>Hide</button>
                   {mergeFrom === '' ? (
-                    <button type="button" onClick={() => { setMergeFrom(st.id); setRosterError(''); }} style={cardLink}>Merge into…</button>
+                    <button type="button" onClick={() => { setMergeFrom(st.id); setRosterError(''); }} style={{ ...cardLink }}>Merge into…</button>
                   ) : mergeFrom === st.id ? (
-                    <button type="button" onClick={() => setMergeFrom('')} style={cardLink}>Cancel merge</button>
+                    <button type="button" onClick={() => setMergeFrom('')} style={{ ...cardLink }}>Cancel merge</button>
                   ) : (
                     <button type="button" onClick={async () => {
                       const r = mergeStudents(roster, st.id, mergeFrom);
@@ -6811,13 +6979,13 @@ function EduSphereScreens() {
                   )}
                   <span aria-hidden="true" style={{ flexBasis: '100%', height: 0 }} />{/* Wonder Questions is the third line of links (2026-09-23, Mikey), left aligned with the others; it opens a popup rather than acting at once. */}
                   <button type="button" onClick={() => setWonderPopupFor(st.id)} style={{ ...cardLink, marginRight: 0, display: 'inline-flex', alignItems: 'center', gap: 8 }}>Wonder Questions
-                    <span aria-hidden="true" style={{ display: 'inline-block', fontSize: 12, fontWeight: 700, letterSpacing: 0.5, padding: '2px 10px', borderRadius: 999, background: wonderOnFor(st) ? C.green : C.line, color: wonderOnFor(st) ? '#FFFFFF' : C.muted, textDecoration: 'none' }}>{wonderOnFor(st) ? 'ON' : 'OFF'}</span>
+                    <span aria-hidden="true" style={{ display: 'inline-block', fontSize: 12, fontWeight: 700, letterSpacing: 0.5, padding: '2px 10px', borderRadius: 999, background: wonderOnFor(st) ? C.green : C.line, color: wonderOnFor(st) ? C.onAccent : C.muted, textDecoration: 'none' }}>{wonderOnFor(st) ? 'ON' : 'OFF'}</span>
                   </button>
                 </div>
                 {certificatesPending(st, readyGrades[st.id] || []).map((g) => (
-                  <div key={g} className="edu-rise" style={{ margin: '10px auto 0', maxWidth: 360, padding: '10px 12px', borderRadius: 12, background: '#FFF8E8', border: `2px solid ${C.gold}`, textAlign: 'center' }}>
+                  <div key={g} className="edu-rise" style={{ margin: '10px auto 0', maxWidth: 360, padding: '10px 12px', borderRadius: 12, background: C.paper, border: `2px solid ${C.gold}`, textAlign: 'center' }}>
                     <p style={{ margin: '0 0 6px', fontSize: 15, fontWeight: 700 }}>Finished {certGradeName(g)}!</p>
-                    <button type="button" style={cardLink} onClick={() => { setCertFor({ id: st.id, grade: g }); setCertTemplate('classic'); setCertName(''); setCertPhotos([]); setCertNote(''); setScreen('certificate'); }}>Make a certificate</button>
+                    <button type="button" style={{ ...cardLink }} onClick={() => { setCertFor({ id: st.id, grade: g }); setCertTemplate('classic'); setCertName(''); setCertPhotos([]); setCertNote(''); setScreen('certificate'); }}>Make a certificate</button>
                     <button type="button" style={{ ...cardLink, marginRight: 0 }} onClick={() => applyRoster(setCertificateState(roster, st.id, g, 'skipped'))}>Not now</button>
                   </div>
                 ))}
@@ -6832,10 +7000,10 @@ function EduSphereScreens() {
                     setRecommendedIds(recommendedCourseIds(rec.events, st.level));
                     setOpenSubjects([]); setShowAllCourses(false); setConfirmReset(false); setBusy(false); setScreen('educator-report');
                   }}>Open report</Btn></div>
-                {mergeFrom === st.id && <p style={{ color: C.gold, fontSize: 13, margin: '8px 0 0' }}>Now tap “Merge here” on the student to keep. Both histories are joined; nothing is deleted.</p>}
+                {mergeFrom === st.id && <p style={{ color: C.gold, fontSize: 13, margin: '8px 0 0', textAlign: 'center' }}>Now tap “Merge here” on the student to keep. Both histories are joined; nothing is deleted.</p>}
                 {wonderPopupFor === st.id && (
-                  <div style={{ position: 'fixed', top: 0, right: 0, bottom: 0, left: 0, background: 'rgba(36, 41, 31, 0.55)', zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }} onClick={() => setWonderPopupFor(null)}>
-                    <div className="edu-rise" style={{ width: 'min(420px, 100%)', background: C.surface, borderRadius: 14, padding: '26px 22px', textAlign: 'center' }} onClick={(e) => e.stopPropagation()}>
+                  <div style={{ position: 'fixed', top: 0, right: 0, bottom: 0, left: 0, background: C.scrim, zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }} onClick={() => setWonderPopupFor(null)}>
+                    <div className="edu-rise" style={{ width: 'min(420px, 100%)', background: C.surface, ...(C.mode === 'dark' ? { border: `1px solid ${C.cardEdge}` } : {}), borderRadius: 14, padding: '26px 22px', textAlign: 'center' }} onClick={(e) => e.stopPropagation()}>
                       <p style={{ margin: '0 0 6px', fontSize: 19, fontWeight: 700 }}>Wonder Questions</p>
                       <p style={{ margin: '0 0 18px', fontSize: 15, color: C.muted }}>Currently: <strong style={{ color: wonderOnFor(st) ? C.green : C.ink }}>{wonderOnFor(st) ? 'On' : 'Off'}</strong></p>
                       <SegToggle size="big" options={[['on', 'On'], ['off', 'Off']]} value={wonderOnFor(st) ? 'on' : 'off'} onChange={(v) => applyRoster(setStudentWonder(roster, st.id, v === 'on'))} ariaLabel="Wonder Questions" />
@@ -6848,8 +7016,8 @@ function EduSphereScreens() {
                     <PinInput value={pinDraft} onChange={setPinDraft} placeholder="New PIN"
                       style={{ fontFamily: FONT, fontSize: 17, letterSpacing: 6, padding: '10px 14px', width: 200, boxSizing: 'border-box', border: `2px solid ${C.line}`, borderRadius: 10 }} />
                     <Btn disabled={pinDraft.length !== PIN_LENGTH} onClick={async () => { await applyRoster(setStudentPin(roster, st.id, pinDraft)); setPinFor(null); }}>Save PIN</Btn>
-                    {st.pin && <button type="button" style={linkBtn} onClick={async () => { await applyRoster(setStudentPin(roster, st.id, null)); setPinFor(null); }}>Remove PIN</button>}
-                    <button type="button" style={linkBtn} onClick={() => setPinFor(null)}>Cancel</button>
+                    {st.pin && <button type="button" style={{ ...linkBtn }} onClick={async () => { await applyRoster(setStudentPin(roster, st.id, null)); setPinFor(null); }}>Remove PIN</button>}
+                    <button type="button" style={{ ...linkBtn }} onClick={() => setPinFor(null)}>Cancel</button>
                   </div>
                 )}
                 {pictureFor === st.id && (
@@ -6868,8 +7036,8 @@ function EduSphereScreens() {
                           style={{ width: 30, height: 30, borderRadius: 999, cursor: 'pointer', background: t.color, border: `3px solid ${st.tint === t.id ? C.green : C.surface}`, boxShadow: `0 0 0 1px ${C.line}` }} />
                       ))}
                       {st.picture && pictureInUse(roster, st.picture, st.tint, st.id) && <span style={{ fontSize: 13, color: C.clay }}>Another student has this one.</span>}
-                      {st.picture && <button type="button" style={linkBtn} onClick={async () => { await applyRoster(setStudentPicture(roster, st.id, null)); setPictureFor(null); }}>No picture</button>}
-                      <button type="button" style={linkBtn} onClick={() => setPictureFor(null)}>Done</button>
+                      {st.picture && <button type="button" style={{ ...linkBtn }} onClick={async () => { await applyRoster(setStudentPicture(roster, st.id, null)); setPictureFor(null); }}>No picture</button>}
+                      <button type="button" style={{ ...linkBtn }} onClick={() => setPictureFor(null)}>Done</button>
                     </div>
                   </div>
                 )}
@@ -6887,13 +7055,13 @@ function EduSphereScreens() {
           </button>
         )}
         {hidden.length > 0 && hiddenOpen && (
-          <div style={card}>
+          <div style={{ ...card }}>
             {hidden.map((st) => (
               <div key={st.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10, padding: '6px 0' }}>
                 <span style={{ color: C.muted }}>{st.label}{st.mergedInto ? ` (merged into ${(findStudent(roster, st.mergedInto) || { label: st.mergedInto }).label})` : ''}</span>
                 {!st.mergedInto && (
                   <span style={{ display: 'inline-flex', gap: 12, alignItems: 'center' }}>
-                    <button type="button" onClick={() => applyRoster(setStudentActive(roster, st.id, true))} style={linkBtn}>Show again</button>
+                    <button type="button" onClick={() => applyRoster(setStudentActive(roster, st.id, true))} style={{ ...linkBtn }}>Show again</button>
                     <button type="button" onClick={() => setConfirmDelete(st.id)} style={{ ...linkBtn, color: C.clay }}>Delete</button>
                   </span>
                 )}
@@ -6919,7 +7087,7 @@ function EduSphereScreens() {
             setConfirmDelete(null);
           };
           return (
-            <div role="dialog" aria-modal="true" onClick={() => setConfirmDelete(null)} style={{ position: 'fixed', top: 0, right: 0, bottom: 0, left: 0, background: 'rgba(36, 41, 31, 0.55)', zIndex: 80, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20 }}>
+            <div role="dialog" aria-modal="true" onClick={() => setConfirmDelete(null)} style={{ position: 'fixed', top: 0, right: 0, bottom: 0, left: 0, background: C.scrim, zIndex: 80, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20 }}>
               <div onClick={(e) => e.stopPropagation()} style={{ ...card, maxWidth: 420, width: '100%', textAlign: 'center', padding: 22, boxShadow: '0 12px 40px rgba(0,0,0,0.25)' }}>
                 <p style={{ margin: '0 0 8px', fontSize: 19, fontWeight: 700 }}>{all ? `Delete every record for all ${targets.length} inactive students?` : `Delete every record for ${targets[0].label}?`}</p>
                 <p style={{ margin: '0 0 18px', fontSize: 15, color: C.muted }}>Their history and progress leave this device for good. Old backup files still hold them.</p>
@@ -6945,29 +7113,31 @@ function EduSphereScreens() {
             {LEVELS.map((lv) => <button key={lv.id} type="button" aria-label={`Walk through ${lv.title.toLowerCase()}`} onClick={() => startPreview(lv.id)} style={{ fontFamily: FONT, fontSize: 15, fontWeight: 600, padding: '10px 16px', borderRadius: 10, background: C.surface, border: `2px solid ${C.green}`, color: C.green, cursor: 'pointer' }}>{lv.title}</button>)}
           </div>
         </div>
+        {/* In the dark theme each feature card's button is a deeper shade of the card's own color, with white words
+            (Mikey, 2026-09-24): violet on lavender, blue on sky, terracotta on peach, amber on yellow, all softened a step. */}
         <div className="edu-two-up" style={{ marginTop: 22 }}>
         {FEATURES.reflection && (
-          <div data-tour="wonder" style={{ ...card, background: 'linear-gradient(135deg, #DCEBE1 0%, #EEF5F0 100%)', borderColor: '#C9DCCF', display: 'flex', flexDirection: 'column' }}>
+          <div data-tour="wonder" style={{ ...card, background: C.featWonder, borderColor: C.featWonderLine, color: C.featInk, display: 'flex', flexDirection: 'column' }}>
             <p style={{ margin: '0 0 6px', fontWeight: 600, textAlign: 'center' }}>Wonder Questions</p>
             <p style={{ margin: '0 0 10px', fontSize: 15, textAlign: 'center' }}>{wonderAwaitingReview(wonderReview) > 0 ? `${wonderAwaitingReview(wonderReview)} to review. These optional reflection questions remain invisible until approved.` : 'All reviewed. Only the ones you approved are shown to students.'}</p>
-            <div style={{ marginTop: 'auto' }}><Btn full kind="secondary" onClick={() => setScreen('wonder-review')}>Wonder Questions</Btn></div>
+            <div style={{ marginTop: 'auto' }}><Btn full kind="secondary" onClick={() => setScreen('wonder-review')} style={C.mode === 'dark' ? { background: '#695D98', color: '#FFFFFF', borderColor: '#695D98' } : null}>Wonder Questions</Btn></div>
           </div>
         )}
-        <div data-tour="reading" style={{ ...card, background: 'linear-gradient(135deg, #E3E9F3 0%, #F1F4F9 100%)', borderColor: '#C9D3E3', display: 'flex', flexDirection: 'column' }}>
+        <div data-tour="reading" style={{ ...card, background: C.featReading, borderColor: C.featReadingLine, color: C.featInk, display: 'flex', flexDirection: 'column' }}>
           <p style={{ margin: '0 0 6px', fontWeight: 600, textAlign: 'center' }}>Reading Lists</p>
           <p style={{ margin: '0 0 10px', fontSize: 15, textAlign: 'center' }}>Don't know what books to read? No problem! Check out our curated list organized by grade.</p>
-          <div style={{ marginTop: 'auto' }}><Btn full kind="secondary" onClick={() => setScreen('reading-lists')}>Reading Lists</Btn></div>
+          <div style={{ marginTop: 'auto' }}><Btn full kind="secondary" onClick={() => setScreen('reading-lists')} style={C.mode === 'dark' ? { background: '#4B6B8B', color: '#FFFFFF', borderColor: '#4B6B8B' } : null}>Reading Lists</Btn></div>
         </div>
-        <div data-tour="experiments" style={{ ...card, background: 'linear-gradient(135deg, #F3DCD2 0%, #FAECE6 100%)', borderColor: '#E6C4B6', display: 'flex', flexDirection: 'column' }}>
+        <div data-tour="experiments" style={{ ...card, background: C.featExperiments, borderColor: C.featExperimentsLine, color: C.featInk, display: 'flex', flexDirection: 'column' }}>
           <p style={{ margin: '0 0 6px', fontWeight: 600, textAlign: 'center' }}>Science Experiments</p>
           <p style={{ margin: '0 0 10px', fontSize: 15, textAlign: 'center' }}>Who says science is boring? We have cool experiment ideas for every age group!</p>
-          <div style={{ marginTop: 'auto' }}><Btn full kind="secondary" onClick={() => setScreen('experiments')}>Experiments</Btn></div>
+          <div style={{ marginTop: 'auto' }}><Btn full kind="secondary" onClick={() => setScreen('experiments')} style={C.mode === 'dark' ? { background: '#905E51', color: '#FFFFFF', borderColor: '#905E51' } : null}>Experiments</Btn></div>
         </div>
         {FEATURES.lifeSkills && (
-          <div data-tour="life" style={{ ...card, background: 'linear-gradient(135deg, #F3E7C9 0%, #FAF3E1 100%)', borderColor: '#E6D4A6', display: 'flex', flexDirection: 'column' }}>
+          <div data-tour="life" style={{ ...card, background: C.featLife, borderColor: C.featLifeLine, color: C.featInk, display: 'flex', flexDirection: 'column' }}>
             <p style={{ margin: '0 0 6px', fontWeight: 600, textAlign: 'center' }}>Practical Life Skills</p>
             <p style={{ margin: '0 0 10px', fontSize: 15, textAlign: 'center' }}>If everything goes right, you'll find yourself learning at an accelerated pace. These are the skills for those hours you save.</p>
-            <div style={{ marginTop: 'auto' }}><Btn full kind="secondary" onClick={() => setScreen('life-skills')}>Life Skills</Btn></div>
+            <div style={{ marginTop: 'auto' }}><Btn full kind="secondary" onClick={() => setScreen('life-skills')} style={C.mode === 'dark' ? { background: '#88633A', color: '#FFFFFF', borderColor: '#88633A' } : null}>Life Skills</Btn></div>
           </div>
         )}
         </div>
@@ -7039,23 +7209,24 @@ function EduSphereScreens() {
       setStoryRows(storyRows.map((r) => (r.id === studentId ? { ...r, events: next.events } : r)));
     };
     return (
-      <div style={page}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} /><div className="edu-wrap" style={wrap}>
+      <div style={{ ...page }}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} /><div className="edu-wrap" style={{ ...wrap }}>
         <div className="edu-no-print" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: '4px 0 12px' }}>
-          <button type="button" onClick={() => { setOpenStoryId(null); setScreen(storyLogFrom === 'report' ? 'educator-report' : 'educator-pick'); }} style={linkBtn}>{storyLogFrom === 'report' ? 'Back to report' : 'Back to Classroom'}</button>
+          <button type="button" onClick={() => { setOpenStoryId(null); setScreen(storyLogFrom === 'report' ? 'educator-report' : 'educator-pick'); }} style={{ ...linkBtn }}>{storyLogFrom === 'report' ? 'Back to report' : 'Back to Classroom'}</button>
           <button type="button" onClick={() => { if (typeof window !== 'undefined' && window.print) window.print(); }} style={{ ...linkBtn, fontSize: 13, color: C.muted }}>Print</button>
         </div>
-        <h1 style={{ fontSize: 24, margin: '12px 0 8px', textAlign: 'center' }}>{storyLogFrom === 'report' && storyRows.length === 1 ? `${storyRows[0].label}'s story log` : 'Story-based Learning'}</h1>
+        <h1 style={{ fontSize: 24, margin: '12px 0 8px', textAlign: 'center' }}>{storyLogFrom === 'report' && storyRows.length === 1 ? `${storyRows[0].label}'s Story Log` : 'Story-based Learning'}</h1>
         <p style={{ margin: '0 0 8px', fontSize: 15, color: C.muted, textAlign: 'center' }}>Each learning module pairs with a short story to teach an idea before the questions do. This page shows everything a student has read, what's pending and what was read most recently. <button type="button" onClick={() => setShowStoryWhy(!showStoryWhy)} aria-label="About story-based learning" aria-expanded={showStoryWhy} style={inlineInfoStyle(showStoryWhy)}>i</button></p>
         {showStoryWhy && <p style={{ ...tipStyle, textAlign: 'center' }}>Stories stick where facts slide off. A student who has read about the cart that would not start remembers Newton's laws as a girl and a heavy load, not as three sentences.<br /><br />Open any story and read it together or print it for the classroom wall. <strong>Most Recent</strong> is either something that was read today or, if there's nothing for the day, the prior three.</p>}
         {/* One picker for the student and one toggle for the view (2026-09-23, Mikey), instead of a select on every card. */}
         {storyRows.length > 1 && (
-          <div className="edu-no-print" style={{ display: 'flex', justifyContent: 'center', margin: '10px 0 10px' }}>
-            <select aria-label="Student" value={who} onChange={(e) => { setStoryView({ ...storyView, student: e.target.value }); setStoryExpanded({}); }} style={{ fontFamily: FONT, fontSize: 15, padding: '8px 12px', borderRadius: 8, border: `1px solid ${C.line}`, background: C.greenSoft, color: C.ink, width: 'min(340px, 100%)', textAlign: 'center', textAlignLast: 'center' }}>
+          <div className="edu-no-print" style={{ display: 'flex', justifyContent: 'center', margin: '22px 0 10px' }}>
+            <select aria-label="Student" value={who} onChange={(e) => { setStoryView({ ...storyView, student: e.target.value }); setStoryExpanded({}); }} style={{ fontFamily: FONT, fontSize: 15, padding: '8px 12px', borderRadius: 8, border: `1px solid ${C.line}`, background: C.greenSoft, color: C.ink, width: 'min(340px, 100%)', textAlign: 'center', textAlignLast: 'center' , ...pickerLook() }}>
               <option value="all">All students</option>
               {storyRows.map((r) => <option key={r.id} value={r.id}>{r.label}</option>)}
             </select>
           </div>
         )}
+        <div aria-hidden="true" style={{ height: 12 }} />{/* a little air between the words above and the toggle (Mikey, 2026-09-25) */}
         <SegToggle size="small" options={[['recent', 'Most recent'], ['read', 'Read'], ['unread', 'Unread']]} value={viewAll} onChange={(key) => { setStoryView({ ...storyView, all: key }); setStoryExpanded({}); }} ariaLabel="Stories to show" />
         {storyRows.filter((row) => who === 'all' || row.id === who).map((row) => {
           const items = listFor(row); const view = viewAll; const counts = countsFor(row);
@@ -7104,8 +7275,8 @@ function EduSphereScreens() {
           );
         })}
         {openStory && (
-          <div className="edu-no-print edu-story-overlay" style={{ position: 'fixed', top: 0, right: 0, bottom: 0, left: 0, background: 'rgba(36, 41, 31, 0.55)', zIndex: 140, display: 'flex', alignItems: 'flex-start', justifyContent: 'center', padding: 16, overflowY: 'auto' }} onClick={(e) => { if (e.target === e.currentTarget) setOpenStoryId(null); }}>
-            <div className="edu-rise edu-story-sheet" style={{ width: 'min(560px, 100%)', background: C.surface, borderRadius: 14, padding: '18px 18px 22px', position: 'relative', marginTop: 12 }} role="dialog" aria-label={openStory.title}>
+          <div className="edu-no-print edu-story-overlay" style={{ position: 'fixed', top: 0, right: 0, bottom: 0, left: 0, background: C.scrim, zIndex: 140, display: 'flex', alignItems: 'flex-start', justifyContent: 'center', padding: 16, overflowY: 'auto' }} onClick={(e) => { if (e.target === e.currentTarget) setOpenStoryId(null); }}>
+            <div className="edu-rise edu-story-sheet" style={{ width: 'min(560px, 100%)', background: C.surface, ...(C.mode === 'dark' ? { border: `1px solid ${C.cardEdge}` } : {}), borderRadius: 14, padding: '18px 18px 22px', position: 'relative', marginTop: 12 }} role="dialog" aria-label={openStory.title}>
               <button type="button" onClick={() => setOpenStoryId(null)} aria-label="Close" style={{ position: 'absolute', top: 8, right: 10, background: 'none', border: 'none', color: C.green, fontFamily: FONT, fontSize: 26, cursor: 'pointer', lineHeight: 1 }}>×</button>
               <p style={{ margin: '0 0 2px' }}>
                 <button type="button" onClick={() => { document.body.classList.add('edu-story-mode'); window.print(); setTimeout(() => document.body.classList.remove('edu-story-mode'), 500); }} style={{ ...linkBtn, fontSize: 13, color: C.muted }}>Print</button>
@@ -7130,11 +7301,11 @@ function EduSphereScreens() {
           return withBook.length ? (
           // The book card wears the deep green (2026-09-24, Mikey), so it reads as its own tool under the students' light green bands.
           // It is a picker and a button, nothing to read on paper, so a printed Story Log leaves it out.
-          <div className="edu-no-print edu-book-card" style={{ ...card, marginTop: 18, textAlign: 'center', background: C.green, borderColor: C.green, color: '#FFFFFF' }}>
+          <div className="edu-no-print edu-book-card" style={{ ...card, marginTop: 18, textAlign: 'center', background: C.green, borderColor: C.green, color: C.onAccent }}>
             <p style={{ margin: '0 0 6px', fontSize: 18, fontWeight: 700 }}>Let's Read!</p>
             <p style={{ margin: '0 0 12px', fontSize: 14, color: C.greenSoft }}>Every story in a course, in order, with the long story at the end. Open it, print it or save as a PDF for a class that likes to read on paper.</p>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, justifyContent: 'center', alignItems: 'center' }}>
-              <select aria-label="Story book course" value={chosen} onChange={(e) => setBookCourseId(e.target.value)} style={{ fontFamily: FONT, fontSize: 15, padding: '8px 12px', borderRadius: 8, border: `1px solid ${C.line}`, background: C.greenSoft, color: C.ink, width: 'min(340px, 100%)', textAlign: 'center', textAlignLast: 'center' }}>
+              <select aria-label="Story book course" value={chosen} onChange={(e) => setBookCourseId(e.target.value)} style={{ fontFamily: FONT, fontSize: 15, padding: '8px 12px', borderRadius: 8, border: `1px solid ${C.line}`, background: C.greenSoft, color: C.ink, width: 'min(340px, 100%)', textAlign: 'center', textAlignLast: 'center' , ...pickerLook() }}>
                 {withBook.map((c) => <option key={c.id} value={c.id}>{gradeLabel(c.grade)}: {c.title}</option>)}
               </select>
               <Btn kind="secondary" onClick={() => { setBookCourseId(chosen); setScreen('story-book'); }}>Open Book</Btn>
@@ -7177,17 +7348,17 @@ function EduSphereScreens() {
       Promise.race([loaded, new Promise((done) => setTimeout(done, 8000))]).then(() => window.print());
     };
     return (
-      <div className="edu-book-page" style={page}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} /><div className="edu-wrap" style={wrap}>
+      <div className="edu-book-page" style={{ ...page }}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} /><div className="edu-wrap" style={{ ...wrap }}>
         <div className="edu-no-print" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10, marginBottom: 8 }}>
-          <button type="button" onClick={() => setScreen('story-log')} style={linkBtn}>Back to Story Log</button>
-          <button type="button" onClick={printBook} style={linkBtn}>Print or Save</button>
+          <button type="button" onClick={() => setScreen('story-log')} style={{ ...linkBtn }}>Back to Story Log</button>
+          <button type="button" onClick={printBook} style={{ ...linkBtn }}>Print or Save</button>
         </div>
         <BookReader items={[...chapters.map((ch) => ch.st), ...(cs ? [cs] : [])]} pace={storyPaceFor(chapters[0] ? chapters[0].m : null)} />
         <div className="edu-book-sheet">
           <div className="edu-book-group edu-book-cover-group"><div className="edu-book-cover" style={{ ...card, textAlign: 'center', padding: '48px 22px', position: 'relative', overflow: 'hidden' }}>
             <CoverArt />
             <div style={{ position: 'relative' }}>
-              <p style={{ margin: '0 0 6px', fontSize: 14, color: C.muted, letterSpacing: 1, textTransform: 'uppercase' }}>EduSphere</p>
+              <p style={{ margin: '0 0 6px', fontSize: 14, color: C.muted, letterSpacing: 1, textTransform: 'uppercase' }}>The Wise Human</p>
               <h1 style={{ fontSize: 30, margin: '0 0 8px' }}>{titleCase(c.title)}</h1>
               {COURSE_GOALS[c.id] && <p style={{ margin: '0 auto 12px', fontSize: 15, color: C.ink, maxWidth: 420, lineHeight: 1.45 }}>{COURSE_GOALS[c.id]}</p>}
               <p style={{ margin: 0, fontSize: 16, color: C.muted }}>{gradeLabel(c.grade)}</p>
@@ -7232,11 +7403,11 @@ function EduSphereScreens() {
   if (screen === 'class-view' && classRows) {
     const tone = (band) => (band === 'needs help now' ? 'review' : band === 'keep an eye on' ? 'locked' : 'mastered');
     return (
-      <div style={page}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={wrap}>
-        <button type="button" onClick={() => setScreen('educator-pick')} style={linkBtn}>Back to Classroom</button>
+      <div style={{ ...page }}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={{ ...wrap }}>
+        <button type="button" onClick={() => setScreen('educator-pick')} style={{ ...linkBtn }}>Back to Classroom</button>
         <h1 style={{ fontSize: 24, margin: '12px 0 16px', textAlign: 'center' }}>Who needs help</h1>
         <p className="edu-print-only" style={{ margin: '0 0 12px', textAlign: 'center', fontSize: 14, color: C.muted }}>{educator && educator.deviceName ? `${educator.deviceName}, ` : ''}{new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}. Ranked most in need first.</p>
-        <div style={{ ...card, background: C.greenSoft, borderColor: C.greenSoft, marginBottom: 24 }} data-tour="rows">
+        <div style={{ ...card, background: C.greenSoft, borderColor: C.softEdge, marginBottom: 24 }} data-tour="rows">
           {classSummary(classRows).split('\n').map((line, i) => <p key={i} style={{ margin: i === 0 ? '0 0 10px' : 0, fontSize: 16, lineHeight: 1.6, textAlign: 'center', fontWeight: i === 0 ? 400 : 700 }}>{line}</p>)}
         </div>
         <div className="edu-no-print" style={{ margin: '0 0 14px' }}>
@@ -7270,7 +7441,7 @@ function EduSphereScreens() {
               {r.practice && <div style={{ margin: '14px 0 0', paddingTop: 10, borderTop: `1px solid ${C.line}`, fontSize: 14, color: C.muted }}><RichText text={r.practice} size={14} lineGap={4} /></div>}
               {r.note && <p style={{ margin: '10px 0 0', fontSize: 14, fontStyle: 'italic' }}>Your note: {noteSearch.trim() && !r.note.toLowerCase().includes(noteSearch.trim().toLowerCase()) ? (r.notesAll.find((n) => n.toLowerCase().includes(noteSearch.trim().toLowerCase())) || r.note) : r.note}</p>}
               <div style={{ marginTop: 8, textAlign: 'right' }}>
-                <button type="button" style={linkBtn} onClick={async () => {
+                <button type="button" style={{ ...linkBtn }} onClick={async () => {
                   setBusy(true);
                   const rec = await withStarterCourses(await loadRecord(r.id));
                   setEducatorRecord(rec); setRecommendedIds(recommendedCourseIds(rec.events, st ? st.level : null));
@@ -7288,7 +7459,7 @@ function EduSphereScreens() {
           <p className="edu-no-print" style={{ textAlign: 'center', margin: '10px 0 0' }}><button type="button" onClick={() => {
             const esc = (t) => String(t).replace(/[&<>]/g, (ch) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[ch]));
             const sheet = document.createElement('div'); sheet.className = 'edu-class-notes';
-            sheet.innerHTML = `<p style="font-size:20px;font-weight:700;margin:0 0 12px">Weekly notes</p>${classRows.map((r) => `<div style="margin:0 0 14px;padding-bottom:10px;border-bottom:1px solid #D9DED4"><p style="margin:0 0 4px;font-weight:600">${esc(r.label)}</p><div style="margin:0;font-size:15px;line-height:1.6">${esc(r.weekly).split('\n').map((ln) => (ln.trim().startsWith('• ') ? `<p style="margin:0 0 4px 18px;text-indent:-14px">${ln.trim().replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')}</p>` : ln.trim() ? `<p style="margin:0 0 6px">${ln.trim().replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')}</p>` : '<div style="height:6px"></div>')).join('')}</div></div>`).join('')}<p style="margin:0;font-size:12px;color:#6B7266">EDUSphere: The Smart Way to Learn. ${esc(new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }))}</p>`;
+            sheet.innerHTML = `<p style="font-size:20px;font-weight:700;margin:0 0 12px">Weekly notes</p>${classRows.map((r) => `<div style="margin:0 0 14px;padding-bottom:10px;border-bottom:1px solid #D9DED4"><p style="margin:0 0 4px;font-weight:600">${esc(r.label)}</p><div style="margin:0;font-size:15px;line-height:1.6">${esc(r.weekly).split('\n').map((ln) => (ln.trim().startsWith('• ') ? `<p style="margin:0 0 4px 18px;text-indent:-14px">${ln.trim().replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')}</p>` : ln.trim() ? `<p style="margin:0 0 6px">${ln.trim().replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')}</p>` : '<div style="height:6px"></div>')).join('')}</div></div>`).join('')}<p style="margin:0;font-size:12px;color:#6B7266">The Wise Human: Where Knowledge Meets Wisdom. ${esc(new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }))}</p>`;
             document.body.appendChild(sheet); document.body.classList.add('edu-classnotes-mode'); window.print();
             setTimeout(() => { document.body.classList.remove('edu-classnotes-mode'); sheet.remove(); }, 500);
           }} style={{ ...linkBtn, fontSize: 13, color: C.muted }}>Print weekly notes</button></p>
@@ -7306,7 +7477,7 @@ function EduSphereScreens() {
     const addPhoto = (i, file) => { if (!file) return; const r = new FileReader(); r.onload = () => setCertPhotos((p) => { const next = [...p]; next[i] = String(r.result); return next; }); r.readAsDataURL(file); };
     const finish = async (state) => { const next = setCertificateState(roster, certFor.id, certFor.grade, state); setRoster(next); await saveRoster(next); setCertPhotos([]); setCertFor(null); setScreen('educator-pick'); };
     return (
-      <div style={page}><PageChrome idleWarning={idleWarning} /><div className="edu-wrap" style={wrap}>
+      <div style={{ ...page }}><PageChrome idleWarning={idleWarning} /><div className="edu-wrap" style={{ ...wrap }}>
         <button type="button" className="edu-no-print" onClick={() => finish(((student && student.certificates) || {})[certFor.grade] || 'skipped')} style={{ ...linkBtn, marginBottom: 8 }}>Back to Classroom</button>
         <h1 className="edu-no-print" style={{ fontSize: 24, margin: '0 0 4px', textAlign: 'center' }}>Certificate</h1>
         <p className="edu-no-print" style={{ margin: '0 0 16px', color: C.muted, textAlign: 'center' }}>{(student && student.label) || certFor.id} finished every module of {certGradeName(certFor.grade)}.</p>
@@ -7322,7 +7493,7 @@ function EduSphereScreens() {
         <div className="edu-no-print" style={{ textAlign: 'center', marginBottom: 12 }}>
           <input value={certName} onChange={(e) => setCertName(e.target.value)} placeholder="Name to print on the certificate" maxLength={40} aria-label="Name on the certificate"
             style={{ fontFamily: FONT, fontSize: 17, padding: '12px 14px', width: 'min(420px, 100%)', boxSizing: 'border-box', border: `2px solid ${C.line}`, borderRadius: 10, textAlign: 'center' }} />
-          <p style={{ margin: '8px 0 0', fontSize: 13, color: C.muted }}>The name and any photo live only on this sheet. EduSphere keeps neither.</p>
+          <p style={{ margin: '8px 0 0', fontSize: 13, color: C.muted }}>The name and any photo live only on this sheet. The Wise Human keeps neither.</p>
         </div>
         {template.photos > 0 && (
           <div className="edu-no-print" style={{ display: 'flex', justifyContent: 'center', gap: 10, flexWrap: 'wrap', marginBottom: 14 }}>
@@ -7337,7 +7508,7 @@ function EduSphereScreens() {
         <div className={`edu-cert-sheet${template.h > template.w ? ' edu-cert-portrait' : ''}`} ref={certSheetRef} style={{ maxWidth: template.h > template.w ? 520 : undefined, margin: '0 auto' }}><CertificateSheet template={template} name={certName} grade={certFor.grade} photos={certPhotos} date={date} year={new Date().getFullYear()} lang={certLang} /></div>
         <div className="edu-no-print" style={{ display: 'flex', justifyContent: 'center', gap: 10, flexWrap: 'wrap', margin: '16px 0 8px' }}>
           <Btn onClick={() => window.print()}>Print</Btn>
-          <Btn onClick={async () => { try { const svg = certSheetRef.current && certSheetRef.current.querySelector('svg'); const png = await certificatePng(svg, template.w, template.h); saveBlob(`edusphere-certificate-${certGradeName(certFor.grade).replace(/\s+/g, '-').toLowerCase()}.png`, png); setCertNote('Saved as a picture in your downloads. Share it from there.'); } catch (e) { setCertNote('This browser could not save the picture. Print works.'); } }}>Save picture</Btn>
+          <Btn onClick={async () => { try { const svg = certSheetRef.current && certSheetRef.current.querySelector('svg'); const png = await certificatePng(svg, template.w, template.h); saveBlob(`wise-human-certificate-${certGradeName(certFor.grade).replace(/\s+/g, '-').toLowerCase()}.png`, png); setCertNote('Saved as a picture in your downloads. Share it from there.'); } catch (e) { setCertNote('This browser could not save the picture. Print works.'); } }}>Save picture</Btn>
           <Btn kind="secondary" onClick={() => finish('made')}>Done</Btn>
         </div>
         {certNote && <p className="edu-no-print" style={{ margin: 0, fontSize: 13, color: C.muted, textAlign: 'center' }}>{certNote}</p>}
@@ -7362,8 +7533,8 @@ function EduSphereScreens() {
     };
     const markDone = async (at, note) => { setBackupAt(at); await saveBackupAt(at); setBackupNote(note); };
     return (
-      <div style={page}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={wrap}>
-        <button type="button" onClick={() => setScreen('educator-pick')} style={linkBtn}>Back to Classroom</button>
+      <div style={{ ...page }}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={{ ...wrap }}>
+        <button type="button" onClick={() => setScreen('educator-pick')} style={{ ...linkBtn }}>Back to Classroom</button>
         <div style={{ height: 36 }} />
         <HeadWithInfo onClick={() => setShowBackupWhat(!showBackupWhat)} label="About backup files" open={showBackupWhat}><span style={{ fontSize: 24 }}>Backup classroom</span></HeadWithInfo>
         {showBackupWhat && <p style={{ ...tipStyle, textAlign: 'center' }}>A backup file holds every student's log (every module attempt, completed stories, individualized notes, settings and more). That includes assigned courses, educator settings, this device's name and even the recovery code for resetting a PIN.<br /><br />Simply restore from backup (on any device) and everything comes back.</p>}
@@ -7374,20 +7545,20 @@ function EduSphereScreens() {
         <div style={{ height: 20 }} />
 
         {!(educator && educator.recovery) && (
-          <div style={{ ...card, background: C.goldSoft, borderColor: C.goldSoft }}>
+          <div style={{ ...card, background: C.goldSoft, borderColor: C.goldEdge }}>
             <p style={{ margin: '0 0 4px', fontWeight: 600, textAlign: 'center' }}>No recovery code yet</p>
             <p style={{ margin: 0, fontSize: 14, color: C.muted, textAlign: 'center' }}>A recovery code, used to reset a pin, comes with an educator account. <button type="button" onClick={() => { setNewPin(''); setNewPin2(''); setDeviceDraft(deviceName || ''); setStateDraft(stateCode || ''); setSetupError(''); setScreen('educator-setup'); }} style={{ ...linkBtn, fontSize: 14, padding: 0 }}>Create one here</button>.</p>
             <p style={{ margin: '10px 0 0', fontSize: 14, color: C.muted, textAlign: 'center' }}>This device is still using a starter PIN. Once an account is created, your recovery code will appear here and within every backup file.</p>
           </div>
         )}
         {educator && educator.recovery && (
-          <div style={{ ...card, background: C.greenSoft, borderColor: C.greenSoft }}>
+          <div style={{ ...card, background: C.mode === 'dark' ? '#F6E3A1' : C.greenSoft, borderColor: C.softEdge, color: C.mode === 'dark' ? '#16201B' : undefined }}>
             <p style={{ margin: '0 0 4px', fontWeight: 600, textAlign: 'center' }}>Recovery code</p>
             <p className="edu-recovery-code" style={{ margin: '0 0 6px', fontWeight: 700, letterSpacing: 1, textAlign: 'center', whiteSpace: 'nowrap' }}>{educator.recovery}</p>
-            <p style={{ margin: 0, fontSize: 14, color: C.muted, textAlign: 'center' }}>This code is also written at the top of every backup file. If you ever forget your PIN, simply select "forgot my pin" on the login screen and type in the code or choose a backup file. Keep it where students cannot see it.</p>
+            <p style={{ margin: 0, fontSize: 14, color: C.mode === 'dark' ? '#3D4436' : C.muted, textAlign: 'center' }}>This code is also written at the top of every backup file. If you ever forget your PIN, simply select "forgot my pin" on the login screen and type in the code or choose a backup file. Keep it where students cannot see it.</p>
           </div>
         )}
-        <div style={card}>
+        <div style={{ ...card }}>
           <p style={{ margin: '0 0 6px', fontWeight: 600, textAlign: 'center' }}>Automatic Backups</p>
           <p style={{ margin: '0 0 8px', fontSize: 14, color: C.muted, textAlign: 'center' }}>An automatic backup is generated within your downloads folder when:</p>
           <div style={{ display: 'flex', justifyContent: 'center' }}>
@@ -7413,7 +7584,7 @@ function EduSphereScreens() {
                 if (!f) { setBackupNote('One moment, the backup is still being prepared. Try again.'); return; }
                 const file = new File([f.text], f.name, { type: 'application/json' });
                 if (navigator.canShare({ files: [file] })) {
-                  navigator.share({ files: [file], title: 'EduSphere backup' })
+                  navigator.share({ files: [file], title: 'The Wise Human backup' })
                     .then(() => markDone(f.at, 'Shared. Wherever you sent it is now your backup.'))
                     .catch((err) => { if (err && err.name === 'AbortError') setBackupNote('Sharing was canceled.'); else setShareRefused(true); });
                   return;
@@ -7429,16 +7600,16 @@ function EduSphereScreens() {
           {backupNote && <p style={{ margin: '10px 0 0', fontSize: 14, color: C.muted, textAlign: 'center' }}>{backupNote}</p>}
         </div>
 
-        <div style={card}>
+        <div style={{ ...card }}>
           <p style={{ margin: '0 0 6px', fontWeight: 600, textAlign: 'center' }}>This device's name</p>
           <p style={{ margin: '0 0 8px', fontSize: 14, color: C.muted, textAlign: 'center' }}>Backing up your device includes the name you add here. This allows for a classroom of ten devices to read at a glance.</p>
           <input value={deviceName} onChange={(e) => setDeviceName(e.target.value)} onBlur={() => saveDeviceName(deviceName)} placeholder="Example: iPad 3, Chromebook"
-            style={{ fontFamily: FONT, fontSize: 16, padding: '10px 12px', width: '100%', boxSizing: 'border-box', border: `2px solid ${C.line}`, borderRadius: 10 }} />
+            style={{ textAlign: 'center', fontFamily: FONT, fontSize: 16, padding: '10px 12px', width: '100%', boxSizing: 'border-box', border: `2px solid ${C.line}`, borderRadius: 10 }} />
           <p style={{ margin: '8px 0 0', fontSize: 13, color: C.muted, textAlign: 'center' }}>Example file name: {backupFileName(deviceName || 'chromebook', activeCount || 2, new Date().toISOString())}</p>
         </div>
 
         {educator && biometricReady() && (
-          <div style={card}>
+          <div style={{ ...card }}>
             <p style={{ margin: '0 0 6px', fontWeight: 600, textAlign: 'center' }}>Biometrics</p>
             <p style={{ margin: '0 0 12px', fontSize: 14, color: C.muted, textAlign: 'center' }}>Sign in with fingerprint or face instead of typing a PIN. The PIN still works. This is set per device and nothing leaves it.</p>
             <div style={{ display: 'flex', justifyContent: 'center' }}>
@@ -7449,7 +7620,7 @@ function EduSphereScreens() {
             {bioNote && <p style={{ margin: '10px 0 0', fontSize: 13, color: C.muted, textAlign: 'center' }}>{bioNote}</p>}
           </div>
         )}
-        <div style={card}>
+        <div style={{ ...card }}>
           <p style={{ margin: '0 0 6px', fontWeight: 600, textAlign: 'center' }}>Restore from backup</p>
           <p style={{ margin: '0 0 10px', fontSize: 14, color: C.muted, textAlign: 'center' }}>Restoring <strong>adds</strong> student metrics to whatever currently lives on this device. Students are matched by ID and histories are merged.<br />Nothing on this device is ever removed.</p>
           <label style={{ display: 'block', textAlign: 'center' }}>
@@ -7517,8 +7688,8 @@ function EduSphereScreens() {
     const toggleSubjectPanel = (id) => setOpenSubjects((list) => (list.includes(id) ? list.filter((x) => x !== id) : [...list, id]));
 
     return (
-      <div style={page}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={wrap}>
-        <button type="button" onClick={() => setScreen('educator-pick')} style={linkBtn}>Back to Classroom</button>
+      <div style={{ ...page }}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={{ ...wrap }}>
+        <button type="button" onClick={() => setScreen('educator-pick')} style={{ ...linkBtn }}>Back to Classroom</button>
         <h1 style={{ fontSize: 26, margin: '10px 0 26px', textAlign: 'center' }}>{keepTogether(shownName)}</h1>
         {since && (since.attempts || since.mastered.length || since.stories || since.colored) ? (
           <p style={{ margin: '0 0 14px', fontSize: 14, color: C.muted, textAlign: 'center' }}>
@@ -7534,7 +7705,7 @@ function EduSphereScreens() {
           {/* Each note sits on its own soft green card, centered, with Edit and Remove under it. An edit is
               the old note removed and the new one written, so the log still says everything that happened. */}
           {rep.notes.map((n) => (
-            <div key={n.id} style={{ margin: '0 0 8px', padding: '10px 12px', borderRadius: 10, background: 'linear-gradient(135deg, #EAF2EC 0%, #F5F9F5 100%)', border: '1px solid #DCE8DF', textAlign: 'center' }}>
+            <div key={n.id} style={{ margin: '0 0 8px', padding: '10px 12px', borderRadius: 10, ...(C.mode === 'dark' ? { background: '#AAD8C5', border: '1px solid #AAD8C5', color: '#16201B' } : { background: C.tipBg, border: `1px solid ${C.tipLine}` }), textAlign: 'center' }}>
               {editingNote && editingNote.id === n.id ? (
                 <div className="edu-no-print">
                   <textarea value={editingNote.text} onChange={(e) => setEditingNote({ id: n.id, text: e.target.value })} aria-label="Edit note" rows={3}
@@ -7575,13 +7746,13 @@ function EduSphereScreens() {
               {openSummary && (
                 <div style={{ padding: '0 16px 16px' }}>
                   <p style={{ margin: '0 0 6px', fontSize: 16, lineHeight: 1.6, textAlign: 'center' }}>{parts.lead}</p>
-                  {parts.items.length > 0 && <ul style={{ margin: '0 0 10px', padding: '10px 12px 10px 32px', listStyleType: 'disc', fontSize: 15, lineHeight: 1.7, borderRadius: 10, background: 'linear-gradient(135deg, #EAF2EC 0%, #F5F9F5 100%)', border: '1px solid #DCE8DF' }}>{parts.items.map((it) => <li key={it} style={{ display: 'list-item' }}>{it}</li>)}</ul>}
+                  {parts.items.length > 0 && <ul style={{ margin: '0 0 10px', padding: '10px 12px 10px 32px', listStyleType: 'disc', fontSize: 15, lineHeight: 1.7, borderRadius: 10, ...(C.mode === 'dark' ? { background: '#AAD8C5', border: '1px solid #AAD8C5', color: '#16201B' } : { background: C.tipBg, border: `1px solid ${C.tipLine}` }) }}>{parts.items.map((it) => <li key={it} style={{ display: 'list-item' }}>{it}</li>)}</ul>}
                   {parts.rest && <div style={{ margin: 0, fontSize: 16, lineHeight: 1.6, textAlign: 'center' }}>{parts.rest.split(/(?<=\.)\s+/).filter(Boolean).map((line) => <p key={line} style={{ margin: '2px 0' }}>{line}</p>)}</div>}
                   {rep.coloringBreaks > 0 && <p style={{ margin: '6px 0 0', fontSize: 15, color: C.muted, textAlign: 'center' }}>Coloring breaks taken: {rep.coloringBreaks}. Coloring is play; it is never marked and never appears on the transcript.</p>}
                   {parts.tried && parts.tried.length > 0 && (
                     <div style={{ margin: '8px 0 0' }}>
                       <p style={{ margin: '0 0 4px', fontSize: 16, lineHeight: 1.6, textAlign: 'center', fontWeight: 600 }}>Tried but not passed yet:</p>
-                      <ul style={{ margin: 0, padding: '10px 12px 10px 32px', listStyleType: 'disc', fontSize: 15, lineHeight: 1.7, borderRadius: 10, background: 'linear-gradient(135deg, #EAF2EC 0%, #F5F9F5 100%)', border: '1px solid #DCE8DF' }}>
+                      <ul style={{ margin: 0, padding: '10px 12px 10px 32px', listStyleType: 'disc', fontSize: 15, lineHeight: 1.7, borderRadius: 10, ...(C.mode === 'dark' ? { background: '#AAD8C5', border: '1px solid #AAD8C5', color: '#16201B' } : { background: C.tipBg, border: `1px solid ${C.tipLine}` }) }}>
                         {parts.tried.map((t) => <li key={t.id}><button type="button" style={{ ...linkBtn, fontSize: 15, fontWeight: 600 }} onClick={() => setStoryModule(t.id)}>{t.title}</button> ({t.subject ? `${t.subject}: ` : ''}{t.detail})</li>)}
                       </ul>
                     </div>
@@ -7610,7 +7781,7 @@ function EduSphereScreens() {
           </div>
         )}
         {/* Choose what this student works on. Recommended first, everything else tucked away. */}
-        <div style={{ ...card, background: C.greenSoft, borderColor: C.greenSoft }}>
+        <div style={{ ...card, background: C.greenSoft, borderColor: C.softEdge }}>
           <p className="edu-card-title" style={{ margin: '0 0 4px', fontWeight: 600 }}>Assigned Now</p>
           <p style={{ margin: '0 0 10px', fontSize: 14, color: C.muted, textAlign: 'center' }}>Assign courses by checking or unchecking the boxes below. Each student starts with the courses we recommend (based on a combination of {shownName}'s initial placement check, quick-check module skips and/or his or her actual progression through the modules) but you are free to edit how you see fit.</p>
           <input value={courseQuery} onChange={(e) => setCourseQuery(e.target.value)} placeholder="Search courses, for example: grade 1 math, kinder, fractions" aria-label="Search courses"
@@ -7644,7 +7815,7 @@ function EduSphereScreens() {
               <span style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 2 }}><span>{courseLabel(c)}</span>{courseNeedsTouch(c.id) && <Tag tone="review">Needs a touch screen</Tag>}</span>
             </label>
           ))}
-          {!courseQuery.trim() && <div className="edu-no-print" style={{ textAlign: 'center', marginTop: 6 }}><button type="button" style={linkBtn} onClick={() => setShowAllCourses(!showAllCourses)}>
+          {!courseQuery.trim() && <div className="edu-no-print" style={{ textAlign: 'center', marginTop: 6 }}><button type="button" style={{ ...linkBtn }} onClick={() => setShowAllCourses(!showAllCourses)}>
             {showAllCourses ? 'Hide other courses' : `Show other courses (${COURSES.length - recommended.length})`}
           </button></div>}
           {!courseQuery.trim() && showAllCourses && (
@@ -7661,7 +7832,7 @@ function EduSphereScreens() {
                   return (
                     <div key={key} style={{ border: `1px solid ${C.line}`, borderRadius: 10, marginBottom: 8, overflow: 'hidden', background: C.surface }}>
                       <button type="button" aria-expanded={open} onClick={() => setOpenOtherGrades((l) => (l.includes(key) ? l.filter((x) => x !== key) : [...l, key]))}
-                        style={{ fontFamily: FONT, width: '100%', textAlign: 'left', background: C.greenSoft, border: 'none', padding: '12px 14px', cursor: 'pointer', color: C.ink, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        style={{ fontFamily: FONT, width: '100%', textAlign: 'left', background: C.mode === 'dark' ? C.panel : C.greenSoft, border: 'none', padding: '12px 14px', cursor: 'pointer', color: C.ink, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                         <span style={{ fontSize: 16, fontWeight: 600 }}>{gradeLabel(g)}</span>
                         <span style={{ fontSize: 14, color: C.muted }}>{list.filter((c) => enabled.includes(c.id)).length ? `${list.filter((c) => enabled.includes(c.id)).length} of ${list.length} selected ` : `${list.length} ${list.length === 1 ? 'course ' : 'courses '}`}{open ? '▴' : '▾'}</span>
                       </button>
@@ -7720,7 +7891,7 @@ function EduSphereScreens() {
                           <p style={{ margin: '6px 0 0', fontSize: 13 }}>Locked by its prerequisites. <button type="button" onClick={async () => { const next = { ...educatorRecord, events: [...educatorRecord.events, makeUnlockEvent(m.id, new Date().toISOString())] }; await saveRecord(next); setEducatorRecord(next); }} style={{ ...linkBtn, fontSize: 13, padding: 0 }}>Unlock it anyway</button></p>
                         )}
                         {/* The story of this module opens over the page, so a long report never sprawls. */}
-                        <button type="button" className="edu-no-print" style={linkBtn} onClick={() => setStoryModule(m.id)}>View progress for this module</button>
+                        <button type="button" className="edu-no-print" style={{ ...linkBtn }} onClick={() => setStoryModule(m.id)}>View progress for this module</button>
                         <p className="edu-print-only" style={{ margin: '6px 0 0', fontSize: 13, lineHeight: 1.6 }}>{moduleStory(shownName, educatorRecord.events, m.id)}</p>
                         {m.attempts > 0 && (confirmModuleReset === m.id ? (
                           <div style={{ background: C.claySoft, borderRadius: 10, padding: 12, marginTop: 8 }}>
@@ -7731,7 +7902,7 @@ function EduSphereScreens() {
                             </div>
                           </div>
                         ) : (
-                          <div><button type="button" style={linkBtn} onClick={() => setConfirmModuleReset(m.id)}>Reset progress for this module</button></div>
+                          <div><button type="button" style={{ ...linkBtn }} onClick={() => setConfirmModuleReset(m.id)}>Reset progress for this module</button></div>
                         ))}
                       </div>
                     );
@@ -7742,8 +7913,8 @@ function EduSphereScreens() {
         })}
 
         {storyModule && (
-          <div className="edu-no-print" style={{ position: 'fixed', top: 0, right: 0, bottom: 0, left: 0, background: 'rgba(36, 41, 31, 0.55)', zIndex: 100, overflowY: 'auto', padding: '24px 12px' }}>
-            <div className="edu-rise" style={{ maxWidth: 560, margin: '0 auto', background: C.surface, borderRadius: 14, padding: 18, position: 'relative' }}>
+          <div className="edu-no-print" style={{ position: 'fixed', top: 0, right: 0, bottom: 0, left: 0, background: C.scrim, zIndex: 100, overflowY: 'auto', padding: '24px 12px' }}>
+            <div className="edu-rise" style={{ maxWidth: 560, margin: '0 auto', background: C.surface, ...(C.mode === 'dark' ? { border: `1px solid ${C.cardEdge}` } : {}), borderRadius: 14, padding: 18, position: 'relative' }}>
               <button type="button" onClick={() => setStoryModule(null)} aria-label="Close"
                 style={{ position: 'absolute', top: 8, right: 10, background: 'none', border: 'none', width: 36, height: 36, fontSize: 30, lineHeight: '34px', cursor: 'pointer', color: C.ink, fontFamily: FONT, padding: 0 }}>×</button>
               <p style={{ margin: '0 0 2px', fontSize: 18, fontWeight: 600, paddingRight: 40 }}>{getModule(storyModule).title}</p>
@@ -7763,23 +7934,23 @@ function EduSphereScreens() {
         )}
 
         {/* Everything the student has ever worked on, including courses since switched off. */}
-        <div className="edu-no-print" style={{ ...card, background: C.goldSoft, borderColor: C.goldSoft }} data-tour="transcript">
+        <div className="edu-no-print" style={{ ...card, background: C.transcriptFill, borderColor: C.transcriptLine, color: C.transcriptInk }} data-tour="transcript">
           <p className="edu-card-title" style={{ margin: '0 0 6px', fontWeight: 600 }}>Transcript</p>
           <p style={{ margin: '0 0 10px', fontSize: 15, textAlign: 'center' }}>A printable record of everything {shownName} has ever worked on, including courses that are no longer assigned. This is the clearest view of student progression.</p>
-          <div style={{ textAlign: 'center' }}><Btn kind="secondary" onClick={() => setScreen('transcript')} style={{ width: 'min(300px, 100%)' }}>Open transcript</Btn></div>
+          <div style={{ textAlign: 'center' }}><Btn kind="secondary" onClick={() => setScreen('transcript')} style={{ width: 'min(300px, 100%)', ...(C.mode === 'dark' ? { background: '#905E51', color: '#FFFFFF', borderColor: '#905E51' } : {}) }}>Open transcript</Btn></div>
         </div>
         {(() => {
           const generated = weeklyNote(shownName, educatorRecord.events, new Date().toISOString()); const shown = weeklyEdit === null ? generated : weeklyEdit;
           return (
-            <div className="edu-weekly-note" style={card}>
-              <div className="edu-no-print" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-                <p className="edu-card-title" style={{ margin: '0 0 6px', fontWeight: 600, textAlign: 'center' }}>Weekly note</p>
+            <div className="edu-weekly-note" style={{ ...card, ...(C.mode === 'dark' ? { background: '#AAD8C5', color: '#16201B' } : {}) }}>
+              <div className="edu-no-print" style={C.mode === 'dark' ? { display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: '-18px -18px 14px', padding: '12px 18px', background: C.tintHead, color: C.ink, borderRadius: '13px 13px 0 0', borderBottom: `1px solid ${C.tintMintLine}` } : { display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
+                <p className="edu-card-title" style={C.mode === 'dark' ? { margin: 0, fontWeight: 700, fontSize: 17, textAlign: 'center' } : { margin: '0 0 6px', fontWeight: 600, textAlign: 'center' }}>Weekly note</p>
                 <span>
                   {weeklyEditing
-                    ? <button type="button" onClick={() => setWeeklyEditing(false)} style={{ ...linkBtn, fontSize: 13, color: C.muted }}>Save</button>
+                    ? <button type="button" onClick={() => setWeeklyEditing(false)} style={{ ...linkBtn, ...(C.mode === 'dark' ? { fontSize: 14, fontWeight: 600, color: C.green } : { fontSize: 13, color: C.muted }) }}>Save</button>
                     : <>
-                      <button type="button" onClick={() => { if (weeklyEdit === null) setWeeklyEdit(generated); setWeeklyEditing(true); }} style={{ ...linkBtn, fontSize: 13, color: C.muted, marginRight: 12 }}>Edit</button>
-                      <button type="button" onClick={() => { document.body.classList.add('edu-note-mode'); window.print(); setTimeout(() => document.body.classList.remove('edu-note-mode'), 500); }} style={{ ...linkBtn, fontSize: 13, color: C.muted }}>Print</button>
+                      <button type="button" onClick={() => { if (weeklyEdit === null) setWeeklyEdit(generated); setWeeklyEditing(true); }} style={{ ...linkBtn, ...(C.mode === 'dark' ? { fontSize: 14, fontWeight: 600, color: C.green } : { fontSize: 13, color: C.muted }), marginRight: 12 }}>Edit</button>
+                      <button type="button" onClick={() => { document.body.classList.add('edu-note-mode'); window.print(); setTimeout(() => document.body.classList.remove('edu-note-mode'), 500); }} style={{ ...linkBtn, ...(C.mode === 'dark' ? { fontSize: 14, fontWeight: 600, color: C.green } : { fontSize: 13, color: C.muted }) }}>Print</button>
                     </>}
                 </span>
               </div>
@@ -7788,13 +7959,13 @@ function EduSphereScreens() {
                 ? <div style={{ fontSize: 15 }}><RichText text={shown} size={15} center /></div>
                 : <textarea value={weeklyEdit} onChange={(e) => setWeeklyEdit(e.target.value)} aria-label="Weekly note" rows={5} style={{ width: '100%', boxSizing: 'border-box', fontFamily: FONT, fontSize: 15, padding: 10, borderRadius: 10, border: `1px solid ${C.line}`, resize: 'vertical', display: 'block' }} />}
               {weeklyEditing && <p className="edu-print-only" style={{ margin: 0, fontSize: 15, lineHeight: 1.6, whiteSpace: 'pre-wrap' }}>{weeklyEdit}</p>}
-              <p style={{ margin: '8px 0 0', fontSize: 12, color: C.muted, textAlign: 'center' }}>EDUSphere: The Smart Way to Learn. {new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</p>
+              <p style={{ margin: '8px 0 0', fontSize: 12, color: C.mode === 'dark' ? '#2E4A3E' : C.muted, textAlign: 'center' }}>The Wise Human: Where Knowledge Meets Wisdom. {new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</p>
             </div>
           );
         })()}
 
         {/* Plain-language explanations, written for someone who does not work in tech */}
-        <div style={{ ...card, background: 'linear-gradient(135deg, #BFD6C7 0%, #D3E4D9 100%)', borderColor: '#A9C6B4' }}>
+        <div style={{ ...card, background: C.tintDeep, borderColor: C.tintDeepLine }}>
           <p className="edu-card-title" style={{ margin: '0 0 8px', fontWeight: 600 }}>Key Words - Explained</p>
           {EXPLANATIONS.map((x, i) => {
             const open = openTerms.includes(x.term);
@@ -7839,9 +8010,9 @@ function EduSphereScreens() {
           </div>
         )}
         {confirmReset ? (
-          <div style={{ ...card, borderColor: C.clay }}>
+          <div style={{ ...card, borderColor: C.mode === 'dark' ? C.cardEdge : C.clay, textAlign: 'center' }}>
             <p style={{ margin: '0 0 10px' }}>Start {shownName} over in every subject? The record is kept, but nothing will count as mastered.</p>
-            <div style={{ display: 'flex', gap: 10 }}>
+            <div style={{ display: 'flex', gap: 10, justifyContent: 'center' }}>
               <Btn onClick={async () => { await addToStudent(makeResetEvent(new Date().toISOString())); setConfirmReset(false); }} disabled={busy}>Yes, reset all progress</Btn>
               <Btn kind="secondary" onClick={() => setConfirmReset(false)}>Cancel</Btn>
             </div>
@@ -7857,5 +8028,5 @@ function EduSphereScreens() {
     );
   }
 
-  return <div style={page}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={wrap}><p>Something went wrong. <Btn kind="secondary" onClick={() => setScreen('overview')}>Back to overview</Btn></p></div></div>;
+  return <div style={{ ...page }}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={{ ...wrap }}><p>Something went wrong. <Btn kind="secondary" onClick={() => setScreen('overview')}>Back to overview</Btn></p></div></div>;
 }

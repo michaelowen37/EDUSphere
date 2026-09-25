@@ -1,6 +1,6 @@
-// EduSphere. Copyright (c) 2026. Source-available; not for reuse. See LICENSE.md.
+// The Wise Human. Copyright (c) 2026. Source-available; not for reuse. See LICENSE.md.
 // =====================================================================
-//  EduSphere — Phase 0 prototype
+//  The Wise Human — Phase 0 prototype
 //  FILE: src/logic.mjs
 //
 //  Everything in this file is plain JavaScript with NO screen code in it.
@@ -1096,6 +1096,36 @@ export const GAMES = [
   { id: 'maze-huge', kind: 'maze', title: 'Huge Maze', cells: 12, minGrade: '2' },
   { id: 'dots-rocket', kind: 'dots', title: 'Rocket', shape: 'rocket' },
   { id: 'pong', kind: 'pong', title: 'Pong', minGrade: '2' },
+  // A course's own quick fire (2026-09-24, pass CO): a timed round of that course's lessons only, for a course no other
+  // game suits yet, or whose only game is a map still waiting for its painting.
+  { id: 'sprint-art-3', kind: 'sprint', title: 'Quick fire: Looking and making', minGrade: '3', course: 'art-3' },
+  { id: 'sprint-art-4', kind: 'sprint', title: 'Quick fire: Color, shape and story', minGrade: '4', course: 'art-4' },
+  { id: 'sprint-civics-3', kind: 'sprint', title: 'Quick fire: Communities and government', minGrade: '3', course: 'civics-3' },
+  { id: 'sprint-government-12', kind: 'sprint', title: 'Quick fire: United States government', minGrade: '12', course: 'government-12' },
+  { id: 'sprint-history-10', kind: 'sprint', title: 'Quick fire: World history', minGrade: '10', course: 'history-10' },
+  { id: 'sprint-history-11', kind: 'sprint', title: 'Quick fire: United States history since 1877', minGrade: '11', course: 'history-11' },
+  { id: 'sprint-history-4', kind: 'sprint', title: 'Quick fire: The story of Texas', minGrade: '4', course: 'history-4' },
+  { id: 'sprint-history-6', kind: 'sprint', title: 'Quick fire: World cultures', minGrade: '6', course: 'history-6' },
+  { id: 'sprint-history-8', kind: 'sprint', title: 'Quick fire: The United States to 1877', minGrade: '8', course: 'history-8' },
+  { id: 'sprint-history-9', kind: 'sprint', title: 'Quick fire: World geography', minGrade: '9', course: 'history-9' },
+  { id: 'sprint-history-college', kind: 'sprint', title: 'Quick fire: Thinking like a historian', minGrade: 'C', course: 'history-college' },
+  { id: 'sprint-reading-10', kind: 'sprint', title: 'Quick fire: English 2', minGrade: '10', course: 'reading-10' },
+  { id: 'sprint-reading-11', kind: 'sprint', title: 'Quick fire: English 3', minGrade: '11', course: 'reading-11' },
+  { id: 'sprint-reading-12', kind: 'sprint', title: 'Quick fire: English 4', minGrade: '12', course: 'reading-12' },
+  { id: 'sprint-reading-3', kind: 'sprint', title: 'Quick fire: Reading to understand', minGrade: '3', course: 'reading-3' },
+  { id: 'sprint-reading-4', kind: 'sprint', title: 'Quick fire: Reading between the lines', minGrade: '4', course: 'reading-4' },
+  { id: 'sprint-reading-5', kind: 'sprint', title: 'Quick fire: Reading with judgment', minGrade: '5', course: 'reading-5' },
+  { id: 'sprint-reading-8', kind: 'sprint', title: 'Quick fire: Reading with a critical eye', minGrade: '8', course: 'reading-8' },
+  { id: 'sprint-reading-9', kind: 'sprint', title: 'Quick fire: English 1', minGrade: '9', course: 'reading-9' },
+  { id: 'sprint-reading-college', kind: 'sprint', title: 'Quick fire: Academic reading', minGrade: 'C', course: 'reading-college' },
+  { id: 'sprint-tech-7', kind: 'sprint', title: 'Quick fire: Bits, networks and safety', minGrade: '7', course: 'tech-7' },
+  { id: 'sprint-writing-10', kind: 'sprint', title: 'Quick fire: Writing about texts', minGrade: '10', course: 'writing-10' },
+  { id: 'sprint-writing-11', kind: 'sprint', title: 'Quick fire: Writing with sources', minGrade: '11', course: 'writing-11' },
+  { id: 'sprint-writing-12', kind: 'sprint', title: 'Quick fire: Writing for the world', minGrade: '12', course: 'writing-12' },
+  { id: 'sprint-writing-3', kind: 'sprint', title: 'Quick fire: Writing a paragraph', minGrade: '3', course: 'writing-3' },
+  { id: 'sprint-writing-4', kind: 'sprint', title: 'Quick fire: Writing paragraphs', minGrade: '4', course: 'writing-4' },
+  { id: 'sprint-writing-5', kind: 'sprint', title: 'Quick fire: Writing several paragraphs', minGrade: '5', course: 'writing-5' },
+  { id: 'sprint-writing-9', kind: 'sprint', title: 'Quick fire: Writing about texts and turns', minGrade: '9', course: 'writing-9' },
 ];
 // Older students' games in a spread order (2026-09-23, Mikey): the same kind never sits beside itself while another kind
 // is still waiting, so a list of decks and Quick fire rounds alternates instead of landing in blocks. Once only one kind
@@ -1136,7 +1166,7 @@ export function spreadBy(items, keyOf) {
 // Quick fire draws only readers' lessons from grade 3 up; a student (or a walk-through) with none gets no Quick fire tile.
 export function sprintPool(modules, game) {
   const seen = new Set();
-  return modules.map((m) => getModule(m.id) || m).filter((m) => { if (seen.has(m.id)) return false; seen.add(m.id); const c = m.courseId ? getCourse(m.courseId) : null; return c && !c.readAloud && GRADES.indexOf(c.grade) >= GRADES.indexOf('3') && (!game.subject || c.subject === game.subject); }).flatMap((m) => [...new Set(m.generators)].map((g) => ({ g, m })));
+  return modules.map((m) => getModule(m.id) || m).filter((m) => { if (seen.has(m.id)) return false; seen.add(m.id); const c = m.courseId ? getCourse(m.courseId) : null; return c && (!game.course || c.id === game.course) && !c.readAloud && GRADES.indexOf(c.grade) >= GRADES.indexOf('3') && (!game.subject || c.subject === game.subject); }).flatMap((m) => [...new Set(m.generators)].map((g) => ({ g, m })));
 }
 // Rule decks: two named groups of short things a student tells apart by eye and hand. Catch catches group A and lets
 // group B fall; Path steps only on group A; Buckets drags every chip to its group. Number groups are computed; a word
@@ -19759,7 +19789,7 @@ export function describeMoment(at) {
 
 export function buildBackup({ roster, records, wonderReview, covered, deviceName, recovery }, at) {
   return {
-    app: 'EduSphere',
+    app: 'The Wise Human',
     // First thing in the file, so anyone who opens it sees it at once. Proof of ownership
     // for a PIN reset: only this classroom's backups carry it, and a student does not have
     // the educator's backup file. It can also be typed in instead of choosing the file.
@@ -19781,11 +19811,11 @@ export function buildBackup({ roster, records, wonderReview, covered, deviceName
 
 // A file name that says where it came from and what it holds, so a folder of backups
 // from ten devices can be read without opening anything:
-// edusphere-ipad-3-12-students-2026-09-10.json
+// wise-human-ipad-3-12-students-2026-09-10.json
 export function backupFileName(deviceName, studentCount, at) {
   // Apostrophes vanish rather than becoming hyphens, so "Mike's laptop" reads as mikes-laptop.
   const device = String(deviceName || 'device').trim().toLowerCase().replace(/['\u2019]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'device';
-  return `edusphere-${device}-${studentCount}-${studentCount === 1 ? 'student' : 'students'}-${backupStamp(at)}.json`;
+  return `wise-human-${device}-${studentCount}-${studentCount === 1 ? 'student' : 'students'}-${backupStamp(at)}.json`;
 }
 
 // The date and time in the file name, in local time and the American order: 9-11-2026-10-43pm.
@@ -19799,9 +19829,9 @@ export function backupStamp(at) {
 
 // Checks a file before anything is merged from it. Returns a plain sentence on failure.
 export function checkBackup(data) {
-  if (!data || typeof data !== 'object') return 'That file is not an EduSphere backup.';
-  if (data.app !== 'EduSphere') return 'That file is not an EduSphere backup.';
-  if (typeof data.version !== 'number' || data.version > BACKUP_VERSION) return 'That backup was made by a newer version of EduSphere. Update the app and try again.';
+  if (!data || typeof data !== 'object') return 'That file is not a backup from The Wise Human.';
+  if (data.app !== 'The Wise Human' && data.app !== 'EduSphere') return 'That file is not a backup from The Wise Human.';   // backups made before the rename say The Wise Human (2026-09-24)
+  if (typeof data.version !== 'number' || data.version > BACKUP_VERSION) return 'That backup was made by a newer version of The Wise Human. Update the app and try again.';
   if (!data.roster || !Array.isArray(data.roster.students)) return 'That backup has no student list in it.';
   if (!Array.isArray(data.records)) return 'That backup has no student records in it.';
   return null;
@@ -21652,4 +21682,103 @@ export function printParts(words, paintedAfter = [], mainPainted = false) {
 // (COLOR_PAGES), this returns the picture ids to show in Let's Color, in the order the lessons were passed.
 export function lessonColorPages(passedIds, hasArt, pages) {
   return passedIds.filter((id) => pages[id] && hasArt(pages[id][0])).map((id) => `lesson-${id}`);
+}
+
+// ---------- A game for every course (2026-09-24, Mikey, pass CO) ----------
+// Every course has its own game, or two, chosen to suit its subject and grade; finishing the course unlocks them. Inside a
+// grade the same kind is avoided wherever today's kinds allow (docs/GAMES-PLAN.md lists the repeats that new kinds will
+// replace), and a course's two games are different kinds. The starter is open from the first day, and so is the first
+// game on a student's list, so there is always something to play.
+export const COURSE_GAMES = {
+  'fractions-intro': ['catch-multiples-3', 'balance-times'],
+  'numbers-1': ['dots-kite', 'pairs-many'],
+  'reading-1': ['jigsaw-9'],
+  'numbers-2': ['maze-huge'],
+  'reading-2': ['catch-red'],
+  'reading-3': ['sprint-reading-3'],
+  'reading-4': ['sprint-reading-4'],
+  'math-5': ['path-multiples-4', 'catch-halves'],
+  'reading-5': ['sprint-reading-5'],
+  'math-6': ['catch-multiples-7', 'jump-fractions'],
+  'reading-6': ['pairs-roots'],
+  'math-7': ['balance-fractions'],
+  'reading-7': ['pairs-vocabulary'],
+  'math-8': ['order-math'],
+  'reading-8': ['sprint-reading-8'],
+  'math-9': ['jump-integers', 'balance-expressions'],
+  'reading-9': ['sprint-reading-9'],
+  'math-10': ['path-squares'],
+  'reading-10': ['sprint-reading-10'],
+  'math-11': ['sprint-math'],
+  'reading-11': ['sprint-reading-11'],
+  'math-12': ['path-primes'],
+  'reading-12': ['sprint-reading-12'],
+  'math-college': ['pairs-formulas'],
+  'reading-college': ['sprint-reading-college'],
+  'science-3': ['order-steps', 'pairs-science-3'],
+  'science-6': ['sprint-science', 'pairs-science-6'],
+  'science-4': ['catch-living', 'buckets-conductors', 'pairs-science-4'],
+  'science-5': ['buckets-mammals', 'pairs-science-5'],
+  'science-7': ['buckets-solid-liquid', 'pairs-science-7'],
+  'science-8': ['catch-renewable', 'pairs-science-8'],
+  'science-9': ['buckets-element-compound', 'pairs-science-9'],
+  'science-10': ['buckets-acid-base', 'pairs-science-10'],
+  'science-11': ['pairs-elements', 'pairs-science-11'],
+  'science-12': ['catch-acids', 'pairs-science-12'],
+  'writing-4': ['sprint-writing-4'],
+  'writing-2': ['dots-boat'],
+  'writing-3': ['sprint-writing-3'],
+  'writing-5': ['sprint-writing-5'],
+  'writing-6': ['buckets-noun-verb'],
+  'writing-7': ['sprint-all'],
+  'writing-9': ['sprint-writing-9'],
+  'writing-11': ['sprint-writing-11'],
+  'writing-10': ['sprint-writing-10'],
+  'writing-12': ['sprint-writing-12'],
+  'writing-8': ['buckets-adjective-adverb'],
+  'history-4': ['map-hemispheres', 'sprint-history-4'],
+  'history-6': ['map-oceans', 'sprint-history-6'],
+  'history-7': ['map-texas', 'pairs-capitals'],
+  'history-9': ['map-europe', 'sprint-history-9'],
+  'history-college': ['map-south-america', 'sprint-history-college'],
+  'history-8': ['map-us-regions', 'sprint-history-8'],
+  'history-10': ['map-us-states', 'sprint-history-10'],
+  'history-11': ['map-africa', 'sprint-history-11'],
+  'government-12': ['map-asia', 'sprint-government-12'],
+  'economics-12': ['buckets-state-country'],
+  'history-5': ['order-timeline'],
+  'math-4': ['path-even'],
+  'multiplication-3': ['pairs-fractions'],
+  'very-first-steps-pk3': ['dots-house'],
+  'listen-and-point-pk3': ['sort-color'],
+  'art-3': ['sprint-art-3'],
+  'art-4': ['sprint-art-4'],
+  'science-k': ['catch-circles'],
+  'science-1': ['balance-ten'],
+  'civics-k': ['sort-size'],
+  'civics-1': ['path-circles'],
+  'civics-2': ['jump-differences'],
+  'music-1': ['maze-big', 'jump-sums'],
+  'music-4': ['pairs-music'],
+  'health-k': ['dots-rocket'],
+  'health-4': ['pairs-health'],
+  'tech-3': ['pairs-technology'],
+  'tech-5': ['pong'],
+  'tech-7': ['sprint-tech-7'],
+  'civics-3': ['map-continents', 'sprint-civics-3'],
+  'science-2': ['pairs-more'],
+  'first-steps-pk': ['jigsaw-4'],
+  'first-sounds-pk': ['dots-fish'],
+  'counting-k': ['maze-small'],
+  'letters-k': ['pairs-shapes'],
+};
+export const STARTER_GAMES = ['dots-star'];
+const GAME_COURSE = new Map(Object.entries(COURSE_GAMES).flatMap(([cid, ids]) => ids.map((id) => [id, cid])));
+export function gameCourse(gameId) { return GAME_COURSE.get(gameId) || null; }
+// Which games on a student's list are open: the starter, the first game on the list, and every game of a finished course.
+export function unlockedGameIds(events, list = []) {
+  const per = deriveProgress(events).perModule;
+  const open = new Set(STARTER_GAMES); if (list[0]) open.add(list[0].id);
+  for (const c of COURSES) if (c.modules.length > 0 && c.modules.every((m) => (per[m.id] || {}).mastered)) for (const id of COURSE_GAMES[c.id] || []) open.add(id);
+  return open;
 }

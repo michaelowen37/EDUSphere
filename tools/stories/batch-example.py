@@ -1,4 +1,4 @@
-# EduSphere. Copyright (c) 2026. Source-available; not for reuse. See LICENSE.md.
+# The Wise Human. Copyright (c) 2026. Source-available; not for reuse. See LICENSE.md.
 # A batch file for tools/stories/batch.py: NEW is a dict per module id. Copy this to /tmp/batch.py, replace the example,
 # then run python3 tools/stories/batch.py /tmp/batch.py. Write apostrophes as APOS (Leo APOS s hat -> LeoAPOSs hat).
 NEW = {

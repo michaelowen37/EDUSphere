@@ -24,9 +24,10 @@ mods.app = readFileSync('tests/e2e/out/edusphere-prototype.js', 'utf8');
 
 // The logo as the browser-tab icon. Built from the same drawing the app uses, squeezed
 // into a data address so the page still needs no other file.
-// A tab icon is 16 pixels wide, so the full logo's fine arcs vanish. This bold version
+// The Wise Human's tab icon (2026-09-25): a gold ring with its gold planet around a bold ivory W on the night green,
+// filling the whole square so it reads at 16 pixels. The full logo's fine words would vanish that small. This bold version
 // keeps the idea (a green sphere with a gold arc) at a size a tab can show.
-const iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><circle cx="32" cy="32" r="30" fill="#3A6B58"/><path d="M8 40 C 20 22, 44 22, 56 40" fill="none" stroke="#D9A83B" stroke-width="6" stroke-linecap="round"/><path d="M22 18 h20 M22 18 v28 M22 32 h15 M22 46 h20" fill="none" stroke="#FFFFFF" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+const iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="14" fill="#14231E"/><circle cx="32" cy="32" r="23" fill="none" stroke="#D9A441" stroke-width="4.5"/><path d="M17.5 23 L24.5 42.5 L32 28.5 L39.5 42.5 L46.5 23" fill="none" stroke="#F1EDE3" stroke-width="5.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="51" cy="44" r="5" fill="#D9A441" stroke="#14231E" stroke-width="2"/></svg>';
 const favicon = 'data:image/svg+xml,' + encodeURIComponent(iconSvg);
 // The story pictures that exist, so the page shows a placeholder for the rest without asking the server.
 // The newest block of docs/WHATS-NEW.md becomes the one-time pop-up educators see after an update.
@@ -41,20 +42,20 @@ const mapList = existsSync('art/maps') ? readdirSync('art/maps').filter((f) => f
 
 const wrap = (name, code) => `__def(${JSON.stringify(name)}, function(module, exports, require){${code}\n});`;
 const html = `<!doctype html>
-<!-- EduSphere. Copyright (c) 2026. Source-available; not for reuse. See LICENSE.md. -->
+<!-- The Wise Human. Copyright (c) 2026. Source-available; not for reuse. See LICENSE.md. -->
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="EduSphere: mastery-based learning for pre-K to 12, with nothing leaving the device.">
-<title>EduSphere</title>
+<meta name="description" content="The Wise Human: mastery-based learning from pre-K to college, with nothing leaving the device.">
+<title>The Wise Human</title>
 <link rel="icon" type="image/svg+xml" href="${favicon}">
 <link rel="apple-touch-icon" href="icons/icon-180.png">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#2F5D4F">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="EduSphere">
+<meta name="apple-mobile-web-app-title" content="The Wise Human">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <style>html, body { margin: 0; padding: 0; background: #F5F7F1; }
 /* Until the app has loaded, the logo draws itself forward and back. It sits after #root and shows only while #root is empty. */

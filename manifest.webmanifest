@@ -1,6 +1,6 @@
 {
-  "name": "EduSphere",
-  "short_name": "EduSphere",
+  "name": "The Wise Human",
+  "short_name": "Wise Human",
   "description": "Mastery-based learning for pre-K to 12, with nothing leaving the device.",
   "start_url": "./",
   "scope": "./",

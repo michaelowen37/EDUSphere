@@ -2208,14 +2208,14 @@ Object.assign(STORY_TITLES, Object.fromEntries(Object.entries(STORIES).map(([id,
 // The first-week tour: title, the element it points at (a data-tour name, or null), and the words.
 const TOUR = [
   ['Welcome to your classroom', 'add', null, 'below-help', <>Add a student by using their school ID. Then, you'll have an option to create nicknames, assign fun sign-in pictures and more!<br /><br />No names or photos are ever stored.</>],
-  ['Lessons, Stories, Practice, Mastery', 'lesson-card', 'lesson', 'right-edge-top', <>We combine mastery-based learning, spaced repetition, story-based learning, reflection questions, images and games to help information stick.<br /><br />Mastery requires continuous proof of competence over time. Modules are presented multiple times across multiple days and even when a student masters a subject, they'll continue to be exposed through "memory checks."<br /><br />Educators see detailed summaries along the way.</>],
-  ['Backups live on this device', 'backup', null, 'over-buttons', <>A backup file automatically downloads to your device when a student taps <em>Exit</em> or, when an educator makes changes and <em>signs out</em>.<br /><br />We still recommend periodic manual backups to a shared drive folder which protects you against lost or broken devices.<br /><br />One file restores everything on any device.</>],
+  ['Lessons, Stories, Practice, Mastery', 'lesson-card', 'lesson', 'lesson-low', <>We combine mastery-based learning, spaced repetition, story-based learning, reflection questions, images and games to help information stick.<br /><br />Mastery requires continuous proof of competence over time. Modules are presented multiple times across multiple days and even when a student masters a subject, they'll continue to be exposed through "memory checks."<br /><br />Educators see detailed summaries along the way.</>],
+  ['Backups live on this device', 'backup', null, 'over-life-low', <>A backup file automatically downloads to your device when a student taps <em>Exit</em> or, when an educator makes changes and <em>signs out</em>.<br /><br />We still recommend periodic manual backups to a shared drive folder which protects you against lost or broken devices.<br /><br />One file restores everything on any device.</>],
   ['Wonder Questions', 'wonder', null, 'right-mid', <>Wonder questions are deep, thought-provoking questions sprinkled between learning modules. They're designed to promote curiosity, reflection and critical thinking and once a student finds themselves failing modules, the questions are re-prioritized to cover emotional resilience and frame failure as an effective way to learn.<br /><br />Students only see the questions you approve.</>],
-  ['Life skills', 'life', null, 'left', <>The Wise Human is designed to make learning more efficient. Our curated list of practical life skills is a perfect way to fill the time you gain back.<br /><br />You'll find helpful skills for every age group!</>],
-  ['Reading', 'reading', null, 'left', <>Need direction finding books for various age groups? We've got you covered! Our reading list is quite extensive.</>],
-  ['Experiments', 'experiments', null, 'right', <>Science is way more fun when it's tangible. We've got experiment ideas for every age group!</>],
+  ['Life skills', 'life', null, 'over-exp-by-life', <>The Wise Human is designed to make learning more efficient. Our curated list of practical life skills is a perfect way to fill the time you gain back.<br /><br />You'll find helpful skills for every age group!</>],
+  ['Reading', 'reading', null, 'over-exp-high', <>Need direction finding books for various age groups? We've got you covered! Our reading list is quite extensive.</>],
+  ['Experiments', 'experiments', null, 'over-life-high', <>Science is way more fun when it's tangible. We've got experiment ideas for every age group!</>],
   ['Student Summaries', 'rows', 'class', 'over-second', <>Every student has a personalized report. Whether you want to see what they've done that day, that week or from the very beginning, we've got you covered! Every module they practice, every story they read, every attempt they make, even their level of confidence on any given topic is continually updated in plain English.<br /><br />Print weekly summaries, add personalized notes, practice missed questions and more!<br /><br />Have more than one student? <strong>Who Needs Help</strong> let's you know who might need a little guidance.</>],
-  ['Story Log', 'storylog', null, 'under-cards', <>Every module comes with a story, and the Story Log is where you see who has read what. Open any story from there to read it together, print it, or mark it as read.</>],
+  ['Story Log', 'storylog-page', 'storylog', 'story-right', <>Every module comes with a story, and the Story Log is where you see who has read what. Open any story from there to read it together, print it, or mark it as read.</>],
   ['Transcripts', 'transcript', 'report', 'above', <>Every student has a printable transcript covering everything they've ever worked on. While weekly summaries are helpful, this is the clearest view of progression across the years.</>],
 ];
 // Three made-up students for the tour's sample Who needs help view. Nothing is saved.
@@ -5084,8 +5084,8 @@ function EduSphereScreens() {
   // A student's wrong PIN clears the box and says so; an educator's wrong PIN just sits there with its line under it.
   useEffect(() => { if (!pinAsk || pinTry.length !== PIN_LENGTH) return; const st = findStudent(roster, pinAsk); if (!st) return; if (pinMatches(st, pinTry)) { setPinAsk(null); startWithName(st.id); } else { setPinWrong(true); setPinTry(''); } }, [pinTry, pinAsk]);
   useEffect(() => { if (screen !== 'educator-pin' || pinInput.length < 4) return; const ok = educator ? scramble(pinInput) === educator.pin : pinInput === EDUCATOR_PIN; if (ok) goBackTo(); }, [pinInput, screen]);
-  const endTour = async () => { setTourStep(-1); if ((screen === 'educator-report' && educatorRecord && educatorRecord.preview) || screen === 'class-view' || (screen === 'lesson' && record && record.preview)) { setEducatorRecord(null); setClassRows(null); if (record && record.preview) { setRecord(null); setModuleId(null); } setScreen('educator-pick'); } const next = { ...educator, tourSeen: true, newsSeen: news ? news.stamp : educator.newsSeen }; setEducator(next); await saveEducator(next); };
-  const tourPopup = tourStep >= 0 && educator && (screen === 'educator-pick' || (screen === 'educator-report' && educatorRecord && educatorRecord.preview) || screen === 'class-view' || (screen === 'lesson' && record && record.preview)) ? (
+  const endTour = async () => { setTourStep(-1); if ((screen === 'educator-report' && educatorRecord && educatorRecord.preview) || screen === 'class-view' || screen === 'story-log' || (screen === 'lesson' && record && record.preview)) { setEducatorRecord(null); setClassRows(null); setStoryRows(null); if (record && record.preview) { setRecord(null); setModuleId(null); } setScreen('educator-pick'); } const next = { ...educator, tourSeen: true, newsSeen: news ? news.stamp : educator.newsSeen }; setEducator(next); await saveEducator(next); };
+  const tourPopup = tourStep >= 0 && educator && (screen === 'educator-pick' || (screen === 'educator-report' && educatorRecord && educatorRecord.preview) || screen === 'class-view' || (screen === 'story-log' && TOUR[tourStep] && TOUR[tourStep][2] === 'storylog') || (screen === 'lesson' && record && record.preview)) ? (
     <div className="edu-no-print" style={{ position: 'fixed', zIndex: 130, pointerEvents: 'none', ...(tourBox ? { left: tourBox.left, top: tourBox.top, width: tourBox.width } : { right: 0, left: 0, bottom: 0, display: 'flex', justifyContent: 'center', padding: '0 12px 10px' }) }}>
       {/* Each card sits where its words say: beside, above or below the thing it points at, whole, never scrolling. */}
       <div className="edu-rise" ref={tourSheetRef} style={{ width: tourBox ? '100%' : 'min(420px, 100%)', boxSizing: 'border-box', background: C.surface, borderRadius: 14, padding: '14px 18px', textAlign: 'center', boxShadow: '0 4px 30px rgba(36, 41, 31, 0.3)', border: C.mode === 'dark' ? '2px solid #A6DCC5' : `1px solid ${C.line}`, pointerEvents: 'auto' }} role="dialog" aria-label="First week tour">
@@ -5105,6 +5105,7 @@ function EduSphereScreens() {
     const [, target, sample, where] = TOUR[tourStep];
     // A card with a sample screen opens it with made-up students; the others come back to the classroom page.
     if (sample === 'report' && screen !== 'educator-report') { setEducatorRecord(sampleRecord()); setOpenSubjects([]); setShowAllCourses(false); setConfirmReset(false); setScreen('educator-report'); return undefined; }
+    if (sample === 'storylog' && screen !== 'story-log') { setStoryRows(sampleClass()); setStoryView({}); setStoryExpanded({}); setOpenStoryId(null); setStoryLogFrom('classroom'); setScreen('story-log'); return undefined; }
     if (sample === 'class' && screen !== 'class-view') { setClassRows(classView(sampleClass(), new Date().toISOString())); setScreen('class-view'); return undefined; }
     if (sample === 'lesson' && screen !== 'lesson') { const band = levelFor('elementary'); const ids = COURSES.filter((c) => band && band.grades.includes(c.grade)).map((c) => c.id); setRecord({ name: 'Walk-through', events: [makeCoursesEnabledEvent(ids, new Date().toISOString())], preview: true, level: 'elementary' }); setModuleId('fraction-meaning'); setAnotherWay(0); setScreen('lesson'); return undefined; }
     if (!sample && screen !== 'educator-pick') { if (record && record.preview && screen === 'lesson') { setRecord(null); setModuleId(null); } setScreen('educator-pick'); return undefined; }
@@ -5122,17 +5123,28 @@ function EduSphereScreens() {
         if (where === 'under-cards' && er0) { expCard0.scrollIntoView({ block: 'center' }); const e2 = expCard0.getBoundingClientRect(); setTourBox({ left: (W - cardW) / 2 / z, top: Math.max(12, Math.min(H - cardH - 12, e2.bottom + 10 - cardH)) / z, width: cardW / z }); return; }
         setTourBox({ left: (W - cardW) / 2 / z, top: (H - cardH - 12) / z, width: cardW / z }); return;
       }
-      if (where === 'right-top' || where === 'over-second' || where === 'right-edge-top') window.scrollTo(0, 0); else els[0].scrollIntoView({ block: 'center' });
+      if (where === 'right-top' || where === 'over-second' || where === 'right-edge-top' || where === 'story-right') window.scrollTo(0, 0); else els[0].scrollIntoView({ block: 'center' });
       const r = els[0].getBoundingClientRect(); const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
       const mid = clamp((H - cardH) / 2, 12, H - cardH - 12);
       let box = null;
       const roomRight = W - r.right - gap - 12; const roomLeft = r.left - gap - 12;
       const expCard = document.querySelector('[data-tour="experiments"]'); const er = expCard ? expCard.getBoundingClientRect() : null;
-      if (where === 'over-right') box = { left: clamp(r.left + r.width * 0.55, 12, W - cardW - 12), top: mid, width: cardW };   // over the right part of a wide card, its left edge past the middle
+      const cardOf = (name) => { const el = document.querySelector(`[data-tour="${name}"]`); return el ? el.getBoundingClientRect() : null; };
+      // These places need a laptop's width; on a phone the card goes to the end of the screen away from its target.
+      const lifeR = cardOf('life'); const wide = W >= 900;
+      if (where === 'lesson-low' && wide) {   // flush right and low on the lesson: the question stays readable, the picture's lower part sits under the card
+        const pic = els[0].querySelector('svg, img'); const pr = pic ? pic.getBoundingClientRect() : null;
+        box = { left: W - cardW - 12, top: clamp(pr && pr.height > 40 ? pr.top + pr.height * 0.45 : r.top + r.height * 0.55, 12, H - cardH - 12), width: cardW };
+      } else if (wide && where === 'over-life-low' && lifeR) box = { left: clamp(lifeR.right - cardW + 24, 12, W - cardW - 12), top: clamp(r.top - 10 - cardH, 12, H - cardH - 12), width: cardW };   // over Life Skills, its foot just above the backup line
+      else if (wide && where === 'over-exp-by-life' && er) box = { left: clamp(er.right - cardW + 18, 12, W - cardW - 12), top: clamp(r.top + r.height / 2 - cardH / 2 + 24, 12, H - cardH - 12), width: cardW };   // over Experiments, beside Life Skills
+      else if (wide && where === 'over-exp-high' && er) box = { left: clamp(er.right - cardW + 40, 12, W - cardW - 12), top: clamp(er.top - 24, 12, H - cardH - 12), width: cardW };   // over Experiments, up toward Reading
+      else if (wide && where === 'over-life-high' && lifeR) box = { left: clamp(lifeR.left - 40, 12, W - cardW - 12), top: clamp(lifeR.top - 24, 12, H - cardH - 12), width: cardW };   // over Life Skills, up toward Experiments
+      else if (wide && where === 'story-right') box = { left: clamp(r.right - cardW + 90, 12, W - cardW - 12), top: clamp(r.bottom - 70, 12, H - cardH - 12), width: cardW };   // low and to the right: the title, the choices and the newest stories with their Open buttons stay readable
+      else if (where === 'over-right') box = { left: clamp(r.left + r.width * 0.55, 12, W - cardW - 12), top: mid, width: cardW };   // over the right part of a wide card, its left edge past the middle
       else if (where === 'right-edge-top') box = { left: W - cardW - 12, top: clamp(r.top + 24, 12, H - cardH - 12), width: cardW };   // flush right, near the top of the glowing card
       else if (where === 'over-buttons' && er) box = { left: (W - cardW) / 2, top: clamp(er.bottom - 44 - cardH, 12, H - cardH - 12), width: cardW };   // its foot over the top edge of the two buttons
       else if (where === 'under-cards' && er) box = { left: (W - cardW) / 2, top: clamp(er.bottom + 10 - cardH, 12, H - cardH - 12), width: cardW };   // its foot just past the cards' bottom edge
-      else if (where === 'over-second') { const second = els[1] ? els[1].getBoundingClientRect() : r; box = { left: clamp(second.right + 60 - cardW, 12, W - cardW - 12), top: clamp(second.top + 8, 12, H - cardH - 12), width: cardW }; }   // beside the second student, clear of the green box, the word keep still showing
+      else if (where === 'over-second') { const second = els[1] ? els[1].getBoundingClientRect() : r; box = { left: clamp(second.right + 140 - cardW, 12, W - cardW - 12), top: clamp(second.top - 36, 12, H - cardH - 12), width: cardW }; }   // beside the second student, clear of the green box, the word keep still showing
       else if (where === 'above') box = { left: (W - cardW) / 2, top: clamp(r.top - 8 - cardH, 12, H - cardH - 12), width: cardW };
       else if (where === 'right-top') box = { left: W - cardW - 12, top: mid, width: cardW };                                     // flush right, the page left readable, scrolled to its top
       else if (where === 'right-mid' || where === 'right') {
@@ -7450,6 +7462,7 @@ function EduSphereScreens() {
     };
     return (
       <div style={{ ...page }}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} /><div className="edu-wrap" style={{ ...wrap }}>
+        {tourPopup}
         <div className="edu-no-print" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: '4px 0 12px' }}>
           <button type="button" onClick={() => { setOpenStoryId(null); setScreen(storyLogFrom === 'report' ? 'educator-report' : 'educator-pick'); }} style={{ ...linkBtn }}>{storyLogFrom === 'report' ? 'Back to report' : 'Back to Classroom'}</button>
           <button type="button" onClick={() => { if (typeof window !== 'undefined' && window.print) window.print(); }} style={{ ...linkBtn, fontSize: 13, color: C.muted }}>Print</button>
@@ -7468,7 +7481,7 @@ function EduSphereScreens() {
         )}
         <div aria-hidden="true" style={{ height: 12 }} />{/* a little air between the words above and the toggle (Mikey, 2026-09-25) */}
         <SegToggle size="small" options={[['recent', 'Most recent'], ['read', 'Read'], ['unread', 'Unread']]} value={viewAll} onChange={(key) => { setStoryView({ ...storyView, all: key }); setStoryExpanded({}); }} ariaLabel="Stories to show" />
-        {storyRows.filter((row) => who === 'all' || row.id === who).map((row) => {
+        {storyRows.filter((row) => who === 'all' || row.id === who).map((row, rowIdx) => {
           const items = listFor(row); const view = viewAll; const counts = countsFor(row);
           const shorts = items.filter((it) => !it.isCourse);
           const longs = view === 'recent' ? items.filter((it) => it.isCourse) : courseRows(row).filter((cr) => (view === 'read' ? cr.read : !cr.read)).map((cr) => ({ moduleId: cr.id, title: cr.title, about: '', goal: cr.course, note: cr.unlocked ? (cr.read ? 'read' : 'unlocked') : `${cr.left} to go`, isCourse: true }));
@@ -7501,7 +7514,7 @@ function EduSphereScreens() {
           // The empty lines say the true thing (2026-09-23, Mikey): a student with no long stories on their courses has read none, not all.
           const longTotal = courseRows(row).length; const shortTotal = counts.total;
           return (
-            <div key={row.id} style={{ ...card, marginTop: 14, padding: 0, overflow: 'hidden' }} className="edu-story-row">
+            <div key={row.id} data-tour={rowIdx === 0 ? 'storylog-page' : undefined} style={{ ...card, marginTop: 14, padding: 0, overflow: 'hidden' }} className="edu-story-row">
               {/* The name band is a light green, so the list below reads as its own thing. */}
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', gap: 10, padding: '12px 16px', background: C.greenSoft }}>
                 <p style={{ margin: 0, fontSize: 18, fontWeight: 600 }}>{row.label}</p>

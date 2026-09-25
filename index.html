@@ -48487,7 +48487,7 @@ function PinInput({ value, onChange, placeholder, style, onEnter = null }) {
 }
 // A stamp of when this copy of the page was built, so a stale page in a cache can be told apart
 // from a fresh one at a glance. Written by the build, never by hand.
-const BUILD_STAMP = '2026-09-24 09:39 PM CDT';
+const BUILD_STAMP = '2026-09-25 12:07 AM CDT';
 function ContactLine({ onOpen, inline = false }) {
     return (react_1.default.createElement("p", { className: "edu-no-print", style: { textAlign: 'center', marginTop: inline ? 0 : 28, fontSize: inline ? 14 : 12, color: C.muted, margin: inline ? '0' : undefined } }, onOpen
         ? react_1.default.createElement("button", { type: "button", onClick: onOpen, style: { background: 'none', border: 'none', color: C.muted, fontFamily: FONT, fontSize: 12, cursor: 'pointer', padding: 0, textDecoration: 'underline' } }, "Contact us")
@@ -51314,7 +51314,7 @@ const TOUR = [
             react_1.default.createElement("br", null),
             react_1.default.createElement("br", null),
             "No names or photos are ever stored.")],
-    ['Lessons, Stories, Practice, Mastery', 'lesson-card', 'lesson', 'right-edge-top', react_1.default.createElement(react_1.default.Fragment, null,
+    ['Lessons, Stories, Practice, Mastery', 'lesson-card', 'lesson', 'lesson-low', react_1.default.createElement(react_1.default.Fragment, null,
             "We combine mastery-based learning, spaced repetition, story-based learning, reflection questions, images and games to help information stick.",
             react_1.default.createElement("br", null),
             react_1.default.createElement("br", null),
@@ -51322,7 +51322,7 @@ const TOUR = [
             react_1.default.createElement("br", null),
             react_1.default.createElement("br", null),
             "Educators see detailed summaries along the way.")],
-    ['Backups live on this device', 'backup', null, 'over-buttons', react_1.default.createElement(react_1.default.Fragment, null,
+    ['Backups live on this device', 'backup', null, 'over-life-low', react_1.default.createElement(react_1.default.Fragment, null,
             "A backup file automatically downloads to your device when a student taps ",
             react_1.default.createElement("em", null, "Exit"),
             " or, when an educator makes changes and ",
@@ -51339,13 +51339,13 @@ const TOUR = [
             react_1.default.createElement("br", null),
             react_1.default.createElement("br", null),
             "Students only see the questions you approve.")],
-    ['Life skills', 'life', null, 'left', react_1.default.createElement(react_1.default.Fragment, null,
+    ['Life skills', 'life', null, 'over-exp-by-life', react_1.default.createElement(react_1.default.Fragment, null,
             "The Wise Human is designed to make learning more efficient. Our curated list of practical life skills is a perfect way to fill the time you gain back.",
             react_1.default.createElement("br", null),
             react_1.default.createElement("br", null),
             "You'll find helpful skills for every age group!")],
-    ['Reading', 'reading', null, 'left', react_1.default.createElement(react_1.default.Fragment, null, "Need direction finding books for various age groups? We've got you covered! Our reading list is quite extensive.")],
-    ['Experiments', 'experiments', null, 'right', react_1.default.createElement(react_1.default.Fragment, null, "Science is way more fun when it's tangible. We've got experiment ideas for every age group!")],
+    ['Reading', 'reading', null, 'over-exp-high', react_1.default.createElement(react_1.default.Fragment, null, "Need direction finding books for various age groups? We've got you covered! Our reading list is quite extensive.")],
+    ['Experiments', 'experiments', null, 'over-life-high', react_1.default.createElement(react_1.default.Fragment, null, "Science is way more fun when it's tangible. We've got experiment ideas for every age group!")],
     ['Student Summaries', 'rows', 'class', 'over-second', react_1.default.createElement(react_1.default.Fragment, null,
             "Every student has a personalized report. Whether you want to see what they've done that day, that week or from the very beginning, we've got you covered! Every module they practice, every story they read, every attempt they make, even their level of confidence on any given topic is continually updated in plain English.",
             react_1.default.createElement("br", null),
@@ -51356,7 +51356,7 @@ const TOUR = [
             "Have more than one student? ",
             react_1.default.createElement("strong", null, "Who Needs Help"),
             " let's you know who might need a little guidance.")],
-    ['Story Log', 'storylog', null, 'under-cards', react_1.default.createElement(react_1.default.Fragment, null, "Every module comes with a story, and the Story Log is where you see who has read what. Open any story from there to read it together, print it, or mark it as read.")],
+    ['Story Log', 'storylog-page', 'storylog', 'story-right', react_1.default.createElement(react_1.default.Fragment, null, "Every module comes with a story, and the Story Log is where you see who has read what. Open any story from there to read it together, print it, or mark it as read.")],
     ['Transcripts', 'transcript', 'report', 'above', react_1.default.createElement(react_1.default.Fragment, null, "Every student has a printable transcript covering everything they've ever worked on. While weekly summaries are helpful, this is the clearest view of progression across the years.")],
 ];
 // Three made-up students for the tour's sample Who needs help view. Nothing is saved.
@@ -55081,16 +55081,17 @@ function EduSphereScreens() {
     (0, react_1.useEffect)(() => { if (screen !== 'educator-pin' || pinInput.length < 4)
         return; const ok = educator ? scramble(pinInput) === educator.pin : pinInput === EDUCATOR_PIN; if (ok)
         goBackTo(); }, [pinInput, screen]);
-    const endTour = async () => { setTourStep(-1); if ((screen === 'educator-report' && educatorRecord && educatorRecord.preview) || screen === 'class-view' || (screen === 'lesson' && record && record.preview)) {
+    const endTour = async () => { setTourStep(-1); if ((screen === 'educator-report' && educatorRecord && educatorRecord.preview) || screen === 'class-view' || screen === 'story-log' || (screen === 'lesson' && record && record.preview)) {
         setEducatorRecord(null);
         setClassRows(null);
+        setStoryRows(null);
         if (record && record.preview) {
             setRecord(null);
             setModuleId(null);
         }
         setScreen('educator-pick');
     } const next = { ...educator, tourSeen: true, newsSeen: news ? news.stamp : educator.newsSeen }; setEducator(next); await saveEducator(next); };
-    const tourPopup = tourStep >= 0 && educator && (screen === 'educator-pick' || (screen === 'educator-report' && educatorRecord && educatorRecord.preview) || screen === 'class-view' || (screen === 'lesson' && record && record.preview)) ? (react_1.default.createElement("div", { className: "edu-no-print", style: { position: 'fixed', zIndex: 130, pointerEvents: 'none', ...(tourBox ? { left: tourBox.left, top: tourBox.top, width: tourBox.width } : { right: 0, left: 0, bottom: 0, display: 'flex', justifyContent: 'center', padding: '0 12px 10px' }) } },
+    const tourPopup = tourStep >= 0 && educator && (screen === 'educator-pick' || (screen === 'educator-report' && educatorRecord && educatorRecord.preview) || screen === 'class-view' || (screen === 'story-log' && TOUR[tourStep] && TOUR[tourStep][2] === 'storylog') || (screen === 'lesson' && record && record.preview)) ? (react_1.default.createElement("div", { className: "edu-no-print", style: { position: 'fixed', zIndex: 130, pointerEvents: 'none', ...(tourBox ? { left: tourBox.left, top: tourBox.top, width: tourBox.width } : { right: 0, left: 0, bottom: 0, display: 'flex', justifyContent: 'center', padding: '0 12px 10px' }) } },
         react_1.default.createElement("div", { className: "edu-rise", ref: tourSheetRef, style: { width: tourBox ? '100%' : 'min(420px, 100%)', boxSizing: 'border-box', background: C.surface, borderRadius: 14, padding: '14px 18px', textAlign: 'center', boxShadow: '0 4px 30px rgba(36, 41, 31, 0.3)', border: C.mode === 'dark' ? '2px solid #A6DCC5' : `1px solid ${C.line}`, pointerEvents: 'auto' }, role: "dialog", "aria-label": "First week tour" },
             react_1.default.createElement("p", { style: { margin: '0 0 4px', fontSize: 13, color: C.muted } },
                 tourStep + 1,
@@ -55117,6 +55118,15 @@ function EduSphereScreens() {
             setShowAllCourses(false);
             setConfirmReset(false);
             setScreen('educator-report');
+            return undefined;
+        }
+        if (sample === 'storylog' && screen !== 'story-log') {
+            setStoryRows(sampleClass());
+            setStoryView({});
+            setStoryExpanded({});
+            setOpenStoryId(null);
+            setStoryLogFrom('classroom');
+            setScreen('story-log');
             return undefined;
         }
         if (sample === 'class' && screen !== 'class-view') {
@@ -55168,7 +55178,7 @@ function EduSphereScreens() {
                 setTourBox({ left: (W - cardW) / 2 / z, top: (H - cardH - 12) / z, width: cardW / z });
                 return;
             }
-            if (where === 'right-top' || where === 'over-second' || where === 'right-edge-top')
+            if (where === 'right-top' || where === 'over-second' || where === 'right-edge-top' || where === 'story-right')
                 window.scrollTo(0, 0);
             else
                 els[0].scrollIntoView({ block: 'center' });
@@ -55180,7 +55190,26 @@ function EduSphereScreens() {
             const roomLeft = r.left - gap - 12;
             const expCard = document.querySelector('[data-tour="experiments"]');
             const er = expCard ? expCard.getBoundingClientRect() : null;
-            if (where === 'over-right')
+            const cardOf = (name) => { const el = document.querySelector(`[data-tour="${name}"]`); return el ? el.getBoundingClientRect() : null; };
+            // These places need a laptop's width; on a phone the card goes to the end of the screen away from its target.
+            const lifeR = cardOf('life');
+            const wide = W >= 900;
+            if (where === 'lesson-low' && wide) { // flush right and low on the lesson: the question stays readable, the picture's lower part sits under the card
+                const pic = els[0].querySelector('svg, img');
+                const pr = pic ? pic.getBoundingClientRect() : null;
+                box = { left: W - cardW - 12, top: clamp(pr && pr.height > 40 ? pr.top + pr.height * 0.45 : r.top + r.height * 0.55, 12, H - cardH - 12), width: cardW };
+            }
+            else if (wide && where === 'over-life-low' && lifeR)
+                box = { left: clamp(lifeR.right - cardW + 24, 12, W - cardW - 12), top: clamp(r.top - 10 - cardH, 12, H - cardH - 12), width: cardW }; // over Life Skills, its foot just above the backup line
+            else if (wide && where === 'over-exp-by-life' && er)
+                box = { left: clamp(er.right - cardW + 18, 12, W - cardW - 12), top: clamp(r.top + r.height / 2 - cardH / 2 + 24, 12, H - cardH - 12), width: cardW }; // over Experiments, beside Life Skills
+            else if (wide && where === 'over-exp-high' && er)
+                box = { left: clamp(er.right - cardW + 40, 12, W - cardW - 12), top: clamp(er.top - 24, 12, H - cardH - 12), width: cardW }; // over Experiments, up toward Reading
+            else if (wide && where === 'over-life-high' && lifeR)
+                box = { left: clamp(lifeR.left - 40, 12, W - cardW - 12), top: clamp(lifeR.top - 24, 12, H - cardH - 12), width: cardW }; // over Life Skills, up toward Experiments
+            else if (wide && where === 'story-right')
+                box = { left: clamp(r.right - cardW + 90, 12, W - cardW - 12), top: clamp(r.bottom - 70, 12, H - cardH - 12), width: cardW }; // low and to the right: the title, the choices and the newest stories with their Open buttons stay readable
+            else if (where === 'over-right')
                 box = { left: clamp(r.left + r.width * 0.55, 12, W - cardW - 12), top: mid, width: cardW }; // over the right part of a wide card, its left edge past the middle
             else if (where === 'right-edge-top')
                 box = { left: W - cardW - 12, top: clamp(r.top + 24, 12, H - cardH - 12), width: cardW }; // flush right, near the top of the glowing card
@@ -55190,7 +55219,7 @@ function EduSphereScreens() {
                 box = { left: (W - cardW) / 2, top: clamp(er.bottom + 10 - cardH, 12, H - cardH - 12), width: cardW }; // its foot just past the cards' bottom edge
             else if (where === 'over-second') {
                 const second = els[1] ? els[1].getBoundingClientRect() : r;
-                box = { left: clamp(second.right + 60 - cardW, 12, W - cardW - 12), top: clamp(second.top + 8, 12, H - cardH - 12), width: cardW };
+                box = { left: clamp(second.right + 140 - cardW, 12, W - cardW - 12), top: clamp(second.top - 36, 12, H - cardH - 12), width: cardW };
             } // beside the second student, clear of the green box, the word keep still showing
             else if (where === 'above')
                 box = { left: (W - cardW) / 2, top: clamp(r.top - 8 - cardH, 12, H - cardH - 12), width: cardW };
@@ -57296,6 +57325,7 @@ function EduSphereScreens() {
         return (react_1.default.createElement("div", { style: { ...page } },
             react_1.default.createElement(PageChrome, { idleWarning: idleWarning, logoutIn: logoutIn }),
             react_1.default.createElement("div", { className: "edu-wrap", style: { ...wrap } },
+                tourPopup,
                 react_1.default.createElement("div", { className: "edu-no-print", style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: '4px 0 12px' } },
                     react_1.default.createElement("button", { type: "button", onClick: () => { setOpenStoryId(null); setScreen(storyLogFrom === 'report' ? 'educator-report' : 'educator-pick'); }, style: { ...linkBtn } }, storyLogFrom === 'report' ? 'Back to report' : 'Back to Classroom'),
                     react_1.default.createElement("button", { type: "button", onClick: () => { if (typeof window !== 'undefined' && window.print)
@@ -57317,7 +57347,7 @@ function EduSphereScreens() {
                         storyRows.map((r) => react_1.default.createElement("option", { key: r.id, value: r.id }, r.label))))),
                 react_1.default.createElement("div", { "aria-hidden": "true", style: { height: 12 } }),
                 react_1.default.createElement(SegToggle, { size: "small", options: [['recent', 'Most recent'], ['read', 'Read'], ['unread', 'Unread']], value: viewAll, onChange: (key) => { setStoryView({ ...storyView, all: key }); setStoryExpanded({}); }, ariaLabel: "Stories to show" }),
-                storyRows.filter((row) => who === 'all' || row.id === who).map((row) => {
+                storyRows.filter((row) => who === 'all' || row.id === who).map((row, rowIdx) => {
                     const items = listFor(row);
                     const view = viewAll;
                     const counts = countsFor(row);
@@ -57348,7 +57378,7 @@ function EduSphereScreens() {
                     // The empty lines say the true thing (2026-09-23, Mikey): a student with no long stories on their courses has read none, not all.
                     const longTotal = courseRows(row).length;
                     const shortTotal = counts.total;
-                    return (react_1.default.createElement("div", { key: row.id, style: { ...card, marginTop: 14, padding: 0, overflow: 'hidden' }, className: "edu-story-row" },
+                    return (react_1.default.createElement("div", { key: row.id, "data-tour": rowIdx === 0 ? 'storylog-page' : undefined, style: { ...card, marginTop: 14, padding: 0, overflow: 'hidden' }, className: "edu-story-row" },
                         react_1.default.createElement("div", { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', gap: 10, padding: '12px 16px', background: C.greenSoft } },
                             react_1.default.createElement("p", { style: { margin: 0, fontSize: 18, fontWeight: 600 } }, row.label),
                             react_1.default.createElement("p", { style: { margin: 0, fontSize: 14, color: C.muted, whiteSpace: 'nowrap' } },

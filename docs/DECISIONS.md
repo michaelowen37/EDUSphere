@@ -752,6 +752,13 @@ Approved by Mikey on 2026-09-04 unless marked "proposed".
 - The puzzles came from a search (a separate script, not the app's runner) that kept only programs that fail as written and that exactly one single-step change brings home without bumping; the rules test checks the same with the app's own runRobot, so two independent runners agree on all sixteen. Eight puzzles a deck, four a round.
 - The two games join tech 3 and tech 5 as second games beside pairs-technology and pong, rather than replacing them: those are their courses' only other games, and neither is a quick fire. Kinds of game 18; quick fires 23; repeats 20.
 
+## 2026-09-25 (pass DH): the tour's cards where Mikey wants them
+
+- Mikey committed DF and DG; this commit message starts fresh at DH.
+- New card places for the laptop tour, all measured from the live page each time: lesson-low (card 2: flush right with its top partway down the lesson's picture, so the question reads and the picture's lower part sits under the card), over-life-low (card 3: over Life Skills, its foot just above the backup line), over-exp-by-life (card 5: over Science Experiments beside Life Skills), over-exp-high (card 6: over Science Experiments up toward Reading), over-life-high (card 7: over Life Skills up toward Experiments), over-second moved 36 px up and 80 px right (card 8), and story-right (card 9).
+- Card 9 was never on the Story Log page: it pointed at the classroom's Story Log link, which a new account without students does not have, so the card floated. It now opens the Story Log page with the tour's three sample students (sample storylog), rings the first student's block, and sits low and to the right so the title, the choices and the newest stories with their Open buttons stay readable. The tour card now renders on the Story Log page during that step, and ending the tour there returns to the classroom and drops the sample rows.
+- The new places apply at 900 px and wider (the laptop tour); narrower screens keep the old rule of the screen's far end from the target.
+
 ## Open items
 - Verify audio plays inside the chat artifact sandbox (works in a normal browser).
 - Common Core / TEKS codes on existing modules to be checked against the official lists.

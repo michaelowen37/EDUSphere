@@ -39,6 +39,7 @@ The newest block is what educators see once, in a pop-up on the classroom page, 
 - In the dark theme, Not started is a quiet tint instead of a bright pill, and the tour's cards have a light green border.
 - The tour now rings every student card on the Student Summaries step, and the Backup classroom step glows the same way as the Story Log step. On Create account, the state you pick sits centered.
 - Debug the robot, for technology 3 and 5: a robot follows its program on a grid, and one step is wrong. Tap Run to watch it, change the step that sends it astray, and run again until it reaches the star. Grade 3 uses arrows; grade 5 uses forward, turn left and turn right. It sits beside each course's first game.
+- The laptop tour's cards moved so the page behind them reads better: the lesson card sits lower, the backup card over Life Skills near the backup link, the Life Skills and Reading cards over Science Experiments, the Experiments card over Life Skills, the Student Summaries card a little up and right, and the Story Log card now opens the Story Log page itself, with sample students, sitting low and to the right.
 
 ## September 24, 2026 (a new name)
 

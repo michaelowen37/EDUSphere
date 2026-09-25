@@ -1406,12 +1406,22 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
   const twoOfAKind = L.COURSES.filter((c) => new Set(L.COURSE_GAMES[c.id].map(kindOf)).size < L.COURSE_GAMES[c.id].length).length;
   ok('courses holding two games of one kind stay at or under 1', twoOfAKind <= 1, `${twoOfAKind}`);
   let repeats = 0; for (const gr of L.GRADES) { const ks = L.COURSES.filter((c) => c.grade === gr).flatMap((c) => L.COURSE_GAMES[c.id].map(kindOf)); repeats += ks.length - new Set(ks).size; }
-  ok('kinds repeated inside a grade stay at or under 28', repeats <= 28, `${repeats}`);
+  ok('kinds repeated inside a grade stay at or under 22 (the sentence builder and fix it took six quick fires, 2026-09-25)', repeats <= 22, `${repeats}`);
   const list = L.GAMES.filter((g) => ['counting-k', 'letters-k'].includes(L.gameCourse(g.id)) || L.STARTER_GAMES.includes(g.id));
   const fresh = L.unlockedGameIds([], list);
   ok('a new student has the starter and the first game open, and nothing from an unfinished course', fresh.size === new Set([...L.STARTER_GAMES, list[0].id]).size && list.slice(1).every((g) => L.STARTER_GAMES.includes(g.id) || !fresh.has(g.id)));
   const qf = L.GAMES.filter((g) => g.course);
   ok('a course quick fire draws only on its own course, and always has questions', qf.length > 0 && qf.every((g) => { const pool = L.sprintPool(L.MODULES, g); return pool.length > 0 && pool.length === L.sprintPool(L.MODULES.filter((m) => m.courseId === g.course), g).length; }));
 }
+
+// Sentence builder and fix it (2026-09-25): every sentence is pinned at both ends, and every mistake is findable.
+{
+  const endMark = /[.!?]$/;
+  const pinned = (s) => { const w = s.split(' '); return /^[A-Z]/.test(w[0]) && w.filter((x) => /^[A-Z]/.test(x) && x !== 'I').length === 1 && w.filter((x) => endMark.test(x)).length === 1 && endMark.test(w[w.length - 1]) && !/  /.test(s); };
+  ok('every sentence builder set has a short and a longer sentence, each with one capital first word and one end mark last', Object.values(L.BUILD_DECKS).every((d) => d.length >= 5 && d.every((s) => pinned(s.base) && pinned(s.more) && s.more.split(' ').length > s.base.split(' ').length)));
+  ok('every fix it sentence names a wrong word that appears exactly once, and its fix reads as a whole sentence', Object.values(L.FIX_DECKS).every((d) => d.length >= 5 && d.every((it) => { const w = it.text.split(' '); return w.filter((x) => x === it.word).length === 1 && it.fixed && it.fixed !== it.word && endMark.test(it.text) && endMark.test(w.map((x) => (x === it.word ? it.fixed : x)).join(' ')) && it.why && it.why.length > 10; })));
+  ok('every sentence builder and fix it game has its deck and a course', L.GAMES.filter((g) => g.kind === 'build' || g.kind === 'fix').length === 6 && L.GAMES.filter((g) => g.kind === 'build').every((g) => L.BUILD_DECKS[g.deck]) && L.GAMES.filter((g) => g.kind === 'fix').every((g) => L.FIX_DECKS[g.deck]) && L.GAMES.filter((g) => g.kind === 'build' || g.kind === 'fix').every((g) => Object.values(L.COURSE_GAMES).some((ids) => ids.includes(g.id))));
+}
+
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exitCode = fail ? 1 : 0;   // never process.exit(): it can drop the last lines of a piped stdout (2026-09-23)

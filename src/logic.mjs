@@ -1086,7 +1086,6 @@ export const GAMES = [
   // Quick fire and In order: two more kinds for older students, so play is not all matching.
   { id: 'sprint-math', kind: 'sprint', title: 'Quick fire: math', minGrade: '3', subject: 'Math' },
   { id: 'sprint-science', kind: 'sprint', title: 'Quick fire: science', minGrade: '3', subject: 'Science' },
-  { id: 'sprint-all', kind: 'sprint', title: 'Quick fire: everything', minGrade: '4' },
   { id: 'order-steps', kind: 'order', title: 'In order: how things happen', minGrade: '3', deck: 'processes' },
   { id: 'order-timeline', kind: 'order', title: 'In order: timeline', minGrade: '5', deck: 'timeline' },
   { id: 'order-math', kind: 'order', title: 'In order: the math way', minGrade: '5', deck: 'mathsteps' },
@@ -1119,13 +1118,14 @@ export const GAMES = [
   { id: 'sprint-reading-9', kind: 'sprint', title: 'Quick fire: English 1', minGrade: '9', course: 'reading-9' },
   { id: 'sprint-reading-college', kind: 'sprint', title: 'Quick fire: Academic reading', minGrade: 'C', course: 'reading-college' },
   { id: 'sprint-tech-7', kind: 'sprint', title: 'Quick fire: Bits, networks and safety', minGrade: '7', course: 'tech-7' },
-  { id: 'sprint-writing-10', kind: 'sprint', title: 'Quick fire: Writing about texts', minGrade: '10', course: 'writing-10' },
+  { id: 'fix-writing-10', kind: 'fix', title: 'Fix it: fine points', minGrade: '10', deck: 'usage10' },
   { id: 'sprint-writing-11', kind: 'sprint', title: 'Quick fire: Writing with sources', minGrade: '11', course: 'writing-11' },
   { id: 'sprint-writing-12', kind: 'sprint', title: 'Quick fire: Writing for the world', minGrade: '12', course: 'writing-12' },
-  { id: 'sprint-writing-3', kind: 'sprint', title: 'Quick fire: Writing a paragraph', minGrade: '3', course: 'writing-3' },
-  { id: 'sprint-writing-4', kind: 'sprint', title: 'Quick fire: Writing paragraphs', minGrade: '4', course: 'writing-4' },
-  { id: 'sprint-writing-5', kind: 'sprint', title: 'Quick fire: Writing several paragraphs', minGrade: '5', course: 'writing-5' },
-  { id: 'sprint-writing-9', kind: 'sprint', title: 'Quick fire: Writing about texts and turns', minGrade: '9', course: 'writing-9' },
+  { id: 'build-writing-3', kind: 'build', title: 'Build a sentence: say more', minGrade: '3', deck: 'describe' },
+  { id: 'build-writing-4', kind: 'build', title: 'Build a sentence: and, but, so', minGrade: '4', deck: 'join' },
+  { id: 'build-writing-5', kind: 'build', title: 'Build a sentence: because, when, if', minGrade: '5', deck: 'open' },
+  { id: 'fix-writing-9', kind: 'fix', title: 'Fix it: tricky words', minGrade: '9', deck: 'usage9' },
+  { id: 'fix-writing-7', kind: 'fix', title: 'Fix it: find the mistake', minGrade: '7', deck: 'usage7' },
 ];
 // Older students' games in a spread order (2026-09-23, Mikey): the same kind never sits beside itself while another kind
 // is still waiting, so a list of decks and Quick fire rounds alternates instead of landing in blocks. Once only one kind
@@ -1390,6 +1390,67 @@ export const PAIR_DECKS = {
   'science-12': [['igneous', 'cooled from lava'], ['sedimentary', 'pressed from layers'], ['metamorphic', 'changed by heat'], ['climate', 'decades of weather'], ['supernova', 'the end of a big star'], ['mantle', 'the hot middle layer'], ['deep current', 'cold salty water sinking'], ['half-life', 'time to halve']],
 };
 // Ordered sets for the In order game: steps or events a student taps first to last.
+// Sentence builder (2026-09-25): each set is a short sentence and then a longer one that says more. Every word is a
+// tile; the capital on the first word and the mark on the last pin the ends, and each sentence has only one order that
+// makes sense (adjectives stand in the order English uses, size before color). Grade 3 adds describing words, grade 4
+// joins two sentences with a comma and and, but or so, grade 5 opens with because, when, although, if or since.
+export const BUILD_DECKS = {
+  describe: [
+    { base: 'The dog ran home.', more: 'The big brown dog ran home.' },
+    { base: 'The bird sang.', more: 'The tiny yellow bird sang.' },
+    { base: 'We saw a whale.', more: 'We saw a huge gray whale.' },
+    { base: 'My sister found a shell.', more: 'My sister found a shiny pink shell.' },
+    { base: 'The boy ate an apple.', more: 'The boy ate a crisp red apple.' },
+  ],
+  join: [
+    { base: 'Mia wanted to swim.', more: 'Mia wanted to swim, but the pool was closed.' },
+    { base: 'It started to rain.', more: 'It started to rain, so we went inside.' },
+    { base: 'Leo fed the dog.', more: 'Leo fed the dog, and his sister fed the cat.' },
+    { base: 'The game was long.', more: 'The game was long, but nobody left early.' },
+    { base: 'Sam studied hard.', more: 'Sam studied hard, so he passed the test.' },
+  ],
+  open: [
+    { base: 'We stayed inside.', more: 'Because it was raining, we stayed inside.' },
+    { base: 'The crowd cheered.', more: 'When the whistle blew, the crowd cheered.' },
+    { base: 'She finished the race.', more: 'Although her legs ached, she finished the race.' },
+    { base: 'You can play outside.', more: 'If you finish your homework, you can play outside.' },
+    { base: 'The plant grew tall.', more: 'Since it got plenty of sun, the plant grew tall.' },
+  ],
+};
+// Fix it (2026-09-25): each sentence has exactly one wrong word, capital or mark, at the word numbered wrong (counting
+// from 0); tapping it swaps in fixed, and why says the rule in a sentence. Every other word is right as it stands.
+export const FIX_DECKS = {
+  usage7: [
+    { text: 'My family visited texas last summer.', word: 'texas', fixed: 'Texas', why: 'The name of a place starts with a capital letter.' },
+    { text: 'The dogs runs to the park every morning.', word: 'runs', fixed: 'run', why: 'Dogs means more than one, so the verb is run.' },
+    { text: 'Their going to the game after school.', word: 'Their', fixed: "They're", why: "They're is short for they are." },
+    { text: "The cat licked it's paw.", word: "it's", fixed: 'its', why: "Its shows belonging; it's means it is." },
+    { text: "We bought apples, bananas, and grape's.", word: "grape's.", fixed: 'grapes.', why: 'A word that means more than one needs no apostrophe.' },
+    { text: 'Jordan and me built a robot.', word: 'me', fixed: 'I', why: 'Use I for someone doing the action: Jordan and I built it.' },
+    { text: 'She has went to the library twice this week.', word: 'went', fixed: 'gone', why: 'After has, use gone, not went.' },
+    { text: 'Each of the students have a locker.', word: 'have', fixed: 'has', why: 'Each means one at a time, so the verb is has.' },
+  ],
+  usage9: [
+    { text: 'The rain stopped, the sun came out.', word: 'stopped,', fixed: 'stopped;', why: 'Two complete sentences need a semicolon or a period between them, not just a comma.' },
+    { text: 'The new rule will effect every student.', word: 'effect', fixed: 'affect', why: 'Affect is the action; effect is the result.' },
+    { text: 'Neither of the answers are correct.', word: 'are', fixed: 'is', why: 'Neither means not one, so the verb is is.' },
+    { text: "Who's backpack is on the bus?", word: "Who's", fixed: 'Whose', why: "Whose asks who owns it; who's means who is." },
+    { text: 'I could of finished sooner.', word: 'of', fixed: 'have', why: 'The phrase is could have; could of is a mishearing of could have.' },
+    { text: 'Between you and I, the test was easy.', word: 'I,', fixed: 'me,', why: 'After a word like between, use me.' },
+    { text: 'There are less students in class today.', word: 'less', fixed: 'fewer', why: 'Use fewer for things you can count and less for things you cannot.' },
+    { text: 'The principal, as well as the teachers, were at the assembly.', word: 'were', fixed: 'was', why: 'As well as does not make the subject plural: the principal was there.' },
+  ],
+  usage10: [
+    { text: 'Its been a long week.', word: 'Its', fixed: "It's", why: "It's is short for it has or it is; its shows belonging." },
+    { text: 'She is taller then her brother.', word: 'then', fixed: 'than', why: 'Than compares two things; then tells when.' },
+    { text: 'Irregardless of the weather, the game will go on.', word: 'Irregardless', fixed: 'Regardless', why: 'Regardless is the standard word; irregardless is not.' },
+    { text: 'The two siblings argued among themselves.', word: 'among', fixed: 'between', why: 'Between is for two; among is for three or more.' },
+    { text: 'I lay the book on the table yesterday.', word: 'lay', fixed: 'laid', why: 'Lay means to put down, and its past tense is laid.' },
+    { text: 'Whom is calling at this hour?', word: 'Whom', fixed: 'Who', why: 'Who does the action here, so it is who, not whom.' },
+    { text: 'The effects of the storm was severe.', word: 'was', fixed: 'were', why: 'Effects means more than one, so the verb is were.' },
+    { text: 'The reason is because the bus was late.', word: 'because', fixed: 'that', why: 'Say the reason is that; because repeats what reason already means.' },
+  ],
+};
 export const ORDER_DECKS = {
   processes: [
     { title: 'The water cycle', steps: ['the sun warms the sea', 'water evaporates', 'vapor cools into clouds', 'rain falls', 'rivers carry it back'] },
@@ -21725,15 +21786,15 @@ export const COURSE_GAMES = {
   'science-10': ['buckets-acid-base', 'pairs-science-10'],
   'science-11': ['pairs-elements', 'pairs-science-11'],
   'science-12': ['catch-acids', 'pairs-science-12'],
-  'writing-4': ['sprint-writing-4'],
+  'writing-4': ['build-writing-4'],
   'writing-2': ['dots-boat'],
-  'writing-3': ['sprint-writing-3'],
-  'writing-5': ['sprint-writing-5'],
+  'writing-3': ['build-writing-3'],
+  'writing-5': ['build-writing-5'],
   'writing-6': ['buckets-noun-verb'],
-  'writing-7': ['sprint-all'],
-  'writing-9': ['sprint-writing-9'],
+  'writing-7': ['fix-writing-7'],
+  'writing-9': ['fix-writing-9'],
   'writing-11': ['sprint-writing-11'],
-  'writing-10': ['sprint-writing-10'],
+  'writing-10': ['fix-writing-10'],
   'writing-12': ['sprint-writing-12'],
   'writing-8': ['buckets-adjective-adverb'],
   'history-4': ['map-hemispheres', 'sprint-history-4'],

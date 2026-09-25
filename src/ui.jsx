@@ -2648,6 +2648,89 @@ function OrderGame({ game, round, onScore = null }) {
     </div>
   );
 }
+// Sentence builder (2026-09-25, the first new kind in docs/GAMES-PLAN.md): tap the word tiles in order to build the
+// sentence, the short one first and then the longer one that says more. A tap on a word already in the sentence takes it
+// back with every word after it. The sentence is checked by its words, so two tiles that say the same word (the, the) can
+// trade places. Three sets a round, and the clock counts up.
+function BuildGame({ game, round, onScore = null }) {
+  const deck = BUILD_DECKS[game.deck] || [];
+  const [k, setK] = useState(0); const [stage, setStage] = useState(0); const [placed, setPlaced] = useState([]); const [wrong, setWrong] = useState([]);
+  const [ticks, setTicks] = useState(0); const [done, setDone] = useState(false); const [good, setGood] = useState(false);
+  const set = deck.length ? deck[(round + k) % deck.length] : null;
+  const target = set ? (stage === 0 ? set.base : set.more).split(' ') : [];
+  const tiles = useMemo(() => shuffle(lcg(round * 37 + k * 11 + stage * 7 + 3), target.map((t, idx) => ({ t, idx }))), [set, round, k, stage]);
+  useEffect(() => { setK(0); setStage(0); setPlaced([]); setWrong([]); setDone(false); setTicks(0); setGood(false); }, [round]);
+  useEffect(() => { if (done) return undefined; const t = setInterval(() => setTicks((n) => n + 1), 1000); return () => clearInterval(t); }, [done]);
+  useEffect(() => { if (done && onScore) onScore(ticks, 'low'); }, [done]);   // every sentence built: a lower time is a new best
+  useEffect(() => { if (!wrong.length) return undefined; const t = setTimeout(() => setWrong([]), 600); return () => clearTimeout(t); }, [wrong]);
+  if (!set) return null;
+  const sets = Math.min(3, deck.length);
+  const tap = (tile) => {
+    if (done || good) return;
+    const at = placed.indexOf(tile.idx);
+    if (at >= 0) { setPlaced(placed.slice(0, at)); return; }
+    const next = [...placed, tile.idx];
+    if (next.length < target.length) { setPlaced(next); return; }
+    const firstWrong = next.findIndex((i, pos) => target[i] !== target[pos]);
+    if (firstWrong < 0) {
+      setPlaced(next); setGood(true);
+      setTimeout(() => { setGood(false); setPlaced([]); if (stage === 0) setStage(1); else if (k + 1 >= sets) setDone(true); else { setStage(0); setK(k + 1); } }, 1100);
+    } else { setWrong(next.slice(firstWrong)); setPlaced(next.slice(0, firstWrong)); }
+  };
+  const tileStyle = (on, bad) => ({ fontFamily: FONT, fontSize: 17, padding: '8px 11px', borderRadius: 10, border: `2px solid ${on ? B.green : bad ? B.clay : B.line}`, background: on ? B.greenSoft : '#fff', color: B.ink, cursor: 'pointer' });
+  return (
+    <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>{stage === 0 ? 'Build the sentence' : 'Now say more'}</span><span>{ticks}s · {Math.min(k + 1, sets)} of {sets}</span></div>
+      {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Every sentence built in {ticks} seconds. Tap the round arrow for new ones.</p> : (
+        <div>
+          {stage === 1 && <p style={{ margin: '0 0 8px', textAlign: 'center', fontSize: 15, color: B.muted }}>{set.base}</p>}
+          <div aria-label="Your sentence" style={{ minHeight: 52, display: 'flex', flexWrap: 'wrap', gap: 6, justifyContent: 'center', alignItems: 'center', padding: 8, borderRadius: 12, border: `2px dashed ${good ? B.green : B.line}`, background: good ? B.greenSoft : 'transparent', marginBottom: 12 }}>
+            {placed.map((i) => <button key={i} type="button" onClick={() => tap({ idx: i })} className="edu-press" style={tileStyle(true, false)}>{target[i]}</button>)}
+          </div>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, justifyContent: 'center' }}>
+            {tiles.filter((it) => !placed.includes(it.idx)).map((it) => <button key={it.idx} type="button" onClick={() => tap(it)} className={`edu-press${wrong.includes(it.idx) ? ' edu-wobble' : ''}`} style={tileStyle(false, wrong.includes(it.idx))}>{it.t}</button>)}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+// Fix it (2026-09-25, the second new kind): a sentence with one mistake, a word, a capital or a mark. Tap it and it
+// turns into the right one, with the rule under the sentence; a tap on a word that is right wobbles it. The clock
+// stops while the rule is showing, so reading it costs nothing. Five sentences a round.
+function FixGame({ game, round, onScore = null }) {
+  const deck = FIX_DECKS[game.deck] || [];
+  const [k, setK] = useState(0); const [fixed, setFixed] = useState(false); const [shake, setShake] = useState(-1); const [ticks, setTicks] = useState(0); const [done, setDone] = useState(false);
+  const item = deck.length ? deck[(round * 3 + k) % deck.length] : null;
+  useEffect(() => { setK(0); setFixed(false); setShake(-1); setDone(false); setTicks(0); }, [round]);
+  useEffect(() => { if (done || fixed) return undefined; const t = setInterval(() => setTicks((n) => n + 1), 1000); return () => clearInterval(t); }, [done, fixed]);
+  useEffect(() => { if (done && onScore) onScore(ticks, 'low'); }, [done]);   // all fixed: a lower time is a new best
+  useEffect(() => { if (shake < 0) return undefined; const t = setTimeout(() => setShake(-1), 600); return () => clearTimeout(t); }, [shake]);
+  if (!item) return null;
+  const sets = Math.min(5, deck.length);
+  const words = item.text.split(' ');
+  const tap = (w, i) => { if (done || fixed) return; if (w === item.word) setFixed(true); else setShake(i); };
+  const next = () => { if (k + 1 >= sets) setDone(true); else { setK(k + 1); setFixed(false); } };
+  return (
+    <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 10 }}><span>Find the mistake</span><span>{ticks}s · {Math.min(k + 1, sets)} of {sets}</span></div>
+      {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>All fixed in {ticks} seconds. Tap the round arrow for new sentences.</p> : (
+        <div>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, justifyContent: 'center', margin: '4px 0 12px' }}>
+            {words.map((w, i) => { const isIt = w === item.word; const on = fixed && isIt; return (
+              <button key={i} type="button" onClick={() => tap(w, i)} className={`edu-press${shake === i ? ' edu-wobble' : ''}`} style={{ fontFamily: FONT, fontSize: 18, padding: '8px 10px', borderRadius: 10, border: `2px solid ${on ? B.green : shake === i ? B.clay : B.line}`, background: on ? B.greenSoft : '#fff', color: B.ink, cursor: 'pointer' }}>{on ? item.fixed : w}</button>); })}
+          </div>
+          {fixed && (
+            <div style={{ textAlign: 'center' }}>
+              <p style={{ margin: '0 0 12px', fontSize: 15, color: B.ink }}>{item.why}</p>
+              <Btn pal={B} onClick={next}>{k + 1 >= sets ? 'Finish' : 'Next sentence'}</Btn>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
 // A chip inside an SVG game: a drawn shape ('shape:kind:color') for the youngest, or a word in a rounded box.
 function SvgChip({ text, x, y, tone = null }) {
   const m = /^shape:([a-z]+):([a-z]+)$/.exec(text);
@@ -2930,9 +3013,11 @@ function BalanceGame({ game, round, onScore = null }) {
     </div>
   );
 }
-const GAME_OF = { dots: DotsGame, pairs: PairsGame, sort: SortGame, maze: MazeGame, jigsaw: JigsawGame, pong: PongGame, sprint: SprintGame, order: OrderGame, catch: CatchGame, path: PathGame, buckets: BucketsGame, jump: JumpGame, map: MapGame, balance: BalanceGame };
+const GAME_OF = { dots: DotsGame, pairs: PairsGame, sort: SortGame, maze: MazeGame, jigsaw: JigsawGame, pong: PongGame, sprint: SprintGame, order: OrderGame, build: BuildGame, fix: FixGame, catch: CatchGame, path: PathGame, buckets: BucketsGame, jump: JumpGame, map: MapGame, balance: BalanceGame };
 // How to play, in a line or two, by kind of game (and by deck for the matching games).
 function gameInstructions(game) {
+  if (game.kind === 'build') return 'Tap the words in order to build the sentence. Tap a word in the sentence to take it back, with every word after it. First the short sentence, then a longer one that says more. Three of each, and the clock counts up.';
+  if (game.kind === 'fix') return 'Each sentence has one mistake: a word, a capital or a mark. Tap it to fix it, read the rule, then tap Next sentence. Five sentences; the clock counts up and stops while you read.';
   if (game.deck) {
     const byDeck = { fractions: 'Every card has a twin that says the same amount another way: 1/2 and 2/4.', roots: 'Match each root to what it means: port and carry.', elements: 'Match each symbol to its element: Na and sodium.', dates: 'Match each year to what happened then.', formulas: 'Match each formula to what it finds: F = ma and force.', times: 'Match each multiplication to its answer: 6 × 7 and 42.', vocabulary: 'Match each word to its meaning.', capitals: 'Match each place to its capital.' };
     return `${byDeck[game.deck] || (String(game.deck).startsWith('science-') ? 'Match each science word to what it means: density and mass over volume.' : 'Match each card to the one that belongs with it.')} Tap two cards. A true pair stays up; a wrong pair turns back over. Find every pair.`;
@@ -3003,6 +3088,8 @@ function GameThumb({ kind, game = null }) {
   if (game && game.kind === 'path') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true">{[0, 1, 2].map((r) => [0, 1, 2].map((c) => <rect key={`${r}${c}`} x={5 + c * 10.5} y={5 + r * 10.5} width="9" height="9" rx="2" fill={(r === 0 && c <= 1) || (r >= 1 && c === 1) || (r === 2 && c === 2) ? C.greenSoft : C.paperBoard} stroke={k} strokeWidth="1.1" />))}<circle cx="9.5" cy="9.5" r="2.6" fill={C.gold} stroke={k} strokeWidth="0.8" /><path d="M30 26.5l1.4 2.9 3.2.5-2.3 2.2.6 3.2-2.9-1.5-2.9 1.5.6-3.2-2.3-2.2 3.2-.5z" fill={C.gold} stroke={k} strokeWidth="0.8" strokeLinejoin="round" /></svg>;
   if (game && game.kind === 'buckets') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="12" y="6" width="16" height="8" rx="3" fill={C.paperBoard} stroke={k} strokeWidth="1.3" /><path d="M4 20h14l-2 14H6z" fill={C.greenSoft} stroke={k} strokeWidth="1.3" strokeLinejoin="round" /><path d="M22 20h14l-2 14H24z" fill={C.paperBoard} stroke={k} strokeWidth="1.3" strokeLinejoin="round" /><path d="M20 15v4" stroke={C.green} strokeWidth="1.6" strokeLinecap="round" /></svg>;
   if (game && game.kind === 'sprint') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><path d="M22 4 L10 22 h9 l-3 14 L30 18 h-9 z" fill={C.gold} stroke={k} strokeWidth="1.5" strokeLinejoin="round" /></svg>;
+  if (game && game.kind === 'build') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="4" y="8" width="32" height="10" rx="3" fill="none" stroke={k} strokeWidth="1.5" strokeDasharray="3 2" />{[[4, 12], [18, 9], [29, 7]].map(([x, w], i) => <rect key={i} x={x} y="24" width={w} height="9" rx="2" fill={i === 0 ? C.greenSoft : C.paperBoard} stroke={k} strokeWidth="1.5" />)}</svg>;
+  if (game && game.kind === 'fix') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true">{[[4, 9], [15, 11], [28, 8]].map(([x, w], i) => <rect key={i} x={x} y="15" width={w} height="9" rx="2" fill={i === 1 ? C.greenSoft : C.paperBoard} stroke={i === 1 ? C.green : k} strokeWidth="1.5" />)}<path d="M15 28 q2.75 -3 5.5 0 t5.5 0" fill="none" stroke={C.clay} strokeWidth="1.6" strokeLinecap="round" /></svg>;
   if (game && game.kind === 'order') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true">{[0, 1, 2].map((r) => <g key={r}><rect x="6" y={6 + r * 11} width="28" height="8" rx="2" fill={r === 0 ? C.greenSoft : C.paperBoard} stroke={k} strokeWidth="1.5" /><text x="11" y={12.5 + r * 11} fontFamily={FONT} fontSize="6" fontWeight="700" fill={C.ink}>{r + 1}</text></g>)}</svg>;
   if (game && game.deck) { const label = { fractions: '½', roots: 'port', elements: 'Na', dates: '1776', formulas: 'F=ma', times: '6×7', vocabulary: 'Aa', capitals: 'TX' }[game.deck] || 'Aa'; return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="4" y="6" width="14" height="18" rx="2" fill={C.paperBoard} stroke={k} strokeWidth="1.5" /><rect x="22" y="16" width="14" height="18" rx="2" fill={C.greenSoft} stroke={k} strokeWidth="1.5" /><text x="11" y="18" fontFamily={FONT} fontSize={label.length > 3 ? 5 : 8} fontWeight="700" textAnchor="middle" fill={C.ink}>{label}</text></svg>; }
   const body = {
@@ -7057,7 +7144,7 @@ function EduSphereScreens() {
         {hidden.length > 0 && hiddenOpen && (
           <div style={{ ...card }}>
             {hidden.map((st) => (
-              <div key={st.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10, padding: '6px 0' }}>
+              <div key={st.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10, padding: '8px 0', borderBottom: `1px solid ${C.mode === 'dark' ? 'rgba(241, 237, 227, 0.45)' : C.line}` }}>
                 <span style={{ color: C.muted }}>{st.label}{st.mergedInto ? ` (merged into ${(findStudent(roster, st.mergedInto) || { label: st.mergedInto }).label})` : ''}</span>
                 {!st.mergedInto && (
                   <span style={{ display: 'inline-flex', gap: 12, alignItems: 'center' }}>

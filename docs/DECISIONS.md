@@ -728,6 +728,15 @@ Approved by Mikey on 2026-09-04 unless marked "proposed".
 
 - In the Wonder review's youngest-children panel, each short voice now reads as its name on a line of its own with a colon (A scientist says:), its sentence on the line under it, and a clear gap before the next voice, all centered (Mikey's layout). Layout, so both themes.
 
+## 2026-09-25 (pass DE): sentence builder and fix it, the first two new kinds
+
+- Mikey committed CI to DD; this commit message starts fresh at DE. He will say continue, committed or continue, not committed.
+- Sentence builder (kind build): each set is a short sentence and a longer one that says more; tiles are tapped in order, a placed word taps back with every word after it, and the sentence is checked by its words so two tiles that say the same word can trade places. Every sentence has one capital (its first word, I aside) and one end mark (its last), so both ends are pinned, and each was written to have one order that makes sense: adjectives before one noun only, in English order (size before color), and the joined and opened sentences keep their comma on the tile before the join. Decks: describe (grade 3), join (grade 4, and, but, so), open (grade 5, because, when, although, if, since); five sets each, three a round.
+- Fix it (kind fix): each sentence carries one wrong word, capital or mark, named by its spelling (it appears once; a first draft that counted positions miscounted two, which the spelling rule makes impossible), its fix and the rule in a sentence. Decks usage7, usage9, usage10, eight sentences each, five a round; the clock stops while the rule shows. Every corrected sentence was read whole. Usage that careful writers now accept both ways (data is or are, singular they) was left out on purpose.
+- They replace six quick fires: writing 3, 4 and 5 hold the builders; writing 7, 9 and 10 hold fix it. Quick fire: everything no longer belongs to any course and is gone. Kinds repeated inside a grade fall from 28 to 22 and the rules test's ceiling follows; kinds of game 14 to 16; quick fires 31 to 25.
+- docs/GAMES-PLAN.md is now written by tools/games-plan.mjs from the app's own lists.
+- Inactive Students: a soft line under each student row (ivory at 45 percent in the dark theme, the usual line color in the light), running from where the name begins to the end of Delete; the card's padding keeps it off the edges.
+
 ## Open items
 - Verify audio plays inside the chat artifact sandbox (works in a normal browser).
 - Common Core / TEKS codes on existing modules to be checked against the official lists.

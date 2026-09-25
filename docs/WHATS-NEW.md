@@ -28,6 +28,13 @@ The newest block is what educators see once, in a pop-up on the classroom page, 
 - The Wonder Question review is easier to scan: everything is centered except the four voices' names, with thin lines between the parts the youngest children hear. The link that takes every approval back is now called Remove All; it still sends every approved question back to waiting for review, hidden from students.
 - Small touches: the i notes are centered, typing boxes are a soft almond in the dark theme, the weekly note is light green under its dark header, and the Story Log breathes a little more around its toggle and picker.
 
+## September 25, 2026 (two new kinds of game)
+
+- Build a sentence: tap the words into a sentence, then build a longer one that says more. Grade 3 adds describing words, grade 4 joins sentences with and, but or so, and grade 5 opens them with because, when, although, if or since.
+- Fix it: every sentence has one mistake, a word, a capital or a mark. Tap it, watch it turn right, and read the rule. Grades 7, 9 and 10 each have their own sentences, and the clock waits while you read.
+- They replace six quick fires in the writing courses, so each of those courses now has a game that practices the writing itself.
+- On the Inactive Students card, a soft line runs under each student, from the name to Delete.
+
 ## September 24, 2026 (a new name)
 
 - EduSphere has a new name: The Wise Human. It comes from our own species name, Homo sapiens, which means wise human, and it fits what we are here to do. The tagline says the rest: Where Knowledge Meets Wisdom.

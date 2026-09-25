@@ -264,4 +264,6 @@ Questions or problems: michaelowen37@gmail.com
 
 ## License
 
+Copyright (c) 2026 iECHO, LLC. All rights reserved.
+
 The Wise Human is source-available, not open source: you may read and evaluate it, and you may not reuse the code or copy the content. See LICENSE.md and NOTICE.md. The content (lessons, stories, experiments, life skills, curriculum mappings, artwork and audio) is copyrighted creative work.

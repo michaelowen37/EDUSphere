@@ -2689,6 +2689,48 @@ function OrderGame({ game, round, onScore = null }) {
     </div>
   );
 }
+// The periodic table (2026-09-25): a question names an element by its name, its protons, its place or its family, and
+// the player taps it on the main-group table. Groups label the columns and periods the rows, so the table's own
+// structure is the clue. A right tap lights the element and says what it is while the clock rests; a wrong one
+// wobbles. Eight questions a round.
+function PtableGame({ round, onScore = null }) {
+  const qs = useMemo(() => ptableQuestions(round, 8), [round]);
+  const [k, setK] = useState(0); const [shake, setShake] = useState(0); const [found, setFound] = useState(0); const [ticks, setTicks] = useState(0); const [done, setDone] = useState(false);
+  useEffect(() => { setK(0); setShake(0); setFound(0); setDone(false); setTicks(0); }, [round]);
+  useEffect(() => { if (done || found) return undefined; const t = setInterval(() => setTicks((n) => n + 1), 1000); return () => clearInterval(t); }, [done, found]);
+  useEffect(() => { if (done && onScore) onScore(ticks, 'low'); }, [done]);   // all found: a lower time is a new best
+  useEffect(() => { if (!shake) return undefined; const t = setTimeout(() => setShake(0), 600); return () => clearTimeout(t); }, [shake]);
+  useEffect(() => { if (!found) return undefined; const t = setTimeout(() => { setFound(0); if (k + 1 >= qs.length) setDone(true); else setK(k + 1); }, 1800); return () => clearTimeout(t); }, [found]);
+  const q = qs[k];
+  const tap = (el) => { if (done || found) return; if (el.z === q.z) setFound(el.z); else setShake(el.z); };
+  const groups = [1, 2, 13, 14, 15, 16, 17, 18];
+  const cellAt = (g, per) => PTABLE.find((e) => e.group === g && e.period === per);
+  const lit = found ? PTABLE.find((e) => e.z === found) : null;
+  const small = { fontSize: 11, color: B.muted, textAlign: 'center', alignSelf: 'center' };
+  return (
+    <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 12 }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Find it</span><span>{ticks}s · {Math.min(k + 1, qs.length)} of {qs.length}</span></div>
+      {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>All eight found in {ticks} seconds. Tap the round arrow for new questions.</p> : (
+        <div>
+          <p style={{ margin: '0 0 10px', textAlign: 'center', fontSize: 17, fontWeight: 700, color: B.ink }}>{q.ask}</p>
+          <div style={{ display: 'grid', gridTemplateColumns: '22px repeat(8, 1fr)', gap: 3 }}>
+            <span style={small} />
+            {groups.map((g) => <span key={`g${g}`} style={small}>{g}</span>)}
+            {[1, 2, 3, 4, 5].map((per) => [
+              <span key={`p${per}`} style={small}>{per}</span>,
+              ...groups.map((g) => { const el = cellAt(g, per); if (!el) return <span key={`${g}-${per}`} />; const on = found === el.z; const bad = shake === el.z; return (
+                <button key={el.z} type="button" onClick={() => tap(el)} aria-label={el.name} className={`edu-press${bad ? ' edu-wobble' : ''}`} style={{ fontFamily: FONT, padding: '4px 0', borderRadius: 6, border: `2px solid ${on ? B.green : bad ? B.clay : B.line}`, background: on ? B.greenSoft : '#fff', color: B.ink, cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', lineHeight: 1.05, minWidth: 0 }}>
+                  <span style={{ fontSize: 9, color: B.muted }}>{el.z}</span><span style={{ fontSize: 15, fontWeight: 700 }}>{el.sym}</span>
+                </button>); }),
+            ])}
+          </div>
+          <p style={{ margin: '8px 0 0', textAlign: 'center', fontSize: 12, color: B.muted }}>Groups run down the columns and periods across the rows. Groups 3 to 12, the transition metals, sit between groups 2 and 13 on the full table.</p>
+          <p style={{ margin: '8px 0 0', textAlign: 'center', fontSize: 15, color: B.ink, minHeight: 22 }}>{lit ? ptableFact(lit) : ''}</p>
+        </div>
+      )}
+    </div>
+  );
+}
 // Debug the robot (2026-09-25, the fourth new kind): the robot's program is a row of numbered steps, and one is wrong.
 // Run plays it a step at a time on the grid; a tap on a step changes it (arrows: up, right, down, left; turns: forward,
 // turn left, turn right), and the robot waits at the start again. Home on the star brings Next and says which step was
@@ -3165,9 +3207,10 @@ function BalanceGame({ game, round, onScore = null }) {
     </div>
   );
 }
-const GAME_OF = { dots: DotsGame, pairs: PairsGame, sort: SortGame, maze: MazeGame, jigsaw: JigsawGame, pong: PongGame, sprint: SprintGame, order: OrderGame, build: BuildGame, fix: FixGame, mix: MixGame, debug: DebugGame, catch: CatchGame, path: PathGame, buckets: BucketsGame, jump: JumpGame, map: MapGame, balance: BalanceGame };
+const GAME_OF = { dots: DotsGame, pairs: PairsGame, sort: SortGame, maze: MazeGame, jigsaw: JigsawGame, pong: PongGame, sprint: SprintGame, order: OrderGame, build: BuildGame, fix: FixGame, mix: MixGame, debug: DebugGame, ptable: PtableGame, catch: CatchGame, path: PathGame, buckets: BucketsGame, jump: JumpGame, map: MapGame, balance: BalanceGame };
 // How to play, in a line or two, by kind of game (and by deck for the matching games).
 function gameInstructions(game) {
+  if (game.kind === 'ptable') return 'A question names an element by its name, its number of protons, its place (group and period) or its family. Tap it on the table. Groups run down the columns and periods across the rows, and the small number on each element is its atomic number, the number of protons. Eight questions, and the clock rests while each answer shows.';
   if (game.kind === 'debug') return game.deck === 'turns' ? 'The robot follows its steps in order: forward moves one square the way it faces, and turn left or turn right turns it where it stands. One step is wrong. Tap Run to watch, tap a step to change it, and run again until the robot reaches the star without bumping a rock or the edge. Four robots, and the clock counts up.' : 'The robot follows its steps in order, one square for each arrow. One step is wrong. Tap Run to watch, tap a step to change its arrow, and run again until the robot reaches the star without bumping a rock or the edge. Four robots, and the clock counts up.';
   if (game.kind === 'mix') return 'A color is named at the top. Tap two paint pots to pour them into the bowl and see what they make. The right color brings its rule and Next; a wrong mix shows what it made, then clears for another try. Five colors, and the clock counts up.';
   if (game.kind === 'build') return 'Tap the words in order to build the sentence. Tap a word in the sentence to take it back, with every word after it. First the short sentence, then a longer one that says more. Three of each, and the clock counts up.';
@@ -3242,6 +3285,7 @@ function GameThumb({ kind, game = null }) {
   if (game && game.kind === 'path') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true">{[0, 1, 2].map((r) => [0, 1, 2].map((c) => <rect key={`${r}${c}`} x={5 + c * 10.5} y={5 + r * 10.5} width="9" height="9" rx="2" fill={(r === 0 && c <= 1) || (r >= 1 && c === 1) || (r === 2 && c === 2) ? C.greenSoft : C.paperBoard} stroke={k} strokeWidth="1.1" />))}<circle cx="9.5" cy="9.5" r="2.6" fill={C.gold} stroke={k} strokeWidth="0.8" /><path d="M30 26.5l1.4 2.9 3.2.5-2.3 2.2.6 3.2-2.9-1.5-2.9 1.5.6-3.2-2.3-2.2 3.2-.5z" fill={C.gold} stroke={k} strokeWidth="0.8" strokeLinejoin="round" /></svg>;
   if (game && game.kind === 'buckets') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="12" y="6" width="16" height="8" rx="3" fill={C.paperBoard} stroke={k} strokeWidth="1.3" /><path d="M4 20h14l-2 14H6z" fill={C.greenSoft} stroke={k} strokeWidth="1.3" strokeLinejoin="round" /><path d="M22 20h14l-2 14H24z" fill={C.paperBoard} stroke={k} strokeWidth="1.3" strokeLinejoin="round" /><path d="M20 15v4" stroke={C.green} strokeWidth="1.6" strokeLinecap="round" /></svg>;
   if (game && game.kind === 'sprint') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><path d="M22 4 L10 22 h9 l-3 14 L30 18 h-9 z" fill={C.gold} stroke={k} strokeWidth="1.5" strokeLinejoin="round" /></svg>;
+  if (game && game.kind === 'ptable') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true">{[0, 1, 2, 3].map((r) => [0, 1, 2, 3, 4, 5].map((c) => ((r === 0 && c > 0 && c < 5) ? null : <rect key={`${r}${c}`} x={3 + c * 5.8} y={8 + r * 6.2} width="5" height="5.4" rx="1" fill={r === 2 && c === 4 ? C.greenSoft : C.paperBoard} stroke={r === 2 && c === 4 ? C.green : k} strokeWidth="0.8" />)))}</svg>;
   if (game && game.kind === 'debug') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true">{[0, 1, 2].map((a) => [0, 1, 2].map((b) => <rect key={`${a}${b}`} x={5 + a * 10} y={5 + b * 10} width="10" height="10" fill={C.paperBoard} stroke={k} strokeWidth="1" />))}<rect x="6.5" y="26.5" width="7" height="7" rx="2" fill={C.green} /><path d="M30 6.5 l1.6 3.3 l3.6 0.5 l-2.6 2.5 l0.6 3.6 l-3.2 -1.7 l-3.2 1.7 l0.6 -3.6 l-2.6 -2.5 l3.6 -0.5 z" fill="#E6B84B" /></svg>;
   if (game && game.kind === 'mix') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><circle cx="15" cy="15" r="9" fill="#D7263D" opacity="0.85" /><circle cx="25" cy="15" r="9" fill="#F4D03F" opacity="0.85" /><circle cx="20" cy="24" r="9" fill="#2E5EAA" opacity="0.85" /><circle cx="20" cy="18" r="15.5" fill="none" stroke={k} strokeWidth="1.5" /></svg>;
   if (game && game.kind === 'build') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="4" y="8" width="32" height="10" rx="3" fill="none" stroke={k} strokeWidth="1.5" strokeDasharray="3 2" />{[[4, 12], [18, 9], [29, 7]].map(([x, w], i) => <rect key={i} x={x} y="24" width={w} height="9" rx="2" fill={i === 0 ? C.greenSoft : C.paperBoard} stroke={k} strokeWidth="1.5" />)}</svg>;
@@ -5259,6 +5303,8 @@ function EduSphereScreens() {
         </div>
         {/* The privacy note sits at the very foot of the page, padded evenly and never wider than the column. */}
         <p style={{ color: C.muted, fontSize: 13, margin: 'auto 0 0', padding: '72px 36px 12px', textAlign: 'center', maxWidth: '100%', boxSizing: 'border-box' }}>All of your school's important information lives entirely on this device (students, student progression, educator settings, transcripts etc).</p>
+        {/* The owner's notice (2026-09-25): a copy of the page alone still says whose work it is. */}
+        <p style={{ color: C.muted, fontSize: 11, margin: '0 0 4px', textAlign: 'center' }}>© 2026 iECHO, LLC. All rights reserved.</p>
         <p className="edu-no-print" style={{ color: C.muted, fontSize: 11, opacity: 0.7, margin: '0 0 14px', textAlign: 'center' }}>Build {BUILD_STAMP}</p>
         {showContact && <ContactPopup onClose={() => setShowContact(false)} />}
         {/* A PIN keeps classmates out of each other's records on a shared screen. Four digits, and the door opens on its own

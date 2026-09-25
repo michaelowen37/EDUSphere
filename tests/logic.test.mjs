@@ -1404,9 +1404,9 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
   ok('a course only gets games its grade can play', L.COURSES.every((c) => L.COURSE_GAMES[c.id].every((id) => { const g = L.GAMES.find((x) => x.id === id); return !g.minGrade || L.GRADES.indexOf(g.minGrade) <= L.GRADES.indexOf(c.grade); })));
   ok('every course has a game students can see today, not only a map waiting for its painting', L.COURSES.every((c) => L.COURSE_GAMES[c.id].some((id) => kindOf(id) !== 'map')));
   const twoOfAKind = L.COURSES.filter((c) => new Set(L.COURSE_GAMES[c.id].map(kindOf)).size < L.COURSE_GAMES[c.id].length).length;
-  ok('courses holding two games of one kind stay at or under 1', twoOfAKind <= 1, `${twoOfAKind}`);
+  ok('no course holds two games of one kind (the element pairs left physics for the periodic table, 2026-09-25)', twoOfAKind === 0, `${twoOfAKind}`);
   let repeats = 0; for (const gr of L.GRADES) { const ks = L.COURSES.filter((c) => c.grade === gr).flatMap((c) => L.COURSE_GAMES[c.id].map(kindOf)); repeats += ks.length - new Set(ks).size; }
-  ok('kinds repeated inside a grade stay at or under 15 (new kinds and history timelines took fourteen quick fires, 2026-09-25)', repeats <= 15, `${repeats}`);
+  ok('kinds repeated inside a grade stay at or under 14 (new kinds, history timelines and the periodic table, 2026-09-25)', repeats <= 14, `${repeats}`);
   const list = L.GAMES.filter((g) => ['counting-k', 'letters-k'].includes(L.gameCourse(g.id)) || L.STARTER_GAMES.includes(g.id));
   const fresh = L.unlockedGameIds([], list);
   ok('a new student has the starter and the first game open, and nothing from an unfinished course', fresh.size === new Set([...L.STARTER_GAMES, list[0].id]).size && list.slice(1).every((g) => L.STARTER_GAMES.includes(g.id) || !fresh.has(g.id)));
@@ -1449,6 +1449,18 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
   const decks = ['texas4', 'cultures6', 'us8', 'world10', 'us11', 'gov12'];
   ok('every history timeline set has five events, a date for each, and runs strictly forward', decks.every((k) => L.ORDER_DECKS[k] && L.ORDER_DECKS[k].length >= 3 && L.ORDER_DECKS[k].every((s) => s.steps.length === 5 && (!s.years || (s.years.length === 5 && s.when.length === 5 && s.years.every((y, i) => i === 0 || y > s.years[i - 1]))))));
   ok('every history timeline game sits in its history course beside its map', ['history-4', 'history-6', 'history-8', 'history-10', 'history-11', 'government-12'].every((c) => L.COURSE_GAMES[c].some((id) => { const g = L.GAMES.find((x) => x.id === id); return g && g.kind === 'order' && decks.includes(g.deck); }) && L.COURSE_GAMES[c].some((id) => id.startsWith('map-'))));
+}
+
+
+// The periodic table (2026-09-25): the data is right, every question has exactly one answer on the table.
+{
+  const P = L.PTABLE; const at = (sym) => P.find((e) => e.sym === sym);
+  ok('the table holds the main groups of periods 1 to 5, numbers rising left to right in each period, symbols and names unique', P.length === 34 && new Set(P.map((e) => e.sym)).size === 34 && new Set(P.map((e) => e.name)).size === 34 && [1, 2, 3, 4, 5].every((per) => { const row = P.filter((e) => e.period === per).sort((a, b) => a.group - b.group); return row.every((e, i) => i === 0 || e.z > row[i - 1].z); }));
+  ok('known elements sit where they belong', at('Na').z === 11 && at('Na').group === 1 && at('Na').period === 3 && at('Cl').z === 17 && at('Cl').group === 17 && at('He').group === 18 && at('He').period === 1 && at('Kr').z === 36 && at('Sn').z === 50 && at('Sn').group === 14 && at('I').z === 53 && at('Xe').period === 5 && at('Ga').z === 31 && at('Ga').group === 13);
+  ok('hydrogen is not called an alkali metal, and the families read right', L.ptableFamily(at('H')) === null && L.ptableFamily(at('K')) === 'alkali metal' && L.ptableFamily(at('Ca')) === 'alkaline earth metal' && L.ptableFamily(at('Br')) === 'halogen' && L.ptableFamily(at('Ar')) === 'noble gas' && L.ptableFact(at('Na')) === 'Na is sodium: 11 protons, group 1, period 3, an alkali metal.');
+  const fits = (q) => P.filter((e) => (q.kind === 'name' ? q.ask === `Tap ${e.name}.` : q.kind === 'protons' ? q.ask.includes(` ${e.z} proton`) : q.kind === 'place' ? q.ask.includes(`group ${e.group}, period ${e.period}.`) : L.ptableFamily(e) && q.ask === `Tap the ${L.ptableFamily(e)} in period ${e.period}.`));
+  ok('every periodic table question over sixty rounds has exactly one element that fits, and it is the answer', Array.from({ length: 60 }, (_, r) => L.ptableQuestions(r)).every((qs) => qs.length === 8 && new Set(qs.map((q) => q.z)).size === 8 && qs.every((q) => { const f = fits(q); return f.length === 1 && f[0].z === q.z; })));
+  ok('the periodic table game belongs to chemistry, and physics no longer holds two pairs games', L.COURSE_GAMES['science-10'].includes('ptable-science-10') && !L.COURSE_GAMES['science-11'].includes('pairs-elements'));
 }
 
 console.log(`\n${pass} passed, ${fail} failed`);

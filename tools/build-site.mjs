@@ -42,7 +42,7 @@ const mapList = existsSync('art/maps') ? readdirSync('art/maps').filter((f) => f
 
 const wrap = (name, code) => `__def(${JSON.stringify(name)}, function(module, exports, require){${code}\n});`;
 const html = `<!doctype html>
-<!-- The Wise Human. Copyright (c) 2026. Source-available; not for reuse. See LICENSE.md. -->
+<!-- The Wise Human. Copyright (c) 2026 iECHO, LLC. All rights reserved. Source-available, not open source: reading is allowed, reuse is not. See LICENSE.md. -->
 <html lang="en">
 <head>
 <meta charset="utf-8">

@@ -28,7 +28,7 @@ The newest block is what educators see once, in a pop-up on the classroom page, 
 - The Wonder Question review is easier to scan: everything is centered except the four voices' names, with thin lines between the parts the youngest children hear. The link that takes every approval back is now called Remove All; it still sends every approved question back to waiting for review, hidden from students.
 - Small touches: the i notes are centered, typing boxes are a soft almond in the dark theme, the weekly note is light green under its dark header, and the Story Log breathes a little more around its toggle and picker.
 
-## September 25, 2026 (four new kinds of game)
+## September 25, 2026 (five new kinds of game)
 
 - Build a sentence: tap the words into a sentence, then build a longer one that says more. Grade 3 adds describing words, grade 4 joins sentences with and, but or so, and grade 5 opens them with because, when, although, if or since.
 - Fix it: every sentence has one mistake, a word, a capital or a mark. Tap it, watch it turn right, and read the rule. Grades 7, 9 and 10 each have their own sentences, and the clock waits while you read.
@@ -41,6 +41,8 @@ The newest block is what educators see once, in a pop-up on the classroom page, 
 - Debug the robot, for technology 3 and 5: a robot follows its program on a grid, and one step is wrong. Tap Run to watch it, change the step that sends it astray, and run again until it reaches the star. Grade 3 uses arrows; grade 5 uses forward, turn left and turn right. It sits beside each course's first game.
 - The laptop tour's cards moved so the page behind them reads better: the lesson card sits lower, the backup card over Life Skills near the backup link, the Life Skills and Reading cards over Science Experiments, the Experiments card over Life Skills, the Student Summaries card a little up and right, and the Story Log card now opens the Story Log page itself, with sample students, sitting low and to the right.
 - Timelines for six history courses: Texas history, early civilizations with great inventions and buildings, the United States to 1877, world history, the United States since 1877, and how our government grew. Put five events in the order they happened; once they are right, each one shows its date.
+- The periodic table, for chemistry: find an element on the table by its name, its number of protons, its group and period, or its family. Each find tells you what the element is, like "Na is sodium: 11 protons, group 1, period 3, an alkali metal."
+- The welcome page now carries the owner's notice: © 2026 iECHO, LLC. All rights reserved. The license, notice and readme name iECHO, LLC as the owner.
 
 ## September 24, 2026 (a new name)
 

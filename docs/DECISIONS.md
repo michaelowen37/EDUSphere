@@ -767,6 +767,13 @@ Approved by Mikey on 2026-09-04 unless marked "proposed".
 - The six games sit beside each course's map and replace its quick fire. World geography, Thinking like a historian and Communities and government keep their quick fires; a timeline does not fit them. Repeats inside a grade 20 to 15; quick fires 23 to 17.
 - A single-quoted instruction string with an apostrophe broke the build once during this pass; the words were changed rather than escaped.
 
+## 2026-09-25 (pass DJ): iECHO, LLC owns it; the periodic table
+
+- Mikey committed DI; this commit message starts fresh at DJ.
+- Ownership: The Wise Human is iECHO, LLC's. LICENSE.md, NOTICE.md and the README's License section say Copyright (c) 2026 iECHO, LLC, All rights reserved (the license had named Mikey (The Wise Human), which is not a legal person); the comment at the top of index.html says the same; and the welcome page's foot shows the notice above the build stamp, so a saved copy of the page alone still says whose it is.
+- The periodic table (kind ptable) for chemistry (science 10, whose first module is The periodic table): PTABLE holds the 34 main-group elements of periods 1 to 5 (groups 1, 2 and 13 to 18) with atomic number, symbol, name, group and period; the transition metals are left out and the game says where they sit. ptableQuestions makes a round's eight questions from the round number (by name, protons, place, or family and period), and ptableFamily keeps hydrogen out of the alkali metals. The rules test checks the data (numbers rise left to right in every period, known elements in their places), the families, the fact sentence, and that each of 480 questions has exactly one element that fits.
+- Element symbols (a pairs game) left physics, where it never belonged; physics keeps its science words, and no course now holds two games of one kind (the ceiling is zero). Kinds 19, repeats 14, quick fires 17. It is chemistry's third game.
+
 ## Open items
 - Verify audio plays inside the chat artifact sandbox (works in a normal browser).
 - Common Core / TEKS codes on existing modules to be checked against the official lists.

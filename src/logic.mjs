@@ -1077,7 +1077,6 @@ export const GAMES = [
   { id: 'pairs-vocabulary', kind: 'pairs', title: 'Word meanings', pairs: 6, minGrade: '4', deck: 'vocabulary' },
   { id: 'pairs-capitals', kind: 'pairs', title: 'Capitals', pairs: 6, minGrade: '6', deck: 'capitals' },
   { id: 'pairs-roots', kind: 'pairs', title: 'Word roots', pairs: 6, minGrade: '6', deck: 'roots' },
-  { id: 'pairs-elements', kind: 'pairs', title: 'Element symbols', pairs: 6, minGrade: '8', deck: 'elements' },
   { id: 'pairs-formulas', kind: 'pairs', title: 'Formulas', pairs: 6, minGrade: '9', deck: 'formulas' },
   // A review game for every science course from grade 3 up, shown once that course is on a student's list.
   { id: 'pairs-technology', kind: 'pairs', title: 'Computer words', pairs: 6, minGrade: '3', deck: 'technology' },
@@ -1103,6 +1102,7 @@ export const GAMES = [
   { id: 'pong', kind: 'pong', title: 'Pong', minGrade: '2' },
   // A course's own quick fire (2026-09-24, pass CO): a timed round of that course's lessons only, for a course no other
   // game suits yet, or whose only game is a map still waiting for its painting.
+  { id: 'ptable-science-10', kind: 'ptable', title: 'The periodic table: find it', minGrade: '10', deck: 'main' },
   { id: 'debug-tech-3', kind: 'debug', title: 'Debug the robot: arrows', minGrade: '3', deck: 'arrows' },
   { id: 'debug-tech-5', kind: 'debug', title: 'Debug the robot: turns', minGrade: '5', deck: 'turns' },
   { id: 'mix-art-3', kind: 'mix', title: 'Color mixer: make new colors', minGrade: '3', deck: 'mix3' },
@@ -1532,6 +1532,40 @@ export function runRobot(p, program, turns = false) {
     x = nx; y = ny; steps.push([x, y, h]);
   }
   return { steps, crash: null, home: x === p.goal[0] && y === p.goal[1] };
+}
+// The periodic table (2026-09-25, a new kind for chemistry): the main groups (1, 2 and 13 to 18) of periods 1 to 5,
+// the part of the table a first chemistry course leans on; groups 3 to 12, the transition metals, are left out and
+// the game says so. Each entry: atomic number (the number of protons), symbol, name, group (1 to 18) and period.
+export const PTABLE = [
+  [1, 'H', 'hydrogen', 1, 1], [2, 'He', 'helium', 18, 1],
+  [3, 'Li', 'lithium', 1, 2], [4, 'Be', 'beryllium', 2, 2], [5, 'B', 'boron', 13, 2], [6, 'C', 'carbon', 14, 2], [7, 'N', 'nitrogen', 15, 2], [8, 'O', 'oxygen', 16, 2], [9, 'F', 'fluorine', 17, 2], [10, 'Ne', 'neon', 18, 2],
+  [11, 'Na', 'sodium', 1, 3], [12, 'Mg', 'magnesium', 2, 3], [13, 'Al', 'aluminum', 13, 3], [14, 'Si', 'silicon', 14, 3], [15, 'P', 'phosphorus', 15, 3], [16, 'S', 'sulfur', 16, 3], [17, 'Cl', 'chlorine', 17, 3], [18, 'Ar', 'argon', 18, 3],
+  [19, 'K', 'potassium', 1, 4], [20, 'Ca', 'calcium', 2, 4], [31, 'Ga', 'gallium', 13, 4], [32, 'Ge', 'germanium', 14, 4], [33, 'As', 'arsenic', 15, 4], [34, 'Se', 'selenium', 16, 4], [35, 'Br', 'bromine', 17, 4], [36, 'Kr', 'krypton', 18, 4],
+  [37, 'Rb', 'rubidium', 1, 5], [38, 'Sr', 'strontium', 2, 5], [49, 'In', 'indium', 13, 5], [50, 'Sn', 'tin', 14, 5], [51, 'Sb', 'antimony', 15, 5], [52, 'Te', 'tellurium', 16, 5], [53, 'I', 'iodine', 17, 5], [54, 'Xe', 'xenon', 18, 5],
+].map(([z, sym, name, group, period]) => ({ z, sym, name, group, period }));
+const PT_FAMILY = { 1: 'alkali metal', 2: 'alkaline earth metal', 17: 'halogen', 18: 'noble gas' };
+// Hydrogen sits in group 1 but is not an alkali metal, so it has no family here.
+export function ptableFamily(el) { return el.z === 1 ? null : PT_FAMILY[el.group] || null; }
+export function ptableFact(el) {
+  const fam = ptableFamily(el);
+  const parts = [`${el.z} ${el.z === 1 ? 'proton' : 'protons'}`, `group ${el.group}`, `period ${el.period}`];
+  if (fam) parts.push(`${/^[aeiou]/.test(fam) ? 'an' : 'a'} ${fam}`);
+  return `${el.sym} is ${el.name}: ${parts.join(', ')}.`;
+}
+// A round's questions, the same for the same round: each asks for one element by its name, its protons, its place
+// (group and period) or its family and period, and exactly one element on the table fits.
+export function ptableQuestions(round, n = 8) {
+  let s = (round * 2654435761 + 97) >>> 0; const rnd = () => { s = (Math.imul(s, 1664525) + 1013904223) >>> 0; return s / 4294967296; };
+  const out = []; const used = new Set();
+  while (out.length < n) {
+    const el = PTABLE[Math.floor(rnd() * PTABLE.length)]; if (used.has(el.z)) continue;
+    const kinds = ['name', 'protons', 'place']; if (ptableFamily(el)) kinds.push('family');
+    const kind = kinds[Math.floor(rnd() * kinds.length)];
+    const ask = kind === 'name' ? `Tap ${el.name}.` : kind === 'protons' ? `Tap the element with ${el.z} ${el.z === 1 ? 'proton' : 'protons'}.`
+      : kind === 'place' ? `Tap the element in group ${el.group}, period ${el.period}.` : `Tap the ${ptableFamily(el)} in period ${el.period}.`;
+    used.add(el.z); out.push({ z: el.z, kind, ask });
+  }
+  return out;
 }
 export const ORDER_DECKS = {
   processes: [
@@ -21904,8 +21938,8 @@ export const COURSE_GAMES = {
   'science-7': ['buckets-solid-liquid', 'pairs-science-7'],
   'science-8': ['catch-renewable', 'pairs-science-8'],
   'science-9': ['buckets-element-compound', 'pairs-science-9'],
-  'science-10': ['buckets-acid-base', 'pairs-science-10'],
-  'science-11': ['pairs-elements', 'pairs-science-11'],
+  'science-10': ['buckets-acid-base', 'pairs-science-10', 'ptable-science-10'],
+  'science-11': ['pairs-science-11'],
   'science-12': ['catch-acids', 'pairs-science-12'],
   'writing-4': ['build-writing-4'],
   'writing-2': ['dots-boat'],

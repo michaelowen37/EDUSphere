@@ -1,6 +1,8 @@
 # The Wise Human License
 
-Copyright (c) 2026 Mikey (The Wise Human). All rights reserved.
+Copyright (c) 2026 iECHO, LLC. All rights reserved.
+
+The Wise Human is a product of iECHO, LLC, which owns the code, the content and the name.
 
 This is a source-available license, not an open-source one. The code and the content in this
 repository are published so that people can read them, evaluate them and report problems.

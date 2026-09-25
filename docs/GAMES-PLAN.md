@@ -2,7 +2,7 @@
 
 Written by tools/games-plan.mjs from the app's own lists; run it again after any change to the games. Every course has its own game, or two, chosen to suit its subject and grade; finishing the course unlocks them. Inside a grade the same kind is avoided wherever today's kinds allow. A course that no game suits yet has a quick fire of its own lessons, and so does a history course whose only game is a map still waiting for its painting.
 
-Starter, open from the first day: Star. Kinds of game: 18. Quick fires still standing in for a game: 17. Kinds repeated inside a grade: 15. Courses holding two games of one kind: science-11. The rules test holds both numbers as ceilings, so each new kind must bring them down.
+Starter, open from the first day: Star. Kinds of game: 19. Quick fires still standing in for a game: 17. Kinds repeated inside a grade: 14. Courses holding two games of one kind: none. The rules test holds both numbers as ceilings, so each new kind must bring them down.
 
 ## New kinds, in order
 
@@ -13,7 +13,7 @@ Each new kind should make the course's idea the rule of the game, so playing is 
 3. Color mixer, for art (built 2026-09-25): tap two paint pots to make a named color, primaries to secondaries, tints, shades and the intermediate colors; a wrong mix shows what it really made. Held by Looking and making, Color, shape and story.
 4. Debug the robot, for technology (built 2026-09-25): a robot follows a program on a grid; find the one wrong step, change it and run again until it reaches the star. Arrows for grade 3, forward and turns for grade 5, each puzzle checked to have exactly one single-step fix. Held by How computers think, Programs that decide, beside their first games.
 5. Timelines for the history grades (built 2026-09-25), using the order kind with new decks: Texas, early civilizations, inventions and buildings, the United States to 1877 and since, world history, and how our government grew. Each date shows once its set is in order. World geography, Thinking like a historian and Communities and government keep their quick fires, since a timeline does not fit them.
-6. A periodic table game for chemistry, so science 11 no longer holds two pairs games.
+6. The periodic table, for chemistry (built 2026-09-25): find an element on the main-group table by its name, protons, place or family, with the fact about it shown after each find. Held by Chemistry. The element symbols pairs game left physics, so no course holds two games of one kind.
 7. The reading courses' quick fires wait for a kind that practices reading itself, not only its questions.
 
 ## Every course and its games
@@ -84,12 +84,12 @@ Each new kind should make the course's idea the rule of the game, so playing is 
 | 9 | World geography | Where is it? Europe (map), Quick fire: World geography (sprint) |
 | 10 | Geometry | Step on the square numbers (path) |
 | 10 | English 2 | Quick fire: English 2 (sprint) |
-| 10 | Chemistry | Acid or base (buckets), Grade 10 science words (pairs) |
+| 10 | Chemistry | Acid or base (buckets), Grade 10 science words (pairs), The periodic table: find it (ptable) |
 | 10 | Writing about texts | Fix it: fine points (fix) |
 | 10 | World history | Where is it? The biggest states (map), In order: world history (order) |
 | 11 | Algebra 2 | Quick fire: math (sprint) |
 | 11 | English 3 | Quick fire: English 3 (sprint) |
-| 11 | Physics | Element symbols (pairs), Grade 11 science words (pairs) |
+| 11 | Physics | Grade 11 science words (pairs) |
 | 11 | Writing with sources | Quick fire: Writing with sources (sprint) |
 | 11 | United States history since 1877 | Where is it? Africa (map), In order: the United States since 1877 (order) |
 | 12 | Precalculus | Step on the primes (path) |

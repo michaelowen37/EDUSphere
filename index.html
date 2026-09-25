@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- The Wise Human. Copyright (c) 2026. Source-available; not for reuse. See LICENSE.md. -->
+<!-- The Wise Human. Copyright (c) 2026 iECHO, LLC. All rights reserved. Source-available, not open source: reading is allowed, reuse is not. See LICENSE.md. -->
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -18310,7 +18310,6 @@ const GAMES = [
     { id: 'pairs-vocabulary', kind: 'pairs', title: 'Word meanings', pairs: 6, minGrade: '4', deck: 'vocabulary' },
     { id: 'pairs-capitals', kind: 'pairs', title: 'Capitals', pairs: 6, minGrade: '6', deck: 'capitals' },
     { id: 'pairs-roots', kind: 'pairs', title: 'Word roots', pairs: 6, minGrade: '6', deck: 'roots' },
-    { id: 'pairs-elements', kind: 'pairs', title: 'Element symbols', pairs: 6, minGrade: '8', deck: 'elements' },
     { id: 'pairs-formulas', kind: 'pairs', title: 'Formulas', pairs: 6, minGrade: '9', deck: 'formulas' },
     // A review game for every science course from grade 3 up, shown once that course is on a student's list.
     { id: 'pairs-technology', kind: 'pairs', title: 'Computer words', pairs: 6, minGrade: '3', deck: 'technology' },
@@ -18336,6 +18335,7 @@ const GAMES = [
     { id: 'pong', kind: 'pong', title: 'Pong', minGrade: '2' },
     // A course's own quick fire (2026-09-24, pass CO): a timed round of that course's lessons only, for a course no other
     // game suits yet, or whose only game is a map still waiting for its painting.
+    { id: 'ptable-science-10', kind: 'ptable', title: 'The periodic table: find it', minGrade: '10', deck: 'main' },
     { id: 'debug-tech-3', kind: 'debug', title: 'Debug the robot: arrows', minGrade: '3', deck: 'arrows' },
     { id: 'debug-tech-5', kind: 'debug', title: 'Debug the robot: turns', minGrade: '5', deck: 'turns' },
     { id: 'mix-art-3', kind: 'mix', title: 'Color mixer: make new colors', minGrade: '3', deck: 'mix3' },
@@ -18816,6 +18816,48 @@ function runRobot(p, program, turns = false) {
         steps.push([x, y, h]);
     }
     return { steps, crash: null, home: x === p.goal[0] && y === p.goal[1] };
+}
+// The periodic table (2026-09-25, a new kind for chemistry): the main groups (1, 2 and 13 to 18) of periods 1 to 5,
+// the part of the table a first chemistry course leans on; groups 3 to 12, the transition metals, are left out and
+// the game says so. Each entry: atomic number (the number of protons), symbol, name, group (1 to 18) and period.
+const PTABLE = [
+    [1, 'H', 'hydrogen', 1, 1], [2, 'He', 'helium', 18, 1],
+    [3, 'Li', 'lithium', 1, 2], [4, 'Be', 'beryllium', 2, 2], [5, 'B', 'boron', 13, 2], [6, 'C', 'carbon', 14, 2], [7, 'N', 'nitrogen', 15, 2], [8, 'O', 'oxygen', 16, 2], [9, 'F', 'fluorine', 17, 2], [10, 'Ne', 'neon', 18, 2],
+    [11, 'Na', 'sodium', 1, 3], [12, 'Mg', 'magnesium', 2, 3], [13, 'Al', 'aluminum', 13, 3], [14, 'Si', 'silicon', 14, 3], [15, 'P', 'phosphorus', 15, 3], [16, 'S', 'sulfur', 16, 3], [17, 'Cl', 'chlorine', 17, 3], [18, 'Ar', 'argon', 18, 3],
+    [19, 'K', 'potassium', 1, 4], [20, 'Ca', 'calcium', 2, 4], [31, 'Ga', 'gallium', 13, 4], [32, 'Ge', 'germanium', 14, 4], [33, 'As', 'arsenic', 15, 4], [34, 'Se', 'selenium', 16, 4], [35, 'Br', 'bromine', 17, 4], [36, 'Kr', 'krypton', 18, 4],
+    [37, 'Rb', 'rubidium', 1, 5], [38, 'Sr', 'strontium', 2, 5], [49, 'In', 'indium', 13, 5], [50, 'Sn', 'tin', 14, 5], [51, 'Sb', 'antimony', 15, 5], [52, 'Te', 'tellurium', 16, 5], [53, 'I', 'iodine', 17, 5], [54, 'Xe', 'xenon', 18, 5],
+].map(([z, sym, name, group, period]) => ({ z, sym, name, group, period }));
+const PT_FAMILY = { 1: 'alkali metal', 2: 'alkaline earth metal', 17: 'halogen', 18: 'noble gas' };
+// Hydrogen sits in group 1 but is not an alkali metal, so it has no family here.
+function ptableFamily(el) { return el.z === 1 ? null : PT_FAMILY[el.group] || null; }
+function ptableFact(el) {
+    const fam = ptableFamily(el);
+    const parts = [`${el.z} ${el.z === 1 ? 'proton' : 'protons'}`, `group ${el.group}`, `period ${el.period}`];
+    if (fam)
+        parts.push(`${/^[aeiou]/.test(fam) ? 'an' : 'a'} ${fam}`);
+    return `${el.sym} is ${el.name}: ${parts.join(', ')}.`;
+}
+// A round's questions, the same for the same round: each asks for one element by its name, its protons, its place
+// (group and period) or its family and period, and exactly one element on the table fits.
+function ptableQuestions(round, n = 8) {
+    let s = (round * 2654435761 + 97) >>> 0;
+    const rnd = () => { s = (Math.imul(s, 1664525) + 1013904223) >>> 0; return s / 4294967296; };
+    const out = [];
+    const used = new Set();
+    while (out.length < n) {
+        const el = PTABLE[Math.floor(rnd() * PTABLE.length)];
+        if (used.has(el.z))
+            continue;
+        const kinds = ['name', 'protons', 'place'];
+        if (ptableFamily(el))
+            kinds.push('family');
+        const kind = kinds[Math.floor(rnd() * kinds.length)];
+        const ask = kind === 'name' ? `Tap ${el.name}.` : kind === 'protons' ? `Tap the element with ${el.z} ${el.z === 1 ? 'proton' : 'protons'}.`
+            : kind === 'place' ? `Tap the element in group ${el.group}, period ${el.period}.` : `Tap the ${ptableFamily(el)} in period ${el.period}.`;
+        used.add(el.z);
+        out.push({ z: el.z, kind, ask });
+    }
+    return out;
 }
 const ORDER_DECKS = {
     processes: [
@@ -40608,8 +40650,8 @@ const COURSE_GAMES = {
     'science-7': ['buckets-solid-liquid', 'pairs-science-7'],
     'science-8': ['catch-renewable', 'pairs-science-8'],
     'science-9': ['buckets-element-compound', 'pairs-science-9'],
-    'science-10': ['buckets-acid-base', 'pairs-science-10'],
-    'science-11': ['pairs-elements', 'pairs-science-11'],
+    'science-10': ['buckets-acid-base', 'pairs-science-10', 'ptable-science-10'],
+    'science-11': ['pairs-science-11'],
     'science-12': ['catch-acids', 'pairs-science-12'],
     'writing-4': ['build-writing-4'],
     'writing-2': ['dots-boat'],
@@ -48526,7 +48568,7 @@ function PinInput({ value, onChange, placeholder, style, onEnter = null }) {
 }
 // A stamp of when this copy of the page was built, so a stale page in a cache can be told apart
 // from a fresh one at a glance. Written by the build, never by hand.
-const BUILD_STAMP = '2026-09-25 09:58 AM CDT';
+const BUILD_STAMP = '2026-09-25 10:20 AM CDT';
 function ContactLine({ onOpen, inline = false }) {
     return (react_1.default.createElement("p", { className: "edu-no-print", style: { textAlign: 'center', marginTop: inline ? 0 : 28, fontSize: inline ? 14 : 12, color: C.muted, margin: inline ? '0' : undefined } }, onOpen
         ? react_1.default.createElement("button", { type: "button", onClick: onOpen, style: { background: 'none', border: 'none', color: C.muted, fontFamily: FONT, fontSize: 12, cursor: 'pointer', padding: 0, textDecoration: 'underline' } }, "Contact us")
@@ -52047,6 +52089,72 @@ function OrderGame({ game, round, onScore = null }) {
                 rest && seq.when && react_1.default.createElement("span", { style: { marginLeft: 'auto', paddingLeft: 8, fontSize: 13, color: B.muted, whiteSpace: 'nowrap' } }, seq.when[it.idx])));
         })))));
 }
+// The periodic table (2026-09-25): a question names an element by its name, its protons, its place or its family, and
+// the player taps it on the main-group table. Groups label the columns and periods the rows, so the table's own
+// structure is the clue. A right tap lights the element and says what it is while the clock rests; a wrong one
+// wobbles. Eight questions a round.
+function PtableGame({ round, onScore = null }) {
+    const qs = (0, react_1.useMemo)(() => ptableQuestions(round, 8), [round]);
+    const [k, setK] = (0, react_1.useState)(0);
+    const [shake, setShake] = (0, react_1.useState)(0);
+    const [found, setFound] = (0, react_1.useState)(0);
+    const [ticks, setTicks] = (0, react_1.useState)(0);
+    const [done, setDone] = (0, react_1.useState)(false);
+    (0, react_1.useEffect)(() => { setK(0); setShake(0); setFound(0); setDone(false); setTicks(0); }, [round]);
+    (0, react_1.useEffect)(() => { if (done || found)
+        return undefined; const t = setInterval(() => setTicks((n) => n + 1), 1000); return () => clearInterval(t); }, [done, found]);
+    (0, react_1.useEffect)(() => { if (done && onScore)
+        onScore(ticks, 'low'); }, [done]); // all found: a lower time is a new best
+    (0, react_1.useEffect)(() => { if (!shake)
+        return undefined; const t = setTimeout(() => setShake(0), 600); return () => clearTimeout(t); }, [shake]);
+    (0, react_1.useEffect)(() => { if (!found)
+        return undefined; const t = setTimeout(() => { setFound(0); if (k + 1 >= qs.length)
+        setDone(true);
+    else
+        setK(k + 1); }, 1800); return () => clearTimeout(t); }, [found]);
+    const q = qs[k];
+    const tap = (el) => { if (done || found)
+        return; if (el.z === q.z)
+        setFound(el.z);
+    else
+        setShake(el.z); };
+    const groups = [1, 2, 13, 14, 15, 16, 17, 18];
+    const cellAt = (g, per) => PTABLE.find((e) => e.group === g && e.period === per);
+    const lit = found ? PTABLE.find((e) => e.z === found) : null;
+    const small = { fontSize: 11, color: B.muted, textAlign: 'center', alignSelf: 'center' };
+    return (react_1.default.createElement("div", { className: "edu-game-box", style: { ...GAME_BOX, aspectRatio: 'auto', padding: 12 } },
+        react_1.default.createElement("div", { style: { display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 } },
+            react_1.default.createElement("span", null, "Find it"),
+            react_1.default.createElement("span", null,
+                ticks,
+                "s \u00B7 ",
+                Math.min(k + 1, qs.length),
+                " of ",
+                qs.length)),
+        done ? react_1.default.createElement("p", { style: { margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 } },
+            "All eight found in ",
+            ticks,
+            " seconds. Tap the round arrow for new questions.") : (react_1.default.createElement("div", null,
+            react_1.default.createElement("p", { style: { margin: '0 0 10px', textAlign: 'center', fontSize: 17, fontWeight: 700, color: B.ink } }, q.ask),
+            react_1.default.createElement("div", { style: { display: 'grid', gridTemplateColumns: '22px repeat(8, 1fr)', gap: 3 } },
+                react_1.default.createElement("span", { style: small }),
+                groups.map((g) => react_1.default.createElement("span", { key: `g${g}`, style: small }, g)),
+                [1, 2, 3, 4, 5].map((per) => [
+                    react_1.default.createElement("span", { key: `p${per}`, style: small }, per),
+                    ...groups.map((g) => {
+                        const el = cellAt(g, per);
+                        if (!el)
+                            return react_1.default.createElement("span", { key: `${g}-${per}` });
+                        const on = found === el.z;
+                        const bad = shake === el.z;
+                        return (react_1.default.createElement("button", { key: el.z, type: "button", onClick: () => tap(el), "aria-label": el.name, className: `edu-press${bad ? ' edu-wobble' : ''}`, style: { fontFamily: FONT, padding: '4px 0', borderRadius: 6, border: `2px solid ${on ? B.green : bad ? B.clay : B.line}`, background: on ? B.greenSoft : '#fff', color: B.ink, cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', lineHeight: 1.05, minWidth: 0 } },
+                            react_1.default.createElement("span", { style: { fontSize: 9, color: B.muted } }, el.z),
+                            react_1.default.createElement("span", { style: { fontSize: 15, fontWeight: 700 } }, el.sym)));
+                    }),
+                ])),
+            react_1.default.createElement("p", { style: { margin: '8px 0 0', textAlign: 'center', fontSize: 12, color: B.muted } }, "Groups run down the columns and periods across the rows. Groups 3 to 12, the transition metals, sit between groups 2 and 13 on the full table."),
+            react_1.default.createElement("p", { style: { margin: '8px 0 0', textAlign: 'center', fontSize: 15, color: B.ink, minHeight: 22 } }, lit ? ptableFact(lit) : '')))));
+}
 // Debug the robot (2026-09-25, the fourth new kind): the robot's program is a row of numbered steps, and one is wrong.
 // Run plays it a step at a time on the grid; a tap on a step changes it (arrows: up, right, down, left; turns: forward,
 // turn left, turn right), and the robot waits at the start again. Home on the star brings Next and says which step was
@@ -52796,9 +52904,11 @@ function BalanceGame({ game, round, onScore = null }) {
             return chip(k, 68 + (at % 4) * 8, 54 + Math.floor(at / 4) * -7, k, false); return chip(k, 10 + k * (80 / Math.max(1, deck.weights.length - 1)), 87, k, false); }),
         react_1.default.createElement(Done, { show: false })));
 }
-const GAME_OF = { dots: DotsGame, pairs: PairsGame, sort: SortGame, maze: MazeGame, jigsaw: JigsawGame, pong: PongGame, sprint: SprintGame, order: OrderGame, build: BuildGame, fix: FixGame, mix: MixGame, debug: DebugGame, catch: CatchGame, path: PathGame, buckets: BucketsGame, jump: JumpGame, map: MapGame, balance: BalanceGame };
+const GAME_OF = { dots: DotsGame, pairs: PairsGame, sort: SortGame, maze: MazeGame, jigsaw: JigsawGame, pong: PongGame, sprint: SprintGame, order: OrderGame, build: BuildGame, fix: FixGame, mix: MixGame, debug: DebugGame, ptable: PtableGame, catch: CatchGame, path: PathGame, buckets: BucketsGame, jump: JumpGame, map: MapGame, balance: BalanceGame };
 // How to play, in a line or two, by kind of game (and by deck for the matching games).
 function gameInstructions(game) {
+    if (game.kind === 'ptable')
+        return 'A question names an element by its name, its number of protons, its place (group and period) or its family. Tap it on the table. Groups run down the columns and periods across the rows, and the small number on each element is its atomic number, the number of protons. Eight questions, and the clock rests while each answer shows.';
     if (game.kind === 'debug')
         return game.deck === 'turns' ? 'The robot follows its steps in order: forward moves one square the way it faces, and turn left or turn right turns it where it stands. One step is wrong. Tap Run to watch, tap a step to change it, and run again until the robot reaches the star without bumping a rock or the edge. Four robots, and the clock counts up.' : 'The robot follows its steps in order, one square for each arrow. One step is wrong. Tap Run to watch, tap a step to change its arrow, and run again until the robot reaches the star without bumping a rock or the edge. Four robots, and the clock counts up.';
     if (game.kind === 'mix')
@@ -52919,6 +53029,8 @@ function GameThumb({ kind, game = null }) {
     if (game && game.kind === 'sprint')
         return react_1.default.createElement("svg", { viewBox: "0 0 40 40", width: "44", height: "44", "aria-hidden": "true" },
             react_1.default.createElement("path", { d: "M22 4 L10 22 h9 l-3 14 L30 18 h-9 z", fill: C.gold, stroke: k, strokeWidth: "1.5", strokeLinejoin: "round" }));
+    if (game && game.kind === 'ptable')
+        return react_1.default.createElement("svg", { viewBox: "0 0 40 40", width: "44", height: "44", "aria-hidden": "true" }, [0, 1, 2, 3].map((r) => [0, 1, 2, 3, 4, 5].map((c) => ((r === 0 && c > 0 && c < 5) ? null : react_1.default.createElement("rect", { key: `${r}${c}`, x: 3 + c * 5.8, y: 8 + r * 6.2, width: "5", height: "5.4", rx: "1", fill: r === 2 && c === 4 ? C.greenSoft : C.paperBoard, stroke: r === 2 && c === 4 ? C.green : k, strokeWidth: "0.8" })))));
     if (game && game.kind === 'debug')
         return react_1.default.createElement("svg", { viewBox: "0 0 40 40", width: "44", height: "44", "aria-hidden": "true" },
             [0, 1, 2].map((a) => [0, 1, 2].map((b) => react_1.default.createElement("rect", { key: `${a}${b}`, x: 5 + a * 10, y: 5 + b * 10, width: "10", height: "10", fill: C.paperBoard, stroke: k, strokeWidth: "1" }))),
@@ -55403,6 +55515,7 @@ function EduSphereScreens() {
                     !educator && (react_1.default.createElement("button", { type: "button", onClick: () => { setNewPin(''); setNewPin2(''); setDeviceDraft(''); setStateDraft(''); setSetupError(''); setScreen('educator-setup'); }, style: { background: 'none', border: 'none', color: C.muted, fontFamily: FONT, fontSize: 14, cursor: 'pointer', padding: '4px 12px', textDecoration: 'underline' } }, "Create account")),
                     react_1.default.createElement(ContactLine, { onOpen: () => setShowContact(true), inline: true })),
                 react_1.default.createElement("p", { style: { color: C.muted, fontSize: 13, margin: 'auto 0 0', padding: '72px 36px 12px', textAlign: 'center', maxWidth: '100%', boxSizing: 'border-box' } }, "All of your school's important information lives entirely on this device (students, student progression, educator settings, transcripts etc)."),
+                react_1.default.createElement("p", { style: { color: C.muted, fontSize: 11, margin: '0 0 4px', textAlign: 'center' } }, "\u00A9 2026 iECHO, LLC. All rights reserved."),
                 react_1.default.createElement("p", { className: "edu-no-print", style: { color: C.muted, fontSize: 11, opacity: 0.7, margin: '0 0 14px', textAlign: 'center' } },
                     "Build ",
                     BUILD_STAMP),

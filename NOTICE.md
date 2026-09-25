@@ -1,5 +1,7 @@
 # Notice
 
+The Wise Human. Copyright (c) 2026 iECHO, LLC. All rights reserved.
+
 The Wise Human is published source-available under LICENSE.md. Reading is allowed; reuse is not.
 
 The content in this repository (lessons, stories, experiments, life skills, curriculum mappings,

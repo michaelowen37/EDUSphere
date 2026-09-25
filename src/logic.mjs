@@ -1102,6 +1102,15 @@ export const GAMES = [
   { id: 'pong', kind: 'pong', title: 'Pong', minGrade: '2' },
   // A course's own quick fire (2026-09-24, pass CO): a timed round of that course's lessons only, for a course no other
   // game suits yet, or whose only game is a map still waiting for its painting.
+  { id: 'evidence-reading-3', kind: 'evidence', title: 'Find the evidence: stories and facts', minGrade: '3', deck: 'ev3' },
+  { id: 'evidence-reading-4', kind: 'evidence', title: 'Find the evidence: clues in a story', minGrade: '4', deck: 'ev3' },
+  { id: 'evidence-reading-5', kind: 'evidence', title: 'Find the evidence: reasons and clues', minGrade: '5', deck: 'ev5' },
+  { id: 'evidence-reading-8', kind: 'evidence', title: 'Find the evidence: cause and reason', minGrade: '8', deck: 'ev5' },
+  { id: 'evidence-reading-9', kind: 'evidence', title: 'Find the evidence: claims and support', minGrade: '9', deck: 'ev9' },
+  { id: 'evidence-reading-10', kind: 'evidence', title: 'Find the evidence: what proves it', minGrade: '10', deck: 'ev9' },
+  { id: 'evidence-reading-11', kind: 'evidence', title: 'Find the evidence: argument and craft', minGrade: '11', deck: 'ev11' },
+  { id: 'evidence-reading-12', kind: 'evidence', title: 'Find the evidence: weighing a case', minGrade: '12', deck: 'ev11' },
+  { id: 'evidence-reading-college', kind: 'evidence', title: 'Find the evidence: academic reading', minGrade: 'C', deck: 'ev11' },
   { id: 'ptable-science-10', kind: 'ptable', title: 'The periodic table: find it', minGrade: '10', deck: 'main' },
   { id: 'debug-tech-3', kind: 'debug', title: 'Debug the robot: arrows', minGrade: '3', deck: 'arrows' },
   { id: 'debug-tech-5', kind: 'debug', title: 'Debug the robot: turns', minGrade: '5', deck: 'turns' },
@@ -1110,15 +1119,6 @@ export const GAMES = [
   { id: 'sprint-civics-3', kind: 'sprint', title: 'Quick fire: Communities and government', minGrade: '3', course: 'civics-3' },
   { id: 'sprint-history-9', kind: 'sprint', title: 'Quick fire: World geography', minGrade: '9', course: 'history-9' },
   { id: 'sprint-history-college', kind: 'sprint', title: 'Quick fire: Thinking like a historian', minGrade: 'C', course: 'history-college' },
-  { id: 'sprint-reading-10', kind: 'sprint', title: 'Quick fire: English 2', minGrade: '10', course: 'reading-10' },
-  { id: 'sprint-reading-11', kind: 'sprint', title: 'Quick fire: English 3', minGrade: '11', course: 'reading-11' },
-  { id: 'sprint-reading-12', kind: 'sprint', title: 'Quick fire: English 4', minGrade: '12', course: 'reading-12' },
-  { id: 'sprint-reading-3', kind: 'sprint', title: 'Quick fire: Reading to understand', minGrade: '3', course: 'reading-3' },
-  { id: 'sprint-reading-4', kind: 'sprint', title: 'Quick fire: Reading between the lines', minGrade: '4', course: 'reading-4' },
-  { id: 'sprint-reading-5', kind: 'sprint', title: 'Quick fire: Reading with judgment', minGrade: '5', course: 'reading-5' },
-  { id: 'sprint-reading-8', kind: 'sprint', title: 'Quick fire: Reading with a critical eye', minGrade: '8', course: 'reading-8' },
-  { id: 'sprint-reading-9', kind: 'sprint', title: 'Quick fire: English 1', minGrade: '9', course: 'reading-9' },
-  { id: 'sprint-reading-college', kind: 'sprint', title: 'Quick fire: Academic reading', minGrade: 'C', course: 'reading-college' },
   { id: 'sprint-tech-7', kind: 'sprint', title: 'Quick fire: Bits, networks and safety', minGrade: '7', course: 'tech-7' },
   { id: 'fix-writing-10', kind: 'fix', title: 'Fix it: fine points', minGrade: '10', deck: 'usage10' },
   { id: 'sprint-writing-11', kind: 'sprint', title: 'Quick fire: Writing with sources', minGrade: '11', course: 'writing-11' },
@@ -1567,6 +1567,58 @@ export function ptableQuestions(round, n = 8) {
   }
   return out;
 }
+// Find the evidence (2026-09-25, a new kind for the reading courses): a short original passage, a question, and one
+// sentence that answers it. Tapping the right sentence shows why it is the evidence; the others were written so that
+// none of them also answers the question (a nervous-sounding deep breath was cut from the first passage for that reason).
+export const EVIDENCE_DECKS = {
+  ev3: [
+    { text: ["Leo stood at the edge of the stage.", "His hands shook as he held his paper.", "The room was full of parents.", "His teacher smiled and gave him a thumbs-up.", "Then he began to read his poem."], ask: "Which sentence shows that Leo was nervous?", answer: 1, why: "Shaking hands are a clue that someone feels nervous." },
+    { text: ["Sea otters spend most of their lives in the water.", "They wrap themselves in kelp so they do not drift away while they sleep.", "Their thick fur keeps them warm in cold water.", "Sea otters eat clams, crabs and sea urchins."], ask: "Which sentence explains how sea otters stay warm?", answer: 2, why: "It names what keeps them warm: their thick fur." },
+    { text: ["Maya's garden had been dry for weeks.", "Every morning she carried a heavy bucket from the pond.", "One day, dark clouds rolled over the hill.", "Maya laughed and danced as the first drops fell."], ask: "Which sentence shows how Maya felt about the rain?", answer: 3, why: "Laughing and dancing show that she was happy." },
+    { text: ["Honeybees live together in a hive.", "The queen lays all the eggs.", "Worker bees collect nectar and make honey.", "Drones do not collect food."], ask: "Which sentence tells who makes the honey?", answer: 2, why: "It says the worker bees make the honey." },
+    { text: ["Sam's little brother dropped his ice cream on the sidewalk.", "He started to cry.", "Sam looked at his own cone for a long moment.", "Then he handed it to his brother and said, \"Here, take mine.\""], ask: "Which sentence shows that Sam is kind?", answer: 3, why: "Giving away his own ice cream is a kind thing to do." },
+    { text: ["The Moon does not make its own light.", "It shines because sunlight bounces off its surface.", "The Moon travels around Earth about once a month.", "It has no air and no liquid water on its surface."], ask: "Which sentence explains why the Moon shines?", answer: 1, why: "It gives the reason with the word because: sunlight bounces off it." },
+  ],
+  ev5: [
+    { text: ["The old bridge had stood for ninety years.", "Last spring, engineers found deep cracks in two of its supports.", "Trucks were banned from it the next day.", "Now the town is voting on whether to repair it or build a new one."], ask: "Which sentence gives the reason trucks were banned?", answer: 1, why: "The cracks came first and the ban followed the next day: cause, then effect." },
+    { text: ["Priya had practiced the song every night for a month.", "When her name was called, she walked to the piano without looking at the crowd.", "Her first notes were quiet, but they grew stronger with every line.", "By the end, the whole room was on its feet."], ask: "Which sentence shows that the audience loved her performance?", answer: 3, why: "A crowd rising to its feet at the end is the audience's answer." },
+    { text: ["Plastic bags can take hundreds of years to break down.", "Many end up in rivers and oceans.", "Sea turtles sometimes mistake floating bags for jellyfish, one of their foods.", "Some cities now charge a small fee for each bag."], ask: "Which sentence explains how plastic bags can harm sea turtles?", answer: 2, why: "It shows how the harm happens: the turtles take the bags for food." },
+    { text: ["Marcus checked his watch again.", "The bus was already ten minutes late, and the test started at eight.", "He looked down the empty street and then at the long hill toward school.", "Without another word, he started running."], ask: "Which sentence explains why Marcus was worried?", answer: 1, why: "It gives the reason: a late bus on the morning of a test." },
+    { text: ["Octopuses have three hearts.", "Two pump blood through the gills, and one pumps it through the rest of the body.", "Their blood is blue because it carries oxygen using copper instead of iron.", "An octopus can squeeze through any gap larger than its beak."], ask: "Which sentence explains why an octopus's blood is blue?", answer: 2, why: "It gives the cause with the word because: copper carries the oxygen." },
+    { text: ["Lena's grandmother kept every letter she had ever received.", "They filled three boxes in the attic.", "One rainy afternoon, Lena opened the oldest box and found a letter from 1962.", "It was from a young soldier who would one day become Lena's grandfather."], ask: "Which sentence reveals a surprise about who wrote the old letter?", answer: 3, why: "The writer turns out to be her grandfather, which nothing before it hints." },
+  ],
+  ev9: [
+    { text: ["Some people argue that homework should be banned in high school.", "They claim it causes stress and takes time away from family.", "However, a large review of research found that moderate homework in high school is linked to higher achievement.", "The key word is moderate: the benefit fades when students spend more than about two hours a night."], ask: "Which sentence offers research as evidence?", answer: 2, why: "It points to a review of research, not to opinion." },
+    { text: ["The storm had passed, but the town was silent.", "Shop windows were boarded, and no children played in the street.", "Mrs. Alvarez stood on her porch, staring at the river that had swallowed her garden.", "Somewhere a dog barked once, then stopped."], ask: "Which sentence shows the storm's cost to one person?", answer: 2, why: "It narrows from the whole town to a single loss: her garden." },
+    { text: ["The company's advertisement promises that its drink will make you smarter.", "It shows students acing tests after a single can.", "But the ad cites no studies, and its small print says the claim has not been tested.", "Readers should be skeptical of claims that come without evidence."], ask: "Which sentence reveals that the ad's claim lacks support?", answer: 2, why: "No studies and an untested claim: the ad offers a promise, not proof." },
+    { text: ["In 1905, Albert Einstein worked as a clerk in a patent office in Switzerland.", "In his spare time, he wrote four papers that changed physics.", "One of them showed that mass and energy are related, the idea behind E = mc².", "He did not become a professor until 1909."], ask: "Which sentence shows that Einstein did his breakthrough work outside his job?", answer: 1, why: "The phrase in his spare time places the work outside the office." },
+    { text: ["The narrator says she is not afraid of the dark.", "Yet she sleeps with three lamps on.", "She checks under the bed twice each night.", "She laughs when her brother asks why."], ask: "Which sentence is the first to suggest that the narrator is not telling the truth?", answer: 1, why: "Yet signals the turn: her actions start to contradict her words." },
+    { text: ["Bamboo is one of the fastest-growing plants on Earth.", "Some kinds can grow almost a meter in a single day.", "For its weight, it is stronger when pulled than many kinds of steel.", "Giant pandas eat almost nothing else."], ask: "Which sentence supports the idea that bamboo is strong?", answer: 2, why: "It compares bamboo's strength with steel's; the others are about growth and food." },
+  ],
+  ev11: [
+    { text: ["Critics of the new highway say it will cut the neighborhood in half.", "Supporters answer that it will shorten commutes by twenty minutes.", "Yet the city's own traffic study predicts that the new lanes will fill with new drivers within five years.", "If that prediction holds, the time saved will not last."], ask: "Which sentence gives the evidence against the supporters' argument?", answer: 2, why: "It is evidence from a study; the sentence after it is the conclusion drawn from that evidence." },
+    { text: ["The speaker begins with a story about her grandfather's farm.", "She describes the smell of rain on dry soil and the creak of the windmill.", "Only then does she state her argument: family farms need protection.", "She closes by asking the audience to picture a country without them."], ask: "Which sentence shows the speaker holding back her claim until after the story?", answer: 2, why: "Only then marks the delay: story first, claim after." },
+    { text: ["The article claims that most teenagers now get their news from social media.", "It cites a survey of two thousand teenagers.", "But the survey was paid for by a social media company.", "Readers should ask who gains when a claim is believed."], ask: "Which sentence reveals a possible conflict of interest?", answer: 2, why: "A company that gains from the result paid for the survey." },
+    { text: ["Thoreau went to live by Walden Pond in 1845.", "He wanted, he wrote, to live deliberately and to face only the essential facts of life.", "He built a small cabin and stayed for two years and two months.", "His book about the experiment, Walden, was published in 1854."], ask: "Which sentence states Thoreau's purpose?", answer: 1, why: "What he wanted is his purpose, given in his own words." },
+    { text: ["Every year, the school spends forty thousand dollars on printed textbooks.", "Digital versions of the same books would cost half as much.", "Some teachers worry that screens distract students from reading carefully.", "The board must weigh the savings against the learning."], ask: "Which sentence presents a counterargument to switching to digital books?", answer: 2, why: "It raises a reason against the switch that the cost figures do not answer." },
+    { text: ["The poem never names the season.", "Instead it gives us frost on the window, bare branches and a sky the color of iron.", "The speaker says nothing about how she feels.", "By the last line, we know it is winter, and we know the speaker is lonely."], ask: "Which sentence shows the poem using images in place of naming the season?", answer: 1, why: "Instead points to the images standing in for the word winter." },
+  ],
+};
+// Security (2026-09-25). A file or a stored value is parsed with safeJson, which drops the three keys that could reach
+// an object's prototype (__proto__, constructor, prototype) wherever they appear, so no imported backup can change how
+// the app's own objects behave. Returns null for anything that is not JSON.
+const UNSAFE_KEYS = new Set(['__proto__', 'constructor', 'prototype']);
+export function safeJson(text) {
+  try { return JSON.parse(String(text), (key, value) => (UNSAFE_KEYS.has(key) ? undefined : value)); } catch (e) { return null; }
+}
+// PIN tries on this device: every fifth wrong try in a row rests the PIN box, 30 seconds the first time and doubling
+// each time after, never more than 15 minutes; a right PIN clears the count. Pure, so the page keeps the state.
+export function pinLockAfterFailure(state, now) {
+  const failures = ((state && state.failures) || 0) + 1;
+  if (failures % 5 !== 0) return { failures, lockUntil: (state && state.lockUntil) || 0 };
+  return { failures, lockUntil: now + Math.min(30000 * 2 ** (failures / 5 - 1), 900000) };
+}
+export function pinLockLeft(state, now) { return state && state.lockUntil && now < state.lockUntil ? Math.ceil((state.lockUntil - now) / 1000) : 0; }
 export const ORDER_DECKS = {
   processes: [
     { title: 'The water cycle', steps: ['the sun warms the sea', 'water evaporates', 'vapor cools into clouds', 'rain falls', 'rivers carry it back'] },
@@ -21911,26 +21963,26 @@ export const COURSE_GAMES = {
   'reading-1': ['jigsaw-9'],
   'numbers-2': ['maze-huge'],
   'reading-2': ['catch-red'],
-  'reading-3': ['sprint-reading-3'],
-  'reading-4': ['sprint-reading-4'],
+  'reading-3': ['evidence-reading-3'],
+  'reading-4': ['evidence-reading-4'],
   'math-5': ['path-multiples-4', 'catch-halves'],
-  'reading-5': ['sprint-reading-5'],
+  'reading-5': ['evidence-reading-5'],
   'math-6': ['catch-multiples-7', 'jump-fractions'],
   'reading-6': ['pairs-roots'],
   'math-7': ['balance-fractions'],
   'reading-7': ['pairs-vocabulary'],
   'math-8': ['order-math'],
-  'reading-8': ['sprint-reading-8'],
+  'reading-8': ['evidence-reading-8'],
   'math-9': ['jump-integers', 'balance-expressions'],
-  'reading-9': ['sprint-reading-9'],
+  'reading-9': ['evidence-reading-9'],
   'math-10': ['path-squares'],
-  'reading-10': ['sprint-reading-10'],
+  'reading-10': ['evidence-reading-10'],
   'math-11': ['sprint-math'],
-  'reading-11': ['sprint-reading-11'],
+  'reading-11': ['evidence-reading-11'],
   'math-12': ['path-primes'],
-  'reading-12': ['sprint-reading-12'],
+  'reading-12': ['evidence-reading-12'],
   'math-college': ['pairs-formulas'],
-  'reading-college': ['sprint-reading-college'],
+  'reading-college': ['evidence-reading-college'],
   'science-3': ['order-steps', 'pairs-science-3'],
   'science-6': ['sprint-science', 'pairs-science-6'],
   'science-4': ['catch-living', 'buckets-conductors', 'pairs-science-4'],

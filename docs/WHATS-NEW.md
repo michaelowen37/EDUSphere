@@ -28,7 +28,16 @@ The newest block is what educators see once, in a pop-up on the classroom page, 
 - The Wonder Question review is easier to scan: everything is centered except the four voices' names, with thin lines between the parts the youngest children hear. The link that takes every approval back is now called Remove All; it still sends every approved question back to waiting for review, hidden from students.
 - Small touches: the i notes are centered, typing boxes are a soft almond in the dark theme, the weekly note is light green under its dark header, and the Story Log breathes a little more around its toggle and picker.
 
-## September 25, 2026 (five new kinds of game)
+## September 25, 2026 (a security check)
+
+- The app was checked from end to end for safety. After five wrong educator PINs in a row, the PIN box rests for 30 seconds, and longer if it keeps happening, so nobody can sit and guess.
+- A backup file is checked more carefully before it is restored, and anything too large to be a real backup is turned away.
+- The page now tells the browser it may only talk to its own site, so nothing typed into the app can be sent anywhere else.
+- docs/SECURITY.md explains in plain words what keeps the classroom safe and what only the device itself can protect.
+- The backup advice in the tour, on the Classroom page and on the backup page now recommends a password-protected drive folder.
+- Grade 6's seven math stories are longer, each with six pictures: unit prices beside ratios, dividing a fraction by a fraction, absolute value, why the slanted side is the wrong height, a three-box balance, what one big allowance does to the average, and mirror images on the city grid.
+
+## September 25, 2026 (six new kinds of game)
 
 - Build a sentence: tap the words into a sentence, then build a longer one that says more. Grade 3 adds describing words, grade 4 joins sentences with and, but or so, and grade 5 opens them with because, when, although, if or since.
 - Fix it: every sentence has one mistake, a word, a capital or a mark. Tap it, watch it turn right, and read the rule. Grades 7, 9 and 10 each have their own sentences, and the clock waits while you read.
@@ -43,6 +52,12 @@ The newest block is what educators see once, in a pop-up on the classroom page, 
 - Timelines for six history courses: Texas history, early civilizations with great inventions and buildings, the United States to 1877, world history, the United States since 1877, and how our government grew. Put five events in the order they happened; once they are right, each one shows its date.
 - The periodic table, for chemistry: find an element on the table by its name, its number of protons, its group and period, or its family. Each find tells you what the element is, like "Na is sodium: 11 protons, group 1, period 3, an alkali metal."
 - The welcome page now carries the owner's notice: © 2026 iECHO, LLC. All rights reserved. The license, notice and readme name iECHO, LLC as the owner.
+- Find the evidence, for the reading courses from grade 3 to college: read a short passage, then tap the one sentence that answers the question. The game shows why that sentence is the evidence. Four sets of original passages grow from stories and facts in grade 3 to argument, bias and craft in high school and college.
+- Grade 4's eight long stories are twice as long, each with five new pictures to make: the six flags over one Texas town, the grandmother's letter, the blackout, Mike's summer paragraphs, Chloe's mural and her road home, the school concert, and the notebook week.
+- Eleven grade 5 stories are longer, each with six pictures: all eight math stories (decimals, fractions, dividing by two digits, volume, the coordinate plane, order of operations, data) and the three technology stories (variables, if and then, finding a bug). Each one now teaches the next step too, like making change, remainders, the origin, brackets and AND.
+- Twelve more grade 5 stories are longer, each with six pictures: the six science stories (salt crystals left behind by evaporation, the moon's phases and its one face, dew and springs in the water cycle, instinct, friction and a heavier cart, kinds of fossils and coal) and the six reading stories (a theme as a sentence, second person and the all-knowing narrator, idioms in Spanish, explaining evidence, a third source, answering the other side).
+- Every grade 5 short story is now full length. The last ten: the thirteen colonies (the House of Burgesses, town meetings, and who was made to do the work), the road to revolution (the Boston Massacre, the First Continental Congress), the Constitution (the Great Compromise, the ninth state), growing west (Lewis and Clark, the Trail of Tears, the railroad), the Civil War (Gettysburg, Lincoln's death), immigration (Ellis Island, Angel Island, Hull House), industry (child labor, Ford's moving line), and three writing stories (headings and facts, reasons with examples, showing instead of telling).
+- Grade 5's six long stories are twice as long, each with five new pictures to make: the lake trip, the family on the road from the coast, the game that kept score, the bake sale, the class play and Georgette's class pet. Grade 5 is now finished: every short and long story at full length.
 
 ## September 24, 2026 (a new name)
 

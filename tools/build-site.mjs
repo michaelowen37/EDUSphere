@@ -46,6 +46,10 @@ const html = `<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<!-- Content Security Policy (security pass, 2026-09-25): the page may load and talk only to its own site, so nothing
+     a student types can leave the device from inside the app, and no outside script, plugin or form can be slipped in.
+     The Claude preview copy drops this line, since the preview host frames the page with rules of its own. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; media-src 'self' data: blob:; connect-src 'self'; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="description" content="The Wise Human: mastery-based learning from pre-K to college, with nothing leaving the device.">
 <title>The Wise Human</title>

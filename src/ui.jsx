@@ -2209,7 +2209,7 @@ Object.assign(STORY_TITLES, Object.fromEntries(Object.entries(STORIES).map(([id,
 const TOUR = [
   ['Welcome to your classroom', 'add', null, 'below-help', <>Add a student by using their school ID. Then, you'll have an option to create nicknames, assign fun sign-in pictures and more!<br /><br />No names or photos are ever stored.</>],
   ['Lessons, Stories, Practice, Mastery', 'lesson-card', 'lesson', 'lesson-low', <>We combine mastery-based learning, spaced repetition, story-based learning, reflection questions, images and games to help information stick.<br /><br />Mastery requires continuous proof of competence over time. Modules are presented multiple times across multiple days and even when a student masters a subject, they'll continue to be exposed through "memory checks."<br /><br />Educators see detailed summaries along the way.</>],
-  ['Backups live on this device', 'backup', null, 'over-life-low', <>A backup file automatically downloads to your device when a student taps <em>Exit</em> or, when an educator makes changes and <em>signs out</em>.<br /><br />We still recommend periodic manual backups to a shared drive folder which protects you against lost or broken devices.<br /><br />One file restores everything on any device.</>],
+  ['Backups live on this device', 'backup', null, 'over-life-low', <>A backup file automatically downloads to your device when a student taps <em>Exit</em> or, when an educator makes changes and <em>signs out</em>.<br /><br />We still recommend periodic manual backups to a password-protected drive folder, which protects you against lost or broken devices.<br /><br />One file restores everything on any device.</>],
   ['Wonder Questions', 'wonder', null, 'right-mid', <>Wonder questions are deep, thought-provoking questions sprinkled between learning modules. They're designed to promote curiosity, reflection and critical thinking and once a student finds themselves failing modules, the questions are re-prioritized to cover emotional resilience and frame failure as an effective way to learn.<br /><br />Students only see the questions you approve.</>],
   ['Life skills', 'life', null, 'over-exp-by-life', <>The Wise Human is designed to make learning more efficient. Our curated list of practical life skills is a perfect way to fill the time you gain back.<br /><br />You'll find helpful skills for every age group!</>],
   ['Reading', 'reading', null, 'over-exp-high', <>Need direction finding books for various age groups? We've got you covered! Our reading list is quite extensive.</>],
@@ -2684,6 +2684,42 @@ function OrderGame({ game, round, onScore = null }) {
             <button key={it.idx} type="button" onClick={() => tap(it)} aria-pressed={isPlaced} className={`edu-press${shake ? ' edu-wobble' : ''}`} style={{ fontFamily: FONT, fontSize: 15, textAlign: 'left', padding: '10px 12px', borderRadius: 10, border: `2px solid ${isPlaced ? B.green : shake ? B.clay : B.line}`, background: isPlaced ? B.greenSoft : '#fff', color: B.ink, cursor: 'pointer', display: 'flex', gap: 10, alignItems: 'center' }}>
               <span style={{ width: 24, height: 24, borderRadius: 12, background: isPlaced ? B.green : B.line, color: B.onAccent, fontSize: 13, fontWeight: 700, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flex: '0 0 24px' }}>{isPlaced ? at + 1 : ''}</span>{it.t}{rest && seq.when && <span style={{ marginLeft: 'auto', paddingLeft: 8, fontSize: 13, color: B.muted, whiteSpace: 'nowrap' }}>{seq.when[it.idx]}</span>}
             </button>); })}
+        </div>
+      )}
+    </div>
+  );
+}
+// Find the evidence (2026-09-25): a short passage and a question. Tap the one sentence that answers it: it lights, and
+// the reason it is the evidence shows under the passage while the clock rests; a tap on another sentence wobbles it.
+// Four passages a round.
+function EvidenceGame({ game, round, onScore = null }) {
+  const deck = EVIDENCE_DECKS[game.deck] || [];
+  const [k, setK] = useState(0); const [got, setGot] = useState(false); const [shake, setShake] = useState(-1); const [ticks, setTicks] = useState(0); const [done, setDone] = useState(false);
+  const item = deck.length ? deck[(round * 2 + k) % deck.length] : null;
+  useEffect(() => { setK(0); setGot(false); setShake(-1); setDone(false); setTicks(0); }, [round]);
+  useEffect(() => { if (done || got) return undefined; const t = setInterval(() => setTicks((n) => n + 1), 1000); return () => clearInterval(t); }, [done, got]);
+  useEffect(() => { if (done && onScore) onScore(ticks, 'low'); }, [done]);   // every passage done: a lower time is a new best
+  useEffect(() => { if (shake < 0) return undefined; const t = setTimeout(() => setShake(-1), 600); return () => clearTimeout(t); }, [shake]);
+  if (!item) return null;
+  const sets = Math.min(4, deck.length);
+  const tap = (i) => { if (done || got) return; if (i === item.answer) setGot(true); else setShake(i); };
+  const next = () => { if (k + 1 >= sets) setDone(true); else { setK(k + 1); setGot(false); } };
+  return (
+    <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Find the evidence</span><span>{ticks}s · {Math.min(k + 1, sets)} of {sets}</span></div>
+      {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>All the evidence found in {ticks} seconds. Tap the round arrow for new passages.</p> : (
+        <div>
+          <p style={{ margin: '0 0 10px', textAlign: 'center', fontSize: 16, fontWeight: 700, color: B.ink }}>{item.ask}</p>
+          <div style={{ display: 'grid', gap: 6 }}>
+            {item.text.map((s, i) => { const on = got && i === item.answer; const bad = shake === i; return (
+              <button key={i} type="button" onClick={() => tap(i)} className={`edu-press${bad ? ' edu-wobble' : ''}`} style={{ fontFamily: FONT, fontSize: 15, lineHeight: 1.45, textAlign: 'left', padding: '8px 11px', borderRadius: 10, border: `2px solid ${on ? B.green : bad ? B.clay : B.line}`, background: on ? B.greenSoft : '#fff', color: B.ink, cursor: 'pointer' }}>{s}</button>); })}
+          </div>
+          {got && (
+            <div style={{ textAlign: 'center', marginTop: 10 }}>
+              <p style={{ margin: '0 0 10px', fontSize: 14, color: B.ink }}>{item.why}</p>
+              <Btn pal={B} onClick={next}>{k + 1 >= sets ? 'Finish' : 'Next passage'}</Btn>
+            </div>
+          )}
         </div>
       )}
     </div>
@@ -3207,9 +3243,10 @@ function BalanceGame({ game, round, onScore = null }) {
     </div>
   );
 }
-const GAME_OF = { dots: DotsGame, pairs: PairsGame, sort: SortGame, maze: MazeGame, jigsaw: JigsawGame, pong: PongGame, sprint: SprintGame, order: OrderGame, build: BuildGame, fix: FixGame, mix: MixGame, debug: DebugGame, ptable: PtableGame, catch: CatchGame, path: PathGame, buckets: BucketsGame, jump: JumpGame, map: MapGame, balance: BalanceGame };
+const GAME_OF = { dots: DotsGame, pairs: PairsGame, sort: SortGame, maze: MazeGame, jigsaw: JigsawGame, pong: PongGame, sprint: SprintGame, order: OrderGame, build: BuildGame, fix: FixGame, mix: MixGame, debug: DebugGame, ptable: PtableGame, evidence: EvidenceGame, catch: CatchGame, path: PathGame, buckets: BucketsGame, jump: JumpGame, map: MapGame, balance: BalanceGame };
 // How to play, in a line or two, by kind of game (and by deck for the matching games).
 function gameInstructions(game) {
+  if (game.kind === 'evidence') return 'Read the short passage and the question above it. Tap the one sentence that answers the question: that sentence is your evidence. The reason shows under the passage, and the clock rests while you read it. Four passages, and the clock counts up.';
   if (game.kind === 'ptable') return 'A question names an element by its name, its number of protons, its place (group and period) or its family. Tap it on the table. Groups run down the columns and periods across the rows, and the small number on each element is its atomic number, the number of protons. Eight questions, and the clock rests while each answer shows.';
   if (game.kind === 'debug') return game.deck === 'turns' ? 'The robot follows its steps in order: forward moves one square the way it faces, and turn left or turn right turns it where it stands. One step is wrong. Tap Run to watch, tap a step to change it, and run again until the robot reaches the star without bumping a rock or the edge. Four robots, and the clock counts up.' : 'The robot follows its steps in order, one square for each arrow. One step is wrong. Tap Run to watch, tap a step to change its arrow, and run again until the robot reaches the star without bumping a rock or the edge. Four robots, and the clock counts up.';
   if (game.kind === 'mix') return 'A color is named at the top. Tap two paint pots to pour them into the bowl and see what they make. The right color brings its rule and Next; a wrong mix shows what it made, then clears for another try. Five colors, and the clock counts up.';
@@ -3285,6 +3322,7 @@ function GameThumb({ kind, game = null }) {
   if (game && game.kind === 'path') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true">{[0, 1, 2].map((r) => [0, 1, 2].map((c) => <rect key={`${r}${c}`} x={5 + c * 10.5} y={5 + r * 10.5} width="9" height="9" rx="2" fill={(r === 0 && c <= 1) || (r >= 1 && c === 1) || (r === 2 && c === 2) ? C.greenSoft : C.paperBoard} stroke={k} strokeWidth="1.1" />))}<circle cx="9.5" cy="9.5" r="2.6" fill={C.gold} stroke={k} strokeWidth="0.8" /><path d="M30 26.5l1.4 2.9 3.2.5-2.3 2.2.6 3.2-2.9-1.5-2.9 1.5.6-3.2-2.3-2.2 3.2-.5z" fill={C.gold} stroke={k} strokeWidth="0.8" strokeLinejoin="round" /></svg>;
   if (game && game.kind === 'buckets') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="12" y="6" width="16" height="8" rx="3" fill={C.paperBoard} stroke={k} strokeWidth="1.3" /><path d="M4 20h14l-2 14H6z" fill={C.greenSoft} stroke={k} strokeWidth="1.3" strokeLinejoin="round" /><path d="M22 20h14l-2 14H24z" fill={C.paperBoard} stroke={k} strokeWidth="1.3" strokeLinejoin="round" /><path d="M20 15v4" stroke={C.green} strokeWidth="1.6" strokeLinecap="round" /></svg>;
   if (game && game.kind === 'sprint') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><path d="M22 4 L10 22 h9 l-3 14 L30 18 h-9 z" fill={C.gold} stroke={k} strokeWidth="1.5" strokeLinejoin="round" /></svg>;
+  if (game && game.kind === 'evidence') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true">{[0, 1, 2, 3].map((r) => <rect key={r} x="6" y={7 + r * 7.5} width={r === 2 ? 28 : 24 - (r % 2) * 4} height="5" rx="1.5" fill={r === 2 ? C.greenSoft : C.paperBoard} stroke={r === 2 ? C.green : k} strokeWidth="1" />)}</svg>;
   if (game && game.kind === 'ptable') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true">{[0, 1, 2, 3].map((r) => [0, 1, 2, 3, 4, 5].map((c) => ((r === 0 && c > 0 && c < 5) ? null : <rect key={`${r}${c}`} x={3 + c * 5.8} y={8 + r * 6.2} width="5" height="5.4" rx="1" fill={r === 2 && c === 4 ? C.greenSoft : C.paperBoard} stroke={r === 2 && c === 4 ? C.green : k} strokeWidth="0.8" />)))}</svg>;
   if (game && game.kind === 'debug') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true">{[0, 1, 2].map((a) => [0, 1, 2].map((b) => <rect key={`${a}${b}`} x={5 + a * 10} y={5 + b * 10} width="10" height="10" fill={C.paperBoard} stroke={k} strokeWidth="1" />))}<rect x="6.5" y="26.5" width="7" height="7" rx="2" fill={C.green} /><path d="M30 6.5 l1.6 3.3 l3.6 0.5 l-2.6 2.5 l0.6 3.6 l-3.2 -1.7 l-3.2 1.7 l0.6 -3.6 l-2.6 -2.5 l3.6 -0.5 z" fill="#E6B84B" /></svg>;
   if (game && game.kind === 'mix') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><circle cx="15" cy="15" r="9" fill="#D7263D" opacity="0.85" /><circle cx="25" cy="15" r="9" fill="#F4D03F" opacity="0.85" /><circle cx="20" cy="24" r="9" fill="#2E5EAA" opacity="0.85" /><circle cx="20" cy="18" r="15.5" fill="none" stroke={k} strokeWidth="1.5" /></svg>;
@@ -3309,7 +3347,7 @@ const COLOR_BREAK_SECONDS = 300;
 // in the student's record: coloring is play and leaves no history. Leaving and coming back picks up
 // where the timer stopped, and a picture that ran its five minutes rests for fifteen.
 const colorKey = (studentId) => `edusphere_v1_coloring:${studentId}`;
-async function loadColorState(studentId) { try { return JSON.parse((await storageGet(colorKey(studentId))) || '{}'); } catch (e) { return {}; } }
+async function loadColorState(studentId) { return safeJson((await storageGet(colorKey(studentId))) || '{}') || {}; }
 async function saveColorState(studentId, state) { return storageSet(colorKey(studentId), JSON.stringify(state)); }
 // How fat the line is, finest first. A phone shows four; a wider screen has room for all six.
 const NIBS = [0.7, 1.1, 1.5, 2.2, 3, 5];
@@ -4245,7 +4283,7 @@ async function storageSet(key, value) {
 }
 async function loadRecord(name) {
   const raw = await storageGet(STORE_PREFIX + slug(name));
-  if (raw) { try { return JSON.parse(raw); } catch (e) { /* fall through to a fresh record */ } }
+  if (raw) { const r = safeJson(raw); if (r) return r; }   // unreadable: fall through to a fresh record
   return { version: 1, name: name.trim(), createdAt: new Date().toISOString(), events: [] };
 }
 async function saveRecord(record) {
@@ -4255,7 +4293,7 @@ async function saveRecord(record) {
 const ROSTER_KEY = 'edusphere_v1_roster';
 async function loadRoster() {
   const raw = await storageGet(ROSTER_KEY);
-  if (raw) { try { const r = JSON.parse(raw); if (r && Array.isArray(r.students)) return r; } catch (e) { /* fall through */ } }
+  if (raw) { const r = safeJson(raw); if (r && Array.isArray(r.students)) return r; }
   return emptyRoster();
 }
 async function saveRoster(roster) { return storageSet(ROSTER_KEY, JSON.stringify(roster)); }
@@ -4264,7 +4302,7 @@ async function saveRoster(roster) { return storageSet(ROSTER_KEY, JSON.stringify
 const COVERED_KEY = 'edusphere_v1_covered_skills';
 async function loadCovered() {
   const raw = await storageGet(COVERED_KEY);
-  if (raw) { try { const c = JSON.parse(raw); if (c && Array.isArray(c.covered)) return c; } catch (e) { /* fall through */ } }
+  if (raw) { const c = safeJson(raw); if (c && Array.isArray(c.covered)) return c; }
   return emptyCoveredSkills();
 }
 async function saveCovered(state) { return storageSet(COVERED_KEY, JSON.stringify(state)); }
@@ -4273,7 +4311,7 @@ async function saveCovered(state) { return storageSet(COVERED_KEY, JSON.stringif
 const WONDER_KEY = 'edusphere_v1_wonder_review';
 async function loadWonderReview() {
   const raw = await storageGet(WONDER_KEY);
-  if (raw) { try { const r = JSON.parse(raw); if (r && Array.isArray(r.approved)) return r; } catch (e) { /* fall through */ } }
+  if (raw) { const r = safeJson(raw); if (r && Array.isArray(r.approved)) return r; }
   return emptyWonderReview();
 }
 async function saveWonderReview(state) { return storageSet(WONDER_KEY, JSON.stringify(state)); }
@@ -4286,9 +4324,12 @@ async function saveBackupAt(at) { return storageSet(BACKUP_AT_KEY, at); }
 // exactly as before, but now the educator chooses it. Stored scrambled so it is not
 // sitting in plain sight in the browser's storage.
 const EDUCATOR_KEY = 'edusphere_v1_educator';
+// A backup file larger than this is refused before it is read (a real classroom backup is a few megabytes).
+const BACKUP_MAX_BYTES = 50 * 1024 * 1024;
+const PINLOCK_KEY = 'edusphere_v1_pinlock';   // wrong educator PIN tries on this device
 function scramble(text) { let h = 5381; for (const ch of String(text)) h = ((h * 33) ^ ch.charCodeAt(0)) >>> 0; return String(h); }
-async function loadEducator() { const raw = await storageGet(EDUCATOR_KEY); if (raw) { try { const p = JSON.parse(raw); return p && p.pin ? p : null; } catch (e) { /* fall through */ } } return null; }
-async function loadEducatorRaw() { const raw = await storageGet(EDUCATOR_KEY); if (raw) { try { return JSON.parse(raw); } catch (e) { /* fall through */ } } return null; }
+async function loadEducator() { const raw = await storageGet(EDUCATOR_KEY); if (raw) { const p = safeJson(raw); return p && p.pin ? p : null; } return null; }
+async function loadEducatorRaw() { const raw = await storageGet(EDUCATOR_KEY); return raw ? safeJson(raw) : null; }
 async function saveEducator(profile) { return storageSet(EDUCATOR_KEY, JSON.stringify(profile)); }
 // Fingerprint or face for the educator, through the browser's own passkey door (WebAuthn) with the
 // device's built-in authenticator. Nothing goes anywhere: the device makes a key pair, keeps the private
@@ -4687,6 +4728,13 @@ function EduSphereScreens() {
   const [qShownAt, setQShownAt] = useState(0);
   const [orderPicked, setOrderPicked] = useState([]);  // the pieces tapped so far on an order question       // when the current question appeared (for time-per-question)
   const [pinInput, setPinInput] = useState('');
+  // Wrong educator PIN tries on this device (security pass, 2026-09-25): every fifth wrong try in a row rests the PIN box,
+  // 30 seconds and doubling up to 15 minutes; kept in storage so reloading the page does not reset it.
+  const [pinLock, setPinLock] = useState({ failures: 0, lockUntil: 0 }); const [pinClock, setPinClock] = useState(Date.now());
+  useEffect(() => { storageGet(PINLOCK_KEY).then((raw) => { const s = raw ? safeJson(raw) : null; if (s && typeof s.failures === 'number') setPinLock(s); }); }, []);
+  useEffect(() => { if (!pinLockLeft(pinLock, Date.now())) return undefined; const t = setInterval(() => setPinClock(Date.now()), 1000); return () => clearInterval(t); }, [pinLock]);
+  const savePinLock = (next) => { setPinLock(next); setPinClock(Date.now()); storageSet(PINLOCK_KEY, JSON.stringify(next)); };
+  const failPin = () => { const next = pinLockAfterFailure(pinLock, Date.now()); savePinLock(next); if (next.lockUntil > Date.now()) setPinInput(''); };
   const [educatorRecord, setEducatorRecord] = useState(null); // the learner an educator is looking at
   const [wonder, setWonder] = useState(null);        // the Wonder question shown after mastery
   const [wonderText, setWonderText] = useState('');  // stays on the screen only; never saved
@@ -5130,7 +5178,7 @@ function EduSphereScreens() {
   // A full PIN opens the door on its own (2026-09-23, Mikey): nobody has to lower the phone keypad to reach Go or Open.
   // A student's wrong PIN clears the box and says so; an educator's wrong PIN just sits there with its line under it.
   useEffect(() => { if (!pinAsk || pinTry.length !== PIN_LENGTH) return; const st = findStudent(roster, pinAsk); if (!st) return; if (pinMatches(st, pinTry)) { setPinAsk(null); startWithName(st.id); } else { setPinWrong(true); setPinTry(''); } }, [pinTry, pinAsk]);
-  useEffect(() => { if (screen !== 'educator-pin' || pinInput.length < 4) return; const ok = educator ? scramble(pinInput) === educator.pin : pinInput === EDUCATOR_PIN; if (ok) goBackTo(); }, [pinInput, screen]);
+  useEffect(() => { if (screen !== 'educator-pin' || pinInput.length < 4) return; const ok = educator ? scramble(pinInput) === educator.pin : pinInput === EDUCATOR_PIN; if (ok) { if (pinLock.failures) savePinLock({ failures: 0, lockUntil: 0 }); goBackTo(); } }, [pinInput, screen]);
   const endTour = async () => { setTourStep(-1); if ((screen === 'educator-report' && educatorRecord && educatorRecord.preview) || screen === 'class-view' || screen === 'story-log' || (screen === 'lesson' && record && record.preview)) { setEducatorRecord(null); setClassRows(null); setStoryRows(null); if (record && record.preview) { setRecord(null); setModuleId(null); } setScreen('educator-pick'); } const next = { ...educator, tourSeen: true, newsSeen: news ? news.stamp : educator.newsSeen }; setEducator(next); await saveEducator(next); };
   const tourPopup = tourStep >= 0 && educator && (screen === 'educator-pick' || (screen === 'educator-report' && educatorRecord && educatorRecord.preview) || screen === 'class-view' || (screen === 'story-log' && TOUR[tourStep] && TOUR[tourStep][2] === 'storylog') || (screen === 'lesson' && record && record.preview)) ? (
     <div className="edu-no-print" style={{ position: 'fixed', zIndex: 130, pointerEvents: 'none', ...(tourBox ? { left: tourBox.left, top: tourBox.top, width: tourBox.width } : { right: 0, left: 0, bottom: 0, display: 'flex', justifyContent: 'center', padding: '0 12px 10px' }) }}>
@@ -6968,8 +7016,10 @@ function EduSphereScreens() {
         <h1 style={{ fontSize: 24, margin: '12px 0 22px', textAlign: 'center' }}>Please log in to continue:</h1>
         <div style={{ ...card }}>
           <p style={{ margin: '0 0 10px', textAlign: 'center' }}>Enter your PIN.</p>
-          <PinInput value={pinInput} onChange={setPinInput} placeholder="PIN" onEnter={() => { if (ok) goBackTo(); }}
+          {/* A wrong try is counted when a full PIN is erased or entered: every fifth one rests the box for a while. */}
+          <PinInput value={pinInput} onChange={(v) => { if (pinLockLeft(pinLock, pinClock)) return; if (pinInput.length >= 4 && v.length < pinInput.length && !ok) failPin(); setPinInput(v); }} placeholder="PIN" onEnter={() => { if (ok) goBackTo(); else if (pinInput.length >= 4) { failPin(); setPinInput(''); } }}
             style={{ fontFamily: FONT, fontSize: 18, padding: '12px 14px', width: '100%', boxSizing: 'border-box', border: `2px solid ${C.line}`, borderRadius: 10, marginBottom: 12, letterSpacing: 4 }} />
+          {pinLockLeft(pinLock, pinClock) > 0 && <p role="status" style={{ margin: '0 0 12px', textAlign: 'center', fontSize: 14, color: C.clay }}>Too many tries. Try again in {pinLockLeft(pinLock, pinClock)} seconds.</p>}
           <div style={{ paddingBottom: 10 }}><Btn full onClick={goBackTo} disabled={!ok}>Open</Btn></div>
           {educator && educator.biometric && biometricReady() && (
             <div style={{ paddingBottom: 16, textAlign: 'center' }}>
@@ -7012,7 +7062,8 @@ function EduSphereScreens() {
                     const f = e.target.files && e.target.files[0];
                     if (!f) return;
                     try {
-                      const data = JSON.parse(await f.text());
+                      if (f.size > BACKUP_MAX_BYTES) { setSetupError('That file is too large to be a backup of this classroom.'); return; }
+                      const data = safeJson(await f.text());
                       if (!backupProvesOwnership(data, educator.recovery)) { setSetupError('That file is not a backup of this classroom, so it cannot reset the PIN.'); return; }
                       const kept = { ...educator, pin: null, resets: [...(educator.resets || []), new Date().toISOString()] };
                       await saveEducator(kept); setEducator(null); setPendingProfile(kept);
@@ -7455,7 +7506,7 @@ function EduSphereScreens() {
                   style={{ position: 'absolute', left: '100%', top: '50%', transform: 'translateY(-50%)', background: 'none', border: `1.5px solid ${C.green}`, color: C.green, fontFamily: FONT, fontSize: 12, fontWeight: 700, lineHeight: '15px', width: 18, height: 18, borderRadius: 999, cursor: 'pointer', padding: 0 }}>i</button>
               </span>
                     {showBackupTip && (
-                <p style={{ ...tipStyle, textAlign: 'center' }}>All student progress is regularly backed up into your device's download folder. However, we still recommend manual backups to a shared drive folder. This protects student progress against broken or lost devices.<br /><br />Only one recent backup file is required for restoration of all settings and progress for both students and educators!</p>
+                <p style={{ ...tipStyle, textAlign: 'center' }}>All student progress is regularly backed up into your device's download folder. However, we still recommend manual backups to a password-protected drive folder. This protects student progress against broken or lost devices.<br /><br />Only one recent backup file is required for restoration of all settings and progress for both students and educators!</p>
               )}
             </div>
           );
@@ -7876,7 +7927,7 @@ function EduSphereScreens() {
 
         <div style={{ ...card, padding: '26px 18px' }}>
           <p style={{ margin: '0 0 6px', fontWeight: 600, textAlign: 'center' }}>Manual Backups</p>
-          <p style={{ margin: '0 0 22px', fontSize: 14, color: C.muted, textAlign: 'center', lineHeight: 1.6 }}>Automatic backups are great but they live only on this device. Manual backups, however, allow you to select your own file destination.<br /><br />We recommend periodic saves into shared drive folders which protects both student progress and educator settings against lost or broken devices.<br /><br />Only one file is needed to restore all progress and settings on another device.</p>
+          <p style={{ margin: '0 0 22px', fontSize: 14, color: C.muted, textAlign: 'center', lineHeight: 1.6 }}>Automatic backups are great but they live only on this device. Manual backups, however, allow you to select your own file destination.<br /><br />We recommend periodic saves into a password-protected drive folder, which protects both student progress and educator settings against lost or broken devices.<br /><br />Only one file is needed to restore all progress and settings on another device.</p>
           {/* One green button. Where the device can share a file (an iPad or a phone), it opens the device's own
               sheet, so Drive or Mail is one tap away; elsewhere it downloads, asking where to save on a laptop. */}
           <div style={{ display: 'flex', justifyContent: 'center' }}>
@@ -7931,7 +7982,8 @@ function EduSphereScreens() {
               const f = e.target.files && e.target.files[0];
               if (!f) return;
               try {
-                const data = JSON.parse(await f.text());
+                if (f.size > BACKUP_MAX_BYTES) { setRestoreNote('That file is too large to be a backup.'); return; }
+                const data = safeJson(await f.text());
                 const problem = checkBackup(data);
                 if (problem) { setRestoreNote(problem); return; }
                 const merged = mergeBackup(await gatherEverything(roster), data);

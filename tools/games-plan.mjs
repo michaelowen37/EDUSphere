@@ -29,7 +29,7 @@ Each new kind should make the course's idea the rule of the game, so playing is 
 4. Debug the robot, for technology (built 2026-09-25): a robot follows a program on a grid; find the one wrong step, change it and run again until it reaches the star. Arrows for grade 3, forward and turns for grade 5, each puzzle checked to have exactly one single-step fix. Held by ${holders('debug').join(', ')}, beside their first games.
 5. Timelines for the history grades (built 2026-09-25), using the order kind with new decks: Texas, early civilizations, inventions and buildings, the United States to 1877 and since, world history, and how our government grew. Each date shows once its set is in order. World geography, Thinking like a historian and Communities and government keep their quick fires, since a timeline does not fit them.
 6. The periodic table, for chemistry (built 2026-09-25): find an element on the main-group table by its name, protons, place or family, with the fact about it shown after each find. Held by ${holders('ptable').join(', ')}. The element symbols pairs game left physics, so no course holds two games of one kind.
-7. The reading courses' quick fires wait for a kind that practices reading itself, not only its questions.
+7. Find the evidence, for reading (built 2026-09-25): read a short original passage and tap the one sentence that answers the question, then read why it is the evidence. Held by ${holders('evidence').join(', ')}, in place of their quick fires.
 
 ## Every course and its games
 

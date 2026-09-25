@@ -518,8 +518,9 @@ await tap('Back to Classroom');
   await page.selectOption('select[aria-label="Story book course"]', 'math-4');
   await tap('Open Book'); await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'story-book');
   const expected = L.getCourse('math-4').modules.filter((m) => S.STORIES[m.id]).length + 1;
-  const n = await page.evaluate(() => document.querySelectorAll('.edu-book-story').length);
-  ok('the story book holds every module story and the long story', n === expected);
+  // A long story can run over more than one printed block (Story 9, continued), so count each story once, by its head.
+  const n = await page.evaluate(() => document.querySelectorAll('[data-book-story]').length);
+  ok('the story book holds every module story and the long story', n === expected, `${n} of ${expected}`);
   const t = await text();
   ok('the book opens on a cover with the course title and a print button', /the wise human/i.test(t) && t.includes('The long story') && (await page.getByRole('button', { name: 'Print or Save' }).count()) === 1);
   // Printed, the book is many pages: the cover alone on the first, then one story a page (a long story may take two).

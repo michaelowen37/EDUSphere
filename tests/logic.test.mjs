@@ -1406,7 +1406,7 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
   const twoOfAKind = L.COURSES.filter((c) => new Set(L.COURSE_GAMES[c.id].map(kindOf)).size < L.COURSE_GAMES[c.id].length).length;
   ok('no course holds two games of one kind (the element pairs left physics for the periodic table, 2026-09-25)', twoOfAKind === 0, `${twoOfAKind}`);
   let repeats = 0; for (const gr of L.GRADES) { const ks = L.COURSES.filter((c) => c.grade === gr).flatMap((c) => L.COURSE_GAMES[c.id].map(kindOf)); repeats += ks.length - new Set(ks).size; }
-  ok('kinds repeated inside a grade stay at or under 14 (new kinds, history timelines and the periodic table, 2026-09-25)', repeats <= 14, `${repeats}`);
+  ok('kinds repeated inside a grade stay at or under 9 (new kinds, timelines, the periodic table and find the evidence, 2026-09-25)', repeats <= 9, `${repeats}`);
   const list = L.GAMES.filter((g) => ['counting-k', 'letters-k'].includes(L.gameCourse(g.id)) || L.STARTER_GAMES.includes(g.id));
   const fresh = L.unlockedGameIds([], list);
   ok('a new student has the starter and the first game open, and nothing from an unfinished course', fresh.size === new Set([...L.STARTER_GAMES, list[0].id]).size && list.slice(1).every((g) => L.STARTER_GAMES.includes(g.id) || !fresh.has(g.id)));
@@ -1461,6 +1461,31 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
   const fits = (q) => P.filter((e) => (q.kind === 'name' ? q.ask === `Tap ${e.name}.` : q.kind === 'protons' ? q.ask.includes(` ${e.z} proton`) : q.kind === 'place' ? q.ask.includes(`group ${e.group}, period ${e.period}.`) : L.ptableFamily(e) && q.ask === `Tap the ${L.ptableFamily(e)} in period ${e.period}.`));
   ok('every periodic table question over sixty rounds has exactly one element that fits, and it is the answer', Array.from({ length: 60 }, (_, r) => L.ptableQuestions(r)).every((qs) => qs.length === 8 && new Set(qs.map((q) => q.z)).size === 8 && qs.every((q) => { const f = fits(q); return f.length === 1 && f[0].z === q.z; })));
   ok('the periodic table game belongs to chemistry, and physics no longer holds two pairs games', L.COURSE_GAMES['science-10'].includes('ptable-science-10') && !L.COURSE_GAMES['science-11'].includes('pairs-elements'));
+}
+
+
+// Find the evidence (2026-09-25): every passage is whole sentences, its answer is one of them, and each reading course
+// that had a quick fire now has this game instead.
+{
+  const decks = Object.values(L.EVIDENCE_DECKS);
+  ok('every evidence passage has four or five whole sentences, a question, one answer among them and a reason', decks.length === 4 && decks.every((d) => d.length >= 6 && d.every((it) => it.text.length >= 4 && it.text.length <= 5 && it.text.every((s) => /^[A-Z"]/.test(s) && /[.!?]"?$/.test(s)) && new Set(it.text).size === it.text.length && /\?$/.test(it.ask) && Number.isInteger(it.answer) && it.answer >= 0 && it.answer < it.text.length && it.why && it.why.length > 10)));
+  ok('the nine reading courses that held quick fires now hold find the evidence', ['reading-3', 'reading-4', 'reading-5', 'reading-8', 'reading-9', 'reading-10', 'reading-11', 'reading-12', 'reading-college'].every((c) => L.COURSE_GAMES[c].length === 1 && L.COURSE_GAMES[c][0] === `evidence-${c}` && L.EVIDENCE_DECKS[L.GAMES.find((g) => g.id === `evidence-${c}`).deck]));
+}
+
+
+// Security pass (2026-09-25): parsing drops prototype keys; wrong PIN tries rest the box on every fifth.
+{
+  const parsed = L.safeJson('{"a":1,"__proto__":{"polluted":true},"nested":{"constructor":{"prototype":{"x":1}},"b":2}}');
+  ok('safeJson keeps ordinary data and drops __proto__, constructor and prototype keys at every depth', parsed.a === 1 && parsed.nested.b === 2 && !Object.prototype.hasOwnProperty.call(parsed, '__proto__') && !Object.prototype.hasOwnProperty.call(parsed.nested, 'constructor') && ({}).polluted === undefined);
+  ok('safeJson returns null for text that is not JSON', L.safeJson('not json') === null && L.safeJson('') === null);
+  let s = { failures: 0, lockUntil: 0 }; const t0 = 1000000;
+  for (let i = 0; i < 4; i++) s = L.pinLockAfterFailure(s, t0);
+  const fourOk = L.pinLockLeft(s, t0) === 0; s = L.pinLockAfterFailure(s, t0);
+  const firstRest = L.pinLockLeft(s, t0) === 30 && L.pinLockLeft(s, t0 + 30001) === 0;
+  for (let i = 0; i < 5; i++) s = L.pinLockAfterFailure(s, t0 + 40000);
+  const secondRest = L.pinLockLeft(s, t0 + 40000) === 60;
+  let big = { failures: 0, lockUntil: 0 }; for (let i = 0; i < 60; i++) big = L.pinLockAfterFailure(big, t0);
+  ok('four wrong PIN tries do nothing, the fifth rests the box 30 seconds, the tenth 60, and the rest never passes 15 minutes', fourOk && firstRest && secondRest && L.pinLockLeft(big, t0) === 900);
 }
 
 console.log(`\n${pass} passed, ${fail} failed`);

@@ -759,6 +759,14 @@ Approved by Mikey on 2026-09-04 unless marked "proposed".
 - Card 9 was never on the Story Log page: it pointed at the classroom's Story Log link, which a new account without students does not have, so the card floated. It now opens the Story Log page with the tour's three sample students (sample storylog), rings the first student's block, and sits low and to the right so the title, the choices and the newest stories with their Open buttons stay readable. The tour card now renders on the Story Log page during that step, and ending the tour there returns to the classroom and drops the sample rows.
 - The new places apply at 900 px and wider (the laptop tour); narrower screens keep the old rule of the screen's far end from the target.
 
+## 2026-09-25 (pass DI): history timelines
+
+- Mikey committed DH; this commit message starts fresh at DI.
+- Six new order decks, 23 sets of five events: texas4 (history 4), cultures6 (history 6: early civilizations, inventions, great buildings), us8 (history 8), world10 (history 10), us11 (history 11) and gov12 (government 12: founding documents, the amendments that widened the vote, landmark Supreme Court cases, and how a bill becomes a law, the one set without dates). Each dated set carries when (what the player sees) and years (numbers, before the Common Era negative, the 1835 to 1836 revolution set in fractions of a year) so the rules test proves every set runs strictly forward.
+- The dates are the answer, not the clue: tiles show only the events, and once a set is in order each shows its date for a moment while the clock rests (the order game's rest state). Pairs too close to order safely were left out on purpose: Gutenberg's Bible and the fall of Constantinople, the end of World War II and the founding of the United Nations, Mexican independence and Austin's first settlers. Wording follows the record: the Magna Carta was sealed, not signed; the Alamo fell four days after Texas declared independence.
+- The six games sit beside each course's map and replace its quick fire. World geography, Thinking like a historian and Communities and government keep their quick fires; a timeline does not fit them. Repeats inside a grade 20 to 15; quick fires 23 to 17.
+- A single-quoted instruction string with an apostrophe broke the build once during this pass; the words were changed rather than escaped.
+
 ## Open items
 - Verify audio plays inside the chat artifact sandbox (works in a normal browser).
 - Common Core / TEKS codes on existing modules to be checked against the official lists.

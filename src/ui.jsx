@@ -2651,10 +2651,11 @@ function SprintGame({ game, round, modules = [], onScore = null, best = null }) 
 function OrderGame({ game, round, onScore = null }) {
   const deck = ORDER_DECKS[game.deck] || [];
   const [k, setK] = useState(0); const [placed, setPlaced] = useState([]); const [wrong, setWrong] = useState([]); const [ticks, setTicks] = useState(0); const [done, setDone] = useState(false);
+  const [rest, setRest] = useState(false);   // a solved timeline shows its dates for a moment, the clock waiting
   const seq = deck.length ? deck[(round + k) % deck.length] : null;
   const items = useMemo(() => (seq ? shuffle(lcg(round * 31 + k * 17 + 5), seq.steps.map((t, idx) => ({ t, idx }))) : []), [seq, round, k]);
-  useEffect(() => { setK(0); setPlaced([]); setWrong([]); setDone(false); setTicks(0); }, [round]);
-  useEffect(() => { if (done) return undefined; const t = setInterval(() => setTicks((n) => n + 1), 1000); return () => clearInterval(t); }, [done]);
+  useEffect(() => { setK(0); setPlaced([]); setWrong([]); setDone(false); setTicks(0); setRest(false); }, [round]);
+  useEffect(() => { if (done || rest) return undefined; const t = setInterval(() => setTicks((n) => n + 1), 1000); return () => clearInterval(t); }, [done, rest]);
   useEffect(() => { if (done && onScore) onScore(ticks, 'low'); }, [done]);   // all in order: a lower time is a new best
   useEffect(() => { if (!wrong.length) return undefined; const t = setTimeout(() => setWrong([]), 600); return () => clearTimeout(t); }, [wrong]);
   if (!seq) return null;
@@ -2663,13 +2664,15 @@ function OrderGame({ game, round, onScore = null }) {
   // (2026-09-23, Mikey: a choice can be unmade). The order is checked only once every step has a number: right, and
   // the next set comes; wrong, and the first mistake and everything after it come loose to try again.
   const tap = (it) => {
-    if (done) return;
+    if (done || rest) return;
     const at = placed.indexOf(it.idx);
     if (at >= 0) { setPlaced(placed.slice(0, at)); return; }
     const next = [...placed, it.idx];
     if (next.length < seq.steps.length) { setPlaced(next); return; }
     const firstWrong = next.findIndex((idx, pos) => idx !== pos);
-    if (firstWrong < 0) { setPlaced(next); if (k + 1 >= sets) setDone(true); else setTimeout(() => { setK(k + 1); setPlaced([]); }, 700); }
+    // A timeline (a set with dates) shows each event's date once it is in order, the clock resting while they show.
+    if (firstWrong < 0 && seq.when) { setPlaced(next); setRest(true); setTimeout(() => { setRest(false); if (k + 1 >= sets) setDone(true); else { setK(k + 1); setPlaced([]); } }, 2600); }
+    else if (firstWrong < 0) { setPlaced(next); if (k + 1 >= sets) setDone(true); else setTimeout(() => { setK(k + 1); setPlaced([]); }, 700); }
     else { setWrong(next.slice(firstWrong)); setPlaced(next.slice(0, firstWrong)); }
   };
   return (
@@ -2679,7 +2682,7 @@ function OrderGame({ game, round, onScore = null }) {
         <div style={{ display: 'grid', gap: 8 }}>
           {items.map((it) => { const at = placed.indexOf(it.idx); const isPlaced = at >= 0; const shake = wrong.includes(it.idx); return (
             <button key={it.idx} type="button" onClick={() => tap(it)} aria-pressed={isPlaced} className={`edu-press${shake ? ' edu-wobble' : ''}`} style={{ fontFamily: FONT, fontSize: 15, textAlign: 'left', padding: '10px 12px', borderRadius: 10, border: `2px solid ${isPlaced ? B.green : shake ? B.clay : B.line}`, background: isPlaced ? B.greenSoft : '#fff', color: B.ink, cursor: 'pointer', display: 'flex', gap: 10, alignItems: 'center' }}>
-              <span style={{ width: 24, height: 24, borderRadius: 12, background: isPlaced ? B.green : B.line, color: B.onAccent, fontSize: 13, fontWeight: 700, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flex: '0 0 24px' }}>{isPlaced ? at + 1 : ''}</span>{it.t}
+              <span style={{ width: 24, height: 24, borderRadius: 12, background: isPlaced ? B.green : B.line, color: B.onAccent, fontSize: 13, fontWeight: 700, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flex: '0 0 24px' }}>{isPlaced ? at + 1 : ''}</span>{it.t}{rest && seq.when && <span style={{ marginLeft: 'auto', paddingLeft: 8, fontSize: 13, color: B.muted, whiteSpace: 'nowrap' }}>{seq.when[it.idx]}</span>}
             </button>); })}
         </div>
       )}
@@ -3183,7 +3186,7 @@ function gameInstructions(game) {
     if (game.kind === 'buckets') return `Drag each chip into its bucket: ${a.label} on the left, ${b.label} on the right. A chip in the wrong bucket bounces back.`;
   }
   if (game.kind === 'sort') return game.by === 'size' ? 'Drag each object to the side it belongs. When they are all sorted, you win!' : 'Drag each object to the side it belongs. When each one is sorted, you win!';
-  return { sprint: 'Sixty seconds. Questions from your own lessons come one after another; tap the answer and the next one appears. A right answer is a point, a wrong one takes a point away, and three right in a row starts a streak. Beat your best.', order: 'The steps are shuffled. Tap them in the order they happen, first to last. Tap a numbered step to take its number back. When every step has a number, a right order moves on and the first mistake comes loose to try again. Three sets, and the clock counts up, so race yourself.', dots: 'Tap the dots in order, 1, 2, 3, and a picture appears. Tap the wrong dot and nothing happens; find the next number.', pairs: 'Tap two cards. If the pictures match, they stay up. If not, they turn back over. Find every pair.', maze: 'Drag the dot to the star without crossing a wall.', jigsaw: 'Drag each piece to where it belongs until the picture is whole.', pong: 'Slide the paddle to hit the ball back. Miss, and the ball resets. See how many hits you can keep going.' }[game.kind] || 'Tap to play.';
+  return { sprint: 'Sixty seconds. Questions from your own lessons come one after another; tap the answer and the next one appears. A right answer is a point, a wrong one takes a point away, and three right in a row starts a streak. Beat your best.', order: 'The steps are shuffled. Tap them in the order they happen, first to last. Tap a numbered step to take its number back. When every step has a number, a right order moves on and the first mistake comes loose to try again. On a timeline, the dates appear once the set is in order, and the clock waits while you read them. Three sets, and the clock counts up, so race yourself.', dots: 'Tap the dots in order, 1, 2, 3, and a picture appears. Tap the wrong dot and nothing happens; find the next number.', pairs: 'Tap two cards. If the pictures match, they stay up. If not, they turn back over. Find every pair.', maze: 'Drag the dot to the star without crossing a wall.', jigsaw: 'Drag each piece to where it belongs until the picture is whole.', pong: 'Slide the paddle to hit the ball back. Miss, and the ball resets. See how many hits you can keep going.' }[game.kind] || 'Tap to play.';
 }
 function GamePad({ game, name, secondsLeft, total, onClose, modules = [], onScore = null, best = null, young = false }) {
   const [round, setRound] = useState(1);

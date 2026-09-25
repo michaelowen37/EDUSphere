@@ -2,7 +2,7 @@
 
 Written by tools/games-plan.mjs from the app's own lists; run it again after any change to the games. Every course has its own game, or two, chosen to suit its subject and grade; finishing the course unlocks them. Inside a grade the same kind is avoided wherever today's kinds allow. A course that no game suits yet has a quick fire of its own lessons, and so does a history course whose only game is a map still waiting for its painting.
 
-Starter, open from the first day: Star. Kinds of game: 18. Quick fires still standing in for a game: 23. Kinds repeated inside a grade: 20. Courses holding two games of one kind: science-11. The rules test holds both numbers as ceilings, so each new kind must bring them down.
+Starter, open from the first day: Star. Kinds of game: 18. Quick fires still standing in for a game: 17. Kinds repeated inside a grade: 15. Courses holding two games of one kind: science-11. The rules test holds both numbers as ceilings, so each new kind must bring them down.
 
 ## New kinds, in order
 
@@ -12,7 +12,7 @@ Each new kind should make the course's idea the rule of the game, so playing is 
 2. Fix it, for writing (built 2026-09-25): tap the one word, capital or mark that is wrong in a sentence, then read the rule. Held by Writing about what you read, Writing about texts and turns, Writing about texts.
 3. Color mixer, for art (built 2026-09-25): tap two paint pots to make a named color, primaries to secondaries, tints, shades and the intermediate colors; a wrong mix shows what it really made. Held by Looking and making, Color, shape and story.
 4. Debug the robot, for technology (built 2026-09-25): a robot follows a program on a grid; find the one wrong step, change it and run again until it reaches the star. Arrows for grade 3, forward and turns for grade 5, each puzzle checked to have exactly one single-step fix. Held by How computers think, Programs that decide, beside their first games.
-5. Timelines for every history grade, using the order kind with new decks.
+5. Timelines for the history grades (built 2026-09-25), using the order kind with new decks: Texas, early civilizations, inventions and buildings, the United States to 1877 and since, world history, and how our government grew. Each date shows once its set is in order. World geography, Thinking like a historian and Communities and government keep their quick fires, since a timeline does not fit them.
 6. A periodic table game for chemistry, so science 11 no longer holds two pairs games.
 7. The reading courses' quick fires wait for a kind that practices reading itself, not only its questions.
 
@@ -50,7 +50,7 @@ Each new kind should make the course's idea the rule of the game, so playing is 
 | 4 | Reading between the lines | Quick fire: Reading between the lines (sprint) |
 | 4 | Energy, Earth and living things | Catch the living things (catch), Conductor or insulator (buckets), Grade 4 science words (pairs) |
 | 4 | Writing paragraphs | Build a sentence: and, but, so (build) |
-| 4 | The story of Texas | Where is it? The hemispheres (map), Quick fire: The story of Texas (sprint) |
+| 4 | The story of Texas | Where is it? The hemispheres (map), In order: Texas history (order) |
 | 4 | Bigger numbers and operations | Step on the even numbers (path) |
 | 4 | Color, shape and story | Color mixer: the color wheel (mix) |
 | 4 | Reading music | Music words (pairs) |
@@ -65,7 +65,7 @@ Each new kind should make the course's idea the rule of the game, so playing is 
 | 6 | Reading like a thinker | Word roots (pairs) |
 | 6 | Matter, energy and Earth | Quick fire: science (sprint), Grade 6 science words (pairs) |
 | 6 | Writing with a purpose | Noun or verb (buckets) |
-| 6 | World cultures | Where is it? The oceans (map), Quick fire: World cultures (sprint) |
+| 6 | World cultures | Where is it? The oceans (map), In order: civilizations, inventions, buildings (order) |
 | 7 | Proportions, integers and circles | Balance the scale: fractions (balance) |
 | 7 | Reading with an eye for craft | Word meanings (pairs) |
 | 7 | Bodies, weather and change | Solid or liquid (buckets), Grade 7 science words (pairs) |
@@ -76,7 +76,7 @@ Each new kind should make the course's idea the rule of the game, so playing is 
 | 8 | Reading with a critical eye | Quick fire: Reading with a critical eye (sprint) |
 | 8 | Atoms, forces and the universe | Catch the renewable ones (catch), Grade 8 science words (pairs) |
 | 8 | Writing essays | Adjective or adverb (buckets) |
-| 8 | The United States to 1877 | Where is it? The United States (map), Quick fire: The United States to 1877 (sprint) |
+| 8 | The United States to 1877 | Where is it? The United States (map), In order: the United States to 1877 (order) |
 | 9 | Algebra 1 | Frog jumps: negative numbers (jump), Balance the scale: expressions (balance) |
 | 9 | English 1 | Quick fire: English 1 (sprint) |
 | 9 | Biology | Element or compound (buckets), Grade 9 science words (pairs) |
@@ -86,17 +86,17 @@ Each new kind should make the course's idea the rule of the game, so playing is 
 | 10 | English 2 | Quick fire: English 2 (sprint) |
 | 10 | Chemistry | Acid or base (buckets), Grade 10 science words (pairs) |
 | 10 | Writing about texts | Fix it: fine points (fix) |
-| 10 | World history | Where is it? The biggest states (map), Quick fire: World history (sprint) |
+| 10 | World history | Where is it? The biggest states (map), In order: world history (order) |
 | 11 | Algebra 2 | Quick fire: math (sprint) |
 | 11 | English 3 | Quick fire: English 3 (sprint) |
 | 11 | Physics | Element symbols (pairs), Grade 11 science words (pairs) |
 | 11 | Writing with sources | Quick fire: Writing with sources (sprint) |
-| 11 | United States history since 1877 | Where is it? Africa (map), Quick fire: United States history since 1877 (sprint) |
+| 11 | United States history since 1877 | Where is it? Africa (map), In order: the United States since 1877 (order) |
 | 12 | Precalculus | Step on the primes (path) |
 | 12 | English 4 | Quick fire: English 4 (sprint) |
 | 12 | Earth and space | Catch the acids (catch), Grade 12 science words (pairs) |
 | 12 | Writing for the world | Quick fire: Writing for the world (sprint) |
-| 12 | United States government | Where is it? Asia (map), Quick fire: United States government (sprint) |
+| 12 | United States government | Where is it? Asia (map), In order: how our government grew (order) |
 | 12 | Economics and personal finance | State or country (buckets) |
 | C | Statistics and reasoning | Formulas (pairs) |
 | C | Academic reading | Quick fire: Academic reading (sprint) |

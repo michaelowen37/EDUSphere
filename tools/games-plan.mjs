@@ -27,7 +27,7 @@ Each new kind should make the course's idea the rule of the game, so playing is 
 2. Fix it, for writing (built 2026-09-25): tap the one word, capital or mark that is wrong in a sentence, then read the rule. Held by ${holders('fix').join(', ')}.
 3. Color mixer, for art (built 2026-09-25): tap two paint pots to make a named color, primaries to secondaries, tints, shades and the intermediate colors; a wrong mix shows what it really made. Held by ${holders('mix').join(', ')}.
 4. Debug the robot, for technology (built 2026-09-25): a robot follows a program on a grid; find the one wrong step, change it and run again until it reaches the star. Arrows for grade 3, forward and turns for grade 5, each puzzle checked to have exactly one single-step fix. Held by ${holders('debug').join(', ')}, beside their first games.
-5. Timelines for every history grade, using the order kind with new decks.
+5. Timelines for the history grades (built 2026-09-25), using the order kind with new decks: Texas, early civilizations, inventions and buildings, the United States to 1877 and since, world history, and how our government grew. Each date shows once its set is in order. World geography, Thinking like a historian and Communities and government keep their quick fires, since a timeline does not fit them.
 6. A periodic table game for chemistry, so science 11 no longer holds two pairs games.
 7. The reading courses' quick fires wait for a kind that practices reading itself, not only its questions.
 

@@ -1406,7 +1406,7 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
   const twoOfAKind = L.COURSES.filter((c) => new Set(L.COURSE_GAMES[c.id].map(kindOf)).size < L.COURSE_GAMES[c.id].length).length;
   ok('courses holding two games of one kind stay at or under 1', twoOfAKind <= 1, `${twoOfAKind}`);
   let repeats = 0; for (const gr of L.GRADES) { const ks = L.COURSES.filter((c) => c.grade === gr).flatMap((c) => L.COURSE_GAMES[c.id].map(kindOf)); repeats += ks.length - new Set(ks).size; }
-  ok('kinds repeated inside a grade stay at or under 20 (sentence builder, fix it and the color mixer took eight quick fires, 2026-09-25)', repeats <= 20, `${repeats}`);
+  ok('kinds repeated inside a grade stay at or under 15 (new kinds and history timelines took fourteen quick fires, 2026-09-25)', repeats <= 15, `${repeats}`);
   const list = L.GAMES.filter((g) => ['counting-k', 'letters-k'].includes(L.gameCourse(g.id)) || L.STARTER_GAMES.includes(g.id));
   const fresh = L.unlockedGameIds([], list);
   ok('a new student has the starter and the first game open, and nothing from an unfinished course', fresh.size === new Set([...L.STARTER_GAMES, list[0].id]).size && list.slice(1).every((g) => L.STARTER_GAMES.includes(g.id) || !fresh.has(g.id)));
@@ -1441,6 +1441,14 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
   ok('every turns robot has a bug that exactly one single change fixes', L.ROBOT_DECKS.turns.length >= 6 && check(L.ROBOT_DECKS.turns, true));
   ok('the robot stops at the edge and at a rock, and turns in place', L.runRobot({ start: [0, 0], goal: [1, 0], rocks: [] }, ['L'], false).crash === 'edge' && L.runRobot({ start: [0, 0], goal: [2, 0], rocks: [[1, 0]] }, ['R'], false).crash === 'rock' && L.runRobot({ start: [2, 2, 0], goal: [3, 2], rocks: [] }, ['R', 'F'], true).home === true);
   ok('the two robot games sit in the two programming courses beside their first games', L.COURSE_GAMES['tech-3'].includes('debug-tech-3') && L.COURSE_GAMES['tech-5'].includes('debug-tech-5') && L.GAMES.filter((g) => g.kind === 'debug').every((g) => L.ROBOT_DECKS[g.deck]));
+}
+
+
+// History timelines (2026-09-25): every dated set runs strictly forward in time, with a date for every event.
+{
+  const decks = ['texas4', 'cultures6', 'us8', 'world10', 'us11', 'gov12'];
+  ok('every history timeline set has five events, a date for each, and runs strictly forward', decks.every((k) => L.ORDER_DECKS[k] && L.ORDER_DECKS[k].length >= 3 && L.ORDER_DECKS[k].every((s) => s.steps.length === 5 && (!s.years || (s.years.length === 5 && s.when.length === 5 && s.years.every((y, i) => i === 0 || y > s.years[i - 1]))))));
+  ok('every history timeline game sits in its history course beside its map', ['history-4', 'history-6', 'history-8', 'history-10', 'history-11', 'government-12'].every((c) => L.COURSE_GAMES[c].some((id) => { const g = L.GAMES.find((x) => x.id === id); return g && g.kind === 'order' && decks.includes(g.deck); }) && L.COURSE_GAMES[c].some((id) => id.startsWith('map-'))));
 }
 
 console.log(`\n${pass} passed, ${fail} failed`);

@@ -18320,6 +18320,12 @@ const GAMES = [
     { id: 'sprint-math', kind: 'sprint', title: 'Quick fire: math', minGrade: '3', subject: 'Math' },
     { id: 'sprint-science', kind: 'sprint', title: 'Quick fire: science', minGrade: '3', subject: 'Science' },
     { id: 'order-steps', kind: 'order', title: 'In order: how things happen', minGrade: '3', deck: 'processes' },
+    { id: 'order-history-4', kind: 'order', title: 'In order: Texas history', minGrade: '4', deck: 'texas4' },
+    { id: 'order-history-6', kind: 'order', title: 'In order: civilizations, inventions, buildings', minGrade: '6', deck: 'cultures6' },
+    { id: 'order-history-8', kind: 'order', title: 'In order: the United States to 1877', minGrade: '8', deck: 'us8' },
+    { id: 'order-history-10', kind: 'order', title: 'In order: world history', minGrade: '10', deck: 'world10' },
+    { id: 'order-history-11', kind: 'order', title: 'In order: the United States since 1877', minGrade: '11', deck: 'us11' },
+    { id: 'order-government-12', kind: 'order', title: 'In order: how our government grew', minGrade: '12', deck: 'gov12' },
     { id: 'order-timeline', kind: 'order', title: 'In order: timeline', minGrade: '5', deck: 'timeline' },
     { id: 'order-math', kind: 'order', title: 'In order: the math way', minGrade: '5', deck: 'mathsteps' },
     ...['3', '4', '5', '6', '7', '8', '9', '10', '11', '12'].map((g) => ({ id: `pairs-science-${g}`, kind: 'pairs', title: `Grade ${g} science words`, pairs: 6, minGrade: g, deck: `science-${g}`, courseId: `science-${g}` })),
@@ -18335,12 +18341,6 @@ const GAMES = [
     { id: 'mix-art-3', kind: 'mix', title: 'Color mixer: make new colors', minGrade: '3', deck: 'mix3' },
     { id: 'mix-art-4', kind: 'mix', title: 'Color mixer: the color wheel', minGrade: '4', deck: 'mix4' },
     { id: 'sprint-civics-3', kind: 'sprint', title: 'Quick fire: Communities and government', minGrade: '3', course: 'civics-3' },
-    { id: 'sprint-government-12', kind: 'sprint', title: 'Quick fire: United States government', minGrade: '12', course: 'government-12' },
-    { id: 'sprint-history-10', kind: 'sprint', title: 'Quick fire: World history', minGrade: '10', course: 'history-10' },
-    { id: 'sprint-history-11', kind: 'sprint', title: 'Quick fire: United States history since 1877', minGrade: '11', course: 'history-11' },
-    { id: 'sprint-history-4', kind: 'sprint', title: 'Quick fire: The story of Texas', minGrade: '4', course: 'history-4' },
-    { id: 'sprint-history-6', kind: 'sprint', title: 'Quick fire: World cultures', minGrade: '6', course: 'history-6' },
-    { id: 'sprint-history-8', kind: 'sprint', title: 'Quick fire: The United States to 1877', minGrade: '8', course: 'history-8' },
     { id: 'sprint-history-9', kind: 'sprint', title: 'Quick fire: World geography', minGrade: '9', course: 'history-9' },
     { id: 'sprint-history-college', kind: 'sprint', title: 'Quick fire: Thinking like a historian', minGrade: 'C', course: 'history-college' },
     { id: 'sprint-reading-10', kind: 'sprint', title: 'Quick fire: English 2', minGrade: '10', course: 'reading-10' },
@@ -18826,6 +18826,45 @@ const ORDER_DECKS = {
         { title: 'A sound reaching you', steps: ['a string vibrates', 'the air shakes', 'the wave travels', 'your ear catches it', 'your brain hears'] },
         { title: 'From cotton to shirt', steps: ['cotton grows', 'it is spun into thread', 'thread is woven into cloth', 'cloth is sewn', 'the shirt is sold'] },
         { title: 'Rain on a hill', steps: ['rain falls on the hill', 'it runs downhill', 'it reaches a creek', 'the creek joins a river', 'the river reaches the sea'] },
+    ],
+    // History timelines (2026-09-25): each set is five events in the order they happened. when is shown beside each
+    // event once the set is solved, so the dates arrive as the answer rather than as the clue; years carries the same
+    // dates as numbers (before the Common Era negative) so the rules test can prove each set runs strictly forward.
+    texas4: [
+        { title: 'From Spain to Mexico', steps: ['Cabeza de Vaca is shipwrecked on the Texas coast', 'Spain builds its first missions in East Texas', 'San Antonio is founded', 'Mexico wins its independence from Spain', 'Texas declares its independence from Mexico'], when: ['1528', '1690', '1718', '1821', '1836'], years: [1528, 1690, 1718, 1821, 1836] },
+        { title: 'The Texas Revolution', steps: ['The Battle of Gonzales: come and take it', 'Texas declares independence at Washington-on-the-Brazos', 'The Alamo falls', 'The Battle of San Jacinto wins independence', 'Sam Houston becomes the first elected president of the Republic'], when: ['October 2, 1835', 'March 2, 1836', 'March 6, 1836', 'April 21, 1836', 'October 22, 1836'], years: [1835.75, 1836.17, 1836.18, 1836.3, 1836.81] },
+        { title: 'From republic to state', steps: ['The Republic of Texas is born', 'Austin becomes the capital', 'Texas joins the United States', 'Texas leaves the Union in the Civil War', 'Juneteenth: freedom is announced in Galveston'], when: ['1836', '1839', '1845', '1861', 'June 19, 1865'], years: [1836, 1839, 1845, 1861, 1865] },
+        { title: 'Texas grows', steps: ['Cattle drives head north on the Chisholm Trail', 'The State Capitol in Austin is finished', 'The Great Storm strikes Galveston', 'Oil gushes at Spindletop', 'Mission Control in Houston guides Apollo 11 to the Moon'], when: ['1867', '1888', '1900', '1901', '1969'], years: [1867, 1888, 1900, 1901, 1969] },
+    ],
+    cultures6: [
+        { title: 'Early civilizations', steps: ['The first cities grow in Sumer', 'Upper and Lower Egypt are united', 'The great cities of the Indus Valley thrive', 'The Shang dynasty rules in China', 'Maya cities reach their height'], when: ['about 3500 BCE', 'about 3100 BCE', 'about 2500 BCE', 'about 1600 BCE', 'about 250 to 900 CE'], years: [-3500, -3100, -2500, -1600, 250] },
+        { title: 'Inventions that changed the world', steps: ['The wheel', 'Paper, made in China', 'The printing press with movable type', 'The telephone', 'The World Wide Web'], when: ['about 3500 BCE', 'about 2,000 years ago', 'about 1450', '1876', '1989'], years: [-3500, 0, 1450, 1876, 1989] },
+        { title: 'Great buildings', steps: ['The Great Pyramid of Giza', 'The Parthenon in Athens', 'Hagia Sophia in Constantinople', 'The Taj Mahal', 'The Eiffel Tower'], when: ['about 2560 BCE', 'finished 432 BCE', '537', 'built 1632 to 1653', '1889'], years: [-2560, -432, 537, 1653, 1889] },
+    ],
+    us8: [
+        { title: 'Colonies to independence', steps: ['Jamestown is founded', 'The Pilgrims land at Plymouth', 'The French and Indian War ends', 'The Boston Tea Party', 'The Declaration of Independence'], when: ['1607', '1620', '1763', '1773', '1776'], years: [1607, 1620, 1763, 1773, 1776] },
+        { title: 'A new nation', steps: ['The Treaty of Paris ends the Revolutionary War', 'The Constitution is written', 'George Washington becomes the first president', 'The Bill of Rights is added', 'The Louisiana Purchase'], when: ['1783', '1787', '1789', '1791', '1803'], years: [1783, 1787, 1789, 1791, 1803] },
+        { title: 'Growing west', steps: ['Lewis and Clark set out', 'The War of 1812 begins', 'The Missouri Compromise', 'The Trail of Tears', 'Gold is found in California'], when: ['1804', '1812', '1820', '1838', '1848'], years: [1804, 1812, 1820, 1838, 1848] },
+        { title: 'War and Reconstruction', steps: ['The Compromise of 1850', 'Abraham Lincoln is elected president', 'The Civil War begins at Fort Sumter', 'The Emancipation Proclamation', 'Reconstruction ends'], when: ['1850', '1860', '1861', '1863', '1877'], years: [1850, 1860, 1861, 1863, 1877] },
+    ],
+    world10: [
+        { title: 'The ancient world', steps: ['Writing begins in Mesopotamia', 'The Great Pyramid of Giza is built', 'The first Olympic Games in Greece', 'Rome becomes a republic', 'Julius Caesar is killed'], when: ['about 3200 BCE', 'about 2560 BCE', '776 BCE', '509 BCE', '44 BCE'], years: [-3200, -2560, -776, -509, -44] },
+        { title: 'The Middle Ages', steps: ['The Western Roman Empire falls', 'Charlemagne is crowned emperor', 'The Normans conquer England', 'The Magna Carta is sealed', 'The Black Death reaches Europe'], when: ['476', '800', '1066', '1215', '1347'], years: [476, 800, 1066, 1215, 1347] },
+        { title: 'A wider world', steps: ['Gutenberg prints with movable type', 'Columbus reaches the Americas', 'Martin Luther posts his 95 Theses', "Magellan's crew sails all the way around the world", 'Galileo turns a telescope to the sky'], when: ['about 1450', '1492', '1517', '1522', '1609'], years: [1450, 1492, 1517, 1522, 1609] },
+        { title: 'Revolutions', steps: ['The Declaration of Independence', 'The French Revolution begins', 'Napoleon is defeated at Waterloo', 'The first public steam railway opens in England', 'Darwin publishes On the Origin of Species'], when: ['1776', '1789', '1815', '1825', '1859'], years: [1776, 1789, 1815, 1825, 1859] },
+        { title: 'The modern world', steps: ['World War I begins', 'The Russian Revolution', 'World War II ends', 'India becomes independent', 'The Berlin Wall falls'], when: ['1914', '1917', '1945', '1947', '1989'], years: [1914, 1917, 1945, 1947, 1989] },
+    ],
+    us11: [
+        { title: 'A growing power', steps: ['Reconstruction ends', 'Ellis Island opens', 'The Spanish-American War', 'The Model T goes on sale', 'The Panama Canal opens'], when: ['1877', '1892', '1898', '1908', '1914'], years: [1877, 1892, 1898, 1908, 1914] },
+        { title: 'Boom, bust and war', steps: ['The Wright brothers fly at Kitty Hawk', 'The United States enters World War I', 'The 19th Amendment gives women the vote', 'The stock market crashes', 'The attack on Pearl Harbor'], when: ['1903', '1917', '1920', '1929', '1941'], years: [1903, 1917, 1920, 1929, 1941] },
+        { title: 'Civil rights', steps: ['World War II ends', 'Brown v. Board of Education', 'The Montgomery bus boycott begins', 'The March on Washington', 'The Civil Rights Act'], when: ['1945', '1954', '1955', '1963', '1964'], years: [1945, 1954, 1955, 1963, 1964] },
+        { title: 'Space and a new century', steps: ['Sputnik starts the space race', 'Apollo 11 lands on the Moon', 'The Berlin Wall falls', 'The attacks of September 11', 'Barack Obama is elected, the first Black president'], when: ['1957', '1969', '1989', '2001', '2008'], years: [1957, 1969, 1989, 2001, 2008] },
+    ],
+    gov12: [
+        { title: 'Founding documents', steps: ['The Mayflower Compact', 'The Declaration of Independence', 'The Articles of Confederation take effect', 'The Constitution is signed', 'The Bill of Rights is ratified'], when: ['1620', '1776', '1781', '1787', '1791'], years: [1620, 1776, 1781, 1787, 1791] },
+        { title: 'Widening the vote', steps: ['The 15th Amendment: no denying the vote because of race', 'The 17th Amendment: voters elect their senators', "The 19th Amendment: women's right to vote", 'The 24th Amendment ends poll taxes in federal elections', 'The 26th Amendment lowers the voting age to 18'], when: ['1870', '1913', '1920', '1964', '1971'], years: [1870, 1913, 1920, 1964, 1971] },
+        { title: 'Landmark Supreme Court cases', steps: ['Marbury v. Madison: the courts can strike down laws', 'Dred Scott v. Sandford', 'Plessy v. Ferguson', 'Brown v. Board of Education', 'Miranda v. Arizona'], when: ['1803', '1857', '1896', '1954', '1966'], years: [1803, 1857, 1896, 1954, 1966] },
+        { title: 'How a bill becomes a law', steps: ['A member of Congress introduces the bill', 'A committee studies it and votes', 'The House and the Senate each pass it', 'The president signs it', 'It becomes a law'] },
     ],
     timeline: [
         { title: 'Texas', steps: ['Spain builds missions', 'Mexico takes over, 1821', 'the Alamo falls, 1836', 'a republic for nine years', 'the 28th state, 1845', 'Juneteenth, 1865'] },
@@ -40583,15 +40622,15 @@ const COURSE_GAMES = {
     'writing-10': ['fix-writing-10'],
     'writing-12': ['sprint-writing-12'],
     'writing-8': ['buckets-adjective-adverb'],
-    'history-4': ['map-hemispheres', 'sprint-history-4'],
-    'history-6': ['map-oceans', 'sprint-history-6'],
+    'history-4': ['map-hemispheres', 'order-history-4'],
+    'history-6': ['map-oceans', 'order-history-6'],
     'history-7': ['map-texas', 'pairs-capitals'],
     'history-9': ['map-europe', 'sprint-history-9'],
     'history-college': ['map-south-america', 'sprint-history-college'],
-    'history-8': ['map-us-regions', 'sprint-history-8'],
-    'history-10': ['map-us-states', 'sprint-history-10'],
-    'history-11': ['map-africa', 'sprint-history-11'],
-    'government-12': ['map-asia', 'sprint-government-12'],
+    'history-8': ['map-us-regions', 'order-history-8'],
+    'history-10': ['map-us-states', 'order-history-10'],
+    'history-11': ['map-africa', 'order-history-11'],
+    'government-12': ['map-asia', 'order-government-12'],
     'economics-12': ['buckets-state-country'],
     'history-5': ['order-timeline'],
     'math-4': ['path-even'],
@@ -48487,7 +48526,7 @@ function PinInput({ value, onChange, placeholder, style, onEnter = null }) {
 }
 // A stamp of when this copy of the page was built, so a stale page in a cache can be told apart
 // from a fresh one at a glance. Written by the build, never by hand.
-const BUILD_STAMP = '2026-09-25 12:07 AM CDT';
+const BUILD_STAMP = '2026-09-25 09:58 AM CDT';
 function ContactLine({ onOpen, inline = false }) {
     return (react_1.default.createElement("p", { className: "edu-no-print", style: { textAlign: 'center', marginTop: inline ? 0 : 28, fontSize: inline ? 14 : 12, color: C.muted, margin: inline ? '0' : undefined } }, onOpen
         ? react_1.default.createElement("button", { type: "button", onClick: onOpen, style: { background: 'none', border: 'none', color: C.muted, fontFamily: FONT, fontSize: 12, cursor: 'pointer', padding: 0, textDecoration: 'underline' } }, "Contact us")
@@ -51933,11 +51972,12 @@ function OrderGame({ game, round, onScore = null }) {
     const [wrong, setWrong] = (0, react_1.useState)([]);
     const [ticks, setTicks] = (0, react_1.useState)(0);
     const [done, setDone] = (0, react_1.useState)(false);
+    const [rest, setRest] = (0, react_1.useState)(false); // a solved timeline shows its dates for a moment, the clock waiting
     const seq = deck.length ? deck[(round + k) % deck.length] : null;
     const items = (0, react_1.useMemo)(() => (seq ? shuffle(lcg(round * 31 + k * 17 + 5), seq.steps.map((t, idx) => ({ t, idx }))) : []), [seq, round, k]);
-    (0, react_1.useEffect)(() => { setK(0); setPlaced([]); setWrong([]); setDone(false); setTicks(0); }, [round]);
-    (0, react_1.useEffect)(() => { if (done)
-        return undefined; const t = setInterval(() => setTicks((n) => n + 1), 1000); return () => clearInterval(t); }, [done]);
+    (0, react_1.useEffect)(() => { setK(0); setPlaced([]); setWrong([]); setDone(false); setTicks(0); setRest(false); }, [round]);
+    (0, react_1.useEffect)(() => { if (done || rest)
+        return undefined; const t = setInterval(() => setTicks((n) => n + 1), 1000); return () => clearInterval(t); }, [done, rest]);
     (0, react_1.useEffect)(() => { if (done && onScore)
         onScore(ticks, 'low'); }, [done]); // all in order: a lower time is a new best
     (0, react_1.useEffect)(() => { if (!wrong.length)
@@ -51949,7 +51989,7 @@ function OrderGame({ game, round, onScore = null }) {
     // (2026-09-23, Mikey: a choice can be unmade). The order is checked only once every step has a number: right, and
     // the next set comes; wrong, and the first mistake and everything after it come loose to try again.
     const tap = (it) => {
-        if (done)
+        if (done || rest)
             return;
         const at = placed.indexOf(it.idx);
         if (at >= 0) {
@@ -51962,7 +52002,18 @@ function OrderGame({ game, round, onScore = null }) {
             return;
         }
         const firstWrong = next.findIndex((idx, pos) => idx !== pos);
-        if (firstWrong < 0) {
+        // A timeline (a set with dates) shows each event's date once it is in order, the clock resting while they show.
+        if (firstWrong < 0 && seq.when) {
+            setPlaced(next);
+            setRest(true);
+            setTimeout(() => { setRest(false); if (k + 1 >= sets)
+                setDone(true);
+            else {
+                setK(k + 1);
+                setPlaced([]);
+            } }, 2600);
+        }
+        else if (firstWrong < 0) {
             setPlaced(next);
             if (k + 1 >= sets)
                 setDone(true);
@@ -51992,7 +52043,8 @@ function OrderGame({ game, round, onScore = null }) {
             const shake = wrong.includes(it.idx);
             return (react_1.default.createElement("button", { key: it.idx, type: "button", onClick: () => tap(it), "aria-pressed": isPlaced, className: `edu-press${shake ? ' edu-wobble' : ''}`, style: { fontFamily: FONT, fontSize: 15, textAlign: 'left', padding: '10px 12px', borderRadius: 10, border: `2px solid ${isPlaced ? B.green : shake ? B.clay : B.line}`, background: isPlaced ? B.greenSoft : '#fff', color: B.ink, cursor: 'pointer', display: 'flex', gap: 10, alignItems: 'center' } },
                 react_1.default.createElement("span", { style: { width: 24, height: 24, borderRadius: 12, background: isPlaced ? B.green : B.line, color: B.onAccent, fontSize: 13, fontWeight: 700, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flex: '0 0 24px' } }, isPlaced ? at + 1 : ''),
-                it.t));
+                it.t,
+                rest && seq.when && react_1.default.createElement("span", { style: { marginLeft: 'auto', paddingLeft: 8, fontSize: 13, color: B.muted, whiteSpace: 'nowrap' } }, seq.when[it.idx])));
         })))));
 }
 // Debug the robot (2026-09-25, the fourth new kind): the robot's program is a row of numbered steps, and one is wrong.
@@ -52777,7 +52829,7 @@ function gameInstructions(game) {
     }
     if (game.kind === 'sort')
         return game.by === 'size' ? 'Drag each object to the side it belongs. When they are all sorted, you win!' : 'Drag each object to the side it belongs. When each one is sorted, you win!';
-    return { sprint: 'Sixty seconds. Questions from your own lessons come one after another; tap the answer and the next one appears. A right answer is a point, a wrong one takes a point away, and three right in a row starts a streak. Beat your best.', order: 'The steps are shuffled. Tap them in the order they happen, first to last. Tap a numbered step to take its number back. When every step has a number, a right order moves on and the first mistake comes loose to try again. Three sets, and the clock counts up, so race yourself.', dots: 'Tap the dots in order, 1, 2, 3, and a picture appears. Tap the wrong dot and nothing happens; find the next number.', pairs: 'Tap two cards. If the pictures match, they stay up. If not, they turn back over. Find every pair.', maze: 'Drag the dot to the star without crossing a wall.', jigsaw: 'Drag each piece to where it belongs until the picture is whole.', pong: 'Slide the paddle to hit the ball back. Miss, and the ball resets. See how many hits you can keep going.' }[game.kind] || 'Tap to play.';
+    return { sprint: 'Sixty seconds. Questions from your own lessons come one after another; tap the answer and the next one appears. A right answer is a point, a wrong one takes a point away, and three right in a row starts a streak. Beat your best.', order: 'The steps are shuffled. Tap them in the order they happen, first to last. Tap a numbered step to take its number back. When every step has a number, a right order moves on and the first mistake comes loose to try again. On a timeline, the dates appear once the set is in order, and the clock waits while you read them. Three sets, and the clock counts up, so race yourself.', dots: 'Tap the dots in order, 1, 2, 3, and a picture appears. Tap the wrong dot and nothing happens; find the next number.', pairs: 'Tap two cards. If the pictures match, they stay up. If not, they turn back over. Find every pair.', maze: 'Drag the dot to the star without crossing a wall.', jigsaw: 'Drag each piece to where it belongs until the picture is whole.', pong: 'Slide the paddle to hit the ball back. Miss, and the ball resets. See how many hits you can keep going.' }[game.kind] || 'Tap to play.';
 }
 function GamePad({ game, name, secondsLeft, total, onClose, modules = [], onScore = null, best = null, young = false }) {
     const [round, setRound] = (0, react_1.useState)(1);

@@ -28,12 +28,17 @@ The newest block is what educators see once, in a pop-up on the classroom page, 
 - The Wonder Question review is easier to scan: everything is centered except the four voices' names, with thin lines between the parts the youngest children hear. The link that takes every approval back is now called Remove All; it still sends every approved question back to waiting for review, hidden from students.
 - Small touches: the i notes are centered, typing boxes are a soft almond in the dark theme, the weekly note is light green under its dark header, and the Story Log breathes a little more around its toggle and picker.
 
-## September 25, 2026 (two new kinds of game)
+## September 25, 2026 (four new kinds of game)
 
 - Build a sentence: tap the words into a sentence, then build a longer one that says more. Grade 3 adds describing words, grade 4 joins sentences with and, but or so, and grade 5 opens them with because, when, although, if or since.
 - Fix it: every sentence has one mistake, a word, a capital or a mark. Tap it, watch it turn right, and read the rule. Grades 7, 9 and 10 each have their own sentences, and the clock waits while you read.
 - They replace six quick fires in the writing courses, so each of those courses now has a game that practices the writing itself.
 - On the Inactive Students card, a soft line runs under each student, from the name to Delete.
+- Color mixer, for art 3 and art 4: tap two paint pots to make the color named at the top. Grade 3 mixes primaries into secondaries, tints and gray; grade 4 makes shades, a tint and the six in-between colors of the wheel. A wrong mix shows what it really made.
+- The weekly note reads more cleanly: short dark green lines between its parts, small headings, each module or story title in bold with the story's line smaller beneath, and the next module large and bold at the end.
+- In the dark theme, Not started is a quiet tint instead of a bright pill, and the tour's cards have a light green border.
+- The tour now rings every student card on the Student Summaries step, and the Backup classroom step glows the same way as the Story Log step. On Create account, the state you pick sits centered.
+- Debug the robot, for technology 3 and 5: a robot follows its program on a grid, and one step is wrong. Tap Run to watch it, change the step that sends it astray, and run again until it reaches the star. Grade 3 uses arrows; grade 5 uses forward, turn left and turn right. It sits beside each course's first game.
 
 ## September 24, 2026 (a new name)
 

@@ -1097,10 +1097,8 @@ export const GAMES = [
   { id: 'pong', kind: 'pong', title: 'Pong', minGrade: '2' },
   // A course's own quick fire (2026-09-24, pass CO): a timed round of that course's lessons only, for a course no other
   // game suits yet, or whose only game is a map still waiting for its painting.
-  { id: 'debug-tech-3', kind: 'debug', title: 'Debug the robot: arrows', minGrade: '3', deck: 'arrows' },
-  { id: 'debug-tech-5', kind: 'debug', title: 'Debug the robot: turns', minGrade: '5', deck: 'turns' },
-  { id: 'mix-art-3', kind: 'mix', title: 'Color mixer: make new colors', minGrade: '3', deck: 'mix3' },
-  { id: 'mix-art-4', kind: 'mix', title: 'Color mixer: the color wheel', minGrade: '4', deck: 'mix4' },
+  { id: 'sprint-art-3', kind: 'sprint', title: 'Quick fire: Looking and making', minGrade: '3', course: 'art-3' },
+  { id: 'sprint-art-4', kind: 'sprint', title: 'Quick fire: Color, shape and story', minGrade: '4', course: 'art-4' },
   { id: 'sprint-civics-3', kind: 'sprint', title: 'Quick fire: Communities and government', minGrade: '3', course: 'civics-3' },
   { id: 'sprint-government-12', kind: 'sprint', title: 'Quick fire: United States government', minGrade: '12', course: 'government-12' },
   { id: 'sprint-history-10', kind: 'sprint', title: 'Quick fire: World history', minGrade: '10', course: 'history-10' },
@@ -1453,86 +1451,6 @@ export const FIX_DECKS = {
     { text: 'The reason is because the bus was late.', word: 'because', fixed: 'that', why: 'Say the reason is that; because repeats what reason already means.' },
   ],
 };
-// Color mixer (2026-09-25, the third new kind): paint pots and what any two of them make, in the painter's wheel of
-// red, yellow and blue. Two primaries make a secondary; white makes a tint and black a shade; a primary and the
-// secondary beside it make an intermediate color; colors across the wheel from each other make brown. A wrong mix
-// still shows what it really made, so every try teaches something. The swatches are close renditions for a screen.
-export const MIX_PAINTS = { red: '#D7263D', yellow: '#F4D03F', blue: '#2E5EAA', white: '#FFFFFF', black: '#222222', orange: '#F28C28', green: '#3E9E4F', violet: '#7B4FA8' };
-const MIX_TABLE = {
-  'red+yellow': ['orange', '#F28C28'], 'blue+red': ['violet', '#7B4FA8'], 'blue+yellow': ['green', '#3E9E4F'],
-  'red+white': ['pink', '#F4A6B8'], 'white+yellow': ['cream', '#FBF1C4'], 'blue+white': ['light blue', '#9CC3E6'], 'black+white': ['gray', '#9A9A9A'],
-  'black+red': ['dark red', '#7A1F2B'], 'black+yellow': ['olive', '#6B6B2A'], 'black+blue': ['navy', '#1F2F5C'],
-  'orange+white': ['peach', '#F9C9A0'], 'green+white': ['mint', '#A8DDB5'], 'violet+white': ['lavender', '#C9B3E3'],
-  'black+orange': ['brown', '#7B5537'], 'black+green': ['dark green', '#1E5631'], 'black+violet': ['dark violet', '#4A2C6A'],
-  'orange+red': ['red-orange', '#E8532C'], 'orange+yellow': ['yellow-orange', '#F7B32B'], 'green+yellow': ['yellow-green', '#9BC53D'],
-  'blue+green': ['blue-green', '#1F8A8A'], 'blue+violet': ['blue-violet', '#4B3C9E'], 'red+violet': ['red-violet', '#A0306E'],
-  'green+red': ['brown', '#6F4E37'], 'violet+yellow': ['brown', '#735A3C'], 'blue+orange': ['brown', '#6A5040'],
-  'green+orange': ['muddy olive', '#6E6A3A'], 'orange+violet': ['muddy brown', '#6B4A3F'], 'green+violet': ['slate gray', '#5B6470'],
-};
-const PRIMARY = ['red', 'yellow', 'blue']; const SECONDARY = ['orange', 'green', 'violet'];
-export function mixOf(a, b) {
-  if (a === b) return { name: a, hex: MIX_PAINTS[a], note: 'One paint alone stays itself.' };
-  const key = [a, b].sort().join('+'); const hit = MIX_TABLE[key]; if (!hit) return null;
-  const [name, hex] = hit; const has = (x) => a === x || b === x;
-  const note = has('white') && has('black') ? 'Black and white make gray.'
-    : has('white') ? 'Adding white makes a tint, a lighter color.'
-    : has('black') ? 'Adding black makes a shade, a darker color.'
-    : PRIMARY.includes(a) && PRIMARY.includes(b) ? 'Two primary colors make a secondary color.'
-    : name === 'brown' ? 'Colors across the wheel from each other make brown.'
-    : (PRIMARY.includes(a) || PRIMARY.includes(b)) && (SECONDARY.includes(a) || SECONDARY.includes(b)) ? 'A primary and the secondary beside it make an intermediate color.'
-    : 'Two secondary colors make a muddy mix.';
-  // Violet is the art word; a child may know it as purple, so the note says so wherever violet is made.
-  return { name, hex, note: name === 'violet' ? `${note} Violet is the art word for purple.` : note };
-}
-// Every named color the mixer can show, for its swatches.
-export const MIX_COLORS = { ...Object.fromEntries(Object.values(MIX_TABLE).map(([n, h]) => [n, h])), ...MIX_PAINTS };
-// Each deck: the pots on the table and the colors to make. Every target is made by exactly one pair of its pots.
-export const MIX_DECKS = {
-  mix3: { pots: ['red', 'yellow', 'blue', 'white', 'black'], targets: ['orange', 'green', 'violet', 'pink', 'light blue', 'gray'] },
-  mix4: { pots: ['red', 'yellow', 'blue', 'white', 'black', 'orange', 'green', 'violet'], targets: ['dark red', 'navy', 'cream', 'red-orange', 'yellow-green', 'blue-violet', 'yellow-orange', 'blue-green', 'red-violet'] },
-};
-// Debug the robot (2026-09-25, the fourth new kind): a robot on a five-by-five grid runs a program one step at a time,
-// and one step is wrong. Arrows (grade 3 technology) move one square up, down, left or right. Turns (grade 5) go
-// forward one square, or turn left or right where the robot stands; it starts facing up (0), right (1), down (2) or
-// left (3). Squares count from the top left, x across and y down. Every puzzle came from a search that kept only
-// programs where changing that one step, and no other single change, brings the robot to the star without leaving the
-// grid or bumping a rock; the rules test runs the same check.
-export const ROBOT_DECKS = {
-  arrows: [
-    { start: [1,1], goal: [0,4], rocks: [[2,1],[0,2],[2,2]], program: 'DDLU' },
-    { start: [1,1], goal: [4,4], rocks: [[3,1],[3,4],[2,3]], program: 'DRLRDD' },
-    { start: [3,4], goal: [1,2], rocks: [[3,3],[1,3]], program: 'LLUL' },
-    { start: [0,0], goal: [2,2], rocks: [[3,2],[0,2],[2,0]], program: 'DURD' },
-    { start: [1,4], goal: [3,2], rocks: [[2,4],[0,4],[2,1]], program: 'URDR' },
-    { start: [4,4], goal: [3,1], rocks: [[3,0],[3,4],[2,2]], program: 'ULRU' },
-    { start: [0,1], goal: [3,0], rocks: [[1,2],[0,2],[3,1]], program: 'RRUD' },
-    { start: [3,1], goal: [2,4], rocks: [[1,4],[3,3]], program: 'DRDD' },
-  ],
-  turns: [
-    { start: [2,3,0], goal: [4,1], rocks: [[1,2],[2,4],[4,0]], program: 'FRFFLL' },
-    { start: [3,1,2], goal: [4,4], rocks: [[3,0],[4,1]], program: 'FFLLRF' },
-    { start: [0,1,2], goal: [4,3], rocks: [[0,0],[2,1]], program: 'FFFFFFRF' },
-    { start: [2,0,2], goal: [0,2], rocks: [[1,2],[3,0]], program: 'FRFFLR' },
-    { start: [1,2,1], goal: [4,3], rocks: [[1,3],[2,1]], program: 'FRRFLF' },
-    { start: [2,0,2], goal: [2,2], rocks: [[3,3],[1,1],[1,0]], program: 'FLRRFRF' },
-    { start: [4,1,3], goal: [4,3], rocks: [[2,1],[4,4],[2,2]], program: 'FLLFLF' },
-    { start: [2,0,3], goal: [3,1], rocks: [[1,2],[0,1],[3,0]], program: 'FLFRFF' },
-  ],
-};
-const ROBOT_HEAD = [[0, -1], [1, 0], [0, 1], [-1, 0]]; const ROBOT_MOVE = { U: [0, -1], D: [0, 1], L: [-1, 0], R: [1, 0] };
-// Runs a program: where the robot stands and faces after each step, whether it bumped (the edge or a rock) and where,
-// and whether it ended on the star.
-export function runRobot(p, program, turns = false) {
-  let [x, y] = p.start; let h = p.start[2] || 0; const rock = new Set(p.rocks.map(([a, b]) => `${a},${b}`)); const steps = [];
-  for (const s of program) {
-    if (turns && (s === 'L' || s === 'R')) { h = s === 'L' ? (h + 3) % 4 : (h + 1) % 4; steps.push([x, y, h]); continue; }
-    const [dx, dy] = turns ? ROBOT_HEAD[h] : ROBOT_MOVE[s]; const nx = x + dx; const ny = y + dy;
-    if (nx < 0 || ny < 0 || nx > 4 || ny > 4) return { steps, crash: 'edge', at: steps.length };
-    if (rock.has(`${nx},${ny}`)) return { steps, crash: 'rock', at: steps.length };
-    x = nx; y = ny; steps.push([x, y, h]);
-  }
-  return { steps, crash: null, home: x === p.goal[0] && y === p.goal[1] };
-}
 export const ORDER_DECKS = {
   processes: [
     { title: 'The water cycle', steps: ['the sun warms the sea', 'water evaporates', 'vapor cools into clouds', 'rain falls', 'rivers carry it back'] },
@@ -21894,8 +21812,8 @@ export const COURSE_GAMES = {
   'multiplication-3': ['pairs-fractions'],
   'very-first-steps-pk3': ['dots-house'],
   'listen-and-point-pk3': ['sort-color'],
-  'art-3': ['mix-art-3'],
-  'art-4': ['mix-art-4'],
+  'art-3': ['sprint-art-3'],
+  'art-4': ['sprint-art-4'],
   'science-k': ['catch-circles'],
   'science-1': ['balance-ten'],
   'civics-k': ['sort-size'],
@@ -21905,8 +21823,8 @@ export const COURSE_GAMES = {
   'music-4': ['pairs-music'],
   'health-k': ['dots-rocket'],
   'health-4': ['pairs-health'],
-  'tech-3': ['pairs-technology', 'debug-tech-3'],
-  'tech-5': ['pong', 'debug-tech-5'],
+  'tech-3': ['pairs-technology'],
+  'tech-5': ['pong'],
   'tech-7': ['sprint-tech-7'],
   'civics-3': ['map-continents', 'sprint-civics-3'],
   'science-2': ['pairs-more'],

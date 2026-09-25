@@ -1406,7 +1406,7 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
   const twoOfAKind = L.COURSES.filter((c) => new Set(L.COURSE_GAMES[c.id].map(kindOf)).size < L.COURSE_GAMES[c.id].length).length;
   ok('courses holding two games of one kind stay at or under 1', twoOfAKind <= 1, `${twoOfAKind}`);
   let repeats = 0; for (const gr of L.GRADES) { const ks = L.COURSES.filter((c) => c.grade === gr).flatMap((c) => L.COURSE_GAMES[c.id].map(kindOf)); repeats += ks.length - new Set(ks).size; }
-  ok('kinds repeated inside a grade stay at or under 22 (the sentence builder and fix it took six quick fires, 2026-09-25)', repeats <= 22, `${repeats}`);
+  ok('kinds repeated inside a grade stay at or under 20 (sentence builder, fix it and the color mixer took eight quick fires, 2026-09-25)', repeats <= 20, `${repeats}`);
   const list = L.GAMES.filter((g) => ['counting-k', 'letters-k'].includes(L.gameCourse(g.id)) || L.STARTER_GAMES.includes(g.id));
   const fresh = L.unlockedGameIds([], list);
   ok('a new student has the starter and the first game open, and nothing from an unfinished course', fresh.size === new Set([...L.STARTER_GAMES, list[0].id]).size && list.slice(1).every((g) => L.STARTER_GAMES.includes(g.id) || !fresh.has(g.id)));
@@ -1421,6 +1421,26 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
   ok('every sentence builder set has a short and a longer sentence, each with one capital first word and one end mark last', Object.values(L.BUILD_DECKS).every((d) => d.length >= 5 && d.every((s) => pinned(s.base) && pinned(s.more) && s.more.split(' ').length > s.base.split(' ').length)));
   ok('every fix it sentence names a wrong word that appears exactly once, and its fix reads as a whole sentence', Object.values(L.FIX_DECKS).every((d) => d.length >= 5 && d.every((it) => { const w = it.text.split(' '); return w.filter((x) => x === it.word).length === 1 && it.fixed && it.fixed !== it.word && endMark.test(it.text) && endMark.test(w.map((x) => (x === it.word ? it.fixed : x)).join(' ')) && it.why && it.why.length > 10; })));
   ok('every sentence builder and fix it game has its deck and a course', L.GAMES.filter((g) => g.kind === 'build' || g.kind === 'fix').length === 6 && L.GAMES.filter((g) => g.kind === 'build').every((g) => L.BUILD_DECKS[g.deck]) && L.GAMES.filter((g) => g.kind === 'fix').every((g) => L.FIX_DECKS[g.deck]) && L.GAMES.filter((g) => g.kind === 'build' || g.kind === 'fix').every((g) => Object.values(L.COURSE_GAMES).some((ids) => ids.includes(g.id))));
+}
+
+
+// Color mixer (2026-09-25): every pair of a deck's pots makes something, and every color to make has exactly one recipe.
+{
+  const decks = Object.values(L.MIX_DECKS);
+  ok('every pair of a color mixer deck\'s pots mixes to a named color with a rule', decks.every((d) => d.pots.every((a) => d.pots.every((b) => { const m = L.mixOf(a, b); return m && m.name && /^#[0-9A-F]{6}$/.test(m.hex) && m.note; }))));
+  ok('every color mixer target is made by exactly one pair of its pots and has a swatch', decks.every((d) => d.targets.every((t) => { let n = 0; for (let i = 0; i < d.pots.length; i++) for (let j = i + 1; j < d.pots.length; j++) if (L.mixOf(d.pots[i], d.pots[j]).name === t) n += 1; return n === 1 && L.MIX_COLORS[t]; }) && d.targets.length >= 5));
+  ok('the wheel mixes right: two primaries a secondary, white a tint, black a shade, across the wheel brown', L.mixOf('red', 'yellow').name === 'orange' && L.mixOf('yellow', 'blue').name === 'green' && L.mixOf('blue', 'red').name === 'violet' && L.mixOf('red', 'white').name === 'pink' && L.mixOf('blue', 'black').name === 'navy' && L.mixOf('red', 'green').name === 'brown' && L.mixOf('yellow', 'violet').name === 'brown' && L.mixOf('blue', 'orange').name === 'brown' && L.mixOf('orange', 'red').name === 'red-orange');
+  ok('the two color mixer games belong to the two art courses', L.COURSE_GAMES['art-3'][0] === 'mix-art-3' && L.COURSE_GAMES['art-4'][0] === 'mix-art-4' && L.GAMES.filter((g) => g.kind === 'mix').every((g) => L.MIX_DECKS[g.deck]));
+}
+
+
+// Debug the robot (2026-09-25): each program fails as written, and exactly one single-step change brings the robot home.
+{
+  const check = (deck, turns) => deck.every((p) => { const cmds = turns ? ['F', 'L', 'R'] : ['U', 'D', 'L', 'R']; const prog = p.program.split(''); if (L.runRobot(p, prog, turns).home) return false; let fixes = 0; for (let j = 0; j < prog.length; j++) for (const c of cmds) { if (c === prog[j]) continue; const t = prog.slice(); t[j] = c; const r = L.runRobot(p, t, turns); if (r.home && !r.crash) fixes += 1; } return fixes === 1 && prog.every((c) => cmds.includes(c)) && p.rocks.every(([a, b]) => !(a === p.goal[0] && b === p.goal[1]) && !(a === p.start[0] && b === p.start[1])); });
+  ok('every arrows robot has a bug that exactly one single change fixes', L.ROBOT_DECKS.arrows.length >= 6 && check(L.ROBOT_DECKS.arrows, false));
+  ok('every turns robot has a bug that exactly one single change fixes', L.ROBOT_DECKS.turns.length >= 6 && check(L.ROBOT_DECKS.turns, true));
+  ok('the robot stops at the edge and at a rock, and turns in place', L.runRobot({ start: [0, 0], goal: [1, 0], rocks: [] }, ['L'], false).crash === 'edge' && L.runRobot({ start: [0, 0], goal: [2, 0], rocks: [[1, 0]] }, ['R'], false).crash === 'rock' && L.runRobot({ start: [2, 2, 0], goal: [3, 2], rocks: [] }, ['R', 'F'], true).home === true);
+  ok('the two robot games sit in the two programming courses beside their first games', L.COURSE_GAMES['tech-3'].includes('debug-tech-3') && L.COURSE_GAMES['tech-5'].includes('debug-tech-5') && L.GAMES.filter((g) => g.kind === 'debug').every((g) => L.ROBOT_DECKS[g.deck]));
 }
 
 console.log(`\n${pass} passed, ${fail} failed`);

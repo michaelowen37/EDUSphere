@@ -25,8 +25,8 @@ Each new kind should make the course's idea the rule of the game, so playing is 
 
 1. Sentence builder, for writing (built 2026-09-25): tap word tiles into a sentence that makes sense, then into one that says more. Held by ${holders('build').join(', ')}.
 2. Fix it, for writing (built 2026-09-25): tap the one word, capital or mark that is wrong in a sentence, then read the rule. Held by ${holders('fix').join(', ')}.
-3. Color mixer, for art: mix two paints to hit a target color, primaries to secondaries to tints and shades.
-4. Debug the robot, for technology: a robot follows steps on a grid; find and fix the step that sends it the wrong way.
+3. Color mixer, for art (built 2026-09-25): tap two paint pots to make a named color, primaries to secondaries, tints, shades and the intermediate colors; a wrong mix shows what it really made. Held by ${holders('mix').join(', ')}.
+4. Debug the robot, for technology (built 2026-09-25): a robot follows a program on a grid; find the one wrong step, change it and run again until it reaches the star. Arrows for grade 3, forward and turns for grade 5, each puzzle checked to have exactly one single-step fix. Held by ${holders('debug').join(', ')}, beside their first games.
 5. Timelines for every history grade, using the order kind with new decks.
 6. A periodic table game for chemistry, so science 11 no longer holds two pairs games.
 7. The reading courses' quick fires wait for a kind that practices reading itself, not only its questions.

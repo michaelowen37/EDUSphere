@@ -737,6 +737,21 @@ Approved by Mikey on 2026-09-04 unless marked "proposed".
 - docs/GAMES-PLAN.md is now written by tools/games-plan.mjs from the app's own lists.
 - Inactive Students: a soft line under each student row (ivory at 45 percent in the dark theme, the usual line color in the light), running from where the name begins to the end of Delete; the card's padding keeps it off the edges.
 
+## 2026-09-25 (pass DF): the color mixer, a sleeker weekly note, tour fixes
+
+- Mikey committed DE; this commit message starts fresh at DF.
+- Color mixer (kind mix): MIX_TABLE holds what any two of eight pots make in the painter's red, yellow and blue wheel (28 pairs): primaries to secondaries, white to tints (pink, cream, light blue, peach, mint, lavender), black to shades (dark red, navy, olive, brown from orange, dark green, dark violet), black and white to gray, a primary and its neighboring secondary to the six intermediate colors, complements to brown, and the three secondary pairs to muddy mixes. mixOf names the result and the rule behind it, so a wrong mix still teaches. The secondary is called violet, the art term, and whenever violet is made the note adds that violet is the art word for purple. Decks: mix3 for art 3 (Looking and making: orange, green, violet, pink, light blue, gray from five pots) and mix4 for art 4 (Color, shape and story: dark red, navy, cream and the six intermediates from eight pots). Every target is made by exactly one pair of its deck's pots, tested. They replace the two art quick fires; repeats inside a grade 22 to 20, kinds 17, quick fires 23.
+- Weekly note: WeeklyNoteBody lays the note out from its own words (so an edited note still reads): parts split at blank lines with a short dark green line between them, a heading line ending in a colon becomes a small uppercase heading with its items under it, each item's bold title on its own line and the rest smaller beneath, and Next up names the module large and bold. Layout and type, so both themes; the dark colors pass contrast on the light green body.
+- Not started (the locked tag everywhere) is ivory at 10 percent in the dark theme, not a near-white pill. The tour card has a 2 px light green border in the dark theme; an older 1 px line later in the same style had been overriding the earlier border.
+- Tour: the Student Summaries step rings every sample student's card (the first was left out). The Backup classroom step rings the whole backup line, as the Story Log step rings its line, and the link's own due-for-backup halo rests while the tour ring shows, so both steps look alike. The state picker on Create account is centered like the other one.
+
+## 2026-09-25 (pass DG): debug the robot
+
+- Mikey re-sent the DF request list word for word with Not committed. Everything on it had been delivered in DF, so nothing was redone; DF is not committed, so this commit message covers DF and DG (DE was committed, per his message before).
+- Debug the robot (kind debug): a robot on a five-by-five grid runs a program, and one step is wrong. Arrows (tech 3, How computers think) move one square up, down, left or right; turns (tech 5, Programs that decide) go forward or turn left or right in place, starting from a stated heading. Run plays the program a step at a time and leaves a trail; tapping a step cycles it and sends the robot back to the start; home says which step was the bug and what it needed, and a bump says which step ran into a rock or the edge.
+- The puzzles came from a search (a separate script, not the app's runner) that kept only programs that fail as written and that exactly one single-step change brings home without bumping; the rules test checks the same with the app's own runRobot, so two independent runners agree on all sixteen. Eight puzzles a deck, four a round.
+- The two games join tech 3 and tech 5 as second games beside pairs-technology and pong, rather than replacing them: those are their courses' only other games, and neither is a quick fire. Kinds of game 18; quick fires 23; repeats 20.
+
 ## Open items
 - Verify audio plays inside the chat artifact sandbox (works in a normal browser).
 - Common Core / TEKS codes on existing modules to be checked against the official lists.

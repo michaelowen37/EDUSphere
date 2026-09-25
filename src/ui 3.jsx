@@ -1048,7 +1048,6 @@ const KID_ANIMATION = () => `
   /* A student's very first button wears the same circling spot, so a young eye finds it. */
   .edu-orbit::after { content: ''; position: absolute; width: 11px; height: 11px; border-radius: 50%; background: #24291F; border: 2px solid #E6B84B; pointer-events: none; z-index: 5; animation: edu-tour-orbit 4s linear infinite; }
   @media (prefers-reduced-motion: reduce) { .edu-orbit::after { animation: none; top: -8px; left: -8px; } }
-  .edu-tour-target .edu-glow { animation: none; }
   .edu-tour-target::after { content: ''; position: absolute; width: 11px; height: 11px; border-radius: 50%; background: #24291F; border: 2px solid #E6B84B; pointer-events: none; z-index: 5; animation: edu-tour-orbit 4s linear infinite; }
   @keyframes edu-tour-pulse { 0%, 100% { box-shadow: 0 0 0 4px #E6B84B, 0 0 14px 4px rgba(230, 184, 75, 0.45); } 50% { box-shadow: 0 0 0 6px #E6B84B, 0 0 26px 10px rgba(230, 184, 75, 0.75); } }
   @keyframes edu-tour-orbit { 0% { top: -8px; left: -8px; } 25% { top: -8px; left: calc(100% - 4px); } 50% { top: calc(100% - 4px); left: calc(100% - 4px); } 75% { top: calc(100% - 4px); left: -8px; } 100% { top: -8px; left: -8px; } }
@@ -1420,43 +1419,6 @@ function StarBurst() {
 function inlineRich(text, keyPrefix) {
   const parts = String(text).split(/(\*\*[^*]+\*\*)/g).filter(Boolean);
   return parts.map((part, i) => (part.startsWith('**') && part.endsWith('**') ? <strong key={`${keyPrefix}-${i}`}>{part.slice(2, -2)}</strong> : <React.Fragment key={`${keyPrefix}-${i}`}>{part}</React.Fragment>));
-}
-// The weekly note, laid out (2026-09-25, Mikey: sleeker, short lines between its parts, the next module in bold). The
-// words are the note's own, generated or edited. Parts split at blank lines, with a short line between them; a part that
-// opens with a line ending in a colon is a small heading with its bulleted items under it, each item's bold title on a
-// line of its own and the rest of it smaller beneath; Next up names its module large and bold. Anything else stays a plain
-// centered paragraph, so a note the educator rewrote still reads.
-function WeeklyNoteBody({ text }) {
-  const dark = C.mode === 'dark';
-  const head = dark ? '#1E5A45' : C.green; const soft = dark ? '#2E4A3E' : C.muted; const rule = dark ? 'rgba(30, 90, 69, 0.5)' : C.line;
-  const parts = String(text || '').split(/\n\s*\n/).map((x) => x.trim()).filter(Boolean);
-  const bold = (s) => s.split(/\*\*(.+?)\*\*/g).map((x, i) => (i % 2 ? <strong key={i}>{x}</strong> : x));
-  const heading = { margin: '0 0 8px', fontSize: 12.5, fontWeight: 700, letterSpacing: 0.9, textTransform: 'uppercase', color: head };
-  return (
-    <div style={{ textAlign: 'center' }}>
-      {parts.map((part, i) => {
-        const lines = part.split('\n'); const items = lines.slice(1).filter((l) => /^•\s*/.test(l)); const nx = lines.length === 1 ? /^Next up:\s*(.+?)\.?$/.exec(part) : null;
-        let inner;
-        if (nx) inner = <><p style={heading}>Next up</p><p style={{ margin: 0, fontSize: 18, fontWeight: 700 }}>{nx[1].replace(/\*\*/g, '')}</p></>;
-        else if (/:$/.test(lines[0]) && items.length) inner = (
-          <>
-            <p style={heading}>{lines[0].replace(/:$/, '')}</p>
-            {items.map((l, j) => {
-              const t = l.replace(/^•\s*/, ''); const m = /^\*\*(.+?)\*\*(.*)$/.exec(t); const rest = m ? m[2].replace(/^[,.]\s*/, '').trim() : '';
-              return (
-                <div key={j} style={{ margin: j ? '10px 0 0' : 0 }}>
-                  <p style={{ margin: 0, fontSize: 16.5, fontWeight: 700 }}>{m ? m[1] : bold(t)}</p>
-                  {rest && <p style={{ margin: '2px auto 0', maxWidth: 460, fontSize: 14, lineHeight: 1.5, color: soft }}>{rest.charAt(0).toUpperCase() + rest.slice(1)}</p>}
-                </div>
-              );
-            })}
-          </>
-        );
-        else inner = <p style={{ margin: 0, fontSize: 15.5, lineHeight: 1.6 }}>{bold(part)}</p>;
-        return <div key={i}>{i > 0 && <div aria-hidden="true" style={{ width: '38%', maxWidth: 180, height: 2, borderRadius: 1, background: rule, margin: '16px auto' }} />}{inner}</div>;
-      })}
-    </div>
-  );
 }
 function RichText({ text, size = 17, color = null, center = false, lineGap = 10 }) {
   const lines = String(text || '').split('\n');
@@ -2686,117 +2648,6 @@ function OrderGame({ game, round, onScore = null }) {
     </div>
   );
 }
-// Debug the robot (2026-09-25, the fourth new kind): the robot's program is a row of numbered steps, and one is wrong.
-// Run plays it a step at a time on the grid; a tap on a step changes it (arrows: up, right, down, left; turns: forward,
-// turn left, turn right), and the robot waits at the start again. Home on the star brings Next and says which step was
-// the bug; a bump says where. Four robots a round; the clock stops while a result shows.
-function DebugGame({ game, round, onScore = null }) {
-  const deck = ROBOT_DECKS[game.deck] || []; const turns = game.deck === 'turns';
-  const cmds = turns ? ['F', 'L', 'R'] : ['U', 'R', 'D', 'L'];
-  const glyph = turns ? { F: '↑', L: '↺', R: '↻' } : { U: '↑', R: '→', D: '↓', L: '←' };
-  const word = turns ? { F: 'forward', L: 'turn left', R: 'turn right' } : { U: 'up', R: 'right', D: 'down', L: 'left' };
-  const [k, setK] = useState(0); const [prog, setProg] = useState([]); const [shown, setShown] = useState(-1); const [ticks, setTicks] = useState(0); const [done, setDone] = useState(false);
-  const p = deck.length ? deck[(round * 3 + k) % deck.length] : null;
-  useEffect(() => { setK(0); setDone(false); setTicks(0); }, [round]);
-  useEffect(() => { if (p) { setProg(p.program.split('')); setShown(-1); } }, [p]);
-  const res = useMemo(() => (p ? runRobot(p, prog, turns) : null), [p, prog, turns]);
-  const total = res ? res.steps.length : 0;
-  const finished = shown >= 0 && shown >= total;
-  const home = finished && res && !res.crash && res.home;
-  useEffect(() => { if (done || home) return undefined; const t = setInterval(() => setTicks((n) => n + 1), 1000); return () => clearInterval(t); }, [done, home]);
-  useEffect(() => { if (done && onScore) onScore(ticks, 'low'); }, [done]);   // every robot home: a lower time is a new best
-  useEffect(() => { if (shown < 0 || shown >= total) return undefined; const t = setTimeout(() => setShown((n) => n + 1), 420); return () => clearTimeout(t); }, [shown, total]);
-  if (!p || !res) return null;
-  const sets = Math.min(4, deck.length);
-  const running = shown >= 0 && shown < total;
-  const change = (i) => { if (running || home) return; const next = prog.slice(); next[i] = cmds[(cmds.indexOf(next[i]) + 1) % cmds.length]; setProg(next); setShown(-1); };
-  const next = () => { if (k + 1 >= sets) setDone(true); else setK(k + 1); };
-  const at = shown > 0 ? res.steps[Math.min(shown, total) - 1] : [p.start[0], p.start[1], p.start[2] || 0];
-  const cell = 44; const pad = 6; const px = (v) => pad + v * cell + cell / 2;
-  const changed = prog.map((c, i) => (c !== p.program[i] ? i : -1)).filter((i) => i >= 0);
-  const said = !finished ? (running ? `Step ${Math.max(1, shown)} of ${prog.length}` : 'Tap Run to watch the robot follow its steps.')
-    : home ? (changed.length === 1 ? `Home! Step ${changed[0] + 1} was the bug: it said ${word[p.program[changed[0]]]}, and it needed ${word[prog[changed[0]]]}.` : 'Home! The robot reached the star.')
-    : res.crash ? `Bump! Step ${res.at + 1} ran the robot into ${res.crash === 'rock' ? 'a rock' : 'the edge'}. Tap a step to change it.`
-    : 'The robot stopped away from the star. Tap a step to change it.';
-  return (
-    <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Find the bug</span><span>{ticks}s · {Math.min(k + 1, sets)} of {sets}</span></div>
-      {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Every robot home in {ticks} seconds. Tap the round arrow for new ones.</p> : (
-        <div style={{ textAlign: 'center' }}>
-          <svg viewBox={`0 0 ${cell * 5 + pad * 2} ${cell * 5 + pad * 2}`} width="100%" style={{ maxWidth: 260, display: 'block', margin: '0 auto' }} role="img" aria-label="The robot's grid">
-            {[0, 1, 2, 3, 4].map((a) => [0, 1, 2, 3, 4].map((b) => <rect key={`${a}-${b}`} x={pad + a * cell} y={pad + b * cell} width={cell} height={cell} fill="#fff" stroke={B.line} strokeWidth="1.5" />))}
-            {shown > 0 && res.steps.slice(0, Math.min(shown, total)).map(([a, b], i) => <circle key={i} cx={px(a)} cy={px(b)} r="5" fill={B.green} opacity="0.45" />)}
-            {p.rocks.map(([a, b]) => <ellipse key={`r${a}-${b}`} cx={px(a)} cy={px(b) + 3} rx="15" ry="12" fill="#8C8C84" stroke="#5E5E57" strokeWidth="2" />)}
-            <path d={`M ${px(p.goal[0])} ${px(p.goal[1]) - 15} l 4.4 9 l 9.9 1.4 l -7.2 7 l 1.7 9.8 l -8.8 -4.6 l -8.8 4.6 l 1.7 -9.8 l -7.2 -7 l 9.9 -1.4 z`} fill="#E6B84B" stroke="#9C7A1C" strokeWidth="1.5" />
-            <g transform={`translate(${px(at[0])} ${px(at[1])})`}>
-              <rect x="-14" y="-14" width="28" height="28" rx="7" fill={res.crash && finished ? B.clay : B.green} stroke={B.ink} strokeWidth="1.5" />
-              <circle cx="-5" cy="-3" r="3" fill="#fff" /><circle cx="5" cy="-3" r="3" fill="#fff" />
-              {turns && <path d="M 0 -22 L 6 -15 L -6 -15 Z" fill={B.ink} transform={`rotate(${at[2] * 90})`} />}
-            </g>
-          </svg>
-          <p style={{ margin: '8px 0 8px', fontSize: 15, color: B.ink, minHeight: 22 }}>{said}</p>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, justifyContent: 'center', marginBottom: 10 }}>
-            {prog.map((c, i) => { const now = running && i === shown - 1; return (
-              <button key={i} type="button" onClick={() => change(i)} aria-label={`Step ${i + 1}: ${word[c]}`} className="edu-press" style={{ fontFamily: FONT, minWidth: 44, padding: '6px 8px', borderRadius: 10, border: `2px solid ${now ? B.green : B.line}`, background: now ? B.greenSoft : '#fff', color: B.ink, cursor: running || home ? 'default' : 'pointer', display: 'inline-flex', flexDirection: 'column', alignItems: 'center', lineHeight: 1.1 }}>
-                <span style={{ fontSize: 11, color: B.muted }}>{i + 1}</span><span style={{ fontSize: 22, fontWeight: 700 }}>{glyph[c]}</span>
-              </button>); })}
-          </div>
-          {home ? <Btn pal={B} onClick={next}>{k + 1 >= sets ? 'Finish' : 'Next robot'}</Btn> : <Btn pal={B} onClick={() => setShown(0)} disabled={running}>{running ? 'Running...' : 'Run'}</Btn>}
-        </div>
-      )}
-    </div>
-  );
-}
-// Color mixer (2026-09-25, the third new kind): a color to make and a row of paint pots. Tap two pots and they pour into
-// the bowl, which shows what they really make, by name. The right color brings its rule and Next, and the clock waits
-// while the rule shows; a wrong mix says what it made, then clears for another try. Five colors a round.
-function MixGame({ game, round, onScore = null }) {
-  const deck = MIX_DECKS[game.deck] || null;
-  const [k, setK] = useState(0); const [picked, setPicked] = useState([]); const [made, setMade] = useState(null); const [ticks, setTicks] = useState(0); const [done, setDone] = useState(false);
-  const order = useMemo(() => (deck ? shuffle(lcg(round * 29 + 7), deck.targets.slice()) : []), [deck, round]);
-  const target = order.length ? order[k % order.length] : null;
-  const right = !!(made && made.name === target);
-  useEffect(() => { setK(0); setPicked([]); setMade(null); setDone(false); setTicks(0); }, [round]);
-  useEffect(() => { if (done || right) return undefined; const t = setInterval(() => setTicks((n) => n + 1), 1000); return () => clearInterval(t); }, [done, right]);
-  useEffect(() => { if (done && onScore) onScore(ticks, 'low'); }, [done]);   // every color made: a lower time is a new best
-  useEffect(() => { if (!made || right) return undefined; const t = setTimeout(() => { setMade(null); setPicked([]); }, 1900); return () => clearTimeout(t); }, [made, right]);
-  if (!deck || !target) return null;
-  const sets = Math.min(5, order.length);
-  const tap = (pot) => {
-    if (done || made) return;
-    if (picked.includes(pot)) { setPicked(picked.filter((x) => x !== pot)); return; }
-    const next = [...picked, pot]; setPicked(next);
-    if (next.length === 2) setMade(mixOf(next[0], next[1]));
-  };
-  const next = () => { if (k + 1 >= sets) setDone(true); else { setK(k + 1); setPicked([]); setMade(null); } };
-  const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
-  const dot = (hex, size) => ({ width: size, height: size, borderRadius: '50%', background: hex, border: `2px solid ${hex === '#FFFFFF' ? B.line : 'rgba(0, 0, 0, 0.15)'}`, boxSizing: 'border-box', display: 'inline-block' });
-  const said = made ? `${cap(picked[0])} and ${picked[1]} make ${made.name}.` : picked.length === 1 ? `${cap(picked[0])} and ...` : 'Tap two paints.';
-  return (
-    <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 10 }}><span>Make {target}</span><span>{ticks}s · {Math.min(k + 1, sets)} of {sets}</span></div>
-      {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Every color made in {ticks} seconds. Tap the round arrow for new ones.</p> : (
-        <div style={{ textAlign: 'center' }}>
-          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 28, marginBottom: 10 }}>
-            <div><span aria-hidden="true" style={dot(MIX_COLORS[target], 64)} /><p style={{ margin: '4px 0 0', fontSize: 15, fontWeight: 700 }}>{target}</p></div>
-            <div><span aria-label={made ? `The bowl: ${made.name}` : 'The bowl'} style={{ ...dot(made ? made.hex : 'transparent', 64), border: made ? dot(made.hex, 64).border : `2px dashed ${B.line}` }} /><p style={{ margin: '4px 0 0', fontSize: 15, fontWeight: 700 }}>{made ? made.name : 'the bowl'}</p></div>
-          </div>
-          <p style={{ margin: '0 0 6px', fontSize: 15, color: B.ink }}>{said}</p>
-          {made && !right && <p style={{ margin: '0 0 6px', fontSize: 14, color: B.muted }}>Not {target} yet. Try another pair.</p>}
-          {right && <><p style={{ margin: '0 0 10px', fontSize: 14, color: B.ink }}>{made.note}</p><Btn pal={B} onClick={next}>{k + 1 >= sets ? 'Finish' : 'Next color'}</Btn></>}
-          {!right && (
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, justifyContent: 'center', marginTop: 8 }}>
-              {deck.pots.map((pot) => { const on = picked.includes(pot); return (
-                <button key={pot} type="button" onClick={() => tap(pot)} aria-pressed={on} className="edu-press" style={{ fontFamily: FONT, fontSize: 14, padding: '6px 10px', borderRadius: 12, border: `2px solid ${on ? B.green : B.line}`, background: on ? B.greenSoft : '#fff', color: B.ink, cursor: 'pointer', display: 'inline-flex', flexDirection: 'column', alignItems: 'center', gap: 4, minWidth: 64 }}>
-                  <span aria-hidden="true" style={dot(MIX_PAINTS[pot], 30)} />{pot}
-                </button>); })}
-            </div>
-          )}
-        </div>
-      )}
-    </div>
-  );
-}
 // Sentence builder (2026-09-25, the first new kind in docs/GAMES-PLAN.md): tap the word tiles in order to build the
 // sentence, the short one first and then the longer one that says more. A tap on a word already in the sentence takes it
 // back with every word after it. The sentence is checked by its words, so two tiles that say the same word (the, the) can
@@ -3162,11 +3013,9 @@ function BalanceGame({ game, round, onScore = null }) {
     </div>
   );
 }
-const GAME_OF = { dots: DotsGame, pairs: PairsGame, sort: SortGame, maze: MazeGame, jigsaw: JigsawGame, pong: PongGame, sprint: SprintGame, order: OrderGame, build: BuildGame, fix: FixGame, mix: MixGame, debug: DebugGame, catch: CatchGame, path: PathGame, buckets: BucketsGame, jump: JumpGame, map: MapGame, balance: BalanceGame };
+const GAME_OF = { dots: DotsGame, pairs: PairsGame, sort: SortGame, maze: MazeGame, jigsaw: JigsawGame, pong: PongGame, sprint: SprintGame, order: OrderGame, build: BuildGame, fix: FixGame, catch: CatchGame, path: PathGame, buckets: BucketsGame, jump: JumpGame, map: MapGame, balance: BalanceGame };
 // How to play, in a line or two, by kind of game (and by deck for the matching games).
 function gameInstructions(game) {
-  if (game.kind === 'debug') return game.deck === 'turns' ? 'The robot follows its steps in order: forward moves one square the way it faces, and turn left or turn right turns it where it stands. One step is wrong. Tap Run to watch, tap a step to change it, and run again until the robot reaches the star without bumping a rock or the edge. Four robots, and the clock counts up.' : 'The robot follows its steps in order, one square for each arrow. One step is wrong. Tap Run to watch, tap a step to change its arrow, and run again until the robot reaches the star without bumping a rock or the edge. Four robots, and the clock counts up.';
-  if (game.kind === 'mix') return 'A color is named at the top. Tap two paint pots to pour them into the bowl and see what they make. The right color brings its rule and Next; a wrong mix shows what it made, then clears for another try. Five colors, and the clock counts up.';
   if (game.kind === 'build') return 'Tap the words in order to build the sentence. Tap a word in the sentence to take it back, with every word after it. First the short sentence, then a longer one that says more. Three of each, and the clock counts up.';
   if (game.kind === 'fix') return 'Each sentence has one mistake: a word, a capital or a mark. Tap it to fix it, read the rule, then tap Next sentence. Five sentences; the clock counts up and stops while you read.';
   if (game.deck) {
@@ -3239,8 +3088,6 @@ function GameThumb({ kind, game = null }) {
   if (game && game.kind === 'path') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true">{[0, 1, 2].map((r) => [0, 1, 2].map((c) => <rect key={`${r}${c}`} x={5 + c * 10.5} y={5 + r * 10.5} width="9" height="9" rx="2" fill={(r === 0 && c <= 1) || (r >= 1 && c === 1) || (r === 2 && c === 2) ? C.greenSoft : C.paperBoard} stroke={k} strokeWidth="1.1" />))}<circle cx="9.5" cy="9.5" r="2.6" fill={C.gold} stroke={k} strokeWidth="0.8" /><path d="M30 26.5l1.4 2.9 3.2.5-2.3 2.2.6 3.2-2.9-1.5-2.9 1.5.6-3.2-2.3-2.2 3.2-.5z" fill={C.gold} stroke={k} strokeWidth="0.8" strokeLinejoin="round" /></svg>;
   if (game && game.kind === 'buckets') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="12" y="6" width="16" height="8" rx="3" fill={C.paperBoard} stroke={k} strokeWidth="1.3" /><path d="M4 20h14l-2 14H6z" fill={C.greenSoft} stroke={k} strokeWidth="1.3" strokeLinejoin="round" /><path d="M22 20h14l-2 14H24z" fill={C.paperBoard} stroke={k} strokeWidth="1.3" strokeLinejoin="round" /><path d="M20 15v4" stroke={C.green} strokeWidth="1.6" strokeLinecap="round" /></svg>;
   if (game && game.kind === 'sprint') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><path d="M22 4 L10 22 h9 l-3 14 L30 18 h-9 z" fill={C.gold} stroke={k} strokeWidth="1.5" strokeLinejoin="round" /></svg>;
-  if (game && game.kind === 'debug') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true">{[0, 1, 2].map((a) => [0, 1, 2].map((b) => <rect key={`${a}${b}`} x={5 + a * 10} y={5 + b * 10} width="10" height="10" fill={C.paperBoard} stroke={k} strokeWidth="1" />))}<rect x="6.5" y="26.5" width="7" height="7" rx="2" fill={C.green} /><path d="M30 6.5 l1.6 3.3 l3.6 0.5 l-2.6 2.5 l0.6 3.6 l-3.2 -1.7 l-3.2 1.7 l0.6 -3.6 l-2.6 -2.5 l3.6 -0.5 z" fill="#E6B84B" /></svg>;
-  if (game && game.kind === 'mix') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><circle cx="15" cy="15" r="9" fill="#D7263D" opacity="0.85" /><circle cx="25" cy="15" r="9" fill="#F4D03F" opacity="0.85" /><circle cx="20" cy="24" r="9" fill="#2E5EAA" opacity="0.85" /><circle cx="20" cy="18" r="15.5" fill="none" stroke={k} strokeWidth="1.5" /></svg>;
   if (game && game.kind === 'build') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="4" y="8" width="32" height="10" rx="3" fill="none" stroke={k} strokeWidth="1.5" strokeDasharray="3 2" />{[[4, 12], [18, 9], [29, 7]].map(([x, w], i) => <rect key={i} x={x} y="24" width={w} height="9" rx="2" fill={i === 0 ? C.greenSoft : C.paperBoard} stroke={k} strokeWidth="1.5" />)}</svg>;
   if (game && game.kind === 'fix') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true">{[[4, 9], [15, 11], [28, 8]].map(([x, w], i) => <rect key={i} x={x} y="15" width={w} height="9" rx="2" fill={i === 1 ? C.greenSoft : C.paperBoard} stroke={i === 1 ? C.green : k} strokeWidth="1.5" />)}<path d="M15 28 q2.75 -3 5.5 0 t5.5 0" fill="none" stroke={C.clay} strokeWidth="1.6" strokeLinecap="round" /></svg>;
   if (game && game.kind === 'order') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true">{[0, 1, 2].map((r) => <g key={r}><rect x="6" y={6 + r * 11} width="28" height="8" rx="2" fill={r === 0 ? C.greenSoft : C.paperBoard} stroke={k} strokeWidth="1.5" /><text x="11" y={12.5 + r * 11} fontFamily={FONT} fontSize="6" fontWeight="700" fill={C.ink}>{r + 1}</text></g>)}</svg>;
@@ -4148,7 +3995,7 @@ function PageChrome({ idleWarning = false, stars = true, logoutIn = null, walkth
 }
 
 function Tag({ children, tone }) {
-  const tones = { mastered: [C.goldSoft, C.gold], passed: [C.goldSoft, C.gold], available: [C.greenSoft, C.green], locked: [C.mode === 'dark' ? 'rgba(241, 237, 227, 0.1)' : '#EEF0EA', C.muted], review: [C.claySoft, C.clay] };
+  const tones = { mastered: [C.goldSoft, C.gold], passed: [C.goldSoft, C.gold], available: [C.greenSoft, C.green], locked: ['#EEF0EA', C.muted], review: [C.claySoft, C.clay] };
   const [bg, fg] = tones[tone] || tones.locked;
   return <span style={{ display: 'inline-block', background: bg, color: fg, fontSize: 13, fontWeight: 600, lineHeight: '18px', padding: '4px 10px', borderRadius: 999, whiteSpace: 'nowrap', textAlign: 'center' }}>{children}</span>;
 }
@@ -5088,7 +4935,7 @@ function EduSphereScreens() {
   const tourPopup = tourStep >= 0 && educator && (screen === 'educator-pick' || (screen === 'educator-report' && educatorRecord && educatorRecord.preview) || screen === 'class-view' || (screen === 'lesson' && record && record.preview)) ? (
     <div className="edu-no-print" style={{ position: 'fixed', zIndex: 130, pointerEvents: 'none', ...(tourBox ? { left: tourBox.left, top: tourBox.top, width: tourBox.width } : { right: 0, left: 0, bottom: 0, display: 'flex', justifyContent: 'center', padding: '0 12px 10px' }) }}>
       {/* Each card sits where its words say: beside, above or below the thing it points at, whole, never scrolling. */}
-      <div className="edu-rise" ref={tourSheetRef} style={{ width: tourBox ? '100%' : 'min(420px, 100%)', boxSizing: 'border-box', background: C.surface, borderRadius: 14, padding: '14px 18px', textAlign: 'center', boxShadow: '0 4px 30px rgba(36, 41, 31, 0.3)', border: C.mode === 'dark' ? '2px solid #A6DCC5' : `1px solid ${C.line}`, pointerEvents: 'auto' }} role="dialog" aria-label="First week tour">
+      <div className="edu-rise" ref={tourSheetRef} style={{ width: tourBox ? '100%' : 'min(420px, 100%)', boxSizing: 'border-box', background: C.surface, ...(C.mode === 'dark' ? { border: `1px solid ${C.cardEdge}` } : {}), borderRadius: 14, padding: '14px 18px', textAlign: 'center', boxShadow: '0 4px 30px rgba(36, 41, 31, 0.3)', border: `1px solid ${C.line}`, pointerEvents: 'auto' }} role="dialog" aria-label="First week tour">
       <p style={{ margin: '0 0 4px', fontSize: 13, color: C.muted }}>{tourStep + 1} of {TOUR.length}</p>
       <p style={{ margin: '0 0 6px', fontSize: 17, fontWeight: 700 }}>{TOUR[tourStep][0]}</p>
       <p style={{ margin: '0 0 12px', fontSize: 14, lineHeight: 1.55 }}>{TOUR[tourStep][4]}</p>
@@ -6872,7 +6719,7 @@ function EduSphereScreens() {
           </p>
           {showStateTip && <p style={{ ...tipStyle, textAlign: 'center' }}>Each state publishes its own learning standards. Most use the Common Core; Texas uses its own. Our courses are mapped to both!<br /><br />Choosing a state mildly alters the course flow and you can change this later from the <strong>My Classroom</strong> page.</p>}
           <select value={stateDraft} onChange={(e) => setStateDraft(e.target.value)} aria-label="Your state"
-            style={{ textAlign: 'center', textAlignLast: 'center', fontFamily: FONT, fontSize: 16, padding: '10px 12px', width: '100%', boxSizing: 'border-box', border: `2px solid ${C.line}`, borderRadius: 10, background: C.surface , ...pickerLook() }}>
+            style={{ fontFamily: FONT, fontSize: 16, padding: '10px 12px', width: '100%', boxSizing: 'border-box', border: `2px solid ${C.line}`, borderRadius: 10, background: C.surface , ...pickerLook() }}>
             <option value="">Choose a state</option>
             {STATES.map((st) => <option key={st.code} value={st.code}>{st.name}</option>)}
           </select>
@@ -7386,10 +7233,10 @@ function EduSphereScreens() {
           const days = daysSinceBackup(backupAt, new Date().toISOString());
           const overdue = visible.length > 0 && (days === null || days >= 1);
           return (
-            <div style={{ textAlign: 'center', marginTop: 24 }} data-tour="backup">
+            <div style={{ textAlign: 'center', marginTop: 24 }}>
               {/* The halo pulses behind the link while a backup is due, and rests once one has been taken today. */}
               <span style={{ position: 'relative', display: 'inline-block' }}>
-                <button type="button" onClick={() => setScreen('backup')} className={`edu-backup-link${overdue ? ' edu-glow' : ''}`} style={{ position: 'relative', background: 'none', border: 'none', color: C.green, fontFamily: FONT, fontSize: 16, fontWeight: 600, cursor: 'pointer', padding: '8px 12px', textDecoration: 'underline' }}>Backup classroom</button>
+                <button type="button" data-tour="backup" onClick={() => setScreen('backup')} className={`edu-backup-link${overdue ? ' edu-glow' : ''}`} style={{ position: 'relative', background: 'none', border: 'none', color: C.green, fontFamily: FONT, fontSize: 16, fontWeight: 600, cursor: 'pointer', padding: '8px 12px', textDecoration: 'underline' }}>Backup classroom</button>
                 <button type="button" onClick={() => setShowBackupTip(!showBackupTip)} aria-label="About backups"
                   style={{ position: 'absolute', left: '100%', top: '50%', transform: 'translateY(-50%)', background: 'none', border: `1.5px solid ${C.green}`, color: C.green, fontFamily: FONT, fontSize: 12, fontWeight: 700, lineHeight: '15px', width: 18, height: 18, borderRadius: 999, cursor: 'pointer', padding: 0 }}>i</button>
               </span>
@@ -7660,7 +7507,7 @@ function EduSphereScreens() {
         {classRows.filter((r) => (!noteSearch.trim() || r.notesText.toLowerCase().includes(noteSearch.trim().toLowerCase()))).map((r, idx) => {
           const st = findStudent(roster, r.id);
           return (
-            <div key={r.id} data-tour="rows" style={{ ...card, borderColor: r.band === 'needs help now' ? C.clay : C.line }}>
+            <div key={r.id} data-tour={idx === 1 || idx === 2 ? 'rows' : undefined} style={{ ...card, borderColor: r.band === 'needs help now' ? C.clay : C.line }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10 }}>
                 <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                   {st && st.picture && <StudentPicture name={st.picture} tint={st.tint} size={36} />}
@@ -8196,7 +8043,7 @@ function EduSphereScreens() {
               </div>
               <p className="edu-print-only" style={{ margin: '0 0 6px', fontWeight: 600 }}>Weekly note</p>
               {!weeklyEditing
-                ? <div style={{ fontSize: 15 }}><WeeklyNoteBody text={shown} /></div>
+                ? <div style={{ fontSize: 15 }}><RichText text={shown} size={15} center /></div>
                 : <textarea value={weeklyEdit} onChange={(e) => setWeeklyEdit(e.target.value)} aria-label="Weekly note" rows={5} style={{ width: '100%', boxSizing: 'border-box', fontFamily: FONT, fontSize: 15, padding: 10, borderRadius: 10, border: `1px solid ${C.line}`, resize: 'vertical', display: 'block' }} />}
               {weeklyEditing && <p className="edu-print-only" style={{ margin: 0, fontSize: 15, lineHeight: 1.6, whiteSpace: 'pre-wrap' }}>{weeklyEdit}</p>}
               <p style={{ margin: '8px 0 0', fontSize: 12, color: C.mode === 'dark' ? '#2E4A3E' : C.muted, textAlign: 'center' }}>The Wise Human: Where Knowledge Meets Wisdom. {new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</p>

@@ -9,7 +9,7 @@ PREV="$1"; OUT="$2"; HERE="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$HERE"
 rm -rf /tmp/edu-prev && mkdir -p /tmp/edu-prev && (cd /tmp/edu-prev && unzip -q "$PREV")
 rm -f "$OUT/edusphere-project.zip" "$OUT/edusphere-changes.zip"
-zip -qr "$OUT/edusphere-project.zip" . -x "dist/*" "tests/e2e/out/*" "tests/e2e/page.html" "*.DS_Store"
+zip -qr "$OUT/edusphere-project.zip" . -x "dist/*" "tests/e2e/out/*" "tests/e2e/page.html" "tests/e2e/page-licensed.html" "*.DS_Store"
 CHANGED=""
 for f in $(unzip -Z1 "$OUT/edusphere-project.zip"); do
   if [ -f "$f" ] && ! cmp -s "$f" "/tmp/edu-prev/$f"; then CHANGED="$CHANGED $f"; fi

@@ -44,4 +44,6 @@ var React = require('react'); var App = require('app').default;
 require('react-dom/client').createRoot(document.getElementById('root')).render(React.createElement(App));
 </script></body></html>`;
 writeFileSync('tests/e2e/page.html', html);
+// The same page with licensing on, for tests/e2e/license.mjs.
+writeFileSync('tests/e2e/page-licensed.html', html.replace('<script>\nvar process', '<script>\nwindow.__eduLicensing = true;\nvar process'));
 console.log('page.html written (' + Math.round(html.length / 1024) + ' KB)');

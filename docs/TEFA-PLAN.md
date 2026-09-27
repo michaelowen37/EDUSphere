@@ -28,8 +28,14 @@ Written September 25, 2026. The goal Mikey set: pre-K and kindergarten free, eve
 
 ## Product changes, in order
 
-1. **Free pre-K and kindergarten.** Every pre-K 3, pre-K 4 and kindergarten module stays open to everyone (86 modules), with no code.
-2. **License codes for grade 1 and up.** A code signed with iECHO's private key and checked inside the app with the matching public key, so it works offline and cannot be forged; one code per child per school year, matching how the accounts fund each child. The private key never goes in the repository.
+1. **Free pre-K and kindergarten.** (Done September 25, 2026.) Every pre-K 3, pre-K 4 and kindergarten module stays open to everyone (86 modules), with no code.
+2. **License codes for grade 1 and up.** (Done September 25, 2026: the engine, the card on each report, and the gate.) A code signed with iECHO's private key and checked inside the app with the matching public key, so it works offline and cannot be forged; one code per child per school year, matching how the accounts fund each child. The private key never goes in the repository.
 3. **A Texas page inside the app.** What is included, the TEKS alignment summary, and the privacy promise, written for parents deciding in the marketplace.
 4. **Paint pre-K and kindergarten first.** The free grades are the storefront; their pictures come before any other grade's.
 5. Then continue the story doubling from grade 6 up, and after approval, the family web checkout, microschools and app stores.
+
+## Depth, accreditation and the website (added September 25, 2026)
+
+- **Depth.** A full school year is about 30 to 45 skills per core subject per grade, each taught over several days (lesson, practice rounds, memory checks days later, story, game). Grade 1 now has 26 modules across all subjects. Build a scope and sequence per grade and subject from the TEKS student expectations, one module per expectation, and fill grades 1 to 5 math and reading first, since the free kindergarten feeds straight into grade 1. Add a daily plan so a parent sees what to do each day, unit reviews, and an end-of-year review.
+- **Accreditation.** Accreditors such as Cognia accredit institutions, not curriculum on its own; a vendor's accredited online school does not make its curriculum accredited for buyers. The realistic routes: run an accredited online school around the app later (a large undertaking), or seek the Texas Education Agency's Instructional Materials Review and Approval (IMRA) as supplemental materials, which judges TEKS coverage, quality and suitability and is voted on by the State Board of Education each November. Until then, claim what is true: TEKS-aligned, with every standard cited.
+- **The website.** thewisehuman.com can be iECHO's site. Register the domain to iECHO, LLC, file an assumed name certificate (The Wise Human) with the Texas Secretary of State, say on every page that The Wise Human is a product of iECHO, LLC, and use an email address on that domain for the store accounts.

@@ -1488,5 +1488,27 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
   ok('four wrong PIN tries do nothing, the fifth rests the box 30 seconds, the tenth 60, and the rest never passes 15 minutes', fourOk && firstRest && secondRest && L.pinLockLeft(big, t0) === 900);
 }
 
+
+// License codes (2026-09-25): pre-K and kindergarten are free; a signed code opens grade 1 and up for one child's year.
+{
+  const { readFileSync } = await import('node:fs');
+  const devKey = JSON.parse(readFileSync(new URL('./fixtures/dev-license-private.json', import.meta.url), 'utf8'));
+  const code = await L.makeLicenseCode(devKey, { id: 'TX-0001', name: 'Frederick', year: '2026-27', until: '2027-07-31' });
+  const good = await L.checkLicenseCode(code, new Date('2026-10-01T12:00:00'));
+  ok('a signed code checks out with its details', good.ok === true && good.id === 'TX-0001' && good.name === 'Frederick' && good.year === '2026-27' && good.until === '2027-07-31');
+  const [head, payload, sig] = code.split('.');
+  const forged = btoa(JSON.stringify({ id: 'TX-0001', name: 'Frederick', year: '2026-27', until: '2099-12-31' })).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+  ok('an edited code is refused', (await L.checkLicenseCode(`${head}.${forged}.${sig}`, new Date('2026-10-01T12:00:00'))).ok === false);
+  ok('a code past its last day is refused, and says so', (await L.checkLicenseCode(code, new Date('2027-08-01T09:00:00'))).reason === 'That code ended on 2027-07-31.');
+  ok('text that is not a code is refused kindly', (await L.checkLicenseCode('hello')).ok === false && (await L.checkLicenseCode('')).ok === false);
+  const otherPair = await crypto.subtle.generateKey({ name: 'ECDSA', namedCurve: 'P-256' }, true, ['sign', 'verify']);
+  const otherPriv = await crypto.subtle.exportKey('jwk', otherPair.privateKey);
+  ok('a code signed with any other key is refused', (await L.checkLicenseCode(await L.makeLicenseCode(otherPriv, { id: 'X', name: 'Y', year: '2026-27', until: '2027-07-31' }), new Date('2026-10-01'))).ok === false);
+  ok('pre-K 3, pre-K 4 and kindergarten courses are free, grade 1 and up are not', L.COURSES.filter(L.courseIsFree).length > 0 && L.COURSES.every((c) => L.courseIsFree(c) === ['PK3', 'PK4', 'K'].includes(c.grade)) && L.COURSES.filter(L.courseIsFree).reduce((n, c) => n + c.modules.length, 0) === 86);
+  const mixed = ['counting-k', 'reading-3', 'letters-k'];
+  ok('without a license only the free courses open; with one, all of them do', JSON.stringify(L.openCourseIds(mixed, false)) === JSON.stringify(['counting-k', 'letters-k']) && L.openCourseIds(mixed, true).length === 3);
+  ok('the app carries a public key only, marked as the development key until launch', !('d' in L.LICENSE_PUBLIC_KEY) && L.LICENSE_KEY_IS_DEVELOPMENT === true);
+}
+
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exitCode = fail ? 1 : 0;   // never process.exit(): it can drop the last lines of a piped stdout (2026-09-23)

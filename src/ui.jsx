@@ -1458,6 +1458,33 @@ function WeeklyNoteBody({ text }) {
     </div>
   );
 }
+// The license card on a student's report (2026-09-25): pre-K and kindergarten are free; grade 1 and up opens with a code,
+// one per child per school year. A code is checked before it is saved, and one already in use for another student on
+// this device is refused.
+function LicenseCard({ name, code, license, usedBy, onSave }) {
+  const [draft, setDraft] = useState(''); const [note, setNote] = useState(''); const [busy, setBusy] = useState(false);
+  const check = async () => {
+    setBusy(true); const r = await checkLicenseCode(draft); setBusy(false);
+    if (!r.ok) { setNote(r.reason); return; }
+    const other = usedBy(r.id); if (other) { setNote(`That code is already in use for ${other} on this device.`); return; }
+    await onSave(draft.trim()); setDraft(''); setNote('');
+  };
+  const open = !!(license && license.ok);
+  return (
+    <div className="edu-no-print" style={{ ...card, textAlign: 'center' }} data-license-card="">
+      <p className="edu-card-title" style={{ margin: '0 0 6px', fontWeight: 600 }}>Grade 1 and up</p>
+      {open ? <p style={{ margin: 0, fontSize: 15 }}>Licensed through {longDate(license.until)}{license.year ? ` (school year ${license.year})` : ''}.</p> : (
+        <>
+          <p style={{ margin: '0 0 10px', fontSize: 15, color: C.muted }}>Pre-K and kindergarten are free. Grade 1 and up opens for {name} with a license code, one per child per school year.{code && license && !license.ok ? ` The saved code no longer works. ${license.reason}` : ''}</p>
+          <input value={draft} onChange={(e) => { setDraft(e.target.value); setNote(''); }} aria-label="License code" placeholder="Paste the license code"
+            style={{ width: '100%', boxSizing: 'border-box', fontFamily: FONT, fontSize: 15, padding: '10px 12px', borderRadius: 10, border: `1px solid ${C.line}`, textAlign: 'center' }} />
+          <div style={{ marginTop: 10 }}><Btn onClick={check} disabled={busy || !draft.trim()}>Check code</Btn></div>
+          {note && <p role="status" style={{ margin: '10px 0 0', color: C.clay, fontSize: 14 }}>{note}</p>}
+        </>
+      )}
+    </div>
+  );
+}
 function RichText({ text, size = 17, color = null, center = false, lineGap = 10 }) {
   const lines = String(text || '').split('\n');
   return (
@@ -4327,6 +4354,12 @@ const EDUCATOR_KEY = 'edusphere_v1_educator';
 // A backup file larger than this is refused before it is read (a real classroom backup is a few megabytes).
 const BACKUP_MAX_BYTES = 50 * 1024 * 1024;
 const PINLOCK_KEY = 'edusphere_v1_pinlock';   // wrong educator PIN tries on this device
+// Licensing (2026-09-25, docs/TEFA-PLAN.md): when on, grade 1 and up opens only for a student whose saved code checks
+// out. Mikey asked to leave it off while he tests and switch it on at the end (LICENSING_LAUNCHED, docs/RELEASE-CHECKLIST.md);
+// until then everything is open, the license card is hidden, and only tests/e2e/license.mjs turns it on (window.__eduLicensing).
+const LICENSING_LAUNCHED = false;
+const LICENSING_ON = LICENSING_LAUNCHED || (typeof window !== 'undefined' && window.__eduLicensing === true);
+const longDate = (ymd) => new Date(`${ymd}T12:00:00`).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
 function scramble(text) { let h = 5381; for (const ch of String(text)) h = ((h * 33) ^ ch.charCodeAt(0)) >>> 0; return String(h); }
 async function loadEducator() { const raw = await storageGet(EDUCATOR_KEY); if (raw) { const p = safeJson(raw); return p && p.pin ? p : null; } return null; }
 async function loadEducatorRaw() { const raw = await storageGet(EDUCATOR_KEY); return raw ? safeJson(raw) : null; }
@@ -4745,7 +4778,11 @@ function EduSphereScreens() {
 
   // Everything the screens need is recomputed from the event log on every render.
   const progress = useMemo(() => (record ? deriveProgress(record.events) : null), [record]);
-  const statuses = useMemo(() => (progress && record ? moduleStatuses(progress, enabledCourseIds(record.events)).map((st) => (record.preview && st.status === 'locked' ? { ...st, status: 'available' } : st)) : []), [progress, record]);
+  // Each saved license code is checked again whenever the roster changes; only a code that checks out opens grade 1 and up.
+  const [licenses, setLicenses] = useState({});   // studentId -> result of checkLicenseCode
+  useEffect(() => { let alive = true; (async () => { const out = {}; for (const st of (roster && roster.students) || []) if (st.licenseCode) out[st.id] = await checkLicenseCode(st.licenseCode); if (alive) setLicenses(out); })(); return () => { alive = false; }; }, [roster]);
+  const licensedFor = (sid) => !LICENSING_ON || !!(licenses[sid] && licenses[sid].ok);
+  const statuses = useMemo(() => (progress && record ? moduleStatuses(progress, record.preview ? enabledCourseIds(record.events) : openCourseIds(enabledCourseIds(record.events), licensedFor(record.name))).map((st) => (record.preview && st.status === 'locked' ? { ...st, status: 'available' } : st)) : []), [progress, record, licenses]);
   const statusOf = (id) => (statuses.find((s) => s.id === id) || {}).status;
   const sortedModules = useMemo(() => [...MODULES].sort((a, b) => a.order - b.order), []);
   // The record is keyed by the student's ID, but every screen shows the name an admin typed.
@@ -4754,7 +4791,7 @@ function EduSphereScreens() {
     const st = findStudent(roster, record.name);
     return st ? st.label : record.name;
   }, [record, roster]);
-  const visibleCourses = useMemo(() => (record ? COURSES.filter((c) => enabledCourseIds(record.events).includes(c.id)) : []), [record]);
+  const visibleCourses = useMemo(() => (record ? COURSES.filter((c) => (record.preview ? enabledCourseIds(record.events) : openCourseIds(enabledCourseIds(record.events), licensedFor(record.name))).includes(c.id)) : []), [record, licenses]);
   const visibleModules = useMemo(() => visibleCourses.flatMap((c) => c.modules), [visibleCourses]);
   // Alphabetical, so the order never depends on how the content happens to be written.
   const subjects = useMemo(() => sortSubjects(visibleCourses.map((c) => c.subject)), [visibleCourses]);
@@ -5413,6 +5450,9 @@ function EduSphereScreens() {
           <h1 style={{ fontSize: 26, margin: '18px 0 8px', textAlign: 'center' }}>Your courses</h1>
           <button type="button" onClick={async () => { if (record && record.preview) { setRecord(null); setScreen('educator-pick'); } else { await autoBackup('sign-out'); setScreen('welcome'); } }} style={{ position: 'absolute', top: 0, right: 0, background: 'none', border: 'none', color: C.green, fontFamily: FONT, fontSize: 15, cursor: 'pointer' }}>Exit</button>
         </div>
+        {!record.preview && enabledCourseIds(record.events).length > openCourseIds(enabledCourseIds(record.events), licensedFor(record.name)).length && (
+          <p role="status" style={{ ...card, textAlign: 'center', margin: '0 0 16px', fontSize: 16 }}>Some of your courses are waiting for a license code. Ask your grown-up to add it.</p>
+        )}
         <p className="edu-overview-body" style={{ color: C.muted, margin: '0 0 22px', textAlign: 'center', fontSize: youngLearner ? 22 : 18, fontWeight: youngLearner ? 600 : 400 }}>{record.preview ? 'Walkthrough mode. Nothing here is recorded.' : `Hi ${displayName}, welcome back!`}</p>
         <RemembranceCard />
         {!youngLearner && placementPending.map((subject) => (
@@ -8287,6 +8327,11 @@ function EduSphereScreens() {
           </div>
         )}
 
+        {LICENSING_ON && !educatorRecord.preview && roster && findStudent(roster, educatorRecord.name) && (
+          <LicenseCard name={shownName} code={findStudent(roster, educatorRecord.name).licenseCode} license={licenses[educatorRecord.name]}
+            usedBy={(id) => { const other = roster.students.find((s) => s.id !== educatorRecord.name && licenses[s.id] && licenses[s.id].ok && licenses[s.id].id === id); return other ? other.label : null; }}
+            onSave={async (code) => { const next = { ...roster, students: roster.students.map((s) => (s.id === educatorRecord.name ? { ...s, licenseCode: code } : s)) }; setRoster(next); await saveRoster(next); }} />
+        )}
         {/* Everything the student has ever worked on, including courses since switched off. */}
         <div className="edu-no-print" style={{ ...card, background: C.transcriptFill, borderColor: C.transcriptLine, color: C.transcriptInk }} data-tour="transcript">
           <p className="edu-card-title" style={{ margin: '0 0 6px', fontWeight: 600 }}>Transcript</p>

@@ -1619,6 +1619,47 @@ export function pinLockAfterFailure(state, now) {
   return { failures, lockUntil: now + Math.min(30000 * 2 ** (failures / 5 - 1), 900000) };
 }
 export function pinLockLeft(state, now) { return state && state.lockUntil && now < state.lockUntil ? Math.ceil((state.lockUntil - now) / 1000) : 0; }
+// License codes (2026-09-25, docs/TEFA-PLAN.md). Pre-K 3, pre-K 4 and kindergarten are free; grade 1 and up need a code,
+// one per child per school year. A code reads TWH1.<payload>.<signature>, both parts base64url: the payload is JSON
+// { id, name, year, until } and the signature is ECDSA P-256 with SHA-256 over the payload's text, made with iECHO's
+// private key. The app checks it with the public key below, offline, so a code cannot be forged or edited. This is the
+// DEVELOPMENT key (its private half is tests/fixtures/dev-license-private.json, for tests only); before launch Mikey makes
+// the real pair with tools/license-keys.mjs on his own computer and only the new public key replaces this one.
+export const LICENSE_PUBLIC_KEY = {"kty": "EC", "crv": "P-256", "x": "TriURT4Y-uSbKqxQREXnMrY6X9pP-8jPoEH3Rq4SyL0", "y": "2SE1xjn5EP52-B2MJAKkS8aNLHLj3wq9EZyzoxY0Nro"};
+export const LICENSE_KEY_IS_DEVELOPMENT = true;
+export const FREE_GRADES = ['PK3', 'PK4', 'K'];
+export function courseIsFree(course) { return !!course && FREE_GRADES.includes(course.grade); }
+// The courses a learner can open: every free course they have, and the rest only with a license that checks out.
+export function openCourseIds(enabledIds, licensed) { return licensed ? enabledIds : enabledIds.filter((id) => courseIsFree(getCourse(id))); }
+const b64u = {
+  enc: (bytes) => btoa(String.fromCharCode(...new Uint8Array(bytes))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, ''),
+  dec: (text) => Uint8Array.from(atob(text.replace(/-/g, '+').replace(/_/g, '/') + '='.repeat((4 - (text.length % 4)) % 4)), (c) => c.charCodeAt(0)),
+};
+const utf8 = (s) => new TextEncoder().encode(s);
+// Signs a code (tools/license-sign.mjs and the tests use it; the app never holds a private key).
+export async function makeLicenseCode(privateJwk, { id, name, year, until }) {
+  const key = await crypto.subtle.importKey('jwk', privateJwk, { name: 'ECDSA', namedCurve: 'P-256' }, false, ['sign']);
+  const payload = b64u.enc(utf8(JSON.stringify({ id: String(id), name: String(name), year: String(year), until: String(until) })));
+  const sig = await crypto.subtle.sign({ name: 'ECDSA', hash: 'SHA-256' }, key, utf8(payload));
+  return `TWH1.${payload}.${b64u.enc(sig)}`;
+}
+// Checks a code: { ok: true, id, name, year, until } when the signature holds and the last day has not passed,
+// otherwise { ok: false, reason } in words a parent can act on.
+export async function checkLicenseCode(code, now = new Date(), publicJwk = LICENSE_PUBLIC_KEY) {
+  const parts = String(code || '').trim().split('.');
+  if (parts.length !== 3 || parts[0] !== 'TWH1' || !parts[1] || !parts[2]) return { ok: false, reason: 'That is not a license code from The Wise Human.' };
+  let good = false;
+  try {
+    const key = await crypto.subtle.importKey('jwk', publicJwk, { name: 'ECDSA', namedCurve: 'P-256' }, false, ['verify']);
+    good = await crypto.subtle.verify({ name: 'ECDSA', hash: 'SHA-256' }, key, b64u.dec(parts[2]), utf8(parts[1]));
+  } catch (e) { good = false; }
+  if (!good) return { ok: false, reason: 'That code does not check out. Please copy it again exactly as it was sent.' };
+  const info = safeJson(new TextDecoder().decode(b64u.dec(parts[1])));
+  if (!info || !info.id || !info.until) return { ok: false, reason: 'That code is missing its details.' };
+  const lastDay = new Date(`${info.until}T23:59:59`);
+  if (!(lastDay.getTime() >= now.getTime())) return { ok: false, reason: `That code ended on ${info.until}.` };
+  return { ok: true, id: info.id, name: info.name || '', year: info.year || '', until: info.until };
+}
 export const ORDER_DECKS = {
   processes: [
     { title: 'The water cycle', steps: ['the sun warms the sea', 'water evaporates', 'vapor cools into clouds', 'rain falls', 'rivers carry it back'] },

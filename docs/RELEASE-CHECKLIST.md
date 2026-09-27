@@ -22,3 +22,4 @@ One page, done by a person, before every commit that ships. The automated checks
 13. On a day near one, confirm the remembrance card shows (September 11, Veterans Day, Memorial Day) and can be hidden for the year.
 
 If anything in 5 to 13 feels wrong, it is a bug even when every check passes. Write it in docs/DECISIONS.md with the date and fix it before the commit.
+- Before selling: switch licensing on (LICENSING_LAUNCHED = true in src/ui.jsx; it is off while Mikey tests), then make the real license key pair on your own computer (node tools/license-keys.mjs <path outside the repo>), paste only the printed public key into LICENSE_PUBLIC_KEY in src/logic.mjs, and set LICENSE_KEY_IS_DEVELOPMENT to false. Codes signed with the development key (tests/fixtures) must never open a sold copy.

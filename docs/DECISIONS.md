@@ -1080,6 +1080,17 @@ Approved by Mikey on 2026-09-04 unless marked "proposed".
 - Twelve kindergarten stories rewritten with tools/stories/rewords.py: beginning-sounds, big-and-small-letters, ending-sounds, letter-names, letter-sounds, rhymes, sounding-out, syllables, which-way-we-read, word-meanings, brushing-teeth, my-plate. The narrative sentences connect and vary; the phonics sounds (Cuh. A. Tuh.) stay spoken one at a time, because that is what the lesson teaches. One picture reworded (Elijah's name coming out as a blur).
 - The flow audit no longer counts a single-word sentence toward a choppy run and does not let one break a run either: a word on its own (Mmm. Corner. Peep!) is a sound, a shout or a beat, by design. Kindergarten stands at 12 stories flagged (six tracing, six civics); 246 of 516 overall.
 
+## 2026-09-28 (pass FG): grade 12 economics stories; grade 12 short stories finished (length program)
+
+- Mikey committed EV to FF; this commit message starts fresh at FG. A length pass; the next is a flow pass.
+- The six grade 12 economics stories grew to six paragraphs, 241 to 283 words, with six pictures each (S2642 to S2659). Facts checked: opportunity cost as the next best alternative, in time and in public budgets; a rain price that fell from fifteen to twelve when supply arrived; price fixing as illegal for real businesses; hyperinflation in Germany in 1923 and Zimbabwe in 2008; deposit insurance and the Fed's two jobs (steady prices, maximum employment); reported growth usually inflation-adjusted; four or five percent unemployment as ordinary and the Fed's two percent inflation aim; a 120-dollar bike on a card at twenty percent with ten-dollar payments costing about fifteen dollars more over about fourteen months; about four percent a year on savings.
+- Fix: the supply-and-demand story is about Savanah's umbrella stall, but its subtitle and two pictures still described a jam stall from an earlier draft; all now say umbrellas. The art audit flagged four pictures, now reworded. Grade 12's short stories are finished; its six long stories remain (next CS 328).
+
+## 2026-09-28 (pass FH): kindergarten finished (flow program, batch four)
+
+- FG was not committed, so this commit message covers FG and FH, and the changes zip carries both passes' files. A flow pass; the next is a length pass.
+- The last twelve kindergarten stories rewritten with tools/stories/rewords.py: jobs-people-do, needs-and-wants, our-flag-and-holidays, our-two-flags, rules-and-helpers, voting-in-class, trace-slant-letters, tracing-letters, tracing-more-letters, tracing-numbers, tracing-shapes, tracing-small-letters. Stroke steps in the tracing stories stay as instructions a child follows; the sentences around them connect and vary. Every sentence eighteen words or fewer, every word three syllables or fewer; the art audit shows none of the twelve. Kindergarten: 0 of 43 flagged. Overall 234 of 516 still flagged; grades 1 and 2 (49 stories) and pre-K (43) remain in the program.
+
 ## Open items
 - Verify audio plays inside the chat artifact sandbox (works in a normal browser).
 - Common Core / TEKS codes on existing modules to be checked against the official lists.

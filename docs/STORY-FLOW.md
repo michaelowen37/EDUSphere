@@ -1,6 +1,6 @@
 # Story flow audit
 
-Generated 2026-09-28. 246 of 516 stories have at least one paragraph that reads robotic (choppy: three or more sentences in a row of six words or fewer; monotone: four or more sentences in a row within three words of one length; then, then: two sentences in a row starting with Then).
+Generated 2026-09-28. 234 of 516 stories have at least one paragraph that reads robotic (choppy: three or more sentences in a row of six words or fewer; monotone: four or more sentences in a row within three words of one length; then, then: two sentences in a row starting with Then).
 
 ## By grade
 
@@ -8,7 +8,7 @@ Generated 2026-09-28. 246 of 516 stories have at least one paragraph that reads 
 |---|---|---|---|
 | PK3 | 17 | 17 | 86 |
 | PK4 | 26 | 26 | 125 |
-| K | 43 | 12 | 44 |
+| K | 43 | 0 | 0 |
 | 1 | 26 | 26 | 90 |
 | 2 | 23 | 23 | 74 |
 | 3 | 44 | 29 | 36 |
@@ -237,50 +237,6 @@ Generated 2026-09-28. 246 of 516 stories have at least one paragraph that reads 
 | PK4 | story | which-came-second | 3 of 7 | choppy | 2, 3, 3, 5, 2 |
 | PK4 | story | which-came-second | 4 of 7 | choppy | 3, 4, 1, 2, 4 |
 | PK4 | story | which-came-second | 5 of 7 | choppy | 5, 2, 2, 2 |
-| K | story | jobs-people-do | 1 of 7 | monotone | 9, 6, 7, 9 |
-| K | story | jobs-people-do | 3 of 7 | choppy | 5, 3, 1, 2, 5 |
-| K | story | jobs-people-do | 4 of 7 | choppy, monotone | 6, 5, 5, 7 |
-| K | story | jobs-people-do | 5 of 7 | choppy | 3, 3, 3, 6 |
-| K | story | jobs-people-do | 6 of 7 | choppy | 5, 3, 4, 5 |
-| K | story | needs-and-wants | 1 of 7 | choppy, monotone | 6, 5, 4, 4, 5 |
-| K | story | needs-and-wants | 3 of 7 | choppy | 2, 4, 4, 3 |
-| K | story | needs-and-wants | 4 of 7 | choppy | 4, 4, 4 |
-| K | story | our-flag-and-holidays | 3 of 7 | choppy | 4, 4, 1, 4, 4, 1 |
-| K | story | our-flag-and-holidays | 4 of 7 | choppy | 5, 6, 4 |
-| K | story | our-two-flags | 1 of 7 | choppy | 6, 3, 6, 2 |
-| K | story | our-two-flags | 3 of 7 | choppy, monotone | 5, 5, 5, 7 |
-| K | story | our-two-flags | 4 of 7 | choppy | 6, 2, 2, 3 |
-| K | story | our-two-flags | 5 of 7 | choppy | 2, 4, 3, 6 |
-| K | story | rules-and-helpers | 2 of 7 | choppy | 4, 4, 4 |
-| K | story | rules-and-helpers | 3 of 7 | choppy, monotone | 5, 4, 4, 6 |
-| K | story | rules-and-helpers | 4 of 7 | choppy, then, then | 6, 1, 2, 2, 2, 2, 2 |
-| K | story | trace-slant-letters | 2 of 7 | choppy | 6, 2, 2, 2, 5, 4 |
-| K | story | trace-slant-letters | 3 of 7 | choppy | 3, 3, 3, 2, 5, 2 |
-| K | story | trace-slant-letters | 4 of 7 | choppy | 3, 3, 3, 3, 6 |
-| K | story | trace-slant-letters | 5 of 7 | choppy | 3, 1, 1, 1, 2, 2, 5 |
-| K | story | tracing-letters | 1 of 7 | choppy | 4, 6, 2, 12 |
-| K | story | tracing-letters | 2 of 7 | choppy | 5, 4, 6, 3 |
-| K | story | tracing-letters | 4 of 7 | choppy | 7, 1, 1, 3, 2, 3 |
-| K | story | tracing-letters | 5 of 7 | choppy | 6, 3, 5, 3, 2 |
-| K | story | tracing-more-letters | 3 of 7 | choppy | 1, 1, 3, 1, 3, 1, 3, 4 |
-| K | story | tracing-more-letters | 4 of 7 | choppy | 3, 1, 1, 1, 1, 1, 1, 1, 2, 3 |
-| K | story | tracing-more-letters | 5 of 7 | choppy | 3, 7, 4, 3, 5 |
-| K | story | tracing-numbers | 1 of 7 | choppy | 6, 6, 3, 5, 3 |
-| K | story | tracing-numbers | 2 of 7 | choppy | 6, 4, 6 |
-| K | story | tracing-numbers | 3 of 7 | choppy, then, then | 9, 4, 3, 2 |
-| K | story | tracing-numbers | 4 of 7 | choppy | 7, 1, 1, 3, 1, 2, 2 |
-| K | story | tracing-numbers | 5 of 7 | choppy | 4, 4, 2, 2, 2, 3 |
-| K | story | tracing-shapes | 1 of 7 | choppy | 4, 1, 1, 2, 3, 5, 5 |
-| K | story | tracing-shapes | 5 of 7 | choppy | 2, 2, 4, 2, 2 |
-| K | story | tracing-shapes | 6 of 7 | choppy | 3, 6, 3, 6 |
-| K | story | tracing-small-letters | 1 of 7 | choppy | 5, 3, 5, 5, 3 |
-| K | story | tracing-small-letters | 3 of 7 | choppy | 7, 3, 5, 2 |
-| K | story | tracing-small-letters | 5 of 7 | choppy | 5, 3, 1, 3, 3, 1 |
-| K | story | voting-in-class | 1 of 7 | choppy | 5, 3, 3, 6, 4, 2 |
-| K | story | voting-in-class | 2 of 7 | choppy | 3, 6, 5 |
-| K | story | voting-in-class | 3 of 7 | choppy | 8, 2, 1, 5, 2, 1 |
-| K | story | voting-in-class | 4 of 7 | choppy | 3, 5, 3, 6 |
-| K | story | voting-in-class | 5 of 7 | choppy | 2, 3, 5, 3 |
 | 1 | story | adding-to-20 | 1 of 7 | choppy | 6, 3, 4, 4, 8, 3 |
 | 1 | story | adding-to-20 | 2 of 7 | choppy | 4, 7, 4, 2, 2, 4 |
 | 1 | story | adding-to-20 | 4 of 7 | choppy | 7, 5, 1, 3, 6 |
@@ -609,8 +565,8 @@ Generated 2026-09-28. 246 of 516 stories have at least one paragraph that reads 
 | 12 | story | natural-resources | 2 of 6 | monotone | 9, 9, 9, 8 |
 | 12 | story | precise-words | 1 of 6 | choppy | 10, 4, 4, 5, 18, 10 |
 | 12 | story | precise-words | 2 of 6 | choppy | 10, 5, 4, 4, 9 |
-| 12 | story | supply-demand-and-price | 1 of 5 | choppy | 16, 5, 5, 2 |
-| 12 | story | supply-demand-and-price | 4 of 5 | choppy | 19, 6, 5, 6, 12 |
+| 12 | story | supply-demand-and-price | 1 of 6 | choppy | 16, 5, 5, 2 |
+| 12 | story | supply-demand-and-price | 4 of 6 | choppy | 19, 6, 5, 6, 12 |
 | 12 | story | three-branches | 1 of 6 | monotone | 7, 12, 6, 6, 7, 6, 2 |
 | 12 | story | two-sources | 2 of 6 | choppy | 12, 4, 6, 4, 2, 9, 11 |
 | 12 | story | unit-circle | 2 of 6 | choppy, monotone | 14, 8, 6, 5, 5, 11 |

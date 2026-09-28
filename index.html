@@ -48870,7 +48870,7 @@ function PinInput({ value, onChange, placeholder, style, onEnter = null }) {
 }
 // A stamp of when this copy of the page was built, so a stale page in a cache can be told apart
 // from a fresh one at a glance. Written by the build, never by hand.
-const BUILD_STAMP = '2026-09-26 11:43 AM CDT';
+const BUILD_STAMP = '2026-09-27 08:13 PM CDT';
 function ContactLine({ onOpen, inline = false }) {
     return (react_1.default.createElement("p", { className: "edu-no-print", style: { textAlign: 'center', marginTop: inline ? 0 : 28, fontSize: inline ? 14 : 12, color: C.muted, margin: inline ? '0' : undefined } }, onOpen
         ? react_1.default.createElement("button", { type: "button", onClick: onOpen, style: { background: 'none', border: 'none', color: C.muted, fontFamily: FONT, fontSize: 12, cursor: 'pointer', padding: 0, textDecoration: 'underline' } }, "Contact us")
@@ -48933,7 +48933,7 @@ function TracePad({ letter, paths, onChange, disabled = false, tone = null }) {
         return [Math.round(((e.clientX - box.left) / box.width) * 100), Math.round(((e.clientY - box.top) / box.height) * 100)];
     };
     const start = (e) => { if (disabled)
-        return; drawing.current = true; e.currentTarget.setPointerCapture && e.currentTarget.setPointerCapture(e.pointerId); onChange([...paths, [toLocal(e)]]); };
+        return; drawing.current = true; grabPointer(e.currentTarget, e); onChange([...paths, [toLocal(e)]]); };
     const move = (e) => { if (!drawing.current || disabled)
         return; const next = paths.slice(); next[next.length - 1] = [...next[next.length - 1], toLocal(e)]; onChange(next); };
     const end = () => { drawing.current = false; };
@@ -51959,7 +51959,23 @@ function SegToggle({ options, value, onChange, ariaLabel, size = 'normal' }) {
 }
 // ---- Let's Play. Small games that need no words: each is a square drawn to fit, played with a
 // finger, a stylus or a mouse (pointer events only), and says "done" with a shower of stars.
-const GAME_BOX = themed(() => ({ width: 'min(520px, 100%)', aspectRatio: '1 / 1', margin: '0 auto', position: 'relative', background: C.paperBoard, color: THEMES.light.ink, border: `2px solid ${C.mode === 'dark' ? C.green : C.ink}`, borderRadius: 14, overflow: 'hidden', touchAction: 'none', userSelect: 'none', boxSizing: 'border-box' }));
+// Starting a drag (2026-09-26, Mikey: on a desktop nothing dragged, though a long press looked as if it would). A mouse
+// press can start the browser's own text selection or picture drag, which cancels the pointer before our game sees it
+// move, and Safari can refuse pointer capture. So every drag start prevents the browser's default, asks for capture
+// without trusting it (moves over the board still reach it), and the board turns off selection in every browser.
+function grabPointer(el, e) {
+    if (e && e.cancelable)
+        e.preventDefault();
+    try {
+        if (el && el.setPointerCapture)
+            el.setPointerCapture(e.pointerId);
+    }
+    catch (err) { /* capture refused; moves still bubble to the board */ }
+}
+if (typeof document !== 'undefined')
+    document.addEventListener('dragstart', (e) => { const t = e.target; if (t && t.closest && t.closest('.edu-game-box'))
+        e.preventDefault(); });
+const GAME_BOX = themed(() => ({ width: 'min(520px, 100%)', aspectRatio: '1 / 1', margin: '0 auto', position: 'relative', background: C.paperBoard, color: THEMES.light.ink, border: `2px solid ${C.mode === 'dark' ? C.green : C.ink}`, borderRadius: 14, overflow: 'hidden', touchAction: 'none', userSelect: 'none', WebkitUserSelect: 'none', WebkitTouchCallout: 'none', boxSizing: 'border-box' }));
 const PAIR_ICONS = ['sun', 'fish', 'tree', 'flower', 'moon', 'bird', 'cup', 'drop'];
 // A small seeded random so a round is the same shuffle on every device, and "play again" is a new one.
 // (shuffle itself comes from logic.mjs: shuffle(rng, list).)
@@ -52049,7 +52065,7 @@ function SortGame({ game, round }) {
     const boxRef = (0, react_1.useRef)(null);
     (0, react_1.useEffect)(() => { setPlaced({}); setDrag(null); }, [round]);
     const start = (it, e) => { if (placed[it.id] !== undefined)
-        return; boxRef.current.setPointerCapture(e.pointerId); const [x, y] = boxPoint(boxRef.current, e); setDrag({ id: it.id, x, y }); };
+        return; grabPointer(boxRef.current, e); const [x, y] = boxPoint(boxRef.current, e); setDrag({ id: it.id, x, y }); };
     const move = (e) => { if (!drag)
         return; const [x, y] = boxPoint(boxRef.current, e); setDrag({ ...drag, x, y }); };
     const drop = () => { if (!drag)
@@ -52117,7 +52133,7 @@ function MazeGame({ game, round }) {
     };
     const s = 100 / n;
     const mid = (i) => i * s + s / 2;
-    return (react_1.default.createElement("div", { ref: boxRef, className: "edu-game-box", style: { ...GAME_BOX }, onPointerDown: (e) => { boxRef.current.setPointerCapture(e.pointerId); move(e); }, onPointerMove: move },
+    return (react_1.default.createElement("div", { ref: boxRef, className: "edu-game-box", style: { ...GAME_BOX }, onPointerDown: (e) => { grabPointer(boxRef.current, e); move(e); }, onPointerMove: move },
         react_1.default.createElement("svg", { viewBox: "0 0 100 100", width: "100%", height: "100%", style: { display: 'block' } },
             react_1.default.createElement("g", { transform: `translate(${(n - 1) * s + s / 2} ${(n - 1) * s + s / 2}) scale(${(s / 24) * 0.78})` },
                 react_1.default.createElement("path", { d: "M0-9.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L0 5.4l-5.9 3.1 1.2-6.5L-9.5-2.6l6.6-.9z", fill: B.gold, stroke: "#2E2E2E", strokeWidth: "1.4", strokeLinejoin: "round" })),
@@ -52161,7 +52177,7 @@ function JigsawGame({ game, round }) {
     const swap = (a, b) => { if (a === b)
         return; const o = [...order]; [o[a], o[b]] = [o[b], o[a]]; setOrder(o); };
     const start = (slot, e) => { if (done)
-        return; boxRef.current.setPointerCapture(e.pointerId); const [x, y] = boxPoint(boxRef.current, e); setDrag({ from: slot, x, y, x0: x, y0: y, moved: false }); };
+        return; grabPointer(boxRef.current, e); const [x, y] = boxPoint(boxRef.current, e); setDrag({ from: slot, x, y, x0: x, y0: y, moved: false }); };
     const move = (e) => { if (!drag)
         return; const [x, y] = boxPoint(boxRef.current, e); setDrag({ ...drag, x, y, moved: drag.moved || Math.hypot(x - drag.x0, y - drag.y0) > 3 }); };
     const drop = () => { if (!drag)
@@ -52256,7 +52272,7 @@ function PongGame({ round, onScore = null }) {
     }, [round]);
     const move = (e) => { if (!state.current)
         return; const [x] = boxPoint(boxRef.current, e); state.current.paddle = Math.max(12, Math.min(88, x)); };
-    return (react_1.default.createElement("div", { ref: boxRef, className: "edu-game-box", style: { ...GAME_BOX }, onPointerMove: move, onPointerDown: move },
+    return (react_1.default.createElement("div", { ref: boxRef, className: "edu-game-box", style: { ...GAME_BOX }, onPointerMove: move, onPointerDown: (e) => { grabPointer(boxRef.current, e); move(e); } },
         react_1.default.createElement("svg", { viewBox: "0 0 100 100", width: "100%", height: "100%", style: { display: 'block' } },
             react_1.default.createElement("text", { x: "50", y: "16", fontSize: "14", fontWeight: "800", fontFamily: FONT, textAnchor: "middle", fill: B.line }, score),
             react_1.default.createElement("circle", { className: "edu-pong-ball", cx: "50", cy: "30", r: "2.6", fill: B.gold, stroke: "#2E2E2E", strokeWidth: "0.8" }),
@@ -52943,7 +52959,7 @@ function CatchGame({ game, round, onScore = null }) {
                 done.of,
                 " caught"),
             react_1.default.createElement("p", { style: { margin: 0, color: B.muted } }, "Tap the round arrow to go again.")));
-    return (react_1.default.createElement("div", { ref: boxRef, className: "edu-game-box", style: { ...GAME_BOX }, onPointerMove: move, onPointerDown: move },
+    return (react_1.default.createElement("div", { ref: boxRef, className: "edu-game-box", style: { ...GAME_BOX }, onPointerMove: move, onPointerDown: (e) => { grabPointer(boxRef.current, e); move(e); } },
         react_1.default.createElement("svg", { viewBox: "0 0 100 100", width: "100%", height: "100%", style: { display: 'block' } },
             react_1.default.createElement("text", { x: "4", y: "7", fontSize: "4", fontWeight: "700", fontFamily: FONT, fill: B.muted }, score),
             react_1.default.createElement("text", { x: "96", y: "7", fontSize: "3.4", fontFamily: FONT, fill: B.muted, textAnchor: "end" }, deck.a.label),
@@ -53020,7 +53036,7 @@ function PathGame({ game, round, onScore = null }) {
             setBad([r, c]);
     };
     const stepped = (r, c) => trail.some(([tr, tc]) => tr === r && tc === c);
-    return (react_1.default.createElement("div", { ref: boxRef, className: "edu-game-box", style: { ...GAME_BOX }, onPointerDown: (e) => { boxRef.current.setPointerCapture(e.pointerId); move(e); }, onPointerMove: move },
+    return (react_1.default.createElement("div", { ref: boxRef, className: "edu-game-box", style: { ...GAME_BOX }, onPointerDown: (e) => { grabPointer(boxRef.current, e); move(e); }, onPointerMove: move },
         react_1.default.createElement("svg", { viewBox: "0 0 100 100", width: "100%", height: "100%", style: { display: 'block' } },
             cells.map((row, r) => row.map((cell, c) => (react_1.default.createElement("g", { key: `${r}-${c}` },
                 react_1.default.createElement("rect", { x: left + c * s + 0.6, y: top + r * s + 0.6, width: s - 1.2, height: s - 1.2, rx: "2", fill: bad && bad[0] === r && bad[1] === c ? '#F3C9BC' : stepped(r, c) ? B.greenSoft : '#F6F8F4', stroke: B.line, strokeWidth: "0.5" }),
@@ -53052,7 +53068,7 @@ function BucketsGame({ game, round, onScore = null }) {
     (0, react_1.useEffect)(() => { if (wrong === null)
         return undefined; const t = setTimeout(() => setWrong(null), 450); return () => clearTimeout(t); }, [wrong]);
     const start = (ch, e) => { if (placed[ch.id] !== undefined)
-        return; boxRef.current.setPointerCapture(e.pointerId); const [x, y] = boxPoint(boxRef.current, e); setDrag({ id: ch.id, x, y }); };
+        return; grabPointer(boxRef.current, e); const [x, y] = boxPoint(boxRef.current, e); setDrag({ id: ch.id, x, y }); };
     const move = (e) => { if (!drag)
         return; const [x, y] = boxPoint(boxRef.current, e); setDrag({ ...drag, x, y }); };
     const drop = () => { if (!drag)
@@ -53122,7 +53138,7 @@ function JumpGame({ game, round, onScore = null }) {
     const xOf = (v) => X0 + ((v - deck.lo) / (deck.hi - deck.lo)) * (X1 - X0);
     const nearest = (x) => ticks.reduce((best, v) => (Math.abs(xOf(v) - x) < Math.abs(xOf(best) - x) ? v : best), ticks[0]);
     const start = (e) => { if (done)
-        return; boxRef.current.setPointerCapture(e.pointerId); const [x] = boxPoint(boxRef.current, e); setDrag({ x }); };
+        return; grabPointer(boxRef.current, e); const [x] = boxPoint(boxRef.current, e); setDrag({ x }); };
     const move = (e) => { if (!drag)
         return; const [x] = boxPoint(boxRef.current, e); setDrag({ x: Math.max(X0, Math.min(X1, x)) }); };
     const drop = () => { if (!drag || done)
@@ -53261,7 +53277,7 @@ function BalanceGame({ game, round, onScore = null }) {
         return undefined; const k = setTimeout(() => { setOnPan([]); setI((n) => n + 1); }, 900); return () => clearTimeout(k); }, [level]);
     const tilt = t ? Math.max(-12, Math.min(12, (right - t.value) * (t.value >= 8 ? 1.2 : 4))) : 0; // degrees, heavier side down
     const start = (k, e) => { if (done || level)
-        return; boxRef.current.setPointerCapture(e.pointerId); const [x, y] = boxPoint(boxRef.current, e); setDrag({ k, x, y, from: onPan.includes(k) ? 'pan' : 'tray' }); };
+        return; grabPointer(boxRef.current, e); const [x, y] = boxPoint(boxRef.current, e); setDrag({ k, x, y, from: onPan.includes(k) ? 'pan' : 'tray' }); };
     const move = (e) => { if (!drag)
         return; const [x, y] = boxPoint(boxRef.current, e); setDrag({ ...drag, x, y }); };
     const drop = () => { if (!drag)
@@ -54704,6 +54720,65 @@ function EduSphereScreens() {
     const dragStart = (0, react_1.useRef)(null);
     const cardEls = (0, react_1.useRef)(new Map());
     const dragY = (0, react_1.useRef)(null); // where the finger is while a card is held
+    // Dragging a student card (2026-09-26, Mikey: on a desktop the card lifted after a long press but would not move).
+    // A finger is captured by the card it touched, so a phone always worked; a mouse is not, so once the pointer left the
+    // held card its moves went to other cards and were ignored. While a card is held, the window now follows the pointer,
+    // the held card rides under it, text selection and the browser's own drag are stopped, and letting go anywhere drops.
+    const rosterDrag = (0, react_1.useRef)({}); // the classroom screen's dropSpot and dragEnd for this render
+    (0, react_1.useEffect)(() => {
+        if (dragId === null)
+            return undefined;
+        // Places the held card under the pointer and the landing line where it would drop; scrolling counts, so the card
+        // stays under the finger while the page moves.
+        const place = () => {
+            const y = dragY.current;
+            if (y === null)
+                return;
+            const el = cardEls.current.get(dragId);
+            if (el && dragStart.current)
+                el.style.transform = `translateY(${y + window.scrollY - dragStart.current.pageY}px) scale(1.02)`;
+            const r = rosterDrag.current;
+            if (r.dropSpot) {
+                const spot = r.dropSpot(y);
+                setDragOver((o) => (o === spot ? o : spot));
+            }
+        };
+        const move = (e) => { if (e.cancelable)
+            e.preventDefault(); dragY.current = e.clientY; place(); };
+        // Held near the top or bottom of the screen, the page scrolls, so a card can travel past the students out of view.
+        let raf = 0;
+        const tick = () => { const y = dragY.current; if (y !== null) {
+            const dy = y > window.innerHeight - 70 ? 12 : y < 70 ? -12 : 0;
+            if (dy) {
+                window.scrollBy(0, dy);
+                place();
+            }
+        } raf = requestAnimationFrame(tick); };
+        raf = requestAnimationFrame(tick);
+        const up = () => { const r = rosterDrag.current; if (r.dragEnd)
+            r.dragEnd(); };
+        const stop = (e) => e.preventDefault();
+        window.addEventListener('pointermove', move, { passive: false });
+        window.addEventListener('pointerup', up);
+        window.addEventListener('pointercancel', up);
+        document.addEventListener('selectstart', stop);
+        document.addEventListener('dragstart', stop);
+        try {
+            const s = window.getSelection && window.getSelection();
+            if (s)
+                s.removeAllRanges();
+        }
+        catch (err) { /* nothing selected */ }
+        return () => {
+            cancelAnimationFrame(raf);
+            dragY.current = null;
+            window.removeEventListener('pointermove', move);
+            window.removeEventListener('pointerup', up);
+            window.removeEventListener('pointercancel', up);
+            document.removeEventListener('selectstart', stop);
+            document.removeEventListener('dragstart', stop);
+        };
+    }, [dragId]);
     (0, react_1.useEffect)(() => {
         if (!dragId || typeof document === 'undefined')
             return undefined;
@@ -57104,12 +57179,12 @@ function EduSphereScreens() {
                 react_1.default.createElement("h1", { style: { fontSize: 24, margin: '12px 0 4px', textAlign: 'center' } }, "Practical Life Skills"),
                 react_1.default.createElement("p", { style: { color: C.muted, marginTop: 0, fontSize: 15 } }, "Making the academic work efficient frees up hours. These are ideas for what to do with them, listed from the earliest skills at the top to the most mature at the bottom. Nothing here is graded, tracked, or shown to a student."),
                 react_1.default.createElement("div", { style: { ...card, marginTop: 22, background: C.greenSoft, borderColor: C.softEdge } },
-                    react_1.default.createElement("p", { style: { margin: '0 0 8px', fontSize: 16, fontWeight: 600 } },
+                    react_1.default.createElement("p", { style: { margin: '0 0 8px', fontSize: 16, fontWeight: 600, textAlign: 'center' } },
                         "My Completed Skills: ",
                         doneCount,
                         " out of ",
                         ordered.length),
-                    react_1.default.createElement("label", { style: { display: 'flex', alignItems: 'center', gap: 10, fontSize: 15 } },
+                    react_1.default.createElement("label", { style: { display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, fontSize: 15 } },
                         react_1.default.createElement("input", { type: "checkbox", checked: hideCovered, onChange: () => setHideCovered(!hideCovered) }),
                         react_1.default.createElement("span", null, "Hide completed skills"))),
                 LIFE_STAGES.map((stage) => {
@@ -57513,29 +57588,46 @@ function EduSphereScreens() {
         const visible = classroomOrder(roster.students.filter((st) => st.active));
         const hidden = roster.students.filter((st) => !st.active);
         const isControl = (el) => !!(el && el.closest && el.closest('button, input, textarea, select, a'));
-        const rowUnder = (y) => { const rows = visible.map((st, i) => ({ i, el: cardEls.current.get(st.id) })).filter((r) => r.el); const hit = rows.find((r) => { const b = r.el.getBoundingClientRect(); return y >= b.top && y <= b.bottom; }); return hit ? hit.i : (rows.length && y > rows[rows.length - 1].el.getBoundingClientRect().bottom ? rows.length - 1 : 0); };
+        // Where a held card would land: the place among the other cards whose middle the pointer is above, or the end.
+        const others = visible.filter((st) => st.id !== dragId).map((st) => st.id);
+        const dropSpot = (y) => { for (let k = 0; k < others.length; k++) {
+            const el = cardEls.current.get(others[k]);
+            if (el) {
+                const b = el.getBoundingClientRect();
+                if (y < b.top + b.height / 2)
+                    return k;
+            }
+        } return others.length; };
         const dragEnd = async () => {
             clearTimeout(dragTimer.current);
             dragTimer.current = null;
-            if (dragId !== null && dragOver !== null) {
-                const ids = visible.map((st) => st.id).filter((id) => id !== dragId);
-                ids.splice(dragOver, 0, dragId);
-                await applyRoster(setClassroomOrder(roster, ids));
-            }
+            if (dragId === null)
+                return;
+            const from = dragId, at = dragOver;
             setDragId(null);
             setDragOver(null);
+            if (at !== null) {
+                const ids = [...others];
+                ids.splice(at, 0, from);
+                await applyRoster(setClassroomOrder(roster, ids));
+            }
         };
+        rosterDrag.current = { dropSpot, dragEnd };
         const holdProps = (st) => ({
-            onPointerDown: (e) => { if (isControl(e.target) || renamingId)
-                return; dragStart.current = { x: e.clientX, y: e.clientY }; dragTimer.current = setTimeout(() => { setDragId(st.id); setDragOver(visible.findIndex((x) => x.id === st.id)); }, 450); },
+            onPointerDown: (e) => { if (isControl(e.target) || renamingId || dragId !== null || (e.pointerType === 'mouse' && e.button !== 0))
+                return; dragStart.current = { x: e.clientX, y: e.clientY, pageY: e.clientY + window.scrollY }; dragY.current = e.clientY; clearTimeout(dragTimer.current); dragTimer.current = setTimeout(() => { dragTimer.current = null; setDragId(st.id); setDragOver(visible.findIndex((x) => x.id === st.id)); }, 450); }, // its own place among the others: dropping at once changes nothing
             onPointerMove: (e) => { if (dragTimer.current && dragStart.current && Math.hypot(e.clientX - dragStart.current.x, e.clientY - dragStart.current.y) > 8) {
                 clearTimeout(dragTimer.current);
                 dragTimer.current = null;
-            } if (dragId === st.id) {
-                dragY.current = e.clientY;
-                setDragOver(rowUnder(e.clientY));
             } },
-            onPointerUp: dragEnd, onPointerCancel: dragEnd, onContextMenu: (e) => { if (dragId)
+            onPointerUp: () => { if (dragId === null) {
+                clearTimeout(dragTimer.current);
+                dragTimer.current = null;
+            } }, onPointerCancel: () => { if (dragId === null) {
+                clearTimeout(dragTimer.current);
+                dragTimer.current = null;
+            } },
+            onContextMenu: (e) => { if (dragId || dragTimer.current)
                 e.preventDefault(); },
         });
         const newsPopup = newsOpen && news ? (react_1.default.createElement("div", { className: "edu-no-print", style: { position: 'fixed', top: 0, right: 0, bottom: 0, left: 0, background: C.scrim, zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 } },
@@ -57685,7 +57777,7 @@ function EduSphereScreens() {
                     activeOpen && visible.map((st, i) => (react_1.default.createElement("div", { key: st.id, ref: (el) => { if (el)
                             cardEls.current.set(st.id, el);
                         else
-                            cardEls.current.delete(st.id); }, ...holdProps(st), style: { ...card, paddingBottom: 14, touchAction: dragId ? 'none' : 'auto', WebkitUserSelect: dragId ? 'none' : 'auto', userSelect: dragId ? 'none' : 'auto', opacity: dragId === st.id ? 0.55 : 1, transform: dragId === st.id ? 'scale(1.02)' : 'none', boxShadow: dragId === st.id ? '0 8px 24px rgba(36, 41, 31, 0.25)' : 'none', borderTop: dragId && dragOver === i && dragId !== st.id ? `4px solid ${C.green}` : undefined, transition: 'transform 0.15s ease, opacity 0.15s ease' } }, renamingId === st.id ? (react_1.default.createElement(react_1.default.Fragment, null,
+                            cardEls.current.delete(st.id); }, ...holdProps(st), style: { ...card, paddingBottom: 14, touchAction: dragId ? 'none' : 'auto', WebkitUserSelect: dragId ? 'none' : 'auto', userSelect: dragId ? 'none' : 'auto', opacity: dragId === st.id ? 0.55 : 1, transform: dragId === st.id ? 'scale(1.02)' : 'none', boxShadow: dragId === st.id ? '0 8px 24px rgba(36, 41, 31, 0.25)' : 'none', position: 'relative', zIndex: dragId === st.id ? 5 : 'auto', borderTop: dragId && dragId !== st.id && dragOver === others.indexOf(st.id) ? `4px solid ${C.green}` : undefined, borderBottom: dragId && dragId !== st.id && dragOver === others.length && others.indexOf(st.id) === others.length - 1 ? `4px solid ${C.green}` : undefined, transition: dragId === st.id ? 'opacity 0.15s ease' : 'transform 0.15s ease, opacity 0.15s ease' } }, renamingId === st.id ? (react_1.default.createElement(react_1.default.Fragment, null,
                         react_1.default.createElement("input", { value: renameInput, onChange: (e) => setRenameInput(e.target.value), placeholder: "Name shown to the student", maxLength: NAME_MAX, style: { fontFamily: FONT, fontSize: 17, padding: '10px 12px', width: '100%', boxSizing: 'border-box', border: `2px solid ${C.line}`, borderRadius: 10, marginBottom: 10 } }),
                         react_1.default.createElement("div", { style: { display: 'flex', gap: 10 } },
                             react_1.default.createElement(Btn, { onClick: async () => { const r = renameStudent(roster, st.id, renameInput); await applyRoster(r.roster, r.error); if (!r.error)
@@ -57807,7 +57899,9 @@ function EduSphereScreens() {
                     react_1.default.createElement("div", { style: { margin: '0 0 16px', padding: '12px 14px', borderRadius: 10, background: C.greenSoft, textAlign: 'center' } },
                         react_1.default.createElement("p", { style: { margin: '0 0 4px', fontWeight: 600 } }, "Quick checks"),
                         react_1.default.createElement("p", { style: { margin: '0 0 8px', fontSize: 14, color: C.muted, lineHeight: 1.5 } },
-                            "All new students (above grade 2) start by taking placement tests. Quick Checks refine that further: a short knowledge check lets a student skip the material they already know. ",
+                            "All new students (above grade 2) start by taking placement tests. Quick-Checks merely refine that further.",
+                            react_1.default.createElement("br", null),
+                            "Short knowledge checks let students skip the material they already know. ",
                             react_1.default.createElement(InfoButton, { onClick: () => setShowQuickTip(!showQuickTip), label: "About quick checks", open: showQuickTip })),
                         showQuickTip && react_1.default.createElement(TipText, null,
                             "Generically placing a student into grade 3 math (after failing grade 4 in a placement test) is an over-simplification. They may already understand some of the grade 3 material. Quick-checks are opportunities for students to skip individual modules (in this case, grade 3 math modules) through five-question knowledge tests and allow for less wasted time.",
@@ -58442,7 +58536,7 @@ function EduSphereScreens() {
                 react_1.default.createElement("div", { className: "edu-no-print", style: { textAlign: 'center', margin: '0 0 12px' } },
                     react_1.default.createElement(Btn, { kind: "secondary", onClick: () => { if (typeof window !== 'undefined' && window.print)
                             window.print(); } }, "Print this report")),
-                react_1.default.createElement("div", { style: { ...card, marginBottom: 14 } },
+                react_1.default.createElement("div", { className: rep.notes.length ? undefined : 'edu-no-print', style: { ...card, marginBottom: 14 } },
                     react_1.default.createElement(HeadWithInfo, { onClick: () => setShowNoteWhy(!showNoteWhy), label: "About notes", open: showNoteWhy }, "Notes"),
                     showNoteWhy && react_1.default.createElement("p", { style: { margin: '0 0 12px', fontSize: 13, color: C.muted, textAlign: 'center' } }, "A note here stays with the student and can be restored through backups. Quickly search student notes through the Who Needs Help page."),
                     rep.notes.map((n) => (react_1.default.createElement("div", { key: n.id, style: { margin: '0 0 8px', padding: '10px 12px', borderRadius: 10, ...(C.mode === 'dark' ? { background: '#AAD8C5', border: '1px solid #AAD8C5', color: '#16201B' } : { background: C.tipBg, border: `1px solid ${C.tipLine}` }), textAlign: 'center' } }, editingNote && editingNote.id === n.id ? (react_1.default.createElement("div", { className: "edu-no-print" },

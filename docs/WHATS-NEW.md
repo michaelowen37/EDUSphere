@@ -28,6 +28,14 @@ The newest block is what educators see once, in a pop-up on the classroom page, 
 - The Wonder Question review is easier to scan: everything is centered except the four voices' names, with thin lines between the parts the youngest children hear. The link that takes every approval back is now called Remove All; it still sends every approved question back to waiting for review, hidden from students.
 - Small touches: the i notes are centered, typing boxes are a soft almond in the dark theme, the weekly note is light green under its dark header, and the Story Log breathes a little more around its toggle and picker.
 
+## September 26, 2026 (dragging on a desktop)
+
+- Dragging in the games works with a desktop mouse. A long press no longer hands the piece to the browser, and a browser that refuses to track the pointer, as Safari can, no longer stops a drag.
+- A printed report leaves out the Notes section when a student has no notes.
+- My Completed Skills and the Hide completed skills choice are centered.
+- The quick checks text on the Classroom page now reads: Quick-Checks merely refine that further, and on a new line, Short knowledge checks let students skip the material they already know.
+- On the Classroom page, a student card held with a desktop mouse now follows the pointer, a green line shows where it will land, and letting go moves the student there. Holding a card near the top or bottom of the screen scrolls the page, so a student can travel past cards out of view.
+
 ## September 25, 2026 (pre-K and kindergarten free)
 
 - Pre-K and kindergarten are free for everyone. Grade 1 and up opens with a license code, one per child per school year.

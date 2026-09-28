@@ -206,7 +206,7 @@ function TracePad({ letter, paths, onChange, disabled = false, tone = null }) {
     const box = ref.current.getBoundingClientRect();
     return [Math.round(((e.clientX - box.left) / box.width) * 100), Math.round(((e.clientY - box.top) / box.height) * 100)];
   };
-  const start = (e) => { if (disabled) return; drawing.current = true; e.currentTarget.setPointerCapture && e.currentTarget.setPointerCapture(e.pointerId); onChange([...paths, [toLocal(e)]]); };
+  const start = (e) => { if (disabled) return; drawing.current = true; grabPointer(e.currentTarget, e); onChange([...paths, [toLocal(e)]]); };
   const move = (e) => { if (!drawing.current || disabled) return; const next = paths.slice(); next[next.length - 1] = [...next[next.length - 1], toLocal(e)]; onChange(next); };
   const end = () => { drawing.current = false; };
   const ink = tone === 'good' ? C.green : tone === 'bad' ? C.clay : C.ink;
@@ -2396,7 +2396,16 @@ function SegToggle({ options, value, onChange, ariaLabel, size = 'normal' }) {
 
 // ---- Let's Play. Small games that need no words: each is a square drawn to fit, played with a
 // finger, a stylus or a mouse (pointer events only), and says "done" with a shower of stars.
-const GAME_BOX = themed(() => ({ width: 'min(520px, 100%)', aspectRatio: '1 / 1', margin: '0 auto', position: 'relative', background: C.paperBoard, color: THEMES.light.ink, border: `2px solid ${C.mode === 'dark' ? C.green : C.ink}`, borderRadius: 14, overflow: 'hidden', touchAction: 'none', userSelect: 'none', boxSizing: 'border-box' }));
+// Starting a drag (2026-09-26, Mikey: on a desktop nothing dragged, though a long press looked as if it would). A mouse
+// press can start the browser's own text selection or picture drag, which cancels the pointer before our game sees it
+// move, and Safari can refuse pointer capture. So every drag start prevents the browser's default, asks for capture
+// without trusting it (moves over the board still reach it), and the board turns off selection in every browser.
+function grabPointer(el, e) {
+  if (e && e.cancelable) e.preventDefault();
+  try { if (el && el.setPointerCapture) el.setPointerCapture(e.pointerId); } catch (err) { /* capture refused; moves still bubble to the board */ }
+}
+if (typeof document !== 'undefined') document.addEventListener('dragstart', (e) => { const t = e.target; if (t && t.closest && t.closest('.edu-game-box')) e.preventDefault(); });
+const GAME_BOX = themed(() => ({ width: 'min(520px, 100%)', aspectRatio: '1 / 1', margin: '0 auto', position: 'relative', background: C.paperBoard, color: THEMES.light.ink, border: `2px solid ${C.mode === 'dark' ? C.green : C.ink}`, borderRadius: 14, overflow: 'hidden', touchAction: 'none', userSelect: 'none', WebkitUserSelect: 'none', WebkitTouchCallout: 'none', boxSizing: 'border-box' }));
 const PAIR_ICONS = ['sun', 'fish', 'tree', 'flower', 'moon', 'bird', 'cup', 'drop'];
 // A small seeded random so a round is the same shuffle on every device, and "play again" is a new one.
 // (shuffle itself comes from logic.mjs: shuffle(rng, list).)
@@ -2476,7 +2485,7 @@ function SortGame({ game, round }) {
   }, [game, round]);
   const [placed, setPlaced] = useState({}); const [drag, setDrag] = useState(null); const boxRef = useRef(null);
   useEffect(() => { setPlaced({}); setDrag(null); }, [round]);
-  const start = (it, e) => { if (placed[it.id] !== undefined) return; boxRef.current.setPointerCapture(e.pointerId); const [x, y] = boxPoint(boxRef.current, e); setDrag({ id: it.id, x, y }); };
+  const start = (it, e) => { if (placed[it.id] !== undefined) return; grabPointer(boxRef.current, e); const [x, y] = boxPoint(boxRef.current, e); setDrag({ id: it.id, x, y }); };
   const move = (e) => { if (!drag) return; const [x, y] = boxPoint(boxRef.current, e); setDrag({ ...drag, x, y }); };
   const drop = () => { if (!drag) return; const it = items.find((i) => i.id === drag.id); const bin = drag.y > 64 ? (drag.x < 50 ? 0 : 1) : -1; if (bin === it.bin) setPlaced({ ...placed, [it.id]: bin }); setDrag(null); };
   const inBin = (bin) => items.filter((it) => placed[it.id] === bin);
@@ -2523,7 +2532,7 @@ function MazeGame({ game, round }) {
   };
   const s = 100 / n; const mid = (i) => i * s + s / 2;
   return (
-    <div ref={boxRef} className="edu-game-box" style={{ ...GAME_BOX }} onPointerDown={(e) => { boxRef.current.setPointerCapture(e.pointerId); move(e); }} onPointerMove={move}>
+    <div ref={boxRef} className="edu-game-box" style={{ ...GAME_BOX }} onPointerDown={(e) => { grabPointer(boxRef.current, e); move(e); }} onPointerMove={move}>
       <svg viewBox="0 0 100 100" width="100%" height="100%" style={{ display: 'block' }}>
         {/* A small gold star marks the way out (2026-09-23, Mikey): the instructions always said star, and now there is one. */}
         <g transform={`translate(${(n - 1) * s + s / 2} ${(n - 1) * s + s / 2}) scale(${(s / 24) * 0.78})`}><path d="M0-9.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L0 5.4l-5.9 3.1 1.2-6.5L-9.5-2.6l6.6-.9z" fill={B.gold} stroke="#2E2E2E" strokeWidth="1.4" strokeLinejoin="round" /></g>
@@ -2566,7 +2575,7 @@ function JigsawGame({ game, round }) {
   // one piece and then another still swaps them, for anyone who taps.
   const slotAt = (x, y) => Math.min(n - 1, Math.max(0, Math.floor(y / s))) * n + Math.min(n - 1, Math.max(0, Math.floor(x / s)));
   const swap = (a, b) => { if (a === b) return; const o = [...order]; [o[a], o[b]] = [o[b], o[a]]; setOrder(o); };
-  const start = (slot, e) => { if (done) return; boxRef.current.setPointerCapture(e.pointerId); const [x, y] = boxPoint(boxRef.current, e); setDrag({ from: slot, x, y, x0: x, y0: y, moved: false }); };
+  const start = (slot, e) => { if (done) return; grabPointer(boxRef.current, e); const [x, y] = boxPoint(boxRef.current, e); setDrag({ from: slot, x, y, x0: x, y0: y, moved: false }); };
   const move = (e) => { if (!drag) return; const [x, y] = boxPoint(boxRef.current, e); setDrag({ ...drag, x, y, moved: drag.moved || Math.hypot(x - drag.x0, y - drag.y0) > 3 }); };
   const drop = () => { if (!drag) return; if (drag.moved) { swap(drag.from, slotAt(drag.x, drag.y)); setPick(-1); } else if (pick < 0) setPick(drag.from); else { swap(pick, drag.from); setPick(-1); } setDrag(null); };
   return (
@@ -2616,7 +2625,7 @@ function PongGame({ round, onScore = null }) {
   }, [round]);
   const move = (e) => { if (!state.current) return; const [x] = boxPoint(boxRef.current, e); state.current.paddle = Math.max(12, Math.min(88, x)); };
   return (
-    <div ref={boxRef} className="edu-game-box" style={{ ...GAME_BOX }} onPointerMove={move} onPointerDown={move}>
+    <div ref={boxRef} className="edu-game-box" style={{ ...GAME_BOX }} onPointerMove={move} onPointerDown={(e) => { grabPointer(boxRef.current, e); move(e); }}>
       <svg viewBox="0 0 100 100" width="100%" height="100%" style={{ display: 'block' }}>
         <text x="50" y="16" fontSize="14" fontWeight="800" fontFamily={FONT} textAnchor="middle" fill={B.line}>{score}</text>
         <circle className="edu-pong-ball" cx="50" cy="30" r="2.6" fill={B.gold} stroke="#2E2E2E" strokeWidth="0.8" />
@@ -3036,7 +3045,7 @@ function CatchGame({ game, round, onScore = null }) {
     </div>
   );
   return (
-    <div ref={boxRef} className="edu-game-box" style={{ ...GAME_BOX }} onPointerMove={move} onPointerDown={move}>
+    <div ref={boxRef} className="edu-game-box" style={{ ...GAME_BOX }} onPointerMove={move} onPointerDown={(e) => { grabPointer(boxRef.current, e); move(e); }}>
       <svg viewBox="0 0 100 100" width="100%" height="100%" style={{ display: 'block' }}>
         <text x="4" y="7" fontSize="4" fontWeight="700" fontFamily={FONT} fill={B.muted}>{score}</text>
         <text x="96" y="7" fontSize="3.4" fontFamily={FONT} fill={B.muted} textAnchor="end">{deck.a.label}</text>
@@ -3074,7 +3083,7 @@ function PathGame({ game, round, onScore = null }) {
   };
   const stepped = (r, c) => trail.some(([tr, tc]) => tr === r && tc === c);
   return (
-    <div ref={boxRef} className="edu-game-box" style={{ ...GAME_BOX }} onPointerDown={(e) => { boxRef.current.setPointerCapture(e.pointerId); move(e); }} onPointerMove={move}>
+    <div ref={boxRef} className="edu-game-box" style={{ ...GAME_BOX }} onPointerDown={(e) => { grabPointer(boxRef.current, e); move(e); }} onPointerMove={move}>
       <svg viewBox="0 0 100 100" width="100%" height="100%" style={{ display: 'block' }}>
         {cells.map((row, r) => row.map((cell, c) => (
           <g key={`${r}-${c}`}>
@@ -3101,7 +3110,7 @@ function BucketsGame({ game, round, onScore = null }) {
   useEffect(() => { if (done) return undefined; const t = setInterval(() => setTicks((k) => k + 1), 1000); return () => clearInterval(t); }, [done]);
   useEffect(() => { if (done && onScore) onScore(ticks, 'low'); }, [done]);
   useEffect(() => { if (wrong === null) return undefined; const t = setTimeout(() => setWrong(null), 450); return () => clearTimeout(t); }, [wrong]);
-  const start = (ch, e) => { if (placed[ch.id] !== undefined) return; boxRef.current.setPointerCapture(e.pointerId); const [x, y] = boxPoint(boxRef.current, e); setDrag({ id: ch.id, x, y }); };
+  const start = (ch, e) => { if (placed[ch.id] !== undefined) return; grabPointer(boxRef.current, e); const [x, y] = boxPoint(boxRef.current, e); setDrag({ id: ch.id, x, y }); };
   const move = (e) => { if (!drag) return; const [x, y] = boxPoint(boxRef.current, e); setDrag({ ...drag, x, y }); };
   const drop = () => { if (!drag) return; const ch = chips.find((c) => c.id === drag.id); const bin = drag.y > 62 ? (drag.x < 50 ? 0 : 1) : -1; if (bin === ch.bin) setPlaced({ ...placed, [ch.id]: bin }); else if (bin >= 0) setWrong(ch.id); setDrag(null); };
   const inBin = (bin) => chips.filter((ch) => placed[ch.id] === bin);
@@ -3147,7 +3156,7 @@ function JumpGame({ game, round, onScore = null }) {
   useEffect(() => { if (!wrong) return undefined; const t = setTimeout(() => setWrong(false), 500); return () => clearTimeout(t); }, [wrong]);
   const X0 = 8; const X1 = 92; const LINE_Y = 66; const xOf = (v) => X0 + ((v - deck.lo) / (deck.hi - deck.lo)) * (X1 - X0);
   const nearest = (x) => ticks.reduce((best, v) => (Math.abs(xOf(v) - x) < Math.abs(xOf(best) - x) ? v : best), ticks[0]);
-  const start = (e) => { if (done) return; boxRef.current.setPointerCapture(e.pointerId); const [x] = boxPoint(boxRef.current, e); setDrag({ x }); };
+  const start = (e) => { if (done) return; grabPointer(boxRef.current, e); const [x] = boxPoint(boxRef.current, e); setDrag({ x }); };
   const move = (e) => { if (!drag) return; const [x] = boxPoint(boxRef.current, e); setDrag({ x: Math.max(X0, Math.min(X1, x)) }); };
   const drop = () => { if (!drag || done) return; const v = nearest(drag.x); setDrag(null); if (Math.abs(v - q.answer) < 1e-9) setI(i + 1); else setWrong(true); };
   const frogX = drag ? drag.x : q ? xOf(q.from) : xOf(deck.lo); const labelOf = deck.label || ((v) => String(v).replace('-', '−'));
@@ -3239,7 +3248,7 @@ function BalanceGame({ game, round, onScore = null }) {
   const level = t && Math.abs(right - t.value) < 1e-9 && onPan.length > 0;
   useEffect(() => { if (!level) return undefined; const k = setTimeout(() => { setOnPan([]); setI((n) => n + 1); }, 900); return () => clearTimeout(k); }, [level]);
   const tilt = t ? Math.max(-12, Math.min(12, (right - t.value) * (t.value >= 8 ? 1.2 : 4))) : 0;   // degrees, heavier side down
-  const start = (k, e) => { if (done || level) return; boxRef.current.setPointerCapture(e.pointerId); const [x, y] = boxPoint(boxRef.current, e); setDrag({ k, x, y, from: onPan.includes(k) ? 'pan' : 'tray' }); };
+  const start = (k, e) => { if (done || level) return; grabPointer(boxRef.current, e); const [x, y] = boxPoint(boxRef.current, e); setDrag({ k, x, y, from: onPan.includes(k) ? 'pan' : 'tray' }); };
   const move = (e) => { if (!drag) return; const [x, y] = boxPoint(boxRef.current, e); setDrag({ ...drag, x, y }); };
   const drop = () => { if (!drag) return; const overPan = drag.x > 52 && drag.y < 72; if (overPan && drag.from === 'tray') setOnPan([...onPan, drag.k]); if (!overPan && drag.from === 'pan') setOnPan(onPan.filter((k) => k !== drag.k)); setDrag(null); };
   const chip = (k, x, y, key, faded) => <div key={key} onPointerDown={(e) => start(k, e)} style={{ position: 'absolute', left: `${x}%`, top: `${y}%`, transform: 'translate(-50%, -50%)', width: 36, height: 30, borderRadius: 8, border: `2px solid ${B.ink}`, background: faded ? '#EEF1EC' : B.goldSoft, color: faded ? B.muted : B.ink, fontFamily: FONT, fontSize: 15, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'grab', touchAction: 'none', userSelect: 'none', transition: drag && drag.k === k ? 'none' : 'left 0.2s ease, top 0.2s ease', zIndex: drag && drag.k === k ? 3 : 2 }}>{deck.weights[k].label}</div>;
@@ -4502,6 +4511,36 @@ function EduSphereScreens() {
   const [dragOver, setDragOver] = useState(null);              // the row index it is held over
   const dragTimer = useRef(null); const dragStart = useRef(null); const cardEls = useRef(new Map());
   const dragY = useRef(null);                                  // where the finger is while a card is held
+  // Dragging a student card (2026-09-26, Mikey: on a desktop the card lifted after a long press but would not move).
+  // A finger is captured by the card it touched, so a phone always worked; a mouse is not, so once the pointer left the
+  // held card its moves went to other cards and were ignored. While a card is held, the window now follows the pointer,
+  // the held card rides under it, text selection and the browser's own drag are stopped, and letting go anywhere drops.
+  const rosterDrag = useRef({});                               // the classroom screen's dropSpot and dragEnd for this render
+  useEffect(() => {
+    if (dragId === null) return undefined;
+    // Places the held card under the pointer and the landing line where it would drop; scrolling counts, so the card
+    // stays under the finger while the page moves.
+    const place = () => {
+      const y = dragY.current; if (y === null) return;
+      const el = cardEls.current.get(dragId); if (el && dragStart.current) el.style.transform = `translateY(${y + window.scrollY - dragStart.current.pageY}px) scale(1.02)`;
+      const r = rosterDrag.current; if (r.dropSpot) { const spot = r.dropSpot(y); setDragOver((o) => (o === spot ? o : spot)); }
+    };
+    const move = (e) => { if (e.cancelable) e.preventDefault(); dragY.current = e.clientY; place(); };
+    // Held near the top or bottom of the screen, the page scrolls, so a card can travel past the students out of view.
+    let raf = 0;
+    const tick = () => { const y = dragY.current; if (y !== null) { const dy = y > window.innerHeight - 70 ? 12 : y < 70 ? -12 : 0; if (dy) { window.scrollBy(0, dy); place(); } } raf = requestAnimationFrame(tick); };
+    raf = requestAnimationFrame(tick);
+    const up = () => { const r = rosterDrag.current; if (r.dragEnd) r.dragEnd(); };
+    const stop = (e) => e.preventDefault();
+    window.addEventListener('pointermove', move, { passive: false }); window.addEventListener('pointerup', up); window.addEventListener('pointercancel', up);
+    document.addEventListener('selectstart', stop); document.addEventListener('dragstart', stop);
+    try { const s = window.getSelection && window.getSelection(); if (s) s.removeAllRanges(); } catch (err) { /* nothing selected */ }
+    return () => {
+      cancelAnimationFrame(raf); dragY.current = null;
+      window.removeEventListener('pointermove', move); window.removeEventListener('pointerup', up); window.removeEventListener('pointercancel', up);
+      document.removeEventListener('selectstart', stop); document.removeEventListener('dragstart', stop);
+    };
+  }, [dragId]);
   useEffect(() => {
     if (!dragId || typeof document === 'undefined') return undefined;
     const stop = (e) => e.preventDefault();   // the page must not scroll under a dragged card
@@ -6792,8 +6831,8 @@ function EduSphereScreens() {
         <p style={{ color: C.muted, marginTop: 0, fontSize: 15 }}>Making the academic work efficient frees up hours. These are ideas for what to do with them, listed from the earliest skills at the top to the most mature at the bottom. Nothing here is graded, tracked, or shown to a student.</p>
 
         <div style={{ ...card, marginTop: 22, background: C.greenSoft, borderColor: C.softEdge }}>
-          <p style={{ margin: '0 0 8px', fontSize: 16, fontWeight: 600 }}>My Completed Skills: {doneCount} out of {ordered.length}</p>
-          <label style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 15 }}>
+          <p style={{ margin: '0 0 8px', fontSize: 16, fontWeight: 600, textAlign: 'center' }}>My Completed Skills: {doneCount} out of {ordered.length}</p>
+          <label style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, fontSize: 15 }}>
             <input type="checkbox" checked={hideCovered} onChange={() => setHideCovered(!hideCovered)} />
             <span>Hide completed skills</span>
           </label>
@@ -7138,19 +7177,21 @@ function EduSphereScreens() {
     const visible = classroomOrder(roster.students.filter((st) => st.active));
     const hidden = roster.students.filter((st) => !st.active);
     const isControl = (el) => !!(el && el.closest && el.closest('button, input, textarea, select, a'));
-    const rowUnder = (y) => { const rows = visible.map((st, i) => ({ i, el: cardEls.current.get(st.id) })).filter((r) => r.el); const hit = rows.find((r) => { const b = r.el.getBoundingClientRect(); return y >= b.top && y <= b.bottom; }); return hit ? hit.i : (rows.length && y > rows[rows.length - 1].el.getBoundingClientRect().bottom ? rows.length - 1 : 0); };
+    // Where a held card would land: the place among the other cards whose middle the pointer is above, or the end.
+    const others = visible.filter((st) => st.id !== dragId).map((st) => st.id);
+    const dropSpot = (y) => { for (let k = 0; k < others.length; k++) { const el = cardEls.current.get(others[k]); if (el) { const b = el.getBoundingClientRect(); if (y < b.top + b.height / 2) return k; } } return others.length; };
     const dragEnd = async () => {
       clearTimeout(dragTimer.current); dragTimer.current = null;
-      if (dragId !== null && dragOver !== null) {
-        const ids = visible.map((st) => st.id).filter((id) => id !== dragId); ids.splice(dragOver, 0, dragId);
-        await applyRoster(setClassroomOrder(roster, ids));
-      }
-      setDragId(null); setDragOver(null);
+      if (dragId === null) return;
+      const from = dragId, at = dragOver; setDragId(null); setDragOver(null);
+      if (at !== null) { const ids = [...others]; ids.splice(at, 0, from); await applyRoster(setClassroomOrder(roster, ids)); }
     };
+    rosterDrag.current = { dropSpot, dragEnd };
     const holdProps = (st) => ({
-      onPointerDown: (e) => { if (isControl(e.target) || renamingId) return; dragStart.current = { x: e.clientX, y: e.clientY }; dragTimer.current = setTimeout(() => { setDragId(st.id); setDragOver(visible.findIndex((x) => x.id === st.id)); }, 450); },
-      onPointerMove: (e) => { if (dragTimer.current && dragStart.current && Math.hypot(e.clientX - dragStart.current.x, e.clientY - dragStart.current.y) > 8) { clearTimeout(dragTimer.current); dragTimer.current = null; } if (dragId === st.id) { dragY.current = e.clientY; setDragOver(rowUnder(e.clientY)); } },
-      onPointerUp: dragEnd, onPointerCancel: dragEnd, onContextMenu: (e) => { if (dragId) e.preventDefault(); },
+      onPointerDown: (e) => { if (isControl(e.target) || renamingId || dragId !== null || (e.pointerType === 'mouse' && e.button !== 0)) return; dragStart.current = { x: e.clientX, y: e.clientY, pageY: e.clientY + window.scrollY }; dragY.current = e.clientY; clearTimeout(dragTimer.current); dragTimer.current = setTimeout(() => { dragTimer.current = null; setDragId(st.id); setDragOver(visible.findIndex((x) => x.id === st.id)); }, 450); },   // its own place among the others: dropping at once changes nothing
+      onPointerMove: (e) => { if (dragTimer.current && dragStart.current && Math.hypot(e.clientX - dragStart.current.x, e.clientY - dragStart.current.y) > 8) { clearTimeout(dragTimer.current); dragTimer.current = null; } },
+      onPointerUp: () => { if (dragId === null) { clearTimeout(dragTimer.current); dragTimer.current = null; } }, onPointerCancel: () => { if (dragId === null) { clearTimeout(dragTimer.current); dragTimer.current = null; } },
+      onContextMenu: (e) => { if (dragId || dragTimer.current) e.preventDefault(); },
     });
     const newsPopup = newsOpen && news ? (
       <div className="edu-no-print" style={{ position: 'fixed', top: 0, right: 0, bottom: 0, left: 0, background: C.scrim, zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
@@ -7321,7 +7362,7 @@ function EduSphereScreens() {
         {activeOpen && visible.length > 1 && <p style={{ margin: '0 0 8px', fontSize: 13, color: C.muted, textAlign: 'center' }}>Youngest band first, then by name. Press and hold a card to drag it somewhere else.</p>}
         {activeOpen && visible.map((st, i) => (
           <div key={st.id} ref={(el) => { if (el) cardEls.current.set(st.id, el); else cardEls.current.delete(st.id); }} {...holdProps(st)}
-            style={{ ...card, paddingBottom: 14, touchAction: dragId ? 'none' : 'auto', WebkitUserSelect: dragId ? 'none' : 'auto', userSelect: dragId ? 'none' : 'auto', opacity: dragId === st.id ? 0.55 : 1, transform: dragId === st.id ? 'scale(1.02)' : 'none', boxShadow: dragId === st.id ? '0 8px 24px rgba(36, 41, 31, 0.25)' : 'none', borderTop: dragId && dragOver === i && dragId !== st.id ? `4px solid ${C.green}` : undefined, transition: 'transform 0.15s ease, opacity 0.15s ease' }}>
+            style={{ ...card, paddingBottom: 14, touchAction: dragId ? 'none' : 'auto', WebkitUserSelect: dragId ? 'none' : 'auto', userSelect: dragId ? 'none' : 'auto', opacity: dragId === st.id ? 0.55 : 1, transform: dragId === st.id ? 'scale(1.02)' : 'none', boxShadow: dragId === st.id ? '0 8px 24px rgba(36, 41, 31, 0.25)' : 'none', position: 'relative', zIndex: dragId === st.id ? 5 : 'auto', borderTop: dragId && dragId !== st.id && dragOver === others.indexOf(st.id) ? `4px solid ${C.green}` : undefined, borderBottom: dragId && dragId !== st.id && dragOver === others.length && others.indexOf(st.id) === others.length - 1 ? `4px solid ${C.green}` : undefined, transition: dragId === st.id ? 'opacity 0.15s ease' : 'transform 0.15s ease, opacity 0.15s ease' }}>
             {renamingId === st.id ? (
               <>
                 <input value={renameInput} onChange={(e) => setRenameInput(e.target.value)} placeholder="Name shown to the student" maxLength={NAME_MAX}
@@ -7495,7 +7536,7 @@ function EduSphereScreens() {
         <div style={{ ...card, marginTop: 22, textAlign: 'center' }}>
           <div style={{ margin: '0 0 16px', padding: '12px 14px', borderRadius: 10, background: C.greenSoft, textAlign: 'center' }}>
             <p style={{ margin: '0 0 4px', fontWeight: 600 }}>Quick checks</p>
-            <p style={{ margin: '0 0 8px', fontSize: 14, color: C.muted, lineHeight: 1.5 }}>All new students (above grade 2) start by taking placement tests. Quick Checks refine that further: a short knowledge check lets a student skip the material they already know. <InfoButton onClick={() => setShowQuickTip(!showQuickTip)} label="About quick checks" open={showQuickTip} /></p>
+            <p style={{ margin: '0 0 8px', fontSize: 14, color: C.muted, lineHeight: 1.5 }}>All new students (above grade 2) start by taking placement tests. Quick-Checks merely refine that further.<br />Short knowledge checks let students skip the material they already know. <InfoButton onClick={() => setShowQuickTip(!showQuickTip)} label="About quick checks" open={showQuickTip} /></p>
             {showQuickTip && <TipText>Generically placing a student into grade 3 math (after failing grade 4 in a placement test) is an over-simplification. They may already understand some of the grade 3 material. Quick-checks are opportunities for students to skip individual modules (in this case, grade 3 math modules) through five-question knowledge tests and allow for less wasted time.<br /><br /><strong>Note:</strong> Successful skips lead to a transcript status of "placed" rather than "mastered." If they answer too quickly, it doesn't count. Future memory checks will further test their level of understanding of these skipped modules by integrating the concepts into new material, ensuring that nothing slips through the cracks. If necessary, we route them backwards.</TipText>}
             <SegToggle options={[['on', 'On'], ['off', 'Off']]} value={quickChecks ? 'on' : 'off'} onChange={async (key) => { const next = key === 'on'; setQuickChecks(next); await saveQuickChecks(next); }} ariaLabel="Quick checks on or off" />
           </div>
@@ -8092,8 +8133,9 @@ function EduSphereScreens() {
         ) : since ? <p style={{ margin: '0 0 14px', fontSize: 14, color: C.muted, textAlign: 'center' }}>Nothing new since you last looked.<br />({niceDateShort(reportOpenedFrom)})</p> : null}
         <div className="edu-no-print" style={{ textAlign: 'center', margin: '0 0 12px' }}><Btn kind="secondary" onClick={() => { if (typeof window !== 'undefined' && window.print) window.print(); }}>Print this report</Btn></div>
 
-        {/* Teacher notes: written here, kept on the student's log, so they ride along in every backup. */}
-        <div style={{ ...card, marginBottom: 14 }}>
+        {/* Teacher notes: written here, kept on the student's log, so they ride along in every backup. With no notes the
+            card stays on screen for writing one but leaves the printed report (2026-09-26, Mikey). */}
+        <div className={rep.notes.length ? undefined : 'edu-no-print'} style={{ ...card, marginBottom: 14 }}>
           <HeadWithInfo onClick={() => setShowNoteWhy(!showNoteWhy)} label="About notes" open={showNoteWhy}>Notes</HeadWithInfo>
           {showNoteWhy && <p style={{ margin: '0 0 12px', fontSize: 13, color: C.muted, textAlign: 'center' }}>A note here stays with the student and can be restored through backups. Quickly search student notes through the Who Needs Help page.</p>}
           {/* Each note sits on its own soft green card, centered, with Edit and Remove under it. An edit is

@@ -28,6 +28,13 @@ The newest block is what educators see once, in a pop-up on the classroom page, 
 - The Wonder Question review is easier to scan: everything is centered except the four voices' names, with thin lines between the parts the youngest children hear. The link that takes every approval back is now called Remove All; it still sends every approved question back to waiting for review, hidden from students.
 - Small touches: the i notes are centered, typing boxes are a soft almond in the dark theme, the weekly note is light green under its dark header, and the Story Log breathes a little more around its toggle and picker.
 
+## September 28, 2026 (grade 10 begins)
+
+- Nine grade 10 stories are longer, each with six pictures: the five geometry stories (angles along parallel lines and the outside angle of a triangle, measuring a tree by its shadow and why area grows by the square, congruent against similar with a 200 percent copy, finding a tree's height with the tangent and the neat sine of 30 degrees, and real crust and slice sizes for a 12-inch pizza) and four reading stories (bias in placement and a second source, disguised paraphrases and naming the source, foils and dynamic characters, and when a thing is or is not a symbol).
+- Grade 10's eight chemistry stories are longer, each with six pictures: Mendeleev's gaps and why cesium is fiercer than sodium, metals as a third way to bond, balancing methane burning and Lavoisier's scale, red cabbage as an indicator and the body's own pH, a mole of water as a big sip, a real example of each reaction type, kelvins and puffed chip bags, and diluting a solution and saturation.
+- Every grade 10 short story is now full length. The last nine: Hammurabi's water laws and four river civilizations, Latin words in Washington and how Augustus emptied the Senate, Magna Carta and Luther's pamphlets, the gaps in the declarations and Haiti's free nation, the Factory Act of 1833 and the first railway, the League of Nations against the United Nations, answering the scene that seems to break a thesis, judging a source, and the details that carry a reflection.
+- Grade 10's five long stories are twice as long, each with five new pictures: Chloe measuring the sculpture two ways, the kitchen chemistry year, the stone in the bridge, Georgette's two newspapers, and Chloe's three pieces of writing. Grade 10 is now finished.
+
 ## September 26, 2026 (changing the PIN)
 
 - The backup page has a Change PIN link under Start over as a new educator. Type the current PIN, then the new one twice.

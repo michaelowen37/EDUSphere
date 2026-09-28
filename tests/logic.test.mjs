@@ -783,8 +783,9 @@ ok('reset: history kept, but nothing counts as mastered afterwards', events.leng
   ok('one round is not yet due a reflection', L.nextWonder(one, 'counting-k', allApproved) === null);
   ok('two rounds are due one', L.nextWonder(two, 'counting-k', allApproved) !== null);
   const failed = (id, at) => ({ ...pass(id, at), coreCorrect: 1 });
-  ok('failed rounds count too, so a struggling child meets more reflections', L.nextWonder([failed('count-to-5', 't1'), failed('count-to-5', 't2')], 'counting-k', allApproved) !== null);
-  ok('after a failed round the reflection is about failure, feelings, or getting through', ['failure', 'feelings', 'ups-and-downs'].includes(L.nextWonder([failed('count-to-5', 't1'), failed('count-to-5', 't2')], 'counting-k', allApproved).theme));
+  ok('failed rounds count too, so a struggling child meets more reflections', L.nextWonder([failed('count-to-5', 't1'), failed('count-to-10', 't2')], 'counting-k', allApproved) !== null);
+  ok('two rounds of the same module count as one module, so it is not yet due', L.nextWonder([pass('count-to-5', 't1'), pass('count-to-5', 't2')], 'counting-k', allApproved) === null);
+  ok('after a failed round the reflection is about failure, feelings, or getting through', ['failure', 'feelings', 'ups-and-downs'].includes(L.nextWonder([failed('count-to-5', 't1'), failed('count-to-10', 't2')], 'counting-k', allApproved).theme));
   ok('a pre-reader only ever gets a question with two spoken voices', Array.isArray(L.nextWonder(two, 'counting-k', allApproved, true).simple));
   ok('nothing is due when nothing is approved', L.nextWonder(two, 'counting-k', L.emptyWonderReview()) === null);
   const first = L.nextWonder(two, 'counting-k', allApproved);
@@ -1508,6 +1509,45 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
   const mixed = ['counting-k', 'reading-3', 'letters-k'];
   ok('without a license only the free courses open; with one, all of them do', JSON.stringify(L.openCourseIds(mixed, false)) === JSON.stringify(['counting-k', 'letters-k']) && L.openCourseIds(mixed, true).length === 3);
   ok('the app carries a public key only, marked as the development key until launch', !('d' in L.LICENSE_PUBLIC_KEY) && L.LICENSE_KEY_IS_DEVELOPMENT === true);
+}
+
+
+// Mikey's Wonder rules (2026-09-28): one reflection per two modules worked; after a failed round or several misses in
+// a row, reframing failure and handling feelings come first, even ahead of questions never seen; never a third time;
+// and every stage holds more than enough, even for a student who struggles often.
+{
+  const approvedAll = L.approveAllWonder(L.emptyWonderReview());
+  const at = (h) => `2026-09-01T${String(h).padStart(2, '0')}:00:00.000Z`;
+  const round = (id, h, correctFlags) => ({ type: 'attempt_completed', at: at(h), startedAt: at(h), moduleId: id, seed: 1, core: correctFlags.map((c) => ({ correct: c })), review: null, coreCorrect: correctFlags.filter(Boolean).length, coreTotal: correctFlags.length });
+  const good = [true, true, true, true, true];
+  const passedButShaky = [true, false, false, false, true];
+  const failedRound = [false, false, true, false, false];
+  const comfortTheme = (w) => w && (w.theme === 'failure' || w.theme === 'feelings');
+  // Every early question answered once, so no question is unseen except none; then a failure must still pick comfort first.
+  const everyWorldOnce = L.WONDER.filter((w) => w.stage === 'early' && w.theme === 'world').map((w, i) => L.makeWonderEvent(w.id, 'count-to-5', at(1) + i, 30, 5));
+  const worldUnseen = [round('count-to-5', 2, good), round('count-to-10', 3, failedRound)];
+  ok('after a failed round a failure or feelings question comes first', comfortTheme(L.nextWonder(worldUnseen, 'counting-k', approvedAll)));
+  ok('three misses in a row inside a passed round also count as a rough patch', L.missStreak(round('m', 1, passedButShaky)) === 3 && comfortTheme(L.nextWonder([round('count-to-5', 2, good), round('count-to-10', 3, passedButShaky)], 'counting-k', approvedAll)));
+  const comfortSeenOnce = L.WONDER.filter((w) => w.stage === 'early' && comfortTheme(w)).map((w, i) => ({ ...L.makeWonderEvent(w.id, 'count-to-5', at(4), 30, 5), at: `2026-09-01T04:00:${String(i).padStart(2, '0')}.000Z` }));
+  const afterFail = [...comfortSeenOnce, round('count-to-5', 6, good), round('count-to-10', 7, failedRound)];
+  ok('a rough patch still picks a comfort question over a world question never seen', comfortTheme(L.nextWonder(afterFail, 'counting-k', approvedAll)));
+  const calm = [round('count-to-5', 2, good), round('count-to-10', 3, good)];
+  ok('with no rough patch, the rotation is unchanged and a question is still due after two modules', L.nextWonder(calm, 'counting-k', approvedAll) !== null);
+  const twice = (w) => [L.makeWonderEvent(w.id, 'm', at(1), 30, 5), L.makeWonderEvent(w.id, 'm', at(2), 30, 5)];
+  const onlyOne = { version: 1, approved: ['w-fell-off-bike'], hidden: [] };
+  ok('a question answered twice is never offered a third time', L.nextWonder([...twice({ id: 'w-fell-off-bike' }), round('count-to-5', 3, good), round('count-to-10', 4, failedRound)], 'counting-k', onlyOne) === null);
+  // Enough for years: at one reflection per two modules, each stage's pool (each question twice) covers the stage half
+  // again, and its failure and feelings questions alone cover three reflections in four.
+  for (const stage of ['early', 'growing', 'teen', 'grown']) {
+    const modules = L.COURSES.filter((c) => L.stageForGrade(c.grade) === stage).reduce((n, c) => n + c.modules.length, 0);
+    const need = Math.ceil(modules / L.WONDER_EVERY);
+    const pool = L.WONDER.filter((w) => w.stage === stage);
+    const comfort = pool.filter(comfortTheme);
+    ok(`${stage}: ${pool.length} questions cover ${need} reflections half again`, pool.length * L.WONDER_MAX_REPEATS >= Math.ceil(need * 1.5));
+    ok(`${stage}: ${comfort.length} failure and feelings questions cover three reflections in four`, comfort.length * L.WONDER_MAX_REPEATS >= Math.ceil(need * 0.75));
+  }
+  const spokenComfort = L.WONDER.filter((w) => w.stage === 'early' && Array.isArray(w.simple) && comfortTheme(w));
+  ok('pre-readers have spoken failure and feelings questions for three early reflections in four', spokenComfort.length * L.WONDER_MAX_REPEATS >= Math.ceil(0.75 * L.COURSES.filter((c) => L.stageForGrade(c.grade) === 'early').reduce((n, c) => n + c.modules.length, 0) / L.WONDER_EVERY));
 }
 
 console.log(`\n${pass} passed, ${fail} failed`);

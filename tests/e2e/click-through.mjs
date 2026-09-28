@@ -300,15 +300,8 @@ await practice();
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'practice');
 await runSet([true, true, true, true, true]);
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'result');
-ok('an approved question now reaches the student', (await page.getByRole('button', { name: 'Wonder for a minute' }).count()) === 1);
-await tap('Wonder for a minute');
-await page.fill('textarea', 'I think it is still one cookie because it is the same cookie.');
-await tap('See how others think');
-await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'wonder-voices');
-t = await text();
-ok('four perspectives shown with none declared right', ['A scientist', 'An artist', 'A grandparent of faith', 'A skeptic'].every((v) => t.includes(v)) && !t.includes('correct answer'));
-const stored = await page.evaluate(() => JSON.stringify(Object.values(__store)));
-ok('the typed reflection was never stored', !stored.includes('same cookie'));
+// Mikey's rule (2026-09-28): one reflection per two different modules worked. Module one again is still one module.
+ok('a reflection waits until two different modules have been worked', (await page.getByRole('button', { name: 'Wonder for a minute' }).count()) === 0);
 await tap('Back to overview');
 
 // 4. Module 2 unlocked; fail it with 2 of 5, review question present
@@ -328,10 +321,24 @@ await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen ===
 t = await text();
 ok('result says keep practicing with 2 of 5', t.includes('Keep practicing') && t.includes('2 of 5'));
 ok('review outcome shown and does not affect mastery', /Memory checks? from earlier: .*correct/.test(t) && t.includes('does not affect mastery'));
-ok('no Wonder offered without mastery', (await page.getByRole('button', { name: 'Wonder for a minute' }).count()) === 0);
 ok('one miss offers a lesson review, not a loop back', t.includes('Review the lesson') && !t.includes('Look back at'));
+// Two different modules are now worked, and right after a failed round is when a reflection lands (Mikey, 2026-09-28).
+ok('an approved question reaches the student right after a failed round', (await page.getByRole('button', { name: 'Wonder for a minute' }).count()) === 1);
+await tap('Wonder for a minute');
+await page.fill('textarea', 'I think it is still one cookie because it is the same cookie.');
+await tap('See how others think');
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'wonder-voices');
+t = await text();
+ok('four perspectives shown with none declared right', ['A scientist', 'An artist', 'A grandparent of faith', 'A skeptic'].every((v) => t.includes(v)) && !t.includes('correct answer'));
+const stored = await page.evaluate(() => JSON.stringify(Object.values(__store)));
+ok('the typed reflection was never stored', !stored.includes('same cookie'));
+await tap('Back to overview');
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview');
 // A second miss in a row sends them back to the module before
-await tap('Try a fresh set of questions');
+await openSubject('Math', 'Equivalent fractions');
+await openModuleNamed('Equivalent fractions');
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'lesson');
+await practice();
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'practice');
 await runSet([true, false, false, false, false]);
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'result');

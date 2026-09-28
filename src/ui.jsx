@@ -6193,9 +6193,10 @@ function EduSphereScreens() {
     // One thing to do next, never a menu. Well done goes forward; not yet goes round again
     // through the lesson, because a child who struggled should see it explained once more.
     const backTo = mastered ? null : loopBackTarget(record.events, mod.id);
-    // After mastery, an approved reflection is offered once, spoken and tap-only. The record
-    // of this round shows whether it has already been answered, so it never repeats.
-    const wonderHere = FEATURES.reflection && mastered && wonderOnFor(findStudent(roster, record.name)) ? nextWonder(record.events, mod.courseId, previewReview(), true) : null;
+    // After any finished round, pass or fail, a due reflection is offered once, spoken and tap-only (Mikey, 2026-09-28:
+    // right after a failed round is when a question about failure or feelings lands). The record of this round shows
+    // whether it has already been answered, so it never repeats.
+    const wonderHere = FEATURES.reflection && wonderOnFor(findStudent(roster, record.name)) ? nextWonder(record.events, mod.courseId, previewReview(), true) : null;
     const wonderDone = wonderHere && record.events.some((e) => e.type === 'wonder_answered' && e.wonderId === wonderHere.id && String(e.at) > String(lastEvent.at));
     // Coloring is not offered here on purpose: a picture in the middle of a round pulls a student
     // away from the work. The pictures wait in Let's Color, where they choose one themselves.
@@ -6276,7 +6277,7 @@ function EduSphereScreens() {
           {lastEvent.review && <p style={{ color: C.muted, fontSize: 14, margin: '12px 0 0', textAlign: 'center' }}>Memory {lastEvent.review2 ? 'checks' : 'check'} from earlier: {[lastEvent.review, lastEvent.review2].filter(Boolean).map((r) => `${(getModule(r.moduleId) || { title: 'earlier' }).title.toLowerCase()} ${r.correct ? 'correct' : 'missed'}`).join(', ')} (does not affect mastery).</p>}
         </div>
         <div style={{ display: 'grid', gap: 10 }}>
-          {FEATURES.reflection && !readAloud && mastered && wonderOnFor(findStudent(roster, record.name)) && nextWonder(record.events, mod.courseId, wonderReview) && <WonderButton onClick={() => { setWonder(nextWonder(record.events, mod.courseId, wonderReview)); setWonderText(''); setWonderPick(''); setWonderStartedAt(Date.now()); setScreen('wonder'); }}>Wonder for a minute</WonderButton>}
+          {FEATURES.reflection && !readAloud && wonderOnFor(findStudent(roster, record.name)) && nextWonder(record.events, mod.courseId, wonderReview) && <WonderButton onClick={() => { setWonder(nextWonder(record.events, mod.courseId, wonderReview)); setWonderText(''); setWonderPick(''); setWonderStartedAt(Date.now()); setScreen('wonder'); }}>Wonder for a minute</WonderButton>}
           {mastered && nextMod && <Btn full onClick={() => openModule(nextMod.id)} disabled={busy}>Next: {nextMod.title}</Btn>}
           {!mastered && loopBackTarget(record.events, mod.id) && <Btn full onClick={() => loopBack(mod.id, loopBackTarget(record.events, mod.id))} disabled={busy}>Look back at {getModule(loopBackTarget(record.events, mod.id)).title.toLowerCase()}</Btn>}
           {!mastered && !loopBackTarget(record.events, mod.id) && <Btn full onClick={() => setScreen('lesson')}>Review the lesson</Btn>}

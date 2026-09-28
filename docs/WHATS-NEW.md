@@ -28,6 +28,24 @@ The newest block is what educators see once, in a pop-up on the classroom page, 
 - The Wonder Question review is easier to scan: everything is centered except the four voices' names, with thin lines between the parts the youngest children hear. The link that takes every approval back is now called Remove All; it still sends every approved question back to waiting for review, hidden from students.
 - Small touches: the i notes are centered, typing boxes are a soft almond in the dark theme, the weekly note is light green under its dark header, and the Story Log breathes a little more around its toggle and picker.
 
+## September 28, 2026 (grade 12 begins)
+
+- Nine grade 12 stories are longer, each with six pictures: the five math stories (moving the lowest point of a parabola to (3, 2), flips and stretches; a coupon and tax in two orders at the checkout and inverse functions; sine squared plus cosine squared and radians; carbon-14 dating and why the last atom does decay; why the highest power rules at x equals 1,000) and four reading stories (what each witness had at stake and a fire marshal's report, injuries per visit and checking your own assumptions, what words feel like as well as what they mean, and whose eyes a story uses).
+
+## September 28, 2026 (Wonder questions)
+
+- A Wonder question now comes once for every two different modules a student works, as intended; redoing one module no longer counts twice.
+- After a failed round, or three or more misses in a row, the next Wonder question is about failure or feelings, ahead of every other question, even ones the student has not seen.
+- A Wonder question can now be offered right after a failed round, when those questions help most.
+- 43 new Wonder questions, most about failure and feelings, so every stage has plenty: nobody sees one more than twice, even over years of hard days. They wait in Wonder Questions for your review.
+
+## September 28, 2026 (grade 11 begins)
+
+- Nine grade 11 stories are longer, each with six pictures: the five algebra stories (a real jump that does not factor, with its top halfway between the landings; squaring a sum and the difference of squares; Gauss's pairs and savings as sequences; earthquake magnitudes and pH as logarithms; absolute value inequalities and an equation with no solution) and four reading stories (concessions and a smaller claim, Swift's A Modest Proposal and parody news, parallel structure, and a control group and a second school).
+- Grade 11's eight physics stories are longer, each with six pictures: acceleration in meters per second per second and falling at 9.8, a ball's 49 joules and where they go when it lands, sound's 343 meters per second, Ohm's law by the numbers and electrons slower than a snail, momentum of a car and a baseball and why airbags work, the watts in a staircase, eyeglasses and rainbows, and series and parallel bulbs by the numbers.
+- Every grade 11 short story is now full length. The last nine: muckrakers, the Triangle fire and the vote for women in 1920; the Dust Bowl and insured savings; D-Day, Rosie the Riveter, the Japanese American camps and the Tuskegee Airmen; Sputnik, the moon and duck-and-cover drills; Little Rock, Greensboro and Selma; smartphones, the 2008 crash, the pandemic and January 2021; naming a source inside a sentence; trimming quotations and asking so what; and why a reader should trust the writer of an op-ed.
+- Grade 11's five long stories are twice as long, each with five new pictures: Mike's garden arch and the cut he got wrong, the skate park's joules and helmets, the house on Fourth Street from Spindletop to 2020, Chloe's satire reply and her five weeks of receipts, and Frederick's thirty jars and the op-ed that brought a biologist. Grade 11 is now finished.
+
 ## September 28, 2026 (grade 10 begins)
 
 - Nine grade 10 stories are longer, each with six pictures: the five geometry stories (angles along parallel lines and the outside angle of a triangle, measuring a tree by its shadow and why area grows by the square, congruent against similar with a 200 percent copy, finding a tree's height with the tangent and the neat sine of 30 degrees, and real crust and slice sizes for a 12-inch pizza) and four reading stories (bias in placement and a second source, disguised paraphrases and naming the source, foils and dynamic characters, and when a thing is or is not a symbol).

@@ -4558,6 +4558,8 @@ function EduSphereScreens() {
   const [educator, setEducator] = useState(null);                 // the educator profile on this device, if one has been created
   const [newPin, setNewPin] = useState('');
   const [newPin2, setNewPin2] = useState('');
+  // Changing the educator PIN from the backup page (2026-09-26, Mikey): the current PIN, then the new one twice.
+  const [changePin, setChangePin] = useState(null);           // null when closed, else { current, next, again, note, done }
   const [setupError, setSetupError] = useState('');
   const [showStateTip, setShowStateTip] = useState(false);
   const [showPinTip, setShowPinTip] = useState(false);              // the i beside Choose a PIN
@@ -5541,7 +5543,7 @@ function EduSphereScreens() {
                               </div>
                             ) : (
                               <div style={{ marginTop: 12 }}>
-                                <Btn halo={st === 'available'} kind={st === 'mastered' ? 'secondary' : 'primary'} onClick={() => openModule(m.id)} disabled={busy}>{st === 'mastered' ? 'Practice again' : st === 'passed' ? 'Pass it again' : 'Open'}</Btn>
+                                <Btn halo={st === 'available' || (youngLearner && st === 'passed')} kind={st === 'mastered' ? 'secondary' : 'primary'} onClick={() => openModule(m.id)} disabled={busy}>{st === 'mastered' ? 'Practice again' : st === 'passed' ? 'Pass it again' : 'Open'}</Btn>
                                 {/* One try per module: five questions, no lesson, and a pass places the module without the star. */}
                                 {st === 'available' && !(record && record.preview) && quickChecks && quickCheckAllowed(record.events, m.id) && (
                                   <div style={{ marginTop: 8 }}><button type="button" style={{ ...linkBtn }} onClick={() => startQuickCheck(m.id)} disabled={busy}>I already know this</button></div>
@@ -5563,7 +5565,7 @@ function EduSphereScreens() {
               {/* A closed subject with something ready inside breathes gently, so a young child knows where to tap. */}
               <button type="button" onClick={() => setOpenSubject(isOpen ? null : sub)} aria-expanded={isOpen}
                 className="edu-breathe"
-                style={{ fontFamily: FONT, width: '100%', textAlign: 'left', background: 'transparent', border: 'none', padding: 16, cursor: 'pointer', color: C.ink, '--beat': youngLearner && !isOpen && subModules.some((m) => statusOf(m.id) === 'available') ? 1 : 0, ...inBeat(2.2) }}>
+                style={{ fontFamily: FONT, width: '100%', textAlign: 'left', background: 'transparent', border: 'none', padding: 16, cursor: 'pointer', color: C.ink, '--beat': youngLearner && !isOpen && subModules.some((m) => ['available', 'passed'].includes(statusOf(m.id))) ? 1 : 0, ...inBeat(2.2) }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10 }}>
                   <span style={{ display: 'flex', alignItems: 'center', gap: 12 }}><SkillIcon skill={sub} /><span style={{ fontSize: 21, fontWeight: 600 }}>{sub}</span></span>
                   <span style={{ fontSize: 14, color: C.muted, whiteSpace: 'nowrap' }}>{done} of {subModules.length} {isOpen ? '▴' : '▾'}</span>
@@ -8090,6 +8092,38 @@ function EduSphereScreens() {
               ? <span style={{ fontSize: 13, color: C.muted }}>Remove this educator account and keep every student? <button type="button" style={{ ...linkBtn, fontSize: 13, color: C.clay, marginLeft: 6 }} onClick={async () => { await storageDelete(EDUCATOR_KEY); setEducator(null); setStartOverArmed(false); setScreen('welcome'); }}>Yes, start over</button> <button type="button" style={{ ...linkBtn, fontSize: 13, marginLeft: 10 }} onClick={() => setStartOverArmed(false)}>No</button></span>
               : <button type="button" style={{ ...linkBtn, fontSize: 13, color: C.muted }} onClick={() => setStartOverArmed(true)}>Start over as a new educator</button>}
           </p>
+        )}
+        {/* Changing the PIN: the current PIN first, so a student at an unlocked screen cannot change it; a wrong current
+            PIN counts toward the same lockout as the sign-in screen. Four to six digits, typed twice, as at setup. */}
+        {educator && (
+          <div style={{ textAlign: 'center', margin: '10px 0 0' }}>
+            {!changePin || changePin.done
+              ? <p style={{ margin: 0 }}><button type="button" style={{ ...linkBtn, fontSize: 13, color: C.muted }} onClick={() => setChangePin({ current: '', next: '', again: '', note: '', done: false })}>Change PIN</button>{changePin && changePin.done && <span role="status" style={{ fontSize: 13, color: C.green, fontWeight: 600, marginLeft: 8 }}>Your PIN is changed.</span>}</p>
+              : (
+                <div style={{ ...card, maxWidth: 340, margin: '6px auto 0', textAlign: 'center' }} data-change-pin="">
+                  <p style={{ margin: '0 0 4px', fontWeight: 600 }}>Change PIN</p>
+                  <p style={{ margin: '0 0 10px', fontSize: 13, color: C.muted }}>Four to six digits.</p>
+                  {[['current', 'Current PIN'], ['next', 'New PIN'], ['again', 'New PIN again']].map(([k, label]) => (
+                    <PinInput key={k} value={changePin[k]} onChange={(v) => setChangePin({ ...changePin, [k]: v, note: '' })} placeholder={label}
+                      style={{ fontFamily: FONT, fontSize: 18, padding: '10px 14px', width: '100%', boxSizing: 'border-box', border: `2px solid ${C.line}`, borderRadius: 10, marginBottom: 8, letterSpacing: 4 }} />
+                  ))}
+                  {changePin.note && <p role="status" style={{ margin: '2px 0 10px', fontSize: 14, color: C.clay }}>{changePin.note}</p>}
+                  <div style={{ display: 'flex', gap: 10, justifyContent: 'center', marginTop: 6 }}>
+                    <Btn onClick={async () => {
+                      const left = pinLockLeft(pinLock, Date.now());
+                      if (left) { setChangePin({ ...changePin, note: `Too many tries. Try again in ${left} seconds.` }); return; }
+                      if (scramble(changePin.current) !== educator.pin) { failPin(); setChangePin({ ...changePin, current: '', note: 'That is not the current PIN.' }); return; }
+                      if (changePin.next.length < 4) { setChangePin({ ...changePin, note: 'The new PIN needs at least four digits.' }); return; }
+                      if (changePin.next !== changePin.again) { setChangePin({ ...changePin, note: 'The two new PINs do not match.' }); return; }
+                      if (pinLock.failures) savePinLock({ failures: 0, lockUntil: 0 });
+                      const next = { ...educator, pin: scramble(changePin.next) }; setEducator(next); await saveEducator(next);
+                      setChangePin({ current: '', next: '', again: '', note: '', done: true });
+                    }}>Save new PIN</Btn>
+                    <Btn kind="secondary" onClick={() => setChangePin(null)}>Cancel</Btn>
+                  </div>
+                </div>
+              )}
+          </div>
         )}
       </div></div>
     );

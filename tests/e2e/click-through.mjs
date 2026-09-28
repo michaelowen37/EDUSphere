@@ -907,7 +907,12 @@ ok('a switched-off course is hidden from the learner', !t.includes('What a fract
   if (await readBtn.count()) {
     // The snail and the hare (2026-09-23): the snail reads at three quarters speed, the hare at the usual pace, and the choice sticks.
     await page.getByRole('button', { name: 'Read slowly' }).click(); await page.evaluate(() => { window.__rates = []; });
+    // Tapping Read the story to me from the bottom of the story brings the page back to the title (2026-09-28, Mikey).
+    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
     await readBtn.click();
+    await page.waitForFunction(() => window.scrollY < 200);
+    const titleTop = await page.evaluate((t) => { const el = [...document.querySelectorAll('p')].find((p) => p.textContent.trim().toLowerCase() === t); return el ? el.getBoundingClientRect().top : -1; }, story.title.toLowerCase());
+    ok('reading aloud scrolls the page to the top of the story', titleTop >= 0 && titleTop < 320);
     // The test page's voice ends each line in thirty milliseconds, so the whole story is spoken before the hare is tapped.
     await page.waitForFunction((n) => window.__spoken.length >= n && !document.querySelector('button') !== null && [...document.querySelectorAll('button')].some((b) => b.textContent.trim() === 'Read the story to me'), story.words.length + 1);
     const slowRates = await page.evaluate(() => (window.__rates || []).slice());

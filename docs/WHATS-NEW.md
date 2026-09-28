@@ -28,9 +28,18 @@ The newest block is what educators see once, in a pop-up on the classroom page, 
 - The Wonder Question review is easier to scan: everything is centered except the four voices' names, with thin lines between the parts the youngest children hear. The link that takes every approval back is now called Remove All; it still sends every approved question back to waiting for review, hidden from students.
 - Small touches: the i notes are centered, typing boxes are a soft almond in the dark theme, the weekly note is light green under its dark header, and the Story Log breathes a little more around its toggle and picker.
 
+## September 28, 2026 (stories that flow)
+
+- Tapping Read the story to me now brings the page to the top of the story, where the reading begins, and the page follows the paragraph being read.
+- The kindergarten stories about day and night, hot and cold, weather, living things, solid shapes, what plants need, sleep and washing hands are rewritten to read the way a picture book reads aloud: the same simple words, in sentences that connect and vary in length instead of one clipped line after another. The rest of pre-K through grade 2 will follow, grade by grade.
+- All eleven kindergarten math stories now read the same way: the blocks, the slide, the ducklings, a hundred fingers, the toy garage, the stick and the rock, partners for ten, two buckets, the cookies, corners, and the sock pile.
+- Kindergarten reading now reads the same way too: beginning and ending sounds, big and small letters, letter names and sounds, rhymes, sounding out, syllables, which way we read and word meanings, along with brushing teeth and the rainbow plate. The letter sounds themselves stay just as they were, one at a time, because that is the lesson.
+
 ## September 28, 2026 (grade 12 begins)
 
 - Nine grade 12 stories are longer, each with six pictures: the five math stories (moving the lowest point of a parabola to (3, 2), flips and stretches; a coupon and tax in two orders at the checkout and inverse functions; sine squared plus cosine squared and radians; carbon-14 dating and why the last atom does decay; why the highest power rules at x equals 1,000) and four reading stories (what each witness had at stake and a fire marshal's report, injuries per visit and checking your own assumptions, what words feel like as well as what they mean, and whose eyes a story uses).
+- Grade 12's eight earth and space science stories are longer, each with six pictures: obsidian, sandstone and gneiss; why climate is measured over thirty years, in both directions; the sun's age and the star-made atoms in your hand; acid rain and the ozone hole as measured recoveries; the crust to scale and Inge Lehmann's inner core; the Gulf Stream and El Niño; the Newfoundland cod; and Hubble, the antenna hiss of 1965 and what the dough gets wrong.
+- Grade 12's three writing stories and six government stories are longer, each with six pictures: citing sources in the text and the list, the shape of a personal essay and the could-anyone-else-have-written-it test, a letter that carries its writer's name and stake; the six ideas tested on the rules that stumped Theo and the two failures the Constitution was built between, the Court claiming its power in 1803, the Tenth Amendment and states handing power down, the fence extended around the states after 1868 with the two rails people forget, thousands of bills against a few hundred laws and the Senate's sixty votes, and the arithmetic of 538 with Maine and Nebraska.
 
 ## September 28, 2026 (Wonder questions)
 

@@ -2332,11 +2332,23 @@ function StoryBody({ story, pace: paceDefault = null, part = null }) {
   const [readingAt, setReadingAt] = useState(-1); const stopRef = useRef(null);
   const [pace, setPace] = useState(() => (paceDefault ? loadPace(paceDefault) : 'normal'));
   useEffect(() => () => { if (stopRef.current) stopRef.current(); }, []);
+  // Reading begins at the title, so the page goes there first (2026-09-28, Mikey): the button sits under the last paragraph,
+  // and a reader who tapped it was left at the bottom while the voice started at the top. While the voice reads, the lit
+  // paragraph is kept on screen. Both moves are instant for anyone whose device asks for less motion.
+  const scrollWay = () => (prefersReducedMotion() ? 'auto' : 'smooth');
   const toggle = () => {
     if (stopRef.current) { stopRef.current(); stopRef.current = null; setReadingAt(-1); return; }
     setSpeechNudge(paceDefault && pace === 'slow' ? -1 : 0);
+    const card = cardRef.current;
+    if (card && typeof window !== 'undefined' && window.scrollTo) window.scrollTo({ top: Math.max(0, card.getBoundingClientRect().top + window.scrollY - 12), behavior: scrollWay() });
     stopRef.current = speakSequence([`${story.title}.`, ...story.words], (i) => setReadingAt(i - 1), () => { stopRef.current = null; setReadingAt(-1); }, [`${story.art}-0`, ...story.words.map((_, i) => `${story.art}-${i + 1}`)]);
   };
+  useEffect(() => {
+    if (readingAt < 0 || !cardRef.current) return;
+    const el = cardRef.current.querySelector(`[data-story-par="${readingAt}"]`); if (!el || !el.scrollIntoView) return;
+    const r = el.getBoundingClientRect(); const h = window.innerHeight || document.documentElement.clientHeight || 0;
+    if (r.top < 0 || r.bottom > h) el.scrollIntoView({ behavior: scrollWay(), block: 'center' });
+  }, [readingAt]);
   const reading = stopRef.current !== null && readingAt >= -1 && stopRef.current;
   return (
     <div ref={cardRef} style={{ ...card, background: C.paper, borderColor: C.paperLine }}>
@@ -2349,7 +2361,7 @@ function StoryBody({ story, pace: paceDefault = null, part = null }) {
           {(story.more || []).filter((m) => m.after === i).map((m) => (
             <div key={m.serial} className={`edu-par-pic edu-reveal ${story.more.indexOf(m) % 2 ? 'edu-pic-left' : 'edu-pic-right'}${hasArt(m.serial) ? ' edu-story-pic' : ''}`} style={{ order: 2 }}><StoryArt serial={m.serial} alt={m.alt} /></div>
           ))}
-          <div style={{ order: 1, borderRadius: 10, padding: readingAt === i ? '6px 10px' : 0, margin: readingAt === i ? '0 -10px' : 0, background: readingAt === i ? C.goldSoft : 'transparent', transition: 'background 200ms' }}><RichText text={t} size={17} lineGap={12} /></div>
+          <div data-story-par={i} style={{ order: 1, borderRadius: 10, padding: readingAt === i ? '6px 10px' : 0, margin: readingAt === i ? '0 -10px' : 0, background: readingAt === i ? C.goldSoft : 'transparent', transition: 'background 200ms' }}><RichText text={t} size={17} lineGap={12} /></div>
         </div>
       )))}
       {!head ? null : canSpeak()

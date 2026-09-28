@@ -35,15 +35,16 @@ for (const [id, cs] of Object.entries(COURSE_STORIES)) {
   if (doubled) ok(`${id}: a doubled long story has five more pictures after five different paragraphs in both halves`, af.length === 5 && new Set(af).size === 5 && af.some((a) => a < half) && af.some((a) => a >= half) && af.every((a) => a >= 0 && a < cs.words.length) && cs.more.every((m) => /^CS\d+$/.test(m.serial) && m.alt), af.join(','));
 }
 // Read-aloud rule for the early years (2026-09-23, Mikey): pre-K to grade 2 stories are spoken to five-year-olds, so no
-// sentence runs past twelve words and no word past three syllables (vowel groups, a silent e dropped).
+// sentence runs past eighteen words (twelve until 2026-09-28, when Mikey asked for flowing, varied sentences over clipped
+// ones; eighteen still fits one breath) and no word past three syllables (vowel groups, a silent e dropped).
 {
   const L = await import('../src/logic.mjs');
   const early = new Set(['PK3', 'PK4', 'K', '1', '2']);
   const syl = (w) => { const x = w.toLowerCase().replace(/[^a-z]/g, ''); if (!x) return 0; let n = (x.match(/[aeiouy]+/g) || []).length; if (/[^aeiouy]e$/.test(x) && !/le$/.test(x) && n > 1) n -= 1; return Math.max(1, n); };
   const bad = [];
   for (const m of L.MODULES) { const st = STORIES[m.id]; const c = L.getCourse(m.courseId); if (!st || !c || !early.has(c.grade)) continue;
-    for (const par of st.words) for (const sent of par.split(/(?<=[.!?])\s+/)) { const ws = sent.split(/\s+/).filter(Boolean); if (ws.length > 12) bad.push(`${m.id}: ${ws.length} words`); for (const w of ws) if (syl(w) > 3) bad.push(`${m.id}: ${w}`); } }
-  ok('early-years stories read aloud kindly: sentences of twelve words or fewer, words of three syllables or fewer', bad.length === 0, bad.slice(0, 6).join(' | '));
+    for (const par of st.words) for (const sent of par.split(/(?<=[.!?])\s+/)) { const ws = sent.split(/\s+/).filter(Boolean); if (ws.length > 18) bad.push(`${m.id}: ${ws.length} words`); for (const w of ws) if (syl(w) > 3) bad.push(`${m.id}: ${w}`); } }
+  ok('early-years stories read aloud kindly: sentences of eighteen words or fewer, words of three syllables or fewer', bad.length === 0, bad.slice(0, 6).join(' | '));
 }
 // Course stories spread the cast (2026-09-23, Mikey): in a grade's Let's Read list, two stories side by side never lead
 // with the same core character, so nobody meets Georgette three times in a row.

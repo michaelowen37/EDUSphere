@@ -3681,7 +3681,167 @@ function SearchGame({ game, round, onScore = null }) {
     </div>
   );
 }
-const GAME_OF = { dots: DotsGame, pairs: PairsGame, sort: SortGame, maze: MazeGame, jigsaw: JigsawGame, pong: PongGame, sprint: SprintGame, order: OrderGame, build: BuildGame, fix: FixGame, mix: MixGame, debug: DebugGame, ptable: PtableGame, evidence: EvidenceGame, catch: CatchGame, path: PathGame, buckets: BucketsGame, jump: JumpGame, map: MapGame, balance: BalanceGame, walk: WalkGame, teach: TeachGame, bits: BitsGame, pay: PayGame, price: PriceGame, loan: LoanGame, fund: FundGame, search: SearchGame };
+// Spot It (2026-09-29, pass GE, a new kind for art and music K to 2): a picture made of five pieces, lines and shapes in
+// six colors, and a voice that asks for one piece at a time: the circle, the zigzag line, the blue shape. Tap the right
+// piece and it lights up and the next ask is spoken; tap the wrong one and it wobbles. Three asks a picture, four pictures
+// a round, and the clock counts up. The lesson's idea is the rule of the game: every picture is made of lines, shapes and
+// colors, and you can find each one. Drawn with B on the paper board.
+function SpotGame({ game, round, onScore = null }) {
+  const scenes = SPOT_SCENES;
+  const [k, setK] = useState(0); const [a, setA] = useState(0); const [found, setFound] = useState([]); const [nudge, setNudge] = useState(null); const [ticks, setTicks] = useState(0); const [done, setDone] = useState(false);
+  const sc = scenes[(round * 2 + k) % scenes.length];
+  const ask = sc.asks[Math.min(a, sc.asks.length - 1)];
+  const pictureDone = a >= sc.asks.length;
+  useEffect(() => { setK(0); setA(0); setFound([]); setTicks(0); setDone(false); }, [round]);
+  useEffect(() => { setA(0); setFound([]); }, [sc]);
+  useEffect(() => { if (!done && !pictureDone && typeof speak === 'function') speak(ask.say); }, [ask, pictureDone, done]);
+  useEffect(() => { if (done) return undefined; const t = setInterval(() => setTicks((n) => n + 1), 1000); return () => clearInterval(t); }, [done]);
+  useEffect(() => { if (done && onScore) onScore(ticks, 'low'); }, [done]);
+  useEffect(() => { if (nudge === null) return undefined; const t = setTimeout(() => setNudge(null), 500); return () => clearTimeout(t); }, [nudge]);
+  const tint = { red: '#D9534F', yellow: '#F2C94C', blue: '#4B6B8B', green: '#5BA84A', orange: '#F4A259', purple: '#7D5BA6' };
+  const word = { circle: 'circle', square: 'square', triangle: 'triangle', zigzag: 'zigzag line', curve: 'curved line', straight: 'straight line' };
+  const tap = (i) => { if (done || pictureDone) return; if (spotMatches(sc.parts[i], ask)) { setFound([...found, i]); setA(a + 1); } else setNudge(i); };
+  const next = () => { if (k + 1 >= 4) setDone(true); else setK(k + 1); };
+  const piece = ([kind, color, x, y, size]) => { const h = size / 2; const fill = tint[color]; const stroke = B.ink;
+    if (kind === 'circle') return <circle cx={x} cy={y} r={h} fill={fill} stroke={stroke} strokeWidth="0.8" />;
+    if (kind === 'square') return <rect x={x - h} y={y - h} width={size} height={size} rx="1.5" fill={fill} stroke={stroke} strokeWidth="0.8" />;
+    if (kind === 'triangle') return <polygon points={`${x},${y - h} ${x + h},${y + h} ${x - h},${y + h}`} fill={fill} stroke={stroke} strokeWidth="0.8" strokeLinejoin="round" />;
+    if (kind === 'zigzag') return <polyline points={`${x - h},${y + h / 2} ${x - h / 2},${y - h / 2} ${x},${y + h / 2} ${x + h / 2},${y - h / 2} ${x + h},${y + h / 2}`} fill="none" stroke={fill} strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" />;
+    if (kind === 'curve') return <path d={`M ${x - h} ${y + h / 2} Q ${x} ${y - h * 1.4} ${x + h} ${y + h / 2}`} fill="none" stroke={fill} strokeWidth="3.5" strokeLinecap="round" />;
+    return <line x1={x - h} y1={y} x2={x + h} y2={y} stroke={fill} strokeWidth="3.5" strokeLinecap="round" />; };
+  return (
+    <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Spot it</span><span>{ticks}s · picture {Math.min(k + 1, 4)} of 4</span></div>
+      {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Four pictures spotted in {ticks} seconds. Tap the round arrow for more.</p> : (
+        <div style={{ textAlign: 'center' }}>
+          <svg viewBox="0 0 100 100" width="100%" style={{ maxWidth: 300, display: 'block', margin: '0 auto', background: '#F6F8F4', borderRadius: 12 }} role="img" aria-label="A picture of lines and shapes">
+            {sc.parts.map((part, i) => { const hit = found.includes(i); return (
+              <g key={i} role="button" tabIndex={0} aria-label={`${part[1]} ${word[part[0]]}`} className={nudge === i ? 'edu-wobble' : undefined} onClick={() => tap(i)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); tap(i); } }} style={{ cursor: hit ? 'default' : 'pointer' }}>
+                {hit && <circle cx={part[2]} cy={part[3]} r={part[4] * 0.9} fill="none" stroke={B.green} strokeWidth="1.6" strokeDasharray="2.5 1.5" />}
+                {piece(part)}
+              </g>); })}
+          </svg>
+          <p data-spot-ask={pictureDone ? '' : ask.say} style={{ margin: '10px 0 8px', fontSize: 18, fontWeight: 700, color: B.ink, minHeight: 26 }}>{pictureDone ? 'All three found.' : ask.say}</p>
+          {pictureDone ? <Btn pal={B} onClick={next}>{k + 1 >= 4 ? 'Finish' : 'Next picture'}</Btn> : <p style={{ margin: 0, fontSize: 13, color: B.muted }}>{sc.asks.length - a} to find</p>}
+        </div>
+      )}
+      <Done show={done} />
+    </div>
+  );
+}
+// What Comes Next (2026-09-29, pass GF, a new kind for art and music 3 to 5): a row of pieces that repeats in a form, AB,
+// ABA or abac, shown twice and cut off, and three pieces to choose the next from. Tap the right one and the row fills in
+// and the next round comes; tap a wrong one and it wobbles. Five rounds, and the clock counts up. The lesson's idea is the
+// rule of the game: repetition in a picture and form in a song are the same thing, a part that comes back. Drawn with B.
+function PatternGame({ game, round, onScore = null }) {
+  const rounds = useMemo(() => patternRounds(round), [round]);
+  const [k, setK] = useState(0); const [got, setGot] = useState(false); const [nudge, setNudge] = useState(null); const [ticks, setTicks] = useState(0); const [done, setDone] = useState(false);
+  const q = rounds[Math.min(k, rounds.length - 1)];
+  useEffect(() => { setK(0); setGot(false); setTicks(0); setDone(false); }, [round]);
+  useEffect(() => { if (done) return undefined; const t = setInterval(() => setTicks((n) => n + 1), 1000); return () => clearInterval(t); }, [done]);
+  useEffect(() => { if (done && onScore) onScore(ticks, 'low'); }, [done]);
+  useEffect(() => { if (nudge === null) return undefined; const t = setTimeout(() => setNudge(null), 500); return () => clearTimeout(t); }, [nudge]);
+  useEffect(() => { if (!got) return undefined; const t = setTimeout(() => { setGot(false); if (k + 1 >= rounds.length) setDone(true); else setK(k + 1); }, 650); return () => clearTimeout(t); }, [got]);
+  const tint = { circle: '#D9534F', square: '#4B6B8B', triangle: '#F2C94C' };
+  const piece = (name, size) => { const h = size / 2; const c = tint[name];
+    if (name === 'circle') return <circle cx={h} cy={h} r={h * 0.8} fill={c} stroke={B.ink} strokeWidth="1" />;
+    if (name === 'square') return <rect x={h * 0.25} y={h * 0.25} width={h * 1.5} height={h * 1.5} rx="3" fill={c} stroke={B.ink} strokeWidth="1" />;
+    return <polygon points={`${h},${h * 0.2} ${h * 1.8},${h * 1.8} ${h * 0.2},${h * 1.8}`} fill={c} stroke={B.ink} strokeWidth="1" strokeLinejoin="round" />; };
+  const pick = (name) => { if (got || done) return; if (name === q.answer) setGot(true); else setNudge(name); };
+  return (
+    <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }} data-pattern-answer={done ? '' : q.answer}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Form: {done ? '' : q.form}</span><span>{ticks}s · {Math.min(k + 1, rounds.length)} of {rounds.length}</span></div>
+      {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Five patterns finished in {ticks} seconds. Tap the round arrow for more.</p> : (
+        <div style={{ textAlign: 'center' }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, justifyContent: 'center', alignItems: 'center', marginBottom: 12 }}>
+            {q.shown.map((name, i) => <svg key={i} viewBox="0 0 40 40" width="40" height="40" aria-label={name} role="img">{piece(name, 40)}</svg>)}
+            <svg viewBox="0 0 40 40" width="40" height="40" role="img" aria-label={got ? q.answer : 'what comes next'}>{got ? piece(q.answer, 40) : <><rect x="3" y="3" width="34" height="34" rx="6" fill="#fff" stroke={B.green} strokeWidth="2" strokeDasharray="4 3" /><text x="20" y="27" textAnchor="middle" fontFamily={FONT} fontSize="20" fontWeight="700" fill={B.green}>?</text></>}</svg>
+          </div>
+          <p style={{ margin: '0 0 10px', fontSize: 15, color: B.ink }}>{got ? 'Yes, that is the next piece.' : 'The row repeats in a form. Tap what comes next.'}</p>
+          <div style={{ display: 'flex', gap: 10, justifyContent: 'center' }}>
+            {q.choices.map((name) => <button key={name} type="button" className={`edu-press${nudge === name ? ' edu-wobble' : ''}`} aria-label={`Next piece: ${name}`} onClick={() => pick(name)} style={{ fontFamily: FONT, width: 64, height: 64, borderRadius: 14, border: `2px solid ${B.green}`, background: '#fff', cursor: got ? 'default' : 'pointer', padding: 6 }}><svg viewBox="0 0 40 40" width="48" height="48" aria-hidden="true">{piece(name, 40)}</svg></button>)}
+          </div>
+        </div>
+      )}
+      <Done show={done} />
+    </div>
+  );
+}
+// Shape the Sound (2026-09-29, pass GG, a new kind for art and music 6 to 8): six bars of loudness under a line of markings
+// from the score, piano, crescendo, forte, decrescendo. Tap a bar louder or softer until the line follows the markings,
+// then check: soft bars low, loud bars high, a crescendo climbing, a decrescendo falling. Four lines a round, and the clock
+// counts up. The lesson's idea is the rule of the game: dynamics markings are instructions, and a line of loudness can be
+// read. Drawn with B on the paper board.
+function ShapeGame({ game, round, onScore = null }) {
+  const [k, setK] = useState(0); const [levels, setLevels] = useState([3, 3, 3, 3, 3, 3]); const [said, setSaid] = useState(''); const [got, setGot] = useState(false); const [ticks, setTicks] = useState(0); const [done, setDone] = useState(false);
+  const plan = dynamicsPlan(round, k);
+  useEffect(() => { setK(0); setLevels([3, 3, 3, 3, 3, 3]); setSaid(''); setGot(false); setTicks(0); setDone(false); }, [round]);
+  useEffect(() => { if (done) return undefined; const t = setInterval(() => setTicks((n) => n + 1), 1000); return () => clearInterval(t); }, [done]);
+  useEffect(() => { if (done && onScore) onScore(ticks, 'low'); }, [done]);
+  useEffect(() => { if (!got) return undefined; const t = setTimeout(() => { setGot(false); setSaid(''); setLevels([3, 3, 3, 3, 3, 3]); if (k + 1 >= 4) setDone(true); else setK(k + 1); }, 800); return () => clearTimeout(t); }, [got]);
+  const short = { piano: 'p', forte: 'f', crescendo: 'cresc.', decrescendo: 'decresc.' };
+  const nudge = (i, d) => { if (got || done) return; setLevels(levels.map((v, j) => (j === i ? Math.max(1, Math.min(6, v + d)) : v))); setSaid(''); };
+  const check = () => { if (got || done) return; if (dynamicsMatch(levels, plan)) { setSaid('Matches the score.'); setGot(true); return; }
+    const bad = plan.findIndex((m, i) => !dynamicsMatch(levels.slice(0, i + 1), plan.slice(0, i + 1)));
+    setSaid(`Not yet: bar ${bad + 1} does not follow ${plan[bad]}.`); };
+  return (
+    <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }} data-dynamics-plan={done ? '' : plan.join(',')}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Shape the sound</span><span>{ticks}s · line {Math.min(k + 1, 4)} of 4</span></div>
+      {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Four lines shaped in {ticks} seconds. Tap the round arrow for more.</p> : (
+        <div style={{ textAlign: 'center' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: 6, alignItems: 'end', marginBottom: 6 }}>
+            {levels.map((v, i) => (
+              <div key={i} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
+                <button type="button" className="edu-press" aria-label={`Bar ${i + 1} louder`} onClick={() => nudge(i, 1)} disabled={got} style={{ fontFamily: FONT, width: 34, height: 28, borderRadius: 8, border: `1.5px solid ${B.green}`, background: '#fff', color: B.green, fontWeight: 700, cursor: 'pointer', padding: 0 }}>▲</button>
+                <div style={{ width: '100%', height: 96, display: 'flex', alignItems: 'flex-end', justifyContent: 'center' }}><div style={{ width: '70%', height: `${(v / 6) * 100}%`, background: got ? B.green : plan[i] === 'forte' ? B.clay : plan[i] === 'piano' ? '#C7DFF8' : B.gold, borderRadius: '6px 6px 2px 2px', border: `1.5px solid ${B.ink}` }} /></div>
+                <button type="button" className="edu-press" aria-label={`Bar ${i + 1} softer`} onClick={() => nudge(i, -1)} disabled={got} style={{ fontFamily: FONT, width: 34, height: 28, borderRadius: 8, border: `1.5px solid ${B.green}`, background: '#fff', color: B.green, fontWeight: 700, cursor: 'pointer', padding: 0 }}>▼</button>
+                <span style={{ fontSize: 13, fontStyle: 'italic', fontWeight: 700, color: B.ink }}>{short[plan[i]]}</span>
+              </div>
+            ))}
+          </div>
+          <p style={{ margin: '6px 0 8px', fontSize: 14, color: B.muted }}>Soft bars low, loud bars high, a crescendo climbing, a decrescendo falling.</p>
+          <p style={{ margin: '0 0 8px', fontSize: 15, color: B.ink, minHeight: 22 }}>{said}</p>
+          <Btn pal={B} onClick={check}>Check the line</Btn>
+        </div>
+      )}
+      <Done show={done} />
+    </div>
+  );
+}
+// Build the Chord (2026-09-29, pass GH, a new kind for art and music 9 to 12): twelve keys from C to B, a chord named,
+// and three keys to tap. A major triad is four half steps and then three; a minor triad is three and then four. Tap a
+// key that belongs and it lights; tap one that does not and it wobbles; three right keys finish the chord and the next
+// is named. Five chords a round and the clock counts up. Drawn with B on the paper board.
+function ChordGame({ game, round, onScore = null }) {
+  const rounds = useMemo(() => chordRounds(round), [round]);
+  const [k, setK] = useState(0); const [lit, setLit] = useState([]); const [nudge, setNudge] = useState(null); const [ticks, setTicks] = useState(0); const [done, setDone] = useState(false);
+  const c = rounds[Math.min(k, rounds.length - 1)];
+  const finished = c.notes.every((n) => lit.includes(n));
+  useEffect(() => { setK(0); setLit([]); setTicks(0); setDone(false); }, [round]);
+  useEffect(() => { if (done) return undefined; const t = setInterval(() => setTicks((n) => n + 1), 1000); return () => clearInterval(t); }, [done]);
+  useEffect(() => { if (done && onScore) onScore(ticks, 'low'); }, [done]);
+  useEffect(() => { if (nudge === null) return undefined; const t = setTimeout(() => setNudge(null), 500); return () => clearTimeout(t); }, [nudge]);
+  useEffect(() => { if (!finished) return undefined; const t = setTimeout(() => { setLit([]); if (k + 1 >= rounds.length) setDone(true); else setK(k + 1); }, 700); return () => clearTimeout(t); }, [finished]);
+  const tap = (note) => { if (done || finished || lit.includes(note)) return; if (c.notes.includes(note)) setLit([...lit, note]); else setNudge(note); };
+  return (
+    <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }} data-chord-notes={done ? '' : c.notes.join(' ')}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Build the chord</span><span>{ticks}s · {Math.min(k + 1, rounds.length)} of {rounds.length}</span></div>
+      {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Five chords built in {ticks} seconds. Tap the round arrow for more.</p> : (
+        <div style={{ textAlign: 'center' }}>
+          <p style={{ margin: '0 0 10px', fontSize: 20, fontWeight: 700, color: B.ink }}>{c.root} {c.quality}</p>
+          <div style={{ display: 'flex', gap: 3, justifyContent: 'center', flexWrap: 'wrap', marginBottom: 10 }}>
+            {CHORD_NOTES.map((note) => { const black = note.includes('#'); const on = lit.includes(note); return (
+              <button key={note} type="button" className={`edu-press${nudge === note ? ' edu-wobble' : ''}`} aria-label={`Key ${note}`} onClick={() => tap(note)}
+                style={{ fontFamily: FONT, width: 30, height: black ? 56 : 76, alignSelf: black ? 'flex-start' : 'flex-end', borderRadius: 6, border: `2px solid ${on ? B.green : B.ink}`, background: on ? B.green : black ? B.ink : '#fff', color: on ? '#fff' : black ? '#fff' : B.ink, fontSize: 11, fontWeight: 700, cursor: on ? 'default' : 'pointer', padding: 0 }}>{note}</button>); })}
+          </div>
+          <p style={{ margin: 0, fontSize: 14, color: B.muted }}>{finished ? `${c.root}, ${c.notes[1]} and ${c.notes[2]}. That is ${c.root} ${c.quality}.` : c.quality === 'major' ? 'Four half steps up, then three.' : 'Three half steps up, then four.'}</p>
+        </div>
+      )}
+      <Done show={done} />
+    </div>
+  );
+}
+const GAME_OF = { dots: DotsGame, pairs: PairsGame, sort: SortGame, maze: MazeGame, jigsaw: JigsawGame, pong: PongGame, sprint: SprintGame, order: OrderGame, build: BuildGame, fix: FixGame, mix: MixGame, debug: DebugGame, ptable: PtableGame, evidence: EvidenceGame, catch: CatchGame, path: PathGame, buckets: BucketsGame, jump: JumpGame, map: MapGame, balance: BalanceGame, walk: WalkGame, teach: TeachGame, bits: BitsGame, pay: PayGame, price: PriceGame, loan: LoanGame, fund: FundGame, search: SearchGame, spot: SpotGame, pattern: PatternGame, shape: ShapeGame, chord: ChordGame };
 // How to play, in a line or two, by kind of game (and by deck for the matching games).
 function gameInstructions(game) {
   if (game.kind === 'bits') return 'A number sits at the top and eight switches below it, worth 128 down to 1. Tap the switches on and off until the lit places add up to the number; the sum shows as you go. Six numbers, and the clock counts up.';
@@ -3691,6 +3851,10 @@ function gameInstructions(game) {
   if (game.kind === 'search') return 'Thirty-two cards lie face down in order from smallest to largest, and a number to find is on one of them. Tap a card to turn it over; the board says whether the number is higher or lower. Halve what is left each time and six looks always find it. Four numbers; fewer looks is the better score.';
   if (game.kind === 'price') return 'A lemonade stand with twelve customers, each with a top price in mind you cannot see, a cost for the day and a cost per cup. Tap a price to try it: the people who will pay it step forward with a cup, and the profit shows as money in minus money out. Three tries a stand, then the best price is revealed. Four stands; more profit found is the better score.';
   if (game.kind === 'pay') return 'A thing to buy shows its price in coins, with a dot for every coin. Tap coins from the table into the tray until the total matches the price exactly; tap a tray coin to put it back. Too many and the tray empties for another try. Four things, and the clock counts up.';
+  if (game.kind === 'spot') return 'A picture made of lines and shapes in six colors, and a voice that asks for one piece at a time: the circle, the zigzag line, the blue shape. Tap the piece it asks for and it lights up; a wrong one wobbles. Three to find in every picture, four pictures, and the clock counts up.';
+  if (game.kind === 'pattern') return 'A row of pieces repeats in a form, AB, ABA or abac, and then cuts off. Tap the piece that comes next from the three below; the right one fills the row and a wrong one wobbles. Five rounds, and the clock counts up.';
+  if (game.kind === 'shape') return 'Six bars of loudness sit under a line of markings from the score: piano, crescendo, forte, decrescendo. Tap the arrows to raise or lower each bar until the line follows the markings, soft bars low, loud bars high, a crescendo climbing and a decrescendo falling, then check it. Four lines, and the clock counts up.';
+  if (game.kind === 'chord') return 'Twelve keys from C to B and a chord named above them. Tap the three keys that make it: a major triad climbs four half steps and then three, a minor triad three and then four. A key that belongs lights up; one that does not wobbles. Five chords, and the clock counts up.';
   if (game.kind === 'walk') return 'Tap the arrows to give the robot its steps, one at a time, then tap Go and watch it follow them to the star. A bump into a rock or the edge stops it; tap the last step to take it back and try another. Four robots, and the clock counts up.';
   if (game.kind === 'evidence') return 'Read the short passage and the question above it. Tap the one sentence that answers the question: that sentence is your evidence. The reason shows under the passage, and the clock rests while you read it. Four passages, and the clock counts up.';
   if (game.kind === 'ptable') return 'A question names an element by its name, its number of protons, its place (group and period) or its family. Tap it on the table. Groups run down the columns and periods across the rows, and the small number on each element is its atomic number, the number of protons. Eight questions, and the clock rests while each answer shows.';
@@ -3767,6 +3931,10 @@ function GameThumb({ kind, game = null }) {
   if (game && game.kind === 'fund') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="5" y="7" width="30" height="26" rx="4" fill="#fff" stroke={k} strokeWidth="1.2" />{[[10, 22, 8], [17, 14, 16], [24, 18, 12]].map(([x, y, h], i) => <rect key={i} x={x} y={y} width="5" height={h} rx="1" fill={i === 1 ? C.green : '#DDE3DE'} stroke={k} strokeWidth="0.7" />)}<path d="M31 13l-3 -3 -3 3M28 10v9" fill="none" stroke={k} strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" /></svg>;
   if (game && game.kind === 'loan') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true">{[[8, 24, 12], [15, 18, 18], [22, 12, 24], [29, 6, 30]].map(([x, y, h], i) => <rect key={i} x={x} y={y} width="5" height={h} rx="1.2" fill={i === 3 ? C.green : '#D9534F'} stroke={k} strokeWidth="0.7" />)}<line x1="5" y1="36" x2="36" y2="36" stroke={k} strokeWidth="1.2" strokeLinecap="round" /></svg>;
   if (game && game.kind === 'price') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><path d="M8 6h16l8 8v20H8z" fill="#fff" stroke={k} strokeWidth="1.2" strokeLinejoin="round" /><circle cx="13" cy="11" r="1.6" fill={k} />{[[13, 22, 10], [19, 17, 15], [25, 20, 12]].map(([x, y, h], i) => <rect key={i} x={x} y={y} width="4.5" height={h} rx="1" fill={i === 1 ? C.green : '#DDE3DE'} stroke={k} strokeWidth="0.7" />)}</svg>;
+  if (game && game.kind === 'chord') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true">{[0, 1, 2, 3, 4, 5, 6].map((i) => <rect key={i} x={2 + i * 5.2} y="8" width="4.6" height="26" rx="1" fill={i === 0 || i === 2 || i === 4 ? C.green : C.paperBoard} stroke={k} strokeWidth="0.8" />)}{[0, 1, 3, 4, 5].map((i) => <rect key={`b${i}`} x={5.4 + i * 5.2} y="8" width="3" height="15" rx="0.8" fill={k} />)}</svg>;
+  if (game && game.kind === 'shape') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true">{[10, 18, 26, 34, 26, 14].map((h, i) => <rect key={i} x={4 + i * 5.6} y={36 - h} width="4.4" height={h} rx="1" fill={i === 3 ? C.clay : C.green} stroke={k} strokeWidth="0.7" />)}<path d="M3 37h34" stroke={k} strokeWidth="1" /></svg>;
+  if (game && game.kind === 'pattern') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><circle cx="8" cy="14" r="4.5" fill="#D9534F" stroke={k} strokeWidth="0.8" /><rect x="15.5" y="9.5" width="9" height="9" rx="2" fill="#4B6B8B" stroke={k} strokeWidth="0.8" /><circle cx="31" cy="14" r="4.5" fill="#D9534F" stroke={k} strokeWidth="0.8" /><rect x="3.5" y="24.5" width="9" height="9" rx="2" fill="#4B6B8B" stroke={k} strokeWidth="0.8" /><circle cx="20" cy="29" r="4.5" fill="#D9534F" stroke={k} strokeWidth="0.8" /><rect x="27" y="24.5" width="9" height="9" rx="2" fill="none" stroke={C.green} strokeWidth="1.2" strokeDasharray="2 1.5" /></svg>;
+  if (game && game.kind === 'spot') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="3" y="3" width="34" height="34" rx="4" fill={C.paperBoard} stroke={k} strokeWidth="1" /><circle cx="13" cy="14" r="5" fill="#D9534F" stroke={k} strokeWidth="0.7" /><rect x="22" y="9" width="10" height="10" rx="1.5" fill="#4B6B8B" stroke={k} strokeWidth="0.7" /><polygon points="13,23 19,32 7,32" fill="#F2C94C" stroke={k} strokeWidth="0.7" /><polyline points="22,31 25,25 28,31 31,25 34,31" fill="none" stroke="#5BA84A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>;
   if (game && game.kind === 'pay') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="5" y="6" width="30" height="14" rx="3" fill="#fff" stroke={k} strokeWidth="1" />{[0, 1, 2, 3].map((i) => <circle key={i} cx={11 + i * 6} cy="13" r="2" fill={i < 2 ? C.green : '#DDE3DE'} stroke={k} strokeWidth="0.6" />)}<circle cx="13" cy="30" r="6" fill="#E6B84B" stroke="#9C7A1C" strokeWidth="1.2" /><circle cx="27" cy="30" r="4.6" fill="#D7DCDF" stroke="#7B8388" strokeWidth="1.2" /></svg>;
   if (game && game.kind === 'walk') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true">{[0, 1, 2].map((r) => [0, 1, 2].map((c) => <rect key={`${r}${c}`} x={4.5 + c * 10.5} y={4.5 + r * 10.5} width="9.5" height="9.5" rx="1.5" fill={C.paperBoard} stroke={k} strokeWidth="1" />))}<rect x="6.5" y="6.5" width="5.5" height="5.5" rx="1.5" fill="#D9534F" stroke={k} strokeWidth="0.7" /><path d="M30.3 24.8l1.3 2.7 3.0 0.4-2.2 2.1 0.5 3.0-2.6-1.4-2.6 1.4 0.5-3.0-2.2-2.1 3.0-0.4z" fill={C.gold} stroke={k} strokeWidth="0.6" /><path d="M13.5 9.3h8.5M19 6.5l3 2.8-3 2.8M20 14v7M17.2 18l2.8 3 2.8-3" fill="none" stroke={k} strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" /></svg>;
   if (game && game.kind === 'balance') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="19" y="14" width="2.4" height="16" fill="#8A9086" /><rect x="12" y="30" width="16" height="3" rx="1.5" fill="#8A9086" /><rect x="6" y="13" width="28" height="2.4" rx="1.2" fill={k} transform="rotate(-6 20 14)" /><path d="M4 22h10l-1.5 5h-7z" fill={C.greenSoft} stroke={k} strokeWidth="1" /><path d="M26 20h10l-1.5 5h-7z" fill="#F7EAD1" stroke={k} strokeWidth="1" /><rect x="28" y="15" width="5" height="4" rx="1" fill={C.gold} stroke={k} strokeWidth="0.8" /></svg>;

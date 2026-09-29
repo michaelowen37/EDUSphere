@@ -969,6 +969,47 @@ export const COURSES = [
     modules: COLLEGE_TECH_MODULES(),
   },
   {
+    id: 'arts-k',
+    grade: 'K',
+    subject: 'Art',
+    title: 'Looking and listening',
+    audience: 'Kindergarten to grade 2',
+    readAloud: true, // the K to 2 band: questions are spoken and answers tapped (2026-09-29, pass GE)
+    elective: true,
+    keywords: ['art', 'music', 'colors', 'lines', 'shapes', 'beat', 'rhythm', 'instruments', 'appreciation', 'elective'],
+    modules: ARTSK_MODULES(),
+  },
+  {
+    id: 'arts-3',
+    grade: '3',
+    subject: 'Art',
+    title: 'Looking closer, listening longer',
+    audience: 'Grades 3 to 5',
+    elective: true,
+    keywords: ['art', 'music', 'design', 'museum', 'orchestra', 'instruments', 'form', 'appreciation', 'elective'],
+    modules: ARTS3_MODULES(),
+  },
+  {
+    id: 'arts-6',
+    grade: '6',
+    subject: 'Art',
+    title: 'Reading a work of art',
+    audience: 'Grades 6 to 8',
+    elective: true,
+    keywords: ['art', 'music', 'critique', 'museum', 'history', 'score', 'form', 'performance', 'appreciation', 'elective'],
+    modules: ARTS6_MODULES(),
+  },
+  {
+    id: 'arts-9',
+    grade: '9',
+    subject: 'Art',
+    title: 'The informed eye and ear',
+    audience: 'Grades 9 to 12',
+    elective: true,
+    keywords: ['art', 'music', 'appreciation', 'critique', 'styles', 'harmony', 'chords', 'genres', 'elective'],
+    modules: ARTS9_MODULES(),
+  },
+  {
     id: 'civics-3',
     grade: '3',
     subject: 'History',
@@ -1104,7 +1145,8 @@ export const GAMES = [
   { id: 'catch-circles', kind: 'catch', title: 'Catch the Circles', rule: 'circles', young: true },
   { id: 'maze-small', kind: 'maze', title: 'Maze', cells: 6 },
   { id: 'walk-tech-k', kind: 'walk', title: 'Walk the Robot', walk: 'walk', young: true, minGrade: 'K' },
-  { id: 'pay-econ-k', kind: 'pay', title: 'Pay the Price', pay: 'coins', young: true, minGrade: 'K' },   // economics K to 2 (pass FV): count out the exact price   // computer science K to 2 (pass FS): the child programs the robot
+  { id: 'pay-econ-k', kind: 'pay', title: 'Pay the Price', pay: 'coins', young: true, minGrade: 'K' },
+  { id: 'spot-arts-k', kind: 'spot', title: 'Spot It', spot: 'scenes', young: true, minGrade: 'K' },   // art and music K to 2 (pass GE): find the line, shape or color a voice asks for   // economics K to 2 (pass FV): count out the exact price   // computer science K to 2 (pass FS): the child programs the robot
   { id: 'jigsaw-4', kind: 'jigsaw', title: 'Puzzle', side: 2 },
   { id: 'dots-boat', kind: 'dots', title: 'Boat', shape: 'boat' },
   { id: 'pairs-more', kind: 'pairs', title: 'More Pairs', pairs: 4 },
@@ -1198,11 +1240,14 @@ export const GAMES = [
   { id: 'ptable-science-10', kind: 'ptable', title: 'The periodic table: find it', minGrade: '10', deck: 'main' },
   { id: 'debug-tech-3', kind: 'debug', title: 'Debug the robot: arrows', minGrade: '3', deck: 'arrows' },
   { id: 'debug-tech-5', kind: 'debug', title: 'Debug the robot: turns', minGrade: '5', deck: 'turns' },
-  { id: 'price-econ-3', kind: 'price', title: 'Set the Price', minGrade: '3', price: 'stand' },   // economics 3 to 5 (pass FW): find the price that earns the most
+  { id: 'price-econ-3', kind: 'price', title: 'Set the Price', minGrade: '3', price: 'stand' },
+  { id: 'pattern-arts-3', kind: 'pattern', title: 'What Comes Next', minGrade: '3', pattern: 'forms' },
+  { id: 'shape-arts-6', kind: 'shape', title: 'Shape the Sound', minGrade: '6', shape: 'dynamics' },   // art and music 6 to 8 (pass GG): the markings are the rule   // art and music 3 to 5 (pass GF): the form is the rule   // economics 3 to 5 (pass FW): find the price that earns the most
   { id: 'teach-tech-6', kind: 'teach', title: 'Teach the Robot', minGrade: '6', teach: 'fruit' },
   { id: 'search-tech-college', kind: 'search', title: 'Split the Search', minGrade: 'C', search: 32 },   // college computer science (pass FU): binary search by hand
   { id: 'loan-econ-6', kind: 'loan', title: 'Pay It Off', minGrade: '6', loan: 'plans' },   // economics 6 to 8 (pass FX): what a loan costs month by month
-  { id: 'fund-econ-9', kind: 'fund', title: 'Build the Fund', minGrade: '9', fund: 'year' },   // personal finance 9 to 12 (pass FY): a year of saving against surprises
+  { id: 'fund-econ-9', kind: 'fund', title: 'Build the Fund', minGrade: '9', fund: 'year' },
+  { id: 'chord-arts-9', kind: 'chord', title: 'Build the Chord', minGrade: '9', chord: 'triads' },   // art and music 9 to 12 (pass GH): four half steps then three   // personal finance 9 to 12 (pass FY): a year of saving against surprises
   { id: 'bits-tech-9', kind: 'bits', title: 'Eight Switches', minGrade: '9', bits: 8 },   // computer science 9 to 12 (pass FU): make the number with the switches   // the plain AI course (pass FT): the child is the pile of examples
   { id: 'mix-art-3', kind: 'mix', title: 'Color mixer: make new colors', minGrade: '3', deck: 'mix3' },
   { id: 'mix-art-4', kind: 'mix', title: 'Color mixer: the color wheel', minGrade: '4', deck: 'mix4' },
@@ -1667,6 +1712,60 @@ export function searchBoard(seed, cards = 32) {
   while (set.size < cards) set.add(10 + Math.floor(rnd() * 980));
   const values = [...set].sort((a, b) => a - b); const target = Math.floor(rnd() * cards);
   return { values, target };
+}
+// Spot It (2026-09-29, pass GE, art and music appreciation K to 2): a picture made of lines, shapes and colors, and a voice
+// that asks for one piece at a time: the circle, the zigzag line, the blue shape. Each ask fits exactly one piece of its
+// picture, and the rules test says so. Pieces are [kind, color, x, y, size] on a 100 by 100 board.
+export const SPOT_SCENES = [
+  { parts: [['circle', 'red', 24, 30, 12], ['square', 'blue', 70, 28, 12], ['triangle', 'yellow', 30, 74, 13], ['zigzag', 'green', 72, 72, 12], ['straight', 'purple', 50, 50, 14]], asks: [{ say: 'Tap the circle', kind: 'circle' }, { say: 'Tap the zigzag line', kind: 'zigzag' }, { say: 'Tap the blue shape', color: 'blue' }] },
+  { parts: [['curve', 'orange', 26, 26, 13], ['circle', 'green', 74, 26, 12], ['square', 'red', 26, 74, 12], ['triangle', 'blue', 74, 74, 13], ['zigzag', 'yellow', 50, 50, 12]], asks: [{ say: 'Tap the square', kind: 'square' }, { say: 'Tap the curved line', kind: 'curve' }, { say: 'Tap the yellow line', color: 'yellow' }] },
+  { parts: [['triangle', 'purple', 22, 28, 13], ['straight', 'green', 50, 26, 14], ['circle', 'orange', 78, 28, 12], ['zigzag', 'red', 30, 74, 12], ['square', 'yellow', 72, 72, 12]], asks: [{ say: 'Tap the triangle', kind: 'triangle' }, { say: 'Tap the straight line', kind: 'straight' }, { say: 'Tap the orange shape', color: 'orange' }] },
+  { parts: [['square', 'green', 24, 26, 12], ['curve', 'blue', 72, 26, 13], ['circle', 'yellow', 50, 52, 12], ['straight', 'red', 26, 76, 14], ['triangle', 'orange', 74, 76, 13]], asks: [{ say: 'Tap the red line', color: 'red' }, { say: 'Tap the circle', kind: 'circle' }, { say: 'Tap the curved line', kind: 'curve' }] },
+];
+export function spotMatches(part, ask) { return (!ask.kind || part[0] === ask.kind) && (!ask.color || part[1] === ask.color); }
+// What Comes Next (2026-09-29, pass GF, art and music 3 to 5): a row of pieces that repeats in a form, AB, ABA or abac,
+// shown twice and then cut off, and three pieces to choose the next from. The form is the rule of the game: repetition
+// in a picture and form in a song are the same idea, a part that comes back. Rounds come from the round number.
+export const PATTERN_FORMS = ['AB', 'ABA', 'abac', 'AAB', 'ABB', 'ABC'];
+export function patternRounds(round) {
+  let x = (round * 22695477 + 1) >>> 0; const rnd = () => { x = (x * 1664525 + 1013904223) >>> 0; return x / 4294967296; };
+  const pieces = ['circle', 'square', 'triangle'];
+  return Array.from({ length: 5 }, () => {
+    const form = PATTERN_FORMS[Math.floor(rnd() * PATTERN_FORMS.length)]; const letters = [...new Set(form.toUpperCase().split(''))];
+    const map = {}; const pool = pieces.slice().sort(() => rnd() - 0.5); letters.forEach((l, i) => { map[l] = pool[i]; });
+    const seq = form.toUpperCase().split('').map((l) => map[l]); const shown = seq.concat(seq); const cut = seq.length + 1 + Math.floor(rnd() * (seq.length - 1));
+    const answer = shown[cut]; const choices = pieces.slice().sort(() => rnd() - 0.5);
+    return { form, shown: shown.slice(0, cut), answer, choices };
+  });
+}
+// Shape the Sound (2026-09-29, pass GG, art and music 6 to 8): a line of dynamics markings from the score, piano, crescendo,
+// forte, decrescendo, and six bars of loudness the player sets by hand. The bars must follow the markings: soft bars low,
+// loud bars high, a crescendo climbing and a decrescendo falling. The markings are the rule of the game. Levels run 1 to 6.
+export const DYNAMICS_PLANS = [
+  ['piano', 'crescendo', 'forte', 'forte', 'decrescendo', 'piano'],
+  ['forte', 'decrescendo', 'piano', 'piano', 'crescendo', 'forte'],
+  ['piano', 'piano', 'crescendo', 'crescendo', 'forte', 'forte'],
+  ['forte', 'forte', 'decrescendo', 'decrescendo', 'piano', 'piano'],
+  ['piano', 'crescendo', 'crescendo', 'forte', 'decrescendo', 'decrescendo'],
+];
+export function dynamicsPlan(round, k) { return DYNAMICS_PLANS[(round * 3 + k) % DYNAMICS_PLANS.length]; }
+// Every bar is judged by its marking: piano is 1 or 2, forte is 5 or 6, a crescendo bar is louder than the bar before it, and a decrescendo bar is softer.
+export function dynamicsMatch(levels, plan) {
+  if (!Array.isArray(levels) || levels.length !== plan.length) return false;
+  return plan.every((mark, i) => { const v = levels[i]; const prev = i > 0 ? levels[i - 1] : null;
+    if (mark === 'piano') return v <= 2; if (mark === 'forte') return v >= 5;
+    if (mark === 'crescendo') return prev !== null ? v > prev : v >= 2; return prev !== null ? v < prev : v <= 5; });
+}
+// Build the Chord (2026-09-29, pass GH, art and music 9 to 12): twelve keys from C to B, a chord named, and three keys to
+// tap. A major triad is four half steps and then three; a minor triad is three and then four. The rule of the game is the
+// lesson's arithmetic, and the rules test proves every chord in the list obeys it.
+export const CHORD_NOTES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+export const CHORD_LIST = [['C', 'major'], ['G', 'major'], ['F', 'major'], ['D', 'major'], ['A', 'major'], ['A', 'minor'], ['E', 'minor'], ['D', 'minor'], ['G', 'minor'], ['C', 'minor']];
+export function chordNotes(root, quality) { const r = CHORD_NOTES.indexOf(root); const third = quality === 'major' ? 4 : 3; return [r, (r + third) % 12, (r + 7) % 12].map((i) => CHORD_NOTES[i]); }
+export function chordRounds(round) {
+  let x = (round * 40503 + 7) >>> 0; const rnd = () => { x = (x * 1664525 + 1013904223) >>> 0; return x / 4294967296; };
+  const order = CHORD_LIST.slice().sort(() => rnd() - 0.5).slice(0, 5);
+  return order.map(([root, quality]) => ({ root, quality, notes: chordNotes(root, quality) }));
 }
 export const ROBOT_DECKS = {
   arrows: [
@@ -8876,6 +8975,300 @@ function COLLEGE_TECH_MODULES() { return [
     generators: ['tc-recursion', 'tc-recursion', 'tc-recursion', 'tc-recursion', 'tc-recursion'],
   },
 ]; }
+// Art and music appreciation for the K to 2 band (2026-09-29, pass GE): four spoken lessons, two for looking and two for
+// listening, each answer said in its lesson first. Texas codes are §117.102 (Art, Kindergarten) and §117.103 (Music,
+// Kindergarten), both Adopted 2013, read from TEA's own text; the national framework is the National Core Arts Standards.
+function ARTSK_MODULES() { return [
+  {
+    id: 'lines-shapes-and-colors',
+    order: 1,
+    title: 'Lines, shapes and colors',
+    tagline: 'The pieces every picture is made of',
+    requires: [],
+    lesson: {
+      paragraphs: ['Every picture is made of lines, shapes and colors. A line can be straight, curved or a zigzag. A shape is a line that closes: a circle, a square, a triangle.\nRed, yellow and blue are the primary colors. Mix two and you get a new one: red and yellow make orange, blue and yellow make green, red and blue make purple.', 'Some colors feel warm, like red, orange and yellow, the colors of the sun. Some feel cool, like blue, green and purple, the colors of water. Texture is how a thing would feel: rough like bark, smooth like glass. A pattern is something that repeats, like stripes.', 'Lines, shapes, colors, texture and pattern. Look at any picture and you can find them all.'],
+      keyIdea: 'Lines, shapes and colors make every picture. Red, yellow and blue mix into orange, green and purple. Warm colors feel like sun, cool colors like water.',
+      example: { kind: 'flow', steps: ['red and yellow', 'orange'], caption: 'Two primary colors mixed make a new one.',
+        another: ['Take a walk with your eyes. The road is a straight line, a hill is a curve, a roof is a zigzag or a triangle. The world is drawn with the same lines a picture is.',
+          { text: 'Warm and cool are feelings, not temperatures. A red room feels busy and bright; a blue room feels calm. Painters choose colors the way you choose a coat.', visual: { kind: 'flow', steps: ['red, orange, yellow: warm', 'blue, green, purple: cool'] } },
+          'A pattern is a promise: stripe, stripe, stripe, and you know the next one before you see it.'] },
+    },
+    sources: ['Aligned with TEKS Fine Arts 117.102(b)(1)(A) (gather information from subjects in the environment using the senses) and 117.102(b)(1)(B) (identify the elements of art, including line, shape, color, texture and form, and the principles of design, including repetition/pattern and balance, in the environment), and the National Core Arts Standards, VA:Re7.2.Ka (describe what an image represents).'],
+    generators: ['ak-lines', 'ak-lines', 'ak-lines', 'ak-lines', 'ak-lines'],
+  },
+  {
+    id: 'what-a-picture-says',
+    order: 2,
+    title: 'What a picture says',
+    tagline: 'A picture shows something, and it makes you feel something',
+    requires: ['lines-shapes-and-colors'],
+    lesson: {
+      paragraphs: ['A picture shows something: a cat, a house, a storm. That is its subject. A picture also makes you feel something. Bright colors and curved lines can feel happy. Dark colors and sharp zigzags can feel stormy.\nTwo people can look at the same picture and feel different things. Both are right.', 'Art is not only in museums. It is on a cup, a quilt, a street sign, a birthday card and the wall of a building. People make art to show what they love and to make plain things beautiful.', 'When you look at a picture, ask two questions. What does it show? How does it make me feel? Then say your idea out loud, and listen to a friend say theirs.'],
+      keyIdea: 'A picture has a subject, what it shows, and a feeling. Art is everywhere, and two people can see it differently.',
+      example: { kind: 'flow', steps: ['look', 'what does it show?', 'how does it feel?', 'say your idea'], caption: 'Two questions open any picture.',
+        another: ['A museum is a house for pictures, but the first gallery a child visits is the fridge door, and the rules are the same: look, and say what you see.',
+          { text: 'The same cat drawn in yellow with round lines and in gray with sharp lines is the same subject and two different feelings.', visual: { kind: 'flow', steps: ['same subject', 'different colors and lines', 'different feelings'] } },
+          'Everyone is allowed an idea about a picture. Saying it is how you find out what you think.'] },
+    },
+    sources: ['Aligned with TEKS Fine Arts 117.102(b)(3)(A) (identify simple subjects expressed in artworks), 117.102(b)(3)(C) (identify the uses of art in everyday life) and 117.102(b)(4)(B) (express ideas found in collections such as real or virtual art museums, galleries, portfolios or exhibitions), and the National Core Arts Standards, VA:Re7.1.Ka (identify uses of art within one\'s personal environment) and VA:Re8.1.Ka (interpret art by identifying subject matter and describing relevant details).'],
+    generators: ['ak-picture', 'ak-picture', 'ak-picture', 'ak-picture', 'ak-picture'],
+  },
+  {
+    id: 'beat-and-sound',
+    order: 3,
+    title: 'Beat and sound',
+    tagline: 'The steady beat, the rhythm on top, and how sounds differ',
+    requires: ['what-a-picture-says'],
+    lesson: {
+      paragraphs: ['Put a hand on your heart. That steady thump is a beat. Music has a steady beat too, and you can clap it, tap it or march to it, always the same.\nRhythm is different. Rhythm is the pattern of the words on top of the beat. Clap your name: some claps are quick and some are slow. That is rhythm.', 'Sounds can be fast or slow, loud or soft, high or low. A bird sings high; a big drum sounds low. A lullaby is soft and slow; a marching song is loud and steady. Between the sounds there is silence, and silence is part of music too.', 'Steady beat, rhythm on top, fast or slow, loud or soft, high or low, and silence in between. Listen for each one.'],
+      keyIdea: 'The steady beat is the same every time; the rhythm is the pattern of the words on top. Sounds can be fast or slow, loud or soft, high or low.',
+      example: { kind: 'flow', steps: ['beat: tap, tap, tap, tap', 'rhythm: clap your name'], caption: 'The beat stays steady; the rhythm follows the words.',
+        another: ['A clock ticks a steady beat. A song sung over the ticking has a rhythm. The tick never changes; the song does.',
+          { text: 'Loud and soft are volume; fast and slow are speed; high and low are pitch. A bird is high and soft, a truck is low and loud.', visual: { kind: 'flow', steps: ['bird: high, soft', 'drum: low, loud'] } },
+          'The best way to find the beat is to move to it. Feet know before ears do.'] },
+    },
+    sources: ['Aligned with TEKS Fine Arts 117.103(b)(1)(D) (identify same/different in beat/rhythm, higher/lower, louder/softer, faster/slower and simple patterns in musical performances), 117.103(b)(4)(B) (identify steady beat in musical performances) and 117.103(b)(4)(C) (compare same/different in beat/rhythm, higher/lower, louder/softer, faster/slower and simple patterns), and the National Core Arts Standards, MU:Re7.2.Ka (with guidance, demonstrate how a specific music concept, such as beat, is used in music) and MU:Re8.1.Ka (with guidance, demonstrate awareness of expressive qualities such as dynamics and tempo).'],
+    generators: ['ak-beat', 'ak-beat', 'ak-beat', 'ak-beat', 'ak-beat'],
+  },
+  {
+    id: 'voices-and-instruments',
+    order: 4,
+    title: 'Voices and instruments',
+    tagline: 'Five voices, three families, and how to listen',
+    requires: ['beat-and-sound'],
+    lesson: {
+      paragraphs: ['You have five voices. A singing voice. A speaking voice. A whispering voice. A calling voice, for across the yard. And an inner voice, the one you hear only inside your head. A grown-up\'s singing voice sounds lower than a child\'s.', 'Instruments come in families. String instruments, like a guitar or a violin, have strings you pluck or bow. Wind instruments, like a flute or a trumpet, sound when you blow. Percussion instruments, like a drum or a shaker, sound when you hit or shake them.\nEvery family has its own sound, and you can tell them apart with your eyes closed.', 'People sing songs and play music games everywhere: rhymes, folk songs, songs for holidays. When someone plays for you, be a good audience: sit still, listen with your ears, and clap at the end.'],
+      keyIdea: 'Five voices: singing, speaking, whispering, calling and inner. Three instrument families: strings, wind and percussion. A good audience listens and claps at the end.',
+      example: { kind: 'flow', steps: ['strings: pluck or bow', 'wind: blow', 'percussion: hit or shake'], caption: 'Each family makes its sound a different way.',
+        another: ['Try the five voices on one word. Sing hello, say hello, whisper hello, call hello across the room, and think hello without a sound. Same word, five voices.',
+          { text: 'A family of instruments is like a family of people: each one is different, but you can hear that they belong together.', visual: { kind: 'flow', steps: ['guitar and violin', 'flute and trumpet', 'drum and shaker'] } },
+          'Clapping at the end is how an audience says thank you. Sitting still during the song is how it says I am listening.'] },
+    },
+    sources: ['Aligned with TEKS Fine Arts 117.103(b)(1)(A) (identify the differences between the five voices, including singing, speaking, inner, whispering and calling voices), 117.103(b)(1)(B) (identify the timbre of adult and child singing voices), 117.103(b)(1)(C) (identify the timbre of instrument families), 117.103(b)(3)(A) (sing songs and play musical games, including rhymes, folk music and seasonal music) and 117.103(b)(4)(A) (identify and demonstrate appropriate audience behavior during live or recorded performances), and the National Core Arts Standards, MU:Re7.2.Ka.'],
+    generators: ['ak-voices', 'ak-voices', 'ak-voices', 'ak-voices', 'ak-voices'],
+  },
+]; }
+// Art and music appreciation for the 3 to 5 band (2026-09-29, pass GF), at grade 3, beside the grade 3 art course and the
+// grade 4 music course, so it takes the ground they leave: the principles of design, art across time and place, the
+// instrument families and musical forms, and listening with a purpose. Texas codes are §117.111 (Art, Grade 3) and
+// §117.112 (Music, Grade 3), Adopted 2013, read from TEA's chapter text; the national framework is the National Core Arts Standards.
+function ARTS3_MODULES() { return [
+  {
+    id: 'principles-of-design',
+    order: 1,
+    title: 'The principles of design',
+    tagline: 'The elements are the building blocks; the principles organize them',
+    requires: [],
+    lesson: {
+      paragraphs: ['The elements of art are the building blocks: line, shape, color, texture, form, space and value, which is how light or dark a color is. The principles of design are the organizers, the rules an artist uses to arrange the blocks so a picture works.', 'Emphasis is the part your eye goes to first, the focal point. Repetition, or pattern, is the same element again and again. Movement, sometimes called rhythm, is the path your eye follows through the picture. Contrast, or variety, is difference set beside difference: light beside dark, big beside small. Balance is weight spread so one side does not tip. Proportion is how sizes relate to each other. Unity is the feeling that everything belongs.', 'Look at any picture and ask which principle is doing the work. A single red bird in a gray sky is emphasis. A row of fence posts is repetition. A river curving to the horizon is movement.'],
+      keyIdea: 'Elements are the building blocks; principles are the organizers: emphasis, repetition, movement, contrast, balance, proportion and unity.',
+      example: { kind: 'flow', steps: ['one red bird', 'a gray sky', 'your eye goes to the bird', 'emphasis'], caption: 'The focal point is where the artist wants you to look first.',
+        another: ['A poster for a lost cat uses the principles without knowing it: the photo is big, emphasis; the phone number repeats, repetition; the black letters sit on yellow paper, contrast.',
+          { text: 'Balance is not the same as symmetry. A large gray rock on one side can balance a small red flower on the other, because color has weight too.', visual: { kind: 'flow', steps: ['big and dull', 'small and bright', 'balanced'] } },
+          'Proportion is why a drawing of a person looks wrong when the head is too big. Artists sometimes break proportion on purpose, and then it is a choice, not a mistake.'] },
+    },
+    sources: ['Aligned with TEKS Fine Arts 117.111(b)(1)(B) (use appropriate vocabulary when discussing the elements of art, including line, shape, color, texture, form, space and value, and the principles of design, including emphasis, repetition/pattern, movement/rhythm, contrast/variety, balance, proportion and unity) and 117.111(b)(1)(C) (discuss the elements of art as building blocks and the principles of design as organizers of works of art), and the National Core Arts Standards, VA:Re8.1.3a (interpret art by analyzing use of media to create subject matter, characteristics of form and mood).'],
+    generators: ['a3-principles', 'a3-principles', 'a3-principles', 'a3-principles', 'a3-principles'],
+  },
+  {
+    id: 'art-across-time-and-place',
+    order: 2,
+    title: 'Art across time and place',
+    tagline: 'Main ideas in old and new art, and the jobs that use it',
+    requires: ['principles-of-design'],
+    lesson: {
+      paragraphs: ['People have made art for a very long time. The cave paintings at Lascaux in France are about 17,000 years old and show horses, deer and bulls. In Japan in the 1830s, Hokusai made The Great Wave, a woodblock print of a huge wave curling over small boats. In the United States, Georgia O\'Keeffe painted flowers so large they fill the whole canvas, and Faith Ringgold told stories on painted quilts.', 'Every artwork has a main idea, the thing the artist most wanted you to see or feel: the power of the sea, the closeness of a flower, a family\'s story. Art has been made by men and women in every culture and every century, and comparing two artworks from different places is one of the best ways to see what each one is doing.', 'Art is also work. Architects, animators, cartoonists, engineers, fashion designers, film makers, graphic artists, illustrators, interior designers, photographers and web designers all use the elements and principles every day. When you evaluate a picture, name the element, the principle or the feeling that carries its main idea.'],
+      keyIdea: 'Every artwork has a main idea, made by people in every time and place, and the elements and principles are working tools in many jobs.',
+      example: { kind: 'flow', steps: ['Lascaux, 17,000 years ago', 'Hokusai, the 1830s', 'today'], caption: 'Art runs from the cave wall to the screen in your pocket.',
+        another: ['A cave painter, a printmaker in Japan and a quilter in New York never met, yet all three chose a subject, a focal point and a color, the same three choices you make.',
+          { text: 'To compare two artworks, put them side by side in your mind and ask the same three questions of each: what is the main idea, which principle carries it, and how does it feel?', visual: { kind: 'flow', steps: ['main idea', 'principle', 'feeling'] } },
+          'An animator draws movement; an architect draws balance and proportion; a web designer draws emphasis and contrast. The words from this course are the words of their work.'] },
+    },
+    sources: ['Aligned with TEKS Fine Arts 117.111(b)(3)(A) (identify simple main ideas expressed in artworks from various times and places), 117.111(b)(3)(B) (compare and contrast artworks created by historical and contemporary men and women, making connections to various cultures), 117.111(b)(3)(C) (connect art to career opportunities such as architects, animators, cartoonists, engineers, fashion designers, film makers, graphic artists, illustrators, interior designers, photographers and web designers) and 117.111(b)(4)(A) (evaluate the elements of art, principles of design or expressive qualities in artworks), and the National Core Arts Standards, VA:Re7.2.3a (determine messages communicated by an image).'],
+    generators: ['a3-time', 'a3-time', 'a3-time', 'a3-time', 'a3-time'],
+  },
+  {
+    id: 'families-and-forms',
+    order: 3,
+    title: 'Families and forms',
+    tagline: 'Four instrument families, the signs on the page, and the shape of a song',
+    requires: ['art-across-time-and-place'],
+    lesson: {
+      paragraphs: ['An orchestra has four instrument families. Woodwinds, like the flute and the clarinet, sound when air moves through a tube. Brass, like the trumpet and the tuba, sound when the player buzzes their lips into a metal mouthpiece. Strings, like the violin and the cello, are bowed or plucked. Percussion, like the drum and the xylophone, is struck or shaken. Instruments from around the world join these families too: the sitar is a string, the djembe is percussion.', 'Voices are instruments as well, and a child\'s singing voice sounds higher and lighter than an adult\'s. Music writes its instructions with symbols and words: rhythm is the pattern of long and short; melody is the tune; timbre is the color of a sound, why a flute and a trumpet playing one note still sound different. Dynamics say how loud: piano is soft, forte is loud, mezzo piano is a little soft and mezzo forte is a little loud. Tempo says how fast: largo is slow, allegro is quick.', 'Form is the shape of a song, written with letters. AB means two different parts. ABA means the first part comes back at the end. A small form like abac uses lowercase letters for the phrases inside one section. Hear a song once and you can usually draw its form.'],
+      keyIdea: 'Woodwinds, brass, strings and percussion; timbre is a sound\'s color; dynamics say how loud, tempo how fast; form is the shape of a song, AB, ABA or abac.',
+      example: { kind: 'flow', steps: ['A: the verse', 'B: the chorus', 'A: the verse again', 'form ABA'], caption: 'Letters mark the parts; a letter that returns marks a part that returns.',
+        another: ['Close your eyes at a concert and sort the sounds: air through a tube, lips buzzing into metal, a bow on a string, a stick on a skin. That is the four families by ear.',
+          { text: 'Mezzo means middle. Mezzo piano is a little soft and mezzo forte is a little loud, and most music lives between them, so the loud and soft moments stand out.', visual: { kind: 'flow', steps: ['piano', 'mezzo piano', 'mezzo forte', 'forte'] } },
+          'Timbre is why you know your friend\'s voice on the phone before they say their name. Every instrument has one.'] },
+    },
+    sources: ['Aligned with TEKS Fine Arts 117.112(b)(1)(A) (categorize and explain a variety of musical sounds, including those of children and adult voices), 117.112(b)(1)(B) (categorize and explain a variety of musical sounds, including those of woodwind, brass, string, percussion and instruments from various cultures), 117.112(b)(1)(C) (use known music symbols and terminology referring to rhythm, melody, timbre, form, tempo and dynamics, including mezzo piano and mezzo forte) and 117.112(b)(1)(D) (identify and label small and large musical forms such as abac, AB and ABA), and the National Core Arts Standards, MU:Re7.2.3a (describe how a response to music can be informed by its structure and the use of the elements of music).'],
+    generators: ['a3-families', 'a3-families', 'a3-families', 'a3-families', 'a3-families'],
+  },
+  {
+    id: 'listening-with-a-purpose',
+    order: 4,
+    title: 'Listening with a purpose',
+    tagline: 'Genres and cultures, what to listen for, and how to be an audience',
+    requires: ['families-and-forms'],
+    lesson: {
+      paragraphs: ['Music comes in genres, styles that share a sound. Folk songs are passed from person to person. Classical music is written down for orchestras and choirs. Jazz is built on improvising, inventing as you play. Blues tells its troubles in a set pattern of lines. Mariachi, from Mexico, is trumpets, violins and guitars, and it is played all over Texas. Every genre belongs to a people and a time, and hearing where a song comes from is part of hearing it.', 'Listening with a purpose means noticing musical events: a change of timbre when the strings hand the tune to the brass, a change of form when the chorus returns, a change of tempo when the music speeds up, a change of dynamics when it drops to a whisper. Name the change with the right word and you have described the music, which is harder and more useful than saying you liked it.', 'An audience has manners: arrive before the music starts, sit still, keep the phone dark, and clap when a piece ends, not between its parts. Music also reaches into other subjects: a song has a form the way a story has a plot, and a rhythm counts the way math does.'],
+      keyIdea: 'Genres belong to peoples and times. Listen for events: changes of timbre, form, tempo and dynamics, and name them. An audience arrives early, sits still and claps at the end.',
+      example: { kind: 'flow', steps: ['strings play the tune', 'the brass take it', 'a change of timbre'], caption: 'A musical event is a change you can name.',
+        another: ['Describing music is like describing weather: not good or bad, but fast, loud, a change at three o\'clock. The words are the point.',
+          { text: 'Clapping between the movements of a long piece is like clapping between the chapters of a story read aloud: kind, but early. Wait for the end, and the clap means more.', visual: { kind: 'flow', steps: ['part one', 'a pause', 'part two', 'the end: clap'] } },
+          'A folk song your grandmother sings is as much a genre as anything on a stage. Ask her where she learned it, and you are doing music history.'] },
+    },
+    sources: ['Aligned with TEKS Fine Arts 117.112(b)(5)(B) (identify music from diverse genres, styles, periods and cultures), 117.112(b)(5)(C) (identify the relationships between music and interdisciplinary concepts), 117.112(b)(6)(A) (exhibit audience etiquette during live and recorded performances), 117.112(b)(6)(C) (identify specific musical events in aural examples such as changes in timbre, form, tempo or dynamics using appropriate vocabulary) and 117.112(b)(6)(E) (describe a variety of compositions and formal or informal musical performances using specific music vocabulary), and the National Core Arts Standards, MU:Re8.1.3a (describe how expressive qualities such as dynamics and tempo are used to reflect expressive intent) and MU:Re9.1.3a (evaluate musical works and performances, applying established criteria).'],
+    generators: ['a3-listen', 'a3-listen', 'a3-listen', 'a3-listen', 'a3-listen'],
+  },
+]; }
+// Art and music appreciation for the 6 to 8 band (2026-09-29, pass GG), at grade 6: the four-step critique and the expressive
+// properties of art, art shaped by history and power, the language of a score, and how to judge a performance. Texas codes
+// are §117.202 (Art, Middle School 1) and §117.208 (Music, Middle School 1), Adopted 2013, read from TEA's Subchapter B text;
+// the national framework is the National Core Arts Standards.
+function ARTS6_MODULES() { return [
+  {
+    id: 'the-four-step-critique',
+    order: 1,
+    title: 'The four-step critique',
+    tagline: 'Describe, analyze, interpret, evaluate: how to say something true about a picture',
+    requires: [],
+    lesson: {
+      paragraphs: ['A critique is not a complaint. It is a method for saying something true about a work of art, and it has four steps. Describe: list what is there, the subject, the colors, the materials, without judging. Analyze: say how it is organized, which elements and principles are doing the work. Interpret: say what the artist meant, the meaning behind the arrangement. Evaluate: judge whether the work succeeds at what it set out to do, and give your reasons.', 'The interpreting step uses the expressive properties of art. Meaning is what the work is about. Narrative is the story it tells or implies. Message is what it wants you to think or do. A symbol is one thing standing for another: a dove for peace, a skull for death, a wilting flower for time passing. Appropriation is borrowing an image made by someone else and using it in a new work, which artists have always done and which raises questions about credit.', 'Written or spoken, a critique uses the vocabulary of the course. Say emphasis, not the eye-catching bit. Say narrative, not story stuff. The words are what make the critique something another person can check.'],
+      keyIdea: 'Describe, analyze, interpret, evaluate. Interpreting uses meaning, narrative, message, symbol and appropriation, said in the vocabulary of art.',
+      example: { kind: 'flow', steps: ['describe', 'analyze', 'interpret', 'evaluate'], caption: 'Four steps, in order, and the judgment comes last.',
+        another: ['Most bad reviews skip straight to step four. I did not like it is a feeling, not a critique. Describe first, and the feeling usually finds its reasons.',
+          { text: 'A symbol is a promise between the artist and the viewer. A dove means peace only because both of you agree it does; in another culture the same bird may promise something else.', visual: { kind: 'flow', steps: ['image', 'shared agreement', 'symbol'] } },
+          'Appropriation is a spectrum from homage to theft. Where a borrowing sits on it depends on how much is transformed and whether the source is named.'] },
+    },
+    sources: ['Aligned with TEKS Fine Arts 117.202(c)(1)(D) (discuss the expressive properties of artworks such as appropriation, meaning, narrative, message and symbol using art vocabulary accurately), 117.202(c)(4)(A) (create written or oral responses to artwork using appropriate art vocabulary) and 117.202(c)(4)(B) (analyze original artworks using a method of critique such as describing the artwork, analyzing the way it is organized, interpreting the artist\'s intention and evaluating the success of the artwork), and the National Core Arts Standards, VA:Re8.1.6a (interpret art by analyzing subject matter, characteristics of form and structure and use of media to identify ideas and mood) and VA:Re9.1.6a (develop and apply relevant criteria to evaluate a work of art).'],
+    generators: ['a6-critique', 'a6-critique', 'a6-critique', 'a6-critique', 'a6-critique'],
+  },
+  {
+    id: 'art-history-and-power',
+    order: 2,
+    title: 'Art, history and power',
+    tagline: 'Artworks shaped by events, the themes every culture paints, and buildings that say who ruled',
+    requires: ['the-four-step-critique'],
+    lesson: {
+      paragraphs: ['Art answers events. In 1937 Pablo Picasso painted Guernica after the bombing of the town of Guernica during the Spanish Civil War, a wall of gray figures screaming under a bare light bulb. Between 1940 and 1941 Jacob Lawrence painted the Migration Series, sixty small panels telling how Black families moved north from the American South. A poster can push a war, and a mural can protest one.', 'Some themes appear in every culture and century: belief, cultural narrative, life cycles, the passage of time, identity, conflict and cooperation. A Japanese scroll, a Navajo weaving and an Italian altarpiece can all be about time passing. A society also says who it is in what it builds. The Parthenon in Athens, from the fifth century BC, is a temple to a goddess and a boast about a city. A Gothic cathedral like Chartres, built mostly in the 1200s, pulls the eye upward to God. A skyscraper says a company has money.', 'Art is also a place of work: designers of every kind, museum educators and curators, conservators who repair paintings, and fine artists. When you visit a gallery or a museum, keep exhibition etiquette: no touching, no flash, low voices, and room for the person behind you.'],
+      keyIdea: 'Artworks answer history. Belief, narrative, life cycles, time, identity, conflict and cooperation appear everywhere. Buildings say who a society is.',
+      example: { kind: 'flow', steps: ['an event', 'an artist answers', 'a work that outlives the event'], caption: 'Guernica is known to more people than the bombing it answered.',
+        another: ['Political art has two audiences: the people it speaks for and the people it speaks against. Read a poster twice, once as each.',
+          { text: 'A temple, a cathedral and a bank tower are all answers to one question: what does this society hold highest? The building is the answer in stone and glass.', visual: { kind: 'flow', steps: ['a society', 'what it holds highest', 'what it builds'] } },
+          'Conservators are the doctors of art. They can tell you what a painting looked like on the day it was finished, and sometimes give it back.'] },
+    },
+    sources: ['Aligned with TEKS Fine Arts 117.202(c)(3)(A) (identify the influence of historical and political events in artworks), 117.202(c)(3)(B) (identify examples of art that convey universal themes such as beliefs, cultural narrative, life cycles, the passage of time, identity, conflict and cooperation), 117.202(c)(3)(C) (explain the relationships that exist between societies and their art and architecture), 117.202(c)(3)(D) (explore career and avocational opportunities in art such as various design, museum and fine arts fields), 117.202(c)(4)(D) (investigate and explore original artworks in a variety of venues outside of the classroom such as museums, galleries or community art) and 117.202(c)(4)(E) (understand and demonstrate proper exhibition etiquette), and the National Core Arts Standards, VA:Cn11.1.6a (analyze how art reflects changing times, traditions, resources and cultural uses).'],
+    generators: ['a6-history', 'a6-history', 'a6-history', 'a6-history', 'a6-history'],
+  },
+  {
+    id: 'the-language-of-the-score',
+    order: 3,
+    title: 'The language of the score',
+    tagline: 'The words, symbols and forms a page of music uses',
+    requires: ['art-history-and-power'],
+    lesson: {
+      paragraphs: ['Musicians describe sound in standard words. Instrumentation is which instruments play. Voicing is which part sings which note. An interval is the distance between two notes. Solfège names the notes do, re, mi; absolute note names call them C, D, E. Rhythmic values name how long a note lasts: a whole note lasts four beats in 4/4 time, a half note two, a quarter note one, an eighth note half a beat, a sixteenth a quarter of a beat, and every note has a matching rest, a silence of the same length. Meter groups the beats: 2/4, 3/4 or 4/4 beats to a measure.', 'The page also carries symbols. A repeat sign, two dots before a double bar, sends you back. Dynamics say how loud: piano soft, forte loud, crescendo growing louder, decrescendo growing softer. Tempo words say how fast: moderato is moderate, allegro is quick, accelerando is speeding up, ritardando is slowing down. Articulations say how to touch a note: staccato is short and separated, legato is smooth and connected.', 'Form is the shape of the whole piece. Binary is AB, two parts. Ternary is ABA, the first part returning. Phrasic form is built from phrases, musical sentences. Rondo keeps coming home: ABACA. Theme and variations states a tune, then changes it again and again.'],
+      keyIdea: 'Note values and rests measure time; dynamics, tempo words and articulations say how; binary, ternary, phrasic, rondo and theme and variations name the shape.',
+      example: { kind: 'flow', steps: ['whole note: 4 beats', 'half: 2', 'quarter: 1', 'eighth: half'], caption: 'Each value is half the one before, which is why they are fractions.',
+        another: ['A repeat sign is the cheapest instruction in music: two dots that double a section without writing it twice.',
+          { text: 'Rondo is a song that keeps coming home. A B A C A: the A is the house, and B and C are trips out the door.', visual: { kind: 'flow', steps: ['A', 'B', 'A', 'C', 'A'] } },
+          'Staccato and legato are the same notes with a different touch, the way the same sentence can be spoken clipped or flowing.'] },
+    },
+    sources: ['Aligned with TEKS Fine Arts 117.208(c)(1)(B) (describe tonal and rhythmic musical elements using standard terminology such as instrumentation, voicing, intervals, solfège, absolute note names, rhythmic values and counting systems), 117.208(c)(1)(C) (describe musical elements of rhythm, including whole notes, half notes, quarter notes, paired and single eighth notes, sixteenth notes, corresponding rests and meter, including 2/4, 3/4 and 4/4), 117.208(c)(1)(D) (identify musical forms such as binary, ternary, phrasic, rondo and theme and variations) and 117.208(c)(2)(A) (identify music symbols and terms referring to notation, including repeat sign; dynamics, including crescendo, decrescendo, piano and forte; tempi, including accelerando, ritardando, moderato and allegro; and articulations, including staccato and legato), and the National Core Arts Standards, MU:Re7.2.6a (describe how the elements of music and expressive qualities relate to the structure of pieces).'],
+    generators: ['a6-score', 'a6-score', 'a6-score', 'a6-score', 'a6-score'],
+  },
+  {
+    id: 'judging-a-performance',
+    order: 4,
+    title: 'Judging a performance',
+    tagline: 'Styles and periods, music beside math and science, and the criteria a good listener uses',
+    requires: ['the-language-of-the-score'],
+    lesson: {
+      paragraphs: ['Music has periods the way art does. Bach, who died in 1750, wrote in the Baroque period; Mozart, who died in 1791, in the Classical; Beethoven, who died in 1827, carried it into the Romantic. Jazz grew up in New Orleans in the early 1900s; blues came before it; conjunto, with its button accordion, grew up along the Texas border. Every style belongs to a place and a time, and describing a piece means naming both.', 'Music leans on other subjects. Note values are fractions, which is math. A vibrating string makes a pitch, and doubling the frequency raises the note an octave, so 440 vibrations a second is the A above middle C and 880 is the A above it; that is physics. A song about a war is history, and a lyric is literature. Music is also a trade: composer, performer, teacher, sound engineer, instrument maker, music therapist.', 'A listener judges with criteria, not with a shrug. Intonation: are the notes in tune? Rhythm: is the beat steady and the timing right? Tone: is the sound full and clear? Balance: can you hear every part? Expression: does the playing follow the dynamics and the tempo the composer wrote? Compare a performance to an exemplary model, the best recording you know, and say where it falls short and where it does not. On stage and in the seats, etiquette holds: quiet, attentive, phones dark, applause at the end.'],
+      keyIdea: 'Baroque, Classical, Romantic, jazz, blues, conjunto: a style has a place and a time. Judge with intonation, rhythm, tone, balance and expression, against an exemplary model.',
+      example: { kind: 'flow', steps: ['listen', 'apply the five criteria', 'compare to the best you know', 'say why'], caption: 'A judgment with criteria is a judgment someone else can check.',
+        another: ['Doubling the frequency gives the octave in every culture on earth. It is the one musical fact physics hands you for free.',
+          { text: 'An exemplary model is a ruler. Without one, every performance is the best you have heard today; with one, you can say how far it has to go.', visual: { kind: 'flow', steps: ['the performance', 'the best you know', 'the gap'] } },
+          'The composer wrote piano at that bar for a reason. A performance that plays it forte has changed the piece, not improved it.'] },
+    },
+    sources: ['Aligned with TEKS Fine Arts 117.208(c)(4)(B) (describe written and aurally presented music representative of diverse styles, periods and cultures), 117.208(c)(4)(C) (identify relationships of music concepts to other academic disciplines such as mathematics, literature, history and the sciences), 117.208(c)(4)(D) (describe music-related vocations and avocations), 117.208(c)(5)(A) (demonstrate appropriate concert and stage etiquette as an informed, actively involved listener and performer), 117.208(c)(5)(B) (identify criteria for listening to and evaluating musical performances) and 117.208(c)(5)(D) (evaluate the quality and effectiveness of musical performances by comparing them to exemplary models), and the National Core Arts Standards, MU:Re9.1.6a (apply criteria to evaluate musical works or performances) and MU:Cn11.0.6a (demonstrate understanding of relationships between music and other disciplines).'],
+    generators: ['a6-judge', 'a6-judge', 'a6-judge', 'a6-judge', 'a6-judge'],
+  },
+]; }
+// Art and music appreciation for the 9 to 12 band (2026-09-29, pass GH), the strand's last course. Texas codes are §117.302
+// Art, Level I, which carries Art Appreciation, and §117.314 Music Studies, which carries Music Appreciation, both Adopted
+// 2013 and read from TEA's Subchapter C text; the national framework is the National Core Arts Standards at the proficient level.
+function ARTS9_MODULES() { return [
+  {
+    id: 'reading-artwork-with-precision',
+    order: 1,
+    title: 'Reading artwork with precision',
+    tagline: 'Content, meaning, message, metaphor, and conclusions you can defend',
+    requires: [],
+    lesson: {
+      paragraphs: ['An informed viewer makes judgments about the expressive properties of a work and can say which is which. Content is what the work contains, its subject and its parts. Meaning is what those parts add up to. Message is what the artist wants you to take away. Metaphor is one thing standing for another: a wilting flower for a life, a locked door for a mind. Naming the right property is the first act of precision.', 'The method of critique is the second. Describe the work, only what is there. Analyze how it is organized, the elements and principles at work. Interpret the artist\'s intention, with evidence from the work. Evaluate its success, against what it set out to do rather than what you would have made. A conclusion reached this way is precise because each step can be checked, and it holds for a painting in a museum, a print in a local gallery, or an image on a website.', 'Working with images carries one more responsibility. Copyright protects an artist\'s work for a term; public domain is what the term has released. An informed viewer who reuses an image as the main focal point of new work knows which of the two applies before touching it.'],
+      keyIdea: 'Content, meaning, message and metaphor are four different properties. Describe, analyze, interpret, evaluate, and every conclusion can be checked. Know copyright from public domain before reusing an image.',
+      example: { kind: 'flow', steps: ['describe', 'analyze', 'interpret', 'evaluate'], caption: 'Four steps, each one checkable, whether the work hangs in a museum or on a screen.',
+        another: ['A painting of an empty chair by a window has content, a chair and a window; meaning, an absence; message, perhaps that someone is missed; and metaphor, the chair standing for a person. Four sentences, four properties, and only the first is beyond argument.',
+          { text: 'Evaluate against intention, not preference. A poster meant to shout that succeeds at shouting is a success even if you prefer whispers.', visual: { kind: 'flow', steps: ['what did it set out to do?', 'did it do that?', 'evaluate'] } },
+          'Public domain is not the same as free to find. An image on a website is easy to copy and may still be someone\'s property for decades.'] },
+    },
+    sources: ['Aligned with TEKS Fine Arts 117.302(c)(1)(D) (make judgments about the expressive properties such as content, meaning, message and metaphor of artwork using art vocabulary accurately), 117.302(c)(2)(C) (use an understanding of copyright and public domain when appropriating imagery), 117.302(c)(4)(A) (interpret, evaluate and justify artistic decisions in artwork by self, peers and other artists such as that in museums, local galleries, art exhibits and websites), 117.302(c)(4)(B) (evaluate and analyze artwork using a verbal or written method of critique) and 117.302(c)(4)(D) (select and analyze original artwork, portfolios and exhibitions to form precise conclusions about formal qualities, historical and cultural contexts, intentions and meanings), and the National Core Arts Standards, VA:Re8.1.Ia (interpret an artwork supported by relevant and sufficient evidence from the work and its contexts) and VA:Re9.1.Ia (establish relevant criteria to evaluate a work of art).'],
+    generators: ['a9-read', 'a9-read', 'a9-read', 'a9-read', 'a9-read'],
+  },
+  {
+    id: 'styles-themes-and-cultures',
+    order: 2,
+    title: 'Styles, themes and cultures',
+    tagline: 'Historical and contemporary styles, what cultures carry in their art, and the work art becomes',
+    requires: ['reading-artwork-with-precision'],
+    lesson: {
+      paragraphs: ['A style is a family resemblance among works. The Impressionists in Paris in the 1870s painted light as it fell, in quick strokes; Monet\'s Impression, Sunrise of 1872 gave the group its name. Cubism, begun by Picasso and Braque around 1907, broke objects into planes seen from several sides at once. Jackson Pollock\'s drip paintings of the late 1940s dropped the subject altogether and kept the act of painting. Set a historical style beside a contemporary one, a street mural, a digital collage, and the themes and trends show: the same questions about light, space and the self, answered with new tools.', 'Cultures carry their own characteristics. The bronze plaques of the Kingdom of Benin, in what is now Nigeria, were cast for the royal court over centuries. Japanese woodblock prints of the Edo period were made for ordinary buyers and traveled to Europe to change painting there. Diego Rivera\'s murals of the 1920s and 1930s put Mexican history on public walls. Personal identity and heritage are characteristics too: an artist\'s own culture is often the first thing a work speaks.', 'Art is also a set of careers and avocations, and comparing them is worth an afternoon. A graphic designer, an art director, a conservator who repairs paintings, a curator who chooses them, an art teacher, and a weekend painter who sells nothing and would not stop: each spends a life with the same vocabulary, on different terms.'],
+      keyIdea: 'A style is a family resemblance; compare historical and contemporary styles to find themes and trends. Cultures and heritage give artwork its characteristics, and art is a range of careers and avocations.',
+      example: { kind: 'flow', steps: ['Impressionism, 1870s', 'Cubism, 1907', 'drip painting, late 1940s', 'a street mural today'], caption: 'Four styles, one trend: each generation kept some questions and changed the answers.',
+        another: ['Put two portraits side by side, one from a seventeenth-century Dutch studio and one painted this year, and ask the same questions of each: who is shown, how is the eye led, what is the artist saying about the sitter. The differences are the trend; the shared questions are the tradition.',
+          { text: 'Identity and heritage enter a work whether or not the artist intends it. The language of the title, the objects in the corner, the way a face is lit: culture is in the details before it is in the subject.', visual: { kind: 'flow', steps: ['the details', 'the subject', 'the culture behind both'] } },
+          'A curator and a conservator stand in the same gallery and see different things: one sees an argument, the other sees a crack. Both are careers in art.'] },
+    },
+    sources: ['Aligned with TEKS Fine Arts 117.302(c)(3)(A) (compare and contrast historical and contemporary styles while identifying general themes and trends), 117.302(c)(3)(B) (describe general characteristics in artwork from a variety of cultures, which might also include personal identity and heritage) and 117.302(c)(3)(D) (compare and contrast career and avocational opportunities in art), and the National Core Arts Standards, VA:Cn11.1.Ia (describe how knowledge of culture, traditions and history may influence personal responses to art).'],
+    generators: ['a9-styles', 'a9-styles', 'a9-styles', 'a9-styles', 'a9-styles'],
+  },
+  {
+    id: 'the-elements-of-music',
+    order: 3,
+    title: 'The elements of music',
+    tagline: 'Rhythm and meter, melody and harmony, texture, form, dynamics and timbre, named with precision',
+    requires: ['styles-themes-and-cultures'],
+    lesson: {
+      paragraphs: ['Music has elements the way pictures do, and an informed listener names them. Rhythm is the pattern of durations. Meter is how beats group: simple meters group beats in twos and threes, like 2/4 and 3/4; compound meters divide each beat in three, like 6/8; asymmetric meters mix groups, like 5/4 and 7/8. Melody is the line you can sing. Harmony is notes sounding together. Key is the home note a piece returns to. Texture is how many lines move at once: one line alone is monophony, a melody with chords beneath it is homophony, several independent lines are polyphony.', 'Harmony has a grammar. An interval is the distance between two notes, counted in half steps. A chord is three or more notes at once, and the commonest chord is a triad, built from a root, a third and a fifth. A major triad stacks four half steps and then three, so C, E and G; a minor triad stacks three and then four, so A, C and E. Musicians read melody with a system, solfège, numbers, letter names or scale degrees, and read the score\'s expression markings for dynamics, tempo and articulation.', 'Timbre is the color of a sound, form is its shape in time, and dynamics are its loudness, from pianissimo to fortissimo. One more element belongs to the listener: hearing protection. Loud music damages hearing slowly and permanently, so an informed ear wears earplugs at loud shows and keeps the earbuds down.'],
+      keyIdea: 'Rhythm, meter, melody, harmony, key, texture, form, dynamics and timbre. An interval is counted in half steps; a major triad stacks four then three, a minor triad three then four.',
+      example: { kind: 'flow', steps: ['C', 'up 4 half steps: E', 'up 3 half steps: G', 'C major'], caption: 'A major triad is four half steps and then three; a minor triad is three and then four.',
+        another: ['Count on a piano: from C, four keys up counting black and white lands on E, three more on G. Start on A, three up is C and four more is E: A minor. The same arithmetic on any root gives any triad.',
+          { text: 'Texture is the number of stories being told at once. A singer alone is one story, a singer with guitar is one story with a floor under it, and a round is three stories overlapping.', visual: { kind: 'flow', steps: ['monophony', 'homophony', 'polyphony'] } },
+          'Hearing protection is not a warning; it is an element of listening. A musician who cannot hear the top of a violin has lost part of every piece.'] },
+    },
+    sources: ['Aligned with TEKS Fine Arts 117.314(c)(1)(B) (identify and describe melodic and harmonic parts using a melodic reading system such as solfège, numbers, letter names, note names or scale degrees), 117.314(c)(1)(C) (define concepts of music notation, intervals and chord structure using appropriate terminology), 117.314(c)(1)(D) (define concepts of rhythm and meter using appropriate terminology and counting system), 117.314(c)(1)(E) (explore elements of music such as rhythm, meter, melody, harmony, key, expression markings, texture, form, dynamics and timbre), 117.314(c)(1)(F) (apply health and wellness concepts related to music practice such as hearing protection), 117.314(c)(2)(B) (rhythmic patterns in simple, compound and asymmetric meters) and 117.314(c)(2)(C) (interpret music symbols and expressive terms referring to dynamics, tempo and articulation), and the National Core Arts Standards, MU:Re7.2.E.Ia (explain how analysis of passages and the way the elements of music are manipulated inform the response to music).'],
+    generators: ['a9-elements', 'a9-elements', 'a9-elements', 'a9-elements', 'a9-elements'],
+  },
+  {
+    id: 'music-in-society',
+    order: 4,
+    title: 'Music in society',
+    tagline: 'Genres and periods, what music is for, what technology and money do to it, and how to judge a performance',
+    requires: ['the-elements-of-music'],
+    lesson: {
+      paragraphs: ['Compare music by genre, style, culture and period and the differences become a map. A Baroque concerto of the early 1700s, a blues recorded in the 1920s, a mariachi son from Jalisco, a hip-hop track built from samples: each has a home culture, a period, a set of instruments and a purpose. Music is used for worship, for work, for war, for dancing, for selling and for mourning, and every society has all of these uses in its own proportions.', 'Technology, ethics and money change music as much as taste does. Recording made a performance repeatable; the microphone made a whisper fill a hall; sampling let one song be built from another, which is where ethics and copyright meet; streaming pays musicians by the play, a fraction of a cent each, which is where economics meets the working musician. Music also reaches into other disciplines: physics in the vibrating string, mathematics in the ratios of intervals, history in every anthem, and poetry in every lyric.', 'An informed listener judges a performance by criteria, not by mood: intonation, rhythm, tone, phrasing, dynamics, ensemble balance, and whether the performance served the piece. Compare it to an exemplary model, a recording the field agrees is fine, and say precisely where it fell short or matched. Concert etiquette is the other half of the bargain: arrive before the downbeat, silence the phone, hold applause until a piece ends, and listen the way you would want to be listened to. Music is also a set of vocations and avocations, from performer and teacher to sound engineer, music therapist and the weekend choir member who sings for nothing but the singing.'],
+      keyIdea: 'Compare music by genre, style, culture and period; every society uses music for worship, work, dancing, selling and mourning. Technology, ethics and money reshape it. Judge a performance by criteria against an exemplary model, and keep concert etiquette.',
+      example: { kind: 'flow', steps: ['intonation', 'rhythm', 'tone and phrasing', 'balance', 'did it serve the piece?'], caption: 'Criteria first, verdict second.',
+        another: ['Streaming pays by the play. A song played a million times earns its musicians a few thousand dollars, split among everyone who made it. That number explains a great deal about how musicians live now.',
+          { text: 'Sampling is quotation with sound. Quoting a book takes a citation; quoting a recording takes permission, because the recording is property as well as art.', visual: { kind: 'flow', steps: ['an old recording', 'a sample', 'a new song', 'permission and payment'] } },
+          'A mariachi son, a Baroque concerto and a blues share a chord or two and almost nothing else, which is why comparing them teaches more than listening to any one alone.'] },
+    },
+    sources: ['Aligned with TEKS Fine Arts 117.314(c)(5)(A) (compare and contrast music by genre, style, culture and historical period), 117.314(c)(5)(B) (identify music-related vocations and avocations), 117.314(c)(5)(C) (identify and describe the uses of music in societies and cultures), 117.314(c)(5)(D) (identify and explore the relationship between music and other academic disciplines), 117.314(c)(5)(E) (identify and explore the impact of technologies, ethical issues and economic factors on music, musicians and performances), 117.314(c)(6)(A) (practice informed concert etiquette as an audience member), 117.314(c)(6)(B) (design and apply criteria for making informed judgments regarding the quality and effectiveness of musical performances) and 117.314(c)(6)(D) (evaluate musical performances by comparing them to exemplary models), and the National Core Arts Standards, MU:Re9.1.E.Ia (evaluate works and performances based on developed criteria) and MU:Cn11.0.E.Ia (relationships between music and the other arts, other disciplines, varied contexts and daily life).'],
+    generators: ['a9-society', 'a9-society', 'a9-society', 'a9-society', 'a9-society'],
+  },
+]; }
 function TECH3_MODULES() { return [
   {
     id: 'inputs-and-outputs',
@@ -13431,6 +13824,192 @@ Object.assign(GENERATORS, {
       ['Who proved, in 1936, that the halting problem has no general answer?', ['Alan Turing', 'Ada Lovelace', 'Isaac Newton', 'Grace Hopper'], 'Alan Turing', 'The halting problem: a general answer is impossible, not merely slow.'],
       ['Every loop can be written as what?', ['recursion', 'a hash table', 'a byte', 'a compiler'], 'recursion', 'And every recursion as a loop; choose the one that reads more clearly.'],
       ['The halting problem is a matter of what?', ['a general answer is impossible', 'speed', 'memory', 'a cleverer coder'], 'a general answer is impossible', 'It is a proof about all programs, not a limit of any machine.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  // Art and music appreciation, K to 2 (2026-09-29, pass GE): spoken questions with tapped answers, every answer said in its lesson first.
+  'ak-lines': (rng) => {
+    const Q = [['Red and yellow mixed make what?', ['orange', 'green', 'purple'], 'orange', 'Red and yellow make orange.'],
+      ['Blue and yellow mixed make what?', ['green', 'orange', 'purple'], 'green', 'Blue and yellow make green.'],
+      ['Red and blue mixed make what?', ['purple', 'green', 'orange'], 'purple', 'Red and blue make purple.'],
+      ['Which color feels warm, like the sun?', ['red', 'blue', 'green'], 'red', 'Red, orange and yellow are the warm colors.'],
+      ['A line that closes makes what?', ['a shape', 'a color', 'a pattern'], 'a shape', 'A shape is a line that closes: a circle, a square, a triangle.'],
+      ['Stripe, stripe, stripe. What is that?', ['a pattern', 'a texture', 'a shape'], 'a pattern', 'A pattern is something that repeats.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'ak-picture': (rng) => {
+    const Q = [['What a picture shows is called its what?', ['subject', 'pattern', 'beat'], 'subject', 'A cat, a house, a storm: that is the subject.'],
+      ['Bright colors and curved lines can feel how?', ['happy', 'stormy', 'quiet'], 'happy', 'Bright colors and curved lines can feel happy.'],
+      ['Dark colors and sharp zigzags can feel how?', ['stormy', 'happy', 'sleepy'], 'stormy', 'Dark colors and sharp zigzags can feel stormy.'],
+      ['Two people feel different things about one picture. Who is right?', ['both', 'the older one', 'nobody'], 'both', 'Two people can look at the same picture and feel different things. Both are right.'],
+      ['Where can you find art besides a museum?', ['on a cup', 'nowhere', 'only in a book'], 'on a cup', 'A cup, a quilt, a street sign, a birthday card, a wall.'],
+      ['What are the two questions to ask a picture?', ['what does it show, how does it feel', 'how big, how old', 'who paid, who sold'], 'what does it show, how does it feel', 'What does it show? How does it make me feel?']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'ak-beat': (rng) => {
+    const Q = [['Tap, tap, tap, tap, always the same. What is that?', ['the steady beat', 'the rhythm', 'silence'], 'the steady beat', 'A steady beat is the same every time, like your heart.'],
+      ['The pattern of the words on top of the beat is called what?', ['rhythm', 'beat', 'pitch'], 'rhythm', 'Clap your name: quick and slow claps. That is rhythm.'],
+      ['A bird sings how?', ['high', 'low', 'loud'], 'high', 'A bird sings high; a big drum sounds low.'],
+      ['A big drum sounds how?', ['low', 'high', 'soft'], 'low', 'A big drum sounds low.'],
+      ['A lullaby is which?', ['soft and slow', 'loud and fast', 'high and loud'], 'soft and slow', 'A lullaby is soft and slow; a marching song is loud and steady.'],
+      ['The quiet between the sounds is called what?', ['silence', 'rhythm', 'a pattern'], 'silence', 'Silence is part of music too.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'ak-voices': (rng) => {
+    const Q = [['Which voice do you use across the yard?', ['a calling voice', 'a whispering voice', 'an inner voice'], 'a calling voice', 'A calling voice, for across the yard.'],
+      ['Which voice do you hear only inside your head?', ['an inner voice', 'a singing voice', 'a calling voice'], 'an inner voice', 'The inner voice is the one you hear only inside your head.'],
+      ['A guitar belongs to which family?', ['string instruments', 'wind instruments', 'percussion instruments'], 'string instruments', 'String instruments, like a guitar or a violin, have strings you pluck or bow.'],
+      ['A flute sounds when you do what?', ['blow', 'hit it', 'shake it'], 'blow', 'Wind instruments, like a flute or a trumpet, sound when you blow.'],
+      ['A drum belongs to which family?', ['percussion instruments', 'string instruments', 'wind instruments'], 'percussion instruments', 'Percussion instruments sound when you hit or shake them.'],
+      ['What does a good audience do at the end?', ['clap', 'shout', 'leave'], 'clap', 'Sit still, listen, and clap at the end.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  // Art and music appreciation, grades 3 to 5 (2026-09-29, pass GF): every answer is said in its lesson first.
+  'a3-principles': (rng) => {
+    const Q = [['The part of a picture your eye goes to first is called what?', ['emphasis', 'repetition', 'proportion', 'unity'], 'emphasis', 'Emphasis is the focal point, where the artist wants you to look first.'],
+      ['The same element again and again is which principle?', ['repetition', 'contrast', 'balance', 'movement'], 'repetition', 'Repetition, or pattern, is the same element again and again.'],
+      ['Light beside dark, big beside small: which principle?', ['contrast', 'unity', 'proportion', 'emphasis'], 'contrast', 'Contrast, or variety, is difference set beside difference.'],
+      ['The path your eye follows through a picture is called what?', ['movement', 'value', 'balance', 'texture'], 'movement', 'Movement, sometimes called rhythm, is the path your eye follows.'],
+      ['How light or dark a color is: which element?', ['value', 'space', 'form', 'line'], 'value', 'Value is how light or dark a color is.'],
+      ['The elements are the building blocks. The principles are what?', ['the organizers', 'the colors', 'the frames', 'the subjects'], 'the organizers', 'The principles organize the blocks so a picture works.'],
+      ['The feeling that everything in a picture belongs is called what?', ['unity', 'emphasis', 'contrast', 'value'], 'unity', 'Unity is the feeling that everything belongs.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'a3-time': (rng) => {
+    const Q = [['About how old are the cave paintings at Lascaux?', ['17,000 years', '500 years', '2,000 years', '100 years'], '17,000 years', 'About 17,000 years old, showing horses, deer and bulls.'],
+      ['The Great Wave is which kind of artwork?', ['a woodblock print', 'a quilt', 'a cave painting', 'a photograph'], 'a woodblock print', 'Hokusai made it in Japan in the 1830s.'],
+      ['Faith Ringgold told stories on what?', ['painted quilts', 'cave walls', 'woodblocks', 'web pages'], 'painted quilts', 'Faith Ringgold told stories on painted quilts.'],
+      ['Georgia O\'Keeffe painted flowers how?', ['so large they fill the whole canvas', 'very small', 'only in black', 'on quilts'], 'so large they fill the whole canvas', 'Her flowers fill the whole canvas.'],
+      ['The thing the artist most wanted you to see or feel is called what?', ['a main idea', 'a frame', 'a price', 'a signature'], 'a main idea', 'Every artwork has a main idea.'],
+      ['Which of these use the elements and principles every day?', ['animators', 'plumbers', 'dentists', 'farmers'], 'animators', 'Architects, animators, cartoonists, illustrators, photographers and web designers all use them.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'a3-families': (rng) => {
+    const Q = [['A trumpet belongs to which family?', ['brass', 'woodwinds', 'strings', 'percussion'], 'brass', 'Brass sound when the player buzzes their lips into a metal mouthpiece.'],
+      ['A clarinet belongs to which family?', ['woodwinds', 'brass', 'strings', 'percussion'], 'woodwinds', 'Woodwinds sound when air moves through a tube.'],
+      ['A cello belongs to which family?', ['strings', 'brass', 'woodwinds', 'percussion'], 'strings', 'Strings are bowed or plucked.'],
+      ['The color of a sound is called what?', ['timbre', 'tempo', 'form', 'melody'], 'timbre', 'Timbre is why a flute and a trumpet playing one note still sound different.'],
+      ['Mezzo forte means what?', ['a little loud', 'very soft', 'very fast', 'slow'], 'a little loud', 'Mezzo means middle: mezzo forte is a little loud.'],
+      ['ABA means what?', ['the first part comes back at the end', 'three different parts', 'one part repeated', 'a song with no parts'], 'the first part comes back at the end', 'AB means two different parts; ABA means the first part comes back.'],
+      ['Which word means slow?', ['largo', 'allegro', 'forte', 'piano'], 'largo', 'Largo is slow, allegro is quick.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'a3-listen': (rng) => {
+    const Q = [['Which genre is built on improvising?', ['jazz', 'classical', 'folk', 'blues'], 'jazz', 'Jazz is built on improvising, inventing as you play.'],
+      ['Mariachi comes from where?', ['Mexico', 'France', 'Japan', 'Ireland'], 'Mexico', 'Trumpets, violins and guitars, played all over Texas.'],
+      ['Strings hand the tune to the brass. Which change is that?', ['a change of timbre', 'a change of tempo', 'a change of form', 'a change of key'], 'a change of timbre', 'A change of timbre is a change in the color of the sound.'],
+      ['The music drops to a whisper. Which change is that?', ['a change of dynamics', 'a change of form', 'a change of timbre', 'a change of genre'], 'a change of dynamics', 'Dynamics are how loud or soft.'],
+      ['When should an audience clap?', ['when a piece ends', 'between its parts', 'during the quiet part', 'never'], 'when a piece ends', 'Clap when a piece ends, not between its parts.'],
+      ['Folk songs are passed how?', ['from person to person', 'only in writing', 'only by orchestras', 'only on the radio'], 'from person to person', 'Folk songs are passed from person to person.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  // Art and music appreciation, grades 6 to 8 (2026-09-29, pass GG): recall answers are said in their lessons; note values and octaves are computed.
+  'a6-critique': (rng) => {
+    const Q = [['Which step of a critique lists what is there without judging?', ['describe', 'analyze', 'interpret', 'evaluate'], 'describe', 'Describe: list the subject, the colors, the materials, without judging.'],
+      ['Which step says how the work is organized?', ['analyze', 'describe', 'interpret', 'evaluate'], 'analyze', 'Analyze: which elements and principles are doing the work.'],
+      ['Which step judges whether the work succeeds, with reasons?', ['evaluate', 'describe', 'analyze', 'interpret'], 'evaluate', 'Evaluate comes last, and it gives reasons.'],
+      ['One thing standing for another, a dove for peace, is called what?', ['a symbol', 'a narrative', 'a message', 'appropriation'], 'a symbol', 'A symbol is one thing standing for another.'],
+      ['The story a work tells or implies is called its what?', ['narrative', 'meaning', 'symbol', 'message'], 'narrative', 'Narrative is the story it tells or implies.'],
+      ['Borrowing an image made by someone else for a new work is called what?', ['appropriation', 'interpretation', 'evaluation', 'articulation'], 'appropriation', 'Appropriation raises questions about credit.'],
+      ['What a work wants you to think or do is called its what?', ['message', 'meter', 'medium', 'narrative'], 'message', 'Message is what it wants you to think or do.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'a6-history': (rng) => {
+    const Q = [['Picasso painted Guernica in 1937 after what?', ['the bombing of a town', 'a flood', 'a wedding', 'an election'], 'the bombing of a town', 'After the bombing of the town of Guernica during the Spanish Civil War.'],
+      ['Jacob Lawrence\'s Migration Series told what story in sixty panels?', ['Black families moving north from the American South', 'a voyage to the moon', 'the building of a cathedral', 'a war in Spain'], 'Black families moving north from the American South', 'Sixty small panels, painted between 1940 and 1941.'],
+      ['The Parthenon in Athens is what kind of building?', ['a temple', 'a bank', 'a skyscraper', 'a cathedral'], 'a temple', 'A temple to a goddess and a boast about a city, from the fifth century BC.'],
+      ['A Gothic cathedral like Chartres pulls the eye which way?', ['upward', 'downward', 'sideways', 'inward'], 'upward', 'Built mostly in the 1200s, it pulls the eye upward to God.'],
+      ['Which is a universal theme in art?', ['the passage of time', 'the repeat sign', 'a cool color', 'the tempo'], 'the passage of time', 'Belief, cultural narrative, life cycles, the passage of time, identity, conflict and cooperation.'],
+      ['Who repairs paintings?', ['conservators', 'composers', 'engineers', 'docents'], 'conservators', 'Conservators repair paintings; museum educators and curators are other museum jobs.'],
+      ['Which is proper exhibition etiquette?', ['no touching and no flash', 'touching to feel the texture', 'loud talk', 'standing in front of others'], 'no touching and no flash', 'No touching, no flash, low voices, and room for the person behind you.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'a6-score': (rng) => {
+    if (rng() < 0.45) {
+      const values = [['a whole note', 4], ['a half note', 2], ['a quarter note', 1], ['an eighth note', 0.5]];
+      const [a, av] = pick(rng, values); const smaller = [['quarter notes', 1], ['eighth notes', 0.5], ['sixteenth notes', 0.25]].filter(([, v]) => v < av); const [name, v] = pick(rng, smaller);
+      const answer = String(av / v);
+      return { type: 'number', story: null, prompt: `In 4/4 time, ${a} lasts as long as how many ${name}?`, choices: null, answer, explain: `${a[0].toUpperCase() + a.slice(1)} lasts ${av} beats and each of the ${name} lasts ${v}, so ${av} divided by ${v} is ${answer}.`, visual: null, explainVisual: null };
+    }
+    const Q = [['Two dots before a double bar mean what?', ['go back and repeat', 'play louder', 'slow down', 'stop'], 'go back and repeat', 'A repeat sign sends you back.'],
+      ['Crescendo means what?', ['growing louder', 'growing softer', 'speeding up', 'slowing down'], 'growing louder', 'Crescendo is growing louder; decrescendo is growing softer.'],
+      ['Ritardando means what?', ['slowing down', 'speeding up', 'short and separated', 'smooth'], 'slowing down', 'Accelerando is speeding up; ritardando is slowing down.'],
+      ['Staccato notes are played how?', ['short and separated', 'smooth and connected', 'loud', 'slow'], 'short and separated', 'Legato is smooth and connected.'],
+      ['ABACA is which form?', ['rondo', 'binary', 'ternary', 'theme and variations'], 'rondo', 'Rondo keeps coming home to A.'],
+      ['The distance between two notes is called what?', ['an interval', 'a meter', 'a voicing', 'a rest'], 'an interval', 'An interval is the distance between two notes.'],
+      ['Which form states a tune and then changes it again and again?', ['theme and variations', 'binary', 'rondo', 'phrasic'], 'theme and variations', 'Theme and variations states a tune, then changes it.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'a6-judge': (rng) => {
+    if (rng() < 0.35) {
+      const base = pick(rng, [110, 220, 440, 880]); const up = rng() < 0.5;
+      const answer = String(up ? base * 2 : base / 2);
+      return { type: 'number', story: `A note vibrates ${base} times a second.`, prompt: `The same note one octave ${up ? 'higher' : 'lower'} vibrates how many times a second?`, choices: null, answer, explain: `Doubling the frequency raises a note an octave, and halving lowers it one, so ${base} ${up ? 'doubled' : 'halved'} is ${answer}.`, visual: null, explainVisual: null };
+    }
+    const Q = [['Bach wrote in which period?', ['Baroque', 'Classical', 'Romantic', 'jazz'], 'Baroque', 'Bach, who died in 1750, wrote in the Baroque period.'],
+      ['Mozart wrote in which period?', ['Classical', 'Baroque', 'Romantic', 'blues'], 'Classical', 'Mozart, who died in 1791, wrote in the Classical period.'],
+      ['Jazz grew up where?', ['New Orleans', 'Vienna', 'along the Texas border', 'London'], 'New Orleans', 'Jazz grew up in New Orleans in the early 1900s.'],
+      ['Conjunto grew up where, with its button accordion?', ['along the Texas border', 'New Orleans', 'Vienna', 'Paris'], 'along the Texas border', 'Conjunto grew up along the Texas border.'],
+      ['Whether the notes are in tune is which criterion?', ['intonation', 'balance', 'tone', 'expression'], 'intonation', 'Intonation: are the notes in tune?'],
+      ['Whether you can hear every part is which criterion?', ['balance', 'rhythm', 'tone', 'intonation'], 'balance', 'Balance: can you hear every part?'],
+      ['You compare a performance to what?', ['an exemplary model', 'the loudest one', 'your own mood', 'the newest one'], 'an exemplary model', 'Compare it to the best recording you know.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  // Art and music appreciation, grades 9 to 12 (2026-09-29, pass GH): every answer is said in its lesson first.
+  'a9-read': (rng) => {
+    const Q = [['A wilting flower standing for a life is which expressive property?', ['metaphor', 'content', 'message', 'meaning'], 'metaphor', 'Metaphor is one thing standing for another.'],
+      ['What the work contains, its subject and its parts, is its what?', ['content', 'message', 'metaphor', 'success'], 'content', 'Content is what the work contains.'],
+      ['What the artist wants you to take away is the what?', ['message', 'content', 'texture', 'medium'], 'message', 'Message is what the artist wants you to take away.'],
+      ['Which step of the critique uses evidence from the work to say what the artist intended?', ['interpret', 'describe', 'analyze', 'evaluate'], 'interpret', 'Interpret the intention, with evidence from the work.'],
+      ['A work should be evaluated against what?', ['what it set out to do', 'what you would have made', 'its price', 'its size'], 'what it set out to do', 'Evaluate its success against what it set out to do.'],
+      ['What has copyright released after its term?', ['public domain', 'a portfolio', 'a metaphor', 'a gallery'], 'public domain', 'Public domain is what the term has released.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'a9-styles': (rng) => {
+    const Q = [['Which painting of 1872 gave the Impressionists their name?', ['Impression, Sunrise', 'The Great Wave', 'Guernica', 'Migrant Mother'], 'Impression, Sunrise', 'Monet\'s Impression, Sunrise of 1872.'],
+      ['Cubism broke objects into what?', ['planes seen from several sides at once', 'drips of paint', 'single points of light', 'flat gray shapes'], 'planes seen from several sides at once', 'Cubism, begun around 1907 by Picasso and Braque.'],
+      ['Jackson Pollock\'s drip paintings kept what?', ['the act of painting', 'the subject', 'the frame', 'the model'], 'the act of painting', 'They dropped the subject and kept the act of painting.'],
+      ['The bronze plaques of the Kingdom of Benin were cast for whom?', ['the royal court', 'tourists', 'a museum in Paris', 'schoolchildren'], 'the royal court', 'Cast for the royal court over centuries, in what is now Nigeria.'],
+      ['Diego Rivera\'s murals put Mexican history where?', ['on public walls', 'in private albums', 'on postage stamps', 'in a single church'], 'on public walls', 'His murals of the 1920s and 1930s.'],
+      ['A conservator does what?', ['repairs paintings', 'chooses paintings for a show', 'sells frames', 'prints posters'], 'repairs paintings', 'A conservator repairs paintings; a curator chooses them.'],
+      ['A style is best described as what?', ['a family resemblance among works', 'a single artist', 'a single color', 'a price range'], 'a family resemblance among works', 'A style is a family resemblance among works.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'a9-elements': (rng) => {
+    const Q = [['Which notes make the C major triad?', ['C, E and G', 'C, E flat and G', 'C, F and A', 'C, D and E'], 'C, E and G', 'A major triad stacks four half steps and then three, so C, E and G.'],
+      ['Which notes make the A minor triad?', ['A, C and E', 'A, C sharp and E', 'A, B and C', 'A, D and F'], 'A, C and E', 'A minor triad stacks three half steps and then four, so A, C and E.'],
+      ['A major triad stacks how many half steps, then how many?', ['four then three', 'three then four', 'two then five', 'five then two'], 'four then three', 'Four half steps and then three, so C, E and G.'],
+      ['A minor triad stacks how many half steps, then how many?', ['three then four', 'four then three', 'three then three', 'four then four'], 'three then four', 'Three half steps and then four, so A, C and E.'],
+      ['Several independent lines moving at once is which texture?', ['polyphony', 'monophony', 'homophony', 'harmony'], 'polyphony', 'Several independent lines are polyphony.'],
+      ['A melody with chords beneath it is which texture?', ['homophony', 'polyphony', 'monophony', 'meter'], 'homophony', 'A melody with chords beneath it is homophony.'],
+      ['Which meter is compound?', ['6/8 time', '2/4 time', '3/4 time', '5/4 time'], '6/8 time', 'Compound meters divide each beat in three, like 6/8.'],
+      ['Which meter is asymmetric?', ['7/8 time', '4/4 time', '3/4 time', '6/8 time'], '7/8 time', 'Asymmetric meters mix groups, like 5/4 and 7/8.'],
+      ['An interval is counted in what?', ['half steps', 'beats', 'bars', 'decibels'], 'half steps', 'An interval is the distance between two notes, counted in half steps.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'a9-society': (rng) => {
+    const Q = [['Where ethics and copyright meet in music is called what?', ['sampling', 'tuning', 'phrasing', 'meter'], 'sampling', 'Sampling let one song be built from another.'],
+      ['Streaming pays musicians how?', ['by the play', 'by the hour', 'by the concert', 'by the page'], 'by the play', 'A fraction of a cent each.'],
+      ['Which is a criterion for judging a performance?', ['intonation', 'ticket price', 'the weather', 'the poster'], 'intonation', 'Intonation, rhythm, tone, phrasing, dynamics and balance.'],
+      ['A performance should be compared to what?', ['an exemplary model', 'the loudest recording', 'a music video', 'the cheapest show'], 'an exemplary model', 'A recording the field agrees is fine.'],
+      ['When does an informed audience applaud?', ['when a piece ends', 'between movements', 'during the quiet part', 'when the phone rings'], 'when a piece ends', 'Hold applause until a piece ends.'],
+      ['Which discipline is in the vibrating string?', ['physics', 'poetry', 'history', 'economics'], 'physics', 'Physics in the vibrating string, mathematics in the ratios of intervals.'],
+      ['The mariachi son comes from where?', ['Jalisco', 'Vienna', 'New Orleans', 'Lagos'], 'Jalisco', 'A mariachi son from Jalisco.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
@@ -20727,6 +21306,36 @@ export const WONDER = [
     closing: 'What would you test before you called something finished?',
   },
   {
+    id: 'w-teen-ugly-on-purpose',
+    theme: 'world',
+    stage: 'teen',
+    courseIds: ['arts-6'],
+    answerMode: 'typed',
+    prompt: 'A famous painting is ugly on purpose, and it works. Can a work of art succeed without being beautiful?',
+    perspectives: [
+      { voice: 'A scientist', says: 'Succeed at what? Guernica set out to make you feel a bombing, and it does, so by its own goal it succeeds completely. Beauty was never the goal, so its absence is not a failure. Judge a thing by what it tried to do.' },
+      { voice: 'An artist', says: 'Yes, and it is one of the hardest things to pull off. Anyone at all can be pretty. Making something hard to look at that you cannot stop looking at is a different skill, and it is the one the four steps are for.' },
+      { voice: 'A grandparent of faith', says: 'Some truths are not beautiful, and a picture that tells one honestly has done a holy kind of work. I would rather a true ugly picture than a lovely lie.' },
+      { voice: 'A skeptic', says: 'Be careful with the word famous. Plenty of ugly art is just ugly, and fame is not a criterion. Run the four steps on it yourself; if it survives evaluate, it works, and if it only survives because of the name on the wall, it does not.' },
+    ],
+    closing: 'What would count as succeeding, for that painting?',
+  },
+  {
+    id: 'w-teen-out-of-tune',
+    theme: 'failure',
+    stage: 'teen',
+    courseIds: ['arts-6'],
+    answerMode: 'typed',
+    prompt: 'You played a solo out of tune at the concert and you knew it while it was happening. What do you take from it?',
+    perspectives: [
+      { voice: 'A scientist', says: 'Intonation is a measurable thing, which means it is a fixable thing. Record the solo, find the notes that drifted, and practice those bars against a tuner. You now have the most useful data a musician can get: exactly where you miss.' },
+      { voice: 'An artist', says: 'Knowing it while it happened means your ear is ahead of your hands, and that is the right order. The ear that hears the miss is the one that will fix it. The hands catch up in time; the ears rarely do.' },
+      { voice: 'A grandparent of faith', says: 'The concert is over, and it was one concert. Sit with it for an evening, then let it go and pick up the instrument in the morning, because the next one is the one you can still change.' },
+      { voice: 'A skeptic', says: 'Ask three people who were there what they noticed. My guess is one heard it, one heard something else, and one was thinking about parking. Fix the notes; do not fix the memory of the whole hall wincing, because that hall is mostly in your head.' },
+    ],
+    closing: 'Which criterion would you work on first, and how?',
+  },
+  {
     id: 'w-teen-sure-and-wrong',
     theme: 'failure',
     stage: 'teen',
@@ -20755,6 +21364,36 @@ export const WONDER = [
       { voice: 'A skeptic', says: 'Try this experiment for yourself. Have the machine write your essay, then explain it out loud to someone who asks hard questions. You will find out quickly whether the essay is yours.' },
     ],
     closing: 'What would you want to say that no machine would say for you?',
+  },
+  {
+    id: 'w-grown-is-it-art',
+    theme: 'world',
+    stage: 'grown',
+    courseIds: ['arts-9'],
+    answerMode: 'typed',
+    prompt: 'A machine can now make a picture from a sentence in seconds. Is what it makes art, and does the answer change what you do with your own?',
+    perspectives: [
+      { voice: 'A scientist', says: 'The machine learned the statistics of a billion pictures and returns the likeliest one. Whether that is art depends on what you think art is for, which is a question the machine cannot help you with and the course can.' },
+      { voice: 'An artist', says: 'It makes pictures, and it makes them fast. Art is a picture with someone behind it, deciding and paying for the decision with time. When you draw badly for an hour, you are doing the thing the machine skips, and that thing is the point.' },
+      { voice: 'A grandparent of faith', says: 'The camera was supposed to end painting, and painting is still here, changed and alive. Make yours anyway, and keep making it. Making it is what it does for you, whatever it does for the wall.' },
+      { voice: 'A skeptic', says: 'Ask who owns the billion pictures it learned from and whether they were asked. The question of art can wait; the question of copyright is already in court, and it is the one that will decide what you can do with your own.' },
+    ],
+    closing: 'What would you want a viewer to know about how your picture was made?',
+  },
+  {
+    id: 'w-grown-panned-the-concert',
+    theme: 'failure',
+    stage: 'grown',
+    courseIds: ['arts-9'],
+    answerMode: 'typed',
+    prompt: 'You reviewed a school concert honestly and the singers you named will not speak to you. Was the honesty a mistake?',
+    perspectives: [
+      { voice: 'A scientist', says: 'Check the review against the criteria. If it named intonation and rhythm with evidence, it was a measurement, and measurements are allowed to sting. If it named people and not problems, that was the error, and it is fixable in the next one.' },
+      { voice: 'An artist', says: 'Every performer has been reviewed badly by someone who was right. The ones who last read it twice, cry once, and fix the thing. Write the next review so it can be read that way: specific, about the work, and kind about the person.' },
+      { voice: 'A grandparent of faith', says: 'Honesty was not the mistake; delivery may have been. Tell them to their faces what you told the page, and add the sentence the page left out, the one about why you came to hear them at all.' },
+      { voice: 'A skeptic', says: 'A review nobody dislikes is an advertisement. If the criteria were fair and the evidence real, the silence is the cost of doing the job. If they were not, the silence is deserved. Only you know which one it was.' },
+    ],
+    closing: 'What would you change in the review, and what would you keep?',
   },
   {
     id: 'w-grown-fund-or-fun',
@@ -20817,6 +21456,36 @@ export const WONDER = [
     closing: 'What could you start this month that would still be growing at forty?',
   },
   {
+    id: 'w-growing-dont-like-it',
+    theme: 'world',
+    stage: 'growing',
+    courseIds: ['arts-3'],
+    answerMode: 'typed',
+    prompt: 'Everyone says a painting is a masterpiece and you do not like it. Are you wrong?',
+    perspectives: [
+      { voice: 'A scientist', says: 'Liking is a measurement of you, not of the painting. Describe what you see before you say what you feel, and you will know whether you looked or only glanced.' },
+      { voice: 'An artist', says: 'No, but you might be early. Some pictures are like coffee; nobody likes them at first. Say what bothers you in the words of the course, and the painting will either win you over or it will not.' },
+      { voice: 'A grandparent of faith', says: 'Having your own taste is allowed. Being rude about it is not. You can say this one is not for me and still stand quietly while someone else loves it.' },
+      { voice: 'A skeptic', says: 'The word masterpiece is a claim, and claims need reasons. Ask what makes it one. If nobody can say, you are not wrong; you are just the only one asking.' },
+    ],
+    closing: 'What would you say about it, using the words of the course?',
+  },
+  {
+    id: 'w-growing-clapped-early',
+    theme: 'failure',
+    stage: 'growing',
+    courseIds: ['arts-3'],
+    answerMode: 'typed',
+    prompt: 'You clapped between the parts of a long piece and the whole hall looked at you. What do you do with that?',
+    perspectives: [
+      { voice: 'A scientist', says: 'You learned the form of that piece the hard way: it has parts, and the pause between them is not the end. Next time count the parts in the program first. The data was expensive, but you have it now.' },
+      { voice: 'An artist', says: 'Every musician on that stage has done the same thing somewhere. Your clap said you were moved, and being moved is the whole reason they are up there. Only the timing was off.' },
+      { voice: 'A grandparent of faith', says: 'Sit back, breathe, and let the music go on, because it will. A red face lasts a minute. A person who never claps at all misses more than one who clapped early.' },
+      { voice: 'A skeptic', says: 'Half that hall clapped early once and forgot. The other half is thinking about their own parking. Learn the pause, and the rest is not your problem.' },
+    ],
+    closing: 'How would you tell the end of a piece from a pause?',
+  },
+  {
     id: 'w-growing-spent-the-plan',
     theme: 'failure',
     stage: 'growing',
@@ -20845,6 +21514,40 @@ export const WONDER = [
       { voice: 'A skeptic', says: 'Before you call it unfair, ask what happens at the old price. Empty shelves by noon, and the flashlights go to whoever got there first, which is its own kind of unfair. There is no price that makes a shortage disappear.' },
     ],
     closing: 'What would you have done if the store were yours?',
+  },
+  {
+    id: 'w-early-both-right',
+    theme: 'world',
+    stage: 'early',
+    courseIds: ['arts-k'],
+    answerMode: 'pick',
+    prompt: 'You think a picture looks happy. Your friend thinks it looks sad. Who is right?',
+    options: ['Both of us', 'The one who looked longer', 'We should ask the painter'],
+    simple: [{ voice: 'An artist says', says: 'A picture can be two things at once.' }, { voice: 'A skeptic says', says: 'Ask each other what you saw.' }],
+    perspectives: [
+      { voice: 'A scientist', says: 'You both looked at the same picture and had different feelings, which means the feeling is partly yours. That is not a mistake at all. It is simply how looking works.' },
+      { voice: 'An artist', says: 'A picture can be two things at once, and the best ones usually are. When I paint, I hope people argue about it a little, because then they are really looking.' },
+      { voice: 'A grandparent of faith', says: 'Two people at a window see two different skies, and both are looking at the same sky. Listen to your friend, and you will see a little of theirs.' },
+      { voice: 'A skeptic', says: 'Ask each other what you saw. Point to the part that looked happy and the part that looked sad. You may find you were looking at different corners.' },
+    ],
+    closing: 'What part of the picture made you feel that way?',
+  },
+  {
+    id: 'w-early-lost-the-beat',
+    theme: 'failure',
+    stage: 'early',
+    courseIds: ['arts-k'],
+    answerMode: 'pick',
+    prompt: 'You clapped along to a song and lost the beat in front of everyone. What now?',
+    options: ['Listen, then join back in', 'Stop clapping', 'Clap louder'],
+    simple: [{ voice: 'A scientist says', says: 'Feet find the beat before hands do.' }, { voice: 'An artist says', says: 'Everyone loses the beat; music waits for you.' }],
+    perspectives: [
+      { voice: 'A scientist', says: 'Stop, listen for the steady thump, tap your foot to it, and let your hands follow your foot. Feet find a beat faster than hands, and nobody hears a foot.' },
+      { voice: 'An artist', says: 'Every musician loses the beat sometimes, even the drummer. The song keeps going, and it takes you back the moment you listen. Music is very forgiving in that way.' },
+      { voice: 'A grandparent of faith', says: 'Nobody was watching your hands; they were listening to the song. Take a breath, find the beat again, and smile. That is all anyone remembers.' },
+      { voice: 'A skeptic', says: 'Clapping louder hides nothing; it makes the miss louder. Go quiet for one line, catch the beat, and come back in. Going quiet is the whole fix.' },
+    ],
+    closing: 'How would you find the beat again?',
   },
   {
     id: 'w-early-two-wants',
@@ -23670,9 +24373,13 @@ export const COURSE_GAMES = {
   'health-k': ['dots-rocket'],
   'tech-k': ['walk-tech-k'],
   'econ-k': ['pay-econ-k'],
+  'arts-k': ['spot-arts-k'],
   'econ-3': ['price-econ-3'],
+  'arts-3': ['pattern-arts-3'],
+  'arts-6': ['shape-arts-6'],
   'econ-6': ['loan-econ-6'],
   'econ-9': ['fund-econ-9'],
+  'arts-9': ['chord-arts-9'],
   'tech-6': ['teach-tech-6'],
   'tech-college': ['search-tech-college'],
   'tech-9': ['bits-tech-9'],

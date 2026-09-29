@@ -941,6 +941,58 @@ await page.waitForTimeout(200);
 }
 await page.getByRole('button', { name: 'Close game' }).first().click({ force: true });
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview');
+// Spot It (pass GE, art and music K to 2): the asked piece is the one whose label matches the ask.
+await page.evaluate(() => window.__eduTest.openColoring('play:spot-arts-k'));
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'coloring');
+await page.waitForTimeout(200);
+{ ok('the spot game opens with five pieces and an ask', (await page.locator('g[role="button"]').count()) === 5 && /Tap the /.test(await text()));
+  for (let i = 0; i < 3; i++) {
+    const askText = ((await page.locator('[data-spot-ask]').getAttribute('data-spot-ask')) || '').replace(/^Tap the /, '');
+    const want = askText.trim().replace(/\s+(shape|line)$/, (m0, w) => (w === 'shape' ? '' : ' ' + w)).trim();
+    const pieces = page.locator('g[role="button"]'); const n = await pieces.count(); let clicked = false;
+    for (let j = 0; j < n && !clicked; j++) { const label = await pieces.nth(j).getAttribute('aria-label'); if (askText.endsWith('shape') ? label.startsWith(want) : label.endsWith(want)) { await pieces.nth(j).click({ force: true }); clicked = true; } }
+    await page.waitForTimeout(150);
+  }
+  ok('tapping the three asked pieces finishes the picture', (await text()).includes('All three found') && (await page.getByRole('button', { name: 'Next picture' }).count()) === 1);
+}
+await page.getByRole('button', { name: 'Close game' }).first().click({ force: true });
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview');
+// What Comes Next (pass GF, art and music 3 to 5): the next piece is the one the form puts there.
+await page.evaluate(() => window.__eduTest.openColoring('play:pattern-arts-3'));
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'coloring');
+await page.waitForTimeout(200);
+{ ok('the pattern game opens with a cut-off row and three pieces to choose from', (await page.getByRole('button', { name: /^Next piece: /, exact: false }).count()) === 3 && /Form: /.test(await text()));
+  for (let i = 0; i < 5; i++) { const ans = await page.locator('[data-pattern-answer]').getAttribute('data-pattern-answer'); if (!ans) break; await page.getByRole('button', { name: `Next piece: ${ans}`, exact: true }).click(); await page.waitForTimeout(800); }
+  ok('five right pieces finish the round', (await text()).includes('Five patterns finished'));
+}
+await page.getByRole('button', { name: 'Close game' }).first().click({ force: true });
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview');
+// Shape the Sound (pass GG, art and music 6 to 8): build the line the markings ask for, bar by bar, and check it.
+await page.evaluate(() => window.__eduTest.openColoring('play:shape-arts-6'));
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'coloring');
+await page.waitForTimeout(200);
+{ ok('the shape game opens with six bars and their markings', (await page.getByRole('button', { name: /^Bar \d louder$/ }).count()) === 6 && /line 1 of 4/.test(await text()));
+  for (let line = 0; line < 4; line++) {
+    const plan = ((await page.locator('[data-dynamics-plan]').getAttribute('data-dynamics-plan')) || '').split(',');
+    if (plan.length !== 6) break;
+    const want = []; plan.forEach((m, i) => { const prev = i ? want[i - 1] : 3; want.push(m === 'piano' ? 1 : m === 'forte' ? 6 : m === 'crescendo' ? Math.min(6, Math.max(prev + 1, 2)) : Math.max(1, Math.min(prev - 1, 5))); });
+    for (let i = 0; i < 6; i++) { const d = want[i] - 3; for (let t = 0; t < Math.abs(d); t++) await page.getByRole('button', { name: `Bar ${i + 1} ${d > 0 ? 'louder' : 'softer'}`, exact: true }).click(); }
+    await page.getByRole('button', { name: 'Check the line' }).click(); await page.waitForTimeout(950);
+  }
+  ok('four lines built to their markings finish the round', (await text()).includes('Four lines shaped'));
+}
+await page.getByRole('button', { name: 'Close game' }).first().click({ force: true });
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview');
+// Build the Chord (pass GH, art and music 9 to 12): the three keys the board names make the chord.
+await page.evaluate(() => window.__eduTest.openColoring('play:chord-arts-9'));
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'coloring');
+await page.waitForTimeout(200);
+{ ok('the chord game opens with twelve keys and a chord named', (await page.getByRole('button', { name: /^Key /, exact: false }).count()) === 12 && /(major|minor)/.test(await text()));
+  for (let i = 0; i < 5; i++) { const notes = ((await page.locator('[data-chord-notes]').getAttribute('data-chord-notes')) || '').split(' ').filter(Boolean); if (!notes.length) break; for (const n of notes) { await page.getByRole('button', { name: `Key ${n}`, exact: true }).click(); await page.waitForTimeout(60); } await page.waitForTimeout(850); }
+  ok('five chords built from their notes finish the round', (await text()).includes('Five chords built'));
+}
+await page.getByRole('button', { name: 'Close game' }).first().click({ force: true });
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview');
 // Some pictures are drawn on rather than filled in: a finger stroke leaves a line in the chosen color.
 await page.evaluate(() => window.__eduTest.openColoring('star'));
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'coloring');

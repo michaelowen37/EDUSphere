@@ -821,7 +821,7 @@ ok('reset: history kept, but nothing counts as mastered afterwards', events.leng
   ok('only grades that have courses are offered, in order', JSON.stringify(L.gradesWithCourses()) === '["PK3","PK4","K","1","2","3","4","5","6","7","8","9","10","11","12","C"]');
   const k = L.subjectsForGrade('K');
   // Health joined kindergarten on 2026-09-23; it sorts last.
-  ok('kindergarten groups into Math, Reading, Science, History, Technology, Health and Economics, in that order (economics joined K in pass FV)', k.length === 7 && k[0].subject === 'Math' && k[1].subject === 'Reading' && k[2].subject === 'Science' && k[3].subject === 'History' && k[4].subject === 'Technology' && k[5].subject === 'Health' && k[6].subject === 'Economics');
+  ok('kindergarten groups into Math, Reading, Science, History, Art, Technology, Health and Economics, in that order (art and music joined K in pass GE)', k.length === 8 && k[0].subject === 'Math' && k[1].subject === 'Reading' && k[2].subject === 'Science' && k[3].subject === 'History' && k[4].subject === 'Art' && k[5].subject === 'Technology' && k[6].subject === 'Health' && k[7].subject === 'Economics');
   ok('every grade now has courses', L.subjectsForGrade('PK3').length === 2);
   ok('science runs from kindergarten to grade 12', ['K', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'].every((g) => L.subjectsForGrade(g).some((x) => x.subject === 'Science')));
   ok('pre-K 3 is never a starter; a new early-years student begins at pre-K 4', L.recommendedCourseIds([L.makeCoursesEnabledEvent([], 't')], 'early').every((id) => L.getCourse(id).grade === 'PK4'));
@@ -1486,6 +1486,26 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
     ok('every search board is sorted and distinct with its target on it, and binary search finds it in six looks or fewer', [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].every((seed) => { const b = L.searchBoard(seed); return b.values.length === 32 && new Set(b.values).size === 32 && b.values.every((v, i) => i === 0 || v > b.values[i - 1]) && b.target >= 0 && b.target < 32 && looks(b) <= 6; }));
     ok('the search game belongs to college computer science and names its board with its own key', L.COURSE_GAMES['tech-college'].includes('search-tech-college') && L.GAMES.find((g) => g.id === 'search-tech-college').search === 32 && !L.GAMES.find((g) => g.id === 'search-tech-college').deck);
   }
+  { // Spot It (pass GE): every ask fits exactly one piece of its picture, pieces stay apart, and every kind and color is one the lesson names.
+    const kinds = ['circle', 'square', 'triangle', 'zigzag', 'curve', 'straight']; const colors = ['red', 'yellow', 'blue', 'orange', 'green', 'purple'];
+    ok('every Spot It picture has five pieces of known kinds and colors, kept apart, and asks that each fit exactly one piece', L.SPOT_SCENES.length >= 4 && L.SPOT_SCENES.every((sc) => sc.parts.length === 5 && sc.parts.every((p) => kinds.includes(p[0]) && colors.includes(p[1])) && sc.parts.every((a, i) => sc.parts.every((b, j) => i === j || (a[2] - b[2]) ** 2 + (a[3] - b[3]) ** 2 >= 18 * 18)) && sc.asks.length === 3 && sc.asks.every((ask) => sc.parts.filter((p) => L.spotMatches(p, ask)).length === 1)));
+    ok('the spot game belongs to art and music K to 2 and is for the youngest', L.COURSE_GAMES['arts-k'].includes('spot-arts-k') && L.GAMES.find((g) => g.id === 'spot-arts-k').young === true && !L.GAMES.find((g) => g.id === 'spot-arts-k').deck);
+  }
+  { // What Comes Next (pass GF): every round shows a form twice, cut inside its second showing, and the answer is the piece the form puts next.
+    ok('every pattern round follows its form and its answer is among the three choices', [1, 2, 3, 4, 5, 6].every((r) => L.patternRounds(r).length === 5 && L.patternRounds(r).every((q) => { const seq = q.form.toUpperCase().split(''); const map = {}; seq.forEach((l, i) => { if (!map[l]) map[l] = q.shown[i]; }); const full = seq.concat(seq).map((l) => map[l]); return q.shown.length > seq.length && q.shown.every((p, i) => p === full[i]) && q.answer === full[q.shown.length] && q.choices.length === 3 && q.choices.includes(q.answer) && new Set(q.choices).size === 3; })));
+    ok('the pattern game belongs to art and music 3 to 5 and names its forms with its own key', L.COURSE_GAMES['arts-3'].includes('pattern-arts-3') && L.GAMES.find((g) => g.id === 'pattern-arts-3').pattern === 'forms' && !L.GAMES.find((g) => g.id === 'pattern-arts-3').deck);
+  }
+  { // Shape the Sound (pass GG): every plan can be matched, a flat line never matches a plan with a crescendo or a decrescendo, and the rule reads each marking.
+    const build = (plan) => { const out = []; plan.forEach((m, i) => { const prev = i ? out[i - 1] : 3; out.push(m === 'piano' ? 1 : m === 'forte' ? 6 : m === 'crescendo' ? Math.min(6, Math.max(prev + 1, 2)) : Math.max(1, Math.min(prev - 1, 5))); }); return out; };
+    ok('every dynamics plan is six markings that its own built line matches, and a flat line fails it', L.DYNAMICS_PLANS.every((plan) => plan.length === 6 && plan.every((m) => ['piano', 'forte', 'crescendo', 'decrescendo'].includes(m)) && L.dynamicsMatch(build(plan), plan) && !L.dynamicsMatch([3, 3, 3, 3, 3, 3], plan)) && [0, 1, 2, 3, 4].every((r) => [0, 1, 2, 3].every((k) => L.DYNAMICS_PLANS.includes(L.dynamicsPlan(r, k)))));
+    ok('the shape game belongs to art and music 6 to 8 and names its plans with its own key', L.COURSE_GAMES['arts-6'].includes('shape-arts-6') && L.GAMES.find((g) => g.id === 'shape-arts-6').shape === 'dynamics' && !L.GAMES.find((g) => g.id === 'shape-arts-6').deck);
+  }
+  { // Build the Chord (pass GH): every chord stacks four then three half steps (major) or three then four (minor), every round names five distinct chords from the list, and the game belongs to arts-9.
+    const step = (a, b) => (L.CHORD_NOTES.indexOf(b) - L.CHORD_NOTES.indexOf(a) + 12) % 12;
+    ok('every chord in the list obeys the triad arithmetic', L.CHORD_LIST.every(([r, q]) => { const n = L.chordNotes(r, q); return n[0] === r && step(n[0], n[1]) === (q === 'major' ? 4 : 3) && step(n[1], n[2]) === (q === 'major' ? 3 : 4) && step(n[0], n[2]) === 7; }));
+    ok('every chord round names five distinct chords with their notes', [1, 2, 3, 4, 5].every((r) => { const rs = L.chordRounds(r); return rs.length === 5 && new Set(rs.map((c) => c.root + c.quality)).size === 5 && rs.every((c) => c.notes.length === 3 && c.notes.join() === L.chordNotes(c.root, c.quality).join()); }));
+    ok('the chord game belongs to art and music 9 to 12 and names its triads with its own key', L.COURSE_GAMES['arts-9'].includes('chord-arts-9') && L.GAMES.find((g) => g.id === 'chord-arts-9').chord === 'triads' && !L.GAMES.find((g) => g.id === 'chord-arts-9').deck);
+  }
   ok('the two robot games sit in the two programming courses beside their first games', L.COURSE_GAMES['tech-3'].includes('debug-tech-3') && L.COURSE_GAMES['tech-5'].includes('debug-tech-5') && L.GAMES.filter((g) => g.kind === 'debug').every((g) => L.ROBOT_DECKS[g.deck]));
 }
 
@@ -1550,7 +1570,7 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
   const otherPair = await crypto.subtle.generateKey({ name: 'ECDSA', namedCurve: 'P-256' }, true, ['sign', 'verify']);
   const otherPriv = await crypto.subtle.exportKey('jwk', otherPair.privateKey);
   ok('a code signed with any other key is refused', (await L.checkLicenseCode(await L.makeLicenseCode(otherPriv, { id: 'X', name: 'Y', year: '2026-27', until: '2027-07-31' }), new Date('2026-10-01'))).ok === false);
-  ok('pre-K 3, pre-K 4 and kindergarten courses are free, grade 1 and up are not', L.COURSES.filter(L.courseIsFree).length > 0 && L.COURSES.every((c) => L.courseIsFree(c) === ['PK3', 'PK4', 'K'].includes(c.grade)) && L.COURSES.filter(L.courseIsFree).reduce((n, c) => n + c.modules.length, 0) === 94);   // 86 plus computer science (pass FS) and economics (pass FV), four modules each
+  ok('pre-K 3, pre-K 4 and kindergarten courses are free, grade 1 and up are not', L.COURSES.filter(L.courseIsFree).length > 0 && L.COURSES.every((c) => L.courseIsFree(c) === ['PK3', 'PK4', 'K'].includes(c.grade)) && L.COURSES.filter(L.courseIsFree).reduce((n, c) => n + c.modules.length, 0) === 98);   // 86 plus computer science (FS), economics (FV) and art and music (GE), four modules each
   const mixed = ['counting-k', 'reading-3', 'letters-k'];
   ok('without a license only the free courses open; with one, all of them do', JSON.stringify(L.openCourseIds(mixed, false)) === JSON.stringify(['counting-k', 'letters-k']) && L.openCourseIds(mixed, true).length === 3);
   ok('the app carries a public key only, marked as the development key until launch', !('d' in L.LICENSE_PUBLIC_KEY) && L.LICENSE_KEY_IS_DEVELOPMENT === true);

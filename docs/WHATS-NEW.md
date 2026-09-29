@@ -2,6 +2,30 @@
 
 The newest block is what educators see once, in a pop-up on the classroom page, after each update. Write it the way Mikey talks to a teacher: conversational, complete sentences, say what changed and why it matters, and skip the shorthand (2026-09-23). Two to four items. The date line is the version stamp.
 
+## September 29, 2026 (the informed eye and ear)
+
+- Grade 9 has a new elective for grades 9 to 12, The informed eye and ear, which completes art and music appreciation from kindergarten up: reading artwork with precision, from content to metaphor and a critique whose every step can be checked; styles, themes and cultures across four centuries and the careers art becomes; the elements of music, with intervals counted in half steps and chords built from them; and music in society, from sampling and streaming to judging a performance by criteria. Each lesson has a story, and the course ends with a long story about Georgette, two portraits and a jazz concert.
+- Finishing the course unlocks Build the Chord, a new kind of game: twelve keys, a chord named, and the three keys that make it.
+- Two new Wonder questions for grades 9 to 12 wait in the review screen.
+
+## September 29, 2026 (reading a work of art)
+
+- Grade 6 has a new elective for grades 6 to 8, Reading a work of art: the four-step critique and the expressive properties of art; art shaped by history and power, from Guernica to a Gothic cathedral; the language of a score, from note values to rondo; and how to judge a performance with criteria instead of a shrug. Each lesson has a story, and the course ends with a long story about a mural that changed its mind.
+- Finishing the course unlocks Shape the Sound, a new kind of game: six bars of loudness and the markings they must follow.
+- Two new Wonder questions for grades 6 to 8 wait in the review screen.
+
+## September 29, 2026 (looking closer, listening longer)
+
+- Grade 3 has a new elective for grades 3 to 5, Looking closer, listening longer: the principles that organize a picture; art across time and place, from a cave wall to a story quilt, and the jobs that use it; the four instrument families and the shape of a song; and listening with a purpose, from mariachi to the manners of an audience. Each lesson has a story, and the course ends with a long story about Chloe and the orchestra.
+- Finishing the course unlocks What Comes Next, a new kind of game: a row of pieces that repeats in a form, and the piece that comes next.
+- Two new Wonder questions for grades 3 to 5 wait in the review screen.
+
+## September 29, 2026 (looking and listening)
+
+- Kindergarten has a new elective for kindergarten through grade 2, Looking and listening, read aloud like the rest of kindergarten: lines, shapes and the colors that mix into new ones; what a picture shows and how it feels; the steady beat and the rhythm on top; and the five voices and three families of instruments. Every lesson has a story and a coloring page, and the course ends with a long story about a concert in the park.
+- Finishing the course unlocks Spot It, a new kind of game: a picture of lines and shapes, and a voice that asks for one piece at a time.
+- Two new Wonder questions for the youngest wait in the review screen.
+
 ## September 29, 2026 (room to breathe)
 
 - The summary on a student's report now has space between its thoughts: the ground to make up and the practice so far, then the reflection line on its own, then the coloring line, then the tried-but-not-passed list with room above it.

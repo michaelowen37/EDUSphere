@@ -1,5 +1,8 @@
-Air in the report summary, ink in the search box, a centered miss
+Art and music appreciation, K to 12: four courses, four games
 
-- Pass GD: the summary on a student's report groups its lines with space between the thoughts; the courses search box keeps the theme's ink when typed in on the dark theme; No course matches that is centered; browser checks for each.
+- Pass GE: the third strand of the depth program begins with Looking and listening for kindergarten through grade 2 (arts-k, read aloud, free): lines, shapes and mixed colors; what a picture says; beat and sound; voices and instruments, with the Texas art and music kindergarten codes and the National Core Arts Standards alongside, four short stories and a long one with their pictures in the ledger, four coloring pages, two Wonder questions, and Spot It, a new kind of game.
+- Pass GF: grade 3 gets Looking closer, listening longer for grades 3 to 5 (arts-3): the principles of design, art across time and place, families and forms, and listening with a purpose, with the Texas grade 3 art and music codes and the National Core Arts Standards, four short stories and a long one about Chloe and the orchestra, two Wonder questions, and What Comes Next, a new kind of game.
+- Pass GG: grade 6 gets Reading a work of art for grades 6 to 8 (arts-6): the four-step critique, art and history and power, the language of the score, and judging a performance, with the Texas middle school art and music codes and the National Core Arts Standards, four short stories and a long one about a mural, two Wonder questions, and Shape the Sound, a new kind of game.
+- Pass GH: grade 9 gets The informed eye and ear for grades 9 to 12 (arts-9): reading artwork with precision, styles and cultures, the elements of music, and music in society, with the Texas Art I and Music Studies codes and the National Core Arts Standards, four short stories and a long one about Georgette and two portraits, two Wonder questions, and Build the Chord, a new kind of game; the strand runs K to 12.
 
-Passes: GD
+Passes: GE, GF, GG, GH

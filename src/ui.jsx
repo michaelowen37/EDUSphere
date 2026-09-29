@@ -3291,9 +3291,179 @@ function BalanceGame({ game, round, onScore = null }) {
     </div>
   );
 }
-const GAME_OF = { dots: DotsGame, pairs: PairsGame, sort: SortGame, maze: MazeGame, jigsaw: JigsawGame, pong: PongGame, sprint: SprintGame, order: OrderGame, build: BuildGame, fix: FixGame, mix: MixGame, debug: DebugGame, ptable: PtableGame, evidence: EvidenceGame, catch: CatchGame, path: PathGame, buckets: BucketsGame, jump: JumpGame, map: MapGame, balance: BalanceGame };
+// Walk the Robot (2026-09-28, pass FS, the fifteenth kind, for computer science K to 2): the child writes the program.
+// Tap an arrow to give the robot a step, tap a step to take it back (with every step after it), tap Go and watch the
+// robot follow the steps to the star. A bump into a rock or the edge stops the run and keeps the steps, so one can be
+// changed; every robot home in the round is the score. The lesson's idea is the rule of the game: the robot does exactly
+// the steps it is told, in order, and nothing more. Drawn with B on the paper board, like every game.
+function WalkGame({ game, round, onScore = null }) {
+  const deck = ROBOT_DECKS.walk || [];
+  const cmds = ['U', 'L', 'D', 'R']; const glyph = { U: '↑', R: '→', D: '↓', L: '←' }; const word = { U: 'up', R: 'right', D: 'down', L: 'left' };
+  const [k, setK] = useState(0); const [prog, setProg] = useState([]); const [shown, setShown] = useState(-1); const [ticks, setTicks] = useState(0); const [done, setDone] = useState(false);
+  const p = deck.length ? deck[(round * 5 + k) % deck.length] : null;
+  useEffect(() => { setK(0); setDone(false); setTicks(0); }, [round]);
+  useEffect(() => { setProg([]); setShown(-1); }, [p]);
+  const res = useMemo(() => (p ? runRobot(p, prog, false) : null), [p, prog]);
+  const total = res ? res.steps.length : 0;
+  const finished = shown >= 0 && shown >= total;
+  const home = finished && res && !res.crash && res.home;
+  useEffect(() => { if (done || home) return undefined; const t = setInterval(() => setTicks((n) => n + 1), 1000); return () => clearInterval(t); }, [done, home]);
+  useEffect(() => { if (done && onScore) onScore(ticks, 'low'); }, [done]);   // every robot home: a lower time is a new best
+  useEffect(() => { if (shown < 0 || shown >= total) return undefined; const t = setTimeout(() => setShown((n) => n + 1), 420); return () => clearTimeout(t); }, [shown, total]);
+  if (!p || !res) return null;
+  const sets = Math.min(4, deck.length); const running = shown >= 0 && shown < total; const MAX = 8;
+  // Adding or removing a step forgets the last run, so the robot goes back to its start until Go is tapped again.
+  const add = (c) => { if (running || home || prog.length >= MAX) return; setProg([...prog, c]); setShown(-1); };
+  const back = (i) => { if (running || home) return; setProg(prog.slice(0, i)); setShown(-1); };
+  // The next robot starts with no steps and no run; clearing here, not only in the effect, so no render sees old steps on a new grid.
+  const next = () => { setProg([]); setShown(-1); if (k + 1 >= sets) setDone(true); else setK(k + 1); };
+  const at = shown > 0 && total > 0 ? res.steps[Math.min(shown, total) - 1] : [p.start[0], p.start[1], 0];
+  const cell = 44; const pad = 6; const px = (v) => pad + v * cell + cell / 2;
+  const said = home ? 'Home! The robot reached the star.'
+    : finished && res.crash ? (res.crash === 'rock' ? 'Bump! A rock. Tap the last arrow to take it back.' : 'Bump! The edge. Tap the last arrow to take it back.')
+    : finished ? 'Not there yet. Add another step.'
+    : running ? `Step ${Math.max(1, shown)} of ${prog.length}`
+    : prog.length ? 'Tap Go to watch the robot walk.' : 'Tap an arrow to give the robot its first step.';
+  const arrowBtn = { fontFamily: FONT, width: 56, height: 56, borderRadius: 14, border: `2px solid ${B.green}`, background: '#fff', color: B.green, fontSize: 28, fontWeight: 700, cursor: running || home ? 'default' : 'pointer', padding: 0, lineHeight: 1 };
+  return (
+    <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Walk to the star</span><span>{ticks}s · {Math.min(k + 1, sets)} of {sets}</span></div>
+      {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Every robot home in {ticks} seconds. Tap the round arrow for new ones.</p> : (
+        <div style={{ textAlign: 'center' }}>
+          <svg viewBox={`0 0 ${cell * 5 + pad * 2} ${cell * 5 + pad * 2}`} width="100%" style={{ maxWidth: 260, display: 'block', margin: '0 auto' }} role="img" aria-label="The robot's grid">
+            {[0, 1, 2, 3, 4].map((a) => [0, 1, 2, 3, 4].map((b) => <rect key={`${a}-${b}`} x={pad + a * cell} y={pad + b * cell} width={cell} height={cell} fill="#fff" stroke={B.line} strokeWidth="1.5" />))}
+            {shown > 0 && res.steps.slice(0, Math.min(shown, total)).map(([a, b], i) => <circle key={i} cx={px(a)} cy={px(b)} r="5" fill={B.green} opacity="0.45" />)}
+            {p.rocks.map(([a, b]) => <ellipse key={`r${a}-${b}`} cx={px(a)} cy={px(b) + 3} rx="15" ry="12" fill="#8C8C84" stroke="#5E5E57" strokeWidth="2" />)}
+            <path d={`M ${px(p.goal[0])} ${px(p.goal[1]) - 15} l 4.4 9 l 9.9 1.4 l -7.2 7 l 1.7 9.8 l -8.8 -4.6 l -8.8 4.6 l 1.7 -9.8 l -7.2 -7 l 9.9 -1.4 z`} fill="#E6B84B" stroke="#9C7A1C" strokeWidth="1.5" />
+            <g transform={`translate(${px(at[0])} ${px(at[1])})`}>
+              <rect x="-14" y="-14" width="28" height="28" rx="7" fill={res.crash && finished ? B.clay : '#D9534F'} stroke={B.ink} strokeWidth="1.5" />
+              <circle cx="-5" cy="-3" r="3.5" fill="#fff" /><circle cx="5" cy="-3" r="3.5" fill="#fff" /><circle cx="-5" cy="-3" r="1.5" fill={B.ink} /><circle cx="5" cy="-3" r="1.5" fill={B.ink} />
+              <path d="M -6 6 Q 0 10 6 6" fill="none" stroke={B.ink} strokeWidth="1.5" strokeLinecap="round" />
+            </g>
+          </svg>
+          <p style={{ margin: '8px 0 8px', fontSize: 15, color: B.ink, minHeight: 22 }}>{said}</p>
+          {/* The steps so far, in order; a tap takes a step back with everything after it. */}
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, justifyContent: 'center', marginBottom: 10, minHeight: 50 }}>
+            {prog.map((c, i) => { const now = running && i === shown - 1; return (
+              <button key={i} type="button" onClick={() => back(i)} aria-label={`Step ${i + 1}: ${word[c]}, tap to take it back`} className="edu-press" style={{ fontFamily: FONT, minWidth: 44, padding: '4px 8px', borderRadius: 10, border: `2px solid ${now ? B.green : B.line}`, background: now ? B.greenSoft : '#fff', color: B.ink, cursor: running || home ? 'default' : 'pointer', display: 'inline-flex', flexDirection: 'column', alignItems: 'center' }}>
+                <span style={{ fontSize: 11, color: B.muted }}>{i + 1}</span><span style={{ fontSize: 22, fontWeight: 700 }}>{glyph[c]}</span>
+              </button>); })}
+          </div>
+          {/* Four big arrows to add a step: up on top, left, down and right below, the way a controller sits under a thumb. */}
+          <div style={{ display: 'grid', gridTemplateColumns: '56px 56px 56px', gap: 6, justifyContent: 'center', marginBottom: 12 }}>
+            <span /><button type="button" aria-label="Add a step: up" className="edu-press" onClick={() => add('U')} style={arrowBtn}>↑</button><span />
+            <button type="button" aria-label="Add a step: left" className="edu-press" onClick={() => add('L')} style={arrowBtn}>←</button>
+            <button type="button" aria-label="Add a step: down" className="edu-press" onClick={() => add('D')} style={arrowBtn}>↓</button>
+            <button type="button" aria-label="Add a step: right" className="edu-press" onClick={() => add('R')} style={arrowBtn}>→</button>
+          </div>
+          {home ? <Btn pal={B} onClick={next}>{k + 1 >= sets ? 'Finish' : 'Next robot'}</Btn> : <Btn pal={B} onClick={() => { if (prog.length) setShown(0); }} disabled={running || !prog.length}>{running ? 'Walking...' : 'Go'}</Btn>}
+        </div>
+      )}
+      <Done show={done} />
+    </div>
+  );
+}
+// Teach the Robot (2026-09-29, pass FT, the sixteenth kind, for the plain AI course): the child is the pile of examples.
+// Twelve fruits sit on a map. The robot knows two of them and guesses every other one from its nearest known fruit (a
+// red ring says apple, a yellow ring says banana). Tap a fruit the robot got wrong to teach it; every guess is made again
+// from all it now knows. A board is done when every ring is right; four boards a round, and the score is the number of
+// lessons it took, lower is better. The course's idea is the rule of the game: a model knows only the examples it was
+// given, and a wrong guess is fixed by adding the example it was missing. Drawn with B on the paper board, like every game.
+function TeachGame({ game, round, onScore = null }) {
+  const deck = TEACH_DECKS[game.teach] || [];
+  const [k, setK] = useState(0); const [known, setKnown] = useState([]); const [lessons, setLessons] = useState(0); const [nudge, setNudge] = useState(null); const [ticks, setTicks] = useState(0); const [done, setDone] = useState(false);
+  const board = deck.length ? deck[(round * 3 + k) % deck.length] : null;
+  useEffect(() => { setK(0); setLessons(0); setDone(false); setTicks(0); }, [round]);
+  useEffect(() => { if (board) setKnown(board.given.slice()); setNudge(null); }, [board]);
+  const guesses = useMemo(() => (board ? teachGuesses(board, known) : []), [board, known]);
+  const wrong = board ? board.items.map((it, i) => i).filter((i) => !known.includes(i) && guesses[i] !== board.items[i][2]) : [];
+  const boardDone = !!board && wrong.length === 0;
+  useEffect(() => { if (done || boardDone) return undefined; const t = setInterval(() => setTicks((n) => n + 1), 1000); return () => clearInterval(t); }, [done, boardDone]);
+  useEffect(() => { if (done && onScore) onScore(lessons, 'low'); }, [done]);   // fewer lessons is a new best
+  useEffect(() => { if (nudge === null) return undefined; const t = setTimeout(() => setNudge(null), 500); return () => clearTimeout(t); }, [nudge]);
+  if (!board) return null;
+  const sets = Math.min(4, deck.length);
+  const teach = (i) => { if (boardDone || done) return; if (known.includes(i) || guesses[i] === board.items[i][2]) { setNudge(i); return; } setKnown([...known, i]); setLessons(lessons + 1); };
+  const next = () => { if (k + 1 >= sets) setDone(true); else setK(k + 1); };
+  const ring = (kind) => (kind === 'apple' ? '#D9534F' : '#E6B84B');
+  const said = boardDone ? (known.length === board.given.length ? 'Every guess was right from two examples.' : `Every ring is right. It took ${known.length - board.given.length} ${known.length - board.given.length === 1 ? 'lesson' : 'lessons'}.`) : `${wrong.length} ${wrong.length === 1 ? 'guess is' : 'guesses are'} wrong. Tap a fruit the robot got wrong to teach it.`;
+  return (
+    <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Lessons: {lessons}</span><span>{ticks}s · {Math.min(k + 1, sets)} of {sets}</span></div>
+      {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Four boards taught in {lessons} {lessons === 1 ? 'lesson' : 'lessons'}. Tap the round arrow for new ones.</p> : (
+        <div style={{ textAlign: 'center' }}>
+          <svg viewBox="0 0 100 100" width="100%" style={{ maxWidth: 300, display: 'block', margin: '0 auto', background: '#F6F8F4', borderRadius: 12 }} role="img" aria-label="The robot's fruit map">
+            {board.items.map(([x, y, kind], i) => { const isKnown = known.includes(i); const g = guesses[i]; const right = g === kind; return (
+              <g key={i} role="button" tabIndex={0} aria-label={isKnown ? `${kind}: taught` : `${kind}: robot says ${g}`} onClick={() => teach(i)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); teach(i); } }} className={nudge === i ? 'edu-wobble' : undefined} style={{ cursor: isKnown || right ? 'default' : 'pointer' }}>
+                <circle cx={x} cy={y} r="6.6" fill="none" stroke={isKnown ? B.ink : ring(g)} strokeWidth={isKnown ? 1.6 : 1.3} strokeDasharray={isKnown ? undefined : '2.2 1.4'} />
+                {kind === 'apple' ? <g><circle cx={x} cy={y + 0.4} r="3.6" fill="#D9534F" stroke="#8E2E2A" strokeWidth="0.6" /><path d={`M ${x} ${y - 3.2} q 0.4 -1.6 1.4 -2.4`} fill="none" stroke="#5E4A2E" strokeWidth="0.8" strokeLinecap="round" /></g>
+                  : <path d={`M ${x - 3.8} ${y - 1.6} q 3.8 5.6 7.6 0 q -3.6 2.6 -7.6 0 z`} fill="#F2C94C" stroke="#A8841C" strokeWidth="0.6" strokeLinejoin="round" />}
+                {isKnown && <path d={`M ${x + 3.6} ${y - 5.2} l 1.2 1.2 l 2.2 -2.4`} fill="none" stroke={B.green} strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" />}
+              </g>); })}
+          </svg>
+          <p style={{ margin: '10px 0 8px', fontSize: 15, color: B.ink, minHeight: 22 }}>{said}</p>
+          <div style={{ display: 'flex', justifyContent: 'center', gap: 14, fontSize: 13, color: B.muted, marginBottom: 10 }}>
+            <span><span style={{ display: 'inline-block', width: 12, height: 12, borderRadius: 6, border: '2px dashed #D9534F', verticalAlign: 'middle', marginRight: 4 }} />robot says apple</span>
+            <span><span style={{ display: 'inline-block', width: 12, height: 12, borderRadius: 6, border: '2px dashed #E6B84B', verticalAlign: 'middle', marginRight: 4 }} />robot says banana</span>
+          </div>
+          {boardDone && <Btn pal={B} onClick={next}>{k + 1 >= sets ? 'Finish' : 'Next board'}</Btn>}
+        </div>
+      )}
+      <Done show={done} />
+    </div>
+  );
+}
+// Eight Switches (2026-09-29, pass FU, the seventeenth kind, for computer science 9 to 12): a byte made by hand. A target
+// number sits at the top and eight switches below it, worth 128 down to 1. Tap a switch to turn it on or off; the sum of
+// the lit places shows live, and when it equals the target the next number comes. Six numbers a round from bitsTargets,
+// the clock counts up, and every round finished is the score. The lesson's rule is the game's: add the places that are on.
+function BitsGame({ game, round, onScore = null }) {
+  const targets = useMemo(() => bitsTargets(round, 6), [round]);
+  const [k, setK] = useState(0); const [on, setOn] = useState([0, 0, 0, 0, 0, 0, 0, 0]); const [ticks, setTicks] = useState(0); const [done, setDone] = useState(false); const [hit, setHit] = useState(false);
+  useEffect(() => { setK(0); setOn([0, 0, 0, 0, 0, 0, 0, 0]); setDone(false); setTicks(0); setHit(false); }, [round]);
+  const places = [128, 64, 32, 16, 8, 4, 2, 1];
+  const sum = on.reduce((t, b, i) => t + (b ? places[i] : 0), 0);
+  const target = targets[Math.min(k, targets.length - 1)];
+  useEffect(() => { if (done) return undefined; const t = setInterval(() => setTicks((n) => n + 1), 1000); return () => clearInterval(t); }, [done]);
+  useEffect(() => { if (done && onScore) onScore(ticks, 'low'); }, [done]);
+  // A match lights the row for a moment, then the next target arrives with every switch off. The timer is set in the tap
+  // itself: an effect keyed on the sum would clear its own timer the moment the lit state changed.
+  const flip = (i) => {
+    if (done || hit) return;
+    const next = on.map((b, j) => (j === i ? (b ? 0 : 1) : b)); setOn(next);
+    if (next.reduce((t, b, j) => t + (b ? places[j] : 0), 0) !== target) return;
+    setHit(true);
+    setTimeout(() => { setHit(false); setOn([0, 0, 0, 0, 0, 0, 0, 0]); if (k + 1 >= targets.length) setDone(true); else setK(k + 1); }, 650);
+  };
+  const bin = on.join('');
+  return (
+    <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Make the number</span><span>{ticks}s · {Math.min(k + 1, targets.length)} of {targets.length}</span></div>
+      {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Six numbers in {ticks} seconds. Tap the round arrow for new ones.</p> : (
+        <div style={{ textAlign: 'center' }}>
+          <p style={{ margin: '4px 0 2px', fontSize: 15, color: B.muted }}>Target</p>
+          <p aria-live="polite" style={{ margin: '0 0 10px', fontSize: 40, fontWeight: 800, color: hit ? B.green : B.ink, lineHeight: 1 }}>{target}</p>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(8, minmax(0, 1fr))', gap: 6, maxWidth: 420, margin: '0 auto 10px' }}>
+            {places.map((v, i) => (
+              <button key={v} type="button" onClick={() => flip(i)} aria-pressed={!!on[i]} aria-label={`Switch worth ${v}, ${on[i] ? 'on' : 'off'}`} className="edu-press" style={{ fontFamily: FONT, padding: '8px 0 6px', borderRadius: 10, border: `2px solid ${on[i] ? B.green : B.line}`, background: on[i] ? B.greenSoft : '#fff', color: B.ink, cursor: done || hit ? 'default' : 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, minHeight: 64 }}>
+                <span style={{ fontSize: 11, color: B.muted }}>{v}</span>
+                <span aria-hidden="true" style={{ width: 16, height: 26, borderRadius: 8, background: on[i] ? B.green : B.line, position: 'relative' }}><span style={{ position: 'absolute', left: 2, top: on[i] ? 2 : 12, width: 12, height: 12, borderRadius: 6, background: '#fff' }} /></span>
+                <span style={{ fontSize: 16, fontWeight: 700 }}>{on[i]}</span>
+              </button>))}
+          </div>
+          <p style={{ margin: '4px 0 0', fontSize: 15, color: B.ink }}>{bin} is {sum}{hit ? '. Right!' : sum === 0 ? '. Every switch is off.' : ` (${on.map((b, i) => (b ? places[i] : null)).filter((v) => v !== null).join(' + ') || 0}).`}</p>
+        </div>
+      )}
+      <Done show={done} />
+    </div>
+  );
+}
+const GAME_OF = { dots: DotsGame, pairs: PairsGame, sort: SortGame, maze: MazeGame, jigsaw: JigsawGame, pong: PongGame, sprint: SprintGame, order: OrderGame, build: BuildGame, fix: FixGame, mix: MixGame, debug: DebugGame, ptable: PtableGame, evidence: EvidenceGame, catch: CatchGame, path: PathGame, buckets: BucketsGame, jump: JumpGame, map: MapGame, balance: BalanceGame, walk: WalkGame, teach: TeachGame, bits: BitsGame };
 // How to play, in a line or two, by kind of game (and by deck for the matching games).
 function gameInstructions(game) {
+  if (game.kind === 'bits') return 'A number sits at the top and eight switches below it, worth 128 down to 1. Tap the switches on and off until the lit places add up to the number; the sum shows as you go. Six numbers, and the clock counts up.';
+  if (game.kind === 'teach') return 'Twelve fruits, apples and bananas. The robot has seen one of each and guesses the rest from its nearest known fruit: a red ring means it guesses apple, a yellow ring banana. Tap a fruit the robot got wrong to teach it, and watch every guess change. Four boards; fewer lessons is the better score.';
+  if (game.kind === 'walk') return 'Tap the arrows to give the robot its steps, one at a time, then tap Go and watch it follow them to the star. A bump into a rock or the edge stops it; tap the last step to take it back and try another. Four robots, and the clock counts up.';
   if (game.kind === 'evidence') return 'Read the short passage and the question above it. Tap the one sentence that answers the question: that sentence is your evidence. The reason shows under the passage, and the clock rests while you read it. Four passages, and the clock counts up.';
   if (game.kind === 'ptable') return 'A question names an element by its name, its number of protons, its place (group and period) or its family. Tap it on the table. Groups run down the columns and periods across the rows, and the small number on each element is its atomic number, the number of protons. Eight questions, and the clock rests while each answer shows.';
   if (game.kind === 'debug') return game.deck === 'turns' ? 'The robot follows its steps in order: forward moves one square the way it faces, and turn left or turn right turns it where it stands. One step is wrong. Tap Run to watch, tap a step to change it, and run again until the robot reaches the star without bumping a rock or the edge. Four robots, and the clock counts up.' : 'The robot follows its steps in order, one square for each arrow. One step is wrong. Tap Run to watch, tap a step to change its arrow, and run again until the robot reaches the star without bumping a rock or the edge. Four robots, and the clock counts up.';
@@ -3363,6 +3533,9 @@ function GameThumb({ kind, game = null }) {
   // A connect-the-dots tile draws its own shape from the game's points; the name game shows a few dotted letters.
   const dotShape = game && game.kind === 'dots' ? (game.shape && DOT_SHAPES[game.shape] ? DOT_SHAPES[game.shape].map(([x, y]) => [4 + (x * 32) / 100, 4 + (y * 32) / 100]) : null) : null;
   if (dotShape) return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><polyline points={[...dotShape, dotShape[0]].map((pt) => pt.join(',')).join(' ')} fill="none" stroke={C.green} strokeWidth="2" strokeLinejoin="round" />{dotShape.map(([x, y], i) => <circle key={i} cx={x} cy={y} r="2.6" fill={C.paperBoard} stroke={k} strokeWidth="1.4" />)}</svg>;
+  if (game && game.kind === 'bits') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true">{[0, 1, 2, 3].map((i) => <g key={i}><rect x={4 + i * 8.6} y="9" width="6.4" height="20" rx="3.2" fill={i === 1 || i === 3 ? C.green : C.paperBoard} stroke={k} strokeWidth="1" /><circle cx={7.2 + i * 8.6} cy={i === 1 || i === 3 ? 13 : 25} r="2.3" fill="#fff" stroke={k} strokeWidth="0.8" /></g>)}<text x="20" y="37" fontSize="6.5" fontWeight="700" textAnchor="middle" fill={k} fontFamily="sans-serif">0101</text></svg>;
+  if (game && game.kind === 'teach') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="3" y="3" width="34" height="34" rx="4" fill={C.paperBoard} stroke={k} strokeWidth="1" />{[[11, 12], [17, 21], [10, 27]].map(([x, y], i) => <g key={`a${i}`}><circle cx={x} cy={y} r="4.4" fill="none" stroke="#D9534F" strokeWidth="1" strokeDasharray="1.6 1" /><circle cx={x} cy={y} r="2.3" fill="#D9534F" /></g>)}{[[27, 14], [30, 26], [22, 31]].map(([x, y], i) => <g key={`b${i}`}><circle cx={x} cy={y} r="4.4" fill="none" stroke="#E6B84B" strokeWidth="1" strokeDasharray="1.6 1" /><path d={`M ${x - 2.4} ${y - 1} q 2.4 3.4 4.8 0 q -2.3 1.6 -4.8 0 z`} fill="#F2C94C" /></g>)}</svg>;
+  if (game && game.kind === 'walk') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true">{[0, 1, 2].map((r) => [0, 1, 2].map((c) => <rect key={`${r}${c}`} x={4.5 + c * 10.5} y={4.5 + r * 10.5} width="9.5" height="9.5" rx="1.5" fill={C.paperBoard} stroke={k} strokeWidth="1" />))}<rect x="6.5" y="6.5" width="5.5" height="5.5" rx="1.5" fill="#D9534F" stroke={k} strokeWidth="0.7" /><path d="M30.3 24.8l1.3 2.7 3.0 0.4-2.2 2.1 0.5 3.0-2.6-1.4-2.6 1.4 0.5-3.0-2.2-2.1 3.0-0.4z" fill={C.gold} stroke={k} strokeWidth="0.6" /><path d="M13.5 9.3h8.5M19 6.5l3 2.8-3 2.8M20 14v7M17.2 18l2.8 3 2.8-3" fill="none" stroke={k} strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" /></svg>;
   if (game && game.kind === 'balance') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="19" y="14" width="2.4" height="16" fill="#8A9086" /><rect x="12" y="30" width="16" height="3" rx="1.5" fill="#8A9086" /><rect x="6" y="13" width="28" height="2.4" rx="1.2" fill={k} transform="rotate(-6 20 14)" /><path d="M4 22h10l-1.5 5h-7z" fill={C.greenSoft} stroke={k} strokeWidth="1" /><path d="M26 20h10l-1.5 5h-7z" fill="#F7EAD1" stroke={k} strokeWidth="1" /><rect x="28" y="15" width="5" height="4" rx="1" fill={C.gold} stroke={k} strokeWidth="0.8" /></svg>;
   if (game && game.kind === 'jump') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><line x1="4" y1="30" x2="36" y2="30" stroke={k} strokeWidth="1.5" strokeLinecap="round" />{[8, 15, 22, 29].map((x) => <line key={x} x1={x} y1="27.5" x2={x} y2="32.5" stroke={k} strokeWidth="1.2" />)}<ellipse cx="14" cy="18" rx="7" ry="5" fill="#5BA84A" stroke={k} strokeWidth="1.2" /><circle cx="11.5" cy="14.5" r="2" fill={C.paperBoard} stroke={k} strokeWidth="0.8" /><circle cx="16.5" cy="14.5" r="2" fill={C.paperBoard} stroke={k} strokeWidth="0.8" /><circle cx="12" cy="14.7" r="0.8" fill={k} /><circle cx="17" cy="14.7" r="0.8" fill={k} /><path d="M22 20q6-8 12 0" fill="none" stroke={C.gold} strokeWidth="1.6" strokeDasharray="2 1.5" /></svg>;
   if (game && game.kind === 'map') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="4" y="6" width="32" height="26" rx="3" fill="#DDEFF8" stroke={k} strokeWidth="1.3" /><path d="M9 12q6-4 10 1t-2 8q-8 2-8-9z" fill="#F1E8CF" stroke={k} strokeWidth="1" /><path d="M24 16q8-4 9 3t-6 7q-5-1-3-10z" fill={C.greenSoft} stroke={k} strokeWidth="1" /><path d="M27 21 L24.5 15 A3 3 0 1 1 29.5 15 Z" fill={C.gold} stroke={k} strokeWidth="0.8" /></svg>;

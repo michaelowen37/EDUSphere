@@ -37,7 +37,7 @@ window.__eduArt = [];
 window.__eduColoringArt = [];
 window.__eduMapArt = [];
 window.__eduAudio = [];
-window.__eduNews = {"stamp":"September 28, 2026 (every story, on the log and in the book)","date":"September 28, 2026","items":["A new check now walks every course the way the Story Log and the story book do: every story lists for a fresh student, moves to Read the first time it is opened, and pages into the book with each picture on the same page as the paragraph it shows. All 81 courses pass, with every story painted or not yet painted.","On the Story Log, Most recent now shows the last three stories a student opened, newest first. It had been showing the first three ever opened, which for a longtime reader was the stories they started with.","This What's new note is back. It had stopped appearing after the September 24 update, and on a phone it had been waiting for the first week tour, which only runs on a wide screen. It opens on any screen now, once per update."]};
+window.__eduNews = {"stamp":"September 29, 2026 (how a program is built)","date":"September 29, 2026","items":["Grade 9 has a new elective for grades 9 to 12, How a program is built: what is inside the machine and what the operating system does, counting in binary, the parts of every program (variables with types, integer division and the remainder, sequence, conditionals and loops, and testing at the edges), and working like a coder: debugging by method, reading a license, long passwords with a second step, and judging a page by its author. Each lesson has a story, and the course ends with a long story about Savanah and a city bus board with a bug at the edge.","Finishing the course unlocks Eight Switches, a new kind of game: eight switches worth 128 down to 1, and a number to make by turning the right ones on.","Two new Wonder questions for older students wait in the review screen."]};
 // Installable app: the worker keeps a copy of the page for offline use and asks the network first, so a fresh build always wins.
 if ('serviceWorker' in navigator && /^https?:/.test(location.protocol)) { navigator.serviceWorker.register('sw.js').catch(function () {}); }
 var process = { env: { NODE_ENV: 'production' } };
@@ -18126,6 +18126,37 @@ const COURSES = [
         modules: TECH7_MODULES(),
     },
     {
+        id: 'tech-k',
+        grade: 'K',
+        subject: 'Technology',
+        title: 'Tell, show, step and repeat',
+        audience: 'Kindergarten to grade 2',
+        readAloud: true, // the K to 2 band: questions are spoken and answers tapped (2026-09-28, pass FS)
+        elective: true,
+        keywords: ['computer', 'coding', 'robot', 'algorithm', 'elective'],
+        modules: TECHK_MODULES(),
+    },
+    {
+        id: 'tech-6',
+        grade: '6',
+        subject: 'Technology',
+        title: 'What a machine learns',
+        audience: 'Grades 6 to 8',
+        elective: true,
+        keywords: ['AI', 'artificial intelligence', 'machine learning', 'chatbot', 'elective'],
+        modules: TECH6_MODULES(),
+    },
+    {
+        id: 'tech-9',
+        grade: '9',
+        subject: 'Technology',
+        title: 'How a program is built',
+        audience: 'Grades 9 to 12',
+        elective: true,
+        keywords: ['computer science', 'programming', 'binary', 'coding', 'elective'],
+        modules: TECH9_MODULES(),
+    },
+    {
         id: 'civics-3',
         grade: '3',
         subject: 'History',
@@ -18258,6 +18289,7 @@ const GAMES = [
     { id: 'sort-size', kind: 'sort', title: 'Big and Small', by: 'size' },
     { id: 'catch-circles', kind: 'catch', title: 'Catch the Circles', rule: 'circles', young: true },
     { id: 'maze-small', kind: 'maze', title: 'Maze', cells: 6 },
+    { id: 'walk-tech-k', kind: 'walk', title: 'Walk the Robot', walk: 'walk', young: true, minGrade: 'K' }, // computer science K to 2 (pass FS): the child programs the robot
     { id: 'jigsaw-4', kind: 'jigsaw', title: 'Puzzle', side: 2 },
     { id: 'dots-boat', kind: 'dots', title: 'Boat', shape: 'boat' },
     { id: 'pairs-more', kind: 'pairs', title: 'More Pairs', pairs: 4 },
@@ -18351,6 +18383,8 @@ const GAMES = [
     { id: 'ptable-science-10', kind: 'ptable', title: 'The periodic table: find it', minGrade: '10', deck: 'main' },
     { id: 'debug-tech-3', kind: 'debug', title: 'Debug the robot: arrows', minGrade: '3', deck: 'arrows' },
     { id: 'debug-tech-5', kind: 'debug', title: 'Debug the robot: turns', minGrade: '5', deck: 'turns' },
+    { id: 'teach-tech-6', kind: 'teach', title: 'Teach the Robot', minGrade: '6', teach: 'fruit' },
+    { id: 'bits-tech-9', kind: 'bits', title: 'Eight Switches', minGrade: '9', bits: 8 }, // computer science 9 to 12 (pass FU): make the number with the switches   // the plain AI course (pass FT): the child is the pile of examples
     { id: 'mix-art-3', kind: 'mix', title: 'Color mixer: make new colors', minGrade: '3', deck: 'mix3' },
     { id: 'mix-art-4', kind: 'mix', title: 'Color mixer: the color wheel', minGrade: '4', deck: 'mix4' },
     { id: 'sprint-civics-3', kind: 'sprint', title: 'Quick fire: Communities and government', minGrade: '3', course: 'civics-3' },
@@ -18771,6 +18805,46 @@ const MIX_DECKS = {
 // left (3). Squares count from the top left, x across and y down. Every puzzle came from a search that kept only
 // programs where changing that one step, and no other single change, brings the robot to the star without leaving the
 // grid or bumping a rock; the rules test runs the same check.
+// Teach the Robot (2026-09-29, pass FT, the plain AI course): twelve fruits on a map, apples toward the top left and
+// bananas toward the bottom right, as [x, y, kind]. The robot starts knowing the two `given` examples and guesses every
+// other fruit from its nearest known example; the child teaches it by tapping a wrong guess. Made by a small search in
+// pass FT so every board starts with two or more wrong guesses and is right after five lessons or fewer.
+const TEACH_DECKS = {
+    fruit: [
+        { given: [0, 6], items: [[19, 40, 'apple'], [43, 29, 'apple'], [38, 13, 'apple'], [13, 21, 'apple'], [51, 46, 'apple'], [37, 56, 'apple'], [76, 53, 'banana'], [89, 44, 'banana'], [60, 77, 'banana'], [46, 63, 'banana'], [40, 73, 'banana'], [78, 68, 'banana']] },
+        { given: [0, 6], items: [[56, 26, 'apple'], [46, 41, 'apple'], [54, 59, 'apple'], [35, 45, 'apple'], [13, 46, 'apple'], [44, 62, 'apple'], [81, 53, 'banana'], [58, 73, 'banana'], [41, 78, 'banana'], [45, 51, 'banana'], [58, 83, 'banana'], [81, 83, 'banana']] },
+        { given: [0, 6], items: [[10, 18, 'apple'], [15, 29, 'apple'], [11, 55, 'apple'], [42, 18, 'apple'], [29, 16, 'apple'], [54, 62, 'apple'], [42, 43, 'banana'], [56, 52, 'banana'], [81, 46, 'banana'], [39, 87, 'banana'], [65, 46, 'banana'], [65, 89, 'banana']] },
+        { given: [0, 6], items: [[55, 46, 'apple'], [24, 29, 'apple'], [19, 50, 'apple'], [38, 51, 'apple'], [52, 61, 'apple'], [28, 12, 'apple'], [51, 74, 'banana'], [88, 61, 'banana'], [87, 89, 'banana'], [70, 85, 'banana'], [85, 79, 'banana'], [77, 63, 'banana']] },
+    ],
+};
+// The robot's guesses: each unknown fruit takes the kind of its nearest known example (the given ones plus what the child
+// taught). A known fruit is its own kind. The rules test walks every board with this same function.
+function teachGuesses(board, known) {
+    return board.items.map((it, i) => { if (known.includes(i))
+        return it[2]; let best = -1; let d = Infinity; for (const j of known) {
+        const dj = (board.items[j][0] - it[0]) ** 2 + (board.items[j][1] - it[1]) ** 2;
+        if (dj < d) {
+            d = dj;
+            best = j;
+        }
+    } return best < 0 ? null : board.items[best][2]; });
+}
+function lcgRandom(seed) { let x = seed >>> 0; return () => { x = (x * 1664525 + 1013904223) >>> 0; return x / 4294967296; }; }
+// Eight Switches (2026-09-29, pass FU, computer science 9 to 12): the six numbers of a round, 0 to 255, from the round
+// number, no two alike and never a plain power of two twice in a row, so the switches have to be added, not just found.
+function bitsTargets(round, count = 6) {
+    const rnd = lcgRandom(round * 7919 + 17);
+    const out = [];
+    while (out.length < count) {
+        const n = Math.floor(rnd() * 256);
+        if (out.includes(n))
+            continue;
+        if (out.length && (n & (n - 1)) === 0 && (out[out.length - 1] & (out[out.length - 1] - 1)) === 0)
+            continue;
+        out.push(n);
+    }
+    return out;
+}
 const ROBOT_DECKS = {
     arrows: [
         { start: [1, 1], goal: [0, 4], rocks: [[2, 1], [0, 2], [2, 2]], program: 'DDLU' },
@@ -18781,6 +18855,18 @@ const ROBOT_DECKS = {
         { start: [4, 4], goal: [3, 1], rocks: [[3, 0], [3, 4], [2, 2]], program: 'ULRU' },
         { start: [0, 1], goal: [3, 0], rocks: [[1, 2], [0, 2], [3, 1]], program: 'RRUD' },
         { start: [3, 1], goal: [2, 4], rocks: [[1, 4], [3, 3]], program: 'DRDD' },
+    ],
+    // Walk the Robot (2026-09-28, pass FS, computer science K to 2): no program is given; the child writes it. Every walk
+    // has a path of five steps or fewer (the rules test finds one), and the star is never behind a wall of rocks.
+    walk: [
+        { start: [0, 0], goal: [2, 0], rocks: [[1, 1]] },
+        { start: [2, 2], goal: [2, 4], rocks: [[1, 3], [3, 3]] },
+        { start: [0, 4], goal: [2, 2], rocks: [[1, 3]] },
+        { start: [4, 0], goal: [1, 1], rocks: [[3, 0]] },
+        { start: [1, 2], goal: [3, 2], rocks: [[2, 2]] },
+        { start: [0, 2], goal: [0, 0], rocks: [[0, 1]] },
+        { start: [4, 4], goal: [2, 3], rocks: [[3, 4], [2, 4]] },
+        { start: [2, 0], goal: [2, 3], rocks: [[2, 1], [1, 2]] },
     ],
     turns: [
         { start: [2, 3, 0], goal: [4, 1], rocks: [[1, 2], [2, 4], [4, 0]], program: 'FRFFLL' },
@@ -25481,6 +25567,230 @@ function HEALTH4_MODULES() {
         },
     ];
 }
+// Computer science for the K to 2 band (2026-09-28, pass FS): four spoken lessons, each answer said in its lesson first.
+// The Texas codes are §126.1 (Kindergarten, adopted 2022, in force from 2024-2025), read from the TEA breakouts document;
+// the national codes are CSTA level 1A (grades K to 2).
+function TECHK_MODULES() {
+    return [
+        {
+            id: 'tell-and-show',
+            order: 1,
+            title: 'Tell and show',
+            tagline: 'Inputs tell, outputs show',
+            requires: [],
+            lesson: {
+                paragraphs: ['A computer cannot see you or hear you on its own. You tell it things with a keyboard, a mouse or a touch screen. Those parts are called inputs.\nIt shows you things on a screen and plays sounds with a speaker. Those parts are called outputs.', 'You tell, and it shows. Press a key, and a letter appears on the screen. Tap a picture on a touch screen, and a song plays from the speaker. A touch screen is an input, because you tell with it. A speaker is an output, because it shows you, with sound.', 'A computer only does what it is told. The telling parts are inputs. The showing parts are outputs.'],
+                keyIdea: 'Inputs tell a computer. Outputs show you.',
+                example: { kind: 'flow', steps: ['tap the screen', 'the computer works', 'a song plays'], caption: 'You tap; the computer follows its steps; the speaker plays the song.',
+                    another: ['A computer is like a helper who cannot see or hear. Its inputs are its ears: the keyboard, the mouse, the touch screen. Its outputs are its voice and its hands: the screen and the speaker.',
+                        { text: 'A toaster works the same way. The lever you push down is the input. The toast that pops up is the output.', visual: { kind: 'flow', steps: ['push the lever', 'the toaster heats', 'toast pops up'] } },
+                        'Ask about any part: do I use it to tell, or does it show me? Tell is an input. Show is an output.'] },
+            },
+            sources: ['Aligned with TEKS Technology Applications 126.1(b)(8)(B) (identify basic computer hardware, including a variety of input and output devices, and software using accurate terminology) and CSTA K-12 CS Standards 1A-CS-02.'],
+            generators: ['tk-tell', 'tk-tell', 'tk-tell', 'tk-tell', 'tk-tell'],
+        },
+        {
+            id: 'first-next-then-last',
+            order: 2,
+            title: 'First, next, then, last',
+            tagline: 'Steps in order',
+            requires: ['tell-and-show'],
+            lesson: {
+                paragraphs: ['A list of steps in order is called an algorithm. That is a big word for a small idea: first, next, then, last.\nTo make a jam sandwich: first get the bread, next spread the jam, then close the sandwich, last take a bite.', 'Mix up the order and it goes wrong. Bite first, and there is no sandwich yet. Spread the jam last, and it lands on top of your bite.', 'A big job breaks into small steps. Getting dressed is one big job: socks first, then shoes. Shoes first, and the socks will not go on.', 'First, next, then, last. A computer follows its steps the same way, one at a time, in order, and it never skips one.'],
+                keyIdea: 'Steps in order, first, next, then, last: that is an algorithm.',
+                example: { kind: 'flow', steps: ['first: bread', 'next: jam', 'then: close it', 'last: bite'], caption: 'Four steps in order make a sandwich. The same steps out of order make a mess.',
+                    another: ['An algorithm is a recipe. A recipe tells you what to do and in what order, and a cook who skips a step gets a different dinner.',
+                        { text: 'Getting dressed is an algorithm too: socks, then shoes. Try it the other way and the shoes are already on when the socks arrive.', visual: { kind: 'flow', steps: ['socks', 'shoes', 'coat', 'out the door'] } },
+                        'When a job feels big, break it into small steps and do the first one. A sandwich is four small steps.'] },
+            },
+            sources: ['Aligned with TEKS Technology Applications 126.1(b)(1)(A) (identify a problem or task and break it down into smaller pieces) and 126.1(b)(1)(C) (identify algorithms using a sequential process such as first, next, then and last), and CSTA K-12 CS Standards 1A-AP-08 and 1A-AP-11.'],
+            generators: ['tk-order', 'tk-order', 'tk-order', 'tk-order', 'tk-order'],
+        },
+        {
+            id: 'do-it-again',
+            order: 3,
+            title: 'Do it again',
+            tagline: 'Patterns and loops',
+            requires: ['first-next-then-last'],
+            lesson: {
+                paragraphs: ['A pattern is something that repeats: red, blue, red, blue. When you know the pattern, you can guess what comes next. After blue, red comes again.', 'A computer can repeat steps too. Instead of saying clap, clap, clap, clap, you can say clap four times. Saying a step again and again is called a loop.\nA loop needs two things: what to do, and how many times. Jump three times. Blink two times.', 'You can write steps for a toy robot the same way. Forward, forward, forward, turn is four steps. Forward three times, then turn, says the same thing in two.', 'A pattern helps you guess what comes next. A loop lets a few words do a lot of work.'],
+                keyIdea: 'A pattern repeats. A loop says do it again, and how many times.',
+                example: { kind: 'flow', steps: ['clap four times', 'jump three times', 'blink two times'], caption: 'Three loops. Each one says what to do and how many times.',
+                    another: ['Beads on a string: red, blue, red, blue. Cover the string with your hand and you can still say what the next bead is. That is what a pattern gives you.',
+                        { text: 'A song has a chorus that comes back after every verse. The singer does not write it out three times; the page says repeat. That is a loop.', visual: { kind: 'flow', steps: ['verse', 'chorus', 'verse', 'chorus'] } },
+                        'Forward, forward, forward, turn is four steps. Forward three times, then turn, is two. Same walk, fewer words.'] },
+            },
+            sources: ['Aligned with TEKS Technology Applications 126.1(b)(1)(B) (identify simple patterns and make predictions based on the patterns) and 126.1(b)(2)(A) (create a sequence of code with or without technology), and CSTA K-12 CS Standards 1A-AP-10.'],
+            generators: ['tk-again', 'tk-again', 'tk-again', 'tk-again', 'tk-again'],
+        },
+        {
+            id: 'safe-online-k',
+            order: 4,
+            title: 'Safe and kind online',
+            tagline: 'Secret words and private things',
+            requires: ['do-it-again'],
+            lesson: {
+                paragraphs: ['A password is a secret word that opens your account. Keep it secret. Only a parent or a teacher may know it. When you are done, log off, so the next person cannot get in.', 'Some things are safe to share online: your favorite color, a game you like, a pet. Some things are private and stay private: your full name, your address, your school and your birthday.', 'Be kind online, just like at the park, because a real person is on the other side. If something online makes you feel bad, stop and tell a grown-up.', 'Secret password, private things private, kind words, and tell a grown-up.'],
+                keyIdea: 'Keep your password secret, keep private things private, be kind, and tell a grown-up.',
+                example: { kind: 'flow', steps: ['log in', 'play', 'log off'], caption: 'Log in with your secret word, and log off when you are done.',
+                    another: ['A password is like the key to your house. You do not hand your key to a stranger, and you lock the door when you leave. Logging off is locking the door.',
+                        { text: 'Safe to share: a favorite color, a favorite game, a pet. Private: your full name, your address, your school, your birthday.', visual: { kind: 'flow', steps: ['color: safe', 'game: safe', 'address: private'] } },
+                        'Kind online is the same as kind at the park: if you would not say it to a face, do not type it.'] },
+            },
+            sources: ['Aligned with TEKS Technology Applications 126.1(b)(7)(A) (identify ways to keep a user account safe, including not sharing login information and logging off), 126.1(b)(7)(B) (identify and discuss what information is safe to share online and what is unsafe) and 126.1(b)(5)(A) (identify and demonstrate responsible behavior within a digital environment), and CSTA K-12 CS Standards 1A-IC-18, 1A-NI-04 and 1A-IC-17.'],
+            generators: ['tk-safe', 'tk-safe', 'tk-safe', 'tk-safe', 'tk-safe'],
+        },
+    ];
+}
+// The plain AI course (2026-09-29, pass FT), for the 6 to 8 band at grade 6: what a machine that learns really does, in
+// plain words. Texas codes from TEA's breakouts for §126.17 (grade 6, adopted 2022); national codes CSTA level 2.
+function TECH6_MODULES() {
+    return [
+        {
+            id: 'learning-from-examples',
+            order: 1,
+            title: 'A machine that learns',
+            tagline: 'Patterns from examples, not rules from a person',
+            requires: [],
+            lesson: {
+                paragraphs: ['Most programs follow rules a person wrote: if the ball touches the paddle, bounce. Artificial intelligence, or AI, is different. Nobody writes the rule for telling a cat from a dog. Instead the program is shown thousands of examples, each labeled cat or dog, and it finds the patterns in them on its own. That is called learning from examples, and the result is called a model.', 'A model is a generalization. It keeps what the examples have in common, pointed ears and whiskers, and drops what is specific to one picture, like the sofa the cat sat on. When a new picture arrives, the model compares it with the patterns it kept and makes a guess: cat, 92 out of 100.', 'The same trick writes text. A language model has read an enormous pile of writing and learned which word tends to come next. Ask it a question and it builds an answer one likely word at a time. It is not looking the answer up. It is guessing, from patterns, what an answer usually looks like.'],
+                keyIdea: 'AI is a program that finds patterns in many examples and guesses about new ones. The guess is a generalization, not a rule a person wrote.',
+                example: { kind: 'flow', steps: ['thousands of labeled examples', 'find the patterns', 'a model', 'a guess about a new one'], caption: 'Examples in, patterns kept, a guess out. No rule was written by hand.',
+                    another: ['Think of how you learned to spot a dog. Nobody gave you a rule. You saw hundreds of dogs and your mind kept what they shared. A model does the same thing with numbers instead of a mind, and much less of everything else.',
+                        { text: 'A model is like a sieve that keeps the common shape and lets the details fall through. Whiskers stay; the sofa falls.', visual: { kind: 'flow', steps: ['many pictures', 'keep what is shared', 'drop what is particular', 'a pattern'] } },
+                        'Autocomplete on a phone is a small language model: it has seen which word usually follows the one you typed. A chatbot is the same idea grown enormous.'] },
+            },
+            sources: ['Aligned with TEKS Technology Applications 126.17(b)(1)(B) (analyze the patterns and sequences found in visual representations of data) and 126.17(b)(1)(C) (define abstraction and distinguish between generalized information and specific information), and CSTA K-12 CS Standards 2-DA-09.'],
+            generators: ['t6-learn', 't6-learn', 't6-learn', 't6-learn', 't6-learn'],
+        },
+        {
+            id: 'wrong-and-sure',
+            order: 2,
+            title: 'Wrong and sure',
+            tagline: 'A guess can be wrong and still sound certain',
+            requires: ['learning-from-examples'],
+            lesson: {
+                paragraphs: ['A model guesses, so it can be wrong. A cat model shown a fox may say cat, 88 out of 100. The number is how strongly the patterns matched, not how true the answer is. A model has no way to feel unsure the way you do; it only reports how well the new thing fits the examples it saw.', 'Language models make the same mistake with facts. Because they build answers from what an answer usually looks like, they can produce a date, a name or a quote that looks right and never happened. People call this a hallucination. It sounds as sure as a true answer, because sounding sure is a pattern too.', 'So a model is a fast first guess, not a final word. Check anything that matters against a second source: a book, a teacher, the original website. The most useful question to ask a machine is, how do you know?, and the answer has to come from somewhere you can look.'],
+                keyIdea: 'A model can be wrong and sound sure. Its number is fit, not truth. Check what matters against a second source.',
+                example: { kind: 'flow', steps: ['the machine answers', 'ask: how do you know?', 'check a second source', 'now decide'], caption: 'A guess is a start. A second source turns it into something you can use.',
+                    another: ['A weather forecast that says 90 percent rain is not promising rain; it is saying that days like this one were mostly rainy. A model\'s number is the same kind of statement, and it can be 90 percent wrong about today.',
+                        { text: 'A confident tone is the easiest thing to learn from a pile of writing, because almost everything in it was written with confidence. So the tone tells you nothing about the facts.', visual: { kind: 'flow', steps: ['sounds sure', 'is it true?', 'look it up'] } },
+                        'The habit that protects you is small: for anything you will repeat, act on or hand in, find where it came from first.'] },
+            },
+            sources: ['Aligned with TEKS Technology Applications 126.17(b)(6)(A) (use digital tools to transform data in order to identify and discuss trends and make inferences) and 126.17(b)(9)(D) (describe how information can be exaggerated or misrepresented online), and CSTA K-12 CS Standards 2-DA-08.'],
+            generators: ['t6-sure', 't6-sure', 't6-sure', 't6-sure', 't6-sure'],
+        },
+        {
+            id: 'fair-examples',
+            order: 3,
+            title: 'Fair examples',
+            tagline: 'The examples carry the fairness of whoever collected them',
+            requires: ['wrong-and-sure'],
+            lesson: {
+                paragraphs: ['A model knows only what its examples showed it. Train a dog model on a thousand pictures, all of them golden retrievers, and it will do badly on a poodle. Nothing in the program is against poodles. They were simply missing from the examples, so the patterns it kept do not cover them.', 'That is why bias creeps in. If the examples were collected by people who mostly photographed one kind of face, one kind of neighborhood or one kind of handwriting, the model works best for that kind and worst for everyone else, and it does so with the same confident number. The unfairness was in the pile of examples before the model ever ran.', 'The fix is to look at who is missing. Good teams count their examples by group, add what is thin, and test the model on every group before anyone depends on it. A model that is right on average can still be wrong for the people it saw least.'],
+                keyIdea: 'A model is only as fair as its examples. Look at who is missing, and test on every group.',
+                example: { kind: 'bar', parts: 5, shaded: 4, caption: 'Four of five examples from one group: the model will serve that group and stumble on the fifth.',
+                    another: ['A class survey taken only in the front row will say the class loves the front row. The survey is not lying; it just never asked the back.',
+                        { text: 'A speech tool trained on a few accents mishears the rest, and it will keep doing so until voices like theirs are in the pile. The fix is more examples, not a faster machine.', visual: { kind: 'bar', parts: 6, shaded: 1 } },
+                        'Being right on average hides who is wronged. Always ask: right for whom, and wrong for whom?'] },
+            },
+            sources: ['Aligned with TEKS Technology Applications 126.17(b)(9)(A) (practice safe, ethical, and positive online behaviors) and CSTA K-12 CS Standards 2-IC-21 (discuss issues of bias and accessibility in the design of existing technologies).'],
+            generators: ['t6-fair', 't6-fair', 't6-fair', 't6-fair', 't6-fair'],
+        },
+        {
+            id: 'staying-in-charge',
+            order: 4,
+            title: 'Staying in charge',
+            tagline: 'What you type in, whose work came out, and who decides',
+            requires: ['fair-examples'],
+            lesson: {
+                paragraphs: ['Whatever you type into an AI tool leaves your device and may be kept. So treat the box like a postcard: no passwords, no address, no private things about you or anyone else. What you send becomes part of your digital footprint, the trail of information about you that stays online.', 'The pile of examples came from somewhere. A picture model learned from millions of pictures people made, and a language model from millions of pages people wrote. Their work is intellectual property; copyright is the law that says who may copy it. When a tool hands you words or a picture, someone\'s work is inside, so say where it came from and never pass it off as yours.', 'Use the tool to learn, not to skip learning. Let it explain, quiz you, suggest a first draft, and then do the thinking yourself, because a skill you never practiced is a skill you do not have. Tools change every year; the habit that lasts is asking what it is doing, checking what it says, and deciding for yourself.'],
+                keyIdea: 'Type nothing private, credit the work inside, and use the tool to learn rather than to skip learning. You decide.',
+                example: { kind: 'flow', steps: ['nothing private goes in', 'the answer is a draft', 'check it', 'say where it came from'], caption: 'Four habits that outlast any tool.',
+                    another: ['A calculator did not end arithmetic class, because you still have to know which numbers to put in and whether the answer makes sense. The same is true here, with words.',
+                        { text: 'Ask the tool to quiz you, then close it and answer from your own head. The tool is a coach, and a coach does not run the race for you.', visual: { kind: 'flow', steps: ['ask for a quiz', 'close the tool', 'answer yourself', 'check'] } },
+                        'Every tool you meet after this one will be new. The questions stay the same: what is it doing, is it right, and who is deciding?'] },
+            },
+            sources: ['Aligned with TEKS Technology Applications 126.17(b)(8)(A) (identify the impact of a digital footprint), 126.17(b)(9)(B) (discuss and define intellectual property and associated terms, including copyright law) and 126.17(b)(4)(C) (transfer current knowledge to the learning of newly encountered technologies), and CSTA K-12 CS Standards 2-IC-23 and 2-IC-20.'],
+            generators: ['t6-charge', 't6-charge', 't6-charge', 't6-charge', 't6-charge'],
+        },
+    ];
+}
+// Computer science for the 9 to 12 band (2026-09-29, pass FU), at grade 9: the parts of a machine, binary, the parts of a
+// program, and the working habits. Texas codes from §127.788, Fundamentals of Computer Science (the high school technology
+// applications courses live in the career and technical education chapter since 2020); national codes CSTA level 3A.
+function TECH9_MODULES() {
+    return [
+        {
+            id: 'inside-the-machine',
+            order: 1,
+            title: 'Inside the machine',
+            tagline: 'CPU, memory, storage and the two kinds of software',
+            requires: [],
+            lesson: {
+                paragraphs: ['Every computer, from a phone to a server, has the same four kinds of part. The central processing unit, or CPU, does the work: it fetches one instruction at a time and carries it out, billions of times a second. Memory, called RAM, holds what the CPU is working on right now and forgets it when the power is off. Storage, a solid-state drive or a hard disk, keeps files after the power is off. Peripherals are everything at the edges: the keyboard, the mouse, the screen, the printer, the camera.', 'The parts fall into a cycle: input comes in from a peripheral, the CPU processes it, output goes out to a peripheral, and storage keeps what should last. Primary storage is memory, fast and temporary; secondary storage is the drive, slower and lasting.', 'Two kinds of software run on those parts. The operating system, Windows, macOS, Linux, Android or iOS, is the program that manages the machine: it starts the hardware, shares the CPU and memory among programs, and keeps the files. An application is a program you run to do a task: a browser, a game, a word processor. An application asks the operating system for the screen, the network and the files; it never touches the hardware directly.'],
+                keyIdea: 'The CPU processes, memory holds the moment, storage keeps the files, peripherals bring input and output. The operating system manages the machine; an application does a task on top of it.',
+                example: { kind: 'flow', steps: ['input: keyboard', 'the CPU processes', 'output: screen', 'storage keeps it'], caption: 'The cycle every program lives in: input, processing, output, and storage for what should last.',
+                    another: ['A kitchen is the same shape. The cook is the CPU, the counter is memory (everything on it is in use, and it is cleared at night), the pantry is storage, and the door and the serving window are the peripherals.',
+                        { text: 'The operating system is the building manager and the applications are the tenants. A tenant asks for water and power; nobody runs their own pipe to the street.', visual: { kind: 'flow', steps: ['application asks', 'operating system grants', 'hardware does it'] } },
+                        'Memory is fast because it is electric switches; a drive is slower because it has to keep its bits without power. That is the whole reason both exist.'] },
+            },
+            sources: ['Aligned with TEKS Fundamentals of Computer Science 127.788(d)(6)(A) (identify and explain the function of basic computer components, including a CPU, storage and peripheral devices), 127.788(d)(6)(D) (describe the differences between an application and an operating system) and 127.788(d)(6)(E) (use input, processing, output and primary and secondary storage devices), and CSTA K-12 CS Standards 3A-CS-02.'],
+            generators: ['t9-machine', 't9-machine', 't9-machine', 't9-machine', 't9-machine'],
+        },
+        {
+            id: 'counting-in-binary',
+            order: 2,
+            title: 'Counting in binary',
+            tagline: 'Eight switches, 256 numbers',
+            requires: ['inside-the-machine'],
+            lesson: {
+                paragraphs: ['A computer holds every number as a row of switches, on or off, 1 or 0. Each switch is a bit, and its place is worth twice the place to its right: 1, 2, 4, 8, 16, 32, 64, 128. Eight bits are a byte, and a byte can hold any number from 0 to 255: all switches off is 0, all on is 128 + 64 + 32 + 16 + 8 + 4 + 2 + 1 = 255.', 'To read a binary number, add the places that are on. 1011 is 8 + 0 + 2 + 1 = 11. To write a decimal number in binary, take the biggest place that fits and subtract, then the next: 13 is 8 (5 left), then 4 (1 left), then 1, so 13 is 1101.', 'Counting in binary is counting with only two digits: 0, 1, 10, 11, 100, 101, 110, 111, 1000. Each time the right-hand bit would become 2, it turns back to 0 and carries 1 to the left, exactly as 9 carries to 10 in decimal. Text, pictures and sound are all numbers too: the letter A is 65, a pixel is three numbers for red, green and blue.'],
+                keyIdea: 'Places worth 1, 2, 4, 8, 16, 32, 64, 128; add the ones that are on. A byte is eight bits, 0 to 255.',
+                example: { kind: 'flow', steps: ['1 0 1 1', '8 + 0 + 2 + 1', '11'], caption: 'Read the places that are on, from the left, and add them.',
+                    another: ['Binary is an odometer with two digits on each wheel. When a wheel passes 1 it rolls back to 0 and turns the next wheel, exactly as a car odometer rolls 9 to 0 and turns the wheel to its left.',
+                        { text: 'To write 22 in binary, ask each place from the largest: does 16 fit? Yes, 6 left. 8? No. 4? Yes, 2 left. 2? Yes, 0 left. 1? No. So 22 is 10110.', visual: { kind: 'flow', steps: ['16: yes', '8: no', '4: yes', '2: yes', '1: no'] } },
+                        'With n bits you can count to 2 to the n minus 1: four bits reach 15, eight reach 255, sixteen reach 65,535. Every extra bit doubles the range.'] },
+            },
+            sources: ['Aligned with TEKS Fundamentals of Computer Science 127.788(d)(4)(B) (communicate an understanding of binary representation of data, perform conversions between decimal and binary number systems, and count in binary) and CSTA K-12 CS Standards 3A-DA-09.'],
+            generators: ['t9-binary', 't9-binary', 't9-binary', 't9-binary', 't9-binary'],
+        },
+        {
+            id: 'variables-and-decisions',
+            order: 3,
+            title: 'Variables, decisions and loops',
+            tagline: 'The parts of every program',
+            requires: ['counting-in-binary'],
+            lesson: {
+                paragraphs: ['A variable is a named box that holds one value, and its data type says what kind: an integer like 12, a real number like 2.5, a string of text like "Mia", or a boolean, true or false. Choosing the right type matters: a score is an integer, a price is a real number, a name is a string, and a flag like game over is a boolean.', 'Programs do arithmetic with operators: + adds, - subtracts, * multiplies, / divides with a real result, so 7 / 2 is 3.5. Integer division keeps only the whole part, so 7 divided by 2 as integers is 3, and modulus keeps only the remainder, 7 % 2 is 1. Modulus is how a program tells odd from even: a number is even when number % 2 is 0.', 'Three structures build every program. Sequence: the statements run in order, top to bottom. A conditional: if the ball touches the paddle, then bounce, else lose a life. Iteration, a loop: repeat while lives are above zero. A random number picks where the next star appears, and testing means running the program with inputs whose right answers you already know, the edges included, to see whether it does what you intended.'],
+                keyIdea: 'Variables with types hold values, operators compute, and sequence, conditionals and loops decide the order. Test with inputs whose answers you know.',
+                example: { kind: 'flow', steps: ['score = 0', 'if hit: score = score + 1', 'while lives > 0: play', 'test: does it end at 0?'], caption: 'Sequence, a conditional, a loop, and a test at the edge.',
+                    another: ['A variable is a labeled jar on a shelf. The label never changes; what is inside does. The type is the shape of the jar: a jar for whole numbers cannot hold half a cookie.',
+                        { text: 'Modulus is the clock: 15 hours after 10 is 1, because (10 + 15) % 12 is 1. Anything that wraps around is a modulus.', visual: { kind: 'flow', steps: ['10 + 15 = 25', '25 % 12', '1 o\'clock'] } },
+                        'The best tests are the edges: zero lives, an empty name, the highest score a byte can hold. Programs break at the edges, so that is where you look first.'] },
+            },
+            sources: ['Aligned with TEKS Fundamentals of Computer Science 127.788(d)(4)(E) (identify and use the appropriate data type), 127.788(d)(4)(G) (use arithmetic operators, including integer division and modulus division), 127.788(d)(4)(I) (use conditional statements), 127.788(d)(4)(J) (use iteration) and 127.788(d)(4)(L) (test program solutions by investigating intended outcomes), and CSTA K-12 CS Standards 3A-AP-13 and 3A-AP-15.'],
+            generators: ['t9-program', 't9-program', 't9-program', 't9-program', 't9-program'],
+        },
+        {
+            id: 'working-like-a-programmer',
+            order: 4,
+            title: 'Working like a coder',
+            tagline: 'Debugging, licenses, passwords and what to believe',
+            requires: ['variables-and-decisions'],
+            lesson: {
+                paragraphs: ['Programs fail, and the craft is in what you do next. Debugging is finding the step where the program stops matching your intention: read the error message, print the variables at the suspect line, shrink the input until the bug shows, and look up the reference for the function you are using. A coder who reads the documentation before guessing fixes more bugs before lunch.', 'Code and pictures belong to whoever made them. Copyright means you need permission to copy, and citing the source is how you show where borrowed work came from. Some work is shared on purpose: open source code comes with a license that lets you use and change it, freeware is free to use but not to change, and public domain work belongs to everyone. Read the license before you use the library.', 'A strong password is long, twelve characters or more, unusual, and used for one account only; a password manager keeps them, and a second step, a code on your phone, protects the account even if the password leaks. Virus detection and software updates close the holes attackers use. And online, a page that loads fast, looks polished and says exactly what you hoped is not more reliable for it: check who wrote it, when, and what they gain.'],
+                keyIdea: 'Debug by reading, printing, shrinking and looking up. Respect copyright and read the license. Long unique passwords, updates, and a second step. Judge a page by its author, not its polish.',
+                example: { kind: 'flow', steps: ['read the error', 'print the variables', 'shrink the input', 'look it up'], caption: 'Four moves that find most bugs, in that order.',
+                    another: ['A bug is a place where the program and your intention disagree. The program is never wrong about what it does; it is only wrong about what you meant. Debugging is finding where the two parted.',
+                        { text: 'Licenses are the rules on the box. Open source: use it, change it, share it under the same rules. Freeware: use it, do not change it. Public domain: no rules at all.', visual: { kind: 'flow', steps: ['open source', 'freeware', 'public domain'] } },
+                        'Twelve random characters take longer to guess than the universe has existed; a word and a birthday take a lunch break. Length beats cleverness.'] },
+            },
+            sources: ['Aligned with TEKS Fundamentals of Computer Science 127.788(d)(3)(B) (debug and solve problems using reference materials and effective strategies), 127.788(d)(5)(A) (discuss privacy and copyright laws and cite sources), 127.788(d)(5)(B) (compare non-copyright asset sharing options such as open source, freeware and public domain), 127.788(d)(5)(D) (explain the value of strong passwords and virus detection) and 127.788(d)(5)(F) (analyze how electronic media can affect reliability of information), and CSTA K-12 CS Standards 3A-AP-20, 3A-NI-05 and 3A-IC-29.'],
+            generators: ['t9-craft', 't9-craft', 't9-craft', 't9-craft', 't9-craft'],
+        },
+    ];
+}
 function TECH3_MODULES() {
     return [
         {
@@ -25497,7 +25807,7 @@ function TECH3_MODULES() {
                         { text: 'Think of a vending machine: the buttons are inputs, the snack is the output, and the machine\'s rules in between are its program.', visual: { kind: 'flow', steps: ['press B4', 'the rules run', 'the snack drops'] } },
                         'Your body works the same way: eyes and ears are inputs, your voice and hands are outputs, and your brain follows the steps in between.'] },
             },
-            sources: ['Aligned with TEKS Technology Applications 126.7(b)(1)(A) (identify and use components of a computer system) and CSTA K-12 CS Standards 1B-CS-01.'],
+            sources: ['Aligned with TEKS Technology Applications 126.8(b)(1)(A) (identify and use components of a computer system) and CSTA K-12 CS Standards 1B-CS-01.'],
             generators: ['t3-parts', 't3-parts', 't3-parts', 't3-parts', 't3-parts'],
         },
         {
@@ -25514,7 +25824,7 @@ function TECH3_MODULES() {
                         { text: 'A recipe card is an algorithm on paper: ingredients first, then numbered steps, and you never do step 4 before step 3.', visual: { kind: 'flow', steps: ['ingredients', 'step 1', 'step 2', 'step 3'] } },
                         'Directions to a friend\'s house are an algorithm too: left, then right, then the blue door. Say them in the wrong order and you end up somewhere else.'] },
             },
-            sources: ['Aligned with TEKS Technology Applications 126.7(b)(4)(A) (create and follow step-by-step directions) and CSTA 1B-AP-08.'],
+            sources: ['Aligned with TEKS Technology Applications 126.8(b)(4)(A) (create and follow step-by-step directions) and CSTA 1B-AP-08.'],
             generators: ['t3-steps', 't3-steps', 't3-steps', 't3-steps', 't3-steps'],
         },
         {
@@ -25531,7 +25841,7 @@ function TECH3_MODULES() {
                         { text: 'Stairs are a loop of the same step. Nobody describes a staircase step by step; they say twelve steps, and you know what to do.', visual: { kind: 'loop', steps: ['step up', 'step up', 'step up'] } },
                         'Ask what changes and what stays the same. What stays the same goes inside the loop; what changes is how many times.'] },
             },
-            sources: ['Aligned with TEKS Technology Applications 126.7(b)(4)(B) (use loops in an algorithm) and CSTA 1B-AP-10.'],
+            sources: ['Aligned with TEKS Technology Applications 126.8(b)(4)(B) (use loops in an algorithm) and CSTA 1B-AP-10.'],
             generators: ['t3-loops', 't3-loops', 't3-loops', 't3-loops', 't3-loops'],
         },
     ];
@@ -25552,7 +25862,7 @@ function TECH5_MODULES() {
                         { text: 'A scoreboard at a game is a set of variables: home, away, quarter, time. Each has a name and a value that changes as the game goes on.', visual: { kind: 'stack', levels: ['home: 21', 'away: 14', 'quarter: 3'] } },
                         'When a program says score = score + 5, it means: take what is in the score box, add 5, and put the answer back in the same box.'] },
             },
-            sources: ['Aligned with TEKS Technology Applications 126.9(b)(4)(C) (use variables) and CSTA 1B-AP-09.'],
+            sources: ['Aligned with TEKS Technology Applications 126.10(b)(4)(C) (use variables) and CSTA 1B-AP-09.'],
             generators: ['t5-variables', 't5-variables', 't5-variables', 't5-variables', 't5-variables'],
         },
         {
@@ -25569,7 +25879,7 @@ function TECH5_MODULES() {
                         { text: 'A thermostat is an if-then that never sleeps: IF the room is colder than 68 THEN heat on, ELSE heat off.', visual: { kind: 'twoway', a: 'colder than 68', b: 'warm enough', top: 'heat on', bottom: 'heat off' } },
                         'The condition is a yes-or-no question. If you cannot answer it yes or no, it is not a condition yet.'] },
             },
-            sources: ['Aligned with TEKS Technology Applications 126.9(b)(4)(B) (use conditional statements) and CSTA 1B-AP-10.'],
+            sources: ['Aligned with TEKS Technology Applications 126.10(b)(4)(B) (use conditional statements) and CSTA 1B-AP-10.'],
             generators: ['t5-if-then', 't5-if-then', 't5-if-then', 't5-if-then', 't5-if-then'],
         },
         {
@@ -25586,7 +25896,7 @@ function TECH5_MODULES() {
                         'Say what should happen, then what did happen. The gap between the two sentences is where to look.',
                         { text: 'Detectives and coders work the same way: the evidence is the output, the suspects are the steps, and you question them one at a time.', visual: { kind: 'flow', steps: ['read a step', 'check it', 'next step', 'found it'] } }] },
             },
-            sources: ['Aligned with TEKS Technology Applications 126.9(b)(4)(E) (debug and revise an algorithm) and CSTA 1B-AP-15.'],
+            sources: ['Aligned with TEKS Technology Applications 126.10(b)(4)(E) (debug and revise an algorithm) and CSTA 1B-AP-15.'],
             generators: ['t5-debug', 't5-debug', 't5-debug', 't5-debug', 't5-debug'],
         },
     ];
@@ -25607,7 +25917,7 @@ function TECH7_MODULES() {
                         'Our usual numbers use ten symbols and places worth 1, 10, 100. Binary uses two symbols and places worth 1, 2, 4, 8. Same idea, smaller alphabet.',
                         { text: 'A hand can count to 31 in binary: each finger is a place, thumb 1, up to 16 on the pinky. Five fingers, thirty-two patterns.', visual: { kind: 'stack', levels: ['16', '8', '4', '2', '1'] } }] },
             },
-            sources: ['Aligned with TEKS Technology Applications 126.15(b)(6)(A) (explain how binary represents data) and CSTA 2-DA-07.'],
+            sources: ['Aligned with TEKS Technology Applications 126.18(b)(6)(A) (explain how binary represents data) and CSTA 2-DA-07.'],
             generators: ['t7-binary', 't7-binary', 't7-binary', 't7-binary', 't7-binary'],
         },
         {
@@ -25624,7 +25934,7 @@ function TECH7_MODULES() {
                         { text: 'DNS is the phone book: you know the name of the pizza place, the book gives you the number, and the number is what actually connects.', visual: { kind: 'twoway', a: 'school.edu', b: '93.184.216.34', top: 'DNS looks it up', bottom: 'the address that connects' } },
                         'A road network with no single road: if one route is blocked, the packets take another. That is why the internet is hard to break.'] },
             },
-            sources: ['Aligned with TEKS Technology Applications 126.15(b)(5)(A) (explain how information is transmitted across networks) and CSTA 2-NI-04.'],
+            sources: ['Aligned with TEKS Technology Applications 126.18(b)(5)(A) (explain how information is transmitted across networks) and CSTA 2-NI-04.'],
             generators: ['t7-internet', 't7-internet', 't7-internet', 't7-internet', 't7-internet'],
         },
         {
@@ -25641,7 +25951,7 @@ function TECH7_MODULES() {
                         { text: 'Two-step sign-in is a door with a key and a doorbell: even with the key, someone still has to be let in by the phone in your pocket.', visual: { kind: 'flow', steps: ['password', 'code on your phone', 'in'] } },
                         'Urgent, secret, now: those three words in one message are the fingerprint of a scam. Real accounts do not rush you.'] },
             },
-            sources: ['Aligned with TEKS Technology Applications 126.15(b)(3)(B) (practice safe and ethical behavior online) and CSTA 2-NI-05.'],
+            sources: ['Aligned with TEKS Technology Applications 126.18(b)(3)(B) (practice safe and ethical behavior online) and CSTA 2-NI-05.'],
             generators: ['t7-safety', 't7-safety', 't7-safety', 't7-safety', 't7-safety'],
         },
     ];
@@ -29859,6 +30169,167 @@ Object.assign(GENERATORS, {
         const Q = [['Allegro means what?', ['fast', 'slow', 'soft'], 'fast', 'Allegro is fast. Adagio is slow.'], ['A lullaby is usually marked how?', ['piano and adagio', 'forte and allegro', 'forte and adagio'], 'piano and adagio', 'Soft and slow, so a baby can drift off.'], ['What does forte mean?', ['loud', 'soft', 'fast'], 'loud', 'Forte is loud and piano is soft. They are Italian words, and every musician uses them.'],
             ['A piece marked piano should be played how?', ['softly', 'loudly', 'quickly'], 'softly', 'Piano means soft. The instrument got its name because it could play soft and loud.'],
             ['Tempo is a piece\'s what?', ['speed', 'loudness', 'key'], 'speed', 'Tempo is how fast the beat goes. Allegro is fast, adagio is slow.']];
+        const [prompt, choices, answer, explain] = pick(rng, Q);
+        return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+    },
+    // Computer science, K to 2 (2026-09-28, pass FS): spoken questions with tapped answers; every answer is said in its lesson first.
+    'tk-tell': (rng) => {
+        const Q = [['Which part do you use to tell a computer something?', ['a keyboard', 'a screen', 'a speaker'], 'a keyboard', 'You tell with a keyboard, a mouse or a touch screen. Those are inputs.'],
+            ['Which part shows you a picture?', ['a screen', 'a mouse', 'a keyboard'], 'a screen', 'The screen shows you things. It is an output.'],
+            ['What do we call the parts that tell a computer?', ['inputs', 'outputs', 'wheels'], 'inputs', 'Inputs tell. A keyboard, a mouse and a touch screen are inputs.'],
+            ['What do we call the parts that show you things?', ['outputs', 'inputs', 'wheels'], 'outputs', 'Outputs show you. The screen and the speaker are outputs.'],
+            ['Which part plays a sound?', ['a speaker', 'a mouse', 'a keyboard'], 'a speaker', 'The speaker plays sounds. It shows you with sound, so it is an output.'],
+            ['A touch screen is which kind of part?', ['an input', 'an output', 'a wheel'], 'an input', 'You tell with a touch screen, so it is an input.']];
+        const [prompt, choices, answer, explain] = pick(rng, Q);
+        return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+    },
+    'tk-order': (rng) => {
+        const Q = [['What is a list of steps in order called?', ['an algorithm', 'a picture', 'a song'], 'an algorithm', 'An algorithm is steps in order: first, next, then, last.'],
+            ['To make a jam sandwich, what do you do first?', ['get the bread', 'take a bite', 'spread the jam'], 'get the bread', 'First get the bread, next spread the jam, then close the sandwich, last take a bite.'],
+            ['When you get dressed, what goes on first?', ['socks', 'shoes', 'a hat'], 'socks', 'Socks first, then shoes. Shoes first, and the socks will not go on.'],
+            ['What happens if you take a bite first?', ['there is no sandwich yet', 'the sandwich is done', 'the jam goes away'], 'there is no sandwich yet', 'Bite first and there is no sandwich yet. The order matters.'],
+            ['How does a computer follow its steps?', ['one at a time, in order', 'all at once', 'backward'], 'one at a time, in order', 'One at a time, in order, and it never skips one.'],
+            ['What word do we say for the step at the end?', ['last', 'first', 'next'], 'last', 'First, next, then, last. Last is the end.']];
+        const [prompt, choices, answer, explain] = pick(rng, Q);
+        return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+    },
+    'tk-again': (rng) => {
+        const Q = [['Red, blue, red, blue. What comes next?', ['red', 'blue', 'green'], 'red', 'The pattern repeats. After blue, red comes again.'],
+            ['What do we call something that repeats?', ['a pattern', 'a loop', 'a song'], 'a pattern', 'A pattern repeats, like red, blue, red, blue.'],
+            ['Saying a step again and again is called what?', ['a loop', 'a pattern', 'a screen'], 'a loop', 'A loop says do it again, and how many times.'],
+            ['A loop needs what to do and what else?', ['how many times', 'a color', 'a friend'], 'how many times', 'What to do, and how many times. Jump three times.'],
+            ['Which one is a loop?', ['clap four times', 'clap once', 'sit still'], 'clap four times', 'Clap four times says clap, and how many times. That is a loop.'],
+            ['What helps you guess what comes next?', ['a pattern', 'a mouse', 'a bite'], 'a pattern', 'When you know the pattern, you can guess what comes next.']];
+        const [prompt, choices, answer, explain] = pick(rng, Q);
+        return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+    },
+    'tk-safe': (rng) => {
+        const Q = [['Who may know your password?', ['a parent or a teacher', 'everyone in class', 'a stranger'], 'a parent or a teacher', 'Only a parent or a teacher. A password is a secret word.'],
+            ['What do you do when you are done on a computer?', ['log off', 'shout', 'share your password'], 'log off', 'Log off, so the next person cannot get in.'],
+            ['Which is safe to share online?', ['your favorite color', 'your address', 'your full name'], 'your favorite color', 'A favorite color, a game you like or a pet are safe to share.'],
+            ['Which one is private?', ['your address', 'your favorite color', 'a game you like'], 'your address', 'Your full name, address, school and birthday are private.'],
+            ['Something online makes you feel bad. What do you do?', ['stop and tell a grown-up', 'keep going', 'hide it'], 'stop and tell a grown-up', 'Stop, and tell a grown-up. That is always the right move.'],
+            ['A password is what kind of word?', ['a secret word', 'a loud word', 'a long song'], 'a secret word', 'A secret word that opens your account. Keep it secret.']];
+        const [prompt, choices, answer, explain] = pick(rng, Q);
+        return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+    },
+    // The plain AI course, grade 6 (2026-09-29, pass FT): every answer is said in its lesson first.
+    't6-learn': (rng) => {
+        const Q = [['What does an AI program learn from?', ['examples', 'a rule a person wrote', 'a dictionary', 'a random number'], 'examples', 'It is shown thousands of labeled examples and finds the patterns on its own.'],
+            ['What is the result of learning from examples called?', ['a model', 'a loop', 'an input', 'a variable'], 'a model', 'The patterns it kept, ready to guess about new things, are called a model.'],
+            ['A model keeps what examples have in common. What is that called?', ['a generalization', 'a copy', 'a rule', 'a search'], 'a generalization', 'A generalization keeps what is shared and drops what is particular.'],
+            ['How does a language model build an answer?', ['one likely word at a time', 'by looking it up', 'by asking a person', 'by copying a page'], 'one likely word at a time', 'It has learned which word tends to come next, and builds the answer word by word.'],
+            ['What does a model make when a new picture arrives?', ['a guess', 'a rule', 'a copy', 'a law'], 'a guess', 'It compares the picture with the patterns it kept and guesses: cat, 92 out of 100.'],
+            ['Which part of a cat picture does a model drop?', ['the sofa the cat sat on', 'the pointed ears', 'the whiskers', 'the fur'], 'the sofa the cat sat on', 'The sofa is specific to one picture. Ears and whiskers are what cats share.']];
+        const [prompt, choices, answer, explain] = pick(rng, Q);
+        return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+    },
+    't6-sure': (rng) => {
+        const Q = [['What does a model\'s number really measure?', ['how well the new thing fits the examples', 'how true the answer is', 'how fast it ran', 'how many people agree'], 'how well the new thing fits the examples', 'Cat, 88 out of 100 means the patterns matched strongly. A fox can match strongly too.'],
+            ['A made-up date that looks right is called what?', ['a hallucination', 'a model', 'a pattern', 'a loop'], 'a hallucination', 'The model built what a date usually looks like. It never happened.'],
+            ['Why can a wrong answer sound sure?', ['sounding sure is a pattern too', 'the machine is lying', 'the machine is tired', 'the answer is short'], 'sounding sure is a pattern too', 'Almost everything it learned from was written with confidence, so confidence is what it learned.'],
+            ['What turns a guess into something you can use?', ['a second source', 'a bigger number', 'a longer answer', 'a faster machine'], 'a second source', 'A book, a teacher, the original website: somewhere you can look.'],
+            ['What is a model, at best?', ['a fast first guess', 'a final word', 'a proof', 'a law'], 'a fast first guess', 'A first guess is useful. It is not the final word.'],
+            ['What is the most useful question to ask a machine?', ['how do you know?', 'are you sure?', 'how fast are you?', 'who made you?'], 'how do you know?', 'The answer has to come from somewhere you can look.']];
+        const [prompt, choices, answer, explain] = pick(rng, Q);
+        return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+    },
+    't6-fair': (rng) => {
+        const Q = [['A dog model saw only golden retrievers. Why does it fail on a poodle?', ['they were simply missing from the examples', 'poodles are not dogs', 'the program hates poodles', 'the picture was too big'], 'they were simply missing from the examples', 'The patterns it kept never covered poodles. Nothing in it is against them.'],
+            ['Where was the unfairness before the model ran?', ['in the pile of examples', 'in the screen', 'in the keyboard', 'in the answer'], 'in the pile of examples', 'Whoever collected the examples decided who was in them and who was not.'],
+            ['What is the fix for a biased model?', ['look at who is missing', 'use a bigger number', 'run it faster', 'ask it twice'], 'look at who is missing', 'Count the examples by group, add what is thin, and test on everyone.'],
+            ['Before anyone depends on a model, good teams test it on what?', ['every group', 'one group', 'the fastest computer', 'the newest phone'], 'every group', 'Right on average can still be wrong for the group it saw least.'],
+            ['A model that is right on average can still be wrong for whom?', ['the people it saw least', 'nobody', 'the people it saw most', 'the people who built it'], 'the people it saw least', 'The average hides them. Ask: right for whom, and wrong for whom?'],
+            ['What does a model give for the groups it serves worst?', ['the same confident number', 'a warning', 'no answer', 'a lower price'], 'the same confident number', 'It cannot tell that it never saw enough of them. The number looks the same.']];
+        const [prompt, choices, answer, explain] = pick(rng, Q);
+        return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+    },
+    't6-charge': (rng) => {
+        const Q = [['What should you treat an AI tool\'s text box like?', ['a postcard', 'a locked safe', 'a diary', 'a private letter'], 'a postcard', 'Whatever you type leaves your device and may be kept. Nothing private goes in.'],
+            ['The trail of information about you that stays online is called what?', ['your digital footprint', 'a model', 'a loop', 'your password'], 'your digital footprint', 'What you send becomes part of it.'],
+            ['The law that says who may copy someone\'s work is called what?', ['copyright', 'a generalization', 'a footprint', 'a hallucination'], 'copyright', 'The pictures and pages a model learned from are intellectual property.'],
+            ['A tool hands you a picture. What is inside it?', ['someone\'s work', 'nothing', 'a virus', 'a password'], 'someone\'s work', 'Millions of pictures people made went into the model. Say where it came from.'],
+            ['What should you use the tool to do?', ['learn', 'skip learning', 'hide', 'copy'], 'learn', 'Let it explain and quiz you, then do the thinking yourself.'],
+            ['A skill you never practiced is what?', ['a skill you do not have', 'a skill you own', 'a habit', 'a model'], 'a skill you do not have', 'A first draft from a tool is not your skill. Practice is.']];
+        const [prompt, choices, answer, explain] = pick(rng, Q);
+        return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+    },
+    // Computer science for grades 9 to 12 (2026-09-29, pass FU): the binary and arithmetic questions are computed, never written.
+    't9-machine': (rng) => {
+        const Q = [['Which part fetches and carries out instructions?', ['the CPU', 'memory', 'storage', 'a peripheral'], 'the CPU', 'The central processing unit fetches one instruction at a time and carries it out.'],
+            ['Which part forgets everything when the power is off?', ['memory', 'storage', 'the printer', 'the keyboard'], 'memory', 'Memory, RAM, holds what the CPU is working on now. A drive keeps files after the power is off.'],
+            ['Which part keeps files after the power is off?', ['storage', 'memory', 'the CPU', 'the screen'], 'storage', 'A solid-state drive or a hard disk is storage: slower than memory, but lasting.'],
+            ['What kind of software manages the machine and shares the CPU?', ['the operating system', 'an application', 'a browser', 'a game'], 'the operating system', 'Windows, macOS, Linux, Android and iOS are operating systems: they start the hardware and share it among programs.'],
+            ['A browser is which kind of software?', ['an application', 'an operating system', 'a peripheral', 'storage'], 'an application', 'An application does a task and asks the operating system for the screen, the network and the files.'],
+            ['Memory is which kind of storage?', ['primary', 'secondary', 'peripheral', 'none'], 'primary', 'Primary storage is memory, fast and temporary; secondary storage is the drive.'],
+            ['A keyboard, a mouse and a printer are what?', ['peripherals', 'processors', 'operating systems', 'applications'], 'peripherals', 'Peripherals sit at the edges and carry input in and output out.']];
+        const [prompt, choices, answer, explain] = pick(rng, Q);
+        return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+    },
+    't9-binary': (rng) => {
+        const kind = pick(rng, ['to', 'from', 'to', 'from', 'fact']);
+        if (kind === 'fact') {
+            const Q = [['How many bits are in a byte?', ['8', '4', '16', '2'], '8', 'Eight bits are a byte, with places worth 1, 2, 4, 8, 16, 32, 64 and 128.'],
+                ['What is the largest number a byte can hold?', ['255', '256', '128', '100'], '255', 'All eight switches on: 128 + 64 + 32 + 16 + 8 + 4 + 2 + 1 = 255.'],
+                ['What comes after 111 when counting in binary?', ['1000', '112', '1111', '200'], '1000', 'Every bit would become 2, so each turns back to 0 and carries left: 1000, which is 8.'],
+                ['What is the place value of the fourth bit from the right?', ['8', '4', '16', '3'], '8', 'From the right the places are 1, 2, 4, 8: each is twice the one to its right.']];
+            const [prompt, choices, answer, explain] = pick(rng, Q);
+            return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+        }
+        const n = 3 + Math.floor(rng() * 60); // 3 to 62, so every answer has two to six bits
+        const bin = n.toString(2);
+        const places = bin.split('').map((b, i) => (b === '1' ? 2 ** (bin.length - 1 - i) : 0)).filter((v) => v > 0);
+        if (kind === 'to') {
+            const wrong = new Set();
+            for (const w of [n + 1, n - 1, n + 2, n * 2, n - 2, n + 4])
+                if (w > 0 && w !== n)
+                    wrong.add(w.toString(2));
+            const choices = [bin, ...[...wrong].slice(0, 3)];
+            return { type: 'choice', story: null, prompt: `What is ${n} in binary?`, choices: shuffle(rng, choices), answer: bin, explain: `${n} is ${places.join(' + ')}, so the places ${places.join(', ')} are on: ${bin}.`, visual: null, explainVisual: null };
+        }
+        const wrong = new Set();
+        for (const w of [n + 1, n - 1, n + 2, n * 2, n - 2, n + 4])
+            if (w > 0 && w !== n)
+                wrong.add(String(w));
+        const choices = [String(n), ...[...wrong].slice(0, 3)];
+        return { type: 'choice', story: null, prompt: `What is binary ${bin} in decimal?`, choices: shuffle(rng, choices), answer: String(n), explain: `Add the places that are on: ${places.join(' + ')} = ${n}.`, visual: null, explainVisual: null };
+    },
+    't9-program': (rng) => {
+        const kind = pick(rng, ['fixed', 'fixed', 'mod', 'div']);
+        if (kind === 'mod' || kind === 'div') {
+            const a = 5 + Math.floor(rng() * 40);
+            const b = 2 + Math.floor(rng() * 8);
+            const mod = a % b;
+            const div = Math.floor(a / b);
+            const answer = String(kind === 'mod' ? mod : div);
+            const wrong = new Set();
+            for (const w of [kind === 'mod' ? div : mod, mod + 1, div + 1, a - b, b, mod + 2])
+                if (String(w) !== answer && w >= 0)
+                    wrong.add(String(w));
+            const choices = [answer, ...[...wrong].slice(0, 3)];
+            const prompt = kind === 'mod' ? `What is ${a} % ${b}, the remainder?` : `What is the whole part of ${a} divided by ${b}?`;
+            const explain = kind === 'mod' ? `${b} goes into ${a} ${div} times with ${mod} left over, so ${a} % ${b} is ${mod}.` : `${b} goes into ${a} ${div} times (${div} × ${b} = ${div * b}); the whole part is ${div}.`;
+            return { type: 'choice', story: null, prompt, choices: shuffle(rng, choices), answer, explain, visual: null, explainVisual: null };
+        }
+        const Q = [['Which data type holds true or false?', ['boolean', 'integer', 'string', 'real'], 'boolean', 'A boolean is a flag: true or false, like game over.'],
+            ['A name like "Mia" is which data type?', ['a string', 'an integer', 'a boolean', 'a real number'], 'a string', 'A string is a piece of text. A price is a real number; a score is an integer.'],
+            ['If this, then that, else the other: which structure is it?', ['a conditional', 'iteration', 'sequence', 'a variable'], 'a conditional', 'A conditional chooses between two roads by a test.'],
+            ['Repeat while lives are above zero: which structure is it?', ['iteration', 'sequence', 'a conditional', 'a random number'], 'iteration', 'Iteration is a loop: the same steps again while a test holds.'],
+            ['How do you test a program?', ['with inputs whose right answers you already know', 'by reading it once', 'by running it with no input', 'by asking a friend'], 'with inputs whose right answers you already know', 'Run it on inputs with known answers, the edges included, and compare.'],
+            ['A number is even when number % 2 is what?', ['0', '1', '2', 'true'], '0', 'Modulus keeps the remainder. An even number leaves no remainder when divided by 2.'],
+            ['Statements running in order, top to bottom, is which structure?', ['sequence', 'iteration', 'a conditional', 'a data type'], 'sequence', 'Sequence is the simplest structure: one statement after another.']];
+        const [prompt, choices, answer, explain] = pick(rng, Q);
+        return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+    },
+    't9-craft': (rng) => {
+        const Q = [['What is debugging?', ['finding the step where the program stops matching your intention', 'deleting the program', 'writing a longer program', 'asking the machine to fix itself'], 'finding the step where the program stops matching your intention', 'Read the error, print the variables, shrink the input, look up the reference.'],
+            ['Which shared work lets you use and change the code?', ['open source', 'freeware', 'copyright', 'a password'], 'open source', 'Open source code comes with a license that lets you use and change it.'],
+            ['Freeware is free to use but not to what?', ['change', 'download', 'run', 'read'], 'change', 'Freeware is free to use, not to change. Public domain work belongs to everyone.'],
+            ['Work that belongs to everyone is in the what?', ['public domain', 'app store', 'cloud', 'library'], 'public domain', 'Public domain work has no owner left to ask.'],
+            ['A strong password has at least how many characters?', ['twelve', 'four', 'six', 'eight'], 'twelve', 'Long, unusual, and used for one account only. A password manager keeps them.'],
+            ['What protects an account even if the password leaks?', ['a second step', 'a longer name', 'a faster computer', 'a new browser'], 'a second step', 'A code on your phone is a second step an attacker with the password does not have.'],
+            ['A polished page that says what you hoped is what?', ['not more reliable for it', 'always true', 'a primary source', 'open source'], 'not more reliable for it', 'Check who wrote it, when, and what they gain.'],
+            ['What do you need before you copy someone\'s code?', ['permission', 'a faster computer', 'a longer password', 'nothing'], 'permission', 'Copyright means you need permission to copy, and citing the source shows where it came from.']];
         const [prompt, choices, answer, explain] = pick(rng, Q);
         return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
     },
@@ -37950,7 +38421,101 @@ const WONDER = [
     { "id": "w-growing-proud", "theme": "feelings", "stage": "growing", "courseIds": [], "answerMode": "typed", "prompt": "What does it feel like to be proud of yourself, and how is that different from showing off?", "perspectives": [{ "voice": "A scientist", "says": "Feeling proud after hard work is healthy; it helps you want to keep trying. It is different from bragging, which is about how others see you." }, { "voice": "An artist", "says": "When I finish a painting I am proud of, I want to show it to someone who will be happy for me, not to someone I want to beat." }, { "voice": "A grandparent of faith", "says": "Being grateful for what you did well, and for the people who helped you, is a gentle kind of pride." }, { "voice": "A skeptic", "says": "A good test: would you still feel proud if nobody ever found out? If yes, that is real pride." }], "closing": "What is something you are proud of this week?" },
     { "id": "w-growing-embarrassed", "theme": "feelings", "stage": "growing", "courseIds": [], "answerMode": "typed", "prompt": "Everyone laughed when you tripped. How long does embarrassment really last?", "perspectives": [{ "voice": "A scientist", "says": "Embarrassment is strongest right away and fades quickly. Other people forget much faster than we do, usually by the next class." }, { "voice": "An artist", "says": "Some of the funniest stories people tell are about the times they tripped. Years later, they laugh along." }, { "voice": "A grandparent of faith", "says": "Laughing at yourself kindly is a gift. It helps you and everyone around you move on." }, { "voice": "A skeptic", "says": "If someone keeps teasing you about it for days, that is not okay, and it is worth telling a teacher." }], "closing": "What is a funny story you can tell about yourself now?" },
     { "id": "w-early-tower-fell", "theme": "failure", "stage": "early", "courseIds": [], "answerMode": "pick", "prompt": "Your block tower fell down. What do you do next?", "options": ["Build it again", "Build it wider", "Take a break first"], "simple": [{ "voice": "A scientist says", "says": "A wide bottom helps a tower stand." }, { "voice": "An artist says", "says": "Every tower you build is a new one." }], "perspectives": [{ "voice": "A scientist", "says": "Towers fall when they are taller than their bottom can hold. A wider bottom helps them stand. Every fall teaches you how to build the next one." }, { "voice": "An artist", "says": "I like to build the second tower a little differently from the first. Sometimes the new way is better." }, { "voice": "A grandparent of faith", "says": "It is okay to be sad when something falls. Take a breath, and try again when you are ready." }, { "voice": "A skeptic", "says": "Look at how it fell before you build again. Did it lean? Wobble? That tells you what to change." }], "closing": "What will you build next?" },
-    { "id": "w-early-feeling-sad", "theme": "feelings", "stage": "early", "courseIds": [], "answerMode": "pick", "prompt": "When you feel sad, what helps you feel better?", "options": ["A hug", "Telling someone", "Quiet time"], "simple": [{ "voice": "A scientist says", "says": "Telling someone how you feel can make it feel smaller." }, { "voice": "A grandparent of faith says", "says": "You are never alone when you are sad." }], "perspectives": [{ "voice": "A scientist", "says": "Telling someone how you feel helps your body calm down. Your feelings are real, and they change." }, { "voice": "An artist", "says": "Some people draw a picture of how they feel. Then the feeling has somewhere to go." }, { "voice": "A grandparent of faith", "says": "It is okay to be sad sometimes. The people who love you want to help. Let them help you feel better." }, { "voice": "A skeptic", "says": "Sad feelings come and go like clouds. If a sad feeling stays a long time, tell a grown-up you trust." }], "closing": "Who can you go to when you feel sad?" }
+    { "id": "w-early-feeling-sad", "theme": "feelings", "stage": "early", "courseIds": [], "answerMode": "pick", "prompt": "When you feel sad, what helps you feel better?", "options": ["A hug", "Telling someone", "Quiet time"], "simple": [{ "voice": "A scientist says", "says": "Telling someone how you feel can make it feel smaller." }, { "voice": "A grandparent of faith says", "says": "You are never alone when you are sad." }], "perspectives": [{ "voice": "A scientist", "says": "Telling someone how you feel helps your body calm down. Your feelings are real, and they change." }, { "voice": "An artist", "says": "Some people draw a picture of how they feel. Then the feeling has somewhere to go." }, { "voice": "A grandparent of faith", "says": "It is okay to be sad sometimes. The people who love you want to help. Let them help you feel better." }, { "voice": "A skeptic", "says": "Sad feelings come and go like clouds. If a sad feeling stays a long time, tell a grown-up you trust." }], "closing": "Who can you go to when you feel sad?" },
+    {
+        id: 'w-grown-exactly-what-you-wrote',
+        theme: 'failure',
+        stage: 'grown',
+        courseIds: ['tech-9'],
+        answerMode: 'typed',
+        prompt: 'A program does exactly what you wrote, not what you meant. When it fails, is that a flaw in machines, or a mirror held up to your own thinking?',
+        perspectives: [
+            { voice: 'A scientist', says: 'It is the most honest mirror you will ever get. A person will nod along with a vague idea; a compiler will not. Every bug is a place where I thought I understood something and had not finished the thought.' },
+            { voice: 'An artist', says: 'A brush does exactly what your hand does too, and nobody calls that a flaw. The medium is strict so that the work can be true. Learn the strictness and it stops feeling like an enemy.' },
+            { voice: 'A grandparent of faith', says: 'There is humility in it. The machine will not flatter you, and it will not be argued with, so you learn to say plainly what you mean. That is a good habit far beyond programs.' },
+            { voice: 'A skeptic', says: 'It is a mirror, but only for the part of you that wrote the code. Do not conclude too much about yourself from a missing semicolon. Fix it, and notice the pattern only if it keeps happening.' },
+        ],
+        closing: 'What did your last bug show you about what you had not yet thought through?',
+    },
+    {
+        id: 'w-grown-everything-is-numbers',
+        theme: 'world',
+        stage: 'grown',
+        courseIds: ['tech-9'],
+        answerMode: 'typed',
+        prompt: 'On a screen a photograph of your family is nothing but numbers, three per dot. Does knowing that make the picture less real, or does it change nothing at all?',
+        perspectives: [
+            { voice: 'A scientist', says: 'A photograph was always a physical trace, silver grains or numbers, and the numbers are a more faithful trace than the grains ever were. Knowing how a thing is made does not make it less; it usually makes it more.' },
+            { voice: 'An artist', says: 'A painting is nothing but pigment, and a song is nothing but air moving. The meaning was never in the material. It is in what the material does to the person looking.' },
+            { voice: 'A grandparent of faith', says: 'The picture is real because the people were real and the love was real. The numbers are the envelope it came in. Nobody weeps over the envelope, and nobody should throw it away either.' },
+            { voice: 'A skeptic', says: 'It changes one thing worth keeping in mind: numbers can be edited without leaving a mark. So the picture is as real as its source, and you should know where it came from before you trust it.' },
+        ],
+        closing: 'What is something you value that is, at bottom, made of very ordinary stuff?',
+    },
+    {
+        id: 'w-teen-sure-and-wrong',
+        theme: 'failure',
+        stage: 'teen',
+        courseIds: ['tech-6'],
+        answerMode: 'typed',
+        prompt: 'A machine you asked gave you a wrong answer that sounded completely sure, and you repeated it. Whose mistake was it?',
+        perspectives: [
+            { voice: 'A scientist', says: 'The machine did what it was built to do, which is to guess from patterns. The mistake was treating a guess as a finding. In a lab, nothing counts until a second measurement agrees with the first.' },
+            { voice: 'An artist', says: 'I copy other painters all the time, but I sign only what I have checked with my own eyes. Repeating something you never looked at is putting your name on a stranger\'s work.' },
+            { voice: 'A grandparent of faith', says: 'Being fooled is not a sin, and it happens to everyone. What matters is what you do next: say plainly that you were wrong, and find out how you will check the next time.' },
+            { voice: 'A skeptic', says: 'The machine cannot be blamed, because it cannot know anything. You can know things, and check them. So the mistake was yours, and that is good news, because yours is the only kind you can fix.' },
+        ],
+        closing: 'What will you check before you repeat something next time?',
+    },
+    {
+        id: 'w-teen-why-learn-to-write',
+        theme: 'world',
+        stage: 'teen',
+        courseIds: ['tech-6'],
+        answerMode: 'typed',
+        prompt: 'If a machine can write a passable essay in a minute, what is the point of learning to write one yourself?',
+        perspectives: [
+            { voice: 'A scientist', says: 'Writing is how thinking gets checked. When I put an idea into sentences, the gaps in it show. A machine can hand me sentences, but it cannot do my thinking, and the gaps stay hidden until I do.' },
+            { voice: 'An artist', says: 'A passable essay is the least interesting kind. The point of writing is to say the one thing only you would say, and no pile of other people\'s pages contains that.' },
+            { voice: 'A grandparent of faith', says: 'People have always had helpers, from scribes to typewriters. The question is not whether you use the help but whether you still have something of your own to say when the help is gone.' },
+            { voice: 'A skeptic', says: 'Try this experiment for yourself. Have the machine write your essay, then explain it out loud to someone who asks hard questions. You will find out quickly whether the essay is yours.' },
+        ],
+        closing: 'What would you want to say that no machine would say for you?',
+    },
+    {
+        id: 'w-early-robot-bumped',
+        theme: 'failure',
+        stage: 'early',
+        courseIds: ['tech-k'],
+        answerMode: 'pick',
+        prompt: 'Your robot walked into a rock. What do you do next?',
+        options: ['Change one step', 'Start the steps over', 'Watch it walk again'],
+        simple: [{ voice: 'A scientist says', says: 'A bump shows you which step to change.' }, { voice: 'A skeptic says', says: 'Watch it again before you change anything.' }],
+        perspectives: [
+            { voice: 'A scientist', says: 'The robot did exactly what its steps said, so the bump points at one step. Change that one and watch again. That is how every program gets fixed.' },
+            { voice: 'An artist', says: 'I would draw the path on paper first, then press the arrows. A picture of the walk is easier to check than a row of arrows.' },
+            { voice: 'A grandparent of faith', says: 'A bump is not a failure. It is the robot telling you something. Take a breath, look, and try one small change.' },
+            { voice: 'A skeptic', says: 'Before you change anything, watch it walk again. Did it bump at the first step or the last? That tells you where to look.' },
+        ],
+        closing: 'Which step will you change?',
+    },
+    {
+        id: 'w-early-computer-told',
+        theme: 'world',
+        stage: 'early',
+        courseIds: ['tech-k'],
+        answerMode: 'pick',
+        prompt: 'A computer only does what it is told. Is that good, or not so good?',
+        options: ['Good, it always listens', 'Not so good, it cannot think', 'A little of both'],
+        simple: [{ voice: 'A scientist says', says: 'It does every step you give it, and no more.' }, { voice: 'An artist says', says: 'You are the one with the ideas.' }],
+        perspectives: [
+            { voice: 'A scientist', says: 'A computer does every step you give it and not one more. That is why it never gets tired and never gets bored, and why your steps have to be right.' },
+            { voice: 'An artist', says: 'The computer has no ideas of its own. The ideas all come from you. That makes you the artist, and the computer the brush.' },
+            { voice: 'A grandparent of faith', says: 'People are not like that. We can stop and think and choose to be kind. A computer needs someone to tell it, so tell it kindly.' },
+            { voice: 'A skeptic', says: 'Good for the most part, I would say. But if someone tells it the wrong steps, it will do the wrong thing just as fast. So always check who is doing the telling.' },
+        ],
+        closing: 'What would you tell a computer to do?',
+    },
 ];
 // Nothing reaches a student until somebody at the school has read it and said yes.
 // Reflection questions are the most sensitive content in the platform, so approval is
@@ -40908,6 +41473,9 @@ const COURSE_GAMES = {
     'music-1': ['maze-big', 'jump-sums'],
     'music-4': ['pairs-music'],
     'health-k': ['dots-rocket'],
+    'tech-k': ['walk-tech-k'],
+    'tech-6': ['teach-tech-6'],
+    'tech-9': ['bits-tech-9'],
     'health-4': ['pairs-health'],
     'tech-3': ['pairs-technology', 'debug-tech-3'],
     'tech-5': ['pong', 'debug-tech-5'],
@@ -42089,12 +42657,33 @@ const CURRICULUM = [
         ],
     },
     {
-        grade: '3', subject: 'Technology', status: 'ready',
-        source: 'Texas Essential Knowledge and Skills, Technology Applications, Grade 3 (§126.7, Adopted 2022); CSTA K-12 Computer Science Standards, Level 1B (grades 3 to 5), the national framework, shown in the Common Core column.',
+        grade: 'K', subject: 'Technology', status: 'ready',
+        source: 'Texas Essential Knowledge and Skills, Technology Applications, Kindergarten (§126.1, Adopted 2022, in force from 2024-2025), the course for the K to 2 band; CSTA K-12 Computer Science Standards, Level 1A (grades K to 2), the national framework, shown in the Common Core column.',
         standards: [
-            { framework: 'TEKS', code: '126.7(b)(1)(A)', text: 'Identify and use components of a computer system.', moduleIds: ['inputs-and-outputs'] },
-            { framework: 'TEKS', code: '126.7(b)(4)(A)', text: 'Create and follow step-by-step directions.', moduleIds: ['steps-in-order'] },
-            { framework: 'TEKS', code: '126.7(b)(4)(B)', text: 'Use loops in an algorithm.', moduleIds: ['patterns-and-loops'] },
+            { framework: 'TEKS', code: '126.1(b)(8)(B)', text: 'Identify basic computer hardware, including a variety of input and output devices, and software using accurate terminology.', moduleIds: ['tell-and-show'] },
+            { framework: 'TEKS', code: '126.1(b)(1)(A)', text: 'Identify a problem or task such as making a sandwich and break it down (decompose) into smaller pieces.', moduleIds: ['first-next-then-last'] },
+            { framework: 'TEKS', code: '126.1(b)(1)(C)', text: 'Identify algorithms (step-by-step instructions) using a sequential process such as first, next, then, and last.', moduleIds: ['first-next-then-last'] },
+            { framework: 'TEKS', code: '126.1(b)(1)(B)', text: 'Identify simple patterns and make predictions based on the patterns.', moduleIds: ['do-it-again'] },
+            { framework: 'TEKS', code: '126.1(b)(2)(A)', text: 'Create a sequence of code with or without technology such as solving a maze using drag-and-drop programming or creating step-by-step directions for student movement to a specific location.', moduleIds: ['do-it-again'] },
+            { framework: 'TEKS', code: '126.1(b)(7)(A)', text: 'Identify ways to keep a user account safe, including not sharing login information and logging off accounts and devices.', moduleIds: ['safe-online-k'] },
+            { framework: 'TEKS', code: '126.1(b)(7)(B)', text: 'Identify and discuss what information is safe to share online such as hobbies and likes and dislikes and what information is unsafe such as identifying information.', moduleIds: ['safe-online-k'] },
+            { framework: 'TEKS', code: '126.1(b)(5)(A)', text: 'Identify and demonstrate responsible behavior within a digital environment.', moduleIds: ['safe-online-k'] },
+            { framework: 'CCSS', code: 'CSTA 1A-CS-02', text: 'Use appropriate terminology in identifying and describing the function of common physical components of computing systems (hardware).', moduleIds: ['tell-and-show'] },
+            { framework: 'CCSS', code: 'CSTA 1A-AP-08', text: 'Model daily processes by creating and following algorithms (sets of step-by-step instructions) to complete tasks.', moduleIds: ['first-next-then-last'] },
+            { framework: 'CCSS', code: 'CSTA 1A-AP-11', text: 'Decompose (break down) the steps needed to solve a problem into a precise sequence of instructions.', moduleIds: ['first-next-then-last'] },
+            { framework: 'CCSS', code: 'CSTA 1A-AP-10', text: 'Develop programs with sequences and simple loops, to express ideas or address a problem.', moduleIds: ['do-it-again'] },
+            { framework: 'CCSS', code: 'CSTA 1A-IC-18', text: 'Keep login information private, and log off of devices appropriately.', moduleIds: ['safe-online-k'] },
+            { framework: 'CCSS', code: 'CSTA 1A-NI-04', text: 'Explain what passwords are and why we use them, and use strong passwords to protect devices and information from unauthorized access.', moduleIds: ['safe-online-k'] },
+            { framework: 'CCSS', code: 'CSTA 1A-IC-17', text: 'Work respectfully and responsibly with others online.', moduleIds: ['safe-online-k'] },
+        ],
+    },
+    {
+        grade: '3', subject: 'Technology', status: 'ready',
+        source: 'Texas Essential Knowledge and Skills, Technology Applications, Grade 3 (§126.8, Adopted 2022); CSTA K-12 Computer Science Standards, Level 1B (grades 3 to 5), the national framework, shown in the Common Core column.',
+        standards: [
+            { framework: 'TEKS', code: '126.8(b)(1)(A)', text: 'Identify and use components of a computer system.', moduleIds: ['inputs-and-outputs'] },
+            { framework: 'TEKS', code: '126.8(b)(4)(A)', text: 'Create and follow step-by-step directions.', moduleIds: ['steps-in-order'] },
+            { framework: 'TEKS', code: '126.8(b)(4)(B)', text: 'Use loops in an algorithm.', moduleIds: ['patterns-and-loops'] },
             { framework: 'CCSS', code: 'CSTA 1B-CS-01', text: 'Describe how internal and external parts of computing devices function to form a system.', moduleIds: ['inputs-and-outputs'] },
             { framework: 'CCSS', code: 'CSTA 1B-AP-08', text: 'Compare and refine multiple algorithms for the same task.', moduleIds: ['steps-in-order'] },
             { framework: 'CCSS', code: 'CSTA 1B-AP-10', text: 'Create programs that include sequences, events, loops, and conditionals.', moduleIds: ['patterns-and-loops'] },
@@ -42102,23 +42691,69 @@ const CURRICULUM = [
     },
     {
         grade: '5', subject: 'Technology', status: 'ready',
-        source: 'Texas Essential Knowledge and Skills, Technology Applications, Grade 5 (§126.9, Adopted 2022); CSTA K-12 Computer Science Standards, Level 1B, the national framework, shown in the Common Core column.',
+        source: 'Texas Essential Knowledge and Skills, Technology Applications, Grade 5 (§126.10, Adopted 2022); CSTA K-12 Computer Science Standards, Level 1B, the national framework, shown in the Common Core column.',
         standards: [
-            { framework: 'TEKS', code: '126.9(b)(4)(C)', text: 'Use variables within a program.', moduleIds: ['variables'] },
-            { framework: 'TEKS', code: '126.9(b)(4)(B)', text: 'Use conditional statements in an algorithm.', moduleIds: ['if-then'] },
-            { framework: 'TEKS', code: '126.9(b)(4)(E)', text: 'Debug and revise an algorithm.', moduleIds: ['finding-the-bug'] },
+            { framework: 'TEKS', code: '126.10(b)(4)(C)', text: 'Use variables within a program.', moduleIds: ['variables'] },
+            { framework: 'TEKS', code: '126.10(b)(4)(B)', text: 'Use conditional statements in an algorithm.', moduleIds: ['if-then'] },
+            { framework: 'TEKS', code: '126.10(b)(4)(E)', text: 'Debug and revise an algorithm.', moduleIds: ['finding-the-bug'] },
             { framework: 'CCSS', code: 'CSTA 1B-AP-09', text: 'Create programs that use variables to store and modify data.', moduleIds: ['variables'] },
             { framework: 'CCSS', code: 'CSTA 1B-AP-10', text: 'Create programs that include sequences, events, loops, and conditionals.', moduleIds: ['if-then'] },
             { framework: 'CCSS', code: 'CSTA 1B-AP-15', text: 'Test and debug a program or algorithm to ensure it runs as intended.', moduleIds: ['finding-the-bug'] },
         ],
     },
     {
-        grade: '7', subject: 'Technology', status: 'ready',
-        source: 'Texas Essential Knowledge and Skills, Technology Applications, Grade 7 (§126.15, Adopted 2022); CSTA K-12 Computer Science Standards, Level 2 (grades 6 to 8), the national framework, shown in the Common Core column.',
+        grade: '6', subject: 'Technology', status: 'ready',
+        source: 'Texas Essential Knowledge and Skills, Technology Applications, Grade 6 (§126.17, Adopted 2022, in force from 2024-2025), the plain AI course for the 6 to 8 band; CSTA K-12 Computer Science Standards, Level 2 (grades 6 to 8), the national framework, shown in the Common Core column.',
         standards: [
-            { framework: 'TEKS', code: '126.15(b)(6)(A)', text: 'Explain how binary numbers represent data.', moduleIds: ['binary'] },
-            { framework: 'TEKS', code: '126.15(b)(5)(A)', text: 'Explain how information is transmitted across networks.', moduleIds: ['how-the-internet-works'] },
-            { framework: 'TEKS', code: '126.15(b)(3)(B)', text: 'Practice safe and ethical behavior online, including strong passwords.', moduleIds: ['passwords-and-privacy'] },
+            { framework: 'TEKS', code: '126.17(b)(1)(B)', text: 'Analyze the patterns and sequences found in visual representations such as learning maps, concept maps, or other representations of data.', moduleIds: ['learning-from-examples'] },
+            { framework: 'TEKS', code: '126.17(b)(1)(C)', text: 'Define abstraction and distinguish between generalized information and specific information in the context of solving a problem or completing a task.', moduleIds: ['learning-from-examples'] },
+            { framework: 'TEKS', code: '126.17(b)(6)(A)', text: 'Use digital tools to transform data in order to identify and discuss trends and make inferences.', moduleIds: ['wrong-and-sure'] },
+            { framework: 'TEKS', code: '126.17(b)(9)(D)', text: 'Describe how information can be exaggerated or misrepresented online.', moduleIds: ['wrong-and-sure'] },
+            { framework: 'TEKS', code: '126.17(b)(9)(A)', text: 'Adhere to local acceptable use policy (AUP) and practice safe, ethical, and positive online behaviors.', moduleIds: ['fair-examples', 'staying-in-charge'] },
+            { framework: 'TEKS', code: '126.17(b)(8)(A)', text: 'Identify the impact of a digital footprint.', moduleIds: ['staying-in-charge'] },
+            { framework: 'TEKS', code: '126.17(b)(9)(B)', text: 'Discuss and define intellectual property and associated terms, including copyright law, permission, fair use, creative commons, open source, and public domain.', moduleIds: ['staying-in-charge'] },
+            { framework: 'TEKS', code: '126.17(b)(4)(C)', text: 'Transfer current knowledge to the learning of newly encountered technologies.', moduleIds: ['staying-in-charge'] },
+            { framework: 'CCSS', code: 'CSTA 2-DA-09', text: 'Refine computational models based on the data they have generated.', moduleIds: ['learning-from-examples', 'fair-examples'] },
+            { framework: 'CCSS', code: 'CSTA 2-DA-08', text: 'Collect data using computational tools and transform the data to make it more useful and reliable.', moduleIds: ['wrong-and-sure'] },
+            { framework: 'CCSS', code: 'CSTA 2-IC-21', text: 'Discuss issues of bias and accessibility in the design of existing technologies.', moduleIds: ['fair-examples'] },
+            { framework: 'CCSS', code: 'CSTA 2-IC-23', text: 'Describe tradeoffs between allowing information to be public and keeping information private and secure.', moduleIds: ['staying-in-charge'] },
+            { framework: 'CCSS', code: 'CSTA 2-IC-20', text: 'Compare tradeoffs associated with computing technologies that affect people\'s everyday activities and career options.', moduleIds: ['staying-in-charge'] },
+        ],
+    },
+    {
+        grade: '9', subject: 'Technology', status: 'ready',
+        source: 'Texas Essential Knowledge and Skills for Career Development and Career and Technical Education, Fundamentals of Computer Science (§127.788, Adopted 2022, in force from 2023-2024; the high school technology applications courses moved into Chapter 127 in 2020), recommended for grades 9 to 12; CSTA K-12 Computer Science Standards, Level 3A (grades 9 to 10), the national framework, shown in the Common Core column.',
+        standards: [
+            { framework: 'TEKS', code: '127.788(d)(6)(A)', text: 'Identify and explain the function of basic computer components, including a central processing unit (CPU), storage, and peripheral devices.', moduleIds: ['inside-the-machine'] },
+            { framework: 'TEKS', code: '127.788(d)(6)(D)', text: 'Describe the differences between an application and an operating system.', moduleIds: ['inside-the-machine'] },
+            { framework: 'TEKS', code: '127.788(d)(6)(E)', text: 'Use various input, processing, output, and primary/secondary storage devices.', moduleIds: ['inside-the-machine'] },
+            { framework: 'TEKS', code: '127.788(d)(4)(B)', text: 'Communicate an understanding of binary representation of data in computer systems, perform conversions between decimal and binary number systems, and count in binary number systems.', moduleIds: ['counting-in-binary'] },
+            { framework: 'TEKS', code: '127.788(d)(4)(E)', text: 'Identify and use the appropriate data type to properly represent the data in a program problem solution.', moduleIds: ['variables-and-decisions'] },
+            { framework: 'TEKS', code: '127.788(d)(4)(G)', text: 'Use arithmetic operators to create mathematical expressions, including addition, subtraction, multiplication, real division, integer division, and modulus division.', moduleIds: ['variables-and-decisions'] },
+            { framework: 'TEKS', code: '127.788(d)(4)(I)', text: 'Communicate an understanding of and use conditional statements within a programmed story, game, or animation.', moduleIds: ['variables-and-decisions'] },
+            { framework: 'TEKS', code: '127.788(d)(4)(J)', text: 'Communicate an understanding of and use iteration within a programmed story, game, or animation.', moduleIds: ['variables-and-decisions'] },
+            { framework: 'TEKS', code: '127.788(d)(4)(L)', text: 'Test program solutions by investigating intended outcomes.', moduleIds: ['variables-and-decisions'] },
+            { framework: 'TEKS', code: '127.788(d)(3)(B)', text: 'Debug and solve problems using reference materials and effective strategies.', moduleIds: ['working-like-a-programmer'] },
+            { framework: 'TEKS', code: '127.788(d)(5)(A)', text: 'Discuss privacy and copyright laws and model ethical acquisition of digital information by citing sources using established methods.', moduleIds: ['working-like-a-programmer'] },
+            { framework: 'TEKS', code: '127.788(d)(5)(B)', text: 'Compare various non-copyright asset sharing options such as open source, freeware, and public domain.', moduleIds: ['working-like-a-programmer'] },
+            { framework: 'TEKS', code: '127.788(d)(5)(D)', text: 'Explain the value of strong passwords and virus detection and prevention for privacy and security.', moduleIds: ['working-like-a-programmer'] },
+            { framework: 'TEKS', code: '127.788(d)(5)(F)', text: 'Analyze how electronic media can affect reliability of information.', moduleIds: ['working-like-a-programmer'] },
+            { framework: 'CCSS', code: 'CSTA 3A-CS-02', text: 'Compare levels of abstraction and interactions between application software, system software, and hardware layers.', moduleIds: ['inside-the-machine'] },
+            { framework: 'CCSS', code: 'CSTA 3A-DA-09', text: 'Translate between different bit representations of real-world phenomena, such as characters, numbers, and images.', moduleIds: ['counting-in-binary'] },
+            { framework: 'CCSS', code: 'CSTA 3A-AP-13', text: 'Create prototypes that use algorithms to solve computational problems by leveraging prior student knowledge and personal interests.', moduleIds: ['variables-and-decisions'] },
+            { framework: 'CCSS', code: 'CSTA 3A-AP-15', text: 'Justify the selection of specific control structures when tradeoffs involve implementation, readability, and program performance, and explain the benefits and drawbacks of choices made.', moduleIds: ['variables-and-decisions'] },
+            { framework: 'CCSS', code: 'CSTA 3A-AP-20', text: 'Evaluate licenses that limit or restrict use of computational artifacts when using resources such as libraries.', moduleIds: ['working-like-a-programmer'] },
+            { framework: 'CCSS', code: 'CSTA 3A-NI-05', text: 'Give examples to illustrate how sensitive data can be affected by malware and other attacks.', moduleIds: ['working-like-a-programmer'] },
+            { framework: 'CCSS', code: 'CSTA 3A-IC-29', text: 'Explain the privacy concerns related to the collection and generation of data through automated processes that may not be evident to users.', moduleIds: ['working-like-a-programmer'] },
+        ],
+    },
+    {
+        grade: '7', subject: 'Technology', status: 'ready',
+        source: 'Texas Essential Knowledge and Skills, Technology Applications, Grade 7 (§126.18, Adopted 2022); CSTA K-12 Computer Science Standards, Level 2 (grades 6 to 8), the national framework, shown in the Common Core column.',
+        standards: [
+            { framework: 'TEKS', code: '126.18(b)(6)(A)', text: 'Explain how binary numbers represent data.', moduleIds: ['binary'] },
+            { framework: 'TEKS', code: '126.18(b)(5)(A)', text: 'Explain how information is transmitted across networks.', moduleIds: ['how-the-internet-works'] },
+            { framework: 'TEKS', code: '126.18(b)(3)(B)', text: 'Practice safe and ethical behavior online, including strong passwords.', moduleIds: ['passwords-and-privacy'] },
             { framework: 'CCSS', code: 'CSTA 2-DA-07', text: 'Represent data using multiple encoding schemes.', moduleIds: ['binary'] },
             { framework: 'CCSS', code: 'CSTA 2-NI-04', text: 'Model the role of protocols in transmitting data across networks and the Internet.', moduleIds: ['how-the-internet-works'] },
             { framework: 'CCSS', code: 'CSTA 2-NI-05', text: 'Explain how physical and digital security measures protect electronic information.', moduleIds: ['passwords-and-privacy'] },
@@ -48080,6 +48715,9 @@ const COURSE_STORIES = {
     'tech-3': { title: 'The robot birthday', about: 'a birthday party run by a robot that did exactly what it was told', art: 'CS13', alt: 'A birthday table with a small white robot carrying a slice of cake on a plate, children laughing', cast: [], words: ['The robot came in a box on the morning of June\'s birthday party. It was small and white, with two blue lights for eyes, and her aunt had built it. The first thing it did was nothing at all. Nobody had told it anything. It sat on the table like a guest who had forgotten why it came.', 'June\'s aunt, who built robots for a living, showed her the three parts. The buttons on its back were inputs: you press them to tell the robot something. The little screen and the beep were outputs: that is how it shows you something. In between, a program waits for steps. No steps, no robot.', 'June wrote her first program on an index card and typed it in with the buttons. Forward two. Turn left. Beep. The robot rolled two squares across the checkered tablecloth, turned, beeped and stopped dead, because that was the end of the card. It did exactly what it was told, and not one thing more.', 'Serving the cake needed more steps than anyone expected. Pick up a plate. Put a slice on it. Drive to the next guest. Hand it over. Four steps, in order, once for every guest, and there were ten guests. Written out, that was forty lines, and June\'s hand hurt by line twelve.', 'Then her cousin noticed that the same four steps kept repeating. So June wrote them once, inside a loop: repeat ten times. Forty lines became five. The robot served ten plates without a single mistake, and the whole program fit on a card small enough for a pocket.', 'The only disaster was the juice. The card said pour the juice, and nobody had said take the cap off first. The robot tipped the bottle over every cup, very politely, and not a drop came out. Everyone laughed so hard that June\'s grandpa had to sit down.', 'June added one line above the pour: take off the cap. The juice poured, and the robot beeped once, which was the closest it could get to singing. Her aunt said June had just debugged her first program: she found the missing step and fixed it.', 'Every computer works like that robot. Inputs tell it, outputs show you, and a program is the steps in between. The order matters, every step must be there, and a loop lets a few lines do a lot of work.'], more: [{ serial: 'CS93', after: 1, alt: 'A small white robot on a party table, an aunt pointing to its buttons, its screen and its speaker' }, { serial: 'CS94', after: 2, alt: 'The robot rolling two squares across a checkered tablecloth, turning left and beeping' }, { serial: 'CS95', after: 3, alt: 'A girl writing a long list of steps on index cards, her hand tired, the birthday cake waiting' }, { serial: 'CS96', after: 5, alt: 'The robot politely tipping a capped juice bottle over a cup while everyone laughs' }, { serial: 'CS97', after: 6, alt: 'Juice pouring into cups as the girl adds one line to her card and the robot beeps' }] },
     'tech-5': { title: 'The game that kept score', about: 'a class that built a game and learned what a program remembers and decides', art: 'CS14', alt: 'A classroom with a projected simple game, a paddle and ball, a scoreboard, students pointing at one line of code on a whiteboard', cast: [], words: ['The class built a game in a week. On Monday it had a ball and a paddle and no memory: every point was forgotten the moment it was scored. The ball bounced, the paddle moved, and nothing that happened mattered to anything that happened next.', 'Tuesday brought variables: a box named score, a box named lives, and the game began to remember. Score went from 0 to 5 to 8, and lives went down from 3 to 2 when the ball got past. The names stayed the same all game long; only the numbers inside them changed.', 'Wednesday was for deciding. IF the ball touches the paddle THEN bounce, ELSE lose a life. IF lives is 0 THEN show the end. The game did not decide anything by itself; it asked yes-or-no questions the class had written and took whichever road the answer pointed down.', 'The questions had to be asked again and again, many times every second, or the ball would slip past the paddle between two checks. So the whole program sat inside a loop: move the ball, check the paddle, check the lives, draw the screen, and start again. A loop is a set of steps a program repeats.', 'Thursday, the game was wrong. It ended after two lost balls, not three. Nobody deleted anything. They read the steps one at a time, and found the line that checked lives before taking one away instead of after. One line moved, and the game was fixed.', 'Then they tested it the way players would try to break it. One student held the paddle at the very edge. Another pressed two keys at once. A third just let the ball go by, to see whether the end screen appeared. Every test that passed was one less surprise on Friday.', 'Friday was for playing, and for one last box. A variable named best kept the highest score anyone had reached, and IF a new score beat it, THEN best took the new number. By lunch the best score was 41, and a quiet student who had written the loop held it.', 'The game was simple, but it held the whole of programming: boxes that remember, questions that decide, a loop that keeps asking, and a careful reading when something goes wrong. Everything bigger is built from the same four parts. The class kept the game on the classroom computer, and the best score has changed hands eleven times since.'], more: [{ serial: 'CS153', after: 1, alt: 'A whiteboard with two boxes labeled score and lives, numbers crossed out and rewritten' }, { serial: 'CS154', after: 2, alt: 'A ball meeting a paddle beside a fork in the road: bounce, or lose a life' }, { serial: 'CS155', after: 3, alt: 'A circle of arrows around four steps: move the ball, check the paddle, check the lives, draw the screen' }, { serial: 'CS156', after: 5, alt: 'Three students testing a game, one holding the paddle at the very edge of the screen' }, { serial: 'CS157', after: 6, alt: 'A game screen showing best score 41, a proud student at the keyboard' }] },
     'tech-7': { title: 'The message across the ocean', about: 'a photo that crossed the ocean in pieces and the lock that guarded the account it came from', art: 'CS15', alt: 'A teenager at a laptop with a beach sunset photo on screen, a world map behind with a dotted route across the ocean, a phone showing a code', cast: [], words: ['The photo was a sunset on a beach in Portugal, sent to a cousin in Texas. It did not travel as a photo. It was cut into packets, a few thousand of them, each stamped with an address that was a number.', 'Each packet took whatever route was open: an undersea cable, a switch in London, a tower outside Dallas. Routers along the way read the address and passed each packet one step closer, the way sorting offices pass mail. The packets arrived out of order and were put back together in the right one.', 'Two packets never arrived at all. The cousin\'s computer noticed the gaps in the numbers and asked for those pieces again, and they came a moment later by a different road. Nobody saw it happen. The whole trip took less than a second.', 'The cousin\'s name for the site was words, but the address the packets used was numbers. A directory called DNS had turned one into the other before the first packet left. The little lock in the address bar meant every packet traveled sealed, scrambled for anyone who might open it along the way.', 'Underneath everything, the sunset was ones and zeros. Every tiny dot of color was a set of numbers. Every number was a row of switches, on and off, in places worth 1, 2, 4, 8 and on up. The orange of the sky was just a long row of lights.', 'The next morning a message arrived saying the account was locked and to click now. It even used the real company\'s colors. The cousin did not click. Hurry is the tell: whoever wants you not to think will tell you there is no time.', 'He went to the site the usual way, typing the address himself, entered the long password that was four unrelated words, and answered the code on his phone. His password manager filled in the password on the real site, as it always did. It would have filled in nothing on a fake one, which is one more reason to use one. He found nothing locked at all.', 'The sunset was still there. The scam was not. He sent the photo on to his grandmother in Ohio. It crossed the country the same way it had crossed the ocean, in a few thousand sealed envelopes that knew how to line up. She called within the minute to say it was beautiful.'], more: [{ serial: 'CS208', after: 0, alt: 'A sunset photo of a beach in Portugal cut into many small numbered envelopes' }, { serial: 'CS209', after: 1, alt: 'Envelopes traveling by undersea cable, through London and on to a tower outside Dallas' }, { serial: 'CS210', after: 3, alt: 'An address bar with a small lock beside a website name' }, { serial: 'CS211', after: 4, alt: 'The orange sky of the photo drawn as a long row of tiny lights, some on and some off' }, { serial: 'CS212', after: 6, alt: 'A boy typing a long password of four unrelated words while a code arrives on his phone' }] },
+    'tech-k': { title: 'Mike and the robot that listened', about: 'a red robot that did nothing until Mike told it every step', art: 'CS373', alt: 'A small red robot with round eyes and four arrow buttons on its back, in an open shoebox on a kitchen table, a six-year-old boy reaching for it', cast: ['Mike'], words: ['Mike\'s uncle brought the robot in a shoebox. It was the size of a mug, red with two round eyes, and it had four arrow buttons on its back. Mike pressed every button at once, and the robot did nothing at all. It just blinked at him, like it was waiting for something.', 'His uncle laughed. It cannot see you, and it cannot hear you, he said. It only knows what you press. The buttons tell it, and its wheels and its beep show you what it heard. Tell first, and then it shows you.', 'So Mike pressed up. The robot rolled forward one square on the kitchen tiles and stopped. He pressed up, up, up, and it rolled three squares and bumped the table leg. Every press was one step, and it did the steps in the order he pressed them, nothing more and nothing less.', 'Mike wanted the robot to carry a crayon to his uncle across the room. He pressed a long line of arrows without thinking, and the robot wandered off under a chair. Plan the steps first, his uncle said, and press them after. So Mike drew the path on paper: up, up, right, right, up.', 'He pressed the five arrows and let go. The robot rolled up two squares, went right for two, then up one more, and stopped at his uncle\'s feet with the crayon. First, next, then, last, his uncle said. That is a plan a robot can follow. Mike called it his robot list.', 'The next job was longer. The kitchen was twelve squares wide, and pressing up twelve times made Mike\'s thumb tired. His uncle showed him the little loop button. Press up, then the loop, then the number twelve, and the robot does that one step twelve times. Three presses instead of twelve.', 'Then the robot bumped a cup and stopped. Mike did not press every button again. He looked at his list, found the one step that was wrong, and changed just that one. The robot rolled the rest of the way. Fixing one wrong step, his uncle said, is how every robot gets fixed.', 'That night the robot sat on Mike\'s shelf, blinking and waiting. Mike knew now that it was not being lazy. It was listening for the next list. A robot only does what it is told, one step at a time, so the telling has to be right. He fell asleep planning tomorrow\'s path.'], more: [{ serial: 'CS374', after: 1, alt: 'An uncle in a work shirt laughing beside a boy and the robot, pointing at its buttons' }, { serial: 'CS375', after: 2, alt: 'The red robot rolling across kitchen tiles and bumping a table leg' }, { serial: 'CS376', after: 3, alt: 'A boy drawing an arrow path on paper while the robot peeks out from under a chair' }, { serial: 'CS377', after: 5, alt: 'A boy pressing a loop button on the robot, a long kitchen floor of tiles ahead of it' }, { serial: 'CS378', after: 6, alt: 'The robot stopped against a fallen cup, a boy checking his list of arrows' }] },
+    'tech-6': { title: 'Frederick and the jar of pond water', about: 'a model that counted pond creatures fast and wrong for the one it had seen least', art: 'CS379', alt: 'A young man of twenty in a white lab coat at a bench with a jar of pond water, a microscope and a laptop showing tiny creatures', cast: ['Frederick'], words: ['The jar of pond water had been on Frederick\'s bench for a week, and the professor wanted a count of each tiny creature in a drop of it. So the professor handed him a program that had learned to tell the creatures apart from pictures, and eight thousand labeled pictures to teach it with.', 'Frederick fed the folder into the program and watched a bar creep across the screen. Nobody had written a rule that says a paramecium is slipper-shaped or that a rotifer has a crown of beating hairs. It had only the pictures and their labels, and it kept whatever the paramecia shared and whatever the rotifers shared. By evening it had a model.', 'The first drop went under the microscope camera, and the model counted it in nine seconds: three hundred and ten paramecia, forty amoebas, two rotifers. Frederick checked the count by eye, because his professor had taught him that a number you have not checked is a hope, not a result. The paramecia were right, and so were the amoebas. But there were eleven rotifers, not two.', 'The model had called nine rotifers paramecia, with the same calm number it gave everything else. Frederick opened the folder and started counting labels. Seven thousand paramecia, six hundred amoebas, and fewer than a hundred rotifers, most of them blurred. The model had barely met a rotifer in its life.', 'Nothing in the program was against rotifers. They had simply been rare in the pile, because whoever collected the pictures collected what was easy to find. The model was right on average and wrong for the creature it had seen least, and it could not tell, because it had no way to know what it had missed.', 'So Frederick spent two days making rotifers less rare. He photographed every one he could find, sharp, from every angle, with the crown of hairs open and closed, until there were nine hundred good pictures. He taught the model again. The next drop came back with ten rotifers, and by eye there were ten.', 'The professor asked what Frederick had learned, and he said: the machine is fast and the microscope is true. He would let the model make the first count of every drop and check a share by eye, because a model only knows the pile it was fed, and the pond does not care about the pile.', 'On the last page of his notebook he wrote the rule he would keep: use the fast guess, check it against something real, and always ask who was missing from the examples. Then he went back to the jar, where something with a crown of hairs turned slowly in the light.'], more: [{ serial: 'CS380', after: 1, alt: 'A progress bar creeping across a laptop screen beside a folder of eight thousand labeled pictures of pond creatures' }, { serial: 'CS381', after: 2, alt: 'A young man counting creatures by eye through a microscope while the laptop shows its nine-second count' }, { serial: 'CS382', after: 3, alt: 'Nine rotifers with crowns of hairs each wrongly ringed as paramecia, the same calm score beside every one' }, { serial: 'CS383', after: 5, alt: 'A young man photographing rotifers from every angle, hundreds of sharp pictures spread across the bench' }, { serial: 'CS384', after: 7, alt: 'A notebook page with three lines written on it, a jar of pond water glowing in the window light' }] },
+    'tech-9': { title: 'Savanah and the buses that ran on time', about: 'a bus board built by a small city team, its bug at the edge, and the rules it ran under', art: 'CS385', alt: 'A confident woman in her thirties standing before a wall screen of bus routes in a city transit office, a small team at laptops behind her', cast: ['Savanah'], words: ['Savanah had not written a line of code in her life, but the city\'s buses were late and the board that was supposed to say so was always wrong. So she did what she always did: she found the people who understood it, and asked them to show her.', 'The team was three coders in a room above the depot. First they showed her the machine. A small computer on every bus had a CPU that did the work, memory that held the last minute, and storage that kept the day\'s log. The bus number went out over the radio as one byte, eight switches, enough for any number up to 255.', 'Then the program. Every bus on the board was a set of variables with types: route, an integer; minutes late, a real number; doors open, a boolean. A loop ran once a second over every bus, and a conditional chose the color: more than five minutes late, red; more than zero, amber; else green.', 'The bug was at the edge. A bus exactly on time had minutes late of zero, and a line written years earlier treated zero as no data, so a bus perfectly on time vanished from the board. Riders read the empty space as a missing bus.', 'Savanah asked how they had found it, and the method was one she knew from her own work. Read the error. Print the variables at the line you suspect. Shrink the input until the bug stays with one bus. Then look up the reference, which said plainly that zero is a number, not an absence. They fixed one comparison and added the edge to the test list: zero late, midnight, a bus with no driver.', 'The map under the buses came from an open-source library, and the team had read its license before using it: use it, change it, share the changes under the same rules. Savanah had them put the credit on the board\'s about page. A city that asks people to follow rules follows them in public, she said.', 'The last thing she asked about was the login. The board\'s password had been a word and a year, shared by the whole depot. That changed the same afternoon: twelve random characters in a password manager, a second step on the dispatcher\'s phone, and a rule that a leaked password alone opens nothing.', 'On Monday the buses were no more on time than before, but the board told the truth about them, which turned out to be most of what the riders wanted. Savanah stood at the main stop and watched a green bus arrive at zero minutes late, on the board for the first time in years, and smiled.'], more: [{ serial: 'CS386', after: 1, alt: 'A wall screen showing eight blocks of switches that spell each bus number in binary' }, { serial: 'CS387', after: 2, alt: 'A coder at a laptop with variables for a bus listed beside their types: route, minutes late, doors open' }, { serial: 'CS388', after: 3, alt: 'A bus board showing a bus at exactly zero minutes late marked as missing' }, { serial: 'CS389', after: 5, alt: 'A license page for an open-source map library pinned beside the team\'s about page' }, { serial: 'CS390', after: 7, alt: 'A city bus arriving on time under a board that shows it, a woman checking her watch and smiling' }] },
     'math-5': { title: 'The bake sale', about: 'a bake sale where every decimal, fraction and box counted', art: 'CS16', alt: 'A school bake sale table with brownies, lemonade, boxes of cookies, a handwritten price list and a cash box', cast: [], words: ['The bake sale needed a table, a cash box and a price list, and the price list was where the decimals lived. Brownies were 1.25, lemonade 0.75. A brownie and a lemonade: line up the points, add the cents, add the dollars, 2.00. The first customer paid with a five, and the change was decimals in reverse: 5.00 minus 2.00, three dollars back.', 'Six lemonades for one family meant multiplying a decimal: six times 75 cents. Six times 75 is 450, and the price had two decimal places, so the answer did too: 4.50. Four dollars fifty, which the family\'s youngest checked by counting out eighteen quarters.', 'The brownies came from a recipe that made a tray, and half the tray had been eaten by breakfast. Half of what was left went to the sale: half of a half, a quarter of the tray. Multiplying by a fraction had made the brownies fewer, which is exactly what fractions do.', 'The cookies came in boxes of 24, and 288 cookies had been baked: how many boxes? Ten boxes used 240, two more used the 48, twelve boxes on the table. Checked backward, twelve times twenty-four was 288, and nobody had to count a single cookie twice.', 'The table sat on a grid painted on the gym floor, and the lemonade stand was three across and two up from the corner, the point (3, 2). The cash box was a box: four cookies long, three wide, two layers high, room for twenty-four cookies.', 'Every hour someone made dots on a line plot for the brownies sold: eight, ten, eleven, nine. The tallest stack showed the busiest hour was the third, just after lunch, and next year the brownies would be ready for it. A line plot does not tell you why. It tells you where to look.', 'Thirty-eight brownies sold at 1.25 each came to 47.50. At the end, the total came from a long sum with brackets in it, and the brackets went first: 38 times 1.25, then the lemonade, then the cookies. The sale had made 143 dollars and 50 cents.', 'Decimals, fractions, division, a grid, a box, a line plot and brackets. Nobody at the table would have called it a math test, but every number on it was one. The class counted the money twice anyway, on two sheets of paper side by side, and both said the same thing. That was the best part.'], more: [{ serial: 'CS158', after: 0, alt: 'A customer handing a five-dollar bill across a bake sale table, three dollars in change coming back' }, { serial: 'CS159', after: 1, alt: 'Eighteen quarters counted out beside six cups of lemonade' }, { serial: 'CS160', after: 3, alt: 'Twelve boxes of cookies stacked on a table beside an empty tray' }, { serial: 'CS161', after: 4, alt: 'A gym floor grid with a lemonade stand at three across and two up from the corner' }, { serial: 'CS162', after: 5, alt: 'A line plot with four stacks of dots, the tallest over the third hour' }] },
     'reading-5': { title: 'The play', about: 'a class play, and everything the script did not say out loud', art: 'CS17', alt: 'A school stage with two children and a bicycle prop, a narrator at the side, an audience of families', cast: [], words: ['The class was putting on a play about two friends who fight over a bicycle and make up. The topic was two friends. The theme, which took a week of rehearsal to find, was that friendship survives a fight. The topic was two words; the theme was a sentence.', 'The play had come from a short book, and the class read both. The book spent three pages inside the younger friend\'s head. The play had no room for that, so it showed her feelings in what she did: she walked past the bicycle twice without looking at it. Same story, two different jobs.', 'The script was in first person for one scene, the narrator saying I, and the audience only knew what she knew. Then the camera moved to the corner: third person, she and he, and suddenly the audience could see the bicycle hidden behind the shed that neither friend could. That was the whole trick of the play.', 'One line said the older friend had cold feet. A first grader in the front row asked why nobody brought him socks. An idiom, said the narrator, not skipping a beat. It means he was nervous. The audience laughed, and the first grader learned a new phrase.', 'When a parent asked afterward how they knew the ending was happy, the cast pointed to the last line. The two friends ride off on the bicycle together, one pedaling and one on the handlebars. A claim about a story needs a line behind it, and that line was the evidence.', 'The week before, someone had written to the principal asking to cancel the play because it took time from math. The class read the letter the way they had learned. The claim was clear. The reason was time. The evidence was missing: no numbers, no schedule, nothing anyone could check.', 'So the class wrote back, and this time the evidence was there: rehearsals had happened at lunch, and not a minute of math had been lost. The principal read both letters and let the play go on. An argument with evidence beat one without. The class pinned both letters to the bulletin board, side by side.', 'After the last bow, the teacher said the play had used every skill of the year: theme, point of view, idioms, evidence, comparing two versions and weighing an argument. The first grader in the front row said it was a good play. That was also true.'], more: [{ serial: 'CS163', after: 1, alt: 'A short book and a play script side by side, the book open to three pages of thoughts' }, { serial: 'CS164', after: 2, alt: 'A stage seen from the corner, a bicycle hidden behind a painted shed' }, { serial: 'CS165', after: 3, alt: 'A first grader in the front row holding up a pair of socks, puzzled' }, { serial: 'CS166', after: 4, alt: 'Two friends riding one bicycle across the stage, one pedaling and one on the handlebars' }, { serial: 'CS167', after: 6, alt: 'A principal at a desk reading two letters side by side' }] },
     'reading-6': { title: 'The editorial', about: 'a student newspaper editorial and the week it took to write one honest argument', art: 'CS18', alt: 'A student at a laptop with a printed draft covered in red marks, a newspaper page on the wall behind', cast: [], words: ['The claim was simple: the school should start an hour later. The first draft had five reasons and three of them were the writer\'s cousin liking it. A reason has to hold the claim up, said the editor, and the cousin held nothing. Two reasons stayed: teenagers sleep late by biology, and rested students learn more.', 'Each reason needed something under it. For the first, a doctors\' group that had studied teenagers\' sleep. For the second, a school district that had moved its start later and measured more sleep and better grades. Evidence a reader could check, not a feeling a reader had to trust. The editor circled every claim without a source until the page looked spotted.', 'The tone was the next fight. The first draft sounded angry, and angry writers get skipped. The second draft was warm and a little funny, and the mood a reader was left with was that the writer could be trusted.', 'Along the way a word had to be looked up: somnolent, from the root somn, sleep, the same root as insomnia. The writer liked it so much that it went into the headline, then came out again, because a headline that sends readers to a dictionary loses them.', 'Then came the part the editor called fairness: the other side. Some parents worried that a later start meant later practices and later dinners. The editorial said so plainly and answered it: many schools that moved their bells moved their practices to match.', 'The last read-through asked one question of every paragraph: is it doing the same job? One paragraph about the cafeteria was not, and it went. What was left was one central idea, held up by reasons that held, in a voice a reader would sit with.', 'The layout editor wanted a pull quote, one line big enough to read from across the room. The writer chose the sentence with the evidence in it, not the one with the feeling. A reader skimming the page would still get the strongest part. Evidence travels farther than anger.', 'It ran on the front page. The principal read it, wrote a letter back, and put the question on the next school board agenda. Nothing changed that year, but the argument was in the room, and it was a good one. The writer kept the red-marked first draft, because it showed how far the argument had come.'], more: [{ serial: 'CS183', after: 0, alt: 'Five index cards on a desk, three of them about a cousin crossed out' }, { serial: 'CS184', after: 1, alt: 'A notebook with a source written under each reason, the sources circled' }, { serial: 'CS185', after: 3, alt: 'A dictionary open to somnolent beside a headline draft with the word crossed out' }, { serial: 'CS186', after: 5, alt: 'A draft with one paragraph about the cafeteria cut away with scissors' }, { serial: 'CS187', after: 7, alt: 'A school newspaper front page with the editorial and a large pull quote' }] },
@@ -48929,6 +49567,177 @@ STORIES['food-webs-4'] = {
         'More links mean more ways to survive a loss. That is why a meadow full of different living things stays alive.',
     ],
 };
+// Computer science, K to 2 (2026-09-28, pass FS): four stories at the kindergarten length with five pictures each.
+STORIES['tell-and-show'] = {
+    about: 'a tablet that stayed dark until Nia told it something',
+    more: [{ serial: 'S2703', after: 2, alt: 'A finger tapping a tablet screen as a cat picture lights up' }, { serial: 'S2704', after: 3, alt: 'The tablet playing a drum picture, sound coming from its speaker' }, { serial: 'S2705', after: 4, alt: 'A girl typing her name on a keyboard, big blue letters on the screen' }, { serial: 'S2706', after: 5, alt: 'A happy girl holding the tablet, the screen bright with pictures' }],
+    title: 'The quiet tablet', art: 'S2702', cast: [],
+    alt: 'A girl looking at a dark, quiet tablet on a kitchen table, a birthday balloon behind her',
+    words: [
+        'Nia got a tablet for her birthday, and it sat on the table doing nothing. The screen was dark and quiet, and she waited for it to start.',
+        'It cannot start on its own, said her brother Sam. You have to tell it something first.',
+        'So Nia tapped the screen with one finger. A picture of a cat lit up, and a small song played from the speaker. Tap, and it shows, said Sam. The tapping part is an input.',
+        'The screen and the speaker are outputs, because they show you things. Nia tapped a drum picture next, and the tablet played a drum. She tapped it again and again and laughed every time.',
+        'Then Sam showed her the keyboard, and she typed her name one letter at a time. Each letter she pressed showed up on the screen, big and blue.',
+        'A tablet does not know what you want until you tell it. Inputs tell. Outputs show.',
+    ],
+};
+STORIES['first-next-then-last'] = {
+    about: 'Leo, who put his shoes on before his socks',
+    more: [{ serial: 'S2708', after: 1, alt: 'A ripped sock pulled over a sneaker, a frowning boy' }, { serial: 'S2709', after: 2, alt: 'A dad kneeling by the shoes, holding up one sock and one shoe' }, { serial: 'S2710', after: 3, alt: 'Four small pictures in a row: socks, shoes, a coat, an open door' }, { serial: 'S2711', after: 4, alt: 'A jam sandwich being made on a park bench, the bread, the jam, the bite' }],
+    title: 'Shoes before socks', art: 'S2707', cast: [],
+    alt: 'A boy on the floor with shoes on and a sock in his hand, a park seen through the window',
+    words: [
+        'Leo was in a hurry to get to the park. He grabbed his shoes and pushed his feet in, and then he reached for his socks.',
+        'The socks would not go on over the shoes. He pulled and pulled, and one sock ripped. Leo sat down on the floor and frowned.',
+        'His dad came in and looked at the shoes. You did the steps, he said, but not in order. Socks first, then shoes.',
+        'Leo took the shoes off and started again. First socks. Next shoes. Then his coat, and last, out the door. It took one minute.',
+        'At the park he made a sandwich with his dad. First bread, next jam, then close it, last a bite. It tasted better in order too.',
+        'Steps in order have a name: an algorithm. First, next, then, last, and the socks go on every time.',
+    ],
+};
+STORIES['do-it-again'] = {
+    about: 'a robot dance that filled a whole board until a loop made it short',
+    more: [{ serial: 'S2713', after: 1, alt: 'A girl with her hand raised, pointing at four claps and one turn' }, { serial: 'S2714', after: 2, alt: 'The board wiped clean with just two lines on it' }, { serial: 'S2715', after: 3, alt: 'A small robot clapping while children cheer around it' }, { serial: 'S2716', after: 4, alt: 'A small card with three loops written on it, held up by a proud child' }],
+    title: 'Clap four times', art: 'S2712', cast: [],
+    alt: 'A teacher at a board covered with a long list of claps, a small robot waiting on the desk',
+    words: [
+        'Miss Ada wrote a dance for the class robot on the board. Clap. Clap. Clap. Clap. Turn. The list filled the whole board, and her marker ran dry.',
+        'Priya raised her hand. There is a pattern, she said. Clap comes four times, and then one turn.',
+        'Miss Ada smiled and wiped the board clean. She wrote two short lines instead: clap four times, then turn. A loop, she said, does the same step again and again.',
+        'The robot read the two lines and clapped four times. It turned, and the class cheered, because the dance was exactly the same.',
+        'Then the class wrote a bigger dance with loops: jump three times, spin two times, clap four times. It fit on one small card.',
+        'A pattern tells you what comes next. A loop says do it again, and says how many times.',
+    ],
+};
+STORIES['safe-online-k'] = {
+    about: 'Omar and the secret word that opened his page',
+    more: [{ serial: 'S2718', after: 1, alt: 'Ben asking Omar for the word, Omar with a finger on his lips' }, { serial: 'S2719', after: 3, alt: 'A game screen asking for an address, a boy walking away to find his teacher' }, { serial: 'S2720', after: 4, alt: 'A boy tapping log off as the bell rings, a small key drawn beside him' }, { serial: 'S2721', after: 5, alt: 'A boy keeping his secret, a finger on his lips, a key on a string' }],
+    title: 'The secret word', art: 'S2717', cast: [],
+    alt: 'A boy at a classroom computer typing a secret word, one hand shielding the keys',
+    words: [
+        'Omar got his very first account on the class computer, with a password all his own. It was a secret word, and it opened his page.',
+        'A boy named Ben asked what the word was. Omar almost said it, and then he stopped. Only a parent or a teacher may know it.',
+        'It is a secret, Omar said. Ben shrugged, and they went to play instead.',
+        'Later a game asked Omar to type his address to win a prize. He knew that his address was private, so he stopped and told his teacher. She said he did exactly the right thing.',
+        'When the bell rang, Omar logged off, so the next person could not get into his page. He felt like the keeper of a small key.',
+        'Keep your password secret. Keep private things private. Be kind, and tell a grown-up.',
+    ],
+};
+// The plain AI course, grade 6 (2026-09-29, pass FT): four stories at the older length with six pictures each.
+STORIES['learning-from-examples'] = {
+    about: 'a bird feeder camera that learned squirrels from two hundred labeled clips',
+    more: [{ serial: 'S2723', after: 1, alt: 'A girl and her grandfather at a kitchen table labeling clips of birds and squirrels, two mugs of cocoa' }, { serial: 'S2724', after: 2, alt: 'Two hundred small clips flowing into a box that keeps only the shared shapes of birds and squirrels' }, { serial: 'S2725', after: 3, alt: 'A feeder door swinging shut just before a squirrel reaches the seed, a girl cheering' }, { serial: 'S2726', after: 4, alt: 'A blue jay with a puffed-up tail landing on the feeder as the door closes on it' }, { serial: 'S2727', after: 5, alt: 'A girl labeling twenty clips of blue jays while her grandfather watches' }],
+    title: 'The bird feeder that learned', art: 'S2722', cast: [],
+    alt: 'A girl aiming an old phone at a bird feeder in a backyard while a squirrel hangs from it',
+    words: [
+        'Maya\'s grandfather was tired of squirrels emptying the bird feeder, so Maya pointed an old phone at it and set it to record every visitor. By Sunday she had two hundred short clips, and a program that was supposed to sort them into birds and squirrels.',
+        'The program came with no rules in it. It could not be told that squirrels have bushy tails, because nobody had written a place to type that. What it wanted instead was examples. Maya sat at the kitchen table and labeled clip after clip, bird, squirrel, bird, bird, until her grandfather brought her cocoa and took a turn.',
+        'When the labeling was done, the program did something Maya could not see. It went through the two hundred clips and kept whatever the birds shared and whatever the squirrels shared, and dropped the rest: the time of day, the light, the particular sunflower seed. What was left, the program called a model.',
+        'On Monday the model met its first new clip and made a guess. Squirrel, it said, 94 out of 100, and the feeder\'s little door swung shut before the squirrel reached the seed. Maya cheered. Her grandfather asked how the program knew, and she found she could not quite say. It had never told her its rule.',
+        'It had never told her, because it had no rule to tell. It had a pattern, pulled from her two hundred labels, and the pattern was only as good as the clips. When a blue jay with a puffed-up tail landed, the door swung shut on a bird. The model had learned that a big tail means squirrel, and nobody had shown it a jay.',
+        'So Maya labeled twenty jays, and the model learned again. That, her grandfather said, is what the machine really is: not a thinker, but a keeper of patterns, and you are the one who decides which examples it sees.',
+    ],
+};
+STORIES['wrong-and-sure'] = {
+    about: 'a chatbot that gave the old iron bridge a date, a builder and a flood that never happened',
+    more: [{ serial: 'S2729', after: 1, alt: 'A family at dinner, a sister asking a question while a boy looks up from his plate' }, { serial: 'S2730', after: 2, alt: 'A librarian opening a drawer of old newspapers, a boy reading a yellowed page about the bridge' }, { serial: 'S2731', after: 3, alt: 'Millions of pages about bridges pouring into a machine that writes one likely word at a time' }, { serial: 'S2732', after: 4, alt: 'A confident paragraph on a screen with the shape of a plaque, a question mark drawn over it' }, { serial: 'S2733', after: 5, alt: 'A report with two columns, how it looked and how it was, a teacher writing in the margin' }],
+    title: 'The bridge that was never built', art: 'S2728', cast: [],
+    alt: 'A boy at a laptop with a chatbot answer on screen and an old iron bridge in a framed photo on the wall',
+    words: [
+        'Theo\'s report on the old iron bridge was due Friday, and the chatbot answered his first question in four seconds. The bridge, it said, was finished in 1887 by an engineer named Samuel Wray, and it had survived the flood of 1913 with only one cracked pier.',
+        'It sounded wonderful. It sounded like a plaque. Theo typed the paragraph straight into his report, and he might have handed it in that way if his sister had not asked, over dinner, who Samuel Wray was. Theo did not know. He had not asked the machine how it knew, and it had not said.',
+        'The next day the librarian pulled a drawer of old newspapers. The bridge was real, and it was finished in 1889, not 1887. There was no engineer named Wray in any issue; the builder was a company from Pittsburgh, and the flood of 1913 had not cracked a pier. It had washed away the road on the far bank.',
+        'Theo felt tricked, until the librarian explained what the chatbot had done. It had read millions of pages about bridges and learned what a paragraph about a bridge usually looks like: a date, a name, a flood. Then it had built one for his bridge, one likely word at a time, with no way to check any of it.',
+        'Sounding sure was part of the pattern, she said, because nearly every page it learned from had been written with confidence. The number it had for Samuel Wray was not a fact. It was the shape of a fact.',
+        'Theo rewrote the report from the newspapers and put the chatbot\'s version beside it in a box, with a title: how it looked, and how it was. His teacher gave the box its own grade. The most useful question, she wrote in the margin, is the one he asked too late: how do you know?',
+    ],
+};
+STORIES['fair-examples'] = {
+    about: 'a kitchen speaker that understood Priya and not her grandmother, and the pile of voices that explained why',
+    more: [{ serial: 'S2735', after: 1, alt: 'A girl speaking slowly into the speaker in her grandmother\'s accent, the speaker showing a puzzled light' }, { serial: 'S2736', after: 2, alt: 'A teacher at a board drawing thousands of hours of voices flowing into a speaker' }, { serial: 'S2737', after: 3, alt: 'A pile of recordings from one city, one empty space where a grandmother\'s voice should be' }, { serial: 'S2738', after: 4, alt: 'A grandmother reading a page of sentences to the speaker while a girl holds up a timer' }, { serial: 'S2739', after: 5, alt: 'A row of very different people each handed a microphone, the machine finally hearing the ones it heard least' }],
+    title: 'The voice it never heard', art: 'S2734', cast: [],
+    alt: 'A girl and her grandmother at a kitchen counter with a small round speaker between them',
+    words: [
+        'The kitchen speaker understood Priya perfectly. It played her songs, set her timers and told her the weather in a cheerful voice. When her grandmother asked it for the same things, it played the wrong song, set no timer, and once answered a question about rain with the price of rice.',
+        'Her grandmother laughed it off, but Priya did not. She spoke to the speaker in her grandmother\'s accent, slowly, and it failed for her too. So it was not the words. It was the voice: the shape of the vowels, the rhythm, the way the sentence rose at the end.',
+        'Priya\'s science teacher explained where a speaker learns to listen. It is trained on recordings, thousands of hours of people talking, each with the words written out. It keeps the patterns those voices share. If nearly all of the voices came from one place, the patterns fit that place and stumble everywhere else.',
+        'Nothing in the speaker was against her grandmother. She had simply been missing, along with everyone who sounded like her, from the pile of recordings someone had collected years before. It had been collected in a city where hardly anyone spoke the way she did. The unfairness was in the pile, not in the machine.',
+        'So Priya did the one thing that changes a model. She found the setting that let the speaker learn a new voice, sat her grandmother in front of it, and had her read a page of sentences. Then another. By the third page the timer worked. By the fifth, the speaker knew the difference between rain and rice.',
+        'A machine that is right for most people can still be wrong for the people it heard least. The fix is never a faster machine. It is asking who is missing, and adding them.',
+    ],
+};
+STORIES['staying-in-charge'] = {
+    about: 'Dev, a science-fair poster, and the postcard rule for anything typed into a machine',
+    more: [{ serial: 'S2741', after: 1, alt: 'A mother leaning over a boy\'s shoulder at a laptop, a postcard held up beside the screen' }, { serial: 'S2742', after: 2, alt: 'A boy deleting his address from a text box, a trail of footprints fading behind a laptop' }, { serial: 'S2743', after: 3, alt: 'A picture of the solar system made of thousands of tiny paintings, a boy writing a credit line on the poster under it' }, { serial: 'S2744', after: 4, alt: 'A boy answering quiz questions with the laptop closed, writing a paragraph by hand' }, { serial: 'S2745', after: 5, alt: 'A boy with a ribbon beside his poster as two judges nod' }],
+    title: 'The postcard rule', art: 'S2740', cast: [],
+    alt: 'A boy at a laptop with a glowing picture of the solar system on screen, a blank poster board and a glue stick beside him',
+    words: [
+        'Dev\'s science-fair poster needed a picture of the solar system and a paragraph to go under it, and the AI tool on his mother\'s laptop offered both in under a minute. The picture was gorgeous. The paragraph was smooth. Dev was already reaching for the glue stick.',
+        'Then the tool asked, helpfully, for his full name, his school and his home address, so it could write him a cover letter to the judges. Dev had typed the first two before his mother looked over his shoulder and said the postcard rule. Anything you type into that box, she said, leaves this laptop and may be kept. Would you write it on a postcard?',
+        'He deleted the school and the address, and kept the first name only. The cover letter could wait; the judges did not need a letter from a machine anyway. What went into the box was part of his digital footprint now, and a footprint is a trail you cannot rake away.',
+        'The picture was the next problem. It looked like a painting, because it was made from millions of paintings and photos that people had made, and those people had names. Dev could not find them, so he wrote on the poster where the picture came from and what tool had made it, the way a book lists its sources.',
+        'The paragraph he threw away. Not because it was wrong, but because it was not his, and the judges would ask him questions the paragraph could not answer for him. He asked the tool to quiz him on the planets instead, closed the laptop, and wrote the paragraph from his own head, twice, until it was better than the smooth one.',
+        'Nothing private goes in, the work inside gets its credit, and the thinking stays yours. Dev won a ribbon. The judges said his answers were the best part.',
+    ],
+};
+// Computer science for grades 9 to 12 (2026-09-29, pass FU): four stories at the older length with six pictures each.
+STORIES['inside-the-machine'] = {
+    about: 'a laptop that would not wake, and the four parts a repair tech checked in order',
+    more: [{ serial: 'S2747', after: 0, alt: 'A power light glowing on a dark screen, a fan spinning behind a vent' }, { serial: 'S2748', after: 2, alt: 'A technician holding a small memory stick beside an empty slot inside the laptop' }, { serial: 'S2749', after: 3, alt: 'A laptop screen showing an operating system starting, a browser and a game waiting as icons' }, { serial: 'S2750', after: 4, alt: 'A finger on the keyboard, a flow drawn on a whiteboard: input, processing, output, storage' }, { serial: 'S2751', after: 5, alt: 'A girl carrying her repaired laptop out of the shop, her essay open on the screen' }],
+    title: 'The laptop that would not wake', art: 'S2746', cast: [],
+    alt: 'A teenager and a repair technician at a workbench with an open laptop, its drive and memory sticks laid out beside it',
+    words: [
+        'Ines\'s laptop had died on the night before her essay was due, or so it seemed. The power light came on, the fan spun, and the screen stayed black. The repair tech, a woman named Dolores, did not panic. She said the machine had four kinds of part and she would check them in order.',
+        'The fan meant the CPU had power, so the processor was probably fine. The black screen could be the screen itself, a peripheral, or it could be that the operating system never started, because starting is the operating system\'s first job. Dolores plugged in an outside monitor. Still black. So the trouble was earlier than the screen.',
+        'She opened the case and pulled a memory stick out of its slot. It was loose, which was enough. Memory holds what the CPU is working on right now, she said, and with a bad stick the CPU has nowhere to put its first thought. Nothing in memory survives a power cut anyway, so the essay was never there.',
+        'The essay was on the drive, the storage that keeps files when the power is off. She reseated the stick and pressed the button. The operating system started, checked the hardware, shared out the CPU and memory, and the desktop appeared with a browser and a game waiting as icons. Those were applications, and they would ask it for the screen and the files.',
+        'Dolores drew the cycle on the whiteboard by the counter: input from the keyboard, processing in the CPU, output to the screen, storage for what should last. Primary storage is memory, fast and forgetful. Secondary storage is the drive, slower and stubborn. Every machine in the shop, phone or server, was the same picture.',
+        'Ines opened the essay. It was exactly where she had left it, because storage does not forget. She did not know yet that the next thing she would learn was how the drive held her sentences as numbers.',
+    ],
+};
+STORIES['counting-in-binary'] = {
+    about: 'eight lanterns on a harbor wall that could send any number up to 255',
+    more: [{ serial: 'S2753', after: 1, alt: 'A boy and a harbor master looking at a row of eight lantern hooks, each hook labeled with a power of two' }, { serial: 'S2754', after: 2, alt: 'A boy adding the places of lit lanterns on a slate: eight, two and one' }, { serial: 'S2755', after: 3, alt: 'Lanterns being lit from the largest place down as a boy works out thirteen' }, { serial: 'S2756', after: 4, alt: 'A row of lanterns rolling over like an odometer, the rightmost going dark and the next lighting' }, { serial: 'S2757', after: 5, alt: 'A boy at a laptop where eight small squares stand for one byte of a photograph' }],
+    title: 'The eight lanterns', art: 'S2752', cast: [],
+    alt: 'Eight lanterns in a row on a stone harbor wall at night, some lit and some dark, a boat waiting offshore',
+    words: [
+        'The old harbor wall had eight iron hooks, and Tomas asked the harbor master what they were for. Lanterns, she said. Before radio, the keepers used them to tell boats a number: which berth to take, how many hours until the tide. Eight lanterns, and any number from zero to two hundred and fifty-five.',
+        'Tomas did not believe eight lanterns could say that many things until she explained the hooks. The one on the right was worth one. The next was worth two, then four, then eight, sixteen, thirty-two, sixty-four and one hundred and twenty-eight, each hook twice the one to its right. A lit lantern meant that place was on. A dark one meant off.',
+        'To read a number you added the lit places. Lit, dark, lit, lit on the four right-hand hooks was eight and two and one: eleven. Tomas wrote it on a slate as 1011 and saw what a computer sees, a row of switches.',
+        'To send a number you worked from the biggest hook down. Thirteen? One hundred and twenty-eight was too big, and so was everything down to sixteen. Eight fit, with five left over, and then four fit, with one left over. Two did not fit, but one did, so thirteen was 1101, and Tomas lit the lanterns himself.',
+        'Then she showed him counting. One lantern lit meant one; for two, the first went dark and the second lit; for three, both lit; for four, the third lit and the first two went dark. Every time the right-hand lantern would have to show two, it went dark and passed one to the left. A car odometer does the same, rolling nine back to zero and turning the next wheel.',
+        'That night Tomas opened a photograph on his laptop and thought about the wall. Every dot of color was three numbers, each held in eight switches. The whole picture was lanterns, millions of them, lit and dark, and the machine read them the way he had.',
+    ],
+};
+STORIES['variables-and-decisions'] = {
+    about: 'a vending machine program that counted change with a modulus and failed at the edges',
+    more: [{ serial: 'S2759', after: 0, alt: 'A whiteboard listing four variables with their types: price, paid, change, done' }, { serial: 'S2760', after: 1, alt: 'A calculation on a screen: change divided by twenty-five, and the remainder left over' }, { serial: 'S2761', after: 2, alt: 'A flow of a program: a loop that keeps asking for coins while paid is less than price' }, { serial: 'S2762', after: 3, alt: 'A cardboard vending machine giving too many coins as two students stare at the screen' }, { serial: 'S2763', after: 5, alt: 'A test list on paper with edge cases checked off: exact change, zero, a large bill' }],
+    title: 'The machine that gave change', art: 'S2758', cast: [],
+    alt: 'Two students at a laptop beside a cardboard vending machine model, coins spread on the table',
+    words: [
+        'The workshop\'s vending machine was cardboard, but the program that ran it had to be real. Rosa and Ben started with the variables, and their teacher made them name the type of each. Price was an integer in cents. Paid was an integer too. Change was an integer, and done was a boolean, true when the machine had finished.',
+        'Change was the interesting part. If change was 85 cents, how many quarters? The whole part of 85 divided by 25 was 3, the integer division. What was left, 85 % 25, was 10: the modulus, the remainder. Ten cents was a dime, and the remainder of 10 % 10 was zero, so no pennies. Every coin was one more division and one more remainder.',
+        'The program was a sequence with a loop in it. While paid was less than price, ask for another coin and add it. When the loop ended, a conditional decided: if paid was greater than price, give change; else give nothing. Then set done to true.',
+        'It worked on the first three tries and failed on the fourth. Ben paid the exact price and the machine gave him a quarter. They read the conditional again. It said greater than or equal, not greater than, and one wrong symbol had turned exact change into a gift.',
+        'So they tested at the edges on purpose: exact change, zero paid, a twenty-dollar bill for a fifty-cent drink, and a price of zero. The last one made the loop end before it began, which was right, and the big bill made 1950 cents of change, seventy-eight quarters, which was also right and also silly. They added a rule about bills.',
+        'Rosa kept the test list taped inside the cardboard door. A program, she wrote at the bottom, does exactly what it says, so say exactly what you mean, and check the edges before anyone else does.',
+    ],
+};
+STORIES['working-like-a-programmer'] = {
+    about: 'an app that crashed, a map library with a license, and a password that had leaked',
+    more: [{ serial: 'S2765', after: 0, alt: 'A student reading an error message and printing a variable at the suspect line' }, { serial: 'S2766', after: 1, alt: 'An input file being cut in half again and again until one line remains' }, { serial: 'S2767', after: 2, alt: 'A license page for an open-source map library, with the words use, change and share marked' }, { serial: 'S2768', after: 3, alt: 'A phone showing a one-time code beside a laptop login screen, a password manager open' }, { serial: 'S2769', after: 4, alt: 'A polished web page with a question written over it: who wrote this, when, and why' }],
+    title: 'The license on the map', art: 'S2764', cast: [],
+    alt: 'A student at a laptop showing a crashed school app, a printed license page and a phone with a code beside it',
+    words: [
+        'The club\'s app for finding lost water bottles crashed every Tuesday, and Kwame was the one who read the error. It named a line, so he printed the variables at that line and saw that the date was empty on Tuesdays, when the janitor\'s list came in blank. That was the bug: not the app, but an empty input the app had never been told about.',
+        'Finding it had taken a method. He had shrunk the input, cutting the list in half and running the app again, until one line remained and the crash stayed with it. Then he looked up the function in its reference, which said in plain words that it could not take an empty date. A minute of reading beat an hour of guessing.',
+        'The map in the app came from a library, and the library came with a license. Kwame read it because his teacher had made reading licenses a habit: open source, use it, change it, share what you change under the same rules. A different map they had wanted was freeware, free to use but not to change, and one old atlas was public domain, nobody\'s and everybody\'s. They cited the library on the about page.',
+        'Then the club\'s login stopped working, and the reason arrived by email: their shared password, a word and a year, had leaked from another site. Kwame set a new one, twelve random characters kept in a password manager. He turned on the second step too, a code on the club phone, so a leaked password alone would open nothing.',
+        'That week a fast, polished page claimed the school would close for a snow day. It looked official. It was not, and it had no author, no date and an ad for a game at the bottom. Kwame taught the club his three questions for any page: who wrote it, when, and what do they gain.',
+        'The app ran the next Tuesday without a crash. The bug had been small, the license had been read, the password was long, and nobody had believed the snow day.',
+    ],
+};
 const STORY_WORD_LIMIT = { early: 200, older: 350 };
 function storyFor(moduleId) { return STORIES[moduleId] || null; }
 // What a whole course is reaching for, in one line (2026-09-24, Mikey): the subtitle on a printed story book's cover,
@@ -48986,6 +49795,9 @@ const COURSE_GOALS = {
     'science-7': 'Understanding bodies, weather, selection and the flow of energy through life',
     'history-7': 'Knowing Texas from its first peoples to the modern state',
     'tech-7': 'Understanding bits, networks and how to stay safe on them',
+    'tech-k': 'Telling a computer what to do: inputs, steps in order, loops and staying safe',
+    'tech-6': 'Understanding what a machine that learns really does, where it goes wrong, and who stays in charge',
+    'tech-9': 'Understanding the parts of a machine, binary, the parts of a program, and the working habits of a programmer',
     'math-8': 'Reasoning with lines, powers, roots and the language of functions',
     'reading-8': 'Reading with a critical eye: flawed reasoning, irony, bias and theme across texts',
     'writing-8': 'Writing an essay from a thesis through proof to a conclusion',
@@ -49155,6 +49967,10 @@ const COLOR_PAGES = {
     'hard-or-soft': ['D160', 'A rock, a pillow, a sponge and a towel laid out on a mat'],
     'magnets': ['D161', 'A horseshoe magnet lifting a chain of paper clips'],
     'habitats': ['D162', 'A hermit crab beside a spiral shell in a tide pool'],
+    'tell-and-show': ['D163', 'A child tapping a tablet screen while a cat picture lights up'],
+    'first-next-then-last': ['D164', 'A pair of socks, a pair of shoes and a coat laid out in a row on a bed'],
+    'do-it-again': ['D165', 'A small robot clapping its hands beside a line of children clapping'],
+    'safe-online-k': ['D166', 'A child at a computer with a finger on the lips, a key on a string around the neck'],
 };
 // The Wise Human. Copyright (c) 2026. Source-available; not for reuse. See LICENSE.md.
 // =====================================================================
@@ -49285,7 +50101,7 @@ function PinInput({ value, onChange, placeholder, style, onEnter = null }) {
 }
 // A stamp of when this copy of the page was built, so a stale page in a cache can be told apart
 // from a fresh one at a glance. Written by the build, never by hand.
-const BUILD_STAMP = '2026-09-28 11:00 PM CDT';
+const BUILD_STAMP = '2026-09-29 07:26 AM CDT';
 function ContactLine({ onOpen, inline = false }) {
     return (react_1.default.createElement("p", { className: "edu-no-print", style: { textAlign: 'center', marginTop: inline ? 0 : 28, fontSize: inline ? 14 : 12, color: C.muted, margin: inline ? '0' : undefined } }, onOpen
         ? react_1.default.createElement("button", { type: "button", onClick: onOpen, style: { background: 'none', border: 'none', color: C.muted, fontFamily: FONT, fontSize: 12, cursor: 'pointer', padding: 0, textDecoration: 'underline' } }, "Contact us")
@@ -53752,9 +54568,257 @@ function BalanceGame({ game, round, onScore = null }) {
             return chip(k, 68 + (at % 4) * 8, 54 + Math.floor(at / 4) * -7, k, false); return chip(k, 10 + k * (80 / Math.max(1, deck.weights.length - 1)), 87, k, false); }),
         react_1.default.createElement(Done, { show: false })));
 }
-const GAME_OF = { dots: DotsGame, pairs: PairsGame, sort: SortGame, maze: MazeGame, jigsaw: JigsawGame, pong: PongGame, sprint: SprintGame, order: OrderGame, build: BuildGame, fix: FixGame, mix: MixGame, debug: DebugGame, ptable: PtableGame, evidence: EvidenceGame, catch: CatchGame, path: PathGame, buckets: BucketsGame, jump: JumpGame, map: MapGame, balance: BalanceGame };
+// Walk the Robot (2026-09-28, pass FS, the fifteenth kind, for computer science K to 2): the child writes the program.
+// Tap an arrow to give the robot a step, tap a step to take it back (with every step after it), tap Go and watch the
+// robot follow the steps to the star. A bump into a rock or the edge stops the run and keeps the steps, so one can be
+// changed; every robot home in the round is the score. The lesson's idea is the rule of the game: the robot does exactly
+// the steps it is told, in order, and nothing more. Drawn with B on the paper board, like every game.
+function WalkGame({ game, round, onScore = null }) {
+    const deck = ROBOT_DECKS.walk || [];
+    const cmds = ['U', 'L', 'D', 'R'];
+    const glyph = { U: '↑', R: '→', D: '↓', L: '←' };
+    const word = { U: 'up', R: 'right', D: 'down', L: 'left' };
+    const [k, setK] = (0, react_1.useState)(0);
+    const [prog, setProg] = (0, react_1.useState)([]);
+    const [shown, setShown] = (0, react_1.useState)(-1);
+    const [ticks, setTicks] = (0, react_1.useState)(0);
+    const [done, setDone] = (0, react_1.useState)(false);
+    const p = deck.length ? deck[(round * 5 + k) % deck.length] : null;
+    (0, react_1.useEffect)(() => { setK(0); setDone(false); setTicks(0); }, [round]);
+    (0, react_1.useEffect)(() => { setProg([]); setShown(-1); }, [p]);
+    const res = (0, react_1.useMemo)(() => (p ? runRobot(p, prog, false) : null), [p, prog]);
+    const total = res ? res.steps.length : 0;
+    const finished = shown >= 0 && shown >= total;
+    const home = finished && res && !res.crash && res.home;
+    (0, react_1.useEffect)(() => { if (done || home)
+        return undefined; const t = setInterval(() => setTicks((n) => n + 1), 1000); return () => clearInterval(t); }, [done, home]);
+    (0, react_1.useEffect)(() => { if (done && onScore)
+        onScore(ticks, 'low'); }, [done]); // every robot home: a lower time is a new best
+    (0, react_1.useEffect)(() => { if (shown < 0 || shown >= total)
+        return undefined; const t = setTimeout(() => setShown((n) => n + 1), 420); return () => clearTimeout(t); }, [shown, total]);
+    if (!p || !res)
+        return null;
+    const sets = Math.min(4, deck.length);
+    const running = shown >= 0 && shown < total;
+    const MAX = 8;
+    // Adding or removing a step forgets the last run, so the robot goes back to its start until Go is tapped again.
+    const add = (c) => { if (running || home || prog.length >= MAX)
+        return; setProg([...prog, c]); setShown(-1); };
+    const back = (i) => { if (running || home)
+        return; setProg(prog.slice(0, i)); setShown(-1); };
+    // The next robot starts with no steps and no run; clearing here, not only in the effect, so no render sees old steps on a new grid.
+    const next = () => { setProg([]); setShown(-1); if (k + 1 >= sets)
+        setDone(true);
+    else
+        setK(k + 1); };
+    const at = shown > 0 && total > 0 ? res.steps[Math.min(shown, total) - 1] : [p.start[0], p.start[1], 0];
+    const cell = 44;
+    const pad = 6;
+    const px = (v) => pad + v * cell + cell / 2;
+    const said = home ? 'Home! The robot reached the star.'
+        : finished && res.crash ? (res.crash === 'rock' ? 'Bump! A rock. Tap the last arrow to take it back.' : 'Bump! The edge. Tap the last arrow to take it back.')
+            : finished ? 'Not there yet. Add another step.'
+                : running ? `Step ${Math.max(1, shown)} of ${prog.length}`
+                    : prog.length ? 'Tap Go to watch the robot walk.' : 'Tap an arrow to give the robot its first step.';
+    const arrowBtn = { fontFamily: FONT, width: 56, height: 56, borderRadius: 14, border: `2px solid ${B.green}`, background: '#fff', color: B.green, fontSize: 28, fontWeight: 700, cursor: running || home ? 'default' : 'pointer', padding: 0, lineHeight: 1 };
+    return (react_1.default.createElement("div", { className: "edu-game-box", style: { ...GAME_BOX, aspectRatio: 'auto', padding: 14 } },
+        react_1.default.createElement("div", { style: { display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 } },
+            react_1.default.createElement("span", null, "Walk to the star"),
+            react_1.default.createElement("span", null,
+                ticks,
+                "s \u00B7 ",
+                Math.min(k + 1, sets),
+                " of ",
+                sets)),
+        done ? react_1.default.createElement("p", { style: { margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 } },
+            "Every robot home in ",
+            ticks,
+            " seconds. Tap the round arrow for new ones.") : (react_1.default.createElement("div", { style: { textAlign: 'center' } },
+            react_1.default.createElement("svg", { viewBox: `0 0 ${cell * 5 + pad * 2} ${cell * 5 + pad * 2}`, width: "100%", style: { maxWidth: 260, display: 'block', margin: '0 auto' }, role: "img", "aria-label": "The robot's grid" },
+                [0, 1, 2, 3, 4].map((a) => [0, 1, 2, 3, 4].map((b) => react_1.default.createElement("rect", { key: `${a}-${b}`, x: pad + a * cell, y: pad + b * cell, width: cell, height: cell, fill: "#fff", stroke: B.line, strokeWidth: "1.5" }))),
+                shown > 0 && res.steps.slice(0, Math.min(shown, total)).map(([a, b], i) => react_1.default.createElement("circle", { key: i, cx: px(a), cy: px(b), r: "5", fill: B.green, opacity: "0.45" })),
+                p.rocks.map(([a, b]) => react_1.default.createElement("ellipse", { key: `r${a}-${b}`, cx: px(a), cy: px(b) + 3, rx: "15", ry: "12", fill: "#8C8C84", stroke: "#5E5E57", strokeWidth: "2" })),
+                react_1.default.createElement("path", { d: `M ${px(p.goal[0])} ${px(p.goal[1]) - 15} l 4.4 9 l 9.9 1.4 l -7.2 7 l 1.7 9.8 l -8.8 -4.6 l -8.8 4.6 l 1.7 -9.8 l -7.2 -7 l 9.9 -1.4 z`, fill: "#E6B84B", stroke: "#9C7A1C", strokeWidth: "1.5" }),
+                react_1.default.createElement("g", { transform: `translate(${px(at[0])} ${px(at[1])})` },
+                    react_1.default.createElement("rect", { x: "-14", y: "-14", width: "28", height: "28", rx: "7", fill: res.crash && finished ? B.clay : '#D9534F', stroke: B.ink, strokeWidth: "1.5" }),
+                    react_1.default.createElement("circle", { cx: "-5", cy: "-3", r: "3.5", fill: "#fff" }),
+                    react_1.default.createElement("circle", { cx: "5", cy: "-3", r: "3.5", fill: "#fff" }),
+                    react_1.default.createElement("circle", { cx: "-5", cy: "-3", r: "1.5", fill: B.ink }),
+                    react_1.default.createElement("circle", { cx: "5", cy: "-3", r: "1.5", fill: B.ink }),
+                    react_1.default.createElement("path", { d: "M -6 6 Q 0 10 6 6", fill: "none", stroke: B.ink, strokeWidth: "1.5", strokeLinecap: "round" }))),
+            react_1.default.createElement("p", { style: { margin: '8px 0 8px', fontSize: 15, color: B.ink, minHeight: 22 } }, said),
+            react_1.default.createElement("div", { style: { display: 'flex', flexWrap: 'wrap', gap: 6, justifyContent: 'center', marginBottom: 10, minHeight: 50 } }, prog.map((c, i) => {
+                const now = running && i === shown - 1;
+                return (react_1.default.createElement("button", { key: i, type: "button", onClick: () => back(i), "aria-label": `Step ${i + 1}: ${word[c]}, tap to take it back`, className: "edu-press", style: { fontFamily: FONT, minWidth: 44, padding: '4px 8px', borderRadius: 10, border: `2px solid ${now ? B.green : B.line}`, background: now ? B.greenSoft : '#fff', color: B.ink, cursor: running || home ? 'default' : 'pointer', display: 'inline-flex', flexDirection: 'column', alignItems: 'center' } },
+                    react_1.default.createElement("span", { style: { fontSize: 11, color: B.muted } }, i + 1),
+                    react_1.default.createElement("span", { style: { fontSize: 22, fontWeight: 700 } }, glyph[c])));
+            })),
+            react_1.default.createElement("div", { style: { display: 'grid', gridTemplateColumns: '56px 56px 56px', gap: 6, justifyContent: 'center', marginBottom: 12 } },
+                react_1.default.createElement("span", null),
+                react_1.default.createElement("button", { type: "button", "aria-label": "Add a step: up", className: "edu-press", onClick: () => add('U'), style: arrowBtn }, "\u2191"),
+                react_1.default.createElement("span", null),
+                react_1.default.createElement("button", { type: "button", "aria-label": "Add a step: left", className: "edu-press", onClick: () => add('L'), style: arrowBtn }, "\u2190"),
+                react_1.default.createElement("button", { type: "button", "aria-label": "Add a step: down", className: "edu-press", onClick: () => add('D'), style: arrowBtn }, "\u2193"),
+                react_1.default.createElement("button", { type: "button", "aria-label": "Add a step: right", className: "edu-press", onClick: () => add('R'), style: arrowBtn }, "\u2192")),
+            home ? react_1.default.createElement(Btn, { pal: B, onClick: next }, k + 1 >= sets ? 'Finish' : 'Next robot') : react_1.default.createElement(Btn, { pal: B, onClick: () => { if (prog.length)
+                    setShown(0); }, disabled: running || !prog.length }, running ? 'Walking...' : 'Go'))),
+        react_1.default.createElement(Done, { show: done })));
+}
+// Teach the Robot (2026-09-29, pass FT, the sixteenth kind, for the plain AI course): the child is the pile of examples.
+// Twelve fruits sit on a map. The robot knows two of them and guesses every other one from its nearest known fruit (a
+// red ring says apple, a yellow ring says banana). Tap a fruit the robot got wrong to teach it; every guess is made again
+// from all it now knows. A board is done when every ring is right; four boards a round, and the score is the number of
+// lessons it took, lower is better. The course's idea is the rule of the game: a model knows only the examples it was
+// given, and a wrong guess is fixed by adding the example it was missing. Drawn with B on the paper board, like every game.
+function TeachGame({ game, round, onScore = null }) {
+    const deck = TEACH_DECKS[game.teach] || [];
+    const [k, setK] = (0, react_1.useState)(0);
+    const [known, setKnown] = (0, react_1.useState)([]);
+    const [lessons, setLessons] = (0, react_1.useState)(0);
+    const [nudge, setNudge] = (0, react_1.useState)(null);
+    const [ticks, setTicks] = (0, react_1.useState)(0);
+    const [done, setDone] = (0, react_1.useState)(false);
+    const board = deck.length ? deck[(round * 3 + k) % deck.length] : null;
+    (0, react_1.useEffect)(() => { setK(0); setLessons(0); setDone(false); setTicks(0); }, [round]);
+    (0, react_1.useEffect)(() => { if (board)
+        setKnown(board.given.slice()); setNudge(null); }, [board]);
+    const guesses = (0, react_1.useMemo)(() => (board ? teachGuesses(board, known) : []), [board, known]);
+    const wrong = board ? board.items.map((it, i) => i).filter((i) => !known.includes(i) && guesses[i] !== board.items[i][2]) : [];
+    const boardDone = !!board && wrong.length === 0;
+    (0, react_1.useEffect)(() => { if (done || boardDone)
+        return undefined; const t = setInterval(() => setTicks((n) => n + 1), 1000); return () => clearInterval(t); }, [done, boardDone]);
+    (0, react_1.useEffect)(() => { if (done && onScore)
+        onScore(lessons, 'low'); }, [done]); // fewer lessons is a new best
+    (0, react_1.useEffect)(() => { if (nudge === null)
+        return undefined; const t = setTimeout(() => setNudge(null), 500); return () => clearTimeout(t); }, [nudge]);
+    if (!board)
+        return null;
+    const sets = Math.min(4, deck.length);
+    const teach = (i) => { if (boardDone || done)
+        return; if (known.includes(i) || guesses[i] === board.items[i][2]) {
+        setNudge(i);
+        return;
+    } setKnown([...known, i]); setLessons(lessons + 1); };
+    const next = () => { if (k + 1 >= sets)
+        setDone(true);
+    else
+        setK(k + 1); };
+    const ring = (kind) => (kind === 'apple' ? '#D9534F' : '#E6B84B');
+    const said = boardDone ? (known.length === board.given.length ? 'Every guess was right from two examples.' : `Every ring is right. It took ${known.length - board.given.length} ${known.length - board.given.length === 1 ? 'lesson' : 'lessons'}.`) : `${wrong.length} ${wrong.length === 1 ? 'guess is' : 'guesses are'} wrong. Tap a fruit the robot got wrong to teach it.`;
+    return (react_1.default.createElement("div", { className: "edu-game-box", style: { ...GAME_BOX, aspectRatio: 'auto', padding: 14 } },
+        react_1.default.createElement("div", { style: { display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 } },
+            react_1.default.createElement("span", null,
+                "Lessons: ",
+                lessons),
+            react_1.default.createElement("span", null,
+                ticks,
+                "s \u00B7 ",
+                Math.min(k + 1, sets),
+                " of ",
+                sets)),
+        done ? react_1.default.createElement("p", { style: { margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 } },
+            "Four boards taught in ",
+            lessons,
+            " ",
+            lessons === 1 ? 'lesson' : 'lessons',
+            ". Tap the round arrow for new ones.") : (react_1.default.createElement("div", { style: { textAlign: 'center' } },
+            react_1.default.createElement("svg", { viewBox: "0 0 100 100", width: "100%", style: { maxWidth: 300, display: 'block', margin: '0 auto', background: '#F6F8F4', borderRadius: 12 }, role: "img", "aria-label": "The robot's fruit map" }, board.items.map(([x, y, kind], i) => {
+                const isKnown = known.includes(i);
+                const g = guesses[i];
+                const right = g === kind;
+                return (react_1.default.createElement("g", { key: i, role: "button", tabIndex: 0, "aria-label": isKnown ? `${kind}: taught` : `${kind}: robot says ${g}`, onClick: () => teach(i), onKeyDown: (e) => { if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        teach(i);
+                    } }, className: nudge === i ? 'edu-wobble' : undefined, style: { cursor: isKnown || right ? 'default' : 'pointer' } },
+                    react_1.default.createElement("circle", { cx: x, cy: y, r: "6.6", fill: "none", stroke: isKnown ? B.ink : ring(g), strokeWidth: isKnown ? 1.6 : 1.3, strokeDasharray: isKnown ? undefined : '2.2 1.4' }),
+                    kind === 'apple' ? react_1.default.createElement("g", null,
+                        react_1.default.createElement("circle", { cx: x, cy: y + 0.4, r: "3.6", fill: "#D9534F", stroke: "#8E2E2A", strokeWidth: "0.6" }),
+                        react_1.default.createElement("path", { d: `M ${x} ${y - 3.2} q 0.4 -1.6 1.4 -2.4`, fill: "none", stroke: "#5E4A2E", strokeWidth: "0.8", strokeLinecap: "round" }))
+                        : react_1.default.createElement("path", { d: `M ${x - 3.8} ${y - 1.6} q 3.8 5.6 7.6 0 q -3.6 2.6 -7.6 0 z`, fill: "#F2C94C", stroke: "#A8841C", strokeWidth: "0.6", strokeLinejoin: "round" }),
+                    isKnown && react_1.default.createElement("path", { d: `M ${x + 3.6} ${y - 5.2} l 1.2 1.2 l 2.2 -2.4`, fill: "none", stroke: B.green, strokeWidth: "1", strokeLinecap: "round", strokeLinejoin: "round" })));
+            })),
+            react_1.default.createElement("p", { style: { margin: '10px 0 8px', fontSize: 15, color: B.ink, minHeight: 22 } }, said),
+            react_1.default.createElement("div", { style: { display: 'flex', justifyContent: 'center', gap: 14, fontSize: 13, color: B.muted, marginBottom: 10 } },
+                react_1.default.createElement("span", null,
+                    react_1.default.createElement("span", { style: { display: 'inline-block', width: 12, height: 12, borderRadius: 6, border: '2px dashed #D9534F', verticalAlign: 'middle', marginRight: 4 } }),
+                    "robot says apple"),
+                react_1.default.createElement("span", null,
+                    react_1.default.createElement("span", { style: { display: 'inline-block', width: 12, height: 12, borderRadius: 6, border: '2px dashed #E6B84B', verticalAlign: 'middle', marginRight: 4 } }),
+                    "robot says banana")),
+            boardDone && react_1.default.createElement(Btn, { pal: B, onClick: next }, k + 1 >= sets ? 'Finish' : 'Next board'))),
+        react_1.default.createElement(Done, { show: done })));
+}
+// Eight Switches (2026-09-29, pass FU, the seventeenth kind, for computer science 9 to 12): a byte made by hand. A target
+// number sits at the top and eight switches below it, worth 128 down to 1. Tap a switch to turn it on or off; the sum of
+// the lit places shows live, and when it equals the target the next number comes. Six numbers a round from bitsTargets,
+// the clock counts up, and every round finished is the score. The lesson's rule is the game's: add the places that are on.
+function BitsGame({ game, round, onScore = null }) {
+    const targets = (0, react_1.useMemo)(() => bitsTargets(round, 6), [round]);
+    const [k, setK] = (0, react_1.useState)(0);
+    const [on, setOn] = (0, react_1.useState)([0, 0, 0, 0, 0, 0, 0, 0]);
+    const [ticks, setTicks] = (0, react_1.useState)(0);
+    const [done, setDone] = (0, react_1.useState)(false);
+    const [hit, setHit] = (0, react_1.useState)(false);
+    (0, react_1.useEffect)(() => { setK(0); setOn([0, 0, 0, 0, 0, 0, 0, 0]); setDone(false); setTicks(0); setHit(false); }, [round]);
+    const places = [128, 64, 32, 16, 8, 4, 2, 1];
+    const sum = on.reduce((t, b, i) => t + (b ? places[i] : 0), 0);
+    const target = targets[Math.min(k, targets.length - 1)];
+    (0, react_1.useEffect)(() => { if (done)
+        return undefined; const t = setInterval(() => setTicks((n) => n + 1), 1000); return () => clearInterval(t); }, [done]);
+    (0, react_1.useEffect)(() => { if (done && onScore)
+        onScore(ticks, 'low'); }, [done]);
+    // A match lights the row for a moment, then the next target arrives with every switch off. The timer is set in the tap
+    // itself: an effect keyed on the sum would clear its own timer the moment the lit state changed.
+    const flip = (i) => {
+        if (done || hit)
+            return;
+        const next = on.map((b, j) => (j === i ? (b ? 0 : 1) : b));
+        setOn(next);
+        if (next.reduce((t, b, j) => t + (b ? places[j] : 0), 0) !== target)
+            return;
+        setHit(true);
+        setTimeout(() => { setHit(false); setOn([0, 0, 0, 0, 0, 0, 0, 0]); if (k + 1 >= targets.length)
+            setDone(true);
+        else
+            setK(k + 1); }, 650);
+    };
+    const bin = on.join('');
+    return (react_1.default.createElement("div", { className: "edu-game-box", style: { ...GAME_BOX, aspectRatio: 'auto', padding: 14 } },
+        react_1.default.createElement("div", { style: { display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 } },
+            react_1.default.createElement("span", null, "Make the number"),
+            react_1.default.createElement("span", null,
+                ticks,
+                "s \u00B7 ",
+                Math.min(k + 1, targets.length),
+                " of ",
+                targets.length)),
+        done ? react_1.default.createElement("p", { style: { margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 } },
+            "Six numbers in ",
+            ticks,
+            " seconds. Tap the round arrow for new ones.") : (react_1.default.createElement("div", { style: { textAlign: 'center' } },
+            react_1.default.createElement("p", { style: { margin: '4px 0 2px', fontSize: 15, color: B.muted } }, "Target"),
+            react_1.default.createElement("p", { "aria-live": "polite", style: { margin: '0 0 10px', fontSize: 40, fontWeight: 800, color: hit ? B.green : B.ink, lineHeight: 1 } }, target),
+            react_1.default.createElement("div", { style: { display: 'grid', gridTemplateColumns: 'repeat(8, minmax(0, 1fr))', gap: 6, maxWidth: 420, margin: '0 auto 10px' } }, places.map((v, i) => (react_1.default.createElement("button", { key: v, type: "button", onClick: () => flip(i), "aria-pressed": !!on[i], "aria-label": `Switch worth ${v}, ${on[i] ? 'on' : 'off'}`, className: "edu-press", style: { fontFamily: FONT, padding: '8px 0 6px', borderRadius: 10, border: `2px solid ${on[i] ? B.green : B.line}`, background: on[i] ? B.greenSoft : '#fff', color: B.ink, cursor: done || hit ? 'default' : 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, minHeight: 64 } },
+                react_1.default.createElement("span", { style: { fontSize: 11, color: B.muted } }, v),
+                react_1.default.createElement("span", { "aria-hidden": "true", style: { width: 16, height: 26, borderRadius: 8, background: on[i] ? B.green : B.line, position: 'relative' } },
+                    react_1.default.createElement("span", { style: { position: 'absolute', left: 2, top: on[i] ? 2 : 12, width: 12, height: 12, borderRadius: 6, background: '#fff' } })),
+                react_1.default.createElement("span", { style: { fontSize: 16, fontWeight: 700 } }, on[i]))))),
+            react_1.default.createElement("p", { style: { margin: '4px 0 0', fontSize: 15, color: B.ink } },
+                bin,
+                " is ",
+                sum,
+                hit ? '. Right!' : sum === 0 ? '. Every switch is off.' : ` (${on.map((b, i) => (b ? places[i] : null)).filter((v) => v !== null).join(' + ') || 0}).`))),
+        react_1.default.createElement(Done, { show: done })));
+}
+const GAME_OF = { dots: DotsGame, pairs: PairsGame, sort: SortGame, maze: MazeGame, jigsaw: JigsawGame, pong: PongGame, sprint: SprintGame, order: OrderGame, build: BuildGame, fix: FixGame, mix: MixGame, debug: DebugGame, ptable: PtableGame, evidence: EvidenceGame, catch: CatchGame, path: PathGame, buckets: BucketsGame, jump: JumpGame, map: MapGame, balance: BalanceGame, walk: WalkGame, teach: TeachGame, bits: BitsGame };
 // How to play, in a line or two, by kind of game (and by deck for the matching games).
 function gameInstructions(game) {
+    if (game.kind === 'bits')
+        return 'A number sits at the top and eight switches below it, worth 128 down to 1. Tap the switches on and off until the lit places add up to the number; the sum shows as you go. Six numbers, and the clock counts up.';
+    if (game.kind === 'teach')
+        return 'Twelve fruits, apples and bananas. The robot has seen one of each and guesses the rest from its nearest known fruit: a red ring means it guesses apple, a yellow ring banana. Tap a fruit the robot got wrong to teach it, and watch every guess change. Four boards; fewer lessons is the better score.';
+    if (game.kind === 'walk')
+        return 'Tap the arrows to give the robot its steps, one at a time, then tap Go and watch it follow them to the star. A bump into a rock or the edge stops it; tap the last step to take it back and try another. Four robots, and the clock counts up.';
     if (game.kind === 'evidence')
         return 'Read the short passage and the question above it. Tap the one sentence that answers the question: that sentence is your evidence. The reason shows under the passage, and the clock rests while you read it. Four passages, and the clock counts up.';
     if (game.kind === 'ptable')
@@ -53835,6 +54899,27 @@ function GameThumb({ kind, game = null }) {
         return react_1.default.createElement("svg", { viewBox: "0 0 40 40", width: "44", height: "44", "aria-hidden": "true" },
             react_1.default.createElement("polyline", { points: [...dotShape, dotShape[0]].map((pt) => pt.join(',')).join(' '), fill: "none", stroke: C.green, strokeWidth: "2", strokeLinejoin: "round" }),
             dotShape.map(([x, y], i) => react_1.default.createElement("circle", { key: i, cx: x, cy: y, r: "2.6", fill: C.paperBoard, stroke: k, strokeWidth: "1.4" })));
+    if (game && game.kind === 'bits')
+        return react_1.default.createElement("svg", { viewBox: "0 0 40 40", width: "44", height: "44", "aria-hidden": "true" },
+            [0, 1, 2, 3].map((i) => react_1.default.createElement("g", { key: i },
+                react_1.default.createElement("rect", { x: 4 + i * 8.6, y: "9", width: "6.4", height: "20", rx: "3.2", fill: i === 1 || i === 3 ? C.green : C.paperBoard, stroke: k, strokeWidth: "1" }),
+                react_1.default.createElement("circle", { cx: 7.2 + i * 8.6, cy: i === 1 || i === 3 ? 13 : 25, r: "2.3", fill: "#fff", stroke: k, strokeWidth: "0.8" }))),
+            react_1.default.createElement("text", { x: "20", y: "37", fontSize: "6.5", fontWeight: "700", textAnchor: "middle", fill: k, fontFamily: "sans-serif" }, "0101"));
+    if (game && game.kind === 'teach')
+        return react_1.default.createElement("svg", { viewBox: "0 0 40 40", width: "44", height: "44", "aria-hidden": "true" },
+            react_1.default.createElement("rect", { x: "3", y: "3", width: "34", height: "34", rx: "4", fill: C.paperBoard, stroke: k, strokeWidth: "1" }),
+            [[11, 12], [17, 21], [10, 27]].map(([x, y], i) => react_1.default.createElement("g", { key: `a${i}` },
+                react_1.default.createElement("circle", { cx: x, cy: y, r: "4.4", fill: "none", stroke: "#D9534F", strokeWidth: "1", strokeDasharray: "1.6 1" }),
+                react_1.default.createElement("circle", { cx: x, cy: y, r: "2.3", fill: "#D9534F" }))),
+            [[27, 14], [30, 26], [22, 31]].map(([x, y], i) => react_1.default.createElement("g", { key: `b${i}` },
+                react_1.default.createElement("circle", { cx: x, cy: y, r: "4.4", fill: "none", stroke: "#E6B84B", strokeWidth: "1", strokeDasharray: "1.6 1" }),
+                react_1.default.createElement("path", { d: `M ${x - 2.4} ${y - 1} q 2.4 3.4 4.8 0 q -2.3 1.6 -4.8 0 z`, fill: "#F2C94C" }))));
+    if (game && game.kind === 'walk')
+        return react_1.default.createElement("svg", { viewBox: "0 0 40 40", width: "44", height: "44", "aria-hidden": "true" },
+            [0, 1, 2].map((r) => [0, 1, 2].map((c) => react_1.default.createElement("rect", { key: `${r}${c}`, x: 4.5 + c * 10.5, y: 4.5 + r * 10.5, width: "9.5", height: "9.5", rx: "1.5", fill: C.paperBoard, stroke: k, strokeWidth: "1" }))),
+            react_1.default.createElement("rect", { x: "6.5", y: "6.5", width: "5.5", height: "5.5", rx: "1.5", fill: "#D9534F", stroke: k, strokeWidth: "0.7" }),
+            react_1.default.createElement("path", { d: "M30.3 24.8l1.3 2.7 3.0 0.4-2.2 2.1 0.5 3.0-2.6-1.4-2.6 1.4 0.5-3.0-2.2-2.1 3.0-0.4z", fill: C.gold, stroke: k, strokeWidth: "0.6" }),
+            react_1.default.createElement("path", { d: "M13.5 9.3h8.5M19 6.5l3 2.8-3 2.8M20 14v7M17.2 18l2.8 3 2.8-3", fill: "none", stroke: k, strokeWidth: "1.3", strokeLinecap: "round", strokeLinejoin: "round" }));
     if (game && game.kind === 'balance')
         return react_1.default.createElement("svg", { viewBox: "0 0 40 40", width: "44", height: "44", "aria-hidden": "true" },
             react_1.default.createElement("rect", { x: "19", y: "14", width: "2.4", height: "16", fill: "#8A9086" }),

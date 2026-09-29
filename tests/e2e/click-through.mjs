@@ -804,6 +804,52 @@ ok('a coloring break shows the five minute bar and its two icons', (await page.l
 await page.getByRole('button', { name: 'Close coloring' }).first().click({ force: true });
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview');
 ok('coloring records nothing: the round count is untouched', (await state()).screen === 'overview');
+// Walk the Robot (pass FS, computer science K to 2): the child writes the steps. The first robot of round one is walk
+// number five (start 0,2; star 0,0; a rock at 0,1): right, up, up, left brings it home. The second (start 4,4; star 2,3;
+// rocks at 3,4 and 2,4) bumps on a first step left; taking the step back and going up, left, left brings it home too.
+await page.evaluate(() => window.__eduTest.openColoring('play:walk-tech-k'));
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'coloring');
+await page.waitForTimeout(200);
+{ const step = async (dir) => page.getByRole('button', { name: `Add a step: ${dir}` }).click();
+  ok('the walk game opens with a robot, a star and four arrows', (await page.getByRole('button', { name: /^Add a step/ }).count()) === 4 && (await text()).includes('Tap an arrow to give the robot its first step'));
+  await step('right'); await step('up'); await step('up'); await step('left');
+  ok('four taps make four steps and Go becomes ready', (await page.getByRole('button', { name: /^Step \d: /, exact: false }).count()) === 4 && (await page.getByRole('button', { name: 'Go' }).isEnabled()));
+  await page.getByRole('button', { name: 'Go' }).click(); await page.waitForTimeout(2600);
+  ok('the robot walks its steps to the star and says so', (await text()).includes('Home! The robot reached the star') && (await page.getByRole('button', { name: 'Next robot' }).count()) === 1);
+  await page.getByRole('button', { name: 'Next robot' }).click(); await page.waitForTimeout(200);
+  await step('left'); await page.getByRole('button', { name: 'Go' }).click(); await page.waitForTimeout(1200);
+  ok('a step into a rock bumps and keeps the steps for fixing', (await text()).includes('Bump!') && (await page.getByRole('button', { name: /^Step 1: left/ }).count()) === 1);
+  await page.getByRole('button', { name: /^Step 1: left/ }).click(); await page.waitForTimeout(100);
+  await step('up'); await step('left'); await step('left'); await page.getByRole('button', { name: 'Go' }).click(); await page.waitForTimeout(2200);
+  ok('the fixed steps bring the second robot home', (await text()).includes('Home! The robot reached the star'));
+}
+await page.getByRole('button', { name: 'Close game' }).first().click({ force: true });
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview');
+// Eight Switches (pass FU, computer science 9 to 12): the first target of round one is 79 = 64 + 8 + 4 + 2 + 1.
+await page.evaluate(() => window.__eduTest.openColoring('play:bits-tech-9'));
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'coloring');
+await page.waitForTimeout(200);
+{ const sw = (v) => page.getByRole('button', { name: new RegExp(`^Switch worth ${v},`) });
+  ok('the switches game opens with a target of 79 and eight switches off', (await text()).includes('Target') && (await text()).includes('79') && (await page.getByRole('button', { name: /^Switch worth \d+, off$/ }).count()) === 8);
+  await sw(64).click(); await sw(8).click(); await sw(4).click(); await sw(2).click(); await page.waitForTimeout(100);
+  ok('lit switches add up live', (await text()).includes('01001110 is 78'));
+  await sw(1).click(); await page.waitForTimeout(900);
+  ok('making the number brings the next target with every switch off', (await text()).includes('2 of 6') && (await page.getByRole('button', { name: /^Switch worth \d+, off$/ }).count()) === 8);
+}
+await page.getByRole('button', { name: 'Close game' }).first().click({ force: true });
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview');
+// Teach the Robot (pass FT, the plain AI course): rings show the robot's guesses; tapping a wrong one teaches it.
+await page.evaluate(() => window.__eduTest.openColoring('play:teach-tech-6'));
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'coloring');
+await page.waitForTimeout(200);
+{ const wrongOnes = () => page.locator('[aria-label="apple: robot says banana"], [aria-label="banana: robot says apple"]');
+  const startWrong = await wrongOnes().count();
+  ok('the teach game opens with twelve fruits, two taught, and some guesses wrong', (await page.locator('g[role="button"]').count()) === 12 && (await page.locator('[aria-label$=": taught"]').count()) === 2 && startWrong >= 2);
+  let taps = 0; while ((await wrongOnes().count()) > 0 && taps < 8) { await wrongOnes().first().click({ force: true }); taps += 1; await page.waitForTimeout(120); }
+  ok('teaching the wrong fruits makes every guess right within five lessons', (await wrongOnes().count()) === 0 && taps <= 5 && (await page.getByRole('button', { name: 'Next board' }).count()) === 1 && (await text()).includes(`It took ${taps} ${taps === 1 ? 'lesson' : 'lessons'}`));
+}
+await page.getByRole('button', { name: 'Close game' }).first().click({ force: true });
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview');
 // Some pictures are drawn on rather than filled in: a finger stroke leaves a line in the chosen color.
 await page.evaluate(() => window.__eduTest.openColoring('star'));
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'coloring');

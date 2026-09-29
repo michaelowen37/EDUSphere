@@ -821,7 +821,7 @@ ok('reset: history kept, but nothing counts as mastered afterwards', events.leng
   ok('only grades that have courses are offered, in order', JSON.stringify(L.gradesWithCourses()) === '["PK3","PK4","K","1","2","3","4","5","6","7","8","9","10","11","12","C"]');
   const k = L.subjectsForGrade('K');
   // Health joined kindergarten on 2026-09-23; it sorts last.
-  ok('kindergarten groups into Math, Reading, Science, History and Health, in that order', k.length === 5 && k[0].subject === 'Math' && k[1].subject === 'Reading' && k[2].subject === 'Science' && k[3].subject === 'History' && k[4].subject === 'Health');
+  ok('kindergarten groups into Math, Reading, Science, History, Technology and Health, in that order (computer science joined K in pass FS; SUBJECT_RANK puts Health last)', k.length === 6 && k[0].subject === 'Math' && k[1].subject === 'Reading' && k[2].subject === 'Science' && k[3].subject === 'History' && k[4].subject === 'Technology' && k[5].subject === 'Health');
   ok('every grade now has courses', L.subjectsForGrade('PK3').length === 2);
   ok('science runs from kindergarten to grade 12', ['K', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'].every((g) => L.subjectsForGrade(g).some((x) => x.subject === 'Science')));
   ok('pre-K 3 is never a starter; a new early-years student begins at pre-K 4', L.recommendedCourseIds([L.makeCoursesEnabledEvent([], 't')], 'early').every((id) => L.getCourse(id).grade === 'PK4'));
@@ -1441,6 +1441,26 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
   ok('every arrows robot has a bug that exactly one single change fixes', L.ROBOT_DECKS.arrows.length >= 6 && check(L.ROBOT_DECKS.arrows, false));
   ok('every turns robot has a bug that exactly one single change fixes', L.ROBOT_DECKS.turns.length >= 6 && check(L.ROBOT_DECKS.turns, true));
   ok('the robot stops at the edge and at a rock, and turns in place', L.runRobot({ start: [0, 0], goal: [1, 0], rocks: [] }, ['L'], false).crash === 'edge' && L.runRobot({ start: [0, 0], goal: [2, 0], rocks: [[1, 0]] }, ['R'], false).crash === 'rock' && L.runRobot({ start: [2, 2, 0], goal: [3, 2], rocks: [] }, ['R', 'F'], true).home === true);
+  { // Walk the Robot (pass FS): every walk has a path of five steps or fewer through the rocks, found here by a breadth-first search.
+    const shortest = (p) => { const rock = new Set(p.rocks.map(([a, b]) => `${a},${b}`)); const seen = new Set([`${p.start[0]},${p.start[1]}`]); let ring = [[p.start[0], p.start[1]]]; for (let d = 0; d <= 8; d++) { if (ring.some(([x, y]) => x === p.goal[0] && y === p.goal[1])) return d; const next = []; for (const [x, y] of ring) for (const [dx, dy] of [[0, -1], [0, 1], [-1, 0], [1, 0]]) { const nx = x + dx; const ny = y + dy; const key = `${nx},${ny}`; if (nx < 0 || ny < 0 || nx > 4 || ny > 4 || rock.has(key) || seen.has(key)) continue; seen.add(key); next.push([nx, ny]); } ring = next; } return Infinity; };
+    const walks = L.ROBOT_DECKS.walk;
+    ok('every robot walk for the youngest reaches its star in five steps or fewer, with nothing on the start or the star', walks.length >= 8 && walks.every((p) => shortest(p) >= 2 && shortest(p) <= 5 && p.rocks.every(([a, b]) => !(a === p.goal[0] && b === p.goal[1]) && !(a === p.start[0] && b === p.start[1]) && a >= 0 && b >= 0 && a <= 4 && b <= 4)), walks.map(shortest).join(','));
+    ok('the walk game belongs to computer science K to 2 and is for the youngest', L.COURSE_GAMES['tech-k'].includes('walk-tech-k') && L.GAMES.find((g) => g.id === 'walk-tech-k').young === true && !L.GAMES.find((g) => g.id === 'walk-tech-k').deck);
+  }
+  { // Eight Switches (pass FU): six different numbers a round, 0 to 255, the same on every device, and never two plain powers of two in a row.
+    const rounds = [1, 2, 3, 7, 12].map((r) => L.bitsTargets(r));
+    ok('every switches round has six different numbers within a byte, the same every time', rounds.every((t) => t.length === 6 && new Set(t).size === 6 && t.every((n) => Number.isInteger(n) && n >= 0 && n <= 255)) && JSON.stringify(L.bitsTargets(3)) === JSON.stringify(L.bitsTargets(3)) && JSON.stringify(rounds[0]) !== JSON.stringify(rounds[1]));
+    ok('two plain powers of two never come in a row, so the switches have to be added', rounds.every((t) => t.every((n, i) => i === 0 || !((n & (n - 1)) === 0 && (t[i - 1] & (t[i - 1] - 1)) === 0))));
+    ok('the switches game belongs to computer science 9 to 12 with eight switches', L.COURSE_GAMES['tech-9'].includes('bits-tech-9') && L.GAMES.find((g) => g.id === 'bits-tech-9').bits === 8 && !L.GAMES.find((g) => g.id === 'bits-tech-9').deck);
+  }
+  { // Teach the Robot (pass FT): every board starts with two wrong guesses or more and is right after five lessons or fewer, teaching the first wrong fruit each time.
+    const boards = L.TEACH_DECKS.fruit;
+    const walk = (b) => { let known = b.given.slice(); let n = 0; let first = -1; for (;;) { const g = L.teachGuesses(b, known); const wrong = b.items.map((it, i) => i).filter((i) => !known.includes(i) && g[i] !== b.items[i][2]); if (first < 0) first = wrong.length; if (!wrong.length) return { first, n }; known.push(wrong[0]); n += 1; if (n > 8) return { first, n }; } };
+    const apart = (b) => b.items.every((a, i) => b.items.every((c, j) => i === j || (a[0] - c[0]) ** 2 + (a[1] - c[1]) ** 2 >= 100));
+    ok('every teach board holds twelve fruits of two kinds, apart from each other, with one given example of each', boards.length >= 4 && boards.every((b) => b.items.length === 12 && apart(b) && b.given.length === 2 && b.items[b.given[0]][2] !== b.items[b.given[1]][2] && b.items.every(([x, y, kind]) => x >= 5 && x <= 95 && y >= 5 && y <= 95 && ['apple', 'banana'].includes(kind))));
+    ok('every teach board starts wrong at least twice and is right after five lessons or fewer', boards.every((b) => { const r = walk(b); return r.first >= 2 && r.n >= 1 && r.n <= 5; }), boards.map((b) => JSON.stringify(walk(b))).join(' '));
+    ok('the teach game belongs to the plain AI course and names its boards with its own key', L.COURSE_GAMES['tech-6'].includes('teach-tech-6') && L.GAMES.find((g) => g.id === 'teach-tech-6').teach === 'fruit' && !L.GAMES.find((g) => g.id === 'teach-tech-6').deck);
+  }
   ok('the two robot games sit in the two programming courses beside their first games', L.COURSE_GAMES['tech-3'].includes('debug-tech-3') && L.COURSE_GAMES['tech-5'].includes('debug-tech-5') && L.GAMES.filter((g) => g.kind === 'debug').every((g) => L.ROBOT_DECKS[g.deck]));
 }
 
@@ -1505,7 +1525,7 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
   const otherPair = await crypto.subtle.generateKey({ name: 'ECDSA', namedCurve: 'P-256' }, true, ['sign', 'verify']);
   const otherPriv = await crypto.subtle.exportKey('jwk', otherPair.privateKey);
   ok('a code signed with any other key is refused', (await L.checkLicenseCode(await L.makeLicenseCode(otherPriv, { id: 'X', name: 'Y', year: '2026-27', until: '2027-07-31' }), new Date('2026-10-01'))).ok === false);
-  ok('pre-K 3, pre-K 4 and kindergarten courses are free, grade 1 and up are not', L.COURSES.filter(L.courseIsFree).length > 0 && L.COURSES.every((c) => L.courseIsFree(c) === ['PK3', 'PK4', 'K'].includes(c.grade)) && L.COURSES.filter(L.courseIsFree).reduce((n, c) => n + c.modules.length, 0) === 86);
+  ok('pre-K 3, pre-K 4 and kindergarten courses are free, grade 1 and up are not', L.COURSES.filter(L.courseIsFree).length > 0 && L.COURSES.every((c) => L.courseIsFree(c) === ['PK3', 'PK4', 'K'].includes(c.grade)) && L.COURSES.filter(L.courseIsFree).reduce((n, c) => n + c.modules.length, 0) === 90);   // 86 plus the four computer science modules of pass FS
   const mixed = ['counting-k', 'reading-3', 'letters-k'];
   ok('without a license only the free courses open; with one, all of them do', JSON.stringify(L.openCourseIds(mixed, false)) === JSON.stringify(['counting-k', 'letters-k']) && L.openCourseIds(mixed, true).length === 3);
   ok('the app carries a public key only, marked as the development key until launch', !('d' in L.LICENSE_PUBLIC_KEY) && L.LICENSE_KEY_IS_DEVELOPMENT === true);

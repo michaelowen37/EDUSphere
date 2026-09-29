@@ -887,6 +887,37 @@ export const COURSES = [
     modules: TECH7_MODULES(),
   },
   {
+    id: 'tech-k',
+    grade: 'K',
+    subject: 'Technology',
+    title: 'Tell, show, step and repeat',
+    audience: 'Kindergarten to grade 2',
+    readAloud: true, // the K to 2 band: questions are spoken and answers tapped (2026-09-28, pass FS)
+    elective: true,
+    keywords: ['computer', 'coding', 'robot', 'algorithm', 'elective'],
+    modules: TECHK_MODULES(),
+  },
+  {
+    id: 'tech-6',
+    grade: '6',
+    subject: 'Technology',
+    title: 'What a machine learns',
+    audience: 'Grades 6 to 8',
+    elective: true,
+    keywords: ['AI', 'artificial intelligence', 'machine learning', 'chatbot', 'elective'],
+    modules: TECH6_MODULES(),
+  },
+  {
+    id: 'tech-9',
+    grade: '9',
+    subject: 'Technology',
+    title: 'How a program is built',
+    audience: 'Grades 9 to 12',
+    elective: true,
+    keywords: ['computer science', 'programming', 'binary', 'coding', 'elective'],
+    modules: TECH9_MODULES(),
+  },
+  {
     id: 'civics-3',
     grade: '3',
     subject: 'History',
@@ -1021,6 +1052,7 @@ export const GAMES = [
   { id: 'sort-size', kind: 'sort', title: 'Big and Small', by: 'size' },
   { id: 'catch-circles', kind: 'catch', title: 'Catch the Circles', rule: 'circles', young: true },
   { id: 'maze-small', kind: 'maze', title: 'Maze', cells: 6 },
+  { id: 'walk-tech-k', kind: 'walk', title: 'Walk the Robot', walk: 'walk', young: true, minGrade: 'K' },   // computer science K to 2 (pass FS): the child programs the robot
   { id: 'jigsaw-4', kind: 'jigsaw', title: 'Puzzle', side: 2 },
   { id: 'dots-boat', kind: 'dots', title: 'Boat', shape: 'boat' },
   { id: 'pairs-more', kind: 'pairs', title: 'More Pairs', pairs: 4 },
@@ -1114,6 +1146,8 @@ export const GAMES = [
   { id: 'ptable-science-10', kind: 'ptable', title: 'The periodic table: find it', minGrade: '10', deck: 'main' },
   { id: 'debug-tech-3', kind: 'debug', title: 'Debug the robot: arrows', minGrade: '3', deck: 'arrows' },
   { id: 'debug-tech-5', kind: 'debug', title: 'Debug the robot: turns', minGrade: '5', deck: 'turns' },
+  { id: 'teach-tech-6', kind: 'teach', title: 'Teach the Robot', minGrade: '6', teach: 'fruit' },
+  { id: 'bits-tech-9', kind: 'bits', title: 'Eight Switches', minGrade: '9', bits: 8 },   // computer science 9 to 12 (pass FU): make the number with the switches   // the plain AI course (pass FT): the child is the pile of examples
   { id: 'mix-art-3', kind: 'mix', title: 'Color mixer: make new colors', minGrade: '3', deck: 'mix3' },
   { id: 'mix-art-4', kind: 'mix', title: 'Color mixer: the color wheel', minGrade: '4', deck: 'mix4' },
   { id: 'sprint-civics-3', kind: 'sprint', title: 'Quick fire: Communities and government', minGrade: '3', course: 'civics-3' },
@@ -1497,6 +1531,31 @@ export const MIX_DECKS = {
 // left (3). Squares count from the top left, x across and y down. Every puzzle came from a search that kept only
 // programs where changing that one step, and no other single change, brings the robot to the star without leaving the
 // grid or bumping a rock; the rules test runs the same check.
+// Teach the Robot (2026-09-29, pass FT, the plain AI course): twelve fruits on a map, apples toward the top left and
+// bananas toward the bottom right, as [x, y, kind]. The robot starts knowing the two `given` examples and guesses every
+// other fruit from its nearest known example; the child teaches it by tapping a wrong guess. Made by a small search in
+// pass FT so every board starts with two or more wrong guesses and is right after five lessons or fewer.
+export const TEACH_DECKS = {
+  fruit: [
+    { given: [0, 6], items: [[19, 40, 'apple'], [43, 29, 'apple'], [38, 13, 'apple'], [13, 21, 'apple'], [51, 46, 'apple'], [37, 56, 'apple'], [76, 53, 'banana'], [89, 44, 'banana'], [60, 77, 'banana'], [46, 63, 'banana'], [40, 73, 'banana'], [78, 68, 'banana']] },
+    { given: [0, 6], items: [[56, 26, 'apple'], [46, 41, 'apple'], [54, 59, 'apple'], [35, 45, 'apple'], [13, 46, 'apple'], [44, 62, 'apple'], [81, 53, 'banana'], [58, 73, 'banana'], [41, 78, 'banana'], [45, 51, 'banana'], [58, 83, 'banana'], [81, 83, 'banana']] },
+    { given: [0, 6], items: [[10, 18, 'apple'], [15, 29, 'apple'], [11, 55, 'apple'], [42, 18, 'apple'], [29, 16, 'apple'], [54, 62, 'apple'], [42, 43, 'banana'], [56, 52, 'banana'], [81, 46, 'banana'], [39, 87, 'banana'], [65, 46, 'banana'], [65, 89, 'banana']] },
+    { given: [0, 6], items: [[55, 46, 'apple'], [24, 29, 'apple'], [19, 50, 'apple'], [38, 51, 'apple'], [52, 61, 'apple'], [28, 12, 'apple'], [51, 74, 'banana'], [88, 61, 'banana'], [87, 89, 'banana'], [70, 85, 'banana'], [85, 79, 'banana'], [77, 63, 'banana']] },
+  ],
+};
+// The robot's guesses: each unknown fruit takes the kind of its nearest known example (the given ones plus what the child
+// taught). A known fruit is its own kind. The rules test walks every board with this same function.
+export function teachGuesses(board, known) {
+  return board.items.map((it, i) => { if (known.includes(i)) return it[2]; let best = -1; let d = Infinity; for (const j of known) { const dj = (board.items[j][0] - it[0]) ** 2 + (board.items[j][1] - it[1]) ** 2; if (dj < d) { d = dj; best = j; } } return best < 0 ? null : board.items[best][2]; });
+}
+function lcgRandom(seed) { let x = seed >>> 0; return () => { x = (x * 1664525 + 1013904223) >>> 0; return x / 4294967296; }; }
+// Eight Switches (2026-09-29, pass FU, computer science 9 to 12): the six numbers of a round, 0 to 255, from the round
+// number, no two alike and never a plain power of two twice in a row, so the switches have to be added, not just found.
+export function bitsTargets(round, count = 6) {
+  const rnd = lcgRandom(round * 7919 + 17); const out = [];
+  while (out.length < count) { const n = Math.floor(rnd() * 256); if (out.includes(n)) continue; if (out.length && (n & (n - 1)) === 0 && (out[out.length - 1] & (out[out.length - 1] - 1)) === 0) continue; out.push(n); }
+  return out;
+}
 export const ROBOT_DECKS = {
   arrows: [
     { start: [1,1], goal: [0,4], rocks: [[2,1],[0,2],[2,2]], program: 'DDLU' },
@@ -1507,6 +1566,18 @@ export const ROBOT_DECKS = {
     { start: [4,4], goal: [3,1], rocks: [[3,0],[3,4],[2,2]], program: 'ULRU' },
     { start: [0,1], goal: [3,0], rocks: [[1,2],[0,2],[3,1]], program: 'RRUD' },
     { start: [3,1], goal: [2,4], rocks: [[1,4],[3,3]], program: 'DRDD' },
+  ],
+  // Walk the Robot (2026-09-28, pass FS, computer science K to 2): no program is given; the child writes it. Every walk
+  // has a path of five steps or fewer (the rules test finds one), and the star is never behind a wall of rocks.
+  walk: [
+    { start: [0,0], goal: [2,0], rocks: [[1,1]] },
+    { start: [2,2], goal: [2,4], rocks: [[1,3],[3,3]] },
+    { start: [0,4], goal: [2,2], rocks: [[1,3]] },
+    { start: [4,0], goal: [1,1], rocks: [[3,0]] },
+    { start: [1,2], goal: [3,2], rocks: [[2,2]] },
+    { start: [0,2], goal: [0,0], rocks: [[0,1]] },
+    { start: [4,4], goal: [2,3], rocks: [[3,4],[2,4]] },
+    { start: [2,0], goal: [2,3], rocks: [[2,1],[1,2]] },
   ],
   turns: [
     { start: [2,3,0], goal: [4,1], rocks: [[1,2],[2,4],[4,0]], program: 'FRFFLL' },
@@ -8109,6 +8180,224 @@ function HEALTH4_MODULES() { return [
     generators: ['h4-screens', 'h4-screens', 'h4-screens', 'h4-screens', 'h4-screens'],
   },
 ]; }
+// Computer science for the K to 2 band (2026-09-28, pass FS): four spoken lessons, each answer said in its lesson first.
+// The Texas codes are §126.1 (Kindergarten, adopted 2022, in force from 2024-2025), read from the TEA breakouts document;
+// the national codes are CSTA level 1A (grades K to 2).
+function TECHK_MODULES() { return [
+  {
+    id: 'tell-and-show',
+    order: 1,
+    title: 'Tell and show',
+    tagline: 'Inputs tell, outputs show',
+    requires: [],
+    lesson: {
+      paragraphs: ['A computer cannot see you or hear you on its own. You tell it things with a keyboard, a mouse or a touch screen. Those parts are called inputs.\nIt shows you things on a screen and plays sounds with a speaker. Those parts are called outputs.', 'You tell, and it shows. Press a key, and a letter appears on the screen. Tap a picture on a touch screen, and a song plays from the speaker. A touch screen is an input, because you tell with it. A speaker is an output, because it shows you, with sound.', 'A computer only does what it is told. The telling parts are inputs. The showing parts are outputs.'],
+      keyIdea: 'Inputs tell a computer. Outputs show you.',
+      example: { kind: 'flow', steps: ['tap the screen', 'the computer works', 'a song plays'], caption: 'You tap; the computer follows its steps; the speaker plays the song.',
+        another: ['A computer is like a helper who cannot see or hear. Its inputs are its ears: the keyboard, the mouse, the touch screen. Its outputs are its voice and its hands: the screen and the speaker.',
+          { text: 'A toaster works the same way. The lever you push down is the input. The toast that pops up is the output.', visual: { kind: 'flow', steps: ['push the lever', 'the toaster heats', 'toast pops up'] } },
+          'Ask about any part: do I use it to tell, or does it show me? Tell is an input. Show is an output.'] },
+    },
+    sources: ['Aligned with TEKS Technology Applications 126.1(b)(8)(B) (identify basic computer hardware, including a variety of input and output devices, and software using accurate terminology) and CSTA K-12 CS Standards 1A-CS-02.'],
+    generators: ['tk-tell', 'tk-tell', 'tk-tell', 'tk-tell', 'tk-tell'],
+  },
+  {
+    id: 'first-next-then-last',
+    order: 2,
+    title: 'First, next, then, last',
+    tagline: 'Steps in order',
+    requires: ['tell-and-show'],
+    lesson: {
+      paragraphs: ['A list of steps in order is called an algorithm. That is a big word for a small idea: first, next, then, last.\nTo make a jam sandwich: first get the bread, next spread the jam, then close the sandwich, last take a bite.', 'Mix up the order and it goes wrong. Bite first, and there is no sandwich yet. Spread the jam last, and it lands on top of your bite.', 'A big job breaks into small steps. Getting dressed is one big job: socks first, then shoes. Shoes first, and the socks will not go on.', 'First, next, then, last. A computer follows its steps the same way, one at a time, in order, and it never skips one.'],
+      keyIdea: 'Steps in order, first, next, then, last: that is an algorithm.',
+      example: { kind: 'flow', steps: ['first: bread', 'next: jam', 'then: close it', 'last: bite'], caption: 'Four steps in order make a sandwich. The same steps out of order make a mess.',
+        another: ['An algorithm is a recipe. A recipe tells you what to do and in what order, and a cook who skips a step gets a different dinner.',
+          { text: 'Getting dressed is an algorithm too: socks, then shoes. Try it the other way and the shoes are already on when the socks arrive.', visual: { kind: 'flow', steps: ['socks', 'shoes', 'coat', 'out the door'] } },
+          'When a job feels big, break it into small steps and do the first one. A sandwich is four small steps.'] },
+    },
+    sources: ['Aligned with TEKS Technology Applications 126.1(b)(1)(A) (identify a problem or task and break it down into smaller pieces) and 126.1(b)(1)(C) (identify algorithms using a sequential process such as first, next, then and last), and CSTA K-12 CS Standards 1A-AP-08 and 1A-AP-11.'],
+    generators: ['tk-order', 'tk-order', 'tk-order', 'tk-order', 'tk-order'],
+  },
+  {
+    id: 'do-it-again',
+    order: 3,
+    title: 'Do it again',
+    tagline: 'Patterns and loops',
+    requires: ['first-next-then-last'],
+    lesson: {
+      paragraphs: ['A pattern is something that repeats: red, blue, red, blue. When you know the pattern, you can guess what comes next. After blue, red comes again.', 'A computer can repeat steps too. Instead of saying clap, clap, clap, clap, you can say clap four times. Saying a step again and again is called a loop.\nA loop needs two things: what to do, and how many times. Jump three times. Blink two times.', 'You can write steps for a toy robot the same way. Forward, forward, forward, turn is four steps. Forward three times, then turn, says the same thing in two.', 'A pattern helps you guess what comes next. A loop lets a few words do a lot of work.'],
+      keyIdea: 'A pattern repeats. A loop says do it again, and how many times.',
+      example: { kind: 'flow', steps: ['clap four times', 'jump three times', 'blink two times'], caption: 'Three loops. Each one says what to do and how many times.',
+        another: ['Beads on a string: red, blue, red, blue. Cover the string with your hand and you can still say what the next bead is. That is what a pattern gives you.',
+          { text: 'A song has a chorus that comes back after every verse. The singer does not write it out three times; the page says repeat. That is a loop.', visual: { kind: 'flow', steps: ['verse', 'chorus', 'verse', 'chorus'] } },
+          'Forward, forward, forward, turn is four steps. Forward three times, then turn, is two. Same walk, fewer words.'] },
+    },
+    sources: ['Aligned with TEKS Technology Applications 126.1(b)(1)(B) (identify simple patterns and make predictions based on the patterns) and 126.1(b)(2)(A) (create a sequence of code with or without technology), and CSTA K-12 CS Standards 1A-AP-10.'],
+    generators: ['tk-again', 'tk-again', 'tk-again', 'tk-again', 'tk-again'],
+  },
+  {
+    id: 'safe-online-k',
+    order: 4,
+    title: 'Safe and kind online',
+    tagline: 'Secret words and private things',
+    requires: ['do-it-again'],
+    lesson: {
+      paragraphs: ['A password is a secret word that opens your account. Keep it secret. Only a parent or a teacher may know it. When you are done, log off, so the next person cannot get in.', 'Some things are safe to share online: your favorite color, a game you like, a pet. Some things are private and stay private: your full name, your address, your school and your birthday.', 'Be kind online, just like at the park, because a real person is on the other side. If something online makes you feel bad, stop and tell a grown-up.', 'Secret password, private things private, kind words, and tell a grown-up.'],
+      keyIdea: 'Keep your password secret, keep private things private, be kind, and tell a grown-up.',
+      example: { kind: 'flow', steps: ['log in', 'play', 'log off'], caption: 'Log in with your secret word, and log off when you are done.',
+        another: ['A password is like the key to your house. You do not hand your key to a stranger, and you lock the door when you leave. Logging off is locking the door.',
+          { text: 'Safe to share: a favorite color, a favorite game, a pet. Private: your full name, your address, your school, your birthday.', visual: { kind: 'flow', steps: ['color: safe', 'game: safe', 'address: private'] } },
+          'Kind online is the same as kind at the park: if you would not say it to a face, do not type it.'] },
+    },
+    sources: ['Aligned with TEKS Technology Applications 126.1(b)(7)(A) (identify ways to keep a user account safe, including not sharing login information and logging off), 126.1(b)(7)(B) (identify and discuss what information is safe to share online and what is unsafe) and 126.1(b)(5)(A) (identify and demonstrate responsible behavior within a digital environment), and CSTA K-12 CS Standards 1A-IC-18, 1A-NI-04 and 1A-IC-17.'],
+    generators: ['tk-safe', 'tk-safe', 'tk-safe', 'tk-safe', 'tk-safe'],
+  },
+]; }
+// The plain AI course (2026-09-29, pass FT), for the 6 to 8 band at grade 6: what a machine that learns really does, in
+// plain words. Texas codes from TEA's breakouts for §126.17 (grade 6, adopted 2022); national codes CSTA level 2.
+function TECH6_MODULES() { return [
+  {
+    id: 'learning-from-examples',
+    order: 1,
+    title: 'A machine that learns',
+    tagline: 'Patterns from examples, not rules from a person',
+    requires: [],
+    lesson: {
+      paragraphs: ['Most programs follow rules a person wrote: if the ball touches the paddle, bounce. Artificial intelligence, or AI, is different. Nobody writes the rule for telling a cat from a dog. Instead the program is shown thousands of examples, each labeled cat or dog, and it finds the patterns in them on its own. That is called learning from examples, and the result is called a model.', 'A model is a generalization. It keeps what the examples have in common, pointed ears and whiskers, and drops what is specific to one picture, like the sofa the cat sat on. When a new picture arrives, the model compares it with the patterns it kept and makes a guess: cat, 92 out of 100.', 'The same trick writes text. A language model has read an enormous pile of writing and learned which word tends to come next. Ask it a question and it builds an answer one likely word at a time. It is not looking the answer up. It is guessing, from patterns, what an answer usually looks like.'],
+      keyIdea: 'AI is a program that finds patterns in many examples and guesses about new ones. The guess is a generalization, not a rule a person wrote.',
+      example: { kind: 'flow', steps: ['thousands of labeled examples', 'find the patterns', 'a model', 'a guess about a new one'], caption: 'Examples in, patterns kept, a guess out. No rule was written by hand.',
+        another: ['Think of how you learned to spot a dog. Nobody gave you a rule. You saw hundreds of dogs and your mind kept what they shared. A model does the same thing with numbers instead of a mind, and much less of everything else.',
+          { text: 'A model is like a sieve that keeps the common shape and lets the details fall through. Whiskers stay; the sofa falls.', visual: { kind: 'flow', steps: ['many pictures', 'keep what is shared', 'drop what is particular', 'a pattern'] } },
+          'Autocomplete on a phone is a small language model: it has seen which word usually follows the one you typed. A chatbot is the same idea grown enormous.'] },
+    },
+    sources: ['Aligned with TEKS Technology Applications 126.17(b)(1)(B) (analyze the patterns and sequences found in visual representations of data) and 126.17(b)(1)(C) (define abstraction and distinguish between generalized information and specific information), and CSTA K-12 CS Standards 2-DA-09.'],
+    generators: ['t6-learn', 't6-learn', 't6-learn', 't6-learn', 't6-learn'],
+  },
+  {
+    id: 'wrong-and-sure',
+    order: 2,
+    title: 'Wrong and sure',
+    tagline: 'A guess can be wrong and still sound certain',
+    requires: ['learning-from-examples'],
+    lesson: {
+      paragraphs: ['A model guesses, so it can be wrong. A cat model shown a fox may say cat, 88 out of 100. The number is how strongly the patterns matched, not how true the answer is. A model has no way to feel unsure the way you do; it only reports how well the new thing fits the examples it saw.', 'Language models make the same mistake with facts. Because they build answers from what an answer usually looks like, they can produce a date, a name or a quote that looks right and never happened. People call this a hallucination. It sounds as sure as a true answer, because sounding sure is a pattern too.', 'So a model is a fast first guess, not a final word. Check anything that matters against a second source: a book, a teacher, the original website. The most useful question to ask a machine is, how do you know?, and the answer has to come from somewhere you can look.'],
+      keyIdea: 'A model can be wrong and sound sure. Its number is fit, not truth. Check what matters against a second source.',
+      example: { kind: 'flow', steps: ['the machine answers', 'ask: how do you know?', 'check a second source', 'now decide'], caption: 'A guess is a start. A second source turns it into something you can use.',
+        another: ['A weather forecast that says 90 percent rain is not promising rain; it is saying that days like this one were mostly rainy. A model\'s number is the same kind of statement, and it can be 90 percent wrong about today.',
+          { text: 'A confident tone is the easiest thing to learn from a pile of writing, because almost everything in it was written with confidence. So the tone tells you nothing about the facts.', visual: { kind: 'flow', steps: ['sounds sure', 'is it true?', 'look it up'] } },
+          'The habit that protects you is small: for anything you will repeat, act on or hand in, find where it came from first.'] },
+    },
+    sources: ['Aligned with TEKS Technology Applications 126.17(b)(6)(A) (use digital tools to transform data in order to identify and discuss trends and make inferences) and 126.17(b)(9)(D) (describe how information can be exaggerated or misrepresented online), and CSTA K-12 CS Standards 2-DA-08.'],
+    generators: ['t6-sure', 't6-sure', 't6-sure', 't6-sure', 't6-sure'],
+  },
+  {
+    id: 'fair-examples',
+    order: 3,
+    title: 'Fair examples',
+    tagline: 'The examples carry the fairness of whoever collected them',
+    requires: ['wrong-and-sure'],
+    lesson: {
+      paragraphs: ['A model knows only what its examples showed it. Train a dog model on a thousand pictures, all of them golden retrievers, and it will do badly on a poodle. Nothing in the program is against poodles. They were simply missing from the examples, so the patterns it kept do not cover them.', 'That is why bias creeps in. If the examples were collected by people who mostly photographed one kind of face, one kind of neighborhood or one kind of handwriting, the model works best for that kind and worst for everyone else, and it does so with the same confident number. The unfairness was in the pile of examples before the model ever ran.', 'The fix is to look at who is missing. Good teams count their examples by group, add what is thin, and test the model on every group before anyone depends on it. A model that is right on average can still be wrong for the people it saw least.'],
+      keyIdea: 'A model is only as fair as its examples. Look at who is missing, and test on every group.',
+      example: { kind: 'bar', parts: 5, shaded: 4, caption: 'Four of five examples from one group: the model will serve that group and stumble on the fifth.',
+        another: ['A class survey taken only in the front row will say the class loves the front row. The survey is not lying; it just never asked the back.',
+          { text: 'A speech tool trained on a few accents mishears the rest, and it will keep doing so until voices like theirs are in the pile. The fix is more examples, not a faster machine.', visual: { kind: 'bar', parts: 6, shaded: 1 } },
+          'Being right on average hides who is wronged. Always ask: right for whom, and wrong for whom?'] },
+    },
+    sources: ['Aligned with TEKS Technology Applications 126.17(b)(9)(A) (practice safe, ethical, and positive online behaviors) and CSTA K-12 CS Standards 2-IC-21 (discuss issues of bias and accessibility in the design of existing technologies).'],
+    generators: ['t6-fair', 't6-fair', 't6-fair', 't6-fair', 't6-fair'],
+  },
+  {
+    id: 'staying-in-charge',
+    order: 4,
+    title: 'Staying in charge',
+    tagline: 'What you type in, whose work came out, and who decides',
+    requires: ['fair-examples'],
+    lesson: {
+      paragraphs: ['Whatever you type into an AI tool leaves your device and may be kept. So treat the box like a postcard: no passwords, no address, no private things about you or anyone else. What you send becomes part of your digital footprint, the trail of information about you that stays online.', 'The pile of examples came from somewhere. A picture model learned from millions of pictures people made, and a language model from millions of pages people wrote. Their work is intellectual property; copyright is the law that says who may copy it. When a tool hands you words or a picture, someone\'s work is inside, so say where it came from and never pass it off as yours.', 'Use the tool to learn, not to skip learning. Let it explain, quiz you, suggest a first draft, and then do the thinking yourself, because a skill you never practiced is a skill you do not have. Tools change every year; the habit that lasts is asking what it is doing, checking what it says, and deciding for yourself.'],
+      keyIdea: 'Type nothing private, credit the work inside, and use the tool to learn rather than to skip learning. You decide.',
+      example: { kind: 'flow', steps: ['nothing private goes in', 'the answer is a draft', 'check it', 'say where it came from'], caption: 'Four habits that outlast any tool.',
+        another: ['A calculator did not end arithmetic class, because you still have to know which numbers to put in and whether the answer makes sense. The same is true here, with words.',
+          { text: 'Ask the tool to quiz you, then close it and answer from your own head. The tool is a coach, and a coach does not run the race for you.', visual: { kind: 'flow', steps: ['ask for a quiz', 'close the tool', 'answer yourself', 'check'] } },
+          'Every tool you meet after this one will be new. The questions stay the same: what is it doing, is it right, and who is deciding?'] },
+    },
+    sources: ['Aligned with TEKS Technology Applications 126.17(b)(8)(A) (identify the impact of a digital footprint), 126.17(b)(9)(B) (discuss and define intellectual property and associated terms, including copyright law) and 126.17(b)(4)(C) (transfer current knowledge to the learning of newly encountered technologies), and CSTA K-12 CS Standards 2-IC-23 and 2-IC-20.'],
+    generators: ['t6-charge', 't6-charge', 't6-charge', 't6-charge', 't6-charge'],
+  },
+]; }
+// Computer science for the 9 to 12 band (2026-09-29, pass FU), at grade 9: the parts of a machine, binary, the parts of a
+// program, and the working habits. Texas codes from §127.788, Fundamentals of Computer Science (the high school technology
+// applications courses live in the career and technical education chapter since 2020); national codes CSTA level 3A.
+function TECH9_MODULES() { return [
+  {
+    id: 'inside-the-machine',
+    order: 1,
+    title: 'Inside the machine',
+    tagline: 'CPU, memory, storage and the two kinds of software',
+    requires: [],
+    lesson: {
+      paragraphs: ['Every computer, from a phone to a server, has the same four kinds of part. The central processing unit, or CPU, does the work: it fetches one instruction at a time and carries it out, billions of times a second. Memory, called RAM, holds what the CPU is working on right now and forgets it when the power is off. Storage, a solid-state drive or a hard disk, keeps files after the power is off. Peripherals are everything at the edges: the keyboard, the mouse, the screen, the printer, the camera.', 'The parts fall into a cycle: input comes in from a peripheral, the CPU processes it, output goes out to a peripheral, and storage keeps what should last. Primary storage is memory, fast and temporary; secondary storage is the drive, slower and lasting.', 'Two kinds of software run on those parts. The operating system, Windows, macOS, Linux, Android or iOS, is the program that manages the machine: it starts the hardware, shares the CPU and memory among programs, and keeps the files. An application is a program you run to do a task: a browser, a game, a word processor. An application asks the operating system for the screen, the network and the files; it never touches the hardware directly.'],
+      keyIdea: 'The CPU processes, memory holds the moment, storage keeps the files, peripherals bring input and output. The operating system manages the machine; an application does a task on top of it.',
+      example: { kind: 'flow', steps: ['input: keyboard', 'the CPU processes', 'output: screen', 'storage keeps it'], caption: 'The cycle every program lives in: input, processing, output, and storage for what should last.',
+        another: ['A kitchen is the same shape. The cook is the CPU, the counter is memory (everything on it is in use, and it is cleared at night), the pantry is storage, and the door and the serving window are the peripherals.',
+          { text: 'The operating system is the building manager and the applications are the tenants. A tenant asks for water and power; nobody runs their own pipe to the street.', visual: { kind: 'flow', steps: ['application asks', 'operating system grants', 'hardware does it'] } },
+          'Memory is fast because it is electric switches; a drive is slower because it has to keep its bits without power. That is the whole reason both exist.'] },
+    },
+    sources: ['Aligned with TEKS Fundamentals of Computer Science 127.788(d)(6)(A) (identify and explain the function of basic computer components, including a CPU, storage and peripheral devices), 127.788(d)(6)(D) (describe the differences between an application and an operating system) and 127.788(d)(6)(E) (use input, processing, output and primary and secondary storage devices), and CSTA K-12 CS Standards 3A-CS-02.'],
+    generators: ['t9-machine', 't9-machine', 't9-machine', 't9-machine', 't9-machine'],
+  },
+  {
+    id: 'counting-in-binary',
+    order: 2,
+    title: 'Counting in binary',
+    tagline: 'Eight switches, 256 numbers',
+    requires: ['inside-the-machine'],
+    lesson: {
+      paragraphs: ['A computer holds every number as a row of switches, on or off, 1 or 0. Each switch is a bit, and its place is worth twice the place to its right: 1, 2, 4, 8, 16, 32, 64, 128. Eight bits are a byte, and a byte can hold any number from 0 to 255: all switches off is 0, all on is 128 + 64 + 32 + 16 + 8 + 4 + 2 + 1 = 255.', 'To read a binary number, add the places that are on. 1011 is 8 + 0 + 2 + 1 = 11. To write a decimal number in binary, take the biggest place that fits and subtract, then the next: 13 is 8 (5 left), then 4 (1 left), then 1, so 13 is 1101.', 'Counting in binary is counting with only two digits: 0, 1, 10, 11, 100, 101, 110, 111, 1000. Each time the right-hand bit would become 2, it turns back to 0 and carries 1 to the left, exactly as 9 carries to 10 in decimal. Text, pictures and sound are all numbers too: the letter A is 65, a pixel is three numbers for red, green and blue.'],
+      keyIdea: 'Places worth 1, 2, 4, 8, 16, 32, 64, 128; add the ones that are on. A byte is eight bits, 0 to 255.',
+      example: { kind: 'flow', steps: ['1 0 1 1', '8 + 0 + 2 + 1', '11'], caption: 'Read the places that are on, from the left, and add them.',
+        another: ['Binary is an odometer with two digits on each wheel. When a wheel passes 1 it rolls back to 0 and turns the next wheel, exactly as a car odometer rolls 9 to 0 and turns the wheel to its left.',
+          { text: 'To write 22 in binary, ask each place from the largest: does 16 fit? Yes, 6 left. 8? No. 4? Yes, 2 left. 2? Yes, 0 left. 1? No. So 22 is 10110.', visual: { kind: 'flow', steps: ['16: yes', '8: no', '4: yes', '2: yes', '1: no'] } },
+          'With n bits you can count to 2 to the n minus 1: four bits reach 15, eight reach 255, sixteen reach 65,535. Every extra bit doubles the range.'] },
+    },
+    sources: ['Aligned with TEKS Fundamentals of Computer Science 127.788(d)(4)(B) (communicate an understanding of binary representation of data, perform conversions between decimal and binary number systems, and count in binary) and CSTA K-12 CS Standards 3A-DA-09.'],
+    generators: ['t9-binary', 't9-binary', 't9-binary', 't9-binary', 't9-binary'],
+  },
+  {
+    id: 'variables-and-decisions',
+    order: 3,
+    title: 'Variables, decisions and loops',
+    tagline: 'The parts of every program',
+    requires: ['counting-in-binary'],
+    lesson: {
+      paragraphs: ['A variable is a named box that holds one value, and its data type says what kind: an integer like 12, a real number like 2.5, a string of text like "Mia", or a boolean, true or false. Choosing the right type matters: a score is an integer, a price is a real number, a name is a string, and a flag like game over is a boolean.', 'Programs do arithmetic with operators: + adds, - subtracts, * multiplies, / divides with a real result, so 7 / 2 is 3.5. Integer division keeps only the whole part, so 7 divided by 2 as integers is 3, and modulus keeps only the remainder, 7 % 2 is 1. Modulus is how a program tells odd from even: a number is even when number % 2 is 0.', 'Three structures build every program. Sequence: the statements run in order, top to bottom. A conditional: if the ball touches the paddle, then bounce, else lose a life. Iteration, a loop: repeat while lives are above zero. A random number picks where the next star appears, and testing means running the program with inputs whose right answers you already know, the edges included, to see whether it does what you intended.'],
+      keyIdea: 'Variables with types hold values, operators compute, and sequence, conditionals and loops decide the order. Test with inputs whose answers you know.',
+      example: { kind: 'flow', steps: ['score = 0', 'if hit: score = score + 1', 'while lives > 0: play', 'test: does it end at 0?'], caption: 'Sequence, a conditional, a loop, and a test at the edge.',
+        another: ['A variable is a labeled jar on a shelf. The label never changes; what is inside does. The type is the shape of the jar: a jar for whole numbers cannot hold half a cookie.',
+          { text: 'Modulus is the clock: 15 hours after 10 is 1, because (10 + 15) % 12 is 1. Anything that wraps around is a modulus.', visual: { kind: 'flow', steps: ['10 + 15 = 25', '25 % 12', '1 o\'clock'] } },
+          'The best tests are the edges: zero lives, an empty name, the highest score a byte can hold. Programs break at the edges, so that is where you look first.'] },
+    },
+    sources: ['Aligned with TEKS Fundamentals of Computer Science 127.788(d)(4)(E) (identify and use the appropriate data type), 127.788(d)(4)(G) (use arithmetic operators, including integer division and modulus division), 127.788(d)(4)(I) (use conditional statements), 127.788(d)(4)(J) (use iteration) and 127.788(d)(4)(L) (test program solutions by investigating intended outcomes), and CSTA K-12 CS Standards 3A-AP-13 and 3A-AP-15.'],
+    generators: ['t9-program', 't9-program', 't9-program', 't9-program', 't9-program'],
+  },
+  {
+    id: 'working-like-a-programmer',
+    order: 4,
+    title: 'Working like a coder',
+    tagline: 'Debugging, licenses, passwords and what to believe',
+    requires: ['variables-and-decisions'],
+    lesson: {
+      paragraphs: ['Programs fail, and the craft is in what you do next. Debugging is finding the step where the program stops matching your intention: read the error message, print the variables at the suspect line, shrink the input until the bug shows, and look up the reference for the function you are using. A coder who reads the documentation before guessing fixes more bugs before lunch.', 'Code and pictures belong to whoever made them. Copyright means you need permission to copy, and citing the source is how you show where borrowed work came from. Some work is shared on purpose: open source code comes with a license that lets you use and change it, freeware is free to use but not to change, and public domain work belongs to everyone. Read the license before you use the library.', 'A strong password is long, twelve characters or more, unusual, and used for one account only; a password manager keeps them, and a second step, a code on your phone, protects the account even if the password leaks. Virus detection and software updates close the holes attackers use. And online, a page that loads fast, looks polished and says exactly what you hoped is not more reliable for it: check who wrote it, when, and what they gain.'],
+      keyIdea: 'Debug by reading, printing, shrinking and looking up. Respect copyright and read the license. Long unique passwords, updates, and a second step. Judge a page by its author, not its polish.',
+      example: { kind: 'flow', steps: ['read the error', 'print the variables', 'shrink the input', 'look it up'], caption: 'Four moves that find most bugs, in that order.',
+        another: ['A bug is a place where the program and your intention disagree. The program is never wrong about what it does; it is only wrong about what you meant. Debugging is finding where the two parted.',
+          { text: 'Licenses are the rules on the box. Open source: use it, change it, share it under the same rules. Freeware: use it, do not change it. Public domain: no rules at all.', visual: { kind: 'flow', steps: ['open source', 'freeware', 'public domain'] } },
+          'Twelve random characters take longer to guess than the universe has existed; a word and a birthday take a lunch break. Length beats cleverness.'] },
+    },
+    sources: ['Aligned with TEKS Fundamentals of Computer Science 127.788(d)(3)(B) (debug and solve problems using reference materials and effective strategies), 127.788(d)(5)(A) (discuss privacy and copyright laws and cite sources), 127.788(d)(5)(B) (compare non-copyright asset sharing options such as open source, freeware and public domain), 127.788(d)(5)(D) (explain the value of strong passwords and virus detection) and 127.788(d)(5)(F) (analyze how electronic media can affect reliability of information), and CSTA K-12 CS Standards 3A-AP-20, 3A-NI-05 and 3A-IC-29.'],
+    generators: ['t9-craft', 't9-craft', 't9-craft', 't9-craft', 't9-craft'],
+  },
+]; }
 function TECH3_MODULES() { return [
   {
     id: 'inputs-and-outputs',
@@ -8124,7 +8413,7 @@ function TECH3_MODULES() { return [
           { text: 'Think of a vending machine: the buttons are inputs, the snack is the output, and the machine\'s rules in between are its program.', visual: { kind: 'flow', steps: ['press B4', 'the rules run', 'the snack drops'] } },
           'Your body works the same way: eyes and ears are inputs, your voice and hands are outputs, and your brain follows the steps in between.'] },
     },
-    sources: ['Aligned with TEKS Technology Applications 126.7(b)(1)(A) (identify and use components of a computer system) and CSTA K-12 CS Standards 1B-CS-01.'],
+    sources: ['Aligned with TEKS Technology Applications 126.8(b)(1)(A) (identify and use components of a computer system) and CSTA K-12 CS Standards 1B-CS-01.'],
     generators: ['t3-parts', 't3-parts', 't3-parts', 't3-parts', 't3-parts'],
   },
   {
@@ -8141,7 +8430,7 @@ function TECH3_MODULES() { return [
           { text: 'A recipe card is an algorithm on paper: ingredients first, then numbered steps, and you never do step 4 before step 3.', visual: { kind: 'flow', steps: ['ingredients', 'step 1', 'step 2', 'step 3'] } },
           'Directions to a friend\'s house are an algorithm too: left, then right, then the blue door. Say them in the wrong order and you end up somewhere else.'] },
     },
-    sources: ['Aligned with TEKS Technology Applications 126.7(b)(4)(A) (create and follow step-by-step directions) and CSTA 1B-AP-08.'],
+    sources: ['Aligned with TEKS Technology Applications 126.8(b)(4)(A) (create and follow step-by-step directions) and CSTA 1B-AP-08.'],
     generators: ['t3-steps', 't3-steps', 't3-steps', 't3-steps', 't3-steps'],
   },
   {
@@ -8158,7 +8447,7 @@ function TECH3_MODULES() { return [
           { text: 'Stairs are a loop of the same step. Nobody describes a staircase step by step; they say twelve steps, and you know what to do.', visual: { kind: 'loop', steps: ['step up', 'step up', 'step up'] } },
           'Ask what changes and what stays the same. What stays the same goes inside the loop; what changes is how many times.'] },
     },
-    sources: ['Aligned with TEKS Technology Applications 126.7(b)(4)(B) (use loops in an algorithm) and CSTA 1B-AP-10.'],
+    sources: ['Aligned with TEKS Technology Applications 126.8(b)(4)(B) (use loops in an algorithm) and CSTA 1B-AP-10.'],
     generators: ['t3-loops', 't3-loops', 't3-loops', 't3-loops', 't3-loops'],
   },
 ]; }
@@ -8177,7 +8466,7 @@ function TECH5_MODULES() { return [
           { text: 'A scoreboard at a game is a set of variables: home, away, quarter, time. Each has a name and a value that changes as the game goes on.', visual: { kind: 'stack', levels: ['home: 21', 'away: 14', 'quarter: 3'] } },
           'When a program says score = score + 5, it means: take what is in the score box, add 5, and put the answer back in the same box.'] },
     },
-    sources: ['Aligned with TEKS Technology Applications 126.9(b)(4)(C) (use variables) and CSTA 1B-AP-09.'],
+    sources: ['Aligned with TEKS Technology Applications 126.10(b)(4)(C) (use variables) and CSTA 1B-AP-09.'],
     generators: ['t5-variables', 't5-variables', 't5-variables', 't5-variables', 't5-variables'],
   },
   {
@@ -8194,7 +8483,7 @@ function TECH5_MODULES() { return [
           { text: 'A thermostat is an if-then that never sleeps: IF the room is colder than 68 THEN heat on, ELSE heat off.', visual: { kind: 'twoway', a: 'colder than 68', b: 'warm enough', top: 'heat on', bottom: 'heat off' } },
           'The condition is a yes-or-no question. If you cannot answer it yes or no, it is not a condition yet.'] },
     },
-    sources: ['Aligned with TEKS Technology Applications 126.9(b)(4)(B) (use conditional statements) and CSTA 1B-AP-10.'],
+    sources: ['Aligned with TEKS Technology Applications 126.10(b)(4)(B) (use conditional statements) and CSTA 1B-AP-10.'],
     generators: ['t5-if-then', 't5-if-then', 't5-if-then', 't5-if-then', 't5-if-then'],
   },
   {
@@ -8211,7 +8500,7 @@ function TECH5_MODULES() { return [
           'Say what should happen, then what did happen. The gap between the two sentences is where to look.',
           { text: 'Detectives and coders work the same way: the evidence is the output, the suspects are the steps, and you question them one at a time.', visual: { kind: 'flow', steps: ['read a step', 'check it', 'next step', 'found it'] } }] },
     },
-    sources: ['Aligned with TEKS Technology Applications 126.9(b)(4)(E) (debug and revise an algorithm) and CSTA 1B-AP-15.'],
+    sources: ['Aligned with TEKS Technology Applications 126.10(b)(4)(E) (debug and revise an algorithm) and CSTA 1B-AP-15.'],
     generators: ['t5-debug', 't5-debug', 't5-debug', 't5-debug', 't5-debug'],
   },
 ]; }
@@ -8230,7 +8519,7 @@ function TECH7_MODULES() { return [
           'Our usual numbers use ten symbols and places worth 1, 10, 100. Binary uses two symbols and places worth 1, 2, 4, 8. Same idea, smaller alphabet.',
           { text: 'A hand can count to 31 in binary: each finger is a place, thumb 1, up to 16 on the pinky. Five fingers, thirty-two patterns.', visual: { kind: 'stack', levels: ['16', '8', '4', '2', '1'] } }] },
     },
-    sources: ['Aligned with TEKS Technology Applications 126.15(b)(6)(A) (explain how binary represents data) and CSTA 2-DA-07.'],
+    sources: ['Aligned with TEKS Technology Applications 126.18(b)(6)(A) (explain how binary represents data) and CSTA 2-DA-07.'],
     generators: ['t7-binary', 't7-binary', 't7-binary', 't7-binary', 't7-binary'],
   },
   {
@@ -8247,7 +8536,7 @@ function TECH7_MODULES() { return [
           { text: 'DNS is the phone book: you know the name of the pizza place, the book gives you the number, and the number is what actually connects.', visual: { kind: 'twoway', a: 'school.edu', b: '93.184.216.34', top: 'DNS looks it up', bottom: 'the address that connects' } },
           'A road network with no single road: if one route is blocked, the packets take another. That is why the internet is hard to break.'] },
     },
-    sources: ['Aligned with TEKS Technology Applications 126.15(b)(5)(A) (explain how information is transmitted across networks) and CSTA 2-NI-04.'],
+    sources: ['Aligned with TEKS Technology Applications 126.18(b)(5)(A) (explain how information is transmitted across networks) and CSTA 2-NI-04.'],
     generators: ['t7-internet', 't7-internet', 't7-internet', 't7-internet', 't7-internet'],
   },
   {
@@ -8264,7 +8553,7 @@ function TECH7_MODULES() { return [
           { text: 'Two-step sign-in is a door with a key and a doorbell: even with the key, someone still has to be let in by the phone in your pocket.', visual: { kind: 'flow', steps: ['password', 'code on your phone', 'in'] } },
           'Urgent, secret, now: those three words in one message are the fingerprint of a scam. Real accounts do not rush you.'] },
     },
-    sources: ['Aligned with TEKS Technology Applications 126.15(b)(3)(B) (practice safe and ethical behavior online) and CSTA 2-NI-05.'],
+    sources: ['Aligned with TEKS Technology Applications 126.18(b)(3)(B) (practice safe and ethical behavior online) and CSTA 2-NI-05.'],
     generators: ['t7-safety', 't7-safety', 't7-safety', 't7-safety', 't7-safety'],
   },
 ]; }
@@ -12178,6 +12467,156 @@ Object.assign(GENERATORS, {
     const Q = [['Allegro means what?', ['fast', 'slow', 'soft'], 'fast', 'Allegro is fast. Adagio is slow.'], ['A lullaby is usually marked how?', ['piano and adagio', 'forte and allegro', 'forte and adagio'], 'piano and adagio', 'Soft and slow, so a baby can drift off.'],['What does forte mean?', ['loud', 'soft', 'fast'], 'loud', 'Forte is loud and piano is soft. They are Italian words, and every musician uses them.'],
       ['A piece marked piano should be played how?', ['softly', 'loudly', 'quickly'], 'softly', 'Piano means soft. The instrument got its name because it could play soft and loud.'],
       ['Tempo is a piece\'s what?', ['speed', 'loudness', 'key'], 'speed', 'Tempo is how fast the beat goes. Allegro is fast, adagio is slow.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  // Computer science, K to 2 (2026-09-28, pass FS): spoken questions with tapped answers; every answer is said in its lesson first.
+  'tk-tell': (rng) => {
+    const Q = [['Which part do you use to tell a computer something?', ['a keyboard', 'a screen', 'a speaker'], 'a keyboard', 'You tell with a keyboard, a mouse or a touch screen. Those are inputs.'],
+      ['Which part shows you a picture?', ['a screen', 'a mouse', 'a keyboard'], 'a screen', 'The screen shows you things. It is an output.'],
+      ['What do we call the parts that tell a computer?', ['inputs', 'outputs', 'wheels'], 'inputs', 'Inputs tell. A keyboard, a mouse and a touch screen are inputs.'],
+      ['What do we call the parts that show you things?', ['outputs', 'inputs', 'wheels'], 'outputs', 'Outputs show you. The screen and the speaker are outputs.'],
+      ['Which part plays a sound?', ['a speaker', 'a mouse', 'a keyboard'], 'a speaker', 'The speaker plays sounds. It shows you with sound, so it is an output.'],
+      ['A touch screen is which kind of part?', ['an input', 'an output', 'a wheel'], 'an input', 'You tell with a touch screen, so it is an input.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'tk-order': (rng) => {
+    const Q = [['What is a list of steps in order called?', ['an algorithm', 'a picture', 'a song'], 'an algorithm', 'An algorithm is steps in order: first, next, then, last.'],
+      ['To make a jam sandwich, what do you do first?', ['get the bread', 'take a bite', 'spread the jam'], 'get the bread', 'First get the bread, next spread the jam, then close the sandwich, last take a bite.'],
+      ['When you get dressed, what goes on first?', ['socks', 'shoes', 'a hat'], 'socks', 'Socks first, then shoes. Shoes first, and the socks will not go on.'],
+      ['What happens if you take a bite first?', ['there is no sandwich yet', 'the sandwich is done', 'the jam goes away'], 'there is no sandwich yet', 'Bite first and there is no sandwich yet. The order matters.'],
+      ['How does a computer follow its steps?', ['one at a time, in order', 'all at once', 'backward'], 'one at a time, in order', 'One at a time, in order, and it never skips one.'],
+      ['What word do we say for the step at the end?', ['last', 'first', 'next'], 'last', 'First, next, then, last. Last is the end.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'tk-again': (rng) => {
+    const Q = [['Red, blue, red, blue. What comes next?', ['red', 'blue', 'green'], 'red', 'The pattern repeats. After blue, red comes again.'],
+      ['What do we call something that repeats?', ['a pattern', 'a loop', 'a song'], 'a pattern', 'A pattern repeats, like red, blue, red, blue.'],
+      ['Saying a step again and again is called what?', ['a loop', 'a pattern', 'a screen'], 'a loop', 'A loop says do it again, and how many times.'],
+      ['A loop needs what to do and what else?', ['how many times', 'a color', 'a friend'], 'how many times', 'What to do, and how many times. Jump three times.'],
+      ['Which one is a loop?', ['clap four times', 'clap once', 'sit still'], 'clap four times', 'Clap four times says clap, and how many times. That is a loop.'],
+      ['What helps you guess what comes next?', ['a pattern', 'a mouse', 'a bite'], 'a pattern', 'When you know the pattern, you can guess what comes next.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'tk-safe': (rng) => {
+    const Q = [['Who may know your password?', ['a parent or a teacher', 'everyone in class', 'a stranger'], 'a parent or a teacher', 'Only a parent or a teacher. A password is a secret word.'],
+      ['What do you do when you are done on a computer?', ['log off', 'shout', 'share your password'], 'log off', 'Log off, so the next person cannot get in.'],
+      ['Which is safe to share online?', ['your favorite color', 'your address', 'your full name'], 'your favorite color', 'A favorite color, a game you like or a pet are safe to share.'],
+      ['Which one is private?', ['your address', 'your favorite color', 'a game you like'], 'your address', 'Your full name, address, school and birthday are private.'],
+      ['Something online makes you feel bad. What do you do?', ['stop and tell a grown-up', 'keep going', 'hide it'], 'stop and tell a grown-up', 'Stop, and tell a grown-up. That is always the right move.'],
+      ['A password is what kind of word?', ['a secret word', 'a loud word', 'a long song'], 'a secret word', 'A secret word that opens your account. Keep it secret.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  // The plain AI course, grade 6 (2026-09-29, pass FT): every answer is said in its lesson first.
+  't6-learn': (rng) => {
+    const Q = [['What does an AI program learn from?', ['examples', 'a rule a person wrote', 'a dictionary', 'a random number'], 'examples', 'It is shown thousands of labeled examples and finds the patterns on its own.'],
+      ['What is the result of learning from examples called?', ['a model', 'a loop', 'an input', 'a variable'], 'a model', 'The patterns it kept, ready to guess about new things, are called a model.'],
+      ['A model keeps what examples have in common. What is that called?', ['a generalization', 'a copy', 'a rule', 'a search'], 'a generalization', 'A generalization keeps what is shared and drops what is particular.'],
+      ['How does a language model build an answer?', ['one likely word at a time', 'by looking it up', 'by asking a person', 'by copying a page'], 'one likely word at a time', 'It has learned which word tends to come next, and builds the answer word by word.'],
+      ['What does a model make when a new picture arrives?', ['a guess', 'a rule', 'a copy', 'a law'], 'a guess', 'It compares the picture with the patterns it kept and guesses: cat, 92 out of 100.'],
+      ['Which part of a cat picture does a model drop?', ['the sofa the cat sat on', 'the pointed ears', 'the whiskers', 'the fur'], 'the sofa the cat sat on', 'The sofa is specific to one picture. Ears and whiskers are what cats share.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  't6-sure': (rng) => {
+    const Q = [['What does a model\'s number really measure?', ['how well the new thing fits the examples', 'how true the answer is', 'how fast it ran', 'how many people agree'], 'how well the new thing fits the examples', 'Cat, 88 out of 100 means the patterns matched strongly. A fox can match strongly too.'],
+      ['A made-up date that looks right is called what?', ['a hallucination', 'a model', 'a pattern', 'a loop'], 'a hallucination', 'The model built what a date usually looks like. It never happened.'],
+      ['Why can a wrong answer sound sure?', ['sounding sure is a pattern too', 'the machine is lying', 'the machine is tired', 'the answer is short'], 'sounding sure is a pattern too', 'Almost everything it learned from was written with confidence, so confidence is what it learned.'],
+      ['What turns a guess into something you can use?', ['a second source', 'a bigger number', 'a longer answer', 'a faster machine'], 'a second source', 'A book, a teacher, the original website: somewhere you can look.'],
+      ['What is a model, at best?', ['a fast first guess', 'a final word', 'a proof', 'a law'], 'a fast first guess', 'A first guess is useful. It is not the final word.'],
+      ['What is the most useful question to ask a machine?', ['how do you know?', 'are you sure?', 'how fast are you?', 'who made you?'], 'how do you know?', 'The answer has to come from somewhere you can look.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  't6-fair': (rng) => {
+    const Q = [['A dog model saw only golden retrievers. Why does it fail on a poodle?', ['they were simply missing from the examples', 'poodles are not dogs', 'the program hates poodles', 'the picture was too big'], 'they were simply missing from the examples', 'The patterns it kept never covered poodles. Nothing in it is against them.'],
+      ['Where was the unfairness before the model ran?', ['in the pile of examples', 'in the screen', 'in the keyboard', 'in the answer'], 'in the pile of examples', 'Whoever collected the examples decided who was in them and who was not.'],
+      ['What is the fix for a biased model?', ['look at who is missing', 'use a bigger number', 'run it faster', 'ask it twice'], 'look at who is missing', 'Count the examples by group, add what is thin, and test on everyone.'],
+      ['Before anyone depends on a model, good teams test it on what?', ['every group', 'one group', 'the fastest computer', 'the newest phone'], 'every group', 'Right on average can still be wrong for the group it saw least.'],
+      ['A model that is right on average can still be wrong for whom?', ['the people it saw least', 'nobody', 'the people it saw most', 'the people who built it'], 'the people it saw least', 'The average hides them. Ask: right for whom, and wrong for whom?'],
+      ['What does a model give for the groups it serves worst?', ['the same confident number', 'a warning', 'no answer', 'a lower price'], 'the same confident number', 'It cannot tell that it never saw enough of them. The number looks the same.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  't6-charge': (rng) => {
+    const Q = [['What should you treat an AI tool\'s text box like?', ['a postcard', 'a locked safe', 'a diary', 'a private letter'], 'a postcard', 'Whatever you type leaves your device and may be kept. Nothing private goes in.'],
+      ['The trail of information about you that stays online is called what?', ['your digital footprint', 'a model', 'a loop', 'your password'], 'your digital footprint', 'What you send becomes part of it.'],
+      ['The law that says who may copy someone\'s work is called what?', ['copyright', 'a generalization', 'a footprint', 'a hallucination'], 'copyright', 'The pictures and pages a model learned from are intellectual property.'],
+      ['A tool hands you a picture. What is inside it?', ['someone\'s work', 'nothing', 'a virus', 'a password'], 'someone\'s work', 'Millions of pictures people made went into the model. Say where it came from.'],
+      ['What should you use the tool to do?', ['learn', 'skip learning', 'hide', 'copy'], 'learn', 'Let it explain and quiz you, then do the thinking yourself.'],
+      ['A skill you never practiced is what?', ['a skill you do not have', 'a skill you own', 'a habit', 'a model'], 'a skill you do not have', 'A first draft from a tool is not your skill. Practice is.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  // Computer science for grades 9 to 12 (2026-09-29, pass FU): the binary and arithmetic questions are computed, never written.
+  't9-machine': (rng) => {
+    const Q = [['Which part fetches and carries out instructions?', ['the CPU', 'memory', 'storage', 'a peripheral'], 'the CPU', 'The central processing unit fetches one instruction at a time and carries it out.'],
+      ['Which part forgets everything when the power is off?', ['memory', 'storage', 'the printer', 'the keyboard'], 'memory', 'Memory, RAM, holds what the CPU is working on now. A drive keeps files after the power is off.'],
+      ['Which part keeps files after the power is off?', ['storage', 'memory', 'the CPU', 'the screen'], 'storage', 'A solid-state drive or a hard disk is storage: slower than memory, but lasting.'],
+      ['What kind of software manages the machine and shares the CPU?', ['the operating system', 'an application', 'a browser', 'a game'], 'the operating system', 'Windows, macOS, Linux, Android and iOS are operating systems: they start the hardware and share it among programs.'],
+      ['A browser is which kind of software?', ['an application', 'an operating system', 'a peripheral', 'storage'], 'an application', 'An application does a task and asks the operating system for the screen, the network and the files.'],
+      ['Memory is which kind of storage?', ['primary', 'secondary', 'peripheral', 'none'], 'primary', 'Primary storage is memory, fast and temporary; secondary storage is the drive.'],
+      ['A keyboard, a mouse and a printer are what?', ['peripherals', 'processors', 'operating systems', 'applications'], 'peripherals', 'Peripherals sit at the edges and carry input in and output out.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  't9-binary': (rng) => {
+    const kind = pick(rng, ['to', 'from', 'to', 'from', 'fact']);
+    if (kind === 'fact') {
+      const Q = [['How many bits are in a byte?', ['8', '4', '16', '2'], '8', 'Eight bits are a byte, with places worth 1, 2, 4, 8, 16, 32, 64 and 128.'],
+        ['What is the largest number a byte can hold?', ['255', '256', '128', '100'], '255', 'All eight switches on: 128 + 64 + 32 + 16 + 8 + 4 + 2 + 1 = 255.'],
+        ['What comes after 111 when counting in binary?', ['1000', '112', '1111', '200'], '1000', 'Every bit would become 2, so each turns back to 0 and carries left: 1000, which is 8.'],
+        ['What is the place value of the fourth bit from the right?', ['8', '4', '16', '3'], '8', 'From the right the places are 1, 2, 4, 8: each is twice the one to its right.']];
+      const [prompt, choices, answer, explain] = pick(rng, Q);
+      return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+    }
+    const n = 3 + Math.floor(rng() * 60);   // 3 to 62, so every answer has two to six bits
+    const bin = n.toString(2);
+    const places = bin.split('').map((b, i) => (b === '1' ? 2 ** (bin.length - 1 - i) : 0)).filter((v) => v > 0);
+    if (kind === 'to') {
+      const wrong = new Set(); for (const w of [n + 1, n - 1, n + 2, n * 2, n - 2, n + 4]) if (w > 0 && w !== n) wrong.add(w.toString(2));
+      const choices = [bin, ...[...wrong].slice(0, 3)];
+      return { type: 'choice', story: null, prompt: `What is ${n} in binary?`, choices: shuffle(rng, choices), answer: bin, explain: `${n} is ${places.join(' + ')}, so the places ${places.join(', ')} are on: ${bin}.`, visual: null, explainVisual: null };
+    }
+    const wrong = new Set(); for (const w of [n + 1, n - 1, n + 2, n * 2, n - 2, n + 4]) if (w > 0 && w !== n) wrong.add(String(w));
+    const choices = [String(n), ...[...wrong].slice(0, 3)];
+    return { type: 'choice', story: null, prompt: `What is binary ${bin} in decimal?`, choices: shuffle(rng, choices), answer: String(n), explain: `Add the places that are on: ${places.join(' + ')} = ${n}.`, visual: null, explainVisual: null };
+  },
+  't9-program': (rng) => {
+    const kind = pick(rng, ['fixed', 'fixed', 'mod', 'div']);
+    if (kind === 'mod' || kind === 'div') {
+      const a = 5 + Math.floor(rng() * 40); const b = 2 + Math.floor(rng() * 8);
+      const mod = a % b; const div = Math.floor(a / b);
+      const answer = String(kind === 'mod' ? mod : div);
+      const wrong = new Set(); for (const w of [kind === 'mod' ? div : mod, mod + 1, div + 1, a - b, b, mod + 2]) if (String(w) !== answer && w >= 0) wrong.add(String(w));
+      const choices = [answer, ...[...wrong].slice(0, 3)];
+      const prompt = kind === 'mod' ? `What is ${a} % ${b}, the remainder?` : `What is the whole part of ${a} divided by ${b}?`;
+      const explain = kind === 'mod' ? `${b} goes into ${a} ${div} times with ${mod} left over, so ${a} % ${b} is ${mod}.` : `${b} goes into ${a} ${div} times (${div} × ${b} = ${div * b}); the whole part is ${div}.`;
+      return { type: 'choice', story: null, prompt, choices: shuffle(rng, choices), answer, explain, visual: null, explainVisual: null };
+    }
+    const Q = [['Which data type holds true or false?', ['boolean', 'integer', 'string', 'real'], 'boolean', 'A boolean is a flag: true or false, like game over.'],
+      ['A name like "Mia" is which data type?', ['a string', 'an integer', 'a boolean', 'a real number'], 'a string', 'A string is a piece of text. A price is a real number; a score is an integer.'],
+      ['If this, then that, else the other: which structure is it?', ['a conditional', 'iteration', 'sequence', 'a variable'], 'a conditional', 'A conditional chooses between two roads by a test.'],
+      ['Repeat while lives are above zero: which structure is it?', ['iteration', 'sequence', 'a conditional', 'a random number'], 'iteration', 'Iteration is a loop: the same steps again while a test holds.'],
+      ['How do you test a program?', ['with inputs whose right answers you already know', 'by reading it once', 'by running it with no input', 'by asking a friend'], 'with inputs whose right answers you already know', 'Run it on inputs with known answers, the edges included, and compare.'],
+      ['A number is even when number % 2 is what?', ['0', '1', '2', 'true'], '0', 'Modulus keeps the remainder. An even number leaves no remainder when divided by 2.'],
+      ['Statements running in order, top to bottom, is which structure?', ['sequence', 'iteration', 'a conditional', 'a data type'], 'sequence', 'Sequence is the simplest structure: one statement after another.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  't9-craft': (rng) => {
+    const Q = [['What is debugging?', ['finding the step where the program stops matching your intention', 'deleting the program', 'writing a longer program', 'asking the machine to fix itself'], 'finding the step where the program stops matching your intention', 'Read the error, print the variables, shrink the input, look up the reference.'],
+      ['Which shared work lets you use and change the code?', ['open source', 'freeware', 'copyright', 'a password'], 'open source', 'Open source code comes with a license that lets you use and change it.'],
+      ['Freeware is free to use but not to what?', ['change', 'download', 'run', 'read'], 'change', 'Freeware is free to use, not to change. Public domain work belongs to everyone.'],
+      ['Work that belongs to everyone is in the what?', ['public domain', 'app store', 'cloud', 'library'], 'public domain', 'Public domain work has no owner left to ask.'],
+      ['A strong password has at least how many characters?', ['twelve', 'four', 'six', 'eight'], 'twelve', 'Long, unusual, and used for one account only. A password manager keeps them.'],
+      ['What protects an account even if the password leaks?', ['a second step', 'a longer name', 'a faster computer', 'a new browser'], 'a second step', 'A code on your phone is a second step an attacker with the password does not have.'],
+      ['A polished page that says what you hoped is what?', ['not more reliable for it', 'always true', 'a primary source', 'open source'], 'not more reliable for it', 'Check who wrote it, when, and what they gain.'],
+      ['What do you need before you copy someone\'s code?', ['permission', 'a faster computer', 'a longer password', 'nothing'], 'permission', 'Copyright means you need permission to copy, and citing the source shows where it came from.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
@@ -19412,7 +19851,101 @@ export const WONDER = [
   {"id": "w-growing-proud", "theme": "feelings", "stage": "growing", "courseIds": [], "answerMode": "typed", "prompt": "What does it feel like to be proud of yourself, and how is that different from showing off?", "perspectives": [{"voice": "A scientist", "says": "Feeling proud after hard work is healthy; it helps you want to keep trying. It is different from bragging, which is about how others see you."}, {"voice": "An artist", "says": "When I finish a painting I am proud of, I want to show it to someone who will be happy for me, not to someone I want to beat."}, {"voice": "A grandparent of faith", "says": "Being grateful for what you did well, and for the people who helped you, is a gentle kind of pride."}, {"voice": "A skeptic", "says": "A good test: would you still feel proud if nobody ever found out? If yes, that is real pride."}], "closing": "What is something you are proud of this week?"},
   {"id": "w-growing-embarrassed", "theme": "feelings", "stage": "growing", "courseIds": [], "answerMode": "typed", "prompt": "Everyone laughed when you tripped. How long does embarrassment really last?", "perspectives": [{"voice": "A scientist", "says": "Embarrassment is strongest right away and fades quickly. Other people forget much faster than we do, usually by the next class."}, {"voice": "An artist", "says": "Some of the funniest stories people tell are about the times they tripped. Years later, they laugh along."}, {"voice": "A grandparent of faith", "says": "Laughing at yourself kindly is a gift. It helps you and everyone around you move on."}, {"voice": "A skeptic", "says": "If someone keeps teasing you about it for days, that is not okay, and it is worth telling a teacher."}], "closing": "What is a funny story you can tell about yourself now?"},
   {"id": "w-early-tower-fell", "theme": "failure", "stage": "early", "courseIds": [], "answerMode": "pick", "prompt": "Your block tower fell down. What do you do next?", "options": ["Build it again", "Build it wider", "Take a break first"], "simple": [{"voice": "A scientist says", "says": "A wide bottom helps a tower stand."}, {"voice": "An artist says", "says": "Every tower you build is a new one."}], "perspectives": [{"voice": "A scientist", "says": "Towers fall when they are taller than their bottom can hold. A wider bottom helps them stand. Every fall teaches you how to build the next one."}, {"voice": "An artist", "says": "I like to build the second tower a little differently from the first. Sometimes the new way is better."}, {"voice": "A grandparent of faith", "says": "It is okay to be sad when something falls. Take a breath, and try again when you are ready."}, {"voice": "A skeptic", "says": "Look at how it fell before you build again. Did it lean? Wobble? That tells you what to change."}], "closing": "What will you build next?"},
-  {"id": "w-early-feeling-sad", "theme": "feelings", "stage": "early", "courseIds": [], "answerMode": "pick", "prompt": "When you feel sad, what helps you feel better?", "options": ["A hug", "Telling someone", "Quiet time"], "simple": [{"voice": "A scientist says", "says": "Telling someone how you feel can make it feel smaller."}, {"voice": "A grandparent of faith says", "says": "You are never alone when you are sad."}], "perspectives": [{"voice": "A scientist", "says": "Telling someone how you feel helps your body calm down. Your feelings are real, and they change."}, {"voice": "An artist", "says": "Some people draw a picture of how they feel. Then the feeling has somewhere to go."}, {"voice": "A grandparent of faith", "says": "It is okay to be sad sometimes. The people who love you want to help. Let them help you feel better."}, {"voice": "A skeptic", "says": "Sad feelings come and go like clouds. If a sad feeling stays a long time, tell a grown-up you trust."}], "closing": "Who can you go to when you feel sad?"}
+  {"id": "w-early-feeling-sad", "theme": "feelings", "stage": "early", "courseIds": [], "answerMode": "pick", "prompt": "When you feel sad, what helps you feel better?", "options": ["A hug", "Telling someone", "Quiet time"], "simple": [{"voice": "A scientist says", "says": "Telling someone how you feel can make it feel smaller."}, {"voice": "A grandparent of faith says", "says": "You are never alone when you are sad."}], "perspectives": [{"voice": "A scientist", "says": "Telling someone how you feel helps your body calm down. Your feelings are real, and they change."}, {"voice": "An artist", "says": "Some people draw a picture of how they feel. Then the feeling has somewhere to go."}, {"voice": "A grandparent of faith", "says": "It is okay to be sad sometimes. The people who love you want to help. Let them help you feel better."}, {"voice": "A skeptic", "says": "Sad feelings come and go like clouds. If a sad feeling stays a long time, tell a grown-up you trust."}], "closing": "Who can you go to when you feel sad?"},
+  {
+    id: 'w-grown-exactly-what-you-wrote',
+    theme: 'failure',
+    stage: 'grown',
+    courseIds: ['tech-9'],
+    answerMode: 'typed',
+    prompt: 'A program does exactly what you wrote, not what you meant. When it fails, is that a flaw in machines, or a mirror held up to your own thinking?',
+    perspectives: [
+      { voice: 'A scientist', says: 'It is the most honest mirror you will ever get. A person will nod along with a vague idea; a compiler will not. Every bug is a place where I thought I understood something and had not finished the thought.' },
+      { voice: 'An artist', says: 'A brush does exactly what your hand does too, and nobody calls that a flaw. The medium is strict so that the work can be true. Learn the strictness and it stops feeling like an enemy.' },
+      { voice: 'A grandparent of faith', says: 'There is humility in it. The machine will not flatter you, and it will not be argued with, so you learn to say plainly what you mean. That is a good habit far beyond programs.' },
+      { voice: 'A skeptic', says: 'It is a mirror, but only for the part of you that wrote the code. Do not conclude too much about yourself from a missing semicolon. Fix it, and notice the pattern only if it keeps happening.' },
+    ],
+    closing: 'What did your last bug show you about what you had not yet thought through?',
+  },
+  {
+    id: 'w-grown-everything-is-numbers',
+    theme: 'world',
+    stage: 'grown',
+    courseIds: ['tech-9'],
+    answerMode: 'typed',
+    prompt: 'On a screen a photograph of your family is nothing but numbers, three per dot. Does knowing that make the picture less real, or does it change nothing at all?',
+    perspectives: [
+      { voice: 'A scientist', says: 'A photograph was always a physical trace, silver grains or numbers, and the numbers are a more faithful trace than the grains ever were. Knowing how a thing is made does not make it less; it usually makes it more.' },
+      { voice: 'An artist', says: 'A painting is nothing but pigment, and a song is nothing but air moving. The meaning was never in the material. It is in what the material does to the person looking.' },
+      { voice: 'A grandparent of faith', says: 'The picture is real because the people were real and the love was real. The numbers are the envelope it came in. Nobody weeps over the envelope, and nobody should throw it away either.' },
+      { voice: 'A skeptic', says: 'It changes one thing worth keeping in mind: numbers can be edited without leaving a mark. So the picture is as real as its source, and you should know where it came from before you trust it.' },
+    ],
+    closing: 'What is something you value that is, at bottom, made of very ordinary stuff?',
+  },
+  {
+    id: 'w-teen-sure-and-wrong',
+    theme: 'failure',
+    stage: 'teen',
+    courseIds: ['tech-6'],
+    answerMode: 'typed',
+    prompt: 'A machine you asked gave you a wrong answer that sounded completely sure, and you repeated it. Whose mistake was it?',
+    perspectives: [
+      { voice: 'A scientist', says: 'The machine did what it was built to do, which is to guess from patterns. The mistake was treating a guess as a finding. In a lab, nothing counts until a second measurement agrees with the first.' },
+      { voice: 'An artist', says: 'I copy other painters all the time, but I sign only what I have checked with my own eyes. Repeating something you never looked at is putting your name on a stranger\'s work.' },
+      { voice: 'A grandparent of faith', says: 'Being fooled is not a sin, and it happens to everyone. What matters is what you do next: say plainly that you were wrong, and find out how you will check the next time.' },
+      { voice: 'A skeptic', says: 'The machine cannot be blamed, because it cannot know anything. You can know things, and check them. So the mistake was yours, and that is good news, because yours is the only kind you can fix.' },
+    ],
+    closing: 'What will you check before you repeat something next time?',
+  },
+  {
+    id: 'w-teen-why-learn-to-write',
+    theme: 'world',
+    stage: 'teen',
+    courseIds: ['tech-6'],
+    answerMode: 'typed',
+    prompt: 'If a machine can write a passable essay in a minute, what is the point of learning to write one yourself?',
+    perspectives: [
+      { voice: 'A scientist', says: 'Writing is how thinking gets checked. When I put an idea into sentences, the gaps in it show. A machine can hand me sentences, but it cannot do my thinking, and the gaps stay hidden until I do.' },
+      { voice: 'An artist', says: 'A passable essay is the least interesting kind. The point of writing is to say the one thing only you would say, and no pile of other people\'s pages contains that.' },
+      { voice: 'A grandparent of faith', says: 'People have always had helpers, from scribes to typewriters. The question is not whether you use the help but whether you still have something of your own to say when the help is gone.' },
+      { voice: 'A skeptic', says: 'Try this experiment for yourself. Have the machine write your essay, then explain it out loud to someone who asks hard questions. You will find out quickly whether the essay is yours.' },
+    ],
+    closing: 'What would you want to say that no machine would say for you?',
+  },
+  {
+    id: 'w-early-robot-bumped',
+    theme: 'failure',
+    stage: 'early',
+    courseIds: ['tech-k'],
+    answerMode: 'pick',
+    prompt: 'Your robot walked into a rock. What do you do next?',
+    options: ['Change one step', 'Start the steps over', 'Watch it walk again'],
+    simple: [{ voice: 'A scientist says', says: 'A bump shows you which step to change.' }, { voice: 'A skeptic says', says: 'Watch it again before you change anything.' }],
+    perspectives: [
+      { voice: 'A scientist', says: 'The robot did exactly what its steps said, so the bump points at one step. Change that one and watch again. That is how every program gets fixed.' },
+      { voice: 'An artist', says: 'I would draw the path on paper first, then press the arrows. A picture of the walk is easier to check than a row of arrows.' },
+      { voice: 'A grandparent of faith', says: 'A bump is not a failure. It is the robot telling you something. Take a breath, look, and try one small change.' },
+      { voice: 'A skeptic', says: 'Before you change anything, watch it walk again. Did it bump at the first step or the last? That tells you where to look.' },
+    ],
+    closing: 'Which step will you change?',
+  },
+  {
+    id: 'w-early-computer-told',
+    theme: 'world',
+    stage: 'early',
+    courseIds: ['tech-k'],
+    answerMode: 'pick',
+    prompt: 'A computer only does what it is told. Is that good, or not so good?',
+    options: ['Good, it always listens', 'Not so good, it cannot think', 'A little of both'],
+    simple: [{ voice: 'A scientist says', says: 'It does every step you give it, and no more.' }, { voice: 'An artist says', says: 'You are the one with the ideas.' }],
+    perspectives: [
+      { voice: 'A scientist', says: 'A computer does every step you give it and not one more. That is why it never gets tired and never gets bored, and why your steps have to be right.' },
+      { voice: 'An artist', says: 'The computer has no ideas of its own. The ideas all come from you. That makes you the artist, and the computer the brush.' },
+      { voice: 'A grandparent of faith', says: 'People are not like that. We can stop and think and choose to be kind. A computer needs someone to tell it, so tell it kindly.' },
+      { voice: 'A skeptic', says: 'Good for the most part, I would say. But if someone tells it the wrong steps, it will do the wrong thing just as fast. So always check who is doing the telling.' },
+    ],
+    closing: 'What would you tell a computer to do?',
+  },
 ];
 
 // Nothing reaches a student until somebody at the school has read it and said yes.
@@ -22167,6 +22700,9 @@ export const COURSE_GAMES = {
   'music-1': ['maze-big', 'jump-sums'],
   'music-4': ['pairs-music'],
   'health-k': ['dots-rocket'],
+  'tech-k': ['walk-tech-k'],
+  'tech-6': ['teach-tech-6'],
+  'tech-9': ['bits-tech-9'],
   'health-4': ['pairs-health'],
   'tech-3': ['pairs-technology', 'debug-tech-3'],
   'tech-5': ['pong', 'debug-tech-5'],

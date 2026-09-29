@@ -2,7 +2,7 @@
 
 Written by tools/games-plan.mjs from the app's own lists; run it again after any change to the games. Every course has its own game, or two, chosen to suit its subject and grade; finishing the course unlocks them. Inside a grade the same kind is avoided wherever today's kinds allow. A course that no game suits yet has a quick fire of its own lessons, and so does a history course whose only game is a map still waiting for its painting.
 
-Starter, open from the first day: Star. Kinds of game: 20. Quick fires still standing in for a game: 8. Kinds repeated inside a grade: 9. Courses holding two games of one kind: none. The rules test holds both numbers as ceilings, so each new kind must bring them down.
+Starter, open from the first day: Star. Kinds of game: 23. Quick fires still standing in for a game: 8. Kinds repeated inside a grade: 9. Courses holding two games of one kind: none. The rules test holds both numbers as ceilings, so each new kind must bring them down.
 
 ## New kinds, in order
 
@@ -27,6 +27,7 @@ Each new kind should make the course's idea the rule of the game, so playing is 
 | K | Looking at the world | Catch the Circles (catch) |
 | K | Me and my community | Big and Small (sort) |
 | K | Taking care of me | Rocket (dots) |
+| K | Tell, show, step and repeat | Walk the Robot (walk) |
 | K | Counting | Maze (maze) |
 | K | Letters | Pairs (pairs) |
 | 1 | Numbers to 20 | Kite (dots), Many Pairs (pairs) |
@@ -66,6 +67,7 @@ Each new kind should make the course's idea the rule of the game, so playing is 
 | 6 | Matter, energy and Earth | Quick fire: science (sprint), Grade 6 science words (pairs) |
 | 6 | Writing with a purpose | Noun or verb (buckets) |
 | 6 | World cultures | Where is it? The oceans (map), In order: civilizations, inventions, buildings (order) |
+| 6 | What a machine learns | Teach the Robot (teach) |
 | 7 | Proportions, integers and circles | Balance the scale: fractions (balance) |
 | 7 | Reading with an eye for craft | Word meanings (pairs) |
 | 7 | Bodies, weather and change | Solid or liquid (buckets), Grade 7 science words (pairs) |
@@ -82,6 +84,7 @@ Each new kind should make the course's idea the rule of the game, so playing is 
 | 9 | Biology | Element or compound (buckets), Grade 9 science words (pairs) |
 | 9 | Writing about texts and turns | Fix it: tricky words (fix) |
 | 9 | World geography | Where is it? Europe (map), Quick fire: World geography (sprint) |
+| 9 | How a program is built | Eight Switches (bits) |
 | 10 | Geometry | Step on the square numbers (path) |
 | 10 | English 2 | Find the evidence: what proves it (evidence) |
 | 10 | Chemistry | Acid or base (buckets), Grade 10 science words (pairs), The periodic table: find it (ptable) |

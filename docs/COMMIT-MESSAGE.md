@@ -1,6 +1,7 @@
-Every story on the Story Log and in the book; What's new pop-up back
+Computer science for K to 2, a plain AI course for 6 to 8, and computer science for 9 to 12
 
-- Pass FR: a rule test walks all 81 courses the way the Story Log and the story book do: every story lists for a fresh student, moves to Read when opened, and pages into the book with each picture on the sheet of its own paragraph, painted or not; the lists and pages now come from logic (storyLogAvailable, recentReads, bookPages).
-- Fixed on the way: Most recent showed the first three stories ever opened (now the last three, newest first); the What's new pop-up had been dark in every build since September 24 and never opened on a phone (tools/whats-new.mjs picks the newest block, the real page is checked, phones see it without the tour).
+- Pass FS: the first course of the depth program, Tell, show, step and repeat (tech-k, kindergarten, read aloud, free): four modules with spoken questions, TEKS §126.1 and CSTA 1A codes, four short stories and a long one with their pictures in the ledger, four coloring pages, two Wonder questions, and Walk the Robot, a new kind, the app's twenty-first, of game the course unlocks. Fixed on the way: the grade 3, 5 and 7 technology courses cited the wrong TEKS section numbers (now §126.8, §126.10, §126.18, from TEA's table of contents).
+- Pass FT: the plain AI course, What a machine learns (tech-6, grade 6 for the 6 to 8 band): four modules on learning from examples, wrong and sure, fair examples and staying in charge, TEKS §126.17 and CSTA level 2 codes, four short stories and a long one about Frederick in the lab, two Wonder questions, and Teach the Robot, a new kind, the app's twenty-second, of game.
+- Pass FU: computer science for 9 to 12, How a program is built (tech-9, grade 9): the machine, binary, the parts of a program and the working habits, TEKS §127.788 (Fundamentals of Computer Science) and CSTA 3A codes, computed binary and arithmetic questions, four short stories and a long one about Savanah and a city bus board, two Wonder questions, and Eight Switches, a new kind, the app's twenty-third, of game.
 
-Passes: FR
+Passes: FS, FT, FU

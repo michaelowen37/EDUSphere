@@ -2,6 +2,24 @@
 
 The newest block is what educators see once, in a pop-up on the classroom page, after each update. Write it the way Mikey talks to a teacher: conversational, complete sentences, say what changed and why it matters, and skip the shorthand (2026-09-23). Two to four items. The date line is the version stamp.
 
+## September 29, 2026 (how a program is built)
+
+- Grade 9 has a new elective for grades 9 to 12, How a program is built: what is inside the machine and what the operating system does, counting in binary, the parts of every program (variables with types, integer division and the remainder, sequence, conditionals and loops, and testing at the edges), and working like a coder: debugging by method, reading a license, long passwords with a second step, and judging a page by its author. Each lesson has a story, and the course ends with a long story about Savanah and a city bus board with a bug at the edge.
+- Finishing the course unlocks Eight Switches, a new kind of game: eight switches worth 128 down to 1, and a number to make by turning the right ones on.
+- Two new Wonder questions for older students wait in the review screen.
+
+## September 29, 2026 (what a machine learns)
+
+- Grade 6 has a new elective, What a machine learns, a plain-words course on AI for grades 6 to 8. Four lessons: a machine that learns keeps the patterns in thousands of examples and guesses about new ones; a guess can be wrong and still sound sure, so check what matters against a second source; a model is only as fair as its examples, so ask who is missing; and staying in charge, with nothing private typed in, credit for the work inside, and the tool used to learn rather than to skip learning. Each lesson has a story, and the course ends with a long story about Frederick and a jar of pond water.
+- Finishing the course unlocks Teach the Robot, a new kind of game: the robot guesses which fruits are apples from the two it has seen, and the student teaches it by tapping the ones it got wrong.
+- Two new Wonder questions for older students wait in the review screen.
+
+## September 28, 2026 (computer science begins)
+
+- Kindergarten has a new elective: Tell, show, step and repeat, a first computer science course for kindergarten through grade 2, read aloud like the rest of kindergarten. Four lessons: inputs tell a computer and outputs show you, steps in order (first, next, then, last), patterns and loops, and keeping a password secret and private things private. Every lesson comes with a story and a coloring page, and the course ends with a long story about Mike and a robot that only does what it is told.
+- Finishing the course unlocks a new kind of game, Walk the Robot. The child taps arrows to give the robot its steps, taps Go, and watches it walk to the star; a bump into a rock stops it so a step can be fixed.
+- Two new Wonder questions for the youngest are waiting in the review screen, one about a robot that walked into a rock.
+
 ## September 28, 2026 (every story, on the log and in the book)
 
 - A new check now walks every course the way the Story Log and the story book do: every story lists for a fresh student, moves to Read the first time it is opened, and pages into the book with each picture on the same page as the paragraph it shows. All 81 courses pass, with every story painted or not yet painted.

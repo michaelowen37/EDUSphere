@@ -1,6 +1,6 @@
 # Story flow audit
 
-Generated 2026-09-28. 234 of 516 stories have at least one paragraph that reads robotic (choppy: three or more sentences in a row of six words or fewer; monotone: four or more sentences in a row within three words of one length; then, then: two sentences in a row starting with Then).
+Generated 2026-09-29. 187 of 516 stories have at least one paragraph that reads robotic (choppy: three or more sentences in a row of six words or fewer; monotone: four or more sentences in a row within three words of one length; then, then: two sentences in a row starting with Then).
 
 ## By grade
 
@@ -9,8 +9,8 @@ Generated 2026-09-28. 234 of 516 stories have at least one paragraph that reads 
 | PK3 | 17 | 17 | 86 |
 | PK4 | 26 | 26 | 125 |
 | K | 43 | 0 | 0 |
-| 1 | 26 | 26 | 90 |
-| 2 | 23 | 23 | 74 |
+| 1 | 26 | 0 | 0 |
+| 2 | 23 | 0 | 0 |
 | 3 | 44 | 29 | 36 |
 | 4 | 46 | 22 | 33 |
 | 5 | 39 | 11 | 11 |
@@ -237,170 +237,6 @@ Generated 2026-09-28. 234 of 516 stories have at least one paragraph that reads 
 | PK4 | story | which-came-second | 3 of 7 | choppy | 2, 3, 3, 5, 2 |
 | PK4 | story | which-came-second | 4 of 7 | choppy | 3, 4, 1, 2, 4 |
 | PK4 | story | which-came-second | 5 of 7 | choppy | 5, 2, 2, 2 |
-| 1 | story | adding-to-20 | 1 of 7 | choppy | 6, 3, 4, 4, 8, 3 |
-| 1 | story | adding-to-20 | 2 of 7 | choppy | 4, 7, 4, 2, 2, 4 |
-| 1 | story | adding-to-20 | 4 of 7 | choppy | 7, 5, 1, 3, 6 |
-| 1 | story | adding-to-20 | 6 of 7 | choppy | 5, 3, 5, 4 |
-| 1 | story | animal-needs | 1 of 7 | choppy, monotone | 3, 5, 4, 4, 5, 3 |
-| 1 | story | animal-needs | 3 of 7 | choppy | 1, 4, 3, 2, 4, 1, 4, 5 |
-| 1 | story | animal-needs | 4 of 7 | choppy | 4, 8, 2, 2, 2, 6 |
-| 1 | story | animal-needs | 6 of 7 | choppy | 6, 1, 1, 1, 4, 6 |
-| 1 | story | comparing-to-100 | 4 of 7 | choppy | 7, 1, 2, 2, 3 |
-| 1 | story | goods-and-services | 2 of 7 | choppy | 6, 5, 6 |
-| 1 | story | goods-and-services | 3 of 7 | choppy | 5, 5, 2, 2, 1, 4 |
-| 1 | story | goods-and-services | 4 of 7 | choppy | 5, 5, 2, 8, 4 |
-| 1 | story | goods-and-services | 5 of 7 | choppy, monotone | 6, 5, 5, 8 |
-| 1 | story | goods-and-services | 6 of 7 | choppy, monotone | 5, 5, 6, 6 |
-| 1 | story | high-and-low | 3 of 7 | choppy | 11, 3, 3, 3 |
-| 1 | story | high-and-low | 4 of 7 | choppy | 7, 3, 3, 3 |
-| 1 | story | high-and-low | 5 of 7 | choppy, monotone | 5, 4, 4, 5 |
-| 1 | story | high-and-low | 6 of 7 | choppy, monotone | 4, 5, 4, 5, 3 |
-| 1 | story | leaders-near-and-far | 4 of 7 | choppy | 6, 1, 3, 3, 6, 3 |
-| 1 | story | leaders-near-and-far | 6 of 7 | choppy | 5, 4, 5, 3 |
-| 1 | story | loud-and-soft | 2 of 7 | choppy | 5, 2, 2, 7 |
-| 1 | story | loud-and-soft | 5 of 7 | choppy | 5, 4, 3, 7 |
-| 1 | story | loud-and-soft | 6 of 7 | monotone | 5, 4, 7, 4, 3 |
-| 1 | story | maps-of-my-world | 4 of 7 | choppy, monotone | 9, 6, 6, 4, 5 |
-| 1 | story | maps-of-my-world | 6 of 7 | choppy, monotone | 4, 4, 4, 4, 5 |
-| 1 | story | read-the-sentence | 2 of 7 | choppy | 8, 4, 4, 5 |
-| 1 | story | read-the-sentence | 3 of 7 | choppy | 8, 3, 2, 4, 3 |
-| 1 | story | read-the-sentence | 4 of 7 | choppy | 4, 4, 5, 3, 4 |
-| 1 | story | read-the-sentence | 5 of 7 | choppy | 3, 2, 2, 1, 5, 2 |
-| 1 | story | read-the-sentence | 6 of 7 | choppy | 7, 3, 3, 4 |
-| 1 | story | read-the-word | 1 of 7 | choppy | 5, 1, 1, 1, 4, 3, 4, 5 |
-| 1 | story | read-the-word | 2 of 7 | choppy | 6, 2, 4, 5 |
-| 1 | story | read-the-word | 5 of 7 | choppy | 4, 4, 4, 8 |
-| 1 | story | sh-ch-th | 1 of 7 | choppy | 4, 3, 6, 10, 5, 1, 4 |
-| 1 | story | sh-ch-th | 4 of 7 | choppy | 3, 6, 1, 6, 1 |
-| 1 | story | sh-ch-th | 5 of 7 | choppy | 6, 1, 5, 1, 4 |
-| 1 | story | signs-around-town | 1 of 7 | monotone | 8, 7, 5, 5 |
-| 1 | story | signs-around-town | 2 of 7 | choppy | 4, 5, 5 |
-| 1 | story | signs-around-town | 6 of 7 | choppy | 7, 3, 1, 6, 2 |
-| 1 | story | silent-e | 1 of 7 | choppy | 3, 2, 4, 4, 4, 3, 4 |
-| 1 | story | silent-e | 5 of 7 | choppy | 3, 1, 1, 5, 1, 1, 5, 7 |
-| 1 | story | silent-e | 6 of 7 | choppy | 5, 5, 3, 5 |
-| 1 | story | subtracting-to-20 | 2 of 7 | choppy | 6, 2, 4, 4 |
-| 1 | story | subtracting-to-20 | 4 of 7 | choppy | 4, 3, 2, 6, 3 |
-| 1 | story | subtracting-to-20 | 6 of 7 | choppy | 5, 1, 2, 2, 7, 1 |
-| 1 | story | sun-moon-patterns | 2 of 7 | choppy, monotone | 4, 5, 4, 5 |
-| 1 | story | sun-moon-patterns | 3 of 7 | choppy | 4, 3, 4, 4, 5 |
-| 1 | story | sun-moon-patterns | 4 of 7 | monotone | 5, 7, 5, 6 |
-| 1 | story | sun-moon-patterns | 5 of 7 | choppy, monotone | 5, 4, 6, 6 |
-| 1 | story | sun-moon-patterns | 6 of 7 | choppy | 7, 4, 4, 3, 3 |
-| 1 | story | symbols-of-our-country | 1 of 7 | monotone | 7, 7, 5, 6 |
-| 1 | story | symbols-of-our-country | 2 of 7 | choppy | 3, 5, 5 |
-| 1 | story | symbols-of-our-country | 3 of 7 | choppy | 8, 5, 4, 4 |
-| 1 | story | teen-numbers | 2 of 7 | choppy, monotone | 5, 4, 6, 6 |
-| 1 | story | teen-numbers | 4 of 7 | choppy | 1, 4, 3, 5 |
-| 1 | story | teen-numbers | 5 of 7 | choppy | 3, 3, 5, 3, 1 |
-| 1 | story | tens-and-ones | 1 of 7 | choppy, monotone | 6, 5, 5, 7, 8 |
-| 1 | story | tens-and-ones | 2 of 7 | choppy | 6, 4, 2, 8 |
-| 1 | story | tens-and-ones | 3 of 7 | choppy | 4, 5, 5 |
-| 1 | story | the-steady-beat | 1 of 7 | monotone | 3, 7, 6, 7, 4 |
-| 1 | story | the-steady-beat | 2 of 7 | choppy | 6, 2, 2, 7 |
-| 1 | story | the-steady-beat | 4 of 7 | choppy | 2, 3, 1, 1, 1, 1, 3, 2 |
-| 1 | story | the-steady-beat | 5 of 7 | choppy | 6, 5, 5 |
-| 1 | story | trace-small-letters-3 | 1 of 7 | monotone | 8, 8, 6, 5 |
-| 1 | story | trace-small-letters-3 | 3 of 7 | choppy | 8, 2, 3, 1, 4 |
-| 1 | story | trace-small-letters-3 | 5 of 7 | choppy | 3, 4, 6, 2, 2, 2 |
-| 1 | story | trace-small-letters-4 | 1 of 7 | choppy, monotone | 4, 6, 4, 7, 5 |
-| 1 | story | trace-small-letters-4 | 2 of 7 | choppy | 8, 3, 2, 6 |
-| 1 | story | trace-small-letters-4 | 3 of 7 | choppy, monotone | 5, 6, 4, 5, 3, 2 |
-| 1 | story | trace-small-letters-4 | 5 of 7 | choppy | 7, 2, 6, 2, 4 |
-| 1 | story | trace-small-letters-5 | 1 of 7 | choppy, then, then | 4, 3, 3, 8, 3, 3 |
-| 1 | story | trace-small-letters-5 | 2 of 7 | choppy | 3, 5, 6, 7 |
-| 1 | story | trace-small-letters-5 | 3 of 7 | choppy | 7, 2, 4, 3, 3 |
-| 1 | story | trace-small-letters-5 | 4 of 7 | choppy | 6, 2, 5, 3, 3 |
-| 1 | story | trace-small-letters-5 | 5 of 7 | choppy | 9, 2, 6, 3, 4 |
-| 1 | story | trace-small-letters-5 | 6 of 7 | choppy | 3, 5, 6, 5 |
-| 1 | story | tracing-more-small-letters | 3 of 7 | choppy | 8, 5, 3, 3, 4, 3 |
-| 1 | story | tracing-more-small-letters | 4 of 7 | choppy | 5, 4, 3, 3, 3, 3 |
-| 1 | story | tracing-more-small-letters | 5 of 7 | choppy | 3, 3, 5, 5, 4 |
-| 1 | story | water-changes | 2 of 7 | choppy | 3, 4, 4, 5 |
-| 1 | story | water-changes | 5 of 7 | choppy | 3, 4, 3, 4, 3 |
-| 1 | story | water-changes | 6 of 7 | choppy | 4, 4, 1, 4, 1, 5 |
-| 1 | story | what-happened | 1 of 7 | choppy | 7, 4, 3, 3, 4, 3 |
-| 1 | story | what-happened | 3 of 7 | choppy | 3, 5, 4, 6, 1 |
-| 1 | story | what-happened | 4 of 7 | choppy | 7, 3, 3, 5 |
-| 1 | story | what-happened | 5 of 7 | choppy | 2, 5, 3, 3 |
-| 1 | story | writing-numbers | 1 of 7 | choppy, monotone | 4, 5, 4, 5, 7 |
-| 1 | story | writing-numbers | 3 of 7 | choppy | 8, 2, 1, 3, 1, 3 |
-| 1 | story | writing-numbers | 4 of 7 | choppy | 2, 1, 1, 1, 1, 2, 3, 6 |
-| 1 | story | writing-numbers | 6 of 7 | choppy | 6, 5, 4, 2 |
-| 2 | story | adding-with-regrouping | 1 of 7 | choppy | 4, 8, 3, 6, 5, 8 |
-| 2 | story | adding-with-regrouping | 3 of 7 | choppy | 8, 3, 6, 3 |
-| 2 | story | adding-with-regrouping | 5 of 7 | choppy | 11, 2, 3, 5, 1 |
-| 2 | story | complete-sentences | 2 of 7 | choppy, monotone | 5, 5, 4, 6 |
-| 2 | story | complete-sentences | 3 of 7 | choppy | 4, 4, 5, 2, 3, 2 |
-| 2 | story | complete-sentences | 4 of 7 | choppy | 6, 1, 5, 1, 3 |
-| 2 | story | complete-sentences | 5 of 7 | choppy | 3, 3, 3, 3, 8 |
-| 2 | story | describing-sentences | 1 of 7 | choppy | 5, 3, 6, 6, 2 |
-| 2 | story | describing-sentences | 2 of 7 | choppy | 6, 2, 4, 1, 6 |
-| 2 | story | describing-sentences | 3 of 7 | choppy | 5, 1, 3, 4, 4 |
-| 2 | story | describing-sentences | 6 of 7 | choppy | 5, 5, 5, 9 |
-| 2 | story | good-citizens | 1 of 7 | choppy | 7, 2, 3, 4, 8 |
-| 2 | story | good-citizens | 5 of 7 | choppy | 5, 4, 5 |
-| 2 | story | good-citizens | 6 of 7 | choppy | 10, 3, 3, 2, 5 |
-| 2 | story | habitats | 2 of 7 | choppy | 7, 6, 2, 2, 2 |
-| 2 | story | habitats | 5 of 7 | choppy, monotone | 5, 5, 5, 7 |
-| 2 | story | hard-or-soft | 1 of 7 | choppy | 7, 4, 2, 2, 2, 2, 4, 6 |
-| 2 | story | hard-or-soft | 3 of 7 | choppy | 3, 4, 3, 4, 3, 3, 3, 4 |
-| 2 | story | hard-or-soft | 5 of 7 | choppy | 3, 6, 5, 7 |
-| 2 | story | hard-or-soft | 6 of 7 | choppy | 6, 2, 2, 3, 2, 4 |
-| 2 | story | hundreds-tens-ones | 1 of 7 | choppy | 8, 7, 5, 3, 3 |
-| 2 | story | hundreds-tens-ones | 3 of 7 | choppy, monotone | 5, 4, 4, 4, 2, 7 |
-| 2 | story | hundreds-tens-ones | 4 of 7 | choppy | 7, 7, 2, 3, 2, 3 |
-| 2 | story | hundreds-tens-ones | 5 of 7 | choppy, then, then | 2, 9, 4, 3, 3 |
-| 2 | story | magnets | 2 of 7 | monotone | 7, 6, 7, 8 |
-| 2 | story | magnets | 6 of 7 | monotone | 7, 4, 4, 7, 4 |
-| 2 | story | maps-of-our-town | 1 of 7 | choppy | 6, 8, 3, 4, 5, 3 |
-| 2 | story | maps-of-our-town | 2 of 7 | choppy | 10, 2, 4, 4, 4 |
-| 2 | story | maps-of-our-town | 4 of 7 | choppy | 5, 8, 3, 2, 4, 2 |
-| 2 | story | money | 2 of 7 | choppy | 5, 1, 3, 1, 4, 6, 3 |
-| 2 | story | money | 4 of 7 | choppy | 2, 1, 2, 1, 2, 1, 2, 1 |
-| 2 | story | producers-and-consumers | 1 of 7 | choppy | 9, 2, 2, 2, 4, 12 |
-| 2 | story | producers-and-consumers | 3 of 7 | choppy, monotone | 4, 4, 4, 6 |
-| 2 | story | producers-and-consumers | 4 of 7 | choppy | 4, 2, 3, 7 |
-| 2 | story | quarter-hours | 1 of 7 | monotone | 7, 5, 7, 4, 4 |
-| 2 | story | quarter-hours | 3 of 7 | choppy | 4, 5, 4, 11, 2 |
-| 2 | story | quarter-hours | 4 of 7 | choppy | 5, 2, 5, 6, 2 |
-| 2 | story | quarter-hours | 5 of 7 | choppy | 3, 5, 3, 3, 9 |
-| 2 | story | reading-for-meaning | 1 of 7 | choppy | 8, 5, 4, 3, 5 |
-| 2 | story | reading-for-meaning | 4 of 7 | choppy | 4, 1, 5, 1, 3, 2, 6 |
-| 2 | story | rows-and-columns | 4 of 7 | choppy | 3, 1, 2, 2, 7 |
-| 2 | story | rows-and-columns | 5 of 7 | choppy | 2, 3, 5, 2, 5, 2 |
-| 2 | story | rows-and-columns | 6 of 7 | choppy | 3, 3, 3, 7, 7 |
-| 2 | story | saving-for-a-goal | 1 of 7 | choppy, monotone | 5, 5, 6, 5, 6 |
-| 2 | story | saving-for-a-goal | 3 of 7 | choppy | 2, 5, 2, 1, 2, 1, 1 |
-| 2 | story | saving-for-a-goal | 4 of 7 | choppy | 3, 4, 2, 4 |
-| 2 | story | saving-for-a-goal | 5 of 7 | choppy | 3, 3, 3, 4, 6 |
-| 2 | story | services-in-our-town | 1 of 7 | choppy, monotone | 6, 5, 5, 6, 6 |
-| 2 | story | services-in-our-town | 3 of 7 | choppy, monotone | 5, 6, 6, 8 |
-| 2 | story | services-in-our-town | 4 of 7 | choppy | 3, 5, 6, 3 |
-| 2 | story | subtracting-with-regrouping | 1 of 7 | choppy | 4, 7, 3, 4, 6 |
-| 2 | story | subtracting-with-regrouping | 2 of 7 | choppy | 4, 6, 3, 3, 8 |
-| 2 | story | subtracting-with-regrouping | 3 of 7 | choppy | 3, 5, 6, 7 |
-| 2 | story | subtracting-with-regrouping | 5 of 7 | choppy | 6, 3, 5, 4 |
-| 2 | story | subtracting-with-regrouping | 6 of 7 | choppy | 5, 3, 1, 2, 7 |
-| 2 | story | tell-a-story-2 | 1 of 7 | choppy, then, then | 7, 6, 3, 4, 4 |
-| 2 | story | tell-a-story-2 | 2 of 7 | choppy, monotone | 4, 5, 6, 6 |
-| 2 | story | tell-a-story-2 | 3 of 7 | choppy | 4, 2, 5 |
-| 2 | story | tell-a-story-2 | 4 of 7 | monotone | 6, 4, 7, 6 |
-| 2 | story | telling-time | 1 of 7 | monotone | 8, 8, 7, 7 |
-| 2 | story | telling-time | 2 of 7 | choppy, monotone | 4, 4, 6, 6, 5 |
-| 2 | story | telling-time | 3 of 7 | choppy | 9, 5, 2, 2, 7 |
-| 2 | story | telling-time | 5 of 7 | choppy | 6, 3, 3, 7, 6 |
-| 2 | story | telling-time | 6 of 7 | choppy | 6, 5, 6, 11 |
-| 2 | story | then-and-now | 1 of 7 | choppy | 8, 2, 2, 5, 4, 6 |
-| 2 | story | then-and-now | 3 of 7 | choppy, monotone | 3, 5, 5, 5, 4 |
-| 2 | story | then-and-now | 4 of 7 | choppy | 3, 2, 2, 2, 6 |
-| 2 | story | then-and-now | 5 of 7 | choppy, monotone | 5, 5, 6, 4, 4 |
-| 2 | story | then-and-now | 6 of 7 | choppy | 4, 2, 3, 7 |
-| 2 | story | two-syllable-words | 2 of 7 | choppy | 5, 2, 2, 2, 2, 6 |
-| 2 | story | vowel-teams | 2 of 7 | choppy | 10, 5, 4, 5 |
-| 2 | story | vowel-teams | 4 of 7 | choppy | 5, 1, 4, 1, 6, 3, 4 |
-| 2 | story | word-meaning-from-context | 1 of 7 | choppy | 5, 1, 2, 5, 9 |
-| 2 | story | word-meaning-from-context | 2 of 7 | choppy | 6, 5, 4 |
 | 3 | long | art-3 | 3 of 8 | choppy | 6, 14, 3, 2, 3, 13, 3, 3 |
 | 3 | story | building-fractions | 2 of 6 | choppy | 5, 3, 2, 8, 17 |
 | 3 | story | character-and-setting | 2 of 6 | monotone | 7, 5, 7, 6, 11 |
@@ -570,7 +406,9 @@ Generated 2026-09-28. 234 of 516 stories have at least one paragraph that reads 
 | 12 | story | three-branches | 1 of 6 | monotone | 7, 12, 6, 6, 7, 6, 2 |
 | 12 | story | two-sources | 2 of 6 | choppy | 12, 4, 6, 4, 2, 9, 11 |
 | 12 | story | unit-circle | 2 of 6 | choppy, monotone | 14, 8, 6, 5, 5, 11 |
-| C | story | correlation-causation | 3 of 4 | choppy | 4, 4, 3, 3, 4, 2, 8, 18, 4 |
-| C | story | the-big-turns | 2 of 4 | monotone | 5, 7, 6, 8, 11, 7, 11, 8 |
-| C | story | thesis-statements | 1 of 4 | monotone | 9, 11, 8, 9, 9 |
-| C | story | thesis-statements | 3 of 4 | monotone | 20, 5, 4, 7, 6 |
+| C | story | correlation-causation | 3 of 6 | choppy | 4, 4, 3, 3, 4, 2, 8, 18, 4 |
+| C | long | history-college | 1 of 8 | choppy | 24, 5, 4, 3, 10 |
+| C | long | reading-college | 1 of 8 | choppy | 28, 6, 3, 2, 9 |
+| C | story | the-big-turns | 2 of 6 | monotone | 5, 7, 6, 8, 11, 7, 11, 8 |
+| C | story | thesis-statements | 1 of 6 | monotone | 9, 11, 8, 9, 9 |
+| C | story | thesis-statements | 3 of 6 | monotone | 20, 5, 4, 7, 6 |

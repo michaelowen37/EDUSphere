@@ -1091,6 +1091,39 @@ Approved by Mikey on 2026-09-04 unless marked "proposed".
 - FG was not committed, so this commit message covers FG and FH, and the changes zip carries both passes' files. A flow pass; the next is a length pass.
 - The last twelve kindergarten stories rewritten with tools/stories/rewords.py: jobs-people-do, needs-and-wants, our-flag-and-holidays, our-two-flags, rules-and-helpers, voting-in-class, trace-slant-letters, tracing-letters, tracing-more-letters, tracing-numbers, tracing-shapes, tracing-small-letters. Stroke steps in the tracing stories stay as instructions a child follows; the sentences around them connect and vary. Every sentence eighteen words or fewer, every word three syllables or fewer; the art audit shows none of the twelve. Kindergarten: 0 of 43 flagged. Overall 234 of 516 still flagged; grades 1 and 2 (49 stories) and pre-K (43) remain in the program.
 
+## 2026-09-28 (pass FI): grade 12 long stories; grade 12 finished (length program)
+
+- Mikey committed FG and FH; this commit message starts fresh at FI. A length pass; the next is a flow pass.
+- The six grade 12 long stories grew from about 200 words to 405 to 424, eight paragraphs each, five new pictures apiece (CS328 to CS357). Numbers checked: the sine of 30 degrees is one half and of 45 about seven tenths; a tide's lap of about twelve hours and twenty-five minutes, so high tide comes about fifty minutes later each day; four half-lives make a reading sixteen times smaller; the sun's swelling in about five billion years; 13.8 billion years; 26 hours at 14 dollars is 364, and 312 after Social Security, Medicare and income taxes; a council seat won 412 to 387.
+- Fixes. Frederick's tide said the water was halfway up at 45 degrees; that is 30 degrees, and at 45 it is about seven tenths. The observatory story had a telescope showing a galaxy moving away; the astronomer now reads that from its light, and the story picks up Earth's layers and ocean currents, which it had skipped. The pothole story put a federal fiber line under a city street; it is now a gas line whose safety rules come from a federal agency. The council's small three branches and the resident's vote are added. The reading and writing stories gain the lessons of their short stories: witnesses' stakes, the missing step, a vote seen under two words, sources named in the text, and the could-anyone-else-have-written-it test. The art audit shows none of the six. STORY-LENGTH: 3 of 62 long stories (college) still to double.
+
+## 2026-09-28 (pass FJ): grade 1 stories flow, batch one (flow program)
+
+- FI was not committed, so this commit message covers FI and FJ, and the changes zip carries both passes' files. A flow pass; the next is a length pass.
+- Twelve grade 1 stories rewritten with tools/stories/rewords.py: adding-to-20, comparing-to-100, subtracting-to-20, teen-numbers, tens-and-ones, writing-numbers, animal-needs, high-and-low, loud-and-soft, sun-moon-patterns, water-changes, what-happened. Same facts and pictures; sentences connected and varied within eighteen words and three syllables. The art audit and the flow audit show none of the twelve. Grade 1: 14 of 26 still flagged; 222 of 516 overall.
+
+## 2026-09-28 (pass FK): college stories, batch one (math and reading; length program)
+
+- FI and FJ were not committed, so this commit message covers FI to FK, and the changes zip carries all three passes' files. A length pass; the next is a flow pass.
+- The five college math and four reading stories grew to six paragraphs, 241 to 277 words, with six pictures each (S2660 to S2686). Numbers checked: mean 325, median 210, mode 200; standard deviation about three points for scores from 70 to 80 and closer to twenty for 40 to 100; one minus 25/64 is about 61 percent; three eighths of five dollars is about 1.88, twelve cents short of two; 72 over 5 is about fourteen years and 72 over 20 under four; three in four thousand is under one in a thousand and nine in sixteen thousand is lower still; deaths on twelve streets down thirty percent against four elsewhere. Chocolate and Nobel prizes is a real published correlation explained by wealth. The art audit flagged five pictures, now reworded.
+
+## 2026-09-28 (pass FL): grade 1 finished (flow program)
+
+- FI to FK were not committed, so this commit message covers FI to FL, and the changes zip carries all four passes' files. A flow pass; the next is a length pass.
+- The other fourteen grade 1 stories rewritten with tools/stories/rewords.py: read-the-sentence, read-the-word, sh-ch-th, silent-e, goods-and-services, leaders-near-and-far, maps-of-my-world, signs-around-town, symbols-of-our-country, the-steady-beat, trace-small-letters-3, -4, -5, tracing-more-small-letters. Phonics sounds and stroke steps stay as they are. Grade 1: 0 of 26 flagged; the art audit shows none of the fourteen. Overall 208 of 516 still flagged; grade 2 (23) and pre-K (43) remain in the program.
+- Fix: maps-of-my-world had Sam facing the sunrise with west behind him and south to his right, then said north was to the left of the sun and at the top; facing east, north is on the left, south on the right and west behind. The story now has him turn the map until its east side points at the fence, and every direction matches.
+
+## 2026-09-28 (pass FM): college finished; the length program is complete
+
+- FI to FL were not committed, so this commit message covers FI to FM, and the changes zip carries all five passes' files. A length pass; the next is a flow pass.
+- The five college history stories grew to six paragraphs, 242 to 284 words, with six pictures each (S2687 to S2701), and the three college long stories doubled to 405 to 421 words, eight paragraphs, five new pictures apiece (CS358 to CS372). Facts checked: 1800 in the eighteenth century and the twentieth century ending on the last day of 2000; no year zero; Britain's calendar skipping eleven days in September 1752 and the legal year that began in March before it; the 1914 shooting as trigger against alliances as necessary cause; 1889 to 1988 as ninety-nine years; seventy-two over four as eighteen years; thirty-seven contaminated flasks in a hundred at three in eight; fourteen against ten as forty percent more.
+- The length program that began in pass CI is complete: docs/STORY-LENGTH.md shows 0 of 454 module stories and 0 of 62 long stories short of their targets. Every story has six pictures; docs/ART-REQUESTS.md lists 3,124 pictures marked Needed, with prompts in docs/LEONARDO-PROMPTS.csv. tools/story-length.mjs stays in check.sh so a new module cannot ship short. The art audit flagged one picture, now reworded.
+
+## 2026-09-28 (pass FN): grade 2 finished (flow program)
+
+- FI to FM were not committed, so this commit message covers FI to FN, and the changes zip carries all six passes' files.
+- All 23 grade 2 stories rewritten with tools/stories/rewords.py: adding-with-regrouping, subtracting-with-regrouping, hundreds-tens-ones, money, quarter-hours, telling-time, rows-and-columns, saving-for-a-goal, complete-sentences, describing-sentences, reading-for-meaning, tell-a-story-2, two-syllable-words, vowel-teams, word-meaning-from-context, then-and-now, good-citizens, habitats, hard-or-soft, magnets, maps-of-our-town, producers-and-consumers, services-in-our-town. Counting chants and coin counts folded into sentences (a quarter was twenty-five, then a dime made thirty-five). Same facts, same pictures; the art audit and the flow audit show none. Grade 2: 0 of 23 flagged. Overall 187 of 516 still flagged: PK4 (26) and PK3 (17) remain in the program, and from grade 3 up the flags want a human read.
+
 ## Open items
 - Verify audio plays inside the chat artifact sandbox (works in a normal browser).
 - Common Core / TEKS codes on existing modules to be checked against the official lists.

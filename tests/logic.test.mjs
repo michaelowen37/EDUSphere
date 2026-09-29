@@ -1506,6 +1506,14 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
     ok('every chord round names five distinct chords with their notes', [1, 2, 3, 4, 5].every((r) => { const rs = L.chordRounds(r); return rs.length === 5 && new Set(rs.map((c) => c.root + c.quality)).size === 5 && rs.every((c) => c.notes.length === 3 && c.notes.join() === L.chordNotes(c.root, c.quality).join()); }));
     ok('the chord game belongs to art and music 9 to 12 and names its triads with its own key', L.COURSE_GAMES['arts-9'].includes('chord-arts-9') && L.GAMES.find((g) => g.id === 'chord-arts-9').chord === 'triads' && !L.GAMES.find((g) => g.id === 'chord-arts-9').deck);
   }
+  { // Valid or Not (pass GI): the form decides validity, every round mixes forms, and every argument's three lines are built from its pair.
+    ok('every argument round follows its form, and the two valid forms are exactly modus ponens and modus tollens', [1, 2, 3, 4, 5].every((r) => { const qs = L.argumentRounds(r); return qs.length === 6 && qs.every((q) => q.lines.length === 3 && q.lines[0].startsWith('If ') && q.lines[2].startsWith('So ') && q.valid === (q.form === 'modus ponens' || q.form === 'modus tollens')); }) && L.ARGUMENT_FORMS.filter((f) => f.valid).map((f) => f.name).sort().join(',') === 'modus ponens,modus tollens');
+    ok('the valid game belongs to philosophy 9 to 12 and names its forms with its own key', L.COURSE_GAMES['philosophy-9'].includes('valid-philosophy-9') && L.GAMES.find((g) => g.id === 'valid-philosophy-9').valid === 'forms' && !L.GAMES.find((g) => g.id === 'valid-philosophy-9').deck);
+  }
+  { // Reason or Not (pass GJ): a reason supports a claim exactly when it is one of that claim's own, and every round mixes both kinds.
+    ok('every reason round marks a reason as support exactly when it belongs to the claim, and mixes both kinds', [1, 2, 3, 4, 5, 6].every((r) => { const qs = L.reasonRounds(r); return qs.length === 6 && qs.every((q) => { const own = L.CLAIM_REASONS.find((c) => c[0] === q.claim)[1]; return q.supports === own.includes(q.reason); }); }) && [1, 2, 3, 4, 5, 6].some((r) => L.reasonRounds(r).some((q) => q.supports)) && [1, 2, 3, 4, 5, 6].some((r) => L.reasonRounds(r).some((q) => !q.supports)));
+    ok('the reason game belongs to philosophy 6 to 8 and names its claims with its own key', L.COURSE_GAMES['philosophy-6'].includes('reason-philosophy-6') && L.GAMES.find((g) => g.id === 'reason-philosophy-6').reason === 'claims' && !L.GAMES.find((g) => g.id === 'reason-philosophy-6').deck);
+  }
   ok('the two robot games sit in the two programming courses beside their first games', L.COURSE_GAMES['tech-3'].includes('debug-tech-3') && L.COURSE_GAMES['tech-5'].includes('debug-tech-5') && L.GAMES.filter((g) => g.kind === 'debug').every((g) => L.ROBOT_DECKS[g.deck]));
 }
 

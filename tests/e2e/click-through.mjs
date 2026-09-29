@@ -993,6 +993,26 @@ await page.waitForTimeout(200);
 }
 await page.getByRole('button', { name: 'Close game' }).first().click({ force: true });
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview');
+// Valid or Not (pass GI, philosophy 9 to 12): the board carries the answer the form gives.
+await page.evaluate(() => window.__eduTest.openColoring('play:valid-philosophy-9'));
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'coloring');
+await page.waitForTimeout(200);
+{ ok('the valid game opens with a three-line argument and two answers', (await page.getByRole('button', { name: 'Valid', exact: true }).count()) === 1 && (await page.getByRole('button', { name: 'Not valid', exact: true }).count()) === 1 && /If .*, then /.test(await text()));
+  for (let i = 0; i < 6; i++) { const ans = await page.locator('[data-argument-valid]').getAttribute('data-argument-valid'); if (!ans) break; await page.getByRole('button', { name: ans === 'yes' ? 'Valid' : 'Not valid', exact: true }).click(); await page.waitForTimeout(1050); }
+  ok('six arguments sorted by their forms finish the round', (await text()).includes('Six arguments sorted'));
+}
+await page.getByRole('button', { name: 'Close game' }).first().click({ force: true });
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview');
+// Reason or Not (pass GJ, philosophy 6 to 8): the board carries whether the reason belongs to the claim.
+await page.evaluate(() => window.__eduTest.openColoring('play:reason-philosophy-6'));
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'coloring');
+await page.waitForTimeout(200);
+{ ok('the reason game opens with a claim, a reason and two answers', (await page.getByRole('button', { name: 'Supports it', exact: true }).count()) === 1 && (await page.getByRole('button', { name: 'Does not', exact: true }).count()) === 1 && /Claim/.test(await text()));
+  for (let i = 0; i < 6; i++) { const ans = await page.locator('[data-reason-supports]').getAttribute('data-reason-supports'); if (!ans) break; await page.getByRole('button', { name: ans === 'yes' ? 'Supports it' : 'Does not', exact: true }).click(); await page.waitForTimeout(1050); }
+  ok('six reasons sorted by relevance finish the round', (await text()).includes('Six reasons sorted'));
+}
+await page.getByRole('button', { name: 'Close game' }).first().click({ force: true });
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview');
 // Some pictures are drawn on rather than filled in: a finger stroke leaves a line in the chosen color.
 await page.evaluate(() => window.__eduTest.openColoring('star'));
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'coloring');

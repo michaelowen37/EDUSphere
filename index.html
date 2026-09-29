@@ -37,7 +37,7 @@ window.__eduArt = [];
 window.__eduColoringArt = [];
 window.__eduMapArt = [];
 window.__eduAudio = [];
-window.__eduNews = {"stamp":"September 29, 2026 (the informed eye and ear)","date":"September 29, 2026","items":["Grade 9 has a new elective for grades 9 to 12, The informed eye and ear, which completes art and music appreciation from kindergarten up: reading artwork with precision, from content to metaphor and a critique whose every step can be checked; styles, themes and cultures across four centuries and the careers art becomes; the elements of music, with intervals counted in half steps and chords built from them; and music in society, from sampling and streaming to judging a performance by criteria. Each lesson has a story, and the course ends with a long story about Georgette, two portraits and a jazz concert.","Finishing the course unlocks Build the Chord, a new kind of game: twelve keys, a chord named, and the three keys that make it.","Two new Wonder questions for grades 9 to 12 wait in the review screen."]};
+window.__eduNews = {"stamp":"September 29, 2026 (big questions, good reasons)","date":"September 29, 2026","items":["Grade 6 has a new elective for grades 6 to 8, Big questions, good reasons: the questions you think through rather than look up, with Socrates and a hot dog; what makes a reason relevant and true, and the four-word question that turns a claim into a conversation; how to disagree about an idea without fighting a person; and three rules for fair, with a test you can run at any table. Each lesson has a story, and the course ends with a long story about Savanah, a cabin of ten-year-olds and four canoes.","Finishing the course unlocks Reason or Not, a new kind of game: a claim, a reason, and one question about whether the reason bears on it.","Two new Wonder questions for grades 6 to 8 wait in the review screen."]};
 // Installable app: the worker keeps a copy of the page for offline use and asks the network first, so a fresh build always wins.
 if ('serviceWorker' in navigator && /^https?:/.test(location.protocol)) { navigator.serviceWorker.register('sw.js').catch(function () {}); }
 var process = { env: { NODE_ENV: 'production' } };
@@ -18178,6 +18178,16 @@ const COURSES = [
         modules: ECON3_MODULES(),
     },
     {
+        id: 'philosophy-6',
+        grade: '6',
+        subject: 'Philosophy',
+        title: 'Big questions, good reasons',
+        audience: 'Grades 6 to 8',
+        elective: true,
+        keywords: ['philosophy', 'questions', 'reasons', 'evidence', 'fairness', 'disagreement', 'thinking', 'elective'],
+        modules: PHIL6_MODULES(),
+    },
+    {
         id: 'econ-6',
         grade: '6',
         subject: 'Economics',
@@ -18186,6 +18196,16 @@ const COURSES = [
         elective: true,
         keywords: ['money', 'interest', 'credit', 'budget', 'college', 'personal finance', 'economics', 'elective'],
         modules: ECON6_MODULES(),
+    },
+    {
+        id: 'philosophy-9',
+        grade: '9',
+        subject: 'Philosophy',
+        title: 'How to think about anything',
+        audience: 'Grades 9 to 12',
+        elective: true,
+        keywords: ['philosophy', 'logic', 'argument', 'fallacy', 'ethics', 'knowledge', 'reasoning', 'elective'],
+        modules: PHIL9_MODULES(),
     },
     {
         id: 'econ-9',
@@ -18482,8 +18502,10 @@ const GAMES = [
     { id: 'shape-arts-6', kind: 'shape', title: 'Shape the Sound', minGrade: '6', shape: 'dynamics' }, // art and music 6 to 8 (pass GG): the markings are the rule   // art and music 3 to 5 (pass GF): the form is the rule   // economics 3 to 5 (pass FW): find the price that earns the most
     { id: 'teach-tech-6', kind: 'teach', title: 'Teach the Robot', minGrade: '6', teach: 'fruit' },
     { id: 'search-tech-college', kind: 'search', title: 'Split the Search', minGrade: 'C', search: 32 }, // college computer science (pass FU): binary search by hand
-    { id: 'loan-econ-6', kind: 'loan', title: 'Pay It Off', minGrade: '6', loan: 'plans' }, // economics 6 to 8 (pass FX): what a loan costs month by month
+    { id: 'loan-econ-6', kind: 'loan', title: 'Pay It Off', minGrade: '6', loan: 'plans' },
+    { id: 'reason-philosophy-6', kind: 'reason', title: 'Reason or Not', minGrade: '6', reason: 'claims' }, // philosophy 6 to 8 (pass GJ): relevance is the rule   // economics 6 to 8 (pass FX): what a loan costs month by month
     { id: 'fund-econ-9', kind: 'fund', title: 'Build the Fund', minGrade: '9', fund: 'year' },
+    { id: 'valid-philosophy-9', kind: 'valid', title: 'Valid or Not', minGrade: '9', valid: 'forms' }, // philosophy 9 to 12 (pass GI): the form decides
     { id: 'chord-arts-9', kind: 'chord', title: 'Build the Chord', minGrade: '9', chord: 'triads' }, // art and music 9 to 12 (pass GH): four half steps then three   // personal finance 9 to 12 (pass FY): a year of saving against surprises
     { id: 'bits-tech-9', kind: 'bits', title: 'Eight Switches', minGrade: '9', bits: 8 }, // computer science 9 to 12 (pass FU): make the number with the switches   // the plain AI course (pass FT): the child is the pile of examples
     { id: 'mix-art-3', kind: 'mix', title: 'Color mixer: make new colors', minGrade: '3', deck: 'mix3' },
@@ -19096,6 +19118,55 @@ function chordRounds(round) {
     const order = CHORD_LIST.slice().sort(() => rnd() - 0.5).slice(0, 5);
     return order.map(([root, quality]) => ({ root, quality, notes: chordNotes(root, quality) }));
 }
+// Valid or Not (2026-09-29, pass GI, philosophy 9 to 12): an argument in one of four forms, filled with everyday
+// content, and one question: does the form guarantee the conclusion? Modus ponens and modus tollens do; affirming the
+// consequent and denying the antecedent do not, however true the sentences sound. The form is the rule of the game.
+const ARGUMENT_PAIRS = [
+    ['it rains', 'the street is wet'], ['the oven is on', 'the kitchen is warm'], ['she studied', 'she passed'], ['the tide is in', 'the rocks are covered'],
+    ['the dog hears the car', 'the dog barks'], ['the battery is dead', 'the car will not start'], ['the bread is fresh', 'the crust cracks'], ['the pool is open', 'the gate is unlocked'],
+];
+const ARGUMENT_FORMS = [
+    { name: 'modus ponens', valid: true, second: (p, q) => `${p}.`, conclusion: (p, q) => `So ${q}.` },
+    { name: 'modus tollens', valid: true, second: (p, q) => `It is not the case that ${q}.`, conclusion: (p, q) => `So it is not the case that ${p}.` },
+    { name: 'affirming the consequent', valid: false, second: (p, q) => `${q}.`, conclusion: (p, q) => `So ${p}.` },
+    { name: 'denying the antecedent', valid: false, second: (p, q) => `It is not the case that ${p}.`, conclusion: (p, q) => `So it is not the case that ${q}.` },
+];
+function argumentRounds(round) {
+    let x = (round * 40503 + 7) >>> 0;
+    const rnd = () => { x = (x * 1664525 + 1013904223) >>> 0; return x / 4294967296; };
+    return Array.from({ length: 6 }, (_, i) => {
+        const [p, q] = ARGUMENT_PAIRS[(i * 3 + round) % ARGUMENT_PAIRS.length];
+        const form = ARGUMENT_FORMS[Math.floor(rnd() * ARGUMENT_FORMS.length)];
+        const cap = (t) => t.charAt(0).toUpperCase() + t.slice(1);
+        return { form: form.name, valid: form.valid, lines: [`If ${p}, then ${q}.`, cap(form.second(p, q)), cap(form.conclusion(p, q))] };
+    });
+}
+// Reason or Not (2026-09-29, pass GJ, philosophy 6 to 8): a claim and a reason, and one question: does the reason bear
+// on the claim? Every claim carries two reasons of its own; a reason borrowed from another claim is true and useless.
+// Relevance is the rule of the game, and the round mixes both kinds.
+const CLAIM_REASONS = [
+    ['The school should start later.', ['Students who sleep more learn more, studies find.', 'Many students fall asleep in first period.']],
+    ['The park needs more trash cans.', ['Litter piles up by the benches every weekend.', 'The nearest can is a five-minute walk from the swings.']],
+    ['Our team should practice on Tuesdays.', ['The field is empty on Tuesdays.', 'Most players have no other clubs that day.']],
+    ['The library should stay open later.', ['Students line up outside it after school.', 'Many families have no quiet place to study at home.']],
+    ['The class should read a play this term.', ['Reading a play aloud builds speaking skills.', 'The drama club has copies of one already.']],
+    ['The cafeteria should serve fruit at breakfast.', ['Fruit costs less than pastries by the tray.', 'Students who eat fruit early stay full longer.']],
+    ['The bus route should add a stop on Elm Street.', ['Twelve students walk a mile from Elm Street.', 'The bus already passes the corner of Elm.']],
+    ['The science fair should move to spring.', ['Projects need weeks the fall calendar does not have.', 'The gym is booked for sports all fall.']],
+];
+function reasonRounds(round) {
+    let x = (round * 69069 + 3) >>> 0;
+    const rnd = () => { x = (x * 1664525 + 1013904223) >>> 0; return x / 4294967296; };
+    return Array.from({ length: 6 }, (_, i) => {
+        const ci = (i * 5 + round) % CLAIM_REASONS.length;
+        const [claim, own] = CLAIM_REASONS[ci];
+        const supports = rnd() < 0.5;
+        if (supports)
+            return { claim, reason: own[Math.floor(rnd() * own.length)], supports: true };
+        const oi = (ci + 1 + Math.floor(rnd() * (CLAIM_REASONS.length - 1))) % CLAIM_REASONS.length;
+        return { claim, reason: CLAIM_REASONS[oi][1][Math.floor(rnd() * 2)], supports: false };
+    });
+}
 const ROBOT_DECKS = {
     arrows: [
         { start: [1, 1], goal: [0, 4], rocks: [[2, 1], [0, 2], [2, 2]], program: 'DDLU' },
@@ -19516,9 +19587,9 @@ function recommendedIncludingElectives(events, level, startGrade = null) {
 }
 // Subjects always read Math, Reading, Writing, Science, History, then anything else alphabetically,
 // whatever order the courses were written in. Every screen that lists subjects sorts with this.
-const SUBJECT_RANK = { Math: 0, Reading: 1, Writing: 2, Science: 3, History: 4, Art: 5, Music: 6, Technology: 7, Health: 8, Economics: 9 }; // Economics joined 2026-09-29 (pass FV)
+const SUBJECT_RANK = { Math: 0, Reading: 1, Writing: 2, Science: 3, History: 4, Art: 5, Music: 6, Technology: 7, Health: 8, Economics: 9, Philosophy: 10 }; // Economics joined 2026-09-29 (pass FV); Philosophy joined the same day (pass GI)
 function sortSubjects(subjects) {
-    return [...new Set(subjects)].sort((a, b) => (SUBJECT_RANK[a] ?? 9) - (SUBJECT_RANK[b] ?? 9) || a.localeCompare(b));
+    return [...new Set(subjects)].sort((a, b) => (SUBJECT_RANK[a] ?? 99) - (SUBJECT_RANK[b] ?? 99) || a.localeCompare(b));
 }
 function subjectsForGrade(grade) {
     const inGrade = COURSES.filter((c) => c.grade === grade);
@@ -26720,6 +26791,158 @@ function ARTS9_MODULES() {
         },
     ];
 }
+// Philosophy for the 9 to 12 band (2026-09-29, pass GI), the fourth strand of the depth program: how arguments work, the
+// mistakes people make with them, what we can know, and how we might live. Texas has no philosophy TEKS, so the Texas
+// column carries the College and Career Readiness Standards, Cross-Disciplinary Standards (2009); the national column
+// carries the Common Core anchor standards for argument. Every thinker named is placed in the right century.
+// Philosophy for the 6 to 8 band (2026-09-29, pass GJ), in the philosophy-for-children tradition: what makes a question
+// worth asking, what makes a reason a good one, how to disagree without losing a friend, and what fairness is. The Texas
+// column carries the College and Career Readiness Standards, Cross-Disciplinary Standards, since Texas has no philosophy
+// TEKS; the national column carries the Common Core grade 6 standards for argument and discussion.
+function PHIL6_MODULES() {
+    return [
+        {
+            id: 'questions-that-open',
+            order: 1,
+            title: 'Questions that open',
+            tagline: 'Some questions you can look up; some you have to think through',
+            requires: [],
+            lesson: {
+                paragraphs: ['What is the capital of Texas? You can look that up, and once you have, the question is closed. What is fairness? Nobody can look that up. A philosophical question is one you have to think through, where the answer depends on reasons rather than on a fact somebody else can hand you.', 'In Athens, about 2,400 years ago, Socrates made a habit of asking people what they meant by the words they used. Someone would say a brave act, and he would ask what bravery was, and the answer would turn out to be harder than anyone had thought. He was put to death in 399 BC, partly for asking too many questions, and the questions outlived him.', 'Two tools do most of the work. A definition says what a word covers. A counterexample is a case that breaks the definition: if a sandwich is filling between two pieces of bread, is a hot dog a sandwich? Facts can be checked, opinions are tastes, and a reasoned view is neither: it is a position you can give reasons for and change if the reasons fail.'],
+                keyIdea: 'A philosophical question is one you think through rather than look up. Ask what a word means, test the definition with a counterexample, and tell a fact from an opinion from a reasoned view.',
+                example: { kind: 'flow', steps: ['what is a sandwich?', 'filling between two pieces of bread', 'is a hot dog one?', 'fix the definition'], caption: 'A counterexample is a case that breaks a definition, and that is useful.',
+                    another: ['Is a tomato a fruit? That one you can look up; botany has a definition. Is a tomato good? That one depends on you. Is it fair to trade a tomato for an apple? That one you have to think through.',
+                        { text: 'Socrates did not write anything down. We know him through his student Plato, who wrote conversations in which Socrates asks and asks and rarely answers.', visual: { kind: 'flow', steps: ['Socrates asks', 'Plato writes it down', 'we read it still'] } },
+                        'A reasoned view can be wrong, and that is what makes it worth having: it can be tested, argued with and improved. An opinion about ice cream cannot.'] },
+            },
+            sources: ['Aligned with the Texas College and Career Readiness Standards, Cross-Disciplinary Standards I.A.1 (engage in scholarly inquiry and dialogue), and the Common Core State Standards for English Language Arts, SL.6.1 (engage effectively in a range of collaborative discussions with diverse partners on grade 6 topics, texts, and issues, building on others\' ideas and expressing their own clearly).'],
+            generators: ['p6-questions', 'p6-questions', 'p6-questions', 'p6-questions', 'p6-questions'],
+        },
+        {
+            id: 'reasons-and-evidence',
+            order: 2,
+            title: 'Reasons and evidence',
+            tagline: 'A claim needs a reason, and a reason needs to be relevant and true',
+            requires: ['questions-that-open'],
+            lesson: {
+                paragraphs: ['A claim is something you say is so. A reason is why you say it. The school should start later, because students who sleep more learn more: claim, then reason. A good reason has two properties. It is relevant, meaning it actually bears on the claim, and it is true. The school should start later because the mascot is a hawk is a reason that is true and useless.', 'Some things sound like reasons and are not. Because I said so is an order. Everyone knows is a headcount, not evidence. It feels right is a feeling, and feelings are real but they are not reasons; a reason is something another person could check. Evidence is the checkable part: a measurement, a record, a study, a thing you can point to.', 'Reasons come in strengths. My cousin got sick after eating there is one story, an anecdote. A hundred customers surveyed is a sample. The bigger and fairer the sample, the stronger the evidence. The best question in this course is four words long: how do you know?'],
+                keyIdea: 'A claim needs a reason; a good reason is relevant and true; evidence is the part another person could check. Orders, headcounts and feelings are not reasons. Ask how do you know.',
+                example: { kind: 'flow', steps: ['claim', 'because', 'a relevant, true reason', 'evidence you can check'], caption: 'The shape of a supported claim.',
+                    another: ['Relevance is the test most people skip. A reason can be perfectly true and have nothing to do with the claim, like defending a restaurant by pointing out that it has a nice sign.',
+                        { text: 'One story is an anecdote; many, gathered fairly, are data. The difference between my cousin and a hundred customers is not that your cousin is lying; it is that one case cannot tell you what usually happens.', visual: { kind: 'flow', steps: ['one story', 'a hundred stories, gathered fairly', 'a pattern'] } },
+                        'How do you know is not rude when it is asked with real curiosity. It is the sentence that turns a claim into a conversation.'] },
+            },
+            sources: ['Aligned with the Texas College and Career Readiness Standards, Cross-Disciplinary Standards I.B.1 (consider arguments and conclusions of self and others) and I.B.3 (gather evidence to support arguments, findings, or lines of reasoning), and the Common Core State Standards for English Language Arts, RI.6.8 (trace and evaluate the argument and specific claims in a text, distinguishing claims that are supported by reasons and evidence from claims that are not) and SL.6.3 (delineate a speaker\'s argument and specific claims, distinguishing claims that are supported by reasons and evidence from claims that are not).'],
+            generators: ['p6-reasons', 'p6-reasons', 'p6-reasons', 'p6-reasons', 'p6-reasons'],
+        },
+        {
+            id: 'disagreeing-well',
+            order: 3,
+            title: 'Disagreeing well',
+            tagline: 'How to argue about an idea without arguing with a person',
+            requires: ['reasons-and-evidence'],
+            lesson: {
+                paragraphs: ['A disagreement is two people who hold different reasoned views. It is not a fight, and it is not a contest, though it can turn into either if nobody is careful. The first rule is to listen to understand rather than to answer: repeat the other person\'s view back to them in your own words until they say yes, that is what I mean. Philosophers call this charity, and it is the opposite of arguing against a version you made up.', 'The second rule is to separate the person from the idea. You can think a claim is wrong and think the person is smart, kind and worth listening to, all at the same time. Attack the reason, never the person who gave it. The third rule is the strange one: changing your mind when the reasons are better is not losing. It is the whole point, and it takes more courage than holding on.', 'This is very old practice. Plato, in the 300s BC, wrote philosophy as dialogues, conversations in which people ask, answer, object and change their minds in front of each other. A class can make its own rules for it: one voice at a time, reasons not volume, and build on what was said before you knock it down.'],
+                keyIdea: 'Listen to understand, and say the view back until they agree that is it. Attack the reason, never the person. Changing your mind for better reasons is the point, not a loss.',
+                example: { kind: 'flow', steps: ['their view, in your words', 'yes, that is what I mean', 'your reason against it', 'their reason back'], caption: 'A disagreement that stays about the idea.',
+                    another: ['"So you are saying..." is the most useful sentence in a disagreement, as long as you finish it honestly and wait for the answer.',
+                        { text: 'Volume is not a reason. If a point is only convincing when it is shouted, it was not the point that convinced anyone.', visual: { kind: 'flow', steps: ['quiet reason', 'loud reason', 'same reason'] } },
+                        'Plato\'s dialogues end without a neat answer more often than not. The people in them are better thinkers at the end anyway, which is the result that counts.'] },
+            },
+            sources: ['Aligned with the Texas College and Career Readiness Standards, Cross-Disciplinary Standards I.A.2 (accept constructive criticism and revise personal views when valid evidence warrants) and I.E.2 (work collaboratively), and the Common Core State Standards for English Language Arts, SL.6.1.'],
+            generators: ['p6-disagree', 'p6-disagree', 'p6-disagree', 'p6-disagree', 'p6-disagree'],
+        },
+        {
+            id: 'fair-and-unfair',
+            order: 4,
+            title: 'Fair and unfair',
+            tagline: 'Equal shares, shares by need, shares by work, and a test you can run at any table',
+            requires: ['disagreeing-well'],
+            lesson: {
+                paragraphs: ['Everyone knows unfair when it happens to them, and almost nobody can say what fair is. Try it with a cake and four people. Equal shares: everyone gets a quarter. Shares by need: the one who missed lunch gets more. Shares by work: the one who baked it gets more. Each of the three is fair by one rule and unfair by another, which is why arguments about fairness are really arguments about which rule fits the case.', 'Rules need exceptions, and exceptions need reasons. No running in the hall is a good rule until the building is on fire. A fair rule is one whose exceptions can be explained to everyone it applies to, and a fair exception is one you would grant to anybody in the same spot, not only to your friend.', 'Two tests have lasted a very long time. The golden rule, treat others as you would want to be treated, appears in many traditions; Confucius, in China about 2,500 years ago, put it as do not impose on others what you would not want for yourself. The other test is to ask whether you would accept the rule if you did not know which person you would be: the one who cuts the cake, or the one who has to choose last.'],
+                keyIdea: 'Equal shares, by need or by work are three different rules, and fairness arguments are about which fits. A fair exception is one you would grant to anyone in the same spot. Would you accept the rule not knowing which person you would be?',
+                example: { kind: 'flow', steps: ['one cake, four people', 'equal, by need, or by work?', 'which rule fits this case?'], caption: 'Fairness is a choice of rule, and the choice needs a reason.',
+                    another: ['The divider chooses last is the oldest fairness trick there is: whoever cuts the cake has every reason to cut it evenly.',
+                        { text: 'A rule with no exceptions is not stricter, only blinder. A rule with exceptions nobody can explain is not kinder, only unfair.', visual: { kind: 'flow', steps: ['the rule', 'the exception', 'the reason everyone can hear'] } },
+                        'If you would not accept a rule as the person at the bottom of it, you have found out something about the rule.'] },
+            },
+            sources: ['Aligned with the Texas College and Career Readiness Standards, Cross-Disciplinary Standards I.B.2 (construct well-reasoned arguments to explain phenomena, validate conjectures, or support positions) and I.F.3 (include the ideas of others and the complexities of the debate, issue, or conflict), and the Common Core State Standards for English Language Arts, W.6.1 (write arguments to support claims with clear reasons and relevant evidence).'],
+            generators: ['p6-fair', 'p6-fair', 'p6-fair', 'p6-fair', 'p6-fair'],
+        },
+    ];
+}
+function PHIL9_MODULES() {
+    return [
+        {
+            id: 'what-is-an-argument',
+            order: 1,
+            title: 'What is an argument',
+            tagline: 'Premises, a conclusion, and the two questions to ask of any argument',
+            requires: [],
+            lesson: {
+                paragraphs: ['In philosophy an argument is not a quarrel. It is a set of statements, the premises, offered as reasons for another statement, the conclusion. All humans are mortal; Socrates is a human; therefore Socrates is mortal. Two premises, one conclusion, and the conclusion cannot be false if the premises are true.', 'That property is called validity. A valid argument is one whose form guarantees the conclusion when the premises hold. Validity says nothing about whether the premises are actually true. An argument that is valid and has true premises is sound, and soundness is what you want.\nTwo forms carry most everyday reasoning. Modus ponens: if P then Q; P; therefore Q. Modus tollens: if P then Q; not Q; therefore not P.', 'Not all good arguments are valid. An inductive argument moves from many cases to a general claim, the sun has risen every day, so it will rise tomorrow, and its conclusion is probable rather than guaranteed. Deduction gives certainty from form; induction gives likelihood from evidence. Ask two questions of any argument: is the form valid, and are the premises true? Most bad arguments fail one of them, and many hide a premise nobody stated.'],
+                keyIdea: 'An argument is premises offered for a conclusion. Valid means the form guarantees the conclusion; sound means valid with true premises. Deduction gives certainty; induction gives likelihood.',
+                example: { kind: 'flow', steps: ['if P then Q', 'P', 'therefore Q'], caption: 'Modus ponens: the form that carries most everyday reasoning.',
+                    another: ['A valid argument with a false premise is a well-built house on sand. If all birds can fly, and penguins are birds, then penguins can fly: valid, and wrong, because the first premise is false.',
+                        { text: 'Modus tollens works backward. If the alarm were on, the light would be red. The light is not red. So the alarm is not on.', visual: { kind: 'flow', steps: ['if P then Q', 'not Q', 'therefore not P'] } },
+                        'The hidden premise is the one to hunt for. "She is late, so she does not care" only works with an unstated premise: people who care are never late. Say it out loud and it collapses.'] },
+            },
+            sources: ['Aligned with the Texas College and Career Readiness Standards, Cross-Disciplinary Standards I.B.1 (consider arguments and conclusions of self and others) and I.B.2 (construct well-reasoned arguments to explain phenomena, validate conjectures, or support positions), and the Common Core State Standards for English Language Arts, RI.9-10.8 (delineate and evaluate the argument and specific claims in a text, assessing whether the reasoning is valid and the evidence is relevant and sufficient).'],
+            generators: ['ph-argument', 'ph-argument', 'ph-argument', 'ph-argument', 'ph-argument'],
+        },
+        {
+            id: 'the-usual-mistakes',
+            order: 2,
+            title: 'The usual mistakes',
+            tagline: 'Nine fallacies to recognize, and the habit of arguing against the strongest version',
+            requires: ['what-is-an-argument'],
+            lesson: {
+                paragraphs: ['A fallacy is a mistake in reasoning that looks like reasoning. The ad hominem attacks the person instead of the claim. The straw man answers a weaker argument than the one that was made. The false dilemma offers two choices when there are more. The slippery slope says one step must lead to the bottom of the hill without showing why.', 'The appeal to popularity says many people believe it, so it is true. The appeal to authority cites an expert outside their field. Circular reasoning uses the conclusion as a premise. The hasty generalization draws a rule from too few cases. And confusing correlation with causation treats two things that happen together as if one caused the other, when ice cream sales and drownings both rise in summer for a third reason, the heat.', 'The cure for most of them is a habit called the principle of charity: before you answer an argument, state it in its strongest form, the form its maker would accept, and answer that. The person who makes a claim carries the burden of proof; asking for the evidence is not rude, it is the whole game.'],
+                keyIdea: 'A fallacy is a mistake that looks like reasoning: ad hominem, straw man, false dilemma, slippery slope, popularity, misplaced authority, circularity, hasty generalization, correlation as cause. Answer the strongest version; the claimant carries the burden of proof.',
+                example: { kind: 'flow', steps: ['ice cream sales rise', 'drownings rise', 'a third thing: summer heat'], caption: 'Correlation is not cause when a third thing moves both.',
+                    another: ['The straw man is the most common mistake in an argument between friends: you answer the version that is easy to beat. The fix is to repeat their claim back until they say yes, that is what I mean.',
+                        { text: 'A false dilemma hides the third door. Either we cut the budget or we go broke leaves out the door most towns walk through: raise the revenue.', visual: { kind: 'flow', steps: ['door one', 'door two', 'the door they hid'] } },
+                        'An expert is evidence inside their field and an ordinary citizen outside it. A famous physicist on diet is a famous physicist, not a dietitian.'] },
+            },
+            sources: ['Aligned with the Texas College and Career Readiness Standards, Cross-Disciplinary Standards I.B.1 (consider arguments and conclusions of self and others) and I.F.2 (evaluate sources for quality of content, validity, credibility, and relevance), and the Common Core State Standards for English Language Arts, SL.9-10.3 (evaluate a speaker\'s point of view, reasoning, and use of evidence and rhetoric, identifying any fallacious reasoning or exaggerated or distorted evidence).'],
+            generators: ['ph-fallacy', 'ph-fallacy', 'ph-fallacy', 'ph-fallacy', 'ph-fallacy'],
+        },
+        {
+            id: 'what-can-we-know',
+            order: 3,
+            title: 'What can we know',
+            tagline: 'Belief, knowledge, doubt, and the test a real claim can fail',
+            requires: ['the-usual-mistakes'],
+            lesson: {
+                paragraphs: ['You believe many things. Knowledge is the smaller set: for most of philosophy\'s history, a belief that is true and that you hold for good reasons, a justified true belief. In 1963 Edmund Gettier showed in three pages that you can have all three and still be lucky rather than knowing, and philosophers have argued about the fourth ingredient since.', 'Where do beliefs come from? Perception, memory, testimony, and reason. Each can fail. In 1641 René Descartes asked how he could be sure he was not dreaming, or deceived by a demon, and found one thing that survived the doubt: that he was thinking. In 1748 David Hume pointed out that induction has no proof behind it; the sun has always risen, and that is a habit, not a guarantee.', 'Science answers doubt with method. In the 1930s Karl Popper argued that a real scientific claim is one that could be shown false, that says in advance what would count against it; a claim that fits every possible outcome tells you nothing. William of Ockham, in the 1300s, gave the other working rule: when two explanations fit the facts, prefer the one with fewer assumptions. Doubt is not the enemy of knowledge. It is the tool that makes it.'],
+                keyIdea: 'Knowledge has been called justified true belief, and Gettier showed the recipe can still miss. Perception, memory, testimony and reason can each fail. A real claim says what would prove it false; prefer the explanation with fewer assumptions.',
+                example: { kind: 'flow', steps: ['a claim', 'what would prove it false?', 'a test', 'it survives, or it goes'], caption: 'Popper: a claim that nothing could count against says nothing.',
+                    another: ['A horoscope that says you will face a challenge this week can never be wrong, which is exactly why it is not knowledge. A weather forecast that says rain by three can be wrong by four, which is why it is worth having.',
+                        { text: 'Occam\'s razor is not "the simplest answer is true." It is "do not add assumptions you do not need." The car will not start: a dead battery needs one assumption; a thief who drained it and left needs three.', visual: { kind: 'flow', steps: ['two explanations fit', 'count the assumptions', 'prefer the fewer'] } },
+                        'Testimony is how you know almost everything, from the shape of Australia to your own birthday. The question is never whether to trust testimony, but whose, and about what.'] },
+            },
+            sources: ['Aligned with the Texas College and Career Readiness Standards, Cross-Disciplinary Standards I.A.1 (engage in scholarly inquiry and dialogue), I.B.3 (gather evidence to support arguments, findings, or lines of reasoning) and I.B.4 (support or modify claims based on the results of an inquiry), and the Common Core State Standards for English Language Arts, RI.9-10.8.'],
+            generators: ['ph-know', 'ph-know', 'ph-know', 'ph-know', 'ph-know'],
+        },
+        {
+            id: 'how-should-we-live',
+            order: 4,
+            title: 'How should we live',
+            tagline: 'Three ways to decide what is right, and a switch on a railway line',
+            requires: ['what-can-we-know'],
+            lesson: {
+                paragraphs: ['Ethics asks what makes an action right. Three answers have lasted. Consequentialism says an action is right when its results are best; John Stuart Mill\'s version, utilitarianism, published in 1861, counts the greatest happiness for the greatest number. Deontology says some acts are right or wrong in themselves; Immanuel Kant, in 1785, gave the test: act only on a rule you could will everyone to follow, and never treat a person merely as a means.', 'Virtue ethics, the oldest of the three, comes from Aristotle in the fourth century BC: the question is not which rule but what kind of person to be, and courage, honesty and generosity are habits built by practice, each a mean between two extremes, courage between cowardice and recklessness.', 'The three answers pull apart in hard cases. In 1967 Philippa Foot imagined a runaway trolley that will kill five people unless you divert it onto a track where it will kill one. The consequentialist pulls the switch, five against one. The deontologist asks whether pulling it uses the one person as a means. And John Rawls, in 1971, offered a way to think about fairness: design the rules as if you did not yet know which person in the society you would be. Behind that veil of ignorance, you protect the worst-off, because the worst-off might be you.'],
+                keyIdea: 'Consequences, duties, or character: Mill counts results, Kant tests the rule, Aristotle asks what kind of person to be. Rawls designs fair rules from behind a veil of ignorance.',
+                example: { kind: 'flow', steps: ['the trolley', 'five on one track, one on the other', 'pull the switch?'], caption: 'The three answers give different reasons, and sometimes different acts.',
+                    another: ['Kant\'s test on a small lie: could you will a world where everyone lies whenever it is convenient? In that world nobody believes anyone, so the lie would not even work. The rule fails its own test.',
+                        { text: 'Aristotle\'s mean is not the middle of every road. Courage sits between cowardice and recklessness, but there is no right amount of cruelty; some acts have no mean at all.', visual: { kind: 'flow', steps: ['cowardice', 'courage', 'recklessness'] } },
+                        'The veil of ignorance is a thought experiment you can run at a dinner table: divide the cake, then let the divider choose last.'] },
+            },
+            sources: ['Aligned with the Texas College and Career Readiness Standards, Cross-Disciplinary Standards I.A.2 (accept constructive criticism and revise personal views when valid evidence warrants), I.F.3 (include the ideas of others and the complexities of the debate, issue, or conflict) and I.F.4 (understand and adhere to ethical codes of conduct), and the Common Core State Standards for English Language Arts, W.9-10.1 (write arguments to support claims in an analysis of substantive topics or texts, using valid reasoning and relevant and sufficient evidence).'],
+            generators: ['ph-ethics', 'ph-ethics', 'ph-ethics', 'ph-ethics', 'ph-ethics'],
+        },
+    ];
+}
 function TECH3_MODULES() {
     return [
         {
@@ -31492,6 +31715,93 @@ Object.assign(GENERATORS, {
         return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
     },
     // Personal finance, grades 9 to 12 (2026-09-29, pass FY): dollars computed each time; concepts said in the lesson first.
+    // Philosophy, grades 9 to 12 (2026-09-29, pass GI): every answer is said in its lesson first.
+    // Philosophy, grades 6 to 8 (2026-09-29, pass GJ): every answer is said in its lesson first.
+    'p6-questions': (rng) => {
+        const Q = [['Which of these is a philosophical question?', ['What is fairness?', 'What is the capital of Texas?', 'How tall is the school?', 'What year is it?'], 'What is fairness?', 'Nobody can look that up; you have to think it through.'],
+            ['Socrates made a habit of asking people what?', ['what they meant by the words they used', 'where they were born', 'how much money they had', 'who their teachers were'], 'what they meant by the words they used', 'Someone would say a brave act, and he would ask what bravery was.'],
+            ['When was Socrates put to death?', ['399 BC', '1641', '1861', '1971'], '399 BC', 'Partly for asking too many questions, and the questions outlived him.'],
+            ['A case that breaks a definition is called what?', ['a counterexample', 'an opinion', 'a fact', 'a headcount'], 'a counterexample', 'If a sandwich is filling between two pieces of bread, is a hot dog a sandwich?'],
+            ['A position you can give reasons for and change if the reasons fail is called what?', ['a reasoned view', 'an opinion', 'a fact', 'a taste'], 'a reasoned view', 'Facts can be checked, opinions are tastes, and a reasoned view is neither.'],
+            ['How do we know Socrates, who wrote nothing down?', ['through his student Plato', 'through his diary', 'through a film', 'through a statue only'], 'through his student Plato', 'Plato wrote conversations in which Socrates asks and asks and rarely answers.']];
+        const [prompt, choices, answer, explain] = pick(rng, Q);
+        return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+    },
+    'p6-reasons': (rng) => {
+        const Q = [['A good reason has which two properties?', ['relevant and true', 'loud and long', 'old and famous', 'short and funny'], 'relevant and true', 'It bears on the claim, and it is so.'],
+            ['The school should start later because the mascot is a hawk. What is wrong with that reason?', ['it is not relevant', 'it is false', 'it is too long', 'nothing'], 'it is not relevant', 'True and useless: it has nothing to do with the claim.'],
+            ['Because I said so is what?', ['an order', 'a reason', 'evidence', 'a sample'], 'an order', 'An order is not a reason.'],
+            ['Everyone knows is what?', ['a headcount', 'a reason', 'a measurement', 'a study'], 'a headcount', 'A headcount is not evidence.'],
+            ['The checkable part of a reason is called what?', ['evidence', 'a feeling', 'a claim', 'an order'], 'evidence', 'A measurement, a record, a study, a thing you can point to.'],
+            ['My cousin got sick after eating there. That is what kind of evidence?', ['an anecdote', 'a sample', 'a survey', 'a study'], 'an anecdote', 'One story is an anecdote; a hundred customers surveyed is a sample.'],
+            ['What is the best question in this course?', ['how do you know?', 'who says?', 'why bother?', 'what time is it?'], 'how do you know?', 'Four words that turn a claim into a conversation.']];
+        const [prompt, choices, answer, explain] = pick(rng, Q);
+        return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+    },
+    'p6-disagree': (rng) => {
+        const Q = [['The first rule of disagreeing well is to listen to do what?', ['understand', 'answer', 'win', 'interrupt'], 'understand', 'Repeat their view back in your own words until they say yes, that is what I mean.'],
+            ['Repeating a view back until the other person agrees that is it is called what?', ['charity', 'volume', 'a counterexample', 'a headcount'], 'charity', 'It is the opposite of arguing against a version you made up.'],
+            ['The second rule is to separate what from what?', ['the person from the idea', 'the loud from the quiet', 'the old from the new', 'the fact from the date'], 'the person from the idea', 'Attack the reason, never the person who gave it.'],
+            ['Changing your mind when the reasons are better is what?', ['the whole point', 'losing', 'cheating', 'rude'], 'the whole point', 'It takes more courage than holding on.'],
+            ['Plato wrote philosophy as what?', ['dialogues', 'poems', 'lists', 'maps'], 'dialogues', 'Conversations in which people ask, answer, object and change their minds.'],
+            ['Which is a good class rule for disagreeing?', ['reasons not volume', 'loudest wins', 'no questions', 'never change your mind'], 'reasons not volume', 'One voice at a time, reasons not volume, and build before you knock down.']];
+        const [prompt, choices, answer, explain] = pick(rng, Q);
+        return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+    },
+    'p6-fair': (rng) => {
+        const Q = [['The one who missed lunch gets more cake. Which rule is that?', ['shares by need', 'equal shares', 'shares by work', 'no shares'], 'shares by need', 'Each rule is fair by one measure and unfair by another.'],
+            ['The one who baked the cake gets more. Which rule is that?', ['shares by work', 'shares by need', 'equal shares', 'shares by age'], 'shares by work', 'Fairness arguments are about which rule fits the case.'],
+            ['Arguments about fairness are really arguments about what?', ['which rule fits the case', 'who is oldest', 'who is loudest', 'who cut the cake'], 'which rule fits the case', 'Equal, by need, or by work.'],
+            ['A fair exception is one you would grant to whom?', ['anybody in the same spot', 'only your friend', 'nobody', 'only yourself'], 'anybody in the same spot', 'Exceptions need reasons everyone can hear.'],
+            ['Who put the golden rule as do not impose on others what you would not want for yourself?', ['Confucius', 'Socrates', 'Plato', 'Kant'], 'Confucius', 'In China, about 2,500 years ago.'],
+            ['Whoever cuts the cake should do what?', ['choose last', 'choose first', 'eat it all', 'hide it'], 'choose last', 'Whoever cuts has every reason to cut it evenly.']];
+        const [prompt, choices, answer, explain] = pick(rng, Q);
+        return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+    },
+    'ph-argument': (rng) => {
+        const Q = [['In philosophy, an argument is what?', ['premises offered for a conclusion', 'a quarrel', 'a single opinion', 'a question with no answer'], 'premises offered for a conclusion', 'A set of statements, the premises, offered as reasons for another statement, the conclusion.'],
+            ['An argument whose form guarantees the conclusion when the premises hold is called what?', ['valid', 'sound', 'inductive', 'popular'], 'valid', 'Validity is about form, not about whether the premises are true.'],
+            ['A valid argument with true premises is called what?', ['sound', 'valid', 'inductive', 'circular'], 'sound', 'Sound means valid with true premises, and soundness is what you want.'],
+            ['If P then Q; P; therefore Q. Which form is that?', ['modus ponens', 'modus tollens', 'induction', 'a false dilemma'], 'modus ponens', 'Modus ponens carries most everyday reasoning.'],
+            ['If P then Q; not Q; therefore not P. Which form is that?', ['modus tollens', 'modus ponens', 'a hasty generalization', 'a straw man'], 'modus tollens', 'Modus tollens works backward from a missing Q.'],
+            ['The sun has risen every day, so it will rise tomorrow. That argument is which kind?', ['inductive', 'deductive', 'circular', 'sound'], 'inductive', 'Induction moves from many cases to a general claim; its conclusion is probable, not guaranteed.'],
+            ['All birds can fly; penguins are birds; so penguins can fly. What is wrong with it?', ['a premise is false', 'the form is invalid', 'nothing', 'the conclusion is a question'], 'a premise is false', 'The form is valid; the first premise is false, so the argument is not sound.']];
+        const [prompt, choices, answer, explain] = pick(rng, Q);
+        return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+    },
+    'ph-fallacy': (rng) => {
+        const Q = [['Attacking the person instead of the claim is which fallacy?', ['ad hominem', 'straw man', 'false dilemma', 'slippery slope'], 'ad hominem', 'The ad hominem attacks the person instead of the claim.'],
+            ['Answering a weaker argument than the one that was made is which fallacy?', ['straw man', 'ad hominem', 'circular reasoning', 'appeal to popularity'], 'straw man', 'The straw man answers a weaker argument than the one that was made.'],
+            ['Offering two choices when there are more is which fallacy?', ['false dilemma', 'slippery slope', 'hasty generalization', 'straw man'], 'false dilemma', 'The false dilemma hides the third door.'],
+            ['Ice cream sales and drownings both rise in summer. Concluding that one causes the other is which mistake?', ['confusing correlation with causation', 'a false dilemma', 'an ad hominem', 'a straw man'], 'confusing correlation with causation', 'A third thing, the heat, moves both.'],
+            ['Using the conclusion as a premise is which fallacy?', ['circular reasoning', 'slippery slope', 'appeal to authority', 'hasty generalization'], 'circular reasoning', 'Circular reasoning uses the conclusion as a premise.'],
+            ['Stating an argument in its strongest form before answering it is called what?', ['the principle of charity', 'the burden of proof', 'modus ponens', 'the straw man'], 'the principle of charity', 'Answer the form its maker would accept.'],
+            ['Who carries the burden of proof?', ['the person who makes a claim', 'the person who doubts it', 'the oldest person', 'the loudest person'], 'the person who makes a claim', 'Asking for the evidence is not rude; it is the whole game.']];
+        const [prompt, choices, answer, explain] = pick(rng, Q);
+        return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+    },
+    'ph-know': (rng) => {
+        const Q = [['For most of its history, philosophy called knowledge what?', ['justified true belief', 'any strong belief', 'whatever experts say', 'perception alone'], 'justified true belief', 'A belief that is true and held for good reasons.'],
+            ['Who showed in 1963 that justified true belief can still be luck?', ['Edmund Gettier', 'René Descartes', 'David Hume', 'Karl Popper'], 'Edmund Gettier', 'Three pages, and philosophers have argued about the fourth ingredient since.'],
+            ['Who asked in 1641 how he could be sure he was not dreaming?', ['René Descartes', 'Aristotle', 'John Rawls', 'William of Ockham'], 'René Descartes', 'One thing survived the doubt: that he was thinking.'],
+            ['Who pointed out in 1748 that induction has no proof behind it?', ['David Hume', 'Immanuel Kant', 'Edmund Gettier', 'Karl Popper'], 'David Hume', 'The sun has always risen, and that is a habit, not a guarantee.'],
+            ['According to Popper, a real scientific claim is one that could be what?', ['shown false', 'proven forever', 'believed by everyone', 'repeated often'], 'shown false', 'A claim that fits every possible outcome tells you nothing.'],
+            ['When two explanations fit the facts, Ockham\'s rule says prefer which?', ['the one with fewer assumptions', 'the older one', 'the more popular one', 'the more surprising one'], 'the one with fewer assumptions', 'Do not add assumptions you do not need.'],
+            ['Which of these is a source of belief that can fail?', ['testimony', 'nothing', 'only dreams', 'only rumors'], 'testimony', 'Perception, memory, testimony and reason can each fail.']];
+        const [prompt, choices, answer, explain] = pick(rng, Q);
+        return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+    },
+    'ph-ethics': (rng) => {
+        const Q = [['Consequentialism says an action is right when what?', ['its results are best', 'a rule allows it', 'a good person would do it', 'it is popular'], 'its results are best', 'Mill\'s utilitarianism counts the greatest happiness for the greatest number.'],
+            ['Whose test says act only on a rule you could will everyone to follow?', ['Immanuel Kant', 'John Stuart Mill', 'Aristotle', 'Philippa Foot'], 'Immanuel Kant', 'Kant, in 1785, and never treat a person merely as a means.'],
+            ['Virtue ethics asks which question?', ['what kind of person to be', 'which rule to follow', 'which result is best', 'who is watching'], 'what kind of person to be', 'Courage, honesty and generosity are habits built by practice.'],
+            ['For Aristotle, courage sits between which two extremes?', ['cowardice and recklessness', 'greed and generosity', 'silence and noise', 'fear and anger'], 'cowardice and recklessness', 'Each virtue is a mean between two extremes.'],
+            ['Who imagined the runaway trolley in 1967?', ['Philippa Foot', 'John Rawls', 'Immanuel Kant', 'David Hume'], 'Philippa Foot', 'Five people on one track, one on the other, and a switch.'],
+            ['Rawls\'s veil of ignorance asks you to design rules as if what?', ['you did not know which person you would be', 'you were the richest', 'you were the judge', 'you would never be affected'], 'you did not know which person you would be', 'Behind the veil you protect the worst-off, because the worst-off might be you.'],
+            ['When was Mill\'s Utilitarianism published?', ['1861', '1641', '1971', '1785'], '1861', 'John Stuart Mill, 1861.']];
+        const [prompt, choices, answer, explain] = pick(rng, Q);
+        return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+    },
     'e9-pay': (rng) => {
         const r = rng();
         if (r < 0.4) {
@@ -40041,6 +40351,36 @@ const WONDER = [
         closing: 'Which criterion would you work on first, and how?',
     },
     {
+        id: 'w-teen-hot-dog-sandwich',
+        theme: 'world',
+        stage: 'teen',
+        courseIds: ['philosophy-6'],
+        answerMode: 'typed',
+        prompt: 'Is a hot dog a sandwich? Before you answer: what would settle it?',
+        perspectives: [
+            { voice: 'A scientist', says: 'Nothing settles it until you agree on a definition, and that is the real lesson. Write the definition down first; then the hot dog either fits or it does not, and the argument is over.' },
+            { voice: 'An artist', says: 'It is a lovely argument because nobody gets hurt and everybody learns how definitions work. Argue it hard for ten minutes, then notice that you never once needed the answer.' },
+            { voice: 'A grandparent of faith', says: 'My grandmother called it a sausage in a roll and was not troubled. Some questions are for sharpening the mind, not for winning. Enjoy this one for a while, and then eat.' },
+            { voice: 'A skeptic', says: 'Anyone who is certain has smuggled in a definition without saying so. Ask them for it out loud. Whatever they answer, find the case that breaks it, and watch the certainty go.' },
+        ],
+        closing: 'What definition of a sandwich would you defend, and what breaks it?',
+    },
+    {
+        id: 'w-teen-lost-the-argument',
+        theme: 'failure',
+        stage: 'teen',
+        courseIds: ['philosophy-6'],
+        answerMode: 'typed',
+        prompt: 'You changed your mind in the middle of a class debate and someone said you lost. Did you?',
+        perspectives: [
+            { voice: 'A scientist', says: 'You updated on better evidence in public, which is the rarest and most valuable move in any argument. The person who called it losing was keeping score in a game you were not playing.' },
+            { voice: 'An artist', says: 'The most interesting person in any room is the one who can say I had that wrong. It looks like weakness for about a minute and like strength for the rest of your life.' },
+            { voice: 'A grandparent of faith', says: 'Holding a wrong idea to save face is the real loss, and it is a slow one. You paid a small price up front. That is a bargain, and someday they will see it.' },
+            { voice: 'A skeptic', says: 'Ask yourself what you actually lost. You did not lose the truth; you got closer to it. You did not lose your reasons; you found better ones. You lost a scoreboard, and scoreboards were never the point of thinking.' },
+        ],
+        closing: 'What reason changed your mind, and would you give it again?',
+    },
+    {
         id: 'w-teen-sure-and-wrong',
         theme: 'failure',
         stage: 'teen',
@@ -40099,6 +40439,36 @@ const WONDER = [
             { voice: 'A skeptic', says: 'A review nobody dislikes is an advertisement. If the criteria were fair and the evidence real, the silence is the cost of doing the job. If they were not, the silence is deserved. Only you know which one it was.' },
         ],
         closing: 'What would you change in the review, and what would you keep?',
+    },
+    {
+        id: 'w-grown-everyone-agrees',
+        theme: 'world',
+        stage: 'grown',
+        courseIds: ['philosophy-9'],
+        answerMode: 'typed',
+        prompt: 'Everyone in the room agrees with a claim and you have one doubt. Do you say it?',
+        perspectives: [
+            { voice: 'A scientist', says: 'Say it, and say it as a question about evidence rather than a verdict. A room that agrees has not tested anything yet; your doubt is the first test the claim will get.' },
+            { voice: 'An artist', says: 'The one doubt in a room is usually where the interesting thing is hiding. Say it gently, and watch who leans in. Those are the people worth talking to afterward.' },
+            { voice: 'A grandparent of faith', says: 'Agreement is warm and doubt is cold, and you will be tempted to stay warm. Say it anyway, with respect, because a friend who never disagrees is only company.' },
+            { voice: 'A skeptic', says: 'Ask who carries the burden of proof. If the claim came without evidence, your doubt is not rude; it is the only honest thing in the room. Ask for the reasons and let them answer.' },
+        ],
+        closing: 'How would you word the doubt so the room could hear it?',
+    },
+    {
+        id: 'w-grown-won-the-wrong-way',
+        theme: 'failure',
+        stage: 'grown',
+        courseIds: ['philosophy-9'],
+        answerMode: 'typed',
+        prompt: 'You won an argument by attacking the person instead of the claim, and later realized it. What now?',
+        perspectives: [
+            { voice: 'A scientist', says: 'You did not win the argument; you won the room, which is a different prize. Go back to the claim, answer it properly, and if you cannot, say so. That correction is worth more than the win was.' },
+            { voice: 'An artist', says: 'Everyone has done it at least once. The good ones are the ones who notice. Tell the person you got them, not their idea, and ask them to make the case again. Most people will, and some become friends over it.' },
+            { voice: 'A grandparent of faith', says: 'A cheap victory costs more later than an honest loss costs now. Apologize plainly, without a speech, and then argue the claim on its merits. That is how a person becomes trustworthy.' },
+            { voice: 'A skeptic', says: 'The claim is still standing; you never touched it. Write down the strongest version of what they said and answer that on paper. If it beats you, you learned something, and that was the point.' },
+        ],
+        closing: 'What is the strongest version of the claim you dodged?',
     },
     {
         id: 'w-grown-fund-or-fun',
@@ -43286,7 +43656,9 @@ const COURSE_GAMES = {
     'arts-3': ['pattern-arts-3'],
     'arts-6': ['shape-arts-6'],
     'econ-6': ['loan-econ-6'],
+    'philosophy-6': ['reason-philosophy-6'],
     'econ-9': ['fund-econ-9'],
+    'philosophy-9': ['valid-philosophy-9'],
     'arts-9': ['chord-arts-9'],
     'tech-6': ['teach-tech-6'],
     'tech-college': ['search-tech-college'],
@@ -44668,6 +45040,24 @@ const CURRICULUM = [
         ],
     },
     {
+        grade: '9', subject: 'Philosophy', status: 'ready',
+        source: 'Texas has no philosophy standard, so the Texas column carries the Texas College and Career Readiness Standards, Cross-Disciplinary Standards (2009), Key Cognitive Skills, for the philosophy course of the 9 to 12 band; the national column carries the Common Core State Standards for English Language Arts anchor standards for argument, grades 9 to 10.',
+        standards: [
+            { framework: 'TEKS', code: 'CCRS I.A.1', text: 'Engage in scholarly inquiry and dialogue.', moduleIds: ['what-can-we-know'] },
+            { framework: 'TEKS', code: 'CCRS I.A.2', text: 'Accept constructive criticism and revise personal views when valid evidence warrants.', moduleIds: ['how-should-we-live'] },
+            { framework: 'TEKS', code: 'CCRS I.B.1', text: 'Consider arguments and conclusions of self and others.', moduleIds: ['what-is-an-argument', 'the-usual-mistakes'] },
+            { framework: 'TEKS', code: 'CCRS I.B.2', text: 'Construct well-reasoned arguments to explain phenomena, validate conjectures, or support positions.', moduleIds: ['what-is-an-argument'] },
+            { framework: 'TEKS', code: 'CCRS I.B.3', text: 'Gather evidence to support arguments, findings, or lines of reasoning.', moduleIds: ['what-can-we-know'] },
+            { framework: 'TEKS', code: 'CCRS I.B.4', text: 'Support or modify claims based on the results of an inquiry.', moduleIds: ['what-can-we-know'] },
+            { framework: 'TEKS', code: 'CCRS I.F.2', text: 'Evaluate sources for quality of content, validity, credibility, and relevance.', moduleIds: ['the-usual-mistakes'] },
+            { framework: 'TEKS', code: 'CCRS I.F.3', text: 'Include the ideas of others and the complexities of the debate, issue, or conflict.', moduleIds: ['how-should-we-live'] },
+            { framework: 'TEKS', code: 'CCRS I.F.4', text: 'Understand and adhere to ethical codes of conduct.', moduleIds: ['how-should-we-live'] },
+            { framework: 'CCSS', code: 'RI.9-10.8', text: 'Delineate and evaluate the argument and specific claims in a text, assessing whether the reasoning is valid and the evidence is relevant and sufficient; identify false statements and fallacious reasoning.', moduleIds: ['what-is-an-argument', 'what-can-we-know'] },
+            { framework: 'CCSS', code: 'SL.9-10.3', text: 'Evaluate a speaker\'s point of view, reasoning, and use of evidence and rhetoric, identifying any fallacious reasoning or exaggerated or distorted evidence.', moduleIds: ['the-usual-mistakes'] },
+            { framework: 'CCSS', code: 'W.9-10.1', text: 'Write arguments to support claims in an analysis of substantive topics or texts, using valid reasoning and relevant and sufficient evidence.', moduleIds: ['how-should-we-live'] },
+        ],
+    },
+    {
         grade: '9', subject: 'Economics', status: 'ready',
         source: 'Texas Essential Knowledge and Skills, Social Studies, Personal Financial Literacy (§113.49, Adopted 2016, one-half credit, recommended for grades 10 to 12), the course for the 9 to 12 band beside the grade 12 economics course; Voluntary National Content Standards in Economics (Council for Economic Education), the national framework, shown in the Common Core column.',
         standards: [
@@ -44747,6 +45137,23 @@ const CURRICULUM = [
             { framework: 'CCSS', code: 'NCAS MU:Re7.2.6a', text: 'Describe how the elements of music and expressive qualities relate to the structure of the pieces.', moduleIds: ['the-language-of-the-score'] },
             { framework: 'CCSS', code: 'NCAS MU:Re9.1.6a', text: 'Apply teacher-provided criteria to evaluate musical works or performances.', moduleIds: ['judging-a-performance'] },
             { framework: 'CCSS', code: 'NCAS MU:Cn11.0.6a', text: 'Demonstrate understanding of relationships between music and the other arts, other disciplines, varied contexts, and daily life.', moduleIds: ['judging-a-performance'] },
+        ],
+    },
+    {
+        grade: '6', subject: 'Philosophy', status: 'ready',
+        source: 'Texas has no philosophy standard, so the Texas column carries the Texas College and Career Readiness Standards, Cross-Disciplinary Standards (2009), Key Cognitive Skills, for the philosophy course of the 6 to 8 band; the national column carries the Common Core State Standards for English Language Arts, grade 6, for argument and discussion.',
+        standards: [
+            { framework: 'TEKS', code: 'CCRS I.A.1', text: 'Engage in scholarly inquiry and dialogue.', moduleIds: ['questions-that-open'] },
+            { framework: 'TEKS', code: 'CCRS I.A.2', text: 'Accept constructive criticism and revise personal views when valid evidence warrants.', moduleIds: ['disagreeing-well'] },
+            { framework: 'TEKS', code: 'CCRS I.B.1', text: 'Consider arguments and conclusions of self and others.', moduleIds: ['reasons-and-evidence'] },
+            { framework: 'TEKS', code: 'CCRS I.B.2', text: 'Construct well-reasoned arguments to explain phenomena, validate conjectures, or support positions.', moduleIds: ['fair-and-unfair'] },
+            { framework: 'TEKS', code: 'CCRS I.B.3', text: 'Gather evidence to support arguments, findings, or lines of reasoning.', moduleIds: ['reasons-and-evidence'] },
+            { framework: 'TEKS', code: 'CCRS I.E.2', text: 'Work collaboratively.', moduleIds: ['disagreeing-well'] },
+            { framework: 'TEKS', code: 'CCRS I.F.3', text: 'Include the ideas of others and the complexities of the debate, issue, or conflict.', moduleIds: ['fair-and-unfair'] },
+            { framework: 'CCSS', code: 'SL.6.1', text: 'Engage effectively in a range of collaborative discussions (one-on-one, in groups, and teacher-led) with diverse partners on grade 6 topics, texts, and issues, building on others\' ideas and expressing their own clearly.', moduleIds: ['questions-that-open', 'disagreeing-well'] },
+            { framework: 'CCSS', code: 'RI.6.8', text: 'Trace and evaluate the argument and specific claims in a text, distinguishing claims that are supported by reasons and evidence from claims that are not.', moduleIds: ['reasons-and-evidence'] },
+            { framework: 'CCSS', code: 'SL.6.3', text: 'Delineate a speaker\'s argument and specific claims, distinguishing claims that are supported by reasons and evidence from claims that are not.', moduleIds: ['reasons-and-evidence'] },
+            { framework: 'CCSS', code: 'W.6.1', text: 'Write arguments to support claims with clear reasons and relevant evidence.', moduleIds: ['fair-and-unfair'] },
         ],
     },
     {
@@ -50801,6 +51208,8 @@ const COURSE_STORIES = {
     'econ-3': { title: 'Savanah and the egg money', about: 'twelve dozen eggs a week, a coffee can of expenses, a fox, a loan, and a jar marked college', art: 'CS397', alt: 'A teenage girl at a market stall of egg cartons, a coffee can of dollars and a hand-lettered price sign', cast: ['Savanah'], words: ['The first thing Savanah ever sold was an egg, and by fifteen she was selling twelve dozen a week at the Saturday market in town. The hens were hers, the feed was hers to buy, and the money in the coffee can was hers to keep, which taught her everything the can could teach.', 'The can had two kinds of expenses in it. The stall fee was eight dollars every Saturday, sold out or not: fixed. The feed went up with every hen she added, and the cartons went up with every dozen: variable. She wrote both kinds on the lid in pencil, so they would stop surprising her.', 'At three dollars a dozen, twelve dozen brought in thirty-six dollars. Eight for the stall, fourteen for feed and cartons, and the profit was fourteen. Her mother, who had kept the farm\'s books for twenty years, showed her the arithmetic once and never again. After that, the can and the pencil were Savanah\'s job.', 'In March a fox got into the coop and took four hens. That week she had seven dozen, not twelve, and half the county was short of eggs, because the fox had not been particular about whose coop. The grocer in town raised his price to four dollars. Scarce and wanted, her mother said, costs more.', 'Savanah kept her price at three. Her customers had come every Saturday for two years, and she wanted them there in two more. It was a choice, and it cost her seven dollars that week, the difference between three and four on seven dozen. She wrote the number on the lid and did not regret it.', 'Replacing the hens took money the can did not have. Her mother lent her forty dollars, and Savanah wrote out the terms herself before she took it: forty back by August, plus four dollars of interest, from the profit and nothing else. Credit, she understood, was borrowing against work she had not done yet.', 'By June the coop was full again, the loan was half paid, and the can had grown a second compartment, a jar with a lid, where a third of every Saturday\'s profit went and stayed. On the jar she had written one word: college. Her mother had told her what it cost, and Savanah had done that arithmetic too.', 'She paid her mother the forty-four dollars on the first Saturday of August, in the truck on the way to market, and her mother folded it into her pocket without counting it. That, Savanah thought, was what the whole summer had been for. Not the eggs. The trust in the folding.'], more: [{ serial: 'CS398', after: 1, alt: 'A coffee-can lid with two columns written in pencil, fixed and variable, beside a bag of feed and a stack of cartons' }, { serial: 'CS399', after: 2, alt: 'A mother and daughter at a farm kitchen table doing the arithmetic on the lid of a can' }, { serial: 'CS400', after: 3, alt: 'A grocer changing a chalkboard price for eggs to four dollars, an empty coop behind the scene' }, { serial: 'CS401', after: 5, alt: 'A girl writing out loan terms on paper, forty dollars on the table between her and her mother' }, { serial: 'CS402', after: 7, alt: 'A girl handing folded dollars to her mother in a farm truck at dawn' }] },
     'econ-6': { title: 'Savanah and the first apartment', about: 'eighteen in the city with an envelope of egg money: an account, a card, a loan compared two ways, and a jar that became a target', art: 'CS403', alt: 'A young woman at a credit union counter with a paper envelope of cash and a new account card', cast: ['Savanah'], words: ['Savanah came to the city at eighteen with a print shop job, the egg money in a paper envelope, and no account to put it in. She visited three banks. One wanted ten dollars a month unless three hundred stayed in the account; one wanted eight; the third, a credit union, wanted nothing. She opened the account there and moved the envelope into it.', 'The debit card came with the account, and she understood it as a bucket with a spout. Whatever she paid with it left the account that minute. She kept a register on the back page of her notebook, deposits added and withdrawals and transfers subtracted, and the balance after every line matched the bank\'s to the dollar.', 'The credit card offer came in the mail a month later, and she almost threw it away. Her landlord told her not to. Use it for groceries, he said, and pay the whole bill the day it comes. It costs nothing that way, and it builds the record. The record, she learned, was a credit report: her accounts, her on-time payments, what she owed, who had asked to see it, kept for about seven years.', 'The car came in the spring, used, for eight thousand dollars. The dealership offered nine percent over six years; the credit union, which had watched her pay the card in full for ten months, offered seven percent over four. She did the arithmetic. Simple interest at nine percent for six years was forty-three hundred twenty dollars. Seven percent for four years was twenty-two hundred forty. The credit union\'s payment was higher each month and two thousand eighty dollars cheaper in all.', 'She took the four years. The point of the loan was the car, not the size of the payment, and a longer loan meant paying for it longer.', 'The budget she wrote in percents, the way her mother kept the farm books: rent thirty-five, the car loan fifteen, groceries and the bus twenty, savings twenty, ten for everything else. When the print shop gave her a raise, the percents stayed and the dollars in each grew.', 'The savings went into an account that paid interest on the interest, and she watched it the way she had watched the coop. Twenty percent of a paycheck was small. But it went in every two weeks, and the earliest deposits, she knew, would do the most work.', 'The jar labeled college had come to the city with her. It was an account now, with a target: the first year at the community college, divided by the months until the fall. In September she paid the tuition from it and kept the empty jar on the windowsill, where it caught the light.'], more: [{ serial: 'CS404', after: 1, alt: 'A notebook register open on a print shop counter, a debit card beside it' }, { serial: 'CS405', after: 2, alt: 'A landlord handing a young woman a credit card offer on the front step, a bag of groceries beside her' }, { serial: 'CS406', after: 3, alt: 'Two loan offers on a counter, nine percent over six years and seven percent over four, arithmetic beside them' }, { serial: 'CS407', after: 5, alt: 'A budget drawn as a pie in percents taped above a desk: rent, car, groceries, savings' }, { serial: 'CS408', after: 7, alt: 'An empty jar labeled college on a windowsill catching the light, a tuition receipt beside it' }] },
     'econ-9': { title: 'Chloe and the lease on Water Street', about: 'a first studio, rent against owning, a loan chosen over a card, insurance that earned its premiums, and a scam that came the same week', art: 'CS409', alt: 'A woman in her thirties reading a lease to the last line in an empty studio on Water Street, canvases stacked behind her', cast: ['Chloe'], words: ['Chloe had painted in borrowed corners for ten years: a garage, a friend\'s spare room, the back of a framing shop. The studio on Water Street was the first space with her name on the lease, and the lease was the first contract she had read to the last line, because her twenties had taught her what fine print costs.', 'Owning had crossed her mind. The building next door was for sale, and a mortgage would have cost about the rent. But owning meant a down payment she did not have, a roof of her own to replace, and taxes and insurance on top. Renting meant a landlord\'s roof and the freedom to leave if the paintings did not sell. She rented, and wrote the reasons down.', 'The deposit and the first month came to 3,400 dollars. A card offer promised 0 percent for six months, and the fine print promised 27 percent after that, variable, plus a fee for cash advances. The credit union offered an installment loan at 9 percent over two years, fixed. She took the loan, put 1,000 dollars down to shrink the principal, and paid 50 extra a month.', 'The studio needed insurance before she could open, and the words now had prices: a premium of 30 dollars a month, a deductible of 1,000 on any claim, a policy limit high enough to replace every canvas. Risk, the agent said, is a loss you cannot afford; insurance is paying a little every month so a bad night stays a bad night.', 'The bad night came in March, with the pipe above the back room. Eleven canvases were ruined, a claim of 6,000 dollars. Chloe paid the 1,000 deductible from her emergency fund and the insurer paid 5,000. The fund had earned its name in one wet hour.', 'The scam came the same week. An email that looked like the building manager\'s asked her to resend the deposit to a new account, today, and to keep it quiet. Urgency and secrecy. She walked upstairs and asked; nobody had sent it. She reported the address and changed every password.', 'By summer the studio paid for itself, and she kept three papers: a register reconciled against the bank each month, an income statement that showed the paintings outrunning the rent, and a net worth statement that crossed zero in May. The loan had four payments left.', 'A student who cleaned brushes for her on Saturdays asked how an artist learned all this. Badly, Chloe said, late, and one contract at a time. Then she handed her the lease and said, read it to the last line. The paintings were the point. The paper was what kept the paintings.'], more: [{ serial: 'CS410', after: 1, alt: 'A woman looking from a for-sale sign next door to her rented studio door, a list of reasons in her hand' }, { serial: 'CS411', after: 2, alt: 'A credit card offer with fine print beside a credit union loan paper at nine percent' }, { serial: 'CS412', after: 3, alt: 'An insurance agent across a desk explaining premium, deductible and policy limit' }, { serial: 'CS413', after: 5, alt: 'A woman walking upstairs to ask the building manager about an email, a phone in her hand' }, { serial: 'CS414', after: 7, alt: 'A woman handing a lease to a student who cleans brushes, canvases drying in the sun' }] },
+    'philosophy-9': { title: 'Frederick and the burden of proof', about: 'a copper bracelet that cured a knee, a napkin with two lines on it, and the question of whether to say so at all', art: 'CS445', alt: 'A twenty-year-old man at a kitchen table across from his uncle, who wears a copper bracelet on his wrist', cast: ['Frederick'], words: ['Frederick came home from college with a philosophy course behind him and found his uncle Ray at the kitchen table wearing a copper bracelet that had, Ray said, cured his knee. His mother wanted Frederick to say nothing. His father wanted him to say everything.', 'He started with the principle of charity, the only manners that matter in an argument. What exactly was the claim? Not that the bracelet felt nice, but that it had made the knee better. Ray agreed that was the claim, and Frederick wrote it on a napkin.', 'Then he asked for the evidence, because the person who makes a claim carries the burden of proof. Ray had it: he had put the bracelet on in March and the knee had stopped hurting by May. Frederick drew two lines on the napkin and asked what else had happened in March. Ray had retired in March. He had stopped climbing ladders in March.', 'Correlation is not cause when a third thing moves both, and rest was a third thing. Ray was not convinced, so Frederick tried Popper. What would count against the bracelet? If nothing could, the claim risked nothing and said nothing. Ray said that if a hundred people wore one and did no better than a hundred who did not, he would take it off.', 'A real claim can be tested. Frederick found the trials on his phone: copper bracelets against plain ones, and no difference anyone could measure. If the bracelet worked, the trials would show it. The trials did not show it. Modus tollens, he wrote, and Ockham beside it: rest needed one assumption, the bracelet needed a mechanism nobody had found.', 'Then came the harder question. Should he say it at all? Mill would count the happiness in the room, and Ray was happy. Kant would ask whether he could will a world where families let false things stand to keep the peace, and he could not. Aristotle would ask what kind of nephew he wanted to be, and the answer was honest and kind, both at once.', 'So he said it kindly. The knee got better because you stopped climbing ladders, and that is good news, because the ladders are still in the garage. Ray looked at the bracelet for a long time and did not take it off. That is fine, Frederick said. Wear it because you like it, but do not buy your brother one for his back.', 'His father said that was not everything. It was enough, said his mother. Frederick folded the napkin into his pocket, two lines and three names on it. The whole course had come down to one evening and one knee, and his professor would have called that a fair test.'], more: [{ serial: 'CS446', after: 1, alt: 'A young man writing a single claim on a paper napkin while his uncle nods' }, { serial: 'CS447', after: 2, alt: 'Two lines drawn on a napkin, a bracelet and a knee, with March written beneath both' }, { serial: 'CS448', after: 3, alt: 'An uncle thinking hard about what would count against his bracelet, a hundred small figures sketched on the napkin' }, { serial: 'CS449', after: 5, alt: 'A young man at the table weighing what Mill, Kant and Aristotle would each say before he speaks' }, { serial: 'CS450', after: 7, alt: 'A folded napkin with two lines and three names on it going into a pocket' }] },
+    'philosophy-6': { title: 'Savanah and the fair share', about: 'an hour after lunch, a cabin of ten-year-olds, a hot dog, a rumor about the lake, two campers not speaking, and four canoes', art: 'CS451', alt: 'An eighteen-year-old counselor holding up a hot dog in front of a cabin of ten-year-olds', cast: ['Savanah'], words: ['The camp director gave Savanah, eighteen and a junior counselor, the hour after lunch and a cabin of ten-year-olds, and told her to teach them to think. She had no idea how, so she started with a hot dog.', 'Is a hot dog a sandwich, she asked, and the cabin split in seconds. She made them define a sandwich before anyone could vote, and every definition met a counterexample within a minute: a wrap, a taco, an open-faced piece of toast. By the end of the hour nobody had won and everybody had learned what a definition was for.', 'The next day a rumor went around that the lake was unsafe because a boy had cut his foot on a rock. Savanah asked the cabin how they knew. One boy, one rock, one story, said a girl named June. An anecdote. Savanah walked them to the lifeguard, who kept a log: two hundred swimmers a week, one cut foot all summer, and a rock moved that morning. That was evidence, because they had checked it.', 'On the third day two campers stopped speaking to each other over a bunk, and Savanah tried a rule from school. Nobody could answer until they had said the other one\'s view back and heard yes, that is it. It took Marco three tries to say what Ellie meant, and when he got there, the argument was half over, because they had wanted the same thing and called it two names.', 'The canoes were the real test, four canoes for twelve campers and one afternoon of water. Equal time, said the fair-minded campers. First to the dock, said the fast ones, and whoever had never paddled should go first, said the ones who never had. Savanah wrote the three rules on the cabin door and asked which one fit, and why.', 'She gave them the two old tests. Confucius, about 2,500 years ago, had said not to impose on others what you would not want for yourself. And decide the rule, she said, before you know which camper you are: the strong one, or the one who has never paddled. Behind that veil they chose beginners first, then equal time, and nobody argued with an order they had chosen themselves.', 'The no-swimming-after-dark rule got its exception that week for a camper whose brother was leaving early, and the whole cabin heard the reason, because a fair exception is one you would grant to anyone in the same spot.', 'On the last night the cabin cut its own cake. The camper who cut it chose last, and the pieces were the most even of the summer. She had not taught them what to think. She had taught them four questions, and they had done the rest.'], more: [{ serial: 'CS452', after: 1, alt: 'Campers shouting definitions of a sandwich while a wrap, a taco and toast sit on a table as counterexamples' }, { serial: 'CS453', after: 2, alt: 'A lifeguard showing campers a log book at the lake while a moved rock sits on the shore' }, { serial: 'CS454', after: 3, alt: 'Two campers on a bunk, one saying the other\'s view back after three tries' }, { serial: 'CS455', after: 5, alt: 'Campers deciding a rule behind a veil, beginners first written on the cabin door' }, { serial: 'CS456', after: 7, alt: 'A camper cutting a cake into even pieces on the last night while the others wait to choose' }] },
     'tech-college': { title: 'Chloe and the catalogue of ten thousand paintings', about: 'a gallery catalogue that took a kettle to search, and a summer intern who asked how it found things before he touched it', art: 'CS415', alt: 'A woman in her thirties at a gallery registrar\'s desk, a slow catalogue program on the screen, racks of paintings behind', cast: ['Chloe'], words: ['The gallery had asked Chloe to curate a show from its collection, ten thousand paintings in storage and one catalogue program to find them by. The program dated from when the collection was two thousand, and every search now took a kettle.', 'Sam, the summer intern, was a second-year computer science student. He asked one question before he touched the program: how does it find a painting? It reads every record from the first until the title matches, the registrar said. Ten thousand records, ten thousand steps.', 'That is a linear search, Sam said, and the fix is not a faster computer. He sorted the titles once and taught the program to look in the middle, throw away the half that could not hold the title, and look again. Ten thousand items, at most fourteen looks. The registrar\'s tea went cold, forgotten, because the search now returned before the kettle boiled.', 'Chloe wanted to find paintings by artist, by year, and by the room they hung in last. Sam built a hash table for each: the name goes through a little arithmetic and lands in a slot, the way a coat check turns a ticket into a hook. However many paintings the gallery acquired, a lookup stayed one step.', 'The images were the harder problem. They lived in folders inside folders, by decade, then artist, then year, and nobody knew how deep the tree went. Sam wrote a function that counted a folder\'s own images and then called itself on every folder inside, down to the base case, a folder with no folders. It counted eleven thousand two hundred images in a breath.', 'It also crashed, once, on a folder that contained a shortcut to itself. The function called itself on the folder, which contained the folder, and the stack of bookmarks that remembers who called whom filled to the ceiling. A stack overflow, Sam said, and added a check for folders already visited. Every recursion needs a way to stop.', 'Chloe asked, half joking, whether he could write a program to tell her whether any program would stop. He told her about Turing: in 1936 he proved no such program can exist, because the general answer is impossible. Some doors are not locked, Sam said. There is no door. Chloe liked knowing where the walls were.', 'The show opened in October with sixty paintings chosen from ten thousand, each found in less than a second. Chloe put a small card by the desk: catalogue by Sam, a summer intern, who asked how it found things before he touched it. The shape of the data, he had said, decides what is possible at all.'], more: [{ serial: 'CS416', after: 1, alt: 'A summer intern asking a registrar how the catalogue finds a painting, a line of ten thousand records on the screen' }, { serial: 'CS417', after: 2, alt: 'A sorted list of titles being split down the middle, fourteen looks marked, a cold cup of tea beside the keyboard' }, { serial: 'CS418', after: 3, alt: 'Coat check hooks labeled by artist, year and room, a ticket landing on a hook by arithmetic' }, { serial: 'CS419', after: 5, alt: 'A folder containing a shortcut to itself, a pile of bookmarks reaching the ceiling' }, { serial: 'CS420', after: 7, alt: 'A gallery opening with sixty paintings hung, a small card by the registrar\'s desk crediting the intern' }] },
     'tech-6': { title: 'Frederick and the jar of pond water', about: 'a model that counted pond creatures fast and wrong for the one it had seen least', art: 'CS379', alt: 'A young man of twenty in a white lab coat at a bench with a jar of pond water, a microscope and a laptop showing tiny creatures', cast: ['Frederick'], words: ['The jar of pond water had been on Frederick\'s bench for a week, and the professor wanted a count of each tiny creature in a drop of it. So the professor handed him a program that had learned to tell the creatures apart from pictures, and eight thousand labeled pictures to teach it with.', 'Frederick fed the folder into the program and watched a bar creep across the screen. Nobody had written a rule that says a paramecium is slipper-shaped or that a rotifer has a crown of beating hairs. It had only the pictures and their labels, and it kept whatever the paramecia shared and whatever the rotifers shared. By evening it had a model.', 'The first drop went under the microscope camera, and the model counted it in nine seconds: three hundred and ten paramecia, forty amoebas, two rotifers. Frederick checked the count by eye, because his professor had taught him that a number you have not checked is a hope, not a result. The paramecia were right, and so were the amoebas. But there were eleven rotifers, not two.', 'The model had called nine rotifers paramecia, with the same calm number it gave everything else. Frederick opened the folder and started counting labels. Seven thousand paramecia, six hundred amoebas, and fewer than a hundred rotifers, most of them blurred. The model had barely met a rotifer in its life.', 'Nothing in the program was against rotifers. They had simply been rare in the pile, because whoever collected the pictures collected what was easy to find. The model was right on average and wrong for the creature it had seen least, and it could not tell, because it had no way to know what it had missed.', 'So Frederick spent two days making rotifers less rare. He photographed every one he could find, sharp, from every angle, with the crown of hairs open and closed, until there were nine hundred good pictures. He taught the model again. The next drop came back with ten rotifers, and by eye there were ten.', 'The professor asked what Frederick had learned, and he said: the machine is fast and the microscope is true. He would let the model make the first count of every drop and check a share by eye, because a model only knows the pile it was fed, and the pond does not care about the pile.', 'On the last page of his notebook he wrote the rule he would keep: use the fast guess, check it against something real, and always ask who was missing from the examples. Then he went back to the jar, where something with a crown of hairs turned slowly in the light.'], more: [{ serial: 'CS380', after: 1, alt: 'A progress bar creeping across a laptop screen beside a folder of eight thousand labeled pictures of pond creatures' }, { serial: 'CS381', after: 2, alt: 'A young man counting creatures by eye through a microscope while the laptop shows its nine-second count' }, { serial: 'CS382', after: 3, alt: 'Nine rotifers with crowns of hairs each wrongly ringed as paramecia, the same calm score beside every one' }, { serial: 'CS383', after: 5, alt: 'A young man photographing rotifers from every angle, hundreds of sharp pictures spread across the bench' }, { serial: 'CS384', after: 7, alt: 'A notebook page with three lines written on it, a jar of pond water glowing in the window light' }] },
     'tech-9': { title: 'Savanah and the buses that ran on time', about: 'a bus board built by a small city team, its bug at the edge, and the rules it ran under', art: 'CS385', alt: 'A confident woman in her thirties standing before a wall screen of bus routes in a city transit office, a small team at laptops behind her', cast: ['Savanah'], words: ['Savanah had not written a line of code in her life, but the city\'s buses were late and the board that was supposed to say so was always wrong. So she did what she always did: she found the people who understood it, and asked them to show her.', 'The team was three coders in a room above the depot. First they showed her the machine. A small computer on every bus had a CPU that did the work, memory that held the last minute, and storage that kept the day\'s log. The bus number went out over the radio as one byte, eight switches, enough for any number up to 255.', 'Then the program. Every bus on the board was a set of variables with types: route, an integer; minutes late, a real number; doors open, a boolean. A loop ran once a second over every bus, and a conditional chose the color: more than five minutes late, red; more than zero, amber; else green.', 'The bug was at the edge. A bus exactly on time had minutes late of zero, and a line written years earlier treated zero as no data, so a bus perfectly on time vanished from the board. Riders read the empty space as a missing bus.', 'Savanah asked how they had found it, and the method was one she knew from her own work. Read the error. Print the variables at the line you suspect. Shrink the input until the bug stays with one bus. Then look up the reference, which said plainly that zero is a number, not an absence. They fixed one comparison and added the edge to the test list: zero late, midnight, a bus with no driver.', 'The map under the buses came from an open-source library, and the team had read its license before using it: use it, change it, share the changes under the same rules. Savanah had them put the credit on the board\'s about page. A city that asks people to follow rules follows them in public, she said.', 'The last thing she asked about was the login. The board\'s password had been a word and a year, shared by the whole depot. That changed the same afternoon: twelve random characters in a password manager, a second step on the dispatcher\'s phone, and a rule that a leaked password alone opens nothing.', 'On Monday the buses were no more on time than before, but the board told the truth about them, which turned out to be most of what the riders wanted. Savanah stood at the main stop and watched a green bus arrive at zero minutes late, on the board for the first time in years, and smiled.'], more: [{ serial: 'CS386', after: 1, alt: 'A wall screen showing eight blocks of switches that spell each bus number in binary' }, { serial: 'CS387', after: 2, alt: 'A coder at a laptop with variables for a bus listed beside their types: route, minutes late, doors open' }, { serial: 'CS388', after: 3, alt: 'A bus board showing a bus at exactly zero minutes late marked as missing' }, { serial: 'CS389', after: 5, alt: 'A license page for an open-source map library pinned beside the team\'s about page' }, { serial: 'CS390', after: 7, alt: 'A city bus arriving on time under a board that shows it, a woman checking her watch and smiling' }] },
@@ -52337,6 +52746,120 @@ STORIES['music-in-society'] = {
         'The credit line went on the track as promised. Priya wrote the review of her own band that week, with criteria and evidence, and the teacher gave it back with one note. This is the job, he wrote. Vocation or avocation, this is what it is.',
     ],
 };
+// Philosophy, grades 9 to 12 (2026-09-29, pass GI): four stories at the older length with six pictures each.
+STORIES['what-is-an-argument'] = {
+    about: 'a penguin that could not fly, a valid argument that was still wrong, and the two questions that sort them',
+    more: [{ serial: 'S2979', after: 1, alt: 'A girl pointing at the word penguins on a board while the coach keeps the argument up' }, { serial: 'S2980', after: 2, alt: 'A well-built house standing on sand, drawn beside the words valid and sound' }, { serial: 'S2981', after: 3, alt: 'A girl checking a school alarm panel whose light is not red' }, { serial: 'S2982', after: 4, alt: 'A girl saying a hidden premise out loud while her friend shakes his head and the coach smiles' }, { serial: 'S2983', after: 5, alt: 'A paper penguin taped inside a binder with two questions written beneath it' }],
+    title: 'The penguin in the syllogism', art: 'S2978', cast: [],
+    alt: 'A debate coach at a whiteboard with a three-line argument about penguins, fourteen hands raised',
+    words: [
+        'The first thing the debate coach wrote on the board was an argument with a penguin in it. All birds can fly, and penguins are birds, so penguins can fly. Then she asked the room what was wrong with it, and fourteen hands went up.',
+        'It is false, said Maya, because penguins cannot fly. The coach nodded and did not erase it. The conclusion is false, she said, and the argument is still valid. If the premises were true, the conclusion would have to be. The form is perfect. The trouble is a premise.',
+        'That was the split Maya had never seen: valid is about the shape, sound is about the shape plus the truth. A valid argument with a false premise is a well-built house on sand. From then on she asked every argument two questions in order. Does the form hold, and are the premises true?',
+        'The coach gave the two forms names. If P then Q, and P, so Q: modus ponens. If P then Q, and not Q, so not P: modus tollens. Maya tried the second on the school alarm. If the alarm were on, the panel light would be red, and the light was not red, so the alarm was not on. She checked the panel, and it was not.',
+        'The hardest exercise came last. Her friend Dev said a classmate who was late did not care about the club, and the coach asked Maya to find the missing premise. People who care are never late, Maya said slowly. Nobody believes that, said Dev. Then the argument does not work, said the coach, and everyone heard the hidden premise fall.',
+        'Maya taped the penguin to the inside of her binder. Not because it could fly, but because it had taught her the two questions, and because most bad arguments, she now knew, fail exactly one of them.',
+    ],
+};
+STORIES['the-usual-mistakes'] = {
+    about: 'a two-hour meeting about a pool, nine fallacies on four pages, and the one argument that deserved an answer',
+    more: [{ serial: 'S2985', after: 1, alt: 'Two doors labeled close the pool and raise taxes, with a third door standing open behind them' }, { serial: 'S2986', after: 2, alt: 'A man pointing at a committee chair while a boy writes ad hominem on his pad' }, { serial: 'S2987', after: 3, alt: 'A confident speaker with half the room nodding, a boy writing how many is everybody' }, { serial: 'S2988', after: 4, alt: 'A boy at the microphone restating the case for closing while the first speaker nods and hands over a page of numbers' }, { serial: 'S2989', after: 5, alt: 'A summer pass pinned to a pool gate, four pages of notes beside it' }],
+    title: 'The third door', art: 'S2984', cast: [],
+    alt: 'A crowded town meeting about a swimming pool, a teenage boy taking notes on a legal pad',
+    words: [
+        'The town meeting about the pool was supposed to take twenty minutes and took two hours. Jonah, who had come for extra credit, filled four pages with the mistakes he had learned that week.',
+        'The first speaker said the choice was simple: close the pool or raise taxes on everyone. False dilemma, Jonah wrote, because a third door was standing open the whole time, a summer pass that paid for itself. The second speaker said the pool committee wanted to turn the park into a water slide for tourists. Nobody on the committee had ever said that. Straw man.',
+        'Then it got personal. A man in the back said the committee chair could not be trusted because she had once been late paying a parking ticket. Ad hominem, Jonah wrote, since a parking ticket says nothing about a budget. A woman said that if the town paid for a lifeguard this year it would be paying for a stadium within five. Slippery slope, no steps shown.',
+        'The most persuasive speaker of the night was also the emptiest. Everybody I know wants the pool closed, he said, and half the room nodded. Jonah wrote appeal to popularity, and beside it, how many people is everybody?',
+        'When Jonah\'s turn came he did the thing his teacher had drilled all week. He restated the strongest version of the case for closing, the pool lost money three summers running, and said it back until the first speaker agreed that was the claim. Then he asked for the numbers, because the person who makes a claim carries the burden of proof. The numbers, it turned out, included a roof repair that had been paid off in June.',
+        'The pool stayed open with a summer pass. Jonah\'s four pages earned the extra credit and something better: he had heard nine fallacies in one room and answered the one argument that deserved an answer.',
+    ],
+};
+STORIES['what-can-we-know'] = {
+    about: 'a horoscope that could not be wrong, a forecast that could, a stopped clock and a car that would not start',
+    more: [{ serial: 'S2991', after: 1, alt: 'A clear sky at four o\'clock beside a forecast that promised rain by three' }, { serial: 'S2992', after: 2, alt: 'A stopped clock reading the right time, a judge looking at it with new eyes' }, { serial: 'S2993', after: 3, alt: 'A car with its hood up, a dead battery, and a cartoon thief crossed out beside it' }, { serial: 'S2994', after: 4, alt: 'A girl awake at night thinking about dreaming and the sun rising' }, { serial: 'S2995', after: 5, alt: 'A volcano with a first-place ribbon next to a board about doubt that took second' }],
+    title: 'The horoscope and the forecast', art: 'S2990', cast: [],
+    alt: 'A science fair board with a horoscope and a weather forecast pinned side by side, a girl beside it',
+    words: [
+        'Lena\'s science fair project began as a joke. She pinned a horoscope and a weather forecast side by side and asked visitors which one could be wrong.',
+        'The horoscope said she would face a challenge this week, and everyone agreed it could not be wrong, because every week has a challenge. The forecast said rain by three, and at four the sky was clear. It was wrong, and that, Lena explained to a judge, was the point. In the 1930s Karl Popper argued that a real claim says in advance what would count against it. The forecast risked something. The horoscope risked nothing, so it told you nothing.',
+        'Her second board was about knowing. A stopped clock reads the right time twice a day. Glance at it at one of those moments and you have a true belief with a good reason, and you still do not know the time. Edmund Gettier, 1963, three pages. The judge said he had never thought of a clock that way.',
+        'The third board was a car that would not start. A dead battery needs one assumption. A thief who drained it and left needs three. William of Ockham, in the 1300s, said to prefer the explanation with fewer assumptions, and Lena had tested it: the battery was dead. The car was her father\'s.',
+        'That night, unable to sleep, she thought about Descartes asking in 1641 how he could know he was not dreaming. She thought about Hume in 1748, saying that the sun rising every morning was a habit and not a proof. It did not frighten her. Doubt, she had written on her first board, is not the enemy of knowledge; it is the tool that makes it.',
+        'The project took second place, behind a volcano. Lena did not mind. The volcano could not be wrong either.',
+    ],
+};
+STORIES['how-should-we-live'] = {
+    about: 'a trolley problem set up with the salt and pepper, three thinkers at one table, and a cake cut fairly',
+    more: [{ serial: 'S2997', after: 1, alt: 'A boy pushing the pepper mill switch while five sugar cubes sit on one track and one on the other' }, { serial: 'S2998', after: 2, alt: 'A grandmother holding her hands still, refusing the switch, a small lie written on a napkin' }, { serial: 'S2999', after: 3, alt: 'A father asking a question, a line drawn from cowardice through courage to recklessness' }, { serial: 'S3000', after: 4, alt: 'A boy cutting a cake into four equal pieces while everyone else waits to choose first' }, { serial: 'S3001', after: 5, alt: 'A passed quiz on a fridge beside an evenly cut cake' }],
+    title: 'The switch and the cake', art: 'S2996', cast: [],
+    alt: 'A family at a dinner table with a salt shaker and a pepper mill set up as a trolley problem',
+    words: [
+        'The trolley problem came to dinner on a Tuesday, because Ana had a philosophy quiz on Wednesday and needed to argue with someone.',
+        'She set it up with the salt and pepper. A runaway trolley, five people on the track, one on the side track, and a switch in your hand. Her brother Tomas pulled the switch at once. Five is more than one, he said. That is consequentialism, Ana said, and Mill wrote it down in 1861: the greatest happiness for the greatest number.',
+        'Her grandmother would not pull it. If I pull the switch, I have chosen to kill that one man, she said. Ana recognized Kant, 1785: never treat a person merely as a means, and act only on a rule you could will everyone to follow. Then she tried Kant on a small lie. Could you will a world where everyone lies whenever it is convenient? In that world nobody believes anyone, so the lie would not even work.',
+        'Her father, who had said nothing, asked what kind of person pulls the switch and what kind does not. Ana said that was the oldest question of the three, Aristotle in the fourth century BC. Courage sits between cowardice and recklessness. Honesty is a habit you build by practice. The question is not the rule but the person.',
+        'Dessert settled the last argument. There was one cake and four people, and Tomas reached for the knife. Ana stopped him with Rawls, 1971: the divider chooses last. Behind that veil of ignorance he cut four equal pieces, because the smallest one might be his.',
+        'Ana passed the quiz. Tomas, who had never read a page of philosophy, cut the cake evenly for the rest of the year.',
+    ],
+};
+// Philosophy, grades 6 to 8 (2026-09-29, pass GJ): four stories at the older length with six pictures each.
+STORIES['questions-that-open'] = {
+    about: 'a mock trial over whether a hot dog is a sandwich, and what kind of question that turned out to be',
+    more: [{ serial: 'S3003', after: 1, alt: 'A girl holding up a sandwich and a hot dog side by side while a boy points at a taco' }, { serial: 'S3004', after: 2, alt: 'Two words on a board, definition and counterexample, a girl rewriting her definition' }, { serial: 'S3005', after: 3, alt: 'A teacher pointing at three labels, fact, opinion and reasoned view, with the last one circled' }, { serial: 'S3006', after: 4, alt: 'A drawing of Socrates in Athens asking a question while a student writes it down' }, { serial: 'S3007', after: 5, alt: 'A jury of students shrugging, then a lunch line with hot dogs' }],
+    title: 'The hot dog court', art: 'S3002', cast: [],
+    alt: 'A classroom set up as a courtroom with a hot dog on the judge\'s desk and a teacher as judge',
+    words: [
+        'The trial of the hot dog began at nine on a Friday, in Room 12, with Miss Ito as judge and the whole class split into two sides. The question was simple and impossible: is a hot dog a sandwich?',
+        'The prosecution went first. A sandwich, said Priya, is filling between two pieces of bread, and a hot dog is filling in one piece of bread with a fold. Not a sandwich. The defense objected at once. By that definition, said Marcus, a wrap is not a sandwich, and neither is a taco.',
+        'Miss Ito stopped them and wrote two words on the board: definition and counterexample. A definition says what a word covers, she said. A counterexample is a case that breaks it. The honest move was not to shout but to fix the definition. Priya tried again: a sandwich is a filling held by bread you can eat with your hands. Marcus said that made a hot dog a sandwich, and Priya, after a pause, said it might.',
+        'Then came the part she had waited for. She asked what kind of question they had been arguing about. It was not a fact, since nobody could look it up. It was not an opinion, since Priya and Marcus had both given reasons and both changed a little. It was a reasoned view, she said, and a reasoned view is the thing philosophers argue about.',
+        'She told them about Socrates, who walked around Athens about 2,400 years ago asking people what they meant by bravery, justice and friendship. He was put to death in 399 BC, partly for asking too much. His student Plato wrote the conversations down. That is why we can still read them, she said, and why a hot dog can still start a trial.',
+        'The jury could not agree, and Miss Ito ruled that the correct verdict. Some questions are for sharpening the mind, she said, not for winning, and the class went to lunch, where hot dogs were served.',
+    ],
+};
+STORIES['reasons-and-evidence'] = {
+    about: 'a petition with a hundred signatures and no reason, a cousin\'s story, a fair sample and the four-word question',
+    more: [{ serial: 'S3009', after: 1, alt: 'A boy comparing one cousin\'s story with a stack of studies about sleep' }, { serial: 'S3010', after: 2, alt: 'A teacher circling the word hawk in red on a page and writing true and useless' }, { serial: 'S3011', after: 3, alt: 'A boy asking every fourth person in a lunch line while tallying answers on a clipboard' }, { serial: 'S3012', after: 4, alt: 'A petition with a page of reasons, a line about jobs and a bus plan, handed to a teacher' }, { serial: 'S3013', after: 5, alt: 'A school board table with a survey on it beside an old petition' }],
+    title: 'How do you know?', art: 'S3008', cast: [],
+    alt: 'A boy holding a petition with a hundred signatures while a teacher asks for a reason',
+    words: [
+        'Theo\'s petition to start school an hour later had one hundred and four signatures and, his teacher pointed out, not a single reason. Students want it, he said, and she told him that a hundred signatures were a headcount. Give me a reason, she said.',
+        'His first try came from his cousin, who went to a school that started at nine and said it was great. One story, said Miss Vega, is an anecdote, true and thin. His second try was better: studies of teenagers find that later starts mean more sleep and better grades. That is evidence, she said, because somebody could check it.',
+        'Then she made him run the relevance test. Theo had written that the school should start later because the building was cold in the morning. True, she said, and what does it have to do with the claim? He crossed it out. He had also written that the mascot was a hawk, as a joke, and she circled it in red and wrote true and useless.',
+        'The survey was the hard part. Theo asked twenty friends and all twenty agreed, which felt like proof until Miss Vega asked whether twenty friends were a fair sample of six hundred students. He went back and asked every fourth person in the lunch line, a hundred and fifty in all. Sixty-one percent wanted the later start, and thirty-nine did not, mostly because of after-school jobs.',
+        'That number changed the petition. Theo added a line about the jobs, because a good argument includes the reason against it, and a plan for the buses, because the principal would ask. When he handed it in, Miss Vega asked the question she had been asking all month. How do you know? This time he had a page.',
+        'The school board did not move the start time that year. It did ask for the survey, which is more than a hundred and four signatures had ever done.',
+    ],
+};
+STORIES['disagreeing-well'] = {
+    about: 'a three-day argument about a hamster, the rule that ended it, and a boy who changed his mind',
+    more: [{ serial: 'S3015', after: 1, alt: 'A girl saying so you are saying while a boy shakes his head, then nods' }, { serial: 'S3016', after: 2, alt: 'The word charity written on a board above two versions of the same argument' }, { serial: 'S3017', after: 3, alt: 'A girl separating a person from an idea: the boy on one side, the claim about quiet houses on the other' }, { serial: 'S3018', after: 4, alt: 'A boy changing his mind with a smile while the teacher holds up a book of Plato\'s dialogues' }, { serial: 'S3019', after: 5, alt: 'Three class rules on a poster beside a hamster cage going home in a girl\'s arms' }],
+    title: 'So you are saying', art: 'S3014', cast: [],
+    alt: 'Two students glaring across a hamster cage while a teacher writes one rule on the board',
+    words: [
+        'The argument about the class hamster had lasted three days when Miss Hale stopped it with a single rule. Nobody could reply until they had said the other person\'s view back, and the other person had agreed that was it.',
+        'Lila went first. So you are saying, she said to Ben, that the hamster should go home with a different student every weekend, because everyone should get a turn. Ben said no, that was not it. He was saying it should go home with whoever had a quiet house, because the hamster was a living thing and not a prize. Lila tried again, and this time he said yes.',
+        'It was the first time in three days that either of them had understood the other, and Miss Hale wrote the word charity on the board. Arguing against the version you made up, she said, is easy and useless. Arguing against the version they mean is hard and worth something.',
+        'The second rule was harder for Lila, who liked Ben and had spent three days annoyed at him. Separate the person from the idea, Miss Hale said. You can think a claim is wrong and think the person is smart and kind at the same time. Lila said the idea about quiet houses left out the students who had loud houses through no fault of their own. That, she said, was the reason she disagreed, and it was the reason and not Ben.',
+        'Ben thought about it for a while and said she was right, and that a rota with a quiet-house check might do both. Somebody said he had lost. Miss Hale said that changing your mind for a better reason was the whole point. Plato had written whole books of people doing it, in Athens, in the 300s BC, and they ended better thinkers than they started.',
+        'The class wrote three rules that afternoon: one voice at a time, reasons not volume, and say it back before you answer. The hamster, as it happened, went home with Lila first.',
+    ],
+};
+STORIES['fair-and-unfair'] = {
+    about: 'six hundred dollars, three sections, three rules for fair, and a test older than any of them',
+    more: [{ serial: 'S3021', after: 1, alt: 'Drummers, flutes and trumpets each holding a sign: equal, by need, by work' }, { serial: 'S3022', after: 2, alt: 'A band director writing fair by which rule on a whiteboard' }, { serial: 'S3023', after: 3, alt: 'Trumpet players pointing at a car wash photo while flute players point at three empty chairs' }, { serial: 'S3024', after: 4, alt: 'A band voting behind a curtain marked veil, a sketch of Confucius on the wall' }, { serial: 'S3025', after: 5, alt: 'A student with a phone on the bus under an exception everyone understands, drummers cutting a cake' }],
+    title: 'Fair by which rule', art: 'S3020', cast: [],
+    alt: 'A band room with a jar of six hundred dollars on a table and three sections arguing',
+    words: [
+        'The band had raised six hundred dollars for the spring trip, and the fight over how to divide it started before the money was counted.',
+        'Equal shares, said the drummers: sixty students, ten dollars each. By need, said the flutes: some students could not afford the trip at all, and the money should go to them first. By work, said the trumpets, who had run the car wash every Saturday while the drummers slept in. Each side was sure, and each side was right by one rule and wrong by the other two.',
+        'That was the sentence the band director wrote on the board. Fair by which rule? Arguments about fairness, she said, are really arguments about which rule fits the case. The way to settle them is not to shout the rule louder but to say why it fits.',
+        'The trumpets went first. Work should count, they said, because without the car wash there was no money to divide. The flutes answered that the trip was the point, and a trip that three students could not join was not the band\'s trip. The drummers, to their credit, admitted that sleeping in was not an argument.',
+        'The director offered a test older than any of them. Confucius, in China about 2,500 years ago, said not to impose on others what you would not want for yourself. Then she offered a newer one: decide the rule before you know which section you are in. Behind that veil, the band voted for need first, then work, then equal shares of whatever was left, because any of them might have been the student who could not pay.',
+        'The rule about no phones on the bus got its exception the same afternoon, for the student whose mother was in the hospital, and everyone could explain why. The cake, when it came to that, was cut by the drummers, who chose last.',
+    ],
+};
 const STORY_WORD_LIMIT = { early: 200, older: 350 };
 function storyFor(moduleId) { return STORIES[moduleId] || null; }
 // What a whole course is reaching for, in one line (2026-09-24, Mikey): the subtitle on a printed story book's cover,
@@ -52403,6 +52926,8 @@ const COURSE_GOALS = {
     'econ-3': 'Skills that earn, spending that is planned, profit that is counted, and a budget that balances',
     'econ-6': 'Accounts and cards, a credit record that lasts, interest that compounds, and a budget in percents',
     'econ-9': 'A paycheck read to the last line, credit priced honestly, a fund and a plan, and risk moved where it belongs',
+    'philosophy-9': 'What an argument is, the mistakes that look like reasoning, what we can know, and how we might decide what is right',
+    'philosophy-6': 'Questions you think through rather than look up, reasons that are relevant and true, disagreeing about ideas without fighting people, and three rules for fair',
     'tech-college': 'What runs when a program runs, how work grows with the input, the shapes of data, and where computing ends',
     'tech-6': 'Understanding what a machine that learns really does, where it goes wrong, and who stays in charge',
     'tech-9': 'Understanding the parts of a machine, binary, the parts of a program, and the working habits of a programmer',
@@ -52717,7 +53242,7 @@ function PinInput({ value, onChange, placeholder, style, onEnter = null }) {
 }
 // A stamp of when this copy of the page was built, so a stale page in a cache can be told apart
 // from a fresh one at a glance. Written by the build, never by hand.
-const BUILD_STAMP = '2026-09-29 03:16 PM CDT';
+const BUILD_STAMP = '2026-09-29 04:49 PM CDT';
 function ContactLine({ onOpen, inline = false }) {
     return (react_1.default.createElement("p", { className: "edu-no-print", style: { textAlign: 'center', marginTop: inline ? 0 : 28, fontSize: inline ? 14 : 12, color: C.muted, margin: inline ? '0' : undefined } }, onOpen
         ? react_1.default.createElement("button", { type: "button", onClick: onOpen, style: { background: 'none', border: 'none', color: C.muted, fontFamily: FONT, fontSize: 12, cursor: 'pointer', padding: 0, textDecoration: 'underline' } }, "Contact us")
@@ -58005,7 +58530,110 @@ function ChordGame({ game, round, onScore = null }) {
             react_1.default.createElement("p", { style: { margin: 0, fontSize: 14, color: B.muted } }, finished ? `${c.root}, ${c.notes[1]} and ${c.notes[2]}. That is ${c.root} ${c.quality}.` : c.quality === 'major' ? 'Four half steps up, then three.' : 'Three half steps up, then four.'))),
         react_1.default.createElement(Done, { show: done })));
 }
-const GAME_OF = { dots: DotsGame, pairs: PairsGame, sort: SortGame, maze: MazeGame, jigsaw: JigsawGame, pong: PongGame, sprint: SprintGame, order: OrderGame, build: BuildGame, fix: FixGame, mix: MixGame, debug: DebugGame, ptable: PtableGame, evidence: EvidenceGame, catch: CatchGame, path: PathGame, buckets: BucketsGame, jump: JumpGame, map: MapGame, balance: BalanceGame, walk: WalkGame, teach: TeachGame, bits: BitsGame, pay: PayGame, price: PriceGame, loan: LoanGame, fund: FundGame, search: SearchGame, spot: SpotGame, pattern: PatternGame, shape: ShapeGame, chord: ChordGame };
+// Valid or Not (2026-09-29, pass GI, a new kind for philosophy 9 to 12): an argument in three lines, built from everyday
+// sentences in one of four forms, and one question: does the form guarantee the conclusion? Modus ponens and modus
+// tollens do; affirming the consequent and denying the antecedent do not, however true the sentences sound. Tap Valid or
+// Not valid; the right answer names the form and moves on, the wrong one wobbles. Six arguments a round and the clock
+// counts up. The lesson's idea is the rule of the game: validity is about the shape. Drawn with B on the paper board.
+function ValidGame({ game, round, onScore = null }) {
+    const rounds = (0, react_1.useMemo)(() => argumentRounds(round), [round]);
+    const [k, setK] = (0, react_1.useState)(0);
+    const [got, setGot] = (0, react_1.useState)(false);
+    const [nudge, setNudge] = (0, react_1.useState)(null);
+    const [ticks, setTicks] = (0, react_1.useState)(0);
+    const [done, setDone] = (0, react_1.useState)(false);
+    const q = rounds[Math.min(k, rounds.length - 1)];
+    (0, react_1.useEffect)(() => { setK(0); setGot(false); setTicks(0); setDone(false); }, [round]);
+    (0, react_1.useEffect)(() => { if (done)
+        return undefined; const t = setInterval(() => setTicks((n) => n + 1), 1000); return () => clearInterval(t); }, [done]);
+    (0, react_1.useEffect)(() => { if (done && onScore)
+        onScore(ticks, 'low'); }, [done]);
+    (0, react_1.useEffect)(() => { if (nudge === null)
+        return undefined; const t = setTimeout(() => setNudge(null), 500); return () => clearTimeout(t); }, [nudge]);
+    (0, react_1.useEffect)(() => { if (!got)
+        return undefined; const t = setTimeout(() => { setGot(false); if (k + 1 >= rounds.length)
+        setDone(true);
+    else
+        setK(k + 1); }, 900); return () => clearTimeout(t); }, [got]);
+    const pick = (v) => { if (got || done)
+        return; if (v === q.valid)
+        setGot(true);
+    else
+        setNudge(v ? 'valid' : 'invalid'); };
+    return (react_1.default.createElement("div", { className: "edu-game-box", style: { ...GAME_BOX, aspectRatio: 'auto', padding: 14 }, "data-argument-valid": done ? '' : (q.valid ? 'yes' : 'no') },
+        react_1.default.createElement("div", { style: { display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 } },
+            react_1.default.createElement("span", null, "Does the form hold?"),
+            react_1.default.createElement("span", null,
+                ticks,
+                "s \u00B7 ",
+                Math.min(k + 1, rounds.length),
+                " of ",
+                rounds.length)),
+        done ? react_1.default.createElement("p", { style: { margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 } },
+            "Six arguments sorted in ",
+            ticks,
+            " seconds. Tap the round arrow for more.") : (react_1.default.createElement("div", { style: { textAlign: 'center' } },
+            react_1.default.createElement("div", { style: { background: '#fff', border: `1.5px solid ${B.line}`, borderRadius: 12, padding: '12px 14px', marginBottom: 12, textAlign: 'left' } }, q.lines.map((line, i) => react_1.default.createElement("p", { key: i, style: { margin: i ? '6px 0 0' : 0, fontSize: 16, color: B.ink, fontWeight: i === 2 ? 700 : 400 } }, line))),
+            react_1.default.createElement("p", { style: { margin: '0 0 10px', fontSize: 15, color: got ? B.green : B.ink, minHeight: 22, fontWeight: got ? 700 : 400 } }, got ? `${q.valid ? 'Valid' : 'Not valid'}: ${q.form}.` : 'If the premises were true, would the conclusion have to be?'),
+            react_1.default.createElement("div", { style: { display: 'flex', gap: 10, justifyContent: 'center' } },
+                react_1.default.createElement("button", { type: "button", className: `edu-press${nudge === 'valid' ? ' edu-wobble' : ''}`, onClick: () => pick(true), style: { fontFamily: FONT, fontSize: 16, fontWeight: 700, padding: '10px 22px', borderRadius: 12, border: `2px solid ${B.green}`, background: '#fff', color: B.ink, cursor: got ? 'default' : 'pointer' } }, "Valid"),
+                react_1.default.createElement("button", { type: "button", className: `edu-press${nudge === 'invalid' ? ' edu-wobble' : ''}`, onClick: () => pick(false), style: { fontFamily: FONT, fontSize: 16, fontWeight: 700, padding: '10px 22px', borderRadius: 12, border: `2px solid ${B.clay}`, background: '#fff', color: B.ink, cursor: got ? 'default' : 'pointer' } }, "Not valid")))),
+        react_1.default.createElement(Done, { show: done })));
+}
+// Reason or Not (2026-09-29, pass GJ, a new kind for philosophy 6 to 8): a claim and a reason, and one question: does the
+// reason bear on the claim? Every claim carries reasons of its own, and a reason borrowed from another claim is true and
+// useless. Tap Supports it or Does not; the right answer moves on, the wrong one wobbles. Six pairs a round and the clock
+// counts up. The lesson's idea is the rule of the game: a good reason is relevant. Drawn with B on the paper board.
+function ReasonGame({ game, round, onScore = null }) {
+    const rounds = (0, react_1.useMemo)(() => reasonRounds(round), [round]);
+    const [k, setK] = (0, react_1.useState)(0);
+    const [got, setGot] = (0, react_1.useState)(false);
+    const [nudge, setNudge] = (0, react_1.useState)(null);
+    const [ticks, setTicks] = (0, react_1.useState)(0);
+    const [done, setDone] = (0, react_1.useState)(false);
+    const q = rounds[Math.min(k, rounds.length - 1)];
+    (0, react_1.useEffect)(() => { setK(0); setGot(false); setTicks(0); setDone(false); }, [round]);
+    (0, react_1.useEffect)(() => { if (done)
+        return undefined; const t = setInterval(() => setTicks((n) => n + 1), 1000); return () => clearInterval(t); }, [done]);
+    (0, react_1.useEffect)(() => { if (done && onScore)
+        onScore(ticks, 'low'); }, [done]);
+    (0, react_1.useEffect)(() => { if (nudge === null)
+        return undefined; const t = setTimeout(() => setNudge(null), 500); return () => clearTimeout(t); }, [nudge]);
+    (0, react_1.useEffect)(() => { if (!got)
+        return undefined; const t = setTimeout(() => { setGot(false); if (k + 1 >= rounds.length)
+        setDone(true);
+    else
+        setK(k + 1); }, 900); return () => clearTimeout(t); }, [got]);
+    const pick = (v) => { if (got || done)
+        return; if (v === q.supports)
+        setGot(true);
+    else
+        setNudge(v ? 'yes' : 'no'); };
+    return (react_1.default.createElement("div", { className: "edu-game-box", style: { ...GAME_BOX, aspectRatio: 'auto', padding: 14 }, "data-reason-supports": done ? '' : (q.supports ? 'yes' : 'no') },
+        react_1.default.createElement("div", { style: { display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 } },
+            react_1.default.createElement("span", null, "Does the reason bear on the claim?"),
+            react_1.default.createElement("span", null,
+                ticks,
+                "s \u00B7 ",
+                Math.min(k + 1, rounds.length),
+                " of ",
+                rounds.length)),
+        done ? react_1.default.createElement("p", { style: { margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 } },
+            "Six reasons sorted in ",
+            ticks,
+            " seconds. Tap the round arrow for more.") : (react_1.default.createElement("div", { style: { textAlign: 'center' } },
+            react_1.default.createElement("div", { style: { background: '#fff', border: `1.5px solid ${B.line}`, borderRadius: 12, padding: '12px 14px', marginBottom: 12, textAlign: 'left' } },
+                react_1.default.createElement("p", { style: { margin: 0, fontSize: 13, color: B.muted, textTransform: 'uppercase', letterSpacing: 0.5 } }, "Claim"),
+                react_1.default.createElement("p", { style: { margin: '2px 0 8px', fontSize: 17, color: B.ink, fontWeight: 700 } }, q.claim),
+                react_1.default.createElement("p", { style: { margin: 0, fontSize: 13, color: B.muted, textTransform: 'uppercase', letterSpacing: 0.5 } }, "Reason"),
+                react_1.default.createElement("p", { style: { margin: '2px 0 0', fontSize: 16, color: B.ink } }, q.reason)),
+            react_1.default.createElement("p", { style: { margin: '0 0 10px', fontSize: 15, color: got ? B.green : B.ink, minHeight: 22, fontWeight: got ? 700 : 400 } }, got ? (q.supports ? 'Yes: relevant, and worth checking.' : 'No: true, maybe, and useless here.') : 'A good reason is relevant and true. Is this one relevant?'),
+            react_1.default.createElement("div", { style: { display: 'flex', gap: 10, justifyContent: 'center' } },
+                react_1.default.createElement("button", { type: "button", className: `edu-press${nudge === 'yes' ? ' edu-wobble' : ''}`, onClick: () => pick(true), style: { fontFamily: FONT, fontSize: 16, fontWeight: 700, padding: '10px 22px', borderRadius: 12, border: `2px solid ${B.green}`, background: '#fff', color: B.ink, cursor: got ? 'default' : 'pointer' } }, "Supports it"),
+                react_1.default.createElement("button", { type: "button", className: `edu-press${nudge === 'no' ? ' edu-wobble' : ''}`, onClick: () => pick(false), style: { fontFamily: FONT, fontSize: 16, fontWeight: 700, padding: '10px 22px', borderRadius: 12, border: `2px solid ${B.clay}`, background: '#fff', color: B.ink, cursor: got ? 'default' : 'pointer' } }, "Does not")))),
+        react_1.default.createElement(Done, { show: done })));
+}
+const GAME_OF = { dots: DotsGame, pairs: PairsGame, sort: SortGame, maze: MazeGame, jigsaw: JigsawGame, pong: PongGame, sprint: SprintGame, order: OrderGame, build: BuildGame, fix: FixGame, mix: MixGame, debug: DebugGame, ptable: PtableGame, evidence: EvidenceGame, catch: CatchGame, path: PathGame, buckets: BucketsGame, jump: JumpGame, map: MapGame, balance: BalanceGame, walk: WalkGame, teach: TeachGame, bits: BitsGame, pay: PayGame, price: PriceGame, loan: LoanGame, fund: FundGame, search: SearchGame, spot: SpotGame, pattern: PatternGame, shape: ShapeGame, chord: ChordGame, valid: ValidGame, reason: ReasonGame };
 // How to play, in a line or two, by kind of game (and by deck for the matching games).
 function gameInstructions(game) {
     if (game.kind === 'bits')
@@ -58016,6 +58644,10 @@ function gameInstructions(game) {
         return 'You owe money on something at a rate per month. Tap a payment: each tap is a month, interest is added on what is still owed, and the payment comes off. Watch what the smallest payment costs over time. Four loans; less interest paid in all is the better score.';
     if (game.kind === 'fund')
         return 'A first year on your own, one month a tap. Income comes in, the bills go out, and you choose how much of the 500 that is left goes into your emergency fund; the rest is spent. Some months bring a surprise bill: the fund pays what it can and the rest is borrowed at 2 percent a month. The score is the fund minus the loan after twelve months, higher is better.';
+    if (game.kind === 'valid')
+        return 'An argument in three lines: if this then that, a second line, and a conclusion. Ask whether the form guarantees the conclusion when the premises are true, however true the sentences sound, and tap Valid or Not valid. The right answer names the form. Six arguments a round, and the clock counts up.';
+    if (game.kind === 'reason')
+        return 'A claim and a reason. Ask whether the reason bears on the claim at all, because a reason can be true and still have nothing to do with it, and tap Supports it or Does not. Six pairs a round, and the clock counts up.';
     if (game.kind === 'search')
         return 'Thirty-two cards lie face down in order from smallest to largest, and a number to find is on one of them. Tap a card to turn it over; the board says whether the number is higher or lower. Halve what is left each time and six looks always find it. Four numbers; fewer looks is the better score.';
     if (game.kind === 'price')
@@ -58131,6 +58763,18 @@ function GameThumb({ kind, game = null }) {
         return react_1.default.createElement("svg", { viewBox: "0 0 40 40", width: "44", height: "44", "aria-hidden": "true" },
             [0, 1, 2, 3, 4, 5, 6, 7].map((i) => react_1.default.createElement("rect", { key: i, x: 3 + (i % 4) * 8.8, y: i < 4 ? 8 : 22, width: "7.5", height: "10", rx: "1.5", fill: i === 5 ? C.green : C.paperBoard, stroke: k, strokeWidth: "1" })),
             react_1.default.createElement("path", { d: "M20 4v34", stroke: k, strokeWidth: "1", strokeDasharray: "2 2" }));
+    if (game && game.kind === 'reason')
+        return react_1.default.createElement("svg", { viewBox: "0 0 40 40", width: "44", height: "44", "aria-hidden": "true" },
+            react_1.default.createElement("rect", { x: "4", y: "5", width: "32", height: "30", rx: "4", fill: C.paperBoard, stroke: k, strokeWidth: "1" }),
+            react_1.default.createElement("rect", { x: "9", y: "11", width: "22", height: "5", rx: "2", fill: k, opacity: "0.85" }),
+            react_1.default.createElement("path", { d: "M9 23h14", stroke: k, strokeWidth: "1.5", strokeLinecap: "round" }),
+            react_1.default.createElement("path", { d: "M26 21l3 3 5-5", fill: "none", stroke: C.green, strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round" }),
+            react_1.default.createElement("path", { d: "M9 29h10", stroke: k, strokeWidth: "1.5", strokeLinecap: "round" }));
+    if (game && game.kind === 'valid')
+        return react_1.default.createElement("svg", { viewBox: "0 0 40 40", width: "44", height: "44", "aria-hidden": "true" },
+            react_1.default.createElement("rect", { x: "4", y: "5", width: "32", height: "30", rx: "4", fill: C.paperBoard, stroke: k, strokeWidth: "1" }),
+            react_1.default.createElement("path", { d: "M9 13h22M9 19h16M9 25h22", stroke: k, strokeWidth: "1.5", strokeLinecap: "round" }),
+            react_1.default.createElement("path", { d: "M11 31l3 3 6-6", fill: "none", stroke: C.green, strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round" }));
     if (game && game.kind === 'fund')
         return react_1.default.createElement("svg", { viewBox: "0 0 40 40", width: "44", height: "44", "aria-hidden": "true" },
             react_1.default.createElement("rect", { x: "5", y: "7", width: "30", height: "26", rx: "4", fill: "#fff", stroke: k, strokeWidth: "1.2" }),

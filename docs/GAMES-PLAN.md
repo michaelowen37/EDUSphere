@@ -2,7 +2,7 @@
 
 Written by tools/games-plan.mjs from the app's own lists; run it again after any change to the games. Every course has its own game, or two, chosen to suit its subject and grade; finishing the course unlocks them. Inside a grade the same kind is avoided wherever today's kinds allow. A course that no game suits yet has a quick fire of its own lessons, and so does a history course whose only game is a map still waiting for its painting.
 
-Starter, open from the first day: Star. Kinds of game: 32. Quick fires still standing in for a game: 8. Kinds repeated inside a grade: 9. Courses holding two games of one kind: none. The rules test holds both numbers as ceilings, so each new kind must bring them down.
+Starter, open from the first day: Star. Kinds of game: 34. Quick fires still standing in for a game: 8. Kinds repeated inside a grade: 9. Courses holding two games of one kind: none. The rules test holds both numbers as ceilings, so each new kind must bring them down.
 
 ## New kinds, in order
 
@@ -72,6 +72,7 @@ Each new kind should make the course's idea the rule of the game, so playing is 
 | 6 | Writing with a purpose | Noun or verb (buckets) |
 | 6 | World cultures | Where is it? The oceans (map), In order: civilizations, inventions, buildings (order) |
 | 6 | What a machine learns | Teach the Robot (teach) |
+| 6 | Big questions, good reasons | Reason or Not (reason) |
 | 6 | Money over time | Pay It Off (loan) |
 | 6 | Reading a work of art | Shape the Sound (shape) |
 | 7 | Proportions, integers and circles | Balance the scale: fractions (balance) |
@@ -91,6 +92,7 @@ Each new kind should make the course's idea the rule of the game, so playing is 
 | 9 | Writing about texts and turns | Fix it: tricky words (fix) |
 | 9 | World geography | Where is it? Europe (map), Quick fire: World geography (sprint) |
 | 9 | How a program is built | Eight Switches (bits) |
+| 9 | How to think about anything | Valid or Not (valid) |
 | 9 | Money for a life | Build the Fund (fund) |
 | 9 | The informed eye and ear | Build the Chord (chord) |
 | 10 | Geometry | Step on the square numbers (path) |

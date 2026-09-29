@@ -2,6 +2,18 @@
 
 The newest block is what educators see once, in a pop-up on the classroom page, after each update. Write it the way Mikey talks to a teacher: conversational, complete sentences, say what changed and why it matters, and skip the shorthand (2026-09-23). Two to four items. The date line is the version stamp.
 
+## September 29, 2026 (big questions, good reasons)
+
+- Grade 6 has a new elective for grades 6 to 8, Big questions, good reasons: the questions you think through rather than look up, with Socrates and a hot dog; what makes a reason relevant and true, and the four-word question that turns a claim into a conversation; how to disagree about an idea without fighting a person; and three rules for fair, with a test you can run at any table. Each lesson has a story, and the course ends with a long story about Savanah, a cabin of ten-year-olds and four canoes.
+- Finishing the course unlocks Reason or Not, a new kind of game: a claim, a reason, and one question about whether the reason bears on it.
+- Two new Wonder questions for grades 6 to 8 wait in the review screen.
+
+## September 29, 2026 (how to think about anything)
+
+- A new subject, Philosophy, begins with an elective for grades 9 to 12, How to think about anything: what an argument is and when it is valid or sound; the nine mistakes that look like reasoning, and the habit of answering the strongest version; what we can know, from Descartes and Hume to Popper's test and Ockham's razor; and how we might decide what is right, with Mill, Kant, Aristotle, a runaway trolley and a veil of ignorance. Each lesson has a story, and the course ends with a long story about Frederick, a copper bracelet and a napkin.
+- Finishing the course unlocks Valid or Not, a new kind of game: an argument in three lines, and one question about its form.
+- Two new Wonder questions for high school wait in the review screen.
+
 ## September 29, 2026 (the informed eye and ear)
 
 - Grade 9 has a new elective for grades 9 to 12, The informed eye and ear, which completes art and music appreciation from kindergarten up: reading artwork with precision, from content to metaphor and a critique whose every step can be checked; styles, themes and cultures across four centuries and the careers art becomes; the elements of music, with intervals counted in half steps and chords built from them; and music in society, from sampling and streaming to judging a performance by criteria. Each lesson has a story, and the course ends with a long story about Georgette, two portraits and a jazz concert.

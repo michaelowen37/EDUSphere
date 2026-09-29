@@ -939,6 +939,16 @@ export const COURSES = [
     modules: ECON3_MODULES(),
   },
   {
+    id: 'philosophy-6',
+    grade: '6',
+    subject: 'Philosophy',
+    title: 'Big questions, good reasons',
+    audience: 'Grades 6 to 8',
+    elective: true,
+    keywords: ['philosophy', 'questions', 'reasons', 'evidence', 'fairness', 'disagreement', 'thinking', 'elective'],
+    modules: PHIL6_MODULES(),
+  },
+  {
     id: 'econ-6',
     grade: '6',
     subject: 'Economics',
@@ -947,6 +957,16 @@ export const COURSES = [
     elective: true,
     keywords: ['money', 'interest', 'credit', 'budget', 'college', 'personal finance', 'economics', 'elective'],
     modules: ECON6_MODULES(),
+  },
+  {
+    id: 'philosophy-9',
+    grade: '9',
+    subject: 'Philosophy',
+    title: 'How to think about anything',
+    audience: 'Grades 9 to 12',
+    elective: true,
+    keywords: ['philosophy', 'logic', 'argument', 'fallacy', 'ethics', 'knowledge', 'reasoning', 'elective'],
+    modules: PHIL9_MODULES(),
   },
   {
     id: 'econ-9',
@@ -1245,8 +1265,10 @@ export const GAMES = [
   { id: 'shape-arts-6', kind: 'shape', title: 'Shape the Sound', minGrade: '6', shape: 'dynamics' },   // art and music 6 to 8 (pass GG): the markings are the rule   // art and music 3 to 5 (pass GF): the form is the rule   // economics 3 to 5 (pass FW): find the price that earns the most
   { id: 'teach-tech-6', kind: 'teach', title: 'Teach the Robot', minGrade: '6', teach: 'fruit' },
   { id: 'search-tech-college', kind: 'search', title: 'Split the Search', minGrade: 'C', search: 32 },   // college computer science (pass FU): binary search by hand
-  { id: 'loan-econ-6', kind: 'loan', title: 'Pay It Off', minGrade: '6', loan: 'plans' },   // economics 6 to 8 (pass FX): what a loan costs month by month
+  { id: 'loan-econ-6', kind: 'loan', title: 'Pay It Off', minGrade: '6', loan: 'plans' },
+  { id: 'reason-philosophy-6', kind: 'reason', title: 'Reason or Not', minGrade: '6', reason: 'claims' },   // philosophy 6 to 8 (pass GJ): relevance is the rule   // economics 6 to 8 (pass FX): what a loan costs month by month
   { id: 'fund-econ-9', kind: 'fund', title: 'Build the Fund', minGrade: '9', fund: 'year' },
+  { id: 'valid-philosophy-9', kind: 'valid', title: 'Valid or Not', minGrade: '9', valid: 'forms' },   // philosophy 9 to 12 (pass GI): the form decides
   { id: 'chord-arts-9', kind: 'chord', title: 'Build the Chord', minGrade: '9', chord: 'triads' },   // art and music 9 to 12 (pass GH): four half steps then three   // personal finance 9 to 12 (pass FY): a year of saving against surprises
   { id: 'bits-tech-9', kind: 'bits', title: 'Eight Switches', minGrade: '9', bits: 8 },   // computer science 9 to 12 (pass FU): make the number with the switches   // the plain AI course (pass FT): the child is the pile of examples
   { id: 'mix-art-3', kind: 'mix', title: 'Color mixer: make new colors', minGrade: '3', deck: 'mix3' },
@@ -1767,6 +1789,49 @@ export function chordRounds(round) {
   const order = CHORD_LIST.slice().sort(() => rnd() - 0.5).slice(0, 5);
   return order.map(([root, quality]) => ({ root, quality, notes: chordNotes(root, quality) }));
 }
+// Valid or Not (2026-09-29, pass GI, philosophy 9 to 12): an argument in one of four forms, filled with everyday
+// content, and one question: does the form guarantee the conclusion? Modus ponens and modus tollens do; affirming the
+// consequent and denying the antecedent do not, however true the sentences sound. The form is the rule of the game.
+export const ARGUMENT_PAIRS = [
+  ['it rains', 'the street is wet'], ['the oven is on', 'the kitchen is warm'], ['she studied', 'she passed'], ['the tide is in', 'the rocks are covered'],
+  ['the dog hears the car', 'the dog barks'], ['the battery is dead', 'the car will not start'], ['the bread is fresh', 'the crust cracks'], ['the pool is open', 'the gate is unlocked'],
+];
+export const ARGUMENT_FORMS = [
+  { name: 'modus ponens', valid: true, second: (p, q) => `${p}.`, conclusion: (p, q) => `So ${q}.` },
+  { name: 'modus tollens', valid: true, second: (p, q) => `It is not the case that ${q}.`, conclusion: (p, q) => `So it is not the case that ${p}.` },
+  { name: 'affirming the consequent', valid: false, second: (p, q) => `${q}.`, conclusion: (p, q) => `So ${p}.` },
+  { name: 'denying the antecedent', valid: false, second: (p, q) => `It is not the case that ${p}.`, conclusion: (p, q) => `So it is not the case that ${q}.` },
+];
+export function argumentRounds(round) {
+  let x = (round * 40503 + 7) >>> 0; const rnd = () => { x = (x * 1664525 + 1013904223) >>> 0; return x / 4294967296; };
+  return Array.from({ length: 6 }, (_, i) => {
+    const [p, q] = ARGUMENT_PAIRS[(i * 3 + round) % ARGUMENT_PAIRS.length]; const form = ARGUMENT_FORMS[Math.floor(rnd() * ARGUMENT_FORMS.length)];
+    const cap = (t) => t.charAt(0).toUpperCase() + t.slice(1);
+    return { form: form.name, valid: form.valid, lines: [`If ${p}, then ${q}.`, cap(form.second(p, q)), cap(form.conclusion(p, q))] };
+  });
+}
+// Reason or Not (2026-09-29, pass GJ, philosophy 6 to 8): a claim and a reason, and one question: does the reason bear
+// on the claim? Every claim carries two reasons of its own; a reason borrowed from another claim is true and useless.
+// Relevance is the rule of the game, and the round mixes both kinds.
+export const CLAIM_REASONS = [
+  ['The school should start later.', ['Students who sleep more learn more, studies find.', 'Many students fall asleep in first period.']],
+  ['The park needs more trash cans.', ['Litter piles up by the benches every weekend.', 'The nearest can is a five-minute walk from the swings.']],
+  ['Our team should practice on Tuesdays.', ['The field is empty on Tuesdays.', 'Most players have no other clubs that day.']],
+  ['The library should stay open later.', ['Students line up outside it after school.', 'Many families have no quiet place to study at home.']],
+  ['The class should read a play this term.', ['Reading a play aloud builds speaking skills.', 'The drama club has copies of one already.']],
+  ['The cafeteria should serve fruit at breakfast.', ['Fruit costs less than pastries by the tray.', 'Students who eat fruit early stay full longer.']],
+  ['The bus route should add a stop on Elm Street.', ['Twelve students walk a mile from Elm Street.', 'The bus already passes the corner of Elm.']],
+  ['The science fair should move to spring.', ['Projects need weeks the fall calendar does not have.', 'The gym is booked for sports all fall.']],
+];
+export function reasonRounds(round) {
+  let x = (round * 69069 + 3) >>> 0; const rnd = () => { x = (x * 1664525 + 1013904223) >>> 0; return x / 4294967296; };
+  return Array.from({ length: 6 }, (_, i) => {
+    const ci = (i * 5 + round) % CLAIM_REASONS.length; const [claim, own] = CLAIM_REASONS[ci]; const supports = rnd() < 0.5;
+    if (supports) return { claim, reason: own[Math.floor(rnd() * own.length)], supports: true };
+    const oi = (ci + 1 + Math.floor(rnd() * (CLAIM_REASONS.length - 1))) % CLAIM_REASONS.length;
+    return { claim, reason: CLAIM_REASONS[oi][1][Math.floor(rnd() * 2)], supports: false };
+  });
+}
 export const ROBOT_DECKS = {
   arrows: [
     { start: [1,1], goal: [0,4], rocks: [[2,1],[0,2],[2,2]], program: 'DDLU' },
@@ -2146,9 +2211,9 @@ function recommendedIncludingElectives(events, level, startGrade = null) {
 
 // Subjects always read Math, Reading, Writing, Science, History, then anything else alphabetically,
 // whatever order the courses were written in. Every screen that lists subjects sorts with this.
-const SUBJECT_RANK = { Math: 0, Reading: 1, Writing: 2, Science: 3, History: 4, Art: 5, Music: 6, Technology: 7, Health: 8, Economics: 9 };   // Economics joined 2026-09-29 (pass FV)
+const SUBJECT_RANK = { Math: 0, Reading: 1, Writing: 2, Science: 3, History: 4, Art: 5, Music: 6, Technology: 7, Health: 8, Economics: 9, Philosophy: 10 };   // Economics joined 2026-09-29 (pass FV); Philosophy joined the same day (pass GI)
 export function sortSubjects(subjects) {
-  return [...new Set(subjects)].sort((a, b) => (SUBJECT_RANK[a] ?? 9) - (SUBJECT_RANK[b] ?? 9) || a.localeCompare(b));
+  return [...new Set(subjects)].sort((a, b) => (SUBJECT_RANK[a] ?? 99) - (SUBJECT_RANK[b] ?? 99) || a.localeCompare(b));
 }
 
 export function subjectsForGrade(grade) {
@@ -9269,6 +9334,154 @@ function ARTS9_MODULES() { return [
     generators: ['a9-society', 'a9-society', 'a9-society', 'a9-society', 'a9-society'],
   },
 ]; }
+// Philosophy for the 9 to 12 band (2026-09-29, pass GI), the fourth strand of the depth program: how arguments work, the
+// mistakes people make with them, what we can know, and how we might live. Texas has no philosophy TEKS, so the Texas
+// column carries the College and Career Readiness Standards, Cross-Disciplinary Standards (2009); the national column
+// carries the Common Core anchor standards for argument. Every thinker named is placed in the right century.
+// Philosophy for the 6 to 8 band (2026-09-29, pass GJ), in the philosophy-for-children tradition: what makes a question
+// worth asking, what makes a reason a good one, how to disagree without losing a friend, and what fairness is. The Texas
+// column carries the College and Career Readiness Standards, Cross-Disciplinary Standards, since Texas has no philosophy
+// TEKS; the national column carries the Common Core grade 6 standards for argument and discussion.
+function PHIL6_MODULES() { return [
+  {
+    id: 'questions-that-open',
+    order: 1,
+    title: 'Questions that open',
+    tagline: 'Some questions you can look up; some you have to think through',
+    requires: [],
+    lesson: {
+      paragraphs: ['What is the capital of Texas? You can look that up, and once you have, the question is closed. What is fairness? Nobody can look that up. A philosophical question is one you have to think through, where the answer depends on reasons rather than on a fact somebody else can hand you.', 'In Athens, about 2,400 years ago, Socrates made a habit of asking people what they meant by the words they used. Someone would say a brave act, and he would ask what bravery was, and the answer would turn out to be harder than anyone had thought. He was put to death in 399 BC, partly for asking too many questions, and the questions outlived him.', 'Two tools do most of the work. A definition says what a word covers. A counterexample is a case that breaks the definition: if a sandwich is filling between two pieces of bread, is a hot dog a sandwich? Facts can be checked, opinions are tastes, and a reasoned view is neither: it is a position you can give reasons for and change if the reasons fail.'],
+      keyIdea: 'A philosophical question is one you think through rather than look up. Ask what a word means, test the definition with a counterexample, and tell a fact from an opinion from a reasoned view.',
+      example: { kind: 'flow', steps: ['what is a sandwich?', 'filling between two pieces of bread', 'is a hot dog one?', 'fix the definition'], caption: 'A counterexample is a case that breaks a definition, and that is useful.',
+        another: ['Is a tomato a fruit? That one you can look up; botany has a definition. Is a tomato good? That one depends on you. Is it fair to trade a tomato for an apple? That one you have to think through.',
+          { text: 'Socrates did not write anything down. We know him through his student Plato, who wrote conversations in which Socrates asks and asks and rarely answers.', visual: { kind: 'flow', steps: ['Socrates asks', 'Plato writes it down', 'we read it still'] } },
+          'A reasoned view can be wrong, and that is what makes it worth having: it can be tested, argued with and improved. An opinion about ice cream cannot.'] },
+    },
+    sources: ['Aligned with the Texas College and Career Readiness Standards, Cross-Disciplinary Standards I.A.1 (engage in scholarly inquiry and dialogue), and the Common Core State Standards for English Language Arts, SL.6.1 (engage effectively in a range of collaborative discussions with diverse partners on grade 6 topics, texts, and issues, building on others\' ideas and expressing their own clearly).'],
+    generators: ['p6-questions', 'p6-questions', 'p6-questions', 'p6-questions', 'p6-questions'],
+  },
+  {
+    id: 'reasons-and-evidence',
+    order: 2,
+    title: 'Reasons and evidence',
+    tagline: 'A claim needs a reason, and a reason needs to be relevant and true',
+    requires: ['questions-that-open'],
+    lesson: {
+      paragraphs: ['A claim is something you say is so. A reason is why you say it. The school should start later, because students who sleep more learn more: claim, then reason. A good reason has two properties. It is relevant, meaning it actually bears on the claim, and it is true. The school should start later because the mascot is a hawk is a reason that is true and useless.', 'Some things sound like reasons and are not. Because I said so is an order. Everyone knows is a headcount, not evidence. It feels right is a feeling, and feelings are real but they are not reasons; a reason is something another person could check. Evidence is the checkable part: a measurement, a record, a study, a thing you can point to.', 'Reasons come in strengths. My cousin got sick after eating there is one story, an anecdote. A hundred customers surveyed is a sample. The bigger and fairer the sample, the stronger the evidence. The best question in this course is four words long: how do you know?'],
+      keyIdea: 'A claim needs a reason; a good reason is relevant and true; evidence is the part another person could check. Orders, headcounts and feelings are not reasons. Ask how do you know.',
+      example: { kind: 'flow', steps: ['claim', 'because', 'a relevant, true reason', 'evidence you can check'], caption: 'The shape of a supported claim.',
+        another: ['Relevance is the test most people skip. A reason can be perfectly true and have nothing to do with the claim, like defending a restaurant by pointing out that it has a nice sign.',
+          { text: 'One story is an anecdote; many, gathered fairly, are data. The difference between my cousin and a hundred customers is not that your cousin is lying; it is that one case cannot tell you what usually happens.', visual: { kind: 'flow', steps: ['one story', 'a hundred stories, gathered fairly', 'a pattern'] } },
+          'How do you know is not rude when it is asked with real curiosity. It is the sentence that turns a claim into a conversation.'] },
+    },
+    sources: ['Aligned with the Texas College and Career Readiness Standards, Cross-Disciplinary Standards I.B.1 (consider arguments and conclusions of self and others) and I.B.3 (gather evidence to support arguments, findings, or lines of reasoning), and the Common Core State Standards for English Language Arts, RI.6.8 (trace and evaluate the argument and specific claims in a text, distinguishing claims that are supported by reasons and evidence from claims that are not) and SL.6.3 (delineate a speaker\'s argument and specific claims, distinguishing claims that are supported by reasons and evidence from claims that are not).'],
+    generators: ['p6-reasons', 'p6-reasons', 'p6-reasons', 'p6-reasons', 'p6-reasons'],
+  },
+  {
+    id: 'disagreeing-well',
+    order: 3,
+    title: 'Disagreeing well',
+    tagline: 'How to argue about an idea without arguing with a person',
+    requires: ['reasons-and-evidence'],
+    lesson: {
+      paragraphs: ['A disagreement is two people who hold different reasoned views. It is not a fight, and it is not a contest, though it can turn into either if nobody is careful. The first rule is to listen to understand rather than to answer: repeat the other person\'s view back to them in your own words until they say yes, that is what I mean. Philosophers call this charity, and it is the opposite of arguing against a version you made up.', 'The second rule is to separate the person from the idea. You can think a claim is wrong and think the person is smart, kind and worth listening to, all at the same time. Attack the reason, never the person who gave it. The third rule is the strange one: changing your mind when the reasons are better is not losing. It is the whole point, and it takes more courage than holding on.', 'This is very old practice. Plato, in the 300s BC, wrote philosophy as dialogues, conversations in which people ask, answer, object and change their minds in front of each other. A class can make its own rules for it: one voice at a time, reasons not volume, and build on what was said before you knock it down.'],
+      keyIdea: 'Listen to understand, and say the view back until they agree that is it. Attack the reason, never the person. Changing your mind for better reasons is the point, not a loss.',
+      example: { kind: 'flow', steps: ['their view, in your words', 'yes, that is what I mean', 'your reason against it', 'their reason back'], caption: 'A disagreement that stays about the idea.',
+        another: ['"So you are saying..." is the most useful sentence in a disagreement, as long as you finish it honestly and wait for the answer.',
+          { text: 'Volume is not a reason. If a point is only convincing when it is shouted, it was not the point that convinced anyone.', visual: { kind: 'flow', steps: ['quiet reason', 'loud reason', 'same reason'] } },
+          'Plato\'s dialogues end without a neat answer more often than not. The people in them are better thinkers at the end anyway, which is the result that counts.'] },
+    },
+    sources: ['Aligned with the Texas College and Career Readiness Standards, Cross-Disciplinary Standards I.A.2 (accept constructive criticism and revise personal views when valid evidence warrants) and I.E.2 (work collaboratively), and the Common Core State Standards for English Language Arts, SL.6.1.'],
+    generators: ['p6-disagree', 'p6-disagree', 'p6-disagree', 'p6-disagree', 'p6-disagree'],
+  },
+  {
+    id: 'fair-and-unfair',
+    order: 4,
+    title: 'Fair and unfair',
+    tagline: 'Equal shares, shares by need, shares by work, and a test you can run at any table',
+    requires: ['disagreeing-well'],
+    lesson: {
+      paragraphs: ['Everyone knows unfair when it happens to them, and almost nobody can say what fair is. Try it with a cake and four people. Equal shares: everyone gets a quarter. Shares by need: the one who missed lunch gets more. Shares by work: the one who baked it gets more. Each of the three is fair by one rule and unfair by another, which is why arguments about fairness are really arguments about which rule fits the case.', 'Rules need exceptions, and exceptions need reasons. No running in the hall is a good rule until the building is on fire. A fair rule is one whose exceptions can be explained to everyone it applies to, and a fair exception is one you would grant to anybody in the same spot, not only to your friend.', 'Two tests have lasted a very long time. The golden rule, treat others as you would want to be treated, appears in many traditions; Confucius, in China about 2,500 years ago, put it as do not impose on others what you would not want for yourself. The other test is to ask whether you would accept the rule if you did not know which person you would be: the one who cuts the cake, or the one who has to choose last.'],
+      keyIdea: 'Equal shares, by need or by work are three different rules, and fairness arguments are about which fits. A fair exception is one you would grant to anyone in the same spot. Would you accept the rule not knowing which person you would be?',
+      example: { kind: 'flow', steps: ['one cake, four people', 'equal, by need, or by work?', 'which rule fits this case?'], caption: 'Fairness is a choice of rule, and the choice needs a reason.',
+        another: ['The divider chooses last is the oldest fairness trick there is: whoever cuts the cake has every reason to cut it evenly.',
+          { text: 'A rule with no exceptions is not stricter, only blinder. A rule with exceptions nobody can explain is not kinder, only unfair.', visual: { kind: 'flow', steps: ['the rule', 'the exception', 'the reason everyone can hear'] } },
+          'If you would not accept a rule as the person at the bottom of it, you have found out something about the rule.'] },
+    },
+    sources: ['Aligned with the Texas College and Career Readiness Standards, Cross-Disciplinary Standards I.B.2 (construct well-reasoned arguments to explain phenomena, validate conjectures, or support positions) and I.F.3 (include the ideas of others and the complexities of the debate, issue, or conflict), and the Common Core State Standards for English Language Arts, W.6.1 (write arguments to support claims with clear reasons and relevant evidence).'],
+    generators: ['p6-fair', 'p6-fair', 'p6-fair', 'p6-fair', 'p6-fair'],
+  },
+]; }
+function PHIL9_MODULES() { return [
+  {
+    id: 'what-is-an-argument',
+    order: 1,
+    title: 'What is an argument',
+    tagline: 'Premises, a conclusion, and the two questions to ask of any argument',
+    requires: [],
+    lesson: {
+      paragraphs: ['In philosophy an argument is not a quarrel. It is a set of statements, the premises, offered as reasons for another statement, the conclusion. All humans are mortal; Socrates is a human; therefore Socrates is mortal. Two premises, one conclusion, and the conclusion cannot be false if the premises are true.', 'That property is called validity. A valid argument is one whose form guarantees the conclusion when the premises hold. Validity says nothing about whether the premises are actually true. An argument that is valid and has true premises is sound, and soundness is what you want.\nTwo forms carry most everyday reasoning. Modus ponens: if P then Q; P; therefore Q. Modus tollens: if P then Q; not Q; therefore not P.', 'Not all good arguments are valid. An inductive argument moves from many cases to a general claim, the sun has risen every day, so it will rise tomorrow, and its conclusion is probable rather than guaranteed. Deduction gives certainty from form; induction gives likelihood from evidence. Ask two questions of any argument: is the form valid, and are the premises true? Most bad arguments fail one of them, and many hide a premise nobody stated.'],
+      keyIdea: 'An argument is premises offered for a conclusion. Valid means the form guarantees the conclusion; sound means valid with true premises. Deduction gives certainty; induction gives likelihood.',
+      example: { kind: 'flow', steps: ['if P then Q', 'P', 'therefore Q'], caption: 'Modus ponens: the form that carries most everyday reasoning.',
+        another: ['A valid argument with a false premise is a well-built house on sand. If all birds can fly, and penguins are birds, then penguins can fly: valid, and wrong, because the first premise is false.',
+          { text: 'Modus tollens works backward. If the alarm were on, the light would be red. The light is not red. So the alarm is not on.', visual: { kind: 'flow', steps: ['if P then Q', 'not Q', 'therefore not P'] } },
+          'The hidden premise is the one to hunt for. "She is late, so she does not care" only works with an unstated premise: people who care are never late. Say it out loud and it collapses.'] },
+    },
+    sources: ['Aligned with the Texas College and Career Readiness Standards, Cross-Disciplinary Standards I.B.1 (consider arguments and conclusions of self and others) and I.B.2 (construct well-reasoned arguments to explain phenomena, validate conjectures, or support positions), and the Common Core State Standards for English Language Arts, RI.9-10.8 (delineate and evaluate the argument and specific claims in a text, assessing whether the reasoning is valid and the evidence is relevant and sufficient).'],
+    generators: ['ph-argument', 'ph-argument', 'ph-argument', 'ph-argument', 'ph-argument'],
+  },
+  {
+    id: 'the-usual-mistakes',
+    order: 2,
+    title: 'The usual mistakes',
+    tagline: 'Nine fallacies to recognize, and the habit of arguing against the strongest version',
+    requires: ['what-is-an-argument'],
+    lesson: {
+      paragraphs: ['A fallacy is a mistake in reasoning that looks like reasoning. The ad hominem attacks the person instead of the claim. The straw man answers a weaker argument than the one that was made. The false dilemma offers two choices when there are more. The slippery slope says one step must lead to the bottom of the hill without showing why.', 'The appeal to popularity says many people believe it, so it is true. The appeal to authority cites an expert outside their field. Circular reasoning uses the conclusion as a premise. The hasty generalization draws a rule from too few cases. And confusing correlation with causation treats two things that happen together as if one caused the other, when ice cream sales and drownings both rise in summer for a third reason, the heat.', 'The cure for most of them is a habit called the principle of charity: before you answer an argument, state it in its strongest form, the form its maker would accept, and answer that. The person who makes a claim carries the burden of proof; asking for the evidence is not rude, it is the whole game.'],
+      keyIdea: 'A fallacy is a mistake that looks like reasoning: ad hominem, straw man, false dilemma, slippery slope, popularity, misplaced authority, circularity, hasty generalization, correlation as cause. Answer the strongest version; the claimant carries the burden of proof.',
+      example: { kind: 'flow', steps: ['ice cream sales rise', 'drownings rise', 'a third thing: summer heat'], caption: 'Correlation is not cause when a third thing moves both.',
+        another: ['The straw man is the most common mistake in an argument between friends: you answer the version that is easy to beat. The fix is to repeat their claim back until they say yes, that is what I mean.',
+          { text: 'A false dilemma hides the third door. Either we cut the budget or we go broke leaves out the door most towns walk through: raise the revenue.', visual: { kind: 'flow', steps: ['door one', 'door two', 'the door they hid'] } },
+          'An expert is evidence inside their field and an ordinary citizen outside it. A famous physicist on diet is a famous physicist, not a dietitian.'] },
+    },
+    sources: ['Aligned with the Texas College and Career Readiness Standards, Cross-Disciplinary Standards I.B.1 (consider arguments and conclusions of self and others) and I.F.2 (evaluate sources for quality of content, validity, credibility, and relevance), and the Common Core State Standards for English Language Arts, SL.9-10.3 (evaluate a speaker\'s point of view, reasoning, and use of evidence and rhetoric, identifying any fallacious reasoning or exaggerated or distorted evidence).'],
+    generators: ['ph-fallacy', 'ph-fallacy', 'ph-fallacy', 'ph-fallacy', 'ph-fallacy'],
+  },
+  {
+    id: 'what-can-we-know',
+    order: 3,
+    title: 'What can we know',
+    tagline: 'Belief, knowledge, doubt, and the test a real claim can fail',
+    requires: ['the-usual-mistakes'],
+    lesson: {
+      paragraphs: ['You believe many things. Knowledge is the smaller set: for most of philosophy\'s history, a belief that is true and that you hold for good reasons, a justified true belief. In 1963 Edmund Gettier showed in three pages that you can have all three and still be lucky rather than knowing, and philosophers have argued about the fourth ingredient since.', 'Where do beliefs come from? Perception, memory, testimony, and reason. Each can fail. In 1641 René Descartes asked how he could be sure he was not dreaming, or deceived by a demon, and found one thing that survived the doubt: that he was thinking. In 1748 David Hume pointed out that induction has no proof behind it; the sun has always risen, and that is a habit, not a guarantee.', 'Science answers doubt with method. In the 1930s Karl Popper argued that a real scientific claim is one that could be shown false, that says in advance what would count against it; a claim that fits every possible outcome tells you nothing. William of Ockham, in the 1300s, gave the other working rule: when two explanations fit the facts, prefer the one with fewer assumptions. Doubt is not the enemy of knowledge. It is the tool that makes it.'],
+      keyIdea: 'Knowledge has been called justified true belief, and Gettier showed the recipe can still miss. Perception, memory, testimony and reason can each fail. A real claim says what would prove it false; prefer the explanation with fewer assumptions.',
+      example: { kind: 'flow', steps: ['a claim', 'what would prove it false?', 'a test', 'it survives, or it goes'], caption: 'Popper: a claim that nothing could count against says nothing.',
+        another: ['A horoscope that says you will face a challenge this week can never be wrong, which is exactly why it is not knowledge. A weather forecast that says rain by three can be wrong by four, which is why it is worth having.',
+          { text: 'Occam\'s razor is not "the simplest answer is true." It is "do not add assumptions you do not need." The car will not start: a dead battery needs one assumption; a thief who drained it and left needs three.', visual: { kind: 'flow', steps: ['two explanations fit', 'count the assumptions', 'prefer the fewer'] } },
+          'Testimony is how you know almost everything, from the shape of Australia to your own birthday. The question is never whether to trust testimony, but whose, and about what.'] },
+    },
+    sources: ['Aligned with the Texas College and Career Readiness Standards, Cross-Disciplinary Standards I.A.1 (engage in scholarly inquiry and dialogue), I.B.3 (gather evidence to support arguments, findings, or lines of reasoning) and I.B.4 (support or modify claims based on the results of an inquiry), and the Common Core State Standards for English Language Arts, RI.9-10.8.'],
+    generators: ['ph-know', 'ph-know', 'ph-know', 'ph-know', 'ph-know'],
+  },
+  {
+    id: 'how-should-we-live',
+    order: 4,
+    title: 'How should we live',
+    tagline: 'Three ways to decide what is right, and a switch on a railway line',
+    requires: ['what-can-we-know'],
+    lesson: {
+      paragraphs: ['Ethics asks what makes an action right. Three answers have lasted. Consequentialism says an action is right when its results are best; John Stuart Mill\'s version, utilitarianism, published in 1861, counts the greatest happiness for the greatest number. Deontology says some acts are right or wrong in themselves; Immanuel Kant, in 1785, gave the test: act only on a rule you could will everyone to follow, and never treat a person merely as a means.', 'Virtue ethics, the oldest of the three, comes from Aristotle in the fourth century BC: the question is not which rule but what kind of person to be, and courage, honesty and generosity are habits built by practice, each a mean between two extremes, courage between cowardice and recklessness.', 'The three answers pull apart in hard cases. In 1967 Philippa Foot imagined a runaway trolley that will kill five people unless you divert it onto a track where it will kill one. The consequentialist pulls the switch, five against one. The deontologist asks whether pulling it uses the one person as a means. And John Rawls, in 1971, offered a way to think about fairness: design the rules as if you did not yet know which person in the society you would be. Behind that veil of ignorance, you protect the worst-off, because the worst-off might be you.'],
+      keyIdea: 'Consequences, duties, or character: Mill counts results, Kant tests the rule, Aristotle asks what kind of person to be. Rawls designs fair rules from behind a veil of ignorance.',
+      example: { kind: 'flow', steps: ['the trolley', 'five on one track, one on the other', 'pull the switch?'], caption: 'The three answers give different reasons, and sometimes different acts.',
+        another: ['Kant\'s test on a small lie: could you will a world where everyone lies whenever it is convenient? In that world nobody believes anyone, so the lie would not even work. The rule fails its own test.',
+          { text: 'Aristotle\'s mean is not the middle of every road. Courage sits between cowardice and recklessness, but there is no right amount of cruelty; some acts have no mean at all.', visual: { kind: 'flow', steps: ['cowardice', 'courage', 'recklessness'] } },
+          'The veil of ignorance is a thought experiment you can run at a dinner table: divide the cake, then let the divider choose last.'] },
+    },
+    sources: ['Aligned with the Texas College and Career Readiness Standards, Cross-Disciplinary Standards I.A.2 (accept constructive criticism and revise personal views when valid evidence warrants), I.F.3 (include the ideas of others and the complexities of the debate, issue, or conflict) and I.F.4 (understand and adhere to ethical codes of conduct), and the Common Core State Standards for English Language Arts, W.9-10.1 (write arguments to support claims in an analysis of substantive topics or texts, using valid reasoning and relevant and sufficient evidence).'],
+    generators: ['ph-ethics', 'ph-ethics', 'ph-ethics', 'ph-ethics', 'ph-ethics'],
+  },
+]; }
 function TECH3_MODULES() { return [
   {
     id: 'inputs-and-outputs',
@@ -13681,6 +13894,93 @@ Object.assign(GENERATORS, {
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
   // Personal finance, grades 9 to 12 (2026-09-29, pass FY): dollars computed each time; concepts said in the lesson first.
+  // Philosophy, grades 9 to 12 (2026-09-29, pass GI): every answer is said in its lesson first.
+  // Philosophy, grades 6 to 8 (2026-09-29, pass GJ): every answer is said in its lesson first.
+  'p6-questions': (rng) => {
+    const Q = [['Which of these is a philosophical question?', ['What is fairness?', 'What is the capital of Texas?', 'How tall is the school?', 'What year is it?'], 'What is fairness?', 'Nobody can look that up; you have to think it through.'],
+      ['Socrates made a habit of asking people what?', ['what they meant by the words they used', 'where they were born', 'how much money they had', 'who their teachers were'], 'what they meant by the words they used', 'Someone would say a brave act, and he would ask what bravery was.'],
+      ['When was Socrates put to death?', ['399 BC', '1641', '1861', '1971'], '399 BC', 'Partly for asking too many questions, and the questions outlived him.'],
+      ['A case that breaks a definition is called what?', ['a counterexample', 'an opinion', 'a fact', 'a headcount'], 'a counterexample', 'If a sandwich is filling between two pieces of bread, is a hot dog a sandwich?'],
+      ['A position you can give reasons for and change if the reasons fail is called what?', ['a reasoned view', 'an opinion', 'a fact', 'a taste'], 'a reasoned view', 'Facts can be checked, opinions are tastes, and a reasoned view is neither.'],
+      ['How do we know Socrates, who wrote nothing down?', ['through his student Plato', 'through his diary', 'through a film', 'through a statue only'], 'through his student Plato', 'Plato wrote conversations in which Socrates asks and asks and rarely answers.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'p6-reasons': (rng) => {
+    const Q = [['A good reason has which two properties?', ['relevant and true', 'loud and long', 'old and famous', 'short and funny'], 'relevant and true', 'It bears on the claim, and it is so.'],
+      ['The school should start later because the mascot is a hawk. What is wrong with that reason?', ['it is not relevant', 'it is false', 'it is too long', 'nothing'], 'it is not relevant', 'True and useless: it has nothing to do with the claim.'],
+      ['Because I said so is what?', ['an order', 'a reason', 'evidence', 'a sample'], 'an order', 'An order is not a reason.'],
+      ['Everyone knows is what?', ['a headcount', 'a reason', 'a measurement', 'a study'], 'a headcount', 'A headcount is not evidence.'],
+      ['The checkable part of a reason is called what?', ['evidence', 'a feeling', 'a claim', 'an order'], 'evidence', 'A measurement, a record, a study, a thing you can point to.'],
+      ['My cousin got sick after eating there. That is what kind of evidence?', ['an anecdote', 'a sample', 'a survey', 'a study'], 'an anecdote', 'One story is an anecdote; a hundred customers surveyed is a sample.'],
+      ['What is the best question in this course?', ['how do you know?', 'who says?', 'why bother?', 'what time is it?'], 'how do you know?', 'Four words that turn a claim into a conversation.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'p6-disagree': (rng) => {
+    const Q = [['The first rule of disagreeing well is to listen to do what?', ['understand', 'answer', 'win', 'interrupt'], 'understand', 'Repeat their view back in your own words until they say yes, that is what I mean.'],
+      ['Repeating a view back until the other person agrees that is it is called what?', ['charity', 'volume', 'a counterexample', 'a headcount'], 'charity', 'It is the opposite of arguing against a version you made up.'],
+      ['The second rule is to separate what from what?', ['the person from the idea', 'the loud from the quiet', 'the old from the new', 'the fact from the date'], 'the person from the idea', 'Attack the reason, never the person who gave it.'],
+      ['Changing your mind when the reasons are better is what?', ['the whole point', 'losing', 'cheating', 'rude'], 'the whole point', 'It takes more courage than holding on.'],
+      ['Plato wrote philosophy as what?', ['dialogues', 'poems', 'lists', 'maps'], 'dialogues', 'Conversations in which people ask, answer, object and change their minds.'],
+      ['Which is a good class rule for disagreeing?', ['reasons not volume', 'loudest wins', 'no questions', 'never change your mind'], 'reasons not volume', 'One voice at a time, reasons not volume, and build before you knock down.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'p6-fair': (rng) => {
+    const Q = [['The one who missed lunch gets more cake. Which rule is that?', ['shares by need', 'equal shares', 'shares by work', 'no shares'], 'shares by need', 'Each rule is fair by one measure and unfair by another.'],
+      ['The one who baked the cake gets more. Which rule is that?', ['shares by work', 'shares by need', 'equal shares', 'shares by age'], 'shares by work', 'Fairness arguments are about which rule fits the case.'],
+      ['Arguments about fairness are really arguments about what?', ['which rule fits the case', 'who is oldest', 'who is loudest', 'who cut the cake'], 'which rule fits the case', 'Equal, by need, or by work.'],
+      ['A fair exception is one you would grant to whom?', ['anybody in the same spot', 'only your friend', 'nobody', 'only yourself'], 'anybody in the same spot', 'Exceptions need reasons everyone can hear.'],
+      ['Who put the golden rule as do not impose on others what you would not want for yourself?', ['Confucius', 'Socrates', 'Plato', 'Kant'], 'Confucius', 'In China, about 2,500 years ago.'],
+      ['Whoever cuts the cake should do what?', ['choose last', 'choose first', 'eat it all', 'hide it'], 'choose last', 'Whoever cuts has every reason to cut it evenly.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'ph-argument': (rng) => {
+    const Q = [['In philosophy, an argument is what?', ['premises offered for a conclusion', 'a quarrel', 'a single opinion', 'a question with no answer'], 'premises offered for a conclusion', 'A set of statements, the premises, offered as reasons for another statement, the conclusion.'],
+      ['An argument whose form guarantees the conclusion when the premises hold is called what?', ['valid', 'sound', 'inductive', 'popular'], 'valid', 'Validity is about form, not about whether the premises are true.'],
+      ['A valid argument with true premises is called what?', ['sound', 'valid', 'inductive', 'circular'], 'sound', 'Sound means valid with true premises, and soundness is what you want.'],
+      ['If P then Q; P; therefore Q. Which form is that?', ['modus ponens', 'modus tollens', 'induction', 'a false dilemma'], 'modus ponens', 'Modus ponens carries most everyday reasoning.'],
+      ['If P then Q; not Q; therefore not P. Which form is that?', ['modus tollens', 'modus ponens', 'a hasty generalization', 'a straw man'], 'modus tollens', 'Modus tollens works backward from a missing Q.'],
+      ['The sun has risen every day, so it will rise tomorrow. That argument is which kind?', ['inductive', 'deductive', 'circular', 'sound'], 'inductive', 'Induction moves from many cases to a general claim; its conclusion is probable, not guaranteed.'],
+      ['All birds can fly; penguins are birds; so penguins can fly. What is wrong with it?', ['a premise is false', 'the form is invalid', 'nothing', 'the conclusion is a question'], 'a premise is false', 'The form is valid; the first premise is false, so the argument is not sound.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'ph-fallacy': (rng) => {
+    const Q = [['Attacking the person instead of the claim is which fallacy?', ['ad hominem', 'straw man', 'false dilemma', 'slippery slope'], 'ad hominem', 'The ad hominem attacks the person instead of the claim.'],
+      ['Answering a weaker argument than the one that was made is which fallacy?', ['straw man', 'ad hominem', 'circular reasoning', 'appeal to popularity'], 'straw man', 'The straw man answers a weaker argument than the one that was made.'],
+      ['Offering two choices when there are more is which fallacy?', ['false dilemma', 'slippery slope', 'hasty generalization', 'straw man'], 'false dilemma', 'The false dilemma hides the third door.'],
+      ['Ice cream sales and drownings both rise in summer. Concluding that one causes the other is which mistake?', ['confusing correlation with causation', 'a false dilemma', 'an ad hominem', 'a straw man'], 'confusing correlation with causation', 'A third thing, the heat, moves both.'],
+      ['Using the conclusion as a premise is which fallacy?', ['circular reasoning', 'slippery slope', 'appeal to authority', 'hasty generalization'], 'circular reasoning', 'Circular reasoning uses the conclusion as a premise.'],
+      ['Stating an argument in its strongest form before answering it is called what?', ['the principle of charity', 'the burden of proof', 'modus ponens', 'the straw man'], 'the principle of charity', 'Answer the form its maker would accept.'],
+      ['Who carries the burden of proof?', ['the person who makes a claim', 'the person who doubts it', 'the oldest person', 'the loudest person'], 'the person who makes a claim', 'Asking for the evidence is not rude; it is the whole game.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'ph-know': (rng) => {
+    const Q = [['For most of its history, philosophy called knowledge what?', ['justified true belief', 'any strong belief', 'whatever experts say', 'perception alone'], 'justified true belief', 'A belief that is true and held for good reasons.'],
+      ['Who showed in 1963 that justified true belief can still be luck?', ['Edmund Gettier', 'René Descartes', 'David Hume', 'Karl Popper'], 'Edmund Gettier', 'Three pages, and philosophers have argued about the fourth ingredient since.'],
+      ['Who asked in 1641 how he could be sure he was not dreaming?', ['René Descartes', 'Aristotle', 'John Rawls', 'William of Ockham'], 'René Descartes', 'One thing survived the doubt: that he was thinking.'],
+      ['Who pointed out in 1748 that induction has no proof behind it?', ['David Hume', 'Immanuel Kant', 'Edmund Gettier', 'Karl Popper'], 'David Hume', 'The sun has always risen, and that is a habit, not a guarantee.'],
+      ['According to Popper, a real scientific claim is one that could be what?', ['shown false', 'proven forever', 'believed by everyone', 'repeated often'], 'shown false', 'A claim that fits every possible outcome tells you nothing.'],
+      ['When two explanations fit the facts, Ockham\'s rule says prefer which?', ['the one with fewer assumptions', 'the older one', 'the more popular one', 'the more surprising one'], 'the one with fewer assumptions', 'Do not add assumptions you do not need.'],
+      ['Which of these is a source of belief that can fail?', ['testimony', 'nothing', 'only dreams', 'only rumors'], 'testimony', 'Perception, memory, testimony and reason can each fail.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'ph-ethics': (rng) => {
+    const Q = [['Consequentialism says an action is right when what?', ['its results are best', 'a rule allows it', 'a good person would do it', 'it is popular'], 'its results are best', 'Mill\'s utilitarianism counts the greatest happiness for the greatest number.'],
+      ['Whose test says act only on a rule you could will everyone to follow?', ['Immanuel Kant', 'John Stuart Mill', 'Aristotle', 'Philippa Foot'], 'Immanuel Kant', 'Kant, in 1785, and never treat a person merely as a means.'],
+      ['Virtue ethics asks which question?', ['what kind of person to be', 'which rule to follow', 'which result is best', 'who is watching'], 'what kind of person to be', 'Courage, honesty and generosity are habits built by practice.'],
+      ['For Aristotle, courage sits between which two extremes?', ['cowardice and recklessness', 'greed and generosity', 'silence and noise', 'fear and anger'], 'cowardice and recklessness', 'Each virtue is a mean between two extremes.'],
+      ['Who imagined the runaway trolley in 1967?', ['Philippa Foot', 'John Rawls', 'Immanuel Kant', 'David Hume'], 'Philippa Foot', 'Five people on one track, one on the other, and a switch.'],
+      ['Rawls\'s veil of ignorance asks you to design rules as if what?', ['you did not know which person you would be', 'you were the richest', 'you were the judge', 'you would never be affected'], 'you did not know which person you would be', 'Behind the veil you protect the worst-off, because the worst-off might be you.'],
+      ['When was Mill\'s Utilitarianism published?', ['1861', '1641', '1971', '1785'], '1861', 'John Stuart Mill, 1861.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
   'e9-pay': (rng) => {
     const r = rng();
     if (r < 0.4) {
@@ -21336,6 +21636,36 @@ export const WONDER = [
     closing: 'Which criterion would you work on first, and how?',
   },
   {
+    id: 'w-teen-hot-dog-sandwich',
+    theme: 'world',
+    stage: 'teen',
+    courseIds: ['philosophy-6'],
+    answerMode: 'typed',
+    prompt: 'Is a hot dog a sandwich? Before you answer: what would settle it?',
+    perspectives: [
+      { voice: 'A scientist', says: 'Nothing settles it until you agree on a definition, and that is the real lesson. Write the definition down first; then the hot dog either fits or it does not, and the argument is over.' },
+      { voice: 'An artist', says: 'It is a lovely argument because nobody gets hurt and everybody learns how definitions work. Argue it hard for ten minutes, then notice that you never once needed the answer.' },
+      { voice: 'A grandparent of faith', says: 'My grandmother called it a sausage in a roll and was not troubled. Some questions are for sharpening the mind, not for winning. Enjoy this one for a while, and then eat.' },
+      { voice: 'A skeptic', says: 'Anyone who is certain has smuggled in a definition without saying so. Ask them for it out loud. Whatever they answer, find the case that breaks it, and watch the certainty go.' },
+    ],
+    closing: 'What definition of a sandwich would you defend, and what breaks it?',
+  },
+  {
+    id: 'w-teen-lost-the-argument',
+    theme: 'failure',
+    stage: 'teen',
+    courseIds: ['philosophy-6'],
+    answerMode: 'typed',
+    prompt: 'You changed your mind in the middle of a class debate and someone said you lost. Did you?',
+    perspectives: [
+      { voice: 'A scientist', says: 'You updated on better evidence in public, which is the rarest and most valuable move in any argument. The person who called it losing was keeping score in a game you were not playing.' },
+      { voice: 'An artist', says: 'The most interesting person in any room is the one who can say I had that wrong. It looks like weakness for about a minute and like strength for the rest of your life.' },
+      { voice: 'A grandparent of faith', says: 'Holding a wrong idea to save face is the real loss, and it is a slow one. You paid a small price up front. That is a bargain, and someday they will see it.' },
+      { voice: 'A skeptic', says: 'Ask yourself what you actually lost. You did not lose the truth; you got closer to it. You did not lose your reasons; you found better ones. You lost a scoreboard, and scoreboards were never the point of thinking.' },
+    ],
+    closing: 'What reason changed your mind, and would you give it again?',
+  },
+  {
     id: 'w-teen-sure-and-wrong',
     theme: 'failure',
     stage: 'teen',
@@ -21394,6 +21724,36 @@ export const WONDER = [
       { voice: 'A skeptic', says: 'A review nobody dislikes is an advertisement. If the criteria were fair and the evidence real, the silence is the cost of doing the job. If they were not, the silence is deserved. Only you know which one it was.' },
     ],
     closing: 'What would you change in the review, and what would you keep?',
+  },
+  {
+    id: 'w-grown-everyone-agrees',
+    theme: 'world',
+    stage: 'grown',
+    courseIds: ['philosophy-9'],
+    answerMode: 'typed',
+    prompt: 'Everyone in the room agrees with a claim and you have one doubt. Do you say it?',
+    perspectives: [
+      { voice: 'A scientist', says: 'Say it, and say it as a question about evidence rather than a verdict. A room that agrees has not tested anything yet; your doubt is the first test the claim will get.' },
+      { voice: 'An artist', says: 'The one doubt in a room is usually where the interesting thing is hiding. Say it gently, and watch who leans in. Those are the people worth talking to afterward.' },
+      { voice: 'A grandparent of faith', says: 'Agreement is warm and doubt is cold, and you will be tempted to stay warm. Say it anyway, with respect, because a friend who never disagrees is only company.' },
+      { voice: 'A skeptic', says: 'Ask who carries the burden of proof. If the claim came without evidence, your doubt is not rude; it is the only honest thing in the room. Ask for the reasons and let them answer.' },
+    ],
+    closing: 'How would you word the doubt so the room could hear it?',
+  },
+  {
+    id: 'w-grown-won-the-wrong-way',
+    theme: 'failure',
+    stage: 'grown',
+    courseIds: ['philosophy-9'],
+    answerMode: 'typed',
+    prompt: 'You won an argument by attacking the person instead of the claim, and later realized it. What now?',
+    perspectives: [
+      { voice: 'A scientist', says: 'You did not win the argument; you won the room, which is a different prize. Go back to the claim, answer it properly, and if you cannot, say so. That correction is worth more than the win was.' },
+      { voice: 'An artist', says: 'Everyone has done it at least once. The good ones are the ones who notice. Tell the person you got them, not their idea, and ask them to make the case again. Most people will, and some become friends over it.' },
+      { voice: 'A grandparent of faith', says: 'A cheap victory costs more later than an honest loss costs now. Apologize plainly, without a speech, and then argue the claim on its merits. That is how a person becomes trustworthy.' },
+      { voice: 'A skeptic', says: 'The claim is still standing; you never touched it. Write down the strongest version of what they said and answer that on paper. If it beats you, you learned something, and that was the point.' },
+    ],
+    closing: 'What is the strongest version of the claim you dodged?',
   },
   {
     id: 'w-grown-fund-or-fun',
@@ -24378,7 +24738,9 @@ export const COURSE_GAMES = {
   'arts-3': ['pattern-arts-3'],
   'arts-6': ['shape-arts-6'],
   'econ-6': ['loan-econ-6'],
+  'philosophy-6': ['reason-philosophy-6'],
   'econ-9': ['fund-econ-9'],
+  'philosophy-9': ['valid-philosophy-9'],
   'arts-9': ['chord-arts-9'],
   'tech-6': ['teach-tech-6'],
   'tech-college': ['search-tech-college'],

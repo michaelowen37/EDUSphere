@@ -1352,6 +1352,24 @@ export const CURRICULUM = [
     ],
   },
   {
+    grade: '9', subject: 'Philosophy', status: 'ready',
+    source: 'Texas has no philosophy standard, so the Texas column carries the Texas College and Career Readiness Standards, Cross-Disciplinary Standards (2009), Key Cognitive Skills, for the philosophy course of the 9 to 12 band; the national column carries the Common Core State Standards for English Language Arts anchor standards for argument, grades 9 to 10.',
+    standards: [
+      { framework: 'TEKS', code: 'CCRS I.A.1', text: 'Engage in scholarly inquiry and dialogue.', moduleIds: ['what-can-we-know'] },
+      { framework: 'TEKS', code: 'CCRS I.A.2', text: 'Accept constructive criticism and revise personal views when valid evidence warrants.', moduleIds: ['how-should-we-live'] },
+      { framework: 'TEKS', code: 'CCRS I.B.1', text: 'Consider arguments and conclusions of self and others.', moduleIds: ['what-is-an-argument', 'the-usual-mistakes'] },
+      { framework: 'TEKS', code: 'CCRS I.B.2', text: 'Construct well-reasoned arguments to explain phenomena, validate conjectures, or support positions.', moduleIds: ['what-is-an-argument'] },
+      { framework: 'TEKS', code: 'CCRS I.B.3', text: 'Gather evidence to support arguments, findings, or lines of reasoning.', moduleIds: ['what-can-we-know'] },
+      { framework: 'TEKS', code: 'CCRS I.B.4', text: 'Support or modify claims based on the results of an inquiry.', moduleIds: ['what-can-we-know'] },
+      { framework: 'TEKS', code: 'CCRS I.F.2', text: 'Evaluate sources for quality of content, validity, credibility, and relevance.', moduleIds: ['the-usual-mistakes'] },
+      { framework: 'TEKS', code: 'CCRS I.F.3', text: 'Include the ideas of others and the complexities of the debate, issue, or conflict.', moduleIds: ['how-should-we-live'] },
+      { framework: 'TEKS', code: 'CCRS I.F.4', text: 'Understand and adhere to ethical codes of conduct.', moduleIds: ['how-should-we-live'] },
+      { framework: 'CCSS', code: 'RI.9-10.8', text: 'Delineate and evaluate the argument and specific claims in a text, assessing whether the reasoning is valid and the evidence is relevant and sufficient; identify false statements and fallacious reasoning.', moduleIds: ['what-is-an-argument', 'what-can-we-know'] },
+      { framework: 'CCSS', code: 'SL.9-10.3', text: 'Evaluate a speaker\'s point of view, reasoning, and use of evidence and rhetoric, identifying any fallacious reasoning or exaggerated or distorted evidence.', moduleIds: ['the-usual-mistakes'] },
+      { framework: 'CCSS', code: 'W.9-10.1', text: 'Write arguments to support claims in an analysis of substantive topics or texts, using valid reasoning and relevant and sufficient evidence.', moduleIds: ['how-should-we-live'] },
+    ],
+  },
+  {
     grade: '9', subject: 'Economics', status: 'ready',
     source: 'Texas Essential Knowledge and Skills, Social Studies, Personal Financial Literacy (§113.49, Adopted 2016, one-half credit, recommended for grades 10 to 12), the course for the 9 to 12 band beside the grade 12 economics course; Voluntary National Content Standards in Economics (Council for Economic Education), the national framework, shown in the Common Core column.',
     standards: [
@@ -1431,6 +1449,23 @@ export const CURRICULUM = [
       { framework: 'CCSS', code: 'NCAS MU:Re7.2.6a', text: 'Describe how the elements of music and expressive qualities relate to the structure of the pieces.', moduleIds: ['the-language-of-the-score'] },
       { framework: 'CCSS', code: 'NCAS MU:Re9.1.6a', text: 'Apply teacher-provided criteria to evaluate musical works or performances.', moduleIds: ['judging-a-performance'] },
       { framework: 'CCSS', code: 'NCAS MU:Cn11.0.6a', text: 'Demonstrate understanding of relationships between music and the other arts, other disciplines, varied contexts, and daily life.', moduleIds: ['judging-a-performance'] },
+    ],
+  },
+  {
+    grade: '6', subject: 'Philosophy', status: 'ready',
+    source: 'Texas has no philosophy standard, so the Texas column carries the Texas College and Career Readiness Standards, Cross-Disciplinary Standards (2009), Key Cognitive Skills, for the philosophy course of the 6 to 8 band; the national column carries the Common Core State Standards for English Language Arts, grade 6, for argument and discussion.',
+    standards: [
+      { framework: 'TEKS', code: 'CCRS I.A.1', text: 'Engage in scholarly inquiry and dialogue.', moduleIds: ['questions-that-open'] },
+      { framework: 'TEKS', code: 'CCRS I.A.2', text: 'Accept constructive criticism and revise personal views when valid evidence warrants.', moduleIds: ['disagreeing-well'] },
+      { framework: 'TEKS', code: 'CCRS I.B.1', text: 'Consider arguments and conclusions of self and others.', moduleIds: ['reasons-and-evidence'] },
+      { framework: 'TEKS', code: 'CCRS I.B.2', text: 'Construct well-reasoned arguments to explain phenomena, validate conjectures, or support positions.', moduleIds: ['fair-and-unfair'] },
+      { framework: 'TEKS', code: 'CCRS I.B.3', text: 'Gather evidence to support arguments, findings, or lines of reasoning.', moduleIds: ['reasons-and-evidence'] },
+      { framework: 'TEKS', code: 'CCRS I.E.2', text: 'Work collaboratively.', moduleIds: ['disagreeing-well'] },
+      { framework: 'TEKS', code: 'CCRS I.F.3', text: 'Include the ideas of others and the complexities of the debate, issue, or conflict.', moduleIds: ['fair-and-unfair'] },
+      { framework: 'CCSS', code: 'SL.6.1', text: 'Engage effectively in a range of collaborative discussions (one-on-one, in groups, and teacher-led) with diverse partners on grade 6 topics, texts, and issues, building on others\' ideas and expressing their own clearly.', moduleIds: ['questions-that-open', 'disagreeing-well'] },
+      { framework: 'CCSS', code: 'RI.6.8', text: 'Trace and evaluate the argument and specific claims in a text, distinguishing claims that are supported by reasons and evidence from claims that are not.', moduleIds: ['reasons-and-evidence'] },
+      { framework: 'CCSS', code: 'SL.6.3', text: 'Delineate a speaker\'s argument and specific claims, distinguishing claims that are supported by reasons and evidence from claims that are not.', moduleIds: ['reasons-and-evidence'] },
+      { framework: 'CCSS', code: 'W.6.1', text: 'Write arguments to support claims with clear reasons and relevant evidence.', moduleIds: ['fair-and-unfair'] },
     ],
   },
   {

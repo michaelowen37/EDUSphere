@@ -1,6 +1,6 @@
 # Story flow audit
 
-Generated 2026-09-29. 135 of 576 stories have at least one paragraph that reads robotic (choppy: three or more sentences in a row of six words or fewer; monotone: four or more sentences in a row within three words of one length; then, then: two sentences in a row starting with Then). A story's closing moral, a short refrain by design, is exempt from the choppy rule, and single-word sentences (a sound, a shout, a beat) do not count toward it. Pre-K 3 to grade 2 are held at zero by a rule test. Grades 3 and up were read by hand on 2026-09-28 (pass FQ): the flags that remain there are deliberate short sentences, lists, dialogue or step sequences, kept on purpose, so a flag from grade 3 up is a prompt to read, not an order to rewrite.
+Generated 2026-09-29. 135 of 586 stories have at least one paragraph that reads robotic (choppy: three or more sentences in a row of six words or fewer; monotone: four or more sentences in a row within three words of one length; then, then: two sentences in a row starting with Then). A story's closing moral, a short refrain by design, is exempt from the choppy rule, and single-word sentences (a sound, a shout, a beat) do not count toward it. Pre-K 3 to grade 2 are held at zero by a rule test. Grades 3 and up were read by hand on 2026-09-28 (pass FQ): the flags that remain there are deliberate short sentences, lists, dialogue or step sequences, kept on purpose, so a flag from grade 3 up is a prompt to read, not an order to rewrite.
 
 ## By grade
 
@@ -14,10 +14,10 @@ Generated 2026-09-29. 135 of 576 stories have at least one paragraph that reads 
 | 3 | 54 | 27 | 34 |
 | 4 | 46 | 21 | 32 |
 | 5 | 39 | 10 | 10 |
-| 6 | 50 | 14 | 16 |
+| 6 | 55 | 14 | 16 |
 | 7 | 38 | 10 | 12 |
 | 8 | 31 | 7 | 8 |
-| 9 | 46 | 14 | 17 |
+| 9 | 51 | 14 | 17 |
 | 10 | 31 | 7 | 8 |
 | 11 | 31 | 10 | 10 |
 | 12 | 38 | 10 | 12 |

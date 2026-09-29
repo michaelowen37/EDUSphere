@@ -37,7 +37,7 @@ window.__eduArt = [];
 window.__eduColoringArt = [];
 window.__eduMapArt = [];
 window.__eduAudio = [];
-window.__eduNews = {"stamp":"September 29, 2026 (preview a course)","date":"September 29, 2026","items":["Every course on a student's report now has a Preview link that opens a list of its modules, each with a one-line description, so you can see what a course holds before you assign it. The course rows are separated by faint lines, on the phone and on a wider screen.","The Wonder Questions popup on a student card now tells you how many of the questions your school has approved for students to see, out of the whole set."]};
+window.__eduNews = {"stamp":"September 29, 2026 (assigned courses by grade)","date":"September 29, 2026","items":["On a student's report, the assigned courses now sit under one dropdown per grade, open by default, the same way the other courses do. When you check a course among the other courses, a Save link appears beside Preview; tap it and the course moves up into the assigned list.","In the dark theme, the module links in the Tried but not passed yet list are readable again."]};
 // Installable app: the worker keeps a copy of the page for offline use and asks the network first, so a fresh build always wins.
 if ('serviceWorker' in navigator && /^https?:/.test(location.protocol)) { navigator.serviceWorker.register('sw.js').catch(function () {}); }
 var process = { env: { NODE_ENV: 'production' } };
@@ -51626,7 +51626,7 @@ function PinInput({ value, onChange, placeholder, style, onEnter = null }) {
 }
 // A stamp of when this copy of the page was built, so a stale page in a cache can be told apart
 // from a fresh one at a glance. Written by the build, never by hand.
-const BUILD_STAMP = '2026-09-29 11:45 AM CDT';
+const BUILD_STAMP = '2026-09-29 12:09 PM CDT';
 function ContactLine({ onOpen, inline = false }) {
     return (react_1.default.createElement("p", { className: "edu-no-print", style: { textAlign: 'center', marginTop: inline ? 0 : 28, fontSize: inline ? 14 : 12, color: C.muted, margin: inline ? '0' : undefined } }, onOpen
         ? react_1.default.createElement("button", { type: "button", onClick: onOpen, style: { background: 'none', border: 'none', color: C.muted, fontFamily: FONT, fontSize: 12, cursor: 'pointer', padding: 0, textDecoration: 'underline' } }, "Contact us")
@@ -57613,10 +57613,13 @@ const inBeat = (seconds) => ({ animationDelay: `-${((((typeof performance !== 'u
 // link that opens the module list; the touch-screen warning when the course needs one. On a phone the link sits centered
 // on its own line under the title and the warning drops a line below it; on a wider screen the link keeps to the right,
 // centered vertically. A faint rule that starts past the checkbox keeps the rows from blending together.
-function CourseChoiceRow({ course, checked, onToggle, onPreview }) {
+function CourseChoiceRow({ course, checked, onToggle, onPreview, onSave = null }) {
     const phone = typeof window !== 'undefined' && window.innerWidth < 700;
     const warn = courseNeedsTouch(course.id) ? react_1.default.createElement(Tag, { tone: "review" }, "Needs a touch screen") : null;
-    const link = react_1.default.createElement("button", { type: "button", className: "edu-no-print", onClick: onPreview, "aria-label": `Preview ${course.title}`, style: { ...linkBtn, padding: '2px 0', fontSize: 14, whiteSpace: 'nowrap' } }, "Preview");
+    // Save appears to the right of Preview once a course in the other lists is checked (2026-09-29, Mikey); it moves the course up to the assigned list.
+    const link = react_1.default.createElement("span", { style: { display: 'inline-flex', gap: 14, alignItems: 'center' } },
+        react_1.default.createElement("button", { type: "button", className: "edu-no-print", onClick: onPreview, "aria-label": `Preview ${course.title}`, style: { ...linkBtn, padding: '2px 0', fontSize: 14, whiteSpace: 'nowrap' } }, "Preview"),
+        onSave && react_1.default.createElement("button", { type: "button", className: "edu-no-print", onClick: onSave, "aria-label": `Save ${course.title}`, style: { ...linkBtn, padding: '2px 0', fontSize: 14, whiteSpace: 'nowrap', fontWeight: 700 } }, "Save"));
     return (react_1.default.createElement("div", { style: { padding: '7px 0 8px', fontSize: 16 } },
         react_1.default.createElement("div", { style: { display: 'flex', alignItems: phone ? 'flex-start' : 'center', gap: 10 } },
             react_1.default.createElement("label", { style: { display: 'flex', alignItems: 'center', gap: 10, flex: 1, minWidth: 0, cursor: 'pointer' } },
@@ -58265,6 +58268,8 @@ function EduSphereScreens() {
     const [showOrderTip, setShowOrderTip] = (0, react_1.useState)(false); // who needs help: how ties are ordered
     const [showPlacedTip, setShowPlacedTip] = (0, react_1.useState)(false); // transcript: placed past and skipped by quick check
     const [otherKind, setOtherKind] = (0, react_1.useState)('core'); // other courses: core or electives
+    const [closedAssignedGrades, setClosedAssignedGrades] = (0, react_1.useState)([]); // assigned courses sit under grade dropdowns, open by default (2026-09-29, Mikey)
+    const [savedCourseIds, setSavedCourseIds] = (0, react_1.useState)([]); // other courses moved into the assigned list with Save; on the next open, everything switched on counts
     const [openOtherGrades, setOpenOtherGrades] = (0, react_1.useState)([]); // other courses: which grade dropdowns are open
     const [openDoneGrades, setOpenDoneGrades] = (0, react_1.useState)([]); // transcript: which completed-course grades are open
     const [mapKind, setMapKind] = (0, react_1.useState)('core'); // the standards map, by grade: core courses or electives
@@ -61259,6 +61264,7 @@ function EduSphereScreens() {
                                     const rec = await withStarterCourses(await loadRecord(st.id));
                                     setEducatorRecord(rec);
                                     setRecommendedIds(recommendedCourseIds(rec.events, st.level));
+                                    setSavedCourseIds(enabledCourseIds(rec.events).filter((id) => !recommendedCourseIds(rec.events, st.level).includes(id)));
                                     setOpenSubjects([]);
                                     setShowAllCourses(false);
                                     setConfirmReset(false);
@@ -61662,6 +61668,7 @@ function EduSphereScreens() {
                                     const rec = await withStarterCourses(await loadRecord(r.id));
                                     setEducatorRecord(rec);
                                     setRecommendedIds(recommendedCourseIds(rec.events, st ? st.level : null));
+                                    setSavedCourseIds(enabledCourseIds(rec.events).filter((id) => !recommendedCourseIds(rec.events, st ? st.level : null).includes(id)));
                                     setOpenSubjects([]);
                                     setShowAllCourses(false);
                                     setConfirmReset(false);
@@ -62028,7 +62035,7 @@ function EduSphereScreens() {
                             parts.tried && parts.tried.length > 0 && (react_1.default.createElement("div", { style: { margin: '8px 0 0' } },
                                 react_1.default.createElement("p", { style: { margin: '0 0 4px', fontSize: 16, lineHeight: 1.6, textAlign: 'center', fontWeight: 600 } }, "Tried but not passed yet:"),
                                 react_1.default.createElement("ul", { style: { margin: 0, padding: '10px 12px 10px 32px', listStyleType: 'disc', fontSize: 15, lineHeight: 1.7, borderRadius: 10, ...(C.mode === 'dark' ? { background: '#AAD8C5', border: '1px solid #AAD8C5', color: '#16201B' } : { background: C.tipBg, border: `1px solid ${C.tipLine}` }) } }, parts.tried.map((t) => react_1.default.createElement("li", { key: t.id },
-                                    react_1.default.createElement("button", { type: "button", style: { ...linkBtn, fontSize: 15, fontWeight: 600 }, onClick: () => setStoryModule(t.id) }, t.title),
+                                    react_1.default.createElement("button", { type: "button", style: { ...linkBtn, fontSize: 15, fontWeight: 600, color: C.mode === 'dark' ? B.green : C.green }, onClick: () => setStoryModule(t.id) }, t.title),
                                     " (",
                                     t.subject ? `${t.subject}: ` : '',
                                     t.detail,
@@ -62063,16 +62070,33 @@ function EduSphereScreens() {
                         "'s initial placement check, quick-check module skips and/or his or her actual progression through the modules) but you are free to edit how you see fit."),
                     react_1.default.createElement("input", { value: courseQuery, onChange: (e) => setCourseQuery(e.target.value), placeholder: "Search courses, for example: grade 1 math, kinder, fractions", "aria-label": "Search courses", style: { fontFamily: FONT, fontSize: 15, padding: '10px 12px', width: '100%', boxSizing: 'border-box', border: `2px solid ${C.line}`, borderRadius: 10, marginBottom: 10, background: C.surface, textAlign: 'center' } }),
                     !courseQuery.trim() && (react_1.default.createElement("p", { style: { margin: '0 0 10px', fontSize: 13, textAlign: 'center' } },
-                        react_1.default.createElement("button", { type: "button", onClick: () => { const student = findStudent(roster, educatorRecord.name); const starter = recommendedCourseIds([makeCoursesEnabledEvent([], new Date().toISOString())], student ? student.level : null); const keep = COURSES.filter((c) => c.modules.some((m) => rep.modules.find((x) => x.id === m.id && x.attempts > 0))).map((c) => c.id); const unlocked = coursesToUnlock([...educatorRecord.events, makeCoursesEnabledEvent([...new Set([...starter, ...keep])], new Date().toISOString())]); const next = [...new Set([...starter, ...keep, ...unlocked])]; setEnabled(next); setRecommendedIds(next); setShowAllCourses(false); }, style: { ...linkBtn, fontSize: 13, padding: 0 } }, "Back to recommended courses"),
+                        react_1.default.createElement("button", { type: "button", onClick: () => { const student = findStudent(roster, educatorRecord.name); const starter = recommendedCourseIds([makeCoursesEnabledEvent([], new Date().toISOString())], student ? student.level : null); const keep = COURSES.filter((c) => c.modules.some((m) => rep.modules.find((x) => x.id === m.id && x.attempts > 0))).map((c) => c.id); const unlocked = coursesToUnlock([...educatorRecord.events, makeCoursesEnabledEvent([...new Set([...starter, ...keep])], new Date().toISOString())]); const next = [...new Set([...starter, ...keep, ...unlocked])]; setEnabled(next); setRecommendedIds(next); setSavedCourseIds([]); setShowAllCourses(false); }, style: { ...linkBtn, fontSize: 13, padding: 0 } }, "Back to recommended courses"),
                         react_1.default.createElement(InfoButton, { onClick: () => setShowRecommendTip(!showRecommendTip), label: "About recommended courses", open: showRecommendTip }))),
                     !courseQuery.trim() && showRecommendTip && (react_1.default.createElement(TipText, null, "Sets this student back to the courses we recommend for their level. Any course they have already started stays assigned, so no progress is hidden.")),
                     courseQuery.trim() && (react_1.default.createElement("div", null,
                         COURSES.filter((c) => matchesCourseSearch(c, courseQuery)).sort(byGradeOrder).map((c) => (react_1.default.createElement(CourseChoiceRow, { key: c.id, course: c, checked: enabled.includes(c.id), onToggle: () => setEnabled(enabled.includes(c.id) ? enabled.filter((id) => id !== c.id) : [...enabled, c.id]), onPreview: () => setCoursePreview(c.id) }))),
                         COURSES.filter((c) => matchesCourseSearch(c, courseQuery)).length === 0 && react_1.default.createElement("p", { style: { margin: '0 0 8px', fontSize: 15, color: C.muted } }, "No course matches that. Try a grade, a subject, or a word from a course title."))),
                     !courseQuery.trim() && COURSES.filter((c) => recommended.includes(c.id)).length === 0 && (react_1.default.createElement("p", { style: { margin: '0 0 8px', fontSize: 15, color: C.muted } }, "Nothing is written yet for this student's level. Anything below can still be assigned.")),
-                    !courseQuery.trim() && COURSES.filter((c) => recommended.includes(c.id)).sort(byGradeOrder).map((c) => (react_1.default.createElement(CourseChoiceRow, { key: c.id, course: c, checked: enabled.includes(c.id), onToggle: () => setEnabled(enabled.includes(c.id) ? enabled.filter((id) => id !== c.id) : [...enabled, c.id]), onPreview: () => setCoursePreview(c.id) }))),
+                    !courseQuery.trim() && (() => {
+                        // Assigned now, under one dropdown per grade like the other courses, open by default since a student spans few grades (2026-09-29, Mikey).
+                        const assignedNow = COURSES.filter((c) => recommended.includes(c.id) || savedCourseIds.includes(c.id)).sort(byGradeOrder);
+                        return GRADES.filter((g) => assignedNow.some((c) => c.grade === g)).map((g) => {
+                            const open = !closedAssignedGrades.includes(g);
+                            const list = assignedNow.filter((c) => c.grade === g);
+                            return (react_1.default.createElement("div", { key: `assigned-${g}`, "data-assigned-fold": g, style: { border: `1px solid ${C.line}`, borderRadius: 10, marginBottom: 8, overflow: 'hidden', background: C.surface } },
+                                react_1.default.createElement("button", { type: "button", "aria-expanded": open, "aria-label": `Assigned ${gradeLabel(g)}`, onClick: () => setClosedAssignedGrades((l) => (l.includes(g) ? l.filter((x) => x !== g) : [...l, g])), style: { fontFamily: FONT, width: '100%', textAlign: 'left', background: C.mode === 'dark' ? C.panel : C.greenSoft, border: 'none', padding: '12px 14px', cursor: 'pointer', color: C.ink, display: 'flex', justifyContent: 'space-between', alignItems: 'center' } },
+                                    react_1.default.createElement("span", { style: { fontSize: 16, fontWeight: 600 } }, gradeLabel(g)),
+                                    react_1.default.createElement("span", { style: { fontSize: 14, color: C.muted } },
+                                        list.filter((c) => enabled.includes(c.id)).length,
+                                        " of ",
+                                        list.length,
+                                        " selected ",
+                                        open ? '▴' : '▾')),
+                                open && react_1.default.createElement("div", { style: { padding: '4px 14px 8px' } }, list.map((c) => react_1.default.createElement(CourseChoiceRow, { key: c.id, course: c, checked: enabled.includes(c.id), onToggle: () => setEnabled(enabled.includes(c.id) ? enabled.filter((id) => id !== c.id) : [...enabled, c.id]), onPreview: () => setCoursePreview(c.id) })))));
+                        });
+                    })(),
                     !courseQuery.trim() && react_1.default.createElement("div", { className: "edu-no-print", style: { textAlign: 'center', marginTop: 6 } },
-                        react_1.default.createElement("button", { type: "button", style: { ...linkBtn }, onClick: () => setShowAllCourses(!showAllCourses) }, showAllCourses ? 'Hide other courses' : `Show other courses (${COURSES.length - recommended.length})`)),
+                        react_1.default.createElement("button", { type: "button", style: { ...linkBtn }, onClick: () => setShowAllCourses(!showAllCourses) }, showAllCourses ? 'Hide other courses' : `Show other courses (${COURSES.filter((c) => !recommended.includes(c.id) && !savedCourseIds.includes(c.id)).length})`)),
                     !courseQuery.trim() && showAllCourses && (react_1.default.createElement("div", { className: "edu-no-print", style: { borderTop: `1px solid ${C.line}`, marginTop: 8, paddingTop: 8 } },
                         react_1.default.createElement("p", { style: { margin: '0 0 10px', fontSize: 14, color: C.muted, textAlign: 'center' } },
                             "Wish to stray from our recommendations? Select anything below for ",
@@ -62082,7 +62106,7 @@ function EduSphereScreens() {
                         showRecTip && react_1.default.createElement(TipText, null, "Kindergarten (and above) courses will not show for a student who has any pre-k courses activated. They must either complete the pre-k courses first or you must uncheck them."),
                         react_1.default.createElement(SegToggle, { options: [['core', 'Core'], ['electives', 'Electives']], value: otherKind, onChange: setOtherKind, ariaLabel: "Core courses or electives" }),
                         (() => {
-                            const others = COURSES.filter((c) => !recommended.includes(c.id) && (otherKind === 'electives' ? !!c.elective : !c.elective)).sort(byGradeOrder);
+                            const others = COURSES.filter((c) => !recommended.includes(c.id) && !savedCourseIds.includes(c.id) && (otherKind === 'electives' ? !!c.elective : !c.elective)).sort(byGradeOrder);
                             const grades = GRADES.filter((g) => others.some((c) => c.grade === g));
                             if (!grades.length)
                                 return react_1.default.createElement("p", { style: { margin: '0 0 8px', fontSize: 15, color: C.muted, textAlign: 'center' } }, otherKind === 'electives' ? 'No electives outside the recommended set.' : 'No other core courses outside the recommended set.');
@@ -62096,7 +62120,7 @@ function EduSphereScreens() {
                                         react_1.default.createElement("span", { style: { fontSize: 14, color: C.muted } },
                                             list.filter((c) => enabled.includes(c.id)).length ? `${list.filter((c) => enabled.includes(c.id)).length} of ${list.length} selected ` : `${list.length} ${list.length === 1 ? 'course ' : 'courses '}`,
                                             open ? '▴' : '▾')),
-                                    open && react_1.default.createElement("div", { style: { padding: '4px 14px 8px' } }, list.map((c) => (react_1.default.createElement(CourseChoiceRow, { key: c.id, course: c, checked: enabled.includes(c.id), onToggle: () => setEnabled(enabled.includes(c.id) ? enabled.filter((id) => id !== c.id) : [...enabled, c.id]), onPreview: () => setCoursePreview(c.id) }))))));
+                                    open && react_1.default.createElement("div", { style: { padding: '4px 14px 8px' } }, list.map((c) => (react_1.default.createElement(CourseChoiceRow, { key: c.id, course: c, checked: enabled.includes(c.id), onToggle: () => setEnabled(enabled.includes(c.id) ? enabled.filter((id) => id !== c.id) : [...enabled, c.id]), onPreview: () => setCoursePreview(c.id), onSave: enabled.includes(c.id) ? () => setSavedCourseIds((l) => (l.includes(c.id) ? l : [...l, c.id])) : null }))))));
                             });
                         })())),
                     react_1.default.createElement("p", { style: { margin: '10px 0 0', fontSize: 13, color: C.muted, textAlign: 'center' } }, "Switching a course off hides it from the student. Their progress is kept."),

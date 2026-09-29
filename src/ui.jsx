@@ -4464,10 +4464,11 @@ const inBeat = (seconds) => ({ animationDelay: `-${((((typeof performance !== 'u
 // link that opens the module list; the touch-screen warning when the course needs one. On a phone the link sits centered
 // on its own line under the title and the warning drops a line below it; on a wider screen the link keeps to the right,
 // centered vertically. A faint rule that starts past the checkbox keeps the rows from blending together.
-function CourseChoiceRow({ course, checked, onToggle, onPreview }) {
+function CourseChoiceRow({ course, checked, onToggle, onPreview, onSave = null }) {
   const phone = typeof window !== 'undefined' && window.innerWidth < 700;
   const warn = courseNeedsTouch(course.id) ? <Tag tone="review">Needs a touch screen</Tag> : null;
-  const link = <button type="button" className="edu-no-print" onClick={onPreview} aria-label={`Preview ${course.title}`} style={{ ...linkBtn, padding: '2px 0', fontSize: 14, whiteSpace: 'nowrap' }}>Preview</button>;
+  // Save appears to the right of Preview once a course in the other lists is checked (2026-09-29, Mikey); it moves the course up to the assigned list.
+  const link = <span style={{ display: 'inline-flex', gap: 14, alignItems: 'center' }}><button type="button" className="edu-no-print" onClick={onPreview} aria-label={`Preview ${course.title}`} style={{ ...linkBtn, padding: '2px 0', fontSize: 14, whiteSpace: 'nowrap' }}>Preview</button>{onSave && <button type="button" className="edu-no-print" onClick={onSave} aria-label={`Save ${course.title}`} style={{ ...linkBtn, padding: '2px 0', fontSize: 14, whiteSpace: 'nowrap', fontWeight: 700 }}>Save</button>}</span>;
   return (
     <div style={{ padding: '7px 0 8px', fontSize: 16 }}>
       <div style={{ display: 'flex', alignItems: phone ? 'flex-start' : 'center', gap: 10 }}>
@@ -5043,6 +5044,8 @@ function EduSphereScreens() {
   const [showOrderTip, setShowOrderTip] = useState(false);           // who needs help: how ties are ordered
   const [showPlacedTip, setShowPlacedTip] = useState(false);         // transcript: placed past and skipped by quick check
   const [otherKind, setOtherKind] = useState('core');               // other courses: core or electives
+  const [closedAssignedGrades, setClosedAssignedGrades] = useState([]);  // assigned courses sit under grade dropdowns, open by default (2026-09-29, Mikey)
+  const [savedCourseIds, setSavedCourseIds] = useState([]);              // other courses moved into the assigned list with Save; on the next open, everything switched on counts
   const [openOtherGrades, setOpenOtherGrades] = useState([]);        // other courses: which grade dropdowns are open
   const [openDoneGrades, setOpenDoneGrades] = useState([]);          // transcript: which completed-course grades are open
   const [mapKind, setMapKind] = useState('core');                   // the standards map, by grade: core courses or electives
@@ -7883,7 +7886,7 @@ function EduSphereScreens() {
                     setBusy(true);
                     const rec = await withStarterCourses(await loadRecord(st.id));
                     setEducatorRecord(rec);
-                    setRecommendedIds(recommendedCourseIds(rec.events, st.level));
+                    setRecommendedIds(recommendedCourseIds(rec.events, st.level)); setSavedCourseIds(enabledCourseIds(rec.events).filter((id) => !recommendedCourseIds(rec.events, st.level).includes(id)));
                     setOpenSubjects([]); setShowAllCourses(false); setConfirmReset(false); setBusy(false); setScreen('educator-report');
                   }}>Open report</Btn></div>
                 {mergeFrom === st.id && <p style={{ color: C.gold, fontSize: 13, margin: '8px 0 0', textAlign: 'center' }}>Now tap “Merge here” on the student to keep. Both histories are joined; nothing is deleted.</p>}
@@ -8323,7 +8326,7 @@ function EduSphereScreens() {
                 <button type="button" style={{ ...linkBtn }} onClick={async () => {
                   setBusy(true);
                   const rec = await withStarterCourses(await loadRecord(r.id));
-                  setEducatorRecord(rec); setRecommendedIds(recommendedCourseIds(rec.events, st ? st.level : null));
+                  setEducatorRecord(rec); setRecommendedIds(recommendedCourseIds(rec.events, st ? st.level : null)); setSavedCourseIds(enabledCourseIds(rec.events).filter((id) => !recommendedCourseIds(rec.events, st ? st.level : null).includes(id)));
                   setOpenSubjects([]); setShowAllCourses(false); setConfirmReset(false); setBusy(false); setScreen('educator-report');
                 }}>Open report</button>
               </div>
@@ -8666,7 +8669,7 @@ function EduSphereScreens() {
                     <div style={{ margin: '8px 0 0' }}>
                       <p style={{ margin: '0 0 4px', fontSize: 16, lineHeight: 1.6, textAlign: 'center', fontWeight: 600 }}>Tried but not passed yet:</p>
                       <ul style={{ margin: 0, padding: '10px 12px 10px 32px', listStyleType: 'disc', fontSize: 15, lineHeight: 1.7, borderRadius: 10, ...(C.mode === 'dark' ? { background: '#AAD8C5', border: '1px solid #AAD8C5', color: '#16201B' } : { background: C.tipBg, border: `1px solid ${C.tipLine}` }) }}>
-                        {parts.tried.map((t) => <li key={t.id}><button type="button" style={{ ...linkBtn, fontSize: 15, fontWeight: 600 }} onClick={() => setStoryModule(t.id)}>{t.title}</button> ({t.subject ? `${t.subject}: ` : ''}{t.detail})</li>)}
+                        {parts.tried.map((t) => <li key={t.id}><button type="button" style={{ ...linkBtn, fontSize: 15, fontWeight: 600, color: C.mode === 'dark' ? B.green : C.green }} onClick={() => setStoryModule(t.id)}>{t.title}</button> ({t.subject ? `${t.subject}: ` : ''}{t.detail})</li>)}
                       </ul>
                     </div>
                   )}
@@ -8701,7 +8704,7 @@ function EduSphereScreens() {
             style={{ fontFamily: FONT, fontSize: 15, padding: '10px 12px', width: '100%', boxSizing: 'border-box', border: `2px solid ${C.line}`, borderRadius: 10, marginBottom: 10, background: C.surface, textAlign: 'center' }} />
           {!courseQuery.trim() && (
             <p style={{ margin: '0 0 10px', fontSize: 13, textAlign: 'center' }}>
-              <button type="button" onClick={() => { const student = findStudent(roster, educatorRecord.name); const starter = recommendedCourseIds([makeCoursesEnabledEvent([], new Date().toISOString())], student ? student.level : null); const keep = COURSES.filter((c) => c.modules.some((m) => rep.modules.find((x) => x.id === m.id && x.attempts > 0))).map((c) => c.id); const unlocked = coursesToUnlock([...educatorRecord.events, makeCoursesEnabledEvent([...new Set([...starter, ...keep])], new Date().toISOString())]); const next = [...new Set([...starter, ...keep, ...unlocked])]; setEnabled(next); setRecommendedIds(next); setShowAllCourses(false); }} style={{ ...linkBtn, fontSize: 13, padding: 0 }}>Back to recommended courses</button>
+              <button type="button" onClick={() => { const student = findStudent(roster, educatorRecord.name); const starter = recommendedCourseIds([makeCoursesEnabledEvent([], new Date().toISOString())], student ? student.level : null); const keep = COURSES.filter((c) => c.modules.some((m) => rep.modules.find((x) => x.id === m.id && x.attempts > 0))).map((c) => c.id); const unlocked = coursesToUnlock([...educatorRecord.events, makeCoursesEnabledEvent([...new Set([...starter, ...keep])], new Date().toISOString())]); const next = [...new Set([...starter, ...keep, ...unlocked])]; setEnabled(next); setRecommendedIds(next); setSavedCourseIds([]); setShowAllCourses(false); }} style={{ ...linkBtn, fontSize: 13, padding: 0 }}>Back to recommended courses</button>
               <InfoButton onClick={() => setShowRecommendTip(!showRecommendTip)} label="About recommended courses" open={showRecommendTip} />
             </p>
           )}
@@ -8719,11 +8722,25 @@ function EduSphereScreens() {
           {!courseQuery.trim() && COURSES.filter((c) => recommended.includes(c.id)).length === 0 && (
             <p style={{ margin: '0 0 8px', fontSize: 15, color: C.muted }}>Nothing is written yet for this student's level. Anything below can still be assigned.</p>
           )}
-          {!courseQuery.trim() && COURSES.filter((c) => recommended.includes(c.id)).sort(byGradeOrder).map((c) => (
-            <CourseChoiceRow key={c.id} course={c} checked={enabled.includes(c.id)} onToggle={() => setEnabled(enabled.includes(c.id) ? enabled.filter((id) => id !== c.id) : [...enabled, c.id])} onPreview={() => setCoursePreview(c.id)} />
-          ))}
+          {!courseQuery.trim() && (() => {
+            // Assigned now, under one dropdown per grade like the other courses, open by default since a student spans few grades (2026-09-29, Mikey).
+            const assignedNow = COURSES.filter((c) => recommended.includes(c.id) || savedCourseIds.includes(c.id)).sort(byGradeOrder);
+            return GRADES.filter((g) => assignedNow.some((c) => c.grade === g)).map((g) => { const open = !closedAssignedGrades.includes(g); const list = assignedNow.filter((c) => c.grade === g);
+              return (
+                <div key={`assigned-${g}`} data-assigned-fold={g} style={{ border: `1px solid ${C.line}`, borderRadius: 10, marginBottom: 8, overflow: 'hidden', background: C.surface }}>
+                  <button type="button" aria-expanded={open} aria-label={`Assigned ${gradeLabel(g)}`} onClick={() => setClosedAssignedGrades((l) => (l.includes(g) ? l.filter((x) => x !== g) : [...l, g]))}
+                    style={{ fontFamily: FONT, width: '100%', textAlign: 'left', background: C.mode === 'dark' ? C.panel : C.greenSoft, border: 'none', padding: '12px 14px', cursor: 'pointer', color: C.ink, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span style={{ fontSize: 16, fontWeight: 600 }}>{gradeLabel(g)}</span>
+                    <span style={{ fontSize: 14, color: C.muted }}>{list.filter((c) => enabled.includes(c.id)).length} of {list.length} selected {open ? '▴' : '▾'}</span>
+                  </button>
+                  {open && <div style={{ padding: '4px 14px 8px' }}>
+                    {list.map((c) => <CourseChoiceRow key={c.id} course={c} checked={enabled.includes(c.id)} onToggle={() => setEnabled(enabled.includes(c.id) ? enabled.filter((id) => id !== c.id) : [...enabled, c.id])} onPreview={() => setCoursePreview(c.id)} />)}
+                  </div>}
+                </div>
+              ); });
+          })()}
           {!courseQuery.trim() && <div className="edu-no-print" style={{ textAlign: 'center', marginTop: 6 }}><button type="button" style={{ ...linkBtn }} onClick={() => setShowAllCourses(!showAllCourses)}>
-            {showAllCourses ? 'Hide other courses' : `Show other courses (${COURSES.length - recommended.length})`}
+            {showAllCourses ? 'Hide other courses' : `Show other courses (${COURSES.filter((c) => !recommended.includes(c.id) && !savedCourseIds.includes(c.id)).length})`}
           </button></div>}
           {!courseQuery.trim() && showAllCourses && (
             <div className="edu-no-print" style={{ borderTop: `1px solid ${C.line}`, marginTop: 8, paddingTop: 8 }}>
@@ -8732,7 +8749,7 @@ function EduSphereScreens() {
               {/* Core courses or electives, then one closed dropdown per grade, so a long catalog stays quick to navigate. */}
               <SegToggle options={[['core', 'Core'], ['electives', 'Electives']]} value={otherKind} onChange={setOtherKind} ariaLabel="Core courses or electives" />
               {(() => {
-                const others = COURSES.filter((c) => !recommended.includes(c.id) && (otherKind === 'electives' ? !!c.elective : !c.elective)).sort(byGradeOrder);
+                const others = COURSES.filter((c) => !recommended.includes(c.id) && !savedCourseIds.includes(c.id) && (otherKind === 'electives' ? !!c.elective : !c.elective)).sort(byGradeOrder);
                 const grades = GRADES.filter((g) => others.some((c) => c.grade === g));
                 if (!grades.length) return <p style={{ margin: '0 0 8px', fontSize: 15, color: C.muted, textAlign: 'center' }}>{otherKind === 'electives' ? 'No electives outside the recommended set.' : 'No other core courses outside the recommended set.'}</p>;
                 return grades.map((g) => { const key = `${otherKind}-${g}`; const open = openOtherGrades.includes(key); const list = others.filter((c) => c.grade === g);
@@ -8745,7 +8762,7 @@ function EduSphereScreens() {
                       </button>
                       {open && <div style={{ padding: '4px 14px 8px' }}>
                         {list.map((c) => (
-                          <CourseChoiceRow key={c.id} course={c} checked={enabled.includes(c.id)} onToggle={() => setEnabled(enabled.includes(c.id) ? enabled.filter((id) => id !== c.id) : [...enabled, c.id])} onPreview={() => setCoursePreview(c.id)} />
+                          <CourseChoiceRow key={c.id} course={c} checked={enabled.includes(c.id)} onToggle={() => setEnabled(enabled.includes(c.id) ? enabled.filter((id) => id !== c.id) : [...enabled, c.id])} onPreview={() => setCoursePreview(c.id)} onSave={enabled.includes(c.id) ? () => setSavedCourseIds((l) => (l.includes(c.id) ? l : [...l, c.id])) : null} />
                         ))}
                       </div>}
                     </div>

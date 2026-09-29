@@ -1249,6 +1249,14 @@ Approved by Mikey on 2026-09-04 unless marked "proposed".
 - Every course in the report's checklists (recommended, other courses by grade, core and electives, search results) is now one `CourseChoiceRow`: the checkbox and the title on the left; a Preview link; the touch-screen warning when the course needs one. On a phone the link sits centered on its own line under the title and the warning drops to the line below it; on a wider screen the link keeps to the right, vertically centered, and the warning stays under the title. A faint rule that starts past the checkbox separates the rows in every list. Preview opens a popup with the course's grade, subject and module count and every module with its one-line description, in order; the click-through opens one, counts its modules and closes it. The rows kept their checkbox semantics: the link is a sibling of the label, not inside it, so a tap on Preview never toggles the course.
 - Next: pass GC, art and music appreciation for K to 2, the third strand of the depth program.
 
+## 2026-09-29 (pass GC): assigned courses under grade dropdowns, Save beside Preview, and a link that hid on the paper card
+
+- Mikey committed through GB; this commit message starts fresh at GC. Three things from his laptop, done before the next course.
+- Assigned now on the student's report sits under one dropdown per grade, the same shape as the other courses, open by default since a student spans few grades; a tap on the grade bar closes it for the visit. The bar shows how many of the grade's courses are switched on.
+- A course checked among the other courses offers a Save link to the right of Preview. Save moves the course up into the assigned list for the visit; on the next open, everything switched on that the placement did not recommend (electives, or a course from another grade) counts as assigned, so the move holds. Back to recommended courses clears the saved set with the rest. The click-through opens the other courses, checks one, saves it and finds it under an assigned grade.
+- The Tried but not passed yet list, which wears the paper green in the dark theme, kept its links in the theme's pale green: near-invisible on the light card. Links on that card now use the paper's own green (the light theme's) in the dark theme.
+- Next: pass GD, art and music appreciation for K to 2, the third strand of the depth program.
+
 ## Open items
 - Verify audio plays inside the chat artifact sandbox (works in a normal browser).
 - Common Core / TEKS codes on existing modules to be checked against the official lists. The technology section numbers were checked and fixed in pass FS (§126.8, §126.10, §126.18); the sub-codes of those three courses are still unchecked.

@@ -476,6 +476,19 @@ ok('the raw data section is titled plainly', t.includes('Raw data'));
 ok('the word set is not used to describe practice', !t.includes('practice set') && !t.includes('Practice set'));
 // Collapsed sections are rendered but hidden, so that printing includes them.
 // That means these checks must ask what is visible rather than what is in the text.
+// Assigned courses sit under grade dropdowns that start open (2026-09-29, Mikey), and a course checked among the others
+// offers Save, which moves it up into the assigned list.
+{ ok('assigned courses sit under grade dropdowns that start open', (await page.locator('[data-assigned-fold]').count()) >= 1 && (await page.locator('[data-assigned-fold] button[aria-expanded="true"]').count()) >= 1);
+  await page.getByRole('button', { name: /^Show other courses/ }).click(); await page.waitForTimeout(200);
+  const first = page.locator('button[aria-expanded="false"]').filter({ hasText: /courses? / }).first();
+  await first.click(); await page.waitForTimeout(200);
+  const box = page.locator('input[type="checkbox"]:not(:checked)').last(); await box.click(); await page.waitForTimeout(250);
+  const saveLinks = () => page.locator('button[aria-label^="Save "]');
+  ok('checking a course among the others offers a Save link beside Preview', (await saveLinks().count()) >= 1);
+  const saved = (await saveLinks().first().getAttribute('aria-label')).slice(5);
+  await saveLinks().first().click(); await page.waitForTimeout(250);
+  ok('Save moves the course up into the assigned list', (await saveLinks().count()) === 0 && (await page.locator('[data-assigned-fold]').filter({ hasText: saved }).count()) === 1);
+  await page.getByRole('button', { name: /^Hide other courses/ }).click(); await page.waitForTimeout(150); }
 // Preview on a course row (2026-09-29, Mikey): the popup lists every module of the course with its one-line description.
 { const prev = page.getByRole('button', { name: /^Preview / }).first();
   ok('every course on the report offers a Preview link', (await page.getByRole('button', { name: /^Preview / }).count()) >= 3);

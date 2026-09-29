@@ -1,7 +1,5 @@
-College computer science, and four fixes from the phone and laptop
+Assigned courses under grade dropdowns, Save beside Preview, a link fix
 
-- Pass FZ: college gets How computers compute (tech-college): inside a running program, counting steps, the shapes of data, and recursion and the limits of computing, with arithmetic answers computed fresh, the Texas College and Career Readiness cross-disciplinary standards and CSTA level 3B, four short stories and a long one about Chloe and a gallery catalogue, two Wonder questions, and Split the Search, a new kind of game.
-- Pass GA: the whole Progress by course bar opens the fold and its courses are tinted apart from it, dropdown options wear the theme's colors, and a ruled-out answer stays readable in the dark theme, with browser checks for each.
-- Pass GB: the Wonder Questions popup counts the approved questions out of the pool, and every course on the report has a Preview link that opens its module list, with faint rules between the rows.
+- Pass GC: on the student's report, assigned courses sit under one dropdown per grade, open by default; a course checked among the other courses offers Save, which moves it up into the assigned list; links on the paper-green Tried but not passed yet card are readable in the dark theme.
 
-Passes: FZ, GA, GB
+Passes: GC

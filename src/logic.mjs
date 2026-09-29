@@ -959,6 +959,16 @@ export const COURSES = [
     modules: ECON9_MODULES(),
   },
   {
+    id: 'tech-college',
+    grade: 'C',
+    subject: 'Technology',
+    title: 'How computers compute',
+    audience: 'College level',
+    elective: true,
+    keywords: ['computer science', 'algorithms', 'data structures', 'recursion', 'elective'],
+    modules: COLLEGE_TECH_MODULES(),
+  },
+  {
     id: 'civics-3',
     grade: '3',
     subject: 'History',
@@ -1190,6 +1200,7 @@ export const GAMES = [
   { id: 'debug-tech-5', kind: 'debug', title: 'Debug the robot: turns', minGrade: '5', deck: 'turns' },
   { id: 'price-econ-3', kind: 'price', title: 'Set the Price', minGrade: '3', price: 'stand' },   // economics 3 to 5 (pass FW): find the price that earns the most
   { id: 'teach-tech-6', kind: 'teach', title: 'Teach the Robot', minGrade: '6', teach: 'fruit' },
+  { id: 'search-tech-college', kind: 'search', title: 'Split the Search', minGrade: 'C', search: 32 },   // college computer science (pass FU): binary search by hand
   { id: 'loan-econ-6', kind: 'loan', title: 'Pay It Off', minGrade: '6', loan: 'plans' },   // economics 6 to 8 (pass FX): what a loan costs month by month
   { id: 'fund-econ-9', kind: 'fund', title: 'Build the Fund', minGrade: '9', fund: 'year' },   // personal finance 9 to 12 (pass FY): a year of saving against surprises
   { id: 'bits-tech-9', kind: 'bits', title: 'Eight Switches', minGrade: '9', bits: 8 },   // computer science 9 to 12 (pass FU): make the number with the switches   // the plain AI course (pass FT): the child is the pile of examples
@@ -1647,6 +1658,15 @@ export function fundMonth(state, save, month) {
   if (loan > 0) loan = Math.round(loan * 1.02);
   const s = month.surprise; if (s > 0) { const fromFund = Math.min(fund, s); fund -= fromFund; loan += s - fromFund; }
   return { fund, loan, spent: state.spent + (state.room - put) };
+}
+// Split the Search (2026-09-29, pass FU, college computer science): a board of sorted face-down cards and a target that is
+// on it. The player taps cards to reveal them and is told higher or lower; binary search finds any target in six looks
+// on 32 cards. Boards come from the round so a replay is new, and the rules test checks every seed it tries.
+export function searchBoard(seed, cards = 32) {
+  let x = (Math.imul(seed, 2654435761) + 97) >>> 0; const rnd = () => { x = (x * 1664525 + 1013904223) >>> 0; return x / 4294967296; }; const set = new Set();
+  while (set.size < cards) set.add(10 + Math.floor(rnd() * 980));
+  const values = [...set].sort((a, b) => a - b); const target = Math.floor(rnd() * cards);
+  return { values, target };
 }
 export const ROBOT_DECKS = {
   arrows: [
@@ -8783,6 +8803,79 @@ function ECON9_MODULES() { return [
     generators: ['e9-protect', 'e9-protect', 'e9-protect', 'e9-protect', 'e9-protect'],
   },
 ]; }
+// The college computer science course (2026-09-29, pass FU): what runs when a program runs, counting steps, the shapes
+// of data, recursion and the edge of what computing can do. Cited to the Texas College and Career Readiness Standards
+// (Cross-Disciplinary) and CSTA level 3B, since college has no TEKS.
+function COLLEGE_TECH_MODULES() { return [
+  {
+    id: 'inside-a-running-program',
+    order: 1,
+    title: 'Inside a running program',
+    tagline: 'Fetch, decode, execute; numbered boxes; a stack',
+    requires: [],
+    lesson: {
+      paragraphs: ['A program you write is text. Before it runs, a compiler translates it into machine instructions, or an interpreter reads it and carries out each line as it goes. Either way, what finally runs is a stream of tiny instructions: load a value from memory, add two values, compare, jump to another instruction. The processor repeats one cycle billions of times a second: fetch the next instruction, decode what it asks, execute it.', 'Memory is a long row of numbered boxes, and each box holds one byte, eight bits, so 256 possible values; two bytes hold 256 times 256 values, 65,536. A variable is a name for an address. An integer usually takes 4 bytes, so an array of integers that starts at address 1000 keeps element 0 at 1000, element 1 at 1004, element 2 at 1008: the address of element i is the start plus 4 times i. That arithmetic is why arrays are fast: the machine jumps straight to the box.', 'When one function calls another, the machine pushes the caller\'s place and its local values onto a stack, runs the callee, and pops back. Call too deep with no way out and the stack overflows. This is the whole picture: text becomes instructions, instructions move values between numbered boxes, and a stack keeps track of who called whom.'],
+      keyIdea: 'A program becomes a stream of fetch, decode, execute; memory is numbered bytes, a variable is a name for an address, and a stack remembers who called whom.',
+      example: { kind: 'flow', steps: ['fetch', 'decode', 'execute', 'next instruction'], caption: 'The processor\'s cycle, repeated billions of times a second.',
+        another: ['Think of a clerk with a numbered wall of pigeonholes and a list of orders. Fetch: read the next order. Decode: work out what it asks. Execute: move a slip from hole 1000 to hole 1004. The clerk never understands the orders; the clerk only follows them, very fast.',
+          { text: 'An array is a street of houses with consecutive numbers. To reach house i you do not walk past the others; you compute the number and go. A linked list, by contrast, is a treasure hunt: each house holds the address of the next.', visual: { kind: 'flow', steps: ['start at 1000', 'element 3', '1000 + 4 times 3', 'address 1012'] } },
+          'The call stack is a pile of bookmarks. Each call adds one on top; each return takes the top one off. A function that calls itself forever adds bookmarks until the pile hits the ceiling: a stack overflow.'] },
+    },
+    sources: ['Aligned with Texas College and Career Readiness Standards, Cross-Disciplinary II.E.4 (use technology appropriately) and I.C.1 (analyze a situation to identify a problem to be solved), and CSTA K-12 CS Standards 3B-CS-02 (illustrate ways computing systems implement logic, input, and output through hardware components).'],
+    generators: ['tc-inside', 'tc-inside', 'tc-inside', 'tc-inside', 'tc-inside'],
+  },
+  {
+    id: 'counting-steps',
+    order: 2,
+    title: 'Counting steps',
+    tagline: 'How work grows as the input grows',
+    requires: ['inside-a-running-program'],
+    lesson: {
+      paragraphs: ['Two programs can give the same answer and differ a millionfold in time. Computer scientists compare them by counting steps as the input grows, not by stopwatch. Searching an unsorted list of n items for a value looks at every item in the worst case: n steps, written O(n), linear. Double the list and you double the work.', 'If the list is sorted, binary search looks at the middle, throws away the half that cannot hold the value, and repeats. Each look halves what is left, so 32 items take at most 6 looks and 1,024 items at most 11: for n items, about log2 of n, plus one, written O(log n). Doubling the list adds a single look.', 'Some work grows faster than the input. Comparing every pair of n items, as the simplest sorts do, takes n times n minus 1, over 2, comparisons: O(n squared). Double the input and the work quadruples. Better sorts reach O(n log n). The lesson is not that fast machines fix slow algorithms; it is that the shape of the growth decides what is possible at all.'],
+      keyIdea: 'Count steps as the input grows: O(log n), O(n), O(n log n), O(n squared). Doubling the input adds one look to a binary search and quadruples a pairwise sort.',
+      example: { kind: 'flow', steps: ['32 items', 'look at the middle', '16 left', '8 left', '4 left', '2 left', '1: found'], caption: 'Binary search on 32 sorted items: six looks at most.',
+        another: ['Guess my number between 1 and 1,000. Ask is it more than 500 and you have thrown away half the numbers with one question. Ten questions of that kind pin it down; a thousand guesses in order might not.',
+          { text: 'Shaking hands: 4 people need 6 handshakes, 8 people need 28, 16 people need 120. Double the people and the handshakes go up about four times. That is n squared growth.', visual: { kind: 'flow', steps: ['4 people: 6', '8 people: 28', '16 people: 120'] } },
+          'A machine ten times faster buys you one more doubling of the input for an n squared algorithm, and then you are exactly where you started. A better algorithm buys you everything.'] },
+    },
+    sources: ['Aligned with Texas College and Career Readiness Standards, Cross-Disciplinary I.C.2 (develop and apply multiple strategies to solve a problem) and CSTA K-12 CS Standards 3B-AP-11 (evaluate algorithms in terms of their efficiency, correctness, and clarity) and 3B-AP-10 (use and adapt classic algorithms to solve computational problems).'],
+    generators: ['tc-steps', 'tc-steps', 'tc-steps', 'tc-steps', 'tc-steps'],
+  },
+  {
+    id: 'shapes-of-data',
+    order: 3,
+    title: 'The shapes of data',
+    tagline: 'Arrays, lists, stacks, queues, hash tables, trees',
+    requires: ['counting-steps'],
+    lesson: {
+      paragraphs: ['An array is a row of boxes at consecutive addresses: reading box i is one step, but inserting at the front means shifting everything, n steps. A linked list is boxes anywhere in memory, each holding the address of the next: inserting at the front is one step, but reaching box i means walking i links.', 'A stack takes and gives back from one end, last in, first out, the way plates are stacked; a queue gives back from the other end, first in, first out, the way a line at a counter works. Push 3, push 7, push 9, then take one: you get 9 from a stack and 3 from a queue.', 'A hash table turns a key into a slot by arithmetic, for instance the key modulo the number of slots, so a lookup is usually one step no matter how many entries there are: key 47 in a table of 10 slots goes to slot 7. A balanced tree keeps keys in order and finds any of them in about log2 n steps. Choosing the shape of the data is most of the work of a fast program.'],
+      keyIdea: 'Array: one step to read, n to insert at the front. Linked list: the reverse. Stack: last in, first out. Queue: first in, first out. Hash table: key to slot by arithmetic. Tree: log n, in order.',
+      example: { kind: 'flow', steps: ['push 3', 'push 7', 'push 9', 'take one: 9'], caption: 'A stack gives back the last thing pushed; a queue would give back 3.',
+        another: ['The undo button is a stack: the last change is the first undone. The print queue is a queue: the first job sent is the first printed. Pick the wrong one and the printer prints your last page first.',
+          { text: 'A hash table is a coat check that computes the hook from the ticket number instead of searching the rack. Ticket 47, ten hooks: hook 7, straight there.', visual: { kind: 'flow', steps: ['key 47', '47 modulo 10', 'slot 7'] } },
+          'Ask three questions of any data: what do I do most often, how many items will there be, and does the order matter? The answers choose the shape.'] },
+    },
+    sources: ['Aligned with Texas College and Career Readiness Standards, Cross-Disciplinary II.E.2 (use technology to organize, manage, and analyze information) and CSTA K-12 CS Standards 3B-AP-12 (compare and contrast fundamental data structures and their uses).'],
+    generators: ['tc-shapes', 'tc-shapes', 'tc-shapes', 'tc-shapes', 'tc-shapes'],
+  },
+  {
+    id: 'recursion-and-limits',
+    order: 4,
+    title: 'Recursion and the limits of computing',
+    tagline: 'Call yourself on a smaller case; some questions have no program',
+    requires: ['shapes-of-data'],
+    lesson: {
+      paragraphs: ['A recursive function solves a problem by calling itself on a smaller version of the same problem, until it reaches a case small enough to answer directly, the base case. Factorial of n is n times factorial of n minus 1, and factorial of 0 is 1: so factorial of 4 is 4 times 3 times 2 times 1, 24, and it makes five calls, factorial of 4 down to factorial of 0. Without a base case the calls never end and the stack overflows.', 'Recursion mirrors the shape of the data: a folder holds files and folders, so to count the files in a folder, count its own files and add the count of each folder inside, the same question asked of something smaller. Every loop can be written as recursion and every recursion as a loop; you choose the one that reads more clearly.', 'Some questions no program can answer for every input. In 1936 Alan Turing proved that no program can decide, for every program and input, whether that program will ever stop: the halting problem. It is not a matter of speed or memory; a general answer is impossible. That result marks the edge of what computing can do, and knowing where the edge is separates a computer scientist from a coder.'],
+      keyIdea: 'Recursion: call yourself on a smaller case until the base case; factorial of 4 is 24. And some questions, like whether every program halts, no program can answer.',
+      example: { kind: 'flow', steps: ['factorial(4)', '4 times factorial(3)', '3 times factorial(2)', '2 times factorial(1)', 'factorial(0) is 1'], caption: 'Down to the base case, then the answers multiply back up: 24.',
+        another: ['Russian nesting dolls: to count them, open one, count it, and ask the same question of the doll inside. The smallest doll, which does not open, is the base case.',
+          { text: 'Counting the files in a folder tree: a folder with 3 files and two folders of 4 and 5 files holds 3 plus 4 plus 5, 12. The function that counts a folder calls itself on each folder inside.', visual: { kind: 'flow', steps: ['folder: 3 files', 'inside: 4', 'inside: 5', '12 in all'] } },
+          'The halting problem is not a challenge waiting for a cleverer coder. It is a proof, like the proof that no ruler-and-compass construction trisects every angle. Some doors are not locked; there is no door.'] },
+    },
+    sources: ['Aligned with Texas College and Career Readiness Standards, Cross-Disciplinary I.B.2 (construct well-reasoned arguments to explain phenomena, validate conjectures, or support positions) and CSTA K-12 CS Standards 3B-AP-14 (construct solutions to problems using student-created components, such as procedures, modules, and/or objects).'],
+    generators: ['tc-recursion', 'tc-recursion', 'tc-recursion', 'tc-recursion', 'tc-recursion'],
+  },
+]; }
 function TECH3_MODULES() { return [
   {
     id: 'inputs-and-outputs',
@@ -13269,6 +13362,75 @@ Object.assign(GENERATORS, {
       ['Which needs no repaying?', ['grants and scholarships', 'student loans', 'a credit card', 'a payday loan'], 'grants and scholarships', 'Pay for school in the cheapest order: gifts first, work second, loans last.'],
       ['Where do grants and federal student loans begin?', ['the FAFSA', 'a credit report', 'a title loan', 'a co-pay'], 'the FAFSA', 'The Free Application for Federal Student Aid, filed the year before you enroll.'],
       ['Which agency takes reports of fraud?', ['the Consumer Financial Protection Bureau', 'a payday lender', 'a mutual fund', 'the FAFSA'], 'the Consumer Financial Protection Bureau', 'Along with the Better Business Bureau and the Texas State Securities Board.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  // College computer science (2026-09-29, pass FU): computed answers where there is arithmetic, and concept answers said in the lesson first.
+  'tc-inside': (rng) => {
+    if (rng() < 0.5) {
+      const start = pick(rng, [1000, 2000, 5000, 8000]); const i = randInt(rng, 1, 9); const ans = start + 4 * i;
+      return { type: 'choice', story: `An array of 4-byte integers starts at address ${start}.`, prompt: `Where is element ${i}?`, choices: shuffle(rng, [ans, start + i, start + 4 * (i + 1), start + 8 * i].filter((v, k, a) => a.indexOf(v) === k).slice(0, 4).map(String)), answer: String(ans), explain: `Start plus 4 times ${i}: ${start} + ${4 * i} = **${ans}**.`, visual: null, explainVisual: null };
+    }
+    const Q = [['What does the processor repeat billions of times a second?', ['fetch, decode, execute', 'compile, link, run', 'read, write, wait', 'push, pop, jump'], 'fetch, decode, execute', 'Fetch the next instruction, decode what it asks, execute it.'],
+      ['What translates a program into machine instructions before it runs?', ['a compiler', 'a stack', 'a byte', 'a variable'], 'a compiler', 'A compiler translates first; an interpreter carries out each line as it goes.'],
+      ['How many values can one byte hold?', ['256', '8', '1,024', '65,536'], '256', 'Eight bits, so 2 to the 8th, 256 values.'],
+      ['A variable is a name for what?', ['an address', 'a processor', 'a program', 'a cycle'], 'an address', 'The name stands for a numbered box in memory.'],
+      ['What overflows when a function calls itself with no way out?', ['the stack', 'the compiler', 'the array', 'the byte'], 'the stack', 'Each call pushes a bookmark; with no return, the pile hits the ceiling.'],
+      ['How many values can two bytes hold?', ['65,536', '512', '256', '16'], '65,536', '256 times 256.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'tc-steps': (rng) => {
+    const r = rng();
+    if (r < 0.35) {
+      const k = randInt(rng, 3, 12); const n = 2 ** k; const ans = k + 1;
+      return { type: 'choice', story: null, prompt: `Binary search on ${n.toLocaleString('en-US')} sorted items: at most how many looks?`, choices: shuffle(rng, [ans, k, k + 2, Math.round(n / 2)].filter((v, i, a) => a.indexOf(v) === i).map(String)), answer: String(ans), explain: `Each look halves what is left: log2 of ${n.toLocaleString('en-US')} is ${k}, plus one look, **${ans}**.`, visual: null, explainVisual: null };
+    }
+    if (r < 0.7) {
+      const n = randInt(rng, 4, 12); const ans = (n * (n - 1)) / 2;
+      return { type: 'choice', story: null, prompt: `Comparing every pair of ${n} items: how many comparisons?`, choices: shuffle(rng, [ans, n * n, n * (n - 1), ans + n].filter((v, i, a) => a.indexOf(v) === i).map(String)), answer: String(ans), explain: `n times n minus 1, over 2: ${n} times ${n - 1} is ${n * (n - 1)}, halved, **${ans}**.`, visual: null, explainVisual: null };
+    }
+    const Q = [['Double the input of an O(n squared) algorithm. The work does what?', ['quadruples', 'doubles', 'stays the same', 'adds one step'], 'quadruples', 'Twice n, squared, is four times the work.'],
+      ['Double a sorted list. Binary search needs how much more?', ['a single look', 'twice the looks', 'four times the looks', 'no looks at all'], 'a single look', 'Each look halves what is left, so doubling the list adds one look.'],
+      ['Worst case, an unsorted search of n items takes how many steps?', ['n', 'log n', 'n squared', '1'], 'n', 'Every item may have to be looked at: linear, O(n).'],
+      ['What decides what is possible at all?', ['the shape of the growth', 'the stopwatch', 'the brand of the machine', 'the length of the program'], 'the shape of the growth', 'A faster machine buys one more doubling; a better shape of growth buys everything.'],
+      ['What do the better sorts reach?', ['O(n log n)', 'O(1)', 'O(n squared)', 'O(2 to the n)'], 'O(n log n)', 'Better sorts reach O(n log n), far below n squared for large n.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'tc-shapes': (rng) => {
+    const r = rng();
+    if (r < 0.3) {
+      const vals = [randInt(rng, 1, 9), randInt(rng, 10, 19), randInt(rng, 20, 29)]; const stack = rng() < 0.5; const ans = stack ? vals[2] : vals[0];
+      return { type: 'choice', story: null, prompt: `Push ${vals[0]}, push ${vals[1]}, push ${vals[2]}, then take one from a ${stack ? 'stack' : 'queue'}. What comes out?`, choices: shuffle(rng, [...vals, vals[0] + vals[2]].map(String)), answer: String(ans), explain: stack ? `A stack is last in, first out: **${ans}**.` : `A queue is first in, first out: **${ans}**.`, visual: null, explainVisual: null };
+    }
+    if (r < 0.6) {
+      const slots = pick(rng, [10, 7, 8, 12]); const key = randInt(rng, 13, 99); const ans = key % slots;
+      return { type: 'choice', story: null, prompt: `Key ${key}, a hash table of ${slots} slots, slot = key modulo ${slots}. Which slot?`, choices: shuffle(rng, [ans, (ans + 1) % slots, Math.floor(key / slots), key % (slots + 1)].filter((v, i, a) => a.indexOf(v) === i).map(String)), answer: String(ans), explain: `${key} divided by ${slots} leaves a remainder of **${ans}**.`, visual: null, explainVisual: null };
+    }
+    const Q = [['Inserting at the front of an array costs how many steps?', ['n', '1', 'log n', '0'], 'n', 'Every box shifts one place: n steps.'],
+      ['Reaching box i in a linked list means what?', ['walking i links', 'one step', 'computing an address', 'sorting first'], 'walking i links', 'Each box holds the address of the next, so you walk.'],
+      ['A queue gives back items in what order?', ['first in, first out', 'last in, first out', 'largest first', 'random'], 'first in, first out', 'Like a line at a counter.'],
+      ['A hash table finds a key in about how many steps, usually?', ['one step', 'n steps', 'log n steps', 'n squared steps'], 'one step', 'Arithmetic on the key gives the slot directly.'],
+      ['A balanced tree finds a key in about how many steps?', ['log2 n', 'n', 'one', 'n squared'], 'log2 n', 'It keeps keys in order and halves the field at each level.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'tc-recursion': (rng) => {
+    const r = rng();
+    if (r < 0.35) {
+      const n = randInt(rng, 3, 7); let f = 1; for (let i = 2; i <= n; i++) f *= i;
+      return { type: 'choice', story: null, prompt: `What is factorial of ${n}?`, choices: shuffle(rng, [f, f / n, f * (n + 1), f - n].filter((v, i, a) => a.indexOf(v) === i).map(String)), answer: String(f), explain: `${Array.from({ length: n }, (_, i) => n - i).join(' times ')} = **${f}**.`, visual: null, explainVisual: null };
+    }
+    if (r < 0.7) {
+      const a = randInt(rng, 1, 9); const b = randInt(rng, 1, 9); const c = randInt(rng, 1, 9); const ans = a + b + c;
+      return { type: 'choice', story: `A folder holds ${a} files and two folders of ${b} and ${c} files.`, prompt: 'How many files in all?', choices: shuffle(rng, [ans, a + b, ans + 2, a * 3].filter((v, i, x) => x.indexOf(v) === i).map(String)), answer: String(ans), explain: `Count its own files, then ask the same question of each folder inside: ${a} + ${b} + ${c} = **${ans}**.`, visual: null, explainVisual: null };
+    }
+    const Q = [['The case small enough to answer directly is called what?', ['the base case', 'the loop', 'the stack', 'the halting problem'], 'the base case', 'Without it the calls never end and the stack overflows.'],
+      ['How many calls does factorial of 4 make?', ['five', 'four', 'one', 'twenty-four'], 'five', 'Factorial of 4 down to factorial of 0: five calls.'],
+      ['Who proved, in 1936, that the halting problem has no general answer?', ['Alan Turing', 'Ada Lovelace', 'Isaac Newton', 'Grace Hopper'], 'Alan Turing', 'The halting problem: a general answer is impossible, not merely slow.'],
+      ['Every loop can be written as what?', ['recursion', 'a hash table', 'a byte', 'a compiler'], 'recursion', 'And every recursion as a loop; choose the one that reads more clearly.'],
+      ['The halting problem is a matter of what?', ['a general answer is impossible', 'speed', 'memory', 'a cleverer coder'], 'a general answer is impossible', 'It is a proof about all programs, not a limit of any machine.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
@@ -20535,6 +20697,36 @@ export const WONDER = [
     closing: 'What is something you value that is, at bottom, made of very ordinary stuff?',
   },
   {
+    id: 'w-grown-no-program-can',
+    theme: 'world',
+    stage: 'grown',
+    courseIds: ['tech-college'],
+    answerMode: 'typed',
+    prompt: 'Some questions no program can answer, ever, no matter how fast the machine. Does that limit make computing smaller, or more interesting?',
+    perspectives: [
+      { voice: 'A scientist', says: 'Every field grew up the day it found its limits. Physics found the speed of light and thermodynamics found entropy, and neither got smaller for it. A limit tells you where the real work is.' },
+      { voice: 'An artist', says: 'A canvas has edges, and the edges are where composition begins. A machine that could answer everything would be a machine with nothing to say. The impossible questions are where the taste lives.' },
+      { voice: 'A grandparent of faith', says: 'People have always lived with questions that cannot be settled by any method. It has not made life smaller. It has made humility possible, and humility is where wisdom starts.' },
+      { voice: 'A skeptic', says: 'Be careful with the word ever. Turing proved a precise thing about a precise question, not that machines are mysterious. Read what was proved before you draw a moral from it.' },
+    ],
+    closing: 'What is a question you would want a machine to leave to you?',
+  },
+  {
+    id: 'w-grown-choked-at-scale',
+    theme: 'failure',
+    stage: 'grown',
+    courseIds: ['tech-college'],
+    answerMode: 'typed',
+    prompt: 'Your program worked perfectly on ten items and choked on ten thousand. Was it broken, or was it never right?',
+    perspectives: [
+      { voice: 'A scientist', says: 'A result that holds at one scale and fails at another was never a result about the thing; it was a result about the sample. The program was correct and the analysis was missing, which is the more common kind of wrong.' },
+      { voice: 'An artist', says: 'A sketch is not a failed painting, and a program that handles ten items is not a failed program. It is a sketch, nothing more. The mistake was calling the sketch finished before anyone tried to hang it.' },
+      { voice: 'A grandparent of faith', says: 'Most of the things I was sure about at twenty held for ten items and not for ten thousand. Growing up is finding that out gently, before it costs someone else.' },
+      { voice: 'A skeptic', says: 'Define what worked means here. It produced the right answer, on a small input, once. That is three conditions, and you tested one of them. Count the steps next time before you count the successes.' },
+    ],
+    closing: 'What would you test before you called something finished?',
+  },
+  {
     id: 'w-teen-sure-and-wrong',
     theme: 'failure',
     stage: 'teen',
@@ -23482,6 +23674,7 @@ export const COURSE_GAMES = {
   'econ-6': ['loan-econ-6'],
   'econ-9': ['fund-econ-9'],
   'tech-6': ['teach-tech-6'],
+  'tech-college': ['search-tech-college'],
   'tech-9': ['bits-tech-9'],
   'health-4': ['pairs-health'],
   'tech-3': ['pairs-technology', 'debug-tech-3'],

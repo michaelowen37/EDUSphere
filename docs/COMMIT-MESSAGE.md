@@ -1,6 +1,7 @@
-Economics for grades 6 to 8 and personal finance for 9 to 12
+College computer science, and four fixes from the phone and laptop
 
-- Pass FX: grade 6 gets Money over time for grades 6 to 8 (econ-6): accounts and cards, credit history and the cost of a loan, interest that compounds, and budgets, taxes and paying for college, with every dollar question computed fresh, Texas codes 6.14, 7.13 and 8.12, four short stories and a long one about Savanah's first apartment, two Wonder questions, and Pay It Off, a new kind of game.
-- Pass FY: grade 9 gets Money for a life for grades 9 to 12 (econ-9): paychecks and statements, the true cost of credit, saving, investing and risk, insurance, scams and paying for college, with every dollar question computed fresh, the §113.49 Personal Financial Literacy codes, four short stories and a long one about Chloe and her first studio lease, two Wonder questions, and Build the Fund, a new kind of game.
+- Pass FZ: college gets How computers compute (tech-college): inside a running program, counting steps, the shapes of data, and recursion and the limits of computing, with arithmetic answers computed fresh, the Texas College and Career Readiness cross-disciplinary standards and CSTA level 3B, four short stories and a long one about Chloe and a gallery catalogue, two Wonder questions, and Split the Search, a new kind of game.
+- Pass GA: the whole Progress by course bar opens the fold and its courses are tinted apart from it, dropdown options wear the theme's colors, and a ruled-out answer stays readable in the dark theme, with browser checks for each.
+- Pass GB: the Wonder Questions popup counts the approved questions out of the pool, and every course on the report has a Preview link that opens its module list, with faint rules between the rows.
 
-Passes: FX, FY
+Passes: FZ, GA, GB

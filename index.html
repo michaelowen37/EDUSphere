@@ -37,7 +37,7 @@ window.__eduArt = [];
 window.__eduColoringArt = [];
 window.__eduMapArt = [];
 window.__eduAudio = [];
-window.__eduNews = {"stamp":"September 29, 2026 (money for a life)","date":"September 29, 2026","items":["Grade 9 has a new elective for grades 9 to 12, Money for a life: a paycheck read to the last line, with FICA, withholding and the benefits that never show in net pay; the true cost of credit, from APR and fees to the three Cs and a credit report worth correcting; saving in order, from an emergency fund to retirement, with stocks, bonds and mutual funds on the risk and return seesaw; and insurance, scams and paying for college in the cheapest order. Every dollar question is worked out fresh. Each lesson has a story, and the course ends with a long story about Chloe and her first studio lease.","Finishing the course unlocks Build the Fund, a new kind of game: twelve months on your own, one tap each, and four surprise bills that an emergency fund can turn from a loan into an errand.","Two new Wonder questions for high school wait in the review screen."]};
+window.__eduNews = {"stamp":"September 29, 2026 (preview a course)","date":"September 29, 2026","items":["Every course on a student's report now has a Preview link that opens a list of its modules, each with a one-line description, so you can see what a course holds before you assign it. The course rows are separated by faint lines, on the phone and on a wider screen.","The Wonder Questions popup on a student card now tells you how many of the questions your school has approved for students to see, out of the whole set."]};
 // Installable app: the worker keeps a copy of the page for offline use and asks the network first, so a fresh build always wins.
 if ('serviceWorker' in navigator && /^https?:/.test(location.protocol)) { navigator.serviceWorker.register('sw.js').catch(function () {}); }
 var process = { env: { NODE_ENV: 'production' } };
@@ -18198,6 +18198,16 @@ const COURSES = [
         modules: ECON9_MODULES(),
     },
     {
+        id: 'tech-college',
+        grade: 'C',
+        subject: 'Technology',
+        title: 'How computers compute',
+        audience: 'College level',
+        elective: true,
+        keywords: ['computer science', 'algorithms', 'data structures', 'recursion', 'elective'],
+        modules: COLLEGE_TECH_MODULES(),
+    },
+    {
         id: 'civics-3',
         grade: '3',
         subject: 'History',
@@ -18427,6 +18437,7 @@ const GAMES = [
     { id: 'debug-tech-5', kind: 'debug', title: 'Debug the robot: turns', minGrade: '5', deck: 'turns' },
     { id: 'price-econ-3', kind: 'price', title: 'Set the Price', minGrade: '3', price: 'stand' }, // economics 3 to 5 (pass FW): find the price that earns the most
     { id: 'teach-tech-6', kind: 'teach', title: 'Teach the Robot', minGrade: '6', teach: 'fruit' },
+    { id: 'search-tech-college', kind: 'search', title: 'Split the Search', minGrade: 'C', search: 32 }, // college computer science (pass FU): binary search by hand
     { id: 'loan-econ-6', kind: 'loan', title: 'Pay It Off', minGrade: '6', loan: 'plans' }, // economics 6 to 8 (pass FX): what a loan costs month by month
     { id: 'fund-econ-9', kind: 'fund', title: 'Build the Fund', minGrade: '9', fund: 'year' }, // personal finance 9 to 12 (pass FY): a year of saving against surprises
     { id: 'bits-tech-9', kind: 'bits', title: 'Eight Switches', minGrade: '9', bits: 8 }, // computer science 9 to 12 (pass FU): make the number with the switches   // the plain AI course (pass FT): the child is the pile of examples
@@ -18955,6 +18966,19 @@ function fundMonth(state, save, month) {
         loan += s - fromFund;
     }
     return { fund, loan, spent: state.spent + (state.room - put) };
+}
+// Split the Search (2026-09-29, pass FU, college computer science): a board of sorted face-down cards and a target that is
+// on it. The player taps cards to reveal them and is told higher or lower; binary search finds any target in six looks
+// on 32 cards. Boards come from the round so a replay is new, and the rules test checks every seed it tries.
+function searchBoard(seed, cards = 32) {
+    let x = (Math.imul(seed, 2654435761) + 97) >>> 0;
+    const rnd = () => { x = (x * 1664525 + 1013904223) >>> 0; return x / 4294967296; };
+    const set = new Set();
+    while (set.size < cards)
+        set.add(10 + Math.floor(rnd() * 980));
+    const values = [...set].sort((a, b) => a - b);
+    const target = Math.floor(rnd() * cards);
+    return { values, target };
 }
 const ROBOT_DECKS = {
     arrows: [
@@ -26203,6 +26227,81 @@ function ECON9_MODULES() {
         },
     ];
 }
+// The college computer science course (2026-09-29, pass FU): what runs when a program runs, counting steps, the shapes
+// of data, recursion and the edge of what computing can do. Cited to the Texas College and Career Readiness Standards
+// (Cross-Disciplinary) and CSTA level 3B, since college has no TEKS.
+function COLLEGE_TECH_MODULES() {
+    return [
+        {
+            id: 'inside-a-running-program',
+            order: 1,
+            title: 'Inside a running program',
+            tagline: 'Fetch, decode, execute; numbered boxes; a stack',
+            requires: [],
+            lesson: {
+                paragraphs: ['A program you write is text. Before it runs, a compiler translates it into machine instructions, or an interpreter reads it and carries out each line as it goes. Either way, what finally runs is a stream of tiny instructions: load a value from memory, add two values, compare, jump to another instruction. The processor repeats one cycle billions of times a second: fetch the next instruction, decode what it asks, execute it.', 'Memory is a long row of numbered boxes, and each box holds one byte, eight bits, so 256 possible values; two bytes hold 256 times 256 values, 65,536. A variable is a name for an address. An integer usually takes 4 bytes, so an array of integers that starts at address 1000 keeps element 0 at 1000, element 1 at 1004, element 2 at 1008: the address of element i is the start plus 4 times i. That arithmetic is why arrays are fast: the machine jumps straight to the box.', 'When one function calls another, the machine pushes the caller\'s place and its local values onto a stack, runs the callee, and pops back. Call too deep with no way out and the stack overflows. This is the whole picture: text becomes instructions, instructions move values between numbered boxes, and a stack keeps track of who called whom.'],
+                keyIdea: 'A program becomes a stream of fetch, decode, execute; memory is numbered bytes, a variable is a name for an address, and a stack remembers who called whom.',
+                example: { kind: 'flow', steps: ['fetch', 'decode', 'execute', 'next instruction'], caption: 'The processor\'s cycle, repeated billions of times a second.',
+                    another: ['Think of a clerk with a numbered wall of pigeonholes and a list of orders. Fetch: read the next order. Decode: work out what it asks. Execute: move a slip from hole 1000 to hole 1004. The clerk never understands the orders; the clerk only follows them, very fast.',
+                        { text: 'An array is a street of houses with consecutive numbers. To reach house i you do not walk past the others; you compute the number and go. A linked list, by contrast, is a treasure hunt: each house holds the address of the next.', visual: { kind: 'flow', steps: ['start at 1000', 'element 3', '1000 + 4 times 3', 'address 1012'] } },
+                        'The call stack is a pile of bookmarks. Each call adds one on top; each return takes the top one off. A function that calls itself forever adds bookmarks until the pile hits the ceiling: a stack overflow.'] },
+            },
+            sources: ['Aligned with Texas College and Career Readiness Standards, Cross-Disciplinary II.E.4 (use technology appropriately) and I.C.1 (analyze a situation to identify a problem to be solved), and CSTA K-12 CS Standards 3B-CS-02 (illustrate ways computing systems implement logic, input, and output through hardware components).'],
+            generators: ['tc-inside', 'tc-inside', 'tc-inside', 'tc-inside', 'tc-inside'],
+        },
+        {
+            id: 'counting-steps',
+            order: 2,
+            title: 'Counting steps',
+            tagline: 'How work grows as the input grows',
+            requires: ['inside-a-running-program'],
+            lesson: {
+                paragraphs: ['Two programs can give the same answer and differ a millionfold in time. Computer scientists compare them by counting steps as the input grows, not by stopwatch. Searching an unsorted list of n items for a value looks at every item in the worst case: n steps, written O(n), linear. Double the list and you double the work.', 'If the list is sorted, binary search looks at the middle, throws away the half that cannot hold the value, and repeats. Each look halves what is left, so 32 items take at most 6 looks and 1,024 items at most 11: for n items, about log2 of n, plus one, written O(log n). Doubling the list adds a single look.', 'Some work grows faster than the input. Comparing every pair of n items, as the simplest sorts do, takes n times n minus 1, over 2, comparisons: O(n squared). Double the input and the work quadruples. Better sorts reach O(n log n). The lesson is not that fast machines fix slow algorithms; it is that the shape of the growth decides what is possible at all.'],
+                keyIdea: 'Count steps as the input grows: O(log n), O(n), O(n log n), O(n squared). Doubling the input adds one look to a binary search and quadruples a pairwise sort.',
+                example: { kind: 'flow', steps: ['32 items', 'look at the middle', '16 left', '8 left', '4 left', '2 left', '1: found'], caption: 'Binary search on 32 sorted items: six looks at most.',
+                    another: ['Guess my number between 1 and 1,000. Ask is it more than 500 and you have thrown away half the numbers with one question. Ten questions of that kind pin it down; a thousand guesses in order might not.',
+                        { text: 'Shaking hands: 4 people need 6 handshakes, 8 people need 28, 16 people need 120. Double the people and the handshakes go up about four times. That is n squared growth.', visual: { kind: 'flow', steps: ['4 people: 6', '8 people: 28', '16 people: 120'] } },
+                        'A machine ten times faster buys you one more doubling of the input for an n squared algorithm, and then you are exactly where you started. A better algorithm buys you everything.'] },
+            },
+            sources: ['Aligned with Texas College and Career Readiness Standards, Cross-Disciplinary I.C.2 (develop and apply multiple strategies to solve a problem) and CSTA K-12 CS Standards 3B-AP-11 (evaluate algorithms in terms of their efficiency, correctness, and clarity) and 3B-AP-10 (use and adapt classic algorithms to solve computational problems).'],
+            generators: ['tc-steps', 'tc-steps', 'tc-steps', 'tc-steps', 'tc-steps'],
+        },
+        {
+            id: 'shapes-of-data',
+            order: 3,
+            title: 'The shapes of data',
+            tagline: 'Arrays, lists, stacks, queues, hash tables, trees',
+            requires: ['counting-steps'],
+            lesson: {
+                paragraphs: ['An array is a row of boxes at consecutive addresses: reading box i is one step, but inserting at the front means shifting everything, n steps. A linked list is boxes anywhere in memory, each holding the address of the next: inserting at the front is one step, but reaching box i means walking i links.', 'A stack takes and gives back from one end, last in, first out, the way plates are stacked; a queue gives back from the other end, first in, first out, the way a line at a counter works. Push 3, push 7, push 9, then take one: you get 9 from a stack and 3 from a queue.', 'A hash table turns a key into a slot by arithmetic, for instance the key modulo the number of slots, so a lookup is usually one step no matter how many entries there are: key 47 in a table of 10 slots goes to slot 7. A balanced tree keeps keys in order and finds any of them in about log2 n steps. Choosing the shape of the data is most of the work of a fast program.'],
+                keyIdea: 'Array: one step to read, n to insert at the front. Linked list: the reverse. Stack: last in, first out. Queue: first in, first out. Hash table: key to slot by arithmetic. Tree: log n, in order.',
+                example: { kind: 'flow', steps: ['push 3', 'push 7', 'push 9', 'take one: 9'], caption: 'A stack gives back the last thing pushed; a queue would give back 3.',
+                    another: ['The undo button is a stack: the last change is the first undone. The print queue is a queue: the first job sent is the first printed. Pick the wrong one and the printer prints your last page first.',
+                        { text: 'A hash table is a coat check that computes the hook from the ticket number instead of searching the rack. Ticket 47, ten hooks: hook 7, straight there.', visual: { kind: 'flow', steps: ['key 47', '47 modulo 10', 'slot 7'] } },
+                        'Ask three questions of any data: what do I do most often, how many items will there be, and does the order matter? The answers choose the shape.'] },
+            },
+            sources: ['Aligned with Texas College and Career Readiness Standards, Cross-Disciplinary II.E.2 (use technology to organize, manage, and analyze information) and CSTA K-12 CS Standards 3B-AP-12 (compare and contrast fundamental data structures and their uses).'],
+            generators: ['tc-shapes', 'tc-shapes', 'tc-shapes', 'tc-shapes', 'tc-shapes'],
+        },
+        {
+            id: 'recursion-and-limits',
+            order: 4,
+            title: 'Recursion and the limits of computing',
+            tagline: 'Call yourself on a smaller case; some questions have no program',
+            requires: ['shapes-of-data'],
+            lesson: {
+                paragraphs: ['A recursive function solves a problem by calling itself on a smaller version of the same problem, until it reaches a case small enough to answer directly, the base case. Factorial of n is n times factorial of n minus 1, and factorial of 0 is 1: so factorial of 4 is 4 times 3 times 2 times 1, 24, and it makes five calls, factorial of 4 down to factorial of 0. Without a base case the calls never end and the stack overflows.', 'Recursion mirrors the shape of the data: a folder holds files and folders, so to count the files in a folder, count its own files and add the count of each folder inside, the same question asked of something smaller. Every loop can be written as recursion and every recursion as a loop; you choose the one that reads more clearly.', 'Some questions no program can answer for every input. In 1936 Alan Turing proved that no program can decide, for every program and input, whether that program will ever stop: the halting problem. It is not a matter of speed or memory; a general answer is impossible. That result marks the edge of what computing can do, and knowing where the edge is separates a computer scientist from a coder.'],
+                keyIdea: 'Recursion: call yourself on a smaller case until the base case; factorial of 4 is 24. And some questions, like whether every program halts, no program can answer.',
+                example: { kind: 'flow', steps: ['factorial(4)', '4 times factorial(3)', '3 times factorial(2)', '2 times factorial(1)', 'factorial(0) is 1'], caption: 'Down to the base case, then the answers multiply back up: 24.',
+                    another: ['Russian nesting dolls: to count them, open one, count it, and ask the same question of the doll inside. The smallest doll, which does not open, is the base case.',
+                        { text: 'Counting the files in a folder tree: a folder with 3 files and two folders of 4 and 5 files holds 3 plus 4 plus 5, 12. The function that counts a folder calls itself on each folder inside.', visual: { kind: 'flow', steps: ['folder: 3 files', 'inside: 4', 'inside: 5', '12 in all'] } },
+                        'The halting problem is not a challenge waiting for a cleverer coder. It is a proof, like the proof that no ruler-and-compass construction trisects every angle. Some doors are not locked; there is no door.'] },
+            },
+            sources: ['Aligned with Texas College and Career Readiness Standards, Cross-Disciplinary I.B.2 (construct well-reasoned arguments to explain phenomena, validate conjectures, or support positions) and CSTA K-12 CS Standards 3B-AP-14 (construct solutions to problems using student-created components, such as procedures, modules, and/or objects).'],
+            generators: ['tc-recursion', 'tc-recursion', 'tc-recursion', 'tc-recursion', 'tc-recursion'],
+        },
+    ];
+}
 function TECH3_MODULES() {
     return [
         {
@@ -31068,6 +31167,90 @@ Object.assign(GENERATORS, {
             ['Which needs no repaying?', ['grants and scholarships', 'student loans', 'a credit card', 'a payday loan'], 'grants and scholarships', 'Pay for school in the cheapest order: gifts first, work second, loans last.'],
             ['Where do grants and federal student loans begin?', ['the FAFSA', 'a credit report', 'a title loan', 'a co-pay'], 'the FAFSA', 'The Free Application for Federal Student Aid, filed the year before you enroll.'],
             ['Which agency takes reports of fraud?', ['the Consumer Financial Protection Bureau', 'a payday lender', 'a mutual fund', 'the FAFSA'], 'the Consumer Financial Protection Bureau', 'Along with the Better Business Bureau and the Texas State Securities Board.']];
+        const [prompt, choices, answer, explain] = pick(rng, Q);
+        return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+    },
+    // College computer science (2026-09-29, pass FU): computed answers where there is arithmetic, and concept answers said in the lesson first.
+    'tc-inside': (rng) => {
+        if (rng() < 0.5) {
+            const start = pick(rng, [1000, 2000, 5000, 8000]);
+            const i = randInt(rng, 1, 9);
+            const ans = start + 4 * i;
+            return { type: 'choice', story: `An array of 4-byte integers starts at address ${start}.`, prompt: `Where is element ${i}?`, choices: shuffle(rng, [ans, start + i, start + 4 * (i + 1), start + 8 * i].filter((v, k, a) => a.indexOf(v) === k).slice(0, 4).map(String)), answer: String(ans), explain: `Start plus 4 times ${i}: ${start} + ${4 * i} = **${ans}**.`, visual: null, explainVisual: null };
+        }
+        const Q = [['What does the processor repeat billions of times a second?', ['fetch, decode, execute', 'compile, link, run', 'read, write, wait', 'push, pop, jump'], 'fetch, decode, execute', 'Fetch the next instruction, decode what it asks, execute it.'],
+            ['What translates a program into machine instructions before it runs?', ['a compiler', 'a stack', 'a byte', 'a variable'], 'a compiler', 'A compiler translates first; an interpreter carries out each line as it goes.'],
+            ['How many values can one byte hold?', ['256', '8', '1,024', '65,536'], '256', 'Eight bits, so 2 to the 8th, 256 values.'],
+            ['A variable is a name for what?', ['an address', 'a processor', 'a program', 'a cycle'], 'an address', 'The name stands for a numbered box in memory.'],
+            ['What overflows when a function calls itself with no way out?', ['the stack', 'the compiler', 'the array', 'the byte'], 'the stack', 'Each call pushes a bookmark; with no return, the pile hits the ceiling.'],
+            ['How many values can two bytes hold?', ['65,536', '512', '256', '16'], '65,536', '256 times 256.']];
+        const [prompt, choices, answer, explain] = pick(rng, Q);
+        return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+    },
+    'tc-steps': (rng) => {
+        const r = rng();
+        if (r < 0.35) {
+            const k = randInt(rng, 3, 12);
+            const n = 2 ** k;
+            const ans = k + 1;
+            return { type: 'choice', story: null, prompt: `Binary search on ${n.toLocaleString('en-US')} sorted items: at most how many looks?`, choices: shuffle(rng, [ans, k, k + 2, Math.round(n / 2)].filter((v, i, a) => a.indexOf(v) === i).map(String)), answer: String(ans), explain: `Each look halves what is left: log2 of ${n.toLocaleString('en-US')} is ${k}, plus one look, **${ans}**.`, visual: null, explainVisual: null };
+        }
+        if (r < 0.7) {
+            const n = randInt(rng, 4, 12);
+            const ans = (n * (n - 1)) / 2;
+            return { type: 'choice', story: null, prompt: `Comparing every pair of ${n} items: how many comparisons?`, choices: shuffle(rng, [ans, n * n, n * (n - 1), ans + n].filter((v, i, a) => a.indexOf(v) === i).map(String)), answer: String(ans), explain: `n times n minus 1, over 2: ${n} times ${n - 1} is ${n * (n - 1)}, halved, **${ans}**.`, visual: null, explainVisual: null };
+        }
+        const Q = [['Double the input of an O(n squared) algorithm. The work does what?', ['quadruples', 'doubles', 'stays the same', 'adds one step'], 'quadruples', 'Twice n, squared, is four times the work.'],
+            ['Double a sorted list. Binary search needs how much more?', ['a single look', 'twice the looks', 'four times the looks', 'no looks at all'], 'a single look', 'Each look halves what is left, so doubling the list adds one look.'],
+            ['Worst case, an unsorted search of n items takes how many steps?', ['n', 'log n', 'n squared', '1'], 'n', 'Every item may have to be looked at: linear, O(n).'],
+            ['What decides what is possible at all?', ['the shape of the growth', 'the stopwatch', 'the brand of the machine', 'the length of the program'], 'the shape of the growth', 'A faster machine buys one more doubling; a better shape of growth buys everything.'],
+            ['What do the better sorts reach?', ['O(n log n)', 'O(1)', 'O(n squared)', 'O(2 to the n)'], 'O(n log n)', 'Better sorts reach O(n log n), far below n squared for large n.']];
+        const [prompt, choices, answer, explain] = pick(rng, Q);
+        return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+    },
+    'tc-shapes': (rng) => {
+        const r = rng();
+        if (r < 0.3) {
+            const vals = [randInt(rng, 1, 9), randInt(rng, 10, 19), randInt(rng, 20, 29)];
+            const stack = rng() < 0.5;
+            const ans = stack ? vals[2] : vals[0];
+            return { type: 'choice', story: null, prompt: `Push ${vals[0]}, push ${vals[1]}, push ${vals[2]}, then take one from a ${stack ? 'stack' : 'queue'}. What comes out?`, choices: shuffle(rng, [...vals, vals[0] + vals[2]].map(String)), answer: String(ans), explain: stack ? `A stack is last in, first out: **${ans}**.` : `A queue is first in, first out: **${ans}**.`, visual: null, explainVisual: null };
+        }
+        if (r < 0.6) {
+            const slots = pick(rng, [10, 7, 8, 12]);
+            const key = randInt(rng, 13, 99);
+            const ans = key % slots;
+            return { type: 'choice', story: null, prompt: `Key ${key}, a hash table of ${slots} slots, slot = key modulo ${slots}. Which slot?`, choices: shuffle(rng, [ans, (ans + 1) % slots, Math.floor(key / slots), key % (slots + 1)].filter((v, i, a) => a.indexOf(v) === i).map(String)), answer: String(ans), explain: `${key} divided by ${slots} leaves a remainder of **${ans}**.`, visual: null, explainVisual: null };
+        }
+        const Q = [['Inserting at the front of an array costs how many steps?', ['n', '1', 'log n', '0'], 'n', 'Every box shifts one place: n steps.'],
+            ['Reaching box i in a linked list means what?', ['walking i links', 'one step', 'computing an address', 'sorting first'], 'walking i links', 'Each box holds the address of the next, so you walk.'],
+            ['A queue gives back items in what order?', ['first in, first out', 'last in, first out', 'largest first', 'random'], 'first in, first out', 'Like a line at a counter.'],
+            ['A hash table finds a key in about how many steps, usually?', ['one step', 'n steps', 'log n steps', 'n squared steps'], 'one step', 'Arithmetic on the key gives the slot directly.'],
+            ['A balanced tree finds a key in about how many steps?', ['log2 n', 'n', 'one', 'n squared'], 'log2 n', 'It keeps keys in order and halves the field at each level.']];
+        const [prompt, choices, answer, explain] = pick(rng, Q);
+        return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+    },
+    'tc-recursion': (rng) => {
+        const r = rng();
+        if (r < 0.35) {
+            const n = randInt(rng, 3, 7);
+            let f = 1;
+            for (let i = 2; i <= n; i++)
+                f *= i;
+            return { type: 'choice', story: null, prompt: `What is factorial of ${n}?`, choices: shuffle(rng, [f, f / n, f * (n + 1), f - n].filter((v, i, a) => a.indexOf(v) === i).map(String)), answer: String(f), explain: `${Array.from({ length: n }, (_, i) => n - i).join(' times ')} = **${f}**.`, visual: null, explainVisual: null };
+        }
+        if (r < 0.7) {
+            const a = randInt(rng, 1, 9);
+            const b = randInt(rng, 1, 9);
+            const c = randInt(rng, 1, 9);
+            const ans = a + b + c;
+            return { type: 'choice', story: `A folder holds ${a} files and two folders of ${b} and ${c} files.`, prompt: 'How many files in all?', choices: shuffle(rng, [ans, a + b, ans + 2, a * 3].filter((v, i, x) => x.indexOf(v) === i).map(String)), answer: String(ans), explain: `Count its own files, then ask the same question of each folder inside: ${a} + ${b} + ${c} = **${ans}**.`, visual: null, explainVisual: null };
+        }
+        const Q = [['The case small enough to answer directly is called what?', ['the base case', 'the loop', 'the stack', 'the halting problem'], 'the base case', 'Without it the calls never end and the stack overflows.'],
+            ['How many calls does factorial of 4 make?', ['five', 'four', 'one', 'twenty-four'], 'five', 'Factorial of 4 down to factorial of 0: five calls.'],
+            ['Who proved, in 1936, that the halting problem has no general answer?', ['Alan Turing', 'Ada Lovelace', 'Isaac Newton', 'Grace Hopper'], 'Alan Turing', 'The halting problem: a general answer is impossible, not merely slow.'],
+            ['Every loop can be written as what?', ['recursion', 'a hash table', 'a byte', 'a compiler'], 'recursion', 'And every recursion as a loop; choose the one that reads more clearly.'],
+            ['The halting problem is a matter of what?', ['a general answer is impossible', 'speed', 'memory', 'a cleverer coder'], 'a general answer is impossible', 'It is a proof about all programs, not a limit of any machine.']];
         const [prompt, choices, answer, explain] = pick(rng, Q);
         return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
     },
@@ -39191,6 +39374,36 @@ const WONDER = [
         closing: 'What is something you value that is, at bottom, made of very ordinary stuff?',
     },
     {
+        id: 'w-grown-no-program-can',
+        theme: 'world',
+        stage: 'grown',
+        courseIds: ['tech-college'],
+        answerMode: 'typed',
+        prompt: 'Some questions no program can answer, ever, no matter how fast the machine. Does that limit make computing smaller, or more interesting?',
+        perspectives: [
+            { voice: 'A scientist', says: 'Every field grew up the day it found its limits. Physics found the speed of light and thermodynamics found entropy, and neither got smaller for it. A limit tells you where the real work is.' },
+            { voice: 'An artist', says: 'A canvas has edges, and the edges are where composition begins. A machine that could answer everything would be a machine with nothing to say. The impossible questions are where the taste lives.' },
+            { voice: 'A grandparent of faith', says: 'People have always lived with questions that cannot be settled by any method. It has not made life smaller. It has made humility possible, and humility is where wisdom starts.' },
+            { voice: 'A skeptic', says: 'Be careful with the word ever. Turing proved a precise thing about a precise question, not that machines are mysterious. Read what was proved before you draw a moral from it.' },
+        ],
+        closing: 'What is a question you would want a machine to leave to you?',
+    },
+    {
+        id: 'w-grown-choked-at-scale',
+        theme: 'failure',
+        stage: 'grown',
+        courseIds: ['tech-college'],
+        answerMode: 'typed',
+        prompt: 'Your program worked perfectly on ten items and choked on ten thousand. Was it broken, or was it never right?',
+        perspectives: [
+            { voice: 'A scientist', says: 'A result that holds at one scale and fails at another was never a result about the thing; it was a result about the sample. The program was correct and the analysis was missing, which is the more common kind of wrong.' },
+            { voice: 'An artist', says: 'A sketch is not a failed painting, and a program that handles ten items is not a failed program. It is a sketch, nothing more. The mistake was calling the sketch finished before anyone tried to hang it.' },
+            { voice: 'A grandparent of faith', says: 'Most of the things I was sure about at twenty held for ten items and not for ten thousand. Growing up is finding that out gently, before it costs someone else.' },
+            { voice: 'A skeptic', says: 'Define what worked means here. It produced the right answer, on a small input, once. That is three conditions, and you tested one of them. Count the steps next time before you count the successes.' },
+        ],
+        closing: 'What would you test before you called something finished?',
+    },
+    {
         id: 'w-teen-sure-and-wrong',
         theme: 'failure',
         stage: 'teen',
@@ -42341,6 +42554,7 @@ const COURSE_GAMES = {
     'econ-6': ['loan-econ-6'],
     'econ-9': ['fund-econ-9'],
     'tech-6': ['teach-tech-6'],
+    'tech-college': ['search-tech-college'],
     'tech-9': ['bits-tech-9'],
     'health-4': ['pairs-health'],
     'tech-3': ['pairs-technology', 'debug-tech-3'],
@@ -43591,6 +43805,22 @@ const CURRICULUM = [
             { framework: 'CCSS', code: 'CEE Standard 14', text: 'Entrepreneurship: entrepreneurs take on the risk of organizing productive resources to make goods and services, and profit is an important incentive.', moduleIds: ['expenses-and-profit'] },
             { framework: 'CCSS', code: 'CEE Standard 10', text: 'Institutions: institutions such as banks evolve to help individuals and groups accomplish their goals.', moduleIds: ['savings-taxes-and-budgets'] },
             { framework: 'CCSS', code: 'CEE Standard 16', text: 'Role of government: governments provide certain goods and services and pay for them with taxes.', moduleIds: ['savings-taxes-and-budgets'] },
+        ],
+    },
+    {
+        grade: 'C', subject: 'Technology', status: 'ready',
+        source: 'Texas College and Career Readiness Standards, Cross-Disciplinary Standards (2009): Key Cognitive Skills and Foundational Skills in technology; CSTA K-12 Computer Science Standards, Level 3B (grades 11 to 12), the national framework, shown in the Common Core column.',
+        standards: [
+            { framework: 'TEKS', code: 'CCRS II.E.4', text: 'Use technology appropriately.', moduleIds: ['inside-a-running-program'] },
+            { framework: 'TEKS', code: 'CCRS I.C.1', text: 'Analyze a situation to identify a problem to be solved.', moduleIds: ['inside-a-running-program'] },
+            { framework: 'TEKS', code: 'CCRS I.C.2', text: 'Develop and apply multiple strategies to solve a problem.', moduleIds: ['counting-steps'] },
+            { framework: 'TEKS', code: 'CCRS II.E.2', text: 'Use technology to organize, manage, and analyze information.', moduleIds: ['shapes-of-data'] },
+            { framework: 'TEKS', code: 'CCRS I.B.2', text: 'Construct well-reasoned arguments to explain phenomena, validate conjectures, or support positions.', moduleIds: ['recursion-and-limits'] },
+            { framework: 'CCSS', code: 'CSTA 3B-CS-02', text: 'Illustrate ways computing systems implement logic, input, and output through hardware components.', moduleIds: ['inside-a-running-program'] },
+            { framework: 'CCSS', code: 'CSTA 3B-AP-11', text: 'Evaluate algorithms in terms of their efficiency, correctness, and clarity.', moduleIds: ['counting-steps'] },
+            { framework: 'CCSS', code: 'CSTA 3B-AP-10', text: 'Use and adapt classic algorithms to solve computational problems.', moduleIds: ['counting-steps'] },
+            { framework: 'CCSS', code: 'CSTA 3B-AP-12', text: 'Compare and contrast fundamental data structures and their uses.', moduleIds: ['shapes-of-data'] },
+            { framework: 'CCSS', code: 'CSTA 3B-AP-14', text: 'Construct solutions to problems using student-created components, such as procedures, modules, and/or objects.', moduleIds: ['recursion-and-limits'] },
         ],
     },
     {
@@ -49716,6 +49946,7 @@ const COURSE_STORIES = {
     'econ-3': { title: 'Savanah and the egg money', about: 'twelve dozen eggs a week, a coffee can of expenses, a fox, a loan, and a jar marked college', art: 'CS397', alt: 'A teenage girl at a market stall of egg cartons, a coffee can of dollars and a hand-lettered price sign', cast: ['Savanah'], words: ['The first thing Savanah ever sold was an egg, and by fifteen she was selling twelve dozen a week at the Saturday market in town. The hens were hers, the feed was hers to buy, and the money in the coffee can was hers to keep, which taught her everything the can could teach.', 'The can had two kinds of expenses in it. The stall fee was eight dollars every Saturday, sold out or not: fixed. The feed went up with every hen she added, and the cartons went up with every dozen: variable. She wrote both kinds on the lid in pencil, so they would stop surprising her.', 'At three dollars a dozen, twelve dozen brought in thirty-six dollars. Eight for the stall, fourteen for feed and cartons, and the profit was fourteen. Her mother, who had kept the farm\'s books for twenty years, showed her the arithmetic once and never again. After that, the can and the pencil were Savanah\'s job.', 'In March a fox got into the coop and took four hens. That week she had seven dozen, not twelve, and half the county was short of eggs, because the fox had not been particular about whose coop. The grocer in town raised his price to four dollars. Scarce and wanted, her mother said, costs more.', 'Savanah kept her price at three. Her customers had come every Saturday for two years, and she wanted them there in two more. It was a choice, and it cost her seven dollars that week, the difference between three and four on seven dozen. She wrote the number on the lid and did not regret it.', 'Replacing the hens took money the can did not have. Her mother lent her forty dollars, and Savanah wrote out the terms herself before she took it: forty back by August, plus four dollars of interest, from the profit and nothing else. Credit, she understood, was borrowing against work she had not done yet.', 'By June the coop was full again, the loan was half paid, and the can had grown a second compartment, a jar with a lid, where a third of every Saturday\'s profit went and stayed. On the jar she had written one word: college. Her mother had told her what it cost, and Savanah had done that arithmetic too.', 'She paid her mother the forty-four dollars on the first Saturday of August, in the truck on the way to market, and her mother folded it into her pocket without counting it. That, Savanah thought, was what the whole summer had been for. Not the eggs. The trust in the folding.'], more: [{ serial: 'CS398', after: 1, alt: 'A coffee-can lid with two columns written in pencil, fixed and variable, beside a bag of feed and a stack of cartons' }, { serial: 'CS399', after: 2, alt: 'A mother and daughter at a farm kitchen table doing the arithmetic on the lid of a can' }, { serial: 'CS400', after: 3, alt: 'A grocer changing a chalkboard price for eggs to four dollars, an empty coop behind the scene' }, { serial: 'CS401', after: 5, alt: 'A girl writing out loan terms on paper, forty dollars on the table between her and her mother' }, { serial: 'CS402', after: 7, alt: 'A girl handing folded dollars to her mother in a farm truck at dawn' }] },
     'econ-6': { title: 'Savanah and the first apartment', about: 'eighteen in the city with an envelope of egg money: an account, a card, a loan compared two ways, and a jar that became a target', art: 'CS403', alt: 'A young woman at a credit union counter with a paper envelope of cash and a new account card', cast: ['Savanah'], words: ['Savanah came to the city at eighteen with a print shop job, the egg money in a paper envelope, and no account to put it in. She visited three banks. One wanted ten dollars a month unless three hundred stayed in the account; one wanted eight; the third, a credit union, wanted nothing. She opened the account there and moved the envelope into it.', 'The debit card came with the account, and she understood it as a bucket with a spout. Whatever she paid with it left the account that minute. She kept a register on the back page of her notebook, deposits added and withdrawals and transfers subtracted, and the balance after every line matched the bank\'s to the dollar.', 'The credit card offer came in the mail a month later, and she almost threw it away. Her landlord told her not to. Use it for groceries, he said, and pay the whole bill the day it comes. It costs nothing that way, and it builds the record. The record, she learned, was a credit report: her accounts, her on-time payments, what she owed, who had asked to see it, kept for about seven years.', 'The car came in the spring, used, for eight thousand dollars. The dealership offered nine percent over six years; the credit union, which had watched her pay the card in full for ten months, offered seven percent over four. She did the arithmetic. Simple interest at nine percent for six years was forty-three hundred twenty dollars. Seven percent for four years was twenty-two hundred forty. The credit union\'s payment was higher each month and two thousand eighty dollars cheaper in all.', 'She took the four years. The point of the loan was the car, not the size of the payment, and a longer loan meant paying for it longer.', 'The budget she wrote in percents, the way her mother kept the farm books: rent thirty-five, the car loan fifteen, groceries and the bus twenty, savings twenty, ten for everything else. When the print shop gave her a raise, the percents stayed and the dollars in each grew.', 'The savings went into an account that paid interest on the interest, and she watched it the way she had watched the coop. Twenty percent of a paycheck was small. But it went in every two weeks, and the earliest deposits, she knew, would do the most work.', 'The jar labeled college had come to the city with her. It was an account now, with a target: the first year at the community college, divided by the months until the fall. In September she paid the tuition from it and kept the empty jar on the windowsill, where it caught the light.'], more: [{ serial: 'CS404', after: 1, alt: 'A notebook register open on a print shop counter, a debit card beside it' }, { serial: 'CS405', after: 2, alt: 'A landlord handing a young woman a credit card offer on the front step, a bag of groceries beside her' }, { serial: 'CS406', after: 3, alt: 'Two loan offers on a counter, nine percent over six years and seven percent over four, arithmetic beside them' }, { serial: 'CS407', after: 5, alt: 'A budget drawn as a pie in percents taped above a desk: rent, car, groceries, savings' }, { serial: 'CS408', after: 7, alt: 'An empty jar labeled college on a windowsill catching the light, a tuition receipt beside it' }] },
     'econ-9': { title: 'Chloe and the lease on Water Street', about: 'a first studio, rent against owning, a loan chosen over a card, insurance that earned its premiums, and a scam that came the same week', art: 'CS409', alt: 'A woman in her thirties reading a lease to the last line in an empty studio on Water Street, canvases stacked behind her', cast: ['Chloe'], words: ['Chloe had painted in borrowed corners for ten years: a garage, a friend\'s spare room, the back of a framing shop. The studio on Water Street was the first space with her name on the lease, and the lease was the first contract she had read to the last line, because her twenties had taught her what fine print costs.', 'Owning had crossed her mind. The building next door was for sale, and a mortgage would have cost about the rent. But owning meant a down payment she did not have, a roof of her own to replace, and taxes and insurance on top. Renting meant a landlord\'s roof and the freedom to leave if the paintings did not sell. She rented, and wrote the reasons down.', 'The deposit and the first month came to 3,400 dollars. A card offer promised 0 percent for six months, and the fine print promised 27 percent after that, variable, plus a fee for cash advances. The credit union offered an installment loan at 9 percent over two years, fixed. She took the loan, put 1,000 dollars down to shrink the principal, and paid 50 extra a month.', 'The studio needed insurance before she could open, and the words now had prices: a premium of 30 dollars a month, a deductible of 1,000 on any claim, a policy limit high enough to replace every canvas. Risk, the agent said, is a loss you cannot afford; insurance is paying a little every month so a bad night stays a bad night.', 'The bad night came in March, with the pipe above the back room. Eleven canvases were ruined, a claim of 6,000 dollars. Chloe paid the 1,000 deductible from her emergency fund and the insurer paid 5,000. The fund had earned its name in one wet hour.', 'The scam came the same week. An email that looked like the building manager\'s asked her to resend the deposit to a new account, today, and to keep it quiet. Urgency and secrecy. She walked upstairs and asked; nobody had sent it. She reported the address and changed every password.', 'By summer the studio paid for itself, and she kept three papers: a register reconciled against the bank each month, an income statement that showed the paintings outrunning the rent, and a net worth statement that crossed zero in May. The loan had four payments left.', 'A student who cleaned brushes for her on Saturdays asked how an artist learned all this. Badly, Chloe said, late, and one contract at a time. Then she handed her the lease and said, read it to the last line. The paintings were the point. The paper was what kept the paintings.'], more: [{ serial: 'CS410', after: 1, alt: 'A woman looking from a for-sale sign next door to her rented studio door, a list of reasons in her hand' }, { serial: 'CS411', after: 2, alt: 'A credit card offer with fine print beside a credit union loan paper at nine percent' }, { serial: 'CS412', after: 3, alt: 'An insurance agent across a desk explaining premium, deductible and policy limit' }, { serial: 'CS413', after: 5, alt: 'A woman walking upstairs to ask the building manager about an email, a phone in her hand' }, { serial: 'CS414', after: 7, alt: 'A woman handing a lease to a student who cleans brushes, canvases drying in the sun' }] },
+    'tech-college': { title: 'Chloe and the catalogue of ten thousand paintings', about: 'a gallery catalogue that took a kettle to search, and a summer intern who asked how it found things before he touched it', art: 'CS415', alt: 'A woman in her thirties at a gallery registrar\'s desk, a slow catalogue program on the screen, racks of paintings behind', cast: ['Chloe'], words: ['The gallery had asked Chloe to curate a show from its collection, ten thousand paintings in storage and one catalogue program to find them by. The program dated from when the collection was two thousand, and every search now took a kettle.', 'Sam, the summer intern, was a second-year computer science student. He asked one question before he touched the program: how does it find a painting? It reads every record from the first until the title matches, the registrar said. Ten thousand records, ten thousand steps.', 'That is a linear search, Sam said, and the fix is not a faster computer. He sorted the titles once and taught the program to look in the middle, throw away the half that could not hold the title, and look again. Ten thousand items, at most fourteen looks. The registrar\'s tea went cold, forgotten, because the search now returned before the kettle boiled.', 'Chloe wanted to find paintings by artist, by year, and by the room they hung in last. Sam built a hash table for each: the name goes through a little arithmetic and lands in a slot, the way a coat check turns a ticket into a hook. However many paintings the gallery acquired, a lookup stayed one step.', 'The images were the harder problem. They lived in folders inside folders, by decade, then artist, then year, and nobody knew how deep the tree went. Sam wrote a function that counted a folder\'s own images and then called itself on every folder inside, down to the base case, a folder with no folders. It counted eleven thousand two hundred images in a breath.', 'It also crashed, once, on a folder that contained a shortcut to itself. The function called itself on the folder, which contained the folder, and the stack of bookmarks that remembers who called whom filled to the ceiling. A stack overflow, Sam said, and added a check for folders already visited. Every recursion needs a way to stop.', 'Chloe asked, half joking, whether he could write a program to tell her whether any program would stop. He told her about Turing: in 1936 he proved no such program can exist, because the general answer is impossible. Some doors are not locked, Sam said. There is no door. Chloe liked knowing where the walls were.', 'The show opened in October with sixty paintings chosen from ten thousand, each found in less than a second. Chloe put a small card by the desk: catalogue by Sam, a summer intern, who asked how it found things before he touched it. The shape of the data, he had said, decides what is possible at all.'], more: [{ serial: 'CS416', after: 1, alt: 'A summer intern asking a registrar how the catalogue finds a painting, a line of ten thousand records on the screen' }, { serial: 'CS417', after: 2, alt: 'A sorted list of titles being split down the middle, fourteen looks marked, a cold cup of tea beside the keyboard' }, { serial: 'CS418', after: 3, alt: 'Coat check hooks labeled by artist, year and room, a ticket landing on a hook by arithmetic' }, { serial: 'CS419', after: 5, alt: 'A folder containing a shortcut to itself, a pile of bookmarks reaching the ceiling' }, { serial: 'CS420', after: 7, alt: 'A gallery opening with sixty paintings hung, a small card by the registrar\'s desk crediting the intern' }] },
     'tech-6': { title: 'Frederick and the jar of pond water', about: 'a model that counted pond creatures fast and wrong for the one it had seen least', art: 'CS379', alt: 'A young man of twenty in a white lab coat at a bench with a jar of pond water, a microscope and a laptop showing tiny creatures', cast: ['Frederick'], words: ['The jar of pond water had been on Frederick\'s bench for a week, and the professor wanted a count of each tiny creature in a drop of it. So the professor handed him a program that had learned to tell the creatures apart from pictures, and eight thousand labeled pictures to teach it with.', 'Frederick fed the folder into the program and watched a bar creep across the screen. Nobody had written a rule that says a paramecium is slipper-shaped or that a rotifer has a crown of beating hairs. It had only the pictures and their labels, and it kept whatever the paramecia shared and whatever the rotifers shared. By evening it had a model.', 'The first drop went under the microscope camera, and the model counted it in nine seconds: three hundred and ten paramecia, forty amoebas, two rotifers. Frederick checked the count by eye, because his professor had taught him that a number you have not checked is a hope, not a result. The paramecia were right, and so were the amoebas. But there were eleven rotifers, not two.', 'The model had called nine rotifers paramecia, with the same calm number it gave everything else. Frederick opened the folder and started counting labels. Seven thousand paramecia, six hundred amoebas, and fewer than a hundred rotifers, most of them blurred. The model had barely met a rotifer in its life.', 'Nothing in the program was against rotifers. They had simply been rare in the pile, because whoever collected the pictures collected what was easy to find. The model was right on average and wrong for the creature it had seen least, and it could not tell, because it had no way to know what it had missed.', 'So Frederick spent two days making rotifers less rare. He photographed every one he could find, sharp, from every angle, with the crown of hairs open and closed, until there were nine hundred good pictures. He taught the model again. The next drop came back with ten rotifers, and by eye there were ten.', 'The professor asked what Frederick had learned, and he said: the machine is fast and the microscope is true. He would let the model make the first count of every drop and check a share by eye, because a model only knows the pile it was fed, and the pond does not care about the pile.', 'On the last page of his notebook he wrote the rule he would keep: use the fast guess, check it against something real, and always ask who was missing from the examples. Then he went back to the jar, where something with a crown of hairs turned slowly in the light.'], more: [{ serial: 'CS380', after: 1, alt: 'A progress bar creeping across a laptop screen beside a folder of eight thousand labeled pictures of pond creatures' }, { serial: 'CS381', after: 2, alt: 'A young man counting creatures by eye through a microscope while the laptop shows its nine-second count' }, { serial: 'CS382', after: 3, alt: 'Nine rotifers with crowns of hairs each wrongly ringed as paramecia, the same calm score beside every one' }, { serial: 'CS383', after: 5, alt: 'A young man photographing rotifers from every angle, hundreds of sharp pictures spread across the bench' }, { serial: 'CS384', after: 7, alt: 'A notebook page with three lines written on it, a jar of pond water glowing in the window light' }] },
     'tech-9': { title: 'Savanah and the buses that ran on time', about: 'a bus board built by a small city team, its bug at the edge, and the rules it ran under', art: 'CS385', alt: 'A confident woman in her thirties standing before a wall screen of bus routes in a city transit office, a small team at laptops behind her', cast: ['Savanah'], words: ['Savanah had not written a line of code in her life, but the city\'s buses were late and the board that was supposed to say so was always wrong. So she did what she always did: she found the people who understood it, and asked them to show her.', 'The team was three coders in a room above the depot. First they showed her the machine. A small computer on every bus had a CPU that did the work, memory that held the last minute, and storage that kept the day\'s log. The bus number went out over the radio as one byte, eight switches, enough for any number up to 255.', 'Then the program. Every bus on the board was a set of variables with types: route, an integer; minutes late, a real number; doors open, a boolean. A loop ran once a second over every bus, and a conditional chose the color: more than five minutes late, red; more than zero, amber; else green.', 'The bug was at the edge. A bus exactly on time had minutes late of zero, and a line written years earlier treated zero as no data, so a bus perfectly on time vanished from the board. Riders read the empty space as a missing bus.', 'Savanah asked how they had found it, and the method was one she knew from her own work. Read the error. Print the variables at the line you suspect. Shrink the input until the bug stays with one bus. Then look up the reference, which said plainly that zero is a number, not an absence. They fixed one comparison and added the edge to the test list: zero late, midnight, a bus with no driver.', 'The map under the buses came from an open-source library, and the team had read its license before using it: use it, change it, share the changes under the same rules. Savanah had them put the credit on the board\'s about page. A city that asks people to follow rules follows them in public, she said.', 'The last thing she asked about was the login. The board\'s password had been a word and a year, shared by the whole depot. That changed the same afternoon: twelve random characters in a password manager, a second step on the dispatcher\'s phone, and a rule that a leaked password alone opens nothing.', 'On Monday the buses were no more on time than before, but the board told the truth about them, which turned out to be most of what the riders wanted. Savanah stood at the main stop and watched a green bus arrive at zero minutes late, on the board for the first time in years, and smiled.'], more: [{ serial: 'CS386', after: 1, alt: 'A wall screen showing eight blocks of switches that spell each bus number in binary' }, { serial: 'CS387', after: 2, alt: 'A coder at a laptop with variables for a bus listed beside their types: route, minutes late, doors open' }, { serial: 'CS388', after: 3, alt: 'A bus board showing a bus at exactly zero minutes late marked as missing' }, { serial: 'CS389', after: 5, alt: 'A license page for an open-source map library pinned beside the team\'s about page' }, { serial: 'CS390', after: 7, alt: 'A city bus arriving on time under a board that shows it, a woman checking her watch and smiling' }] },
     'math-5': { title: 'The bake sale', about: 'a bake sale where every decimal, fraction and box counted', art: 'CS16', alt: 'A school bake sale table with brownies, lemonade, boxes of cookies, a handwritten price list and a cash box', cast: [], words: ['The bake sale needed a table, a cash box and a price list, and the price list was where the decimals lived. Brownies were 1.25, lemonade 0.75. A brownie and a lemonade: line up the points, add the cents, add the dollars, 2.00. The first customer paid with a five, and the change was decimals in reverse: 5.00 minus 2.00, three dollars back.', 'Six lemonades for one family meant multiplying a decimal: six times 75 cents. Six times 75 is 450, and the price had two decimal places, so the answer did too: 4.50. Four dollars fifty, which the family\'s youngest checked by counting out eighteen quarters.', 'The brownies came from a recipe that made a tray, and half the tray had been eaten by breakfast. Half of what was left went to the sale: half of a half, a quarter of the tray. Multiplying by a fraction had made the brownies fewer, which is exactly what fractions do.', 'The cookies came in boxes of 24, and 288 cookies had been baked: how many boxes? Ten boxes used 240, two more used the 48, twelve boxes on the table. Checked backward, twelve times twenty-four was 288, and nobody had to count a single cookie twice.', 'The table sat on a grid painted on the gym floor, and the lemonade stand was three across and two up from the corner, the point (3, 2). The cash box was a box: four cookies long, three wide, two layers high, room for twenty-four cookies.', 'Every hour someone made dots on a line plot for the brownies sold: eight, ten, eleven, nine. The tallest stack showed the busiest hour was the third, just after lunch, and next year the brownies would be ready for it. A line plot does not tell you why. It tells you where to look.', 'Thirty-eight brownies sold at 1.25 each came to 47.50. At the end, the total came from a long sum with brackets in it, and the brackets went first: 38 times 1.25, then the lemonade, then the cookies. The sale had made 143 dollars and 50 cents.', 'Decimals, fractions, division, a grid, a box, a line plot and brackets. Nobody at the table would have called it a math test, but every number on it was one. The class counted the money twice anyway, on two sheets of paper side by side, and both said the same thing. That was the best part.'], more: [{ serial: 'CS158', after: 0, alt: 'A customer handing a five-dollar bill across a bake sale table, three dollars in change coming back' }, { serial: 'CS159', after: 1, alt: 'Eighteen quarters counted out beside six cups of lemonade' }, { serial: 'CS160', after: 3, alt: 'Twelve boxes of cookies stacked on a table beside an empty tray' }, { serial: 'CS161', after: 4, alt: 'A gym floor grid with a lemonade stand at three across and two up from the corner' }, { serial: 'CS162', after: 5, alt: 'A line plot with four stacks of dots, the tallest over the third hour' }] },
@@ -50966,6 +51197,63 @@ STORIES['insurance-scams-and-college'] = {
         'She had chosen the community college for the first two years after comparing three schools on cost, graduation rate and the starting pay of graduates in her program. The arithmetic still held. A burst pipe was a bad week. Without the policy, the fund and the order, it would have been a bad decade.',
     ],
 };
+// College computer science (2026-09-29, pass FZ): four stories at the older length with six pictures each.
+STORIES['inside-a-running-program'] = {
+    about: 'a stack overflow, a wall of numbered pigeonholes, and a pile of bookmarks that nobody took off',
+    more: [{ serial: 'S2863', after: 1, alt: 'A professor drawing a wall of numbered pigeonholes with a slip of paper in each' }, { serial: 'S2864', after: 2, alt: 'An array drawn as holes 1000, 1004 and 1008 with an arrow computing the address of element i' }, { serial: 'S2865', after: 3, alt: 'A pile of bookmarks beside the wall, one added for every call, one removed for every return' }, { serial: 'S2866', after: 4, alt: 'A pile of bookmarks reaching the ceiling, a single wrong character circled in the code' }, { serial: 'S2867', after: 5, alt: 'A student writing which hole and which bookmark on a sticky note stuck to her laptop' }],
+    title: 'The box at address 1000', art: 'S2862', cast: [],
+    alt: 'A student at a laptop showing the words stack overflow, a wall of numbered pigeonholes drawn on a whiteboard behind her',
+    words: [
+        'Ines\'s program crashed with two words she had never seen: stack overflow. It was the third week of her first systems course and the program was forty lines long. She had read it a dozen times without finding anything that looked like a stack, or full.',
+        'Her professor did not look at the code. He drew a wall of numbered pigeonholes on the board, one thousand to one thousand and forty, and put a slip of paper in each. Memory, he said, is this wall. A variable is a name for a hole. A program is a clerk with a list of orders: fetch the next order, decode what it asks, execute it, and again, billions of times a second.',
+        'Then he drew an array of integers starting at hole 1000. Element 0 lives at 1000, he said, element 1 at 1004, element 2 at 1008: four bytes each, so the address of element i is 1000 plus 4 times i. The clerk does not walk the wall; the clerk computes the number and reaches. That is why arrays are fast.',
+        'And the stack? He drew a pile of bookmarks beside the wall. When a function calls another, the clerk drops a bookmark on the pile: where to come back to, and the values it was holding. When the function returns, the bookmark comes off. Your function, he said, calls itself, and nothing ever takes a bookmark off.',
+        'Ines saw it then. Her function had a case that was supposed to stop the calls, and a typo had made it never true. Each call added a bookmark, none removed one, and the pile hit the ceiling, which is all a stack overflow is: bookmarks past the room the machine gave them.',
+        'She fixed the one character and the program ran in a blink. The lesson she kept was not the fix. It was the wall: text becomes instructions, instructions move values between numbered holes, and a pile of bookmarks remembers who called whom. Every bug after that, she found by asking which hole and which bookmark.',
+    ],
+};
+STORIES['counting-steps'] = {
+    about: 'a guessing game between one and a thousand, handshakes that grow four times when the people double, and a roster search that went from two thousand steps to twelve',
+    more: [{ serial: 'S2869', after: 1, alt: 'A student halving a number line with each question, the range shrinking to a single number' }, { serial: 'S2870', after: 2, alt: 'A chart comparing a thousand steps against ten and a billion against thirty-one' }, { serial: 'S2871', after: 3, alt: 'Sixteen people shaking hands in a circle with one hundred twenty lines between them' }, { serial: 'S2872', after: 4, alt: 'A student sorting a club roster once and then searching it by halving on a laptop in a dormitory' }, { serial: 'S2873', after: 5, alt: 'The number three hundred and twelve on a board with one sentence written beneath it' }],
+    title: 'Guess my number', art: 'S2868', cast: [],
+    alt: 'A teaching assistant at a whiteboard with the numbers one to one thousand, students calling out questions',
+    words: [
+        'The teaching assistant opened the lab with a game. I am thinking of a number between one and one thousand, she said, and you may ask yes-or-no questions. The first student started at one and worked upward, and the room groaned by the time he reached forty.',
+        'The second student asked whether it was above five hundred. No. Above two hundred and fifty? Yes. Above three hundred and seventy-five? No. Ten questions later she had it: three hundred and twelve. Each question had thrown away half of what was left, and 1,024 is two to the tenth, so ten questions always suffice.',
+        'That, the assistant said, is the whole of the lecture. Searching an unsorted list looks at every item in the worst case: n steps, linear. Searching a sorted list by halving takes about log2 of n, plus one, and doubling the list adds one step. On a thousand items the difference is a thousand against ten. On a billion, it is a billion against thirty-one.',
+        'Then she turned it around with handshakes. Four people shaking every hand: six handshakes. Eight people: twenty-eight. Sixteen: one hundred and twenty. Double the people and the handshakes go up about four times, because the count is n times n minus one over two. Any algorithm that compares every pair grows that way, n squared, and it is the reason the simplest sorts die on large inputs.',
+        'One student, Priya, went back to her dormitory and found her own club roster program, which searched an unsorted list of two thousand names for every lookup. She sorted the list once and searched by halving. The lookups went from two thousand steps to twelve, and the page that had taken a breath to load now loaded before she lifted her finger.',
+        'The number the assistant had been thinking of was written on the board at the end: three hundred and twelve, and beneath it, in smaller letters, the only sentence Priya copied down. A faster machine buys you one more doubling. A better algorithm buys you all of them.',
+    ],
+};
+STORIES['shapes-of-data'] = {
+    about: 'an order app that served the last order first, and the shape of data that fixed it',
+    more: [{ serial: 'S2875', after: 1, alt: 'A student comparing a stack of plates on a shelf with a line at a counter, a one-line bug on his screen' }, { serial: 'S2876', after: 2, alt: 'Three numbered plates pushed onto a stack, the nine coming off first, a queue giving back the three' }, { serial: 'S2877', after: 3, alt: 'A program walking a list of ten thousand customers from the front to find one name' }, { serial: 'S2878', after: 4, alt: 'A coat check where a ticket number points straight to a hook, a hash table drawn beside it' }, { serial: 'S2879', after: 5, alt: 'Three questions taped above a desk: how often, how many, does order matter' }],
+    title: 'The plates and the line', art: 'S2874', cast: [],
+    alt: 'A campus café with a line to the door, an order screen showing the newest order at the top',
+    words: [
+        'The campus café\'s new order app went live on a Monday and the line reached the door by ten. Orders were not being lost. They were being served in the wrong order: whoever had ordered last got their coffee first, and the student who had ordered at eight-fifteen was still waiting at nine.',
+        'Diego, who had written the app over the summer, found the bug in one line. He had stored the orders in a stack: the last one pushed was the first one popped, like plates on a shelf. A line at a counter is a queue: first in, first out. He had built the plates when he needed the line.',
+        'Push 3, push 7, push 9, then take one, his roommate said, testing him. Nine from a stack, three from a queue. Diego changed one structure and the café ran in order by lunchtime. The undo button in the same app, he noticed, was a stack on purpose: the last change is the first undone.',
+        'The second complaint was slower to see. Looking up a customer\'s rewards balance took longer every week, because the app walked a list of every customer from the front until it found the name. Ten customers, no problem. Ten thousand, and every lookup was a hike.',
+        'He replaced the list with a hash table, which turns a name into a slot by arithmetic. A coat check does the same, turning a ticket number into a hook without searching the rack. Key 47 in a table of ten slots goes to slot 7; a name goes to a slot computed from its letters. Lookups became one step, however many customers signed up.',
+        'By the end of the term Diego kept three questions taped above his desk, the ones the course said choose the shape of any data. What do I do most often, how many will there be, and does the order matter? A stack, a queue, a list, a hash table and a tree each answer them differently, and the café never lost the line again.',
+    ],
+};
+STORIES['recursion-and-limits'] = {
+    about: 'eleven thousand photographs in folders inside folders, a function that asked the same question of something smaller, and a question no program can answer',
+    more: [{ serial: 'S2881', after: 1, alt: 'A diagram of a folder holding files and smaller folders, the smallest folder marked as the base case' }, { serial: 'S2882', after: 2, alt: 'Three nesting dolls opened in a row beside a toy folder of twelve files' }, { serial: 'S2883', after: 3, alt: 'Factorial of four written as a chain of five calls multiplying back up to twenty-four' }, { serial: 'S2884', after: 4, alt: 'A machine reading a tape of another program with a question mark above it' }, { serial: 'S2885', after: 5, alt: 'A student writing the count eleven thousand and forty beside a door with no lock and no door' }],
+    title: 'The folder inside the folder', art: 'S2880', cast: [],
+    alt: 'A student at a laptop with a tree of folders inside folders drawn across the screen',
+    words: [
+        'Wen had eleven thousand photographs in folders inside folders inside folders, and the assignment was to count them without opening a single folder by hand. Her first program counted the files in the top folder and stopped, because it did not know how deep the folders went.',
+        'The answer was to ask the same question of something smaller. To count a folder: count its own files, then add the count of each folder inside it. The smallest folder, with no folders in it, is the base case, the one you can answer directly. That is recursion, and it fits any data shaped like a tree.',
+        'She tested it on a toy: a folder with three files and two folders of four and five files. Three plus four plus five, twelve. Then she ran it on the eleven thousand, and it finished before her tea was cold. Her roommate said it was like counting nesting dolls: open one, count it, ask the same of the doll inside.',
+        'Factorial, the course pointed out, is the same trick with numbers: factorial of n is n times factorial of n minus 1, and factorial of 0 is 1. So factorial of 4 is 4 times 3 times 2 times 1, 24, in five calls. Leave out the base case and the calls never stop, the bookmarks pile up, and the stack overflows.',
+        'That word, stop, led Wen to the strangest thing in the course. She asked whether a program could be written that reads any other program and says whether it will ever finish. In 1936 Alan Turing proved that no such program can exist, not for lack of speed or memory but because the general answer is impossible. It is called the halting problem.',
+        'The count came to eleven thousand and forty. The proof she could not stop thinking about had no number in it at all. Some doors, the course said, are not locked. There is no door. Knowing where those are, Wen decided, is what separates a computer scientist from someone who can code.',
+    ],
+};
 const STORY_WORD_LIMIT = { early: 200, older: 350 };
 function storyFor(moduleId) { return STORIES[moduleId] || null; }
 // What a whole course is reaching for, in one line (2026-09-24, Mikey): the subtitle on a printed story book's cover,
@@ -51028,6 +51316,7 @@ const COURSE_GOALS = {
     'econ-3': 'Skills that earn, spending that is planned, profit that is counted, and a budget that balances',
     'econ-6': 'Accounts and cards, a credit record that lasts, interest that compounds, and a budget in percents',
     'econ-9': 'A paycheck read to the last line, credit priced honestly, a fund and a plan, and risk moved where it belongs',
+    'tech-college': 'What runs when a program runs, how work grows with the input, the shapes of data, and where computing ends',
     'tech-6': 'Understanding what a machine that learns really does, where it goes wrong, and who stays in charge',
     'tech-9': 'Understanding the parts of a machine, binary, the parts of a program, and the working habits of a programmer',
     'math-8': 'Reasoning with lines, powers, roots and the language of functions',
@@ -51337,7 +51626,7 @@ function PinInput({ value, onChange, placeholder, style, onEnter = null }) {
 }
 // A stamp of when this copy of the page was built, so a stale page in a cache can be told apart
 // from a fresh one at a glance. Written by the build, never by hand.
-const BUILD_STAMP = '2026-09-29 10:44 AM CDT';
+const BUILD_STAMP = '2026-09-29 11:45 AM CDT';
 function ContactLine({ onOpen, inline = false }) {
     return (react_1.default.createElement("p", { className: "edu-no-print", style: { textAlign: 'center', marginTop: inline ? 0 : 28, fontSize: inline ? 14 : 12, color: C.muted, margin: inline ? '0' : undefined } }, onOpen
         ? react_1.default.createElement("button", { type: "button", onClick: onOpen, style: { background: 'none', border: 'none', color: C.muted, fontFamily: FONT, fontSize: 12, cursor: 'pointer', padding: 0, textDecoration: 'underline' } }, "Contact us")
@@ -56309,7 +56598,62 @@ function FundGame({ game, round, onScore = null }) {
             " owed. Tap the round arrow for a new year.") : (react_1.default.createElement("div", { style: { display: 'flex', flexWrap: 'wrap', gap: 6, justifyContent: 'center' } }, [0, 100, 200, 300, 400, 500].map((v) => react_1.default.createElement("button", { key: v, type: "button", className: "edu-press", "aria-label": `Save ${v} this month`, onClick: () => choose(v), style: { fontFamily: FONT, minWidth: 64, height: 48, borderRadius: 12, border: `2px solid ${B.green}`, background: '#fff', color: B.ink, fontSize: 16, fontWeight: 700, cursor: 'pointer', padding: '0 8px' } }, v)))),
         react_1.default.createElement(Done, { show: done && st.loan === 0 })));
 }
-const GAME_OF = { dots: DotsGame, pairs: PairsGame, sort: SortGame, maze: MazeGame, jigsaw: JigsawGame, pong: PongGame, sprint: SprintGame, order: OrderGame, build: BuildGame, fix: FixGame, mix: MixGame, debug: DebugGame, ptable: PtableGame, evidence: EvidenceGame, catch: CatchGame, path: PathGame, buckets: BucketsGame, jump: JumpGame, map: MapGame, balance: BalanceGame, walk: WalkGame, teach: TeachGame, bits: BitsGame, pay: PayGame, price: PriceGame, loan: LoanGame, fund: FundGame };
+// Split the Search (2026-09-29, pass FZ, a new kind for college computer science): thirty-two cards face down in sorted
+// order and a number that is on one of them. Tap a card to turn it over; the board says whether the number is higher or
+// lower, so halving what is left finds any target in six looks. Four targets a round, and the score is the looks it took,
+// lower is better. The lesson's idea is the rule of the game: sorted data can be searched by halving, and a thousand cards
+// would take only ten looks. Drawn with B on the paper board.
+function SearchGame({ game, round, onScore = null }) {
+    const cards = game.search || 32;
+    const [k, setK] = (0, react_1.useState)(0);
+    const [seen, setSeen] = (0, react_1.useState)([]);
+    const [total, setTotal] = (0, react_1.useState)(0);
+    const [done, setDone] = (0, react_1.useState)(false);
+    const [ticks, setTicks] = (0, react_1.useState)(0);
+    const board = (0, react_1.useMemo)(() => searchBoard(round * 4 + k, cards), [round, k, cards]);
+    (0, react_1.useEffect)(() => { setK(0); setSeen([]); setTotal(0); setDone(false); setTicks(0); }, [round]);
+    (0, react_1.useEffect)(() => { setSeen([]); }, [board]);
+    const target = board.values[board.target];
+    const found = seen.includes(board.target);
+    const last = seen.length ? seen[seen.length - 1] : -1;
+    (0, react_1.useEffect)(() => { if (done || found)
+        return undefined; const t = setInterval(() => setTicks((n) => n + 1), 1000); return () => clearInterval(t); }, [done, found]);
+    (0, react_1.useEffect)(() => { if (done && onScore)
+        onScore(total, 'low'); }, [done]);
+    const turn = (i) => { if (found || done || seen.includes(i))
+        return; setSeen([...seen, i]); setTotal(total + 1); };
+    const next = () => { if (k + 1 >= 4)
+        setDone(true);
+    else
+        setK(k + 1); };
+    const said = found ? `Found in ${seen.length} ${seen.length === 1 ? 'look' : 'looks'}. Six is always enough on thirty-two cards.` : last >= 0 ? `Card ${last + 1} shows ${board.values[last]}. The number is ${board.values[last] < target ? 'higher' : 'lower'}.` : 'Tap a card. The cards are in order from smallest to largest.';
+    const tone = (i) => (i === board.target && seen.includes(i) ? B.green : seen.includes(i) ? (board.values[i] < target ? '#C7DFF8' : B.clay) : '#fff');
+    return (react_1.default.createElement("div", { className: "edu-game-box", style: { ...GAME_BOX, aspectRatio: 'auto', padding: 14 } },
+        react_1.default.createElement("div", { style: { display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 } },
+            react_1.default.createElement("span", null,
+                "Looks so far: ",
+                total),
+            react_1.default.createElement("span", null,
+                ticks,
+                "s \u00B7 target ",
+                Math.min(k + 1, 4),
+                " of 4")),
+        done ? react_1.default.createElement("p", { style: { margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 } },
+            "Four numbers found in ",
+            total,
+            " looks. Tap the round arrow for new cards.") : (react_1.default.createElement("div", { style: { textAlign: 'center' } },
+            react_1.default.createElement("p", { style: { margin: '0 0 8px', fontSize: 20, fontWeight: 700, color: B.ink } },
+                "Find ",
+                target),
+            react_1.default.createElement("div", { style: { display: 'grid', gridTemplateColumns: 'repeat(8, 1fr)', gap: 5, marginBottom: 10 } }, board.values.map((v, i) => {
+                const open = seen.includes(i);
+                return (react_1.default.createElement("button", { key: i, type: "button", className: "edu-press", "aria-label": open ? `Card ${i + 1}: ${v}` : `Card ${i + 1}`, disabled: open || found, onClick: () => turn(i), style: { fontFamily: FONT, height: 40, borderRadius: 8, border: `2px solid ${open ? B.ink : B.line}`, background: tone(i), color: B.ink, fontSize: open ? 13 : 11, fontWeight: 700, cursor: open || found ? 'default' : 'pointer', padding: 0 } }, open ? v : i + 1));
+            })),
+            react_1.default.createElement("p", { style: { margin: '4px 0 10px', fontSize: 15, color: B.ink, minHeight: 22 } }, said),
+            found && react_1.default.createElement(Btn, { pal: B, onClick: next }, k + 1 >= 4 ? 'Finish' : 'Next number'))),
+        react_1.default.createElement(Done, { show: done })));
+}
+const GAME_OF = { dots: DotsGame, pairs: PairsGame, sort: SortGame, maze: MazeGame, jigsaw: JigsawGame, pong: PongGame, sprint: SprintGame, order: OrderGame, build: BuildGame, fix: FixGame, mix: MixGame, debug: DebugGame, ptable: PtableGame, evidence: EvidenceGame, catch: CatchGame, path: PathGame, buckets: BucketsGame, jump: JumpGame, map: MapGame, balance: BalanceGame, walk: WalkGame, teach: TeachGame, bits: BitsGame, pay: PayGame, price: PriceGame, loan: LoanGame, fund: FundGame, search: SearchGame };
 // How to play, in a line or two, by kind of game (and by deck for the matching games).
 function gameInstructions(game) {
     if (game.kind === 'bits')
@@ -56320,6 +56664,8 @@ function gameInstructions(game) {
         return 'You owe money on something at a rate per month. Tap a payment: each tap is a month, interest is added on what is still owed, and the payment comes off. Watch what the smallest payment costs over time. Four loans; less interest paid in all is the better score.';
     if (game.kind === 'fund')
         return 'A first year on your own, one month a tap. Income comes in, the bills go out, and you choose how much of the 500 that is left goes into your emergency fund; the rest is spent. Some months bring a surprise bill: the fund pays what it can and the rest is borrowed at 2 percent a month. The score is the fund minus the loan after twelve months, higher is better.';
+    if (game.kind === 'search')
+        return 'Thirty-two cards lie face down in order from smallest to largest, and a number to find is on one of them. Tap a card to turn it over; the board says whether the number is higher or lower. Halve what is left each time and six looks always find it. Four numbers; fewer looks is the better score.';
     if (game.kind === 'price')
         return 'A lemonade stand with twelve customers, each with a top price in mind you cannot see, a cost for the day and a cost per cup. Tap a price to try it: the people who will pay it step forward with a cup, and the profit shows as money in minus money out. Three tries a stand, then the best price is revealed. Four stands; more profit found is the better score.';
     if (game.kind === 'pay')
@@ -56421,6 +56767,10 @@ function GameThumb({ kind, game = null }) {
             [[27, 14], [30, 26], [22, 31]].map(([x, y], i) => react_1.default.createElement("g", { key: `b${i}` },
                 react_1.default.createElement("circle", { cx: x, cy: y, r: "4.4", fill: "none", stroke: "#E6B84B", strokeWidth: "1", strokeDasharray: "1.6 1" }),
                 react_1.default.createElement("path", { d: `M ${x - 2.4} ${y - 1} q 2.4 3.4 4.8 0 q -2.3 1.6 -4.8 0 z`, fill: "#F2C94C" }))));
+    if (game && game.kind === 'search')
+        return react_1.default.createElement("svg", { viewBox: "0 0 40 40", width: "44", height: "44", "aria-hidden": "true" },
+            [0, 1, 2, 3, 4, 5, 6, 7].map((i) => react_1.default.createElement("rect", { key: i, x: 3 + (i % 4) * 8.8, y: i < 4 ? 8 : 22, width: "7.5", height: "10", rx: "1.5", fill: i === 5 ? C.green : C.paperBoard, stroke: k, strokeWidth: "1" })),
+            react_1.default.createElement("path", { d: "M20 4v34", stroke: k, strokeWidth: "1", strokeDasharray: "2 2" }));
     if (game && game.kind === 'fund')
         return react_1.default.createElement("svg", { viewBox: "0 0 40 40", width: "44", height: "44", "aria-hidden": "true" },
             react_1.default.createElement("rect", { x: "5", y: "7", width: "30", height: "26", rx: "4", fill: "#fff", stroke: k, strokeWidth: "1.2" }),
@@ -57259,6 +57609,27 @@ function ColoringPad({ picture, name, secondsLeft, total, saved, onArt, onClose 
 // drops it back into the same rhythm as everything else.
 const PAGE_OPENED = typeof performance !== 'undefined' ? performance.now() : Date.now();
 const inBeat = (seconds) => ({ animationDelay: `-${((((typeof performance !== 'undefined' ? performance.now() : Date.now()) - PAGE_OPENED) / 1000) % seconds).toFixed(2)}s` });
+// One course in a checklist on the student's report (2026-09-29, Mikey): the checkbox and the title on the left; a Preview
+// link that opens the module list; the touch-screen warning when the course needs one. On a phone the link sits centered
+// on its own line under the title and the warning drops a line below it; on a wider screen the link keeps to the right,
+// centered vertically. A faint rule that starts past the checkbox keeps the rows from blending together.
+function CourseChoiceRow({ course, checked, onToggle, onPreview }) {
+    const phone = typeof window !== 'undefined' && window.innerWidth < 700;
+    const warn = courseNeedsTouch(course.id) ? react_1.default.createElement(Tag, { tone: "review" }, "Needs a touch screen") : null;
+    const link = react_1.default.createElement("button", { type: "button", className: "edu-no-print", onClick: onPreview, "aria-label": `Preview ${course.title}`, style: { ...linkBtn, padding: '2px 0', fontSize: 14, whiteSpace: 'nowrap' } }, "Preview");
+    return (react_1.default.createElement("div", { style: { padding: '7px 0 8px', fontSize: 16 } },
+        react_1.default.createElement("div", { style: { display: 'flex', alignItems: phone ? 'flex-start' : 'center', gap: 10 } },
+            react_1.default.createElement("label", { style: { display: 'flex', alignItems: 'center', gap: 10, flex: 1, minWidth: 0, cursor: 'pointer' } },
+                react_1.default.createElement("input", { type: "checkbox", checked: checked, onChange: onToggle }),
+                react_1.default.createElement("span", { style: { display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 2, minWidth: 0 } },
+                    react_1.default.createElement("span", null, courseLabel(course)),
+                    !phone && warn)),
+            !phone && link),
+        phone && react_1.default.createElement("div", { style: { display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, marginTop: 2 } },
+            link,
+            warn),
+        react_1.default.createElement("div", { "aria-hidden": "true", style: { height: 1, background: C.line, opacity: 0.55, marginTop: 8, marginLeft: 30 } })));
+}
 function InfoButton({ onClick, label, open = false }) {
     return (react_1.default.createElement("button", { type: "button", onClick: onClick, "aria-label": label, "aria-expanded": open, style: { background: open ? C.green : 'none', border: `1.5px solid ${C.green}`, color: open ? C.onAccent : C.green, fontFamily: FONT, fontSize: 12, fontWeight: 700, lineHeight: '15px', width: 18, height: 18, borderRadius: 999, cursor: 'pointer', padding: 0, marginLeft: 8, verticalAlign: 'middle', flexShrink: 0 } }, "i"));
 }
@@ -57752,6 +58123,7 @@ function EduSphereScreens() {
     const [showWonderWhy, setShowWonderWhy] = (0, react_1.useState)(false); // the i beside the Wonder switch
     const [pinFor, setPinFor] = (0, react_1.useState)(null); // student whose PIN is being set on their card
     const [wonderPopupFor, setWonderPopupFor] = (0, react_1.useState)(null); // student whose Wonder Questions popup is open
+    const [coursePreview, setCoursePreview] = (0, react_1.useState)(null); // course whose module preview popup is open on the report (2026-09-29, Mikey)
     const [showPinWhy, setShowPinWhy] = (0, react_1.useState)(false); // the i beside PIN (optional) in the add-student popup
     const [showAutoTip, setShowAutoTip] = (0, react_1.useState)(false); // the i under the automatic backups list
     const [pinDraft, setPinDraft] = (0, react_1.useState)('');
@@ -59511,8 +59883,12 @@ function EduSphereScreens() {
                         let bg = C.surface;
                         let border = C.line;
                         const ruledOut = wrongPicks.includes(c);
-                        if (ruledOut)
-                            bg = '#EDEFEA';
+                        // A ruled-out answer stays readable in the dark theme (2026-09-29, Mikey): a slightly lighter surface at
+                        // seven-tenths, not the light grey that swallowed pale text; the light theme keeps its pale grey.
+                        if (ruledOut) {
+                            bg = C.mode === 'dark' ? '#2C4238' : '#EDEFEA';
+                            border = C.muted;
+                        }
                         if (checked && c === q.answer) {
                             bg = C.greenSoft;
                             border = C.green;
@@ -59531,7 +59907,7 @@ function EduSphereScreens() {
                                         speak(c);
                                 }
                                 setGiven(c);
-                            } }, style: { opacity: ruledOut && !checked ? 0.45 : 1, fontFamily: FONT, fontSize: choiceFont(q.choices), textAlign: 'center', padding: '12px 10px', minWidth: 0, overflowWrap: /^-?[\d.,\/ ]+$/.test(c) ? 'normal' : 'anywhere', whiteSpace: /^-?[\d.,\/ ]+$/.test(c) ? 'nowrap' : 'normal', borderRadius: 10, background: bg, border: `2px solid ${border}`, color: C.ink, cursor: checked ? 'default' : 'pointer', minHeight: 48 } }, /^dots:(\d+)$/.test(c) ? react_1.default.createElement(DotGroup, { count: Number(c.split(':')[1]), size: 28 }) : /^shape:/.test(c) ? react_1.default.createElement(ShapePic, { name: c.split(':')[1], size: c.endsWith(':big') ? 88 : c.endsWith(':small') ? 34 : c.endsWith(':medium') ? 58 : 64 }) : /^tens:(\d+)$/.test(c) ? react_1.default.createElement(TensGroup, { count: Number(c.split(':')[1]), size: 14 }) : /^bar:(\d+)$/.test(c) ? react_1.default.createElement(BarPic, { length: Number(c.split(':')[1]), size: 18 }) : /^tower:(\d+)$/.test(c) ? react_1.default.createElement(BarPic, { length: Number(c.split(':')[1]), vertical: true, size: 14 }) : /^solid:/.test(c) ? react_1.default.createElement(SolidPic, { name: c.slice(6), size: 64 }) : /^pic:/.test(c) ? react_1.default.createElement(StudentPicture, { name: c.slice(4).split('#')[0], size: 72 }) : /^art:/.test(c) ? react_1.default.createElement(ColorThumb, { picture: c.slice(4).split('#')[0], size: 84 }) : /^icon:/.test(c) ? react_1.default.createElement(IconPic, { name: c.slice(5), size: 64 }) : /^swatch:/.test(c) ? react_1.default.createElement(Swatch, { colour: c.slice(7), size: 64 }) : /^item:/.test(c) ? react_1.default.createElement(Item, { spec: c.slice(5), size: 64 }) : /^clock:/.test(c) ? react_1.default.createElement(ClockPic, { hour: Number(c.split(':')[1]), minute: Number(c.split(':')[2]), size: 80 }) : /^array:/.test(c) ? react_1.default.createElement(ArrayPic, { rows: Number(c.slice(6).split('x')[0]), cols: Number(c.slice(6).split('x')[1]), size: 12 }) : c));
+                            } }, style: { opacity: ruledOut && !checked ? (C.mode === 'dark' ? 0.72 : 0.5) : 1, fontFamily: FONT, fontSize: choiceFont(q.choices), textAlign: 'center', padding: '12px 10px', minWidth: 0, overflowWrap: /^-?[\d.,\/ ]+$/.test(c) ? 'normal' : 'anywhere', whiteSpace: /^-?[\d.,\/ ]+$/.test(c) ? 'nowrap' : 'normal', borderRadius: 10, background: bg, border: `2px solid ${border}`, color: C.ink, cursor: checked ? 'default' : 'pointer', minHeight: 48 } }, /^dots:(\d+)$/.test(c) ? react_1.default.createElement(DotGroup, { count: Number(c.split(':')[1]), size: 28 }) : /^shape:/.test(c) ? react_1.default.createElement(ShapePic, { name: c.split(':')[1], size: c.endsWith(':big') ? 88 : c.endsWith(':small') ? 34 : c.endsWith(':medium') ? 58 : 64 }) : /^tens:(\d+)$/.test(c) ? react_1.default.createElement(TensGroup, { count: Number(c.split(':')[1]), size: 14 }) : /^bar:(\d+)$/.test(c) ? react_1.default.createElement(BarPic, { length: Number(c.split(':')[1]), size: 18 }) : /^tower:(\d+)$/.test(c) ? react_1.default.createElement(BarPic, { length: Number(c.split(':')[1]), vertical: true, size: 14 }) : /^solid:/.test(c) ? react_1.default.createElement(SolidPic, { name: c.slice(6), size: 64 }) : /^pic:/.test(c) ? react_1.default.createElement(StudentPicture, { name: c.slice(4).split('#')[0], size: 72 }) : /^art:/.test(c) ? react_1.default.createElement(ColorThumb, { picture: c.slice(4).split('#')[0], size: 84 }) : /^icon:/.test(c) ? react_1.default.createElement(IconPic, { name: c.slice(5), size: 64 }) : /^swatch:/.test(c) ? react_1.default.createElement(Swatch, { colour: c.slice(7), size: 64 }) : /^item:/.test(c) ? react_1.default.createElement(Item, { spec: c.slice(5), size: 64 }) : /^clock:/.test(c) ? react_1.default.createElement(ClockPic, { hour: Number(c.split(':')[1]), minute: Number(c.split(':')[2]), size: 80 }) : /^array:/.test(c) ? react_1.default.createElement(ArrayPic, { rows: Number(c.slice(6).split('x')[0]), cols: Number(c.slice(6).split('x')[1]), size: 12 }) : c));
                     }))) : q.type === 'writing' ? (react_1.default.createElement("div", null,
                         react_1.default.createElement("div", { style: { padding: 14, borderRadius: 10, background: C.goldSoft, marginBottom: 12 } },
                             react_1.default.createElement("p", { style: { margin: '0 0 6px', fontWeight: 600 } }, q.medium === 'typed' ? 'Type this in a word processor.' : 'Write this by hand, on paper.'),
@@ -60424,7 +60800,7 @@ function EduSphereScreens() {
                 react_1.default.createElement("h1", { style: { fontSize: 24, margin: '12px 0 8px', textAlign: 'center' } }, "Your state"),
                 react_1.default.createElement("p", { style: { color: C.muted, marginTop: 0, fontSize: 15, textAlign: 'center' } }, "Each state publishes its own learning standards. Your reports show coverage against the standards that apply to you."),
                 react_1.default.createElement("div", { style: { ...card } },
-                    react_1.default.createElement("select", { value: stateDraft, onChange: (e) => setStateDraft(e.target.value), "aria-label": "Your state", style: { textAlign: 'center', textAlignLast: 'center', fontFamily: FONT, fontSize: 16, padding: '10px 12px', width: '100%', boxSizing: 'border-box', border: `2px solid ${C.line}`, borderRadius: 10, background: C.surface, marginBottom: 12, ...pickerLook() } }, STATES.map((st) => react_1.default.createElement("option", { key: st.code, value: st.code }, st.name))),
+                    react_1.default.createElement("select", { value: stateDraft, onChange: (e) => setStateDraft(e.target.value), "aria-label": "Your state", style: { textAlign: 'center', textAlignLast: 'center', fontFamily: FONT, fontSize: 16, padding: '10px 12px', width: '100%', boxSizing: 'border-box', border: `2px solid ${C.line}`, borderRadius: 10, background: C.surface, marginBottom: 12, ...pickerLook() } }, STATES.map((st) => react_1.default.createElement("option", { style: { background: C.surface, color: C.ink }, key: st.code, value: st.code }, st.name))),
                     react_1.default.createElement(Btn, { full: true, onClick: async () => { setStateCode(stateDraft); await saveStateCode(stateDraft); goBackTo(); } }, "Save")))));
     }
     // ---------- Creating the educator account: PIN, device name and state, asked once ----------
@@ -60465,8 +60841,8 @@ function EduSphereScreens() {
                         react_1.default.createElement("strong", null, "My Classroom"),
                         " page."),
                     react_1.default.createElement("select", { value: stateDraft, onChange: (e) => setStateDraft(e.target.value), "aria-label": "Your state", style: { textAlign: 'center', textAlignLast: 'center', fontFamily: FONT, fontSize: 16, padding: '10px 12px', width: '100%', boxSizing: 'border-box', border: `2px solid ${C.line}`, borderRadius: 10, background: C.surface, ...pickerLook() } },
-                        react_1.default.createElement("option", { value: "" }, "Choose a state"),
-                        STATES.map((st) => react_1.default.createElement("option", { key: st.code, value: st.code }, st.name)))),
+                        react_1.default.createElement("option", { style: { background: C.surface, color: C.ink }, value: "" }, "Choose a state"),
+                        STATES.map((st) => react_1.default.createElement("option", { style: { background: C.surface, color: C.ink }, key: st.code, value: st.code }, st.name)))),
                 react_1.default.createElement(Btn, { full: true, onClick: async () => {
                         if (newPin.length < 4) {
                             setSetupError('The PIN needs at least four digits.');
@@ -60893,9 +61269,14 @@ function EduSphereScreens() {
                         wonderPopupFor === st.id && (react_1.default.createElement("div", { style: { position: 'fixed', top: 0, right: 0, bottom: 0, left: 0, background: C.scrim, zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }, onClick: () => setWonderPopupFor(null) },
                             react_1.default.createElement("div", { className: "edu-rise", style: { width: 'min(420px, 100%)', background: C.surface, ...(C.mode === 'dark' ? { border: `1px solid ${C.cardEdge}` } : {}), borderRadius: 14, padding: '26px 22px', textAlign: 'center' }, onClick: (e) => e.stopPropagation() },
                                 react_1.default.createElement("p", { style: { margin: '0 0 6px', fontSize: 19, fontWeight: 700 } }, "Wonder Questions"),
-                                react_1.default.createElement("p", { style: { margin: '0 0 18px', fontSize: 15, color: C.muted } },
+                                react_1.default.createElement("p", { style: { margin: '0 0 6px', fontSize: 15, color: C.muted } },
                                     "Currently: ",
                                     react_1.default.createElement("strong", { style: { color: wonderOnFor(st) ? C.green : C.ink } }, wonderOnFor(st) ? 'On' : 'Off')),
+                                react_1.default.createElement("p", { style: { margin: '0 0 18px', fontSize: 14, color: C.muted }, "data-wonder-approved": wonderReview.approved.length },
+                                    wonderReview.approved.length,
+                                    " of ",
+                                    WONDER.length,
+                                    " Wonder Questions approved for student viewing"),
                                 react_1.default.createElement(SegToggle, { size: "big", options: [['on', 'On'], ['off', 'Off']], value: wonderOnFor(st) ? 'on' : 'off', onChange: (v) => applyRoster(setStudentWonder(roster, st.id, v === 'on')), ariaLabel: "Wonder Questions" }),
                                 react_1.default.createElement(Btn, { kind: "secondary", onClick: () => setWonderPopupFor(null) }, "Close")))),
                         pinFor === st.id && (react_1.default.createElement("div", { style: { marginTop: 10, display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' } },
@@ -61080,8 +61461,8 @@ function EduSphereScreens() {
                     " is either something that was read today or, if there's nothing for the day, the prior three."),
                 storyRows.length > 1 && (react_1.default.createElement("div", { className: "edu-no-print", style: { display: 'flex', justifyContent: 'center', margin: '22px 0 10px' } },
                     react_1.default.createElement("select", { "aria-label": "Student", value: who, onChange: (e) => { setStoryView({ ...storyView, student: e.target.value }); setStoryExpanded({}); }, style: { fontFamily: FONT, fontSize: 15, padding: '8px 12px', borderRadius: 8, border: `1px solid ${C.line}`, background: C.greenSoft, color: C.ink, width: 'min(340px, 100%)', textAlign: 'center', textAlignLast: 'center', ...pickerLook() } },
-                        react_1.default.createElement("option", { value: "all" }, "All students"),
-                        storyRows.map((r) => react_1.default.createElement("option", { key: r.id, value: r.id }, r.label))))),
+                        react_1.default.createElement("option", { style: { background: C.surface, color: C.ink }, value: "all" }, "All students"),
+                        storyRows.map((r) => react_1.default.createElement("option", { style: { background: C.surface, color: C.ink }, key: r.id, value: r.id }, r.label))))),
                 react_1.default.createElement("div", { "aria-hidden": "true", style: { height: 12 } }),
                 react_1.default.createElement(SegToggle, { size: "small", options: [['recent', 'Most recent'], ['read', 'Read'], ['unread', 'Unread']], value: viewAll, onChange: (key) => { setStoryView({ ...storyView, all: key }); setStoryExpanded({}); }, ariaLabel: "Stories to show" }),
                 storyRows.filter((row) => who === 'all' || row.id === who).map((row, rowIdx) => {
@@ -61145,7 +61526,7 @@ function EduSphereScreens() {
                         react_1.default.createElement("p", { style: { margin: '0 0 6px', fontSize: 18, fontWeight: 700 } }, "Let's Read!"),
                         react_1.default.createElement("p", { style: { margin: '0 0 12px', fontSize: 14, color: C.greenSoft } }, "Every story in a course, in order, with the long story at the end. Open it, print it or save as a PDF for a class that likes to read on paper."),
                         react_1.default.createElement("div", { style: { display: 'flex', flexWrap: 'wrap', gap: 10, justifyContent: 'center', alignItems: 'center' } },
-                            react_1.default.createElement("select", { "aria-label": "Story book course", value: chosen, onChange: (e) => setBookCourseId(e.target.value), style: { fontFamily: FONT, fontSize: 15, padding: '8px 12px', borderRadius: 8, border: `1px solid ${C.line}`, background: C.greenSoft, color: C.ink, width: 'min(340px, 100%)', textAlign: 'center', textAlignLast: 'center', ...pickerLook() } }, withBook.map((c) => react_1.default.createElement("option", { key: c.id, value: c.id },
+                            react_1.default.createElement("select", { "aria-label": "Story book course", value: chosen, onChange: (e) => setBookCourseId(e.target.value), style: { fontFamily: FONT, fontSize: 15, padding: '8px 12px', borderRadius: 8, border: `1px solid ${C.line}`, background: C.greenSoft, color: C.ink, width: 'min(340px, 100%)', textAlign: 'center', textAlignLast: 'center', ...pickerLook() } }, withBook.map((c) => react_1.default.createElement("option", { style: { background: C.surface, color: C.ink }, key: c.id, value: c.id },
                                 gradeLabel(c.grade),
                                 ": ",
                                 c.title))),
@@ -61686,18 +62067,10 @@ function EduSphereScreens() {
                         react_1.default.createElement(InfoButton, { onClick: () => setShowRecommendTip(!showRecommendTip), label: "About recommended courses", open: showRecommendTip }))),
                     !courseQuery.trim() && showRecommendTip && (react_1.default.createElement(TipText, null, "Sets this student back to the courses we recommend for their level. Any course they have already started stays assigned, so no progress is hidden.")),
                     courseQuery.trim() && (react_1.default.createElement("div", null,
-                        COURSES.filter((c) => matchesCourseSearch(c, courseQuery)).sort(byGradeOrder).map((c) => (react_1.default.createElement("label", { key: c.id, style: { display: 'flex', alignItems: 'center', gap: 10, padding: '7px 0', fontSize: 16 } },
-                            react_1.default.createElement("input", { type: "checkbox", checked: enabled.includes(c.id), onChange: () => setEnabled(enabled.includes(c.id) ? enabled.filter((id) => id !== c.id) : [...enabled, c.id]) }),
-                            react_1.default.createElement("span", { style: { display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 2 } },
-                                react_1.default.createElement("span", null, courseLabel(c)),
-                                courseNeedsTouch(c.id) && react_1.default.createElement(Tag, { tone: "review" }, "Needs a touch screen"))))),
+                        COURSES.filter((c) => matchesCourseSearch(c, courseQuery)).sort(byGradeOrder).map((c) => (react_1.default.createElement(CourseChoiceRow, { key: c.id, course: c, checked: enabled.includes(c.id), onToggle: () => setEnabled(enabled.includes(c.id) ? enabled.filter((id) => id !== c.id) : [...enabled, c.id]), onPreview: () => setCoursePreview(c.id) }))),
                         COURSES.filter((c) => matchesCourseSearch(c, courseQuery)).length === 0 && react_1.default.createElement("p", { style: { margin: '0 0 8px', fontSize: 15, color: C.muted } }, "No course matches that. Try a grade, a subject, or a word from a course title."))),
                     !courseQuery.trim() && COURSES.filter((c) => recommended.includes(c.id)).length === 0 && (react_1.default.createElement("p", { style: { margin: '0 0 8px', fontSize: 15, color: C.muted } }, "Nothing is written yet for this student's level. Anything below can still be assigned.")),
-                    !courseQuery.trim() && COURSES.filter((c) => recommended.includes(c.id)).sort(byGradeOrder).map((c) => (react_1.default.createElement("label", { key: c.id, style: { display: 'flex', alignItems: 'center', gap: 10, padding: '7px 0', fontSize: 16 } },
-                        react_1.default.createElement("input", { type: "checkbox", checked: enabled.includes(c.id), onChange: () => setEnabled(enabled.includes(c.id) ? enabled.filter((id) => id !== c.id) : [...enabled, c.id]) }),
-                        react_1.default.createElement("span", { style: { display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 2 } },
-                            react_1.default.createElement("span", null, courseLabel(c)),
-                            courseNeedsTouch(c.id) && react_1.default.createElement(Tag, { tone: "review" }, "Needs a touch screen"))))),
+                    !courseQuery.trim() && COURSES.filter((c) => recommended.includes(c.id)).sort(byGradeOrder).map((c) => (react_1.default.createElement(CourseChoiceRow, { key: c.id, course: c, checked: enabled.includes(c.id), onToggle: () => setEnabled(enabled.includes(c.id) ? enabled.filter((id) => id !== c.id) : [...enabled, c.id]), onPreview: () => setCoursePreview(c.id) }))),
                     !courseQuery.trim() && react_1.default.createElement("div", { className: "edu-no-print", style: { textAlign: 'center', marginTop: 6 } },
                         react_1.default.createElement("button", { type: "button", style: { ...linkBtn }, onClick: () => setShowAllCourses(!showAllCourses) }, showAllCourses ? 'Hide other courses' : `Show other courses (${COURSES.length - recommended.length})`)),
                     !courseQuery.trim() && showAllCourses && (react_1.default.createElement("div", { className: "edu-no-print", style: { borderTop: `1px solid ${C.line}`, marginTop: 8, paddingTop: 8 } },
@@ -61723,27 +62096,42 @@ function EduSphereScreens() {
                                         react_1.default.createElement("span", { style: { fontSize: 14, color: C.muted } },
                                             list.filter((c) => enabled.includes(c.id)).length ? `${list.filter((c) => enabled.includes(c.id)).length} of ${list.length} selected ` : `${list.length} ${list.length === 1 ? 'course ' : 'courses '}`,
                                             open ? '▴' : '▾')),
-                                    open && react_1.default.createElement("div", { style: { padding: '4px 14px 8px' } }, list.map((c) => (react_1.default.createElement("label", { key: c.id, style: { display: 'flex', alignItems: 'center', gap: 10, padding: '7px 0', fontSize: 16 } },
-                                        react_1.default.createElement("input", { type: "checkbox", checked: enabled.includes(c.id), onChange: () => setEnabled(enabled.includes(c.id) ? enabled.filter((id) => id !== c.id) : [...enabled, c.id]) }),
-                                        react_1.default.createElement("span", { style: { display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 2 } },
-                                            react_1.default.createElement("span", null, courseLabel(c)),
-                                            courseNeedsTouch(c.id) && react_1.default.createElement(Tag, { tone: "review" }, "Needs a touch screen"))))))));
+                                    open && react_1.default.createElement("div", { style: { padding: '4px 14px 8px' } }, list.map((c) => (react_1.default.createElement(CourseChoiceRow, { key: c.id, course: c, checked: enabled.includes(c.id), onToggle: () => setEnabled(enabled.includes(c.id) ? enabled.filter((id) => id !== c.id) : [...enabled, c.id]), onPreview: () => setCoursePreview(c.id) }))))));
                             });
                         })())),
-                    react_1.default.createElement("p", { style: { margin: '10px 0 0', fontSize: 13, color: C.muted, textAlign: 'center' } }, "Switching a course off hides it from the student. Their progress is kept.")),
+                    react_1.default.createElement("p", { style: { margin: '10px 0 0', fontSize: 13, color: C.muted, textAlign: 'center' } }, "Switching a course off hides it from the student. Their progress is kept."),
+                    coursePreview && getCourse(coursePreview) && (react_1.default.createElement("div", { style: { position: 'fixed', top: 0, right: 0, bottom: 0, left: 0, background: C.scrim, zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }, onClick: () => setCoursePreview(null) },
+                        react_1.default.createElement("div", { className: "edu-rise", role: "dialog", "aria-label": "Course preview", style: { width: 'min(520px, 100%)', maxHeight: '86vh', overflowY: 'auto', background: C.surface, ...(C.mode === 'dark' ? { border: `1px solid ${C.cardEdge}` } : {}), borderRadius: 14, padding: '22px 22px 18px' }, onClick: (e) => e.stopPropagation() },
+                            react_1.default.createElement("p", { style: { margin: '0 0 2px', fontSize: 19, fontWeight: 700, textAlign: 'center' } }, getCourse(coursePreview).title),
+                            react_1.default.createElement("p", { style: { margin: '0 0 14px', fontSize: 14, color: C.muted, textAlign: 'center' } },
+                                gradeLabel(getCourse(coursePreview).grade),
+                                " \u00B7 ",
+                                getCourse(coursePreview).subject,
+                                " \u00B7 ",
+                                getCourse(coursePreview).modules.length,
+                                " ",
+                                getCourse(coursePreview).modules.length === 1 ? 'module' : 'modules'),
+                            react_1.default.createElement("ol", { style: { margin: 0, padding: '0 0 0 22px' } }, getCourse(coursePreview).modules.map((m) => (react_1.default.createElement("li", { key: m.id, style: { padding: '6px 0', borderTop: `1px solid ${C.line}` } },
+                                react_1.default.createElement("span", { style: { display: 'block', fontSize: 16, fontWeight: 600 } }, m.title),
+                                react_1.default.createElement("span", { style: { display: 'block', fontSize: 14, color: C.muted } }, m.tagline || (m.lesson && m.lesson.keyIdea) || ''))))),
+                            react_1.default.createElement("div", { style: { textAlign: 'center', marginTop: 16 } },
+                                react_1.default.createElement(Btn, { kind: "secondary", onClick: () => setCoursePreview(null) }, "Close")))))),
                 react_1.default.createElement("div", { style: { ...card, padding: 0, overflow: 'hidden' } },
-                    react_1.default.createElement("div", { className: "edu-fold-head", style: { display: 'flex', alignItems: 'center', padding: '14px 16px' } },
+                    react_1.default.createElement("div", { className: "edu-fold-head", role: "button", tabIndex: 0, "aria-expanded": openProgress, "aria-label": "Progress by course", onClick: () => setOpenProgress(!openProgress), onKeyDown: (e) => { if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            setOpenProgress(!openProgress);
+                        } }, style: { display: 'flex', alignItems: 'center', padding: '14px 16px', cursor: 'pointer', userSelect: 'none' } },
                         react_1.default.createElement("span", { className: "edu-fold-title", style: { fontSize: 17, fontWeight: 600, display: 'inline-flex', alignItems: 'center' } },
                             "Progress by course",
-                            react_1.default.createElement(InfoButton, { onClick: () => setShowProgressTip(!showProgressTip), label: "About progress by course", open: showProgressTip })),
-                        react_1.default.createElement("button", { type: "button", className: "edu-fold-meta", onClick: () => setOpenProgress(!openProgress), "aria-expanded": openProgress, "aria-label": "Progress by course", style: { fontFamily: FONT, textAlign: 'right', background: 'none', border: 'none', padding: 0, cursor: 'pointer', color: C.muted, fontSize: 16 } }, openProgress ? '▴' : '▾')),
+                            react_1.default.createElement(InfoButton, { onClick: (e) => { e.stopPropagation(); setShowProgressTip(!showProgressTip); }, label: "About progress by course", open: showProgressTip })),
+                        react_1.default.createElement("span", { className: "edu-fold-meta", "aria-hidden": "true", style: { color: C.muted, fontSize: 16 } }, openProgress ? '▴' : '▾')),
                     showProgressTip && react_1.default.createElement("div", { style: { padding: '0 16px' } },
                         react_1.default.createElement(TipText, null, "Once you assign a course above, you can view or reset the student's progression within said course. See how they're doing or allow them to start fresh."))),
                 (openProgress || printing) && assigned.map((course) => {
                     const open = openSubjects.includes(course.id);
                     const rows = rep.modules.filter((m) => m.courseId === course.id);
                     const done = rows.filter((m) => m.mastered).length;
-                    return (react_1.default.createElement("div", { key: course.id, style: { ...card, padding: 0, overflow: 'hidden' } },
+                    return (react_1.default.createElement("div", { key: course.id, style: { ...card, padding: 0, overflow: 'hidden', background: C.greenSoft } },
                         react_1.default.createElement("button", { type: "button", onClick: () => toggleSubjectPanel(course.id), "aria-expanded": open, style: { fontFamily: FONT, width: '100%', textAlign: 'left', background: 'transparent', border: 'none', padding: 16, cursor: 'pointer', color: C.ink } },
                             react_1.default.createElement("div", { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10 } },
                                 react_1.default.createElement("span", null,

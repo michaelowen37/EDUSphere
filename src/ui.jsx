@@ -3643,13 +3643,52 @@ function FundGame({ game, round, onScore = null }) {
     </div>
   );
 }
-const GAME_OF = { dots: DotsGame, pairs: PairsGame, sort: SortGame, maze: MazeGame, jigsaw: JigsawGame, pong: PongGame, sprint: SprintGame, order: OrderGame, build: BuildGame, fix: FixGame, mix: MixGame, debug: DebugGame, ptable: PtableGame, evidence: EvidenceGame, catch: CatchGame, path: PathGame, buckets: BucketsGame, jump: JumpGame, map: MapGame, balance: BalanceGame, walk: WalkGame, teach: TeachGame, bits: BitsGame, pay: PayGame, price: PriceGame, loan: LoanGame, fund: FundGame };
+// Split the Search (2026-09-29, pass FZ, a new kind for college computer science): thirty-two cards face down in sorted
+// order and a number that is on one of them. Tap a card to turn it over; the board says whether the number is higher or
+// lower, so halving what is left finds any target in six looks. Four targets a round, and the score is the looks it took,
+// lower is better. The lesson's idea is the rule of the game: sorted data can be searched by halving, and a thousand cards
+// would take only ten looks. Drawn with B on the paper board.
+function SearchGame({ game, round, onScore = null }) {
+  const cards = game.search || 32;
+  const [k, setK] = useState(0); const [seen, setSeen] = useState([]); const [total, setTotal] = useState(0); const [done, setDone] = useState(false); const [ticks, setTicks] = useState(0);
+  const board = useMemo(() => searchBoard(round * 4 + k, cards), [round, k, cards]);
+  useEffect(() => { setK(0); setSeen([]); setTotal(0); setDone(false); setTicks(0); }, [round]);
+  useEffect(() => { setSeen([]); }, [board]);
+  const target = board.values[board.target];
+  const found = seen.includes(board.target);
+  const last = seen.length ? seen[seen.length - 1] : -1;
+  useEffect(() => { if (done || found) return undefined; const t = setInterval(() => setTicks((n) => n + 1), 1000); return () => clearInterval(t); }, [done, found]);
+  useEffect(() => { if (done && onScore) onScore(total, 'low'); }, [done]);
+  const turn = (i) => { if (found || done || seen.includes(i)) return; setSeen([...seen, i]); setTotal(total + 1); };
+  const next = () => { if (k + 1 >= 4) setDone(true); else setK(k + 1); };
+  const said = found ? `Found in ${seen.length} ${seen.length === 1 ? 'look' : 'looks'}. Six is always enough on thirty-two cards.` : last >= 0 ? `Card ${last + 1} shows ${board.values[last]}. The number is ${board.values[last] < target ? 'higher' : 'lower'}.` : 'Tap a card. The cards are in order from smallest to largest.';
+  const tone = (i) => (i === board.target && seen.includes(i) ? B.green : seen.includes(i) ? (board.values[i] < target ? '#C7DFF8' : B.clay) : '#fff');
+  return (
+    <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Looks so far: {total}</span><span>{ticks}s · target {Math.min(k + 1, 4)} of 4</span></div>
+      {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Four numbers found in {total} looks. Tap the round arrow for new cards.</p> : (
+        <div style={{ textAlign: 'center' }}>
+          <p style={{ margin: '0 0 8px', fontSize: 20, fontWeight: 700, color: B.ink }}>Find {target}</p>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(8, 1fr)', gap: 5, marginBottom: 10 }}>
+            {board.values.map((v, i) => { const open = seen.includes(i); return (
+              <button key={i} type="button" className="edu-press" aria-label={open ? `Card ${i + 1}: ${v}` : `Card ${i + 1}`} disabled={open || found} onClick={() => turn(i)} style={{ fontFamily: FONT, height: 40, borderRadius: 8, border: `2px solid ${open ? B.ink : B.line}`, background: tone(i), color: B.ink, fontSize: open ? 13 : 11, fontWeight: 700, cursor: open || found ? 'default' : 'pointer', padding: 0 }}>{open ? v : i + 1}</button>); })}
+          </div>
+          <p style={{ margin: '4px 0 10px', fontSize: 15, color: B.ink, minHeight: 22 }}>{said}</p>
+          {found && <Btn pal={B} onClick={next}>{k + 1 >= 4 ? 'Finish' : 'Next number'}</Btn>}
+        </div>
+      )}
+      <Done show={done} />
+    </div>
+  );
+}
+const GAME_OF = { dots: DotsGame, pairs: PairsGame, sort: SortGame, maze: MazeGame, jigsaw: JigsawGame, pong: PongGame, sprint: SprintGame, order: OrderGame, build: BuildGame, fix: FixGame, mix: MixGame, debug: DebugGame, ptable: PtableGame, evidence: EvidenceGame, catch: CatchGame, path: PathGame, buckets: BucketsGame, jump: JumpGame, map: MapGame, balance: BalanceGame, walk: WalkGame, teach: TeachGame, bits: BitsGame, pay: PayGame, price: PriceGame, loan: LoanGame, fund: FundGame, search: SearchGame };
 // How to play, in a line or two, by kind of game (and by deck for the matching games).
 function gameInstructions(game) {
   if (game.kind === 'bits') return 'A number sits at the top and eight switches below it, worth 128 down to 1. Tap the switches on and off until the lit places add up to the number; the sum shows as you go. Six numbers, and the clock counts up.';
   if (game.kind === 'teach') return 'Twelve fruits, apples and bananas. The robot has seen one of each and guesses the rest from its nearest known fruit: a red ring means it guesses apple, a yellow ring banana. Tap a fruit the robot got wrong to teach it, and watch every guess change. Four boards; fewer lessons is the better score.';
   if (game.kind === 'loan') return 'You owe money on something at a rate per month. Tap a payment: each tap is a month, interest is added on what is still owed, and the payment comes off. Watch what the smallest payment costs over time. Four loans; less interest paid in all is the better score.';
   if (game.kind === 'fund') return 'A first year on your own, one month a tap. Income comes in, the bills go out, and you choose how much of the 500 that is left goes into your emergency fund; the rest is spent. Some months bring a surprise bill: the fund pays what it can and the rest is borrowed at 2 percent a month. The score is the fund minus the loan after twelve months, higher is better.';
+  if (game.kind === 'search') return 'Thirty-two cards lie face down in order from smallest to largest, and a number to find is on one of them. Tap a card to turn it over; the board says whether the number is higher or lower. Halve what is left each time and six looks always find it. Four numbers; fewer looks is the better score.';
   if (game.kind === 'price') return 'A lemonade stand with twelve customers, each with a top price in mind you cannot see, a cost for the day and a cost per cup. Tap a price to try it: the people who will pay it step forward with a cup, and the profit shows as money in minus money out. Three tries a stand, then the best price is revealed. Four stands; more profit found is the better score.';
   if (game.kind === 'pay') return 'A thing to buy shows its price in coins, with a dot for every coin. Tap coins from the table into the tray until the total matches the price exactly; tap a tray coin to put it back. Too many and the tray empties for another try. Four things, and the clock counts up.';
   if (game.kind === 'walk') return 'Tap the arrows to give the robot its steps, one at a time, then tap Go and watch it follow them to the star. A bump into a rock or the edge stops it; tap the last step to take it back and try another. Four robots, and the clock counts up.';
@@ -3724,6 +3763,7 @@ function GameThumb({ kind, game = null }) {
   if (dotShape) return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><polyline points={[...dotShape, dotShape[0]].map((pt) => pt.join(',')).join(' ')} fill="none" stroke={C.green} strokeWidth="2" strokeLinejoin="round" />{dotShape.map(([x, y], i) => <circle key={i} cx={x} cy={y} r="2.6" fill={C.paperBoard} stroke={k} strokeWidth="1.4" />)}</svg>;
   if (game && game.kind === 'bits') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true">{[0, 1, 2, 3].map((i) => <g key={i}><rect x={4 + i * 8.6} y="9" width="6.4" height="20" rx="3.2" fill={i === 1 || i === 3 ? C.green : C.paperBoard} stroke={k} strokeWidth="1" /><circle cx={7.2 + i * 8.6} cy={i === 1 || i === 3 ? 13 : 25} r="2.3" fill="#fff" stroke={k} strokeWidth="0.8" /></g>)}<text x="20" y="37" fontSize="6.5" fontWeight="700" textAnchor="middle" fill={k} fontFamily="sans-serif">0101</text></svg>;
   if (game && game.kind === 'teach') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="3" y="3" width="34" height="34" rx="4" fill={C.paperBoard} stroke={k} strokeWidth="1" />{[[11, 12], [17, 21], [10, 27]].map(([x, y], i) => <g key={`a${i}`}><circle cx={x} cy={y} r="4.4" fill="none" stroke="#D9534F" strokeWidth="1" strokeDasharray="1.6 1" /><circle cx={x} cy={y} r="2.3" fill="#D9534F" /></g>)}{[[27, 14], [30, 26], [22, 31]].map(([x, y], i) => <g key={`b${i}`}><circle cx={x} cy={y} r="4.4" fill="none" stroke="#E6B84B" strokeWidth="1" strokeDasharray="1.6 1" /><path d={`M ${x - 2.4} ${y - 1} q 2.4 3.4 4.8 0 q -2.3 1.6 -4.8 0 z`} fill="#F2C94C" /></g>)}</svg>;
+  if (game && game.kind === 'search') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true">{[0, 1, 2, 3, 4, 5, 6, 7].map((i) => <rect key={i} x={3 + (i % 4) * 8.8} y={i < 4 ? 8 : 22} width="7.5" height="10" rx="1.5" fill={i === 5 ? C.green : C.paperBoard} stroke={k} strokeWidth="1" />)}<path d="M20 4v34" stroke={k} strokeWidth="1" strokeDasharray="2 2" /></svg>;
   if (game && game.kind === 'fund') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="5" y="7" width="30" height="26" rx="4" fill="#fff" stroke={k} strokeWidth="1.2" />{[[10, 22, 8], [17, 14, 16], [24, 18, 12]].map(([x, y, h], i) => <rect key={i} x={x} y={y} width="5" height={h} rx="1" fill={i === 1 ? C.green : '#DDE3DE'} stroke={k} strokeWidth="0.7" />)}<path d="M31 13l-3 -3 -3 3M28 10v9" fill="none" stroke={k} strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" /></svg>;
   if (game && game.kind === 'loan') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true">{[[8, 24, 12], [15, 18, 18], [22, 12, 24], [29, 6, 30]].map(([x, y, h], i) => <rect key={i} x={x} y={y} width="5" height={h} rx="1.2" fill={i === 3 ? C.green : '#D9534F'} stroke={k} strokeWidth="0.7" />)}<line x1="5" y1="36" x2="36" y2="36" stroke={k} strokeWidth="1.2" strokeLinecap="round" /></svg>;
   if (game && game.kind === 'price') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><path d="M8 6h16l8 8v20H8z" fill="#fff" stroke={k} strokeWidth="1.2" strokeLinejoin="round" /><circle cx="13" cy="11" r="1.6" fill={k} />{[[13, 22, 10], [19, 17, 15], [25, 20, 12]].map(([x, y, h], i) => <rect key={i} x={x} y={y} width="4.5" height={h} rx="1" fill={i === 1 ? C.green : '#DDE3DE'} stroke={k} strokeWidth="0.7" />)}</svg>;
@@ -4420,6 +4460,28 @@ function ColoringPad({ picture, name, secondsLeft, total, saved, onArt, onClose 
 // drops it back into the same rhythm as everything else.
 const PAGE_OPENED = typeof performance !== 'undefined' ? performance.now() : Date.now();
 const inBeat = (seconds) => ({ animationDelay: `-${((((typeof performance !== 'undefined' ? performance.now() : Date.now()) - PAGE_OPENED) / 1000) % seconds).toFixed(2)}s` });
+// One course in a checklist on the student's report (2026-09-29, Mikey): the checkbox and the title on the left; a Preview
+// link that opens the module list; the touch-screen warning when the course needs one. On a phone the link sits centered
+// on its own line under the title and the warning drops a line below it; on a wider screen the link keeps to the right,
+// centered vertically. A faint rule that starts past the checkbox keeps the rows from blending together.
+function CourseChoiceRow({ course, checked, onToggle, onPreview }) {
+  const phone = typeof window !== 'undefined' && window.innerWidth < 700;
+  const warn = courseNeedsTouch(course.id) ? <Tag tone="review">Needs a touch screen</Tag> : null;
+  const link = <button type="button" className="edu-no-print" onClick={onPreview} aria-label={`Preview ${course.title}`} style={{ ...linkBtn, padding: '2px 0', fontSize: 14, whiteSpace: 'nowrap' }}>Preview</button>;
+  return (
+    <div style={{ padding: '7px 0 8px', fontSize: 16 }}>
+      <div style={{ display: 'flex', alignItems: phone ? 'flex-start' : 'center', gap: 10 }}>
+        <label style={{ display: 'flex', alignItems: 'center', gap: 10, flex: 1, minWidth: 0, cursor: 'pointer' }}>
+          <input type="checkbox" checked={checked} onChange={onToggle} />
+          <span style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 2, minWidth: 0 }}><span>{courseLabel(course)}</span>{!phone && warn}</span>
+        </label>
+        {!phone && link}
+      </div>
+      {phone && <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, marginTop: 2 }}>{link}{warn}</div>}
+      <div aria-hidden="true" style={{ height: 1, background: C.line, opacity: 0.55, marginTop: 8, marginLeft: 30 }} />
+    </div>
+  );
+}
 function InfoButton({ onClick, label, open = false }) {
   return (
     <button type="button" onClick={onClick} aria-label={label} aria-expanded={open}
@@ -4878,6 +4940,7 @@ function EduSphereScreens() {
   const [showWonderWhy, setShowWonderWhy] = useState(false);   // the i beside the Wonder switch
   const [pinFor, setPinFor] = useState(null);                  // student whose PIN is being set on their card
   const [wonderPopupFor, setWonderPopupFor] = useState(null);            // student whose Wonder Questions popup is open
+  const [coursePreview, setCoursePreview] = useState(null);              // course whose module preview popup is open on the report (2026-09-29, Mikey)
   const [showPinWhy, setShowPinWhy] = useState(false);         // the i beside PIN (optional) in the add-student popup
   const [showAutoTip, setShowAutoTip] = useState(false);       // the i under the automatic backups list
   const [pinDraft, setPinDraft] = useState('');
@@ -6379,7 +6442,9 @@ function EduSphereScreens() {
                 const picked = given === c;
                 let bg = C.surface; let border = C.line;
                 const ruledOut = wrongPicks.includes(c);
-                if (ruledOut) bg = '#EDEFEA';
+                // A ruled-out answer stays readable in the dark theme (2026-09-29, Mikey): a slightly lighter surface at
+                // seven-tenths, not the light grey that swallowed pale text; the light theme keeps its pale grey.
+                if (ruledOut) { bg = C.mode === 'dark' ? '#2C4238' : '#EDEFEA'; border = C.muted; }
                 if (checked && c === q.answer) { bg = C.greenSoft; border = C.green; }
                 else if (checked && picked) { bg = C.claySoft; border = C.clay; }
                 else if (picked) { border = C.green; }
@@ -6387,7 +6452,7 @@ function EduSphereScreens() {
                   // A word answer says itself for a child who cannot read; a picture answer never does,
                   // because naming it would hand over the answer.
                   <button key={c} type="button" data-choice={c} onClick={() => { if (!checked) { if (readAloud) { playTap(); if (!c.includes(':')) speak(c); } setGiven(c); } }}
-                    style={{ opacity: ruledOut && !checked ? 0.45 : 1, fontFamily: FONT, fontSize: choiceFont(q.choices), textAlign: 'center', padding: '12px 10px', minWidth: 0, overflowWrap: /^-?[\d.,\/ ]+$/.test(c) ? 'normal' : 'anywhere', whiteSpace: /^-?[\d.,\/ ]+$/.test(c) ? 'nowrap' : 'normal', borderRadius: 10, background: bg, border: `2px solid ${border}`, color: C.ink, cursor: checked ? 'default' : 'pointer', minHeight: 48 }}>
+                    style={{ opacity: ruledOut && !checked ? (C.mode === 'dark' ? 0.72 : 0.5) : 1, fontFamily: FONT, fontSize: choiceFont(q.choices), textAlign: 'center', padding: '12px 10px', minWidth: 0, overflowWrap: /^-?[\d.,\/ ]+$/.test(c) ? 'normal' : 'anywhere', whiteSpace: /^-?[\d.,\/ ]+$/.test(c) ? 'nowrap' : 'normal', borderRadius: 10, background: bg, border: `2px solid ${border}`, color: C.ink, cursor: checked ? 'default' : 'pointer', minHeight: 48 }}>
                     {/^dots:(\d+)$/.test(c) ? <DotGroup count={Number(c.split(':')[1])} size={28} /> : /^shape:/.test(c) ? <ShapePic name={c.split(':')[1]} size={c.endsWith(':big') ? 88 : c.endsWith(':small') ? 34 : c.endsWith(':medium') ? 58 : 64} /> : /^tens:(\d+)$/.test(c) ? <TensGroup count={Number(c.split(':')[1])} size={14} /> : /^bar:(\d+)$/.test(c) ? <BarPic length={Number(c.split(':')[1])} size={18} /> : /^tower:(\d+)$/.test(c) ? <BarPic length={Number(c.split(':')[1])} vertical size={14} /> : /^solid:/.test(c) ? <SolidPic name={c.slice(6)} size={64} /> : /^pic:/.test(c) ? <StudentPicture name={c.slice(4).split('#')[0]} size={72} /> : /^art:/.test(c) ? <ColorThumb picture={c.slice(4).split('#')[0]} size={84} /> : /^icon:/.test(c) ? <IconPic name={c.slice(5)} size={64} /> : /^swatch:/.test(c) ? <Swatch colour={c.slice(7)} size={64} /> : /^item:/.test(c) ? <Item spec={c.slice(5)} size={64} /> : /^clock:/.test(c) ? <ClockPic hour={Number(c.split(':')[1])} minute={Number(c.split(':')[2])} size={80} /> : /^array:/.test(c) ? <ArrayPic rows={Number(c.slice(6).split('x')[0])} cols={Number(c.slice(6).split('x')[1])} size={12} /> : c}
                   </button>
                 );
@@ -7411,7 +7476,7 @@ function EduSphereScreens() {
         <div style={{ ...card }}>
           <select value={stateDraft} onChange={(e) => setStateDraft(e.target.value)} aria-label="Your state"
             style={{ textAlign: 'center', textAlignLast: 'center', fontFamily: FONT, fontSize: 16, padding: '10px 12px', width: '100%', boxSizing: 'border-box', border: `2px solid ${C.line}`, borderRadius: 10, background: C.surface, marginBottom: 12 , ...pickerLook() }}>
-            {STATES.map((st) => <option key={st.code} value={st.code}>{st.name}</option>)}
+            {STATES.map((st) => <option style={{ background: C.surface, color: C.ink }} key={st.code} value={st.code}>{st.name}</option>)}
           </select>
           <Btn full onClick={async () => { setStateCode(stateDraft); await saveStateCode(stateDraft); goBackTo(); }}>Save</Btn>
         </div>
@@ -7449,8 +7514,8 @@ function EduSphereScreens() {
           {showStateTip && <p style={{ ...tipStyle, textAlign: 'center' }}>Each state publishes its own learning standards. Most use the Common Core; Texas uses its own. Our courses are mapped to both!<br /><br />Choosing a state mildly alters the course flow and you can change this later from the <strong>My Classroom</strong> page.</p>}
           <select value={stateDraft} onChange={(e) => setStateDraft(e.target.value)} aria-label="Your state"
             style={{ textAlign: 'center', textAlignLast: 'center', fontFamily: FONT, fontSize: 16, padding: '10px 12px', width: '100%', boxSizing: 'border-box', border: `2px solid ${C.line}`, borderRadius: 10, background: C.surface , ...pickerLook() }}>
-            <option value="">Choose a state</option>
-            {STATES.map((st) => <option key={st.code} value={st.code}>{st.name}</option>)}
+            <option style={{ background: C.surface, color: C.ink }} value="">Choose a state</option>
+            {STATES.map((st) => <option style={{ background: C.surface, color: C.ink }} key={st.code} value={st.code}>{st.name}</option>)}
           </select>
         </div>
         <Btn full onClick={async () => {
@@ -7826,7 +7891,9 @@ function EduSphereScreens() {
                   <div style={{ position: 'fixed', top: 0, right: 0, bottom: 0, left: 0, background: C.scrim, zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }} onClick={() => setWonderPopupFor(null)}>
                     <div className="edu-rise" style={{ width: 'min(420px, 100%)', background: C.surface, ...(C.mode === 'dark' ? { border: `1px solid ${C.cardEdge}` } : {}), borderRadius: 14, padding: '26px 22px', textAlign: 'center' }} onClick={(e) => e.stopPropagation()}>
                       <p style={{ margin: '0 0 6px', fontSize: 19, fontWeight: 700 }}>Wonder Questions</p>
-                      <p style={{ margin: '0 0 18px', fontSize: 15, color: C.muted }}>Currently: <strong style={{ color: wonderOnFor(st) ? C.green : C.ink }}>{wonderOnFor(st) ? 'On' : 'Off'}</strong></p>
+                      <p style={{ margin: '0 0 6px', fontSize: 15, color: C.muted }}>Currently: <strong style={{ color: wonderOnFor(st) ? C.green : C.ink }}>{wonderOnFor(st) ? 'On' : 'Off'}</strong></p>
+                      {/* How many of the pool this school has approved for students to see (2026-09-29, Mikey): the count follows the review screen and grows with the pool. */}
+                      <p style={{ margin: '0 0 18px', fontSize: 14, color: C.muted }} data-wonder-approved={wonderReview.approved.length}>{wonderReview.approved.length} of {WONDER.length} Wonder Questions approved for student viewing</p>
                       <SegToggle size="big" options={[['on', 'On'], ['off', 'Off']]} value={wonderOnFor(st) ? 'on' : 'off'} onChange={(v) => applyRoster(setStudentWonder(roster, st.id, v === 'on'))} ariaLabel="Wonder Questions" />
                       <Btn kind="secondary" onClick={() => setWonderPopupFor(null)}>Close</Btn>
                     </div>
@@ -8041,8 +8108,8 @@ function EduSphereScreens() {
         {storyRows.length > 1 && (
           <div className="edu-no-print" style={{ display: 'flex', justifyContent: 'center', margin: '22px 0 10px' }}>
             <select aria-label="Student" value={who} onChange={(e) => { setStoryView({ ...storyView, student: e.target.value }); setStoryExpanded({}); }} style={{ fontFamily: FONT, fontSize: 15, padding: '8px 12px', borderRadius: 8, border: `1px solid ${C.line}`, background: C.greenSoft, color: C.ink, width: 'min(340px, 100%)', textAlign: 'center', textAlignLast: 'center' , ...pickerLook() }}>
-              <option value="all">All students</option>
-              {storyRows.map((r) => <option key={r.id} value={r.id}>{r.label}</option>)}
+              <option style={{ background: C.surface, color: C.ink }} value="all">All students</option>
+              {storyRows.map((r) => <option style={{ background: C.surface, color: C.ink }} key={r.id} value={r.id}>{r.label}</option>)}
             </select>
           </div>
         )}
@@ -8126,7 +8193,7 @@ function EduSphereScreens() {
             <p style={{ margin: '0 0 12px', fontSize: 14, color: C.greenSoft }}>Every story in a course, in order, with the long story at the end. Open it, print it or save as a PDF for a class that likes to read on paper.</p>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, justifyContent: 'center', alignItems: 'center' }}>
               <select aria-label="Story book course" value={chosen} onChange={(e) => setBookCourseId(e.target.value)} style={{ fontFamily: FONT, fontSize: 15, padding: '8px 12px', borderRadius: 8, border: `1px solid ${C.line}`, background: C.greenSoft, color: C.ink, width: 'min(340px, 100%)', textAlign: 'center', textAlignLast: 'center' , ...pickerLook() }}>
-                {withBook.map((c) => <option key={c.id} value={c.id}>{gradeLabel(c.grade)}: {c.title}</option>)}
+                {withBook.map((c) => <option style={{ background: C.surface, color: C.ink }} key={c.id} value={c.id}>{gradeLabel(c.grade)}: {c.title}</option>)}
               </select>
               <Btn kind="secondary" onClick={() => { setBookCourseId(chosen); setScreen('story-book'); }}>Open Book</Btn>
             </div>
@@ -8644,10 +8711,7 @@ function EduSphereScreens() {
           {courseQuery.trim() && (
             <div>
               {COURSES.filter((c) => matchesCourseSearch(c, courseQuery)).sort(byGradeOrder).map((c) => (
-                <label key={c.id} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '7px 0', fontSize: 16 }}>
-                  <input type="checkbox" checked={enabled.includes(c.id)} onChange={() => setEnabled(enabled.includes(c.id) ? enabled.filter((id) => id !== c.id) : [...enabled, c.id])} />
-                  <span style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 2 }}><span>{courseLabel(c)}</span>{courseNeedsTouch(c.id) && <Tag tone="review">Needs a touch screen</Tag>}</span>
-                </label>
+                <CourseChoiceRow key={c.id} course={c} checked={enabled.includes(c.id)} onToggle={() => setEnabled(enabled.includes(c.id) ? enabled.filter((id) => id !== c.id) : [...enabled, c.id])} onPreview={() => setCoursePreview(c.id)} />
               ))}
               {COURSES.filter((c) => matchesCourseSearch(c, courseQuery)).length === 0 && <p style={{ margin: '0 0 8px', fontSize: 15, color: C.muted }}>No course matches that. Try a grade, a subject, or a word from a course title.</p>}
             </div>
@@ -8656,10 +8720,7 @@ function EduSphereScreens() {
             <p style={{ margin: '0 0 8px', fontSize: 15, color: C.muted }}>Nothing is written yet for this student's level. Anything below can still be assigned.</p>
           )}
           {!courseQuery.trim() && COURSES.filter((c) => recommended.includes(c.id)).sort(byGradeOrder).map((c) => (
-            <label key={c.id} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '7px 0', fontSize: 16 }}>
-              <input type="checkbox" checked={enabled.includes(c.id)} onChange={() => setEnabled(enabled.includes(c.id) ? enabled.filter((id) => id !== c.id) : [...enabled, c.id])} />
-              <span style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 2 }}><span>{courseLabel(c)}</span>{courseNeedsTouch(c.id) && <Tag tone="review">Needs a touch screen</Tag>}</span>
-            </label>
+            <CourseChoiceRow key={c.id} course={c} checked={enabled.includes(c.id)} onToggle={() => setEnabled(enabled.includes(c.id) ? enabled.filter((id) => id !== c.id) : [...enabled, c.id])} onPreview={() => setCoursePreview(c.id)} />
           ))}
           {!courseQuery.trim() && <div className="edu-no-print" style={{ textAlign: 'center', marginTop: 6 }}><button type="button" style={{ ...linkBtn }} onClick={() => setShowAllCourses(!showAllCourses)}>
             {showAllCourses ? 'Hide other courses' : `Show other courses (${COURSES.length - recommended.length})`}
@@ -8684,10 +8745,7 @@ function EduSphereScreens() {
                       </button>
                       {open && <div style={{ padding: '4px 14px 8px' }}>
                         {list.map((c) => (
-                          <label key={c.id} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '7px 0', fontSize: 16 }}>
-                            <input type="checkbox" checked={enabled.includes(c.id)} onChange={() => setEnabled(enabled.includes(c.id) ? enabled.filter((id) => id !== c.id) : [...enabled, c.id])} />
-                            <span style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 2 }}><span>{courseLabel(c)}</span>{courseNeedsTouch(c.id) && <Tag tone="review">Needs a touch screen</Tag>}</span>
-                          </label>
+                          <CourseChoiceRow key={c.id} course={c} checked={enabled.includes(c.id)} onToggle={() => setEnabled(enabled.includes(c.id) ? enabled.filter((id) => id !== c.id) : [...enabled, c.id])} onPreview={() => setCoursePreview(c.id)} />
                         ))}
                       </div>}
                     </div>
@@ -8696,14 +8754,33 @@ function EduSphereScreens() {
             </div>
           )}
           <p style={{ margin: '10px 0 0', fontSize: 13, color: C.muted, textAlign: 'center' }}>Switching a course off hides it from the student. Their progress is kept.</p>
+          {coursePreview && getCourse(coursePreview) && (
+            // A course previewed before it is assigned (2026-09-29, Mikey): every module with its one-line description.
+            <div style={{ position: 'fixed', top: 0, right: 0, bottom: 0, left: 0, background: C.scrim, zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }} onClick={() => setCoursePreview(null)}>
+              <div className="edu-rise" role="dialog" aria-label="Course preview" style={{ width: 'min(520px, 100%)', maxHeight: '86vh', overflowY: 'auto', background: C.surface, ...(C.mode === 'dark' ? { border: `1px solid ${C.cardEdge}` } : {}), borderRadius: 14, padding: '22px 22px 18px' }} onClick={(e) => e.stopPropagation()}>
+                <p style={{ margin: '0 0 2px', fontSize: 19, fontWeight: 700, textAlign: 'center' }}>{getCourse(coursePreview).title}</p>
+                <p style={{ margin: '0 0 14px', fontSize: 14, color: C.muted, textAlign: 'center' }}>{gradeLabel(getCourse(coursePreview).grade)} · {getCourse(coursePreview).subject} · {getCourse(coursePreview).modules.length} {getCourse(coursePreview).modules.length === 1 ? 'module' : 'modules'}</p>
+                <ol style={{ margin: 0, padding: '0 0 0 22px' }}>
+                  {getCourse(coursePreview).modules.map((m) => (
+                    <li key={m.id} style={{ padding: '6px 0', borderTop: `1px solid ${C.line}` }}>
+                      <span style={{ display: 'block', fontSize: 16, fontWeight: 600 }}>{m.title}</span>
+                      <span style={{ display: 'block', fontSize: 14, color: C.muted }}>{m.tagline || (m.lesson && m.lesson.keyIdea) || ''}</span>
+                    </li>
+                  ))}
+                </ol>
+                <div style={{ textAlign: 'center', marginTop: 16 }}><Btn kind="secondary" onClick={() => setCoursePreview(null)}>Close</Btn></div>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Progress by course, all of it behind one dropdown so the transcript is not pushed out of sight. */}
         <div style={{ ...card, padding: 0, overflow: 'hidden' }}>
-          <div className="edu-fold-head" style={{ display: 'flex', alignItems: 'center', padding: '14px 16px' }}>
-            <span className="edu-fold-title" style={{ fontSize: 17, fontWeight: 600, display: 'inline-flex', alignItems: 'center' }}>Progress by course<InfoButton onClick={() => setShowProgressTip(!showProgressTip)} label="About progress by course" open={showProgressTip} /></span>
-            <button type="button" className="edu-fold-meta" onClick={() => setOpenProgress(!openProgress)} aria-expanded={openProgress} aria-label="Progress by course"
-              style={{ fontFamily: FONT, textAlign: 'right', background: 'none', border: 'none', padding: 0, cursor: 'pointer', color: C.muted, fontSize: 16 }}>{openProgress ? '▴' : '▾'}</button>
+          {/* The whole bar opens the fold, not only the arrow (2026-09-29, Mikey); the info dot inside stops the tap from reaching it. */}
+          <div className="edu-fold-head" role="button" tabIndex={0} aria-expanded={openProgress} aria-label="Progress by course" onClick={() => setOpenProgress(!openProgress)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setOpenProgress(!openProgress); } }}
+            style={{ display: 'flex', alignItems: 'center', padding: '14px 16px', cursor: 'pointer', userSelect: 'none' }}>
+            <span className="edu-fold-title" style={{ fontSize: 17, fontWeight: 600, display: 'inline-flex', alignItems: 'center' }}>Progress by course<InfoButton onClick={(e) => { e.stopPropagation(); setShowProgressTip(!showProgressTip); }} label="About progress by course" open={showProgressTip} /></span>
+            <span className="edu-fold-meta" aria-hidden="true" style={{ color: C.muted, fontSize: 16 }}>{openProgress ? '▴' : '▾'}</span>
           </div>
           {showProgressTip && <div style={{ padding: '0 16px' }}><TipText>Once you assign a course above, you can view or reset the student's progression within said course. See how they're doing or allow them to start fresh.</TipText></div>}
         </div>
@@ -8712,7 +8789,8 @@ function EduSphereScreens() {
           const rows = rep.modules.filter((m) => m.courseId === course.id);
           const done = rows.filter((m) => m.mastered).length;
           return (
-            <div key={course.id} style={{ ...card, padding: 0, overflow: 'hidden' }}>
+            // The courses that drop out of the fold wear the soft green so they read apart from the bar above them (2026-09-29, Mikey).
+            <div key={course.id} style={{ ...card, padding: 0, overflow: 'hidden', background: C.greenSoft }}>
               <button type="button" onClick={() => toggleSubjectPanel(course.id)} aria-expanded={open}
                 style={{ fontFamily: FONT, width: '100%', textAlign: 'left', background: 'transparent', border: 'none', padding: 16, cursor: 'pointer', color: C.ink }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10 }}>

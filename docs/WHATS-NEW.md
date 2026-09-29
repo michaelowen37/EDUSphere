@@ -2,6 +2,22 @@
 
 The newest block is what educators see once, in a pop-up on the classroom page, after each update. Write it the way Mikey talks to a teacher: conversational, complete sentences, say what changed and why it matters, and skip the shorthand (2026-09-23). Two to four items. The date line is the version stamp.
 
+## September 29, 2026 (preview a course)
+
+- Every course on a student's report now has a Preview link that opens a list of its modules, each with a one-line description, so you can see what a course holds before you assign it. The course rows are separated by faint lines, on the phone and on a wider screen.
+- The Wonder Questions popup on a student card now tells you how many of the questions your school has approved for students to see, out of the whole set.
+
+## September 29, 2026 (two small fixes)
+
+- On a student's report, the whole Progress by course bar now opens the list, not only its arrow, and the courses that appear are tinted so they read apart from the bar. Every dropdown list in the app now shows its choices in the theme's own colors.
+- In the dark theme, an answer that was ruled out after a wrong try stays visible behind its grey, so a child can see what was wrong before trying again.
+
+## September 29, 2026 (how computers compute)
+
+- College has a new course, How computers compute: what actually runs when a program runs, from fetch, decode and execute to numbered bytes and the call stack; how work grows with the input, and why a better algorithm beats a faster machine; the shapes of data, from arrays and linked lists to stacks, queues, hash tables and trees; and recursion, the base case, and the one question no program can answer. Arithmetic questions are worked out fresh every time. Each lesson has a story, and the course ends with a long story about Chloe and a gallery catalogue of ten thousand paintings.
+- Finishing the course unlocks Split the Search, a new kind of game: thirty-two cards face down in order, a number to find, and six looks that are always enough.
+- Two new Wonder questions for college wait in the review screen.
+
 ## September 29, 2026 (money for a life)
 
 - Grade 9 has a new elective for grades 9 to 12, Money for a life: a paycheck read to the last line, with FICA, withholding and the benefits that never show in net pay; the true cost of credit, from APR and fees to the three Cs and a credit report worth correcting; saving in order, from an emergency fund to retirement, with stocks, bonds and mutual funds on the risk and return seesaw; and insurance, scams and paying for college in the cheapest order. Every dollar question is worked out fresh. Each lesson has a story, and the course ends with a long story about Chloe and her first studio lease.

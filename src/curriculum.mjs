@@ -1227,6 +1227,22 @@ export const CURRICULUM = [
     ],
   },
   {
+    grade: 'C', subject: 'Technology', status: 'ready',
+    source: 'Texas College and Career Readiness Standards, Cross-Disciplinary Standards (2009): Key Cognitive Skills and Foundational Skills in technology; CSTA K-12 Computer Science Standards, Level 3B (grades 11 to 12), the national framework, shown in the Common Core column.',
+    standards: [
+      { framework: 'TEKS', code: 'CCRS II.E.4', text: 'Use technology appropriately.', moduleIds: ['inside-a-running-program'] },
+      { framework: 'TEKS', code: 'CCRS I.C.1', text: 'Analyze a situation to identify a problem to be solved.', moduleIds: ['inside-a-running-program'] },
+      { framework: 'TEKS', code: 'CCRS I.C.2', text: 'Develop and apply multiple strategies to solve a problem.', moduleIds: ['counting-steps'] },
+      { framework: 'TEKS', code: 'CCRS II.E.2', text: 'Use technology to organize, manage, and analyze information.', moduleIds: ['shapes-of-data'] },
+      { framework: 'TEKS', code: 'CCRS I.B.2', text: 'Construct well-reasoned arguments to explain phenomena, validate conjectures, or support positions.', moduleIds: ['recursion-and-limits'] },
+      { framework: 'CCSS', code: 'CSTA 3B-CS-02', text: 'Illustrate ways computing systems implement logic, input, and output through hardware components.', moduleIds: ['inside-a-running-program'] },
+      { framework: 'CCSS', code: 'CSTA 3B-AP-11', text: 'Evaluate algorithms in terms of their efficiency, correctness, and clarity.', moduleIds: ['counting-steps'] },
+      { framework: 'CCSS', code: 'CSTA 3B-AP-10', text: 'Use and adapt classic algorithms to solve computational problems.', moduleIds: ['counting-steps'] },
+      { framework: 'CCSS', code: 'CSTA 3B-AP-12', text: 'Compare and contrast fundamental data structures and their uses.', moduleIds: ['shapes-of-data'] },
+      { framework: 'CCSS', code: 'CSTA 3B-AP-14', text: 'Construct solutions to problems using student-created components, such as procedures, modules, and/or objects.', moduleIds: ['recursion-and-limits'] },
+    ],
+  },
+  {
     grade: '3', subject: 'Technology', status: 'ready',
     source: 'Texas Essential Knowledge and Skills, Technology Applications, Grade 3 (§126.8, Adopted 2022); CSTA K-12 Computer Science Standards, Level 1B (grades 3 to 5), the national framework, shown in the Common Core column.',
     standards: [

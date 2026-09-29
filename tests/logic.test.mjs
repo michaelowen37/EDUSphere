@@ -1481,6 +1481,11 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
     ok('every fund year has four surprises that steady saving covers, and saving nothing ends in debt', [1, 2, 3, 4, 5].every((r) => { const y = L.fundYear(r); const hits = y.months.filter((m) => m.surprise > 0); let st = { fund: 0, loan: 0, spent: 0 }; let none = { fund: 0, loan: 0, spent: 0 }; y.months.forEach((m) => { st = L.fundMonth({ ...st, room: y.room }, y.room, m); none = L.fundMonth({ ...none, room: y.room }, 0, m); }); return hits.length === 4 && y.total <= y.room * 12 && st.loan === 0 && st.fund === y.room * 12 - y.total && none.loan > y.total; }));
     ok('the fund game belongs to personal finance 9 to 12 and names its year with its own key', L.COURSE_GAMES['econ-9'].includes('fund-econ-9') && L.GAMES.find((g) => g.id === 'fund-econ-9').fund === 'year' && !L.GAMES.find((g) => g.id === 'fund-econ-9').deck);
   }
+  { // Split the Search (pass FZ): every board is 32 sorted, distinct values with the target on it, and binary search finds any target in six looks.
+    const looks = (b) => { let lo = 0; let hi = b.values.length - 1; let n = 0; const t = b.values[b.target]; while (lo <= hi) { const mid = Math.floor((lo + hi) / 2); n += 1; if (b.values[mid] === t) return n; if (b.values[mid] < t) lo = mid + 1; else hi = mid - 1; } return Infinity; };
+    ok('every search board is sorted and distinct with its target on it, and binary search finds it in six looks or fewer', [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].every((seed) => { const b = L.searchBoard(seed); return b.values.length === 32 && new Set(b.values).size === 32 && b.values.every((v, i) => i === 0 || v > b.values[i - 1]) && b.target >= 0 && b.target < 32 && looks(b) <= 6; }));
+    ok('the search game belongs to college computer science and names its board with its own key', L.COURSE_GAMES['tech-college'].includes('search-tech-college') && L.GAMES.find((g) => g.id === 'search-tech-college').search === 32 && !L.GAMES.find((g) => g.id === 'search-tech-college').deck);
+  }
   ok('the two robot games sit in the two programming courses beside their first games', L.COURSE_GAMES['tech-3'].includes('debug-tech-3') && L.COURSE_GAMES['tech-5'].includes('debug-tech-5') && L.GAMES.filter((g) => g.kind === 'debug').every((g) => L.ROBOT_DECKS[g.deck]));
 }
 

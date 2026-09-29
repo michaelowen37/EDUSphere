@@ -113,6 +113,27 @@ for (const s of [...screens.filter((x) => studentScreens.has(x) && x !== 'overvi
   await page.evaluate((name) => window.__eduTest.goTo(name), s); await page.waitForTimeout(300);
   if (await page.evaluate(() => window.__eduTest.screen) === s) await check(s);
 }
+// A ruled-out answer on the dark board stays visible (2026-09-29, Mikey): answer a practice question wrong, tap Try again,
+// and the greyed choice must keep its ink apart from its background at seven-tenths or more.
+{ await keepAlive(); await page.evaluate(() => window.__eduTest.goTo('overview')); await page.waitForTimeout(300);
+  // The first unlocked early module: open it, go from its lesson to practice, and wait for a question to appear.
+  for (const id of ['count-to-3', 'one-and-two', 'washing-hands', 'tell-and-show', 'wants-needs-and-choices']) {
+    await page.evaluate((mid) => window.__eduTest.openModule(mid), id); await page.waitForTimeout(500);
+    const sc = await page.evaluate(() => window.__eduTest.screen);
+    if (sc === 'lesson') { const start = page.getByLabel('Start practice'); if (await start.count()) { await start.first().click(); await page.waitForTimeout(500); } }
+    if ((await page.evaluate(() => window.__eduTest.screen)) === 'practice') break;
+    await page.evaluate(() => window.__eduTest.goTo('overview')); await page.waitForTimeout(200);
+  }
+  const q0 = await page.evaluate(() => (window.__eduTest && window.__eduTest.question) || null);
+  if (q0 && q0.choices && q0.type !== 'number') {
+    const wrong = q0.choices.find((c) => c !== q0.answer); const m = /^dots:(\d+)$/.exec(wrong || '');
+    const el = m ? page.locator(`button:has(svg[aria-label="${m[1]} dots"])`).first() : page.getByRole('button', { name: wrong, exact: true }).first();
+    await el.click(); await page.getByRole('button', { name: 'Check answer' }).click(); await page.waitForTimeout(200);
+    const again = page.getByRole('button', { name: 'Try again' }); if (await again.count()) { await again.click(); await page.waitForTimeout(200); }
+    const look = await el.evaluate((node) => { const cs = getComputedStyle(node); return { opacity: Number(cs.opacity), color: cs.color, bg: cs.backgroundColor }; });
+    ok('a ruled-out answer stays readable on the dark board', look.opacity >= 0.7 && look.color !== look.bg && look.bg === 'rgb(44, 66, 56)', JSON.stringify(look));
+  } else ok('a ruled-out answer stays readable on the dark board', false, `no choice question on the practice screen: ${JSON.stringify(q0 && q0.type)}`);
+  await page.evaluate(() => window.__eduTest.goTo('overview')); await page.waitForTimeout(200); }
 // The colorful rows on the courses page, opened one at a time: they keep their color and their words stay readable.
 for (const name of [/Let's Color/, /Let's Play/, /Let's Read/]) {
   const b = page.getByRole('button', { name }).first(); if (!(await b.count())) continue;

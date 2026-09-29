@@ -159,6 +159,8 @@ await page.getByLabel('Close').click();
 // Student card links (2026-09-20): Wonder Questions opens a popup with the switch; Add PIN saves from the card.
 await page.getByRole('button', { name: /^Wonder Questions/ }).first().click();
 ok('the Wonder Questions popup says what is current', (await text()).includes('Currently:'));
+// The popup counts what this school has approved for students to see, out of the whole pool (2026-09-29, Mikey).
+ok('the Wonder Questions popup counts the approved questions out of the pool', /\d+ of \d{3} Wonder Questions approved for student viewing/.test(await text()));
 await page.getByRole('group', { name: 'Wonder Questions' }).getByRole('button', { name: 'Off' }).click();
 await page.waitForTimeout(200);
 ok('switching Wonder Questions off shows on the card', (await page.getByRole('button', { name: /^Wonder Questions/ }).first().textContent()).includes('OFF'));
@@ -409,7 +411,9 @@ ok('question was spoken automatically', spokenBefore >= 2);
   ok('a wrong answer offers Try again instead of Next', (await page.getByRole('button', { name: 'Try again' }).count()) === 1);
   ok('a wrong answer gives nothing away before the retry', !(await text()).includes('The answer is'));
   await page.getByRole('button', { name: 'Try again' }).click();
-  ok('the child stays on the same question', (await state()).screen === 'practice'); }
+  ok('the child stays on the same question', (await state()).screen === 'practice');
+  // The ruled-out answer stays readable on the dark board (2026-09-29, Mikey): its opacity and its ink both hold up.
+  if (q0.type !== 'number') { const el = m ? page.locator(`button:has(svg[aria-label="${m[1]} dots"])`).first() : page.getByRole('button', { name: wrong, exact: true }).first(); const look = await el.evaluate((node) => { const cs = getComputedStyle(node); return { opacity: Number(cs.opacity), color: cs.color, bg: cs.backgroundColor }; }); ok('a ruled-out answer stays readable behind its grey', look.opacity >= 0.45 && look.color !== look.bg, JSON.stringify(look)); } }
 r = await runSet([true, true, true, true, true]);
 // five core questions, plus a memory check from any mastered course when there is one
 ok('counting questions answered by tapping pictures or numbers', r.length >= 5 && r.every(Boolean));
@@ -472,7 +476,17 @@ ok('the raw data section is titled plainly', t.includes('Raw data'));
 ok('the word set is not used to describe practice', !t.includes('practice set') && !t.includes('Practice set'));
 // Collapsed sections are rendered but hidden, so that printing includes them.
 // That means these checks must ask what is visible rather than what is in the text.
-await page.getByRole('button', { name: /^Progress by course/ }).click();
+// Preview on a course row (2026-09-29, Mikey): the popup lists every module of the course with its one-line description.
+{ const prev = page.getByRole('button', { name: /^Preview / }).first();
+  ok('every course on the report offers a Preview link', (await page.getByRole('button', { name: /^Preview / }).count()) >= 3);
+  await prev.click(); await page.waitForTimeout(200);
+  const dlg = page.getByRole('dialog', { name: 'Course preview' });
+  ok('Preview opens a popup listing the modules of that course with a line each', (await dlg.count()) === 1 && (await dlg.locator('li').count()) >= 2 && (await dlg.textContent()).includes('module'));
+  await dlg.getByRole('button', { name: 'Close' }).click(); await page.waitForTimeout(150);
+  ok('the preview popup closes', (await page.getByRole('dialog', { name: 'Course preview' }).count()) === 0); }
+// The whole bar opens the fold, not only the arrow (2026-09-29, Mikey): tap the words themselves.
+await page.locator('.edu-fold-title', { hasText: 'Progress by course' }).first().click({ position: { x: 20, y: 10 } });
+ok('tapping the words Progress by course opens the fold, not only its arrow', (await page.getByRole('button', { name: /^Progress by course/ }).first().getAttribute('aria-expanded')) === 'true');
 await page.getByRole('button', { name: /^Counting/ }).click();
 ok('an assigned course unfolds into its modules', await page.getByRole('button', { name: 'View progress for this module' }).first().isVisible());
 await page.getByRole('button', { name: 'View progress for this module' }).first().click();
@@ -894,6 +908,17 @@ await page.waitForTimeout(200);
 { ok('the fund game opens on month one with six amounts to save', (await text()).includes('yours to save or spend') && (await page.getByRole('button', { name: /^Save \d+ this month$/ }).count()) === 6);
   for (let i = 0; i < 12; i++) { await page.getByRole('button', { name: 'Save 500 this month' }).click(); await page.waitForTimeout(60); }
   ok('a year of saving the whole room ends with money in the fund and nothing owed', /Year over: [\d,]+ in the fund, 0 owed/.test(await text()));
+}
+await page.getByRole('button', { name: 'Close game' }).first().click({ force: true });
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview');
+// Split the Search (pass FZ, college computer science): binary search by hand finds the number in six looks or fewer.
+await page.evaluate(() => window.__eduTest.openColoring('play:search-tech-college'));
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'coloring');
+await page.waitForTimeout(200);
+{ ok('the search game opens with thirty-two face-down cards and a number to find', (await page.getByRole('button', { name: /^Card \d+$/ }).count()) === 32 && /Find \d+/.test(await text()));
+  let lo = 1; let hi = 32; let looks = 0; let foundIt = false;
+  while (lo <= hi && looks < 7) { const mid = Math.floor((lo + hi) / 2); await page.getByRole('button', { name: `Card ${mid}`, exact: true }).click(); looks += 1; await page.waitForTimeout(80); const t = await text(); if (t.includes('Found in')) { foundIt = true; break; } if (t.includes('is higher')) lo = mid + 1; else hi = mid - 1; }
+  ok('halving the cards finds the number in six looks or fewer', foundIt && looks <= 6 && (await page.getByRole('button', { name: 'Next number' }).count()) === 1);
 }
 await page.getByRole('button', { name: 'Close game' }).first().click({ force: true });
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview');

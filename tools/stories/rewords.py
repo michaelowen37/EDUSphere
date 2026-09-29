@@ -11,7 +11,12 @@ def swap(table, sid, words):
     global s
     # Stories come in two layouts: the oldest sit inside one object literal (  'id': {), the rest are added one at a
     # time (STORIES['id'] = {). Both keep their words array as a line of '  words: [' closed by '  ],'.
-    m = re.search(r"%s\['%s'\] = \{" % (re.escape(table), re.escape(sid)), s) or (table == 'STORIES' and re.search(r"^  '%s': \{" % re.escape(sid), s, re.M))
+    m = re.search(r"%s\['%s'\] = \{" % (re.escape(table), re.escape(sid)), s)
+    if not m:
+        # object-literal layout: search only inside that table's literal
+        t0 = s.index('%s = {' % table); t1 = s.find('\n};', t0)
+        mm = re.compile(r"^  '%s': \{" % re.escape(sid), re.M).search(s, t0, t1 if t1 > 0 else len(s))
+        m = mm
     assert m, (table, sid)
     start = m.end()
     wm = re.compile(r"^( *)words: \[\n", re.M).search(s, start); assert wm, sid

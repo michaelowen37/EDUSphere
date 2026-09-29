@@ -1124,6 +1124,23 @@ Approved by Mikey on 2026-09-04 unless marked "proposed".
 - FI to FM were not committed, so this commit message covers FI to FN, and the changes zip carries all six passes' files.
 - All 23 grade 2 stories rewritten with tools/stories/rewords.py: adding-with-regrouping, subtracting-with-regrouping, hundreds-tens-ones, money, quarter-hours, telling-time, rows-and-columns, saving-for-a-goal, complete-sentences, describing-sentences, reading-for-meaning, tell-a-story-2, two-syllable-words, vowel-teams, word-meaning-from-context, then-and-now, good-citizens, habitats, hard-or-soft, magnets, maps-of-our-town, producers-and-consumers, services-in-our-town. Counting chants and coin counts folded into sentences (a quarter was twenty-five, then a dime made thirty-five). Same facts, same pictures; the art audit and the flow audit show none. Grade 2: 0 of 23 flagged. Overall 187 of 516 still flagged: PK4 (26) and PK3 (17) remain in the program, and from grade 3 up the flags want a human read.
 
+## 2026-09-28 (pass FO): pre-K 4 finished (flow program)
+
+- Mikey committed FI to FN; this commit message starts fresh at FO.
+- All 26 pre-K 4 stories rewritten with tools/stories/rewords.py, in short connected sentences for four-year-olds (most under fourteen words, none over eighteen, every word three syllables or fewer): big-bigger-biggest, big-letters, bigger-and-smaller, colours, connect-the-dots, count-to-3, draw-the-shapes, first-letter-tracing, first-sounds, first-strokes, helpers-all-around, listen-for-rhymes, match-the-land-animals, match-the-shapes, match-the-solids, match-the-things, match-the-vehicles, match-the-water-animals, more-and-fewer-5, more-big-letters, patterns, same-and-different, taking-turns, trace-straight-letters, which-came-first, which-came-second. Same facts, same pictures; the art audit and the flow audit show none. PK4: 0 of 26 flagged. Overall 161 of 516 still flagged: PK3 (17) remains in the program, and from grade 3 up the flags want a human read.
+
+## 2026-09-28 (pass FP): pre-K 3 finished; the early-years flow program is complete
+
+- FO was not committed, so this commit message covers FO and FP, and the changes zip carries both passes' files.
+- All 17 pre-K 3 stories rewritten with tools/stories/rewords.py, in short connected sentences for three-year-olds: a-and-b, animal-sounds, big-and-little, big-and-small, circle-and-square, find-the-match, first-marks, listen-and-tap-pictures, match-the-animals, more-or-fewer, not-the-same, one-and-two, please-and-thank-you, red-and-blue, three-dots, triangles-too, yellow-and-green. Same facts, same pictures; the art audit shows none.
+- The early-years flow program that began in pass FB is complete: pre-K 3, pre-K 4, kindergarten, grade 1 and grade 2 show 0 flagged stories of 135. The flow rules moved to tools/story-flow.mjs, shared by the audit and by a new rule test that holds every early-years story at zero flags, so a clipped story cannot come back. Overall 144 of 516 stories still carry a flag, all from grade 3 up; those are mostly deliberate short sentences and want a human read, rewriting only what reads robotic.
+
+## 2026-09-28 (pass FQ): grade 3 to college read by hand; the flow program is complete
+
+- FO and FP were not committed, so this commit message covers FO to FQ, and the changes zip carries all three passes' files.
+- Every flagged paragraph from grade 3 up (about 180, in 144 stories) was read and judged. Nearly all are deliberate: lists of steps, order words, color mixes, describe-what-you-see lists, dialogue, math sequences and short punches for effect (Fifty-three heads. He frowned. Fair should be fifty.). Eleven paragraphs read mechanically, mostly chains of Then, and got light touches: times-tables, sharing-equally, inputs-and-outputs, text-features, order-of-operations, heat-transfer, explanatory-essay, cattle-cotton-and-oil, the science-8 long story, symbols and human-impact. Same facts, same pictures; the art audit shows none of them.
+- docs/STORY-FLOW.md now says so in its header: the early years are held at zero by a rule test, and a flag from grade 3 up is a prompt to read, not an order to rewrite. 135 of 516 stories keep a flag on purpose. tools/stories/rewords.py now also finds long stories inside the COURSE_STORIES object literal (single-line entries there are still edited directly). The flow program that began in pass FB is complete; painting is next.
+
 ## Open items
 - Verify audio plays inside the chat artifact sandbox (works in a normal browser).
 - Common Core / TEKS codes on existing modules to be checked against the official lists.

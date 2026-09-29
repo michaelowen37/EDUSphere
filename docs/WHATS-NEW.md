@@ -38,6 +38,9 @@ The newest block is what educators see once, in a pop-up on the classroom page, 
 - Grade 1 has begun: the six math stories (two pockets, two jars of buttons, birds on the wire, ten and three, bundles of ten, the five) and six science and history stories (the puppy, bird high and cow low, the drum and the lullaby, the sun and moon chart, ice and water, first then last).
 - Every grade 1 story now reads this way. The last fourteen: the sentence from the capital to the period, the word on the box, shell, chair and thumb, the quiet e, the hat and the haircut, leaders near and far, the map of the yard (now with the directions right), the sign that stopped everyone, the bell and the torch, the clock in the song, and the four small-letter tracing stories.
 - Every grade 2 story now reads this way too: all eight math stories, the reading and writing stories, then and now, and the science and civics stories. Kindergarten through grade 2 are done; pre-K is next.
+- Every pre-K 4 story now reads this way as well, all 26 of them, from the three bears' bowls to the sounds in the kitchen. Only pre-K 3 is left.
+- Pre-K 3 is done too, so every story from pre-K 3 through grade 2, all 135 of them, now reads like a picture book. A check keeps them that way.
+- Every story from grade 3 to college was read through as well. Eleven paragraphs that chained one Then after another now read smoothly; the rest of the short sentences up there are on purpose, the way a good storyteller uses them.
 
 ## September 28, 2026 (college begins)
 

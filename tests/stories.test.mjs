@@ -89,5 +89,18 @@ for (const [id, cs] of Object.entries(COURSE_STORIES)) {
   ok('a lesson page shows only once its lesson is passed and its art exists', L.lessonColorPages([], has, COLOR_PAGES).length === 0 && L.lessonColorPages([first], has, COLOR_PAGES).join() === `lesson-${first}` && L.lessonColorPages([earlyIds[1]], has, COLOR_PAGES).length === 0);
   ok('a lesson page is titled by its lesson', L.pictureTitle(`lesson-${first}`) === L.MODULES.find((m) => m.id === first).title);
 }
+
+// Early-years stories flow (2026-09-28, Mikey): every story from pre-K 3 to grade 2 reads the way a picture book reads
+// aloud, connected and varied, never a run of clipped lines. The rules are the flow audit's; this holds them at zero.
+{
+  const L = await import('../src/logic.mjs');
+  const { flowFlags } = await import('../tools/story-flow.mjs');
+  const early = new Set(['PK3', 'PK4', 'K', '1', '2']);
+  const bad = [];
+  for (const m of L.MODULES) { const st = STORIES[m.id]; const c = L.getCourse(m.courseId); if (!st || !c || !early.has(c.grade)) continue;
+    st.words.forEach((p, i) => { const f = flowFlags(p, { moral: i === st.words.length - 1 }); if (f.flags.length) bad.push(`${m.id} paragraph ${i + 1}: ${f.flags.join(', ')}`); }); }
+  ok('early-years stories flow: no paragraph reads robotic (choppy, monotone, then then)', bad.length === 0, bad.slice(0, 6).join(' | '));
+}
+
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exitCode = fail ? 1 : 0;   // never process.exit(): it can drop the last lines of a piped stdout (2026-09-23)

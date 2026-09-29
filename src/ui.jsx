@@ -8663,11 +8663,17 @@ function EduSphereScreens() {
                 <div style={{ padding: '0 16px 16px' }}>
                   <p style={{ margin: '0 0 6px', fontSize: 16, lineHeight: 1.6, textAlign: 'center' }}>{parts.lead}</p>
                   {parts.items.length > 0 && <ul style={{ margin: '0 0 10px', padding: '10px 12px 10px 32px', listStyleType: 'disc', fontSize: 15, lineHeight: 1.7, borderRadius: 10, ...(C.mode === 'dark' ? { background: '#AAD8C5', border: '1px solid #AAD8C5', color: '#16201B' } : { background: C.tipBg, border: `1px solid ${C.tipLine}` }) }}>{parts.items.map((it) => <li key={it} style={{ display: 'list-item' }}>{it}</li>)}</ul>}
-                  {parts.rest && <div style={{ margin: 0, fontSize: 16, lineHeight: 1.6, textAlign: 'center' }}>{parts.rest.split(/(?<=\.)\s+/).filter(Boolean).map((line) => <p key={line} style={{ margin: '2px 0' }}>{line}</p>)}</div>}
-                  {rep.coloringBreaks > 0 && <p style={{ margin: '6px 0 0', fontSize: 15, color: C.muted, textAlign: 'center' }}>Coloring breaks taken: {rep.coloringBreaks}. Coloring is play; it is never marked and never appears on the transcript.</p>}
+                  {/* Air between the summary's thoughts (2026-09-29, Mikey): the ground to make up and the practice so far sit together, the reflection
+                      line stands alone, the coloring line stands alone, and the tried-but-not-passed list gets its own room below. */}
+                  {parts.rest && (() => { const lines = parts.rest.split(/(?<=\.)\s+/).filter(Boolean); const cut = lines.findIndex((l) => /reflection question/i.test(l)); const first = cut < 0 ? lines : lines.slice(0, cut); const second = cut < 0 ? [] : lines.slice(cut); return (
+                    <div style={{ margin: 0, fontSize: 16, lineHeight: 1.6, textAlign: 'center' }}>
+                      {first.length > 0 && <div style={{ marginBottom: second.length ? 14 : 0 }}>{first.map((line) => <p key={line} style={{ margin: '2px 0' }}>{line}</p>)}</div>}
+                      {second.length > 0 && <div style={{ margin: '14px 0' }}>{second.map((line) => <p key={line} style={{ margin: '2px 0' }}>{line}</p>)}</div>}
+                    </div>); })()}
+                  {rep.coloringBreaks > 0 && <p style={{ margin: '14px 0', fontSize: 15, color: C.muted, textAlign: 'center' }}>Coloring breaks taken: {rep.coloringBreaks}. Coloring is play; it is never marked and never appears on the transcript.</p>}
                   {parts.tried && parts.tried.length > 0 && (
                     <div style={{ margin: '8px 0 0' }}>
-                      <p style={{ margin: '0 0 4px', fontSize: 16, lineHeight: 1.6, textAlign: 'center', fontWeight: 600 }}>Tried but not passed yet:</p>
+                      <p style={{ margin: '18px 0 6px', fontSize: 16, lineHeight: 1.6, textAlign: 'center', fontWeight: 600 }}>Tried but not passed yet:</p>
                       <ul style={{ margin: 0, padding: '10px 12px 10px 32px', listStyleType: 'disc', fontSize: 15, lineHeight: 1.7, borderRadius: 10, ...(C.mode === 'dark' ? { background: '#AAD8C5', border: '1px solid #AAD8C5', color: '#16201B' } : { background: C.tipBg, border: `1px solid ${C.tipLine}` }) }}>
                         {parts.tried.map((t) => <li key={t.id}><button type="button" style={{ ...linkBtn, fontSize: 15, fontWeight: 600, color: C.mode === 'dark' ? B.green : C.green }} onClick={() => setStoryModule(t.id)}>{t.title}</button> ({t.subject ? `${t.subject}: ` : ''}{t.detail})</li>)}
                       </ul>
@@ -8701,7 +8707,7 @@ function EduSphereScreens() {
           <p className="edu-card-title" style={{ margin: '0 0 4px', fontWeight: 600 }}>Assigned Now</p>
           <p style={{ margin: '0 0 10px', fontSize: 14, color: C.muted, textAlign: 'center' }}>Assign courses by checking or unchecking the boxes below. Each student starts with the courses we recommend (based on a combination of {shownName}'s initial placement check, quick-check module skips and/or his or her actual progression through the modules) but you are free to edit how you see fit.</p>
           <input value={courseQuery} onChange={(e) => setCourseQuery(e.target.value)} placeholder="Search courses, for example: grade 1 math, kinder, fractions" aria-label="Search courses"
-            style={{ fontFamily: FONT, fontSize: 15, padding: '10px 12px', width: '100%', boxSizing: 'border-box', border: `2px solid ${C.line}`, borderRadius: 10, marginBottom: 10, background: C.surface, textAlign: 'center' }} />
+            style={{ fontFamily: FONT, fontSize: 15, padding: '10px 12px', width: '100%', boxSizing: 'border-box', border: `2px solid ${C.line}`, borderRadius: 10, marginBottom: 10, background: C.surface, color: C.ink, WebkitTextFillColor: C.ink, caretColor: C.ink, textAlign: 'center' }} />
           {!courseQuery.trim() && (
             <p style={{ margin: '0 0 10px', fontSize: 13, textAlign: 'center' }}>
               <button type="button" onClick={() => { const student = findStudent(roster, educatorRecord.name); const starter = recommendedCourseIds([makeCoursesEnabledEvent([], new Date().toISOString())], student ? student.level : null); const keep = COURSES.filter((c) => c.modules.some((m) => rep.modules.find((x) => x.id === m.id && x.attempts > 0))).map((c) => c.id); const unlocked = coursesToUnlock([...educatorRecord.events, makeCoursesEnabledEvent([...new Set([...starter, ...keep])], new Date().toISOString())]); const next = [...new Set([...starter, ...keep, ...unlocked])]; setEnabled(next); setRecommendedIds(next); setSavedCourseIds([]); setShowAllCourses(false); }} style={{ ...linkBtn, fontSize: 13, padding: 0 }}>Back to recommended courses</button>
@@ -8716,7 +8722,7 @@ function EduSphereScreens() {
               {COURSES.filter((c) => matchesCourseSearch(c, courseQuery)).sort(byGradeOrder).map((c) => (
                 <CourseChoiceRow key={c.id} course={c} checked={enabled.includes(c.id)} onToggle={() => setEnabled(enabled.includes(c.id) ? enabled.filter((id) => id !== c.id) : [...enabled, c.id])} onPreview={() => setCoursePreview(c.id)} />
               ))}
-              {COURSES.filter((c) => matchesCourseSearch(c, courseQuery)).length === 0 && <p style={{ margin: '0 0 8px', fontSize: 15, color: C.muted }}>No course matches that. Try a grade, a subject, or a word from a course title.</p>}
+              {COURSES.filter((c) => matchesCourseSearch(c, courseQuery)).length === 0 && <p style={{ margin: '0 0 8px', fontSize: 15, color: C.muted, textAlign: 'center' }}>No course matches that. Try a grade, a subject, or a word from a course title.</p>}
             </div>
           )}
           {!courseQuery.trim() && COURSES.filter((c) => recommended.includes(c.id)).length === 0 && (

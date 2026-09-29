@@ -2,6 +2,11 @@
 
 The newest block is what educators see once, in a pop-up on the classroom page, after each update. Write it the way Mikey talks to a teacher: conversational, complete sentences, say what changed and why it matters, and skip the shorthand (2026-09-23). Two to four items. The date line is the version stamp.
 
+## September 29, 2026 (room to breathe)
+
+- The summary on a student's report now has space between its thoughts: the ground to make up and the practice so far, then the reflection line on its own, then the coloring line, then the tried-but-not-passed list with room above it.
+- In the dark theme, what you type into the courses search box is readable again, and a search with no match says so in the middle of the box.
+
 ## September 29, 2026 (assigned courses by grade)
 
 - On a student's report, the assigned courses now sit under one dropdown per grade, open by default, the same way the other courses do. When you check a course among the other courses, a Save link appears beside Preview; tap it and the course moves up into the assigned list.

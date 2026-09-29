@@ -1257,6 +1257,14 @@ Approved by Mikey on 2026-09-04 unless marked "proposed".
 - The Tried but not passed yet list, which wears the paper green in the dark theme, kept its links in the theme's pale green: near-invisible on the light card. Links on that card now use the paper's own green (the light theme's) in the dark theme.
 - Next: pass GD, art and music appreciation for K to 2, the third strand of the depth program.
 
+## 2026-09-29 (pass GD): air in the report's summary, ink in the search box, a centered miss
+
+- Mikey committed through GC; this commit message starts fresh at GD. Three things from his laptop.
+- The summary under a student's mastered list ran its thoughts together. It now breathes the way he drew it: the ground still to make up and the practice so far sit together, then a gap; the reflection line stands alone with air above and below; the coloring line stands alone; and Tried but not passed yet is its own line with room above it. The lines still come from `summaryParts` in logic; the screen only groups them, cutting at the first sentence about reflection questions. The first week tour never quotes these lines, so it needed no change.
+- The courses search box on the report wore the theme's surface with no ink of its own, so in the dark theme it typed black on dark. It carries the theme's ink now, and the click-through types into it and checks. Every other typing box in the app keeps its white field with dark text in both themes, on purpose (a phone in dark mode must not repaint the fields); the search box was the one that had taken the surface without the ink.
+- No course matches that is centered, and the click-through checks that too.
+- Next: pass GE, art and music appreciation for K to 2, the third strand of the depth program.
+
 ## Open items
 - Verify audio plays inside the chat artifact sandbox (works in a normal browser).
 - Common Core / TEKS codes on existing modules to be checked against the official lists. The technology section numbers were checked and fixed in pass FS (§126.8, §126.10, §126.18); the sub-codes of those three courses are still unchecked.

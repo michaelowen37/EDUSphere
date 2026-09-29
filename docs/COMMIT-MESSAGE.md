@@ -1,5 +1,5 @@
-Assigned courses under grade dropdowns, Save beside Preview, a link fix
+Air in the report summary, ink in the search box, a centered miss
 
-- Pass GC: on the student's report, assigned courses sit under one dropdown per grade, open by default; a course checked among the other courses offers Save, which moves it up into the assigned list; links on the paper-green Tried but not passed yet card are readable in the dark theme.
+- Pass GD: the summary on a student's report groups its lines with space between the thoughts; the courses search box keeps the theme's ink when typed in on the dark theme; No course matches that is centered; browser checks for each.
 
-Passes: GC
+Passes: GD

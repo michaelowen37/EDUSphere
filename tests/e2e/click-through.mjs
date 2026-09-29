@@ -476,6 +476,12 @@ ok('the raw data section is titled plainly', t.includes('Raw data'));
 ok('the word set is not used to describe practice', !t.includes('practice set') && !t.includes('Practice set'));
 // Collapsed sections are rendered but hidden, so that printing includes them.
 // That means these checks must ask what is visible rather than what is in the text.
+// The courses search box keeps the theme's ink when typed in (2026-09-29, Mikey: it typed black on dark), and a miss is centered.
+{ const box = page.getByLabel('Search courses'); await box.fill('zzqx'); await page.waitForTimeout(150);
+  const look = await box.evaluate((el) => { const cs = getComputedStyle(el); return { color: cs.color, bg: cs.backgroundColor }; });
+  ok('typed text in the courses search box keeps the theme ink apart from its background', look.color !== look.bg && look.color !== 'rgb(0, 0, 0)' || look.bg === 'rgb(255, 255, 255)', JSON.stringify(look));
+  ok('a search with no match says so, centered', (await page.getByText('No course matches that', { exact: false }).evaluate((el) => getComputedStyle(el).textAlign)) === 'center');
+  await box.fill(''); await page.waitForTimeout(150); }
 // Assigned courses sit under grade dropdowns that start open (2026-09-29, Mikey), and a course checked among the others
 // offers Save, which moves it up into the assigned list.
 { ok('assigned courses sit under grade dropdowns that start open', (await page.locator('[data-assigned-fold]').count()) >= 1 && (await page.locator('[data-assigned-fold] button[aria-expanded="true"]').count()) >= 1);

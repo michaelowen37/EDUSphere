@@ -3458,11 +3458,115 @@ function BitsGame({ game, round, onScore = null }) {
     </div>
   );
 }
-const GAME_OF = { dots: DotsGame, pairs: PairsGame, sort: SortGame, maze: MazeGame, jigsaw: JigsawGame, pong: PongGame, sprint: SprintGame, order: OrderGame, build: BuildGame, fix: FixGame, mix: MixGame, debug: DebugGame, ptable: PtableGame, evidence: EvidenceGame, catch: CatchGame, path: PathGame, buckets: BucketsGame, jump: JumpGame, map: MapGame, balance: BalanceGame, walk: WalkGame, teach: TeachGame, bits: BitsGame };
+// Pay the Price (2026-09-29, pass FV, a new kind for economics K to 2): a thing to buy with its price in coins, and a
+// table of coins worth 5 and 1. Tap coins into the tray until the total matches the price exactly; a tray coin taps back
+// out; going over wobbles the tray and empties it. Four things a round, and the clock counts up. The lesson's idea is
+// the rule of the game: the price is the coins it takes, no more and no fewer. Drawn with B on the paper board.
+function PayGame({ game, round, onScore = null }) {
+  const items = useMemo(() => payPrices(round), [round]);
+  const coins = useMemo(() => [5, 5, 1, 1, 1, 1, 1], []);
+  const [k, setK] = useState(0); const [tray, setTray] = useState([]); const [over, setOver] = useState(false); const [ticks, setTicks] = useState(0); const [done, setDone] = useState(false);
+  const it = items[k] || items[0];
+  useEffect(() => { setK(0); setTray([]); setOver(false); setTicks(0); setDone(false); }, [round]);
+  const total = tray.reduce((n, i) => n + coins[i], 0);
+  const paid = total === it.price;
+  useEffect(() => { if (done || paid) return undefined; const t = setInterval(() => setTicks((n) => n + 1), 1000); return () => clearInterval(t); }, [done, paid]);
+  useEffect(() => { if (done && onScore) onScore(ticks, 'low'); }, [done]);
+  useEffect(() => { if (!over) return undefined; const t = setTimeout(() => { setTray([]); setOver(false); }, 550); return () => clearTimeout(t); }, [over]);
+  const add = (i) => { if (paid || done || over || tray.includes(i)) return; const next = [...tray, i]; const sum = next.reduce((n, j) => n + coins[j], 0); if (sum > it.price) { setTray(next); setOver(true); } else setTray(next); };
+  const back = (i) => { if (paid || done || over) return; setTray(tray.filter((j) => j !== i)); };
+  const next = () => { setTray([]); if (k + 1 >= items.length) setDone(true); else setK(k + 1); };
+  const coinStyle = (v, dim) => ({ fontFamily: FONT, width: v === 5 ? 60 : 48, height: v === 5 ? 60 : 48, borderRadius: '50%', border: `3px solid ${v === 5 ? '#9C7A1C' : '#7B8388'}`, background: v === 5 ? '#E6B84B' : '#D7DCDF', color: B.ink, fontSize: v === 5 ? 24 : 20, fontWeight: 700, cursor: dim ? 'default' : 'pointer', opacity: dim ? 0.25 : 1, padding: 0, lineHeight: 1 });
+  const said = done ? '' : paid ? `Paid! ${it.item} is yours.` : over ? 'Too many. Try again.' : `${it.item.charAt(0).toUpperCase() + it.item.slice(1)} costs ${it.price} coins. Tap coins to pay.`;
+  return (
+    <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Pay the price</span><span>{ticks}s · {Math.min(k + 1, items.length)} of {items.length}</span></div>
+      {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Four things bought in {ticks} seconds. Tap the round arrow for more.</p> : (
+        <div style={{ textAlign: 'center' }}>
+          {/* The price tag: dots the child can count, one per coin, so the number is never the only way in. */}
+          <div style={{ display: 'inline-flex', flexDirection: 'column', alignItems: 'center', gap: 6, padding: '10px 18px', borderRadius: 14, border: `2px solid ${B.line}`, background: '#fff', marginBottom: 10 }}>
+            <span style={{ fontSize: 15, color: B.ink }}>{said}</span>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, justifyContent: 'center', maxWidth: 220 }} aria-hidden="true">{Array.from({ length: it.price }, (_, i) => <span key={i} style={{ width: 10, height: 10, borderRadius: 5, background: i < total ? B.green : '#DDE3DE', border: `1px solid ${B.line}` }} />)}</div>
+          </div>
+          {/* The tray: what has been paid so far; a tap puts a coin back on the table. */}
+          <div className={over ? 'edu-wobble' : undefined} style={{ minHeight: 70, display: 'flex', gap: 8, justifyContent: 'center', alignItems: 'center', padding: 8, borderRadius: 14, border: `3px dashed ${paid ? B.green : over ? B.clay : B.muted}`, marginBottom: 12 }} aria-label="The tray">
+            {tray.length === 0 ? <span style={{ fontSize: 13, color: B.muted }}>tray</span> : tray.map((i) => <button key={i} type="button" className="edu-press" aria-label={`Tray coin worth ${coins[i]}, tap to put it back`} onClick={() => back(i)} style={coinStyle(coins[i], false)}>{coins[i]}</button>)}
+            <span style={{ fontSize: 16, fontWeight: 700, color: B.ink, marginLeft: 6 }}>= {total}</span>
+          </div>
+          {/* The table: two fives and five ones, the way a small purse looks. */}
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, justifyContent: 'center', marginBottom: 12 }}>
+            {coins.map((v, i) => <button key={i} type="button" className="edu-press" aria-label={tray.includes(i) ? `Coin worth ${v}, in the tray` : `Coin worth ${v}`} disabled={tray.includes(i)} onClick={() => add(i)} style={coinStyle(v, tray.includes(i))}>{v}</button>)}
+          </div>
+          {paid && <Btn pal={B} onClick={next}>{k + 1 >= items.length ? 'Finish' : 'Next thing'}</Btn>}
+        </div>
+      )}
+      <Done show={done} />
+    </div>
+  );
+}
+// Set the Price (2026-09-29, pass FW, a new kind for economics 3 to 5): a lemonade stand with twelve customers, each with a
+// top price in mind that the player cannot see, a fixed cost for the day and a cost per cup. Tap a price to try it: the
+// customers who will pay it step forward, and the profit shows as money in minus money out. Three tries a stand, then the
+// best price is revealed beside the best the player found; four stands a round, and the score is the profit found,
+// higher is better. The lesson's idea is the rule of the game: a price too high loses buyers, a price too low loses
+// money on every cup, and profit is what is left after the costs. Drawn with B on the paper board.
+function PriceGame({ game, round, onScore = null }) {
+  const stands = useMemo(() => priceStands(round), [round]);
+  const [k, setK] = useState(0); const [tries, setTries] = useState([]); const [ticks, setTicks] = useState(0); const [done, setDone] = useState(false); const [found, setFound] = useState(0);
+  const stand = stands[k] || stands[0];
+  useEffect(() => { setK(0); setTries([]); setTicks(0); setDone(false); setFound(0); }, [round]);
+  const MAX = 3; const over = tries.length >= MAX;
+  const best = useMemo(() => { let b = { price: 1, profit: -Infinity }; for (let pr = 1; pr <= 8; pr++) { const r = standProfit(stand, pr); if (r.profit > b.profit) b = { price: pr, profit: r.profit }; } return b; }, [stand]);
+  const mine = tries.length ? Math.max(...tries.map((t) => t.profit)) : null;
+  useEffect(() => { if (done) return undefined; const t = setInterval(() => setTicks((n) => n + 1), 1000); return () => clearInterval(t); }, [done]);
+  useEffect(() => { if (done && onScore) onScore(found, 'high'); }, [done]);
+  const tryPrice = (pr) => { if (over || done) return; const r = standProfit(stand, pr); setTries([...tries, { price: pr, ...r }]); };
+  const next = () => { const gained = Math.max(0, mine || 0); setFound(found + gained); setTries([]); if (k + 1 >= stands.length) setDone(true); else setK(k + 1); };
+  const last = tries[tries.length - 1] || null;
+  const dollars = last && last.price === 1 ? 'dollar' : 'dollars'; const people = last && last.buyers === 1 ? 'person' : 'people';
+  const outcome = !last ? '' : last.profit < 0 ? 'a loss of ' + String(-last.profit) : 'profit ' + String(last.profit);
+  const said = last ? `At ${last.price} ${dollars} a cup, ${last.buyers} ${people} bought: ${last.price * last.buyers} in, ${stand.fixed + stand.each * last.buyers} out, ${outcome}.` : `Costs: ${stand.fixed} dollars for the day and ${stand.each} per cup. Tap a price to try it.`;
+  const buying = last ? stand.tops.map((t) => t >= last.price) : stand.tops.map(() => null);
+  return (
+    <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Profit found: {found}</span><span>{ticks}s · stand {Math.min(k + 1, stands.length)} of {stands.length}</span></div>
+      {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Four stands run, {found} dollars of profit found. Tap the round arrow for new customers.</p> : (
+        <div style={{ textAlign: 'center' }}>
+          {/* The customers: twelve people at the stand; after a try, the ones who bought hold a cup. */}
+          <svg viewBox="0 0 240 70" width="100%" style={{ maxWidth: 360, display: 'block', margin: '0 auto 6px' }} role="img" aria-label="The customers at the stand">
+            {stand.tops.map((t, i) => { const x = 12 + i * 19; const b = buying[i]; return (
+              <g key={i} opacity={b === false ? 0.3 : 1}>
+                <circle cx={x} cy="18" r="7" fill={b ? B.green : '#D7DCDF'} stroke={B.ink} strokeWidth="1" />
+                <rect x={x - 7} y="28" width="14" height="22" rx="4" fill={b ? B.greenSoft : '#EEF1EE'} stroke={B.ink} strokeWidth="1" />
+                {b && <rect x={x + 5} y="32" width="6" height="9" rx="1" fill="#F2C94C" stroke={B.ink} strokeWidth="0.8" />}
+              </g>); })}
+          </svg>
+          <p style={{ margin: '4px 0 8px', fontSize: 15, color: B.ink, minHeight: 22 }}>{said}</p>
+          {over ? (
+            <div style={{ marginBottom: 10 }}>
+              <p style={{ margin: '0 0 8px', fontSize: 15, fontWeight: 700, color: B.ink }}>Best price here: {best.price} {best.price === 1 ? 'dollar' : 'dollars'}, profit {best.profit}. You found {Math.max(0, mine)}.</p>
+              <Btn pal={B} onClick={next}>{k + 1 >= stands.length ? 'Finish' : 'Next stand'}</Btn>
+            </div>
+          ) : (
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, justifyContent: 'center', marginBottom: 10 }}>
+              {[1, 2, 3, 4, 5, 6, 7, 8].map((pr) => { const tried = tries.find((t) => t.price === pr); return (
+                <button key={pr} type="button" className="edu-press" aria-label={`Try price ${pr}`} disabled={!!tried} onClick={() => tryPrice(pr)} style={{ fontFamily: FONT, minWidth: 48, height: 48, borderRadius: 12, border: `2px solid ${tried ? B.line : B.green}`, background: tried ? '#EEF1EE' : '#fff', color: tried ? B.muted : B.ink, fontSize: 18, fontWeight: 700, cursor: tried ? 'default' : 'pointer', padding: '0 6px' }}>{tried ? `${pr}: ${tried.profit}` : `$${pr}`}</button>); })}
+            </div>
+          )}
+          <p style={{ margin: 0, fontSize: 13, color: B.muted }}>{MAX - tries.length} {MAX - tries.length === 1 ? 'try' : 'tries'} left on this stand</p>
+        </div>
+      )}
+      <Done show={done} />
+    </div>
+  );
+}
+const GAME_OF = { dots: DotsGame, pairs: PairsGame, sort: SortGame, maze: MazeGame, jigsaw: JigsawGame, pong: PongGame, sprint: SprintGame, order: OrderGame, build: BuildGame, fix: FixGame, mix: MixGame, debug: DebugGame, ptable: PtableGame, evidence: EvidenceGame, catch: CatchGame, path: PathGame, buckets: BucketsGame, jump: JumpGame, map: MapGame, balance: BalanceGame, walk: WalkGame, teach: TeachGame, bits: BitsGame, pay: PayGame, price: PriceGame };
 // How to play, in a line or two, by kind of game (and by deck for the matching games).
 function gameInstructions(game) {
   if (game.kind === 'bits') return 'A number sits at the top and eight switches below it, worth 128 down to 1. Tap the switches on and off until the lit places add up to the number; the sum shows as you go. Six numbers, and the clock counts up.';
   if (game.kind === 'teach') return 'Twelve fruits, apples and bananas. The robot has seen one of each and guesses the rest from its nearest known fruit: a red ring means it guesses apple, a yellow ring banana. Tap a fruit the robot got wrong to teach it, and watch every guess change. Four boards; fewer lessons is the better score.';
+  if (game.kind === 'price') return 'A lemonade stand with twelve customers, each with a top price in mind you cannot see, a cost for the day and a cost per cup. Tap a price to try it: the people who will pay it step forward with a cup, and the profit shows as money in minus money out. Three tries a stand, then the best price is revealed. Four stands; more profit found is the better score.';
+  if (game.kind === 'pay') return 'A thing to buy shows its price in coins, with a dot for every coin. Tap coins from the table into the tray until the total matches the price exactly; tap a tray coin to put it back. Too many and the tray empties for another try. Four things, and the clock counts up.';
   if (game.kind === 'walk') return 'Tap the arrows to give the robot its steps, one at a time, then tap Go and watch it follow them to the star. A bump into a rock or the edge stops it; tap the last step to take it back and try another. Four robots, and the clock counts up.';
   if (game.kind === 'evidence') return 'Read the short passage and the question above it. Tap the one sentence that answers the question: that sentence is your evidence. The reason shows under the passage, and the clock rests while you read it. Four passages, and the clock counts up.';
   if (game.kind === 'ptable') return 'A question names an element by its name, its number of protons, its place (group and period) or its family. Tap it on the table. Groups run down the columns and periods across the rows, and the small number on each element is its atomic number, the number of protons. Eight questions, and the clock rests while each answer shows.';
@@ -3535,6 +3639,8 @@ function GameThumb({ kind, game = null }) {
   if (dotShape) return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><polyline points={[...dotShape, dotShape[0]].map((pt) => pt.join(',')).join(' ')} fill="none" stroke={C.green} strokeWidth="2" strokeLinejoin="round" />{dotShape.map(([x, y], i) => <circle key={i} cx={x} cy={y} r="2.6" fill={C.paperBoard} stroke={k} strokeWidth="1.4" />)}</svg>;
   if (game && game.kind === 'bits') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true">{[0, 1, 2, 3].map((i) => <g key={i}><rect x={4 + i * 8.6} y="9" width="6.4" height="20" rx="3.2" fill={i === 1 || i === 3 ? C.green : C.paperBoard} stroke={k} strokeWidth="1" /><circle cx={7.2 + i * 8.6} cy={i === 1 || i === 3 ? 13 : 25} r="2.3" fill="#fff" stroke={k} strokeWidth="0.8" /></g>)}<text x="20" y="37" fontSize="6.5" fontWeight="700" textAnchor="middle" fill={k} fontFamily="sans-serif">0101</text></svg>;
   if (game && game.kind === 'teach') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="3" y="3" width="34" height="34" rx="4" fill={C.paperBoard} stroke={k} strokeWidth="1" />{[[11, 12], [17, 21], [10, 27]].map(([x, y], i) => <g key={`a${i}`}><circle cx={x} cy={y} r="4.4" fill="none" stroke="#D9534F" strokeWidth="1" strokeDasharray="1.6 1" /><circle cx={x} cy={y} r="2.3" fill="#D9534F" /></g>)}{[[27, 14], [30, 26], [22, 31]].map(([x, y], i) => <g key={`b${i}`}><circle cx={x} cy={y} r="4.4" fill="none" stroke="#E6B84B" strokeWidth="1" strokeDasharray="1.6 1" /><path d={`M ${x - 2.4} ${y - 1} q 2.4 3.4 4.8 0 q -2.3 1.6 -4.8 0 z`} fill="#F2C94C" /></g>)}</svg>;
+  if (game && game.kind === 'price') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><path d="M8 6h16l8 8v20H8z" fill="#fff" stroke={k} strokeWidth="1.2" strokeLinejoin="round" /><circle cx="13" cy="11" r="1.6" fill={k} />{[[13, 22, 10], [19, 17, 15], [25, 20, 12]].map(([x, y, h], i) => <rect key={i} x={x} y={y} width="4.5" height={h} rx="1" fill={i === 1 ? C.green : '#DDE3DE'} stroke={k} strokeWidth="0.7" />)}</svg>;
+  if (game && game.kind === 'pay') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="5" y="6" width="30" height="14" rx="3" fill="#fff" stroke={k} strokeWidth="1" />{[0, 1, 2, 3].map((i) => <circle key={i} cx={11 + i * 6} cy="13" r="2" fill={i < 2 ? C.green : '#DDE3DE'} stroke={k} strokeWidth="0.6" />)}<circle cx="13" cy="30" r="6" fill="#E6B84B" stroke="#9C7A1C" strokeWidth="1.2" /><circle cx="27" cy="30" r="4.6" fill="#D7DCDF" stroke="#7B8388" strokeWidth="1.2" /></svg>;
   if (game && game.kind === 'walk') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true">{[0, 1, 2].map((r) => [0, 1, 2].map((c) => <rect key={`${r}${c}`} x={4.5 + c * 10.5} y={4.5 + r * 10.5} width="9.5" height="9.5" rx="1.5" fill={C.paperBoard} stroke={k} strokeWidth="1" />))}<rect x="6.5" y="6.5" width="5.5" height="5.5" rx="1.5" fill="#D9534F" stroke={k} strokeWidth="0.7" /><path d="M30.3 24.8l1.3 2.7 3.0 0.4-2.2 2.1 0.5 3.0-2.6-1.4-2.6 1.4 0.5-3.0-2.2-2.1 3.0-0.4z" fill={C.gold} stroke={k} strokeWidth="0.6" /><path d="M13.5 9.3h8.5M19 6.5l3 2.8-3 2.8M20 14v7M17.2 18l2.8 3 2.8-3" fill="none" stroke={k} strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" /></svg>;
   if (game && game.kind === 'balance') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="19" y="14" width="2.4" height="16" fill="#8A9086" /><rect x="12" y="30" width="16" height="3" rx="1.5" fill="#8A9086" /><rect x="6" y="13" width="28" height="2.4" rx="1.2" fill={k} transform="rotate(-6 20 14)" /><path d="M4 22h10l-1.5 5h-7z" fill={C.greenSoft} stroke={k} strokeWidth="1" /><path d="M26 20h10l-1.5 5h-7z" fill="#F7EAD1" stroke={k} strokeWidth="1" /><rect x="28" y="15" width="5" height="4" rx="1" fill={C.gold} stroke={k} strokeWidth="0.8" /></svg>;
   if (game && game.kind === 'jump') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><line x1="4" y1="30" x2="36" y2="30" stroke={k} strokeWidth="1.5" strokeLinecap="round" />{[8, 15, 22, 29].map((x) => <line key={x} x1={x} y1="27.5" x2={x} y2="32.5" stroke={k} strokeWidth="1.2" />)}<ellipse cx="14" cy="18" rx="7" ry="5" fill="#5BA84A" stroke={k} strokeWidth="1.2" /><circle cx="11.5" cy="14.5" r="2" fill={C.paperBoard} stroke={k} strokeWidth="0.8" /><circle cx="16.5" cy="14.5" r="2" fill={C.paperBoard} stroke={k} strokeWidth="0.8" /><circle cx="12" cy="14.7" r="0.8" fill={k} /><circle cx="17" cy="14.7" r="0.8" fill={k} /><path d="M22 20q6-8 12 0" fill="none" stroke={C.gold} strokeWidth="1.6" strokeDasharray="2 1.5" /></svg>;

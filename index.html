@@ -37,7 +37,7 @@ window.__eduArt = [];
 window.__eduColoringArt = [];
 window.__eduMapArt = [];
 window.__eduAudio = [];
-window.__eduNews = {"stamp":"September 29, 2026 (how a program is built)","date":"September 29, 2026","items":["Grade 9 has a new elective for grades 9 to 12, How a program is built: what is inside the machine and what the operating system does, counting in binary, the parts of every program (variables with types, integer division and the remainder, sequence, conditionals and loops, and testing at the edges), and working like a coder: debugging by method, reading a license, long passwords with a second step, and judging a page by its author. Each lesson has a story, and the course ends with a long story about Savanah and a city bus board with a bug at the edge.","Finishing the course unlocks Eight Switches, a new kind of game: eight switches worth 128 down to 1, and a number to make by turning the right ones on.","Two new Wonder questions for older students wait in the review screen."]};
+window.__eduNews = {"stamp":"September 29, 2026 (money that works)","date":"September 29, 2026","items":["Grade 3 has a new elective for grades 3 to 5, Money that works: skills raise what an hour of work pays and scarce things cost more; planned spending and what credit really costs; fixed and variable expenses and the profit that is left; and savings, the four taxes, gross and net pay, and a budget that balances. The dollar questions are worked out fresh every time. Each lesson has a story, and the course ends with a long story about Savanah and her egg money.","Finishing the course unlocks Set the Price, a new kind of game: a lemonade stand with twelve customers, three prices to try, and the best price revealed at the end.","Two new Wonder questions for grades 3 to 5 wait in the review screen."]};
 // Installable app: the worker keeps a copy of the page for offline use and asks the network first, so a fresh build always wins.
 if ('serviceWorker' in navigator && /^https?:/.test(location.protocol)) { navigator.serviceWorker.register('sw.js').catch(function () {}); }
 var process = { env: { NODE_ENV: 'production' } };
@@ -18157,6 +18157,27 @@ const COURSES = [
         modules: TECH9_MODULES(),
     },
     {
+        id: 'econ-k',
+        grade: 'K',
+        subject: 'Economics',
+        title: 'Needs, wants, work and saving',
+        audience: 'Kindergarten to grade 2',
+        readAloud: true, // the K to 2 band: questions are spoken and answers tapped (2026-09-29, pass FV)
+        elective: true,
+        keywords: ['money', 'saving', 'jobs', 'personal finance', 'economics', 'elective'],
+        modules: ECONK_MODULES(),
+    },
+    {
+        id: 'econ-3',
+        grade: '3',
+        subject: 'Economics',
+        title: 'Money that works',
+        audience: 'Grades 3 to 5',
+        elective: true,
+        keywords: ['money', 'profit', 'budget', 'saving', 'credit', 'personal finance', 'economics', 'elective'],
+        modules: ECON3_MODULES(),
+    },
+    {
         id: 'civics-3',
         grade: '3',
         subject: 'History',
@@ -18289,7 +18310,8 @@ const GAMES = [
     { id: 'sort-size', kind: 'sort', title: 'Big and Small', by: 'size' },
     { id: 'catch-circles', kind: 'catch', title: 'Catch the Circles', rule: 'circles', young: true },
     { id: 'maze-small', kind: 'maze', title: 'Maze', cells: 6 },
-    { id: 'walk-tech-k', kind: 'walk', title: 'Walk the Robot', walk: 'walk', young: true, minGrade: 'K' }, // computer science K to 2 (pass FS): the child programs the robot
+    { id: 'walk-tech-k', kind: 'walk', title: 'Walk the Robot', walk: 'walk', young: true, minGrade: 'K' },
+    { id: 'pay-econ-k', kind: 'pay', title: 'Pay the Price', pay: 'coins', young: true, minGrade: 'K' }, // economics K to 2 (pass FV): count out the exact price   // computer science K to 2 (pass FS): the child programs the robot
     { id: 'jigsaw-4', kind: 'jigsaw', title: 'Puzzle', side: 2 },
     { id: 'dots-boat', kind: 'dots', title: 'Boat', shape: 'boat' },
     { id: 'pairs-more', kind: 'pairs', title: 'More Pairs', pairs: 4 },
@@ -18383,6 +18405,7 @@ const GAMES = [
     { id: 'ptable-science-10', kind: 'ptable', title: 'The periodic table: find it', minGrade: '10', deck: 'main' },
     { id: 'debug-tech-3', kind: 'debug', title: 'Debug the robot: arrows', minGrade: '3', deck: 'arrows' },
     { id: 'debug-tech-5', kind: 'debug', title: 'Debug the robot: turns', minGrade: '5', deck: 'turns' },
+    { id: 'price-econ-3', kind: 'price', title: 'Set the Price', minGrade: '3', price: 'stand' }, // economics 3 to 5 (pass FW): find the price that earns the most
     { id: 'teach-tech-6', kind: 'teach', title: 'Teach the Robot', minGrade: '6', teach: 'fruit' },
     { id: 'bits-tech-9', kind: 'bits', title: 'Eight Switches', minGrade: '9', bits: 8 }, // computer science 9 to 12 (pass FU): make the number with the switches   // the plain AI course (pass FT): the child is the pile of examples
     { id: 'mix-art-3', kind: 'mix', title: 'Color mixer: make new colors', minGrade: '3', deck: 'mix3' },
@@ -18845,6 +18868,25 @@ function bitsTargets(round, count = 6) {
     }
     return out;
 }
+// Pay the Price (2026-09-29, pass FV, economics K to 2): four things to buy a round, each with a price in coins, paid by
+// tapping coins worth 5 and 1 into the tray until the total matches exactly. The prices come from the round so a replay
+// is new; every price is payable with the two fives and five ones on the table (up to 15), and the rules test says so.
+function payPrices(round) {
+    let x = (round * 7919 + 3) >>> 0;
+    const rnd = () => { x = (x * 1664525 + 1013904223) >>> 0; return x / 4294967296; };
+    const items = ['a ball', 'a kite', 'a book', 'a puzzle', 'crayons', 'a yo-yo', 'a cap', 'a top'];
+    return Array.from({ length: 4 }, (_, k) => ({ item: items[(Math.floor(rnd() * 8) + k) % 8], price: 3 + Math.floor(rnd() * 11) }));
+}
+// Set the Price (2026-09-29, pass FW, economics 3 to 5): a stand with twelve customers who each have a top price in mind
+// (hidden), a fixed cost for the day and a cost per cup. The player tries prices; a customer buys when the price is at or
+// under their top, and profit is price times buyers minus the costs. Four stands a round from the round number, and the
+// rules test checks that some price on every stand makes a profit.
+function priceStands(round) {
+    let x = (round * 104729 + 17) >>> 0;
+    const rnd = () => { x = (x * 1664525 + 1013904223) >>> 0; return x / 4294967296; };
+    return Array.from({ length: 4 }, () => { const tops = Array.from({ length: 12 }, () => 1 + Math.floor(rnd() * 8)); const fixed = 3 + Math.floor(rnd() * 5); const each = 1; return { tops, fixed, each }; });
+}
+function standProfit(stand, price) { const buyers = stand.tops.filter((t) => t >= price).length; return { buyers, profit: price * buyers - stand.fixed - stand.each * buyers }; }
 const ROBOT_DECKS = {
     arrows: [
         { start: [1, 1], goal: [0, 4], rocks: [[2, 1], [0, 2], [2, 2]], program: 'DDLU' },
@@ -19265,7 +19307,7 @@ function recommendedIncludingElectives(events, level, startGrade = null) {
 }
 // Subjects always read Math, Reading, Writing, Science, History, then anything else alphabetically,
 // whatever order the courses were written in. Every screen that lists subjects sorts with this.
-const SUBJECT_RANK = { Math: 0, Reading: 1, Writing: 2, Science: 3, History: 4, Art: 5, Music: 6, Technology: 7, Health: 8 };
+const SUBJECT_RANK = { Math: 0, Reading: 1, Writing: 2, Science: 3, History: 4, Art: 5, Music: 6, Technology: 7, Health: 8, Economics: 9 }; // Economics joined 2026-09-29 (pass FV)
 function sortSubjects(subjects) {
     return [...new Set(subjects)].sort((a, b) => (SUBJECT_RANK[a] ?? 9) - (SUBJECT_RANK[b] ?? 9) || a.localeCompare(b));
 }
@@ -25791,6 +25833,157 @@ function TECH9_MODULES() {
         },
     ];
 }
+// Economics and personal finance for the K to 2 band (2026-09-29, pass FV): four spoken lessons, each answer said first.
+// Texas codes are the personal financial literacy strands of the mathematics TEKS (§111.2(b)(9), §111.3(b)(9), §111.4(b)(11),
+// read from the published text); the national framework is the Council for Economic Education's Voluntary National
+// Content Standards in Economics.
+function ECONK_MODULES() {
+    return [
+        {
+            id: 'wants-needs-and-choices',
+            order: 1,
+            title: 'Needs, wants and choices',
+            tagline: 'Pick one, and let the other go',
+            requires: [],
+            lesson: {
+                paragraphs: ['A need is something you must have to live: food, water, clothes and a home. A want is something nice to have: a toy, a candy bar, a new game.\nNeeds come first. When the money is spent on needs, wants wait.', 'Nobody can have everything. When you cannot have both, you make a choice, and the thing you did not pick is what you give up. If you choose the ball, you give up the crayons for now.', 'Needs first, then wants. A choice means picking one and letting the other go.'],
+                keyIdea: 'Needs come first; wants wait. A choice means picking one and letting the other go.',
+                example: { kind: 'flow', steps: ['two things you want', 'money for one', 'pick one', 'let the other go'], caption: 'One coin, two wants: the choice gives one up.',
+                    another: ['Ask of anything: would I be hurt without it? Food, water, clothes, a home: yes, so they are needs. A toy: no, so it is a want.',
+                        { text: 'A grocery cart holds needs first. If there is money left at the end, a want can ride on top.', visual: { kind: 'flow', steps: ['bread and milk', 'soap', 'money left?', 'a treat'] } },
+                        'Giving something up is not losing. It is the price of choosing, and everyone pays it, even grown-ups.'] },
+            },
+            sources: ['Aligned with TEKS Mathematics K.9(D) (distinguish between wants and needs and identify income as a source to meet one\'s wants and needs) and the Voluntary National Content Standards in Economics, Standards 1 (Scarcity) and 2 (Decision Making).'],
+            generators: ['ek-wants', 'ek-wants', 'ek-wants', 'ek-wants', 'ek-wants'],
+        },
+        {
+            id: 'earning-income',
+            order: 2,
+            title: 'Earning income',
+            tagline: 'Work earns money',
+            requires: ['wants-needs-and-choices'],
+            lesson: {
+                paragraphs: ['Money you get for doing a job is called income. A baker earns income baking bread, a bus driver earns income driving, and you can earn income too: walking a dog, raking leaves, washing a car.\nMoney a grandmother gives you for your birthday is a gift. It is nice, but it is not income, because you did not work for it.', 'Every job needs skills. Being on time, following the steps, doing the job well, and being kind to people are skills. The more skills you have, the more jobs you can do.', 'Work earns income. A gift is not income. Skills get you the job.'],
+                keyIdea: 'Income is money earned by working. A gift is not income. Every job needs skills.',
+                example: { kind: 'flow', steps: ['a job to do', 'do it well', 'income'], caption: 'Do the job, earn the money.',
+                    another: ['A lemonade stand is a small job: make the lemonade, pour it, take the coins. The coins are income because they came from work.',
+                        { text: 'Ask where the money came from. Work: income. A birthday card: a gift. Both spend the same, but only one you earned.', visual: { kind: 'flow', steps: ['walked the dog: income', 'birthday card: gift'] } },
+                        'Skills grow with practice. Being on time is a skill you can practice tomorrow morning.'] },
+            },
+            sources: ['Aligned with TEKS Mathematics K.9(A) (identify ways to earn income), K.9(B) (differentiate between money received as income and money received as gifts) and K.9(C) (list simple skills required for jobs), and the Voluntary National Content Standards in Economics, Standard 13 (Income).'],
+            generators: ['ek-income', 'ek-income', 'ek-income', 'ek-income', 'ek-income'],
+        },
+        {
+            id: 'spending-and-saving',
+            order: 3,
+            title: 'Spending and saving',
+            tagline: 'Coins in the bank add up',
+            requires: ['earning-income'],
+            lesson: {
+                paragraphs: ['Income buys things: goods, like bread and shoes, and services, like a haircut. Bread is a good; a haircut is a service. Spending is using money now. Saving is keeping money for later.\nA piggy bank or a savings account keeps money safe. Putting money in is a deposit. Taking money out is a withdrawal.', 'Saving adds up. Two coins a week for three weeks is six coins. Save a little every week and a big thing gets closer: two coins, then four, then six, then eight.', 'Some people also give some money to help others. Spend some, save some, and share some.'],
+                keyIdea: 'Spending is now; saving is for later. A deposit puts money in, a withdrawal takes it out, and saving adds up.',
+                example: { kind: 'flow', steps: ['week 1: 2 coins', 'week 2: 4', 'week 3: 6', 'week 4: 8'], caption: 'Two coins a week: the bank grows by two every week.',
+                    another: ['A jar with a picture of the thing you are saving for taped on the front. Every coin makes the picture closer.',
+                        { text: 'A deposit is putting in; a withdrawal is taking out. In, out: the words say which way the money moves.', visual: { kind: 'flow', steps: ['deposit: in', 'withdrawal: out'] } },
+                        'Spend some, save some, share some. Three jars, and every coin goes in one of them.'] },
+            },
+            sources: ['Aligned with TEKS Mathematics 1.9(B) (identify income as a means of obtaining goods and services), 1.9(C) (distinguish between spending and saving), 1.9(D) (consider charitable giving), 2.11(A) (calculate how money saved can accumulate into a larger amount over time), 2.11(B) (explain that saving is an alternative to spending) and 2.11(C) (distinguish between a deposit and a withdrawal), and the Voluntary National Content Standards in Economics, Standard 10 (Institutions).'],
+            generators: ['ek-saving', 'ek-saving', 'ek-saving', 'ek-saving', 'ek-saving'],
+        },
+        {
+            id: 'trading-and-markets',
+            order: 4,
+            title: 'Trading and markets',
+            tagline: 'A price is the coins it takes',
+            requires: ['spending-and-saving'],
+            lesson: {
+                paragraphs: ['A trade is a swap. You can trade a thing for a thing, like a sticker for a marble, or a thing for money. Most trades use money, because money is easy to carry and everyone takes it.\nA market is any place where buyers and sellers meet: a store, a farm stand, a lemonade stand.', 'The price is how many coins a thing costs. If a ball costs 4 coins and you have 6, you can buy it, and 2 coins are left. If it costs 8, you cannot buy it yet: you save more, or you choose something else.', 'A trade is a swap. A market is where buyers meet sellers. The price is the coins it takes.'],
+                keyIdea: 'A trade is a swap, a market is where buyers meet sellers, and the price is how many coins a thing costs.',
+                example: { kind: 'flow', steps: ['ball: 4 coins', 'you have 6', 'pay 4', '2 left'], caption: 'Count out the price; what is left stays yours.',
+                    another: ['Before money, people swapped: eggs for bread, wool for a pot. It only worked when each wanted what the other had. Money made every swap easy.',
+                        { text: 'A store is a market with a roof. A farm stand is a market with a table. A lemonade stand is a market with a pitcher.', visual: { kind: 'flow', steps: ['store', 'farm stand', 'lemonade stand'] } },
+                        'Not enough coins is not the end. It means save more, or choose something else.'] },
+            },
+            sources: ['Aligned with TEKS Mathematics 1.9(B) (identify income as a means of obtaining goods and services) and the Voluntary National Content Standards in Economics, Standards 5 (Trade) and 7 (Markets and Prices).'],
+            generators: ['ek-trade', 'ek-trade', 'ek-trade', 'ek-trade', 'ek-trade'],
+        },
+    ];
+}
+// Economics and personal finance for the 3 to 5 band (2026-09-29, pass FW), at grade 3. Texas codes are the personal
+// financial literacy strands of the mathematics TEKS for grades 3, 4 and 5 (§111.5(b)(9), §111.6(b)(10), §111.7(b)(10)),
+// read from the published text; the national framework is the CEE Voluntary National Content Standards in Economics.
+function ECON3_MODULES() {
+    return [
+        {
+            id: 'skills-and-income',
+            order: 1,
+            title: 'Skills and income',
+            tagline: 'What you can do sets what you can earn',
+            requires: [],
+            lesson: {
+                paragraphs: ['Income is what work pays, and what work pays depends on what you can do. A skill you learn, a tool you can use, a job you have practiced: economists call all of that human capital. More human capital, more income. A person who mows lawns earns for the mowing; a person who can also sharpen the blades earns for both.', 'Income is usually pay for time: 9 dollars an hour for 4 hours is 36 dollars. Learning a skill raises the number in front of the hour.', 'Cost depends on how scarce a thing is. When a frost ruins most of the strawberries, the few that are left cost more, because many people want them and few exist. When something is easy to get, it costs less. Scarce means costly; plentiful means cheap.'],
+                keyIdea: 'Skills are human capital, and more of it means more income. Scarce things cost more; plentiful things cost less.',
+                example: { kind: 'flow', steps: ['9 dollars an hour', '4 hours', '36 dollars'], caption: 'Pay for time: the rate times the hours.',
+                    another: ['Two lifeguards work the same pool. One also holds a first aid card and earns two dollars more an hour. The card is human capital, and it pays every hour, all summer.',
+                        { text: 'After a storm, everyone needs chainsaw blades at once and the hardware store has twelve. The price goes up until the shelf is refilled. The blades did not change; how scarce they were did.', visual: { kind: 'flow', steps: ['storm', 'twelve blades left', 'many buyers', 'price up'] } },
+                        'Ask two questions of any price: how many people want it, and how much of it there is.'] },
+            },
+            sources: ['Aligned with TEKS Mathematics 3.9(A) (explain the connection between human capital/labor and income) and 3.9(B) (describe the relationship between the availability or scarcity of resources and how that impacts cost), and the Voluntary National Content Standards in Economics, Standards 13 (Income) and 1 (Scarcity).'],
+            generators: ['e3-skills', 'e3-skills', 'e3-skills', 'e3-skills', 'e3-skills'],
+        },
+        {
+            id: 'planned-spending-and-credit',
+            order: 2,
+            title: 'Planned spending and credit',
+            tagline: 'A plan, an impulse, and a loan',
+            requires: ['skills-and-income'],
+            lesson: {
+                paragraphs: ['Planned spending is deciding before you go: what you will buy, and how much it may cost. Unplanned spending is deciding in the aisle. Planned spending usually gets you the thing you wanted at a price you were ready for; unplanned spending often costs more than it gives, because the money for something planned is gone.', 'Credit is buying now and paying later. When a want or a need is bigger than the money you have, a lender, such as a bank, can lend you the money, and it is the borrower\'s job to pay it back, usually with interest. Interest is the extra you pay for borrowing: borrow 20 dollars at 2 dollars interest and you pay back 22.', 'Credit is a tool, not free money. Used for something planned that you can pay back, it works. Used for an impulse, it turns a want into a debt.'],
+                keyIdea: 'Planned spending decides before the store; unplanned spending decides in the aisle. Credit means the borrower pays back, usually with interest.',
+                example: { kind: 'flow', steps: ['borrow 20', 'interest 2', 'pay back 22'], caption: 'The lender gets the loan back and the interest on top.',
+                    another: ['A shopping list is planned spending written down. Everything in the cart that is not on the list is unplanned, and the receipt shows what it cost.',
+                        { text: 'A library book is a loan of a book: you must give it back, and a late fee is the interest. Borrowed money works the same way, with dollars instead of pages.', visual: { kind: 'flow', steps: ['borrow', 'use', 'give back', 'plus the fee'] } },
+                        'Before using credit, ask three things: is it planned, can I pay it back, and what will the interest add?'] },
+            },
+            sources: ['Aligned with TEKS Mathematics 3.9(C) (identify the costs and benefits of planned and unplanned spending decisions), 3.9(D) (explain that credit is used when wants or needs exceed the ability to pay and that it is the borrower\'s responsibility to pay it back, usually with interest) and 3.9(F) (identify decisions involving income, spending, saving, credit, and charitable giving), and the Voluntary National Content Standards in Economics, Standards 2 (Decision Making) and 12 (Interest Rates).'],
+            generators: ['e3-credit', 'e3-credit', 'e3-credit', 'e3-credit', 'e3-credit'],
+        },
+        {
+            id: 'expenses-and-profit',
+            order: 3,
+            title: 'Expenses and profit',
+            tagline: 'What comes in, minus what goes out',
+            requires: ['planned-spending-and-credit'],
+            lesson: {
+                paragraphs: ['A business has expenses, and they come in two kinds. Fixed expenses stay the same no matter how much you sell: the rent for the table at the fair is 5 dollars whether you sell one cookie or fifty. Variable expenses grow with what you sell: every dozen cookies needs more flour and sugar.', 'Profit is the money that comes in minus all the expenses. Sell 8 cups of lemonade at 2 dollars, that is 16 dollars in; spend 6 dollars on lemons and cups, and the profit is 10 dollars. If the expenses are bigger than what comes in, that is a loss.', 'An allowance can be run like a small business too. Decide the shares before the money arrives: some to spend, some to save, and some to share. Ten dollars might be 5 to spend, 3 to save and 2 to share, and the deciding is the part that matters.'],
+                keyIdea: 'Fixed expenses stay the same; variable expenses grow with sales. Profit is money in minus expenses. Divide an allowance before it arrives: spend, save, share.',
+                example: { kind: 'flow', steps: ['16 dollars in', '6 dollars out', 'profit 10'], caption: 'Money in, minus money out, is profit.',
+                    another: ['A lemonade stand\'s pitcher is a fixed expense: one pitcher, however many cups. The lemons are variable: more cups, more lemons.',
+                        { text: 'A loss is profit below zero. Sell 3 cups at 2 dollars, that is 6 in, with 8 dollars of expenses: a loss of 2. The fix is more sales, lower expenses, or a better price.', visual: { kind: 'flow', steps: ['6 in', '8 out', 'loss of 2'] } },
+                        'Three jars for an allowance, labeled before the first coin: spend, save, share. The label is the decision.'] },
+            },
+            sources: ['Aligned with TEKS Mathematics 4.10(A) (distinguish between fixed and variable expenses), 4.10(B) (calculate profit in a given situation) and 4.10(D) (describe how to allocate a weekly allowance among spending, saving, including for college, and sharing), and the Voluntary National Content Standards in Economics, Standard 14 (Entrepreneurship).'],
+            generators: ['e3-profit', 'e3-profit', 'e3-profit', 'e3-profit', 'e3-profit'],
+        },
+        {
+            id: 'savings-taxes-and-budgets',
+            order: 4,
+            title: 'Savings, taxes and budgets',
+            tagline: 'Where money waits, what the government takes, and how the month balances',
+            requires: ['expenses-and-profit'],
+            lesson: {
+                paragraphs: ['People save for a reason: a bike, an emergency, college. A savings plan says how much goes aside each week and what it is for. A piggy bank keeps money at home, where it is easy to reach and earns nothing. A savings account at a bank keeps it safe and pays a little interest for leaving it there. Banks do three things: keep money safe, lend money, and borrow it from savers by paying interest.', 'A paycheck has a hole in it, and the hole is tax. Gross income is what you earned; net income is what you take home after taxes. Income tax and payroll tax come out of pay, sales tax is added when you buy, and property tax is paid on a house or land. Taxes pay for roads, schools, parks and firefighters.', 'A budget is a plan for a month: income on one side, expenses on the other. It balances when the expenses are no bigger than the income. When expenses are bigger, something has to give: spend less, earn more, or move a want to next month.'],
+                keyIdea: 'Save on a plan, in a bank if you can. Gross income minus taxes is net income. A budget balances when expenses are no bigger than income.',
+                example: { kind: 'flow', steps: ['gross 50', 'tax 5', 'net 45'], caption: 'What you earned, minus tax, is what you take home.',
+                    another: ['Money in a piggy bank is safe from spending only as long as you are. A savings account adds a lock and a little interest.',
+                        { text: 'A month with 40 dollars in and 45 out does not balance. Cut 5 dollars of wants, earn 5 more, or move something to next month: any one of the three closes the gap.', visual: { kind: 'flow', steps: ['40 in', '45 out', 'gap of 5', 'cut, earn or wait'] } },
+                        'Sales tax hides in the price at the register: a 10 dollar toy costs a little more than 10. Ask what the tax adds before you count out the money.'] },
+            },
+            sources: ['Aligned with TEKS Mathematics 3.9(E) (list reasons to save and explain the benefit of a savings plan, including for college), 4.10(C) (compare the advantages and disadvantages of various savings options), 4.10(E) (describe the basic purpose of financial institutions, including keeping money safe, borrowing money, and lending), 5.10(A) (define income tax, payroll tax, sales tax, and property tax), 5.10(B) (explain the difference between gross income and net income), 5.10(E) (describe actions that might be taken to balance a budget when expenses exceed income) and 5.10(F) (balance a simple budget), and the Voluntary National Content Standards in Economics, Standards 10 (Institutions) and 16 (Role of Government and Market Failure).'],
+            generators: ['e3-budget', 'e3-budget', 'e3-budget', 'e3-budget', 'e3-budget'],
+        },
+    ];
+}
 function TECH3_MODULES() {
     return [
         {
@@ -30330,6 +30523,146 @@ Object.assign(GENERATORS, {
             ['What protects an account even if the password leaks?', ['a second step', 'a longer name', 'a faster computer', 'a new browser'], 'a second step', 'A code on your phone is a second step an attacker with the password does not have.'],
             ['A polished page that says what you hoped is what?', ['not more reliable for it', 'always true', 'a primary source', 'open source'], 'not more reliable for it', 'Check who wrote it, when, and what they gain.'],
             ['What do you need before you copy someone\'s code?', ['permission', 'a faster computer', 'a longer password', 'nothing'], 'permission', 'Copyright means you need permission to copy, and citing the source shows where it came from.']];
+        const [prompt, choices, answer, explain] = pick(rng, Q);
+        return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+    },
+    // Economics and personal finance, K to 2 (2026-09-29, pass FV): spoken questions, tapped answers, coins counted where there is counting.
+    'ek-wants': (rng) => {
+        const Q = [['Which one is a need?', ['water', 'a toy', 'candy'], 'water', 'Food, water, clothes and a home are needs. You must have them to live.'],
+            ['Which one is a want?', ['a new game', 'food', 'a home'], 'a new game', 'A want is nice to have, not needed to live.'],
+            ['Which comes first, needs or wants?', ['needs', 'wants', 'neither'], 'needs', 'Needs first, then wants, if there is money left.'],
+            ['You pick the ball instead of the crayons. What is that?', ['a choice', 'a gift', 'income'], 'a choice', 'Picking one and letting the other go is a choice.'],
+            ['When you choose one thing, what happens to the other?', ['you give it up', 'you get it too', 'it costs less'], 'you give it up', 'The thing you did not pick is what you give up, for now.'],
+            ['Which one is a need?', ['clothes', 'a candy bar', 'a sticker'], 'clothes', 'Clothes keep you warm and safe. They are a need.']];
+        const [prompt, choices, answer, explain] = pick(rng, Q);
+        return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+    },
+    'ek-income': (rng) => {
+        const Q = [['Money you get for doing a job is called what?', ['income', 'a gift', 'a price'], 'income', 'Income is money earned by working.'],
+            ['Grandma gives you money for your birthday. What is that?', ['a gift', 'income', 'a deposit'], 'a gift', 'You did not work for it, so it is a gift, not income.'],
+            ['Which one earns income?', ['walking a dog', 'a birthday card', 'a nap'], 'walking a dog', 'Walking a dog is a job, so the money is income.'],
+            ['Which one is a skill for a job?', ['being on time', 'being tall', 'being sleepy'], 'being on time', 'Being on time, following the steps and being kind are skills.'],
+            ['A baker earns income by doing what?', ['baking bread', 'eating bread', 'buying bread'], 'baking bread', 'Baking is the work; the money for it is income.'],
+            ['More skills let you do what?', ['more jobs', 'fewer jobs', 'no jobs'], 'more jobs', 'The more skills you have, the more jobs you can do.']];
+        const [prompt, choices, answer, explain] = pick(rng, Q);
+        return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+    },
+    'ek-saving': (rng) => {
+        const r = rng();
+        if (r < 0.3) {
+            const per = randInt(rng, 1, 3);
+            const weeks = randInt(rng, 2, 4);
+            const ans = per * weeks;
+            return { type: 'choice', story: null, prompt: `You save ${per} ${per === 1 ? 'coin' : 'coins'} each week for ${weeks} weeks. How many coins?`, choices: shuffle(rng, [ans, ans + per, per + weeks, ans - 1].filter((v, i, a) => a.indexOf(v) === i && v > 0).slice(0, 3).map(String)), answer: String(ans), explain: `${Array.from({ length: weeks }, () => per).join(' + ')} = **${ans}**. Saving adds up.`, visual: null, explainVisual: null };
+        }
+        if (r < 0.55) {
+            const put = randInt(rng, 4, 9);
+            const take = randInt(rng, 1, 3);
+            const ans = put - take;
+            return { type: 'choice', story: null, prompt: `You deposit ${put} coins and withdraw ${take}. How many are in the bank?`, choices: shuffle(rng, [ans, put + take, put, take].filter((v, i, a) => a.indexOf(v) === i).slice(0, 3).map(String)), answer: String(ans), explain: `A deposit puts in, a withdrawal takes out: ${put} take away ${take} is **${ans}**.`, visual: null, explainVisual: null };
+        }
+        const Q = [['Using money now is called what?', ['spending', 'saving', 'a deposit'], 'spending', 'Spending is using money now. Saving is keeping it for later.'],
+            ['Keeping money for later is called what?', ['saving', 'spending', 'a gift'], 'saving', 'Saving keeps money for something later.'],
+            ['Putting money into the bank is called what?', ['a deposit', 'a withdrawal', 'a price'], 'a deposit', 'In: a deposit. Out: a withdrawal.'],
+            ['Taking money out of the bank is called what?', ['a withdrawal', 'a deposit', 'a trade'], 'a withdrawal', 'Out: a withdrawal. In: a deposit.'],
+            ['A haircut is which kind of thing you buy?', ['a service', 'a good', 'a gift'], 'a service', 'Goods are things like bread and shoes; a haircut is a service.']];
+        const [prompt, choices, answer, explain] = pick(rng, Q);
+        return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+    },
+    'ek-trade': (rng) => {
+        const r = rng();
+        if (r < 0.4) {
+            const price = randInt(rng, 2, 6);
+            const have = price + randInt(rng, 1, 4);
+            const ans = have - price;
+            return { type: 'choice', story: `A toy costs ${price} coins and you have ${have}.`, prompt: 'How many coins are left after you buy it?', choices: shuffle(rng, [ans, have + price, price, ans + 1].filter((v, i, a) => a.indexOf(v) === i).slice(0, 3).map(String)), answer: String(ans), explain: `Count out the price: ${have} take away ${price} leaves **${ans}**.`, visual: null, explainVisual: null };
+        }
+        const Q = [['A sticker for a marble is what?', ['a trade', 'income', 'a need'], 'a trade', 'A trade is a swap: a thing for a thing, or a thing for money.'],
+            ['A place where buyers and sellers meet is called what?', ['a market', 'a bank', 'a gift'], 'a market', 'A store, a farm stand and a lemonade stand are all markets.'],
+            ['How many coins a thing costs is called what?', ['the price', 'the income', 'the deposit'], 'the price', 'The price is the coins it takes.'],
+            ['Why do most trades use money?', ['everyone takes it', 'it is heavy', 'it is a want'], 'everyone takes it', 'Money is easy to carry and everyone takes it.'],
+            ['A ball costs 8 coins and you have 6. What can you do?', ['save more', 'take it anyway', 'pay 6'], 'save more', 'Not enough coins means save more, or choose something else.']];
+        const [prompt, choices, answer, explain] = pick(rng, Q);
+        return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+    },
+    // Economics and personal finance, grades 3 to 5 (2026-09-29, pass FW): the money is computed each time; the concepts are said in the lesson first.
+    'e3-skills': (rng) => {
+        if (rng() < 0.5) {
+            const rate = randInt(rng, 6, 12);
+            const hours = randInt(rng, 2, 6);
+            const ans = rate * hours;
+            return { type: 'choice', story: `A job pays ${rate} dollars an hour.`, prompt: `How much income does ${hours} hours earn?`, choices: shuffle(rng, [ans, ans + rate, rate + hours, ans - hours].filter((v, i, a) => a.indexOf(v) === i).map(String)), answer: String(ans), explain: `The rate times the hours: ${rate} times ${hours} is **${ans}** dollars.`, visual: null, explainVisual: null };
+        }
+        const Q = [['Skills, tools you can use and jobs you have practiced are called what?', ['human capital', 'a budget', 'interest', 'a loss'], 'human capital', 'Economists call what you can do human capital. More of it, more income.'],
+            ['More human capital usually means what?', ['more income', 'more tax', 'less work', 'a loss'], 'more income', 'A person who can also sharpen the blades earns for both.'],
+            ['A frost ruins most of the strawberries. The ones left cost what?', ['more', 'less', 'the same', 'nothing'], 'more', 'Scarce means costly: many want them and few exist.'],
+            ['When a thing is easy to get, it usually costs what?', ['less', 'more', 'double', 'nothing'], 'less', 'Plentiful means cheap.'],
+            ['What does learning a skill raise?', ['the number in front of the hour', 'the number of hours in a day', 'the tax', 'the price of strawberries'], 'the number in front of the hour', 'Pay is usually a rate times the hours; a skill raises the rate.'],
+            ['What are the two questions to ask of any price?', ['how many want it, and how much there is', 'who made it, and when', 'is it red, and is it big', 'how heavy, and how far'], 'how many want it, and how much there is', 'Want and scarcity set the price together.']];
+        const [prompt, choices, answer, explain] = pick(rng, Q);
+        return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+    },
+    'e3-credit': (rng) => {
+        if (rng() < 0.45) {
+            const loan = pick(rng, [10, 20, 30, 40, 50]);
+            const interest = randInt(rng, 1, 5);
+            const ans = loan + interest;
+            return { type: 'choice', story: `You borrow ${loan} dollars and the interest is ${interest} dollars.`, prompt: 'How much do you pay back?', choices: shuffle(rng, [ans, loan, loan - interest, ans + interest].filter((v, i, a) => a.indexOf(v) === i).map(String)), answer: String(ans), explain: `The loan plus the interest: ${loan} + ${interest} = **${ans}** dollars.`, visual: null, explainVisual: null };
+        }
+        const Q = [['Deciding what to buy before you go to the store is called what?', ['planned spending', 'unplanned spending', 'credit', 'interest'], 'planned spending', 'Planned spending decides before the store; unplanned decides in the aisle.'],
+            ['Buying now and paying later is called what?', ['credit', 'a budget', 'income', 'a tax'], 'credit', 'Credit is used when a want or need is bigger than the money you have.'],
+            ['Whose job is it to pay a loan back?', ['the borrower\'s', 'the lender\'s', 'the store\'s', 'nobody\'s'], 'the borrower\'s', 'It is the borrower\'s job to pay it back, usually with interest.'],
+            ['The extra you pay for borrowing is called what?', ['interest', 'profit', 'a deposit', 'net income'], 'interest', 'Borrow 20 dollars at 2 dollars interest and you pay back 22.'],
+            ['Credit used for an impulse turns a want into what?', ['a debt', 'a profit', 'a gift', 'income'], 'a debt', 'Used for something planned that you can pay back, credit works. Used for an impulse, it turns a want into a debt.'],
+            ['Which usually costs more than it gives?', ['unplanned spending', 'planned spending', 'saving', 'sharing'], 'unplanned spending', 'The money for something planned is gone.']];
+        const [prompt, choices, answer, explain] = pick(rng, Q);
+        return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+    },
+    'e3-profit': (rng) => {
+        const r = rng();
+        if (r < 0.35) {
+            const cups = randInt(rng, 4, 12);
+            const price = randInt(rng, 1, 3);
+            const cost = randInt(rng, 3, 9);
+            const inn = cups * price;
+            const ans = inn - cost;
+            return { type: 'choice', story: `You sell ${cups} cups at ${price} ${price === 1 ? 'dollar' : 'dollars'} each and your expenses are ${cost} dollars.`, prompt: 'What is the profit?', choices: shuffle(rng, [ans, inn, inn + cost, ans + price].filter((v, i, a) => a.indexOf(v) === i).map(String)), answer: String(ans), explain: `Money in: ${cups} times ${price} is ${inn}. Minus ${cost} of expenses: **${ans}**${ans < 0 ? ', a loss' : ''}.`, visual: null, explainVisual: null };
+        }
+        if (r < 0.6) {
+            const total = pick(rng, [10, 12, 15, 20]);
+            const save = randInt(rng, 2, 5);
+            const share = randInt(rng, 1, 3);
+            const ans = total - save - share;
+            return { type: 'choice', story: `An allowance of ${total} dollars: ${save} to save and ${share} to share.`, prompt: 'How much is left to spend?', choices: shuffle(rng, [ans, total - save, ans + share, save + share].filter((v, i, a) => a.indexOf(v) === i).map(String)), answer: String(ans), explain: `${total} minus ${save} minus ${share} leaves **${ans}** to spend.`, visual: null, explainVisual: null };
+        }
+        const Q = [['The table rent is 5 dollars however many cookies you sell. Which kind of expense is that?', ['fixed', 'variable', 'profit', 'a loss'], 'fixed', 'Fixed expenses stay the same no matter how much you sell.'],
+            ['Flour for every dozen cookies is which kind of expense?', ['variable', 'fixed', 'a tax', 'income'], 'variable', 'Variable expenses grow with what you sell.'],
+            ['Money in minus all the expenses is called what?', ['profit', 'a budget', 'credit', 'gross income'], 'profit', 'Sell 8 cups at 2 dollars, spend 6, and the profit is 10.'],
+            ['Expenses bigger than the money in is called what?', ['a loss', 'a profit', 'a deposit', 'interest'], 'a loss', 'A loss is profit below zero.'],
+            ['When should an allowance be divided into spend, save and share?', ['before the money arrives', 'after it is spent', 'never', 'at the store'], 'before the money arrives', 'The deciding is the part that matters.']];
+        const [prompt, choices, answer, explain] = pick(rng, Q);
+        return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+    },
+    'e3-budget': (rng) => {
+        const r = rng();
+        if (r < 0.35) {
+            const gross = pick(rng, [40, 50, 60, 80, 100]);
+            const tax = randInt(rng, 3, 12);
+            const ans = gross - tax;
+            return { type: 'choice', story: `Gross income is ${gross} dollars and the tax taken out is ${tax} dollars.`, prompt: 'What is the net income?', choices: shuffle(rng, [ans, gross, gross + tax, ans - tax].filter((v, i, a) => a.indexOf(v) === i).map(String)), answer: String(ans), explain: `Gross minus tax: ${gross} minus ${tax} is **${ans}**, the take-home pay.`, visual: null, explainVisual: null };
+        }
+        if (r < 0.6) {
+            const income = pick(rng, [30, 40, 50, 60]);
+            const expenses = income + randInt(rng, 2, 9);
+            const ans = expenses - income;
+            return { type: 'choice', story: `A month has ${income} dollars of income and ${expenses} dollars of expenses.`, prompt: 'By how much do expenses exceed income?', choices: shuffle(rng, [ans, income, expenses, ans + 1].filter((v, i, a) => a.indexOf(v) === i).map(String)), answer: String(ans), explain: `${expenses} minus ${income} is **${ans}**: cut that much, earn it, or move a want to next month.`, visual: null, explainVisual: null };
+        }
+        const Q = [['What you earned before taxes is called what?', ['gross income', 'net income', 'a budget', 'profit'], 'gross income', 'Gross is what you earned; net is what you take home.'],
+            ['Which tax is added when you buy something?', ['sales tax', 'income tax', 'property tax', 'payroll tax'], 'sales tax', 'Sales tax is added at the register; income and payroll tax come out of pay.'],
+            ['Which is paid on a house or land?', ['property tax', 'sales tax', 'payroll tax', 'interest'], 'property tax', 'Property tax is paid on a house or land.'],
+            ['Which keeps money safe and pays a little interest?', ['a savings account', 'a piggy bank', 'a wallet', 'a shopping list'], 'a savings account', 'A piggy bank earns nothing; a savings account at a bank pays a little interest.'],
+            ['A budget balances when what is true?', ['expenses are no bigger than income', 'income is zero', 'taxes are zero', 'expenses are bigger than income'], 'expenses are no bigger than income', 'Income on one side, expenses on the other, and the expenses must fit.'],
+            ['What do taxes pay for?', ['roads, schools, parks and firefighters', 'toys', 'interest', 'allowances'], 'roads, schools, parks and firefighters', 'Taxes pay for what everyone shares.']];
         const [prompt, choices, answer, explain] = pick(rng, Q);
         return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
     },
@@ -38483,6 +38816,70 @@ const WONDER = [
         closing: 'What would you want to say that no machine would say for you?',
     },
     {
+        id: 'w-growing-spent-the-plan',
+        theme: 'failure',
+        stage: 'growing',
+        courseIds: ['econ-3'],
+        answerMode: 'typed',
+        prompt: 'You saved for a bike, then spent the money on something at the store you had not planned. Was that a mistake, or just a different choice?',
+        perspectives: [
+            { voice: 'A scientist', says: 'It was a choice made with less information than the plan had. In the aisle you knew only that the thing looked good; at home you knew what the bike was worth to you. Decisions made with less information are more often wrong.' },
+            { voice: 'An artist', says: 'Every choice is a small painting of who you are that day. Nobody paints only masterpieces, not even the masters. Look at this one honestly, learn what it shows, and paint the next one on purpose.' },
+            { voice: 'A grandparent of faith', says: 'A plan you break once is still a plan. Be kind to yourself, put the next coin in the jar, and tell someone what you are saving for so they can help you remember.' },
+            { voice: 'A skeptic', says: 'Count what you got and what you gave up. If the thing in the store is still making you happy in a month, it was a choice. If it is in a drawer, it was a mistake, and now you know the difference.' },
+        ],
+        closing: 'What would help you keep the plan next time?',
+    },
+    {
+        id: 'w-growing-fair-price',
+        theme: 'world',
+        stage: 'growing',
+        courseIds: ['econ-3'],
+        answerMode: 'typed',
+        prompt: 'After a storm, a store raises the price of the last flashlights. Is that unfair, or is that just what prices do?',
+        perspectives: [
+            { voice: 'A scientist', says: 'A higher price does two things at once: it stops one person from buying all the flashlights, and it tells suppliers to send more. That is what prices are for. Whether it feels fair is a separate question, and a real one.' },
+            { voice: 'An artist', says: 'Fairness is about the people in the room, not the number on the tag. A store that raised the price and also set two flashlights aside for the old couple next door did both things at once.' },
+            { voice: 'A grandparent of faith', says: 'Many traditions warn against profiting from a neighbor in trouble. The rule of the market and the rule of kindness can point different ways, and a person chooses which to follow.' },
+            { voice: 'A skeptic', says: 'Before you call it unfair, ask what happens at the old price. Empty shelves by noon, and the flashlights go to whoever got there first, which is its own kind of unfair. There is no price that makes a shortage disappear.' },
+        ],
+        closing: 'What would you have done if the store were yours?',
+    },
+    {
+        id: 'w-early-two-wants',
+        theme: 'ups-and-downs',
+        stage: 'early',
+        courseIds: ['econ-k'],
+        answerMode: 'pick',
+        prompt: 'You have coins for one thing and you want two things. What do you do?',
+        options: ['Pick the one I want most', 'Save for the other one', 'Ask which one lasts longer'],
+        simple: [{ voice: 'A scientist says', says: 'Choosing one means the other waits, not disappears.' }, { voice: 'An artist says', says: 'The one you still think about tomorrow is the one.' }],
+        perspectives: [
+            { voice: 'A scientist', says: 'You cannot have both today, and that is not sad, it is just true. Pick one, and the other one waits for the next coins. Waiting is how the second one arrives.' },
+            { voice: 'An artist', says: 'Sleep on it before you choose. The one you still think about in the morning is the one you really want, and the other was only shiny in the store.' },
+            { voice: 'A grandparent of faith', says: 'Every grown-up makes this choice every week. The trick is to be glad about the one you picked instead of sad about the one you did not.' },
+            { voice: 'A skeptic', says: 'Ask which one lasts longer. A thing that breaks by Friday costs more than a thing that lasts a year, even if the coins are the same.' },
+        ],
+        closing: 'Which one would you pick, and why?',
+    },
+    {
+        id: 'w-early-jar-broke',
+        theme: 'failure',
+        stage: 'early',
+        courseIds: ['econ-k'],
+        answerMode: 'pick',
+        prompt: 'You saved for weeks, then spent it all in one day and felt bad. What now?',
+        options: ['Start the jar again', 'Decide the rule before the store', 'Talk to a grown-up about it'],
+        simple: [{ voice: 'A scientist says', says: 'The jar can start again tomorrow.' }, { voice: 'A skeptic says', says: 'Make the rule before you walk into the store.' }],
+        perspectives: [
+            { voice: 'A scientist', says: 'Spending it is not the mistake. Spending it without deciding first is. The jar starts again tomorrow, and this time you know what happens at the store.' },
+            { voice: 'An artist', says: 'You learned what the feeling after is like. That feeling is worth more than the coins, because it will stop you next time, right at the shelf.' },
+            { voice: 'A grandparent of faith', says: 'Everyone has done this, and everyone has felt that. Be kind to yourself, and put the first coin back in the jar tonight.' },
+            { voice: 'A skeptic', says: 'Make the rule before the store, not in it. Decide how many coins may leave the jar this week, and say it out loud to someone.' },
+        ],
+        closing: 'What rule would you make for next time?',
+    },
+    {
         id: 'w-early-robot-bumped',
         theme: 'failure',
         stage: 'early',
@@ -41474,6 +41871,8 @@ const COURSE_GAMES = {
     'music-4': ['pairs-music'],
     'health-k': ['dots-rocket'],
     'tech-k': ['walk-tech-k'],
+    'econ-k': ['pay-econ-k'],
+    'econ-3': ['price-econ-3'],
     'tech-6': ['teach-tech-6'],
     'tech-9': ['bits-tech-9'],
     'health-4': ['pairs-health'],
@@ -42634,6 +43033,28 @@ const CURRICULUM = [
         ],
     },
     {
+        grade: 'K', subject: 'Economics', status: 'ready',
+        source: 'Texas Essential Knowledge and Skills, Mathematics, the personal financial literacy strands for Kindergarten (§111.2(b)(9)), Grade 1 (§111.3(b)(9)) and Grade 2 (§111.4(b)(11)), the course for the K to 2 band; Voluntary National Content Standards in Economics (Council for Economic Education), the national framework, shown in the Common Core column.',
+        standards: [
+            { framework: 'TEKS', code: 'Math K.9(D)', text: 'Distinguish between wants and needs and identify income as a source to meet one\'s wants and needs.', moduleIds: ['wants-needs-and-choices'] },
+            { framework: 'TEKS', code: 'Math K.9(A)', text: 'Identify ways to earn income.', moduleIds: ['earning-income'] },
+            { framework: 'TEKS', code: 'Math K.9(B)', text: 'Differentiate between money received as income and money received as gifts.', moduleIds: ['earning-income'] },
+            { framework: 'TEKS', code: 'Math K.9(C)', text: 'List simple skills required for jobs.', moduleIds: ['earning-income'] },
+            { framework: 'TEKS', code: 'Math 1.9(B)', text: 'Identify income as a means of obtaining goods and services, oftentimes making choices between wants and needs.', moduleIds: ['spending-and-saving', 'trading-and-markets'] },
+            { framework: 'TEKS', code: 'Math 1.9(C)', text: 'Distinguish between spending and saving.', moduleIds: ['spending-and-saving'] },
+            { framework: 'TEKS', code: 'Math 1.9(D)', text: 'Consider charitable giving.', moduleIds: ['spending-and-saving'] },
+            { framework: 'TEKS', code: 'Math 2.11(A)', text: 'Calculate how money saved can accumulate into a larger amount over time.', moduleIds: ['spending-and-saving'] },
+            { framework: 'TEKS', code: 'Math 2.11(B)', text: 'Explain that saving is an alternative to spending.', moduleIds: ['spending-and-saving'] },
+            { framework: 'TEKS', code: 'Math 2.11(C)', text: 'Distinguish between a deposit and a withdrawal.', moduleIds: ['spending-and-saving'] },
+            { framework: 'CCSS', code: 'CEE Standard 1', text: 'Scarcity: productive resources are limited, so people cannot have all the goods and services they want and must choose.', moduleIds: ['wants-needs-and-choices'] },
+            { framework: 'CCSS', code: 'CEE Standard 2', text: 'Decision making: effective decision making requires comparing the additional costs of alternatives with the additional benefits.', moduleIds: ['wants-needs-and-choices'] },
+            { framework: 'CCSS', code: 'CEE Standard 13', text: 'Income: income for most people is determined by the market value of the productive resources they sell.', moduleIds: ['earning-income'] },
+            { framework: 'CCSS', code: 'CEE Standard 10', text: 'Institutions: institutions such as banks evolve to help individuals and groups accomplish their goals.', moduleIds: ['spending-and-saving'] },
+            { framework: 'CCSS', code: 'CEE Standard 5', text: 'Trade: voluntary exchange occurs only when all participating parties expect to gain.', moduleIds: ['trading-and-markets'] },
+            { framework: 'CCSS', code: 'CEE Standard 7', text: 'Markets and prices: a market exists when buyers and sellers interact, and prices are determined there.', moduleIds: ['trading-and-markets'] },
+        ],
+    },
+    {
         grade: 'K', subject: 'Health', status: 'ready',
         source: 'Texas Essential Knowledge and Skills, Health Education, Kindergarten (§115.12, Adopted 2020); national guidance from the CDC, the American Dental Association and USDA MyPlate, shown in the Common Core column.',
         standards: [
@@ -42675,6 +43096,34 @@ const CURRICULUM = [
             { framework: 'CCSS', code: 'CSTA 1A-IC-18', text: 'Keep login information private, and log off of devices appropriately.', moduleIds: ['safe-online-k'] },
             { framework: 'CCSS', code: 'CSTA 1A-NI-04', text: 'Explain what passwords are and why we use them, and use strong passwords to protect devices and information from unauthorized access.', moduleIds: ['safe-online-k'] },
             { framework: 'CCSS', code: 'CSTA 1A-IC-17', text: 'Work respectfully and responsibly with others online.', moduleIds: ['safe-online-k'] },
+        ],
+    },
+    {
+        grade: '3', subject: 'Economics', status: 'ready',
+        source: 'Texas Essential Knowledge and Skills, Mathematics, the personal financial literacy strands for Grade 3 (§111.5(b)(9)), Grade 4 (§111.6(b)(10)) and Grade 5 (§111.7(b)(10)), the course for the 3 to 5 band; Voluntary National Content Standards in Economics (Council for Economic Education), the national framework, shown in the Common Core column.',
+        standards: [
+            { framework: 'TEKS', code: 'Math 3.9(A)', text: 'Explain the connection between human capital/labor and income.', moduleIds: ['skills-and-income'] },
+            { framework: 'TEKS', code: 'Math 3.9(B)', text: 'Describe the relationship between the availability or scarcity of resources and how that impacts cost.', moduleIds: ['skills-and-income'] },
+            { framework: 'TEKS', code: 'Math 3.9(C)', text: 'Identify the costs and benefits of planned and unplanned spending decisions.', moduleIds: ['planned-spending-and-credit'] },
+            { framework: 'TEKS', code: 'Math 3.9(D)', text: 'Explain that credit is used when wants or needs exceed the ability to pay and that it is the borrower\'s responsibility to pay it back to the lender, usually with interest.', moduleIds: ['planned-spending-and-credit'] },
+            { framework: 'TEKS', code: 'Math 3.9(E)', text: 'List reasons to save and explain the benefit of a savings plan, including for college.', moduleIds: ['savings-taxes-and-budgets'] },
+            { framework: 'TEKS', code: 'Math 3.9(F)', text: 'Identify decisions involving income, spending, saving, credit, and charitable giving.', moduleIds: ['planned-spending-and-credit'] },
+            { framework: 'TEKS', code: 'Math 4.10(A)', text: 'Distinguish between fixed and variable expenses.', moduleIds: ['expenses-and-profit'] },
+            { framework: 'TEKS', code: 'Math 4.10(B)', text: 'Calculate profit in a given situation.', moduleIds: ['expenses-and-profit'] },
+            { framework: 'TEKS', code: 'Math 4.10(C)', text: 'Compare the advantages and disadvantages of various savings options.', moduleIds: ['savings-taxes-and-budgets'] },
+            { framework: 'TEKS', code: 'Math 4.10(D)', text: 'Describe how to allocate a weekly allowance among spending; saving, including for college; and sharing.', moduleIds: ['expenses-and-profit'] },
+            { framework: 'TEKS', code: 'Math 4.10(E)', text: 'Describe the basic purpose of financial institutions, including keeping money safe, borrowing money, and lending.', moduleIds: ['savings-taxes-and-budgets'] },
+            { framework: 'TEKS', code: 'Math 5.10(A)', text: 'Define income tax, payroll tax, sales tax, and property tax.', moduleIds: ['savings-taxes-and-budgets'] },
+            { framework: 'TEKS', code: 'Math 5.10(B)', text: 'Explain the difference between gross income and net income.', moduleIds: ['savings-taxes-and-budgets'] },
+            { framework: 'TEKS', code: 'Math 5.10(E)', text: 'Describe actions that might be taken to balance a budget when expenses exceed income.', moduleIds: ['savings-taxes-and-budgets'] },
+            { framework: 'TEKS', code: 'Math 5.10(F)', text: 'Balance a simple budget.', moduleIds: ['savings-taxes-and-budgets'] },
+            { framework: 'CCSS', code: 'CEE Standard 13', text: 'Income: income for most people is determined by the market value of the productive resources they sell.', moduleIds: ['skills-and-income'] },
+            { framework: 'CCSS', code: 'CEE Standard 1', text: 'Scarcity: productive resources are limited, so people cannot have all the goods and services they want and must choose.', moduleIds: ['skills-and-income'] },
+            { framework: 'CCSS', code: 'CEE Standard 2', text: 'Decision making: effective decision making requires comparing the additional costs of alternatives with the additional benefits.', moduleIds: ['planned-spending-and-credit'] },
+            { framework: 'CCSS', code: 'CEE Standard 12', text: 'Interest rates: interest rates are the price of borrowing money and the reward for saving it.', moduleIds: ['planned-spending-and-credit'] },
+            { framework: 'CCSS', code: 'CEE Standard 14', text: 'Entrepreneurship: entrepreneurs take on the risk of organizing productive resources to make goods and services, and profit is an important incentive.', moduleIds: ['expenses-and-profit'] },
+            { framework: 'CCSS', code: 'CEE Standard 10', text: 'Institutions: institutions such as banks evolve to help individuals and groups accomplish their goals.', moduleIds: ['savings-taxes-and-budgets'] },
+            { framework: 'CCSS', code: 'CEE Standard 16', text: 'Role of government: governments provide certain goods and services and pay for them with taxes.', moduleIds: ['savings-taxes-and-budgets'] },
         ],
     },
     {
@@ -48716,6 +49165,8 @@ const COURSE_STORIES = {
     'tech-5': { title: 'The game that kept score', about: 'a class that built a game and learned what a program remembers and decides', art: 'CS14', alt: 'A classroom with a projected simple game, a paddle and ball, a scoreboard, students pointing at one line of code on a whiteboard', cast: [], words: ['The class built a game in a week. On Monday it had a ball and a paddle and no memory: every point was forgotten the moment it was scored. The ball bounced, the paddle moved, and nothing that happened mattered to anything that happened next.', 'Tuesday brought variables: a box named score, a box named lives, and the game began to remember. Score went from 0 to 5 to 8, and lives went down from 3 to 2 when the ball got past. The names stayed the same all game long; only the numbers inside them changed.', 'Wednesday was for deciding. IF the ball touches the paddle THEN bounce, ELSE lose a life. IF lives is 0 THEN show the end. The game did not decide anything by itself; it asked yes-or-no questions the class had written and took whichever road the answer pointed down.', 'The questions had to be asked again and again, many times every second, or the ball would slip past the paddle between two checks. So the whole program sat inside a loop: move the ball, check the paddle, check the lives, draw the screen, and start again. A loop is a set of steps a program repeats.', 'Thursday, the game was wrong. It ended after two lost balls, not three. Nobody deleted anything. They read the steps one at a time, and found the line that checked lives before taking one away instead of after. One line moved, and the game was fixed.', 'Then they tested it the way players would try to break it. One student held the paddle at the very edge. Another pressed two keys at once. A third just let the ball go by, to see whether the end screen appeared. Every test that passed was one less surprise on Friday.', 'Friday was for playing, and for one last box. A variable named best kept the highest score anyone had reached, and IF a new score beat it, THEN best took the new number. By lunch the best score was 41, and a quiet student who had written the loop held it.', 'The game was simple, but it held the whole of programming: boxes that remember, questions that decide, a loop that keeps asking, and a careful reading when something goes wrong. Everything bigger is built from the same four parts. The class kept the game on the classroom computer, and the best score has changed hands eleven times since.'], more: [{ serial: 'CS153', after: 1, alt: 'A whiteboard with two boxes labeled score and lives, numbers crossed out and rewritten' }, { serial: 'CS154', after: 2, alt: 'A ball meeting a paddle beside a fork in the road: bounce, or lose a life' }, { serial: 'CS155', after: 3, alt: 'A circle of arrows around four steps: move the ball, check the paddle, check the lives, draw the screen' }, { serial: 'CS156', after: 5, alt: 'Three students testing a game, one holding the paddle at the very edge of the screen' }, { serial: 'CS157', after: 6, alt: 'A game screen showing best score 41, a proud student at the keyboard' }] },
     'tech-7': { title: 'The message across the ocean', about: 'a photo that crossed the ocean in pieces and the lock that guarded the account it came from', art: 'CS15', alt: 'A teenager at a laptop with a beach sunset photo on screen, a world map behind with a dotted route across the ocean, a phone showing a code', cast: [], words: ['The photo was a sunset on a beach in Portugal, sent to a cousin in Texas. It did not travel as a photo. It was cut into packets, a few thousand of them, each stamped with an address that was a number.', 'Each packet took whatever route was open: an undersea cable, a switch in London, a tower outside Dallas. Routers along the way read the address and passed each packet one step closer, the way sorting offices pass mail. The packets arrived out of order and were put back together in the right one.', 'Two packets never arrived at all. The cousin\'s computer noticed the gaps in the numbers and asked for those pieces again, and they came a moment later by a different road. Nobody saw it happen. The whole trip took less than a second.', 'The cousin\'s name for the site was words, but the address the packets used was numbers. A directory called DNS had turned one into the other before the first packet left. The little lock in the address bar meant every packet traveled sealed, scrambled for anyone who might open it along the way.', 'Underneath everything, the sunset was ones and zeros. Every tiny dot of color was a set of numbers. Every number was a row of switches, on and off, in places worth 1, 2, 4, 8 and on up. The orange of the sky was just a long row of lights.', 'The next morning a message arrived saying the account was locked and to click now. It even used the real company\'s colors. The cousin did not click. Hurry is the tell: whoever wants you not to think will tell you there is no time.', 'He went to the site the usual way, typing the address himself, entered the long password that was four unrelated words, and answered the code on his phone. His password manager filled in the password on the real site, as it always did. It would have filled in nothing on a fake one, which is one more reason to use one. He found nothing locked at all.', 'The sunset was still there. The scam was not. He sent the photo on to his grandmother in Ohio. It crossed the country the same way it had crossed the ocean, in a few thousand sealed envelopes that knew how to line up. She called within the minute to say it was beautiful.'], more: [{ serial: 'CS208', after: 0, alt: 'A sunset photo of a beach in Portugal cut into many small numbered envelopes' }, { serial: 'CS209', after: 1, alt: 'Envelopes traveling by undersea cable, through London and on to a tower outside Dallas' }, { serial: 'CS210', after: 3, alt: 'An address bar with a small lock beside a website name' }, { serial: 'CS211', after: 4, alt: 'The orange sky of the photo drawn as a long row of tiny lights, some on and some off' }, { serial: 'CS212', after: 6, alt: 'A boy typing a long password of four unrelated words while a code arrives on his phone' }] },
     'tech-k': { title: 'Mike and the robot that listened', about: 'a red robot that did nothing until Mike told it every step', art: 'CS373', alt: 'A small red robot with round eyes and four arrow buttons on its back, in an open shoebox on a kitchen table, a six-year-old boy reaching for it', cast: ['Mike'], words: ['Mike\'s uncle brought the robot in a shoebox. It was the size of a mug, red with two round eyes, and it had four arrow buttons on its back. Mike pressed every button at once, and the robot did nothing at all. It just blinked at him, like it was waiting for something.', 'His uncle laughed. It cannot see you, and it cannot hear you, he said. It only knows what you press. The buttons tell it, and its wheels and its beep show you what it heard. Tell first, and then it shows you.', 'So Mike pressed up. The robot rolled forward one square on the kitchen tiles and stopped. He pressed up, up, up, and it rolled three squares and bumped the table leg. Every press was one step, and it did the steps in the order he pressed them, nothing more and nothing less.', 'Mike wanted the robot to carry a crayon to his uncle across the room. He pressed a long line of arrows without thinking, and the robot wandered off under a chair. Plan the steps first, his uncle said, and press them after. So Mike drew the path on paper: up, up, right, right, up.', 'He pressed the five arrows and let go. The robot rolled up two squares, went right for two, then up one more, and stopped at his uncle\'s feet with the crayon. First, next, then, last, his uncle said. That is a plan a robot can follow. Mike called it his robot list.', 'The next job was longer. The kitchen was twelve squares wide, and pressing up twelve times made Mike\'s thumb tired. His uncle showed him the little loop button. Press up, then the loop, then the number twelve, and the robot does that one step twelve times. Three presses instead of twelve.', 'Then the robot bumped a cup and stopped. Mike did not press every button again. He looked at his list, found the one step that was wrong, and changed just that one. The robot rolled the rest of the way. Fixing one wrong step, his uncle said, is how every robot gets fixed.', 'That night the robot sat on Mike\'s shelf, blinking and waiting. Mike knew now that it was not being lazy. It was listening for the next list. A robot only does what it is told, one step at a time, so the telling has to be right. He fell asleep planning tomorrow\'s path.'], more: [{ serial: 'CS374', after: 1, alt: 'An uncle in a work shirt laughing beside a boy and the robot, pointing at its buttons' }, { serial: 'CS375', after: 2, alt: 'The red robot rolling across kitchen tiles and bumping a table leg' }, { serial: 'CS376', after: 3, alt: 'A boy drawing an arrow path on paper while the robot peeks out from under a chair' }, { serial: 'CS377', after: 5, alt: 'A boy pressing a loop button on the robot, a long kitchen floor of tiles ahead of it' }, { serial: 'CS378', after: 6, alt: 'The robot stopped against a fallen cup, a boy checking his list of arrows' }] },
+    'econ-k': { title: 'The lemonade stand on Maple Street', about: 'two friends, a kite that cost twenty coins, and a summer of earning, trading and saving', art: 'CS391', alt: 'Two children behind a lemonade stand at the end of a driveway, a pitcher, paper cups and a hand-lettered sign', cast: [], words: ['Nadia and Ben wanted the same thing, a kite with a long red tail from the shop on Maple Street. The kite cost twenty coins, and between them they had three. So on the first hot Saturday of summer they set up a lemonade stand at the end of Nadia\'s driveway, with a pitcher, paper cups and a sign.', 'The first thing they learned was that a stand has needs of its own. Lemons, sugar and cups had to be bought before a single cup could be sold. Ben wanted to buy a fancy tablecloth too. That is a want, Nadia said, and the lemons come first. They bought the lemons with their three coins and borrowed the sugar from Ben\'s kitchen.', 'By noon they had sold nine cups at one coin each, and the jar on the table held nine coins. That was income, money they had earned by squeezing and pouring. When Miss Alvarez dropped in two coins and did not take a cup, Nadia set those apart. That is a gift, she said. It is kind, but we did not work for it.', 'A boy named Theo came by with a plate of cookies and no coins at all. He wanted lemonade; they wanted cookies. Two cookies for one cup, Ben offered, and Theo agreed. That was a trade, a swap with no money in it, and it only worked because each side wanted what the other had.', 'In the afternoon the line got longer, and Ben had an idea. He raised the price to two coins a cup. Three people paid it, and four walked on. Nadia lowered the price back to one coin, and the line came back. The price, they decided, is what people will pay, not what you wish they would.', 'At the end of the day the jar held twenty-one coins, and Ben wanted to spend them all on ice cream. Nadia counted out what the next Saturday would need: coins for lemons, sugar and cups. Spending is now, she said, and the stand needs some of this later. They put six coins in a second jar and labeled it lemons.', 'That left fifteen coins for the kite, and a decision. Ice cream now would eat the whole kite. They chose two cones instead of four, spent two coins, and put the rest away. Giving up the other two cones was the price of the kite, and they paid it gladly.', 'By the third Saturday the kite jar held twenty coins. They counted the coins onto the counter at the shop and flew the kite that evening from the top of the hill. Every coin had a story: earned, gifted, traded or saved. Nadia kept the sign for next summer.'], more: [{ serial: 'CS392', after: 1, alt: 'A girl holding lemons and sugar while a boy points at a fancy tablecloth' }, { serial: 'CS393', after: 2, alt: 'A jar of nine coins on the stand, a neighbor dropping in two more without taking a cup' }, { serial: 'CS394', after: 3, alt: 'A boy trading a plate of cookies for a cup of lemonade' }, { serial: 'CS395', after: 5, alt: 'Two jars on a table, one labeled lemons, a girl counting coins into it' }, { serial: 'CS396', after: 7, alt: 'Two children flying a kite with a long red tail from the top of a hill at evening' }] },
+    'econ-3': { title: 'Savanah and the egg money', about: 'twelve dozen eggs a week, a coffee can of expenses, a fox, a loan, and a jar marked college', art: 'CS397', alt: 'A teenage girl at a market stall of egg cartons, a coffee can of dollars and a hand-lettered price sign', cast: ['Savanah'], words: ['The first thing Savanah ever sold was an egg, and by fifteen she was selling twelve dozen a week at the Saturday market in town. The hens were hers, the feed was hers to buy, and the money in the coffee can was hers to keep, which taught her everything the can could teach.', 'The can had two kinds of expenses in it. The stall fee was eight dollars every Saturday, sold out or not: fixed. The feed went up with every hen she added, and the cartons went up with every dozen: variable. She wrote both kinds on the lid in pencil, so they would stop surprising her.', 'At three dollars a dozen, twelve dozen brought in thirty-six dollars. Eight for the stall, fourteen for feed and cartons, and the profit was fourteen. Her mother, who had kept the farm\'s books for twenty years, showed her the arithmetic once and never again. After that, the can and the pencil were Savanah\'s job.', 'In March a fox got into the coop and took four hens. That week she had seven dozen, not twelve, and half the county was short of eggs, because the fox had not been particular about whose coop. The grocer in town raised his price to four dollars. Scarce and wanted, her mother said, costs more.', 'Savanah kept her price at three. Her customers had come every Saturday for two years, and she wanted them there in two more. It was a choice, and it cost her seven dollars that week, the difference between three and four on seven dozen. She wrote the number on the lid and did not regret it.', 'Replacing the hens took money the can did not have. Her mother lent her forty dollars, and Savanah wrote out the terms herself before she took it: forty back by August, plus four dollars of interest, from the profit and nothing else. Credit, she understood, was borrowing against work she had not done yet.', 'By June the coop was full again, the loan was half paid, and the can had grown a second compartment, a jar with a lid, where a third of every Saturday\'s profit went and stayed. On the jar she had written one word: college. Her mother had told her what it cost, and Savanah had done that arithmetic too.', 'She paid her mother the forty-four dollars on the first Saturday of August, in the truck on the way to market, and her mother folded it into her pocket without counting it. That, Savanah thought, was what the whole summer had been for. Not the eggs. The trust in the folding.'], more: [{ serial: 'CS398', after: 1, alt: 'A coffee-can lid with two columns written in pencil, fixed and variable, beside a bag of feed and a stack of cartons' }, { serial: 'CS399', after: 2, alt: 'A mother and daughter at a farm kitchen table doing the arithmetic on the lid of a can' }, { serial: 'CS400', after: 3, alt: 'A grocer changing a chalkboard price for eggs to four dollars, an empty coop behind the scene' }, { serial: 'CS401', after: 5, alt: 'A girl writing out loan terms on paper, forty dollars on the table between her and her mother' }, { serial: 'CS402', after: 7, alt: 'A girl handing folded dollars to her mother in a farm truck at dawn' }] },
     'tech-6': { title: 'Frederick and the jar of pond water', about: 'a model that counted pond creatures fast and wrong for the one it had seen least', art: 'CS379', alt: 'A young man of twenty in a white lab coat at a bench with a jar of pond water, a microscope and a laptop showing tiny creatures', cast: ['Frederick'], words: ['The jar of pond water had been on Frederick\'s bench for a week, and the professor wanted a count of each tiny creature in a drop of it. So the professor handed him a program that had learned to tell the creatures apart from pictures, and eight thousand labeled pictures to teach it with.', 'Frederick fed the folder into the program and watched a bar creep across the screen. Nobody had written a rule that says a paramecium is slipper-shaped or that a rotifer has a crown of beating hairs. It had only the pictures and their labels, and it kept whatever the paramecia shared and whatever the rotifers shared. By evening it had a model.', 'The first drop went under the microscope camera, and the model counted it in nine seconds: three hundred and ten paramecia, forty amoebas, two rotifers. Frederick checked the count by eye, because his professor had taught him that a number you have not checked is a hope, not a result. The paramecia were right, and so were the amoebas. But there were eleven rotifers, not two.', 'The model had called nine rotifers paramecia, with the same calm number it gave everything else. Frederick opened the folder and started counting labels. Seven thousand paramecia, six hundred amoebas, and fewer than a hundred rotifers, most of them blurred. The model had barely met a rotifer in its life.', 'Nothing in the program was against rotifers. They had simply been rare in the pile, because whoever collected the pictures collected what was easy to find. The model was right on average and wrong for the creature it had seen least, and it could not tell, because it had no way to know what it had missed.', 'So Frederick spent two days making rotifers less rare. He photographed every one he could find, sharp, from every angle, with the crown of hairs open and closed, until there were nine hundred good pictures. He taught the model again. The next drop came back with ten rotifers, and by eye there were ten.', 'The professor asked what Frederick had learned, and he said: the machine is fast and the microscope is true. He would let the model make the first count of every drop and check a share by eye, because a model only knows the pile it was fed, and the pond does not care about the pile.', 'On the last page of his notebook he wrote the rule he would keep: use the fast guess, check it against something real, and always ask who was missing from the examples. Then he went back to the jar, where something with a crown of hairs turned slowly in the light.'], more: [{ serial: 'CS380', after: 1, alt: 'A progress bar creeping across a laptop screen beside a folder of eight thousand labeled pictures of pond creatures' }, { serial: 'CS381', after: 2, alt: 'A young man counting creatures by eye through a microscope while the laptop shows its nine-second count' }, { serial: 'CS382', after: 3, alt: 'Nine rotifers with crowns of hairs each wrongly ringed as paramecia, the same calm score beside every one' }, { serial: 'CS383', after: 5, alt: 'A young man photographing rotifers from every angle, hundreds of sharp pictures spread across the bench' }, { serial: 'CS384', after: 7, alt: 'A notebook page with three lines written on it, a jar of pond water glowing in the window light' }] },
     'tech-9': { title: 'Savanah and the buses that ran on time', about: 'a bus board built by a small city team, its bug at the edge, and the rules it ran under', art: 'CS385', alt: 'A confident woman in her thirties standing before a wall screen of bus routes in a city transit office, a small team at laptops behind her', cast: ['Savanah'], words: ['Savanah had not written a line of code in her life, but the city\'s buses were late and the board that was supposed to say so was always wrong. So she did what she always did: she found the people who understood it, and asked them to show her.', 'The team was three coders in a room above the depot. First they showed her the machine. A small computer on every bus had a CPU that did the work, memory that held the last minute, and storage that kept the day\'s log. The bus number went out over the radio as one byte, eight switches, enough for any number up to 255.', 'Then the program. Every bus on the board was a set of variables with types: route, an integer; minutes late, a real number; doors open, a boolean. A loop ran once a second over every bus, and a conditional chose the color: more than five minutes late, red; more than zero, amber; else green.', 'The bug was at the edge. A bus exactly on time had minutes late of zero, and a line written years earlier treated zero as no data, so a bus perfectly on time vanished from the board. Riders read the empty space as a missing bus.', 'Savanah asked how they had found it, and the method was one she knew from her own work. Read the error. Print the variables at the line you suspect. Shrink the input until the bug stays with one bus. Then look up the reference, which said plainly that zero is a number, not an absence. They fixed one comparison and added the edge to the test list: zero late, midnight, a bus with no driver.', 'The map under the buses came from an open-source library, and the team had read its license before using it: use it, change it, share the changes under the same rules. Savanah had them put the credit on the board\'s about page. A city that asks people to follow rules follows them in public, she said.', 'The last thing she asked about was the login. The board\'s password had been a word and a year, shared by the whole depot. That changed the same afternoon: twelve random characters in a password manager, a second step on the dispatcher\'s phone, and a rule that a leaked password alone opens nothing.', 'On Monday the buses were no more on time than before, but the board told the truth about them, which turned out to be most of what the riders wanted. Savanah stood at the main stop and watched a green bus arrive at zero minutes late, on the board for the first time in years, and smiled.'], more: [{ serial: 'CS386', after: 1, alt: 'A wall screen showing eight blocks of switches that spell each bus number in binary' }, { serial: 'CS387', after: 2, alt: 'A coder at a laptop with variables for a bus listed beside their types: route, minutes late, doors open' }, { serial: 'CS388', after: 3, alt: 'A bus board showing a bus at exactly zero minutes late marked as missing' }, { serial: 'CS389', after: 5, alt: 'A license page for an open-source map library pinned beside the team\'s about page' }, { serial: 'CS390', after: 7, alt: 'A city bus arriving on time under a board that shows it, a woman checking her watch and smiling' }] },
     'math-5': { title: 'The bake sale', about: 'a bake sale where every decimal, fraction and box counted', art: 'CS16', alt: 'A school bake sale table with brownies, lemonade, boxes of cookies, a handwritten price list and a cash box', cast: [], words: ['The bake sale needed a table, a cash box and a price list, and the price list was where the decimals lived. Brownies were 1.25, lemonade 0.75. A brownie and a lemonade: line up the points, add the cents, add the dollars, 2.00. The first customer paid with a five, and the change was decimals in reverse: 5.00 minus 2.00, three dollars back.', 'Six lemonades for one family meant multiplying a decimal: six times 75 cents. Six times 75 is 450, and the price had two decimal places, so the answer did too: 4.50. Four dollars fifty, which the family\'s youngest checked by counting out eighteen quarters.', 'The brownies came from a recipe that made a tray, and half the tray had been eaten by breakfast. Half of what was left went to the sale: half of a half, a quarter of the tray. Multiplying by a fraction had made the brownies fewer, which is exactly what fractions do.', 'The cookies came in boxes of 24, and 288 cookies had been baked: how many boxes? Ten boxes used 240, two more used the 48, twelve boxes on the table. Checked backward, twelve times twenty-four was 288, and nobody had to count a single cookie twice.', 'The table sat on a grid painted on the gym floor, and the lemonade stand was three across and two up from the corner, the point (3, 2). The cash box was a box: four cookies long, three wide, two layers high, room for twenty-four cookies.', 'Every hour someone made dots on a line plot for the brownies sold: eight, ten, eleven, nine. The tallest stack showed the busiest hour was the third, just after lunch, and next year the brownies would be ready for it. A line plot does not tell you why. It tells you where to look.', 'Thirty-eight brownies sold at 1.25 each came to 47.50. At the end, the total came from a long sum with brackets in it, and the brackets went first: 38 times 1.25, then the lemonade, then the cookies. The sale had made 143 dollars and 50 cents.', 'Decimals, fractions, division, a grid, a box, a line plot and brackets. Nobody at the table would have called it a math test, but every number on it was one. The class counted the money twice anyway, on two sheets of paper side by side, and both said the same thing. That was the best part.'], more: [{ serial: 'CS158', after: 0, alt: 'A customer handing a five-dollar bill across a bake sale table, three dollars in change coming back' }, { serial: 'CS159', after: 1, alt: 'Eighteen quarters counted out beside six cups of lemonade' }, { serial: 'CS160', after: 3, alt: 'Twelve boxes of cookies stacked on a table beside an empty tray' }, { serial: 'CS161', after: 4, alt: 'A gym floor grid with a lemonade stand at three across and two up from the corner' }, { serial: 'CS162', after: 5, alt: 'A line plot with four stacks of dots, the tallest over the third hour' }] },
@@ -49738,6 +50189,120 @@ STORIES['working-like-a-programmer'] = {
         'The app ran the next Tuesday without a crash. The bug had been small, the license had been read, the password was long, and nobody had believed the snow day.',
     ],
 };
+// Economics and personal finance, K to 2 (2026-09-29, pass FV): four stories at the kindergarten length with five pictures each.
+STORIES['wants-needs-and-choices'] = {
+    about: 'Rosa, one coin, and the balloon she let go',
+    more: [{ serial: 'S2771', after: 1, alt: 'A girl looking from a red balloon to a sparkly ring, one coin in her hand' }, { serial: 'S2772', after: 2, alt: 'A big brother kneeling beside a girl and holding up one finger' }, { serial: 'S2773', after: 3, alt: 'A girl sliding a sparkly ring onto her finger as she hands the coin to a man' }, { serial: 'S2774', after: 4, alt: 'A girl at the fair gate looking back at the balloons, her brother beside her' }],
+    title: 'One coin, two wants', art: 'S2770', cast: [],
+    alt: 'A small girl holding one shiny coin between a table of balloons and a table of sparkly rings at a school fair',
+    words: [
+        'Rosa had one shiny coin for the school fair. She walked past the balloons, and then past the sparkly rings, and stopped.',
+        'She wanted a balloon. She wanted a ring too. But the coin could buy only one thing.',
+        'Her big brother Luis knelt down beside her. You have to choose, he said. When you pick one, you let the other go.',
+        'Rosa held the coin for a long time. Then she chose the ring, because a balloon can pop and a ring can stay. She gave the coin to the man and slid the ring on her finger.',
+        'At the gate she saw the balloons again, and she felt a little sad. Luis said that was normal. Giving something up is part of choosing.',
+        'Needs come first, and wants wait. One coin, two wants: you pick one and let the other go.',
+    ],
+};
+STORIES['earning-income'] = {
+    about: 'Kofi, a dog named Pepper, and the coins he earned',
+    more: [{ serial: 'S2776', after: 1, alt: 'A neighbor woman handing a boy a leash and counting rules on her fingers' }, { serial: 'S2777', after: 2, alt: 'A woman placing five coins in a boy\'s open hand while a dog wags beside them' }, { serial: 'S2778', after: 3, alt: 'An aunt handing a boy a card with two coins inside, a jar on the table' }, { serial: 'S2779', after: 4, alt: 'A boy flying a new kite, a jar of coins on the porch behind him' }],
+    title: 'The dog walk', art: 'S2775', cast: [],
+    alt: 'A boy walking a small brown dog on a leash past a neighbor\'s gate, a kite in a shop window behind him',
+    words: [
+        'Kofi wanted a kite, and kites cost coins. Miss Ito next door had a dog named Pepper who needed a walk every day.',
+        'I will walk Pepper, Kofi said. Miss Ito said yes, and she said the job had rules. Be on time, hold the leash tight, and bring Pepper home dry.',
+        'Every day Kofi came at four. Every day Pepper pulled, and Kofi held on. At the end of the week Miss Ito gave him five coins. That was income, money he had earned.',
+        'On Sunday his aunt came to visit and gave him two coins in a card. Kofi put them in the jar too. But those were a gift, his aunt said. You did not work for them.',
+        'By the end of the month the jar held enough for the kite. Kofi knew which coins he had earned and which had been given. Both bought the kite, but only one had been work.',
+        'Work earns income. A gift is not income. Skills like being on time get you the job.',
+    ],
+};
+STORIES['spending-and-saving'] = {
+    about: 'Amara, a jar with a scooter on the front, and two coins a week',
+    more: [{ serial: 'S2781', after: 1, alt: 'A girl dropping one coin into a jar and keeping one coin in her other hand' }, { serial: 'S2782', after: 2, alt: 'A jar filling with coins, the scooter picture taped on the front' }, { serial: 'S2783', after: 3, alt: 'A girl taking three coins out of the jar to buy a birthday card' }, { serial: 'S2784', after: 4, alt: 'A girl riding a red scooter down a street at sunset' }],
+    title: 'Two coins a week', art: 'S2780', cast: [],
+    alt: 'A girl holding an empty jar with a picture of a red scooter taped to the front',
+    words: [
+        'Amara wanted a red scooter. It cost more coins than she had ever seen in one place. So her mother gave her a jar and a plan.',
+        'Every week Amara earned two coins for setting the table. One coin went in the jar. One coin was hers to spend. Putting a coin in the jar was a deposit.',
+        'The jar filled slowly. Two, then four, then six, then eight. Amara taped a picture of the scooter on the front, and the picture got closer every week.',
+        'One day she took three coins out to buy a birthday card for her friend. Taking coins out is a withdrawal. The jar went down, and then it went up again.',
+        'By the end of the summer the jar was full. Amara spent it on the scooter. She rode it up and down the street until the sun went down.',
+        'Spending is now. Saving is for later. A deposit puts money in, a withdrawal takes it out, and saving adds up.',
+    ],
+};
+STORIES['trading-and-markets'] = {
+    about: 'a trading day of stickers and marbles, and a school store with prices',
+    more: [{ serial: 'S2786', after: 1, alt: 'A boy handing two stickers to a girl and receiving one blue marble' }, { serial: 'S2787', after: 2, alt: 'A boy holding out a sticker while another shakes his head at a toy car, a teacher pointing at a coin' }, { serial: 'S2788', after: 3, alt: 'A school store counter with a pencil and a small ball, each with a price tag' }, { serial: 'S2789', after: 4, alt: 'A boy buying a pencil at the school store and holding up one coin left over' }],
+    title: 'The sticker market', art: 'S2785', cast: [],
+    alt: 'Three children at a classroom table with piles of stickers, marbles and tiny toy cars',
+    words: [
+        'On Friday the class had a trading day. Diego brought stickers, Lena brought marbles, and Sam brought tiny toy cars.',
+        'A trade is a swap, Miss Ray said. You give one thing and get one thing. Diego gave Lena two stickers and got one blue marble.',
+        'Then Sam wanted a sticker, but Diego did not want a car. They had nothing to swap. That is why people use money, Miss Ray said. Everyone takes money.',
+        'After lunch the class went to the school store, which is a market with a roof. A pencil cost 2 coins. A small ball cost 4. Diego had 3 coins in his pocket.',
+        'He could buy the pencil and have 1 coin left, but he could not buy the ball yet. Not enough coins means save more, or choose something else. Diego chose the pencil and kept saving.',
+        'A trade is a swap. A market is where buyers meet sellers. The price is the coins it takes.',
+    ],
+};
+// Economics and personal finance, grades 3 to 5 (2026-09-29, pass FW): four stories at the older length with six pictures each.
+STORIES['skills-and-income'] = {
+    about: 'a girl who could sharpen blades, a windstorm, and a shelf of chainsaw blades that went up in price',
+    more: [{ serial: 'S2791', after: 1, alt: 'A grandfather showing a girl how to lift a blade off a mower in a garage' }, { serial: 'S2792', after: 2, alt: 'A boy doing arithmetic on the back of a flyer, a mower behind him' }, { serial: 'S2793', after: 3, alt: 'A hardware store shelf with a dozen chainsaw blades and a price tag raised by four dollars' }, { serial: 'S2794', after: 4, alt: 'A delivery truck refilling the shelf of blades, the price tag coming back down' }, { serial: 'S2795', after: 5, alt: 'A boy at a grinder in winter, sparks flying, his grandfather nodding' }],
+    title: 'The blade sharpener', art: 'S2790', cast: [],
+    alt: 'A girl sharpening a mower blade on a workbench grinder while a boy watches, sparks flying',
+    words: [
+        'Priya and her cousin Jonah both mowed lawns on Elm Street that summer, and both charged the same: six dollars an hour. By July, Jonah had noticed something that did not seem fair. Priya was earning almost twice as much as he was.',
+        'The difference was not the mowing. It was what Priya had learned from her grandfather the winter before, on the workbench in his garage. She could take a mower blade off, sharpen it on the grinder, and balance it so the mower did not shake. Nobody else on Elm Street could do that.',
+        'So the neighbors paid her for two things. Six dollars an hour to mow, and eight dollars for every blade she sharpened, which took her fifteen minutes. Jonah worked out the arithmetic on the back of a flyer and stared at it. A skill, his grandfather told him, is money that shows up every hour you use it.',
+        'In August a windstorm came through and knocked down half the branches on the street. Everyone needed a chainsaw blade at once, and the hardware store had twelve. The price on the shelf went up by four dollars overnight. The blades had not changed. How many there were, and how many people wanted them, had.',
+        'Priya understood it before Jonah did. When something is scarce and wanted, it costs more; when the truck refills the shelf, the price comes back down. She did not raise her own prices for the neighbors, but she understood why the store had.',
+        'That winter Jonah spent his Saturdays in the garage, learning the grinder. Skills are human capital, his grandfather said, and human capital is the only thing you carry to every job you will ever have. By the next summer, Elm Street had two blade sharpeners, and both of them earned for two things.',
+    ],
+};
+STORIES['planned-spending-and-credit'] = {
+    about: 'Marcus, a planned bike, a loan from his sister, and a friend who decided in the aisle',
+    more: [{ serial: 'S2797', after: 1, alt: 'A teenage sister writing twenty-four on a slip of paper while a boy nods' }, { serial: 'S2798', after: 2, alt: 'A boy leaving a store with a remote-control car and candy, three dollars left in his hand' }, { serial: 'S2799', after: 3, alt: 'A boy mowing a neighbor\'s yard while his sister counts dollars on the porch' }, { serial: 'S2800', after: 4, alt: 'Two boys talking beside a bike, one drawing a line down a page into two halves' }, { serial: 'S2801', after: 5, alt: 'A boy writing a shopping list at a kitchen table before going to the store' }],
+    title: 'The bike that cost forty-four dollars', art: 'S2796', cast: [],
+    alt: 'A boy looking at a blue bike with a sale tag in a shop window, a jar of dollars in his hands',
+    words: [
+        'Marcus had planned the bike for a month. He knew the model, the color, and the price: sixty dollars, marked down from eighty for one week in June. He had forty dollars in his jar, and the week would end on Saturday.',
+        'His sister Dani, who was in high school and had a job, offered him a loan. Twenty dollars, she said, and you pay me back twenty-four by the end of summer. The four dollars was interest, the price of borrowing. Marcus thought about it overnight, wrote down how he would earn the twenty-four, and said yes.',
+        'His friend Theo went to the same store that Saturday with thirty dollars and no plan. He came out with a remote-control car that had been by the register, a bag of candy, and three dollars. The car broke on Tuesday. The bike Theo had been talking about since April was still sixty dollars, and he had three.',
+        'Marcus rode home. Every Saturday in July he mowed Miss Okafor\'s yard for six dollars, and every Saturday he handed Dani a share. By the middle of August he had paid back all twenty-four, and the bike was his with nothing owed on it.',
+        'Theo asked how it had worked. Marcus explained the two halves of it. The plan had told him what he wanted and what it cost before he walked in, so the register had no power over him. And the loan had been for something planned that he could pay back, with the interest counted before he said yes.',
+        'Credit is a tool, Dani told them both. Used for a plan, it gets you the bike. Used in the aisle, it turns a want into a debt, and the debt outlives the want. Theo wrote a list before his next trip to the store.',
+    ],
+};
+STORIES['expenses-and-profit'] = {
+    about: 'a cookie table with a fixed five dollars, variable flour and a napkin of arithmetic',
+    more: [{ serial: 'S2803', after: 1, alt: 'Bowls of flour, sugar, butter and chocolate chips on a counter beside four trays of cookies' }, { serial: 'S2804', after: 2, alt: 'A man with three children buying the last fifteen cookies at half price' }, { serial: 'S2805', after: 3, alt: 'A girl doing arithmetic on a napkin at a kitchen table, her mother checking it' }, { serial: 'S2806', after: 4, alt: 'Three jars labeled spend, save and shelter, a girl dividing dollars among them' }, { serial: 'S2807', after: 5, alt: 'A girl sketching next year\'s plan on a napkin: five dozen cookies and no cousin' }],
+    title: 'The cookie table', art: 'S2802', cast: [],
+    alt: 'A girl behind a fair table of cookies under a hand-lettered sign, a five-dollar receipt taped to the table',
+    words: [
+        'Ana signed up for a table at the spring fair to sell cookies, and the first thing she learned was that the table itself cost money. Five dollars for the day, whether she sold one cookie or a hundred. Her mother called it a fixed expense: it did not move.',
+        'The flour, sugar, butter and chocolate chips were different. Every dozen cookies she baked used up more of them, so the more she planned to sell, the more they cost. Those were variable expenses, and they grew with the batch. Four dozen cookies cost her twelve dollars in ingredients.',
+        'She priced the cookies at one dollar each and set out forty-eight of them under a sign. By two o\'clock she had sold thirty-one. Her cousin ate two, which counted as expenses of a sort. At the end of the day she sold the last fifteen for fifty cents each to a man with three children.',
+        'At the kitchen table that night she did the arithmetic on a napkin. Money in: thirty-one dollars plus seven dollars and fifty cents, thirty-eight fifty. Expenses: five for the table, twelve for ingredients, seventeen. Profit: twenty-one dollars and fifty cents. Her mother made her do it twice, and it came out the same.',
+        'Ana divided the profit the way she divided her allowance, before it could disappear: ten to spend, eight to save, and three fifty for the animal shelter jar. The deciding took a minute and the money stayed where she had put it.',
+        'Next year, she said, she would bake five dozen and skip the cousin. Fixed expenses stay the same, variable ones grow with what you sell, and profit is what is left when both are paid. A napkin and a pencil are enough to run a table.',
+    ],
+};
+STORIES['savings-taxes-and-budgets'] = {
+    about: 'a first paycheck with twelve dollars missing, and a budget six dollars over',
+    more: [{ serial: 'S2809', after: 1, alt: 'A pay stub with gross income at the top and net income at the bottom, taxes listed in small print' }, { serial: 'S2810', after: 2, alt: 'A father and son in a car passing a road crew, a school, a park with a pool and a fire station' }, { serial: 'S2811', after: 3, alt: 'A budget on a kitchen table with income on the left and expenses on the right' }, { serial: 'S2812', after: 4, alt: 'A boy packing his own lunch, a budget on the fridge with six dollars crossed out' }, { serial: 'S2813', after: 5, alt: 'A boy at a bank counter opening a savings account, a jar left behind on a closet shelf' }],
+    title: 'The paycheck with a hole in it', art: 'S2808', cast: [],
+    alt: 'A teenage boy staring at his first paycheck beside a pool snack bar, a calculator in his other hand',
+    words: [
+        'Leo\'s first paycheck from the swimming pool snack bar was supposed to be one hundred dollars: ten hours at ten dollars an hour. The check said eighty-eight. He read it three times and then took it to his father, sure that someone had made a mistake.',
+        'Nobody had. One hundred dollars was his gross income, what he had earned. Eighty-eight was his net income, what he took home. The twelve dollars in between were taxes: some for income tax, some for payroll tax, listed in small print down the side of the stub.',
+        'Leo wanted to know where the twelve dollars had gone. His father drove him past the answer on the way home. The road they were driving on, the school, the park with the pool, and the fire station on the corner: taxes pay for the things everyone shares.',
+        'At the kitchen table they made a budget for the summer. Income on the left: eighty-eight dollars every two weeks. Expenses on the right: a bus pass, lunches, and the phone plan Leo had promised to pay for himself. The right side came to ninety-four.',
+        'A budget balances when the expenses fit inside the income, his father said, and this one did not. Six dollars over. Leo had three ways to close it: spend less, earn more, or move something to next month. He packed his lunches, and the six dollars vanished.',
+        'The rest went into a savings account instead of the jar in his closet, because the bank kept it safe and paid a little interest for leaving it there. By the end of the summer the account held more than he had put in, and Leo knew exactly where every dollar had gone.',
+    ],
+};
 const STORY_WORD_LIMIT = { early: 200, older: 350 };
 function storyFor(moduleId) { return STORIES[moduleId] || null; }
 // What a whole course is reaching for, in one line (2026-09-24, Mikey): the subtitle on a printed story book's cover,
@@ -49796,6 +50361,8 @@ const COURSE_GOALS = {
     'history-7': 'Knowing Texas from its first peoples to the modern state',
     'tech-7': 'Understanding bits, networks and how to stay safe on them',
     'tech-k': 'Telling a computer what to do: inputs, steps in order, loops and staying safe',
+    'econ-k': 'Needs before wants, work that earns, coins that add up, and the price a thing takes',
+    'econ-3': 'Skills that earn, spending that is planned, profit that is counted, and a budget that balances',
     'tech-6': 'Understanding what a machine that learns really does, where it goes wrong, and who stays in charge',
     'tech-9': 'Understanding the parts of a machine, binary, the parts of a program, and the working habits of a programmer',
     'math-8': 'Reasoning with lines, powers, roots and the language of functions',
@@ -49971,6 +50538,10 @@ const COLOR_PAGES = {
     'first-next-then-last': ['D164', 'A pair of socks, a pair of shoes and a coat laid out in a row on a bed'],
     'do-it-again': ['D165', 'A small robot clapping its hands beside a line of children clapping'],
     'safe-online-k': ['D166', 'A child at a computer with a finger on the lips, a key on a string around the neck'],
+    'wants-needs-and-choices': ['D167', 'A girl with one coin standing between a balloon and a sparkly ring'],
+    'earning-income': ['D168', 'A boy walking a small dog on a leash past a neighbor\'s gate'],
+    'spending-and-saving': ['D169', 'A jar of coins with a picture of a scooter taped to the front'],
+    'trading-and-markets': ['D170', 'A lemonade stand with a pitcher, cups and a hand-lettered sign'],
 };
 // The Wise Human. Copyright (c) 2026. Source-available; not for reuse. See LICENSE.md.
 // =====================================================================
@@ -50101,7 +50672,7 @@ function PinInput({ value, onChange, placeholder, style, onEnter = null }) {
 }
 // A stamp of when this copy of the page was built, so a stale page in a cache can be told apart
 // from a fresh one at a glance. Written by the build, never by hand.
-const BUILD_STAMP = '2026-09-29 07:26 AM CDT';
+const BUILD_STAMP = '2026-09-29 08:17 AM CDT';
 function ContactLine({ onOpen, inline = false }) {
     return (react_1.default.createElement("p", { className: "edu-no-print", style: { textAlign: 'center', marginTop: inline ? 0 : 28, fontSize: inline ? 14 : 12, color: C.muted, margin: inline ? '0' : undefined } }, onOpen
         ? react_1.default.createElement("button", { type: "button", onClick: onOpen, style: { background: 'none', border: 'none', color: C.muted, fontFamily: FONT, fontSize: 12, cursor: 'pointer', padding: 0, textDecoration: 'underline' } }, "Contact us")
@@ -54810,13 +55381,164 @@ function BitsGame({ game, round, onScore = null }) {
                 hit ? '. Right!' : sum === 0 ? '. Every switch is off.' : ` (${on.map((b, i) => (b ? places[i] : null)).filter((v) => v !== null).join(' + ') || 0}).`))),
         react_1.default.createElement(Done, { show: done })));
 }
-const GAME_OF = { dots: DotsGame, pairs: PairsGame, sort: SortGame, maze: MazeGame, jigsaw: JigsawGame, pong: PongGame, sprint: SprintGame, order: OrderGame, build: BuildGame, fix: FixGame, mix: MixGame, debug: DebugGame, ptable: PtableGame, evidence: EvidenceGame, catch: CatchGame, path: PathGame, buckets: BucketsGame, jump: JumpGame, map: MapGame, balance: BalanceGame, walk: WalkGame, teach: TeachGame, bits: BitsGame };
+// Pay the Price (2026-09-29, pass FV, a new kind for economics K to 2): a thing to buy with its price in coins, and a
+// table of coins worth 5 and 1. Tap coins into the tray until the total matches the price exactly; a tray coin taps back
+// out; going over wobbles the tray and empties it. Four things a round, and the clock counts up. The lesson's idea is
+// the rule of the game: the price is the coins it takes, no more and no fewer. Drawn with B on the paper board.
+function PayGame({ game, round, onScore = null }) {
+    const items = (0, react_1.useMemo)(() => payPrices(round), [round]);
+    const coins = (0, react_1.useMemo)(() => [5, 5, 1, 1, 1, 1, 1], []);
+    const [k, setK] = (0, react_1.useState)(0);
+    const [tray, setTray] = (0, react_1.useState)([]);
+    const [over, setOver] = (0, react_1.useState)(false);
+    const [ticks, setTicks] = (0, react_1.useState)(0);
+    const [done, setDone] = (0, react_1.useState)(false);
+    const it = items[k] || items[0];
+    (0, react_1.useEffect)(() => { setK(0); setTray([]); setOver(false); setTicks(0); setDone(false); }, [round]);
+    const total = tray.reduce((n, i) => n + coins[i], 0);
+    const paid = total === it.price;
+    (0, react_1.useEffect)(() => { if (done || paid)
+        return undefined; const t = setInterval(() => setTicks((n) => n + 1), 1000); return () => clearInterval(t); }, [done, paid]);
+    (0, react_1.useEffect)(() => { if (done && onScore)
+        onScore(ticks, 'low'); }, [done]);
+    (0, react_1.useEffect)(() => { if (!over)
+        return undefined; const t = setTimeout(() => { setTray([]); setOver(false); }, 550); return () => clearTimeout(t); }, [over]);
+    const add = (i) => { if (paid || done || over || tray.includes(i))
+        return; const next = [...tray, i]; const sum = next.reduce((n, j) => n + coins[j], 0); if (sum > it.price) {
+        setTray(next);
+        setOver(true);
+    }
+    else
+        setTray(next); };
+    const back = (i) => { if (paid || done || over)
+        return; setTray(tray.filter((j) => j !== i)); };
+    const next = () => { setTray([]); if (k + 1 >= items.length)
+        setDone(true);
+    else
+        setK(k + 1); };
+    const coinStyle = (v, dim) => ({ fontFamily: FONT, width: v === 5 ? 60 : 48, height: v === 5 ? 60 : 48, borderRadius: '50%', border: `3px solid ${v === 5 ? '#9C7A1C' : '#7B8388'}`, background: v === 5 ? '#E6B84B' : '#D7DCDF', color: B.ink, fontSize: v === 5 ? 24 : 20, fontWeight: 700, cursor: dim ? 'default' : 'pointer', opacity: dim ? 0.25 : 1, padding: 0, lineHeight: 1 });
+    const said = done ? '' : paid ? `Paid! ${it.item} is yours.` : over ? 'Too many. Try again.' : `${it.item.charAt(0).toUpperCase() + it.item.slice(1)} costs ${it.price} coins. Tap coins to pay.`;
+    return (react_1.default.createElement("div", { className: "edu-game-box", style: { ...GAME_BOX, aspectRatio: 'auto', padding: 14 } },
+        react_1.default.createElement("div", { style: { display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 } },
+            react_1.default.createElement("span", null, "Pay the price"),
+            react_1.default.createElement("span", null,
+                ticks,
+                "s \u00B7 ",
+                Math.min(k + 1, items.length),
+                " of ",
+                items.length)),
+        done ? react_1.default.createElement("p", { style: { margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 } },
+            "Four things bought in ",
+            ticks,
+            " seconds. Tap the round arrow for more.") : (react_1.default.createElement("div", { style: { textAlign: 'center' } },
+            react_1.default.createElement("div", { style: { display: 'inline-flex', flexDirection: 'column', alignItems: 'center', gap: 6, padding: '10px 18px', borderRadius: 14, border: `2px solid ${B.line}`, background: '#fff', marginBottom: 10 } },
+                react_1.default.createElement("span", { style: { fontSize: 15, color: B.ink } }, said),
+                react_1.default.createElement("div", { style: { display: 'flex', flexWrap: 'wrap', gap: 4, justifyContent: 'center', maxWidth: 220 }, "aria-hidden": "true" }, Array.from({ length: it.price }, (_, i) => react_1.default.createElement("span", { key: i, style: { width: 10, height: 10, borderRadius: 5, background: i < total ? B.green : '#DDE3DE', border: `1px solid ${B.line}` } })))),
+            react_1.default.createElement("div", { className: over ? 'edu-wobble' : undefined, style: { minHeight: 70, display: 'flex', gap: 8, justifyContent: 'center', alignItems: 'center', padding: 8, borderRadius: 14, border: `3px dashed ${paid ? B.green : over ? B.clay : B.muted}`, marginBottom: 12 }, "aria-label": "The tray" },
+                tray.length === 0 ? react_1.default.createElement("span", { style: { fontSize: 13, color: B.muted } }, "tray") : tray.map((i) => react_1.default.createElement("button", { key: i, type: "button", className: "edu-press", "aria-label": `Tray coin worth ${coins[i]}, tap to put it back`, onClick: () => back(i), style: coinStyle(coins[i], false) }, coins[i])),
+                react_1.default.createElement("span", { style: { fontSize: 16, fontWeight: 700, color: B.ink, marginLeft: 6 } },
+                    "= ",
+                    total)),
+            react_1.default.createElement("div", { style: { display: 'flex', flexWrap: 'wrap', gap: 10, justifyContent: 'center', marginBottom: 12 } }, coins.map((v, i) => react_1.default.createElement("button", { key: i, type: "button", className: "edu-press", "aria-label": tray.includes(i) ? `Coin worth ${v}, in the tray` : `Coin worth ${v}`, disabled: tray.includes(i), onClick: () => add(i), style: coinStyle(v, tray.includes(i)) }, v))),
+            paid && react_1.default.createElement(Btn, { pal: B, onClick: next }, k + 1 >= items.length ? 'Finish' : 'Next thing'))),
+        react_1.default.createElement(Done, { show: done })));
+}
+// Set the Price (2026-09-29, pass FW, a new kind for economics 3 to 5): a lemonade stand with twelve customers, each with a
+// top price in mind that the player cannot see, a fixed cost for the day and a cost per cup. Tap a price to try it: the
+// customers who will pay it step forward, and the profit shows as money in minus money out. Three tries a stand, then the
+// best price is revealed beside the best the player found; four stands a round, and the score is the profit found,
+// higher is better. The lesson's idea is the rule of the game: a price too high loses buyers, a price too low loses
+// money on every cup, and profit is what is left after the costs. Drawn with B on the paper board.
+function PriceGame({ game, round, onScore = null }) {
+    const stands = (0, react_1.useMemo)(() => priceStands(round), [round]);
+    const [k, setK] = (0, react_1.useState)(0);
+    const [tries, setTries] = (0, react_1.useState)([]);
+    const [ticks, setTicks] = (0, react_1.useState)(0);
+    const [done, setDone] = (0, react_1.useState)(false);
+    const [found, setFound] = (0, react_1.useState)(0);
+    const stand = stands[k] || stands[0];
+    (0, react_1.useEffect)(() => { setK(0); setTries([]); setTicks(0); setDone(false); setFound(0); }, [round]);
+    const MAX = 3;
+    const over = tries.length >= MAX;
+    const best = (0, react_1.useMemo)(() => { let b = { price: 1, profit: -Infinity }; for (let pr = 1; pr <= 8; pr++) {
+        const r = standProfit(stand, pr);
+        if (r.profit > b.profit)
+            b = { price: pr, profit: r.profit };
+    } return b; }, [stand]);
+    const mine = tries.length ? Math.max(...tries.map((t) => t.profit)) : null;
+    (0, react_1.useEffect)(() => { if (done)
+        return undefined; const t = setInterval(() => setTicks((n) => n + 1), 1000); return () => clearInterval(t); }, [done]);
+    (0, react_1.useEffect)(() => { if (done && onScore)
+        onScore(found, 'high'); }, [done]);
+    const tryPrice = (pr) => { if (over || done)
+        return; const r = standProfit(stand, pr); setTries([...tries, { price: pr, ...r }]); };
+    const next = () => { const gained = Math.max(0, mine || 0); setFound(found + gained); setTries([]); if (k + 1 >= stands.length)
+        setDone(true);
+    else
+        setK(k + 1); };
+    const last = tries[tries.length - 1] || null;
+    const dollars = last && last.price === 1 ? 'dollar' : 'dollars';
+    const people = last && last.buyers === 1 ? 'person' : 'people';
+    const outcome = !last ? '' : last.profit < 0 ? 'a loss of ' + String(-last.profit) : 'profit ' + String(last.profit);
+    const said = last ? `At ${last.price} ${dollars} a cup, ${last.buyers} ${people} bought: ${last.price * last.buyers} in, ${stand.fixed + stand.each * last.buyers} out, ${outcome}.` : `Costs: ${stand.fixed} dollars for the day and ${stand.each} per cup. Tap a price to try it.`;
+    const buying = last ? stand.tops.map((t) => t >= last.price) : stand.tops.map(() => null);
+    return (react_1.default.createElement("div", { className: "edu-game-box", style: { ...GAME_BOX, aspectRatio: 'auto', padding: 14 } },
+        react_1.default.createElement("div", { style: { display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 } },
+            react_1.default.createElement("span", null,
+                "Profit found: ",
+                found),
+            react_1.default.createElement("span", null,
+                ticks,
+                "s \u00B7 stand ",
+                Math.min(k + 1, stands.length),
+                " of ",
+                stands.length)),
+        done ? react_1.default.createElement("p", { style: { margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 } },
+            "Four stands run, ",
+            found,
+            " dollars of profit found. Tap the round arrow for new customers.") : (react_1.default.createElement("div", { style: { textAlign: 'center' } },
+            react_1.default.createElement("svg", { viewBox: "0 0 240 70", width: "100%", style: { maxWidth: 360, display: 'block', margin: '0 auto 6px' }, role: "img", "aria-label": "The customers at the stand" }, stand.tops.map((t, i) => {
+                const x = 12 + i * 19;
+                const b = buying[i];
+                return (react_1.default.createElement("g", { key: i, opacity: b === false ? 0.3 : 1 },
+                    react_1.default.createElement("circle", { cx: x, cy: "18", r: "7", fill: b ? B.green : '#D7DCDF', stroke: B.ink, strokeWidth: "1" }),
+                    react_1.default.createElement("rect", { x: x - 7, y: "28", width: "14", height: "22", rx: "4", fill: b ? B.greenSoft : '#EEF1EE', stroke: B.ink, strokeWidth: "1" }),
+                    b && react_1.default.createElement("rect", { x: x + 5, y: "32", width: "6", height: "9", rx: "1", fill: "#F2C94C", stroke: B.ink, strokeWidth: "0.8" })));
+            })),
+            react_1.default.createElement("p", { style: { margin: '4px 0 8px', fontSize: 15, color: B.ink, minHeight: 22 } }, said),
+            over ? (react_1.default.createElement("div", { style: { marginBottom: 10 } },
+                react_1.default.createElement("p", { style: { margin: '0 0 8px', fontSize: 15, fontWeight: 700, color: B.ink } },
+                    "Best price here: ",
+                    best.price,
+                    " ",
+                    best.price === 1 ? 'dollar' : 'dollars',
+                    ", profit ",
+                    best.profit,
+                    ". You found ",
+                    Math.max(0, mine),
+                    "."),
+                react_1.default.createElement(Btn, { pal: B, onClick: next }, k + 1 >= stands.length ? 'Finish' : 'Next stand'))) : (react_1.default.createElement("div", { style: { display: 'flex', flexWrap: 'wrap', gap: 6, justifyContent: 'center', marginBottom: 10 } }, [1, 2, 3, 4, 5, 6, 7, 8].map((pr) => {
+                const tried = tries.find((t) => t.price === pr);
+                return (react_1.default.createElement("button", { key: pr, type: "button", className: "edu-press", "aria-label": `Try price ${pr}`, disabled: !!tried, onClick: () => tryPrice(pr), style: { fontFamily: FONT, minWidth: 48, height: 48, borderRadius: 12, border: `2px solid ${tried ? B.line : B.green}`, background: tried ? '#EEF1EE' : '#fff', color: tried ? B.muted : B.ink, fontSize: 18, fontWeight: 700, cursor: tried ? 'default' : 'pointer', padding: '0 6px' } }, tried ? `${pr}: ${tried.profit}` : `$${pr}`));
+            }))),
+            react_1.default.createElement("p", { style: { margin: 0, fontSize: 13, color: B.muted } },
+                MAX - tries.length,
+                " ",
+                MAX - tries.length === 1 ? 'try' : 'tries',
+                " left on this stand"))),
+        react_1.default.createElement(Done, { show: done })));
+}
+const GAME_OF = { dots: DotsGame, pairs: PairsGame, sort: SortGame, maze: MazeGame, jigsaw: JigsawGame, pong: PongGame, sprint: SprintGame, order: OrderGame, build: BuildGame, fix: FixGame, mix: MixGame, debug: DebugGame, ptable: PtableGame, evidence: EvidenceGame, catch: CatchGame, path: PathGame, buckets: BucketsGame, jump: JumpGame, map: MapGame, balance: BalanceGame, walk: WalkGame, teach: TeachGame, bits: BitsGame, pay: PayGame, price: PriceGame };
 // How to play, in a line or two, by kind of game (and by deck for the matching games).
 function gameInstructions(game) {
     if (game.kind === 'bits')
         return 'A number sits at the top and eight switches below it, worth 128 down to 1. Tap the switches on and off until the lit places add up to the number; the sum shows as you go. Six numbers, and the clock counts up.';
     if (game.kind === 'teach')
         return 'Twelve fruits, apples and bananas. The robot has seen one of each and guesses the rest from its nearest known fruit: a red ring means it guesses apple, a yellow ring banana. Tap a fruit the robot got wrong to teach it, and watch every guess change. Four boards; fewer lessons is the better score.';
+    if (game.kind === 'price')
+        return 'A lemonade stand with twelve customers, each with a top price in mind you cannot see, a cost for the day and a cost per cup. Tap a price to try it: the people who will pay it step forward with a cup, and the profit shows as money in minus money out. Three tries a stand, then the best price is revealed. Four stands; more profit found is the better score.';
+    if (game.kind === 'pay')
+        return 'A thing to buy shows its price in coins, with a dot for every coin. Tap coins from the table into the tray until the total matches the price exactly; tap a tray coin to put it back. Too many and the tray empties for another try. Four things, and the clock counts up.';
     if (game.kind === 'walk')
         return 'Tap the arrows to give the robot its steps, one at a time, then tap Go and watch it follow them to the star. A bump into a rock or the edge stops it; tap the last step to take it back and try another. Four robots, and the clock counts up.';
     if (game.kind === 'evidence')
@@ -54914,6 +55636,17 @@ function GameThumb({ kind, game = null }) {
             [[27, 14], [30, 26], [22, 31]].map(([x, y], i) => react_1.default.createElement("g", { key: `b${i}` },
                 react_1.default.createElement("circle", { cx: x, cy: y, r: "4.4", fill: "none", stroke: "#E6B84B", strokeWidth: "1", strokeDasharray: "1.6 1" }),
                 react_1.default.createElement("path", { d: `M ${x - 2.4} ${y - 1} q 2.4 3.4 4.8 0 q -2.3 1.6 -4.8 0 z`, fill: "#F2C94C" }))));
+    if (game && game.kind === 'price')
+        return react_1.default.createElement("svg", { viewBox: "0 0 40 40", width: "44", height: "44", "aria-hidden": "true" },
+            react_1.default.createElement("path", { d: "M8 6h16l8 8v20H8z", fill: "#fff", stroke: k, strokeWidth: "1.2", strokeLinejoin: "round" }),
+            react_1.default.createElement("circle", { cx: "13", cy: "11", r: "1.6", fill: k }),
+            [[13, 22, 10], [19, 17, 15], [25, 20, 12]].map(([x, y, h], i) => react_1.default.createElement("rect", { key: i, x: x, y: y, width: "4.5", height: h, rx: "1", fill: i === 1 ? C.green : '#DDE3DE', stroke: k, strokeWidth: "0.7" })));
+    if (game && game.kind === 'pay')
+        return react_1.default.createElement("svg", { viewBox: "0 0 40 40", width: "44", height: "44", "aria-hidden": "true" },
+            react_1.default.createElement("rect", { x: "5", y: "6", width: "30", height: "14", rx: "3", fill: "#fff", stroke: k, strokeWidth: "1" }),
+            [0, 1, 2, 3].map((i) => react_1.default.createElement("circle", { key: i, cx: 11 + i * 6, cy: "13", r: "2", fill: i < 2 ? C.green : '#DDE3DE', stroke: k, strokeWidth: "0.6" })),
+            react_1.default.createElement("circle", { cx: "13", cy: "30", r: "6", fill: "#E6B84B", stroke: "#9C7A1C", strokeWidth: "1.2" }),
+            react_1.default.createElement("circle", { cx: "27", cy: "30", r: "4.6", fill: "#D7DCDF", stroke: "#7B8388", strokeWidth: "1.2" }));
     if (game && game.kind === 'walk')
         return react_1.default.createElement("svg", { viewBox: "0 0 40 40", width: "44", height: "44", "aria-hidden": "true" },
             [0, 1, 2].map((r) => [0, 1, 2].map((c) => react_1.default.createElement("rect", { key: `${r}${c}`, x: 4.5 + c * 10.5, y: 4.5 + r * 10.5, width: "9.5", height: "9.5", rx: "1.5", fill: C.paperBoard, stroke: k, strokeWidth: "1" }))),

@@ -918,6 +918,27 @@ export const COURSES = [
     modules: TECH9_MODULES(),
   },
   {
+    id: 'econ-k',
+    grade: 'K',
+    subject: 'Economics',
+    title: 'Needs, wants, work and saving',
+    audience: 'Kindergarten to grade 2',
+    readAloud: true, // the K to 2 band: questions are spoken and answers tapped (2026-09-29, pass FV)
+    elective: true,
+    keywords: ['money', 'saving', 'jobs', 'personal finance', 'economics', 'elective'],
+    modules: ECONK_MODULES(),
+  },
+  {
+    id: 'econ-3',
+    grade: '3',
+    subject: 'Economics',
+    title: 'Money that works',
+    audience: 'Grades 3 to 5',
+    elective: true,
+    keywords: ['money', 'profit', 'budget', 'saving', 'credit', 'personal finance', 'economics', 'elective'],
+    modules: ECON3_MODULES(),
+  },
+  {
     id: 'civics-3',
     grade: '3',
     subject: 'History',
@@ -1052,7 +1073,8 @@ export const GAMES = [
   { id: 'sort-size', kind: 'sort', title: 'Big and Small', by: 'size' },
   { id: 'catch-circles', kind: 'catch', title: 'Catch the Circles', rule: 'circles', young: true },
   { id: 'maze-small', kind: 'maze', title: 'Maze', cells: 6 },
-  { id: 'walk-tech-k', kind: 'walk', title: 'Walk the Robot', walk: 'walk', young: true, minGrade: 'K' },   // computer science K to 2 (pass FS): the child programs the robot
+  { id: 'walk-tech-k', kind: 'walk', title: 'Walk the Robot', walk: 'walk', young: true, minGrade: 'K' },
+  { id: 'pay-econ-k', kind: 'pay', title: 'Pay the Price', pay: 'coins', young: true, minGrade: 'K' },   // economics K to 2 (pass FV): count out the exact price   // computer science K to 2 (pass FS): the child programs the robot
   { id: 'jigsaw-4', kind: 'jigsaw', title: 'Puzzle', side: 2 },
   { id: 'dots-boat', kind: 'dots', title: 'Boat', shape: 'boat' },
   { id: 'pairs-more', kind: 'pairs', title: 'More Pairs', pairs: 4 },
@@ -1146,6 +1168,7 @@ export const GAMES = [
   { id: 'ptable-science-10', kind: 'ptable', title: 'The periodic table: find it', minGrade: '10', deck: 'main' },
   { id: 'debug-tech-3', kind: 'debug', title: 'Debug the robot: arrows', minGrade: '3', deck: 'arrows' },
   { id: 'debug-tech-5', kind: 'debug', title: 'Debug the robot: turns', minGrade: '5', deck: 'turns' },
+  { id: 'price-econ-3', kind: 'price', title: 'Set the Price', minGrade: '3', price: 'stand' },   // economics 3 to 5 (pass FW): find the price that earns the most
   { id: 'teach-tech-6', kind: 'teach', title: 'Teach the Robot', minGrade: '6', teach: 'fruit' },
   { id: 'bits-tech-9', kind: 'bits', title: 'Eight Switches', minGrade: '9', bits: 8 },   // computer science 9 to 12 (pass FU): make the number with the switches   // the plain AI course (pass FT): the child is the pile of examples
   { id: 'mix-art-3', kind: 'mix', title: 'Color mixer: make new colors', minGrade: '3', deck: 'mix3' },
@@ -1556,6 +1579,22 @@ export function bitsTargets(round, count = 6) {
   while (out.length < count) { const n = Math.floor(rnd() * 256); if (out.includes(n)) continue; if (out.length && (n & (n - 1)) === 0 && (out[out.length - 1] & (out[out.length - 1] - 1)) === 0) continue; out.push(n); }
   return out;
 }
+// Pay the Price (2026-09-29, pass FV, economics K to 2): four things to buy a round, each with a price in coins, paid by
+// tapping coins worth 5 and 1 into the tray until the total matches exactly. The prices come from the round so a replay
+// is new; every price is payable with the two fives and five ones on the table (up to 15), and the rules test says so.
+export function payPrices(round) {
+  let x = (round * 7919 + 3) >>> 0; const rnd = () => { x = (x * 1664525 + 1013904223) >>> 0; return x / 4294967296; }; const items = ['a ball', 'a kite', 'a book', 'a puzzle', 'crayons', 'a yo-yo', 'a cap', 'a top'];
+  return Array.from({ length: 4 }, (_, k) => ({ item: items[(Math.floor(rnd() * 8) + k) % 8], price: 3 + Math.floor(rnd() * 11) }));
+}
+// Set the Price (2026-09-29, pass FW, economics 3 to 5): a stand with twelve customers who each have a top price in mind
+// (hidden), a fixed cost for the day and a cost per cup. The player tries prices; a customer buys when the price is at or
+// under their top, and profit is price times buyers minus the costs. Four stands a round from the round number, and the
+// rules test checks that some price on every stand makes a profit.
+export function priceStands(round) {
+  let x = (round * 104729 + 17) >>> 0; const rnd = () => { x = (x * 1664525 + 1013904223) >>> 0; return x / 4294967296; };
+  return Array.from({ length: 4 }, () => { const tops = Array.from({ length: 12 }, () => 1 + Math.floor(rnd() * 8)); const fixed = 3 + Math.floor(rnd() * 5); const each = 1; return { tops, fixed, each }; });
+}
+export function standProfit(stand, price) { const buyers = stand.tops.filter((t) => t >= price).length; return { buyers, profit: price * buyers - stand.fixed - stand.each * buyers }; }
 export const ROBOT_DECKS = {
   arrows: [
     { start: [1,1], goal: [0,4], rocks: [[2,1],[0,2],[2,2]], program: 'DDLU' },
@@ -1935,7 +1974,7 @@ function recommendedIncludingElectives(events, level, startGrade = null) {
 
 // Subjects always read Math, Reading, Writing, Science, History, then anything else alphabetically,
 // whatever order the courses were written in. Every screen that lists subjects sorts with this.
-const SUBJECT_RANK = { Math: 0, Reading: 1, Writing: 2, Science: 3, History: 4, Art: 5, Music: 6, Technology: 7, Health: 8 };
+const SUBJECT_RANK = { Math: 0, Reading: 1, Writing: 2, Science: 3, History: 4, Art: 5, Music: 6, Technology: 7, Health: 8, Economics: 9 };   // Economics joined 2026-09-29 (pass FV)
 export function sortSubjects(subjects) {
   return [...new Set(subjects)].sort((a, b) => (SUBJECT_RANK[a] ?? 9) - (SUBJECT_RANK[b] ?? 9) || a.localeCompare(b));
 }
@@ -8398,6 +8437,153 @@ function TECH9_MODULES() { return [
     generators: ['t9-craft', 't9-craft', 't9-craft', 't9-craft', 't9-craft'],
   },
 ]; }
+// Economics and personal finance for the K to 2 band (2026-09-29, pass FV): four spoken lessons, each answer said first.
+// Texas codes are the personal financial literacy strands of the mathematics TEKS (§111.2(b)(9), §111.3(b)(9), §111.4(b)(11),
+// read from the published text); the national framework is the Council for Economic Education's Voluntary National
+// Content Standards in Economics.
+function ECONK_MODULES() { return [
+  {
+    id: 'wants-needs-and-choices',
+    order: 1,
+    title: 'Needs, wants and choices',
+    tagline: 'Pick one, and let the other go',
+    requires: [],
+    lesson: {
+      paragraphs: ['A need is something you must have to live: food, water, clothes and a home. A want is something nice to have: a toy, a candy bar, a new game.\nNeeds come first. When the money is spent on needs, wants wait.', 'Nobody can have everything. When you cannot have both, you make a choice, and the thing you did not pick is what you give up. If you choose the ball, you give up the crayons for now.', 'Needs first, then wants. A choice means picking one and letting the other go.'],
+      keyIdea: 'Needs come first; wants wait. A choice means picking one and letting the other go.',
+      example: { kind: 'flow', steps: ['two things you want', 'money for one', 'pick one', 'let the other go'], caption: 'One coin, two wants: the choice gives one up.',
+        another: ['Ask of anything: would I be hurt without it? Food, water, clothes, a home: yes, so they are needs. A toy: no, so it is a want.',
+          { text: 'A grocery cart holds needs first. If there is money left at the end, a want can ride on top.', visual: { kind: 'flow', steps: ['bread and milk', 'soap', 'money left?', 'a treat'] } },
+          'Giving something up is not losing. It is the price of choosing, and everyone pays it, even grown-ups.'] },
+    },
+    sources: ['Aligned with TEKS Mathematics K.9(D) (distinguish between wants and needs and identify income as a source to meet one\'s wants and needs) and the Voluntary National Content Standards in Economics, Standards 1 (Scarcity) and 2 (Decision Making).'],
+    generators: ['ek-wants', 'ek-wants', 'ek-wants', 'ek-wants', 'ek-wants'],
+  },
+  {
+    id: 'earning-income',
+    order: 2,
+    title: 'Earning income',
+    tagline: 'Work earns money',
+    requires: ['wants-needs-and-choices'],
+    lesson: {
+      paragraphs: ['Money you get for doing a job is called income. A baker earns income baking bread, a bus driver earns income driving, and you can earn income too: walking a dog, raking leaves, washing a car.\nMoney a grandmother gives you for your birthday is a gift. It is nice, but it is not income, because you did not work for it.', 'Every job needs skills. Being on time, following the steps, doing the job well, and being kind to people are skills. The more skills you have, the more jobs you can do.', 'Work earns income. A gift is not income. Skills get you the job.'],
+      keyIdea: 'Income is money earned by working. A gift is not income. Every job needs skills.',
+      example: { kind: 'flow', steps: ['a job to do', 'do it well', 'income'], caption: 'Do the job, earn the money.',
+        another: ['A lemonade stand is a small job: make the lemonade, pour it, take the coins. The coins are income because they came from work.',
+          { text: 'Ask where the money came from. Work: income. A birthday card: a gift. Both spend the same, but only one you earned.', visual: { kind: 'flow', steps: ['walked the dog: income', 'birthday card: gift'] } },
+          'Skills grow with practice. Being on time is a skill you can practice tomorrow morning.'] },
+    },
+    sources: ['Aligned with TEKS Mathematics K.9(A) (identify ways to earn income), K.9(B) (differentiate between money received as income and money received as gifts) and K.9(C) (list simple skills required for jobs), and the Voluntary National Content Standards in Economics, Standard 13 (Income).'],
+    generators: ['ek-income', 'ek-income', 'ek-income', 'ek-income', 'ek-income'],
+  },
+  {
+    id: 'spending-and-saving',
+    order: 3,
+    title: 'Spending and saving',
+    tagline: 'Coins in the bank add up',
+    requires: ['earning-income'],
+    lesson: {
+      paragraphs: ['Income buys things: goods, like bread and shoes, and services, like a haircut. Bread is a good; a haircut is a service. Spending is using money now. Saving is keeping money for later.\nA piggy bank or a savings account keeps money safe. Putting money in is a deposit. Taking money out is a withdrawal.', 'Saving adds up. Two coins a week for three weeks is six coins. Save a little every week and a big thing gets closer: two coins, then four, then six, then eight.', 'Some people also give some money to help others. Spend some, save some, and share some.'],
+      keyIdea: 'Spending is now; saving is for later. A deposit puts money in, a withdrawal takes it out, and saving adds up.',
+      example: { kind: 'flow', steps: ['week 1: 2 coins', 'week 2: 4', 'week 3: 6', 'week 4: 8'], caption: 'Two coins a week: the bank grows by two every week.',
+        another: ['A jar with a picture of the thing you are saving for taped on the front. Every coin makes the picture closer.',
+          { text: 'A deposit is putting in; a withdrawal is taking out. In, out: the words say which way the money moves.', visual: { kind: 'flow', steps: ['deposit: in', 'withdrawal: out'] } },
+          'Spend some, save some, share some. Three jars, and every coin goes in one of them.'] },
+    },
+    sources: ['Aligned with TEKS Mathematics 1.9(B) (identify income as a means of obtaining goods and services), 1.9(C) (distinguish between spending and saving), 1.9(D) (consider charitable giving), 2.11(A) (calculate how money saved can accumulate into a larger amount over time), 2.11(B) (explain that saving is an alternative to spending) and 2.11(C) (distinguish between a deposit and a withdrawal), and the Voluntary National Content Standards in Economics, Standard 10 (Institutions).'],
+    generators: ['ek-saving', 'ek-saving', 'ek-saving', 'ek-saving', 'ek-saving'],
+  },
+  {
+    id: 'trading-and-markets',
+    order: 4,
+    title: 'Trading and markets',
+    tagline: 'A price is the coins it takes',
+    requires: ['spending-and-saving'],
+    lesson: {
+      paragraphs: ['A trade is a swap. You can trade a thing for a thing, like a sticker for a marble, or a thing for money. Most trades use money, because money is easy to carry and everyone takes it.\nA market is any place where buyers and sellers meet: a store, a farm stand, a lemonade stand.', 'The price is how many coins a thing costs. If a ball costs 4 coins and you have 6, you can buy it, and 2 coins are left. If it costs 8, you cannot buy it yet: you save more, or you choose something else.', 'A trade is a swap. A market is where buyers meet sellers. The price is the coins it takes.'],
+      keyIdea: 'A trade is a swap, a market is where buyers meet sellers, and the price is how many coins a thing costs.',
+      example: { kind: 'flow', steps: ['ball: 4 coins', 'you have 6', 'pay 4', '2 left'], caption: 'Count out the price; what is left stays yours.',
+        another: ['Before money, people swapped: eggs for bread, wool for a pot. It only worked when each wanted what the other had. Money made every swap easy.',
+          { text: 'A store is a market with a roof. A farm stand is a market with a table. A lemonade stand is a market with a pitcher.', visual: { kind: 'flow', steps: ['store', 'farm stand', 'lemonade stand'] } },
+          'Not enough coins is not the end. It means save more, or choose something else.'] },
+    },
+    sources: ['Aligned with TEKS Mathematics 1.9(B) (identify income as a means of obtaining goods and services) and the Voluntary National Content Standards in Economics, Standards 5 (Trade) and 7 (Markets and Prices).'],
+    generators: ['ek-trade', 'ek-trade', 'ek-trade', 'ek-trade', 'ek-trade'],
+  },
+]; }
+// Economics and personal finance for the 3 to 5 band (2026-09-29, pass FW), at grade 3. Texas codes are the personal
+// financial literacy strands of the mathematics TEKS for grades 3, 4 and 5 (§111.5(b)(9), §111.6(b)(10), §111.7(b)(10)),
+// read from the published text; the national framework is the CEE Voluntary National Content Standards in Economics.
+function ECON3_MODULES() { return [
+  {
+    id: 'skills-and-income',
+    order: 1,
+    title: 'Skills and income',
+    tagline: 'What you can do sets what you can earn',
+    requires: [],
+    lesson: {
+      paragraphs: ['Income is what work pays, and what work pays depends on what you can do. A skill you learn, a tool you can use, a job you have practiced: economists call all of that human capital. More human capital, more income. A person who mows lawns earns for the mowing; a person who can also sharpen the blades earns for both.', 'Income is usually pay for time: 9 dollars an hour for 4 hours is 36 dollars. Learning a skill raises the number in front of the hour.', 'Cost depends on how scarce a thing is. When a frost ruins most of the strawberries, the few that are left cost more, because many people want them and few exist. When something is easy to get, it costs less. Scarce means costly; plentiful means cheap.'],
+      keyIdea: 'Skills are human capital, and more of it means more income. Scarce things cost more; plentiful things cost less.',
+      example: { kind: 'flow', steps: ['9 dollars an hour', '4 hours', '36 dollars'], caption: 'Pay for time: the rate times the hours.',
+        another: ['Two lifeguards work the same pool. One also holds a first aid card and earns two dollars more an hour. The card is human capital, and it pays every hour, all summer.',
+          { text: 'After a storm, everyone needs chainsaw blades at once and the hardware store has twelve. The price goes up until the shelf is refilled. The blades did not change; how scarce they were did.', visual: { kind: 'flow', steps: ['storm', 'twelve blades left', 'many buyers', 'price up'] } },
+          'Ask two questions of any price: how many people want it, and how much of it there is.'] },
+    },
+    sources: ['Aligned with TEKS Mathematics 3.9(A) (explain the connection between human capital/labor and income) and 3.9(B) (describe the relationship between the availability or scarcity of resources and how that impacts cost), and the Voluntary National Content Standards in Economics, Standards 13 (Income) and 1 (Scarcity).'],
+    generators: ['e3-skills', 'e3-skills', 'e3-skills', 'e3-skills', 'e3-skills'],
+  },
+  {
+    id: 'planned-spending-and-credit',
+    order: 2,
+    title: 'Planned spending and credit',
+    tagline: 'A plan, an impulse, and a loan',
+    requires: ['skills-and-income'],
+    lesson: {
+      paragraphs: ['Planned spending is deciding before you go: what you will buy, and how much it may cost. Unplanned spending is deciding in the aisle. Planned spending usually gets you the thing you wanted at a price you were ready for; unplanned spending often costs more than it gives, because the money for something planned is gone.', 'Credit is buying now and paying later. When a want or a need is bigger than the money you have, a lender, such as a bank, can lend you the money, and it is the borrower\'s job to pay it back, usually with interest. Interest is the extra you pay for borrowing: borrow 20 dollars at 2 dollars interest and you pay back 22.', 'Credit is a tool, not free money. Used for something planned that you can pay back, it works. Used for an impulse, it turns a want into a debt.'],
+      keyIdea: 'Planned spending decides before the store; unplanned spending decides in the aisle. Credit means the borrower pays back, usually with interest.',
+      example: { kind: 'flow', steps: ['borrow 20', 'interest 2', 'pay back 22'], caption: 'The lender gets the loan back and the interest on top.',
+        another: ['A shopping list is planned spending written down. Everything in the cart that is not on the list is unplanned, and the receipt shows what it cost.',
+          { text: 'A library book is a loan of a book: you must give it back, and a late fee is the interest. Borrowed money works the same way, with dollars instead of pages.', visual: { kind: 'flow', steps: ['borrow', 'use', 'give back', 'plus the fee'] } },
+          'Before using credit, ask three things: is it planned, can I pay it back, and what will the interest add?'] },
+    },
+    sources: ['Aligned with TEKS Mathematics 3.9(C) (identify the costs and benefits of planned and unplanned spending decisions), 3.9(D) (explain that credit is used when wants or needs exceed the ability to pay and that it is the borrower\'s responsibility to pay it back, usually with interest) and 3.9(F) (identify decisions involving income, spending, saving, credit, and charitable giving), and the Voluntary National Content Standards in Economics, Standards 2 (Decision Making) and 12 (Interest Rates).'],
+    generators: ['e3-credit', 'e3-credit', 'e3-credit', 'e3-credit', 'e3-credit'],
+  },
+  {
+    id: 'expenses-and-profit',
+    order: 3,
+    title: 'Expenses and profit',
+    tagline: 'What comes in, minus what goes out',
+    requires: ['planned-spending-and-credit'],
+    lesson: {
+      paragraphs: ['A business has expenses, and they come in two kinds. Fixed expenses stay the same no matter how much you sell: the rent for the table at the fair is 5 dollars whether you sell one cookie or fifty. Variable expenses grow with what you sell: every dozen cookies needs more flour and sugar.', 'Profit is the money that comes in minus all the expenses. Sell 8 cups of lemonade at 2 dollars, that is 16 dollars in; spend 6 dollars on lemons and cups, and the profit is 10 dollars. If the expenses are bigger than what comes in, that is a loss.', 'An allowance can be run like a small business too. Decide the shares before the money arrives: some to spend, some to save, and some to share. Ten dollars might be 5 to spend, 3 to save and 2 to share, and the deciding is the part that matters.'],
+      keyIdea: 'Fixed expenses stay the same; variable expenses grow with sales. Profit is money in minus expenses. Divide an allowance before it arrives: spend, save, share.',
+      example: { kind: 'flow', steps: ['16 dollars in', '6 dollars out', 'profit 10'], caption: 'Money in, minus money out, is profit.',
+        another: ['A lemonade stand\'s pitcher is a fixed expense: one pitcher, however many cups. The lemons are variable: more cups, more lemons.',
+          { text: 'A loss is profit below zero. Sell 3 cups at 2 dollars, that is 6 in, with 8 dollars of expenses: a loss of 2. The fix is more sales, lower expenses, or a better price.', visual: { kind: 'flow', steps: ['6 in', '8 out', 'loss of 2'] } },
+          'Three jars for an allowance, labeled before the first coin: spend, save, share. The label is the decision.'] },
+    },
+    sources: ['Aligned with TEKS Mathematics 4.10(A) (distinguish between fixed and variable expenses), 4.10(B) (calculate profit in a given situation) and 4.10(D) (describe how to allocate a weekly allowance among spending, saving, including for college, and sharing), and the Voluntary National Content Standards in Economics, Standard 14 (Entrepreneurship).'],
+    generators: ['e3-profit', 'e3-profit', 'e3-profit', 'e3-profit', 'e3-profit'],
+  },
+  {
+    id: 'savings-taxes-and-budgets',
+    order: 4,
+    title: 'Savings, taxes and budgets',
+    tagline: 'Where money waits, what the government takes, and how the month balances',
+    requires: ['expenses-and-profit'],
+    lesson: {
+      paragraphs: ['People save for a reason: a bike, an emergency, college. A savings plan says how much goes aside each week and what it is for. A piggy bank keeps money at home, where it is easy to reach and earns nothing. A savings account at a bank keeps it safe and pays a little interest for leaving it there. Banks do three things: keep money safe, lend money, and borrow it from savers by paying interest.', 'A paycheck has a hole in it, and the hole is tax. Gross income is what you earned; net income is what you take home after taxes. Income tax and payroll tax come out of pay, sales tax is added when you buy, and property tax is paid on a house or land. Taxes pay for roads, schools, parks and firefighters.', 'A budget is a plan for a month: income on one side, expenses on the other. It balances when the expenses are no bigger than the income. When expenses are bigger, something has to give: spend less, earn more, or move a want to next month.'],
+      keyIdea: 'Save on a plan, in a bank if you can. Gross income minus taxes is net income. A budget balances when expenses are no bigger than income.',
+      example: { kind: 'flow', steps: ['gross 50', 'tax 5', 'net 45'], caption: 'What you earned, minus tax, is what you take home.',
+        another: ['Money in a piggy bank is safe from spending only as long as you are. A savings account adds a lock and a little interest.',
+          { text: 'A month with 40 dollars in and 45 out does not balance. Cut 5 dollars of wants, earn 5 more, or move something to next month: any one of the three closes the gap.', visual: { kind: 'flow', steps: ['40 in', '45 out', 'gap of 5', 'cut, earn or wait'] } },
+          'Sales tax hides in the price at the register: a 10 dollar toy costs a little more than 10. Ask what the tax adds before you count out the money.'] },
+    },
+    sources: ['Aligned with TEKS Mathematics 3.9(E) (list reasons to save and explain the benefit of a savings plan, including for college), 4.10(C) (compare the advantages and disadvantages of various savings options), 4.10(E) (describe the basic purpose of financial institutions, including keeping money safe, borrowing money, and lending), 5.10(A) (define income tax, payroll tax, sales tax, and property tax), 5.10(B) (explain the difference between gross income and net income), 5.10(E) (describe actions that might be taken to balance a budget when expenses exceed income) and 5.10(F) (balance a simple budget), and the Voluntary National Content Standards in Economics, Standards 10 (Institutions) and 16 (Role of Government and Market Failure).'],
+    generators: ['e3-budget', 'e3-budget', 'e3-budget', 'e3-budget', 'e3-budget'],
+  },
+]; }
 function TECH3_MODULES() { return [
   {
     id: 'inputs-and-outputs',
@@ -12617,6 +12803,125 @@ Object.assign(GENERATORS, {
       ['What protects an account even if the password leaks?', ['a second step', 'a longer name', 'a faster computer', 'a new browser'], 'a second step', 'A code on your phone is a second step an attacker with the password does not have.'],
       ['A polished page that says what you hoped is what?', ['not more reliable for it', 'always true', 'a primary source', 'open source'], 'not more reliable for it', 'Check who wrote it, when, and what they gain.'],
       ['What do you need before you copy someone\'s code?', ['permission', 'a faster computer', 'a longer password', 'nothing'], 'permission', 'Copyright means you need permission to copy, and citing the source shows where it came from.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  // Economics and personal finance, K to 2 (2026-09-29, pass FV): spoken questions, tapped answers, coins counted where there is counting.
+  'ek-wants': (rng) => {
+    const Q = [['Which one is a need?', ['water', 'a toy', 'candy'], 'water', 'Food, water, clothes and a home are needs. You must have them to live.'],
+      ['Which one is a want?', ['a new game', 'food', 'a home'], 'a new game', 'A want is nice to have, not needed to live.'],
+      ['Which comes first, needs or wants?', ['needs', 'wants', 'neither'], 'needs', 'Needs first, then wants, if there is money left.'],
+      ['You pick the ball instead of the crayons. What is that?', ['a choice', 'a gift', 'income'], 'a choice', 'Picking one and letting the other go is a choice.'],
+      ['When you choose one thing, what happens to the other?', ['you give it up', 'you get it too', 'it costs less'], 'you give it up', 'The thing you did not pick is what you give up, for now.'],
+      ['Which one is a need?', ['clothes', 'a candy bar', 'a sticker'], 'clothes', 'Clothes keep you warm and safe. They are a need.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'ek-income': (rng) => {
+    const Q = [['Money you get for doing a job is called what?', ['income', 'a gift', 'a price'], 'income', 'Income is money earned by working.'],
+      ['Grandma gives you money for your birthday. What is that?', ['a gift', 'income', 'a deposit'], 'a gift', 'You did not work for it, so it is a gift, not income.'],
+      ['Which one earns income?', ['walking a dog', 'a birthday card', 'a nap'], 'walking a dog', 'Walking a dog is a job, so the money is income.'],
+      ['Which one is a skill for a job?', ['being on time', 'being tall', 'being sleepy'], 'being on time', 'Being on time, following the steps and being kind are skills.'],
+      ['A baker earns income by doing what?', ['baking bread', 'eating bread', 'buying bread'], 'baking bread', 'Baking is the work; the money for it is income.'],
+      ['More skills let you do what?', ['more jobs', 'fewer jobs', 'no jobs'], 'more jobs', 'The more skills you have, the more jobs you can do.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'ek-saving': (rng) => {
+    const r = rng();
+    if (r < 0.3) {
+      const per = randInt(rng, 1, 3); const weeks = randInt(rng, 2, 4); const ans = per * weeks;
+      return { type: 'choice', story: null, prompt: `You save ${per} ${per === 1 ? 'coin' : 'coins'} each week for ${weeks} weeks. How many coins?`, choices: shuffle(rng, [ans, ans + per, per + weeks, ans - 1].filter((v, i, a) => a.indexOf(v) === i && v > 0).slice(0, 3).map(String)), answer: String(ans), explain: `${Array.from({ length: weeks }, () => per).join(' + ')} = **${ans}**. Saving adds up.`, visual: null, explainVisual: null };
+    }
+    if (r < 0.55) {
+      const put = randInt(rng, 4, 9); const take = randInt(rng, 1, 3); const ans = put - take;
+      return { type: 'choice', story: null, prompt: `You deposit ${put} coins and withdraw ${take}. How many are in the bank?`, choices: shuffle(rng, [ans, put + take, put, take].filter((v, i, a) => a.indexOf(v) === i).slice(0, 3).map(String)), answer: String(ans), explain: `A deposit puts in, a withdrawal takes out: ${put} take away ${take} is **${ans}**.`, visual: null, explainVisual: null };
+    }
+    const Q = [['Using money now is called what?', ['spending', 'saving', 'a deposit'], 'spending', 'Spending is using money now. Saving is keeping it for later.'],
+      ['Keeping money for later is called what?', ['saving', 'spending', 'a gift'], 'saving', 'Saving keeps money for something later.'],
+      ['Putting money into the bank is called what?', ['a deposit', 'a withdrawal', 'a price'], 'a deposit', 'In: a deposit. Out: a withdrawal.'],
+      ['Taking money out of the bank is called what?', ['a withdrawal', 'a deposit', 'a trade'], 'a withdrawal', 'Out: a withdrawal. In: a deposit.'],
+      ['A haircut is which kind of thing you buy?', ['a service', 'a good', 'a gift'], 'a service', 'Goods are things like bread and shoes; a haircut is a service.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'ek-trade': (rng) => {
+    const r = rng();
+    if (r < 0.4) {
+      const price = randInt(rng, 2, 6); const have = price + randInt(rng, 1, 4); const ans = have - price;
+      return { type: 'choice', story: `A toy costs ${price} coins and you have ${have}.`, prompt: 'How many coins are left after you buy it?', choices: shuffle(rng, [ans, have + price, price, ans + 1].filter((v, i, a) => a.indexOf(v) === i).slice(0, 3).map(String)), answer: String(ans), explain: `Count out the price: ${have} take away ${price} leaves **${ans}**.`, visual: null, explainVisual: null };
+    }
+    const Q = [['A sticker for a marble is what?', ['a trade', 'income', 'a need'], 'a trade', 'A trade is a swap: a thing for a thing, or a thing for money.'],
+      ['A place where buyers and sellers meet is called what?', ['a market', 'a bank', 'a gift'], 'a market', 'A store, a farm stand and a lemonade stand are all markets.'],
+      ['How many coins a thing costs is called what?', ['the price', 'the income', 'the deposit'], 'the price', 'The price is the coins it takes.'],
+      ['Why do most trades use money?', ['everyone takes it', 'it is heavy', 'it is a want'], 'everyone takes it', 'Money is easy to carry and everyone takes it.'],
+      ['A ball costs 8 coins and you have 6. What can you do?', ['save more', 'take it anyway', 'pay 6'], 'save more', 'Not enough coins means save more, or choose something else.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  // Economics and personal finance, grades 3 to 5 (2026-09-29, pass FW): the money is computed each time; the concepts are said in the lesson first.
+  'e3-skills': (rng) => {
+    if (rng() < 0.5) {
+      const rate = randInt(rng, 6, 12); const hours = randInt(rng, 2, 6); const ans = rate * hours;
+      return { type: 'choice', story: `A job pays ${rate} dollars an hour.`, prompt: `How much income does ${hours} hours earn?`, choices: shuffle(rng, [ans, ans + rate, rate + hours, ans - hours].filter((v, i, a) => a.indexOf(v) === i).map(String)), answer: String(ans), explain: `The rate times the hours: ${rate} times ${hours} is **${ans}** dollars.`, visual: null, explainVisual: null };
+    }
+    const Q = [['Skills, tools you can use and jobs you have practiced are called what?', ['human capital', 'a budget', 'interest', 'a loss'], 'human capital', 'Economists call what you can do human capital. More of it, more income.'],
+      ['More human capital usually means what?', ['more income', 'more tax', 'less work', 'a loss'], 'more income', 'A person who can also sharpen the blades earns for both.'],
+      ['A frost ruins most of the strawberries. The ones left cost what?', ['more', 'less', 'the same', 'nothing'], 'more', 'Scarce means costly: many want them and few exist.'],
+      ['When a thing is easy to get, it usually costs what?', ['less', 'more', 'double', 'nothing'], 'less', 'Plentiful means cheap.'],
+      ['What does learning a skill raise?', ['the number in front of the hour', 'the number of hours in a day', 'the tax', 'the price of strawberries'], 'the number in front of the hour', 'Pay is usually a rate times the hours; a skill raises the rate.'],
+      ['What are the two questions to ask of any price?', ['how many want it, and how much there is', 'who made it, and when', 'is it red, and is it big', 'how heavy, and how far'], 'how many want it, and how much there is', 'Want and scarcity set the price together.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'e3-credit': (rng) => {
+    if (rng() < 0.45) {
+      const loan = pick(rng, [10, 20, 30, 40, 50]); const interest = randInt(rng, 1, 5); const ans = loan + interest;
+      return { type: 'choice', story: `You borrow ${loan} dollars and the interest is ${interest} dollars.`, prompt: 'How much do you pay back?', choices: shuffle(rng, [ans, loan, loan - interest, ans + interest].filter((v, i, a) => a.indexOf(v) === i).map(String)), answer: String(ans), explain: `The loan plus the interest: ${loan} + ${interest} = **${ans}** dollars.`, visual: null, explainVisual: null };
+    }
+    const Q = [['Deciding what to buy before you go to the store is called what?', ['planned spending', 'unplanned spending', 'credit', 'interest'], 'planned spending', 'Planned spending decides before the store; unplanned decides in the aisle.'],
+      ['Buying now and paying later is called what?', ['credit', 'a budget', 'income', 'a tax'], 'credit', 'Credit is used when a want or need is bigger than the money you have.'],
+      ['Whose job is it to pay a loan back?', ['the borrower\'s', 'the lender\'s', 'the store\'s', 'nobody\'s'], 'the borrower\'s', 'It is the borrower\'s job to pay it back, usually with interest.'],
+      ['The extra you pay for borrowing is called what?', ['interest', 'profit', 'a deposit', 'net income'], 'interest', 'Borrow 20 dollars at 2 dollars interest and you pay back 22.'],
+      ['Credit used for an impulse turns a want into what?', ['a debt', 'a profit', 'a gift', 'income'], 'a debt', 'Used for something planned that you can pay back, credit works. Used for an impulse, it turns a want into a debt.'],
+      ['Which usually costs more than it gives?', ['unplanned spending', 'planned spending', 'saving', 'sharing'], 'unplanned spending', 'The money for something planned is gone.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'e3-profit': (rng) => {
+    const r = rng();
+    if (r < 0.35) {
+      const cups = randInt(rng, 4, 12); const price = randInt(rng, 1, 3); const cost = randInt(rng, 3, 9); const inn = cups * price; const ans = inn - cost;
+      return { type: 'choice', story: `You sell ${cups} cups at ${price} ${price === 1 ? 'dollar' : 'dollars'} each and your expenses are ${cost} dollars.`, prompt: 'What is the profit?', choices: shuffle(rng, [ans, inn, inn + cost, ans + price].filter((v, i, a) => a.indexOf(v) === i).map(String)), answer: String(ans), explain: `Money in: ${cups} times ${price} is ${inn}. Minus ${cost} of expenses: **${ans}**${ans < 0 ? ', a loss' : ''}.`, visual: null, explainVisual: null };
+    }
+    if (r < 0.6) {
+      const total = pick(rng, [10, 12, 15, 20]); const save = randInt(rng, 2, 5); const share = randInt(rng, 1, 3); const ans = total - save - share;
+      return { type: 'choice', story: `An allowance of ${total} dollars: ${save} to save and ${share} to share.`, prompt: 'How much is left to spend?', choices: shuffle(rng, [ans, total - save, ans + share, save + share].filter((v, i, a) => a.indexOf(v) === i).map(String)), answer: String(ans), explain: `${total} minus ${save} minus ${share} leaves **${ans}** to spend.`, visual: null, explainVisual: null };
+    }
+    const Q = [['The table rent is 5 dollars however many cookies you sell. Which kind of expense is that?', ['fixed', 'variable', 'profit', 'a loss'], 'fixed', 'Fixed expenses stay the same no matter how much you sell.'],
+      ['Flour for every dozen cookies is which kind of expense?', ['variable', 'fixed', 'a tax', 'income'], 'variable', 'Variable expenses grow with what you sell.'],
+      ['Money in minus all the expenses is called what?', ['profit', 'a budget', 'credit', 'gross income'], 'profit', 'Sell 8 cups at 2 dollars, spend 6, and the profit is 10.'],
+      ['Expenses bigger than the money in is called what?', ['a loss', 'a profit', 'a deposit', 'interest'], 'a loss', 'A loss is profit below zero.'],
+      ['When should an allowance be divided into spend, save and share?', ['before the money arrives', 'after it is spent', 'never', 'at the store'], 'before the money arrives', 'The deciding is the part that matters.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'e3-budget': (rng) => {
+    const r = rng();
+    if (r < 0.35) {
+      const gross = pick(rng, [40, 50, 60, 80, 100]); const tax = randInt(rng, 3, 12); const ans = gross - tax;
+      return { type: 'choice', story: `Gross income is ${gross} dollars and the tax taken out is ${tax} dollars.`, prompt: 'What is the net income?', choices: shuffle(rng, [ans, gross, gross + tax, ans - tax].filter((v, i, a) => a.indexOf(v) === i).map(String)), answer: String(ans), explain: `Gross minus tax: ${gross} minus ${tax} is **${ans}**, the take-home pay.`, visual: null, explainVisual: null };
+    }
+    if (r < 0.6) {
+      const income = pick(rng, [30, 40, 50, 60]); const expenses = income + randInt(rng, 2, 9); const ans = expenses - income;
+      return { type: 'choice', story: `A month has ${income} dollars of income and ${expenses} dollars of expenses.`, prompt: 'By how much do expenses exceed income?', choices: shuffle(rng, [ans, income, expenses, ans + 1].filter((v, i, a) => a.indexOf(v) === i).map(String)), answer: String(ans), explain: `${expenses} minus ${income} is **${ans}**: cut that much, earn it, or move a want to next month.`, visual: null, explainVisual: null };
+    }
+    const Q = [['What you earned before taxes is called what?', ['gross income', 'net income', 'a budget', 'profit'], 'gross income', 'Gross is what you earned; net is what you take home.'],
+      ['Which tax is added when you buy something?', ['sales tax', 'income tax', 'property tax', 'payroll tax'], 'sales tax', 'Sales tax is added at the register; income and payroll tax come out of pay.'],
+      ['Which is paid on a house or land?', ['property tax', 'sales tax', 'payroll tax', 'interest'], 'property tax', 'Property tax is paid on a house or land.'],
+      ['Which keeps money safe and pays a little interest?', ['a savings account', 'a piggy bank', 'a wallet', 'a shopping list'], 'a savings account', 'A piggy bank earns nothing; a savings account at a bank pays a little interest.'],
+      ['A budget balances when what is true?', ['expenses are no bigger than income', 'income is zero', 'taxes are zero', 'expenses are bigger than income'], 'expenses are no bigger than income', 'Income on one side, expenses on the other, and the expenses must fit.'],
+      ['What do taxes pay for?', ['roads, schools, parks and firefighters', 'toys', 'interest', 'allowances'], 'roads, schools, parks and firefighters', 'Taxes pay for what everyone shares.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
@@ -19913,6 +20218,70 @@ export const WONDER = [
     closing: 'What would you want to say that no machine would say for you?',
   },
   {
+    id: 'w-growing-spent-the-plan',
+    theme: 'failure',
+    stage: 'growing',
+    courseIds: ['econ-3'],
+    answerMode: 'typed',
+    prompt: 'You saved for a bike, then spent the money on something at the store you had not planned. Was that a mistake, or just a different choice?',
+    perspectives: [
+      { voice: 'A scientist', says: 'It was a choice made with less information than the plan had. In the aisle you knew only that the thing looked good; at home you knew what the bike was worth to you. Decisions made with less information are more often wrong.' },
+      { voice: 'An artist', says: 'Every choice is a small painting of who you are that day. Nobody paints only masterpieces, not even the masters. Look at this one honestly, learn what it shows, and paint the next one on purpose.' },
+      { voice: 'A grandparent of faith', says: 'A plan you break once is still a plan. Be kind to yourself, put the next coin in the jar, and tell someone what you are saving for so they can help you remember.' },
+      { voice: 'A skeptic', says: 'Count what you got and what you gave up. If the thing in the store is still making you happy in a month, it was a choice. If it is in a drawer, it was a mistake, and now you know the difference.' },
+    ],
+    closing: 'What would help you keep the plan next time?',
+  },
+  {
+    id: 'w-growing-fair-price',
+    theme: 'world',
+    stage: 'growing',
+    courseIds: ['econ-3'],
+    answerMode: 'typed',
+    prompt: 'After a storm, a store raises the price of the last flashlights. Is that unfair, or is that just what prices do?',
+    perspectives: [
+      { voice: 'A scientist', says: 'A higher price does two things at once: it stops one person from buying all the flashlights, and it tells suppliers to send more. That is what prices are for. Whether it feels fair is a separate question, and a real one.' },
+      { voice: 'An artist', says: 'Fairness is about the people in the room, not the number on the tag. A store that raised the price and also set two flashlights aside for the old couple next door did both things at once.' },
+      { voice: 'A grandparent of faith', says: 'Many traditions warn against profiting from a neighbor in trouble. The rule of the market and the rule of kindness can point different ways, and a person chooses which to follow.' },
+      { voice: 'A skeptic', says: 'Before you call it unfair, ask what happens at the old price. Empty shelves by noon, and the flashlights go to whoever got there first, which is its own kind of unfair. There is no price that makes a shortage disappear.' },
+    ],
+    closing: 'What would you have done if the store were yours?',
+  },
+  {
+    id: 'w-early-two-wants',
+    theme: 'ups-and-downs',
+    stage: 'early',
+    courseIds: ['econ-k'],
+    answerMode: 'pick',
+    prompt: 'You have coins for one thing and you want two things. What do you do?',
+    options: ['Pick the one I want most', 'Save for the other one', 'Ask which one lasts longer'],
+    simple: [{ voice: 'A scientist says', says: 'Choosing one means the other waits, not disappears.' }, { voice: 'An artist says', says: 'The one you still think about tomorrow is the one.' }],
+    perspectives: [
+      { voice: 'A scientist', says: 'You cannot have both today, and that is not sad, it is just true. Pick one, and the other one waits for the next coins. Waiting is how the second one arrives.' },
+      { voice: 'An artist', says: 'Sleep on it before you choose. The one you still think about in the morning is the one you really want, and the other was only shiny in the store.' },
+      { voice: 'A grandparent of faith', says: 'Every grown-up makes this choice every week. The trick is to be glad about the one you picked instead of sad about the one you did not.' },
+      { voice: 'A skeptic', says: 'Ask which one lasts longer. A thing that breaks by Friday costs more than a thing that lasts a year, even if the coins are the same.' },
+    ],
+    closing: 'Which one would you pick, and why?',
+  },
+  {
+    id: 'w-early-jar-broke',
+    theme: 'failure',
+    stage: 'early',
+    courseIds: ['econ-k'],
+    answerMode: 'pick',
+    prompt: 'You saved for weeks, then spent it all in one day and felt bad. What now?',
+    options: ['Start the jar again', 'Decide the rule before the store', 'Talk to a grown-up about it'],
+    simple: [{ voice: 'A scientist says', says: 'The jar can start again tomorrow.' }, { voice: 'A skeptic says', says: 'Make the rule before you walk into the store.' }],
+    perspectives: [
+      { voice: 'A scientist', says: 'Spending it is not the mistake. Spending it without deciding first is. The jar starts again tomorrow, and this time you know what happens at the store.' },
+      { voice: 'An artist', says: 'You learned what the feeling after is like. That feeling is worth more than the coins, because it will stop you next time, right at the shelf.' },
+      { voice: 'A grandparent of faith', says: 'Everyone has done this, and everyone has felt that. Be kind to yourself, and put the first coin back in the jar tonight.' },
+      { voice: 'A skeptic', says: 'Make the rule before the store, not in it. Decide how many coins may leave the jar this week, and say it out loud to someone.' },
+    ],
+    closing: 'What rule would you make for next time?',
+  },
+  {
     id: 'w-early-robot-bumped',
     theme: 'failure',
     stage: 'early',
@@ -22701,6 +23070,8 @@ export const COURSE_GAMES = {
   'music-4': ['pairs-music'],
   'health-k': ['dots-rocket'],
   'tech-k': ['walk-tech-k'],
+  'econ-k': ['pay-econ-k'],
+  'econ-3': ['price-econ-3'],
   'tech-6': ['teach-tech-6'],
   'tech-9': ['bits-tech-9'],
   'health-4': ['pairs-health'],

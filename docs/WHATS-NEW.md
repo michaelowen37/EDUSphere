@@ -2,6 +2,18 @@
 
 The newest block is what educators see once, in a pop-up on the classroom page, after each update. Write it the way Mikey talks to a teacher: conversational, complete sentences, say what changed and why it matters, and skip the shorthand (2026-09-23). Two to four items. The date line is the version stamp.
 
+## September 29, 2026 (money that works)
+
+- Grade 3 has a new elective for grades 3 to 5, Money that works: skills raise what an hour of work pays and scarce things cost more; planned spending and what credit really costs; fixed and variable expenses and the profit that is left; and savings, the four taxes, gross and net pay, and a budget that balances. The dollar questions are worked out fresh every time. Each lesson has a story, and the course ends with a long story about Savanah and her egg money.
+- Finishing the course unlocks Set the Price, a new kind of game: a lemonade stand with twelve customers, three prices to try, and the best price revealed at the end.
+- Two new Wonder questions for grades 3 to 5 wait in the review screen.
+
+## September 29, 2026 (money begins)
+
+- Kindergarten has a new subject and its first course, Needs, wants, work and saving, for kindergarten through grade 2, read aloud like the rest of kindergarten. Four lessons: needs come first and a choice lets the other go; work earns income and a gift is not income; spending now or saving for later, with coins that add up; and trading, markets and prices. Every lesson has a story and a coloring page, and the course ends with a long story about a lemonade stand on Maple Street.
+- Finishing the course unlocks Pay the Price, a new kind of game: a thing with its price in coins, a table of fives and ones, and a tray to count the exact price into.
+- Two new Wonder questions for the youngest wait in the review screen.
+
 ## September 29, 2026 (how a program is built)
 
 - Grade 9 has a new elective for grades 9 to 12, How a program is built: what is inside the machine and what the operating system does, counting in binary, the parts of every program (variables with types, integer division and the remainder, sequence, conditionals and loops, and testing at the edges), and working like a coder: debugging by method, reading a license, long passwords with a second step, and judging a page by its author. Each lesson has a story, and the course ends with a long story about Savanah and a city bus board with a bug at the edge.

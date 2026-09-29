@@ -2,7 +2,7 @@
 
 Written by tools/games-plan.mjs from the app's own lists; run it again after any change to the games. Every course has its own game, or two, chosen to suit its subject and grade; finishing the course unlocks them. Inside a grade the same kind is avoided wherever today's kinds allow. A course that no game suits yet has a quick fire of its own lessons, and so does a history course whose only game is a map still waiting for its painting.
 
-Starter, open from the first day: Star. Kinds of game: 23. Quick fires still standing in for a game: 8. Kinds repeated inside a grade: 9. Courses holding two games of one kind: none. The rules test holds both numbers as ceilings, so each new kind must bring them down.
+Starter, open from the first day: Star. Kinds of game: 25. Quick fires still standing in for a game: 8. Kinds repeated inside a grade: 9. Courses holding two games of one kind: none. The rules test holds both numbers as ceilings, so each new kind must bring them down.
 
 ## New kinds, in order
 
@@ -28,6 +28,7 @@ Each new kind should make the course's idea the rule of the game, so playing is 
 | K | Me and my community | Big and Small (sort) |
 | K | Taking care of me | Rocket (dots) |
 | K | Tell, show, step and repeat | Walk the Robot (walk) |
+| K | Needs, wants, work and saving | Pay the Price (pay) |
 | K | Counting | Maze (maze) |
 | K | Letters | Pairs (pairs) |
 | 1 | Numbers to 20 | Kite (dots), Many Pairs (pairs) |
@@ -47,6 +48,7 @@ Each new kind should make the course's idea the rule of the game, so playing is 
 | 3 | Multiplication and division | Fraction twins (pairs) |
 | 3 | Looking and making | Color mixer: make new colors (mix) |
 | 3 | How computers think | Computer words (pairs), Debug the robot: arrows (debug) |
+| 3 | Money that works | Set the Price (price) |
 | 3 | Communities and government | Where is it? The continents (map), Quick fire: Communities and government (sprint) |
 | 4 | Reading between the lines | Find the evidence: clues in a story (evidence) |
 | 4 | Energy, Earth and living things | Catch the living things (catch), Conductor or insulator (buckets), Grade 4 science words (pairs) |

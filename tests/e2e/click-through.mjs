@@ -850,6 +850,32 @@ await page.waitForTimeout(200);
 }
 await page.getByRole('button', { name: 'Close game' }).first().click({ force: true });
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview');
+// Pay the Price (pass FV, economics K to 2): read the price, pay it with fives then ones, and the thing is bought.
+await page.evaluate(() => window.__eduTest.openColoring('play:pay-econ-k'));
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'coloring');
+await page.waitForTimeout(200);
+{ const price = Number(((await text()).match(/costs (\d+) coins/) || [])[1]);
+  ok('the pay game opens with a priced thing and a table of two fives and five ones', price >= 3 && price <= 15 && (await page.getByRole('button', { name: 'Coin worth 5', exact: true }).count()) === 2 && (await page.getByRole('button', { name: 'Coin worth 1', exact: true }).count()) === 5);
+  const fives = Math.min(2, Math.floor(price / 5)) - (price - 5 * Math.min(2, Math.floor(price / 5)) > 5 ? 1 : 0); const ones = price - 5 * fives;
+  for (let i = 0; i < fives; i++) { await page.getByRole('button', { name: 'Coin worth 5', exact: true }).first().click(); await page.waitForTimeout(60); }
+  for (let i = 0; i < ones; i++) { await page.getByRole('button', { name: 'Coin worth 1', exact: true }).first().click(); await page.waitForTimeout(60); }
+  ok('counting out the exact price buys the thing', (await text()).includes('Paid!') && (await page.getByRole('button', { name: 'Next thing' }).count()) === 1);
+}
+await page.getByRole('button', { name: 'Close game' }).first().click({ force: true });
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview');
+// Set the Price (pass FW, economics 3 to 5): three prices tried, the profit shown for each, then the best price revealed.
+await page.evaluate(() => window.__eduTest.openColoring('play:price-econ-3'));
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'coloring');
+await page.waitForTimeout(200);
+{ ok('the price game opens with a stand, its costs and eight prices to try', (await text()).includes('Tap a price to try it') && (await page.getByRole('button', { name: /^Try price \d$/ }).count()) === 8);
+  await page.getByRole('button', { name: 'Try price 3' }).click(); await page.waitForTimeout(100);
+  ok('a tried price shows who bought and the profit as money in minus money out', /At 3 dollars a cup, \d+ (person|people) bought: \d+ in, \d+ out, (profit \d+|a loss of \d+)\./.test(await text()));
+  await page.getByRole('button', { name: 'Try price 5' }).click(); await page.waitForTimeout(100);
+  await page.getByRole('button', { name: 'Try price 2' }).click(); await page.waitForTimeout(150);
+  ok('after three tries the best price is revealed beside the best found', /Best price here: \d+ dollars?, profit -?\d+\. You found \d+\./.test(await text()) && (await page.getByRole('button', { name: 'Next stand' }).count()) === 1);
+}
+await page.getByRole('button', { name: 'Close game' }).first().click({ force: true });
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview');
 // Some pictures are drawn on rather than filled in: a finger stroke leaves a line in the chosen color.
 await page.evaluate(() => window.__eduTest.openColoring('star'));
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'coloring');

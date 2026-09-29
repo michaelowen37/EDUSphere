@@ -939,6 +939,26 @@ export const COURSES = [
     modules: ECON3_MODULES(),
   },
   {
+    id: 'econ-6',
+    grade: '6',
+    subject: 'Economics',
+    title: 'Money over time',
+    audience: 'Grades 6 to 8',
+    elective: true,
+    keywords: ['money', 'interest', 'credit', 'budget', 'college', 'personal finance', 'economics', 'elective'],
+    modules: ECON6_MODULES(),
+  },
+  {
+    id: 'econ-9',
+    grade: '9',
+    subject: 'Economics',
+    title: 'Money for a life',
+    audience: 'Grades 9 to 12',
+    elective: true,
+    keywords: ['money', 'paycheck', 'credit', 'APR', 'investing', 'insurance', 'college', 'personal finance', 'economics', 'elective'],
+    modules: ECON9_MODULES(),
+  },
+  {
     id: 'civics-3',
     grade: '3',
     subject: 'History',
@@ -1170,6 +1190,8 @@ export const GAMES = [
   { id: 'debug-tech-5', kind: 'debug', title: 'Debug the robot: turns', minGrade: '5', deck: 'turns' },
   { id: 'price-econ-3', kind: 'price', title: 'Set the Price', minGrade: '3', price: 'stand' },   // economics 3 to 5 (pass FW): find the price that earns the most
   { id: 'teach-tech-6', kind: 'teach', title: 'Teach the Robot', minGrade: '6', teach: 'fruit' },
+  { id: 'loan-econ-6', kind: 'loan', title: 'Pay It Off', minGrade: '6', loan: 'plans' },   // economics 6 to 8 (pass FX): what a loan costs month by month
+  { id: 'fund-econ-9', kind: 'fund', title: 'Build the Fund', minGrade: '9', fund: 'year' },   // personal finance 9 to 12 (pass FY): a year of saving against surprises
   { id: 'bits-tech-9', kind: 'bits', title: 'Eight Switches', minGrade: '9', bits: 8 },   // computer science 9 to 12 (pass FU): make the number with the switches   // the plain AI course (pass FT): the child is the pile of examples
   { id: 'mix-art-3', kind: 'mix', title: 'Color mixer: make new colors', minGrade: '3', deck: 'mix3' },
   { id: 'mix-art-4', kind: 'mix', title: 'Color mixer: the color wheel', minGrade: '4', deck: 'mix4' },
@@ -1595,6 +1617,37 @@ export function priceStands(round) {
   return Array.from({ length: 4 }, () => { const tops = Array.from({ length: 12 }, () => 1 + Math.floor(rnd() * 8)); const fixed = 3 + Math.floor(rnd() * 5); const each = 1; return { tops, fixed, each }; });
 }
 export function standProfit(stand, price) { const buyers = stand.tops.filter((t) => t >= price).length; return { buyers, profit: price * buyers - stand.fixed - stand.each * buyers }; }
+// Pay It Off (2026-09-29, pass FX, economics 6 to 8): a loan with a rate per month and three payment sizes. Each tap is a
+// month: interest is added on the balance, the payment comes off, and the interest paid so far is the score, lower is
+// better. Four loans a round from the round number. The smallest payment always beats the first month's interest and
+// the largest always clears the loan within twelve months, which the rules test checks.
+export function loanPlans(round) {
+  let x = (round * 48271 + 11) >>> 0; const rnd = () => { x = (x * 1664525 + 1013904223) >>> 0; return x / 4294967296; };
+  const things = ['a used bike', 'a laptop', 'a guitar', 'a phone', 'a camera', 'a scooter'];
+  return Array.from({ length: 4 }, (_, k) => { const principal = [600, 800, 1000, 1200][Math.floor(rnd() * 4)]; const rate = [1, 2, 3][Math.floor(rnd() * 3)]; const min = Math.ceil((principal * rate) / 100 / 10) * 10 + 20; const max = Math.ceil(principal / 4 / 10) * 10; const mid = Math.round((min + max) / 2 / 10) * 10; return { thing: things[(Math.floor(rnd() * 6) + k) % 6], principal, rate, payments: [min, mid, max] }; });
+}
+export function loanMonth(balance, rate, payment) { const interest = Math.round((balance * rate) / 100); const next = balance + interest - payment; return { interest, balance: Math.max(0, next), paid: next <= 0 }; }
+// Build the Fund (2026-09-29, pass FY, personal finance 9 to 12): twelve months of a first year on your own. Each month
+// income arrives, the bills are due, and the player chooses how much of what is left goes into the emergency fund; some
+// months a surprise bill lands, and a fund that cannot cover it means a loan at a high rate whose interest bites every
+// month after. A year's surprises never exceed what steady saving can cover, so a careful player ends in the black.
+export function fundYear(round) {
+  let x = (round * 69621 + 5) >>> 0; const rnd = () => { x = (x * 1664525 + 1013904223) >>> 0; return x / 4294967296; };
+  const income = 2000; const bills = 1500; const room = income - bills;   // 500 a month to save or spend
+  const names = ['car repair', 'dentist', 'phone replaced', 'vet bill', 'flat tire', 'lost wallet', 'furnace part', 'parking ticket'];
+  const months = Array.from({ length: 12 }, () => ({ surprise: 0, what: '' }));
+  let total = 0;
+  for (const m of [2, 5, 8, 10]) { const amt = 100 * (2 + Math.floor(rnd() * 5)); months[m] = { surprise: amt, what: names[Math.floor(rnd() * names.length)] }; total += amt; }
+  return { income, bills, room, months, total };
+}
+// One month of the fund: save what was chosen (never more than the room), pay the surprise from the fund first, borrow the
+// rest at 2 percent a month, and pay 2 percent interest on any loan still open.
+export function fundMonth(state, save, month) {
+  const put = Math.max(0, Math.min(save, state.room)); let fund = state.fund + put; let loan = state.loan;
+  if (loan > 0) loan = Math.round(loan * 1.02);
+  const s = month.surprise; if (s > 0) { const fromFund = Math.min(fund, s); fund -= fromFund; loan += s - fromFund; }
+  return { fund, loan, spent: state.spent + (state.room - put) };
+}
 export const ROBOT_DECKS = {
   arrows: [
     { start: [1,1], goal: [0,4], rocks: [[2,1],[0,2],[2,2]], program: 'DDLU' },
@@ -8584,6 +8637,152 @@ function ECON3_MODULES() { return [
     generators: ['e3-budget', 'e3-budget', 'e3-budget', 'e3-budget', 'e3-budget'],
   },
 ]; }
+// Economics and personal finance for the 6 to 8 band (2026-09-29, pass FX), at grade 6. Texas codes are the personal
+// financial literacy strands of the mathematics TEKS for grades 6, 7 and 8 (§111.26(b)(14), §111.27(b)(13), §111.28(b)(12)),
+// read from the published text; the national framework is the CEE Voluntary National Content Standards in Economics.
+function ECON6_MODULES() { return [
+  {
+    id: 'accounts-and-cards',
+    order: 1,
+    title: 'Accounts and cards',
+    tagline: 'Where money sits, and what a card really does',
+    requires: [],
+    lesson: {
+      paragraphs: ['A checking account is where pay goes in and bills go out. Banks differ in what it costs: some charge a monthly fee unless a minimum balance stays in the account, some charge nothing, and most charge an overdraft fee, often around 30 dollars, when you spend more than is there. Compare the fees before you open one, because the fees are the price of the account.', 'A debit card and a credit card look the same and do opposite things. A debit card takes the money out of your checking account right away: it is your money leaving. A credit card borrows the bank\'s money, and you owe it back at the end of the month; pay it in full and it costs nothing, pay less and interest is added to the rest.', 'A check register is a running list of every deposit, withdrawal and transfer, with the balance after each one. Deposits add; withdrawals and transfers out subtract. Start at 300 dollars, deposit 120, withdraw 45, transfer 50 to savings, and the balance is 325. Keeping the register is how you know what the card can spend before the bank tells you.'],
+      keyIdea: 'Compare account fees. A debit card spends your money now; a credit card borrows the bank\'s money until the bill. A register keeps the running balance: deposits add, withdrawals and transfers subtract.',
+      example: { kind: 'flow', steps: ['300', 'deposit 120: 420', 'withdraw 45: 375', 'transfer 50: 325'], caption: 'The register: a balance after every line.',
+        another: ['Two banks, same account. One charges 12 dollars a month unless 500 dollars stays in; the other charges nothing. Over a year the difference is 144 dollars, which is the price of not reading the fee page.',
+          { text: 'Debit is a bucket: what you pour out was already yours. Credit is a tab at a shop: the shop keeps count, and the count comes due.', visual: { kind: 'flow', steps: ['debit: your money now', 'credit: the bank\'s money, due later'] } },
+          'An overdraft fee is the most expensive thing most people ever buy by accident. The register is what keeps you from buying it.'] },
+    },
+    sources: ['Aligned with TEKS Mathematics 6.14(A) (compare the features and costs of a checking account and a debit card offered by different local financial institutions), 6.14(B) (distinguish between debit cards and credit cards) and 6.14(C) (balance a check register that includes deposits, withdrawals, and transfers), and the Voluntary National Content Standards in Economics, Standard 10 (Institutions).'],
+    generators: ['e6-accounts', 'e6-accounts', 'e6-accounts', 'e6-accounts', 'e6-accounts'],
+  },
+  {
+    id: 'credit-history-and-loans',
+    order: 2,
+    title: 'Credit history and the cost of a loan',
+    tagline: 'Your record, their rate, and what time adds',
+    requires: ['accounts-and-cards'],
+    lesson: {
+      paragraphs: ['A credit report is the record lenders keep of how you have handled borrowed money: the accounts you have, whether you paid on time, how much you owe, and who has asked to see it. Most of what is on it stays there for about seven years. A positive credit history, built by paying on time, is what gets a borrower a loan at all, and a lower rate when it comes.', 'Lenders read the report to decide whether to lend and at what interest rate; borrowers with a good report pay less for the same loan. The report is worth money to both sides, which is why it is worth guarding.', 'The cost of a loan is the interest, and interest depends on the rate and the length. Borrow 1,000 dollars at 5 percent a year for 3 years and the simple interest is 150 dollars; the same loan for 6 years costs 300. A lower rate or a shorter loan costs less; a longer loan has smaller payments and a bigger total. Always ask for the total you will repay, not only the monthly number.'],
+      keyIdea: 'A credit report records how you handled borrowing, for about seven years; paying on time earns lower rates. Interest is rate times time: a longer or higher-rate loan costs more in all.',
+      example: { kind: 'flow', steps: ['1,000 at 5 percent', '3 years: 150', '6 years: 300'], caption: 'Same loan, twice the time, twice the interest.',
+        another: ['Two cousins buy the same car with the same loan. One pays on time for years and gets 5 percent; the other missed payments once and gets 9 percent. On 10,000 dollars over 4 years that is 2,000 against 3,600 in simple interest.',
+          { text: 'A monthly payment is a window, not the whole house. Multiply it by the months and subtract what you borrowed: the rest is what the loan cost.', visual: { kind: 'flow', steps: ['payment', 'times months', 'minus the loan', 'the cost'] } },
+          'A credit report is a reputation with numbers. It takes years to build and one bad year to dent, and the dent shows for about seven.'] },
+    },
+    sources: ['Aligned with TEKS Mathematics 6.14(D) (explain why it is important to establish a positive credit history), 6.14(E) (describe the information in a credit report and how long it is retained), 6.14(F) (describe the value of credit reports to borrowers and to lenders), 8.12(A) (solve real-world problems comparing how interest rate and loan length affect the cost of credit) and 8.12(B) (calculate the total cost of repaying a loan under various rates of interest and over different periods), and the Voluntary National Content Standards in Economics, Standard 12 (Interest Rates).'],
+    generators: ['e6-loans', 'e6-loans', 'e6-loans', 'e6-loans', 'e6-loans'],
+  },
+  {
+    id: 'interest-that-compounds',
+    order: 3,
+    title: 'Interest that compounds',
+    tagline: 'Growth on the growth',
+    requires: ['credit-history-and-loans'],
+    lesson: {
+      paragraphs: ['Simple interest is paid on the amount you started with, every year the same. Compound interest is paid on the starting amount and on the interest already earned, so each year\'s interest is a little bigger than the last. Put 1,000 dollars at 10 percent: simple interest gives 1,200 after two years; compound gives 1,100 after one year and 1,210 after two, because the second year earns on 1,100.', 'The difference looks small at two years and enormous at forty. That is why small amounts invested regularly grow into large ones over time: money saved for college at age twelve, or for retirement at twenty-two, has decades of compounding ahead of it. The earliest dollars do the most work.', 'The same arithmetic runs the other way on a debt. A credit card balance that is not paid compounds against you, month after month. Compound interest is a friend to the saver and an enemy to the borrower, and it does not care which one you are.'],
+      keyIdea: 'Simple interest earns on the start; compound interest earns on the interest too, so it grows faster the longer it runs. Small amounts saved early grow large; unpaid debt compounds against you.',
+      example: { kind: 'flow', steps: ['1,000', 'year 1: 1,100', 'year 2: 1,210', 'year 3: 1,331'], caption: 'Ten percent, compounded: each year earns on last year too.',
+        another: ['Simple interest is a flat road: 100 a year, every year. Compound interest is a hill that gets steeper: 100, then 110, then 121.',
+          { text: 'Twenty dollars a month from age twelve is 240 a year. Over decades of compounding, it is the biggest thing most people ever save, and it started with a lunch money habit.', visual: { kind: 'flow', steps: ['20 a month', '240 a year', 'decades', 'a large sum'] } },
+          'The rule of 72: divide 72 by the rate and you get roughly the years to double. At 6 percent, money doubles in about 12 years. So does a debt.'] },
+    },
+    sources: ['Aligned with TEKS Mathematics 7.13(E) (calculate and compare simple interest and compound interest earnings), 8.12(C) (explain how small amounts of money invested regularly, including money saved for college and retirement, grow over time) and 8.12(D) (calculate and compare simple interest and compound interest earnings), and the Voluntary National Content Standards in Economics, Standard 12 (Interest Rates).'],
+    generators: ['e6-compound', 'e6-compound', 'e6-compound', 'e6-compound', 'e6-compound'],
+  },
+  {
+    id: 'budgets-taxes-and-college',
+    order: 4,
+    title: 'Budgets, taxes and paying for college',
+    tagline: 'The percent of everything',
+    requires: ['interest-that-compounds'],
+    lesson: {
+      paragraphs: ['Sales tax is a percent added at the register: 8 percent on a 50 dollar purchase is 4 dollars, so the total is 54. Income tax is a percent taken from wages before the pay arrives. A budget is best read in percents too: with 200 dollars of income, 50 dollars of savings is 25 percent, and the categories, fixed expenses, variable expenses, taxes and savings for college, retirement and emergencies, should add up to the whole.', 'Net worth is what you own minus what you owe: assets minus liabilities. A bike worth 200 and a savings account of 300 are 500 of assets; owing a friend 40 is a liability; net worth is 460. It can be negative, and a loan for something that keeps its value is different from a loan for something that does not.', 'College is paid for in five ways: savings, grants, scholarships, student loans and work-study. A two-year college costs far less than a four-year one, and a family\'s share can be planned years ahead: divide the first year\'s cost by the months until it starts, and that is the monthly savings target. Jobs that need more training tend to pay more each year, and a difference of even a few thousand dollars a year adds up to a large one over a working life.'],
+      keyIdea: 'Sales tax adds a percent at the register; income tax takes a percent from wages. Read a budget in percents. Net worth is assets minus liabilities. College is paid by savings, grants, scholarships, loans and work-study.',
+      example: { kind: 'flow', steps: ['50 dollars', '8 percent: 4', 'total 54'], caption: 'Sales tax: the percent, then the total.',
+        another: ['A budget in percents is a pie. If savings is a sliver and variable spending is half the pie, you can see the problem without adding a thing.',
+          { text: 'Net worth on a napkin: a column of what you own, a column of what you owe, one subtraction. A thirteen-year-old with a bike and no debts has a higher net worth than plenty of adults.', visual: { kind: 'flow', steps: ['assets 500', 'liabilities 40', 'net worth 460'] } },
+          'A monthly college target is only division: the cost of the first year, divided by the months you have. Start early and the number is small.'] },
+    },
+    sources: ['Aligned with TEKS Mathematics 7.13(A) (calculate the sales tax for a given purchase and calculate income tax for earned wages), 7.13(B) (identify the components of a personal budget and calculate what percentage each category comprises of the total budget), 7.13(C) (create and organize a financial assets and liabilities record and construct a net worth statement), 6.14(G) (explain various methods to pay for college), 6.14(H) (compare the annual salary of several occupations requiring various levels of post-secondary education or vocational training), 8.12(E) (identify and explain the advantages and disadvantages of different payment methods), 8.12(F) (analyze situations to determine if they represent financially responsible decisions) and 8.12(G) (estimate the cost of a two-year and four-year college education and devise a periodic savings plan), and the Voluntary National Content Standards in Economics, Standard 16 (Role of Government and Market Failure).'],
+    generators: ['e6-budget', 'e6-budget', 'e6-budget', 'e6-budget', 'e6-budget'],
+  },
+]; }
+// Personal finance for the 9 to 12 band (2026-09-29, pass FY), at grade 9, beside the grade 12 economics course. Texas
+// codes are §113.49, Personal Financial Literacy (Adopted 2016), read from the published text; the national framework is
+// the CEE Voluntary National Content Standards in Economics.
+function ECON9_MODULES() { return [
+  {
+    id: 'paychecks-and-statements',
+    order: 1,
+    title: 'Paychecks and statements',
+    tagline: 'What a job really pays, and the papers that keep you honest',
+    requires: [],
+    lesson: {
+      paragraphs: ['A paycheck starts with gross pay, what you earned, and ends with net pay, what arrives. In between come the deductions: FICA, which is Social Security at 6.2 percent and Medicare at 1.45 percent, 7.65 percent together, plus federal income tax withheld at a rate that depends on your pay and your tax form. Gross 2,000 with 7.65 percent FICA and 10 percent income tax withheld: 2,000 minus 153 minus 200 is 1,847 net. A job also pays in benefits that never show in net pay: health insurance contributions, retirement matching, sick leave, vacation pay, and sometimes disability or life insurance.', 'Three papers keep a money life honest. A bank statement, which you reconcile against your own record of deposits, withdrawals and transfers so a double charge or a missing deposit is caught. An income statement, which lists income and expenses for a month and shows whether you gained or lost. And a net worth statement, or balance sheet: assets, what you own, minus liabilities, what you owe.', 'Goals turn the papers into a plan. A good financial goal is specific, measurable, attainable, realistic and time based: not save more, but 1,200 dollars in an emergency fund by June, 100 a month. Short-term goals run months, medium-term a few years, long-term decades, and a budget that balances is the machine that reaches all three. Unplanned spending is what breaks the machine.'],
+      keyIdea: 'Gross pay minus FICA and income tax is net pay, and benefits pay too. Reconcile the bank statement, keep an income statement and a net worth statement, and write goals that are specific, measurable and dated.',
+      example: { kind: 'flow', steps: ['gross 2,000', 'FICA 153', 'income tax 200', 'net 1,847'], caption: 'What you earned, minus what is withheld, is what arrives.',
+        another: ['Two jobs at the same gross pay are not the same job if one matches retirement savings and pays for health insurance. Benefits can be worth a fifth of the salary again.',
+          { text: 'Reconciling a statement is matching two lists: the bank\'s and yours. Every line that appears on one and not the other is a question, and the questions are where the money leaks.', visual: { kind: 'flow', steps: ['your record', 'the bank\'s statement', 'lines that differ', 'ask why'] } },
+          'A goal without a number and a date is a wish. Put both on it and it becomes a line in the budget.'] },
+    },
+    sources: ['Aligned with TEKS Social Studies 113.49(c)(3)(A) (identify benefits such as health insurance contributions, retirement benefits, sick leave and vacation pay), 113.49(c)(3)(B) (identify taxes deducted from paychecks, including FICA and federal income taxes), 113.49(c)(3)(C) (calculate gross and net pay using information on a paycheck), 113.49(c)(2)(A) (reconcile a bank statement with personal records), 113.49(c)(2)(B) (track income and expenses and develop an income statement), 113.49(c)(2)(D) (identify assets and liabilities), 113.49(c)(2)(E) (construct a balance sheet or net worth statement), 113.49(c)(2)(F) (evaluate the impact of unplanned spending on a budget) and 113.49(c)(1)(D) (develop financial goals for the short, medium and long term that are specific, measurable, attainable, realistic and time based), and the Voluntary National Content Standards in Economics, Standard 13 (Income).'],
+    generators: ['e9-pay', 'e9-pay', 'e9-pay', 'e9-pay', 'e9-pay'],
+  },
+  {
+    id: 'the-true-cost-of-credit',
+    order: 2,
+    title: 'The true cost of credit',
+    tagline: 'APR, terms, fees, and the three Cs',
+    requires: ['paychecks-and-statements'],
+    lesson: {
+      paragraphs: ['Credit comes from many doors: banks and credit unions, merchants with store credit, peer-to-peer lenders, payday lenders and title lenders. Revolving credit, like a credit card, lets you borrow again as you repay; installment credit, like a car loan, is a fixed amount repaid in fixed payments over a term. A collateralized loan is backed by something the lender can take, a car or a house, and costs less than unsecured credit, which is backed only by your promise.', 'The cost of borrowing has parts: the annual percentage rate, or APR, which is the yearly cost as a percent; whether the rate is fixed or variable; the length of the term; the grace period before interest starts; and fees for late payment, cash advances or paying early. A payday loan that charges 15 dollars per 100 for two weeks looks small and is not: 15 percent for two weeks, 26 times a year, is an APR of about 390 percent. Strategies that cut the total cost: a larger down payment, extra payments on the principal, a shorter term, and paying the whole card balance inside the grace period.', 'Lenders judge you by the three Cs: character, your record of paying; capacity, your income against your debts; and collateral, what backs the loan. The record lives in your credit report, summed up in a credit score, and you should read the report regularly and dispute mistakes, because errors are common and lenders act on them. Bankruptcy, which can follow medical bills, job loss, divorce or a failed business, stays on the report for years, and poor credit management costs you higher rates on everything after.'],
+      keyIdea: 'APR, term, fixed or variable rate, grace period and fees set the cost of credit; a bigger down payment and extra principal cut it. Lenders read character, capacity and collateral from a report you should check and correct.',
+      example: { kind: 'flow', steps: ['15 per 100', 'for two weeks', '26 periods a year', 'APR about 390%'], caption: 'A small fee for a short time is a huge rate for a year.',
+        another: ['Revolving credit is a bucket you can keep dipping into as you refill it. Installment credit is a jug you pour out once and refill on a schedule. The bucket is where most trouble starts.',
+          { text: 'The same 10,000 dollar car: 8 percent for 3 years costs less in interest than 8 percent for 6 years, and a 2,000 dollar down payment cuts the interest on both, because there is less principal for the rate to work on.', visual: { kind: 'flow', steps: ['down payment', 'less principal', 'less interest', 'shorter term: less still'] } },
+          'Read your credit report the way you would read a story someone wrote about you: check every line, and object in writing to the ones that are wrong.'] },
+    },
+    sources: ['Aligned with TEKS Social Studies 113.49(c)(8)(A) (compare and contrast sources of credit such as banks, merchants, peer-to-peer, payday loans and title loans), 113.49(c)(8)(B) (compare and contrast types of credit, including revolving and installment credit, and collateralized loans versus unsecured credit), 113.49(c)(10)(A) (examine the components of the cost of borrowing, including APR, fixed versus variable interest, length of term, grace period and additional fees), 113.49(c)(10)(B) (explain strategies to reduce total cost of borrowing such as a higher down payment and additional principal payments), 113.49(c)(9)(A) (discuss how character, capacity and collateral impact credit rating), 113.49(c)(9)(B) (describe how to access and interpret a sample credit report and score), 113.49(c)(9)(C) (describe the importance of monitoring credit reports regularly and addressing mistakes) and 113.49(c)(9)(D) (identify factors that could lead to bankruptcy), and the Voluntary National Content Standards in Economics, Standard 12 (Interest Rates).'],
+    generators: ['e9-credit', 'e9-credit', 'e9-credit', 'e9-credit', 'e9-credit'],
+  },
+  {
+    id: 'saving-investing-and-risk',
+    order: 3,
+    title: 'Saving, investing and risk',
+    tagline: 'An emergency fund, then growth, then retirement',
+    requires: ['the-true-cost-of-credit'],
+    lesson: {
+      paragraphs: ['Saving has an order. First an emergency fund, three to six months of expenses in a savings account you can reach: 1,500 dollars of monthly expenses means 4,500 to 9,000 set aside, and it is what keeps a car repair from becoming a loan. Then intermediate goals of a few years, a down payment on a car or a home, in savings accounts, certificates of deposit that pay more for locking the money up, or money market funds. Then the long goal, retirement, which is where investing belongs.', 'Investing means accepting risk for return. A bond is a loan to a company or a government; bonds pay steady interest with lower risk; stocks are shares of ownership that can rise far and fall far; a mutual fund spreads money across many of either. Over decades, compound growth does the heavy lifting: 100 dollars a month for 40 years at 7 percent compounded yearly grows to about 240,000 dollars from 48,000 put in. The rule of 72 says money at 7 percent doubles about every 10 years, and each doubling is bigger than the last.', 'Retirement costs living expenses, health care and sometimes long-term care, and it is paid from three sources: Social Security, your own savings, and employer-sponsored plans, which often match what you put in. The single decision that matters most is starting early and saving enough: a dollar saved at 25 has forty years of doubling ahead of it; the same dollar at 45 has twenty.'],
+      keyIdea: 'Emergency fund first, in reach; then dated goals in savings, certificates of deposit or money market funds. Retirement comes through investing, where stocks, bonds and mutual funds trade risk for return and compounding rewards the early.',
+      example: { kind: 'flow', steps: ['100 a month', '40 years at 7%', '48,000 put in', 'about 240,000'], caption: 'Time does most of the work: the last doubling adds more than all the deposits.',
+        another: ['An emergency fund is insurance you sell to yourself: the premium is the months of saving, and the claim is the day the transmission goes.',
+          { text: 'Risk and return sit on one seesaw. A savings account is low on both; a single stock is high on both; a broad mutual fund sits between, because many holdings do not all fall at once.', visual: { kind: 'flow', steps: ['savings account', 'bonds', 'mutual funds', 'single stocks'] } },
+          'Employer matching is the only guaranteed instant return in finance: put in 100 and the match makes it 150 or 200 before the market does anything at all.'] },
+    },
+    sources: ['Aligned with TEKS Social Studies 113.49(c)(5)(A) (develop a short-term saving strategy such as establishing and maintaining an emergency fund), 113.49(c)(5)(B) (develop an intermediate-term saving and investing strategy), 113.49(c)(5)(D) (develop a long-term investing strategy to achieve a financially secure retirement), 113.49(c)(6)(B) (demonstrate the impact of compound growth over time), 113.49(c)(6)(C) (evaluate the costs and benefits of savings options such as bank savings accounts, certificates of deposit and money market mutual funds), 113.49(c)(6)(D) (evaluate risk and return of investment options, including stocks, bonds and mutual funds), 113.49(c)(7)(B) (identify and explain sources of income during retirement, including Social Security, individual savings and employer-sponsored plans) and 113.49(c)(7)(C) (demonstrate an understanding of the importance of saving early and at a sufficient level), and the Voluntary National Content Standards in Economics, Standard 10 (Institutions).'],
+    generators: ['e9-invest', 'e9-invest', 'e9-invest', 'e9-invest', 'e9-invest'],
+  },
+  {
+    id: 'insurance-scams-and-college',
+    order: 4,
+    title: 'Insurance, scams and paying for college',
+    tagline: 'Moving risk, spotting fraud, and the biggest purchase of your twenties',
+    requires: ['saving-investing-and-risk'],
+    lesson: {
+      paragraphs: ['Risk is the chance of losing assets or the ability to earn, and there are four things to do with it: avoid it, reduce it, retain it with savings, or transfer it to an insurer: paying a premium is transferring risk. Insurance has a vocabulary: the premium is what you pay, the deductible is what you pay first on a claim, a co-pay is a fixed share of a bill, and the policy limit is the most the insurer will pay. A 2,000 dollar repair on a policy with a 500 dollar deductible means you pay 500 and the insurer pays 1,500. Health insurance comes from employers, from individual plans and from government programs; renter\'s insurance covers what you own in a home you do not; auto insurance is priced by the car, the driver\'s age and record, the deductible and where you live.', 'Fraud comes for money the way water comes for a crack. Protect personal information to cut the risk of identity theft: shred, use strong passwords, and never give account numbers to someone who called you. Recognize the shapes of scams: an investment that cannot lose, a pyramid that pays early joiners from later ones, a phishing message that imitates your bank, a check to cash and send part back, a roofer who wants payment before the work. Report and research through consumer protection agencies such as the Better Business Bureau, the Consumer Financial Protection Bureau and the Texas State Securities Board.', 'Education is bought like anything else: by comparing cost and return. More training generally means higher earnings, and the cost of a program is tuition, fees, books, housing and the income given up while studying. Compare public universities, private ones, community colleges and certification programs on cost, on graduation rates and on the starting pay of graduates in your field. Pay for it in this order: grants and scholarships that need no repaying, then work-study, then loans, which must be repaid with interest. The Free Application for Federal Student Aid, the FAFSA, is where grants and federal loans begin, and it is filed the year before you enroll.'],
+      keyIdea: 'Avoid, reduce, retain or transfer risk; premium, deductible, co-pay and limit are the words of insurance. Guard personal information and know the shapes of scams. Buy education by comparing cost and return, and pay with grants and scholarships before loans.',
+      example: { kind: 'flow', steps: ['2,000 repair', '500 deductible', 'you pay 500', 'insurer pays 1,500'], caption: 'The deductible is your first share of every claim.',
+        another: ['Insurance is a pool: many people pay premiums, and the few who have the bad year draw from it. The deductible keeps small claims out of the pool so the premiums stay low.',
+          { text: 'Every scam has the same tell: urgency plus secrecy. Act now, tell no one, pay in a way that cannot be traced. Slow down, tell someone, and the scam usually dissolves.', visual: { kind: 'flow', steps: ['urgency', 'secrecy', 'untraceable payment', 'a scam'] } },
+          'Pay for school in the cheapest order: gifts first, work second, loans last, and only the loans a starting salary in your field can repay.'] },
+    },
+    sources: ['Aligned with TEKS Social Studies 113.49(c)(11)(A) (identify risk as potential loss of assets or earning potential), 113.49(c)(11)(B) (apply risk management strategies, including avoiding, reducing, retaining and transferring risk), 113.49(c)(12)(A) (define insurance terminology, including premiums, deductibles, co-pays and policy limits), 113.49(c)(12)(B) (explain the costs and benefits of different types and sources of health insurance), 113.49(c)(12)(E) (explain the costs and benefits of property insurance, including renter\'s insurance), 113.49(c)(12)(F) (explain the costs and benefits of automobile insurance and factors that impact its price), 113.49(c)(13)(A) (identify ways to protect personal information and reduce risk of identity theft), 113.49(c)(13)(B) (recognize common schemes and scams such as investment, pyramid, phishing, check cashing and home renovation scams), 113.49(c)(13)(C) (use consumer protection agencies to research and report fraud), 113.49(c)(15)(A) (analyze the relationship between education and training and earnings), 113.49(c)(15)(B) (identify types of costs associated with college, postsecondary education and training), 113.49(c)(15)(C) (compare costs among postsecondary institutions), 113.49(c)(15)(D) (analyze the quality of an education investment), 113.49(c)(16)(A) (understand how, why and when to complete grant and scholarship applications and the FAFSA), 113.49(c)(16)(B) (research sources of funds for postsecondary education) and 113.49(c)(16)(C) (analyze the advantages and disadvantages of those sources), and the Voluntary National Content Standards in Economics, Standard 2 (Decision Making).'],
+    generators: ['e9-protect', 'e9-protect', 'e9-protect', 'e9-protect', 'e9-protect'],
+  },
+]; }
 function TECH3_MODULES() { return [
   {
     id: 'inputs-and-outputs',
@@ -12922,6 +13121,154 @@ Object.assign(GENERATORS, {
       ['Which keeps money safe and pays a little interest?', ['a savings account', 'a piggy bank', 'a wallet', 'a shopping list'], 'a savings account', 'A piggy bank earns nothing; a savings account at a bank pays a little interest.'],
       ['A budget balances when what is true?', ['expenses are no bigger than income', 'income is zero', 'taxes are zero', 'expenses are bigger than income'], 'expenses are no bigger than income', 'Income on one side, expenses on the other, and the expenses must fit.'],
       ['What do taxes pay for?', ['roads, schools, parks and firefighters', 'toys', 'interest', 'allowances'], 'roads, schools, parks and firefighters', 'Taxes pay for what everyone shares.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  // Economics and personal finance, grades 6 to 8 (2026-09-29, pass FX): the money is computed each time; the concepts are said in the lesson first.
+  'e6-accounts': (rng) => {
+    if (rng() < 0.45) {
+      const start = pick(rng, [200, 300, 400, 500]); const dep = randInt(rng, 5, 20) * 10; const wd = randInt(rng, 2, 9) * 5; const tr = randInt(rng, 1, 6) * 10; const ans = start + dep - wd - tr;
+      return { type: 'choice', story: `A register starts at ${start} dollars: a deposit of ${dep}, a withdrawal of ${wd}, a transfer out of ${tr}.`, prompt: 'What is the balance?', choices: shuffle(rng, [ans, start + dep + wd - tr, start + dep - wd, start - dep + wd + tr].filter((v, i, a) => a.indexOf(v) === i).map(String)), answer: String(ans), explain: `Deposits add, withdrawals and transfers out subtract: ${start} + ${dep} - ${wd} - ${tr} = **${ans}**.`, visual: null, explainVisual: null };
+    }
+    const Q = [['Which card takes the money out of your checking account right away?', ['a debit card', 'a credit card', 'a gift card', 'a library card'], 'a debit card', 'Debit is your money leaving now; credit is the bank\'s money until the bill.'],
+      ['A credit card paid in full each month costs what?', ['nothing', 'interest', 'an overdraft fee', 'a monthly fee'], 'nothing', 'Pay it in full and it costs nothing; pay less and interest is added to the rest.'],
+      ['Spending more than a checking account holds usually brings what?', ['an overdraft fee', 'a deposit', 'interest earned', 'a transfer'], 'an overdraft fee', 'Often around 30 dollars, the most expensive thing bought by accident.'],
+      ['In a check register, which lines subtract?', ['withdrawals and transfers out', 'deposits', 'interest', 'nothing'], 'withdrawals and transfers out', 'Deposits add; withdrawals and transfers out subtract.'],
+      ['What should you compare before opening a checking account?', ['the fees', 'the color of the card', 'the size of the building', 'the logo'], 'the fees', 'The fees are the price of the account.'],
+      ['What is a check register?', ['a running list with the balance after each line', 'a kind of card', 'a bank fee', 'a loan'], 'a running list with the balance after each line', 'Every deposit, withdrawal and transfer, with the balance after each one.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'e6-loans': (rng) => {
+    if (rng() < 0.45) {
+      const principal = pick(rng, [1000, 2000, 5000, 10000]); const rate = pick(rng, [3, 4, 5, 6, 8]); const years = randInt(rng, 2, 6); const ans = (principal * rate * years) / 100;
+      return { type: 'choice', story: `A loan of ${principal.toLocaleString('en-US')} dollars at ${rate} percent a year, simple interest, for ${years} years.`, prompt: 'How much interest in all?', choices: shuffle(rng, [ans, (principal * rate) / 100, ans * 2, ans + principal].filter((v, i, a) => a.indexOf(v) === i).map((v) => v.toLocaleString('en-US'))), answer: ans.toLocaleString('en-US'), explain: `Rate times time: ${principal.toLocaleString('en-US')} times ${rate} percent is ${((principal * rate) / 100).toLocaleString('en-US')} a year, times ${years} years, **${ans.toLocaleString('en-US')}**.`, visual: null, explainVisual: null };
+    }
+    const Q = [['About how long does most information stay on a credit report?', ['about seven years', 'one month', 'forever', 'one year'], 'about seven years', 'Most of what is on it stays for about seven years.'],
+      ['What builds a positive credit history?', ['paying on time', 'having many cards', 'never borrowing', 'a big income'], 'paying on time', 'Paying on time is what earns a loan at all, and a lower rate when it comes.'],
+      ['Who uses a credit report to decide whether to lend and at what rate?', ['lenders', 'teachers', 'stores only', 'nobody'], 'lenders', 'Lenders read it; borrowers with a good report pay less for the same loan.'],
+      ['Which loan costs more interest in all?', ['a longer loan', 'a shorter loan', 'they cost the same', 'a loan with no rate'], 'a longer loan', 'A longer loan has smaller payments and a bigger total.'],
+      ['What should you always ask for on a loan?', ['the total you will repay', 'only the monthly number', 'the color of the paperwork', 'a longer term'], 'the total you will repay', 'The monthly payment is a window, not the whole house.'],
+      ['What is on a credit report?', ['accounts, on-time payments, what you owe, who asked to see it', 'your grades', 'your address only', 'your favorite store'], 'accounts, on-time payments, what you owe, who asked to see it', 'The record of how you have handled borrowed money.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'e6-compound': (rng) => {
+    const r = rng();
+    if (r < 0.35) {
+      const rate = pick(rng, [5, 10, 20]); const start = 1000; const simple = start + (start * rate * 2) / 100; const comp = Math.round(start * (1 + rate / 100) * (1 + rate / 100));
+      return { type: 'choice', story: `1,000 dollars at ${rate} percent a year, for two years.`, prompt: 'What does compound interest give?', choices: shuffle(rng, [comp, simple, start + (start * rate) / 100, comp + rate].filter((v, i, a) => a.indexOf(v) === i).map((v) => v.toLocaleString('en-US'))), answer: comp.toLocaleString('en-US'), explain: `Year one earns on 1,000: ${(start + (start * rate) / 100).toLocaleString('en-US')}. Year two earns on that: **${comp.toLocaleString('en-US')}**, against ${simple.toLocaleString('en-US')} with simple interest.`, visual: null, explainVisual: null };
+    }
+    if (r < 0.6) {
+      const rate = pick(rng, [4, 6, 8, 9, 12]); const ans = 72 / rate;
+      return { type: 'choice', story: null, prompt: `By the rule of 72, about how many years to double at ${rate} percent?`, choices: shuffle(rng, [ans, rate, 72 - rate, ans * 2].filter((v, i, a) => a.indexOf(v) === i).map(String)), answer: String(ans), explain: `72 divided by ${rate} is about **${ans}** years.`, visual: null, explainVisual: null };
+    }
+    const Q = [['Interest paid on the interest already earned is called what?', ['compound interest', 'simple interest', 'sales tax', 'net worth'], 'compound interest', 'Each year earns on last year too, so it grows faster the longer it runs.'],
+      ['Which dollars do the most work in a savings plan?', ['the earliest dollars', 'the last dollars', 'the biggest dollars', 'none of them'], 'the earliest dollars', 'They have decades of compounding ahead of them.'],
+      ['An unpaid credit card balance does what?', ['compounds against you', 'shrinks', 'earns interest for you', 'stays the same'], 'compounds against you', 'Compound interest is a friend to the saver and an enemy to the borrower.'],
+      ['Simple interest is paid on what?', ['the amount you started with', 'the interest earned', 'sales tax', 'net worth'], 'the amount you started with', 'Every year the same.'],
+      ['Twenty dollars a month is how much a year?', ['240 dollars', '120 dollars', '200 dollars', '2,400 dollars'], '240 dollars', 'Twenty times twelve, and then decades of compounding.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'e6-budget': (rng) => {
+    const r = rng();
+    if (r < 0.3) {
+      const price = pick(rng, [50, 100, 200, 25]); const rate = pick(rng, [4, 6, 8, 10]); const tax = (price * rate) / 100; const ans = price + tax;
+      return { type: 'choice', story: `A ${price} dollar purchase with ${rate} percent sales tax.`, prompt: 'What is the total at the register?', choices: shuffle(rng, [ans, price + rate, price - tax, ans + tax].filter((v, i, a) => a.indexOf(v) === i).map(String)), answer: String(ans), explain: `${rate} percent of ${price} is ${tax}; the total is **${ans}**.`, visual: null, explainVisual: null };
+    }
+    if (r < 0.55) {
+      const income = pick(rng, [200, 400, 500, 1000]); const part = pick(rng, [10, 20, 25, 50]); const amount = (income * part) / 100;
+      return { type: 'choice', story: `Income is ${income.toLocaleString('en-US')} dollars a month and savings is ${amount} dollars.`, prompt: 'What percent of the budget is savings?', choices: shuffle(rng, [part, part * 2, 100 - part, part / 2].filter((v, i, a) => a.indexOf(v) === i && v > 0).map((v) => `${v} percent`)), answer: `${part} percent`, explain: `${amount} out of ${income.toLocaleString('en-US')} is **${part} percent**.`, visual: null, explainVisual: null };
+    }
+    if (r < 0.75) {
+      const bike = pick(rng, [100, 200, 300]); const savings = randInt(rng, 2, 9) * 50; const owe = randInt(rng, 1, 8) * 10; const ans = bike + savings - owe;
+      return { type: 'choice', story: `A bike worth ${bike} dollars, a savings account of ${savings}, and ${owe} dollars owed to a friend.`, prompt: 'What is the net worth?', choices: shuffle(rng, [ans, bike + savings, bike + savings + owe, savings - owe].filter((v, i, a) => a.indexOf(v) === i).map(String)), answer: String(ans), explain: `Assets ${bike + savings} minus liabilities ${owe} is **${ans}**.`, visual: null, explainVisual: null };
+    }
+    const Q = [['What you own minus what you owe is called what?', ['net worth', 'sales tax', 'a budget', 'compound interest'], 'net worth', 'Assets minus liabilities.'],
+      ['Which is a way to pay for college?', ['work-study', 'an overdraft fee', 'a credit report', 'sales tax'], 'work-study', 'Savings, grants, scholarships, student loans and work-study.'],
+      ['Which tax is taken from wages before the pay arrives?', ['income tax', 'sales tax', 'property tax', 'no tax'], 'income tax', 'Income tax is a percent taken from wages; sales tax is added at the register.'],
+      ['A monthly college savings target is what?', ['the first year\'s cost divided by the months until it starts', 'the total cost every month', 'a percent of a bike', 'a fee'], 'the first year\'s cost divided by the months until it starts', 'Start early and the number is small.'],
+      ['Which usually costs far less?', ['a two-year college', 'a four-year college', 'they cost the same', 'neither has a cost'], 'a two-year college', 'A two-year college costs far less than a four-year one.'],
+      ['Jobs that need more training tend to do what?', ['pay more each year', 'pay less', 'pay the same', 'have no pay'], 'pay more each year', 'A difference of even a few thousand dollars a year adds up over a working life.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  // Personal finance, grades 9 to 12 (2026-09-29, pass FY): dollars computed each time; concepts said in the lesson first.
+  'e9-pay': (rng) => {
+    const r = rng();
+    if (r < 0.4) {
+      const gross = pick(rng, [1000, 1500, 2000, 2400, 3000, 4000]); const taxPct = pick(rng, [10, 12, 15, 20]); const fica = Math.round(gross * 0.0765 * 100) / 100; const tax = (gross * taxPct) / 100; const net = Math.round((gross - fica - tax) * 100) / 100;
+      const fmt = (v) => v.toLocaleString('en-US', { minimumFractionDigits: v % 1 ? 2 : 0, maximumFractionDigits: 2 });
+      return { type: 'choice', story: `Gross pay ${fmt(gross)} dollars, FICA at 7.65 percent, federal income tax withheld at ${taxPct} percent.`, prompt: 'What is the net pay?', choices: shuffle(rng, [net, gross - tax, gross - fica, gross].filter((v, i, a) => a.indexOf(v) === i).map(fmt)), answer: fmt(net), explain: `FICA: ${fmt(fica)}. Income tax: ${fmt(tax)}. ${fmt(gross)} minus both is **${fmt(net)}**.`, visual: null, explainVisual: null };
+    }
+    if (r < 0.6) {
+      const own = pick(rng, [3500, 8000, 12000, 20000]); const owe = pick(rng, [900, 2500, 4000, 7500]); const ans = own - owe;
+      return { type: 'choice', story: `Assets of ${own.toLocaleString('en-US')} dollars and liabilities of ${owe.toLocaleString('en-US')} dollars.`, prompt: 'What does the net worth statement show?', choices: shuffle(rng, [ans, own + owe, own, owe].filter((v, i, a) => a.indexOf(v) === i).map((v) => v.toLocaleString('en-US'))), answer: ans.toLocaleString('en-US'), explain: `Assets minus liabilities: **${ans.toLocaleString('en-US')}**.`, visual: null, explainVisual: null };
+    }
+    const Q = [['FICA is Social Security plus Medicare. What is the combined rate?', ['7.65 percent', '6.2 percent', '1.45 percent', '10 percent'], '7.65 percent', 'Social Security at 6.2 percent and Medicare at 1.45 percent.'],
+      ['Which paper lists income and expenses for a month?', ['an income statement', 'a net worth statement', 'a bank statement', 'a paycheck'], 'an income statement', 'It shows whether you gained or lost that month.'],
+      ['Assets minus liabilities is shown on which statement?', ['a net worth statement', 'an income statement', 'a paycheck', 'a tax form'], 'a net worth statement', 'A balance sheet: what you own minus what you owe.'],
+      ['Matching the bank\'s list against your own record is called what?', ['reconciling', 'withholding', 'budgeting', 'investing'], 'reconciling', 'Every line on one list and not the other is a question.'],
+      ['Which is a benefit that never shows in net pay?', ['retirement matching', 'gross pay', 'income tax', 'FICA'], 'retirement matching', 'Health insurance contributions, retirement matching, sick leave and vacation pay are benefits.'],
+      ['A good financial goal is specific, measurable, attainable, realistic and what?', ['time based', 'secret', 'large', 'flexible'], 'time based', 'Not save more, but 1,200 dollars by June.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'e9-credit': (rng) => {
+    const r = rng();
+    if (r < 0.35) {
+      const fee = pick(rng, [10, 12, 15, 18, 20, 25]); const ans = fee * 26;
+      return { type: 'choice', story: `A payday loan charges ${fee} dollars per 100 borrowed for two weeks.`, prompt: 'About what APR is that?', choices: shuffle(rng, [ans, fee, fee * 12, fee * 2].filter((v, i, a) => a.indexOf(v) === i).map((v) => `${v} percent`)), answer: `${ans} percent`, explain: `${fee} percent for two weeks, and there are 26 two-week periods in a year: about **${ans} percent** APR.`, visual: null, explainVisual: null };
+    }
+    if (r < 0.6) {
+      const p = pick(rng, [5000, 8000, 10000, 12000]); const down = pick(rng, [500, 1000, 2000, 3000]); const rate = pick(rng, [5, 6, 8, 10]); const years = randInt(rng, 2, 5); const saved = ((down * rate) / 100) * years;
+      return { type: 'choice', story: `A ${p.toLocaleString('en-US')} dollar loan at ${rate} percent simple interest for ${years} years, with a ${down.toLocaleString('en-US')} dollar down payment instead of none.`, prompt: 'About how much interest does the down payment save?', choices: shuffle(rng, [saved, down, saved * 2, (p * rate) / 100].filter((v, i, a) => a.indexOf(v) === i).map((v) => v.toLocaleString('en-US'))), answer: saved.toLocaleString('en-US'), explain: `Less principal for the rate to work on: ${down.toLocaleString('en-US')} times ${rate / 100} times ${years} is **${saved.toLocaleString('en-US')}**.`, visual: null, explainVisual: null };
+    }
+    const Q = [['The yearly cost of borrowing as a percent is called what?', ['APR', 'a grace period', 'collateral', 'a deductible'], 'APR', 'The annual percentage rate.'],
+      ['Credit you can borrow again as you repay is called what?', ['revolving credit', 'installment credit', 'a title loan', 'collateral'], 'revolving credit', 'A credit card is revolving; a car loan is installment.'],
+      ['A loan backed by something the lender can take is what?', ['collateralized', 'unsecured', 'revolving', 'variable'], 'collateralized', 'It costs less than unsecured credit, which is backed only by your promise.'],
+      ['Which strategy cuts the total cost of a loan?', ['a larger down payment', 'a longer term', 'a cash advance', 'paying late'], 'a larger down payment', 'Less principal, less interest; extra principal payments and a shorter term help too.'],
+      ['Character, capacity and collateral are what?', ['the three Cs lenders judge by', 'three kinds of tax', 'three savings options', 'three scams'], 'the three Cs lenders judge by', 'Your record, your income against debts, and what backs the loan.'],
+      ['Which can lead to bankruptcy?', ['medical bills', 'a grace period', 'a down payment', 'a fixed rate'], 'medical bills', 'Medical bills, job loss, divorce or a failed business.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'e9-invest': (rng) => {
+    const r = rng();
+    if (r < 0.35) {
+      const monthly = pick(rng, [1200, 1500, 1800, 2000, 2500]); const months = pick(rng, [3, 4, 5, 6]); const ans = monthly * months;
+      return { type: 'choice', story: `Monthly expenses of ${monthly.toLocaleString('en-US')} dollars, and an emergency fund of ${months} months.`, prompt: 'How big is the fund?', choices: shuffle(rng, [ans, monthly, ans + monthly, monthly * 12].filter((v, i, a) => a.indexOf(v) === i).map((v) => v.toLocaleString('en-US'))), answer: ans.toLocaleString('en-US'), explain: `${months} times ${monthly.toLocaleString('en-US')} is **${ans.toLocaleString('en-US')}**.`, visual: null, explainVisual: null };
+    }
+    if (r < 0.6) {
+      const rate = pick(rng, [4, 6, 8, 9, 12]); const ans = Math.round(72 / rate);
+      return { type: 'choice', story: `Money grows at ${rate} percent a year.`, prompt: 'By the rule of 72, about how many years to double?', choices: shuffle(rng, [ans, rate, 72, ans * 2].filter((v, i, a) => a.indexOf(v) === i).map(String)), answer: String(ans), explain: `72 divided by ${rate} is about **${ans}** years.`, visual: null, explainVisual: null };
+    }
+    const Q = [['What comes first in the order of saving?', ['an emergency fund', 'stocks', 'a car', 'a vacation'], 'an emergency fund', 'Three to six months of expenses, in reach.'],
+      ['A loan to a company or a government that pays steady interest is what?', ['a bond', 'a stock', 'a mutual fund', 'a deductible'], 'a bond', 'Bonds pay steady interest with lower risk; stocks are shares of ownership.'],
+      ['Which spreads money across many stocks or bonds?', ['a mutual fund', 'a single stock', 'a certificate of deposit', 'a payday loan'], 'a mutual fund', 'Many holdings do not all fall at once.'],
+      ['Which savings option pays more for locking the money up?', ['a certificate of deposit', 'a checking account', 'a stock', 'cash'], 'a certificate of deposit', 'Certificates of deposit pay more for a fixed term.'],
+      ['Retirement income comes from Social Security, your savings and what else?', ['employer-sponsored plans', 'payday loans', 'sales tax', 'a grace period'], 'employer-sponsored plans', 'Which often match what you put in.'],
+      ['What single decision matters most for retirement?', ['starting early and saving enough', 'picking one stock', 'waiting for a raise', 'skipping the match'], 'starting early and saving enough', 'A dollar at 25 has forty years of doubling ahead of it.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'e9-protect': (rng) => {
+    const r = rng();
+    if (r < 0.35) {
+      const claim = pick(rng, [1200, 2000, 3500, 5000, 8000]); const ded = pick(rng, [250, 500, 1000]); const ans = claim - ded;
+      return { type: 'choice', story: `A ${claim.toLocaleString('en-US')} dollar claim on a policy with a ${ded.toLocaleString('en-US')} dollar deductible.`, prompt: 'How much does the insurer pay?', choices: shuffle(rng, [ans, claim, ded, claim + ded].filter((v, i, a) => a.indexOf(v) === i).map((v) => v.toLocaleString('en-US'))), answer: ans.toLocaleString('en-US'), explain: `You pay the deductible first: ${claim.toLocaleString('en-US')} minus ${ded.toLocaleString('en-US')} is **${ans.toLocaleString('en-US')}**.`, visual: null, explainVisual: null };
+    }
+    if (r < 0.6) {
+      const cost = pick(rng, [12000, 18000, 24000, 30000]); const grants = pick(rng, [2000, 4000, 6000, 9000]); const work = pick(rng, [1500, 3000]); const ans = cost - grants - work;
+      return { type: 'choice', story: `A year costs ${cost.toLocaleString('en-US')} dollars; grants and scholarships cover ${grants.toLocaleString('en-US')} and work-study ${work.toLocaleString('en-US')}.`, prompt: 'How much is left to save or borrow?', choices: shuffle(rng, [ans, cost - grants, cost, ans + work].filter((v, i, a) => a.indexOf(v) === i).map((v) => v.toLocaleString('en-US'))), answer: ans.toLocaleString('en-US'), explain: `Gifts first, work second, loans last: ${cost.toLocaleString('en-US')} minus ${grants.toLocaleString('en-US')} minus ${work.toLocaleString('en-US')} is **${ans.toLocaleString('en-US')}**.`, visual: null, explainVisual: null };
+    }
+    const Q = [['Paying an insurer to take a risk is which strategy?', ['transferring risk', 'avoiding risk', 'retaining risk', 'reducing risk'], 'transferring risk', 'Avoid, reduce, retain with savings, or transfer to an insurer.'],
+      ['What is the premium?', ['what you pay for the policy', 'what you pay first on a claim', 'the most the insurer pays', 'a fixed share of a bill'], 'what you pay for the policy', 'Premium, deductible, co-pay and policy limit.'],
+      ['A message that imitates your bank to steal your login is called what?', ['phishing', 'a pyramid scheme', 'a grace period', 'work-study'], 'phishing', 'Urgency plus secrecy is the tell.'],
+      ['Which needs no repaying?', ['grants and scholarships', 'student loans', 'a credit card', 'a payday loan'], 'grants and scholarships', 'Pay for school in the cheapest order: gifts first, work second, loans last.'],
+      ['Where do grants and federal student loans begin?', ['the FAFSA', 'a credit report', 'a title loan', 'a co-pay'], 'the FAFSA', 'The Free Application for Federal Student Aid, filed the year before you enroll.'],
+      ['Which agency takes reports of fraud?', ['the Consumer Financial Protection Bureau', 'a payday lender', 'a mutual fund', 'the FAFSA'], 'the Consumer Financial Protection Bureau', 'Along with the Better Business Bureau and the Texas State Securities Board.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
@@ -20218,6 +20565,66 @@ export const WONDER = [
     closing: 'What would you want to say that no machine would say for you?',
   },
   {
+    id: 'w-grown-fund-or-fun',
+    theme: 'ups-and-downs',
+    stage: 'grown',
+    courseIds: ['econ-9'],
+    answerMode: 'typed',
+    prompt: 'An emergency fund is money you hope never to touch. How do you keep filling something you hope never to use?',
+    perspectives: [
+      { voice: 'A scientist', says: 'Treat it as a bill, not a choice. A transfer that happens on payday before you see the money is a habit, and a habit needs no willpower. The fund fills itself while you are looking elsewhere.' },
+      { voice: 'An artist', says: 'Name it after the thing it protects: the car fund, the roof fund, the month-off fund. Money with a name is harder to raid, and easier to feel good about feeding.' },
+      { voice: 'A grandparent of faith', says: 'You are not saving for a disaster. You are saving so that a disaster stays a bad week instead of a bad year. That is a gift to the person you will be, and it is worth a small ache now.' },
+      { voice: 'A skeptic', says: 'Everyone touches it eventually, so the question is only whether you touch it for a transmission or for a sale. Write the rule down: what counts as an emergency, and what does not.' },
+    ],
+    closing: 'What would you write as your rule for touching it?',
+  },
+  {
+    id: 'w-grown-the-fine-print',
+    theme: 'failure',
+    stage: 'grown',
+    courseIds: ['econ-9'],
+    answerMode: 'typed',
+    prompt: 'You signed for something without reading the terms, and the fees came later. Who is responsible: the one who wrote the fine print, or the one who did not read it?',
+    perspectives: [
+      { voice: 'A scientist', says: 'Both, in different measures, and only one of them is you. The lender chose the print size; you chose to sign. Responsibility for the next contract is entirely yours, and that is the useful part.' },
+      { voice: 'An artist', says: 'Fine print is designed to be skipped, the way a dull frame is designed to make you look at the painting. Knowing that is half the defense. The other half is a pen and ten minutes.' },
+      { voice: 'A grandparent of faith', says: 'There is no shame in being fooled once. The shame would be in pretending it did not happen. Tell someone younger, and the lesson stops costing money and starts earning it.' },
+      { voice: 'A skeptic', says: 'The one who wrote it is responsible for the trick; the one who signed is responsible for the loss. Those are different things, and the law will only help you with the first if the print was actually illegal.' },
+    ],
+    closing: 'What is the one line you will read first on the next contract?',
+  },
+  {
+    id: 'w-teen-card-in-full',
+    theme: 'ups-and-downs',
+    stage: 'teen',
+    courseIds: ['econ-6'],
+    answerMode: 'typed',
+    prompt: 'A credit card lets you buy the thing today and pay for it next month. Is that a tool, a trap, or both, and what decides which?',
+    perspectives: [
+      { voice: 'A scientist', says: 'It is the same object either way; what changes is the arithmetic. Paid in full, the interest is zero and the card is a convenience. Paid in part, the balance compounds against you, and the numbers decide, not the plastic.' },
+      { voice: 'An artist', says: 'A brush is a tool in one hand and a mess in another. The card is like that. The question is not whether to own one but whether you can put it down when the picture is finished.' },
+      { voice: 'A grandparent of faith', says: 'The old rule was never to owe what you could not repay by morning. A card kept to that rule is a servant; a card that runs ahead of you becomes a master, and it collects.' },
+      { voice: 'A skeptic', says: 'Ask who designed it and why. The bank earns nothing from people who pay in full, so the whole design leans toward the people who do not. Knowing that is half of using it well.' },
+    ],
+    closing: 'What rule would you set for yourself before the first card arrives?',
+  },
+  {
+    id: 'w-teen-early-dollars',
+    theme: 'world',
+    stage: 'teen',
+    courseIds: ['econ-6'],
+    answerMode: 'typed',
+    prompt: 'Twenty dollars a month saved at twelve becomes far more than a hundred a month saved at thirty. Why does the world reward the person who started early, and is that fair?',
+    perspectives: [
+      { voice: 'A scientist', says: 'Compounding is multiplication repeated, and multiplication repeated grows fastest at the end of a long run. The early saver did not do more work; the early saver gave the arithmetic more time. Time is the ingredient nobody can buy back.' },
+      { voice: 'An artist', says: 'Every skill works this way. The musician who started at eight is not more talented than the one who started at thirty; the hours simply compounded. Fair is a strange word for it. It is only how growth works.' },
+      { voice: 'A grandparent of faith', says: 'Plant a tree when you are young and you sit in its shade when you are old. The proverb is older than banks, and it is the same lesson: the patient are paid by time itself.' },
+      { voice: 'A skeptic', says: 'It is not fair, if fair means equal. A child whose family can spare twenty dollars a month starts a race that another child cannot enter. Compounding rewards a head start, and head starts are not handed out evenly.' },
+    ],
+    closing: 'What could you start this month that would still be growing at forty?',
+  },
+  {
     id: 'w-growing-spent-the-plan',
     theme: 'failure',
     stage: 'growing',
@@ -23072,6 +23479,8 @@ export const COURSE_GAMES = {
   'tech-k': ['walk-tech-k'],
   'econ-k': ['pay-econ-k'],
   'econ-3': ['price-econ-3'],
+  'econ-6': ['loan-econ-6'],
+  'econ-9': ['fund-econ-9'],
   'tech-6': ['teach-tech-6'],
   'tech-9': ['bits-tech-9'],
   'health-4': ['pairs-health'],

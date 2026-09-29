@@ -3560,11 +3560,96 @@ function PriceGame({ game, round, onScore = null }) {
     </div>
   );
 }
-const GAME_OF = { dots: DotsGame, pairs: PairsGame, sort: SortGame, maze: MazeGame, jigsaw: JigsawGame, pong: PongGame, sprint: SprintGame, order: OrderGame, build: BuildGame, fix: FixGame, mix: MixGame, debug: DebugGame, ptable: PtableGame, evidence: EvidenceGame, catch: CatchGame, path: PathGame, buckets: BucketsGame, jump: JumpGame, map: MapGame, balance: BalanceGame, walk: WalkGame, teach: TeachGame, bits: BitsGame, pay: PayGame, price: PriceGame };
+// Pay It Off (2026-09-29, pass FX, a new kind for economics 6 to 8): a loan with a rate per month and three payment sizes.
+// Every tap is a month: interest is added on what is still owed, the payment comes off, and the interest paid so far
+// climbs. Four loans a round; the score is the interest paid in all, lower is better. The lesson's idea is the rule of
+// the game: the same loan costs more the longer it runs, and the smallest payment is the most expensive road. Drawn
+// with B on the paper board.
+function LoanGame({ game, round, onScore = null }) {
+  const plans = useMemo(() => loanPlans(round), [round]);
+  const [k, setK] = useState(0); const [balance, setBalance] = useState(null); const [months, setMonths] = useState(0); const [interest, setInterest] = useState(0); const [last, setLast] = useState(null); const [total, setTotal] = useState(0); const [done, setDone] = useState(false); const [ticks, setTicks] = useState(0);
+  const plan = plans[k] || plans[0];
+  useEffect(() => { setK(0); setTotal(0); setDone(false); setTicks(0); }, [round]);
+  useEffect(() => { setBalance(plan.principal); setMonths(0); setInterest(0); setLast(null); }, [plan]);
+  const paid = balance === 0;
+  useEffect(() => { if (done || paid) return undefined; const t = setInterval(() => setTicks((n) => n + 1), 1000); return () => clearInterval(t); }, [done, paid]);
+  useEffect(() => { if (done && onScore) onScore(total, 'low'); }, [done]);
+  const pay = (amount) => { if (paid || done || balance === null) return; const r = loanMonth(balance, plan.rate, amount); setBalance(r.balance); setMonths(months + 1); setInterest(interest + r.interest); setLast({ amount, ...r }); };
+  const next = () => { setTotal(total + interest); if (k + 1 >= plans.length) setDone(true); else setK(k + 1); };
+  const said = balance === null ? '' : paid ? `Paid off in ${months} ${months === 1 ? 'month' : 'months'}. Interest paid: ${interest} dollars.` : last ? `Month ${months}: interest ${last.interest}, paid ${last.amount}, still owed ${balance}. Interest so far: ${interest}.` : `${plan.thing.charAt(0).toUpperCase() + plan.thing.slice(1)}: you owe ${plan.principal.toLocaleString('en-US')} dollars at ${plan.rate} percent a month. Tap a payment; each tap is a month.`;
+  const share = balance === null ? 0 : Math.max(0, Math.min(1, balance / plan.principal));
+  return (
+    <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Interest paid: {total + interest}</span><span>{ticks}s · loan {Math.min(k + 1, plans.length)} of {plans.length}</span></div>
+      {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Four loans paid off, {total} dollars of interest in all. Tap the round arrow for new ones.</p> : (
+        <div style={{ textAlign: 'center' }}>
+          {/* What is still owed, as a bar that shrinks; interest pushes it back up before each payment takes it down. */}
+          <div style={{ height: 26, borderRadius: 13, background: '#EEF1EE', border: `2px solid ${B.line}`, overflow: 'hidden', margin: '0 auto 8px', maxWidth: 360 }} aria-hidden="true">
+            <div style={{ width: `${share * 100}%`, height: '100%', background: paid ? B.green : '#D9534F', transition: 'width 250ms' }} />
+          </div>
+          <p style={{ margin: '4px 0 10px', fontSize: 15, color: B.ink, minHeight: 44 }}>{said}</p>
+          {paid ? <Btn pal={B} onClick={next}>{k + 1 >= plans.length ? 'Finish' : 'Next loan'}</Btn> : (
+            <div style={{ display: 'flex', gap: 8, justifyContent: 'center', flexWrap: 'wrap' }}>
+              {plan.payments.map((amount) => <button key={amount} type="button" className="edu-press" aria-label={`Pay ${amount} this month`} onClick={() => pay(amount)} style={{ fontFamily: FONT, minWidth: 92, height: 52, borderRadius: 12, border: `2px solid ${B.green}`, background: '#fff', color: B.ink, fontSize: 17, fontWeight: 700, cursor: 'pointer', padding: '0 10px' }}>Pay {amount}</button>)}
+            </div>
+          )}
+        </div>
+      )}
+      <Done show={done} />
+    </div>
+  );
+}
+// Build the Fund (2026-09-29, pass FY, a new kind for personal finance 9 to 12): a first year on your own, one month a tap.
+// Income comes in, the bills go out, and the player chooses how much of the room that is left goes into the emergency
+// fund; the rest is spent. Four months bring a surprise bill: the fund pays what it can and the rest is borrowed at
+// 2 percent a month, with interest every month after. The score is the fund minus the loan at the end of the year,
+// higher is better. The lesson's idea is the rule of the game: an emergency fund is what keeps a surprise from becoming a
+// loan. Drawn with B on the paper board.
+function FundGame({ game, round, onScore = null }) {
+  const year = useMemo(() => fundYear(round), [round]);
+  const [m, setM] = useState(0); const [st, setSt] = useState({ fund: 0, loan: 0, spent: 0 }); const [last, setLast] = useState(null); const [done, setDone] = useState(false); const [ticks, setTicks] = useState(0);
+  useEffect(() => { setM(0); setSt({ fund: 0, loan: 0, spent: 0 }); setLast(null); setDone(false); setTicks(0); }, [round]);
+  useEffect(() => { if (done) return undefined; const t = setInterval(() => setTicks((n) => n + 1), 1000); return () => clearInterval(t); }, [done]);
+  const score = st.fund - st.loan;
+  useEffect(() => { if (done && onScore) onScore(score, 'high'); }, [done]);
+  const choose = (save) => {
+    if (done) return;
+    const month = year.months[m]; const next = fundMonth({ ...st, room: year.room }, save, month);
+    const short = month.surprise > 0 ? Math.max(0, month.surprise - (st.fund + Math.min(save, year.room))) : 0;
+    setLast({ n: m + 1, save, surprise: month.surprise, what: month.what, short });
+    setSt(next);
+    if (m + 1 >= 12) setDone(true); else setM(m + 1);
+  };
+  const fmt = (v) => v.toLocaleString('en-US');
+  const said = last ? (last.surprise > 0 ? (last.short > 0 ? `Month ${last.n}: a ${last.what}, ${fmt(last.surprise)}. The fund was short by ${fmt(last.short)}, so that much was borrowed at 2 percent a month.` : `Month ${last.n}: a ${last.what}, ${fmt(last.surprise)}. The fund covered it.`) : `Month ${last.n}: no surprises. ${fmt(last.save)} saved, ${fmt(year.room - last.save)} spent.`) : `Income ${fmt(year.income)}, bills ${fmt(year.bills)}: ${fmt(year.room)} a month is yours to save or spend.`;
+  const maxBar = Math.max(1000, st.fund, st.loan, st.spent);
+  const bar = (label, v, color) => (
+    <div style={{ display: 'flex', alignItems: 'center', gap: 8, margin: '4px 0' }}>
+      <span style={{ width: 62, textAlign: 'right', fontSize: 13, color: B.muted }}>{label}</span>
+      <div style={{ flex: 1, height: 16, background: '#EEF1EE', borderRadius: 8, overflow: 'hidden', border: `1px solid ${B.line}` }}><div style={{ width: `${Math.min(100, (v / maxBar) * 100)}%`, height: '100%', background: color, transition: 'width 300ms' }} /></div>
+      <span style={{ width: 54, fontSize: 14, fontWeight: 700, color: B.ink }}>{fmt(v)}</span>
+    </div>);
+  return (
+    <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Fund minus loan: {fmt(score)}</span><span>{ticks}s · month {Math.min(m + 1, 12)} of 12</span></div>
+      {bar('fund', st.fund, B.green)}{bar('loan', st.loan, B.clay)}{bar('spent', st.spent, '#B9C2BC')}
+      <p style={{ margin: '10px 0 8px', fontSize: 15, color: B.ink, minHeight: 22, textAlign: 'center' }}>{said}</p>
+      {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Year over: {fmt(st.fund)} in the fund, {fmt(st.loan)} owed. Tap the round arrow for a new year.</p> : (
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, justifyContent: 'center' }}>
+          {[0, 100, 200, 300, 400, 500].map((v) => <button key={v} type="button" className="edu-press" aria-label={`Save ${v} this month`} onClick={() => choose(v)} style={{ fontFamily: FONT, minWidth: 64, height: 48, borderRadius: 12, border: `2px solid ${B.green}`, background: '#fff', color: B.ink, fontSize: 16, fontWeight: 700, cursor: 'pointer', padding: '0 8px' }}>{v}</button>)}
+        </div>
+      )}
+      <Done show={done && st.loan === 0} />
+    </div>
+  );
+}
+const GAME_OF = { dots: DotsGame, pairs: PairsGame, sort: SortGame, maze: MazeGame, jigsaw: JigsawGame, pong: PongGame, sprint: SprintGame, order: OrderGame, build: BuildGame, fix: FixGame, mix: MixGame, debug: DebugGame, ptable: PtableGame, evidence: EvidenceGame, catch: CatchGame, path: PathGame, buckets: BucketsGame, jump: JumpGame, map: MapGame, balance: BalanceGame, walk: WalkGame, teach: TeachGame, bits: BitsGame, pay: PayGame, price: PriceGame, loan: LoanGame, fund: FundGame };
 // How to play, in a line or two, by kind of game (and by deck for the matching games).
 function gameInstructions(game) {
   if (game.kind === 'bits') return 'A number sits at the top and eight switches below it, worth 128 down to 1. Tap the switches on and off until the lit places add up to the number; the sum shows as you go. Six numbers, and the clock counts up.';
   if (game.kind === 'teach') return 'Twelve fruits, apples and bananas. The robot has seen one of each and guesses the rest from its nearest known fruit: a red ring means it guesses apple, a yellow ring banana. Tap a fruit the robot got wrong to teach it, and watch every guess change. Four boards; fewer lessons is the better score.';
+  if (game.kind === 'loan') return 'You owe money on something at a rate per month. Tap a payment: each tap is a month, interest is added on what is still owed, and the payment comes off. Watch what the smallest payment costs over time. Four loans; less interest paid in all is the better score.';
+  if (game.kind === 'fund') return 'A first year on your own, one month a tap. Income comes in, the bills go out, and you choose how much of the 500 that is left goes into your emergency fund; the rest is spent. Some months bring a surprise bill: the fund pays what it can and the rest is borrowed at 2 percent a month. The score is the fund minus the loan after twelve months, higher is better.';
   if (game.kind === 'price') return 'A lemonade stand with twelve customers, each with a top price in mind you cannot see, a cost for the day and a cost per cup. Tap a price to try it: the people who will pay it step forward with a cup, and the profit shows as money in minus money out. Three tries a stand, then the best price is revealed. Four stands; more profit found is the better score.';
   if (game.kind === 'pay') return 'A thing to buy shows its price in coins, with a dot for every coin. Tap coins from the table into the tray until the total matches the price exactly; tap a tray coin to put it back. Too many and the tray empties for another try. Four things, and the clock counts up.';
   if (game.kind === 'walk') return 'Tap the arrows to give the robot its steps, one at a time, then tap Go and watch it follow them to the star. A bump into a rock or the edge stops it; tap the last step to take it back and try another. Four robots, and the clock counts up.';
@@ -3639,6 +3724,8 @@ function GameThumb({ kind, game = null }) {
   if (dotShape) return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><polyline points={[...dotShape, dotShape[0]].map((pt) => pt.join(',')).join(' ')} fill="none" stroke={C.green} strokeWidth="2" strokeLinejoin="round" />{dotShape.map(([x, y], i) => <circle key={i} cx={x} cy={y} r="2.6" fill={C.paperBoard} stroke={k} strokeWidth="1.4" />)}</svg>;
   if (game && game.kind === 'bits') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true">{[0, 1, 2, 3].map((i) => <g key={i}><rect x={4 + i * 8.6} y="9" width="6.4" height="20" rx="3.2" fill={i === 1 || i === 3 ? C.green : C.paperBoard} stroke={k} strokeWidth="1" /><circle cx={7.2 + i * 8.6} cy={i === 1 || i === 3 ? 13 : 25} r="2.3" fill="#fff" stroke={k} strokeWidth="0.8" /></g>)}<text x="20" y="37" fontSize="6.5" fontWeight="700" textAnchor="middle" fill={k} fontFamily="sans-serif">0101</text></svg>;
   if (game && game.kind === 'teach') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="3" y="3" width="34" height="34" rx="4" fill={C.paperBoard} stroke={k} strokeWidth="1" />{[[11, 12], [17, 21], [10, 27]].map(([x, y], i) => <g key={`a${i}`}><circle cx={x} cy={y} r="4.4" fill="none" stroke="#D9534F" strokeWidth="1" strokeDasharray="1.6 1" /><circle cx={x} cy={y} r="2.3" fill="#D9534F" /></g>)}{[[27, 14], [30, 26], [22, 31]].map(([x, y], i) => <g key={`b${i}`}><circle cx={x} cy={y} r="4.4" fill="none" stroke="#E6B84B" strokeWidth="1" strokeDasharray="1.6 1" /><path d={`M ${x - 2.4} ${y - 1} q 2.4 3.4 4.8 0 q -2.3 1.6 -4.8 0 z`} fill="#F2C94C" /></g>)}</svg>;
+  if (game && game.kind === 'fund') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="5" y="7" width="30" height="26" rx="4" fill="#fff" stroke={k} strokeWidth="1.2" />{[[10, 22, 8], [17, 14, 16], [24, 18, 12]].map(([x, y, h], i) => <rect key={i} x={x} y={y} width="5" height={h} rx="1" fill={i === 1 ? C.green : '#DDE3DE'} stroke={k} strokeWidth="0.7" />)}<path d="M31 13l-3 -3 -3 3M28 10v9" fill="none" stroke={k} strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" /></svg>;
+  if (game && game.kind === 'loan') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true">{[[8, 24, 12], [15, 18, 18], [22, 12, 24], [29, 6, 30]].map(([x, y, h], i) => <rect key={i} x={x} y={y} width="5" height={h} rx="1.2" fill={i === 3 ? C.green : '#D9534F'} stroke={k} strokeWidth="0.7" />)}<line x1="5" y1="36" x2="36" y2="36" stroke={k} strokeWidth="1.2" strokeLinecap="round" /></svg>;
   if (game && game.kind === 'price') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><path d="M8 6h16l8 8v20H8z" fill="#fff" stroke={k} strokeWidth="1.2" strokeLinejoin="round" /><circle cx="13" cy="11" r="1.6" fill={k} />{[[13, 22, 10], [19, 17, 15], [25, 20, 12]].map(([x, y, h], i) => <rect key={i} x={x} y={y} width="4.5" height={h} rx="1" fill={i === 1 ? C.green : '#DDE3DE'} stroke={k} strokeWidth="0.7" />)}</svg>;
   if (game && game.kind === 'pay') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="5" y="6" width="30" height="14" rx="3" fill="#fff" stroke={k} strokeWidth="1" />{[0, 1, 2, 3].map((i) => <circle key={i} cx={11 + i * 6} cy="13" r="2" fill={i < 2 ? C.green : '#DDE3DE'} stroke={k} strokeWidth="0.6" />)}<circle cx="13" cy="30" r="6" fill="#E6B84B" stroke="#9C7A1C" strokeWidth="1.2" /><circle cx="27" cy="30" r="4.6" fill="#D7DCDF" stroke="#7B8388" strokeWidth="1.2" /></svg>;
   if (game && game.kind === 'walk') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true">{[0, 1, 2].map((r) => [0, 1, 2].map((c) => <rect key={`${r}${c}`} x={4.5 + c * 10.5} y={4.5 + r * 10.5} width="9.5" height="9.5" rx="1.5" fill={C.paperBoard} stroke={k} strokeWidth="1" />))}<rect x="6.5" y="6.5" width="5.5" height="5.5" rx="1.5" fill="#D9534F" stroke={k} strokeWidth="0.7" /><path d="M30.3 24.8l1.3 2.7 3.0 0.4-2.2 2.1 0.5 3.0-2.6-1.4-2.6 1.4 0.5-3.0-2.2-2.1 3.0-0.4z" fill={C.gold} stroke={k} strokeWidth="0.6" /><path d="M13.5 9.3h8.5M19 6.5l3 2.8-3 2.8M20 14v7M17.2 18l2.8 3 2.8-3" fill="none" stroke={k} strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" /></svg>;

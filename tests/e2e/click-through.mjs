@@ -876,6 +876,27 @@ await page.waitForTimeout(200);
 }
 await page.getByRole('button', { name: 'Close game' }).first().click({ force: true });
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview');
+// Pay It Off (pass FX, economics 6 to 8): the biggest payment clears a loan within twelve months and the interest paid shows.
+await page.evaluate(() => window.__eduTest.openColoring('play:loan-econ-6'));
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'coloring');
+await page.waitForTimeout(200);
+{ ok('the loan game opens with a debt, a rate and three payments to choose', /you owe [\d,]+ dollars at \d percent a month/.test(await text()) && (await page.getByRole('button', { name: /^Pay \d+ this month$/ }).count()) === 3);
+  const biggest = page.getByRole('button', { name: /^Pay \d+ this month$/ }).last();
+  let taps = 0; while ((await page.getByRole('button', { name: /^Pay \d+ this month$/ }).count()) > 0 && taps < 14) { await biggest.click(); taps += 1; await page.waitForTimeout(60); }
+  ok('the biggest payment pays the loan off within twelve months and the interest paid is shown', taps <= 12 && /Paid off in \d+ months?\. Interest paid: \d+ dollars\./.test(await text()) && (await page.getByRole('button', { name: 'Next loan' }).count()) === 1);
+}
+await page.getByRole('button', { name: 'Close game' }).first().click({ force: true });
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview');
+// Build the Fund (pass FY, personal finance 9 to 12): saving the whole room every month ends the year with no loan.
+await page.evaluate(() => window.__eduTest.openColoring('play:fund-econ-9'));
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'coloring');
+await page.waitForTimeout(200);
+{ ok('the fund game opens on month one with six amounts to save', (await text()).includes('yours to save or spend') && (await page.getByRole('button', { name: /^Save \d+ this month$/ }).count()) === 6);
+  for (let i = 0; i < 12; i++) { await page.getByRole('button', { name: 'Save 500 this month' }).click(); await page.waitForTimeout(60); }
+  ok('a year of saving the whole room ends with money in the fund and nothing owed', /Year over: [\d,]+ in the fund, 0 owed/.test(await text()));
+}
+await page.getByRole('button', { name: 'Close game' }).first().click({ force: true });
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview');
 // Some pictures are drawn on rather than filled in: a finger stroke leaves a line in the chosen color.
 await page.evaluate(() => window.__eduTest.openColoring('star'));
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'coloring');

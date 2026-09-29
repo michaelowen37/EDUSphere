@@ -1471,6 +1471,16 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
     ok('profit is price times buyers minus the fixed cost and the cost per cup', L.standProfit({ tops: [1, 4, 4, 8], fixed: 3, each: 1 }, 4).profit === 4 * 3 - 3 - 3 && L.standProfit({ tops: [1, 4, 4, 8], fixed: 3, each: 1 }, 9).buyers === 0);
     ok('the price game belongs to economics 3 to 5 and names its stands with its own key', L.COURSE_GAMES['econ-3'].includes('price-econ-3') && L.GAMES.find((g) => g.id === 'price-econ-3').price === 'stand' && !L.GAMES.find((g) => g.id === 'price-econ-3').deck);
   }
+  { // Pay It Off (pass FX): four loans a round; the smallest payment beats the first month's interest, the largest clears the loan within twelve months.
+    const clears = (plan, payment, months) => { let bal = plan.principal; for (let m = 0; m < months; m++) { const r = L.loanMonth(bal, plan.rate, payment); bal = r.balance; if (r.paid) return true; } return false; };
+    ok('every loan plan can be paid off: the biggest payment clears it in twelve months and the smallest still shrinks it', [1, 2, 3, 4, 5].every((r) => L.loanPlans(r).length === 4 && L.loanPlans(r).every((pl) => pl.payments.length === 3 && pl.payments[0] < pl.payments[1] && pl.payments[1] < pl.payments[2] && pl.payments[0] > L.loanMonth(pl.principal, pl.rate, 0).interest && clears(pl, pl.payments[2], 12))));
+    ok('a month adds interest on the balance and takes the payment off', JSON.stringify(L.loanMonth(1000, 2, 250)) === JSON.stringify({ interest: 20, balance: 770, paid: false }) && L.loanMonth(200, 2, 250).paid === true);
+    ok('the loan game belongs to economics 6 to 8 and names its plans with its own key', L.COURSE_GAMES['econ-6'].includes('loan-econ-6') && L.GAMES.find((g) => g.id === 'loan-econ-6').loan === 'plans' && !L.GAMES.find((g) => g.id === 'loan-econ-6').deck);
+  }
+  { // Build the Fund (pass FY): a year's surprises never exceed what steady saving can cover, so saving the room every month ends in the black.
+    ok('every fund year has four surprises that steady saving covers, and saving nothing ends in debt', [1, 2, 3, 4, 5].every((r) => { const y = L.fundYear(r); const hits = y.months.filter((m) => m.surprise > 0); let st = { fund: 0, loan: 0, spent: 0 }; let none = { fund: 0, loan: 0, spent: 0 }; y.months.forEach((m) => { st = L.fundMonth({ ...st, room: y.room }, y.room, m); none = L.fundMonth({ ...none, room: y.room }, 0, m); }); return hits.length === 4 && y.total <= y.room * 12 && st.loan === 0 && st.fund === y.room * 12 - y.total && none.loan > y.total; }));
+    ok('the fund game belongs to personal finance 9 to 12 and names its year with its own key', L.COURSE_GAMES['econ-9'].includes('fund-econ-9') && L.GAMES.find((g) => g.id === 'fund-econ-9').fund === 'year' && !L.GAMES.find((g) => g.id === 'fund-econ-9').deck);
+  }
   ok('the two robot games sit in the two programming courses beside their first games', L.COURSE_GAMES['tech-3'].includes('debug-tech-3') && L.COURSE_GAMES['tech-5'].includes('debug-tech-5') && L.GAMES.filter((g) => g.kind === 'debug').every((g) => L.ROBOT_DECKS[g.deck]));
 }
 

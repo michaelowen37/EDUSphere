@@ -2,6 +2,18 @@
 
 The newest block is what educators see once, in a pop-up on the classroom page, after each update. Write it the way Mikey talks to a teacher: conversational, complete sentences, say what changed and why it matters, and skip the shorthand (2026-09-23). Two to four items. The date line is the version stamp.
 
+## September 29, 2026 (money for a life)
+
+- Grade 9 has a new elective for grades 9 to 12, Money for a life: a paycheck read to the last line, with FICA, withholding and the benefits that never show in net pay; the true cost of credit, from APR and fees to the three Cs and a credit report worth correcting; saving in order, from an emergency fund to retirement, with stocks, bonds and mutual funds on the risk and return seesaw; and insurance, scams and paying for college in the cheapest order. Every dollar question is worked out fresh. Each lesson has a story, and the course ends with a long story about Chloe and her first studio lease.
+- Finishing the course unlocks Build the Fund, a new kind of game: twelve months on your own, one tap each, and four surprise bills that an emergency fund can turn from a loan into an errand.
+- Two new Wonder questions for high school wait in the review screen.
+
+## September 29, 2026 (money over time)
+
+- Grade 6 has a new elective for grades 6 to 8, Money over time: checking accounts and what a debit card really does against a credit card, a credit report and what a loan costs over years, interest that compounds and the rule of 72, and sales tax, income tax, a budget in percents, net worth and the five ways to pay for college. The dollar questions are worked out fresh every time. Each lesson has a story, and the course ends with a long story about Savanah's first apartment in the city.
+- Finishing the course unlocks Pay It Off, a new kind of game: a loan, three payment sizes, and a month with every tap, so the cost of the smallest payment shows up on its own.
+- Two new Wonder questions for grades 6 to 8 wait in the review screen.
+
 ## September 29, 2026 (money that works)
 
 - Grade 3 has a new elective for grades 3 to 5, Money that works: skills raise what an hour of work pays and scarce things cost more; planned spending and what credit really costs; fixed and variable expenses and the profit that is left; and savings, the four taxes, gross and net pay, and a budget that balances. The dollar questions are worked out fresh every time. Each lesson has a story, and the course ends with a long story about Savanah and her egg money.

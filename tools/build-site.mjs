@@ -10,6 +10,7 @@
 // Nothing here talks to a server. The file is the product.
 import { readFileSync, writeFileSync, readdirSync, existsSync } from 'node:fs';
 import { execSync } from 'node:child_process';
+import { newestNews } from './whats-new.mjs';
 
 const G = execSync('npm root -g').toString().trim();
 const read = (rel) => readFileSync(`${G}/${rel}`, 'utf8');
@@ -30,11 +31,10 @@ mods.app = readFileSync('tests/e2e/out/edusphere-prototype.js', 'utf8');
 const iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="14" fill="#14231E"/><circle cx="32" cy="32" r="23" fill="none" stroke="#D9A441" stroke-width="4.5"/><path d="M17.5 23 L24.5 42.5 L32 28.5 L39.5 42.5 L46.5 23" fill="none" stroke="#F1EDE3" stroke-width="5.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="51" cy="44" r="5" fill="#D9A441" stroke="#14231E" stroke-width="2"/></svg>';
 const favicon = 'data:image/svg+xml,' + encodeURIComponent(iconSvg);
 // The story pictures that exist, so the page shows a placeholder for the rest without asking the server.
-// The newest block of docs/WHATS-NEW.md becomes the one-time pop-up educators see after an update.
+// The newest block of docs/WHATS-NEW.md becomes the one-time pop-up educators see after an update. tools/whats-new.mjs
+// picks it (the latest date, the higher block on a tie) and tests/site.test.mjs checks the page shows that very block.
 const newsDoc = existsSync('docs/WHATS-NEW.md') ? readFileSync('docs/WHATS-NEW.md', 'utf8') : '';
-// The first dated block, whole: the old regex stopped at the first line end (multiline $), so the pop-up showed one item.
-const newsBlock = (/^## (\S+)\s*\n([\s\S]*)$/.exec((newsDoc.split(/\n(?=## )/).find((b) => b.startsWith('## ')) || '')) || []);
-const news = newsBlock[1] ? { stamp: newsBlock[1], date: newsBlock[1], items: newsBlock[2].split('\n').filter((ln) => ln.startsWith('- ')).map((ln) => ln.slice(2).trim()) } : null;
+const news = newestNews(newsDoc);
 const artList = existsSync('art/stories') ? readdirSync('art/stories').filter((f) => f.endsWith('.webp')).map((f) => f.slice(0, -5)) : [];
 const audioList = existsSync('audio') ? readdirSync('audio').filter((f) => f.endsWith('.mp3')).map((f) => f.slice(0, -4)) : [];
 const coloringList = existsSync('art/coloring') ? readdirSync('art/coloring').filter((f) => f.endsWith('.webp')).map((f) => f.slice(0, -5)) : [];

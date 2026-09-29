@@ -5236,7 +5236,14 @@ function EduSphereScreens() {
   const tourBegun = useRef(false);                                 // the tour starts once per sign-in, not every time the classroom page shows
   // On a phone the tour does not start on its own (the sheet fights the page for room); the classroom page offers it instead.
   const phoneScreen = typeof window !== 'undefined' && window.innerWidth < 700;
-  useEffect(() => { if (screen === 'educator-pick' && educator && !educator.tourSeen) { if (!tourBegun.current && !phoneScreen) { tourBegun.current = true; setTourStep(0); } return; } if (screen === 'educator-pick' && news && educator && educator.newsSeen !== news.stamp && educator.tourSeen) setNewsOpen(true); }, [screen, educator && educator.newsSeen, educator && educator.tourSeen]);
+  // The first week tour opens on a wide screen for a new educator, and What's new waits until the tour is done. On a phone
+  // the tour never runs (its cards need room), so What's new opens straight away there (2026-09-28, pass FR): before this
+  // a phone-only educator waited for a tour that never came and saw no news at all.
+  useEffect(() => {
+    if (screen !== 'educator-pick' || !educator) return;
+    if (!educator.tourSeen && !phoneScreen) { if (!tourBegun.current) { tourBegun.current = true; setTourStep(0); } return; }
+    if (news && educator.newsSeen !== news.stamp) setNewsOpen(true);
+  }, [screen, educator && educator.newsSeen, educator && educator.tourSeen]);
   useEffect(() => { if (screen === 'wonder' && readAloud && wonder) speak(wonder.prompt); }, [screen, readAloud, wonder]);
   const spokenVoice = screen === 'wonder-voices' && readAloud && wonder ? (wonder.simple || [])[Math.min(wonderVoiceStep, ((wonder.simple || []).length || 1) - 1)] : null;
   useEffect(() => { if (spokenVoice) speak(`${spokenVoice.voice}. ${spokenVoice.says}`); }, [spokenVoice]);
@@ -7630,26 +7637,24 @@ function EduSphereScreens() {
     const goalOf = (moduleId) => { const m = getModule(moduleId); return m ? m.title : ''; };
     const line = (moduleId) => { const st = storyFor(moduleId); if (!st) return null; return { moduleId, title: titleCase(st.title), about: st.about || '', goal: goalOf(moduleId) }; };
     const viewAll = storyView.all || 'recent'; const who = storyView.student || 'all';
+    // What exists for a student comes from logic (storyLogAvailable, 2026-09-28, pass FR): every module story on their
+    // courses and every long story, each with its first-read time. The screen only sorts and words them.
     const listFor = (row) => {
       const view = viewAll;
-      const read = storiesRead(row.events);                                     // [{ moduleId, at }] newest first, course stories included
-      const readIds = new Set(read.map((r) => r.moduleId));
-      const available = enabledCourseIds(row.events).flatMap((cid) => { const c = getCourse(cid); return c ? c.modules.map((m) => m.id) : []; }).filter((id) => storyFor(id));
-      if (view === 'read') return read.filter((r) => !String(r.moduleId).startsWith('course:')).map((r) => ({ ...line(r.moduleId), at: r.at })).filter((x) => x.title);
-      if (view === 'unread') return available.filter((id) => !readIds.has(id)).map((id) => line(id)).filter(Boolean);
-      const dayOf = (at) => { const d = new Date(at); return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`; };
-      const today = dayOf(new Date().toISOString()); const todays = read.filter((r) => dayOf(r.at) === today);
-      // Course stories count as recent reading when they were read today or among the last three.
-      return (todays.length ? todays : read.slice(0, 3)).map((r) => (String(r.moduleId).startsWith('course:') ? { moduleId: r.moduleId, title: courseStoryFor(r.moduleId.slice(7)) ? courseStoryFor(r.moduleId.slice(7)).title : '', about: (courseStoryFor(r.moduleId.slice(7)) || {}).about || '', goal: (getCourse(r.moduleId.slice(7)) || {}).title || '', at: r.at, isCourse: true } : { ...line(r.moduleId), at: r.at })).filter((x) => x.title);
+      const { shorts } = storyLogAvailable(row.events, storyFor, courseStoryFor);
+      // Read: newest first, so the story opened last sits at the top.
+      if (view === 'read') return shorts.filter((s) => s.at).sort((a, b) => (a.at < b.at ? 1 : -1)).map((s) => ({ ...line(s.moduleId), at: s.at })).filter((x) => x.title);
+      if (view === 'unread') return shorts.filter((s) => !s.at).map((s) => line(s.moduleId)).filter(Boolean);
+      // Most recent: today's reading, or the last three stories opened, newest first; course stories count too.
+      return recentReads(row.events).map((r) => (String(r.moduleId).startsWith('course:') ? { moduleId: r.moduleId, title: courseStoryFor(r.moduleId.slice(7)) ? courseStoryFor(r.moduleId.slice(7)).title : '', about: (courseStoryFor(r.moduleId.slice(7)) || {}).about || '', goal: (getCourse(r.moduleId.slice(7)) || {}).title || '', at: r.at, isCourse: true } : { ...line(r.moduleId), at: r.at })).filter((x) => x.title);
     };
     const countsFor = (row) => {
-      const readIds = new Set(storiesRead(row.events).map((r) => r.moduleId));
-      const available = enabledCourseIds(row.events).flatMap((cid) => { const c = getCourse(cid); return c ? c.modules.map((m) => m.id) : []; }).filter((id) => storyFor(id));
-      return { read: available.filter((id) => readIds.has(id)).length, total: available.length };
+      const { shorts } = storyLogAvailable(row.events, storyFor, courseStoryFor);
+      return { read: shorts.filter((s) => s.at).length, total: shorts.length };
     };
     const openStory = openStoryId ? (String(openStoryId).startsWith('course:') ? courseStoryFor(openStoryId.slice(7)) : storyFor(openStoryId)) : null;
     // Course stories per student: unlocked when every module of the course is mastered; read when logged.
-    const courseRows = (row) => { const pg = deriveProgress(row.events); const readIds = new Set(storiesRead(row.events).map((r) => r.moduleId)); return enabledCourseIds(row.events).map((cid) => getCourse(cid)).filter((c) => c && courseStoryFor(c.id)).map((c) => ({ id: `course:${c.id}`, title: courseStoryFor(c.id).title, course: c.title, unlocked: c.modules.every((m) => pg.masteredIds.includes(m.id)), left: c.modules.filter((m) => !pg.masteredIds.includes(m.id)).length, read: readIds.has(`course:${c.id}`), art: courseStoryFor(c.id).art })); };
+    const courseRows = (row) => storyLogAvailable(row.events, storyFor, courseStoryFor).longs.map((l) => ({ id: l.moduleId, title: courseStoryFor(l.courseId).title, course: getCourse(l.courseId).title, unlocked: l.unlocked, left: l.left, read: !!l.at, art: courseStoryFor(l.courseId).art }));
     const SHOW = 3;   // a long list shows three rows, then offers the rest
     const markRead = async (studentId, moduleId) => {
       const rec = await loadRecord(studentId); const next = { ...rec, events: [...(rec.events || []), makeStoryReadEvent(moduleId, new Date().toISOString())] };
@@ -7771,22 +7776,14 @@ function EduSphereScreens() {
     // apart to read as three stories; a long story keeps a page of its own, and so does any story whose painting has arrived,
     // since a picture is half a page and the pictures print by default.
     const hasArt = (serial) => typeof window !== 'undefined' && Array.isArray(window.__eduArt) && window.__eduArt.includes(serial);
-    const painted = (st) => [st.art, ...(st.more || []).map((m) => m.serial)].some(hasArt);
-    // A painted story runs onto as many sheets as its pictures need, each paragraph with its own picture (2026-09-24, Mikey).
-    const partsOf = (st) => printParts(st.words, (st.more || []).filter((m) => hasArt(m.serial)).map((m) => m.after), hasArt(st.art));
-    // One or two stories a page (2026-09-24, Mikey): a story under 130 words shares a page with one more, an older one under
-    // 260 shares in a slightly smaller face, anything longer or painted stands alone.
-    const words = (st) => st.words.join(' ').split(/\s+/).length;
-    const fit = (st) => (painted(st) ? 1 : words(st) <= 260 ? 2 : 1);
+    // The pages come from logic's bookPages (2026-09-28, pass FR), the one place that decides them, so the rule test pages
+    // every course the same way: two short unpainted stories a page, a painted or long story on sheets that split only
+    // between paragraphs (each paragraph with its own picture), the long story last on as many sheets as it needs.
+    const { groups, csParts } = bookPages(chapters, cs, hasArt);
     // The last page: which of the state's standards each story serves, from the standards map (2026-09-24, Mikey).
     const fw = frameworkForState(stateCode || 'CA');
     const standardsFor = (moduleId) => CURRICULUM.flatMap((e) => e.standards).filter((st) => st.framework === fw && (st.moduleIds || []).includes(moduleId));
     const standardRows = chapters.map(({ m, st }, i) => ({ i, m, list: standardsFor(m.id) })).filter((r) => r.list.length);
-    const groups = [];
-    // A story that needs more than one sheet, painted or not (a doubled story in the older grades can), splits between
-    // paragraphs across as many sheets as it needs, so nothing is ever cut off the bottom of a page (2026-09-24).
-    chapters.forEach((ch, i) => { const parts = partsOf(ch.st); if (painted(ch.st) || parts.length > 1) { parts.forEach((part) => groups.push({ per: 1, items: [{ ...ch, i, part }] })); return; } const per = fit(ch.st); const last = groups[groups.length - 1]; if (per > 1 && last && last.per === per && last.items.length < per) last.items.push({ ...ch, i }); else groups.push({ per, items: [{ ...ch, i }] }); });
-    const csParts = cs ? partsOf(cs) : [];   // a doubled long story runs onto a second sheet when it needs one
     const pageTotal = 1 + groups.length + csParts.length + (standardRows.length ? 1 : 0);
     // Every painting loads before the printer sees the page (2026-09-24): pictures load lazily on screen, and a lazy one
     // further down the book could print as a blank.

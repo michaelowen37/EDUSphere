@@ -15,8 +15,16 @@ await page.selectOption('select[aria-label="Your state"]', 'CA');
 await page.getByRole('button', { name: 'Create account', exact: true }).click();
 { const skip = page.getByRole('button', { name: 'Skip tour' }); if (await skip.count()) await skip.click({ force: true }); }
 { const later = page.getByRole('button', { name: 'Later' }); if (await later.count()) await later.click(); }
-// The what's-new pop-up appears once per build on the real page; dismiss it the way an educator would.
+// The What's new pop-up appears once per build on the real page, on a phone too, and shows the newest block of
+// docs/WHATS-NEW.md whole (2026-09-28, pass FR: it had been dark since September 24, when the headings gained spaces).
+const { newestNews } = await import('../tools/whats-new.mjs'); const { readFileSync } = await import('node:fs');
+const wantNews = newestNews(readFileSync('docs/WHATS-NEW.md', 'utf8'));
+await page.waitForTimeout(400);
+const newsSeen = { shown: (await page.getByRole('dialog', { name: "What's new" }).count()) === 1, text: '' };
+if (newsSeen.shown) newsSeen.text = await page.getByRole('dialog', { name: "What's new" }).textContent();
 { const got = page.getByRole('button', { name: 'Got it' }); if (await got.count()) await got.click(); }
+await page.waitForTimeout(200);
+const newsGone = (await page.getByRole('dialog', { name: "What's new" }).count()) === 0;
 await page.getByRole('button', { name: 'Add someone new' }).click();
 await page.fill('input[placeholder="School-issued ID"]', 'S-777');
 await page.getByRole('button', { name: /^Elementary/ }).click();
@@ -33,6 +41,9 @@ ok('what was done survives a reload, because it lives in the browser', after.inc
 const createOffered = (await page.getByRole('button', { name: 'Create account' }).count()) > 0;
 ok('the account, device name and state are remembered too', !createOffered);
 ok('no browser errors on the standalone page', errors.length === 0);
+ok("the What's new pop-up opens on a phone with the newest block, every item, and closes on Got it", !!wantNews && newsSeen.shown && newsSeen.text.includes(wantNews.date) && wantNews.items.every((t) => newsSeen.text.includes(t)) && newsGone);
+const newsAfter = (await page.getByRole('dialog', { name: "What's new" }).count()) === 0;
+ok("What's new stays closed after a reload, because Got it was remembered", newsAfter);
 await b.close();
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exitCode = fail ? 1 : 0;   // never process.exit(): it can drop the last lines of a piped stdout (2026-09-23)

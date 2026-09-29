@@ -22033,7 +22033,54 @@ export function printParts(words, paintedAfter = [], mainPainted = false) {
     part.to = i; part.used += cost(i);
   });
   parts.push(part);
-  return parts.map(({ head, from, to }) => ({ head, from, to }));
+  // `used` is the inches of the sheet the part fills (2026-09-28, pass FR): the rule test reads it to prove every page fits,
+  // so no paragraph is ever tall enough to be cut off or parted from its picture.
+  return parts.map(({ head, from, to, used }) => ({ head, from, to, used: Math.round(used * 100) / 100 }));
+}
+
+// ---------- The story book's pages and the Story Log's lists (2026-09-28, Mikey, pass FR) ----------
+// The printed book decides its pages here, not on the screen, so a rule test can turn every course into pages exactly the
+// way the book does, twice: once with no painting yet and once as if every painting had arrived. `chapters` are the
+// course's modules that have a story, in course order, as { m, st }; `hasArt(serial)` says whether a painting exists.
+// Short stories go two to a page while neither is painted and under 260 words (the dense face); a painted story, or one
+// that needs more than one sheet, takes a page per part from printParts, which splits only between paragraphs. The long
+// story comes last, on as many sheets as it needs. Nothing here knows about screens or printers, only sizes.
+export function bookPages(chapters, courseStory, hasArt) {
+  const painted = (st) => [st.art, ...(st.more || []).map((m) => m.serial)].some(hasArt);
+  const partsOf = (st) => printParts(st.words, (st.more || []).filter((m) => hasArt(m.serial)).map((m) => m.after), hasArt(st.art));
+  const words = (st) => st.words.join(' ').split(/\s+/).length;
+  const fit = (st) => (painted(st) ? 1 : words(st) <= 260 ? 2 : 1);
+  const groups = [];
+  chapters.forEach((ch, i) => {
+    const parts = partsOf(ch.st);
+    if (painted(ch.st) || parts.length > 1) { parts.forEach((part) => groups.push({ per: 1, items: [{ ...ch, i, part }] })); return; }
+    const per = fit(ch.st); const last = groups[groups.length - 1];
+    if (per > 1 && last && last.per === per && last.items.length < per) last.items.push({ ...ch, i }); else groups.push({ per, items: [{ ...ch, i }] });
+  });
+  const csParts = courseStory ? partsOf(courseStory) : [];
+  return { groups, csParts };
+}
+// Everything a student's Story Log can list: every module story on a course the student has, and every long story of
+// those courses, each with when it was first read (null when unread). A long story unlocks when every module of its
+// course is mastered; `left` counts the modules still to master. The screen sorts these into Most recent, Read and Unread
+// and never decides on its own what exists, so a story that is missing here is missing everywhere, and the rule test
+// checks that none is.
+export function storyLogAvailable(events, storyFor, courseStoryFor) {
+  const readAt = new Map(storiesRead(events).map((r) => [r.moduleId, r.at]));
+  const mastered = new Set(deriveProgress(events).masteredIds);
+  const courses = enabledCourseIds(events).map((cid) => getCourse(cid)).filter(Boolean);
+  const shorts = courses.flatMap((c) => c.modules.filter((m) => storyFor(m.id)).map((m) => ({ moduleId: m.id, courseId: c.id, at: readAt.get(m.id) || null })));
+  const longs = courses.filter((c) => courseStoryFor(c.id)).map((c) => ({ moduleId: `course:${c.id}`, courseId: c.id, unlocked: c.modules.every((m) => mastered.has(m.id)), left: c.modules.filter((m) => !mastered.has(m.id)).length, at: readAt.get(`course:${c.id}`) || null }));
+  return { shorts, longs };
+}
+// Most recent reading, newest first: everything read today (the device's day) or, when nothing was read today, the last
+// three stories opened. Before pass FR the screen took the first three ever read, since storiesRead lists first openings
+// in the order they happened, so an old reader's Most recent showed the stories they began with.
+export function recentReads(events, now = new Date()) {
+  const read = storiesRead(events).slice().reverse();
+  const dayOf = (at) => { const d = new Date(at); return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`; };
+  const today = dayOf(now); const todays = read.filter((r) => dayOf(r.at) === today);
+  return todays.length ? todays : read.slice(0, 3);
 }
 
 // ---------- Coloring pages from lessons (2026-09-24, Mikey) ----------

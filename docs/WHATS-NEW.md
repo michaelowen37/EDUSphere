@@ -2,31 +2,11 @@
 
 The newest block is what educators see once, in a pop-up on the classroom page, after each update. Write it the way Mikey talks to a teacher: conversational, complete sentences, say what changed and why it matters, and skip the shorthand (2026-09-23). Two to four items. The date line is the version stamp.
 
-## September 24, 2026 (a helping hand)
+## September 28, 2026 (every story, on the log and in the book)
 
-- Young learners get a clearer nudge now. Everything they can open on their course list glows softly in a light, bright green, and once a subject is open, every lesson ready to start pulses with a gentle green ring. The lessons slide in one after another so little eyes can follow along.
-- Anything they can't open yet simply steps aside, so the screen only shows what's ready for them.
-- Nothing flashes or shouts. On a device set to reduce motion, the green ring simply stays still around each thing to tap.
-- The book picker on the Story Log now reads clearly in the dark theme.
-
-## September 24, 2026 (dark theme)
-
-- The Wise Human now opens in a dark theme, easy on the eyes in the evening and in dim rooms. Prefer light? Tap the sun at the top of the welcome page or the Classroom page, and that device remembers your choice.
-- The colored cards on the Classroom page keep their colors in the dark, just deeper, and every word on them reads clearly. The student pickers read clearly too.
-- Each science experiment now sits in its own card, so the ideas are easy to tell apart.
-- The rainbow behind Let's Color, Let's Read and Let's Play is a touch softer, so its words read on every color.
-- Anything you print still comes out as dark words on white paper.
-- The dark theme got a final polish. The warm cards (Transcript, Life Skills, Science Experiments) are night green with a soft gold or coral edge instead of a dark brown, the weekly note has a header strip of its own, and the panels inside a Wonder Question stand apart from the card around them.
-- The cards now wear a soft green edge in the dark theme, the reading list's grade titles stand apart from the books under them, and pop-ups like Add someone new and the Wonder Question review stand out clearly from the page behind them.
-- In the dark theme, Let's Color, Let's Play and Let's Read show just their changing colors with no frame around them, and the recovery code card has a soft yellow glow so it's easy to find. The light theme looks exactly as it always has.
-- On a laptop or other wide screen, titles, links and notes in the dark theme no longer sit on white bars. The reading list and science experiment rows get their gold edge only once they're opened.
-- The Wonder Questions, Reading Lists, Science Experiments and Life Skills cards on the Classroom page are soft, playful colors in the dark theme, each with a button in a deeper shade of its own color, and the recovery code card is a soft yellow.
-- In the dark theme, games, coloring pages, their thumbnails and the pictures in lessons sit on soft almond paper instead of bright white, and every label on a drawing reads clearly. The Step on... grids sit centered on their boards.
-- A few more touches in the dark theme: the Transcript card is a light peach, the list of what a student has mastered and the Let's Read note are a light green, the weekly note and the course rows stand out a little from their cards, and a story whose painting is still to come shows a quiet dark placeholder.
-- At the end of a Let's Read story there's now a Back to my courses link, so nobody has to scroll to the top to leave.
-- PIN boxes and the device name box now keep their words centered, and the note that appears after Merge into... is centered too.
-- The Wonder Question review is easier to scan: everything is centered except the four voices' names, with thin lines between the parts the youngest children hear. The link that takes every approval back is now called Remove All; it still sends every approved question back to waiting for review, hidden from students.
-- Small touches: the i notes are centered, typing boxes are a soft almond in the dark theme, the weekly note is light green under its dark header, and the Story Log breathes a little more around its toggle and picker.
+- A new check now walks every course the way the Story Log and the story book do: every story lists for a fresh student, moves to Read the first time it is opened, and pages into the book with each picture on the same page as the paragraph it shows. All 81 courses pass, with every story painted or not yet painted.
+- On the Story Log, Most recent now shows the last three stories a student opened, newest first. It had been showing the first three ever opened, which for a longtime reader was the stories they started with.
+- This What's new note is back. It had stopped appearing after the September 24 update, and on a phone it had been waiting for the first week tour, which only runs on a wide screen. It opens on any screen now, once per update.
 
 ## September 28, 2026 (stories that flow)
 
@@ -144,6 +124,32 @@ The newest block is what educators see once, in a pop-up on the classroom page, 
 - Twelve more grade 5 stories are longer, each with six pictures: the six science stories (salt crystals left behind by evaporation, the moon's phases and its one face, dew and springs in the water cycle, instinct, friction and a heavier cart, kinds of fossils and coal) and the six reading stories (a theme as a sentence, second person and the all-knowing narrator, idioms in Spanish, explaining evidence, a third source, answering the other side).
 - Every grade 5 short story is now full length. The last ten: the thirteen colonies (the House of Burgesses, town meetings, and who was made to do the work), the road to revolution (the Boston Massacre, the First Continental Congress), the Constitution (the Great Compromise, the ninth state), growing west (Lewis and Clark, the Trail of Tears, the railroad), the Civil War (Gettysburg, Lincoln's death), immigration (Ellis Island, Angel Island, Hull House), industry (child labor, Ford's moving line), and three writing stories (headings and facts, reasons with examples, showing instead of telling).
 - Grade 5's six long stories are twice as long, each with five new pictures to make: the lake trip, the family on the road from the coast, the game that kept score, the bake sale, the class play and Georgette's class pet. Grade 5 is now finished: every short and long story at full length.
+
+## September 24, 2026 (a helping hand)
+
+- Young learners get a clearer nudge now. Everything they can open on their course list glows softly in a light, bright green, and once a subject is open, every lesson ready to start pulses with a gentle green ring. The lessons slide in one after another so little eyes can follow along.
+- Anything they can't open yet simply steps aside, so the screen only shows what's ready for them.
+- Nothing flashes or shouts. On a device set to reduce motion, the green ring simply stays still around each thing to tap.
+- The book picker on the Story Log now reads clearly in the dark theme.
+
+## September 24, 2026 (dark theme)
+
+- The Wise Human now opens in a dark theme, easy on the eyes in the evening and in dim rooms. Prefer light? Tap the sun at the top of the welcome page or the Classroom page, and that device remembers your choice.
+- The colored cards on the Classroom page keep their colors in the dark, just deeper, and every word on them reads clearly. The student pickers read clearly too.
+- Each science experiment now sits in its own card, so the ideas are easy to tell apart.
+- The rainbow behind Let's Color, Let's Read and Let's Play is a touch softer, so its words read on every color.
+- Anything you print still comes out as dark words on white paper.
+- The dark theme got a final polish. The warm cards (Transcript, Life Skills, Science Experiments) are night green with a soft gold or coral edge instead of a dark brown, the weekly note has a header strip of its own, and the panels inside a Wonder Question stand apart from the card around them.
+- The cards now wear a soft green edge in the dark theme, the reading list's grade titles stand apart from the books under them, and pop-ups like Add someone new and the Wonder Question review stand out clearly from the page behind them.
+- In the dark theme, Let's Color, Let's Play and Let's Read show just their changing colors with no frame around them, and the recovery code card has a soft yellow glow so it's easy to find. The light theme looks exactly as it always has.
+- On a laptop or other wide screen, titles, links and notes in the dark theme no longer sit on white bars. The reading list and science experiment rows get their gold edge only once they're opened.
+- The Wonder Questions, Reading Lists, Science Experiments and Life Skills cards on the Classroom page are soft, playful colors in the dark theme, each with a button in a deeper shade of its own color, and the recovery code card is a soft yellow.
+- In the dark theme, games, coloring pages, their thumbnails and the pictures in lessons sit on soft almond paper instead of bright white, and every label on a drawing reads clearly. The Step on... grids sit centered on their boards.
+- A few more touches in the dark theme: the Transcript card is a light peach, the list of what a student has mastered and the Let's Read note are a light green, the weekly note and the course rows stand out a little from their cards, and a story whose painting is still to come shows a quiet dark placeholder.
+- At the end of a Let's Read story there's now a Back to my courses link, so nobody has to scroll to the top to leave.
+- PIN boxes and the device name box now keep their words centered, and the note that appears after Merge into... is centered too.
+- The Wonder Question review is easier to scan: everything is centered except the four voices' names, with thin lines between the parts the youngest children hear. The link that takes every approval back is now called Remove All; it still sends every approved question back to waiting for review, hidden from students.
+- Small touches: the i notes are centered, typing boxes are a soft almond in the dark theme, the weekly note is light green under its dark header, and the Story Log breathes a little more around its toggle and picker.
 
 ## September 24, 2026 (a new name)
 

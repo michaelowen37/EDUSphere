@@ -102,5 +102,76 @@ for (const [id, cs] of Object.entries(COURSE_STORIES)) {
   ok('early-years stories flow: no paragraph reads robotic (choppy, monotone, then then)', bad.length === 0, bad.slice(0, 6).join(' | '));
 }
 
+// Every story lists on the Story Log and pages into the book with its pictures (2026-09-28, Mikey, pass FR). The Story Log
+// asks logic (storyLogAvailable, recentReads) what a student has, and the book asks logic (bookPages) for its pages, so
+// this test walks every course the way the screens do: a fresh student sees every module story unread and every long
+// story locked; reading one moves it to Read and to Most recent, newest first; and the book, paged twice (nothing painted,
+// everything painted), holds every paragraph exactly once, in order, with each picture on the same sheet as its
+// paragraph, and no sheet fuller than the paper.
+{
+  const L = await import('../src/logic.mjs');
+  const S = await import('../src/stories.mjs');
+  const fresh = L.storyLogAvailable([], S.storyFor, S.courseStoryFor);
+  const shortIds = new Set(fresh.shorts.map((s) => s.moduleId)); const longIds = new Set(fresh.longs.map((l) => l.courseId));
+  const missingShort = Object.keys(STORIES).filter((id) => !shortIds.has(id));
+  ok('a fresh student\'s Story Log lists every module story, each unread', missingShort.length === 0 && fresh.shorts.every((s) => s.at === null) && fresh.shorts.length === Object.keys(STORIES).length, missingShort.slice(0, 5).join(','));
+  const missingLong = Object.keys(COURSE_STORIES).filter((id) => !longIds.has(id));
+  ok('a fresh student\'s Story Log lists every long story, locked with every module still to master', missingLong.length === 0 && fresh.longs.every((l) => !l.unlocked && l.at === null && l.left === L.getCourse(l.courseId).modules.length && l.left > 0), missingLong.slice(0, 5).join(','));
+  ok('every long story belongs to a real course with modules', Object.keys(COURSE_STORIES).every((id) => L.getCourse(id) && L.getCourse(id).modules.length > 0), Object.keys(COURSE_STORIES).filter((id) => !L.getCourse(id)).join(','));
+  ok('every story shows a title on the Story Log', Object.values(STORIES).every((st) => L.titleCase(st.title).trim().length > 0) && Object.values(COURSE_STORIES).every((st) => String(st.title).trim().length > 0));
+  // Reading moves a story: first opening counts, Most recent is today's reading or the last three, newest first.
+  const ids = Object.keys(STORIES).slice(0, 5); const cid = Object.keys(COURSE_STORIES)[0];
+  const evs = ids.map((id, i) => L.makeStoryReadEvent(id, `2026-09-0${i + 1}T10:00:00.000Z`)).concat([L.makeStoryReadEvent(ids[0], '2026-09-09T10:00:00.000Z'), L.makeStoryReadEvent(`course:${cid}`, '2026-09-10T10:00:00.000Z')]);
+  const after = L.storyLogAvailable(evs, S.storyFor, S.courseStoryFor);
+  ok('a story read moves to Read at its first opening, and a long story read is marked read', ids.every((id) => (after.shorts.find((s) => s.moduleId === id) || {}).at) && (after.shorts.find((s) => s.moduleId === ids[0]) || {}).at === '2026-09-01T10:00:00.000Z' && after.shorts.filter((s) => s.at).length === 5 && !!(after.longs.find((l) => l.courseId === cid) || {}).at);
+  const recent = L.recentReads(evs, new Date('2026-09-20T12:00:00.000Z'));
+  ok('Most recent with nothing read today is the last three stories opened, newest first', recent.length === 3 && recent[0].moduleId === `course:${cid}` && recent[1].moduleId === ids[4] && recent[2].moduleId === ids[3], recent.map((r) => r.moduleId).join(','));
+  const today = new Date(); const stamp = new Date(today.getTime() - 60000).toISOString();
+  const todays = L.recentReads(evs.concat([L.makeStoryReadEvent(Object.keys(STORIES)[6], stamp)]), today);
+  ok('Most recent shows today\'s reading when there is any', todays.length === 1 && todays[0].at === stamp, todays.map((r) => r.moduleId).join(','));
+  // The book, twice over: nothing painted (pairs of short stories share a sheet) and everything painted (every story on
+  // sheets of its own). A page is a part of one story: its paragraphs run in order with no gap, every picture's paragraph
+  // is on that page, the first page carries the title and main picture, and the sheet is never fuller than the paper.
+  const P = L.PRINT_PAGE; const bad = []; let pages = 0; let courses = 0;
+  const checkStory = (label, st, parts, painted) => {
+    if (!parts.length) { bad.push(`${label}: no pages`); return; }
+    let next = 0;
+    parts.forEach((part, k) => {
+      if (part.head !== (k === 0)) bad.push(`${label}: page ${k + 1} ${part.head ? 'repeats the title' : 'has no title'}`);
+      if (part.from !== next || part.to < part.from) bad.push(`${label}: page ${k + 1} runs ${part.from} to ${part.to}, expected to start at ${next}`);
+      if (part.used > P.room + 0.001) bad.push(`${label}: page ${k + 1} needs ${part.used} inches of ${P.room}`);
+      next = part.to + 1;
+    });
+    if (next !== st.words.length) bad.push(`${label}: pages end at paragraph ${next} of ${st.words.length}`);
+    // Every picture lands on the page of its own paragraph: no paragraph is parted from its picture.
+    for (const m of st.more || []) { const page = parts.findIndex((p) => m.after >= p.from && m.after <= p.to); if (page < 0) bad.push(`${label}: picture ${m.serial} after paragraph ${m.after} is on no page`); }
+  };
+  for (const c of L.COURSES) {
+    const chapters = c.modules.map((m) => ({ m, st: STORIES[m.id] })).filter((x) => x.st); const cs = COURSE_STORIES[c.id] || null;
+    if (!chapters.length && !cs) continue;
+    courses += 1;
+    for (const painted of [false, true]) {
+      const { groups, csParts } = L.bookPages(chapters, cs, () => painted);
+      // Each chapter appears once, in course order, its parts on consecutive pages; two stories share a page only unpainted.
+      const seen = groups.flatMap((g) => g.items.map((it) => it.i));
+      const order = chapters.map((_, i) => i); const heads = groups.flatMap((g) => g.items.filter((it) => !it.part || it.part.head).map((it) => it.i));
+      if (heads.join(',') !== order.join(',')) bad.push(`${c.id}${painted ? ' painted' : ''}: chapters ${heads.join(',')} for ${order.join(',')}`);
+      if (painted && groups.some((g) => g.items.length > 1)) bad.push(`${c.id} painted: two stories on one sheet`);
+      if (groups.some((g) => g.items.length > g.per || g.items.length === 0)) bad.push(`${c.id}${painted ? ' painted' : ''}: a sheet holds more than its share`);
+      chapters.forEach((ch, i) => { const parts = groups.flatMap((g) => g.items.filter((it) => it.i === i).map((it) => it.part || { head: true, from: 0, to: ch.st.words.length - 1, used: 0 })); checkStory(`${c.id}/${ch.m.id}${painted ? ' painted' : ''}`, ch.st, parts, painted); });
+      if (cs) checkStory(`${c.id}/long${painted ? ' painted' : ''}`, cs, csParts, painted);
+      if (seen.length < chapters.length) bad.push(`${c.id}: ${seen.length} placements for ${chapters.length} chapters`);
+      if (painted) pages += groups.length + csParts.length;
+    }
+  }
+  ok(`every course's book pages every story with its pictures, painted or not (${courses} courses, ${pages} painted sheets)`, bad.length === 0 && courses === L.COURSES.filter((c) => c.modules.some((m) => STORIES[m.id]) || COURSE_STORIES[c.id]).length, bad.slice(0, 6).join(' | '));
+  // A paragraph with its picture always fits a sheet of its own, so the book never has to part them.
+  const tall = [];
+  for (const [id, st] of [...Object.entries(STORIES), ...Object.entries(COURSE_STORIES).map(([k, v]) => [`long:${k}`, v])]) {
+    st.words.forEach((par, i) => { const parts = L.printParts([par], [0], true); if (parts.length !== 1 || parts[0].used > P.room) tall.push(`${id} paragraph ${i + 1}: ${parts[0] ? parts[0].used : '?'} inches`); });
+  }
+  ok('every paragraph fits one sheet beside its picture, under the title and main painting', tall.length === 0, tall.slice(0, 5).join(' | '));
+}
+
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exitCode = fail ? 1 : 0;   // never process.exit(): it can drop the last lines of a piped stdout (2026-09-23)

@@ -918,6 +918,17 @@ export const COURSES = [
     modules: TECH9_MODULES(),
   },
   {
+    id: 'philosophy-k',
+    grade: 'K',
+    subject: 'Philosophy',
+    title: 'I wonder',
+    audience: 'Kindergarten to grade 2',
+    readAloud: true, // the K to 2 band: questions are spoken and answers tapped (2026-09-29, pass GL)
+    elective: true,
+    keywords: ['philosophy', 'wondering', 'why', 'because', 'turns', 'fair', 'sharing', 'elective'],
+    modules: PHILK_MODULES(),
+  },
+  {
     id: 'econ-k',
     grade: 'K',
     subject: 'Economics',
@@ -927,6 +938,16 @@ export const COURSES = [
     elective: true,
     keywords: ['money', 'saving', 'jobs', 'personal finance', 'economics', 'elective'],
     modules: ECONK_MODULES(),
+  },
+  {
+    id: 'philosophy-3',
+    grade: '3',
+    subject: 'Philosophy',
+    title: 'I wonder why',
+    audience: 'Grades 3 to 5',
+    elective: true,
+    keywords: ['philosophy', 'wonder', 'questions', 'because', 'reasons', 'fair', 'listening', 'elective'],
+    modules: PHIL3_MODULES(),
   },
   {
     id: 'econ-3',
@@ -957,6 +978,16 @@ export const COURSES = [
     elective: true,
     keywords: ['money', 'interest', 'credit', 'budget', 'college', 'personal finance', 'economics', 'elective'],
     modules: ECON6_MODULES(),
+  },
+  {
+    id: 'psychology-9',
+    grade: '9',
+    subject: 'Psychology',
+    title: 'The science of behavior',
+    audience: 'Grades 9 to 12',
+    elective: true,
+    keywords: ['psychology', 'brain', 'memory', 'learning', 'behavior', 'social', 'research', 'elective'],
+    modules: PSY9_MODULES(),
   },
   {
     id: 'philosophy-9',
@@ -1166,6 +1197,7 @@ export const GAMES = [
   { id: 'maze-small', kind: 'maze', title: 'Maze', cells: 6 },
   { id: 'walk-tech-k', kind: 'walk', title: 'Walk the Robot', walk: 'walk', young: true, minGrade: 'K' },
   { id: 'pay-econ-k', kind: 'pay', title: 'Pay the Price', pay: 'coins', young: true, minGrade: 'K' },
+  { id: 'share-philosophy-k', kind: 'share', title: 'Share the Cookies', share: 'plates', young: true, minGrade: 'K' },   // philosophy K to 2 (pass GL): equal shares is the rule
   { id: 'spot-arts-k', kind: 'spot', title: 'Spot It', spot: 'scenes', young: true, minGrade: 'K' },   // art and music K to 2 (pass GE): find the line, shape or color a voice asks for   // economics K to 2 (pass FV): count out the exact price   // computer science K to 2 (pass FS): the child programs the robot
   { id: 'jigsaw-4', kind: 'jigsaw', title: 'Puzzle', side: 2 },
   { id: 'dots-boat', kind: 'dots', title: 'Boat', shape: 'boat' },
@@ -1261,6 +1293,7 @@ export const GAMES = [
   { id: 'debug-tech-3', kind: 'debug', title: 'Debug the robot: arrows', minGrade: '3', deck: 'arrows' },
   { id: 'debug-tech-5', kind: 'debug', title: 'Debug the robot: turns', minGrade: '5', deck: 'turns' },
   { id: 'price-econ-3', kind: 'price', title: 'Set the Price', minGrade: '3', price: 'stand' },
+  { id: 'because-philosophy-3', kind: 'because', title: 'Sort the Because', minGrade: '3', because: 'claims' },   // philosophy 3 to 5 (pass GK): a real reason is about the thing
   { id: 'pattern-arts-3', kind: 'pattern', title: 'What Comes Next', minGrade: '3', pattern: 'forms' },
   { id: 'shape-arts-6', kind: 'shape', title: 'Shape the Sound', minGrade: '6', shape: 'dynamics' },   // art and music 6 to 8 (pass GG): the markings are the rule   // art and music 3 to 5 (pass GF): the form is the rule   // economics 3 to 5 (pass FW): find the price that earns the most
   { id: 'teach-tech-6', kind: 'teach', title: 'Teach the Robot', minGrade: '6', teach: 'fruit' },
@@ -1268,7 +1301,8 @@ export const GAMES = [
   { id: 'loan-econ-6', kind: 'loan', title: 'Pay It Off', minGrade: '6', loan: 'plans' },
   { id: 'reason-philosophy-6', kind: 'reason', title: 'Reason or Not', minGrade: '6', reason: 'claims' },   // philosophy 6 to 8 (pass GJ): relevance is the rule   // economics 6 to 8 (pass FX): what a loan costs month by month
   { id: 'fund-econ-9', kind: 'fund', title: 'Build the Fund', minGrade: '9', fund: 'year' },
-  { id: 'valid-philosophy-9', kind: 'valid', title: 'Valid or Not', minGrade: '9', valid: 'forms' },   // philosophy 9 to 12 (pass GI): the form decides
+  { id: 'valid-philosophy-9', kind: 'valid', title: 'Valid or Not', minGrade: '9', valid: 'forms' },
+  { id: 'stat-psychology-9', kind: 'stat', title: 'Mean, Median, Mode', minGrade: '9', stat: 'scores' },   // psychology 9 to 12 (pass GM): three ways to say average   // philosophy 9 to 12 (pass GI): the form decides
   { id: 'chord-arts-9', kind: 'chord', title: 'Build the Chord', minGrade: '9', chord: 'triads' },   // art and music 9 to 12 (pass GH): four half steps then three   // personal finance 9 to 12 (pass FY): a year of saving against surprises
   { id: 'bits-tech-9', kind: 'bits', title: 'Eight Switches', minGrade: '9', bits: 8 },   // computer science 9 to 12 (pass FU): make the number with the switches   // the plain AI course (pass FT): the child is the pile of examples
   { id: 'mix-art-3', kind: 'mix', title: 'Color mixer: make new colors', minGrade: '3', deck: 'mix3' },
@@ -1832,6 +1866,54 @@ export function reasonRounds(round) {
     return { claim, reason: CLAIM_REASONS[oi][1][Math.floor(rnd() * 2)], supports: false };
   });
 }
+// Sort the Because (2026-09-29, pass GK, philosophy 3 to 5): a claim and four becauses, two of them real reasons and two
+// of them a headcount, an order, a wish or something true about the wrong thing. Tap the real ones. Every claim carries
+// its own real reasons, and the fakes are drawn from a shared pile, so the rule of the game is the lesson's test.
+export const BECAUSE_CLAIMS = [
+  ['We should have recess before lunch.', ['Kids eat more when they have already run around.', 'The playground is empty before lunch.']],
+  ['The class pet should be a fish.', ['Nobody in the class is allergic to fish.', 'A fish can stay at school over the weekend.']],
+  ['We should plant a garden by the fence.', ['That corner gets sun all day.', 'The cafeteria could use the vegetables.']],
+  ['The library needs more chairs.', ['Students sit on the floor at lunch reading.', 'There are six chairs for twenty readers.']],
+  ['Our field trip should be to the river.', ['The science unit this month is about water.', 'The river is a ten-minute bus ride.']],
+  ['The class should read aloud on Fridays.', ['Reading aloud helps with new words.', 'Friday afternoons have no other lessons.']],
+];
+export const BECAUSE_FAKES = ['Because everybody says so.', 'Because I said so.', 'Because I want to.', 'Because it just is.', 'Because the sky is blue.', 'Because my cousin said so.', 'Because Tuesday comes after Monday.', 'Because the mascot is a hawk.'];
+export function becauseRounds(round) {
+  let x = (round * 214013 + 11) >>> 0; const rnd = () => { x = (x * 1664525 + 1013904223) >>> 0; return x / 4294967296; };
+  return Array.from({ length: 5 }, (_, i) => {
+    const [claim, real] = BECAUSE_CLAIMS[(i * 2 + round) % BECAUSE_CLAIMS.length];
+    const a = Math.floor(rnd() * BECAUSE_FAKES.length); let b = Math.floor(rnd() * (BECAUSE_FAKES.length - 1)); if (b >= a) b += 1;
+    const options = [real[0], real[1], BECAUSE_FAKES[a], BECAUSE_FAKES[b]].map((text, j) => ({ text, real: j < 2 })).sort(() => rnd() - 0.5);
+    return { claim, options };
+  });
+}
+// Share the Cookies (2026-09-29, pass GL, philosophy K to 2): cookies and plates, and one fair rule: the same on every
+// plate. Tap a plate to put a cookie on it until the cookies are gone and the plates match, then check. Equal shares is
+// the rule of the game, and every round divides evenly, which the rules test proves.
+export function shareRounds(round) {
+  let x = (round * 48271 + 11) >>> 0; const rnd = () => { x = (x * 1664525 + 1013904223) >>> 0; return x / 4294967296; };
+  return Array.from({ length: 4 }, (_, i) => {
+    const plates = 2 + (i % 2); const each = 1 + Math.floor(rnd() * 3); const cookies = plates * each;
+    return { plates, cookies, each, say: `${cookies} cookies. ${plates} plates. The same on every plate.` };
+  });
+}
+// Mean, Median, Mode (2026-09-29, pass GM, psychology 9 to 12): a handful of scores and one of the three averages to
+// find, tapped from four numbers. Every round is built so the median is a whole score, the mode is single and the mean
+// comes out whole, which the rules test proves. Six rounds and the clock counts up.
+export function statRounds(round) {
+  let x = (round * 16807 + 5) >>> 0; const rnd = () => { x = (x * 1664525 + 1013904223) >>> 0; return x / 4294967296; };
+  const which = ['mean', 'median', 'mode'];
+  return Array.from({ length: 6 }, (_, i) => {
+    let scores;
+    do { const base = 50 + Math.floor(rnd() * 4) * 10; scores = [base, base + 10, base + 10, base + 20, base + 30 + Math.floor(rnd() * 3) * 10]; } while (scores.reduce((a, b) => a + b, 0) % 5 !== 0);
+    const sorted = [...scores].sort((a, b) => a - b); const mean = scores.reduce((a, b) => a + b, 0) / 5; const median = sorted[2]; const mode = sorted[1];
+    const ask = which[(i + round) % 3]; const answer = { mean, median, mode }[ask];
+    const pool = [...new Set([mean, median, mode, answer + 5, answer - 5, sorted[4]])].filter((v) => v !== answer).slice(0, 3);
+    const order = [...scores]; for (let j = order.length - 1; j > 0; j--) { const k = Math.floor(rnd() * (j + 1)); [order[j], order[k]] = [order[k], order[j]]; }
+    const choices = [answer, ...pool]; for (let j = choices.length - 1; j > 0; j--) { const k = Math.floor(rnd() * (j + 1)); [choices[j], choices[k]] = [choices[k], choices[j]]; }
+    return { scores: order, ask, answer, choices };
+  });
+}
 export const ROBOT_DECKS = {
   arrows: [
     { start: [1,1], goal: [0,4], rocks: [[2,1],[0,2],[2,2]], program: 'DDLU' },
@@ -2211,7 +2293,7 @@ function recommendedIncludingElectives(events, level, startGrade = null) {
 
 // Subjects always read Math, Reading, Writing, Science, History, then anything else alphabetically,
 // whatever order the courses were written in. Every screen that lists subjects sorts with this.
-const SUBJECT_RANK = { Math: 0, Reading: 1, Writing: 2, Science: 3, History: 4, Art: 5, Music: 6, Technology: 7, Health: 8, Economics: 9, Philosophy: 10 };   // Economics joined 2026-09-29 (pass FV); Philosophy joined the same day (pass GI)
+const SUBJECT_RANK = { Math: 0, Reading: 1, Writing: 2, Science: 3, History: 4, Art: 5, Music: 6, Technology: 7, Health: 8, Economics: 9, Philosophy: 10, Psychology: 11 };   // Economics joined 2026-09-29 (pass FV); Philosophy (GI) and Psychology (GM) the same day
 export function sortSubjects(subjects) {
   return [...new Set(subjects)].sort((a, b) => (SUBJECT_RANK[a] ?? 99) - (SUBJECT_RANK[b] ?? 99) || a.localeCompare(b));
 }
@@ -9342,6 +9424,229 @@ function ARTS9_MODULES() { return [
 // worth asking, what makes a reason a good one, how to disagree without losing a friend, and what fairness is. The Texas
 // column carries the College and Career Readiness Standards, Cross-Disciplinary Standards, since Texas has no philosophy
 // TEKS; the national column carries the Common Core grade 6 standards for argument and discussion.
+// Philosophy for the 3 to 5 band (2026-09-29, pass GK), in the philosophy-for-children tradition: wonder questions
+// and look-up questions, the because that makes a reason, listening to someone you disagree with, and what fair means
+// when equal is not enough. The Texas column carries the College and Career Readiness Standards, Cross-Disciplinary
+// Standards, as the other philosophy courses do; the national column carries the Common Core grade 3 standards.
+// Philosophy for the K to 2 band (2026-09-29, pass GL), in the philosophy-for-children tradition and read aloud: wondering,
+// the because that makes a reason, taking turns to talk, and fair shares, each in the words of a five-year-old. The Texas
+// column carries the College and Career Readiness Standards, Cross-Disciplinary Standards, as the other philosophy courses
+// do; the national column carries the Common Core kindergarten standards for conversation and opinion.
+// Psychology for the 9 to 12 band (2026-09-29, pass GM), the fifth strand of the depth program: how psychologists know,
+// the brain, the senses and development, learning, memory and thinking, and people among people. Texas codes are §113.45
+// Psychology (One-Half Credit), Beginning with School Year 2011-2012, read from the published text; the national framework
+// is the American Psychological Association's National Standards for High School Psychology Curricula. Every study named
+// carries the year it was published, and each is one the course can defend.
+function PSY9_MODULES() { return [
+  {
+    id: 'how-psychologists-know',
+    order: 1,
+    title: 'How psychologists know',
+    tagline: 'Six perspectives, four methods, a code of ethics, and three ways to say average',
+    requires: [],
+    lesson: {
+      paragraphs: ['Psychology is the science of behavior and mental processes. It differs from sociology, which studies groups, and from biology, which studies the body, by asking how an individual thinks, feels and acts, and testing the answer. The field has a birthday: Wilhelm Wundt opened the first psychology laboratory in Leipzig in 1879. Since then six perspectives have grown up. Biological explains behavior by brain and body; behavioral by learned responses; cognitive by thinking; sociocultural by culture and group; humanistic by growth and choice; psychodynamic by motives outside awareness.', 'A principle is a rule that holds in many cases; a theory is an explanation that ties principles together and predicts new ones. Psychologists test both with four methods. Observation watches behavior where it happens. A survey asks. A correlational study measures whether two things rise and fall together, which never shows that one causes the other. An experiment changes one thing on purpose and holds the rest still, and only an experiment can show cause.\nThe American Psychological Association sets the ethics: participants give informed consent, may stop at any time, are kept safe and their data confidential, and are told the truth afterward.', 'Results are numbers, and three numbers say average. The mean is the sum divided by the count. The median is the middle value when the numbers are in order. The mode is the value that appears most. The range is the largest minus the smallest, and the standard deviation says how far scores typically sit from the mean. Two classes can share a mean of 80 and differ completely in spread.'],
+      keyIdea: 'Psychology tests how individuals think, feel and act. Only an experiment shows cause; correlation shows two things move together. Mean, median and mode each say average, and spread is a separate question.',
+      example: { kind: 'flow', steps: ['scores 70, 80, 80, 90, 100', 'mean 84', 'median 80', 'mode 80'], caption: 'Three averages from one set of scores.',
+        another: ['Ice cream sales and sunburns rise together every July. Correlation, and a third thing, the sun, moves both. No experiment would ever feed people ice cream to give them sunburn.',
+          { text: 'The six perspectives are not rivals so much as lenses. A fear of dogs has a biological story, a learned story, a thinking story and a cultural story at the same time.', visual: { kind: 'flow', steps: ['one behavior', 'six lenses', 'a fuller picture'] } },
+          'Informed consent means a participant knows enough to say no. That single rule is the reason many famous old studies could not be run today.'] },
+    },
+    sources: ['Aligned with TEKS Social Studies 113.45(c)(1)(A) (identify characteristics that differentiate the field of psychology from other related social sciences), 113.45(c)(1)(B) (trace the historical development of the contemporary perspectives in psychology, including biological, behavioral, cognitive, sociocultural, humanistic, and psychodynamic), 113.45(c)(2)(A) (define and differentiate the concepts of theory and principle), 113.45(c)(2)(B) (identify and describe the basic methods of social scientific reasoning), 113.45(c)(2)(C) (apply the standards of the American Psychological Association for ethical decision making) and 113.45(c)(2)(D) (define and interpret measures of central tendency and dispersion), and the APA National Standards for High School Psychology Curricula, Scientific Inquiry and Research Methods.'],
+    generators: ['ps-know', 'ps-stats', 'ps-know', 'ps-stats', 'ps-know'],
+  },
+  {
+    id: 'brain-senses-and-growing-up',
+    order: 2,
+    title: 'Brain, senses and growing up',
+    tagline: 'Nerves and hormones, what the senses can and cannot do, and how a mind develops',
+    requires: ['how-psychologists-know'],
+    lesson: {
+      paragraphs: ['The nervous system has two parts. The central nervous system is the brain and spinal cord; the peripheral nervous system is every nerve that runs out to the body and back. Messages travel along neurons as electrical pulses and cross the gaps between them as chemicals. The endocrine system is slower: glands release hormones into the blood, so adrenaline speeds the heart in seconds and cortisol keeps the body alert for hours. Together they shape mood, growth and how a person meets a threat.', 'Sensation is what the sense organs pick up; perception is what the brain makes of it. The senses have limits: the absolute threshold is the level below which a sound or a light is not noticed, and they adapt, which is why a smell fades and a cold pool warms. Perception adds expectation, so the same gray looks dark on white and light on black, and an optical illusion is the brain\'s rule applied where it does not fit.', 'Development runs for a lifetime, shaped by nature, the genes, and nurture, the surroundings, and the debate is about how much of each. Jean Piaget, in the 1920s to 1950s, described four stages of thinking: sensorimotor to about two, preoperational to about seven, concrete operational to about eleven, and formal operational after. Erik Erikson, in 1950, described eight psychosocial stages, each a task, from trust in infancy to identity in the teenage years to integrity in old age. Caregivers matter at every stage.'],
+      keyIdea: 'Central and peripheral nerves carry fast signals; hormones carry slow ones. Sensation is what the senses pick up, perception what the brain makes of it. Piaget gave thinking four stages, Erikson gave life eight tasks.',
+      example: { kind: 'flow', steps: ['a threat', 'adrenaline in seconds', 'cortisol for hours', 'the body stays alert'], caption: 'Two speeds of alarm.',
+        another: ['A child under about seven will say a tall thin glass holds more juice than a short wide one with the same amount. Piaget called that a failure to conserve, and it is the clearest sign of the preoperational stage.',
+          { text: 'Sensation is the camera; perception is the editor. The camera cannot record a sound too soft to reach the threshold, and the editor will fill in a face where there is only a socket and a smudge.', visual: { kind: 'flow', steps: ['sense organ', 'signal', 'brain adds expectation', 'what you perceive'] } },
+          'Erikson\'s teenage task is identity against role confusion, which is the psychological name for the question you are asked at every family dinner: what are you going to do?'] },
+    },
+    sources: ['Aligned with TEKS Social Studies 113.45(c)(3)(A) (describe the anatomy of the central and peripheral nervous systems and the endocrine system), 113.45(c)(3)(B) (explain the effects of the endocrine and nervous systems on development and behavior), 113.45(c)(4)(A) (explain the capabilities and limitations of sensory systems and individual perceptions), 113.45(c)(4)(B) (understand the interaction of the individual and the environment in determining sensation and perception), 113.45(c)(5)(A) (critique the various perspectives presented in the nature versus nurture debate), 113.45(c)(5)(C) (discuss the role of the caregiver on individual development), 113.45(c)(5)(D) (explain factors involved in cognitive development according to Jean Piaget) and 113.45(c)(5)(E) (describe Erik Erikson\'s stages of psychosocial development), and the APA National Standards for High School Psychology Curricula, Biological Pillar and Development and Learning Pillar.'],
+    generators: ['ps-brain', 'ps-brain', 'ps-brain', 'ps-brain', 'ps-brain'],
+  },
+  {
+    id: 'learning-memory-and-thinking',
+    order: 3,
+    title: 'Learning, memory and thinking',
+    tagline: 'Three ways behavior is learned, how memory works and fails, and the shortcuts that trip thinking',
+    requires: ['brain-senses-and-growing-up'],
+    lesson: {
+      paragraphs: ['Three kinds of learning explain most of what people do without deciding to. Classical conditioning pairs a signal with an event until the signal alone brings the response: Ivan Pavlov\'s dogs, in the 1890s and after, salivated at the sound that had always come before food. Operant conditioning changes behavior by what follows it: B. F. Skinner showed from the 1930s that a behavior followed by a reward grows and one followed by a punishment shrinks. Social learning is learning by watching: in 1961 Albert Bandura found that children who watched an adult hit a doll hit the doll.', 'Memory has three steps, encoding, storage and retrieval, and it fails at each. Working memory holds about seven items, the finding George Miller published in 1956, unless they are chunked into larger pieces. Hermann Ebbinghaus, in 1885, drew the forgetting curve: most of a new list is gone within a day unless it is reviewed, and each review flattens the curve. The information processing model treats the mind as a system with limited capacity, which is right about the limits and quiet about feeling.', 'Thinking uses concepts, images and language. To solve a problem you can run an algorithm, a step-by-step method that always works, or a heuristic, a shortcut that usually works. The shortcuts have costs: functional fixedness sees a tool only for its usual job, and confirmation bias hunts for evidence that agrees with you. Motivation is the push behind behavior, from hunger up to the need to belong; Abraham Maslow, in 1943, arranged those needs as a pyramid with survival at the bottom.'],
+      keyIdea: 'Behavior is learned by pairing, by consequences and by watching. Memory encodes, stores and retrieves, holds about seven items, and forgets on a curve that review flattens. Heuristics are fast and biased.',
+      example: { kind: 'flow', steps: ['a bell', 'then food', 'again and again', 'the bell alone brings drool'], caption: 'Classical conditioning: a signal borrows a response.',
+        another: ['A phone number is ten digits, three past working memory, which is why it is written as three chunks. Chunking is the oldest memory trick there is.',
+          { text: 'Review on the day, then in three days, then in a week, and the forgetting curve bends flat. The spaced repetition in this app is Ebbinghaus, applied.', visual: { kind: 'flow', steps: ['learn', 'forget fast', 'review', 'forget slower'] } },
+          'Confirmation bias is the reason a good scientist asks what would prove me wrong, and the reason most people do not.'] },
+    },
+    sources: ['Aligned with TEKS Social Studies 113.45(c)(6)(A) (demonstrate an understanding of the principles of operant and classical conditioning and of social learning), 113.45(c)(6)(B) (describe the processes of learning using typical classroom situations), 113.45(c)(7)(A) (compare predominant theories of motivation and emotion), 113.45(c)(11)(A) (define and identify the basic elements of thought), 113.45(c)(11)(B) (identify strategies and obstacles associated with problem solving and decision making) and 113.45(c)(11)(E) (evaluate the limitations and capabilities of the information processing model), and the APA National Standards for High School Psychology Curricula, Cognition Pillar and Development and Learning Pillar.'],
+    generators: ['ps-learn', 'ps-learn', 'ps-learn', 'ps-learn', 'ps-learn'],
+  },
+  {
+    id: 'people-among-people',
+    order: 4,
+    title: 'People among people',
+    tagline: 'Why we explain others as we do, how crowds change us, and how to meet stress',
+    requires: ['learning-memory-and-thinking'],
+    lesson: {
+      paragraphs: ['When someone cuts in line we call them rude; when we cut in line we were late. That is the fundamental attribution error: we explain other people by their character and ourselves by our situation. Bias goes further when it attaches to a group, and discrimination is bias acted on. Attitudes are learned from family, peers and media, and changed by the same routes: a credible source, a message that fits the listener, and repetition.', 'Other people change what we do. In 1951 Solomon Asch found that about a third of the time people gave a plainly wrong answer to match a group that had given it. In 1961 Stanley Milgram found that most participants obeyed an experimenter\'s instruction to give what they believed were painful shocks. In 1968 John Darley and Bibb Latané found that the more bystanders were present, the less likely any one of them was to help; each assumed another would. Altruism, helping at a cost to yourself, rises when the responsibility is clearly yours: point to one person and ask them by name.', 'Stress is the body\'s response to a demand. The heart quickens, cortisol rises, attention narrows, and the response that saves a life in an emergency wears the body down when it never switches off. Coping strategies that work under study include reappraising the situation, breaking a problem into steps, exercise, sleep and talking to someone; avoiding the problem works only until it grows. Labeling a behavior abnormal carries a stigma, which is why psychologists describe patterns carefully and treat people, not labels.'],
+      keyIdea: 'We explain others by character and ourselves by situation. Groups push conformity, obedience and the bystander effect, and naming one helper breaks it. Stress that never switches off wears the body down; reappraisal, steps, exercise, sleep and talk help.',
+      example: { kind: 'flow', steps: ['someone collapses', 'ten bystanders', 'each waits for another', 'nobody helps'], caption: 'The bystander effect, and why you name one person.',
+        another: ['Asch\'s lines were easy; anyone alone got them right. The group did not change what people saw. It changed what they were willing to say.',
+          { text: 'The attribution error runs both ways. The driver who cut you off is late for the hospital as often as you are, and you will never know which.', visual: { kind: 'flow', steps: ['their act', 'your quick story: character', 'the slower question: situation?'] } },
+          'Milgram\'s participants were ordinary people, which is the finding. The lesson is not that people are cruel; it is that authority is strong, and knowing that is the first defense against it.'] },
+    },
+    sources: ['Aligned with TEKS Social Studies 113.45(c)(13)(A) (describe how attributions affect explanations of behavior), 113.45(c)(13)(B) (explore the nature and effects of bias and discrimination), 113.45(c)(13)(C) (describe circumstances in which conformity and obedience are likely to occur), 113.45(c)(13)(D) (describe the effects of the presence of others on individual behavior), 113.45(c)(13)(E) (discuss the nature of altruism), 113.45(c)(13)(G) (identify sources of attitude formation and assess methods used to influence attitudes), 113.45(c)(12)(A) (explain stress and the individual\'s physiological, behavioral, and psychological responses to stressors), 113.45(c)(12)(B) (evaluate cognitive and behavioral strategies for dealing with stress) and 113.45(c)(12)(C) (analyze the challenges inherent in defining abnormal behavior and acknowledge the sociocultural stigma of labeling behavior as abnormal), and the APA National Standards for High School Psychology Curricula, Social and Personality Pillar and Mental and Physical Health Pillar.'],
+    generators: ['ps-social', 'ps-social', 'ps-social', 'ps-social', 'ps-social'],
+  },
+]; }
+function PHILK_MODULES() { return [
+  {
+    id: 'i-wonder',
+    order: 1,
+    title: 'I wonder',
+    tagline: 'Some questions you find out; some questions you think about',
+    requires: [],
+    lesson: {
+      paragraphs: ['Why is the sky blue? Someone can tell you, and then you know. That is a finding question.\nWhat makes a good friend? Nobody can just tell you. You think about it. That is a wondering question.', 'When someone says a word, you can ask, what do you mean? A toy is a thing you play with. But what about a stick? You play with it. Is a stick a toy? Asking but what about helps an idea get better.', 'Long ago, a man named Socrates asked wondering questions all day. He is famous for it. His friend Plato wrote his questions down. You can wonder too.'],
+      keyIdea: 'A finding question has an answer you find. A wondering question you think about. Ask what do you mean, and but what about.',
+      example: { kind: 'flow', steps: ['a toy is a thing you play with', 'but what about a stick?', 'the idea gets better'], caption: 'But what about finds a hole, and the hole helps.',
+        another: ['Is a hot dog a sandwich? Say what a sandwich is first. Then see if the hot dog fits.',
+          { text: 'Two people can wonder about the same thing and think different things. Both of them are thinking.', visual: { kind: 'flow', steps: ['I wonder', 'you wonder', 'we talk'] } },
+          'Socrates did not write his questions down. His friend Plato did. That is why we still have them.'] },
+    },
+    sources: ['Aligned with the Texas College and Career Readiness Standards, Cross-Disciplinary Standards I.A.1 (engage in scholarly inquiry and dialogue), and the Common Core State Standards for English Language Arts, SL.K.3 (ask and answer questions in order to seek help, get information, or clarify something that is not understood).'],
+    generators: ['pk-wonder', 'pk-wonder', 'pk-wonder', 'pk-wonder', 'pk-wonder'],
+  },
+  {
+    id: 'because-k',
+    order: 2,
+    title: 'Because',
+    tagline: 'A reason comes after because, and it has to be about the thing',
+    requires: ['i-wonder'],
+    lesson: {
+      paragraphs: ['A reason is what comes after because. We should go outside, because the sun is out. That is a reason.\nWe should go outside, because my shirt is blue. That is not a reason. It is not about going outside.', 'Because I want to is a wish, not a reason. Because I said so is an order, not a reason. A reason is about the thing, and it is true.', 'The best question is how do you know? Then you go and look. If you can see it or count it, you can point to it.'],
+      keyIdea: 'A reason comes after because and is about the thing. A wish and an order are not reasons. Ask how do you know, then look.',
+      example: { kind: 'flow', steps: ['we should go outside', 'because', 'the sun is out'], caption: 'A reason that is about the thing.',
+        another: ['Try it with a snack. I want an apple, because I am hungry. That is a reason. I want an apple, because it is Tuesday. That one is silly.',
+          { text: 'How do you know is a kind question when you really want to find out. It is not a mean one.', visual: { kind: 'flow', steps: ['how do you know?', 'let us look', 'now we know'] } },
+          'A reason another person can check is the best kind. Is the sun out? Look out the window.'] },
+    },
+    sources: ['Aligned with the Texas College and Career Readiness Standards, Cross-Disciplinary Standards I.B.1 (consider arguments and conclusions of self and others), and the Common Core State Standards for English Language Arts, W.K.1 (use a combination of drawing, dictating, and writing to compose opinion pieces that state an opinion or preference about the topic).'],
+    generators: ['pk-because', 'pk-because', 'pk-because', 'pk-because', 'pk-because'],
+  },
+  {
+    id: 'my-turn-your-turn',
+    order: 3,
+    title: 'My turn, your turn',
+    tagline: 'One voice at a time, say it back, and you can change your mind',
+    requires: ['because-k'],
+    lesson: {
+      paragraphs: ['When we talk about a wondering question, we take turns. One voice at a time. When it is your turn, you talk. When it is not, you listen with your ears and your eyes. A talking stick helps: whoever holds the stick talks.', 'To show you listened, say it back. You think the class pet should be a fish. If your friend says yes, that is it, you understood.\nYou can think an idea is wrong and still like your friend. Say I do not agree with that reason. Do not say you are silly.', 'If your friend gives a better reason, you can change your mind. That is brave. It is not losing.'],
+      keyIdea: 'One voice at a time. Say it back. Talk about the idea, not the friend. Changing your mind is brave.',
+      example: { kind: 'flow', steps: ['my turn', 'your turn', 'say it back', 'yes, that is it'], caption: 'A talk where everyone gets heard.',
+        another: ['A talking stick helps. Whoever holds the stick talks. Everyone else listens. Then the stick moves on.',
+          { text: 'Loud is not the same as right. A quiet reason is still a reason.', visual: { kind: 'flow', steps: ['a quiet reason', 'a loud reason', 'the same reason'] } },
+          'The quiet friend gets a turn too. Ask them what they think.'] },
+    },
+    sources: ['Aligned with the Texas College and Career Readiness Standards, Cross-Disciplinary Standards I.A.2 (accept constructive criticism and revise personal views when valid evidence warrants) and I.E.2 (work collaboratively), and the Common Core State Standards for English Language Arts, SL.K.1 (participate in collaborative conversations with diverse partners about kindergarten topics and texts with peers and adults in small and larger groups) and SL.K.6 (speak audibly and express thoughts, feelings, and ideas clearly).'],
+    generators: ['pk-turns', 'pk-turns', 'pk-turns', 'pk-turns', 'pk-turns'],
+  },
+  {
+    id: 'fair-shares',
+    order: 4,
+    title: 'Fair shares',
+    tagline: 'The same for everyone, or more for the one who needs it, and a test for both',
+    requires: ['my-turn-your-turn'],
+    lesson: {
+      paragraphs: ['Four cookies and two children. Fair is two each. That is equal shares.\nOne child fell down and has a hurt knee. The ice pack goes to that child first. That is fair too, by need.', 'On the swing, we take turns. Every turn is the same size. That is fair for a swing.\nA rule can have an exception, but the exception needs a reason everyone can hear.', 'Here is a test. Would you like it if it were you? If not, the rule needs another look. And when you cut the cake, the cutter picks last. Then the pieces come out even.'],
+      keyIdea: 'Equal shares are fair. More for the one who needs it is fair too. Ask would you like it if it were you. The cutter picks last.',
+      example: { kind: 'flow', steps: ['four cookies', 'two children', 'two each'], caption: 'Equal shares.',
+        another: ['A hurt knee gets the ice pack first. Nobody says that is unfair, because everyone can hear the reason.',
+          { text: 'The cutter picks last is a very old trick. It still works, because the cutter wants every piece to be a good one.', visual: { kind: 'flow', steps: ['one cuts', 'others pick', 'the cutter takes the last'] } },
+          'Would you like it if it were you is a question you can ask about any rule, at home or at school.'] },
+    },
+    sources: ['Aligned with the Texas College and Career Readiness Standards, Cross-Disciplinary Standards I.B.2 (construct well-reasoned arguments to explain phenomena, validate conjectures, or support positions), and the Common Core State Standards for English Language Arts, W.K.1.'],
+    generators: ['pk-fair', 'pk-fair', 'pk-fair', 'pk-fair', 'pk-fair'],
+  },
+]; }
+function PHIL3_MODULES() { return [
+  {
+    id: 'wondering-out-loud',
+    order: 1,
+    title: 'Wondering out loud',
+    tagline: 'Some questions you look up; some questions you think about',
+    requires: [],
+    lesson: {
+      paragraphs: ['How many legs does a spider have? That is a look-up question: eight. Can a robot be your friend? Nobody can look that up. It is a wonder question, and to answer it you have to think about what a friend is. Wonder questions are the kind philosophers ask, and you have been asking them since you could talk.', 'The best first move with a wonder question is to ask what a word means. What is a friend? Someone who is kind to you, says one person. Then give an example, a friend you have, and a not-example: is the crossing guard your friend? She is kind to you. If the answer is no, the meaning of friend needs more than kind.', 'Long ago in a city called Athens, a man named Socrates spent his days asking people what their words meant, and he found that most people had never checked. His student Plato wrote the questions down. You can check. Say what you mean, give an example, and try a not-example to see if your meaning holds.'],
+      keyIdea: 'A wonder question cannot be looked up; you think it through. Start by saying what a word means, give an example, and try a not-example to see if the meaning holds.',
+      example: { kind: 'flow', steps: ['what is a friend?', 'someone kind to you', 'the crossing guard is kind', 'is she your friend?'], caption: 'A not-example shows what a meaning still needs.',
+        another: ['Is a whale a fish? That is a look-up question, and the answer is no, because a whale breathes air. Is a whale beautiful? That is a wonder question, and the answer needs a reason.',
+          { text: 'Socrates did not write books. His student Plato wrote down the questions, and people still read them two thousand years later.', visual: { kind: 'flow', steps: ['Socrates asks', 'Plato writes', 'you read'] } },
+          'What do you mean by that? is a friendly question when you ask it because you want to know.'] },
+    },
+    sources: ['Aligned with the Texas College and Career Readiness Standards, Cross-Disciplinary Standards I.A.1 (engage in scholarly inquiry and dialogue), and the Common Core State Standards for English Language Arts, SL.3.3 (ask and answer questions about information from a speaker, offering appropriate elaboration and detail).'],
+    generators: ['p3-wonder', 'p3-wonder', 'p3-wonder', 'p3-wonder', 'p3-wonder'],
+  },
+  {
+    id: 'because',
+    order: 2,
+    title: 'Because',
+    tagline: 'A reason is a because that is about the thing and true',
+    requires: ['wondering-out-loud'],
+    lesson: {
+      paragraphs: ['I think we should have recess before lunch. Why? Because kids eat more when they have already run around. That is a claim, a because, and a reason. A good reason has two parts: it is about the thing, and it is true. Because the sky is blue is true and has nothing to do with recess.', 'Some becauses are not reasons at all. Because everybody says so is a headcount. Because I said so is an order. Because I want to is a wish. A real reason is something another person could check: they could look, count, measure, or ask someone who knows.', 'The most useful question you can ask is how do you know. It is not rude when you ask it kindly. It turns a claim into a conversation, and it is the question every scientist, judge and good friend asks.'],
+      keyIdea: 'A reason is a because that is about the thing and true, and that another person could check. A headcount, an order and a wish are not reasons. Ask how do you know.',
+      example: { kind: 'flow', steps: ['claim', 'because', 'about the thing?', 'true?', 'could someone check?'], caption: 'Three tests for a because.',
+        another: ['My cousin says the pool is cold is one person. The thermometer at the pool says sixty-eight degrees is something anyone can check.',
+          { text: 'Because the teacher is nice is true, and it is not a reason to have recess before lunch. About the thing is the test most people forget.', visual: { kind: 'flow', steps: ['true', 'about the thing', 'both: a reason'] } },
+          'How do you know? said with a smile is the beginning of every good argument and the end of most bad ones.'] },
+    },
+    sources: ['Aligned with the Texas College and Career Readiness Standards, Cross-Disciplinary Standards I.B.1 (consider arguments and conclusions of self and others) and I.B.3 (gather evidence to support arguments, findings, or lines of reasoning), and the Common Core State Standards for English Language Arts, RI.3.8 (describe the logical connection between particular sentences and paragraphs in a text, such as comparison, cause and effect, or first, second and third in a sequence).'],
+    generators: ['p3-because', 'p3-because', 'p3-because', 'p3-because', 'p3-because'],
+  },
+  {
+    id: 'listening-to-disagree',
+    order: 3,
+    title: 'Listening to disagree',
+    tagline: 'Say it back, say I think because, and stay friends',
+    requires: ['because'],
+    lesson: {
+      paragraphs: ['Two people can think different things and both be thinking well. When you disagree, the first job is to listen and say the other person\'s idea back: so you think the class pet should be a rabbit because rabbits are quiet. If they say yes, that is it, you are ready to answer. If they say no, listen again.', 'Then say your own idea with a because. I think a fish, because nobody is allergic to fish. You are disagreeing with an idea, not a person, and you can disagree with your best friend\'s idea and still be best friends by dinner.', 'Sometimes the other person\'s because is better than yours. Then you change your mind, and that is not losing. It is one of the bravest things a thinker does. Take turns, use quiet voices, and remember that the loudest idea is not the best one; the one with the best because is.'],
+      keyIdea: 'Say the other idea back until they say that is it. Say yours with a because. Disagree with the idea, not the person, and change your mind when the better because wins.',
+      example: { kind: 'flow', steps: ['so you think... because...', 'yes, that is it', 'I think... because...'], caption: 'The shape of a friendly disagreement.',
+        another: ['Saying it back is a gift: it tells the other person you heard them, which is what most people in an argument really want.',
+          { text: 'A loud because is still just a because. Whisper it and see if it still works.', visual: { kind: 'flow', steps: ['shouted because', 'whispered because', 'same because'] } },
+          'Changing your mind in front of everyone feels strange for a minute and feels strong for a long time.'] },
+    },
+    sources: ['Aligned with the Texas College and Career Readiness Standards, Cross-Disciplinary Standards I.A.2 (accept constructive criticism and revise personal views when valid evidence warrants) and I.E.2 (work collaboratively), and the Common Core State Standards for English Language Arts, SL.3.1 (engage effectively in a range of collaborative discussions with diverse partners on grade 3 topics and texts, building on others\' ideas and expressing their own clearly).'],
+    generators: ['p3-listen', 'p3-listen', 'p3-listen', 'p3-listen', 'p3-listen'],
+  },
+  {
+    id: 'what-is-fair',
+    order: 4,
+    title: 'What is fair',
+    tagline: 'Fair is not always equal, and the person who cuts chooses last',
+    requires: ['listening-to-disagree'],
+    lesson: {
+      paragraphs: ['Three children want to watch a parade over a fence. If each gets one box to stand on, that is equal, and the smallest child still cannot see, so it is not fair. If the smallest gets two boxes and the tallest gets none, that is not equal, and everyone can see. Fair means everyone gets what they need for the same chance, and sometimes that is equal and sometimes it is not.', 'Rules are a way of being fair to everyone at once, and good rules have exceptions with reasons. No running in the hall is a good rule. When the building is on fire, running is the rule. A fair exception is one you would give to anybody in the same spot, not only to a friend.', 'Two old tests still work. Treat others the way you would want to be treated, which people have said in many languages for thousands of years. And when there is one cake and two people, let one cut and the other choose, because the one who cuts will cut it even.'],
+      keyIdea: 'Fair means everyone gets what they need for the same chance, which is not always equal. A fair exception goes to anyone in the same spot. Treat others as you would want to be treated, and the one who cuts chooses last.',
+      example: { kind: 'flow', steps: ['one cake, two people', 'one cuts', 'the other chooses', 'even pieces'], caption: 'The oldest fairness trick there is.',
+        another: ['Taking turns is fairness with a clock in it: everyone gets the same thing, only at different times.',
+          { text: 'Equal is one kind of fair. Need is another. When you argue about fair, you are usually arguing about which kind fits.', visual: { kind: 'flow', steps: ['equal boxes', 'boxes by need', 'everyone sees'] } },
+          'If you would not want the rule used on you, you have learned something about the rule.'] },
+    },
+    sources: ['Aligned with the Texas College and Career Readiness Standards, Cross-Disciplinary Standards I.B.2 (construct well-reasoned arguments to explain phenomena, validate conjectures, or support positions) and I.F.3 (include the ideas of others and the complexities of the debate, issue, or conflict), and the Common Core State Standards for English Language Arts, W.3.1 (write opinion pieces on topics or texts, supporting a point of view with reasons).'],
+    generators: ['p3-fair', 'p3-fair', 'p3-fair', 'p3-fair', 'p3-fair'],
+  },
+]; }
 function PHIL6_MODULES() { return [
   {
     id: 'questions-that-open',
@@ -13896,6 +14201,88 @@ Object.assign(GENERATORS, {
   // Personal finance, grades 9 to 12 (2026-09-29, pass FY): dollars computed each time; concepts said in the lesson first.
   // Philosophy, grades 9 to 12 (2026-09-29, pass GI): every answer is said in its lesson first.
   // Philosophy, grades 6 to 8 (2026-09-29, pass GJ): every answer is said in its lesson first.
+  // Philosophy, grades 3 to 5 (2026-09-29, pass GK): every answer is said in its lesson first.
+  // Philosophy, K to 2 (2026-09-29, pass GL): spoken questions with tapped answers, every answer said in its lesson first.
+  'pk-wonder': (rng) => {
+    const Q = [['Why is the sky blue? What kind of question is that?', ['a finding question', 'a wondering question', 'a wish'], 'a finding question', 'Someone can tell you, and then you know.'],
+      ['What makes a good friend? What kind of question is that?', ['a wondering question', 'a finding question', 'an order'], 'a wondering question', 'Nobody can just tell you. You think about it.'],
+      ['When someone says a word, what can you ask?', ['what do you mean?', 'who cares?', 'what time is it?'], 'what do you mean?', 'Asking what do you mean helps.'],
+      ['A toy is a thing you play with. What can you ask about a stick?', ['but what about a stick?', 'is it blue?', 'how much is it?'], 'but what about a stick?', 'Asking but what about helps an idea get better.'],
+      ['Who asked wondering questions all day, long ago?', ['Socrates', 'a robot', 'a king'], 'Socrates', 'He is famous for it. You can wonder too.'],
+      ['Who wrote down the questions Socrates asked?', ['Plato', 'nobody', 'a bird'], 'Plato', 'That is why we still have them.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'pk-because': (rng) => {
+    const Q = [['A reason comes after which word?', ['because', 'maybe', 'hello'], 'because', 'We should go outside, because the sun is out.'],
+      ['We should go outside, because my shirt is blue. Is that a reason?', ['no, it is not about going outside', 'yes', 'only on Tuesday'], 'no, it is not about going outside', 'A reason is about the thing.'],
+      ['Because I want to is what?', ['a wish', 'a reason', 'a question'], 'a wish', 'A wish is not a reason.'],
+      ['Because I said so is what?', ['an order', 'a reason', 'a song'], 'an order', 'An order is not a reason.'],
+      ['What is the best question?', ['how do you know?', 'who is first?', 'is it lunch?'], 'how do you know?', 'Then you go and look.'],
+      ['I want an apple, because I am hungry. Is that a reason?', ['yes', 'no', 'only for bananas'], 'yes', 'It is about the thing, and it is true.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'pk-turns': (rng) => {
+    const Q = [['How many voices at a time?', ['one', 'two', 'all'], 'one', 'One voice at a time.'],
+      ['When it is not your turn, what do you do?', ['listen', 'shout', 'leave'], 'listen', 'Listen with your ears and your eyes.'],
+      ['To show you listened, what do you do?', ['say it back', 'say nothing', 'sing'], 'say it back', 'You think the class pet should be a fish.'],
+      ['You think an idea is wrong. What do you say?', ['I do not agree with that reason', 'you are silly', 'go away'], 'I do not agree with that reason', 'Talk about the idea, not the friend.'],
+      ['Your friend gives a better reason. Changing your mind is what?', ['brave', 'losing', 'silly'], 'brave', 'It is not losing.'],
+      ['Whoever holds the talking stick does what?', ['talks', 'hides', 'runs'], 'talks', 'Everyone else listens.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'pk-fair': (rng) => {
+    const Q = [['Four cookies and two children. What is fair?', ['two each', 'four for one', 'none'], 'two each', 'That is equal shares.'],
+      ['One child has a hurt knee. Who gets the ice pack first?', ['the child with the hurt knee', 'the oldest', 'the loudest'], 'the child with the hurt knee', 'That is fair too, by need.'],
+      ['On the swing, how is it fair?', ['we take turns', 'the biggest swings', 'nobody swings'], 'we take turns', 'Every turn is the same size.'],
+      ['An exception needs what?', ['a reason everyone can hear', 'a secret', 'a shout'], 'a reason everyone can hear', 'A rule can have an exception.'],
+      ['What test can you ask about any rule?', ['would you like it if it were you?', 'is it big?', 'is it red?'], 'would you like it if it were you?', 'If not, the rule needs another look.'],
+      ['When you cut the cake, who picks last?', ['the cutter', 'the tallest', 'the first one'], 'the cutter', 'Then the pieces come out even.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'p3-wonder': (rng) => {
+    const Q = [['Which of these is a wonder question?', ['Can a robot be your friend?', 'How many legs does a spider have?', 'What time is lunch?', 'How tall is the flagpole?'], 'Can a robot be your friend?', 'Nobody can look that up; you have to think about what a friend is.'],
+      ['How many legs does a spider have? What kind of question is that?', ['a look-up question', 'a wonder question', 'a trick question', 'a riddle'], 'a look-up question', 'You can look it up: eight.'],
+      ['What is the best first move with a wonder question?', ['ask what a word means', 'shout an answer', 'look it up', 'give up'], 'ask what a word means', 'What is a friend? Then give an example and a not-example.'],
+      ['The crossing guard is kind but not your friend, so what does that show?', ['friend needs more than kind', 'she is your friend', 'kind means friend', 'nothing'], 'friend needs more than kind', 'A not-example shows what a meaning still needs.'],
+      ['Who spent his days in Athens asking people what their words meant?', ['Socrates', 'a spider', 'the crossing guard', 'a robot'], 'Socrates', 'He found that most people had never checked.'],
+      ['Who wrote down the questions Socrates asked?', ['Plato', 'Socrates himself', 'nobody', 'a robot'], 'Plato', 'People still read them two thousand years later.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'p3-because': (rng) => {
+    const Q = [['A good reason has two parts. It is true and what else?', ['about the thing', 'loud', 'long', 'funny'], 'about the thing', 'Because the sky is blue is true and has nothing to do with recess.'],
+      ['Because everybody says so is what?', ['a headcount', 'a reason', 'a check', 'a measurement'], 'a headcount', 'A headcount is not a reason.'],
+      ['Because I said so is what?', ['an order', 'a reason', 'a wish', 'a check'], 'an order', 'An order is not a reason.'],
+      ['Because I want to is what?', ['a wish', 'a reason', 'an order', 'a headcount'], 'a wish', 'A wish is not a reason.'],
+      ['A real reason is something another person could do what with?', ['check', 'ignore', 'forget', 'sell'], 'check', 'They could look, count, measure, or ask someone who knows.'],
+      ['What is the most useful question you can ask?', ['how do you know', 'who cares', 'why me', 'what time is it'], 'how do you know', 'It turns a claim into a conversation.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'p3-listen': (rng) => {
+    const Q = [['When you disagree, what is the first job?', ['listen and say the idea back', 'talk louder', 'walk away', 'say you win'], 'listen and say the idea back', 'So you think the class pet should be a rabbit because rabbits are quiet.'],
+      ['How do you say your own idea?', ['with a because', 'with a shout', 'with a joke', 'with a frown'], 'with a because', 'I think a fish, because nobody is allergic to fish.'],
+      ['When you disagree with a friend\'s idea, what are you disagreeing with?', ['an idea, not a person', 'your friend', 'everyone', 'yourself'], 'an idea, not a person', 'You can still be best friends by dinner.'],
+      ['Changing your mind when the other because is better is what?', ['one of the bravest things a thinker does', 'losing', 'cheating', 'giving up'], 'one of the bravest things a thinker does', 'It is not losing.'],
+      ['Which idea is the best one?', ['the one with the best because', 'the loudest', 'the first', 'the longest'], 'the one with the best because', 'The loudest idea is not the best one.'],
+      ['What do you do if the other person says no, that is not my idea?', ['listen again', 'argue anyway', 'leave', 'shout'], 'listen again', 'Say it back until they say yes, that is it.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'p3-fair': (rng) => {
+    const Q = [['One box each and the smallest still cannot see: equal, but what?', ['not fair', 'fair', 'a rule', 'a wish'], 'not fair', 'Fair means everyone gets what they need for the same chance.'],
+      ['Fair means everyone gets what?', ['what they need for the same chance', 'exactly the same thing', 'the most', 'nothing'], 'what they need for the same chance', 'Sometimes that is equal and sometimes it is not.'],
+      ['When the building is on fire, what is the rule about running?', ['running is the rule', 'no running', 'walk backwards', 'wait'], 'running is the rule', 'Good rules have exceptions with reasons.'],
+      ['A fair exception is one you would give to whom?', ['anybody in the same spot', 'only a friend', 'nobody', 'the tallest'], 'anybody in the same spot', 'Not only to a friend.'],
+      ['One cake and two people. Who chooses?', ['the one who did not cut', 'the one who cut', 'the oldest', 'the hungriest'], 'the one who did not cut', 'The one who cuts will cut it even.'],
+      ['How long have people said to treat others as you want to be treated?', ['thousands of years', 'since last week', 'never', 'one year'], 'thousands of years', 'In many languages.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
   'p6-questions': (rng) => {
     const Q = [['Which of these is a philosophical question?', ['What is fairness?', 'What is the capital of Texas?', 'How tall is the school?', 'What year is it?'], 'What is fairness?', 'Nobody can look that up; you have to think it through.'],
       ['Socrates made a habit of asking people what?', ['what they meant by the words they used', 'where they were born', 'how much money they had', 'who their teachers were'], 'what they meant by the words they used', 'Someone would say a brave act, and he would ask what bravery was.'],
@@ -13934,6 +14321,63 @@ Object.assign(GENERATORS, {
       ['A fair exception is one you would grant to whom?', ['anybody in the same spot', 'only your friend', 'nobody', 'only yourself'], 'anybody in the same spot', 'Exceptions need reasons everyone can hear.'],
       ['Who put the golden rule as do not impose on others what you would not want for yourself?', ['Confucius', 'Socrates', 'Plato', 'Kant'], 'Confucius', 'In China, about 2,500 years ago.'],
       ['Whoever cuts the cake should do what?', ['choose last', 'choose first', 'eat it all', 'hide it'], 'choose last', 'Whoever cuts has every reason to cut it evenly.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  // Psychology, grades 9 to 12 (2026-09-29, pass GM): every recall answer is said in its lesson first; the statistics are computed fresh.
+  'ps-know': (rng) => {
+    const Q = [['Who opened the first psychology laboratory, in Leipzig in 1879?', ['Wilhelm Wundt', 'Sigmund Freud', 'Jean Piaget', 'B. F. Skinner'], 'Wilhelm Wundt', 'The field has a birthday: 1879.'],
+      ['Which perspective explains behavior by learned responses?', ['behavioral', 'biological', 'humanistic', 'psychodynamic'], 'behavioral', 'Behavioral by learned responses; cognitive by thinking; sociocultural by culture and group.'],
+      ['Which perspective explains behavior by motives outside awareness?', ['psychodynamic', 'behavioral', 'cognitive', 'biological'], 'psychodynamic', 'Psychodynamic by motives outside awareness.'],
+      ['Which method alone can show that one thing causes another?', ['an experiment', 'a survey', 'a correlational study', 'observation'], 'an experiment', 'An experiment changes one thing on purpose and holds the rest still.'],
+      ['Two things rise and fall together. What has correlation shown?', ['that they move together, not that one causes the other', 'that one causes the other', 'nothing', 'that both are random'], 'that they move together, not that one causes the other', 'Correlation never shows cause.'],
+      ['Under APA ethics, participants must give what?', ['informed consent', 'a fee', 'their address', 'a promise to finish'], 'informed consent', 'And they may stop at any time.'],
+      ['An explanation that ties principles together is called what?', ['a theory', 'a principle', 'a survey', 'a mode'], 'a theory', 'A principle is a rule that holds in many cases; a theory ties principles together.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'ps-stats': (rng) => {
+    // Five scores in tens, one repeated, so the mode is single and the median is a whole number; the mean is made whole by choice.
+    const base = 60 + Math.floor(rng() * 3) * 10; let scores;
+    do { scores = [base, base + 10, base + 10, base + 20, base + 30].map((v) => v); const bump = Math.floor(rng() * 3) * 10; scores[4] += bump; } while (scores.reduce((a, b) => a + b, 0) % 5 !== 0);
+    const sorted = [...scores].sort((a, b) => a - b); const mean = scores.reduce((a, b) => a + b, 0) / 5; const median = sorted[2]; const mode = base + 10; const range = sorted[4] - sorted[0];
+    const which = pick(rng, ['mean', 'median', 'mode', 'range']); const answer = { mean, median, mode, range }[which];
+    const distract = [mean, median, mode, range, answer + 5, answer - 5].filter((v) => v !== answer && v > 0);
+    const choices = shuffle(rng, [String(answer), ...[...new Set(distract)].slice(0, 3).map(String)]);
+    const list = shuffle(rng, [...scores]).join(', ');
+    return { type: 'choice', story: `Five quiz scores: ${list}.`, prompt: `What is the ${which}?`, choices, answer: String(answer), explain: which === 'mean' ? `Add them (${scores.reduce((a, b) => a + b, 0)}) and divide by 5: ${mean}.` : which === 'median' ? `In order, ${sorted.join(', ')}; the middle value is ${median}.` : which === 'mode' ? `${mode} appears twice; nothing else repeats.` : `Largest ${sorted[4]} minus smallest ${sorted[0]} is ${range}.`, visual: null, explainVisual: null };
+  },
+  'ps-brain': (rng) => {
+    const Q = [['The brain and spinal cord together are called what?', ['the central nervous system', 'the peripheral nervous system', 'the endocrine system', 'the senses'], 'the central nervous system', 'The peripheral nervous system is every nerve that runs out to the body and back.'],
+      ['Which hormone speeds the heart in seconds?', ['adrenaline', 'cortisol', 'insulin', 'melatonin'], 'adrenaline', 'Cortisol keeps the body alert for hours.'],
+      ['What the sense organs pick up is called what?', ['sensation', 'perception', 'cognition', 'motivation'], 'sensation', 'Perception is what the brain makes of it.'],
+      ['The level below which a sound or light is not noticed is called what?', ['the absolute threshold', 'the range', 'the median', 'the mode'], 'the absolute threshold', 'The senses also adapt, which is why a smell fades.'],
+      ['Which of Piaget\'s stages lasts to about age two?', ['sensorimotor', 'preoperational', 'concrete operational', 'formal operational'], 'sensorimotor', 'Preoperational to about seven, concrete operational to about eleven, formal operational after.'],
+      ['How many psychosocial stages did Erik Erikson describe in 1950?', ['eight', 'four', 'six', 'twelve'], 'eight', 'Each a task, from trust in infancy to integrity in old age.'],
+      ['The genes are nature. The surroundings are called what?', ['nurture', 'perception', 'the endocrine system', 'the threshold'], 'nurture', 'The debate is about how much of each.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'ps-learn': (rng) => {
+    const Q = [['Dogs drooling at the sound that came before food: which learning?', ['classical conditioning', 'operant conditioning', 'social learning', 'chunking'], 'classical conditioning', 'A signal paired with an event brings the response by itself.'],
+      ['A behavior followed by a reward grows. Which learning is that?', ['operant conditioning', 'classical conditioning', 'social learning', 'functional fixedness'], 'operant conditioning', 'B. F. Skinner showed it from the 1930s.'],
+      ['Children who watched an adult hit a doll hit it. Who found that?', ['Albert Bandura', 'Ivan Pavlov', 'George Miller', 'Hermann Ebbinghaus'], 'Albert Bandura', 'Social learning is learning by watching.'],
+      ['About how many items does working memory hold?', ['seven', 'two', 'twenty', 'a hundred'], 'seven', 'George Miller, 1956, unless the items are chunked.'],
+      ['What flattens the forgetting curve?', ['review', 'sleep alone', 'reading faster', 'nothing'], 'review', 'Ebbinghaus, 1885: each review flattens the curve.'],
+      ['A step-by-step method that always works is called what?', ['an algorithm', 'a heuristic', 'a bias', 'a chunk'], 'an algorithm', 'A heuristic is a shortcut that usually works.'],
+      ['Hunting for evidence that agrees with you is called what?', ['confirmation bias', 'functional fixedness', 'chunking', 'encoding'], 'confirmation bias', 'Functional fixedness sees a tool only for its usual job.'],
+      ['Who arranged human needs as a pyramid in 1943?', ['Abraham Maslow', 'Jean Piaget', 'Erik Erikson', 'Solomon Asch'], 'Abraham Maslow', 'Survival at the bottom, belonging above it.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'ps-social': (rng) => {
+    const Q = [['Others act from character, we from situation. That is called what?', ['the fundamental attribution error', 'the bystander effect', 'conformity', 'altruism'], 'the fundamental attribution error', 'When someone cuts in line we call them rude; when we do, we were late.'],
+      ['How often did Asch\'s people give a wrong answer to match the group?', ['about a third of the time', 'never', 'always', 'once a year'], 'about a third of the time', 'The group changed what people were willing to say.'],
+      ['Who found in 1961 that most people obeyed orders to give shocks?', ['Stanley Milgram', 'Solomon Asch', 'John Darley', 'Ivan Pavlov'], 'Stanley Milgram', 'Authority is strong, and knowing that is the first defense.'],
+      ['More bystanders, less chance any one helps. That is called what?', ['the bystander effect', 'altruism', 'the attribution error', 'reappraisal'], 'the bystander effect', 'Darley and Latané, 1968.'],
+      ['How do you break the bystander effect?', ['point to one person and ask them by name', 'shout to the crowd', 'wait', 'leave'], 'point to one person and ask them by name', 'Altruism rises when the responsibility is clearly yours.'],
+      ['Helping at a cost to yourself is called what?', ['altruism', 'conformity', 'obedience', 'bias'], 'altruism', 'It rises when the responsibility is clearly yours.'],
+      ['Which coping strategy works only until the problem grows?', ['avoiding the problem', 'exercise', 'sleep', 'talking to someone'], 'avoiding the problem', 'Reappraisal, steps, exercise, sleep and talk help.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
@@ -21726,6 +22170,36 @@ export const WONDER = [
     closing: 'What would you change in the review, and what would you keep?',
   },
   {
+    id: 'w-grown-the-crowd-did-nothing',
+    theme: 'world',
+    stage: 'grown',
+    courseIds: ['psychology-9'],
+    answerMode: 'typed',
+    prompt: 'Ten people watched someone fall and nobody moved. Were they bad people?',
+    perspectives: [
+      { voice: 'A scientist', says: 'Probably not; they were ten. Darley and Latané showed the numbers do the damage: each person assumed another would act. The cure is one sentence: you, in the blue coat, call for help.' },
+      { voice: 'An artist', says: 'Every one of them will remember standing there. That is not the memory of a bad person; it is the memory of someone who learned, too late, what a crowd does to a decision.' },
+      { voice: 'A grandparent of faith', says: 'Judge less and practice more. Decide today that you are the one who moves, and say it out loud to yourself, because the moment will not leave time to decide.' },
+      { voice: 'A skeptic', says: 'Calling them bad is the attribution error in a crowd of ten. Ask instead what the situation did, and then ask what would have broken it. Usually it would have taken a single name.' },
+    ],
+    closing: 'What would you say, and to whom, to break the freeze?',
+  },
+  {
+    id: 'w-grown-forgot-it-all',
+    theme: 'failure',
+    stage: 'grown',
+    courseIds: ['psychology-9'],
+    answerMode: 'typed',
+    prompt: 'You studied for four hours the night before and forgot most of it by the test. What went wrong?',
+    perspectives: [
+      { voice: 'A scientist', says: 'Nothing went wrong with you; Ebbinghaus drew this exact curve in 1885. Four hours once decays; forty minutes on four different days does not. The timing, not the effort, is the variable.' },
+      { voice: 'An artist', says: 'You were pouring water into a bucket with a hole, and the hole is the same size for everyone. Fill it a little each day and it stays full enough to carry.' },
+      { voice: 'A grandparent of faith', says: 'Your grandfather learned his psalms one line a day for a year and had them at ninety. Little and often is older than any textbook.' },
+      { voice: 'A skeptic', says: 'Measure it instead of mourning it. Read a page tonight, test yourself tomorrow without looking, and count what survived. Then space the next reading and count again. The numbers will teach you faster than the regret.' },
+    ],
+    closing: 'How would you split those four hours across a week?',
+  },
+  {
     id: 'w-grown-everyone-agrees',
     theme: 'world',
     stage: 'grown',
@@ -21846,6 +22320,36 @@ export const WONDER = [
     closing: 'How would you tell the end of a piece from a pause?',
   },
   {
+    id: 'w-growing-robot-friend',
+    theme: 'world',
+    stage: 'growing',
+    courseIds: ['philosophy-3'],
+    answerMode: 'typed',
+    prompt: 'Can a robot be your friend? Say what a friend is first, then answer.',
+    perspectives: [
+      { voice: 'A scientist', says: 'Write down what a friend does: listens, helps, keeps a promise, notices when you are sad. Then check the robot against each one honestly. Whatever you find, you will know more about friends than you did.' },
+      { voice: 'An artist', says: 'People have made friends of dogs, dolls and imaginary lions, and the friendship was real on their side. The question may be less about the robot than about what you bring to it.' },
+      { voice: 'A grandparent of faith', says: 'A friend is someone who can choose you. A robot does what it was made to do, which is a fine thing, but choosing is the part that makes a friend, and you should ask whether a robot can choose.' },
+      { voice: 'A skeptic', says: 'Try a not-example on it first. The crossing guard is kind and helpful and is not your friend. So kind and helpful are not enough. Find what is missing, and then ask whether the robot has it.' },
+    ],
+    closing: 'What does a friend do that the crossing guard does not?',
+  },
+  {
+    id: 'w-growing-lost-my-because',
+    theme: 'failure',
+    stage: 'growing',
+    courseIds: ['philosophy-3'],
+    answerMode: 'typed',
+    prompt: 'You said something in class and then could not think of a because. Everyone waited. What now?',
+    perspectives: [
+      { voice: 'A scientist', says: 'Say the honest thing: I think it, and I do not have my because yet. Then go and find one. Half of science is people who noticed they were missing a reason and went looking.' },
+      { voice: 'An artist', says: 'The waiting felt like a year and was about four seconds. Everyone in that room has stood in the same silence. The ones who remember it are the ones who admired you for standing there.' },
+      { voice: 'A grandparent of faith', says: 'Having a feeling before you have a reason is how most true things start. Keep the feeling, look for the because, and if you never find one, let the idea go gently.' },
+      { voice: 'A skeptic', says: 'Better to say I do not know why yet than to invent a because on the spot. An invented because is worse than none, because now you have to defend it.' },
+    ],
+    closing: 'What because would you look for first?',
+  },
+  {
     id: 'w-growing-spent-the-plan',
     theme: 'failure',
     stage: 'growing',
@@ -21908,6 +22412,40 @@ export const WONDER = [
       { voice: 'A skeptic', says: 'Clapping louder hides nothing; it makes the miss louder. Go quiet for one line, catch the beat, and come back in. Going quiet is the whole fix.' },
     ],
     closing: 'How would you find the beat again?',
+  },
+  {
+    id: 'w-early-is-a-stick-a-toy',
+    theme: 'world',
+    stage: 'early',
+    courseIds: ['philosophy-k'],
+    answerMode: 'pick',
+    prompt: 'Is a stick a toy?',
+    options: ['Yes, if you play with it', 'No, toys come from a store', 'It depends what you mean by toy'],
+    simple: [{ voice: 'A scientist says', says: 'Say what a toy is first.' }, { voice: 'An artist says', says: 'A stick can be anything you like.' }],
+    perspectives: [
+      { voice: 'A scientist', says: 'Say what a toy is first, and then the stick either fits or it does not. Most arguments about sticks are really arguments about the word toy.' },
+      { voice: 'An artist', says: 'A stick can be a sword, a wand, a horse or a fishing pole in one afternoon. I have never seen a store toy do that many things.' },
+      { voice: 'A grandparent of faith', says: 'When I was small the best toy on our street was a stick, and the second best was a box. Nobody on the street argued about it, because we were far too busy playing.' },
+      { voice: 'A skeptic', says: 'Ask the person who says no what makes a toy a toy. If the answer is a store, ask about a drum made from a pot. Watch how fast the answer changes.' },
+    ],
+    closing: 'What would you play with a stick?',
+  },
+  {
+    id: 'w-early-lost-my-turn',
+    theme: 'failure',
+    stage: 'early',
+    courseIds: ['philosophy-k'],
+    answerMode: 'pick',
+    prompt: 'You talked when it was not your turn and your friend got sad. What now?',
+    options: ['Say sorry and listen', 'Talk louder', 'Stop talking forever'],
+    simple: [{ voice: 'A grandparent says', says: 'Say sorry, then listen with your ears and your eyes.' }, { voice: 'A skeptic says', says: 'Everyone slips; the next turn is a fresh one.' }],
+    perspectives: [
+      { voice: 'A scientist', says: 'Everyone slips once in a while. The fix is small and quick: say sorry, then listen so hard that your friend can tell.' },
+      { voice: 'An artist', says: 'Your friend is sad because they wanted to be heard. Ask them to say it again, and look at them while they do.' },
+      { voice: 'A grandparent of faith', says: 'A sorry that comes fast and means it is worth more than a long speech. Then hand the turn back, and the sad goes away.' },
+      { voice: 'A skeptic', says: 'Talking louder makes it worse, and never talking again is silly. Say sorry, and take the next turn when it comes. That is all there is to it.' },
+    ],
+    closing: 'What would you say to your friend?',
   },
   {
     id: 'w-early-two-wants',
@@ -24733,14 +25271,17 @@ export const COURSE_GAMES = {
   'health-k': ['dots-rocket'],
   'tech-k': ['walk-tech-k'],
   'econ-k': ['pay-econ-k'],
+  'philosophy-k': ['share-philosophy-k'],
   'arts-k': ['spot-arts-k'],
   'econ-3': ['price-econ-3'],
+  'philosophy-3': ['because-philosophy-3'],
   'arts-3': ['pattern-arts-3'],
   'arts-6': ['shape-arts-6'],
   'econ-6': ['loan-econ-6'],
   'philosophy-6': ['reason-philosophy-6'],
   'econ-9': ['fund-econ-9'],
   'philosophy-9': ['valid-philosophy-9'],
+  'psychology-9': ['stat-psychology-9'],
   'arts-9': ['chord-arts-9'],
   'tech-6': ['teach-tech-6'],
   'tech-college': ['search-tech-college'],

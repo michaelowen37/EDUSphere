@@ -2,6 +2,24 @@
 
 The newest block is what educators see once, in a pop-up on the classroom page, after each update. Write it the way Mikey talks to a teacher: conversational, complete sentences, say what changed and why it matters, and skip the shorthand (2026-09-23). Two to four items. The date line is the version stamp.
 
+## September 29, 2026 (the science of behavior)
+
+- A new subject, Psychology, begins with an elective for grades 9 to 12, The science of behavior: how psychologists test a claim, from surveys and correlation to the experiment that alone shows cause, with three ways to say average; the brain, the senses and how a mind grows, with Piaget and Erikson; how behavior is learned by pairing, by consequences and by watching, how memory works and forgets, and the shortcuts that trip thinking; and what crowds do to a person, from the attribution error to the bystander effect, with the stress response and what helps. Each lesson has a story, and the course ends with a long story about Savanah and a waiting room.
+- Finishing the course unlocks Mean, Median, Mode, a new kind of game: five scores and one average to find.
+- Two new Wonder questions for high school wait in the review screen.
+
+## September 29, 2026 (I wonder)
+
+- Kindergarten has a new elective for kindergarten through grade 2, I wonder, read aloud like the rest of kindergarten: finding questions and wondering questions, with a stick that might be a toy; the because that makes a reason; one voice at a time, saying it back, and changing your mind; and fair shares, with a test you can ask about any rule. Every lesson has a story and a coloring page, and the course ends with a long story about a wondering rug.
+- Finishing the course unlocks Share the Cookies, a new kind of game: a pile of cookies, some plates, and the same on every plate.
+- Two new Wonder questions for the youngest wait in the review screen.
+
+## September 29, 2026 (I wonder why)
+
+- Grade 3 has a new elective for grades 3 to 5, I wonder why: the questions you look up and the questions you think about, with a robot vacuum named Bolt; what makes a because a reason; how to say a friend's idea back before you disagree with it; and why fair is not always equal, with three boxes and a fence. Each lesson has a story, and the course ends with a long story about Georgette and a jar of questions.
+- Finishing the course unlocks Sort the Because, a new kind of game: a claim, four becauses, and the two that are real reasons.
+- Two new Wonder questions for grades 3 to 5 wait in the review screen.
+
 ## September 29, 2026 (big questions, good reasons)
 
 - Grade 6 has a new elective for grades 6 to 8, Big questions, good reasons: the questions you think through rather than look up, with Socrates and a hot dog; what makes a reason relevant and true, and the four-word question that turns a claim into a conversation; how to disagree about an idea without fighting a person; and three rules for fair, with a test you can run at any table. Each lesson has a story, and the course ends with a long story about Savanah, a cabin of ten-year-olds and four canoes.

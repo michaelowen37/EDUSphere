@@ -1013,6 +1013,38 @@ await page.waitForTimeout(200);
 }
 await page.getByRole('button', { name: 'Close game' }).first().click({ force: true });
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview');
+// Sort the Because (pass GK, philosophy 3 to 5): the board carries the two real reasons.
+await page.evaluate(() => window.__eduTest.openColoring('play:because-philosophy-3'));
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'coloring');
+await page.waitForTimeout(200);
+{ ok('the because game opens with a claim and four becauses', (await page.getByRole('button', { name: /^Because: / }).count()) === 4 && /Claim/.test(await text()));
+  for (let i = 0; i < 5; i++) { const real = await page.locator('[data-because-real]').getAttribute('data-because-real'); if (!real) break; for (const t of real.split(' | ')) { await page.getByRole('button', { name: `Because: ${t}`, exact: true }).click(); await page.waitForTimeout(120); } await page.waitForTimeout(950); }
+  ok('five claims sorted by their real reasons finish the round', (await text()).includes('Five claims sorted'));
+}
+await page.getByRole('button', { name: 'Close game' }).first().click({ force: true });
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview');
+// Share the Cookies (pass GL, philosophy K to 2): the board carries how many each plate should hold.
+await page.evaluate(() => window.__eduTest.openColoring('play:share-philosophy-k'));
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'coloring');
+await page.waitForTimeout(200);
+{ ok('the share game opens with a pile of cookies, plates and a Check button', (await page.getByRole('button', { name: /^Plate \d+/ }).count()) >= 2 && (await page.getByRole('button', { name: 'Check', exact: true }).count()) === 1);
+  for (let r = 0; r < 4; r++) { const each = Number(await page.locator('[data-share-each]').getAttribute('data-share-each')); const n = Number(await page.locator('[data-share-plates]').getAttribute('data-share-plates')); if (!each || !n) break;
+    for (let i = 0; i < n; i++) for (let j = 0; j < each; j++) { await page.getByRole('button', { name: new RegExp(`^Plate ${i + 1}:`) }).click(); await page.waitForTimeout(40); }
+    await page.getByRole('button', { name: 'Check', exact: true }).click(); await page.waitForTimeout(1050); }
+  ok('four even shares finish the round', (await text()).includes('Four fair shares'));
+}
+await page.getByRole('button', { name: 'Close game' }).first().click({ force: true });
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview');
+// Mean, Median, Mode (pass GM, psychology 9 to 12): the board carries the true average.
+await page.evaluate(() => window.__eduTest.openColoring('play:stat-psychology-9'));
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'coloring');
+await page.waitForTimeout(200);
+{ ok('the stat game opens with five scores, a question and four answers', (await page.getByRole('button', { name: /^Answer \d+$/ }).count()) === 4 && /What is the (mean|median|mode)\?/.test(await text()));
+  for (let i = 0; i < 6; i++) { const ans = await page.locator('[data-stat-answer]').getAttribute('data-stat-answer'); if (!ans) break; await page.getByRole('button', { name: `Answer ${ans}`, exact: true }).click(); await page.waitForTimeout(1150); }
+  ok('six right averages finish the round', (await text()).includes('Six averages found'));
+}
+await page.getByRole('button', { name: 'Close game' }).first().click({ force: true });
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview');
 // Some pictures are drawn on rather than filled in: a finger stroke leaves a line in the chosen color.
 await page.evaluate(() => window.__eduTest.openColoring('star'));
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'coloring');

@@ -135,6 +135,10 @@ ok('a grade dropdown opens to its courses', (await text()).includes('Grade 1 - M
 await page.fill('input[aria-label="Search courses"]', 'grade 1 math');
 t = await text();
 ok('searching narrows the course list to what was typed', t.includes('Numbers to 20 (Grade 1 - Math)') && !t.includes('Grade 4 - Math'));
+// The small × inside the search box clears it in one tap (pass GV, Mikey).
+ok('a typed search shows a clear button inside the box', (await page.getByRole('button', { name: 'Clear search' }).count()) === 1);
+await page.getByRole('button', { name: 'Clear search' }).click();
+ok('the clear button empties the search box and hides itself', (await page.locator('input[aria-label="Search courses"]').inputValue()) === '' && (await page.getByRole('button', { name: 'Clear search' }).count()) === 0);
 await page.fill('input[aria-label="Search courses"]', '');
 await page.getByRole('button', { name: /^Grade 3\b/ }).first().click();
 await page.locator('label', { hasText: 'Fractions (Grade 3 - Math)' }).locator('input[type=checkbox]').check();
@@ -224,6 +228,11 @@ await page.getByRole('button', { name: /^Math/ }).click();
 // 2. Master Fractions module 1 with a perfect set (early courses now list first, so open it by name)
 await openModuleNamed('What a fraction means');
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'lesson');
+// A refresh brings the student back to the same lesson instead of the front door (pass GV, Mikey).
+await page.waitForTimeout(250); // let the where-note and the record land in storage before the reload
+await page.reload();
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen !== 'loading' && window.__eduTest.screen !== 'welcome' && document.body.textContent.includes('What a fraction means'), null, { timeout: 15000 }).catch(() => {});
+ok('a refresh brings the student back to the lesson they were on', (await page.evaluate(() => window.__eduTest.screen)) === 'lesson' && (await text()).includes('What a fraction means'));
 // Story-based learning (2026-09-22): the lesson's green button opens the story page; its own Practice button leads on.
 t = await text();
 ok('lesson shows key idea and a plain-text source', t.includes('Key idea') && t.includes('Source:') && (await page.locator('a').count()) === 0);
@@ -332,7 +341,7 @@ await tap('See how others think');
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'wonder-voices');
 t = await text();
 ok('four perspectives shown with none declared right', ['A scientist', 'An artist', 'A grandparent of faith', 'A skeptic'].every((v) => t.includes(v)) && !t.includes('correct answer'));
-const stored = await page.evaluate(() => JSON.stringify(Object.values(__store)));
+const stored = await page.evaluate(() => { const vals = []; for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); if (k.startsWith('fake:')) vals.push(localStorage.getItem(k)); } return JSON.stringify(vals); });
 ok('the typed reflection was never stored', !stored.includes('same cookie'));
 await tap('Back to overview');
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview');
@@ -466,6 +475,9 @@ await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen ===
 t = await text();
 ok('the report opens with a plain-English paragraph naming the student', t.includes('S-1042 has mastered') && t.includes('Kindergarten math'));
 ok('the summary never shows the storage id', !t.includes('s_1042'));
+// The mastered list sits centered inside its tinted box, shrunk to its longest line, with the bullets lined up on the left (pass GW, Mikey).
+{ const m = await page.evaluate(() => { const box = document.querySelector('[data-summary-list="mastered"]'); if (!box) return null; const ul = box.querySelector('ul'); const b = box.getBoundingClientRect(); const u = ul.getBoundingClientRect(); return { boxW: b.width, ulW: u.width, leftGap: u.left - b.left, rightGap: b.right - u.right, align: getComputedStyle(ul).textAlign }; });
+  ok('the mastered list is narrower than its box and centered, with left-aligned lines', !!m && m.ulW < m.boxW - 40 && Math.abs(m.leftGap - m.rightGap) < 4 && m.align === 'left'); }
 ok('assigned courses lead with the course name', t.includes('Assigned Now') && t.includes('(KG - Math)'));
 ok('courses are split into assigned and other', t.includes('Assigned Now') && t.includes('Show other courses'));
 ok('a course that needs a touch screen says so where it is assigned', t.includes('Needs a touch screen'));
@@ -1114,6 +1126,26 @@ await page.waitForTimeout(200);
 { ok('the turn game opens with four friends and a holder named', (await page.getByRole('button', { name: /^Friend: / }).count()) === 4 && /has the stick\. Who is next\?/.test(await text()));
   for (let i = 0; i < 6; i++) { const ans = await page.locator('[data-turn-answer]').getAttribute('data-turn-answer'); if (!ans) break; await page.getByRole('button', { name: `Friend: ${ans}`, exact: true }).click(); await page.waitForTimeout(1050); }
   ok('six turns in order finish the round', (await text()).includes('Six turns in order'));
+}
+await page.getByRole('button', { name: 'Close game' }).first().click({ force: true });
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview');
+// Read the Jar (pass GU, agriculture 9 to 12): the board carries the texture the layers show.
+await page.evaluate(() => window.__eduTest.openColoring('play:jar-agriculture-9'));
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'coloring');
+await page.waitForTimeout(200);
+{ ok('the jar game opens with a settled jar and three textures', (await page.getByRole('button', { name: /^Texture: / }).count()) === 3 && (await text()).includes('Which texture do the layers show?'));
+  for (let i = 0; i < 6; i++) { const ans = await page.locator('[data-jar-answer]').getAttribute('data-jar-answer'); if (!ans) break; await page.getByRole('button', { name: `Texture: ${ans}`, exact: true }).click(); await page.waitForTimeout(1150); }
+  ok('six jars read finish the round', (await text()).includes('Six jars read'));
+}
+await page.getByRole('button', { name: 'Close game' }).first().click({ force: true });
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview');
+// Who Gains (pass GX, agriculture 6 to 8): the board carries the relationship the case shows.
+await page.evaluate(() => window.__eduTest.openColoring('play:relation-agriculture-6'));
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'coloring');
+await page.waitForTimeout(200);
+{ ok('the relation game opens with a case and four names', (await page.getByRole('button', { name: /^Relationship: / }).count()) === 4 && (await text()).includes('Which relationship is this?'));
+  for (let i = 0; i < 6; i++) { const ans = await page.locator('[data-relation-answer]').getAttribute('data-relation-answer'); if (!ans) break; await page.getByRole('button', { name: `Relationship: ${ans}`, exact: true }).click(); await page.waitForTimeout(1150); }
+  ok('six named relationships finish the round', (await text()).includes('Six relationships named'));
 }
 await page.getByRole('button', { name: 'Close game' }).first().click({ force: true });
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview');

@@ -69,7 +69,12 @@ export function gradeShort(grade) { return grade === 'K' ? 'KG' : grade === 'PK3
 const GRADE_WORDS = ['first', 'second', 'third', 'fourth', 'fifth', 'sixth', 'seventh', 'eighth', 'ninth', 'tenth', 'eleventh', 'twelfth'];
 export function gradeInSentence(grade) { return grade === 'K' ? 'Kindergarten' : grade === 'PK3' ? 'pre-K 3' : grade === 'PK4' ? 'pre-K 4' : grade === 'C' ? 'college level' : `${GRADE_WORDS[Number(grade) - 1]} grade`; }
 // One line for a course anywhere it appears in a list.
-export function courseLabel(course) { return `${course.title} (${gradeShort(course.grade)} - ${course.subject})`; }
+// courseGradeLabel: the grade text a course shows in lists and dropdowns (2026-09-30, pass GV, Mikey). In plain terms:
+// a band elective sits at the youngest grade of its band (grade 3 for the 3 to 5 course) but serves the whole band, so
+// showing "Grade 3" beside it made the grade list look full of gaps. An elective with an `audience` shows that band
+// ("Grades 3 to 5", "Kindergarten to grade 2"); every other course shows its grade as before.
+export function courseGradeLabel(course) { return course.elective && course.audience ? course.audience : gradeLabel(course.grade); }
+export function courseLabel(course) { return `${course.title} (${course.elective && course.audience ? course.audience : gradeShort(course.grade)} - ${course.subject})`; }
 
 // A COURSE belongs to exactly one subject (Math, Reading, Science, ...) and
 // holds an ordered list of modules. Modules unlock in order WITHIN a course.
@@ -1046,6 +1051,36 @@ export const COURSES = [
     keywords: ['speech', 'listening', 'instructions', 'presentation', 'discussion', 'disagree', 'elective'],
     modules: SPEECH6_MODULES(),
   },
+  // ---------------------------------------------------------------------------------------------------------------
+  // Agriculture for grades 9 to 12 (2026-09-30, pass GU). In plain terms: this is the course card for the first course
+  // of a new subject, Agriculture, the seventh strand of the depth program. Its four lessons live in AGRI9_MODULES()
+  // further down; this entry only names the course and points at them.
+  // ---------------------------------------------------------------------------------------------------------------
+  // ---------------------------------------------------------------------------------------------------------------
+  // Agriculture for grades 6 to 8 (2026-09-30, pass GX). In plain terms: the course card for the middle school
+  // agriculture elective, built above the Texas minimum (Texas has no middle school agriculture course). Its four
+  // lessons live in AGRI6_MODULES() further down; this entry only names the course and points at them.
+  // ---------------------------------------------------------------------------------------------------------------
+  {
+    id: 'agriculture-6',
+    grade: '6',
+    subject: 'Agriculture',
+    title: 'Where food comes from',
+    audience: 'Grades 6 to 8',
+    elective: true,
+    keywords: ['agriculture', 'farm', 'soil', 'seeds', 'animals', 'food', 'project', 'elective'],
+    modules: AGRI6_MODULES(),
+  },
+  {
+    id: 'agriculture-9',
+    grade: '9',
+    subject: 'Agriculture',
+    title: 'From soil to supper',
+    audience: 'Grades 9 to 12',
+    elective: true,
+    keywords: ['agriculture', 'farming', 'soil', 'plants', 'livestock', 'food', 'business plan', 'elective'],
+    modules: AGRI9_MODULES(),
+  },
   {
     id: 'speech-9',
     grade: '9',
@@ -1385,6 +1420,8 @@ export const GAMES = [
   { id: 'valid-philosophy-9', kind: 'valid', title: 'Valid or Not', minGrade: '9', valid: 'forms' },
   { id: 'stat-psychology-9', kind: 'stat', title: 'Mean, Median, Mode', minGrade: '9', stat: 'scores' },   // psychology 9 to 12 (pass GM): three ways to say average   // philosophy 9 to 12 (pass GI): the form decides
   { id: 'filler-speech-9', kind: 'filler', title: 'Cut the Fillers', minGrade: '9', filler: 'lines' },   // speech 9 to 12 (pass GQ): the fillers are the rule
+  { id: 'jar-agriculture-9', kind: 'jar', title: 'Read the Jar', minGrade: '9', jar: 'textures' },   // agriculture 9 to 12 (pass GU): the settled layers are the rule
+  { id: 'relation-agriculture-6', kind: 'relation', title: 'Who Gains', minGrade: '6', relation: 'cases' },   // agriculture 6 to 8 (pass GX): who gains is the rule
   { id: 'room-speech-6', kind: 'room', title: 'Fit the Room', minGrade: '6', room: 'lines' },   // speech 6 to 8 (pass GR): the room is the rule
   { id: 'ask-speech-3', kind: 'ask', title: 'Ask the Right Question', minGrade: '3', ask: 'topics' },   // speech 3 to 5 (pass GS): the topic is the rule
   { id: 'chord-arts-9', kind: 'chord', title: 'Build the Chord', minGrade: '9', chord: 'triads' },   // art and music 9 to 12 (pass GH): four half steps then three   // personal finance 9 to 12 (pass FY): a year of saving against surprises
@@ -2109,6 +2146,56 @@ export function turnRounds(round) {
   while (rounds.length < 6) { const holder = Math.floor(rnd() * TURN_FRIENDS.length); if (holder === last) continue; last = holder; rounds.push({ holder, answer: TURN_FRIENDS[(holder + 1) % TURN_FRIENDS.length] }); }
   return rounds;
 }
+// -----------------------------------------------------------------------------------------------------------------
+// Read the Jar (2026-09-30, pass GU, the agriculture game). In plain terms: shake soil in a jar of water and let it
+// settle; sand drops first, silt next, clay last, and the three layers show the soil's texture. The game draws a jar
+// with three layers and asks which texture it is. `jarRounds(round)` picks six samples for one game, each a mix of
+// sand, silt and clay adding to 100, and names the answer by one plain rule (`jarTexture`): 70 percent sand or more is
+// sandy, 40 percent clay or more is clay, and anything else is loam. The screen reads answers from here, never decides
+// them, so the rules test can prove every answer follows the rule.
+// -----------------------------------------------------------------------------------------------------------------
+export const JAR_TEXTURES = ['sandy', 'loam', 'clay'];
+export function jarTexture(sand, silt, clay) { if (sand >= 70) return 'sandy'; if (clay >= 40) return 'clay'; return 'loam'; }
+export function jarRounds(round) {
+  let x = (round * 40503 + 13) >>> 0; const rnd = () => { x = (x * 1664525 + 1013904223) >>> 0; return x / 4294967296; };
+  const rounds = [];
+  while (rounds.length < 6) {
+    const kind = rounds.length % 3; // spread the three answers across the round so no texture goes missing
+    let sand; let clay;
+    if (kind === 0) { sand = 70 + Math.floor(rnd() * 21); clay = Math.floor(rnd() * Math.min(15, 100 - sand)); }
+    else if (kind === 2) { clay = 40 + Math.floor(rnd() * 31); sand = Math.floor(rnd() * Math.min(30, 100 - clay)); }
+    else { sand = 20 + Math.floor(rnd() * 40); clay = 10 + Math.floor(rnd() * 25); }
+    const silt = 100 - sand - clay; if (silt < 0) continue;
+    const answer = jarTexture(sand, silt, clay);
+    rounds.push({ sand, silt, clay, answer, choices: [...JAR_TEXTURES] });
+  }
+  const order = [...rounds]; for (let j = order.length - 1; j > 0; j--) { const k = Math.floor(rnd() * (j + 1)); [order[j], order[k]] = [order[k], order[j]]; }
+  return order;
+}
+// -----------------------------------------------------------------------------------------------------------------
+// Who Gains (2026-09-30, pass GX, the middle school agriculture game). In plain terms: a line describes two living
+// things on a farm and what passes between them, and the student taps the name of the relationship: mutualism (both
+// gain), parasitism (one gains, one is harmed), commensalism (one gains, the other is unaffected) or predation (one eats
+// the other). `RELATION_CASES` holds the cases with their answers; `relationRounds(round)` picks six with the four names
+// as choices. The screen reads answers from here, never decides them, so one rules test can prove every answer.
+// -----------------------------------------------------------------------------------------------------------------
+export const FARM_RELATIONS = ['mutualism', 'parasitism', 'commensalism', 'predation'];
+export const RELATION_CASES = [
+  ['Bees carry pollen between the orchard\'s blossoms and take nectar home.', 'mutualism'],
+  ['Bacteria in a soybean\'s roots make nitrogen for the plant and get sugar from it.', 'mutualism'],
+  ['A tick drinks a cow\'s blood.', 'parasitism'],
+  ['A tapeworm lives in a sheep\'s gut and eats what the sheep ate.', 'parasitism'],
+  ['An egret eats the grasshoppers a cow kicks up, and the cow does not notice.', 'commensalism'],
+  ['Barn swallows nest in the rafters above the cattle, who never look up.', 'commensalism'],
+  ['A coyote takes a lamb from the far pasture.', 'predation'],
+  ['A hawk takes a field mouse from the stubble.', 'predation'],
+];
+export function relationRounds(round) {
+  let x = (round * 25173 + 17) >>> 0; const rnd = () => { x = (x * 1664525 + 1013904223) >>> 0; return x / 4294967296; };
+  const order = [...RELATION_CASES]; for (let j = order.length - 1; j > 0; j--) { const k = Math.floor(rnd() * (j + 1)); [order[j], order[k]] = [order[k], order[j]]; }
+  const picked = []; for (const [line, answer] of order) { if (picked.length >= 6) break; if (picked.filter((q) => q.answer === answer).length >= 2) continue; picked.push({ line, answer, choices: [...FARM_RELATIONS] }); }
+  return picked;
+}
 export const ROBOT_DECKS = {
   arrows: [
     { start: [1,1], goal: [0,4], rocks: [[2,1],[0,2],[2,2]], program: 'DDLU' },
@@ -2488,7 +2575,7 @@ function recommendedIncludingElectives(events, level, startGrade = null) {
 
 // Subjects always read Math, Reading, Writing, Science, History, then anything else alphabetically,
 // whatever order the courses were written in. Every screen that lists subjects sorts with this.
-const SUBJECT_RANK = { Math: 0, Reading: 1, Writing: 2, Science: 3, History: 4, Art: 5, Music: 6, Technology: 7, Health: 8, Economics: 9, Philosophy: 10, Psychology: 11, Speech: 12 };   // Economics joined 2026-09-29 (pass FV); Philosophy (GI) and Psychology (GM) the same day
+const SUBJECT_RANK = { Math: 0, Reading: 1, Writing: 2, Science: 3, History: 4, Art: 5, Music: 6, Technology: 7, Health: 8, Economics: 9, Philosophy: 10, Psychology: 11, Speech: 12, Agriculture: 13 };   // Economics joined 2026-09-29 (pass FV); Philosophy (GI) and Psychology (GM) the same day
 export function sortSubjects(subjects) {
   return [...new Set(subjects)].sort((a, b) => (SUBJECT_RANK[a] ?? 99) - (SUBJECT_RANK[b] ?? 99) || a.localeCompare(b));
 }
@@ -9784,6 +9871,160 @@ function SPEECH6_MODULES() { return [
     generators: ['s6-discuss', 's6-discuss', 's6-discuss', 's6-discuss', 's6-discuss'],
   },
 ]; }
+// -----------------------------------------------------------------------------------------------------------------
+// AGRI9_MODULES: the four lessons of the high school agriculture course (2026-09-30, pass GU).
+// In plain terms: each object is one lesson. `paragraphs` is the lesson text, `keyIdea` the one-sentence takeaway,
+// `example` the pictures and extra examples, `sources` the Texas standard the lesson meets (Principles of Agriculture,
+// Food, and Natural Resources, §130.2, read from the published text) with the national AFNR standard beside it, and
+// `generators` the question banks below that make the five quick checks. Every number in the text was checked twice.
+// -----------------------------------------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------------------------------------------
+// AGRI6_MODULES: the four lessons of the middle school agriculture course (2026-09-30, pass GX).
+// In plain terms: each object is one lesson. `paragraphs` is the lesson text, `keyIdea` the one-sentence takeaway,
+// `example` the pictures and extra examples, `sources` the Texas standard the lesson meets (the grade 6 science
+// standards on resources, organisms and environments, and investigations, §112.26, read from the published text) with
+// the national AFNR standard beside it, and `generators` the question banks below that make the five quick checks.
+// -----------------------------------------------------------------------------------------------------------------
+function AGRI6_MODULES() { return [
+  {
+    id: 'where-food-comes-from',
+    order: 1,
+    title: 'Where food comes from',
+    tagline: 'The chain from a field to your plate, and the soil, water and energy that run it',
+    requires: [],
+    lesson: {
+      paragraphs: ['Everything you ate today started on a farm or in a fishery, and it traveled a chain to reach you: grown or raised, harvested, cleaned and packed, moved by truck or train, sold, cooked. Agriculture is the whole chain, and it makes more than food. Cotton in your shirt, wood in your desk and the leather in a baseball glove are agriculture too.', 'Texas is a farming state: it raises more cattle and grows more cotton than any other state. But the chain runs on three resources that can run short. Soil, which takes centuries to build and can wash away in a storm. Water, which most Texas farms pump from underground or take from rivers. And energy, for the tractors, the pumps and the trucks. Managing those three well is what keeps food cheap and shelves full; managing them badly is why some places in the world go hungry and others have dirty air and water.', 'Conservation, efficiency and technology are the three ways to manage them. Conservation: use less, like leaving stalks on a field so the soil stays put. Efficiency: get more from the same, like drip lines that put water at the root instead of in the air. Technology: tools that see what people cannot, like a satellite picture that shows which corner of a field is dry. The people who do this work are farmers, but also soil scientists, veterinarians, engineers and the person who flies the drone.'],
+      keyIdea: 'Food travels a chain: grown, harvested, packed, moved, sold, cooked. Texas leads in cattle and cotton. Soil, water and energy run the chain, and conservation, efficiency and technology are how they are managed.',
+      example: { kind: 'flow', steps: ['grown', 'harvested', 'packed', 'moved', 'sold', 'cooked'], caption: 'The chain from a field to your plate.',
+        another: ['A taco: beef from a ranch, wheat for the tortilla from a field, tomatoes from a farm, cheese from a dairy. Four farms in one hand.',
+          { text: 'Drip lines put water at the root. A sprinkler on a windy day puts a lot of it in the air. Same crop, half the water.', visual: { kind: 'flow', steps: ['water at the root', 'less lost to the wind', 'the same crop'] } },
+          'A soil scientist, a veterinarian and a drone pilot are all in agriculture. Most of the jobs in the chain are not on a tractor.'] },
+    },
+    sources: ['Aligned with TEKS Science, Grade 6, 112.26(b)(11)(A) (research and describe why resource management is important in reducing global energy poverty, malnutrition, and air and water pollution), 112.26(b)(11)(B) (explain how conservation, increased efficiency, and technology can help manage air, water, soil, and energy resources) and 112.26(b)(4)(C) (research and explore resources to investigate STEM careers), and the National AFNR Content Standards, CS.01 (analyze how issues, trends, technologies and public policies impact systems in the AFNR Career Cluster).'],
+    generators: ['a6-food', 'a6-food', 'a6-food', 'a6-food', 'a6-food'],
+  },
+  {
+    id: 'soil-and-seeds',
+    order: 2,
+    title: 'Soil and seeds',
+    tagline: 'What soil is made of, what a seed needs, and a fair test with two pots',
+    requires: ['where-food-comes-from'],
+    lesson: {
+      paragraphs: ['Soil is a mix: mineral bits called sand, silt and clay, dead leaves and roots called organic matter, water, and air in the spaces between. Sand is coarse and drains fast; clay is fine and holds water; a balanced mix is called loam and grows the most. Shake a handful of soil in a jar of water and let it settle overnight: sand drops first, silt next, clay last, and the layers show what the soil is made of.', 'Soil is one of the nonliving, or abiotic, things a plant depends on, along with light, water and temperature. A seed germinates when it has water, air and warmth; it does not need light until the shoot comes up. Then roots drink, stems carry, leaves make sugar from sunlight, and flowers make the next seeds.', 'Farmers test ideas the way scientists do. A fair comparison changes one thing and keeps the rest the same: two pots of the same seeds, the same soil and the same light, but one watered every day and one every three days. Measure the height with a metric ruler every day, put the numbers in a table, draw the graph, and the graph tells you which schedule the plant prefers. Change two things at once and you cannot tell which one mattered.'],
+      keyIdea: 'Soil is sand, silt, clay, organic matter, water and air; a jar test shows the mix. Soil, light, water and temperature are the abiotic things a plant depends on. A seed needs water, air and warmth. A fair test changes one thing, measures, tables and graphs.',
+      example: { kind: 'flow', steps: ['two pots, one change', 'measure every day', 'a table, then a graph', 'the answer'], caption: 'A fair test with two pots.',
+        another: ['Sand drains so fast the plant is thirsty by noon. Clay holds so much the roots sit in water. Loam, in the middle, is why farmers pay for good land.',
+          { text: 'A seed in a dark cupboard sprouts fine. Light matters after the shoot is up, because that is when the leaves start their work.', visual: { kind: 'flow', steps: ['water, air, warmth', 'a shoot', 'now it needs light'] } },
+          'Two pots with different soil and different water is not a test; it is two guesses. One change at a time is the whole trick.'] },
+    },
+    sources: ['Aligned with TEKS Science, Grade 6, 112.26(b)(12)(A) (investigate how organisms and populations in an ecosystem depend on and may compete for biotic factors such as food and abiotic factors such as availability of light and water, range of temperatures, or soil composition), 112.26(b)(1)(B) (use scientific practices to plan and conduct descriptive, comparative, and experimental investigations), 112.26(b)(1)(D) (use appropriate tools such as metric rulers and pH indicators) and 112.26(b)(1)(F) (construct appropriate tables, graphs, maps, and charts using repeated trials and means to organize data), and the National AFNR Content Standards, PS.01 (develop and implement a crop management plan for a given production goal that accounts for environmental factors).'],
+    generators: ['a6-soil', 'a6-soil', 'a6-soil', 'a6-soil', 'a6-soil'],
+  },
+  {
+    id: 'animals-on-a-farm',
+    order: 3,
+    title: 'Animals on a farm',
+    tagline: 'Who eats what, who helps whom, and why a herd is never all the same',
+    requires: ['soil-and-seeds'],
+    lesson: {
+      paragraphs: ['A farm is an ecosystem with a fence around it. The cattle are a population, one kind of living thing in one place; the cattle, the grass, the egrets, the ticks and the coyotes together are a community; add the soil, the water and the weather and you have the ecosystem. Every animal depends on living things, called biotic factors, such as grass and prey, and on nonliving ones, called abiotic, such as water, shade and the range of temperatures it can stand.', 'Living things on a farm relate in a few ways worth naming. Predation: the coyote takes a lamb. Competition: two calves want the same patch of clover. Mutualism, where both gain: bees carry pollen between the orchard\'s blossoms and take nectar home. Parasitism, where one gains and the other is harmed: a tick drinks a cow\'s blood. Commensalism, where one gains and the other is unaffected: a cattle egret eats the grasshoppers a cow kicks up as it walks, and the cow does not notice.', 'Animals differ, and farmers use the differences. Cattle, sheep and goats are ruminants, with a four-part stomach that turns grass into meat and milk; pigs and chickens have one stomach and eat grain. Within a herd, no two animals are alike: some grow faster, some resist a disease, some handle heat better. When the weather changes or a disease arrives, those variations decide which animals do well, and a rancher chooses which ones to breed for the same reason.'],
+      keyIdea: 'Organism, population, community, ecosystem, on a farm with a fence. Animals depend on biotic and abiotic factors. Predation, competition, mutualism, parasitism, commensalism. Ruminants turn grass into food; variation within a herd decides who does well when conditions change.',
+      example: { kind: 'flow', steps: ['one cow', 'the herd', 'the herd, the grass, the egrets, the ticks', 'plus soil, water and weather'], caption: 'Organism, population, community, ecosystem.',
+        another: ['Bees and the orchard: both gain, mutualism. A tick and a cow: the tick gains, the cow loses, parasitism. An egret and a cow: the egret gains, the cow shrugs, commensalism.',
+          { text: 'A drought is a change in an abiotic factor. The calves that handle heat and thin grass do well; the ones that do not fall behind. Variation is the herd\'s insurance.', visual: { kind: 'flow', steps: ['a dry summer', 'some calves cope better', 'those are the ones bred next year'] } },
+          'A goat and a chicken can eat from the same field and never compete: one eats the brush, the other the bugs. Different diets, no fight.'] },
+    },
+    sources: ['Aligned with TEKS Science, Grade 6, 112.26(b)(12)(A), 112.26(b)(12)(B) (describe and give examples of predatory, competitive, and symbiotic relationships between organisms, including mutualism, parasitism, and commensalism), 112.26(b)(12)(C) (describe the hierarchical organization of organism, population, and community within an ecosystem) and 112.26(b)(13)(C) (describe how variations within a population can be an advantage or disadvantage to the survival of a population as environments change), and the National AFNR Content Standards, AS.01 (analyze historic and current trends impacting the animal systems industry).'],
+    generators: ['a6-animals', 'a6-animals', 'a6-animals', 'a6-animals', 'a6-animals'],
+  },
+  {
+    id: 'a-small-project',
+    order: 4,
+    title: 'A small project',
+    tagline: 'A plan, a record of every dollar, a graph that tells the truth, and the land kept for next year',
+    requires: ['animals-on-a-farm'],
+    lesson: {
+      paragraphs: ['Every farmer started small, and a small project teaches the whole job: a raised bed of lettuce, three laying hens, a flat of tomato seedlings for the spring sale. The plan comes first, on one page: what you will produce, what it will cost, what it should sell for, and what could go wrong. Weigh the cost against the benefit before you spend a dollar; a project that costs more than it can ever earn is a hobby, which is fine, as long as you know.', 'Then keep records, every expense and every sale, the day it happens. Profit is income minus expenses and nothing else, and a table of the numbers, turned into a graph, shows what a page of notes hides: the feed line climbing, the sale price falling, the week the hens stopped laying. Safety is part of the record too. Gloves for the chemicals, closed shoes in the pen, a grown-up for the power tools.', 'The last line of the plan is next year. A bed that lost its topsoil to a storm, or a hose left running, costs more than any harvest earns. Cover the bare soil, water at the root, and the same bed grows again in the spring. That is the oldest rule in agriculture: take the harvest and leave the land better than you found it.'],
+      keyIdea: 'A one-page plan: what, cost, price, what could go wrong, and cost against benefit. Records every day; profit is income minus expenses; a graph shows what notes hide. Safety in the record. Leave the land better for next year.',
+      example: { kind: 'flow', steps: ['a plan', 'records every day', 'income minus expenses', 'a graph', 'next year'], caption: 'The shape of a small project.',
+        another: ['Three hens: $45 to buy, $60 in feed for the season, $130 in eggs sold at the gate. Income 130 minus expenses 105 is a profit of $25, and the graph shows the feed line was steady while the egg line dipped in August.',
+          { text: 'A graph of weekly egg sales makes the August dip obvious in one glance. In the notebook it was three numbers on three pages.', visual: { kind: 'flow', steps: ['numbers in a table', 'a line on a graph', 'the dip you could not see'] } },
+          'Cost against benefit: a $200 greenhouse for $40 of tomatoes is a hobby. Knowing that before you buy it is the skill.'] },
+    },
+    sources: ['Aligned with TEKS Science, Grade 6, 112.26(b)(1)(C) (use appropriate safety equipment and practices), 112.26(b)(1)(F) (construct appropriate tables, graphs, maps, and charts), 112.26(b)(2)(C) (use mathematical calculations to assess quantitative relationships in data), 112.26(b)(4)(A) (relate the impact of research on society, including cost-benefit analysis) and 112.26(b)(11)(B), and the National AFNR Content Standards, ABS.01 (utilize economic principles to establish and manage an AFNR enterprise) and NRS.01 (plan and conduct natural resource management activities).'],
+    generators: ['a6-project', 'a6-project', 'a6-project', 'a6-project', 'a6-project'],
+  },
+]; }
+function AGRI9_MODULES() { return [
+  {
+    id: 'what-agriculture-is',
+    order: 1,
+    title: 'What agriculture is',
+    tagline: 'Food, fiber, wood and water, ten thousand years of it, and the jobs it holds today',
+    requires: [],
+    lesson: {
+      paragraphs: ['Agriculture is the work of growing and raising what people use: food, fiber such as cotton and wool, wood products, and the care of the land and water they come from. It began about ten thousand years ago, when people in several parts of the world stopped only gathering wild plants and began planting and keeping them, and it has been the largest human enterprise ever since.', 'Three changes made modern farming. The mechanical reaper, patented by Cyrus McCormick in 1834, let one person harvest what had taken many. The Haber-Bosch process, developed between 1909 and 1913, pulled nitrogen from the air to make fertilizer, and roughly half the people alive today eat food grown with it. And the Green Revolution of the 1960s, led by Norman Borlaug\'s short, sturdy wheat, doubled harvests in countries that had faced famine; Borlaug won the Nobel Peace Prize in 1970 for it. Today fewer than two in a hundred Americans work on farms, yet about one job in ten touches food and agriculture somewhere between the field and the plate.', 'The industry is global. Prices for corn, wheat and cotton are set by buyers on several continents, a drought in one country raises bread prices in another, and currency matters: when the dollar is strong, American crops cost more abroad and sell less. The careers are wider than the tractor: agronomists, veterinarians, food scientists, agricultural engineers, soil chemists, lenders, and the people who fly the drones and write the software, most of them needing science and mathematics as much as a strong back.'],
+      keyIdea: 'Agriculture is food, fiber, wood and the land and water behind them, ten thousand years old. The reaper, nitrogen fertilizer and the Green Revolution made modern farming. Markets are global, currency matters, and the careers run from soil chemist to software.',
+      example: { kind: 'flow', steps: ['the reaper, 1834', 'nitrogen from air, 1909 to 1913', 'the Green Revolution, 1960s'], caption: 'Three changes that made modern farming.',
+        another: ['Cotton in your shirt, wheat in your bread, lumber in your house and beef in your taco: four products, one industry, and none of them arrive without soil, water and someone who understands both.',
+          { text: 'A strong dollar is bad news for a Texas cotton farmer selling abroad: the same bale costs a foreign mill more of its own money, so it buys less.', visual: { kind: 'flow', steps: ['the dollar rises', 'the bale costs more abroad', 'fewer bales sold'] } },
+          'Borlaug\'s wheat was short on purpose. Tall wheat fell over under the weight of a heavy harvest; short stems stood up and carried it.'] },
+    },
+    sources: ['Aligned with TEKS Career and Technical Education 130.2(c)(1)(A) (identify career development, education, and entrepreneurship opportunities in the field of agriculture, food, and natural resources), 130.2(c)(1)(E) (identify careers in agriculture, food, and natural resources with required aptitudes in science, technology, engineering, mathematics, language arts, and social studies), 130.2(c)(3)(A) (compare and contrast global agricultural markets, currency, and trends), 130.2(c)(3)(B) (evaluate marketing factors and practices that impact the global markets), 130.2(c)(4)(A) (define the scope of agriculture), 130.2(c)(4)(B) (analyze the scope of agriculture, food, and natural resources and its effect upon society), 130.2(c)(4)(C) (evaluate significant historical and current agriculture, food, and natural resources developments), 130.2(c)(4)(D) (identify potential future scenarios), 130.2(c)(4)(E) (describe how emerging technologies and globalization impacts agriculture) and 130.2(c)(4)(F) (compare and contrast issues impacting agriculture such as biotechnology, employment, safety, environment, and animal welfare), and the National AFNR Content Standards, CS.01 (analyze how issues, trends, technologies and public policies impact systems in the AFNR Career Cluster).'],
+    generators: ['ag-scope', 'ag-scope', 'ag-scope', 'ag-scope', 'ag-scope'],
+  },
+  {
+    id: 'soil-and-plants',
+    order: 2,
+    title: 'Soil and plants',
+    tagline: 'What soil is made of, how it forms, and how a seed becomes a crop',
+    requires: ['what-agriculture-is'],
+    lesson: {
+      paragraphs: ['Soil is four things. By volume, a good topsoil is about 45 percent mineral particles, sand, silt and clay in some mix, about 5 percent organic matter from dead plants and animals, and about 25 percent water and 25 percent air in the spaces between. The mix of sand, silt and clay is its texture: sandy soil drains fast and holds few nutrients, clay holds water and nutrients but drains slowly, and loam, the balance of the three, is what farmers hope for. Soil pH, measured from 0 to 14, decides which nutrients a plant can take up; most crops want between 6 and 7.', 'Soil forms slowly. Rock weathers into particles; climate, living things, the slope of the land and time turn those particles into soil, and it takes centuries to build an inch. That is why erosion, which can strip an inch in a few storms from bare ground, is the farmer\'s oldest enemy.', 'A plant has four working parts: roots that anchor and drink, stems that carry water up and sugar down, leaves that make sugar from sunlight, water and carbon dioxide, and flowers that make seeds. A seed germinates when it has water, oxygen and the right temperature; light is not needed until the shoot is up. Plants reproduce by pollination, and breeders choose parents with the traits they want, higher yield, drought tolerance, disease resistance, and cross them over many seasons. The five crops that feed and clothe most of the world are corn, wheat, rice, soybeans and cotton.'],
+      keyIdea: 'Soil is about 45 percent mineral, 5 percent organic matter, 25 percent water and 25 percent air. Texture is the sand, silt and clay mix, and most crops want a pH of 6 to 7. Soil takes centuries per inch. Roots, stems, leaves, flowers; a seed needs water, oxygen and warmth; breeders cross chosen parents.',
+      example: { kind: 'flow', steps: ['rock weathers', 'climate, life, slope and time', 'an inch a century'], caption: 'How soil forms.',
+        another: ['Shake soil in a jar of water and let it settle: sand drops first, silt next, clay last and slowest. The layers show the texture, which the game after this course reads.',
+          { text: 'Water, oxygen and warmth start a seed, and the shoot only needs light once it is up. That is why a seed can start in the dark of the soil.', visual: { kind: 'flow', steps: ['water', 'oxygen', 'warmth', 'a shoot', 'then light'] } },
+          'A pH of 5 is ten times more acid than a pH of 6. Lime raises it; sulfur lowers it. A soil test before planting saves a season of guessing.'] },
+    },
+    sources: ['Aligned with TEKS Career and Technical Education 130.2(c)(10)(A) (identify the components and properties of soils), 130.2(c)(10)(B) (identify and describe the process of soil formation), 130.2(c)(10)(C) (conduct experiments related to soil chemistry), 130.2(c)(11)(A) (describe the structure and functions of plant parts), 130.2(c)(11)(B) (discuss and apply plant germination, growth, and development), 130.2(c)(11)(C) (describe plant reproduction, genetics, and breeding) and 130.2(c)(11)(D) (identify plants of importance to agriculture, food, and natural resources), and the National AFNR Content Standards, PS.01 (develop and implement a crop management plan for a given production goal that accounts for environmental factors).'],
+    generators: ['ag-soil', 'ag-soil', 'ag-soil', 'ag-soil', 'ag-soil'],
+  },
+  {
+    id: 'animals-and-food',
+    order: 3,
+    title: 'Animals and food',
+    tagline: 'How livestock grow, how breeds are chosen, and how food gets from the farm to the plate',
+    requires: ['soil-and-plants'],
+    lesson: {
+      paragraphs: ['Farm animals grow in stages: birth, weaning, growing and finishing, and each stage needs different feed and care. Their insides differ. Cattle, sheep and goats are ruminants, with a four-part stomach, rumen, reticulum, omasum and abomasum, that turns grass people cannot digest into meat and milk; pigs and poultry are monogastric, with one stomach, and eat grains. Breeds are chosen for a purpose: Angus and Hereford are beef breeds, Holsteins are dairy, and within a breed a rancher selects parents by records of growth, milk and calving ease, because those traits pass down.', 'Food processing is everything between the harvest and the plate: cleaning, milling, pasteurizing, packaging, cooling and moving. Louis Pasteur showed in the 1860s that gentle heating kills the microbes that spoil food, and refrigeration, which spread across the twentieth century, did the rest; together they made a city possible, since a city cannot feed itself from its own soil.', 'Two numbers frame the future. The world will need roughly half again as much food by 2050 as it grew in 2010, on about the same land. And about a third of the food grown today is lost or wasted between the field and the fork. Growing more and wasting less are the same problem seen from two ends.'],
+      keyIdea: 'Animals grow through birth, weaning, growing and finishing. Ruminants have four stomach parts and turn grass into food; pigs and poultry have one. Breeds and parents are chosen for traits that pass down. Pasteurization and refrigeration made cities possible. The world needs about half again as much food by 2050 and wastes a third of it now.',
+      example: { kind: 'flow', steps: ['grass', 'rumen and three more parts', 'milk and meat'], caption: 'What a ruminant does that we cannot.',
+        another: ['A dairy Holstein and a beef Angus are the same species and different tools: one was bred for milk over a long life, the other for muscle by two years old.',
+          { text: 'Milk from the cow is cooled within hours, pasteurized at the plant, bottled cold and kept cold to the shelf. Break the cold chain anywhere and the milk is lost.', visual: { kind: 'flow', steps: ['the cow', 'cooled', 'pasteurized', 'cold to the shelf'] } },
+          'A third of the food grown is wasted. Feeding the world in 2050 is partly a growing problem and partly a not-throwing-away problem.'] },
+    },
+    sources: ['Aligned with TEKS Career and Technical Education 130.2(c)(12)(A) (describe animal growth and development), 130.2(c)(12)(B) (identify animal anatomy and physiology), 130.2(c)(12)(C) (identify and evaluate breeds and classes of livestock), 130.2(c)(12)(D) (explain animal selection, reproduction, breeding, and genetics), 130.2(c)(13)(A) (evaluate food products and processing systems), 130.2(c)(13)(B) (determine trends in world food production) and 130.2(c)(13)(C) (discuss current issues in food production), and the National AFNR Content Standards, AS.01 (analyze historic and current trends impacting the animal systems industry) and FPP.01 (develop and implement procedures to ensure safety, sanitation and quality in food product and processing facilities).'],
+    generators: ['ag-animals', 'ag-animals', 'ag-animals', 'ag-animals', 'ag-animals'],
+  },
+  {
+    id: 'running-a-farm',
+    order: 4,
+    title: 'Running a farm',
+    tagline: 'A plan, records, a meeting run fairly, safety first, and the land kept for next year',
+    requires: ['animals-and-food'],
+    lesson: {
+      paragraphs: ['A farm is a business, and every agriculture student runs a small one: a supervised agricultural experience, a project you plan, carry out, record and judge, whether it is six goats, an acre of sweet corn or a summer at a feed store. The plan comes first: what you will produce, what it will cost, what it should sell for, and what could go wrong. Then records, every expense and every sale written down the day it happens, because profit is only income minus expenses, and nobody remembers either one in December.', 'Farms are also organizations. A chapter meeting runs by democratic rules: someone makes a motion, someone else offers a second, the group discusses, and a vote decides, so the loudest voice does not win by being loud. Safety comes before speed: tractors roll over, and a roll bar with a seat belt is the difference; augers and power take-offs take hands; chemicals need labels read and gloves worn.', 'The newest tools are on a screen. GPS maps steer tractors within an inch and record yield row by row; a drone spots a dry corner or a sick patch before a person walking the field would; robots milk cows on the cow\'s schedule. And the land must last: leaving crop residue on the surface and planting cover crops hold soil that bare fields lose, drip irrigation puts water at the root instead of in the air, and fields host wind turbines and grow the corn that becomes ethanol. A farm that loses its topsoil or its water has no next year.'],
+      keyIdea: 'Plan the project, then keep records, because profit is income minus expenses. Meetings run by motion, second, discussion and vote. Roll bars, guards and gloves come before speed. GPS, drones and robots are the new tools, and residue, cover crops and drip irrigation keep the soil and water for next year.',
+      example: { kind: 'flow', steps: ['a plan', 'records every day', 'income minus expenses', 'what to change'], caption: 'The shape of a supervised agricultural experience.',
+        another: ['Six goats: $600 to buy, $400 in feed and care, $1,400 at sale. Income 1,400 minus expenses 1,000 is a profit of $400, and the records show the feed cost more than planned.',
+          { text: 'A motion is a sentence beginning I move that. A second says one other person wants it discussed. Then discussion, then the vote, and the minutes record all three.', visual: { kind: 'flow', steps: ['I move that', 'second', 'discussion', 'vote'] } },
+          'A tractor rollover is survivable with a roll bar and a fastened belt and usually not without them. Most of farm safety is that plain.'] },
+    },
+    sources: ['Aligned with TEKS Career and Technical Education 130.2(c)(1)(C) (demonstrate knowledge of personal and occupational safety, environmental regulations, and first-aid policy in the workplace), 130.2(c)(1)(D) (analyze employers\' expectations such as appropriate work habits, ethical conduct, legal responsibilities, and good citizenship skills), 130.2(c)(2)(A) (plan, propose, conduct, document, and evaluate a supervised agriculture experience program), 130.2(c)(2)(B) (apply proper record-keeping skills as they relate to the supervised agriculture experience), 130.2(c)(5)(A) (develop and demonstrate leadership skills and collaborate with others to accomplish organizational goals), 130.2(c)(5)(C) (demonstrate democratic principles in conducting effective meetings), 130.2(c)(8)(A) (develop a formal business plan), 130.2(c)(8)(B) (develop, maintain, and analyze records), 130.2(c)(9)(C) (analyze the benefits and limitations of emerging technology such as online mapping systems, drones, and robotics), 130.2(c)(9)(D) (explain the benefits of computer-based and mobile application equipment), 130.2(c)(14)(A) (identify major areas of power, structural, and technical systems), 130.2(c)(14)(B) (use safe and appropriate laboratory procedures and policies), 130.2(c)(15)(A) (determine the effects of agriculture upon safety, health, and the environment), 130.2(c)(15)(D) (research and analyze alternative energy sources that stem from or impact agriculture) and 130.2(c)(15)(E) (evaluate energy and water conservation methods), and the National AFNR Content Standards, ABS.01 (utilize economic principles to establish and manage an AFNR enterprise) and NRS.01 (plan and conduct natural resource management activities that apply logical, reasoned and scientifically based solutions to natural resource issues and goals).'],
+    generators: ['ag-farm', 'ag-farm', 'ag-farm', 'ag-farm', 'ag-farm'],
+  },
+]; }
 function SPEECH9_MODULES() { return [
   {
     id: 'the-communication-process',
@@ -15299,6 +15540,122 @@ Object.assign(GENERATORS, {
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
+  // ---------------------------------------------------------------------------------------------------------------
+  // Agriculture question banks (2026-09-30, pass GU). In plain terms: each bank is a list of quick-check questions for
+  // one lesson, [what is asked, the four answers, the right one, one line said after]. `pick` chooses one, `shuffle`
+  // mixes the answers. Two banks also build arithmetic questions from numbers chosen on the spot (a soil sample that
+  // must add to 100 percent, a farm profit that is income minus expenses), so the answer is always computed, never
+  // typed by hand. Every fixed answer is a phrase the lesson said first, which the untaught-answer check proves.
+  // ---------------------------------------------------------------------------------------------------------------
+  // ---------------------------------------------------------------------------------------------------------------
+  // Middle school agriculture question banks (2026-09-30, pass GX). In plain terms: each bank is a list of quick-check
+  // questions for one lesson, [what is asked, the four answers, the right one, one line said after]; `pick` chooses one
+  // and `shuffle` mixes the answers. The project bank also builds a profit question from numbers chosen on the spot,
+  // so the answer is computed as income minus expenses, never typed by hand.
+  // ---------------------------------------------------------------------------------------------------------------
+  'a6-food': (rng) => {
+    const Q = [['Which is the first link in the chain from a field to your plate?', ['grown', 'sold', 'cooked', 'moved'], 'grown', 'Grown, harvested, packed, moved, sold, cooked.'],
+      ['Which of these is agriculture too, besides food?', ['cotton in your shirt', 'a phone screen', 'a car engine', 'a brick'], 'cotton in your shirt', 'Wood in your desk and leather in a glove as well.'],
+      ['Texas raises more of what than any other state?', ['cattle', 'penguins', 'salmon', 'reindeer'], 'cattle', 'And grows more cotton.'],
+      ['Which three resources run the chain?', ['soil, water and energy', 'gold, silver and iron', 'sun, moon and stars', 'salt, sugar and flour'], 'soil, water and energy', 'All three can run short.'],
+      ['Leaving stalks on a field so the soil stays put is what?', ['conservation', 'technology', 'harvest', 'cooking'], 'conservation', 'Use less.'],
+      ['Drip lines that put water at the root are an example of what?', ['efficiency', 'conservation of gold', 'a truck', 'a market'], 'efficiency', 'Get more from the same.'],
+      ['Which is a job in agriculture that is not on a tractor?', ['soil scientist', 'lifeguard', 'pilot of an airliner', 'dentist'], 'soil scientist', 'Veterinarians, engineers and the person who flies the drone too.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'a6-soil': (rng) => {
+    const Q = [['Which soil part drains fast?', ['sand', 'clay', 'organic matter', 'water'], 'sand', 'Clay is fine and holds water.'],
+      ['A balanced mix of sand, silt and clay is called what?', ['loam', 'gravel', 'mud', 'dust'], 'loam', 'It grows the most.'],
+      ['In a jar test, which settles last?', ['clay', 'sand', 'silt', 'gravel'], 'clay', 'Sand drops first, silt next, clay last.'],
+      ['Soil, light, water and temperature are what kind of factors?', ['abiotic', 'biotic', 'imaginary', 'animal'], 'abiotic', 'Nonliving things a plant depends on.'],
+      ['What does a seed need to germinate?', ['water, air and warmth', 'light only', 'fertilizer only', 'wind'], 'water, air and warmth', 'It does not need light until the shoot comes up.'],
+      ['A fair comparison changes how many things?', ['one', 'two', 'everything', 'nothing'], 'one', 'Change two things at once and you cannot tell which one mattered.'],
+      ['After measuring the plants every day, what do you build?', ['a table, then a graph', 'a fence', 'a bigger pot', 'a story'], 'a table, then a graph', 'The graph tells you which schedule the plant prefers.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'a6-animals': (rng) => {
+    const Q = [['All the cattle in one place are called what?', ['a population', 'a community', 'an ecosystem', 'a factor'], 'a population', 'One kind of living thing in one place.'],
+      ['The cattle, grass, egrets, ticks and coyotes together are what?', ['a community', 'a population', 'one organism', 'a farm shop'], 'a community', 'Add soil, water and weather and you have the ecosystem.'],
+      ['Grass and prey are what kind of factors?', ['biotic', 'abiotic', 'nonliving', 'weather'], 'biotic', 'Water, shade and temperature are abiotic.'],
+      ['Bees carry pollen between blossoms and take nectar. What is that?', ['mutualism', 'parasitism', 'commensalism', 'predation'], 'mutualism', 'Both gain.'],
+      ['A tick drinks a cow\'s blood. What is that?', ['parasitism', 'mutualism', 'commensalism', 'competition'], 'parasitism', 'One gains and the other is harmed.'],
+      ['An egret eats bugs a cow stirs up; the cow is unaffected. What is it?', ['commensalism', 'parasitism', 'mutualism', 'predation'], 'commensalism', 'One gains and the other is unaffected.'],
+      ['Which animals are ruminants?', ['cattle, sheep and goats', 'pigs and chickens', 'dogs and cats', 'bees'], 'cattle, sheep and goats', 'A four-part stomach turns grass into meat and milk.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'a6-project': (rng) => {
+    if (rng() < 0.35) { // profit computed from the numbers shown: income minus both expenses
+      const buy = (2 + Math.floor(rng() * 8)) * 10; const feed = (3 + Math.floor(rng() * 8)) * 10; const sales = buy + feed + (1 + Math.floor(rng() * 9)) * 10; const profit = sales - buy - feed;
+      const answer = `$${profit}`; const wrong = shuffle(rng, [profit + 10, profit - 10, sales - buy]).filter((v) => v !== profit).slice(0, 3).map((v) => `$${v}`);
+      return { type: 'choice', story: `A project spent $${buy} on hens and $${feed} on feed, and sold $${sales} of eggs.`, prompt: 'What was the profit?', choices: shuffle(rng, [answer, ...wrong]), answer, explain: 'Profit is income minus expenses and nothing else.', visual: null, explainVisual: null };
+    }
+    const Q = [['What comes first in a small project?', ['the plan', 'the sale', 'the graph', 'the harvest'], 'the plan', 'What you will produce, what it will cost, what it should sell for, and what could go wrong.'],
+      ['A project that costs more than it can ever earn is what?', ['a hobby', 'a farm', 'a profit', 'a record'], 'a hobby', 'Which is fine, as long as you know.'],
+      ['Profit is what?', ['income minus expenses', 'income plus expenses', 'the number of hens', 'the sale price'], 'income minus expenses', 'And nothing else.'],
+      ['When do you write down an expense?', ['the day it happens', 'in December', 'never', 'after the sale'], 'the day it happens', 'Every expense and every sale.'],
+      ['What shows what a page of notes hides?', ['a graph', 'a fence', 'a bigger notebook', 'a hen'], 'a graph', 'The feed line climbing, the sale price falling.'],
+      ['Which belongs in the record too?', ['safety', 'the weather on Mars', 'a song', 'nothing else'], 'safety', 'Gloves for the chemicals, closed shoes in the pen.'],
+      ['What is the oldest rule in agriculture?', ['leave the land better than you found it', 'sell everything', 'plant once', 'skip the plan'], 'leave the land better than you found it', 'Cover the bare soil, water at the root.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'ag-scope': (rng) => {
+    const Q = [['About how long ago did agriculture begin?', ['ten thousand years', 'a hundred years', 'a million years', 'five hundred years'], 'ten thousand years', 'People began planting and keeping what they had only gathered.'],
+      ['Who patented the mechanical reaper in 1834?', ['Cyrus McCormick', 'Norman Borlaug', 'Louis Pasteur', 'Fritz Haber'], 'Cyrus McCormick', 'One person could harvest what had taken many.'],
+      ['What did the Haber-Bosch process pull from the air?', ['nitrogen', 'water', 'gold', 'oxygen'], 'nitrogen', 'Roughly half the people alive eat food grown with it.'],
+      ['Norman Borlaug won the Nobel Peace Prize in which year?', ['1970', '1834', '1913', '2010'], '1970', 'For the short, sturdy wheat of the Green Revolution.'],
+      ['Fewer than how many in a hundred Americans work on farms?', ['two', 'twenty', 'fifty', 'ninety'], 'two', 'Yet about one job in ten touches food and agriculture.'],
+      ['When the dollar is strong, American crops abroad do what?', ['cost more and sell less', 'cost less and sell more', 'stay the same', 'disappear'], 'cost more and sell less', 'Currency matters in a global market.'],
+      ['Which is a career in agriculture besides farming?', ['agronomist', 'lifeguard', 'pilot', 'dentist'], 'agronomist', 'Veterinarians, food scientists and soil chemists too.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'ag-soil': (rng) => {
+    if (rng() < 0.3) { // a soil sample must add to 100 percent: three parts are given, the fourth is computed
+      const mineral = 40 + Math.floor(rng() * 11); const organic = 3 + Math.floor(rng() * 5); const water = 20 + Math.floor(rng() * 11); const air = 100 - mineral - organic - water;
+      const answer = `${air} percent`; const wrong = shuffle(rng, [air + 5, air - 5, air + 10].filter((v) => v > 0 && v !== air)).slice(0, 3).map((v) => `${v} percent`);
+      return { type: 'choice', story: `A soil sample is ${mineral} percent mineral, ${organic} percent organic matter and ${water} percent water.`, prompt: 'What percent is air?', choices: shuffle(rng, [answer, ...wrong]), answer, explain: 'The four parts add to 100 percent.', visual: null, explainVisual: null };
+    }
+    const Q = [['About what percent of a good topsoil is mineral particles?', ['45', '5', '90', '25'], '45', 'About 5 percent organic matter, 25 percent water and 25 percent air.'],
+      ['Which soil drains fast and holds few nutrients?', ['sandy soil', 'clay', 'loam', 'organic matter'], 'sandy soil', 'Clay holds water and nutrients but drains slowly.'],
+      ['What is loam?', ['the balance of sand, silt and clay', 'pure clay', 'pure sand', 'dead leaves'], 'the balance of sand, silt and clay', 'It is what farmers hope for.'],
+      ['Most crops want a pH between what?', ['6 and 7', '1 and 2', '12 and 14', '9 and 10'], '6 and 7', 'The pH decides which nutrients a plant can take up.'],
+      ['About how long does it take to build an inch of soil?', ['centuries', 'a week', 'a year', 'a day'], 'centuries', 'Erosion can strip an inch in a few storms from bare ground.'],
+      ['What does a seed need to germinate?', ['water, oxygen and the right temperature', 'light only', 'fertilizer only', 'wind'], 'water, oxygen and the right temperature', 'Light is not needed until the shoot is up.'],
+      ['Which plant part makes sugar from sunlight?', ['leaves', 'roots', 'stems', 'flowers'], 'leaves', 'Roots anchor and drink; stems carry; flowers make seeds.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'ag-animals': (rng) => {
+    const Q = [['Which animals are ruminants?', ['cattle, sheep and goats', 'pigs and poultry', 'dogs and cats', 'fish'], 'cattle, sheep and goats', 'A four-part stomach turns grass into meat and milk.'],
+      ['How many stomach parts does a ruminant have?', ['four', 'one', 'two', 'ten'], 'four', 'Rumen, reticulum, omasum and abomasum.'],
+      ['Pigs and poultry are what?', ['monogastric', 'ruminants', 'plants', 'insects'], 'monogastric', 'One stomach, and they eat grains.'],
+      ['Which is a dairy breed?', ['Holstein', 'Angus', 'Hereford', 'oak'], 'Holstein', 'Angus and Hereford are beef breeds.'],
+      ['Who showed in the 1860s that gentle heating kills spoilage microbes?', ['Louis Pasteur', 'Cyrus McCormick', 'Norman Borlaug', 'Fritz Haber'], 'Louis Pasteur', 'Refrigeration did the rest.'],
+      ['About what share of the food grown today is lost or wasted?', ['a third', 'a hundredth', 'almost all', 'none'], 'a third', 'Between the field and the fork.'],
+      ['By 2050 the world will need roughly how much more food than in 2010?', ['half again as much', 'ten times as much', 'the same', 'less'], 'half again as much', 'On about the same land.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'ag-farm': (rng) => {
+    if (rng() < 0.35) { // profit is income minus expenses, computed from the numbers shown
+      const buy = (4 + Math.floor(rng() * 8)) * 100; const feed = (2 + Math.floor(rng() * 6)) * 100; const sale = buy + feed + (2 + Math.floor(rng() * 9)) * 100; const profit = sale - buy - feed;
+      const answer = `$${profit}`; const wrong = shuffle(rng, [profit + 100, profit - 100, sale - buy]).filter((v) => v !== profit).slice(0, 3).map((v) => `$${v}`);
+      return { type: 'choice', story: `A project bought animals for $${buy}, spent $${feed} on feed and care, and sold them for $${sale}.`, prompt: 'What was the profit?', choices: shuffle(rng, [answer, ...wrong]), answer, explain: 'Profit is income minus expenses.', visual: null, explainVisual: null };
+    }
+    const Q = [['A project you plan, carry out, record and judge is called what?', ['a supervised agricultural experience', 'a vacation', 'a test', 'a hobby'], 'a supervised agricultural experience', 'Six goats, an acre of sweet corn or a summer at a feed store.'],
+      ['Profit is what?', ['income minus expenses', 'income plus expenses', 'expenses minus income', 'the number of animals'], 'income minus expenses', 'Nobody remembers either one in December.'],
+      ['In a meeting, what comes right after a motion?', ['a second', 'the vote', 'lunch', 'the minutes'], 'a second', 'Then discussion, then the vote.'],
+      ['What makes a tractor rollover survivable?', ['a roll bar with a seat belt', 'speed', 'a radio', 'a hat'], 'a roll bar with a seat belt', 'Safety comes before speed.'],
+      ['What spots a dry corner of a field before a walker would?', ['a drone', 'a plow', 'a fence', 'a scale'], 'a drone', 'GPS maps steer tractors within an inch.'],
+      ['Which keeps water at the root instead of in the air?', ['drip irrigation', 'a sprinkler on a windy day', 'a flood', 'nothing'], 'drip irrigation', 'A farm that loses its water has no next year.'],
+      ['Which holds soil that bare fields lose?', ['cover crops', 'plowing more', 'burning', 'concrete'], 'cover crops', 'Crop residue on the surface does too.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
   'sp-process': (rng) => {
     const Q = [['A voice, a phone call, a screen: which part of the process?', ['the channel', 'the message', 'the feedback', 'the noise'], 'the channel', 'The message travels by a channel.'],
       ['A nod, a question, a frown from the receiver is called what?', ['feedback', 'noise', 'the channel', 'the register'], 'feedback', 'The receiver sends feedback.'],
@@ -20660,6 +21017,38 @@ export const WONDER = [
     ],
     closing: 'What is an idea you found strange at first and now use without thinking?',
   },
+  // Two teen-stage Wonder questions for the middle school agriculture course (pass GX): one about a farm as an
+  // ecosystem with a fence, and one a failure question about a fair test that was not fair.
+  {
+    id: 'w-teen-fence-around-an-ecosystem',
+    theme: 'world',
+    stage: 'teen',
+    courseIds: ['agriculture-6'],
+    answerMode: 'typed',
+    prompt: 'A farm is an ecosystem with a fence around it. Does the fence make it less natural, or just easier to see?',
+    perspectives: [
+      { voice: 'A scientist', says: 'The fence changes what lives inside, but the rules do not change. Predators, competitors, parasites and partners are all still there, which is why a farm is the easiest ecosystem to study: you can count everything.' },
+      { voice: 'An artist', says: 'A fence is a frame. It does not change the picture; it tells you where to look. Inside it the same old story runs, who eats, who helps, who hides.' },
+      { voice: 'A grandparent of faith', says: 'Every garden since the first one has had a fence, and every gardener has learned that the fence keeps the deer out and lets the ticks in. Nature does not stop at the wire.' },
+      { voice: 'A skeptic', says: 'Less natural, and honestly so: a farm is an ecosystem a person keeps tilting toward one crop. That is not a flaw, it is the job. Just do not call a pasture wild.' },
+    ],
+    closing: 'What relationships could you find inside one fence near you?',
+  },
+  {
+    id: 'w-teen-two-pots-two-changes',
+    theme: 'failure',
+    stage: 'teen',
+    courseIds: ['agriculture-6'],
+    answerMode: 'typed',
+    prompt: 'You gave one pot better soil and more water, it grew taller, and now you cannot say which one helped. What went wrong?',
+    perspectives: [
+      { voice: 'A scientist', says: 'You changed two things, so the result has two possible causes and no way to split them. It is the most common mistake in science, and the fix is a third pot: better soil, the old water.' },
+      { voice: 'An artist', says: 'It is like changing the lighting and the paint at once and asking which made the room feel warmer. Undo one and you will know.' },
+      { voice: 'A grandparent of faith', says: 'The plant did fine; the test did not. Nobody wasted anything but a week, and next week you will know something true instead of something likely.' },
+      { voice: 'A skeptic', says: 'Be careful even with three pots: the pots have to be in the same light, or you have changed a third thing without meaning to. One change is a discipline, not a rule.' },
+    ],
+    closing: 'What would your third pot get?',
+  },
   {
     id: 'w-teen-the-quiet-one-had-it',
     theme: 'world',
@@ -23246,6 +23635,38 @@ export const WONDER = [
       { voice: 'A skeptic', says: 'A review nobody dislikes is an advertisement. If the criteria were fair and the evidence real, the silence is the cost of doing the job. If they were not, the silence is deserved. Only you know which one it was.' },
     ],
     closing: 'What would you change in the review, and what would you keep?',
+  },
+  // Two grown-stage Wonder questions for the agriculture course (pass GU): one about who feeds a city, and one a
+  // failure question about a project that lost money.
+  {
+    id: 'w-grown-two-in-a-hundred',
+    theme: 'world',
+    stage: 'grown',
+    courseIds: ['agriculture-9'],
+    answerMode: 'typed',
+    prompt: 'Fewer than two people in a hundred grow the food for the other ninety-eight. Is that a triumph or a risk?',
+    perspectives: [
+      { voice: 'A scientist', says: 'Both, and the numbers say why. Fertilizer, breeding and machines let one farmer feed dozens, which freed everyone else to be doctors and teachers. The risk is that a system this efficient has fewer people who know how it works.' },
+      { voice: 'An artist', says: 'A city is a painting of a farm it cannot see. Most people have never watched food grow, and something is lost when the source disappears behind the shelf.' },
+      { voice: 'A grandparent of faith', says: 'My grandfather fed his family and four others. His grandson feeds four hundred he will never meet. I am grateful for both, and I still think every child should plant something once.' },
+      { voice: 'A skeptic', says: 'Efficiency is only a triumph until the one thing it depends on fails: the fertilizer plant, the water, the price. Ask what the ninety-eight would do in a bad year, and you will know whether it is a risk.' },
+    ],
+    closing: 'What is one thing you could grow this year?',
+  },
+  {
+    id: 'w-grown-the-goats-lost-money',
+    theme: 'failure',
+    stage: 'grown',
+    courseIds: ['agriculture-9'],
+    answerMode: 'typed',
+    prompt: 'Your project sold for less than it cost, and the records prove it. What did the records buy you?',
+    perspectives: [
+      { voice: 'A scientist', says: 'The one thing a loss without records cannot give: the reason. Feed cost more than planned, or the sale came too late, and the records will say which. Next year\'s plan starts from that line.' },
+      { voice: 'An artist', says: 'A loss with records is a sketch of the next attempt. A loss without them is a blank page and the same mistake waiting.' },
+      { voice: 'A grandparent of faith', says: 'Every farmer alive has lost money on something. The ones still farming wrote it down, and you can be one of those.' },
+      { voice: 'A skeptic', says: 'Check the records before you trust the story you are telling yourself. People blame the weather; the ledger usually blames the feed bill or the timing, and the ledger is the one to believe.' },
+    ],
+    closing: 'Which line in the records would you change first?',
   },
   {
     id: 'w-grown-the-slide-said-it-all',
@@ -26526,6 +26947,8 @@ export const COURSE_GAMES = {
   'philosophy-9': ['valid-philosophy-9'],
   'psychology-9': ['stat-psychology-9'],
   'speech-9': ['filler-speech-9'],
+  'agriculture-9': ['jar-agriculture-9'],
+  'agriculture-6': ['relation-agriculture-6'],
   'speech-6': ['room-speech-6'],
   'speech-3': ['ask-speech-3'],
   'arts-9': ['chord-arts-9'],

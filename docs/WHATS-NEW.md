@@ -2,6 +2,30 @@
 
 The newest block is what educators see once, in a pop-up on the classroom page, after each update. Write it the way Mikey talks to a teacher: conversational, complete sentences, say what changed and why it matters, and skip the shorthand (2026-09-23). Two to four items. The date line is the version stamp.
 
+## September 30, 2026 (where food comes from)
+
+- Grade 6 has a new elective for grades 6 to 8, Where food comes from: the chain from a field to your plate and the soil, water and energy that run it; soil and seeds, with a jar test and a fair experiment that changes one thing; a farm as an ecosystem with a fence, with who eats whom and who helps whom; and a small project with a plan, a record of every dollar and a graph that tells the truth. Each lesson has a story, and the course ends with a long story about Frederick and a farm week.
+- Finishing the course unlocks Who Gains, a new kind of game: two living things on a farm, and the name of what passes between them.
+- Two new Wonder questions for grades 6 to 8 wait in the review screen.
+
+## September 30, 2026 (bullets closer to center)
+
+- On the report, the lists of what a student has mastered and what they have tried now sit near the middle of their box with the bullets lined up, so they read with the centered sentences around them. On a phone they fill the box as before.
+
+## September 30, 2026 (five small fixes)
+
+- Search boxes have a small × inside them to clear what you typed in one tap.
+- Refreshing the browser brings a student back to the screen they were on, a lesson, a story, the map or their overview, instead of the front door. Educator screens still ask for the PIN.
+- Elective courses now show the grades they serve, Grades 3 to 5 or Kindergarten to grade 2, wherever a course lists its grade.
+- On a laptop the Weekly note title is centered, with Edit and Print where they were.
+- Back to recommended courses has a small i that explains what it removes: assigned courses not yet started; a course with progress stays.
+
+## September 30, 2026 (from soil to supper)
+
+- A new subject, Agriculture, begins with an elective for grades 9 to 12, From soil to supper: what agriculture is, from the first planted seed ten thousand years ago to the reaper, nitrogen from the air and the Green Revolution, and the global market that sets a Texas farmer's price; soil and plants, with a jar that shows a soil's texture and a seed that starts in the dark; animals and food, from four stomach parts to the cold chain; and running a farm, with a plan, a ledger, a fair meeting, a roll bar and the land kept for next year. Each lesson has a story, and the course ends with a long story about Chloe and forty acres.
+- Finishing the course unlocks Read the Jar, a new kind of game: a settled jar of soil, and the texture its layers show.
+- Two new Wonder questions for high school wait in the review screen.
+
 ## September 30, 2026 (I can listen, I can say)
 
 - Kindergarten has a new free read-aloud elective for K to 2, I can listen, I can say: listening with the whole body and asking when you do not understand; steps said back and done in order, first, then, last; a clear voice with three parts, loud enough for the last friend; and a hand up for a turn, with hello, please, thank you and excuse me. Each lesson has a story and a coloring page, and the course ends with a long story about a circle rug that learned to listen.

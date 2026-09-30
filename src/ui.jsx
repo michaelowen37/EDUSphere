@@ -4284,7 +4284,97 @@ function TurnGame({ game, round, onScore = null }) {
     </div>
   );
 }
-const GAME_OF = { dots: DotsGame, pairs: PairsGame, sort: SortGame, maze: MazeGame, jigsaw: JigsawGame, pong: PongGame, sprint: SprintGame, order: OrderGame, build: BuildGame, fix: FixGame, mix: MixGame, debug: DebugGame, ptable: PtableGame, evidence: EvidenceGame, catch: CatchGame, path: PathGame, buckets: BucketsGame, jump: JumpGame, map: MapGame, balance: BalanceGame, walk: WalkGame, teach: TeachGame, bits: BitsGame, pay: PayGame, price: PriceGame, loan: LoanGame, fund: FundGame, search: SearchGame, spot: SpotGame, pattern: PatternGame, shape: ShapeGame, chord: ChordGame, valid: ValidGame, reason: ReasonGame, because: BecauseGame, share: ShareGame, stat: StatGame, recall: RecallGame, face: FaceGame, sense: SenseGame, filler: FillerGame, room: RoomGame, ask: AskGame, turn: TurnGame };
+// -----------------------------------------------------------------------------------------------------------------
+// Read the Jar (2026-09-30, pass GU, the agriculture game). In plain terms: a jar of soil and water has settled into
+// three layers, sand at the bottom, silt in the middle, clay on top, drawn to the true percentages of the sample. The
+// student taps the texture the layers show: sandy, loam or clay. This component only draws and reacts: the six samples
+// and their answers come from jarRounds() in logic.mjs, so the screen cannot get one wrong on its own. The right texture
+// moves on and says why, a wrong one wobbles, the clock counts up, and the board carries the answer in
+// `data-jar-answer` so the browser test can play a round. Drawn with B (the paper palette) because game boards sit on
+// the almond paper board in both themes.
+// -----------------------------------------------------------------------------------------------------------------
+function JarGame({ game, round, onScore = null }) {
+  const rounds = useMemo(() => jarRounds(round), [round]); // the six samples for this round, fixed by the round number
+  const [k, setK] = useState(0); // which sample we are on
+  const [got, setGot] = useState(false); // true for a moment after a right tap
+  const [nudge, setNudge] = useState(null); // the texture of a wrong tap, so that button wobbles
+  const [ticks, setTicks] = useState(0); // seconds since the round started
+  const [done, setDone] = useState(false); // true once all six are answered
+  const q = rounds[Math.min(k, rounds.length - 1)];
+  useEffect(() => { setK(0); setGot(false); setTicks(0); setDone(false); }, [round]);
+  useEffect(() => { if (done) return undefined; const t = setInterval(() => setTicks((n) => n + 1), 1000); return () => clearInterval(t); }, [done]);
+  useEffect(() => { if (done && onScore) onScore(ticks, 'low'); }, [done]);
+  useEffect(() => { if (nudge === null) return undefined; const t = setTimeout(() => setNudge(null), 500); return () => clearTimeout(t); }, [nudge]);
+  useEffect(() => { if (!got) return undefined; const t = setTimeout(() => { setGot(false); if (k + 1 >= rounds.length) setDone(true); else setK(k + 1); }, 1000); return () => clearTimeout(t); }, [got]);
+  const pick = (v) => { if (got || done) return; if (v === q.answer) setGot(true); else setNudge(v); };
+  const why = { sandy: 'seventy percent sand or more, so it drains fast and holds little', clay: 'forty percent clay or more, so it holds water and drains slowly', loam: 'a balance of the three, what farmers hope for' };
+  // The jar is 120 units tall inside; each layer's height is its percentage of that, sand at the bottom.
+  const H = 120; const top = 30; const sandH = H * q.sand / 100; const siltH = H * q.silt / 100; const clayH = H * q.clay / 100;
+  return (
+    <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }} data-jar-answer={done ? '' : q.answer}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 6 }}><span>Read the jar</span><span>{ticks}s · {Math.min(k + 1, rounds.length)} of {rounds.length}</span></div>
+      {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Six jars read in {ticks} seconds. Tap the round arrow for more.</p> : (
+        <div style={{ textAlign: 'center' }}>
+          <svg viewBox="0 0 200 170" width="220" height="187" role="img" aria-label={`A settled jar: ${q.sand} percent sand, ${q.silt} percent silt, ${q.clay} percent clay`} style={{ display: 'block', margin: '0 auto 6px' }}>
+            <rect x="60" y={top - 8} width="80" height={H + 12} rx="8" fill="#F4F8FB" stroke={B.ink} strokeWidth="2" />
+            <rect x="62" y={top + H - sandH} width="76" height={sandH} fill="#E3C27A" />
+            <rect x="62" y={top + H - sandH - siltH} width="76" height={siltH} fill="#B9A58A" />
+            <rect x="62" y={top + H - sandH - siltH - clayH} width="76" height={clayH} fill="#8C6A4A" />
+            <rect x="72" y={top - 18} width="56" height="12" rx="3" fill={B.line} stroke={B.ink} strokeWidth="1.5" />
+            <text x="150" y={top + H - sandH / 2 + 4} fontSize="11" fill={B.ink} fontFamily={FONT}>{`sand ${q.sand}`}</text>
+            <text x="150" y={top + H - sandH - siltH / 2 + 4} fontSize="11" fill={B.ink} fontFamily={FONT}>{`silt ${q.silt}`}</text>
+            <text x="150" y={top + H - sandH - siltH - clayH / 2 + 4} fontSize="11" fill={B.ink} fontFamily={FONT}>{`clay ${q.clay}`}</text>
+          </svg>
+          <p style={{ margin: '0 0 10px', fontSize: 15, color: got ? B.green : B.ink, minHeight: 22, fontWeight: got ? 700 : 400 }}>{got ? `Yes: ${q.answer}, ${why[q.answer]}.` : 'Which texture do the layers show?'}</p>
+          <div style={{ display: 'flex', gap: 10, justifyContent: 'center', flexWrap: 'wrap' }}>
+            {q.choices.map((v) => <button key={v} type="button" className={`edu-press${nudge === v ? ' edu-wobble' : ''}`} aria-label={`Texture: ${v}`} onClick={() => pick(v)} style={{ fontFamily: FONT, fontSize: 17, fontWeight: 700, minWidth: 96, padding: '10px 14px', borderRadius: 12, border: `2px solid ${B.green}`, background: '#fff', color: B.ink, cursor: got ? 'default' : 'pointer', textTransform: 'capitalize' }}>{v}</button>)}
+          </div>
+        </div>
+      )}
+      <Done show={done} />
+    </div>
+  );
+}
+// -----------------------------------------------------------------------------------------------------------------
+// Who Gains (2026-09-30, pass GX, the middle school agriculture game). In plain terms: a line on a paper card describes
+// two living things on a farm and what passes between them, and four names sit below it: mutualism, parasitism,
+// commensalism, predation. The student taps the one that fits. This component only draws and reacts: the six cases
+// and their answers come from relationRounds() in logic.mjs, so the screen cannot get one wrong on its own. The right
+// name moves on and says who gained, a wrong one wobbles, the clock counts up, and the board carries the answer in
+// `data-relation-answer` so the browser test can play a round. Drawn with B (the paper palette).
+// -----------------------------------------------------------------------------------------------------------------
+function RelationGame({ game, round, onScore = null }) {
+  const rounds = useMemo(() => relationRounds(round), [round]); // the six cases for this round, fixed by the round number
+  const [k, setK] = useState(0); // which case we are on
+  const [got, setGot] = useState(false); // true for a moment after a right tap
+  const [nudge, setNudge] = useState(null); // the name of a wrong tap, so that button wobbles
+  const [ticks, setTicks] = useState(0); // seconds since the round started
+  const [done, setDone] = useState(false); // true once all six are answered
+  const q = rounds[Math.min(k, rounds.length - 1)];
+  useEffect(() => { setK(0); setGot(false); setTicks(0); setDone(false); }, [round]);
+  useEffect(() => { if (done) return undefined; const t = setInterval(() => setTicks((n) => n + 1), 1000); return () => clearInterval(t); }, [done]);
+  useEffect(() => { if (done && onScore) onScore(ticks, 'low'); }, [done]);
+  useEffect(() => { if (nudge === null) return undefined; const t = setTimeout(() => setNudge(null), 500); return () => clearTimeout(t); }, [nudge]);
+  useEffect(() => { if (!got) return undefined; const t = setTimeout(() => { setGot(false); if (k + 1 >= rounds.length) setDone(true); else setK(k + 1); }, 1000); return () => clearTimeout(t); }, [got]);
+  const pick = (v) => { if (got || done) return; if (v === q.answer) setGot(true); else setNudge(v); };
+  const why = { mutualism: 'both gain', parasitism: 'one gains and the other is harmed', commensalism: 'one gains and the other is unaffected', predation: 'one eats the other' };
+  return (
+    <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }} data-relation-answer={done ? '' : q.answer}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Who gains</span><span>{ticks}s · {Math.min(k + 1, rounds.length)} of {rounds.length}</span></div>
+      {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Six relationships named in {ticks} seconds. Tap the round arrow for more.</p> : (
+        <div style={{ textAlign: 'center' }}>
+          <div style={{ background: '#fff', border: `1.5px solid ${B.line}`, borderRadius: 12, padding: '14px 12px', marginBottom: 10, fontSize: 17, fontWeight: 600, color: B.ink }}>{q.line}</div>
+          <p style={{ margin: '0 0 10px', fontSize: 15, color: got ? B.green : B.ink, minHeight: 22, fontWeight: got ? 700 : 400 }}>{got ? `Yes: ${q.answer}, ${why[q.answer]}.` : 'Which relationship is this?'}</p>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+            {q.choices.map((v) => <button key={v} type="button" className={`edu-press${nudge === v ? ' edu-wobble' : ''}`} aria-label={`Relationship: ${v}`} onClick={() => pick(v)} style={{ fontFamily: FONT, fontSize: 16, fontWeight: 700, padding: '10px 8px', borderRadius: 12, border: `2px solid ${B.green}`, background: '#fff', color: B.ink, cursor: got ? 'default' : 'pointer', textTransform: 'capitalize' }}>{v}</button>)}
+          </div>
+        </div>
+      )}
+      <Done show={done} />
+    </div>
+  );
+}
+const GAME_OF = { dots: DotsGame, pairs: PairsGame, sort: SortGame, maze: MazeGame, jigsaw: JigsawGame, pong: PongGame, sprint: SprintGame, order: OrderGame, build: BuildGame, fix: FixGame, mix: MixGame, debug: DebugGame, ptable: PtableGame, evidence: EvidenceGame, catch: CatchGame, path: PathGame, buckets: BucketsGame, jump: JumpGame, map: MapGame, balance: BalanceGame, walk: WalkGame, teach: TeachGame, bits: BitsGame, pay: PayGame, price: PriceGame, loan: LoanGame, fund: FundGame, search: SearchGame, spot: SpotGame, pattern: PatternGame, shape: ShapeGame, chord: ChordGame, valid: ValidGame, reason: ReasonGame, because: BecauseGame, share: ShareGame, stat: StatGame, recall: RecallGame, face: FaceGame, sense: SenseGame, filler: FillerGame, room: RoomGame, ask: AskGame, turn: TurnGame, jar: JarGame, relation: RelationGame };
 // How to play, in a line or two, by kind of game (and by deck for the matching games).
 function gameInstructions(game) {
   if (game.kind === 'bits') return 'A number sits at the top and eight switches below it, worth 128 down to 1. Tap the switches on and off until the lit places add up to the number; the sum shows as you go. Six numbers, and the clock counts up.';
@@ -4293,6 +4383,8 @@ function gameInstructions(game) {
   if (game.kind === 'fund') return 'A first year on your own, one month a tap. Income comes in, the bills go out, and you choose how much of the 500 that is left goes into your emergency fund; the rest is spent. Some months bring a surprise bill: the fund pays what it can and the rest is borrowed at 2 percent a month. The score is the fund minus the loan after twelve months, higher is better.';
   if (game.kind === 'valid') return 'An argument in three lines: if this then that, a second line, and a conclusion. Ask whether the form guarantees the conclusion when the premises are true, however true the sentences sound, and tap Valid or Not valid. The right answer names the form. Six arguments a round, and the clock counts up.';
   if (game.kind === 'stat') return 'Five quiz scores and one average to find: the mean, the median or the mode. Add and divide, or order and take the middle, or find the score that repeats, and tap the number. Six rounds, and the clock counts up.';
+  if (game.kind === 'relation') return 'A line about two living things on a farm and four names: mutualism, parasitism, commensalism, predation. Tap the one that fits. Six cases, and the clock counts up.';
+  if (game.kind === 'jar') return 'A jar of soil and water has settled: sand at the bottom, silt in the middle, clay on top, drawn to the true percentages. Tap the texture the layers show: sandy at seventy percent sand or more, clay at forty percent clay or more, loam for the balance. Six jars, and the clock counts up.';
   if (game.kind === 'turn') return 'Four friends sit in a circle and one holds the talking stick. Tap the friend whose turn is next, going around the circle the way the arrow points. Six turns, and the clock counts up.';
   if (game.kind === 'ask') return 'Something a friend said and four questions. Tap the question that is about what they said; a question about you wobbles. Six a round, and the clock counts up.';
   if (game.kind === 'room') return 'A line somebody said and four rooms: friends, class, a job interview, a text to a grandparent. Tap the room the line fits. Six lines a round, and the clock counts up.';
@@ -4391,6 +4483,8 @@ function GameThumb({ kind, game = null }) {
   if (game && game.kind === 'room') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="4" y="6" width="14" height="12" rx="2" fill={C.paperBoard} stroke={k} strokeWidth="1" /><rect x="22" y="6" width="14" height="12" rx="2" fill={C.paperBoard} stroke={k} strokeWidth="1" /><rect x="4" y="22" width="14" height="12" rx="2" fill={C.paperBoard} stroke={k} strokeWidth="1" /><rect x="22" y="22" width="14" height="12" rx="2" fill={C.green} stroke={k} strokeWidth="1" /><path d="M25 28h8" stroke="#fff" strokeWidth="2" strokeLinecap="round" /></svg>;
   if (game && game.kind === 'ask') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><path d="M6 8h22a3 3 0 0 1 3 3v10a3 3 0 0 1-3 3H14l-6 5v-5H6a3 3 0 0 1-3-3V11a3 3 0 0 1 3-3z" fill={C.paperBoard} stroke={k} strokeWidth="1" /><text x="17" y="21" textAnchor="middle" fontSize="13" fontWeight="700" fill={k}>?</text><circle cx="33" cy="31" r="5" fill={C.green} /></svg>;
   if (game && game.kind === 'turn') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><circle cx="20" cy="20" r="13" fill="none" stroke={k} strokeWidth="1" strokeDasharray="2 3" /><circle cx="20" cy="7" r="4" fill={C.paperBoard} stroke={k} strokeWidth="1" /><circle cx="33" cy="20" r="4" fill={C.green} stroke={k} strokeWidth="1" /><circle cx="20" cy="33" r="4" fill={C.paperBoard} stroke={k} strokeWidth="1" /><circle cx="7" cy="20" r="4" fill={C.paperBoard} stroke={k} strokeWidth="1" /><line x1="23" y1="3" x2="26" y2="10" stroke={C.clay} strokeWidth="2" strokeLinecap="round" /></svg>;
+  if (game && game.kind === 'jar') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="12" y="8" width="16" height="28" rx="3" fill={C.paperBoard} stroke={k} strokeWidth="1" /><rect x="13" y="24" width="14" height="11" fill="#E3C27A" /><rect x="13" y="17" width="14" height="7" fill="#B9A58A" /><rect x="13" y="12" width="14" height="5" fill="#8C6A4A" /><rect x="14" y="4" width="12" height="4" rx="1" fill={k} /></svg>;
+  if (game && game.kind === 'relation') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><circle cx="13" cy="20" r="8" fill={C.paperBoard} stroke={k} strokeWidth="1" /><circle cx="29" cy="20" r="6" fill={C.green} stroke={k} strokeWidth="1" /><path d="M21 16l4 0M21 24l4 0" stroke={k} strokeWidth="2" strokeLinecap="round" /><path d="M24 14l3 2-3 2M22 26l-3-2 3-2" fill="none" stroke={k} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" /></svg>;
   if (game && game.kind === 'stat') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="4" y="5" width="32" height="30" rx="4" fill={C.paperBoard} stroke={k} strokeWidth="1" /><rect x="9" y="22" width="4" height="9" fill={k} opacity="0.6" /><rect x="15" y="16" width="4" height="15" fill={k} opacity="0.6" /><rect x="21" y="12" width="4" height="19" fill={C.green} /><rect x="27" y="18" width="4" height="13" fill={k} opacity="0.6" /><path d="M7 20h26" stroke={C.green} strokeWidth="1.2" strokeDasharray="2 1.5" /></svg>;
   if (game && game.kind === 'valid') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="4" y="5" width="32" height="30" rx="4" fill={C.paperBoard} stroke={k} strokeWidth="1" /><path d="M9 13h22M9 19h16M9 25h22" stroke={k} strokeWidth="1.5" strokeLinecap="round" /><path d="M11 31l3 3 6-6" fill="none" stroke={C.green} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>;
   if (game && game.kind === 'fund') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="5" y="7" width="30" height="26" rx="4" fill="#fff" stroke={k} strokeWidth="1.2" />{[[10, 22, 8], [17, 14, 16], [24, 18, 12]].map(([x, y, h], i) => <rect key={i} x={x} y={y} width="5" height={h} rx="1" fill={i === 1 ? C.green : '#DDE3DE'} stroke={k} strokeWidth="0.7" />)}<path d="M31 13l-3 -3 -3 3M28 10v9" fill="none" stroke={k} strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" /></svg>;
@@ -5118,6 +5212,20 @@ function CourseChoiceRow({ course, checked, onToggle, onPreview, onSave = null }
     </div>
   );
 }
+// -----------------------------------------------------------------------------------------------------------------
+// ClearableInput (2026-09-30, pass GV, Mikey). In plain terms: any box the person types a search into gets a small,
+// quiet × at its right edge, inside the box, that clears everything typed in one tap. The × only appears once there is
+// text to clear. The wrapper takes the same props as an <input>, plus `onClear`, and keeps the input's own styling.
+// -----------------------------------------------------------------------------------------------------------------
+function ClearableInput({ value, onClear, style = {}, ...rest }) {
+  const has = typeof value === 'string' && value.length > 0;
+  return (
+    <span style={{ position: 'relative', display: 'block', width: '100%' }}>
+      <input value={value} {...rest} style={{ ...style, paddingRight: 36 }} />
+      {has && <button type="button" onClick={onClear} aria-label="Clear search" title="Clear" style={{ position: 'absolute', right: 8, top: '50%', transform: 'translateY(-50%)', width: 24, height: 24, borderRadius: 12, border: 'none', background: 'transparent', color: C.muted, fontFamily: FONT, fontSize: 18, lineHeight: '24px', cursor: 'pointer', padding: 0, opacity: 0.75 }}>×</button>}
+    </span>
+  );
+}
 function InfoButton({ onClick, label, open = false }) {
   return (
     <button type="button" onClick={onClick} aria-label={label} aria-expanded={open}
@@ -5393,6 +5501,17 @@ async function storageSet(key, value) {
   }
   return { saved: false, reason: 'no response' };
 }
+// -----------------------------------------------------------------------------------------------------------------
+// Where the student was (2026-09-30, pass GV, Mikey). In plain terms: when a student is on their overview, in a lesson,
+// on a story or on the map, the app writes a small note to the browser ("Ava, lesson, fractions") so that a page
+// refresh brings them straight back there instead of to the front door. Educator screens are never remembered,
+// because they sit behind the PIN, and the note is erased when the student taps Exit. Storage may be switched off in
+// some browsers, so every read and write is wrapped in try.
+// -----------------------------------------------------------------------------------------------------------------
+const WHERE_KEY = 'edusphere_v1_where';
+const WHERE_SCREENS = new Set(['overview', 'lesson', 'story', 'map']);
+function loadWhere() { try { const w = safeJson(window.localStorage.getItem(WHERE_KEY)); return w && typeof w.name === 'string' && w.name && WHERE_SCREENS.has(w.screen) ? w : null; } catch (e) { return null; } }
+function saveWhere(w) { try { if (w) window.localStorage.setItem(WHERE_KEY, JSON.stringify(w)); else window.localStorage.removeItem(WHERE_KEY); } catch (e) { /* storage may be off */ } }
 async function loadRecord(name) {
   const raw = await storageGet(STORE_PREFIX + slug(name));
   if (raw) { const r = safeJson(raw); if (r) return r; }   // unreadable: fall through to a fresh record
@@ -5682,6 +5801,7 @@ function EduSphereScreens() {
   const [closedAssignedGrades, setClosedAssignedGrades] = useState([]);  // assigned courses sit under grade dropdowns, open by default (2026-09-29, Mikey)
   const [savedCourseIds, setSavedCourseIds] = useState([]);              // other courses moved into the assigned list with Save; on the next open, everything switched on counts
   const [openOtherGrades, setOpenOtherGrades] = useState([]);        // other courses: which grade dropdowns are open
+  const [showRecommendedTip, setShowRecommendedTip] = useState(false); // the small explanation beside Back to recommended courses (pass GV)
   const [openDoneGrades, setOpenDoneGrades] = useState([]);          // transcript: which completed-course grades are open
   const [mapKind, setMapKind] = useState('core');                   // the standards map, by grade: core courses or electives
   const [quickChecks, setQuickChecks] = useState(true);             // may a student skip a module by passing five questions?
@@ -5942,9 +6062,25 @@ function EduSphereScreens() {
       setQuickChecks(await loadQuickChecks());
       setEducator(await loadEducator());
       { const rawProfile = await loadEducatorRaw(); if (rawProfile && !rawProfile.pin) setPendingProfile(rawProfile); }
+      // A refresh brings a student back to where they were (pass GV): the remembered student is loaded and their screen restored.
+      const where = loadWhere();
+      if (where) {
+        try {
+          const rec = await withStarterCourses(await loadRecord(where.name));
+          if (rec && rec.events && rec.events.length) {
+            setRecord(rec);
+            const known = where.moduleId && getModule(where.moduleId);
+            if ((where.screen === 'lesson' || where.screen === 'story') && known) { setModuleId(where.moduleId); setLessonStep(0); setScreen(where.screen); }
+            else setScreen(where.screen === 'map' ? 'map' : 'overview');
+            return;
+          }
+        } catch (e) { /* fall through to the front door */ }
+      }
       setScreen('welcome');
     })();
   }, []);
+  // The note of where the student is: written on the four remembered screens, erased at the front door (pass GV).
+  useEffect(() => { if (screen === 'loading') return; if (record && !record.preview && WHERE_SCREENS.has(screen)) saveWhere({ name: record.name, screen, moduleId: screen === 'lesson' || screen === 'story' ? moduleId : null }); else if (screen === 'welcome') saveWhere(null); }, [screen, moduleId, record && record.name, record && record.preview]);
 
   // Adds one event to the learner's log and saves. This is the ONLY place the log changes.
   async function addEvent(event) { return addEvents([event]); }
@@ -6474,7 +6610,7 @@ function EduSphereScreens() {
           ) : (
             <>
               {activeStudents(roster).length > 8 && (
-                <input value={nameInput} onChange={(e) => setNameInput(e.target.value)} placeholder="Find your name"
+                <ClearableInput value={nameInput} onChange={(e) => setNameInput(e.target.value)} onClear={() => setNameInput('')} placeholder="Find your name"
                   style={{ textAlign: 'center',  fontFamily: FONT, fontSize: 17, padding: '10px 12px', width: '100%', boxSizing: 'border-box', border: `2px solid ${C.line}`, borderRadius: 10, marginBottom: 10 }} />
               )}
               {/* One name per row on a phone, so no name is ever squeezed; two per row from a tablet up,
@@ -8831,7 +8967,7 @@ function EduSphereScreens() {
             <p style={{ margin: '0 0 12px', fontSize: 14, color: C.greenSoft }}>Every story in a course, in order, with the long story at the end. Open it, print it or save as a PDF for a class that likes to read on paper.</p>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, justifyContent: 'center', alignItems: 'center' }}>
               <select aria-label="Story book course" value={chosen} onChange={(e) => setBookCourseId(e.target.value)} style={{ fontFamily: FONT, fontSize: 15, padding: '8px 12px', borderRadius: 8, border: `1px solid ${C.line}`, background: C.greenSoft, color: C.ink, width: 'min(340px, 100%)', textAlign: 'center', textAlignLast: 'center' , ...pickerLook() }}>
-                {withBook.map((c) => <option style={{ background: C.surface, color: C.ink }} key={c.id} value={c.id}>{gradeLabel(c.grade)}: {c.title}</option>)}
+                {withBook.map((c) => <option style={{ background: C.surface, color: C.ink }} key={c.id} value={c.id}>{courseGradeLabel(c)}: {c.title}</option>)}
               </select>
               <Btn kind="secondary" onClick={() => { setBookCourseId(chosen); setScreen('story-book'); }}>Open Book</Btn>
             </div>
@@ -8878,7 +9014,7 @@ function EduSphereScreens() {
               <p style={{ margin: '0 0 6px', fontSize: 14, color: C.muted, letterSpacing: 1, textTransform: 'uppercase' }}>The Wise Human</p>
               <h1 style={{ fontSize: 30, margin: '0 0 8px' }}>{titleCase(c.title)}</h1>
               {COURSE_GOALS[c.id] && <p style={{ margin: '0 auto 12px', fontSize: 15, color: C.ink, maxWidth: 420, lineHeight: 1.45 }}>{COURSE_GOALS[c.id]}</p>}
-              <p style={{ margin: 0, fontSize: 16, color: C.muted }}>{gradeLabel(c.grade)}</p>
+              <p style={{ margin: 0, fontSize: 16, color: C.muted }}>{courseGradeLabel(c)}</p>
             </div>
           </div></div>
           {groups.map((g, gi) => (
@@ -8928,7 +9064,7 @@ function EduSphereScreens() {
           {classSummary(classRows).split('\n').map((line, i) => <p key={i} style={{ margin: i === 0 ? '0 0 10px' : 0, fontSize: 16, lineHeight: 1.6, textAlign: 'center', fontWeight: i === 0 ? 400 : 700 }}>{line}</p>)}
         </div>
         <div className="edu-no-print" style={{ margin: '0 0 14px' }}>
-          <input value={noteSearch} onChange={(e) => setNoteSearch(e.target.value)} aria-label="Search notes" placeholder="Search your notes, for example: shy"
+          <ClearableInput value={noteSearch} onChange={(e) => setNoteSearch(e.target.value)} onClear={() => setNoteSearch('')} aria-label="Search notes" placeholder="Search your notes, for example: shy"
             style={{ width: '100%', boxSizing: 'border-box', fontFamily: FONT, fontSize: 15, padding: '10px 12px', borderRadius: 10, border: `1px solid ${C.line}`, textAlign: 'center' }} />
         </div>
         {classRows.filter((r) => (!noteSearch.trim() || r.notesText.toLowerCase().includes(noteSearch.trim().toLowerCase()))).length === 0 && (
@@ -9297,7 +9433,10 @@ function EduSphereScreens() {
               {openSummary && (
                 <div style={{ padding: '0 16px 16px' }}>
                   <p style={{ margin: '0 0 6px', fontSize: 16, lineHeight: 1.6, textAlign: 'center' }}>{parts.lead}</p>
-                  {parts.items.length > 0 && <ul style={{ margin: '0 0 10px', padding: '10px 12px 10px 32px', listStyleType: 'disc', fontSize: 15, lineHeight: 1.7, borderRadius: 10, ...(C.mode === 'dark' ? { background: '#AAD8C5', border: '1px solid #AAD8C5', color: '#16201B' } : { background: C.tipBg, border: `1px solid ${C.tipLine}` }) }}>{parts.items.map((it) => <li key={it} style={{ display: 'list-item' }}>{it}</li>)}</ul>}
+                  {/* Centered bullets (2026-09-30, pass GW, Mikey): the tinted box stays full width, and the list inside it shrinks to the width of its longest line
+                      and sits in the middle, so the bullets line up on the left while the block stays close to the centered sentences above and below. On a
+                      phone the list simply grows to the box's width and wraps as before. */}
+                  {parts.items.length > 0 && <div data-summary-list="mastered" style={{ margin: '0 0 10px', padding: '10px 12px', borderRadius: 10, ...(C.mode === 'dark' ? { background: '#AAD8C5', border: '1px solid #AAD8C5', color: '#16201B' } : { background: C.tipBg, border: `1px solid ${C.tipLine}` }) }}><ul style={{ margin: '0 auto', padding: '0 0 0 20px', width: 'fit-content', maxWidth: '100%', boxSizing: 'border-box', textAlign: 'left', listStyleType: 'disc', fontSize: 15, lineHeight: 1.7 }}>{parts.items.map((it) => <li key={it} style={{ display: 'list-item' }}>{it}</li>)}</ul></div>}
                   {/* Air between the summary's thoughts (2026-09-29, Mikey): the ground to make up and the practice so far sit together, the reflection
                       line stands alone, the coloring line stands alone, and the tried-but-not-passed list gets its own room below. */}
                   {parts.rest && (() => { const lines = parts.rest.split(/(?<=\.)\s+/).filter(Boolean); const cut = lines.findIndex((l) => /reflection question/i.test(l)); const first = cut < 0 ? lines : lines.slice(0, cut); const second = cut < 0 ? [] : lines.slice(cut); return (
@@ -9309,9 +9448,10 @@ function EduSphereScreens() {
                   {parts.tried && parts.tried.length > 0 && (
                     <div style={{ margin: '8px 0 0' }}>
                       <p style={{ margin: '18px 0 6px', fontSize: 16, lineHeight: 1.6, textAlign: 'center', fontWeight: 600 }}>Tried but not passed yet:</p>
-                      <ul style={{ margin: 0, padding: '10px 12px 10px 32px', listStyleType: 'disc', fontSize: 15, lineHeight: 1.7, borderRadius: 10, ...(C.mode === 'dark' ? { background: '#AAD8C5', border: '1px solid #AAD8C5', color: '#16201B' } : { background: C.tipBg, border: `1px solid ${C.tipLine}` }) }}>
+                      {/* The same centered, shrink-to-fit list as the mastered list above; these lines are longer, so the block is wider and still on one line where the screen allows (pass GW). */}
+                      <div data-summary-list="tried" style={{ margin: 0, padding: '10px 12px', borderRadius: 10, ...(C.mode === 'dark' ? { background: '#AAD8C5', border: '1px solid #AAD8C5', color: '#16201B' } : { background: C.tipBg, border: `1px solid ${C.tipLine}` }) }}><ul style={{ margin: '0 auto', padding: '0 0 0 20px', width: 'fit-content', maxWidth: '100%', boxSizing: 'border-box', textAlign: 'left', listStyleType: 'disc', fontSize: 15, lineHeight: 1.7 }}>
                         {parts.tried.map((t) => <li key={t.id}><button type="button" style={{ ...linkBtn, fontSize: 15, fontWeight: 600, color: C.mode === 'dark' ? B.green : C.green }} onClick={() => setStoryModule(t.id)}>{t.title}</button> ({t.subject ? `${t.subject}: ` : ''}{t.detail})</li>)}
-                      </ul>
+                      </ul></div>
                     </div>
                   )}
                 </div>
@@ -9341,11 +9481,12 @@ function EduSphereScreens() {
         <div style={{ ...card, background: C.greenSoft, borderColor: C.softEdge }}>
           <p className="edu-card-title" style={{ margin: '0 0 4px', fontWeight: 600 }}>Assigned Now</p>
           <p style={{ margin: '0 0 10px', fontSize: 14, color: C.muted, textAlign: 'center' }}>Assign courses by checking or unchecking the boxes below. Each student starts with the courses we recommend (based on a combination of {shownName}'s initial placement check, quick-check module skips and/or his or her actual progression through the modules) but you are free to edit how you see fit.</p>
-          <input value={courseQuery} onChange={(e) => setCourseQuery(e.target.value)} placeholder="Search courses, for example: grade 1 math, kinder, fractions" aria-label="Search courses"
+          <ClearableInput value={courseQuery} onChange={(e) => setCourseQuery(e.target.value)} onClear={() => setCourseQuery('')} placeholder="Search courses, for example: grade 1 math, kinder, fractions" aria-label="Search courses"
             style={{ fontFamily: FONT, fontSize: 15, padding: '10px 12px', width: '100%', boxSizing: 'border-box', border: `2px solid ${C.line}`, borderRadius: 10, marginBottom: 10, background: C.surface, color: C.ink, WebkitTextFillColor: C.ink, caretColor: C.ink, textAlign: 'center' }} />
           {!courseQuery.trim() && (
             <p style={{ margin: '0 0 10px', fontSize: 13, textAlign: 'center' }}>
-              <button type="button" onClick={() => { const student = findStudent(roster, educatorRecord.name); const starter = recommendedCourseIds([makeCoursesEnabledEvent([], new Date().toISOString())], student ? student.level : null); const keep = COURSES.filter((c) => c.modules.some((m) => rep.modules.find((x) => x.id === m.id && x.attempts > 0))).map((c) => c.id); const unlocked = coursesToUnlock([...educatorRecord.events, makeCoursesEnabledEvent([...new Set([...starter, ...keep])], new Date().toISOString())]); const next = [...new Set([...starter, ...keep, ...unlocked])]; setEnabled(next); setRecommendedIds(next); setSavedCourseIds([]); setShowAllCourses(false); }} style={{ ...linkBtn, fontSize: 13, padding: 0 }}>Back to recommended courses</button>
+              <button type="button" onClick={() => { const student = findStudent(roster, educatorRecord.name); const starter = recommendedCourseIds([makeCoursesEnabledEvent([], new Date().toISOString())], student ? student.level : null); const keep = COURSES.filter((c) => c.modules.some((m) => rep.modules.find((x) => x.id === m.id && x.attempts > 0))).map((c) => c.id); const unlocked = coursesToUnlock([...educatorRecord.events, makeCoursesEnabledEvent([...new Set([...starter, ...keep])], new Date().toISOString())]); const next = [...new Set([...starter, ...keep, ...unlocked])]; setEnabled(next); setRecommendedIds(next); setSavedCourseIds([]); setShowAllCourses(false); }} style={{ ...linkBtn, fontSize: 13, padding: 0 }}>Back to recommended courses</button> <InfoButton onClick={() => setShowRecommendedTip(!showRecommendedTip)} label="What back to recommended courses does" open={showRecommendedTip} />
+              {showRecommendedTip && <span style={{ display: 'block', margin: '6px auto 0', maxWidth: 520, fontSize: 13, color: C.muted, lineHeight: 1.5 }}>Selecting <em>Back to recommended courses</em> returns the list to our recommendation for {shownName}. Any assigned course that has not been started yet, including an elective, is removed; a course with any progress stays assigned.</span>}
               <InfoButton onClick={() => setShowRecommendTip(!showRecommendTip)} label="About recommended courses" open={showRecommendTip} />
             </p>
           )}
@@ -9417,7 +9558,7 @@ function EduSphereScreens() {
             <div style={{ position: 'fixed', top: 0, right: 0, bottom: 0, left: 0, background: C.scrim, zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }} onClick={() => setCoursePreview(null)}>
               <div className="edu-rise" role="dialog" aria-label="Course preview" style={{ width: 'min(520px, 100%)', maxHeight: '86vh', overflowY: 'auto', background: C.surface, ...(C.mode === 'dark' ? { border: `1px solid ${C.cardEdge}` } : {}), borderRadius: 14, padding: '22px 22px 18px' }} onClick={(e) => e.stopPropagation()}>
                 <p style={{ margin: '0 0 2px', fontSize: 19, fontWeight: 700, textAlign: 'center' }}>{getCourse(coursePreview).title}</p>
-                <p style={{ margin: '0 0 14px', fontSize: 14, color: C.muted, textAlign: 'center' }}>{gradeLabel(getCourse(coursePreview).grade)} · {getCourse(coursePreview).subject} · {getCourse(coursePreview).modules.length} {getCourse(coursePreview).modules.length === 1 ? 'module' : 'modules'}</p>
+                <p style={{ margin: '0 0 14px', fontSize: 14, color: C.muted, textAlign: 'center' }}>{courseGradeLabel(getCourse(coursePreview))} · {getCourse(coursePreview).subject} · {getCourse(coursePreview).modules.length} {getCourse(coursePreview).modules.length === 1 ? 'module' : 'modules'}</p>
                 <ol style={{ margin: 0, padding: '0 0 0 22px' }}>
                   {getCourse(coursePreview).modules.map((m) => (
                     <li key={m.id} style={{ padding: '6px 0', borderTop: `1px solid ${C.line}` }}>
@@ -9530,9 +9671,11 @@ function EduSphereScreens() {
           const generated = weeklyNote(shownName, educatorRecord.events, new Date().toISOString()); const shown = weeklyEdit === null ? generated : weeklyEdit;
           return (
             <div className="edu-weekly-note" style={{ ...card, ...(C.mode === 'dark' ? { background: '#AAD8C5', color: '#16201B' } : {}) }}>
-              <div className="edu-no-print" style={C.mode === 'dark' ? { display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: '-18px -18px 14px', padding: '12px 18px', background: C.tintHead, color: C.ink, borderRadius: '13px 13px 0 0', borderBottom: `1px solid ${C.tintMintLine}` } : { display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
+              {/* On a wide screen the title is centered over the whole bar (a three-column grid with the buttons in the right column); on a phone the bar stays title-left, buttons-right (2026-09-30, pass GV, Mikey). */}
+              <div className="edu-no-print" style={{ ...(C.mode === 'dark' ? { margin: '-18px -18px 14px', padding: '12px 18px', background: C.tintHead, color: C.ink, borderRadius: '13px 13px 0 0', borderBottom: `1px solid ${C.tintMintLine}` } : {}), ...(typeof window !== 'undefined' && window.innerWidth >= 700 ? { display: 'grid', gridTemplateColumns: '1fr auto 1fr', alignItems: 'center' } : { display: 'flex', justifyContent: 'space-between', alignItems: C.mode === 'dark' ? 'center' : 'baseline' }) }}>
+                {typeof window !== 'undefined' && window.innerWidth >= 700 && <span aria-hidden="true" />}
                 <p className="edu-card-title" style={C.mode === 'dark' ? { margin: 0, fontWeight: 700, fontSize: 17, textAlign: 'center' } : { margin: '0 0 6px', fontWeight: 600, textAlign: 'center' }}>Weekly note</p>
-                <span>
+                <span style={{ justifySelf: 'end' }}>
                   {weeklyEditing
                     ? <button type="button" onClick={() => setWeeklyEditing(false)} style={{ ...linkBtn, ...(C.mode === 'dark' ? { fontSize: 14, fontWeight: 600, color: C.green } : { fontSize: 13, color: C.muted }) }}>Save</button>
                     : <>

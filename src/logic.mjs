@@ -74,6 +74,19 @@ export function gradeInSentence(grade) { return grade === 'K' ? 'Kindergarten' :
 // showing "Grade 3" beside it made the grade list look full of gaps. An elective with an `audience` shows that band
 // ("Grades 3 to 5", "Kindergarten to grade 2"); every other course shows its grade as before.
 export function courseGradeLabel(course) { return course.elective && course.audience ? course.audience : gradeLabel(course.grade); }
+// electiveBand: the grade band an elective fold belongs to (2026-09-30, pass GY, Mikey). In plain terms: electives are
+// built for bands, kindergarten to grade 2, grades 3 to 5, 6 to 8, 9 to 12, and college, so a list of elective folds
+// titled by single grades looked as if it skipped grades. This returns the band's first grade as the fold's key and the
+// band's name as its title, so the older single-grade art courses (grades 3 and 4) fold in with the 3 to 5 band.
+export function electiveBand(grade) {
+  if (grade === 'C') return { key: 'C', title: 'College level' };
+  if (grade === 'PK3' || grade === 'PK4') return { key: grade, title: gradeLabel(grade) };
+  const n = grade === 'K' ? 0 : Number(grade);
+  if (n <= 2) return { key: 'K', title: 'Kindergarten to grade 2' };
+  if (n <= 5) return { key: '3', title: 'Grades 3 to 5' };
+  if (n <= 8) return { key: '6', title: 'Grades 6 to 8' };
+  return { key: '9', title: 'Grades 9 to 12' };
+}
 export function courseLabel(course) { return `${course.title} (${course.elective && course.audience ? course.audience : gradeShort(course.grade)} - ${course.subject})`; }
 
 // A COURSE belongs to exactly one subject (Math, Reading, Science, ...) and

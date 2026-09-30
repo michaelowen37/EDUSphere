@@ -1474,6 +1474,15 @@ Approved by Mikey on 2026-09-04 unless marked "proposed".
 - Every block added this pass opens with a plain-English comment.
 - Next: agriculture for 3 to 5 as `agriculture-3` (grade 3, Agriculture, above the Texas minimum: where food comes from, seeds and soil, farm animals and what they need, a tiny project with a plan and a tally; the grade 3 science standards on organisms and environments (§112.5, Adopted 2021) read from the published text before citing, with AFNR beside them; older stories and six pictures; a new kind of game), then K to 2, then business from Chapter 130 Subchapter D, with a college course every few passes.
 
+## 2026-09-30 (pass GY): three more report fixes from Mikey's screenshots
+
+- Mikey committed GX, so the commit message starts fresh at GY.
+- Summary rhythm: a short faint rule (120 pixels, centered) now sits between the practice lines and the reflection line, and another between the reflection line and the coloring line; the Tried but not passed yet section has more air above it and no rule, as asked. The browser test finds the rules whenever there are thoughts to separate.
+- Back to recommended courses had grown two info buttons, the one from before and the one added in pass GV. The GV button and its text are gone; the original stays, and its text now ends by naming what is removed, an assigned course not yet started, including an elective, so nothing was lost.
+- Elective grade dropdowns: Mikey meant the folds themselves, not only the course titles. Electives are built for bands, so the closed list of elective folds now reads Kindergarten to grade 2, Grades 3 to 5, Grades 6 to 8, Grades 9 to 12, College level (`electiveBand(grade)` in logic.mjs gives a fold its band key and title). The two older single-grade art courses at grades 3 and 4 fold in with Grades 3 to 5. The Other courses list and the standards map both fold electives this way; core courses still fold by grade. The browser test opens the Electives view and reads the band titles.
+- The Change PIN link on phones: the code has no phone gate on either Change PIN, the per-student link on the class list or the educator's link on the backup page, and a probe at 390 pixels wide found both on screen. Nothing was changed for it; a screenshot of the phone screen where the link is missing would show which one Mikey means.
+- Next: agriculture for 3 to 5 as `agriculture-3`, then K to 2, then business from Chapter 130 Subchapter D, with a college course every few passes.
+
 ## Open items
 - Verify audio plays inside the chat artifact sandbox (works in a normal browser).
 - Common Core / TEKS codes on existing modules to be checked against the official lists. The technology section numbers were checked and fixed in pass FS (§126.8, §126.10, §126.18); the sub-codes of those three courses are still unchecked.

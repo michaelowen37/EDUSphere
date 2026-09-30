@@ -37,7 +37,7 @@ window.__eduArt = [];
 window.__eduColoringArt = [];
 window.__eduMapArt = [];
 window.__eduAudio = [];
-window.__eduNews = {"stamp":"September 30, 2026 (where food comes from)","date":"September 30, 2026","items":["Grade 6 has a new elective for grades 6 to 8, Where food comes from: the chain from a field to your plate and the soil, water and energy that run it; soil and seeds, with a jar test and a fair experiment that changes one thing; a farm as an ecosystem with a fence, with who eats whom and who helps whom; and a small project with a plan, a record of every dollar and a graph that tells the truth. Each lesson has a story, and the course ends with a long story about Frederick and a farm week.","Finishing the course unlocks Who Gains, a new kind of game: two living things on a farm, and the name of what passes between them.","Two new Wonder questions for grades 6 to 8 wait in the review screen."]};
+window.__eduNews = {"stamp":"September 30, 2026 (three small report fixes)","date":"September 30, 2026","items":["On the report's Summary, short faint rules separate the practice lines, the reflection line and the coloring line, and the tried list has more room above it.","Back to recommended courses has one info button again, and its note says what is removed.","The Electives list folds by grade band, Kindergarten to grade 2, Grades 3 to 5 and so on, so nothing looks skipped."]};
 // Installable app: the worker keeps a copy of the page for offline use and asks the network first, so a fresh build always wins.
 if ('serviceWorker' in navigator && /^https?:/.test(location.protocol)) { navigator.serviceWorker.register('sw.js').catch(function () {}); }
 var process = { env: { NODE_ENV: 'production' } };
@@ -17315,6 +17315,24 @@ function gradeInSentence(grade) { return grade === 'K' ? 'Kindergarten' : grade 
 // showing "Grade 3" beside it made the grade list look full of gaps. An elective with an `audience` shows that band
 // ("Grades 3 to 5", "Kindergarten to grade 2"); every other course shows its grade as before.
 function courseGradeLabel(course) { return course.elective && course.audience ? course.audience : gradeLabel(course.grade); }
+// electiveBand: the grade band an elective fold belongs to (2026-09-30, pass GY, Mikey). In plain terms: electives are
+// built for bands, kindergarten to grade 2, grades 3 to 5, 6 to 8, 9 to 12, and college, so a list of elective folds
+// titled by single grades looked as if it skipped grades. This returns the band's first grade as the fold's key and the
+// band's name as its title, so the older single-grade art courses (grades 3 and 4) fold in with the 3 to 5 band.
+function electiveBand(grade) {
+    if (grade === 'C')
+        return { key: 'C', title: 'College level' };
+    if (grade === 'PK3' || grade === 'PK4')
+        return { key: grade, title: gradeLabel(grade) };
+    const n = grade === 'K' ? 0 : Number(grade);
+    if (n <= 2)
+        return { key: 'K', title: 'Kindergarten to grade 2' };
+    if (n <= 5)
+        return { key: '3', title: 'Grades 3 to 5' };
+    if (n <= 8)
+        return { key: '6', title: 'Grades 6 to 8' };
+    return { key: '9', title: 'Grades 9 to 12' };
+}
 function courseLabel(course) { return `${course.title} (${course.elective && course.audience ? course.audience : gradeShort(course.grade)} - ${course.subject})`; }
 // A COURSE belongs to exactly one subject (Math, Reading, Science, ...) and
 // holds an ordered list of modules. Modules unlock in order WITHIN a course.
@@ -56641,7 +56659,7 @@ function PinInput({ value, onChange, placeholder, style, onEnter = null }) {
 }
 // A stamp of when this copy of the page was built, so a stale page in a cache can be told apart
 // from a fresh one at a glance. Written by the build, never by hand.
-const BUILD_STAMP = '2026-09-30 10:22 AM CDT';
+const BUILD_STAMP = '2026-09-30 11:20 AM CDT';
 function ContactLine({ onOpen, inline = false }) {
     return (react_1.default.createElement("p", { className: "edu-no-print", style: { textAlign: 'center', marginTop: inline ? 0 : 28, fontSize: inline ? 14 : 12, color: C.muted, margin: inline ? '0' : undefined } }, onOpen
         ? react_1.default.createElement("button", { type: "button", onClick: onOpen, style: { background: 'none', border: 'none', color: C.muted, fontFamily: FONT, fontSize: 12, cursor: 'pointer', padding: 0, textDecoration: 'underline' } }, "Contact us")
@@ -64562,7 +64580,6 @@ function EduSphereScreens() {
     const [closedAssignedGrades, setClosedAssignedGrades] = (0, react_1.useState)([]); // assigned courses sit under grade dropdowns, open by default (2026-09-29, Mikey)
     const [savedCourseIds, setSavedCourseIds] = (0, react_1.useState)([]); // other courses moved into the assigned list with Save; on the next open, everything switched on counts
     const [openOtherGrades, setOpenOtherGrades] = (0, react_1.useState)([]); // other courses: which grade dropdowns are open
-    const [showRecommendedTip, setShowRecommendedTip] = (0, react_1.useState)(false); // the small explanation beside Back to recommended courses (pass GV)
     const [openDoneGrades, setOpenDoneGrades] = (0, react_1.useState)([]); // transcript: which completed-course grades are open
     const [mapKind, setMapKind] = (0, react_1.useState)('core'); // the standards map, by grade: core courses or electives
     const [quickChecks, setQuickChecks] = (0, react_1.useState)(true); // may a student skip a module by passing five questions?
@@ -66703,7 +66720,9 @@ function EduSphereScreens() {
                     const shown = mapOrder === 'grade' && anyElectives ? plan.filter((entry) => (mapKind === 'electives' ? electiveEntry(entry) : !electiveEntry(entry))) : plan;
                     const sorted = [...shown].sort((a, b) => GRADES.indexOf(a.grade) - GRADES.indexOf(b.grade) || subjectOrder.indexOf(a.subject) - subjectOrder.indexOf(b.subject));
                     const groups = mapOrder === 'grade'
-                        ? GRADES.filter((g) => sorted.some((e) => e.grade === g)).map((g) => ({ key: g, title: gradeLabel(g), entries: sorted.filter((e) => e.grade === g) }))
+                        ? (mapKind === 'electives' && anyElectives
+                            ? GRADES.filter((g) => sorted.some((e) => electiveBand(e.grade).key === g)).map((g) => ({ key: g, title: electiveBand(g).title, entries: sorted.filter((e) => electiveBand(e.grade).key === g) })) // electives fold by band (pass GY)
+                            : GRADES.filter((g) => sorted.some((e) => e.grade === g)).map((g) => ({ key: g, title: gradeLabel(g), entries: sorted.filter((e) => e.grade === g) })))
                         : subjectOrder.map((sub) => ({ key: sub, title: sub, entries: sorted.filter((e) => e.subject === sub) })).filter((group) => group.entries.length);
                     const kindToggle = mapOrder === 'grade' && anyElectives ? (react_1.default.createElement(SegToggle, { key: "kind", options: [['core', 'Core'], ['electives', 'Electives']], value: mapKind, onChange: setMapKind, ariaLabel: "Core courses or electives" })) : null;
                     // Each grade (or subject) is one closed row with its own count, so the page reads as a short
@@ -68352,15 +68371,17 @@ function EduSphereScreens() {
                                 const first = cut < 0 ? lines : lines.slice(0, cut);
                                 const second = cut < 0 ? [] : lines.slice(cut);
                                 return (react_1.default.createElement("div", { style: { margin: 0, fontSize: 16, lineHeight: 1.6, textAlign: 'center' } },
-                                    first.length > 0 && react_1.default.createElement("div", { style: { marginBottom: second.length ? 14 : 0 } }, first.map((line) => react_1.default.createElement("p", { key: line, style: { margin: '2px 0' } }, line))),
-                                    second.length > 0 && react_1.default.createElement("div", { style: { margin: '14px 0' } }, second.map((line) => react_1.default.createElement("p", { key: line, style: { margin: '2px 0' } }, line)))));
+                                    first.length > 0 && react_1.default.createElement("div", null, first.map((line) => react_1.default.createElement("p", { key: line, style: { margin: '2px 0' } }, line))),
+                                    first.length > 0 && second.length > 0 && react_1.default.createElement("div", { "aria-hidden": "true", "data-summary-rule": "", style: { width: 120, height: 1, background: C.line, opacity: 0.7, margin: '14px auto' } }),
+                                    second.length > 0 && react_1.default.createElement("div", null, second.map((line) => react_1.default.createElement("p", { key: line, style: { margin: '2px 0' } }, line)))));
                             })(),
-                            rep.coloringBreaks > 0 && react_1.default.createElement("p", { style: { margin: '14px 0', fontSize: 15, color: C.muted, textAlign: 'center' } },
+                            rep.coloringBreaks > 0 && react_1.default.createElement("div", { "aria-hidden": "true", "data-summary-rule": "", style: { width: 120, height: 1, background: C.line, opacity: 0.7, margin: '14px auto' } }),
+                            rep.coloringBreaks > 0 && react_1.default.createElement("p", { style: { margin: '0 0 6px', fontSize: 15, color: C.muted, textAlign: 'center' } },
                                 "Coloring breaks taken: ",
                                 rep.coloringBreaks,
                                 ". Coloring is play; it is never marked and never appears on the transcript."),
-                            parts.tried && parts.tried.length > 0 && (react_1.default.createElement("div", { style: { margin: '8px 0 0' } },
-                                react_1.default.createElement("p", { style: { margin: '18px 0 6px', fontSize: 16, lineHeight: 1.6, textAlign: 'center', fontWeight: 600 } }, "Tried but not passed yet:"),
+                            parts.tried && parts.tried.length > 0 && (react_1.default.createElement("div", { style: { margin: '30px 0 0' } },
+                                react_1.default.createElement("p", { style: { margin: '0 0 6px', fontSize: 16, lineHeight: 1.6, textAlign: 'center', fontWeight: 600 } }, "Tried but not passed yet:"),
                                 react_1.default.createElement("div", { "data-summary-list": "tried", style: { margin: 0, padding: '10px 12px', borderRadius: 10, ...(C.mode === 'dark' ? { background: '#AAD8C5', border: '1px solid #AAD8C5', color: '#16201B' } : { background: C.tipBg, border: `1px solid ${C.tipLine}` }) } },
                                     react_1.default.createElement("ul", { style: { margin: '0 auto', padding: '0 0 0 20px', width: 'fit-content', maxWidth: '100%', boxSizing: 'border-box', textAlign: 'left', listStyleType: 'disc', fontSize: 15, lineHeight: 1.7 } }, parts.tried.map((t) => react_1.default.createElement("li", { key: t.id },
                                         react_1.default.createElement("button", { type: "button", style: { ...linkBtn, fontSize: 15, fontWeight: 600, color: C.mode === 'dark' ? B.green : C.green }, onClick: () => setStoryModule(t.id) }, t.title),
@@ -68399,16 +68420,8 @@ function EduSphereScreens() {
                     react_1.default.createElement(ClearableInput, { value: courseQuery, onChange: (e) => setCourseQuery(e.target.value), onClear: () => setCourseQuery(''), placeholder: "Search courses, for example: grade 1 math, kinder, fractions", "aria-label": "Search courses", style: { fontFamily: FONT, fontSize: 15, padding: '10px 12px', width: '100%', boxSizing: 'border-box', border: `2px solid ${C.line}`, borderRadius: 10, marginBottom: 10, background: C.surface, color: C.ink, WebkitTextFillColor: C.ink, caretColor: C.ink, textAlign: 'center' } }),
                     !courseQuery.trim() && (react_1.default.createElement("p", { style: { margin: '0 0 10px', fontSize: 13, textAlign: 'center' } },
                         react_1.default.createElement("button", { type: "button", onClick: () => { const student = findStudent(roster, educatorRecord.name); const starter = recommendedCourseIds([makeCoursesEnabledEvent([], new Date().toISOString())], student ? student.level : null); const keep = COURSES.filter((c) => c.modules.some((m) => rep.modules.find((x) => x.id === m.id && x.attempts > 0))).map((c) => c.id); const unlocked = coursesToUnlock([...educatorRecord.events, makeCoursesEnabledEvent([...new Set([...starter, ...keep])], new Date().toISOString())]); const next = [...new Set([...starter, ...keep, ...unlocked])]; setEnabled(next); setRecommendedIds(next); setSavedCourseIds([]); setShowAllCourses(false); }, style: { ...linkBtn, fontSize: 13, padding: 0 } }, "Back to recommended courses"),
-                        " ",
-                        react_1.default.createElement(InfoButton, { onClick: () => setShowRecommendedTip(!showRecommendedTip), label: "What back to recommended courses does", open: showRecommendedTip }),
-                        showRecommendedTip && react_1.default.createElement("span", { style: { display: 'block', margin: '6px auto 0', maxWidth: 520, fontSize: 13, color: C.muted, lineHeight: 1.5 } },
-                            "Selecting ",
-                            react_1.default.createElement("em", null, "Back to recommended courses"),
-                            " returns the list to our recommendation for ",
-                            shownName,
-                            ". Any assigned course that has not been started yet, including an elective, is removed; a course with any progress stays assigned."),
                         react_1.default.createElement(InfoButton, { onClick: () => setShowRecommendTip(!showRecommendTip), label: "About recommended courses", open: showRecommendTip }))),
-                    !courseQuery.trim() && showRecommendTip && (react_1.default.createElement(TipText, null, "Sets this student back to the courses we recommend for their level. Any course they have already started stays assigned, so no progress is hidden.")),
+                    !courseQuery.trim() && showRecommendTip && (react_1.default.createElement(TipText, null, "Sets this student back to the courses we recommend for their level. Any course they have already started stays assigned, so no progress is hidden; an assigned course not yet started, including an elective, is removed.")),
                     courseQuery.trim() && (react_1.default.createElement("div", null,
                         COURSES.filter((c) => matchesCourseSearch(c, courseQuery)).sort(byGradeOrder).map((c) => (react_1.default.createElement(CourseChoiceRow, { key: c.id, course: c, checked: enabled.includes(c.id), onToggle: () => setEnabled(enabled.includes(c.id) ? enabled.filter((id) => id !== c.id) : [...enabled, c.id]), onPreview: () => setCoursePreview(c.id) }))),
                         COURSES.filter((c) => matchesCourseSearch(c, courseQuery)).length === 0 && react_1.default.createElement("p", { style: { margin: '0 0 8px', fontSize: 15, color: C.muted, textAlign: 'center' } }, "No course matches that. Try a grade, a subject, or a word from a course title."))),
@@ -68443,16 +68456,20 @@ function EduSphereScreens() {
                         react_1.default.createElement(SegToggle, { options: [['core', 'Core'], ['electives', 'Electives']], value: otherKind, onChange: setOtherKind, ariaLabel: "Core courses or electives" }),
                         (() => {
                             const others = COURSES.filter((c) => !recommended.includes(c.id) && !savedCourseIds.includes(c.id) && (otherKind === 'electives' ? !!c.elective : !c.elective)).sort(byGradeOrder);
-                            const grades = GRADES.filter((g) => others.some((c) => c.grade === g));
+                            // Electives fold by band (pass GY, Mikey): the fold's key is the band's first grade and its title the band's name, so the closed list
+                            // reads Kindergarten to grade 2, Grades 3 to 5, Grades 6 to 8, Grades 9 to 12, College level, with no grade seeming to be skipped.
+                            const foldOf = (c) => (otherKind === 'electives' ? electiveBand(c.grade).key : c.grade);
+                            const grades = GRADES.filter((g) => others.some((c) => foldOf(c) === g));
                             if (!grades.length)
                                 return react_1.default.createElement("p", { style: { margin: '0 0 8px', fontSize: 15, color: C.muted, textAlign: 'center' } }, otherKind === 'electives' ? 'No electives outside the recommended set.' : 'No other core courses outside the recommended set.');
                             return grades.map((g) => {
                                 const key = `${otherKind}-${g}`;
                                 const open = openOtherGrades.includes(key);
-                                const list = others.filter((c) => c.grade === g);
+                                const list = others.filter((c) => foldOf(c) === g);
+                                const foldTitle = otherKind === 'electives' ? electiveBand(g).title : gradeLabel(g);
                                 return (react_1.default.createElement("div", { key: key, style: { border: `1px solid ${C.line}`, borderRadius: 10, marginBottom: 8, overflow: 'hidden', background: C.surface } },
                                     react_1.default.createElement("button", { type: "button", "aria-expanded": open, onClick: () => setOpenOtherGrades((l) => (l.includes(key) ? l.filter((x) => x !== key) : [...l, key])), style: { fontFamily: FONT, width: '100%', textAlign: 'left', background: C.mode === 'dark' ? C.panel : C.greenSoft, border: 'none', padding: '12px 14px', cursor: 'pointer', color: C.ink, display: 'flex', justifyContent: 'space-between', alignItems: 'center' } },
-                                        react_1.default.createElement("span", { style: { fontSize: 16, fontWeight: 600 } }, gradeLabel(g)),
+                                        react_1.default.createElement("span", { style: { fontSize: 16, fontWeight: 600 } }, foldTitle),
                                         react_1.default.createElement("span", { style: { fontSize: 14, color: C.muted } },
                                             list.filter((c) => enabled.includes(c.id)).length ? `${list.filter((c) => enabled.includes(c.id)).length} of ${list.length} selected ` : `${list.length} ${list.length === 1 ? 'course ' : 'courses '}`,
                                             open ? '▴' : '▾')),

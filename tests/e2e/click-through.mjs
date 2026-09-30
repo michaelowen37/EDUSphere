@@ -130,6 +130,10 @@ t = await text();
 ok('a new student starts on the lowest grade of their band', t.includes('pre-K 4 math') && !t.includes('Kindergarten') && !t.includes('third grade'));
 await page.getByRole('button', { name: /^Show other courses/ }).click();
 ok('other courses fold into grade dropdowns, earliest grade first', (await text()).indexOf('Kindergarten') < (await text()).indexOf('Grade 4') && (await page.getByRole('button', { name: 'Electives' }).count()) === 1);
+// Elective folds are titled by band, so the closed list never looks as if it skipped a grade (pass GY, Mikey).
+await page.getByRole('button', { name: 'Electives' }).click();
+{ const e = await text(); ok('elective folds are titled by grade band', e.includes('Kindergarten to grade 2') && e.includes('Grades 3 to 5') && e.includes('Grades 6 to 8') && e.includes('Grades 9 to 12') && !/Grade 4\s*\d+ courses/.test(e)); }
+await page.getByRole('button', { name: 'Core', exact: true }).click();
 await page.getByRole('button', { name: /^Grade 1\b/ }).first().click();
 ok('a grade dropdown opens to its courses', (await text()).includes('Grade 1 - Math'));
 await page.fill('input[aria-label="Search courses"]', 'grade 1 math');
@@ -475,6 +479,9 @@ await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen ===
 t = await text();
 ok('the report opens with a plain-English paragraph naming the student', t.includes('S-1042 has mastered') && t.includes('Kindergarten math'));
 ok('the summary never shows the storage id', !t.includes('s_1042'));
+// Short faint rules sit between the summary's thoughts when there is more than one thought to separate (pass GY, Mikey).
+{ const t2 = await text(); const expectRule = (/reflection question/i.test(t2) && /Practice so far|ground to make up/i.test(t2)) || /Coloring breaks taken/.test(t2);
+  ok('the summary carries short rules between its thoughts', !expectRule || (await page.locator('[data-summary-rule]').count()) >= 1); }
 // The mastered list sits centered inside its tinted box, shrunk to its longest line, with the bullets lined up on the left (pass GW, Mikey).
 { const m = await page.evaluate(() => { const box = document.querySelector('[data-summary-list="mastered"]'); if (!box) return null; const ul = box.querySelector('ul'); const b = box.getBoundingClientRect(); const u = ul.getBoundingClientRect(); return { boxW: b.width, ulW: u.width, leftGap: u.left - b.left, rightGap: b.right - u.right, align: getComputedStyle(ul).textAlign }; });
   ok('the mastered list is narrower than its box and centered, with left-aligned lines', !!m && m.ulW < m.boxW - 40 && Math.abs(m.leftGap - m.rightGap) < 4 && m.align === 'left'); }
@@ -540,6 +547,7 @@ ok('the transcript offers a way to print', (await page.getByRole('button', { nam
 await tap('Back to report');
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'educator-report');
 ok('resetting one module changes the summary', (await text()).includes('0 of 14 in Kindergarten math'));
+ok('a summary with a coloring line carries a short rule above it', !(await text()).includes('Coloring breaks taken') || (await page.locator('[data-summary-rule]').count()) >= 1);
 ok('a new student starts on a short list of recommended courses', !(await text()).includes('fourth grade math'));
 ok('the all-progress reset carries the student\'s name', (await page.getByRole('button', { name: /^Reset .*Progress$/ }).count()) === 1);
 // Switch a course off from the recommended list

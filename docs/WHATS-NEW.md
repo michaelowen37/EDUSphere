@@ -2,6 +2,12 @@
 
 The newest block is what educators see once, in a pop-up on the classroom page, after each update. Write it the way Mikey talks to a teacher: conversational, complete sentences, say what changed and why it matters, and skip the shorthand (2026-09-23). Two to four items. The date line is the version stamp.
 
+## September 30, 2026 (three small report fixes)
+
+- On the report's Summary, short faint rules separate the practice lines, the reflection line and the coloring line, and the tried list has more room above it.
+- Back to recommended courses has one info button again, and its note says what is removed.
+- The Electives list folds by grade band, Kindergarten to grade 2, Grades 3 to 5 and so on, so nothing looks skipped.
+
 ## September 30, 2026 (where food comes from)
 
 - Grade 6 has a new elective for grades 6 to 8, Where food comes from: the chain from a field to your plate and the soil, water and energy that run it; soil and seeds, with a jar test and a fair experiment that changes one thing; a farm as an ecosystem with a fence, with who eats whom and who helps whom; and a small project with a plan, a record of every dollar and a graph that tells the truth. Each lesson has a story, and the course ends with a long story about Frederick and a farm week.

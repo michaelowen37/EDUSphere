@@ -1,7 +1,5 @@
-Report and search fixes, and agriculture for 6 to 8
+Summary rules, one info button, and elective folds by grade band
 
-- Pass GV: a small × inside the search boxes clears them in one tap; a browser refresh brings a student back to the lesson, story, map or overview they were on (educator screens still ask for the PIN); elective courses show the grades they serve, such as Grades 3 to 5, wherever a course lists its grade; the Weekly note title is centered on wide screens with Edit and Print in place; and Back to recommended courses has an info note saying it removes assigned courses not yet started and keeps any with progress. The test page's fake storage now survives a reload like the real page. Every new block carries a plain-English explanation.
-- Pass GW: the report's mastered and tried lists sit near the center of their tinted box with the bullets lined up, shrinking to their longest line and filling the box on a phone.
-- Pass GX: grade 6 gets Where food comes from for grades 6 to 8 (agriculture-6), built above the Texas minimum: where food comes from, soil and seeds, animals on a farm, and a small project, with the grade 6 science standards and the National AFNR standards alongside, four short stories and a long one about Frederick and a farm week, two Wonder questions, and Who Gains, a new kind of game. Every new block carries a plain-English explanation.
+- Pass GY: short faint rules separate the report summary's practice, reflection and coloring lines with more room above the tried list; Back to recommended courses is back to one info button whose note names what is removed; and the Electives list folds by grade band (Kindergarten to grade 2, Grades 3 to 5, Grades 6 to 8, Grades 9 to 12, College level) in the Other courses list and the standards map, so no grade looks skipped.
 
-Passes: GV, GW, GX
+Passes: GY

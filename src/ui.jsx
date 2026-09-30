@@ -5801,7 +5801,6 @@ function EduSphereScreens() {
   const [closedAssignedGrades, setClosedAssignedGrades] = useState([]);  // assigned courses sit under grade dropdowns, open by default (2026-09-29, Mikey)
   const [savedCourseIds, setSavedCourseIds] = useState([]);              // other courses moved into the assigned list with Save; on the next open, everything switched on counts
   const [openOtherGrades, setOpenOtherGrades] = useState([]);        // other courses: which grade dropdowns are open
-  const [showRecommendedTip, setShowRecommendedTip] = useState(false); // the small explanation beside Back to recommended courses (pass GV)
   const [openDoneGrades, setOpenDoneGrades] = useState([]);          // transcript: which completed-course grades are open
   const [mapKind, setMapKind] = useState('core');                   // the standards map, by grade: core courses or electives
   const [quickChecks, setQuickChecks] = useState(true);             // may a student skip a module by passing five questions?
@@ -7747,7 +7746,9 @@ function EduSphereScreens() {
           const shown = mapOrder === 'grade' && anyElectives ? plan.filter((entry) => (mapKind === 'electives' ? electiveEntry(entry) : !electiveEntry(entry))) : plan;
           const sorted = [...shown].sort((a, b) => GRADES.indexOf(a.grade) - GRADES.indexOf(b.grade) || subjectOrder.indexOf(a.subject) - subjectOrder.indexOf(b.subject));
           const groups = mapOrder === 'grade'
-            ? GRADES.filter((g) => sorted.some((e) => e.grade === g)).map((g) => ({ key: g, title: gradeLabel(g), entries: sorted.filter((e) => e.grade === g) }))
+            ? (mapKind === 'electives' && anyElectives
+              ? GRADES.filter((g) => sorted.some((e) => electiveBand(e.grade).key === g)).map((g) => ({ key: g, title: electiveBand(g).title, entries: sorted.filter((e) => electiveBand(e.grade).key === g) }))   // electives fold by band (pass GY)
+              : GRADES.filter((g) => sorted.some((e) => e.grade === g)).map((g) => ({ key: g, title: gradeLabel(g), entries: sorted.filter((e) => e.grade === g) })))
             : subjectOrder.map((sub) => ({ key: sub, title: sub, entries: sorted.filter((e) => e.subject === sub) })).filter((group) => group.entries.length);
           const kindToggle = mapOrder === 'grade' && anyElectives ? (
             <SegToggle key="kind" options={[['core', 'Core'], ['electives', 'Electives']]} value={mapKind} onChange={setMapKind} ariaLabel="Core courses or electives" />
@@ -9439,15 +9440,19 @@ function EduSphereScreens() {
                   {parts.items.length > 0 && <div data-summary-list="mastered" style={{ margin: '0 0 10px', padding: '10px 12px', borderRadius: 10, ...(C.mode === 'dark' ? { background: '#AAD8C5', border: '1px solid #AAD8C5', color: '#16201B' } : { background: C.tipBg, border: `1px solid ${C.tipLine}` }) }}><ul style={{ margin: '0 auto', padding: '0 0 0 20px', width: 'fit-content', maxWidth: '100%', boxSizing: 'border-box', textAlign: 'left', listStyleType: 'disc', fontSize: 15, lineHeight: 1.7 }}>{parts.items.map((it) => <li key={it} style={{ display: 'list-item' }}>{it}</li>)}</ul></div>}
                   {/* Air between the summary's thoughts (2026-09-29, Mikey): the ground to make up and the practice so far sit together, the reflection
                       line stands alone, the coloring line stands alone, and the tried-but-not-passed list gets its own room below. */}
+                  {/* Short faint rules between the summary's thoughts (2026-09-30, pass GY, Mikey): one between the practice lines and the
+                      reflection line, one between the reflection line and the coloring line, and then air, no rule, above the tried list. */}
                   {parts.rest && (() => { const lines = parts.rest.split(/(?<=\.)\s+/).filter(Boolean); const cut = lines.findIndex((l) => /reflection question/i.test(l)); const first = cut < 0 ? lines : lines.slice(0, cut); const second = cut < 0 ? [] : lines.slice(cut); return (
                     <div style={{ margin: 0, fontSize: 16, lineHeight: 1.6, textAlign: 'center' }}>
-                      {first.length > 0 && <div style={{ marginBottom: second.length ? 14 : 0 }}>{first.map((line) => <p key={line} style={{ margin: '2px 0' }}>{line}</p>)}</div>}
-                      {second.length > 0 && <div style={{ margin: '14px 0' }}>{second.map((line) => <p key={line} style={{ margin: '2px 0' }}>{line}</p>)}</div>}
+                      {first.length > 0 && <div>{first.map((line) => <p key={line} style={{ margin: '2px 0' }}>{line}</p>)}</div>}
+                      {first.length > 0 && second.length > 0 && <div aria-hidden="true" data-summary-rule="" style={{ width: 120, height: 1, background: C.line, opacity: 0.7, margin: '14px auto' }} />}
+                      {second.length > 0 && <div>{second.map((line) => <p key={line} style={{ margin: '2px 0' }}>{line}</p>)}</div>}
                     </div>); })()}
-                  {rep.coloringBreaks > 0 && <p style={{ margin: '14px 0', fontSize: 15, color: C.muted, textAlign: 'center' }}>Coloring breaks taken: {rep.coloringBreaks}. Coloring is play; it is never marked and never appears on the transcript.</p>}
+                  {rep.coloringBreaks > 0 && <div aria-hidden="true" data-summary-rule="" style={{ width: 120, height: 1, background: C.line, opacity: 0.7, margin: '14px auto' }} />}
+                  {rep.coloringBreaks > 0 && <p style={{ margin: '0 0 6px', fontSize: 15, color: C.muted, textAlign: 'center' }}>Coloring breaks taken: {rep.coloringBreaks}. Coloring is play; it is never marked and never appears on the transcript.</p>}
                   {parts.tried && parts.tried.length > 0 && (
-                    <div style={{ margin: '8px 0 0' }}>
-                      <p style={{ margin: '18px 0 6px', fontSize: 16, lineHeight: 1.6, textAlign: 'center', fontWeight: 600 }}>Tried but not passed yet:</p>
+                    <div style={{ margin: '30px 0 0' }}>
+                      <p style={{ margin: '0 0 6px', fontSize: 16, lineHeight: 1.6, textAlign: 'center', fontWeight: 600 }}>Tried but not passed yet:</p>
                       {/* The same centered, shrink-to-fit list as the mastered list above; these lines are longer, so the block is wider and still on one line where the screen allows (pass GW). */}
                       <div data-summary-list="tried" style={{ margin: 0, padding: '10px 12px', borderRadius: 10, ...(C.mode === 'dark' ? { background: '#AAD8C5', border: '1px solid #AAD8C5', color: '#16201B' } : { background: C.tipBg, border: `1px solid ${C.tipLine}` }) }}><ul style={{ margin: '0 auto', padding: '0 0 0 20px', width: 'fit-content', maxWidth: '100%', boxSizing: 'border-box', textAlign: 'left', listStyleType: 'disc', fontSize: 15, lineHeight: 1.7 }}>
                         {parts.tried.map((t) => <li key={t.id}><button type="button" style={{ ...linkBtn, fontSize: 15, fontWeight: 600, color: C.mode === 'dark' ? B.green : C.green }} onClick={() => setStoryModule(t.id)}>{t.title}</button> ({t.subject ? `${t.subject}: ` : ''}{t.detail})</li>)}
@@ -9485,13 +9490,12 @@ function EduSphereScreens() {
             style={{ fontFamily: FONT, fontSize: 15, padding: '10px 12px', width: '100%', boxSizing: 'border-box', border: `2px solid ${C.line}`, borderRadius: 10, marginBottom: 10, background: C.surface, color: C.ink, WebkitTextFillColor: C.ink, caretColor: C.ink, textAlign: 'center' }} />
           {!courseQuery.trim() && (
             <p style={{ margin: '0 0 10px', fontSize: 13, textAlign: 'center' }}>
-              <button type="button" onClick={() => { const student = findStudent(roster, educatorRecord.name); const starter = recommendedCourseIds([makeCoursesEnabledEvent([], new Date().toISOString())], student ? student.level : null); const keep = COURSES.filter((c) => c.modules.some((m) => rep.modules.find((x) => x.id === m.id && x.attempts > 0))).map((c) => c.id); const unlocked = coursesToUnlock([...educatorRecord.events, makeCoursesEnabledEvent([...new Set([...starter, ...keep])], new Date().toISOString())]); const next = [...new Set([...starter, ...keep, ...unlocked])]; setEnabled(next); setRecommendedIds(next); setSavedCourseIds([]); setShowAllCourses(false); }} style={{ ...linkBtn, fontSize: 13, padding: 0 }}>Back to recommended courses</button> <InfoButton onClick={() => setShowRecommendedTip(!showRecommendedTip)} label="What back to recommended courses does" open={showRecommendedTip} />
-              {showRecommendedTip && <span style={{ display: 'block', margin: '6px auto 0', maxWidth: 520, fontSize: 13, color: C.muted, lineHeight: 1.5 }}>Selecting <em>Back to recommended courses</em> returns the list to our recommendation for {shownName}. Any assigned course that has not been started yet, including an elective, is removed; a course with any progress stays assigned.</span>}
+              <button type="button" onClick={() => { const student = findStudent(roster, educatorRecord.name); const starter = recommendedCourseIds([makeCoursesEnabledEvent([], new Date().toISOString())], student ? student.level : null); const keep = COURSES.filter((c) => c.modules.some((m) => rep.modules.find((x) => x.id === m.id && x.attempts > 0))).map((c) => c.id); const unlocked = coursesToUnlock([...educatorRecord.events, makeCoursesEnabledEvent([...new Set([...starter, ...keep])], new Date().toISOString())]); const next = [...new Set([...starter, ...keep, ...unlocked])]; setEnabled(next); setRecommendedIds(next); setSavedCourseIds([]); setShowAllCourses(false); }} style={{ ...linkBtn, fontSize: 13, padding: 0 }}>Back to recommended courses</button>
               <InfoButton onClick={() => setShowRecommendTip(!showRecommendTip)} label="About recommended courses" open={showRecommendTip} />
             </p>
           )}
           {!courseQuery.trim() && showRecommendTip && (
-            <TipText>Sets this student back to the courses we recommend for their level. Any course they have already started stays assigned, so no progress is hidden.</TipText>
+            <TipText>Sets this student back to the courses we recommend for their level. Any course they have already started stays assigned, so no progress is hidden; an assigned course not yet started, including an elective, is removed.</TipText>
           )}
           {courseQuery.trim() && (
             <div>
@@ -9532,14 +9536,17 @@ function EduSphereScreens() {
               <SegToggle options={[['core', 'Core'], ['electives', 'Electives']]} value={otherKind} onChange={setOtherKind} ariaLabel="Core courses or electives" />
               {(() => {
                 const others = COURSES.filter((c) => !recommended.includes(c.id) && !savedCourseIds.includes(c.id) && (otherKind === 'electives' ? !!c.elective : !c.elective)).sort(byGradeOrder);
-                const grades = GRADES.filter((g) => others.some((c) => c.grade === g));
+                // Electives fold by band (pass GY, Mikey): the fold's key is the band's first grade and its title the band's name, so the closed list
+                // reads Kindergarten to grade 2, Grades 3 to 5, Grades 6 to 8, Grades 9 to 12, College level, with no grade seeming to be skipped.
+                const foldOf = (c) => (otherKind === 'electives' ? electiveBand(c.grade).key : c.grade);
+                const grades = GRADES.filter((g) => others.some((c) => foldOf(c) === g));
                 if (!grades.length) return <p style={{ margin: '0 0 8px', fontSize: 15, color: C.muted, textAlign: 'center' }}>{otherKind === 'electives' ? 'No electives outside the recommended set.' : 'No other core courses outside the recommended set.'}</p>;
-                return grades.map((g) => { const key = `${otherKind}-${g}`; const open = openOtherGrades.includes(key); const list = others.filter((c) => c.grade === g);
+                return grades.map((g) => { const key = `${otherKind}-${g}`; const open = openOtherGrades.includes(key); const list = others.filter((c) => foldOf(c) === g); const foldTitle = otherKind === 'electives' ? electiveBand(g).title : gradeLabel(g);
                   return (
                     <div key={key} style={{ border: `1px solid ${C.line}`, borderRadius: 10, marginBottom: 8, overflow: 'hidden', background: C.surface }}>
                       <button type="button" aria-expanded={open} onClick={() => setOpenOtherGrades((l) => (l.includes(key) ? l.filter((x) => x !== key) : [...l, key]))}
                         style={{ fontFamily: FONT, width: '100%', textAlign: 'left', background: C.mode === 'dark' ? C.panel : C.greenSoft, border: 'none', padding: '12px 14px', cursor: 'pointer', color: C.ink, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <span style={{ fontSize: 16, fontWeight: 600 }}>{gradeLabel(g)}</span>
+                        <span style={{ fontSize: 16, fontWeight: 600 }}>{foldTitle}</span>
                         <span style={{ fontSize: 14, color: C.muted }}>{list.filter((c) => enabled.includes(c.id)).length ? `${list.filter((c) => enabled.includes(c.id)).length} of ${list.length} selected ` : `${list.length} ${list.length === 1 ? 'course ' : 'courses '}`}{open ? '▴' : '▾'}</span>
                       </button>
                       {open && <div style={{ padding: '4px 14px 8px' }}>

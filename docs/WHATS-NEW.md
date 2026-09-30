@@ -2,6 +2,48 @@
 
 The newest block is what educators see once, in a pop-up on the classroom page, after each update. Write it the way Mikey talks to a teacher: conversational, complete sentences, say what changed and why it matters, and skip the shorthand (2026-09-23). Two to four items. The date line is the version stamp.
 
+## September 30, 2026 (I can listen, I can say)
+
+- Kindergarten has a new free read-aloud elective for K to 2, I can listen, I can say: listening with the whole body and asking when you do not understand; steps said back and done in order, first, then, last; a clear voice with three parts, loud enough for the last friend; and a hand up for a turn, with hello, please, thank you and excuse me. Each lesson has a story and a coloring page, and the course ends with a long story about a circle rug that learned to listen.
+- Finishing the course unlocks Whose Turn Next, a new kind of game for small hands: four friends in a circle, a talking stick, and the friend whose turn comes next.
+- Two new Wonder questions for the youngest wait in the review screen. The speech strand now runs from kindergarten to grade 12.
+
+## September 30, 2026 (listen, then say it)
+
+- Grade 3 has a new elective for grades 3 to 5, Listen, then say it: listening with eyes, hands, body and mind, and asking a question that is about the topic; telling it in order, with the steps counted and said back; a one-minute talk with one topic, three facts and complete sentences; and taking turns to talk, with a talking stick, two sentences that build on an idea, and polite words in every room. Each lesson has a story, and the course ends with a long story about Savanah and a fire chief.
+- Finishing the course unlocks Ask the Right Question, a new kind of game: something a friend said, and the question that is about it.
+- Two new Wonder questions for grades 3 to 5 wait in the review screen.
+
+## September 30, 2026 (say what you mean)
+
+- Grade 6 has a new elective for grades 6 to 8, Say what you mean: listening on purpose, with three moves that catch a mistake before it is built; saying it clearly, in one sentence with the ends of the words on, in the voice the room needs; a two-minute talk with a stance, two reasons and a closer; and disagreeing out loud, with the quiet one asked, notes taken, and the idea argued with instead of the person. Each lesson has a story, and the course ends with a long story about Georgette and a Saturday club.
+- Finishing the course unlocks Fit the Room, a new kind of game: a line somebody said, and the room it fits.
+- Two new Wonder questions for grades 6 to 8 wait in the review screen.
+
+## September 30, 2026 (say it so it lands)
+
+- A new subject, Speech, begins with an elective for grades 9 to 12, Say it so it lands: the six parts of every message and the register that fits the room; listening that works, from the five steps to the question under the question in an interview; building a talk for its audience, occasion and purpose, with sources that check each other and a shape a listener can follow; and delivery, with nerves reframed as readiness, fillers cut, and questions answered honestly. Each lesson has a story, and the course ends with a long story about Mike at the city council.
+- Finishing the course unlocks Cut the Fillers, a new kind of game: a line from a talk, and the words that say nothing.
+- Two new Wonder questions for high school wait in the review screen.
+
+## September 30, 2026 (me and my mind)
+
+- Kindergarten has a new elective for kindergarten through grade 2, Me and my mind, read aloud like the rest of kindergarten: the brain as the boss and the five senses that bring it news; remembering a little every day; feelings with names and a slow breath; and how to make a friend and fix a fight. Every lesson has a story and a coloring page, and the course ends with a long story about a rainy day club.
+- Finishing the course unlocks Which Sense, a new kind of game: a thing you might meet, and the sense that tells you about it.
+- Two new Wonder questions for the youngest wait in the review screen.
+
+## September 30, 2026 (how your mind works)
+
+- Grade 3 has a new elective for grades 3 to 5, How your mind works: the brain as the boss and the senses as its reporters, and why it needs ten hours of sleep; how remembering works and why small and often beats one big night; big feelings as signals, with a name and a breath; and friends whose minds are not yours, with the sentence that fixes a fight. Each lesson has a story, and the course ends with a long story about Chloe and a worry jar.
+- Finishing the course unlocks Name the Feeling, a new kind of game: a face and four feeling words.
+- Two new Wonder questions for grades 3 to 5 wait in the review screen.
+
+## September 29, 2026 (how people work)
+
+- Grade 6 has a new elective for grades 6 to 8, How people work: the brain you are growing, with its parts and their jobs, the brakes that finish in your twenties, and why sleep files the day; attention, memory and the two study habits that beat all the others; feelings as signals with jobs, why naming one turns it down, and what to do with stress; and other people, from first impressions to the pull of a group to being the one who moves. Each lesson has a story, and the course ends with a long story about Mike and a team that could not remember the plays.
+- Finishing the course unlocks Hold It in Mind, a new kind of game: five words, four seconds, and one question.
+- Two new Wonder questions for grades 6 to 8 wait in the review screen.
+
 ## September 29, 2026 (the science of behavior)
 
 - A new subject, Psychology, begins with an elective for grades 9 to 12, The science of behavior: how psychologists test a claim, from surveys and correlation to the experiment that alone shows cause, with three ways to say average; the brain, the senses and how a mind grows, with Piaget and Erikson; how behavior is learned by pairing, by consequences and by watching, how memory works and forgets, and the shortcuts that trip thinking; and what crowds do to a person, from the attribution error to the bystander effect, with the stress response and what helps. Each lesson has a story, and the course ends with a long story about Savanah and a waiting room.

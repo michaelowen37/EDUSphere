@@ -1045,6 +1045,78 @@ await page.waitForTimeout(200);
 }
 await page.getByRole('button', { name: 'Close game' }).first().click({ force: true });
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview');
+// Hold It in Mind (pass GN, psychology 6 to 8): the board carries the answer only once the words have hidden.
+await page.evaluate(() => window.__eduTest.openColoring('play:recall-psychology-6'));
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'coloring');
+await page.waitForTimeout(200);
+{ ok('the recall game opens by showing five words with a countdown', /The words hide in \d/.test(await text()));
+  for (let i = 0; i < 5; i++) { await page.waitForFunction(() => { const el = document.querySelector('[data-recall-answer]'); return el && el.getAttribute('data-recall-answer'); }, null, { timeout: 8000 }); const ans = await page.locator('[data-recall-answer]').getAttribute('data-recall-answer'); if (!ans) break; await page.getByRole('button', { name: `Word ${ans}`, exact: true }).click(); await page.waitForTimeout(1050); }
+  ok('five lists held in mind finish the round', (await text()).includes('Five lists held in mind'));
+}
+await page.getByRole('button', { name: 'Close game' }).first().click({ force: true });
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview');
+// Name the Feeling (pass GO, psychology 3 to 5): the board carries the feeling the face shows.
+await page.evaluate(() => window.__eduTest.openColoring('play:face-psychology-3'));
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'coloring');
+await page.waitForTimeout(200);
+{ ok('the face game opens with a face and four feeling words', (await page.getByRole('button', { name: /^Feeling: / }).count()) === 4 && (await text()).includes('What is this face feeling?'));
+  for (let i = 0; i < 6; i++) { const ans = await page.locator('[data-feeling-answer]').getAttribute('data-feeling-answer'); if (!ans) break; await page.getByRole('button', { name: `Feeling: ${ans}`, exact: true }).click(); await page.waitForTimeout(950); }
+  ok('six named feelings finish the round', (await text()).includes('Six feelings named'));
+}
+await page.getByRole('button', { name: 'Close game' }).first().click({ force: true });
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview');
+// Which Sense (pass GP, psychology K to 2): the board carries the sense the thing belongs to.
+await page.evaluate(() => window.__eduTest.openColoring('play:sense-psychology-k'));
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'coloring');
+await page.waitForTimeout(200);
+{ ok('the sense game opens with a thing and five senses', (await page.getByRole('button', { name: /^Sense: / }).count()) === 5 && (await page.locator('[data-sense-answer]').count()) === 1);
+  for (let i = 0; i < 5; i++) { const ans = await page.locator('[data-sense-answer]').getAttribute('data-sense-answer'); if (!ans) break; await page.getByRole('button', { name: `Sense: ${ans}`, exact: true }).click(); await page.waitForTimeout(1050); }
+  ok('five right senses finish the round', (await text()).includes('Five senses found'));
+}
+await page.getByRole('button', { name: 'Close game' }).first().click({ force: true });
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview');
+// Cut the Fillers (pass GQ, speech 9 to 12): the fillers are marked on the board and the count of what is left is carried.
+await page.evaluate(() => window.__eduTest.openColoring('play:filler-speech-9'));
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'coloring');
+await page.waitForTimeout(200);
+{ ok('the filler game opens with a line that holds fillers to cut', (await page.locator('button[data-filler="yes"]').count()) >= 2 && /fillers? to cut/.test(await text()));
+  for (let r = 0; r < 5; r++) { const left = await page.locator('[data-filler-left]').getAttribute('data-filler-left'); if (left === '' || left === null) break;
+    const fillers = page.locator('button[data-filler="yes"]'); const n = await fillers.count(); for (let i = 0; i < n; i++) { await fillers.nth(i).click(); await page.waitForTimeout(60); }
+    await page.waitForTimeout(1150); }
+  ok('five cleaned lines finish the round', (await text()).includes('Five lines cleaned'));
+}
+await page.getByRole('button', { name: 'Close game' }).first().click({ force: true });
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview');
+// Fit the Room (pass GR, speech 6 to 8): the board carries the room the line fits.
+await page.evaluate(() => window.__eduTest.openColoring('play:room-speech-6'));
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'coloring');
+await page.waitForTimeout(200);
+{ ok('the room game opens with a line and four rooms', (await page.getByRole('button', { name: /^Room: / }).count()) === 4 && (await text()).includes('Which room does this line fit?'));
+  for (let i = 0; i < 6; i++) { const ans = await page.locator('[data-room-answer]').getAttribute('data-room-answer'); if (!ans) break; await page.getByRole('button', { name: `Room: ${ans}`, exact: true }).click(); await page.waitForTimeout(1050); }
+  ok('six lines in their rooms finish the round', (await text()).includes('Six lines in their rooms'));
+}
+await page.getByRole('button', { name: 'Close game' }).first().click({ force: true });
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview');
+// Ask the Right Question (pass GS, speech 3 to 5): the board carries the relevant question.
+await page.evaluate(() => window.__eduTest.openColoring('play:ask-speech-3'));
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'coloring');
+await page.waitForTimeout(200);
+{ ok('the ask game opens with something said and four questions', (await page.getByRole('button', { name: /^Question: / }).count()) === 4 && (await text()).includes('Which question is about what they said?'));
+  for (let i = 0; i < 6; i++) { const ans = await page.locator('[data-ask-answer]').getAttribute('data-ask-answer'); if (!ans) break; await page.getByRole('button', { name: `Question: ${ans}`, exact: true }).click(); await page.waitForTimeout(1050); }
+  ok('six questions on the topic finish the round', (await text()).includes('Six questions on the topic'));
+}
+await page.getByRole('button', { name: 'Close game' }).first().click({ force: true });
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview');
+// Whose Turn Next (pass GT, speech K to 2): the board carries the name of the friend whose turn is next.
+await page.evaluate(() => window.__eduTest.openColoring('play:turn-speech-k'));
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'coloring');
+await page.waitForTimeout(200);
+{ ok('the turn game opens with four friends and a holder named', (await page.getByRole('button', { name: /^Friend: / }).count()) === 4 && /has the stick\. Who is next\?/.test(await text()));
+  for (let i = 0; i < 6; i++) { const ans = await page.locator('[data-turn-answer]').getAttribute('data-turn-answer'); if (!ans) break; await page.getByRole('button', { name: `Friend: ${ans}`, exact: true }).click(); await page.waitForTimeout(1050); }
+  ok('six turns in order finish the round', (await text()).includes('Six turns in order'));
+}
+await page.getByRole('button', { name: 'Close game' }).first().click({ force: true });
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview');
 // Some pictures are drawn on rather than filled in: a finger stroke leaves a line in the chosen color.
 await page.evaluate(() => window.__eduTest.openColoring('star'));
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'coloring');

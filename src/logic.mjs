@@ -917,6 +917,33 @@ export const COURSES = [
     keywords: ['computer science', 'programming', 'binary', 'coding', 'elective'],
     modules: TECH9_MODULES(),
   },
+  // ---------------------------------------------------------------------------------------------------------------
+  // Speech for kindergarten to grade 2 (2026-09-30, pass GT). In plain terms: this is the course card the app shows on
+  // the kindergarten shelf. It is read aloud (questions are spoken and answers tapped), free (the K storefront), and an
+  // elective. Its four lessons live in SPEECHK_MODULES() further down; this entry only names the course and points at them.
+  // ---------------------------------------------------------------------------------------------------------------
+  {
+    id: 'speech-k',
+    grade: 'K',
+    subject: 'Speech',
+    title: 'I can listen, I can say',
+    audience: 'Kindergarten to grade 2',
+    readAloud: true, // the K to 2 band: questions are spoken and answers tapped
+    elective: true,
+    keywords: ['speech', 'listening', 'directions', 'clear voice', 'turns', 'kind words', 'elective'],
+    modules: SPEECHK_MODULES(),
+  },
+  {
+    id: 'psychology-k',
+    grade: 'K',
+    subject: 'Psychology',
+    title: 'Me and my mind',
+    audience: 'Kindergarten to grade 2',
+    readAloud: true, // the K to 2 band: questions are spoken and answers tapped (2026-09-30, pass GP)
+    elective: true,
+    keywords: ['psychology', 'brain', 'senses', 'feelings', 'calm', 'friends', 'remembering', 'elective'],
+    modules: PSYK_MODULES(),
+  },
   {
     id: 'philosophy-k',
     grade: 'K',
@@ -940,6 +967,16 @@ export const COURSES = [
     modules: ECONK_MODULES(),
   },
   {
+    id: 'psychology-3',
+    grade: '3',
+    subject: 'Psychology',
+    title: 'How your mind works',
+    audience: 'Grades 3 to 5',
+    elective: true,
+    keywords: ['psychology', 'brain', 'senses', 'memory', 'feelings', 'friends', 'calm', 'elective'],
+    modules: PSY3_MODULES(),
+  },
+  {
     id: 'philosophy-3',
     grade: '3',
     subject: 'Philosophy',
@@ -960,6 +997,16 @@ export const COURSES = [
     modules: ECON3_MODULES(),
   },
   {
+    id: 'psychology-6',
+    grade: '6',
+    subject: 'Psychology',
+    title: 'How people work',
+    audience: 'Grades 6 to 8',
+    elective: true,
+    keywords: ['psychology', 'brain', 'memory', 'attention', 'feelings', 'stress', 'friends', 'peer pressure', 'elective'],
+    modules: PSY6_MODULES(),
+  },
+  {
     id: 'philosophy-6',
     grade: '6',
     subject: 'Philosophy',
@@ -978,6 +1025,36 @@ export const COURSES = [
     elective: true,
     keywords: ['money', 'interest', 'credit', 'budget', 'college', 'personal finance', 'economics', 'elective'],
     modules: ECON6_MODULES(),
+  },
+  {
+    id: 'speech-3',
+    grade: '3',
+    subject: 'Speech',
+    title: 'Listen, then say it',
+    audience: 'Grades 3 to 5',
+    elective: true,
+    keywords: ['speech', 'listening', 'questions', 'instructions', 'talk', 'turns', 'polite', 'elective'],
+    modules: SPEECH3_MODULES(),
+  },
+  {
+    id: 'speech-6',
+    grade: '6',
+    subject: 'Speech',
+    title: 'Say what you mean',
+    audience: 'Grades 6 to 8',
+    elective: true,
+    keywords: ['speech', 'listening', 'instructions', 'presentation', 'discussion', 'disagree', 'elective'],
+    modules: SPEECH6_MODULES(),
+  },
+  {
+    id: 'speech-9',
+    grade: '9',
+    subject: 'Speech',
+    title: 'Say it so it lands',
+    audience: 'Grades 9 to 12',
+    elective: true,
+    keywords: ['speech', 'communication', 'listening', 'presentation', 'public speaking', 'nerves', 'interview', 'elective'],
+    modules: SPEECH9_MODULES(),
   },
   {
     id: 'psychology-9',
@@ -1198,6 +1275,8 @@ export const GAMES = [
   { id: 'walk-tech-k', kind: 'walk', title: 'Walk the Robot', walk: 'walk', young: true, minGrade: 'K' },
   { id: 'pay-econ-k', kind: 'pay', title: 'Pay the Price', pay: 'coins', young: true, minGrade: 'K' },
   { id: 'share-philosophy-k', kind: 'share', title: 'Share the Cookies', share: 'plates', young: true, minGrade: 'K' },   // philosophy K to 2 (pass GL): equal shares is the rule
+  { id: 'sense-psychology-k', kind: 'sense', title: 'Which Sense', sense: 'things', young: true, minGrade: 'K' },   // psychology K to 2 (pass GP): each thing belongs to one sense
+  { id: 'turn-speech-k', kind: 'turn', title: 'Whose Turn Next', turn: 'friends', young: true, minGrade: 'K' },   // speech K to 2 (pass GT): the circle is the rule
   { id: 'spot-arts-k', kind: 'spot', title: 'Spot It', spot: 'scenes', young: true, minGrade: 'K' },   // art and music K to 2 (pass GE): find the line, shape or color a voice asks for   // economics K to 2 (pass FV): count out the exact price   // computer science K to 2 (pass FS): the child programs the robot
   { id: 'jigsaw-4', kind: 'jigsaw', title: 'Puzzle', side: 2 },
   { id: 'dots-boat', kind: 'dots', title: 'Boat', shape: 'boat' },
@@ -1294,15 +1373,20 @@ export const GAMES = [
   { id: 'debug-tech-5', kind: 'debug', title: 'Debug the robot: turns', minGrade: '5', deck: 'turns' },
   { id: 'price-econ-3', kind: 'price', title: 'Set the Price', minGrade: '3', price: 'stand' },
   { id: 'because-philosophy-3', kind: 'because', title: 'Sort the Because', minGrade: '3', because: 'claims' },   // philosophy 3 to 5 (pass GK): a real reason is about the thing
+  { id: 'face-psychology-3', kind: 'face', title: 'Name the Feeling', minGrade: '3', face: 'feelings' },   // psychology 3 to 5 (pass GO): naming the feeling is the rule
   { id: 'pattern-arts-3', kind: 'pattern', title: 'What Comes Next', minGrade: '3', pattern: 'forms' },
   { id: 'shape-arts-6', kind: 'shape', title: 'Shape the Sound', minGrade: '6', shape: 'dynamics' },   // art and music 6 to 8 (pass GG): the markings are the rule   // art and music 3 to 5 (pass GF): the form is the rule   // economics 3 to 5 (pass FW): find the price that earns the most
   { id: 'teach-tech-6', kind: 'teach', title: 'Teach the Robot', minGrade: '6', teach: 'fruit' },
   { id: 'search-tech-college', kind: 'search', title: 'Split the Search', minGrade: 'C', search: 32 },   // college computer science (pass FU): binary search by hand
   { id: 'loan-econ-6', kind: 'loan', title: 'Pay It Off', minGrade: '6', loan: 'plans' },
-  { id: 'reason-philosophy-6', kind: 'reason', title: 'Reason or Not', minGrade: '6', reason: 'claims' },   // philosophy 6 to 8 (pass GJ): relevance is the rule   // economics 6 to 8 (pass FX): what a loan costs month by month
+  { id: 'reason-philosophy-6', kind: 'reason', title: 'Reason or Not', minGrade: '6', reason: 'claims' },
+  { id: 'recall-psychology-6', kind: 'recall', title: 'Hold It in Mind', minGrade: '6', recall: 'words' },   // psychology 6 to 8 (pass GN): attention is the doorway   // philosophy 6 to 8 (pass GJ): relevance is the rule   // economics 6 to 8 (pass FX): what a loan costs month by month
   { id: 'fund-econ-9', kind: 'fund', title: 'Build the Fund', minGrade: '9', fund: 'year' },
   { id: 'valid-philosophy-9', kind: 'valid', title: 'Valid or Not', minGrade: '9', valid: 'forms' },
   { id: 'stat-psychology-9', kind: 'stat', title: 'Mean, Median, Mode', minGrade: '9', stat: 'scores' },   // psychology 9 to 12 (pass GM): three ways to say average   // philosophy 9 to 12 (pass GI): the form decides
+  { id: 'filler-speech-9', kind: 'filler', title: 'Cut the Fillers', minGrade: '9', filler: 'lines' },   // speech 9 to 12 (pass GQ): the fillers are the rule
+  { id: 'room-speech-6', kind: 'room', title: 'Fit the Room', minGrade: '6', room: 'lines' },   // speech 6 to 8 (pass GR): the room is the rule
+  { id: 'ask-speech-3', kind: 'ask', title: 'Ask the Right Question', minGrade: '3', ask: 'topics' },   // speech 3 to 5 (pass GS): the topic is the rule
   { id: 'chord-arts-9', kind: 'chord', title: 'Build the Chord', minGrade: '9', chord: 'triads' },   // art and music 9 to 12 (pass GH): four half steps then three   // personal finance 9 to 12 (pass FY): a year of saving against surprises
   { id: 'bits-tech-9', kind: 'bits', title: 'Eight Switches', minGrade: '9', bits: 8 },   // computer science 9 to 12 (pass FU): make the number with the switches   // the plain AI course (pass FT): the child is the pile of examples
   { id: 'mix-art-3', kind: 'mix', title: 'Color mixer: make new colors', minGrade: '3', deck: 'mix3' },
@@ -1914,6 +1998,117 @@ export function statRounds(round) {
     return { scores: order, ask, answer, choices };
   });
 }
+// Hold It in Mind (2026-09-29, pass GN, psychology 6 to 8): five words shown for a few seconds and then hidden, and one
+// question: which of these four was on the list? Attention is the doorway and working memory holds a handful, which is
+// the rule of the game. Every round's four choices hold exactly one word from its list, which the rules test proves.
+export const RECALL_WORDS = ['apple', 'drum', 'river', 'candle', 'ladder', 'tiger', 'button', 'pillow', 'rocket', 'garden', 'mirror', 'basket', 'window', 'pencil', 'anchor', 'feather', 'helmet', 'lantern', 'meadow', 'compass', 'saddle', 'kettle', 'violin', 'bridge'];
+export function recallRounds(round) {
+  let x = (round * 214013 + 2531011) >>> 0; const rnd = () => { x = (x * 1664525 + 1013904223) >>> 0; return x / 4294967296; };
+  return Array.from({ length: 5 }, () => {
+    const pool = [...RECALL_WORDS]; for (let j = pool.length - 1; j > 0; j--) { const k = Math.floor(rnd() * (j + 1)); [pool[j], pool[k]] = [pool[k], pool[j]]; }
+    const shown = pool.slice(0, 5); const answer = shown[Math.floor(rnd() * 5)]; const choices = [answer, ...pool.slice(5, 8)];
+    for (let j = choices.length - 1; j > 0; j--) { const k = Math.floor(rnd() * (j + 1)); [choices[j], choices[k]] = [choices[k], choices[j]]; }
+    return { shown, answer, choices };
+  });
+}
+// Name the Feeling (2026-09-29, pass GO, psychology 3 to 5): a face, drawn from six expressions, and four feeling
+// words; tap the one the face shows. Naming a feeling is the lesson's first move, and here it is the rule of the game.
+// Six faces a round, every feeling once, and the clock counts up.
+export const FEELINGS = ['happy', 'sad', 'angry', 'scared', 'surprised', 'calm'];
+export function feelingRounds(round) {
+  let x = (round * 22695477 + 9) >>> 0; const rnd = () => { x = (x * 1664525 + 1013904223) >>> 0; return x / 4294967296; };
+  const order = [...FEELINGS]; for (let j = order.length - 1; j > 0; j--) { const k = Math.floor(rnd() * (j + 1)); [order[j], order[k]] = [order[k], order[j]]; }
+  return order.map((answer) => {
+    const others = FEELINGS.filter((f) => f !== answer); for (let j = others.length - 1; j > 0; j--) { const k = Math.floor(rnd() * (j + 1)); [others[j], others[k]] = [others[k], others[j]]; }
+    const choices = [answer, ...others.slice(0, 3)]; for (let j = choices.length - 1; j > 0; j--) { const k = Math.floor(rnd() * (j + 1)); [choices[j], choices[k]] = [choices[k], choices[j]]; }
+    return { answer, choices };
+  });
+}
+// Which Sense (2026-09-30, pass GP, psychology K to 2): a thing you might meet, a bell, a rainbow, a rose, a lemon or a
+// kitten's fur, and the five senses to choose from; tap the sense that tells you about it. Every thing belongs to one
+// sense, which the rules test proves. Five things a round, one for each sense, and the clock counts up.
+export const SENSES = ['see', 'hear', 'smell', 'taste', 'touch'];
+export const SENSE_THINGS = [
+  ['a rainbow', 'see'], ['a red apple', 'see'], ['a ringing bell', 'hear'], ['a barking dog', 'hear'], ['a rose', 'smell'], ['fresh bread baking', 'smell'],
+  ['a sour lemon', 'taste'], ['sweet honey', 'taste'], ['soft kitten fur', 'touch'], ['a cold ice cube', 'touch'],
+];
+export function senseRounds(round) {
+  let x = (round * 31337 + 13) >>> 0; const rnd = () => { x = (x * 1664525 + 1013904223) >>> 0; return x / 4294967296; };
+  const order = [...SENSES]; for (let j = order.length - 1; j > 0; j--) { const k = Math.floor(rnd() * (j + 1)); [order[j], order[k]] = [order[k], order[j]]; }
+  return order.map((sense) => { const pool = SENSE_THINGS.filter((t) => t[1] === sense); const [thing] = pool[Math.floor(rnd() * pool.length)]; return { thing, sense }; });
+}
+// Cut the Fillers (2026-09-30, pass GQ, speech 9 to 12): a line of a talk with filler words dropped into it, and one
+// job: tap every filler until the line is clean. The fillers are the rule of the game, and every line's fillers are
+// counted in advance, which the rules test proves. Five lines a round and the clock counts up.
+export const FILLERS = ['um', 'like', 'you know', 'basically', 'so', 'uh', 'kind of', 'right'];
+export const CLEAN_LINES = [
+  'The crosswalk would save the school four minutes a day.',
+  'Our survey asked one hundred and fifty students.',
+  'The first point is the cost, and the second is the time.',
+  'Every rehearsal took the same fifteen minutes.',
+  'The map shows three crossings and one signal.',
+  'The band raised six hundred dollars in a month.',
+  'A pause before the last line makes people remember it.',
+  'Notes let you talk, and a script makes you read.',
+];
+export function fillerRounds(round) {
+  let x = (round * 1103515245 + 3) >>> 0; const rnd = () => { x = (x * 1664525 + 1013904223) >>> 0; return x / 4294967296; };
+  return Array.from({ length: 5 }, (_, i) => {
+    const words = CLEAN_LINES[(i * 3 + round) % CLEAN_LINES.length].split(' ');
+    const count = 2 + Math.floor(rnd() * 2); const slots = new Set(); while (slots.size < count) slots.add(1 + Math.floor(rnd() * (words.length - 1)));
+    const tokens = []; words.forEach((w, j) => { if (slots.has(j)) tokens.push({ text: FILLERS[Math.floor(rnd() * FILLERS.length)], filler: true }); tokens.push({ text: w, filler: false }); });
+    return { tokens, fillers: count };
+  });
+}
+// Fit the Room (2026-09-30, pass GR, speech 6 to 8): a line somebody said and four rooms; tap the room the line fits.
+// Adapting speech to the room is the lesson, and here it is the rule of the game. Six lines a round, and the clock
+// counts up.
+export const ROOMS = ['friends', 'class', 'a job interview', 'a text to a grandparent'];
+export const ROOM_LINES = [
+  ['hey what is up, you coming?', 'friends'], ['no way, that is wild', 'friends'], ['bet, see you at four', 'friends'],
+  ['I think the author chose the storm to show the change in Marcus.', 'class'], ['Could you explain what the denominator does here?', 'class'], ['My evidence comes from the second paragraph.', 'class'],
+  ['Good morning, thank you for taking the time to meet with me.', 'a job interview'], ['My biggest strength is that I finish what I start.', 'a job interview'], ['I would like to learn more about the role before I answer.', 'a job interview'],
+  ['Hi Grandma, thank you for the sweater, I love it.', 'a text to a grandparent'], ['Can I call you Sunday after lunch?', 'a text to a grandparent'], ['Happy birthday! We will see you at dinner.', 'a text to a grandparent'],
+];
+export function roomRounds(round) {
+  let x = (round * 69069 + 5) >>> 0; const rnd = () => { x = (x * 1664525 + 1013904223) >>> 0; return x / 4294967296; };
+  const order = [...ROOM_LINES]; for (let j = order.length - 1; j > 0; j--) { const k = Math.floor(rnd() * (j + 1)); [order[j], order[k]] = [order[k], order[j]]; }
+  const seen = new Set(); const picked = [];
+  for (const [line, room] of order) { if (picked.length >= 6) break; if (picked.filter((q) => q.answer === room).length >= 2) continue; if (seen.has(line)) continue; seen.add(line); picked.push({ line, answer: room, choices: [...ROOMS] }); }
+  return picked;
+}
+// Ask the Right Question (2026-09-30, pass GS, speech 3 to 5): something a friend said and four questions; tap the one
+// that is about the topic. A relevant question is the lesson's rule, and here it is the rule of the game. Six a round,
+// and the clock counts up.
+export const ASK_ROUNDS = [
+  { said: 'We went to the beach on Saturday.', good: 'Did you swim?', off: ['What is for lunch?', 'Is it Tuesday?', 'Do you like my shoes?'] },
+  { said: 'My dog learned to sit.', good: 'How did you teach him?', off: ['Can I have a cookie?', 'What time is it?', 'Where is my hat?'] },
+  { said: 'I lost my first tooth last night.', good: 'Did it hurt?', off: ['Is it raining?', 'What is your favorite color?', 'Do you have a bike?'] },
+  { said: 'We are getting a new puppy.', good: 'What will you name it?', off: ['Is the bus late?', 'What is nine plus three?', 'Can you see the moon?'] },
+  { said: 'My grandma is visiting from far away.', good: 'How long is she staying?', off: ['Is the pool open?', 'What is for dinner?', 'Do you like soccer?'] },
+  { said: 'I built a birdhouse with my dad.', good: 'What did you make it out of?', off: ['Is it recess yet?', 'Where are my crayons?', 'Do you like pizza?'] },
+  { said: 'Our class is going to the zoo.', good: 'Which animal do you want to see?', off: ['What is your middle name?', 'Is your shirt new?', 'Can we play tag?'] },
+  { said: 'I planted sunflower seeds in a cup.', good: 'Have they sprouted yet?', off: ['What is the date?', 'Where is the library?', 'Is your lunch in a bag?'] },
+];
+export function askRounds(round) {
+  let x = (round * 214013 + 7) >>> 0; const rnd = () => { x = (x * 1664525 + 1013904223) >>> 0; return x / 4294967296; };
+  const order = [...ASK_ROUNDS]; for (let j = order.length - 1; j > 0; j--) { const k = Math.floor(rnd() * (j + 1)); [order[j], order[k]] = [order[k], order[j]]; }
+  return order.slice(0, 6).map((r) => { const choices = [r.good, ...r.off]; for (let j = choices.length - 1; j > 0; j--) { const k = Math.floor(rnd() * (j + 1)); [choices[j], choices[k]] = [choices[k], choices[j]]; } return { said: r.said, answer: r.good, choices }; });
+}
+// -----------------------------------------------------------------------------------------------------------------
+// Whose Turn Next (2026-09-30, pass GT, the kindergarten speech game). In plain terms: four friends sit in a circle and
+// one of them holds the talking stick. The child taps the friend whose turn comes next, going around the circle the
+// same way every time. `TURN_FRIENDS` is the four names in circle order; `turnRounds(round)` picks six holders for one
+// game and works out the answer for each (the next name around the circle). The screen never decides answers itself;
+// it reads them from here, which is why one rules test can prove every answer right.
+// -----------------------------------------------------------------------------------------------------------------
+export const TURN_FRIENDS = ['Ava', 'Ben', 'Cy', 'Dee'];
+export function turnRounds(round) {
+  let x = (round * 48271 + 11) >>> 0; const rnd = () => { x = (x * 1664525 + 1013904223) >>> 0; return x / 4294967296; };
+  const rounds = []; let last = -1;
+  while (rounds.length < 6) { const holder = Math.floor(rnd() * TURN_FRIENDS.length); if (holder === last) continue; last = holder; rounds.push({ holder, answer: TURN_FRIENDS[(holder + 1) % TURN_FRIENDS.length] }); }
+  return rounds;
+}
 export const ROBOT_DECKS = {
   arrows: [
     { start: [1,1], goal: [0,4], rocks: [[2,1],[0,2],[2,2]], program: 'DDLU' },
@@ -2293,7 +2488,7 @@ function recommendedIncludingElectives(events, level, startGrade = null) {
 
 // Subjects always read Math, Reading, Writing, Science, History, then anything else alphabetically,
 // whatever order the courses were written in. Every screen that lists subjects sorts with this.
-const SUBJECT_RANK = { Math: 0, Reading: 1, Writing: 2, Science: 3, History: 4, Art: 5, Music: 6, Technology: 7, Health: 8, Economics: 9, Philosophy: 10, Psychology: 11 };   // Economics joined 2026-09-29 (pass FV); Philosophy (GI) and Psychology (GM) the same day
+const SUBJECT_RANK = { Math: 0, Reading: 1, Writing: 2, Science: 3, History: 4, Art: 5, Music: 6, Technology: 7, Health: 8, Economics: 9, Philosophy: 10, Psychology: 11, Speech: 12 };   // Economics joined 2026-09-29 (pass FV); Philosophy (GI) and Psychology (GM) the same day
 export function sortSubjects(subjects) {
   return [...new Set(subjects)].sort((a, b) => (SUBJECT_RANK[a] ?? 99) - (SUBJECT_RANK[b] ?? 99) || a.localeCompare(b));
 }
@@ -9437,6 +9632,228 @@ function ARTS9_MODULES() { return [
 // Psychology (One-Half Credit), Beginning with School Year 2011-2012, read from the published text; the national framework
 // is the American Psychological Association's National Standards for High School Psychology Curricula. Every study named
 // carries the year it was published, and each is one the course can defend.
+// Speech for the 9 to 12 band (2026-09-30, pass GQ), the sixth strand of the depth program: the communication process,
+// listening that works, building a talk, and delivery and nerves. Texas codes are §110.58 Communication Applications
+// (One-Half Credit), read from the published text; the national framework is the Common Core speaking and listening
+// standards for grades 9 to 10.
+// Speech for the 6 to 8 band (2026-09-30, pass GR), above the Texas minimum at Mikey's direction: listening on purpose,
+// saying it clearly, a two-minute talk, and disagreeing out loud. The Texas column carries the oral language strand of
+// English Language Arts and Reading, Grade 6 (§110.22(b)(1), Adopted 2017), read from the published text; the national
+// column carries the Common Core speaking and listening standards for grade 6.
+// Speech for the 3 to 5 band (2026-09-30, pass GS), above the Texas minimum at Mikey's direction: listening and asking,
+// telling it in order, a one-minute talk, and taking turns to talk, in the words of an eight-year-old. The Texas column
+// carries the oral language strand of English Language Arts and Reading, Grade 3 (§110.5(b)(1), Adopted 2017), read from
+// the published text; the national column carries the Common Core speaking and listening standards for grade 3.
+function SPEECH3_MODULES() { return [
+  {
+    id: 'listening-and-asking',
+    order: 1,
+    title: 'Listening and asking',
+    tagline: 'Eyes, hands and mind on the speaker, then a question that is about the topic',
+    requires: [],
+    lesson: {
+      paragraphs: ['Listening has three parts you can see and one you cannot. Eyes on the speaker. Hands still. Body turned toward them. And the part nobody can see: your mind on the words, not on what you want to say next. If your mind wanders, that is normal. Bring it back to the last thing you heard.', 'A good question is about the topic. If someone tells you about their trip to the beach, where did you swim is a relevant question. What are we having for lunch is not, even if you are hungry. A good comment is about the topic too: I went to a beach with big waves once, adds to the talk. I like pizza, does not.', 'When you listen to a story or a report, find the main idea, the one thing it is mostly about, and a few details that go with it. If a report is about how bees make honey, the main idea is honey, and the details are the flowers, the hive and the wax. Say the main idea back in your own words, and you will know whether you really heard it.'],
+      keyIdea: 'Eyes, hands, body and mind on the speaker. A relevant question or comment is about the topic. Find the main idea and a few details, and say the main idea back in your own words.',
+      example: { kind: 'flow', steps: ['eyes on the speaker', 'hands still', 'mind on the words', 'a question about the topic'], caption: 'What listening looks like.',
+        another: ['Your friend says their dog learned to sit. A relevant question: how did you teach it? A comment that adds: my cousin\'s dog took a month to learn that.',
+          { text: 'Saying the main idea back is a check. Bees make honey from flowers, I said, and my teacher said yes. If she had said no, I would know what to listen for again.', visual: { kind: 'flow', steps: ['listen', 'say the main idea back', 'yes or listen again'] } },
+          'Your mind will wander during a long story. Everyone\'s does. The trick is not to never wander; it is to notice and come back to the last thing you heard.'] },
+    },
+    sources: ['Aligned with TEKS English Language Arts and Reading 110.5(b)(1)(A) (listen actively, ask relevant questions to clarify information, and make pertinent comments), and the Common Core State Standards for English Language Arts, SL.3.2 (determine the main ideas and supporting details of a text read aloud or information presented in diverse media and formats) and SL.3.3 (ask and answer questions about information from a speaker, offering appropriate elaboration and detail).'],
+    generators: ['s3-listen', 's3-listen', 's3-listen', 's3-listen', 's3-listen'],
+  },
+  {
+    id: 'telling-it-in-order',
+    order: 2,
+    title: 'Telling it in order',
+    tagline: 'First, next, then, last, and say the steps back before you start',
+    requires: ['listening-and-asking'],
+    lesson: {
+      paragraphs: ['Instructions come in steps, and steps have an order. When someone gives you instructions, count the steps on your fingers, then say them back in order before you start: first the flour, next the eggs, then stir, last the oven. If you say them back and get one wrong, the person fixes it right then, before anything is in the bowl.', 'When you give instructions, say how many steps there are first. Then use order words: first, next, then, last. Then ask the person to say them back to you. There are four steps. First, walk to the end of the hall. Next, turn left. Then, go past the library. Last, the door with the blue sign. Now you say them.', 'Telling what happened works the same way. Start at the beginning, keep the events in the order they happened, and use the order words so the listener can follow. First we got on the bus, then it rained, then the bus stopped, and last we ran inside. A story told out of order is a puzzle the listener has to solve while you talk.'],
+      keyIdea: 'Count the steps and say them back before you start. Give instructions with the number first and order words: first, next, then, last, then ask for them back. Tell what happened in the order it happened.',
+      example: { kind: 'flow', steps: ['how many steps', 'first, next, then, last', 'say them back'], caption: 'Instructions that arrive in one piece.',
+        another: ['Four steps for a paper airplane: first, fold the paper in half. Next, fold the top corners to the middle. Then, fold the sides down to make wings. Last, throw it. Say them back to me.',
+          { text: 'Saying the steps back caught a mistake: I said turn right at the library and my friend said left. We fixed it in one second instead of at the wrong door.', visual: { kind: 'flow', steps: ['say them back', 'one is wrong', 'fixed right then'] } },
+          'Order words are like the numbers on stairs. Without them the listener does not know which step they are on.'] },
+    },
+    sources: ['Aligned with TEKS English Language Arts and Reading 110.5(b)(1)(B) (follow, restate, and give oral instructions that involve a series of related sequences of action), and the Common Core State Standards for English Language Arts, SL.3.4 (report on a topic or text, tell a story, or recount an experience with appropriate facts and relevant, descriptive details, speaking clearly at an understandable pace).'],
+    generators: ['s3-order', 's3-order', 's3-order', 's3-order', 's3-order'],
+  },
+  {
+    id: 'a-one-minute-talk',
+    order: 3,
+    title: 'A one-minute talk',
+    tagline: 'One topic, three facts, complete sentences, and a voice that reaches the back',
+    requires: ['telling-it-in-order'],
+    lesson: {
+      paragraphs: ['A one-minute talk is one topic, three facts about it, and a picture if it helps. Pick something you know: your pet, a game, a place you went. Say what it is, then the three facts in order, then one sentence that tells why you like it or what you learned. That is about a hundred words, which is a minute.', 'Speak in complete sentences, with a who and a what: my rabbit eats hay every morning, not rabbit, hay. Then four things carry the sentences across the room. Eye contact: look at one person, then another. Rate: slower than feels normal. Volume: talk to the person farthest away. Enunciation: say the ends of your words, so walking is walking and not walkin.', 'A picture can help if it shows something your words cannot: a photo of the rabbit, a map of the place. Hold it up when you talk about it and put it down after. Practice your talk out loud three times, standing up, before the day, and it will come out the way you practiced it.'],
+      keyIdea: 'One topic, three facts in order, and why you like it: about a hundred words. Complete sentences with a who and a what. Eye contact, a slower rate, volume for the farthest person, and the ends of words. Practice out loud three times.',
+      example: { kind: 'flow', steps: ['what it is', 'fact, fact, fact', 'why you like it'], caption: 'One minute, five sentences or so.',
+        another: ['My topic is my rabbit, Clover. She eats hay every morning. She sleeps in a box in the kitchen. She thumps her foot when the cat comes in. I like her because she is quiet and brave.',
+          { text: 'Look at one person for a whole sentence, then look at someone else. It feels strange and it looks, to the room, like you are talking to everyone.', visual: { kind: 'flow', steps: ['one face', 'one sentence', 'the next face'] } },
+          'Three practices out loud, standing up, is the whole secret. The talk comes out the way you practiced it, and nerves are just the sign that you care.'] },
+    },
+    sources: ['Aligned with TEKS English Language Arts and Reading 110.5(b)(1)(C) (speak coherently about the topic under discussion, employing eye contact, speaking rate, volume, enunciation, and the conventions of language to communicate ideas effectively), and the Common Core State Standards for English Language Arts, SL.3.4, SL.3.5 (add visual displays when appropriate to emphasize or enhance certain facts or details) and SL.3.6 (speak in complete sentences when appropriate to task and situation in order to provide requested detail or clarification).'],
+    generators: ['s3-talk', 's3-talk', 's3-talk', 's3-talk', 's3-talk'],
+  },
+  {
+    id: 'taking-turns-to-talk',
+    order: 4,
+    title: 'Taking turns to talk',
+    tagline: 'One voice at a time, build on what was said, and be polite in every room',
+    requires: ['a-one-minute-talk'],
+    lesson: {
+      paragraphs: ['A group that talks well has rules everyone agreed to: one voice at a time, a way to ask for a turn, a hand up or a talking stick, and everyone gets a turn before anyone gets two. The rules are not there to slow you down. They are there so the quiet person gets heard and the loud person gets listened to.', 'Build on what other people say instead of starting over. I agree with Maya, and I want to add that the bake sale could be on Friday. Or, I think something different, because Friday is the field trip. Both sentences take the other person seriously. Both keep the talk moving instead of going in circles.', 'Polite talk works in every room. Say hello with the person\'s name, please and thank you, excuse me before interrupting, and a full sentence when a grown-up asks you a question. Yes, I finished my reading, instead of yeah. Polite is not fancy. It is the way you show the other person that they matter to you.'],
+      keyIdea: 'Agreed rules: one voice at a time, a way to ask for a turn, everyone gets a turn. Build on what was said: I agree and I want to add, or I think something different, because. Polite talk in every room: names, please, thank you, excuse me, and full sentences.',
+      example: { kind: 'flow', steps: ['one voice at a time', 'ask for a turn', 'build on what was said'], caption: 'How a group talks well.',
+        another: ['The talking stick rule: whoever holds it talks, everyone else listens, and it goes around the circle. Simple, and it fixes most arguments about who is next.',
+          { text: 'I think something different, because, is a polite way to disagree. It says the idea might be wrong and the person is still your friend.', visual: { kind: 'flow', steps: ['I agree and I want to add', 'or', 'I think something different, because'] } },
+          'When the principal asks how your day was, yeah, fine, is not a full sentence. It was good, we did a science experiment, is. The second one starts a conversation.'] },
+    },
+    sources: ['Aligned with TEKS English Language Arts and Reading 110.5(b)(1)(D) (work collaboratively with others by following agreed-upon rules, norms, and protocols) and 110.5(b)(1)(E) (develop social communication such as conversing politely in all situations), and the Common Core State Standards for English Language Arts, SL.3.1 (engage effectively in a range of collaborative discussions, building on others\' ideas and expressing their own clearly).'],
+    generators: ['s3-turns', 's3-turns', 's3-turns', 's3-turns', 's3-turns'],
+  },
+]; }
+function SPEECH6_MODULES() { return [
+  {
+    id: 'listening-on-purpose',
+    order: 1,
+    title: 'Listening on purpose',
+    tagline: 'Say it back, ask one question, then answer what was actually said',
+    requires: [],
+    lesson: {
+      paragraphs: ['Hearing happens to you; listening is something you do. Active listening has three moves. Say it back: so you want the poster done by Friday. Ask one clarifying question: does Friday mean the morning or the end of the day? Then respond to what was actually said, not to what you expected. People who do the three moves are wrong far less often, because the first two catch the mistake before the third makes it.', 'A message is more than its words. The same sentence, that is fine, means three things depending on the tone, the face and the pause before it, and a good listener reads all three. When words and tone disagree, believe the tone, and ask.', 'Instructions with several steps are where listening is tested. When you receive them, count the steps first, then repeat them in order before you start. When you give them, say how many there are, use order words, first, then, next, last, and end by asking the other person to say them back. Four steps told well take one telling; four steps told badly take four.'],
+      keyIdea: 'Say it back, ask one clarifying question, then respond to what was actually said. Read the tone and the face with the words. For instructions, count the steps, use order words, and have them said back.',
+      example: { kind: 'flow', steps: ['say it back', 'ask one question', 'respond to what was said'], caption: 'The three moves of active listening.',
+        another: ['Your friend says, sure, whatever, in a flat voice. The words say yes; the tone says no. Believe the tone, and ask what is wrong.',
+          { text: 'Giving directions to the gym: three steps. First, down this hall to the doors. Then left past the trophy case. Last, the double doors on the right. Say them back to me.', visual: { kind: 'flow', steps: ['how many steps', 'first, then, last', 'say them back'] } },
+          'Say it back is not parroting. It is a check: if your version is wrong, the speaker fixes it now instead of after the poster is done on Saturday.'] },
+    },
+    sources: ['Aligned with TEKS English Language Arts and Reading 110.22(b)(1)(A) (listen actively to interpret a message, ask clarifying questions, and respond appropriately) and 110.22(b)(1)(B) (follow and give oral instructions that include multiple action steps), and the Common Core State Standards for English Language Arts, SL.6.2 (interpret information presented in diverse media and formats and explain how it contributes to a topic, text, or issue under study).'],
+    generators: ['s6-listen', 's6-listen', 's6-listen', 's6-listen', 's6-listen'],
+  },
+  {
+    id: 'saying-it-clearly',
+    order: 2,
+    title: 'Saying it clearly',
+    tagline: 'One sentence, one reason, one example, in the voice the room needs',
+    requires: ['listening-on-purpose'],
+    lesson: {
+      paragraphs: ['Before you explain anything, find the one sentence. Not the whole story, the point: the bus was late because the road was closed. Then give one reason and one example, and stop. Most unclear explanations are clear explanations buried under everything the speaker also remembered.', 'The same idea is said differently in different rooms. With friends, casual words and half sentences work. In class, full sentences and the words the subject uses. With an adult you do not know, a formal opening, please and thank you, and no slang. None of these is the correct way to talk; each is the correct way to talk in that room, and switching between them is a skill, not fakeness.', 'Three things carry a sentence across a room. Enunciation, every sound in every word, especially the ends. Rate, slower than feels natural, because a listener needs time the speaker does not. Volume, aimed at the farthest person. Say the one sentence at that speed and that volume, with the ends of the words on, and it lands.'],
+      keyIdea: 'One sentence, one reason, one example, then stop. Casual with friends, full sentences in class, formal with an adult you do not know. Enunciate the ends of words, go slower than feels natural, and aim at the farthest person.',
+      example: { kind: 'flow', steps: ['the one sentence', 'one reason', 'one example', 'stop'], caption: 'The shape of a clear explanation.',
+        another: ['Explaining a game to someone who was not there: the sentence is who won and how; the reason is the play that decided it; the example is what that play looked like. Three sentences, and they have it.',
+          { text: 'Ask a teacher a question in the words of the subject, what does the denominator do here, and you get a better answer than from what is this bottom thing. The room has a language.', visual: { kind: 'flow', steps: ['friends: casual', 'class: full sentences', 'a stranger who is an adult: formal'] } },
+          'The ends of words are where clarity lives. Walking, not walkin. Asked, not ask. Say the last sound and the whole word arrives.'] },
+    },
+    sources: ['Aligned with TEKS English Language Arts and Reading 110.22(b)(1)(C) (give an organized presentation with a specific stance and position, employing eye contact, speaking rate, volume, enunciation, natural gestures, and conventions of language to communicate ideas effectively), and the Common Core State Standards for English Language Arts, SL.6.6 (adapt speech to a variety of contexts and tasks, demonstrating command of formal English when indicated or appropriate).'],
+    generators: ['s6-clear', 's6-clear', 's6-clear', 's6-clear', 's6-clear'],
+  },
+  {
+    id: 'a-two-minute-talk',
+    order: 3,
+    title: 'A two-minute talk',
+    tagline: 'A stance, two reasons, a closer, and a body that helps instead of hides',
+    requires: ['saying-it-clearly'],
+    lesson: {
+      paragraphs: ['A talk needs a stance, one position you can say in a sentence: our school should start at nine. Then a shape. An opener that makes people look up. The stance. Two reasons, each with a fact or an example. A closer that says the stance again in different words. Two minutes is about two hundred and fifty words, which is less than you think and more than enough.', 'A picture can help if it does one job. A chart of who sleeps how much clarifies a reason about sleep; a slide that repeats your words gives the audience something to read instead of you. One picture, one job, or none.', 'Delivery is the part people fear and the part that is most learnable. Eye contact: look at one person for a sentence, then another. Rate: slower. Volume: the back row. Natural gestures: let your hands do what they do when you tell a friend a story, and keep them out of your pockets. Practice aloud, standing, at least three times, and the nerves on the day will be the ordinary kind, the kind that means you care.'],
+      keyIdea: 'A stance in one sentence; an opener, the stance, two reasons with a fact or example each, and a closer. One picture with one job. Eye contact one person at a time, slower, to the back row, with natural gestures, after three practices aloud.',
+      example: { kind: 'flow', steps: ['opener', 'the stance', 'reason and fact', 'reason and example', 'closer'], caption: 'Two minutes, five parts.',
+        another: ['Opener: raise your hand if you were tired in first period. Stance: school should start at nine. Reason one: eleven-year-olds need nine to twelve hours, and most get seven. Reason two: the district that moved to nine saw fewer tardies. Closer: give us the hour and we will give you the mornings.',
+          { text: 'Look at one person for a whole sentence, then move. It is easier than scanning the room, and to the room it looks like you are talking to everyone.', visual: { kind: 'flow', steps: ['one face', 'one sentence', 'the next face'] } },
+          'Two hundred and fifty words is a paragraph and a half. Write it, time it, cut it to two minutes, and the cutting will make it better.'] },
+    },
+    sources: ['Aligned with TEKS English Language Arts and Reading 110.22(b)(1)(C) (give an organized presentation with a specific stance and position, employing eye contact, speaking rate, volume, enunciation, natural gestures, and conventions of language to communicate ideas effectively), and the Common Core State Standards for English Language Arts, SL.6.4 (present claims and findings, sequencing ideas logically and using pertinent descriptions, facts, and details; use appropriate eye contact, adequate volume, and clear pronunciation) and SL.6.5 (include multimedia components and visual displays in presentations to clarify information).'],
+    generators: ['s6-talk', 's6-talk', 's6-talk', 's6-talk', 's6-talk'],
+  },
+  {
+    id: 'disagreeing-out-loud',
+    order: 4,
+    title: 'Disagreeing out loud',
+    tagline: 'Ask what others think, take notes, and disagree with the idea, not the person',
+    requires: ['a-two-minute-talk'],
+    lesson: {
+      paragraphs: ['A discussion that a group runs itself needs four habits. Elicit: ask the quiet person what they think, on purpose, because the best idea in the room is often sitting in the person who has not spoken. Consider: hold their idea for a moment before answering it. Take notes, so the group remembers what was said and not only who said it. And name the points of agreement and disagreement out loud: we all want the fundraiser in May; we disagree about what to sell.', 'Listen for the difference between a claim with reasons and a claim without. We should sell candy because last year it made the most money is a claim with a reason and evidence. Candy is obviously the best is a claim with a feeling. Both are allowed; only the first can be argued with, so ask the second for its reason.', 'Disagree with the idea, never the person. I see it differently, because, is the sentence. You always want candy is not. Build on others\' ideas when you can, what if we did your candy idea but at the game instead of at lunch, and the group will disagree more and fight less, which is the whole point of talking.'],
+      keyIdea: 'Elicit the quiet person, consider before answering, take notes, and name what the group agrees and disagrees about. Tell a claim with reasons from a claim with only a feeling. Disagree with the idea, not the person: I see it differently, because.',
+      example: { kind: 'flow', steps: ['ask what they think', 'hold it a moment', 'write it down', 'name the agreement and the disagreement'], caption: 'Four habits of a discussion that runs itself.',
+        another: ['The notes from a good meeting fit on one page: what we agree on, what we do not, and who is finding out what by when.',
+          { text: 'Candy is obviously the best. Ask: what makes you think so? If the answer is last year\'s numbers, you have a reason to weigh. If the answer is a shrug, you have a feeling, and feelings are not evidence.', visual: { kind: 'flow', steps: ['a claim', 'what is the reason?', 'a reason or a shrug'] } },
+          'I see it differently, because, keeps the person on your side while you take their idea apart. That is not politeness for its own sake. It is how the idea gets a fair hearing.'] },
+    },
+    sources: ['Aligned with TEKS English Language Arts and Reading 110.22(b)(1)(D) (participate in student-led discussions by eliciting and considering suggestions from other group members, taking notes, and identifying points of agreement and disagreement), and the Common Core State Standards for English Language Arts, SL.6.1 (engage effectively in a range of collaborative discussions, building on others\' ideas and expressing their own clearly) and SL.6.3 (delineate a speaker\'s argument and specific claims, distinguishing claims that are supported by reasons and evidence from claims that are not).'],
+    generators: ['s6-discuss', 's6-discuss', 's6-discuss', 's6-discuss', 's6-discuss'],
+  },
+]; }
+function SPEECH9_MODULES() { return [
+  {
+    id: 'the-communication-process',
+    order: 1,
+    title: 'The communication process',
+    tagline: 'Sender, message, channel, receiver, feedback and noise, and the choices that fit the room',
+    requires: [],
+    lesson: {
+      paragraphs: ['Every message has six parts. A sender has an idea and puts it into words, gestures or pictures; that is the message. It travels by the channel, a voice across a table, a phone call, a screen. A receiver takes it in and makes sense of it, then sends feedback, a nod, a question, a frown. Noise is anything that gets in the way, a loud room or a distracted mind, and it is why the message that arrives is never quite the one that was sent.', 'Good communicators make choices before they speak: for themselves, for the listener, for the occasion and for the task. Language comes in three registers. Informal is for friends, standard for school and work, and technical for the specialists in a field; the mistake is not using one of them but using the wrong one in the room. Nonverbal messages travel with the words: posture, gesture, facial expression, eye contact, tone of voice and the distance you keep. A firm handshake, direct eye contact and standing at a comfortable distance say you are present before you say anything.', 'Two responsibilities come with the skill. Gather accurate and complete information before you speak, because a confident message built on a wrong fact does harm. And be honest about what you know, name your sources, and treat the listener with respect; a communicator who wins by misleading people has not communicated, only performed.'],
+      keyIdea: 'Sender, message, channel, receiver, feedback and noise. Choose the register for the room: informal, standard or technical. Nonverbal signals travel with the words, and honesty and accurate information are the communicator\'s duties.',
+      example: { kind: 'flow', steps: ['sender', 'message by a channel', 'receiver', 'feedback', 'noise all along'], caption: 'Six parts of every message.',
+        another: ['Text a joke and the receiver gets the words without the tone, which is why the same joke lands in person and misfires on a screen. The channel dropped a nonverbal part.',
+          { text: 'Technical language is not showing off when the listener shares it; a surgeon talking to a surgeon should use it. The same words to a patient are noise.', visual: { kind: 'flow', steps: ['who is listening?', 'informal, standard or technical', 'the same idea, a different register'] } },
+          'Feedback is the receiver sending a message back. Watch for it while you talk, and you will know whether the message arrived before anyone tells you.'] },
+    },
+    sources: ['Aligned with TEKS English Language Arts and Reading 110.58(b)(1)(A) (explain the importance of effective communication skills in professional and social contexts), 110.58(b)(1)(B) (identify the components of the communication process and their functions), 110.58(b)(1)(C) (identify standards for making appropriate communication choices for self, listener, occasion, and task), 110.58(b)(1)(D) (identify the characteristics of oral language and analyze standards for using informal, standard, and technical language appropriately), 110.58(b)(1)(E) (identify types of nonverbal communication and their effects), 110.58(b)(1)(F) (recognize the importance of effective nonverbal strategies such as appearance, a firm handshake, direct eye contact, and appropriate use of space and distance), 110.58(b)(1)(I) (recognize the importance of gathering and using accurate and complete information as a basis for making communication decisions) and 110.58(b)(1)(J) (identify and analyze ethical and social responsibilities of communicators), and the Common Core State Standards for English Language Arts, SL.9-10.6 (adapt speech to a variety of contexts and tasks, demonstrating command of formal English when indicated or appropriate).'],
+    generators: ['sp-process', 'sp-process', 'sp-process', 'sp-process', 'sp-process'],
+  },
+  {
+    id: 'listening-that-works',
+    order: 2,
+    title: 'Listening that works',
+    tagline: 'Five steps, three kinds, and the sentences that make a conversation work',
+    requires: ['the-communication-process'],
+    lesson: {
+      paragraphs: ['Listening is not hearing. Hearing is the ear\'s job; listening has five steps: receive the sound, attend to it, understand it, remember it and respond to it, and most listening fails at the second step, attention. There are three kinds worth naming. Critical listening judges whether a claim is true and supported. Deliberative listening weighs choices before a decision. Empathic listening sets judgment aside to understand how another person feels, and it is the kind a friend needs most.', 'A conversation is built from small, learnable moves. Ask purposeful questions, ones whose answers you will use. Make clear requests: say what you need, by when, and why. Give directions in order, with the number of steps announced first. Answer the question that was asked before adding the one you wish had been asked. And when you disagree, restate the other person\'s point until they agree that is it, then answer that.', 'Professional etiquette is listening made visible. Introduce people by name and connection. On the phone, say who you are and why you are calling in the first sentence. Receive criticism by repeating it back and asking one question, not by defending. In an interview, listen for the question under the question, answer it in under a minute with one example, and ask something at the end that shows you were listening all along.'],
+      keyIdea: 'Listening has five steps and fails most at attention. Critical, deliberative and empathic listening do different jobs. Purposeful questions, clear requests, ordered directions, criticism repeated back, and an interview answered with one example.',
+      example: { kind: 'flow', steps: ['receive', 'attend', 'understand', 'remember', 'respond'], caption: 'The listening process, where attention is the weak link.',
+        another: ['Criticism repeated back, so you want the report shorter and the numbers up front, does two things at once: it proves you heard, and it gives the critic a chance to fix your version.',
+          { text: 'The interview question tell me about a weakness is really asking whether you know yourself and can fix things. Answer the real question with one true example and what you did about it.', visual: { kind: 'flow', steps: ['the question asked', 'the question under it', 'one example', 'under a minute'] } },
+          'Empathic listening has one rule: you are not preparing your reply while they talk. If you catch yourself doing it, you have stopped listening.'] },
+    },
+    sources: ['Aligned with TEKS English Language Arts and Reading 110.58(b)(1)(G) (identify the components of the listening process), 110.58(b)(1)(H) (identify specific kinds of listening such as critical, deliberative, and empathic), 110.58(b)(2)(D) (use professional etiquette and protocol in situations such as making introductions, speaking on the telephone, and offering and receiving criticism), 110.58(b)(2)(E) (send clear and appropriate requests, provide clear and accurate directions, ask appropriate and purposeful questions, and respond appropriately), 110.58(b)(2)(F) (participate appropriately in conversations), 110.58(b)(2)(G) (communicate effectively in interviews) and 110.58(b)(2)(I) (analyze and evaluate the effectiveness of one\'s own and others\' communication), and the Common Core State Standards for English Language Arts, SL.9-10.1 (initiate and participate effectively in a range of collaborative discussions) and SL.9-10.3 (evaluate a speaker\'s point of view, reasoning, and use of evidence and rhetoric).'],
+    generators: ['sp-listen', 'sp-listen', 'sp-listen', 'sp-listen', 'sp-listen'],
+  },
+  {
+    id: 'building-a-talk',
+    order: 3,
+    title: 'Building a talk',
+    tagline: 'Audience, occasion and purpose, then a shape the listener can follow',
+    requires: ['listening-that-works'],
+    lesson: {
+      paragraphs: ['Before a word is written, answer three questions. Who is the audience, what do they already know and care about? What is the occasion, a class, a council meeting, a toast? What is the purpose: to inform, to persuade, or to motivate? The same topic is a different talk for each answer, and most weak talks were written for the wrong audience.', 'Then narrow the topic to one sentence you could say in a doorway, and research it with primary sources, the data, the document, the person who was there, and secondary sources, the reporting and the summaries, checking that both agree. A talk has a shape a listener can follow: an introduction with a hook, the one sentence, and a preview of the points; a body of two or three points, each with evidence that supports and clarifies it; and a conclusion that repeats the sentence and ends on a line you chose on purpose.', 'Write notes, not a script. A script read aloud sounds read; notes with the sentence, the three points and the evidence let you talk. A visual aid, a chart, a map, a single photo, is there to make a point clearer, not to be read from; if the slide says everything you say, the audience reads it and stops listening to you.'],
+      keyIdea: 'Audience, occasion and purpose first. One sentence, research from primary and secondary sources, then hook, sentence, preview; two or three points with evidence; a conclusion that lands. Notes, not a script; visuals that clarify a point.',
+      example: { kind: 'flow', steps: ['who, when, why?', 'one sentence', 'hook, sentence, preview', 'point, evidence, point, evidence', 'the last line'], caption: 'The shape of a talk a listener can follow.',
+        another: ['A preview is a promise: I will show you three things. Listeners relax when they know how long the road is and where it goes.',
+          { text: 'Primary and secondary sources check each other. The city\'s own crash count and the newspaper\'s story about it should agree; when they do not, you have found either an error or your best point.', visual: { kind: 'flow', steps: ['the record itself', 'the report about it', 'do they agree?'] } },
+          'The last line of a talk is the one people carry out the door. Write it first, then build the talk that earns it.'] },
+    },
+    sources: ['Aligned with TEKS English Language Arts and Reading 110.58(b)(4)(A) (analyze the audience, occasion, and purpose when designing presentations), 110.58(b)(4)(B) (determine specific topics and purposes for presentations), 110.58(b)(4)(C) (research topics using primary and secondary sources, including electronic technology), 110.58(b)(4)(D) (use effective strategies to organize and outline presentations), 110.58(b)(4)(E) (use information effectively to support and clarify points in presentations), 110.58(b)(4)(F) (prepare scripts or notes for presentations) and 110.58(b)(4)(G) (prepare and use visual or auditory aids, including technology, to enhance presentations), and the Common Core State Standards for English Language Arts, SL.9-10.4 (present information, findings, and supporting evidence clearly, concisely, and logically) and SL.9-10.5 (make strategic use of digital media in presentations).'],
+    generators: ['sp-build', 'sp-build', 'sp-build', 'sp-build', 'sp-build'],
+  },
+  {
+    id: 'delivery-and-nerves',
+    order: 4,
+    title: 'Delivery and nerves',
+    tagline: 'What the shaking hands mean, what to do about them, and how a talk sounds when it works',
+    requires: ['building-a-talk'],
+    lesson: {
+      paragraphs: ['Nearly everyone is nervous before speaking to a group; the name for it is communication apprehension, and it is normal, not a flaw. The body reads the room as a threat: a fast heart, dry mouth, shaking hands. Four things reduce it. Preparation, because command of the material is the surest confidence. Practice aloud, standing, several times, because the mouth learns the words the eyes cannot. A slow breath before the first sentence. And a reframe: the racing heart is the same one you have before a race, and it means ready, not doomed.', 'Delivery has verbal and nonverbal parts. Verbal: a rate slow enough to follow, a volume that reaches the back row, a pause before an important line, and no filler, since um, like and you know spend the listener\'s attention on nothing. Nonverbal: eye contact that moves around the room, gestures that match the words, feet planted rather than pacing, and a face that shows you believe what you are saying.', 'A talk ends with questions. Listen to the whole question, repeat it for the room, answer it briefly and honestly, and say I do not know when you do not, then offer to find out. Afterward, evaluate: what did the audience do, where did they lean in, where did they drift, and what would you change? A group talk adds roles, someone who leads, someone who keeps time, someone who handles the visuals, and the group is only as good as its handoffs.'],
+      keyIdea: 'Nerves are normal: prepare, practice aloud, breathe, and reframe the racing heart as ready. Slow rate, reaching volume, pauses, no filler; moving eye contact and matching gestures. Repeat each question, answer briefly, admit what you do not know, then evaluate.',
+      example: { kind: 'flow', steps: ['prepare', 'practice aloud', 'one slow breath', 'ready, not doomed'], caption: 'Four moves against communication apprehension.',
+        another: ['Record yourself once and count the fillers. Most people are shocked, and most people cut them in half by the second recording, because the ear is a better coach than the will.',
+          { text: 'A pause feels like a mile to the speaker and a moment to the listener. Use it before the line you want remembered.', visual: { kind: 'flow', steps: ['the line before', 'a pause', 'the line that matters'] } },
+          'Repeating a question for the room buys you three seconds to think and makes sure the back row heard it. It is the most useful habit in any question-and-answer session.'] },
+    },
+    sources: ['Aligned with TEKS English Language Arts and Reading 110.58(b)(4)(H) (use appropriate techniques to manage communication apprehension, build self-confidence, and gain command of the information), 110.58(b)(4)(I) (use effective verbal and nonverbal strategies in presentations), 110.58(b)(4)(J) (make group presentations to inform, persuade, or motivate an audience), 110.58(b)(4)(K) (make individual presentations to inform, persuade, or motivate an audience), 110.58(b)(4)(L) (participate in question-and-answer sessions following presentations), 110.58(b)(4)(M) (apply critical-listening strategies to evaluate presentations), 110.58(b)(4)(N) (evaluate effectiveness of his/her own presentation), 110.58(b)(3)(D) (demonstrate understanding of group roles and their impact on group effectiveness) and 110.58(b)(3)(E) (use appropriate verbal, nonverbal, and listening skills to promote group effectiveness), and the Common Core State Standards for English Language Arts, SL.9-10.4.'],
+    generators: ['sp-deliver', 'sp-deliver', 'sp-deliver', 'sp-deliver', 'sp-deliver'],
+  },
+]; }
 function PSY9_MODULES() { return [
   {
     id: 'how-psychologists-know',
@@ -9645,6 +10062,307 @@ function PHIL3_MODULES() { return [
     },
     sources: ['Aligned with the Texas College and Career Readiness Standards, Cross-Disciplinary Standards I.B.2 (construct well-reasoned arguments to explain phenomena, validate conjectures, or support positions) and I.F.3 (include the ideas of others and the complexities of the debate, issue, or conflict), and the Common Core State Standards for English Language Arts, W.3.1 (write opinion pieces on topics or texts, supporting a point of view with reasons).'],
     generators: ['p3-fair', 'p3-fair', 'p3-fair', 'p3-fair', 'p3-fair'],
+  },
+]; }
+// Psychology for the 6 to 8 band (2026-09-29, pass GN), built above the Texas minimum at Mikey's ask: the growing brain,
+// attention, memory and practice, feelings as signals, and other people, each pitched for an eleven-year-old. The Texas
+// column carries the grade 6 health education standard's mental health and wellness strands (§115.26, Adopted 2020, read
+// from TEA's chapter text) and a College and Career Readiness study-habits standard; the national column carries the CASEL
+// framework's five competencies. Every study named carries its year and is one the course can defend.
+// Psychology for the 3 to 5 band (2026-09-29, pass GO), above the Texas minimum at Mikey's direction: the brain and the
+// senses, how remembering works, big feelings and what to do with them, and friends and other minds, in the words of an
+// eight-year-old. The Texas column carries the mental health and wellness strands of Health Education, Grade 3 (§115.15,
+// Adopted 2020), read from the published text; the national column carries the CASEL framework's five competencies.
+// Psychology for the K to 2 band (2026-09-30, pass GP), above the Texas minimum and read aloud: the brain and the five
+// senses, remembering, feelings with names and a way to calm down, and friends, in the words of a five-year-old. The Texas
+// column carries the mental health and wellness strands of Health Education, Kindergarten (§115.12, Adopted 2020), read
+// from the published text; the national column carries the CASEL framework's five competencies.
+// -----------------------------------------------------------------------------------------------------------------
+// SPEECHK_MODULES: the four lessons of the kindergarten speech course (2026-09-30, pass GT).
+// In plain terms: each object below is one lesson a five-year-old hears read aloud. `paragraphs` is the lesson text,
+// `keyIdea` is the one-sentence takeaway, `example` gives the pictures and extra examples the screen shows, `sources`
+// names the Texas standard the lesson meets (the kindergarten oral language strand, read from the published text) and
+// the national standard beside it, and `generators` lists which question banks below make the five quick checks.
+// The course sits above the Texas minimum at Mikey's direction: Texas has no kindergarten speech course of its own.
+// -----------------------------------------------------------------------------------------------------------------
+function SPEECHK_MODULES() { return [
+  {
+    id: 'my-listening-body',
+    order: 1,
+    title: 'My listening body',
+    tagline: 'Eyes, ears, hands, feet and mind, all listening at once',
+    requires: [],
+    lesson: {
+      paragraphs: ['Listening is a whole-body job. Your eyes look at the person. Your ears hear the words. Your hands stay still. Your feet stay still. And your mind thinks about the words, not about lunch.', 'If you do not understand, ask. You can say, what do you mean? Or, can you say it again? Asking is not rude. Asking is how listeners get it right.\nWhen someone asks you a question, answer with more than one word. Not just yes. Say, yes, I saw the red bird.', 'A good listener can say the story back. Try it after a story. What happened first? What happened last? If you can say it back, you heard it.'],
+      keyIdea: 'Listen with your eyes, ears, hands, feet and mind. If you do not understand, ask. Answer with more than one word. If you can say the story back, you heard it.',
+      example: { kind: 'flow', steps: ['eyes look', 'ears hear', 'hands still', 'mind on the words'], caption: 'A whole-body listener.',
+        another: ['Your teacher says, get your coat. If you did not hear, ask: can you say it again? Then you will get the coat and not the hat.',
+          { text: 'Did you like the story? Not just yes. Yes, I liked the part with the boat. That is more than one word.', visual: { kind: 'flow', steps: ['a question', 'more than one word', 'a real answer'] } },
+          'After the story, say it back. First the bear was hungry. Last the bear found honey. You heard it.'] },
+    },
+    sources: ['Aligned with TEKS English Language Arts and Reading 110.2(b)(1)(A) (listen actively and ask questions to understand information and answer questions using multi-word responses), and the Common Core State Standards for English Language Arts, SL.K.2 (confirm understanding of a text read aloud or information presented orally by asking and answering questions about key details and requesting clarification if something is not understood) and SL.K.3 (ask and answer questions in order to seek help, get information, or clarify something that is not understood).'],
+    generators: ['spk-listen', 'spk-listen', 'spk-listen', 'spk-listen', 'spk-listen'],
+  },
+  {
+    id: 'first-then-do',
+    order: 2,
+    title: 'First, then, do it',
+    tagline: 'Hear the steps, say them back, then do them in order',
+    requires: ['my-listening-body'],
+    lesson: {
+      paragraphs: ['Directions come in steps. First, then, last. First get a cup. Then fill it with water. Last, put it on the table. Three steps, in order.', 'Before you do the steps, say them back. Cup, water, table. Saying them back keeps them in your head. If you say one wrong, the grown-up fixes it before you start.\nThen do the steps in order. First things first. Last things last.', 'You can give directions too. Say how many steps. Say first, then, last. Then ask your friend to say them back to you. Two steps: first, get the ball. Then, roll it to me. Now you say it.'],
+      keyIdea: 'Directions come in steps: first, then, last. Say the steps back before you do them. Do them in order. When you give directions, say first, then, last, and ask for them back.',
+      example: { kind: 'flow', steps: ['hear the steps', 'say them back', 'do them in order'], caption: 'First, then, last.',
+        another: ['First, wash your hands. Then, sit down. Last, eat. Say it back: hands, sit, eat.',
+          { text: 'Two steps for a friend: first, get the crayons. Then, put them on the table. Now you say it. If they say table first, fix it.', visual: { kind: 'flow', steps: ['first', 'then', 'say it back'] } },
+          'Saying the steps back is like putting them in your pocket. They are there when you need them.'] },
+    },
+    sources: ['Aligned with TEKS English Language Arts and Reading 110.2(b)(1)(B) (restate and follow oral directions that involve a short, related sequence of actions), and the Common Core State Standards for English Language Arts, SL.K.2.'],
+    generators: ['spk-steps', 'spk-steps', 'spk-steps', 'spk-steps', 'spk-steps'],
+  },
+  {
+    id: 'my-clear-voice',
+    order: 3,
+    title: 'My clear voice',
+    tagline: 'Loud enough, slow enough, whole words, and something to show',
+    requires: ['first-then-do'],
+    lesson: {
+      paragraphs: ['When you tell something, talk so your friends can hear. Loud enough to reach the last friend. Slow enough to follow. Say whole words. Cat, not ca.', 'A good telling has three parts. This is my dog. He is brown and he likes to dig. I like him because he is funny. What it is, what it does, and why you like it.', 'A picture helps. Draw your dog. Hold it up when you talk about him. Then put it down and look at your friends. Your friends are the ones you are talking to.'],
+      keyIdea: 'Talk loud enough for the last friend, slow enough to follow, with whole words. Tell what it is, what it does, and why you like it. Show a picture, then look at your friends.',
+      example: { kind: 'flow', steps: ['what it is', 'what it does', 'why I like it'], caption: 'Three parts of a telling.',
+        another: ['This is my cat. She sleeps in the sun. I like her because she is soft. Three parts, and everyone can hear.',
+          { text: 'Talk to the friend at the back. If the back friend can hear you, everyone can.', visual: { kind: 'flow', steps: ['the back friend', 'loud enough', 'everyone hears'] } },
+          'Whole words have ends. Dog, not do. Jump, not jum. Say the end and the word is whole.'] },
+    },
+    sources: ['Aligned with TEKS English Language Arts and Reading 110.2(b)(1)(C) (share information and ideas by speaking audibly and clearly using the conventions of language), and the Common Core State Standards for English Language Arts, SL.K.4 (describe familiar people, places, things, and events and, with prompting and support, provide additional detail), SL.K.5 (add drawings or other visual displays to descriptions as desired to provide additional detail) and SL.K.6 (speak audibly and express thoughts, feelings, and ideas clearly).'],
+    generators: ['spk-voice', 'spk-voice', 'spk-voice', 'spk-voice', 'spk-voice'],
+  },
+  {
+    id: 'my-turn-and-kind-words',
+    order: 4,
+    title: 'My turn and kind words',
+    tagline: 'One talker at a time, a hand up for a turn, and words that are kind',
+    requires: ['my-clear-voice'],
+    lesson: {
+      paragraphs: ['In a group, one person talks at a time. Everyone else listens. If you want a turn, put your hand up and wait. Your turn will come. That is the rule, and the rule is fair.', 'Kind words open doors. Hello, my name is Sam. Please. Thank you. Excuse me. I need help. These words work in every room, at school and at home and at the store.', 'If you want something, say it in words. I need help with my zipper. I want a turn with the truck. Saying it in words works better than grabbing, and better than crying. People can help you when they know what you need.'],
+      keyIdea: 'One talker at a time; put your hand up and wait for your turn. Kind words: hello and my name, please, thank you, excuse me. Say what you need in words.',
+      example: { kind: 'flow', steps: ['one talker', 'hand up', 'my turn'], caption: 'How a group takes turns.',
+        another: ['Hello, my name is Ava. That is how you meet someone. Then they know your name, and you can be friends.',
+          { text: 'I want a turn with the truck. That is words. Grabbing the truck is not words. Words get you a turn.', visual: { kind: 'flow', steps: ['I want a turn', 'they hear it', 'a turn'] } },
+          'Excuse me is the word for going by someone or for needing to say something. It is a small word that says I see you.'] },
+    },
+    sources: ['Aligned with TEKS English Language Arts and Reading 110.2(b)(1)(D) (work collaboratively with others by following agreed-upon rules for discussion, including taking turns) and 110.2(b)(1)(E) (develop social communication such as introducing himself/herself, using common greetings, and expressing needs and wants), and the Common Core State Standards for English Language Arts, SL.K.1 (participate in collaborative conversations with diverse partners about kindergarten topics and texts with peers and adults in small and larger groups).'],
+    generators: ['spk-turns', 'spk-turns', 'spk-turns', 'spk-turns', 'spk-turns'],
+  },
+]; }
+function PSYK_MODULES() { return [
+  {
+    id: 'my-brain-and-senses',
+    order: 1,
+    title: 'My brain and my senses',
+    tagline: 'The brain is the boss, and the five senses tell it what is out there',
+    requires: [],
+    lesson: {
+      paragraphs: ['Inside your head is your brain. It is the boss of you. It moves your legs, it picks your words, and it makes your dreams.\nYour brain gets its news from five senses. Eyes see. Ears hear. Your nose smells. Your tongue tastes. Your skin feels.', 'The senses tell, and the brain decides. In the dark, the brain can guess wrong. A coat on a hook can look like a monster. Turn on the light, and it is a coat.', 'A brain needs sleep to work well. A child your age needs about ten hours a night. A tired brain gets grumpy and forgets things. Sleep helps it remember.'],
+      keyIdea: 'Your brain is the boss. Five senses tell it what is out there: eyes, ears, nose, tongue and skin. The brain can guess wrong in the dark. Sleep helps it work.',
+      example: { kind: 'flow', steps: ['eyes see', 'the brain decides', 'a coat, not a monster'], caption: 'The senses tell; the brain decides.',
+        another: ['Close your eyes and listen. Your ears are still working. Your brain is still getting news.',
+          { text: 'A tired brain is like a toy with a low battery. It still goes, but slowly. Sleep is how it charges.', visual: { kind: 'flow', steps: ['ten hours of sleep', 'a charged brain', 'a good day'] } },
+          'Smell a flower. That is your nose telling your brain, and your brain saying nice.'] },
+    },
+    sources: ['Aligned with TEKS Health Education 115.12(b)(1) (name the five senses) and 115.12(b)(7)(B) (identify habits that help individuals stay healthy such as getting the proper amount of sleep and daily physical activity), and the CASEL framework, Self-awareness.'],
+    generators: ['pyk-brain', 'pyk-brain', 'pyk-brain', 'pyk-brain', 'pyk-brain'],
+  },
+  {
+    id: 'remember-it',
+    order: 2,
+    title: 'Remember it',
+    tagline: 'Look, listen, say it again, and a little every day',
+    requires: ['my-brain-and-senses'],
+    lesson: {
+      paragraphs: ['To remember something, first look and listen. If you are looking at something else, it does not go in. Then say it again, out loud. Saying it again puts it in deeper.', 'Your brain forgets, and that is normal. A little every day helps. Three words today and three words tomorrow beats all of them at once.\nA brain can hold only a few things at a time. So we break big things into small pieces.', 'Try it with your phone number. Say it in three small pieces. Say it every day for a week. Then you have it.'],
+      keyIdea: 'Look and listen first. Say it again out loud. A little every day beats all at once. Break big things into small pieces.',
+      example: { kind: 'flow', steps: ['look and listen', 'say it again', 'a little every day'], caption: 'How remembering works.',
+        another: ['Close the book and say it. If you can say it, you have it.',
+          { text: 'A phone number is ten numbers. That is too many at once. Three small pieces are easy.', visual: { kind: 'flow', steps: ['ten numbers', 'three pieces', 'easy'] } },
+          'Forgetting is not bad. It just means say it again.'] },
+    },
+    sources: ['Aligned with TEKS Health Education 115.12(b)(4)(B) (discuss the meaning of goals and identify at least one health-related goal), and the CASEL framework, Self-management.'],
+    generators: ['pyk-memory', 'pyk-memory', 'pyk-memory', 'pyk-memory', 'pyk-memory'],
+  },
+  {
+    id: 'my-feelings',
+    order: 3,
+    title: 'My feelings',
+    tagline: 'Every feeling has a name, and naming it helps',
+    requires: ['remember-it'],
+    lesson: {
+      paragraphs: ['Feelings come and go. Happy, sad, angry, scared, surprised, calm. Every feeling has a name. Feelings are signals. Scared says be careful. Angry says that is not fair. Sad says I miss it.', 'When a big feeling comes, say its name. I am angry. I am scared. Naming it makes it smaller. Then calm your body. Breathe in slow, and breathe out slow. Count to ten. Hug someone you love.', 'A feeling is not a fact. You can feel scared and still be safe. Say the name, calm your body, and then decide what to do. Telling a grown-up you trust is smart.'],
+      keyIdea: 'Every feeling has a name, and naming it makes it smaller. Then breathe in slow and out slow, or count to ten. A feeling is not a fact.',
+      example: { kind: 'flow', steps: ['a big feeling', 'say its name', 'breathe slow', 'then decide'], caption: 'Name it, calm down, then choose.',
+        another: ['A smoke alarm beeps for burnt toast too. Scared is like that. It is a good alarm that sometimes beeps at toast.',
+          { text: 'Breathe in while you count to four. Breathe out while you count to four. Do it five times. Your body gets quiet.', visual: { kind: 'flow', steps: ['in, two, three, four', 'out, two, three, four', 'quiet'] } },
+          'Telling a grown-up you trust about a big feeling is smart, not weak.'] },
+    },
+    sources: ['Aligned with TEKS Health Education 115.12(b)(3)(A) (identify their own feelings and emotions) and 115.12(b)(3)(B) (describe and practice calming and self-management strategies), and the CASEL framework, Self-awareness and Self-management.'],
+    generators: ['pyk-feelings', 'pyk-feelings', 'pyk-feelings', 'pyk-feelings', 'pyk-feelings'],
+  },
+  {
+    id: 'making-friends',
+    order: 4,
+    title: 'Making friends',
+    tagline: 'How to say hello, how to be kind, and how to fix a fight',
+    requires: ['my-feelings'],
+    lesson: {
+      paragraphs: ['To make a new friend, say hello and your name. Ask what they like. Ask to play. That is all it takes to start.\nFriends can change what you do. A good friend helps you be kind and brave. If a friend wants you to be mean, you can say no.', 'Be kind with your words. Say please and thank you. Tell the truth. A good friend takes turns and keeps promises.', 'Friends fight sometimes. To fix it, say what you feel and what you want. I felt sad when you took the ball, and I want a turn. Then listen. Everyone is different, and everyone gets to be treated with respect.'],
+      keyIdea: 'Say hello, your name, and ask to play. A good friend helps you be kind and brave. Tell the truth and take turns. Fix a fight by saying what you feel and what you want.',
+      example: { kind: 'flow', steps: ['hello, my name is', 'what do you like?', 'want to play?'], caption: 'Three steps to a new friend.',
+        another: ['A fight fixed with words is over in a minute. A fight fixed with pushing lasts all week.',
+          { text: 'I felt sad when you took the ball, and I want a turn. That sentence works on the playground and at home.', visual: { kind: 'flow', steps: ['I felt', 'when you', 'and I want'] } },
+          'Everyone learns in their own way and at their own speed. Kind is the same for everyone.'] },
+    },
+    sources: ['Aligned with TEKS Health Education 115.12(b)(3)(C) (discuss how friends can influence a person\'s behavior), 115.12(b)(3)(D) (demonstrate skills for making new acquaintances), 115.12(b)(3)(E) (demonstrate respect and communicate appropriately with individuals), 115.12(b)(3)(F) (identify and practice ways to solve conflicts with a friend), 115.12(b)(4)(A) (describe positive social skills and personal qualities such as truth, kindness, reliability, and respectfulness) and 115.12(b)(5) (discuss how to treat peers with different learning needs with dignity), and the CASEL framework, Social awareness and Relationship skills.'],
+    generators: ['pyk-friends', 'pyk-friends', 'pyk-friends', 'pyk-friends', 'pyk-friends'],
+  },
+]; }
+function PSY3_MODULES() { return [
+  {
+    id: 'your-brain-and-senses',
+    order: 1,
+    title: 'Your brain and your senses',
+    tagline: 'The brain is the boss, the senses are its reporters, and it is still being built',
+    requires: [],
+    lesson: {
+      paragraphs: ['Inside your head is a brain, soft and folded, about the size of two fists. It runs everything: your breathing, your walking, your words and your dreams. It is not finished. A brain keeps growing and changing until a person is about twenty-five, and every time you practice something, the brain builds a stronger path for it.', 'Your five senses are the brain\'s reporters. Eyes, ears, nose, tongue and skin send in reports, and the brain decides what they mean. Sometimes it guesses wrong. A drawing can look like it moves when it does not, and a sound in the dark can seem like a monster. That is the brain filling in the gaps, which it does all day.', 'A brain needs three things to work well: sleep, food and water. A child of eight needs about ten hours of sleep a night, because that is when the brain sorts the day and files what it learned. A tired brain forgets, snaps and makes more mistakes. That is not a bad brain. It is a brain that needs its rest.'],
+      keyIdea: 'Your brain runs everything and keeps growing until about twenty-five. The senses report and the brain decides, and sometimes guesses wrong. Sleep, food and water keep it working.',
+      example: { kind: 'flow', steps: ['the eyes report', 'the brain decides', 'sometimes it guesses wrong'], caption: 'Senses report; the brain makes the call.',
+        another: ['Practice builds a path in the brain the way feet build a path across a field. Walk it every day and it gets wider and easier.',
+          { text: 'A tired brain is like a phone at two percent. It still works, but everything is slower and it shuts off at the worst time.', visual: { kind: 'flow', steps: ['ten hours of sleep', 'the brain files the day', 'you remember more'] } },
+          'The brain filling in gaps is why you can read a word with a letter missing. It is also why the dark seems full of things.'] },
+    },
+    sources: ['Aligned with TEKS Health Education 115.15(b)(3)(C) (discuss and explain how the brain develops through maturation) and 115.15(b)(1) (name, locate, and describe the primary functions and major components of body systems), and the CASEL framework, Self-awareness.'],
+    generators: ['py3-brain', 'py3-brain', 'py3-brain', 'py3-brain', 'py3-brain'],
+  },
+  {
+    id: 'how-remembering-works',
+    order: 2,
+    title: 'How remembering works',
+    tagline: 'Pay attention, put it in, keep it, and get it back',
+    requires: ['your-brain-and-senses'],
+    lesson: {
+      paragraphs: ['Remembering has three steps. First you get something in, by paying attention to it. Then you keep it. Then you get it back when you need it. If the first step fails, nothing else can happen, and the first step fails whenever your attention is somewhere else, like on a screen or a noise.', 'Forgetting is normal. Most of what you learn on Monday is gone by Wednesday unless you meet it again. The trick that works best is small and often: ten minutes today, ten minutes tomorrow, ten minutes next week beats an hour all at once. And testing yourself, closing the book and saying it, works better than reading it again.', 'Your brain can hold about seven small things at once, like a phone number. That is why long things are broken into chunks, and why a list is easier than a paragraph. Give the brain a chunk, give it a rest, give it a test, and it will keep almost anything.'],
+      keyIdea: 'Remembering is get it in, keep it, get it back, and attention is the door. Small and often beats all at once, and testing yourself beats rereading. About seven small things fit at a time.',
+      example: { kind: 'flow', steps: ['pay attention', 'keep it', 'get it back'], caption: 'The three steps of memory.',
+        another: ['Spelling words: three today, three tomorrow, three the day after, and all nine on Friday. It takes less time than one big Thursday night and it stays.',
+          { text: 'Close the book and say it out loud. If you can say it, you have it. If you cannot, you know exactly what to look at again.', visual: { kind: 'flow', steps: ['read', 'close the book', 'say it', 'check'] } },
+          'A phone number is ten digits, more than the brain holds at once, which is why it is written in three chunks.'] },
+    },
+    sources: ['Aligned with TEKS Health Education 115.15(b)(3)(C) (discuss and explain how the brain develops through maturation) and 115.15(b)(4)(A) (define self-esteem and ways it is formed, including identifying areas for one\'s personal growth), and the CASEL framework, Self-management.'],
+    generators: ['py3-memory', 'py3-memory', 'py3-memory', 'py3-memory', 'py3-memory'],
+  },
+  {
+    id: 'big-feelings',
+    order: 3,
+    title: 'Big feelings',
+    tagline: 'Every feeling has a job, and naming it turns the volume down',
+    requires: ['how-remembering-works'],
+    lesson: {
+      paragraphs: ['Feelings are signals. Fear says watch out. Anger says something is unfair. Sadness says something mattered. Joy says do that again. A feeling is not a fact; it is a message, and the job is to read it, not to obey it every time.', 'When a big feeling comes, the body gets loud: a fast heart, hot cheeks, tight hands. The first move is to name it. Saying I am angry, or I am scared, turns the volume down a little, because naming uses the thinking part of the brain. Then calm the body: breathe in for four, out for four, or count to ten, or walk.', 'Thoughts, feelings and actions are linked. If you think everyone hates me, you feel sad and you hide. If you think that was one bad moment, you feel calmer and you try again. Some stress is even useful: a little before a test gives focus and energy. Too much, or stress that never stops, needs rest, movement, and a trusted adult to talk to.'],
+      keyIdea: 'Feelings are signals, not facts. Name the feeling, then calm the body: breathe in for four and out for four. Thoughts change feelings and actions; a little stress helps, too much needs rest and a trusted adult.',
+      example: { kind: 'flow', steps: ['a big feeling', 'name it', 'breathe in for four, out for four', 'then decide'], caption: 'Name it, calm the body, then choose.',
+        another: ['The smoke detector in your kitchen goes off for burnt toast too. Fear is like that: a useful alarm that sometimes shouts about toast.',
+          { text: 'Try the two thoughts on one bad moment. Everyone hates me. That was one bad moment. Same moment, two feelings, two different next steps.', visual: { kind: 'flow', steps: ['one bad moment', 'the thought you pick', 'the feeling that follows'] } },
+          'A trusted adult is anyone who listens and keeps you safe: a parent, a grandparent, a teacher, a coach. Telling them a worry is not weak. It is smart.'] },
+    },
+    sources: ['Aligned with TEKS Health Education 115.15(b)(3)(A) (communicate needs, wants, and emotions in healthy ways), 115.15(b)(3)(B) (describe strategies for assessing thoughts and applying calming and self-management practices), 115.15(b)(5)(C) (describe positive outcomes of stress, including creativity, focus, energy, drive, and purpose), 115.15(b)(5)(D) (describe and practice healthy behaviors that reduce stress) and 115.15(b)(4)(B) (describe the importance of seeking guidance from a parent or another trusted adult), and the CASEL framework, Self-awareness and Self-management.'],
+    generators: ['py3-feelings', 'py3-feelings', 'py3-feelings', 'py3-feelings', 'py3-feelings'],
+  },
+  {
+    id: 'friends-and-other-minds',
+    order: 4,
+    title: 'Friends and other minds',
+    tagline: 'Other people feel things differently, and a good friend is a kind of person, not a number',
+    requires: ['big-feelings'],
+    lesson: {
+      paragraphs: ['Other people have minds like yours and not like yours. The same joke makes one friend laugh and another feel small. The same loud game is fun for one child and too much for another. Neither is wrong. Asking how was that for you is how you find out.', 'A healthy friendship feels safe: you can be yourself, you take turns, and a fight ends with a fix. An unhealthy friendship is one where it keeps score, makes you feel small, or dares you into things you do not want. Friends can pull you up or push you down, and you get to notice which.', 'When friends fight, use respectful words: say what you feel and what you need, not what is wrong with them. I felt left out when you picked the teams, and I want a turn, works. You always cheat, does not. If it stays stuck, a trusted adult can help. And accepting yourself, mistakes and all, is what makes it possible to accept everyone else.'],
+      keyIdea: 'Other minds feel the same moment differently; ask. A healthy friendship feels safe and fixes its fights. Say what you feel and need, not what is wrong with them, and take a stuck fight to a trusted adult.',
+      example: { kind: 'flow', steps: ['I felt left out', 'when you picked the teams', 'and I want a turn'], caption: 'A respectful sentence: what you felt, when, and what you need.',
+        another: ['A friend who dares you to do something you do not want is testing whether you belong to them. A friend who says okay, next time, already knows you do.',
+          { text: 'Ask how was that for you after a game, a joke or a movie. The answers will surprise you, and they are the fastest way to learn another mind.', visual: { kind: 'flow', steps: ['same moment', 'two minds', 'ask'] } },
+          'Accepting yourself does not mean liking every mistake. It means knowing a mistake is a thing you did, not a thing you are.'] },
+    },
+    sources: ['Aligned with TEKS Health Education 115.15(b)(3)(D) (distinguish between healthy and harmful influences of friends and others), 115.15(b)(3)(E) (describe the characteristics of healthy and unhealthy friendships), 115.15(b)(3)(F) (describe the value of respectful communication), 115.15(b)(3)(G) (discuss how others may experience situations differently than oneself), 115.15(b)(3)(H) (demonstrate strategies for resolving conflicts) and 115.15(b)(5)(E) (describe the importance of acceptance of oneself and others), and the CASEL framework, Social awareness, Relationship skills and Responsible decision-making.'],
+    generators: ['py3-friends', 'py3-friends', 'py3-friends', 'py3-friends', 'py3-friends'],
+  },
+]; }
+function PSY6_MODULES() { return [
+  {
+    id: 'the-brain-you-are-growing',
+    order: 1,
+    title: 'The brain you are growing',
+    tagline: 'Three pounds, eighty-six billion cells, and a front part still under construction',
+    requires: [],
+    lesson: {
+      paragraphs: ['Your brain weighs about three pounds and holds about eighty-six billion neurons, cells that pass signals to each other. Different parts do different jobs. The brainstem keeps you breathing. The cerebellum keeps you balanced. The hippocampus files new memories. The amygdala is the alarm that fires when something might be dangerous. The wrinkled outer layer, the cortex, does the thinking, and its front part, the prefrontal cortex, does the planning and the stopping.', 'The brain is not finished at your age, and the front part is the last to finish, in the mid-twenties. That is why a decision made when you are excited or with friends is harder than the same decision made alone at a desk: the alarm and the reward parts are grown, and the brakes are still being built. Knowing that is useful. You can build in the brakes on purpose, by deciding ahead of time and by sleeping.', 'Sleep is when the brain files the day. Teenagers need eight to ten hours, and the hippocampus does much of its filing in the night, which is why a night of sleep after studying beats an extra hour of studying. The brain also changes with use: practice a skill and the connections for it grow stronger. That is called plasticity, and it means the brain you have is partly the brain you are building.'],
+      keyIdea: 'Eighty-six billion neurons in parts with jobs: brainstem, cerebellum, hippocampus, amygdala, cortex. The prefrontal brakes finish in the mid-twenties. Sleep files the day, and practice rewires the brain.',
+      example: { kind: 'flow', steps: ['something exciting', 'alarm and reward fire fast', 'the brakes are still being built', 'decide ahead of time'], caption: 'Why deciding early works better than deciding in the moment.',
+        another: ['Eighty-six billion is more than ten times the number of people on Earth, and every one of those cells is talking to thousands of others right now.',
+          { text: 'Plasticity is why a pianist\'s brain has more room for the fingers than a runner\'s. The map changes with the use.', visual: { kind: 'flow', steps: ['practice', 'connections strengthen', 'the skill gets easier'] } },
+          'A brain that is still under construction is not a worse brain. It is a brain that can still be shaped, which is the best news in this course.'] },
+    },
+    sources: ['Aligned with TEKS Health Education 115.26(b)(5)(A) (identify and discuss how adolescent brain development influences emotions, decision making, and logic) and 115.26(b)(1) (explain how to maintain the healthy status of body systems), and the CASEL framework, self-awareness.'],
+    generators: ['py6-brain', 'py6-brain', 'py6-brain', 'py6-brain', 'py6-brain'],
+  },
+  {
+    id: 'attention-memory-and-practice',
+    order: 2,
+    title: 'Attention, memory and practice',
+    tagline: 'You cannot remember what you never noticed, and the two study habits that work',
+    requires: ['the-brain-you-are-growing'],
+    lesson: {
+      paragraphs: ['Attention is the doorway to memory. You cannot remember what you never noticed, and attention is narrow: when a phone is on the desk, even face down, part of it is on the phone. Working memory, the part that holds what you are thinking about right now, holds only a handful of things at once. Put big things into it in small chunks.', 'Two study habits beat all the others in study after study. The first is testing yourself: closing the book and trying to say it back. In 2006 Henry Roediger and Jeffrey Karpicke found that students who tested themselves remembered far more a week later than students who reread the same material. The second is spacing: short sessions spread over days, not one long night. Hermann Ebbinghaus drew the forgetting curve in 1885, and each review bends it flatter.', 'Rereading feels like learning because the page looks familiar, and familiar is not the same as known. Habits are how the brain saves effort. A habit has three parts: a cue, a routine and a reward, and the cue is the part you can change. Put the book on the pillow and the cue is there at bedtime. Put the phone in another room and the cue is gone. Sleep finishes the job: what you practiced today is filed tonight.'],
+      keyIdea: 'Attention is the doorway; working memory holds a handful. Test yourself and space it out, the two habits that work. A habit is cue, routine, reward, and you can move the cue.',
+      example: { kind: 'flow', steps: ['read a page', 'close the book', 'say it back', 'check what you missed'], caption: 'Testing yourself, the study habit that works.',
+        another: ['Rereading feels like learning because the page looks familiar. Familiar is not the same as known. Cover it and find out.',
+          { text: 'Ten minutes on four days beats forty minutes on one night, for the same total time. The gap between sessions is where the remembering gets built.', visual: { kind: 'flow', steps: ['ten minutes', 'a day off', 'ten minutes', 'the curve bends'] } },
+          'A cue is the thing that starts a habit without you deciding. Change what is on the desk and you change what you do at the desk.'] },
+    },
+    sources: ['Aligned with the Texas College and Career Readiness Standards, Cross-Disciplinary Standards I.D.2 (use study habits necessary to manage academic pursuits and requirements) and I.D.1 (self-monitor learning needs and seek assistance when needed), and the CASEL framework, self-management.'],
+    generators: ['py6-memory', 'py6-memory', 'py6-memory', 'py6-memory', 'py6-memory'],
+  },
+  {
+    id: 'feelings-are-signals',
+    order: 3,
+    title: 'Feelings are signals',
+    tagline: 'What each feeling is for, why naming it helps, and what to do with stress',
+    requires: ['attention-memory-and-practice'],
+    lesson: {
+      paragraphs: ['A feeling is a signal with a job. Fear says something might hurt you. Anger says something is unfair or in the way. Sadness says you have lost something and need people. Joy says do that again. Feelings are not facts; a feeling that a test will go badly is a signal, not a result, but the signal is real and worth reading.', 'When the alarm fires, the amygdala sends adrenaline, the heart speeds and thinking narrows. Naming the feeling turns the volume down: in 2007 Matthew Lieberman and his colleagues found that putting a feeling into words calmed the alarm part of the brain. I am nervous is a sentence that helps. Thoughts, feelings and actions pull on each other, so change one and the others change.', 'Stress is the body ready for a demand, and it is useful in small doses and harmful when it never switches off. Healthy ways to handle it: slow breathing, moving your body, sleep, breaking the problem into steps, and telling a parent or another trusted adult. Unhealthy ways: bottling it, taking it out on someone, or avoiding the thing until it grows. Bouncing back after a hard thing is called resilience, and it is a skill, built by the healthy ways.'],
+      keyIdea: 'Feelings are signals with jobs, not facts. Naming a feeling turns its volume down. Healthy ways with stress: breathe, move, sleep, break it into steps, tell a trusted adult.',
+      example: { kind: 'flow', steps: ['heart racing', 'I am nervous', 'the alarm quiets', 'now decide'], caption: 'Name it, then handle it.',
+        another: ['Anger is not a bad feeling; it is a smoke detector for unfairness. The question is what you do in the thirty seconds after it goes off.',
+          { text: 'Thoughts, feelings and actions are three corners of a triangle. Pull one corner and the other two move. Going for a walk moves the feeling; the thought follows.', visual: { kind: 'flow', steps: ['thought', 'feeling', 'action', 'and back to thought'] } },
+          'Telling a trusted adult is not weakness; it is the oldest stress strategy humans have, and the one that works when the others do not.'] },
+    },
+    sources: ['Aligned with TEKS Health Education 115.26(b)(3)(A) (demonstrate healthy methods for communicating emotions in a variety of scenarios), 115.26(b)(6)(C) (identify how to respond positively to develop resiliency) and 115.26(b)(6)(D) (describe healthy and unhealthy self-management strategies for stress), and the CASEL framework, self-awareness and self-management.'],
+    generators: ['py6-feelings', 'py6-feelings', 'py6-feelings', 'py6-feelings', 'py6-feelings'],
+  },
+  {
+    id: 'other-people',
+    order: 4,
+    title: 'Other people',
+    tagline: 'First impressions, the pull of a group, and being the one who moves',
+    requires: ['feelings-are-signals'],
+    lesson: {
+      paragraphs: ['Your brain judges a new person in a second and then looks for reasons to keep the judgment. It also explains other people by their character and yourself by your situation: they were rude, you were having a bad day. Psychologists call that the attribution error, and the cure is a question, what might be going on for them? Taking someone else\'s perspective is a skill, and listening to their feelings without fixing them is most of it.', 'Groups pull. In 1951 Solomon Asch found that about a third of the time people said a plainly wrong answer to match a group that had said it. Peer influence can be positive, a friend who studies pulls you toward studying, or negative, and the difference is whether it moves you toward what you would choose alone. Deciding ahead of time what you will and will not do is the strongest protection there is.', 'When something goes wrong in a crowd, everyone waits for someone else. In 1968 John Darley and Bibb Latané showed that the more people present, the less likely any one helps. The fix is to be the one who moves, and if you need help, to ask one person by name. Helping costs something and gives something back: people who spend on others report feeling better than people who spend on themselves, a finding Elizabeth Dunn and her colleagues published in 2008. A good decision has steps: name the problem, list the options, weigh them, choose, and look back at how it went.'],
+      keyIdea: 'We judge fast and explain others by character; ask what might be going on for them. Groups pull; decide ahead of time. In a crowd, be the one who moves and ask one person by name.',
+      example: { kind: 'flow', steps: ['someone snaps at you', 'rude, says your brain', 'what might be going on for them?', 'a slower, kinder story'], caption: 'The cure for the attribution error is a question.',
+        another: ['A friend who pulls you toward what you would choose alone is positive influence. A friend who pulls you away from it is the other kind, however much fun they are.',
+          { text: 'Asch\'s lines were easy. Alone, nearly everyone got them right. The group did not change what people saw; it changed what they were willing to say.', visual: { kind: 'flow', steps: ['an easy question', 'a group answers wrong', 'a third go along'] } },
+          'In a crowd, you, in the red jacket, get the nurse works where somebody get help does not, because somebody is nobody.'] },
+    },
+    sources: ['Aligned with TEKS Health Education 115.26(b)(3)(C) (differentiate between positive and negative peer influence), 115.26(b)(3)(D) (describe methods for communicating important issues with and understanding perspectives of parents and peers), 115.26(b)(3)(E) (discuss and demonstrate how to listen and respect others\' feelings and perspectives in a variety of scenarios) and 115.26(b)(4)(D) (explain the steps in the decision-making process and the importance of following the steps), and the CASEL framework, social awareness, relationship skills and responsible decision-making.'],
+    generators: ['py6-people', 'py6-people', 'py6-people', 'py6-people', 'py6-people'],
   },
 ]; }
 function PHIL6_MODULES() { return [
@@ -14203,6 +14921,93 @@ Object.assign(GENERATORS, {
   // Philosophy, grades 6 to 8 (2026-09-29, pass GJ): every answer is said in its lesson first.
   // Philosophy, grades 3 to 5 (2026-09-29, pass GK): every answer is said in its lesson first.
   // Philosophy, K to 2 (2026-09-29, pass GL): spoken questions with tapped answers, every answer said in its lesson first.
+  // Psychology, K to 2 (2026-09-30, pass GP): spoken questions with tapped answers, every answer said in its lesson first.
+  // ---------------------------------------------------------------------------------------------------------------
+  // Kindergarten speech question banks (2026-09-30, pass GT). In plain terms: each bank is a short list of quick-check
+  // questions for one lesson. Every question is [what is asked, the three answers to tap, the right one, one line said
+  // after]. `pick` chooses one at random and `shuffle` mixes the three answers, so the right answer moves around. Every
+  // right answer is a phrase the lesson said first, which the untaught-answer check proves.
+  // ---------------------------------------------------------------------------------------------------------------
+  'spk-listen': (rng) => {
+    const Q = [['Listening is what kind of job?', ['a whole-body job', 'an ear job only', 'a hand job only'], 'a whole-body job', 'Eyes, ears, hands, feet and mind.'],
+      ['Where do your eyes look when you listen?', ['at the person', 'at the floor', 'at your lunch'], 'at the person', 'Your eyes look at the person.'],
+      ['What do your hands do when you listen?', ['stay still', 'wave', 'clap'], 'stay still', 'Hands still, feet still.'],
+      ['If you do not understand, what do you do?', ['ask', 'hide', 'guess'], 'ask', 'Asking is how listeners get it right.'],
+      ['Someone asks a question. How many words do you answer with?', ['more than one', 'one', 'none'], 'more than one', 'Not just yes. Yes, I saw the red bird.'],
+      ['If you can say the story back, what does that mean?', ['you heard it', 'you missed it', 'it is over'], 'you heard it', 'What happened first? What happened last?']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'spk-steps': (rng) => {
+    const Q = [['Directions come in what?', ['steps', 'colors', 'songs'], 'steps', 'First, then, last.'],
+      ['Before you do the steps, what do you do?', ['say them back', 'run', 'sing'], 'say them back', 'Cup, water, table.'],
+      ['Get a cup, fill it, put it on the table. What is first?', ['get a cup', 'the table', 'fill it'], 'get a cup', 'First things first.'],
+      ['If you say a step wrong, what happens?', ['the grown-up fixes it', 'nothing', 'you start over'], 'the grown-up fixes it', 'Before you start.'],
+      ['When you give directions, what words do you use?', ['first, then, last', 'big, small', 'red, blue'], 'first, then, last', 'Then ask your friend to say them back.'],
+      ['First, get the ball. Then, roll it. How many steps?', ['two', 'five', 'ten'], 'two', 'Say how many steps.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'spk-voice': (rng) => {
+    const Q = [['How loud do you talk?', ['loud enough for the last friend', 'as quiet as a mouse', 'as loud as a truck'], 'loud enough for the last friend', 'If the back friend can hear you, everyone can.'],
+      ['How fast do you talk?', ['slow enough to follow', 'as fast as you can', 'not at all'], 'slow enough to follow', 'Slow enough to follow.'],
+      ['Which is a whole word?', ['cat', 'ca', 'c'], 'cat', 'Cat, not ca.'],
+      ['A good telling has how many parts?', ['three', 'ten', 'one'], 'three', 'What it is, what it does, and why you like it.'],
+      ['This is my dog. He is brown and likes to dig. What comes next?', ['why you like him', 'his shoe size', 'the end'], 'why you like him', 'I like him because he is funny.'],
+      ['After you hold up your picture, where do you look?', ['at your friends', 'at the floor', 'at the door'], 'at your friends', 'Your friends are the ones you are talking to.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'spk-turns': (rng) => {
+    const Q = [['In a group, how many people talk at a time?', ['one', 'everyone', 'two'], 'one', 'Everyone else listens.'],
+      ['If you want a turn, what do you do?', ['put your hand up and wait', 'shout', 'grab'], 'put your hand up and wait', 'Your turn will come.'],
+      ['How do you meet someone?', ['hello, my name is Sam', 'nothing', 'give me that'], 'hello, my name is Sam', 'Then they know your name.'],
+      ['What do you say to go by someone?', ['excuse me', 'move', 'nothing'], 'excuse me', 'It is a small word that says I see you.'],
+      ['You want the truck. What do you say?', ['I want a turn with the truck', 'nothing, just grab it', 'mine'], 'I want a turn with the truck', 'Words get you a turn.'],
+      ['Your zipper is stuck. What do you say?', ['I need help with my zipper', 'nothing', 'waaa'], 'I need help with my zipper', 'People can help you when they know what you need.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'pyk-brain': (rng) => {
+    const Q = [['What is the boss of you?', ['your brain', 'your shoe', 'your lunch'], 'your brain', 'It moves your legs and picks your words.'],
+      ['How many senses does your brain get its news from?', ['five', 'two', 'ten'], 'five', 'Eyes, ears, nose, tongue and skin.'],
+      ['What do your ears do?', ['hear', 'see', 'taste'], 'hear', 'Eyes see. Ears hear.'],
+      ['What does your tongue do?', ['tastes', 'hears', 'smells'], 'tastes', 'Your tongue tastes. Your skin feels.'],
+      ['In the dark, a coat on a hook can look like what?', ['a monster', 'a cake', 'a friend'], 'a monster', 'Turn on the light, and it is a coat.'],
+      ['About how many hours of sleep does a child your age need?', ['ten', 'two', 'twenty'], 'ten', 'A tired brain gets grumpy and forgets things.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'pyk-memory': (rng) => {
+    const Q = [['To remember something, what do you do first?', ['look and listen', 'run', 'close your eyes'], 'look and listen', 'If you are looking at something else, it does not go in.'],
+      ['What puts it in deeper?', ['saying it again', 'whispering once', 'forgetting it'], 'saying it again', 'Say it out loud.'],
+      ['Three words today and three tomorrow beats what?', ['all of them at once', 'nothing', 'a nap'], 'all of them at once', 'A little every day helps.'],
+      ['A brain can hold how many things at a time?', ['only a few', 'a thousand', 'none'], 'only a few', 'So we break big things into small pieces.'],
+      ['How do you say a phone number?', ['in three small pieces', 'all at once', 'backwards'], 'in three small pieces', 'Say it every day for a week.'],
+      ['Your brain forgets. Is that normal?', ['yes', 'no', 'only on Mondays'], 'yes', 'Forgetting just means say it again.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'pyk-feelings': (rng) => {
+    const Q = [['Scared says what?', ['be careful', 'eat lunch', 'run fast'], 'be careful', 'Feelings are signals.'],
+      ['Angry says what?', ['that is not fair', 'time for bed', 'I am hungry'], 'that is not fair', 'Sad says I miss it.'],
+      ['When a big feeling comes, what do you do first?', ['say its name', 'shout', 'hide'], 'say its name', 'Naming it makes it smaller.'],
+      ['After you say its name, what do you do?', ['breathe in slow and out slow', 'jump up and down', 'eat candy'], 'breathe in slow and out slow', 'Or count to ten, or hug someone you love.'],
+      ['Is a feeling a fact?', ['no', 'yes', 'only at night'], 'no', 'You can feel scared and still be safe.'],
+      ['Telling a grown-up you trust about a big feeling is what?', ['smart', 'weak', 'silly'], 'smart', 'It is smart, not weak.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'pyk-friends': (rng) => {
+    const Q = [['To make a new friend, what do you say first?', ['hello and your name', 'go away', 'nothing'], 'hello and your name', 'Then ask what they like, and ask to play.'],
+      ['A good friend helps you be what?', ['kind and brave', 'mean', 'loud'], 'kind and brave', 'If a friend wants you to be mean, you can say no.'],
+      ['Which is a thing a good friend does?', ['takes turns', 'grabs', 'lies'], 'takes turns', 'Say please and thank you. Tell the truth. Take turns.'],
+      ['To fix a fight, what do you say?', ['what you feel and what you want', 'you are bad', 'nothing'], 'what you feel and what you want', 'I felt sad when you took the ball, and I want a turn.'],
+      ['After you say what you feel, what do you do?', ['listen', 'walk away', 'shout'], 'listen', 'Then listen.'],
+      ['Everyone is different. How does everyone get treated?', ['with respect', 'with a push', 'with a frown'], 'with respect', 'Kind is the same for everyone.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
   'pk-wonder': (rng) => {
     const Q = [['Why is the sky blue? What kind of question is that?', ['a finding question', 'a wondering question', 'a wish'], 'a finding question', 'Someone can tell you, and then you know.'],
       ['What makes a good friend? What kind of question is that?', ['a wondering question', 'a finding question', 'an order'], 'a wondering question', 'Nobody can just tell you. You think about it.'],
@@ -14243,6 +15048,47 @@ Object.assign(GENERATORS, {
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
+  // Psychology, grades 3 to 5 (2026-09-29, pass GO): every answer is said in its lesson first.
+  'py3-brain': (rng) => {
+    const Q = [['A brain keeps growing and changing until a person is about how old?', ['twenty-five', 'ten', 'five', 'sixty'], 'twenty-five', 'It is not finished.'],
+      ['Every time you practice something, the brain does what?', ['builds a stronger path for it', 'gets smaller', 'forgets it', 'goes to sleep'], 'builds a stronger path for it', 'Like feet building a path across a field.'],
+      ['Your five senses are the brain\'s what?', ['reporters', 'bosses', 'enemies', 'batteries'], 'reporters', 'They send in reports, and the brain decides what they mean.'],
+      ['A sound in the dark seems like a monster. What is the brain doing?', ['filling in the gaps', 'sleeping', 'growing a path', 'sending a report'], 'filling in the gaps', 'It does that all day.'],
+      ['About how many hours of sleep does a child of eight need?', ['ten', 'four', 'six', 'fourteen'], 'ten', 'That is when the brain sorts the day and files what it learned.'],
+      ['A tired brain forgets and snaps. What does it need?', ['its rest', 'more screens', 'a scolding', 'nothing'], 'its rest', 'That is not a bad brain.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'py3-memory': (rng) => {
+    const Q = [['What is the first step of remembering?', ['paying attention', 'sleeping', 'writing it twice', 'saying it fast'], 'paying attention', 'If the first step fails, nothing else can happen.'],
+      ['Ten minutes today, ten tomorrow, ten next week. What is that called?', ['small and often', 'all at once', 'cramming', 'guessing'], 'small and often', 'It beats an hour all at once.'],
+      ['Which works better than reading it again?', ['testing yourself', 'reading it louder', 'sitting still', 'copying the cover'], 'testing yourself', 'Close the book and say it.'],
+      ['About how many small things can your brain hold at once?', ['seven', 'seventy', 'two', 'a hundred'], 'seven', 'Like a phone number.'],
+      ['Why are long things broken into chunks?', ['the brain holds only a few things at once', 'to waste time', 'because paper is small', 'no reason'], 'the brain holds only a few things at once', 'A list is easier than a paragraph.'],
+      ['Most of what you learn on Monday is gone by Wednesday unless what?', ['you meet it again', 'you sleep less', 'you read faster', 'you close your eyes'], 'you meet it again', 'Forgetting is normal.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'py3-feelings': (rng) => {
+    const Q = [['Feelings are what?', ['signals', 'facts', 'orders', 'mistakes'], 'signals', 'A feeling is a message, and the job is to read it.'],
+      ['Fear says what?', ['watch out', 'do that again', 'something mattered', 'go to sleep'], 'watch out', 'Anger says something is unfair; sadness says something mattered.'],
+      ['When a big feeling comes, what is the first move?', ['name it', 'run', 'shout', 'hide it'], 'name it', 'Naming uses the thinking part of the brain.'],
+      ['Breathe in for four and out for what?', ['four', 'one', 'ten', 'twenty'], 'four', 'Or count to ten, or walk.'],
+      ['Which are linked together?', ['thoughts, feelings and actions', 'only thoughts', 'only feelings', 'nothing'], 'thoughts, feelings and actions', 'If you think that was one bad moment, you feel calmer and you try again.'],
+      ['A little stress before a test gives what?', ['focus and energy', 'nothing', 'a cold', 'more sleep'], 'focus and energy', 'Too much, or stress that never stops, needs rest, movement, and a trusted adult.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'py3-friends': (rng) => {
+    const Q = [['One friend laughs at a joke and another feels small. Who is wrong?', ['neither', 'the one who laughed', 'the one who felt small', 'both'], 'neither', 'Other people have minds like yours and not like yours.'],
+      ['How do you find out how something was for a friend?', ['ask', 'guess', 'wait a year', 'tell them'], 'ask', 'Asking how was that for you is how you find out.'],
+      ['A healthy friendship feels how?', ['safe', 'scary', 'like a contest', 'small'], 'safe', 'You can be yourself, you take turns, and a fight ends with a fix.'],
+      ['Which is a sign of an unhealthy friendship?', ['it keeps score', 'you take turns', 'you can be yourself', 'a fight ends with a fix'], 'it keeps score', 'An unhealthy one keeps score, makes you feel small, or dares you into things you do not want.'],
+      ['Which is a respectful way to say it?', ['I felt left out when you picked the teams, and I want a turn', 'you always cheat', 'you are the worst', 'nobody likes you'], 'I felt left out when you picked the teams, and I want a turn', 'Say what you feel and what you need.'],
+      ['If a fight stays stuck, who can help?', ['a trusted adult', 'nobody', 'a stranger', 'the loudest friend'], 'a trusted adult', 'And accepting yourself makes it possible to accept everyone else.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
   'p3-wonder': (rng) => {
     const Q = [['Which of these is a wonder question?', ['Can a robot be your friend?', 'How many legs does a spider have?', 'What time is lunch?', 'How tall is the flagpole?'], 'Can a robot be your friend?', 'Nobody can look that up; you have to think about what a friend is.'],
       ['How many legs does a spider have? What kind of question is that?', ['a look-up question', 'a wonder question', 'a trick question', 'a riddle'], 'a look-up question', 'You can look it up: eight.'],
@@ -14280,6 +15126,51 @@ Object.assign(GENERATORS, {
       ['A fair exception is one you would give to whom?', ['anybody in the same spot', 'only a friend', 'nobody', 'the tallest'], 'anybody in the same spot', 'Not only to a friend.'],
       ['One cake and two people. Who chooses?', ['the one who did not cut', 'the one who cut', 'the oldest', 'the hungriest'], 'the one who did not cut', 'The one who cuts will cut it even.'],
       ['How long have people said to treat others as you want to be treated?', ['thousands of years', 'since last week', 'never', 'one year'], 'thousands of years', 'In many languages.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  // Psychology, grades 6 to 8 (2026-09-29, pass GN): every answer is said in its lesson first.
+  'py6-brain': (rng) => {
+    const Q = [['About how many neurons does your brain hold?', ['eighty-six billion', 'eighty-six million', 'a thousand', 'eight'], 'eighty-six billion', 'Cells that pass signals to each other.'],
+      ['Which part of the brain keeps you breathing?', ['the brainstem', 'the cerebellum', 'the hippocampus', 'the amygdala'], 'the brainstem', 'The cerebellum keeps you balanced.'],
+      ['Which part files new memories?', ['the hippocampus', 'the brainstem', 'the amygdala', 'the cerebellum'], 'the hippocampus', 'And it does much of its filing in the night.'],
+      ['Which part is the alarm that fires when something might be dangerous?', ['the amygdala', 'the hippocampus', 'the cerebellum', 'the brainstem'], 'the amygdala', 'The alarm part is grown early; the brakes come later.'],
+      ['When does the prefrontal cortex finish growing?', ['in the mid-twenties', 'at age ten', 'at birth', 'at age fifty'], 'in the mid-twenties', 'It does the planning and the stopping.'],
+      ['How much sleep do teenagers need?', ['eight to ten hours', 'four to five hours', 'twelve to fourteen hours', 'six hours'], 'eight to ten hours', 'Sleep is when the brain files the day.'],
+      ['The brain changing with use is called what?', ['plasticity', 'attention', 'adrenaline', 'balance'], 'plasticity', 'Practice a skill and the connections for it grow stronger.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'py6-memory': (rng) => {
+    const Q = [['What is the doorway to memory?', ['attention', 'sleep', 'a reward', 'a cue'], 'attention', 'You cannot remember what you never noticed.'],
+      ['How much does working memory hold at once?', ['a handful of things', 'everything', 'one thing', 'a thousand things'], 'a handful of things', 'Put big things into it in small chunks.'],
+      ['Closing the book and trying to say it back is called what?', ['testing yourself', 'rereading', 'cramming', 'skimming'], 'testing yourself', 'Roediger and Karpicke, 2006: it beats rereading a week later.'],
+      ['Short sessions spread over days, not one long night, is called what?', ['spacing', 'cramming', 'chunking', 'a cue'], 'spacing', 'Each review bends the forgetting curve flatter.'],
+      ['Who drew the forgetting curve in 1885?', ['Hermann Ebbinghaus', 'Solomon Asch', 'Matthew Lieberman', 'Elizabeth Dunn'], 'Hermann Ebbinghaus', 'Each review bends it flatter.'],
+      ['A habit has three parts. Which part can you change most easily?', ['the cue', 'the routine', 'the reward', 'none of them'], 'the cue', 'Put the phone in another room and the cue is gone.'],
+      ['Rereading feels like learning because the page looks what?', ['familiar', 'new', 'short', 'blank'], 'familiar', 'Familiar is not the same as known.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'py6-feelings': (rng) => {
+    const Q = [['What is a feeling?', ['a signal with a job', 'a fact', 'a mistake', 'a habit'], 'a signal with a job', 'Fear says something might hurt you; anger says something is unfair.'],
+      ['Which feeling says you have lost something and need people?', ['sadness', 'fear', 'anger', 'joy'], 'sadness', 'Joy says do that again.'],
+      ['Putting a feeling into words does what to the alarm?', ['turns the volume down', 'turns it up', 'nothing', 'switches it off forever'], 'turns the volume down', 'Lieberman and colleagues, 2007.'],
+      ['Which is a healthy way to handle stress?', ['slow breathing', 'bottling it', 'taking it out on someone', 'avoiding the thing'], 'slow breathing', 'Also moving, sleep, steps, and a trusted adult.'],
+      ['Which is an unhealthy way to handle stress?', ['bottling it', 'moving your body', 'sleep', 'telling a trusted adult'], 'bottling it', 'Or taking it out on someone, or avoiding the thing until it grows.'],
+      ['Bouncing back after a hard thing is called what?', ['resilience', 'stress', 'adrenaline', 'attention'], 'resilience', 'It is a skill, built by the healthy ways.'],
+      ['Thoughts, feelings and actions pull on each other. Change one, and?', ['the others change', 'nothing changes', 'only feelings change', 'you forget'], 'the others change', 'Three corners of a triangle.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'py6-people': (rng) => {
+    const Q = [['They were rude, you were having a bad day. What is that called?', ['the attribution error', 'peer influence', 'resilience', 'plasticity'], 'the attribution error', 'The cure is a question: what might be going on for them?'],
+      ['What is the cure for the attribution error?', ['asking what might be going on for them', 'judging faster', 'ignoring them', 'a reward'], 'asking what might be going on for them', 'Taking someone else\'s perspective is a skill.'],
+      ['In 1951, Asch found people matched a wrong group answer how often?', ['about a third of the time', 'never', 'always', 'once'], 'about a third of the time', 'The group changed what people were willing to say.'],
+      ['A friend who studies pulls you toward studying. Which influence?', ['positive', 'negative', 'neither', 'the attribution error'], 'positive', 'The difference is whether it moves you toward what you would choose alone.'],
+      ['What is the strongest protection against negative peer influence?', ['deciding ahead of time', 'shouting', 'hiding', 'guessing'], 'deciding ahead of time', 'Decide what you will and will not do before the moment.'],
+      ['In a crowd, how do you get help?', ['ask one person by name', 'shout somebody help', 'wait', 'leave'], 'ask one person by name', 'Darley and Latané, 1968: somebody is nobody.'],
+      ['People who spend on others, rather than themselves, feel how?', ['better', 'worse', 'the same', 'poorer'], 'better', 'Elizabeth Dunn and colleagues, 2008.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
@@ -14325,6 +15216,133 @@ Object.assign(GENERATORS, {
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
   // Psychology, grades 9 to 12 (2026-09-29, pass GM): every recall answer is said in its lesson first; the statistics are computed fresh.
+  // Speech, grades 9 to 12 (2026-09-30, pass GQ): every answer is said in its lesson first.
+  // Speech, grades 6 to 8 (2026-09-30, pass GR): every answer is said in its lesson first.
+  // Speech, grades 3 to 5 (2026-09-30, pass GS): every answer is said in its lesson first.
+  's3-listen': (rng) => {
+    const Q = [['Which part of listening can nobody see?', ['your mind on the words', 'eyes on the speaker', 'hands still', 'body turned toward them'], 'your mind on the words', 'Not on what you want to say next.'],
+      ['Your mind wanders during a story. What do you do?', ['bring it back to the last thing you heard', 'give up', 'talk instead', 'leave'], 'bring it back to the last thing you heard', 'That is normal.'],
+      ['Someone tells you about the beach. Which question is relevant?', ['where did you swim', 'what are we having for lunch', 'is it Tuesday', 'do you like pizza'], 'where did you swim', 'A good question is about the topic.'],
+      ['Which comment adds to a talk about the beach?', ['I went to a beach with big waves once', 'I like pizza', 'my shoe is untied', 'I am bored'], 'I went to a beach with big waves once', 'A good comment is about the topic too.'],
+      ['A report is about how bees make honey. What is the main idea?', ['honey', 'the flowers', 'the wax', 'the hive'], 'honey', 'The flowers, the hive and the wax are details.'],
+      ['How do you know whether you really heard the main idea?', ['say it back in your own words', 'nod', 'clap', 'write your name'], 'say it back in your own words', 'It is a check.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  's3-order': (rng) => {
+    const Q = [['When you get instructions, what do you do before you start?', ['say them back in order', 'start fast', 'guess', 'wait an hour'], 'say them back in order', 'Count the steps on your fingers first.'],
+      ['When you give instructions, what do you say first?', ['how many steps there are', 'the last step', 'your name', 'good luck'], 'how many steps there are', 'Then use order words.'],
+      ['Which are the order words?', ['first, next, then, last', 'big, small, tall', 'red, blue, green', 'up, down, sideways'], 'first, next, then, last', 'Like the numbers on stairs.'],
+      ['After giving instructions, what do you ask?', ['say them back to me', 'did you like them', 'what is your name', 'nothing'], 'say them back to me', 'If one is wrong, you fix it right then.'],
+      ['A story told out of order is what for the listener?', ['a puzzle to solve while you talk', 'easier', 'funnier', 'shorter'], 'a puzzle to solve while you talk', 'Keep the events in the order they happened.'],
+      ['Saying the steps back caught a mistake. When was it fixed?', ['right then', 'at the wrong door', 'never', 'next week'], 'right then', 'Before anything is in the bowl.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  's3-talk': (rng) => {
+    const Q = [['A one-minute talk is one topic and how many facts?', ['three', 'ten', 'one', 'twenty'], 'three', 'And a picture if it helps.'],
+      ['About how many words is a minute?', ['a hundred', 'ten', 'a thousand', 'five'], 'a hundred', 'What it is, three facts, and why you like it.'],
+      ['Which is a complete sentence?', ['my rabbit eats hay every morning', 'rabbit, hay', 'hay morning', 'rabbit'], 'my rabbit eats hay every morning', 'A complete sentence has a who and a what.'],
+      ['Who do you aim your volume at?', ['the person farthest away', 'yourself', 'the floor', 'the closest person'], 'the person farthest away', 'Then everyone hears.'],
+      ['Enunciation means saying what?', ['the ends of your words', 'only the first word', 'nothing', 'every word twice'], 'the ends of your words', 'Walking, not walkin.'],
+      ['How many times do you practice out loud, standing up?', ['three', 'zero', 'one', 'a hundred'], 'three', 'It will come out the way you practiced it.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  's3-turns': (rng) => {
+    const Q = [['How many voices at a time in a group that talks well?', ['one', 'two', 'all of them', 'none'], 'one', 'And everyone gets a turn before anyone gets two.'],
+      ['What are the group rules for?', ['so the quiet person gets heard', 'to slow you down', 'to end the talk', 'to pick a winner'], 'so the quiet person gets heard', 'And the loud person gets listened to.'],
+      ['Which sentence builds on what Maya said?', ['I agree with Maya, and I want to add', 'anyway, my idea is', 'Maya is wrong', 'let us start over'], 'I agree with Maya, and I want to add', 'It takes the other person seriously.'],
+      ['Which is a polite way to disagree?', ['I think something different, because', 'no', 'that is dumb', 'you are wrong'], 'I think something different, because', 'The idea might be wrong and the person is still your friend.'],
+      ['What do you say before interrupting?', ['excuse me', 'hey', 'nothing', 'move'], 'excuse me', 'Polite talk works in every room.'],
+      ['A grown-up asks about your reading. Which is a full sentence?', ['yes, I finished my reading', 'yeah', 'uh huh', 'reading'], 'yes, I finished my reading', 'Polite is not fancy.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  's6-listen': (rng) => {
+    const Q = [['What is the first move of active listening?', ['say it back', 'nod', 'take notes', 'argue'], 'say it back', 'So you want the poster done by Friday.'],
+      ['After saying it back, what do you ask?', ['one clarifying question', 'ten questions', 'nothing', 'a riddle'], 'one clarifying question', 'Does Friday mean the morning or the end of the day?'],
+      ['Then you respond to what?', ['what was actually said', 'what you expected', 'the loudest person', 'the last word'], 'what was actually said', 'Not to what you expected.'],
+      ['When words and tone disagree, which do you believe?', ['the tone', 'the words', 'neither', 'the pause'], 'the tone', 'And ask.'],
+      ['You receive instructions with several steps. What comes first?', ['count the steps', 'start at once', 'guess', 'write a note'], 'count the steps', 'Then repeat them in order before you start.'],
+      ['Which are order words?', ['first, then, next, last', 'big, small, loud', 'red, blue, green', 'yes, no, maybe'], 'first, then, next, last', 'Say how many there are, use order words, and end by asking them to say it back.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  's6-clear': (rng) => {
+    const Q = [['Before you explain anything, what do you find?', ['the one sentence', 'the whole story', 'a joke', 'a chair'], 'the one sentence', 'Not the whole story, the point.'],
+      ['One sentence, one reason, one example, and then what?', ['stop', 'repeat it', 'add everything else', 'shout'], 'stop', 'Most unclear explanations are clear explanations buried under everything else.'],
+      ['With an adult you do not know, which fits?', ['a formal opening and no slang', 'half sentences', 'slang', 'silence'], 'a formal opening and no slang', 'Each way is correct in its room.'],
+      ['Switching how you talk between rooms is what?', ['a skill, not fakeness', 'fakeness', 'lying', 'rude'], 'a skill, not fakeness', 'None of these is the correct way to talk; each is correct in that room.'],
+      ['Which speaking rate carries a sentence across a room?', ['slower than feels natural', 'as fast as possible', 'whispered', 'sung'], 'slower than feels natural', 'A listener needs time the speaker does not.'],
+      ['Where do you aim your volume?', ['at the farthest person', 'at your shoes', 'at the ceiling', 'at yourself'], 'at the farthest person', 'Enunciation, rate and volume carry a sentence.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  's6-talk': (rng) => {
+    const Q = [['A talk needs a stance. What is a stance?', ['one position you can say in a sentence', 'a way of standing', 'a joke', 'a picture'], 'one position you can say in a sentence', 'Our school should start at nine.'],
+      ['How many reasons does the two-minute talk hold?', ['two', 'ten', 'none', 'five'], 'two', 'Each with a fact or an example.'],
+      ['About how many words is two minutes?', ['two hundred and fifty', 'two thousand', 'twenty', 'a million'], 'two hundred and fifty', 'Less than you think and more than enough.'],
+      ['A picture in a talk should do how many jobs?', ['one', 'three', 'every job', 'none, ever'], 'one', 'One picture, one job, or none.'],
+      ['How do you do eye contact?', ['one person for a sentence, then another', 'stare at the floor', 'scan fast', 'close your eyes'], 'one person for a sentence, then another', 'To the room it looks like you are talking to everyone.'],
+      ['How many times should you practice aloud, standing?', ['at least three', 'once', 'never', 'fifty'], 'at least three', 'Then the nerves are the ordinary kind, the kind that means you care.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  's6-discuss': (rng) => {
+    const Q = [['Elicit means what in a discussion?', ['ask the quiet person what they think', 'talk the most', 'end the meeting', 'take a vote'], 'ask the quiet person what they think', 'The best idea is often sitting in the person who has not spoken.'],
+      ['Why take notes in a discussion?', ['so the group remembers what was said', 'to look busy', 'to hide', 'to draw'], 'so the group remembers what was said', 'And not only who said it.'],
+      ['Which is a claim with a reason?', ['sell candy because it made the most money last year', 'candy is obviously the best', 'candy!', 'I like candy'], 'sell candy because it made the most money last year', 'Only a claim with a reason can be argued with.'],
+      ['What do you ask a claim that has only a feeling?', ['what makes you think so', 'nothing', 'who cares', 'are you sure'], 'what makes you think so', 'If the answer is a shrug, you have a feeling, and feelings are not evidence.'],
+      ['Which sentence disagrees with the idea and not the person?', ['I see it differently, because', 'you always want candy', 'that is dumb', 'you are wrong'], 'I see it differently, because', 'It keeps the person on your side while you take the idea apart.'],
+      ['Name what the group agrees and disagrees about. Why?', ['so disagreement is about the right thing', 'to end the talk', 'to win', 'to take longer'], 'so disagreement is about the right thing', 'We all want May; we disagree about what to sell.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'sp-process': (rng) => {
+    const Q = [['A voice, a phone call, a screen: which part of the process?', ['the channel', 'the message', 'the feedback', 'the noise'], 'the channel', 'The message travels by a channel.'],
+      ['A nod, a question, a frown from the receiver is called what?', ['feedback', 'noise', 'the channel', 'the register'], 'feedback', 'The receiver sends feedback.'],
+      ['A loud room or a distracted mind is called what?', ['noise', 'feedback', 'the sender', 'the task'], 'noise', 'Noise is anything that gets in the way.'],
+      ['Which register is for school and work?', ['standard', 'informal', 'technical', 'silent'], 'standard', 'Informal is for friends; technical for the specialists in a field.'],
+      ['Which of these is nonverbal communication?', ['eye contact', 'a written report', 'a word list', 'a headline'], 'eye contact', 'Posture, gesture, facial expression, eye contact, tone and distance travel with the words.'],
+      ['What should a communicator gather before speaking?', ['accurate and complete information', 'the biggest audience', 'a costume', 'a louder voice'], 'accurate and complete information', 'A confident message built on a wrong fact does harm.'],
+      ['A communicator who wins by misleading people has done what?', ['only performed', 'communicated well', 'listened', 'used technical language'], 'only performed', 'Be honest about what you know, name your sources, and treat the listener with respect.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'sp-listen': (rng) => {
+    const Q = [['At which step does most listening fail?', ['attention', 'receiving', 'remembering', 'responding'], 'attention', 'Receive, attend, understand, remember, respond.'],
+      ['Which kind of listening judges whether a claim is true and supported?', ['critical', 'empathic', 'deliberative', 'casual'], 'critical', 'Deliberative weighs choices; empathic sets judgment aside.'],
+      ['Which kind of listening does a friend need most?', ['empathic', 'critical', 'deliberative', 'technical'], 'empathic', 'It sets judgment aside to understand how another person feels.'],
+      ['A clear request says what you need, by when, and what else?', ['why', 'how loud', 'who is to blame', 'nothing else'], 'why', 'Say what you need, by when, and why.'],
+      ['How should you receive criticism?', ['repeat it back and ask one question', 'defend at once', 'walk away', 'change the subject'], 'repeat it back and ask one question', 'Not by defending.'],
+      ['On the phone, what goes in the first sentence?', ['who you are and why you are calling', 'a joke', 'the weather', 'a long story'], 'who you are and why you are calling', 'Professional etiquette is listening made visible.'],
+      ['In an interview, how long should an answer be?', ['under a minute, with one example', 'as long as possible', 'one word', 'ten minutes'], 'under a minute, with one example', 'Listen for the question under the question.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'sp-build': (rng) => {
+    const Q = [['What three questions come before a word is written?', ['audience, occasion and purpose', 'font, color and length', 'jokes, slides and props', 'who, how much and when paid'], 'audience, occasion and purpose', 'The same topic is a different talk for each answer.'],
+      ['What are the three purposes of a talk?', ['to inform, to persuade, or to motivate', 'to fill time, to impress, to end', 'to read, to write, to draw', 'to shout, to whisper, to wait'], 'to inform, to persuade, or to motivate', 'Most weak talks were written for the wrong audience.'],
+      ['The document itself, the person who was there: which source?', ['primary', 'secondary', 'invented', 'visual'], 'primary', 'Secondary sources are the reporting and the summaries.'],
+      ['An introduction holds a hook, the one sentence, and what?', ['a preview of the points', 'a joke', 'the bibliography', 'the last line'], 'a preview of the points', 'A preview is a promise.'],
+      ['How many points should the body of a talk hold?', ['two or three', 'ten', 'one', 'as many as fit'], 'two or three', 'Each with evidence that supports and clarifies it.'],
+      ['What should you bring to the stage instead of a script?', ['notes', 'nothing', 'a book', 'a recording'], 'notes', 'A script read aloud sounds read.'],
+      ['What is a visual aid for?', ['to make a point clearer', 'to be read from', 'to fill the screen', 'to replace the talk'], 'to make a point clearer', 'If the slide says everything you say, the audience stops listening to you.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'sp-deliver': (rng) => {
+    const Q = [['Nerves before speaking to a group are called what?', ['communication apprehension', 'a flaw', 'stage fever', 'noise'], 'communication apprehension', 'It is normal, not a flaw.'],
+      ['What is the surest confidence?', ['command of the material', 'a loud voice', 'a new shirt', 'a long script'], 'command of the material', 'Preparation first.'],
+      ['Why practice aloud, standing?', ['the mouth learns the words the eyes cannot', 'to get tired', 'to wake the neighbors', 'no reason'], 'the mouth learns the words the eyes cannot', 'Several times.'],
+      ['The racing heart before a talk means what?', ['ready, not doomed', 'doomed', 'sick', 'bored'], 'ready, not doomed', 'It is the same heart you have before a race.'],
+      ['Um, like and you know spend the listener\'s attention on what?', ['nothing', 'the point', 'the evidence', 'the last line'], 'nothing', 'Filler words cost attention.'],
+      ['What should you do with a question from the audience first?', ['repeat it for the room', 'ignore it', 'answer at length', 'laugh'], 'repeat it for the room', 'Then answer it briefly and honestly.'],
+      ['What should you say when you do not know an answer?', ['I do not know, then offer to find out', 'make one up', 'nothing', 'change the subject'], 'I do not know, then offer to find out', 'Briefly and honestly.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
   'ps-know': (rng) => {
     const Q = [['Who opened the first psychology laboratory, in Leipzig in 1879?', ['Wilhelm Wundt', 'Sigmund Freud', 'Jean Piaget', 'B. F. Skinner'], 'Wilhelm Wundt', 'The field has a birthday: 1879.'],
       ['Which perspective explains behavior by learned responses?', ['behavioral', 'biological', 'humanistic', 'psychodynamic'], 'behavioral', 'Behavioral by learned responses; cognitive by thinking; sociocultural by culture and group.'],
@@ -19643,6 +20661,36 @@ export const WONDER = [
     closing: 'What is an idea you found strange at first and now use without thinking?',
   },
   {
+    id: 'w-teen-the-quiet-one-had-it',
+    theme: 'world',
+    stage: 'teen',
+    courseIds: ['speech-6'],
+    answerMode: 'typed',
+    prompt: 'The group talked for twenty minutes, and the best idea came from the person nobody had asked. Why does that keep happening?',
+    perspectives: [
+      { voice: 'A scientist', says: 'Talking and thinking compete for the same attention, and the quiet person spent theirs on thinking. Groups that ask the quiet member on purpose get more ideas, and that is a habit, not luck.' },
+      { voice: 'An artist', says: 'The loud ideas arrive first and fill the room, the way the first brushstroke decides a painting before anyone has looked. Leave space, and the better stroke has somewhere to land.' },
+      { voice: 'A grandparent of faith', says: 'Still water runs deep, my mother said, and she was quiet at every table. Someone asked her once, and the whole family learned it. Asking costs one sentence and pays for years.' },
+      { voice: 'A skeptic', says: 'Test it at the next meeting. Ask the quiet person first, before the talkers set the frame, and count how often their idea is the one you use. If it is not, I am wrong. I do not think I am wrong.' },
+    ],
+    closing: 'Who in your group has not been asked yet?',
+  },
+  {
+    id: 'w-teen-they-said-it-back-wrong',
+    theme: 'failure',
+    stage: 'teen',
+    courseIds: ['speech-6'],
+    answerMode: 'typed',
+    prompt: 'You gave your friend four steps to get to the gym, and they ended up in the cafeteria. Whose mistake was it?',
+    perspectives: [
+      { voice: 'A scientist', says: 'Probably yours, and that is good news, because it is fixable. Instructions with several steps fail unless the listener says them back. Next time end with, tell me the four steps, and you will hear the wrong turn before they take it.' },
+      { voice: 'An artist', says: 'You gave them a map in your head, not theirs. Left past the trophy case means nothing to someone who never noticed the trophy case. Describe the landmarks they will actually see.' },
+      { voice: 'A grandparent of faith', says: 'Nobody is at fault, and both of you can do better; that is most mistakes. Count the steps aloud next time, and say them slowly, and they will make it to the gym.' },
+      { voice: 'A skeptic', says: 'Find the step that broke. If it was step two, the problem was your words; if they forgot step three, it was their memory, and three steps at a time is the cure. Do not blame until you know which.' },
+    ],
+    closing: 'What would you add to the end of the four steps next time?',
+  },
+  {
     id: 'w-teen-wrong-answer',
     theme: 'failure',
     stage: 'teen',
@@ -22080,6 +23128,36 @@ export const WONDER = [
     closing: 'Which criterion would you work on first, and how?',
   },
   {
+    id: 'w-teen-decide-ahead',
+    theme: 'world',
+    stage: 'teen',
+    courseIds: ['psychology-6'],
+    answerMode: 'typed',
+    prompt: 'Your brakes are still being built, the course says. Does that mean you cannot be trusted with decisions?',
+    perspectives: [
+      { voice: 'A scientist', says: 'No; it means you know where the weak spot is, which most adults never learn about their own. Decide the big things ahead of time, when the alarm is quiet, and the moment gets easier.' },
+      { voice: 'An artist', says: 'A brain under construction is a brain that can still choose its shape. I would rather have that than a finished one. Use the years to build the person you want to be.' },
+      { voice: 'A grandparent of faith', says: 'Every good person I know was once eleven and decided some things early: what they would not do, who they would not leave behind. The deciding is the trust, and you can do it now.' },
+      { voice: 'A skeptic', says: 'Adults with finished brakes still run red lights. The finding is about when decisions are hardest, not who is trustworthy. Ask what you decided in advance last week; that is your answer.' },
+    ],
+    closing: 'What is one decision you would rather make ahead of time than in the moment?',
+  },
+  {
+    id: 'w-teen-froze-in-the-hall',
+    theme: 'failure',
+    stage: 'teen',
+    courseIds: ['psychology-6'],
+    answerMode: 'typed',
+    prompt: 'Someone was being picked on in the hall and you froze with everyone else. What do you do with that?',
+    perspectives: [
+      { voice: 'A scientist', says: 'You did what a crowd does, and now you know the mechanism. The next time, you say one name and one job: you, get a teacher. Knowing the trick is most of the cure.' },
+      { voice: 'An artist', says: 'The freeze is the memory that will not leave, and that is fine; let it teach you. Go find the person tomorrow and say you saw it. Late is a long way from never.' },
+      { voice: 'A grandparent of faith', says: 'Nobody is born the one who moves. People become it, usually after a day they wish had gone differently. Decide tonight that you are that person, and the next hall will be different.' },
+      { voice: 'A skeptic', says: 'Everyone froze, which means the crowd did it, not your character. Blaming yourself feels honest and changes nothing. Plan the sentence you will say next time; that changes something.' },
+    ],
+    closing: 'What sentence would you say, and to whom, next time?',
+  },
+  {
     id: 'w-teen-hot-dog-sandwich',
     theme: 'world',
     stage: 'teen',
@@ -22168,6 +23246,36 @@ export const WONDER = [
       { voice: 'A skeptic', says: 'A review nobody dislikes is an advertisement. If the criteria were fair and the evidence real, the silence is the cost of doing the job. If they were not, the silence is deserved. Only you know which one it was.' },
     ],
     closing: 'What would you change in the review, and what would you keep?',
+  },
+  {
+    id: 'w-grown-the-slide-said-it-all',
+    theme: 'world',
+    stage: 'grown',
+    courseIds: ['speech-9'],
+    answerMode: 'typed',
+    prompt: 'A speaker reads every word off the slides, and the audience reads ahead and stops listening. Whose fault is that?',
+    perspectives: [
+      { voice: 'A scientist', says: 'It is the fault of the design, not of the people. Eyes read faster than mouths speak, so a full slide races the speaker and wins. Put a chart or six words on the screen and the listening comes back.' },
+      { voice: 'An artist', says: 'The slide was doing the talk\'s job, so the talk had nothing left to do. A picture behind a speaker should be something the words cannot say, and then both are needed.' },
+      { voice: 'A grandparent of faith', says: 'Be gentle; reading the slide is what a frightened speaker does to survive. Give them your eyes anyway. Next time they may trust the room enough to look up.' },
+      { voice: 'A skeptic', says: 'The audience did the rational thing: they took the faster channel. If you want them on the slow one, the voice, put less on the fast one. Blame the choice, not the people.' },
+    ],
+    closing: 'What would you leave on the slide, and what would you keep for your voice?',
+  },
+  {
+    id: 'w-grown-froze-at-the-podium',
+    theme: 'failure',
+    stage: 'grown',
+    courseIds: ['speech-9'],
+    answerMode: 'typed',
+    prompt: 'You stood up to speak, forgot the first line and stood there for ten seconds. What now?',
+    perspectives: [
+      { voice: 'A scientist', says: 'Ten seconds felt like a year to you and like a pause to the room; clocks run differently at a podium. Look at your notes, breathe once, and start with the second sentence. Nobody will remember the gap.' },
+      { voice: 'An artist', says: 'Every performer has stood in that silence. The ones who last learn to like it: a silence is attention, and attention is what you came for. Say the next true thing.' },
+      { voice: 'A grandparent of faith', says: 'Say, I lost my place, and smile, and find it. A room forgives a person who is honest about a stumble far faster than one who pretends it did not happen.' },
+      { voice: 'A skeptic', says: 'The first line went because you memorized it and the fear ate the memory. Next time write the first line on the card in large letters, and practice standing up. Freezing is a preparation problem with a cure.' },
+    ],
+    closing: 'What would you write on the top of your first card?',
   },
   {
     id: 'w-grown-the-crowd-did-nothing',
@@ -22288,6 +23396,66 @@ export const WONDER = [
       { voice: 'A skeptic', says: 'It is not fair, if fair means equal. A child whose family can spare twenty dollars a month starts a race that another child cannot enter. Compounding rewards a head start, and head starts are not handed out evenly.' },
     ],
     closing: 'What could you start this month that would still be growing at forty?',
+  },
+  {
+    id: 'w-growing-everyone-talked-at-once',
+    theme: 'world',
+    stage: 'growing',
+    courseIds: ['speech-3'],
+    answerMode: 'typed',
+    prompt: 'Your group had five great ideas and everyone said theirs at the same time, so nobody heard any of them. What went wrong?',
+    perspectives: [
+      { voice: 'A scientist', says: 'Ears can only take in one voice at a time, so five voices at once is the same as zero. A rule for turns is not about being polite; it is about the way hearing works.' },
+      { voice: 'An artist', says: 'Five colors poured into one cup make brown. Five ideas said one at a time are five colors. The turn-taking rule is what keeps the colors apart.' },
+      { voice: 'A grandparent of faith', says: 'A talking stick fixed our family dinners in one night. Whoever holds it talks, and it goes around the table, and the shy cousin finally got to finish a sentence.' },
+      { voice: 'A skeptic', says: 'Count the ideas you actually heard: none. Now try one voice at a time and count again. If the count goes up, the rule works, and you will not need anyone to tell you so.' },
+    ],
+    closing: 'What rule would your group agree to try tomorrow?',
+  },
+  {
+    id: 'w-growing-forgot-the-third-step',
+    theme: 'failure',
+    stage: 'growing',
+    courseIds: ['speech-3'],
+    answerMode: 'typed',
+    prompt: 'Your teacher gave four steps and you did three of them and forgot the fourth. What would help next time?',
+    perspectives: [
+      { voice: 'A scientist', says: 'Four steps is a lot to hold in a head at once. Count them on your fingers as they come, and say them back before you start; the fourth finger will remind you that there was a fourth step.' },
+      { voice: 'An artist', says: 'Picture each step as a little drawing in a row: a bowl, an egg, a spoon, an oven. When you get to the spoon you will see the oven waiting, and you will not forget it.' },
+      { voice: 'A grandparent of faith', says: 'Three out of four is not failing; it is nearly there. Ask for the steps again next time without being ashamed. Asking is what people who get all four do.' },
+      { voice: 'A skeptic', says: 'Maybe the teacher did not say how many there were. If she had said four steps first, you would have known to wait for the fourth. Ask how many, every time, before the first one.' },
+    ],
+    closing: 'What would you do with your fingers next time?',
+  },
+  {
+    id: 'w-growing-same-game-two-kids',
+    theme: 'world',
+    stage: 'growing',
+    courseIds: ['psychology-3'],
+    answerMode: 'typed',
+    prompt: 'The same loud game is the best part of recess for you and the worst part for your friend. Who is right?',
+    perspectives: [
+      { voice: 'A scientist', says: 'Both of you, because you are reporting two different minds, and both reports are true. The only mistake would be assuming your friend feels what you feel.' },
+      { voice: 'An artist', says: 'Your friend is not spoiling the game; they are showing you a second way it can feel. Ask them what a good recess looks like, and you might get a game you both love.' },
+      { voice: 'A grandparent of faith', says: 'Loud is fun for one and too much for another, and neither child chose their ears. Take turns picking the game, and the turn-taking becomes the friendship.' },
+      { voice: 'A skeptic', says: 'Test it for a week. Play their game one day and yours the next, and see how each of you feels. You will learn more from two recesses than from an argument about one.' },
+    ],
+    closing: 'What would you ask your friend before tomorrow\'s recess?',
+  },
+  {
+    id: 'w-growing-crammed-and-forgot',
+    theme: 'failure',
+    stage: 'growing',
+    courseIds: ['psychology-3'],
+    answerMode: 'typed',
+    prompt: 'You practiced all your spelling words the night before and still got half wrong. What happened?',
+    perspectives: [
+      { voice: 'A scientist', says: 'Nothing is wrong with your brain; it forgot on schedule. One big night fades fast. Three words a day for a week and a test of yourself on Friday would have held.' },
+      { voice: 'An artist', says: 'You poured a bucket of water on a plant once and wondered why it wilted. Little sips every day are what a brain drinks.' },
+      { voice: 'A grandparent of faith', says: 'Half right after one night is not failure; it is what one night buys. Buy a little each day and Friday will be different. That is all learning ever was.' },
+      { voice: 'A skeptic', says: 'Count what you kept and what you lost, and notice they were the same words you barely looked at. Then close the book next time and say them out loud. The saying is the test.' },
+    ],
+    closing: 'How would you spread the words over a week?',
   },
   {
     id: 'w-growing-dont-like-it',
@@ -22414,6 +23582,40 @@ export const WONDER = [
     closing: 'How would you find the beat again?',
   },
   {
+    id: 'w-early-the-coat-monster',
+    theme: 'world',
+    stage: 'early',
+    courseIds: ['psychology-k'],
+    answerMode: 'pick',
+    prompt: 'A coat in the dark looked like a monster. Was your brain being silly?',
+    options: ['No, it was guessing to keep me safe', 'Yes, brains are silly', 'Coats are monsters at night'],
+    simple: [{ voice: 'A scientist says', says: 'Your brain guesses fast in the dark to keep you safe.' }, { voice: 'A grandparent says', says: 'Turn on the light and thank your brain.' }],
+    perspectives: [
+      { voice: 'A scientist', says: 'Your brain was not being silly. In the dark it guesses fast, and it would rather guess monster and be wrong than guess coat and be wrong. Turn on the light, and it learns.' },
+      { voice: 'An artist', says: 'A coat that turns into a monster is your brain making up a story. It makes up stories all day. That is where drawings come from too.' },
+      { voice: 'A grandparent of faith', says: 'Every child has met that coat. Turn on the light, say hello to the coat, and thank your brain for looking out for you.' },
+      { voice: 'A skeptic', says: 'Check with the light before you decide. A monster that is a coat every time you check is a coat. Your eyes reported, and your brain guessed. Now you know which one to believe.' },
+    ],
+    closing: 'What would you do the next time?',
+  },
+  {
+    id: 'w-early-i-forgot-my-line',
+    theme: 'failure',
+    stage: 'early',
+    courseIds: ['psychology-k'],
+    answerMode: 'pick',
+    prompt: 'You forgot your line in the class play. What now?',
+    options: ['Take a breath and try again', 'Give up on plays', 'Say the whole play was silly'],
+    simple: [{ voice: 'A scientist says', says: 'Breathe, then say it again a little every day.' }, { voice: 'An artist says', says: 'Every actor forgets a line once.' }],
+    perspectives: [
+      { voice: 'A scientist', says: 'A scared brain drops things. Breathe in slow and out slow, and the line comes back. Then say it a little every day, and next time it stays.' },
+      { voice: 'An artist', says: 'Every actor in the world has forgotten a line. The show kept going, and yours will too. The people watching only remember that you were brave.' },
+      { voice: 'A grandparent of faith', says: 'One lost line is a small thing that feels big. Take a breath, smile at your friends on stage, and go on. That is what the grown-ups do.' },
+      { voice: 'A skeptic', says: 'Giving up on plays because of one line is like giving up on lunch because of one dropped fork. Pick the fork up and eat, and say the line again tomorrow.' },
+    ],
+    closing: 'How would you practice the line this week?',
+  },
+  {
     id: 'w-early-is-a-stick-a-toy',
     theme: 'world',
     stage: 'early',
@@ -22497,6 +23699,43 @@ export const WONDER = [
       { voice: 'A skeptic', says: 'Before you change anything, watch it walk again. Did it bump at the first step or the last? That tells you where to look.' },
     ],
     closing: 'Which step will you change?',
+  },
+  // Two early-stage Wonder questions for the kindergarten speech course (pass GT). In plain terms: `prompt` is read
+  // aloud, `options` are tapped, `simple` is the short spoken version of two viewpoints, and `perspectives` are the
+  // four fuller viewpoints a grown-up can read with the child.
+  {
+    id: 'w-early-hand-up-forever',
+    theme: 'world',
+    stage: 'early',
+    courseIds: ['speech-k'],
+    answerMode: 'pick',
+    prompt: 'You put your hand up and waited, and three other friends got turns first. Was that fair?',
+    options: ['Yes, turns take time', 'No, I waited longest', 'I am not sure'],
+    simple: [{ voice: 'A scientist says', says: 'Every turn is one talker. Yours is coming.' }, { voice: 'An artist says', says: 'Waiting is part of the game, like the quiet between songs.' }],
+    perspectives: [
+      { voice: 'A scientist', says: 'Only one person can be heard at a time, so turns line up. Three before you means three people were heard, and the fourth turn is yours, because the line keeps moving.' },
+      { voice: 'An artist', says: 'Waiting with your hand up is like the quiet between two songs. It feels long, and it is what lets the next song be heard.' },
+      { voice: 'A grandparent of faith', says: 'Waiting is hard at five and hard at eighty. Keep your hand up and keep your idea in your head, and say it well when it is your turn.' },
+      { voice: 'A skeptic', says: 'Count the hands next time. If your hand was up first and you got the fourth turn, tell the teacher kindly. If you put it up third, then third was fair.' },
+    ],
+    closing: 'What do you do with your idea while you wait?',
+  },
+  {
+    id: 'w-early-forgot-the-last-step',
+    theme: 'failure',
+    stage: 'early',
+    courseIds: ['speech-k'],
+    answerMode: 'pick',
+    prompt: 'The teacher said three steps, and you did two and forgot the last one. What now?',
+    options: ['Ask what the last step was', 'Give up', 'Guess'],
+    simple: [{ voice: 'A scientist says', says: 'Ask for the last step. Asking is how you get it right.' }, { voice: 'A grandparent of faith says', says: 'Two out of three is nearly there. Ask, and finish.' }],
+    perspectives: [
+      { voice: 'A scientist', says: 'Three steps is a lot for one head. Next time say them back first, cup, water, table, and the last one stays. Today, ask what it was.' },
+      { voice: 'An artist', says: 'Picture the three steps like three stones in a row. You stepped on two of them, and the third stone is still there, waiting for you to ask where it is.' },
+      { voice: 'A grandparent of faith', says: 'Nobody is cross about a forgotten step. They are glad when you ask. Two done and one asked about is a good morning.' },
+      { voice: 'A skeptic', says: 'Guessing might give you the wrong last step. Asking gives you the right one every time, so asking wins.' },
+    ],
+    closing: 'What would you say to the teacher?',
   },
   {
     id: 'w-early-computer-told',
@@ -25272,16 +26511,23 @@ export const COURSE_GAMES = {
   'tech-k': ['walk-tech-k'],
   'econ-k': ['pay-econ-k'],
   'philosophy-k': ['share-philosophy-k'],
+  'psychology-k': ['sense-psychology-k'],
+  'speech-k': ['turn-speech-k'],
   'arts-k': ['spot-arts-k'],
   'econ-3': ['price-econ-3'],
   'philosophy-3': ['because-philosophy-3'],
+  'psychology-3': ['face-psychology-3'],
   'arts-3': ['pattern-arts-3'],
   'arts-6': ['shape-arts-6'],
   'econ-6': ['loan-econ-6'],
   'philosophy-6': ['reason-philosophy-6'],
+  'psychology-6': ['recall-psychology-6'],
   'econ-9': ['fund-econ-9'],
   'philosophy-9': ['valid-philosophy-9'],
   'psychology-9': ['stat-psychology-9'],
+  'speech-9': ['filler-speech-9'],
+  'speech-6': ['room-speech-6'],
+  'speech-3': ['ask-speech-3'],
   'arts-9': ['chord-arts-9'],
   'tech-6': ['teach-tech-6'],
   'tech-college': ['search-tech-college'],

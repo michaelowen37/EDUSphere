@@ -2,7 +2,7 @@
 
 Written by tools/games-plan.mjs from the app's own lists; run it again after any change to the games. Every course has its own game, or two, chosen to suit its subject and grade; finishing the course unlocks them. Inside a grade the same kind is avoided wherever today's kinds allow. A course that no game suits yet has a quick fire of its own lessons, and so does a history course whose only game is a map still waiting for its painting.
 
-Starter, open from the first day: Star. Kinds of game: 37. Quick fires still standing in for a game: 8. Kinds repeated inside a grade: 9. Courses holding two games of one kind: none. The rules test holds both numbers as ceilings, so each new kind must bring them down.
+Starter, open from the first day: Star. Kinds of game: 44. Quick fires still standing in for a game: 8. Kinds repeated inside a grade: 9. Courses holding two games of one kind: none. The rules test holds both numbers as ceilings, so each new kind must bring them down.
 
 ## New kinds, in order
 
@@ -28,6 +28,8 @@ Each new kind should make the course's idea the rule of the game, so playing is 
 | K | Me and my community | Big and Small (sort) |
 | K | Taking care of me | Rocket (dots) |
 | K | Tell, show, step and repeat | Walk the Robot (walk) |
+| K | I can listen, I can say | Whose Turn Next (turn) |
+| K | Me and my mind | Which Sense (sense) |
 | K | I wonder | Share the Cookies (share) |
 | K | Needs, wants, work and saving | Pay the Price (pay) |
 | K | Looking and listening | Spot It (spot) |
@@ -50,8 +52,10 @@ Each new kind should make the course's idea the rule of the game, so playing is 
 | 3 | Multiplication and division | Fraction twins (pairs) |
 | 3 | Looking and making | Color mixer: make new colors (mix) |
 | 3 | How computers think | Computer words (pairs), Debug the robot: arrows (debug) |
+| 3 | How your mind works | Name the Feeling (face) |
 | 3 | I wonder why | Sort the Because (because) |
 | 3 | Money that works | Set the Price (price) |
+| 3 | Listen, then say it | Ask the Right Question (ask) |
 | 3 | Looking closer, listening longer | What Comes Next (pattern) |
 | 3 | Communities and government | Where is it? The continents (map), Quick fire: Communities and government (sprint) |
 | 4 | Reading between the lines | Find the evidence: clues in a story (evidence) |
@@ -74,8 +78,10 @@ Each new kind should make the course's idea the rule of the game, so playing is 
 | 6 | Writing with a purpose | Noun or verb (buckets) |
 | 6 | World cultures | Where is it? The oceans (map), In order: civilizations, inventions, buildings (order) |
 | 6 | What a machine learns | Teach the Robot (teach) |
+| 6 | How people work | Hold It in Mind (recall) |
 | 6 | Big questions, good reasons | Reason or Not (reason) |
 | 6 | Money over time | Pay It Off (loan) |
+| 6 | Say what you mean | Fit the Room (room) |
 | 6 | Reading a work of art | Shape the Sound (shape) |
 | 7 | Proportions, integers and circles | Balance the scale: fractions (balance) |
 | 7 | Reading with an eye for craft | Word meanings (pairs) |
@@ -94,6 +100,7 @@ Each new kind should make the course's idea the rule of the game, so playing is 
 | 9 | Writing about texts and turns | Fix it: tricky words (fix) |
 | 9 | World geography | Where is it? Europe (map), Quick fire: World geography (sprint) |
 | 9 | How a program is built | Eight Switches (bits) |
+| 9 | Say it so it lands | Cut the Fillers (filler) |
 | 9 | The science of behavior | Mean, Median, Mode (stat) |
 | 9 | How to think about anything | Valid or Not (valid) |
 | 9 | Money for a life | Build the Fund (fund) |

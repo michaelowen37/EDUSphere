@@ -5193,21 +5193,43 @@ const inBeat = (seconds) => ({ animationDelay: `-${((((typeof performance !== 'u
 // link that opens the module list; the touch-screen warning when the course needs one. On a phone the link sits centered
 // on its own line under the title and the warning drops a line below it; on a wider screen the link keeps to the right,
 // centered vertically. A faint rule that starts past the checkbox keeps the rows from blending together.
+// -----------------------------------------------------------------------------------------------------------------
+// CourseChoiceRow (2026-09-30, pass GZ, Mikey). In plain terms: one course in the report's checklists. On a laptop or a
+// tablet the row is one line, the checkbox and the course name on the left and the Preview link (and Save, when offered)
+// on the right. On a phone, portrait or landscape, the row stacks in three centered lines: the course title beside its
+// checkbox, then the grade or band with the subject, then the links. The phone layout starts below 600 pixels of width,
+// or when the screen is short and no wider than 1000, which is a phone turned sideways; a tablet in either direction
+// keeps the one-line layout. Core courses and electives share this row.
+// -----------------------------------------------------------------------------------------------------------------
+function narrowCourseRows() { return typeof window !== 'undefined' && (window.innerWidth < 600 || (window.innerHeight < 500 && window.innerWidth <= 1000)); }
 function CourseChoiceRow({ course, checked, onToggle, onPreview, onSave = null }) {
-  const phone = typeof window !== 'undefined' && window.innerWidth < 700;
+  const phone = narrowCourseRows();
   const warn = courseNeedsTouch(course.id) ? <Tag tone="review">Needs a touch screen</Tag> : null;
   // Save appears to the right of Preview once a course in the other lists is checked (2026-09-29, Mikey); it moves the course up to the assigned list.
-  const link = <span style={{ display: 'inline-flex', gap: 14, alignItems: 'center' }}><button type="button" className="edu-no-print" onClick={onPreview} aria-label={`Preview ${course.title}`} style={{ ...linkBtn, padding: '2px 0', fontSize: 14, whiteSpace: 'nowrap' }}>Preview</button>{onSave && <button type="button" className="edu-no-print" onClick={onSave} aria-label={`Save ${course.title}`} style={{ ...linkBtn, padding: '2px 0', fontSize: 14, whiteSpace: 'nowrap', fontWeight: 700 }}>Save</button>}</span>;
+  const link = <span style={{ display: 'inline-flex', gap: 14, alignItems: 'center' }}><button type="button" className="edu-no-print" onClick={onPreview} aria-label={`Preview ${course.title}`} style={{ ...linkBtn, padding: '2px 0', fontSize: 14, whiteSpace: 'nowrap' }}>Preview</button>{onSave && <button type="button" className="edu-no-print" onClick={onSave} aria-label={`Save ${course.title}`} style={{ ...linkBtn, padding: '2px 0', fontSize: 14, whiteSpace: 'nowrap' }}>Save</button>}</span>;
+  const gradeText = `${course.elective && course.audience ? bandShort(course.audience, true) : gradeShort(course.grade)} - ${course.subject}`;
+  if (phone) {
+    return (
+      <div style={{ padding: '7px 0 8px', fontSize: 16 }}>
+        <label style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, cursor: 'pointer' }}>
+          <input type="checkbox" checked={checked} onChange={onToggle} />
+          <span style={{ textAlign: 'center' }}>{course.title}</span>
+        </label>
+        <p style={{ margin: '2px 0 0', fontSize: 14, color: C.muted, textAlign: 'center' }}>{gradeText}</p>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, marginTop: 2 }}>{link}{warn}</div>
+        <div aria-hidden="true" style={{ height: 1, background: C.line, opacity: 0.55, marginTop: 8 }} />
+      </div>
+    );
+  }
   return (
     <div style={{ padding: '7px 0 8px', fontSize: 16 }}>
-      <div style={{ display: 'flex', alignItems: phone ? 'flex-start' : 'center', gap: 10 }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
         <label style={{ display: 'flex', alignItems: 'center', gap: 10, flex: 1, minWidth: 0, cursor: 'pointer' }}>
           <input type="checkbox" checked={checked} onChange={onToggle} />
-          <span style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 2, minWidth: 0 }}><span>{courseLabel(course)}</span>{!phone && warn}</span>
+          <span style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 2, minWidth: 0 }}><span>{courseLabel(course)}</span>{warn}</span>
         </label>
-        {!phone && link}
+        {link}
       </div>
-      {phone && <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, marginTop: 2 }}>{link}{warn}</div>}
       <div aria-hidden="true" style={{ height: 1, background: C.line, opacity: 0.55, marginTop: 8, marginLeft: 30 }} />
     </div>
   );
@@ -9299,13 +9321,15 @@ function EduSphereScreens() {
           </label>
           {restoreNote && <p style={{ margin: '10px 0 0', fontSize: 14, color: C.green, fontWeight: 600, textAlign: 'center' }}>{restoreNote}</p>}
         </div>
-        <p style={{ color: C.muted, fontSize: 13, textAlign: 'center', margin: '52px 0 8px' }}>We send nothing anywhere. You choose where the file lives. Choose wisely.</p>
-        {/* The two housekeeping links sit together at the very foot, well below the work of the page. */}
-        {educator && !phoneScreen && <p style={{ textAlign: 'center', margin: '56px 0 0' }}><button type="button" style={{ ...linkBtn, fontSize: 13, color: C.muted }} onClick={async () => { const next = { ...educator, tourSeen: false }; setEducator(next); await saveEducator(next); tourBegun.current = false; setScreen('educator-pick'); }}>Show the first week tour again</button></p>}
+        {/* Your educator account (2026-09-30, pass GZ, Mikey): the tour link, Start over and Change PIN sit together in one bordered card on every
+            screen size, so a phone cannot lose them at the foot of the page; the closing note follows the card. */}
+        {educator && <div style={{ ...card, marginTop: 28, textAlign: 'center' }} data-account-card="">
+        <p className="edu-card-title" style={{ margin: '0 0 6px', fontWeight: 600, textAlign: 'center' }}>Your educator account</p>
+        {educator && <p style={{ textAlign: 'center', margin: '0' }}><button type="button" style={{ ...linkBtn, fontSize: 13, color: C.muted }} onClick={async () => { const next = { ...educator, tourSeen: false }; setEducator(next); await saveEducator(next); tourBegun.current = false; setScreen('educator-pick'); }}>Show the first week tour again</button></p>}
         {/* Starting over: the educator profile (PIN, device name, state, tour) is removed and the students are untouched,
             so the account can be created again from the first screen. Two taps, so a stray touch does nothing. */}
         {educator && (
-          <p style={{ textAlign: 'center', margin: phoneScreen ? '56px 0 0' : '10px 0 0' }}>
+          <p style={{ textAlign: 'center', margin: '8px 0 0' }}>
             {startOverArmed
               ? <span style={{ fontSize: 13, color: C.muted }}>Remove this educator account and keep every student? <button type="button" style={{ ...linkBtn, fontSize: 13, color: C.clay, marginLeft: 6 }} onClick={async () => { await storageDelete(EDUCATOR_KEY); setEducator(null); setStartOverArmed(false); setScreen('welcome'); }}>Yes, start over</button> <button type="button" style={{ ...linkBtn, fontSize: 13, marginLeft: 10 }} onClick={() => setStartOverArmed(false)}>No</button></span>
               : <button type="button" style={{ ...linkBtn, fontSize: 13, color: C.muted }} onClick={() => setStartOverArmed(true)}>Start over as a new educator</button>}
@@ -9314,9 +9338,9 @@ function EduSphereScreens() {
         {/* Changing the PIN: the current PIN first, so a student at an unlocked screen cannot change it; a wrong current
             PIN counts toward the same lockout as the sign-in screen. Four to six digits, typed twice, as at setup. */}
         {educator && (
-          <div style={{ textAlign: 'center', margin: '10px 0 0' }}>
+          <div style={{ textAlign: 'center', margin: '8px 0 0' }}>
             {!changePin || changePin.done
-              ? <p style={{ margin: 0 }}><button type="button" style={{ ...linkBtn, fontSize: 13, color: C.muted }} onClick={() => setChangePin({ current: '', next: '', again: '', note: '', done: false })}>Change PIN</button>{changePin && changePin.done && <span role="status" style={{ fontSize: 13, color: C.green, fontWeight: 600, marginLeft: 8 }}>Your PIN is changed.</span>}</p>
+              ? <p style={{ margin: 0 }}><button type="button" style={{ ...linkBtn, fontSize: 14, fontWeight: 600, color: C.green }} onClick={() => setChangePin({ current: '', next: '', again: '', note: '', done: false })}>Change PIN</button>{changePin && changePin.done && <span role="status" style={{ fontSize: 13, color: C.green, fontWeight: 600, marginLeft: 8 }}>Your PIN is changed.</span>}</p>
               : (
                 <div style={{ ...card, maxWidth: 340, margin: '6px auto 0', textAlign: 'center' }} data-change-pin="">
                   <p style={{ margin: '0 0 4px', fontWeight: 600 }}>Change PIN</p>
@@ -9343,6 +9367,8 @@ function EduSphereScreens() {
               )}
           </div>
         )}
+        </div>}
+        <p style={{ color: C.muted, fontSize: 13, textAlign: 'center', margin: '28px 0 8px' }}>We send nothing anywhere. You choose where the file lives. Choose wisely.</p>
       </div></div>
     );
   }

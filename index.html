@@ -37,7 +37,7 @@ window.__eduArt = [];
 window.__eduColoringArt = [];
 window.__eduMapArt = [];
 window.__eduAudio = [];
-window.__eduNews = {"stamp":"September 30, 2026 (three small report fixes)","date":"September 30, 2026","items":["On the report's Summary, short faint rules separate the practice lines, the reflection line and the coloring line, and the tried list has more room above it.","Back to recommended courses has one info button again, and its note says what is removed.","The Electives list folds by grade band, Kindergarten to grade 2, Grades 3 to 5 and so on, so nothing looks skipped."]};
+window.__eduNews = {"stamp":"September 30, 2026 (your educator account, phone course rows)","date":"September 30, 2026","items":["The backup page has a Your educator account card with the tour link, Start over and Change PIN, on every screen size.","On phones, each course row in the report stacks in three centered lines: the title, the grade, then Preview. Tablets keep the one-line row with Preview on the right.","The kindergarten elective band reads Kinder to Grade 2 on its fold and KG to Grade 2 on its course rows."]};
 // Installable app: the worker keeps a copy of the page for offline use and asks the network first, so a fresh build always wins.
 if ('serviceWorker' in navigator && /^https?:/.test(location.protocol)) { navigator.serviceWorker.register('sw.js').catch(function () {}); }
 var process = { env: { NODE_ENV: 'production' } };
@@ -17314,7 +17314,12 @@ function gradeInSentence(grade) { return grade === 'K' ? 'Kindergarten' : grade 
 // a band elective sits at the youngest grade of its band (grade 3 for the 3 to 5 course) but serves the whole band, so
 // showing "Grade 3" beside it made the grade list look full of gaps. An elective with an `audience` shows that band
 // ("Grades 3 to 5", "Kindergarten to grade 2"); every other course shows its grade as before.
-function courseGradeLabel(course) { return course.elective && course.audience ? course.audience : gradeLabel(course.grade); }
+// bandShort: the elective band names in the short forms Mikey asked for (2026-09-30, pass GZ): "Kinder to Grade 2" on a
+// fold or heading and "KG to Grade 2" inside a course row's parentheses; the other bands are already short and keep
+// their capital G ("Grades 3 to 5"). Core courses keep their own abbreviations (KG, Grade 1) untouched.
+function bandShort(audience, inRow = false) { if (audience === 'Kindergarten to grade 2')
+    return inRow ? 'KG to Grade 2' : 'Kinder to Grade 2'; return audience; }
+function courseGradeLabel(course) { return course.elective && course.audience ? bandShort(course.audience) : gradeLabel(course.grade); }
 // electiveBand: the grade band an elective fold belongs to (2026-09-30, pass GY, Mikey). In plain terms: electives are
 // built for bands, kindergarten to grade 2, grades 3 to 5, 6 to 8, 9 to 12, and college, so a list of elective folds
 // titled by single grades looked as if it skipped grades. This returns the band's first grade as the fold's key and the
@@ -17326,14 +17331,14 @@ function electiveBand(grade) {
         return { key: grade, title: gradeLabel(grade) };
     const n = grade === 'K' ? 0 : Number(grade);
     if (n <= 2)
-        return { key: 'K', title: 'Kindergarten to grade 2' };
+        return { key: 'K', title: 'Kinder to Grade 2' };
     if (n <= 5)
         return { key: '3', title: 'Grades 3 to 5' };
     if (n <= 8)
         return { key: '6', title: 'Grades 6 to 8' };
     return { key: '9', title: 'Grades 9 to 12' };
 }
-function courseLabel(course) { return `${course.title} (${course.elective && course.audience ? course.audience : gradeShort(course.grade)} - ${course.subject})`; }
+function courseLabel(course) { return `${course.title} (${course.elective && course.audience ? bandShort(course.audience, true) : gradeShort(course.grade)} - ${course.subject})`; }
 // A COURSE belongs to exactly one subject (Math, Reading, Science, ...) and
 // holds an ordered list of modules. Modules unlock in order WITHIN a course.
 // An educator can turn courses on or off per learner (see enabledCourseIds).
@@ -56659,7 +56664,7 @@ function PinInput({ value, onChange, placeholder, style, onEnter = null }) {
 }
 // A stamp of when this copy of the page was built, so a stale page in a cache can be told apart
 // from a fresh one at a glance. Written by the build, never by hand.
-const BUILD_STAMP = '2026-09-30 11:20 AM CDT';
+const BUILD_STAMP = '2026-09-30 12:01 PM CDT';
 function ContactLine({ onOpen, inline = false }) {
     return (react_1.default.createElement("p", { className: "edu-no-print", style: { textAlign: 'center', marginTop: inline ? 0 : 28, fontSize: inline ? 14 : 12, color: C.muted, margin: inline ? '0' : undefined } }, onOpen
         ? react_1.default.createElement("button", { type: "button", onClick: onOpen, style: { background: 'none', border: 'none', color: C.muted, fontFamily: FONT, fontSize: 12, cursor: 'pointer', padding: 0, textDecoration: 'underline' } }, "Contact us")
@@ -63888,24 +63893,42 @@ const inBeat = (seconds) => ({ animationDelay: `-${((((typeof performance !== 'u
 // link that opens the module list; the touch-screen warning when the course needs one. On a phone the link sits centered
 // on its own line under the title and the warning drops a line below it; on a wider screen the link keeps to the right,
 // centered vertically. A faint rule that starts past the checkbox keeps the rows from blending together.
+// -----------------------------------------------------------------------------------------------------------------
+// CourseChoiceRow (2026-09-30, pass GZ, Mikey). In plain terms: one course in the report's checklists. On a laptop or a
+// tablet the row is one line, the checkbox and the course name on the left and the Preview link (and Save, when offered)
+// on the right. On a phone, portrait or landscape, the row stacks in three centered lines: the course title beside its
+// checkbox, then the grade or band with the subject, then the links. The phone layout starts below 600 pixels of width,
+// or when the screen is short and no wider than 1000, which is a phone turned sideways; a tablet in either direction
+// keeps the one-line layout. Core courses and electives share this row.
+// -----------------------------------------------------------------------------------------------------------------
+function narrowCourseRows() { return typeof window !== 'undefined' && (window.innerWidth < 600 || (window.innerHeight < 500 && window.innerWidth <= 1000)); }
 function CourseChoiceRow({ course, checked, onToggle, onPreview, onSave = null }) {
-    const phone = typeof window !== 'undefined' && window.innerWidth < 700;
+    const phone = narrowCourseRows();
     const warn = courseNeedsTouch(course.id) ? react_1.default.createElement(Tag, { tone: "review" }, "Needs a touch screen") : null;
     // Save appears to the right of Preview once a course in the other lists is checked (2026-09-29, Mikey); it moves the course up to the assigned list.
     const link = react_1.default.createElement("span", { style: { display: 'inline-flex', gap: 14, alignItems: 'center' } },
         react_1.default.createElement("button", { type: "button", className: "edu-no-print", onClick: onPreview, "aria-label": `Preview ${course.title}`, style: { ...linkBtn, padding: '2px 0', fontSize: 14, whiteSpace: 'nowrap' } }, "Preview"),
-        onSave && react_1.default.createElement("button", { type: "button", className: "edu-no-print", onClick: onSave, "aria-label": `Save ${course.title}`, style: { ...linkBtn, padding: '2px 0', fontSize: 14, whiteSpace: 'nowrap', fontWeight: 700 } }, "Save"));
+        onSave && react_1.default.createElement("button", { type: "button", className: "edu-no-print", onClick: onSave, "aria-label": `Save ${course.title}`, style: { ...linkBtn, padding: '2px 0', fontSize: 14, whiteSpace: 'nowrap' } }, "Save"));
+    const gradeText = `${course.elective && course.audience ? bandShort(course.audience, true) : gradeShort(course.grade)} - ${course.subject}`;
+    if (phone) {
+        return (react_1.default.createElement("div", { style: { padding: '7px 0 8px', fontSize: 16 } },
+            react_1.default.createElement("label", { style: { display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, cursor: 'pointer' } },
+                react_1.default.createElement("input", { type: "checkbox", checked: checked, onChange: onToggle }),
+                react_1.default.createElement("span", { style: { textAlign: 'center' } }, course.title)),
+            react_1.default.createElement("p", { style: { margin: '2px 0 0', fontSize: 14, color: C.muted, textAlign: 'center' } }, gradeText),
+            react_1.default.createElement("div", { style: { display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, marginTop: 2 } },
+                link,
+                warn),
+            react_1.default.createElement("div", { "aria-hidden": "true", style: { height: 1, background: C.line, opacity: 0.55, marginTop: 8 } })));
+    }
     return (react_1.default.createElement("div", { style: { padding: '7px 0 8px', fontSize: 16 } },
-        react_1.default.createElement("div", { style: { display: 'flex', alignItems: phone ? 'flex-start' : 'center', gap: 10 } },
+        react_1.default.createElement("div", { style: { display: 'flex', alignItems: 'center', gap: 10 } },
             react_1.default.createElement("label", { style: { display: 'flex', alignItems: 'center', gap: 10, flex: 1, minWidth: 0, cursor: 'pointer' } },
                 react_1.default.createElement("input", { type: "checkbox", checked: checked, onChange: onToggle }),
                 react_1.default.createElement("span", { style: { display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 2, minWidth: 0 } },
                     react_1.default.createElement("span", null, courseLabel(course)),
-                    !phone && warn)),
-            !phone && link),
-        phone && react_1.default.createElement("div", { style: { display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, marginTop: 2 } },
-            link,
-            warn),
+                    warn)),
+            link),
         react_1.default.createElement("div", { "aria-hidden": "true", style: { height: 1, background: C.line, opacity: 0.55, marginTop: 8, marginLeft: 30 } })));
 }
 // -----------------------------------------------------------------------------------------------------------------
@@ -68242,53 +68265,55 @@ function EduSphereScreens() {
                                 e.target.value = '';
                             } })),
                     restoreNote && react_1.default.createElement("p", { style: { margin: '10px 0 0', fontSize: 14, color: C.green, fontWeight: 600, textAlign: 'center' } }, restoreNote)),
-                react_1.default.createElement("p", { style: { color: C.muted, fontSize: 13, textAlign: 'center', margin: '52px 0 8px' } }, "We send nothing anywhere. You choose where the file lives. Choose wisely."),
-                educator && !phoneScreen && react_1.default.createElement("p", { style: { textAlign: 'center', margin: '56px 0 0' } },
-                    react_1.default.createElement("button", { type: "button", style: { ...linkBtn, fontSize: 13, color: C.muted }, onClick: async () => { const next = { ...educator, tourSeen: false }; setEducator(next); await saveEducator(next); tourBegun.current = false; setScreen('educator-pick'); } }, "Show the first week tour again")),
-                educator && (react_1.default.createElement("p", { style: { textAlign: 'center', margin: phoneScreen ? '56px 0 0' : '10px 0 0' } }, startOverArmed
-                    ? react_1.default.createElement("span", { style: { fontSize: 13, color: C.muted } },
-                        "Remove this educator account and keep every student? ",
-                        react_1.default.createElement("button", { type: "button", style: { ...linkBtn, fontSize: 13, color: C.clay, marginLeft: 6 }, onClick: async () => { await storageDelete(EDUCATOR_KEY); setEducator(null); setStartOverArmed(false); setScreen('welcome'); } }, "Yes, start over"),
-                        " ",
-                        react_1.default.createElement("button", { type: "button", style: { ...linkBtn, fontSize: 13, marginLeft: 10 }, onClick: () => setStartOverArmed(false) }, "No"))
-                    : react_1.default.createElement("button", { type: "button", style: { ...linkBtn, fontSize: 13, color: C.muted }, onClick: () => setStartOverArmed(true) }, "Start over as a new educator"))),
-                educator && (react_1.default.createElement("div", { style: { textAlign: 'center', margin: '10px 0 0' } }, !changePin || changePin.done
-                    ? react_1.default.createElement("p", { style: { margin: 0 } },
-                        react_1.default.createElement("button", { type: "button", style: { ...linkBtn, fontSize: 13, color: C.muted }, onClick: () => setChangePin({ current: '', next: '', again: '', note: '', done: false }) }, "Change PIN"),
-                        changePin && changePin.done && react_1.default.createElement("span", { role: "status", style: { fontSize: 13, color: C.green, fontWeight: 600, marginLeft: 8 } }, "Your PIN is changed."))
-                    : (react_1.default.createElement("div", { style: { ...card, maxWidth: 340, margin: '6px auto 0', textAlign: 'center' }, "data-change-pin": "" },
-                        react_1.default.createElement("p", { style: { margin: '0 0 4px', fontWeight: 600 } }, "Change PIN"),
-                        react_1.default.createElement("p", { style: { margin: '0 0 10px', fontSize: 13, color: C.muted } }, "Four to six digits."),
-                        [['current', 'Current PIN'], ['next', 'New PIN'], ['again', 'New PIN again']].map(([k, label]) => (react_1.default.createElement(PinInput, { key: k, value: changePin[k], onChange: (v) => setChangePin({ ...changePin, [k]: v, note: '' }), placeholder: label, style: { fontFamily: FONT, fontSize: 18, padding: '10px 14px', width: '100%', boxSizing: 'border-box', border: `2px solid ${C.line}`, borderRadius: 10, marginBottom: 8, letterSpacing: 4 } }))),
-                        changePin.note && react_1.default.createElement("p", { role: "status", style: { margin: '2px 0 10px', fontSize: 14, color: C.clay } }, changePin.note),
-                        react_1.default.createElement("div", { style: { display: 'flex', gap: 10, justifyContent: 'center', marginTop: 6 } },
-                            react_1.default.createElement(Btn, { onClick: async () => {
-                                    const left = pinLockLeft(pinLock, Date.now());
-                                    if (left) {
-                                        setChangePin({ ...changePin, note: `Too many tries. Try again in ${left} seconds.` });
-                                        return;
-                                    }
-                                    if (scramble(changePin.current) !== educator.pin) {
-                                        failPin();
-                                        setChangePin({ ...changePin, current: '', note: 'That is not the current PIN.' });
-                                        return;
-                                    }
-                                    if (changePin.next.length < 4) {
-                                        setChangePin({ ...changePin, note: 'The new PIN needs at least four digits.' });
-                                        return;
-                                    }
-                                    if (changePin.next !== changePin.again) {
-                                        setChangePin({ ...changePin, note: 'The two new PINs do not match.' });
-                                        return;
-                                    }
-                                    if (pinLock.failures)
-                                        savePinLock({ failures: 0, lockUntil: 0 });
-                                    const next = { ...educator, pin: scramble(changePin.next) };
-                                    setEducator(next);
-                                    await saveEducator(next);
-                                    setChangePin({ current: '', next: '', again: '', note: '', done: true });
-                                } }, "Save new PIN"),
-                            react_1.default.createElement(Btn, { kind: "secondary", onClick: () => setChangePin(null) }, "Cancel")))))))));
+                educator && react_1.default.createElement("div", { style: { ...card, marginTop: 28, textAlign: 'center' }, "data-account-card": "" },
+                    react_1.default.createElement("p", { className: "edu-card-title", style: { margin: '0 0 6px', fontWeight: 600, textAlign: 'center' } }, "Your educator account"),
+                    educator && react_1.default.createElement("p", { style: { textAlign: 'center', margin: '0' } },
+                        react_1.default.createElement("button", { type: "button", style: { ...linkBtn, fontSize: 13, color: C.muted }, onClick: async () => { const next = { ...educator, tourSeen: false }; setEducator(next); await saveEducator(next); tourBegun.current = false; setScreen('educator-pick'); } }, "Show the first week tour again")),
+                    educator && (react_1.default.createElement("p", { style: { textAlign: 'center', margin: '8px 0 0' } }, startOverArmed
+                        ? react_1.default.createElement("span", { style: { fontSize: 13, color: C.muted } },
+                            "Remove this educator account and keep every student? ",
+                            react_1.default.createElement("button", { type: "button", style: { ...linkBtn, fontSize: 13, color: C.clay, marginLeft: 6 }, onClick: async () => { await storageDelete(EDUCATOR_KEY); setEducator(null); setStartOverArmed(false); setScreen('welcome'); } }, "Yes, start over"),
+                            " ",
+                            react_1.default.createElement("button", { type: "button", style: { ...linkBtn, fontSize: 13, marginLeft: 10 }, onClick: () => setStartOverArmed(false) }, "No"))
+                        : react_1.default.createElement("button", { type: "button", style: { ...linkBtn, fontSize: 13, color: C.muted }, onClick: () => setStartOverArmed(true) }, "Start over as a new educator"))),
+                    educator && (react_1.default.createElement("div", { style: { textAlign: 'center', margin: '8px 0 0' } }, !changePin || changePin.done
+                        ? react_1.default.createElement("p", { style: { margin: 0 } },
+                            react_1.default.createElement("button", { type: "button", style: { ...linkBtn, fontSize: 14, fontWeight: 600, color: C.green }, onClick: () => setChangePin({ current: '', next: '', again: '', note: '', done: false }) }, "Change PIN"),
+                            changePin && changePin.done && react_1.default.createElement("span", { role: "status", style: { fontSize: 13, color: C.green, fontWeight: 600, marginLeft: 8 } }, "Your PIN is changed."))
+                        : (react_1.default.createElement("div", { style: { ...card, maxWidth: 340, margin: '6px auto 0', textAlign: 'center' }, "data-change-pin": "" },
+                            react_1.default.createElement("p", { style: { margin: '0 0 4px', fontWeight: 600 } }, "Change PIN"),
+                            react_1.default.createElement("p", { style: { margin: '0 0 10px', fontSize: 13, color: C.muted } }, "Four to six digits."),
+                            [['current', 'Current PIN'], ['next', 'New PIN'], ['again', 'New PIN again']].map(([k, label]) => (react_1.default.createElement(PinInput, { key: k, value: changePin[k], onChange: (v) => setChangePin({ ...changePin, [k]: v, note: '' }), placeholder: label, style: { fontFamily: FONT, fontSize: 18, padding: '10px 14px', width: '100%', boxSizing: 'border-box', border: `2px solid ${C.line}`, borderRadius: 10, marginBottom: 8, letterSpacing: 4 } }))),
+                            changePin.note && react_1.default.createElement("p", { role: "status", style: { margin: '2px 0 10px', fontSize: 14, color: C.clay } }, changePin.note),
+                            react_1.default.createElement("div", { style: { display: 'flex', gap: 10, justifyContent: 'center', marginTop: 6 } },
+                                react_1.default.createElement(Btn, { onClick: async () => {
+                                        const left = pinLockLeft(pinLock, Date.now());
+                                        if (left) {
+                                            setChangePin({ ...changePin, note: `Too many tries. Try again in ${left} seconds.` });
+                                            return;
+                                        }
+                                        if (scramble(changePin.current) !== educator.pin) {
+                                            failPin();
+                                            setChangePin({ ...changePin, current: '', note: 'That is not the current PIN.' });
+                                            return;
+                                        }
+                                        if (changePin.next.length < 4) {
+                                            setChangePin({ ...changePin, note: 'The new PIN needs at least four digits.' });
+                                            return;
+                                        }
+                                        if (changePin.next !== changePin.again) {
+                                            setChangePin({ ...changePin, note: 'The two new PINs do not match.' });
+                                            return;
+                                        }
+                                        if (pinLock.failures)
+                                            savePinLock({ failures: 0, lockUntil: 0 });
+                                        const next = { ...educator, pin: scramble(changePin.next) };
+                                        setEducator(next);
+                                        await saveEducator(next);
+                                        setChangePin({ current: '', next: '', again: '', note: '', done: true });
+                                    } }, "Save new PIN"),
+                                react_1.default.createElement(Btn, { kind: "secondary", onClick: () => setChangePin(null) }, "Cancel"))))))),
+                react_1.default.createElement("p", { style: { color: C.muted, fontSize: 13, textAlign: 'center', margin: '28px 0 8px' } }, "We send nothing anywhere. You choose where the file lives. Choose wisely."))));
     }
     // ---------- One student's report: summary, what's assigned, course switches, progress, resets ----------
     if (screen === 'educator-report' && educatorRecord) {

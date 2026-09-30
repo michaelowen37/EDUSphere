@@ -2,6 +2,12 @@
 
 The newest block is what educators see once, in a pop-up on the classroom page, after each update. Write it the way Mikey talks to a teacher: conversational, complete sentences, say what changed and why it matters, and skip the shorthand (2026-09-23). Two to four items. The date line is the version stamp.
 
+## September 30, 2026 (your educator account, phone course rows)
+
+- The backup page has a Your educator account card with the tour link, Start over and Change PIN, on every screen size.
+- On phones, each course row in the report stacks in three centered lines: the title, the grade, then Preview. Tablets keep the one-line row with Preview on the right.
+- The kindergarten elective band reads Kinder to Grade 2 on its fold and KG to Grade 2 on its course rows.
+
 ## September 30, 2026 (three small report fixes)
 
 - On the report's Summary, short faint rules separate the practice lines, the reflection line and the coloring line, and the tried list has more room above it.

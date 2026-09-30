@@ -1483,6 +1483,16 @@ Approved by Mikey on 2026-09-04 unless marked "proposed".
 - The Change PIN link on phones: the code has no phone gate on either Change PIN, the per-student link on the class list or the educator's link on the backup page, and a probe at 390 pixels wide found both on screen. Nothing was changed for it; a screenshot of the phone screen where the link is missing would show which one Mikey means.
 - Next: agriculture for 3 to 5 as `agriculture-3`, then K to 2, then business from Chapter 130 Subchapter D, with a college course every few passes.
 
+## 2026-09-30 (pass GZ): the account card, phone course rows, and shorter band names
+
+- Mikey committed GY, so the commit message starts fresh at GZ.
+- The missing Change PIN link: Mikey's phone screenshot showed the backup page ending at the closing note, with no Start over and no Change PIN under it, while the same page at phone width in the browser test shows both. Rather than keep guessing at the phone, the three housekeeping links now live in a bordered card, Your educator account, that sits between the Restore card and the closing note on every screen size: the tour link (no longer hidden on phones), Start over, and Change PIN in green. A card with a border and a title cannot be lost at the foot of a page.
+- The prerequisite question, answered in the reply: inside a course, modules already unlock in order, so assigning a course early never lets a student skip ahead; across courses there is no hard prerequisite, and placement sets the level. A warning on assignment would be more confusing than helpful; a light note in the course preview ("usually follows Grade 3 math") is the right size if Mikey wants it, and is offered for a later pass.
+- Phone course rows: the row switched to its stacked layout at 700 pixels, which caught tablets. `narrowCourseRows()` now switches below 600 pixels of width, or when the screen is short (under 500) and no wider than 1000, which is a phone turned sideways; tablets in either direction keep the one-line row with Preview on the right. The stacked row is three centered lines, the title beside its checkbox, the grade or band with the subject, then Preview and Save; core courses and electives share it. The browser test, which runs at phone width, measures the stack and the centered link; the row selectors in the tests now find a course by its title alone.
+- Shorter band names: `bandShort` in logic.mjs gives the kindergarten band its two short forms, Kinder to Grade 2 on a fold or heading and KG to Grade 2 inside a course row's parentheses; the other bands keep their names. Core courses keep their own abbreviations. The rules test and the browser test read the new forms.
+- Every block added this pass opens with a plain-English comment.
+- Next: agriculture for 3 to 5 as `agriculture-3`, then K to 2, then business from Chapter 130 Subchapter D, with a college course every few passes.
+
 ## Open items
 - Verify audio plays inside the chat artifact sandbox (works in a normal browser).
 - Common Core / TEKS codes on existing modules to be checked against the official lists. The technology section numbers were checked and fixed in pass FS (§126.8, §126.10, §126.18); the sub-codes of those three courses are still unchecked.

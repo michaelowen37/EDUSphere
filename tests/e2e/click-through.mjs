@@ -132,23 +132,26 @@ await page.getByRole('button', { name: /^Show other courses/ }).click();
 ok('other courses fold into grade dropdowns, earliest grade first', (await text()).indexOf('Kindergarten') < (await text()).indexOf('Grade 4') && (await page.getByRole('button', { name: 'Electives' }).count()) === 1);
 // Elective folds are titled by band, so the closed list never looks as if it skipped a grade (pass GY, Mikey).
 await page.getByRole('button', { name: 'Electives' }).click();
-{ const e = await text(); ok('elective folds are titled by grade band', e.includes('Kindergarten to grade 2') && e.includes('Grades 3 to 5') && e.includes('Grades 6 to 8') && e.includes('Grades 9 to 12') && !/Grade 4\s*\d+ courses/.test(e)); }
+{ const e = await text(); ok('elective folds are titled by grade band', e.includes('Kinder to Grade 2') && e.includes('Grades 3 to 5') && e.includes('Grades 6 to 8') && e.includes('Grades 9 to 12') && !/Grade 4\s*\d+ courses/.test(e)); }
 await page.getByRole('button', { name: 'Core', exact: true }).click();
 await page.getByRole('button', { name: /^Grade 1\b/ }).first().click();
 ok('a grade dropdown opens to its courses', (await text()).includes('Grade 1 - Math'));
+// On a phone each course row stacks: the title beside its checkbox, the grade line under it, the Preview link under that (pass GZ, Mikey).
+{ const stacked = await page.evaluate(() => { const b = [...document.querySelectorAll('button')].find((e) => e.getAttribute('aria-label') === 'Preview Numbers to 20'); if (!b) return null; const row = b.closest('div').parentElement; const label = row.querySelector('label'); const grade = row.querySelector('p'); const lr = label.getBoundingClientRect(); const gr = grade.getBoundingClientRect(); const br = b.getBoundingClientRect(); return { order: lr.bottom <= gr.top + 1 && gr.bottom <= br.top + 1, gradeText: grade.textContent, centered: Math.abs((br.left + br.right) / 2 - (row.getBoundingClientRect().left + row.getBoundingClientRect().right) / 2) < 30 }; });
+  ok('a phone course row stacks title, grade line and a centered Preview link', !!stacked && stacked.order && stacked.gradeText === 'Grade 1 - Math' && stacked.centered); }
 await page.fill('input[aria-label="Search courses"]', 'grade 1 math');
 t = await text();
-ok('searching narrows the course list to what was typed', t.includes('Numbers to 20 (Grade 1 - Math)') && !t.includes('Grade 4 - Math'));
+ok('searching narrows the course list to what was typed', t.includes('Numbers to 20') && t.includes('Grade 1 - Math') && !t.includes('Grade 4 - Math'));
 // The small × inside the search box clears it in one tap (pass GV, Mikey).
 ok('a typed search shows a clear button inside the box', (await page.getByRole('button', { name: 'Clear search' }).count()) === 1);
 await page.getByRole('button', { name: 'Clear search' }).click();
 ok('the clear button empties the search box and hides itself', (await page.locator('input[aria-label="Search courses"]').inputValue()) === '' && (await page.getByRole('button', { name: 'Clear search' }).count()) === 0);
 await page.fill('input[aria-label="Search courses"]', '');
 await page.getByRole('button', { name: /^Grade 3\b/ }).first().click();
-await page.locator('label', { hasText: 'Fractions (Grade 3 - Math)' }).locator('input[type=checkbox]').check();
+await page.locator('label', { hasText: /^\s*Fractions\s*$/ }).locator('input[type=checkbox]').check();
 await page.waitForTimeout(400);
 await page.getByRole('button', { name: /^Kindergarten\b/ }).first().click();
-for (const name of ['Counting (KG - Math)', 'Letters (KG - Reading)']) { await page.locator('label', { hasText: name }).locator('input[type=checkbox]').check(); await page.waitForTimeout(300); }
+for (const name of [/^\s*Counting\s*$/, /^\s*Letters\s*$/]) { await page.locator('label', { hasText: name }).locator('input[type=checkbox]').check(); await page.waitForTimeout(300); }
 await tap('Back to Classroom');
 // A grade 3 reader for the reading-age flows. Elementary starts on the grade 3 courses, Fractions included.
 await tap('Add someone new');
@@ -485,7 +488,7 @@ ok('the summary never shows the storage id', !t.includes('s_1042'));
 // The mastered list sits centered inside its tinted box, shrunk to its longest line, with the bullets lined up on the left (pass GW, Mikey).
 { const m = await page.evaluate(() => { const box = document.querySelector('[data-summary-list="mastered"]'); if (!box) return null; const ul = box.querySelector('ul'); const b = box.getBoundingClientRect(); const u = ul.getBoundingClientRect(); return { boxW: b.width, ulW: u.width, leftGap: u.left - b.left, rightGap: b.right - u.right, align: getComputedStyle(ul).textAlign }; });
   ok('the mastered list is narrower than its box and centered, with left-aligned lines', !!m && m.ulW < m.boxW - 40 && Math.abs(m.leftGap - m.rightGap) < 4 && m.align === 'left'); }
-ok('assigned courses lead with the course name', t.includes('Assigned Now') && t.includes('(KG - Math)'));
+ok('assigned courses lead with the course name', t.includes('Assigned Now') && t.includes('KG - Math'));
 ok('courses are split into assigned and other', t.includes('Assigned Now') && t.includes('Show other courses'));
 ok('a course that needs a touch screen says so where it is assigned', t.includes('Needs a touch screen'));
 ok('the report explains its key words, each folded until opened', t.includes('Key Words - Explained') && t.includes('Mastered') && t.includes('Reflections'));
@@ -554,14 +557,14 @@ ok('the all-progress reset carries the student\'s name', (await page.getByRole('
 // Find the course by its label rather than by position, so the test says what it means.
 // Switch off every course from grade 2 up, so this student is left with only pre-reader courses.
 // Done by label so the test keeps working as more grades are written.
-await page.locator('label', { hasText: 'Fractions (Grade 3 - Math)' }).locator('input[type=checkbox]').uncheck();
+await page.locator('label', { hasText: /^\s*Fractions\s*$/ }).locator('input[type=checkbox]').uncheck();
 await page.waitForTimeout(400);
 { const upper = page.locator('label', { hasText: /\(Grade ([2-9]|1[0-2]) - / });
   const n = await upper.count();
   for (let i = 0; i < n; i++) { const box = upper.nth(i).locator('input[type=checkbox]'); if (await box.isChecked()) { await box.uncheck(); await page.waitForTimeout(300); } } }
 { // The box for a switched-off course is unticked while the kindergarten one stays ticked.
-  const fractionsBox = page.locator('label', { hasText: 'Fractions (Grade 3 - Math)' }).locator('input[type=checkbox]');
-  const countingBox = page.locator('label', { hasText: 'Counting (KG - Math)' }).locator('input[type=checkbox]');
+  const fractionsBox = page.locator('label', { hasText: /^\s*Fractions\s*$/ }).locator('input[type=checkbox]');
+  const countingBox = page.locator('label', { hasText: /^\s*Counting\s*$/ }).locator('input[type=checkbox]');
   ok('switching a course off unticks it and leaves the others ticked', !(await fractionsBox.first().isChecked()) && (await countingBox.first().isChecked())); }
 // Backup: the file is the backup, and restoring never loses anything
 await tap('Back to Classroom');

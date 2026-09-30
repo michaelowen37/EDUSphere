@@ -988,6 +988,7 @@ ok('reset: history kept, but nothing counts as mastered afterwards', events.leng
 
 // ---- 13. Course labels and the recommended list ----
 {
+  ok('an elective band shows its short names: Kinder on a fold, KG in a row', L.electiveBand('K').title === 'Kinder to Grade 2' && L.courseLabel(L.getCourse('speech-k')).includes('(KG to Grade 2 - Speech)') && L.courseGradeLabel(L.getCourse('speech-k')) === 'Kinder to Grade 2' && L.courseLabel(L.getCourse('speech-3')).includes('(Grades 3 to 5 - Speech)'));
   ok('a course label leads with its name', L.courseLabel(L.getCourse('fractions-intro')) === 'Fractions (Grade 3 - Math)');
   ok('kindergarten is abbreviated', L.courseLabel(L.getCourse('counting-k')) === 'Counting (KG - Math)');
   ok('grades read naturally in a sentence', L.gradeInSentence('K') === 'Kindergarten' && L.gradeInSentence('3') === 'third grade');

@@ -4374,7 +4374,67 @@ function RelationGame({ game, round, onScore = null }) {
     </div>
   );
 }
-const GAME_OF = { dots: DotsGame, pairs: PairsGame, sort: SortGame, maze: MazeGame, jigsaw: JigsawGame, pong: PongGame, sprint: SprintGame, order: OrderGame, build: BuildGame, fix: FixGame, mix: MixGame, debug: DebugGame, ptable: PtableGame, evidence: EvidenceGame, catch: CatchGame, path: PathGame, buckets: BucketsGame, jump: JumpGame, map: MapGame, balance: BalanceGame, walk: WalkGame, teach: TeachGame, bits: BitsGame, pay: PayGame, price: PriceGame, loan: LoanGame, fund: FundGame, search: SearchGame, spot: SpotGame, pattern: PatternGame, shape: ShapeGame, chord: ChordGame, valid: ValidGame, reason: ReasonGame, because: BecauseGame, share: ShareGame, stat: StatGame, recall: RecallGame, face: FaceGame, sense: SenseGame, filler: FillerGame, room: RoomGame, ask: AskGame, turn: TurnGame, jar: JarGame, relation: RelationGame };
+// -----------------------------------------------------------------------------------------------------------------
+// Will It Sprout? (2026-09-30, pass HB, the elementary agriculture game). In plain terms: a seed in a cup is drawn on the
+// paper board with four facts beside it, water, air, warmth and light, and two answers: it sprouts, or it will not. The
+// right answer moves on and says why (a seed in the dark still sprouts, which is the lesson's surprise), a wrong one
+// wobbles, the clock counts up over six seeds, and a seed that sprouts grows a little shoot in the drawing. This component
+// only draws and reacts: the seeds and their answers come from sproutRounds() in logic.mjs, and the board carries the
+// answer in `data-sprout-answer` so the browser test can play a round. Drawn with B (the paper palette).
+// -----------------------------------------------------------------------------------------------------------------
+function SproutGame({ game, round, onScore = null }) {
+  const rounds = useMemo(() => sproutRounds(round), [round]); // the six seeds for this round, fixed by the round number
+  const [k, setK] = useState(0); // which seed we are on
+  const [got, setGot] = useState(false); // true for a moment after a right answer
+  const [nudge, setNudge] = useState(null); // the answer of a wrong tap, so that button wobbles
+  const [ticks, setTicks] = useState(0); // seconds since the round started
+  const [done, setDone] = useState(false); // true once all six are judged
+  const q = rounds[Math.min(k, rounds.length - 1)];
+  useEffect(() => { setK(0); setGot(false); setTicks(0); setDone(false); }, [round]);
+  useEffect(() => { if (done) return undefined; const t = setInterval(() => setTicks((n) => n + 1), 1000); return () => clearInterval(t); }, [done]);
+  useEffect(() => { if (done && onScore) onScore(ticks, 'low'); }, [done]);
+  useEffect(() => { if (nudge === null) return undefined; const t = setTimeout(() => setNudge(null), 500); return () => clearTimeout(t); }, [nudge]);
+  useEffect(() => { if (!got) return undefined; const t = setTimeout(() => { setGot(false); if (k + 1 >= rounds.length) setDone(true); else setK(k + 1); }, 1200); return () => clearTimeout(t); }, [got]);
+  const pick = (v) => { if (got || done) return; if (v === q.answer) setGot(true); else setNudge(v); };
+  // The four facts, worded so the flooded cup reads as too much water and no air, never as two separate problems.
+  const facts = [
+    ['Water', q.water ? (q.air ? 'damp soil' : 'too much, the cup is flooded') : 'dry soil, no water'],
+    ['Air', q.air ? 'loose soil with air in it' : 'none, water fills every space'],
+    ['Warmth', q.warm ? 'a warm room' : 'a cold porch in winter'],
+    ['Light', q.light ? 'a sunny window' : 'a dark closet'],
+  ];
+  const missing = !q.water ? 'water' : !q.air ? 'air' : 'warmth';
+  const why = q.answer === 'yes' ? (q.light ? 'Yes: water, air and warmth are all there.' : 'Yes: water, air and warmth are there, and light can wait until the shoot is up.') : `Yes: it is missing ${missing}.`;
+  const answers = [['yes', 'it sprouts', 'It sprouts'], ['no', 'it will not sprout', 'It will not sprout']];
+  return (
+    <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }} data-sprout-answer={done ? '' : q.answer}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Will it sprout?</span><span>{ticks}s · {Math.min(k + 1, rounds.length)} of {rounds.length}</span></div>
+      {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Six seeds judged in {ticks} seconds. Tap the round arrow for more.</p> : (
+        <div style={{ textAlign: 'center' }}>
+          <div style={{ display: 'flex', gap: 12, alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap', marginBottom: 10 }}>
+            <svg viewBox="0 0 100 110" width="104" height="114" role="img" aria-label={q.light ? 'A cup of soil with a bean seed, in the light' : 'A cup of soil with a bean seed, in the dark'}>
+              <rect x="0" y="0" width="100" height="110" rx="10" fill={q.light ? '#FFF4C8' : '#4A5160'} />
+              {q.light && <circle cx="82" cy="18" r="10" fill="#F2C94C" />}
+              {got && q.answer === 'yes' && <g><path d="M50 62 C50 48 50 40 50 30" stroke="#3E8E4F" strokeWidth="3" fill="none" strokeLinecap="round" /><path d="M50 40 C40 34 36 28 38 24 C44 26 48 32 50 40 Z" fill="#5DB36D" /><path d="M50 36 C60 30 64 24 62 20 C56 22 52 28 50 36 Z" fill="#5DB36D" /></g>}
+              <path d="M22 60 L78 60 L70 104 L30 104 Z" fill="#C8734B" stroke={B.ink} strokeWidth="1.5" />
+              <rect x="24" y="60" width="52" height="10" fill={q.air ? '#6B4A2F' : '#4F6F8F'} />
+              <ellipse cx="50" cy="66" rx="6" ry="4" fill="#E8D8A8" stroke={B.ink} strokeWidth="1" />
+            </svg>
+            <div style={{ textAlign: 'left', background: '#fff', border: `1.5px solid ${B.line}`, borderRadius: 12, padding: '10px 12px', fontSize: 15, color: B.ink, lineHeight: 1.6, minWidth: 0, flex: '1 1 180px', maxWidth: 280 }}>
+              {facts.map(([label, value]) => <div key={label}><strong>{label}:</strong> {value}</div>)}
+            </div>
+          </div>
+          <p style={{ margin: '0 0 10px', fontSize: 15, color: got ? B.green : B.ink, minHeight: 22, fontWeight: got ? 700 : 400 }}>{got ? why : 'Will this bean seed sprout?'}</p>
+          <div style={{ display: 'flex', gap: 10, justifyContent: 'center', flexWrap: 'wrap' }}>
+            {answers.map(([v, spoken, shown]) => <button key={v} type="button" className={`edu-press${nudge === v ? ' edu-wobble' : ''}`} aria-label={`Answer: ${spoken}`} onClick={() => pick(v)} style={{ fontFamily: FONT, fontSize: 16, fontWeight: 700, minWidth: 140, padding: '10px 14px', borderRadius: 12, border: `2px solid ${B.green}`, background: '#fff', color: B.ink, cursor: got ? 'default' : 'pointer' }}>{shown}</button>)}
+          </div>
+        </div>
+      )}
+      <Done show={done} />
+    </div>
+  );
+}
+const GAME_OF = { dots: DotsGame, pairs: PairsGame, sort: SortGame, maze: MazeGame, jigsaw: JigsawGame, pong: PongGame, sprint: SprintGame, order: OrderGame, build: BuildGame, fix: FixGame, mix: MixGame, debug: DebugGame, ptable: PtableGame, evidence: EvidenceGame, catch: CatchGame, path: PathGame, buckets: BucketsGame, jump: JumpGame, map: MapGame, balance: BalanceGame, walk: WalkGame, teach: TeachGame, bits: BitsGame, pay: PayGame, price: PriceGame, loan: LoanGame, fund: FundGame, search: SearchGame, spot: SpotGame, pattern: PatternGame, shape: ShapeGame, chord: ChordGame, valid: ValidGame, reason: ReasonGame, because: BecauseGame, share: ShareGame, stat: StatGame, recall: RecallGame, face: FaceGame, sense: SenseGame, filler: FillerGame, room: RoomGame, ask: AskGame, turn: TurnGame, jar: JarGame, relation: RelationGame, sprout: SproutGame };
 // How to play, in a line or two, by kind of game (and by deck for the matching games).
 function gameInstructions(game) {
   if (game.kind === 'bits') return 'A number sits at the top and eight switches below it, worth 128 down to 1. Tap the switches on and off until the lit places add up to the number; the sum shows as you go. Six numbers, and the clock counts up.';
@@ -4383,6 +4443,7 @@ function gameInstructions(game) {
   if (game.kind === 'fund') return 'A first year on your own, one month a tap. Income comes in, the bills go out, and you choose how much of the 500 that is left goes into your emergency fund; the rest is spent. Some months bring a surprise bill: the fund pays what it can and the rest is borrowed at 2 percent a month. The score is the fund minus the loan after twelve months, higher is better.';
   if (game.kind === 'valid') return 'An argument in three lines: if this then that, a second line, and a conclusion. Ask whether the form guarantees the conclusion when the premises are true, however true the sentences sound, and tap Valid or Not valid. The right answer names the form. Six arguments a round, and the clock counts up.';
   if (game.kind === 'stat') return 'Five quiz scores and one average to find: the mean, the median or the mode. Add and divide, or order and take the middle, or find the score that repeats, and tap the number. Six rounds, and the clock counts up.';
+  if (game.kind === 'sprout') return 'A bean seed in a cup and four facts about it: water, air, warmth and light. Decide whether it sprouts. A bean needs water, air and warmth, and light can wait until the shoot is up. Six seeds, and the clock counts up.';
   if (game.kind === 'relation') return 'A line about two living things on a farm and four names: mutualism, parasitism, commensalism, predation. Tap the one that fits. Six cases, and the clock counts up.';
   if (game.kind === 'jar') return 'A jar of soil and water has settled: sand at the bottom, silt in the middle, clay on top, drawn to the true percentages. Tap the texture the layers show: sandy at seventy percent sand or more, clay at forty percent clay or more, loam for the balance. Six jars, and the clock counts up.';
   if (game.kind === 'turn') return 'Four friends sit in a circle and one holds the talking stick. Tap the friend whose turn is next, going around the circle the way the arrow points. Six turns, and the clock counts up.';
@@ -4485,6 +4546,7 @@ function GameThumb({ kind, game = null }) {
   if (game && game.kind === 'turn') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><circle cx="20" cy="20" r="13" fill="none" stroke={k} strokeWidth="1" strokeDasharray="2 3" /><circle cx="20" cy="7" r="4" fill={C.paperBoard} stroke={k} strokeWidth="1" /><circle cx="33" cy="20" r="4" fill={C.green} stroke={k} strokeWidth="1" /><circle cx="20" cy="33" r="4" fill={C.paperBoard} stroke={k} strokeWidth="1" /><circle cx="7" cy="20" r="4" fill={C.paperBoard} stroke={k} strokeWidth="1" /><line x1="23" y1="3" x2="26" y2="10" stroke={C.clay} strokeWidth="2" strokeLinecap="round" /></svg>;
   if (game && game.kind === 'jar') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="12" y="8" width="16" height="28" rx="3" fill={C.paperBoard} stroke={k} strokeWidth="1" /><rect x="13" y="24" width="14" height="11" fill="#E3C27A" /><rect x="13" y="17" width="14" height="7" fill="#B9A58A" /><rect x="13" y="12" width="14" height="5" fill="#8C6A4A" /><rect x="14" y="4" width="12" height="4" rx="1" fill={k} /></svg>;
   if (game && game.kind === 'relation') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><circle cx="13" cy="20" r="8" fill={C.paperBoard} stroke={k} strokeWidth="1" /><circle cx="29" cy="20" r="6" fill={C.green} stroke={k} strokeWidth="1" /><path d="M21 16l4 0M21 24l4 0" stroke={k} strokeWidth="2" strokeLinecap="round" /><path d="M24 14l3 2-3 2M22 26l-3-2 3-2" fill="none" stroke={k} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" /></svg>;
+  if (game && game.kind === 'sprout') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><path d="M20 24 C20 18 20 14 20 10" stroke="#3E8E4F" strokeWidth="2" fill="none" /><path d="M20 15 C15 12 13 9 14 7 C17 8 19 11 20 15 Z" fill="#5DB36D" /><path d="M20 13 C25 10 27 7 26 5 C23 6 21 9 20 13 Z" fill="#5DB36D" /><path d="M9 24 L31 24 L28 37 L12 37 Z" fill="#C8734B" stroke={k} strokeWidth="1" /></svg>;
   if (game && game.kind === 'stat') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="4" y="5" width="32" height="30" rx="4" fill={C.paperBoard} stroke={k} strokeWidth="1" /><rect x="9" y="22" width="4" height="9" fill={k} opacity="0.6" /><rect x="15" y="16" width="4" height="15" fill={k} opacity="0.6" /><rect x="21" y="12" width="4" height="19" fill={C.green} /><rect x="27" y="18" width="4" height="13" fill={k} opacity="0.6" /><path d="M7 20h26" stroke={C.green} strokeWidth="1.2" strokeDasharray="2 1.5" /></svg>;
   if (game && game.kind === 'valid') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="4" y="5" width="32" height="30" rx="4" fill={C.paperBoard} stroke={k} strokeWidth="1" /><path d="M9 13h22M9 19h16M9 25h22" stroke={k} strokeWidth="1.5" strokeLinecap="round" /><path d="M11 31l3 3 6-6" fill="none" stroke={C.green} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>;
   if (game && game.kind === 'fund') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="5" y="7" width="30" height="26" rx="4" fill="#fff" stroke={k} strokeWidth="1.2" />{[[10, 22, 8], [17, 14, 16], [24, 18, 12]].map(([x, y, h], i) => <rect key={i} x={x} y={y} width="5" height={h} rx="1" fill={i === 1 ? C.green : '#DDE3DE'} stroke={k} strokeWidth="0.7" />)}<path d="M31 13l-3 -3 -3 3M28 10v9" fill="none" stroke={k} strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" /></svg>;
@@ -5199,35 +5261,50 @@ const inBeat = (seconds) => ({ animationDelay: `-${((((typeof performance !== 'u
 // on the right. On a phone, portrait or landscape, the row stacks in three centered lines: the course title beside its
 // checkbox, then the grade or band with the subject, then the links. The phone layout starts below 600 pixels of width,
 // or when the screen is short and no wider than 1000, which is a phone turned sideways; a tablet in either direction
-// keeps the one-line layout. Core courses and electives share this row.
+// keeps the one-line layout. Core courses and electives share this row. Since pass HA the checkbox is centered top to
+// bottom against every line of the row on phones too, and a course that needs a touch screen shows a small red i after
+// its title instead of a tag; tapping the i shows the warning.
 // -----------------------------------------------------------------------------------------------------------------
 function narrowCourseRows() { return typeof window !== 'undefined' && (window.innerWidth < 600 || (window.innerHeight < 500 && window.innerWidth <= 1000)); }
 function CourseChoiceRow({ course, checked, onToggle, onPreview, onSave = null }) {
+  const boxId = useId(); // a unique id that ties this row's checkbox to its title, so tapping the title ticks the box
+  const [touchOpen, setTouchOpen] = useState(false); // the red i's note, shown only when tapped (pass HA, Mikey)
   const phone = narrowCourseRows();
-  const warn = courseNeedsTouch(course.id) ? <Tag tone="review">Needs a touch screen</Tag> : null;
+  const touch = courseNeedsTouch(course.id);
+  const touchButton = touch ? <InfoButton tone="warn" onClick={() => setTouchOpen(!touchOpen)} label={`Needs a touch screen: ${course.title}`} open={touchOpen} /> : null;
+  const touchNote = touch && touchOpen ? <p role="note" style={{ margin: '4px 0 0', fontSize: 13, color: C.clay, fontWeight: 600 }}>This course needs a touch screen. An iPad or another large tablet with a stylus is best.</p> : null;
   // Save appears to the right of Preview once a course in the other lists is checked (2026-09-29, Mikey); it moves the course up to the assigned list.
   const link = <span style={{ display: 'inline-flex', gap: 14, alignItems: 'center' }}><button type="button" className="edu-no-print" onClick={onPreview} aria-label={`Preview ${course.title}`} style={{ ...linkBtn, padding: '2px 0', fontSize: 14, whiteSpace: 'nowrap' }}>Preview</button>{onSave && <button type="button" className="edu-no-print" onClick={onSave} aria-label={`Save ${course.title}`} style={{ ...linkBtn, padding: '2px 0', fontSize: 14, whiteSpace: 'nowrap' }}>Save</button>}</span>;
   const gradeText = `${course.elective && course.audience ? bandShort(course.audience, true) : gradeShort(course.grade)} - ${course.subject}`;
+  const box = <input type="checkbox" id={boxId} checked={checked} onChange={onToggle} style={{ margin: 0, flexShrink: 0 }} />;
   if (phone) {
+    // Phone: the checkbox sits at the left, centered top to bottom against all three lines, and an equal empty space
+    // on the right keeps the three lines centered on the row itself.
     return (
-      <div style={{ padding: '7px 0 8px', fontSize: 16 }}>
-        <label style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, cursor: 'pointer' }}>
-          <input type="checkbox" checked={checked} onChange={onToggle} />
-          <span style={{ textAlign: 'center' }}>{course.title}</span>
-        </label>
-        <p style={{ margin: '2px 0 0', fontSize: 14, color: C.muted, textAlign: 'center' }}>{gradeText}</p>
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, marginTop: 2 }}>{link}{warn}</div>
+      <div data-course-row={course.id} style={{ padding: '7px 0 8px', fontSize: 16 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <span style={{ width: 24, display: 'flex', justifyContent: 'center', flexShrink: 0 }}>{box}</span>
+          <div data-course-lines="" style={{ flex: 1, minWidth: 0, textAlign: 'center' }}>
+            <div><label htmlFor={boxId} style={{ cursor: 'pointer' }}>{course.title}</label>{touchButton}</div>
+            <p data-course-grade="" style={{ margin: '2px 0 0', fontSize: 14, color: C.muted }}>{gradeText}</p>
+            <div style={{ display: 'flex', justifyContent: 'center', marginTop: 2 }}>{link}</div>
+            {touchNote}
+          </div>
+          <span aria-hidden="true" style={{ width: 24, flexShrink: 0 }} />
+        </div>
         <div aria-hidden="true" style={{ height: 1, background: C.line, opacity: 0.55, marginTop: 8 }} />
       </div>
     );
   }
+  // Tablet and laptop: one line, the checkbox and the course name on the left, Preview on the right.
   return (
-    <div style={{ padding: '7px 0 8px', fontSize: 16 }}>
+    <div data-course-row={course.id} style={{ padding: '7px 0 8px', fontSize: 16 }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-        <label style={{ display: 'flex', alignItems: 'center', gap: 10, flex: 1, minWidth: 0, cursor: 'pointer' }}>
-          <input type="checkbox" checked={checked} onChange={onToggle} />
-          <span style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 2, minWidth: 0 }}><span>{courseLabel(course)}</span>{warn}</span>
-        </label>
+        {box}
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <label htmlFor={boxId} style={{ cursor: 'pointer' }}>{courseLabel(course)}</label>{touchButton}
+          {touchNote}
+        </div>
         {link}
       </div>
       <div aria-hidden="true" style={{ height: 1, background: C.line, opacity: 0.55, marginTop: 8, marginLeft: 30 }} />
@@ -5248,10 +5325,13 @@ function ClearableInput({ value, onClear, style = {}, ...rest }) {
     </span>
   );
 }
-function InfoButton({ onClick, label, open = false }) {
+// InfoButton: the small round i that opens a note. `tone="warn"` draws it in the warning color (the red of the old
+// "Needs a touch screen" tag) for notes that caution rather than explain (pass HA).
+function InfoButton({ onClick, label, open = false, tone = 'info' }) {
+  const ink = tone === 'warn' ? C.clay : C.green;
   return (
     <button type="button" onClick={onClick} aria-label={label} aria-expanded={open}
-      style={{ background: open ? C.green : 'none', border: `1.5px solid ${C.green}`, color: open ? C.onAccent : C.green, fontFamily: FONT, fontSize: 12, fontWeight: 700, lineHeight: '15px', width: 18, height: 18, borderRadius: 999, cursor: 'pointer', padding: 0, marginLeft: 8, verticalAlign: 'middle', flexShrink: 0 }}>i</button>
+      style={{ background: open ? ink : 'none', border: `1.5px solid ${ink}`, color: open ? C.onAccent : ink, fontFamily: FONT, fontSize: 12, fontWeight: 700, lineHeight: '15px', width: 18, height: 18, borderRadius: 999, cursor: 'pointer', padding: 0, marginLeft: 8, verticalAlign: 'middle', flexShrink: 0 }}>i</button>
   );
 }
 
@@ -6460,6 +6540,10 @@ function EduSphereScreens() {
   const tourBegun = useRef(false);                                 // the tour starts once per sign-in, not every time the classroom page shows
   // On a phone the tour does not start on its own (the sheet fights the page for room); the classroom page offers it instead.
   const phoneScreen = typeof window !== 'undefined' && window.innerWidth < 700;
+  // startAccountSetup (2026-09-30, pass HB). In plain terms: opens the educator account setup with the PIN boxes empty and this
+  // device's name and state filled in. Every Create account button uses it, and since the starter PIN was retired, so does Educator
+  // Login on a device that has no account yet: an account with its own PIN is now the only way into the educator screens.
+  const startAccountSetup = () => { setNewPin(''); setNewPin2(''); setDeviceDraft(deviceName || ''); setStateDraft(stateCode || ''); setSetupError(''); setScreen('educator-setup'); };
   // The first week tour opens on a wide screen for a new educator, and What's new waits until the tour is done. On a phone
   // the tour never runs (its cards need room), so What's new opens straight away there (2026-09-28, pass FR): before this
   // a phone-only educator waited for a tour that never came and saw no news at all.
@@ -6499,7 +6583,8 @@ function EduSphereScreens() {
   // A full PIN opens the door on its own (2026-09-23, Mikey): nobody has to lower the phone keypad to reach Go or Open.
   // A student's wrong PIN clears the box and says so; an educator's wrong PIN just sits there with its line under it.
   useEffect(() => { if (!pinAsk || pinTry.length !== PIN_LENGTH) return; const st = findStudent(roster, pinAsk); if (!st) return; if (pinMatches(st, pinTry)) { setPinAsk(null); startWithName(st.id); } else { setPinWrong(true); setPinTry(''); } }, [pinTry, pinAsk]);
-  useEffect(() => { if (screen !== 'educator-pin' || pinInput.length < 4) return; const ok = educator ? scramble(pinInput) === educator.pin : pinInput === EDUCATOR_PIN; if (ok) { if (pinLock.failures) savePinLock({ failures: 0, lockUntil: 0 }); goBackTo(); } }, [pinInput, screen]);
+  // Only this device's own educator account PIN opens the educator side; with no account, no PIN does (starter PIN retired, pass HB).
+  useEffect(() => { if (screen !== 'educator-pin' || pinInput.length < 4) return; const ok = !!educator && scramble(pinInput) === educator.pin; if (ok) { if (pinLock.failures) savePinLock({ failures: 0, lockUntil: 0 }); goBackTo(); } }, [pinInput, screen]);
   const endTour = async () => { setTourStep(-1); if ((screen === 'educator-report' && educatorRecord && educatorRecord.preview) || screen === 'class-view' || screen === 'story-log' || (screen === 'lesson' && record && record.preview)) { setEducatorRecord(null); setClassRows(null); setStoryRows(null); if (record && record.preview) { setRecord(null); setModuleId(null); } setScreen('educator-pick'); } const next = { ...educator, tourSeen: true, newsSeen: news ? news.stamp : educator.newsSeen }; setEducator(next); await saveEducator(next); };
   const tourPopup = tourStep >= 0 && educator && (screen === 'educator-pick' || (screen === 'educator-report' && educatorRecord && educatorRecord.preview) || screen === 'class-view' || (screen === 'story-log' && TOUR[tourStep] && TOUR[tourStep][2] === 'storylog') || (screen === 'lesson' && record && record.preview)) ? (
     <div className="edu-no-print" style={{ position: 'fixed', zIndex: 130, pointerEvents: 'none', ...(tourBox ? { left: tourBox.left, top: tourBox.top, width: tourBox.width } : { right: 0, left: 0, bottom: 0, display: 'flex', justifyContent: 'center', padding: '0 12px 10px' }) }}>
@@ -6664,7 +6749,7 @@ function EduSphereScreens() {
           {errorMsg && <p style={{ color: C.clay }}>{errorMsg}</p>}
         </div>
         <div className="edu-welcome-links" style={{ marginTop: 4, textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
-          <div className="edu-login-btn" style={{ width: '100%', maxWidth: 320, marginBottom: 18 }}><Btn full onClick={() => { if (lastActive && Date.now() - lastActive < EDUCATOR_IDLE_MS) { setScreen('educator-pick'); return; } setPinInput(''); setScreen('educator-pin'); }}>Educator Login</Btn></div>
+          <div className="edu-login-btn" style={{ width: '100%', maxWidth: 320, marginBottom: 18 }}><Btn full onClick={() => { if (!educator) { startAccountSetup(); return; } if (lastActive && Date.now() - lastActive < EDUCATOR_IDLE_MS) { setScreen('educator-pick'); return; } setPinInput(''); setScreen('educator-pin'); }}>Educator Login</Btn></div>
           {!educator && (
             <button type="button" onClick={() => { setNewPin(''); setNewPin2(''); setDeviceDraft(''); setStateDraft(''); setSetupError(''); setScreen('educator-setup'); }} style={{ background: 'none', border: 'none', color: C.muted, fontFamily: FONT, fontSize: 14, cursor: 'pointer', padding: '4px 12px', textDecoration: 'underline' }}>Create account</button>
           )}
@@ -8262,7 +8347,6 @@ function EduSphereScreens() {
 
   // ---------- Educator screens. NOTE: the PIN is a convenience lock for the prototype, not security.
   // Real educator accounts with real permissions arrive in phase 1. ----------
-  const EDUCATOR_PIN = '2468';
 
   if (screen === 'change-state') {
     return (
@@ -8336,27 +8420,31 @@ function EduSphereScreens() {
   }
 
   if (screen === 'educator-pin') {
-    // With an account on this device, its PIN is the key. Without one, the prototype PIN still opens the door.
-    const ok = educator ? scramble(pinInput) === educator.pin : pinInput === EDUCATOR_PIN;
+    // The account's own PIN is the only key (pass HB, Mikey: the starter PIN is retired). With no account on this device the screen
+    // shows no PIN box at all, only a way to create the account.
+    const ok = !!educator && scramble(pinInput) === educator.pin;
     return (
       <div style={{ ...page }}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap edu-welcome" style={{ ...wrap }}>
         <button type="button" onClick={() => setScreen('welcome')} style={{ background: 'none', border: 'none', color: C.green, fontFamily: FONT, fontSize: 15, cursor: 'pointer', padding: 0, alignSelf: 'flex-start' }}>Back</button>
         <div className="edu-login-body">
         <h1 style={{ fontSize: 24, margin: '12px 0 22px', textAlign: 'center' }}>Please log in to continue:</h1>
         <div style={{ ...card }}>
-          <p style={{ margin: '0 0 10px', textAlign: 'center' }}>Enter your PIN.</p>
+          {!educator && <>
+            <p style={{ margin: '0 0 12px', textAlign: 'center', fontSize: 15, lineHeight: 1.55 }}>There is no educator account on this device yet. Create one to choose your PIN. Any students already here stay exactly as they are.</p>
+            <div style={{ paddingBottom: 6 }}><Btn full onClick={startAccountSetup}>Create account</Btn></div>
+          </>}
+          {educator && <p style={{ margin: '0 0 10px', textAlign: 'center' }}>Enter your PIN.</p>}
           {/* A wrong try is counted when a full PIN is erased or entered: every fifth one rests the box for a while. */}
-          <PinInput value={pinInput} onChange={(v) => { if (pinLockLeft(pinLock, pinClock)) return; if (pinInput.length >= 4 && v.length < pinInput.length && !ok) failPin(); setPinInput(v); }} placeholder="PIN" onEnter={() => { if (ok) goBackTo(); else if (pinInput.length >= 4) { failPin(); setPinInput(''); } }}
-            style={{ fontFamily: FONT, fontSize: 18, padding: '12px 14px', width: '100%', boxSizing: 'border-box', border: `2px solid ${C.line}`, borderRadius: 10, marginBottom: 12, letterSpacing: 4 }} />
-          {pinLockLeft(pinLock, pinClock) > 0 && <p role="status" style={{ margin: '0 0 12px', textAlign: 'center', fontSize: 14, color: C.clay }}>Too many tries. Try again in {pinLockLeft(pinLock, pinClock)} seconds.</p>}
-          <div style={{ paddingBottom: 10 }}><Btn full onClick={goBackTo} disabled={!ok}>Open</Btn></div>
+          {educator && <PinInput value={pinInput} onChange={(v) => { if (pinLockLeft(pinLock, pinClock)) return; if (pinInput.length >= 4 && v.length < pinInput.length && !ok) failPin(); setPinInput(v); }} placeholder="PIN" onEnter={() => { if (ok) goBackTo(); else if (pinInput.length >= 4) { failPin(); setPinInput(''); } }}
+            style={{ fontFamily: FONT, fontSize: 18, padding: '12px 14px', width: '100%', boxSizing: 'border-box', border: `2px solid ${C.line}`, borderRadius: 10, marginBottom: 12, letterSpacing: 4 }} />}
+          {educator && pinLockLeft(pinLock, pinClock) > 0 && <p role="status" style={{ margin: '0 0 12px', textAlign: 'center', fontSize: 14, color: C.clay }}>Too many tries. Try again in {pinLockLeft(pinLock, pinClock)} seconds.</p>}
+          {educator && <div style={{ paddingBottom: 10 }}><Btn full onClick={goBackTo} disabled={!ok}>Open</Btn></div>}
           {educator && educator.biometric && biometricReady() && (
             <div style={{ paddingBottom: 16, textAlign: 'center' }}>
               <Btn full kind="secondary" onClick={async () => { try { if (await checkBiometric(educator.biometric)) goBackTo(); } catch (e) { setBioNote('That did not work. Use your PIN.'); } }}>Use fingerprint or face</Btn>
               {bioNote && <p style={{ margin: '8px 0 0', fontSize: 13, color: C.muted }}>{bioNote}</p>}
             </div>
           )}
-          {!educator && <p style={{ margin: '12px 0 0', fontSize: 14, color: C.muted, textAlign: 'center' }}>No educator account created on this device. <button type="button" onClick={() => { setNewPin(''); setNewPin2(''); setDeviceDraft(''); setStateDraft(''); setSetupError(''); setScreen('educator-setup'); }} style={{ ...linkBtn, fontSize: 14, padding: 0 }}>Create one here</button><br />Starter PIN still works and data can be merged later.</p>}
           {educator && !forgotPin && <p style={{ margin: '12px 0 0', fontSize: 14, color: C.muted, textAlign: 'center' }}><button type="button" onClick={() => setForgotPin(true)} style={{ ...linkBtn, fontSize: 14, padding: 0 }}>Forgot my PIN</button></p>}
           {educator && forgotPin && (
             <div style={{ marginTop: 12, padding: 12, borderRadius: 10, background: C.goldSoft }}>
@@ -9224,7 +9312,7 @@ function EduSphereScreens() {
           <div style={{ ...card, background: C.goldSoft, borderColor: C.goldEdge }}>
             <p style={{ margin: '0 0 4px', fontWeight: 600, textAlign: 'center' }}>No recovery code yet</p>
             <p style={{ margin: 0, fontSize: 14, color: C.muted, textAlign: 'center' }}>A recovery code, used to reset a pin, comes with an educator account. <button type="button" onClick={() => { setNewPin(''); setNewPin2(''); setDeviceDraft(deviceName || ''); setStateDraft(stateCode || ''); setSetupError(''); setScreen('educator-setup'); }} style={{ ...linkBtn, fontSize: 14, padding: 0 }}>Create one here</button>.</p>
-            <p style={{ margin: '10px 0 0', fontSize: 14, color: C.muted, textAlign: 'center' }}>This device is still using a starter PIN. Once an account is created, your recovery code will appear here and within every backup file.</p>
+            <p style={{ margin: '10px 0 0', fontSize: 14, color: C.muted, textAlign: 'center' }}>Once this device has an educator account, your recovery code will appear here and within every backup file.</p>
           </div>
         )}
         {educator && educator.recovery && (
@@ -9321,24 +9409,33 @@ function EduSphereScreens() {
           </label>
           {restoreNote && <p style={{ margin: '10px 0 0', fontSize: 14, color: C.green, fontWeight: 600, textAlign: 'center' }}>{restoreNote}</p>}
         </div>
-        {/* Your educator account (2026-09-30, pass GZ, Mikey): the tour link, Start over and Change PIN sit together in one bordered card on every
-            screen size, so a phone cannot lose them at the foot of the page; the closing note follows the card. */}
-        {educator && <div style={{ ...card, marginTop: 28, textAlign: 'center' }} data-account-card="">
+        {/* Your educator account (2026-09-30, pass GZ; both states since pass HA, Mikey). In plain terms: this card is always on the backup
+            page. With an educator account on the device it holds the tour link and Start over, side by side when the screen has room and stacked
+            when it does not, with Change PIN centered on its own line below. Since the starter PIN was retired (pass HB) the educator side
+            cannot be reached without an account, so the no-account state is only a safe fallback that offers Create account. */}
+        <div style={{ ...card, marginTop: 28, textAlign: 'center' }} data-account-card={educator ? 'account' : 'none'}>
         <p className="edu-card-title" style={{ margin: '0 0 6px', fontWeight: 600, textAlign: 'center' }}>Your educator account</p>
+        {!educator && <>
+          <p style={{ margin: '0 0 12px', fontSize: 14, color: C.muted, lineHeight: 1.55 }}>This device has no educator account yet. Create one to choose a PIN of your own. Your students stay exactly as they are.</p>
+          <Btn onClick={startAccountSetup}>Create account</Btn>
+        </>}
+        {educator && <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'baseline', gap: '8px 28px' }} data-account-links="">
         {educator && <p style={{ textAlign: 'center', margin: '0' }}><button type="button" style={{ ...linkBtn, fontSize: 13, color: C.muted }} onClick={async () => { const next = { ...educator, tourSeen: false }; setEducator(next); await saveEducator(next); tourBegun.current = false; setScreen('educator-pick'); }}>Show the first week tour again</button></p>}
         {/* Starting over: the educator profile (PIN, device name, state, tour) is removed and the students are untouched,
-            so the account can be created again from the first screen. Two taps, so a stray touch does nothing. */}
+            so the account can be created again from the first screen. Two taps, so a stray touch does nothing. Since pass HB it
+            also ends the educator session, so nothing of the old account's sign-in lingers. */}
         {educator && (
-          <p style={{ textAlign: 'center', margin: '8px 0 0' }}>
+          <p style={{ textAlign: 'center', margin: '0' }}>
             {startOverArmed
-              ? <span style={{ fontSize: 13, color: C.muted }}>Remove this educator account and keep every student? <button type="button" style={{ ...linkBtn, fontSize: 13, color: C.clay, marginLeft: 6 }} onClick={async () => { await storageDelete(EDUCATOR_KEY); setEducator(null); setStartOverArmed(false); setScreen('welcome'); }}>Yes, start over</button> <button type="button" style={{ ...linkBtn, fontSize: 13, marginLeft: 10 }} onClick={() => setStartOverArmed(false)}>No</button></span>
+              ? <span style={{ fontSize: 13, color: C.muted }}>Remove this educator account and keep every student? <button type="button" style={{ ...linkBtn, fontSize: 13, color: C.clay, marginLeft: 6 }} onClick={async () => { await storageDelete(EDUCATOR_KEY); setEducator(null); setStartOverArmed(false); setLastActive(0); setIdleWarning(false); setScreen('welcome'); }}>Yes, start over</button> <button type="button" style={{ ...linkBtn, fontSize: 13, marginLeft: 10 }} onClick={() => setStartOverArmed(false)}>No</button></span>
               : <button type="button" style={{ ...linkBtn, fontSize: 13, color: C.muted }} onClick={() => setStartOverArmed(true)}>Start over as a new educator</button>}
           </p>
         )}
+        </div>}
         {/* Changing the PIN: the current PIN first, so a student at an unlocked screen cannot change it; a wrong current
             PIN counts toward the same lockout as the sign-in screen. Four to six digits, typed twice, as at setup. */}
         {educator && (
-          <div style={{ textAlign: 'center', margin: '8px 0 0' }}>
+          <div style={{ textAlign: 'center', margin: '12px 0 0' }}>
             {!changePin || changePin.done
               ? <p style={{ margin: 0 }}><button type="button" style={{ ...linkBtn, fontSize: 14, fontWeight: 600, color: C.green }} onClick={() => setChangePin({ current: '', next: '', again: '', note: '', done: false })}>Change PIN</button>{changePin && changePin.done && <span role="status" style={{ fontSize: 13, color: C.green, fontWeight: 600, marginLeft: 8 }}>Your PIN is changed.</span>}</p>
               : (
@@ -9367,7 +9464,7 @@ function EduSphereScreens() {
               )}
           </div>
         )}
-        </div>}
+        </div>
         <p style={{ color: C.muted, fontSize: 13, textAlign: 'center', margin: '28px 0 8px' }}>We send nothing anywhere. You choose where the file lives. Choose wisely.</p>
       </div></div>
     );

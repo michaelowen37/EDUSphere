@@ -37,7 +37,7 @@ window.__eduArt = [];
 window.__eduColoringArt = [];
 window.__eduMapArt = [];
 window.__eduAudio = [];
-window.__eduNews = {"stamp":"September 30, 2026 (your educator account, phone course rows)","date":"September 30, 2026","items":["The backup page has a Your educator account card with the tour link, Start over and Change PIN, on every screen size.","On phones, each course row in the report stacks in three centered lines: the title, the grade, then Preview. Tablets keep the one-line row with Preview on the right.","The kindergarten elective band reads Kinder to Grade 2 on its fold and KG to Grade 2 on its course rows."]};
+window.__eduNews = {"stamp":"September 30, 2026 (down on the farm, and your own PIN only)","date":"September 30, 2026","items":["The starter PIN is retired. Only the PIN of the educator account on a device opens the educator side; on a device with no account yet, Educator Login leads straight to creating one. Create the account first thing on any device that holds students.","Grade 3 has a new elective for grades 3 to 5, Down on the farm: where food and clothes come from and the path a loaf of bread takes; seeds and soil, including why a bean sprouts in the dark; farm animals, what they need and how a chick grows into a hen; and a tiny farm of your own with a plan, a tally and a bar graph. Each lesson has a story, and the course ends with a long story about Mike and twenty-one days of eggs in a classroom.","Finishing the course unlocks Will It Sprout?, a new kind of game: a bean in a cup, four facts, and the call.","Two new Wonder questions for grades 3 to 5 wait in the review screen."]};
 // Installable app: the worker keeps a copy of the page for offline use and asks the network first, so a fresh build always wins.
 if ('serviceWorker' in navigator && /^https?:/.test(location.protocol)) { navigator.serviceWorker.register('sw.js').catch(function () {}); }
 var process = { env: { NODE_ENV: 'production' } };
@@ -17309,16 +17309,15 @@ function gradeShort(grade) { return grade === 'K' ? 'KG' : grade === 'PK3' ? 'Pr
 // The way a person would say it in a sentence: "Kindergarten math", "third grade reading".
 const GRADE_WORDS = ['first', 'second', 'third', 'fourth', 'fifth', 'sixth', 'seventh', 'eighth', 'ninth', 'tenth', 'eleventh', 'twelfth'];
 function gradeInSentence(grade) { return grade === 'K' ? 'Kindergarten' : grade === 'PK3' ? 'pre-K 3' : grade === 'PK4' ? 'pre-K 4' : grade === 'C' ? 'college level' : `${GRADE_WORDS[Number(grade) - 1]} grade`; }
-// One line for a course anywhere it appears in a list.
-// courseGradeLabel: the grade text a course shows in lists and dropdowns (2026-09-30, pass GV, Mikey). In plain terms:
-// a band elective sits at the youngest grade of its band (grade 3 for the 3 to 5 course) but serves the whole band, so
-// showing "Grade 3" beside it made the grade list look full of gaps. An elective with an `audience` shows that band
-// ("Grades 3 to 5", "Kindergarten to grade 2"); every other course shows its grade as before.
 // bandShort: the elective band names in the short forms Mikey asked for (2026-09-30, pass GZ): "Kinder to Grade 2" on a
 // fold or heading and "KG to Grade 2" inside a course row's parentheses; the other bands are already short and keep
 // their capital G ("Grades 3 to 5"). Core courses keep their own abbreviations (KG, Grade 1) untouched.
 function bandShort(audience, inRow = false) { if (audience === 'Kindergarten to grade 2')
     return inRow ? 'KG to Grade 2' : 'Kinder to Grade 2'; return audience; }
+// courseGradeLabel: the grade text a course shows in lists and dropdowns (2026-09-30, pass GV, Mikey). In plain terms:
+// a band elective sits at the youngest grade of its band (grade 3 for the 3 to 5 course) but serves the whole band, so
+// showing "Grade 3" beside it made the grade list look full of gaps. An elective with an `audience` shows that band
+// ("Grades 3 to 5", "Kindergarten to grade 2"); every other course shows its grade as before.
 function courseGradeLabel(course) { return course.elective && course.audience ? bandShort(course.audience) : gradeLabel(course.grade); }
 // electiveBand: the grade band an elective fold belongs to (2026-09-30, pass GY, Mikey). In plain terms: electives are
 // built for bands, kindergarten to grade 2, grades 3 to 5, 6 to 8, 9 to 12, and college, so a list of elective folds
@@ -17338,6 +17337,7 @@ function electiveBand(grade) {
         return { key: '6', title: 'Grades 6 to 8' };
     return { key: '9', title: 'Grades 9 to 12' };
 }
+// One line for a course anywhere it appears in a list.
 function courseLabel(course) { return `${course.title} (${course.elective && course.audience ? bandShort(course.audience, true) : gradeShort(course.grade)} - ${course.subject})`; }
 // A COURSE belongs to exactly one subject (Math, Reading, Science, ...) and
 // holds an ordered list of modules. Modules unlock in order WITHIN a course.
@@ -18314,10 +18314,20 @@ const COURSES = [
         modules: SPEECH6_MODULES(),
     },
     // ---------------------------------------------------------------------------------------------------------------
-    // Agriculture for grades 9 to 12 (2026-09-30, pass GU). In plain terms: this is the course card for the first course
-    // of a new subject, Agriculture, the seventh strand of the depth program. Its four lessons live in AGRI9_MODULES()
-    // further down; this entry only names the course and points at them.
+    // Agriculture for grades 3 to 5 (2026-09-30, pass HB). In plain terms: the course card for the elementary agriculture
+    // elective, built above the Texas minimum (Texas has no elementary agriculture course). Its four lessons live in
+    // AGRI3_MODULES() further down; this entry only names the course and points at them.
     // ---------------------------------------------------------------------------------------------------------------
+    {
+        id: 'agriculture-3',
+        grade: '3',
+        subject: 'Agriculture',
+        title: 'Down on the farm',
+        audience: 'Grades 3 to 5',
+        elective: true,
+        keywords: ['agriculture', 'farm', 'seeds', 'soil', 'animals', 'chickens', 'garden', 'bees', 'elective'],
+        modules: AGRI3_MODULES(),
+    },
     // ---------------------------------------------------------------------------------------------------------------
     // Agriculture for grades 6 to 8 (2026-09-30, pass GX). In plain terms: the course card for the middle school
     // agriculture elective, built above the Texas minimum (Texas has no middle school agriculture course). Its four
@@ -18333,6 +18343,11 @@ const COURSES = [
         keywords: ['agriculture', 'farm', 'soil', 'seeds', 'animals', 'food', 'project', 'elective'],
         modules: AGRI6_MODULES(),
     },
+    // ---------------------------------------------------------------------------------------------------------------
+    // Agriculture for grades 9 to 12 (2026-09-30, pass GU). In plain terms: this is the course card for the first course
+    // of a new subject, Agriculture, the seventh strand of the depth program. Its four lessons live in AGRI9_MODULES()
+    // further down; this entry only names the course and points at them.
+    // ---------------------------------------------------------------------------------------------------------------
     {
         id: 'agriculture-9',
         grade: '9',
@@ -18682,6 +18697,7 @@ const GAMES = [
     { id: 'filler-speech-9', kind: 'filler', title: 'Cut the Fillers', minGrade: '9', filler: 'lines' }, // speech 9 to 12 (pass GQ): the fillers are the rule
     { id: 'jar-agriculture-9', kind: 'jar', title: 'Read the Jar', minGrade: '9', jar: 'textures' }, // agriculture 9 to 12 (pass GU): the settled layers are the rule
     { id: 'relation-agriculture-6', kind: 'relation', title: 'Who Gains', minGrade: '6', relation: 'cases' }, // agriculture 6 to 8 (pass GX): who gains is the rule
+    { id: 'sprout-agriculture-3', kind: 'sprout', title: 'Will It Sprout?', minGrade: '3', sprout: 'seeds' }, // agriculture 3 to 5 (pass HB): water, air and warmth are the rule
     { id: 'room-speech-6', kind: 'room', title: 'Fit the Room', minGrade: '6', room: 'lines' }, // speech 6 to 8 (pass GR): the room is the rule
     { id: 'ask-speech-3', kind: 'ask', title: 'Ask the Right Question', minGrade: '3', ask: 'topics' }, // speech 3 to 5 (pass GS): the topic is the rule
     { id: 'chord-arts-9', kind: 'chord', title: 'Build the Chord', minGrade: '9', chord: 'triads' }, // art and music 9 to 12 (pass GH): four half steps then three   // personal finance 9 to 12 (pass FY): a year of saving against surprises
@@ -19672,6 +19688,36 @@ function relationRounds(round) {
         picked.push({ line, answer, choices: [...FARM_RELATIONS] });
     }
     return picked;
+}
+// -----------------------------------------------------------------------------------------------------------------
+// Will It Sprout? (2026-09-30, pass HB, the elementary agriculture game). In plain terms: a bean seed sits in a cup, and
+// four facts describe the cup: is there water, is there air in the soil, is it warm, is it light. The student decides
+// whether the seed sprouts. A bean sprouts exactly when it has water, air and warmth, and light does not decide it, which
+// is the lesson's surprise (the seed is a bean on purpose: a few seeds, such as lettuce, do need light to start); `sproutAnswer` holds that one rule and `sproutRounds(round)` builds six seeds for a game:
+// two that sprout in the dark, two that sprout in the light and two that are missing one need. The screen reads the
+// answers from here, never decides them, so the rules test can prove every one.
+// -----------------------------------------------------------------------------------------------------------------
+function sproutAnswer(c) { return c.water && c.air && c.warm ? 'yes' : 'no'; }
+function sproutRounds(round) {
+    let x = (round * 16807 + 19) >>> 0;
+    const rnd = () => { x = (x * 1664525 + 1013904223) >>> 0; return x / 4294967296; };
+    const out = [];
+    for (let i = 0; i < 6; i++) {
+        const kind = i % 3; // 0: every need met, in the dark; 1: one need missing; 2: every need met, in the light
+        let c;
+        if (kind === 1) {
+            const miss = Math.floor(rnd() * 3);
+            c = { water: miss !== 0, air: miss !== 1, warm: miss !== 2, light: rnd() < 0.5 };
+        }
+        else
+            c = { water: true, air: true, warm: true, light: kind === 2 };
+        out.push({ ...c, answer: sproutAnswer(c) });
+    }
+    for (let j = out.length - 1; j > 0; j--) {
+        const k = Math.floor(rnd() * (j + 1));
+        [out[j], out[k]] = [out[k], out[j]];
+    }
+    return out;
 }
 const ROBOT_DECKS = {
     arrows: [
@@ -27297,39 +27343,6 @@ function ARTS9_MODULES() {
         },
     ];
 }
-// Philosophy for the 9 to 12 band (2026-09-29, pass GI), the fourth strand of the depth program: how arguments work, the
-// mistakes people make with them, what we can know, and how we might live. Texas has no philosophy TEKS, so the Texas
-// column carries the College and Career Readiness Standards, Cross-Disciplinary Standards (2009); the national column
-// carries the Common Core anchor standards for argument. Every thinker named is placed in the right century.
-// Philosophy for the 6 to 8 band (2026-09-29, pass GJ), in the philosophy-for-children tradition: what makes a question
-// worth asking, what makes a reason a good one, how to disagree without losing a friend, and what fairness is. The Texas
-// column carries the College and Career Readiness Standards, Cross-Disciplinary Standards, since Texas has no philosophy
-// TEKS; the national column carries the Common Core grade 6 standards for argument and discussion.
-// Philosophy for the 3 to 5 band (2026-09-29, pass GK), in the philosophy-for-children tradition: wonder questions
-// and look-up questions, the because that makes a reason, listening to someone you disagree with, and what fair means
-// when equal is not enough. The Texas column carries the College and Career Readiness Standards, Cross-Disciplinary
-// Standards, as the other philosophy courses do; the national column carries the Common Core grade 3 standards.
-// Philosophy for the K to 2 band (2026-09-29, pass GL), in the philosophy-for-children tradition and read aloud: wondering,
-// the because that makes a reason, taking turns to talk, and fair shares, each in the words of a five-year-old. The Texas
-// column carries the College and Career Readiness Standards, Cross-Disciplinary Standards, as the other philosophy courses
-// do; the national column carries the Common Core kindergarten standards for conversation and opinion.
-// Psychology for the 9 to 12 band (2026-09-29, pass GM), the fifth strand of the depth program: how psychologists know,
-// the brain, the senses and development, learning, memory and thinking, and people among people. Texas codes are §113.45
-// Psychology (One-Half Credit), Beginning with School Year 2011-2012, read from the published text; the national framework
-// is the American Psychological Association's National Standards for High School Psychology Curricula. Every study named
-// carries the year it was published, and each is one the course can defend.
-// Speech for the 9 to 12 band (2026-09-30, pass GQ), the sixth strand of the depth program: the communication process,
-// listening that works, building a talk, and delivery and nerves. Texas codes are §110.58 Communication Applications
-// (One-Half Credit), read from the published text; the national framework is the Common Core speaking and listening
-// standards for grades 9 to 10.
-// Speech for the 6 to 8 band (2026-09-30, pass GR), above the Texas minimum at Mikey's direction: listening on purpose,
-// saying it clearly, a two-minute talk, and disagreeing out loud. The Texas column carries the oral language strand of
-// English Language Arts and Reading, Grade 6 (§110.22(b)(1), Adopted 2017), read from the published text; the national
-// column carries the Common Core speaking and listening standards for grade 6.
-// Speech for the 3 to 5 band (2026-09-30, pass GS), above the Texas minimum at Mikey's direction: listening and asking,
-// telling it in order, a one-minute talk, and taking turns to talk, in the words of an eight-year-old. The Texas column
-// carries the oral language strand of English Language Arts and Reading, Grade 3 (§110.5(b)(1), Adopted 2017), read from
-// the published text; the national column carries the Common Core speaking and listening standards for grade 3.
 function SPEECH3_MODULES() {
     return [
         {
@@ -27402,6 +27415,14 @@ function SPEECH3_MODULES() {
         },
     ];
 }
+// Speech for the 6 to 8 band (2026-09-30, pass GR), above the Texas minimum at Mikey's direction: listening on purpose,
+// saying it clearly, a two-minute talk, and disagreeing out loud. The Texas column carries the oral language strand of
+// English Language Arts and Reading, Grade 6 (§110.22(b)(1), Adopted 2017), read from the published text; the national
+// column carries the Common Core speaking and listening standards for grade 6.
+// Speech for the 3 to 5 band (2026-09-30, pass GS), above the Texas minimum at Mikey's direction: listening and asking,
+// telling it in order, a one-minute talk, and taking turns to talk, in the words of an eight-year-old. The Texas column
+// carries the oral language strand of English Language Arts and Reading, Grade 3 (§110.5(b)(1), Adopted 2017), read from
+// the published text; the national column carries the Common Core speaking and listening standards for grade 3.
 function SPEECH6_MODULES() {
     return [
         {
@@ -27475,12 +27496,84 @@ function SPEECH6_MODULES() {
     ];
 }
 // -----------------------------------------------------------------------------------------------------------------
-// AGRI9_MODULES: the four lessons of the high school agriculture course (2026-09-30, pass GU).
-// In plain terms: each object is one lesson. `paragraphs` is the lesson text, `keyIdea` the one-sentence takeaway,
-// `example` the pictures and extra examples, `sources` the Texas standard the lesson meets (Principles of Agriculture,
-// Food, and Natural Resources, §130.2, read from the published text) with the national AFNR standard beside it, and
-// `generators` the question banks below that make the five quick checks. Every number in the text was checked twice.
+// AGRI3_MODULES: the four lessons of the elementary agriculture course (2026-09-30, pass HB).
+// In plain terms: each object is one lesson for an eight-year-old. `paragraphs` is the lesson text, `keyIdea` the takeaway,
+// `example` the pictures and extra examples, `sources` the Texas standard the lesson meets (the grade 3 science standards,
+// §112.5, read from the published text) with the National Agricultural Literacy Outcomes for grades 3 to 5 beside it, and
+// `generators` the question banks below that make the five quick checks. Every fact was checked twice.
 // -----------------------------------------------------------------------------------------------------------------
+function AGRI3_MODULES() {
+    return [
+        {
+            id: 'farms-and-food',
+            order: 1,
+            title: 'Farms feed us',
+            tagline: 'Food, clothes and more start on a farm, and a path of many jobs brings them to you',
+            requires: [],
+            lesson: {
+                paragraphs: ['A farm grows or raises the things people need. Wheat for bread, milk for cheese, eggs for breakfast, and cotton for the shirt you are wearing all start on a farm. Texas raises more cattle and grows more cotton than any other state.', 'Farms use natural resources to do their work: soil to grow in, water for crops and animals, sunlight, air, and fuel for tractors and trucks. Using those resources well is part of a farmer\'s job, because they have to last for next year and for the next family.', 'Food takes a path from the farm to your table. Take bread: a farmer grows wheat, a machine called a combine harvests it, a truck carries it to a mill, the mill grinds it into flour, a bakery bakes it into bread, and a store sells it. Each step is a job: farmer, driver, miller, baker, grocer, and the scientists who study better wheat.'],
+                keyIdea: 'Farms grow food, clothes and more, and Texas raises the most cattle and cotton. Farms use soil, water, sunlight, air and fuel. Food takes a path from farm to table, and each step is a job.',
+                example: { kind: 'flow', steps: ['wheat on a farm', 'a combine harvests it', 'a mill makes flour', 'a bakery bakes bread', 'a store sells it'], caption: 'The path of a loaf of bread.',
+                    another: ['Your jeans started in a field. Cotton is a plant, and the fluffy fiber around its seeds is spun into thread and woven into cloth.',
+                        { text: 'Draw the path of anything you ate today as boxes and arrows. That drawing is called a flow chart, and scientists use them all the time.', visual: { kind: 'flow', steps: ['the farm', 'the trip', 'the store', 'your plate'] } },
+                        'A farm needs many people who never drive a tractor: the veterinarian, the soil scientist, the truck driver and the person who fixes the machines.'] },
+            },
+            sources: ['Aligned with TEKS Science, Grade 3, 112.5(b)(11)(A) (explore and explain how humans use natural resources such as in construction, in agriculture, in transportation, and to make products), 112.5(b)(4)(B) (research and explore resources to investigate STEM careers) and 112.5(b)(1)(F) (construct appropriate graphic organizers to collect data, including flow charts or sequence maps), and the National Agricultural Literacy Outcomes, T1.3-5.e (recognize the natural resources used in agricultural practices), T3.3-5.b (diagram the path of production for a processed product, from farm to table), T5.3-5.b (discover that there are many jobs in agriculture) and T5.3-5.d (explain the value of agriculture and how it is important in daily life).'],
+            generators: ['ag3-farm', 'ag3-farm', 'ag3-farm', 'ag3-farm', 'ag3-farm'],
+        },
+        {
+            id: 'seeds-and-soil-3',
+            order: 2,
+            title: 'Seeds and soil',
+            tagline: 'Soil is made from rock and old leaves, and most seeds need water, air and warmth to start',
+            requires: ['farms-and-food'],
+            lesson: {
+                paragraphs: ['Soil is made two ways at once. Wind, water and ice slowly break rock into tiny pieces, which is called weathering, and sand and clay are made this way. Meanwhile dead leaves, roots and animals rot and break down, which is called decomposition, and that dark crumbly part feeds plants.', 'Most seeds, like beans and radishes, need three things to sprout: water, air and warmth. A seed does not need light yet, because its first food is packed inside the seed. Once the shoot pokes up, the leaves need sunlight to make food, and the roots take in nutrients from good soil.', 'A plant has a life cycle. A lima bean starts as a seed, sprouts into a seedling, grows into a plant, blooms with flowers, and makes pods full of new seeds. Radishes grow so fast that the root is ready to eat in about a month. When winter comes, some plants, like pecan trees, drop their leaves and rest, and that rest is called dormancy.'],
+                keyIdea: 'Soil forms as rock weathers into sand and clay and as dead plants and animals decompose. Most seeds need water, air and warmth to sprout. A plant\'s life cycle runs from seed to new seeds.',
+                example: { kind: 'flow', steps: ['seed', 'seedling', 'plant', 'flowers', 'new seeds'], caption: 'The life cycle of a lima bean.',
+                    another: ['Put a bean seed in a wet paper towel in a dark drawer. In a few days a root comes out, with no light at all.',
+                        { text: 'A seed in a flooded cup can rot. Seeds need air in the soil as much as they need water.', visual: { kind: 'flow', steps: ['water', 'air', 'warmth', 'a sprout'] } },
+                        'A pecan tree in winter looks dead, but it is resting. In spring its buds open again.'] },
+            },
+            sources: ['Aligned with TEKS Science, Grade 3, 112.5(b)(10)(B) (investigate and explain how soils such as sand and clay are formed by weathering of rock and by decomposition of plant and animal remains), 112.5(b)(13)(B) (explore, illustrate, and compare life cycles in organisms such as beetles, crickets, radishes, or lima beans) and 112.5(b)(12)(A) (explain how temperature and precipitation affect plant responses through dormancy), and the National Agricultural Literacy Outcomes, T1.3-5.b (explain how the interaction of the sun, soil, water, and weather in plant and animal growth impacts agricultural production) and T2.3-5.c (explain how the availability of soil nutrients affects plant growth and development).'],
+            generators: ['ag3-soil', 'ag3-soil', 'ag3-soil', 'ag3-soil', 'ag3-soil'],
+        },
+        {
+            id: 'farm-animals-3',
+            order: 3,
+            title: 'Farm animals',
+            tagline: 'What animals need, the body parts that help them live, and a chicken from egg to hen',
+            requires: ['seeds-and-soil-3'],
+            lesson: {
+                paragraphs: ['Every farm animal needs food, water, shelter and space, and a farmer\'s day is built around those four. Cattle drink a lot of water, so troughs are checked every day. In summer animals need shade, and in winter they need hay when the grass stops growing.', 'An animal\'s body parts help it live where it lives. A cow has wide, flat back teeth for grinding grass and a stomach with four parts to digest it. A duck has webbed feet for paddling. A sheep\'s thick wool keeps it warm, which is why farmers shear it off in spring. In winter many cattle grow thicker, shaggier coats.', 'Animals have life cycles too. A hen lays an egg, and if the egg is kept warm, a chick hatches after about 21 days. The chick grows into a young hen, and at about five months old she starts laying eggs of her own. Wild animals near farms answer the seasons as well: monarch butterflies migrate south through Texas every fall.'],
+                keyIdea: 'Animals need food, water, shelter and space. Body parts like flat teeth, webbed feet and thick wool help them live. A chick hatches after about 21 days and grows up to lay eggs.',
+                example: { kind: 'flow', steps: ['egg', 'chick at about 21 days', 'young hen', 'laying hen'], caption: 'The life cycle of a chicken.',
+                    another: ['A cow swallows her food, brings it back up and chews it again. That second chewing is called chewing her cud.',
+                        { text: 'A duck\'s webbed feet push water like a paddle. A chicken\'s feet have no webs, which is why chickens stay out of the pond.', visual: { kind: 'flow', steps: ['webbed feet', 'a paddle', 'a swimmer'] } },
+                        'Farmers watch the weather for their animals: more water in the heat, more hay in the cold, a dry barn in the rain.'] },
+            },
+            sources: ['Aligned with TEKS Science, Grade 3, 112.5(b)(13)(A) (explore and explain how external structures and functions of animals such as the neck of a giraffe or webbed feet on a duck enable them to survive in their environment), 112.5(b)(13)(B) (explore, illustrate, and compare life cycles in organisms) and 112.5(b)(12)(A) (explain how temperature and precipitation affect animal growth and behavior through migration and hibernation), and the National Agricultural Literacy Outcomes, T2.3-5.d (provide examples of specific ways farmers/ranchers meet the needs of animals).'],
+            generators: ['ag3-animals', 'ag3-animals', 'ag3-animals', 'ag3-animals', 'ag3-animals'],
+        },
+        {
+            id: 'a-tiny-farm',
+            order: 4,
+            title: 'A tiny farm of my own',
+            tagline: 'A plan, a tally, a bar graph, and the bees, weather and care a garden depends on',
+            requires: ['farm-animals-3'],
+            lesson: {
+                paragraphs: ['A tiny farm can be one garden bed. Make a plan first: what to grow, where the sun falls, and how you will water it. Then keep a tally, a mark for every squash you pick, and turn the tally into a bar graph so anyone can see the harvest week by week. Measure your plants with a metric ruler and write the numbers down, because numbers are evidence.', 'A garden is a food chain. The sun\'s energy goes into the plants, the plants feed people and animals, and when one link goes missing, everything after it changes. Squash, apples and many other crops need bees to carry pollen from flower to flower. Take the bees out of a field, and many of those flowers never make food.', 'Weather can help or hurt. In a drought, some plants wilt while tough ones like cactus hold on; in a flood, some plants drown while frogs and mosquitoes thrive. Farmers care for their land so it lasts: rows of trees block the wind, old stalks are left on fields to hold the soil, and water, paper and scraps are saved by reducing, reusing and recycling. That care is called stewardship.'],
+                keyIdea: 'Plan the garden, keep a tally and a bar graph, and measure. Energy flows from the sun to plants to people, and many crops need bees. Weather changes who thrives. Stewardship keeps the land for next year.',
+                example: { kind: 'flow', steps: ['sun', 'plants', 'people and animals'], caption: 'A food chain in a garden.',
+                    another: ['Use an old milk jug as a watering can and turn scraps into compost. That is reusing and recycling in one garden.',
+                        { text: 'A tally of 4 squash on Monday, 3 on Tuesday and 5 on Wednesday makes 12 in all. On a bar graph, Wednesday is the tallest bar.', visual: { kind: 'flow', steps: ['tally marks', 'numbers', 'a bar graph'] } },
+                        'Some gardeners carry pollen with a small paintbrush when bees are scarce. It works, and it shows how much work the bees do for free.'] },
+            },
+            sources: ['Aligned with TEKS Science, Grade 3, 112.5(b)(1)(D) (use tools, including metric rulers and rain gauges), 112.5(b)(1)(E) (collect observations and measurements as evidence), 112.5(b)(1)(F) (construct appropriate graphic organizers to collect data, including tables and bar graphs), 112.5(b)(11)(B) (explain why the conservation of natural resources is important), 112.5(b)(11)(C) (identify ways to conserve natural resources through reducing, reusing, or recycling), 112.5(b)(12)(B) (identify and describe the flow of energy in a food chain and predict how changes in a food chain such as removal of bees from a field affect the ecosystem) and 112.5(b)(12)(C) (describe how natural changes to the environment such as floods and droughts cause some organisms to thrive and others to perish or move to new locations), and the National Agricultural Literacy Outcomes, T1.3-5.c (identify land and water conservation methods used in farming systems) and T2.3-5.e (understand the concept of stewardship and identify ways farmers/ranchers care for soil, water, plants, and animals).'],
+            generators: ['ag3-tiny', 'ag3-tiny', 'ag3-tiny', 'ag3-tiny', 'ag3-tiny'],
+        },
+    ];
+}
 // -----------------------------------------------------------------------------------------------------------------
 // AGRI6_MODULES: the four lessons of the middle school agriculture course (2026-09-30, pass GX).
 // In plain terms: each object is one lesson. `paragraphs` is the lesson text, `keyIdea` the one-sentence takeaway,
@@ -27560,6 +27653,13 @@ function AGRI6_MODULES() {
         },
     ];
 }
+// -----------------------------------------------------------------------------------------------------------------
+// AGRI9_MODULES: the four lessons of the high school agriculture course (2026-09-30, pass GU).
+// In plain terms: each object is one lesson. `paragraphs` is the lesson text, `keyIdea` the one-sentence takeaway,
+// `example` the pictures and extra examples, `sources` the Texas standard the lesson meets (Principles of Agriculture,
+// Food, and Natural Resources, §130.2, read from the published text) with the national AFNR standard beside it, and
+// `generators` the question banks below that make the five quick checks. Every number in the text was checked twice.
+// -----------------------------------------------------------------------------------------------------------------
 function AGRI9_MODULES() {
     return [
         {
@@ -27632,6 +27732,10 @@ function AGRI9_MODULES() {
         },
     ];
 }
+// Speech for the 9 to 12 band (2026-09-30, pass GQ), the sixth strand of the depth program: the communication process,
+// listening that works, building a talk, and delivery and nerves. Texas codes are §110.58 Communication Applications
+// (One-Half Credit), read from the published text; the national framework is the Common Core speaking and listening
+// standards for grades 9 to 10.
 function SPEECH9_MODULES() {
     return [
         {
@@ -27704,6 +27808,11 @@ function SPEECH9_MODULES() {
         },
     ];
 }
+// Psychology for the 9 to 12 band (2026-09-29, pass GM), the fifth strand of the depth program: how psychologists know,
+// the brain, the senses and development, learning, memory and thinking, and people among people. Texas codes are §113.45
+// Psychology (One-Half Credit), Beginning with School Year 2011-2012, read from the published text; the national framework
+// is the American Psychological Association's National Standards for High School Psychology Curricula. Every study named
+// carries the year it was published, and each is one the course can defend.
 function PSY9_MODULES() {
     return [
         {
@@ -27776,6 +27885,10 @@ function PSY9_MODULES() {
         },
     ];
 }
+// Philosophy for the K to 2 band (2026-09-29, pass GL), in the philosophy-for-children tradition and read aloud: wondering,
+// the because that makes a reason, taking turns to talk, and fair shares, each in the words of a five-year-old. The Texas
+// column carries the College and Career Readiness Standards, Cross-Disciplinary Standards, as the other philosophy courses
+// do; the national column carries the Common Core kindergarten standards for conversation and opinion.
 function PHILK_MODULES() {
     return [
         {
@@ -27848,6 +27961,10 @@ function PHILK_MODULES() {
         },
     ];
 }
+// Philosophy for the 3 to 5 band (2026-09-29, pass GK), in the philosophy-for-children tradition: wonder questions
+// and look-up questions, the because that makes a reason, listening to someone you disagree with, and what fair means
+// when equal is not enough. The Texas column carries the College and Career Readiness Standards, Cross-Disciplinary
+// Standards, as the other philosophy courses do; the national column carries the Common Core grade 3 standards.
 function PHIL3_MODULES() {
     return [
         {
@@ -27920,19 +28037,6 @@ function PHIL3_MODULES() {
         },
     ];
 }
-// Psychology for the 6 to 8 band (2026-09-29, pass GN), built above the Texas minimum at Mikey's ask: the growing brain,
-// attention, memory and practice, feelings as signals, and other people, each pitched for an eleven-year-old. The Texas
-// column carries the grade 6 health education standard's mental health and wellness strands (§115.26, Adopted 2020, read
-// from TEA's chapter text) and a College and Career Readiness study-habits standard; the national column carries the CASEL
-// framework's five competencies. Every study named carries its year and is one the course can defend.
-// Psychology for the 3 to 5 band (2026-09-29, pass GO), above the Texas minimum at Mikey's direction: the brain and the
-// senses, how remembering works, big feelings and what to do with them, and friends and other minds, in the words of an
-// eight-year-old. The Texas column carries the mental health and wellness strands of Health Education, Grade 3 (§115.15,
-// Adopted 2020), read from the published text; the national column carries the CASEL framework's five competencies.
-// Psychology for the K to 2 band (2026-09-30, pass GP), above the Texas minimum and read aloud: the brain and the five
-// senses, remembering, feelings with names and a way to calm down, and friends, in the words of a five-year-old. The Texas
-// column carries the mental health and wellness strands of Health Education, Kindergarten (§115.12, Adopted 2020), read
-// from the published text; the national column carries the CASEL framework's five competencies.
 // -----------------------------------------------------------------------------------------------------------------
 // SPEECHK_MODULES: the four lessons of the kindergarten speech course (2026-09-30, pass GT).
 // In plain terms: each object below is one lesson a five-year-old hears read aloud. `paragraphs` is the lesson text,
@@ -28013,6 +28117,10 @@ function SPEECHK_MODULES() {
         },
     ];
 }
+// Psychology for the K to 2 band (2026-09-30, pass GP), above the Texas minimum and read aloud: the brain and the five
+// senses, remembering, feelings with names and a way to calm down, and friends, in the words of a five-year-old. The Texas
+// column carries the mental health and wellness strands of Health Education, Kindergarten (§115.12, Adopted 2020), read
+// from the published text; the national column carries the CASEL framework's five competencies.
 function PSYK_MODULES() {
     return [
         {
@@ -28085,6 +28193,10 @@ function PSYK_MODULES() {
         },
     ];
 }
+// Psychology for the 3 to 5 band (2026-09-29, pass GO), above the Texas minimum at Mikey's direction: the brain and the
+// senses, how remembering works, big feelings and what to do with them, and friends and other minds, in the words of an
+// eight-year-old. The Texas column carries the mental health and wellness strands of Health Education, Grade 3 (§115.15,
+// Adopted 2020), read from the published text; the national column carries the CASEL framework's five competencies.
 function PSY3_MODULES() {
     return [
         {
@@ -28157,6 +28269,11 @@ function PSY3_MODULES() {
         },
     ];
 }
+// Psychology for the 6 to 8 band (2026-09-29, pass GN), built above the Texas minimum at Mikey's ask: the growing brain,
+// attention, memory and practice, feelings as signals, and other people, each pitched for an eleven-year-old. The Texas
+// column carries the grade 6 health education standard's mental health and wellness strands (§115.26, Adopted 2020, read
+// from TEA's chapter text) and a College and Career Readiness study-habits standard; the national column carries the CASEL
+// framework's five competencies. Every study named carries its year and is one the course can defend.
 function PSY6_MODULES() {
     return [
         {
@@ -28229,6 +28346,10 @@ function PSY6_MODULES() {
         },
     ];
 }
+// Philosophy for the 6 to 8 band (2026-09-29, pass GJ), in the philosophy-for-children tradition: what makes a question
+// worth asking, what makes a reason a good one, how to disagree without losing a friend, and what fairness is. The Texas
+// column carries the College and Career Readiness Standards, Cross-Disciplinary Standards, since Texas has no philosophy
+// TEKS; the national column carries the Common Core grade 6 standards for argument and discussion.
 function PHIL6_MODULES() {
     return [
         {
@@ -28301,6 +28422,10 @@ function PHIL6_MODULES() {
         },
     ];
 }
+// Philosophy for the 9 to 12 band (2026-09-29, pass GI), the fourth strand of the depth program: how arguments work, the
+// mistakes people make with them, what we can know, and how we might live. Texas has no philosophy TEKS, so the Texas
+// column carries the College and Career Readiness Standards, Cross-Disciplinary Standards (2009); the national column
+// carries the Common Core anchor standards for argument. Every thinker named is placed in the right century.
 function PHIL9_MODULES() {
     return [
         {
@@ -33144,12 +33269,6 @@ Object.assign(GENERATORS, {
         const [prompt, choices, answer, explain] = pick(rng, Q);
         return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
     },
-    // Personal finance, grades 9 to 12 (2026-09-29, pass FY): dollars computed each time; concepts said in the lesson first.
-    // Philosophy, grades 9 to 12 (2026-09-29, pass GI): every answer is said in its lesson first.
-    // Philosophy, grades 6 to 8 (2026-09-29, pass GJ): every answer is said in its lesson first.
-    // Philosophy, grades 3 to 5 (2026-09-29, pass GK): every answer is said in its lesson first.
-    // Philosophy, K to 2 (2026-09-29, pass GL): spoken questions with tapped answers, every answer said in its lesson first.
-    // Psychology, K to 2 (2026-09-30, pass GP): spoken questions with tapped answers, every answer said in its lesson first.
     // ---------------------------------------------------------------------------------------------------------------
     // Kindergarten speech question banks (2026-09-30, pass GT). In plain terms: each bank is a short list of quick-check
     // questions for one lesson. Every question is [what is asked, the three answers to tap, the right one, one line said
@@ -33196,6 +33315,7 @@ Object.assign(GENERATORS, {
         const [prompt, choices, answer, explain] = pick(rng, Q);
         return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
     },
+    // Psychology, K to 2 (2026-09-30, pass GP): spoken questions with tapped answers, every answer said in its lesson first.
     'pyk-brain': (rng) => {
         const Q = [['What is the boss of you?', ['your brain', 'your shoe', 'your lunch'], 'your brain', 'It moves your legs and picks your words.'],
             ['How many senses does your brain get its news from?', ['five', 'two', 'ten'], 'five', 'Eyes, ears, nose, tongue and skin.'],
@@ -33236,6 +33356,7 @@ Object.assign(GENERATORS, {
         const [prompt, choices, answer, explain] = pick(rng, Q);
         return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
     },
+    // Philosophy, K to 2 (2026-09-29, pass GL): spoken questions with tapped answers, every answer said in its lesson first.
     'pk-wonder': (rng) => {
         const Q = [['Why is the sky blue? What kind of question is that?', ['a finding question', 'a wondering question', 'a wish'], 'a finding question', 'Someone can tell you, and then you know.'],
             ['What makes a good friend? What kind of question is that?', ['a wondering question', 'a finding question', 'an order'], 'a wondering question', 'Nobody can just tell you. You think about it.'],
@@ -33317,6 +33438,7 @@ Object.assign(GENERATORS, {
         const [prompt, choices, answer, explain] = pick(rng, Q);
         return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
     },
+    // Philosophy, grades 3 to 5 (2026-09-29, pass GK): every answer is said in its lesson first.
     'p3-wonder': (rng) => {
         const Q = [['Which of these is a wonder question?', ['Can a robot be your friend?', 'How many legs does a spider have?', 'What time is lunch?', 'How tall is the flagpole?'], 'Can a robot be your friend?', 'Nobody can look that up; you have to think about what a friend is.'],
             ['How many legs does a spider have? What kind of question is that?', ['a look-up question', 'a wonder question', 'a trick question', 'a riddle'], 'a look-up question', 'You can look it up: eight.'],
@@ -33402,6 +33524,7 @@ Object.assign(GENERATORS, {
         const [prompt, choices, answer, explain] = pick(rng, Q);
         return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
     },
+    // Philosophy, grades 6 to 8 (2026-09-29, pass GJ): every answer is said in its lesson first.
     'p6-questions': (rng) => {
         const Q = [['Which of these is a philosophical question?', ['What is fairness?', 'What is the capital of Texas?', 'How tall is the school?', 'What year is it?'], 'What is fairness?', 'Nobody can look that up; you have to think it through.'],
             ['Socrates made a habit of asking people what?', ['what they meant by the words they used', 'where they were born', 'how much money they had', 'who their teachers were'], 'what they meant by the words they used', 'Someone would say a brave act, and he would ask what bravery was.'],
@@ -33443,10 +33566,6 @@ Object.assign(GENERATORS, {
         const [prompt, choices, answer, explain] = pick(rng, Q);
         return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
     },
-    // Psychology, grades 9 to 12 (2026-09-29, pass GM): every recall answer is said in its lesson first; the statistics are computed fresh.
-    // Speech, grades 9 to 12 (2026-09-30, pass GQ): every answer is said in its lesson first.
-    // Speech, grades 6 to 8 (2026-09-30, pass GR): every answer is said in its lesson first.
-    // Speech, grades 3 to 5 (2026-09-30, pass GS): every answer is said in its lesson first.
     's3-listen': (rng) => {
         const Q = [['Which part of listening can nobody see?', ['your mind on the words', 'eyes on the speaker', 'hands still', 'body turned toward them'], 'your mind on the words', 'Not on what you want to say next.'],
             ['Your mind wanders during a story. What do you do?', ['bring it back to the last thing you heard', 'give up', 'talk instead', 'leave'], 'bring it back to the last thing you heard', 'That is normal.'],
@@ -33487,6 +33606,8 @@ Object.assign(GENERATORS, {
         const [prompt, choices, answer, explain] = pick(rng, Q);
         return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
     },
+    // Speech, grades 6 to 8 (2026-09-30, pass GR): every answer is said in its lesson first.
+    // Speech, grades 3 to 5 (2026-09-30, pass GS): every answer is said in its lesson first.
     's6-listen': (rng) => {
         const Q = [['What is the first move of active listening?', ['say it back', 'nod', 'take notes', 'argue'], 'say it back', 'So you want the poster done by Friday.'],
             ['After saying it back, what do you ask?', ['one clarifying question', 'ten questions', 'nothing', 'a riddle'], 'one clarifying question', 'Does Friday mean the morning or the end of the day?'],
@@ -33528,12 +33649,64 @@ Object.assign(GENERATORS, {
         return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
     },
     // ---------------------------------------------------------------------------------------------------------------
-    // Agriculture question banks (2026-09-30, pass GU). In plain terms: each bank is a list of quick-check questions for
-    // one lesson, [what is asked, the four answers, the right one, one line said after]. `pick` chooses one, `shuffle`
-    // mixes the answers. Two banks also build arithmetic questions from numbers chosen on the spot (a soil sample that
-    // must add to 100 percent, a farm profit that is income minus expenses), so the answer is always computed, never
-    // typed by hand. Every fixed answer is a phrase the lesson said first, which the untaught-answer check proves.
+    // Elementary agriculture question banks (2026-09-30, pass HB). In plain terms: each bank is a short list of quick-check
+    // questions for one lesson, [what is asked, the four answers, the right one, one line said after]; `pick` chooses one and
+    // `shuffle` mixes the answers. The tiny-farm bank also builds a tally question from numbers chosen on the spot, so its
+    // answer is computed by adding, never typed by hand. The prefix ag3 keeps these apart from the art course's a3 banks.
     // ---------------------------------------------------------------------------------------------------------------
+    'ag3-farm': (rng) => {
+        const Q = [['Which state raises more cattle than any other?', ['Texas', 'Ohio', 'Maine', 'Alaska'], 'Texas', 'Texas grows more cotton than any other state too.'],
+            ['The shirt you are wearing may have started as what?', ['cotton', 'wheat', 'milk', 'eggs'], 'cotton', 'Cotton grows on a farm.'],
+            ['What machine harvests wheat?', ['a combine', 'a crane', 'a boat', 'a mixer'], 'a combine', 'Then a truck carries it to a mill.'],
+            ['Where does wheat go to be ground into flour?', ['a mill', 'a bank', 'a zoo', 'a pond'], 'a mill', 'The mill grinds it into flour.'],
+            ['Which is a natural resource farms use?', ['soil', 'plastic', 'glass', 'paint'], 'soil', 'Water, sunlight, air and fuel too.'],
+            ['Each step on the path from farm to table is what?', ['a job', 'a game', 'a holiday', 'a rule'], 'a job', 'Farmer, driver, miller, baker, grocer.'],
+            ['Why must farmers use resources well?', ['they have to last for next year', 'to win a prize', 'to make noise', 'no reason'], 'they have to last for next year', 'And for the next family.']];
+        const [prompt, choices, answer, explain] = pick(rng, Q);
+        return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+    },
+    'ag3-soil': (rng) => {
+        const Q = [['Breaking rock into tiny pieces is called what?', ['weathering', 'decomposition', 'harvest', 'dormancy'], 'weathering', 'Sand and clay are made this way.'],
+            ['Dead leaves and roots breaking down is called what?', ['decomposition', 'weathering', 'migration', 'shearing'], 'decomposition', 'That dark crumbly part feeds plants.'],
+            ['Most seeds need water, air and what to sprout?', ['warmth', 'light', 'sugar', 'wind'], 'warmth', 'Light can wait until the shoot is up.'],
+            ['Why does a seed not need light yet?', ['its first food is packed inside the seed', 'it is too small', 'light hurts it', 'it is asleep'], 'its first food is packed inside the seed', 'The leaves need sunlight later.'],
+            ['In a lima bean\'s life, what comes after the seed?', ['a seedling', 'the pod', 'the flower', 'the soil'], 'a seedling', 'Seed, seedling, plant, flowers, new seeds.'],
+            ['About how long until a radish root is ready to eat?', ['about a month', 'a year', 'one day', 'ten years'], 'about a month', 'Radishes grow fast.'],
+            ['A pecan tree resting in winter is called what?', ['dormancy', 'migration', 'weathering', 'harvest'], 'dormancy', 'Its buds open again in spring.']];
+        const [prompt, choices, answer, explain] = pick(rng, Q);
+        return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+    },
+    'ag3-animals': (rng) => {
+        const Q = [['What four things does every farm animal need?', ['food, water, shelter and space', 'toys, hats, music and snacks', 'only food', 'only water'], 'food, water, shelter and space', 'A farmer\'s day is built around those four.'],
+            ['What are a cow\'s wide, flat back teeth for?', ['grinding grass', 'catching fish', 'digging holes', 'cracking nuts'], 'grinding grass', 'Her stomach has four parts to digest it.'],
+            ['What does a duck have for paddling?', ['webbed feet', 'flat teeth', 'thick wool', 'a long neck'], 'webbed feet', 'Chickens have no webs.'],
+            ['What keeps a sheep warm?', ['thick wool', 'webbed feet', 'a long tail', 'flat teeth'], 'thick wool', 'Farmers shear it off in spring.'],
+            ['A kept-warm egg hatches after about how many days?', ['21', '7', '100', '2'], '21', 'Then the chick grows into a young hen.'],
+            ['At about what age does a young hen start laying?', ['five months', 'five days', 'five years', 'five weeks'], 'five months', 'Then the circle starts again.'],
+            ['Which butterflies migrate south through Texas in fall?', ['monarch butterflies', 'ladybugs', 'honeybees', 'fireflies'], 'monarch butterflies', 'Animals answer the seasons.']];
+        const [prompt, choices, answer, explain] = pick(rng, Q);
+        return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+    },
+    'ag3-tiny': (rng) => {
+        if (rng() < 0.35) { // a tally over three days: the answer is the sum of the three numbers shown
+            const a = 1 + Math.floor(rng() * 9);
+            const b = 1 + Math.floor(rng() * 9);
+            const c = 1 + Math.floor(rng() * 9);
+            const sum = a + b + c;
+            const answer = String(sum);
+            const wrong = [sum + 1, sum - 1, sum + 2].filter((v) => v > 0 && v !== sum).map(String);
+            return { type: 'choice', story: `A tally shows ${a} squash on Monday, ${b} on Tuesday and ${c} on Wednesday.`, prompt: 'How many squash were picked in all?', choices: shuffle(rng, [answer, ...wrong]), answer, explain: 'Add the three days together.', visual: null, explainVisual: null };
+        }
+        const Q = [['What do you make first for a tiny farm?', ['a plan', 'a fence', 'a sale', 'a graph'], 'a plan', 'What to grow, where the sun falls, how to water.'],
+            ['A mark for every squash you pick is called what?', ['a tally', 'a pollen', 'a trough', 'a mill'], 'a tally', 'Then turn it into a bar graph.'],
+            ['What do you turn a tally into so anyone can see it?', ['a bar graph', 'a song', 'a poem', 'a map'], 'a bar graph', 'The harvest week by week.'],
+            ['What do squash and apples need to carry pollen?', ['bees', 'cows', 'ducks', 'worms'], 'bees', 'Take the bees out and many flowers never make food.'],
+            ['In a flood, which animals thrive?', ['frogs and mosquitoes', 'cows and horses', 'hens and chicks', 'bees and ants'], 'frogs and mosquitoes', 'Some plants drown.'],
+            ['What do rows of trees on a farm do?', ['block the wind', 'make flour', 'lay eggs', 'sell bread'], 'block the wind', 'That keeps the soil in place.'],
+            ['Caring for land so it lasts is called what?', ['stewardship', 'dormancy', 'weathering', 'migration'], 'stewardship', 'It keeps the land for next year.']];
+        const [prompt, choices, answer, explain] = pick(rng, Q);
+        return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+    },
     // ---------------------------------------------------------------------------------------------------------------
     // Middle school agriculture question banks (2026-09-30, pass GX). In plain terms: each bank is a list of quick-check
     // questions for one lesson, [what is asked, the four answers, the right one, one line said after]; `pick` chooses one
@@ -33593,6 +33766,13 @@ Object.assign(GENERATORS, {
         const [prompt, choices, answer, explain] = pick(rng, Q);
         return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
     },
+    // ---------------------------------------------------------------------------------------------------------------
+    // Agriculture question banks (2026-09-30, pass GU). In plain terms: each bank is a list of quick-check questions for
+    // one lesson, [what is asked, the four answers, the right one, one line said after]. `pick` chooses one, `shuffle`
+    // mixes the answers. Two banks also build arithmetic questions from numbers chosen on the spot (a soil sample that
+    // must add to 100 percent, a farm profit that is income minus expenses), so the answer is always computed, never
+    // typed by hand. Every fixed answer is a phrase the lesson said first, which the untaught-answer check proves.
+    // ---------------------------------------------------------------------------------------------------------------
     'ag-scope': (rng) => {
         const Q = [['About how long ago did agriculture begin?', ['ten thousand years', 'a hundred years', 'a million years', 'five hundred years'], 'ten thousand years', 'People began planting and keeping what they had only gathered.'],
             ['Who patented the mechanical reaper in 1834?', ['Cyrus McCormick', 'Norman Borlaug', 'Louis Pasteur', 'Fritz Haber'], 'Cyrus McCormick', 'One person could harvest what had taken many.'],
@@ -33655,6 +33835,7 @@ Object.assign(GENERATORS, {
         const [prompt, choices, answer, explain] = pick(rng, Q);
         return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
     },
+    // Speech, grades 9 to 12 (2026-09-30, pass GQ): every answer is said in its lesson first.
     'sp-process': (rng) => {
         const Q = [['A voice, a phone call, a screen: which part of the process?', ['the channel', 'the message', 'the feedback', 'the noise'], 'the channel', 'The message travels by a channel.'],
             ['A nod, a question, a frown from the receiver is called what?', ['feedback', 'noise', 'the channel', 'the register'], 'feedback', 'The receiver sends feedback.'],
@@ -33699,6 +33880,7 @@ Object.assign(GENERATORS, {
         const [prompt, choices, answer, explain] = pick(rng, Q);
         return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
     },
+    // Psychology, grades 9 to 12 (2026-09-29, pass GM): every recall answer is said in its lesson first; the statistics are computed fresh.
     'ps-know': (rng) => {
         const Q = [['Who opened the first psychology laboratory, in Leipzig in 1879?', ['Wilhelm Wundt', 'Sigmund Freud', 'Jean Piaget', 'B. F. Skinner'], 'Wilhelm Wundt', 'The field has a birthday: 1879.'],
             ['Which perspective explains behavior by learned responses?', ['behavioral', 'biological', 'humanistic', 'psychodynamic'], 'behavioral', 'Behavioral by learned responses; cognitive by thinking; sociocultural by culture and group.'],
@@ -33765,6 +33947,7 @@ Object.assign(GENERATORS, {
         const [prompt, choices, answer, explain] = pick(rng, Q);
         return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
     },
+    // Philosophy, grades 9 to 12 (2026-09-29, pass GI): every answer is said in its lesson first.
     'ph-argument': (rng) => {
         const Q = [['In philosophy, an argument is what?', ['premises offered for a conclusion', 'a quarrel', 'a single opinion', 'a question with no answer'], 'premises offered for a conclusion', 'A set of statements, the premises, offered as reasons for another statement, the conclusion.'],
             ['An argument whose form guarantees the conclusion when the premises hold is called what?', ['valid', 'sound', 'inductive', 'popular'], 'valid', 'Validity is about form, not about whether the premises are true.'],
@@ -33809,6 +33992,7 @@ Object.assign(GENERATORS, {
         const [prompt, choices, answer, explain] = pick(rng, Q);
         return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
     },
+    // Personal finance, grades 9 to 12 (2026-09-29, pass FY): dollars computed each time; concepts said in the lesson first.
     'e9-pay': (rng) => {
         const r = rng();
         if (r < 0.4) {
@@ -42721,6 +42905,38 @@ const WONDER = [
         ],
         closing: 'What could you start this month that would still be growing at forty?',
     },
+    // Two growing-stage Wonder questions for the elementary agriculture course (pass HB): one about bees leaving a farm,
+    // and one a failure question about seeds that never came up.
+    {
+        id: 'w-growing-if-the-bees-left',
+        theme: 'world',
+        stage: 'growing',
+        courseIds: ['agriculture-3'],
+        answerMode: 'typed',
+        prompt: 'If every bee left a farm for a whole summer, what would happen to the squash and the apples?',
+        perspectives: [
+            { voice: 'A scientist', says: 'Most of those flowers would never become food, because bees carry the pollen that turns a flower into a squash or an apple. Some farmers even rent beehives in spring to be sure the job gets done.' },
+            { voice: 'An artist', says: 'Picture an orchard in full bloom and not one apple in the fall. The flowers would be just as pretty, and the baskets would be empty.' },
+            { voice: 'A grandparent of faith', says: 'My garden taught me that small things carry big loads. A bee weighs almost nothing, and a lot of my supper depends on her, so I say thank you when I see one.' },
+            { voice: 'A skeptic', says: 'Some crops would be fine, because corn is pollinated by the wind and wheat mostly pollinates itself. The answer depends on the crop, and a good farmer knows which of hers need bees.' },
+        ],
+        closing: 'Which of your favorite foods do you think need bees?',
+    },
+    {
+        id: 'w-growing-seeds-never-came-up',
+        theme: 'failure',
+        stage: 'growing',
+        courseIds: ['agriculture-3'],
+        answerMode: 'typed',
+        prompt: 'You planted seeds and watered them every day, and after two weeks nothing came up. What might have gone wrong?',
+        perspectives: [
+            { voice: 'A scientist', says: 'Check the three needs one at a time. Too much water can drown a seed because it needs air too, and a cold windowsill can keep it from starting. Change one thing and try again.' },
+            { voice: 'An artist', says: 'Sometimes a garden is a rough draft. The second planting always goes better, because now you know where the cold draft comes from.' },
+            { voice: 'A grandparent of faith', says: 'Every gardener I know has a pot where nothing grew. Nobody in my garden club is keeping score. Plant again, and tell me which seed came up first.' },
+            { voice: 'A skeptic', says: 'Before blaming yourself, dig one seed up and look at it. If it is soft and brown, it rotted from too much water; if it is hard and whole, it was too cold or too dry. The seed will tell you.' },
+        ],
+        closing: 'What would you change the next time you plant?',
+    },
     {
         id: 'w-growing-everyone-talked-at-once',
         theme: 'world',
@@ -46055,6 +46271,7 @@ const COURSE_GAMES = {
     'speech-9': ['filler-speech-9'],
     'agriculture-9': ['jar-agriculture-9'],
     'agriculture-6': ['relation-agriculture-6'],
+    'agriculture-3': ['sprout-agriculture-3'],
     'speech-6': ['room-speech-6'],
     'speech-3': ['ask-speech-3'],
     'arts-9': ['chord-arts-9'],
@@ -47566,12 +47783,40 @@ const CURRICULUM = [
         ],
     },
     {
+        grade: '3', subject: 'Agriculture', status: 'ready',
+        source: 'Texas has no elementary agriculture course, so the Texas column carries the grade 3 science standards the course rests on, natural resources, soil, organisms and environments, and scientific practices (Science, Grade 3, §112.5, Adopted 2021), for the agriculture course of the 3 to 5 band, built above that minimum; the national column carries the National Agricultural Literacy Outcomes for grades 3 to 5 (Spielmaker and Leising, 2013), shown in the Common Core column.',
+        standards: [
+            { framework: 'TEKS', code: '112.5(b)(1)(D)', text: 'Use tools, including hand lenses; metric rulers; Celsius thermometers; wind vanes; rain gauges; graduated cylinders; beakers; digital scales; hot plates; meter sticks; magnets; notebooks; Sun, Earth, Moon system models; timing devices; materials to support observation of habitats of organisms such as terrariums, aquariums, and collecting nets; and materials to support digital data collection such as computers, tablets, and cameras, to observe, measure, test, and analyze information.', moduleIds: ['a-tiny-farm'] },
+            { framework: 'TEKS', code: '112.5(b)(1)(E)', text: 'Collect observations and measurements as evidence.', moduleIds: ['a-tiny-farm'] },
+            { framework: 'TEKS', code: '112.5(b)(1)(F)', text: 'Construct appropriate graphic organizers to collect data, including tables, bar graphs, line graphs, tree maps, concept maps, Venn diagrams, flow charts or sequence maps, and input-output tables that show cause and effect.', moduleIds: ['farms-and-food', 'a-tiny-farm'] },
+            { framework: 'TEKS', code: '112.5(b)(4)(B)', text: 'Research and explore resources such as museums, libraries, professional organizations, private companies, online platforms, and mentors employed in a science, technology, engineering, and mathematics (STEM) field to investigate STEM careers.', moduleIds: ['farms-and-food'] },
+            { framework: 'TEKS', code: '112.5(b)(10)(B)', text: 'Investigate and explain how soils such as sand and clay are formed by weathering of rock and by decomposition of plant and animal remains.', moduleIds: ['seeds-and-soil-3'] },
+            { framework: 'TEKS', code: '112.5(b)(11)(A)', text: 'Explore and explain how humans use natural resources such as in construction, in agriculture, in transportation, and to make products.', moduleIds: ['farms-and-food'] },
+            { framework: 'TEKS', code: '112.5(b)(11)(B)', text: 'Explain why the conservation of natural resources is important.', moduleIds: ['a-tiny-farm'] },
+            { framework: 'TEKS', code: '112.5(b)(11)(C)', text: 'Identify ways to conserve natural resources through reducing, reusing, or recycling.', moduleIds: ['a-tiny-farm'] },
+            { framework: 'TEKS', code: '112.5(b)(12)(A)', text: 'Explain how temperature and precipitation affect animal growth and behavior through migration and hibernation and plant responses through dormancy.', moduleIds: ['seeds-and-soil-3', 'farm-animals-3'] },
+            { framework: 'TEKS', code: '112.5(b)(12)(B)', text: 'Identify and describe the flow of energy in a food chain and predict how changes in a food chain such as removal of frogs from a pond or bees from a field affect the ecosystem.', moduleIds: ['a-tiny-farm'] },
+            { framework: 'TEKS', code: '112.5(b)(12)(C)', text: 'Describe how natural changes to the environment such as floods and droughts cause some organisms to thrive and others to perish or move to new locations.', moduleIds: ['a-tiny-farm'] },
+            { framework: 'TEKS', code: '112.5(b)(13)(A)', text: 'Explore and explain how external structures and functions of animals such as the neck of a giraffe or webbed feet on a duck enable them to survive in their environment.', moduleIds: ['farm-animals-3'] },
+            { framework: 'TEKS', code: '112.5(b)(13)(B)', text: 'Explore, illustrate, and compare life cycles in organisms such as beetles, crickets, radishes, or lima beans.', moduleIds: ['seeds-and-soil-3', 'farm-animals-3'] },
+            { framework: 'CCSS', code: 'NALO T1.3-5.b', text: 'Explain how the interaction of the sun, soil, water, and weather in plant and animal growth impacts agricultural production.', moduleIds: ['seeds-and-soil-3'] },
+            { framework: 'CCSS', code: 'NALO T1.3-5.c', text: 'Identify land and water conservation methods used in farming systems (wind barriers, conservation tillage, laser leveling, GPS planting, etc.).', moduleIds: ['a-tiny-farm'] },
+            { framework: 'CCSS', code: 'NALO T1.3-5.e', text: 'Recognize the natural resources used in agricultural practices to produce food, feed, clothing, landscaping plants, and fuel (e.g., soil, water, air, plants, animals, and minerals).', moduleIds: ['farms-and-food'] },
+            { framework: 'CCSS', code: 'NALO T2.3-5.c', text: 'Explain how the availability of soil nutrients affects plant growth and development.', moduleIds: ['seeds-and-soil-3'] },
+            { framework: 'CCSS', code: 'NALO T2.3-5.d', text: 'Provide examples of specific ways farmers/ranchers meet the needs of animals.', moduleIds: ['farm-animals-3'] },
+            { framework: 'CCSS', code: 'NALO T2.3-5.e', text: 'Understand the concept of stewardship and identify ways farmers/ranchers care for soil, water, plants, and animals.', moduleIds: ['a-tiny-farm'] },
+            { framework: 'CCSS', code: 'NALO T3.3-5.b', text: 'Diagram the path of production for a processed product, from farm to table.', moduleIds: ['farms-and-food'] },
+            { framework: 'CCSS', code: 'NALO T5.3-5.b', text: 'Discover that there are many jobs in agriculture.', moduleIds: ['farms-and-food'] },
+            { framework: 'CCSS', code: 'NALO T5.3-5.d', text: 'Explain the value of agriculture and how it is important in daily life.', moduleIds: ['farms-and-food'] },
+        ],
+    },
+    {
         grade: '6', subject: 'Agriculture', status: 'ready',
         source: 'Texas has no middle school agriculture course, so the Texas column carries the grade 6 science standards the course rests on, resource management, organisms and environments, and scientific practices (Science, Grade 6, §112.26, Adopted 2021), for the agriculture course of the 6 to 8 band, built above that minimum; the National AFNR Content Standards are the national framework, shown in the Common Core column.',
         standards: [
             { framework: 'TEKS', code: '112.26(b)(1)(B)', text: 'Use scientific practices to plan and conduct descriptive, comparative, and experimental investigations and use engineering practices to design solutions to problems.', moduleIds: ['soil-and-seeds'] },
             { framework: 'TEKS', code: '112.26(b)(1)(C)', text: 'Use appropriate safety equipment and practices during laboratory, classroom, and field investigations as outlined in Texas Education Agency-approved safety standards.', moduleIds: ['a-small-project'] },
-            { framework: 'TEKS', code: '112.26(b)(1)(D)', text: 'Use appropriate tools such as graduated cylinders, metric rulers, balances, scales, thermometers, pH indicators, hand lenses, and lab notebooks or journals.', moduleIds: ['soil-and-seeds'] },
+            { framework: 'TEKS', code: '112.26(b)(1)(D)', text: 'Use appropriate tools such as graduated cylinders, metric rulers, periodic tables, balances, scales, thermometers, temperature probes, laboratory ware, timing devices, pH indicators, hot plates, models, microscopes, slides, life science models, petri dishes, dissecting kits, magnets, spring scales or force sensors, tools that model wave behavior, satellite images, hand lenses, and lab notebooks or journals.', moduleIds: ['soil-and-seeds'] },
             { framework: 'TEKS', code: '112.26(b)(1)(F)', text: 'Construct appropriate tables, graphs, maps, and charts using repeated trials and means to organize data.', moduleIds: ['soil-and-seeds', 'a-small-project'] },
             { framework: 'TEKS', code: '112.26(b)(2)(C)', text: 'Use mathematical calculations to assess quantitative relationships in data.', moduleIds: ['a-small-project'] },
             { framework: 'TEKS', code: '112.26(b)(4)(A)', text: 'Relate the impact of past and current research on scientific thought and society, including the process of science, cost-benefit analysis, and contributions of diverse scientists as related to the content.', moduleIds: ['a-small-project'] },
@@ -53919,6 +54164,7 @@ const COURSE_STORIES = {
     'speech-9': { title: 'Mike at the council', about: 'three minutes at a microphone, three questions before a word, one sentence for a doorway, a map, nineteen fillers cut to four, and an honest answer', art: 'CS493', alt: 'A man in his thirties at a public comment lectern facing seven council members and a timer', cast: ['Mike'], words: ['The city council gave Mike three minutes, which is what it gave everyone, and he had never spoken into a microphone. He wanted a crosswalk with a signal at Elm Street, where two hundred children crossed to the elementary school every morning without one.', 'He started the way the night class had taught him, with three questions before a word. The audience was seven council members who had heard forty requests that year. The occasion was public comment, three minutes and a timer. The purpose was to persuade, not to inform, and not to complain, as the last three speakers had.', 'The sentence he could say in a doorway took him a week: a signal at Elm costs less than one ambulance ride and prevents the ride. For sources he went primary, the city\'s own crossing count and its crash log, and secondary, the newspaper story about the near miss in April. The log and the story agreed, and the count, two hundred and twelve, became his first number.', 'The talk had a shape. A hook: at 7:45 tomorrow, two hundred and twelve children will step off the curb at Elm and guess. The sentence. A preview: the count, the cost, the near miss. Three points, one number each. A conclusion that repeated the sentence and ended on the line he had written first: they are guessing, and you can make them stop.', 'He made one visual, a map with the crossing marked in red, and threw away the page of bullet points when he saw it said everything he planned to say. His notes fit on a card. Then he practiced aloud, standing in the kitchen, seven times, recorded the seventh, counted nineteen fillers, and cut them to four by the ninth.', 'On the night his hands shook while he waited, and he let them, because the class had told him what the shaking meant. One slow breath. A pause before the last line. He finished at two minutes and fifty seconds, and nobody in the room was reading anything but his face.', 'A council member asked what a signal would cost the city in maintenance, and Mike repeated the question for the room, said he did not know, and offered to find out by Friday. She said that was the first honest answer she had heard all night. He found out by Thursday.', 'The council approved the signal in the spring, and Mike went back to the night class to say so. He told them the talk had not been the hard part. The hard part had been the three questions and the one sentence, and the listening afterward, and he had learned all of that in a room that was not afraid of him.'], more: [{ serial: 'CS494', after: 1, alt: 'Three questions on a note card, audience, occasion, purpose, beside a three-minute timer' }, { serial: 'CS495', after: 2, alt: 'A crossing count and a crash log beside a newspaper story about a near miss, all agreeing' }, { serial: 'CS496', after: 3, alt: 'A talk drawn as a road from a hook at 7:45 to a last line about guessing' }, { serial: 'CS497', after: 5, alt: 'A man taking one slow breath at a lectern with shaking hands before his last line' }, { serial: 'CS498', after: 7, alt: 'A man telling a night class that the hard part was the questions and the listening' }] },
     'agriculture-9': { title: 'Chloe and the forty acres', about: 'a year on a grandmother\'s forty acres: a jar that settled to clay, a pH of 7.8, sorghum instead of cotton, a drone, a ledger, a co-op vote, and a first harvest', art: 'CS517', alt: 'A young woman in her late twenties standing at a fence line looking over forty acres of rough pasture', cast: ['Chloe'], words: ['Chloe\'s grandmother had leased the forty acres to a neighbor for twenty years, and when the lease ended she offered them to Chloe for one year, rent free, to see what a granddaughter with a degree in soil science would do with them.', 'Chloe started with a jar. Soil from six spots, shaken in water and left to settle on the kitchen counter, sand first, silt next, clay last. Every jar settled to a thick clay layer, which meant the land held water and nutrients and drained slowly. The pH meter read 7.8, on the alkaline side, and sulfur, not lime, was the fix.', 'Cotton was what the neighbor had grown and what the neighbor had lost money on twice. Chloe chose grain sorghum instead, a crop that stood up to a dry summer and sold into a market that reached across the Gulf, and she planted it in April with a borrowed drill. Between the rows of her plan she wrote a cover crop for the winter, to hold the soil the bare years had let blow.', 'In June she paid a drone pilot forty dollars to fly the field, and the image showed one dry corner in red before her boots would have found it. She fixed a broken line the same afternoon. Under the whole plan sat a business plan she had written in February: what she would grow, what it would cost, what it should sell for, and what could go wrong.', 'Records ran every day in a green ledger, seed, diesel, the drone, the sulfur, the drill\'s hire, because profit is income minus expenses and nobody remembers either one in December. By August the expense line said more than the plan had guessed, mostly diesel, and Chloe knew it in August.', 'The co-op meeting in September was her first. A member moved that the co-op buy a second grain trailer, another seconded, the discussion ran twenty minutes, and the vote carried by a show of hands. Chloe voted yes and understood, watching, that the loudest man in the room had not decided anything.', 'Harvest came in October, into the trailer the co-op had just voted for. The yield was fair, not fine, on clay that had been pasture for twenty years, and the price was better than cotton had been. Income minus expenses left a profit of a few hundred dollars, small and real, and the ledger showed exactly where the rest had gone.', 'Her grandmother read the ledger at the kitchen table, beside the jar that had started everything. She said the neighbor had never once shown her a number. Then she offered the forty acres for a second year, this time with rent, which Chloe understood was the higher compliment.'], more: [{ serial: 'CS518', after: 1, alt: 'A jar of soil settled into a thick clay layer on a kitchen counter, a pH meter reading 7.8' }, { serial: 'CS519', after: 2, alt: 'A young woman planting grain sorghum with a borrowed drill, a cover crop plan pinned to the barn wall' }, { serial: 'CS520', after: 3, alt: 'A drone image of a field with one dry corner marked in red' }, { serial: 'CS521', after: 5, alt: 'A co-op meeting with a motion, a second and a show of hands, a young woman voting' }, { serial: 'CS522', after: 7, alt: 'A first harvest of sorghum in a trailer, a ledger open to a small profit' }] },
     'agriculture-6': { title: 'Frederick and the farm week', about: 'five days at a middle school: a taco traced to four farms, jars on a windowsill, an ecosystem inside the school fence, and a lettuce bed with a ledger', art: 'CS523', alt: 'A young man in his early twenties at a middle school garden bed with a class around him', cast: ['Frederick'], words: ['Frederick was twenty-three and a graduate student in soil science when the middle school asked him to run a farm week: five days in the courtyard garden for sixty sixth graders.', 'Monday he started with lunch. He wrote the day\'s menu on the whiteboard and traced it backward: the beef to a ranch, the bun to a wheat field, the milk to a dairy, and every one of them along the same chain, grown, harvested, packed, moved, sold, cooked. Then the three things every link needed, soil, water and energy.', 'Tuesday was jars. Each student brought a handful of soil from home and shook it in a jar of water, and by Wednesday morning the windowsill was a row of settled layers, sand at the bottom, silt, and clay last and thinnest. A boy named Marcus had brought soil from the creek bank, nearly all sand, and Frederick showed him why nothing grew there.', 'Wednesday he took them to the school fence and asked what lived inside it. An egret on the far field. A hawk on the light pole. Ants farming aphids on the peach tree, which was mutualism, both gaining. A farm, he said, is an ecosystem with a fence around it, and so is a school.', 'Thursday was the project. The class already had a raised bed of lettuce, planted in September by the science teacher, and Frederick handed them a ledger. Seed, four dollars. Compost, twelve. Water from the rain barrel, free, measured with a gauge. Every harvest weighed and written down the same day, because profit is income minus expenses.', 'He made them run one fair test on the bed: half watered every day, half every other day, everything else the same, heights measured with a metric ruler each morning and put in a table. By the second week the graph showed the every-other-day half growing just as well, which meant half the water for the same lettuce. Efficiency, a girl named Priya wrote at the top of the graph, and underlined it.', 'Friday the cafeteria manager came out to the bed with a scale and bought eleven pounds of lettuce at two dollars a pound. Twenty-two dollars of income, sixteen in expenses, a profit of six dollars, written in the ledger in Marcus\'s handwriting and checked by Priya.', 'Six dollars was not much, Frederick told them, and it was more than most first farms make. The bed was covered with straw before he left, so the soil would still be there in the spring, and the class voted to plant it again in March.'], more: [{ serial: 'CS524', after: 1, alt: 'A lunch traced on a whiteboard to four farms and one chain: grown, harvested, packed, moved, sold, cooked' }, { serial: 'CS525', after: 2, alt: 'A row of jars on a classroom windowsill settled into sand, silt and clay layers' }, { serial: 'CS526', after: 3, alt: 'A school fence with an egret, a hawk, ants on a peach tree and two students finding relationships' }, { serial: 'CS527', after: 5, alt: 'A raised bed of lettuce with a ledger and a rain gauge beside it' }, { serial: 'CS528', after: 6, alt: 'A cafeteria manager buying lettuce from students, a ledger showing a small profit' }] },
+    'agriculture-3': { title: 'Mike and the twenty-one days', about: 'three weeks with an incubator in a third-grade class: twelve eggs turned by hand, a flashlight that showed nine, cups of radishes, the path of store eggs, and seven chicks', art: 'CS529', alt: 'A man carrying an incubator and a carton of eggs into a third-grade classroom', cast: ['Mike'], words: ['Mike kept a dozen laying hens and a rooster behind his house. In March the third-grade teacher down the street asked if he could bring the class some eggs that would hatch. He arrived with an incubator the size of a picnic cooler and twelve eggs.', 'The incubator kept the eggs at about 99.5 degrees, the warmth of a sitting hen, and the class took over the hen\'s other job. A hen turns her eggs many times a day, so the students marked each shell with an X on one side and an O on the other. They turned the eggs three times a day, and Mike came by on weekends to do it himself.', 'On day seven Mike brought a bright flashlight and darkened the room. Held against the light, nine eggs showed a web of thin red veins and a dark spot. Three were clear inside; they had never started, which happens even under a hen, and nobody had done anything wrong.', 'While they waited, the class planted radish seeds in paper cups so there would be something to watch. The seeds sprouted in four days with water, air and warmth. The students kept a tally of sprouts on the board and measured the tallest one each morning with a metric ruler.', 'A boy asked where the eggs at the store came from, if not from a class like this one. Mike walked them through it: big farms keep thousands of hens, and the eggs are collected, washed, checked under a light like theirs, packed in cartons and trucked to stores. The hens eat corn and soybeans grown on other farms.', 'On day eighteen they stopped turning the eggs, so the chicks could settle into place to hatch. On day twenty the first tiny crack appeared, and on day twenty-one the room went silent as a wet chick pushed its way out. By Friday seven of the nine had hatched.', 'The chicks moved to a box with a heat lamp, water and chick feed, kept at about 95 degrees the first week and a little cooler each week after. The students noticed beaks made for pecking seeds, and fluffy down starting to give way to real feathers on the wings.', 'After two weeks the chicks went home to Mike\'s yard, and the class came to visit in May. Mike promised the teacher a carton of eggs from the new hens in the fall, since a young hen starts laying at about five months old. The circle, he said, would close by Halloween.'], more: [{ serial: 'CS530', after: 1, alt: 'Children turning eggs marked with X and O inside an incubator' }, { serial: 'CS531', after: 2, alt: 'An egg held against a flashlight in a dark room, showing thin red veins' }, { serial: 'CS532', after: 3, alt: 'Radish sprouts in paper cups beside a tally on a whiteboard' }, { serial: 'CS533', after: 5, alt: 'A wet chick pushing out of a cracked egg while children watch' }, { serial: 'CS534', after: 7, alt: 'Children visiting young hens in a backyard coop in spring' }] },
     'speech-6': { title: 'Georgette and the quiet twenty minutes', about: 'a Saturday club for six sixth-graders, a sentence said back, a terrible pitcher of lemonade, two-minute talks, and twenty minutes without a teacher', art: 'CS499', alt: 'An older woman at a library table with six sixth-graders on a Saturday morning', cast: ['Georgette'], words: ['Georgette had taught sixth grade for thirty-one years, and in her retirement she ran a Saturday club at the library for six of them, on one subject: how to say what you mean and hear what was said.', 'The first Saturday was one drill, say it back. She gave each child a sentence and had the next child say it back before answering. Four of the six got it wrong on the first try, and the wrongness was the lesson. You did not hear the sentence, she said. You heard the word you were waiting for.', 'The second Saturday was instructions. She read seven steps for lemonade, once, fast, without counting them, and let them try. The lemonade was terrible. Then she read them again the way she taught it: seven steps, she said first, and used first, then and last, and had a child say them back. That pitcher they drank.', 'The third Saturday was the one sentence. Each child had to explain something from the week to a partner who had not been there, in one sentence, one reason, one example, and then stop. Stopping was the hard part. A boy named Teo got to the sentence in his fourth try and looked surprised at how good it sounded alone.', 'They said the same news three ways after that, to a friend, in class, and to a stranger who was an adult, and she made them notice that none of the three was fake. Then came the two-minute talks, one each, with a stance and two reasons, practiced aloud three times at home, which she could hear in the ones who had.', 'The fifth Saturday was the hardest, disagreeing. She gave them a question with no right answer, the library\'s empty room. Then four habits: ask the quiet one, hold the idea before answering, take notes, and say out loud what they agreed on and what they did not. The talk was clumsy and honest, as she wanted.', 'On the last Saturday she told them she would not speak for twenty minutes, and she did not. They asked the quiet one. They wrote things down. Somebody said I see it differently, because, and somebody else built on the idea instead of defending her own. The empty room, they decided, should be a place to practice talks.', 'Twenty minutes is a long time to be quiet when you have been a teacher for thirty-one years, and Georgette found it the best twenty minutes of the club. They had not needed her. That had been the sentence all along.'], more: [{ serial: 'CS500', after: 1, alt: 'A child saying a sentence back to the next child around a table, four of them getting it wrong' }, { serial: 'CS501', after: 2, alt: 'Seven lemonade steps read too fast, a terrible pitcher, and a second pitcher made from steps said back' }, { serial: 'CS502', after: 3, alt: 'A boy explaining his week to a partner in one sentence and stopping' }, { serial: 'CS503', after: 5, alt: 'Six children disagreeing about an empty room with notes, one asking the quiet one' }, { serial: 'CS504', after: 7, alt: 'An older woman quiet for twenty minutes while six children run the meeting themselves' }] },
     'speech-3': { title: 'Savanah and the fire chief', about: 'five Fridays getting a third-grade class ready for a visitor: on-topic questions, listening you can see, five steps to the fire station, one-minute talks, and turns', art: 'CS505', alt: 'A woman in her thirties at the front of a third-grade classroom with a fire truck drawn on the board', cast: ['Savanah'], words: ['Savanah volunteered on Friday mornings in a third-grade class near the hospital where she worked, and in March the teacher asked her to get the class ready for a visitor: the fire chief.', 'The first Friday she found out what the questions would be. A boy asked whether the chief liked pizza. Savanah did not say it was a bad question. She drew a fire truck on the board and asked which questions were about the truck and which were about the person asking. The pizza question, the class decided, was about the boy.', 'So they made a rule, on topic, and practiced it. She told them about a patient whose heart she had scanned at work, and they asked questions. Was the patient scared? What did the picture look like? Every question was about the story, and she answered every one, and the class found out that on-topic questions get longer answers.', 'The second Friday was listening you could see: eyes on the speaker, hands still, body turned. And the part you could not see, your mind on the words. She read a short report about how a fire truck pumps water and asked for the main idea back in their own words. The truck pushes water through the hose, a girl said. Yes, said Savanah. The rest was details.', 'The third Friday was instructions, because the class would walk to the fire station. She gave the route in one breath first, badly, and half of them pointed the wrong way. Then she gave it properly: five steps, she said first, with first, next, then and last, and had a boy say them back. He had step three wrong, and they fixed it in the classroom instead of on the sidewalk.', 'The fourth Friday was one-minute talks about helpers. One topic, three facts, why. A girl talked about her aunt the nurse in complete sentences, looking at one face at a time, with the ends of her words on, and Savanah understood the aunt better in one minute than she had from a year of hearing about her.', 'The last Friday before the visit was turns. Twenty-two children and one fire chief meant a talking stick, hands up, one voice at a time, and everyone gets a turn before anyone gets two. They practiced good morning, Chief, with the name, and a full sentence for every answer.', 'The chief came on a Tuesday and stayed forty minutes, because every question was about the truck or the job and every child said thank you. On the way out she asked the teacher who had prepared them. The teacher pointed at Savanah, who was, at that moment, listening.'], more: [{ serial: 'CS506', after: 1, alt: 'A fire truck on a board with questions sorted into about the truck and about the asker' }, { serial: 'CS507', after: 2, alt: 'A woman describing a patient\'s heart scan to a class with every hand up' }, { serial: 'CS508', after: 3, alt: 'A class listening with eyes on the speaker while a report about a fire truck pumping water is read' }, { serial: 'CS509', after: 5, alt: 'A girl giving a one-minute talk about her aunt the nurse, looking at one face at a time' }, { serial: 'CS510', after: 7, alt: 'A fire chief at a classroom door asking who prepared the class, a teacher pointing at a listening woman' }] },
     'speech-k': { title: 'The circle that learned to listen', about: 'a circle rug with twenty spots, a listening game, three steps for a seed, a voice for the back of the room, a stick that goes around, and twenty sprouts', art: 'CS511', alt: 'A kindergarten class on a round rug with twenty spots and a teacher in a chair', cast: [], words: ['Miss Park\'s kindergarten class had a circle rug with twenty spots. One week in October, the circle learned five things, one each day. Miss Park said the rug was a good place to learn how to talk and how to listen.', 'Monday was the listening body. Miss Park said, show me listening. Eyes on me, hands still, feet still, and your mind on my words. Then she played a game where she said things once, softly. Jonah heard her say touch your nose, and Lily heard her say hop one time. Nobody had to ask what she said.', 'Tuesday was steps. Miss Park gave three of them: first, get a cup, and then put in the soil, and last, push in a seed with one finger. The class said them back together. Cup, soil, seed. Eli said soil first, and Miss Park fixed it before any soil was out. That is why you say the steps back, she said. Then everyone did it in order, and twenty cups had seeds in them.', 'Wednesday was the clear voice. Each child told about one thing from home. Miss Park sat in the back, on purpose. Talk to me, she said, and if I can hear you, everyone can. Jonah said, this is my truck, it is red, and I like it because it is fast. He said whole words, slow, with the ends on. Miss Park heard every word.', 'Thursday was turns. Twenty children had twenty ideas, all at once, and nobody could hear any of them. So Miss Park brought out a stick. Whoever holds it talks, and everyone else listens. It went around the circle, and every idea got heard. Lily had the last turn, and she had been quiet all year. She said the class should plant flowers by the door, and everyone agreed.', 'Friday another class came to visit, and Miss Park\'s children knew just what to do. Hello, my name is Lily, said Lily. Hello, my name is Omar, said Omar. Please and thank you went around the rug the way the stick had, and the visitors learned the stick rule in one try.', 'One visitor did not understand the game. A boy named Eli did not grab or shout. He asked instead. Can you say it again? The visitor said it again, and then they both played. Miss Park watched from the back and did not need to say a word.', 'On Monday the seeds came up. Twenty little green sprouts, one in each cup, in the order they were planted. Miss Park said the circle had learned to listen, and the seeds had heard it too.'], more: [{ serial: 'CS512', after: 1, alt: 'A teacher saying things softly while children listen with eyes, hands and feet still' }, { serial: 'CS513', after: 2, alt: 'Twenty cups with soil and a seed in each, made in three steps' }, { serial: 'CS514', after: 3, alt: 'A boy holding up a red truck and talking to his teacher at the back of the room' }, { serial: 'CS515', after: 5, alt: 'Two classes on a rug saying hello and their names, a stick going around' }, { serial: 'CS516', after: 7, alt: 'Twenty green sprouts in twenty cups by a window' }] },
@@ -56258,6 +56504,63 @@ STORIES['a-small-project'] = {
         'The last line of her plan was next year, and it was already written. Shade cloth over the run before August, and the run itself moved to fresh ground so the old patch could grow back. Take the eggs, Miss Navarro had said, and leave the ground better than you found it.',
     ],
 };
+// Agriculture, grades 3 to 5 (2026-09-30, pass HB): four stories at the older length with six pictures each.
+STORIES['farms-and-food'] = {
+    about: 'a sandwich traced back to a wheat field and a peanut patch, six jobs between the farm and the plate, and a flow chart on a refrigerator',
+    more: [{ serial: 'S3311', after: 1, alt: 'A path drawn backward from a store shelf to a bakery, a mill and a wheat field' }, { serial: 'S3312', after: 2, alt: 'A farmer, a truck driver, a miller, a baker and a grocer standing in a row' }, { serial: 'S3313', after: 3, alt: 'A board with soil, rain, sunlight and diesel written under natural resources' }, { serial: 'S3314', after: 4, alt: 'Peanut plants with peanuts growing under the soil, dug up and drying' }, { serial: 'S3315', after: 5, alt: 'A flow chart of a sandwich taped to a refrigerator door' }],
+    title: 'The path of a loaf of bread', art: 'S3310', cast: [],
+    alt: 'A girl holding a sandwich in a classroom while her teacher asks where lunch came from',
+    words: [
+        'Lucia was halfway through a peanut butter sandwich when her teacher asked the class where their lunch had come from. The store, Lucia said, and Miss Ortega smiled and asked where the store had gotten it.',
+        'So Lucia traced the bread backward, one step at a time. The store had bought it from a bakery, and the bakery had baked it from flour. The flour had come from a mill, where wheat is ground into powder, and the wheat had grown in a field in the Texas Panhandle.',
+        'Miss Ortega asked who had done each step, and the list surprised the class. A farmer had planted the wheat in the fall and harvested it in early summer with a combine. A truck driver had hauled it to the mill. A miller had ground it, a baker had baked it, and a grocer had set the loaf on the shelf.',
+        'Then she asked what the farm itself had used. Soil to grow in, Lucia said, and rain, and sunlight, and someone added diesel for the tractor. Miss Ortega wrote every answer on the board under the words natural resources and said a good farmer spends them carefully, because they have to last.',
+        'The peanut butter had its own path, which a boy named Omar traced. Peanuts grow underground on low green plants, and Texas grows a great many of them. They are dug, dried, roasted and ground, and the paste goes into a jar.',
+        'That night Lucia drew her sandwich as a flow chart, boxes and arrows from two fields to one plate, with a stick figure at every step for each worker. Her mother taped it to the refrigerator, where it stayed until the paper curled.',
+    ],
+};
+STORIES['seeds-and-soil-3'] = {
+    about: 'two cups of lima beans, one in a dark closet, pale shoots that turned green, a compost pile that became soil, and a pecan tree resting in January',
+    more: [{ serial: 'S3317', after: 1, alt: 'Pale bean shoots pushing up out of a cup inside a dark closet' }, { serial: 'S3318', after: 2, alt: 'A grandmother at a dinner table drawing a seed with food packed inside it' }, { serial: 'S3319', after: 3, alt: 'Tall pale yellow bean stems beside short green ones on a windowsill' }, { serial: 'S3320', after: 4, alt: 'A compost pile of leaves and peels next to a bucket of dark crumbly soil' }, { serial: 'S3321', after: 5, alt: 'A bare pecan tree in winter and the same tree budding in spring' }],
+    title: 'The cup in the closet', art: 'S3316', cast: [],
+    alt: 'A boy placing one cup of beans on a sunny windowsill and another in a dark closet',
+    words: [
+        'Ethan was sure seeds needed light, so he set out to prove it with two cups of lima beans. One went on the sunny windowsill, and the other went into the dark hall closet, where nobody would bother it.',
+        'Both cups got the same soil, the same water and the same warm house. After a week Ethan opened the closet expecting nothing, and found two pale shoots pushing up through the dirt. The beans had sprouted in the dark.',
+        'His grandmother, who had gardened for fifty years, explained it at dinner. A seed carries its first food packed inside it, so it needs only water, air and warmth to start. Light matters later, once the shoot is up and the leaves have work to do.',
+        'The closet beans proved her right over the next week. Their stems grew long, thin and yellow, stretching for light that was not there, while the windowsill beans stood short, sturdy and green. Ethan moved the pale ones to the window, and in a few days they began to turn green.',
+        'The soil was the other surprise. His grandmother\'s compost pile, a heap of old leaves and vegetable peels, had turned in a year into dark crumbly earth. That is decomposition, she said, and the sand mixed into it came from rock worn down by wind and water over a very long time.',
+        'In January Ethan pointed at her pecan tree and asked if it had died. It was resting, she said, dormant until spring. In April the buds opened, and Ethan planted his beans beside it, in the dark soil the pile had made.',
+    ],
+};
+STORIES['farm-animals-3'] = {
+    about: 'four questions every morning on a farm, teeth made for grass, a duck built for the pond, a hen from egg to egg, and monarchs heading south',
+    more: [{ serial: 'S3323', after: 1, alt: 'Hay for cattle, grain for hens, and a girl checking the barn doors after a windy night' }, { serial: 'S3324', after: 2, alt: 'A cow chewing grass, with wide flat back teeth shown in a small drawing beside her' }, { serial: 'S3325', after: 3, alt: 'Ducks waddling across a farmyard and then paddling easily on a pond' }, { serial: 'S3326', after: 4, alt: 'A hen with newly hatched chicks and an egg-to-hen circle drawn beside her' }, { serial: 'S3327', after: 5, alt: 'Cattle with their backs to a cold wind while orange monarch butterflies fly south' }],
+    title: 'Four questions every morning', art: 'S3322', cast: [],
+    alt: 'A girl carrying a bucket toward a water trough at sunrise on a Texas farm',
+    words: [
+        'Ava spent a long October weekend on her aunt\'s farm outside Waco, and every morning started with the same four questions. Did everyone have food, water, shelter and enough room? Her aunt said those four were the whole job, and everything else was details.',
+        'Water came first, because a cow can drink twenty gallons or more on a hot day, and the trough had to be full before breakfast. After that came hay for the cattle, grain for the hens, and a check that the barn doors had held through the night\'s wind.',
+        'Ava watched the cows eat and noticed their teeth, wide and flat at the back, grinding grass the way a mill grinds wheat. Her aunt said a cow\'s stomach has four parts to handle all that grass. The chewing Ava saw while the cows rested was cud, food brought back up to chew again.',
+        'The ducks were built differently. They crossed the yard clumsily on webbed feet, then slid into the pond and paddled away with no effort at all, which is what the webs are for. The hens had no webs and stayed well away from the water.',
+        'On Saturday one of the hens hatched the chicks she had been sitting on for three weeks, and her aunt explained the whole circle. An egg kept warm for about 21 days hatches into a chick. The chick grows into a young hen, and at about five months old she lays eggs of her own.',
+        'On the last morning a cold front blew in, and the cattle stood with their backs to the wind. Overhead a loose line of orange butterflies was heading south. Monarchs, her aunt said, on their way to Mexico for the winter. Ava added a fifth question to the list: what is the weather doing?',
+    ],
+};
+STORIES['a-tiny-farm'] = {
+    about: 'a squash bed with flowers and no squash, a paintbrush that did the bees\' job, a tally that became a bar graph, and a milk jug in a dry July',
+    more: [{ serial: 'S3329', after: 1, alt: 'A neighbor who keeps bees pointing at a squash flower beside a boy' }, { serial: 'S3330', after: 2, alt: 'A boy dabbing pollen between squash flowers with a small paintbrush in early morning' }, { serial: 'S3331', after: 3, alt: 'A tally on a garage wall beside a bar graph that climbs like stairs' }, { serial: 'S3332', after: 4, alt: 'A boy watering squash roots from a cut milk jug beside a cactus' }, { serial: 'S3333', after: 5, alt: 'Bees on squash flowers and a compost bin full of peels and stems' }],
+    title: 'The squash that would not come', art: 'S3328', cast: [],
+    alt: 'A boy looking at squash plants full of yellow flowers and no squash',
+    words: [
+        'Noah\'s squash plants were covered in yellow flowers by June, and not one of them turned into a squash. The flowers opened in the morning, closed by afternoon, and dropped off.',
+        'His neighbor, who kept bees, walked over to look and asked how many bees Noah had seen. He had not seen any. A squash flower has to get pollen from another flower, she said, and bees are the ones who carry it.',
+        'Until her bees found his yard, she showed him how to do their job with a small paintbrush, dabbing pollen from one flower into another early in the morning. Three days later the first tiny squash began to swell behind a wilting bloom.',
+        'Noah kept a tally on the garage wall, a mark for every squash he picked: four the first week, six the second and nine the third. His teacher helped him turn the marks into a bar graph, and the bars climbed like stairs, which pleased him more than he expected.',
+        'Then July brought a dry spell, three weeks without rain. The squash wilted every afternoon while the cactus by the mailbox looked exactly the same. Noah cut the top off an old milk jug to make a watering can, filled it from the rain barrel, and watered at the roots each evening.',
+        'By August the neighbor\'s bees had found the yard, the paintbrush went back in the drawer, and the tally reached forty-one. Noah put the peels and old stems in the compost bin for next year\'s soil, which his neighbor said was the whole idea of a farm, tiny or not.',
+    ],
+};
 const STORY_WORD_LIMIT = { early: 200, older: 350 };
 function storyFor(moduleId) { return STORIES[moduleId] || null; }
 // What a whole course is reaching for, in one line (2026-09-24, Mikey): the subtitle on a printed story book's cover,
@@ -56329,6 +56632,7 @@ const COURSE_GOALS = {
     'speech-9': 'The six parts of every message, listening that works, a talk built for its audience, and delivery that turns nerves into readiness',
     'agriculture-9': 'The scope and history of agriculture and its global markets, soil and plants, animals and food processing, and running a farm with a plan, records, a fair meeting, safety and the land kept for next year',
     'agriculture-6': 'The chain from a field to a plate and the resources that run it, soil and seeds with a fair test, a farm as an ecosystem with named relationships, and a small project with a plan, records and a graph',
+    'agriculture-3': 'Where farm food and fiber come from and the resources farms use, how soil forms and seeds sprout, what farm animals need and how they grow, and a tiny farm with a plan, a tally and stewardship',
     'speech-6': 'Listening with three moves, the one sentence in the voice the room needs, a two-minute talk with a stance, and disagreeing with the idea and not the person',
     'speech-3': 'Listening with eyes, hands and mind, questions about the topic, steps said back in order, a one-minute talk in complete sentences, and turns',
     'speech-k': 'Listening with the whole body, steps said back and done in order, a clear voice with three parts, and turns with kind words',
@@ -56664,7 +56968,7 @@ function PinInput({ value, onChange, placeholder, style, onEnter = null }) {
 }
 // A stamp of when this copy of the page was built, so a stale page in a cache can be told apart
 // from a fresh one at a glance. Written by the build, never by hand.
-const BUILD_STAMP = '2026-09-30 12:01 PM CDT';
+const BUILD_STAMP = '2026-09-30 01:58 PM CDT';
 function ContactLine({ onOpen, inline = false }) {
     return (react_1.default.createElement("p", { className: "edu-no-print", style: { textAlign: 'center', marginTop: inline ? 0 : 28, fontSize: inline ? 14 : 12, color: C.muted, margin: inline ? '0' : undefined } }, onOpen
         ? react_1.default.createElement("button", { type: "button", onClick: onOpen, style: { background: 'none', border: 'none', color: C.muted, fontFamily: FONT, fontSize: 12, cursor: 'pointer', padding: 0, textDecoration: 'underline' } }, "Contact us")
@@ -62779,7 +63083,84 @@ function RelationGame({ game, round, onScore = null }) {
             react_1.default.createElement("div", { style: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 } }, q.choices.map((v) => react_1.default.createElement("button", { key: v, type: "button", className: `edu-press${nudge === v ? ' edu-wobble' : ''}`, "aria-label": `Relationship: ${v}`, onClick: () => pick(v), style: { fontFamily: FONT, fontSize: 16, fontWeight: 700, padding: '10px 8px', borderRadius: 12, border: `2px solid ${B.green}`, background: '#fff', color: B.ink, cursor: got ? 'default' : 'pointer', textTransform: 'capitalize' } }, v))))),
         react_1.default.createElement(Done, { show: done })));
 }
-const GAME_OF = { dots: DotsGame, pairs: PairsGame, sort: SortGame, maze: MazeGame, jigsaw: JigsawGame, pong: PongGame, sprint: SprintGame, order: OrderGame, build: BuildGame, fix: FixGame, mix: MixGame, debug: DebugGame, ptable: PtableGame, evidence: EvidenceGame, catch: CatchGame, path: PathGame, buckets: BucketsGame, jump: JumpGame, map: MapGame, balance: BalanceGame, walk: WalkGame, teach: TeachGame, bits: BitsGame, pay: PayGame, price: PriceGame, loan: LoanGame, fund: FundGame, search: SearchGame, spot: SpotGame, pattern: PatternGame, shape: ShapeGame, chord: ChordGame, valid: ValidGame, reason: ReasonGame, because: BecauseGame, share: ShareGame, stat: StatGame, recall: RecallGame, face: FaceGame, sense: SenseGame, filler: FillerGame, room: RoomGame, ask: AskGame, turn: TurnGame, jar: JarGame, relation: RelationGame };
+// -----------------------------------------------------------------------------------------------------------------
+// Will It Sprout? (2026-09-30, pass HB, the elementary agriculture game). In plain terms: a seed in a cup is drawn on the
+// paper board with four facts beside it, water, air, warmth and light, and two answers: it sprouts, or it will not. The
+// right answer moves on and says why (a seed in the dark still sprouts, which is the lesson's surprise), a wrong one
+// wobbles, the clock counts up over six seeds, and a seed that sprouts grows a little shoot in the drawing. This component
+// only draws and reacts: the seeds and their answers come from sproutRounds() in logic.mjs, and the board carries the
+// answer in `data-sprout-answer` so the browser test can play a round. Drawn with B (the paper palette).
+// -----------------------------------------------------------------------------------------------------------------
+function SproutGame({ game, round, onScore = null }) {
+    const rounds = (0, react_1.useMemo)(() => sproutRounds(round), [round]); // the six seeds for this round, fixed by the round number
+    const [k, setK] = (0, react_1.useState)(0); // which seed we are on
+    const [got, setGot] = (0, react_1.useState)(false); // true for a moment after a right answer
+    const [nudge, setNudge] = (0, react_1.useState)(null); // the answer of a wrong tap, so that button wobbles
+    const [ticks, setTicks] = (0, react_1.useState)(0); // seconds since the round started
+    const [done, setDone] = (0, react_1.useState)(false); // true once all six are judged
+    const q = rounds[Math.min(k, rounds.length - 1)];
+    (0, react_1.useEffect)(() => { setK(0); setGot(false); setTicks(0); setDone(false); }, [round]);
+    (0, react_1.useEffect)(() => { if (done)
+        return undefined; const t = setInterval(() => setTicks((n) => n + 1), 1000); return () => clearInterval(t); }, [done]);
+    (0, react_1.useEffect)(() => { if (done && onScore)
+        onScore(ticks, 'low'); }, [done]);
+    (0, react_1.useEffect)(() => { if (nudge === null)
+        return undefined; const t = setTimeout(() => setNudge(null), 500); return () => clearTimeout(t); }, [nudge]);
+    (0, react_1.useEffect)(() => { if (!got)
+        return undefined; const t = setTimeout(() => { setGot(false); if (k + 1 >= rounds.length)
+        setDone(true);
+    else
+        setK(k + 1); }, 1200); return () => clearTimeout(t); }, [got]);
+    const pick = (v) => { if (got || done)
+        return; if (v === q.answer)
+        setGot(true);
+    else
+        setNudge(v); };
+    // The four facts, worded so the flooded cup reads as too much water and no air, never as two separate problems.
+    const facts = [
+        ['Water', q.water ? (q.air ? 'damp soil' : 'too much, the cup is flooded') : 'dry soil, no water'],
+        ['Air', q.air ? 'loose soil with air in it' : 'none, water fills every space'],
+        ['Warmth', q.warm ? 'a warm room' : 'a cold porch in winter'],
+        ['Light', q.light ? 'a sunny window' : 'a dark closet'],
+    ];
+    const missing = !q.water ? 'water' : !q.air ? 'air' : 'warmth';
+    const why = q.answer === 'yes' ? (q.light ? 'Yes: water, air and warmth are all there.' : 'Yes: water, air and warmth are there, and light can wait until the shoot is up.') : `Yes: it is missing ${missing}.`;
+    const answers = [['yes', 'it sprouts', 'It sprouts'], ['no', 'it will not sprout', 'It will not sprout']];
+    return (react_1.default.createElement("div", { className: "edu-game-box", style: { ...GAME_BOX, aspectRatio: 'auto', padding: 14 }, "data-sprout-answer": done ? '' : q.answer },
+        react_1.default.createElement("div", { style: { display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 } },
+            react_1.default.createElement("span", null, "Will it sprout?"),
+            react_1.default.createElement("span", null,
+                ticks,
+                "s \u00B7 ",
+                Math.min(k + 1, rounds.length),
+                " of ",
+                rounds.length)),
+        done ? react_1.default.createElement("p", { style: { margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 } },
+            "Six seeds judged in ",
+            ticks,
+            " seconds. Tap the round arrow for more.") : (react_1.default.createElement("div", { style: { textAlign: 'center' } },
+            react_1.default.createElement("div", { style: { display: 'flex', gap: 12, alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap', marginBottom: 10 } },
+                react_1.default.createElement("svg", { viewBox: "0 0 100 110", width: "104", height: "114", role: "img", "aria-label": q.light ? 'A cup of soil with a bean seed, in the light' : 'A cup of soil with a bean seed, in the dark' },
+                    react_1.default.createElement("rect", { x: "0", y: "0", width: "100", height: "110", rx: "10", fill: q.light ? '#FFF4C8' : '#4A5160' }),
+                    q.light && react_1.default.createElement("circle", { cx: "82", cy: "18", r: "10", fill: "#F2C94C" }),
+                    got && q.answer === 'yes' && react_1.default.createElement("g", null,
+                        react_1.default.createElement("path", { d: "M50 62 C50 48 50 40 50 30", stroke: "#3E8E4F", strokeWidth: "3", fill: "none", strokeLinecap: "round" }),
+                        react_1.default.createElement("path", { d: "M50 40 C40 34 36 28 38 24 C44 26 48 32 50 40 Z", fill: "#5DB36D" }),
+                        react_1.default.createElement("path", { d: "M50 36 C60 30 64 24 62 20 C56 22 52 28 50 36 Z", fill: "#5DB36D" })),
+                    react_1.default.createElement("path", { d: "M22 60 L78 60 L70 104 L30 104 Z", fill: "#C8734B", stroke: B.ink, strokeWidth: "1.5" }),
+                    react_1.default.createElement("rect", { x: "24", y: "60", width: "52", height: "10", fill: q.air ? '#6B4A2F' : '#4F6F8F' }),
+                    react_1.default.createElement("ellipse", { cx: "50", cy: "66", rx: "6", ry: "4", fill: "#E8D8A8", stroke: B.ink, strokeWidth: "1" })),
+                react_1.default.createElement("div", { style: { textAlign: 'left', background: '#fff', border: `1.5px solid ${B.line}`, borderRadius: 12, padding: '10px 12px', fontSize: 15, color: B.ink, lineHeight: 1.6, minWidth: 0, flex: '1 1 180px', maxWidth: 280 } }, facts.map(([label, value]) => react_1.default.createElement("div", { key: label },
+                    react_1.default.createElement("strong", null,
+                        label,
+                        ":"),
+                    " ",
+                    value)))),
+            react_1.default.createElement("p", { style: { margin: '0 0 10px', fontSize: 15, color: got ? B.green : B.ink, minHeight: 22, fontWeight: got ? 700 : 400 } }, got ? why : 'Will this bean seed sprout?'),
+            react_1.default.createElement("div", { style: { display: 'flex', gap: 10, justifyContent: 'center', flexWrap: 'wrap' } }, answers.map(([v, spoken, shown]) => react_1.default.createElement("button", { key: v, type: "button", className: `edu-press${nudge === v ? ' edu-wobble' : ''}`, "aria-label": `Answer: ${spoken}`, onClick: () => pick(v), style: { fontFamily: FONT, fontSize: 16, fontWeight: 700, minWidth: 140, padding: '10px 14px', borderRadius: 12, border: `2px solid ${B.green}`, background: '#fff', color: B.ink, cursor: got ? 'default' : 'pointer' } }, shown))))),
+        react_1.default.createElement(Done, { show: done })));
+}
+const GAME_OF = { dots: DotsGame, pairs: PairsGame, sort: SortGame, maze: MazeGame, jigsaw: JigsawGame, pong: PongGame, sprint: SprintGame, order: OrderGame, build: BuildGame, fix: FixGame, mix: MixGame, debug: DebugGame, ptable: PtableGame, evidence: EvidenceGame, catch: CatchGame, path: PathGame, buckets: BucketsGame, jump: JumpGame, map: MapGame, balance: BalanceGame, walk: WalkGame, teach: TeachGame, bits: BitsGame, pay: PayGame, price: PriceGame, loan: LoanGame, fund: FundGame, search: SearchGame, spot: SpotGame, pattern: PatternGame, shape: ShapeGame, chord: ChordGame, valid: ValidGame, reason: ReasonGame, because: BecauseGame, share: ShareGame, stat: StatGame, recall: RecallGame, face: FaceGame, sense: SenseGame, filler: FillerGame, room: RoomGame, ask: AskGame, turn: TurnGame, jar: JarGame, relation: RelationGame, sprout: SproutGame };
 // How to play, in a line or two, by kind of game (and by deck for the matching games).
 function gameInstructions(game) {
     if (game.kind === 'bits')
@@ -62794,6 +63175,8 @@ function gameInstructions(game) {
         return 'An argument in three lines: if this then that, a second line, and a conclusion. Ask whether the form guarantees the conclusion when the premises are true, however true the sentences sound, and tap Valid or Not valid. The right answer names the form. Six arguments a round, and the clock counts up.';
     if (game.kind === 'stat')
         return 'Five quiz scores and one average to find: the mean, the median or the mode. Add and divide, or order and take the middle, or find the score that repeats, and tap the number. Six rounds, and the clock counts up.';
+    if (game.kind === 'sprout')
+        return 'A bean seed in a cup and four facts about it: water, air, warmth and light. Decide whether it sprouts. A bean needs water, air and warmth, and light can wait until the shoot is up. Six seeds, and the clock counts up.';
     if (game.kind === 'relation')
         return 'A line about two living things on a farm and four names: mutualism, parasitism, commensalism, predation. Tap the one that fits. Six cases, and the clock counts up.';
     if (game.kind === 'jar')
@@ -62999,6 +63382,12 @@ function GameThumb({ kind, game = null }) {
             react_1.default.createElement("circle", { cx: "29", cy: "20", r: "6", fill: C.green, stroke: k, strokeWidth: "1" }),
             react_1.default.createElement("path", { d: "M21 16l4 0M21 24l4 0", stroke: k, strokeWidth: "2", strokeLinecap: "round" }),
             react_1.default.createElement("path", { d: "M24 14l3 2-3 2M22 26l-3-2 3-2", fill: "none", stroke: k, strokeWidth: "1.6", strokeLinecap: "round", strokeLinejoin: "round" }));
+    if (game && game.kind === 'sprout')
+        return react_1.default.createElement("svg", { viewBox: "0 0 40 40", width: "44", height: "44", "aria-hidden": "true" },
+            react_1.default.createElement("path", { d: "M20 24 C20 18 20 14 20 10", stroke: "#3E8E4F", strokeWidth: "2", fill: "none" }),
+            react_1.default.createElement("path", { d: "M20 15 C15 12 13 9 14 7 C17 8 19 11 20 15 Z", fill: "#5DB36D" }),
+            react_1.default.createElement("path", { d: "M20 13 C25 10 27 7 26 5 C23 6 21 9 20 13 Z", fill: "#5DB36D" }),
+            react_1.default.createElement("path", { d: "M9 24 L31 24 L28 37 L12 37 Z", fill: "#C8734B", stroke: k, strokeWidth: "1" }));
     if (game && game.kind === 'stat')
         return react_1.default.createElement("svg", { viewBox: "0 0 40 40", width: "44", height: "44", "aria-hidden": "true" },
             react_1.default.createElement("rect", { x: "4", y: "5", width: "32", height: "30", rx: "4", fill: C.paperBoard, stroke: k, strokeWidth: "1" }),
@@ -63899,35 +64288,48 @@ const inBeat = (seconds) => ({ animationDelay: `-${((((typeof performance !== 'u
 // on the right. On a phone, portrait or landscape, the row stacks in three centered lines: the course title beside its
 // checkbox, then the grade or band with the subject, then the links. The phone layout starts below 600 pixels of width,
 // or when the screen is short and no wider than 1000, which is a phone turned sideways; a tablet in either direction
-// keeps the one-line layout. Core courses and electives share this row.
+// keeps the one-line layout. Core courses and electives share this row. Since pass HA the checkbox is centered top to
+// bottom against every line of the row on phones too, and a course that needs a touch screen shows a small red i after
+// its title instead of a tag; tapping the i shows the warning.
 // -----------------------------------------------------------------------------------------------------------------
 function narrowCourseRows() { return typeof window !== 'undefined' && (window.innerWidth < 600 || (window.innerHeight < 500 && window.innerWidth <= 1000)); }
 function CourseChoiceRow({ course, checked, onToggle, onPreview, onSave = null }) {
+    const boxId = (0, react_1.useId)(); // a unique id that ties this row's checkbox to its title, so tapping the title ticks the box
+    const [touchOpen, setTouchOpen] = (0, react_1.useState)(false); // the red i's note, shown only when tapped (pass HA, Mikey)
     const phone = narrowCourseRows();
-    const warn = courseNeedsTouch(course.id) ? react_1.default.createElement(Tag, { tone: "review" }, "Needs a touch screen") : null;
+    const touch = courseNeedsTouch(course.id);
+    const touchButton = touch ? react_1.default.createElement(InfoButton, { tone: "warn", onClick: () => setTouchOpen(!touchOpen), label: `Needs a touch screen: ${course.title}`, open: touchOpen }) : null;
+    const touchNote = touch && touchOpen ? react_1.default.createElement("p", { role: "note", style: { margin: '4px 0 0', fontSize: 13, color: C.clay, fontWeight: 600 } }, "This course needs a touch screen. An iPad or another large tablet with a stylus is best.") : null;
     // Save appears to the right of Preview once a course in the other lists is checked (2026-09-29, Mikey); it moves the course up to the assigned list.
     const link = react_1.default.createElement("span", { style: { display: 'inline-flex', gap: 14, alignItems: 'center' } },
         react_1.default.createElement("button", { type: "button", className: "edu-no-print", onClick: onPreview, "aria-label": `Preview ${course.title}`, style: { ...linkBtn, padding: '2px 0', fontSize: 14, whiteSpace: 'nowrap' } }, "Preview"),
         onSave && react_1.default.createElement("button", { type: "button", className: "edu-no-print", onClick: onSave, "aria-label": `Save ${course.title}`, style: { ...linkBtn, padding: '2px 0', fontSize: 14, whiteSpace: 'nowrap' } }, "Save"));
     const gradeText = `${course.elective && course.audience ? bandShort(course.audience, true) : gradeShort(course.grade)} - ${course.subject}`;
+    const box = react_1.default.createElement("input", { type: "checkbox", id: boxId, checked: checked, onChange: onToggle, style: { margin: 0, flexShrink: 0 } });
     if (phone) {
-        return (react_1.default.createElement("div", { style: { padding: '7px 0 8px', fontSize: 16 } },
-            react_1.default.createElement("label", { style: { display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, cursor: 'pointer' } },
-                react_1.default.createElement("input", { type: "checkbox", checked: checked, onChange: onToggle }),
-                react_1.default.createElement("span", { style: { textAlign: 'center' } }, course.title)),
-            react_1.default.createElement("p", { style: { margin: '2px 0 0', fontSize: 14, color: C.muted, textAlign: 'center' } }, gradeText),
-            react_1.default.createElement("div", { style: { display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, marginTop: 2 } },
-                link,
-                warn),
+        // Phone: the checkbox sits at the left, centered top to bottom against all three lines, and an equal empty space
+        // on the right keeps the three lines centered on the row itself.
+        return (react_1.default.createElement("div", { "data-course-row": course.id, style: { padding: '7px 0 8px', fontSize: 16 } },
+            react_1.default.createElement("div", { style: { display: 'flex', alignItems: 'center', gap: 8 } },
+                react_1.default.createElement("span", { style: { width: 24, display: 'flex', justifyContent: 'center', flexShrink: 0 } }, box),
+                react_1.default.createElement("div", { "data-course-lines": "", style: { flex: 1, minWidth: 0, textAlign: 'center' } },
+                    react_1.default.createElement("div", null,
+                        react_1.default.createElement("label", { htmlFor: boxId, style: { cursor: 'pointer' } }, course.title),
+                        touchButton),
+                    react_1.default.createElement("p", { "data-course-grade": "", style: { margin: '2px 0 0', fontSize: 14, color: C.muted } }, gradeText),
+                    react_1.default.createElement("div", { style: { display: 'flex', justifyContent: 'center', marginTop: 2 } }, link),
+                    touchNote),
+                react_1.default.createElement("span", { "aria-hidden": "true", style: { width: 24, flexShrink: 0 } })),
             react_1.default.createElement("div", { "aria-hidden": "true", style: { height: 1, background: C.line, opacity: 0.55, marginTop: 8 } })));
     }
-    return (react_1.default.createElement("div", { style: { padding: '7px 0 8px', fontSize: 16 } },
+    // Tablet and laptop: one line, the checkbox and the course name on the left, Preview on the right.
+    return (react_1.default.createElement("div", { "data-course-row": course.id, style: { padding: '7px 0 8px', fontSize: 16 } },
         react_1.default.createElement("div", { style: { display: 'flex', alignItems: 'center', gap: 10 } },
-            react_1.default.createElement("label", { style: { display: 'flex', alignItems: 'center', gap: 10, flex: 1, minWidth: 0, cursor: 'pointer' } },
-                react_1.default.createElement("input", { type: "checkbox", checked: checked, onChange: onToggle }),
-                react_1.default.createElement("span", { style: { display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 2, minWidth: 0 } },
-                    react_1.default.createElement("span", null, courseLabel(course)),
-                    warn)),
+            box,
+            react_1.default.createElement("div", { style: { flex: 1, minWidth: 0 } },
+                react_1.default.createElement("label", { htmlFor: boxId, style: { cursor: 'pointer' } }, courseLabel(course)),
+                touchButton,
+                touchNote),
             link),
         react_1.default.createElement("div", { "aria-hidden": "true", style: { height: 1, background: C.line, opacity: 0.55, marginTop: 8, marginLeft: 30 } })));
 }
@@ -63942,8 +64344,11 @@ function ClearableInput({ value, onClear, style = {}, ...rest }) {
         react_1.default.createElement("input", { value: value, ...rest, style: { ...style, paddingRight: 36 } }),
         has && react_1.default.createElement("button", { type: "button", onClick: onClear, "aria-label": "Clear search", title: "Clear", style: { position: 'absolute', right: 8, top: '50%', transform: 'translateY(-50%)', width: 24, height: 24, borderRadius: 12, border: 'none', background: 'transparent', color: C.muted, fontFamily: FONT, fontSize: 18, lineHeight: '24px', cursor: 'pointer', padding: 0, opacity: 0.75 } }, "\u00D7")));
 }
-function InfoButton({ onClick, label, open = false }) {
-    return (react_1.default.createElement("button", { type: "button", onClick: onClick, "aria-label": label, "aria-expanded": open, style: { background: open ? C.green : 'none', border: `1.5px solid ${C.green}`, color: open ? C.onAccent : C.green, fontFamily: FONT, fontSize: 12, fontWeight: 700, lineHeight: '15px', width: 18, height: 18, borderRadius: 999, cursor: 'pointer', padding: 0, marginLeft: 8, verticalAlign: 'middle', flexShrink: 0 } }, "i"));
+// InfoButton: the small round i that opens a note. `tone="warn"` draws it in the warning color (the red of the old
+// "Needs a touch screen" tag) for notes that caution rather than explain (pass HA).
+function InfoButton({ onClick, label, open = false, tone = 'info' }) {
+    const ink = tone === 'warn' ? C.clay : C.green;
+    return (react_1.default.createElement("button", { type: "button", onClick: onClick, "aria-label": label, "aria-expanded": open, style: { background: open ? ink : 'none', border: `1.5px solid ${ink}`, color: open ? C.onAccent : ink, fontFamily: FONT, fontSize: 12, fontWeight: 700, lineHeight: '15px', width: 18, height: 18, borderRadius: 999, cursor: 'pointer', padding: 0, marginLeft: 8, verticalAlign: 'middle', flexShrink: 0 } }, "i"));
 }
 // A small faint sphere on each side of the logo, shown only on large screens, so the
 // logo does not sit alone in a wide empty band. Drawn from the same arc geometry.
@@ -65429,6 +65834,10 @@ function EduSphereScreens() {
     const tourBegun = (0, react_1.useRef)(false); // the tour starts once per sign-in, not every time the classroom page shows
     // On a phone the tour does not start on its own (the sheet fights the page for room); the classroom page offers it instead.
     const phoneScreen = typeof window !== 'undefined' && window.innerWidth < 700;
+    // startAccountSetup (2026-09-30, pass HB). In plain terms: opens the educator account setup with the PIN boxes empty and this
+    // device's name and state filled in. Every Create account button uses it, and since the starter PIN was retired, so does Educator
+    // Login on a device that has no account yet: an account with its own PIN is now the only way into the educator screens.
+    const startAccountSetup = () => { setNewPin(''); setNewPin2(''); setDeviceDraft(deviceName || ''); setStateDraft(stateCode || ''); setSetupError(''); setScreen('educator-setup'); };
     // The first week tour opens on a wide screen for a new educator, and What's new waits until the tour is done. On a phone
     // the tour never runs (its cards need room), so What's new opens straight away there (2026-09-28, pass FR): before this
     // a phone-only educator waited for a tour that never came and saw no news at all.
@@ -65514,8 +65923,9 @@ function EduSphereScreens() {
         setPinWrong(true);
         setPinTry('');
     } }, [pinTry, pinAsk]);
+    // Only this device's own educator account PIN opens the educator side; with no account, no PIN does (starter PIN retired, pass HB).
     (0, react_1.useEffect)(() => { if (screen !== 'educator-pin' || pinInput.length < 4)
-        return; const ok = educator ? scramble(pinInput) === educator.pin : pinInput === EDUCATOR_PIN; if (ok) {
+        return; const ok = !!educator && scramble(pinInput) === educator.pin; if (ok) {
         if (pinLock.failures)
             savePinLock({ failures: 0, lockUntil: 0 });
         goBackTo();
@@ -65783,7 +66193,10 @@ function EduSphereScreens() {
                     errorMsg && react_1.default.createElement("p", { style: { color: C.clay } }, errorMsg)),
                 react_1.default.createElement("div", { className: "edu-welcome-links", style: { marginTop: 4, textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 } },
                     react_1.default.createElement("div", { className: "edu-login-btn", style: { width: '100%', maxWidth: 320, marginBottom: 18 } },
-                        react_1.default.createElement(Btn, { full: true, onClick: () => { if (lastActive && Date.now() - lastActive < EDUCATOR_IDLE_MS) {
+                        react_1.default.createElement(Btn, { full: true, onClick: () => { if (!educator) {
+                                startAccountSetup();
+                                return;
+                            } if (lastActive && Date.now() - lastActive < EDUCATOR_IDLE_MS) {
                                 setScreen('educator-pick');
                                 return;
                             } setPinInput(''); setScreen('educator-pin'); } }, "Educator Login")),
@@ -67156,7 +67569,6 @@ function EduSphereScreens() {
     }
     // ---------- Educator screens. NOTE: the PIN is a convenience lock for the prototype, not security.
     // Real educator accounts with real permissions arrive in phase 1. ----------
-    const EDUCATOR_PIN = '2468';
     if (screen === 'change-state') {
         return (react_1.default.createElement("div", { style: { ...page } },
             react_1.default.createElement(PageChrome, { idleWarning: idleWarning, logoutIn: logoutIn, walkthrough: !!(record && record.preview) }),
@@ -67245,8 +67657,9 @@ function EduSphereScreens() {
                 setupError && react_1.default.createElement("p", { style: { color: C.clay, fontSize: 14 } }, setupError))));
     }
     if (screen === 'educator-pin') {
-        // With an account on this device, its PIN is the key. Without one, the prototype PIN still opens the door.
-        const ok = educator ? scramble(pinInput) === educator.pin : pinInput === EDUCATOR_PIN;
+        // The account's own PIN is the only key (pass HB, Mikey: the starter PIN is retired). With no account on this device the screen
+        // shows no PIN box at all, only a way to create the account.
+        const ok = !!educator && scramble(pinInput) === educator.pin;
         return (react_1.default.createElement("div", { style: { ...page } },
             react_1.default.createElement(PageChrome, { idleWarning: idleWarning, logoutIn: logoutIn, walkthrough: !!(record && record.preview) }),
             react_1.default.createElement("div", { className: "edu-wrap edu-welcome", style: { ...wrap } },
@@ -67254,8 +67667,12 @@ function EduSphereScreens() {
                 react_1.default.createElement("div", { className: "edu-login-body" },
                     react_1.default.createElement("h1", { style: { fontSize: 24, margin: '12px 0 22px', textAlign: 'center' } }, "Please log in to continue:"),
                     react_1.default.createElement("div", { style: { ...card } },
-                        react_1.default.createElement("p", { style: { margin: '0 0 10px', textAlign: 'center' } }, "Enter your PIN."),
-                        react_1.default.createElement(PinInput, { value: pinInput, onChange: (v) => { if (pinLockLeft(pinLock, pinClock))
+                        !educator && react_1.default.createElement(react_1.default.Fragment, null,
+                            react_1.default.createElement("p", { style: { margin: '0 0 12px', textAlign: 'center', fontSize: 15, lineHeight: 1.55 } }, "There is no educator account on this device yet. Create one to choose your PIN. Any students already here stay exactly as they are."),
+                            react_1.default.createElement("div", { style: { paddingBottom: 6 } },
+                                react_1.default.createElement(Btn, { full: true, onClick: startAccountSetup }, "Create account"))),
+                        educator && react_1.default.createElement("p", { style: { margin: '0 0 10px', textAlign: 'center' } }, "Enter your PIN."),
+                        educator && react_1.default.createElement(PinInput, { value: pinInput, onChange: (v) => { if (pinLockLeft(pinLock, pinClock))
                                 return; if (pinInput.length >= 4 && v.length < pinInput.length && !ok)
                                 failPin(); setPinInput(v); }, placeholder: "PIN", onEnter: () => { if (ok)
                                 goBackTo();
@@ -67263,11 +67680,11 @@ function EduSphereScreens() {
                                 failPin();
                                 setPinInput('');
                             } }, style: { fontFamily: FONT, fontSize: 18, padding: '12px 14px', width: '100%', boxSizing: 'border-box', border: `2px solid ${C.line}`, borderRadius: 10, marginBottom: 12, letterSpacing: 4 } }),
-                        pinLockLeft(pinLock, pinClock) > 0 && react_1.default.createElement("p", { role: "status", style: { margin: '0 0 12px', textAlign: 'center', fontSize: 14, color: C.clay } },
+                        educator && pinLockLeft(pinLock, pinClock) > 0 && react_1.default.createElement("p", { role: "status", style: { margin: '0 0 12px', textAlign: 'center', fontSize: 14, color: C.clay } },
                             "Too many tries. Try again in ",
                             pinLockLeft(pinLock, pinClock),
                             " seconds."),
-                        react_1.default.createElement("div", { style: { paddingBottom: 10 } },
+                        educator && react_1.default.createElement("div", { style: { paddingBottom: 10 } },
                             react_1.default.createElement(Btn, { full: true, onClick: goBackTo, disabled: !ok }, "Open")),
                         educator && educator.biometric && biometricReady() && (react_1.default.createElement("div", { style: { paddingBottom: 16, textAlign: 'center' } },
                             react_1.default.createElement(Btn, { full: true, kind: "secondary", onClick: async () => { try {
@@ -67278,11 +67695,6 @@ function EduSphereScreens() {
                                     setBioNote('That did not work. Use your PIN.');
                                 } } }, "Use fingerprint or face"),
                             bioNote && react_1.default.createElement("p", { style: { margin: '8px 0 0', fontSize: 13, color: C.muted } }, bioNote))),
-                        !educator && react_1.default.createElement("p", { style: { margin: '12px 0 0', fontSize: 14, color: C.muted, textAlign: 'center' } },
-                            "No educator account created on this device. ",
-                            react_1.default.createElement("button", { type: "button", onClick: () => { setNewPin(''); setNewPin2(''); setDeviceDraft(''); setStateDraft(''); setSetupError(''); setScreen('educator-setup'); }, style: { ...linkBtn, fontSize: 14, padding: 0 } }, "Create one here"),
-                            react_1.default.createElement("br", null),
-                            "Starter PIN still works and data can be merged later."),
                         educator && !forgotPin && react_1.default.createElement("p", { style: { margin: '12px 0 0', fontSize: 14, color: C.muted, textAlign: 'center' } },
                             react_1.default.createElement("button", { type: "button", onClick: () => setForgotPin(true), style: { ...linkBtn, fontSize: 14, padding: 0 } }, "Forgot my PIN")),
                         educator && forgotPin && (react_1.default.createElement("div", { style: { marginTop: 12, padding: 12, borderRadius: 10, background: C.goldSoft } },
@@ -68141,7 +68553,7 @@ function EduSphereScreens() {
                         "A recovery code, used to reset a pin, comes with an educator account. ",
                         react_1.default.createElement("button", { type: "button", onClick: () => { setNewPin(''); setNewPin2(''); setDeviceDraft(deviceName || ''); setStateDraft(stateCode || ''); setSetupError(''); setScreen('educator-setup'); }, style: { ...linkBtn, fontSize: 14, padding: 0 } }, "Create one here"),
                         "."),
-                    react_1.default.createElement("p", { style: { margin: '10px 0 0', fontSize: 14, color: C.muted, textAlign: 'center' } }, "This device is still using a starter PIN. Once an account is created, your recovery code will appear here and within every backup file."))),
+                    react_1.default.createElement("p", { style: { margin: '10px 0 0', fontSize: 14, color: C.muted, textAlign: 'center' } }, "Once this device has an educator account, your recovery code will appear here and within every backup file."))),
                 educator && educator.recovery && (react_1.default.createElement("div", { style: { ...card, background: C.mode === 'dark' ? '#F6E3A1' : C.greenSoft, borderColor: C.softEdge, color: C.mode === 'dark' ? '#16201B' : undefined } },
                     react_1.default.createElement("p", { style: { margin: '0 0 4px', fontWeight: 600, textAlign: 'center' } }, "Recovery code"),
                     react_1.default.createElement("p", { className: "edu-recovery-code", style: { margin: '0 0 6px', fontWeight: 700, letterSpacing: 1, textAlign: 'center', whiteSpace: 'nowrap' } }, educator.recovery),
@@ -68265,18 +68677,22 @@ function EduSphereScreens() {
                                 e.target.value = '';
                             } })),
                     restoreNote && react_1.default.createElement("p", { style: { margin: '10px 0 0', fontSize: 14, color: C.green, fontWeight: 600, textAlign: 'center' } }, restoreNote)),
-                educator && react_1.default.createElement("div", { style: { ...card, marginTop: 28, textAlign: 'center' }, "data-account-card": "" },
+                react_1.default.createElement("div", { style: { ...card, marginTop: 28, textAlign: 'center' }, "data-account-card": educator ? 'account' : 'none' },
                     react_1.default.createElement("p", { className: "edu-card-title", style: { margin: '0 0 6px', fontWeight: 600, textAlign: 'center' } }, "Your educator account"),
-                    educator && react_1.default.createElement("p", { style: { textAlign: 'center', margin: '0' } },
-                        react_1.default.createElement("button", { type: "button", style: { ...linkBtn, fontSize: 13, color: C.muted }, onClick: async () => { const next = { ...educator, tourSeen: false }; setEducator(next); await saveEducator(next); tourBegun.current = false; setScreen('educator-pick'); } }, "Show the first week tour again")),
-                    educator && (react_1.default.createElement("p", { style: { textAlign: 'center', margin: '8px 0 0' } }, startOverArmed
-                        ? react_1.default.createElement("span", { style: { fontSize: 13, color: C.muted } },
-                            "Remove this educator account and keep every student? ",
-                            react_1.default.createElement("button", { type: "button", style: { ...linkBtn, fontSize: 13, color: C.clay, marginLeft: 6 }, onClick: async () => { await storageDelete(EDUCATOR_KEY); setEducator(null); setStartOverArmed(false); setScreen('welcome'); } }, "Yes, start over"),
-                            " ",
-                            react_1.default.createElement("button", { type: "button", style: { ...linkBtn, fontSize: 13, marginLeft: 10 }, onClick: () => setStartOverArmed(false) }, "No"))
-                        : react_1.default.createElement("button", { type: "button", style: { ...linkBtn, fontSize: 13, color: C.muted }, onClick: () => setStartOverArmed(true) }, "Start over as a new educator"))),
-                    educator && (react_1.default.createElement("div", { style: { textAlign: 'center', margin: '8px 0 0' } }, !changePin || changePin.done
+                    !educator && react_1.default.createElement(react_1.default.Fragment, null,
+                        react_1.default.createElement("p", { style: { margin: '0 0 12px', fontSize: 14, color: C.muted, lineHeight: 1.55 } }, "This device has no educator account yet. Create one to choose a PIN of your own. Your students stay exactly as they are."),
+                        react_1.default.createElement(Btn, { onClick: startAccountSetup }, "Create account")),
+                    educator && react_1.default.createElement("div", { style: { display: 'flex', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'baseline', gap: '8px 28px' }, "data-account-links": "" },
+                        educator && react_1.default.createElement("p", { style: { textAlign: 'center', margin: '0' } },
+                            react_1.default.createElement("button", { type: "button", style: { ...linkBtn, fontSize: 13, color: C.muted }, onClick: async () => { const next = { ...educator, tourSeen: false }; setEducator(next); await saveEducator(next); tourBegun.current = false; setScreen('educator-pick'); } }, "Show the first week tour again")),
+                        educator && (react_1.default.createElement("p", { style: { textAlign: 'center', margin: '0' } }, startOverArmed
+                            ? react_1.default.createElement("span", { style: { fontSize: 13, color: C.muted } },
+                                "Remove this educator account and keep every student? ",
+                                react_1.default.createElement("button", { type: "button", style: { ...linkBtn, fontSize: 13, color: C.clay, marginLeft: 6 }, onClick: async () => { await storageDelete(EDUCATOR_KEY); setEducator(null); setStartOverArmed(false); setLastActive(0); setIdleWarning(false); setScreen('welcome'); } }, "Yes, start over"),
+                                " ",
+                                react_1.default.createElement("button", { type: "button", style: { ...linkBtn, fontSize: 13, marginLeft: 10 }, onClick: () => setStartOverArmed(false) }, "No"))
+                            : react_1.default.createElement("button", { type: "button", style: { ...linkBtn, fontSize: 13, color: C.muted }, onClick: () => setStartOverArmed(true) }, "Start over as a new educator")))),
+                    educator && (react_1.default.createElement("div", { style: { textAlign: 'center', margin: '12px 0 0' } }, !changePin || changePin.done
                         ? react_1.default.createElement("p", { style: { margin: 0 } },
                             react_1.default.createElement("button", { type: "button", style: { ...linkBtn, fontSize: 14, fontWeight: 600, color: C.green }, onClick: () => setChangePin({ current: '', next: '', again: '', note: '', done: false }) }, "Change PIN"),
                             changePin && changePin.done && react_1.default.createElement("span", { role: "status", style: { fontSize: 13, color: C.green, fontWeight: 600, marginLeft: 8 } }, "Your PIN is changed."))

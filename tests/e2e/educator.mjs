@@ -9,7 +9,14 @@ const page = await browser.newPage({ viewport: { width: 1280, height: 900 } });
 const text = () => page.evaluate(() => document.body.innerText);
 await page.goto(pathToFileURL(new URL('./page.html', import.meta.url).pathname).href);
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'welcome');
-await page.getByRole('button', { name: 'Create account' }).click(); await page.waitForTimeout(300);
+// The starter PIN is retired (pass HB, Mikey). With no educator account on the device, Educator Login goes straight to account
+// setup, and the PIN screen, if reached at all, has no PIN box: only the account's own PIN will ever open the educator side.
+await page.getByRole('button', { name: 'Educator Login' }).click(); await page.waitForTimeout(300);
+ok('with no educator account, Educator Login opens account setup', (await page.evaluate(() => window.__eduTest.screen)) === 'educator-setup');
+await page.evaluate(() => window.__eduTest.goTo('educator-pin')); await page.waitForTimeout(300);
+ok('with no account the PIN screen has no PIN box and offers Create account', (await page.locator('input[placeholder="PIN"]').count()) === 0 && (await page.getByRole('button', { name: 'Create account' }).count()) >= 1);
+await page.getByRole('button', { name: 'Create account' }).first().click(); await page.waitForTimeout(300);
+ok('Create account on the PIN screen opens account setup', (await page.evaluate(() => window.__eduTest.screen)) === 'educator-setup');
 await page.fill('input[placeholder="PIN"]', '2468'); await page.fill('input[placeholder="PIN again"]', '2468');
 await page.fill('input[placeholder="This device\'s name"]', 'G'); await page.selectOption('select[aria-label="Your state"]', 'TX');
 await page.getByRole('button', { name: 'Create account', exact: true }).click();
@@ -18,6 +25,15 @@ for (const name of ['Skip tour', 'Later', 'Got it']) { const b = page.getByRole(
 await page.evaluate(() => window.__eduTest.goTo('backup')); await page.waitForTimeout(400);
 const t0 = await text();
 ok('the Change PIN link sits under Start over', t0.indexOf('Change PIN') > t0.indexOf('Start over as a new educator') && t0.indexOf('Start over as a new educator') > 0);
+// With an account, the tour link and Start over sit side by side when there is room and stack when there is not, with Change PIN
+// centered on its own line below either way (pass HA, Mikey).
+{ const pos = () => page.evaluate(() => { const card = document.querySelector('[data-account-card="account"]'); const c = card.getBoundingClientRect(); const btn = (re) => [...card.querySelectorAll('button')].find((b) => re.test(b.textContent)).getBoundingClientRect(); const tour = btn(/first week tour/), over = btn(/^Start over/), pin = btn(/^Change PIN/); return { sideBySide: Math.abs(tour.top - over.top) < 4, pinBelow: pin.top >= Math.max(tour.bottom, over.bottom) - 1, pinCentered: Math.abs((pin.left + pin.right) / 2 - (c.left + c.right) / 2) < 6 }; });
+  const wide = await pos();
+  ok('on a wide screen the tour link and Start over sit side by side, with Change PIN centered below', wide.sideBySide && wide.pinBelow && wide.pinCentered);
+  await page.setViewportSize({ width: 390, height: 844 }); await page.waitForTimeout(300);
+  const narrow = await pos();
+  ok('on a phone the two links stack, with Change PIN centered below', !narrow.sideBySide && narrow.pinBelow && narrow.pinCentered);
+  await page.setViewportSize({ width: 1280, height: 900 }); await page.waitForTimeout(300); }
 await page.getByRole('button', { name: 'Change PIN' }).click(); await page.waitForTimeout(200);
 const fill = async (a, b, c) => { await page.fill('input[placeholder="Current PIN"]', a); await page.fill('input[placeholder="New PIN"]', b); await page.fill('input[placeholder="New PIN again"]', c); await page.getByRole('button', { name: 'Save new PIN' }).click(); await page.waitForTimeout(250); };
 await fill('1111', '1357', '1357');

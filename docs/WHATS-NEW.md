@@ -2,6 +2,19 @@
 
 The newest block is what educators see once, in a pop-up on the classroom page, after each update. Write it the way Mikey talks to a teacher: conversational, complete sentences, say what changed and why it matters, and skip the shorthand (2026-09-23). Two to four items. The date line is the version stamp.
 
+## September 30, 2026 (down on the farm, and your own PIN only)
+
+- The starter PIN is retired. Only the PIN of the educator account on a device opens the educator side; on a device with no account yet, Educator Login leads straight to creating one. Create the account first thing on any device that holds students.
+- Grade 3 has a new elective for grades 3 to 5, Down on the farm: where food and clothes come from and the path a loaf of bread takes; seeds and soil, including why a bean sprouts in the dark; farm animals, what they need and how a chick grows into a hen; and a tiny farm of your own with a plan, a tally and a bar graph. Each lesson has a story, and the course ends with a long story about Mike and twenty-one days of eggs in a classroom.
+- Finishing the course unlocks Will It Sprout?, a new kind of game: a bean in a cup, four facts, and the call.
+- Two new Wonder questions for grades 3 to 5 wait in the review screen.
+
+## September 30, 2026 (the account card on every device)
+
+- The backup page's Your educator account card now appears on every device. With an account, the tour link and Start over sit side by side when there is room, and Change PIN sits centered below.
+- A course that needs a touch screen shows a small red i after its title instead of a tag; tap it for the warning.
+- On phones, each course row's checkbox is centered against all of the row's lines.
+
 ## September 30, 2026 (your educator account, phone course rows)
 
 - The backup page has a Your educator account card with the tour link, Start over and Change PIN, on every screen size.

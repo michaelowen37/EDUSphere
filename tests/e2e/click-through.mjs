@@ -136,9 +136,11 @@ await page.getByRole('button', { name: 'Electives' }).click();
 await page.getByRole('button', { name: 'Core', exact: true }).click();
 await page.getByRole('button', { name: /^Grade 1\b/ }).first().click();
 ok('a grade dropdown opens to its courses', (await text()).includes('Grade 1 - Math'));
-// On a phone each course row stacks: the title beside its checkbox, the grade line under it, the Preview link under that (pass GZ, Mikey).
-{ const stacked = await page.evaluate(() => { const b = [...document.querySelectorAll('button')].find((e) => e.getAttribute('aria-label') === 'Preview Numbers to 20'); if (!b) return null; const row = b.closest('div').parentElement; const label = row.querySelector('label'); const grade = row.querySelector('p'); const lr = label.getBoundingClientRect(); const gr = grade.getBoundingClientRect(); const br = b.getBoundingClientRect(); return { order: lr.bottom <= gr.top + 1 && gr.bottom <= br.top + 1, gradeText: grade.textContent, centered: Math.abs((br.left + br.right) / 2 - (row.getBoundingClientRect().left + row.getBoundingClientRect().right) / 2) < 30 }; });
-  ok('a phone course row stacks title, grade line and a centered Preview link', !!stacked && stacked.order && stacked.gradeText === 'Grade 1 - Math' && stacked.centered); }
+// On a phone each course row stacks: the title, the grade line under it, the Preview link under that (pass GZ), with the checkbox
+// centered top to bottom against all three lines (pass HA, Mikey).
+{ const stacked = await page.evaluate(() => { const row = document.querySelector('[data-course-row="numbers-1"]'); if (!row) return null; const r = (el) => el.getBoundingClientRect(); const lines = row.querySelector('[data-course-lines]'); const label = lines.querySelector('label'); const grade = lines.querySelector('[data-course-grade]'); const b = row.querySelector('button[aria-label="Preview Numbers to 20"]'); const box = row.querySelector('input[type=checkbox]'); const lr = r(label), gr = r(grade), br = r(b), xr = r(box), nr = r(lines), rr = r(row); return { order: lr.bottom <= gr.top + 1 && gr.bottom <= br.top + 1, gradeText: grade.textContent, centered: Math.abs((br.left + br.right) / 2 - (rr.left + rr.right) / 2) < 12, boxMiddle: Math.abs((xr.top + xr.bottom) / 2 - (nr.top + nr.bottom) / 2) < 3, labelFor: label.htmlFor === box.id }; });
+  ok('a phone course row stacks title, grade line and a centered Preview link', !!stacked && stacked.order && stacked.gradeText === 'Grade 1 - Math' && stacked.centered);
+  ok('the checkbox is centered against all three lines of a phone row, and the title is its label', !!stacked && stacked.boxMiddle && stacked.labelFor); }
 await page.fill('input[aria-label="Search courses"]', 'grade 1 math');
 t = await text();
 ok('searching narrows the course list to what was typed', t.includes('Numbers to 20') && t.includes('Grade 1 - Math') && !t.includes('Grade 4 - Math'));
@@ -148,10 +150,10 @@ await page.getByRole('button', { name: 'Clear search' }).click();
 ok('the clear button empties the search box and hides itself', (await page.locator('input[aria-label="Search courses"]').inputValue()) === '' && (await page.getByRole('button', { name: 'Clear search' }).count()) === 0);
 await page.fill('input[aria-label="Search courses"]', '');
 await page.getByRole('button', { name: /^Grade 3\b/ }).first().click();
-await page.locator('label', { hasText: /^\s*Fractions\s*$/ }).locator('input[type=checkbox]').check();
+await page.locator('[data-course-row="fractions-intro"] input[type=checkbox]').check();
 await page.waitForTimeout(400);
 await page.getByRole('button', { name: /^Kindergarten\b/ }).first().click();
-for (const name of [/^\s*Counting\s*$/, /^\s*Letters\s*$/]) { await page.locator('label', { hasText: name }).locator('input[type=checkbox]').check(); await page.waitForTimeout(300); }
+for (const id of ['counting-k', 'letters-k']) { await page.locator(`[data-course-row="${id}"] input[type=checkbox]`).check(); await page.waitForTimeout(300); }
 await tap('Back to Classroom');
 // A grade 3 reader for the reading-age flows. Elementary starts on the grade 3 courses, Fractions included.
 await tap('Add someone new');
@@ -490,7 +492,12 @@ ok('the summary never shows the storage id', !t.includes('s_1042'));
   ok('the mastered list is narrower than its box and centered, with left-aligned lines', !!m && m.ulW < m.boxW - 40 && Math.abs(m.leftGap - m.rightGap) < 4 && m.align === 'left'); }
 ok('assigned courses lead with the course name', t.includes('Assigned Now') && t.includes('KG - Math'));
 ok('courses are split into assigned and other', t.includes('Assigned Now') && t.includes('Show other courses'));
-ok('a course that needs a touch screen says so where it is assigned', t.includes('Needs a touch screen'));
+// A course that needs a touch screen shows a small red i after its title instead of a tag; tapping it shows the warning (pass HA, Mikey).
+{ const warnBtn = page.locator('button[aria-label^="Needs a touch screen"]');
+  ok('a course that needs a touch screen shows a red i, not a tag', (await warnBtn.count()) >= 1 && !t.includes('Needs a touch screen'));
+  await warnBtn.first().click(); await page.waitForTimeout(150);
+  ok('tapping the red i shows the touch-screen warning', (await text()).includes('This course needs a touch screen.'));
+  await warnBtn.first().click(); await page.waitForTimeout(100); }
 ok('the report explains its key words, each folded until opened', t.includes('Key Words - Explained') && t.includes('Mastered') && t.includes('Reflections'));
 await page.getByRole('button', { name: /^Mastered ▾$/ }).click();
 ok('a key word opens to its explanation', (await page.getByRole('button', { name: /^Mastered ▴$/ }).count()) === 1);
@@ -557,14 +564,14 @@ ok('the all-progress reset carries the student\'s name', (await page.getByRole('
 // Find the course by its label rather than by position, so the test says what it means.
 // Switch off every course from grade 2 up, so this student is left with only pre-reader courses.
 // Done by label so the test keeps working as more grades are written.
-await page.locator('label', { hasText: /^\s*Fractions\s*$/ }).locator('input[type=checkbox]').uncheck();
+await page.locator('[data-course-row="fractions-intro"] input[type=checkbox]').uncheck();
 await page.waitForTimeout(400);
 { const upper = page.locator('label', { hasText: /\(Grade ([2-9]|1[0-2]) - / });
   const n = await upper.count();
   for (let i = 0; i < n; i++) { const box = upper.nth(i).locator('input[type=checkbox]'); if (await box.isChecked()) { await box.uncheck(); await page.waitForTimeout(300); } } }
 { // The box for a switched-off course is unticked while the kindergarten one stays ticked.
-  const fractionsBox = page.locator('label', { hasText: /^\s*Fractions\s*$/ }).locator('input[type=checkbox]');
-  const countingBox = page.locator('label', { hasText: /^\s*Counting\s*$/ }).locator('input[type=checkbox]');
+  const fractionsBox = page.locator('[data-course-row="fractions-intro"] input[type=checkbox]');
+  const countingBox = page.locator('[data-course-row="counting-k"] input[type=checkbox]');
   ok('switching a course off unticks it and leaves the others ticked', !(await fractionsBox.first().isChecked()) && (await countingBox.first().isChecked())); }
 // Backup: the file is the backup, and restoring never loses anything
 await tap('Back to Classroom');
@@ -1157,6 +1164,16 @@ await page.waitForTimeout(200);
 { ok('the relation game opens with a case and four names', (await page.getByRole('button', { name: /^Relationship: / }).count()) === 4 && (await text()).includes('Which relationship is this?'));
   for (let i = 0; i < 6; i++) { const ans = await page.locator('[data-relation-answer]').getAttribute('data-relation-answer'); if (!ans) break; await page.getByRole('button', { name: `Relationship: ${ans}`, exact: true }).click(); await page.waitForTimeout(1150); }
   ok('six named relationships finish the round', (await text()).includes('Six relationships named'));
+}
+await page.getByRole('button', { name: 'Close game' }).first().click({ force: true });
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview');
+// Will It Sprout? (pass HB, agriculture 3 to 5): the board carries whether the seed sprouts.
+await page.evaluate(() => window.__eduTest.openColoring('play:sprout-agriculture-3'));
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'coloring');
+await page.waitForTimeout(200);
+{ ok('the sprout game opens with a seed, its four facts and two answers', (await page.getByRole('button', { name: /^Answer: / }).count()) === 2 && (await text()).includes('Will this bean seed sprout?') && (await text()).includes('Warmth:'));
+  for (let i = 0; i < 6; i++) { const ans = await page.locator('[data-sprout-answer]').getAttribute('data-sprout-answer'); if (!ans) break; await page.getByRole('button', { name: `Answer: ${ans === 'yes' ? 'it sprouts' : 'it will not sprout'}`, exact: true }).click(); await page.waitForTimeout(1350); }
+  ok('six judged seeds finish the round', (await text()).includes('Six seeds judged'));
 }
 await page.getByRole('button', { name: 'Close game' }).first().click({ force: true });
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview');

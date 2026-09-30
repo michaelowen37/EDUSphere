@@ -68,15 +68,14 @@ export function gradeShort(grade) { return grade === 'K' ? 'KG' : grade === 'PK3
 // The way a person would say it in a sentence: "Kindergarten math", "third grade reading".
 const GRADE_WORDS = ['first', 'second', 'third', 'fourth', 'fifth', 'sixth', 'seventh', 'eighth', 'ninth', 'tenth', 'eleventh', 'twelfth'];
 export function gradeInSentence(grade) { return grade === 'K' ? 'Kindergarten' : grade === 'PK3' ? 'pre-K 3' : grade === 'PK4' ? 'pre-K 4' : grade === 'C' ? 'college level' : `${GRADE_WORDS[Number(grade) - 1]} grade`; }
-// One line for a course anywhere it appears in a list.
-// courseGradeLabel: the grade text a course shows in lists and dropdowns (2026-09-30, pass GV, Mikey). In plain terms:
-// a band elective sits at the youngest grade of its band (grade 3 for the 3 to 5 course) but serves the whole band, so
-// showing "Grade 3" beside it made the grade list look full of gaps. An elective with an `audience` shows that band
-// ("Grades 3 to 5", "Kindergarten to grade 2"); every other course shows its grade as before.
 // bandShort: the elective band names in the short forms Mikey asked for (2026-09-30, pass GZ): "Kinder to Grade 2" on a
 // fold or heading and "KG to Grade 2" inside a course row's parentheses; the other bands are already short and keep
 // their capital G ("Grades 3 to 5"). Core courses keep their own abbreviations (KG, Grade 1) untouched.
 export function bandShort(audience, inRow = false) { if (audience === 'Kindergarten to grade 2') return inRow ? 'KG to Grade 2' : 'Kinder to Grade 2'; return audience; }
+// courseGradeLabel: the grade text a course shows in lists and dropdowns (2026-09-30, pass GV, Mikey). In plain terms:
+// a band elective sits at the youngest grade of its band (grade 3 for the 3 to 5 course) but serves the whole band, so
+// showing "Grade 3" beside it made the grade list look full of gaps. An elective with an `audience` shows that band
+// ("Grades 3 to 5", "Kindergarten to grade 2"); every other course shows its grade as before.
 export function courseGradeLabel(course) { return course.elective && course.audience ? bandShort(course.audience) : gradeLabel(course.grade); }
 // electiveBand: the grade band an elective fold belongs to (2026-09-30, pass GY, Mikey). In plain terms: electives are
 // built for bands, kindergarten to grade 2, grades 3 to 5, 6 to 8, 9 to 12, and college, so a list of elective folds
@@ -91,6 +90,7 @@ export function electiveBand(grade) {
   if (n <= 8) return { key: '6', title: 'Grades 6 to 8' };
   return { key: '9', title: 'Grades 9 to 12' };
 }
+// One line for a course anywhere it appears in a list.
 export function courseLabel(course) { return `${course.title} (${course.elective && course.audience ? bandShort(course.audience, true) : gradeShort(course.grade)} - ${course.subject})`; }
 
 // A COURSE belongs to exactly one subject (Math, Reading, Science, ...) and
@@ -1069,10 +1069,20 @@ export const COURSES = [
     modules: SPEECH6_MODULES(),
   },
   // ---------------------------------------------------------------------------------------------------------------
-  // Agriculture for grades 9 to 12 (2026-09-30, pass GU). In plain terms: this is the course card for the first course
-  // of a new subject, Agriculture, the seventh strand of the depth program. Its four lessons live in AGRI9_MODULES()
-  // further down; this entry only names the course and points at them.
+  // Agriculture for grades 3 to 5 (2026-09-30, pass HB). In plain terms: the course card for the elementary agriculture
+  // elective, built above the Texas minimum (Texas has no elementary agriculture course). Its four lessons live in
+  // AGRI3_MODULES() further down; this entry only names the course and points at them.
   // ---------------------------------------------------------------------------------------------------------------
+  {
+    id: 'agriculture-3',
+    grade: '3',
+    subject: 'Agriculture',
+    title: 'Down on the farm',
+    audience: 'Grades 3 to 5',
+    elective: true,
+    keywords: ['agriculture', 'farm', 'seeds', 'soil', 'animals', 'chickens', 'garden', 'bees', 'elective'],
+    modules: AGRI3_MODULES(),
+  },
   // ---------------------------------------------------------------------------------------------------------------
   // Agriculture for grades 6 to 8 (2026-09-30, pass GX). In plain terms: the course card for the middle school
   // agriculture elective, built above the Texas minimum (Texas has no middle school agriculture course). Its four
@@ -1088,6 +1098,11 @@ export const COURSES = [
     keywords: ['agriculture', 'farm', 'soil', 'seeds', 'animals', 'food', 'project', 'elective'],
     modules: AGRI6_MODULES(),
   },
+  // ---------------------------------------------------------------------------------------------------------------
+  // Agriculture for grades 9 to 12 (2026-09-30, pass GU). In plain terms: this is the course card for the first course
+  // of a new subject, Agriculture, the seventh strand of the depth program. Its four lessons live in AGRI9_MODULES()
+  // further down; this entry only names the course and points at them.
+  // ---------------------------------------------------------------------------------------------------------------
   {
     id: 'agriculture-9',
     grade: '9',
@@ -1439,6 +1454,7 @@ export const GAMES = [
   { id: 'filler-speech-9', kind: 'filler', title: 'Cut the Fillers', minGrade: '9', filler: 'lines' },   // speech 9 to 12 (pass GQ): the fillers are the rule
   { id: 'jar-agriculture-9', kind: 'jar', title: 'Read the Jar', minGrade: '9', jar: 'textures' },   // agriculture 9 to 12 (pass GU): the settled layers are the rule
   { id: 'relation-agriculture-6', kind: 'relation', title: 'Who Gains', minGrade: '6', relation: 'cases' },   // agriculture 6 to 8 (pass GX): who gains is the rule
+  { id: 'sprout-agriculture-3', kind: 'sprout', title: 'Will It Sprout?', minGrade: '3', sprout: 'seeds' },   // agriculture 3 to 5 (pass HB): water, air and warmth are the rule
   { id: 'room-speech-6', kind: 'room', title: 'Fit the Room', minGrade: '6', room: 'lines' },   // speech 6 to 8 (pass GR): the room is the rule
   { id: 'ask-speech-3', kind: 'ask', title: 'Ask the Right Question', minGrade: '3', ask: 'topics' },   // speech 3 to 5 (pass GS): the topic is the rule
   { id: 'chord-arts-9', kind: 'chord', title: 'Build the Chord', minGrade: '9', chord: 'triads' },   // art and music 9 to 12 (pass GH): four half steps then three   // personal finance 9 to 12 (pass FY): a year of saving against surprises
@@ -2212,6 +2228,28 @@ export function relationRounds(round) {
   const order = [...RELATION_CASES]; for (let j = order.length - 1; j > 0; j--) { const k = Math.floor(rnd() * (j + 1)); [order[j], order[k]] = [order[k], order[j]]; }
   const picked = []; for (const [line, answer] of order) { if (picked.length >= 6) break; if (picked.filter((q) => q.answer === answer).length >= 2) continue; picked.push({ line, answer, choices: [...FARM_RELATIONS] }); }
   return picked;
+}
+// -----------------------------------------------------------------------------------------------------------------
+// Will It Sprout? (2026-09-30, pass HB, the elementary agriculture game). In plain terms: a bean seed sits in a cup, and
+// four facts describe the cup: is there water, is there air in the soil, is it warm, is it light. The student decides
+// whether the seed sprouts. A bean sprouts exactly when it has water, air and warmth, and light does not decide it, which
+// is the lesson's surprise (the seed is a bean on purpose: a few seeds, such as lettuce, do need light to start); `sproutAnswer` holds that one rule and `sproutRounds(round)` builds six seeds for a game:
+// two that sprout in the dark, two that sprout in the light and two that are missing one need. The screen reads the
+// answers from here, never decides them, so the rules test can prove every one.
+// -----------------------------------------------------------------------------------------------------------------
+export function sproutAnswer(c) { return c.water && c.air && c.warm ? 'yes' : 'no'; }
+export function sproutRounds(round) {
+  let x = (round * 16807 + 19) >>> 0; const rnd = () => { x = (x * 1664525 + 1013904223) >>> 0; return x / 4294967296; };
+  const out = [];
+  for (let i = 0; i < 6; i++) {
+    const kind = i % 3; // 0: every need met, in the dark; 1: one need missing; 2: every need met, in the light
+    let c;
+    if (kind === 1) { const miss = Math.floor(rnd() * 3); c = { water: miss !== 0, air: miss !== 1, warm: miss !== 2, light: rnd() < 0.5 }; }
+    else c = { water: true, air: true, warm: true, light: kind === 2 };
+    out.push({ ...c, answer: sproutAnswer(c) });
+  }
+  for (let j = out.length - 1; j > 0; j--) { const k = Math.floor(rnd() * (j + 1)); [out[j], out[k]] = [out[k], out[j]]; }
+  return out;
 }
 export const ROBOT_DECKS = {
   arrows: [
@@ -9715,39 +9753,6 @@ function ARTS9_MODULES() { return [
     generators: ['a9-society', 'a9-society', 'a9-society', 'a9-society', 'a9-society'],
   },
 ]; }
-// Philosophy for the 9 to 12 band (2026-09-29, pass GI), the fourth strand of the depth program: how arguments work, the
-// mistakes people make with them, what we can know, and how we might live. Texas has no philosophy TEKS, so the Texas
-// column carries the College and Career Readiness Standards, Cross-Disciplinary Standards (2009); the national column
-// carries the Common Core anchor standards for argument. Every thinker named is placed in the right century.
-// Philosophy for the 6 to 8 band (2026-09-29, pass GJ), in the philosophy-for-children tradition: what makes a question
-// worth asking, what makes a reason a good one, how to disagree without losing a friend, and what fairness is. The Texas
-// column carries the College and Career Readiness Standards, Cross-Disciplinary Standards, since Texas has no philosophy
-// TEKS; the national column carries the Common Core grade 6 standards for argument and discussion.
-// Philosophy for the 3 to 5 band (2026-09-29, pass GK), in the philosophy-for-children tradition: wonder questions
-// and look-up questions, the because that makes a reason, listening to someone you disagree with, and what fair means
-// when equal is not enough. The Texas column carries the College and Career Readiness Standards, Cross-Disciplinary
-// Standards, as the other philosophy courses do; the national column carries the Common Core grade 3 standards.
-// Philosophy for the K to 2 band (2026-09-29, pass GL), in the philosophy-for-children tradition and read aloud: wondering,
-// the because that makes a reason, taking turns to talk, and fair shares, each in the words of a five-year-old. The Texas
-// column carries the College and Career Readiness Standards, Cross-Disciplinary Standards, as the other philosophy courses
-// do; the national column carries the Common Core kindergarten standards for conversation and opinion.
-// Psychology for the 9 to 12 band (2026-09-29, pass GM), the fifth strand of the depth program: how psychologists know,
-// the brain, the senses and development, learning, memory and thinking, and people among people. Texas codes are §113.45
-// Psychology (One-Half Credit), Beginning with School Year 2011-2012, read from the published text; the national framework
-// is the American Psychological Association's National Standards for High School Psychology Curricula. Every study named
-// carries the year it was published, and each is one the course can defend.
-// Speech for the 9 to 12 band (2026-09-30, pass GQ), the sixth strand of the depth program: the communication process,
-// listening that works, building a talk, and delivery and nerves. Texas codes are §110.58 Communication Applications
-// (One-Half Credit), read from the published text; the national framework is the Common Core speaking and listening
-// standards for grades 9 to 10.
-// Speech for the 6 to 8 band (2026-09-30, pass GR), above the Texas minimum at Mikey's direction: listening on purpose,
-// saying it clearly, a two-minute talk, and disagreeing out loud. The Texas column carries the oral language strand of
-// English Language Arts and Reading, Grade 6 (§110.22(b)(1), Adopted 2017), read from the published text; the national
-// column carries the Common Core speaking and listening standards for grade 6.
-// Speech for the 3 to 5 band (2026-09-30, pass GS), above the Texas minimum at Mikey's direction: listening and asking,
-// telling it in order, a one-minute talk, and taking turns to talk, in the words of an eight-year-old. The Texas column
-// carries the oral language strand of English Language Arts and Reading, Grade 3 (§110.5(b)(1), Adopted 2017), read from
-// the published text; the national column carries the Common Core speaking and listening standards for grade 3.
 function SPEECH3_MODULES() { return [
   {
     id: 'listening-and-asking',
@@ -9818,6 +9823,14 @@ function SPEECH3_MODULES() { return [
     generators: ['s3-turns', 's3-turns', 's3-turns', 's3-turns', 's3-turns'],
   },
 ]; }
+// Speech for the 6 to 8 band (2026-09-30, pass GR), above the Texas minimum at Mikey's direction: listening on purpose,
+// saying it clearly, a two-minute talk, and disagreeing out loud. The Texas column carries the oral language strand of
+// English Language Arts and Reading, Grade 6 (§110.22(b)(1), Adopted 2017), read from the published text; the national
+// column carries the Common Core speaking and listening standards for grade 6.
+// Speech for the 3 to 5 band (2026-09-30, pass GS), above the Texas minimum at Mikey's direction: listening and asking,
+// telling it in order, a one-minute talk, and taking turns to talk, in the words of an eight-year-old. The Texas column
+// carries the oral language strand of English Language Arts and Reading, Grade 3 (§110.5(b)(1), Adopted 2017), read from
+// the published text; the national column carries the Common Core speaking and listening standards for grade 3.
 function SPEECH6_MODULES() { return [
   {
     id: 'listening-on-purpose',
@@ -9889,12 +9902,82 @@ function SPEECH6_MODULES() { return [
   },
 ]; }
 // -----------------------------------------------------------------------------------------------------------------
-// AGRI9_MODULES: the four lessons of the high school agriculture course (2026-09-30, pass GU).
-// In plain terms: each object is one lesson. `paragraphs` is the lesson text, `keyIdea` the one-sentence takeaway,
-// `example` the pictures and extra examples, `sources` the Texas standard the lesson meets (Principles of Agriculture,
-// Food, and Natural Resources, §130.2, read from the published text) with the national AFNR standard beside it, and
-// `generators` the question banks below that make the five quick checks. Every number in the text was checked twice.
+// AGRI3_MODULES: the four lessons of the elementary agriculture course (2026-09-30, pass HB).
+// In plain terms: each object is one lesson for an eight-year-old. `paragraphs` is the lesson text, `keyIdea` the takeaway,
+// `example` the pictures and extra examples, `sources` the Texas standard the lesson meets (the grade 3 science standards,
+// §112.5, read from the published text) with the National Agricultural Literacy Outcomes for grades 3 to 5 beside it, and
+// `generators` the question banks below that make the five quick checks. Every fact was checked twice.
 // -----------------------------------------------------------------------------------------------------------------
+function AGRI3_MODULES() { return [
+  {
+    id: 'farms-and-food',
+    order: 1,
+    title: 'Farms feed us',
+    tagline: 'Food, clothes and more start on a farm, and a path of many jobs brings them to you',
+    requires: [],
+    lesson: {
+      paragraphs: ['A farm grows or raises the things people need. Wheat for bread, milk for cheese, eggs for breakfast, and cotton for the shirt you are wearing all start on a farm. Texas raises more cattle and grows more cotton than any other state.', 'Farms use natural resources to do their work: soil to grow in, water for crops and animals, sunlight, air, and fuel for tractors and trucks. Using those resources well is part of a farmer\'s job, because they have to last for next year and for the next family.', 'Food takes a path from the farm to your table. Take bread: a farmer grows wheat, a machine called a combine harvests it, a truck carries it to a mill, the mill grinds it into flour, a bakery bakes it into bread, and a store sells it. Each step is a job: farmer, driver, miller, baker, grocer, and the scientists who study better wheat.'],
+      keyIdea: 'Farms grow food, clothes and more, and Texas raises the most cattle and cotton. Farms use soil, water, sunlight, air and fuel. Food takes a path from farm to table, and each step is a job.',
+      example: { kind: 'flow', steps: ['wheat on a farm', 'a combine harvests it', 'a mill makes flour', 'a bakery bakes bread', 'a store sells it'], caption: 'The path of a loaf of bread.',
+        another: ['Your jeans started in a field. Cotton is a plant, and the fluffy fiber around its seeds is spun into thread and woven into cloth.',
+          { text: 'Draw the path of anything you ate today as boxes and arrows. That drawing is called a flow chart, and scientists use them all the time.', visual: { kind: 'flow', steps: ['the farm', 'the trip', 'the store', 'your plate'] } },
+          'A farm needs many people who never drive a tractor: the veterinarian, the soil scientist, the truck driver and the person who fixes the machines.'] },
+    },
+    sources: ['Aligned with TEKS Science, Grade 3, 112.5(b)(11)(A) (explore and explain how humans use natural resources such as in construction, in agriculture, in transportation, and to make products), 112.5(b)(4)(B) (research and explore resources to investigate STEM careers) and 112.5(b)(1)(F) (construct appropriate graphic organizers to collect data, including flow charts or sequence maps), and the National Agricultural Literacy Outcomes, T1.3-5.e (recognize the natural resources used in agricultural practices), T3.3-5.b (diagram the path of production for a processed product, from farm to table), T5.3-5.b (discover that there are many jobs in agriculture) and T5.3-5.d (explain the value of agriculture and how it is important in daily life).'],
+    generators: ['ag3-farm', 'ag3-farm', 'ag3-farm', 'ag3-farm', 'ag3-farm'],
+  },
+  {
+    id: 'seeds-and-soil-3',
+    order: 2,
+    title: 'Seeds and soil',
+    tagline: 'Soil is made from rock and old leaves, and most seeds need water, air and warmth to start',
+    requires: ['farms-and-food'],
+    lesson: {
+      paragraphs: ['Soil is made two ways at once. Wind, water and ice slowly break rock into tiny pieces, which is called weathering, and sand and clay are made this way. Meanwhile dead leaves, roots and animals rot and break down, which is called decomposition, and that dark crumbly part feeds plants.', 'Most seeds, like beans and radishes, need three things to sprout: water, air and warmth. A seed does not need light yet, because its first food is packed inside the seed. Once the shoot pokes up, the leaves need sunlight to make food, and the roots take in nutrients from good soil.', 'A plant has a life cycle. A lima bean starts as a seed, sprouts into a seedling, grows into a plant, blooms with flowers, and makes pods full of new seeds. Radishes grow so fast that the root is ready to eat in about a month. When winter comes, some plants, like pecan trees, drop their leaves and rest, and that rest is called dormancy.'],
+      keyIdea: 'Soil forms as rock weathers into sand and clay and as dead plants and animals decompose. Most seeds need water, air and warmth to sprout. A plant\'s life cycle runs from seed to new seeds.',
+      example: { kind: 'flow', steps: ['seed', 'seedling', 'plant', 'flowers', 'new seeds'], caption: 'The life cycle of a lima bean.',
+        another: ['Put a bean seed in a wet paper towel in a dark drawer. In a few days a root comes out, with no light at all.',
+          { text: 'A seed in a flooded cup can rot. Seeds need air in the soil as much as they need water.', visual: { kind: 'flow', steps: ['water', 'air', 'warmth', 'a sprout'] } },
+          'A pecan tree in winter looks dead, but it is resting. In spring its buds open again.'] },
+    },
+    sources: ['Aligned with TEKS Science, Grade 3, 112.5(b)(10)(B) (investigate and explain how soils such as sand and clay are formed by weathering of rock and by decomposition of plant and animal remains), 112.5(b)(13)(B) (explore, illustrate, and compare life cycles in organisms such as beetles, crickets, radishes, or lima beans) and 112.5(b)(12)(A) (explain how temperature and precipitation affect plant responses through dormancy), and the National Agricultural Literacy Outcomes, T1.3-5.b (explain how the interaction of the sun, soil, water, and weather in plant and animal growth impacts agricultural production) and T2.3-5.c (explain how the availability of soil nutrients affects plant growth and development).'],
+    generators: ['ag3-soil', 'ag3-soil', 'ag3-soil', 'ag3-soil', 'ag3-soil'],
+  },
+  {
+    id: 'farm-animals-3',
+    order: 3,
+    title: 'Farm animals',
+    tagline: 'What animals need, the body parts that help them live, and a chicken from egg to hen',
+    requires: ['seeds-and-soil-3'],
+    lesson: {
+      paragraphs: ['Every farm animal needs food, water, shelter and space, and a farmer\'s day is built around those four. Cattle drink a lot of water, so troughs are checked every day. In summer animals need shade, and in winter they need hay when the grass stops growing.', 'An animal\'s body parts help it live where it lives. A cow has wide, flat back teeth for grinding grass and a stomach with four parts to digest it. A duck has webbed feet for paddling. A sheep\'s thick wool keeps it warm, which is why farmers shear it off in spring. In winter many cattle grow thicker, shaggier coats.', 'Animals have life cycles too. A hen lays an egg, and if the egg is kept warm, a chick hatches after about 21 days. The chick grows into a young hen, and at about five months old she starts laying eggs of her own. Wild animals near farms answer the seasons as well: monarch butterflies migrate south through Texas every fall.'],
+      keyIdea: 'Animals need food, water, shelter and space. Body parts like flat teeth, webbed feet and thick wool help them live. A chick hatches after about 21 days and grows up to lay eggs.',
+      example: { kind: 'flow', steps: ['egg', 'chick at about 21 days', 'young hen', 'laying hen'], caption: 'The life cycle of a chicken.',
+        another: ['A cow swallows her food, brings it back up and chews it again. That second chewing is called chewing her cud.',
+          { text: 'A duck\'s webbed feet push water like a paddle. A chicken\'s feet have no webs, which is why chickens stay out of the pond.', visual: { kind: 'flow', steps: ['webbed feet', 'a paddle', 'a swimmer'] } },
+          'Farmers watch the weather for their animals: more water in the heat, more hay in the cold, a dry barn in the rain.'] },
+    },
+    sources: ['Aligned with TEKS Science, Grade 3, 112.5(b)(13)(A) (explore and explain how external structures and functions of animals such as the neck of a giraffe or webbed feet on a duck enable them to survive in their environment), 112.5(b)(13)(B) (explore, illustrate, and compare life cycles in organisms) and 112.5(b)(12)(A) (explain how temperature and precipitation affect animal growth and behavior through migration and hibernation), and the National Agricultural Literacy Outcomes, T2.3-5.d (provide examples of specific ways farmers/ranchers meet the needs of animals).'],
+    generators: ['ag3-animals', 'ag3-animals', 'ag3-animals', 'ag3-animals', 'ag3-animals'],
+  },
+  {
+    id: 'a-tiny-farm',
+    order: 4,
+    title: 'A tiny farm of my own',
+    tagline: 'A plan, a tally, a bar graph, and the bees, weather and care a garden depends on',
+    requires: ['farm-animals-3'],
+    lesson: {
+      paragraphs: ['A tiny farm can be one garden bed. Make a plan first: what to grow, where the sun falls, and how you will water it. Then keep a tally, a mark for every squash you pick, and turn the tally into a bar graph so anyone can see the harvest week by week. Measure your plants with a metric ruler and write the numbers down, because numbers are evidence.', 'A garden is a food chain. The sun\'s energy goes into the plants, the plants feed people and animals, and when one link goes missing, everything after it changes. Squash, apples and many other crops need bees to carry pollen from flower to flower. Take the bees out of a field, and many of those flowers never make food.', 'Weather can help or hurt. In a drought, some plants wilt while tough ones like cactus hold on; in a flood, some plants drown while frogs and mosquitoes thrive. Farmers care for their land so it lasts: rows of trees block the wind, old stalks are left on fields to hold the soil, and water, paper and scraps are saved by reducing, reusing and recycling. That care is called stewardship.'],
+      keyIdea: 'Plan the garden, keep a tally and a bar graph, and measure. Energy flows from the sun to plants to people, and many crops need bees. Weather changes who thrives. Stewardship keeps the land for next year.',
+      example: { kind: 'flow', steps: ['sun', 'plants', 'people and animals'], caption: 'A food chain in a garden.',
+        another: ['Use an old milk jug as a watering can and turn scraps into compost. That is reusing and recycling in one garden.',
+          { text: 'A tally of 4 squash on Monday, 3 on Tuesday and 5 on Wednesday makes 12 in all. On a bar graph, Wednesday is the tallest bar.', visual: { kind: 'flow', steps: ['tally marks', 'numbers', 'a bar graph'] } },
+          'Some gardeners carry pollen with a small paintbrush when bees are scarce. It works, and it shows how much work the bees do for free.'] },
+    },
+    sources: ['Aligned with TEKS Science, Grade 3, 112.5(b)(1)(D) (use tools, including metric rulers and rain gauges), 112.5(b)(1)(E) (collect observations and measurements as evidence), 112.5(b)(1)(F) (construct appropriate graphic organizers to collect data, including tables and bar graphs), 112.5(b)(11)(B) (explain why the conservation of natural resources is important), 112.5(b)(11)(C) (identify ways to conserve natural resources through reducing, reusing, or recycling), 112.5(b)(12)(B) (identify and describe the flow of energy in a food chain and predict how changes in a food chain such as removal of bees from a field affect the ecosystem) and 112.5(b)(12)(C) (describe how natural changes to the environment such as floods and droughts cause some organisms to thrive and others to perish or move to new locations), and the National Agricultural Literacy Outcomes, T1.3-5.c (identify land and water conservation methods used in farming systems) and T2.3-5.e (understand the concept of stewardship and identify ways farmers/ranchers care for soil, water, plants, and animals).'],
+    generators: ['ag3-tiny', 'ag3-tiny', 'ag3-tiny', 'ag3-tiny', 'ag3-tiny'],
+  },
+]; }
 // -----------------------------------------------------------------------------------------------------------------
 // AGRI6_MODULES: the four lessons of the middle school agriculture course (2026-09-30, pass GX).
 // In plain terms: each object is one lesson. `paragraphs` is the lesson text, `keyIdea` the one-sentence takeaway,
@@ -9972,6 +10055,13 @@ function AGRI6_MODULES() { return [
     generators: ['a6-project', 'a6-project', 'a6-project', 'a6-project', 'a6-project'],
   },
 ]; }
+// -----------------------------------------------------------------------------------------------------------------
+// AGRI9_MODULES: the four lessons of the high school agriculture course (2026-09-30, pass GU).
+// In plain terms: each object is one lesson. `paragraphs` is the lesson text, `keyIdea` the one-sentence takeaway,
+// `example` the pictures and extra examples, `sources` the Texas standard the lesson meets (Principles of Agriculture,
+// Food, and Natural Resources, §130.2, read from the published text) with the national AFNR standard beside it, and
+// `generators` the question banks below that make the five quick checks. Every number in the text was checked twice.
+// -----------------------------------------------------------------------------------------------------------------
 function AGRI9_MODULES() { return [
   {
     id: 'what-agriculture-is',
@@ -10042,6 +10132,10 @@ function AGRI9_MODULES() { return [
     generators: ['ag-farm', 'ag-farm', 'ag-farm', 'ag-farm', 'ag-farm'],
   },
 ]; }
+// Speech for the 9 to 12 band (2026-09-30, pass GQ), the sixth strand of the depth program: the communication process,
+// listening that works, building a talk, and delivery and nerves. Texas codes are §110.58 Communication Applications
+// (One-Half Credit), read from the published text; the national framework is the Common Core speaking and listening
+// standards for grades 9 to 10.
 function SPEECH9_MODULES() { return [
   {
     id: 'the-communication-process',
@@ -10112,6 +10206,11 @@ function SPEECH9_MODULES() { return [
     generators: ['sp-deliver', 'sp-deliver', 'sp-deliver', 'sp-deliver', 'sp-deliver'],
   },
 ]; }
+// Psychology for the 9 to 12 band (2026-09-29, pass GM), the fifth strand of the depth program: how psychologists know,
+// the brain, the senses and development, learning, memory and thinking, and people among people. Texas codes are §113.45
+// Psychology (One-Half Credit), Beginning with School Year 2011-2012, read from the published text; the national framework
+// is the American Psychological Association's National Standards for High School Psychology Curricula. Every study named
+// carries the year it was published, and each is one the course can defend.
 function PSY9_MODULES() { return [
   {
     id: 'how-psychologists-know',
@@ -10182,6 +10281,10 @@ function PSY9_MODULES() { return [
     generators: ['ps-social', 'ps-social', 'ps-social', 'ps-social', 'ps-social'],
   },
 ]; }
+// Philosophy for the K to 2 band (2026-09-29, pass GL), in the philosophy-for-children tradition and read aloud: wondering,
+// the because that makes a reason, taking turns to talk, and fair shares, each in the words of a five-year-old. The Texas
+// column carries the College and Career Readiness Standards, Cross-Disciplinary Standards, as the other philosophy courses
+// do; the national column carries the Common Core kindergarten standards for conversation and opinion.
 function PHILK_MODULES() { return [
   {
     id: 'i-wonder',
@@ -10252,6 +10355,10 @@ function PHILK_MODULES() { return [
     generators: ['pk-fair', 'pk-fair', 'pk-fair', 'pk-fair', 'pk-fair'],
   },
 ]; }
+// Philosophy for the 3 to 5 band (2026-09-29, pass GK), in the philosophy-for-children tradition: wonder questions
+// and look-up questions, the because that makes a reason, listening to someone you disagree with, and what fair means
+// when equal is not enough. The Texas column carries the College and Career Readiness Standards, Cross-Disciplinary
+// Standards, as the other philosophy courses do; the national column carries the Common Core grade 3 standards.
 function PHIL3_MODULES() { return [
   {
     id: 'wondering-out-loud',
@@ -10322,19 +10429,6 @@ function PHIL3_MODULES() { return [
     generators: ['p3-fair', 'p3-fair', 'p3-fair', 'p3-fair', 'p3-fair'],
   },
 ]; }
-// Psychology for the 6 to 8 band (2026-09-29, pass GN), built above the Texas minimum at Mikey's ask: the growing brain,
-// attention, memory and practice, feelings as signals, and other people, each pitched for an eleven-year-old. The Texas
-// column carries the grade 6 health education standard's mental health and wellness strands (§115.26, Adopted 2020, read
-// from TEA's chapter text) and a College and Career Readiness study-habits standard; the national column carries the CASEL
-// framework's five competencies. Every study named carries its year and is one the course can defend.
-// Psychology for the 3 to 5 band (2026-09-29, pass GO), above the Texas minimum at Mikey's direction: the brain and the
-// senses, how remembering works, big feelings and what to do with them, and friends and other minds, in the words of an
-// eight-year-old. The Texas column carries the mental health and wellness strands of Health Education, Grade 3 (§115.15,
-// Adopted 2020), read from the published text; the national column carries the CASEL framework's five competencies.
-// Psychology for the K to 2 band (2026-09-30, pass GP), above the Texas minimum and read aloud: the brain and the five
-// senses, remembering, feelings with names and a way to calm down, and friends, in the words of a five-year-old. The Texas
-// column carries the mental health and wellness strands of Health Education, Kindergarten (§115.12, Adopted 2020), read
-// from the published text; the national column carries the CASEL framework's five competencies.
 // -----------------------------------------------------------------------------------------------------------------
 // SPEECHK_MODULES: the four lessons of the kindergarten speech course (2026-09-30, pass GT).
 // In plain terms: each object below is one lesson a five-year-old hears read aloud. `paragraphs` is the lesson text,
@@ -10413,6 +10507,10 @@ function SPEECHK_MODULES() { return [
     generators: ['spk-turns', 'spk-turns', 'spk-turns', 'spk-turns', 'spk-turns'],
   },
 ]; }
+// Psychology for the K to 2 band (2026-09-30, pass GP), above the Texas minimum and read aloud: the brain and the five
+// senses, remembering, feelings with names and a way to calm down, and friends, in the words of a five-year-old. The Texas
+// column carries the mental health and wellness strands of Health Education, Kindergarten (§115.12, Adopted 2020), read
+// from the published text; the national column carries the CASEL framework's five competencies.
 function PSYK_MODULES() { return [
   {
     id: 'my-brain-and-senses',
@@ -10483,6 +10581,10 @@ function PSYK_MODULES() { return [
     generators: ['pyk-friends', 'pyk-friends', 'pyk-friends', 'pyk-friends', 'pyk-friends'],
   },
 ]; }
+// Psychology for the 3 to 5 band (2026-09-29, pass GO), above the Texas minimum at Mikey's direction: the brain and the
+// senses, how remembering works, big feelings and what to do with them, and friends and other minds, in the words of an
+// eight-year-old. The Texas column carries the mental health and wellness strands of Health Education, Grade 3 (§115.15,
+// Adopted 2020), read from the published text; the national column carries the CASEL framework's five competencies.
 function PSY3_MODULES() { return [
   {
     id: 'your-brain-and-senses',
@@ -10553,6 +10655,11 @@ function PSY3_MODULES() { return [
     generators: ['py3-friends', 'py3-friends', 'py3-friends', 'py3-friends', 'py3-friends'],
   },
 ]; }
+// Psychology for the 6 to 8 band (2026-09-29, pass GN), built above the Texas minimum at Mikey's ask: the growing brain,
+// attention, memory and practice, feelings as signals, and other people, each pitched for an eleven-year-old. The Texas
+// column carries the grade 6 health education standard's mental health and wellness strands (§115.26, Adopted 2020, read
+// from TEA's chapter text) and a College and Career Readiness study-habits standard; the national column carries the CASEL
+// framework's five competencies. Every study named carries its year and is one the course can defend.
 function PSY6_MODULES() { return [
   {
     id: 'the-brain-you-are-growing',
@@ -10623,6 +10730,10 @@ function PSY6_MODULES() { return [
     generators: ['py6-people', 'py6-people', 'py6-people', 'py6-people', 'py6-people'],
   },
 ]; }
+// Philosophy for the 6 to 8 band (2026-09-29, pass GJ), in the philosophy-for-children tradition: what makes a question
+// worth asking, what makes a reason a good one, how to disagree without losing a friend, and what fairness is. The Texas
+// column carries the College and Career Readiness Standards, Cross-Disciplinary Standards, since Texas has no philosophy
+// TEKS; the national column carries the Common Core grade 6 standards for argument and discussion.
 function PHIL6_MODULES() { return [
   {
     id: 'questions-that-open',
@@ -10693,6 +10804,10 @@ function PHIL6_MODULES() { return [
     generators: ['p6-fair', 'p6-fair', 'p6-fair', 'p6-fair', 'p6-fair'],
   },
 ]; }
+// Philosophy for the 9 to 12 band (2026-09-29, pass GI), the fourth strand of the depth program: how arguments work, the
+// mistakes people make with them, what we can know, and how we might live. Texas has no philosophy TEKS, so the Texas
+// column carries the College and Career Readiness Standards, Cross-Disciplinary Standards (2009); the national column
+// carries the Common Core anchor standards for argument. Every thinker named is placed in the right century.
 function PHIL9_MODULES() { return [
   {
     id: 'what-is-an-argument',
@@ -15174,12 +15289,6 @@ Object.assign(GENERATORS, {
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
-  // Personal finance, grades 9 to 12 (2026-09-29, pass FY): dollars computed each time; concepts said in the lesson first.
-  // Philosophy, grades 9 to 12 (2026-09-29, pass GI): every answer is said in its lesson first.
-  // Philosophy, grades 6 to 8 (2026-09-29, pass GJ): every answer is said in its lesson first.
-  // Philosophy, grades 3 to 5 (2026-09-29, pass GK): every answer is said in its lesson first.
-  // Philosophy, K to 2 (2026-09-29, pass GL): spoken questions with tapped answers, every answer said in its lesson first.
-  // Psychology, K to 2 (2026-09-30, pass GP): spoken questions with tapped answers, every answer said in its lesson first.
   // ---------------------------------------------------------------------------------------------------------------
   // Kindergarten speech question banks (2026-09-30, pass GT). In plain terms: each bank is a short list of quick-check
   // questions for one lesson. Every question is [what is asked, the three answers to tap, the right one, one line said
@@ -15226,6 +15335,7 @@ Object.assign(GENERATORS, {
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
+  // Psychology, K to 2 (2026-09-30, pass GP): spoken questions with tapped answers, every answer said in its lesson first.
   'pyk-brain': (rng) => {
     const Q = [['What is the boss of you?', ['your brain', 'your shoe', 'your lunch'], 'your brain', 'It moves your legs and picks your words.'],
       ['How many senses does your brain get its news from?', ['five', 'two', 'ten'], 'five', 'Eyes, ears, nose, tongue and skin.'],
@@ -15266,6 +15376,7 @@ Object.assign(GENERATORS, {
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
+  // Philosophy, K to 2 (2026-09-29, pass GL): spoken questions with tapped answers, every answer said in its lesson first.
   'pk-wonder': (rng) => {
     const Q = [['Why is the sky blue? What kind of question is that?', ['a finding question', 'a wondering question', 'a wish'], 'a finding question', 'Someone can tell you, and then you know.'],
       ['What makes a good friend? What kind of question is that?', ['a wondering question', 'a finding question', 'an order'], 'a wondering question', 'Nobody can just tell you. You think about it.'],
@@ -15347,6 +15458,7 @@ Object.assign(GENERATORS, {
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
+  // Philosophy, grades 3 to 5 (2026-09-29, pass GK): every answer is said in its lesson first.
   'p3-wonder': (rng) => {
     const Q = [['Which of these is a wonder question?', ['Can a robot be your friend?', 'How many legs does a spider have?', 'What time is lunch?', 'How tall is the flagpole?'], 'Can a robot be your friend?', 'Nobody can look that up; you have to think about what a friend is.'],
       ['How many legs does a spider have? What kind of question is that?', ['a look-up question', 'a wonder question', 'a trick question', 'a riddle'], 'a look-up question', 'You can look it up: eight.'],
@@ -15432,6 +15544,7 @@ Object.assign(GENERATORS, {
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
+  // Philosophy, grades 6 to 8 (2026-09-29, pass GJ): every answer is said in its lesson first.
   'p6-questions': (rng) => {
     const Q = [['Which of these is a philosophical question?', ['What is fairness?', 'What is the capital of Texas?', 'How tall is the school?', 'What year is it?'], 'What is fairness?', 'Nobody can look that up; you have to think it through.'],
       ['Socrates made a habit of asking people what?', ['what they meant by the words they used', 'where they were born', 'how much money they had', 'who their teachers were'], 'what they meant by the words they used', 'Someone would say a brave act, and he would ask what bravery was.'],
@@ -15473,10 +15586,6 @@ Object.assign(GENERATORS, {
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
-  // Psychology, grades 9 to 12 (2026-09-29, pass GM): every recall answer is said in its lesson first; the statistics are computed fresh.
-  // Speech, grades 9 to 12 (2026-09-30, pass GQ): every answer is said in its lesson first.
-  // Speech, grades 6 to 8 (2026-09-30, pass GR): every answer is said in its lesson first.
-  // Speech, grades 3 to 5 (2026-09-30, pass GS): every answer is said in its lesson first.
   's3-listen': (rng) => {
     const Q = [['Which part of listening can nobody see?', ['your mind on the words', 'eyes on the speaker', 'hands still', 'body turned toward them'], 'your mind on the words', 'Not on what you want to say next.'],
       ['Your mind wanders during a story. What do you do?', ['bring it back to the last thing you heard', 'give up', 'talk instead', 'leave'], 'bring it back to the last thing you heard', 'That is normal.'],
@@ -15517,6 +15626,8 @@ Object.assign(GENERATORS, {
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
+  // Speech, grades 6 to 8 (2026-09-30, pass GR): every answer is said in its lesson first.
+  // Speech, grades 3 to 5 (2026-09-30, pass GS): every answer is said in its lesson first.
   's6-listen': (rng) => {
     const Q = [['What is the first move of active listening?', ['say it back', 'nod', 'take notes', 'argue'], 'say it back', 'So you want the poster done by Friday.'],
       ['After saying it back, what do you ask?', ['one clarifying question', 'ten questions', 'nothing', 'a riddle'], 'one clarifying question', 'Does Friday mean the morning or the end of the day?'],
@@ -15558,12 +15669,60 @@ Object.assign(GENERATORS, {
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
   // ---------------------------------------------------------------------------------------------------------------
-  // Agriculture question banks (2026-09-30, pass GU). In plain terms: each bank is a list of quick-check questions for
-  // one lesson, [what is asked, the four answers, the right one, one line said after]. `pick` chooses one, `shuffle`
-  // mixes the answers. Two banks also build arithmetic questions from numbers chosen on the spot (a soil sample that
-  // must add to 100 percent, a farm profit that is income minus expenses), so the answer is always computed, never
-  // typed by hand. Every fixed answer is a phrase the lesson said first, which the untaught-answer check proves.
+  // Elementary agriculture question banks (2026-09-30, pass HB). In plain terms: each bank is a short list of quick-check
+  // questions for one lesson, [what is asked, the four answers, the right one, one line said after]; `pick` chooses one and
+  // `shuffle` mixes the answers. The tiny-farm bank also builds a tally question from numbers chosen on the spot, so its
+  // answer is computed by adding, never typed by hand. The prefix ag3 keeps these apart from the art course's a3 banks.
   // ---------------------------------------------------------------------------------------------------------------
+  'ag3-farm': (rng) => {
+    const Q = [['Which state raises more cattle than any other?', ['Texas', 'Ohio', 'Maine', 'Alaska'], 'Texas', 'Texas grows more cotton than any other state too.'],
+      ['The shirt you are wearing may have started as what?', ['cotton', 'wheat', 'milk', 'eggs'], 'cotton', 'Cotton grows on a farm.'],
+      ['What machine harvests wheat?', ['a combine', 'a crane', 'a boat', 'a mixer'], 'a combine', 'Then a truck carries it to a mill.'],
+      ['Where does wheat go to be ground into flour?', ['a mill', 'a bank', 'a zoo', 'a pond'], 'a mill', 'The mill grinds it into flour.'],
+      ['Which is a natural resource farms use?', ['soil', 'plastic', 'glass', 'paint'], 'soil', 'Water, sunlight, air and fuel too.'],
+      ['Each step on the path from farm to table is what?', ['a job', 'a game', 'a holiday', 'a rule'], 'a job', 'Farmer, driver, miller, baker, grocer.'],
+      ['Why must farmers use resources well?', ['they have to last for next year', 'to win a prize', 'to make noise', 'no reason'], 'they have to last for next year', 'And for the next family.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'ag3-soil': (rng) => {
+    const Q = [['Breaking rock into tiny pieces is called what?', ['weathering', 'decomposition', 'harvest', 'dormancy'], 'weathering', 'Sand and clay are made this way.'],
+      ['Dead leaves and roots breaking down is called what?', ['decomposition', 'weathering', 'migration', 'shearing'], 'decomposition', 'That dark crumbly part feeds plants.'],
+      ['Most seeds need water, air and what to sprout?', ['warmth', 'light', 'sugar', 'wind'], 'warmth', 'Light can wait until the shoot is up.'],
+      ['Why does a seed not need light yet?', ['its first food is packed inside the seed', 'it is too small', 'light hurts it', 'it is asleep'], 'its first food is packed inside the seed', 'The leaves need sunlight later.'],
+      ['In a lima bean\'s life, what comes after the seed?', ['a seedling', 'the pod', 'the flower', 'the soil'], 'a seedling', 'Seed, seedling, plant, flowers, new seeds.'],
+      ['About how long until a radish root is ready to eat?', ['about a month', 'a year', 'one day', 'ten years'], 'about a month', 'Radishes grow fast.'],
+      ['A pecan tree resting in winter is called what?', ['dormancy', 'migration', 'weathering', 'harvest'], 'dormancy', 'Its buds open again in spring.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'ag3-animals': (rng) => {
+    const Q = [['What four things does every farm animal need?', ['food, water, shelter and space', 'toys, hats, music and snacks', 'only food', 'only water'], 'food, water, shelter and space', 'A farmer\'s day is built around those four.'],
+      ['What are a cow\'s wide, flat back teeth for?', ['grinding grass', 'catching fish', 'digging holes', 'cracking nuts'], 'grinding grass', 'Her stomach has four parts to digest it.'],
+      ['What does a duck have for paddling?', ['webbed feet', 'flat teeth', 'thick wool', 'a long neck'], 'webbed feet', 'Chickens have no webs.'],
+      ['What keeps a sheep warm?', ['thick wool', 'webbed feet', 'a long tail', 'flat teeth'], 'thick wool', 'Farmers shear it off in spring.'],
+      ['A kept-warm egg hatches after about how many days?', ['21', '7', '100', '2'], '21', 'Then the chick grows into a young hen.'],
+      ['At about what age does a young hen start laying?', ['five months', 'five days', 'five years', 'five weeks'], 'five months', 'Then the circle starts again.'],
+      ['Which butterflies migrate south through Texas in fall?', ['monarch butterflies', 'ladybugs', 'honeybees', 'fireflies'], 'monarch butterflies', 'Animals answer the seasons.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'ag3-tiny': (rng) => {
+    if (rng() < 0.35) { // a tally over three days: the answer is the sum of the three numbers shown
+      const a = 1 + Math.floor(rng() * 9); const b = 1 + Math.floor(rng() * 9); const c = 1 + Math.floor(rng() * 9); const sum = a + b + c;
+      const answer = String(sum); const wrong = [sum + 1, sum - 1, sum + 2].filter((v) => v > 0 && v !== sum).map(String);
+      return { type: 'choice', story: `A tally shows ${a} squash on Monday, ${b} on Tuesday and ${c} on Wednesday.`, prompt: 'How many squash were picked in all?', choices: shuffle(rng, [answer, ...wrong]), answer, explain: 'Add the three days together.', visual: null, explainVisual: null };
+    }
+    const Q = [['What do you make first for a tiny farm?', ['a plan', 'a fence', 'a sale', 'a graph'], 'a plan', 'What to grow, where the sun falls, how to water.'],
+      ['A mark for every squash you pick is called what?', ['a tally', 'a pollen', 'a trough', 'a mill'], 'a tally', 'Then turn it into a bar graph.'],
+      ['What do you turn a tally into so anyone can see it?', ['a bar graph', 'a song', 'a poem', 'a map'], 'a bar graph', 'The harvest week by week.'],
+      ['What do squash and apples need to carry pollen?', ['bees', 'cows', 'ducks', 'worms'], 'bees', 'Take the bees out and many flowers never make food.'],
+      ['In a flood, which animals thrive?', ['frogs and mosquitoes', 'cows and horses', 'hens and chicks', 'bees and ants'], 'frogs and mosquitoes', 'Some plants drown.'],
+      ['What do rows of trees on a farm do?', ['block the wind', 'make flour', 'lay eggs', 'sell bread'], 'block the wind', 'That keeps the soil in place.'],
+      ['Caring for land so it lasts is called what?', ['stewardship', 'dormancy', 'weathering', 'migration'], 'stewardship', 'It keeps the land for next year.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
   // ---------------------------------------------------------------------------------------------------------------
   // Middle school agriculture question banks (2026-09-30, pass GX). In plain terms: each bank is a list of quick-check
   // questions for one lesson, [what is asked, the four answers, the right one, one line said after]; `pick` chooses one
@@ -15619,6 +15778,13 @@ Object.assign(GENERATORS, {
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
+  // ---------------------------------------------------------------------------------------------------------------
+  // Agriculture question banks (2026-09-30, pass GU). In plain terms: each bank is a list of quick-check questions for
+  // one lesson, [what is asked, the four answers, the right one, one line said after]. `pick` chooses one, `shuffle`
+  // mixes the answers. Two banks also build arithmetic questions from numbers chosen on the spot (a soil sample that
+  // must add to 100 percent, a farm profit that is income minus expenses), so the answer is always computed, never
+  // typed by hand. Every fixed answer is a phrase the lesson said first, which the untaught-answer check proves.
+  // ---------------------------------------------------------------------------------------------------------------
   'ag-scope': (rng) => {
     const Q = [['About how long ago did agriculture begin?', ['ten thousand years', 'a hundred years', 'a million years', 'five hundred years'], 'ten thousand years', 'People began planting and keeping what they had only gathered.'],
       ['Who patented the mechanical reaper in 1834?', ['Cyrus McCormick', 'Norman Borlaug', 'Louis Pasteur', 'Fritz Haber'], 'Cyrus McCormick', 'One person could harvest what had taken many.'],
@@ -15673,6 +15839,7 @@ Object.assign(GENERATORS, {
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
+  // Speech, grades 9 to 12 (2026-09-30, pass GQ): every answer is said in its lesson first.
   'sp-process': (rng) => {
     const Q = [['A voice, a phone call, a screen: which part of the process?', ['the channel', 'the message', 'the feedback', 'the noise'], 'the channel', 'The message travels by a channel.'],
       ['A nod, a question, a frown from the receiver is called what?', ['feedback', 'noise', 'the channel', 'the register'], 'feedback', 'The receiver sends feedback.'],
@@ -15717,6 +15884,7 @@ Object.assign(GENERATORS, {
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
+  // Psychology, grades 9 to 12 (2026-09-29, pass GM): every recall answer is said in its lesson first; the statistics are computed fresh.
   'ps-know': (rng) => {
     const Q = [['Who opened the first psychology laboratory, in Leipzig in 1879?', ['Wilhelm Wundt', 'Sigmund Freud', 'Jean Piaget', 'B. F. Skinner'], 'Wilhelm Wundt', 'The field has a birthday: 1879.'],
       ['Which perspective explains behavior by learned responses?', ['behavioral', 'biological', 'humanistic', 'psychodynamic'], 'behavioral', 'Behavioral by learned responses; cognitive by thinking; sociocultural by culture and group.'],
@@ -15773,6 +15941,7 @@ Object.assign(GENERATORS, {
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
+  // Philosophy, grades 9 to 12 (2026-09-29, pass GI): every answer is said in its lesson first.
   'ph-argument': (rng) => {
     const Q = [['In philosophy, an argument is what?', ['premises offered for a conclusion', 'a quarrel', 'a single opinion', 'a question with no answer'], 'premises offered for a conclusion', 'A set of statements, the premises, offered as reasons for another statement, the conclusion.'],
       ['An argument whose form guarantees the conclusion when the premises hold is called what?', ['valid', 'sound', 'inductive', 'popular'], 'valid', 'Validity is about form, not about whether the premises are true.'],
@@ -15817,6 +15986,7 @@ Object.assign(GENERATORS, {
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
+  // Personal finance, grades 9 to 12 (2026-09-29, pass FY): dollars computed each time; concepts said in the lesson first.
   'e9-pay': (rng) => {
     const r = rng();
     if (r < 0.4) {
@@ -23835,6 +24005,38 @@ export const WONDER = [
     ],
     closing: 'What could you start this month that would still be growing at forty?',
   },
+  // Two growing-stage Wonder questions for the elementary agriculture course (pass HB): one about bees leaving a farm,
+  // and one a failure question about seeds that never came up.
+  {
+    id: 'w-growing-if-the-bees-left',
+    theme: 'world',
+    stage: 'growing',
+    courseIds: ['agriculture-3'],
+    answerMode: 'typed',
+    prompt: 'If every bee left a farm for a whole summer, what would happen to the squash and the apples?',
+    perspectives: [
+      { voice: 'A scientist', says: 'Most of those flowers would never become food, because bees carry the pollen that turns a flower into a squash or an apple. Some farmers even rent beehives in spring to be sure the job gets done.' },
+      { voice: 'An artist', says: 'Picture an orchard in full bloom and not one apple in the fall. The flowers would be just as pretty, and the baskets would be empty.' },
+      { voice: 'A grandparent of faith', says: 'My garden taught me that small things carry big loads. A bee weighs almost nothing, and a lot of my supper depends on her, so I say thank you when I see one.' },
+      { voice: 'A skeptic', says: 'Some crops would be fine, because corn is pollinated by the wind and wheat mostly pollinates itself. The answer depends on the crop, and a good farmer knows which of hers need bees.' },
+    ],
+    closing: 'Which of your favorite foods do you think need bees?',
+  },
+  {
+    id: 'w-growing-seeds-never-came-up',
+    theme: 'failure',
+    stage: 'growing',
+    courseIds: ['agriculture-3'],
+    answerMode: 'typed',
+    prompt: 'You planted seeds and watered them every day, and after two weeks nothing came up. What might have gone wrong?',
+    perspectives: [
+      { voice: 'A scientist', says: 'Check the three needs one at a time. Too much water can drown a seed because it needs air too, and a cold windowsill can keep it from starting. Change one thing and try again.' },
+      { voice: 'An artist', says: 'Sometimes a garden is a rough draft. The second planting always goes better, because now you know where the cold draft comes from.' },
+      { voice: 'A grandparent of faith', says: 'Every gardener I know has a pot where nothing grew. Nobody in my garden club is keeping score. Plant again, and tell me which seed came up first.' },
+      { voice: 'A skeptic', says: 'Before blaming yourself, dig one seed up and look at it. If it is soft and brown, it rotted from too much water; if it is hard and whole, it was too cold or too dry. The seed will tell you.' },
+    ],
+    closing: 'What would you change the next time you plant?',
+  },
   {
     id: 'w-growing-everyone-talked-at-once',
     theme: 'world',
@@ -26966,6 +27168,7 @@ export const COURSE_GAMES = {
   'speech-9': ['filler-speech-9'],
   'agriculture-9': ['jar-agriculture-9'],
   'agriculture-6': ['relation-agriculture-6'],
+  'agriculture-3': ['sprout-agriculture-3'],
   'speech-6': ['room-speech-6'],
   'speech-3': ['ask-speech-3'],
   'arts-9': ['chord-arts-9'],

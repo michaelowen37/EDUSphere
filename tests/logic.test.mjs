@@ -1566,6 +1566,12 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
     ok('the relation game belongs to agriculture 6 to 8 and names its cases with its own key', L.COURSE_GAMES['agriculture-6'].includes('relation-agriculture-6') && L.GAMES.find((g) => g.id === 'relation-agriculture-6').relation === 'cases' && !L.GAMES.find((g) => g.id === 'relation-agriculture-6').deck);
     ok('the hen-project profit questions compute their answers', [...Array(40).keys()].every((i) => { const q = L.generateQuestion('a6-project', i); if (!q.story) return true; const n = q.story.match(/\d+/g).map(Number); return q.answer === `$${n[2] - n[0] - n[1]}`; }));
   }
+  { // Will It Sprout? (pass HB): six seeds a round; a seed sprouts exactly when it has water, air and warmth, light never decides it;
+    // every round has both answers and at least one seed that sprouts in the dark.
+    ok('every sprout round follows the water, air and warmth rule, with a seed that sprouts in the dark', [1, 2, 3, 4, 5].every((r) => { const qs = L.sproutRounds(r); return qs.length === 6 && qs.every((q) => q.answer === (q.water && q.air && q.warm ? 'yes' : 'no')) && qs.some((q) => q.answer === 'yes' && !q.light) && qs.some((q) => q.answer === 'no'); }));
+    ok('the sprout game belongs to agriculture 3 to 5 and names its seeds with its own key', L.COURSE_GAMES['agriculture-3'].includes('sprout-agriculture-3') && L.GAMES.find((g) => g.id === 'sprout-agriculture-3').sprout === 'seeds' && !L.GAMES.find((g) => g.id === 'sprout-agriculture-3').deck);
+    ok('the squash-tally questions compute their answers', [...Array(40).keys()].every((i) => { const q = L.generateQuestion('ag3-tiny', i); if (!q.story) return true; const n = q.story.match(/\d+/g).map(Number); return q.answer === String(n[0] + n[1] + n[2]); }));
+  }
   ok('the two robot games sit in the two programming courses beside their first games', L.COURSE_GAMES['tech-3'].includes('debug-tech-3') && L.COURSE_GAMES['tech-5'].includes('debug-tech-5') && L.GAMES.filter((g) => g.kind === 'debug').every((g) => L.ROBOT_DECKS[g.deck]));
 }
 

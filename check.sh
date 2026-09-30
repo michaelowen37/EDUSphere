@@ -14,7 +14,8 @@ echo "6/13 old backups still restore"; node tests/backup-forever.test.mjs | tail
 echo "7/13 build";        ./build.sh || fail=1
 echo "8/13 render smoke"; npx tsx tests/render.smoke.test.mjs 2>&1 | grep -E "^(PASS|FAIL)" | tail -1 | tee /tmp/edu_s.txt; grep -q "^PASS" /tmp/edu_s.txt || fail=1
 echo "9/13 syntax";       tsc --noEmit --allowJs --jsx preserve --target es2022 --module esnext --moduleResolution bundler dist/edusphere-prototype.jsx 2>&1 | grep -v "Cannot find module 'react'" | tee /tmp/edu_x.txt; [ -s /tmp/edu_x.txt ] && fail=1
-echo "10/13 browser click-through (three to four minutes)"; node tests/e2e/make-page.mjs >/dev/null && timeout 330 node tests/e2e/click-through.mjs 2>&1 | tail -1 | tee /tmp/edu_e.txt; grep -q " 0 failed" /tmp/edu_e.txt || fail=1
+# The click-through keeps its whole log in /tmp/edu_click_through.log, so a failure can be read in full (pass HC).
+echo "10/13 browser click-through (four to six minutes)"; node tests/e2e/make-page.mjs >/dev/null && timeout 480 node tests/e2e/click-through.mjs > /tmp/edu_click_through.log 2>&1; tail -1 /tmp/edu_click_through.log | tee /tmp/edu_e.txt; grep -q " 0 failed" /tmp/edu_e.txt || fail=1
 echo "10/13 license codes in the browser"; timeout 120 node tests/e2e/license.mjs 2>&1 | tail -1 | tee /tmp/edu_lic.txt; grep -q " 0 failed" /tmp/edu_lic.txt || fail=1
 echo "10/13 dragging with a desktop mouse"; timeout 150 node tests/e2e/drag.mjs 2>&1 | tail -1 | tee /tmp/edu_drag.txt; grep -q " 0 failed" /tmp/edu_drag.txt || fail=1
 echo "10/13 changing the educator PIN"; timeout 120 node tests/e2e/educator.mjs 2>&1 | tail -1 | tee /tmp/edu_educator.txt; grep -q " 0 failed" /tmp/edu_educator.txt || fail=1

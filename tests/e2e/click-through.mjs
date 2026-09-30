@@ -1177,6 +1177,18 @@ await page.waitForTimeout(200);
 }
 await page.getByRole('button', { name: 'Close game' }).first().click({ force: true });
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview');
+// Grow the Plant (pass HC, agriculture K to 2): a toy changes nothing; water, sunshine and soil grow each of four plants.
+await page.evaluate(() => window.__eduTest.openColoring('play:grow-agriculture-k'));
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'coloring');
+await page.waitForTimeout(200);
+{ ok('the grow game opens with a pot and five pictures to tap', (await page.getByRole('button', { name: /^Give / }).count()) === 5 && /Tap what the \w+ needs\./.test(await text()));
+  const toy = page.getByRole('button', { name: /^Give (ball|shoe|toy car|hat)$/ }).first(); await toy.click(); await page.waitForTimeout(150);
+  ok('a toy does not grow the plant', (await page.locator('[data-grow-given]').getAttribute('data-grow-given')) === '0');
+  for (let r = 0; r < 4; r++) { for (const need of ['water', 'sunshine', 'soil']) { await page.getByRole('button', { name: `Give ${need}`, exact: true }).click(); await page.waitForTimeout(80); } await page.waitForTimeout(1300); }
+  ok('three needs for each of four plants finish the round', (await text()).includes('Four plants grown'));
+}
+await page.getByRole('button', { name: 'Close game' }).first().click({ force: true });
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview');
 // Some pictures are drawn on rather than filled in: a finger stroke leaves a line in the chosen color.
 await page.evaluate(() => window.__eduTest.openColoring('star'));
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'coloring');

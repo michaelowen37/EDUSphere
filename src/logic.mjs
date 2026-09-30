@@ -1069,6 +1069,23 @@ export const COURSES = [
     modules: SPEECH6_MODULES(),
   },
   // ---------------------------------------------------------------------------------------------------------------
+  // Agriculture for kindergarten to grade 2 (2026-09-30, pass HC). In plain terms: the course card on the kindergarten
+  // shelf for the youngest farm course, read aloud (questions spoken, answers tapped), free like all of kindergarten, and
+  // an elective above the Texas minimum (Texas has no kindergarten agriculture course). Its four lessons live in
+  // AGRIK_MODULES() further down; this entry only names the course and points at them.
+  // ---------------------------------------------------------------------------------------------------------------
+  {
+    id: 'agriculture-k',
+    grade: 'K',
+    subject: 'Agriculture',
+    title: 'On the farm',
+    audience: 'Kindergarten to grade 2',
+    readAloud: true, // the K to 2 band: questions are spoken and answers tapped
+    elective: true,
+    keywords: ['agriculture', 'farm', 'plants', 'seeds', 'animals', 'food', 'farmer', 'elective'],
+    modules: AGRIK_MODULES(),
+  },
+  // ---------------------------------------------------------------------------------------------------------------
   // Agriculture for grades 3 to 5 (2026-09-30, pass HB). In plain terms: the course card for the elementary agriculture
   // elective, built above the Texas minimum (Texas has no elementary agriculture course). Its four lessons live in
   // AGRI3_MODULES() further down; this entry only names the course and points at them.
@@ -1455,6 +1472,7 @@ export const GAMES = [
   { id: 'jar-agriculture-9', kind: 'jar', title: 'Read the Jar', minGrade: '9', jar: 'textures' },   // agriculture 9 to 12 (pass GU): the settled layers are the rule
   { id: 'relation-agriculture-6', kind: 'relation', title: 'Who Gains', minGrade: '6', relation: 'cases' },   // agriculture 6 to 8 (pass GX): who gains is the rule
   { id: 'sprout-agriculture-3', kind: 'sprout', title: 'Will It Sprout?', minGrade: '3', sprout: 'seeds' },   // agriculture 3 to 5 (pass HB): water, air and warmth are the rule
+  { id: 'grow-agriculture-k', kind: 'grow', title: 'Grow the Plant', grow: 'needs', young: true, minGrade: 'K' },   // agriculture K to 2 (pass HC): the plant's needs are the rule
   { id: 'room-speech-6', kind: 'room', title: 'Fit the Room', minGrade: '6', room: 'lines' },   // speech 6 to 8 (pass GR): the room is the rule
   { id: 'ask-speech-3', kind: 'ask', title: 'Ask the Right Question', minGrade: '3', ask: 'topics' },   // speech 3 to 5 (pass GS): the topic is the rule
   { id: 'chord-arts-9', kind: 'chord', title: 'Build the Chord', minGrade: '9', chord: 'triads' },   // art and music 9 to 12 (pass GH): four half steps then three   // personal finance 9 to 12 (pass FY): a year of saving against surprises
@@ -2250,6 +2268,22 @@ export function sproutRounds(round) {
   }
   for (let j = out.length - 1; j > 0; j--) { const k = Math.floor(rnd() * (j + 1)); [out[j], out[k]] = [out[k], out[j]]; }
   return out;
+}
+// -----------------------------------------------------------------------------------------------------------------
+// Grow the Plant (2026-09-30, pass HC, the kindergarten agriculture game). In plain terms: a pot with a seed sits on the
+// board, and five pictures sit below it: water, sunshine, soil, and two toys. The child taps the three things the plant
+// needs, in any order, and the plant grows a step with each one; a toy wobbles. The lesson names five needs, and the game
+// uses the three a child can give with a tap (air and room are already there). `GROW_NEEDS` and `GROW_TOYS` are the
+// pictures, and `growRounds(round)` builds four rounds, each a plant with the three needs and two different toys, shuffled.
+// The screen reads the rounds from here, so one rules test can prove every round is fair.
+// -----------------------------------------------------------------------------------------------------------------
+export const GROW_NEEDS = ['water', 'sunshine', 'soil'];
+export const GROW_TOYS = ['ball', 'shoe', 'toy car', 'hat'];
+export const GROW_PLANTS = ['bean', 'sunflower', 'tomato', 'corn'];
+export function growRounds(round) {
+  let x = (round * 69621 + 23) >>> 0; const rnd = () => { x = (x * 1664525 + 1013904223) >>> 0; return x / 4294967296; };
+  const shuffled = (list) => { const a = [...list]; for (let j = a.length - 1; j > 0; j--) { const k = Math.floor(rnd() * (j + 1)); [a[j], a[k]] = [a[k], a[j]]; } return a; };
+  return GROW_PLANTS.map((plant) => ({ plant, items: shuffled([...GROW_NEEDS, ...shuffled(GROW_TOYS).slice(0, 2)]) }));
 }
 export const ROBOT_DECKS = {
   arrows: [
@@ -9902,6 +9936,84 @@ function SPEECH6_MODULES() { return [
   },
 ]; }
 // -----------------------------------------------------------------------------------------------------------------
+// AGRIK_MODULES: the four lessons of the kindergarten agriculture course (2026-09-30, pass HC).
+// In plain terms: each object is one lesson a five-year-old hears read aloud. `paragraphs` is the lesson text, in short
+// sentences; `keyIdea` is the takeaway; `example` gives the pictures and extra examples the screen shows; `sources`
+// names the Texas standard the lesson meets (Science, Kindergarten, §112.2, in TEA's published wording) and the National
+// Agricultural Literacy Outcomes for kindergarten to grade 2 beside it; `generators` lists the question banks below that
+// make the five quick checks. Every fact was checked twice.
+// -----------------------------------------------------------------------------------------------------------------
+function AGRIK_MODULES() { return [
+  {
+    id: 'plants-we-eat-k',
+    order: 1,
+    title: 'Plants we eat',
+    tagline: 'Farmers grow plants, and we eat their roots, leaves, flowers, fruits and seeds',
+    requires: [],
+    lesson: {
+      paragraphs: ['Farmers grow plants for us to eat. A plant has parts: roots, a stem, leaves, flowers and fruits. We eat every one of those parts.', 'A carrot is a root, and it grows under the ground. Lettuce is leaves. Broccoli is a bunch of tiny flower buds, picked before they open. Asparagus is a young stem.\nAn apple is a fruit, and its seeds are inside.', 'Corn and wheat are seeds. Wheat seeds are ground into flour for our bread, and corn seeds pop into popcorn. Cows eat plants too, like grass and hay.'],
+      keyIdea: 'Farmers grow plants for food. We eat roots like carrots, leaves like lettuce, flower buds like broccoli, fruits like apples, and seeds like corn and wheat.',
+      example: { kind: 'flow', steps: ['a carrot: a root', 'lettuce: leaves', 'broccoli: flower buds', 'an apple: a fruit'], caption: 'Plant parts we eat.',
+        another: ['A salad can hold four plant parts at once: carrot roots, lettuce leaves, broccoli flower buds and tomato fruits.',
+          { text: 'Cut an apple across the middle and look. The seeds sit in a little star inside the fruit.', visual: { kind: 'flow', steps: ['an apple', 'cut it across', 'a star of seeds'] } },
+          'Popcorn is a seed. The water inside heats up, and pop, the seed turns inside out.'] },
+    },
+    sources: ['Aligned with TEKS Science, Kindergarten, 112.2(b)(13)(A) (identify the structures of plants, including roots, stems, leaves, flowers, and fruits), and the National Agricultural Literacy Outcomes, T1.K-2.a (describe how farmers/ranchers use land to grow crops and support livestock) and T2.K-2.c (identify examples of feed/food products eaten by animals and people).'],
+    generators: ['agk-plants', 'agk-plants', 'agk-plants', 'agk-plants', 'agk-plants'],
+  },
+  {
+    id: 'seed-to-plant-k',
+    order: 2,
+    title: 'From seed to plant',
+    tagline: 'A seed grows into a plant, and a plant needs air, sunlight, water, soil and room',
+    requires: ['plants-we-eat-k'],
+    lesson: {
+      paragraphs: ['A plant starts as a seed. The seed opens, and a tiny root goes down into the soil. A small shoot comes up, and now it is a seedling.', 'The seedling grows into a plant. The plant grows flowers, and the flowers make fruit with new seeds inside. Seed, seedling, plant, flower, fruit!\nA baby bean plant looks like its parent, with the same kind of leaves.', 'Plants need air, sunlight, water, nutrients in the soil, and room to grow. Nutrients are plant food. Farmers plant seeds apart, so each plant has room.'],
+      keyIdea: 'A seed grows into a seedling, then a plant, then flowers and fruit with new seeds. Plants need air, sunlight, water, nutrients in the soil, and room to grow.',
+      example: { kind: 'flow', steps: ['seed', 'seedling', 'plant', 'flower', 'fruit'], caption: 'The life of a plant.',
+        another: ['A sunflower seed grows into a sunflower, never into a bean. Young plants look like their parent plants.',
+          { text: 'Two seeds planted too close fight for water and light. Room to grow is one of the five things a plant needs.', visual: { kind: 'flow', steps: ['seeds apart', 'room for roots', 'strong plants'] } },
+          'The fruit holds new seeds, and new seeds start the whole thing over again.'] },
+    },
+    sources: ['Aligned with TEKS Science, Kindergarten, 112.2(b)(12)(A) (observe and identify the dependence of plants on air, sunlight, water, nutrients in the soil, and space to grow), 112.2(b)(13)(C) (identify and record the changes from seed, seedling, plant, flower, and fruit in a simple plant life cycle) and 112.2(b)(13)(D) (identify ways that young plants resemble the parent plant), and the National Agricultural Literacy Outcomes, T1.K-2.b (describe the importance of soil and water in raising crops and livestock), T2.K-2.a (explain how farmers/ranchers work with the lifecycle of plants and animals to harvest a crop) and T2.K-2.e (identify the importance of natural resources in farming).'],
+    generators: ['agk-grow', 'agk-grow', 'agk-grow', 'agk-grow', 'agk-grow'],
+  },
+  {
+    id: 'farm-animals-k',
+    order: 3,
+    title: 'Farm animals',
+    tagline: 'What farm animals need, the body parts that help them, and what they give us',
+    requires: ['seed-to-plant-k'],
+    lesson: {
+      paragraphs: ['Farm animals need air, water, food, space, and shelter. Shelter is a barn or a shed. It keeps them dry in the rain and cool on a hot day.', 'Animals have body parts that help them. A cow can see almost all the way around, and her ears turn to hear. A hen uses her beak to pick up seeds.\nA goat grabs leaves with her lips, and a horse has strong legs to run.', 'Farm animals give us things we need. Cows give milk, and hens lay eggs. Sheep grow wool, and the wool is made into warm sweaters. Farmers take care of them every day.'],
+      keyIdea: 'Farm animals need air, water, food, space and shelter. Body parts help them see, hear, grab and move. Cows give milk, hens lay eggs, and sheep grow wool.',
+      example: { kind: 'flow', steps: ['air and water', 'food', 'space', 'shelter'], caption: 'What every farm animal needs.',
+        another: ['A barn is shelter. When a storm comes, the animals go inside and stay dry.',
+          { text: 'A hen has no hands, so her beak does the picking up. A goat has no hands either, so her lips do the grabbing.', visual: { kind: 'flow', steps: ['a beak for seeds', 'lips for leaves', 'legs to run'] } },
+          'A sweater can start on a farm: sheep grow wool, a farmer shears it off, and it is spun into yarn.'] },
+    },
+    sources: ['Aligned with TEKS Science, Kindergarten, 112.2(b)(12)(B) (observe and identify the dependence of animals on air, water, food, space, and shelter) and 112.2(b)(13)(B) (identify the different structures that animals have that allow them to interact with their environment such as seeing, hearing, moving, and grasping objects), and the National Agricultural Literacy Outcomes, T2.K-2.b (identify animals involved in agricultural production and their uses) and T3.K-2.b (recognize that agriculture provides our most basic necessities: food, fiber, energy, and shelter).'],
+    generators: ['agk-animals', 'agk-animals', 'agk-animals', 'agk-animals', 'agk-animals'],
+  },
+  {
+    id: 'a-day-on-the-farm-k',
+    order: 4,
+    title: 'A day on the farm',
+    tagline: 'What a farmer does all day, how weather helps or hurts, and how a farm feeds a town',
+    requires: ['farm-animals-k'],
+    lesson: {
+      paragraphs: ['A farmer\'s day starts early. The farmer feeds the animals, checks their water, and looks at the sky. Weather matters on a farm.', 'Rain helps plants grow, but too much rain can drown them. Hot sun dries the soil, so plants need water. In the cold, animals need a warm barn.', 'A farm feeds a whole town. Milk, eggs and apples go from the farm to the store, and from the store to your table.\nA cow on a farm is cared for by a farmer, but a deer in the woods finds its own food.'],
+      keyIdea: 'A farmer cares for plants and animals every day. Rain, sun and cold can help or hurt a farm. Food goes from the farm to the store to your table.',
+      example: { kind: 'flow', steps: ['the farm', 'the truck', 'the store', 'your table'], caption: 'How food gets to you.',
+        another: ['The eggs in your fridge were laid by a hen. A farmer gathered them, and a truck brought them to the store.',
+          { text: 'A dry summer means the farmer waters the garden every evening. A rainy spring means the farmer waits for the fields to dry.', visual: { kind: 'flow', steps: ['look at the sky', 'rain or sun?', 'what the farm needs today'] } },
+          'A farm cow gets hay from the farmer in winter. A deer in the woods has to find its own food.'] },
+    },
+    sources: ['Aligned with TEKS Science, Kindergarten, 112.2(b)(12)(A) and 112.2(b)(12)(B), and the National Agricultural Literacy Outcomes, T1.K-2.d (provide examples of how weather patterns affect plant and animal growth for food), T5.K-2.a (discuss what a farmer does) and T5.K-2.f (trace the sources of agricultural products used daily).'],
+    generators: ['agk-day', 'agk-day', 'agk-day', 'agk-day', 'agk-day'],
+  },
+]; }
+// -----------------------------------------------------------------------------------------------------------------
 // AGRI3_MODULES: the four lessons of the elementary agriculture course (2026-09-30, pass HB).
 // In plain terms: each object is one lesson for an eight-year-old. `paragraphs` is the lesson text, `keyIdea` the takeaway,
 // `example` the pictures and extra examples, `sources` the Texas standard the lesson meets (the grade 3 science standards,
@@ -15665,6 +15777,51 @@ Object.assign(GENERATORS, {
       ['What do you ask a claim that has only a feeling?', ['what makes you think so', 'nothing', 'who cares', 'are you sure'], 'what makes you think so', 'If the answer is a shrug, you have a feeling, and feelings are not evidence.'],
       ['Which sentence disagrees with the idea and not the person?', ['I see it differently, because', 'you always want candy', 'that is dumb', 'you are wrong'], 'I see it differently, because', 'It keeps the person on your side while you take the idea apart.'],
       ['Name what the group agrees and disagrees about. Why?', ['so disagreement is about the right thing', 'to end the talk', 'to win', 'to take longer'], 'so disagreement is about the right thing', 'We all want May; we disagree about what to sell.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  // ---------------------------------------------------------------------------------------------------------------
+  // Kindergarten agriculture question banks (2026-09-30, pass HC). In plain terms: each bank is a short list of quick-check
+  // questions for one lesson, [what is asked, the three answers to tap, the right one, one line said after]. `pick`
+  // chooses one and `shuffle` mixes the answers. Every right answer is a phrase the lesson says first, which the
+  // untaught-answer check proves. The prefix agk keeps these apart from every other bank.
+  // ---------------------------------------------------------------------------------------------------------------
+  'agk-plants': (rng) => {
+    const Q = [['Which part of a plant is a carrot?', ['a root', 'a flower', 'a fruit'], 'a root', 'A carrot grows under the ground.'],
+      ['What part of the plant is lettuce?', ['leaves', 'roots', 'seeds'], 'leaves', 'Lettuce is leaves.'],
+      ['Broccoli is a bunch of tiny what?', ['flower buds', 'roots', 'rocks'], 'flower buds', 'They are picked before they open.'],
+      ['Where are an apple\'s seeds?', ['inside', 'on top', 'under the ground'], 'inside', 'An apple is a fruit, and its seeds are inside.'],
+      ['Corn and wheat are what part of a plant?', ['seeds', 'roots', 'leaves'], 'seeds', 'Wheat seeds become flour for bread.'],
+      ['Who grows plants for us to eat?', ['farmers', 'pilots', 'dentists'], 'farmers', 'Farmers grow plants for us to eat.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'agk-grow': (rng) => {
+    const Q = [['What does a plant start as?', ['a seed', 'a rock', 'a leaf'], 'a seed', 'The seed opens, and a tiny root goes down.'],
+      ['A tiny plant with a new shoot is called what?', ['a seedling', 'a fruit', 'a flower'], 'a seedling', 'Seed, then seedling.'],
+      ['What do the flowers make?', ['fruit', 'rocks', 'rain'], 'fruit', 'And the fruit has new seeds inside.'],
+      ['A baby bean plant looks like what?', ['its parent', 'a tree', 'a cat'], 'its parent', 'With the same kind of leaves.'],
+      ['Which one does a plant need to grow?', ['sunlight', 'a toy', 'a shoe'], 'sunlight', 'Air, sunlight, water, nutrients in the soil, and room.'],
+      ['Why do farmers plant seeds apart?', ['so each plant has room', 'to hide them', 'for fun'], 'so each plant has room', 'Room to grow is something every plant needs.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'agk-animals': (rng) => {
+    const Q = [['A barn or a shed is what for animals?', ['shelter', 'food', 'a toy'], 'shelter', 'It keeps them dry in the rain.'],
+      ['What does a hen pick up with her beak?', ['seeds', 'rocks', 'hats'], 'seeds', 'Her beak does the picking up.'],
+      ['What does a goat grab with her lips?', ['leaves', 'shoes', 'cars'], 'leaves', 'Her lips do the grabbing.'],
+      ['What do cows give us?', ['milk', 'wool', 'eggs'], 'milk', 'Cows give milk, and hens lay eggs.'],
+      ['Which farm animal lays eggs?', ['hens', 'cows', 'sheep'], 'hens', 'Hens lay eggs.'],
+      ['What do sheep grow?', ['wool', 'milk', 'apples'], 'wool', 'The wool is made into warm sweaters.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'agk-day': (rng) => {
+    const Q = [['When does a farmer\'s day start?', ['early', 'at bedtime', 'never'], 'early', 'The farmer feeds the animals first.'],
+      ['What does rain help?', ['plants grow', 'cars go', 'toys break'], 'plants grow', 'But too much rain can drown them.'],
+      ['What do animals need in the cold?', ['a warm barn', 'ice cream', 'a pool'], 'a warm barn', 'Weather matters on a farm.'],
+      ['Where does milk go after the farm?', ['to the store', 'to the moon', 'to the sea'], 'to the store', 'And from the store to your table.'],
+      ['Who finds its own food in the woods?', ['a deer', 'a farm cow', 'a pet fish'], 'a deer', 'A farm cow is cared for by a farmer.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
@@ -24340,6 +24497,43 @@ export const WONDER = [
     ],
     closing: 'Which step will you change?',
   },
+  // Two early-stage Wonder questions for the kindergarten agriculture course (pass HC). In plain terms: `prompt` is read
+  // aloud, `options` are tapped, `simple` is the short spoken version of two viewpoints, and `perspectives` are the four
+  // fuller viewpoints a grown-up can read with the child.
+  {
+    id: 'w-early-where-milk-starts',
+    theme: 'world',
+    stage: 'early',
+    courseIds: ['agriculture-k'],
+    answerMode: 'pick',
+    prompt: 'Your milk came from the store. Where was it before the store?',
+    options: ['On a farm, from a cow', 'The store made it', 'I am not sure'],
+    simple: [{ voice: 'A scientist says', says: 'Milk comes from cows on a dairy farm.' }, { voice: 'An artist says', says: 'Picture a cow, a truck and a store in a row.' }],
+    perspectives: [
+      { voice: 'A scientist', says: 'Cows make milk for their calves, and a dairy farmer milks the cows every day. The milk is kept cold, then a truck carries it to the store.' },
+      { voice: 'An artist', says: 'Draw it as a line of pictures: a cow in a green field, a shiny truck, a store, and your glass. That line is the whole trip.' },
+      { voice: 'A grandparent of faith', says: 'Someone got up early to care for the cow that made your milk. I like to say thank you for the people I will never meet.' },
+      { voice: 'A skeptic', says: 'Look at the carton next time. It often names the dairy, and then you know which farm to picture.' },
+    ],
+    closing: 'What else in your fridge came from a farm?',
+  },
+  {
+    id: 'w-early-my-plant-drooped',
+    theme: 'failure',
+    stage: 'early',
+    courseIds: ['agriculture-k'],
+    answerMode: 'pick',
+    prompt: 'You forgot to water your plant, and now it is drooping. What can you do?',
+    options: ['Give it water and wait', 'Throw it away', 'I am not sure'],
+    simple: [{ voice: 'A scientist says', says: 'A droopy plant is thirsty. Give it water and wait.' }, { voice: 'A grandparent of faith says', says: 'Everybody forgets sometimes. Try again today.' }],
+    perspectives: [
+      { voice: 'A scientist', says: 'A droopy plant is thirsty, and water can help it stand up again. Give it a drink and check it in an hour.' },
+      { voice: 'An artist', says: 'Watch closely after you water it. The leaves lift slowly, like someone waking up from a nap.' },
+      { voice: 'A grandparent of faith', says: 'Every gardener forgets to water sometimes. Plants are more forgiving than we think, so try again today.' },
+      { voice: 'A skeptic', says: 'Touch the soil first with one finger. If it is dry, water the plant; if it is wet, too much water may be the trouble.' },
+    ],
+    closing: 'How can you remember to water your plant?',
+  },
   // Two early-stage Wonder questions for the kindergarten speech course (pass GT). In plain terms: `prompt` is read
   // aloud, `options` are tapped, `simple` is the short spoken version of two viewpoints, and `perspectives` are the
   // four fuller viewpoints a grown-up can read with the child.
@@ -27169,6 +27363,7 @@ export const COURSE_GAMES = {
   'agriculture-9': ['jar-agriculture-9'],
   'agriculture-6': ['relation-agriculture-6'],
   'agriculture-3': ['sprout-agriculture-3'],
+  'agriculture-k': ['grow-agriculture-k'],
   'speech-6': ['room-speech-6'],
   'speech-3': ['ask-speech-3'],
   'arts-9': ['chord-arts-9'],

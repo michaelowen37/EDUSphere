@@ -37,7 +37,7 @@ window.__eduArt = [];
 window.__eduColoringArt = [];
 window.__eduMapArt = [];
 window.__eduAudio = [];
-window.__eduNews = {"stamp":"September 30, 2026 (down on the farm, and your own PIN only)","date":"September 30, 2026","items":["The starter PIN is retired. Only the PIN of the educator account on a device opens the educator side; on a device with no account yet, Educator Login leads straight to creating one. Create the account first thing on any device that holds students.","Grade 3 has a new elective for grades 3 to 5, Down on the farm: where food and clothes come from and the path a loaf of bread takes; seeds and soil, including why a bean sprouts in the dark; farm animals, what they need and how a chick grows into a hen; and a tiny farm of your own with a plan, a tally and a bar graph. Each lesson has a story, and the course ends with a long story about Mike and twenty-one days of eggs in a classroom.","Finishing the course unlocks Will It Sprout?, a new kind of game: a bean in a cup, four facts, and the call.","Two new Wonder questions for grades 3 to 5 wait in the review screen."]};
+window.__eduNews = {"stamp":"September 30, 2026 (on the farm)","date":"September 30, 2026","items":["On a phone, the Your educator account card no longer offers the first-week tour, which is made for bigger screens.","Kindergarten has a new free read-aloud elective for K to 2, On the farm: the plant parts we eat, a seed growing into a plant and what it needs, farm animals and what they give us, and a farmer's day from the sky to the store. Each lesson has a story and a coloring page, and the course ends with a long story about Ella's year on a farm.","Finishing the course unlocks Grow the Plant, a new kind of game for small hands: water, sunshine and soil grow the plant, and a toy does not.","Two new Wonder questions for the youngest wait in the review screen. The agriculture strand now runs from kindergarten to grade 12."]};
 // Installable app: the worker keeps a copy of the page for offline use and asks the network first, so a fresh build always wins.
 if ('serviceWorker' in navigator && /^https?:/.test(location.protocol)) { navigator.serviceWorker.register('sw.js').catch(function () {}); }
 var process = { env: { NODE_ENV: 'production' } };
@@ -18314,6 +18314,23 @@ const COURSES = [
         modules: SPEECH6_MODULES(),
     },
     // ---------------------------------------------------------------------------------------------------------------
+    // Agriculture for kindergarten to grade 2 (2026-09-30, pass HC). In plain terms: the course card on the kindergarten
+    // shelf for the youngest farm course, read aloud (questions spoken, answers tapped), free like all of kindergarten, and
+    // an elective above the Texas minimum (Texas has no kindergarten agriculture course). Its four lessons live in
+    // AGRIK_MODULES() further down; this entry only names the course and points at them.
+    // ---------------------------------------------------------------------------------------------------------------
+    {
+        id: 'agriculture-k',
+        grade: 'K',
+        subject: 'Agriculture',
+        title: 'On the farm',
+        audience: 'Kindergarten to grade 2',
+        readAloud: true, // the K to 2 band: questions are spoken and answers tapped
+        elective: true,
+        keywords: ['agriculture', 'farm', 'plants', 'seeds', 'animals', 'food', 'farmer', 'elective'],
+        modules: AGRIK_MODULES(),
+    },
+    // ---------------------------------------------------------------------------------------------------------------
     // Agriculture for grades 3 to 5 (2026-09-30, pass HB). In plain terms: the course card for the elementary agriculture
     // elective, built above the Texas minimum (Texas has no elementary agriculture course). Its four lessons live in
     // AGRI3_MODULES() further down; this entry only names the course and points at them.
@@ -18698,6 +18715,7 @@ const GAMES = [
     { id: 'jar-agriculture-9', kind: 'jar', title: 'Read the Jar', minGrade: '9', jar: 'textures' }, // agriculture 9 to 12 (pass GU): the settled layers are the rule
     { id: 'relation-agriculture-6', kind: 'relation', title: 'Who Gains', minGrade: '6', relation: 'cases' }, // agriculture 6 to 8 (pass GX): who gains is the rule
     { id: 'sprout-agriculture-3', kind: 'sprout', title: 'Will It Sprout?', minGrade: '3', sprout: 'seeds' }, // agriculture 3 to 5 (pass HB): water, air and warmth are the rule
+    { id: 'grow-agriculture-k', kind: 'grow', title: 'Grow the Plant', grow: 'needs', young: true, minGrade: 'K' }, // agriculture K to 2 (pass HC): the plant's needs are the rule
     { id: 'room-speech-6', kind: 'room', title: 'Fit the Room', minGrade: '6', room: 'lines' }, // speech 6 to 8 (pass GR): the room is the rule
     { id: 'ask-speech-3', kind: 'ask', title: 'Ask the Right Question', minGrade: '3', ask: 'topics' }, // speech 3 to 5 (pass GS): the topic is the rule
     { id: 'chord-arts-9', kind: 'chord', title: 'Build the Chord', minGrade: '9', chord: 'triads' }, // art and music 9 to 12 (pass GH): four half steps then three   // personal finance 9 to 12 (pass FY): a year of saving against surprises
@@ -19718,6 +19736,26 @@ function sproutRounds(round) {
         [out[j], out[k]] = [out[k], out[j]];
     }
     return out;
+}
+// -----------------------------------------------------------------------------------------------------------------
+// Grow the Plant (2026-09-30, pass HC, the kindergarten agriculture game). In plain terms: a pot with a seed sits on the
+// board, and five pictures sit below it: water, sunshine, soil, and two toys. The child taps the three things the plant
+// needs, in any order, and the plant grows a step with each one; a toy wobbles. The lesson names five needs, and the game
+// uses the three a child can give with a tap (air and room are already there). `GROW_NEEDS` and `GROW_TOYS` are the
+// pictures, and `growRounds(round)` builds four rounds, each a plant with the three needs and two different toys, shuffled.
+// The screen reads the rounds from here, so one rules test can prove every round is fair.
+// -----------------------------------------------------------------------------------------------------------------
+const GROW_NEEDS = ['water', 'sunshine', 'soil'];
+const GROW_TOYS = ['ball', 'shoe', 'toy car', 'hat'];
+const GROW_PLANTS = ['bean', 'sunflower', 'tomato', 'corn'];
+function growRounds(round) {
+    let x = (round * 69621 + 23) >>> 0;
+    const rnd = () => { x = (x * 1664525 + 1013904223) >>> 0; return x / 4294967296; };
+    const shuffled = (list) => { const a = [...list]; for (let j = a.length - 1; j > 0; j--) {
+        const k = Math.floor(rnd() * (j + 1));
+        [a[j], a[k]] = [a[k], a[j]];
+    } return a; };
+    return GROW_PLANTS.map((plant) => ({ plant, items: shuffled([...GROW_NEEDS, ...shuffled(GROW_TOYS).slice(0, 2)]) }));
 }
 const ROBOT_DECKS = {
     arrows: [
@@ -27496,6 +27534,86 @@ function SPEECH6_MODULES() {
     ];
 }
 // -----------------------------------------------------------------------------------------------------------------
+// AGRIK_MODULES: the four lessons of the kindergarten agriculture course (2026-09-30, pass HC).
+// In plain terms: each object is one lesson a five-year-old hears read aloud. `paragraphs` is the lesson text, in short
+// sentences; `keyIdea` is the takeaway; `example` gives the pictures and extra examples the screen shows; `sources`
+// names the Texas standard the lesson meets (Science, Kindergarten, §112.2, in TEA's published wording) and the National
+// Agricultural Literacy Outcomes for kindergarten to grade 2 beside it; `generators` lists the question banks below that
+// make the five quick checks. Every fact was checked twice.
+// -----------------------------------------------------------------------------------------------------------------
+function AGRIK_MODULES() {
+    return [
+        {
+            id: 'plants-we-eat-k',
+            order: 1,
+            title: 'Plants we eat',
+            tagline: 'Farmers grow plants, and we eat their roots, leaves, flowers, fruits and seeds',
+            requires: [],
+            lesson: {
+                paragraphs: ['Farmers grow plants for us to eat. A plant has parts: roots, a stem, leaves, flowers and fruits. We eat every one of those parts.', 'A carrot is a root, and it grows under the ground. Lettuce is leaves. Broccoli is a bunch of tiny flower buds, picked before they open. Asparagus is a young stem.\nAn apple is a fruit, and its seeds are inside.', 'Corn and wheat are seeds. Wheat seeds are ground into flour for our bread, and corn seeds pop into popcorn. Cows eat plants too, like grass and hay.'],
+                keyIdea: 'Farmers grow plants for food. We eat roots like carrots, leaves like lettuce, flower buds like broccoli, fruits like apples, and seeds like corn and wheat.',
+                example: { kind: 'flow', steps: ['a carrot: a root', 'lettuce: leaves', 'broccoli: flower buds', 'an apple: a fruit'], caption: 'Plant parts we eat.',
+                    another: ['A salad can hold four plant parts at once: carrot roots, lettuce leaves, broccoli flower buds and tomato fruits.',
+                        { text: 'Cut an apple across the middle and look. The seeds sit in a little star inside the fruit.', visual: { kind: 'flow', steps: ['an apple', 'cut it across', 'a star of seeds'] } },
+                        'Popcorn is a seed. The water inside heats up, and pop, the seed turns inside out.'] },
+            },
+            sources: ['Aligned with TEKS Science, Kindergarten, 112.2(b)(13)(A) (identify the structures of plants, including roots, stems, leaves, flowers, and fruits), and the National Agricultural Literacy Outcomes, T1.K-2.a (describe how farmers/ranchers use land to grow crops and support livestock) and T2.K-2.c (identify examples of feed/food products eaten by animals and people).'],
+            generators: ['agk-plants', 'agk-plants', 'agk-plants', 'agk-plants', 'agk-plants'],
+        },
+        {
+            id: 'seed-to-plant-k',
+            order: 2,
+            title: 'From seed to plant',
+            tagline: 'A seed grows into a plant, and a plant needs air, sunlight, water, soil and room',
+            requires: ['plants-we-eat-k'],
+            lesson: {
+                paragraphs: ['A plant starts as a seed. The seed opens, and a tiny root goes down into the soil. A small shoot comes up, and now it is a seedling.', 'The seedling grows into a plant. The plant grows flowers, and the flowers make fruit with new seeds inside. Seed, seedling, plant, flower, fruit!\nA baby bean plant looks like its parent, with the same kind of leaves.', 'Plants need air, sunlight, water, nutrients in the soil, and room to grow. Nutrients are plant food. Farmers plant seeds apart, so each plant has room.'],
+                keyIdea: 'A seed grows into a seedling, then a plant, then flowers and fruit with new seeds. Plants need air, sunlight, water, nutrients in the soil, and room to grow.',
+                example: { kind: 'flow', steps: ['seed', 'seedling', 'plant', 'flower', 'fruit'], caption: 'The life of a plant.',
+                    another: ['A sunflower seed grows into a sunflower, never into a bean. Young plants look like their parent plants.',
+                        { text: 'Two seeds planted too close fight for water and light. Room to grow is one of the five things a plant needs.', visual: { kind: 'flow', steps: ['seeds apart', 'room for roots', 'strong plants'] } },
+                        'The fruit holds new seeds, and new seeds start the whole thing over again.'] },
+            },
+            sources: ['Aligned with TEKS Science, Kindergarten, 112.2(b)(12)(A) (observe and identify the dependence of plants on air, sunlight, water, nutrients in the soil, and space to grow), 112.2(b)(13)(C) (identify and record the changes from seed, seedling, plant, flower, and fruit in a simple plant life cycle) and 112.2(b)(13)(D) (identify ways that young plants resemble the parent plant), and the National Agricultural Literacy Outcomes, T1.K-2.b (describe the importance of soil and water in raising crops and livestock), T2.K-2.a (explain how farmers/ranchers work with the lifecycle of plants and animals to harvest a crop) and T2.K-2.e (identify the importance of natural resources in farming).'],
+            generators: ['agk-grow', 'agk-grow', 'agk-grow', 'agk-grow', 'agk-grow'],
+        },
+        {
+            id: 'farm-animals-k',
+            order: 3,
+            title: 'Farm animals',
+            tagline: 'What farm animals need, the body parts that help them, and what they give us',
+            requires: ['seed-to-plant-k'],
+            lesson: {
+                paragraphs: ['Farm animals need air, water, food, space, and shelter. Shelter is a barn or a shed. It keeps them dry in the rain and cool on a hot day.', 'Animals have body parts that help them. A cow can see almost all the way around, and her ears turn to hear. A hen uses her beak to pick up seeds.\nA goat grabs leaves with her lips, and a horse has strong legs to run.', 'Farm animals give us things we need. Cows give milk, and hens lay eggs. Sheep grow wool, and the wool is made into warm sweaters. Farmers take care of them every day.'],
+                keyIdea: 'Farm animals need air, water, food, space and shelter. Body parts help them see, hear, grab and move. Cows give milk, hens lay eggs, and sheep grow wool.',
+                example: { kind: 'flow', steps: ['air and water', 'food', 'space', 'shelter'], caption: 'What every farm animal needs.',
+                    another: ['A barn is shelter. When a storm comes, the animals go inside and stay dry.',
+                        { text: 'A hen has no hands, so her beak does the picking up. A goat has no hands either, so her lips do the grabbing.', visual: { kind: 'flow', steps: ['a beak for seeds', 'lips for leaves', 'legs to run'] } },
+                        'A sweater can start on a farm: sheep grow wool, a farmer shears it off, and it is spun into yarn.'] },
+            },
+            sources: ['Aligned with TEKS Science, Kindergarten, 112.2(b)(12)(B) (observe and identify the dependence of animals on air, water, food, space, and shelter) and 112.2(b)(13)(B) (identify the different structures that animals have that allow them to interact with their environment such as seeing, hearing, moving, and grasping objects), and the National Agricultural Literacy Outcomes, T2.K-2.b (identify animals involved in agricultural production and their uses) and T3.K-2.b (recognize that agriculture provides our most basic necessities: food, fiber, energy, and shelter).'],
+            generators: ['agk-animals', 'agk-animals', 'agk-animals', 'agk-animals', 'agk-animals'],
+        },
+        {
+            id: 'a-day-on-the-farm-k',
+            order: 4,
+            title: 'A day on the farm',
+            tagline: 'What a farmer does all day, how weather helps or hurts, and how a farm feeds a town',
+            requires: ['farm-animals-k'],
+            lesson: {
+                paragraphs: ['A farmer\'s day starts early. The farmer feeds the animals, checks their water, and looks at the sky. Weather matters on a farm.', 'Rain helps plants grow, but too much rain can drown them. Hot sun dries the soil, so plants need water. In the cold, animals need a warm barn.', 'A farm feeds a whole town. Milk, eggs and apples go from the farm to the store, and from the store to your table.\nA cow on a farm is cared for by a farmer, but a deer in the woods finds its own food.'],
+                keyIdea: 'A farmer cares for plants and animals every day. Rain, sun and cold can help or hurt a farm. Food goes from the farm to the store to your table.',
+                example: { kind: 'flow', steps: ['the farm', 'the truck', 'the store', 'your table'], caption: 'How food gets to you.',
+                    another: ['The eggs in your fridge were laid by a hen. A farmer gathered them, and a truck brought them to the store.',
+                        { text: 'A dry summer means the farmer waters the garden every evening. A rainy spring means the farmer waits for the fields to dry.', visual: { kind: 'flow', steps: ['look at the sky', 'rain or sun?', 'what the farm needs today'] } },
+                        'A farm cow gets hay from the farmer in winter. A deer in the woods has to find its own food.'] },
+            },
+            sources: ['Aligned with TEKS Science, Kindergarten, 112.2(b)(12)(A) and 112.2(b)(12)(B), and the National Agricultural Literacy Outcomes, T1.K-2.d (provide examples of how weather patterns affect plant and animal growth for food), T5.K-2.a (discuss what a farmer does) and T5.K-2.f (trace the sources of agricultural products used daily).'],
+            generators: ['agk-day', 'agk-day', 'agk-day', 'agk-day', 'agk-day'],
+        },
+    ];
+}
+// -----------------------------------------------------------------------------------------------------------------
 // AGRI3_MODULES: the four lessons of the elementary agriculture course (2026-09-30, pass HB).
 // In plain terms: each object is one lesson for an eight-year-old. `paragraphs` is the lesson text, `keyIdea` the takeaway,
 // `example` the pictures and extra examples, `sources` the Texas standard the lesson meets (the grade 3 science standards,
@@ -33645,6 +33763,51 @@ Object.assign(GENERATORS, {
             ['What do you ask a claim that has only a feeling?', ['what makes you think so', 'nothing', 'who cares', 'are you sure'], 'what makes you think so', 'If the answer is a shrug, you have a feeling, and feelings are not evidence.'],
             ['Which sentence disagrees with the idea and not the person?', ['I see it differently, because', 'you always want candy', 'that is dumb', 'you are wrong'], 'I see it differently, because', 'It keeps the person on your side while you take the idea apart.'],
             ['Name what the group agrees and disagrees about. Why?', ['so disagreement is about the right thing', 'to end the talk', 'to win', 'to take longer'], 'so disagreement is about the right thing', 'We all want May; we disagree about what to sell.']];
+        const [prompt, choices, answer, explain] = pick(rng, Q);
+        return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+    },
+    // ---------------------------------------------------------------------------------------------------------------
+    // Kindergarten agriculture question banks (2026-09-30, pass HC). In plain terms: each bank is a short list of quick-check
+    // questions for one lesson, [what is asked, the three answers to tap, the right one, one line said after]. `pick`
+    // chooses one and `shuffle` mixes the answers. Every right answer is a phrase the lesson says first, which the
+    // untaught-answer check proves. The prefix agk keeps these apart from every other bank.
+    // ---------------------------------------------------------------------------------------------------------------
+    'agk-plants': (rng) => {
+        const Q = [['Which part of a plant is a carrot?', ['a root', 'a flower', 'a fruit'], 'a root', 'A carrot grows under the ground.'],
+            ['What part of the plant is lettuce?', ['leaves', 'roots', 'seeds'], 'leaves', 'Lettuce is leaves.'],
+            ['Broccoli is a bunch of tiny what?', ['flower buds', 'roots', 'rocks'], 'flower buds', 'They are picked before they open.'],
+            ['Where are an apple\'s seeds?', ['inside', 'on top', 'under the ground'], 'inside', 'An apple is a fruit, and its seeds are inside.'],
+            ['Corn and wheat are what part of a plant?', ['seeds', 'roots', 'leaves'], 'seeds', 'Wheat seeds become flour for bread.'],
+            ['Who grows plants for us to eat?', ['farmers', 'pilots', 'dentists'], 'farmers', 'Farmers grow plants for us to eat.']];
+        const [prompt, choices, answer, explain] = pick(rng, Q);
+        return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+    },
+    'agk-grow': (rng) => {
+        const Q = [['What does a plant start as?', ['a seed', 'a rock', 'a leaf'], 'a seed', 'The seed opens, and a tiny root goes down.'],
+            ['A tiny plant with a new shoot is called what?', ['a seedling', 'a fruit', 'a flower'], 'a seedling', 'Seed, then seedling.'],
+            ['What do the flowers make?', ['fruit', 'rocks', 'rain'], 'fruit', 'And the fruit has new seeds inside.'],
+            ['A baby bean plant looks like what?', ['its parent', 'a tree', 'a cat'], 'its parent', 'With the same kind of leaves.'],
+            ['Which one does a plant need to grow?', ['sunlight', 'a toy', 'a shoe'], 'sunlight', 'Air, sunlight, water, nutrients in the soil, and room.'],
+            ['Why do farmers plant seeds apart?', ['so each plant has room', 'to hide them', 'for fun'], 'so each plant has room', 'Room to grow is something every plant needs.']];
+        const [prompt, choices, answer, explain] = pick(rng, Q);
+        return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+    },
+    'agk-animals': (rng) => {
+        const Q = [['A barn or a shed is what for animals?', ['shelter', 'food', 'a toy'], 'shelter', 'It keeps them dry in the rain.'],
+            ['What does a hen pick up with her beak?', ['seeds', 'rocks', 'hats'], 'seeds', 'Her beak does the picking up.'],
+            ['What does a goat grab with her lips?', ['leaves', 'shoes', 'cars'], 'leaves', 'Her lips do the grabbing.'],
+            ['What do cows give us?', ['milk', 'wool', 'eggs'], 'milk', 'Cows give milk, and hens lay eggs.'],
+            ['Which farm animal lays eggs?', ['hens', 'cows', 'sheep'], 'hens', 'Hens lay eggs.'],
+            ['What do sheep grow?', ['wool', 'milk', 'apples'], 'wool', 'The wool is made into warm sweaters.']];
+        const [prompt, choices, answer, explain] = pick(rng, Q);
+        return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+    },
+    'agk-day': (rng) => {
+        const Q = [['When does a farmer\'s day start?', ['early', 'at bedtime', 'never'], 'early', 'The farmer feeds the animals first.'],
+            ['What does rain help?', ['plants grow', 'cars go', 'toys break'], 'plants grow', 'But too much rain can drown them.'],
+            ['What do animals need in the cold?', ['a warm barn', 'ice cream', 'a pool'], 'a warm barn', 'Weather matters on a farm.'],
+            ['Where does milk go after the farm?', ['to the store', 'to the moon', 'to the sea'], 'to the store', 'And from the store to your table.'],
+            ['Who finds its own food in the woods?', ['a deer', 'a farm cow', 'a pet fish'], 'a deer', 'A farm cow is cared for by a farmer.']];
         const [prompt, choices, answer, explain] = pick(rng, Q);
         return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
     },
@@ -43240,6 +43403,43 @@ const WONDER = [
         ],
         closing: 'Which step will you change?',
     },
+    // Two early-stage Wonder questions for the kindergarten agriculture course (pass HC). In plain terms: `prompt` is read
+    // aloud, `options` are tapped, `simple` is the short spoken version of two viewpoints, and `perspectives` are the four
+    // fuller viewpoints a grown-up can read with the child.
+    {
+        id: 'w-early-where-milk-starts',
+        theme: 'world',
+        stage: 'early',
+        courseIds: ['agriculture-k'],
+        answerMode: 'pick',
+        prompt: 'Your milk came from the store. Where was it before the store?',
+        options: ['On a farm, from a cow', 'The store made it', 'I am not sure'],
+        simple: [{ voice: 'A scientist says', says: 'Milk comes from cows on a dairy farm.' }, { voice: 'An artist says', says: 'Picture a cow, a truck and a store in a row.' }],
+        perspectives: [
+            { voice: 'A scientist', says: 'Cows make milk for their calves, and a dairy farmer milks the cows every day. The milk is kept cold, then a truck carries it to the store.' },
+            { voice: 'An artist', says: 'Draw it as a line of pictures: a cow in a green field, a shiny truck, a store, and your glass. That line is the whole trip.' },
+            { voice: 'A grandparent of faith', says: 'Someone got up early to care for the cow that made your milk. I like to say thank you for the people I will never meet.' },
+            { voice: 'A skeptic', says: 'Look at the carton next time. It often names the dairy, and then you know which farm to picture.' },
+        ],
+        closing: 'What else in your fridge came from a farm?',
+    },
+    {
+        id: 'w-early-my-plant-drooped',
+        theme: 'failure',
+        stage: 'early',
+        courseIds: ['agriculture-k'],
+        answerMode: 'pick',
+        prompt: 'You forgot to water your plant, and now it is drooping. What can you do?',
+        options: ['Give it water and wait', 'Throw it away', 'I am not sure'],
+        simple: [{ voice: 'A scientist says', says: 'A droopy plant is thirsty. Give it water and wait.' }, { voice: 'A grandparent of faith says', says: 'Everybody forgets sometimes. Try again today.' }],
+        perspectives: [
+            { voice: 'A scientist', says: 'A droopy plant is thirsty, and water can help it stand up again. Give it a drink and check it in an hour.' },
+            { voice: 'An artist', says: 'Watch closely after you water it. The leaves lift slowly, like someone waking up from a nap.' },
+            { voice: 'A grandparent of faith', says: 'Every gardener forgets to water sometimes. Plants are more forgiving than we think, so try again today.' },
+            { voice: 'A skeptic', says: 'Touch the soil first with one finger. If it is dry, water the plant; if it is wet, too much water may be the trouble.' },
+        ],
+        closing: 'How can you remember to water your plant?',
+    },
     // Two early-stage Wonder questions for the kindergarten speech course (pass GT). In plain terms: `prompt` is read
     // aloud, `options` are tapped, `simple` is the short spoken version of two viewpoints, and `perspectives` are the
     // four fuller viewpoints a grown-up can read with the child.
@@ -46272,6 +46472,7 @@ const COURSE_GAMES = {
     'agriculture-9': ['jar-agriculture-9'],
     'agriculture-6': ['relation-agriculture-6'],
     'agriculture-3': ['sprout-agriculture-3'],
+    'agriculture-k': ['grow-agriculture-k'],
     'speech-6': ['room-speech-6'],
     'speech-3': ['ask-speech-3'],
     'arts-9': ['chord-arts-9'],
@@ -47780,6 +47981,28 @@ const CURRICULUM = [
             { framework: 'CCSS', code: 'SL.6.4', text: 'Present claims and findings, sequencing ideas logically and using pertinent descriptions, facts, and details to accentuate main ideas or themes; use appropriate eye contact, adequate volume, and clear pronunciation.', moduleIds: ['a-two-minute-talk'] },
             { framework: 'CCSS', code: 'SL.6.5', text: 'Include multimedia components (e.g., graphics, images, music, sound) and visual displays in presentations to clarify information.', moduleIds: ['a-two-minute-talk'] },
             { framework: 'CCSS', code: 'SL.6.6', text: 'Adapt speech to a variety of contexts and tasks, demonstrating command of formal English when indicated or appropriate.', moduleIds: ['saying-it-clearly'] },
+        ],
+    },
+    {
+        grade: 'K', subject: 'Agriculture', status: 'ready',
+        source: 'Texas has no kindergarten agriculture course, so the Texas column carries the kindergarten science standards the course rests on, the needs and structures of plants and animals and the plant life cycle (Science, Kindergarten, §112.2, Adopted 2021, in the wording of TEA\'s published text), for the agriculture course of the K to 2 band, built above that minimum; the national column carries the National Agricultural Literacy Outcomes for kindergarten to grade 2 (Spielmaker and Leising, 2013), shown in the Common Core column.',
+        standards: [
+            { framework: 'TEKS', code: '112.2(b)(12)(A)', text: 'Observe and identify the dependence of plants on air, sunlight, water, nutrients in the soil, and space to grow.', moduleIds: ['seed-to-plant-k', 'a-day-on-the-farm-k'] },
+            { framework: 'TEKS', code: '112.2(b)(12)(B)', text: 'Observe and identify the dependence of animals on air, water, food, space, and shelter.', moduleIds: ['farm-animals-k', 'a-day-on-the-farm-k'] },
+            { framework: 'TEKS', code: '112.2(b)(13)(A)', text: 'Identify the structures of plants, including roots, stems, leaves, flowers, and fruits.', moduleIds: ['plants-we-eat-k'] },
+            { framework: 'TEKS', code: '112.2(b)(13)(B)', text: 'Identify the different structures that animals have that allow them to interact with their environment such as seeing, hearing, moving, and grasping objects.', moduleIds: ['farm-animals-k'] },
+            { framework: 'TEKS', code: '112.2(b)(13)(C)', text: 'Identify and record the changes from seed, seedling, plant, flower, and fruit in a simple plant life cycle.', moduleIds: ['seed-to-plant-k'] },
+            { framework: 'TEKS', code: '112.2(b)(13)(D)', text: 'Identify ways that young plants resemble the parent plant.', moduleIds: ['seed-to-plant-k'] },
+            { framework: 'CCSS', code: 'NALO T1.K-2.a', text: 'Describe how farmers/ranchers use land to grow crops and support livestock.', moduleIds: ['plants-we-eat-k'] },
+            { framework: 'CCSS', code: 'NALO T1.K-2.b', text: 'Describe the importance of soil and water in raising crops and livestock.', moduleIds: ['seed-to-plant-k'] },
+            { framework: 'CCSS', code: 'NALO T1.K-2.d', text: 'Provide examples of how weather patterns affect plant and animal growth for food.', moduleIds: ['a-day-on-the-farm-k'] },
+            { framework: 'CCSS', code: 'NALO T2.K-2.a', text: 'Explain how farmers/ranchers work with the lifecycle of plants and animals (planting/breeding) to harvest a crop.', moduleIds: ['seed-to-plant-k'] },
+            { framework: 'CCSS', code: 'NALO T2.K-2.b', text: 'Identify animals involved in agricultural production and their uses (i.e., work, meat, dairy, eggs).', moduleIds: ['farm-animals-k'] },
+            { framework: 'CCSS', code: 'NALO T2.K-2.c', text: 'Identify examples of feed/food products eaten by animals and people.', moduleIds: ['plants-we-eat-k'] },
+            { framework: 'CCSS', code: 'NALO T2.K-2.e', text: 'Identify the importance of natural resources (e.g., sun, soil, water, minerals) in farming.', moduleIds: ['seed-to-plant-k'] },
+            { framework: 'CCSS', code: 'NALO T3.K-2.b', text: 'Recognize that agriculture provides our most basic necessities: food, fiber (fabric or clothing), energy, and shelter.', moduleIds: ['farm-animals-k'] },
+            { framework: 'CCSS', code: 'NALO T5.K-2.a', text: 'Discuss what a farmer does.', moduleIds: ['a-day-on-the-farm-k'] },
+            { framework: 'CCSS', code: 'NALO T5.K-2.f', text: 'Trace the sources of agricultural products (plant or animal) used daily.', moduleIds: ['a-day-on-the-farm-k'] },
         ],
     },
     {
@@ -54165,6 +54388,7 @@ const COURSE_STORIES = {
     'agriculture-9': { title: 'Chloe and the forty acres', about: 'a year on a grandmother\'s forty acres: a jar that settled to clay, a pH of 7.8, sorghum instead of cotton, a drone, a ledger, a co-op vote, and a first harvest', art: 'CS517', alt: 'A young woman in her late twenties standing at a fence line looking over forty acres of rough pasture', cast: ['Chloe'], words: ['Chloe\'s grandmother had leased the forty acres to a neighbor for twenty years, and when the lease ended she offered them to Chloe for one year, rent free, to see what a granddaughter with a degree in soil science would do with them.', 'Chloe started with a jar. Soil from six spots, shaken in water and left to settle on the kitchen counter, sand first, silt next, clay last. Every jar settled to a thick clay layer, which meant the land held water and nutrients and drained slowly. The pH meter read 7.8, on the alkaline side, and sulfur, not lime, was the fix.', 'Cotton was what the neighbor had grown and what the neighbor had lost money on twice. Chloe chose grain sorghum instead, a crop that stood up to a dry summer and sold into a market that reached across the Gulf, and she planted it in April with a borrowed drill. Between the rows of her plan she wrote a cover crop for the winter, to hold the soil the bare years had let blow.', 'In June she paid a drone pilot forty dollars to fly the field, and the image showed one dry corner in red before her boots would have found it. She fixed a broken line the same afternoon. Under the whole plan sat a business plan she had written in February: what she would grow, what it would cost, what it should sell for, and what could go wrong.', 'Records ran every day in a green ledger, seed, diesel, the drone, the sulfur, the drill\'s hire, because profit is income minus expenses and nobody remembers either one in December. By August the expense line said more than the plan had guessed, mostly diesel, and Chloe knew it in August.', 'The co-op meeting in September was her first. A member moved that the co-op buy a second grain trailer, another seconded, the discussion ran twenty minutes, and the vote carried by a show of hands. Chloe voted yes and understood, watching, that the loudest man in the room had not decided anything.', 'Harvest came in October, into the trailer the co-op had just voted for. The yield was fair, not fine, on clay that had been pasture for twenty years, and the price was better than cotton had been. Income minus expenses left a profit of a few hundred dollars, small and real, and the ledger showed exactly where the rest had gone.', 'Her grandmother read the ledger at the kitchen table, beside the jar that had started everything. She said the neighbor had never once shown her a number. Then she offered the forty acres for a second year, this time with rent, which Chloe understood was the higher compliment.'], more: [{ serial: 'CS518', after: 1, alt: 'A jar of soil settled into a thick clay layer on a kitchen counter, a pH meter reading 7.8' }, { serial: 'CS519', after: 2, alt: 'A young woman planting grain sorghum with a borrowed drill, a cover crop plan pinned to the barn wall' }, { serial: 'CS520', after: 3, alt: 'A drone image of a field with one dry corner marked in red' }, { serial: 'CS521', after: 5, alt: 'A co-op meeting with a motion, a second and a show of hands, a young woman voting' }, { serial: 'CS522', after: 7, alt: 'A first harvest of sorghum in a trailer, a ledger open to a small profit' }] },
     'agriculture-6': { title: 'Frederick and the farm week', about: 'five days at a middle school: a taco traced to four farms, jars on a windowsill, an ecosystem inside the school fence, and a lettuce bed with a ledger', art: 'CS523', alt: 'A young man in his early twenties at a middle school garden bed with a class around him', cast: ['Frederick'], words: ['Frederick was twenty-three and a graduate student in soil science when the middle school asked him to run a farm week: five days in the courtyard garden for sixty sixth graders.', 'Monday he started with lunch. He wrote the day\'s menu on the whiteboard and traced it backward: the beef to a ranch, the bun to a wheat field, the milk to a dairy, and every one of them along the same chain, grown, harvested, packed, moved, sold, cooked. Then the three things every link needed, soil, water and energy.', 'Tuesday was jars. Each student brought a handful of soil from home and shook it in a jar of water, and by Wednesday morning the windowsill was a row of settled layers, sand at the bottom, silt, and clay last and thinnest. A boy named Marcus had brought soil from the creek bank, nearly all sand, and Frederick showed him why nothing grew there.', 'Wednesday he took them to the school fence and asked what lived inside it. An egret on the far field. A hawk on the light pole. Ants farming aphids on the peach tree, which was mutualism, both gaining. A farm, he said, is an ecosystem with a fence around it, and so is a school.', 'Thursday was the project. The class already had a raised bed of lettuce, planted in September by the science teacher, and Frederick handed them a ledger. Seed, four dollars. Compost, twelve. Water from the rain barrel, free, measured with a gauge. Every harvest weighed and written down the same day, because profit is income minus expenses.', 'He made them run one fair test on the bed: half watered every day, half every other day, everything else the same, heights measured with a metric ruler each morning and put in a table. By the second week the graph showed the every-other-day half growing just as well, which meant half the water for the same lettuce. Efficiency, a girl named Priya wrote at the top of the graph, and underlined it.', 'Friday the cafeteria manager came out to the bed with a scale and bought eleven pounds of lettuce at two dollars a pound. Twenty-two dollars of income, sixteen in expenses, a profit of six dollars, written in the ledger in Marcus\'s handwriting and checked by Priya.', 'Six dollars was not much, Frederick told them, and it was more than most first farms make. The bed was covered with straw before he left, so the soil would still be there in the spring, and the class voted to plant it again in March.'], more: [{ serial: 'CS524', after: 1, alt: 'A lunch traced on a whiteboard to four farms and one chain: grown, harvested, packed, moved, sold, cooked' }, { serial: 'CS525', after: 2, alt: 'A row of jars on a classroom windowsill settled into sand, silt and clay layers' }, { serial: 'CS526', after: 3, alt: 'A school fence with an egret, a hawk, ants on a peach tree and two students finding relationships' }, { serial: 'CS527', after: 5, alt: 'A raised bed of lettuce with a ledger and a rain gauge beside it' }, { serial: 'CS528', after: 6, alt: 'A cafeteria manager buying lettuce from students, a ledger showing a small profit' }] },
     'agriculture-3': { title: 'Mike and the twenty-one days', about: 'three weeks with an incubator in a third-grade class: twelve eggs turned by hand, a flashlight that showed nine, cups of radishes, the path of store eggs, and seven chicks', art: 'CS529', alt: 'A man carrying an incubator and a carton of eggs into a third-grade classroom', cast: ['Mike'], words: ['Mike kept a dozen laying hens and a rooster behind his house. In March the third-grade teacher down the street asked if he could bring the class some eggs that would hatch. He arrived with an incubator the size of a picnic cooler and twelve eggs.', 'The incubator kept the eggs at about 99.5 degrees, the warmth of a sitting hen, and the class took over the hen\'s other job. A hen turns her eggs many times a day, so the students marked each shell with an X on one side and an O on the other. They turned the eggs three times a day, and Mike came by on weekends to do it himself.', 'On day seven Mike brought a bright flashlight and darkened the room. Held against the light, nine eggs showed a web of thin red veins and a dark spot. Three were clear inside; they had never started, which happens even under a hen, and nobody had done anything wrong.', 'While they waited, the class planted radish seeds in paper cups so there would be something to watch. The seeds sprouted in four days with water, air and warmth. The students kept a tally of sprouts on the board and measured the tallest one each morning with a metric ruler.', 'A boy asked where the eggs at the store came from, if not from a class like this one. Mike walked them through it: big farms keep thousands of hens, and the eggs are collected, washed, checked under a light like theirs, packed in cartons and trucked to stores. The hens eat corn and soybeans grown on other farms.', 'On day eighteen they stopped turning the eggs, so the chicks could settle into place to hatch. On day twenty the first tiny crack appeared, and on day twenty-one the room went silent as a wet chick pushed its way out. By Friday seven of the nine had hatched.', 'The chicks moved to a box with a heat lamp, water and chick feed, kept at about 95 degrees the first week and a little cooler each week after. The students noticed beaks made for pecking seeds, and fluffy down starting to give way to real feathers on the wings.', 'After two weeks the chicks went home to Mike\'s yard, and the class came to visit in May. Mike promised the teacher a carton of eggs from the new hens in the fall, since a young hen starts laying at about five months old. The circle, he said, would close by Halloween.'], more: [{ serial: 'CS530', after: 1, alt: 'Children turning eggs marked with X and O inside an incubator' }, { serial: 'CS531', after: 2, alt: 'An egg held against a flashlight in a dark room, showing thin red veins' }, { serial: 'CS532', after: 3, alt: 'Radish sprouts in paper cups beside a tally on a whiteboard' }, { serial: 'CS533', after: 5, alt: 'A wet chick pushing out of a cracked egg while children watch' }, { serial: 'CS534', after: 7, alt: 'Children visiting young hens in a backyard coop in spring' }] },
+    'agriculture-k': { title: 'Ella\'s farm year', about: 'a year on her grandpa\'s farm: seeds a hand apart in spring, a thirsty summer, a fall harvest of roots, leaves and fruit, a snug barn in winter, and a new calf', art: 'CS535', alt: 'A girl and her grandpa standing by a big red barn with a garden, a corn field, cows and hens', cast: [], words: ['Ella spent a whole year helping on her grandpa\'s farm. The farm had a garden, a field of corn, and three brown cows. It also had a flock of hens and a big red barn with a squeaky door. Grandpa said each season had its own work, and Ella wanted to do all of it.', 'In spring, they planted seeds. Ella pushed each corn seed into the soil a hand apart, so every plant would have room. Grandpa watered the rows, and the warm sun did the rest. In about a week, tiny green shoots poked up in long, straight lines, and Ella cheered.', 'Summer was hot and dry. By afternoon the corn leaves curled in the heat, so Ella and Grandpa watered every evening. The cows stood under the trees, where the shade was cool. They drank so much water that Ella helped fill the trough twice a day. Ella learned that plants and cows both need water to grow.', 'In the fall, it was time to pick. Ella pulled up carrots, which are roots, and cut lettuce, which is leaves. She picked red tomatoes, which are fruits with seeds inside. The corn stalks dried out, and Grandpa saved a few ears of seed corn to plant next year.', 'Winter was cold and gray. The garden rested under a blanket of straw, and the animals spent cold nights in the snug barn. Its walls kept out the wind and the rain. Grandpa gave the cows hay every morning, because the grass had stopped growing.', 'Every morning, Ella gathered eggs from the hens. In summer there were often six eggs, but in winter there were only two or three. Grandpa said hens lay fewer eggs when the days are short and dark. Ella counted the eggs and wrote each number on the barn wall with chalk.', 'When spring came around again, one of the cows had a calf. The calf wobbled on long legs, and soon she was drinking her mother\'s milk. She had the same brown coat and white face as her mother. Ella named her Daisy. Every day she brought Daisy\'s mother a bucket of fresh water, because a nursing cow drinks a lot.', 'Then it was time to plant again. Ella pushed Grandpa\'s saved corn seeds into the soil, a hand apart, just like last spring. Grandpa said a farm year goes around like a wheel. Ella had helped it turn all the way around, from seeds to seeds.'], more: [{ serial: 'CS536', after: 1, alt: 'A girl pushing corn seeds into the soil a hand apart in spring' }, { serial: 'CS537', after: 2, alt: 'A girl and her grandpa watering a garden on a hot summer evening, cows resting in the shade' }, { serial: 'CS538', after: 3, alt: 'A girl holding carrots, lettuce and red tomatoes in a fall garden basket' }, { serial: 'CS539', after: 5, alt: 'A girl gathering eggs from hens in a barn, numbers written in chalk on the wall' }, { serial: 'CS540', after: 6, alt: 'A new brown calf with a white face standing on wobbly legs beside its mother' }] },
     'speech-6': { title: 'Georgette and the quiet twenty minutes', about: 'a Saturday club for six sixth-graders, a sentence said back, a terrible pitcher of lemonade, two-minute talks, and twenty minutes without a teacher', art: 'CS499', alt: 'An older woman at a library table with six sixth-graders on a Saturday morning', cast: ['Georgette'], words: ['Georgette had taught sixth grade for thirty-one years, and in her retirement she ran a Saturday club at the library for six of them, on one subject: how to say what you mean and hear what was said.', 'The first Saturday was one drill, say it back. She gave each child a sentence and had the next child say it back before answering. Four of the six got it wrong on the first try, and the wrongness was the lesson. You did not hear the sentence, she said. You heard the word you were waiting for.', 'The second Saturday was instructions. She read seven steps for lemonade, once, fast, without counting them, and let them try. The lemonade was terrible. Then she read them again the way she taught it: seven steps, she said first, and used first, then and last, and had a child say them back. That pitcher they drank.', 'The third Saturday was the one sentence. Each child had to explain something from the week to a partner who had not been there, in one sentence, one reason, one example, and then stop. Stopping was the hard part. A boy named Teo got to the sentence in his fourth try and looked surprised at how good it sounded alone.', 'They said the same news three ways after that, to a friend, in class, and to a stranger who was an adult, and she made them notice that none of the three was fake. Then came the two-minute talks, one each, with a stance and two reasons, practiced aloud three times at home, which she could hear in the ones who had.', 'The fifth Saturday was the hardest, disagreeing. She gave them a question with no right answer, the library\'s empty room. Then four habits: ask the quiet one, hold the idea before answering, take notes, and say out loud what they agreed on and what they did not. The talk was clumsy and honest, as she wanted.', 'On the last Saturday she told them she would not speak for twenty minutes, and she did not. They asked the quiet one. They wrote things down. Somebody said I see it differently, because, and somebody else built on the idea instead of defending her own. The empty room, they decided, should be a place to practice talks.', 'Twenty minutes is a long time to be quiet when you have been a teacher for thirty-one years, and Georgette found it the best twenty minutes of the club. They had not needed her. That had been the sentence all along.'], more: [{ serial: 'CS500', after: 1, alt: 'A child saying a sentence back to the next child around a table, four of them getting it wrong' }, { serial: 'CS501', after: 2, alt: 'Seven lemonade steps read too fast, a terrible pitcher, and a second pitcher made from steps said back' }, { serial: 'CS502', after: 3, alt: 'A boy explaining his week to a partner in one sentence and stopping' }, { serial: 'CS503', after: 5, alt: 'Six children disagreeing about an empty room with notes, one asking the quiet one' }, { serial: 'CS504', after: 7, alt: 'An older woman quiet for twenty minutes while six children run the meeting themselves' }] },
     'speech-3': { title: 'Savanah and the fire chief', about: 'five Fridays getting a third-grade class ready for a visitor: on-topic questions, listening you can see, five steps to the fire station, one-minute talks, and turns', art: 'CS505', alt: 'A woman in her thirties at the front of a third-grade classroom with a fire truck drawn on the board', cast: ['Savanah'], words: ['Savanah volunteered on Friday mornings in a third-grade class near the hospital where she worked, and in March the teacher asked her to get the class ready for a visitor: the fire chief.', 'The first Friday she found out what the questions would be. A boy asked whether the chief liked pizza. Savanah did not say it was a bad question. She drew a fire truck on the board and asked which questions were about the truck and which were about the person asking. The pizza question, the class decided, was about the boy.', 'So they made a rule, on topic, and practiced it. She told them about a patient whose heart she had scanned at work, and they asked questions. Was the patient scared? What did the picture look like? Every question was about the story, and she answered every one, and the class found out that on-topic questions get longer answers.', 'The second Friday was listening you could see: eyes on the speaker, hands still, body turned. And the part you could not see, your mind on the words. She read a short report about how a fire truck pumps water and asked for the main idea back in their own words. The truck pushes water through the hose, a girl said. Yes, said Savanah. The rest was details.', 'The third Friday was instructions, because the class would walk to the fire station. She gave the route in one breath first, badly, and half of them pointed the wrong way. Then she gave it properly: five steps, she said first, with first, next, then and last, and had a boy say them back. He had step three wrong, and they fixed it in the classroom instead of on the sidewalk.', 'The fourth Friday was one-minute talks about helpers. One topic, three facts, why. A girl talked about her aunt the nurse in complete sentences, looking at one face at a time, with the ends of her words on, and Savanah understood the aunt better in one minute than she had from a year of hearing about her.', 'The last Friday before the visit was turns. Twenty-two children and one fire chief meant a talking stick, hands up, one voice at a time, and everyone gets a turn before anyone gets two. They practiced good morning, Chief, with the name, and a full sentence for every answer.', 'The chief came on a Tuesday and stayed forty minutes, because every question was about the truck or the job and every child said thank you. On the way out she asked the teacher who had prepared them. The teacher pointed at Savanah, who was, at that moment, listening.'], more: [{ serial: 'CS506', after: 1, alt: 'A fire truck on a board with questions sorted into about the truck and about the asker' }, { serial: 'CS507', after: 2, alt: 'A woman describing a patient\'s heart scan to a class with every hand up' }, { serial: 'CS508', after: 3, alt: 'A class listening with eyes on the speaker while a report about a fire truck pumping water is read' }, { serial: 'CS509', after: 5, alt: 'A girl giving a one-minute talk about her aunt the nurse, looking at one face at a time' }, { serial: 'CS510', after: 7, alt: 'A fire chief at a classroom door asking who prepared the class, a teacher pointing at a listening woman' }] },
     'speech-k': { title: 'The circle that learned to listen', about: 'a circle rug with twenty spots, a listening game, three steps for a seed, a voice for the back of the room, a stick that goes around, and twenty sprouts', art: 'CS511', alt: 'A kindergarten class on a round rug with twenty spots and a teacher in a chair', cast: [], words: ['Miss Park\'s kindergarten class had a circle rug with twenty spots. One week in October, the circle learned five things, one each day. Miss Park said the rug was a good place to learn how to talk and how to listen.', 'Monday was the listening body. Miss Park said, show me listening. Eyes on me, hands still, feet still, and your mind on my words. Then she played a game where she said things once, softly. Jonah heard her say touch your nose, and Lily heard her say hop one time. Nobody had to ask what she said.', 'Tuesday was steps. Miss Park gave three of them: first, get a cup, and then put in the soil, and last, push in a seed with one finger. The class said them back together. Cup, soil, seed. Eli said soil first, and Miss Park fixed it before any soil was out. That is why you say the steps back, she said. Then everyone did it in order, and twenty cups had seeds in them.', 'Wednesday was the clear voice. Each child told about one thing from home. Miss Park sat in the back, on purpose. Talk to me, she said, and if I can hear you, everyone can. Jonah said, this is my truck, it is red, and I like it because it is fast. He said whole words, slow, with the ends on. Miss Park heard every word.', 'Thursday was turns. Twenty children had twenty ideas, all at once, and nobody could hear any of them. So Miss Park brought out a stick. Whoever holds it talks, and everyone else listens. It went around the circle, and every idea got heard. Lily had the last turn, and she had been quiet all year. She said the class should plant flowers by the door, and everyone agreed.', 'Friday another class came to visit, and Miss Park\'s children knew just what to do. Hello, my name is Lily, said Lily. Hello, my name is Omar, said Omar. Please and thank you went around the rug the way the stick had, and the visitors learned the stick rule in one try.', 'One visitor did not understand the game. A boy named Eli did not grab or shout. He asked instead. Can you say it again? The visitor said it again, and then they both played. Miss Park watched from the back and did not need to say a word.', 'On Monday the seeds came up. Twenty little green sprouts, one in each cup, in the order they were planted. Miss Park said the circle had learned to listen, and the seeds had heard it too.'], more: [{ serial: 'CS512', after: 1, alt: 'A teacher saying things softly while children listen with eyes, hands and feet still' }, { serial: 'CS513', after: 2, alt: 'Twenty cups with soil and a seed in each, made in three steps' }, { serial: 'CS514', after: 3, alt: 'A boy holding up a red truck and talking to his teacher at the back of the room' }, { serial: 'CS515', after: 5, alt: 'Two classes on a rug saying hello and their names, a stick going around' }, { serial: 'CS516', after: 7, alt: 'Twenty green sprouts in twenty cups by a window' }] },
@@ -56561,6 +56785,59 @@ STORIES['a-tiny-farm'] = {
         'By August the neighbor\'s bees had found the yard, the paintbrush went back in the drawer, and the tally reached forty-one. Noah put the peels and old stems in the compost bin for next year\'s soil, which his neighbor said was the whole idea of a farm, tiny or not.',
     ],
 };
+// Agriculture, kindergarten to grade 2 (2026-09-30, pass HC): four read-aloud stories at the kindergarten length with five pictures each.
+STORIES['plants-we-eat-k'] = {
+    about: 'a carrot pulled from the dirt, lettuce leaves, broccoli buds, a tomato full of seeds, and a salad with every plant part',
+    more: [{ serial: 'S3335', after: 1, alt: 'A girl tearing big green lettuce leaves in a garden' }, { serial: 'S3336', after: 2, alt: 'A grandpa pointing to the green bumps on top of a broccoli head' }, { serial: 'S3337', after: 3, alt: 'A red tomato cut in half with many small seeds inside' }, { serial: 'S3338', after: 4, alt: 'A girl and her grandpa eating a big salad at a garden table' }],
+    title: 'Lunch from the garden', art: 'S3334', cast: [],
+    alt: 'A girl pulling a long orange carrot out of the garden dirt beside her grandpa',
+    words: [
+        'Rosa helped her grandpa pick lunch from the garden. First she pulled a carrot out of the dirt. It was orange and long, because a carrot is a root that grows under the ground.',
+        'Next they picked lettuce. Grandpa said lettuce is leaves. Rosa tore off the big green leaves and left the small ones to grow.',
+        'The broccoli looked like a tiny green tree. Grandpa showed her the bumps on top. Each bump was a flower bud that had not opened yet.',
+        'Rosa picked a red tomato, and Grandpa cut it in half. Inside were lots of little seeds. A tomato is a fruit, he said, and each seed could grow a new tomato plant.',
+        'They made a big salad with a root, leaves, flower buds and a fruit. Rosa ate every plant part, and she asked for more carrots.',
+    ],
+};
+STORIES['seed-to-plant-k'] = {
+    about: 'a bean in a clear cup, a root that went down and a shoot that came up, a sunny window, and a pod full of new beans',
+    more: [{ serial: 'S3340', after: 1, alt: 'A clear cup showing a white root going down and a green shoot coming up' }, { serial: 'S3341', after: 2, alt: 'A bean seedling in a cup on a sunny window, its leaves turned toward the light' }, { serial: 'S3342', after: 3, alt: 'A tall bean plant in a garden with little white flowers' }, { serial: 'S3343', after: 4, alt: 'A boy holding an open green pod full of beans' }],
+    title: 'The bean in the cup', art: 'S3339', cast: [],
+    alt: 'A boy pushing a bean seed into a clear cup of soil',
+    words: [
+        'Leo pushed a bean seed into a clear cup of soil and gave it a drink. He put the cup in a warm spot and waited.',
+        'After a few days, the seed opened. Leo could see a tiny white root through the cup, going down into the soil. A green shoot came up next.',
+        'Now it was a seedling. Leo moved it to a sunny window, because a plant needs sunlight, water and air to grow. Its leaves turned toward the light.',
+        'The cup got too small, so Leo moved the bean to the garden, where it had room. It grew tall and made little white flowers.',
+        'The flowers turned into green pods. Leo opened one, and inside were new beans just like the one he planted. The bean plant had made more beans!',
+    ],
+};
+STORIES['farm-animals-k'] = {
+    about: 'a cow whose ears turned, hens that pecked, a goat that grabbed a leaf, a storm that sent everyone into the barn, and a warm egg',
+    more: [{ serial: 'S3345', after: 1, alt: 'Hens pecking at seeds on the ground by a barn' }, { serial: 'S3346', after: 2, alt: 'A goat stretching over a fence to grab a leaf with its lips' }, { serial: 'S3347', after: 3, alt: 'A farmer leading a cow, hens and a goat into a red barn in the rain' }, { serial: 'S3348', after: 4, alt: 'A girl holding a brown egg carefully in both hands' }],
+    title: 'The red barn', art: 'S3344', cast: [],
+    alt: 'A girl at a fence waving to a brown cow in front of a big red barn',
+    words: [
+        'Maya visited a farm with a big red barn. A brown cow looked at her, and its ears turned toward her voice. Cows can see almost all the way around.',
+        'The hens were busy pecking at seeds on the ground. Their beaks picked up the seeds one at a time, quick as a wink.',
+        'A goat stretched its neck over the fence. It grabbed a leaf with its lips and chewed it slowly while Maya laughed.',
+        'Then dark clouds rolled in, and it began to rain. The farmer led the animals into the barn, where it was dry. A barn is shelter, and every farm animal needs it.',
+        'Before Maya left, the farmer gave her a brown egg from a hen. It was still warm. Maya held it with both hands all the way home.',
+    ],
+};
+STORIES['a-day-on-the-farm-k'] = {
+    about: 'a farm day that starts before the sun, a sky that tells the day\'s work, a milk truck, and a deer at the edge of the woods',
+    more: [{ serial: 'S3350', after: 1, alt: 'A farmer looking up at a cloudy sky over a field of corn' }, { serial: 'S3351', after: 2, alt: 'A milk truck at a farm driving away down a country road' }, { serial: 'S3352', after: 3, alt: 'A deer at the edge of the woods at evening, a boy and his mother watching' }, { serial: 'S3353', after: 4, alt: 'A boy pointing at a milk carton in a store and grinning' }],
+    title: 'Up with the sun', art: 'S3349', cast: [],
+    alt: 'A mother farmer feeding cows at sunrise while her son watches',
+    words: [
+        'Sam\'s mom is a farmer, and her day starts before the sun comes up. First she feeds the cows and fills their water.',
+        'Then she looks at the sky. Rain today means the corn gets a drink, so she will not need the hose. On hot days, she waters the garden every evening.',
+        'At noon, a big truck comes for the milk. The milk goes to a dairy and the store, and soon it is on tables in town.',
+        'In the evening, Sam saw a deer at the edge of the woods. Nobody feeds the deer, his mom said. It finds its own food, but our cows count on us.',
+        'At the store the next day, Sam found milk from his mom\'s farm. He pointed at the carton and grinned, because he knew just where it came from.',
+    ],
+};
 const STORY_WORD_LIMIT = { early: 200, older: 350 };
 function storyFor(moduleId) { return STORIES[moduleId] || null; }
 // What a whole course is reaching for, in one line (2026-09-24, Mikey): the subtitle on a printed story book's cover,
@@ -56633,6 +56910,7 @@ const COURSE_GOALS = {
     'agriculture-9': 'The scope and history of agriculture and its global markets, soil and plants, animals and food processing, and running a farm with a plan, records, a fair meeting, safety and the land kept for next year',
     'agriculture-6': 'The chain from a field to a plate and the resources that run it, soil and seeds with a fair test, a farm as an ecosystem with named relationships, and a small project with a plan, records and a graph',
     'agriculture-3': 'Where farm food and fiber come from and the resources farms use, how soil forms and seeds sprout, what farm animals need and how they grow, and a tiny farm with a plan, a tally and stewardship',
+    'agriculture-k': 'Plant parts we eat, a seed growing into a plant and what plants need, what farm animals need and give us, and a farmer\'s day from the sky to the store',
     'speech-6': 'Listening with three moves, the one sentence in the voice the room needs, a two-minute talk with a stance, and disagreeing with the idea and not the person',
     'speech-3': 'Listening with eyes, hands and mind, questions about the topic, steps said back in order, a one-minute talk in complete sentences, and turns',
     'speech-k': 'Listening with the whole body, steps said back and done in order, a clear voice with three parts, and turns with kind words',
@@ -56838,6 +57116,10 @@ const COLOR_PAGES = {
     'first-then-do': ['D184', 'A cup, a water jug and a table in a row, first, then, last'],
     'my-clear-voice': ['D185', 'A child holding up a drawing of a dog for the class to see'],
     'my-turn-and-kind-words': ['D186', 'Four children sitting in a circle with one hand up'],
+    'plants-we-eat-k': ['D187', 'A carrot, a head of lettuce and a broccoli side by side on a table'],
+    'seed-to-plant-k': ['D188', 'A bean seed, a seedling and a bean plant with a pod in a row'],
+    'farm-animals-k': ['D189', 'A cow, a hen and a goat in front of a barn'],
+    'a-day-on-the-farm-k': ['D190', 'A farmer with a pail next to a cow under a big sun'],
 };
 // The Wise Human. Copyright (c) 2026. Source-available; not for reuse. See LICENSE.md.
 // =====================================================================
@@ -56968,7 +57250,7 @@ function PinInput({ value, onChange, placeholder, style, onEnter = null }) {
 }
 // A stamp of when this copy of the page was built, so a stale page in a cache can be told apart
 // from a fresh one at a glance. Written by the build, never by hand.
-const BUILD_STAMP = '2026-09-30 01:58 PM CDT';
+const BUILD_STAMP = '2026-09-30 05:05 PM CDT';
 function ContactLine({ onOpen, inline = false }) {
     return (react_1.default.createElement("p", { className: "edu-no-print", style: { textAlign: 'center', marginTop: inline ? 0 : 28, fontSize: inline ? 14 : 12, color: C.muted, margin: inline ? '0' : undefined } }, onOpen
         ? react_1.default.createElement("button", { type: "button", onClick: onOpen, style: { background: 'none', border: 'none', color: C.muted, fontFamily: FONT, fontSize: 12, cursor: 'pointer', padding: 0, textDecoration: 'underline' } }, "Contact us")
@@ -63160,7 +63442,127 @@ function SproutGame({ game, round, onScore = null }) {
             react_1.default.createElement("div", { style: { display: 'flex', gap: 10, justifyContent: 'center', flexWrap: 'wrap' } }, answers.map(([v, spoken, shown]) => react_1.default.createElement("button", { key: v, type: "button", className: `edu-press${nudge === v ? ' edu-wobble' : ''}`, "aria-label": `Answer: ${spoken}`, onClick: () => pick(v), style: { fontFamily: FONT, fontSize: 16, fontWeight: 700, minWidth: 140, padding: '10px 14px', borderRadius: 12, border: `2px solid ${B.green}`, background: '#fff', color: B.ink, cursor: got ? 'default' : 'pointer' } }, shown))))),
         react_1.default.createElement(Done, { show: done })));
 }
-const GAME_OF = { dots: DotsGame, pairs: PairsGame, sort: SortGame, maze: MazeGame, jigsaw: JigsawGame, pong: PongGame, sprint: SprintGame, order: OrderGame, build: BuildGame, fix: FixGame, mix: MixGame, debug: DebugGame, ptable: PtableGame, evidence: EvidenceGame, catch: CatchGame, path: PathGame, buckets: BucketsGame, jump: JumpGame, map: MapGame, balance: BalanceGame, walk: WalkGame, teach: TeachGame, bits: BitsGame, pay: PayGame, price: PriceGame, loan: LoanGame, fund: FundGame, search: SearchGame, spot: SpotGame, pattern: PatternGame, shape: ShapeGame, chord: ChordGame, valid: ValidGame, reason: ReasonGame, because: BecauseGame, share: ShareGame, stat: StatGame, recall: RecallGame, face: FaceGame, sense: SenseGame, filler: FillerGame, room: RoomGame, ask: AskGame, turn: TurnGame, jar: JarGame, relation: RelationGame, sprout: SproutGame };
+// -----------------------------------------------------------------------------------------------------------------
+// Grow the Plant (2026-09-30, pass HC, the kindergarten agriculture game). In plain terms: a pot with a seed sits on the
+// board and five pictures sit under it: water, sunshine, soil and two toys. The child taps the three things the plant
+// needs, in any order; each one grows the plant a step, from a seed to a sprout to a leafy plant to a bean pod, a
+// sunflower, a tomato or an ear of corn. A toy wobbles and changes nothing. Four plants a round, and the clock counts up.
+// This component only draws and reacts: the four rounds come from growRounds() in logic.mjs, and which pictures count as
+// needs comes from GROW_NEEDS there. The board carries the plant and how many needs it has had in `data-grow-plant` and
+// `data-grow-given`, so the browser test can play a round. Drawn with B, the paper palette of every game board.
+// -----------------------------------------------------------------------------------------------------------------
+function GrowGame({ game, round, onScore = null }) {
+    const rounds = (0, react_1.useMemo)(() => growRounds(round), [round]); // the four plants for this round, fixed by the round number
+    const [k, setK] = (0, react_1.useState)(0); // which plant we are on
+    const [given, setGiven] = (0, react_1.useState)([]); // the needs tapped so far for this plant
+    const [nudge, setNudge] = (0, react_1.useState)(null); // a toy tapped by mistake, so that picture wobbles
+    const [ticks, setTicks] = (0, react_1.useState)(0); // seconds since the round started
+    const [done, setDone] = (0, react_1.useState)(false); // true once all four plants have grown
+    const q = rounds[Math.min(k, rounds.length - 1)];
+    const grown = given.length >= GROW_NEEDS.length;
+    (0, react_1.useEffect)(() => { setK(0); setGiven([]); setTicks(0); setDone(false); }, [round]); // a new round starts fresh
+    (0, react_1.useEffect)(() => { if (typeof speak === 'function' && !done)
+        speak(`Help the ${q.plant} grow. Tap what it needs.`); }, [q, done]);
+    (0, react_1.useEffect)(() => { if (done)
+        return undefined; const t = setInterval(() => setTicks((n) => n + 1), 1000); return () => clearInterval(t); }, [done]);
+    (0, react_1.useEffect)(() => { if (done && onScore)
+        onScore(ticks, 'low'); }, [done]); // hand the time up; lower is better
+    (0, react_1.useEffect)(() => { if (nudge === null)
+        return undefined; const t = setTimeout(() => setNudge(null), 500); return () => clearTimeout(t); }, [nudge]);
+    (0, react_1.useEffect)(() => { if (!grown)
+        return undefined; if (typeof speak === 'function')
+        speak(`The ${q.plant} is growing!`); const t = setTimeout(() => { if (k + 1 >= rounds.length)
+        setDone(true);
+    else {
+        setK(k + 1);
+        setGiven([]);
+    } }, 1100); return () => clearTimeout(t); }, [grown]);
+    const tap = (item) => { if (done || grown || given.includes(item))
+        return; if (GROW_NEEDS.includes(item))
+        setGiven([...given, item]);
+    else
+        setNudge(item); };
+    const ink = B.ink;
+    // The small picture on each button, drawn in a 40 by 40 box.
+    const icon = (item) => {
+        if (item === 'water')
+            return react_1.default.createElement("path", { d: "M20 5C14 15 10 20 10 26a10 10 0 0 0 20 0c0-6-4-11-10-21z", fill: "#6FA8DC", stroke: ink, strokeWidth: "1.5" });
+        if (item === 'sunshine')
+            return react_1.default.createElement("g", null,
+                react_1.default.createElement("circle", { cx: "20", cy: "20", r: "8", fill: "#F2C94C", stroke: ink, strokeWidth: "1.5" }),
+                [0, 45, 90, 135, 180, 225, 270, 315].map((a) => { const r = a * Math.PI / 180; return react_1.default.createElement("line", { key: a, x1: 20 + 11 * Math.cos(r), y1: 20 + 11 * Math.sin(r), x2: 20 + 16 * Math.cos(r), y2: 20 + 16 * Math.sin(r), stroke: "#E0A800", strokeWidth: "2", strokeLinecap: "round" }); }));
+        if (item === 'soil')
+            return react_1.default.createElement("g", null,
+                react_1.default.createElement("path", { d: "M6 30q14-14 28 0z", fill: "#8C6A4A", stroke: ink, strokeWidth: "1.5" }),
+                react_1.default.createElement("circle", { cx: "16", cy: "26", r: "1.2", fill: "#5B4330" }),
+                react_1.default.createElement("circle", { cx: "24", cy: "25", r: "1.2", fill: "#5B4330" }));
+        if (item === 'ball')
+            return react_1.default.createElement("g", null,
+                react_1.default.createElement("circle", { cx: "20", cy: "20", r: "12", fill: "#E57373", stroke: ink, strokeWidth: "1.5" }),
+                react_1.default.createElement("path", { d: "M8 20h24", stroke: "#fff", strokeWidth: "3" }));
+        if (item === 'shoe')
+            return react_1.default.createElement("path", { d: "M6 28v-10h8l4 5h12a4 4 0 0 1 4 4v1z", fill: "#9B8BD1", stroke: ink, strokeWidth: "1.5", strokeLinejoin: "round" });
+        if (item === 'toy car')
+            return react_1.default.createElement("g", null,
+                react_1.default.createElement("path", { d: "M6 26v-6l5-6h14l6 6v6z", fill: "#F59E6B", stroke: ink, strokeWidth: "1.5", strokeLinejoin: "round" }),
+                react_1.default.createElement("circle", { cx: "12", cy: "28", r: "3.5", fill: ink }),
+                react_1.default.createElement("circle", { cx: "28", cy: "28", r: "3.5", fill: ink }));
+        return react_1.default.createElement("g", null,
+            react_1.default.createElement("path", { d: "M10 26h20l-3-12h-14z", fill: "#7CC3A6", stroke: ink, strokeWidth: "1.5", strokeLinejoin: "round" }),
+            react_1.default.createElement("path", { d: "M5 27h30", stroke: ink, strokeWidth: "2.5", strokeLinecap: "round" })); // the hat
+    };
+    // The finished top of each plant: a bean pod, a sunflower, a tomato or an ear of corn.
+    const crown = (plant) => {
+        if (plant === 'sunflower')
+            return react_1.default.createElement("g", null,
+                react_1.default.createElement("circle", { cx: "50", cy: "26", r: "11", fill: "#F2C94C", stroke: ink, strokeWidth: "1.2" }),
+                react_1.default.createElement("circle", { cx: "50", cy: "26", r: "5", fill: "#8C6A4A" }));
+        if (plant === 'tomato')
+            return react_1.default.createElement("g", null,
+                react_1.default.createElement("circle", { cx: "58", cy: "36", r: "7", fill: "#E05A4F", stroke: ink, strokeWidth: "1.2" }),
+                react_1.default.createElement("path", { d: "M55 30l3 2 3-2", stroke: "#3E8E4F", strokeWidth: "1.5", fill: "none" }));
+        if (plant === 'corn')
+            return react_1.default.createElement("g", null,
+                react_1.default.createElement("ellipse", { cx: "58", cy: "38", rx: "4.5", ry: "9", fill: "#F2C94C", stroke: ink, strokeWidth: "1.2" }),
+                react_1.default.createElement("path", { d: "M54 44q-3-8 1-14", stroke: "#3E8E4F", strokeWidth: "2", fill: "none" }));
+        return react_1.default.createElement("path", { d: "M56 34q9 4 6 14q-5-1-7-7q-1-4 1-7z", fill: "#5DB36D", stroke: ink, strokeWidth: "1.2" }); // a bean pod
+    };
+    const stage = given.length; // 0 seed, 1 sprout, 2 leafy plant, 3 finished plant
+    return (react_1.default.createElement("div", { className: "edu-game-box", style: { ...GAME_BOX, aspectRatio: 'auto', padding: 14 }, "data-grow-plant": done ? '' : q.plant, "data-grow-given": done ? '' : String(stage) },
+        react_1.default.createElement("div", { style: { display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 6 } },
+            react_1.default.createElement("span", null, "Grow the plant"),
+            react_1.default.createElement("span", null,
+                ticks,
+                "s \u00B7 ",
+                Math.min(k + 1, rounds.length),
+                " of ",
+                rounds.length)),
+        done ? react_1.default.createElement("p", { style: { margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 } },
+            "Four plants grown in ",
+            ticks,
+            " seconds. Tap the round arrow for more.") : (react_1.default.createElement("div", { style: { textAlign: 'center' } },
+            react_1.default.createElement("svg", { viewBox: "0 0 100 100", width: "160", height: "160", role: "img", "aria-label": `A ${q.plant} in a pot, ${['still a seed', 'a small sprout', 'a leafy plant', 'grown'][stage]}`, style: { display: 'block', margin: '0 auto 6px' } },
+                stage >= 1 && react_1.default.createElement("path", { d: `M50 70 V${stage >= 2 ? 34 : 56}`, stroke: "#3E8E4F", strokeWidth: "3", strokeLinecap: "round" }),
+                stage >= 1 && react_1.default.createElement("g", null,
+                    react_1.default.createElement("path", { d: "M50 62q-10-6-12-12q8 0 12 8z", fill: "#5DB36D" }),
+                    react_1.default.createElement("path", { d: "M50 60q10-6 12-12q-8 0-12 8z", fill: "#5DB36D" })),
+                stage >= 2 && react_1.default.createElement("g", null,
+                    react_1.default.createElement("path", { d: "M50 48q-12-4-15-12q10 0 15 8z", fill: "#5DB36D" }),
+                    react_1.default.createElement("path", { d: "M50 44q12-4 15-12q-10 0-15 8z", fill: "#5DB36D" })),
+                stage >= 3 && crown(q.plant),
+                react_1.default.createElement("path", { d: "M30 70h40l-5 24h-30z", fill: "#C8734B", stroke: ink, strokeWidth: "1.5" }),
+                react_1.default.createElement("rect", { x: "31", y: "68", width: "38", height: "5", rx: "2", fill: "#6B4A2F" }),
+                stage === 0 && react_1.default.createElement("ellipse", { cx: "50", cy: "68", rx: "4", ry: "2.5", fill: "#E8D8A8", stroke: ink, strokeWidth: "1" })),
+            react_1.default.createElement("p", { style: { margin: '0 0 10px', fontSize: 16, color: grown ? B.green : B.ink, minHeight: 22, fontWeight: grown ? 700 : 400 } }, grown ? `The ${q.plant} is growing!` : `Tap what the ${q.plant} needs.`),
+            react_1.default.createElement("div", { style: { display: 'flex', gap: 8, justifyContent: 'center', flexWrap: 'wrap' } }, q.items.map((item) => {
+                const used = given.includes(item);
+                return (react_1.default.createElement("button", { key: item, type: "button", className: `edu-press${nudge === item ? ' edu-wobble' : ''}`, "aria-label": `Give ${item}`, "aria-pressed": used, onClick: () => tap(item), style: { fontFamily: FONT, width: 76, padding: '6px 4px', borderRadius: 14, border: `2px solid ${used ? B.green : B.line}`, background: used ? '#E4F3EA' : '#fff', color: B.ink, cursor: used || grown ? 'default' : 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 } },
+                    react_1.default.createElement("svg", { viewBox: "0 0 40 40", width: "40", height: "40", "aria-hidden": "true" }, icon(item)),
+                    react_1.default.createElement("span", { style: { fontSize: 13, fontWeight: 700, textTransform: 'capitalize' } }, item)));
+            })))),
+        react_1.default.createElement(Done, { show: done })));
+}
+const GAME_OF = { dots: DotsGame, pairs: PairsGame, sort: SortGame, maze: MazeGame, jigsaw: JigsawGame, pong: PongGame, sprint: SprintGame, order: OrderGame, build: BuildGame, fix: FixGame, mix: MixGame, debug: DebugGame, ptable: PtableGame, evidence: EvidenceGame, catch: CatchGame, path: PathGame, buckets: BucketsGame, jump: JumpGame, map: MapGame, balance: BalanceGame, walk: WalkGame, teach: TeachGame, bits: BitsGame, pay: PayGame, price: PriceGame, loan: LoanGame, fund: FundGame, search: SearchGame, spot: SpotGame, pattern: PatternGame, shape: ShapeGame, chord: ChordGame, valid: ValidGame, reason: ReasonGame, because: BecauseGame, share: ShareGame, stat: StatGame, recall: RecallGame, face: FaceGame, sense: SenseGame, filler: FillerGame, room: RoomGame, ask: AskGame, turn: TurnGame, jar: JarGame, relation: RelationGame, sprout: SproutGame, grow: GrowGame };
 // How to play, in a line or two, by kind of game (and by deck for the matching games).
 function gameInstructions(game) {
     if (game.kind === 'bits')
@@ -63175,6 +63577,8 @@ function gameInstructions(game) {
         return 'An argument in three lines: if this then that, a second line, and a conclusion. Ask whether the form guarantees the conclusion when the premises are true, however true the sentences sound, and tap Valid or Not valid. The right answer names the form. Six arguments a round, and the clock counts up.';
     if (game.kind === 'stat')
         return 'Five quiz scores and one average to find: the mean, the median or the mode. Add and divide, or order and take the middle, or find the score that repeats, and tap the number. Six rounds, and the clock counts up.';
+    if (game.kind === 'grow')
+        return 'A seed in a pot and five pictures: water, sunshine, soil and two toys. Tap the three things the plant needs, in any order, and watch it grow. Four plants, and the clock counts up.';
     if (game.kind === 'sprout')
         return 'A bean seed in a cup and four facts about it: water, air, warmth and light. Decide whether it sprouts. A bean needs water, air and warmth, and light can wait until the shoot is up. Six seeds, and the clock counts up.';
     if (game.kind === 'relation')
@@ -63388,6 +63792,13 @@ function GameThumb({ kind, game = null }) {
             react_1.default.createElement("path", { d: "M20 15 C15 12 13 9 14 7 C17 8 19 11 20 15 Z", fill: "#5DB36D" }),
             react_1.default.createElement("path", { d: "M20 13 C25 10 27 7 26 5 C23 6 21 9 20 13 Z", fill: "#5DB36D" }),
             react_1.default.createElement("path", { d: "M9 24 L31 24 L28 37 L12 37 Z", fill: "#C8734B", stroke: k, strokeWidth: "1" }));
+    if (game && game.kind === 'grow')
+        return react_1.default.createElement("svg", { viewBox: "0 0 40 40", width: "44", height: "44", "aria-hidden": "true" },
+            react_1.default.createElement("path", { d: "M13 26h14l-2 10h-10z", fill: "#C8734B", stroke: k, strokeWidth: "1" }),
+            react_1.default.createElement("path", { d: "M20 26v-12", stroke: C.green, strokeWidth: "2", strokeLinecap: "round" }),
+            react_1.default.createElement("path", { d: "M20 20q-6-3-7-8q5 0 7 5z", fill: C.green }),
+            react_1.default.createElement("path", { d: "M20 18q6-3 7-8q-5 0-7 5z", fill: C.green }),
+            react_1.default.createElement("circle", { cx: "32", cy: "8", r: "4", fill: "#F2C94C" }));
     if (game && game.kind === 'stat')
         return react_1.default.createElement("svg", { viewBox: "0 0 40 40", width: "44", height: "44", "aria-hidden": "true" },
             react_1.default.createElement("rect", { x: "4", y: "5", width: "32", height: "30", rx: "4", fill: C.paperBoard, stroke: k, strokeWidth: "1" }),
@@ -65832,8 +66243,24 @@ function EduSphereScreens() {
     // The what's-new pop-up: once per build, the first time an educator lands on the classroom after it.
     const tourSheetRef = (0, react_1.useRef)(null); // the sheet, scrolled back to its top on every card
     const tourBegun = (0, react_1.useRef)(false); // the tour starts once per sign-in, not every time the classroom page shows
-    // On a phone the tour does not start on its own (the sheet fights the page for room); the classroom page offers it instead.
-    const phoneScreen = typeof window !== 'undefined' && window.innerWidth < 700;
+    // phoneScreen (updated 2026-09-30, pass HC, Mikey): true on a phone held either way, meaning under 700 pixels wide, or under
+    // 500 pixels tall and no wider than 1000 (a phone turned sideways). The first week tour needs room, so on a phone it never
+    // starts on its own and the backup page does not offer it; nothing else in the app hides on phones by this test.
+    const phoneScreen = typeof window !== 'undefined' && (window.innerWidth < 700 || (window.innerHeight < 500 && window.innerWidth <= 1000));
+    // Redraw when the screen changes size (pass HC). In plain terms: several layouts ask how wide or tall the screen is while they
+    // draw (phoneScreen, the course rows, the weekly note title). Turning a phone sideways or resizing a window changes the answer,
+    // so the app redraws once per frame at most while the size changes; without this, a rotated phone kept the old layout.
+    const [, setViewportTick] = (0, react_1.useState)(0);
+    (0, react_1.useEffect)(() => {
+        if (typeof window === 'undefined')
+            return undefined;
+        let frame = 0;
+        const onResize = () => { if (frame)
+            return; frame = window.requestAnimationFrame(() => { frame = 0; setViewportTick((n) => n + 1); }); };
+        window.addEventListener('resize', onResize);
+        return () => { window.removeEventListener('resize', onResize); if (frame)
+            window.cancelAnimationFrame(frame); };
+    }, []);
     // startAccountSetup (2026-09-30, pass HB). In plain terms: opens the educator account setup with the PIN boxes empty and this
     // device's name and state filled in. Every Create account button uses it, and since the starter PIN was retired, so does Educator
     // Login on a device that has no account yet: an account with its own PIN is now the only way into the educator screens.
@@ -68683,7 +69110,7 @@ function EduSphereScreens() {
                         react_1.default.createElement("p", { style: { margin: '0 0 12px', fontSize: 14, color: C.muted, lineHeight: 1.55 } }, "This device has no educator account yet. Create one to choose a PIN of your own. Your students stay exactly as they are."),
                         react_1.default.createElement(Btn, { onClick: startAccountSetup }, "Create account")),
                     educator && react_1.default.createElement("div", { style: { display: 'flex', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'baseline', gap: '8px 28px' }, "data-account-links": "" },
-                        educator && react_1.default.createElement("p", { style: { textAlign: 'center', margin: '0' } },
+                        educator && !phoneScreen && react_1.default.createElement("p", { style: { textAlign: 'center', margin: '0' } },
                             react_1.default.createElement("button", { type: "button", style: { ...linkBtn, fontSize: 13, color: C.muted }, onClick: async () => { const next = { ...educator, tourSeen: false }; setEducator(next); await saveEducator(next); tourBegun.current = false; setScreen('educator-pick'); } }, "Show the first week tour again")),
                         educator && (react_1.default.createElement("p", { style: { textAlign: 'center', margin: '0' } }, startOverArmed
                             ? react_1.default.createElement("span", { style: { fontSize: 13, color: C.muted } },

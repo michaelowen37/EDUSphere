@@ -1480,6 +1480,28 @@ export const CURRICULUM = [
     ],
   },
   {
+    grade: 'K', subject: 'Agriculture', status: 'ready',
+    source: 'Texas has no kindergarten agriculture course, so the Texas column carries the kindergarten science standards the course rests on, the needs and structures of plants and animals and the plant life cycle (Science, Kindergarten, §112.2, Adopted 2021, in the wording of TEA\'s published text), for the agriculture course of the K to 2 band, built above that minimum; the national column carries the National Agricultural Literacy Outcomes for kindergarten to grade 2 (Spielmaker and Leising, 2013), shown in the Common Core column.',
+    standards: [
+      { framework: 'TEKS', code: '112.2(b)(12)(A)', text: 'Observe and identify the dependence of plants on air, sunlight, water, nutrients in the soil, and space to grow.', moduleIds: ['seed-to-plant-k', 'a-day-on-the-farm-k'] },
+      { framework: 'TEKS', code: '112.2(b)(12)(B)', text: 'Observe and identify the dependence of animals on air, water, food, space, and shelter.', moduleIds: ['farm-animals-k', 'a-day-on-the-farm-k'] },
+      { framework: 'TEKS', code: '112.2(b)(13)(A)', text: 'Identify the structures of plants, including roots, stems, leaves, flowers, and fruits.', moduleIds: ['plants-we-eat-k'] },
+      { framework: 'TEKS', code: '112.2(b)(13)(B)', text: 'Identify the different structures that animals have that allow them to interact with their environment such as seeing, hearing, moving, and grasping objects.', moduleIds: ['farm-animals-k'] },
+      { framework: 'TEKS', code: '112.2(b)(13)(C)', text: 'Identify and record the changes from seed, seedling, plant, flower, and fruit in a simple plant life cycle.', moduleIds: ['seed-to-plant-k'] },
+      { framework: 'TEKS', code: '112.2(b)(13)(D)', text: 'Identify ways that young plants resemble the parent plant.', moduleIds: ['seed-to-plant-k'] },
+      { framework: 'CCSS', code: 'NALO T1.K-2.a', text: 'Describe how farmers/ranchers use land to grow crops and support livestock.', moduleIds: ['plants-we-eat-k'] },
+      { framework: 'CCSS', code: 'NALO T1.K-2.b', text: 'Describe the importance of soil and water in raising crops and livestock.', moduleIds: ['seed-to-plant-k'] },
+      { framework: 'CCSS', code: 'NALO T1.K-2.d', text: 'Provide examples of how weather patterns affect plant and animal growth for food.', moduleIds: ['a-day-on-the-farm-k'] },
+      { framework: 'CCSS', code: 'NALO T2.K-2.a', text: 'Explain how farmers/ranchers work with the lifecycle of plants and animals (planting/breeding) to harvest a crop.', moduleIds: ['seed-to-plant-k'] },
+      { framework: 'CCSS', code: 'NALO T2.K-2.b', text: 'Identify animals involved in agricultural production and their uses (i.e., work, meat, dairy, eggs).', moduleIds: ['farm-animals-k'] },
+      { framework: 'CCSS', code: 'NALO T2.K-2.c', text: 'Identify examples of feed/food products eaten by animals and people.', moduleIds: ['plants-we-eat-k'] },
+      { framework: 'CCSS', code: 'NALO T2.K-2.e', text: 'Identify the importance of natural resources (e.g., sun, soil, water, minerals) in farming.', moduleIds: ['seed-to-plant-k'] },
+      { framework: 'CCSS', code: 'NALO T3.K-2.b', text: 'Recognize that agriculture provides our most basic necessities: food, fiber (fabric or clothing), energy, and shelter.', moduleIds: ['farm-animals-k'] },
+      { framework: 'CCSS', code: 'NALO T5.K-2.a', text: 'Discuss what a farmer does.', moduleIds: ['a-day-on-the-farm-k'] },
+      { framework: 'CCSS', code: 'NALO T5.K-2.f', text: 'Trace the sources of agricultural products (plant or animal) used daily.', moduleIds: ['a-day-on-the-farm-k'] },
+    ],
+  },
+  {
     grade: '3', subject: 'Agriculture', status: 'ready',
     source: 'Texas has no elementary agriculture course, so the Texas column carries the grade 3 science standards the course rests on, natural resources, soil, organisms and environments, and scientific practices (Science, Grade 3, §112.5, Adopted 2021), for the agriculture course of the 3 to 5 band, built above that minimum; the national column carries the National Agricultural Literacy Outcomes for grades 3 to 5 (Spielmaker and Leising, 2013), shown in the Common Core column.',
     standards: [

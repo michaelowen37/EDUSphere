@@ -821,7 +821,7 @@ ok('reset: history kept, but nothing counts as mastered afterwards', events.leng
   ok('only grades that have courses are offered, in order', JSON.stringify(L.gradesWithCourses()) === '["PK3","PK4","K","1","2","3","4","5","6","7","8","9","10","11","12","C"]');
   const k = L.subjectsForGrade('K');
   // Health joined kindergarten on 2026-09-23; it sorts last.
-  ok('kindergarten groups into Math, Reading, Science, History, Art, Technology, Health, Economics, Philosophy, Psychology and Speech, in that order (speech joined K in pass GT)', k.length === 11 && k[0].subject === 'Math' && k[1].subject === 'Reading' && k[2].subject === 'Science' && k[3].subject === 'History' && k[4].subject === 'Art' && k[5].subject === 'Technology' && k[6].subject === 'Health' && k[7].subject === 'Economics' && k[8].subject === 'Philosophy' && k[9].subject === 'Psychology' && k[10].subject === 'Speech');
+  ok('kindergarten groups into Math, Reading, Science, History, Art, Technology, Health, Economics, Philosophy, Psychology, Speech and Agriculture, in that order (agriculture joined K in pass HC)', k.length === 12 && k[0].subject === 'Math' && k[1].subject === 'Reading' && k[2].subject === 'Science' && k[3].subject === 'History' && k[4].subject === 'Art' && k[5].subject === 'Technology' && k[6].subject === 'Health' && k[7].subject === 'Economics' && k[8].subject === 'Philosophy' && k[9].subject === 'Psychology' && k[10].subject === 'Speech' && k[11].subject === 'Agriculture');
   ok('every grade now has courses', L.subjectsForGrade('PK3').length === 2);
   ok('science runs from kindergarten to grade 12', ['K', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'].every((g) => L.subjectsForGrade(g).some((x) => x.subject === 'Science')));
   ok('pre-K 3 is never a starter; a new early-years student begins at pre-K 4', L.recommendedCourseIds([L.makeCoursesEnabledEvent([], 't')], 'early').every((id) => L.getCourse(id).grade === 'PK4'));
@@ -1572,6 +1572,10 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
     ok('the sprout game belongs to agriculture 3 to 5 and names its seeds with its own key', L.COURSE_GAMES['agriculture-3'].includes('sprout-agriculture-3') && L.GAMES.find((g) => g.id === 'sprout-agriculture-3').sprout === 'seeds' && !L.GAMES.find((g) => g.id === 'sprout-agriculture-3').deck);
     ok('the squash-tally questions compute their answers', [...Array(40).keys()].every((i) => { const q = L.generateQuestion('ag3-tiny', i); if (!q.story) return true; const n = q.story.match(/\d+/g).map(Number); return q.answer === String(n[0] + n[1] + n[2]); }));
   }
+  { // Grow the Plant (pass HC): four rounds, each a listed plant with five distinct pictures, the three needs and two toys from the list.
+    ok('every grow round holds the three needs and two different toys for a listed plant', [1, 2, 3, 4, 5].every((r) => { const qs = L.growRounds(r); return qs.length === 4 && qs.every((q) => L.GROW_PLANTS.includes(q.plant) && q.items.length === 5 && new Set(q.items).size === 5 && L.GROW_NEEDS.every((n) => q.items.includes(n)) && q.items.filter((i) => L.GROW_TOYS.includes(i)).length === 2); }));
+    ok('the grow game belongs to agriculture K to 2, is marked young and names its needs with its own key', L.COURSE_GAMES['agriculture-k'].includes('grow-agriculture-k') && L.GAMES.find((g) => g.id === 'grow-agriculture-k').young === true && L.GAMES.find((g) => g.id === 'grow-agriculture-k').grow === 'needs' && !L.GAMES.find((g) => g.id === 'grow-agriculture-k').deck);
+  }
   ok('the two robot games sit in the two programming courses beside their first games', L.COURSE_GAMES['tech-3'].includes('debug-tech-3') && L.COURSE_GAMES['tech-5'].includes('debug-tech-5') && L.GAMES.filter((g) => g.kind === 'debug').every((g) => L.ROBOT_DECKS[g.deck]));
 }
 
@@ -1636,7 +1640,7 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
   const otherPair = await crypto.subtle.generateKey({ name: 'ECDSA', namedCurve: 'P-256' }, true, ['sign', 'verify']);
   const otherPriv = await crypto.subtle.exportKey('jwk', otherPair.privateKey);
   ok('a code signed with any other key is refused', (await L.checkLicenseCode(await L.makeLicenseCode(otherPriv, { id: 'X', name: 'Y', year: '2026-27', until: '2027-07-31' }), new Date('2026-10-01'))).ok === false);
-  ok('pre-K 3, pre-K 4 and kindergarten courses are free, grade 1 and up are not', L.COURSES.filter(L.courseIsFree).length > 0 && L.COURSES.every((c) => L.courseIsFree(c) === ['PK3', 'PK4', 'K'].includes(c.grade)) && L.COURSES.filter(L.courseIsFree).reduce((n, c) => n + c.modules.length, 0) === 110);   // 86 plus computer science (FS), economics (FV), art and music (GE), philosophy (GL), psychology (GP) and speech (GT), four modules each
+  ok('pre-K 3, pre-K 4 and kindergarten courses are free, grade 1 and up are not', L.COURSES.filter(L.courseIsFree).length > 0 && L.COURSES.every((c) => L.courseIsFree(c) === ['PK3', 'PK4', 'K'].includes(c.grade)) && L.COURSES.filter(L.courseIsFree).reduce((n, c) => n + c.modules.length, 0) === 114);   // 86 plus computer science (FS), economics (FV), art and music (GE), philosophy (GL), psychology (GP) and speech (GT), four modules each
   const mixed = ['counting-k', 'reading-3', 'letters-k'];
   ok('without a license only the free courses open; with one, all of them do', JSON.stringify(L.openCourseIds(mixed, false)) === JSON.stringify(['counting-k', 'letters-k']) && L.openCourseIds(mixed, true).length === 3);
   ok('the app carries a public key only, marked as the development key until launch', !('d' in L.LICENSE_PUBLIC_KEY) && L.LICENSE_KEY_IS_DEVELOPMENT === true);

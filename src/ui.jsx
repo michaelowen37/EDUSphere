@@ -4434,7 +4434,79 @@ function SproutGame({ game, round, onScore = null }) {
     </div>
   );
 }
-const GAME_OF = { dots: DotsGame, pairs: PairsGame, sort: SortGame, maze: MazeGame, jigsaw: JigsawGame, pong: PongGame, sprint: SprintGame, order: OrderGame, build: BuildGame, fix: FixGame, mix: MixGame, debug: DebugGame, ptable: PtableGame, evidence: EvidenceGame, catch: CatchGame, path: PathGame, buckets: BucketsGame, jump: JumpGame, map: MapGame, balance: BalanceGame, walk: WalkGame, teach: TeachGame, bits: BitsGame, pay: PayGame, price: PriceGame, loan: LoanGame, fund: FundGame, search: SearchGame, spot: SpotGame, pattern: PatternGame, shape: ShapeGame, chord: ChordGame, valid: ValidGame, reason: ReasonGame, because: BecauseGame, share: ShareGame, stat: StatGame, recall: RecallGame, face: FaceGame, sense: SenseGame, filler: FillerGame, room: RoomGame, ask: AskGame, turn: TurnGame, jar: JarGame, relation: RelationGame, sprout: SproutGame };
+// -----------------------------------------------------------------------------------------------------------------
+// Grow the Plant (2026-09-30, pass HC, the kindergarten agriculture game). In plain terms: a pot with a seed sits on the
+// board and five pictures sit under it: water, sunshine, soil and two toys. The child taps the three things the plant
+// needs, in any order; each one grows the plant a step, from a seed to a sprout to a leafy plant to a bean pod, a
+// sunflower, a tomato or an ear of corn. A toy wobbles and changes nothing. Four plants a round, and the clock counts up.
+// This component only draws and reacts: the four rounds come from growRounds() in logic.mjs, and which pictures count as
+// needs comes from GROW_NEEDS there. The board carries the plant and how many needs it has had in `data-grow-plant` and
+// `data-grow-given`, so the browser test can play a round. Drawn with B, the paper palette of every game board.
+// -----------------------------------------------------------------------------------------------------------------
+function GrowGame({ game, round, onScore = null }) {
+  const rounds = useMemo(() => growRounds(round), [round]); // the four plants for this round, fixed by the round number
+  const [k, setK] = useState(0); // which plant we are on
+  const [given, setGiven] = useState([]); // the needs tapped so far for this plant
+  const [nudge, setNudge] = useState(null); // a toy tapped by mistake, so that picture wobbles
+  const [ticks, setTicks] = useState(0); // seconds since the round started
+  const [done, setDone] = useState(false); // true once all four plants have grown
+  const q = rounds[Math.min(k, rounds.length - 1)];
+  const grown = given.length >= GROW_NEEDS.length;
+  useEffect(() => { setK(0); setGiven([]); setTicks(0); setDone(false); }, [round]); // a new round starts fresh
+  useEffect(() => { if (typeof speak === 'function' && !done) speak(`Help the ${q.plant} grow. Tap what it needs.`); }, [q, done]);
+  useEffect(() => { if (done) return undefined; const t = setInterval(() => setTicks((n) => n + 1), 1000); return () => clearInterval(t); }, [done]);
+  useEffect(() => { if (done && onScore) onScore(ticks, 'low'); }, [done]); // hand the time up; lower is better
+  useEffect(() => { if (nudge === null) return undefined; const t = setTimeout(() => setNudge(null), 500); return () => clearTimeout(t); }, [nudge]);
+  useEffect(() => { if (!grown) return undefined; if (typeof speak === 'function') speak(`The ${q.plant} is growing!`); const t = setTimeout(() => { if (k + 1 >= rounds.length) setDone(true); else { setK(k + 1); setGiven([]); } }, 1100); return () => clearTimeout(t); }, [grown]);
+  const tap = (item) => { if (done || grown || given.includes(item)) return; if (GROW_NEEDS.includes(item)) setGiven([...given, item]); else setNudge(item); };
+  const ink = B.ink;
+  // The small picture on each button, drawn in a 40 by 40 box.
+  const icon = (item) => {
+    if (item === 'water') return <path d="M20 5C14 15 10 20 10 26a10 10 0 0 0 20 0c0-6-4-11-10-21z" fill="#6FA8DC" stroke={ink} strokeWidth="1.5" />;
+    if (item === 'sunshine') return <g><circle cx="20" cy="20" r="8" fill="#F2C94C" stroke={ink} strokeWidth="1.5" />{[0, 45, 90, 135, 180, 225, 270, 315].map((a) => { const r = a * Math.PI / 180; return <line key={a} x1={20 + 11 * Math.cos(r)} y1={20 + 11 * Math.sin(r)} x2={20 + 16 * Math.cos(r)} y2={20 + 16 * Math.sin(r)} stroke="#E0A800" strokeWidth="2" strokeLinecap="round" />; })}</g>;
+    if (item === 'soil') return <g><path d="M6 30q14-14 28 0z" fill="#8C6A4A" stroke={ink} strokeWidth="1.5" /><circle cx="16" cy="26" r="1.2" fill="#5B4330" /><circle cx="24" cy="25" r="1.2" fill="#5B4330" /></g>;
+    if (item === 'ball') return <g><circle cx="20" cy="20" r="12" fill="#E57373" stroke={ink} strokeWidth="1.5" /><path d="M8 20h24" stroke="#fff" strokeWidth="3" /></g>;
+    if (item === 'shoe') return <path d="M6 28v-10h8l4 5h12a4 4 0 0 1 4 4v1z" fill="#9B8BD1" stroke={ink} strokeWidth="1.5" strokeLinejoin="round" />;
+    if (item === 'toy car') return <g><path d="M6 26v-6l5-6h14l6 6v6z" fill="#F59E6B" stroke={ink} strokeWidth="1.5" strokeLinejoin="round" /><circle cx="12" cy="28" r="3.5" fill={ink} /><circle cx="28" cy="28" r="3.5" fill={ink} /></g>;
+    return <g><path d="M10 26h20l-3-12h-14z" fill="#7CC3A6" stroke={ink} strokeWidth="1.5" strokeLinejoin="round" /><path d="M5 27h30" stroke={ink} strokeWidth="2.5" strokeLinecap="round" /></g>; // the hat
+  };
+  // The finished top of each plant: a bean pod, a sunflower, a tomato or an ear of corn.
+  const crown = (plant) => {
+    if (plant === 'sunflower') return <g><circle cx="50" cy="26" r="11" fill="#F2C94C" stroke={ink} strokeWidth="1.2" /><circle cx="50" cy="26" r="5" fill="#8C6A4A" /></g>;
+    if (plant === 'tomato') return <g><circle cx="58" cy="36" r="7" fill="#E05A4F" stroke={ink} strokeWidth="1.2" /><path d="M55 30l3 2 3-2" stroke="#3E8E4F" strokeWidth="1.5" fill="none" /></g>;
+    if (plant === 'corn') return <g><ellipse cx="58" cy="38" rx="4.5" ry="9" fill="#F2C94C" stroke={ink} strokeWidth="1.2" /><path d="M54 44q-3-8 1-14" stroke="#3E8E4F" strokeWidth="2" fill="none" /></g>;
+    return <path d="M56 34q9 4 6 14q-5-1-7-7q-1-4 1-7z" fill="#5DB36D" stroke={ink} strokeWidth="1.2" />; // a bean pod
+  };
+  const stage = given.length; // 0 seed, 1 sprout, 2 leafy plant, 3 finished plant
+  return (
+    <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }} data-grow-plant={done ? '' : q.plant} data-grow-given={done ? '' : String(stage)}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 6 }}><span>Grow the plant</span><span>{ticks}s · {Math.min(k + 1, rounds.length)} of {rounds.length}</span></div>
+      {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Four plants grown in {ticks} seconds. Tap the round arrow for more.</p> : (
+        <div style={{ textAlign: 'center' }}>
+          <svg viewBox="0 0 100 100" width="160" height="160" role="img" aria-label={`A ${q.plant} in a pot, ${['still a seed', 'a small sprout', 'a leafy plant', 'grown'][stage]}`} style={{ display: 'block', margin: '0 auto 6px' }}>
+            {stage >= 1 && <path d={`M50 70 V${stage >= 2 ? 34 : 56}`} stroke="#3E8E4F" strokeWidth="3" strokeLinecap="round" />}
+            {stage >= 1 && <g><path d="M50 62q-10-6-12-12q8 0 12 8z" fill="#5DB36D" /><path d="M50 60q10-6 12-12q-8 0-12 8z" fill="#5DB36D" /></g>}
+            {stage >= 2 && <g><path d="M50 48q-12-4-15-12q10 0 15 8z" fill="#5DB36D" /><path d="M50 44q12-4 15-12q-10 0-15 8z" fill="#5DB36D" /></g>}
+            {stage >= 3 && crown(q.plant)}
+            <path d="M30 70h40l-5 24h-30z" fill="#C8734B" stroke={ink} strokeWidth="1.5" />
+            <rect x="31" y="68" width="38" height="5" rx="2" fill="#6B4A2F" />
+            {stage === 0 && <ellipse cx="50" cy="68" rx="4" ry="2.5" fill="#E8D8A8" stroke={ink} strokeWidth="1" />}
+          </svg>
+          <p style={{ margin: '0 0 10px', fontSize: 16, color: grown ? B.green : B.ink, minHeight: 22, fontWeight: grown ? 700 : 400 }}>{grown ? `The ${q.plant} is growing!` : `Tap what the ${q.plant} needs.`}</p>
+          <div style={{ display: 'flex', gap: 8, justifyContent: 'center', flexWrap: 'wrap' }}>
+            {q.items.map((item) => { const used = given.includes(item); return (
+              <button key={item} type="button" className={`edu-press${nudge === item ? ' edu-wobble' : ''}`} aria-label={`Give ${item}`} aria-pressed={used} onClick={() => tap(item)} style={{ fontFamily: FONT, width: 76, padding: '6px 4px', borderRadius: 14, border: `2px solid ${used ? B.green : B.line}`, background: used ? '#E4F3EA' : '#fff', color: B.ink, cursor: used || grown ? 'default' : 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
+                <svg viewBox="0 0 40 40" width="40" height="40" aria-hidden="true">{icon(item)}</svg>
+                <span style={{ fontSize: 13, fontWeight: 700, textTransform: 'capitalize' }}>{item}</span>
+              </button>); })}
+          </div>
+        </div>
+      )}
+      <Done show={done} />
+    </div>
+  );
+}
+const GAME_OF = { dots: DotsGame, pairs: PairsGame, sort: SortGame, maze: MazeGame, jigsaw: JigsawGame, pong: PongGame, sprint: SprintGame, order: OrderGame, build: BuildGame, fix: FixGame, mix: MixGame, debug: DebugGame, ptable: PtableGame, evidence: EvidenceGame, catch: CatchGame, path: PathGame, buckets: BucketsGame, jump: JumpGame, map: MapGame, balance: BalanceGame, walk: WalkGame, teach: TeachGame, bits: BitsGame, pay: PayGame, price: PriceGame, loan: LoanGame, fund: FundGame, search: SearchGame, spot: SpotGame, pattern: PatternGame, shape: ShapeGame, chord: ChordGame, valid: ValidGame, reason: ReasonGame, because: BecauseGame, share: ShareGame, stat: StatGame, recall: RecallGame, face: FaceGame, sense: SenseGame, filler: FillerGame, room: RoomGame, ask: AskGame, turn: TurnGame, jar: JarGame, relation: RelationGame, sprout: SproutGame, grow: GrowGame };
 // How to play, in a line or two, by kind of game (and by deck for the matching games).
 function gameInstructions(game) {
   if (game.kind === 'bits') return 'A number sits at the top and eight switches below it, worth 128 down to 1. Tap the switches on and off until the lit places add up to the number; the sum shows as you go. Six numbers, and the clock counts up.';
@@ -4443,6 +4515,7 @@ function gameInstructions(game) {
   if (game.kind === 'fund') return 'A first year on your own, one month a tap. Income comes in, the bills go out, and you choose how much of the 500 that is left goes into your emergency fund; the rest is spent. Some months bring a surprise bill: the fund pays what it can and the rest is borrowed at 2 percent a month. The score is the fund minus the loan after twelve months, higher is better.';
   if (game.kind === 'valid') return 'An argument in three lines: if this then that, a second line, and a conclusion. Ask whether the form guarantees the conclusion when the premises are true, however true the sentences sound, and tap Valid or Not valid. The right answer names the form. Six arguments a round, and the clock counts up.';
   if (game.kind === 'stat') return 'Five quiz scores and one average to find: the mean, the median or the mode. Add and divide, or order and take the middle, or find the score that repeats, and tap the number. Six rounds, and the clock counts up.';
+  if (game.kind === 'grow') return 'A seed in a pot and five pictures: water, sunshine, soil and two toys. Tap the three things the plant needs, in any order, and watch it grow. Four plants, and the clock counts up.';
   if (game.kind === 'sprout') return 'A bean seed in a cup and four facts about it: water, air, warmth and light. Decide whether it sprouts. A bean needs water, air and warmth, and light can wait until the shoot is up. Six seeds, and the clock counts up.';
   if (game.kind === 'relation') return 'A line about two living things on a farm and four names: mutualism, parasitism, commensalism, predation. Tap the one that fits. Six cases, and the clock counts up.';
   if (game.kind === 'jar') return 'A jar of soil and water has settled: sand at the bottom, silt in the middle, clay on top, drawn to the true percentages. Tap the texture the layers show: sandy at seventy percent sand or more, clay at forty percent clay or more, loam for the balance. Six jars, and the clock counts up.';
@@ -4547,6 +4620,7 @@ function GameThumb({ kind, game = null }) {
   if (game && game.kind === 'jar') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="12" y="8" width="16" height="28" rx="3" fill={C.paperBoard} stroke={k} strokeWidth="1" /><rect x="13" y="24" width="14" height="11" fill="#E3C27A" /><rect x="13" y="17" width="14" height="7" fill="#B9A58A" /><rect x="13" y="12" width="14" height="5" fill="#8C6A4A" /><rect x="14" y="4" width="12" height="4" rx="1" fill={k} /></svg>;
   if (game && game.kind === 'relation') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><circle cx="13" cy="20" r="8" fill={C.paperBoard} stroke={k} strokeWidth="1" /><circle cx="29" cy="20" r="6" fill={C.green} stroke={k} strokeWidth="1" /><path d="M21 16l4 0M21 24l4 0" stroke={k} strokeWidth="2" strokeLinecap="round" /><path d="M24 14l3 2-3 2M22 26l-3-2 3-2" fill="none" stroke={k} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" /></svg>;
   if (game && game.kind === 'sprout') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><path d="M20 24 C20 18 20 14 20 10" stroke="#3E8E4F" strokeWidth="2" fill="none" /><path d="M20 15 C15 12 13 9 14 7 C17 8 19 11 20 15 Z" fill="#5DB36D" /><path d="M20 13 C25 10 27 7 26 5 C23 6 21 9 20 13 Z" fill="#5DB36D" /><path d="M9 24 L31 24 L28 37 L12 37 Z" fill="#C8734B" stroke={k} strokeWidth="1" /></svg>;
+  if (game && game.kind === 'grow') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><path d="M13 26h14l-2 10h-10z" fill="#C8734B" stroke={k} strokeWidth="1" /><path d="M20 26v-12" stroke={C.green} strokeWidth="2" strokeLinecap="round" /><path d="M20 20q-6-3-7-8q5 0 7 5z" fill={C.green} /><path d="M20 18q6-3 7-8q-5 0-7 5z" fill={C.green} /><circle cx="32" cy="8" r="4" fill="#F2C94C" /></svg>;
   if (game && game.kind === 'stat') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="4" y="5" width="32" height="30" rx="4" fill={C.paperBoard} stroke={k} strokeWidth="1" /><rect x="9" y="22" width="4" height="9" fill={k} opacity="0.6" /><rect x="15" y="16" width="4" height="15" fill={k} opacity="0.6" /><rect x="21" y="12" width="4" height="19" fill={C.green} /><rect x="27" y="18" width="4" height="13" fill={k} opacity="0.6" /><path d="M7 20h26" stroke={C.green} strokeWidth="1.2" strokeDasharray="2 1.5" /></svg>;
   if (game && game.kind === 'valid') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="4" y="5" width="32" height="30" rx="4" fill={C.paperBoard} stroke={k} strokeWidth="1" /><path d="M9 13h22M9 19h16M9 25h22" stroke={k} strokeWidth="1.5" strokeLinecap="round" /><path d="M11 31l3 3 6-6" fill="none" stroke={C.green} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>;
   if (game && game.kind === 'fund') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="5" y="7" width="30" height="26" rx="4" fill="#fff" stroke={k} strokeWidth="1.2" />{[[10, 22, 8], [17, 14, 16], [24, 18, 12]].map(([x, y, h], i) => <rect key={i} x={x} y={y} width="5" height={h} rx="1" fill={i === 1 ? C.green : '#DDE3DE'} stroke={k} strokeWidth="0.7" />)}<path d="M31 13l-3 -3 -3 3M28 10v9" fill="none" stroke={k} strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" /></svg>;
@@ -6538,8 +6612,21 @@ function EduSphereScreens() {
   // The what's-new pop-up: once per build, the first time an educator lands on the classroom after it.
   const tourSheetRef = useRef(null);                               // the sheet, scrolled back to its top on every card
   const tourBegun = useRef(false);                                 // the tour starts once per sign-in, not every time the classroom page shows
-  // On a phone the tour does not start on its own (the sheet fights the page for room); the classroom page offers it instead.
-  const phoneScreen = typeof window !== 'undefined' && window.innerWidth < 700;
+  // phoneScreen (updated 2026-09-30, pass HC, Mikey): true on a phone held either way, meaning under 700 pixels wide, or under
+  // 500 pixels tall and no wider than 1000 (a phone turned sideways). The first week tour needs room, so on a phone it never
+  // starts on its own and the backup page does not offer it; nothing else in the app hides on phones by this test.
+  const phoneScreen = typeof window !== 'undefined' && (window.innerWidth < 700 || (window.innerHeight < 500 && window.innerWidth <= 1000));
+  // Redraw when the screen changes size (pass HC). In plain terms: several layouts ask how wide or tall the screen is while they
+  // draw (phoneScreen, the course rows, the weekly note title). Turning a phone sideways or resizing a window changes the answer,
+  // so the app redraws once per frame at most while the size changes; without this, a rotated phone kept the old layout.
+  const [, setViewportTick] = useState(0);
+  useEffect(() => {
+    if (typeof window === 'undefined') return undefined;
+    let frame = 0;
+    const onResize = () => { if (frame) return; frame = window.requestAnimationFrame(() => { frame = 0; setViewportTick((n) => n + 1); }); };
+    window.addEventListener('resize', onResize);
+    return () => { window.removeEventListener('resize', onResize); if (frame) window.cancelAnimationFrame(frame); };
+  }, []);
   // startAccountSetup (2026-09-30, pass HB). In plain terms: opens the educator account setup with the PIN boxes empty and this
   // device's name and state filled in. Every Create account button uses it, and since the starter PIN was retired, so does Educator
   // Login on a device that has no account yet: an account with its own PIN is now the only way into the educator screens.
@@ -9410,7 +9497,7 @@ function EduSphereScreens() {
           {restoreNote && <p style={{ margin: '10px 0 0', fontSize: 14, color: C.green, fontWeight: 600, textAlign: 'center' }}>{restoreNote}</p>}
         </div>
         {/* Your educator account (2026-09-30, pass GZ; both states since pass HA, Mikey). In plain terms: this card is always on the backup
-            page. With an educator account on the device it holds the tour link and Start over, side by side when the screen has room and stacked
+            page. With an educator account on the device it holds the tour link (not on phones, since pass HC) and Start over, side by side when the screen has room and stacked
             when it does not, with Change PIN centered on its own line below. Since the starter PIN was retired (pass HB) the educator side
             cannot be reached without an account, so the no-account state is only a safe fallback that offers Create account. */}
         <div style={{ ...card, marginTop: 28, textAlign: 'center' }} data-account-card={educator ? 'account' : 'none'}>
@@ -9420,7 +9507,7 @@ function EduSphereScreens() {
           <Btn onClick={startAccountSetup}>Create account</Btn>
         </>}
         {educator && <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'baseline', gap: '8px 28px' }} data-account-links="">
-        {educator && <p style={{ textAlign: 'center', margin: '0' }}><button type="button" style={{ ...linkBtn, fontSize: 13, color: C.muted }} onClick={async () => { const next = { ...educator, tourSeen: false }; setEducator(next); await saveEducator(next); tourBegun.current = false; setScreen('educator-pick'); }}>Show the first week tour again</button></p>}
+        {educator && !phoneScreen && <p style={{ textAlign: 'center', margin: '0' }}><button type="button" style={{ ...linkBtn, fontSize: 13, color: C.muted }} onClick={async () => { const next = { ...educator, tourSeen: false }; setEducator(next); await saveEducator(next); tourBegun.current = false; setScreen('educator-pick'); }}>Show the first week tour again</button></p>}
         {/* Starting over: the educator profile (PIN, device name, state, tour) is removed and the students are untouched,
             so the account can be created again from the first screen. Two taps, so a stray touch does nothing. Since pass HB it
             also ends the educator session, so nothing of the old account's sign-in lingers. */}

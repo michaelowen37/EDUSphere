@@ -2,6 +2,13 @@
 
 The newest block is what educators see once, in a pop-up on the classroom page, after each update. Write it the way Mikey talks to a teacher: conversational, complete sentences, say what changed and why it matters, and skip the shorthand (2026-09-23). Two to four items. The date line is the version stamp.
 
+## September 30, 2026 (on the farm)
+
+- On a phone, the Your educator account card no longer offers the first-week tour, which is made for bigger screens.
+- Kindergarten has a new free read-aloud elective for K to 2, On the farm: the plant parts we eat, a seed growing into a plant and what it needs, farm animals and what they give us, and a farmer's day from the sky to the store. Each lesson has a story and a coloring page, and the course ends with a long story about Ella's year on a farm.
+- Finishing the course unlocks Grow the Plant, a new kind of game for small hands: water, sunshine and soil grow the plant, and a toy does not.
+- Two new Wonder questions for the youngest wait in the review screen. The agriculture strand now runs from kindergarten to grade 12.
+
 ## September 30, 2026 (down on the farm, and your own PIN only)
 
 - The starter PIN is retired. Only the PIN of the educator account on a device opens the educator side; on a device with no account yet, Educator Login leads straight to creating one. Create the account first thing on any device that holds students.

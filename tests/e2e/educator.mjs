@@ -25,14 +25,18 @@ for (const name of ['Skip tour', 'Later', 'Got it']) { const b = page.getByRole(
 await page.evaluate(() => window.__eduTest.goTo('backup')); await page.waitForTimeout(400);
 const t0 = await text();
 ok('the Change PIN link sits under Start over', t0.indexOf('Change PIN') > t0.indexOf('Start over as a new educator') && t0.indexOf('Start over as a new educator') > 0);
-// With an account, the tour link and Start over sit side by side when there is room and stack when there is not, with Change PIN
-// centered on its own line below either way (pass HA, Mikey).
-{ const pos = () => page.evaluate(() => { const card = document.querySelector('[data-account-card="account"]'); const c = card.getBoundingClientRect(); const btn = (re) => [...card.querySelectorAll('button')].find((b) => re.test(b.textContent)).getBoundingClientRect(); const tour = btn(/first week tour/), over = btn(/^Start over/), pin = btn(/^Change PIN/); return { sideBySide: Math.abs(tour.top - over.top) < 4, pinBelow: pin.top >= Math.max(tour.bottom, over.bottom) - 1, pinCentered: Math.abs((pin.left + pin.right) / 2 - (c.left + c.right) / 2) < 6 }; });
+// With an account, the tour link and Start over sit side by side when there is room, with Change PIN centered on its own line
+// below (pass HA). On a phone, held either way, the tour link is gone because the tour does not fit a small screen, and Start over
+// and Change PIN sit centered one above the other (pass HC, Mikey).
+{ const pos = () => page.evaluate(() => { const card = document.querySelector('[data-account-card="account"]'); const c = card.getBoundingClientRect(); const find = (re) => [...card.querySelectorAll('button')].find((b) => re.test(b.textContent)); const mid = (r) => (r.left + r.right) / 2; const tourBtn = find(/first week tour/); const over = find(/^Start over/).getBoundingClientRect(), pin = find(/^Change PIN/).getBoundingClientRect(); const tour = tourBtn ? tourBtn.getBoundingClientRect() : null; return { hasTour: !!tour, sideBySide: !!tour && Math.abs(tour.top - over.top) < 4, pinBelow: pin.top >= Math.max(tour ? tour.bottom : 0, over.bottom) - 1, overCentered: Math.abs(mid(over) - mid(c)) < 6, pinCentered: Math.abs(mid(pin) - mid(c)) < 6 }; });
   const wide = await pos();
-  ok('on a wide screen the tour link and Start over sit side by side, with Change PIN centered below', wide.sideBySide && wide.pinBelow && wide.pinCentered);
+  ok('on a wide screen the tour link and Start over sit side by side, with Change PIN centered below', wide.hasTour && wide.sideBySide && wide.pinBelow && wide.pinCentered);
   await page.setViewportSize({ width: 390, height: 844 }); await page.waitForTimeout(300);
   const narrow = await pos();
-  ok('on a phone the two links stack, with Change PIN centered below', !narrow.sideBySide && narrow.pinBelow && narrow.pinCentered);
+  ok('on a phone there is no tour link, and Start over sits centered above a centered Change PIN', !narrow.hasTour && narrow.overCentered && narrow.pinBelow && narrow.pinCentered);
+  await page.setViewportSize({ width: 844, height: 390 }); await page.waitForTimeout(300);
+  const sideways = await pos();
+  ok('on a phone turned sideways there is no tour link either', !sideways.hasTour && sideways.pinBelow && sideways.pinCentered);
   await page.setViewportSize({ width: 1280, height: 900 }); await page.waitForTimeout(300); }
 await page.getByRole('button', { name: 'Change PIN' }).click(); await page.waitForTimeout(200);
 const fill = async (a, b, c) => { await page.fill('input[placeholder="Current PIN"]', a); await page.fill('input[placeholder="New PIN"]', b); await page.fill('input[placeholder="New PIN again"]', c); await page.getByRole('button', { name: 'Save new PIN' }).click(); await page.waitForTimeout(250); };

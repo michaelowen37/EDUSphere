@@ -1116,6 +1116,79 @@ export const COURSES = [
     modules: AGRI6_MODULES(),
   },
   // ---------------------------------------------------------------------------------------------------------------
+  // Business for grades 3 to 5 (2026-09-30, pass HG). In plain terms: the course card for the business course of the
+  // 3 to 5 band, built above the Texas minimum. Its four lessons live in BIZ3_MODULES() further down.
+  // ---------------------------------------------------------------------------------------------------------------
+  {
+    id: 'business-3',
+    grade: '3',
+    subject: 'Business',
+    title: 'Jars, banks and lemonade',
+    audience: 'Grades 3 to 5',
+    elective: true,
+    keywords: ['business', 'money', 'saving', 'sharing', 'bank', 'profit', 'stand', 'elective'],
+    modules: BIZ3_MODULES(),
+  },
+  // ---------------------------------------------------------------------------------------------------------------
+  // Business for grades 6 to 8 (2026-09-30, pass HF). In plain terms: the course card for the middle school business
+  // course, built above the Texas minimum on the money standards of grade 6 and 7 math. Lessons in BIZ6_MODULES().
+  // ---------------------------------------------------------------------------------------------------------------
+  {
+    id: 'business-6',
+    grade: '6',
+    subject: 'Business',
+    title: 'Earn, save, start',
+    audience: 'Grades 6 to 8',
+    elective: true,
+    keywords: ['business', 'money', 'taxes', 'banking', 'credit', 'budget', 'interest', 'entrepreneur', 'elective'],
+    modules: BIZ6_MODULES(),
+  },
+  // ---------------------------------------------------------------------------------------------------------------
+  // Business for kindergarten to grade 2 (2026-10-01, pass HH). In plain terms: the course card for the youngest business
+  // course, read aloud (questions spoken, answers tapped), free like all of kindergarten, and an elective above the
+  // Texas minimum. It completes the business strand. Its four lessons live in BIZK_MODULES() further down.
+  // ---------------------------------------------------------------------------------------------------------------
+  {
+    id: 'business-k',
+    grade: 'K',
+    subject: 'Business',
+    title: 'Money and me',
+    audience: 'Kindergarten to grade 2',
+    readAloud: true, // the K to 2 band: questions are spoken and answers tapped
+    elective: true,
+    keywords: ['business', 'money', 'jobs', 'income', 'saving', 'sharing', 'bank', 'elective'],
+    modules: BIZK_MODULES(),
+  },
+  // ---------------------------------------------------------------------------------------------------------------
+  // Business Principles, college level (2026-10-01, pass HK). In plain terms: the course card for the college business
+  // course, the first college course since computer science, built on the learning outcomes Texas sets for BUSI 1301
+  // in its college course guide. Its four lessons live in BIZC_MODULES() further down.
+  // ---------------------------------------------------------------------------------------------------------------
+  {
+    id: 'business-college',
+    grade: 'C',
+    subject: 'Business',
+    title: 'Business principles',
+    audience: 'College level',
+    elective: true,
+    keywords: ['business', 'management', 'accounting', 'finance', 'ethics', 'international business', 'college', 'elective'],
+    modules: BIZC_MODULES(),
+  },
+  // ---------------------------------------------------------------------------------------------------------------
+  // Business for grades 9 to 12 (2026-09-30, pass HD). In plain terms: the course card for the first course of a new
+  // subject, Business, the eighth strand of the depth program. Its four lessons live in BIZ9_MODULES() further down.
+  // ---------------------------------------------------------------------------------------------------------------
+  {
+    id: 'business-9',
+    grade: '9',
+    subject: 'Business',
+    title: 'Open for business',
+    audience: 'Grades 9 to 12',
+    elective: true,
+    keywords: ['business', 'marketing', 'finance', 'profit', 'entrepreneur', 'ethics', 'careers', 'elective'],
+    modules: BIZ9_MODULES(),
+  },
+  // ---------------------------------------------------------------------------------------------------------------
   // Agriculture for grades 9 to 12 (2026-09-30, pass GU). In plain terms: this is the course card for the first course
   // of a new subject, Agriculture, the seventh strand of the depth program. Its four lessons live in AGRI9_MODULES()
   // further down; this entry only names the course and points at them.
@@ -1470,6 +1543,11 @@ export const GAMES = [
   { id: 'stat-psychology-9', kind: 'stat', title: 'Mean, Median, Mode', minGrade: '9', stat: 'scores' },   // psychology 9 to 12 (pass GM): three ways to say average   // philosophy 9 to 12 (pass GI): the form decides
   { id: 'filler-speech-9', kind: 'filler', title: 'Cut the Fillers', minGrade: '9', filler: 'lines' },   // speech 9 to 12 (pass GQ): the fillers are the rule
   { id: 'jar-agriculture-9', kind: 'jar', title: 'Read the Jar', minGrade: '9', jar: 'textures' },   // agriculture 9 to 12 (pass GU): the settled layers are the rule
+  { id: 'breakeven-business-9', kind: 'breakeven', title: 'Break Even', minGrade: '9', breakeven: 'businesses' },   // business 9 to 12 (pass HD): where the lines cross is the rule
+  { id: 'tool-business-k', kind: 'tool', title: 'Find the Tool', minGrade: 'K', young: true, tool: 'jobs' },   // business K to 2 (pass HH): six jobs, six tools
+  { id: 'ledger-business-college', kind: 'ledger', title: 'Sort the Ledger', minGrade: 'C', ledger: 'accounts' },   // business college (pass HK): assets, liabilities or equity
+  { id: 'deal-business-6', kind: 'deal', title: 'The Better Deal', minGrade: '6', deal: 'offers' },   // business 6 to 8 (pass HF): percent off or dollars off
+  { id: 'savejar-business-3', kind: 'savejar', title: 'Fill the Jar', minGrade: '3', savejar: 'goals' },   // business 3 to 5 (pass HG): the goal divided by the weekly amount
   { id: 'relation-agriculture-6', kind: 'relation', title: 'Who Gains', minGrade: '6', relation: 'cases' },   // agriculture 6 to 8 (pass GX): who gains is the rule
   { id: 'sprout-agriculture-3', kind: 'sprout', title: 'Will It Sprout?', minGrade: '3', sprout: 'seeds' },   // agriculture 3 to 5 (pass HB): water, air and warmth are the rule
   { id: 'grow-agriculture-k', kind: 'grow', title: 'Grow the Plant', grow: 'needs', young: true, minGrade: 'K' },   // agriculture K to 2 (pass HC): the plant's needs are the rule
@@ -2285,6 +2363,113 @@ export function growRounds(round) {
   const shuffled = (list) => { const a = [...list]; for (let j = a.length - 1; j > 0; j--) { const k = Math.floor(rnd() * (j + 1)); [a[j], a[k]] = [a[k], a[j]]; } return a; };
   return GROW_PLANTS.map((plant) => ({ plant, items: shuffled([...GROW_NEEDS, ...shuffled(GROW_TOYS).slice(0, 2)]) }));
 }
+// -----------------------------------------------------------------------------------------------------------------
+// The Better Deal (2026-09-30, pass HF, the middle school business game). In plain terms: an item with a price tag and
+// two offers, a percent off and a number of dollars off; the student taps the offer that saves more. Prices are
+// multiples of 20 and the percents end in 0 or 5, so every saving is a whole dollar, and no round is ever a tie.
+// `dealSaving` is the one rule and `dealRounds(round)` builds six items with their two offers and the answer.
+// -----------------------------------------------------------------------------------------------------------------
+export const DEAL_ITEMS = ['sneakers', 'a jacket', 'headphones', 'a skateboard', 'a video game', 'a backpack', 'a basketball', 'a tablet case'];
+export function dealSaving(price, pct) { return price * pct / 100; }
+export function dealRounds(round) {
+  let x = (round * 48271 + 31) >>> 0; const rnd = () => { x = (x * 1664525 + 1013904223) >>> 0; return x / 4294967296; };
+  const items = [...DEAL_ITEMS]; for (let j = items.length - 1; j > 0; j--) { const k = Math.floor(rnd() * (j + 1)); [items[j], items[k]] = [items[k], items[j]]; }
+  const pcts = [10, 15, 20, 25, 30, 40, 50]; const offs = [5, 10, 15, 20, 25, 30];
+  return items.slice(0, 6).map((what) => {
+    let price, pct, off; do { price = 20 * (1 + Math.floor(rnd() * 10)); pct = pcts[Math.floor(rnd() * pcts.length)]; off = offs[Math.floor(rnd() * offs.length)]; } while (dealSaving(price, pct) === off || off >= price);
+    const pctLabel = `${pct}% off`; const offLabel = `$${off} off`;
+    return { what, price, pct, off, pctLabel, offLabel, answer: dealSaving(price, pct) > off ? pctLabel : offLabel };
+  });
+}
+// -----------------------------------------------------------------------------------------------------------------
+// Break Even (2026-09-30, pass HD, the high school business game). In plain terms: a small business card shows its
+// monthly fixed costs, the price of one item and what each item costs to make, and a chart draws the revenue line and
+// the total-cost line; the student taps how many items it must sell to break even, where the two lines cross.
+// `breakevenUnits` is the one rule (fixed costs divided by what each sale leaves), and `breakevenRounds(round)` builds
+// six businesses whose answers are always whole numbers, with four different choices each.
+// -----------------------------------------------------------------------------------------------------------------
+export const BREAKEVEN_ITEMS = ['cups of lemonade', 'tacos', 'car washes', 'phone cases', 'cupcakes', 'haircuts', 'bike repairs', 'smoothies'];
+export function breakevenUnits(fixed, price, cost) { return fixed / (price - cost); }
+export function breakevenRounds(round) {
+  let x = (round * 97213 + 29) >>> 0; const rnd = () => { x = (x * 1664525 + 1013904223) >>> 0; return x / 4294967296; };
+  const items = [...BREAKEVEN_ITEMS]; for (let j = items.length - 1; j > 0; j--) { const k = Math.floor(rnd() * (j + 1)); [items[j], items[k]] = [items[k], items[j]]; }
+  return items.slice(0, 6).map((what) => {
+    const cost = 1 + Math.floor(rnd() * 4); const margin = 1 + Math.floor(rnd() * 5); const answer = (4 + Math.floor(rnd() * 27)) * 10; const fixed = answer * margin; const price = cost + margin;
+    const pool = [answer * 2, answer + 20, answer - 20, Math.round(fixed / price), answer + 50].filter((v) => v > 0 && v !== answer);
+    const choices = [answer]; for (const v of pool) { if (choices.length < 4 && !choices.includes(v)) choices.push(v); }
+    for (let j = choices.length - 1; j > 0; j--) { const k = Math.floor(rnd() * (j + 1)); [choices[j], choices[k]] = [choices[k], choices[j]]; }
+    return { what, fixed, price, cost, answer, choices };
+  });
+}
+// -----------------------------------------------------------------------------------------------------------------
+// Fill the Jar (2026-09-30, pass HG, the business game for grades 3 to 5). In plain terms: a jar has a savings goal on
+// it, the price of something a child wants, and a tag says how much goes in each week; the child taps how many weeks
+// it takes to fill the jar to the goal line, and the jar then fills one week at a time. `savejarWeeks` is the one rule
+// (the goal divided by the weekly amount) and `savejarRounds(round)` builds six goals that always divide evenly.
+// -----------------------------------------------------------------------------------------------------------------
+export const SAVEJAR_GOALS = ['a skateboard', 'a soccer ball', 'a book set', 'an art kit', 'a bike helmet', 'a puzzle', 'a kite', 'a board game'];
+export function savejarWeeks(goal, weekly) { return goal / weekly; }
+export function savejarRounds(round) {
+  let x = (round * 75011 + 37) >>> 0; const rnd = () => { x = (x * 1664525 + 1013904223) >>> 0; return x / 4294967296; };
+  const items = [...SAVEJAR_GOALS]; for (let j = items.length - 1; j > 0; j--) { const k = Math.floor(rnd() * (j + 1)); [items[j], items[k]] = [items[k], items[j]]; }
+  return items.slice(0, 6).map((what) => {
+    const weekly = 2 + Math.floor(rnd() * 5); const answer = 3 + Math.floor(rnd() * 8); const goal = weekly * answer;
+    const choices = [answer, answer + 1, answer - 1, answer + 2];
+    for (let j = choices.length - 1; j > 0; j--) { const k = Math.floor(rnd() * (j + 1)); [choices[j], choices[k]] = [choices[k], choices[j]]; }
+    return { what, goal, weekly, answer, choices };
+  });
+}
+// -----------------------------------------------------------------------------------------------------------------
+// flowLayout (2026-10-01, pass HG, from Mikey's screenshots). In plain terms: works out where each box of a "first this,
+// then that" diagram goes and how its words break into lines, so no label spills past its box. When every label is short
+// (12 characters or fewer) the boxes keep running left to right as before (`dir: 'row'`). When any label is longer, the
+// chain is drawn top to bottom instead, one wide box per step, and `wrapLabel` puts each label on one or two lines,
+// making the type smaller only if two lines would still be too wide. Letter widths are estimated generously, at 0.6 of
+// the type size, so a line the estimate accepts fits on screen. The rules test runs every flow diagram in every lesson.
+// -----------------------------------------------------------------------------------------------------------------
+export const FLOW_CHAR_EM = 0.6;
+export function wrapLabel(text, maxWidth, maxHeight) {
+  const words = String(text).split(/\s+/).filter(Boolean);
+  for (let size = 6.4; size >= 3.4 - 1e-9; size -= 0.2) { // up to a quarter larger than the old row's type, since the wide boxes have room
+    const fits = (line) => line.length * size * FLOW_CHAR_EM <= maxWidth;
+    if (fits(text) && size * 1.2 <= maxHeight) return { lines: [String(text)], size: Number(size.toFixed(1)) };
+    let best = null; // split at the space that leaves the two lines most even
+    for (let k = 1; k < words.length; k++) { const a = words.slice(0, k).join(' '); const b = words.slice(k).join(' '); const worst = Math.max(a.length, b.length); if (!best || worst < best.worst) best = { a, b, worst }; }
+    if (best && fits(best.a) && fits(best.b) && 2 * size * 1.2 <= maxHeight) return { lines: [best.a, best.b], size: Number(size.toFixed(1)) };
+  }
+  return { lines: [String(text)], size: 3.4 }; // no fit at the smallest size; the rules test fails if any lesson reaches this
+}
+export function flowLayout(steps) {
+  if (!steps.some((t) => String(t).length > 12)) return { dir: 'row' };
+  const n = steps.length; const gapY = n > 5 ? 4 : n > 4 ? 5 : 7; const w = 136; const x = 12;
+  const h = Math.min(18, (94 - (n - 1) * gapY) / n); const y0 = (100 - (n * h + (n - 1) * gapY)) / 2;
+  return { dir: 'column', boxes: steps.map((t, i) => ({ x, y: y0 + i * (h + gapY), w, h, ...wrapLabel(t, w - 8, h - 2) })) };
+}
+// -----------------------------------------------------------------------------------------------------------------
+// Find the Tool (2026-10-01, pass HH, the kindergarten to grade 2 business game). In plain terms: a job is named and
+// spoken, such as a chef, and three simple drawings of tools appear; the child taps the tool that worker uses. Each round
+// asks about all six jobs once, in an order fixed by the round number, with the right tool and two others to choose from.
+// -----------------------------------------------------------------------------------------------------------------
+export const TOOL_JOBS = [['a chef', 'pan'], ['a firefighter', 'hose'], ['a doctor', 'stethoscope'], ['a carpenter', 'hammer'], ['a teacher', 'book'], ['a mail carrier', 'mail bag']];
+export function toolRounds(round) {
+  let x = (round * 48271 + 11) >>> 0; const rnd = () => { x = (x * 1664525 + 1013904223) >>> 0; return x / 4294967296; };
+  const mix = (arr) => { const a = [...arr]; for (let j = a.length - 1; j > 0; j--) { const k = Math.floor(rnd() * (j + 1)); [a[j], a[k]] = [a[k], a[j]]; } return a; };
+  return mix(TOOL_JOBS).map(([job, answer]) => ({ job, answer, choices: mix([answer, ...mix(TOOL_JOBS.map((t) => t[1]).filter((t) => t !== answer)).slice(0, 2)]) }));
+}
+// -----------------------------------------------------------------------------------------------------------------
+// Sort the Ledger (2026-10-01, pass HK, the college business game). In plain terms: an account appears, such as cash,
+// a bank loan or retained earnings, and the student taps where it belongs on a balance sheet: assets, liabilities or
+// equity. `LEDGER_ITEMS` holds each account with its side, and `ledgerRounds(round)` deals six a round, two from each
+// side, in an order fixed by the round number.
+// -----------------------------------------------------------------------------------------------------------------
+export const LEDGER_SIDES = ['assets', 'liabilities', 'equity'];
+export const LEDGER_ITEMS = [['cash', 'assets'], ['inventory', 'assets'], ['equipment', 'assets'], ['accounts receivable', 'assets'], ['a building the firm owns', 'assets'], ['accounts payable', 'liabilities'], ['a bank loan', 'liabilities'], ['wages payable', 'liabilities'], ['taxes payable', 'liabilities'], ["owner's capital", 'equity'], ['retained earnings', 'equity'], ['common stock', 'equity']];
+export function ledgerRounds(round) {
+  let x = (round * 69069 + 7) >>> 0; const rnd = () => { x = (x * 1664525 + 1013904223) >>> 0; return x / 4294967296; };
+  const mix = (arr) => { const a = [...arr]; for (let j = a.length - 1; j > 0; j--) { const k = Math.floor(rnd() * (j + 1)); [a[j], a[k]] = [a[k], a[j]]; } return a; };
+  const deal = LEDGER_SIDES.flatMap((side) => mix(LEDGER_ITEMS.filter((it) => it[1] === side)).slice(0, 2));
+  return mix(deal).map(([item, answer]) => ({ item, answer }));
+}
 export const ROBOT_DECKS = {
   arrows: [
     { start: [1,1], goal: [0,4], rocks: [[2,1],[0,2],[2,2]], program: 'DDLU' },
@@ -2664,7 +2849,7 @@ function recommendedIncludingElectives(events, level, startGrade = null) {
 
 // Subjects always read Math, Reading, Writing, Science, History, then anything else alphabetically,
 // whatever order the courses were written in. Every screen that lists subjects sorts with this.
-const SUBJECT_RANK = { Math: 0, Reading: 1, Writing: 2, Science: 3, History: 4, Art: 5, Music: 6, Technology: 7, Health: 8, Economics: 9, Philosophy: 10, Psychology: 11, Speech: 12, Agriculture: 13 };   // Economics joined 2026-09-29 (pass FV); Philosophy (GI) and Psychology (GM) the same day
+const SUBJECT_RANK = { Math: 0, Reading: 1, Writing: 2, Science: 3, History: 4, Art: 5, Music: 6, Technology: 7, Health: 8, Economics: 9, Philosophy: 10, Psychology: 11, Speech: 12, Agriculture: 13, Business: 14 };   // Economics joined 2026-09-29 (pass FV); Philosophy (GI) and Psychology (GM) the same day
 export function sortSubjects(subjects) {
   return [...new Set(subjects)].sort((a, b) => (SUBJECT_RANK[a] ?? 99) - (SUBJECT_RANK[b] ?? 99) || a.localeCompare(b));
 }
@@ -10168,6 +10353,388 @@ function AGRI6_MODULES() { return [
   },
 ]; }
 // -----------------------------------------------------------------------------------------------------------------
+// BIZ3_MODULES: the four lessons of the business course for grades 3 to 5 (2026-09-30, pass HG).
+// In plain terms: each object is one lesson. `paragraphs` is the lesson text, `keyIdea` the one-sentence takeaway,
+// `example` the pictures and extra examples, `sources` the Texas math personal financial literacy expectations the
+// lesson meets (grade 3 §111.5(b)(9) and grade 4 §111.6(b)(10), read from published copies) with the national
+// economics standard beside them, and `generators` the question banks below. Every number was checked twice.
+// -----------------------------------------------------------------------------------------------------------------
+function BIZ3_MODULES() { return [
+  {
+    id: 'work-and-income-3',
+    order: 1,
+    title: 'Work, skills and prices',
+    tagline: 'Why people earn money for work, why skills earn more, and why scarce things cost more',
+    requires: [],
+    lesson: {
+      paragraphs: ['Income is money you earn. Most people earn income by working: a nurse, a baker and a bus driver are each paid for their labor, the work they do. The skills and knowledge a person has are called human capital. Learning a skill takes time, and people with skills that are hard to learn are often paid more. An electrician trains for years, so an hour of an electrician\'s work usually costs more than an hour of mowing a lawn.', 'Prices change when things are hard to get. When something is scarce, there is not enough of it for everyone who wants it, and the cost goes up. When there is plenty of it, the cost goes down. When a hard freeze kills orange trees, there are fewer oranges to sell, and orange juice costs more at the store. In summer, when tomatoes ripen in every garden, they often cost less than they do in winter.', 'Every time money comes in, you have choices. You can spend it, save it, or share some with people who need help, which is called charitable giving. You can also borrow, which means using someone else\'s money and paying it back later. Thinking about those choices before the money arrives is the first step to using it well.'],
+      keyIdea: 'Income is money earned for work, and skills, called human capital, can raise it. Scarce things cost more. Money can be spent, saved, shared or borrowed.',
+      example: { kind: 'flow', steps: ['learn a skill', 'do the work', 'earn income'], caption: 'Human capital turns into income.',
+        another: ['A piano teacher practiced for years before anyone paid for her lessons. Those years of practice are her human capital.',
+          { text: 'One shop has the last two puppies of a popular breed, and ten families want one. The price goes up.', visual: { kind: 'flow', steps: ['few to sell', 'many who want it', 'a higher price'] } },
+          'Giving some money to a food bank is charitable giving. It is a choice, just like spending and saving.'] },
+    },
+    sources: ['Aligned with TEKS Mathematics 111.5(b)(9)(A) (explain the connection between human capital/labor and income), 111.5(b)(9)(B) (describe the relationship between the availability or scarcity of resources and how that impacts cost) and 111.5(b)(9)(F) (identify decisions involving income, spending, saving, credit, and charitable giving), and the Voluntary National Content Standards in Economics, Standards 1 and 13.'],
+    generators: ['bz3-work', 'bz3-work', 'bz3-work', 'bz3-work', 'bz3-work'],
+  },
+  {
+    id: 'spend-save-share',
+    order: 2,
+    title: 'Spend, save and share',
+    tagline: 'Planned and unplanned spending, a savings plan with a goal, and splitting an allowance three ways',
+    requires: ['work-and-income-3'],
+    lesson: {
+      paragraphs: ['Planned spending is deciding ahead what you will buy, after you compare choices. Unplanned spending happens on the spot, like grabbing candy at the checkout line. Both have costs and benefits: an unplanned treat feels good right now, but it can use up money you meant for something you wanted more.', 'Saving means keeping some money to use later. People save for a goal, like a new bike, for an emergency, like a broken phone, and for college. A savings plan says how much you will save each week and for how long. To find how long it will take, divide the goal by the weekly amount: a $36 skateboard, saving $4 a week, takes 9 weeks.', 'Many families split an allowance three ways: spending, saving, and sharing. With $10 a week, you might spend $5, save $4, including some for college, and share $1 with a cause you care about. There is no single right split. The point is to decide on purpose, before the money is gone.'],
+      keyIdea: 'Planned spending is decided ahead, and unplanned spending happens on the spot. A savings plan divides the goal by what you save each week. An allowance can be split into spending, saving and sharing.',
+      example: { kind: 'flow', steps: ['spend', 'save', 'share'], caption: 'Three jobs for every allowance.',
+        another: ['A $20 book, saving $5 a week, takes 20 divided by 5, or 4 weeks.',
+          { text: 'Leo planned to save $4 a week, but one week he spent it on a slushie and a toy. His skateboard took 10 weeks instead of 9.', visual: { kind: 'flow', steps: ['the plan', 'an unplanned buy', 'one more week'] } },
+          'Sharing can be money, but it can also be time, like helping at an animal shelter.'] },
+    },
+    sources: ['Aligned with TEKS Mathematics 111.5(b)(9)(C) (identify the costs and benefits of planned and unplanned spending decisions), 111.5(b)(9)(E) (list reasons to save and explain the benefit of a savings plan, including for college) and 111.6(b)(10)(D) (describe how to allocate a weekly allowance among spending; saving, including for college; and sharing), and the Voluntary National Content Standards in Economics, Standard 2.'],
+    generators: ['bz3-jars', 'bz3-jars', 'bz3-jars', 'bz3-jars', 'bz3-jars'],
+  },
+  {
+    id: 'banks-and-borrowing',
+    order: 3,
+    title: 'Banks and borrowing',
+    tagline: 'What banks do with money, how credit works, and the good and bad of different ways to save',
+    requires: ['spend-save-share'],
+    lesson: {
+      paragraphs: ['Banks and credit unions are financial institutions, and they do three big jobs. They keep money safe, they lend money to people who need to borrow, and they pay interest to people who save. The money savers keep in the bank is what the bank lends to borrowers, and borrowers pay the bank more interest than the bank pays savers.', 'Credit is used when wants or needs cost more than you can pay right now. Credit means borrowing money and paying it back later. The borrower, the person who borrows, must pay the lender back, usually with interest, which is extra money for the use of the money. A family that borrows $10,000 for a car pays back more than $10,000.', 'There are different ways to save, and each has good and bad sides. A piggy bank is easy to reach, but it pays no interest, and money in it can be lost or spent on a whim. A savings account at a bank pays a little interest and is protected by the government, but you have to visit or use an app to get your money. Some savers keep a little at home and the rest in the bank.'],
+      keyIdea: 'Banks keep money safe, lend it, and pay interest to savers. Credit is borrowing that must be paid back, usually with interest. A piggy bank is easy to reach; a savings account pays interest.',
+      example: { kind: 'flow', steps: ['savers deposit money', 'the bank lends it', 'borrowers pay it back with interest'], caption: 'How a bank uses the money it keeps.',
+        another: ['A piggy bank earns nothing. A savings account earns a little interest every month.',
+          { text: 'Borrow $5 from your brother and you owe him $5. Borrow from a bank and you usually owe interest too.', visual: { kind: 'flow', steps: ['borrow', 'use the money', 'pay it back, usually with interest'] } },
+          'Credit is a promise. The lender trusts that the borrower will pay it back.'] },
+    },
+    sources: ['Aligned with TEKS Mathematics 111.5(b)(9)(D) (explain that credit is used when wants or needs exceed the ability to pay and that it is the borrower\'s responsibility to pay it back to the lender, usually with interest), 111.6(b)(10)(C) (compare the advantages and disadvantages of various savings options) and 111.6(b)(10)(E) (describe the basic purpose of financial institutions, including keeping money safe, borrowing money, and lending), and the Voluntary National Content Standards in Economics, Standards 10 and 12.'],
+    generators: ['bz3-bank', 'bz3-bank', 'bz3-bank', 'bz3-bank', 'bz3-bank'],
+  },
+  {
+    id: 'my-first-stand',
+    order: 4,
+    title: 'A stand of my own',
+    tagline: 'Fixed and variable expenses, profit from a lemonade stand, and the risk every business takes',
+    requires: ['banks-and-borrowing'],
+    lesson: {
+      paragraphs: ['A business has expenses, the money it spends to do its work. Fixed expenses stay the same no matter how much you sell, like the $5 it costs to rent a table at the neighborhood market. Variable expenses change with how much you sell: every cup of lemonade needs a cup, lemons and sugar, so selling more cups means spending more. The table is a fixed expense, and each cup is a variable expense.', 'Profit is the money left after you pay your expenses. Say each cup of lemonade costs 40 cents to make and sells for $1. Sell 30 cups and you take in $30. The variable expenses are 30 times 40 cents, or $12, and the table is $5, so the expenses are $17. The profit is $30 minus $17, which is $13.', 'Someone who starts a business is an entrepreneur, and every entrepreneur takes a risk. If too few customers come, the money from sales may not cover the expenses, and there is no profit at all. Good sellers think about price, about where their customers are, and about what they will do if it rains.'],
+      keyIdea: 'Fixed expenses stay the same, and variable expenses grow with each sale. Profit is the money from sales minus all the expenses. Every entrepreneur takes a risk.',
+      example: { kind: 'flow', steps: ['money from sales', 'minus expenses', 'profit'], caption: 'How to find profit.',
+        another: ['Sell 40 cups at $1 and the variable expenses are $16. With the $5 table, the profit is $40 minus $21, or $19.',
+          { text: 'A rainy Saturday: 10 cups sold for $10, $4 for cups and lemons, and $5 for the table. The profit is only $1.', visual: { kind: 'flow', steps: ['fewer customers', 'the same table cost', 'less profit'] } },
+          'The table costs $5 whether you sell 1 cup or 100. That is what makes it a fixed expense.'] },
+    },
+    sources: ['Aligned with TEKS Mathematics 111.6(b)(10)(A) (distinguish between fixed and variable expenses) and 111.6(b)(10)(B) (calculate profit in a given situation), and the Voluntary National Content Standards in Economics, Standard 14.'],
+    generators: ['bz3-stand', 'bz3-stand', 'bz3-stand', 'bz3-stand', 'bz3-stand'],
+  },
+]; }
+// -----------------------------------------------------------------------------------------------------------------
+// BIZ6_MODULES: the four lessons of the middle school business course (2026-09-30, pass HF).
+// In plain terms: each object is one lesson, laid out like every other course: `paragraphs`, `keyIdea`, `example`,
+// `sources` (the grade 6 and 7 math personal financial literacy standards it meets, with the national economics
+// standards beside them), and the question banks that make its quick checks. Every number was worked out and checked.
+// -----------------------------------------------------------------------------------------------------------------
+function BIZ6_MODULES() { return [
+  {
+    id: 'earning-and-taxes',
+    order: 1,
+    title: 'Earning money and paying taxes',
+    tagline: 'Gross and net pay, income tax and sales tax, what training does to a lifetime of pay, and ways to pay for college',
+    requires: [],
+    lesson: {
+      paragraphs: ['Money you earn by working is income, and a paycheck usually shows two numbers. Gross pay is everything you earned: the hours you worked times your hourly rate. Net pay is what you take home after taxes and other deductions are taken out. Income tax is a tax on earned wages. Texas has no state income tax, but the federal government collects one, and Social Security and Medicare taxes come out of nearly every paycheck too.', 'Sales tax is added when you buy something. In Texas the state rate is 6.25 percent, and cities and counties can add up to 2 percent more, so the most you will pay is 8.25 percent. To find the tax, change the percent to a decimal and multiply: 8.25 percent of $40 is $3.30, so a $40 pair of earbuds costs $43.30 at the register.', 'What you earn depends a lot on your training. Suppose one job pays $35,000 a year and another, which needs two more years of training, pays $55,000. Over a 40-year career, that $20,000 difference adds up to $800,000 before taxes. Paying for training has several paths: savings; grants and scholarships, which you do not pay back; student loans, which you do; and work-study, a part-time job that helps pay for school.'],
+      keyIdea: 'Gross pay is what you earn, and net pay is what you keep after taxes. Sales tax is a percent of the price. More training often means more lifetime income.',
+      example: { kind: 'flow', steps: ['gross pay', 'minus taxes', 'net pay'], caption: 'What a paycheck shows.',
+        another: ['Twelve hours at $9 an hour is $108 in gross pay. Social Security and Medicare take 7.65 percent, about $8.26, which leaves $99.74.',
+          { text: 'A $60 jacket in a city that charges 8.25 percent: 60 times 0.0825 is $4.95 in tax, so the total is $64.95.', visual: { kind: 'flow', steps: ['the price', 'times the tax rate', 'plus the price'] } },
+          'A scholarship is money for school that you do not pay back. A student loan is money that you do.'] },
+    },
+    sources: ['Aligned with TEKS Mathematics 111.27(b)(13)(A) (calculate the sales tax for a given purchase and calculate income tax for earned wages), 111.26(b)(14)(G) (explain various methods to pay for college) and 111.26(b)(14)(H) (compare the annual salary of several occupations and calculate the effects on lifetime income), and the Voluntary National Content Standards in Economics, Standard 13.'],
+    generators: ['bz6-earn', 'bz6-earn', 'bz6-earn', 'bz6-earn', 'bz6-earn'],
+  },
+  {
+    id: 'banking-and-credit',
+    order: 2,
+    title: 'Banks, cards and credit',
+    tagline: 'Checking accounts and their costs, debit against credit, a balanced register, and the credit report that follows you',
+    requires: ['earning-and-taxes'],
+    lesson: {
+      paragraphs: ['A checking account holds money you plan to spend, and a debit card connected to it lets you pay from it. Banks and credit unions charge differently: some charge a monthly fee unless you keep a minimum balance, some charge for using another bank\'s ATM, and some charge an overdraft fee if you spend more than you have. Before you open an account, compare the fees, the minimum balance and the ATMs near you.', 'A debit card spends your own money right away. A credit card borrows the bank\'s money, and you pay it back later; pay the whole bill on time and it costs nothing extra, but carry a balance and you pay interest, often more than 20 percent a year. To keep track, people keep a check register: start with the balance, add every deposit, subtract every withdrawal, and subtract any transfer to another account. When your register and the bank agree, it is balanced.', 'Every time you borrow and pay back, you build a credit history, and a positive one makes it easier and cheaper to borrow later. A credit report lists your accounts, how much you owe, and whether you paid on time. Most late payments stay on a credit report for seven years, and some bankruptcies for ten. Lenders use the report to decide whether to lend and at what interest rate, and borrowers use it to catch mistakes, since you can check your own report for free.'],
+      keyIdea: 'Compare an account\'s fees before you open it. A debit card spends your money, and a credit card borrows money you must repay. A positive credit history makes borrowing easier and cheaper.',
+      example: { kind: 'flow', steps: ['starting balance', 'plus deposits', 'minus withdrawals', 'the new balance'], caption: 'How a check register works.',
+        another: ['A register starts at $120. Add a $30 deposit, subtract a $45 withdrawal and a $20 transfer to savings, and the balance is $85.',
+          { text: 'Pay a credit card bill in full and the card costs nothing extra. Leave part unpaid and interest is added every month.', visual: { kind: 'flow', steps: ['buy on credit', 'the bill comes', 'pay it all or pay interest'] } },
+          'A credit report is not a credit score. The score is a number calculated from what the report says.'] },
+    },
+    sources: ['Aligned with TEKS Mathematics 111.26(b)(14)(A) (compare the features and costs of a checking account and a debit card), 111.26(b)(14)(B) (distinguish between debit cards and credit cards), 111.26(b)(14)(C) (balance a check register), 111.26(b)(14)(D) (explain why it is important to establish a positive credit history), 111.26(b)(14)(E) (describe the information in a credit report and how long it is retained) and 111.26(b)(14)(F) (describe the value of credit reports to borrowers and to lenders), and the Voluntary National Content Standards in Economics, Standards 10 and 12.'],
+    generators: ['bz6-bank', 'bz6-bank', 'bz6-bank', 'bz6-bank', 'bz6-bank'],
+  },
+  {
+    id: 'budgets-and-net-worth',
+    order: 3,
+    title: 'Budgets and net worth',
+    tagline: 'The parts of a budget and their percents, fixed and variable expenses, a net worth statement, and interest that grows on itself',
+    requires: ['banking-and-credit'],
+    lesson: {
+      paragraphs: ['A budget is a plan for your money. It starts with income, then sets aside planned savings for college, retirement and emergencies, then taxes, then expenses. Fixed expenses stay the same each month, like rent or a phone plan; variable expenses change, like groceries or gas. To see where the money goes, divide each category by the total: $1,500 of rent in a $6,000 budget is 1,500 divided by 6,000, or 25 percent.', 'Net worth is what you own minus what you owe. Make two lists: assets, like cash, savings, a car or a house, and liabilities, like a car loan or a mortgage. Add each list, then subtract: a family with $277,000 in assets and $198,000 in liabilities has a net worth of $79,000. A net worth statement is a snapshot, and it changes as debts are paid and savings grow.', 'Savings earn interest. Simple interest is paid only on what you put in: $1,000 at 5 percent a year earns $50 a year, or $150 in three years. Compound interest is paid on the interest too: the same $1,000 compounded once a year grows to $1,157.63 in three years. The gap looks small at first and grows wide over decades, which is why starting early matters.'],
+      keyIdea: 'A budget plans income, savings, taxes and expenses, and each category is a percent of the total. Net worth is assets minus liabilities. Compound interest earns interest on interest.',
+      example: { kind: 'flow', steps: ['assets', 'minus liabilities', 'net worth'], caption: 'The one subtraction behind a net worth statement.',
+        another: ['Food is a variable expense: $900 one month, $780 the next. Rent is fixed.',
+          { text: 'Put $1,000 in at 5 percent. After three years, simple interest gives $1,150 and compound interest gives $1,157.63.', visual: { kind: 'flow', steps: ['interest on the deposit', 'interest on the interest', 'faster growth'] } },
+          'An emergency fund is savings set aside for surprises, like a car repair, so you do not have to borrow.'] },
+    },
+    sources: ['Aligned with TEKS Mathematics 111.27(b)(13)(B) (identify the components of a personal budget and calculate what percentage each category comprises of the total budget), 111.27(b)(13)(C) (create and organize a financial assets and liabilities record and construct a net worth statement) and 111.27(b)(13)(E) (calculate and compare simple interest and compound interest earnings), and the Voluntary National Content Standards in Economics, Standards 1 and 12.'],
+    generators: ['bz6-budget', 'bz6-budget', 'bz6-budget', 'bz6-budget', 'bz6-budget'],
+  },
+  {
+    id: 'starting-a-small-business',
+    order: 4,
+    title: 'A small business of your own',
+    tagline: 'Spotting a need, counting costs and profit, setting a price, and the sales, coupons and rebates that bring buyers',
+    requires: ['budgets-and-net-worth'],
+    lesson: {
+      paragraphs: ['An entrepreneur is someone who starts a business and takes the risk that it might not work. Most start by noticing a need: neighbors who need dogs walked, lawns mowed or old phones fixed. Before you start, count the costs: what you must buy once, like leashes or a mower, and what you spend every time, like gas or bags. Profit is what is left from your sales after the costs are paid.', 'Price matters as much as the product. Price too high and customers go to a competitor; price too low and you work hard for nothing. Many businesses use incentives to win customers: a sale lowers the price for a while, a coupon takes money off at the register, and a rebate pays part of the price back after you buy, often only if you mail in a form.', 'Comparing incentives takes a little math. On a $60 pair of sneakers, 25 percent off saves $15, so it beats a $10 coupon. On a $30 shirt, 25 percent off saves only $7.50, so the $10 coupon wins. Percent-off deals grow with the price while dollars-off deals stay the same, so the higher the price, the better a percent tends to look. A rebate counts only if you actually send it in.'],
+      keyIdea: 'An entrepreneur spots a need and takes a risk. Profit is sales minus costs. Compare percent off with dollars off by working out what each one saves.',
+      example: { kind: 'flow', steps: ['spot a need', 'count the costs', 'set a price', 'find customers'], caption: 'Four steps to a small business.',
+        another: ['Ten dog walks at $10 each bring in $100. If bags and treats cost $15, the profit is $85.',
+          { text: 'A $40 game: 20 percent off saves $8, and a $10 coupon saves $10. Here the coupon is the better deal.', visual: { kind: 'flow', steps: ['work out the percent', 'compare it with the coupon', 'pick the bigger saving'] } },
+          'A rebate is a promise of money later. Many buyers never mail the form in, and companies count on it.'] },
+    },
+    sources: ['Aligned with TEKS Mathematics 111.27(b)(13)(F) (analyze and compare monetary incentives, including sales, rebates, and coupons), and the Voluntary National Content Standards in Economics, Standards 9 and 14.'],
+    generators: ['bz6-start', 'bz6-start', 'bz6-start', 'bz6-start', 'bz6-start'],
+  },
+]; }
+// -----------------------------------------------------------------------------------------------------------------
+// BIZC_MODULES: the four lessons of the college business course (2026-10-01, pass HK).
+// In plain terms: each object is one lesson at a first-year college level. `sources` names the BUSI 1301 learning
+// outcomes from Texas's college course guide that the lesson meets, with the national economics standards beside them,
+// and `generators` the question banks below that make the quick checks. Every name, date and figure was checked twice.
+// -----------------------------------------------------------------------------------------------------------------
+function BIZC_MODULES() { return [
+  {
+    id: 'business-and-its-world-c',
+    order: 1,
+    title: 'Business and its world',
+    tagline: 'The functions inside a firm, the forms of ownership, the environment outside it, and trade across borders',
+    requires: [],
+    lesson: {
+      paragraphs: ['A business runs on five core functions: management sets direction and organizes people, marketing finds and keeps customers, accounting records and reports the money, finance decides how to raise and spend it, and information systems move data to the people who need it. Weakness in any one shows up in the others: a firm with strong sales and careless accounting can still run out of cash.', 'The form of ownership decides who controls the firm, who keeps the profit, who carries the risk and how it is taxed. A sole proprietorship is simple and cheap to start, but the owner has unlimited liability. A general partnership shares control and liability among the partners. A corporation is a separate legal entity: its shareholders have limited liability, and it can raise money by selling stock, but a C corporation\'s profits are taxed twice, once as corporate income and again as dividends. An S corporation and a limited liability company, or LLC, keep limited liability while passing profits through to the owners\' personal tax returns.', 'Outside the firm sits its environment: social, economic, legal, ethical, technological, competitive and international forces it cannot control but must read. International business adds currency and trade policy. A firm can go abroad by exporting, licensing, franchising, forming a joint venture or investing directly. A stronger dollar makes American exports more expensive abroad and imports cheaper at home. Governments restrict trade with tariffs (taxes on imports), quotas (limits on amounts) and embargoes (outright bans). Countries gain from trade by specializing in what they produce at the lowest opportunity cost, which is called comparative advantage.'],
+      keyIdea: 'Five functions run a firm. The form of ownership sets control, profit, risk and taxes. The environment and trade policy shape every decision a firm makes.',
+      example: { kind: 'flow', steps: ['sole proprietorship: one owner, unlimited liability', 'corporation: shareholders, limited liability', 'LLC: limited liability, profits pass through'], caption: 'Three forms of ownership and the risk each carries.',
+        another: ['Information systems are a function too: when a retailer\'s inventory system is wrong, purchasing, marketing and accounting are all wrong with it.',
+          { text: 'Comparative advantage: if Mexico gives up less to grow avocados and the United States gives up less to build aircraft, both gain when each specializes and they trade.', visual: { kind: 'flow', steps: ['specialize at the lowest opportunity cost', 'trade', 'both gain'] } },
+          'A stronger dollar is good news for an American importer and bad news for an American exporter.'] },
+    },
+    sources: ['Aligned with ACGM BUSI 1301 learning outcomes 1 (identify major business functions of accounting, finance, information systems, management, and marketing), 3 (explain forms of ownership, including their advantages and disadvantages) and 4 (the domestic and international considerations for today\'s business environment), and the Voluntary National Content Standards in Economics, Standards 5, 6 and 14.'],
+    generators: ['bzc-world', 'bzc-world', 'bzc-world', 'bzc-world', 'bzc-world'],
+  },
+  {
+    id: 'management-c',
+    order: 2,
+    title: 'Management and leadership',
+    tagline: 'The four functions of management, leading and motivating people, and reading a firm\'s strengths and threats',
+    requires: ['business-and-its-world-c'],
+    lesson: {
+      paragraphs: ['Management is the work of reaching goals through people and resources, and it has four functions: planning sets goals and the steps to reach them, organizing arranges people and resources, leading guides and motivates people, and controlling compares results with the plan and corrects course. Top managers set strategy, middle managers turn it into plans, and first-line managers supervise the daily work; each level leans on a different mix of technical, interpersonal and conceptual skills.', 'Leadership styles run from autocratic, where the leader decides alone, to democratic, where the team helps decide, to free-rein, where the team decides within broad limits; good leaders change style with the situation. Frederick Herzberg found that some job factors, like pay, job security and working conditions, only prevent dissatisfaction when they are adequate; he called them hygiene factors. Others, like achievement, recognition and responsibility, actually raise effort; he called them motivators. Integrity is the foundation: people follow leaders who keep their word, and a leader\'s ethics set the culture of the whole firm.', 'A SWOT analysis helps managers plan by listing a firm\'s internal strengths and weaknesses and its external opportunities and threats. Information technology makes a good test. A cloud system can be a strength, speeding orders and sharing data; a weakness, if the firm depends on one vendor; an opportunity, opening online markets; and a threat, because the same connection invites cyberattacks and data breaches.'],
+      keyIdea: 'Plan, organize, lead and control. Hygiene factors prevent dissatisfaction, while motivators like recognition raise effort. A SWOT weighs internal strengths and weaknesses against outside opportunities and threats.',
+      example: { kind: 'flow', steps: ['plan', 'organize', 'lead', 'control'], caption: 'The four functions of management.',
+        another: ['A first-line supervisor needs technical skill most, a chief executive needs conceptual skill most, and every manager needs interpersonal skill.',
+          { text: 'A raise fixes a pay complaint, but it rarely makes anyone love the work. Recognition and responsibility do more for effort.', visual: { kind: 'flow', steps: ['fix the hygiene factors', 'add the motivators', 'effort rises'] } },
+          'A SWOT lists what the firm controls first, its strengths and weaknesses, and then what it does not, its opportunities and threats.'] },
+    },
+    sources: ['Aligned with ACGM BUSI 1301 learning outcomes 9 (explain integrity, ethics, and social responsibility as they relate to leadership and management), 10 (explain the nature and functions of management) and 11 (identify strengths, weaknesses, opportunities, and threats of information technology for businesses).'],
+    generators: ['bzc-manage', 'bzc-manage', 'bzc-manage', 'bzc-manage', 'bzc-manage'],
+  },
+  {
+    id: 'money-and-markets-c',
+    order: 3,
+    title: 'Accounting, finance and markets',
+    tagline: 'The accounting equation, three financial statements, banks and the Federal Reserve, and stocks and bonds',
+    requires: ['management-c'],
+    lesson: {
+      paragraphs: ['Accounting rests on one equation: assets equal liabilities plus owners\' equity. The balance sheet shows that equation on a single date; the income statement shows revenues, expenses and net income over a period; and the statement of cash flows shows where cash came from and where it went, because a profitable firm can still run out of cash. Lenders read ratios built from these statements, such as the current ratio, current assets divided by current liabilities, which shows whether a firm can pay what it owes in the coming year.', 'Money moves through banks, which take deposits and make loans, and through the Federal Reserve, the central bank of the United States, which steers short-term interest rates and supervises banks. When it raises its target rate, borrowing gets more expensive across the economy, from car loans to business lines of credit.', 'A business finances itself in two ways. Debt financing borrows, through bank loans or bonds, and must be repaid with interest, but the owners keep control. Equity financing sells ownership, through stock or a partner\'s investment, and never has to be repaid, but the owners give up a share of control and profit. A stock is a share of ownership that may pay dividends; a bond is a loan to the issuer that pays interest; both trade in securities markets, where prices move with expectations about the future.'],
+      keyIdea: 'Assets equal liabilities plus owners\' equity. Three statements show a firm\'s position, results and cash. Debt must be repaid with interest, while equity sells a share of ownership.',
+      example: { kind: 'flow', steps: ['assets', 'equal liabilities', 'plus owners\' equity'], caption: 'The accounting equation.',
+        another: [{ text: 'A café has $90,000 in assets and $60,000 in liabilities, so its owners\' equity is $30,000.', visual: { kind: 'flow', steps: ['assets: $90,000', 'minus liabilities: $60,000', 'equity: $30,000'] } },
+          'Current assets of $50,000 against current liabilities of $25,000 give a current ratio of 2. A ratio above 1 means current assets cover current liabilities.',
+          'A bondholder is a lender and a stockholder is an owner. In a bankruptcy, lenders are paid before owners.'] },
+    },
+    sources: ['Aligned with ACGM BUSI 1301 learning outcomes 1 (identify major business functions of accounting, finance, information systems, management, and marketing), 7 (describe basic financial statements and show how they reflect the activity and financial condition of a business) and 8 (explain the banking and financial systems, including the securities markets, business financing, and basic concepts of accounting), and the Voluntary National Content Standards in Economics, Standards 10 and 12.'],
+    generators: ['bzc-money', 'bzc-money', 'bzc-money', 'bzc-money', 'bzc-money'],
+  },
+  {
+    id: 'ethics-and-government-c',
+    order: 4,
+    title: 'Ethics, responsibility and the law',
+    tagline: 'Dilemmas and lapses, social responsibility, and the role and effect of government on business',
+    requires: ['money-and-markets-c'],
+    lesson: {
+      paragraphs: ['Business ethics applies standards of right and wrong to business decisions, and it reaches past the law: the law sets the minimum, and ethics asks what is right. An ethical lapse is choosing something you know is wrong, like hiding a defect. An ethical dilemma is harder: a choice between alternatives that each have a defensible claim, such as protecting workers\' jobs or a customer\'s safety. Leaders shape the answer for everyone below them, because people copy what their managers do, not what the code of conduct says.', 'Social responsibility is a firm\'s duty to its stakeholders, the groups affected by what it does: owners, employees, customers, suppliers, the community and the environment. Archie Carroll described it as a pyramid: be profitable, obey the law, be ethical, and then be a good citizen through giving and service. The layers depend on each other: a firm that is legal but unethical can still lose its customers\' trust, and a firm that is unprofitable cannot do much good for anyone.', 'Government shapes business in several ways. It enforces contracts through the courts and protects property. It regulates through agencies such as the Federal Trade Commission, which acts against unfair competition and deceptive practices, and the Consumer Product Safety Commission, which oversees recalls of dangerous products. Antitrust laws, starting with the Sherman Act of 1890, keep markets competitive. Government also taxes, spends and sets the rules for trade, and each of these raises or lowers a firm\'s costs.'],
+      keyIdea: 'The law sets the minimum, and ethics asks what is right. A lapse is knowingly wrong, while a dilemma weighs defensible claims. Government enforces contracts, regulates, taxes and keeps markets competitive.',
+      example: { kind: 'flow', steps: ['be profitable', 'obey the law', 'be ethical', 'be a good citizen'], caption: 'Carroll\'s pyramid of social responsibility, from the base up.',
+        another: ['Shipping a toy you know can choke a child is an ethical lapse. Choosing between closing a plant and cutting every worker\'s hours is an ethical dilemma.',
+          { text: 'A safety recall can cost a week\'s profit. Hiding the defect can cost far more, to the company and to a child.', visual: { kind: 'flow', steps: ['find the defect', 'tell the public', 'recall the product'] } },
+          'Antitrust law protects competition, not competitors: a firm may win by being better, but not by blocking rivals unfairly.'] },
+    },
+    sources: ['Aligned with ACGM BUSI 1301 learning outcomes 2 (describe the relationships of social responsibility, ethics, and law in business), 5 (identify and explain the role and effect of government on business), 6 (describe the importance and effects of ethical practices in business and analyze business situations to identify ethical dilemmas and ethical lapses) and 9 (explain integrity, ethics, and social responsibility as they relate to leadership and management), and the Voluntary National Content Standards in Economics, Standard 16.'],
+    generators: ['bzc-ethics', 'bzc-ethics', 'bzc-ethics', 'bzc-ethics', 'bzc-ethics'],
+  },
+]; }
+// -----------------------------------------------------------------------------------------------------------------
+// BIZK_MODULES: the four lessons of the kindergarten to grade 2 business course (2026-10-01, pass HH).
+// In plain terms: each object is one lesson, written in short sentences to be read aloud. `sources` names the Texas
+// mathematics personal financial literacy expectations for kindergarten, grade 1 and grade 2 that the lesson meets, with
+// the national economics standard beside them, and `generators` the question banks below that make the quick checks.
+// -----------------------------------------------------------------------------------------------------------------
+function BIZK_MODULES() { return [
+  {
+    id: 'earning-money-k',
+    order: 1,
+    title: 'Earning money',
+    tagline: 'People work at jobs to earn money, and a gift is not the same as pay',
+    requires: [],
+    lesson: {
+      paragraphs: ['People work at jobs to earn money. Money you earn by working is called income. A baker earns income by baking bread, and a nurse earns income by caring for sick people.', 'Jobs need skills. A baker has to measure and to get up early. A bus driver has to drive with care and know the way. You can learn skills like these, one at a time.', 'Not all money is income. When your grandma gives you money for your birthday, that money is a gift. You did not work for it. Income is earned, and a gift is given.'],
+      keyIdea: 'Money you earn by working is income. Jobs need skills. A gift of money is not income, because you did not work for it.',
+      example: { kind: 'flow', steps: ['do a job', 'earn money', 'that money is income'], caption: 'How people earn income.',
+        another: ['A dog walker earns income for each walk. The dog\'s owner pays for the work.',
+          { text: 'Five dollars from a job is income. Five dollars in a birthday card is a gift. The money looks the same; where it came from is different.', visual: { kind: 'flow', steps: ['a job', 'income'] } },
+          'A firefighter needs to be strong and calm. A teacher needs to read well and be kind.'] },
+    },
+    sources: ['Aligned with TEKS Mathematics 111.2(b)(9)(A) (identify ways to earn income), 111.2(b)(9)(B) (differentiate between money received as income and money received as gifts), 111.2(b)(9)(C) (list simple skills required for jobs) and 111.3(b)(9)(A) (define money earned as income), and the Voluntary National Content Standards in Economics, Standard 13.'],
+    generators: ['bzk-earn', 'bzk-earn', 'bzk-earn', 'bzk-earn', 'bzk-earn'],
+  },
+  {
+    id: 'wants-and-needs-k',
+    order: 2,
+    title: 'Wants and needs',
+    tagline: 'Needs keep us alive and well, wants are nice to have, and income pays for both',
+    requires: ['earning-money-k'],
+    lesson: {
+      paragraphs: ['A need is something we must have to live and be well. Food, water, a home and warm clothes are needs.', 'A want is something nice to have. A new toy, a kite and a game are wants. We can live without them.', 'Families use income to buy goods, like food and shoes, and services, like a haircut. Money runs out, so families buy needs first and then choose which wants to buy.'],
+      keyIdea: 'A need is something we must have, like food and a home. A want is nice to have. Income pays for needs first, then for some wants.',
+      example: { kind: 'flow', steps: ['income', 'needs first', 'then some wants'], caption: 'How a family spends its money.',
+        another: ['Shoes are a need. Shoes with lights in them are nice, and the lights are a want.',
+          { text: 'A family has twenty dollars. Milk and bread come first. If money is left, they can choose a treat.', visual: { kind: 'flow', steps: ['milk and bread', 'a treat'] } },
+          'Wanting things is fine. Everyone wants things. Choosing well is the skill.'] },
+    },
+    sources: ['Aligned with TEKS Mathematics 111.2(b)(9)(D) (distinguish between wants and needs and identify income as a source to meet one\'s wants and needs) and 111.3(b)(9)(B) (identify income as a means of obtaining goods and services, oftentimes making choices between wants and needs), and the Voluntary National Content Standards in Economics, Standard 1.'],
+    generators: ['bzk-wants', 'bzk-wants', 'bzk-wants', 'bzk-wants', 'bzk-wants'],
+  },
+  {
+    id: 'save-spend-share-k',
+    order: 3,
+    title: 'Save, spend and share',
+    tagline: 'Saving instead of spending, money that adds up week by week, the bank, and giving',
+    requires: ['wants-and-needs-k'],
+    lesson: {
+      paragraphs: ['When you get money, you can spend it now or save it for later. Saving is a choice instead of spending.', 'Saved money adds up. Save one dollar each week, and after five weeks you have five dollars. A bank keeps money safe. Putting money in the bank is a deposit. Taking money out is a withdrawal.', 'You can also share. Some people give money to help others, like a food bank or an animal shelter. Giving to help others is called charity.'],
+      keyIdea: 'You can spend, save or share money. Saving adds up over time. Putting money in a bank is a deposit, and taking it out is a withdrawal.',
+      example: { kind: 'flow', steps: ['save one dollar a week', 'five weeks go by', 'five dollars saved'], caption: 'Saving adds up.',
+        another: ['Three jars help: one to spend, one to save and one to share.',
+          { text: 'Put ten dollars in the bank. That is a deposit. Take out four dollars. That is a withdrawal, and six dollars are still there.', visual: { kind: 'flow', steps: ['deposit ten dollars', 'withdraw four dollars', 'six dollars left'] } },
+          'Sharing can be time, too. Helping at a food bank is a way to give.'] },
+    },
+    sources: ['Aligned with TEKS Mathematics 111.3(b)(9)(C) (distinguish between spending and saving), 111.3(b)(9)(D) (consider charitable giving), 111.4(b)(11)(A) (calculate how money saved can accumulate into a larger amount over time), 111.4(b)(11)(B) (explain that saving is an alternative to spending) and 111.4(b)(11)(C) (distinguish between a deposit and a withdrawal), and the Voluntary National Content Standards in Economics, Standard 10.'],
+    generators: ['bzk-save', 'bzk-save', 'bzk-save', 'bzk-save', 'bzk-save'],
+  },
+  {
+    id: 'borrow-and-make-k',
+    order: 4,
+    title: 'Borrow, lend and make',
+    tagline: 'Borrowing and lending with care, and the people who make things and the people who buy them',
+    requires: ['save-spend-share-k'],
+    lesson: {
+      paragraphs: ['To borrow is to use something that belongs to someone else and give it back. When you borrow well, you give it back on time and in good shape. Losing it or breaking it is borrowing badly.', 'To lend is to let someone use your things. Before you lend, think: what could go well, and what could go wrong? A friend may give it back late, or not at all.', 'People who make things are producers. People who buy and use things are consumers. To find what something costs to make, add up the cost of each part. A bookmark made from paper that costs two dollars and a ribbon that costs one dollar costs three dollars to make.'],
+      keyIdea: 'Borrow well: give it back on time and in good shape. Think before you lend. Producers make things, and consumers buy and use them.',
+      example: { kind: 'flow', steps: ['paper: two dollars', 'ribbon: one dollar', 'a bookmark: three dollars'], caption: 'The cost to make a bookmark.',
+        another: ['A baker is a producer. The family that buys her bread is a consumer.',
+          { text: 'You borrow a library book. You read it, keep it dry and bring it back by the due date. That is borrowing well.', visual: { kind: 'flow', steps: ['borrow it', 'take care of it', 'give it back on time'] } },
+          'Lending a pencil is an easy yes. Lending a new game takes more thinking.'] },
+    },
+    sources: ['Aligned with TEKS Mathematics 111.4(b)(11)(D) (identify examples of borrowing and distinguish between responsible and irresponsible borrowing), 111.4(b)(11)(E) (identify examples of lending and use concepts of benefits and costs to evaluate lending decisions) and 111.4(b)(11)(F) (differentiate between producers and consumers and calculate the cost to produce a simple item), and the Voluntary National Content Standards in Economics, Standard 14.'],
+    generators: ['bzk-make', 'bzk-make', 'bzk-make', 'bzk-make', 'bzk-make'],
+  },
+]; }
+// -----------------------------------------------------------------------------------------------------------------
+// BIZ9_MODULES: the four lessons of the high school business course (2026-09-30, pass HD).
+// In plain terms: each object is one lesson. `paragraphs` is the lesson text, `keyIdea` the one-sentence takeaway,
+// `example` the pictures and extra examples, `sources` the Texas standard the lesson meets (Principles of Business,
+// Marketing, and Finance, §127.241, in the text TEA publishes today) with the national economics standard beside it,
+// and `generators` the question banks below that make the five quick checks. Every number was checked twice.
+// -----------------------------------------------------------------------------------------------------------------
+function BIZ9_MODULES() { return [
+  {
+    id: 'business-basics',
+    order: 1,
+    title: 'How a business works',
+    tagline: 'Goods and services, who owns a business, the system it runs in, and how the work gets divided',
+    requires: [],
+    lesson: {
+      paragraphs: ['A business sells goods, things you can hold like a bike or a sandwich, or services, work done for you like a haircut or a repair. Businesses come in types: producers grow or dig up raw goods, manufacturers turn them into products, wholesalers buy in bulk and sell to stores, retailers sell to you, and service businesses sell work. Every business has an owner, and the form of ownership decides who keeps the profit and who carries the risk. A sole proprietorship has one owner, who keeps all the profit and is personally responsible for every debt. A partnership shares both among two or more owners. A corporation is owned by shareholders, who can lose only what they put in, which is called limited liability; a limited liability company, or LLC, gives small owners the same protection with simpler rules.', 'Every business runs inside an economic system. In a traditional economy, custom decides what gets made; in a centrally planned economy, the government decides; in a market economy, buyers and sellers decide through prices. Real countries mix the three, and the United States is a mixed economy built on private enterprise: people can own property, start a business, compete, and keep the profit they earn. Business also crosses borders. Imports are goods and services a country buys from other countries, and exports are what it sells to them; imports give buyers more choices and often lower prices, while exports bring money and jobs home.', 'Inside, a business has four core functions: production makes the good or service, marketing finds and keeps customers, finance handles the money, and management plans and leads the people. How the work is divided matters. In 1776 Adam Smith described a pin factory where ten workers, each doing one small step, made more than 48,000 pins a day, when one worker alone could not make twenty. That is specialization, or division of labor, and it raises productivity, the amount produced for the time and effort put in.'],
+      keyIdea: 'Businesses sell goods or services. The form of ownership decides who keeps the profit and carries the risk. The United States is a mixed, private enterprise economy. Specialization raises productivity.',
+      example: { kind: 'flow', steps: ['sole proprietorship: one owner', 'partnership: shared', 'corporation: limited liability'], caption: 'Who owns it, who keeps the profit, who carries the risk.',
+        another: ['A car wash sells a service, and the soap it buys is a good. Most businesses buy and sell some of each.',
+          { text: 'If a sole proprietor\'s business owes $20,000 it cannot pay, the owner can owe it personally. A shareholder in a corporation risks only what the shares cost.', visual: { kind: 'flow', steps: ['one owner', 'a business debt', 'a personal debt'] } },
+          'Division of labor has a cost too: one step all day can be dull, which is why some managers rotate jobs.'] },
+    },
+    sources: ['Aligned with TEKS Career and Technical Education 127.241(d)(1)(B) (differentiate between goods and services), 127.241(d)(1)(C) (identify the types of business), 127.241(d)(1)(D) (compare the different forms of ownership), 127.241(d)(1)(E) (examine the organizational structure and functions of business), 127.241(d)(3)(A) (compare and contrast the types of economic systems), 127.241(d)(3)(B) (summarize the characteristics of the private enterprise system), 127.241(d)(4)(A), (B) and (C) (business in a global society, domestic and world trade, and the impact of imports and exports), 127.241(d)(6)(B) (define business and industry terms such as producers, manufacturers, retailers, wholesalers, and service businesses), 127.241(d)(7)(A) (explain the concept of productivity) and 127.241(d)(7)(B) (analyze the impact of specialization and division of labor on productivity), and the Voluntary National Content Standards in Economics, Standards 6 and 14.'],
+    generators: ['bz-basics', 'bz-basics', 'bz-basics', 'bz-basics', 'bz-basics'],
+  },
+  {
+    id: 'marketing-mix-9',
+    order: 2,
+    title: 'Marketing and the four Ps',
+    tagline: 'Who the customer is, what they want, and the product, price, place and promotion that reach them',
+    requires: ['business-basics'],
+    lesson: {
+      paragraphs: ['Marketing is everything a business does to find out what customers want and get it to them at a profit, and that idea, starting with the customer, is called the marketing concept. Marketing includes market research, product planning, pricing, getting the product to the right places, promotion and selling. It ties into every other function: production has to make what marketing learns people will buy, and finance has to pay for all of it.', 'A market is all the people who might buy a product. Mass marketing aims one message at all of them. Market segmentation splits them into groups by age, place, interests or buying habits, and a business picks one or two segments as its target market. A skate shop\'s target market is not everyone in town; it is teenagers and young adults who skate, which tells the shop where to advertise and what to stock.', 'The marketing mix is four choices, the four Ps. Product is what you sell and its features. Price is what it costs, set between what it costs to make and what customers will pay; when demand rises or supply falls, prices tend to rise, and when supply rises or demand falls, they tend to fall. Place is how it reaches customers, often through wholesalers, who buy in bulk, like a grocery distributor that stocks hundreds of stores, and then retailers, who sell to the public. Promotion is how people hear about it. A marketing strategy is a target market plus the mix built for it. Services are marketed differently from goods: a haircut cannot be stored or tried first, so reviews and reputation carry more weight.'],
+      keyIdea: 'Marketing finds what customers want and delivers it at a profit. Segment the market and choose a target market. The four Ps are product, price, place and promotion.',
+      example: { kind: 'flow', steps: ['product', 'price', 'place', 'promotion'], caption: 'The four Ps of the marketing mix.',
+        another: ['A sports drink aimed at runners and one aimed at gamers can be the same liquid. The target market changes the name, the bottle, the store and the ad.',
+          { text: 'Concert tickets: a sellout crowd, fixed seats. When demand rises and supply stays the same, prices tend to rise, which is why resale prices climb for the biggest shows.', visual: { kind: 'flow', steps: ['more buyers', 'the same seats', 'a higher price'] } },
+          'Wholesalers are the stage most shoppers never see: the store you buy from bought from them.'] },
+    },
+    sources: ['Aligned with TEKS Career and Technical Education 127.241(d)(1)(A) (explain the principles of supply and demand), 127.241(d)(6)(A) (explain the importance of different marketing strategies for goods versus services), 127.241(d)(6)(D) (explain the role of retailers in a private enterprise system), 127.241(d)(6)(E) (identify examples of wholesalers), 127.241(d)(6)(F) (describe the role of wholesalers in a private enterprise system), 127.241(d)(10)(A) to (D) (marketing, its ties to other functions, the marketing concept, and its functions), 127.241(d)(11)(A) to (E) (markets, segments, segmentation and mass marketing, and target markets) and 127.241(d)(12)(A) to (C) (marketing strategies and the marketing mix), and the Voluntary National Content Standards in Economics, Standard 7.'],
+    generators: ['bz-market', 'bz-market', 'bz-market', 'bz-market', 'bz-market'],
+  },
+  {
+    id: 'business-money',
+    order: 3,
+    title: 'Money in a business',
+    tagline: 'Revenue, expenses and profit, the two statements that tell a business\'s story, credit, and a paycheck',
+    requires: ['marketing-mix-9'],
+    lesson: {
+      paragraphs: ['Revenue is the money a business takes in from sales. Expenses are what it spends: rent, wages, materials, electricity. Profit is revenue minus expenses, and when expenses are bigger, the result is a loss. The income statement shows revenue, expenses and profit over a period, such as a month or a year. The balance sheet is a snapshot of a single day: what the business owns, its assets; what it owes, its liabilities; and the difference, which is the owner\'s equity. Assets always equal liabilities plus owner\'s equity.', 'Some costs stay the same no matter how much you sell, like rent; those are fixed costs. Others grow with every sale, like the ingredients in each sandwich; those are variable costs. The break-even point is the number of sales where revenue just covers all the costs: divide the fixed costs by what each sale leaves after its own variable cost. Sell more than that and there is a profit. The whole economy has its ups and downs too, called the business cycle: expansion, peak, contraction and trough, and sales usually follow it.', 'Money itself does three jobs: it is a medium of exchange, a unit of measure for prices, and a store of value. Businesses take cash, debit cards, credit cards and electronic funds transfers. Credit lets a business buy now and pay later, which can help it grow, but interest is the price of borrowing, and a loan that cannot be repaid can sink a business. For the people who work there, gross pay is hours times the hourly rate, and net pay, what lands in the bank, is gross pay minus taxes and other deductions.'],
+      keyIdea: 'Profit is revenue minus expenses. The income statement covers a period, and the balance sheet shows one day. Break-even is fixed costs divided by what each sale leaves after its variable cost.',
+      example: { kind: 'flow', steps: ['revenue', 'minus expenses', 'profit or loss'], caption: 'The line every income statement ends on.',
+        another: ['A bakery with $12,000 in monthly revenue and $10,500 in expenses made $1,500 in profit that month.',
+          { text: 'A food cart pays $900 a month in fixed costs, and each taco sells for $4 and costs $1 to make. Each taco leaves $3, so 900 divided by 3 is 300 tacos to break even.', visual: { kind: 'flow', steps: ['fixed costs', 'divided by what each sale leaves', 'the break-even point'] } },
+          'Twenty hours at $12 an hour is $240 in gross pay. If $22 is taken out in taxes, the net pay is $218.'] },
+    },
+    sources: ['Aligned with TEKS Career and Technical Education 127.241(d)(1)(F) (interpret the nature of balance sheets and income statements), 127.241(d)(1)(G) (identify business cycles), 127.241(d)(3)(C) (identify factors affecting business profits, revenues, and expenses), 127.241(d)(8)(A) (evaluate forms of financial exchange, including cash, credit, debit, and electronic funds transfer), 127.241(d)(8)(C) (list functions of money such as medium of exchange, unit of measure, and store of value), 127.241(d)(8)(D) (summarize the purposes and importance of credit) and 127.241(d)(9)(B) (calculate gross and net pay), and the Voluntary National Content Standards in Economics, Standard 12.'],
+    generators: ['bz-money', 'bz-money', 'bz-money', 'bz-money', 'bz-money'],
+  },
+  {
+    id: 'ethics-and-careers',
+    order: 4,
+    title: 'Ethics, law and careers',
+    tagline: 'Right, legal and personal choices, the rules and unions a business works with, and a career plan',
+    requires: ['business-money'],
+    lesson: {
+      paragraphs: ['Ethics in business means the standards of right conduct a business is held to: honest prices, safe products, fair treatment of workers and customers. Morals are a person\'s own beliefs about right and wrong, and laws are the rules a government enforces. The three do not always line up. Something can be legal but unethical, like a technically true ad that leaves customers with a false impression, and a good test is whether you would be comfortable if every customer knew exactly what you did.', 'Government plays several roles in business. It makes rules, like safety and consumer-protection laws; it buys goods and services from businesses; it collects taxes; and it runs the courts, where contracts are enforced and disputes are settled. Organized labor, workers joined together in a union, bargains with an employer as a group over wages, hours and working conditions, which is called collective bargaining.', 'A career plan starts with your goals and interests, then your talents, abilities and skills. The business, marketing and finance field holds careers from accountant and bank teller to marketing manager, buyer, human resources specialist and entrepreneur. Match what you like and what you are good at to two or three careers, find out the education each one needs, and write the first steps down.'],
+      keyIdea: 'Ethical, moral and legal are different tests, and something legal can still be unethical. Government makes rules, collects taxes and runs the courts. Unions bargain collectively. Plan a career from your interests and skills.',
+      example: { kind: 'flow', steps: ['is it legal?', 'is it ethical?', 'would I tell every customer?'], caption: 'Three questions before a business decision.',
+        another: ['A store that raises the price of water during a hurricane may break a law in some states, and many people call it unethical even where it is legal.',
+          { text: 'A union contract sets the wages and hours for everyone it covers, so no worker has to bargain alone.', visual: { kind: 'flow', steps: ['workers join together', 'bargain as a group', 'one contract'] } },
+          'A career plan that fits on one page is more useful than a long one that stays in a drawer.'] },
+    },
+    sources: ['Aligned with TEKS Career and Technical Education 127.241(d)(2)(A) (distinguish between ethical and unethical business practices), 127.241(d)(2)(B) (contrast ethical, moral, and legal choices that relate to the decision-making process in business situations), 127.241(d)(5)(A) to (D) (the roles of government, its activities in business, the legal system, and organized labor), 127.241(d)(7)(C) (explain the concept of organized labor and business) and 127.241(d)(13)(A) to (C) (goals and interests, talents and skills, and a career plan).'],
+    generators: ['bz-ethics', 'bz-ethics', 'bz-ethics', 'bz-ethics', 'bz-ethics'],
+  },
+]; }
+// -----------------------------------------------------------------------------------------------------------------
 // AGRI9_MODULES: the four lessons of the high school agriculture course (2026-09-30, pass GU).
 // In plain terms: each object is one lesson. `paragraphs` is the lesson text, `keyIdea` the one-sentence takeaway,
 // `example` the pictures and extra examples, `sources` the Texas standard the lesson meets (Principles of Agriculture,
@@ -10189,7 +10756,7 @@ function AGRI9_MODULES() { return [
           { text: 'A strong dollar is bad news for a Texas cotton farmer selling abroad: the same bale costs a foreign mill more of its own money, so it buys less.', visual: { kind: 'flow', steps: ['the dollar rises', 'the bale costs more abroad', 'fewer bales sold'] } },
           'Borlaug\'s wheat was short on purpose. Tall wheat fell over under the weight of a heavy harvest; short stems stood up and carried it.'] },
     },
-    sources: ['Aligned with TEKS Career and Technical Education 130.2(c)(1)(A) (identify career development, education, and entrepreneurship opportunities in the field of agriculture, food, and natural resources), 130.2(c)(1)(E) (identify careers in agriculture, food, and natural resources with required aptitudes in science, technology, engineering, mathematics, language arts, and social studies), 130.2(c)(3)(A) (compare and contrast global agricultural markets, currency, and trends), 130.2(c)(3)(B) (evaluate marketing factors and practices that impact the global markets), 130.2(c)(4)(A) (define the scope of agriculture), 130.2(c)(4)(B) (analyze the scope of agriculture, food, and natural resources and its effect upon society), 130.2(c)(4)(C) (evaluate significant historical and current agriculture, food, and natural resources developments), 130.2(c)(4)(D) (identify potential future scenarios), 130.2(c)(4)(E) (describe how emerging technologies and globalization impacts agriculture) and 130.2(c)(4)(F) (compare and contrast issues impacting agriculture such as biotechnology, employment, safety, environment, and animal welfare), and the National AFNR Content Standards, CS.01 (analyze how issues, trends, technologies and public policies impact systems in the AFNR Career Cluster).'],
+    sources: ['Aligned with TEKS Career and Technical Education 127.30(d)(1)(A), 127.30(d)(5)(A), 127.30(d)(5)(C), 127.30(d)(5)(E) (Principles of Agriculture, Food, and Natural Resources, Adopted 2024), and the National AFNR Career Cluster Content Standards, CS.01.'],
     generators: ['ag-scope', 'ag-scope', 'ag-scope', 'ag-scope', 'ag-scope'],
   },
   {
@@ -10206,7 +10773,7 @@ function AGRI9_MODULES() { return [
           { text: 'Water, oxygen and warmth start a seed, and the shoot only needs light once it is up. That is why a seed can start in the dark of the soil.', visual: { kind: 'flow', steps: ['water', 'oxygen', 'warmth', 'a shoot', 'then light'] } },
           'A pH of 5 is ten times more acid than a pH of 6. Lime raises it; sulfur lowers it. A soil test before planting saves a season of guessing.'] },
     },
-    sources: ['Aligned with TEKS Career and Technical Education 130.2(c)(10)(A) (identify the components and properties of soils), 130.2(c)(10)(B) (identify and describe the process of soil formation), 130.2(c)(10)(C) (conduct experiments related to soil chemistry), 130.2(c)(11)(A) (describe the structure and functions of plant parts), 130.2(c)(11)(B) (discuss and apply plant germination, growth, and development), 130.2(c)(11)(C) (describe plant reproduction, genetics, and breeding) and 130.2(c)(11)(D) (identify plants of importance to agriculture, food, and natural resources), and the National AFNR Content Standards, PS.01 (develop and implement a crop management plan for a given production goal that accounts for environmental factors).'],
+    sources: ['Aligned with TEKS Career and Technical Education 127.30(d)(11)(B), 127.30(d)(11)(C), 127.30(d)(11)(D) (Principles of Agriculture, Food, and Natural Resources, Adopted 2024), and the National AFNR Career Cluster Content Standards, PS.01.'],
     generators: ['ag-soil', 'ag-soil', 'ag-soil', 'ag-soil', 'ag-soil'],
   },
   {
@@ -10223,7 +10790,7 @@ function AGRI9_MODULES() { return [
           { text: 'Milk from the cow is cooled within hours, pasteurized at the plant, bottled cold and kept cold to the shelf. Break the cold chain anywhere and the milk is lost.', visual: { kind: 'flow', steps: ['the cow', 'cooled', 'pasteurized', 'cold to the shelf'] } },
           'A third of the food grown is wasted. Feeding the world in 2050 is partly a growing problem and partly a not-throwing-away problem.'] },
     },
-    sources: ['Aligned with TEKS Career and Technical Education 130.2(c)(12)(A) (describe animal growth and development), 130.2(c)(12)(B) (identify animal anatomy and physiology), 130.2(c)(12)(C) (identify and evaluate breeds and classes of livestock), 130.2(c)(12)(D) (explain animal selection, reproduction, breeding, and genetics), 130.2(c)(13)(A) (evaluate food products and processing systems), 130.2(c)(13)(B) (determine trends in world food production) and 130.2(c)(13)(C) (discuss current issues in food production), and the National AFNR Content Standards, AS.01 (analyze historic and current trends impacting the animal systems industry) and FPP.01 (develop and implement procedures to ensure safety, sanitation and quality in food product and processing facilities).'],
+    sources: ['Aligned with TEKS Career and Technical Education 127.30(d)(5)(D), 127.30(d)(12)(A), 127.30(d)(12)(B), 127.30(d)(12)(D), 127.30(d)(13)(A), 127.30(d)(13)(B), 127.30(d)(13)(D) (Principles of Agriculture, Food, and Natural Resources, Adopted 2024), and the National AFNR Career Cluster Content Standards, AS.01 and FPP.01.'],
     generators: ['ag-animals', 'ag-animals', 'ag-animals', 'ag-animals', 'ag-animals'],
   },
   {
@@ -10240,7 +10807,7 @@ function AGRI9_MODULES() { return [
           { text: 'A motion is a sentence beginning I move that. A second says one other person wants it discussed. Then discussion, then the vote, and the minutes record all three.', visual: { kind: 'flow', steps: ['I move that', 'second', 'discussion', 'vote'] } },
           'A tractor rollover is survivable with a roll bar and a fastened belt and usually not without them. Most of farm safety is that plain.'] },
     },
-    sources: ['Aligned with TEKS Career and Technical Education 130.2(c)(1)(C) (demonstrate knowledge of personal and occupational safety, environmental regulations, and first-aid policy in the workplace), 130.2(c)(1)(D) (analyze employers\' expectations such as appropriate work habits, ethical conduct, legal responsibilities, and good citizenship skills), 130.2(c)(2)(A) (plan, propose, conduct, document, and evaluate a supervised agriculture experience program), 130.2(c)(2)(B) (apply proper record-keeping skills as they relate to the supervised agriculture experience), 130.2(c)(5)(A) (develop and demonstrate leadership skills and collaborate with others to accomplish organizational goals), 130.2(c)(5)(C) (demonstrate democratic principles in conducting effective meetings), 130.2(c)(8)(A) (develop a formal business plan), 130.2(c)(8)(B) (develop, maintain, and analyze records), 130.2(c)(9)(C) (analyze the benefits and limitations of emerging technology such as online mapping systems, drones, and robotics), 130.2(c)(9)(D) (explain the benefits of computer-based and mobile application equipment), 130.2(c)(14)(A) (identify major areas of power, structural, and technical systems), 130.2(c)(14)(B) (use safe and appropriate laboratory procedures and policies), 130.2(c)(15)(A) (determine the effects of agriculture upon safety, health, and the environment), 130.2(c)(15)(D) (research and analyze alternative energy sources that stem from or impact agriculture) and 130.2(c)(15)(E) (evaluate energy and water conservation methods), and the National AFNR Content Standards, ABS.01 (utilize economic principles to establish and manage an AFNR enterprise) and NRS.01 (plan and conduct natural resource management activities that apply logical, reasoned and scientifically based solutions to natural resource issues and goals).'],
+    sources: ['Aligned with TEKS Career and Technical Education 127.30(d)(1)(C), 127.30(d)(2)(A), 127.30(d)(2)(B), 127.30(d)(5)(F), 127.30(d)(6)(C), 127.30(d)(10)(A), 127.30(d)(10)(B), 127.30(d)(15)(B), 127.30(d)(15)(D), 127.30(d)(15)(E) (Principles of Agriculture, Food, and Natural Resources, Adopted 2024), and the National AFNR Career Cluster Content Standards, ABS.01 and NRS.01.'],
     generators: ['ag-farm', 'ag-farm', 'ag-farm', 'ag-farm', 'ag-farm'],
   },
 ]; }
@@ -15932,6 +16499,321 @@ Object.assign(GENERATORS, {
       ['What shows what a page of notes hides?', ['a graph', 'a fence', 'a bigger notebook', 'a hen'], 'a graph', 'The feed line climbing, the sale price falling.'],
       ['Which belongs in the record too?', ['safety', 'the weather on Mars', 'a song', 'nothing else'], 'safety', 'Gloves for the chemicals, closed shoes in the pen.'],
       ['What is the oldest rule in agriculture?', ['leave the land better than you found it', 'sell everything', 'plant once', 'skip the plan'], 'leave the land better than you found it', 'Cover the bare soil, water at the root.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  // ---------------------------------------------------------------------------------------------------------------
+  // Business question banks for grades 3 to 5 (2026-09-30, pass HG). In plain terms: each bank is a list of
+  // quick-check questions, [what is asked, the four answers, the right one, one line said after]; `pick` chooses one
+  // and `shuffle` mixes the answers. The jar bank builds weeks-to-a-goal questions and the stand bank builds profit
+  // questions from numbers chosen on the spot, so those answers are computed, never typed by hand.
+  // ---------------------------------------------------------------------------------------------------------------
+  'bz3-work': (rng) => {
+    const Q = [['What is the money people earn for their work called?', ['income', 'credit', 'interest', 'a fee'], 'income', 'Most people earn income by working.'],
+      ['Skills and knowledge a person has are called what?', ['human capital', 'a profit', 'a loan', 'a fixed expense'], 'human capital', 'Hard-to-learn skills often earn more.'],
+      ['When something is scarce, what usually happens to its cost?', ['the cost goes up', 'the cost goes down', 'it becomes free', 'nothing changes'], 'the cost goes up', 'There is not enough for everyone who wants it.'],
+      ['A freeze kills orange trees. What happens to orange juice?', ['orange juice costs more', 'orange juice costs less', 'it is given away', 'the price stays the same'], 'orange juice costs more', 'Fewer oranges to sell makes them scarce.'],
+      ['Giving money to help others is called what?', ['charitable giving', 'borrowing', 'a fixed expense', 'interest'], 'charitable giving', 'Spend, save, share, or borrow: each is a choice.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'bz3-jars': (rng) => {
+    if (rng() < 0.4) { // weeks to a goal: the goal divided by what is saved each week, always a whole number
+      const weekly = 2 + Math.floor(rng() * 5); const weeks = 3 + Math.floor(rng() * 8); const goal = weekly * weeks;
+      const things = ['a skateboard', 'a book set', 'a soccer ball', 'a puzzle', 'a bike helmet', 'an art kit'];
+      const what = things[Math.floor(rng() * things.length)];
+      const answer = `${weeks} weeks`; const choices = [answer, `${weeks + 1} weeks`, `${weeks - 1} weeks`, `${weeks + 2} weeks`];
+      return { type: 'choice', story: `Leo wants ${what} that costs $${goal}. He saves $${weekly} each week.`, prompt: 'How many weeks until he can buy it?', choices: shuffle(rng, choices), answer, explain: 'Divide the goal by the amount saved each week.', visual: null, explainVisual: null };
+    }
+    const Q = [['Grabbing candy at the checkout line is what kind of spending?', ['unplanned spending', 'planned spending', 'saving', 'sharing'], 'unplanned spending', 'Planned spending is decided ahead.'],
+      ['Deciding ahead what you will buy is called what?', ['planned spending', 'unplanned spending', 'borrowing', 'a loss'], 'planned spending', 'Compare your choices first.'],
+      ['Which is a reason to save?', ['for college', 'to pay interest', 'to make prices scarce', 'to lose money'], 'for college', 'People save for goals, emergencies and college.'],
+      ['An allowance is often split into spending, saving and what?', ['sharing', 'borrowing', 'renting', 'charging'], 'sharing', 'There is no single right split.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'bz3-bank': (rng) => {
+    const Q = [['Banks and credit unions are called what?', ['financial institutions', 'fixed expenses', 'human capital', 'charitable giving'], 'financial institutions', 'They keep money safe, lend it, and pay interest.'],
+      ['Which is one of the jobs a bank does?', ['keep money safe', 'make prices scarce', 'set your allowance', 'grow lemons'], 'keep money safe', 'Banks also lend money and pay savers interest.'],
+      ['Borrowing money and paying it back later is called what?', ['credit', 'profit', 'income', 'sharing'], 'credit', 'Credit is used when you cannot pay right now.'],
+      ['Who must pay a loan back to the lender?', ['the borrower', 'the bank teller', 'the lender', 'nobody'], 'the borrower', 'Usually with interest.'],
+      ['Extra money paid for the use of borrowed money is called what?', ['interest', 'an allowance', 'a fixed expense', 'income tax'], 'interest', 'A family that borrows $10,000 pays back more than $10,000.'],
+      ['Which way of saving pays a little interest?', ['a savings account', 'a piggy bank', 'a sock drawer', 'a shoebox'], 'a savings account', 'A piggy bank is easy to reach but pays nothing.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'bz3-stand': (rng) => {
+    if (rng() < 0.4) { // profit: money from sales minus the variable and fixed expenses, in whole dollars
+      const cups = (2 + Math.floor(rng() * 5)) * 10; const sales = cups; const variable = cups * 4 / 10; const table = 5; const profit = sales - variable - table;
+      const answer = `$${profit}`; const choices = [answer, `$${sales - table}`, `$${sales - variable}`, `$${profit + 10}`];
+      return { type: 'choice', story: `A stand sells ${cups} cups of lemonade at $1 each. Each cup costs 40 cents to make, and the table costs $5.`, prompt: 'What is the profit?', choices: shuffle(rng, [...new Set(choices)].length === 4 ? choices : [answer, `$${profit + 1}`, `$${profit + 2}`, `$${profit + 10}`]), answer, explain: `Sales of $${sales}, minus $${variable} for the cups, minus $5 for the table, leaves $${profit}.`, visual: null, explainVisual: null };
+    }
+    const Q = [['The $5 to rent a market table every Saturday is what kind of expense?', ['a fixed expense', 'a variable expense', 'a profit', 'income'], 'a fixed expense', 'It stays the same no matter how much you sell.'],
+      ['Lemons and cups for each cup sold are what kind of expense?', ['a variable expense', 'a fixed expense', 'a profit', 'a loan'], 'a variable expense', 'Sell more cups and you spend more.'],
+      ['The money left after you pay your expenses is called what?', ['profit', 'credit', 'interest', 'human capital'], 'profit', 'Money from sales minus all the expenses.'],
+      ['Someone who starts a business is called what?', ['an entrepreneur', 'a borrower', 'a lender', 'a bank teller'], 'an entrepreneur', 'Every entrepreneur takes a risk.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  // ---------------------------------------------------------------------------------------------------------------
+  // Middle school business question banks (2026-09-30, pass HF). In plain terms: one bank per lesson, each a list of
+  // [question, four answers, the right one, a line said after]. Four kinds of question are built from numbers chosen
+  // on the spot and worked out in whole cents, so the answers are exact: a register total with Texas's highest sales
+  // tax, take-home pay after a 10 percent income tax, a check register balance, a budget percent, a net worth, simple
+  // interest, a profit, and which of two deals saves more.
+  // ---------------------------------------------------------------------------------------------------------------
+  'bz6-earn': (rng) => {
+    const r = rng();
+    if (r < 0.2) { // sales tax at 8.25 percent; prices are multiples of 20, so the tax is a whole number of cents
+      const price = pick(rng, [20, 40, 60, 80, 120, 160, 200]); const taxCents = price * 825 / 100; const totalCents = price * 100 + taxCents;
+      const dollars = (c) => `$${(c / 100).toFixed(2)}`;
+      const answer = dollars(totalCents); const choices = [answer, dollars(price * 100), dollars(price * 100 + 825), dollars(price * 100 + 2 * taxCents)];
+      return { type: 'choice', story: `A $${price} item in a city with an 8.25 percent sales tax.`, prompt: 'What is the total at the register?', choices: shuffle(rng, choices), answer, explain: 'Change 8.25 percent to 0.0825, multiply by the price, then add the tax to the price.', visual: null, explainVisual: null };
+    }
+    if (r < 0.4) { // a 10 percent income tax on wages that are multiples of 20 from 120 to 300
+      const wages = 120 + 20 * Math.floor(rng() * 10); const tax = wages / 10; const net = wages - tax;
+      const answer = `$${net}`; const choices = [answer, `$${wages}`, `$${wages - 10}`, `$${tax}`];
+      return { type: 'choice', story: `Sam earned $${wages}, and income tax took 10 percent of it.`, prompt: 'How much did Sam take home?', choices: shuffle(rng, choices), answer, explain: 'Ten percent of the wages is the tax; net pay is the wages minus the tax.', visual: null, explainVisual: null };
+    }
+    const Q = [['Pay before taxes and deductions is called what?', ['gross pay', 'net pay', 'a rebate', 'a deposit'], 'gross pay', 'Net pay is what you take home.'],
+      ['Pay you take home after taxes is called what?', ['net pay', 'gross pay', 'sales tax', 'a scholarship'], 'net pay', 'Gross pay minus taxes and deductions.'],
+      ['What is the highest sales tax rate a Texas city can charge?', ['8.25 percent', '6.25 percent', '2 percent', '10 percent'], '8.25 percent', 'The state rate of 6.25 plus up to 2 more.'],
+      ['Which money for college do you not pay back?', ['grants and scholarships', 'student loans', 'credit cards', 'a car loan'], 'grants and scholarships', 'Student loans you do pay back.'],
+      ['Which of these states has no state income tax?', ['Texas', 'California', 'New York', 'Oregon'], 'Texas', 'The federal income tax still applies.'],
+      ['Over 40 years, $20,000 more a year adds up to how much?', ['$800,000', '$80,000', '$20,000', '$8,000,000'], '$800,000', 'Twenty thousand times forty.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'bz6-bank': (rng) => {
+    if (rng() < 0.3) { // a check register: start, plus a deposit, minus a withdrawal, minus a transfer to savings
+      const start = 100 + 10 * Math.floor(rng() * 11); const dep = 20 + 5 * Math.floor(rng() * 9); const wd = 15 + 5 * Math.floor(rng() * 8); const tr = 10 + 5 * Math.floor(rng() * 5);
+      const bal = start + dep - wd - tr; const answer = `$${bal}`;
+      const wrong = [start + dep - wd, start + dep + wd - tr, bal + 20, bal - 10].filter((v) => v > 0 && v !== bal);
+      const choices = [answer, ...[...new Set(wrong.map((v) => `$${v}`))].slice(0, 3)];
+      return { type: 'choice', story: `A register starts at $${start}. Then a $${dep} deposit, a $${wd} withdrawal, and a $${tr} transfer to savings.`, prompt: 'What is the new balance?', choices: shuffle(rng, choices), answer, explain: 'Add the deposit, then subtract the withdrawal and the transfer.', visual: null, explainVisual: null };
+    }
+    const Q = [['Which card spends your own money right away?', ['a debit card', 'a credit card', 'a gift card', 'a library card'], 'a debit card', 'A credit card borrows the bank\'s money.'],
+      ['Which card borrows money that you pay back later?', ['a credit card', 'a debit card', 'a gift card', 'an ID card'], 'a credit card', 'Pay the whole bill on time and it costs nothing extra.'],
+      ['What do you pay when you carry a credit card balance?', ['interest', 'a rebate', 'sales tax', 'a scholarship'], 'interest', 'Often more than 20 percent a year.'],
+      ['A record of borrowing and paying back is your what?', ['credit history', 'net worth', 'gross pay', 'budget'], 'credit history', 'A positive one makes borrowing easier and cheaper.'],
+      ['How long do most late payments stay on a credit report?', ['seven years', 'one month', 'one year', 'forever'], 'seven years', 'Some bankruptcies stay for ten.'],
+      ['What fee can come when you spend more than you have?', ['an overdraft fee', 'a rebate', 'a coupon', 'a dividend'], 'an overdraft fee', 'Compare fees before you open an account.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'bz6-budget': (rng) => {
+    const money = (n) => '$' + String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    const r = rng();
+    if (r < 0.15) { // what percent of a budget one category is
+      const total = pick(rng, [2000, 4000, 5000]); const pct = pick(rng, [10, 15, 20, 25, 30, 40]); const part = total * pct / 100;
+      const answer = `${pct} percent`; const choices = [answer, `${pct + 5} percent`, `${pct + 10} percent`, `${pct * 2 === pct + 10 ? pct + 15 : pct * 2} percent`];
+      return { type: 'choice', story: `A ${money(total)} monthly budget spends ${money(part)} on rent.`, prompt: 'What percent of the budget is rent?', choices: shuffle(rng, [...new Set(choices)]), answer, explain: 'Divide the part by the total and change the decimal to a percent.', visual: null, explainVisual: null };
+    }
+    if (r < 0.3) { // net worth: assets minus liabilities
+      const assets = 20000 + 5000 * Math.floor(rng() * 15); const owed = 5000 * (1 + Math.floor(rng() * (assets / 5000 - 1)));
+      const answer = money(assets - owed); const choices = [answer, money(assets + owed), money(owed), money(assets)];
+      return { type: 'choice', story: `A family owns ${money(assets)} in assets and owes ${money(owed)}.`, prompt: 'What is their net worth?', choices: shuffle(rng, [...new Set(choices)]), answer, explain: 'Net worth is assets minus liabilities.', visual: null, explainVisual: null };
+    }
+    if (r < 0.45) { // simple interest: principal times rate times years
+      const principal = pick(rng, [100, 200, 500, 1000]); const rate = pick(rng, [2, 3, 4, 5]); const years = pick(rng, [2, 3, 4]); const interest = principal * rate * years / 100;
+      const answer = money(interest); const choices = [answer, money(principal * rate / 100), money(interest + principal), money(interest * 2)];
+      return { type: 'choice', story: `${money(principal)} earns ${rate} percent simple interest a year for ${years} years.`, prompt: 'How much interest does it earn in all?', choices: shuffle(rng, [...new Set(choices)]), answer, explain: 'Simple interest is the principal times the rate times the years.', visual: null, explainVisual: null };
+    }
+    const Q = [['Rent that stays the same each month is what kind of expense?', ['fixed', 'variable', 'an asset', 'a liability'], 'fixed', 'Variable expenses change, like groceries.'],
+      ['Groceries that change each month are what kind of expense?', ['variable', 'fixed', 'an asset', 'a rebate'], 'variable', 'Fixed expenses stay the same.'],
+      ['Net worth is assets minus what?', ['liabilities', 'income', 'savings', 'taxes'], 'liabilities', 'What you own minus what you owe.'],
+      ['Interest paid on the interest too is called what?', ['compound interest', 'simple interest', 'sales tax', 'a rebate'], 'compound interest', 'It grows faster over time.'],
+      ['Interest paid only on what you put in is called what?', ['simple interest', 'compound interest', 'a dividend', 'net pay'], 'simple interest', '$1,000 at 5 percent earns $50 a year.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'bz6-start': (rng) => {
+    const r = rng();
+    if (r < 0.2) { // which deal saves more: a percent off or dollars off (never a tie)
+      let price, pct, off; do { price = 20 * (1 + Math.floor(rng() * 10)); pct = pick(rng, [10, 20, 25, 50]); off = pick(rng, [5, 10, 15, 20]); } while (price * pct / 100 === off || off >= price);
+      const pctLabel = `${pct} percent off`; const offLabel = `$${off} off`; const answer = price * pct / 100 > off ? pctLabel : offLabel;
+      return { type: 'choice', story: `A $${price} item. Deal one: ${pct} percent off. Deal two: $${off} off.`, prompt: 'Which deal saves more?', choices: shuffle(rng, [pctLabel, offLabel, 'they save the same', 'neither saves money']), answer, explain: `${pct} percent of $${price} is $${price * pct / 100}; compare that with $${off}.`, visual: null, explainVisual: null };
+    }
+    if (r < 0.4) { // profit: sales minus costs
+      const walks = 8 + Math.floor(rng() * 13); const costs = 10 + 5 * Math.floor(rng() * 7); const profit = 10 * walks - costs;
+      const answer = `$${profit}`; const choices = [answer, `$${10 * walks}`, `$${costs}`, `$${10 * walks + costs}`];
+      return { type: 'choice', story: `Nia walked dogs ${walks} times at $10 a walk, and her costs were $${costs}.`, prompt: 'What was her profit?', choices: shuffle(rng, [...new Set(choices)]), answer, explain: 'Profit is sales minus costs.', visual: null, explainVisual: null };
+    }
+    const Q = [['Someone who starts a business and takes the risk is called what?', ['an entrepreneur', 'a competitor', 'a borrower', 'a lender'], 'an entrepreneur', 'Most start by noticing a need.'],
+      ['Money taken off at the register is called what?', ['a coupon', 'a rebate', 'interest', 'a fee'], 'a coupon', 'A rebate pays back after you buy.'],
+      ['Money paid back to you after you buy is called what?', ['a rebate', 'a coupon', 'a sale', 'a deposit'], 'a rebate', 'It counts only if you send in the form.'],
+      ['What is left from sales after the costs are paid?', ['profit', 'net worth', 'gross pay', 'a liability'], 'profit', 'Sales minus costs.'],
+      ['Which grows with the price: percent off or dollars off?', ['percent off', 'dollars off', 'neither', 'both the same'], 'percent off', 'Dollars off stays the same at any price.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  // ---------------------------------------------------------------------------------------------------------------
+  // College business question banks (2026-10-01, pass HK). In plain terms: four-answer quick checks for each lesson.
+  // The accounting bank also builds two questions from figures chosen on the spot, a firm's owners' equity (assets minus
+  // liabilities) and its current ratio (current assets over current liabilities), so those answers are computed.
+  // ---------------------------------------------------------------------------------------------------------------
+  'bzc-world': (rng) => {
+    const Q = [['Which form of ownership has unlimited liability?', ['a sole proprietorship', 'a C corporation', 'an S corporation', 'a limited liability company'], 'a sole proprietorship', 'The owner is personally responsible for the debts.'],
+      ['Which form of ownership has its profits taxed twice?', ['a C corporation', 'a sole proprietorship', 'a limited liability company', 'a general partnership'], 'a C corporation', 'As corporate income, then again as dividends.'],
+      ['Which function records and reports the money?', ['accounting', 'marketing', 'management', 'information systems'], 'accounting', 'Finance decides how to raise and spend it.'],
+      ['A stronger dollar makes American exports what?', ['more expensive abroad', 'cheaper abroad', 'illegal', 'tax free'], 'more expensive abroad', 'And imports cheaper at home.'],
+      ['Specializing at the lowest opportunity cost is called what?', ['comparative advantage', 'an embargo', 'a joint venture', 'limited liability'], 'comparative advantage', 'Both trading partners gain.'],
+      ['Which keeps limited liability and passes profits through?', ['a limited liability company', 'a C corporation', 'a general partnership', 'a sole proprietorship'], 'a limited liability company', 'An S corporation does too.'],
+      ['Taxes on imported goods are called what?', ['tariffs', 'quotas', 'embargoes', 'dividends'], 'tariffs', 'Quotas limit amounts; embargoes ban trade.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'bzc-manage': (rng) => {
+    const Q = [['Which function compares results with the plan?', ['controlling', 'planning', 'organizing', 'leading'], 'controlling', 'Then it corrects course.'],
+      ['A leader who decides alone has which style?', ['autocratic', 'democratic', 'free-rein', 'conceptual'], 'autocratic', 'Democratic leaders let the team help decide.'],
+      ['In Herzberg\'s terms, pay and working conditions are what?', ['hygiene factors', 'motivators', 'liabilities', 'tariffs'], 'hygiene factors', 'They prevent dissatisfaction when adequate.'],
+      ['In Herzberg\'s terms, recognition and responsibility are what?', ['motivators', 'hygiene factors', 'controls', 'threats'], 'motivators', 'They raise effort.'],
+      ['Which managers set strategy?', ['top managers', 'first-line managers', 'middle managers', 'shareholders'], 'top managers', 'Middle managers turn it into plans.'],
+      ['In a SWOT, the risk of a cyberattack is which?', ['a threat', 'a strength', 'a weakness', 'an opportunity'], 'a threat', 'Threats come from outside the firm.'],
+      ['Are weaknesses in a SWOT internal or external?', ['internal', 'external', 'both', 'neither'], 'internal', 'Strengths and weaknesses are inside the firm.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'bzc-money': (rng) => {
+    const r = rng();
+    if (r < 0.2) { // owners' equity = assets minus liabilities, in thousands of dollars
+      const assets = (6 + Math.floor(rng() * 15)) * 10; const liab = (1 + Math.floor(rng() * (assets / 10 - 1))) * 10; const eq = assets - liab;
+      const fmt = (v) => `$${v},000`; const pool = [eq, assets + liab, liab, assets].map(fmt); const choices = [...new Set(pool)];
+      while (choices.length < 4) choices.push(fmt(eq + 10 * choices.length));
+      return { type: 'choice', story: `A firm has ${fmt(assets)} in assets and ${fmt(liab)} in liabilities.`, prompt: 'What is its owners\' equity?', choices: shuffle(rng, choices.slice(0, 4)), answer: fmt(eq), explain: 'Owners\' equity is assets minus liabilities.', visual: null, explainVisual: null };
+    }
+    if (r < 0.4) { // current ratio = current assets / current liabilities
+      const ratio = [1, 1.5, 2, 2.5, 3][Math.floor(rng() * 5)]; const cl = (1 + Math.floor(rng() * 5)) * 10; const ca = ratio * cl;
+      const show = (v) => String(v); const choices = [...new Set([ratio, ratio + 0.5, ratio + 1, ratio > 0.5 ? ratio - 0.5 : ratio + 1.5].map(show))];
+      while (choices.length < 4) choices.push(show(ratio + 2 + choices.length));
+      return { type: 'choice', story: `Current assets are $${ca},000 and current liabilities are $${cl},000.`, prompt: 'What is the current ratio?', choices: shuffle(rng, choices.slice(0, 4)), answer: show(ratio), explain: 'Divide current assets by current liabilities.', visual: null, explainVisual: null };
+    }
+    const Q = [['Assets equal liabilities plus what?', ['owners\' equity', 'revenue', 'net income', 'dividends'], 'owners\' equity', 'The accounting equation.'],
+      ['Which statement shows a firm on a single date?', ['the balance sheet', 'the income statement', 'the statement of cash flows', 'the budget'], 'the balance sheet', 'The income statement covers a period.'],
+      ['Which statement shows where cash came from and went?', ['the statement of cash flows', 'the balance sheet', 'the income statement', 'the SWOT'], 'the statement of cash flows', 'A profitable firm can still run out of cash.'],
+      ['Who steers short-term interest rates in the United States?', ['the Federal Reserve', 'the stock market', 'the Federal Trade Commission', 'each bank alone'], 'the Federal Reserve', 'The central bank of the United States.'],
+      ['Selling ownership to raise money is called what?', ['equity financing', 'debt financing', 'a tariff', 'a bond'], 'equity financing', 'It never has to be repaid.'],
+      ['A bond is what?', ['a loan to the issuer', 'a share of ownership', 'a kind of tariff', 'a bank deposit'], 'a loan to the issuer', 'It pays interest.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'bzc-ethics': (rng) => {
+    const Q = [['Knowingly choosing what is wrong is called what?', ['an ethical lapse', 'an ethical dilemma', 'a stakeholder', 'a recall'], 'an ethical lapse', 'Like hiding a defect.'],
+      ['A choice between defensible claims is called what?', ['an ethical dilemma', 'an ethical lapse', 'an embargo', 'a motivator'], 'an ethical dilemma', 'Each side has a real claim.'],
+      ['The groups affected by a firm are its what?', ['stakeholders', 'shareholders only', 'competitors', 'regulators'], 'stakeholders', 'Owners, employees, customers, suppliers, community.'],
+      ['What is the base of Carroll\'s pyramid?', ['be profitable', 'be a good citizen', 'be ethical', 'obey the law'], 'be profitable', 'Then obey the law, be ethical, be a good citizen.'],
+      ['Which 1890 law began U.S. antitrust law?', ['the Sherman Act', 'the Federal Reserve Act', 'the Clean Air Act', 'the Securities Act'], 'the Sherman Act', 'It keeps markets competitive.'],
+      ['Which agency acts against deceptive practices?', ['the Federal Trade Commission', 'the Federal Reserve', 'the stock exchange', 'the Census Bureau'], 'the Federal Trade Commission', 'It also acts against unfair competition.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  // ---------------------------------------------------------------------------------------------------------------
+  // Kindergarten to grade 2 business question banks (2026-10-01, pass HH). In plain terms: short spoken questions with
+  // three answers to tap. The saving bank and the making bank each build one sum from small numbers chosen on the spot
+  // (dollars saved over a few weeks, and the cost of a bookmark's parts), so those answers are computed, never typed.
+  // ---------------------------------------------------------------------------------------------------------------
+  'bzk-earn': (rng) => {
+    const Q = [['Money you earn by working is called what?', ['income', 'a gift', 'a toy'], 'income', 'You work, and you earn income.'],
+      ['Grandma gives you money for your birthday. What is it?', ['a gift', 'income', 'a job'], 'a gift', 'You did not work for it.'],
+      ['How does a baker earn money?', ['baking bread', 'sleeping late', 'playing games'], 'baking bread', 'That is the baker\'s job.'],
+      ['What skill does a baker need?', ['to measure', 'to fly', 'to swim'], 'to measure', 'And to get up early.'],
+      ['Why do people work at jobs?', ['to earn money', 'to get a gift', 'to sleep'], 'to earn money', 'Money earned is income.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'bzk-wants': (rng) => {
+    const Q = [['Is food a need or a want?', ['a need', 'a want', 'a gift'], 'a need', 'We must have food to live.'],
+      ['Is a new toy a need or a want?', ['a want', 'a need', 'a job'], 'a want', 'It is nice to have.'],
+      ['Which one is a need?', ['water', 'a kite', 'a game'], 'water', 'We must have water.'],
+      ['Which one is a want?', ['a kite', 'food', 'a home'], 'a kite', 'We can live without a kite.'],
+      ['What do families buy first?', ['needs', 'wants', 'games'], 'needs', 'Then they choose some wants.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'bzk-save': (rng) => {
+    if (rng() < 0.3) { // saving adds up: a small amount each week for a few weeks
+      const each = 1 + Math.floor(rng() * 2); const weeks = 2 + Math.floor(rng() * 4); const total = each * weeks;
+      const answer = `${total} dollars`; const choices = [answer, `${total + each} dollars`, `${Math.max(1, total - each) === total ? total + 2 * each : Math.max(1, total - each)} dollars`];
+      return { type: 'choice', story: `You save ${each === 1 ? 'one dollar' : 'two dollars'} each week.`, prompt: `How much after ${weeks} weeks?`, choices: shuffle(rng, choices), answer, explain: 'Count the saved dollars week by week.', visual: null, explainVisual: null };
+    }
+    const Q = [['Putting money in the bank is called what?', ['a deposit', 'a withdrawal', 'a gift'], 'a deposit', 'Taking it out is a withdrawal.'],
+      ['Taking money out of the bank is called what?', ['a withdrawal', 'a deposit', 'a job'], 'a withdrawal', 'Putting it in is a deposit.'],
+      ['Giving to help others is called what?', ['charity', 'income', 'a loan'], 'charity', 'Like giving to an animal shelter.'],
+      ['What keeps money safe?', ['a bank', 'a pocket with a hole', 'the sidewalk'], 'a bank', 'A bank keeps money safe.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'bzk-make': (rng) => {
+    if (rng() < 0.3) { // the cost to make a bookmark: add up its two parts
+      const paper = 1 + Math.floor(rng() * 4); const ribbon = 1 + Math.floor(rng() * 3); const cost = paper + ribbon;
+      const answer = `${cost} dollars`; const others = [...new Set([paper, ribbon, cost + 1, cost - 1].filter((v) => v > 0 && v !== cost))].slice(0, 2);
+      return { type: 'choice', story: `Paper costs ${paper} dollars. Ribbon costs ${ribbon} dollars.`, prompt: 'What does the bookmark cost to make?', choices: shuffle(rng, [answer, ...others.map((v) => `${v} dollars`)]), answer, explain: 'Add up the cost of each part.', visual: null, explainVisual: null };
+    }
+    const Q = [['People who make things are called what?', ['producers', 'consumers', 'bankers'], 'producers', 'A baker is a producer.'],
+      ['People who buy and use things are called what?', ['consumers', 'producers', 'farmers'], 'consumers', 'You are a consumer when you buy bread.'],
+      ['How do you borrow well?', ['give it back on time', 'keep it forever', 'lose it'], 'give it back on time', 'And in good shape.'],
+      ['Letting someone use your things is to do what?', ['lend', 'borrow', 'spend'], 'lend', 'Think before you lend.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  // ---------------------------------------------------------------------------------------------------------------
+  // Business question banks (2026-09-30, pass HD). In plain terms: each bank is a list of quick-check questions for one
+  // lesson, [what is asked, the four answers, the right one, one line said after]; `pick` chooses one and `shuffle`
+  // mixes the answers. The money bank also builds two arithmetic questions from numbers chosen on the spot, a break-even
+  // count and a net paycheck, so those answers are computed, never typed by hand.
+  // ---------------------------------------------------------------------------------------------------------------
+  'bz-basics': (rng) => {
+    const Q = [['A haircut is which: a good or a service?', ['a service', 'a good', 'a tax', 'a loan'], 'a service', 'Services are work done for you.'],
+      ['Which form of ownership has one owner who keeps all the profit?', ['a sole proprietorship', 'a partnership', 'a corporation', 'a union'], 'a sole proprietorship', 'And that owner is personally responsible for every debt.'],
+      ['What does limited liability mean?', ['owners can lose only what they put in', 'owners owe every debt personally', 'the government owns it', 'profit is capped'], 'owners can lose only what they put in', 'Corporations and LLCs give their owners limited liability.'],
+      ['In which economy do buyers and sellers decide through prices?', ['a market economy', 'a traditional economy', 'a centrally planned economy', 'no economy at all'], 'a market economy', 'Custom decides in a traditional one; the government in a planned one.'],
+      ['The United States is which kind of economy?', ['a mixed economy', 'a traditional economy', 'a centrally planned economy', 'a barter economy'], 'a mixed economy', 'Built on private enterprise.'],
+      ['Which function finds and keeps customers?', ['marketing', 'production', 'finance', 'management'], 'marketing', 'Production makes it, finance handles money, management leads people.'],
+      ['Ten workers each doing one step is an example of what?', ['specialization', 'inflation', 'a monopoly', 'a partnership'], 'specialization', 'Adam Smith\'s pin factory, 1776.'],
+      ['Goods a country buys from other countries are called what?', ['imports', 'exports', 'dividends', 'retailers'], 'imports', 'Exports are what it sells to them.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'bz-market': (rng) => {
+    const Q = [['Starting with what the customer wants is called what?', ['the marketing concept', 'mass marketing', 'the business cycle', 'limited liability'], 'the marketing concept', 'Find what customers want and deliver it at a profit.'],
+      ['Splitting a market into groups is called what?', ['market segmentation', 'mass marketing', 'division of labor', 'collective bargaining'], 'market segmentation', 'By age, place, interests or buying habits.'],
+      ['One message aimed at everyone is called what?', ['mass marketing', 'market segmentation', 'a target market', 'a partnership'], 'mass marketing', 'Segmentation picks groups instead.'],
+      ['The group a business chooses to aim at is its what?', ['target market', 'balance sheet', 'wholesaler', 'union'], 'target market', 'A skate shop aims at people who skate.'],
+      ['Which is one of the four Ps?', ['place', 'profit', 'payroll', 'patents'], 'place', 'Product, price, place and promotion.'],
+      ['Who buys in bulk and sells to stores?', ['wholesalers', 'retailers', 'consumers', 'shareholders'], 'wholesalers', 'Retailers sell to the public.'],
+      ['When demand rises and supply stays the same, prices tend to do what?', ['rise', 'fall', 'stay the same', 'disappear'], 'rise', 'When supply rises or demand falls, prices tend to fall.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'bz-money': (rng) => {
+    const r = rng();
+    if (r < 0.2) { // break-even: fixed costs divided by what each sale leaves after its variable cost, always a whole number
+      const cost = 1 + Math.floor(rng() * 3); const margin = 1 + Math.floor(rng() * 4); const units = (5 + Math.floor(rng() * 36)) * 10; const fixed = units * margin; const price = cost + margin;
+      const answer = `${units}`; const wrong = shuffle(rng, [units + 10, units * 2, Math.max(10, units - 10), Math.round(fixed / price)]).filter((v) => v !== units && v > 0);
+      const choices = [answer, ...[...new Set(wrong.map(String))].slice(0, 3)];
+      return { type: 'choice', story: `A food cart pays $${fixed} a month in fixed costs. Each taco sells for $${price} and costs $${cost} to make.`, prompt: 'How many tacos a month to break even?', choices: shuffle(rng, choices), answer, explain: 'Divide the fixed costs by what each taco leaves after its own cost.', visual: null, explainVisual: null };
+    }
+    if (r < 0.4) { // net pay: hours times rate, minus what is taken out
+      const hours = 10 + Math.floor(rng() * 21); const rate = 10 + Math.floor(rng() * 9); const gross = hours * rate; const taken = 10 + Math.floor(rng() * 21); const net = gross - taken;
+      const answer = `$${net}`; const choices = [answer, `$${gross}`, `$${net - 10}`, `$${gross + taken}`];
+      return { type: 'choice', story: `Dana worked ${hours} hours at $${rate} an hour, and $${taken} was taken out for taxes.`, prompt: 'What was her net pay?', choices: shuffle(rng, choices), answer, explain: 'Gross pay is hours times the rate; net pay is gross pay minus what is taken out.', visual: null, explainVisual: null };
+    }
+    const Q = [['Profit is revenue minus what?', ['expenses', 'assets', 'taxes only', 'equity'], 'expenses', 'When expenses are bigger, the result is a loss.'],
+      ['Which statement shows one day: what is owned and what is owed?', ['the balance sheet', 'the income statement', 'the pay stub', 'the business cycle'], 'the balance sheet', 'The income statement covers a period.'],
+      ['Costs that stay the same no matter how much you sell are what?', ['fixed costs', 'variable costs', 'profits', 'assets'], 'fixed costs', 'Variable costs grow with every sale.'],
+      ['Which is one of the three jobs of money?', ['a store of value', 'a tax on sales', 'a kind of loan', 'a profit margin'], 'a store of value', 'Also a medium of exchange and a unit of measure.'],
+      ['Interest is the price of what?', ['borrowing', 'saving', 'hiring', 'shipping'], 'borrowing', 'Credit lets a business buy now and pay later.'],
+      ['Expansion, peak, contraction and trough make up the what?', ['the business cycle', 'the marketing mix', 'the balance sheet', 'the four Ps'], 'the business cycle', 'Sales usually follow it.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'bz-ethics': (rng) => {
+    const Q = [['A person\'s own beliefs about right and wrong are their what?', ['morals', 'laws', 'wages', 'assets'], 'morals', 'Laws are the rules a government enforces.'],
+      ['Which can be legal and still unethical?', ['a technically true ad', 'an honest price', 'a safe product', 'a paid invoice'], 'a technically true ad', 'One that leaves customers with a false impression.'],
+      ['Workers bargaining with an employer as a group is called what?', ['collective bargaining', 'mass marketing', 'division of labor', 'market segmentation'], 'collective bargaining', 'Over wages, hours and working conditions.'],
+      ['Where are contracts enforced and disputes settled?', ['the courts', 'the wholesalers', 'the union hall', 'the bank'], 'the courts', 'The government runs the courts.'],
+      ['What does a career plan start with?', ['your goals and interests', 'your first paycheck', 'a job title', 'a loan'], 'your goals and interests', 'Then your talents, abilities and skills.'],
+      ['Which is a career in business, marketing and finance?', ['accountant', 'astronaut', 'surgeon', 'geologist'], 'accountant', 'Also bank teller, buyer and marketing manager.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
@@ -23980,6 +24862,170 @@ export const WONDER = [
     ],
     closing: 'What would you change in the review, and what would you keep?',
   },
+  // Two teen-stage Wonder questions for the middle school business course (pass HF): one about lending a friend money,
+  // and one a failure question about a budget that ran out before the month did.
+  {
+    id: 'w-teen-lending-a-friend-money',
+    theme: 'world',
+    stage: 'teen',
+    courseIds: ['business-6'],
+    answerMode: 'typed',
+    prompt: 'A friend asks to borrow $20 and promises to pay you back next week. What do you think about first?',
+    perspectives: [
+      { voice: 'A scientist', says: 'Look at the evidence you already have. Has this friend paid back small amounts before, and could you live without the $20 if they never do?' },
+      { voice: 'An artist', says: 'Money between friends changes the picture a little. Some people lend only what they would be happy to give, so the friendship stays the main thing.' },
+      { voice: 'A grandparent of faith', says: 'My mother said never to lend what you cannot afford to lose. She lent plenty, and she never once lost a friend over it.' },
+      { voice: 'A skeptic', says: 'A promise is not a plan. Agree on the day and write it down, because a clear plan protects the friendship better than trust alone.' },
+    ],
+    closing: 'What would you do if the week passed and nothing came back?',
+  },
+  {
+    id: 'w-teen-the-budget-ran-out',
+    theme: 'failure',
+    stage: 'teen',
+    courseIds: ['business-6'],
+    answerMode: 'typed',
+    prompt: 'You made a budget, and the money ran out before the month did. What went wrong, and what do you do now?',
+    perspectives: [
+      { voice: 'A scientist', says: 'Compare the plan with what really happened, line by line. The surprise is usually in the variable expenses, the ones that change from month to month.' },
+      { voice: 'An artist', says: 'A first budget is a sketch. You only learn where the lines belong by drawing them once and seeing where they miss.' },
+      { voice: 'A grandparent of faith', says: 'Every family I know has had a month like that. The next month is a fresh page, and you start it knowing more.' },
+      { voice: 'A skeptic', says: 'Find the single biggest surprise first. Fixing one large leak does more than trimming ten small ones.' },
+    ],
+    closing: 'Which line of your budget would you watch most closely next month?',
+  },
+  // Two growing-stage Wonder questions for the business course for grades 3 to 5 (pass HG): one about sharing a
+  // dollar, and one a failure question about a stand nobody came to.
+  {
+    id: 'w-growing-a-dollar-to-share',
+    theme: 'world',
+    stage: 'growing',
+    courseIds: ['business-3'],
+    answerMode: 'typed',
+    prompt: 'You earned $10. Should some of it go to helping others? How would you decide how much?',
+    perspectives: [
+      { voice: 'A scientist', says: 'Look at what the money could do in each place. A dollar at a food bank can help buy a meal, and a dollar saved grows a little every year.' },
+      { voice: 'An artist', says: 'Picture the person your dollar helps. Some people give a little every time, and they like knowing it is part of every paycheck.' },
+      { voice: 'A grandparent of faith', says: 'My family always set some aside for others before spending the rest. It was never very much, and we never once missed it.' },
+      { voice: 'A skeptic', says: 'Find out where the money goes before you give it. A good cause can tell you exactly what your dollar does.' },
+    ],
+    closing: 'What cause would you want your dollar to help?',
+  },
+  {
+    id: 'w-growing-nobody-came-to-the-stand',
+    theme: 'failure',
+    stage: 'growing',
+    courseIds: ['business-3'],
+    answerMode: 'typed',
+    prompt: 'You set up a lemonade stand, and nobody came all morning. What would you try next time?',
+    perspectives: [
+      { voice: 'A scientist', says: 'Change one thing at a time and watch what happens. Try a busier corner first, then a different hour, and keep track of each one.' },
+      { voice: 'An artist', says: 'Maybe nobody could see you from the street. A bright sign and a smile you can see from far away can bring people over.' },
+      { voice: 'A grandparent of faith', says: 'My first stand sold three cups all day, and two were to my mother. I tried again the next week, and that is how I learned.' },
+      { voice: 'A skeptic', says: 'Ask a neighbor why they walked past. One honest answer can tell you more than a whole morning of guessing.' },
+    ],
+    closing: 'Where in your neighborhood would a stand get the most visitors?',
+  },
+  // Two grown-stage Wonder questions for the college business course (pass HK): one about cutting jobs or cutting
+  // everyone's pay, and one a failure question about a product launch that failed.
+  {
+    id: 'w-grown-cut-pay-or-jobs',
+    theme: 'world',
+    stage: 'grown',
+    courseIds: ['business-college'],
+    answerMode: 'typed',
+    prompt: 'Sales fell, and your firm must cut costs: lay off ten people, or cut everyone\'s pay by five percent. Which is fairer?',
+    perspectives: [
+      { voice: 'A scientist', says: 'Look at what the evidence says about each path. Layoffs save money at once but can drain the trust and effort of the people who stay, while shared cuts spread the pain and keep skills in the building.' },
+      { voice: 'An artist', says: 'Picture the room the morning after each choice. In one, ten desks are empty. In the other, everyone is a little poorer and still there. Which room would you rather lead?' },
+      { voice: 'A grandparent of faith', says: 'I worked for a man who cut his own pay first, before anyone else\'s. We never forgot it, and we stayed when times got better.' },
+      { voice: 'A skeptic', says: 'Ask whether the cut is temporary or permanent. Shared pay cuts work for a short storm, but if the business has truly shrunk, they only delay a harder choice.' },
+    ],
+    closing: 'What would you tell the people affected, and when?',
+  },
+  {
+    id: 'w-grown-the-launch-that-failed',
+    theme: 'failure',
+    stage: 'grown',
+    courseIds: ['business-college'],
+    answerMode: 'typed',
+    prompt: 'Your first product launch failed. What do you need to learn before you try again?',
+    perspectives: [
+      { voice: 'A scientist', says: 'Treat the launch as an experiment that returned data. Separate what failed: the product, the price, the place, the promotion, or the timing.' },
+      { voice: 'An artist', says: 'Most work that lasts was redrawn many times. The first version showed you what the second one needs to be.' },
+      { voice: 'A grandparent of faith', says: 'Failure is a teacher that charges tuition. The only waste is paying the tuition and skipping the lesson.' },
+      { voice: 'A skeptic', says: 'Talk to the people who did not buy, not just the ones who did. Their reasons are the most useful thing the launch produced.' },
+    ],
+    closing: 'Which of the four Ps would you test first?',
+  },
+  // Two early-stage Wonder questions for the kindergarten business course (pass HH): one about a birthday gift and income,
+  // and one a failure question about spending everything and then wanting something more.
+  {
+    id: 'w-early-gift-or-earned',
+    theme: 'world',
+    stage: 'early',
+    courseIds: ['business-k'],
+    answerMode: 'pick',
+    prompt: 'Your aunt gives you five dollars for your birthday. Did you earn it?',
+    options: ['No, it was a gift', 'Yes, I earned it', 'I am not sure'],
+    simple: [{ voice: 'A scientist says', says: 'Money you work for is income. This was a gift.' }, { voice: 'An artist says', says: 'Draw a birthday card with money inside it.' }],
+    perspectives: [
+      { voice: 'A scientist', says: 'Income is money you earn by doing work. A birthday gift is given because someone loves you, not because you did a job.' },
+      { voice: 'An artist', says: 'Picture two drawings side by side. In one, you rake leaves and get paid. In the other, you open a card. Same money, two different stories.' },
+      { voice: 'A grandparent of faith', says: 'A gift is a way of saying you matter. I always say thank you for a gift, and I try to give gifts too.' },
+      { voice: 'A skeptic', says: 'Ask where the money came from. If it came from your work, it is income. If not, it is a gift.' },
+    ],
+    closing: 'What could you do to earn five dollars?',
+  },
+  {
+    id: 'w-early-spent-it-all',
+    theme: 'failure',
+    stage: 'early',
+    courseIds: ['business-k'],
+    answerMode: 'pick',
+    prompt: 'You spent all your money on a toy. Then you saw something you wanted more. What can you do?',
+    options: ['Start saving for it', 'Ask for it right now', 'I am not sure'],
+    simple: [{ voice: 'A scientist says', says: 'Save a little each week, and it adds up.' }, { voice: 'An artist says', says: 'Draw the thing you want on your saving jar.' }],
+    perspectives: [
+      { voice: 'A scientist', says: 'Saving a little at a time adds up. One dollar a week for five weeks is five dollars, and you can count it as it grows.' },
+      { voice: 'An artist', says: 'Make a picture of what you want and tape it to a jar. Every coin you add brings you closer.' },
+      { voice: 'A grandparent of faith', says: 'Everyone has spent money and wished they had waited. It teaches patience, and patience is a gift you give yourself.' },
+      { voice: 'A skeptic', says: 'Before the next time you spend, ask one question: do I want this more than anything else I could buy?' },
+    ],
+    closing: 'What would you save for?',
+  },
+  // Two grown-stage Wonder questions for the business course (pass HD): one about telling customers about a cheaper
+  // ingredient, and one a failure question about a first month that lost money.
+  {
+    id: 'w-grown-the-cheaper-ingredient',
+    theme: 'world',
+    stage: 'grown',
+    courseIds: ['business-9'],
+    answerMode: 'typed',
+    prompt: 'You could earn more by switching to a cheaper ingredient that customers would never notice. Do you tell them?',
+    perspectives: [
+      { voice: 'A scientist', says: 'Test the claim before you decide anything. Customers notice more than owners expect, and a switch discovered later costs more trust than it saved in money.' },
+      { voice: 'An artist', says: 'What you make is a kind of promise. If the new ingredient is truly as good, say so proudly; if you would not want to say it, that tells you something.' },
+      { voice: 'A grandparent of faith', says: 'My father ran a hardware store for forty years on one rule: sell people what you would sell your own family. It was not always the cheapest rule, and it kept him in business.' },
+      { voice: 'A skeptic', says: 'Legal and ethical are different tests. Ask whether you would be comfortable if every customer knew exactly what you did, and let that answer decide.' },
+    ],
+    closing: 'What would you put on the sign if you made the switch?',
+  },
+  {
+    id: 'w-grown-first-month-lost-money',
+    theme: 'failure',
+    stage: 'grown',
+    courseIds: ['business-9'],
+    answerMode: 'typed',
+    prompt: 'Your first month in business lost money. What does that tell you, and what does it not tell you?',
+    perspectives: [
+      { voice: 'A scientist', says: 'One month is a single data point. Fixed costs arrive in full from day one while sales take time to build, so compare this month with the break-even point before deciding anything.' },
+      { voice: 'An artist', says: 'A first month is a rough draft. The shape of the business is there, and the second draft is where you move what does not work.' },
+      { voice: 'A grandparent of faith', says: 'Most businesses I knew lost money at the start, including the ones that lasted. The ones that lasted kept records and kept going.' },
+      { voice: 'A skeptic', says: 'Read the income statement line by line. A loss from one big expense is a different problem from a loss because nobody came, and the fix is different too.' },
+    ],
+    closing: 'Which line of the income statement would you look at first?',
+  },
   // Two grown-stage Wonder questions for the agriculture course (pass GU): one about who feeds a city, and one a
   // failure question about a project that lost money.
   {
@@ -27361,6 +28407,11 @@ export const COURSE_GAMES = {
   'psychology-9': ['stat-psychology-9'],
   'speech-9': ['filler-speech-9'],
   'agriculture-9': ['jar-agriculture-9'],
+  'business-9': ['breakeven-business-9'],
+  'business-k': ['tool-business-k'],
+  'business-college': ['ledger-business-college'],
+  'business-6': ['deal-business-6'],
+  'business-3': ['savejar-business-3'],
   'agriculture-6': ['relation-agriculture-6'],
   'agriculture-3': ['sprout-agriculture-3'],
   'agriculture-k': ['grow-agriculture-k'],

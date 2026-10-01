@@ -1,7 +1,8 @@
 // Licensing in the browser (2026-09-25): a new elementary student sees nothing until the educator saves a code that checks
 // out, a bad code is refused in plain words, and the saved code opens grade 1 and up. Runs on page-licensed.html.
 import { createRequire } from 'node:module'; import { pathToFileURL } from 'node:url'; import { readFileSync } from 'node:fs';
-import { makeLicenseCode } from '../../src/logic.mjs';
+import { makeLicenseCode, COURSES, courseIsFree } from '../../src/logic.mjs';
+const paidModules = new Set(COURSES.filter((c) => !courseIsFree(c)).flatMap((c) => c.modules.map((m) => m.id))); // grade 1 and up
 const require = createRequire(import.meta.url);
 const { chromium } = require('playwright');
 let passed = 0, failed = 0; const ok = (name, cond) => { if (cond) { passed++; console.log('PASS - ' + name); } else { failed++; console.log('FAIL - ' + name); } };
@@ -26,6 +27,16 @@ await page.getByRole('button', { name: /S-3001$/ }).click();
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview'); await page.waitForTimeout(400);
 ok('without a code, an elementary student sees no modules', (await page.evaluate(() => window.__eduTest.visibleModuleIds().length)) === 0);
 ok('and is told the courses are waiting for a code', (await text()).includes('Some of your courses are waiting for a license code.'));
+// An educator's walk-through is never gated by licenses (2026-10-01, pass HJ, Mikey): before any code is saved, walking
+// through as a student still opens paid courses (grade 1 and up) and their lessons, whether or not anyone has paid.
+await page.evaluate(() => window.__eduTest.goTo('educator-pick')); await page.waitForTimeout(400);
+{ const walk = page.getByRole('button', { name: /^Walk through elementary/i });
+  if (await walk.count()) { await walk.first().click(); await page.waitForTimeout(500); }
+  await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview', null, { timeout: 8000 }).catch(() => {});
+  const ids = await page.evaluate(() => window.__eduTest.visibleModuleIds());
+  ok("an educator's walk-through opens paid courses with no code saved", ids.some((id) => paidModules.has(id)) && !(await text()).includes('waiting for a license code'));
+}
+await page.evaluate(() => window.__eduTest.goTo('educator-pick')); await page.waitForTimeout(400);
 await page.evaluate(() => window.__eduTest.goTo('educator-pick')); await page.waitForTimeout(400);
 await page.getByRole('button', { name: 'Open report' }).first().click();
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'educator-report'); await page.waitForTimeout(300);

@@ -2,6 +2,55 @@
 
 The newest block is what educators see once, in a pop-up on the classroom page, after each update. Write it the way Mikey talks to a teacher: conversational, complete sentences, say what changed and why it matters, and skip the shorthand (2026-09-23). Two to four items. The date line is the version stamp.
 
+## October 1, 2026 (a shorter What's new)
+
+- What's new now opens as a short list: each change in a few words, at most four, with More Details centered at the bottom.
+- More Details opens a page with the last six updates in full, newest first.
+- Only one pop-up opens at a time now, so the backup reminder never covers What's new.
+
+## October 1, 2026 (business principles)
+
+- A college-level elective, Business principles: how a business works and the forms of ownership, management and leadership, accounting, finance and markets, and ethics, responsibility and the law. Each lesson has a story, and the course ends with a long story about Professor Frederick, whose class runs a real company for a semester.
+- Finishing the course unlocks Sort the Ledger, a new kind of game: place each account as an asset, a liability or equity.
+- Two new Wonder questions for grown learners wait in the review screen. Business now runs from kindergarten to college.
+
+## October 1, 2026 (the key idea, in light green)
+
+- In the dark theme, each lesson's Key idea now sits on light green with dark text, and its title and text are centered.
+
+## October 1, 2026 (money and me)
+
+- Kindergarten has a new free read-aloud elective for K to 2, Money and me: earning money and the skills jobs need, wants and needs, saving, spending and sharing with a trip to the bank, and borrowing, lending and making things. Each lesson has a story and a coloring page, and the course ends with a long story about a cookie stand on Maple Street.
+- Finishing the course unlocks Find the Tool, a new kind of game for small hands: a job is named, and you tap the tool that worker uses.
+- Two new Wonder questions for the youngest wait in the review screen. Business now runs from kindergarten to grade 12.
+
+## September 30, 2026 (jars, banks and lemonade)
+
+- Grade 3 has a new business elective for grades 3 to 5, Jars, banks and lemonade: why work and skills earn money and why scarce things cost more; spending, saving and sharing with a savings plan; what banks do and how borrowing works; and the expenses and profit of a lemonade stand. Each lesson has a story, and the course ends with a long story about Georgette and a summer of peach jam.
+- Finishing the course unlocks Fill the Jar, a new kind of game: a savings goal, a weekly amount, and a jar that fills one week at a time.
+- Two new Wonder questions for grades 3 to 5 wait in the review screen.
+- In order games, the first step pulses gently until you place it, so a cycle like a frog's life has a clear start.
+- Educators who use a fingerprint or face to sign in no longer tap a button first: the prompt opens as soon as Educator Login is tapped.
+- The read-aloud speaker on a quick check and on the Wonder page now sits beside the title instead of on top of the question.
+- Step-by-step diagrams with long words now run top to bottom in wide boxes, so no label spills across the arrows.
+
+## September 30, 2026 (earn, save, start)
+
+- Grade 6 has a new business elective for grades 6 to 8, Earn, save, start: paychecks and taxes, banks, cards and credit, budgets and net worth, and a small business of your own. Each lesson has a story, and the course ends with a long story about Chloe reselling thrift store jackets.
+- Finishing the course unlocks The Better Deal, a new kind of game: two coupons, one price, and the one that saves more.
+- Two new Wonder questions for middle school wait in the review screen.
+
+## September 30, 2026 (the standards, cited exactly)
+
+- The standards shown for high school agriculture now follow the course Texas uses today, Principles of Agriculture, Food, and Natural Resources, Adopted 2024, which replaced the 2015 course.
+- The national economics standards beside the economics courses now appear in their exact published wording, and the national agriculture standards in their 2015 edition.
+
+## September 30, 2026 (open for business)
+
+- A new subject, Business, begins with an elective for grades 9 to 12, Open for business: how a business works, from who owns it to how the work is divided; marketing and the four Ps; money in a business, from profit and the two statements to break-even and a paycheck; and ethics, law and careers. Each lesson has a story, and the course ends with a long story about Frederick and a taco truck.
+- Finishing the course unlocks Break Even, a new kind of game: a small business, two lines on a chart, and the point where they cross.
+- Two new Wonder questions for high school wait in the review screen.
+
 ## September 30, 2026 (on the farm)
 
 - On a phone, the Your educator account card no longer offers the first-week tour, which is made for bigger screens.

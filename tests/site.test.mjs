@@ -20,8 +20,16 @@ await page.getByRole('button', { name: 'Create account', exact: true }).click();
 const { newestNews } = await import('../tools/whats-new.mjs'); const { readFileSync } = await import('node:fs');
 const wantNews = newestNews(readFileSync('docs/WHATS-NEW.md', 'utf8'));
 await page.waitForTimeout(400);
+// One pop-up at a time (pass HL): wait for the first-backup reminder, check What's new is not open beneath it, then answer it.
+await page.waitForTimeout(1200);
+const reminder = page.getByText('Make your first backup soon');
+const oneAtATime = !((await reminder.count()) && (await page.getByRole('dialog', { name: "What's new" }).count()));
+if (await reminder.count()) { await page.getByRole('button', { name: 'Later', exact: true }).first().click(); await page.waitForTimeout(500); }
 const newsSeen = { shown: (await page.getByRole('dialog', { name: "What's new" }).count()) === 1, text: '' };
 if (newsSeen.shown) newsSeen.text = await page.getByRole('dialog', { name: "What's new" }).textContent();
+// More Details (pass HL, Mikey): the pop-up shows short notes and a centered link to a page with every note in full.
+const details = { link: (await page.getByRole('button', { name: 'More Details' }).count()) === 1, text: '' };
+if (details.link) { await page.getByRole('button', { name: 'More Details' }).click(); await page.waitForTimeout(300); details.text = await page.textContent('#root'); await page.getByRole('button', { name: 'Back to Classroom' }).click(); await page.waitForTimeout(300); }
 { const got = page.getByRole('button', { name: 'Got it' }); if (await got.count()) await got.click(); }
 await page.waitForTimeout(200);
 const newsGone = (await page.getByRole('dialog', { name: "What's new" }).count()) === 0;
@@ -41,7 +49,9 @@ ok('what was done survives a reload, because it lives in the browser', after.inc
 const createOffered = (await page.getByRole('button', { name: 'Create account' }).count()) > 0;
 ok('the account, device name and state are remembered too', !createOffered);
 ok('no browser errors on the standalone page', errors.length === 0);
-ok("the What's new pop-up opens on a phone with the newest block, every item, and closes on Got it", !!wantNews && newsSeen.shown && newsSeen.text.includes(wantNews.date) && wantNews.items.every((t) => newsSeen.text.includes(t)) && newsGone);
+ok("the What's new pop-up opens on a phone with the newest block in short notes, at most four", !!wantNews && newsSeen.shown && newsSeen.text.includes(wantNews.date) && wantNews.brief.slice(0, 4).every((t) => newsSeen.text.includes(t)) && newsGone);
+ok('the backup reminder and What\'s new never open at the same time, so every button can be tapped', oneAtATime);
+ok("More Details opens a page with every note of the newest block in full, and closes the pop-up", details.link && wantNews.items.every((t) => details.text.includes(t)));
 const newsAfter = (await page.getByRole('dialog', { name: "What's new" }).count()) === 0;
 ok("What's new stays closed after a reload, because Got it was remembered", newsAfter);
 await b.close();

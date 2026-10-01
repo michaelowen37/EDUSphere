@@ -965,6 +965,9 @@ const KID_ANIMATION = () => `
 @keyframes edu-halo { 0%, 100% { transform: scale(1); opacity: 0.45; } 50% { transform: scale(1.28); opacity: 0; } }
 @keyframes edu-drift-in { 0% { transform: translateX(-46px) scale(0.4); opacity: 0; } 60% { opacity: 1; } 100% { transform: translateX(0) scale(1); opacity: 1; } }
 @keyframes edu-cheer { 0%, 100% { transform: translateY(0) scale(1); } 25% { transform: translateY(-16px) scale(1.05); } 55% { transform: translateY(0) scale(0.97); } 75% { transform: translateY(-6px) scale(1.02); } }
+@keyframes edu-start-pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(230, 184, 75, 0); transform: scale(1); } 50% { box-shadow: 0 0 0 4px rgba(230, 184, 75, 0.9); transform: scale(1.02); } }
+.edu-start-hint { animation: edu-start-pulse 1.4s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) { .edu-start-hint { animation: none; outline: 3px solid #E6B84B; outline-offset: 2px; } }
 @keyframes edu-wobble { 0%, 100% { transform: translateX(0) rotate(0deg); } 20% { transform: translateX(-9px) rotate(-2deg); } 40% { transform: translateX(9px) rotate(2deg); } 60% { transform: translateX(-5px) rotate(-1deg); } 80% { transform: translateX(5px) rotate(1deg); } }
 @keyframes edu-burst { 0% { transform: translate(0, 0) scale(0.2) rotate(0deg); opacity: 1; } 100% { transform: translate(var(--dx), var(--dy)) scale(1) rotate(140deg); opacity: 0; } }
 @keyframes edu-rise { 0% { transform: translateY(14px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
@@ -1929,6 +1932,10 @@ function SpinnerPic({ sectors = 8, win = 3 }) {
 }
 const Box = ({ x, y, w, h, text, fill = '#FFFFFF' }) => { const [X, Y, W, H] = [x, y, w, h].map(Number); const size = Math.min(5.2, Math.max(3.2, (W * 1.5) / Math.max(4, text.length))); return <g><rect x={X} y={Y} width={W} height={H} rx="6" fill={fill} stroke="#2E2E2E" strokeWidth="1" /><text x={X + W / 2} y={Y + H / 2} {...DIAGRAM_TEXT} fontSize={size}>{text}</text></g>; };
 function FlowPic({ steps = [] }) {
+  // A chain with any label longer than 12 characters is drawn top to bottom, each label wrapped inside its own wide box
+  // (flowLayout in logic.mjs, pass HG, Mikey's screenshots); short labels keep the left-to-right row below.
+  const lay = flowLayout(steps);
+  if (lay.dir === 'column') return <Diagram label={steps.join(', then ')}>{lay.boxes.map((bx, i) => { const lh = bx.size * 1.2; const cy = bx.y + bx.h / 2 - ((bx.lines.length - 1) * lh) / 2; return <g key={i}><rect x={bx.x} y={bx.y} width={bx.w} height={bx.h} rx="5" fill={i === lay.boxes.length - 1 ? B.goldSoft : '#FFFFFF'} stroke="#2E2E2E" strokeWidth="1" /><text {...DIAGRAM_TEXT} fontSize={bx.size} dominantBaseline="central" data-flow-label="">{bx.lines.map((ln, k) => <tspan key={k} x={bx.x + bx.w / 2} y={cy + k * lh}>{ln}</tspan>)}</text>{i < lay.boxes.length - 1 && <Arrow d={`M80 ${bx.y + bx.h + 0.6} L80 ${lay.boxes[i + 1].y - 0.8}`} />}</g>; })}</Diagram>;
   // Up to four boxes in a row; a longer chain wraps to a second row and the arrow turns the corner.
   const per = steps.length > 4 ? Math.ceil(steps.length / 2) : steps.length; const rows = Math.ceil(steps.length / per);
   const w = Math.min(40, (150 - (per - 1) * 12) / per); const gap = (160 - per * w) / (per + 1); const y0 = rows > 1 ? 18 : 38;
@@ -2728,8 +2735,11 @@ function OrderGame({ game, round, onScore = null }) {
       <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 6 }}><span>{seq.title}</span><span>{ticks}s · {Math.min(k + 1, sets)} of {sets}</span></div>
       {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>All in order in {ticks} seconds. Tap the round arrow for a new set.</p> : (
         <div style={{ display: 'grid', gap: 8 }}>
-          {items.map((it) => { const at = placed.indexOf(it.idx); const isPlaced = at >= 0; const shake = wrong.includes(it.idx); return (
-            <button key={it.idx} type="button" onClick={() => tap(it)} aria-pressed={isPlaced} className={`edu-press${shake ? ' edu-wobble' : ''}`} style={{ fontFamily: FONT, fontSize: 15, textAlign: 'left', padding: '10px 12px', borderRadius: 10, border: `2px solid ${isPlaced ? B.green : shake ? B.clay : B.line}`, background: isPlaced ? B.greenSoft : '#fff', color: B.ink, cursor: 'pointer', display: 'flex', gap: 10, alignItems: 'center' }}>
+          {/* The first step pulses gently until a step is placed (2026-09-30, pass HG, Mikey). In plain terms: a cycle such as a
+              frog's life has no natural start, egg or adult, so the game shows where its chain begins and the student builds
+              from there; the pulse comes back if a wrong answer sends every step loose again. */}
+          {items.map((it) => { const at = placed.indexOf(it.idx); const isPlaced = at >= 0; const shake = wrong.includes(it.idx); const isStart = placed.length === 0 && it.idx === 0; return (
+            <button key={it.idx} type="button" onClick={() => tap(it)} aria-pressed={isPlaced} data-start-hint={isStart ? '' : undefined} className={`edu-press${shake ? ' edu-wobble' : ''}${isStart ? ' edu-start-hint' : ''}`} style={{ fontFamily: FONT, fontSize: 15, textAlign: 'left', padding: '10px 12px', borderRadius: 10, border: `2px solid ${isPlaced ? B.green : shake ? B.clay : B.line}`, background: isPlaced ? B.greenSoft : '#fff', color: B.ink, cursor: 'pointer', display: 'flex', gap: 10, alignItems: 'center' }}>
               <span style={{ width: 24, height: 24, borderRadius: 12, background: isPlaced ? B.green : B.line, color: B.onAccent, fontSize: 13, fontWeight: 700, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flex: '0 0 24px' }}>{isPlaced ? at + 1 : ''}</span>{it.t}{rest && seq.when && <span style={{ marginLeft: 'auto', paddingLeft: 8, fontSize: 13, color: B.muted, whiteSpace: 'nowrap' }}>{seq.when[it.idx]}</span>}
             </button>); })}
         </div>
@@ -4506,7 +4516,240 @@ function GrowGame({ game, round, onScore = null }) {
     </div>
   );
 }
-const GAME_OF = { dots: DotsGame, pairs: PairsGame, sort: SortGame, maze: MazeGame, jigsaw: JigsawGame, pong: PongGame, sprint: SprintGame, order: OrderGame, build: BuildGame, fix: FixGame, mix: MixGame, debug: DebugGame, ptable: PtableGame, evidence: EvidenceGame, catch: CatchGame, path: PathGame, buckets: BucketsGame, jump: JumpGame, map: MapGame, balance: BalanceGame, walk: WalkGame, teach: TeachGame, bits: BitsGame, pay: PayGame, price: PriceGame, loan: LoanGame, fund: FundGame, search: SearchGame, spot: SpotGame, pattern: PatternGame, shape: ShapeGame, chord: ChordGame, valid: ValidGame, reason: ReasonGame, because: BecauseGame, share: ShareGame, stat: StatGame, recall: RecallGame, face: FaceGame, sense: SenseGame, filler: FillerGame, room: RoomGame, ask: AskGame, turn: TurnGame, jar: JarGame, relation: RelationGame, sprout: SproutGame, grow: GrowGame };
+// -----------------------------------------------------------------------------------------------------------------
+// Break Even (2026-09-30, pass HD, the high school business game). In plain terms: a card describes a small business,
+// its fixed costs for a month, the price of one item and what each item costs to make, and a small chart draws two
+// lines: the money coming in (revenue) and the total cost. The student taps how many items the business must sell to
+// break even, the point where the two lines cross; once they get it, the crossing is marked. This component only draws
+// and reacts: the six businesses and their answers come from breakevenRounds() in logic.mjs. The board carries the
+// answer in `data-breakeven-answer` so the browser test can play a round. Drawn with B (the paper palette).
+// -----------------------------------------------------------------------------------------------------------------
+function BreakEvenGame({ game, round, onScore = null }) {
+  const rounds = useMemo(() => breakevenRounds(round), [round]); // the six businesses for this round, fixed by the round number
+  const [k, setK] = useState(0); // which business we are on
+  const [got, setGot] = useState(false); // true for a moment after a right tap, while the crossing is marked
+  const [nudge, setNudge] = useState(null); // the number of a wrong tap, so that button wobbles
+  const [ticks, setTicks] = useState(0); // seconds since the round started
+  const [done, setDone] = useState(false); // true once all six are answered
+  const q = rounds[Math.min(k, rounds.length - 1)];
+  useEffect(() => { setK(0); setGot(false); setTicks(0); setDone(false); }, [round]);
+  useEffect(() => { if (done) return undefined; const t = setInterval(() => setTicks((n) => n + 1), 1000); return () => clearInterval(t); }, [done]);
+  useEffect(() => { if (done && onScore) onScore(ticks, 'low'); }, [done]);
+  useEffect(() => { if (nudge === null) return undefined; const t = setTimeout(() => setNudge(null), 500); return () => clearTimeout(t); }, [nudge]);
+  useEffect(() => { if (!got) return undefined; const t = setTimeout(() => { setGot(false); if (k + 1 >= rounds.length) setDone(true); else setK(k + 1); }, 1200); return () => clearTimeout(t); }, [got]);
+  const pick = (v) => { if (got || done) return; if (v === q.answer) setGot(true); else setNudge(v); };
+  // The chart runs from zero to twice the answer, so the crossing always sits in the middle.
+  const X = 2 * q.answer; const Y = Math.max(q.price * X, q.fixed + q.cost * X);
+  const W = 280; const H = 160; const left = 30; const bottom = H - 22;
+  const px = (u) => left + (u / X) * (W - left - 10); const py = (d) => bottom - (d / Y) * (bottom - 12);
+  return (
+    <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }} data-breakeven-answer={done ? '' : String(q.answer)}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Break even</span><span>{ticks}s · {Math.min(k + 1, rounds.length)} of {rounds.length}</span></div>
+      {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Six break-even points found in {ticks} seconds. Tap the round arrow for more.</p> : (
+        <div style={{ textAlign: 'center' }}>
+          <div style={{ background: '#fff', border: `1.5px solid ${B.line}`, borderRadius: 12, padding: '10px 12px', marginBottom: 8, fontSize: 15, color: B.ink, lineHeight: 1.5 }}>Selling {q.what}: fixed costs of ${q.fixed} a month. Each sells for ${q.price} and costs ${q.cost} to make.</div>
+          <svg viewBox={`0 0 ${W} ${H}`} width="100%" style={{ maxWidth: 340, display: 'block', margin: '0 auto 6px' }} role="img" aria-label="A chart of the revenue line and the total cost line crossing at the break-even point">
+            <line x1={left} y1={bottom} x2={W - 8} y2={bottom} stroke={B.line} strokeWidth="1.5" />
+            <line x1={left} y1={bottom} x2={left} y2={8} stroke={B.line} strokeWidth="1.5" />
+            <line x1={px(0)} y1={py(q.fixed)} x2={px(X)} y2={py(q.fixed + q.cost * X)} stroke={B.clay} strokeWidth="3" strokeLinecap="round" />
+            <line x1={px(0)} y1={py(0)} x2={px(X)} y2={py(q.price * X)} stroke={B.green} strokeWidth="3" strokeLinecap="round" />
+            <text x={W - 10} y={py(q.price * X) + (q.price * X >= q.fixed + q.cost * X ? -6 : 14)} textAnchor="end" fontSize="11" fill={B.green} fontFamily={FONT}>revenue</text>
+            <text x={W - 10} y={py(q.fixed + q.cost * X) + (q.price * X >= q.fixed + q.cost * X ? 14 : -6)} textAnchor="end" fontSize="11" fill={B.clay} fontFamily={FONT}>total cost</text>
+            <text x={left + 4} y={py(q.fixed) - 5} fontSize="10" fill={B.muted} fontFamily={FONT}>fixed ${q.fixed}</text>
+            {got && <g><line x1={px(q.answer)} y1={py(q.price * q.answer)} x2={px(q.answer)} y2={bottom} stroke={B.ink} strokeWidth="1" strokeDasharray="3 3" /><circle cx={px(q.answer)} cy={py(q.price * q.answer)} r="5" fill={B.ink} /><text x={px(q.answer)} y={bottom + 15} textAnchor="middle" fontSize="11" fontWeight="700" fill={B.ink} fontFamily={FONT}>{q.answer}</text></g>}
+          </svg>
+          <p style={{ margin: '0 0 10px', fontSize: 15, color: got ? B.green : B.ink, minHeight: 22, fontWeight: got ? 700 : 400 }}>{got ? `Yes: ${q.fixed} divided by the $${q.price - q.cost} each one leaves is ${q.answer}.` : 'How many to break even?'}</p>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+            {q.choices.map((v) => <button key={v} type="button" className={`edu-press${nudge === v ? ' edu-wobble' : ''}`} aria-label={`Units: ${v}`} onClick={() => pick(v)} style={{ fontFamily: FONT, fontSize: 17, fontWeight: 700, padding: '10px 8px', borderRadius: 12, border: `2px solid ${B.green}`, background: '#fff', color: B.ink, cursor: got ? 'default' : 'pointer' }}>{v}</button>)}
+          </div>
+        </div>
+      )}
+      <Done show={done} />
+    </div>
+  );
+}
+// -----------------------------------------------------------------------------------------------------------------
+// The Better Deal (2026-09-30, pass HF, the middle school business game). In plain terms: a price tag for one item
+// and two coupon cards, a percent off and a number of dollars off; the student taps the coupon that saves more. After
+// a right tap, both savings and both final prices are shown so the comparison is visible. This component only draws
+// and reacts: the six items, their offers and the answers come from dealRounds() in logic.mjs. The board carries the
+// answer in `data-deal-answer` so the browser test can play a round. Drawn with B (the paper palette).
+// -----------------------------------------------------------------------------------------------------------------
+function DealGame({ game, round, onScore = null }) {
+  const rounds = useMemo(() => dealRounds(round), [round]); // the six items for this round, fixed by the round number
+  const [k, setK] = useState(0); // which item we are on
+  const [got, setGot] = useState(false); // true for a moment after a right tap, while the two prices are shown
+  const [nudge, setNudge] = useState(null); // the label of a wrong tap, so that coupon wobbles
+  const [ticks, setTicks] = useState(0); // seconds since the round started
+  const [done, setDone] = useState(false); // true once all six are judged
+  const q = rounds[Math.min(k, rounds.length - 1)];
+  useEffect(() => { setK(0); setGot(false); setTicks(0); setDone(false); }, [round]);
+  useEffect(() => { if (done) return undefined; const t = setInterval(() => setTicks((n) => n + 1), 1000); return () => clearInterval(t); }, [done]);
+  useEffect(() => { if (done && onScore) onScore(ticks, 'low'); }, [done]);
+  useEffect(() => { if (nudge === null) return undefined; const t = setTimeout(() => setNudge(null), 500); return () => clearTimeout(t); }, [nudge]);
+  useEffect(() => { if (!got) return undefined; const t = setTimeout(() => { setGot(false); if (k + 1 >= rounds.length) setDone(true); else setK(k + 1); }, 1300); return () => clearTimeout(t); }, [got]);
+  const pick = (label) => { if (got || done) return; if (label === q.answer) setGot(true); else setNudge(label); };
+  const pctSaves = dealSaving(q.price, q.pct);
+  const coupon = (label, saves, color) => (
+    <button key={label} type="button" className={`edu-press${nudge === label ? ' edu-wobble' : ''}`} aria-label={`Deal: ${label}`} onClick={() => pick(label)}
+      style={{ fontFamily: FONT, flex: '1 1 130px', maxWidth: 200, padding: '14px 10px', borderRadius: 14, border: `2px dashed ${color}`, background: got && label === q.answer ? '#EAF6EE' : '#fff', color: B.ink, cursor: got ? 'default' : 'pointer' }}>
+      <div style={{ fontSize: 22, fontWeight: 800, color }}>{label}</div>
+      {got && <div style={{ fontSize: 13, marginTop: 4 }}>saves ${saves}, pay ${q.price - saves}</div>}
+    </button>
+  );
+  return (
+    <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }} data-deal-answer={done ? '' : q.answer}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>The better deal</span><span>{ticks}s · {Math.min(k + 1, rounds.length)} of {rounds.length}</span></div>
+      {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Six deals judged in {ticks} seconds. Tap the round arrow for more.</p> : (
+        <div style={{ textAlign: 'center' }}>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 10, background: '#fff', border: `1.5px solid ${B.line}`, borderRadius: 12, padding: '10px 16px', marginBottom: 10 }}>
+            <svg viewBox="0 0 40 40" width="34" height="34" aria-hidden="true"><path d="M6 20L20 6H34V20L20 34Z" fill={B.gold || '#E8C468'} stroke={B.ink} strokeWidth="1.5" strokeLinejoin="round" /><circle cx="27" cy="13" r="2.5" fill="#fff" stroke={B.ink} strokeWidth="1" /></svg>
+            <span style={{ fontSize: 18, color: B.ink }}>{q.what}: <strong>${q.price}</strong></span>
+          </div>
+          <p style={{ margin: '0 0 10px', fontSize: 15, color: got ? B.green : B.ink, minHeight: 22, fontWeight: got ? 700 : 400 }}>{got ? `Yes: ${q.answer} saves more.` : 'Which coupon saves more?'}</p>
+          <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
+            {coupon(q.pctLabel, pctSaves, B.green)}
+            {coupon(q.offLabel, q.off, B.clay)}
+          </div>
+        </div>
+      )}
+      <Done show={done} />
+    </div>
+  );
+}
+// -----------------------------------------------------------------------------------------------------------------
+// Fill the Jar (2026-09-30, pass HG, the business game for grades 3 to 5). In plain terms: a card names something a
+// child is saving for, its price (the goal) and how much goes in the jar each week; a jar is drawn with the goal line
+// near the top. The child taps how many weeks it takes, and on a right answer the jar fills, one stripe for each week.
+// This component only draws and reacts: the six goals and their answers come from savejarRounds() in logic.mjs. The
+// board carries the answer in `data-savejar-answer` so the browser test can play a round. Drawn with B (paper palette).
+// -----------------------------------------------------------------------------------------------------------------
+function SaveJarGame({ game, round, onScore = null }) {
+  const rounds = useMemo(() => savejarRounds(round), [round]); // the six goals for this round, fixed by the round number
+  const [k, setK] = useState(0); // which goal we are on
+  const [got, setGot] = useState(false); // true for a moment after a right tap, while the jar fills
+  const [nudge, setNudge] = useState(null); // the number of a wrong tap, so that button wobbles
+  const [ticks, setTicks] = useState(0); // seconds since the round started
+  const [done, setDone] = useState(false); // true once all six are answered
+  const q = rounds[Math.min(k, rounds.length - 1)];
+  useEffect(() => { setK(0); setGot(false); setTicks(0); setDone(false); }, [round]);
+  useEffect(() => { if (done) return undefined; const t = setInterval(() => setTicks((n) => n + 1), 1000); return () => clearInterval(t); }, [done]);
+  useEffect(() => { if (done && onScore) onScore(ticks, 'low'); }, [done]);
+  useEffect(() => { if (nudge === null) return undefined; const t = setTimeout(() => setNudge(null), 500); return () => clearTimeout(t); }, [nudge]);
+  useEffect(() => { if (!got) return undefined; const t = setTimeout(() => { setGot(false); if (k + 1 >= rounds.length) setDone(true); else setK(k + 1); }, 1200); return () => clearTimeout(t); }, [got]);
+  const pick = (v) => { if (got || done) return; if (v === q.answer) setGot(true); else setNudge(v); };
+  // The jar's inside runs from y = 34 (the goal line) to y = 132 (the bottom); each week is one equal stripe.
+  const top = 34; const bottom = 132; const stripe = (bottom - top) / q.answer;
+  return (
+    <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }} data-savejar-answer={done ? '' : String(q.answer)}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Fill the jar</span><span>{ticks}s · {Math.min(k + 1, rounds.length)} of {rounds.length}</span></div>
+      {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Six jars filled in {ticks} seconds. Tap the round arrow for more.</p> : (
+        <div style={{ textAlign: 'center' }}>
+          <div style={{ background: '#fff', border: `1.5px solid ${B.line}`, borderRadius: 12, padding: '10px 12px', marginBottom: 8, fontSize: 15, color: B.ink, lineHeight: 1.5 }}>Saving for {q.what}: the goal is ${q.goal}, and ${q.weekly} goes in the jar each week.</div>
+          <svg viewBox="0 0 120 145" width="120" height="145" role="img" aria-label={`A jar with a goal line at ${q.goal} dollars`} style={{ display: 'block', margin: '0 auto 6px' }}>
+            <rect x="38" y="6" width="44" height="12" rx="3" fill="#C8A26B" stroke={B.ink} strokeWidth="1.5" />
+            <path d="M30 22 Q30 18 36 18 L84 18 Q90 18 90 22 L94 30 Q98 36 98 44 L98 128 Q98 136 90 136 L30 136 Q22 136 22 128 L22 44 Q22 36 26 30 Z" fill="#EEF6FA" stroke={B.ink} strokeWidth="1.5" />
+            {got && Array.from({ length: q.answer }, (_, i) => <rect key={i} x="25" y={bottom - (i + 1) * stripe + 1} width="70" height={Math.max(1, stripe - 1.5)} rx="2" fill={i % 2 ? '#5DB36D' : '#7CC88A'} />)}
+            <line x1="22" y1={top} x2="98" y2={top} stroke={B.clay} strokeWidth="2" strokeDasharray="4 3" />
+            <text x="60" y={top - 4} textAnchor="middle" fontSize="11" fontWeight="700" fill={B.clay} fontFamily={FONT}>goal ${q.goal}</text>
+          </svg>
+          <p style={{ margin: '0 0 10px', fontSize: 15, color: got ? B.green : B.ink, minHeight: 22, fontWeight: got ? 700 : 400 }}>{got ? `Yes: ${q.goal} divided by ${q.weekly} is ${q.answer}.` : 'How many weeks to fill the jar?'}</p>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+            {q.choices.map((v) => <button key={v} type="button" className={`edu-press${nudge === v ? ' edu-wobble' : ''}`} aria-label={`Weeks: ${v}`} onClick={() => pick(v)} style={{ fontFamily: FONT, fontSize: 17, fontWeight: 700, padding: '10px 8px', borderRadius: 12, border: `2px solid ${B.green}`, background: '#fff', color: B.ink, cursor: got ? 'default' : 'pointer' }}>{v} weeks</button>)}
+          </div>
+        </div>
+      )}
+      <Done show={done} />
+    </div>
+  );
+}
+// -----------------------------------------------------------------------------------------------------------------
+// Find the Tool (2026-10-01, pass HH, the kindergarten to grade 2 business game). In plain terms: the game names a job
+// out loud, such as a chef, and shows three simple drawings of tools; the child taps the tool that worker uses. A right
+// tap says so and moves on; a wrong one wobbles. Six jobs a round, from toolRounds() in logic.mjs. ToolIcon draws each
+// tool from plain shapes in the paper palette. The board carries the answer in `data-tool-answer` for the browser test.
+// -----------------------------------------------------------------------------------------------------------------
+function ToolIcon({ name }) {
+  const ink = '#2E2E2E';
+  if (name === 'pan') return <svg viewBox="0 0 60 60" width="64" height="64" aria-hidden="true"><circle cx="25" cy="32" r="16" fill="#4A4A4A" stroke={ink} strokeWidth="1.5" /><circle cx="25" cy="32" r="11" fill="#6B6B6B" /><rect x="39" y="29" width="18" height="6" rx="3" fill="#7A5134" stroke={ink} strokeWidth="1" /></svg>;
+  if (name === 'hose') return <svg viewBox="0 0 60 60" width="64" height="64" aria-hidden="true"><circle cx="26" cy="32" r="15" fill="none" stroke={B.green} strokeWidth="5" /><circle cx="26" cy="32" r="7" fill="none" stroke={B.green} strokeWidth="5" /><path d="M38 22 L46 12" stroke={B.green} strokeWidth="5" strokeLinecap="round" /><rect x="43" y="6" width="12" height="8" rx="2" fill="#E3B341" stroke={ink} strokeWidth="1" transform="rotate(-50 49 10)" /></svg>;
+  if (name === 'stethoscope') return <svg viewBox="0 0 60 60" width="64" height="64" aria-hidden="true"><path d="M18 8 V22 A12 12 0 0 0 42 22 V8" fill="none" stroke={ink} strokeWidth="3" strokeLinecap="round" /><path d="M30 34 V44" stroke={ink} strokeWidth="3" /><circle cx="30" cy="50" r="7" fill="#A9B8C2" stroke={ink} strokeWidth="2" /><circle cx="18" cy="8" r="2.5" fill={ink} /><circle cx="42" cy="8" r="2.5" fill={ink} /></svg>;
+  if (name === 'hammer') return <svg viewBox="0 0 60 60" width="64" height="64" aria-hidden="true"><rect x="27" y="20" width="6" height="34" rx="2" fill="#A0522D" stroke={ink} strokeWidth="1" /><rect x="13" y="9" width="34" height="12" rx="2" fill="#6B6B6B" stroke={ink} strokeWidth="1.2" /></svg>;
+  if (name === 'book') return <svg viewBox="0 0 60 60" width="64" height="64" aria-hidden="true"><rect x="12" y="10" width="36" height="42" rx="3" fill="#4B6B8B" stroke={ink} strokeWidth="1.2" /><rect x="12" y="10" width="7" height="42" fill="#34506B" /><rect x="25" y="20" width="18" height="4" rx="1" fill="#FFFFFF" opacity="0.85" /><line x1="22" y1="47" x2="46" y2="47" stroke="#FFFFFF" strokeWidth="1.5" /></svg>;
+  return <svg viewBox="0 0 60 60" width="64" height="64" aria-hidden="true"><path d="M14 26 Q30 0 46 26" fill="none" stroke="#6B4423" strokeWidth="4" /><rect x="20" y="17" width="20" height="13" fill="#FFFFFF" stroke="#8A8A8A" strokeWidth="1" /><path d="M20 17 L30 25 L40 17" fill="none" stroke="#8A8A8A" strokeWidth="1" /><rect x="10" y="25" width="40" height="27" rx="6" fill="#8B5A2B" stroke={ink} strokeWidth="1.2" /><path d="M10 31 H50" stroke="#6B4423" strokeWidth="2" /></svg>;
+}
+function ToolGame({ game, round, onScore = null }) {
+  const rounds = useMemo(() => toolRounds(round), [round]); // the six jobs for this round, fixed by the round number
+  const [k, setK] = useState(0); // which job we are on
+  const [got, setGot] = useState(false); // true for a moment after a right tap
+  const [nudge, setNudge] = useState(null); // the tool of a wrong tap, so that picture wobbles
+  const [ticks, setTicks] = useState(0); // seconds since the round started
+  const [done, setDone] = useState(false); // true once all six jobs are matched
+  const q = rounds[Math.min(k, rounds.length - 1)];
+  useEffect(() => { setK(0); setGot(false); setTicks(0); setDone(false); }, [round]);
+  useEffect(() => { if (done) return undefined; const t = setInterval(() => setTicks((n) => n + 1), 1000); return () => clearInterval(t); }, [done]);
+  useEffect(() => { if (done && onScore) onScore(ticks, 'low'); }, [done]);
+  useEffect(() => { if (nudge === null) return undefined; const t = setTimeout(() => setNudge(null), 500); return () => clearTimeout(t); }, [nudge]);
+  useEffect(() => { if (!got) return undefined; const t = setTimeout(() => { setGot(false); if (k + 1 >= rounds.length) setDone(true); else setK(k + 1); }, 1100); return () => clearTimeout(t); }, [got]);
+  const pick = (name) => { if (got || done) return; if (name === q.answer) setGot(true); else setNudge(name); };
+  const ask = `Which tool does ${q.job} use?`;
+  return (
+    <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }} data-tool-answer={done ? '' : q.answer}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Find the tool</span><span>{ticks}s · {Math.min(k + 1, rounds.length)} of {rounds.length}</span></div>
+      {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Six jobs, six tools, in {ticks} seconds. Tap the round arrow for more.</p> : (
+        <div style={{ textAlign: 'center' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, margin: '4px 0 12px' }}>
+            <p style={{ margin: 0, fontSize: 19, fontWeight: 700, color: got ? B.green : B.ink }}>{got ? `Yes: ${q.job} uses a ${q.answer}.` : ask}</p>
+            {!got && <SpeakButton mini text={ask} label="Hear it" />}
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10 }}>
+            {q.choices.map((name) => <button key={name} type="button" className={`edu-press${nudge === name ? ' edu-wobble' : ''}`} aria-label={`Tool: ${name}`} onClick={() => pick(name)} style={{ fontFamily: FONT, background: '#fff', border: `2px solid ${got && name === q.answer ? B.green : B.line}`, borderRadius: 14, padding: '10px 4px 8px', cursor: got ? 'default' : 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, color: B.ink, fontSize: 14, fontWeight: 600 }}><ToolIcon name={name} />{name}</button>)}
+          </div>
+        </div>
+      )}
+      <Done show={done} />
+    </div>
+  );
+}
+// -----------------------------------------------------------------------------------------------------------------
+// Sort the Ledger (2026-10-01, pass HK, the college business game). In plain terms: one account at a time, such as cash,
+// a bank loan or retained earnings, appears under the accounting equation, and the student taps its side of the balance
+// sheet: assets, liabilities or equity. A right tap says why and moves on; a wrong one wobbles. Six accounts a round,
+// two from each side, from ledgerRounds() in logic.mjs. The board carries the answer in `data-ledger-answer`.
+// -----------------------------------------------------------------------------------------------------------------
+function LedgerGame({ game, round, onScore = null }) {
+  const rounds = useMemo(() => ledgerRounds(round), [round]); // the six accounts for this round, fixed by the round number
+  const [k, setK] = useState(0); // which account we are on
+  const [got, setGot] = useState(false); // true for a moment after a right tap
+  const [nudge, setNudge] = useState(null); // the side of a wrong tap, so that button wobbles
+  const [ticks, setTicks] = useState(0); // seconds since the round started
+  const [done, setDone] = useState(false); // true once all six are placed
+  const q = rounds[Math.min(k, rounds.length - 1)];
+  useEffect(() => { setK(0); setGot(false); setTicks(0); setDone(false); }, [round]);
+  useEffect(() => { if (done) return undefined; const t = setInterval(() => setTicks((n) => n + 1), 1000); return () => clearInterval(t); }, [done]);
+  useEffect(() => { if (done && onScore) onScore(ticks, 'low'); }, [done]);
+  useEffect(() => { if (nudge === null) return undefined; const t = setTimeout(() => setNudge(null), 500); return () => clearTimeout(t); }, [nudge]);
+  useEffect(() => { if (!got) return undefined; const t = setTimeout(() => { setGot(false); if (k + 1 >= rounds.length) setDone(true); else setK(k + 1); }, 1100); return () => clearTimeout(t); }, [got]);
+  const pick = (side) => { if (got || done) return; if (side === q.answer) setGot(true); else setNudge(side); };
+  const why = { assets: 'something the firm owns, an asset', liabilities: 'something the firm owes, a liability', equity: 'part of the owners\' equity' }[q.answer];
+  return (
+    <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }} data-ledger-answer={done ? '' : q.answer}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Sort the ledger</span><span>{ticks}s · {Math.min(k + 1, rounds.length)} of {rounds.length}</span></div>
+      {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Six accounts placed in {ticks} seconds. Tap the round arrow for more.</p> : (
+        <div style={{ textAlign: 'center' }}>
+          <p style={{ margin: '0 0 8px', fontSize: 14, color: B.muted, fontWeight: 600 }}>Assets = Liabilities + Equity</p>
+          <div style={{ background: '#fff', border: `1.5px solid ${B.line}`, borderRadius: 12, padding: '14px 12px', marginBottom: 8, fontSize: 20, fontWeight: 700, color: B.ink }}>{q.item}</div>
+          <p style={{ margin: '0 0 10px', fontSize: 15, color: got ? B.green : B.ink, minHeight: 22, fontWeight: got ? 700 : 400 }}>{got ? `Yes: ${q.item} is ${why}.` : 'Where does it go on the balance sheet?'}</p>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8 }}>
+            {LEDGER_SIDES.map((side) => <button key={side} type="button" className={`edu-press${nudge === side ? ' edu-wobble' : ''}`} aria-label={`Side: ${side}`} onClick={() => pick(side)} style={{ fontFamily: FONT, fontSize: 15, fontWeight: 700, padding: '12px 4px', borderRadius: 12, border: `2px solid ${got && side === q.answer ? B.green : B.line}`, background: '#fff', color: B.ink, cursor: got ? 'default' : 'pointer', textTransform: 'capitalize' }}>{side}</button>)}
+          </div>
+        </div>
+      )}
+      <Done show={done} />
+    </div>
+  );
+}
+const GAME_OF = { dots: DotsGame, pairs: PairsGame, sort: SortGame, maze: MazeGame, jigsaw: JigsawGame, pong: PongGame, sprint: SprintGame, order: OrderGame, build: BuildGame, fix: FixGame, mix: MixGame, debug: DebugGame, ptable: PtableGame, evidence: EvidenceGame, catch: CatchGame, path: PathGame, buckets: BucketsGame, jump: JumpGame, map: MapGame, balance: BalanceGame, walk: WalkGame, teach: TeachGame, bits: BitsGame, pay: PayGame, price: PriceGame, loan: LoanGame, fund: FundGame, search: SearchGame, spot: SpotGame, pattern: PatternGame, shape: ShapeGame, chord: ChordGame, valid: ValidGame, reason: ReasonGame, because: BecauseGame, share: ShareGame, stat: StatGame, recall: RecallGame, face: FaceGame, sense: SenseGame, filler: FillerGame, room: RoomGame, ask: AskGame, turn: TurnGame, jar: JarGame, relation: RelationGame, sprout: SproutGame, grow: GrowGame, breakeven: BreakEvenGame, deal: DealGame, savejar: SaveJarGame, tool: ToolGame, ledger: LedgerGame };
 // How to play, in a line or two, by kind of game (and by deck for the matching games).
 function gameInstructions(game) {
   if (game.kind === 'bits') return 'A number sits at the top and eight switches below it, worth 128 down to 1. Tap the switches on and off until the lit places add up to the number; the sum shows as you go. Six numbers, and the clock counts up.';
@@ -4515,6 +4758,11 @@ function gameInstructions(game) {
   if (game.kind === 'fund') return 'A first year on your own, one month a tap. Income comes in, the bills go out, and you choose how much of the 500 that is left goes into your emergency fund; the rest is spent. Some months bring a surprise bill: the fund pays what it can and the rest is borrowed at 2 percent a month. The score is the fund minus the loan after twelve months, higher is better.';
   if (game.kind === 'valid') return 'An argument in three lines: if this then that, a second line, and a conclusion. Ask whether the form guarantees the conclusion when the premises are true, however true the sentences sound, and tap Valid or Not valid. The right answer names the form. Six arguments a round, and the clock counts up.';
   if (game.kind === 'stat') return 'Five quiz scores and one average to find: the mean, the median or the mode. Add and divide, or order and take the middle, or find the score that repeats, and tap the number. Six rounds, and the clock counts up.';
+  if (game.kind === 'savejar') return 'Something to save for, its price, and how much goes in the jar each week. Tap how many weeks it takes to reach the goal line, and watch the jar fill one week at a time. Six goals, and the clock counts up.';
+  if (game.kind === 'breakeven') return 'A small business with its fixed costs for a month, the price of one item and what each costs to make. The chart draws the revenue line and the total-cost line; tap how many it must sell to break even, where the lines cross. Six businesses, and the clock counts up.';
+  if (game.kind === 'tool') return 'A job is named, and three tools appear. Tap the tool that worker uses. Six jobs, and the clock counts up.';
+  if (game.kind === 'ledger') return 'An account appears, and you place it on the balance sheet: assets, liabilities or equity. Six accounts, and the clock counts up.';
+  if (game.kind === 'deal') return 'An item with a price tag and two coupons, a percent off and a number of dollars off. Work out what each one saves and tap the coupon that saves more. Six items, and the clock counts up.';
   if (game.kind === 'grow') return 'A seed in a pot and five pictures: water, sunshine, soil and two toys. Tap the three things the plant needs, in any order, and watch it grow. Four plants, and the clock counts up.';
   if (game.kind === 'sprout') return 'A bean seed in a cup and four facts about it: water, air, warmth and light. Decide whether it sprouts. A bean needs water, air and warmth, and light can wait until the shoot is up. Six seeds, and the clock counts up.';
   if (game.kind === 'relation') return 'A line about two living things on a farm and four names: mutualism, parasitism, commensalism, predation. Tap the one that fits. Six cases, and the clock counts up.';
@@ -4621,6 +4869,11 @@ function GameThumb({ kind, game = null }) {
   if (game && game.kind === 'relation') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><circle cx="13" cy="20" r="8" fill={C.paperBoard} stroke={k} strokeWidth="1" /><circle cx="29" cy="20" r="6" fill={C.green} stroke={k} strokeWidth="1" /><path d="M21 16l4 0M21 24l4 0" stroke={k} strokeWidth="2" strokeLinecap="round" /><path d="M24 14l3 2-3 2M22 26l-3-2 3-2" fill="none" stroke={k} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" /></svg>;
   if (game && game.kind === 'sprout') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><path d="M20 24 C20 18 20 14 20 10" stroke="#3E8E4F" strokeWidth="2" fill="none" /><path d="M20 15 C15 12 13 9 14 7 C17 8 19 11 20 15 Z" fill="#5DB36D" /><path d="M20 13 C25 10 27 7 26 5 C23 6 21 9 20 13 Z" fill="#5DB36D" /><path d="M9 24 L31 24 L28 37 L12 37 Z" fill="#C8734B" stroke={k} strokeWidth="1" /></svg>;
   if (game && game.kind === 'grow') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><path d="M13 26h14l-2 10h-10z" fill="#C8734B" stroke={k} strokeWidth="1" /><path d="M20 26v-12" stroke={C.green} strokeWidth="2" strokeLinecap="round" /><path d="M20 20q-6-3-7-8q5 0 7 5z" fill={C.green} /><path d="M20 18q6-3 7-8q-5 0-7 5z" fill={C.green} /><circle cx="32" cy="8" r="4" fill="#F2C94C" /></svg>;
+  if (game && game.kind === 'deal') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="4" y="9" width="14" height="22" rx="3" fill={C.paperBoard} stroke={C.green} strokeWidth="1.6" strokeDasharray="3 2" /><rect x="22" y="9" width="14" height="22" rx="3" fill={C.paperBoard} stroke={C.clay} strokeWidth="1.6" strokeDasharray="3 2" /><text x="11" y="24" textAnchor="middle" fontSize="9" fontWeight="700" fill={k}>%</text><text x="29" y="24" textAnchor="middle" fontSize="9" fontWeight="700" fill={k}>$</text></svg>;
+  if (game && game.kind === 'ledger') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="4" y="5" width="32" height="30" rx="4" fill={C.paperBoard} stroke={k} strokeWidth="1" /><rect x="8" y="12" width="7" height="18" rx="1" fill={C.green} /><rect x="17" y="18" width="7" height="12" rx="1" fill={C.clay} /><rect x="26" y="22" width="7" height="8" rx="1" fill={k} /></svg>;
+  if (game && game.kind === 'tool') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="4" y="5" width="32" height="30" rx="4" fill={C.paperBoard} stroke={k} strokeWidth="1" /><rect x="18" y="15" width="4" height="16" rx="1" fill="#A0522D" /><rect x="11" y="10" width="18" height="6" rx="1" fill="#6B6B6B" /></svg>;
+  if (game && game.kind === 'breakeven') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="4" y="5" width="32" height="30" rx="4" fill={C.paperBoard} stroke={k} strokeWidth="1" /><path d="M8 30L32 10" stroke={C.green} strokeWidth="2.2" strokeLinecap="round" /><path d="M8 20L32 14" stroke={C.clay} strokeWidth="2.2" strokeLinecap="round" /><circle cx="20" cy="20" r="2.6" fill={k} /></svg>;
+  if (game && game.kind === 'savejar') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="14" y="4" width="12" height="5" rx="1.5" fill="#C8A26B" stroke={k} strokeWidth="1" /><rect x="9" y="9" width="22" height="27" rx="5" fill={C.paperBoard} stroke={k} strokeWidth="1.2" /><rect x="11" y="22" width="18" height="12" rx="2" fill={C.green} /><line x1="9" y1="15" x2="31" y2="15" stroke={C.clay} strokeWidth="1.4" strokeDasharray="2 1.5" /></svg>;
   if (game && game.kind === 'stat') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="4" y="5" width="32" height="30" rx="4" fill={C.paperBoard} stroke={k} strokeWidth="1" /><rect x="9" y="22" width="4" height="9" fill={k} opacity="0.6" /><rect x="15" y="16" width="4" height="15" fill={k} opacity="0.6" /><rect x="21" y="12" width="4" height="19" fill={C.green} /><rect x="27" y="18" width="4" height="13" fill={k} opacity="0.6" /><path d="M7 20h26" stroke={C.green} strokeWidth="1.2" strokeDasharray="2 1.5" /></svg>;
   if (game && game.kind === 'valid') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="4" y="5" width="32" height="30" rx="4" fill={C.paperBoard} stroke={k} strokeWidth="1" /><path d="M9 13h22M9 19h16M9 25h22" stroke={k} strokeWidth="1.5" strokeLinecap="round" /><path d="M11 31l3 3 6-6" fill="none" stroke={C.green} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>;
   if (game && game.kind === 'fund') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="5" y="7" width="30" height="26" rx="4" fill="#fff" stroke={k} strokeWidth="1.2" />{[[10, 22, 8], [17, 14, 16], [24, 18, 12]].map(([x, y, h], i) => <rect key={i} x={x} y={y} width="5" height={h} rx="1" fill={i === 1 ? C.green : '#DDE3DE'} stroke={k} strokeWidth="0.7" />)}<path d="M31 13l-3 -3 -3 3M28 10v9" fill="none" stroke={k} strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" /></svg>;
@@ -6670,6 +6923,18 @@ function EduSphereScreens() {
   // A full PIN opens the door on its own (2026-09-23, Mikey): nobody has to lower the phone keypad to reach Go or Open.
   // A student's wrong PIN clears the box and says so; an educator's wrong PIN just sits there with its line under it.
   useEffect(() => { if (!pinAsk || pinTry.length !== PIN_LENGTH) return; const st = findStudent(roster, pinAsk); if (!st) return; if (pinMatches(st, pinTry)) { setPinAsk(null); startWithName(st.id); } else { setPinWrong(true); setPinTry(''); } }, [pinTry, pinAsk]);
+  // Fingerprint or face starts by itself (2026-09-30, pass HG, Mikey). In plain terms: when an educator who turned on
+  // biometrics taps Educator Login, the fingerprint or face prompt opens at once on the PIN screen, with no extra tap. It
+  // asks once per visit and only after the educator's own tap, never after an idle sign-out, so a prompt never appears
+  // on its own in front of a student. If it is cancelled, or a browser refuses to ask without a tap of its own, the
+  // PIN box and the "Use fingerprint or face" button are still there.
+  const bioAuto = useRef(false);
+  useEffect(() => {
+    if (screen !== 'educator-pin' || !bioAuto.current) return;
+    bioAuto.current = false;
+    if (!educator || !educator.biometric || !biometricReady()) return;
+    (async () => { try { if (await checkBiometric(educator.biometric)) goBackTo(); } catch (e) { /* cancelled or refused: the PIN box and the button remain */ } })();
+  }, [screen]);
   // Only this device's own educator account PIN opens the educator side; with no account, no PIN does (starter PIN retired, pass HB).
   useEffect(() => { if (screen !== 'educator-pin' || pinInput.length < 4) return; const ok = !!educator && scramble(pinInput) === educator.pin; if (ok) { if (pinLock.failures) savePinLock({ failures: 0, lockUntil: 0 }); goBackTo(); } }, [pinInput, screen]);
   const endTour = async () => { setTourStep(-1); if ((screen === 'educator-report' && educatorRecord && educatorRecord.preview) || screen === 'class-view' || screen === 'story-log' || (screen === 'lesson' && record && record.preview)) { setEducatorRecord(null); setClassRows(null); setStoryRows(null); if (record && record.preview) { setRecord(null); setModuleId(null); } setScreen('educator-pick'); } const next = { ...educator, tourSeen: true, newsSeen: news ? news.stamp : educator.newsSeen }; setEducator(next); await saveEducator(next); };
@@ -6836,7 +7101,7 @@ function EduSphereScreens() {
           {errorMsg && <p style={{ color: C.clay }}>{errorMsg}</p>}
         </div>
         <div className="edu-welcome-links" style={{ marginTop: 4, textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
-          <div className="edu-login-btn" style={{ width: '100%', maxWidth: 320, marginBottom: 18 }}><Btn full onClick={() => { if (!educator) { startAccountSetup(); return; } if (lastActive && Date.now() - lastActive < EDUCATOR_IDLE_MS) { setScreen('educator-pick'); return; } setPinInput(''); setScreen('educator-pin'); }}>Educator Login</Btn></div>
+          <div className="edu-login-btn" style={{ width: '100%', maxWidth: 320, marginBottom: 18 }}><Btn full onClick={() => { if (!educator) { startAccountSetup(); return; } if (lastActive && Date.now() - lastActive < EDUCATOR_IDLE_MS) { setScreen('educator-pick'); return; } setPinInput(''); bioAuto.current = true; setScreen('educator-pin'); }}>Educator Login</Btn></div>
           {!educator && (
             <button type="button" onClick={() => { setNewPin(''); setNewPin2(''); setDeviceDraft(''); setStateDraft(''); setSetupError(''); setScreen('educator-setup'); }} style={{ background: 'none', border: 'none', color: C.muted, fontFamily: FONT, fontSize: 14, cursor: 'pointer', padding: '4px 12px', textDecoration: 'underline' }}>Create account</button>
           )}
@@ -7351,9 +7616,11 @@ function EduSphereScreens() {
             {missed[mod.id].map((line, i) => <p key={i} style={{ margin: '4px 0', fontSize: 15 }}>“{line}”</p>)}
           </div>
         )}
-        <div style={{ ...card, background: C.goldSoft, borderColor: C.goldEdge }}>
-          <p style={{ margin: 0, fontWeight: 600 }}>Key idea</p>
-          <div style={{ marginTop: 6 }}><RichText text={formatTeachingText(mod.lesson.keyIdea)} size={16} /></div>
+        {/* The Key idea card (2026-10-01, pass HI, Mikey): in the dark theme it uses the light green of the mastered lists and
+            notes, with dark text; its title and its text are centered in both themes. The light theme keeps its gold. */}
+        <div data-key-idea="" style={{ ...card, textAlign: 'center', ...(C.mode === 'dark' ? { background: '#AAD8C5', borderColor: '#AAD8C5', color: '#16201B' } : { background: C.goldSoft, borderColor: C.goldEdge }) }}>
+          <p style={{ margin: 0, fontWeight: 600, textAlign: 'center' }}>Key idea</p>
+          <div style={{ marginTop: 6 }}><RichText text={formatTeachingText(mod.lesson.keyIdea)} size={16} center color={C.mode === 'dark' ? '#16201B' : null} /></div>
         </div>
         {<SpeakButton full text={[...mod.lesson.paragraphs, mod.lesson.example.formula || '', mod.lesson.example.caption, mod.lesson.keyIdea].join(' ')} label="Read it to me" />}
         {experimentsForModule(mod.id).length > 0 && (
@@ -7396,12 +7663,16 @@ function EduSphereScreens() {
             <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" strokeWidth="3.2" strokeLinecap="round" /></svg>
           </button>
         </div>
-        {!isReviewQ && <p style={{ margin: '10px 0 18px', fontSize: 18, fontWeight: 600, textAlign: 'center' }}>{mod.title}</p>}
+        {/* The speaker sits to the right of the module title (2026-10-01, pass HG, Mikey's screenshot), out of the question card,
+            where it covered the end of a long question's first line. A review question has no title, so its speaker stands alone. */}
+        <div data-title-row="" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, margin: isReviewQ ? '8px 0 10px' : '10px 0 18px' }}>
+          {!isReviewQ && <p style={{ margin: 0, fontSize: 18, fontWeight: 600, textAlign: 'center' }}>{mod.title}</p>}
+          <SpeakButton mini text={questionText} label={readAloud ? 'Hear it again' : 'Read it to me'} />
+        </div>
         <div style={{ ...card, position: 'relative' }}>
-          <p style={{ fontSize: 20, fontWeight: 600, margin: readAloud ? '8px 0 12px' : '0 0 12px', textAlign: 'center', padding: readAloud ? '0 66px' : 0, minHeight: readAloud ? 48 : 0 }}>{q.prompt}</p>
+          <p data-question-text="" style={{ fontSize: 20, fontWeight: 600, margin: '0 0 12px', textAlign: 'center' }}>{q.prompt}</p>
           {q.story && <div style={{ margin: '0 0 14px', color: C.ink }}><RichText text={q.story} size={17} center lineGap={8} /></div>}
           {q.visual && <div style={{ margin: '0 0 14px' }}><Picture visual={q.visual} /></div>}
-          <SpeakButton corner text={questionText} label={readAloud ? 'Hear it again' : 'Read it to me'} />
           {q.type === 'choice' ? (
             // Number answers never stack onto two lines (2026-09-23, Mikey): the columns are as wide as the longest one needs.
             <div style={{ display: 'grid', gap: 10, gridTemplateColumns: q.choices.every((c) => /^(\d+|[A-Za-z])$/.test(c)) ? `repeat(auto-fit, minmax(${Math.max(70, Math.max(...q.choices.map((c) => c.length)) * 15 + 24)}px, 1fr))` : '1fr' }}>
@@ -7793,11 +8064,14 @@ function EduSphereScreens() {
     };
     return (
       <div style={{ ...page }}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={{ ...wrap }}>
-        <h1 className="edu-slide-in" style={{ fontSize: 30, margin: '8px 0 4px', textAlign: 'center', color: C.green }}>Let's Wonder!</h1>
+        {/* The speaker sits to the right of the title here too (pass HG, Mikey). */}
+        <div data-title-row="" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, margin: '8px 0 4px' }}>
+          <h1 className="edu-slide-in" style={{ fontSize: 30, margin: 0, textAlign: 'center', color: C.green }}>Let's Wonder!</h1>
+          <SpeakButton mini text={wonder.prompt} label={readAloud ? 'Hear it again' : 'Read it to me'} />
+        </div>
         <p style={{ color: C.muted, fontSize: 14, margin: '0 0 10px', textAlign: 'center' }}>No right answer</p>
         <div style={{ ...card, position: 'relative' }}>
-          <p style={{ fontSize: 20, fontWeight: 600, margin: '0 0 14px', paddingRight: readAloud ? 60 : 0 }}>{wonder.prompt}</p>
-          <SpeakButton corner text={wonder.prompt} label={readAloud ? 'Hear it again' : 'Read it to me'} />
+          <p style={{ fontSize: 20, fontWeight: 600, margin: '0 0 14px' }}>{wonder.prompt}</p>
           {wonder.answerMode === 'pick' ? (
             <div style={{ display: 'grid', gap: 10 }}>
               {wonder.options.map((o) => (
@@ -8618,13 +8892,25 @@ function EduSphereScreens() {
       onPointerUp: () => { if (dragId === null) { clearTimeout(dragTimer.current); dragTimer.current = null; } }, onPointerCancel: () => { if (dragId === null) { clearTimeout(dragTimer.current); dragTimer.current = null; } },
       onContextMenu: (e) => { if (dragId || dragTimer.current) e.preventDefault(); },
     });
-    const newsPopup = newsOpen && news ? (
+    // The What's new pop-up (2026-10-01, pass HL, Mikey). In plain terms: a short list, each change in a few natural words
+    // (the build makes them with briefNews in tools/whats-new.mjs), at most four, then Got it, then a centered More
+    // Details link that opens the full notes on their own page. The box never grows past the screen, so Got it is
+    // always reachable. Either button marks this update as seen.
+    const newsBrief = news ? (news.brief && news.brief.length ? news.brief : news.items) : [];
+    const dismissNews = async () => { setNewsOpen(false); const next = { ...educator, newsSeen: news.stamp }; setEducator(next); await saveEducator(next); };
+    // One pop-up at a time (2026-10-01, pass HL, Mikey's screenshot): a brand-new account also gets the first-backup reminder,
+    // and the two opened together, the reminder on top of What's new, so More Details and Got it could not be tapped.
+    // What's new now waits while the reminder is open and appears as soon as it is answered.
+    const backupNudgeOpen = !!(educator && backupAt === null && !backupNudgeSeen && tourStep < 0);
+    const newsPopup = newsOpen && news && !backupNudgeOpen ? (
       <div className="edu-no-print" style={{ position: 'fixed', top: 0, right: 0, bottom: 0, left: 0, background: C.scrim, zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
-        <div className="edu-rise" style={{ width: 'min(440px, 100%)', background: C.surface, ...(C.mode === 'dark' ? { border: `1px solid ${C.cardEdge}` } : {}), borderRadius: 14, padding: '24px 22px', textAlign: 'center' }} role="dialog" aria-label="What's new">
+        <div className="edu-rise" style={{ width: 'min(440px, 100%)', maxHeight: '85vh', overflowY: 'auto', background: C.surface, ...(C.mode === 'dark' ? { border: `1px solid ${C.cardEdge}` } : {}), borderRadius: 14, padding: '24px 22px', textAlign: 'center' }} role="dialog" aria-label="What's new">
           <p style={{ margin: '0 0 4px', fontSize: 19, fontWeight: 700 }}>What's new</p>
           <p style={{ margin: '0 0 14px', fontSize: 13, color: C.muted }}>{news.date}</p>
-          <ul style={{ margin: '0 0 18px', padding: '0 0 0 22px', textAlign: 'left', fontSize: 15, lineHeight: 1.6 }}>{news.items.map((t, k) => <li key={k}>{t}</li>)}</ul>
-          <Btn onClick={async () => { setNewsOpen(false); const next = { ...educator, newsSeen: news.stamp }; setEducator(next); await saveEducator(next); }}>Got it</Btn>
+          <ul data-news-brief="" style={{ margin: '0 0 18px', padding: '0 0 0 22px', textAlign: 'left', fontSize: 15, lineHeight: 1.6 }}>{newsBrief.slice(0, 4).map((t, k) => <li key={k} style={{ marginBottom: 4 }}>{t}</li>)}</ul>
+          {newsBrief.length > 4 && <p style={{ margin: '-8px 0 14px', fontSize: 14, color: C.muted }}>And {newsBrief.length - 4} more in More Details.</p>}
+          <Btn onClick={dismissNews}>Got it</Btn>
+          <p style={{ margin: '14px 0 0', textAlign: 'center' }}><button type="button" style={{ ...linkBtn, fontSize: 15 }} onClick={async () => { await dismissNews(); setScreen('whats-new'); }}>More Details</button></p>
         </div>
       </div>
     ) : null;
@@ -8645,7 +8931,7 @@ function EduSphereScreens() {
             </div>
           );
         })()}
-        {educator && backupAt === null && !backupNudgeSeen && tourStep < 0 && (
+        {backupNudgeOpen && (
           <div className="edu-no-print" style={{ position: 'fixed', top: 0, right: 0, bottom: 0, left: 0, background: C.scrim, zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
             <div className="edu-rise" style={{ maxWidth: 420, width: '100%', background: C.surface, ...(C.mode === 'dark' ? { border: `1px solid ${C.cardEdge}` } : {}), borderRadius: 14, padding: 22, textAlign: 'center' }}>
               <p style={{ margin: '0 0 8px', fontSize: 18, fontWeight: 600 }}>Make your first backup soon</p>
@@ -9363,6 +9649,29 @@ function EduSphereScreens() {
           <Btn kind="secondary" onClick={() => finish('made')}>Done</Btn>
         </div>
         {certNote && <p className="edu-no-print" style={{ margin: 0, fontSize: 13, color: C.muted, textAlign: 'center' }}>{certNote}</p>}
+      </div></div>
+    );
+  }
+  // -----------------------------------------------------------------------------------------------------------------
+  // The More Details page for What's new (2026-10-01, pass HL, Mikey). In plain terms: the full release notes, newest
+  // first, for the last few updates the build passed in (up to six), each under its date with every note whole. The
+  // pop-up shows only short versions; this page holds the whole story. Back returns to the Classroom page.
+  // -----------------------------------------------------------------------------------------------------------------
+  if (screen === 'whats-new') {
+    const blocks = news ? (news.history && news.history.length ? news.history : [{ date: news.date, title: '', items: news.items }]) : [];
+    return (
+      <div style={{ ...page }}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} /><div className="edu-wrap" style={{ ...wrap }}>
+        <button type="button" onClick={() => setScreen('educator-pick')} style={{ ...linkBtn }}>Back to Classroom</button>
+        <h1 style={{ fontSize: 26, margin: '28px 0 6px', textAlign: 'center' }}>What's new</h1>
+        <p style={{ margin: '0 0 18px', fontSize: 14, color: C.muted, textAlign: 'center' }}>The full notes for the latest updates, newest first.</p>
+        {blocks.length === 0 && <p style={{ textAlign: 'center', color: C.muted }}>No notes yet.</p>}
+        {blocks.map((bk, i) => (
+          <div key={`${bk.date}-${i}`} style={{ ...card, marginBottom: 14 }} data-news-block="">
+            <p style={{ margin: '0 0 2px', fontWeight: 700, fontSize: 17 }}>{bk.date}</p>
+            {bk.title && <p style={{ margin: '0 0 10px', fontSize: 14, color: C.muted }}>{bk.title.charAt(0).toUpperCase() + bk.title.slice(1)}</p>}
+            <ul style={{ margin: 0, padding: '0 0 0 20px', fontSize: 15, lineHeight: 1.6 }}>{bk.items.map((t, k) => <li key={k} style={{ marginBottom: 6 }}>{t}</li>)}</ul>
+          </div>
+        ))}
       </div></div>
     );
   }

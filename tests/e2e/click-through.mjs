@@ -235,16 +235,24 @@ ok('only one subject is open at a time', /main idea/i.test(t) && !t.includes('Wh
 await page.getByRole('button', { name: /^Math/ }).click();
 
 // 2. Master Fractions module 1 with a perfect set (early courses now list first, so open it by name)
+const whereBefore = await page.evaluate(() => { try { return localStorage.getItem('edusphere_v1_where'); } catch (e) { return null; } }); // the note before this lesson opens (pass HL)
 await openModuleNamed('What a fraction means');
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'lesson');
 // A refresh brings the student back to the same lesson instead of the front door (pass GV, Mikey).
-await page.waitForTimeout(250); // let the where-note and the record land in storage before the reload
+// Wait for the where-note itself rather than a fixed pause, then a moment for the record, before the reload (pass HG: 250 ms was a flake).
+// Wait for a NEW where-note (pass HL): an older lesson's note already said 'lesson', so the old wait could pass at once and reload too early.
+await page.waitForFunction((before) => { try { const w = localStorage.getItem('edusphere_v1_where') || ''; return w !== before && w.includes('lesson'); } catch (e) { return false; } }, whereBefore, { timeout: 5000 }).catch(() => {});
+await page.waitForTimeout(800);
 await page.reload();
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen !== 'loading' && window.__eduTest.screen !== 'welcome' && document.body.textContent.includes('What a fraction means'), null, { timeout: 15000 }).catch(() => {});
+{ const diag = await page.evaluate(() => ({ screen: window.__eduTest && window.__eduTest.screen, where: (() => { try { return localStorage.getItem('edusphere_v1_where'); } catch (e) { return null; } })() })); if (diag.screen !== 'lesson') console.log('DIAG refresh landed on', JSON.stringify(diag)); }
 ok('a refresh brings the student back to the lesson they were on', (await page.evaluate(() => window.__eduTest.screen)) === 'lesson' && (await text()).includes('What a fraction means'));
 // Story-based learning (2026-09-22): the lesson's green button opens the story page; its own Practice button leads on.
 t = await text();
 ok('lesson shows key idea and a plain-text source', t.includes('Key idea') && t.includes('Source:') && (await page.locator('a').count()) === 0);
+// The Key idea card is light green with dark text in the dark theme, and its title is centered (pass HI, Mikey).
+{ const ki = await page.evaluate(() => { const el = document.querySelector('[data-key-idea]'); if (!el) return null; return { bg: getComputedStyle(el).backgroundColor, ink: getComputedStyle(el.querySelector('p')).color, center: getComputedStyle(el.querySelector('p')).textAlign, dark: document.documentElement.dataset.theme || '' }; });
+  ok('the key idea card is light green with dark text and a centered title', !!ki && ki.center === 'center' && (ki.bg === 'rgb(170, 216, 197)' ? ki.ink === 'rgb(22, 32, 27)' : true)); }
 ok('a lesson with a story offers View story in place of Practice', (await page.getByRole('button', { name: 'View story' }).count()) === 1 && (await page.getByRole('button', { name: 'Practice this' }).count()) === 0);
 await tap('View story');
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'story');
@@ -252,6 +260,10 @@ await page.getByLabel('Illustration S5 to come').waitFor();
 t = await text();
 ok('the story page shows the title, its pictures in order, and no wonder question', t.includes('The Broken Cups') && (await page.getByLabel(/Illustration S3[78] to come/).count()) === 2 && !t.includes('Something to wonder about'));
 await practice();
+// The speaker sits beside the module title, above the question, never on top of it (pass HG, Mikey's screenshot).
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'question', null, { timeout: 8000 }).catch(() => {});
+{ const clear = await page.evaluate(() => { const row = document.querySelector('[data-title-row]'); const btn = row && row.querySelector('button'); const q = document.querySelector('[data-question-text]'); if (!btn || !q) return null; return btn.getBoundingClientRect().bottom <= q.getBoundingClientRect().top + 1; });
+  ok('the speaker sits beside the module title, clear of the question', clear === true); }
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'practice');
 let r = await runSet([true, true, true, true, true]);
 ok('five core questions, all marked correct', r.length === 5 && r.every(Boolean));
@@ -1186,6 +1198,66 @@ await page.waitForTimeout(200);
   ok('a toy does not grow the plant', (await page.locator('[data-grow-given]').getAttribute('data-grow-given')) === '0');
   for (let r = 0; r < 4; r++) { for (const need of ['water', 'sunshine', 'soil']) { await page.getByRole('button', { name: `Give ${need}`, exact: true }).click(); await page.waitForTimeout(80); } await page.waitForTimeout(1300); }
   ok('three needs for each of four plants finish the round', (await text()).includes('Four plants grown'));
+}
+await page.getByRole('button', { name: 'Close game' }).first().click({ force: true });
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview');
+// The Better Deal (pass HF, business 6 to 8): the board carries the coupon that saves more.
+await page.evaluate(() => window.__eduTest.openColoring('play:deal-business-6'));
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'coloring');
+await page.waitForTimeout(200);
+{ ok('the better-deal game opens with a price tag and two coupons', (await page.getByRole('button', { name: /^Deal: / }).count()) === 2 && (await text()).includes('Which coupon saves more?'));
+  for (let i = 0; i < 6; i++) { const ans = await page.locator('[data-deal-answer]').getAttribute('data-deal-answer'); if (!ans) break; await page.getByRole('button', { name: `Deal: ${ans}`, exact: true }).click(); await page.waitForTimeout(1450); }
+  ok('six deals judged finish the round', (await text()).includes('Six deals judged'));
+}
+await page.getByRole('button', { name: 'Close game' }).first().click({ force: true });
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview');
+// Break Even (pass HD, business 9 to 12): the board carries the break-even count for the business shown. Each tap waits
+// for the round counter to move on rather than a fixed pause (pass HL: a fixed 1.35 seconds once lost the race on a busy machine).
+await page.evaluate(() => window.__eduTest.openColoring('play:breakeven-business-9'));
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'coloring');
+await page.waitForTimeout(200);
+{ ok('the break-even game opens with a business, a chart and four counts', (await page.getByRole('button', { name: /^Units: / }).count()) === 4 && (await text()).includes('How many to break even?'));
+  for (let i = 0; i < 6; i++) { const ans = await page.locator('[data-breakeven-answer]').getAttribute('data-breakeven-answer'); if (!ans) break; await page.getByRole('button', { name: `Units: ${ans}`, exact: true }).click(); await page.waitForFunction((n) => { const t = document.body.innerText; return t.includes(n + ' of 6') || t.includes('Six break-even points found'); }, i + 2, { timeout: 6000 }).catch(() => {}); }
+  ok('six break-even points finish the round', (await text()).includes('Six break-even points found'));
+}
+await page.getByRole('button', { name: 'Close game' }).first().click({ force: true });
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview');
+// Fill the Jar (pass HG, business 3 to 5): the board carries the number of weeks for the goal shown.
+await page.evaluate(() => window.__eduTest.openColoring('play:savejar-business-3'));
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'coloring');
+await page.waitForTimeout(200);
+{ ok('the jar game opens with a goal, a jar and four week counts', (await page.getByRole('button', { name: /^Weeks: / }).count()) === 4 && (await text()).includes('How many weeks to fill the jar?'));
+  for (let i = 0; i < 6; i++) { const ans = await page.locator('[data-savejar-answer]').getAttribute('data-savejar-answer'); if (!ans) break; await page.getByRole('button', { name: `Weeks: ${ans}`, exact: true }).click(); await page.waitForTimeout(1350); }
+  ok('six filled jars finish the round', (await text()).includes('Six jars filled'));
+}
+await page.getByRole('button', { name: 'Close game' }).first().click({ force: true });
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview');
+// Order games mark their first step with a gentle pulse until it is tapped, so a cycle has a clear start (pass HG, Mikey).
+{ const Lg = await import(new URL('../../src/logic.mjs', import.meta.url).href); const og = Lg.GAMES.find((g) => g.kind === 'order');
+  await page.evaluate((id) => window.__eduTest.openColoring('play:' + id), og.id);
+  await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'coloring'); await page.waitForTimeout(250);
+  ok('an order game marks its first step with a pulse before anything is placed', (await page.locator('[data-start-hint]').count()) === 1);
+  await page.locator('[data-start-hint]').first().click(); await page.waitForTimeout(200);
+  ok('the pulse stops once the first step is placed', (await page.locator('[data-start-hint]').count()) === 0);
+  await page.getByRole('button', { name: 'Close game' }).first().click({ force: true });
+  await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview'); }
+// Find the Tool (pass HH, business K to 2): the board carries the right tool for the job named.
+await page.evaluate(() => window.__eduTest.openColoring('play:tool-business-k'));
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'coloring');
+await page.waitForTimeout(200);
+{ ok('the tool game opens with a job and three tools', (await page.getByRole('button', { name: /^Tool: / }).count()) === 3 && (await text()).includes('Which tool does'));
+  for (let i = 0; i < 6; i++) { const ans = await page.locator('[data-tool-answer]').getAttribute('data-tool-answer'); if (!ans) break; await page.getByRole('button', { name: `Tool: ${ans}`, exact: true }).click(); await page.waitForFunction((n) => { const t = document.body.innerText; return t.includes(n + ' of 6') || t.includes('Six jobs, six tools'); }, i + 2, { timeout: 6000 }).catch(() => {}); }
+  ok('six jobs matched finish the round', (await text()).includes('Six jobs, six tools'));
+}
+await page.getByRole('button', { name: 'Close game' }).first().click({ force: true });
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview');
+// Sort the Ledger (pass HK, college business): the board carries the right side of the balance sheet for the account shown.
+await page.evaluate(() => window.__eduTest.openColoring('play:ledger-business-college'));
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'coloring');
+await page.waitForTimeout(200);
+{ ok('the ledger game opens with an account and three sides', (await page.getByRole('button', { name: /^Side: / }).count()) === 3 && (await text()).includes('Where does it go on the balance sheet?'));
+  for (let i = 0; i < 6; i++) { const ans = await page.locator('[data-ledger-answer]').getAttribute('data-ledger-answer'); if (!ans) break; await page.getByRole('button', { name: `Side: ${ans}`, exact: true }).click(); await page.waitForFunction((n) => { const t = document.body.innerText; return t.includes(n + ' of 6') || t.includes('Six accounts placed'); }, i + 2, { timeout: 6000 }).catch(() => {}); }
+  ok('six accounts placed finish the round', (await text()).includes('Six accounts placed'));
 }
 await page.getByRole('button', { name: 'Close game' }).first().click({ force: true });
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview');

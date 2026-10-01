@@ -10,7 +10,7 @@
 // Nothing here talks to a server. The file is the product.
 import { readFileSync, writeFileSync, readdirSync, existsSync } from 'node:fs';
 import { execSync } from 'node:child_process';
-import { newestNews } from './whats-new.mjs';
+import { newestNews, recentNews } from './whats-new.mjs';
 
 const G = execSync('npm root -g').toString().trim();
 const read = (rel) => readFileSync(`${G}/${rel}`, 'utf8');
@@ -35,6 +35,7 @@ const favicon = 'data:image/svg+xml,' + encodeURIComponent(iconSvg);
 // picks it (the latest date, the higher block on a tie) and tests/site.test.mjs checks the page shows that very block.
 const newsDoc = existsSync('docs/WHATS-NEW.md') ? readFileSync('docs/WHATS-NEW.md', 'utf8') : '';
 const news = newestNews(newsDoc);
+if (news) news.history = recentNews(newsDoc, 6); // the last six updates in full, for the More Details page (pass HL)
 const artList = existsSync('art/stories') ? readdirSync('art/stories').filter((f) => f.endsWith('.webp')).map((f) => f.slice(0, -5)) : [];
 const audioList = existsSync('audio') ? readdirSync('audio').filter((f) => f.endsWith('.mp3')).map((f) => f.slice(0, -4)) : [];
 const coloringList = existsSync('art/coloring') ? readdirSync('art/coloring').filter((f) => f.endsWith('.webp')).map((f) => f.slice(0, -5)) : [];

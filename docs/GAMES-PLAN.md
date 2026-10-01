@@ -2,7 +2,7 @@
 
 Written by tools/games-plan.mjs from the app's own lists; run it again after any change to the games. Every course has its own game, or two, chosen to suit its subject and grade; finishing the course unlocks them. Inside a grade the same kind is avoided wherever today's kinds allow. A course that no game suits yet has a quick fire of its own lessons, and so does a history course whose only game is a map still waiting for its painting.
 
-Starter, open from the first day: Star. Kinds of game: 48. Quick fires still standing in for a game: 8. Kinds repeated inside a grade: 9. Courses holding two games of one kind: none. The rules test holds both numbers as ceilings, so each new kind must bring them down.
+Starter, open from the first day: Star. Kinds of game: 53. Quick fires still standing in for a game: 8. Kinds repeated inside a grade: 9. Courses holding two games of one kind: none. The rules test holds both numbers as ceilings, so each new kind must bring them down.
 
 ## New kinds, in order
 
@@ -33,6 +33,7 @@ Each new kind should make the course's idea the rule of the game, so playing is 
 | K | I wonder | Share the Cookies (share) |
 | K | Needs, wants, work and saving | Pay the Price (pay) |
 | K | On the farm | Grow the Plant (grow) |
+| K | Money and me | Find the Tool (tool) |
 | K | Looking and listening | Spot It (spot) |
 | K | Counting | Maze (maze) |
 | K | Letters | Pairs (pairs) |
@@ -58,6 +59,7 @@ Each new kind should make the course's idea the rule of the game, so playing is 
 | 3 | Money that works | Set the Price (price) |
 | 3 | Listen, then say it | Ask the Right Question (ask) |
 | 3 | Down on the farm | Will It Sprout? (sprout) |
+| 3 | Jars, banks and lemonade | Fill the Jar (savejar) |
 | 3 | Looking closer, listening longer | What Comes Next (pattern) |
 | 3 | Communities and government | Where is it? The continents (map), Quick fire: Communities and government (sprint) |
 | 4 | Reading between the lines | Find the evidence: clues in a story (evidence) |
@@ -85,6 +87,7 @@ Each new kind should make the course's idea the rule of the game, so playing is 
 | 6 | Money over time | Pay It Off (loan) |
 | 6 | Say what you mean | Fit the Room (room) |
 | 6 | Where food comes from | Who Gains (relation) |
+| 6 | Earn, save, start | The Better Deal (deal) |
 | 6 | Reading a work of art | Shape the Sound (shape) |
 | 7 | Proportions, integers and circles | Balance the scale: fractions (balance) |
 | 7 | Reading with an eye for craft | Word meanings (pairs) |
@@ -103,6 +106,7 @@ Each new kind should make the course's idea the rule of the game, so playing is 
 | 9 | Writing about texts and turns | Fix it: tricky words (fix) |
 | 9 | World geography | Where is it? Europe (map), Quick fire: World geography (sprint) |
 | 9 | How a program is built | Eight Switches (bits) |
+| 9 | Open for business | Break Even (breakeven) |
 | 9 | From soil to supper | Read the Jar (jar) |
 | 9 | Say it so it lands | Cut the Fillers (filler) |
 | 9 | The science of behavior | Mean, Median, Mode (stat) |
@@ -128,4 +132,5 @@ Each new kind should make the course's idea the rule of the game, so playing is 
 | C | Statistics and reasoning | Formulas (pairs) |
 | C | Academic reading | Find the evidence: academic reading (evidence) |
 | C | Thinking like a historian | Where is it? South America (map), Quick fire: Thinking like a historian (sprint) |
+| C | Business principles | Sort the Ledger (ledger) |
 | C | How computers compute | Split the Search (search) |

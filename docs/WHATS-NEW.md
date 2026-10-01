@@ -2,6 +2,31 @@
 
 The newest block is what educators see once, in a pop-up on the classroom page, after each update. Write it the way Mikey talks to a teacher: conversational, complete sentences, say what changed and why it matters, and skip the shorthand (2026-09-23). Two to four items. The date line is the version stamp.
 
+## October 1, 2026 (relationships and health)
+
+- A second health elective, Relationships and health, is ready for grades 9 to 12, and appears only when an educator assigns it. It covers healthy relationships and boundaries, safety, abuse and trafficking, STIs and testing, and choices and responsibilities, with a story for each lesson and a long story about Georgette and a question box.
+- Assigning it asks for a parent's written consent first, as Texas requires of schools.
+- Myth or Fact is a new kind of game that comes with the course. Each answer shows the reason behind it.
+
+## October 1, 2026 (growing up healthy)
+
+- Growing up healthy is a new elective for grades 6 to 8 that an educator assigns when a family is ready. It covers puberty and its timing, reproduction and pregnancy, healthy relationships and boundaries, and safety, reporting and abstinence, with a story for each lesson and a long story about Savanah and a baby's heart at twenty weeks.
+- Green Flag or Red Flag is a new kind of game that comes with the course. Sort each behavior as a sign of a healthy relationship or a warning sign.
+- Two new Wonder questions for middle school wait in the review screen.
+- Assigning Growing up healthy asks for a parent's written consent first, as Texas requires of schools.
+
+## October 1, 2026 (health for life)
+
+- High school health arrives as an elective for grades 9 to 12. Health for life teaches judging health claims and the warning signs of a heart attack and a stroke, food labels and energy balance, CPR, an AED and choking rescue, mental health and getting help, and medicines, drugs and refusal skills, with a story for each lesson and a long story about Mike and a Saturday at the ballpark.
+- Push to the Beat is a new kind of game that comes with the course. Tap at the pace of chest compressions, and it tells you whether you were just right.
+- Two new Wonder questions for grown learners wait in the review screen.
+
+## October 1, 2026 (healthy choices)
+
+- A new health elective for grades 6 to 8, Healthy choices: your body and your health, food and movement, staying safe in person and online, and medicines, nicotine and other drugs. Each lesson has a story, and the course ends with a long story about Savanah's summer as a camp counselor.
+- Finishing the course unlocks Read the Label, a new kind of game: two food labels, one question, the better choice.
+- Two new Wonder questions for teens wait in the review screen.
+
 ## October 1, 2026 (a shorter What's new)
 
 - What's new now opens as a short list: each change in a few words, at most four, with More Details centered at the bottom.

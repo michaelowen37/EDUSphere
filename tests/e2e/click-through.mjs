@@ -144,6 +144,13 @@ ok('a grade dropdown opens to its courses', (await text()).includes('Grade 1 - M
 await page.fill('input[aria-label="Search courses"]', 'grade 1 math');
 t = await text();
 ok('searching narrows the course list to what was typed', t.includes('Numbers to 20') && t.includes('Grade 1 - Math') && !t.includes('Grade 4 - Math'));
+// Consent comes first (pass HO): ticking the human sexuality elective asks for a parent's written consent; Cancel leaves it unassigned.
+await page.fill('input[aria-label="Search courses"]', 'Growing up healthy'); await page.waitForTimeout(300);
+await page.locator('[data-course-row="sexual-health-6"] input[type=checkbox]').click(); await page.waitForTimeout(300);
+ok("assigning human sexuality instruction asks for a parent's written consent first", (await page.getByRole('dialog', { name: 'Consent required' }).count()) === 1 && (await text()).includes('28.004'));
+await page.getByRole('button', { name: 'Cancel', exact: true }).click(); await page.waitForTimeout(200);
+ok('cancelling leaves the course unassigned', (await page.getByRole('dialog', { name: 'Consent required' }).count()) === 0 && !(await page.locator('[data-course-row="sexual-health-6"] input[type=checkbox]').isChecked()));
+await page.fill('input[aria-label="Search courses"]', 'grade 1 math'); await page.waitForTimeout(300);
 // The small × inside the search box clears it in one tap (pass GV, Mikey).
 ok('a typed search shows a clear button inside the box', (await page.getByRole('button', { name: 'Clear search' }).count()) === 1);
 await page.getByRole('button', { name: 'Clear search' }).click();
@@ -242,7 +249,19 @@ await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen ===
 // Wait for the where-note itself rather than a fixed pause, then a moment for the record, before the reload (pass HG: 250 ms was a flake).
 // Wait for a NEW where-note (pass HL): an older lesson's note already said 'lesson', so the old wait could pass at once and reload too early.
 await page.waitForFunction((before) => { try { const w = localStorage.getItem('edusphere_v1_where') || ''; return w !== before && w.includes('lesson'); } catch (e) { return false; } }, whereBefore, { timeout: 5000 }).catch(() => {});
+// And wait for the student's record itself to be saved with its events (pass HO): the test once reloaded before this
+// student's very first save had landed, so the restore found no record and fell back to the welcome screen.
+await page.waitForFunction((pre) => { try { for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); if (k.indexOf('fake:' + pre) === 0 && k.indexOf('2001') >= 0) { const r = JSON.parse(localStorage.getItem(k)); if (r && r.events && r.events.length) return true; } } return false; } catch (e) { return false; } }, 'edusphere_v1_learner_', { timeout: 8000 }).catch(() => {});
 await page.waitForTimeout(800);
+console.log('DIAG before reload', JSON.stringify(await page.evaluate(() => ({ screen: window.__eduTest && window.__eduTest.screen, where: (() => { try { return localStorage.getItem('edusphere_v1_where'); } catch (e) { return null; } })(), text: document.body.innerText.slice(0, 120) }))));
+// Carry the store across the reload (2026-10-01, pass HQ). In plain terms: this test's stand-in for durable storage is
+// the browser's localStorage, and Chromium commits a page's localStorage writes in batches. A probe run six times showed
+// two reloads opening with every key gone, the student's record included, though nothing had deleted them: the reload
+// had started before the newest batch was committed. Real storage is durable, so the test copies the store before the
+// reload and puts back any key that is missing, once, guarded by a token in window.name, which survives a reload.
+{ const snap = await page.evaluate(() => { const o = {}; for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); o[k] = localStorage.getItem(k); } return o; });
+  const token = 'edu-carry-' + Date.now();
+  await page.addInitScript(([store, tok]) => { try { if (window.name === tok) return; for (const k of Object.keys(store)) if (window.localStorage.getItem(k) === null) window.localStorage.setItem(k, store[k]); window.name = tok; } catch (e) { /* storage may be off */ } }, [snap, token]); }
 await page.reload();
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen !== 'loading' && window.__eduTest.screen !== 'welcome' && document.body.textContent.includes('What a fraction means'), null, { timeout: 15000 }).catch(() => {});
 { const diag = await page.evaluate(() => ({ screen: window.__eduTest && window.__eduTest.screen, where: (() => { try { return localStorage.getItem('edusphere_v1_where'); } catch (e) { return null; } })() })); if (diag.screen !== 'lesson') console.log('DIAG refresh landed on', JSON.stringify(diag)); }
@@ -1258,6 +1277,48 @@ await page.waitForTimeout(200);
 { ok('the ledger game opens with an account and three sides', (await page.getByRole('button', { name: /^Side: / }).count()) === 3 && (await text()).includes('Where does it go on the balance sheet?'));
   for (let i = 0; i < 6; i++) { const ans = await page.locator('[data-ledger-answer]').getAttribute('data-ledger-answer'); if (!ans) break; await page.getByRole('button', { name: `Side: ${ans}`, exact: true }).click(); await page.waitForFunction((n) => { const t = document.body.innerText; return t.includes(n + ' of 6') || t.includes('Six accounts placed'); }, i + 2, { timeout: 6000 }).catch(() => {}); }
   ok('six accounts placed finish the round', (await text()).includes('Six accounts placed'));
+}
+await page.getByRole('button', { name: 'Close game' }).first().click({ force: true });
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview');
+// Read the Label (pass HM, health 6 to 8): the board carries the better label for the nutrient asked.
+await page.evaluate(() => window.__eduTest.openColoring('play:label-health-6'));
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'coloring');
+await page.waitForTimeout(200);
+{ ok('the label game opens with two labels and a question about one nutrient', (await page.getByRole('button', { name: /^Label: / }).count()) === 2 && (await text()).includes('per serving?'));
+  for (let i = 0; i < 6; i++) { const ans = await page.locator('[data-label-answer]').getAttribute('data-label-answer'); if (!ans) break; await page.getByRole('button', { name: `Label: ${ans}`, exact: true }).click(); await page.waitForTimeout(1550); }
+  ok('six labels read finish the round', (await text()).includes('Six labels read'));
+}
+await page.getByRole('button', { name: 'Close game' }).first().click({ force: true });
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview');
+// Push to the Beat (pass HN, health 9 to 12): sixteen pushes 550 ms apart, timed inside the page, are 109 a minute, just right.
+await page.evaluate(() => window.__eduTest.openColoring('play:cpr-health-9'));
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'coloring');
+await page.waitForTimeout(200);
+{ ok('the CPR game opens with a Push button and the target pace', (await page.getByRole('button', { name: 'Push', exact: true }).count()) === 1 && (await text()).includes('100 to 120 a minute'));
+  await page.evaluate(async () => { const b = document.querySelector('[data-cpr-push]'); for (let i = 0; i < 16; i++) { b.click(); await new Promise((r) => setTimeout(r, 550)); } });
+  await page.waitForTimeout(300);
+  const verdict = await page.locator('[data-cpr-verdict]').getAttribute('data-cpr-verdict');
+  ok('pushes at about 109 a minute are just right', verdict === 'just right' && (await text()).includes('just right'));
+}
+await page.getByRole('button', { name: 'Close game' }).first().click({ force: true });
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview');
+// Green Flag or Red Flag (pass HO, reproductive and sexual health 6 to 8): the board carries the right flag for the behavior shown.
+await page.evaluate(() => window.__eduTest.openColoring('play:greenred-sexual-health-6'));
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'coloring');
+await page.waitForTimeout(200);
+{ ok('the green-or-red game opens with a behavior and two flags', (await page.getByRole('button', { name: /^Flag: / }).count()) === 2 && (await text()).includes('Healthy, or a warning sign?'));
+  for (let i = 0; i < 8; i++) { const ans = await page.locator('[data-greenred-answer]').getAttribute('data-greenred-answer'); if (!ans) break; await page.getByRole('button', { name: `Flag: ${ans}`, exact: true }).click(); await page.waitForTimeout(1250); }
+  ok('eight behaviors sorted finish the round', (await text()).includes('Eight behaviors sorted'));
+}
+await page.getByRole('button', { name: 'Close game' }).first().click({ force: true });
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview');
+// Myth or Fact (pass HP, the high school human sexuality elective): the board carries the right answer for each statement.
+await page.evaluate(() => window.__eduTest.openColoring('play:mythfact-sexual-health-9'));
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'coloring');
+await page.waitForTimeout(200);
+{ ok('the Myth or Fact game opens with a statement and two answers', (await page.getByRole('button', { name: /^Answer: / }).count()) === 2 && (await text()).includes('Is it a myth or a fact?'));
+  for (let i = 0; i < 6; i++) { const ans = await page.locator('[data-myth-answer]').getAttribute('data-myth-answer'); if (!ans) break; await page.getByRole('button', { name: `Answer: ${ans}`, exact: true }).click(); await page.waitForTimeout(1450); }
+  ok('six statements answered finish the round', (await text()).includes('Six statements sorted'));
 }
 await page.getByRole('button', { name: 'Close game' }).first().click({ force: true });
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview');

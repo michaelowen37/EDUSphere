@@ -1614,6 +1614,36 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
     const doc = '## October 1, 2026 (newer)\n\n- New one: detail.\n\n## September 30, 2026 (older)\n\n- Old one.\n'; const h = recentNews(doc, 6);
     ok('the More Details history lists the newest update first, with its title and full notes', h.length === 2 && h[0].date === 'October 1, 2026' && h[0].title === 'newer' && h[0].items[0] === 'New one: detail.');
   }
+  { // Read the Label (pass HM): six comparisons, two for each nutrient, the asked-for difference at least its gap, and the answer the better label.
+    const gap = { sodium: 80, 'added sugars': 3, fiber: 2 };
+    ok('every label round compares two foods fairly and names the better one', [1, 2, 3, 4, 5].every((r) => { const qs = L.labelRounds(r); return qs.length === 6 && L.LABEL_NUTRIENTS.every(([n]) => qs.filter((q) => q.nutrient === n).length === 2) && qs.every((q) => { const d = q.a[q.nutrient] - q.b[q.nutrient]; if (Math.abs(d) < gap[q.nutrient]) return false; const aBetter = q.goal === 'less' ? d < 0 : d > 0; return q.answer === (aBetter ? 'A' : 'B'); }); }));
+    ok('the label game belongs to health 6 to 8 and names its foods with its own key', L.COURSE_GAMES['health-6'].includes('label-health-6') && L.GAMES.find((g) => g.id === 'label-health-6').label === 'foods');
+    ok('the health food bank computes the sodium in several servings', [...Array(80).keys()].every((i) => { const q = L.generateQuestion('hl6-food', i); if (!q.story) return true; const per = Number(q.story.match(/\d+/)[0]); const n = Number(q.prompt.match(/\d+/)[0]); return q.answer === `${per * n} milligrams` && new Set(q.choices).size === q.choices.length && q.choices.length >= 3; }));
+  }
+  { // Push to the Beat (pass HN): the pace comes from the gaps between taps, and only 100 to 120 a minute is just right.
+    const taps = (gap, n = 12) => Array.from({ length: n }, (_, i) => i * gap);
+    ok('the CPR pace is measured from the gaps between taps', L.cprRate(taps(500)) === 120 && L.cprRate(taps(545)) === 110 && L.cprRate(taps(600)) === 100 && L.cprRate([0]) === 0);
+    ok('only 100 to 120 compressions a minute is just right', L.cprVerdict(99) === 'too slow' && L.cprVerdict(100) === 'just right' && L.cprVerdict(120) === 'just right' && L.cprVerdict(121) === 'too fast' && L.CPR_TARGET.low === 100 && L.CPR_TARGET.high === 120);
+    ok('the CPR game belongs to high school health and names its compressions with its own key', L.COURSE_GAMES['health-9'].includes('cpr-health-9') && L.GAMES.find((g) => g.id === 'cpr-health-9').cpr === 'compressions');
+    ok('the high school food bank computes the calories in a whole bag', [...Array(80).keys()].every((i) => { const q = L.generateQuestion('hl9-food', i); if (!q.story) return true; const n = q.story.match(/\d+/g).map(Number); return q.answer === String(n[0] * n[1]) && new Set(q.choices).size === 4; }));
+  }
+  { // Green Flag or Red Flag (pass HO): eight behaviors a round, four of each flag, each with its true flag.
+    ok('every green-or-red round deals four of each flag, each with its true flag', [1, 2, 3, 4, 5].every((r) => { const qs = L.greenredRounds(r); return qs.length === 8 && new Set(qs.map((q) => q.behavior)).size === 8 && qs.filter((q) => q.answer === 'green').length === 4 && qs.every((q) => L.GREENRED_CARDS.find((c) => c[0] === q.behavior)[1] === q.answer); }));
+    ok('the green-or-red game belongs to the reproductive and sexual health elective', L.COURSE_GAMES['sexual-health-6'].includes('greenred-sexual-health-6') && L.GAMES.find((g) => g.id === 'greenred-sexual-health-6').greenred === 'behaviors');
+    ok('the reproductive and sexual health course is an elective, so it appears only when an educator assigns it', L.COURSES.find((c) => c.id === 'sexual-health-6').elective === true);
+  }
+  { // The human sexuality elective (pass HO): it asks for consent, and its Wonder questions never leave it.
+    const hs = L.COURSES.find((c) => c.id === 'sexual-health-6'); const gated = L.WONDER.filter((w) => w.courseIds.includes('sexual-health-6'));
+    const plain = L.WONDER.find((w) => w.stage === 'teen' && w.courseIds.includes('health-6'));
+    ok('the human sexuality elective is an elective that asks for a parent\'s consent', !!hs && hs.elective === true && hs.consent === 'human-sexuality');
+    ok('its Wonder questions appear only inside it, while other questions still follow the stage', gated.length === 2 && gated.every((w) => !L.wonderAllowed(w, 'health-6', 'teen') && !L.wonderAllowed(w, 'psychology-6', 'teen') && L.wonderAllowed(w, 'sexual-health-6', 'teen')) && !!plain && L.wonderAllowed(plain, 'psychology-6', 'teen'));
+  }
+  { // The high school human sexuality elective (pass HP): consent, gated Wonder questions, and a fair Myth or Fact deal.
+    const hs9 = L.COURSES.find((c) => c.id === 'sexual-health-9'); const gated9 = L.WONDER.filter((w) => w.courseIds.includes('sexual-health-9'));
+    ok('the high school human sexuality elective asks for consent and keeps its Wonder questions inside it', !!hs9 && hs9.elective === true && hs9.consent === 'human-sexuality' && gated9.length === 2 && gated9.every((w) => !L.wonderAllowed(w, 'health-9', 'grown') && L.wonderAllowed(w, 'sexual-health-9', 'grown')));
+    ok('every Myth or Fact round deals three myths and three facts, each with a reason', [1, 2, 3, 4, 5].every((r) => { const qs = L.mythfactRounds(r); return qs.length === 6 && new Set(qs.map((q) => q.text)).size === 6 && qs.filter((q) => q.answer === 'myth').length === 3 && qs.every((q) => (q.answer === 'myth' || q.answer === 'fact') && q.why.length > 10); }));
+    ok('the Myth or Fact game belongs to the high school human sexuality elective', L.COURSE_GAMES['sexual-health-9'].includes('mythfact-sexual-health-9') && L.GAMES.find((g) => g.id === 'mythfact-sexual-health-9').mythfact === 'statements');
+  }
   ok('the two robot games sit in the two programming courses beside their first games', L.COURSE_GAMES['tech-3'].includes('debug-tech-3') && L.COURSE_GAMES['tech-5'].includes('debug-tech-5') && L.GAMES.filter((g) => g.kind === 'debug').every((g) => L.ROBOT_DECKS[g.deck]));
 }
 

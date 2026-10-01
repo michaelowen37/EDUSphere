@@ -1175,6 +1175,71 @@ export const COURSES = [
     modules: BIZC_MODULES(),
   },
   // ---------------------------------------------------------------------------------------------------------------
+  // Reproductive and sexual health for grades 9 to 12 (2026-10-01, pass HP, Mikey). In plain terms: the second human
+  // sexuality elective, on the strand of the Texas Health I course that the general high school course leaves out. Like
+  // the grade 6 course, it appears only when an educator assigns it, and assigning it asks the educator to confirm a
+  // parent's written consent (`consent`). Its four lessons live in SEXHEALTH9_MODULES() further down.
+  // ---------------------------------------------------------------------------------------------------------------
+  {
+    id: 'sexual-health-9',
+    grade: '9',
+    subject: 'Health',
+    title: 'Relationships and health',
+    audience: 'Grades 9 to 12',
+    elective: true,
+    consent: 'human-sexuality', // assigning it asks the educator to confirm a parent's written consent (Texas Education Code §28.004(i-2))
+    keywords: ['health', 'relationships', 'boundaries', 'abstinence', 'STI prevention', 'safety', 'elective'],
+    modules: SEXHEALTH9_MODULES(),
+  },
+  // ---------------------------------------------------------------------------------------------------------------
+  // Reproductive and sexual health for grades 6 to 8 (2026-10-01, pass HO, Mikey). In plain terms: an elective that never
+  // appears for a student unless an educator assigns it, built on the reproductive and sexual health strand of the Texas
+  // grade 6 health standard. It is clinical and protective, and abstinence-centered as Texas law requires; its stories are
+  // about friendship, growing up, boundaries and getting help, never romance. Its lessons are in SEXHEALTH6_MODULES().
+  // ---------------------------------------------------------------------------------------------------------------
+  {
+    id: 'sexual-health-6',
+    grade: '6',
+    subject: 'Health',
+    title: 'Growing up healthy',
+    audience: 'Grades 6 to 8',
+    elective: true, // electives appear only when an educator assigns them
+    consent: 'human-sexuality', // pass HO: assigning it asks the educator to confirm a parent's written consent (Texas Education Code §28.004(i-2))
+    keywords: ['health', 'puberty', 'reproduction', 'relationships', 'boundaries', 'abstinence', 'safety', 'elective'],
+    modules: SEXHEALTH6_MODULES(),
+  },
+  // ---------------------------------------------------------------------------------------------------------------
+  // Health for grades 9 to 12 (2026-10-01, pass HN). In plain terms: the course card for high school health, built on
+  // the Texas Health I course. It teaches five of the course's six strands in five lessons, in HEALTH9_MODULES()
+  // further down; the reproductive and sexual health strand is left to districts and families, as the standard provides.
+  // ---------------------------------------------------------------------------------------------------------------
+  {
+    id: 'health-9',
+    grade: '9',
+    subject: 'Health',
+    title: 'Health for life',
+    audience: 'Grades 9 to 12',
+    elective: true,
+    keywords: ['health', 'prevention', 'nutrition', 'fitness', 'CPR', 'emergencies', 'mental health', 'drugs', 'elective'],
+    modules: HEALTH9_MODULES(),
+  },
+  // ---------------------------------------------------------------------------------------------------------------
+  // Health for grades 6 to 8 (2026-10-01, pass HM). In plain terms: the course card for the middle school health
+  // elective, built on the Texas grade 6 health standard. It teaches four of the standard's six strands; the
+  // reproductive and sexual health strand stays with districts and families, as Texas law sets out, and the crisis
+  // topics stay with school counselors. Its four lessons live in HEALTH6_MODULES() further down.
+  // ---------------------------------------------------------------------------------------------------------------
+  {
+    id: 'health-6',
+    grade: '6',
+    subject: 'Health',
+    title: 'Healthy choices',
+    audience: 'Grades 6 to 8',
+    elective: true,
+    keywords: ['health', 'hygiene', 'nutrition', 'physical activity', 'bleeding and burns', 'safety', 'vaping', 'medicine', 'elective'],
+    modules: HEALTH6_MODULES(),
+  },
+  // ---------------------------------------------------------------------------------------------------------------
   // Business for grades 9 to 12 (2026-09-30, pass HD). In plain terms: the course card for the first course of a new
   // subject, Business, the eighth strand of the depth program. Its four lessons live in BIZ9_MODULES() further down.
   // ---------------------------------------------------------------------------------------------------------------
@@ -1546,6 +1611,10 @@ export const GAMES = [
   { id: 'breakeven-business-9', kind: 'breakeven', title: 'Break Even', minGrade: '9', breakeven: 'businesses' },   // business 9 to 12 (pass HD): where the lines cross is the rule
   { id: 'tool-business-k', kind: 'tool', title: 'Find the Tool', minGrade: 'K', young: true, tool: 'jobs' },   // business K to 2 (pass HH): six jobs, six tools
   { id: 'ledger-business-college', kind: 'ledger', title: 'Sort the Ledger', minGrade: 'C', ledger: 'accounts' },   // business college (pass HK): assets, liabilities or equity
+  { id: 'label-health-6', kind: 'label', title: 'Read the Label', minGrade: '6', label: 'foods' },   // health 6 to 8 (pass HM): the better label for the nutrient asked
+  { id: 'cpr-health-9', kind: 'cpr', title: 'Push to the Beat', minGrade: '9', cpr: 'compressions' },   // health 9 to 12 (pass HN): 100 to 120 a minute
+  { id: 'greenred-sexual-health-6', kind: 'greenred', title: 'Green Flag or Red Flag', minGrade: '6', greenred: 'behaviors' },   // reproductive and sexual health 6 to 8 (pass HO)
+  { id: 'mythfact-sexual-health-9', kind: 'mythfact', title: 'Myth or Fact', minGrade: '9', mythfact: 'statements' },   // sexual health 9 to 12 (pass HP)
   { id: 'deal-business-6', kind: 'deal', title: 'The Better Deal', minGrade: '6', deal: 'offers' },   // business 6 to 8 (pass HF): percent off or dollars off
   { id: 'savejar-business-3', kind: 'savejar', title: 'Fill the Jar', minGrade: '3', savejar: 'goals' },   // business 3 to 5 (pass HG): the goal divided by the weekly amount
   { id: 'relation-agriculture-6', kind: 'relation', title: 'Who Gains', minGrade: '6', relation: 'cases' },   // agriculture 6 to 8 (pass GX): who gains is the rule
@@ -2469,6 +2538,86 @@ export function ledgerRounds(round) {
   const mix = (arr) => { const a = [...arr]; for (let j = a.length - 1; j > 0; j--) { const k = Math.floor(rnd() * (j + 1)); [a[j], a[k]] = [a[k], a[j]]; } return a; };
   const deal = LEDGER_SIDES.flatMap((side) => mix(LEDGER_ITEMS.filter((it) => it[1] === side)).slice(0, 2));
   return mix(deal).map(([item, answer]) => ({ item, answer }));
+}
+// -----------------------------------------------------------------------------------------------------------------
+// Read the Label (2026-10-01, pass HM, the grades 6 to 8 health game). In plain terms: two labels for the same kind of
+// food, A and B, each list sodium, added sugars and fiber per serving, and the student taps the better one for the
+// nutrient asked: less sodium, less added sugars, or more fiber. The foods are generic on purpose, so no real product
+// is ever named or misdescribed. `labelRounds(round)` builds six comparisons, two for each nutrient, and makes the
+// asked-for difference large enough to read at a glance.
+// -----------------------------------------------------------------------------------------------------------------
+export const LABEL_FOODS = ['cereal', 'soup', 'crackers', 'yogurt', 'juice drink', 'granola bar', 'canned beans', 'frozen meal'];
+export const LABEL_NUTRIENTS = [['sodium', 'mg', 'less'], ['added sugars', 'g', 'less'], ['fiber', 'g', 'more']];
+export function labelRounds(round) {
+  let x = (round * 40503 + 17) >>> 0; const rnd = () => { x = (x * 1664525 + 1013904223) >>> 0; return x / 4294967296; };
+  const foods = [...LABEL_FOODS]; for (let j = foods.length - 1; j > 0; j--) { const k = Math.floor(rnd() * (j + 1)); [foods[j], foods[k]] = [foods[k], foods[j]]; }
+  const gap = { sodium: 80, 'added sugars': 3, fiber: 2 };
+  const draw = () => ({ sodium: (5 + Math.floor(rnd() * 86)) * 10, 'added sugars': Math.floor(rnd() * 25), fiber: Math.floor(rnd() * 10) });
+  return foods.slice(0, 6).map((food, i) => {
+    const [nutrient, unit, goal] = LABEL_NUTRIENTS[i % 3];
+    let a = draw(); let b = draw(); let tries = 0;
+    while (Math.abs(a[nutrient] - b[nutrient]) < gap[nutrient] && tries < 50) { b = draw(); tries++; }
+    if (Math.abs(a[nutrient] - b[nutrient]) < gap[nutrient]) b[nutrient] = a[nutrient] + gap[nutrient];
+    const aBetter = goal === 'less' ? a[nutrient] < b[nutrient] : a[nutrient] > b[nutrient];
+    return { food, nutrient, unit, goal, a, b, answer: aBetter ? 'A' : 'B' };
+  });
+}
+// -----------------------------------------------------------------------------------------------------------------
+// Push to the Beat (2026-10-01, pass HN, the high school health game). In plain terms: the student taps a Push button
+// as if giving chest compressions, and the game measures the pace. The American Heart Association's target for
+// hands-only CPR is 100 to 120 compressions a minute (CPR_TARGET). `cprRate(times)` turns tap times in milliseconds
+// into compressions a minute from the gaps between them, and `cprVerdict(rate)` says too slow, just right or too fast.
+// -----------------------------------------------------------------------------------------------------------------
+export const CPR_TARGET = { low: 100, high: 120 };
+export function cprRate(times) { if (!times || times.length < 2) return 0; const gaps = []; for (let i = 1; i < times.length; i++) gaps.push(times[i] - times[i - 1]); const mean = gaps.reduce((a, b) => a + b, 0) / gaps.length; return mean > 0 ? Math.round(60000 / mean) : 0; }
+export function cprVerdict(rate) { return rate < CPR_TARGET.low ? 'too slow' : rate > CPR_TARGET.high ? 'too fast' : 'just right'; }
+// -----------------------------------------------------------------------------------------------------------------
+// Green Flag or Red Flag (2026-10-01, pass HO, the grades 6 to 8 relationships game). In plain terms: one behavior at a
+// time, such as listening when you talk or checking your phone without asking, and the student taps whether it is a
+// green flag of a healthy relationship or a red flag of an unhealthy one. `GREENRED_CARDS` holds each behavior with
+// its flag, and `greenredRounds(round)` deals eight a round, four of each, in an order fixed by the round number.
+// -----------------------------------------------------------------------------------------------------------------
+export const GREENRED_CARDS = [['listens when you talk', 'green'], ['respects your no right away', 'green'], ['is honest with you', 'green'], ['supports your other friendships', 'green'], ['apologizes and changes', 'green'], ['encourages your goals', 'green'], ['checks your phone without asking', 'red'], ['gets angry when you see friends', 'red'], ['pressures you after you say no', 'red'], ['puts you down in front of others', 'red'], ['asks you to keep secrets from your parents', 'red'], ['makes threats when angry', 'red']];
+export function greenredRounds(round) {
+  let x = (round * 40503 + 17) >>> 0; const rnd = () => { x = (x * 1664525 + 1013904223) >>> 0; return x / 4294967296; };
+  const mix = (arr) => { const a = [...arr]; for (let j = a.length - 1; j > 0; j--) { const k = Math.floor(rnd() * (j + 1)); [a[j], a[k]] = [a[k], a[j]]; } return a; };
+  const deal = [...mix(GREENRED_CARDS.filter((c) => c[1] === 'green')).slice(0, 4), ...mix(GREENRED_CARDS.filter((c) => c[1] === 'red')).slice(0, 4)];
+  return mix(deal).map(([behavior, answer]) => ({ behavior, answer }));
+}
+// -----------------------------------------------------------------------------------------------------------------
+// wonderAllowed (2026-10-01, pass HO, Mikey). In plain terms: decides whether a Wonder question may be offered while a
+// student works in a course. A question tied to that course always may; otherwise a question of the student's stage may,
+// unless it is tied to a course that needs a parent's consent (the human sexuality elective), because those questions
+// must never reach a student who was not assigned that course.
+// -----------------------------------------------------------------------------------------------------------------
+export function wonderAllowed(w, courseId, stage) {
+  if (w.courseIds.includes(courseId)) return true;
+  if ((w.stage || 'early') !== stage) return false;
+  return !w.courseIds.some((id) => { const c = getCourse(id); return !!(c && c.consent); });
+}
+// -----------------------------------------------------------------------------------------------------------------
+// Myth or Fact (2026-10-01, pass HP, the high school human sexuality elective's game). In plain terms: one statement at
+// a time about health, safety or relationships, and the student taps Myth or Fact; each card carries the one-line
+// reason shown after. `MYTHFACT_CARDS` holds the statements, and `mythfactRounds(round)` deals three myths and three
+// facts a round, in an order fixed by the round number.
+// -----------------------------------------------------------------------------------------------------------------
+export const MYTHFACT_CARDS = [
+  ['Many STIs cause no symptoms.', 'fact', 'That is why testing matters.'],
+  ['The HPV vaccine helps prevent several cancers.', 'fact', 'It is recommended at ages 11 to 12.'],
+  ['Condoms lower the risk of STIs but do not remove it.', 'fact', 'They reduce risk; nothing but abstinence removes it.'],
+  ['Abstinence is the only method that is 100 percent effective.', 'fact', 'For both pregnancy and STIs.'],
+  ['Traffickers are often someone the victim knows.', 'fact', 'Many recruit online with flattery and promises.'],
+  ['You can tell by looking whether someone has an STI.', 'myth', 'Many STIs have no visible signs; only testing tells.'],
+  ['Birth control pills protect against STIs.', 'myth', 'Only condoms lower STI risk.'],
+  ['Only people with symptoms need STI testing.', 'myth', 'Many infections have no symptoms at all.'],
+  ['Trafficking always means being kidnapped by a stranger.', 'myth', 'Most victims are recruited by someone they trust.'],
+  ['Once you say yes, you cannot change your mind.', 'myth', 'Consent can be taken back at any time.'],
+];
+export function mythfactRounds(round) {
+  let x = (round * 40503 + 17) >>> 0; const rnd = () => { x = (x * 1664525 + 1013904223) >>> 0; return x / 4294967296; };
+  const mix = (arr) => { const a = [...arr]; for (let j = a.length - 1; j > 0; j--) { const k = Math.floor(rnd() * (j + 1)); [a[j], a[k]] = [a[k], a[j]]; } return a; };
+  const deal = [...mix(MYTHFACT_CARDS.filter((c) => c[1] === 'fact')).slice(0, 3), ...mix(MYTHFACT_CARDS.filter((c) => c[1] === 'myth')).slice(0, 3)];
+  return mix(deal).map(([text, answer, why]) => ({ text, answer, why }));
 }
 export const ROBOT_DECKS = {
   arrows: [
@@ -10506,6 +10655,329 @@ function BIZ6_MODULES() { return [
   },
 ]; }
 // -----------------------------------------------------------------------------------------------------------------
+// SEXHEALTH9_MODULES: the four lessons of the high school human sexuality elective (2026-10-01, pass HP).
+// In plain terms: clinical, plain and protective, for grades 9 to 12. `sources` names the expectations of the Health I
+// strand (§115.38, Adopted 2020) the lesson meets, quoted only where the published wording was read complete. The
+// effectiveness figures are the FDA's typical-use numbers, and the Texas child support rule is the Family Code's.
+// -----------------------------------------------------------------------------------------------------------------
+function SEXHEALTH9_MODULES() { return [
+  {
+    id: 'healthy-relationships-9',
+    order: 1,
+    title: 'Healthy relationships and boundaries',
+    tagline: 'What healthy relationships share, boundaries and consent, and saying no assertively',
+    requires: [],
+    lesson: {
+      paragraphs: ['Friendships are the training ground for every close relationship that comes later. The traits that make a good friendship, respect, honesty, trust, kindness, patience and good communication, are the same ones that make a healthy dating relationship and, later, a healthy marriage. A relationship that is missing them, where one person controls, belittles or scares the other, is unhealthy no matter how strong the feelings are.', 'A boundary is a limit you set about your own body, time and feelings. Each person decides their own boundaries, and a healthy sense of self makes them easier to set and keep. Consent must be clear and freely given, and it can be taken back at any time. Pressuring, manipulating or threatening anyone into sexual activity is wrong, and often a crime.', 'Refusal strategies help you say no assertively: say no clearly, let your body language match your words, give a reason if you want to, suggest something else, or leave and get help. Pressure to become sexually active can come from friends, partners, media and music, and it is fine to decide that the pressure does not get a vote. Waiting is a choice many teens make, and it deserves the same respect as any other boundary.'],
+      keyIdea: 'Healthy relationships share respect, honesty and trust. You set your own boundaries, and consent can be taken back at any time. Pressuring anyone is wrong. Say no clearly.',
+      example: { kind: 'flow', steps: ['say no clearly', 'match your body language', 'suggest something else', 'or leave and get help'], caption: 'Saying no assertively.',
+        another: ['A friend who respects you takes no for an answer the first time.',
+          { text: 'Healthy and unhealthy can look alike at first. Watch what happens after someone hears no.', visual: { kind: 'flow', steps: ['someone hears no', 'a healthy person accepts it', 'an unhealthy person pushes'] } },
+          'Feelings can be strong in an unhealthy relationship. Strength of feeling is not the test; respect is.'] },
+    },
+    sources: ['Aligned with TEKS Health Education 115.38(c)(18)(A) and (B) (friendships as a foundation, and character traits that promote healthy relationships and marriage), 115.38(c)(19)(D) (a healthy sense of self and safe boundaries), 115.38(c)(19)(E) (refusal strategies) and 115.38(c)(19)(G) (influences and pressures, and why violating another person\'s boundaries is wrong), and the National Health Education Standards, Standard 4.'],
+    generators: ['hs9-rel', 'hs9-rel', 'hs9-rel', 'hs9-rel', 'hs9-rel'],
+  },
+  {
+    id: 'safety-and-abuse-9',
+    order: 2,
+    title: 'Safety, abuse and trafficking',
+    tagline: 'Preventing abuse, how sex trafficking works, and how alcohol and drugs affect boundaries',
+    requires: ['healthy-relationships-9'],
+    lesson: {
+      paragraphs: ['Abuse can be physical, emotional or sexual, and preventing it starts with knowing the warning signs: controlling behavior, jealousy, isolation from friends and family, threats, and pressure to keep secrets. Healthy strategies include staying connected to people you trust, having a safety plan, and telling a parent or another trusted adult early, before things get worse.', 'Sex trafficking is the use of force, fraud or coercion to make someone perform commercial sex. Traffickers are often someone the victim knows, and many recruit online with flattery, gifts, promises of money, a job or love, then grooming, which means building trust in order to exploit it. Signs include controlling behavior, someone else holding a person\'s money or ID, and a story that changes. The National Human Trafficking Hotline answers at 1-888-373-7888, any hour.', 'Alcohol and other drugs impair judgment. They make it harder to set boundaries, to notice when someone else\'s boundaries are being crossed, and to make decisions you would make sober, which is one reason people who want to cause harm sometimes use them. Staying sober, sticking with friends and having a ride home are simple protections.'],
+      keyIdea: 'Warning signs of abuse include control, jealousy and isolation. Traffickers often know their victims and recruit online. Alcohol and drugs impair judgment and boundaries. Tell a trusted adult.',
+      example: { kind: 'flow', steps: ['flattery and gifts', 'secrecy and isolation', 'control', 'exploitation'], caption: 'How grooming usually unfolds.',
+        another: ['A job offer that asks you to keep it secret from your parents is not a job offer.',
+          { text: 'If something feels wrong online: stop answering, save the messages, and tell an adult.', visual: { kind: 'flow', steps: ['stop answering', 'save the messages', 'tell an adult'] } },
+          'Friends who arrive together and leave together protect each other.'] },
+    },
+    sources: ['Aligned with TEKS Health Education 115.38(c)(19)(A) (the characteristics of sex trafficking), 115.38(c)(19)(C) (healthy strategies for preventing abuse) and 115.38(c)(19)(F) (how alcohol and other substances affect boundaries), and the National Health Education Standards, Standard 7.'],
+    generators: ['hs9-safety', 'hs9-safety', 'hs9-safety', 'hs9-safety', 'hs9-safety'],
+  },
+  {
+    id: 'sti-prevention-9',
+    order: 3,
+    title: 'STIs, testing and prenatal care',
+    tagline: 'How STIs spread, what the numbers show, why testing matters, and early prenatal care',
+    requires: ['safety-and-abuse-9'],
+    lesson: {
+      paragraphs: ['Sexually transmitted infections, or STIs, spread mainly through sexual contact. Some, including HIV, hepatitis B and syphilis, can also spread through blood or from a mother to her baby during pregnancy or birth. Many STIs have no symptoms, which is why testing matters: a person can have an infection, and pass it on, without knowing.', 'The numbers are large. According to the Centers for Disease Control and Prevention, young people ages 15 to 24 account for about half of the new STIs in the United States each year. Reliable numbers come from public health sources such as the CDC and the Texas Department of State Health Services, which report cases by state and county. The HPV vaccine, recommended at ages 11 to 12, prevents infections that cause several kinds of cancer.', 'If signs of pregnancy appear, such as a missed period, the right steps are to tell a parent or another trusted adult, get an early pregnancy test and begin prenatal care early. Early care, including checkups and folic acid, protects the health of both the mother and the baby.'],
+      keyIdea: 'STIs spread mainly through sexual contact, and many have no symptoms, so testing matters. The HPV vaccine prevents several cancers. With signs of pregnancy, tell an adult and get early care.',
+      example: { kind: 'flow', steps: ['many STIs have no symptoms', 'testing finds them', 'treatment and prevention'], caption: 'Why testing matters.',
+        another: ['Some STIs are cured with medicine; others, like HIV, are managed for life with treatment.',
+          { text: 'A trustworthy statistic names its source and year, like a CDC or Texas Department of State Health Services report.', visual: { kind: 'flow', steps: ['who measured it', 'when', 'for what place'] } },
+          'Early prenatal care is one of the best predictors of a healthy pregnancy.'] },
+    },
+    sources: ['Aligned with TEKS Health Education 115.38(c)(20) (telling a trusted adult, early pregnancy testing and prenatal care), 115.38(c)(21)(B) (modes of transmission of STDs/STIs) and 115.38(c)(21)(C) (statistics on STDs/STIs among teens from county, state and federal sources), and the National Health Education Standards, Standard 1.'],
+    generators: ['hs9-sti', 'hs9-sti', 'hs9-sti', 'hs9-sti', 'hs9-sti'],
+  },
+  {
+    id: 'choices-and-responsibilities-9',
+    order: 4,
+    title: 'Choices, risks and responsibilities',
+    tagline: 'Abstinence and support, how well methods work, and the legal responsibilities of parents',
+    requires: ['sti-prevention-9'],
+    lesson: {
+      paragraphs: ['Abstinence, not having sex, is the only method that is 100 percent effective at preventing pregnancy and STIs. Sexual activity can also carry emotional risks for teens, including stress, anxiety and depression. Support makes any choice easier to keep: parents, trusted adults and friends who share the same goal. A person can choose abstinence at any point, including after having been sexually active.', 'Other methods lower risk without removing it. According to the FDA\'s birth control guide, with typical use, about 7 in 100 people relying on the pill, the patch or the ring become pregnant in the first year, about 13 in 100 relying on male condoms, and fewer than 1 in 100 with an implant or an IUD. Only condoms also lower the risk of STIs, and they do not remove it.', 'Parenthood carries legal responsibilities. In Texas, both parents are legally responsible for supporting their child. A father can establish paternity by signing an Acknowledgment of Paternity or through a court, and child support usually continues until the child turns 18 or graduates from high school, whichever comes later.'],
+      keyIdea: 'Abstinence is the only 100 percent effective method. Other methods lower risk, and only condoms lower STI risk. In Texas, both parents are legally responsible for supporting their child.',
+      example: { kind: 'flow', steps: ['implant or IUD: fewer than 1 in 100', 'pill, patch or ring: about 7 in 100', 'male condoms: about 13 in 100'], caption: 'Pregnancies in the first year with typical use (FDA).',
+        another: ['Typical use means how people really use a method, with missed pills and mistakes, not perfect use.',
+          { text: 'Choosing to wait is easier with a plan: know your reasons, tell someone who supports you, and avoid situations that make it hard.', visual: { kind: 'flow', steps: ['know your reasons', 'tell a supporter', 'plan ahead'] } },
+          'Child support is the child\'s right, not a favor between parents.'] },
+    },
+    sources: ['Aligned with TEKS Health Education 115.38(c)(21)(F) (emotional risks), 115.38(c)(21)(G) and (H) (the benefits of abstinence and building support for it), 115.38(c)(21)(I) (the effectiveness and failure rates of barrier protection and other methods) and 115.38(c)(21)(J) (legal responsibilities, including child support and acknowledgement of paternity), and the National Health Education Standards, Standard 5.'],
+    generators: ['hs9-choices', 'hs9-choices', 'hs9-choices', 'hs9-choices', 'hs9-choices'],
+  },
+]; }
+// -----------------------------------------------------------------------------------------------------------------
+// SEXHEALTH6_MODULES: the four lessons of the grades 6 to 8 reproductive and sexual health elective (2026-10-01, pass HO).
+// In plain terms: each object is one lesson in clinical, age-appropriate language. `sources` names the expectations of
+// the Texas grade 6 health standard, §115.26(b)(20) to (23), read in full, that the lesson meets. Medical figures follow
+// the American College of Obstetricians and Gynecologists and the CDC, and every one was checked twice.
+// -----------------------------------------------------------------------------------------------------------------
+function SEXHEALTH6_MODULES() { return [
+  {
+    id: 'puberty-and-the-body-6',
+    order: 1,
+    title: 'Puberty and the growing body',
+    tagline: 'How bodies change during puberty, why the timing differs, the menstrual cycle, and the hormones behind it',
+    requires: [],
+    lesson: {
+      paragraphs: ['Puberty is the stretch of years when a child\'s body becomes an adult\'s. It usually begins between about ages 8 and 13 for girls and about 9 and 14 for boys, and every person\'s timing and pace are different, so classmates of the same age can look very different without anything being wrong. Girls and boys both grow taller, gain muscle and body hair, and sweat more, which makes daily showers and deodorant part of good hygiene.', 'Girls develop breasts, their hips widen and they begin to menstruate. Boys\' voices deepen, their shoulders broaden and facial hair appears. Growth spurts, acne and changing emotions are common for everyone. If a change worries you, or if puberty seems very early or very late, a parent and a doctor can help sort out what is normal.', 'Hormones, chemical messengers made by glands, drive these changes. The pituitary gland in the brain signals the ovaries to make estrogen and progesterone and the testes to make testosterone. The menstrual cycle is the monthly pattern in which an ovary releases an egg and the lining of the uterus thickens; if no pregnancy begins, the lining leaves the body as a period. Periods usually last 2 to 7 days, and in the early years, cycles of 21 to 45 days are common and can be irregular.'],
+      keyIdea: 'Puberty turns a child\'s body into an adult\'s, on a different schedule for everyone. Hormones signaled by the pituitary gland drive the changes. The menstrual cycle releases an egg about once a month.',
+      example: { kind: 'flow', steps: ['the pituitary gland signals', 'the ovaries or testes make hormones', 'the body changes'], caption: 'How hormones drive puberty.',
+        another: ['Two friends who are both twelve can be a foot apart in height, and both can be completely normal.',
+          { text: 'In the early years, a period often lasts 2 to 7 days, and 21 to 45 days can pass from the start of one period to the start of the next.', visual: { kind: 'flow', steps: ['a period begins', 'an egg is released', 'the next period begins'] } },
+          'Daily showers, clean clothes and deodorant matter more once puberty begins.'] },
+    },
+    sources: ['Aligned with TEKS Health Education 115.26(b)(22)(A) (changes during puberty and how rates and patterns of development vary), 115.26(b)(22)(B) (the menstrual cycle) and 115.26(b)(22)(C) (the role of hormones), and the National Health Education Standards, Standard 1.'],
+    generators: ['rsh6-body', 'rsh6-body', 'rsh6-body', 'rsh6-body', 'rsh6-body'],
+  },
+  {
+    id: 'reproduction-and-pregnancy-6',
+    order: 2,
+    title: 'Reproduction and pregnancy',
+    tagline: 'How a new life begins at the level of cells, how a baby develops week by week, and why prenatal care matters',
+    requires: ['puberty-and-the-body-6'],
+    lesson: {
+      paragraphs: ['Human reproduction begins with fertilization, when a sperm cell joins an egg cell, usually in a fallopian tube. The fertilized egg, called a zygote, carries half of its genetic instructions from each parent. It divides again and again as it travels to the uterus, and about a week later it attaches to the uterine wall.', 'Pregnancy is counted in weeks, about 40 from the first day of the last period. By about week 6, an ultrasound can often show the heart beating. By week 12 the major organs have formed, and around week 20 a detailed ultrasound can check the baby\'s anatomy. In the last months the baby mostly grows, and its lungs mature.', 'Prenatal care is the health care a pregnant person receives, starting as early as possible. Regular checkups, folic acid to help prevent certain birth defects of the brain and spine, healthy food, and avoiding alcohol, tobacco and other drugs give a baby the best start. Raising a child is a responsibility that lasts for years, so most people want to finish school, find steady work and be ready before becoming a parent.'],
+      keyIdea: 'Fertilization joins a sperm and an egg into a zygote. A baby develops over about 40 weeks, with the heart beating early. Early prenatal care gives a baby the best start.',
+      example: { kind: 'flow', steps: ['fertilization', 'attaching to the uterus', 'about 40 weeks of growth'], caption: 'From one cell to a baby.',
+        another: ['A baby\'s heart can often be seen beating on an ultrasound by about week 6.',
+          { text: 'Folic acid, a B vitamin, is recommended before and early in pregnancy, because the brain and spine form in the earliest weeks.', visual: { kind: 'flow', steps: ['folic acid', 'a healthy brain and spine', 'fewer birth defects'] } },
+          'Every cell in your body came from one fertilized egg.'] },
+    },
+    sources: ['Aligned with TEKS Health Education 115.26(b)(22)(D) (the cellular process of fertilization), 115.26(b)(22)(E) (milestones of fetal development) and 115.26(b)(23)(B) (life goals to achieve before becoming a parent), and the National Health Education Standards, Standard 1.'],
+    generators: ['rsh6-life', 'rsh6-life', 'rsh6-life', 'rsh6-life', 'rsh6-life'],
+  },
+  {
+    id: 'healthy-relationships-6',
+    order: 3,
+    title: 'Healthy relationships',
+    tagline: 'Friendship, crushes and dating, what makes a relationship healthy, and the warning signs of one that is not',
+    requires: ['reproduction-and-pregnancy-6'],
+    lesson: {
+      paragraphs: ['Relationships come in kinds. A friendship is built on shared interests and trust. Infatuation, a crush, is a strong attraction that often fades and may not be returned. Dating relationships come later for most people, and marriage is a lifelong legal commitment. Friendships are the foundation: the skills you practice with friends, listening, honesty and keeping your word, are the same ones every healthy relationship needs.', 'A healthy relationship includes sharing, kindness, honesty, respect, trust, patience, good communication and compatibility, and each person is treated with dignity. There are healthy ways to show friendship, affection and love: spending time together, encouraging each other\'s goals and saying kind things. Healthy marriages help build strong families and communities.', 'Warning signs of an unhealthy or harmful relationship include anger, controlling behavior such as checking someone\'s phone or deciding who they can see, jealousy, manipulation, and isolation, pulling someone away from friends and family. Everyone has the right to set boundaries and have them respected, including about touch such as hugs or holding hands, and no one should be pressured. Saying no is a skill: say it clearly, mean it, and leave if you need to. If a relationship feels unsafe, tell a parent or another trusted adult.'],
+      keyIdea: 'Friendships are the foundation for healthy relationships. Healthy means honest, kind and respectful. Controlling behavior, jealousy and isolation are warning signs, and everyone\'s boundaries deserve respect.',
+      example: { kind: 'flow', steps: ['friendship', 'infatuation', 'dating', 'marriage'], caption: 'Four kinds of relationships.',
+        another: ['Respecting a no right away, without sulking or pressuring, is a sign of a healthy relationship.',
+          { text: 'A friend who checks your messages and gets angry when you sit with others is showing controlling behavior.', visual: { kind: 'flow', steps: ['checking your phone', 'cutting you off from friends', 'a warning sign'] } },
+          'Kind words and kept promises show care at any age.'] },
+    },
+    sources: ['Aligned with TEKS Health Education 115.26(b)(20)(A) to (F) (kinds of relationships, friendship as a foundation, healthy ways to express friendship, affection, and love, healthy relationships and marriage, dignity and respect), 115.26(b)(21)(C) (characteristics of unhealthy or harmful relationships) and 115.26(b)(21)(E) to (G) (boundaries, limits, communication and refusal skills), and the National Health Education Standards, Standard 4.'],
+    generators: ['rsh6-relate', 'rsh6-relate', 'rsh6-relate', 'rsh6-relate', 'rsh6-relate'],
+  },
+  {
+    id: 'safety-and-choices-6',
+    order: 4,
+    title: 'Safety, boundaries and choices',
+    tagline: 'Recognizing abuse and exploitation, reporting it, the laws that protect you, and why waiting is the healthiest choice',
+    requires: ['healthy-relationships-6'],
+    lesson: {
+      paragraphs: ['Abuse can be physical, emotional or sexual, and exploitation, using someone for another person\'s gain, is abuse too. Sexual harassment, sexual abuse, sexual assault and sex trafficking harm a person\'s body, feelings, trust and schoolwork, sometimes for years. It is never the victim\'s fault.', 'If abuse is happening to you or to someone you know, tell a parent or another trusted adult, such as a teacher or school counselor, and keep telling until someone helps. In Texas, teachers, counselors and other professionals are required by law to report suspected child abuse. State law makes sexual harassment, abuse and assault crimes, and federal law requires schools to stop sexual harassment and protect students who report it.', 'Sexual activity carries real risks for young people. Pregnancy, including teen pregnancy, is one possible outcome. Others are sexually transmitted infections and diseases, infections or diseases spread through sex or sexual activity, including HIV, and emotional risks such as regret, stress and damaged trust. Abstinence, refraining from all forms of sexual activity, is the only method that is 100% effective at avoiding these risks, and it supports self-respect, school goals, and personal, family and religious values. Support from parents, other trusted adults and friends makes that choice easier.'],
+      keyIdea: 'Abuse and exploitation are never the victim\'s fault, and trusted adults must help. Laws protect victims. Abstinence is the only 100% effective way to avoid the risks of sexual activity.',
+      example: { kind: 'flow', steps: ['notice it', 'tell a trusted adult', 'keep telling until someone helps'], caption: 'What to do about abuse.',
+        another: ['An adult who asks a young person to keep their friendship a secret is showing a warning sign. Secrets like that should be told.',
+          { text: 'Teachers and counselors in Texas must report suspected abuse, so telling one of them starts help.', visual: { kind: 'flow', steps: ['tell a teacher or counselor', 'they report it', 'help begins'] } },
+          'Saying no to pressure is a sign of strength and self-respect.'] },
+    },
+    sources: ['Aligned with TEKS Health Education 115.26(b)(21)(A), (B) and (D) (forms of abuse and exploitation, their impacts, and ways of reporting), 115.26(b)(23)(A) and (C) to (I) (teen pregnancy as a possible outcome, STIs and STDs, emotional risks, abstinence and its benefits, and how laws protect victims), and the National Health Education Standards, Standard 5.'],
+    generators: ['rsh6-safe', 'rsh6-safe', 'rsh6-safe', 'rsh6-safe', 'rsh6-safe'],
+  },
+]; }
+// -----------------------------------------------------------------------------------------------------------------
+// HEALTH9_MODULES: the five lessons of the high school health course (2026-10-01, pass HN).
+// In plain terms: each object is one lesson. `sources` names the expectations of the Texas Health I course (§115.38,
+// Adopted 2020) that the lesson meets, quoted only where the published text was read in full, and `generators` the
+// question banks below. The first-aid, CPR, caffeine, sleep and medicine guidance follows the American Heart
+// Association, the CDC, the American Academy of Pediatrics and the FDA, and every figure was checked twice.
+// -----------------------------------------------------------------------------------------------------------------
+function HEALTH9_MODULES() { return [
+  {
+    id: 'health-literacy-9',
+    order: 1,
+    title: 'Health literacy and prevention',
+    tagline: 'Judging health claims, preventing disease, and the warning signs that mean call 911',
+    requires: [],
+    lesson: {
+      paragraphs: ['Health literacy is the skill of finding, judging and using health information. Before trusting a claim, check who is behind it, whether it cites evidence from sources such as the Centers for Disease Control and Prevention or a medical journal, how recent it is, and whether someone is selling something. A post that promises a cure, uses one person\'s story as proof, or attacks every doctor who disagrees is a warning sign.', 'Diseases are communicable, spread by germs from person to person, or non-communicable, like heart disease, cancer and diabetes, which develop over years. Prevention works for both. Handwashing with soap for at least 20 seconds, vaccines and staying home when sick cut the spread of germs, while not smoking, eating well, staying active and sleeping enough lower the risk of chronic disease. Regular checkups catch problems such as high blood pressure early, often before any symptom appears.', 'Some warning signs mean call 911 now. A heart attack often feels like pressure or pain in the chest that may spread to an arm, the back, the neck or the jaw, with shortness of breath, a cold sweat or nausea; women are somewhat more likely to have the less typical signs. For a stroke, think F.A.S.T.: face drooping, arm weakness, speech difficulty, time to call 911. Good decisions follow a pattern: name the problem, list the options, weigh each against reliable information and your values, choose, then look back at how it went.'],
+      keyIdea: 'Judge health information by its source and evidence. Prevent disease with vaccines, handwashing and healthy habits. Know the warning signs of a heart attack and a stroke, and call 911.',
+      example: { kind: 'flow', steps: ['face drooping', 'arm weakness', 'speech difficulty', 'time to call 911'], caption: 'F.A.S.T., the warning signs of a stroke.',
+        another: ['High blood pressure usually causes no symptoms, which is why it is checked at every visit.',
+          { text: 'Handwashing: wet your hands, lather for at least 20 seconds, rinse and dry. Twenty seconds is about two rounds of the birthday song.', visual: { kind: 'flow', steps: ['wet', 'lather for 20 seconds', 'rinse and dry'] } },
+          'A claim that sounds too good to be true usually is. Check the source before you share it.'] },
+    },
+    sources: ['Aligned with TEKS Health Education 115.38(c)(1)(A) (analyze health information based on health-related standards), 115.38(c)(1)(B) (strategies to prevent communicable and non-communicable diseases), 115.38(c)(1)(C) (early detection and warning signs) and 115.38(c)(3) (decision-making skills based on health information), and the National Health Education Standards, Standards 1 and 3.'],
+    generators: ['hl9-literacy', 'hl9-literacy', 'hl9-literacy', 'hl9-literacy', 'hl9-literacy'],
+  },
+  {
+    id: 'nutrition-and-activity-9',
+    order: 2,
+    title: 'Food, fitness and energy balance',
+    tagline: 'Reading labels and menus, balancing calories with activity, and the sleep that makes it work',
+    requires: ['health-literacy-9'],
+    lesson: {
+      paragraphs: ['Food labels show nutrients per serving, so check the serving size and the number of servings you actually eat. The percent Daily Value tells you how much one serving gives toward a day: 5 percent or less is low, and 20 percent or more is high. Aim low for sodium, saturated fat and added sugars, and high for fiber, calcium, iron and potassium. Menus at large restaurant chains list calories too, which makes comparing easier.', 'Energy balance compares the calories you eat with the calories you use. A runner in training needs more fuel than someone resting, and needs change with age, size and activity. Healthy patterns favor vegetables, fruits, whole grains, lean proteins and water, and fresh or minimally processed foods usually carry less added sugar and sodium than highly processed ones. Skipping meals, crash diets and living on sugary or energy drinks work against the body, and pediatricians advise teens to keep caffeine to no more than about 100 milligrams a day.', 'Teens need at least 60 minutes of moderate-to-vigorous activity every day; adults need at least 150 minutes of moderate activity a week, plus muscle strengthening. Activity improves mood, sleep, focus and friendships, and with a balanced diet it lowers the risk of chronic conditions such as heart disease, type 2 diabetes and some cancers. Sleep counts too: teens need 8 to 10 hours a night, and too little makes healthy eating and exercise harder.'],
+      keyIdea: 'Read labels per serving: 5 percent Daily Value is low and 20 percent is high. Balance calories with activity. Teens need 60 active minutes a day and 8 to 10 hours of sleep.',
+      example: { kind: 'flow', steps: ['check the serving size', 'read the percent Daily Value', 'compare two foods'], caption: 'Reading a food label.',
+        another: [{ text: 'A drink with 48 grams of added sugars gives 96 percent of the 50-gram Daily Value in one bottle.', visual: { kind: 'flow', steps: ['48 grams of added sugars', 'out of a 50-gram Daily Value', 'about 96 percent'] } },
+          'A 16-ounce energy drink can hold 150 milligrams of caffeine or more, past a teen\'s daily limit in one can.',
+          'Two 30-minute walks add up to the 60 minutes teens need.'] },
+    },
+    sources: ['Aligned with TEKS Health Education 115.38(c)(6)(A) (evaluate food labels and menus and make healthy decisions about daily caloric intake), 115.38(c)(6)(B) (healthy and unhealthy dietary practices), 115.38(c)(7)(A) and (B) (nutrition, physical activity, quality of life and balancing caloric intake) and 115.38(c)(8)(A) and (B) (fresh and processed foods, and preventing chronic conditions), and the National Health Education Standards, Standard 7.'],
+    generators: ['hl9-food', 'hl9-food', 'hl9-food', 'hl9-food', 'hl9-food'],
+  },
+  {
+    id: 'first-aid-and-safety-9',
+    order: 3,
+    title: 'Emergencies, CPR and staying safe',
+    tagline: 'Hands-only CPR and an AED, choking rescue, and safety in person and online',
+    requires: ['nutrition-and-activity-9'],
+    lesson: {
+      paragraphs: ['If someone collapses and is not breathing normally, call 911, send someone for an automated external defibrillator, or AED, and start hands-only CPR: push hard and fast in the center of the chest, at least 2 inches deep for an adult, 100 to 120 times a minute, letting the chest rise back up between pushes. When the AED arrives, turn it on and follow its voice: it tells you where to place the pads, checks the heart rhythm and says whether to give a shock. Keep pushing until help takes over.', 'Choking that blocks the airway is silent: the person cannot cough, speak or breathe, and may clutch the throat. Ask, "Are you choking?" and if they nod, stand behind them and give quick inward and upward abdominal thrusts just above the navel until the object comes out. If they become unresponsive, lower them to the ground, call 911 and start CPR.', 'Safety plans prevent emergencies. Avoid people and places tied to violence, gangs and weapons, and learn a sign of human trafficking: someone controlling another person\'s money, documents or movement. Online, protect your identity, keep your address, school and passwords private, and remember that a predator may pose as a friend your age. Never send, ask for or forward a sexual image of anyone under 18; in Texas it is a crime even between teens, and once sent it cannot be taken back. For bullying or harassment, make a plan: save the evidence, block and report, and name the adults you will tell.'],
+      keyIdea: 'Call 911, push hard and fast at 100 to 120 a minute, and use an AED. Give abdominal thrusts for choking. Protect your identity online, and have a plan for bullying.',
+      example: { kind: 'flow', steps: ['call 911', 'push hard and fast', 'use the AED'], caption: 'Hands-only CPR in three steps.',
+        another: ['A song at about 100 to 120 beats a minute, such as "Stayin\' Alive," keeps the right pace for compressions.',
+          { text: 'An AED checks the heart rhythm before it advises a shock, so it is safe to use on someone who has collapsed.', visual: { kind: 'flow', steps: ['place the pads', 'it checks the rhythm', 'it advises a shock or not'] } },
+          'A friend who says "send it and I will delete it" cannot promise that. Screenshots last.'] },
+    },
+    sources: ['Aligned with TEKS Health Education 115.38(c)(9) (first aid, CPR, choking rescue and an AED), 115.38(c)(10)(A) (strategies for avoiding violence, gangs, weapons, and human trafficking), 115.38(c)(11)(A) and (B) (resisting inappropriate digital communication, identity protection and recognizing predators) and 115.38(c)(12)(B) (a personal action plan for bullying, cyberbullying or harassment), and the National Health Education Standards, Standard 7.'],
+    generators: ['hl9-safety', 'hl9-safety', 'hl9-safety', 'hl9-safety', 'hl9-safety'],
+  },
+  {
+    id: 'mind-and-mood-9',
+    order: 4,
+    title: 'Mind and mood',
+    tagline: 'Empathy and assertive communication, recovering from hard experiences, and getting help',
+    requires: ['first-aid-and-safety-9'],
+    lesson: {
+      paragraphs: ['Empathy means trying to see a situation from another person\'s side and letting them know you care. In a conflict, communication can be passive, keeping quiet and giving in; aggressive, attacking or blaming; or assertive, saying what you think and need clearly and respectfully while listening to the other person. Assertive communication solves the most conflicts and keeps the most friendships.', 'Adverse childhood experiences, such as abuse, neglect or growing up around violence, can keep the brain\'s stress system on high alert and raise the risk of later health problems. They do not decide a person\'s future. Safe, steady relationships with adults, coping skills and counseling help people process hard events and build resilience, the ability to recover and grow.', 'The CDC lists risk factors for suicide, such as depression and other mental health conditions, substance use, a previous attempt and feeling isolated, and protective factors, such as connection to family, friends and school, and access to mental health care. Warning signs include talking about wanting to die or about being a burden, pulling away from others, and giving away belongings. If you see them in yourself or a friend, tell a parent or another trusted adult right away. The 988 Suicide and Crisis Lifeline, reached by calling or texting 988, replaced the old national lifeline number in 2022 and connects people with trained counselors at any hour, and reaching out to it helps keep people safe.'],
+      keyIdea: 'Assertive communication is clear and respectful. Hard experiences can be overcome with support. Tell a trusted adult about warning signs, and call or text 988.',
+      example: { kind: 'flow', steps: ['passive', 'aggressive', 'assertive'], caption: 'Three ways to communicate in a conflict.',
+        another: ['Assertive sounds like this: "I felt left out when plans changed without me. Next time, can you text me?"',
+          { text: 'Resilience grows from connection. One steady adult can make a large difference.', visual: { kind: 'flow', steps: ['a hard event', 'support and coping skills', 'recovery and growth'] } },
+          'You never have to handle a friend\'s warning signs alone. Telling an adult is caring, not betraying.'] },
+    },
+    sources: ['Aligned with TEKS Health Education 115.38(c)(2)(A) and (B) (perspective-taking and empathy, and passive, aggressive and assertive communication), 115.38(c)(4) (adverse childhood experiences and overcoming negative events) and 115.38(c)(5)(A) and (B) (the CDC\'s suicide risk and protective factors, telling a trusted adult, and suicide prevention resources), and the National Health Education Standards, Standard 4.'],
+    generators: ['hl9-mind', 'hl9-mind', 'hl9-mind', 'hl9-mind', 'hl9-mind'],
+  },
+  {
+    id: 'drugs-and-choices-9',
+    order: 5,
+    title: 'Drugs, medicine and choices',
+    tagline: 'Medicine labels and safe storage, counterfeit pills and naloxone, treatment, and refusal skills',
+    requires: ['mind-and-mood-9'],
+    lesson: {
+      paragraphs: ['Medicine labels tell you what a drug is for and how to use it safely. An over-the-counter label lists the active ingredient and its category, such as pain reliever or antihistamine, along with uses, warnings and directions; a prescription label names the patient, the dose and the prescriber. Store medicines locked up, never share prescriptions, and get rid of leftovers at a pharmacy kiosk or a drug take-back event. Combining drugs is dangerous: opioids taken with alcohol or sleep medicines can slow breathing until it stops.', 'Counterfeit pills sold online or by friends can look exactly like real medicine but contain fentanyl, an opioid so strong that a tiny amount can kill. Naloxone, sold over the counter as a nasal spray since 2023, can reverse an opioid overdose: call 911 and give it if someone will not wake up or is barely breathing. Addiction is a treatable condition. Treatment can include counseling, support groups and, for opioid use disorder, medications such as buprenorphine or methadone, and the first step is telling a parent, a school counselor, a teacher or another trusted adult.', 'Influences on substance use are physical, like how quickly the teenage brain forms habits, and social, like friends, family, ads and social media. Most teens do not use alcohol, tobacco or other drugs, and refusal skills make saying no easier: say no clearly, give a reason, suggest something else, or leave. The longer a person waits to start, the lower the risk of later addiction.'],
+      keyIdea: 'Read labels, store medicines safely and never combine drugs without a doctor. Counterfeit pills can hold fentanyl, and naloxone can reverse an overdose. Addiction is treatable, and refusal skills work.',
+      example: { kind: 'flow', steps: ['say no clearly', 'give a reason', 'suggest something else', 'or leave'], caption: 'Four refusal skills.',
+        another: ['The same active ingredient can hide in two medicines, so taking both can double the dose. Read every label.',
+          { text: 'If someone will not wake up after taking a pill: call 911, give naloxone, and stay with them.', visual: { kind: 'flow', steps: ['call 911', 'give naloxone', 'stay with them'] } },
+          'Waiting matters: people who start using substances young face a higher risk of addiction.'] },
+    },
+    sources: ['Aligned with TEKS Health Education 115.38(c)(13)(A), (B) and (C) (drug labels, safe storage and disposal, and preventing misuse, including combining drugs), 115.38(c)(15)(A) and (B) (treatment options and how to report suspected drug abuse), 115.38(c)(16)(A) (physical and social influences) and 115.38(c)(17)(A) (refusal skills), and the National Health Education Standards, Standard 5.'],
+    generators: ['hl9-drugs', 'hl9-drugs', 'hl9-drugs', 'hl9-drugs', 'hl9-drugs'],
+  },
+]; }
+// -----------------------------------------------------------------------------------------------------------------
+// HEALTH6_MODULES: the four lessons of the grades 6 to 8 health course (2026-10-01, pass HM).
+// In plain terms: each object is one lesson. Every health fact here comes from the agency that sets it (the CDC for
+// physical activity, seizures, ticks and mosquitoes; the National Institutes of Health for calcium and iron; the Red
+// Cross for burns; the DEA for counterfeit pills) and was checked twice. `sources` names the Texas grade 6 health
+// expectations the lesson meets and the National Health Education Standards beside them.
+// -----------------------------------------------------------------------------------------------------------------
+function HEALTH6_MODULES() { return [
+  {
+    id: 'body-and-hygiene-6',
+    order: 1,
+    title: 'Your body and your health',
+    tagline: 'Habits that keep body systems healthy, prevention, first steps when illness strikes, and trustworthy health information',
+    requires: [],
+    lesson: {
+      paragraphs: ['Every body system has jobs, and simple habits keep them working: sleep repairs the body and the brain, water keeps blood and joints moving, and exercise strengthens the heart and lungs. Hygiene choices pay off at two speeds. Brushing twice a day with fluoride toothpaste and cleaning between your teeth every day stops bad breath now and prevents cavities and gum disease later. Washing your hands with soap for at least 20 seconds stops germs today and means fewer sick days all year.', 'Prevention works before anything goes wrong. Vaccines train the immune system to recognize a germ before it can make you sick, and yearly wellness exams and dental check-ups catch problems early. When illness does happen, knowing what to do matters. During an asthma attack, help the person sit up and use their inhaler, and get an adult or call 911 if breathing does not improve. If someone with diabetes is shaky, sweaty or confused, their blood sugar may be low, so get an adult and follow their care plan, which often calls for juice or another fast sugar. During a seizure, move hard objects away, never hold the person down or put anything in their mouth, time it, and call 911 if it lasts more than five minutes.', 'Some illnesses are spread by bites. Ticks can spread Lyme disease, which often starts with a spreading red rash, fever and tiredness, and mosquitoes can spread West Nile virus, which most infected people never notice but which makes some very sick. Insect repellent, long sleeves outdoors and a tick check after time in tall grass prevent most bites. Health information spreads too, and not all of it is true. Check who wrote it, what evidence they give, how recent it is, and whether trusted sources such as the CDC or your doctor agree.'],
+      keyIdea: 'Habits like sleep, brushing and handwashing protect your body now and later. Vaccines and check-ups prevent illness. Know the first steps for asthma, low blood sugar and seizures, and check health information before you trust it.',
+      example: { kind: 'flow', steps: ['brush twice a day', 'clean between teeth daily', 'fewer cavities later'], caption: 'A habit now, a payoff later.',
+        another: ['A tick check after a hike takes two minutes: look behind the knees, around the waist, under the arms and along the hairline.',
+          { text: 'Seizure first aid: keep the person safe, do not hold them down, put nothing in their mouth, time it, and call 911 if it passes five minutes.', visual: { kind: 'flow', steps: ['keep them safe', 'time the seizure', 'call 911 after five minutes'] } },
+          'A website selling a cure is a reason for more questions, not fewer. Ask who gains if you believe it.'] },
+    },
+    sources: ['Aligned with TEKS Health Education 115.26(b)(1) (explain how to maintain the healthy status of body systems), 115.26(b)(2)(A) (immediate and long-term effects of personal and dental hygiene), 115.26(b)(2)(B) (criteria for evaluating the validity of health information and sources), 115.26(b)(2)(E) (preventive health measures, immunizations, wellness exams and dental check-ups), 115.26(b)(2)(F) (actions when illness occurs, including asthma, diabetes, and epilepsy) and 115.26(b)(2)(G) (vector-borne illnesses such as Lyme disease or West Nile Virus), and the National Health Education Standards, Standards 1, 3 and 7.'],
+    generators: ['hl6-body', 'hl6-body', 'hl6-body', 'hl6-body', 'hl6-body'],
+  },
+  {
+    id: 'eating-and-moving-6',
+    order: 2,
+    title: 'Food and movement',
+    tagline: 'Calcium and iron, reading a food label, lower-sodium choices, and an hour of activity a day',
+    requires: ['body-and-hygiene-6'],
+    lesson: {
+      paragraphs: ['Your body needs micronutrients, nutrients needed in small amounts. Calcium builds bones, and young people ages 9 to 18 need about 1,300 milligrams a day, about the amount in four cups of milk or a fortified alternative. Iron carries oxygen in the blood, and children ages 9 to 13 need about 8 milligrams a day, from foods like beans, lean meat and fortified cereal. Most of your bone mass is built by the end of your teens, so calcium matters now.', 'Food labels list calories and nutrients per serving, so check the serving size first: if you eat two servings, you get twice the amounts on the label. Look at sodium, added sugars and fiber, and compare similar foods. Many canned and packaged foods are high in sodium, so lower-sodium choices like no-salt-added canned vegetables help. Fresh or minimally processed foods usually keep more fiber and less added salt and sugar than highly processed ones. Healthy eating means regular meals with a variety of foods, not skipping meals or living on sugary drinks.', 'The CDC recommends that children and teens ages 6 to 17 get at least 60 minutes of moderate-to-vigorous physical activity every day, with muscle- and bone-strengthening activity on at least three days a week. Regular activity and balanced meals lower the risk of obesity, heart disease and type 2 diabetes, and they also improve mood, sleep and focus. Ads and social media push foods and habits for profit, so ask who made a message and what they want you to buy. A good goal is specific and realistic, like walking the dog for 20 minutes after school five days a week.'],
+      keyIdea: 'Calcium builds bones and iron carries oxygen. Read labels per serving and compare sodium, added sugars and fiber. Aim for 60 minutes of activity a day, and set goals you can keep.',
+      example: { kind: 'flow', steps: ['check the serving size', 'compare sodium and added sugars', 'choose the better option'], caption: 'Reading a food label.',
+        another: ['A bag of chips may list 160 milligrams of sodium per serving, but if the bag holds three servings and you eat it all, that is 480 milligrams.',
+          { text: 'Sixty minutes can add up in pieces: a bike ride to school, recess, and practice.', visual: { kind: 'flow', steps: ['bike to school', 'recess', 'practice'] } },
+          'An ad for a sports drink shows athletes, but most kids playing for an hour need water, not sugar.'] },
+    },
+    sources: ['Aligned with TEKS Health Education 115.26(b)(7)(A) (micronutrients, including calcium and iron, and their recommended daily allowances), 115.26(b)(7)(B) (food labels and menus), 115.26(b)(7)(C) (healthy and unhealthy dietary practices), 115.26(b)(7)(E) (lower sodium alternatives), 115.26(b)(8)(A) and (B) (the CDC guidelines for physical activity and its benefits), 115.26(b)(9)(A) and (B) (food choices, activity goals, and the role of media), and 115.26(b)(10)(A), (B) and (D) (activity and diet in preventing chronic conditions, and fresh versus highly processed foods), and the National Health Education Standards, Standards 1, 2 and 6.'],
+    generators: ['hl6-food', 'hl6-food', 'hl6-food', 'hl6-food', 'hl6-food'],
+  },
+  {
+    id: 'staying-safe-6',
+    order: 3,
+    title: 'Staying safe, in person and online',
+    tagline: 'Treating bleeding and burns, a safety plan, never touching a gun you find, and handling cyberbullying',
+    requires: ['eating-and-moving-6'],
+    lesson: {
+      paragraphs: ['First aid starts with your own safety and a call for help: if someone is badly hurt, call 911 or get an adult. For bleeding, press firmly on the wound with a clean cloth and keep pressing. For a burn, cool it under cool running water for at least 10 minutes, and never put ice or butter on it. A personal safety plan lists who you can call, where you can go and what you will do if something feels wrong.', 'Weapons cause injuries in seconds, often by accident. If you ever find a gun, do not touch it: leave the area and tell an adult right away. Rules that ban weapons at school exist because one mistake can cost a life, and breaking them brings serious consequences.', 'Online, think before you post: a photo or message can be copied and shared forever. Keep personal details such as your address, school and passwords private, use strong passwords, and check your privacy settings. Cyberbullying, repeated cruelty through phones or the internet, hurts both the target and the bully. If it happens, do not answer back; save the messages, block and report the sender, and tell a parent or trusted adult. Texas\'s David\'s Law, passed in 2017, lets schools act on cyberbullying even when it happens off campus, and serious cases can be crimes. If you see bullying, you can stand with the target, refuse to share the message and report it.'],
+      keyIdea: 'Call 911 or get an adult when someone is badly hurt, and know first aid for bleeding and burns. Never touch a gun you find. Online, protect your details and report cyberbullying.',
+      example: { kind: 'flow', steps: ['do not answer back', 'save the messages', 'block, report and tell an adult'], caption: 'What to do about cyberbullying.',
+        another: ['Cool running water for 10 minutes is the right first step for a burn; ice can damage the skin further.',
+          { text: 'Found a gun? Stop, do not touch it, leave the area, and tell an adult.', visual: { kind: 'flow', steps: ['stop', 'do not touch it', 'leave and tell an adult'] } },
+          'A strong password is long and unique: a short sentence only you would think of beats a single word with a number on the end.'] },
+    },
+    sources: ['Aligned with TEKS Health Education 115.26(b)(11) (describe basic first-aid procedures), 115.26(b)(12)(C), (D) and (E) (the dangers of weapons, rules prohibiting them, and a personal safety plan), 115.26(b)(13)(A), (D) and (F) (online boundaries, identity protection, and the legal consequences of cyberbullying), and 115.26(b)(14)(B) to (E) (responding to and preventing bullying and cyberbullying and seeking trusted adults), and the National Health Education Standards, Standards 4 and 7.'],
+    generators: ['hl6-safe', 'hl6-safe', 'hl6-safe', 'hl6-safe', 'hl6-safe'],
+  },
+  {
+    id: 'substance-free-6',
+    order: 4,
+    title: 'Medicines, nicotine and other drugs',
+    tagline: 'Reading medicine labels, safe storage and take-back, nicotine and vaping, fentanyl, and saying no',
+    requires: ['staying-safe-6'],
+    lesson: {
+      paragraphs: ['Medicines help when they are used as directed, and they harm when they are misused. Over-the-counter labels list the active ingredient, uses, warnings and directions; prescription labels add the patient\'s name, the dose and the prescriber. Misuse means taking someone else\'s prescription, taking more than directed, or combining drugs, which can be dangerous because effects can add up. Store medicines locked up and out of reach, and get rid of unused ones at a drug take-back site.', 'Nicotine, in cigarettes and most vapes, is highly addictive, and the teen brain, which keeps developing until about age 25, is especially easy to hook. Vape aerosol is not harmless water vapor; it can contain nicotine and other harmful chemicals. Alcohol slows reaction time and judgment, which is why drinking and driving kills. Federal law bans selling tobacco and vaping products to anyone under 21, and in Texas a person under 21 who buys or has them can be fined.', 'Pills sold by friends or online can be counterfeit and contain fentanyl, an opioid so strong that a tiny amount can kill, and there is no way to see or taste it. Most teens do not vape, drink or use drugs, and you can say no without losing face: say no clearly, give a reason if you want, suggest something else, or leave. If you are worried about someone, tell a parent, a school counselor or another trusted adult, and in an emergency call 911.'],
+      keyIdea: 'Use medicines only as directed, and store and dispose of them safely. Nicotine is highly addictive, and fake pills can hide fentanyl. You can refuse, and a trusted adult can help.',
+      example: { kind: 'flow', steps: ['say no clearly', 'give a reason or suggest something else', 'leave if you need to'], caption: 'Three ways to refuse.',
+        another: ['Two cold medicines can contain the same active ingredient, so taking both can mean a double dose. Read the active ingredient on every label.',
+          { text: 'A drug take-back day lets families drop off unused medicines safely, so no one misuses them later.', visual: { kind: 'flow', steps: ['find unused medicines', 'take them back', 'no one misuses them'] } },
+          'Saying no gets easier with practice. Many people decide their answer before the moment comes.'] },
+    },
+    sources: ['Aligned with TEKS Health Education 115.26(b)(15)(A) to (D) (misuse of medicines, comparing labels, safe storage and disposal, and addiction, including to vaping products), 115.26(b)(16)(A) and (B) (health and legal consequences), 115.26(b)(17)(A) and (C) (reporting and getting help), 115.26(b)(18)(A) and (D) (peer influence, and substances in unsafe situations such as drinking and driving) and 115.26(b)(19)(A) to (C) (refusal skills and avoiding drugs, including opioids), and the National Health Education Standards, Standards 2, 4 and 5.'],
+    generators: ['hl6-drugs', 'hl6-drugs', 'hl6-drugs', 'hl6-drugs', 'hl6-drugs'],
+  },
+]; }
+// -----------------------------------------------------------------------------------------------------------------
 // BIZC_MODULES: the four lessons of the college business course (2026-10-01, pass HK).
 // In plain terms: each object is one lesson at a first-year college level. `sources` names the BUSI 1301 learning
 // outcomes from Texas's college course guide that the lesson meets, with the national economics standards beside them,
@@ -16644,6 +17116,194 @@ Object.assign(GENERATORS, {
       ['Money paid back to you after you buy is called what?', ['a rebate', 'a coupon', 'a sale', 'a deposit'], 'a rebate', 'It counts only if you send in the form.'],
       ['What is left from sales after the costs are paid?', ['profit', 'net worth', 'gross pay', 'a liability'], 'profit', 'Sales minus costs.'],
       ['Which grows with the price: percent off or dollars off?', ['percent off', 'dollars off', 'neither', 'both the same'], 'percent off', 'Dollars off stays the same at any price.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  // ---------------------------------------------------------------------------------------------------------------
+  // High school human sexuality elective question banks (2026-10-01, pass HP). In plain terms: four-answer quick checks
+  // for each lesson, worded plainly and clinically, every answer stated in its lesson.
+  // ---------------------------------------------------------------------------------------------------------------
+  'hs9-rel': (rng) => {
+    const Q = [['Which trait belongs in every healthy relationship?', ['respect', 'jealousy', 'control', 'secrecy'], 'respect', 'Along with honesty and trust.'],
+      ['A limit you set about your own body, time and feelings is a what?', ['boundary', 'rumor', 'grade', 'contract'], 'boundary', 'Each person sets their own.'],
+      ['Which is a refusal strategy?', ['say no clearly', 'stay quiet and hope', 'give in once', 'change the subject forever'], 'say no clearly', 'Then match your body language.'],
+      ['Pressuring someone into sexual activity is what?', ['wrong, and often a crime', 'a normal part of dating', 'a kind of compliment', 'fine if you ask twice'], 'wrong, and often a crime', 'Consent must be freely given.'],
+      ['When can consent be taken back?', ['at any time', 'never', 'only before a first date', 'only with a parent there'], 'at any time', 'It must be clear and freely given.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'hs9-safety': (rng) => {
+    const Q = [['Building trust in order to exploit someone is called what?', ['grooming', 'mentoring', 'coaching', 'networking'], 'grooming', 'It often starts with flattery and gifts.'],
+      ['Who are traffickers often?', ['someone the victim knows', 'always a stranger', 'only people overseas', 'only gang members'], 'someone the victim knows', 'Many recruit online.'],
+      ['What number reaches the National Human Trafficking Hotline?', ['1-888-373-7888', '988', '411', '1-800-000-0000'], '1-888-373-7888', 'It answers at any hour.'],
+      ['What do alcohol and other drugs do to judgment?', ['impair judgment', 'sharpen judgment', 'have no effect on judgment', 'make judgment perfect'], 'impair judgment', 'Staying sober is a simple protection.'],
+      ['Which is a warning sign of an abusive relationship?', ['isolation from friends and family', 'shared hobbies', 'honest talk', 'time apart with friends'], 'isolation from friends and family', 'Control and jealousy are others.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'hs9-sti': (rng) => {
+    const Q = [['How do STIs mainly spread?', ['through sexual contact', 'through shaking hands', 'through the air', 'through sharing pencils'], 'through sexual contact', 'Some also spread through blood.'],
+      ['Many STIs cause what?', ['no symptoms', 'instant rashes', 'fever every time', 'sneezing'], 'no symptoms', 'That is why testing matters.'],
+      ['At what ages is the HPV vaccine recommended?', ['ages 11 to 12', 'only at birth', 'after age 50', 'never for teens'], 'ages 11 to 12', 'It prevents several cancers.'],
+      ['With signs of pregnancy, what is the right first step?', ['tell a parent or another trusted adult', 'wait and see', 'tell no one', 'search online only'], 'tell a parent or another trusted adult', 'Then early testing and prenatal care.'],
+      ['Which is a reliable source of STI statistics?', ['the CDC', 'a rumor at school', 'an anonymous post', 'a celebrity interview'], 'the CDC', 'Or the Texas Department of State Health Services.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'hs9-choices': (rng) => {
+    const Q = [['Which method is 100 percent effective?', ['abstinence', 'the pill', 'male condoms', 'the ring'], 'abstinence', 'It prevents pregnancy and STIs.'],
+      ['Which method also lowers the risk of STIs?', ['condoms', 'the pill', 'the patch', 'the ring'], 'condoms', 'They lower the risk without removing it.'],
+      ['With typical use, how many in 100 pill users get pregnant a year?', ['about 7', 'none', 'about 50', 'about 90'], 'about 7', 'From the FDA birth control guide.'],
+      ['In Texas, who is legally responsible for supporting a child?', ['both parents', 'only the mother', 'only the father', 'the school'], 'both parents', 'Child support is the child\'s right.'],
+      ['How long does Texas child support usually last?', ['until the child turns 18 or graduates from high school', 'one year', 'until age 5', 'only while parents agree'], 'until the child turns 18 or graduates from high school', 'Whichever comes later.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  // ---------------------------------------------------------------------------------------------------------------
+  // Grades 6 to 8 reproductive and sexual health question banks (2026-10-01, pass HO). In plain terms: four-answer quick
+  // checks in clinical, plain language, each answer said word for word in its lesson.
+  // ---------------------------------------------------------------------------------------------------------------
+  'rsh6-body': (rng) => {
+    const Q = [['When does puberty usually begin for girls?', ['between about ages 8 and 13', 'at exactly age 16', 'after age 18', 'before age 3'], 'between about ages 8 and 13', 'Timing varies from person to person.'],
+      ['Which gland signals the body to start puberty?', ['the pituitary gland', 'the thyroid', 'the tonsils', 'the appendix'], 'the pituitary gland', 'It sits in the brain.'],
+      ['Which hormone do the testes make?', ['testosterone', 'insulin', 'estrogen only', 'adrenaline only'], 'testosterone', 'The ovaries make estrogen and progesterone.'],
+      ['How long does a period usually last?', ['2 to 7 days', '1 hour', '3 weeks', '2 months'], '2 to 7 days', 'Early cycles can be irregular.'],
+      ['What are hormones?', ['chemical messengers made by glands', 'a kind of bone', 'germs that cause illness', 'muscle fibers'], 'chemical messengers made by glands', 'They drive the changes of puberty.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'rsh6-life': (rng) => {
+    const Q = [['Where does fertilization usually happen?', ['in a fallopian tube', 'in the stomach', 'in the heart', 'in the lungs'], 'in a fallopian tube', 'Then the zygote travels to the uterus.'],
+      ['A fertilized egg is called what?', ['a zygote', 'a placenta', 'a hormone', 'a gland'], 'a zygote', 'It divides again and again.'],
+      ['About how many weeks does a pregnancy last?', ['about 40', 'about 10', 'about 100', 'about 4'], 'about 40', 'Counted from the first day of the last period.'],
+      ['By about which week can an ultrasound often show the heart beating?', ['week 6', 'week 30', 'week 38', 'week 1'], 'week 6', 'The heart forms early.'],
+      ['Which vitamin helps prevent certain birth defects?', ['folic acid', 'vitamin K', 'caffeine', 'sugar'], 'folic acid', 'The brain and spine form in the earliest weeks.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'rsh6-relate': (rng) => {
+    const Q = [['A strong attraction that often fades is called what?', ['infatuation', 'marriage', 'friendship', 'isolation'], 'infatuation', 'A crush.'],
+      ['What is the foundation for healthy relationships?', ['friendships', 'jealousy', 'secrets', 'rumors'], 'friendships', 'Listening, honesty and keeping your word.'],
+      ['Which is a warning sign of an unhealthy relationship?', ['controlling behavior', 'kindness', 'patience', 'honesty'], 'controlling behavior', 'Like checking someone\'s phone.'],
+      ['Which is part of a healthy relationship?', ['respect', 'jealousy', 'manipulation', 'isolation'], 'respect', 'Each person is treated with dignity.'],
+      ['What should you do if a relationship feels unsafe?', ['tell a parent or another trusted adult', 'keep it secret', 'post about it', 'ignore it'], 'tell a parent or another trusted adult', 'You do not have to handle it alone.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'rsh6-safe': (rng) => {
+    const Q = [['Is abuse ever the victim\'s fault?', ['never', 'sometimes', 'often', 'always'], 'never', 'It is never the victim\'s fault.'],
+      ['Who must report suspected child abuse in Texas?', ['teachers, counselors and other professionals', 'only police officers', 'only parents', 'no one'], 'teachers, counselors and other professionals', 'Telling one of them starts help.'],
+      ['Which choice is 100% effective at avoiding sexual risks?', ['abstinence', 'luck', 'waiting a month', 'asking a friend'], 'abstinence', 'Refraining from all forms of sexual activity.'],
+      ['Infections spread through sexual activity are called what?', ['sexually transmitted infections', 'food allergies', 'colds', 'sprains'], 'sexually transmitted infections', 'HIV is one.'],
+      ['Someone you know is being abused. What should you do?', ['tell a parent or another trusted adult', 'keep their secret', 'wait and see', 'handle it alone'], 'tell a parent or another trusted adult', 'Keep telling until someone helps.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  // ---------------------------------------------------------------------------------------------------------------
+  // High school health question banks (2026-10-01, pass HN). In plain terms: four-answer quick checks for each of the
+  // five lessons. The food bank also builds one question from numbers chosen on the spot, the calories in a whole bag
+  // (servings times calories per serving), so that answer is computed.
+  // ---------------------------------------------------------------------------------------------------------------
+  'hl9-literacy': (rng) => {
+    const Q = [['Diseases spread by germs are called what?', ['communicable', 'non-communicable', 'chronic', 'genetic'], 'communicable', 'Heart disease is non-communicable.'],
+      ['Which is a non-communicable disease?', ['heart disease', 'the flu', 'a cold', 'strep throat'], 'heart disease', 'It develops over years.'],
+      ['How long should you lather when washing your hands?', ['at least 20 seconds', 'two seconds', 'five seconds', 'one minute exactly'], 'at least 20 seconds', 'About two rounds of the birthday song.'],
+      ['In F.A.S.T., what does the T stand for?', ['time to call 911', 'take a nap', 'test your eyes', 'try to walk'], 'time to call 911', 'Face, arm, speech, time.'],
+      ['What should you do for signs of a heart attack?', ['call 911', 'wait and see', 'drive yourself', 'take a nap'], 'call 911', 'Every minute matters.'],
+      ['Which makes a health post less trustworthy?', ['promises a cure', 'cites a medical journal', 'names its author', 'gives a date'], 'promises a cure', 'Check the source and the evidence.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'hl9-food': (rng) => {
+    if (rng() < 0.25) { // calories in the whole bag: servings times calories per serving
+      const servings = 2 + Math.floor(rng() * 3); const per = [110, 120, 140, 150, 160, 180, 200][Math.floor(rng() * 7)]; const total = servings * per;
+      const choices = [total, per, total + per, total + 2 * per].map(String); // always four different numbers
+      return { type: 'choice', story: `A bag of chips holds ${servings} servings, and each serving has ${per} calories.`, prompt: 'How many calories are in the whole bag?', choices: shuffle(rng, choices), answer: String(total), explain: 'Multiply the servings by the calories in one serving.', visual: null, explainVisual: null };
+    }
+    const Q = [['What percent Daily Value counts as high?', ['20 percent or more', '5 percent or less', '50 percent exactly', '1 percent'], '20 percent or more', '5 percent or less is low.'],
+      ['What percent Daily Value counts as low?', ['5 percent or less', '20 percent or more', '50 percent', '100 percent'], '5 percent or less', '20 percent or more is high.'],
+      ['How much activity do teens need each day?', ['at least 60 minutes', '10 minutes', '5 hours', 'none on school days'], 'at least 60 minutes', 'Moderate to vigorous.'],
+      ['How much sleep do teens need each night?', ['8 to 10 hours', '4 to 5 hours', '12 to 14 hours', '6 hours exactly'], '8 to 10 hours', 'Too little makes healthy habits harder.'],
+      ['What daily caffeine limit do pediatricians advise for teens?', ['about 100 milligrams', 'about 500 milligrams', 'no limit at all', 'about 1,000 milligrams'], 'about 100 milligrams', 'One energy drink can pass it.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'hl9-safety': (rng) => {
+    const Q = [['How fast should CPR compressions be?', ['100 to 120 times a minute', '30 times a minute', '200 times a minute', '60 times a minute'], '100 to 120 times a minute', 'Push hard and fast.'],
+      ['How deep should compressions be for an adult?', ['at least 2 inches', 'half an inch', 'at least 6 inches', 'as gently as possible'], 'at least 2 inches', 'Let the chest rise back up between pushes.'],
+      ['What does an AED do before it advises a shock?', ['checks the heart rhythm', 'takes a temperature', 'gives medicine', 'calls a parent'], 'checks the heart rhythm', 'Then it says whether to shock.'],
+      ['A choking person cannot cough or speak. What do you give?', ['abdominal thrusts', 'a glass of water', 'a pat on the head', 'time to rest'], 'abdominal thrusts', 'Quick, inward and upward, above the navel.'],
+      ['Who may pose as a friend your age online?', ['a predator', 'a teacher', 'a coach', 'a librarian'], 'a predator', 'Keep personal details private.'],
+      ['Someone collapses and is not breathing normally. What comes first?', ['call 911', 'wait for them to wake', 'give them food', 'leave them alone'], 'call 911', 'Then start CPR and send for an AED.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'hl9-mind': (rng) => {
+    const Q = [['Saying what you need clearly and respectfully is which style?', ['assertive', 'aggressive', 'passive', 'silent'], 'assertive', 'It solves the most conflicts.'],
+      ['Attacking or blaming is which communication style?', ['aggressive', 'assertive', 'passive', 'empathetic'], 'aggressive', 'Passive is keeping quiet and giving in.'],
+      ['The ability to recover and grow after hard events is called what?', ['resilience', 'stress', 'isolation', 'avoidance'], 'resilience', 'Support and coping skills build it.'],
+      ['What number reaches the Suicide and Crisis Lifeline?', ['988', '411', '311', '611'], '988', 'Call or text, any hour.'],
+      ['A friend shows warning signs. What should you do?', ['tell a parent or another trusted adult', 'keep it a secret', 'wait a week', 'post about it'], 'tell a parent or another trusted adult', 'Telling is caring, not betraying.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'hl9-drugs': (rng) => {
+    const Q = [['Which medicine can reverse an opioid overdose?', ['naloxone', 'aspirin', 'an antihistamine', 'caffeine'], 'naloxone', 'Sold over the counter since 2023.'],
+      ['Which strong opioid turns up in many counterfeit pills?', ['fentanyl', 'ibuprofen', 'vitamin C', 'melatonin'], 'fentanyl', 'A tiny amount can kill.'],
+      ['Opioids taken with alcohol can slow what?', ['breathing', 'hair growth', 'eyesight only', 'digestion only'], 'breathing', 'Breathing can stop.'],
+      ['Where should leftover medicines go?', ['a drug take-back event', 'the trash, loose', 'a friend', 'the toilet'], 'a drug take-back event', 'Or a pharmacy kiosk.'],
+      ['Which is a refusal skill?', ['say no clearly', 'change the subject forever', 'take just a little', 'hide it'], 'say no clearly', 'Then give a reason, suggest something else, or leave.'],
+      ['Which is a medication for opioid use disorder?', ['buprenorphine', 'ibuprofen', 'antibiotics', 'antacids'], 'buprenorphine', 'Methadone is another.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  // ---------------------------------------------------------------------------------------------------------------
+  // Grades 6 to 8 health question banks (2026-10-01, pass HM). In plain terms: four-answer quick checks for each lesson.
+  // The food bank also builds a serving-size question from numbers chosen on the spot (sodium per serving times the
+  // servings eaten), so that answer is computed.
+  // ---------------------------------------------------------------------------------------------------------------
+  'hl6-body': (rng) => {
+    const Q = [['How long should you wash your hands with soap?', ['at least 20 seconds', 'about 5 seconds', 'one minute exactly', 'until they feel dry'], 'at least 20 seconds', 'Long enough to sing a short song twice.'],
+      ['What do vaccines train?', ['the immune system', 'the muscles', 'the lungs', 'the teeth'], 'the immune system', 'To recognize a germ before it makes you sick.'],
+      ['What should you never do during a seizure?', ['hold the person down', 'move hard objects away', 'time the seizure', 'stay with the person'], 'hold the person down', 'And never put anything in their mouth.'],
+      ['What can spread Lyme disease?', ['ticks', 'mosquitoes', 'bees', 'fleas'], 'ticks', 'Mosquitoes can spread West Nile virus.'],
+      ['What can spread West Nile virus?', ['mosquitoes', 'ticks', 'flies', 'spiders'], 'mosquitoes', 'Repellent and long sleeves help prevent bites.'],
+      ['How often should you brush your teeth?', ['twice a day', 'once a week', 'only before school', 'after every snack only'], 'twice a day', 'With fluoride toothpaste.'],
+      ['During an asthma attack, what should the person use?', ['their inhaler', 'a cold drink', 'a heating pad', 'a cough drop'], 'their inhaler', 'Call 911 if breathing does not improve.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'hl6-food': (rng) => {
+    if (rng() < 0.25) { // servings eaten times the amount per serving
+      const per = (8 + Math.floor(rng() * 25)) * 10; const n = 2 + Math.floor(rng() * 3); const total = per * n;
+      const pool = [total, per, per * (n + 1), total + per * 2].map((v) => `${v} milligrams`); const choices = [...new Set(pool)];
+      return { type: 'choice', story: `A label says ${per} milligrams of sodium per serving.`, prompt: `You eat ${n} servings. How much sodium is that?`, choices: shuffle(rng, choices.slice(0, 4)), answer: `${total} milligrams`, explain: 'Multiply the amount per serving by the servings you eat.', visual: null, explainVisual: null };
+    }
+    const Q = [['Ages 9 to 18 need about how much calcium a day?', ['1,300 milligrams', '100 milligrams', '13 milligrams', '13,000 milligrams'], '1,300 milligrams', 'About four cups of milk or a fortified alternative.'],
+      ['What does iron carry in the blood?', ['oxygen', 'calcium', 'sugar', 'salt'], 'oxygen', 'Beans, lean meat and fortified cereal have iron.'],
+      ['What should you check first on a food label?', ['the serving size', 'the brand name', 'the color', 'the price'], 'the serving size', 'Every amount on the label is per serving.'],
+      ['How much activity does the CDC recommend each day?', ['at least 60 minutes', 'at least 10 minutes', 'exactly 3 hours', 'none on school days'], 'at least 60 minutes', 'For children and teens ages 6 to 17.'],
+      ['Which choice usually has less sodium?', ['no-salt-added canned vegetables', 'salty snacks', 'regular canned soup', 'instant noodles'], 'no-salt-added canned vegetables', 'Compare labels to be sure.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'hl6-safe': (rng) => {
+    const Q = [['What should you do first if someone is badly hurt?', ['call 911 or get an adult', 'take a photo', 'give them food', 'wait and see'], 'call 911 or get an adult', 'Then help if it is safe.'],
+      ['How do you slow bleeding?', ['press firmly on the wound', 'run water on it for an hour', 'pour juice on it', 'leave it uncovered'], 'press firmly on the wound', 'With a clean cloth, and keep pressing.'],
+      ['How long should a burn cool under running water?', ['at least 10 minutes', 'about 10 seconds', 'under ice for an hour', 'not at all'], 'at least 10 minutes', 'Never ice or butter.'],
+      ['What should you do if you find a gun?', ['leave the area and tell an adult', 'pick it up carefully', 'check if it is loaded', 'hide it'], 'leave the area and tell an adult', 'Do not touch it.'],
+      ['What should you do with cyberbullying messages?', ['save the messages', 'answer back', 'delete everything', 'share them'], 'save the messages', 'Then block, report and tell an adult.'],
+      ['Which Texas law covers cyberbullying?', ['David\'s Law', 'the Sherman Act', 'the Baby Moses law', 'the Clean Air Act'], 'David\'s Law', 'Passed in 2017.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'hl6-drugs': (rng) => {
+    const Q = [['Taking someone else\'s prescription is called what?', ['misuse', 'prevention', 'a refusal skill', 'a check-up'], 'misuse', 'So is taking more than directed.'],
+      ['Where should unused medicines go?', ['a drug take-back site', 'a friend\'s house', 'the backyard', 'a school locker'], 'a drug take-back site', 'Store the rest locked up.'],
+      ['Until about what age does the brain keep developing?', ['about age 25', 'about age 12', 'about age 16', 'about age 50'], 'about age 25', 'Which is why nicotine hooks teens easily.'],
+      ['What can counterfeit pills contain?', ['fentanyl', 'vitamins only', 'nothing at all', 'sugar only'], 'fentanyl', 'A tiny amount can kill.'],
+      ['What can vape aerosol contain?', ['nicotine and other harmful chemicals', 'only water vapor', 'only flavoring', 'fresh air'], 'nicotine and other harmful chemicals', 'It is not harmless water vapor.'],
+      ['Selling tobacco and vapes to anyone under what age is banned?', ['21', '16', '18', '25'], '21', 'Under federal law.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
@@ -24926,6 +25586,134 @@ export const WONDER = [
     ],
     closing: 'Where in your neighborhood would a stand get the most visitors?',
   },
+  // Two grown-stage Wonder questions for the high school human sexuality elective (pass HP). Like every question tied to
+  // a consent course, wonderAllowed keeps them inside that course.
+  {
+    id: 'w-grown-the-friend-who-changed',
+    theme: 'world',
+    stage: 'grown',
+    courseIds: ['sexual-health-9'],
+    answerMode: 'typed',
+    prompt: 'A close friend has started spending all their time with one new person and has stopped seeing everyone else. Do you say something?',
+    perspectives: [
+      { voice: 'A scientist', says: 'Isolation from friends is one of the clearest early warning signs of a controlling relationship. It is also common in healthy new relationships, so watch for it alongside other signs.' },
+      { voice: 'An artist', says: 'Tell your friend what you miss, not what you suspect. "I miss our Saturdays" opens a door that "your partner is bad" slams shut.' },
+      { voice: 'A grandparent of faith', says: 'A true friend stays near, even when they are pushed away. Keep the door open, and they will know where to come.' },
+      { voice: 'A skeptic', says: 'Ask yourself what you actually know. If there are signs of control or fear, that is the moment to bring in a trusted adult.' },
+    ],
+    closing: 'What would you say first, and to whom?',
+  },
+  {
+    id: 'w-grown-the-rumor',
+    theme: 'failure',
+    stage: 'grown',
+    courseIds: ['sexual-health-9'],
+    answerMode: 'typed',
+    prompt: 'You repeated a rumor about someone, and it spread. What can you do now?',
+    perspectives: [
+      { voice: 'A scientist', says: 'Rumors spread faster than corrections, so a correction has to be louder than the rumor. Tell the same people you told before, directly.' },
+      { voice: 'An artist', says: 'An apology is a piece you make for one person. Make it specific: name what you said, and what it may have cost them.' },
+      { voice: 'A grandparent of faith', says: 'You cannot gather the feathers once they blow away, as the old story says. You can still stop throwing them, and ask to be forgiven.' },
+      { voice: 'A skeptic', says: 'Ask whether anyone is being harassed because of it. If so, a teacher or counselor needs to know, even if that is uncomfortable for you.' },
+    ],
+    closing: 'What will you do the next time a rumor reaches you?',
+  },
+  // Two teen-stage Wonder questions for the reproductive and sexual health elective (pass HO): growing at different
+  // speeds, and a failure question about laughing along at a joke that crossed a line.
+  {
+    id: 'w-teen-growing-at-different-speeds',
+    theme: 'world',
+    stage: 'teen',
+    courseIds: ['sexual-health-6'],
+    answerMode: 'typed',
+    prompt: 'Your friends seem to be growing up faster, or slower, than you are. Does it matter?',
+    perspectives: [
+      { voice: 'A scientist', says: 'Puberty can start years apart in perfectly healthy people. Early or late, almost everyone ends up in the same adult range.' },
+      { voice: 'An artist', says: 'A garden does not bloom all at once. The late flowers are not worse; they are simply later.' },
+      { voice: 'A grandparent of faith', says: 'I was the smallest boy in my class until I was fifteen. It felt like forever then, and it hardly matters now.' },
+      { voice: 'A skeptic', says: 'Notice who is making it matter. Comparisons usually come from comments and pictures, not from anything your body is doing wrong.' },
+    ],
+    closing: 'Who could you talk to if a change worried you?',
+  },
+  {
+    id: 'w-teen-i-laughed-along',
+    theme: 'failure',
+    stage: 'teen',
+    courseIds: ['sexual-health-6'],
+    answerMode: 'typed',
+    prompt: 'Someone made a joke about a classmate\'s body, and you laughed along. What now?',
+    perspectives: [
+      { voice: 'A scientist', says: 'People in a group often laugh because others do. Studies of bystanders show that one person speaking up makes others more likely to stop.' },
+      { voice: 'An artist', says: 'Imagine the scene from the classmate\'s side of the room. That picture usually tells you what to do next.' },
+      { voice: 'A grandparent of faith', says: 'Go to the person and say you are sorry. A real apology costs a little pride and repairs a great deal.' },
+      { voice: 'A skeptic', says: 'Laughing once does not make you cruel, but doing nothing again would make it a habit. Decide now what you will say next time.' },
+    ],
+    closing: 'What could you say the next time a joke crosses a line?',
+  },
+  // Two grown-stage Wonder questions for the high school health course (pass HN): sleep or study before a test, and a
+  // failure question about freezing when someone needed help.
+  {
+    id: 'w-grown-sleep-or-study',
+    theme: 'world',
+    stage: 'grown',
+    courseIds: ['health-9'],
+    answerMode: 'typed',
+    prompt: 'It is midnight before a big test, and you do not feel ready. Do you keep studying or go to sleep?',
+    perspectives: [
+      { voice: 'A scientist', says: 'Sleep is when the brain files away what you learned that day. Studies of students find that an all-nighter usually costs more in recall than the extra hours add.' },
+      { voice: 'An artist', says: 'Some of my best ideas arrive after a night of rest. A tired mind can stare at the same page for an hour and see nothing new.' },
+      { voice: 'A grandparent of faith', says: 'I was taught to do my best and then let go of the rest. Peace of mind is part of being ready.' },
+      { voice: 'A skeptic', says: 'It depends on what is missing. Ten minutes on the one topic you have never seen may beat two hours of rereading what you already know, and then sleep.' },
+    ],
+    closing: 'What would you change about the week before, so midnight is not the choice?',
+  },
+  {
+    id: 'w-grown-i-froze',
+    theme: 'failure',
+    stage: 'grown',
+    courseIds: ['health-9'],
+    answerMode: 'typed',
+    prompt: 'Someone needed help, and you froze. What do you do with that feeling now?',
+    perspectives: [
+      { voice: 'A scientist', says: 'Freezing is a common stress response, not a flaw in character. Practice changes it: people who have rehearsed CPR are far more likely to act.' },
+      { voice: 'An artist', says: 'Write down what you saw and what you wish you had done. Turning the memory into a plan makes it something you can use.' },
+      { voice: 'A grandparent of faith', says: 'Forgive yourself, then get ready. Take the class, learn the steps, and you will be the one who moves next time.' },
+      { voice: 'A skeptic', says: 'Ask what actually happened afterward. Often someone else stepped in, and the person was helped, and the freeze cost less than it feels like now.' },
+    ],
+    closing: 'What would you practice so you are ready next time?',
+  },
+  // Two teen-stage Wonder questions for the grades 6 to 8 health course (pass HM): one about a friend's claim that
+  // everyone vapes, and one a failure question about staying silent when someone was bullied online.
+  {
+    id: 'w-teen-everyone-vapes',
+    theme: 'world',
+    stage: 'teen',
+    courseIds: ['health-6'],
+    answerMode: 'typed',
+    prompt: 'A friend says everyone vapes and offers you a hit. What would you say, and is it true that everyone does?',
+    perspectives: [
+      { voice: 'A scientist', says: 'Check the claim before you answer. Surveys of students find that most teens do not vape at all, and nicotine hooks a developing brain quickly, so the story about trying it once often ends differently.' },
+      { voice: 'An artist', says: 'Picture who you want to be at twenty. Then picture the person who started vaping at twelve. Which story would you rather be writing?' },
+      { voice: 'A grandparent of faith', says: 'I smoked for thirty years because of one cigarette at a party. Quitting was the hardest thing I ever did, and never starting would have been much easier.' },
+      { voice: 'A skeptic', says: 'Ask who profits when you believe that everyone does it. The companies selling the flavors do, and that alone is worth a pause.' },
+    ],
+    closing: 'What words would you actually use to say no?',
+  },
+  {
+    id: 'w-teen-i-said-nothing',
+    theme: 'failure',
+    stage: 'teen',
+    courseIds: ['health-6'],
+    answerMode: 'typed',
+    prompt: 'You saw someone being bullied online and said nothing. What can you do now?',
+    perspectives: [
+      { voice: 'A scientist', says: 'What bystanders do makes a real difference. When even one person speaks up or reaches out, bullying often stops sooner, and the person targeted feels less alone.' },
+      { voice: 'An artist', says: 'A short private message saying you saw it and you are sorry it happened can mean more than a public argument.' },
+      { voice: 'A grandparent of faith', says: 'Silence is not the end of the story. Going back to make it right takes courage, and courage counts even when it arrives late.' },
+      { voice: 'A skeptic', says: 'Think about what would actually help: saving the messages, reporting them, or telling an adult who can act. Pick one and do it today.' },
+    ],
+    closing: 'Who is one adult you could tell?',
+  },
   // Two grown-stage Wonder questions for the college business course (pass HK): one about cutting jobs or cutting
   // everyone's pay, and one a failure question about a product launch that failed.
   {
@@ -25737,7 +26525,7 @@ export function nextWonder(events, courseId, review, preReader = false) {
   const course = getCourse(courseId);
   const stage = course ? stageForGrade(course.grade) : 'early';
   const pool = WONDER.filter((w) => state.approved.includes(w.id) && !state.hidden.includes(w.id)
-    && (w.courseIds.includes(courseId) || (w.stage || 'early') === stage)
+    && wonderAllowed(w, courseId, stage)
     && (!preReader || Array.isArray(w.simple)));
   if (pool.length === 0) return null;
   const lastAt = {}; const times = {};
@@ -28410,6 +29198,10 @@ export const COURSE_GAMES = {
   'business-9': ['breakeven-business-9'],
   'business-k': ['tool-business-k'],
   'business-college': ['ledger-business-college'],
+  'health-6': ['label-health-6'],
+  'health-9': ['cpr-health-9'],
+  'sexual-health-6': ['greenred-sexual-health-6'],
+  'sexual-health-9': ['mythfact-sexual-health-9'],
   'business-6': ['deal-business-6'],
   'business-3': ['savejar-business-3'],
   'agriculture-6': ['relation-agriculture-6'],

@@ -4749,7 +4749,167 @@ function LedgerGame({ game, round, onScore = null }) {
     </div>
   );
 }
-const GAME_OF = { dots: DotsGame, pairs: PairsGame, sort: SortGame, maze: MazeGame, jigsaw: JigsawGame, pong: PongGame, sprint: SprintGame, order: OrderGame, build: BuildGame, fix: FixGame, mix: MixGame, debug: DebugGame, ptable: PtableGame, evidence: EvidenceGame, catch: CatchGame, path: PathGame, buckets: BucketsGame, jump: JumpGame, map: MapGame, balance: BalanceGame, walk: WalkGame, teach: TeachGame, bits: BitsGame, pay: PayGame, price: PriceGame, loan: LoanGame, fund: FundGame, search: SearchGame, spot: SpotGame, pattern: PatternGame, shape: ShapeGame, chord: ChordGame, valid: ValidGame, reason: ReasonGame, because: BecauseGame, share: ShareGame, stat: StatGame, recall: RecallGame, face: FaceGame, sense: SenseGame, filler: FillerGame, room: RoomGame, ask: AskGame, turn: TurnGame, jar: JarGame, relation: RelationGame, sprout: SproutGame, grow: GrowGame, breakeven: BreakEvenGame, deal: DealGame, savejar: SaveJarGame, tool: ToolGame, ledger: LedgerGame };
+// -----------------------------------------------------------------------------------------------------------------
+// Read the Label (2026-10-01, pass HM, the grades 6 to 8 health game). In plain terms: two nutrition labels for the same
+// kind of food sit side by side, each listing sodium, added sugars and fiber per serving. The question names one of
+// them (less sodium, less added sugars, or more fiber), so the student has to read the right row; tapping the better
+// label says why and moves on, and a wrong tap wobbles. Six pairs a round, from labelRounds() in logic.mjs. The board
+// carries the answer in `data-label-answer` for the browser test. Drawn with B, the paper palette.
+// -----------------------------------------------------------------------------------------------------------------
+function LabelGame({ game, round, onScore = null }) {
+  const rounds = useMemo(() => labelRounds(round), [round]); // the six label pairs for this round, fixed by the round number
+  const [k, setK] = useState(0); // which pair we are on
+  const [got, setGot] = useState(false); // true for a moment after a right tap
+  const [nudge, setNudge] = useState(null); // the label of a wrong tap, so that card wobbles
+  const [ticks, setTicks] = useState(0); // seconds since the round started
+  const [done, setDone] = useState(false); // true once all six are read
+  const q = rounds[Math.min(k, rounds.length - 1)];
+  useEffect(() => { setK(0); setGot(false); setTicks(0); setDone(false); }, [round]);
+  useEffect(() => { if (done) return undefined; const t = setInterval(() => setTicks((n) => n + 1), 1000); return () => clearInterval(t); }, [done]);
+  useEffect(() => { if (done && onScore) onScore(ticks, 'low'); }, [done]);
+  useEffect(() => { if (nudge === null) return undefined; const t = setTimeout(() => setNudge(null), 500); return () => clearTimeout(t); }, [nudge]);
+  useEffect(() => { if (!got) return undefined; const t = setTimeout(() => { setGot(false); if (k + 1 >= rounds.length) setDone(true); else setK(k + 1); }, 1400); return () => clearTimeout(t); }, [got]);
+  const pick = (side) => { if (got || done) return; if (side === q.answer) setGot(true); else setNudge(side); };
+  const name = q.food.charAt(0).toUpperCase() + q.food.slice(1);
+  const ask = `Which ${q.food} has ${q.goal} ${q.nutrient} per serving?`;
+  const rows = [['sodium', 'Sodium', 'mg'], ['added sugars', 'Added sugars', 'g'], ['fiber', 'Fiber', 'g']];
+  const card = (side, v) => (
+    <button key={side} type="button" className={`edu-press${nudge === side ? ' edu-wobble' : ''}`} aria-label={`Label: ${side}`} onClick={() => pick(side)} style={{ fontFamily: FONT, textAlign: 'left', background: '#fff', border: `2.5px solid ${got && side === q.answer ? B.green : B.ink}`, borderRadius: 8, padding: '8px 10px', cursor: got ? 'default' : 'pointer', color: B.ink }}>
+      <div style={{ fontSize: 16, fontWeight: 800, borderBottom: `3px solid ${B.ink}`, paddingBottom: 3, marginBottom: 4 }}>{name} {side}</div>
+      <div style={{ fontSize: 11, fontWeight: 600, marginBottom: 2 }}>Per serving</div>
+      {rows.map(([key, label, unit]) => <div key={key} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, padding: '2px 0', borderTop: `1px solid ${B.line}`, fontWeight: got && key === q.nutrient ? 800 : 500, background: got && key === q.nutrient ? '#FFF3C4' : 'transparent' }}><span>{label}</span><span>{v[key]} {unit}</span></div>)}
+    </button>
+  );
+  return (
+    <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }} data-label-answer={done ? '' : q.answer}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Read the label</span><span>{ticks}s · {Math.min(k + 1, rounds.length)} of {rounds.length}</span></div>
+      {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Six labels read in {ticks} seconds. Tap the round arrow for more.</p> : (
+        <div style={{ textAlign: 'center' }}>
+          <p style={{ margin: '0 0 10px', fontSize: 16, fontWeight: 700, color: got ? B.green : B.ink, minHeight: 22 }}>{got ? `Yes: ${q.answer} has ${q.answer === 'A' ? q.a[q.nutrient] : q.b[q.nutrient]} ${q.unit} of ${q.nutrient}, against ${q.answer === 'A' ? q.b[q.nutrient] : q.a[q.nutrient]} ${q.unit}.` : ask}</p>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>{card('A', q.a)}{card('B', q.b)}</div>
+        </div>
+      )}
+      <Done show={done} />
+    </div>
+  );
+}
+// -----------------------------------------------------------------------------------------------------------------
+// Push to the Beat (2026-10-01, pass HN, the high school health game). In plain terms: a big Push button stands beside a
+// ring that pulses at 110 a minute, the middle of the American Heart Association's 100 to 120. The student taps Push as
+// if giving chest compressions; after fifteen pushes the game works out the pace from the gaps between taps (cprRate in
+// logic.mjs) and says too slow, just right or too fast (cprVerdict). Just right finishes the round; anything else offers
+// another try. The board carries the result in `data-cpr-rate` and `data-cpr-verdict` for the browser test.
+// -----------------------------------------------------------------------------------------------------------------
+function CprGame({ game, round, onScore = null }) {
+  const PUSHES = 15;
+  const [taps, setTaps] = useState([]); // the time of each push, in milliseconds
+  const [result, setResult] = useState(null); // { rate, verdict } once fifteen pushes are in
+  useEffect(() => { setTaps([]); setResult(null); }, [round]);
+  useEffect(() => { if (result && result.verdict === 'just right' && onScore) onScore(Math.abs(result.rate - 110), 'low'); }, [result]);
+  const push = () => {
+    if (result) return;
+    const now = typeof performance !== 'undefined' ? performance.now() : Date.now();
+    const next = [...taps, now];
+    if (next.length >= PUSHES) { const rate = cprRate(next.slice(-11)); setResult({ rate, verdict: cprVerdict(rate) }); }
+    setTaps(next);
+  };
+  const again = () => { setTaps([]); setResult(null); };
+  const good = result && result.verdict === 'just right';
+  return (
+    <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }} data-cpr-rate={result ? String(result.rate) : ''} data-cpr-verdict={result ? result.verdict : ''}>
+      <style>{'@keyframes eduCprBeat { 0% { transform: scale(1); opacity: 0.9; } 30% { transform: scale(1.18); opacity: 1; } 100% { transform: scale(1); opacity: 0.9; } } @media (prefers-reduced-motion: reduce) { .edu-cpr-ring { animation: none !important; } }'}</style>
+      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Push to the beat</span><span>{Math.min(taps.length, PUSHES)} of {PUSHES}</span></div>
+      <p style={{ margin: '0 0 12px', textAlign: 'center', fontSize: 15, color: B.ink }}>Push hard and fast: 100 to 120 a minute. The ring shows the pace.</p>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 22, margin: '6px 0 12px' }}>
+        <div className="edu-cpr-ring" aria-hidden="true" style={{ width: 54, height: 54, borderRadius: '50%', border: `4px solid ${B.clay}`, animation: 'eduCprBeat 0.545s ease-in-out infinite' }} />
+        <button type="button" data-cpr-push="" aria-label="Push" onClick={push} disabled={!!result} style={{ width: 120, height: 120, borderRadius: '50%', border: `3px solid ${B.ink}`, background: B.green, color: '#fff', fontFamily: FONT, fontSize: 22, fontWeight: 700, cursor: result ? 'default' : 'pointer', touchAction: 'manipulation' }}>Push</button>
+      </div>
+      {result && (
+        <div style={{ textAlign: 'center' }}>
+          <p style={{ margin: '0 0 8px', fontSize: 18, fontWeight: 700, color: good ? B.green : B.clay }}>{result.rate} a minute: {result.verdict}.</p>
+          {good ? <p style={{ margin: 0, fontSize: 15, color: B.ink }}>That is the pace that keeps blood moving. Tap the round arrow to go again.</p>
+            : <button type="button" className="edu-press" onClick={again} style={{ fontFamily: FONT, fontSize: 16, fontWeight: 700, padding: '10px 20px', borderRadius: 12, border: `2px solid ${B.green}`, background: '#fff', color: B.ink, cursor: 'pointer' }}>Try again</button>}
+        </div>
+      )}
+      <Done show={!!good} />
+    </div>
+  );
+}
+// -----------------------------------------------------------------------------------------------------------------
+// Green Flag or Red Flag (2026-10-01, pass HO, the grades 6 to 8 relationships game). In plain terms: one behavior at a
+// time appears on a card, such as respects your no right away, and the student taps Green flag for a sign of a healthy
+// relationship or Red flag for a warning sign. A right tap says which and why; a wrong one wobbles. Eight a round, four
+// of each, from greenredRounds() in logic.mjs. The board carries the answer in `data-greenred-answer`.
+// -----------------------------------------------------------------------------------------------------------------
+function GreenRedGame({ game, round, onScore = null }) {
+  const rounds = useMemo(() => greenredRounds(round), [round]); // the eight behaviors for this round, fixed by the round number
+  const [k, setK] = useState(0); // which behavior we are on
+  const [got, setGot] = useState(false); // true for a moment after a right tap
+  const [nudge, setNudge] = useState(null); // the flag of a wrong tap, so that button wobbles
+  const [ticks, setTicks] = useState(0); // seconds since the round started
+  const [done, setDone] = useState(false); // true once all eight are sorted
+  const q = rounds[Math.min(k, rounds.length - 1)];
+  useEffect(() => { setK(0); setGot(false); setTicks(0); setDone(false); }, [round]);
+  useEffect(() => { if (done) return undefined; const t = setInterval(() => setTicks((n) => n + 1), 1000); return () => clearInterval(t); }, [done]);
+  useEffect(() => { if (done && onScore) onScore(ticks, 'low'); }, [done]);
+  useEffect(() => { if (nudge === null) return undefined; const t = setTimeout(() => setNudge(null), 500); return () => clearTimeout(t); }, [nudge]);
+  useEffect(() => { if (!got) return undefined; const t = setTimeout(() => { setGot(false); if (k + 1 >= rounds.length) setDone(true); else setK(k + 1); }, 1100); return () => clearTimeout(t); }, [got]);
+  const pick = (flag) => { if (got || done) return; if (flag === q.answer) setGot(true); else setNudge(flag); };
+  const why = q.answer === 'green' ? 'a green flag, a sign of a healthy relationship' : 'a red flag, a warning sign';
+  const flags = [['green', 'Green flag', B.green], ['red', 'Red flag', B.clay]];
+  return (
+    <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }} data-greenred-answer={done ? '' : q.answer}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Green flag or red flag</span><span>{ticks}s · {Math.min(k + 1, rounds.length)} of {rounds.length}</span></div>
+      {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Eight behaviors sorted in {ticks} seconds. Tap the round arrow for more.</p> : (
+        <div style={{ textAlign: 'center' }}>
+          <p style={{ margin: '0 0 8px', fontSize: 14, color: B.muted }}>Someone who...</p>
+          <div style={{ background: '#fff', border: `1.5px solid ${B.line}`, borderRadius: 12, padding: '16px 12px', marginBottom: 8, fontSize: 19, fontWeight: 700, color: B.ink }}>{q.behavior}</div>
+          <p style={{ margin: '0 0 10px', fontSize: 15, color: got ? B.green : B.ink, minHeight: 22, fontWeight: got ? 700 : 400 }}>{got ? `Yes: that is ${why}.` : 'Healthy, or a warning sign?'}</p>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+            {flags.map(([flag, label, ink]) => <button key={flag} type="button" className={`edu-press${nudge === flag ? ' edu-wobble' : ''}`} aria-label={`Flag: ${flag}`} onClick={() => pick(flag)} style={{ fontFamily: FONT, fontSize: 16, fontWeight: 700, padding: '12px 6px', borderRadius: 12, border: `2px solid ${ink}`, background: '#fff', color: B.ink, cursor: got ? 'default' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}><span aria-hidden="true" style={{ width: 14, height: 14, borderRadius: 3, background: ink, display: 'inline-block' }} />{label}</button>)}
+          </div>
+        </div>
+      )}
+      <Done show={done} />
+    </div>
+  );
+}
+// -----------------------------------------------------------------------------------------------------------------
+// Myth or Fact (2026-10-01, pass HP, the high school human sexuality elective's game). In plain terms: one statement at a
+// time, and the student taps Myth or Fact. A right tap shows the card's one-line reason and moves on; a wrong one wobbles
+// and shows the reason too, so every card teaches. Six cards a round, three of each, from mythfactRounds() in logic.mjs.
+// The board carries the right answer in `data-myth-answer` for the browser test.
+// -----------------------------------------------------------------------------------------------------------------
+function MythFactGame({ game, round, onScore = null }) {
+  const rounds = useMemo(() => mythfactRounds(round), [round]); // the six statements for this round, fixed by the round number
+  const [k, setK] = useState(0); // which statement we are on
+  const [got, setGot] = useState(false); // true for a moment after a right tap
+  const [nudge, setNudge] = useState(null); // the wrong answer tapped, so its button wobbles
+  const [misses, setMisses] = useState(0); // wrong taps this round
+  const [done, setDone] = useState(false); // true once all six are answered
+  const q = rounds[Math.min(k, rounds.length - 1)];
+  useEffect(() => { setK(0); setGot(false); setMisses(0); setDone(false); }, [round]);
+  useEffect(() => { if (done && onScore) onScore(misses, 'low'); }, [done]);
+  useEffect(() => { if (nudge === null) return undefined; const t = setTimeout(() => setNudge(null), 500); return () => clearTimeout(t); }, [nudge]);
+  useEffect(() => { if (!got) return undefined; const t = setTimeout(() => { setGot(false); if (k + 1 >= rounds.length) setDone(true); else setK(k + 1); }, 1300); return () => clearTimeout(t); }, [got]);
+  const pick = (ans) => { if (got || done) return; if (ans === q.answer) setGot(true); else { setNudge(ans); setMisses((n) => n + 1); } };
+  return (
+    <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }} data-myth-answer={done ? '' : q.answer}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Myth or fact</span><span>{Math.min(k + 1, rounds.length)} of {rounds.length}</span></div>
+      {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Six statements sorted{misses ? `, with ${misses} to look at again` : ', every one right'}. Tap the round arrow for more.</p> : (
+        <div style={{ textAlign: 'center' }}>
+          <div style={{ background: '#fff', border: `1.5px solid ${B.line}`, borderRadius: 12, padding: '16px 12px', marginBottom: 10, fontSize: 18, fontWeight: 700, color: B.ink, lineHeight: 1.4 }}>{q.text}</div>
+          <p style={{ margin: '0 0 10px', fontSize: 15, minHeight: 22, color: got ? B.green : nudge ? B.clay : B.ink, fontWeight: got ? 700 : 400 }}>{got || nudge ? `${q.answer === 'myth' ? 'Myth' : 'Fact'}: ${q.why}` : 'Is it a myth or a fact?'}</p>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+            {['myth', 'fact'].map((ans) => <button key={ans} type="button" className={`edu-press${nudge === ans ? ' edu-wobble' : ''}`} aria-label={`Answer: ${ans}`} onClick={() => pick(ans)} style={{ fontFamily: FONT, fontSize: 17, fontWeight: 700, padding: '12px 4px', borderRadius: 12, border: `2px solid ${got && ans === q.answer ? B.green : B.line}`, background: '#fff', color: B.ink, cursor: got ? 'default' : 'pointer', textTransform: 'capitalize' }}>{ans}</button>)}
+          </div>
+        </div>
+      )}
+      <Done show={done} />
+    </div>
+  );
+}
+const GAME_OF = { dots: DotsGame, pairs: PairsGame, sort: SortGame, maze: MazeGame, jigsaw: JigsawGame, pong: PongGame, sprint: SprintGame, order: OrderGame, build: BuildGame, fix: FixGame, mix: MixGame, debug: DebugGame, ptable: PtableGame, evidence: EvidenceGame, catch: CatchGame, path: PathGame, buckets: BucketsGame, jump: JumpGame, map: MapGame, balance: BalanceGame, walk: WalkGame, teach: TeachGame, bits: BitsGame, pay: PayGame, price: PriceGame, loan: LoanGame, fund: FundGame, search: SearchGame, spot: SpotGame, pattern: PatternGame, shape: ShapeGame, chord: ChordGame, valid: ValidGame, reason: ReasonGame, because: BecauseGame, share: ShareGame, stat: StatGame, recall: RecallGame, face: FaceGame, sense: SenseGame, filler: FillerGame, room: RoomGame, ask: AskGame, turn: TurnGame, jar: JarGame, relation: RelationGame, sprout: SproutGame, grow: GrowGame, breakeven: BreakEvenGame, deal: DealGame, savejar: SaveJarGame, tool: ToolGame, ledger: LedgerGame, label: LabelGame, cpr: CprGame, greenred: GreenRedGame, mythfact: MythFactGame };
 // How to play, in a line or two, by kind of game (and by deck for the matching games).
 function gameInstructions(game) {
   if (game.kind === 'bits') return 'A number sits at the top and eight switches below it, worth 128 down to 1. Tap the switches on and off until the lit places add up to the number; the sum shows as you go. Six numbers, and the clock counts up.';
@@ -4762,6 +4922,10 @@ function gameInstructions(game) {
   if (game.kind === 'breakeven') return 'A small business with its fixed costs for a month, the price of one item and what each costs to make. The chart draws the revenue line and the total-cost line; tap how many it must sell to break even, where the lines cross. Six businesses, and the clock counts up.';
   if (game.kind === 'tool') return 'A job is named, and three tools appear. Tap the tool that worker uses. Six jobs, and the clock counts up.';
   if (game.kind === 'ledger') return 'An account appears, and you place it on the balance sheet: assets, liabilities or equity. Six accounts, and the clock counts up.';
+  if (game.kind === 'label') return 'Two labels for the same kind of food. Read the row the question asks about, sodium, added sugars or fiber, and tap the better label. Six pairs, and the clock counts up.';
+  if (game.kind === 'cpr') return 'Tap Push at the pace of chest compressions, 100 to 120 a minute, with the ring as your guide. After fifteen pushes the game tells you whether you were too slow, just right or too fast.';
+  if (game.kind === 'mythfact') return 'A statement appears, and you decide: myth or fact. Each answer shows the reason, so every card teaches. Six statements a round.';
+  if (game.kind === 'greenred') return 'A behavior appears, and you decide: a green flag of a healthy relationship, or a red flag, a warning sign. Eight behaviors, and the clock counts up.';
   if (game.kind === 'deal') return 'An item with a price tag and two coupons, a percent off and a number of dollars off. Work out what each one saves and tap the coupon that saves more. Six items, and the clock counts up.';
   if (game.kind === 'grow') return 'A seed in a pot and five pictures: water, sunshine, soil and two toys. Tap the three things the plant needs, in any order, and watch it grow. Four plants, and the clock counts up.';
   if (game.kind === 'sprout') return 'A bean seed in a cup and four facts about it: water, air, warmth and light. Decide whether it sprouts. A bean needs water, air and warmth, and light can wait until the shoot is up. Six seeds, and the clock counts up.';
@@ -4870,6 +5034,10 @@ function GameThumb({ kind, game = null }) {
   if (game && game.kind === 'sprout') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><path d="M20 24 C20 18 20 14 20 10" stroke="#3E8E4F" strokeWidth="2" fill="none" /><path d="M20 15 C15 12 13 9 14 7 C17 8 19 11 20 15 Z" fill="#5DB36D" /><path d="M20 13 C25 10 27 7 26 5 C23 6 21 9 20 13 Z" fill="#5DB36D" /><path d="M9 24 L31 24 L28 37 L12 37 Z" fill="#C8734B" stroke={k} strokeWidth="1" /></svg>;
   if (game && game.kind === 'grow') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><path d="M13 26h14l-2 10h-10z" fill="#C8734B" stroke={k} strokeWidth="1" /><path d="M20 26v-12" stroke={C.green} strokeWidth="2" strokeLinecap="round" /><path d="M20 20q-6-3-7-8q5 0 7 5z" fill={C.green} /><path d="M20 18q6-3 7-8q-5 0-7 5z" fill={C.green} /><circle cx="32" cy="8" r="4" fill="#F2C94C" /></svg>;
   if (game && game.kind === 'deal') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="4" y="9" width="14" height="22" rx="3" fill={C.paperBoard} stroke={C.green} strokeWidth="1.6" strokeDasharray="3 2" /><rect x="22" y="9" width="14" height="22" rx="3" fill={C.paperBoard} stroke={C.clay} strokeWidth="1.6" strokeDasharray="3 2" /><text x="11" y="24" textAnchor="middle" fontSize="9" fontWeight="700" fill={k}>%</text><text x="29" y="24" textAnchor="middle" fontSize="9" fontWeight="700" fill={k}>$</text></svg>;
+  if (game && game.kind === 'greenred') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="4" y="5" width="32" height="30" rx="4" fill={C.paperBoard} stroke={k} strokeWidth="1" /><line x1="12" y1="10" x2="12" y2="31" stroke={k} strokeWidth="1.6" /><path d="M12 10 H20 L18 14 L20 18 H12 Z" fill={C.green} /><line x1="25" y1="10" x2="25" y2="31" stroke={k} strokeWidth="1.6" /><path d="M25 10 H33 L31 14 L33 18 H25 Z" fill={C.clay} /></svg>;
+  if (game && game.kind === 'mythfact') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="4" y="5" width="32" height="30" rx="4" fill={C.paperBoard} stroke={k} strokeWidth="1" /><rect x="8" y="12" width="11" height="16" rx="2" fill={C.clay} /><rect x="21" y="12" width="11" height="16" rx="2" fill={C.green} /><path d="M11 18 L16 23 M16 18 L11 23" stroke="#fff" strokeWidth="1.8" /><path d="M23.5 20.5 L26 23 L30 17.5" fill="none" stroke="#fff" strokeWidth="1.8" /></svg>;
+  if (game && game.kind === 'cpr') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="4" y="5" width="32" height="30" rx="4" fill={C.paperBoard} stroke={k} strokeWidth="1" /><path d="M20 31 C10 24 8 19 8 15 C8 11 11 9 14 9 C17 9 19 11 20 13 C21 11 23 9 26 9 C29 9 32 11 32 15 C32 19 30 24 20 31 Z" fill={C.clay} /><path d="M10 20 H15 L17 16 L20 24 L22 19 H30" fill="none" stroke="#fff" strokeWidth="1.6" /></svg>;
+  if (game && game.kind === 'label') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="4" y="5" width="32" height="30" rx="4" fill={C.paperBoard} stroke={k} strokeWidth="1" /><rect x="8" y="9" width="11" height="22" rx="1" fill="#fff" stroke={k} strokeWidth="1.2" /><rect x="21" y="9" width="11" height="22" rx="1" fill="#fff" stroke={k} strokeWidth="1.2" /><path d="M10 14h7M10 18h7M10 22h7M23 14h7M23 18h7M23 22h7" stroke={k} strokeWidth="1" /></svg>;
   if (game && game.kind === 'ledger') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="4" y="5" width="32" height="30" rx="4" fill={C.paperBoard} stroke={k} strokeWidth="1" /><rect x="8" y="12" width="7" height="18" rx="1" fill={C.green} /><rect x="17" y="18" width="7" height="12" rx="1" fill={C.clay} /><rect x="26" y="22" width="7" height="8" rx="1" fill={k} /></svg>;
   if (game && game.kind === 'tool') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="4" y="5" width="32" height="30" rx="4" fill={C.paperBoard} stroke={k} strokeWidth="1" /><rect x="18" y="15" width="4" height="16" rx="1" fill="#A0522D" /><rect x="11" y="10" width="18" height="6" rx="1" fill="#6B6B6B" /></svg>;
   if (game && game.kind === 'breakeven') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="4" y="5" width="32" height="30" rx="4" fill={C.paperBoard} stroke={k} strokeWidth="1" /><path d="M8 30L32 10" stroke={C.green} strokeWidth="2.2" strokeLinecap="round" /><path d="M8 20L32 14" stroke={C.clay} strokeWidth="2.2" strokeLinecap="round" /><circle cx="20" cy="20" r="2.6" fill={k} /></svg>;
@@ -6125,6 +6293,7 @@ function EduSphereScreens() {
   const [pinFor, setPinFor] = useState(null);                  // student whose PIN is being set on their card
   const [wonderPopupFor, setWonderPopupFor] = useState(null);            // student whose Wonder Questions popup is open
   const [coursePreview, setCoursePreview] = useState(null);              // course whose module preview popup is open on the report (2026-09-29, Mikey)
+  const [consentAsk, setConsentAsk] = useState(null);   // pass HO: a course that needs a parent's consent, waiting for the educator to confirm it
   const [showPinWhy, setShowPinWhy] = useState(false);         // the i beside PIN (optional) in the add-student popup
   const [showAutoTip, setShowAutoTip] = useState(false);       // the i under the automatic backups list
   const [pinDraft, setPinDraft] = useState('');
@@ -6480,6 +6649,11 @@ function EduSphereScreens() {
 
   // On first load: find learners who have used this device before.
   useEffect(() => {
+    // Read the where-note before anything else (2026-10-01, pass HM). In plain terms: the note that brings a student back
+    // after a refresh is erased whenever the welcome screen shows, and startup reads several things from storage before
+    // it gets to the note. If the welcome screen appeared in that gap, the note was gone before it was read, and a
+    // refresh landed on the welcome screen (the browser test caught it twice). Taking the note first closes the gap.
+    const whereAtStart = loadWhere();
     (async () => {
       setRoster(await loadRoster());
       setCovered(await loadCovered());
@@ -6491,7 +6665,7 @@ function EduSphereScreens() {
       setEducator(await loadEducator());
       { const rawProfile = await loadEducatorRaw(); if (rawProfile && !rawProfile.pin) setPendingProfile(rawProfile); }
       // A refresh brings a student back to where they were (pass GV): the remembered student is loaded and their screen restored.
-      const where = loadWhere();
+      const where = whereAtStart;
       if (where) {
         try {
           const rec = await withStarterCourses(await loadRecord(where.name));
@@ -10005,6 +10179,22 @@ function EduSphereScreens() {
         <div style={{ ...card, background: C.greenSoft, borderColor: C.softEdge }}>
           <p className="edu-card-title" style={{ margin: '0 0 4px', fontWeight: 600 }}>Assigned Now</p>
           <p style={{ margin: '0 0 10px', fontSize: 14, color: C.muted, textAlign: 'center' }}>Assign courses by checking or unchecking the boxes below. Each student starts with the courses we recommend (based on a combination of {shownName}'s initial placement check, quick-check module skips and/or his or her actual progression through the modules) but you are free to edit how you see fit.</p>
+          {/* Consent comes first (2026-10-01, pass HO, Mikey). In plain terms: ticking a course marked `consent`, the human sexuality
+              elective, opens this box instead of assigning it at once. Texas requires schools to get a parent's written consent before a
+              student receives human sexuality instruction (Texas Education Code §28.004(i-2)), so the course is assigned only when the
+              educator confirms that consent; Cancel leaves it unassigned. */}
+          {consentAsk && (
+            <div role="dialog" aria-modal="true" aria-label="Consent required" className="edu-no-print" style={{ position: 'fixed', top: 0, right: 0, bottom: 0, left: 0, background: C.scrim, zIndex: 120, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
+              <div className="edu-rise" style={{ maxWidth: 440, width: '100%', background: C.surface, ...(C.mode === 'dark' ? { border: `1px solid ${C.cardEdge}` } : {}), borderRadius: 14, padding: 22, textAlign: 'center' }}>
+                <p style={{ margin: '0 0 8px', fontSize: 18, fontWeight: 700 }}>A parent's consent comes first</p>
+                <p style={{ margin: '0 0 16px', fontSize: 15, lineHeight: 1.55 }}>{consentAsk.title} is human sexuality instruction. Texas requires schools to get a parent's written consent before a student receives it (Texas Education Code §28.004). Assign it only with a parent's consent.</p>
+                <div style={{ display: 'flex', gap: 10, justifyContent: 'center', flexWrap: 'wrap' }}>
+                  <button type="button" onClick={() => { setEnabled(enabled.includes(consentAsk.id) ? enabled : [...enabled, consentAsk.id]); setConsentAsk(null); }} style={{ fontFamily: FONT, fontSize: 15, fontWeight: 700, padding: '10px 16px', borderRadius: 10, border: 'none', background: C.green, color: C.onAccent, cursor: 'pointer' }}>A parent has consented</button>
+                  <button type="button" onClick={() => setConsentAsk(null)} style={{ fontFamily: FONT, fontSize: 15, fontWeight: 700, padding: '10px 16px', borderRadius: 10, border: `2px solid ${C.green}`, background: 'transparent', color: C.ink, cursor: 'pointer' }}>Cancel</button>
+                </div>
+              </div>
+            </div>
+          )}
           <ClearableInput value={courseQuery} onChange={(e) => setCourseQuery(e.target.value)} onClear={() => setCourseQuery('')} placeholder="Search courses, for example: grade 1 math, kinder, fractions" aria-label="Search courses"
             style={{ fontFamily: FONT, fontSize: 15, padding: '10px 12px', width: '100%', boxSizing: 'border-box', border: `2px solid ${C.line}`, borderRadius: 10, marginBottom: 10, background: C.surface, color: C.ink, WebkitTextFillColor: C.ink, caretColor: C.ink, textAlign: 'center' }} />
           {!courseQuery.trim() && (
@@ -10019,7 +10209,7 @@ function EduSphereScreens() {
           {courseQuery.trim() && (
             <div>
               {COURSES.filter((c) => matchesCourseSearch(c, courseQuery)).sort(byGradeOrder).map((c) => (
-                <CourseChoiceRow key={c.id} course={c} checked={enabled.includes(c.id)} onToggle={() => setEnabled(enabled.includes(c.id) ? enabled.filter((id) => id !== c.id) : [...enabled, c.id])} onPreview={() => setCoursePreview(c.id)} />
+                <CourseChoiceRow key={c.id} course={c} checked={enabled.includes(c.id)} onToggle={() => { if (!enabled.includes(c.id) && c.consent) { setConsentAsk({ id: c.id, title: c.title }); return; } setEnabled(enabled.includes(c.id) ? enabled.filter((id) => id !== c.id) : [...enabled, c.id]); }} onPreview={() => setCoursePreview(c.id)} />
               ))}
               {COURSES.filter((c) => matchesCourseSearch(c, courseQuery)).length === 0 && <p style={{ margin: '0 0 8px', fontSize: 15, color: C.muted, textAlign: 'center' }}>No course matches that. Try a grade, a subject, or a word from a course title.</p>}
             </div>
@@ -10039,7 +10229,7 @@ function EduSphereScreens() {
                     <span style={{ fontSize: 14, color: C.muted }}>{list.filter((c) => enabled.includes(c.id)).length} of {list.length} selected {open ? '▴' : '▾'}</span>
                   </button>
                   {open && <div style={{ padding: '4px 14px 8px' }}>
-                    {list.map((c) => <CourseChoiceRow key={c.id} course={c} checked={enabled.includes(c.id)} onToggle={() => setEnabled(enabled.includes(c.id) ? enabled.filter((id) => id !== c.id) : [...enabled, c.id])} onPreview={() => setCoursePreview(c.id)} />)}
+                    {list.map((c) => <CourseChoiceRow key={c.id} course={c} checked={enabled.includes(c.id)} onToggle={() => { if (!enabled.includes(c.id) && c.consent) { setConsentAsk({ id: c.id, title: c.title }); return; } setEnabled(enabled.includes(c.id) ? enabled.filter((id) => id !== c.id) : [...enabled, c.id]); }} onPreview={() => setCoursePreview(c.id)} />)}
                   </div>}
                 </div>
               ); });
@@ -10070,7 +10260,7 @@ function EduSphereScreens() {
                       </button>
                       {open && <div style={{ padding: '4px 14px 8px' }}>
                         {list.map((c) => (
-                          <CourseChoiceRow key={c.id} course={c} checked={enabled.includes(c.id)} onToggle={() => setEnabled(enabled.includes(c.id) ? enabled.filter((id) => id !== c.id) : [...enabled, c.id])} onPreview={() => setCoursePreview(c.id)} onSave={enabled.includes(c.id) ? () => setSavedCourseIds((l) => (l.includes(c.id) ? l : [...l, c.id])) : null} />
+                          <CourseChoiceRow key={c.id} course={c} checked={enabled.includes(c.id)} onToggle={() => { if (!enabled.includes(c.id) && c.consent) { setConsentAsk({ id: c.id, title: c.title }); return; } setEnabled(enabled.includes(c.id) ? enabled.filter((id) => id !== c.id) : [...enabled, c.id]); }} onPreview={() => setCoursePreview(c.id)} onSave={enabled.includes(c.id) ? () => setSavedCourseIds((l) => (l.includes(c.id) ? l : [...l, c.id])) : null} />
                         ))}
                       </div>}
                     </div>

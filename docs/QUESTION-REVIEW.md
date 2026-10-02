@@ -24,7 +24,7 @@ The practice screen shows a question in this order: the module title, the questi
 | Grades 6 to 8 | Pass IG read the first three patterns of each bank; pass IH read the rest (1,317 patterns, 247 banks) |
 | Grades 9 to 12 | Grades 9 and 10 read in pass IH (1,285 patterns, 185 banks); grades 11 and 12 in pass II (609 patterns, 173 banks) |
 | College | Pass IJ: 284 patterns in 47 banks read |
-| Wonder questions | Pass IK: early and growing stages read (136 of 264, all four voices); teen and grown next |
+| Wonder questions | All read (IK early and growing, IL teen and grown); sun questions merged; 12 new in IL, 275 in all; the pool program adds a batch each pass |
 | Game cards with words (Myth or Fact, Valid or Not, and others) | To do |
 
 ## What a read-through checks

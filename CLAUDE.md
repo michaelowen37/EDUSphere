@@ -290,3 +290,4 @@ Add its standards to src/curriculum.mjs (every code, with the module ids that co
 - Read-throughs (2026-10-02, pass IH): a read-through reads every pattern of every bank. A skim of the first few patterns is not one, and the docs must say which was done.
 - Sourcing (2026-10-02, pass IJ): a statistic in a question, even a wrong choice or an example of evidence, must be one we can source; when it cannot be sourced, use a documented fact instead.
 - Wonder edits (2026-10-02, pass IK): Wonder text was written and approved by a person. A review pass may correct a fact or a word, and must list every change in docs/DECISIONS.md for Mikey's approval.
+- Wonder pool (Mikey, 2026-10-02, pass IL): grow the pool well past one per module, failure and hard feelings first; older stages draw on Deutsch, Popper, Socrates, the Dalai Lama, Naval Ravikant and Arthur Brooks, paraphrased and accurate; new questions are listed for approval and show only after an educator approves them.

@@ -2,6 +2,12 @@
 
 The newest block is what educators see once, in a pop-up on the classroom page, after each update. Write it the way Mikey talks to a teacher: conversational, complete sentences, say what changed and why it matters, and skip the shorthand (2026-09-23). Two to four items. The date line is the version stamp.
 
+## October 2, 2026 (Wonder questions for older learners, and twelve new ones)
+
+- Every Wonder question has now been read through by hand, and the two questions about where the sun goes at night are one.
+- Twelve new Wonder questions for teens and adults, about failure, hard feelings and hard days, draw on Karl Popper, David Deutsch, Socrates, the Dalai Lama, Naval Ravikant and Arthur Brooks.
+- The scientist voice now gives the newest research on being left out and on whether crowds really stand by.
+
 ## October 2, 2026 (Wonder questions for younger learners)
 
 - Every Wonder question for the two youngest stages was read through by hand, all four voices.

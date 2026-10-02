@@ -1658,6 +1658,11 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
       ok('no question bank is defined twice, so an edit can never land on an unused copy', twice.length === 0); }
     ok('the two agriculture banks from the screenshots fill a ten-question round', QP.poolSize(['ag-scope']) >= 12 && QP.poolSize(['ag-animals']) >= 12);
   }
+  { // Every prompt is under its limit (pass HZ): the seed 7 check near the top reads one question per bank, so this one
+    // samples every bank the way the pool audit does, and a long prompt can no longer hide among a bank's others.
+    const QP = await import('../tools/question-pools.mjs'); const longs = QP.longPrompts(200);
+    ok(`every prompt in every bank is under 70 characters, or 110 for writing (now ${longs.length} over${longs.length ? ': ' + longs.slice(0, 3).map((r) => r.generator).join(', ') : ''})`, longs.length === 0);
+  }
   ok('the two robot games sit in the two programming courses beside their first games', L.COURSE_GAMES['tech-3'].includes('debug-tech-3') && L.COURSE_GAMES['tech-5'].includes('debug-tech-5') && L.GAMES.filter((g) => g.kind === 'debug').every((g) => L.ROBOT_DECKS[g.deck]));
 }
 

@@ -1768,8 +1768,27 @@ Approved by Mikey on 2026-09-04 unless marked "proposed".
 - My first script stopped at a safety check (the reading lists span two lines each) and wrote nothing; a full check had already started against the unchanged files, so it was stopped, and the lists were updated by finding each list's own closing bracket.
 - This is the moment to start a new chat: the question-bank program is finished, every check passes, and docs/NEW-CHAT.md carries the whole project.
 
+## 2026-10-02 (pass HZ): every prompt under its limit, and a test that reads every bank
+
+- Mikey committed everything through HY and started a new chat inside the Project, so the commit message starts fresh at HZ. Before anything changed, the new chat's full check passed with HY's numbers.
+- The open item said 46 banks had prompts of 70 characters or more. That count was wrong: it included writing prompts, whose limit is 110, and none of those is over. The true count was 22 prompts in 16 banks: grade 3 economics (2) and philosophy (2), grade 6 philosophy (4), art (1) and music (2, from one computed template), grade 9 philosophy (7), personal finance (3) and art (1).
+- Why they slipped through: the rules test read one question per bank, at one seed. `longPrompts` in tools/question-pools.mjs now samples every bank the way the pool audit does, docs/QUESTION-POOLS.md lists any long prompt, and a rules test fails on one. A planted long prompt was caught before the test went in.
+- How they were shortened: twelve lost words that carried no meaning; eight moved their scene into a setup line shown with a one-sentence question (the table rent, the hawk mascot, the charity habit, Confucius's wording of the golden rule, three grade 9 arguments, and ice cream and drownings), through an optional fifth item in those banks' entries; and the note-length template now asks the count first (In 4/4 time, how many sixteenth notes last as long as a quarter note?). Every answer is unchanged, so every answer is still taught in its lesson.
+- Fixed along the way: the grade 6 charity question was garbled (until the other person agrees that is it), and its setup now uses the lesson's own words; the note-length explanation said 1 beats and now says 1 beat; a retirement explanation that was a fragment is a sentence.
+- Found, not changed: about 157 banks write a setup sentence and a question together in one prompt (6x + 8 = 2x + 36. What is x?; Look at the rock. Is it living?). That is deliberate and reads well, aloud especially. A smaller set ends in a terse fragment (The model?, Purpose?, The cone holds?); a later pass can make those whole questions.
+- Next: General Psychology (PSYC 2301), with the ACGM learning outcomes read from a Texas college syllabus before citing.
+
+## 2026-10-02 (pass IA): questions that make sense read first
+
+- Mikey has not committed HZ, so the commit message covers HZ and IA.
+- Mikey flagged one of HZ's rewrites, What is wrong with the reason about the mascot?, as a sentence that does not make sense, and he was right. The practice screen shows the question first, in bold, with its setup line under it; Quick fire shows the setup above. HZ's notes said the setup shows above the question. That was wrong, and those notes are corrected.
+- So a question must make sense when read first, and it names its setup with this, as the reading and math banks already do (What is the flaw in this reasoning?, What is its volume?). Rewritten to that pattern: the mascot, the charity habit, Confucius's version of the golden rule, the three grade 9 argument questions, and ice cream and drownings, now a whole piece of reasoning to judge, like the grade 8 sunburn question.
+- The mascot question also had an older flaw: nothing said the mascot really is a hawk, so it is false could look right. The setup now says so, and the explanation says a mascot has nothing to do with when school starts.
+- The grade 6 lesson sentence behind it read as one long claim (The school should start later because the mascot is a hawk is a reason that is true and useless). It now sets the example apart and says why it fails: it is true, but it is not relevant. A grade 6 question that ended in is what? now reads What is a position you back with reasons and change if they fail?
+- Next: General Psychology (PSYC 2301).
+
 ## Open items
-- Shorten the older prompts of 70 characters or more (pass HU found them in the grade 6 philosophy and art critique banks, among others).
+- Make the terse fragment prompts whole questions (pass HZ found them in reading, math, science, computer science and psychology banks from grade 3 to 8, among them The model?, Purpose? and The cone holds?).
 - On a real phone, answer a question, tap Next and refresh: the set should resume at the next question with the answer kept (pass HR).
 - Verify audio plays inside the chat artifact sandbox (works in a normal browser).
 - Common Core / TEKS codes on existing modules to be checked against the official lists. The technology section numbers were checked and fixed in pass FS (§126.8, §126.10, §126.18); the sub-codes of those three courses are still unchecked.

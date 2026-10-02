@@ -2,6 +2,13 @@
 
 The newest block is what educators see once, in a pop-up on the classroom page, after each update. Write it the way Mikey talks to a teacher: conversational, complete sentences, say what changed and why it matters, and skip the shorthand (2026-09-23). Two to four items. The date line is the version stamp.
 
+## October 2, 2026 (shorter, clearer questions)
+
+- Every practice question is now short enough to read at a glance on a phone. Twenty-two older questions, mostly in philosophy and economics, ran long and have been trimmed, with the same answers as before.
+- When a question comes with a scene to read, like an argument to judge, the scene sits on its own line and the question is one short sentence that makes sense on its own.
+- A garbled question in grade 6 philosophy and a small grammar slip in a music explanation are fixed.
+- A few philosophy questions, and a lesson sentence about a school mascot, were reworded so they read clearly the first time through.
+
 ## October 1, 2026 (practice that survives a refresh)
 
 - A refresh in the middle of practice now brings the student back to the same question set, at the next question, with every answer kept.

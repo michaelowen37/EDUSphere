@@ -10,11 +10,11 @@ Written 2026-10-02 (pass HX), when the question-bank program finished. Mikey ask
 4. Send: "New chat for The Wise Human. Unzip the project, read docs/NEW-CHAT.md and the latest DECISIONS entry, then continue. Committed through <pass>."
 5. Optional and helpful: add this file to the Project's knowledge, so every chat in the Project sees it before the first message.
 
-## Where things stand (pass HY)
+## Where things stand (pass IA)
 
-- 118 courses, 603 modules in 15 subjects, 99 long stories, 148 games in 57 kinds, every module able to fill its practice round without repeating a question.
-- Passes HR to HY are delivered, and Mikey planned to commit all of them together, with docs/COMMIT-MESSAGE.md, before starting this chat. Confirm with him, and start the next commit message fresh.
-- Next, in order: shorten the older prompts of 70 characters or more (46 banks); the approved college courses (General Psychology PSYC 2301 first, then ECON 2301, SPCH 1315, PHIL 1301, ARTS 1301, MUSI 1306, AGRI 1131, ENGL 1301, BIOL 1308); health science (Principles of Health Science) and engineering; then the pictures program (pre-K and kindergarten first), the audio program, and the launch items. Not Spanish: Mikey cannot review it.
+- 118 courses, 603 modules in 15 subjects, 99 long stories, 148 games in 57 kinds; every module fills its practice round without repeating a question, and every prompt in every bank is under its length limit.
+- Mikey committed through HY and opened the Project's first new chat, which delivered passes HZ and IA. Confirm with him what is committed, and start the commit message fresh after each commit he reports.
+- Next, in order: the approved college courses (General Psychology PSYC 2301 first, then ECON 2301, SPCH 1315, PHIL 1301, ARTS 1301, MUSI 1306, AGRI 1131, ENGL 1301, BIOL 1308); health science (Principles of Health Science) and engineering; then the pictures program (pre-K and kindergarten first), the audio program, and the launch items. Not Spanish: Mikey cannot review it.
 
 ## The vision
 

@@ -441,7 +441,7 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
     if (genId === 'g12-override-votes') { const [total, yes] = q.story.match(/\d+/g).map(Number); if (q.answer !== (yes >= Math.ceil(2 * total / 3) ? 'Yes' : 'No')) problems.push('override wrong'); }
     if (genId === 'g12-electors') { const reps = Number(q.story.match(/has (\d+)/)[1]); if (Number(q.answer) !== reps + 2) problems.push('electors wrong'); }
     if (genId === 'g12-presidential-year') { const y = Number(q.story.match(/\d+/)[0]); if (q.answer !== (y % 4 === 0 ? 'Presidential' : 'Midterm')) problems.push('election year wrong'); }
-    if (genId === 'g12-how-many') { const table = { 'members of the House of Representatives': 435, senators: 100, 'senators from each state': 2, 'justices on the Supreme Court': 9, "years in a President's term": 4, "years in a senator's term": 6, "years in a representative's term": 2, 'terms a President may serve': 2 }; const what = q.prompt.replace(/^How many /, '').replace(/\?$/, ''); if (Number(q.answer) !== table[what]) problems.push('count wrong'); }
+    if (genId === 'g12-how-many') { const table = { 'members of the House of Representatives': 435, senators: 100, 'senators from each state': 2, 'justices on the Supreme Court': 9, "years in a President's term": 4, "years in a senator's term": 6, "years in a representative's term": 2, 'terms a President may serve': 2 }; const asked = { 'How many members does the House of Representatives have?': 435, 'How many senators are there?': 100, 'How many senators does each state have?': 2, 'How many justices sit on the Supreme Court?': 9, "How many years are in a President's term?": 4, "How many years are in a senator's term?": 6, "How many years are in a representative's term?": 2, 'How many terms may a President serve?': 2 }; const what = q.prompt.replace(/^How many /, '').replace(/\?$/, ''); if (Number(q.answer) !== (asked[q.prompt] ?? table[what])) problems.push('count wrong'); }
     if (genId === 'e12-opportunity-cost') { const nums = q.story.match(/\d+/g).map(Number); if (Number(q.answer) !== (nums.length > 1 ? Math.min(...nums) : nums[0])) problems.push('opportunity cost wrong'); }
     if (genId === 'e12-equilibrium-price') { const line = q.story.split('\n').find((l) => { const [, d, s] = l.match(/want (\d+) and sellers offer (\d+)/); return d === s; }); if (Number(q.answer) !== Number(line.match(/At (\d+)/)[1])) problems.push('equilibrium wrong'); }
     if (genId === 'e12-shortage-or-surplus') { const [a, b] = q.story.match(/\d+/g).map(Number); if (q.answer !== (a > b ? 'Shortage' : 'Surplus')) problems.push('shortage wrong'); }
@@ -478,7 +478,7 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
     // Grades 6, 7 and 9 social studies, re-derived from the story
     if (genId === 'wc6-hemisphere') { const [, ns, ew] = q.story.match(/degrees ([NS]), \d+ degrees ([EW])/); if (q.answer !== `${ns === 'N' ? 'Northern' : 'Southern'} and ${ew === 'E' ? 'Eastern' : 'Western'}`) problems.push('hemisphere wrong'); }
     if (genId === 'wc6-gdp-per-person') { const [gdp, people] = q.story.match(/\d+/g).map(Number); if (Number(q.answer) !== gdp * 1000 / people) problems.push('gdp per person wrong'); }
-    if (genId === 'wc6-density' || genId === 'wg9-density') { const [people, area] = q.story.match(/\d+/g).map(Number); if (Number(q.answer) !== people / area) problems.push('density wrong'); }
+    if (genId === 'wc6-density' || genId === 'wg9-density') { const m = q.story.match(/([\d.]+) (million|thousand)? ?people on ([\d.]+)/); const people = Number(m[1]) * (m[2] === 'million' ? 1000 : 1); const area = Number(m[3]); if (Number(q.answer) !== people / area) problems.push('density wrong'); }
     if (genId === 'wc6-more-crowded') { const [a, b] = q.story.match(/\d+/g).map(Number); if (q.answer !== (a > b ? 'Town A' : 'Town B')) problems.push('crowded wrong'); }
     if (genId === 'tx7-herd-math') { const [head, price] = q.story.match(/\d+/g).map(Number); if (Number(q.answer) !== head * price) problems.push('herd wrong'); }
     if (genId === 'wg9-lapse') { const [base, m] = q.story.match(/\d+/g).map(Number); if (Number(q.answer) !== base - 6 * (m / 1000)) problems.push('lapse wrong'); }
@@ -550,7 +550,7 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
     if (genId === 'g12-half-life-left') { const [start, hl] = q.story.match(/\d+/g).map(Number); const t = Number(q.prompt.match(/\d+/)[0]); if (Number(q.answer.match(/\d+/)[0]) !== start / 2 ** (t / hl)) problems.push('half life left wrong'); }
     if (genId === 'g12-half-lives-count') { const [hl] = q.story.match(/\d+/g).map(Number); const t = Number(q.prompt.match(/\d+/)[0]); if (Number(q.answer) * hl !== t) problems.push('half lives count wrong'); }
     if (genId === 'g12-end-behavior') { const mm = q.story.match(/^(-?\d+)x\^(\d+)/); const lead = Number(mm[1]); const power = Number(mm[2]); const even = power % 2 === 0; const expected = even ? (lead > 0 ? 'Both ends go up' : 'Both ends go down') : (lead > 0 ? 'Down on the left, up on the right' : 'Up on the left, down on the right'); if (q.answer !== expected) problems.push('end behavior wrong'); }
-    if (genId === 'g12-leading-term') { const mm = q.story.match(/([-\d]+)x\^(\d+)/); if (q.answer !== `${mm[1]}x^${mm[2]}`) problems.push('leading term wrong'); }
+    if (genId === 'g12-leading-term') { const mm = q.story.match(/([-+]) (\d+)x\^(\d+)/); if (q.answer !== `${mm[1] === '-' ? '-' : ''}${mm[2]}x^${mm[3]}`) problems.push('leading term wrong'); }
     // Grade 11 math, re-derived from the prompt
     if (genId === 'g11-quadratic-roots') { const [b, c] = q.story.match(/\d+/g).map(Number); const [lo, hi] = q.answer.match(/\d+/g).map(Number); if (lo + hi !== b || lo * hi !== c) problems.push('quadratic roots wrong'); }
     if (genId === 'g11-discriminant') { const mm = q.story.match(/^(\d*)x² \+ (\d+)x \+ (\d+)/); const a = mm[1] ? Number(mm[1]) : 1; const b = Number(mm[2]); const c = Number(mm[3]); if (Number(q.answer) !== b * b - 4 * a * c) problems.push('discriminant wrong'); }
@@ -1666,7 +1666,7 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
   { // Questions that read well (pass IB, Mikey): the wording checks in tools/question-review.mjs find questions that end in a
     // fragment, lean on a setup they come before, leave a word hanging, say 1 meters or a 8, or explain with a label or by
     // repeating the answer. The read-through passes fix the rest by hand; this count may only fall.
-    const WORDING_FLAG_LIMIT = 8; // pass IB: 13 explanations that only repeat their answer (grades 7, 9 and 12)
+    const WORDING_FLAG_LIMIT = 0; // pass IB: 13 explanations that only repeat their answer (grades 7, 9 and 12)
     const QR = await import('../tools/question-review.mjs'); const flagged = QR.flaggedQuestions(150);
     ok(`no new question reads badly to the wording checks (at most ${WORDING_FLAG_LIMIT}, now ${flagged.length})`, flagged.length <= WORDING_FLAG_LIMIT);
   }

@@ -2,6 +2,29 @@
 
 The newest block is what educators see once, in a pop-up on the classroom page, after each update. Write it the way Mikey talks to a teacher: conversational, complete sentences, say what changed and why it matters, and skip the shorthand (2026-09-23). Two to four items. The date line is the version stamp.
 
+## October 2, 2026 (Wonder questions for younger learners)
+
+- Every Wonder question for the two youngest stages was read through by hand, all four voices.
+- The scientist voice now gives the newest research: how long feelings last, what handwriting does for memory, and which cells last a whole life.
+- Wonder voices for pre-K speak to the child, not about children.
+
+## October 2, 2026 (college courses, read through)
+
+- Every college question was read through by hand, so every grade from pre-K through college has now been read.
+- A logic question now uses a true contradiction, and a history example uses a fact we could source: Houston's deepwater ship channel, opened in 1914.
+
+## October 2, 2026 (grades 11 and 12, read through)
+
+- Every grade 11 and 12 question was read through by hand, so every grade from pre-K to 12 has now been read.
+- A momentum answer that printed sixteen decimal places is a whole number now, and polynomials read 6x - 4x^5 - 3.
+- Government questions ask whole questions and answer in sentences, like a President may serve 2 terms.
+
+## October 2, 2026 (grades 9 and 10, read through)
+
+- Every grade 9 and 10 question was read through by hand, and the rest of grades 6 to 8 too.
+- Fixes include a story question whose wrong answer matched the right one, the pH of baking soda, and the spelling of the explorer Álvarez de Pineda.
+- The automated wording checks now find nothing to flag anywhere in the app.
+
 ## October 2, 2026 (grades 6 to 8, and the newest research)
 
 - The memory lessons now teach the newest research: the brain holds about four things at once, not the older figure of seven.

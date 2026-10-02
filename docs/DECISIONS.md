@@ -1851,6 +1851,44 @@ Approved by Mikey on 2026-09-04 unless marked "proposed".
 - Grammar: chloroplasts and mitochondria take no a; food chains use plurals (the robins lose their food; small fish stays small fish); the tendons are part of the muscular system. Explanations: the weak-evidence ones no longer just repeat the answer, so the wording flags drop from 13 to 8 and the limit drops to 8; 50 out of 100 is 50%; 4 + 6 = 10; the Jumano lived along the Rio Grande; farther left on the number line.
 - Next: grades 9 to 12.
 
+## 2026-10-02 (pass IH): grades 9 and 10, and the rest of grades 6 to 8
+
+- Mikey committed through IG, so the commit message starts again at IH.
+- A correction: pass IG read the first three patterns of each grade 6 to 8 bank, not every pattern. This pass read the rest of each bank, so grades 6 to 8 are now read in full.
+- Grades 9 and 10 were read in full: 1,285 patterns in 185 banks.
+- Accuracy: a complex-character question offered, as its wrong answer, the same want that won (Elena's farm, Marcus's job); each story now names the want that lost. Baking soda in water is about pH 8 (8.3), not 9, and the lesson and questions agree. The explorer is Alonso Álvarez de Pineda; the app spelled him Piñeda. Tendons, nerves and blood vessels are not organs, so the question asks which part belongs to the system.
+- Clarity: questions name their subject (the population, the block's density, where the point lands, the sector), point at their setup with this, and finish their fragments (Who argued this?, Which amendment did this?, Why do they carry half?, Is this a physical change or a chemical change?). The last When? prompts ask When did this happen?. A long, chatty setup about table columns is one plain sentence. Populations read 10 million people, not 10000 thousand. Plural places agree (What kind of feature are the Himalayas?).
+- Explanations: the source-credibility and star-stage explanations no longer just repeat their answers, so the automated wording checks flag nothing and the limit drops to 0. The largest hot desert is the Sahara, written as a sentence.
+- Next: grades 11 and 12, then college.
+
+## 2026-10-02 (pass II): grades 11 and 12
+
+- Mikey has not committed IH, so the commit message covers IH and II.
+- Every grade 11 and 12 question was read, every pattern of every bank: 609 patterns in 173 banks. With them, every grade from pre-K to 12 has been read by hand.
+- Bugs and accuracy: a momentum question printed 967.3333333333334 meters per second; truck masses now divide evenly, so answers are whole numbers. A polynomial read 6x + -4x^5 - 3; it reads 6x - 4x^5 - 3. The grade 12 amendment questions asked which amendment did a right; they ask which amendment says it. One amp flows, not flow.
+- Clarity: physics questions name the car, the ball, the train and the note. Fragments became whole questions (Why does the straw look bent?, What happens to the other bulb?, Who made these rules law?, What did the New Deal change most?, Why is it so much milder?, Which is not one of the First Amendment's five freedoms?). Government counts ask whole questions (How many terms may a President serve?) and answer in sentences (A President may serve 2 terms). Branch explanations are sentences with the right verb (The courts decide what a law means). Are groceries a need or a want?
+- Names after a date keep their capitals: 1957: Sputnik; 1944: D-Day; 1954: Brown v. Board of Education.
+- The wording checks still flag nothing. Next: the college courses, then the Wonder questions and the game cards.
+
+## 2026-10-02 (pass IJ): the college courses
+
+- Mikey has not committed IH or II, so the commit message covers IH, II and IJ.
+- Every college question was read, every pattern of every bank: 284 patterns in 47 banks.
+- Accuracy: a consistency question said a program could not both cut costs by a third and grow its budget every year, while its own lesson rightly says both can hold if something else changed; the question now uses a strict contradiction (spending fell every year, and rose this year). A history evidence choice said Houston's port tonnage tripled in the ten years after the 1900 storm, a figure we could not source; it now says Houston opened a deepwater ship channel in 1914, safe from the open Gulf. The Union troop transfer of 1863 is about 25,000 men, nearly 1,200 miles, in under two weeks (sources give eleven and a half to twelve days), not eleven days.
+- Clarity: whole questions (How much is there after 2 years?, How long does it take to grow to 8 times the start?, What is the firm's owners' equity?); array positions say counting from 0; queues are added to, not pushed; the factorial of 6; dates that start with About read about 1760 mid-sentence.
+- The wording checks still flag nothing. Next: the Wonder questions (264, four voices each), then the game cards, then General Psychology.
+
+## 2026-10-02 (pass IK): Wonder questions, early and growing stages
+
+- Mikey has not committed IH, II or IJ, so the commit message covers IH to IK.
+- The early and growing Wonder questions were read in full: 136 of 264 (72 early, 64 growing), every prompt, all four voices and every closing question. The teen and grown stages (128) are next.
+- Wonder text was written and approved by a person, so every change below is listed for Mikey's approval, and the code comment now says so.
+- Newest research and accuracy: w-feelings-pass (scientist) said even a very strong feeling usually changes within minutes; a 2015 study that had people time their feelings (Verduyn and Lavrijsen) found fear often fades within an hour while sadness can last days, and it now says that. w-on-paper (scientist) said handwriting beats typing for memory; the famous 2014 study found that, but later, larger studies found the difference small or missing, and it now says both. w-same-river (prompt and scientist) said every cell gets replaced; many brain cells last a whole life, so it says most cells. w-same-water: water is hardly ever made or used up (plants split it and bodies make it), not never. w-slow-time: the brain has no single stopwatch for minutes, rather than no clock at all. w-growing-everyone-talked-at-once: attention follows one voice at a time, while ears take in all of them. w-early-lost-the-beat: removed a claim that feet find a beat faster than hands, which could not be sourced. w-three-governments (grandparent): the founders split power between the nation and the states, and the states share theirs with towns; three levels was not their design. w-say-sorry: saying sorry usually helps, not every time. w-smallest: billions and billions of bits in a grain of sand.
+- Voice: the pre-K questions w-big-or-small and w-same-or-different spoke about children in the third person, as if to a parent; they now speak to the child, and so does w-fish-home.
+- Even-handedness: w-need-or-want-really's grandparent said The oldest wisdom says; it now says One very old teaching says.
+- Wording: every culture (not every people), airplanes, farther, tell a computer carefully, one doubled this week, a plant given a whole bucket (the artist no longer tells the child what they did), and many people (not nobody) dislike some pictures at first.
+- Found, not changed: two Wonder questions ask Where does the sun go at night? (w-sun-night, with no course, and w-where-sun-goes, for kindergarten science). Keep both, merge them, or rewrite one: Mikey's call.
+
 ## Open items
 - Make the terse fragment prompts whole questions (pass HZ found them in reading, math, science, computer science and psychology banks from grade 3 to 8, among them The model?, Purpose? and The cone holds?).
 - On a real phone, answer a question, tap Next and refresh: the set should resume at the next question with the answer kept (pass HR).

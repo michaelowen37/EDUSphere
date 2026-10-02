@@ -805,7 +805,22 @@ await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen ===
 t = await text();
 ok('the quick check runs on the practice screen as a labeled five-question round', t.includes('Quick check') && (await state()).question !== null);
 // Answering all five in under two seconds each is "too fast to count", so this run reads each question first.
-for (let i = 0; i < 5; i++) { await page.waitForTimeout(2100); await answer(true); if (i < 4) await next(); }
+// A refresh mid-practice resumes the set (2026-10-01, pass HR, Mikey on a real phone): answer a question, tap Next,
+// refresh, and the next question is waiting with the first answer kept. The store is carried across the reload, as in
+// the lesson refresh above, because headless Chromium can reload before committing localStorage.
+{ await page.waitForTimeout(2100); await answer(true);
+  if (await page.getByRole('button', { name: /^Next/ }).count()) { await page.getByRole('button', { name: /^Next/ }).first().click(); }
+  await page.waitForTimeout(500);
+  const q2 = await page.evaluate(() => window.__eduTest.question && window.__eduTest.question.prompt);
+  const snap = await page.evaluate(() => { const o = {}; for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); o[k] = localStorage.getItem(k); } return o; });
+  const token = 'edu-carry-set-' + Date.now();
+  await page.addInitScript(([store, tok]) => { try { if (window.name === tok) return; for (const k of Object.keys(store)) if (window.localStorage.getItem(k) === null) window.localStorage.setItem(k, store[k]); window.name = tok; } catch (e) { /* storage may be off */ } }, [snap, token]);
+  await page.reload();
+  await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'practice', null, { timeout: 15000 }).catch(() => {});
+  const after = await page.evaluate(() => { let w = null; try { w = JSON.parse(localStorage.getItem('edusphere_v1_where')); } catch (e) { /* none */ } return { screen: window.__eduTest && window.__eduTest.screen, prompt: window.__eduTest && window.__eduTest.question && window.__eduTest.question.prompt, answered: w && w.set ? (w.set.coreResults || []).length : -1 }; });
+  ok('a refresh in the middle of practice returns to the next question with the answer kept', after.screen === 'practice' && after.prompt === q2 && after.answered === 1);
+}
+for (let i = 1; i < 5; i++) { await page.waitForTimeout(2100); await answer(true); if (i < 4) await next(); } // the first was answered before the refresh
 await next();
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'quick-result');
 t = await text();

@@ -6106,7 +6106,7 @@ async function storageSet(key, value) {
 // some browsers, so every read and write is wrapped in try.
 // -----------------------------------------------------------------------------------------------------------------
 const WHERE_KEY = 'edusphere_v1_where';
-const WHERE_SCREENS = new Set(['overview', 'lesson', 'story', 'map']);
+const WHERE_SCREENS = new Set(['overview', 'lesson', 'story', 'map', 'practice']); // 'practice' since pass HR: a set in progress resumes after a refresh
 function loadWhere() { try { const w = safeJson(window.localStorage.getItem(WHERE_KEY)); return w && typeof w.name === 'string' && w.name && WHERE_SCREENS.has(w.screen) ? w : null; } catch (e) { return null; } }
 function saveWhere(w) { try { if (w) window.localStorage.setItem(WHERE_KEY, JSON.stringify(w)); else window.localStorage.removeItem(WHERE_KEY); } catch (e) { /* storage may be off */ } }
 async function loadRecord(name) {
@@ -6672,7 +6672,15 @@ function EduSphereScreens() {
           if (rec && rec.events && rec.events.length) {
             setRecord(rec);
             const known = where.moduleId && getModule(where.moduleId);
-            if ((where.screen === 'lesson' || where.screen === 'story') && known) { setModuleId(where.moduleId); setLessonStep(0); setScreen(where.screen); }
+            const st = where.set;
+            if (where.screen === 'practice' && known && st && st.attempt && Array.isArray(st.attempt.core)) {
+              // Resume the practice set where it was (pass HR): the same questions, the same place, every answer kept.
+              setModuleId(where.moduleId); setAttempt(st.attempt); setQIndex(st.qIndex || 0); setGiven(st.given || ''); setChecked(!!st.checked); setWasCorrect(!!st.wasCorrect); setMisses(st.misses || 0);
+              setCoreResults(st.coreResults || []); setReviewResult(st.reviewResult || null); setReview2Result(st.review2Result || null); setStartedAt(st.startedAt || null); setOrderPicked([]); setQShownAt(Date.now());
+              if (st.placementWalk) setPlacementWalk(st.placementWalk);
+              setScreen('practice');
+            }
+            else if ((where.screen === 'lesson' || where.screen === 'story') && known) { setModuleId(where.moduleId); setLessonStep(0); setScreen(where.screen); }
             else setScreen(where.screen === 'map' ? 'map' : 'overview');
             return;
           }
@@ -6682,7 +6690,20 @@ function EduSphereScreens() {
     })();
   }, []);
   // The note of where the student is: written on the four remembered screens, erased at the front door (pass GV).
-  useEffect(() => { if (screen === 'loading') return; if (record && !record.preview && WHERE_SCREENS.has(screen)) saveWhere({ name: record.name, screen, moduleId: screen === 'lesson' || screen === 'story' ? moduleId : null }); else if (screen === 'welcome') saveWhere(null); }, [screen, moduleId, record && record.name, record && record.preview]);
+  // The where-note (passes GV and HR). In plain terms: on the screens a refresh should return to, the app notes where the
+  // student is. On the practice screen it also saves the practice set in progress, the questions, the number reached, the
+  // answers so far and any feedback showing (and, for placement, the walk through the grades), so a refresh resumes the
+  // set with every answer kept (Mikey, on a real phone: an answered question was lost on refresh). Leaving the practice
+  // screen for anywhere else drops the saved set, so a finished set can never come back and be recorded twice.
+  useEffect(() => {
+    if (screen === 'loading') return;
+    if (record && !record.preview && WHERE_SCREENS.has(screen)) {
+      const inSet = screen === 'practice' && attempt && Array.isArray(attempt.core);
+      saveWhere({ name: record.name, screen, moduleId: screen === 'lesson' || screen === 'story' || screen === 'practice' ? moduleId : null,
+        ...(inSet ? { set: { attempt, qIndex, given, checked, wasCorrect, misses, coreResults, reviewResult, review2Result, startedAt, placementWalk: attempt.placement ? placementWalk : null } } : {}) });
+    } else if (screen === 'welcome') saveWhere(null);
+    else if (record && !record.preview) { const w = loadWhere(); if (w && w.set) saveWhere({ name: w.name, screen: 'overview', moduleId: null }); }
+  }, [screen, moduleId, record && record.name, record && record.preview, attempt, qIndex, checked, coreResults, reviewResult, review2Result]);
 
   // Adds one event to the learner's log and saves. This is the ONLY place the log changes.
   async function addEvent(event) { return addEvents([event]); }

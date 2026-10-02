@@ -3637,7 +3637,7 @@ function K_SCIENCE_MODULES() { return [
     title: 'Day and night',
     tagline: 'The sun and the moon',
     lesson: {
-      paragraphs: ['The sun shines in the day. The moon shines at night.', 'Look up and see which one it is.'],
+      paragraphs: ['The sun shines in the day. The moon shines at night. In the day the sky is bright. At night the sky is dark.', 'Look up and see which one it is.'],
       keyIdea: 'Sun in the day, moon at night.',
       example: { kind: 'daynight', caption: 'The side facing the sun has day. The side facing away has night. The Earth turns.' , formula: 'the Earth turns'},
       script: [
@@ -6261,7 +6261,7 @@ function GRADE9_READING_MODULES() { return [
       example: { kind: 'letters', text: 'who how why', caption: 'Who says so, how they know, and who benefits.' , another: "A credible source shows its homework: an author's name, a date, evidence you can follow. No author, no date, no sources is a rumor with a website."},
     },
     sources: ['Aligned with Texas TEKS E1.12C (refine the major research question, if necessary, guided by the answers to a secondary set of questions) and E1.12D (evaluate sources for credibility) and Common Core W.9-10.8 (assess the usefulness of each source).'],
-    generators: ['r9-more-credible', 'r9-credibility-flag', 'r9-more-credible', 'r9-credibility-flag', 'r9-more-credible'],
+    generators: ['r9-more-credible', 'r9-credibility-flag', 'r9-more-credible', 'r9-credibility-flag', 'r9-more-credible', 'r9-credibility-check', 'r9-credibility-check'],
   },
 ]; }
 
@@ -6411,7 +6411,7 @@ function GRADE10_READING_MODULES() { return [
       example: { kind: 'letters', text: 'torn', caption: 'Two real wants, pulling opposite ways.' , another: 'A flat character wants one thing. A complex character wants two things that fight: to be honest and to be liked, to leave and to stay. The fight is the story.'},
     },
     sources: ['Aligned with Texas TEKS E2.7B (analyze how characters\' motivations and behaviors influence events and resolution of the conflict) and Common Core RL.9-10.3 (analyze how complex characters develop over the course of a text).'],
-    generators: ['r10-two-wants', 'r10-which-won', 'r10-two-wants', 'r10-which-won', 'r10-two-wants'],
+    generators: ['r10-two-wants', 'r10-which-won', 'r10-two-wants', 'r10-which-won', 'r10-two-wants', 'r10-complex-facts', 'r10-complex-facts'],
   },
   {
     id: 'symbols',
@@ -6581,7 +6581,7 @@ function GRADE11_READING_MODULES() { return [
       example: { kind: 'letters', text: 'Then the phone rang.', caption: 'A short sentence after a long one.' , another: 'A long sentence carries you along, adding one thing to the next until you arrive. A short one stops. Writers switch between them on purpose.'},
     },
     sources: ['Aligned with Texas TEKS E3.9F (analyze how the author\'s diction and syntax contribute to the mood, voice, and tone of a text) and Common Core L.11-12.3a (vary syntax for effect).'],
-    generators: ['r11-structure-effect', 'r11-short-for-impact', 'r11-structure-effect', 'r11-short-for-impact', 'r11-structure-effect'],
+    generators: ['r11-structure-effect', 'r11-short-for-impact', 'r11-structure-effect', 'r11-short-for-impact', 'r11-structure-effect', 'r11-structure-facts', 'r11-structure-facts'],
   },
   {
     id: 'enough-evidence',
@@ -6769,7 +6769,7 @@ function GRADE12_READING_MODULES() { return [
       example: { kind: 'letters', text: 'begin end order', caption: 'Three choices every author makes.' , another: 'A story could have started anywhere. Ask why it starts here, why it ends there, why this scene comes before that one. Every choice shapes what you feel.'},
     },
     sources: ['Aligned with Texas TEKS E4.7C (analyze how the author uses structure to achieve specific purposes) and Common Core RL.11-12.5 (analyze how an author\'s choices concerning how to structure specific parts of a text contribute to its overall structure and meaning).'],
-    generators: ['r12-structure-choice', 'r12-if-it-began', 'r12-structure-choice', 'r12-if-it-began', 'r12-structure-choice'],
+    generators: ['r12-structure-choice', 'r12-if-it-began', 'r12-structure-choice', 'r12-if-it-began', 'r12-structure-choice', 'r12-choice-facts', 'r12-choice-facts'],
   },
 ]; }
 
@@ -6941,7 +6941,7 @@ function COLLEGE_READING_MODULES() { return [
       example: { kind: 'letters', text: 'page two vs page nine', caption: 'Both true only if something else changed.' , another: 'List the claims and check whether they can all be true at the same time. A text that says the plan is cheap and also says it costs more than anything before has a problem.'},
     },
     sources: ['Aligned with Texas College and Career Readiness Standards, English Language Arts B.2 (evaluate the logic of an argument) and Common Core RI.11-12.8 (evaluate the reasoning in seminal texts, including whether the reasoning is valid).'],
-    generators: ['rc-contradiction', 'rc-consistent-pair', 'rc-contradiction', 'rc-consistent-pair', 'rc-contradiction'],
+    generators: ['rc-contradiction', 'rc-consistent-pair', 'rc-contradiction', 'rc-consistent-pair', 'rc-contradiction', 'rc-consistency-facts', 'rc-consistency-facts'],
   },
 ]; }
 
@@ -7480,7 +7480,7 @@ function GRADE7_SCIENCE_MODULES() { return [
       example: { kind: 'flow', steps: ['high pressure', 'wind', 'low pressure'], caption: 'Air moves from high pressure to low. That movement is wind.' , formula: 'high to low', another: 'Air behaves like water on a slope. Heavy, cool air piles up as high pressure and slides toward light, warm air, low pressure. That slide is wind.'},
     },
     sources: ['Aligned with Texas TEKS 7.8A (describe how energy from the Sun drives convection in the atmosphere and produces weather) and NGSS MS-ESS2-5 (collect data to provide evidence for how the motions and complex interactions of air masses result in changes in weather conditions).'],
-    generators: ['s7-front-result', 's7-pressure-sky', 's7-front-result', 's7-pressure-sky', 's7-air-rule'],
+    generators: ['s7-front-result', 's7-pressure-sky', 's7-front-result', 's7-pressure-sky', 's7-air-rule', 's7-weather-facts', 's7-weather-facts'],
   },
   {
     id: 'natural-selection',
@@ -7517,7 +7517,7 @@ function GRADE7_SCIENCE_MODULES() { return [
       example: { kind: 'punnett', caption: 'Two brown-eyed parents who each carry a blue version: three squares show brown, one shows blue.' , formula: 'dominant or recessive', another: { text: 'You carry two cards for each trait, one from each parent. A brown-eyes card beats a blue-eyes card, so you show brown even holding one blue. Two blue cards, and blue shows.', visual: { kind: 'punnett' } }},
     },
     sources: ['Aligned with Texas TEKS 7.14C (recognize that inherited traits of individuals are governed in the genetic material found in the genes within chromosomes in the nucleus) and NGSS MS-LS3-2 (develop and use a model to describe why asexual reproduction results in offspring with identical genetic information and sexual reproduction results in offspring with genetic variation).'],
-    generators: ['s7-dominant-or-recessive', 's7-which-shows', 's7-dominant-or-recessive', 's7-which-shows', 's7-why-blue-child'],
+    generators: ['s7-dominant-or-recessive', 's7-which-shows', 's7-dominant-or-recessive', 's7-which-shows', 's7-why-blue-child', 's7-genes-facts', 's7-genes-facts'],
   },
   {
     id: 'energy-in-ecosystems',
@@ -7707,7 +7707,7 @@ function GRADE9_SCIENCE_MODULES() { return [
       example: { kind: 'punnett', p1: 'Bb', p2: 'bb', caption: 'One parent carries a blue version, the other has two: half the squares show blue.' , formula: 'Bb × bb', another: 'A Punnett square is a raffle with four tickets. Each parent gives one card at random. Two Bb parents: three tickets show brown, one shows blue, so each child has a one in four chance of blue.'},
     },
     sources: ['Aligned with Texas TEKS Bio.6F (predict possible outcomes of various genetic combinations such as monohybrid crosses) and NGSS HS-LS3-3 (apply concepts of statistics and probability to explain the variation of expressed traits in a population).'],
-    generators: ['s9-shows-trait', 's9-cross-odds', 's9-shows-trait', 's9-cross-odds', 's9-which-boxes'],
+    generators: ['s9-shows-trait', 's9-cross-odds', 's9-shows-trait', 's9-cross-odds', 's9-which-boxes', 's9-genetics-facts', 's9-genetics-facts'],
   },
   {
     id: 'respiration-and-photosynthesis',
@@ -7800,7 +7800,7 @@ function GRADE9_SCIENCE_MODULES() { return [
       example: { kind: 'loop', steps: ['air', 'leaf', 'rabbit', 'air'], caption: 'Carbon goes around: from the air into a leaf, into the rabbit that eats it, and back to the air when it breathes.' , formula: 'air, leaf, rabbit, air', another: 'Carbon is a passenger that never leaves the bus. It rides in the air, gets picked up by a leaf, is eaten by a rabbit, and is breathed back into the air. Nitrogen rides a similar loop through soil, roots and animals.'},
     },
     sources: ['Aligned with Texas TEKS Bio.12D (describe the flow of matter through the carbon and nitrogen cycles and explain the consequences of disrupting these cycles) and NGSS HS-LS2-5 (develop a model to illustrate the role of photosynthesis and cellular respiration in the cycling of carbon).'],
-    generators: ['s9-which-cycle', 's9-cycle-step', 's9-which-cycle', 's9-cycle-step', 's9-who-fixes-nitrogen'],
+    generators: ['s9-which-cycle', 's9-cycle-step', 's9-which-cycle', 's9-cycle-step', 's9-who-fixes-nitrogen', 's9-cycles-facts', 's9-cycles-facts'],
   },
   {
     id: 'homeostasis',
@@ -8212,7 +8212,7 @@ function GRADE12_SCIENCE_MODULES() { return [
       example: { kind: 'earthlayers', caption: 'A thin crust, a thick hot mantle, and a metal core, liquid outside and solid inside.' , formula: 'crust, mantle, core', another: { text: 'A peach. The thin skin is the crust. The thick flesh is the hot mantle. The pit is the core, with a liquid outer layer around a solid center.', visual: { kind: 'earthlayers' } }},
     },
     sources: ['Aligned with Texas TEKS ESS.10A (investigate how new conceptual interpretations of data and innovative geophysical technologies led to the current theory of plate tectonics) and NGSS HS-ESS2-3 (develop a model based on evidence of Earth\'s interior to describe the cycling of matter by thermal convection).'],
-    generators: ['s12-which-layer', 's12-layer-order', 's12-which-layer', 's12-how-we-know', 's12-layer-order'],
+    generators: ['s12-which-layer', 's12-layer-order', 's12-which-layer', 's12-how-we-know', 's12-layer-order', 's12-layer-facts', 's12-layer-facts'],
   },
   {
     id: 'ocean-currents',
@@ -8231,7 +8231,7 @@ function GRADE12_SCIENCE_MODULES() { return [
       example: { kind: 'ocean', caption: 'Cold, salty water is heavy and sinks; it slides along the bottom while warm water flows back on top.' , formula: 'cold and salty sinks', another: { text: 'Cold, salty water is heavy, so it sinks and creeps along the sea floor. Warm water is light, so it flows back along the top. The ocean is a slow conveyor belt driven by weight.', visual: { kind: 'ocean' } }},
     },
     sources: ['Aligned with Texas TEKS ESS.12A (investigate how the atmosphere and ocean interact to influence weather and climate, including ocean currents) and NGSS HS-ESS2-4 (use a model to describe how variations in the flow of energy into and out of Earth\'s systems result in changes in climate).'],
-    generators: ['s12-current-driver', 's12-why-mild', 's12-current-driver', 's12-sinks-or-rises', 's12-why-mild'],
+    generators: ['s12-current-driver', 's12-why-mild', 's12-current-driver', 's12-sinks-or-rises', 's12-why-mild', 's12-ocean-facts', 's12-ocean-facts'],
   },
   {
     id: 'natural-resources',
@@ -8536,7 +8536,7 @@ function GRADE8_HISTORY_MODULES() { return [
       example: { kind: 'flow', steps: ['13th: freedom', '14th: citizens', '15th: the vote'], caption: 'Three amendments rebuilt the promise.' , formula: '13, 14, 15' , another: ['Three amendments as three promises. The 13th: no more slavery. The 14th: everyone born here is a citizen. The 15th: no one loses the vote for their race. Keeping them took a century.', { text: 'Three amendments in five years, three promises:\\n• **1865, the 13th:** no more slavery.\\n• **1868, the 14th:** citizens, all born here.\\n• **1870, the 15th:** the vote, whatever your race.', visual: { kind: 'timeline', events: [[1865, '13th'], [1868, '14th'], [1870, '15th']] } }]},
     },
     sources: ['Aligned with Texas TEKS 8.9B (evaluate legislative reform programs of the Radical Reconstruction Congress and reconstructed state governments) and 8.9C, and NCSS Theme VI.'],
-    generators: ['h8-which-amendment', 'h8-amendment-year', 'h8-which-amendment', 'h8-after-1877', 'h8-amendment-year'],
+    generators: ['h8-which-amendment', 'h8-amendment-year', 'h8-which-amendment', 'h8-after-1877', 'h8-amendment-year', 'h8-reconstruction-facts', 'h8-reconstruction-facts'],
   },
 ]; }
 
@@ -8630,7 +8630,7 @@ function GRADE10_HISTORY_MODULES() { return [
       example: { kind: 'flow', steps: ['steam', 'factories', 'cities'], caption: 'Power made factories, factories made cities.' , formula: 'steam, factories, cities' , another: ['Around 1760, steam replaced muscle. A machine could do the work of a hundred hands, so people moved to the towns where the machines were. Life got richer and cities got dirtier.', { text: "Muscle to steam in one lifetime: the spinning jenny in the 1760s, Watt's engine in 1776, the first railway in 1825. Each machine did the work of many hands and pulled people into towns.", visual: { kind: 'timeline', events: [[1764, 'spinning jenny'], [1776, 'Watt engine'], [1825, 'first railway']] } }]},
     },
     sources: ['Aligned with Texas TEKS WH.10A (identify the causes and effects of the Industrial Revolution) and NCSS Theme VIII (Science, Technology, and Society).'],
-    generators: ['h10-industry-fact', 'h10-price-and-payoff', 'h10-industry-fact', 'h10-pattern', 'h10-price-and-payoff'],
+    generators: ['h10-industry-fact', 'h10-price-and-payoff', 'h10-industry-fact', 'h10-pattern', 'h10-price-and-payoff', 'h10-industry-facts', 'h10-industry-facts'],
   },
   {
     id: 'world-wars',
@@ -13079,7 +13079,7 @@ function GRADE11_HISTORY_MODULES() { return [
       example: { kind: 'growthbars', values: [3, 25, 14], labels: ['1929', '1933', '1937'], caption: 'Unemployment, in percent: one in four out of work at the bottom.' , formula: '1929' , another: 'In 1929 the stock market crashed, and by 1933 one worker in four had no job. The New Deal was the government hiring people, insuring banks and starting Social Security.'},
     },
     sources: ['Aligned with Texas TEKS US.6C (analyze the causes of the Great Depression) and US.6D (evaluate the New Deal) and NCSS Theme VII.'],
-    generators: ['h11-depression-year', 'h11-depression-fact', 'h11-depression-year', 'h11-new-deal', 'h11-depression-fact'],
+    generators: ['h11-depression-year', 'h11-depression-fact', 'h11-depression-year', 'h11-new-deal', 'h11-depression-fact', 'h11-newdeal-facts', 'h11-newdeal-facts'],
   },
   {
     id: 'america-in-world-war-two',
@@ -14187,11 +14187,8 @@ Object.assign(GENERATORS, {
     return { type: 'choice', story: null, prompt: 'Which one is missing?', choices: shuffle(rng, [`item:${missing}-${c}`, `item:${b}-${c}`]), answer: `item:${missing}-${c}`,
       explain: `${a}, ${b}, ${a}, ${b}. The missing one is ${a}.`, visual: { kind: 'pattern', items, color: c }, explainVisual: null };
   },
-  'p3-how-many': (rng) => {
-    const n = randInt(rng, 1, 3);
-    return { type: 'choice', story: null, prompt: 'How many?', choices: shuffle(rng, ['1', '2', '3']), answer: String(n),
-      explain: `${countUp(n)}. There ${n === 1 ? 'is' : 'are'} ${n}.`, visual: { kind: 'dots', count: n }, explainVisual: null };
-  },
+
+
   'p3-tap-group': (rng) => {
     const n = randInt(rng, 1, 3);
     return { type: 'choice', story: null, prompt: `Tap ${n}.`, choices: shuffle(rng, [1, 2, 3].map((c) => `dots:${c}`)), answer: `dots:${n}`,
@@ -14213,15 +14210,22 @@ Object.assign(GENERATORS, {
 const PREK_LETTERS = ['A', 'B', 'C', 'D', 'E', 'M', 'S'];
 Object.assign(GENERATORS, {
   'sk-day-or-night': (rng) => {
-    const sun = randInt(rng, 0, 1) === 1;
-    return { type: 'choice', story: null, prompt: sun ? 'Is the sun for the day or the night?' : 'Is the moon for the day or the night?', choices: ['Day', 'Night'], answer: sun ? 'Day' : 'Night',
-      explain: sun ? 'The sun shines in the day.' : 'The moon shines at night.', visual: { kind: 'icon', name: sun ? 'sun' : 'moon' }, explainVisual: null };
+    // More examples (pass HT, Mikey): eight short scenes, each answered by the lesson's sun, moon, bright and dark.
+    const Q = [['Is the sun for the day or the night?', 'Day', 'sun', 'The sun shines in the day.'], ['Is the moon for the day or the night?', 'Night', 'moon', 'The moon shines at night.'],
+      ['The moon is out. Is it day or night?', 'Night', 'moon', 'The moon shines at night.'], ['The sun is shining. Is it day or night?', 'Day', 'sun', 'The sun shines in the day.'],
+      ['The sky is bright. Is it day or night?', 'Day', null, 'In the day the sky is bright.'], ['The sky is dark. Is it day or night?', 'Night', null, 'At night the sky is dark.'],
+      ['You see the sun out the window. Day or night?', 'Day', 'sun', 'The sun shines in the day.'], ['You see the moon out the window. Day or night?', 'Night', 'moon', 'The moon shines at night.']];
+    const [prompt, answer, icon, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: ['Day', 'Night'], answer, explain, visual: icon ? { kind: 'icon', name: icon } : null, explainVisual: null };
   },
+
   'sk-tap-sky': (rng) => {
-    const sun = randInt(rng, 0, 1) === 1;
-    return { type: 'choice', story: null, prompt: sun ? 'Tap the sun.' : 'Tap the moon.', choices: shuffle(rng, ['icon:sun', 'icon:moon']), answer: sun ? 'icon:sun' : 'icon:moon',
-      explain: sun ? 'This is the sun.' : 'This is the moon.', visual: null, explainVisual: null };
+    // More examples (pass HT, Mikey): tap the sun or the moon by name or by when it shines.
+    const [prompt, sun] = pick(rng, [['Tap the sun.', true], ['Tap the moon.', false], ['Tap what shines in the day.', true], ['Tap what shines at night.', false]]);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, ['icon:sun', 'icon:moon']), answer: sun ? 'icon:sun' : 'icon:moon',
+      explain: sun ? 'This is the sun. It shines in the day.' : 'This is the moon. It shines at night.', visual: null, explainVisual: null };
   },
+
   'sk-which-weather': (rng) => {
     const w = pick(rng, ['sun', 'rain', 'snow']); const word = { sun: 'Sunny', rain: 'Rainy', snow: 'Snowy' };
     return { type: 'choice', story: null, prompt: `Look at the ${w}. What is the weather?`, choices: shuffle(rng, ['Sunny', 'Rainy', 'Snowy']), answer: word[w],
@@ -14363,15 +14367,21 @@ Object.assign(GENERATORS, {
 // Pre-K 3: two choices, one thing asked, everything named in the words the child hears.
 Object.assign(GENERATORS, {
   'p3-tap-red-blue': (rng) => {
+    // More examples (pass HT, Mikey): tap a color on swatches or on two shapes that differ only in color.
     const c = pick(rng, ['red', 'blue']); const other = c === 'red' ? 'blue' : 'red';
+    if (rng() < 0.5) { const shape = pick(rng, PATTERN_SHAPES); return { type: 'choice', story: null, prompt: `Tap the ${c} ${shape}.`, choices: shuffle(rng, [`item:${shape}-${c}`, `item:${shape}-${other}`]), answer: `item:${shape}-${c}`, explain: `This ${shape} is ${c}.`, visual: null, explainVisual: null }; }
     return { type: 'choice', story: null, prompt: `Tap ${c}.`, choices: shuffle(rng, [`swatch:${c}`, `swatch:${other}`]), answer: `swatch:${c}`,
       explain: `This one is ${c}.`, visual: null, explainVisual: null };
   },
+
   'p3-which-colour': (rng) => {
+    // More examples (pass HT, Mikey): the color on a swatch or on a shape, so a round of five never repeats.
     const c = pick(rng, ['red', 'blue']); const other = c === 'red' ? 'blue' : 'red';
+    if (rng() < 0.5) { const shape = pick(rng, PATTERN_SHAPES); return { type: 'choice', story: null, prompt: `What color is this ${shape}?`, choices: shuffle(rng, [c, other]), answer: c, explain: `This ${shape} is ${c}.`, visual: { kind: 'item', shape, colour: c }, explainVisual: null }; }
     return { type: 'choice', story: null, prompt: 'What color is this?', choices: shuffle(rng, [c, other]), answer: c,
       explain: `It is ${c}.`, visual: { kind: 'swatch', colour: c }, explainVisual: null };
   },
+
   'p3-find-match': (rng) => {
     const shape = pick(rng, PATTERN_SHAPES); const c = pickColor(rng); const otherShape = pick(rng, PATTERN_SHAPES.filter((x) => x !== shape));
     return { type: 'choice', story: `This is a ${c} ${shape}.`, prompt: 'Tap the one that is the same.', choices: shuffle(rng, [`item:${shape}-${c}`, `item:${otherShape}-${c}`]), answer: `item:${shape}-${c}`,
@@ -14383,10 +14393,15 @@ Object.assign(GENERATORS, {
       explain: `This is ${word}.`, visual: null, explainVisual: null };
   },
   'p3-how-many': (rng) => {
+    // More examples (pass HT, Mikey): count one or two dots, or one or two shapes in a row in red or blue, so a round of
+    // five never repeats. (An unused older copy of this bank was removed in pass HS; no bank may be defined twice.)
     const n = randInt(rng, 1, 2);
+    if (rng() < 0.6) { const shape = pick(rng, PATTERN_SHAPES); const colour = pick(rng, ['red', 'blue']);
+      return { type: 'choice', story: null, prompt: `How many ${shape}s?`, choices: shuffle(rng, ['1', '2']), answer: String(n), explain: n === 1 ? `One ${shape}.` : `Two ${shape}s.`, visual: { kind: 'pattern', items: Array.from({ length: n }, () => shape), colour, counting: true }, explainVisual: null }; }
     return { type: 'choice', story: null, prompt: 'How many dots?', choices: shuffle(rng, ['1', '2']), answer: String(n),
       explain: n === 1 ? 'One dot.' : 'Two dots.', visual: { kind: 'dots', count: n }, explainVisual: null };
   },
+
   'p4-which-came-first': (rng) => {
     const SOUNDS = [['cat', 'meow'], ['duck', 'quack'], ['bee', 'buzz'], ['frog', 'ribbit'], ['owl', 'hoot'], ['bear', 'growl']];
     const [a, sa] = pick(rng, SOUNDS); const [b, sb] = pick(rng, SOUNDS.filter((x) => x[0] !== a));
@@ -14514,10 +14529,14 @@ Object.assign(GENERATORS, {
       explain: `This is ${L}.`, visual: null, explainVisual: null };
   },
   'p3-name-ab': (rng) => {
+    // More examples (pass HT, Mikey): the letter alone, or lit up at the start of a word read aloud.
+    if (rng() < 0.6) { const [word, L] = pick(rng, [['Apple', 'A'], ['Ant', 'A'], ['Arm', 'A'], ['Ball', 'B'], ['Bee', 'B'], ['Bus', 'B'], ['Bat', 'B']]);
+      return { type: 'choice', story: null, prompt: `What letter starts ${word.toLowerCase()}?`, choices: shuffle(rng, ['A', 'B']), answer: L, explain: `${word} starts with ${L}.`, visual: { kind: 'letters', text: word, highlight: 0 }, explainVisual: null }; }
     const L = pick(rng, ['A', 'B']);
     return { type: 'choice', story: null, prompt: 'What letter is this?', choices: shuffle(rng, ['A', 'B']), answer: L,
       explain: `This is ${L}.`, visual: { kind: 'letters', text: L, highlight: 0 }, explainVisual: null };
   },
+
   'p3-odd-one': (rng) => {
     const shape = pick(rng, PATTERN_SHAPES); const c = pickColor(rng); const otherShape = pick(rng, PATTERN_SHAPES.filter((x) => x !== shape)); const otherColor = otherColors(rng, c, 1)[0];
     return { type: 'choice', story: `This is a ${c} ${shape}.`, prompt: 'Tap the one that is different.', choices: shuffle(rng, [`item:${shape}-${c}`, `item:${otherShape}-${otherColor}`]), answer: `item:${otherShape}-${otherColor}`,
@@ -15909,21 +15928,47 @@ Object.assign(GENERATORS, {
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
   'm6-mean': (rng) => {
+    // Computed questions (pass HS): fresh numbers each time, so a round never needs a repeat.
+    if (rng() < 0.5) {
+      const kind = pick(rng, ['mean', 'median', 'range']);
+      if (kind === 'mean') { const mean = randInt(rng, 5, 15); const a = mean - randInt(rng, 1, 4); const b = mean + randInt(rng, 1, 3); const c = 3 * mean - a - b; const list = shuffle(rng, [a, b, c]); return { type: 'choice', story: null, prompt: `Scores: ${list.join(', ')}. What is the mean?`, choices: shuffle(rng, [String(mean), String(mean + 1), String(mean - 1)]), answer: String(mean), explain: `Add them, ${3 * mean}, and share among 3: ${mean}.`, visual: null, explainVisual: null }; }
+      const pool = shuffle(rng, Array.from({ length: 30 }, (_, i) => i + 1));
+      if (kind === 'median') { const list = pool.slice(0, 5); const sorted = [...list].sort((x, y) => x - y); const med = sorted[2]; return { type: 'choice', story: null, prompt: `Scores: ${list.join(', ')}. What is the median?`, choices: shuffle(rng, [String(med), String(sorted[0]), String(sorted[4])]), answer: String(med), explain: `In order, ${sorted.join(', ')}; the middle is ${med}.`, visual: null, explainVisual: null }; }
+      const list = pool.slice(0, 4); const hi = Math.max(...list); const lo = Math.min(...list); const range = hi - lo;
+      const others = [...new Set([hi, lo, range + 1].filter((v) => v !== range))].slice(0, 2);
+      return { type: 'choice', story: null, prompt: `Scores: ${list.join(', ')}. What is the range?`, choices: shuffle(rng, [String(range), ...others.map(String)]), answer: String(range), explain: `Highest minus lowest: ${hi} - ${lo} = ${range}.`, visual: null, explainVisual: null };
+    }
     const Q = [['Scores: 4, 6, 8. What is the mean?', ['6', '8', '4'], '6', 'Add them, 18, and share among 3: the mean is 6.'], ['Scores: 2, 9, 4. What is the median?', ['4', '2', '9'], '4', 'Put them in order, 2, 4, 9, and take the middle: 4.'], ['Scores: 5, 5, 7, 9. What is the mode?', ['5', '7', '9'], '5', 'The mode is the most common value. Five appears twice.'], ['Scores: 3, 5, 10. What is the range?', ['7', '3', '10'], '7', 'Range is highest minus lowest: 10 minus 3 is 7.'], ['One huge score is added to a set. Which moves most?', ['the mean', 'the median', 'the mode'], 'the mean', 'An outlier drags the mean; the median stays near the middle of the pack.'], ['Which is the middle value of an ordered list?', ['the median', 'the mean', 'the range'], 'the median', 'Median means middle. Line the numbers up and find the center.'], ];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
   'm6-quadrants': (rng) => {
+    // Computed questions (pass HS): a fresh point each time, so a round never needs a repeat.
+    if (rng() < 0.5) {
+      const x = pick(rng, [-9, -8, -7, -6, -5, -4, -3, -2, -1, 1, 2, 3, 4, 5, 6, 7, 8, 9]); const y = pick(rng, [-9, -8, -7, -6, -5, -4, -3, -2, -1, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
+      if (rng() < 0.5) { const quad = x > 0 ? (y > 0 ? 'first' : 'fourth') : (y > 0 ? 'second' : 'third'); return { type: 'choice', story: null, prompt: `In which quadrant is (${x}, ${y})?`, choices: shuffle(rng, ['first', 'second', 'third', 'fourth']), answer: quad, explain: `${Math.abs(x)} ${x > 0 ? 'right' : 'left'} and ${Math.abs(y)} ${y > 0 ? 'up' : 'down'}: the ${quad} quadrant, counting counterclockwise from the top right.`, visual: null, explainVisual: null }; }
+      const ans = `${Math.abs(x)} ${x > 0 ? 'right' : 'left'}`;
+      return { type: 'choice', story: null, prompt: `The point (${x}, ${y}) is how far across and which way?`, choices: shuffle(rng, [ans, `${Math.abs(x)} ${x > 0 ? 'left' : 'right'}`, `${Math.abs(y)} ${y > 0 ? 'up' : 'down'}`]), answer: ans, explain: 'The first number is across: positive is right, negative is left.', visual: null, explainVisual: null };
+    }
     const Q = [['The point (3, -2) is how far across and which way?', ['3 right', '3 left', '2 up'], '3 right', 'The first number is across: positive is right, negative is left.'], ['The point (3, -2) is how far up or down?', ['2 down', '2 up', '3 down'], '2 down', 'The second number is up or down: negative goes down.'], ['In which quadrant is (-4, 5)?', ['the second', 'the first', 'the fourth'], 'the second', 'Left and up is the second quadrant, counting counterclockwise from top right.'], ['In which quadrant is (2, 2)?', ['the first', 'the second', 'the third'], 'the first', 'Right and up is the first quadrant.'], ['Which point is on the x-axis?', ['(5, 0)', '(0, 5)', '(5, 5)'], '(5, 0)', 'On the x-axis the up-or-down number is zero.'], ['What is the point (0, 0) called?', ['the origin', 'the center line', 'the quadrant'], 'the origin', 'The origin is where the two axes cross.'], ];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
   'm8-linear': (rng) => {
+    // Computed questions (pass HX): fresh numbers each time, so a round never needs a repeat.
+    if (rng() < 0.5) { const m = pick(rng, [2, 3, 4, 5, -2, -3]); const b = pick(rng, [-6, -5, -4, -3, -2, 1, 2, 3, 4, 6, 7]); const eq = `y = ${m}x ${b < 0 ? '-' : '+'} ${Math.abs(b)}`;
+      if (rng() < 0.5) { const choices = [...new Set([String(m), String(b), String(m + 1), String(m + 2)])].slice(0, 3); return { type: 'choice', story: null, prompt: `${eq}. What is the slope?`, choices: shuffle(rng, choices), answer: String(m), explain: `In y = mx + b, m is the slope: ${m}.`, visual: null, explainVisual: null }; }
+      const ans = `at ${b}`; const choices = [...new Set([ans, `at ${m}`, `at ${b + 1}`, `at ${b - 1}`])].slice(0, 3);
+      return { type: 'choice', story: null, prompt: `${eq}. Where does the line cross the y-axis?`, choices: shuffle(rng, choices), answer: ans, explain: `In y = mx + b, b is where the line crosses: ${b}.`, visual: null, explainVisual: null }; }
     const Q = [['y = 3x + 2. What is the slope?', ['3', '2', '5'], '3', 'In y = mx + b, m is the slope: 3.'], ['y = 3x + 2. Where does the line cross the y-axis?', ['at 2', 'at 3', 'at 0'], 'at 2', 'b is the y-intercept: the line starts at 2.'], ['A line rises 4 for every 2 across. What is its slope?', ['2', '4', '8'], '2', 'Rise over run: 4 over 2 is 2.'], ['Which equation is a line?', ['y = 2x - 1', 'y = x squared', 'y = 2 to the x'], 'y = 2x - 1', 'A line has x to the first power, times a number, plus a number.'], ['A line with slope 0 does what?', ['stays flat', 'goes up', 'goes down'], 'stays flat', 'Zero rise: the line is horizontal.'], ['Two lines with the same slope are what?', ['parallel', 'crossing', 'the same length'], 'parallel', 'Same steepness, never meeting: parallel.'], ];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
   'm8-cylinder': (rng) => {
+    // Computed questions (pass HX): fresh numbers each time, so a round never needs a repeat.
+    if (rng() < 0.5) { const r = randInt(rng, 1, 6); const h = randInt(rng, 2, 10); const v = r * r * h; const ans = `${v} pi`;
+      const choices = [...new Set([ans, `${2 * r * h} pi`, `${r * h} pi`, `${2 * v} pi`, `${v + h} pi`, `${v + 1} pi`])].slice(0, 3); // always three different numbers
+      return { type: 'choice', story: null, prompt: `A can has radius ${r} and height ${h}. Its volume, in terms of pi?`, choices: shuffle(rng, choices), answer: ans, explain: `Pi times ${r} squared times ${h}: ${v} pi.`, visual: null, explainVisual: null }; }
     const Q = [['A can has radius 2 and height 5. Its volume, in terms of pi?', ['20 pi', '10 pi', '7 pi'], '20 pi', 'Volume of a cylinder is pi times radius squared times height: pi times 4 times 5.'], ['What is the base of a cylinder?', ['a circle', 'a square', 'a triangle'], 'a circle', 'A cylinder is a circle stacked up: base area times height.'], ['Doubling the height of a can does what to its volume?', ['doubles it', 'quadruples it', 'halves it'], 'doubles it', 'Height is multiplied once, so the volume doubles.'], ['Doubling the radius of a can does what to its volume?', ['quadruples it', 'doubles it', 'halves it'], 'quadruples it', 'Radius is squared, so doubling it multiplies the volume by four.'], ['Which formula is the volume of a cylinder?', ['pi times r squared times h', '2 times pi times r', 'pi times r times h'], 'pi times r squared times h', 'Base area, pi r squared, times height.'], ['A cone and a cylinder share a base and height. The cone holds?', ['one third', 'one half', 'the same'], 'one third', 'A cone is a third of the cylinder around it.'], ];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
@@ -15939,12 +15984,21 @@ Object.assign(GENERATORS, {
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
   'r6-plot': (rng) => {
-    const Q = [['The problem a character faces is called what?', ['the conflict', 'the setting', 'the resolution'], 'the conflict', 'Conflict is the problem the story turns on.'], ['The moment of highest tension is called what?', ['the climax', 'the exposition', 'the theme'], 'the climax', 'The climax is the peak, where the conflict comes to a head.'], ['The part that introduces characters and setting is what?', ['the exposition', 'the climax', 'the resolution'], 'the exposition', 'Exposition sets the stage before the action rises.'], ['A character struggles against a storm. What kind of conflict?', ['character versus nature', 'character versus self', 'character versus society'], 'character versus nature', 'Nature is the opponent: a storm, a mountain, a sea.'], ['A character cannot decide whether to lie. What kind of conflict?', ['character versus self', 'character versus nature', 'character versus character'], 'character versus self', 'The struggle is inside one person.'], ['How a story ties up is called what?', ['the resolution', 'the rising action', 'the setting'], 'the resolution', 'Resolution is where the conflict settles.'], ];
+    const Q = [['The problem a character faces is called what?', ['the conflict', 'the setting', 'the resolution'], 'the conflict', 'Conflict is the problem the story turns on.'], ['The moment of highest tension is called what?', ['the climax', 'the exposition', 'the theme'], 'the climax', 'The climax is the peak, where the conflict comes to a head.'], ['The part that introduces characters and setting is what?', ['the exposition', 'the climax', 'the resolution'], 'the exposition', 'Exposition sets the stage before the action rises.'], ['A character struggles against a storm. What kind of conflict?', ['character versus nature', 'character versus self', 'character versus society'], 'character versus nature', 'Nature is the opponent: a storm, a mountain, a sea.'], ['A character cannot decide whether to lie. What kind of conflict?', ['character versus self', 'character versus nature', 'character versus character'], 'character versus self', 'The struggle is inside one person.'], ['How a story ties up is called what?', ['the resolution', 'the rising action', 'the setting'], 'the resolution', 'Resolution is where the conflict settles.'],
+      // More questions (pass HS), so a round never needs a repeat.
+      ['The part where tension builds toward the climax is what?', ['the rising action', 'the resolution', 'the exposition'], 'the rising action', 'Rising action carries the conflict up to the climax.'],
+      ['Two characters want the same prize. What kind of conflict?', ['character versus character', 'character versus nature', 'character versus self'], 'character versus character', 'One person against another.'],
+      ['A character fights an unfair law. What kind of conflict?', ['character versus society', 'character versus self', 'character versus nature'], 'character versus society', 'The struggle is with the rules of a whole group.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
   'r6-poetry': (rng) => {
-    const Q = [['A group of lines in a poem is called what?', ['a stanza', 'a paragraph', 'a chapter'], 'a stanza', 'Stanzas are the paragraphs of a poem.'], ['Words that end with the same sound are what?', ['rhymes', 'stanzas', 'metaphors'], 'rhymes', 'Cat and hat rhyme: the ending sounds match.'], ['The beat pattern of a poem is called what?', ['rhythm', 'rhyme', 'setting'], 'rhythm', 'Rhythm is the beat you can tap.'], ['Repeating the same starting sound, like silver spoons, is what?', ['alliteration', 'rhyme', 'simile'], 'alliteration', 'Alliteration repeats a beginning sound.'], ['A poem with no rhyme or set beat is called what?', ['free verse', 'a sonnet', 'a limerick'], 'free verse', 'Free verse follows the sense, not a pattern.'], ['A word that sounds like its meaning, like buzz, is what?', ['onomatopoeia', 'rhythm', 'a stanza'], 'onomatopoeia', 'Buzz, hiss, crash: the sound is the meaning.'], ];
+    const Q = [['A group of lines in a poem is called what?', ['a stanza', 'a paragraph', 'a chapter'], 'a stanza', 'Stanzas are the paragraphs of a poem.'], ['Words that end with the same sound are what?', ['rhymes', 'stanzas', 'metaphors'], 'rhymes', 'Cat and hat rhyme: the ending sounds match.'], ['The beat pattern of a poem is called what?', ['rhythm', 'rhyme', 'setting'], 'rhythm', 'Rhythm is the beat you can tap.'], ['Repeating the same starting sound, like silver spoons, is what?', ['alliteration', 'rhyme', 'simile'], 'alliteration', 'Alliteration repeats a beginning sound.'], ['A poem with no rhyme or set beat is called what?', ['free verse', 'a sonnet', 'a limerick'], 'free verse', 'Free verse follows the sense, not a pattern.'], ['A word that sounds like its meaning, like buzz, is what?', ['onomatopoeia', 'rhythm', 'a stanza'], 'onomatopoeia', 'Buzz, hiss, crash: the sound is the meaning.'],
+      // More questions (pass HS), so a round never needs a repeat.
+      ['Which word is onomatopoeia?', ['hiss', 'quiet', 'table'], 'hiss', 'Hiss sounds like what it means.'],
+      ['Which pair rhymes?', ['cat and hat', 'cat and dog', 'sun and moon'], 'cat and hat', 'The ending sounds match.'],
+      ['Which phrase uses alliteration?', ['silver spoons', 'blue water', 'old tree'], 'silver spoons', 'Both words begin with the same sound.'],
+      ['Read aloud, what tells you where a poem breathes?', ['the rhythm', 'the title', 'the page number'], 'the rhythm', 'The beat shows where the pauses fall.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
@@ -15999,11 +16053,19 @@ Object.assign(GENERATORS, {
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
   'm7-probability': (rng) => {
+    // Computed questions (pass HX): fresh numbers each time, so a round never needs a repeat.
+    if (rng() < 0.5) { const r = randInt(rng, 1, 8); const b = randInt(rng, 1, 8); const t = r + b; const red = rng() < 0.5; const want = red ? r : b; const other = red ? b : r; const ans = `${want} out of ${t}`;
+      const choices = [...new Set([ans, `${other} out of ${t}`, `${want} out of ${other}`, `1 out of ${t}`, `${t} out of ${want}`])].slice(0, 3);
+      return { type: 'choice', story: `A bag has ${r} red and ${b} blue marbles.`, prompt: `What is the chance of ${red ? 'red' : 'blue'}?`, choices: shuffle(rng, choices), answer: ans, explain: `Count the ${red ? 'red' : 'blue'} marbles, ${want}, over all ${t}.`, visual: null, explainVisual: null }; }
     const Q = [['A coin flip lands heads how often, in the long run?', ['about half the time', 'always', 'never'], 'about half the time', 'Two equal outcomes: heads is one of two.'], ['A bag has 3 red and 1 blue marble. What is the chance of red?', ['3 out of 4', '1 out of 4', '1 out of 3'], '3 out of 4', 'Three red out of four marbles.'], ['Which event is certain?', ['the sun rising tomorrow', 'rolling a 7 on a die', 'rain today'], 'the sun rising tomorrow', 'Certain means it will happen: probability 1.'], ['Which event is impossible?', ['rolling a 7 on a die', 'rolling a 1', 'rain today'], 'rolling a 7 on a die', 'A die has 1 to 6. Seven never comes: probability 0.'], ['You roll a die 60 times. About how many sixes?', ['about 10', 'about 30', 'about 60'], 'about 10', 'One in six of sixty rolls is ten.'], ['A spinner has 5 equal parts, 2 shaded. Chance of shaded?', ['2 out of 5', '5 out of 2', '2 out of 3'], '2 out of 5', 'Two shaded parts out of five equal parts.'], ];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
   'm7-scale': (rng) => {
+    // Computed questions (pass HX): fresh numbers each time, so a round never needs a repeat.
+    if (rng() < 0.5) { const k = pick(rng, [2, 5, 10, 20, 25, 50]); const n = randInt(rng, 2, 9); const prod = k * n; const ans = `${prod} miles`;
+      const choices = [...new Set([ans, `${prod + k} miles`, `${k + n} miles`, `${prod + 2 * k} miles`])].slice(0, 3);
+      return { type: 'choice', story: null, prompt: `1 inch is ${k} miles. Two towns are ${n} inches apart. How far?`, choices: shuffle(rng, choices), answer: ans, explain: `Each inch is ${k} miles: ${n} times ${k} is ${prod}.`, visual: null, explainVisual: null }; }
     const Q = [['1 inch is 10 miles. Two towns are 3 inches apart. How far?', ['30 miles', '3 miles', '13 miles'], '30 miles', 'Each inch is ten miles: 3 times 10.'], ['A drawing is at scale 1 to 4. A wall drawn 5 inches long is how long?', ['20 inches', '5 inches', '9 inches'], '20 inches', 'Every inch on paper is four in the room: 5 times 4.'], ['A scale drawing keeps what the same?', ['the shape', 'the size', 'the color'], 'the shape', 'Every length changes by the same factor, so the shape stays.'], ['A photo is enlarged by a factor of 3. A 2-inch nose becomes?', ['6 inches', '5 inches', '2 inches'], '6 inches', 'Every length times three.'], ['A model car is 1 to 20. The real car is 4 meters long. The model?', ['20 centimeters', '80 centimeters', '4 centimeters'], '20 centimeters', 'Four meters is 400 centimeters; divide by 20.'], ['What is the scale factor from a 2 cm square to an 8 cm square?', ['4', '2', '6'], '4', 'Eight is four times two.'], ];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
@@ -16029,22 +16091,42 @@ Object.assign(GENERATORS, {
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
   'r7-figurative': (rng) => {
-    const Q = [['The wind whispered through the trees. What is that?', ['personification', 'a simile', 'a fact'], 'personification', 'Wind cannot whisper; giving it a human action is personification.'], ['I have told you a million times. What is that?', ['hyperbole', 'a metaphor', 'a fact'], 'hyperbole', 'An exaggeration for effect.'], ['Her smile was sunshine. What is that?', ['a metaphor', 'a simile', 'hyperbole'], 'a metaphor', 'It says one thing is another, without like or as.'], ['He ran like the wind. What is that?', ['a simile', 'a metaphor', 'personification'], 'a simile', 'Like or as makes a simile.'], ['Why do writers use figurative language?', ['to make a picture in the mind', 'to confuse', 'to fill space'], 'to make a picture in the mind', 'A figure of speech shows instead of tells.'], ['The clock glared at me. Which word makes it personification?', ['glared', 'clock', 'me'], 'glared', 'Glaring is a human look, given to a clock.'], ];
+    const Q = [['The wind whispered through the trees. What is that?', ['personification', 'a simile', 'a fact'], 'personification', 'Wind cannot whisper; giving it a human action is personification.'], ['I have told you a million times. What is that?', ['hyperbole', 'a metaphor', 'a fact'], 'hyperbole', 'An exaggeration for effect.'], ['Her smile was sunshine. What is that?', ['a metaphor', 'a simile', 'hyperbole'], 'a metaphor', 'It says one thing is another, without like or as.'], ['He ran like the wind. What is that?', ['a simile', 'a metaphor', 'personification'], 'a simile', 'Like or as makes a simile.'], ['Why do writers use figurative language?', ['to make a picture in the mind', 'to confuse', 'to fill space'], 'to make a picture in the mind', 'A figure of speech shows instead of tells.'], ['The clock glared at me. Which word makes it personification?', ['glared', 'clock', 'me'], 'glared', 'Glaring is a human look, given to a clock.'],
+      // More questions (pass HX), so a round never needs a repeat.
+      ['The stars danced in the sky. What is that?', ['personification', 'a simile', 'hyperbole', 'a metaphor'], 'personification', 'Stars cannot dance; that is a human action.'],
+      ['She was as quiet as a mouse. What is that?', ['a simile', 'a metaphor', 'hyperbole', 'personification'], 'a simile', 'It compares with as.'],
+      ['This backpack weighs a ton. What is that?', ['hyperbole', 'a simile', 'personification', 'a metaphor'], 'hyperbole', 'It exaggerates for effect.'],
+      ['The classroom was a zoo. What is that?', ['a metaphor', 'a simile', 'hyperbole', 'personification'], 'a metaphor', 'It says one thing is another.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
   'r7-structure': (rng) => {
-    const Q = [['An article lists events in the order they happened. What structure?', ['chronological', 'compare and contrast', 'problem and solution'], 'chronological', 'Time order, first to last.'], ['An article describes a problem, then a fix. What structure?', ['problem and solution', 'description', 'chronological'], 'problem and solution', 'A problem, then what was done about it.'], ['An article says how two cities are alike and different. Structure?', ['compare and contrast', 'cause and effect', 'sequence'], 'compare and contrast', 'Alike and different, side by side.'], ['Which words signal compare and contrast?', ['however, similarly', 'first, next', 'because, so'], 'however, similarly', 'However contrasts; similarly compares.'], ['Which words signal problem and solution?', ['the trouble was, one answer', 'then, after', 'like, unlike'], 'the trouble was, one answer', 'Trouble, then answer.'], ['Why does structure matter to a reader?', ['it tells you what to look for next', 'it makes the text longer', 'it does not'], 'it tells you what to look for next', 'Know the shape and you know where the next idea will be.'], ];
+    const Q = [['An article lists events in the order they happened. What structure?', ['chronological', 'compare and contrast', 'problem and solution'], 'chronological', 'Time order, first to last.'], ['An article describes a problem, then a fix. What structure?', ['problem and solution', 'description', 'chronological'], 'problem and solution', 'A problem, then what was done about it.'], ['An article says how two cities are alike and different. Structure?', ['compare and contrast', 'cause and effect', 'sequence'], 'compare and contrast', 'Alike and different, side by side.'], ['Which words signal compare and contrast?', ['however, similarly', 'first, next', 'because, so'], 'however, similarly', 'However contrasts; similarly compares.'], ['Which words signal problem and solution?', ['the trouble was, one answer', 'then, after', 'like, unlike'], 'the trouble was, one answer', 'Trouble, then answer.'], ['Why does structure matter to a reader?', ['it tells you what to look for next', 'it makes the text longer', 'it does not'], 'it tells you what to look for next', 'Know the shape and you know where the next idea will be.'],
+      // More questions (pass HX), so a round never needs a repeat.
+      ['A recipe lists its steps in order. What structure?', ['chronological', 'compare and contrast', 'problem and solution', 'cause and effect'], 'chronological', 'Things in the order they happen.'],
+      ['Cats and dogs as pets, side by side. What structure?', ['compare and contrast', 'chronological', 'problem and solution', 'cause and effect'], 'compare and contrast', 'Alike and different.'],
+      ['Litter on a beach, then a cleanup plan. What structure?', ['problem and solution', 'chronological', 'compare and contrast', 'cause and effect'], 'problem and solution', 'A problem, then a fix.'],
+      ['Know a text\'s shape and you know what?', ['where the next idea will be', 'who wrote it', 'how long it is', 'nothing'], 'where the next idea will be', 'Structure tells you what to look for next.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
   'r8-author-purpose': (rng) => {
-    const Q = [['A pamphlet urges you to vote for a candidate. Purpose?', ['to persuade', 'to inform', 'to entertain'], 'to persuade', 'It wants you to do something.'], ['An encyclopedia entry on volcanoes. Purpose?', ['to inform', 'to persuade', 'to entertain'], 'to inform', 'Facts, laid out to teach.'], ['A comic about a cat who cannot find its bed. Purpose?', ['to entertain', 'to inform', 'to persuade'], 'to entertain', 'A story for the fun of it.'], ['An author leaves out the costs of a plan. What might that show?', ['a bias', 'a mistake in printing', 'nothing'], 'a bias', 'Leaving out the other side leans the text.'], ['Two accounts of one event disagree. What should a reader ask?', ['who wrote each and why', 'which is shorter', 'which has pictures'], 'who wrote each and why', 'The author and purpose explain the difference.'], ['A word like should in an article signals what?', ['an opinion', 'a fact', 'a date'], 'an opinion', 'Should tells you what the author wants, not what is.'], ];
+    const Q = [['A pamphlet urges you to vote for a candidate. Purpose?', ['to persuade', 'to inform', 'to entertain'], 'to persuade', 'It wants you to do something.'], ['An encyclopedia entry on volcanoes. Purpose?', ['to inform', 'to persuade', 'to entertain'], 'to inform', 'Facts, laid out to teach.'], ['A comic about a cat who cannot find its bed. Purpose?', ['to entertain', 'to inform', 'to persuade'], 'to entertain', 'A story for the fun of it.'], ['An author leaves out the costs of a plan. What might that show?', ['a bias', 'a mistake in printing', 'nothing'], 'a bias', 'Leaving out the other side leans the text.'], ['Two accounts of one event disagree. What should a reader ask?', ['who wrote each and why', 'which is shorter', 'which has pictures'], 'who wrote each and why', 'The author and purpose explain the difference.'], ['A word like should in an article signals what?', ['an opinion', 'a fact', 'a date'], 'an opinion', 'Should tells you what the author wants, not what is.'],
+      // More questions (pass HX), so a round never needs a repeat.
+      ['An ad for a new phone. Purpose?', ['to persuade', 'to inform', 'to entertain', 'to apologize'], 'to persuade', 'It wants you to buy.'],
+      ['A funny story about a dog who loves socks. Purpose?', ['to entertain', 'to persuade', 'to inform', 'to warn'], 'to entertain', 'It is there to delight you.'],
+      ['A news report on a storm\'s path. Purpose?', ['to inform', 'to entertain', 'to persuade', 'to sell'], 'to inform', 'It gives facts.'],
+      ['Purpose explains what a text includes. Bias explains what?', ['what it leaves out', 'its length', 'its title', 'its price'], 'what it leaves out', 'Then ask what is missing.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
   'r8-theme-across': (rng) => {
-    const Q = [['Two stories both show friendship surviving a fight. What is shared?', ['a theme', 'a setting', 'a character'], 'a theme', 'The same message across different stories is a shared theme.'], ['A theme is best stated as what?', ['a sentence', 'one word', 'a name'], 'a sentence', 'A topic is a word; a theme is a sentence about it.'], ['A fable ends with a moral. What is the moral?', ['the theme stated plainly', 'a character', 'the setting'], 'the theme stated plainly', 'Fables say their theme out loud at the end.'], ['Which is a theme, not a topic?', ['Honesty costs something but is worth it', 'honesty', 'a lie'], 'Honesty costs something but is worth it', 'A full sentence with a message.'], ['How do you find a theme?', ['track what changes for the character', 'count the pages', 'read the title'], 'track what changes for the character', 'What the character learns is what the story says.'], ['A poem and a story share a theme. Which shows it faster?', ['the poem, in fewer words', 'the story', 'neither'], 'the poem, in fewer words', 'Poems compress; the same message arrives in a few lines.'], ];
+    const Q = [['Two stories both show friendship surviving a fight. What is shared?', ['a theme', 'a setting', 'a character'], 'a theme', 'The same message across different stories is a shared theme.'], ['A theme is best stated as what?', ['a sentence', 'one word', 'a name'], 'a sentence', 'A topic is a word; a theme is a sentence about it.'], ['A fable ends with a moral. What is the moral?', ['the theme stated plainly', 'a character', 'the setting'], 'the theme stated plainly', 'Fables say their theme out loud at the end.'], ['Which is a theme, not a topic?', ['Honesty costs something but is worth it', 'honesty', 'a lie'], 'Honesty costs something but is worth it', 'A full sentence with a message.'], ['How do you find a theme?', ['track what changes for the character', 'count the pages', 'read the title'], 'track what changes for the character', 'What the character learns is what the story says.'], ['A poem and a story share a theme. Which shows it faster?', ['the poem, in fewer words', 'the story', 'neither'], 'the poem, in fewer words', 'Poems compress; the same message arrives in a few lines.'],
+      // More questions (pass HX), so a round never needs a repeat.
+      ['Honesty alone, a single word, is a what?', ['a topic', 'a theme', 'a moral', 'a plot'], 'a topic', 'A theme is a sentence.'],
+      ['What the character learns is what?', ['what the story says', 'the setting', 'the title', 'the topic'], 'what the story says', 'Track what changes.'],
+      ['Kindness can turn an enemy into a friend. Theme or topic?', ['a theme', 'a topic', 'a setting', 'a plot'], 'a theme', 'It is a full sentence about life.'],
+      ['One message, many what?', ['stories', 'authors', 'titles', 'pages'], 'stories', 'Different texts can share one theme.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
@@ -16149,7 +16231,13 @@ Object.assign(GENERATORS, {
       ['A model keeps what examples have in common. What is that called?', ['a generalization', 'a copy', 'a rule', 'a search'], 'a generalization', 'A generalization keeps what is shared and drops what is particular.'],
       ['How does a language model build an answer?', ['one likely word at a time', 'by looking it up', 'by asking a person', 'by copying a page'], 'one likely word at a time', 'It has learned which word tends to come next, and builds the answer word by word.'],
       ['What does a model make when a new picture arrives?', ['a guess', 'a rule', 'a copy', 'a law'], 'a guess', 'It compares the picture with the patterns it kept and guesses: cat, 92 out of 100.'],
-      ['Which part of a cat picture does a model drop?', ['the sofa the cat sat on', 'the pointed ears', 'the whiskers', 'the fur'], 'the sofa the cat sat on', 'The sofa is specific to one picture. Ears and whiskers are what cats share.']];
+      ['Which part of a cat picture does a model drop?', ['the sofa the cat sat on', 'the pointed ears', 'the whiskers', 'the fur'], 'the sofa the cat sat on', 'The sofa is specific to one picture. Ears and whiskers are what cats share.'],
+      // More questions (pass HS), so a round never needs a repeat.
+      ['Who writes the rules in most programs?', ['a person', 'the computer', 'a cat', 'nobody'], 'a person', 'If the ball touches the paddle, bounce: a person wrote that rule.'],
+      ['What is AI short for?', ['artificial intelligence', 'automatic input', 'any information', 'active internet'], 'artificial intelligence', 'Programs that learn from examples.'],
+      ['In the lesson, each example picture is labeled with what?', ['cat or dog', 'big or small', 'red or blue', 'old or new'], 'cat or dog', 'Labels tell the program what each example shows.'],
+      ['What does a language model learn about words?', ['which word tends to come next', 'how to spell every name', 'which facts are true', 'where words are stored'], 'which word tends to come next', 'It builds answers one likely word at a time.'],
+      ['A language model answering a question is doing what?', ['guessing', 'looking it up', 'asking a person', 'reading a book'], 'guessing', 'It guesses from patterns what an answer usually looks like.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
@@ -16159,7 +16247,13 @@ Object.assign(GENERATORS, {
       ['Why can a wrong answer sound sure?', ['sounding sure is a pattern too', 'the machine is lying', 'the machine is tired', 'the answer is short'], 'sounding sure is a pattern too', 'Almost everything it learned from was written with confidence, so confidence is what it learned.'],
       ['What turns a guess into something you can use?', ['a second source', 'a bigger number', 'a longer answer', 'a faster machine'], 'a second source', 'A book, a teacher, the original website: somewhere you can look.'],
       ['What is a model, at best?', ['a fast first guess', 'a final word', 'a proof', 'a law'], 'a fast first guess', 'A first guess is useful. It is not the final word.'],
-      ['What is the most useful question to ask a machine?', ['how do you know?', 'are you sure?', 'how fast are you?', 'who made you?'], 'how do you know?', 'The answer has to come from somewhere you can look.']];
+      ['What is the most useful question to ask a machine?', ['how do you know?', 'are you sure?', 'how fast are you?', 'who made you?'], 'how do you know?', 'The answer has to come from somewhere you can look.'],
+      // More questions (pass HS), so a round never needs a repeat.
+      ['A cat model shown a fox may say what?', ['cat', 'fox', 'dog', 'nothing'], 'cat', 'Cat, 88 out of 100: the patterns matched, but the answer is wrong.'],
+      ['What does a model have no way to do?', ['feel unsure', 'make a guess', 'report a number', 'match patterns'], 'feel unsure', 'It only reports how well the new thing fits.'],
+      ['What can a language model make up?', ['a date, a name or a quote', 'only numbers', 'nothing at all', 'only pictures'], 'a date, a name or a quote', 'It can look right and never have happened.'],
+      ['Which is a second source you can check?', ['a book', 'the same chatbot', 'a guess', 'a rumor'], 'a book', 'Or a teacher, or the original website.'],
+      ['How sure does a hallucination sound?', ['as sure as a true answer', 'clearly unsure', 'silent', 'confused'], 'as sure as a true answer', 'Sounding sure is a pattern too.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
@@ -16169,7 +16263,12 @@ Object.assign(GENERATORS, {
       ['What is the fix for a biased model?', ['look at who is missing', 'use a bigger number', 'run it faster', 'ask it twice'], 'look at who is missing', 'Count the examples by group, add what is thin, and test on everyone.'],
       ['Before anyone depends on a model, good teams test it on what?', ['every group', 'one group', 'the fastest computer', 'the newest phone'], 'every group', 'Right on average can still be wrong for the group it saw least.'],
       ['A model that is right on average can still be wrong for whom?', ['the people it saw least', 'nobody', 'the people it saw most', 'the people who built it'], 'the people it saw least', 'The average hides them. Ask: right for whom, and wrong for whom?'],
-      ['What does a model give for the groups it serves worst?', ['the same confident number', 'a warning', 'no answer', 'a lower price'], 'the same confident number', 'It cannot tell that it never saw enough of them. The number looks the same.']];
+      ['What does a model give for the groups it serves worst?', ['the same confident number', 'a warning', 'no answer', 'a lower price'], 'the same confident number', 'It cannot tell that it never saw enough of them. The number looks the same.'],
+      // More questions (pass HS), so a round never needs a repeat.
+      ['What does a model know?', ['only what its examples showed it', 'everything on the internet', 'what is fair', 'what you are thinking'], 'only what its examples showed it', 'Missing examples mean missing patterns.'],
+      ['What creeps in when examples leave groups out?', ['bias', 'speed', 'color', 'sound'], 'bias', 'The model works worst for the people it saw least.'],
+      ['Good teams count their examples by what?', ['group', 'size', 'color', 'date'], 'group', 'Then they add what is thin.'],
+      ['What in the dog program was against poodles?', ['nothing', 'the code', 'the screen', 'the user'], 'nothing', 'Poodles were simply missing from the examples.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
@@ -16179,7 +16278,13 @@ Object.assign(GENERATORS, {
       ['The law that says who may copy someone\'s work is called what?', ['copyright', 'a generalization', 'a footprint', 'a hallucination'], 'copyright', 'The pictures and pages a model learned from are intellectual property.'],
       ['A tool hands you a picture. What is inside it?', ['someone\'s work', 'nothing', 'a virus', 'a password'], 'someone\'s work', 'Millions of pictures people made went into the model. Say where it came from.'],
       ['What should you use the tool to do?', ['learn', 'skip learning', 'hide', 'copy'], 'learn', 'Let it explain and quiz you, then do the thinking yourself.'],
-      ['A skill you never practiced is what?', ['a skill you do not have', 'a skill you own', 'a habit', 'a model'], 'a skill you do not have', 'A first draft from a tool is not your skill. Practice is.']];
+      ['A skill you never practiced is what?', ['a skill you do not have', 'a skill you own', 'a habit', 'a model'], 'a skill you do not have', 'A first draft from a tool is not your skill. Practice is.'],
+      // More questions (pass HS), so a round never needs a repeat.
+      ['What should never go into an AI text box?', ['passwords', 'questions', 'ideas', 'thank-yous'], 'passwords', 'No passwords, no address, no private things.'],
+      ['What happens to what you type into an AI tool?', ['leaves your device and may be kept', 'disappears at once', 'stays only on your screen', 'turns into a password'], 'leaves your device and may be kept', 'Treat the box like a postcard.'],
+      ['A tool hands you words or a picture. What should you say?', ['where it came from', 'that you made it', 'nothing', 'that it is free'], 'where it came from', 'Someone\'s work is inside it.'],
+      ['Tools change every year. Which habit lasts?', ['checking what it says', 'trusting every answer', 'skipping practice', 'copying the answer'], 'checking what it says', 'Ask what it is doing, check it, decide for yourself.'],
+      ['A picture model learned from what?', ['millions of pictures people made', 'nothing at all', 'one photo', 'the weather'], 'millions of pictures people made', 'Their work is intellectual property.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
@@ -16191,7 +16296,14 @@ Object.assign(GENERATORS, {
       ['What kind of software manages the machine and shares the CPU?', ['the operating system', 'an application', 'a browser', 'a game'], 'the operating system', 'Windows, macOS, Linux, Android and iOS are operating systems: they start the hardware and share it among programs.'],
       ['A browser is which kind of software?', ['an application', 'an operating system', 'a peripheral', 'storage'], 'an application', 'An application does a task and asks the operating system for the screen, the network and the files.'],
       ['Memory is which kind of storage?', ['primary', 'secondary', 'peripheral', 'none'], 'primary', 'Primary storage is memory, fast and temporary; secondary storage is the drive.'],
-      ['A keyboard, a mouse and a printer are what?', ['peripherals', 'processors', 'operating systems', 'applications'], 'peripherals', 'Peripherals sit at the edges and carry input in and output out.']];
+      ['A keyboard, a mouse and a printer are what?', ['peripherals', 'processors', 'operating systems', 'applications'], 'peripherals', 'Peripherals sit at the edges and carry input in and output out.'],
+      // More questions (pass HV), so a round never needs a repeat.
+      ['Secondary storage is what?', ['the drive', 'memory', 'the CPU', 'the screen'], 'the drive', 'Slower than memory, and lasting.'],
+      ['Which is an operating system?', ['Linux', 'a browser', 'a game', 'a word processor'], 'Linux', 'Windows, macOS, Android and iOS are others.'],
+      ['An application asks the operating system for what?', ['the screen, the network and the files', 'nothing', 'a new CPU', 'more peripherals'], 'the screen, the network and the files', 'It never touches the hardware directly.'],
+      ['How fast does a CPU carry out instructions?', ['billions of times a second', 'once a minute', 'ten times an hour', 'once a day'], 'billions of times a second', 'One instruction at a time, very fast.'],
+      ['What does an application never touch directly?', ['the hardware', 'the user', 'the screen', 'its own code'], 'the hardware', 'It asks the operating system.'],
+      ['Which device is storage?', ['a solid-state drive', 'a keyboard', 'a CPU', 'a printer'], 'a solid-state drive', 'Or a hard disk.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
@@ -16247,7 +16359,13 @@ Object.assign(GENERATORS, {
       ['A strong password has at least how many characters?', ['twelve', 'four', 'six', 'eight'], 'twelve', 'Long, unusual, and used for one account only. A password manager keeps them.'],
       ['What protects an account even if the password leaks?', ['a second step', 'a longer name', 'a faster computer', 'a new browser'], 'a second step', 'A code on your phone is a second step an attacker with the password does not have.'],
       ['A polished page that says what you hoped is what?', ['not more reliable for it', 'always true', 'a primary source', 'open source'], 'not more reliable for it', 'Check who wrote it, when, and what they gain.'],
-      ['What do you need before you copy someone\'s code?', ['permission', 'a faster computer', 'a longer password', 'nothing'], 'permission', 'Copyright means you need permission to copy, and citing the source shows where it came from.']];
+      ['What do you need before you copy someone\'s code?', ['permission', 'a faster computer', 'a longer password', 'nothing'], 'permission', 'Copyright means you need permission to copy, and citing the source shows where it came from.'],
+      // More questions (pass HV), so a round never needs a repeat.
+      ['What should you read before you use a library?', ['the license', 'the reviews', 'the logo', 'nothing'], 'the license', 'It says what you may do with the code.'],
+      ['What keeps your many passwords safe?', ['a password manager', 'a sticky note', 'one shared password', 'your memory alone'], 'a password manager', 'One account, one password.'],
+      ['What closes the holes attackers use?', ['software updates', 'turning the screen off', 'a bigger monitor', 'a new mouse'], 'software updates', 'Along with virus detection.'],
+      ['Citing the source shows what?', ['where borrowed work came from', 'that you wrote it', 'the price', 'nothing'], 'where borrowed work came from', 'Copyright means you need permission.'],
+      ['A program fails. What do you read first?', ['the error message', 'the license', 'the reviews', 'nothing'], 'the error message', 'Then print the variables at the suspect line.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
@@ -16658,7 +16776,12 @@ Object.assign(GENERATORS, {
       ['Which part is the alarm that fires when something might be dangerous?', ['the amygdala', 'the hippocampus', 'the cerebellum', 'the brainstem'], 'the amygdala', 'The alarm part is grown early; the brakes come later.'],
       ['When does the prefrontal cortex finish growing?', ['in the mid-twenties', 'at age ten', 'at birth', 'at age fifty'], 'in the mid-twenties', 'It does the planning and the stopping.'],
       ['How much sleep do teenagers need?', ['eight to ten hours', 'four to five hours', 'twelve to fourteen hours', 'six hours'], 'eight to ten hours', 'Sleep is when the brain files the day.'],
-      ['The brain changing with use is called what?', ['plasticity', 'attention', 'adrenaline', 'balance'], 'plasticity', 'Practice a skill and the connections for it grow stronger.']];
+      ['The brain changing with use is called what?', ['plasticity', 'attention', 'adrenaline', 'balance'], 'plasticity', 'Practice a skill and the connections for it grow stronger.'],
+      // More questions (pass HU), so a round never needs a repeat.
+      ['Which part of the brain keeps you balanced?', ['the cerebellum', 'the brainstem', 'the amygdala', 'the hippocampus'], 'the cerebellum', 'The brainstem keeps you breathing.'],
+      ['Which part does the planning and the stopping?', ['the prefrontal cortex', 'the cerebellum', 'the brainstem', 'the amygdala'], 'the prefrontal cortex', 'It is the last part to finish growing.'],
+      ['About how much does a brain weigh?', ['about three pounds', 'about thirty pounds', 'about an ounce', 'about ten pounds'], 'about three pounds', 'And it holds about eighty-six billion neurons.'],
+      ['The wrinkled outer layer that does the thinking is what?', ['the cortex', 'the brainstem', 'the amygdala', 'the hippocampus'], 'the cortex', 'Its front part plans and stops.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
@@ -16669,7 +16792,12 @@ Object.assign(GENERATORS, {
       ['Short sessions spread over days, not one long night, is called what?', ['spacing', 'cramming', 'chunking', 'a cue'], 'spacing', 'Each review bends the forgetting curve flatter.'],
       ['Who drew the forgetting curve in 1885?', ['Hermann Ebbinghaus', 'Solomon Asch', 'Matthew Lieberman', 'Elizabeth Dunn'], 'Hermann Ebbinghaus', 'Each review bends it flatter.'],
       ['A habit has three parts. Which part can you change most easily?', ['the cue', 'the routine', 'the reward', 'none of them'], 'the cue', 'Put the phone in another room and the cue is gone.'],
-      ['Rereading feels like learning because the page looks what?', ['familiar', 'new', 'short', 'blank'], 'familiar', 'Familiar is not the same as known.']];
+      ['Rereading feels like learning because the page looks what?', ['familiar', 'new', 'short', 'blank'], 'familiar', 'Familiar is not the same as known.'],
+      // More questions (pass HU), so a round never needs a repeat.
+      ['In 2006, who found testing yourself beats rereading?', ['Henry Roediger and Jeffrey Karpicke', 'Hermann Ebbinghaus', 'Solomon Asch', 'Matthew Lieberman'], 'Henry Roediger and Jeffrey Karpicke', 'Students who tested themselves remembered far more.'],
+      ['A habit has a cue, a routine and what?', ['a reward', 'a rule', 'a grade', 'a guess'], 'a reward', 'The cue is the part you can change.'],
+      ['Where should the phone go to remove the cue?', ['in another room', 'face down on the desk', 'in your hand', 'next to the book'], 'in another room', 'Even face down, part of your attention stays on it.'],
+      ['Each review does what to the forgetting curve?', ['bends it flatter', 'makes it steeper', 'erases it', 'nothing at all'], 'bends it flatter', 'Spacing beats one long night.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
@@ -16680,7 +16808,12 @@ Object.assign(GENERATORS, {
       ['Which is a healthy way to handle stress?', ['slow breathing', 'bottling it', 'taking it out on someone', 'avoiding the thing'], 'slow breathing', 'Also moving, sleep, steps, and a trusted adult.'],
       ['Which is an unhealthy way to handle stress?', ['bottling it', 'moving your body', 'sleep', 'telling a trusted adult'], 'bottling it', 'Or taking it out on someone, or avoiding the thing until it grows.'],
       ['Bouncing back after a hard thing is called what?', ['resilience', 'stress', 'adrenaline', 'attention'], 'resilience', 'It is a skill, built by the healthy ways.'],
-      ['Thoughts, feelings and actions pull on each other. Change one, and?', ['the others change', 'nothing changes', 'only feelings change', 'you forget'], 'the others change', 'Three corners of a triangle.']];
+      ['Thoughts, feelings and actions pull on each other. Change one, and?', ['the others change', 'nothing changes', 'only feelings change', 'you forget'], 'the others change', 'Three corners of a triangle.'],
+      // More questions (pass HU), so a round never needs a repeat.
+      ['Which feeling says something is unfair or in the way?', ['anger', 'joy', 'sadness', 'fear'], 'anger', 'Every feeling is a signal with a job.'],
+      ['Which feeling says do that again?', ['joy', 'anger', 'fear', 'sadness'], 'joy', 'A good signal, worth reading too.'],
+      ['When the alarm fires, the amygdala sends what?', ['adrenaline', 'sleep', 'memories', 'calm'], 'adrenaline', 'The heart speeds and thinking narrows.'],
+      ['Stress turns harmful when it does what?', ['never switches off', 'comes in small doses', 'helps you focus', 'ends quickly'], 'never switches off', 'In small doses it is useful.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
@@ -16691,7 +16824,12 @@ Object.assign(GENERATORS, {
       ['A friend who studies pulls you toward studying. Which influence?', ['positive', 'negative', 'neither', 'the attribution error'], 'positive', 'The difference is whether it moves you toward what you would choose alone.'],
       ['What is the strongest protection against negative peer influence?', ['deciding ahead of time', 'shouting', 'hiding', 'guessing'], 'deciding ahead of time', 'Decide what you will and will not do before the moment.'],
       ['In a crowd, how do you get help?', ['ask one person by name', 'shout somebody help', 'wait', 'leave'], 'ask one person by name', 'Darley and Latané, 1968: somebody is nobody.'],
-      ['People who spend on others, rather than themselves, feel how?', ['better', 'worse', 'the same', 'poorer'], 'better', 'Elizabeth Dunn and colleagues, 2008.']];
+      ['People who spend on others, rather than themselves, feel how?', ['better', 'worse', 'the same', 'poorer'], 'better', 'Elizabeth Dunn and colleagues, 2008.'],
+      // More questions (pass HU), so a round never needs a repeat.
+      ['In 1968, who showed people help less in a crowd?', ['John Darley and Bibb Latané', 'Solomon Asch', 'Elizabeth Dunn', 'Hermann Ebbinghaus'], 'John Darley and Bibb Latané', 'Everyone waits for someone else.'],
+      ['What is most of taking someone else\'s perspective?', ['listening to their feelings without fixing them', 'telling them what to do', 'agreeing with everything', 'changing the subject'], 'listening to their feelings without fixing them', 'Perspective-taking is a skill.'],
+      ['What is the first step of a good decision?', ['name the problem', 'choose', 'look back', 'ask a friend to pick'], 'name the problem', 'Then list the options and weigh them.'],
+      ['Who published the 2008 finding about spending on others?', ['Elizabeth Dunn and her colleagues', 'Solomon Asch', 'John Darley', 'Henry Roediger'], 'Elizabeth Dunn and her colleagues', 'Spending on others made people feel better.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
@@ -16702,7 +16840,12 @@ Object.assign(GENERATORS, {
       ['When was Socrates put to death?', ['399 BC', '1641', '1861', '1971'], '399 BC', 'Partly for asking too many questions, and the questions outlived him.'],
       ['A case that breaks a definition is called what?', ['a counterexample', 'an opinion', 'a fact', 'a headcount'], 'a counterexample', 'If a sandwich is filling between two pieces of bread, is a hot dog a sandwich?'],
       ['A position you can give reasons for and change if the reasons fail is called what?', ['a reasoned view', 'an opinion', 'a fact', 'a taste'], 'a reasoned view', 'Facts can be checked, opinions are tastes, and a reasoned view is neither.'],
-      ['How do we know Socrates, who wrote nothing down?', ['through his student Plato', 'through his diary', 'through a film', 'through a statue only'], 'through his student Plato', 'Plato wrote conversations in which Socrates asks and asks and rarely answers.']];
+      ['How do we know Socrates, who wrote nothing down?', ['through his student Plato', 'through his diary', 'through a film', 'through a statue only'], 'through his student Plato', 'Plato wrote conversations in which Socrates asks and asks and rarely answers.'],
+      // More questions (pass HU), so a round never needs a repeat.
+      ['Once you look up an answer, the question is what?', ['closed', 'philosophical', 'open forever', 'unfair'], 'closed', 'A philosophical question cannot be looked up.'],
+      ['What does a definition say?', ['what a word covers', 'what a word sounds like', 'who invented a word', 'how to spell a word'], 'what a word covers', 'A counterexample is a case that breaks it.'],
+      ['In this lesson, opinions are what?', ['tastes', 'facts', 'reasoned views', 'definitions'], 'tastes', 'Facts can be checked; opinions are tastes.'],
+      ['In which city did Socrates ask his questions?', ['Athens', 'Rome', 'Cairo', 'Paris'], 'Athens', 'About 2,400 years ago.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
@@ -16713,7 +16856,12 @@ Object.assign(GENERATORS, {
       ['Everyone knows is what?', ['a headcount', 'a reason', 'a measurement', 'a study'], 'a headcount', 'A headcount is not evidence.'],
       ['The checkable part of a reason is called what?', ['evidence', 'a feeling', 'a claim', 'an order'], 'evidence', 'A measurement, a record, a study, a thing you can point to.'],
       ['My cousin got sick after eating there. That is what kind of evidence?', ['an anecdote', 'a sample', 'a survey', 'a study'], 'an anecdote', 'One story is an anecdote; a hundred customers surveyed is a sample.'],
-      ['What is the best question in this course?', ['how do you know?', 'who says?', 'why bother?', 'what time is it?'], 'how do you know?', 'Four words that turn a claim into a conversation.']];
+      ['What is the best question in this course?', ['how do you know?', 'who says?', 'why bother?', 'what time is it?'], 'how do you know?', 'Four words that turn a claim into a conversation.'],
+      // More questions (pass HU), so a round never needs a repeat.
+      ['A hundred customers surveyed is what?', ['a sample', 'an anecdote', 'an order', 'a feeling'], 'a sample', 'One story is an anecdote.'],
+      ['It feels right is what?', ['a feeling', 'evidence', 'a sample', 'a fact'], 'a feeling', 'Feelings are real but they are not reasons.'],
+      ['What makes a sample stronger evidence?', ['bigger and fairer', 'smaller and faster', 'louder', 'older'], 'bigger and fairer', 'The bigger and fairer, the stronger.'],
+      ['Why you say a claim is so is called what?', ['a reason', 'an order', 'a headcount', 'a feeling'], 'a reason', 'Claim, then reason.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
@@ -16723,7 +16871,12 @@ Object.assign(GENERATORS, {
       ['The second rule is to separate what from what?', ['the person from the idea', 'the loud from the quiet', 'the old from the new', 'the fact from the date'], 'the person from the idea', 'Attack the reason, never the person who gave it.'],
       ['Changing your mind when the reasons are better is what?', ['the whole point', 'losing', 'cheating', 'rude'], 'the whole point', 'It takes more courage than holding on.'],
       ['Plato wrote philosophy as what?', ['dialogues', 'poems', 'lists', 'maps'], 'dialogues', 'Conversations in which people ask, answer, object and change their minds.'],
-      ['Which is a good class rule for disagreeing?', ['reasons not volume', 'loudest wins', 'no questions', 'never change your mind'], 'reasons not volume', 'One voice at a time, reasons not volume, and build before you knock down.']];
+      ['Which is a good class rule for disagreeing?', ['reasons not volume', 'loudest wins', 'no questions', 'never change your mind'], 'reasons not volume', 'One voice at a time, reasons not volume, and build before you knock down.'],
+      // More questions (pass HU), so a round never needs a repeat.
+      ['A disagreement is two people holding different what?', ['reasoned views', 'grades', 'teams', 'tastes in music'], 'reasoned views', 'It is not a fight, and not a contest.'],
+      ['In a disagreement, what do you attack?', ['the reason', 'the person', 'their friends', 'their grades'], 'the reason', 'Never the person who gave it.'],
+      ['When did Plato write his dialogues?', ['the 300s BC', 'the 1800s', 'the 100s AD', 'the 2000s'], 'the 300s BC', 'People ask, answer, object and change their minds.'],
+      ['Changing your mind takes more of what than holding on?', ['courage', 'luck', 'money', 'time'], 'courage', 'Changing your mind is the whole point.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
@@ -16733,7 +16886,12 @@ Object.assign(GENERATORS, {
       ['Arguments about fairness are really arguments about what?', ['which rule fits the case', 'who is oldest', 'who is loudest', 'who cut the cake'], 'which rule fits the case', 'Equal, by need, or by work.'],
       ['A fair exception is one you would grant to whom?', ['anybody in the same spot', 'only your friend', 'nobody', 'only yourself'], 'anybody in the same spot', 'Exceptions need reasons everyone can hear.'],
       ['Who put the golden rule as do not impose on others what you would not want for yourself?', ['Confucius', 'Socrates', 'Plato', 'Kant'], 'Confucius', 'In China, about 2,500 years ago.'],
-      ['Whoever cuts the cake should do what?', ['choose last', 'choose first', 'eat it all', 'hide it'], 'choose last', 'Whoever cuts has every reason to cut it evenly.']];
+      ['Whoever cuts the cake should do what?', ['choose last', 'choose first', 'eat it all', 'hide it'], 'choose last', 'Whoever cuts has every reason to cut it evenly.'],
+      // More questions (pass HU), so a round never needs a repeat.
+      ['Everyone gets a quarter of the cake. Which rule is that?', ['equal shares', 'shares by need', 'shares by work', 'no rule'], 'equal shares', 'Each rule is fair by its own measure.'],
+      ['No running in the hall is a good rule until when?', ['the building is on fire', 'the bell rings', 'lunch starts', 'it rains'], 'the building is on fire', 'Rules need exceptions.'],
+      ['Exceptions to rules need what?', ['reasons', 'votes', 'friends', 'money'], 'reasons', 'A fair rule\'s exceptions can be explained to everyone.'],
+      ['Treat others as you would want to be treated is called what?', ['the golden rule', 'the silver rule', 'shares by need', 'a counterexample'], 'the golden rule', 'It appears in many traditions.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
@@ -16785,7 +16943,12 @@ Object.assign(GENERATORS, {
       ['Then you respond to what?', ['what was actually said', 'what you expected', 'the loudest person', 'the last word'], 'what was actually said', 'Not to what you expected.'],
       ['When words and tone disagree, which do you believe?', ['the tone', 'the words', 'neither', 'the pause'], 'the tone', 'And ask.'],
       ['You receive instructions with several steps. What comes first?', ['count the steps', 'start at once', 'guess', 'write a note'], 'count the steps', 'Then repeat them in order before you start.'],
-      ['Which are order words?', ['first, then, next, last', 'big, small, loud', 'red, blue, green', 'yes, no, maybe'], 'first, then, next, last', 'Say how many there are, use order words, and end by asking them to say it back.']];
+      ['Which are order words?', ['first, then, next, last', 'big, small, loud', 'red, blue, green', 'yes, no, maybe'], 'first, then, next, last', 'Say how many there are, use order words, and end by asking them to say it back.'],
+      // More questions (pass HU), so a round never needs a repeat.
+      ['Hearing happens to you. Listening is what?', ['something you do', 'something you hear', 'something you skip', 'something you guess'], 'something you do', 'Active listening has three moves.'],
+      ['The same sentence changes meaning with what?', ['the tone, the face and the pause', 'the spelling', 'the paper', 'the clock'], 'the tone, the face and the pause', 'A good listener reads all three.'],
+      ['When giving instructions, how do you end?', ['asking the other person to say them back', 'walking away', 'repeating them louder', 'saying good luck'], 'asking the other person to say them back', 'Then you know they landed.'],
+      ['How many moves does active listening have?', ['three', 'one', 'five', 'ten'], 'three', 'Say it back, ask, respond.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
@@ -16795,7 +16958,12 @@ Object.assign(GENERATORS, {
       ['With an adult you do not know, which fits?', ['a formal opening and no slang', 'half sentences', 'slang', 'silence'], 'a formal opening and no slang', 'Each way is correct in its room.'],
       ['Switching how you talk between rooms is what?', ['a skill, not fakeness', 'fakeness', 'lying', 'rude'], 'a skill, not fakeness', 'None of these is the correct way to talk; each is correct in that room.'],
       ['Which speaking rate carries a sentence across a room?', ['slower than feels natural', 'as fast as possible', 'whispered', 'sung'], 'slower than feels natural', 'A listener needs time the speaker does not.'],
-      ['Where do you aim your volume?', ['at the farthest person', 'at your shoes', 'at the ceiling', 'at yourself'], 'at the farthest person', 'Enunciation, rate and volume carry a sentence.']];
+      ['Where do you aim your volume?', ['at the farthest person', 'at your shoes', 'at the ceiling', 'at yourself'], 'at the farthest person', 'Enunciation, rate and volume carry a sentence.'],
+      // More questions (pass HU), so a round never needs a repeat.
+      ['With friends, which words work?', ['casual words and half sentences', 'a formal opening', 'the words the subject uses', 'no words at all'], 'casual words and half sentences', 'Each room has its own way to talk.'],
+      ['Every sound in every word, especially the ends, is what?', ['enunciation', 'volume', 'rate', 'slang'], 'enunciation', 'It carries a sentence across a room.'],
+      ['After the one sentence and one reason, you give what?', ['one example', 'ten examples', 'a joke', 'the whole story'], 'one example', 'Then stop.'],
+      ['In class, which way of talking fits?', ['full sentences and the words the subject uses', 'half sentences', 'slang', 'whispering'], 'full sentences and the words the subject uses', 'Switching rooms is a skill.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
@@ -16805,7 +16973,12 @@ Object.assign(GENERATORS, {
       ['About how many words is two minutes?', ['two hundred and fifty', 'two thousand', 'twenty', 'a million'], 'two hundred and fifty', 'Less than you think and more than enough.'],
       ['A picture in a talk should do how many jobs?', ['one', 'three', 'every job', 'none, ever'], 'one', 'One picture, one job, or none.'],
       ['How do you do eye contact?', ['one person for a sentence, then another', 'stare at the floor', 'scan fast', 'close your eyes'], 'one person for a sentence, then another', 'To the room it looks like you are talking to everyone.'],
-      ['How many times should you practice aloud, standing?', ['at least three', 'once', 'never', 'fifty'], 'at least three', 'Then the nerves are the ordinary kind, the kind that means you care.']];
+      ['How many times should you practice aloud, standing?', ['at least three', 'once', 'never', 'fifty'], 'at least three', 'Then the nerves are the ordinary kind, the kind that means you care.'],
+      // More questions (pass HU), so a round never needs a repeat.
+      ['What does a talk\'s opener do?', ['makes people look up', 'thanks everyone', 'lists every fact', 'ends the talk'], 'makes people look up', 'Then comes the stance.'],
+      ['What does a talk\'s closer say?', ['the stance again in different words', 'a brand new idea', 'nothing at all', 'the opener again word for word'], 'the stance again in different words', 'It brings the talk home.'],
+      ['In a talk, where do you aim your volume?', ['the back row', 'the front row', 'your notes', 'the floor'], 'the back row', 'Rate slower, volume to the back.'],
+      ['Where should your hands stay out of?', ['your pockets', 'the air', 'your gestures', 'the story'], 'your pockets', 'Let them move as when you tell a friend a story.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
@@ -16815,7 +16988,12 @@ Object.assign(GENERATORS, {
       ['Which is a claim with a reason?', ['sell candy because it made the most money last year', 'candy is obviously the best', 'candy!', 'I like candy'], 'sell candy because it made the most money last year', 'Only a claim with a reason can be argued with.'],
       ['What do you ask a claim that has only a feeling?', ['what makes you think so', 'nothing', 'who cares', 'are you sure'], 'what makes you think so', 'If the answer is a shrug, you have a feeling, and feelings are not evidence.'],
       ['Which sentence disagrees with the idea and not the person?', ['I see it differently, because', 'you always want candy', 'that is dumb', 'you are wrong'], 'I see it differently, because', 'It keeps the person on your side while you take the idea apart.'],
-      ['Name what the group agrees and disagrees about. Why?', ['so disagreement is about the right thing', 'to end the talk', 'to win', 'to take longer'], 'so disagreement is about the right thing', 'We all want May; we disagree about what to sell.']];
+      ['Name what the group agrees and disagrees about. Why?', ['so disagreement is about the right thing', 'to end the talk', 'to win', 'to take longer'], 'so disagreement is about the right thing', 'We all want May; we disagree about what to sell.'],
+      // More questions (pass HU), so a round never needs a repeat.
+      ['Disagree with what, never the person?', ['the idea', 'the group', 'the notes', 'the teacher'], 'the idea', 'I see it differently, because.'],
+      ['Candy is obviously the best is a claim with what?', ['a feeling', 'a reason', 'evidence', 'a sample'], 'a feeling', 'Ask it for its reason.'],
+      ['Where is the best idea in the room often sitting?', ['in the person who has not spoken', 'with the loudest person', 'in the notes', 'nowhere'], 'in the person who has not spoken', 'That is why you elicit.'],
+      ['Building on ideas helps a group disagree more and do what?', ['fight less', 'talk less', 'vote more', 'leave early'], 'fight less', 'That is the whole point of talking.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
@@ -16932,7 +17110,12 @@ Object.assign(GENERATORS, {
       ['Which three resources run the chain?', ['soil, water and energy', 'gold, silver and iron', 'sun, moon and stars', 'salt, sugar and flour'], 'soil, water and energy', 'All three can run short.'],
       ['Leaving stalks on a field so the soil stays put is what?', ['conservation', 'technology', 'harvest', 'cooking'], 'conservation', 'Use less.'],
       ['Drip lines that put water at the root are an example of what?', ['efficiency', 'conservation of gold', 'a truck', 'a market'], 'efficiency', 'Get more from the same.'],
-      ['Which is a job in agriculture that is not on a tractor?', ['soil scientist', 'lifeguard', 'pilot of an airliner', 'dentist'], 'soil scientist', 'Veterinarians, engineers and the person who flies the drone too.']];
+      ['Which is a job in agriculture that is not on a tractor?', ['soil scientist', 'lifeguard', 'pilot of an airliner', 'dentist'], 'soil scientist', 'Veterinarians, engineers and the person who flies the drone too.'],
+      // More questions (pass HU), so a round never needs a repeat.
+      ['Texas grows more of what than any other state?', ['cotton', 'rice', 'apples', 'coffee'], 'cotton', 'And it raises more cattle than any other state.'],
+      ['A satellite picture of a dry corner of a field is what?', ['technology', 'conservation', 'efficiency', 'a resource'], 'technology', 'Tools that see what people cannot.'],
+      ['How long does soil take to build?', ['centuries', 'a week', 'a year', 'a day'], 'centuries', 'And a storm can wash it away.'],
+      ['How do most Texas farms get water?', ['pump from underground or take from rivers', 'buy it in bottles', 'wait for snow', 'they need none'], 'pump from underground or take from rivers', 'Water is one of three resources that can run short.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
@@ -16943,7 +17126,12 @@ Object.assign(GENERATORS, {
       ['Soil, light, water and temperature are what kind of factors?', ['abiotic', 'biotic', 'imaginary', 'animal'], 'abiotic', 'Nonliving things a plant depends on.'],
       ['What does a seed need to germinate?', ['water, air and warmth', 'light only', 'fertilizer only', 'wind'], 'water, air and warmth', 'It does not need light until the shoot comes up.'],
       ['A fair comparison changes how many things?', ['one', 'two', 'everything', 'nothing'], 'one', 'Change two things at once and you cannot tell which one mattered.'],
-      ['After measuring the plants every day, what do you build?', ['a table, then a graph', 'a fence', 'a bigger pot', 'a story'], 'a table, then a graph', 'The graph tells you which schedule the plant prefers.']];
+      ['After measuring the plants every day, what do you build?', ['a table, then a graph', 'a fence', 'a bigger pot', 'a story'], 'a table, then a graph', 'The graph tells you which schedule the plant prefers.'],
+      // More questions (pass HU), so a round never needs a repeat.
+      ['Leaves make sugar from what?', ['sunlight', 'soil', 'sand', 'clay'], 'sunlight', 'Roots drink, stems carry, leaves make sugar.'],
+      ['What do you measure plant height with?', ['a metric ruler', 'a thermometer', 'a scale', 'a clock'], 'a metric ruler', 'Every day, into a table.'],
+      ['Dead leaves and roots in soil are called what?', ['organic matter', 'loam', 'silt', 'clay'], 'organic matter', 'Soil is a mix of minerals, organic matter, water and air.'],
+      ['Change two things at once and you cannot tell what?', ['which one mattered', 'the date', 'the plant\'s name', 'the soil color'], 'which one mattered', 'A fair comparison changes one thing.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
@@ -16954,7 +17142,12 @@ Object.assign(GENERATORS, {
       ['Bees carry pollen between blossoms and take nectar. What is that?', ['mutualism', 'parasitism', 'commensalism', 'predation'], 'mutualism', 'Both gain.'],
       ['A tick drinks a cow\'s blood. What is that?', ['parasitism', 'mutualism', 'commensalism', 'competition'], 'parasitism', 'One gains and the other is harmed.'],
       ['An egret eats bugs a cow stirs up; the cow is unaffected. What is it?', ['commensalism', 'parasitism', 'mutualism', 'predation'], 'commensalism', 'One gains and the other is unaffected.'],
-      ['Which animals are ruminants?', ['cattle, sheep and goats', 'pigs and chickens', 'dogs and cats', 'bees'], 'cattle, sheep and goats', 'A four-part stomach turns grass into meat and milk.']];
+      ['Which animals are ruminants?', ['cattle, sheep and goats', 'pigs and chickens', 'dogs and cats', 'bees'], 'cattle, sheep and goats', 'A four-part stomach turns grass into meat and milk.'],
+      // More questions (pass HU), so a round never needs a repeat.
+      ['Two calves want the same patch of clover. What is that?', ['competition', 'mutualism', 'parasitism', 'commensalism'], 'competition', 'Both want the same thing.'],
+      ['A coyote takes a lamb. What is that?', ['predation', 'competition', 'mutualism', 'commensalism'], 'predation', 'One animal hunts another.'],
+      ['A community plus soil, water and weather makes what?', ['the ecosystem', 'a population', 'a herd', 'a fence'], 'the ecosystem', 'A farm is an ecosystem with a fence around it.'],
+      ['How many stomachs do pigs and chickens have?', ['one stomach', 'four stomachs', 'two stomachs', 'no stomach'], 'one stomach', 'Ruminants have a four-part stomach.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
@@ -17128,7 +17321,15 @@ Object.assign(GENERATORS, {
       ['A limit you set about your own body, time and feelings is a what?', ['boundary', 'rumor', 'grade', 'contract'], 'boundary', 'Each person sets their own.'],
       ['Which is a refusal strategy?', ['say no clearly', 'stay quiet and hope', 'give in once', 'change the subject forever'], 'say no clearly', 'Then match your body language.'],
       ['Pressuring someone into sexual activity is what?', ['wrong, and often a crime', 'a normal part of dating', 'a kind of compliment', 'fine if you ask twice'], 'wrong, and often a crime', 'Consent must be freely given.'],
-      ['When can consent be taken back?', ['at any time', 'never', 'only before a first date', 'only with a parent there'], 'at any time', 'It must be clear and freely given.']];
+      ['When can consent be taken back?', ['at any time', 'never', 'only before a first date', 'only with a parent there'], 'at any time', 'It must be clear and freely given.'],
+      // More questions (pass HW), so a round never needs a repeat.
+      ['What are friendships for every later close relationship?', ['the training ground', 'a waste of time', 'a contest', 'a secret'], 'the training ground', 'The same traits make every healthy relationship.'],
+      ['Which trait makes friendships and dating healthy alike?', ['honesty', 'jealousy', 'control', 'secrecy'], 'honesty', 'Respect, trust and kindness too.'],
+      ['One person controls, belittles or scares the other. What is it?', ['unhealthy', 'healthy', 'normal', 'romantic'], 'unhealthy', 'No matter how strong the feelings are.'],
+      ['What makes boundaries easier to set and keep?', ['a healthy sense of self', 'more pressure', 'keeping secrets', 'less sleep'], 'a healthy sense of self', 'Each person decides their own boundaries.'],
+      ['Consent must be clear and what?', ['freely given', 'pressured', 'assumed', 'permanent'], 'freely given', 'And it can be taken back at any time.'],
+      ['Where can pressure to become sexually active come from?', ['friends, partners, media and music', 'nowhere', 'only strangers', 'only teachers'], 'friends, partners, media and music', 'The pressure does not get a vote.'],
+      ['When you refuse, your body language should do what?', ['match your words', 'joke around', 'look away', 'say yes'], 'match your words', 'Say no clearly too.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
@@ -17137,7 +17338,15 @@ Object.assign(GENERATORS, {
       ['Who are traffickers often?', ['someone the victim knows', 'always a stranger', 'only people overseas', 'only gang members'], 'someone the victim knows', 'Many recruit online.'],
       ['What number reaches the National Human Trafficking Hotline?', ['1-888-373-7888', '988', '411', '1-800-000-0000'], '1-888-373-7888', 'It answers at any hour.'],
       ['What do alcohol and other drugs do to judgment?', ['impair judgment', 'sharpen judgment', 'have no effect on judgment', 'make judgment perfect'], 'impair judgment', 'Staying sober is a simple protection.'],
-      ['Which is a warning sign of an abusive relationship?', ['isolation from friends and family', 'shared hobbies', 'honest talk', 'time apart with friends'], 'isolation from friends and family', 'Control and jealousy are others.']];
+      ['Which is a warning sign of an abusive relationship?', ['isolation from friends and family', 'shared hobbies', 'honest talk', 'time apart with friends'], 'isolation from friends and family', 'Control and jealousy are others.'],
+      // More questions (pass HW), so a round never needs a repeat.
+      ['Sex trafficking uses force, fraud or what?', ['coercion', 'contracts', 'kindness', 'teamwork'], 'coercion', 'To make someone perform commercial sex.'],
+      ['Where do many traffickers recruit?', ['online', 'only in prisons', 'only overseas', 'never'], 'online', 'With flattery, gifts and promises.'],
+      ['Which is a sign of trafficking?', ['someone else holding a person\'s money or ID', 'a paycheck', 'a school ID', 'a family dinner'], 'someone else holding a person\'s money or ID', 'A story that changes is another.'],
+      ['When should you tell a trusted adult about abuse?', ['early, before things get worse', 'never', 'only after a year', 'only if asked'], 'early, before things get worse', 'Stay connected to people you trust.'],
+      ['Which is a simple protection at a party?', ['having a ride home', 'leaving friends behind', 'drinking more', 'keeping secrets'], 'having a ride home', 'Sticking with friends too.'],
+      ['Control, jealousy, threats and pressure to keep secrets are what?', ['the warning signs', 'signs of love', 'normal habits', 'good manners'], 'the warning signs', 'Knowing them starts prevention.'],
+      ['Which is a healthy strategy against abuse?', ['having a safety plan', 'keeping it secret', 'cutting off friends', 'waiting it out'], 'having a safety plan', 'And telling a trusted adult early.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
@@ -17146,7 +17355,15 @@ Object.assign(GENERATORS, {
       ['Many STIs cause what?', ['no symptoms', 'instant rashes', 'fever every time', 'sneezing'], 'no symptoms', 'That is why testing matters.'],
       ['At what ages is the HPV vaccine recommended?', ['ages 11 to 12', 'only at birth', 'after age 50', 'never for teens'], 'ages 11 to 12', 'It prevents several cancers.'],
       ['With signs of pregnancy, what is the right first step?', ['tell a parent or another trusted adult', 'wait and see', 'tell no one', 'search online only'], 'tell a parent or another trusted adult', 'Then early testing and prenatal care.'],
-      ['Which is a reliable source of STI statistics?', ['the CDC', 'a rumor at school', 'an anonymous post', 'a celebrity interview'], 'the CDC', 'Or the Texas Department of State Health Services.']];
+      ['Which is a reliable source of STI statistics?', ['the CDC', 'a rumor at school', 'an anonymous post', 'a celebrity interview'], 'the CDC', 'Or the Texas Department of State Health Services.'],
+      // More questions (pass HW), so a round never needs a repeat.
+      ['Which STI can also spread through blood?', ['HIV', 'the common cold', 'strep throat', 'the flu'], 'HIV', 'Hepatitis B and syphilis can too.'],
+      ['When can some STIs pass from a mother to her baby?', ['during pregnancy or birth', 'never', 'only in old age', 'only by touch'], 'during pregnancy or birth', 'HIV, hepatitis B and syphilis among them.'],
+      ['People of which ages have about half of new STIs?', ['15 to 24', '50 to 60', '5 to 10', '70 to 80'], '15 to 24', 'According to the CDC.'],
+      ['The HPV vaccine prevents infections that cause what?', ['several kinds of cancer', 'colds', 'broken bones', 'allergies'], 'several kinds of cancer', 'It is recommended at ages 11 to 12.'],
+      ['Which is a sign of pregnancy?', ['a missed period', 'a sore toe', 'a sunburn', 'a haircut'], 'a missed period', 'Then tell an adult and get tested early.'],
+      ['Which Texas agency reports cases by county?', ['the Texas Department of State Health Services', 'the Texas Railroad Commission', 'the school board', 'the DMV'], 'the Texas Department of State Health Services', 'Along with the CDC nationally.'],
+      ['Early prenatal care includes checkups and what?', ['folic acid', 'energy drinks', 'skipping meals', 'nothing'], 'folic acid', 'Early care protects mother and baby.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
@@ -17155,7 +17372,15 @@ Object.assign(GENERATORS, {
       ['Which method also lowers the risk of STIs?', ['condoms', 'the pill', 'the patch', 'the ring'], 'condoms', 'They lower the risk without removing it.'],
       ['With typical use, how many in 100 pill users get pregnant a year?', ['about 7', 'none', 'about 50', 'about 90'], 'about 7', 'From the FDA birth control guide.'],
       ['In Texas, who is legally responsible for supporting a child?', ['both parents', 'only the mother', 'only the father', 'the school'], 'both parents', 'Child support is the child\'s right.'],
-      ['How long does Texas child support usually last?', ['until the child turns 18 or graduates from high school', 'one year', 'until age 5', 'only while parents agree'], 'until the child turns 18 or graduates from high school', 'Whichever comes later.']];
+      ['How long does Texas child support usually last?', ['until the child turns 18 or graduates from high school', 'one year', 'until age 5', 'only while parents agree'], 'until the child turns 18 or graduates from high school', 'Whichever comes later.'],
+      // More questions (pass HW), so a round never needs a repeat.
+      ['Which emotional risks can sexual activity carry for teens?', ['stress, anxiety and depression', 'none', 'better sleep', 'higher grades'], 'stress, anxiety and depression', 'Support helps any choice.'],
+      ['When can a person choose abstinence?', ['at any point', 'never again', 'only once', 'only as an adult'], 'at any point', 'Including after having been sexually active.'],
+      ['Typical use: pregnancies per 100 male condom users a year?', ['about 13', 'about 1', 'none', 'about 50'], 'about 13', 'From the FDA\'s birth control guide.'],
+      ['Which methods fail for fewer than 1 in 100 a year?', ['an implant or an IUD', 'the pill', 'male condoms', 'the ring'], 'an implant or an IUD', 'With typical use.'],
+      ['How can a father establish paternity?', ['by signing an Acknowledgment of Paternity or through a court', 'by text message', 'by moving away', 'he cannot'], 'by signing an Acknowledgment of Paternity or through a court', 'Then he is the legal father.'],
+      ['Whose guide gives these effectiveness numbers?', ['the FDA\'s birth control guide', 'a social media post', 'a rumor', 'an ad'], 'the FDA\'s birth control guide', 'Older charts show different numbers.'],
+      ['Who makes a choice easier to keep?', ['parents, trusted adults and friends who share the same goal', 'strangers online', 'nobody', 'advertisers'], 'parents, trusted adults and friends who share the same goal', 'Support makes any choice easier.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
@@ -17168,7 +17393,13 @@ Object.assign(GENERATORS, {
       ['Which gland signals the body to start puberty?', ['the pituitary gland', 'the thyroid', 'the tonsils', 'the appendix'], 'the pituitary gland', 'It sits in the brain.'],
       ['Which hormone do the testes make?', ['testosterone', 'insulin', 'estrogen only', 'adrenaline only'], 'testosterone', 'The ovaries make estrogen and progesterone.'],
       ['How long does a period usually last?', ['2 to 7 days', '1 hour', '3 weeks', '2 months'], '2 to 7 days', 'Early cycles can be irregular.'],
-      ['What are hormones?', ['chemical messengers made by glands', 'a kind of bone', 'germs that cause illness', 'muscle fibers'], 'chemical messengers made by glands', 'They drive the changes of puberty.']];
+      ['What are hormones?', ['chemical messengers made by glands', 'a kind of bone', 'germs that cause illness', 'muscle fibers'], 'chemical messengers made by glands', 'They drive the changes of puberty.'],
+      // More questions (pass HU), so a round never needs a repeat.
+      ['When does puberty usually begin for boys?', ['about 9 and 14', 'about 2 and 4', 'about 20 and 25', 'about 30 and 35'], 'about 9 and 14', 'Every person\'s timing is different.'],
+      ['Which hormones do the ovaries make?', ['estrogen and progesterone', 'testosterone only', 'adrenaline', 'insulin'], 'estrogen and progesterone', 'The pituitary gland signals them.'],
+      ['In the early years, cycles commonly last how long?', ['21 to 45 days', '2 to 3 days', '100 days', 'one year'], '21 to 45 days', 'They can be irregular at first.'],
+      ['During puberty, boys\' voices do what?', ['deepen', 'get higher', 'disappear', 'stay exactly the same'], 'deepen', 'And their shoulders broaden.'],
+      ['Daily showers and deodorant are part of what?', ['good hygiene', 'a growth spurt', 'a hormone', 'a gland'], 'good hygiene', 'Everyone sweats more during puberty.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
@@ -17177,7 +17408,13 @@ Object.assign(GENERATORS, {
       ['A fertilized egg is called what?', ['a zygote', 'a placenta', 'a hormone', 'a gland'], 'a zygote', 'It divides again and again.'],
       ['About how many weeks does a pregnancy last?', ['about 40', 'about 10', 'about 100', 'about 4'], 'about 40', 'Counted from the first day of the last period.'],
       ['By about which week can an ultrasound often show the heart beating?', ['week 6', 'week 30', 'week 38', 'week 1'], 'week 6', 'The heart forms early.'],
-      ['Which vitamin helps prevent certain birth defects?', ['folic acid', 'vitamin K', 'caffeine', 'sugar'], 'folic acid', 'The brain and spine form in the earliest weeks.']];
+      ['Which vitamin helps prevent certain birth defects?', ['folic acid', 'vitamin K', 'caffeine', 'sugar'], 'folic acid', 'The brain and spine form in the earliest weeks.'],
+      // More questions (pass HU), so a round never needs a repeat.
+      ['By which week have the major organs formed?', ['week 12', 'week 2', 'week 30', 'week 40'], 'week 12', 'In the last months the baby mostly grows.'],
+      ['Around which week can an ultrasound check the anatomy?', ['week 20', 'week 1', 'week 3', 'week 50'], 'week 20', 'A detailed ultrasound checks the baby\'s anatomy.'],
+      ['Health care during pregnancy is called what?', ['prenatal care', 'first aid', 'a checkup only', 'hygiene'], 'prenatal care', 'It starts as early as possible.'],
+      ['About a week after fertilization, the zygote attaches to what?', ['the uterine wall', 'the heart', 'the lungs', 'the stomach'], 'the uterine wall', 'It divides again and again on the way.'],
+      ['In the last months, what matures in the baby?', ['its lungs', 'its teeth', 'its height only', 'nothing'], 'its lungs', 'The baby mostly grows.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
@@ -17186,7 +17423,13 @@ Object.assign(GENERATORS, {
       ['What is the foundation for healthy relationships?', ['friendships', 'jealousy', 'secrets', 'rumors'], 'friendships', 'Listening, honesty and keeping your word.'],
       ['Which is a warning sign of an unhealthy relationship?', ['controlling behavior', 'kindness', 'patience', 'honesty'], 'controlling behavior', 'Like checking someone\'s phone.'],
       ['Which is part of a healthy relationship?', ['respect', 'jealousy', 'manipulation', 'isolation'], 'respect', 'Each person is treated with dignity.'],
-      ['What should you do if a relationship feels unsafe?', ['tell a parent or another trusted adult', 'keep it secret', 'post about it', 'ignore it'], 'tell a parent or another trusted adult', 'You do not have to handle it alone.']];
+      ['What should you do if a relationship feels unsafe?', ['tell a parent or another trusted adult', 'keep it secret', 'post about it', 'ignore it'], 'tell a parent or another trusted adult', 'You do not have to handle it alone.'],
+      // More questions (pass HU), so a round never needs a repeat.
+      ['Which relationship is a lifelong legal commitment?', ['marriage', 'a crush', 'a friendship', 'a team'], 'marriage', 'Dating comes later for most people.'],
+      ['A friendship is built on what?', ['shared interests and trust', 'jealousy', 'secrets', 'pressure'], 'shared interests and trust', 'Friendships are the foundation.'],
+      ['Pulling someone away from friends and family is what?', ['isolation', 'kindness', 'patience', 'compatibility'], 'isolation', 'It is a warning sign.'],
+      ['Who has the right to set boundaries?', ['everyone', 'only adults', 'only friends', 'no one'], 'everyone', 'Including about touch such as hugs.'],
+      ['Which is a healthy way to show friendship?', ['encouraging each other\'s goals', 'checking their phone', 'deciding who they see', 'making them jealous'], 'encouraging each other\'s goals', 'Spending time together and kind words count too.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
@@ -17195,7 +17438,13 @@ Object.assign(GENERATORS, {
       ['Who must report suspected child abuse in Texas?', ['teachers, counselors and other professionals', 'only police officers', 'only parents', 'no one'], 'teachers, counselors and other professionals', 'Telling one of them starts help.'],
       ['Which choice is 100% effective at avoiding sexual risks?', ['abstinence', 'luck', 'waiting a month', 'asking a friend'], 'abstinence', 'Refraining from all forms of sexual activity.'],
       ['Infections spread through sexual activity are called what?', ['sexually transmitted infections', 'food allergies', 'colds', 'sprains'], 'sexually transmitted infections', 'HIV is one.'],
-      ['Someone you know is being abused. What should you do?', ['tell a parent or another trusted adult', 'keep their secret', 'wait and see', 'handle it alone'], 'tell a parent or another trusted adult', 'Keep telling until someone helps.']];
+      ['Someone you know is being abused. What should you do?', ['tell a parent or another trusted adult', 'keep their secret', 'wait and see', 'handle it alone'], 'tell a parent or another trusted adult', 'Keep telling until someone helps.'],
+      // More questions (pass HU), so a round never needs a repeat.
+      ['Using someone for another person\'s gain is called what?', ['exploitation', 'cooperation', 'friendship', 'teamwork'], 'exploitation', 'Exploitation is abuse too.'],
+      ['What does federal law require schools to do?', ['stop sexual harassment', 'ignore reports', 'close for a week', 'call parents only'], 'stop sexual harassment', 'And protect students who report it.'],
+      ['Abuse can be physical, emotional or what?', ['sexual', 'imaginary', 'helpful', 'fair'], 'sexual', 'It is never the victim\'s fault.'],
+      ['If no one helps after you tell, what should you do?', ['keep telling', 'give up', 'keep it secret', 'handle it alone'], 'keep telling', 'Keep telling until someone helps.'],
+      ['Which emotional risks can sexual activity carry?', ['regret, stress and damaged trust', 'none at all', 'better grades', 'more sleep'], 'regret, stress and damaged trust', 'Abstinence avoids these risks.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
@@ -17210,7 +17459,14 @@ Object.assign(GENERATORS, {
       ['How long should you lather when washing your hands?', ['at least 20 seconds', 'two seconds', 'five seconds', 'one minute exactly'], 'at least 20 seconds', 'About two rounds of the birthday song.'],
       ['In F.A.S.T., what does the T stand for?', ['time to call 911', 'take a nap', 'test your eyes', 'try to walk'], 'time to call 911', 'Face, arm, speech, time.'],
       ['What should you do for signs of a heart attack?', ['call 911', 'wait and see', 'drive yourself', 'take a nap'], 'call 911', 'Every minute matters.'],
-      ['Which makes a health post less trustworthy?', ['promises a cure', 'cites a medical journal', 'names its author', 'gives a date'], 'promises a cure', 'Check the source and the evidence.']];
+      ['Which makes a health post less trustworthy?', ['promises a cure', 'cites a medical journal', 'names its author', 'gives a date'], 'promises a cure', 'Check the source and the evidence.'],
+      // More questions (pass HV), so a round never needs a repeat.
+      ['What do regular checkups catch early?', ['high blood pressure', 'sunburn', 'a cold', 'a broken arm'], 'high blood pressure', 'Often before any symptom appears.'],
+      ['Besides handwashing, what cuts the spread of germs?', ['vaccines', 'skipping sleep', 'sharing cups', 'smoking'], 'vaccines', 'And staying home when sick.'],
+      ['In F.A.S.T., what does the F stand for?', ['face drooping', 'fever', 'falling', 'fast pulse'], 'face drooping', 'Face, arm, speech, time.'],
+      ['In F.A.S.T., what does the S stand for?', ['speech difficulty', 'sweating', 'sleepiness', 'sneezing'], 'speech difficulty', 'Face, arm, speech, time.'],
+      ['Heart attack pain may spread where?', ['an arm, the back, the neck or the jaw', 'only the feet', 'only the stomach', 'nowhere'], 'an arm, the back, the neck or the jaw', 'With shortness of breath or a cold sweat.'],
+      ['What is the first step of a good decision?', ['name the problem', 'choose', 'look back', 'ask a stranger'], 'name the problem', 'Then list the options and weigh them.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
@@ -17234,7 +17490,14 @@ Object.assign(GENERATORS, {
       ['What does an AED do before it advises a shock?', ['checks the heart rhythm', 'takes a temperature', 'gives medicine', 'calls a parent'], 'checks the heart rhythm', 'Then it says whether to shock.'],
       ['A choking person cannot cough or speak. What do you give?', ['abdominal thrusts', 'a glass of water', 'a pat on the head', 'time to rest'], 'abdominal thrusts', 'Quick, inward and upward, above the navel.'],
       ['Who may pose as a friend your age online?', ['a predator', 'a teacher', 'a coach', 'a librarian'], 'a predator', 'Keep personal details private.'],
-      ['Someone collapses and is not breathing normally. What comes first?', ['call 911', 'wait for them to wake', 'give them food', 'leave them alone'], 'call 911', 'Then start CPR and send for an AED.']];
+      ['Someone collapses and is not breathing normally. What comes first?', ['call 911', 'wait for them to wake', 'give them food', 'leave them alone'], 'call 911', 'Then start CPR and send for an AED.'],
+      // More questions (pass HV), so a round never needs a repeat.
+      ['When the AED arrives, what do you do?', ['turn it on and follow its voice', 'read the manual first', 'wait for help', 'leave it closed'], 'turn it on and follow its voice', 'It tells you where the pads go.'],
+      ['Where do you push in hands-only CPR?', ['the center of the chest', 'the stomach', 'the back', 'the arms'], 'the center of the chest', 'Hard and fast.'],
+      ['Where do abdominal thrusts go?', ['just above the navel', 'on the chest', 'on the back', 'on the neck'], 'just above the navel', 'Quick, inward and upward.'],
+      ['A choking person becomes unresponsive. What do you start?', ['CPR', 'a snack', 'a nap', 'nothing'], 'CPR', 'After calling 911.'],
+      ['Which is a sign of human trafficking?', ['someone controlling another person\'s money, documents or movement', 'a new job with a contract', 'a family trip', 'a school field trip'], 'someone controlling another person\'s money, documents or movement', 'Learn the signs.'],
+      ['For bullying or harassment, what does a plan do first?', ['save the evidence', 'delete everything', 'answer back', 'stay silent'], 'save the evidence', 'Then block, report and tell an adult.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
@@ -17243,7 +17506,15 @@ Object.assign(GENERATORS, {
       ['Attacking or blaming is which communication style?', ['aggressive', 'assertive', 'passive', 'empathetic'], 'aggressive', 'Passive is keeping quiet and giving in.'],
       ['The ability to recover and grow after hard events is called what?', ['resilience', 'stress', 'isolation', 'avoidance'], 'resilience', 'Support and coping skills build it.'],
       ['What number reaches the Suicide and Crisis Lifeline?', ['988', '411', '311', '611'], '988', 'Call or text, any hour.'],
-      ['A friend shows warning signs. What should you do?', ['tell a parent or another trusted adult', 'keep it a secret', 'wait a week', 'post about it'], 'tell a parent or another trusted adult', 'Telling is caring, not betraying.']];
+      ['A friend shows warning signs. What should you do?', ['tell a parent or another trusted adult', 'keep it a secret', 'wait a week', 'post about it'], 'tell a parent or another trusted adult', 'Telling is caring, not betraying.'],
+      // More questions (pass HV), so a round never needs a repeat.
+      ['Keeping quiet and giving in is which style?', ['passive', 'assertive', 'aggressive', 'empathetic'], 'passive', 'Assertive is clear and respectful.'],
+      ['Seeing a situation from another person\'s side is what?', ['empathy', 'resilience', 'isolation', 'aggression'], 'empathy', 'And letting them know you care.'],
+      ['Abuse, neglect and growing up around violence are called what?', ['adverse childhood experiences', 'protective factors', 'refusal skills', 'healthy habits'], 'adverse childhood experiences', 'They do not decide a person\'s future.'],
+      ['Which is a protective factor against suicide?', ['connection to family, friends and school', 'feeling isolated', 'substance use', 'a previous attempt'], 'connection to family, friends and school', 'Access to mental health care is another.'],
+      ['Which is a warning sign?', ['pulling away from others', 'joining a club', 'laughing with friends', 'sleeping well'], 'pulling away from others', 'Tell a trusted adult right away.'],
+      ['In what year did 988 replace the old lifeline number?', ['2022', '1992', '2002', '2012'], '2022', 'Trained counselors answer at any hour.'],
+      ['How can you reach the 988 Lifeline?', ['calling or texting 988', 'only by letter', 'only in person', 'only by email'], 'calling or texting 988', 'Any hour of the day.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
@@ -17253,7 +17524,14 @@ Object.assign(GENERATORS, {
       ['Opioids taken with alcohol can slow what?', ['breathing', 'hair growth', 'eyesight only', 'digestion only'], 'breathing', 'Breathing can stop.'],
       ['Where should leftover medicines go?', ['a drug take-back event', 'the trash, loose', 'a friend', 'the toilet'], 'a drug take-back event', 'Or a pharmacy kiosk.'],
       ['Which is a refusal skill?', ['say no clearly', 'change the subject forever', 'take just a little', 'hide it'], 'say no clearly', 'Then give a reason, suggest something else, or leave.'],
-      ['Which is a medication for opioid use disorder?', ['buprenorphine', 'ibuprofen', 'antibiotics', 'antacids'], 'buprenorphine', 'Methadone is another.']];
+      ['Which is a medication for opioid use disorder?', ['buprenorphine', 'ibuprofen', 'antibiotics', 'antacids'], 'buprenorphine', 'Methadone is another.'],
+      // More questions (pass HV), so a round never needs a repeat.
+      ['What does an over-the-counter label list?', ['the active ingredient', 'the patient\'s name', 'the prescriber', 'nothing'], 'the active ingredient', 'And its category, uses, warnings and directions.'],
+      ['Since when has naloxone been sold over the counter?', ['2023', '1993', '2003', '2013'], '2023', 'As a nasal spray.'],
+      ['What is the first step toward treatment?', ['telling a parent, a school counselor, a teacher or another trusted adult', 'waiting it out', 'keeping it secret', 'buying pills online'], 'telling a parent, a school counselor, a teacher or another trusted adult', 'Addiction is a treatable condition.'],
+      ['Which is a social influence on substance use?', ['friends', 'sleep', 'vitamins', 'weather'], 'friends', 'Family, ads and social media too.'],
+      ['Waiting longer to start lowers the risk of what?', ['later addiction', 'good grades', 'sleep', 'exercise'], 'later addiction', 'Most teens do not use at all.'],
+      ['What should you never share?', ['prescriptions', 'good news', 'study notes', 'water'], 'prescriptions', 'Store medicines locked up.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
@@ -17269,7 +17547,12 @@ Object.assign(GENERATORS, {
       ['What can spread Lyme disease?', ['ticks', 'mosquitoes', 'bees', 'fleas'], 'ticks', 'Mosquitoes can spread West Nile virus.'],
       ['What can spread West Nile virus?', ['mosquitoes', 'ticks', 'flies', 'spiders'], 'mosquitoes', 'Repellent and long sleeves help prevent bites.'],
       ['How often should you brush your teeth?', ['twice a day', 'once a week', 'only before school', 'after every snack only'], 'twice a day', 'With fluoride toothpaste.'],
-      ['During an asthma attack, what should the person use?', ['their inhaler', 'a cold drink', 'a heating pad', 'a cough drop'], 'their inhaler', 'Call 911 if breathing does not improve.']];
+      ['During an asthma attack, what should the person use?', ['their inhaler', 'a cold drink', 'a heating pad', 'a cough drop'], 'their inhaler', 'Call 911 if breathing does not improve.'],
+      // More questions (pass HU), so a round never needs a repeat.
+      ['What does sleep repair?', ['the body and the brain', 'only the hair', 'only the teeth', 'nothing'], 'the body and the brain', 'Water and exercise help too.'],
+      ['Call 911 if a seizure lasts more than how long?', ['five minutes', 'five seconds', 'one hour', 'one day'], 'five minutes', 'Time it, and never hold the person down.'],
+      ['What often starts Lyme disease?', ['a spreading red rash', 'a sneeze', 'a sore foot', 'a broken bone'], 'a spreading red rash', 'With fever and tiredness.'],
+      ['Low blood sugar care plans often call for what?', ['juice or another fast sugar', 'a nap', 'a cold shower', 'nothing to eat'], 'juice or another fast sugar', 'Get an adult and follow the care plan.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
@@ -17293,7 +17576,13 @@ Object.assign(GENERATORS, {
       ['How long should a burn cool under running water?', ['at least 10 minutes', 'about 10 seconds', 'under ice for an hour', 'not at all'], 'at least 10 minutes', 'Never ice or butter.'],
       ['What should you do if you find a gun?', ['leave the area and tell an adult', 'pick it up carefully', 'check if it is loaded', 'hide it'], 'leave the area and tell an adult', 'Do not touch it.'],
       ['What should you do with cyberbullying messages?', ['save the messages', 'answer back', 'delete everything', 'share them'], 'save the messages', 'Then block, report and tell an adult.'],
-      ['Which Texas law covers cyberbullying?', ['David\'s Law', 'the Sherman Act', 'the Baby Moses law', 'the Clean Air Act'], 'David\'s Law', 'Passed in 2017.']];
+      ['Which Texas law covers cyberbullying?', ['David\'s Law', 'the Sherman Act', 'the Baby Moses law', 'the Clean Air Act'], 'David\'s Law', 'Passed in 2017.'],
+      // More questions (pass HU), so a round never needs a repeat.
+      ['What should never go on a burn?', ['ice or butter', 'cool running water', 'a clean cloth', 'nothing'], 'ice or butter', 'Cool it under running water instead.'],
+      ['Repeated cruelty through phones or the internet is what?', ['cyberbullying', 'first aid', 'privacy', 'a safety plan'], 'cyberbullying', 'It hurts both the target and the bully.'],
+      ['In what year did David\'s Law pass?', ['2017', '1917', '1997', '2027'], '2017', 'It lets schools act on cyberbullying off campus.'],
+      ['A photo or message posted online can be what?', ['copied and shared forever', 'deleted everywhere', 'seen by no one', 'taken back easily'], 'copied and shared forever', 'Think before you post.'],
+      ['What does a personal safety plan list?', ['who you can call, where you can go and what you will do', 'your passwords', 'your address for strangers', 'nothing'], 'who you can call, where you can go and what you will do', 'Make it before you need it.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
@@ -17303,7 +17592,12 @@ Object.assign(GENERATORS, {
       ['Until about what age does the brain keep developing?', ['about age 25', 'about age 12', 'about age 16', 'about age 50'], 'about age 25', 'Which is why nicotine hooks teens easily.'],
       ['What can counterfeit pills contain?', ['fentanyl', 'vitamins only', 'nothing at all', 'sugar only'], 'fentanyl', 'A tiny amount can kill.'],
       ['What can vape aerosol contain?', ['nicotine and other harmful chemicals', 'only water vapor', 'only flavoring', 'fresh air'], 'nicotine and other harmful chemicals', 'It is not harmless water vapor.'],
-      ['Selling tobacco and vapes to anyone under what age is banned?', ['21', '16', '18', '25'], '21', 'Under federal law.']];
+      ['Selling tobacco and vapes to anyone under what age is banned?', ['21', '16', '18', '25'], '21', 'Under federal law.'],
+      // More questions (pass HU), so a round never needs a repeat.
+      ['Nicotine is found in cigarettes and what?', ['most vapes', 'water', 'fruit', 'vitamins'], 'most vapes', 'It is highly addictive.'],
+      ['Alcohol slows what?', ['reaction time and judgment', 'hair growth', 'eyesight only', 'nothing'], 'reaction time and judgment', 'That is why drinking and driving kills.'],
+      ['What do prescription labels add?', ['the patient\'s name, the dose and the prescriber', 'a coupon', 'a recipe', 'nothing'], 'the patient\'s name, the dose and the prescriber', 'Over-the-counter labels list uses and warnings.'],
+      ['Combining drugs is dangerous because effects do what?', ['add up', 'cancel out', 'disappear', 'stay the same'], 'add up', 'Never combine drugs without a doctor.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
@@ -17319,7 +17613,13 @@ Object.assign(GENERATORS, {
       ['A stronger dollar makes American exports what?', ['more expensive abroad', 'cheaper abroad', 'illegal', 'tax free'], 'more expensive abroad', 'And imports cheaper at home.'],
       ['Specializing at the lowest opportunity cost is called what?', ['comparative advantage', 'an embargo', 'a joint venture', 'limited liability'], 'comparative advantage', 'Both trading partners gain.'],
       ['Which keeps limited liability and passes profits through?', ['a limited liability company', 'a C corporation', 'a general partnership', 'a sole proprietorship'], 'a limited liability company', 'An S corporation does too.'],
-      ['Taxes on imported goods are called what?', ['tariffs', 'quotas', 'embargoes', 'dividends'], 'tariffs', 'Quotas limit amounts; embargoes ban trade.']];
+      ['Taxes on imported goods are called what?', ['tariffs', 'quotas', 'embargoes', 'dividends'], 'tariffs', 'Quotas limit amounts; embargoes ban trade.'],
+      // More questions (pass HX), so a round never needs a repeat.
+      ['Which function finds and keeps customers?', ['marketing', 'accounting', 'finance', 'management'], 'marketing', 'One of the five core functions.'],
+      ['Which function decides how to raise and spend money?', ['finance', 'marketing', 'accounting', 'information systems'], 'finance', 'Accounting records and reports it.'],
+      ['Which form shares control and liability among partners?', ['a general partnership', 'a sole proprietorship', 'a C corporation', 'an LLC'], 'a general partnership', 'Two or more owners.'],
+      ['Which is a way for a firm to go abroad?', ['franchising', 'tariffs', 'embargoes', 'quotas'], 'franchising', 'Exporting and licensing are others.'],
+      ['Quotas are what?', ['limits on amounts', 'taxes on imports', 'outright bans', 'subsidies'], 'limits on amounts', 'Tariffs tax; embargoes ban.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
@@ -17330,7 +17630,13 @@ Object.assign(GENERATORS, {
       ['In Herzberg\'s terms, recognition and responsibility are what?', ['motivators', 'hygiene factors', 'controls', 'threats'], 'motivators', 'They raise effort.'],
       ['Which managers set strategy?', ['top managers', 'first-line managers', 'middle managers', 'shareholders'], 'top managers', 'Middle managers turn it into plans.'],
       ['In a SWOT, the risk of a cyberattack is which?', ['a threat', 'a strength', 'a weakness', 'an opportunity'], 'a threat', 'Threats come from outside the firm.'],
-      ['Are weaknesses in a SWOT internal or external?', ['internal', 'external', 'both', 'neither'], 'internal', 'Strengths and weaknesses are inside the firm.']];
+      ['Are weaknesses in a SWOT internal or external?', ['internal', 'external', 'both', 'neither'], 'internal', 'Strengths and weaknesses are inside the firm.'],
+      // More questions (pass HX), so a round never needs a repeat.
+      ['Which function arranges people and resources?', ['organizing', 'planning', 'leading', 'controlling'], 'organizing', 'Plan, organize, lead, control.'],
+      ['Which style lets the team decide within broad limits?', ['free-rein', 'autocratic', 'democratic', 'conceptual'], 'free-rein', 'Good leaders change style with the situation.'],
+      ['Which managers supervise the daily work?', ['first-line managers', 'top managers', 'middle managers', 'shareholders'], 'first-line managers', 'They lean most on technical skill.'],
+      ['In a SWOT, opening online markets is which?', ['an opportunity', 'a threat', 'a weakness', 'a strength'], 'an opportunity', 'Opportunities come from outside.'],
+      ['A leader\'s ethics set what?', ['the culture of the whole firm', 'the stock price', 'the weather', 'nothing'], 'the culture of the whole firm', 'People follow leaders who keep their word.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
@@ -17363,7 +17669,14 @@ Object.assign(GENERATORS, {
       ['The groups affected by a firm are its what?', ['stakeholders', 'shareholders only', 'competitors', 'regulators'], 'stakeholders', 'Owners, employees, customers, suppliers, community.'],
       ['What is the base of Carroll\'s pyramid?', ['be profitable', 'be a good citizen', 'be ethical', 'obey the law'], 'be profitable', 'Then obey the law, be ethical, be a good citizen.'],
       ['Which 1890 law began U.S. antitrust law?', ['the Sherman Act', 'the Federal Reserve Act', 'the Clean Air Act', 'the Securities Act'], 'the Sherman Act', 'It keeps markets competitive.'],
-      ['Which agency acts against deceptive practices?', ['the Federal Trade Commission', 'the Federal Reserve', 'the stock exchange', 'the Census Bureau'], 'the Federal Trade Commission', 'It also acts against unfair competition.']];
+      ['Which agency acts against deceptive practices?', ['the Federal Trade Commission', 'the Federal Reserve', 'the stock exchange', 'the Census Bureau'], 'the Federal Trade Commission', 'It also acts against unfair competition.'],
+      // More questions (pass HX), so a round never needs a repeat.
+      ['Which agency oversees recalls of dangerous products?', ['the Consumer Product Safety Commission', 'the Federal Reserve', 'the stock exchange', 'the Census Bureau'], 'the Consumer Product Safety Commission', 'It works to keep products safe.'],
+      ['Social responsibility is a firm\'s duty to whom?', ['its stakeholders', 'its owners only', 'no one', 'its rivals'], 'its stakeholders', 'Everyone its actions affect.'],
+      ['The law sets the minimum. Ethics asks what?', ['what is right', 'what is cheapest', 'what is fastest', 'what is popular'], 'what is right', 'Ethics reaches past the law.'],
+      ['What is the top of Carroll\'s pyramid?', ['be a good citizen', 'be profitable', 'obey the law', 'be ethical'], 'be a good citizen', 'Through giving and service.'],
+      ['Government enforces contracts through what?', ['the courts', 'the stock market', 'the Federal Reserve', 'advertising'], 'the courts', 'And protects property.'],
+      ['Antitrust laws keep markets what?', ['competitive', 'closed', 'secret', 'empty'], 'competitive', 'Starting with the Sherman Act of 1890.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
@@ -17430,7 +17743,13 @@ Object.assign(GENERATORS, {
       ['The United States is which kind of economy?', ['a mixed economy', 'a traditional economy', 'a centrally planned economy', 'a barter economy'], 'a mixed economy', 'Built on private enterprise.'],
       ['Which function finds and keeps customers?', ['marketing', 'production', 'finance', 'management'], 'marketing', 'Production makes it, finance handles money, management leads people.'],
       ['Ten workers each doing one step is an example of what?', ['specialization', 'inflation', 'a monopoly', 'a partnership'], 'specialization', 'Adam Smith\'s pin factory, 1776.'],
-      ['Goods a country buys from other countries are called what?', ['imports', 'exports', 'dividends', 'retailers'], 'imports', 'Exports are what it sells to them.']];
+      ['Goods a country buys from other countries are called what?', ['imports', 'exports', 'dividends', 'retailers'], 'imports', 'Exports are what it sells to them.'],
+      // More questions (pass HV), so a round never needs a repeat.
+      ['Which business turns raw goods into products?', ['manufacturers', 'retailers', 'wholesalers', 'producers'], 'manufacturers', 'Producers grow or dig up the raw goods.'],
+      ['In which economy does custom decide what gets made?', ['a traditional economy', 'a market economy', 'a centrally planned economy', 'a mixed economy'], 'a traditional economy', 'Real countries mix the three.'],
+      ['In which economy does the government decide?', ['a centrally planned economy', 'a market economy', 'a traditional economy', 'a household'], 'a centrally planned economy', 'In a market economy, prices decide.'],
+      ['In 1776, who described the pin factory?', ['Adam Smith', 'Henry Ford', 'Karl Marx', 'Thomas Edison'], 'Adam Smith', 'Ten workers made more than 48,000 pins a day.'],
+      ['Goods a country sells to other countries are what?', ['exports', 'imports', 'taxes', 'services only'], 'exports', 'They bring money and jobs home.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
@@ -17441,7 +17760,14 @@ Object.assign(GENERATORS, {
       ['The group a business chooses to aim at is its what?', ['target market', 'balance sheet', 'wholesaler', 'union'], 'target market', 'A skate shop aims at people who skate.'],
       ['Which is one of the four Ps?', ['place', 'profit', 'payroll', 'patents'], 'place', 'Product, price, place and promotion.'],
       ['Who buys in bulk and sells to stores?', ['wholesalers', 'retailers', 'consumers', 'shareholders'], 'wholesalers', 'Retailers sell to the public.'],
-      ['When demand rises and supply stays the same, prices tend to do what?', ['rise', 'fall', 'stay the same', 'disappear'], 'rise', 'When supply rises or demand falls, prices tend to fall.']];
+      ['When demand rises and supply stays the same, prices tend to do what?', ['rise', 'fall', 'stay the same', 'disappear'], 'rise', 'When supply rises or demand falls, prices tend to fall.'],
+      // More questions (pass HV), so a round never needs a repeat.
+      ['Product, price, place and what make the four Ps?', ['promotion', 'profit', 'people', 'paper'], 'promotion', 'How people hear about it.'],
+      ['When supply rises, prices tend to do what?', ['fall', 'rise', 'stay the same', 'disappear'], 'fall', 'And when demand falls, too.'],
+      ['A skate shop\'s target market is whom?', ['teenagers and young adults who skate', 'everyone in town', 'only grandparents', 'nobody'], 'teenagers and young adults who skate', 'That tells it where to advertise.'],
+      ['Why do reviews matter more for services?', ['a haircut cannot be stored or tried first', 'services are always cheap', 'goods have no reviews', 'they do not'], 'a haircut cannot be stored or tried first', 'Reputation carries more weight.'],
+      ['Who sells to the public?', ['retailers', 'wholesalers', 'producers', 'manufacturers'], 'retailers', 'Wholesalers sell to stores.'],
+      ['A target market plus the mix built for it is a what?', ['marketing strategy', 'price list', 'balance sheet', 'contract'], 'marketing strategy', 'Product, price, place and promotion.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
@@ -17473,7 +17799,14 @@ Object.assign(GENERATORS, {
       ['Workers bargaining with an employer as a group is called what?', ['collective bargaining', 'mass marketing', 'division of labor', 'market segmentation'], 'collective bargaining', 'Over wages, hours and working conditions.'],
       ['Where are contracts enforced and disputes settled?', ['the courts', 'the wholesalers', 'the union hall', 'the bank'], 'the courts', 'The government runs the courts.'],
       ['What does a career plan start with?', ['your goals and interests', 'your first paycheck', 'a job title', 'a loan'], 'your goals and interests', 'Then your talents, abilities and skills.'],
-      ['Which is a career in business, marketing and finance?', ['accountant', 'astronaut', 'surgeon', 'geologist'], 'accountant', 'Also bank teller, buyer and marketing manager.']];
+      ['Which is a career in business, marketing and finance?', ['accountant', 'astronaut', 'surgeon', 'geologist'], 'accountant', 'Also bank teller, buyer and marketing manager.'],
+      // More questions (pass HV), so a round never needs a repeat.
+      ['The rules a government enforces are called what?', ['laws', 'morals', 'ethics', 'habits'], 'laws', 'Ethics, morals and laws do not always line up.'],
+      ['What is a good test of whether a choice is ethical?', ['whether you would be comfortable if every customer knew exactly what you did', 'whether it is legal', 'whether it is profitable', 'whether it is popular'], 'whether you would be comfortable if every customer knew exactly what you did', 'Legal is not the same as ethical.'],
+      ['Workers joined together to bargain are called what?', ['a union', 'a corporation', 'a market', 'a court'], 'a union', 'They bargain as a group.'],
+      ['Which is one of government\'s roles in business?', ['collects taxes', 'sets every price', 'owns every store', 'picks your job'], 'collects taxes', 'It also makes rules and runs the courts.'],
+      ['Ethics in business includes which?', ['honest prices', 'hidden fees', 'false ads', 'unsafe products'], 'honest prices', 'Safe products and fair treatment too.'],
+      ['A career plan matches you to how many careers?', ['two or three careers', 'exactly one', 'fifty', 'none'], 'two or three careers', 'Then find the education each needs.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
@@ -17491,7 +17824,14 @@ Object.assign(GENERATORS, {
       ['Norman Borlaug won the Nobel Peace Prize in which year?', ['1970', '1834', '1913', '2010'], '1970', 'For the short, sturdy wheat of the Green Revolution.'],
       ['Fewer than how many in a hundred Americans work on farms?', ['two', 'twenty', 'fifty', 'ninety'], 'two', 'Yet about one job in ten touches food and agriculture.'],
       ['When the dollar is strong, American crops abroad do what?', ['cost more and sell less', 'cost less and sell more', 'stay the same', 'disappear'], 'cost more and sell less', 'Currency matters in a global market.'],
-      ['Which is a career in agriculture besides farming?', ['agronomist', 'lifeguard', 'pilot', 'dentist'], 'agronomist', 'Veterinarians, food scientists and soil chemists too.']];
+      ['Which is a career in agriculture besides farming?', ['agronomist', 'lifeguard', 'pilot', 'dentist'], 'agronomist', 'Veterinarians, food scientists and soil chemists too.'],
+      // Six more (pass HR), so a ten-question round never needs a repeat.
+      ['Which fiber does agriculture grow, besides wool?', ['cotton', 'nylon', 'steel', 'plastic'], 'cotton', 'Fiber, food and wood all come from agriculture.'],
+      ['Whose short, sturdy wheat led the Green Revolution?', ['Norman Borlaug', 'Cyrus McCormick', 'Louis Pasteur', 'Fritz Haber'], 'Norman Borlaug', 'It doubled harvests in countries facing famine.'],
+      ['In which decade did the Green Revolution begin?', ['the 1960s', 'the 1830s', 'the 1910s', 'the 2000s'], 'the 1960s', 'Borlaug won the Nobel Peace Prize in 1970.'],
+      ['About what share of jobs touch food and agriculture?', ['about one job in ten', 'every job', 'one job in a thousand', 'none'], 'about one job in ten', 'Somewhere between the field and the plate.'],
+      ['About what share of people eat food grown with Haber-Bosch nitrogen?', ['roughly half', 'almost none', 'one in a hundred', 'everyone'], 'roughly half', 'Nitrogen fertilizer made modern harvests possible.'],
+      ['A drought in one country can raise what in another?', ['bread prices', 'rainfall', 'school grades', 'nothing at all'], 'bread prices', 'Markets for grain are global.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
@@ -17518,7 +17858,14 @@ Object.assign(GENERATORS, {
       ['Which is a dairy breed?', ['Holstein', 'Angus', 'Hereford', 'oak'], 'Holstein', 'Angus and Hereford are beef breeds.'],
       ['Who showed in the 1860s that gentle heating kills spoilage microbes?', ['Louis Pasteur', 'Cyrus McCormick', 'Norman Borlaug', 'Fritz Haber'], 'Louis Pasteur', 'Refrigeration did the rest.'],
       ['About what share of the food grown today is lost or wasted?', ['a third', 'a hundredth', 'almost all', 'none'], 'a third', 'Between the field and the fork.'],
-      ['By 2050 the world will need roughly how much more food than in 2010?', ['half again as much', 'ten times as much', 'the same', 'less'], 'half again as much', 'On about the same land.']];
+      ['By 2050 the world will need roughly how much more food than in 2010?', ['half again as much', 'ten times as much', 'the same', 'less'], 'half again as much', 'On about the same land.'],
+      // Six more (pass HR), so a ten-question round never needs a repeat.
+      ['What are the growth stages of farm animals?', ['birth, weaning, growing and finishing', 'planting, watering, picking and selling', 'egg, larva, pupa and adult', 'spring, summer, fall and winter'], 'birth, weaning, growing and finishing', 'Each stage needs different feed and care.'],
+      ['Which are beef breeds?', ['Angus and Hereford', 'Holstein and Jersey', 'pigs and poultry', 'oak and maple'], 'Angus and Hereford', 'Holsteins are dairy.'],
+      ['Which is a part of a ruminant\'s stomach?', ['rumen', 'liver', 'lung', 'kidney'], 'rumen', 'Rumen, reticulum, omasum and abomasum.'],
+      ['Along with pasteurization, what made cities possible?', ['refrigeration', 'the reaper', 'drones', 'tractors'], 'refrigeration', 'A city cannot feed itself from its own soil.'],
+      ['Ranchers choose parents by records of what?', ['growth, milk and calving ease', 'color and size only', 'the weather', 'nothing at all'], 'growth, milk and calving ease', 'Those traits pass down.'],
+      ['Food processing covers everything between the harvest and what?', ['the plate', 'the seed', 'the rain', 'the barn door'], 'the plate', 'Cleaning, milling, pasteurizing, packaging, cooling and moving.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
@@ -17546,7 +17893,14 @@ Object.assign(GENERATORS, {
       ['Which register is for school and work?', ['standard', 'informal', 'technical', 'silent'], 'standard', 'Informal is for friends; technical for the specialists in a field.'],
       ['Which of these is nonverbal communication?', ['eye contact', 'a written report', 'a word list', 'a headline'], 'eye contact', 'Posture, gesture, facial expression, eye contact, tone and distance travel with the words.'],
       ['What should a communicator gather before speaking?', ['accurate and complete information', 'the biggest audience', 'a costume', 'a louder voice'], 'accurate and complete information', 'A confident message built on a wrong fact does harm.'],
-      ['A communicator who wins by misleading people has done what?', ['only performed', 'communicated well', 'listened', 'used technical language'], 'only performed', 'Be honest about what you know, name your sources, and treat the listener with respect.']];
+      ['A communicator who wins by misleading people has done what?', ['only performed', 'communicated well', 'listened', 'used technical language'], 'only performed', 'Be honest about what you know, name your sources, and treat the listener with respect.'],
+      // More questions (pass HW), so a round never needs a repeat.
+      ['The idea put into words, gestures or pictures is the what?', ['message', 'channel', 'noise', 'feedback'], 'message', 'It travels by the channel.'],
+      ['Which register is for the specialists in a field?', ['technical', 'standard', 'informal', 'casual'], 'technical', 'The mistake is using the wrong one in the room.'],
+      ['A firm handshake and direct eye contact say what?', ['you are present', 'you are bored', 'you are late', 'nothing'], 'you are present', 'Before you say anything.'],
+      ['To be honest about what you know, what do you name?', ['your sources', 'your fans', 'your grades', 'nothing'], 'your sources', 'And treat the listener with respect.'],
+      ['What does a confident message built on a wrong fact do?', ['harm', 'good', 'nothing', 'wonders'], 'harm', 'Gather accurate information first.'],
+      ['Good communicators choose for the listener, the occasion and what?', ['the task', 'the weather', 'the price', 'the snacks'], 'the task', 'And for themselves.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
@@ -17557,7 +17911,14 @@ Object.assign(GENERATORS, {
       ['A clear request says what you need, by when, and what else?', ['why', 'how loud', 'who is to blame', 'nothing else'], 'why', 'Say what you need, by when, and why.'],
       ['How should you receive criticism?', ['repeat it back and ask one question', 'defend at once', 'walk away', 'change the subject'], 'repeat it back and ask one question', 'Not by defending.'],
       ['On the phone, what goes in the first sentence?', ['who you are and why you are calling', 'a joke', 'the weather', 'a long story'], 'who you are and why you are calling', 'Professional etiquette is listening made visible.'],
-      ['In an interview, how long should an answer be?', ['under a minute, with one example', 'as long as possible', 'one word', 'ten minutes'], 'under a minute, with one example', 'Listen for the question under the question.']];
+      ['In an interview, how long should an answer be?', ['under a minute, with one example', 'as long as possible', 'one word', 'ten minutes'], 'under a minute, with one example', 'Listen for the question under the question.'],
+      // More questions (pass HW), so a round never needs a repeat.
+      ['Listening has how many steps?', ['five steps', 'one step', 'ten steps', 'two steps'], 'five steps', 'Receive, attend, understand, remember, respond.'],
+      ['Empathic listening sets what aside?', ['judgment', 'feelings', 'the speaker', 'attention'], 'judgment', 'To understand how another person feels.'],
+      ['Which questions are purposeful?', ['ones whose answers you will use', 'ones that fill silence', 'ones you already know', 'trick questions'], 'ones whose answers you will use', 'Ask on purpose.'],
+      ['When giving directions, what do you announce first?', ['the number of steps', 'your name', 'the weather', 'nothing'], 'the number of steps', 'Then give them in order.'],
+      ['How do you introduce people?', ['by name and connection', 'by age', 'by height', 'without names'], 'by name and connection', 'Etiquette is listening made visible.'],
+      ['In an interview, what do you listen for?', ['the question under the question', 'the clock', 'your own voice', 'the door'], 'the question under the question', 'Answer it in under a minute.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
@@ -17568,7 +17929,14 @@ Object.assign(GENERATORS, {
       ['An introduction holds a hook, the one sentence, and what?', ['a preview of the points', 'a joke', 'the bibliography', 'the last line'], 'a preview of the points', 'A preview is a promise.'],
       ['How many points should the body of a talk hold?', ['two or three', 'ten', 'one', 'as many as fit'], 'two or three', 'Each with evidence that supports and clarifies it.'],
       ['What should you bring to the stage instead of a script?', ['notes', 'nothing', 'a book', 'a recording'], 'notes', 'A script read aloud sounds read.'],
-      ['What is a visual aid for?', ['to make a point clearer', 'to be read from', 'to fill the screen', 'to replace the talk'], 'to make a point clearer', 'If the slide says everything you say, the audience stops listening to you.']];
+      ['What is a visual aid for?', ['to make a point clearer', 'to be read from', 'to fill the screen', 'to replace the talk'], 'to make a point clearer', 'If the slide says everything you say, the audience stops listening to you.'],
+      // More questions (pass HW), so a round never needs a repeat.
+      ['Narrow the topic to one sentence you could say where?', ['in a doorway', 'in a book', 'in an hour', 'in a song'], 'in a doorway', 'Short enough to say in passing.'],
+      ['The reporting and the summaries are which sources?', ['secondary sources', 'primary sources', 'fake sources', 'no sources'], 'secondary sources', 'Check that they agree with the primary ones.'],
+      ['What should a conclusion end on?', ['a line you chose on purpose', 'a random fact', 'an apology', 'silence'], 'a line you chose on purpose', 'After repeating the sentence.'],
+      ['What do your notes hold?', ['the sentence, the three points and the evidence', 'the whole script', 'nothing', 'jokes only'], 'the sentence, the three points and the evidence', 'Notes let you talk.'],
+      ['If the slide says everything you say, the audience does what?', ['reads it and stops listening to you', 'listens harder', 'claps', 'leaves'], 'reads it and stops listening to you', 'A visual aid makes a point clearer.'],
+      ['Most weak talks were written for what?', ['the wrong audience', 'the right purpose', 'too many people', 'no reason'], 'the wrong audience', 'Know the audience first.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
@@ -17579,7 +17947,14 @@ Object.assign(GENERATORS, {
       ['The racing heart before a talk means what?', ['ready, not doomed', 'doomed', 'sick', 'bored'], 'ready, not doomed', 'It is the same heart you have before a race.'],
       ['Um, like and you know spend the listener\'s attention on what?', ['nothing', 'the point', 'the evidence', 'the last line'], 'nothing', 'Filler words cost attention.'],
       ['What should you do with a question from the audience first?', ['repeat it for the room', 'ignore it', 'answer at length', 'laugh'], 'repeat it for the room', 'Then answer it briefly and honestly.'],
-      ['What should you say when you do not know an answer?', ['I do not know, then offer to find out', 'make one up', 'nothing', 'change the subject'], 'I do not know, then offer to find out', 'Briefly and honestly.']];
+      ['What should you say when you do not know an answer?', ['I do not know, then offer to find out', 'make one up', 'nothing', 'change the subject'], 'I do not know, then offer to find out', 'Briefly and honestly.'],
+      // More questions (pass HW), so a round never needs a repeat.
+      ['Where should your feet be during a talk?', ['planted rather than pacing', 'tapping', 'on a chair', 'crossed'], 'planted rather than pacing', 'Gestures match the words.'],
+      ['What comes before an important line?', ['a pause', 'a filler word', 'a joke', 'a cough'], 'a pause', 'Let it land.'],
+      ['What do you do after a talk?', ['evaluate', 'forget it', 'apologize', 'leave'], 'evaluate', 'Where did they lean in, where did they drift?'],
+      ['A group talk is only as good as its what?', ['handoffs', 'slides', 'snacks', 'length'], 'handoffs', 'Someone leads, someone keeps time.'],
+      ['How should you answer an audience question?', ['briefly and honestly', 'at great length', 'by changing the subject', 'with a joke only'], 'briefly and honestly', 'Repeat it for the room first.'],
+      ['How should eye contact move?', ['around the room', 'to the floor', 'to your notes only', 'to one person only'], 'around the room', 'Everyone feels included.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
@@ -17613,7 +17988,14 @@ Object.assign(GENERATORS, {
       ['The level below which a sound or light is not noticed is called what?', ['the absolute threshold', 'the range', 'the median', 'the mode'], 'the absolute threshold', 'The senses also adapt, which is why a smell fades.'],
       ['Which of Piaget\'s stages lasts to about age two?', ['sensorimotor', 'preoperational', 'concrete operational', 'formal operational'], 'sensorimotor', 'Preoperational to about seven, concrete operational to about eleven, formal operational after.'],
       ['How many psychosocial stages did Erik Erikson describe in 1950?', ['eight', 'four', 'six', 'twelve'], 'eight', 'Each a task, from trust in infancy to integrity in old age.'],
-      ['The genes are nature. The surroundings are called what?', ['nurture', 'perception', 'the endocrine system', 'the threshold'], 'nurture', 'The debate is about how much of each.']];
+      ['The genes are nature. The surroundings are called what?', ['nurture', 'perception', 'the endocrine system', 'the threshold'], 'nurture', 'The debate is about how much of each.'],
+      // More questions (pass HW), so a round never needs a repeat.
+      ['Every nerve that runs out to the body is which system?', ['the peripheral nervous system', 'the central nervous system', 'the endocrine system', 'the immune system'], 'the peripheral nervous system', 'The brain and spinal cord are central.'],
+      ['Which hormone keeps the body alert for hours?', ['cortisol', 'adrenaline', 'insulin', 'melatonin'], 'cortisol', 'Adrenaline works in seconds.'],
+      ['What the brain makes of a sensation is called what?', ['perception', 'sensation', 'adaptation', 'threshold'], 'perception', 'Perception adds expectation.'],
+      ['Why does a smell fade after a while?', ['they adapt', 'the nose closes', 'smells vanish', 'the brain sleeps'], 'they adapt', 'Senses adapt; a cold pool warms too.'],
+      ['Which task belongs to the teenage years in Erikson\'s stages?', ['identity', 'trust', 'integrity', 'sensorimotor'], 'identity', 'Trust comes in infancy.'],
+      ['Which of Piaget\'s stages comes after about age eleven?', ['formal operational', 'sensorimotor', 'preoperational', 'concrete operational'], 'formal operational', 'Concrete operational ends about eleven.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
@@ -17625,7 +18007,13 @@ Object.assign(GENERATORS, {
       ['What flattens the forgetting curve?', ['review', 'sleep alone', 'reading faster', 'nothing'], 'review', 'Ebbinghaus, 1885: each review flattens the curve.'],
       ['A step-by-step method that always works is called what?', ['an algorithm', 'a heuristic', 'a bias', 'a chunk'], 'an algorithm', 'A heuristic is a shortcut that usually works.'],
       ['Hunting for evidence that agrees with you is called what?', ['confirmation bias', 'functional fixedness', 'chunking', 'encoding'], 'confirmation bias', 'Functional fixedness sees a tool only for its usual job.'],
-      ['Who arranged human needs as a pyramid in 1943?', ['Abraham Maslow', 'Jean Piaget', 'Erik Erikson', 'Solomon Asch'], 'Abraham Maslow', 'Survival at the bottom, belonging above it.']];
+      ['Who arranged human needs as a pyramid in 1943?', ['Abraham Maslow', 'Jean Piaget', 'Erik Erikson', 'Solomon Asch'], 'Abraham Maslow', 'Survival at the bottom, belonging above it.'],
+      // More questions (pass HW), so a round never needs a repeat.
+      ['Memory has which three steps?', ['encoding, storage and retrieval', 'seeing, hearing and touching', 'eating, sleeping and waking', 'reading, writing and math'], 'encoding, storage and retrieval', 'It can fail at each.'],
+      ['A shortcut that usually works is called what?', ['a heuristic', 'an algorithm', 'a reflex', 'a stimulus'], 'a heuristic', 'An algorithm always works.'],
+      ['Seeing a tool only for its usual job is called what?', ['functional fixedness', 'confirmation bias', 'chunking', 'conditioning'], 'functional fixedness', 'A cost of mental shortcuts.'],
+      ['Who published in 1956 that working memory holds about seven?', ['George Miller', 'Ivan Pavlov', 'Albert Bandura', 'Abraham Maslow'], 'George Miller', 'Chunking stretches it.'],
+      ['Who showed from the 1930s that rewards grow a behavior?', ['B. F. Skinner', 'Ivan Pavlov', 'George Miller', 'Jean Piaget'], 'B. F. Skinner', 'Operant conditioning.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
@@ -17636,7 +18024,14 @@ Object.assign(GENERATORS, {
       ['More bystanders, less chance any one helps. That is called what?', ['the bystander effect', 'altruism', 'the attribution error', 'reappraisal'], 'the bystander effect', 'Darley and Latané, 1968.'],
       ['How do you break the bystander effect?', ['point to one person and ask them by name', 'shout to the crowd', 'wait', 'leave'], 'point to one person and ask them by name', 'Altruism rises when the responsibility is clearly yours.'],
       ['Helping at a cost to yourself is called what?', ['altruism', 'conformity', 'obedience', 'bias'], 'altruism', 'It rises when the responsibility is clearly yours.'],
-      ['Which coping strategy works only until the problem grows?', ['avoiding the problem', 'exercise', 'sleep', 'talking to someone'], 'avoiding the problem', 'Reappraisal, steps, exercise, sleep and talk help.']];
+      ['Which coping strategy works only until the problem grows?', ['avoiding the problem', 'exercise', 'sleep', 'talking to someone'], 'avoiding the problem', 'Reappraisal, steps, exercise, sleep and talk help.'],
+      // More questions (pass HW), so a round never needs a repeat.
+      ['Bias acted on is called what?', ['discrimination', 'altruism', 'attitude', 'stress'], 'discrimination', 'Bias attached to a group goes further.'],
+      ['Where are attitudes learned?', ['family, peers and media', 'only in school', 'only from books', 'nowhere'], 'family, peers and media', 'And changed by the same routes.'],
+      ['Which hormone rises under stress?', ['cortisol', 'insulin', 'melatonin', 'estrogen'], 'cortisol', 'The heart quickens and attention narrows.'],
+      ['Which coping strategy works under study?', ['breaking a problem into steps', 'avoiding the problem', 'bottling it up', 'blaming others'], 'breaking a problem into steps', 'Exercise, sleep and talking help too.'],
+      ['Labeling a behavior abnormal carries what?', ['a stigma', 'a reward', 'a cure', 'nothing'], 'a stigma', 'Psychologists describe patterns carefully.'],
+      ['Psychologists treat people, not what?', ['labels', 'feelings', 'problems', 'families'], 'labels', 'They describe patterns carefully.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
@@ -17648,7 +18043,13 @@ Object.assign(GENERATORS, {
       ['If P then Q; P; therefore Q. Which form is that?', ['modus ponens', 'modus tollens', 'induction', 'a false dilemma'], 'modus ponens', 'Modus ponens carries most everyday reasoning.'],
       ['If P then Q; not Q; therefore not P. Which form is that?', ['modus tollens', 'modus ponens', 'a hasty generalization', 'a straw man'], 'modus tollens', 'Modus tollens works backward from a missing Q.'],
       ['The sun has risen every day, so it will rise tomorrow. That argument is which kind?', ['inductive', 'deductive', 'circular', 'sound'], 'inductive', 'Induction moves from many cases to a general claim; its conclusion is probable, not guaranteed.'],
-      ['All birds can fly; penguins are birds; so penguins can fly. What is wrong with it?', ['a premise is false', 'the form is invalid', 'nothing', 'the conclusion is a question'], 'a premise is false', 'The form is valid; the first premise is false, so the argument is not sound.']];
+      ['All birds can fly; penguins are birds; so penguins can fly. What is wrong with it?', ['a premise is false', 'the form is invalid', 'nothing', 'the conclusion is a question'], 'a premise is false', 'The form is valid; the first premise is false, so the argument is not sound.'],
+      // More questions (pass HW), so a round never needs a repeat.
+      ['An argument\'s reasons are called what?', ['the premises', 'the conclusions', 'the fallacies', 'the opinions'], 'the premises', 'Offered for a conclusion.'],
+      ['Deduction gives certainty from form. Induction gives what?', ['likelihood from evidence', 'certainty from form', 'nothing', 'proof'], 'likelihood from evidence', 'Its conclusion is probable.'],
+      ['Many bad arguments hide what?', ['a premise nobody stated', 'their conclusion', 'their author', 'a fallacy name'], 'a premise nobody stated', 'Ask whether the premises are true.'],
+      ['An inductive conclusion is probable rather than what?', ['guaranteed', 'possible', 'stated', 'likely'], 'guaranteed', 'From many cases to a general claim.'],
+      ['Validity says nothing about whether the premises are what?', ['actually true', 'valid', 'long', 'stated'], 'actually true', 'Soundness adds true premises.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
@@ -17659,7 +18060,14 @@ Object.assign(GENERATORS, {
       ['Ice cream sales and drownings both rise in summer. Concluding that one causes the other is which mistake?', ['confusing correlation with causation', 'a false dilemma', 'an ad hominem', 'a straw man'], 'confusing correlation with causation', 'A third thing, the heat, moves both.'],
       ['Using the conclusion as a premise is which fallacy?', ['circular reasoning', 'slippery slope', 'appeal to authority', 'hasty generalization'], 'circular reasoning', 'Circular reasoning uses the conclusion as a premise.'],
       ['Stating an argument in its strongest form before answering it is called what?', ['the principle of charity', 'the burden of proof', 'modus ponens', 'the straw man'], 'the principle of charity', 'Answer the form its maker would accept.'],
-      ['Who carries the burden of proof?', ['the person who makes a claim', 'the person who doubts it', 'the oldest person', 'the loudest person'], 'the person who makes a claim', 'Asking for the evidence is not rude; it is the whole game.']];
+      ['Who carries the burden of proof?', ['the person who makes a claim', 'the person who doubts it', 'the oldest person', 'the loudest person'], 'the person who makes a claim', 'Asking for the evidence is not rude; it is the whole game.'],
+      // More questions (pass HW), so a round never needs a repeat.
+      ['One step must lead to the bottom of the hill. Which fallacy?', ['slippery slope', 'straw man', 'ad hominem', 'false dilemma'], 'slippery slope', 'It never shows why.'],
+      ['Many people believe it, so it is true. Which fallacy?', ['appeal to popularity', 'appeal to authority', 'circular reasoning', 'straw man'], 'appeal to popularity', 'A headcount is not evidence.'],
+      ['Citing an expert outside their field is which fallacy?', ['appeal to authority', 'appeal to popularity', 'slippery slope', 'ad hominem'], 'appeal to authority', 'Expertise does not transfer.'],
+      ['Drawing a rule from too few cases is which fallacy?', ['hasty generalization', 'straw man', 'circular reasoning', 'false dilemma'], 'hasty generalization', 'Too few cases.'],
+      ['What is a fallacy?', ['a mistake in reasoning that looks like reasoning', 'a true premise', 'a valid form', 'a fact'], 'a mistake in reasoning that looks like reasoning', 'Charity is the cure for most.'],
+      ['Asking for the evidence is not rude. It is what?', ['the whole game', 'a fallacy', 'an insult', 'unnecessary'], 'the whole game', 'The claim maker carries the burden.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
@@ -17670,7 +18078,14 @@ Object.assign(GENERATORS, {
       ['Who pointed out in 1748 that induction has no proof behind it?', ['David Hume', 'Immanuel Kant', 'Edmund Gettier', 'Karl Popper'], 'David Hume', 'The sun has always risen, and that is a habit, not a guarantee.'],
       ['According to Popper, a real scientific claim is one that could be what?', ['shown false', 'proven forever', 'believed by everyone', 'repeated often'], 'shown false', 'A claim that fits every possible outcome tells you nothing.'],
       ['When two explanations fit the facts, Ockham\'s rule says prefer which?', ['the one with fewer assumptions', 'the older one', 'the more popular one', 'the more surprising one'], 'the one with fewer assumptions', 'Do not add assumptions you do not need.'],
-      ['Which of these is a source of belief that can fail?', ['testimony', 'nothing', 'only dreams', 'only rumors'], 'testimony', 'Perception, memory, testimony and reason can each fail.']];
+      ['Which of these is a source of belief that can fail?', ['testimony', 'nothing', 'only dreams', 'only rumors'], 'testimony', 'Perception, memory, testimony and reason can each fail.'],
+      // More questions (pass HW), so a round never needs a repeat.
+      ['What survived Descartes\'s doubt?', ['that he was thinking', 'that he was dreaming', 'that demons exist', 'nothing'], 'that he was thinking', 'In 1641.'],
+      ['When did William of Ockham give his rule?', ['the 1300s', 'the 1900s', 'the 1600s', 'the 500s BC'], 'the 1300s', 'Prefer fewer assumptions.'],
+      ['A claim that fits every possible outcome tells you what?', ['nothing', 'everything', 'the truth', 'the future'], 'nothing', 'Popper wanted claims that could be shown false.'],
+      ['Doubt is not the enemy of knowledge. It is what?', ['the tool that makes it', 'its end', 'a fallacy', 'a belief'], 'the tool that makes it', 'Science answers doubt with method.'],
+      ['In the 1930s, who said real science could be shown false?', ['Karl Popper', 'David Hume', 'René Descartes', 'Edmund Gettier'], 'Karl Popper', 'A real claim says what would count against it.'],
+      ['How long was Gettier\'s paper?', ['three pages', 'three hundred pages', 'three books', 'three lines'], 'three pages', 'Short, and argued about ever since.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
@@ -17681,7 +18096,14 @@ Object.assign(GENERATORS, {
       ['For Aristotle, courage sits between which two extremes?', ['cowardice and recklessness', 'greed and generosity', 'silence and noise', 'fear and anger'], 'cowardice and recklessness', 'Each virtue is a mean between two extremes.'],
       ['Who imagined the runaway trolley in 1967?', ['Philippa Foot', 'John Rawls', 'Immanuel Kant', 'David Hume'], 'Philippa Foot', 'Five people on one track, one on the other, and a switch.'],
       ['Rawls\'s veil of ignorance asks you to design rules as if what?', ['you did not know which person you would be', 'you were the richest', 'you were the judge', 'you would never be affected'], 'you did not know which person you would be', 'Behind the veil you protect the worst-off, because the worst-off might be you.'],
-      ['When was Mill\'s Utilitarianism published?', ['1861', '1641', '1971', '1785'], '1861', 'John Stuart Mill, 1861.']];
+      ['When was Mill\'s Utilitarianism published?', ['1861', '1641', '1971', '1785'], '1861', 'John Stuart Mill, 1861.'],
+      // More questions (pass HW), so a round never needs a repeat.
+      ['Whose version of consequentialism is utilitarianism?', ['John Stuart Mill', 'Immanuel Kant', 'Aristotle', 'John Rawls'], 'John Stuart Mill', 'Published in 1861.'],
+      ['Who gave virtue ethics in the fourth century BC?', ['Aristotle', 'Kant', 'Mill', 'Rawls'], 'Aristotle', 'What kind of person to be.'],
+      ['Behind the veil of ignorance, whom do you protect?', ['the worst-off', 'the richest', 'yourself only', 'nobody'], 'the worst-off', 'The worst-off might be you.'],
+      ['Kant says never treat a person merely as what?', ['a means', 'a friend', 'an end', 'a citizen'], 'a means', 'Act on a rule everyone could follow.'],
+      ['In the trolley case, what does the consequentialist do?', ['pulls the switch', 'walks away', 'asks Kant', 'nothing'], 'pulls the switch', 'Five against one.'],
+      ['In 1971, who offered the veil of ignorance?', ['John Rawls', 'Philippa Foot', 'John Stuart Mill', 'Aristotle'], 'John Rawls', 'A way to think about fairness.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
@@ -17924,7 +18346,12 @@ Object.assign(GENERATORS, {
       ['One thing standing for another, a dove for peace, is called what?', ['a symbol', 'a narrative', 'a message', 'appropriation'], 'a symbol', 'A symbol is one thing standing for another.'],
       ['The story a work tells or implies is called its what?', ['narrative', 'meaning', 'symbol', 'message'], 'narrative', 'Narrative is the story it tells or implies.'],
       ['Borrowing an image made by someone else for a new work is called what?', ['appropriation', 'interpretation', 'evaluation', 'articulation'], 'appropriation', 'Appropriation raises questions about credit.'],
-      ['What a work wants you to think or do is called its what?', ['message', 'meter', 'medium', 'narrative'], 'message', 'Message is what it wants you to think or do.']];
+      ['What a work wants you to think or do is called its what?', ['message', 'meter', 'medium', 'narrative'], 'message', 'Message is what it wants you to think or do.'],
+      // More questions (pass HU), so a round never needs a repeat.
+      ['Which step says what the artist meant?', ['interpret', 'describe', 'analyze', 'evaluate'], 'interpret', 'The meaning behind the arrangement.'],
+      ['What a work is about is called its what?', ['meaning', 'material', 'frame', 'price'], 'meaning', 'Narrative and message are related ideas.'],
+      ['As a symbol, a dove stands for what?', ['peace', 'death', 'time passing', 'money'], 'peace', 'A skull stands for death.'],
+      ['In a critique, say emphasis instead of what?', ['the eye-catching bit', 'narrative', 'symbol', 'message'], 'the eye-catching bit', 'Use the vocabulary of the course.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
@@ -17935,7 +18362,12 @@ Object.assign(GENERATORS, {
       ['A Gothic cathedral like Chartres pulls the eye which way?', ['upward', 'downward', 'sideways', 'inward'], 'upward', 'Built mostly in the 1200s, it pulls the eye upward to God.'],
       ['Which is a universal theme in art?', ['the passage of time', 'the repeat sign', 'a cool color', 'the tempo'], 'the passage of time', 'Belief, cultural narrative, life cycles, the passage of time, identity, conflict and cooperation.'],
       ['Who repairs paintings?', ['conservators', 'composers', 'engineers', 'docents'], 'conservators', 'Conservators repair paintings; museum educators and curators are other museum jobs.'],
-      ['Which is proper exhibition etiquette?', ['no touching and no flash', 'touching to feel the texture', 'loud talk', 'standing in front of others'], 'no touching and no flash', 'No touching, no flash, low voices, and room for the person behind you.']];
+      ['Which is proper exhibition etiquette?', ['no touching and no flash', 'touching to feel the texture', 'loud talk', 'standing in front of others'], 'no touching and no flash', 'No touching, no flash, low voices, and room for the person behind you.'],
+      // More questions (pass HU), so a round never needs a repeat.
+      ['Who painted Guernica?', ['Pablo Picasso', 'Jacob Lawrence', 'Leonardo da Vinci', 'Frida Kahlo'], 'Pablo Picasso', 'In 1937, after a town was bombed.'],
+      ['How many panels are in the Migration Series?', ['sixty', 'six', 'six hundred', 'one'], 'sixty', 'Jacob Lawrence painted them in 1940 and 1941.'],
+      ['When was Chartres cathedral mostly built?', ['the 1200s', 'the 1900s', 'the 500s BC', 'the 2000s'], 'the 1200s', 'Gothic cathedrals pull the eye upward.'],
+      ['What does a skyscraper say?', ['a company has money', 'a goddess is near', 'the passage of time', 'nothing'], 'a company has money', 'A society says who it is in what it builds.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
@@ -17979,7 +18411,14 @@ Object.assign(GENERATORS, {
       ['What the artist wants you to take away is the what?', ['message', 'content', 'texture', 'medium'], 'message', 'Message is what the artist wants you to take away.'],
       ['Which step of the critique uses evidence from the work to say what the artist intended?', ['interpret', 'describe', 'analyze', 'evaluate'], 'interpret', 'Interpret the intention, with evidence from the work.'],
       ['A work should be evaluated against what?', ['what it set out to do', 'what you would have made', 'its price', 'its size'], 'what it set out to do', 'Evaluate its success against what it set out to do.'],
-      ['What has copyright released after its term?', ['public domain', 'a portfolio', 'a metaphor', 'a gallery'], 'public domain', 'Public domain is what the term has released.']];
+      ['What has copyright released after its term?', ['public domain', 'a portfolio', 'a metaphor', 'a gallery'], 'public domain', 'Public domain is what the term has released.'],
+      // More questions (pass HW), so a round never needs a repeat.
+      ['Meaning is what the parts do?', ['add up to', 'cost', 'weigh', 'hide'], 'add up to', 'Content is what the work contains.'],
+      ['Why is a critique conclusion precise?', ['each step can be checked', 'it is long', 'it is loud', 'it is new'], 'each step can be checked', 'Describe, analyze, interpret, evaluate.'],
+      ['Copyright protects an artist\'s work for what?', ['a term', 'forever', 'a day', 'nothing'], 'a term', 'Then it enters the public domain.'],
+      ['Naming the right property is the first act of what?', ['precision', 'guessing', 'copying', 'pricing'], 'precision', 'Content, meaning, message, metaphor.'],
+      ['The critique holds for a museum painting, a print and what?', ['an image on a website', 'only sculptures', 'nothing else', 'only murals'], 'an image on a website', 'Wherever a work is shown.'],
+      ['You interpret the artist\'s intention with what?', ['evidence from the work', 'a guess', 'the price tag', 'your mood'], 'evidence from the work', 'Interpret is the third step.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
@@ -17990,7 +18429,14 @@ Object.assign(GENERATORS, {
       ['The bronze plaques of the Kingdom of Benin were cast for whom?', ['the royal court', 'tourists', 'a museum in Paris', 'schoolchildren'], 'the royal court', 'Cast for the royal court over centuries, in what is now Nigeria.'],
       ['Diego Rivera\'s murals put Mexican history where?', ['on public walls', 'in private albums', 'on postage stamps', 'in a single church'], 'on public walls', 'His murals of the 1920s and 1930s.'],
       ['A conservator does what?', ['repairs paintings', 'chooses paintings for a show', 'sells frames', 'prints posters'], 'repairs paintings', 'A conservator repairs paintings; a curator chooses them.'],
-      ['A style is best described as what?', ['a family resemblance among works', 'a single artist', 'a single color', 'a price range'], 'a family resemblance among works', 'A style is a family resemblance among works.']];
+      ['A style is best described as what?', ['a family resemblance among works', 'a single artist', 'a single color', 'a price range'], 'a family resemblance among works', 'A style is a family resemblance among works.'],
+      // More questions (pass HW), so a round never needs a repeat.
+      ['Who began Cubism around 1907?', ['Picasso and Braque', 'Monet and Renoir', 'Pollock and Rothko', 'Rivera and Kahlo'], 'Picasso and Braque', 'Objects broken into planes.'],
+      ['In which city did the Impressionists paint in the 1870s?', ['Paris', 'Rome', 'Tokyo', 'New York'], 'Paris', 'Light as it fell, in quick strokes.'],
+      ['For whom were Edo period woodblock prints made?', ['ordinary buyers', 'the royal court', 'churches only', 'museums'], 'ordinary buyers', 'They traveled to Europe.'],
+      ['Where did Edo woodblock prints travel to change painting?', ['Europe', 'the Moon', 'Antarctica', 'nowhere'], 'Europe', 'Made for ordinary buyers.'],
+      ['The Kingdom of Benin is in what is now which country?', ['Nigeria', 'Mexico', 'Japan', 'Italy'], 'Nigeria', 'Its bronze plaques were cast for the court.'],
+      ['Who chooses which paintings to show?', ['a curator', 'a conservator', 'a printer', 'a critic'], 'a curator', 'A conservator repairs them.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
@@ -18003,7 +18449,13 @@ Object.assign(GENERATORS, {
       ['A melody with chords beneath it is which texture?', ['homophony', 'polyphony', 'monophony', 'meter'], 'homophony', 'A melody with chords beneath it is homophony.'],
       ['Which meter is compound?', ['6/8 time', '2/4 time', '3/4 time', '5/4 time'], '6/8 time', 'Compound meters divide each beat in three, like 6/8.'],
       ['Which meter is asymmetric?', ['7/8 time', '4/4 time', '3/4 time', '6/8 time'], '7/8 time', 'Asymmetric meters mix groups, like 5/4 and 7/8.'],
-      ['An interval is counted in what?', ['half steps', 'beats', 'bars', 'decibels'], 'half steps', 'An interval is the distance between two notes, counted in half steps.']];
+      ['An interval is counted in what?', ['half steps', 'beats', 'bars', 'decibels'], 'half steps', 'An interval is the distance between two notes, counted in half steps.'],
+      // More questions (pass HW), so a round never needs a repeat.
+      ['One line alone is which texture?', ['monophony', 'homophony', 'polyphony', 'harmony'], 'monophony', 'Several independent lines are polyphony.'],
+      ['Loudness from pianissimo to fortissimo is what?', ['dynamics', 'meter', 'key', 'texture'], 'dynamics', 'Timbre is the color of a sound.'],
+      ['Which meters group beats in twos and threes?', ['simple meters', 'compound meters', 'asymmetric meters', 'no meters'], 'simple meters', 'Like 2/4 and 3/4.'],
+      ['What should an informed ear wear at loud shows?', ['earplugs', 'headphones on full', 'nothing', 'a hat'], 'earplugs', 'Loud music damages hearing slowly.'],
+      ['A triad is built from a root, a third and what?', ['a fifth', 'a second', 'an octave', 'a ninth'], 'a fifth', 'The commonest chord.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
@@ -18014,7 +18466,14 @@ Object.assign(GENERATORS, {
       ['A performance should be compared to what?', ['an exemplary model', 'the loudest recording', 'a music video', 'the cheapest show'], 'an exemplary model', 'A recording the field agrees is fine.'],
       ['When does an informed audience applaud?', ['when a piece ends', 'between movements', 'during the quiet part', 'when the phone rings'], 'when a piece ends', 'Hold applause until a piece ends.'],
       ['Which discipline is in the vibrating string?', ['physics', 'poetry', 'history', 'economics'], 'physics', 'Physics in the vibrating string, mathematics in the ratios of intervals.'],
-      ['The mariachi son comes from where?', ['Jalisco', 'Vienna', 'New Orleans', 'Lagos'], 'Jalisco', 'A mariachi son from Jalisco.']];
+      ['The mariachi son comes from where?', ['Jalisco', 'Vienna', 'New Orleans', 'Lagos'], 'Jalisco', 'A mariachi son from Jalisco.'],
+      // More questions (pass HW), so a round never needs a repeat.
+      ['What did recording make a performance?', ['repeatable', 'silent', 'illegal', 'shorter'], 'repeatable', 'Technology changes music as much as taste.'],
+      ['What let a whisper fill a hall?', ['the microphone', 'the violin', 'the score', 'the stage'], 'the microphone', 'Technology changed singing.'],
+      ['When should you arrive at a concert?', ['before the downbeat', 'at intermission', 'at the end', 'whenever'], 'before the downbeat', 'And silence the phone.'],
+      ['Which discipline is in the ratios of intervals?', ['mathematics', 'biology', 'history', 'geography'], 'mathematics', 'Physics is in the vibrating string.'],
+      ['When were Baroque concertos written?', ['the early 1700s', 'the 1920s', 'the 1990s', 'the 500s'], 'the early 1700s', 'Each style has a home period.'],
+      ['Who sings for nothing but the singing?', ['the weekend choir member', 'the sound engineer', 'the music therapist', 'the critic'], 'the weekend choir member', 'Music is a vocation and an avocation.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
@@ -18126,14 +18585,25 @@ Object.assign(GENERATORS, {
   't7-internet': (rng) => {
     const Q = [['Packets arrive out of order. How is the photo rebuilt?', ['by the numbers on each packet', 'by luck', 'it cannot be'], 'by the numbers on each packet', 'Each packet is numbered, so the far end puts them back in order.'], ['One route is blocked. What do the packets do?', ['take another route', 'wait forever', 'disappear'], 'take another route', 'The internet is a web of routes. Blocked one way, the packets go another.'],['You send a photo across the world. How does it travel?', ['cut into packets that take their own routes', 'as one piece down one wire', 'by radio straight to the other phone'], 'cut into packets that take their own routes', 'A message is chopped into packets, each addressed and routed on its own, and put back together at the end.'],
       ['What does an address like 192.168.1.4 name?', ['a device on a network', 'a person', 'a website\'s color'], 'a device on a network', 'Every device on the internet has a number address so packets know where to go.'],
-      ['What turns a website\'s name into a number address?', ['a directory called DNS', 'a search engine', 'the keyboard'], 'a directory called DNS', 'DNS is the phone book: it turns names into number addresses.']];
+      ['What turns a website\'s name into a number address?', ['a directory called DNS', 'a search engine', 'the keyboard'], 'a directory called DNS', 'DNS is the phone book: it turns names into number addresses.'],
+      // More questions (pass HX), so a round never needs a repeat.
+      ['In this lesson, DNS is called what?', ['the phone book of the internet', 'the mailbox', 'the engine', 'the cloud'], 'the phone book of the internet', 'It turns names into number addresses.'],
+      ['Each packet is addressed like what?', ['a letter', 'a song', 'a photo', 'a recipe'], 'a letter', 'So it knows where to go.'],
+      ['Where are the packets put back together?', ['at the end', 'at the start', 'in the middle', 'never'], 'at the end', 'They take their own routes.'],
+      ['Every device on the internet has what?', ['a number address', 'a name tag', 'a phone book', 'a password'], 'a number address', 'Like 192.168.1.4.'],
+      ['Packets, addresses and a phone book are how much of it?', ['most of it', 'none of it', 'a tiny bit', 'all of it'], 'most of it', 'That is most of how the internet works.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
   't7-safety': (rng) => {
     const Q = [['Which message is the fingerprint of a scam?', ['urgent, secret, now', 'a birthday note', 'a homework reminder'], 'urgent, secret, now', 'Urgency and secrecy together are the trick. Real accounts do not rush you.'], ['Why is a longer password stronger?', ['there are too many patterns to try', 'it looks nicer', 'it is easier to type'], 'there are too many patterns to try', 'Every letter multiplies the patterns. Length beats cleverness.'],['Which password is strongest?', ['a long phrase of four unrelated words', 'your birthday', 'password123'], 'a long phrase of four unrelated words', 'Length beats cleverness. Four unrelated words are long, easy to remember and hard to guess.'],
       ['A message says click now, your account is locked. Safest move?', ['go to the site yourself, not through the link', 'click the link quickly', 'reply with your password'], 'go to the site yourself, not through the link', 'Urgency is the trick. Open the site the way you always do and check there.'],
-      ['What does two-step sign-in add?', ['a second proof, like a code on your phone', 'a second password', 'nothing'], 'a second proof, like a code on your phone', 'A stolen password alone is not enough when a second proof is needed.']];
+      ['What does two-step sign-in add?', ['a second proof, like a code on your phone', 'a second password', 'nothing'], 'a second proof, like a code on your phone', 'A stolen password alone is not enough when a second proof is needed.'],
+      // More questions (pass HX), so a round never needs a repeat.
+      ['A password protects what?', ['a door', 'a window', 'a phone book', 'a packet'], 'a door', 'Length beats cleverness.'],
+      ['A message saying act now is using what as the trick?', ['urgency', 'kindness', 'humor', 'math'], 'urgency', 'Slow down and check.'],
+      ['Which password is weak?', ['password123', 'a long phrase of four unrelated words', 'a passphrase from a song you made up', 'a twelve-word sentence'], 'password123', 'Your birthday is weak too.'],
+      ['Why use four unrelated words?', ['easy to remember and hard to guess', 'easy to guess', 'short to type', 'required by law'], 'easy to remember and hard to guess', 'Length beats cleverness.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
@@ -18159,7 +18629,13 @@ Object.assign(GENERATORS, {
     const Q = [['Which part of a microscope shines light up through the sample?', ['the light underneath', 'the eyepiece', 'the knob'], 'the light underneath', 'Light comes from below, through the sample, up the lenses to your eye.'], ['You turn the coarse knob, then what?', ['the fine knob', 'the light off', 'the eyepiece'], 'the fine knob', 'Coarse gets close; fine gets sharp.'],['What does a microscope do?', ['makes tiny things look bigger', 'makes far things look closer', 'makes dark things bright'], 'makes tiny things look bigger', 'Lenses bend light so a tiny thing fills your eye. That is magnification.'],
       ['A 10x eyepiece and a 40x objective: how much bigger?', ['400 times', '50 times', '30 times'], '400 times', 'Magnifications multiply: 10 × 40 = 400.'],
       ['The image is blurry. What do you turn?', ['the focus knob', 'the light switch', 'the eyepiece'], 'the focus knob', 'Focus moves the lens until the image is sharp. Coarse first, then fine.'],
-      ['Who first named cells, looking at cork through a microscope?', ['Robert Hooke', 'Isaac Newton', 'Marie Curie'], 'Robert Hooke', 'In 1665 Hooke saw little boxes in cork and called them cells.']];
+      ['Who first named cells, looking at cork through a microscope?', ['Robert Hooke', 'Isaac Newton', 'Marie Curie'], 'Robert Hooke', 'In 1665 Hooke saw little boxes in cork and called them cells.'],
+      // More questions (pass HS), so a round never needs a repeat.
+      ['What does a lens do?', ['bends light', 'stores light', 'makes light'], 'bends light', 'Bending light makes something tiny fill your eye.'],
+      ['Which focus knob do you turn first?', ['the coarse knob', 'the fine knob', 'the light switch'], 'the coarse knob', 'Coarse first, then fine.'],
+      ['In what year did Robert Hooke name cells?', ['1665', '1865', '1965'], '1665', 'He looked at cork through a microscope.'],
+      ['The eyepiece and objective magnifications do what?', ['multiply', 'add', 'cancel out'], 'multiply', '10x times 40x is 400 times bigger.'],
+      ['What did Hooke see when he looked at cork?', ['little boxes', 'tiny animals', 'nothing at all'], 'little boxes', 'He named them cells.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
@@ -18168,7 +18644,13 @@ Object.assign(GENERATORS, {
     const Q = [['What is a supply chain?', ['the steps and places between a raw material and you', 'a kind of ship', 'a store'], 'the steps and places between a raw material and you', 'Field, thread, cloth, stitches, shelf: the chain of steps and places.'], ['A tag on a shirt names one country. How many did the shirt visit?', ['often several', 'exactly one', 'none'], 'often several', 'Each step may happen somewhere else. The tag names the last one.'],['Cotton grows in a field. What happens before it is a shirt?', ['spinning, weaving, sewing', 'nothing, it is picked as a shirt', 'painting'], 'spinning, weaving, sewing', 'Raw cotton is spun into thread, woven into cloth and sewn. Each step may happen in a different country.'],
       ['Why does one country grow coffee and another build computers?', ['each makes what it does best and trades', 'a law says so', 'they cannot talk to each other'], 'each makes what it does best and trades', 'Specialization: a place makes what its land, skills and tools suit, and trades for the rest.'],
       ['A ship carrying phone parts is delayed. What happens to phone prices?', ['they tend to rise', 'they fall', 'nothing changes'], 'they tend to rise', 'Fewer phones arrive while people still want them. Scarcity pushes prices up.'],
-      ['What does a container ship carry?', ['many goods in standard boxes', 'only one kind of thing', 'passengers'], 'many goods in standard boxes', 'Standard steel boxes fit ships, trains and trucks the same way. That is why shipping got cheap.']];
+      ['What does a container ship carry?', ['many goods in standard boxes', 'only one kind of thing', 'passengers'], 'many goods in standard boxes', 'Standard steel boxes fit ships, trains and trucks the same way. That is why shipping got cheap.'],
+      // More questions (pass HS), so a round never needs a repeat.
+      ['Cotton is spun into what?', ['thread', 'cloth', 'paper'], 'thread', 'Then thread is woven into cloth.'],
+      ['Thread is woven into what?', ['cloth', 'cotton', 'thread again'], 'cloth', 'Then cloth is sewn into a shirt.'],
+      ['Places that make what they do best and trade do what?', ['specialize', 'stop trading', 'close'], 'specialize', 'Each makes what its land, skills and tools suit.'],
+      ['Why did shipping get cheap?', ['standard steel boxes', 'faster sails', 'fewer goods'], 'standard steel boxes', 'The same box fits ships, trains and trucks.'],
+      ['Which place does a clothing tag name?', ['only the last place', 'every place', 'the first field'], 'only the last place', 'The shirt may have visited several countries.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
@@ -18221,7 +18703,12 @@ Object.assign(GENERATORS, {
     const Q = [['The ridge between two slopes is called what?', ['the divide between two watersheds', 'a creek', 'a treatment plant'], 'the divide between two watersheds', 'The ridge sends rain to one side or the other. It divides watersheds.'], ['What settles the mud out of river water?', ['a treatment plant', 'the creek', 'the rain'], 'a treatment plant', 'Settling, filtering and a disinfectant, in that order, at the plant.'],['Rain falls on a hillside. Where does it go first?', ['downhill into the nearest stream', 'straight to the ocean', 'up into the clouds'], 'downhill into the nearest stream', 'Water runs downhill. A watershed is all the land that drains to one stream or river.'],
       ['Two towns on one river. Whose pollution reaches the other?', ['the upstream town\'s', 'the downstream town\'s', 'neither'], 'the upstream town\'s', 'Water carries what it picks up downstream. Upstream choices become downstream water.'],
       ['Where does most of Austin\'s drinking water come from?', ['a river and its lakes', 'the ocean', 'rain barrels'], 'a river and its lakes', 'Most cities drink from a river or a lake fed by their watershed, cleaned at a treatment plant.'],
-      ['What does a treatment plant do before water reaches a tap?', ['filters and disinfects it', 'adds salt', 'warms it'], 'filters and disinfects it', 'Settling, filtering and a disinfectant make river water safe to drink.']];
+      ['What does a treatment plant do before water reaches a tap?', ['filters and disinfects it', 'adds salt', 'warms it'], 'filters and disinfects it', 'Settling, filtering and a disinfectant make river water safe to drink.'],
+      // More questions (pass HX), so a round never needs a repeat.
+      ['All the land that drains into one river is its what?', ['watershed', 'ocean', 'canyon', 'desert'], 'watershed', 'What happens upstream shows up downstream.'],
+      ['What does a treatment plant add before water reaches a tap?', ['a disinfectant', 'salt', 'mud', 'sugar'], 'a disinfectant', 'After settling and filtering.'],
+      ['How soon can an upstream spill reach the downstream town?', ['within days', 'never', 'in a century', 'in a year'], 'within days', 'Rivers carry it down.'],
+      ['Most cities drink from what?', ['a river or a lake', 'the ocean', 'rain barrels', 'bottles only'], 'a river or a lake', 'Filled by their watershed.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
@@ -18752,6 +19239,17 @@ Object.assign(GENERATORS, {
     return { type: 'choice', story: `A writer wants this effect: ${w.effect}`, prompt: 'Which sentence achieves it?', choices: shuffle(rng, [w.strong, w.plain]), answer: w.strong,
       explain: `"${w.word}" carries the effect. The plain sentence only reports.`, visual: null, explainVisual: null };
   },
+  // Credible sources (2026-10-02, pass HV): a small fact bank so a round never needs a repeat.
+  'r9-credibility-check': (rng) => {
+    const Q = [['Before you trust a claim, what do you ask first?', ['Who is making it?', 'How long is it?', 'Is it popular?', 'Is it new?'], 'Who is making it?', 'Then: how do they know?'],
+      ['What is the second question to ask about a claim?', ['How do they know?', 'Who likes it?', 'Is it short?', 'Is it loud?'], 'How do they know?', 'A source that can be checked shows how it knows.'],
+      ['Credible does not mean what?', ['correct', 'checked', 'named', 'dated'], 'correct', 'Experts are wrong sometimes.'],
+      ['What does a credible source show?', ['its work', 'its price', 'its fans', 'its color'], 'its work', 'So you can see where it went wrong.'],
+      ['A source that hides its work asks for what?', ['faith', 'evidence', 'a date', 'an author'], 'faith', 'A credible source shows its work instead.'],
+      ['After the four checks, what one more question do you ask?', ['who benefits if you believe it?', 'is it long?', 'is it pretty?', 'is it free?'], 'who benefits if you believe it?', 'Money and motive matter.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
   'r9-more-credible': (rng) => {
     const src = pick(rng, SOURCES);
     return { type: 'choice', story: null, prompt: 'Which source is more credible?', choices: shuffle(rng, [src.credible, src.shaky]), answer: src.credible,
@@ -18919,6 +19417,15 @@ Object.assign(GENERATORS, {
     const pp = pick(rng, PARAPHRASES); const others = shuffle(rng, PARAPHRASES.filter((x) => x !== pp)).slice(0, 2).map((x) => x.lost);
     return { type: 'choice', story: `Original:\n${pp.original}\nParaphrase:\n${pp.bad}`, prompt: 'What did the paraphrase lose?', choices: shuffle(rng, [pp.lost, ...others]), answer: pp.lost,
       explain: 'A paraphrase must keep every fact. Check it against the original one fact at a time.', visual: null, explainVisual: null };
+  },
+  // Complex characters (2026-10-02, pass HX): a small fact bank so a round never needs a repeat.
+  'r10-complex-facts': (rng) => {
+    const Q = [['A simple character wants how many things?', ['one thing', 'two things', 'nothing', 'everything'], 'one thing', 'A complex character wants two.'],
+      ['A complex character wants two things that do what?', ['pull against each other', 'agree', 'never change', 'disappear'], 'pull against each other', 'The story is what happens in the pull.'],
+      ['The pattern of a character\'s small wins is the character\'s what?', ['arc', 'setting', 'title', 'theme'], 'arc', 'Watch which want wins in each scene.'],
+      ['To read a complex character, what do you name first?', ['both wants', 'the setting', 'the author', 'the ending'], 'both wants', 'Then watch which one wins.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
   'r10-two-wants': (rng) => {
     const t = pick(rng, TORN);
@@ -19090,6 +19597,16 @@ Object.assign(GENERATORS, {
     const st = pick(rng, SATIRES); const plain = pick(rng, STRAIGHT_REPORTS);
     return { type: 'choice', story: null, prompt: 'Which of these is satire?', choices: shuffle(rng, [st.text, plain]), answer: st.text,
       explain: 'Satire describes something absurd in a calm, reasonable voice. The other one simply reports.', visual: null, explainVisual: null };
+  },
+  // Sentence structure (2026-10-02, pass HX): a small fact bank so a round never needs a repeat.
+  'r11-structure-facts': (rng) => {
+    const Q = [['Long sentences carry a reader along. Short ones do what?', ['stop the reader cold', 'flow forever', 'confuse everyone', 'repeat'], 'stop the reader cold', 'Long sentences flow; short ones hit.'],
+      ['Three sentences that begin the same way build what?', ['a drumbeat', 'a list', 'a mistake', 'a summary'], 'a drumbeat', 'Repetition is a structure too.'],
+      ['A question among statements makes the reader do what?', ['answer it', 'skip it', 'stop reading', 'nothing'], 'answer it', 'The reader is pulled in.'],
+      ['A writer picks sentence length the way a musician picks what?', ['a note\'s length', 'a song title', 'an instrument', 'a stage'], 'a note\'s length', 'Length and shape are choices.'],
+      ['Notice a sentence\'s shape. Ask what it does to what?', ['your reading speed and your breath', 'the page count', 'the title', 'the author'], 'your reading speed and your breath', 'Shape changes how you read.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
   'r11-structure-effect': (rng) => {
     const se = pick(rng, SENTENCE_EFFECTS);
@@ -19284,6 +19801,15 @@ Object.assign(GENERATORS, {
     return { type: 'choice', story: `"${w}"`, prompt: 'What does this word imply?', choices: shuffle(rng, [right, ...others]), answer: right,
       explain: 'Near-synonyms carry different implications. The precise one matches what happened.', visual: null, explainVisual: null };
   },
+  // Author's choices (2026-10-02, pass HX): a small fact bank so a round never needs a repeat.
+  'r12-choice-facts': (rng) => {
+    const Q = [['A writer chooses where a story begins, ends, and what?', ['what order the parts come in', 'the font', 'the price', 'the cover'], 'what order the parts come in', 'None of those are accidents.'],
+      ['Same events, told in a different order, make a different what?', ['story', 'author', 'title', 'reader'], 'story', 'Order shapes meaning.'],
+      ['A story that stops before the verdict is about what?', ['the waiting', 'the verdict', 'the judge', 'the weather'], 'the waiting', 'Endings shape meaning too.'],
+      ['Ask what the story would mean if it had done what?', ['started or stopped somewhere else', 'been longer', 'had pictures', 'been funnier'], 'started or stopped somewhere else', 'The difference is the choice at work.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
   'r12-structure-choice': (rng) => {
     const sc = pick(rng, STRUCTURE_CHOICES);
     return { type: 'choice', story: `${sc.setup}\nThe author chose: ${sc.choice.toLowerCase()}.`, prompt: 'What does that choice do to the story?', choices: shuffle(rng, [sc.effect, sc.otherEffect]), answer: sc.effect,
@@ -19409,6 +19935,16 @@ Object.assign(GENERATORS, {
     const cp = pick(rng, CHANGE_PAIRS);
     return { type: 'choice', story: null, prompt: 'Which is the bigger change in real numbers?', choices: shuffle(rng, [cp.a, cp.b]), answer: cp.bigger,
       explain: `${cp.why}.`, visual: null, explainVisual: null };
+  },
+  // Logical consistency (2026-10-02, pass HX): a small fact bank so a round never needs a repeat.
+  'rc-consistency-facts': (rng) => {
+    const Q = [['A text is consistent when its claims can do what?', ['all be true at once', 'all be long', 'all be new', 'all be loud'], 'all be true at once', 'Can every claim be true at the same time?'],
+      ['Accepting one part means rejecting another. What is that?', ['contradiction', 'consistency', 'summary', 'theme'], 'contradiction', 'A text that contradicts itself.'],
+      ['To check consistency, what do you keep as you read?', ['a short list of the text\'s main claims', 'a dictionary', 'a timer', 'nothing'], 'a short list of the text\'s main claims', 'Then hold them side by side.'],
+      ['Where should your questions go?', ['the pairs that do not fit', 'the title', 'the first page', 'nowhere'], 'the pairs that do not fit', 'That is where the text needs explaining.'],
+      ['A contradiction can be what, instead of a mistake?', ['the most interesting thing in the text', 'a typo', 'boring', 'invisible'], 'the most interesting thing in the text', 'A careful reader wants to know what changed.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
   'rc-contradiction': (rng) => {
     const c = pick(rng, CONSISTENCY);
@@ -19572,8 +20108,14 @@ Object.assign(GENERATORS, {
       explain: `${b.place} is where two plates ${b.move}, which makes ${b.result.toLowerCase()}.`, visual: null, explainVisual: null };
   },
   's6-where-quakes': (rng) => {
-    return { type: 'choice', story: 'A map of earthquakes and volcanoes.', prompt: 'Where do most of them fall?', choices: shuffle(rng, ['Along the edges of plates', 'In the middles of plates', 'Spread evenly everywhere']), answer: 'Along the edges of plates',
-      explain: 'The edges are where plates push, pull and slide. The middles are mostly quiet.', visual: null, explainVisual: null };
+    // Grown into a small bank (pass HS), so a round never needs a repeat.
+    const Q = [['A map of earthquakes and volcanoes.', 'Where do most of them fall?', ['Along the edges of plates', 'In the middles of plates', 'Spread evenly everywhere'], 'Along the edges of plates', 'The edges are where plates push, pull and slide. The middles are mostly quiet.'],
+      [null, 'How fast do plates move?', ['a few centimeters a year', 'a mile a day', 'they never move'], 'a few centimeters a year', 'Slow, but over millions of years it moves continents.'],
+      [null, 'What are the huge pieces of the outer shell called?', ['plates', 'layers', 'cores'], 'plates', 'The Earth\'s outer shell is cracked into plates.'],
+      [null, 'Are the middles of plates busy or quiet?', ['mostly quiet', 'very busy', 'always erupting'], 'mostly quiet', 'The edges are where the action is.'],
+      [null, 'Which mountains still grow as India pushes into Asia?', ['the Himalayas', 'the Andes', 'the Rockies'], 'the Himalayas', 'Two plates pushing together.']];
+    const [story, prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
   's6-cell-part-job': (rng) => {
     const c = pick(rng, CELL_PARTS); const others = shuffle(rng, CELL_PARTS.filter((x) => x !== c)).slice(0, 2).map((x) => x.job);
@@ -19836,6 +20378,15 @@ Object.assign(GENERATORS, {
     return { type: 'choice', story: 'A leaf is making sugar from light.', prompt: 'Where in the cell does photosynthesis happen?', choices: shuffle(rng, ['In the chloroplasts', 'In the nucleus', 'In the cell wall']), answer: 'In the chloroplasts',
       explain: 'The chloroplasts are the green parts that catch the light.', visual: null, explainVisual: null };
   },
+  // Weather systems (2026-10-02, pass HX): a small fact bank so a round never needs a repeat.
+  's7-weather-facts': (rng) => {
+    const Q = [['Cool air does what?', ['sinks', 'rises', 'disappears', 'freezes'], 'sinks', 'Warm air rises.'],
+      ['Why does cold air push under warm air?', ['cold air is denser', 'cold air is faster', 'warm air is heavier', 'wind pushes it'], 'cold air is denser', 'The warm air is shoved upward.'],
+      ['Rising air cools, and its water vapor does what?', ['condenses', 'burns', 'freezes solid', 'vanishes'], 'condenses', 'That makes clouds and rain.'],
+      ['A forecast is mostly reading what?', ['which is coming', 'old newspapers', 'the stars', 'the ocean floor'], 'which is coming', 'High pressure or low, warm front or cold.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
   's7-front-result': (rng) => {
     const f = pick(rng, FRONTS); const other = FRONTS.find((x) => x !== f);
     return { type: 'choice', story: f.text, prompt: 'What weather does that bring?', choices: shuffle(rng, [f.result, other.result]), answer: f.result,
@@ -19966,6 +20517,16 @@ Object.assign(GENERATORS, {
     const gene = randInt(rng, 0, 1) === 1;
     return { type: 'choice', story: gene ? 'A stretch of DNA carrying the recipe for one protein.' : 'A long DNA molecule carrying many genes.', prompt: 'Is that a gene or a chromosome?', choices: ['Gene', 'Chromosome'], answer: gene ? 'Gene' : 'Chromosome',
       explain: gene ? 'One instruction is a gene.' : 'Many genes on one strand make a chromosome.', visual: null, explainVisual: null };
+  },
+  // Punnett squares (2026-10-02, pass HV): a small fact bank so a round never needs a repeat.
+  's9-genetics-facts': (rng) => {
+    const Q = [['A capital letter stands for which kind of allele?', ['dominant', 'recessive', 'missing', 'extra'], 'dominant', 'One copy is enough to show.'],
+      ['A recessive allele shows only when there are how many?', ['two', 'one', 'three', 'none'], 'two', 'One from each parent.'],
+      ['Where does each of your two alleles come from?', ['one from each parent', 'both from one parent', 'from the environment', 'from a sibling'], 'one from each parent', 'You carry two of each.'],
+      ['The versions a trait comes in are called what?', ['alleles', 'cells', 'squares', 'organs'], 'alleles', 'Capital letters are dominant, small letters recessive.'],
+      ['A Punnett square gives a probability, not what?', ['a promise', 'a number', 'a chance', 'a guess'], 'a promise', 'Each child is a fresh draw.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
   's9-shows-trait': (rng) => {
     const combo = pick(rng, ['BB', 'Bb', 'bb']); const shows = combo !== 'bb';
@@ -20278,6 +20839,15 @@ Object.assign(GENERATORS, {
     return { type: 'choice', story: 'DNA uses the letters A, T, C and G.', prompt: 'Which letter does RNA use instead of T?', choices: shuffle(rng, ['U', 'A', 'X']), answer: 'U',
       explain: 'RNA uses U where DNA uses T.', visual: null, explainVisual: null };
   },
+  // Carbon and nitrogen cycles (2026-10-02, pass HV): a small fact bank so a round never needs a repeat.
+  's9-cycles-facts': (rng) => {
+    const Q = [['Plants pull carbon from the air as what?', ['carbon dioxide', 'nitrogen', 'sugar', 'water'], 'carbon dioxide', 'A leaf builds it into sugar.'],
+      ['Air is mostly which gas?', ['nitrogen', 'carbon dioxide', 'helium', 'hydrogen'], 'nitrogen', 'Almost nothing can use it directly.'],
+      ['Which plants hold nitrogen-fixing bacteria in their roots?', ['beans and clover', 'pine trees', 'cactus', 'moss'], 'beans and clover', 'Farmers plant clover between crops for that reason.'],
+      ['What breaks down a dead rabbit?', ['decomposers', 'leaves', 'carbon dioxide', 'clover'], 'decomposers', 'The atom returns through them.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
   's9-which-cycle': (rng) => {
     const c = pick(rng, CYCLE_STEPS);
     return { type: 'choice', story: c.text, prompt: 'Which cycle is that part of?', choices: ['Carbon', 'Nitrogen'], answer: c.cycle,
@@ -20440,6 +21010,15 @@ Object.assign(GENERATORS, {
     return { type: 'choice', story: `A ${a} ohm bulb and a ${b} ohm bulb are wired in series.`, prompt: 'What is the total resistance?', choices: shuffle(rng, [a + b, Math.abs(a - b) || a + b + 1, a * b].filter((x, i, arr) => arr.indexOf(x) === i).map((x) => `${x} ohms`)), answer: `${a + b} ohms`,
       explain: `Resistances add in series: ${a} + ${b} = **${a + b} ohms**.`, visual: null, explainVisual: null };
   },
+  // Earth's layers (2026-10-02, pass HX): a small fact bank so a round never needs a repeat.
+  's12-layer-facts': (rng) => {
+    const Q = [['Some earthquake waves cannot pass through what?', ['liquid', 'rock', 'air', 'light'], 'liquid', 'That is how the outer core was found.'],
+      ['What makes the magnetic field that turns a compass?', ['liquid outer core', 'the crust', 'the moon', 'the inner core alone'], 'liquid outer core', 'It churns as it moves.'],
+      ['The plates are pieces of crust riding on what?', ['the slowly flowing mantle', 'the ocean', 'the inner core', 'the air'], 'the slowly flowing mantle', 'That is plate tectonics.'],
+      ['What keeps the inner core solid?', ['pressure', 'cold', 'ice', 'magnets'], 'pressure', 'It is hotter than the surface of the sun.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
   's12-which-layer': (rng) => {
     const l = pick(rng, EARTH_LAYERS);
     return { type: 'choice', story: `${l.fact}.`, prompt: 'Which layer is that?', choices: shuffle(rng, EARTH_LAYERS.map((x) => x.name)), answer: l.name,
@@ -20453,6 +21032,18 @@ Object.assign(GENERATORS, {
   's12-how-we-know': (rng) => {
     return { type: 'choice', story: 'Nobody has drilled past the crust.', prompt: 'How were the deeper layers mapped?', choices: shuffle(rng, ['By tracking earthquake waves through the planet', 'By drilling to the center', 'By looking down volcanoes']), answer: 'By tracking earthquake waves through the planet',
       explain: 'Some waves cannot pass through liquid, and where they vanish shows where the liquid core begins.', visual: null, explainVisual: null };
+  },
+  // Ocean currents (2026-10-02, pass HX): a small fact bank so a round never needs a repeat.
+  's12-ocean-facts': (rng) => {
+    const Q = [['What do ocean currents carry around the planet?', ['heat', 'sand only', 'sound', 'nothing'], 'heat', 'They move warmth from place to place.'],
+      ['Where does the Gulf Stream\'s warm water flow from?', ['the tropics', 'the poles', 'the deep sea', 'rivers'], 'the tropics', 'Up the American coast and across the Atlantic.'],
+      ['Western Europe is as far north as which country?', ['Canada', 'Mexico', 'Brazil', 'Egypt'], 'Canada', 'And far milder, thanks to the Gulf Stream.'],
+      ['Ice forming near the poles leaves what behind?', ['the salt', 'the heat', 'the fish', 'the wind'], 'the salt', 'So the water left is saltier and heavier.'],
+      ['Deep water creeps along the bottom for how long?', ['centuries', 'minutes', 'a day', 'a week'], 'centuries', 'Before it rises again.'],
+      ['The slow loop linking every ocean is called what?', ['the great conveyor', 'the Gulf Stream', 'the tide', 'the equator'], 'the great conveyor', 'It links every ocean into one.'],
+      ['Move the current and you move what?', ['the climate', 'the moon', 'the mountains', 'nothing'], 'the climate', 'Currents carry heat.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
   's12-current-driver': (rng) => {
     const surface = randInt(rng, 0, 1) === 1;
@@ -20518,6 +21109,16 @@ Object.assign(GENERATORS, {
   's6-why-ship-floats': (rng) => {
     return { type: 'choice', story: 'A steel ship floats, though a steel bolt sinks.', prompt: 'Why?', choices: shuffle(rng, ['The hull holds so much air that the whole ship is less dense than water', 'Ships are painted', 'Salt water is stronger than fresh water']), answer: 'The hull holds so much air that the whole ship is less dense than water',
       explain: 'Density is mass per volume. The ship\'s volume includes all the air inside it.', visual: null, explainVisual: null };
+  },
+  // Genes and traits (2026-10-02, pass HX): a small fact bank so a round never needs a repeat.
+  's7-genes-facts': (rng) => {
+    const Q = [['Eye color, height and the shape of a leaf are each a what?', ['trait', 'gene pair', 'cell', 'organ'], 'trait', 'A feature of a living thing.'],
+      ['Traits come from what?', ['genes', 'food', 'weather', 'sleep'], 'genes', 'And genes come from parents.'],
+      ['Genes come from whom?', ['parents', 'friends', 'teachers', 'neighbors'], 'parents', 'Half from each.'],
+      ['Which version wins when it is present?', ['dominant', 'recessive', 'hidden', 'blue'], 'dominant', 'Dominant shows with one copy.'],
+      ['A dominant version shows with how many copies?', ['one copy', 'two copies', 'three copies', 'none'], 'one copy', 'Recessive needs two.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
   's7-dominant-or-recessive': (rng) => {
     const dom = randInt(rng, 0, 1) === 1;
@@ -21425,6 +22026,15 @@ Object.assign(GENERATORS, {
     return { type: 'choice', story: 'The seceding states wrote declarations explaining why they left.', prompt: 'What did they say the war was about?', choices: shuffle(rng, ['Slavery, in their own words', 'Tariffs only', 'Railroads']), answer: 'Slavery, in their own words',
       explain: 'The war was about slavery. The seceding states said so themselves.', visual: null, explainVisual: null };
   },
+  // Reconstruction (2026-10-02, pass HX): a small fact bank so a round never needs a repeat.
+  'h8-reconstruction-facts': (rng) => {
+    const Q = [['In what year did federal troops leave the South?', ['1877', '1865', '1900', '1954'], '1877', 'Then the vote was taken back.'],
+      ['The segregation that followed was called what?', ['Jim Crow', 'the New Deal', 'Reconstruction', 'the Gilded Age'], 'Jim Crow', 'It lasted almost a century.'],
+      ['How long did segregation last?', ['almost a century', 'a year', 'a decade', 'it never began'], 'almost a century', 'Until the civil rights movement.'],
+      ['In which decades was the nation held to the amendments?', ['the 1950s and 1960s', 'the 1860s', 'the 1920s', 'the 2000s'], 'the 1950s and 1960s', 'The amendments stayed on the books.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
   'h8-which-amendment': (rng) => {
     const a = pick(rng, AMENDMENTS);
     return { type: 'choice', story: `${a.does}.`, prompt: 'Which amendment?', choices: shuffle(rng, AMENDMENTS.map((x) => `The ${x.n}`)), answer: `The ${a.n}`,
@@ -21473,6 +22083,17 @@ Object.assign(GENERATORS, {
   'h10-rev-year': (rng) => yearQuestionS(rng, REVS),
   'h10-why-different': (rng) => ({ type: 'choice', story: 'The American and French revolutions ended very differently.', prompt: 'Why?', choices: shuffle(rng, ['America had a century of practice at self-rule; France tore out a whole society at once', 'America was richer', 'France had no thinkers']), answer: 'America had a century of practice at self-rule; France tore out a whole society at once', explain: 'Practice at self-rule was the difference.', visual: null, explainVisual: null }),
   'h10-enlightenment': (rng) => ({ type: 'choice', story: null, prompt: 'What was the Enlightenment\'s central claim about government?', choices: shuffle(rng, ['People have natural rights, and governments get their power from the governed', 'Kings rule by divine right', 'Only the church may make laws']), answer: 'People have natural rights, and governments get their power from the governed', explain: 'Rights first, consent second: the idea both revolutions tested.', visual: null, explainVisual: null }),
+  // The Industrial Revolution (2026-10-02, pass HX): a small fact bank so a round never needs a repeat.
+  'h10-industry-facts': (rng) => {
+    const Q = [['Machines were driven first by water, then by what?', ['steam', 'wind', 'electricity', 'horses'], 'steam', 'James Watt improved the steam engine.'],
+      ['A shirt came to cost a day\'s wage instead of what?', ['a month\'s', 'a year\'s', 'an hour\'s', 'nothing'], 'a month\'s', 'Ordinary people grew richer.'],
+      ['For the first time, ordinary people did what?', ['grew steadily richer', 'grew poorer', 'stopped working', 'left the cities'], 'grew steadily richer', 'And life expectancy rose.'],
+      ['What happened to life expectancy?', ['rose', 'fell', 'stayed the same', 'vanished'], 'rose', 'Alongside real harm.'],
+      ['How fast did some cities grow?', ['doubled in a generation', 'shrank by half', 'stayed the same', 'grew a little'], 'doubled in a generation', 'Crowded and sick at first.'],
+      ['From about what year did it begin in Britain?', ['about 1760', 'about 1900', 'about 1500', 'about 1960'], 'about 1760', 'Water and then steam drove the machines.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
   'h10-industry-fact': (rng) => { const c = pick(rng, INDUSTRY); return { type: 'choice', story: `${c.text}.`, prompt: 'Who or what?', choices: shuffle(rng, INDUSTRY.map((x) => x.a)), answer: c.a, explain: `${c.a}: ${c.text.toLowerCase()}.`, visual: null, explainVisual: null }; },
   'h10-price-and-payoff': (rng) => ({ type: 'choice', story: 'The Industrial Revolution.', prompt: 'Which statement is true?', choices: shuffle(rng, ['It caused real harm and made ordinary people richer for the first time in history; both are true', 'It only made people poorer', 'It only made people richer']), answer: 'It caused real harm and made ordinary people richer for the first time in history; both are true', explain: 'Reformers spent a century fixing the first without losing the second.', visual: null, explainVisual: null }),
   'h10-pattern': (rng) => ({ type: 'choice', story: 'Electricity, cars and computers each followed a pattern set by the Industrial Revolution.', prompt: 'What is the pattern?', choices: shuffle(rng, ['A new source of power, a burst of growth, real harm, and laws that catch up', 'A war, a treaty, a new king', 'A discovery, a patent, a monopoly forever']), answer: 'A new source of power, a burst of growth, real harm, and laws that catch up', explain: 'Knowing the pattern is the point of studying the first one.', visual: null, explainVisual: null }),
@@ -21482,6 +22103,16 @@ Object.assign(GENERATORS, {
   'h11-gilded-year': (rng) => yearQuestionS(rng, GILDED),
   'h11-gilded-fact': (rng) => factQuestionS(rng, GILDED),
   'h11-progressive-law': (rng) => ({ type: 'choice', story: 'A factory has a fire exit and a can of soup has a label.', prompt: 'Who is that thanks to?', choices: shuffle(rng, ['The Progressives', 'The robber barons', 'The Confederacy']), answer: 'The Progressives', explain: 'Progressive laws caught up with industry\'s harms.', visual: null, explainVisual: null }),
+  // The Depression and the New Deal (2026-10-02, pass HX): a small fact bank so a round never needs a repeat.
+  'h11-newdeal-facts': (rng) => {
+    const Q = [['Who led the New Deal?', ['Franklin Roosevelt', 'Abraham Lincoln', 'Herbert Hoover', 'Woodrow Wilson'], 'Franklin Roosevelt', 'From 1933.'],
+      ['What did the New Deal insure?', ['bank deposits', 'cars', 'houses', 'crops'], 'bank deposits', 'Banks had failed by the thousand.'],
+      ['What ended the Depression?', ['the war', 'the New Deal alone', 'the crash', 'nothing'], 'the war', 'The New Deal changed expectations.'],
+      ['In which month of 1929 did the market crash?', ['October', 'January', 'June', 'March'], 'October', 'Banks failed by the thousand.'],
+      ['The New Deal regulated what?', ['the stock market', 'the weather', 'sports', 'schools'], 'the stock market', 'And put people to work.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
   'h11-depression-year': (rng) => yearQuestionS(rng, DEPRESSION),
   'h11-depression-fact': (rng) => factQuestionS(rng, DEPRESSION),
   'h11-new-deal': (rng) => ({ type: 'choice', story: 'The New Deal.', prompt: 'What did it change most?', choices: shuffle(rng, ['What Americans expected government to do when the market fails', 'The number of states', 'The length of the school year']), answer: 'What Americans expected government to do when the market fails', explain: 'It did not end the Depression; the war did. It changed what government was for.', visual: null, explainVisual: null }),
@@ -27259,6 +27890,19 @@ export function daysSinceBackup(lastAt, now) {
 // 3. CORE RULES
 // ---------------------------------------------------------------------
 
+// -----------------------------------------------------------------------------------------------------------------
+// questionKey (2026-10-01, pass HS). In plain terms: what makes two questions the same question. It is the setup, the
+// wording, the picture, the answer and the set of answers offered (in any order). Two picture tasks with the same words
+// but different pictures, such as two different "tap the bigger one" boards, are different questions; the same item
+// from a fixed bank, with its choices shuffled, is the same question. Rounds, memory checks, placement probes, the
+// question-pool audit and the rules tests all use this one definition.
+// -----------------------------------------------------------------------------------------------------------------
+export function questionKey(q) {
+  if (!q) return '';
+  const choices = Array.isArray(q.choices) ? q.choices.map((c) => (typeof c === 'string' ? c : JSON.stringify(c))).sort() : null;
+  return JSON.stringify([q.story || '', q.prompt || '', q.visual || null, q.answer === undefined ? null : q.answer, choices, q.trace || q.target || null]);
+}
+
 // Builds one practice set for a module. Same (moduleId, seed, masteredIds) => same set.
 //   core:   the questions that count toward mastery
 //   review: one question from an EARLIER, already-mastered module (retention check only)
@@ -27274,13 +27918,24 @@ export function buildAttempt(moduleId, seed, masteredIds, options = {}) {
   const order = shuffle(rng, mod.generators);
   const core = [];
   const howMany = moduleRules(moduleId).questions * dose;
+  // Tracing and dot-to-dot tasks are motor practice with no answer to give away, so tracing a letter twice is allowed.
+  const same = (q, taken) => { if (q.type === 'trace') return false; const k = questionKey(q); return taken.some((c) => questionKey(c) === k); };
   const fresh = (gen, taken) => {
-    // Never the same question twice in one round, and not one from the last rounds if another can be found.
+    // Not one from the last rounds if another can be found, and many tries for one not yet in this round.
     let q = generateQuestion(gen, randInt(rng, 1, 2147483646));
-    for (let tries = 0; tries < 16 && (taken.some((c) => c.story === q.story && c.prompt === q.prompt) || (tries < 10 && avoid.has(q.prompt))); tries++) q = generateQuestion(gen, randInt(rng, 1, 2147483646));
+    for (let tries = 0; tries < 40 && (same(q, taken) || (tries < 10 && avoid.has(q.prompt))); tries++) q = generateQuestion(gen, randInt(rng, 1, 2147483646));
     return q;
   };
-  for (let i = 0; i < howMany; i++) core.push(fresh(order[i % order.length], core));
+  // Never the same question twice in one round (2026-10-01, pass HR, Mikey). In plain terms: when a bank has no new
+  // question left, the module's other banks are tried; if none has one, the round ends early instead of repeating,
+  // because a repeated question gives its answer away. Mastery needs the same share of a shorter round (coreTotal).
+  const banks = [...new Set(mod.generators)];
+  for (let i = 0; i < howMany; i++) {
+    let q = fresh(order[i % order.length], core);
+    for (const g of banks) { if (!same(q, core)) break; q = fresh(g, core); }
+    if (same(q, core)) break;
+    core.push(q);
+  }
   let review = null;
   // The memory check can come from any module the student has mastered, in any course, so
   // old skills keep resurfacing where they are least expected. Nearer modules in the same
@@ -27491,7 +28146,8 @@ export function buildCheckpoint(events, seed) {
   for (let i = 0; i < CHECKPOINT_QUESTIONS; i++) {
     const m = order[i % order.length];
     let q = generateQuestion(pick(rng, m.generators), randInt(rng, 1, 2147483646));
-    for (let tries = 0; tries < 12 && core.some((c) => c.story === q.story && c.prompt === q.prompt); tries++) q = generateQuestion(pick(rng, m.generators), randInt(rng, 1, 2147483646));
+    for (let tries = 0; tries < 40 && core.some((c) => questionKey(c) === questionKey(q)); tries++) q = generateQuestion(pick(rng, m.generators), randInt(rng, 1, 2147483646));
+    if (core.some((c) => questionKey(c) === questionKey(q))) continue; // never a repeat (pass HR): skip the slot instead
     core.push({ ...q, fromModuleId: m.id });
   }
   return { checkpoint: true, moduleId: core[0].fromModuleId, seed, core, review: null, review2: null, atCount: progress.passedIds.length };
@@ -27553,7 +28209,8 @@ export function buildPlacementProbe(subject, grade, seed) {
   for (let i = 0; i < PLACEMENT_PROBE; i++) {
     const m = order[i % order.length];
     let q = generateQuestion(pick(rng, m.generators), randInt(rng, 1, 2147483646));
-    for (let tries = 0; tries < 12 && core.some((c) => c.story === q.story && c.prompt === q.prompt); tries++) q = generateQuestion(pick(rng, m.generators), randInt(rng, 1, 2147483646));
+    for (let tries = 0; tries < 40 && core.some((c) => questionKey(c) === questionKey(q)); tries++) q = generateQuestion(pick(rng, m.generators), randInt(rng, 1, 2147483646));
+    if (core.some((c) => questionKey(c) === questionKey(q))) continue; // never a repeat (pass HR): skip the slot instead
     core.push({ ...q, fromModuleId: m.id });
   }
   return { placement: true, subject, grade, moduleId: core[0].fromModuleId, seed, core, review: null, review2: null };
@@ -27602,7 +28259,7 @@ export function buildQuickCheck(moduleId, seed) {
   for (let i = 0; i < QUICK_CHECK_QUESTIONS; i++) {
     const genId = m.generators[i % m.generators.length];
     let q = generateQuestion(genId, randInt(rng, 1, 2147483646));
-    for (let tries = 0; tries < 12 && core.some((c) => c.story === q.story && c.prompt === q.prompt); tries++) q = generateQuestion(genId, randInt(rng, 1, 2147483646));
+    for (let tries = 0; tries < 12 && core.some((c) => questionKey(c) === questionKey(q)); tries++) q = generateQuestion(genId, randInt(rng, 1, 2147483646));
     core.push({ ...q, fromModuleId: m.id });
   }
   return { quickCheck: true, moduleId: m.id, seed, core, review: null, review2: null };
@@ -27637,6 +28294,9 @@ export function makeQuickPlacedEvent(moduleId, at) {
 // educator to pull from. Nothing from the books themselves is stored or shown; a title is a
 // pointer to a library shelf, not a quotation.
 // ---------------------------------------------------------------------
+// Reading lists by grade, with a grown shelf for parents, educators and advanced readers. Pass HY (2026-10-02, Mikey) added
+// books by thinkers he admires where they fit: Frankl in grade 11, Marcus Aurelius in grade 12, Brooks and Popper for college,
+// and Brooks, McGilchrist, Naval Ravikant and the Dalai Lama on the grown shelf.
 export const READING_LISTS = {
   PK3: ['Goodnight Moon (Margaret Wise Brown)', 'The Very Hungry Caterpillar (Eric Carle)', 'Brown Bear, Brown Bear, What Do You See? (Bill Martin Jr.)', 'Where Is the Green Sheep? (Mem Fox)', 'Dear Zoo (Rod Campbell)'],
   PK4: ['Where the Wild Things Are (Maurice Sendak)', 'Chicka Chicka Boom Boom (Bill Martin Jr. and John Archambault)', 'The Snowy Day (Ezra Jack Keats)', 'Corduroy (Don Freeman)', 'Blueberries for Sal (Robert McCloskey)', 'Llama Llama Red Pajama (Anna Dewdney)'],
@@ -27663,12 +28323,12 @@ export const READING_LISTS = {
   10: ['Julius Caesar (William Shakespeare)', 'Things Fall Apart (Chinua Achebe)', 'A Raisin in the Sun (Lorraine Hansberry)', 'The Book Thief (Markus Zusak)', 'Antigone (Sophocles)', 'Persepolis (Marjane Satrapi)',
     'The Iliad (Homer)', 'The Odyssey (Homer)', 'The Histories, selections (Herodotus)', 'Oedipus the King (Sophocles)', 'Oedipus at Colonus (Sophocles)', 'Poetics (Aristotle)', 'Meno (Plato)', 'Euthyphro (Plato)', 'Apology (Plato)', 'Genesis and Exodus', 'Beowulf', 'Macbeth (William Shakespeare)', 'The Tempest (William Shakespeare)', 'Crime and Punishment (Fyodor Dostoevsky)'],
   11: ['The Great Gatsby (F. Scott Fitzgerald)', 'The Crucible (Arthur Miller)', 'Their Eyes Were Watching God (Zora Neale Hurston)', 'The Adventures of Huckleberry Finn (Mark Twain)', 'Narrative of the Life of Frederick Douglass (Frederick Douglass)', 'Beloved (Toni Morrison)',
-    'The Oresteia (Aeschylus)', 'Republic (Plato)', 'Nicomachean Ethics (Aristotle)', 'The Aeneid (Virgil)', 'The Gospel of John', 'Confessions (Augustine)', 'Summa Theologica: Treatise on Happiness, selections (Thomas Aquinas)', 'Richard II (William Shakespeare)', 'Henry V (William Shakespeare)', 'Pride and Prejudice (Jane Austen)', 'Fathers and Sons (Ivan Turgenev)'],
+    'The Oresteia (Aeschylus)', 'Republic (Plato)', 'Nicomachean Ethics (Aristotle)', 'The Aeneid (Virgil)', 'The Gospel of John', 'Confessions (Augustine)', 'Summa Theologica: Treatise on Happiness, selections (Thomas Aquinas)', 'Richard II (William Shakespeare)', 'Henry V (William Shakespeare)', 'Pride and Prejudice (Jane Austen)', 'Fathers and Sons (Ivan Turgenev)', 'Man\'s Search for Meaning (Viktor E. Frankl)'],
   12: ['Hamlet (William Shakespeare)', '1984 (George Orwell)', 'Pride and Prejudice (Jane Austen)', 'Frankenstein (Mary Shelley)', 'Brave New World (Aldous Huxley)', 'Crime and Punishment (Fyodor Dostoevsky)',
-    'Medea (Euripides)', 'Gorgias (Plato)', 'Politics (Aristotle)', 'Lives, selections (Plutarch)', 'The Letter to the Romans', 'Summa Theologica: Treatise on Law, selections (Thomas Aquinas)', 'Inferno (Dante)', 'Purgatorio (Dante)', 'Paradiso (Dante)', 'The Canterbury Tales, selections (Geoffrey Chaucer)', 'King Lear (William Shakespeare)', 'Othello (William Shakespeare)', 'The Brothers Karamazov (Fyodor Dostoevsky)'],
-  C: ['The Elements of Style (Strunk and White)', 'Thinking, Fast and Slow (Daniel Kahneman)', 'The Structure of Scientific Revolutions (Thomas Kuhn)', 'Meditations (Marcus Aurelius)', 'The Republic (Plato)', 'A Room of One\'s Own (Virginia Woolf)'],
+    'Medea (Euripides)', 'Gorgias (Plato)', 'Politics (Aristotle)', 'Lives, selections (Plutarch)', 'The Letter to the Romans', 'Summa Theologica: Treatise on Law, selections (Thomas Aquinas)', 'Inferno (Dante)', 'Purgatorio (Dante)', 'Paradiso (Dante)', 'The Canterbury Tales, selections (Geoffrey Chaucer)', 'King Lear (William Shakespeare)', 'Othello (William Shakespeare)', 'The Brothers Karamazov (Fyodor Dostoevsky)', 'Meditations, selections (Marcus Aurelius)'],
+  C: ['The Elements of Style (Strunk and White)', 'Thinking, Fast and Slow (Daniel Kahneman)', 'The Structure of Scientific Revolutions (Thomas Kuhn)', 'Meditations (Marcus Aurelius)', 'The Republic (Plato)', 'A Room of One\'s Own (Virginia Woolf)', 'Love Your Enemies (Arthur C. Brooks)', 'Conjectures and Refutations (Karl Popper), advanced'],
   // A shelf for parents, educators and advanced readers, chosen by the founder.
-  grown: ['The Meaning of Your Life: Finding Purpose in an Age of Emptiness (Arthur C. Brooks)', 'From Strength to Strength (Arthur C. Brooks)', 'The Untethered Soul (Michael A. Singer)', 'Amusing Ourselves to Death (Neil Postman)', 'Dark Matter (Blake Crouch)', 'Born to Run (Christopher McDougall)', 'The Creative Act: A Way of Being (Rick Rubin)', 'Hardwiring Happiness (Rick Hanson)', 'The Beginning of Infinity (David Deutsch), advanced', 'The Psychology of Money (Morgan Housel)', 'The Little Book of Common Sense Investing (John C. Bogle)', 'A Random Walk Down Wall Street (Burton Malkiel)', 'The Intelligent Investor (Benjamin Graham), advanced'],
+  grown: ['The Meaning of Your Life: Finding Purpose in an Age of Emptiness (Arthur C. Brooks)', 'From Strength to Strength (Arthur C. Brooks)', 'The Untethered Soul (Michael A. Singer)', 'Amusing Ourselves to Death (Neil Postman)', 'Dark Matter (Blake Crouch)', 'Born to Run (Christopher McDougall)', 'The Creative Act: A Way of Being (Rick Rubin)', 'Hardwiring Happiness (Rick Hanson)', 'The Beginning of Infinity (David Deutsch), advanced', 'The Psychology of Money (Morgan Housel)', 'The Little Book of Common Sense Investing (John C. Bogle)', 'A Random Walk Down Wall Street (Burton Malkiel)', 'The Intelligent Investor (Benjamin Graham), advanced', 'Build the Life You Want (Arthur C. Brooks and Oprah Winfrey)', 'The Happiness Files (Arthur C. Brooks)', 'The Master and His Emissary (Iain McGilchrist), advanced', 'The Almanack of Naval Ravikant (Eric Jorgenson)', 'The Book of Joy (the Dalai Lama, Desmond Tutu and Douglas Abrams)'],
 };
 export function readingListFor(grade) { return READING_LISTS[grade] || []; }
 

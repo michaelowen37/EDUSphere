@@ -84,7 +84,7 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
     else if (q.visual && q.visual.kind === 'bar') { if (!(q.visual.shaded >= 0 && q.visual.shaded <= q.visual.parts)) problems.push('bar picture out of range'); }
     else if (q.visual && q.visual.kind === 'swatch') { if (!['red', 'blue', 'yellow', 'green'].includes(q.visual.colour)) problems.push('unknown colour'); }
     else if (q.visual && q.visual.kind === 'item') { if (!q.visual.shape || !q.visual.colour) problems.push('item incomplete'); }
-    else if (q.visual && q.visual.kind === 'pattern') { if (!Array.isArray(q.visual.items) || q.visual.items.length < 3) problems.push('pattern too short'); }
+    else if (q.visual && q.visual.kind === 'pattern') { if (!Array.isArray(q.visual.items) || (q.visual.counting ? q.visual.items.length < 1 : q.visual.items.length < 3)) problems.push('pattern too short'); } // a counting row (pass HS) may hold one shape
     else if (q.visual && q.visual.kind === 'clock') { if (!(q.visual.hour >= 1 && q.visual.hour <= 12 && [0, 15, 30, 45].includes(q.visual.minute))) problems.push('clock out of range'); }
     else if (q.visual && q.visual.kind === 'icon') { if (!['sun', 'moon', 'cloud', 'rain', 'snow', 'plant', 'tree', 'flower', 'fish', 'bird', 'rock', 'drop', 'ice', 'fire', 'magnet'].includes(q.visual.name)) problems.push('unknown icon'); }
     else if (q.visual && (q.visual.kind === 'pic' || q.visual.kind === 'art')) { if (!q.visual.name) problems.push('picture incomplete'); }
@@ -240,7 +240,7 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
     if (genId === 'pp-what-next') { const it = q.visual.items; if (spec(q.answer)[0] !== it[it.length % 2 === 0 ? 0 : 1]) problems.push('what next wrong'); }
     if (genId === 'pp-which-repeats') { const it = q.visual.items; const repeats = it.every((x, i) => x === it[i % 2]); if (q.answer !== (repeats ? 'Yes' : 'No')) problems.push('repeats wrong'); }
     if (genId === 'pp-missing') { const it = q.visual.items; const i = it.indexOf('?'); if (spec(q.answer)[0] !== it[i % 2 === 0 ? 0 : 1]) problems.push('missing wrong'); }
-    if (genId === 'p3-how-many' && Number(q.answer) !== q.visual.count) problems.push('pre-K how many wrong');
+    if (genId === 'p3-how-many' && Number(q.answer) !== (q.visual.counting ? q.visual.items.length : q.visual.count)) problems.push('pre-K how many wrong'); // dots or a counting row (pass HS)
     if (genId === 'p3-tap-group' && dotCount(q.answer) !== Number(q.prompt.match(/Tap (\d)/)[1])) problems.push('pre-K tap group wrong');
     if (genId === 'p3-tap-one' && dotCount(q.answer) !== 1) problems.push('tap one wrong');
     if (genId === 'p3-more' && dotCount(q.answer) !== Math.max(...q.choices.map(dotCount))) problems.push('pre-K more wrong');
@@ -1643,6 +1643,20 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
     ok('the high school human sexuality elective asks for consent and keeps its Wonder questions inside it', !!hs9 && hs9.elective === true && hs9.consent === 'human-sexuality' && gated9.length === 2 && gated9.every((w) => !L.wonderAllowed(w, 'health-9', 'grown') && L.wonderAllowed(w, 'sexual-health-9', 'grown')));
     ok('every Myth or Fact round deals three myths and three facts, each with a reason', [1, 2, 3, 4, 5].every((r) => { const qs = L.mythfactRounds(r); return qs.length === 6 && new Set(qs.map((q) => q.text)).size === 6 && qs.filter((q) => q.answer === 'myth').length === 3 && qs.every((q) => (q.answer === 'myth' || q.answer === 'fact') && q.why.length > 10); }));
     ok('the Myth or Fact game belongs to the high school human sexuality elective', L.COURSE_GAMES['sexual-health-9'].includes('mythfact-sexual-health-9') && L.GAMES.find((g) => g.id === 'mythfact-sexual-health-9').mythfact === 'statements');
+  }
+  { // No repeated questions (pass HR, Mikey's screenshots): a round never asks the same question twice, and the number of
+    // modules whose banks are smaller than their round may only fall. When a bank grows, lower SHORT_POOL_LIMIT to match.
+    const SHORT_POOL_LIMIT = 0; // the program is finished (pass HX): every module must fill its round
+    const repeats = []; for (const c of L.COURSES) for (const m of c.modules) for (const seed of [1, 2, 3]) { const core = L.buildAttempt(m.id, seed, []).core.filter((q) => q.type !== 'trace'); if (new Set(core.map((q) => L.questionKey(q))).size !== core.length) repeats.push(m.id); }
+    ok('no practice round, in any module, asks the same question twice', repeats.length === 0);
+    // No reduction in questions (Mikey, pass HX): every module's round is full length, never shortened.
+    const shortRounds = []; for (const c of L.COURSES) for (const m of c.modules) for (const seed of [1, 2, 3]) if (L.buildAttempt(m.id, seed, []).core.length < L.moduleRules(m.id).questions) shortRounds.push(m.id);
+    ok('every practice round, in every module, is full length', shortRounds.length === 0);
+    const QP = await import('../tools/question-pools.mjs'); const short = QP.shortPools(200);
+    ok(`no new module has fewer different questions than its round (at most ${SHORT_POOL_LIMIT}, now ${short.length})`, short.length <= SHORT_POOL_LIMIT);
+    { const src = (await import('node:fs')).readFileSync(new URL('../src/logic.mjs', import.meta.url), 'utf8'); const keys = [...src.matchAll(/^  '([a-z0-9-]+)': \(rng\) => \{/gm)].map((m) => m[1]); const twice = keys.filter((k, i) => keys.indexOf(k) !== i);
+      ok('no question bank is defined twice, so an edit can never land on an unused copy', twice.length === 0); }
+    ok('the two agriculture banks from the screenshots fill a ten-question round', QP.poolSize(['ag-scope']) >= 12 && QP.poolSize(['ag-animals']) >= 12);
   }
   ok('the two robot games sit in the two programming courses beside their first games', L.COURSE_GAMES['tech-3'].includes('debug-tech-3') && L.COURSE_GAMES['tech-5'].includes('debug-tech-5') && L.GAMES.filter((g) => g.kind === 'debug').every((g) => L.ROBOT_DECKS[g.deck]));
 }

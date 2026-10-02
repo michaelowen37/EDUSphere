@@ -2,6 +2,18 @@
 
 The newest block is what educators see once, in a pop-up on the classroom page, after each update. Write it the way Mikey talks to a teacher: conversational, complete sentences, say what changed and why it matters, and skip the shorthand (2026-09-23). Two to four items. The date line is the version stamp.
 
+## October 1, 2026 (practice that survives a refresh)
+
+- A refresh in the middle of practice now brings the student back to the same question set, at the next question, with every answer kept.
+- A practice round never asks the same question twice. When a module runs out of new questions, the round ends a little early instead.
+- Picture and tracing rounds for the youngest learners are full length again, and grade 6 math, reading, science and history rounds draw from bigger question banks.
+- The youngest learners get many more examples in red and blue, one and two, A and B, and day and night, with shapes, words and scenes, and grade 6 computer science has bigger question banks.
+- Grade 6 electives, from psychology to art, now draw from bigger question banks, so rounds vary more.
+- Grade 9 reading, science, computer science, health and business rounds now draw from bigger question banks.
+- Every grade 9 course now draws from bigger question banks, so no round repeats itself.
+- Every module in every grade now draws from enough questions that a round never repeats one, with fresh numbers in middle school math.
+- The reading lists grew: Viktor Frankl in grade 11, Marcus Aurelius in grade 12, Arthur Brooks and Karl Popper for college, and five new books on the shelf for parents and educators.
+
 ## October 1, 2026 (relationships and health)
 
 - A second health elective, Relationships and health, is ready for grades 9 to 12, and appears only when an educator assigns it. It covers healthy relationships and boundaries, safety, abuse and trafficking, STIs and testing, and choices and responsibilities, with a story for each lesson and a long story about Georgette and a question box.

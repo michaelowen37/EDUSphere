@@ -1,3 +1,5 @@
+New chats: read docs/NEW-CHAT.md first, then the latest docs/DECISIONS.md entry.
+
 # EduSphere
 
 ## If you are new here, read in this order
@@ -272,3 +274,8 @@ Add its standards to src/curriculum.mjs (every code, with the module ids that co
 - Consent courses (2026-10-01, pass HO): a course with `consent: 'human-sexuality'` opens a consent box when ticked in the report (`consentAsk`), and `wonderAllowed` keeps its Wonder questions inside it. Course entries may carry comments after `elective: true`, so patch scripts must not assume the bare line.
 - Pass HP (2026-10-01): Myth or Fact is kind `mythfact` (MythFactGame in ui.jsx; MYTHFACT_CARDS and mythfactRounds(round) in logic.mjs; the board carries `data-myth-answer`). Both human sexuality electives carry `consent: 'human-sexuality'`; their stories never show students in romance, and figures name one source (the FDA's typical-use guide).
 - Pass HQ (2026-10-01): any browser test that reloads must carry the store across the reload (see the click-through's refresh step): headless Chromium can start a reload before committing the page's localStorage writes, and the page then opens with an empty store. To find intermittent failures, cut a probe from the test and run it in a loop with the state printed around the failing step.
+- Pass HR (2026-10-01): the practice screen is named 'practice' (there is no 'question' screen). The where-note covers it and carries the set in progress (`set`), restored at startup; leaving practice drops it.
+- No repeats (2026-10-01, pass HR): every module needs at least as many different questions as its round (moduleRules: 10 from grade 9, 8 from grade 6), plus a few more. buildAttempt never repeats a question and ends a round early instead. When you grow a short bank, rerun tools/question-pools.mjs and lower SHORT_POOL_LIMIT in tests/logic.test.mjs to the new count.
+- Pass HS (2026-10-01): `questionKey(q)` in logic.mjs decides what a repeated question is (setup, wording, picture, answer, answer set); type trace may repeat. To grow a bank, insert inside that bank's own block (find the bank, then its own closing) and confirm with tools/question-pools.mjs that the pool grew where you meant it to; some banks end their list with `'], ];`.
+- Pass HT (2026-10-02): no question bank may be defined twice (a rules test checks the source). A counting row is a pattern picture with `counting: true`. Grow a bank by inserting inside its own block, then confirm the pool grew with tools/question-pools.mjs.
+- No reduction in questions (Mikey, pass HX): a module's practice round is never shortened; add questions, examples or variety whenever it improves learning. The rules test checks every round is full length.

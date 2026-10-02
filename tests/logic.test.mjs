@@ -13,7 +13,7 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
   let bad = [];
   for (let seed = 1; seed <= 300; seed++) {
     const q = L.generateQuestion(genId, seed);
-    if (q.prompt === 'When?' && q.story) { if (!whenAnswers.has(q.story)) whenAnswers.set(q.story, new Set()); whenAnswers.get(q.story).add(q.answer); }
+    if (q.prompt === 'When did this happen?' && q.story) { if (!whenAnswers.has(q.story)) whenAnswers.set(q.story, new Set()); whenAnswers.get(q.story).add(q.answer); }
     const problems = [];
     if (!q.prompt || !q.explain) problems.push('empty prompt/explain');
     if (q.type === 'choice') {
@@ -1666,7 +1666,7 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
   { // Questions that read well (pass IB, Mikey): the wording checks in tools/question-review.mjs find questions that end in a
     // fragment, lean on a setup they come before, leave a word hanging, say 1 meters or a 8, or explain with a label or by
     // repeating the answer. The read-through passes fix the rest by hand; this count may only fall.
-    const WORDING_FLAG_LIMIT = 13; // pass IB: 13 explanations that only repeat their answer (grades 7, 9 and 12)
+    const WORDING_FLAG_LIMIT = 8; // pass IB: 13 explanations that only repeat their answer (grades 7, 9 and 12)
     const QR = await import('../tools/question-review.mjs'); const flagged = QR.flaggedQuestions(150);
     ok(`no new question reads badly to the wording checks (at most ${WORDING_FLAG_LIMIT}, now ${flagged.length})`, flagged.length <= WORDING_FLAG_LIMIT);
   }

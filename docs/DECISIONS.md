@@ -1841,6 +1841,16 @@ Approved by Mikey on 2026-09-04 unless marked "proposed".
 - Found, not changed: grade 3 psychology teaches that the brain holds about seven things at once, the classic figure; newer research puts working memory nearer four chunks. That is a teaching decision for Mikey when the psychology lessons are next revisited.
 - Still 13 flagged (grades 7, 9 and 12). Next: grades 6 to 8.
 
+## 2026-10-02 (pass IG): grades 6 to 8, and the newest research
+
+- Mikey committed through IF, so the commit message starts again at IG.
+- Mikey's standing rule: always teach the newest research. First use, working memory: Nelson Cowan's 2001 review in Behavioral and Brain Sciences puts it at about four chunks, where George Miller's 1956 paper said about seven. The grade 3 lesson and question now say about four (which is why a phone number is said in small pieces); the grade 9 lesson says about four, names Cowan, and keeps Miller as history; its question asks how many chunks, answer about four.
+- Every grade 6, 7 and 8 question was read: 1,317 patterns in 247 banks.
+- Accuracy: the Lyme question asked what starts the disease and answered a rash; a tick bite starts it and the rash is the first sign, so it asks for the first sign. The implantation question said the zygote attaches; by then it is a ball of cells, as the lesson says. The grade 4 art lesson said cave paintings in France and Spain are about 17,000 years old, true of Lascaux but not of older caves, so it names Lascaux like its question. The cell explanation gave cell walls and chloroplasts the same reason; each now gets its own (standing up without bones, making food from sunlight).
+- Clarity: questions name what they ask about (the triangle's area, the line's slope, the circle's radius, the country's GDP per person), point at their setup with this, and fold short setups (What is the main job of the skeletal system?, Where do meat eaters sit on an energy pyramid?). History dates ask When did this happen? instead of When?. Place names lose a capital The mid-sentence (Which continent is the Mississippi on?).
+- Grammar: chloroplasts and mitochondria take no a; food chains use plurals (the robins lose their food; small fish stays small fish); the tendons are part of the muscular system. Explanations: the weak-evidence ones no longer just repeat the answer, so the wording flags drop from 13 to 8 and the limit drops to 8; 50 out of 100 is 50%; 4 + 6 = 10; the Jumano lived along the Rio Grande; farther left on the number line.
+- Next: grades 9 to 12.
+
 ## Open items
 - Make the terse fragment prompts whole questions (pass HZ found them in reading, math, science, computer science and psychology banks from grade 3 to 8, among them The model?, Purpose? and The cone holds?).
 - On a real phone, answer a question, tap Next and refresh: the set should resume at the next question with the answer kept (pass HR).

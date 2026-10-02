@@ -21,7 +21,7 @@ The practice screen shows a question in this order: the module title, the questi
 | Kindergarten | Pass ID: 1,664 patterns in 165 banks read; sleep hours corrected; thirty-one elective explanations rewritten |
 | Grades 1 and 2 | Pass IE: 1,610 patterns in 163 banks read; names in history explanations kept in capitals app-wide |
 | Grades 3 to 5 | Pass IF: 1,691 patterns in 290 banks read; four facts corrected |
-| Grades 6 to 8 | Next (includes grade 7 weak-evidence explanations) |
+| Grades 6 to 8 | Pass IG: 1,317 patterns in 247 banks read; weak-evidence explanations rewritten (flags 8) |
 | Grades 9 to 12 | To do (includes grade 9 credibility and grade 12 star-stage explanations) |
 | College | To do |
 | Wonder questions (264, four voices each) | To do |

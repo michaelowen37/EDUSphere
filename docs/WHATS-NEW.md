@@ -2,6 +2,12 @@
 
 The newest block is what educators see once, in a pop-up on the classroom page, after each update. Write it the way Mikey talks to a teacher: conversational, complete sentences, say what changed and why it matters, and skip the shorthand (2026-09-23). Two to four items. The date line is the version stamp.
 
+## October 2, 2026 (grades 6 to 8, and the newest research)
+
+- The memory lessons now teach the newest research: the brain holds about four things at once, not the older figure of seven.
+- Every grade 6 to 8 question was read through by hand, with fixes to the Lyme disease, early pregnancy and cell questions.
+- Questions name what they ask about, like the triangle's area or the line's slope, and history dates ask when did this happen.
+
 ## October 2, 2026 (grades 3 to 5, read through)
 
 - Every grade 3 to 5 question was read through by hand, and four facts were corrected, including why a bulb stays dark with a dead battery and which cave paintings are about 17,000 years old.

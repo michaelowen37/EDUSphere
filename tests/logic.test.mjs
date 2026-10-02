@@ -189,7 +189,7 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
     const lineWords = (t) => t.trim().split(/\s+/);
     if (genId === 'rw-first' && q.answer !== lineWords(q.story)[0]) problems.push('first word wrong');
     if (genId === 'rw-last' && q.answer !== lineWords(q.story).slice(-1)[0]) problems.push('last word wrong');
-    if (genId === 'rw-next') { const ws = lineWords(q.story); const after = q.prompt.match(/after (\w+)\?/)[1]; if (q.answer !== ws[ws.indexOf(after) + 1]) problems.push('next word wrong'); }
+    if (genId === 'rw-next') { const ws = lineWords(q.story); const after = q.prompt.match(/after the word (\w+)\?/)[1]; /* pass IB: right after the word the? */ if (q.answer !== ws[ws.indexOf(after) + 1]) problems.push('next word wrong'); }
     if (genId === 'rw-count-words' && Number(q.answer) !== lineWords(q.story).length) problems.push('word count wrong');
     if (genId === 'rw-which-way' && q.answer !== (/left to right/.test(q.story) ? 'Yes' : 'No')) problems.push('which way wrong');
     const PIC_WORD = { circle: 'circle', square: 'square', triangle: 'triangle', rectangle: 'rectangle', sphere: 'ball', cube: 'box', cylinder: 'can', cone: 'cone' };
@@ -298,7 +298,7 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
     if (genId === 'r1-where' && q.answer !== q.story.match(/ran to (the \w+)\./)[1]) problems.push('where wrong');
     if (genId === 'r1-what-colour' && q.answer !== q.story.match(/got a (\w+) /)[1]) problems.push('what colour wrong');
     if (genId === 'r1-how-many' && Number(q.answer) !== NUMW.indexOf(q.story.match(/has (\w+) /)[1]) + 1) problems.push('how many wrong');
-    if (genId === 'r1-true-false') { const real = q.story.match(/ran to (the \w+)\./)[1]; const claim = q.prompt.match(/ran to (the \w+)\./)[1]; if (q.answer !== (real === claim ? 'Yes' : 'No')) problems.push('true/false wrong'); }
+    if (genId === 'r1-true-false') { const real = q.story.match(/ran to (the \w+)\./)[1]; const claim = q.prompt.match(/run to (the \w+)\?/)[1]; /* the question reads: In the story, did the dog run to the hill? (pass IB) */ if (q.answer !== (real === claim ? 'Yes' : 'No')) problems.push('true/false wrong'); }
     // Grade 2, re-derived from the numbers in the words
     const g2 = text.match(/\d+/g) ? text.match(/\d+/g).map(Number) : [];
     const HOURS = ['twelve', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven'];
@@ -532,7 +532,7 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
     if (genId === 's8-atomic-number') { const n = Number(q.story.match(/\d+/)[0]); const table = { 1: 'hydrogen', 2: 'helium', 6: 'carbon', 7: 'nitrogen', 8: 'oxygen', 10: 'neon' }; if (q.answer !== table[n]) problems.push('atomic number wrong'); }
     if (genId === 's8-biggest-of') { const order = ['the moon', 'the Earth', 'the solar system', 'the Milky Way', 'the universe']; const best = [...q.choices].sort((x, y) => order.indexOf(y) - order.indexOf(x))[0]; if (q.answer !== best) problems.push('biggest wrong'); }
     if (genId === 's4-will-it-light') { const broken = /not connected|switch open|rubber|dead battery/.test(q.story); if ((broken ? 'No' : 'Yes') !== q.answer) problems.push('circuit wrong'); }
-    if (genId === 's4-conductor-or-insulator') { const metal = /copper|iron|aluminum|steel/.test(q.story); if ((metal ? 'Conductor' : 'Insulator') !== q.answer) problems.push('conductor wrong'); }
+    if (genId === 's4-conductor-or-insulator') { const metal = /copper|iron|aluminum|steel/.test(q.prompt); /* pass IB: the material is named in the question */ if ((metal ? 'Conductor' : 'Insulator') !== q.answer) problems.push('conductor wrong'); }
     if (genId === 's5-next-stage') { const cycle = ['evaporation', 'condensation', 'precipitation', 'collection']; const i = cycle.findIndex((x) => q.story.includes(x)); if (q.answer.toLowerCase() !== cycle[(i + 1) % 4]) problems.push('next stage wrong'); }
     if (genId === 's5-moon-phase') { const i = ['none of', 'half of', 'all of'].findIndex((x) => q.story.includes(x)); if (q.answer !== ['new moon', 'half moon', 'full moon'][i]) problems.push('moon phase wrong'); }
     if (genId === 's6-count-kinds') { const kinds = (q.story.match(/[A-Z]/g) || []).length; if (Number(q.answer) !== kinds) problems.push('count kinds wrong'); }
@@ -1662,6 +1662,13 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
     // samples every bank the way the pool audit does, and a long prompt can no longer hide among a bank's others.
     const QP = await import('../tools/question-pools.mjs'); const longs = QP.longPrompts(200);
     ok(`every prompt in every bank is under 70 characters, or 110 for writing (now ${longs.length} over${longs.length ? ': ' + longs.slice(0, 3).map((r) => r.generator).join(', ') : ''})`, longs.length === 0);
+  }
+  { // Questions that read well (pass IB, Mikey): the wording checks in tools/question-review.mjs find questions that end in a
+    // fragment, lean on a setup they come before, leave a word hanging, say 1 meters or a 8, or explain with a label or by
+    // repeating the answer. The read-through passes fix the rest by hand; this count may only fall.
+    const WORDING_FLAG_LIMIT = 13; // pass IB: 13 explanations that only repeat their answer (grades 7, 9 and 12)
+    const QR = await import('../tools/question-review.mjs'); const flagged = QR.flaggedQuestions(150);
+    ok(`no new question reads badly to the wording checks (at most ${WORDING_FLAG_LIMIT}, now ${flagged.length})`, flagged.length <= WORDING_FLAG_LIMIT);
   }
   ok('the two robot games sit in the two programming courses beside their first games', L.COURSE_GAMES['tech-3'].includes('debug-tech-3') && L.COURSE_GAMES['tech-5'].includes('debug-tech-5') && L.GAMES.filter((g) => g.kind === 'debug').every((g) => L.ROBOT_DECKS[g.deck]));
 }

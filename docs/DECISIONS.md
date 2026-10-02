@@ -1787,6 +1787,18 @@ Approved by Mikey on 2026-09-04 unless marked "proposed".
 - The grade 6 lesson sentence behind it read as one long claim (The school should start later because the mascot is a hawk is a reason that is true and useless). It now sets the example apart and says why it fails: it is true, but it is not relevant. A grade 6 question that ended in is what? now reads What is a position you back with reasons and change if they fail?
 - Next: General Psychology (PSYC 2301).
 
+## 2026-10-02 (pass IB): the question review begins, with everything the checks can see fixed across the app
+
+- Mikey committed through IA and asked for a review of every question and answer, so each one makes sense when a person reads it, in his conversational voice. The commit message starts fresh at IB.
+- The size of it: 1,344 banks make 9,352 question patterns once numbers are folded together. That is too many to read well in one pass, so the review is a program. This pass fixes everything a check can find, across the whole app; the passes after it read every question by hand, grade by grade from pre-K up, then the Wonder questions and the game cards. General Psychology follows the program.
+- New tool: tools/question-review.mjs prints a grade's questions the way the practice screen shows them (question, setup line, answer, other choices, explanation), and its wording checks flag questions that end in a fragment, point at a setup they come before with that, leave a word hanging, say 1 meters or a 8, or explain with a label or by repeating the answer. They flagged 1,060 patterns.
+- Fixed across the app, in about 100 banks: setup references now say this (Which stage is this?), and where the setup only said Think about it, the thing moved into the question (Is plastic a conductor or an insulator?, Which body system are the lungs part of?, What was an empresario?). Two-way flash cards became whole questions (Is this color warm or cool?, In what year did this happen?), and hanging endings became whole questions (What does famished mean?, What is one more than 7?); The model?, Purpose? and Then? are gone.
+- Grade 1's true-or-false questions now ask In the story, did the dog run to the hill?, because the question comes before the story it asks about. Leader and Texas-fact explanations are sentences (The mayor leads a city., Austin is the capital of Texas., Six flags have flown over Texas.), and the body-system explanation agrees with its subject (the lungs belong, the heart belongs).
+- Number words are tidied in one place for every bank (generateQuestion runs every question through tidyQuestion): 1 meter, 1 one, an 8-inch nose. A lone 1 only, so 0.1, 11 and 21 keep their plurals.
+- 13 patterns remain flagged, all explanations that only repeat their answer (grade 7 weak evidence, grade 9 source credibility, grade 12 star stages); their grades' read-throughs fix them. A rules test holds the count at 13, and it may only fall.
+- What the checks cannot see is why the read-through matters: a wrong fact, two defensible answers, a giveaway choice, a stiff sentence. The mascot question in pass IA had one of those, and no check would have caught it.
+- Next: the read-through, pre-K 3 and pre-K 4 first.
+
 ## Open items
 - Make the terse fragment prompts whole questions (pass HZ found them in reading, math, science, computer science and psychology banks from grade 3 to 8, among them The model?, Purpose? and The cone holds?).
 - On a real phone, answer a question, tap Next and refresh: the set should resume at the next question with the answer kept (pass HR).

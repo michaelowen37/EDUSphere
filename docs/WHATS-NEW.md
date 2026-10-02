@@ -2,6 +2,12 @@
 
 The newest block is what educators see once, in a pop-up on the classroom page, after each update. Write it the way Mikey talks to a teacher: conversational, complete sentences, say what changed and why it matters, and skip the shorthand (2026-09-23). Two to four items. The date line is the version stamp.
 
+## October 2, 2026 (questions that read like a person wrote them)
+
+- Hundreds of questions now read as whole, natural questions. A flash card that said Warm or cool now asks whether a color is warm or cool, and one that ended in Famished means now asks what famished means.
+- When a question comes with a scene, the question now points to it with this, because the question is the first thing a student reads.
+- Small number slips are gone everywhere, so a question never says 1 meters or a 8-inch nose.
+
 ## October 2, 2026 (shorter, clearer questions)
 
 - Every practice question is now short enough to read at a glance on a phone. Twenty-two older questions, mostly in philosophy and economics, ran long and have been trimmed, with the same answers as before.

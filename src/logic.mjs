@@ -14101,7 +14101,7 @@ export const GENERATORS = {
     return {
       type: 'choice',
       story: `${fracText(x)} is bigger than ${fracText(y)}.`,
-      prompt: 'True or false?',
+      prompt: 'Is this true or false?',
       choices: ['True', 'False'],
       answer: claimTrue ? 'True' : 'False',
       explain: `${claimTrue ? 'True.' : 'False.'} ${explainCommonDenominator(x, y, bigger)}`,
@@ -14214,7 +14214,7 @@ Object.assign(GENERATORS, {
     const Q = [['Is the sun for the day or the night?', 'Day', 'sun', 'The sun shines in the day.'], ['Is the moon for the day or the night?', 'Night', 'moon', 'The moon shines at night.'],
       ['The moon is out. Is it day or night?', 'Night', 'moon', 'The moon shines at night.'], ['The sun is shining. Is it day or night?', 'Day', 'sun', 'The sun shines in the day.'],
       ['The sky is bright. Is it day or night?', 'Day', null, 'In the day the sky is bright.'], ['The sky is dark. Is it day or night?', 'Night', null, 'At night the sky is dark.'],
-      ['You see the sun out the window. Day or night?', 'Day', 'sun', 'The sun shines in the day.'], ['You see the moon out the window. Day or night?', 'Night', 'moon', 'The moon shines at night.']];
+      ['You see the sun out the window. Is it day or night?', 'Day', 'sun', 'The sun shines in the day.'], ['You see the moon out the window. Is it day or night?', 'Night', 'moon', 'The moon shines at night.']];
     const [prompt, answer, icon, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: ['Day', 'Night'], answer, explain, visual: icon ? { kind: 'icon', name: icon } : null, explainVisual: null };
   },
@@ -14641,7 +14641,7 @@ Object.assign(GENERATORS, {
   },
   'bf-how-many-units': (rng) => {
     const parts = pick(rng, NL_BOTTOMS); const top = randInt(rng, 2, parts - 1 > 1 ? parts - 1 : parts);
-    return { type: 'number', story: `Think about ${top}/${parts}.`, prompt: `How many pieces of 1/${parts} is that?`, choices: [], answer: String(top),
+    return { type: 'number', story: null, prompt: `How many pieces of 1/${parts} are in ${top}/${parts}?`, choices: [], answer: String(top),
       explain: `${top}/${parts} is ${Array.from({ length: top }, () => `1/${parts}`).join(' + ')}. That is ${top} pieces.`, visual: { kind: 'bar', parts, shaded: top }, explainVisual: null };
   },
   'bf-sum-of-units': (rng) => {
@@ -15009,7 +15009,7 @@ Object.assign(GENERATORS, {
     const [w, pair] = pick(rng, DIGRAPH_WORDS);
     const twin = pick(rng, DIGRAPH_WORDS.filter((x) => x[1] === pair && x[0] !== w))[0];
     const other = pick(rng, DIGRAPH_WORDS.filter((x) => x[1] !== pair))[0];
-    return { type: 'choice', story: `${capWord(w)}.`, prompt: `Which word has the same two-letter sound as ${w}?`, choices: shuffle(rng, [twin, other]), answer: twin,
+    return { type: 'choice', story: `${capWord(w)}.`, prompt: `Which word has the same two-letter sound as the word ${w}?`, choices: shuffle(rng, [twin, other]), answer: twin,
       explain: `${w} and ${twin} both have ${pair}.`, visual: { kind: 'letters', text: w }, explainVisual: null };
   },
   'r1-odd-pair': (rng) => {
@@ -15100,7 +15100,7 @@ Object.assign(GENERATORS, {
   'r1-true-false': (rng) => {
     const name = pick(rng, STORY_NAMES); const animal = pick(rng, STORY_ANIMALS); const place = pick(rng, STORY_PLACES); const yes = randInt(rng, 0, 1) === 1;
     const claimPlace = yes ? place : pick(rng, STORY_PLACES.filter((x) => x !== place));
-    return { type: 'choice', story: `${name} has a ${animal}. The ${animal} ran to ${place}.`, prompt: `Is this true? The ${animal} ran to ${claimPlace}.`, choices: ['Yes', 'No'], answer: yes ? 'Yes' : 'No',
+    return { type: 'choice', story: `${name} has a ${animal}. The ${animal} ran to ${place}.`, prompt: `In the story, did the ${animal} run to ${claimPlace}?`, choices: ['Yes', 'No'], answer: yes ? 'Yes' : 'No',
       explain: yes ? `Yes. The story says ${place}.` : `No. The story says ${place}, not ${claimPlace}.`, visual: null, explainVisual: null };
   },
 });
@@ -15114,7 +15114,7 @@ const nearNumbers = (rng, right, lo, hi, n = 4) => {
 Object.assign(GENERATORS, {
   'g1-ten-and': (rng) => {
     const ones = randInt(rng, 1, 9);
-    return { type: 'choice', story: `Ten and ${ones} more.`, prompt: 'What number is that?', choices: nearNumbers(rng, 10 + ones, 10, 20), answer: String(10 + ones),
+    return { type: 'choice', story: `Ten and ${ones} more.`, prompt: 'What number is this?', choices: nearNumbers(rng, 10 + ones, 10, 20), answer: String(10 + ones),
       explain: `Ten and ${ones} is ${10 + ones}.`, visual: { kind: 'tenframe', filled: 10 }, explainVisual: { kind: 'dots', count: ones } };
   },
   'g1-teen-split': (rng) => {
@@ -15190,7 +15190,7 @@ Object.assign(GENERATORS, {
   },
   'g1-tens-ones': (rng) => {
     const tens = randInt(rng, 2, 9); const ones = randInt(rng, 1, 9);
-    return { type: 'choice', story: `${tens} tens and ${ones} ones.`, prompt: 'What number is that?', choices: nearNumbers(rng, tens * 10 + ones, 10, 99), answer: String(tens * 10 + ones),
+    return { type: 'choice', story: `${tens} tens and ${ones} ones.`, prompt: 'What number is this?', choices: nearNumbers(rng, tens * 10 + ones, 10, 99), answer: String(tens * 10 + ones),
       explain: `${tens} tens is ${tens * 10}. And ${ones} ones. ${tens * 10 + ones}.`, visual: { kind: 'tens', count: tens }, explainVisual: { kind: 'dots', count: ones } };
   },
   'g1-how-many-tens': (rng) => {
@@ -15255,7 +15255,7 @@ const hourWord = (h) => ['twelve', 'one', 'two', 'three', 'four', 'five', 'six',
 Object.assign(GENERATORS, {
   'g2-place-value': (rng) => {
     const h = randInt(rng, 1, 9); const t = randInt(rng, 0, 9); const o = randInt(rng, 0, 9);
-    return { type: 'number', story: `${h} hundreds, ${t} tens and ${o} ones.`, prompt: 'What number is that?', choices: [], answer: String(h * 100 + t * 10 + o),
+    return { type: 'number', story: `${h} hundreds, ${t} tens and ${o} ones.`, prompt: 'What number is this?', choices: [], answer: String(h * 100 + t * 10 + o),
       explain: `${h * 100} + ${t * 10} + ${o} = ${h * 100 + t * 10 + o}.`, visual: { kind: 'bars', lengths: [h, Math.max(1, t), Math.max(1, o)] }, explainVisual: null };
   },
   'g2-expanded': (rng) => {
@@ -15969,17 +15969,17 @@ Object.assign(GENERATORS, {
     if (rng() < 0.5) { const r = randInt(rng, 1, 6); const h = randInt(rng, 2, 10); const v = r * r * h; const ans = `${v} pi`;
       const choices = [...new Set([ans, `${2 * r * h} pi`, `${r * h} pi`, `${2 * v} pi`, `${v + h} pi`, `${v + 1} pi`])].slice(0, 3); // always three different numbers
       return { type: 'choice', story: null, prompt: `A can has radius ${r} and height ${h}. Its volume, in terms of pi?`, choices: shuffle(rng, choices), answer: ans, explain: `Pi times ${r} squared times ${h}: ${v} pi.`, visual: null, explainVisual: null }; }
-    const Q = [['A can has radius 2 and height 5. Its volume, in terms of pi?', ['20 pi', '10 pi', '7 pi'], '20 pi', 'Volume of a cylinder is pi times radius squared times height: pi times 4 times 5.'], ['What is the base of a cylinder?', ['a circle', 'a square', 'a triangle'], 'a circle', 'A cylinder is a circle stacked up: base area times height.'], ['Doubling the height of a can does what to its volume?', ['doubles it', 'quadruples it', 'halves it'], 'doubles it', 'Height is multiplied once, so the volume doubles.'], ['Doubling the radius of a can does what to its volume?', ['quadruples it', 'doubles it', 'halves it'], 'quadruples it', 'Radius is squared, so doubling it multiplies the volume by four.'], ['Which formula is the volume of a cylinder?', ['pi times r squared times h', '2 times pi times r', 'pi times r times h'], 'pi times r squared times h', 'Base area, pi r squared, times height.'], ['A cone and a cylinder share a base and height. The cone holds?', ['one third', 'one half', 'the same'], 'one third', 'A cone is a third of the cylinder around it.'], ];
+    const Q = [['A can has radius 2 and height 5. Its volume, in terms of pi?', ['20 pi', '10 pi', '7 pi'], '20 pi', 'Volume of a cylinder is pi times radius squared times height: pi times 4 times 5.'], ['What is the base of a cylinder?', ['a circle', 'a square', 'a triangle'], 'a circle', 'A cylinder is a circle stacked up: base area times height.'], ['Doubling the height of a can does what to its volume?', ['doubles it', 'quadruples it', 'halves it'], 'doubles it', 'Height is multiplied once, so the volume doubles.'], ['Doubling the radius of a can does what to its volume?', ['quadruples it', 'doubles it', 'halves it'], 'quadruples it', 'Radius is squared, so doubling it multiplies the volume by four.'], ['Which formula is the volume of a cylinder?', ['pi times r squared times h', '2 times pi times r', 'pi times r times h'], 'pi times r squared times h', 'Base area, pi r squared, times height.'], ['A cone shares a cylinder\'s base and height. What part does it hold?', ['one third', 'one half', 'the same'], 'one third', 'A cone is a third of the cylinder around it.'], ];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
   'r3-context': (rng) => {
-    const Q = [['The word is unfamiliar. Where do you look first?', ['at the words around it', 'at the cover', 'at the page number'], 'at the words around it', 'Context clues: the nearby words often say what the new word means.'], ['The frigid wind made her shiver. What does frigid mean?', ['very cold', 'very warm', 'very loud'], 'very cold', 'Shiver is the clue: frigid means very cold.'], ['He was famished, so he ate three plates. Famished means?', ['very hungry', 'very tired', 'very happy'], 'very hungry', 'Three plates is the clue. Famished means very hungry.'], ['A sentence says a word, then or in other words. What follows?', ['a meaning of the word', 'a new topic', 'a question'], 'a meaning of the word', 'Words like or and in other words introduce a definition.'], ['What kind of clue is an example after a word?', ['a context clue', 'a picture clue', 'a title clue'], 'a context clue', 'Examples nearby show what a word covers.'], ['If the clues run out, what do you use?', ['a dictionary', 'a guess', 'nothing'], 'a dictionary', 'Clues first, then the dictionary for the exact meaning.'], ];
+    const Q = [['The word is unfamiliar. Where do you look first?', ['at the words around it', 'at the cover', 'at the page number'], 'at the words around it', 'Context clues: the nearby words often say what the new word means.'], ['The frigid wind made her shiver. What does frigid mean?', ['very cold', 'very warm', 'very loud'], 'very cold', 'Shiver is the clue: frigid means very cold.'], ['He was famished, so he ate three plates. What does famished mean?', ['very hungry', 'very tired', 'very happy'], 'very hungry', 'Three plates is the clue. Famished means very hungry.'], ['A sentence says a word, then or in other words. What follows?', ['a meaning of the word', 'a new topic', 'a question'], 'a meaning of the word', 'Words like or and in other words introduce a definition.'], ['What kind of clue is an example after a word?', ['a context clue', 'a picture clue', 'a title clue'], 'a context clue', 'Examples nearby show what a word covers.'], ['If the clues run out, what do you use?', ['a dictionary', 'a guess', 'nothing'], 'a dictionary', 'Clues first, then the dictionary for the exact meaning.'], ];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
   'r3-character': (rng) => {
-    const Q = [['Where and when a story happens is called what?', ['the setting', 'the plot', 'the theme'], 'the setting', 'Setting is the where and the when.'], ['A character keeps helping others. What is that telling you?', ['what the character is like', 'the setting', 'the ending'], 'what the character is like', 'Actions show character traits. Helping shows kindness.'], ['Which is a character trait?', ['brave', 'tall', 'red'], 'brave', 'A trait is a way of acting or being: brave, honest, shy.'], ['A story opens in a snowy village at night. Snowy and night are?', ['the setting', 'a character', 'the moral'], 'the setting', 'Place and time: the setting.'], ['How do you learn what a character wants?', ['from what they say and do', 'from the title', 'from the page count'], 'from what they say and do', 'Words and actions reveal what a character wants.'], ['A character changes from scared to brave. What is that called?', ['character growth', 'setting', 'rhyme'], 'character growth', 'Characters grow when the story changes them.'], ];
+    const Q = [['Where and when a story happens is called what?', ['the setting', 'the plot', 'the theme'], 'the setting', 'Setting is the where and the when.'], ['A character keeps helping others. What is that telling you?', ['what the character is like', 'the setting', 'the ending'], 'what the character is like', 'Actions show character traits. Helping shows kindness.'], ['Which is a character trait?', ['brave', 'tall', 'red'], 'brave', 'A trait is a way of acting or being: brave, honest, shy.'], ['A story opens in a snowy village at night. Which story part is that?', ['the setting', 'a character', 'the moral'], 'the setting', 'Place and time: the setting.'], ['How do you learn what a character wants?', ['from what they say and do', 'from the title', 'from the page count'], 'from what they say and do', 'Words and actions reveal what a character wants.'], ['A character changes from scared to brave. What is that called?', ['character growth', 'setting', 'rhyme'], 'character growth', 'Characters grow when the story changes them.'], ];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
@@ -16013,7 +16013,7 @@ Object.assign(GENERATORS, {
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
   'sc5-forces': (rng) => {
-    const Q = [['A ball rolls and slows on the grass. What slowed it?', ['friction', 'gravity pulling up', 'magnetism'], 'friction', 'Rough grass rubs against the ball: friction slows it.'], ['You push a cart and it speeds up. What did the push change?', ['its motion', 'its color', 'its weight'], 'its motion', 'A force changes motion: starts, stops, speeds, slows, turns.'], ['Two people push a box equally from opposite sides. Then?', ['it stays still', 'it moves left', 'it spins'], 'it stays still', 'Balanced forces cancel. No change in motion.'], ['Which force pulls everything toward the Earth?', ['gravity', 'friction', 'a magnet'], 'gravity', 'Gravity pulls down, everywhere, all the time.'], ['A heavier cart needs what to speed up the same amount?', ['a bigger push', 'a smaller push', 'the same push'], 'a bigger push', 'More mass takes more force for the same change.'], ['Unbalanced forces do what?', ['change motion', 'keep things still', 'only slow things'], 'change motion', 'When one side wins, motion changes.'], ];
+    const Q = [['A ball rolls and slows on the grass. What slowed it?', ['friction', 'gravity pulling up', 'magnetism'], 'friction', 'Rough grass rubs against the ball: friction slows it.'], ['You push a cart and it speeds up. What did the push change?', ['its motion', 'its color', 'its weight'], 'its motion', 'A force changes motion: starts, stops, speeds, slows, turns.'], ['Two people push a box equally from opposite sides. What happens?', ['it stays still', 'it moves left', 'it spins'], 'it stays still', 'Balanced forces cancel. No change in motion.'], ['Which force pulls everything toward the Earth?', ['gravity', 'friction', 'a magnet'], 'gravity', 'Gravity pulls down, everywhere, all the time.'], ['A heavier cart needs what to speed up the same amount?', ['a bigger push', 'a smaller push', 'the same push'], 'a bigger push', 'More mass takes more force for the same change.'], ['Unbalanced forces do what?', ['change motion', 'keep things still', 'only slow things'], 'change motion', 'When one side wins, motion changes.'], ];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
@@ -16057,7 +16057,7 @@ Object.assign(GENERATORS, {
     if (rng() < 0.5) { const r = randInt(rng, 1, 8); const b = randInt(rng, 1, 8); const t = r + b; const red = rng() < 0.5; const want = red ? r : b; const other = red ? b : r; const ans = `${want} out of ${t}`;
       const choices = [...new Set([ans, `${other} out of ${t}`, `${want} out of ${other}`, `1 out of ${t}`, `${t} out of ${want}`])].slice(0, 3);
       return { type: 'choice', story: `A bag has ${r} red and ${b} blue marbles.`, prompt: `What is the chance of ${red ? 'red' : 'blue'}?`, choices: shuffle(rng, choices), answer: ans, explain: `Count the ${red ? 'red' : 'blue'} marbles, ${want}, over all ${t}.`, visual: null, explainVisual: null }; }
-    const Q = [['A coin flip lands heads how often, in the long run?', ['about half the time', 'always', 'never'], 'about half the time', 'Two equal outcomes: heads is one of two.'], ['A bag has 3 red and 1 blue marble. What is the chance of red?', ['3 out of 4', '1 out of 4', '1 out of 3'], '3 out of 4', 'Three red out of four marbles.'], ['Which event is certain?', ['the sun rising tomorrow', 'rolling a 7 on a die', 'rain today'], 'the sun rising tomorrow', 'Certain means it will happen: probability 1.'], ['Which event is impossible?', ['rolling a 7 on a die', 'rolling a 1', 'rain today'], 'rolling a 7 on a die', 'A die has 1 to 6. Seven never comes: probability 0.'], ['You roll a die 60 times. About how many sixes?', ['about 10', 'about 30', 'about 60'], 'about 10', 'One in six of sixty rolls is ten.'], ['A spinner has 5 equal parts, 2 shaded. Chance of shaded?', ['2 out of 5', '5 out of 2', '2 out of 3'], '2 out of 5', 'Two shaded parts out of five equal parts.'], ];
+    const Q = [['A coin flip lands heads how often, in the long run?', ['about half the time', 'always', 'never'], 'about half the time', 'Two equal outcomes: heads is one of two.'], ['A bag has 3 red and 1 blue marble. What is the chance of red?', ['3 out of 4', '1 out of 4', '1 out of 3'], '3 out of 4', 'Three red out of four marbles.'], ['Which event is certain?', ['the sun rising tomorrow', 'rolling a 7 on a die', 'rain today'], 'the sun rising tomorrow', 'Certain means it will happen: probability 1.'], ['Which event is impossible?', ['rolling a 7 on a die', 'rolling a 1', 'rain today'], 'rolling a 7 on a die', 'A die has 1 to 6. Seven never comes: probability 0.'], ['You roll a die 60 times. About how many sixes will you get?', ['about 10', 'about 30', 'about 60'], 'about 10', 'One in six of sixty rolls is ten.'], ['A spinner has 5 equal parts, 2 shaded. What is the chance of shaded?', ['2 out of 5', '5 out of 2', '2 out of 3'], '2 out of 5', 'Two shaded parts out of five equal parts.'], ];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
@@ -16066,7 +16066,7 @@ Object.assign(GENERATORS, {
     if (rng() < 0.5) { const k = pick(rng, [2, 5, 10, 20, 25, 50]); const n = randInt(rng, 2, 9); const prod = k * n; const ans = `${prod} miles`;
       const choices = [...new Set([ans, `${prod + k} miles`, `${k + n} miles`, `${prod + 2 * k} miles`])].slice(0, 3);
       return { type: 'choice', story: null, prompt: `1 inch is ${k} miles. Two towns are ${n} inches apart. How far?`, choices: shuffle(rng, choices), answer: ans, explain: `Each inch is ${k} miles: ${n} times ${k} is ${prod}.`, visual: null, explainVisual: null }; }
-    const Q = [['1 inch is 10 miles. Two towns are 3 inches apart. How far?', ['30 miles', '3 miles', '13 miles'], '30 miles', 'Each inch is ten miles: 3 times 10.'], ['A drawing is at scale 1 to 4. A wall drawn 5 inches long is how long?', ['20 inches', '5 inches', '9 inches'], '20 inches', 'Every inch on paper is four in the room: 5 times 4.'], ['A scale drawing keeps what the same?', ['the shape', 'the size', 'the color'], 'the shape', 'Every length changes by the same factor, so the shape stays.'], ['A photo is enlarged by a factor of 3. A 2-inch nose becomes?', ['6 inches', '5 inches', '2 inches'], '6 inches', 'Every length times three.'], ['A model car is 1 to 20. The real car is 4 meters long. The model?', ['20 centimeters', '80 centimeters', '4 centimeters'], '20 centimeters', 'Four meters is 400 centimeters; divide by 20.'], ['What is the scale factor from a 2 cm square to an 8 cm square?', ['4', '2', '6'], '4', 'Eight is four times two.'], ];
+    const Q = [['1 inch is 10 miles. Two towns are 3 inches apart. How far?', ['30 miles', '3 miles', '13 miles'], '30 miles', 'Each inch is ten miles: 3 times 10.'], ['A drawing is at scale 1 to 4. A wall drawn 5 inches long is how long?', ['20 inches', '5 inches', '9 inches'], '20 inches', 'Every inch on paper is four in the room: 5 times 4.'], ['A scale drawing keeps what the same?', ['the shape', 'the size', 'the color'], 'the shape', 'Every length changes by the same factor, so the shape stays.'], ['Enlarged by a factor of 3, how long is a 2-inch nose?', ['6 inches', '5 inches', '2 inches'], '6 inches', 'Every length times three.'], ['A 1 to 20 model of a 4-meter car is how long?', ['20 centimeters', '80 centimeters', '4 centimeters'], '20 centimeters', 'Four meters is 400 centimeters; divide by 20.'], ['What is the scale factor from a 2 cm square to an 8 cm square?', ['4', '2', '6'], '4', 'Eight is four times two.'], ];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
@@ -16101,7 +16101,7 @@ Object.assign(GENERATORS, {
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
   'r7-structure': (rng) => {
-    const Q = [['An article lists events in the order they happened. What structure?', ['chronological', 'compare and contrast', 'problem and solution'], 'chronological', 'Time order, first to last.'], ['An article describes a problem, then a fix. What structure?', ['problem and solution', 'description', 'chronological'], 'problem and solution', 'A problem, then what was done about it.'], ['An article says how two cities are alike and different. Structure?', ['compare and contrast', 'cause and effect', 'sequence'], 'compare and contrast', 'Alike and different, side by side.'], ['Which words signal compare and contrast?', ['however, similarly', 'first, next', 'because, so'], 'however, similarly', 'However contrasts; similarly compares.'], ['Which words signal problem and solution?', ['the trouble was, one answer', 'then, after', 'like, unlike'], 'the trouble was, one answer', 'Trouble, then answer.'], ['Why does structure matter to a reader?', ['it tells you what to look for next', 'it makes the text longer', 'it does not'], 'it tells you what to look for next', 'Know the shape and you know where the next idea will be.'],
+    const Q = [['An article lists events in the order they happened. What structure?', ['chronological', 'compare and contrast', 'problem and solution'], 'chronological', 'Time order, first to last.'], ['An article describes a problem, then a fix. What structure?', ['problem and solution', 'description', 'chronological'], 'problem and solution', 'A problem, then what was done about it.'], ['Which structure shows how two cities are alike and different?', ['compare and contrast', 'cause and effect', 'sequence'], 'compare and contrast', 'Alike and different, side by side.'], ['Which words signal compare and contrast?', ['however, similarly', 'first, next', 'because, so'], 'however, similarly', 'However contrasts; similarly compares.'], ['Which words signal problem and solution?', ['the trouble was, one answer', 'then, after', 'like, unlike'], 'the trouble was, one answer', 'Trouble, then answer.'], ['Why does structure matter to a reader?', ['it tells you what to look for next', 'it makes the text longer', 'it does not'], 'it tells you what to look for next', 'Know the shape and you know where the next idea will be.'],
       // More questions (pass HX), so a round never needs a repeat.
       ['A recipe lists its steps in order. What structure?', ['chronological', 'compare and contrast', 'problem and solution', 'cause and effect'], 'chronological', 'Things in the order they happen.'],
       ['Cats and dogs as pets, side by side. What structure?', ['compare and contrast', 'chronological', 'problem and solution', 'cause and effect'], 'compare and contrast', 'Alike and different.'],
@@ -16111,11 +16111,11 @@ Object.assign(GENERATORS, {
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
   'r8-author-purpose': (rng) => {
-    const Q = [['A pamphlet urges you to vote for a candidate. Purpose?', ['to persuade', 'to inform', 'to entertain'], 'to persuade', 'It wants you to do something.'], ['An encyclopedia entry on volcanoes. Purpose?', ['to inform', 'to persuade', 'to entertain'], 'to inform', 'Facts, laid out to teach.'], ['A comic about a cat who cannot find its bed. Purpose?', ['to entertain', 'to inform', 'to persuade'], 'to entertain', 'A story for the fun of it.'], ['An author leaves out the costs of a plan. What might that show?', ['a bias', 'a mistake in printing', 'nothing'], 'a bias', 'Leaving out the other side leans the text.'], ['Two accounts of one event disagree. What should a reader ask?', ['who wrote each and why', 'which is shorter', 'which has pictures'], 'who wrote each and why', 'The author and purpose explain the difference.'], ['A word like should in an article signals what?', ['an opinion', 'a fact', 'a date'], 'an opinion', 'Should tells you what the author wants, not what is.'],
+    const Q = [['A pamphlet urges you to vote for a candidate. What is its purpose?', ['to persuade', 'to inform', 'to entertain'], 'to persuade', 'It wants you to do something.'], ['An encyclopedia entry on volcanoes. What is its purpose?', ['to inform', 'to persuade', 'to entertain'], 'to inform', 'Facts, laid out to teach.'], ['A comic about a cat who cannot find its bed. What is its purpose?', ['to entertain', 'to inform', 'to persuade'], 'to entertain', 'A story for the fun of it.'], ['An author leaves out the costs of a plan. What might that show?', ['a bias', 'a mistake in printing', 'nothing'], 'a bias', 'Leaving out the other side leans the text.'], ['Two accounts of one event disagree. What should a reader ask?', ['who wrote each and why', 'which is shorter', 'which has pictures'], 'who wrote each and why', 'The author and purpose explain the difference.'], ['A word like should in an article signals what?', ['an opinion', 'a fact', 'a date'], 'an opinion', 'Should tells you what the author wants, not what is.'],
       // More questions (pass HX), so a round never needs a repeat.
-      ['An ad for a new phone. Purpose?', ['to persuade', 'to inform', 'to entertain', 'to apologize'], 'to persuade', 'It wants you to buy.'],
-      ['A funny story about a dog who loves socks. Purpose?', ['to entertain', 'to persuade', 'to inform', 'to warn'], 'to entertain', 'It is there to delight you.'],
-      ['A news report on a storm\'s path. Purpose?', ['to inform', 'to entertain', 'to persuade', 'to sell'], 'to inform', 'It gives facts.'],
+      ['An ad for a new phone. What is its purpose?', ['to persuade', 'to inform', 'to entertain', 'to apologize'], 'to persuade', 'It wants you to buy.'],
+      ['A funny story about a dog who loves socks. What is its purpose?', ['to entertain', 'to persuade', 'to inform', 'to warn'], 'to entertain', 'It is there to delight you.'],
+      ['A news report on a storm\'s path. What is its purpose?', ['to inform', 'to entertain', 'to persuade', 'to sell'], 'to inform', 'It gives facts.'],
       ['Purpose explains what a text includes. Bias explains what?', ['what it leaves out', 'its length', 'its title', 'its price'], 'what it leaves out', 'Then ask what is missing.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
@@ -16125,8 +16125,8 @@ Object.assign(GENERATORS, {
       // More questions (pass HX), so a round never needs a repeat.
       ['Honesty alone, a single word, is a what?', ['a topic', 'a theme', 'a moral', 'a plot'], 'a topic', 'A theme is a sentence.'],
       ['What the character learns is what?', ['what the story says', 'the setting', 'the title', 'the topic'], 'what the story says', 'Track what changes.'],
-      ['Kindness can turn an enemy into a friend. Theme or topic?', ['a theme', 'a topic', 'a setting', 'a plot'], 'a theme', 'It is a full sentence about life.'],
-      ['One message, many what?', ['stories', 'authors', 'titles', 'pages'], 'stories', 'Different texts can share one theme.']];
+      ['Kindness can turn an enemy into a friend. Is that a theme or a topic?', ['a theme', 'a topic', 'a setting', 'a plot'], 'a theme', 'It is a full sentence about life.'],
+      ['One theme can run through many what?', ['stories', 'authors', 'titles', 'pages'], 'stories', 'Different texts can share one theme.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
@@ -16810,7 +16810,7 @@ Object.assign(GENERATORS, {
       ['Which is a healthy way to handle stress?', ['slow breathing', 'bottling it', 'taking it out on someone', 'avoiding the thing'], 'slow breathing', 'Also moving, sleep, steps, and a trusted adult.'],
       ['Which is an unhealthy way to handle stress?', ['bottling it', 'moving your body', 'sleep', 'telling a trusted adult'], 'bottling it', 'Or taking it out on someone, or avoiding the thing until it grows.'],
       ['Bouncing back after a hard thing is called what?', ['resilience', 'stress', 'adrenaline', 'attention'], 'resilience', 'It is a skill, built by the healthy ways.'],
-      ['Thoughts, feelings and actions pull on each other. Change one, and?', ['the others change', 'nothing changes', 'only feelings change', 'you forget'], 'the others change', 'Three corners of a triangle.'],
+      ['Thoughts, feelings and actions are linked. What if you change one?', ['the others change', 'nothing changes', 'only feelings change', 'you forget'], 'the others change', 'Three corners of a triangle.'],
       // More questions (pass HU), so a round never needs a repeat.
       ['Which feeling says something is unfair or in the way?', ['anger', 'joy', 'sadness', 'fear'], 'anger', 'Every feeling is a signal with a job.'],
       ['Which feeling says do that again?', ['joy', 'anger', 'fear', 'sadness'], 'joy', 'A good signal, worth reading too.'],
@@ -16986,7 +16986,7 @@ Object.assign(GENERATORS, {
       ['What does a talk\'s opener do?', ['makes people look up', 'thanks everyone', 'lists every fact', 'ends the talk'], 'makes people look up', 'Then comes the stance.'],
       ['What does a talk\'s closer say?', ['the stance again in different words', 'a brand new idea', 'nothing at all', 'the opener again word for word'], 'the stance again in different words', 'It brings the talk home.'],
       ['In a talk, where do you aim your volume?', ['the back row', 'the front row', 'your notes', 'the floor'], 'the back row', 'Rate slower, volume to the back.'],
-      ['Where should your hands stay out of?', ['your pockets', 'the air', 'your gestures', 'the story'], 'your pockets', 'Let them move as when you tell a friend a story.']];
+      ['What should your hands stay out of?', ['your pockets', 'the air', 'your gestures', 'the story'], 'your pockets', 'Let them move as when you tell a friend a story.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
@@ -18290,7 +18290,7 @@ Object.assign(GENERATORS, {
   'ak-beat': (rng) => {
     const Q = [['Tap, tap, tap, tap, always the same. What is that?', ['the steady beat', 'the rhythm', 'silence'], 'the steady beat', 'A steady beat is the same every time, like your heart.'],
       ['The pattern of the words on top of the beat is called what?', ['rhythm', 'beat', 'pitch'], 'rhythm', 'Clap your name: quick and slow claps. That is rhythm.'],
-      ['A bird sings how?', ['high', 'low', 'loud'], 'high', 'A bird sings high; a big drum sounds low.'],
+      ['How does a bird sing?', ['high', 'low', 'loud'], 'high', 'A bird sings high; a big drum sounds low.'],
       ['A big drum sounds how?', ['low', 'high', 'soft'], 'low', 'A big drum sounds low.'],
       ['A lullaby is which?', ['soft and slow', 'loud and fast', 'high and loud'], 'soft and slow', 'A lullaby is soft and slow; a marching song is loud and steady.'],
       ['The quiet between the sounds is called what?', ['silence', 'rhythm', 'a pattern'], 'silence', 'Silence is part of music too.']];
@@ -18410,7 +18410,7 @@ Object.assign(GENERATORS, {
     }
     const Q = [['Bach wrote in which period?', ['Baroque', 'Classical', 'Romantic', 'jazz'], 'Baroque', 'Bach, who died in 1750, wrote in the Baroque period.'],
       ['Mozart wrote in which period?', ['Classical', 'Baroque', 'Romantic', 'blues'], 'Classical', 'Mozart, who died in 1791, wrote in the Classical period.'],
-      ['Jazz grew up where?', ['New Orleans', 'Vienna', 'along the Texas border', 'London'], 'New Orleans', 'Jazz grew up in New Orleans in the early 1900s.'],
+      ['Where did jazz grow up?', ['New Orleans', 'Vienna', 'along the Texas border', 'London'], 'New Orleans', 'Jazz grew up in New Orleans in the early 1900s.'],
       ['Conjunto grew up where, with its button accordion?', ['along the Texas border', 'New Orleans', 'Vienna', 'Paris'], 'along the Texas border', 'Conjunto grew up along the Texas border.'],
       ['Whether the notes are in tune is which criterion?', ['intonation', 'balance', 'tone', 'expression'], 'intonation', 'Intonation: are the notes in tune?'],
       ['Whether you can hear every part is which criterion?', ['balance', 'rhythm', 'tone', 'intonation'], 'balance', 'Balance: can you hear every part?'],
@@ -18468,14 +18468,14 @@ Object.assign(GENERATORS, {
       ['One line alone is which texture?', ['monophony', 'homophony', 'polyphony', 'harmony'], 'monophony', 'Several independent lines are polyphony.'],
       ['Loudness from pianissimo to fortissimo is what?', ['dynamics', 'meter', 'key', 'texture'], 'dynamics', 'Timbre is the color of a sound.'],
       ['Which meters group beats in twos and threes?', ['simple meters', 'compound meters', 'asymmetric meters', 'no meters'], 'simple meters', 'Like 2/4 and 3/4.'],
-      ['What should an informed ear wear at loud shows?', ['earplugs', 'headphones on full', 'nothing', 'a hat'], 'earplugs', 'Loud music damages hearing slowly.'],
+      ['What should an informed listener wear at loud shows?', ['earplugs', 'headphones on full', 'nothing', 'a hat'], 'earplugs', 'Loud music damages hearing slowly.'],
       ['A triad is built from a root, a third and what?', ['a fifth', 'a second', 'an octave', 'a ninth'], 'a fifth', 'The commonest chord.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
   'a9-society': (rng) => {
     const Q = [['Where ethics and copyright meet in music is called what?', ['sampling', 'tuning', 'phrasing', 'meter'], 'sampling', 'Sampling let one song be built from another.'],
-      ['Streaming pays musicians how?', ['by the play', 'by the hour', 'by the concert', 'by the page'], 'by the play', 'A fraction of a cent each.'],
+      ['How does streaming pay musicians?', ['by the play', 'by the hour', 'by the concert', 'by the page'], 'by the play', 'A fraction of a cent each.'],
       ['Which is a criterion for judging a performance?', ['intonation', 'ticket price', 'the weather', 'the poster'], 'intonation', 'Intonation, rhythm, tone, phrasing, dynamics and balance.'],
       ['A performance should be compared to what?', ['an exemplary model', 'the loudest recording', 'a music video', 'the cheapest show'], 'an exemplary model', 'A recording the field agrees is fine.'],
       ['When does an informed audience applaud?', ['when a piece ends', 'between movements', 'during the quiet part', 'when the phone rings'], 'when a piece ends', 'Hold applause until a piece ends.'],
@@ -18577,8 +18577,8 @@ Object.assign(GENERATORS, {
   },
   't5-if-then': (rng) => {
     const Q = [['IF it is cold THEN wear a coat. It is cold. What happens?', ['wear a coat', 'nothing', 'take the coat off'], 'wear a coat', 'The condition is true, so the THEN step runs.'], ['A condition must be what kind of question?', ['yes or no', 'a long one', 'a math one only'], 'yes or no', 'If you cannot answer it yes or no, it is not a condition yet.'],['IF it is raining THEN take an umbrella. It is sunny. What happens?', ['nothing, the condition is false', 'take an umbrella', 'the program stops'], 'nothing, the condition is false', 'An if-then runs its step only when the condition is true. False, and it is skipped.'],
-      ['IF score is more than 10 THEN say You win. Score is 12. Then?', ['it says You win', 'nothing', 'score becomes 10'], 'it says You win', 'Twelve is more than ten, so the condition is true and the step runs.'],
-      ['IF the door is open THEN close it, ELSE open it. It is closed. Then?', ['it opens the door', 'it closes the door', 'nothing'], 'it opens the door', 'ELSE is the other road: when the IF is false, the ELSE step runs.']];
+      ['IF score is more than 10 THEN say You win. Score is 12. What happens?', ['it says You win', 'nothing', 'score becomes 10'], 'it says You win', 'Twelve is more than ten, so the condition is true and the step runs.'],
+      ['The door is shut. IF open THEN close it, ELSE open it. What happens?', ['it opens the door', 'it closes the door', 'nothing'], 'it opens the door', 'ELSE is the other road: when the IF is false, the ELSE step runs.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
@@ -18611,7 +18611,7 @@ Object.assign(GENERATORS, {
   },
   't7-safety': (rng) => {
     const Q = [['Which message is the fingerprint of a scam?', ['urgent, secret, now', 'a birthday note', 'a homework reminder'], 'urgent, secret, now', 'Urgency and secrecy together are the trick. Real accounts do not rush you.'], ['Why is a longer password stronger?', ['there are too many patterns to try', 'it looks nicer', 'it is easier to type'], 'there are too many patterns to try', 'Every letter multiplies the patterns. Length beats cleverness.'],['Which password is strongest?', ['a long phrase of four unrelated words', 'your birthday', 'password123'], 'a long phrase of four unrelated words', 'Length beats cleverness. Four unrelated words are long, easy to remember and hard to guess.'],
-      ['A message says click now, your account is locked. Safest move?', ['go to the site yourself, not through the link', 'click the link quickly', 'reply with your password'], 'go to the site yourself, not through the link', 'Urgency is the trick. Open the site the way you always do and check there.'],
+      ['A message says click now, your account is locked. What do you do?', ['go to the site yourself, not through the link', 'click the link quickly', 'reply with your password'], 'go to the site yourself, not through the link', 'Urgency is the trick. Open the site the way you always do and check there.'],
       ['What does two-step sign-in add?', ['a second proof, like a code on your phone', 'a second password', 'nothing'], 'a second proof, like a code on your phone', 'A stolen password alone is not enough when a second proof is needed.'],
       // More questions (pass HX), so a round never needs a repeat.
       ['A password protects what?', ['a door', 'a window', 'a phone book', 'a packet'], 'a door', 'Length beats cleverness.'],
@@ -18781,7 +18781,7 @@ Object.assign(GENERATORS, {
   'g7-what-percent': (rng) => {
     const base = pick(rng, [20, 40, 60, 80, 100, 200]); const pct = pick(rng, [10, 20, 25, 50, 75]); const part = base * pct / 100; // every pair here gives a whole number of students
     const wrongs = [pct + 10, pct - 5, part].filter((x) => x !== pct && x > 0);
-    return { type: 'choice', story: `${part} out of ${base} students walk to school.`, prompt: 'What percent is that?', choices: shuffle(rng, [pct, ...[...new Set(wrongs)].slice(0, 3)].map((x) => `${x}%`)), answer: `${pct}%`,
+    return { type: 'choice', story: `${part} out of ${base} students walk to school.`, prompt: 'What percent is this?', choices: shuffle(rng, [pct, ...[...new Set(wrongs)].slice(0, 3)].map((x) => `${x}%`)), answer: `${pct}%`,
       explain: `${part}/${base} = ${pct}/100.`, visual: { kind: 'groups', a: part, b: base - part, aLabel: 'walk', bLabel: 'do not' }, explainVisual: { kind: 'percentgrid', shaded: pct } };
   },
   'g7-add-integers': (rng) => {
@@ -19831,7 +19831,7 @@ Object.assign(GENERATORS, {
   },
   'r12-if-it-began': (rng) => {
     const sc = pick(rng, STRUCTURE_CHOICES);
-    return { type: 'choice', story: `${sc.setup}\nThe author wants this: ${sc.otherEffect.toLowerCase()}.`, prompt: 'Which choice would do that?', choices: shuffle(rng, [sc.other, sc.choice]), answer: sc.other,
+    return { type: 'choice', story: `${sc.setup}\nThe author wants this: ${sc.otherEffect.toLowerCase()}.`, prompt: 'Which choice would do this?', choices: shuffle(rng, [sc.other, sc.choice]), answer: sc.other,
       explain: 'Where a story begins or ends decides what it is about.', visual: null, explainVisual: null };
   },
 
@@ -19910,7 +19910,7 @@ Object.assign(GENERATORS, {
   },
   'gc-cause-or-correlate': (rng) => {
     const c = pick(rng, CAUSE_CASES);
-    return { type: 'choice', story: c.text, prompt: 'Correlation or causation?', choices: shuffle(rng, ['Correlation, with a third factor', 'Causation, shown by an experiment']), answer: c.verdict,
+    return { type: 'choice', story: c.text, prompt: 'Is this correlation or causation?', choices: shuffle(rng, ['Correlation, with a third factor', 'Causation, shown by an experiment']), answer: c.verdict,
       explain: c.verdict.startsWith('Causation') ? 'Something was changed on purpose and the effect followed. That is an experiment.' : `Both rise together because of something else: ${c.third.toLowerCase()}.`, visual: null, explainVisual: null };
   },
   'gc-third-factor': (rng) => {
@@ -20027,7 +20027,7 @@ const CHAINS = [['sun', 'grass', 'grasshopper', 'bird'], ['sun', 'seaweed', 'sma
 Object.assign(GENERATORS, {
   's3-which-state': (rng) => {
     const m = pick(rng, MATTER);
-    return { type: 'choice', story: `Think about ${m.thing}.`, prompt: 'Is it a solid, a liquid or a gas?', choices: shuffle(rng, MATTER_STATES), answer: m.state,
+    return { type: 'choice', story: null, prompt: `Is ${m.thing} a solid, a liquid or a gas?`, choices: shuffle(rng, MATTER_STATES), answer: m.state,
       explain: `${STATE_PROPS[m.state]}, so it is a ${m.state.toLowerCase()}.`, choiceNotes: { Solid: 'A solid keeps its own shape.', Liquid: 'A liquid takes the shape of its container.', Gas: 'A gas spreads out to fill its space.' }, visual: null, explainVisual: null };
   },
   's3-state-change': (rng) => {
@@ -20047,7 +20047,7 @@ Object.assign(GENERATORS, {
   },
   's3-which-force': (rng) => {
     const c = pick(rng, FORCE_CASES);
-    return { type: 'choice', story: c.text, prompt: 'Which force is doing that?', choices: shuffle(rng, FORCE_NAMES), answer: c.force,
+    return { type: 'choice', story: c.text, prompt: 'Which force is doing this?', choices: shuffle(rng, FORCE_NAMES), answer: c.force,
       explain: c.force === 'Gravity' ? 'Gravity pulls everything toward the ground.' : c.force === 'Friction' ? 'Friction is the rubbing that slows moving things down.' : 'A magnet can push or pull without touching.', choiceNotes: { Gravity: 'Gravity is the pull toward the ground.', Friction: 'Friction is the rubbing that slows things down.', 'A magnet': 'A magnet pushes or pulls without touching.' }, visual: null, explainVisual: null };
   },
   's3-what-stops-it': (rng) => {
@@ -20207,7 +20207,7 @@ const TRAITS = [
 Object.assign(GENERATORS, {
   's4-which-form': (rng) => {
     const c = pick(rng, ENERGY_CASES);
-    return { type: 'choice', story: `${c.text}.`, prompt: 'Which form of energy is that?', choices: shuffle(rng, [c.form, ...shuffle(rng, ENERGY_FORMS.filter((f) => f !== c.form)).slice(0, 2)]), answer: c.form,
+    return { type: 'choice', story: `${c.text}.`, prompt: 'Which form of energy is this?', choices: shuffle(rng, [c.form, ...shuffle(rng, ENERGY_FORMS.filter((f) => f !== c.form)).slice(0, 2)]), answer: c.form,
       explain: `${c.text} is ${c.form.toLowerCase()} energy.`, choiceNotes: { Light: 'Light is the energy that lets you see.', Heat: 'Heat is the energy that warms things.', Sound: 'Sound is the energy you hear.', Electrical: 'Electrical energy runs through wires.', Mechanical: 'Mechanical energy is the energy of something moving.' }, visual: null, explainVisual: null };
   },
   's4-form-change': (rng) => {
@@ -20222,7 +20222,7 @@ Object.assign(GENERATORS, {
   },
   's4-conductor-or-insulator': (rng) => {
     const m = pick(rng, MATERIALS);
-    return { type: 'choice', story: `Think about ${m.name}.`, prompt: 'Conductor or insulator?', choices: ['Conductor', 'Insulator'], answer: m.kind,
+    return { type: 'choice', story: null, prompt: `Is ${m.name} a conductor or an insulator?`, choices: ['Conductor', 'Insulator'], answer: m.kind,
       explain: m.kind === 'Conductor' ? `${m.name.charAt(0).toUpperCase() + m.name.slice(1)} is a metal, and metals let electricity through.` : `${m.name.charAt(0).toUpperCase() + m.name.slice(1)} stops electricity, which is why it is used to cover wires.`, visual: null, explainVisual: null };
   },
   's4-will-it-light': (rng) => {
@@ -20237,7 +20237,7 @@ Object.assign(GENERATORS, {
   },
   's4-which-step': (rng) => {
     const c = pick(rng, LAND_CASES);
-    return { type: 'choice', story: c.text, prompt: 'Weathering, erosion or deposition?', choices: shuffle(rng, LAND_STEPS), answer: c.step,
+    return { type: 'choice', story: c.text, prompt: 'Is this weathering, erosion or deposition?', choices: shuffle(rng, LAND_STEPS), answer: c.step,
       explain: c.step === 'Weathering' ? 'Rock is being broken into pieces, so it is weathering.' : c.step === 'Erosion' ? 'Pieces are being carried away, so it is erosion.' : 'Pieces are being dropped somewhere new, so it is deposition.', choiceNotes: { Weathering: 'Weathering breaks rock into pieces.', Erosion: 'Erosion carries the pieces away.', Deposition: 'Deposition drops them somewhere new.' }, visual: null, explainVisual: null };
   },
   's4-what-caused': (rng) => {
@@ -20280,12 +20280,12 @@ Object.assign(GENERATORS, {
   },
   's5-which-motion': (rng) => {
     const c = pick(rng, SKY);
-    return { type: 'choice', story: c.text, prompt: 'Which motion causes that?', choices: shuffle(rng, MOTIONS), answer: c.motion,
+    return { type: 'choice', story: c.text, prompt: 'Which motion causes this?', choices: shuffle(rng, MOTIONS), answer: c.motion,
       explain: `${c.motion} is what does it.`, choiceNotes: { 'The Earth spinning': 'The Earth spinning once a day gives day and night.', 'The Earth circling the sun, tilted': 'The tilted Earth circling the sun once a year gives the seasons.', 'The moon circling the Earth': 'The moon circling the Earth about once a month gives its phases.' }, visual: null, explainVisual: null };
   },
   's5-moon-phase': (rng) => {
     const i = randInt(rng, 0, 2); const seen = ['none of the lit side', 'half of the lit side', 'all of the lit side'][i];
-    return { type: 'choice', story: `From Earth you see ${seen}.`, prompt: 'Which phase is that?', choices: shuffle(rng, PHASES), answer: PHASES[i],
+    return { type: 'choice', story: `From Earth you see ${seen}.`, prompt: 'Which phase is this?', choices: shuffle(rng, PHASES), answer: PHASES[i],
       explain: 'The moon shines by reflected sunlight. How much of the lit side faces us is the phase.', visual: null, explainVisual: null };
   },
   's5-moon-light': (rng) => {
@@ -20294,7 +20294,7 @@ Object.assign(GENERATORS, {
   },
   's5-which-stage': (rng) => {
     const c = pick(rng, CYCLE_CASES);
-    return { type: 'choice', story: c.text, prompt: 'Which stage of the water cycle is that?', choices: shuffle(rng, CYCLE), answer: c.stage,
+    return { type: 'choice', story: c.text, prompt: 'Which stage of the water cycle is this?', choices: shuffle(rng, CYCLE), answer: c.stage,
       explain: `${c.stage}: ${c.change.toLowerCase()}.`, choiceNotes: { Evaporation: 'Evaporation is water rising as a gas.', Condensation: 'Condensation is the gas cooling into drops.', Precipitation: 'Precipitation is water falling as rain or snow.', Collection: 'Collection is water gathering in rivers, lakes and seas.' }, visual: null, explainVisual: null };
   },
   's5-next-stage': (rng) => {
@@ -20304,12 +20304,12 @@ Object.assign(GENERATORS, {
   },
   's5-state-change-in-cycle': (rng) => {
     const c = pick(rng, CYCLE_CASES.filter((x) => x.stage === 'Evaporation' || x.stage === 'Condensation'));
-    return { type: 'choice', story: c.text, prompt: 'Which change of state is that?', choices: ['Liquid to gas', 'Gas to liquid'], answer: c.change,
+    return { type: 'choice', story: c.text, prompt: 'Which change of state is this?', choices: ['Liquid to gas', 'Gas to liquid'], answer: c.change,
       explain: c.change === 'Liquid to gas' ? 'Evaporation turns liquid water into a gas.' : 'Condensation turns the gas back into liquid drops.', visual: null, explainVisual: null };
   },
   's5-inherited-or-learned': (rng) => {
     const t = pick(rng, TRAITS);
-    return { type: 'choice', story: `${t.text}.`, prompt: 'Inherited or learned?', choices: ['Inherited', 'Learned'], answer: t.kind,
+    return { type: 'choice', story: `${t.text}.`, prompt: 'Is this inherited or learned?', choices: ['Inherited', 'Learned'], answer: t.kind,
       explain: t.kind === 'Inherited' ? 'It was passed from the parents. The living thing was born with it.' : 'It took practice or experience. Nobody is born knowing it.', visual: null, explainVisual: null };
   },
   's5-which-is-inherited': (rng) => {
@@ -20365,8 +20365,9 @@ const LIGHT = [{ from: 'the sun', time: '8 minutes' }, { from: 'the nearest star
 Object.assign(GENERATORS, {
   's7-which-system': (rng) => {
     const sy = pick(rng, SYSTEMS); const organ = pick(rng, sy.organs);
-    return { type: 'choice', story: `Think about ${organ}.`, prompt: 'Which body system is it part of?', choices: shuffle(rng, [sy.name, ...shuffle(rng, SYSTEMS.filter((x) => x !== sy)).slice(0, 2).map((x) => x.name)]), answer: sy.name,
-      explain: `${organ.charAt(0).toUpperCase() + organ.slice(1)} belongs to the ${sy.name.toLowerCase()} system, which ${sy.job.toLowerCase().replace(/^the /, '')}.`, visual: null, explainVisual: null };
+    const many = /s$/.test(organ) && !/(pancreas|esophagus|uterus|thymus)$/.test(organ); // the lungs belong, the heart belongs
+    return { type: 'choice', story: null, prompt: `Which body system ${many ? 'are' : 'is'} ${organ} part of?`, choices: shuffle(rng, [sy.name, ...shuffle(rng, SYSTEMS.filter((x) => x !== sy)).slice(0, 2).map((x) => x.name)]), answer: sy.name,
+      explain: `${organ.charAt(0).toUpperCase() + organ.slice(1)} ${many ? 'belong' : 'belongs'} to the ${sy.name.toLowerCase()} system, which ${sy.job.toLowerCase().replace(/^the /, '')}.`, visual: null, explainVisual: null };
   },
   's7-system-job': (rng) => {
     const sy = pick(rng, SYSTEMS); const others = shuffle(rng, SYSTEMS.filter((x) => x !== sy)).slice(0, 2).map((x) => x.job);
@@ -20447,7 +20448,7 @@ Object.assign(GENERATORS, {
   },
   's8-which-law': (rng) => {
     const c = pick(rng, LAW_CASES);
-    return { type: 'choice', story: c.text, prompt: 'Which of Newton\'s laws is that?', choices: shuffle(rng, LAWS), answer: c.law,
+    return { type: 'choice', story: c.text, prompt: 'Which of Newton\'s laws is this?', choices: shuffle(rng, LAWS), answer: c.law,
       explain: c.law === 'First law' ? 'A thing keeps doing what it is doing until a force changes it.' : c.law === 'Second law' ? 'More force means more acceleration, and more mass means less.' : 'Every push has an equal push back the other way.', choiceNotes: { 'First law': 'The first law: things keep doing what they are doing until a force acts.', 'Second law': 'The second law: force equals mass times acceleration.', 'Third law': 'The third law: every push has an equal push back.' }, visual: null, explainVisual: null };
   },
   's8-f-equals-ma': (rng) => {
@@ -20558,7 +20559,7 @@ Object.assign(GENERATORS, {
   },
   's9-which-process': (rng) => {
     const c = pick(rng, [{ text: 'Makes sugar and oxygen from carbon dioxide, water and light.', p: 'Photosynthesis' }, { text: 'Burns sugar with oxygen to release energy.', p: 'Respiration' }, { text: 'Happens only in chloroplasts and only in light.', p: 'Photosynthesis' }, { text: 'Happens in mitochondria, day and night.', p: 'Respiration' }, { text: 'Gives off carbon dioxide and water.', p: 'Respiration' }, { text: 'Takes in carbon dioxide and water.', p: 'Photosynthesis' }]);
-    return { type: 'choice', story: c.text, prompt: 'Photosynthesis or respiration?', choices: ['Photosynthesis', 'Respiration'], answer: c.p,
+    return { type: 'choice', story: c.text, prompt: 'Is this photosynthesis or respiration?', choices: ['Photosynthesis', 'Respiration'], answer: c.p,
       explain: c.p === 'Photosynthesis' ? 'Photosynthesis builds sugar from light in the chloroplasts.' : 'Respiration burns sugar for energy in the mitochondria.', visual: null, explainVisual: null };
   },
   's9-reactant-or-product': (rng) => {
@@ -20573,7 +20574,7 @@ Object.assign(GENERATORS, {
   },
   's9-which-evidence': (rng) => {
     const c = pick(rng, [{ text: 'Older rock layers hold simpler forms and newer layers hold forms closer to today\'s.', kind: 'Fossils' }, { text: 'The same bones appear in a human arm, a whale flipper and a bat wing.', kind: 'Homologous structures' }, { text: 'Two species share nearly all their genetic code.', kind: 'DNA' }, { text: 'A bat wing and a human arm have one bone, then two, then a cluster.', kind: 'Homologous structures' }, { text: 'Chimpanzee and human genetic code differ by only a small fraction.', kind: 'DNA' }]);
-    return { type: 'choice', story: c.text, prompt: 'Which line of evidence is that?', choices: shuffle(rng, ['Fossils', 'Homologous structures', 'DNA']), answer: c.kind,
+    return { type: 'choice', story: c.text, prompt: 'Which line of evidence is this?', choices: shuffle(rng, ['Fossils', 'Homologous structures', 'DNA']), answer: c.kind,
       explain: `That is evidence from ${c.kind.toLowerCase()}.`, choiceNotes: { Fossils: 'Fossils show change across rock layers over time.', 'Homologous structures': 'Homologous structures are the same bones doing different jobs.', DNA: 'DNA similarity shows how recently two species shared an ancestor.' }, visual: null, explainVisual: null };
   },
   's9-closer-relative': (rng) => {
@@ -20602,7 +20603,7 @@ Object.assign(GENERATORS, {
   },
   's10-ionic-or-covalent': (rng) => {
     const c = pick(rng, BONDED_COMPOUNDS);
-    return { type: 'choice', story: `${c.formula}, ${c.name}.`, prompt: 'Ionic or covalent?', choices: ['Ionic', 'Covalent'], answer: c.bond,
+    return { type: 'choice', story: `${c.formula}, ${c.name}.`, prompt: 'Is this compound ionic or covalent?', choices: ['Ionic', 'Covalent'], answer: c.bond,
       explain: `${c.name.charAt(0).toUpperCase() + c.name.slice(1)} is ${c.parts}, so the bond is ${c.bond.toLowerCase()}.`, visual: null, explainVisual: null };
   },
   's10-gives-or-shares': (rng) => {
@@ -20617,7 +20618,7 @@ Object.assign(GENERATORS, {
   },
   's10-count-atoms': (rng) => {
     const c = pick(rng, ATOM_COUNTS); const wrongs = [c.count / 2, c.count * 2, c.count + 1].filter((v) => v !== c.count && Number.isInteger(v) && v > 0);
-    return { type: 'choice', story: c.formula, prompt: `How many ${c.atom} atoms is that?`, choices: shuffle(rng, [c.count, ...[...new Set(wrongs)].slice(0, 3)].map(String)), answer: String(c.count),
+    return { type: 'choice', story: c.formula, prompt: `How many ${c.atom} atoms are in this?`, choices: shuffle(rng, [c.count, ...[...new Set(wrongs)].slice(0, 3)].map(String)), answer: String(c.count),
       explain: 'The big number in front multiplies everything in the formula behind it.', visual: null, explainVisual: null };
   },
   's10-is-balanced': (rng) => {
@@ -20631,7 +20632,7 @@ Object.assign(GENERATORS, {
   },
   's10-acid-or-base': (rng) => {
     const p = pick(rng, PH);
-    return { type: 'choice', story: `${p.thing.charAt(0).toUpperCase() + p.thing.slice(1)} has a pH of about ${p.ph}.`, prompt: 'Acid, neutral or base?', choices: ['Acid', 'Neutral', 'Base'], answer: p.ph < 7 ? 'Acid' : p.ph === 7 ? 'Neutral' : 'Base',
+    return { type: 'choice', story: `${p.thing.charAt(0).toUpperCase() + p.thing.slice(1)} has a pH of about ${p.ph}.`, prompt: 'Is this an acid, a base or neutral?', choices: ['Acid', 'Neutral', 'Base'], answer: p.ph < 7 ? 'Acid' : p.ph === 7 ? 'Neutral' : 'Base',
       explain: p.ph < 7 ? 'Below 7 is an acid.' : p.ph === 7 ? '7 is neutral.' : 'Above 7 is a base.', visual: null, explainVisual: null };
   },
   's10-more-acidic': (rng) => {
@@ -20760,7 +20761,7 @@ Object.assign(GENERATORS, {
   },
   's12-weather-or-climate': (rng) => {
     const c = pick(rng, CLIMATE_CASES);
-    return { type: 'choice', story: c.text, prompt: 'Weather or climate?', choices: ['Weather', 'Climate'], answer: c.kind,
+    return { type: 'choice', story: c.text, prompt: 'Is this weather or climate?', choices: ['Weather', 'Climate'], answer: c.kind,
       explain: c.kind === 'Weather' ? 'It is about a day or a week, so it is weather.' : 'It is about decades of average, so it is climate.', visual: null, explainVisual: null };
   },
   's12-climate-driver': (rng) => {
@@ -20780,7 +20781,7 @@ Object.assign(GENERATORS, {
   },
   's12-star-stage': (rng) => {
     const c = pick(rng, STAR_STAGES); const others = shuffle(rng, STAR_STAGES.filter((x) => x !== c)).slice(0, 2).map((x) => x.stage);
-    return { type: 'choice', story: c.text, prompt: 'Which stage is that?', choices: shuffle(rng, [c.stage, ...others]), answer: c.stage,
+    return { type: 'choice', story: c.text, prompt: 'Which stage is this?', choices: shuffle(rng, [c.stage, ...others]), answer: c.stage,
       explain: c.stage, visual: null, explainVisual: null };
   },
   's12-where-elements': (rng) => {
@@ -20825,7 +20826,7 @@ const CYCLE_STEPS = [
 Object.assign(GENERATORS, {
   's9-mitosis-or-meiosis': (rng) => {
     const c = pick(rng, [{ text: 'Makes two identical cells.', p: 'Mitosis' }, { text: 'Makes four cells with half the chromosomes.', p: 'Meiosis' }, { text: 'Repairs a cut in your skin.', p: 'Mitosis' }, { text: 'Makes eggs and sperm.', p: 'Meiosis' }, { text: 'Grows a child taller.', p: 'Mitosis' }, { text: 'Shuffles chromosomes so no two sex cells are alike.', p: 'Meiosis' }]);
-    return { type: 'choice', story: c.text, prompt: 'Mitosis or meiosis?', choices: ['Mitosis', 'Meiosis'], answer: c.p,
+    return { type: 'choice', story: c.text, prompt: 'Is this mitosis or meiosis?', choices: ['Mitosis', 'Meiosis'], answer: c.p,
       explain: c.p === 'Mitosis' ? 'Mitosis copies a cell exactly, for growth and repair.' : 'Meiosis halves the chromosomes, for egg and sperm.', visual: null, explainVisual: null };
   },
   's9-chromosome-count': (rng) => {
@@ -20840,7 +20841,7 @@ Object.assign(GENERATORS, {
   },
   's9-transcription-or-translation': (rng) => {
     const c = pick(rng, [{ text: 'A gene is copied into RNA inside the nucleus.', p: 'Transcription' }, { text: 'A ribosome reads RNA three letters at a time and links amino acids.', p: 'Translation' }, { text: 'DNA to RNA.', p: 'Transcription' }, { text: 'RNA to protein.', p: 'Translation' }]);
-    return { type: 'choice', story: c.text, prompt: 'Transcription or translation?', choices: ['Transcription', 'Translation'], answer: c.p,
+    return { type: 'choice', story: c.text, prompt: 'Is this transcription or translation?', choices: ['Transcription', 'Translation'], answer: c.p,
       explain: c.p === 'Transcription' ? 'Transcription copies DNA into RNA.' : 'Translation reads RNA to build a protein.', visual: null, explainVisual: null };
   },
   's9-codon-count': (rng) => {
@@ -20864,7 +20865,7 @@ Object.assign(GENERATORS, {
   },
   's9-which-cycle': (rng) => {
     const c = pick(rng, CYCLE_STEPS);
-    return { type: 'choice', story: c.text, prompt: 'Which cycle is that part of?', choices: ['Carbon', 'Nitrogen'], answer: c.cycle,
+    return { type: 'choice', story: c.text, prompt: 'Which cycle is this part of?', choices: ['Carbon', 'Nitrogen'], answer: c.cycle,
       explain: c.cycle === 'Carbon' ? 'Carbon moves through air, plants, animals and decay.' : 'Nitrogen moves through air, bacteria, plants, animals and decay.', visual: null, explainVisual: null };
   },
   's9-cycle-step': (rng) => {
@@ -20910,12 +20911,12 @@ Object.assign(GENERATORS, {
   's10-moles-from-grams': (rng) => {
     const m = pick(rng, MOLAR.filter((x) => Number.isInteger(x.mass))); const n = randInt(rng, 2, 5); const grams = m.mass * n;
     const wrongs = [n * 2, grams, n + 1].filter((v) => v !== n);
-    return { type: 'choice', story: `${m.formula} has a molar mass of ${m.mass} grams per mole. You have ${grams} grams.`, prompt: 'How many moles is that?', choices: shuffle(rng, [n, ...[...new Set(wrongs)].slice(0, 3)].map(String)), answer: String(n),
+    return { type: 'choice', story: `${m.formula} has a molar mass of ${m.mass} grams per mole. You have ${grams} grams.`, prompt: 'How many moles do you have?', choices: shuffle(rng, [n, ...[...new Set(wrongs)].slice(0, 3)].map(String)), answer: String(n),
       explain: `${grams} ÷ ${m.mass} = **${n} moles**.`, visual: null, explainVisual: null };
   },
   's10-reaction-type': (rng) => {
     const r = pick(rng, REACTIONS);
-    return { type: 'choice', story: r.text, prompt: 'Which type of reaction is that?', choices: shuffle(rng, REACTION_TYPES), answer: r.type,
+    return { type: 'choice', story: r.text, prompt: 'Which type of reaction is this?', choices: shuffle(rng, REACTION_TYPES), answer: r.type,
       explain: REACTION_NOTES[r.type], choiceNotes: REACTION_NOTES, visual: null, explainVisual: null };
   },
   's10-type-example': (rng) => {
@@ -20951,7 +20952,7 @@ Object.assign(GENERATORS, {
   },
   's10-solute-or-solvent': (rng) => {
     const solute = randInt(rng, 0, 1) === 1;
-    return { type: 'choice', story: solute ? 'The salt in salt water.' : 'The water in salt water.', prompt: 'Solute or solvent?', choices: ['Solute', 'Solvent'], answer: solute ? 'Solute' : 'Solvent',
+    return { type: 'choice', story: solute ? 'The salt in salt water.' : 'The water in salt water.', prompt: 'Is this the solute or the solvent?', choices: ['Solute', 'Solvent'], answer: solute ? 'Solute' : 'Solvent',
       explain: solute ? 'The solute is what is dissolved.' : 'The solvent is what it is dissolved in.', visual: null, explainVisual: null };
   },
 });
@@ -20997,7 +20998,7 @@ Object.assign(GENERATORS, {
   },
   's11-reflect-or-refract': (rng) => {
     const c = pick(rng, [{ text: 'Light bounces off a mirror.', k: 'Reflection' }, { text: 'A straw looks broken at the surface of a glass of water.', k: 'Refraction' }, { text: 'A lens brings light to a point.', k: 'Refraction' }, { text: 'You see yourself in a still pond.', k: 'Reflection' }, { text: 'A pool looks shallower than it is.', k: 'Refraction' }]);
-    return { type: 'choice', story: c.text, prompt: 'Reflection or refraction?', choices: ['Reflection', 'Refraction'], answer: c.k,
+    return { type: 'choice', story: c.text, prompt: 'Is this reflection or refraction?', choices: ['Reflection', 'Refraction'], answer: c.k,
       explain: c.k === 'Reflection' ? 'The light bounced.' : 'The light bent as it changed speed between materials.', visual: null, explainVisual: null };
   },
   's11-angle-out': (rng) => {
@@ -21011,7 +21012,7 @@ Object.assign(GENERATORS, {
   },
   's11-series-or-parallel': (rng) => {
     const c = pick(rng, [{ text: 'The current goes through one bulb and then the next.', k: 'Series' }, { text: 'Each bulb has its own path back to the battery.', k: 'Parallel' }, { text: 'One bulb burns out and they all go dark.', k: 'Series' }, { text: 'One bulb burns out and the rest stay lit.', k: 'Parallel' }, { text: 'How a house is wired.', k: 'Parallel' }, { text: 'Old strings of holiday lights.', k: 'Series' }]);
-    return { type: 'choice', story: c.text, prompt: 'Series or parallel?', choices: ['Series', 'Parallel'], answer: c.k,
+    return { type: 'choice', story: c.text, prompt: 'Is this a series or a parallel circuit?', choices: ['Series', 'Parallel'], answer: c.k,
       explain: c.k === 'Series' ? 'One path: series.' : 'Separate paths: parallel.', visual: null, explainVisual: null };
   },
   's11-bulb-burns-out': (rng) => {
@@ -21035,7 +21036,7 @@ Object.assign(GENERATORS, {
   },
   's12-which-layer': (rng) => {
     const l = pick(rng, EARTH_LAYERS);
-    return { type: 'choice', story: `${l.fact}.`, prompt: 'Which layer is that?', choices: shuffle(rng, EARTH_LAYERS.map((x) => x.name)), answer: l.name,
+    return { type: 'choice', story: `${l.fact}.`, prompt: 'Which layer is this?', choices: shuffle(rng, EARTH_LAYERS.map((x) => x.name)), answer: l.name,
       explain: `${l.name}: ${l.fact.toLowerCase()}.`, visual: null, explainVisual: null };
   },
   's12-layer-order': (rng) => {
@@ -21075,7 +21076,7 @@ Object.assign(GENERATORS, {
   },
   's12-renewable-or-not': (rng) => {
     const r = pick(rng, RESOURCES);
-    return { type: 'choice', story: `${r.name.charAt(0).toUpperCase() + r.name.slice(1)}.`, prompt: 'Renewable or nonrenewable?', choices: ['Renewable', 'Nonrenewable'], answer: r.kind,
+    return { type: 'choice', story: `${r.name.charAt(0).toUpperCase() + r.name.slice(1)}.`, prompt: 'Is this resource renewable or nonrenewable?', choices: ['Renewable', 'Nonrenewable'], answer: r.kind,
       explain: r.kind === 'Renewable' ? `${r.name.charAt(0).toUpperCase() + r.name.slice(1)} comes back on a human timescale.` : `${r.name.charAt(0).toUpperCase() + r.name.slice(1)} took millions of years to form and is used in decades.`, visual: null, explainVisual: null };
   },
   's12-rate-decides': (rng) => {
@@ -21089,7 +21090,7 @@ Object.assign(GENERATORS, {
   },
   's12-big-bang-evidence': (rng) => {
     const e = pick(rng, BB_EVIDENCE);
-    return { type: 'choice', story: e.text, prompt: 'Which line of evidence is that?', choices: shuffle(rng, BB_EVIDENCE.map((x) => x.line)), answer: e.line,
+    return { type: 'choice', story: e.text, prompt: 'Which line of evidence is this?', choices: shuffle(rng, BB_EVIDENCE.map((x) => x.line)), answer: e.line,
       explain: `${e.line}: ${e.text.toLowerCase()}`, visual: null, explainVisual: null };
   },
   's12-redshift': (rng) => {
@@ -21136,7 +21137,7 @@ Object.assign(GENERATORS, {
   },
   's7-dominant-or-recessive': (rng) => {
     const dom = randInt(rng, 0, 1) === 1;
-    return { type: 'choice', story: dom ? 'A version of a gene that shows with only one copy.' : 'A version of a gene that shows only when there are two copies.', prompt: 'Dominant or recessive?', choices: ['Dominant', 'Recessive'], answer: dom ? 'Dominant' : 'Recessive',
+    return { type: 'choice', story: dom ? 'A version of a gene that shows with only one copy.' : 'A version of a gene that shows only when there are two copies.', prompt: 'Is this version dominant or recessive?', choices: ['Dominant', 'Recessive'], answer: dom ? 'Dominant' : 'Recessive',
       explain: dom ? 'Dominant shows with one copy.' : 'Recessive needs two copies to show.', visual: null, explainVisual: null };
   },
   's7-which-shows': (rng) => {
@@ -21382,25 +21383,25 @@ const THESIS_OR_FACT = [['The Louisiana Purchase doubled the country', 'Fact'], 
 const EVIDENCE_FITS = [['The North won mainly because of its railroads.', 'Union trains moved 25,000 men 1,200 miles in eleven days in 1863.', 'Lincoln was born in a log cabin.', 'The war began at Fort Sumter.'], ['Jefferson doubted the purchase was constitutional.', 'His 1803 letters propose an amendment to allow it.', 'The land cost fifteen million dollars.', 'Lewis and Clark set out in 1804.'], ['The 1900 hurricane pushed Galveston\'s trade to Houston.', 'Houston\'s port tonnage tripled in the ten years after the storm.', 'Galveston is an island.', 'The storm struck on September 8.']];
 const HEDGES = [['One letter mentions it', 'The evidence suggests'], ['Three letters and a diary describe it', 'The evidence shows'], ['A decade of tax rolls records it', 'The evidence establishes']];
 Object.assign(GENERATORS, {
-  'hc-source-kind': (rng) => kindQ(rng, SOURCE_KINDS, 'Primary or secondary?', SOURCE_NOTES),
+  'hc-source-kind': (rng) => kindQ(rng, SOURCE_KINDS, 'Is this a primary or a secondary source?', SOURCE_NOTES),
   'hc-why-made': (rng) => { const c = pick(rng, WHY_MADE); const others = shuffle(rng, WHY_MADE.filter((x) => x !== c)).slice(0, 2).map((x) => x[1]);
     return { type: 'choice', story: `${c[0]}.`, prompt: 'Why was it made?', choices: shuffle(rng, [c[1], ...others]), answer: c[1], explain: `${c[0]}: ${c[1].charAt(0).toLowerCase()}${c[1].slice(1)}.\nRead it once for what it says and once for what its maker wanted.`, visual: null, explainVisual: null }; },
   'hc-closer-witness': (rng) => { const c = pick(rng, WITNESS_PAIRS);
     return { type: 'choice', story: null, prompt: 'Which was closer to the event?', choices: shuffle(rng, [c[0], c[1]]), answer: c[0], explain: `${c[0]} was made at the time. It wins on what was seen, and the later source wins on what it meant.`, visual: null, explainVisual: null }; },
   'hc-which-century': (rng) => { const year = randInt(rng, 1001, 2099); const c = Math.floor((year - 1) / 100) + 1;
-    return { type: 'number', story: `The year ${year}.`, prompt: 'Which century is that?', answer: String(c), explain: `The hundreds digits are ${Math.floor(year / 100)}, so it is the ${c}th century, because the first century was the years 1 to 100.\n[[${year} is in the ${c}th century]]`, visual: null, explainVisual: null }; },
+    return { type: 'number', story: `The year ${year}.`, prompt: 'Which century is this?', answer: String(c), explain: `The hundreds digits are ${Math.floor(year / 100)}, so it is the ${c}th century, because the first century was the years 1 to 100.\n[[${year} is in the ${c}th century]]`, visual: null, explainVisual: null }; },
   'hc-years-between': (rng) => {
     if (randInt(rng, 0, 1) === 1) { const bc = pick(rng, [44, 100, 200, 300, 500]); const ad = pick(rng, [100, 476, 800, 1000, 1492]);
-      return { type: 'number', story: `From ${bc} BC to ${ad} AD.`, prompt: 'How many years is that?', answer: String(bc + ad - 1), explain: `There is no year zero, so add the two and take away one.\n[[${bc} + ${ad} − 1 = ${bc + ad - 1} years]]`, visual: null, explainVisual: null }; }
+      return { type: 'number', story: `From ${bc} BC to ${ad} AD.`, prompt: 'How many years is this?', answer: String(bc + ad - 1), explain: `There is no year zero, so add the two and take away one.\n[[${bc} + ${ad} − 1 = ${bc + ad - 1} years]]`, visual: null, explainVisual: null }; }
     const a = randInt(rng, 1000, 1900); const b = a + randInt(rng, 5, 400);
-    return { type: 'number', story: `From ${a} to ${b}.`, prompt: 'How many years is that?', answer: String(b - a), explain: `Both are AD, so subtract.\n[[${b} − ${a} = ${b - a} years]]`, visual: null, explainVisual: null }; },
+    return { type: 'number', story: `From ${a} to ${b}.`, prompt: 'How many years is this?', answer: String(b - a), explain: `Both are AD, so subtract.\n[[${b} − ${a} = ${b - a} years]]`, visual: null, explainVisual: null }; },
   'hc-earlier': (rng) => { let a = pick(rng, [300, 500, 800, 1200]); let b = pick(rng, [300, 500, 800, 1200]); if (a === b) b = a + 200;
     return { type: 'choice', story: `${a} BC and ${b} BC.`, prompt: 'Which came first?', choices: shuffle(rng, [`${a} BC`, `${b} BC`]), answer: `${Math.max(a, b)} BC`, explain: `BC years run backward toward the year 1, so the bigger number is earlier: ${Math.max(a, b)} BC.`, visual: null, explainVisual: null }; },
   'hc-which-decade': (rng) => { const year = randInt(rng, 1800, 2019); const d = Math.floor(year / 10) * 10;
-    return { type: 'number', story: `The year ${year}.`, prompt: 'Which decade is that? Answer with its first year.', answer: String(d), explain: `A decade shares a tens digit, so ${year} is in the ${d}s.`, visual: null, explainVisual: null }; },
-  'hc-cause-kind': (rng) => kindQ(rng, CAUSE_KINDS, 'Which kind of because is that?', CAUSE_NOTES),
+    return { type: 'number', story: `The year ${year}.`, prompt: 'Which decade is this? Answer with its first year.', answer: String(d), explain: `A decade shares a tens digit, so ${year} is in the ${d}s.`, visual: null, explainVisual: null }; },
+  'hc-cause-kind': (rng) => kindQ(rng, CAUSE_KINDS, 'Which kind of because is this?', CAUSE_NOTES),
   'hc-correlation': (rng) => { const c = pick(rng, CORRELATIONS); const others = shuffle(rng, CORRELATIONS.filter((x) => x !== c)).slice(0, 2).map((x) => x[1]);
-    return { type: 'choice', story: `${c[0]}.`, prompt: 'What is the best reading of that?', choices: shuffle(rng, [c[1], ...others]), answer: c[1], explain: `${c[1]}.\nTwo things rising together is correlation. It takes more to show that one causes the other.`, visual: null, explainVisual: null }; },
+    return { type: 'choice', story: `${c[0]}.`, prompt: 'What is the best reading of this?', choices: shuffle(rng, [c[1], ...others]), answer: c[1], explain: `${c[1]}.\nTwo things rising together is correlation. It takes more to show that one causes the other.`, visual: null, explainVisual: null }; },
   'hc-counterfactual': (rng) => { const c = pick(rng, COUNTERFACTUALS); const others = shuffle(rng, COUNTERFACTUALS.filter((x) => x !== c)).slice(0, 2).map((x) => x[1]);
     return { type: 'choice', story: c[0], prompt: 'What does the counterfactual suggest?', choices: shuffle(rng, [c[1], ...others]), answer: c[1], explain: `${c[1]}.\nThe test of a cause is what would have happened without it.`, visual: null, explainVisual: null }; },
   'hc-turn-year': (rng) => datedQuestion(rng, BIG_TURNS),
@@ -21408,7 +21409,7 @@ Object.assign(GENERATORS, {
   'hc-turns-order': (rng) => { const four = shuffle(rng, BIG_TURNS).slice(0, 4).sort((a, b) => BIG_TURNS.indexOf(a) - BIG_TURNS.indexOf(b));
     return orderQuestion(rng, 'Four of the great turns.', 'Tap them in order, from earliest to latest.', four.map((t) => t.event), four.map((t) => `${t.event}: ${t.year.toLowerCase()}.`).join('\n')); },
   'hc-thesis-or-fact': (rng) => { const c = pick(rng, THESIS_OR_FACT);
-    return { type: 'choice', story: `${c[0]}.`, prompt: 'Thesis or fact?', choices: ['Thesis', 'Fact'], answer: c[1], explain: c[1] === 'Fact' ? 'Nobody argues with it, so it is a fact, not a claim.' : 'Somebody could disagree with it, so it is a thesis: a claim the essay has to carry.', visual: null, explainVisual: null }; },
+    return { type: 'choice', story: `${c[0]}.`, prompt: 'Is this a thesis or a fact?', choices: ['Thesis', 'Fact'], answer: c[1], explain: c[1] === 'Fact' ? 'Nobody argues with it, so it is a fact, not a claim.' : 'Somebody could disagree with it, so it is a thesis: a claim the essay has to carry.', visual: null, explainVisual: null }; },
   'hc-evidence-fits': (rng) => { const c = pick(rng, EVIDENCE_FITS);
     return { type: 'choice', story: `Claim: ${c[0]}`, prompt: 'Which evidence supports it?', choices: shuffle(rng, [c[1], c[2], c[3]]), answer: c[1], explain: `${c[1]}\nThe others are true and beside the point. Evidence has to bear on the claim.`, visual: null, explainVisual: null }; },
   'hc-hedge': (rng) => { const c = pick(rng, HEDGES);
@@ -21427,31 +21428,31 @@ const ART_DEPTH = [['The shape in front hides part of the shape behind', 'Overla
 const ART_WHY = [['A painting of a king in his robes', 'To honor'], ['A picture of a battle as it happened', 'To record'], ['A window telling a story everyone should know', 'To teach'], ['A painted pattern around the rim of a pot', 'To decorate'], ['A picture that asks why things are as they are', 'To question']];
 Object.assign(GENERATORS, {
   'art-which-element': (rng) => { const c = pick(rng, ART_ELEMENTS); const others = shuffle(rng, ART_ELEMENTS.filter((x) => x[1] !== c[1])).slice(0, 2).map((x) => x[1]);
-    return { type: 'choice', story: `${c[0]}.`, prompt: 'Which element of art is that?', choices: shuffle(rng, [c[1], ...others]), answer: c[1], explain: `${c[1]}: ${c[0].toLowerCase()}.`, visual: null, explainVisual: null }; },
+    return { type: 'choice', story: `${c[0]}.`, prompt: 'Which element of art is this?', choices: shuffle(rng, [c[1], ...others]), answer: c[1], explain: `${c[1]}: ${c[0].toLowerCase()}.`, visual: null, explainVisual: null }; },
   'art-element-or-principle': (rng) => { const c = pick(rng, ART_PRINCIPLES);
-    return { type: 'choice', story: `${c[0]}.`, prompt: 'Element or principle?', choices: ['Element', 'Principle'], answer: c[1], explain: c[1] === 'Element' ? `${c[0]} is an element: one of the ingredients a picture is made of.` : `${c[0]} is a principle: a way of arranging the elements.`, visual: null, explainVisual: null }; },
-  'art-how-many-elements': (rng) => ({ type: 'number', story: 'Line, shape, form, color, texture, space, value.', prompt: 'How many elements of art is that?', answer: '7', explain: 'Seven elements: line, shape, form, color, texture, space and value.', visual: null, explainVisual: null }),
+    return { type: 'choice', story: `${c[0]}.`, prompt: 'Is this an element or a principle?', choices: ['Element', 'Principle'], answer: c[1], explain: c[1] === 'Element' ? `${c[0]} is an element: one of the ingredients a picture is made of.` : `${c[0]} is a principle: a way of arranging the elements.`, visual: null, explainVisual: null }; },
+  'art-how-many-elements': (rng) => ({ type: 'number', story: 'Line, shape, form, color, texture, space, value.', prompt: 'How many elements of art are listed here?', answer: '7', explain: 'Seven elements: line, shape, form, color, texture, space and value.', visual: null, explainVisual: null }),
   'art-mix-colors': (rng) => { const [a, b, made] = pick(rng, ART_MIXES); const others = ART_MIXES.filter((x) => x[2] !== made).map((x) => x[2]);
     return { type: 'choice', story: `Mix ${a} and ${b}.`, prompt: 'What color do you get?', choices: shuffle(rng, [made, ...others]), answer: made, explain: `${a.charAt(0).toUpperCase()}${a.slice(1)} and ${b} make ${made}.`, visual: null, explainVisual: null }; },
   'art-primary-or-secondary': (rng) => { const c = pick(rng, ART_COLOUR_KIND);
-    return { type: 'choice', story: `${c[0]}.`, prompt: 'Primary or secondary?', choices: ['Primary', 'Secondary'], answer: c[1], explain: c[1] === 'Primary' ? `${c[0]} cannot be mixed from other colors.` : `${c[0]} is mixed from two primary colors.`, visual: null, explainVisual: null }; },
+    return { type: 'choice', story: `${c[0]}.`, prompt: 'Is this color primary or secondary?', choices: ['Primary', 'Secondary'], answer: c[1], explain: c[1] === 'Primary' ? `${c[0]} cannot be mixed from other colors.` : `${c[0]} is mixed from two primary colors.`, visual: null, explainVisual: null }; },
   'art-warm-or-cool': (rng) => { const c = pick(rng, ART_WARM_COOL);
-    return { type: 'choice', story: `${c[0]}.`, prompt: 'Warm or cool?', choices: ['Warm', 'Cool'], answer: c[1], explain: c[1] === 'Warm' ? `${c[0]} is warm: fire, sun, shouting.` : `${c[0]} is cool: water, shade, quiet.`, visual: null, explainVisual: null }; },
+    return { type: 'choice', story: `${c[0]}.`, prompt: 'Is this color warm or cool?', choices: ['Warm', 'Cool'], answer: c[1], explain: c[1] === 'Warm' ? `${c[0]} is warm: fire, sun, shouting.` : `${c[0]} is cool: water, shade, quiet.`, visual: null, explainVisual: null }; },
   'art-tint-or-shade': (rng) => { const white = randInt(rng, 0, 1) === 1;
-    return { type: 'choice', story: white ? 'Red with white added.' : 'Red with black added.', prompt: 'Tint or shade?', choices: ['Tint', 'Shade'], answer: white ? 'Tint' : 'Shade', explain: white ? 'White makes a tint, a lighter version. Red plus white is pink.' : 'Black makes a shade, a darker version.', visual: null, explainVisual: null }; },
+    return { type: 'choice', story: white ? 'Red with white added.' : 'Red with black added.', prompt: 'Is this a tint or a shade?', choices: ['Tint', 'Shade'], answer: white ? 'Tint' : 'Shade', explain: white ? 'White makes a tint, a lighter version. Red plus white is pink.' : 'Black makes a shade, a darker version.', visual: null, explainVisual: null }; },
   'art-which-step': (rng) => { const c = pick(rng, ART_STEPS);
-    return { type: 'choice', story: `${c[0]}.`, prompt: 'Which step of looking is that?', choices: ART_STEPS.map((x) => x[1]), answer: c[1], explain: `That is ${c[1].toLowerCase()}. The order is describe, analyze, interpret, judge.`, visual: null, explainVisual: null }; },
+    return { type: 'choice', story: `${c[0]}.`, prompt: 'Which step of looking is this?', choices: ART_STEPS.map((x) => x[1]), answer: c[1], explain: `That is ${c[1].toLowerCase()}. The order is describe, analyze, interpret, judge.`, visual: null, explainVisual: null }; },
   'art-step-order': (rng) => orderQuestion(rng, 'Looking at a picture.', 'Tap the steps in order, from first to last.', ART_STEPS.map((x) => x[1]), 'Describe what is there, analyze how it works, interpret what it means, then judge it.'),
   'art-focus-how': (rng) => ({ type: 'choice', story: 'One face in a dark crowd is painted bright.', prompt: 'What makes your eye go there?', choices: shuffle(rng, ['Contrast', 'Texture', 'Pattern']), answer: 'Contrast', explain: 'Contrast, light against dark, makes the focus. The artist put it there on purpose.', visual: null, explainVisual: null }),
   'art-which-balance': (rng) => { const c = pick(rng, ART_BALANCE);
-    return { type: 'choice', story: `${c[0]}.`, prompt: 'Which kind of balance is that?', choices: ART_BALANCE.map((x) => x[1]), answer: c[1], explain: `${c[1]} balance: ${c[0].toLowerCase()}.`, visual: null, explainVisual: null }; },
+    return { type: 'choice', story: `${c[0]}.`, prompt: 'Which kind of balance is this?', choices: ART_BALANCE.map((x) => x[1]), answer: c[1], explain: `${c[1]} balance: ${c[0].toLowerCase()}.`, visual: null, explainVisual: null }; },
   'art-which-principle': (rng) => { const c = pick(rng, [['Difference put side by side: light against dark', 'Contrast'], ['Repetition with a rule', 'Pattern'], ['The part the eye goes to first', 'Emphasis'], ['Everything looking like it belongs together', 'Unity']]);
-    return { type: 'choice', story: `${c[0]}.`, prompt: 'Which principle of design is that?', choices: shuffle(rng, ['Contrast', 'Pattern', 'Emphasis', 'Unity']), answer: c[1], explain: `${c[1]}: ${c[0].toLowerCase()}.`, visual: null, explainVisual: null }; },
+    return { type: 'choice', story: `${c[0]}.`, prompt: 'Which principle of design is this?', choices: shuffle(rng, ['Contrast', 'Pattern', 'Emphasis', 'Unity']), answer: c[1], explain: `${c[1]}: ${c[0].toLowerCase()}.`, visual: null, explainVisual: null }; },
   'art-break-pattern': (rng) => ({ type: 'choice', story: 'A row of blue squares, and one red one.', prompt: 'What does the red square create?', choices: shuffle(rng, ['Emphasis', 'Balance', 'Texture']), answer: 'Emphasis', explain: 'Break a pattern and the eye goes straight to the break. That is emphasis, made out of almost nothing.', visual: null, explainVisual: null }),
   'art-depth-trick': (rng) => { const c = pick(rng, ART_DEPTH);
-    return { type: 'choice', story: `${c[0]}.`, prompt: 'Which way of showing depth is that?', choices: ART_DEPTH.map((x) => x[1]), answer: c[1], explain: `${c[1]}: ${c[0].toLowerCase()}.`, visual: null, explainVisual: null }; },
+    return { type: 'choice', story: `${c[0]}.`, prompt: 'Which way of showing depth is this?', choices: ART_DEPTH.map((x) => x[1]), answer: c[1], explain: `${c[1]}: ${c[0].toLowerCase()}.`, visual: null, explainVisual: null }; },
   'art-positive-negative': (rng) => { const positive = randInt(rng, 0, 1) === 1;
-    return { type: 'choice', story: positive ? 'The shape of the vase itself.' : 'The shape of the gaps around the vase.', prompt: 'Positive or negative space?', choices: ['Positive space', 'Negative space'], answer: positive ? 'Positive space' : 'Negative space', explain: positive ? 'Positive space is the thing itself.' : 'Negative space is the gaps around the thing. Draw the gaps and your drawing usually improves.', visual: null, explainVisual: null }; },
+    return { type: 'choice', story: positive ? 'The shape of the vase itself.' : 'The shape of the gaps around the vase.', prompt: 'Is this positive or negative space?', choices: ['Positive space', 'Negative space'], answer: positive ? 'Positive space' : 'Negative space', explain: positive ? 'Positive space is the thing itself.' : 'Negative space is the gaps around the thing. Draw the gaps and your drawing usually improves.', visual: null, explainVisual: null }; },
   'art-perspective-part': (rng) => { const c = pick(rng, [['The line where the sky meets the ground', 'The horizon line'], ['The dot where the edges of a road seem to meet', 'The vanishing point']]);
     return { type: 'choice', story: `${c[0]}.`, prompt: 'What is that called?', choices: shuffle(rng, ['The horizon line', 'The vanishing point']), answer: c[1], explain: `${c[1]}: ${c[0].toLowerCase()}.`, visual: null, explainVisual: null }; },
   'art-why-made': (rng) => { const c = pick(rng, ART_WHY); const others = shuffle(rng, [...new Set(ART_WHY.filter((x) => x[1] !== c[1]).map((x) => x[1]))]).slice(0, 2);
@@ -21501,7 +21502,7 @@ Object.assign(GENERATORS, {
   'pk-whose-turn': (rng) => { const first = randInt(rng, 0, 1) === 1; const done = first ? 'Sam' : 'Ana'; const next = first ? 'Ana' : 'Sam';
     return { type: 'choice', story: null, prompt: `${done} had a turn and is done, so whose turn is next?`, choices: ['Sam', 'Ana'], answer: next, explain: `${done} had a turn, so ${next} is next.`, visual: null, explainVisual: null }; },
   'ck-which-flag': (rng) => { const tx = randInt(rng, 0, 1) === 1;
-    return { type: 'choice', story: tx ? 'A flag with one big star.' : 'A flag with 50 stars.', prompt: 'Which flag is that?', choices: ['The Texas flag', 'The United States flag'], answer: tx ? 'The Texas flag' : 'The United States flag', explain: tx ? 'One star is the Texas flag. Texas is the Lone Star State.' : 'Fifty stars is the United States flag, one star for each state.', visual: null, explainVisual: null }; },
+    return { type: 'choice', story: tx ? 'A flag with one big star.' : 'A flag with 50 stars.', prompt: 'Which flag is this?', choices: ['The Texas flag', 'The United States flag'], answer: tx ? 'The Texas flag' : 'The United States flag', explain: tx ? 'One star is the Texas flag. Texas is the Lone Star State.' : 'Fifty stars is the United States flag, one star for each state.', visual: null, explainVisual: null }; },
   'ck-lone-star': (rng) => ({ type: 'choice', story: null, prompt: 'How many stars does the Texas flag have?', choices: shuffle(rng, ['One', 'Fifty', 'Thirteen']), answer: 'One', explain: 'One big star. That is why Texas is the Lone Star State.', visual: null, explainVisual: null }),
   'ck-more-votes': (rng) => { let a = randInt(rng, 1, 6); let b = randInt(rng, 1, 6); if (a === b) b = a === 6 ? 5 : a + 1;
     return { type: 'choice', story: 'The story got the first votes. The song got the second votes.', prompt: 'Tap the one with more votes.', choices: [`dots:${a}`, `dots:${b}`], answer: `dots:${Math.max(a, b)}`, explain: `${Math.max(a, b)} is more than ${Math.min(a, b)}, so that one wins.`, visual: null, explainVisual: null }; },
@@ -21520,33 +21521,33 @@ Object.assign(GENERATORS, {
   'ck-not-on-flag': (rng) => { const odd = pick(rng, ['green', 'yellow']); return { type: 'choice', story: null, prompt: 'Which color is not on our flag?', choices: shuffle(rng, [`swatch:${odd}`, 'swatch:red', 'swatch:blue']), answer: `swatch:${odd}`, explain: `Our flag is red, white and blue. There is no ${odd} on it.`, visual: null, explainVisual: null }; },
   'ck-holiday': (rng) => { const c = pick(rng, CIV_HOLIDAYS); return { type: 'choice', story: null, prompt: `${c[0]}...`, choices: twoOf(rng, CIV_HOLIDAYS.map((x) => x[1]), c[1]), answer: c[1], explain: `${c[0]} ${c[1]}.`, visual: null, explainVisual: null }; },
   'c1-which-symbol': (rng) => { const c = pick(rng, [['A big bell with a crack, in Philadelphia', 'The Liberty Bell'], ['A green statue holding a torch, in New York', 'The Statue of Liberty'], ['An old mission in San Antonio where Texans fought', 'The Alamo'], ['Fifty stars and thirteen stripes', 'The flag']]);
-    return { type: 'choice', story: `${c[0]}.`, prompt: 'Which symbol is that?', choices: shuffle(rng, [c[1], ...shuffle(rng, ['The Liberty Bell', 'The Statue of Liberty', 'The Alamo', 'The flag'].filter((x) => x !== c[1])).slice(0, 2)]), answer: c[1], explain: `${c[0]}: ${c[1].toLowerCase()}.`, visual: null, explainVisual: null }; },
+    return { type: 'choice', story: `${c[0]}.`, prompt: 'Which symbol is this?', choices: shuffle(rng, [c[1], ...shuffle(rng, ['The Liberty Bell', 'The Statue of Liberty', 'The Alamo', 'The flag'].filter((x) => x !== c[1])).slice(0, 2)]), answer: c[1], explain: `${c[0]}: ${c[1].toLowerCase()}.`, visual: null, explainVisual: null }; },
   'c1-texas-symbol': (rng) => ({ type: 'choice', story: null, prompt: 'Which one is a Texas symbol?', choices: shuffle(rng, ['The Alamo', 'The Liberty Bell', 'The Statue of Liberty']), answer: 'The Alamo', explain: 'The Alamo is in San Antonio, Texas. The bell is in Philadelphia and the statue is in New York.', visual: null, explainVisual: null }),
   'c1-sign-means': (rng) => { const c = pick(rng, [['STOP', 'Stop'], ['EXIT', 'The way out'], ['WALK', 'Cross now'], ['ONE WAY', 'Cars go one direction']]);
     return { type: 'choice', story: null, prompt: 'What does this sign mean?', choices: shuffle(rng, [c[1], ...shuffle(rng, ['Stop', 'The way out', 'Cross now', 'Cars go one direction'].filter((x) => x !== c[1])).slice(0, 2)]), answer: c[1], explain: `${c[0]} means ${c[1].toLowerCase()}.`, visual: { kind: 'letters', text: c[0] }, explainVisual: null }; },
   'c1-sign-color': (rng) => ({ type: 'choice', story: null, prompt: 'Which color means stop or danger?', choices: shuffle(rng, ['swatch:red', 'swatch:green', 'swatch:blue']), answer: 'swatch:red', explain: 'Red means stop or danger, on signs and on traffic lights.', visual: null, explainVisual: null }),
   'c1-why-signs': (rng) => ({ type: 'choice', story: null, prompt: 'Why do we have signs?', choices: shuffle(rng, ['So everyone knows the same thing at once', 'To make streets pretty', 'Because letters are fun']), answer: 'So everyone knows the same thing at once', explain: 'A sign tells everyone the same thing at once, so people stay safe without asking.', visual: null, explainVisual: null }),
-  'c1-which-leader': (rng) => { const c = pick(rng, CIV_LEADERS); return { type: 'choice', story: null, prompt: c[0], choices: shuffle(rng, CIV_LEADERS.map((x) => x[1])), answer: c[1], explain: `${c[0].replace(/\?$/, '')}: the ${c[1].toLowerCase()}.`, visual: null, explainVisual: null }; },
-  'c1-where-they-work': (rng) => { const c = pick(rng, CIV_WORKPLACES); return { type: 'choice', story: null, prompt: c[0], choices: shuffle(rng, CIV_WORKPLACES.map((x) => x[1])), answer: c[1], explain: `${c[0].replace(/\?$/, '')}: the ${c[1].toLowerCase()}.`, visual: null, explainVisual: null }; },
+  'c1-which-leader': (rng) => { const c = pick(rng, CIV_LEADERS); return { type: 'choice', story: null, prompt: c[0], choices: shuffle(rng, CIV_LEADERS.map((x) => x[1])), answer: c[1], explain: `The ${c[1].toLowerCase()} ${c[0].replace(/^Who /, '').replace(/\?$/, '')}.`, visual: null, explainVisual: null }; },
+  'c1-where-they-work': (rng) => { const c = pick(rng, CIV_WORKPLACES); return { type: 'choice', story: null, prompt: c[0], choices: shuffle(rng, CIV_WORKPLACES.map((x) => x[1])), answer: c[1], explain: `The ${c[1].toLowerCase()} ${c[0].replace(/^Who /, '').replace(/\?$/, '')}.`, visual: null, explainVisual: null }; },
   'c1-texas-capital': (rng) => ({ type: 'choice', story: null, prompt: 'What is the capital of Texas?', choices: shuffle(rng, ['Austin', 'Houston', 'Dallas']), answer: 'Austin', explain: 'Austin is the capital of Texas. The governor works there.', visual: null, explainVisual: null }),
-  'c1-good-or-service': (rng) => { const c = pick(rng, CIV_GOOD_SERVICE); return { type: 'choice', story: `${c[0]}.`, prompt: 'Good or service?', choices: ['Good', 'Service'], answer: c[1], explain: c[1] === 'Good' ? `${c[0]} is a good. You can hold it.` : `${c[0]} is a service. Someone does the work for you.`, visual: null, explainVisual: null }; },
+  'c1-good-or-service': (rng) => { const c = pick(rng, CIV_GOOD_SERVICE); return { type: 'choice', story: `${c[0]}.`, prompt: 'Is this a good or a service?', choices: ['Good', 'Service'], answer: c[1], explain: c[1] === 'Good' ? `${c[0]} is a good. You can hold it.` : `${c[0]} is a service. Someone does the work for you.`, visual: null, explainVisual: null }; },
   'c1-money-from': (rng) => ({ type: 'choice', story: null, prompt: 'Where does money come from?', choices: shuffle(rng, ['Working', 'Wishing', 'Trees']), answer: 'Working', explain: 'People earn money by working. Then they trade it for goods and services.', visual: null, explainVisual: null }),
   'c1-count-coins': (rng) => { const [coin, cents] = pick(rng, COIN_VALUES); const n = randInt(rng, 2, 5);
-    return { type: 'choice', story: `${['Two', 'Three', 'Four', 'Five'][n - 2]} ${coin === 'penny' ? 'pennies' : coin + 's'}.`, prompt: 'How many cents is that?', choices: shuffle(rng, [String(n * cents), String((n + 1) * cents), String(n * cents + 5)].filter((x, i, a) => a.indexOf(x) === i)).slice(0, 3), answer: String(n * cents), explain: `A ${coin} is ${cents} ${cents === 1 ? 'cent' : 'cents'}. ${n} of them make ${n * cents} cents.`, visual: null, explainVisual: null }; },
+    return { type: 'choice', story: `${['Two', 'Three', 'Four', 'Five'][n - 2]} ${coin === 'penny' ? 'pennies' : coin + 's'}.`, prompt: 'How many cents is this?', choices: shuffle(rng, [String(n * cents), String((n + 1) * cents), String(n * cents + 5)].filter((x, i, a) => a.indexOf(x) === i)).slice(0, 3), answer: String(n * cents), explain: `A ${coin} is ${cents} ${cents === 1 ? 'cent' : 'cents'}. ${n} of them make ${n * cents} cents.`, visual: null, explainVisual: null }; },
   'c1-direction': (rng) => { const c = pick(rng, CIV_DIRECTIONS); return { type: 'choice', story: null, prompt: `${c[0]}...`, choices: shuffle(rng, ['North', 'South', 'East', 'West']), answer: c[1], explain: `${c[0]} ${c[1].toLowerCase()}.`, visual: null, explainVisual: null }; },
-  'c1-map-or-globe': (rng) => { const globe = randInt(rng, 0, 1) === 1; return { type: 'choice', story: globe ? 'A round model of the whole earth.' : 'A flat drawing of a place.', prompt: 'Map or globe?', choices: ['Map', 'Globe'], answer: globe ? 'Globe' : 'Map', explain: globe ? 'A globe is round, like the earth.' : 'A map is flat, like a drawing.', visual: null, explainVisual: null }; },
+  'c1-map-or-globe': (rng) => { const globe = randInt(rng, 0, 1) === 1; return { type: 'choice', story: globe ? 'A round model of the whole earth.' : 'A flat drawing of a place.', prompt: 'Is this a map or a globe?', choices: ['Map', 'Globe'], answer: globe ? 'Globe' : 'Map', explain: globe ? 'A globe is round, like the earth.' : 'A map is flat, like a drawing.', visual: null, explainVisual: null }; },
   'c1-map-key': (rng) => ({ type: 'choice', story: null, prompt: 'What tells you what the little pictures on a map mean?', choices: shuffle(rng, ['The key', 'The title', 'The border']), answer: 'The key', explain: 'The map key tells you what each little picture means.', visual: null, explainVisual: null }),
-  'c2-then-or-now': (rng) => { const c = pick(rng, CIV_THEN_NOW); return { type: 'choice', story: `${c[0]}.`, prompt: 'Then or now?', choices: ['Then', 'Now'], answer: c[1], explain: c[1] === 'Then' ? `${c[0]}: that was long ago.` : `${c[0]}: that is today.`, visual: null, explainVisual: null }; },
+  'c2-then-or-now': (rng) => { const c = pick(rng, CIV_THEN_NOW); return { type: 'choice', story: `${c[0]}.`, prompt: 'Is this from then or from now?', choices: ['Then', 'Now'], answer: c[1], explain: c[1] === 'Then' ? `${c[0]}: that was long ago.` : `${c[0]}: that is today.`, visual: null, explainVisual: null }; },
   'c2-timeline-order': (rng) => { const born = 2010 + randInt(rng, 0, 8); const school = born + 5; const bike = school + randInt(rng, 1, 2);
     return orderQuestion(rng, 'Three events in a life.', 'Tap them in order, from earliest to latest.', [`Born in ${born}`, `Started school in ${school}`, `Learned to ride a bike in ${bike}`], `The smaller year comes first: ${born}, then ${school}, then ${bike}.`); },
   'c2-earlier-year': (rng) => { const a = 1990 + randInt(rng, 0, 30); let b = 1990 + randInt(rng, 0, 30); if (b === a) b = a + 3;
     return { type: 'choice', story: null, prompt: 'Which year came first?', choices: shuffle(rng, [String(a), String(b)]), answer: String(Math.min(a, b)), explain: `${Math.min(a, b)} is the smaller number, so it came first.`, visual: null, explainVisual: null }; },
-  'c2-which-trait': (rng) => { const c = pick(rng, CIV_TRAITS); return { type: 'choice', story: `${c[0]}.`, prompt: 'Which trait is that?', choices: CIV_TRAITS.map((x) => x[1]), answer: c[1], explain: CIV_TRAIT_NOTES[c[1]], choiceNotes: CIV_TRAIT_NOTES, visual: null, explainVisual: null }; },
+  'c2-which-trait': (rng) => { const c = pick(rng, CIV_TRAITS); return { type: 'choice', story: `${c[0]}.`, prompt: 'Which trait is this?', choices: CIV_TRAITS.map((x) => x[1]), answer: c[1], explain: CIV_TRAIT_NOTES[c[1]], choiceNotes: CIV_TRAIT_NOTES, visual: null, explainVisual: null }; },
   'c2-vote-winner': (rng) => { let a = randInt(rng, 5, 15); let b = randInt(rng, 5, 15); if (a === b) b = a + 2;
     return { type: 'choice', story: `${a} voted for pizza and ${b} voted for tacos.`, prompt: 'Which wins?', choices: ['Pizza', 'Tacos'], answer: a > b ? 'Pizza' : 'Tacos', explain: `${Math.max(a, b)} is more than ${Math.min(a, b)}, so ${a > b ? 'pizza' : 'tacos'} wins. That is majority rule.`, visual: null, explainVisual: null }; },
   'c2-vote-margin': (rng) => { let a = randInt(rng, 5, 15); let b = randInt(rng, 5, 15); if (a === b) b = a + 2;
     return { type: 'number', story: `${a} voted for pizza and ${b} voted for tacos.`, prompt: 'By how many votes did the winner win?', answer: String(Math.abs(a - b)), explain: `Take the smaller from the bigger.\n[[${Math.max(a, b)} − ${Math.min(a, b)} = ${Math.abs(a - b)}]]`, visual: null, explainVisual: null }; },
-  'c2-producer-or-consumer': (rng) => { const c = pick(rng, CIV_PROD_CONS); return { type: 'choice', story: `${c[0]}.`, prompt: 'Producer or consumer?', choices: ['Producer', 'Consumer'], answer: c[1], explain: c[1] === 'Producer' ? 'A producer makes or sells something.' : 'A consumer buys something.', visual: null, explainVisual: null }; },
+  'c2-producer-or-consumer': (rng) => { const c = pick(rng, CIV_PROD_CONS); return { type: 'choice', story: `${c[0]}.`, prompt: 'Is this a producer or a consumer?', choices: ['Producer', 'Consumer'], answer: c[1], explain: c[1] === 'Producer' ? 'A producer makes or sells something.' : 'A consumer buys something.', visual: null, explainVisual: null }; },
   'c2-money-left': (rng) => { const have = pick(rng, [10, 12, 15, 20]); const spend = randInt(rng, 3, have - 2);
     return { type: 'number', story: `You have ${have} dollars and spend ${spend}.`, prompt: 'How much is left, in dollars?', answer: String(have - spend), explain: `What you had minus what you spent.\n[[${have} − ${spend} = ${have - spend} dollars]]`, visual: null, explainVisual: null }; },
   'c2-natural-resource': (rng) => { const c = pick(rng, ['Water', 'Trees', 'Soil', 'Rocks']); return { type: 'choice', story: null, prompt: 'Which one is a natural resource?', choices: shuffle(rng, [c, 'A bicycle', 'A book']), answer: c, explain: `${c} come${c === 'Water' || c === 'Soil' ? 's' : ''} from nature. A bicycle and a book are made by people.`, visual: null, explainVisual: null }; },
@@ -21562,14 +21563,14 @@ Object.assign(GENERATORS, {
   'c2-save-or-spend': (rng) => { const c = pick(rng, [['You want a bike that costs more than you have.', 'Save a little each week'], ['You have exactly enough for lunch and you are hungry.', 'Spend it on lunch'], ['You want a game next month and have half the money now.', 'Save a little each week']]);
     return { type: 'choice', story: c[0], prompt: 'What do you do?', choices: shuffle(rng, ['Save a little each week', 'Spend it on lunch']), answer: c[1], explain: c[1].startsWith('Save') ? 'Saving a little each week gets you there.' : 'A need you can pay for now is fine to spend on.', visual: null, explainVisual: null }; },
   'c2-service-or-business': (rng) => { const c = pick(rng, [['The library', 'Town service'], ['The fire department', 'Town service'], ['The public school', 'Town service'], ['The park', 'Town service'], ['A pizza shop', 'Business'], ['A shoe store', 'Business'], ['A car wash', 'Business']]);
-    return { type: 'choice', story: `${c[0]}.`, prompt: 'Town service or business?', choices: ['Town service', 'Business'], answer: c[1], explain: c[1] === 'Town service' ? `${c[0]} is provided by the town for everyone.` : `${c[0]} is a business. Someone owns it and sells things.`, visual: null, explainVisual: null }; },
+    return { type: 'choice', story: `${c[0]}.`, prompt: 'Is this a town service or a business?', choices: ['Town service', 'Business'], answer: c[1], explain: c[1] === 'Town service' ? `${c[0]} is provided by the town for everyone.` : `${c[0]} is a business. Someone owns it and sells things.`, visual: null, explainVisual: null }; },
   'c2-which-service': (rng) => { const c = pick(rng, [['Who puts out fires?', 'The fire department'], ['Where do you borrow books for free?', 'The library'], ['Who keeps the streets safe?', 'The police'], ['Where do children go to learn?', 'The school'], ['Where can everyone play outside?', 'The park']]);
     return { type: 'choice', story: null, prompt: c[0], choices: shuffle(rng, [c[1], ...shuffle(rng, ['The fire department', 'The library', 'The police', 'The school', 'The park'].filter((x) => x !== c[1])).slice(0, 2)]), answer: c[1], explain: `${c[1]}. The town provides it for everyone.`, visual: null, explainVisual: null }; },
-  'c3-which-level': (rng) => { const c = pick(rng, CIV_LEVELS3); return { type: 'choice', story: `${c[0]}.`, prompt: 'Which level of government does that?', choices: ['Local', 'State', 'National'], answer: c[1], explain: CIV_LEVEL_NOTES[c[1]], choiceNotes: CIV_LEVEL_NOTES, visual: null, explainVisual: null }; },
-  'c3-leader-title': (rng) => { const c = pick(rng, CIV_LEADERS); return { type: 'choice', story: null, prompt: c[0], choices: shuffle(rng, CIV_LEADERS.map((x) => x[1])), answer: c[1], explain: `${c[0].replace(/\?$/, '')}: the ${c[1].toLowerCase()}.`, visual: null, explainVisual: null }; },
+  'c3-which-level': (rng) => { const c = pick(rng, CIV_LEVELS3); return { type: 'choice', story: `${c[0]}.`, prompt: 'Which level of government does this?', choices: ['Local', 'State', 'National'], answer: c[1], explain: CIV_LEVEL_NOTES[c[1]], choiceNotes: CIV_LEVEL_NOTES, visual: null, explainVisual: null }; },
+  'c3-leader-title': (rng) => { const c = pick(rng, CIV_LEADERS); return { type: 'choice', story: null, prompt: c[0], choices: shuffle(rng, CIV_LEADERS.map((x) => x[1])), answer: c[1], explain: `The ${c[1].toLowerCase()} ${c[0].replace(/^Who /, '').replace(/\?$/, '')}.`, visual: null, explainVisual: null }; },
   'c3-capital-city': (rng) => { const tx = randInt(rng, 0, 1) === 1; return { type: 'choice', story: null, prompt: tx ? 'What is the capital of Texas?' : 'What is the capital of the United States?', choices: shuffle(rng, tx ? ['Austin', 'Houston', 'Dallas'] : ['Washington, D.C.', 'New York', 'Austin']), answer: tx ? 'Austin' : 'Washington, D.C.', explain: tx ? 'Austin, where the governor and the legislature work.' : 'Washington, D.C., where the president and Congress work.', visual: null, explainVisual: null }; },
-  'c3-rule-or-law': (rng) => { const c = pick(rng, CIV_RULE_LAW); return { type: 'choice', story: `${c[0]}.`, prompt: 'Rule or law?', choices: ['Rule', 'Law'], answer: c[1], explain: c[1] === 'Rule' ? 'A rule is for one family, class or team.' : 'A law is for everyone in the city, state or country.', visual: null, explainVisual: null }; },
-  'c3-branch-job': (rng) => { const c = pick(rng, CIV_BRANCH_JOBS); return { type: 'choice', story: `${c[0]}.`, prompt: 'Who does that?', choices: shuffle(rng, CIV_BRANCH_JOBS.map((x) => x[1])), answer: c[1], explain: `${c[1]}: ${c[0].toLowerCase()}.`, visual: null, explainVisual: null }; },
+  'c3-rule-or-law': (rng) => { const c = pick(rng, CIV_RULE_LAW); return { type: 'choice', story: `${c[0]}.`, prompt: 'Is this a rule or a law?', choices: ['Rule', 'Law'], answer: c[1], explain: c[1] === 'Rule' ? 'A rule is for one family, class or team.' : 'A law is for everyone in the city, state or country.', visual: null, explainVisual: null }; },
+  'c3-branch-job': (rng) => { const c = pick(rng, CIV_BRANCH_JOBS); return { type: 'choice', story: `${c[0]}.`, prompt: 'Who does this job?', choices: shuffle(rng, CIV_BRANCH_JOBS.map((x) => x[1])), answer: c[1], explain: `${c[1]}: ${c[0].toLowerCase()}.`, visual: null, explainVisual: null }; },
   'c3-vote-winner': (rng) => { const total = pick(rng, [20, 24, 30]); const a = randInt(rng, Math.floor(total / 2) + 1, total - 3); const b = total - a; const zooFirst = randInt(rng, 0, 1) === 1;
     return { type: 'choice', story: zooFirst ? `A class of ${total} votes: ${a} for the zoo, ${b} for the museum.` : `A class of ${total} votes: ${b} for the museum, ${a} for the zoo.`, prompt: 'Which wins?', choices: ['The zoo', 'The museum'], answer: 'The zoo', explain: `${a} is more than half of ${total}, so the zoo wins. That is majority rule.`, visual: null, explainVisual: null }; },
   'c3-vote-margin': (rng) => { const total = pick(rng, [20, 24, 30]); const a = randInt(rng, Math.floor(total / 2) + 1, total - 3); const b = total - a;
@@ -21653,14 +21654,14 @@ Object.assign(GENERATORS, {
     return { type: 'choice', story: `A place at ${lat} degrees ${ns}, ${lon} degrees ${ew}.`, prompt: 'Which two hemispheres is it in?', choices: shuffle(rng, ['Northern and Eastern', 'Northern and Western', 'Southern and Eastern', 'Southern and Western']), answer, explain: `${ns} means ${ns === 'N' ? 'north' : 'south'} of the equator, and ${ew} means ${ew === 'E' ? 'east' : 'west'} of the prime meridian.\n[[${answer}]]`, visual: null, explainVisual: null }; },
   'wc6-continent-of': (rng) => threeQ(rng, COUNTRY_CONTINENT, (name) => `Which continent is ${name} on?`),
   'wc6-how-many': (rng) => { const c = pick(rng, [['continents', 7], ['oceans', 5]]); return { type: 'number', story: null, prompt: `How many ${c[0]} does the world have?`, answer: String(c[1]), explain: `There are ${c[1]} ${c[0]}.`, visual: null, explainVisual: null }; },
-  'wc6-which-line': (rng) => { const eq = randInt(rng, 0, 1) === 1; return { type: 'choice', story: eq ? 'Zero degrees latitude.' : 'Zero degrees longitude.', prompt: 'Which line is that?', choices: ['The equator', 'The prime meridian'], answer: eq ? 'The equator' : 'The prime meridian', explain: eq ? 'The equator is 0 degrees latitude, halfway between the poles.' : 'The prime meridian is 0 degrees longitude, through Greenwich.', visual: null, explainVisual: null }; },
-  'wc6-culture-part': (rng) => kindQ(rng, CULTURE_PARTS, 'Which part of culture is that?', CULTURE_NOTES),
+  'wc6-which-line': (rng) => { const eq = randInt(rng, 0, 1) === 1; return { type: 'choice', story: eq ? 'Zero degrees latitude.' : 'Zero degrees longitude.', prompt: 'Which line is this?', choices: ['The equator', 'The prime meridian'], answer: eq ? 'The equator' : 'The prime meridian', explain: eq ? 'The equator is 0 degrees latitude, halfway between the poles.' : 'The prime meridian is 0 degrees longitude, through Greenwich.', visual: null, explainVisual: null }; },
+  'wc6-culture-part': (rng) => kindQ(rng, CULTURE_PARTS, 'Which part of culture is this?', CULTURE_NOTES),
   'wc6-how-it-spread': (rng) => kindQ(rng, SPREADS, 'How did it spread?', null),
   'wc6-religion-origin': (rng) => threeQ(rng, RELIGION_ORIGIN, (name) => `Where did ${name} begin?`),
-  'wc6-government-kind': (rng) => kindQ(rng, GOVT_KINDS, 'Which kind of government is that?', GOVT_NOTES),
-  'wc6-limited-or-not': (rng) => kindQ(rng, LIMITED, 'Limited or unlimited government?', null),
+  'wc6-government-kind': (rng) => kindQ(rng, GOVT_KINDS, 'Which kind of government is this?', GOVT_NOTES),
+  'wc6-limited-or-not': (rng) => kindQ(rng, LIMITED, 'Is this limited or unlimited government?', null),
   'wc6-who-rules': (rng) => { const c = pick(rng, GOVT_KINDS); return { type: 'choice', story: `In a ${c[1].toLowerCase()}.`, prompt: 'Who decides?', choices: shuffle(rng, ['The people', 'A king or queen', 'One ruler', 'A small group', 'Religious leaders']), answer: { Democracy: 'The people', Monarchy: 'A king or queen', Dictatorship: 'One ruler', Oligarchy: 'A small group', Theocracy: 'Religious leaders' }[c[1]], explain: GOVT_NOTES[c[1]], visual: null, explainVisual: null }; },
-  'wc6-economy-kind': (rng) => kindQ(rng, ECON_KINDS, 'Which kind of economy is that?', ECON_NOTES),
+  'wc6-economy-kind': (rng) => kindQ(rng, ECON_KINDS, 'Which kind of economy is this?', ECON_NOTES),
   'wc6-who-decides': (rng) => { const c = pick(rng, ECON_KINDS.slice(0, 3)); return { type: 'choice', story: `In a ${c[1].toLowerCase()} economy.`, prompt: 'Who decides what is made?', choices: shuffle(rng, ['Custom', 'The government', 'Buyers and sellers']), answer: { Traditional: 'Custom', Command: 'The government', Market: 'Buyers and sellers' }[c[1]], explain: ECON_NOTES[c[1]], visual: null, explainVisual: null }; },
   'wc6-gdp-per-person': (rng) => { const people = pick(rng, [10, 20, 25, 50]); const per = pick(rng, [2000, 5000, 10000, 20000, 40000]); const gdp = (people * per) / 1000;
     return { type: 'number', story: `A country makes ${gdp} billion dollars a year and has ${people} million people.`, prompt: 'What is its GDP per person, in dollars?', answer: String(per), explain: `GDP per person is GDP divided by population.\n[[${gdp} billion ÷ ${people} million = ${per} dollars]]`, visual: null, explainVisual: null }; },
@@ -21678,7 +21679,7 @@ Object.assign(GENERATORS, {
   'tx7-four-regions': (rng) => { const c = pick(rng, TX_REGIONS); return { type: 'choice', story: null, prompt: `Which natural region of Texas is ${c[0]} in?`, choices: TX_REGION_NAMES, answer: c[1], explain: `${c[0]} is in the ${c[1]}.`, visual: null, explainVisual: null }; },
   'tx7-spanish-year': (rng) => datedQuestion(rng, TX_SPANISH),
   'tx7-spanish-fact': (rng) => datedFact(rng, TX_SPANISH),
-  'tx7-empresario': (rng) => ({ type: 'choice', story: 'An empresario.', prompt: 'What was that?', choices: shuffle(rng, ['A person who brought settlers to Texas for Mexico', 'A Spanish priest who ran a mission', 'A Comanche war chief']), answer: 'A person who brought settlers to Texas for Mexico', explain: 'Mexico wanted settlers, so empresarios like Stephen F. Austin were given land to bring in families.', visual: null, explainVisual: null }),
+  'tx7-empresario': (rng) => ({ type: 'choice', story: null, prompt: 'What was an empresario?', choices: shuffle(rng, ['A person who brought settlers to Texas for Mexico', 'A Spanish priest who ran a mission', 'A Comanche war chief']), answer: 'A person who brought settlers to Texas for Mexico', explain: 'Mexico wanted settlers, so empresarios like Stephen F. Austin were given land to bring in families.', visual: null, explainVisual: null }),
   'tx7-republic-year': (rng) => datedQuestion(rng, TX_REPUBLIC),
   'tx7-republic-fact': (rng) => datedFact(rng, TX_REPUBLIC),
   'tx7-rev-order': (rng) => orderQuestion(rng, 'The Texas Revolution.', 'Tap the events in order, from first to last.', ['Gonzales: the first shot', 'The Alamo falls', 'Goliad', 'San Jacinto'], 'Gonzales in October 1835, the Alamo on March 6, Goliad on March 27, San Jacinto on April 21, 1836.'),
@@ -21692,11 +21693,11 @@ Object.assign(GENERATORS, {
     return { type: 'number', story: `A herd of ${head} head sells at ${price} dollars a head.`, prompt: 'How much is that, in dollars?', answer: String(head * price), explain: `Head times price.\n[[${head} × ${price} = ${head * price} dollars]]`, visual: null, explainVisual: null }; },
   'tx7-modern-year': (rng) => datedQuestion(rng, TX_MODERN),
   'tx7-modern-fact': (rng) => datedFact(rng, TX_MODERN),
-  'tx7-texas-today': (rng) => { const c = pick(rng, TX_TODAY); return { type: 'choice', story: null, prompt: c[0], choices: shuffle(rng, [c[1], ...c[2]]), answer: c[1], explain: `${c[0].replace(/\?$/, '')}: ${c[1]}.`, visual: null, explainVisual: null }; },
-  'wg9-landform': (rng) => kindQ(rng, LANDFORMS, 'Which landform is that?', LANDFORM_NOTES),
+  'tx7-texas-today': (rng) => { const c = pick(rng, TX_TODAY); return { type: 'choice', story: null, prompt: c[0], choices: shuffle(rng, [c[1], ...c[2]]), answer: c[1], explain: /^How many /.test(c[0]) ? c[0].replace(/^How many (.+)\?$/, `${c[1]} $1.`) : /^(What|Which \w+) is /.test(c[0]) ? c[0].replace(/^(What|Which \w+) is /, `${c[1]} is `).replace(/\?$/, '.') : `${c[0].replace(/\?$/, '')}: ${c[1]}.`, visual: null, explainVisual: null }; },
+  'wg9-landform': (rng) => kindQ(rng, LANDFORMS, 'Which landform is this?', LANDFORM_NOTES),
   'wg9-plate-effect': (rng) => kindQ(rng, PLATE_EFFECTS, 'What happens?', null),
   'wg9-biggest': (rng) => { const c = pick(rng, BIGGEST); return { type: 'choice', story: `${c[0]}.`, prompt: 'Which is it?', choices: shuffle(rng, [c[1], ...c[2]]), answer: c[1], explain: `${c[0]}: ${c[1]}.`, visual: null, explainVisual: null }; },
-  'wg9-biome': (rng) => kindQ(rng, BIOMES, 'Which biome is that?', BIOME_NOTES),
+  'wg9-biome': (rng) => kindQ(rng, BIOMES, 'Which biome is this?', BIOME_NOTES),
   'wg9-lapse': (rng) => { const base = pick(rng, [30, 36, 42]); const km = randInt(rng, 1, 4);
     return { type: 'number', story: `It is ${base} degrees Celsius at sea level. A town sits ${km * 1000} meters up.`, prompt: 'About how warm is the town, in degrees?', answer: String(base - 6 * km), explain: `About 6 degrees colder for every 1,000 meters.\n[[${base} − 6 × ${km} = ${base - 6 * km} degrees]]`, visual: null, explainVisual: null }; },
   'wg9-climate-factor': (rng) => kindQ(rng, CLIMATE_WHY, 'What explains it?', null),
@@ -21704,15 +21705,15 @@ Object.assign(GENERATORS, {
     return { type: 'number', story: `On the map, 1 centimeter stands for ${per} kilometers. Two towns are ${cm} centimeters apart.`, prompt: 'How far apart are they, in kilometers?', answer: String(per * cm), explain: `Real distance is map distance times scale.\n[[${cm} × ${per} = ${per * cm} kilometers]]`, visual: null, explainVisual: null }; },
   'wg9-time-zones': (rng) => { const a = pick(rng, [15, 30, 45, 60, 75, 90]); const hours = randInt(rng, 1, 5); const b = a + 15 * hours;
     return { type: 'number', story: `One city is at ${a} degrees west and another at ${b} degrees west.`, prompt: 'How many hours apart are their time zones?', answer: String(hours), explain: `Fifteen degrees of longitude is one hour.\n[[(${b} − ${a}) ÷ 15 = ${hours} hours]]`, visual: null, explainVisual: null }; },
-  'wg9-map-kind': (rng) => kindQ(rng, MAP_KINDS, 'Which kind of map shows that?', null),
+  'wg9-map-kind': (rng) => kindQ(rng, MAP_KINDS, 'Which kind of map shows this?', null),
   'wg9-density': (rng) => { const area = pick(rng, [10, 50, 100, 200]); const d = pick(rng, [20, 50, 100, 200]); const people = area * d;
     return { type: 'number', story: `A country has ${people} thousand people on ${area} thousand square kilometers.`, prompt: 'How many people per square kilometer?', answer: String(d), explain: `Density is people divided by area.\n[[${people} ÷ ${area} = ${d} per square kilometer]]`, visual: null, explainVisual: null }; },
   'wg9-natural-increase': (rng) => { const births = pick(rng, [12, 16, 20, 30, 40]); const deaths = pick(rng, [5, 8, 10]);
     return { type: 'number', story: `In a year there are ${births} births and ${deaths} deaths for every thousand people.`, prompt: 'What is the natural increase, per thousand?', answer: String(births - deaths), explain: `Births minus deaths.\n[[${births} − ${deaths} = ${births - deaths} per thousand]]`, visual: null, explainVisual: null }; },
   'wg9-urban-share': (rng) => { const total = pick(rng, [10, 20, 50, 100]); const pct = pick(rng, [20, 40, 50, 60, 80, 90]); const urban = (total * pct) / 100;
     return { type: 'number', story: `A country of ${total} million people has ${urban} million living in cities.`, prompt: 'What percent is urban?', answer: String(pct), explain: `City people divided by all people, times 100.\n[[${urban} ÷ ${total} × 100 = ${pct} percent]]`, visual: null, explainVisual: null }; },
-  'wg9-renewable': (rng) => kindQ(rng, RESOURCE_KINDS, 'Renewable or nonrenewable?', null),
-  'wg9-sector': (rng) => kindQ(rng, SECTORS, 'Which sector of work is that?', SECTOR_NOTES),
+  'wg9-renewable': (rng) => kindQ(rng, RESOURCE_KINDS, 'Is this resource renewable or nonrenewable?', null),
+  'wg9-sector': (rng) => kindQ(rng, SECTORS, 'Which sector of work is this?', SECTOR_NOTES),
   'wg9-trade-balance': (rng) => { const imports = pick(rng, [40, 60, 80, 100]); const exports = imports + pick(rng, [10, 20, 30, 50]);
     return { type: 'number', story: `A country exports ${exports} billion dollars of goods and imports ${imports} billion.`, prompt: 'What is its trade balance, in billions?', answer: String(exports - imports), explain: `Exports minus imports.\n[[${exports} − ${imports} = ${exports - imports} billion]]`, visual: null, explainVisual: null }; },
   'wg9-capital': (rng) => threeQ(rng, CAPITALS, (name) => `What is the capital of ${name}?`),
@@ -21831,12 +21832,12 @@ Object.assign(GENERATORS, {
   'h11-turning-year': (rng) => datedQuestion(rng, US_TURNING_11),
   'h11-turning-fact': (rng) => datedFact(rng, US_TURNING_11),
   'g12-which-principle': (rng) => { const c = pick(rng, PRINCIPLES); const others = shuffle(rng, PRINCIPLES.filter((x) => x !== c)).slice(0, 2).map((x) => x.name);
-    return { type: 'choice', story: `${c.clue}.`, prompt: 'Which principle is that?', choices: shuffle(rng, [c.name, ...others]), answer: c.name, explain: PRINCIPLE_NOTES[c.name], choiceNotes: PRINCIPLE_NOTES, visual: null, explainVisual: null }; },
+    return { type: 'choice', story: `${c.clue}.`, prompt: 'Which principle is this?', choices: shuffle(rng, [c.name, ...others]), answer: c.name, explain: PRINCIPLE_NOTES[c.name], choiceNotes: PRINCIPLE_NOTES, visual: null, explainVisual: null }; },
   'g12-constitution-year': (rng) => datedQuestion(rng, GOV_DATES),
   'g12-constitution-fact': (rng) => datedFact(rng, GOV_DATES),
   'g12-madison-line': (rng) => ({ type: 'choice', story: 'Federalist Number 51, by James Madison.', prompt: 'What must be made to counteract ambition?', choices: shuffle(rng, ['Ambition', 'Virtue', 'The army']), answer: 'Ambition', explain: 'Ambition must be made to counteract ambition.\nGive every office a reason to guard its own power, and no office can take all of it.', visual: null, explainVisual: null }),
   'g12-which-branch': (rng) => { const c = pick(rng, BRANCH_POWERS);
-    return { type: 'choice', story: `${c.power}.`, prompt: 'Which branch does that?', choices: shuffle(rng, BRANCHES3), answer: c.branch, explain: `${c.branch}: ${c.power.toLowerCase()}.`, visual: null, explainVisual: null }; },
+    return { type: 'choice', story: `${c.power}.`, prompt: 'Which branch does this?', choices: shuffle(rng, BRANCHES3), answer: c.branch, explain: `${c.branch}: ${c.power.toLowerCase()}.`, visual: null, explainVisual: null }; },
   'g12-how-many': (rng) => { const c = pick(rng, GOV_COUNTS);
     return { type: 'number', story: null, prompt: `How many ${c.what}?`, answer: String(c.n), explain: `There are ${c.n} ${c.what}.`, visual: null, explainVisual: null }; },
   'g12-which-check': (rng) => { const c = pick(rng, GOV_CHECKS);
@@ -21848,7 +21849,7 @@ Object.assign(GENERATORS, {
   'g12-which-level': (rng) => { const c = pick(rng, LEVELS_OF_GOVT);
     return { type: 'choice', story: `${c.power}.`, prompt: 'Which government holds that power?', choices: ['National', 'State', 'Both'], answer: c.level, explain: `${c.power}: ${c.level === 'Both' ? 'both the national government and the states' : c.level === 'National' ? 'the national government, an enumerated power' : 'the states, a reserved power'}.`, visual: null, explainVisual: null }; },
   'g12-power-kind': (rng) => { const c = pick(rng, LEVELS_OF_GOVT); const kind = POWER_KIND[c.level];
-    return { type: 'choice', story: `${c.power}.`, prompt: 'Enumerated, reserved or shared?', choices: ['Enumerated', 'Reserved', 'Shared'], answer: kind, explain: POWER_KIND_NOTES[kind], choiceNotes: POWER_KIND_NOTES, visual: null, explainVisual: null }; },
+    return { type: 'choice', story: `${c.power}.`, prompt: 'Is this power enumerated, reserved or shared?', choices: ['Enumerated', 'Reserved', 'Shared'], answer: kind, explain: POWER_KIND_NOTES[kind], choiceNotes: POWER_KIND_NOTES, visual: null, explainVisual: null }; },
   'g12-supremacy': (rng) => ({ type: 'choice', story: 'A state law and a national law collide.', prompt: 'Which one wins?', choices: shuffle(rng, ['The national law', 'The state law', 'Whichever passed first']), answer: 'The national law', explain: 'The supremacy clause in Article VI makes national law the supreme law of the land.', visual: null, explainVisual: null }),
   'g12-tenth': (rng) => ({ type: 'choice', story: 'A power the Constitution never gives to the national government.', prompt: 'Where does it belong?', choices: shuffle(rng, ['With the states or the people', 'With the President', 'With the Supreme Court']), answer: 'With the states or the people', explain: 'The 10th Amendment reserves every power not given to the nation to the states or to the people.', visual: null, explainVisual: null }),
   'g12-which-amendment': (rng) => { const c = pick(rng, AMENDMENT_RIGHTS); const others = shuffle(rng, AMENDMENT_RIGHTS.filter((x) => x !== c)).slice(0, 2).map((x) => x.n);
@@ -21867,9 +21868,9 @@ Object.assign(GENERATORS, {
   'g12-electors': (rng) => { const [state, reps] = pick(rng, STATE_REPS);
     return { type: 'number', story: `${state} has ${reps} ${reps === 1 ? 'representative' : 'representatives'} in the House.`, prompt: 'How many electoral votes does it have?', answer: String(reps + 2), explain: `First, every state has 2 senators.\nThen, ${reps} + 2 gives: **${reps + 2}** electoral votes.`, visual: null, explainVisual: null }; },
   'g12-presidential-year': (rng) => { const year = 2020 + 2 * randInt(rng, 0, 10); const pres = year % 4 === 0;
-    return { type: 'choice', story: `${year}.`, prompt: 'Presidential election or midterm?', choices: ['Presidential', 'Midterm'], answer: pres ? 'Presidential' : 'Midterm', explain: pres ? `${year} divides by 4, so it is a presidential year.` : `${year} does not divide by 4, so it is a midterm: the House and a third of the Senate, but not the President.`, visual: null, explainVisual: null }; },
+    return { type: 'choice', story: `${year}.`, prompt: 'Is this year\'s election presidential or a midterm?', choices: ['Presidential', 'Midterm'], answer: pres ? 'Presidential' : 'Midterm', explain: pres ? `${year} divides by 4, so it is a presidential year.` : `${year} does not divide by 4, so it is a midterm: the House and a third of the Senate, but not the President.`, visual: null, explainVisual: null }; },
   'g12-primary-or-general': (rng) => { const primary = randInt(rng, 0, 1) === 1;
-    return { type: 'choice', story: primary ? 'Each party\'s voters choose the party\'s candidate.' : 'Voters choose between the parties\' candidates.', prompt: 'Primary or general election?', choices: ['Primary', 'General'], answer: primary ? 'Primary' : 'General', explain: primary ? 'A primary picks the candidate. The general election comes after.' : 'The general election picks the winner. The primaries came first.', visual: null, explainVisual: null }; },
+    return { type: 'choice', story: primary ? 'Each party\'s voters choose the party\'s candidate.' : 'Voters choose between the parties\' candidates.', prompt: 'Is this a primary or a general election?', choices: ['Primary', 'General'], answer: primary ? 'Primary' : 'General', explain: primary ? 'A primary picks the candidate. The general election comes after.' : 'The general election picks the winner. The primaries came first.', visual: null, explainVisual: null }; },
   'g12-who-can-vote': (rng) => { const c = pick(rng, VOTERS);
     return { type: 'choice', story: `${c.who}.`, prompt: 'Can this person vote?', choices: ['Yes', 'No'], answer: c.can, explain: 'A citizen who is at least 18 and registered can vote. Under 18, or not registered, and not yet.', visual: null, explainVisual: null }; },
 });
@@ -21902,14 +21903,14 @@ Object.assign(GENERATORS, {
     return { type: 'number', story: `Job A pays ${a} dollars. Job B pays ${b} dollars. You pick the one that pays more.`, prompt: 'What is the opportunity cost, in dollars?', answer: String(Math.min(a, b)), explain: `First, you take the ${Math.max(a, b)}-dollar job.\nThen, the best thing you gave up is the other job, so the opportunity cost is: **${Math.min(a, b)} dollars**.`, visual: null, explainVisual: null };
   },
   'e12-factor-kind': (rng) => { const c = pick(rng, FACTORS);
-    return { type: 'choice', story: `${c.thing}.`, prompt: 'Which factor of production is that?', choices: ['Land', 'Labor', 'Capital', 'Entrepreneurship'], answer: c.kind, explain: FACTOR_NOTES[c.kind], choiceNotes: FACTOR_NOTES, visual: null, explainVisual: null }; },
+    return { type: 'choice', story: `${c.thing}.`, prompt: 'Which factor of production is this?', choices: ['Land', 'Labor', 'Capital', 'Entrepreneurship'], answer: c.kind, explain: FACTOR_NOTES[c.kind], choiceNotes: FACTOR_NOTES, visual: null, explainVisual: null }; },
   'e12-basic-question': (rng) => { const c = pick(rng, BASIC_QUESTIONS);
-    return { type: 'choice', story: `${c.case}?`, prompt: 'Which basic economic question is that?', choices: BASIC_QUESTIONS.map((x) => x.q), answer: c.q, explain: `That is the question of ${c.q.toLowerCase()}.\nEvery society has to answer what, how and for whom.`, visual: null, explainVisual: null }; },
+    return { type: 'choice', story: `${c.case}?`, prompt: 'Which basic economic question is this?', choices: BASIC_QUESTIONS.map((x) => x.q), answer: c.q, explain: `That is the question of ${c.q.toLowerCase()}.\nEvery society has to answer what, how and for whom.`, visual: null, explainVisual: null }; },
   'e12-equilibrium-price': (rng) => { const p = randInt(rng, 2, 8); const step = pick(rng, [10, 20]); const q = pick(rng, [30, 40, 50, 60]);
     const rows = [[p - 1, q + step, q - step], [p, q, q], [p + 1, q - step, q + step]];
     return { type: 'number', story: rows.map(([price, d, s]) => `At ${price} dollars, buyers want ${d} and sellers offer ${s}.`).join('\n'), prompt: 'What is the equilibrium price, in dollars?', answer: String(p), explain: `First, look for the price where the amount wanted equals the amount offered.\nAt ${p} dollars, both are ${q}.\n[[Equilibrium price = ${p} dollars]]`, visual: null, explainVisual: null }; },
   'e12-shortage-or-surplus': (rng) => { let a = pick(rng, [20, 30, 40, 50, 60, 70]); let b = pick(rng, [20, 30, 40, 50, 60, 70]); if (a === b) b = a + 10; const shortage = a > b;
-    return { type: 'choice', story: `At this price, buyers want ${a} cups and sellers offer ${b}.`, prompt: 'Shortage or surplus?', choices: ['Shortage', 'Surplus'], answer: shortage ? 'Shortage' : 'Surplus', explain: shortage ? `Buyers want ${a} and sellers offer only ${b}: a shortage, and the price rises.` : `Sellers offer ${b} and buyers want only ${a}: a surplus, and the price falls.`, visual: null, explainVisual: null }; },
+    return { type: 'choice', story: `At this price, buyers want ${a} cups and sellers offer ${b}.`, prompt: 'Is this a shortage or a surplus?', choices: ['Shortage', 'Surplus'], answer: shortage ? 'Shortage' : 'Surplus', explain: shortage ? `Buyers want ${a} and sellers offer only ${b}: a shortage, and the price rises.` : `Sellers offer ${b} and buyers want only ${a}: a surplus, and the price falls.`, visual: null, explainVisual: null }; },
   'e12-shift-effect': (rng) => { const c = pick(rng, SHIFTS);
     return { type: 'choice', story: `${c.event}.`, prompt: 'What happens to the price?', choices: ['Rises', 'Falls'], answer: c.price, explain: `${c.event}, so ${c.shift}, and the price ${c.price.toLowerCase()}.`, visual: null, explainVisual: null }; },
   'e12-law-of-demand': (rng) => { const demand = randInt(rng, 0, 1) === 1;
@@ -21921,11 +21922,11 @@ Object.assign(GENERATORS, {
     return { type: 'number', story: `Revenue was ${r} dollars and costs were ${c} dollars.`, prompt: 'What is the profit, in dollars?', answer: String(r - c), explain: `Profit is revenue minus costs.\n[[${r} − ${c} = ${r - c} dollars]]`, visual: null, explainVisual: null }; },
   'e12-competition-effect': (rng) => ({ type: 'choice', story: 'A second pizza shop opens across the street from the only one in town.', prompt: 'What tends to happen to prices and quality?', choices: shuffle(rng, ['Prices fall and quality rises', 'Prices rise and quality falls', 'Nothing changes']), answer: 'Prices fall and quality rises', explain: 'With a rival next door, a shop that raises prices or lets quality slip loses its customers.', visual: null, explainVisual: null }),
   'e12-free-enterprise-kind': (rng) => { const c = pick(rng, FREE_ENTERPRISE);
-    return { type: 'choice', story: `${c.case}.`, prompt: 'Which feature of free enterprise is that?', choices: FREE_ENTERPRISE.map((x) => x.kind), answer: c.kind, explain: FE_NOTES[c.kind], choiceNotes: FE_NOTES, visual: null, explainVisual: null }; },
+    return { type: 'choice', story: `${c.case}.`, prompt: 'Which feature of free enterprise is this?', choices: FREE_ENTERPRISE.map((x) => x.kind), answer: c.kind, explain: FE_NOTES[c.kind], choiceNotes: FE_NOTES, visual: null, explainVisual: null }; },
   'e12-simple-interest': (rng) => { const p = pick(rng, [500, 1000, 2000, 4000]); const r = pick(rng, [2, 3, 4, 5, 10]); const y = randInt(rng, 1, 3); const interest = (p * r * y) / 100;
     return { type: 'number', story: `${p} dollars at ${r} percent a year, simple interest.`, prompt: `How much interest after ${y} ${y === 1 ? 'year' : 'years'}, in dollars?`, answer: String(interest), explain: `Simple interest is principal times rate times years.\n[[${p} × ${r}/100 × ${y} = ${interest} dollars]]`, visual: null, explainVisual: null }; },
   'e12-money-job': (rng) => { const c = pick(rng, MONEY_JOBS);
-    return { type: 'choice', story: `${c.case}.`, prompt: 'Which job of money is that?', choices: MONEY_JOBS.map((x) => x.job), answer: c.job, explain: MONEY_NOTES[c.job], choiceNotes: MONEY_NOTES, visual: null, explainVisual: null }; },
+    return { type: 'choice', story: `${c.case}.`, prompt: 'Which job of money is this?', choices: MONEY_JOBS.map((x) => x.job), answer: c.job, explain: MONEY_NOTES[c.job], choiceNotes: MONEY_NOTES, visual: null, explainVisual: null }; },
   'e12-fed-response': (rng) => { const hot = randInt(rng, 0, 1) === 1;
     return { type: 'choice', story: hot ? 'Prices are rising much too fast.' : 'The economy has stalled and hiring has stopped.', prompt: 'What does the Fed usually do?', choices: ['Raise interest rates', 'Lower interest rates'], answer: hot ? 'Raise interest rates' : 'Lower interest rates', explain: hot ? 'Higher rates make borrowing cost more, so spending cools and prices slow.' : 'Lower rates make borrowing cheaper, so spending and hiring pick up.', visual: null, explainVisual: null }; },
   'e12-bank-gap': (rng) => ({ type: 'choice', story: 'A bank pays 2 percent on deposits and charges borrowers 6 percent.', prompt: 'How does the bank earn its living?', choices: shuffle(rng, ['On the gap between the two rates', 'By printing money', 'From the government']), answer: 'On the gap between the two rates', explain: 'It lends your deposit out at 6 percent, pays you 2, and keeps the difference.', visual: null, explainVisual: null }),
@@ -21951,7 +21952,7 @@ Object.assign(GENERATORS, {
 
 function yearQuestion(rng, list, story) {
   const e = pick(rng, list); const others = shuffle(rng, [...new Set(list.filter((x) => x.year !== e.year).map((x) => String(x.year)))]).slice(0, 2);
-  return { type: 'choice', story: story ? `${story} ${e.event}.` : `${e.event}.`, prompt: 'In what year?', choices: shuffle(rng, [String(e.year), ...others]), answer: String(e.year),
+  return { type: 'choice', story: story ? `${story} ${e.event}.` : `${e.event}.`, prompt: 'In what year did this happen?', choices: shuffle(rng, [String(e.year), ...others]), answer: String(e.year),
     explain: withStory(`${e.event}: ${e.year}.`, e.event), visual: null, explainVisual: null };
 }
 function factQuestion(rng, list) {
@@ -21976,7 +21977,7 @@ const AMENDMENTS = [
 Object.assign(GENERATORS, {
   'h4-which-people': (rng) => {
     const c = pick(rng, TX_PEOPLES);
-    return { type: 'choice', story: `${c.clue}.`, prompt: 'Which people is that?', choices: shuffle(rng, TX_PEOPLES.map((x) => x.people)), answer: c.people,
+    return { type: 'choice', story: `${c.clue}.`, prompt: 'Which people are these?', choices: shuffle(rng, TX_PEOPLES.map((x) => x.people)), answer: c.people,
       explain: `${c.people}: ${c.clue.toLowerCase()}.`, visual: null, explainVisual: null };
   },
   'h4-land-shapes': (rng) => {
@@ -21996,7 +21997,7 @@ Object.assign(GENERATORS, {
   'h4-rev-year': (rng) => yearQuestion(rng, TX_REV, null),
   'h4-rev-fact': (rng) => {
     const c = pick(rng, [{ text: 'A thirteen-day siege in San Antonio, every defender killed.', a: 'The Alamo' }, { text: 'An eighteen-minute battle that won Texas its freedom.', a: 'San Jacinto' }, { text: 'The Mexican president captured after the battle.', a: 'Santa Anna' }, { text: 'The general who led the Texans and became the Republic\'s first president.', a: 'Sam Houston' }]);
-    return { type: 'choice', story: c.text, prompt: 'What or who is that?', choices: shuffle(rng, ['The Alamo', 'San Jacinto', 'Santa Anna', 'Sam Houston']), answer: c.a,
+    return { type: 'choice', story: c.text, prompt: 'What or who is this?', choices: shuffle(rng, ['The Alamo', 'San Jacinto', 'Santa Anna', 'Sam Houston']), answer: c.a,
       explain: `${c.a}: ${c.text.toLowerCase()}`, visual: null, explainVisual: null };
   },
   'h4-order-revolution': (rng) => {
@@ -22056,7 +22057,7 @@ Object.assign(GENERATORS, {
   },
   'h8-amendment-year': (rng) => {
     const a = pick(rng, AMENDMENTS);
-    return { type: 'choice', story: `The ${a.n} Amendment.`, prompt: 'In what year?', choices: shuffle(rng, AMENDMENTS.map((x) => String(x.year))), answer: String(a.year),
+    return { type: 'choice', story: `The ${a.n} Amendment.`, prompt: 'In what year was this amendment added?', choices: shuffle(rng, AMENDMENTS.map((x) => String(x.year))), answer: String(a.year),
       explain: `The ${a.n} Amendment was ratified in ${a.year}.\n${a.why}`, visual: null, explainVisual: null };
   },
   'h8-after-1877': (rng) => {
@@ -22088,7 +22089,7 @@ Object.assign(GENERATORS, {
   'h10-which-river': (rng) => { const c = pick(rng, RIVERS); return { type: 'choice', story: `${c.civ}.`, prompt: 'Which river did it grow along?', choices: shuffle(rng, RIVERS.map((x) => x.river)), answer: c.river, explain: `${c.civ} grew along ${lowerTitle(c.river)}.`, visual: null, explainVisual: null }; },
   'h10-surplus': (rng) => ({ type: 'choice', story: 'One farmer can feed five people.', prompt: 'What does that surplus make possible?', choices: shuffle(rng, ['Four people free to build, trade, rule, pray or write', 'Nothing changes', 'Fewer cities']), answer: 'Four people free to build, trade, rule, pray or write', explain: 'A surplus is what frees people to do something other than farm.', visual: null, explainVisual: null }),
   'h10-first-writing': (rng) => ({ type: 'choice', story: 'The first writing, on clay in Mesopotamia.', prompt: 'What was it for?', choices: shuffle(rng, ['Keeping accounts of grain and sheep', 'Writing poems', 'Sending letters']), answer: 'Keeping accounts of grain and sheep', explain: 'Writing began as accounting and became law, story and scripture.', visual: null, explainVisual: null }),
-  'h10-athens-or-rome': (rng) => { const a = randInt(rng, 0, 1) === 1; return { type: 'choice', story: a ? 'Citizens vote directly on the laws.' : 'Citizens elect officials, and a senate governs.', prompt: 'Athens or Rome?', choices: ['Athens', 'Rome'], answer: a ? 'Athens' : 'Rome', explain: a ? 'Athens: direct democracy.' : 'Rome: a republic.', visual: null, explainVisual: null }; },
+  'h10-athens-or-rome': (rng) => { const a = randInt(rng, 0, 1) === 1; return { type: 'choice', story: a ? 'Citizens vote directly on the laws.' : 'Citizens elect officials, and a senate governs.', prompt: 'Was this Athens or Rome?', choices: ['Athens', 'Rome'], answer: a ? 'Athens' : 'Rome', explain: a ? 'Athens: direct democracy.' : 'Rome: a republic.', visual: null, explainVisual: null }; },
   'h10-rome-year': (rng) => yearQuestionS(rng, ROME_DATES),
   'h10-founders-fear': (rng) => ({ type: 'choice', story: 'The American founders read Roman history closely.', prompt: 'What did it make them build into the Constitution?', choices: shuffle(rng, ['Power split three ways and limited terms, out of fear of a Caesar', 'An emperor for life', 'A senate with no elections']), answer: 'Power split three ways and limited terms, out of fear of a Caesar', explain: 'Their fear of a Caesar is why power is split and terms are limited.', visual: null, explainVisual: null }),
   'h10-medieval-year': (rng) => yearQuestionS(rng, MEDIEVAL),
@@ -22170,7 +22171,7 @@ Object.assign(GENERATORS, {
   },
   'h5-which-branch': (rng) => {
     const b = pick(rng, BRANCHES);
-    return { type: 'choice', story: `${b.who}.`, prompt: 'Which branch is that?', choices: shuffle(rng, BRANCHES.map((x) => x.name)), answer: b.name,
+    return { type: 'choice', story: `${b.who}.`, prompt: 'Which branch is this?', choices: shuffle(rng, BRANCHES.map((x) => x.name)), answer: b.name,
       explain: `${b.who}: the ${b.name.toLowerCase()} branch. ${b.job}.`, choiceNotes: { Legislative: 'Legislative is the Congress, which makes the laws.', Executive: 'Executive is the President, who carries out the laws.', Judicial: 'Judicial is the courts, which decide what the laws mean.' }, visual: null, explainVisual: null };
   },
   'h5-branch-job': (rng) => {
@@ -22406,7 +22407,7 @@ Object.assign(GENERATORS, {
   },
   'tt-fact-story': (rng) => {
     const a = randInt(rng, 3, 10); const b = randInt(rng, 3, 10); const thing = g3thing(rng);
-    return { type: 'number', story: `A pack holds ${b} ${thing}. You buy ${a} packs.`, prompt: `How many ${thing} is that?`, choices: [], answer: String(a * b),
+    return { type: 'number', story: `A pack holds ${b} ${thing}. You buy ${a} packs.`, prompt: `How many ${thing} do you get in all?`, choices: [], answer: String(a * b),
       explain: `${a} packs × ${b} = ${a * b}.`, visual: null, explainVisual: null };
   },
   'dv-share': (rng) => {
@@ -22670,7 +22671,7 @@ Object.assign(GENERATORS, {
   'ko-how-many-groups': (rng) => {
     const n = randInt(rng, 2, 3);
     const names = shuffle(rng, SHAPES.map((x) => x.name)).slice(0, n);
-    return { type: 'choice', story: `${names.map((x) => x[0].toUpperCase() + x.slice(1)).join(', ')}.`, prompt: 'How many groups is that?', choices: ['2', '3', '4'], answer: String(n),
+    return { type: 'choice', story: `${names.map((x) => x[0].toUpperCase() + x.slice(1)).join(', ')}.`, prompt: 'How many groups are there?', choices: ['2', '3', '4'], answer: String(n),
       explain: `${names.join(', ')}. That is ${n} kinds, so ${n} groups.`, visual: null, explainVisual: null };
   },
 });
@@ -22682,12 +22683,12 @@ const kidThing = (rng) => KID_THINGS[randInt(rng, 0, KID_THINGS.length - 1)];
 Object.assign(GENERATORS, {
   'km-one-more': (rng) => {
     const n = randInt(rng, 1, 9);
-    return { type: 'choice', story: null, prompt: `One more than ${n} is?`, choices: shuffle(rng, distinctCounts(rng, 4, 10, n + 1).map(String)), answer: String(n + 1),
+    return { type: 'choice', story: null, prompt: `What is one more than ${n}?`, choices: shuffle(rng, distinctCounts(rng, 4, 10, n + 1).map(String)), answer: String(n + 1),
       explain: `${countWords(n)}, then ${countWords(n + 1)}. One more than ${n} is ${n + 1}.`, visual: { kind: 'dots', count: n }, explainVisual: { kind: 'dots', count: n + 1 } };
   },
   'km-one-less': (rng) => {
     const n = randInt(rng, 2, 10);
-    return { type: 'choice', story: null, prompt: `One less than ${n} is?`, choices: shuffle(rng, distinctCounts(rng, 4, 10, n - 1).map(String)), answer: String(n - 1),
+    return { type: 'choice', story: null, prompt: `What is one less than ${n}?`, choices: shuffle(rng, distinctCounts(rng, 4, 10, n - 1).map(String)), answer: String(n - 1),
       explain: `Count back one from ${n}. One less than ${n} is ${n - 1}.`, visual: { kind: 'dots', count: n }, explainVisual: { kind: 'dots', count: n - 1 } };
   },
   'km-one-more-pic': (rng) => {
@@ -22858,7 +22859,7 @@ Object.assign(GENERATORS, {
   },
   'rw-next': (rng) => {
     const line = pick(rng, READ_LINES); const i = randInt(rng, 0, line.length - 2);
-    return { type: 'choice', story: `${line.join(' ')}`, prompt: `Which word comes right after ${line[i]}?`, choices: shuffle(rng, [...new Set(line)].filter((w) => w !== line[i])), answer: line[i + 1],
+    return { type: 'choice', story: `${line.join(' ')}`, prompt: `Which word comes right after the word ${line[i]}?`, choices: shuffle(rng, [...new Set(line)].filter((w) => w !== line[i])), answer: line[i + 1],
       explain: `After ${line[i]} comes ${line[i + 1]}, moving right.`, visual: { kind: 'letters', text: line.join(' ') }, explainVisual: null };
   },
   'rw-count-words': (rng) => {
@@ -23364,7 +23365,30 @@ const SCIENCE_WHY = {
   's9-pair-letter': { A: 'A pairs with T. The two fit together like a lock and key, which is what holds the DNA ladder together.', T: 'T pairs with A, always. That is why one strand can be rebuilt from the other.', G: 'G pairs with C, held by three bonds instead of two, which makes it the tighter pair.', C: 'C pairs with G, always, so a strand reading GATTACA has a partner reading CTAATGT.' },
   's5-which-is-learned': { 'Riding a bicycle': 'Nobody is born knowing how to ride a bicycle. It takes practice, falls and a patient grown-up.', Reading: 'Reading is learned. A child raised without books never picks it up on their own.', 'A parrot saying hello': 'A parrot copies the sounds it hears. A parrot raised in silence says nothing.', 'A dog sitting on command': 'A dog learns to sit for a treat. It is trained, not born knowing the word.', 'A bird finding a feeder in a yard': 'The bird found the feeder by trying places and remembering. That is learning.' },
 };
-export function generateQuestion(genId, seed) {
+// -----------------------------------------------------------------------------------------------------------------
+// Number words, tidied (2026-10-02, pass IB). In plain terms: a computed question can land on exactly one of
+// something, and a template written for many then says 1 meters, or it lands on 8 and says a 8-inch nose. This last
+// step reads every question a bank makes and fixes those two slips in the setup, the question, the choices, the answer
+// and the explanation, the same way everywhere, so no bank needs its own plural or article code. A lone 1 only: 0.1,
+// 11 and 21 keep their plurals. tools/question-review.mjs checks every bank for both slips.
+// -----------------------------------------------------------------------------------------------------------------
+const ONE_OF = { pieces: 'piece', slices: 'slice', floors: 'floor', meters: 'meter', amps: 'amp', moles: 'mole', steps: 'step', stars: 'star', hats: 'hat', ducks: 'duck', cookies: 'cookie', cars: 'car', blocks: 'block', birds: 'bird', balls: 'ball', apples: 'apple', tenths: 'tenth', hundredths: 'hundredth', thousandths: 'thousandth', degrees: 'degree', hours: 'hour', files: 'file', units: 'unit', doublings: 'doubling', cups: 'cup', dots: 'dot', wholes: 'whole', beats: 'beat', minutes: 'minute', seconds: 'second', days: 'day', weeks: 'week', months: 'month', years: 'year', inches: 'inch', feet: 'foot', miles: 'mile', pounds: 'pound', ounces: 'ounce', liters: 'liter', grams: 'gram', kilograms: 'kilogram', centimeters: 'centimeter', kilometers: 'kilometer', millimeters: 'millimeter', dollars: 'dollar', cents: 'cent', coins: 'coin', points: 'point', marbles: 'marble', books: 'book', pencils: 'pencil', cards: 'card', packs: 'pack', boxes: 'box', groups: 'group', rows: 'row', votes: 'vote', volts: 'volt', ohms: 'ohm', newtons: 'newton', joules: 'joule', watts: 'watt', kilowatts: 'kilowatt', servings: 'serving', ones: 'one', tens: 'ten', hundreds: 'hundred', thousands: 'thousand', bags: 'bag', eggs: 'egg', cats: 'cat', dogs: 'dog', fish: 'fish', trees: 'tree', flowers: 'flower', bananas: 'banana', oranges: 'orange', students: 'student', friends: 'friend', shells: 'shell', rocks: 'rock', buttons: 'button', bricks: 'brick' };
+function tidyNumberWords(text) {
+  if (typeof text !== 'string') return text;
+  return text
+    .replace(/(^|[^\d.,/])1 ([a-z]+)\b/g, (m, before, word) => (ONE_OF[word] ? `${before}1 ${ONE_OF[word]}` : m))
+    .replace(/\b([aA]) (8\d*|11|18)(?![\d])/g, (m, a, n) => `${a}n ${n}`);
+}
+function tidyQuestion(q) {
+  if (!q || typeof q !== 'object') return q;
+  const out = { ...q };
+  for (const key of ['story', 'prompt', 'explain', 'answer']) out[key] = tidyNumberWords(q[key]);
+  for (const key of ['choices', 'items']) if (Array.isArray(q[key])) out[key] = q[key].map(tidyNumberWords);
+  return out;
+}
+// Every question in the app comes through here, so the tidy step above sees all of them.
+export function generateQuestion(genId, seed) { return tidyQuestion(generateQuestionRaw(genId, seed)); }
+function generateQuestionRaw(genId, seed) {
   const generator = GENERATORS[genId];
   if (!generator) throw new Error(`Unknown question generator: ${genId}`);
   const q = { genId, seed, ...generator(makeRng(seed)) };

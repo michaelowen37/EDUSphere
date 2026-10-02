@@ -3342,7 +3342,7 @@ function PREK3_MODULES() { return [
       script: [
         { say: 'Look at this fox.', show: { kind: 'pic', name: 'fox' } },
         { say: 'Here is another fox. They are the same.', show: { kind: 'pair', a: { kind: 'pic', name: 'fox' }, b: { kind: 'pic', name: 'fox' } } },
-        { say: 'This is a owl. The owl is different from the fox.', show: { kind: 'pair', a: { kind: 'pic', name: 'fox' }, b: { kind: 'pic', name: 'owl' } } },
+        { say: 'This is an owl. The owl is different from the fox.', show: { kind: 'pair', a: { kind: 'pic', name: 'fox' }, b: { kind: 'pic', name: 'owl' } } },
       ],
     },
     sources: ['Aligned with Texas Prekindergarten Guidelines V.E.1 (sorts objects that are the same and different into groups) and Head Start ELOF Goal P-MATH 8.'],
@@ -3400,7 +3400,7 @@ function PREK3_MODULES() { return [
       script: [
         { say: 'Here is one dot.', show: { kind: 'dots', count: 1 } },
         { say: 'Here are three dots. That is more.', show: { kind: 'pair', a: { kind: 'dots', count: 3 }, b: { kind: 'dots', count: 1 } } },
-        { say: 'Three dots is more than one dot.', show: { kind: 'pair', a: { kind: 'dots', count: 3 }, b: { kind: 'dots', count: 1 } } },
+        { say: 'Three dots are more than one dot.', show: { kind: 'pair', a: { kind: 'dots', count: 3 }, b: { kind: 'dots', count: 1 } } },
       ],
     },
     sources: ['Aligned with Texas Prekindergarten Guidelines V.A.8 (compares sets of objects up to 5 using comparative language) and Head Start ELOF Goal P-MATH 4 (compares numbers).'],
@@ -3517,7 +3517,7 @@ function PREK3_MODULES() { return [
       example: { kind: 'pair', a: { kind: 'pic', name: 'bear' }, b: { kind: 'pic', name: 'rabbit' }, caption: 'Please. Thank you.' },
       script: [
         { say: 'Please. That is the word for asking. May I have a cracker, please?', show: { kind: 'letters', text: 'Please' } },
-        { say: 'Thank you. That is the word for when you get it.', show: { kind: 'letters', text: 'Thank you' } },
+        { say: 'Thank you. That is what we say when someone gives us something.', show: { kind: 'letters', text: 'Thank you' } },
         { say: 'Please to ask. Thank you when you get it.', show: null },
         { say: 'Take turns. Share it. Those are kind words too.', show: { kind: 'pic', name: 'bear' } },
       ],
@@ -13839,14 +13839,14 @@ export const MATCH_THEMES = {
 };
 const themedSame = (theme) => (rng) => {
   const a = pick(rng, theme.items); const b = pick(rng, theme.items.filter((x) => x !== a));
-  return { type: 'choice', story: `This is a ${a}.`, prompt: 'Tap the one that is the same.', choices: shuffle(rng, [`${theme.kind}:${a}`, `${theme.kind}:${b}`]), answer: `${theme.kind}:${a}`,
-    explain: `Both are a ${a}.`, visual: { kind: theme.kind, name: a }, explainVisual: { kind: 'pair', a: { kind: theme.kind, name: a }, b: { kind: theme.kind, name: a } } };
+  return { type: 'choice', story: `This is ${aOrAn(a)} ${a}.`, prompt: 'Tap the one that is the same.', choices: shuffle(rng, [`${theme.kind}:${a}`, `${theme.kind}:${b}`]), answer: `${theme.kind}:${a}`,
+    explain: `Both are ${pluralOf(a)}.`, visual: { kind: theme.kind, name: a }, explainVisual: { kind: 'pair', a: { kind: theme.kind, name: a }, b: { kind: theme.kind, name: a } } };
 };
 const themedDifferent = (theme) => (rng) => {
   const a = pick(rng, theme.items); const b = pick(rng, theme.items.filter((x) => x !== a));
   const choices = shuffle(rng, [`${theme.kind}:${a}#0`, `${theme.kind}:${a}#1`, `${theme.kind}:${b}#2`]);
   return { type: 'choice', story: 'Two are the same.', prompt: 'Tap the one that is different.', choices, answer: choices.find((x) => x.startsWith(`${theme.kind}:${b}#`)),
-    explain: `The ${b} is different from the ${a}.`, visual: null, explainVisual: { kind: 'pair', a: { kind: theme.kind, name: a }, b: { kind: theme.kind, name: b } } };
+    explain: `The ${b} is different from the ${pluralOf(a)}.`, visual: null, explainVisual: { kind: 'pair', a: { kind: theme.kind, name: a }, b: { kind: theme.kind, name: b } } };
 };
 export const GENERATORS = {
   // ---------- Module 1: what a fraction means ----------
@@ -14172,20 +14172,20 @@ Object.assign(GENERATORS, {
     const [a, b] = shuffle(rng, PATTERN_SHAPES).slice(0, 2); const c = pickColor(rng);
     const items = [a, b, a, b]; const next = a; const wrong = b;
     return { type: 'choice', story: null, prompt: 'What comes next?', choices: shuffle(rng, [`item:${next}-${c}`, `item:${wrong}-${c}`]), answer: `item:${next}-${c}`,
-      explain: `${a}, ${b}, ${a}, ${b}. Next comes ${a}.`, visual: { kind: 'pattern', items, color: c }, explainVisual: null };
+      explain: `${capFirst(a)}, ${b}, ${a}, ${b}. Next comes ${a}.`, visual: { kind: 'pattern', items, color: c }, explainVisual: null };
   },
   'pp-which-repeats': (rng) => {
     const [a, b, d] = shuffle(rng, PATTERN_SHAPES); const c = pickColor(rng);
     const yes = randInt(rng, 0, 1) === 1;
     const items = yes ? [a, b, a, b, a, b] : [a, b, d, a, d, b];
     return { type: 'choice', story: null, prompt: 'Does this repeat the same way each time?', choices: ['Yes', 'No'], answer: yes ? 'Yes' : 'No',
-      explain: yes ? `${a}, ${b}, ${a}, ${b}. It repeats.` : 'The order keeps changing. It does not repeat.', visual: { kind: 'pattern', items, color: c }, explainVisual: null };
+      explain: yes ? `${capFirst(a)}, ${b}, ${a}, ${b}. It repeats.` : 'The order keeps changing. It does not repeat.', visual: { kind: 'pattern', items, color: c }, explainVisual: null };
   },
   'pp-missing': (rng) => {
     const [a, b] = shuffle(rng, PATTERN_SHAPES).slice(0, 2); const c = pickColor(rng);
     const items = [a, b, '?', b, a, b]; const missing = a;
     return { type: 'choice', story: null, prompt: 'Which one is missing?', choices: shuffle(rng, [`item:${missing}-${c}`, `item:${b}-${c}`]), answer: `item:${missing}-${c}`,
-      explain: `${a}, ${b}, ${a}, ${b}. The missing one is ${a}.`, visual: { kind: 'pattern', items, color: c }, explainVisual: null };
+      explain: `${capFirst(a)}, ${b}, ${a}, ${b}. The missing one is ${a}.`, visual: { kind: 'pattern', items, color: c }, explainVisual: null };
   },
 
 
@@ -14196,8 +14196,8 @@ Object.assign(GENERATORS, {
   },
   'p3-tap-one': (rng) => {
     const other = randInt(rng, 2, 3);
-    return { type: 'choice', story: null, prompt: 'Tap the one with just one.', choices: shuffle(rng, ['dots:1', `dots:${other}`]), answer: 'dots:1',
-      explain: 'This has just one.', visual: null, explainVisual: null };
+    return { type: 'choice', story: null, prompt: 'Tap the group with just one dot.', choices: shuffle(rng, ['dots:1', `dots:${other}`]), answer: 'dots:1',
+      explain: 'This group has just one dot.', visual: null, explainVisual: null };
   },
   'p3-more': (rng) => {
     const [a, b] = shuffle(rng, [1, 2, 3]).slice(0, 2);
@@ -14335,7 +14335,7 @@ Object.assign(GENERATORS, {
   's2-magnet-pulls': (rng) => {
     const t = pick(rng, [{ n: 'rock', pulls: false }, { n: 'flower', pulls: false }, { n: 'plant', pulls: false }, { n: 'ice', pulls: false }]);
     return { type: 'choice', story: null, prompt: `Look at the ${t.n}. Does a magnet pull it?`, choices: ['Yes', 'No'], answer: 'No',
-      explain: `A magnet does not pull a ${t.n}. It pulls iron and steel.`, visual: { kind: 'icon', name: t.n }, explainVisual: null };
+      explain: `A magnet does not pull the ${t.n}. It pulls iron and steel.`, visual: { kind: 'icon', name: t.n }, explainVisual: null };
   },
   's2-tap-not-pulled': (rng) => {
     // Reworded 2026-09-23 (Mikey): the pair is a metal thing and a not-metal thing, never the magnet itself.
@@ -14385,7 +14385,7 @@ Object.assign(GENERATORS, {
   'p3-find-match': (rng) => {
     const shape = pick(rng, PATTERN_SHAPES); const c = pickColor(rng); const otherShape = pick(rng, PATTERN_SHAPES.filter((x) => x !== shape));
     return { type: 'choice', story: `This is a ${c} ${shape}.`, prompt: 'Tap the one that is the same.', choices: shuffle(rng, [`item:${shape}-${c}`, `item:${otherShape}-${c}`]), answer: `item:${shape}-${c}`,
-      explain: `Both are a ${c} ${shape}.`, visual: { kind: 'item', shape, colour: c }, explainVisual: null };
+      explain: `Both are ${c} ${shape}s.`, visual: { kind: 'item', shape, colour: c }, explainVisual: null };
   },
   'p3-tap-count': (rng) => {
     const n = randInt(rng, 1, 2); const other = n === 1 ? 2 : 1; const word = n === 1 ? 'one' : 'two';
@@ -14446,12 +14446,12 @@ Object.assign(GENERATORS, {
   'k-tap-more-10': (rng) => {
     const small = randInt(rng, 2, 6); const big = Math.min(10, small + randInt(rng, 1, 4));
     return { type: 'choice', story: null, prompt: 'Tap the one with more dots.', choices: shuffle(rng, [`dots:${big}`, `dots:${small}`]), answer: `dots:${big}`,
-      explain: `${NUMBER_NAMES[big].charAt(0).toUpperCase() + NUMBER_NAMES[big].slice(1)} dots is more than ${NUMBER_NAMES[small]} dots.`, visual: null, explainVisual: { kind: 'pair', a: { kind: 'dots', count: big }, b: { kind: 'dots', count: small } } };
+      explain: `${NUMBER_NAMES[big].charAt(0).toUpperCase() + NUMBER_NAMES[big].slice(1)} dots are more than ${NUMBER_NAMES[small]} dots.`, visual: null, explainVisual: { kind: 'pair', a: { kind: 'dots', count: big }, b: { kind: 'dots', count: small } } };
   },
   'k-tap-fewer-10': (rng) => {
     const small = randInt(rng, 2, 6); const big = Math.min(10, small + randInt(rng, 1, 4));
     return { type: 'choice', story: null, prompt: 'Tap the one with fewer dots.', choices: shuffle(rng, [`dots:${big}`, `dots:${small}`]), answer: `dots:${small}`,
-      explain: `${NUMBER_NAMES[small].charAt(0).toUpperCase() + NUMBER_NAMES[small].slice(1)} dots is fewer than ${NUMBER_NAMES[big]} dots.`, visual: null, explainVisual: { kind: 'pair', a: { kind: 'dots', count: small }, b: { kind: 'dots', count: big } } };
+      explain: `${NUMBER_NAMES[small].charAt(0).toUpperCase() + NUMBER_NAMES[small].slice(1)} dots are fewer than ${NUMBER_NAMES[big]} dots.`, visual: null, explainVisual: { kind: 'pair', a: { kind: 'dots', count: small }, b: { kind: 'dots', count: big } } };
   },
   'p4-tap-bigger': (rng) => {
     const shape = pick(rng, ['square', 'circle', 'triangle']);
@@ -14466,22 +14466,22 @@ Object.assign(GENERATORS, {
   'p4-tap-more-5': (rng) => {
     const small = randInt(rng, 1, 3); const big = Math.min(5, small + randInt(rng, 1, 2));
     return { type: 'choice', story: null, prompt: 'Tap the one with more dots.', choices: shuffle(rng, [`dots:${big}`, `dots:${small}`]), answer: `dots:${big}`,
-      explain: `${NUMBER_NAMES[big].charAt(0).toUpperCase() + NUMBER_NAMES[big].slice(1)} dots is more than ${NUMBER_NAMES[small]} dots.`, visual: null, explainVisual: { kind: 'pair', a: { kind: 'dots', count: big }, b: { kind: 'dots', count: small } } };
+      explain: `${NUMBER_NAMES[big].charAt(0).toUpperCase() + NUMBER_NAMES[big].slice(1)} dots are more than ${NUMBER_NAMES[small]} dots.`, visual: null, explainVisual: { kind: 'pair', a: { kind: 'dots', count: big }, b: { kind: 'dots', count: small } } };
   },
   'p4-tap-fewer-5': (rng) => {
     const small = randInt(rng, 1, 3); const big = Math.min(5, small + randInt(rng, 1, 2));
     return { type: 'choice', story: null, prompt: 'Tap the one with fewer dots.', choices: shuffle(rng, [`dots:${big}`, `dots:${small}`]), answer: `dots:${small}`,
-      explain: `${NUMBER_NAMES[small].charAt(0).toUpperCase() + NUMBER_NAMES[small].slice(1)} dots is fewer than ${NUMBER_NAMES[big]} dots.`, visual: null, explainVisual: { kind: 'pair', a: { kind: 'dots', count: small }, b: { kind: 'dots', count: big } } };
+      explain: `${NUMBER_NAMES[small].charAt(0).toUpperCase() + NUMBER_NAMES[small].slice(1)} dots are fewer than ${NUMBER_NAMES[big]} dots.`, visual: null, explainVisual: { kind: 'pair', a: { kind: 'dots', count: small }, b: { kind: 'dots', count: big } } };
   },
   'p3-tap-more': (rng) => {
     const small = randInt(rng, 1, 2); const big = small + randInt(rng, 1, 2);
     return { type: 'choice', story: null, prompt: 'Tap the one with more dots.', choices: shuffle(rng, [`dots:${big}`, `dots:${small}`]), answer: `dots:${big}`,
-      explain: `${big} dots is more than ${small}.`, visual: null, explainVisual: null };
+      explain: `${big} dots are more than ${small} dots.`, visual: null, explainVisual: null };
   },
   'p3-tap-fewer': (rng) => {
     const small = randInt(rng, 1, 2); const big = small + randInt(rng, 1, 2);
     return { type: 'choice', story: null, prompt: 'Tap the one with fewer dots.', choices: shuffle(rng, [`dots:${big}`, `dots:${small}`]), answer: `dots:${small}`,
-      explain: `${small} dots is fewer than ${big}.`, visual: null, explainVisual: null };
+      explain: `${small} dots are fewer than ${big} dots.`, visual: null, explainVisual: null };
   },
   'p3-tap-yellow-green': (rng) => {
     const color = pick(rng, ['yellow', 'green']); const other = color === 'yellow' ? 'green' : 'yellow';
@@ -14501,7 +14501,7 @@ Object.assign(GENERATORS, {
   'p3-tap-three-shapes': (rng) => {
     const shape = pick(rng, ['circle', 'square', 'triangle']); const others = ['circle', 'square', 'triangle'].filter((x) => x !== shape);
     return { type: 'choice', story: null, prompt: `Tap the ${shape}.`, choices: shuffle(rng, [`shape:${shape}`, ...others.map((x) => `shape:${x}`)]), answer: `shape:${shape}`,
-      explain: shape === 'triangle' ? 'This is a triangle. It has three corners.' : `This is a ${shape}.`, visual: null, explainVisual: null };
+      explain: ({ triangle: 'This is a triangle. It has three corners.', circle: 'This is a circle. It is round, with no corners.', square: 'This is a square. It has four corners.' })[shape] || `This is a ${shape}.`, visual: null, explainVisual: null };
   },
   'p3-name-three-shapes': (rng) => {
     const shape = pick(rng, ['circle', 'square', 'triangle']);
@@ -14531,7 +14531,7 @@ Object.assign(GENERATORS, {
   'p3-name-ab': (rng) => {
     // More examples (pass HT, Mikey): the letter alone, or lit up at the start of a word read aloud.
     if (rng() < 0.6) { const [word, L] = pick(rng, [['Apple', 'A'], ['Ant', 'A'], ['Arm', 'A'], ['Ball', 'B'], ['Bee', 'B'], ['Bus', 'B'], ['Bat', 'B']]);
-      return { type: 'choice', story: null, prompt: `What letter starts ${word.toLowerCase()}?`, choices: shuffle(rng, ['A', 'B']), answer: L, explain: `${word} starts with ${L}.`, visual: { kind: 'letters', text: word, highlight: 0 }, explainVisual: null }; }
+      return { type: 'choice', story: null, prompt: `What letter does ${word.toLowerCase()} start with?`, choices: shuffle(rng, ['A', 'B']), answer: L, explain: `${word} starts with ${L}.`, visual: { kind: 'letters', text: word, highlight: 0 }, explainVisual: null }; }
     const L = pick(rng, ['A', 'B']);
     return { type: 'choice', story: null, prompt: 'What letter is this?', choices: shuffle(rng, ['A', 'B']), answer: L,
       explain: `This is ${L}.`, visual: { kind: 'letters', text: L, highlight: 0 }, explainVisual: null };
@@ -20433,12 +20433,12 @@ Object.assign(GENERATORS, {
   },
   's8-particle-charge': (rng) => {
     const p = pick(rng, PARTICLES);
-    return { type: 'choice', story: null, prompt: `What charge does a ${p.name.toLowerCase()} have?`, choices: shuffle(rng, ['Positive', 'Negative', 'No charge']), answer: p.charge,
-      explain: p.charge === 'No charge' ? `A ${p.name.toLowerCase()} has no charge.` : `A ${p.name.toLowerCase()} has a ${p.charge.toLowerCase()} charge.`, visual: null, explainVisual: null };
+    return { type: 'choice', story: null, prompt: `What charge does ${aOrAn(p.name)} ${p.name.toLowerCase()} have?`, choices: shuffle(rng, ['Positive', 'Negative', 'No charge']), answer: p.charge,
+      explain: p.charge === 'No charge' ? `${capFirst(aOrAn(p.name))} ${p.name.toLowerCase()} has no charge.` : `${capFirst(aOrAn(p.name))} ${p.name.toLowerCase()} has a ${p.charge.toLowerCase()} charge.`, visual: null, explainVisual: null };
   },
   's8-particle-where': (rng) => {
     const p = pick(rng, PARTICLES);
-    return { type: 'choice', story: null, prompt: `Where in the atom is a ${p.name.toLowerCase()}?`, choices: shuffle(rng, ['In the nucleus', 'In the cloud outside the nucleus']), answer: p.where,
+    return { type: 'choice', story: null, prompt: `Where in the atom is ${aOrAn(p.name)} ${p.name.toLowerCase()}?`, choices: shuffle(rng, ['In the nucleus', 'In the cloud outside the nucleus']), answer: p.where,
       explain: `${p.name}s sit ${p.where.toLowerCase()}.`, visual: null, explainVisual: null };
   },
   's8-atomic-number': (rng) => {
@@ -21492,13 +21492,13 @@ Object.assign(GENERATORS, {
   'pk4-tap-middle': (rng) => { const sh = pick(rng, ['circle', 'square', 'triangle']);
     return { type: 'choice', story: null, prompt: 'Tap the middle-sized one.', choices: shuffle(rng, [`shape:${sh}:big`, `shape:${sh}:medium`, `shape:${sh}:small`]), answer: `shape:${sh}:medium`, explain: `That is the middle-sized ${sh}: not little, not big.`, visual: null, explainVisual: null }; },
   'pk3-magic-word': (rng) => { const ask = randInt(rng, 0, 1) === 1;
-    return { type: 'choice', story: ask ? 'You want a cracker.' : 'Someone hands you a cracker.', prompt: 'What do you say?', choices: shuffle(rng, ask ? ['Please', 'Give me'] : ['Thank you', 'Nothing']), answer: ask ? 'Please' : 'Thank you', explain: ask ? 'Please is the word for asking.' : 'Thank you is the word for when you get it.', visual: null, explainVisual: null }; },
+    return { type: 'choice', story: ask ? 'You want a cracker.' : 'Someone hands you a cracker.', prompt: 'What do you say?', choices: shuffle(rng, ask ? ['Please', 'Give me'] : ['Thank you', 'Nothing']), answer: ask ? 'Please' : 'Thank you', explain: ask ? 'Please is the word for asking.' : 'We say thank you when someone gives us something.', visual: null, explainVisual: null }; },
   'pk3-tap-big': (rng) => { const sh = pick(rng, ['circle', 'square', 'triangle']);
     return { type: 'choice', story: null, prompt: 'Tap the big one.', choices: shuffle(rng, [`shape:${sh}:big`, `shape:${sh}:small`]), answer: `shape:${sh}:big`, explain: `That is the big ${sh}.`, visual: null, explainVisual: null }; },
   'pk3-tap-little': (rng) => { const sh = pick(rng, ['circle', 'square', 'triangle']);
     return { type: 'choice', story: null, prompt: 'Tap the small one.', choices: shuffle(rng, [`shape:${sh}:big`, `shape:${sh}:small`]), answer: `shape:${sh}:small`, explain: `That is the small ${sh}.`, visual: null, explainVisual: null }; },
   'pk-turn-choice': (rng) => { const c = pick(rng, [['You both want the swing.', 'Take turns', 'Grab it'], ['You both want the red crayon.', 'Take turns', 'Keep it all day'], ['Two friends, one ball.', 'Share it', 'Hide it']]);
-    return { type: 'choice', story: c[0], prompt: 'What do we do?', choices: shuffle(rng, [c[1], c[2]]), answer: c[1], explain: `${c[1]}. Then everybody gets a turn.`, visual: null, explainVisual: null }; },
+    return { type: 'choice', story: c[0], prompt: 'What do we do?', choices: shuffle(rng, [c[1], c[2]]), answer: c[1], explain: `${c[1]}. That way, you both get to play.`, visual: null, explainVisual: null }; },
   'pk-whose-turn': (rng) => { const first = randInt(rng, 0, 1) === 1; const done = first ? 'Sam' : 'Ana'; const next = first ? 'Ana' : 'Sam';
     return { type: 'choice', story: null, prompt: `${done} had a turn and is done, so whose turn is next?`, choices: ['Sam', 'Ana'], answer: next, explain: `${done} had a turn, so ${next} is next.`, visual: null, explainVisual: null }; },
   'ck-which-flag': (rng) => { const tx = randInt(rng, 0, 1) === 1;
@@ -21508,12 +21508,12 @@ Object.assign(GENERATORS, {
     return { type: 'choice', story: 'The story got the first votes. The song got the second votes.', prompt: 'Tap the one with more votes.', choices: [`dots:${a}`, `dots:${b}`], answer: `dots:${Math.max(a, b)}`, explain: `${Math.max(a, b)} is more than ${Math.min(a, b)}, so that one wins.`, visual: null, explainVisual: null }; },
   'ck-one-vote-each': (rng) => ({ type: 'choice', story: 'The class is voting.', prompt: 'How many votes does each person get?', choices: shuffle(rng, ['One', 'As many as they want']), answer: 'One', explain: 'Everyone gets one vote. That is what makes it fair.', visual: null, explainVisual: null }),
   'ck-job-tool': (rng) => { const c = pick(rng, [['Who uses a hose?', 'Firefighter'], ['Who uses a stethoscope?', 'Doctor'], ['Who writes on a whiteboard?', 'Teacher'], ['Who drives a mail truck?', 'Mail carrier']]);
-    return { type: 'choice', story: null, prompt: c[0], choices: twoOf(rng, CIV_HELPER_NAMES, c[1]), answer: c[1], explain: `${c[1]}.`, visual: null, explainVisual: null }; },
+    return { type: 'choice', story: null, prompt: c[0], choices: twoOf(rng, CIV_HELPER_NAMES, c[1]), answer: c[1], explain: `A ${c[1].toLowerCase()} ${c[0].replace(/^Who /, '').replace(/\?$/, '')}.`, visual: null, explainVisual: null }; },
   'ck-why-work': (rng) => ({ type: 'choice', story: null, prompt: 'Why do grown-ups go to work?', choices: shuffle(rng, ['To earn money for needs', 'Because school is closed', 'To stay away from home']), answer: 'To earn money for needs', explain: 'Work earns money, and money pays for food, a home and clothes.', visual: null, explainVisual: null }),
   'ck-why-rule': (rng) => { const c = pick(rng, CIV_RULE_WHYS); const others = CIV_RULE_WHYS.filter((x) => x !== c).map((x) => x[1]);
     return { type: 'choice', story: null, prompt: c[0], choices: shuffle(rng, [c[1], ...others]), answer: c[1], explain: `${c[0].replace(/\?$/, '')}: ${c[1].toLowerCase()}.`, visual: null, explainVisual: null }; },
-  'ck-which-helper': (rng) => { const c = pick(rng, CIV_HELPERS); return { type: 'choice', story: null, prompt: c[0], choices: twoOf(rng, CIV_HELPER_NAMES, c[1]), answer: c[1], explain: `${c[1]}.`, visual: null, explainVisual: null }; },
-  'ck-good-choice': (rng) => { const c = pick(rng, CIV_GOOD_CHOICES); return { type: 'choice', story: c[0], prompt: 'What is the good choice?', choices: shuffle(rng, [c[1], c[2]]), answer: c[1], explain: `${c[1]}. That is being kind.`, visual: null, explainVisual: null }; },
+  'ck-which-helper': (rng) => { const c = pick(rng, CIV_HELPERS); return { type: 'choice', story: null, prompt: c[0], choices: twoOf(rng, CIV_HELPER_NAMES, c[1]), answer: c[1], explain: `A ${c[1].toLowerCase()} ${c[0].replace(/^Who /, '').replace(/\?$/, '')}.`, visual: null, explainVisual: null }; },
+  'ck-good-choice': (rng) => { const c = pick(rng, CIV_GOOD_CHOICES); return { type: 'choice', story: c[0], prompt: 'What is the good choice?', choices: shuffle(rng, [c[1], c[2]]), answer: c[1], explain: `${c[1]}. That helps everyone.`, visual: null, explainVisual: null }; },
   'ck-need-or-want': (rng) => { const c = pick(rng, CIV_NEED_WANT); return { type: 'choice', story: null, prompt: `Is ${c[0].charAt(0).toLowerCase() + c[0].slice(1)} a need or a want?`, choices: ['Need', 'Want'], answer: c[1], explain: c[1] === 'Need' ? `${c[0]} is a need. You must have it.` : `${c[0]} is a want. It is nice, but you can live without it.`, visual: null, explainVisual: null }; },
   'ck-which-is-need': (rng) => { const need = pick(rng, CIV_NEED_WANT.filter((x) => x[1] === 'Need'))[0]; const wants = shuffle(rng, CIV_NEED_WANT.filter((x) => x[1] === 'Want')).slice(0, 2).map((x) => x[0]);
     return { type: 'choice', story: null, prompt: 'Which one is a need?', choices: shuffle(rng, [need, ...wants]), answer: need, explain: `${need} is a need. The others are wants.`, visual: null, explainVisual: null }; },
@@ -21660,7 +21660,7 @@ Object.assign(GENERATORS, {
   'wc6-religion-origin': (rng) => threeQ(rng, RELIGION_ORIGIN, (name) => `Where did ${name} begin?`),
   'wc6-government-kind': (rng) => kindQ(rng, GOVT_KINDS, 'Which kind of government is this?', GOVT_NOTES),
   'wc6-limited-or-not': (rng) => kindQ(rng, LIMITED, 'Is this limited or unlimited government?', null),
-  'wc6-who-rules': (rng) => { const c = pick(rng, GOVT_KINDS); return { type: 'choice', story: `In a ${c[1].toLowerCase()}.`, prompt: 'Who decides?', choices: shuffle(rng, ['The people', 'A king or queen', 'One ruler', 'A small group', 'Religious leaders']), answer: { Democracy: 'The people', Monarchy: 'A king or queen', Dictatorship: 'One ruler', Oligarchy: 'A small group', Theocracy: 'Religious leaders' }[c[1]], explain: GOVT_NOTES[c[1]], visual: null, explainVisual: null }; },
+  'wc6-who-rules': (rng) => { const c = pick(rng, GOVT_KINDS); return { type: 'choice', story: `In ${aOrAn(c[1])} ${c[1].toLowerCase()}.`, prompt: 'Who decides?', choices: shuffle(rng, ['The people', 'A king or queen', 'One ruler', 'A small group', 'Religious leaders']), answer: { Democracy: 'The people', Monarchy: 'A king or queen', Dictatorship: 'One ruler', Oligarchy: 'A small group', Theocracy: 'Religious leaders' }[c[1]], explain: GOVT_NOTES[c[1]], visual: null, explainVisual: null }; },
   'wc6-economy-kind': (rng) => kindQ(rng, ECON_KINDS, 'Which kind of economy is this?', ECON_NOTES),
   'wc6-who-decides': (rng) => { const c = pick(rng, ECON_KINDS.slice(0, 3)); return { type: 'choice', story: `In a ${c[1].toLowerCase()} economy.`, prompt: 'Who decides what is made?', choices: shuffle(rng, ['Custom', 'The government', 'Buyers and sellers']), answer: { Traditional: 'Custom', Command: 'The government', Market: 'Buyers and sellers' }[c[1]], explain: ECON_NOTES[c[1]], visual: null, explainVisual: null }; },
   'wc6-gdp-per-person': (rng) => { const people = pick(rng, [10, 20, 25, 50]); const per = pick(rng, [2000, 5000, 10000, 20000, 40000]); const gdp = (people * per) / 1000;
@@ -23217,28 +23217,28 @@ Object.assign(GENERATORS, {
     const twin = pick(rng, SOUND_WORDS.filter((x) => x.letter === w.letter && x.word !== w.word)) || w;
     const other = pick(rng, SOUND_WORDS.filter((x) => x.letter !== w.letter));
     return { type: 'choice', story: `${capWord(w.word)}.`, prompt: `Which word starts the same way as ${w.word}?`, choices: shuffle(rng, [twin.word, other.word]), answer: twin.word,
-      explain: `${w.word} and ${twin.word} both start with ${w.sound}.`, visual: { kind: 'letters', text: w.word }, explainVisual: null };
+      explain: `${capFirst(w.word)} and ${twin.word} both start with ${w.sound}.`, visual: { kind: 'letters', text: w.word }, explainVisual: null };
   },
   'rs-odd-start': (rng) => {
     const w = pick(rng, SOUND_WORDS);
     const twin = pick(rng, SOUND_WORDS.filter((x) => x.letter === w.letter && x.word !== w.word)) || w;
     const odd = pick(rng, SOUND_WORDS.filter((x) => x.letter !== w.letter));
     return { type: 'choice', story: 'Two start the same way.', prompt: 'Which one starts differently?', choices: shuffle(rng, [w.word, twin.word, odd.word]), answer: odd.word,
-      explain: `${w.word} and ${twin.word} start with ${w.sound}. ${odd.word} starts with ${odd.sound}.`, visual: null, explainVisual: null };
+      explain: `${capFirst(w.word)} and ${twin.word} start with ${w.sound}. ${capFirst(odd.word)} starts with ${odd.sound}.`, visual: null, explainVisual: null };
   },
 // Rhymes. Each family is a set of words that end the same way.
   'rr-does-rhyme': (rng) => {
     const fam = pick(rng, RHYME_FAMILIES); const [a, b] = shuffle(rng, fam).slice(0, 2);
     const yes = randInt(rng, 0, 1) === 1;
     const c = yes ? b : pick(rng, pick(rng, RHYME_FAMILIES.filter((f) => f !== fam)));
-    return { type: 'choice', story: `${a}. ${c}.`, prompt: 'Do they rhyme?', choices: ['Yes', 'No'], answer: yes ? 'Yes' : 'No',
-      explain: yes ? `${a} and ${c} end the same way. They rhyme.` : `${a} and ${c} end differently. They do not rhyme.`, visual: { kind: 'letters', text: `${a} ${c}` }, explainVisual: null };
+    return { type: 'choice', story: `${capFirst(a)}. ${capFirst(c)}.`, prompt: 'Do they rhyme?', choices: ['Yes', 'No'], answer: yes ? 'Yes' : 'No',
+      explain: yes ? `${capFirst(a)} and ${c} end the same way. They rhyme.` : `${capFirst(a)} and ${c} end differently. They do not rhyme.`, visual: { kind: 'letters', text: `${a} ${c}` }, explainVisual: null };
   },
   'rr-pick-rhyme': (rng) => {
     const fam = pick(rng, RHYME_FAMILIES); const [a, b] = shuffle(rng, fam).slice(0, 2);
     const others = shuffle(rng, RHYME_FAMILIES.filter((f) => f !== fam)).slice(0, 2).map((f) => pick(rng, f));
     return { type: 'choice', story: `${capWord(a)}.`, prompt: `Which word rhymes with ${a}?`, choices: shuffle(rng, [b, ...others]), answer: b,
-      explain: `${a} and ${b} rhyme. They end the same way.`, visual: { kind: 'letters', text: a }, explainVisual: null };
+      explain: `${capFirst(a)} and ${b} rhyme. They end the same way.`, visual: { kind: 'letters', text: a }, explainVisual: null };
   },
   'rr-odd-rhyme': (rng) => {
     const fam = pick(rng, RHYME_FAMILIES); const [a, b] = shuffle(rng, fam).slice(0, 2);
@@ -23366,6 +23366,21 @@ const SCIENCE_WHY = {
   's5-which-is-learned': { 'Riding a bicycle': 'Nobody is born knowing how to ride a bicycle. It takes practice, falls and a patient grown-up.', Reading: 'Reading is learned. A child raised without books never picks it up on their own.', 'A parrot saying hello': 'A parrot copies the sounds it hears. A parrot raised in silence says nothing.', 'A dog sitting on command': 'A dog learns to sit for a treat. It is trained, not born knowing the word.', 'A bird finding a feeder in a yard': 'The bird found the feeder by trying places and remembering. That is learning.' },
 };
 // -----------------------------------------------------------------------------------------------------------------
+// Little words for spoken explanations (2026-10-02, pass IC). In plain terms: the youngest learners hear their
+// explanations read aloud, so they must sound the way a person talks: an owl, not a owl; both are owls, not both are a
+// owl; and a sentence that starts with a word from the question starts with a capital. These three helpers are the
+// one place those rules live.
+// -----------------------------------------------------------------------------------------------------------------
+function aOrAn(word) { return /^[aeiou]/i.test(String(word)) ? 'an' : 'a'; }
+function pluralOf(word) {
+  const w = String(word);
+  if (/^(fish|sheep|deer)$/.test(w)) return w;
+  if (/[^aeiou]y$/.test(w)) return w.slice(0, -1) + 'ies';
+  if (/(s|x|z|ch|sh)$/.test(w)) return w + 'es';
+  return w + 's';
+}
+function capFirst(text) { const t = String(text); return t.charAt(0).toUpperCase() + t.slice(1); }
+// -----------------------------------------------------------------------------------------------------------------
 // Number words, tidied (2026-10-02, pass IB). In plain terms: a computed question can land on exactly one of
 // something, and a template written for many then says 1 meters, or it lands on 8 and says a 8-inch nose. This last
 // step reads every question a bank makes and fixes those two slips in the setup, the question, the choices, the answer
@@ -23383,6 +23398,8 @@ function tidyQuestion(q) {
   if (!q || typeof q !== 'object') return q;
   const out = { ...q };
   for (const key of ['story', 'prompt', 'explain', 'answer']) out[key] = tidyNumberWords(q[key]);
+  // A sentence starts with a capital (pass IC); a letter name (b, d) or a symbol (x = 5, pH) keeps its case.
+  if (typeof out.explain === 'string' && /^[a-z]/.test(out.explain) && !/^[a-z](\s|$|[=+\-*/^(<>.,_])/.test(out.explain) && !/^(pH|mL|km|cm|mm|kg|mg|kW|e\.g|i\.e|log|ln|sin|cos|tan)\b/.test(out.explain)) out.explain = out.explain.charAt(0).toUpperCase() + out.explain.slice(1);
   for (const key of ['choices', 'items']) if (Array.isArray(q[key])) out[key] = q[key].map(tidyNumberWords);
   return out;
 }

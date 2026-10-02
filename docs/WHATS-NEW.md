@@ -2,6 +2,12 @@
 
 The newest block is what educators see once, in a pop-up on the classroom page, after each update. Write it the way Mikey talks to a teacher: conversational, complete sentences, say what changed and why it matters, and skip the shorthand (2026-09-23). Two to four items. The date line is the version stamp.
 
+## October 2, 2026 (pre-K, read aloud the way a teacher talks)
+
+- Every pre-K question and answer was read through by hand. What children hear now sounds the way a teacher talks: an owl, both are owls, and five dots are more than three dots.
+- Community helper answers teach in a sentence, like a doctor uses a stethoscope, and every shape gets its own line, not only the triangle.
+- Explanations everywhere now start with a capital letter, and a small slip with a or an is fixed in grade 2, grade 6 and grade 8 questions.
+
 ## October 2, 2026 (questions that read like a person wrote them)
 
 - Hundreds of questions now read as whole, natural questions. A flash card that said Warm or cool now asks whether a color is warm or cool, and one that ended in Famished means now asks what famished means.

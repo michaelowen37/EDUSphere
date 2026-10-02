@@ -16,9 +16,9 @@ The practice screen shows a question in this order: the module title, the questi
 
 | Part | Status |
 |---|---|
-| Wording checks across all 1,344 banks (9,352 patterns) | Pass IB: 1,060 flagged, fixed down to 13 |
-| Pre-K 3 and pre-K 4 read-through | Next |
-| Kindergarten | To do |
+| Wording checks across all 1,344 banks (9,352 patterns) | Pass IB: 1,060 flagged, fixed down to 13; pass IC added a or an and lower-case starts |
+| Pre-K 3 and pre-K 4 read-through | Pass IC: 953 patterns in 76 banks read; explanations rewritten to sound spoken |
+| Kindergarten | Next |
 | Grades 1 and 2 | To do |
 | Grades 3 to 5 | To do |
 | Grades 6 to 8 | To do (includes grade 7 weak-evidence explanations) |

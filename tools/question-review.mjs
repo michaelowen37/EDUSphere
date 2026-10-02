@@ -54,6 +54,13 @@ export function wordingFlags(q) {
   const allText = [q.story, prompt, explain].filter(Boolean).join(' ');
   for (const m of allText.matchAll(/(?:^|[^\d.,/-])1 ([a-z]+s)\b/g)) if (!NOT_PLURAL.has(m[1]) && !/ss$/.test(m[1])) { flags.push(`one-${m[1]}`); break; }
   for (const m of allText.matchAll(/\b(a|an) (\d[\d,]*)\b/gi)) if (m[1].toLowerCase() !== articleFor(m[2])) { flags.push(`article-${m[1]}-${m[2]}`); break; }
+  // A or an by sound (pass IC): a owl, an cat. Words that start with a vowel letter but a consonant sound (a one, a unit,
+  // a European) and the silent-h words (an hour, an honest) are left alone.
+  const aVowel = allText.match(/(?<!([Ss]mall|[Bb]ig|[Ll]etter|[Cc]apital|[Ll]owercase) )\ba ([aeiou][a-z]*)/); // small a and big A are letters, not articles
+  if (aVowel && !/^(one|once|uni|use|usu|uti|ure|uro|eu|ewe|uk)/.test(aVowel[2])) flags.push(`article-a-${aVowel[2]}`);
+  const anConsonant = allText.match(/\b[Aa]n ([b-df-hj-np-tv-z][a-z]*)/);
+  if (anConsonant && !/^(hour|honest|honor|heir|herb)/.test(anConsonant[1])) flags.push(`article-an-${anConsonant[1]}`);
+  if (/^[a-z]/.test(explain) && !/^[a-z](\s|$|[=+\-*/^(<>.,_])/.test(explain) && !/^(pH|mL|km|cm|mm|kg|mg|kW|e\.g|i\.e|log|ln|sin|cos|tan)\b/.test(explain)) flags.push('lowercase-start');
   const doubled = allText.match(/\b([a-z]{2,}) \1\b/i);
   if (doubled && !/^(that|had|hop|clap|tap|stomp|knock|beep|boo|bye|no|yes|ha|so|very|far|again|round|bang|buzz|na|quack|moo|woof|tick|tock|ding|dong|pop|drip|drop|chop|zig|zag|tweet|honk|choo|ho|la|go|run|jump|step|is)$/i.test(doubled[1])) flags.push(`doubled-${doubled[1].toLowerCase()}`);
   if (q.type === 'choice') {

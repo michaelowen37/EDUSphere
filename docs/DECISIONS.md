@@ -1799,6 +1799,17 @@ Approved by Mikey on 2026-09-04 unless marked "proposed".
 - What the checks cannot see is why the read-through matters: a wrong fact, two defensible answers, a giveaway choice, a stiff sentence. The mascot question in pass IA had one of those, and no check would have caught it.
 - Next: the read-through, pre-K 3 and pre-K 4 first.
 
+## 2026-10-02 (pass IC): the pre-K read-through
+
+- Mikey committed through IB, so the commit message starts fresh at IC.
+- Every pre-K 3 and pre-K 4 question, setup and explanation was read in full: about 950 patterns in 76 banks. Children hear these aloud, so the bar was how a teacher would say them. The questions held up; the explanations needed work.
+- The matching games said This is a owl and Both are a owl. They now say This is an owl and Both are owls, and The bear is different from the rabbits, since two rabbits are shown. Both are a yellow triangle became Both are yellow triangles, and Five dots is more than three dots became Five dots are more than three dots, in the questions and in the lesson line that teaches it.
+- Community helpers explained with a bare label (Doctor.); they now teach in a sentence (A doctor uses a stethoscope.). Only the triangle had a teaching line; the circle (It is round, with no corners.) and the square (It has four corners.) have theirs now.
+- Smaller fixes: thank you is what we say when someone gives us something; throwing away a wrapper was called being kind, so every good choice now says That helps everyone; taking turns no longer explains itself with Then everybody gets a turn; What letter starts bee? became What letter does bee start with?; Tap the one with just one became Tap the group with just one dot; rhyme setups read Pup. Cup.
+- New helpers in logic.mjs (aOrAn, pluralOf, capFirst) are the one place spoken explanations get a or an, plurals and capitals. Every explanation in the app now starts with a capital letter, except a letter name or a math symbol (b, x = 5, pH), which keeps its case.
+- The wording checks gained a or an and lower-case starts. They found three slips beyond pre-K, now fixed: a electron (grade 8), a oligarchy (grade 6), and a magnet does not pull a ice (grade 2, now the ice).
+- Still 13 flagged, the explanations that repeat their answer in grades 7, 9 and 12. Next: kindergarten, the largest grade (165 banks).
+
 ## Open items
 - Make the terse fragment prompts whole questions (pass HZ found them in reading, math, science, computer science and psychology banks from grade 3 to 8, among them The model?, Purpose? and The cone holds?).
 - On a real phone, answer a question, tap Next and refresh: the set should resume at the next question with the answer kept (pass HR).

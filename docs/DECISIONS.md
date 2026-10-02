@@ -1810,6 +1810,37 @@ Approved by Mikey on 2026-09-04 unless marked "proposed".
 - The wording checks gained a or an and lower-case starts. They found three slips beyond pre-K, now fixed: a electron (grade 8), a oligarchy (grade 6), and a magnet does not pull a ice (grade 2, now the ice).
 - Still 13 flagged, the explanations that repeat their answer in grades 7, 9 and 12. Next: kindergarten, the largest grade (165 banks).
 
+## 2026-10-02 (pass ID): the kindergarten read-through
+
+- Mikey committed through IC, so the commit message starts fresh at ID.
+- Every kindergarten question, setup and explanation was read in full: 1,664 patterns in 165 banks, the largest grade. Kindergarten is read aloud, so again the bar was a teacher's voice.
+- Accuracy: the sleep lesson and its question said a five-year-old needs ten to twelve hours. The American Academy of Sleep Medicine's 2016 consensus, read on the AASM's own pages, gives 10 to 13 hours a day, naps included, for ages 3 to 5. The lesson, the question and its explanation now say ten to thirteen, counting naps.
+- The newer electives (speech, psychology, philosophy, agriculture, art and business) had explanations that did not teach: some repeated the answer, some were fragments, and a few sat under the wrong question (Cup, water, table. under a question about saying the steps back). Thirty-one were rewritten to say why the answer is right, for example Get a cup first. You cannot fill a cup you do not have yet. The money banks now show their sums (2 + 2 + 2 + 2 + 2 = 10 dollars).
+- The holidays were sentence starters, and the one for Martin Luther King Day said we honor the day. They are whole questions now, each with its own explanation (It honors Dr. King.). Rule questions explain in a sentence (We walk in the hall so nobody bumps or falls.).
+- Smaller fixes: Ice does not grow or eat (it said A ice, here and in grade 2's hard or soft); The sun is hot; One duck, not One ducks; 6 is less than 8, not fewer than, for numbers; the longer line reaches farther and the shorter one does not reach as far, in the lesson too; A box looks like this. Questions that leaned on a setup beneath them now name it: Tap the first letter of this word, What solid shape is a can?, Tap the letter that says puh, How many more does 7 need to make 10? Rhyme and clap explanations start every sentence with a capital.
+- The capital rule now keeps log lower case only in math (log base 10), so the word log starts with a capital. The wording checks gained A before a vowel word and Why labels; still 13 flagged (grades 7, 9 and 12).
+- Next: grades 1 and 2.
+
+## 2026-10-02 (pass IE): grades 1 and 2, and names that kept losing their capitals
+
+- Mikey has not committed ID, so the commit message covers ID and IE.
+- Every grade 1 and grade 2 question was read in full: 1,610 patterns in 163 banks.
+- Order on the screen: a make-ten question showed Then add the rest above First make ten, because a question sits above its setup line. It now asks What is 8 + 8?, with the hint Make ten first: 8 + 2 = 10. Then add the rest. under it. Questions that leaned on a setup now ask it whole: If 8 + 8 = 16, what is 16 − 8?; How many more is 8 than 4?; Which number is between 65 and 73?; How many tens are in 75?; What is the ones digit in 724 worth?; Two of these have th. Which one does not?
+- Grammar: This is 1 ten, not These are 1 ten; 4 pennies, not pennys; 2 quarters make 50 cents; shoes are goods; this is the sun; tacos win. Explanations that start with a word under study capitalize it.
+- Explanations that teach: even and odd now say why (Two equal rows of 7 leave one left over, so 15 is odd.); then and now, and the symbols of our country, explain in sentences rather than labels (The Alamo is an old mission in San Antonio where Texans fought.); a vowel team explanation says Soap has the long O sound.
+- Found by a new check and fixed across the app: names written in lower case. Templates lowered whole phrases to fit them after a colon or into a list, so history explanations from grade 4 to college said texans, texas, san Jacinto, british soldiers, the rio grande, dr. King, 10,000 bc and the industrial revolution. lowerTitle now keeps names (Texas, San Jacinto, Dr. King and others), a new lowerLead lowers only a leading common word, the Industrial Revolution is capitalized in the data, and the wording checks flag these names in lower case.
+- Still 13 flagged (grades 7, 9 and 12). Next: grades 3 to 5.
+
+## 2026-10-02 (pass IF): grades 3 to 5
+
+- Mikey has not committed IE, so the commit message covers ID, IE and IF.
+- Every grade 3, 4 and 5 question was read: 1,691 patterns in 290 banks.
+- Accuracy: the bulb question said a dead battery in a complete loop fails because the loop is broken; each case now gives its own reason (a dead battery has no push left, rubber is an insulator, an open switch or a loose wire is a gap). The first three flags over Texas were not Spain, Mexico and the Republic, since France's flag flew over La Salle's colony from 1685 to 1690; the question now names the three flags it asks about. The cave paintings question said France and Spain at about 17,000 years, which fits Lascaux, the cave the lesson names, but not older caves; it names Lascaux now. A grade 3 subtraction set had a library lending out pencils, cookies and coins; it is a box with things given away now.
+- Clarity: questions ask whole (Is 6/8 closer to 0 or to 1?, What does the word since point to?, What happens when steam is cooled?, If 7 × 8 = 56, what is 8 × 7?, What color do blue and red make?), point at their setup with this (this inference, this answer, this part), and name the thing (the box's volume, the moon's light). The decimal-places question was misleading, since 0.25 × 0.4 is 0.1, which has one place; it now asks how many places you count when you multiply.
+- Explanations: prefixes read the way people talk (reread means to read again, not again read); 1 slice is left; 21/5 is 4 and 1/5; Pennsylvania belonged to the middle colonies; That is the interpret step. Story names in sequences keep their capitals (First Leo put on his boots).
+- Found, not changed: grade 3 psychology teaches that the brain holds about seven things at once, the classic figure; newer research puts working memory nearer four chunks. That is a teaching decision for Mikey when the psychology lessons are next revisited.
+- Still 13 flagged (grades 7, 9 and 12). Next: grades 6 to 8.
+
 ## Open items
 - Make the terse fragment prompts whole questions (pass HZ found them in reading, math, science, computer science and psychology banks from grade 3 to 8, among them The model?, Purpose? and The cone holds?).
 - On a real phone, answer a question, tap Next and refresh: the set should resume at the next question with the answer kept (pass HR).

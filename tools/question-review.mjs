@@ -49,15 +49,22 @@ export function wordingFlags(q) {
   if (q.story && !/\bthe word that\b/i.test(prompt) && /\bthat\b(?! (is|was|are|were|has|have|had|can|could|will|would|makes|made|means|shows|show|helps|uses|lets|keeps|says|tells|people|you|they|we|it)\b)/i.test(prompt) && !/\bthat\b/i.test(prompt.replace(/\b(so|such|now|and|but) that\b/gi, ''))) flags.push('that-with-setup');
   if (q.story && !/\bthe word that\?$/i.test(prompt) && /^(what|which|how|why|who|where|when|is|are|does|do|can)\b[^.]*\bthat\?$/i.test(prompt)) flags.push('that-with-setup');
   const explain = String(q.explain || '').trim();
-  if (/^(which|who|whose|what|how)\b[^.]*: /i.test(explain)) flags.push('explanation-fragment'); // a label (Who leads a city: the mayor.), not a sentence
+  if (/^(which|who|whose|what|how|why)\b[^.]*: /i.test(explain)) flags.push('explanation-fragment'); // a label (Who leads a city: the mayor.), not a sentence
   if (q.type !== 'writing' && q.type !== 'trace' && (!explain || explain.toLowerCase() === String(q.answer).toLowerCase())) flags.push('no-explanation');
   const allText = [q.story, prompt, explain].filter(Boolean).join(' ');
+  // A name written in lower case (the alamo, the mexican president, the rio grande), usually from a template that lower-cased a
+  // whole phrase to fit it after a colon (pass IE).
+  const lowName = allText.match(/\b(alamo|liberty bell|statue of liberty|rio grande|mexican|mexico|texan|texans|texas|industrial revolution|united states|american|britain|british|england|spanish|spain|french|france|europe|european|africa|african|asian|juneteenth|san jacinto|sam houston|stephen f|moses austin|washington|lincoln|jefferson|germany|hitler|martin luther|americans|brown v|rome|lyndon|roosevelt|kennedy|congress passes|january|february|march 1|april|june|july|august|september|october|november|december|monday|tuesday|wednesday|thursday|friday|saturday|sunday)\b/);
+  if (lowName) flags.push(`lower-case-name-${lowName[1].replace(/ /g, '-')}`);
   for (const m of allText.matchAll(/(?:^|[^\d.,/-])1 ([a-z]+s)\b/g)) if (!NOT_PLURAL.has(m[1]) && !/ss$/.test(m[1])) { flags.push(`one-${m[1]}`); break; }
   for (const m of allText.matchAll(/\b(a|an) (\d[\d,]*)\b/gi)) if (m[1].toLowerCase() !== articleFor(m[2])) { flags.push(`article-${m[1]}-${m[2]}`); break; }
   // A or an by sound (pass IC): a owl, an cat. Words that start with a vowel letter but a consonant sound (a one, a unit,
   // a European) and the silent-h words (an hour, an honest) are left alone.
   const aVowel = allText.match(/(?<!([Ss]mall|[Bb]ig|[Ll]etter|[Cc]apital|[Ll]owercase) )\ba ([aeiou][a-z]*)/); // small a and big A are letters, not articles
   if (aVowel && !/^(one|once|uni|use|usu|uti|ure|uro|eu|ewe|uk)/.test(aVowel[2])) flags.push(`article-a-${aVowel[2]}`);
+  // A sentence that opens with A before a vowel word (A ice) is the same slip; A and B, A is, and other letter talk are not.
+  const capA = allText.match(/(?:^|[.?!] )A ([aeiou][a-z]+)/);
+  if (capA && !/^(and|is|are|or|as|at|in|on|of|if|it|an|always|also|only|often|again|even|ever|usually|alone|above|after)\b|^(one|once|uni|use|usu|eu)/.test(capA[1])) flags.push(`article-A-${capA[1]}`);
   const anConsonant = allText.match(/\b[Aa]n ([b-df-hj-np-tv-z][a-z]*)/);
   if (anConsonant && !/^(hour|honest|honor|heir|herb)/.test(anConsonant[1])) flags.push(`article-an-${anConsonant[1]}`);
   if (/^[a-z]/.test(explain) && !/^[a-z](\s|$|[=+\-*/^(<>.,_])/.test(explain) && !/^(pH|mL|km|cm|mm|kg|mg|kW|e\.g|i\.e|log|ln|sin|cos|tan)\b/.test(explain)) flags.push('lowercase-start');

@@ -2,6 +2,24 @@
 
 The newest block is what educators see once, in a pop-up on the classroom page, after each update. Write it the way Mikey talks to a teacher: conversational, complete sentences, say what changed and why it matters, and skip the shorthand (2026-09-23). Two to four items. The date line is the version stamp.
 
+## October 2, 2026 (grades 3 to 5, read through)
+
+- Every grade 3 to 5 question was read through by hand, and four facts were corrected, including why a bulb stays dark with a dead battery and which cave paintings are about 17,000 years old.
+- Questions read whole now, like is 6/8 closer to 0 or to 1, and prefix answers sound the way people talk: reread means to read again.
+- A subtraction set no longer has a library lending out cookies and coins.
+
+## October 2, 2026 (grades 1 and 2, and names with their capitals)
+
+- Every grade 1 and grade 2 question was read through by hand. Questions now read whole, like how many more is 8 than 4, and a make-ten question no longer shows its last step first.
+- Small grammar slips are gone, like pennys and these are 1 ten, and even and odd answers now explain why.
+- History explanations in every grade keep their capitals now, so Texas, San Jacinto, Dr. King and the Industrial Revolution are written the way they should be.
+
+## October 2, 2026 (kindergarten, read the way a teacher would say it)
+
+- Every kindergarten question and answer was read through by hand. Explanations in the speech, feelings, farm and money lessons now say why an answer is right, instead of repeating it.
+- The sleep lesson now says a five-year-old needs ten to thirteen hours, counting naps, which is what the American Academy of Sleep Medicine recommends.
+- Holiday questions are whole questions now, and small slips are fixed, like ice instead of a ice and one duck instead of one ducks.
+
 ## October 2, 2026 (pre-K, read aloud the way a teacher talks)
 
 - Every pre-K question and answer was read through by hand. What children hear now sounds the way a teacher talks: an owl, both are owls, and five dots are more than three dots.

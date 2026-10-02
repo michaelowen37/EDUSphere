@@ -18,10 +18,10 @@ The practice screen shows a question in this order: the module title, the questi
 |---|---|
 | Wording checks across all 1,344 banks (9,352 patterns) | Pass IB: 1,060 flagged, fixed down to 13; pass IC added a or an and lower-case starts |
 | Pre-K 3 and pre-K 4 read-through | Pass IC: 953 patterns in 76 banks read; explanations rewritten to sound spoken |
-| Kindergarten | Next |
-| Grades 1 and 2 | To do |
-| Grades 3 to 5 | To do |
-| Grades 6 to 8 | To do (includes grade 7 weak-evidence explanations) |
+| Kindergarten | Pass ID: 1,664 patterns in 165 banks read; sleep hours corrected; thirty-one elective explanations rewritten |
+| Grades 1 and 2 | Pass IE: 1,610 patterns in 163 banks read; names in history explanations kept in capitals app-wide |
+| Grades 3 to 5 | Pass IF: 1,691 patterns in 290 banks read; four facts corrected |
+| Grades 6 to 8 | Next (includes grade 7 weak-evidence explanations) |
 | Grades 9 to 12 | To do (includes grade 9 credibility and grade 12 star-stage explanations) |
 | College | To do |
 | Wonder questions (264, four voices each) | To do |

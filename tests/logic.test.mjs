@@ -167,7 +167,7 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
     const ROLLS = { sphere: 'Yes', cube: 'No', cylinder: 'Yes', cone: 'Yes' };
     if (genId === 'kd-name-solid' && q.answer !== q.visual.name) problems.push('named the wrong solid');
     if (genId === 'kd-tap-solid' && q.answer !== `solid:${q.prompt.match(/Tap the (\w+)/)[1]}`) problems.push('tapped the wrong solid');
-    if (genId === 'kd-real-thing' && q.answer !== THING[q.story.match(/Think of (.+)\./)[1]]) problems.push('real thing wrong');
+    if (genId === 'kd-real-thing' && q.answer !== THING[q.prompt.match(/What solid shape is (.+)\?/)[1]] /* pass ID: the thing is named in the question */) problems.push('real thing wrong');
     if (genId === 'kd-flat-or-solid' && q.answer !== (q.visual.kind === 'solid' ? 'Solid' : 'Flat')) problems.push('flat/solid wrong');
     if (genId === 'kd-rolls' && q.answer !== ROLLS[q.visual.name]) problems.push('rolls wrong');
     if ((genId === 'kn-partner' || genId === 'kn-frame') && Number(q.answer) !== 10 - q.visual.filled) problems.push('partner of ten wrong');
@@ -305,7 +305,7 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
     const COINV = { penny: 1, nickel: 5, dime: 10, quarter: 25 };
     if (genId === 'g2-place-value' && Number(q.answer) !== g2[0] * 100 + g2[1] * 10 + g2[2]) problems.push('place value wrong');
     if (genId === 'g2-expanded') { const parts = q.answer.split(' + ').map(Number); if (parts.reduce((x, y) => x + y, 0) !== g2[0] || parts.length !== 3) problems.push('expanded form wrong'); }
-    if (genId === 'g2-digit-means') { const n = g2[0]; const place = q.story.match(/the (\w+) digit/)[1]; const want = place === 'hundreds' ? Math.floor(n / 100) * 100 : place === 'tens' ? Math.floor((n % 100) / 10) * 10 : n % 10; if (Number(q.answer) !== want) problems.push('digit value wrong'); }
+    if (genId === 'g2-digit-means') { const n = g2[0]; const place = text.match(/the (\w+) digit/)[1]; /* pass IE: the place is named in the question */ const want = place === 'hundreds' ? Math.floor(n / 100) * 100 : place === 'tens' ? Math.floor((n % 100) / 10) * 10 : n % 10; if (Number(q.answer) !== want) problems.push('digit value wrong'); }
     if (genId === 'g2-build-3digit') { const [h, t, o] = q.answer.match(/\d+/g).map(Number); if (h * 100 + t * 10 + o !== g2[0]) problems.push('build 3-digit wrong'); }
     if (genId === 'g2-hundred-more') { const more = /more/.test(q.prompt); if (Number(q.answer) !== (more ? g2[1] + 100 : g2[1] - 100)) problems.push('hundred more/less wrong'); }
     if ((genId === 'g2-add' || genId === 'g2-add-story') && Number(q.answer) !== g2[0] + g2[1]) problems.push('grade 2 add wrong');
@@ -324,7 +324,7 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
     if (genId === 'g2-count-coins') { const names = q.story.match(/\ba (penny|nickel|dime|quarter)/gi).map((x) => x.slice(2).toLowerCase()); if (Number(q.answer) !== names.reduce((sum, n) => sum + COINV[n], 0)) problems.push('count coins wrong'); }
     if (genId === 'g2-make-amount') { const names = q.answer.match(/a (\w+)/g).map((x) => x.slice(2)); if (names.reduce((sum, n) => sum + COINV[n], 0) !== g2[0]) problems.push('make amount wrong'); }
     if (genId === 'g2-change' && Number(q.answer) !== 100 - g2[0]) problems.push('change wrong');
-    if (genId === 'g2-which-more-money') { const val = (c) => { const [n, coin] = c.split(' '); return Number(n) * COINV[coin.replace(/s$/, '')]; }; if (val(q.answer) !== Math.max(...q.choices.map(val))) problems.push('more money wrong'); }
+    if (genId === 'g2-which-more-money') { const val = (c) => { const [n, coin] = c.split(' '); return Number(n) * COINV[coin.replace(/ies$/, 'y').replace(/s$/, '')]; /* pass IE: pennies */ }; if (val(q.answer) !== Math.max(...q.choices.map(val))) problems.push('more money wrong'); }
     if (genId === 'g2-array-total' && Number(q.answer) !== q.visual.rows * q.visual.cols) problems.push('array total wrong');
     if (genId === 'g2-repeated-add') { const terms = q.answer.split(' + ').map(Number); if (terms.length !== q.visual.rows || !terms.every((t) => t === q.visual.cols)) problems.push('repeated add wrong'); }
     if (genId === 'g2-rows-in' && Number(q.answer) !== q.visual.rows) problems.push('rows wrong');

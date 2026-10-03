@@ -2,6 +2,19 @@
 
 The newest block is what educators see once, in a pop-up on the classroom page, after each update. Write it the way Mikey talks to a teacher: conversational, complete sentences, say what changed and why it matters, and skip the shorthand (2026-09-23). Two to four items. The date line is the version stamp.
 
+## October 3, 2026 (Principles of Macroeconomics for college)
+
+- A college macroeconomics course: markets, measuring the economy, money and the Federal Reserve, and policy and trade, with true stories about Adam Smith's pin factory, the first measure of a nation's income, the stone money of Yap and the year interest rates hit 20 percent, a long story about Mike's crew in the 2008 recession, and a new game, In GDP or Not.
+
+## October 3, 2026 (General Psychology for college)
+
+- A college General Psychology course: how psychologists know what they know, where the field came from, seven ways to explain one behavior, and the brain and body behind it. Four true stories come with it, from a horse that seemed to count to a man who could not form new memories, and Savanah's class runs its own experiment with a coin.
+- A new game, Cause or Correlation: read a study and decide whether chance chose the groups. Only then can a study show cause.
+
+## October 3, 2026 (parentheses, not brackets)
+
+- Math lessons now call ( ) parentheses, the way American classrooms and the Texas standards do, and keep the word brackets for [ ]. Grade 5 also learns brackets as the outer of two groups, worked from the inside out, with a new practice question to match.
+
 ## October 3, 2026 (more Wonder questions for teens and adults)
 
 - Sixteen new Wonder questions for middle school through college about failure, hard feelings and hard days: why rereading fools you, what makes an apology work, a friend who drifted away, a college that said no, and whether chasing happiness backfires. They draw on Aristotle, Marcus Aurelius, Viktor Frankl and Arthur Brooks, and are waiting in your Wonder review for approval.

@@ -5011,6 +5011,81 @@ function GreenRedGame({ game, round, onScore = null }) {
   );
 }
 // -----------------------------------------------------------------------------------------------------------------
+// In GDP or Not (2026-10-03, pass JC, the college macroeconomics game). In plain terms: one case at a time, and the
+// student taps In GDP (a new final good or service made in the country and sold) or Not in GDP (used goods, stock
+// trades, transfer payments, ingredients, unpaid work at home, things made abroad). It is the Cause or Correlation
+// screen with its own words: a right tap shows the card's reason and moves on, a wrong one wobbles and shows the reason
+// too. Six cards a round, three of each, from gdpRounds() in logic.mjs. The board carries the right answer in
+// `data-gdp-answer` for the browser test.
+// -----------------------------------------------------------------------------------------------------------------
+function GdpGame({ game, round, onScore = null }) {
+  const rounds = useMemo(() => gdpRounds(round), [round]); // the six cases for this round, fixed by the round number
+  const [k, setK] = useState(0); // which case we are on
+  const [got, setGot] = useState(false); // true for a moment after a right tap
+  const [nudge, setNudge] = useState(null); // the wrong answer tapped, so its button wobbles
+  const [misses, setMisses] = useState(0); // wrong taps this round
+  const [streak, setStreak] = useState(0); // right answers in a row
+  const [done, setDone] = useState(false); // true once all six are answered
+  const q = rounds[Math.min(k, rounds.length - 1)];
+  useEffect(() => { setK(0); setGot(false); setMisses(0); setDone(false); setStreak(0); }, [round]);
+  useEffect(() => { if (done && onScore) onScore(misses, 'low'); }, [done]);
+  useEffect(() => { if (nudge === null) return undefined; const t = setTimeout(() => setNudge(null), 500); return () => clearTimeout(t); }, [nudge]);
+  useEffect(() => { if (!got) return undefined; const t = setTimeout(() => { setGot(false); if (k + 1 >= rounds.length) setDone(true); else setK(k + 1); }, 1300); return () => clearTimeout(t); }, [got]);
+  const pick = (ans) => { if (got || done) return; if (ans === q.answer) { setGot(true); setStreak((n) => n + 1); } else { setNudge(ans); setMisses((n) => n + 1); setStreak(0); } };
+  return (
+    <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }} data-gdp-answer={done ? '' : q.answer}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>In GDP or not{streak > 1 ? ` · ${streak} in a row` : ''}</span><span>{Math.min(k + 1, rounds.length)} of {rounds.length}</span></div>
+      {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Six cases sorted{misses ? `, with ${misses} to look at again` : ', every one right'}. Tap the round arrow for more.</p> : (
+        <div style={{ textAlign: 'center' }}>
+          <SwipeCard left={['out', 'Not in GDP', B.clay]} right={['in', 'In GDP', B.green]} onPick={pick} off={got || done}><div style={{ background: '#fff', border: `1.5px solid ${B.line}`, borderRadius: 12, padding: '16px 12px', marginBottom: 10, fontSize: 18, fontWeight: 700, color: B.ink, lineHeight: 1.4 }}>{q.text}</div></SwipeCard>
+          <p style={{ margin: '0 0 10px', fontSize: 15, minHeight: 22, color: got ? B.green : nudge ? B.clay : B.ink, fontWeight: got ? 700 : 400 }}>{got || nudge ? `${q.answer === 'out' ? 'Not in GDP' : 'In GDP'}: ${q.why}` : 'In GDP or not?'}</p>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+            {['out', 'in'].map((ans) => <button key={ans} type="button" className={`edu-press${nudge === ans ? ' edu-wobble' : ''}`} aria-label={`Answer: ${ans}`} onClick={() => pick(ans)} style={{ fontFamily: FONT, fontSize: 17, fontWeight: 700, padding: '12px 4px', borderRadius: 12, border: `2px solid ${got && ans === q.answer ? B.green : B.line}`, background: '#fff', color: B.ink, cursor: got ? 'default' : 'pointer', textTransform: 'capitalize' }}>{ans === 'out' ? '← Not in GDP' : 'In GDP →'}</button>)}
+          </div>
+        </div>
+      )}
+      <Done show={done} />
+    </div>
+  );
+}
+// -----------------------------------------------------------------------------------------------------------------
+// Cause or Correlation (2026-10-03, pass JB, the college psychology game). In plain terms: one study at a time, and the
+// student taps Experiment (the groups were assigned by chance, so it can show cause) or Correlation (things were only
+// measured, so it cannot). It is the Myth or Fact screen with its own words: a right tap shows the card's reason and moves
+// on, a wrong one wobbles and shows the reason too. Six cards a round, three of each, from causeRounds() in logic.mjs.
+// The board carries the right answer in `data-cause-answer` for the browser test.
+// -----------------------------------------------------------------------------------------------------------------
+function CauseGame({ game, round, onScore = null }) {
+  const rounds = useMemo(() => causeRounds(round), [round]); // the six studies for this round, fixed by the round number
+  const [k, setK] = useState(0); // which study we are on
+  const [got, setGot] = useState(false); // true for a moment after a right tap
+  const [nudge, setNudge] = useState(null); // the wrong answer tapped, so its button wobbles
+  const [misses, setMisses] = useState(0); // wrong taps this round
+  const [streak, setStreak] = useState(0); // right answers in a row
+  const [done, setDone] = useState(false); // true once all six are answered
+  const q = rounds[Math.min(k, rounds.length - 1)];
+  useEffect(() => { setK(0); setGot(false); setMisses(0); setDone(false); setStreak(0); }, [round]);
+  useEffect(() => { if (done && onScore) onScore(misses, 'low'); }, [done]);
+  useEffect(() => { if (nudge === null) return undefined; const t = setTimeout(() => setNudge(null), 500); return () => clearTimeout(t); }, [nudge]);
+  useEffect(() => { if (!got) return undefined; const t = setTimeout(() => { setGot(false); if (k + 1 >= rounds.length) setDone(true); else setK(k + 1); }, 1300); return () => clearTimeout(t); }, [got]);
+  const pick = (ans) => { if (got || done) return; if (ans === q.answer) { setGot(true); setStreak((n) => n + 1); } else { setNudge(ans); setMisses((n) => n + 1); setStreak(0); } };
+  return (
+    <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }} data-cause-answer={done ? '' : q.answer}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Cause or correlation{streak > 1 ? ` · ${streak} in a row` : ''}</span><span>{Math.min(k + 1, rounds.length)} of {rounds.length}</span></div>
+      {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Six studies sorted{misses ? `, with ${misses} to look at again` : ', every one right'}. Tap the round arrow for more.</p> : (
+        <div style={{ textAlign: 'center' }}>
+          <SwipeCard left={['correlation', 'Correlation', B.clay]} right={['experiment', 'Experiment', B.green]} onPick={pick} off={got || done}><div style={{ background: '#fff', border: `1.5px solid ${B.line}`, borderRadius: 12, padding: '16px 12px', marginBottom: 10, fontSize: 18, fontWeight: 700, color: B.ink, lineHeight: 1.4 }}>{q.text}</div></SwipeCard>
+          <p style={{ margin: '0 0 10px', fontSize: 15, minHeight: 22, color: got ? B.green : nudge ? B.clay : B.ink, fontWeight: got ? 700 : 400 }}>{got || nudge ? `${q.answer === 'correlation' ? 'Correlation' : 'Experiment'}: ${q.why}` : 'Experiment or correlation?'}</p>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+            {['correlation', 'experiment'].map((ans) => <button key={ans} type="button" className={`edu-press${nudge === ans ? ' edu-wobble' : ''}`} aria-label={`Answer: ${ans}`} onClick={() => pick(ans)} style={{ fontFamily: FONT, fontSize: 17, fontWeight: 700, padding: '12px 4px', borderRadius: 12, border: `2px solid ${got && ans === q.answer ? B.green : B.line}`, background: '#fff', color: B.ink, cursor: got ? 'default' : 'pointer', textTransform: 'capitalize' }}>{ans === 'correlation' ? '← Correlation' : 'Experiment →'}</button>)}
+          </div>
+        </div>
+      )}
+      <Done show={done} />
+    </div>
+  );
+}
+// -----------------------------------------------------------------------------------------------------------------
 // Myth or Fact (2026-10-01, pass HP, the high school human sexuality elective's game). In plain terms: one statement at a
 // time, and the student taps Myth or Fact. A right tap shows the card's one-line reason and moves on; a wrong one wobbles
 // and shows the reason too, so every card teaches. Six cards a round, three of each, from mythfactRounds() in logic.mjs.
@@ -5046,7 +5121,7 @@ function MythFactGame({ game, round, onScore = null }) {
     </div>
   );
 }
-const GAME_OF = { ship: ShipGame, dots: DotsGame, pairs: PairsGame, sort: SortGame, maze: MazeGame, jigsaw: JigsawGame, pong: PongGame, sprint: SprintGame, order: OrderGame, build: BuildGame, fix: FixGame, mix: MixGame, debug: DebugGame, ptable: PtableGame, evidence: EvidenceGame, catch: CatchGame, path: PathGame, buckets: BucketsGame, jump: JumpGame, map: MapGame, balance: BalanceGame, walk: WalkGame, teach: TeachGame, bits: BitsGame, pay: PayGame, price: PriceGame, loan: LoanGame, fund: FundGame, search: SearchGame, spot: SpotGame, pattern: PatternGame, shape: ShapeGame, chord: ChordGame, valid: ValidGame, reason: ReasonGame, because: BecauseGame, share: ShareGame, stat: StatGame, recall: RecallGame, face: FaceGame, sense: SenseGame, filler: FillerGame, room: RoomGame, ask: AskGame, turn: TurnGame, jar: JarGame, relation: RelationGame, sprout: SproutGame, grow: GrowGame, breakeven: BreakEvenGame, deal: DealGame, savejar: SaveJarGame, tool: ToolGame, ledger: LedgerGame, label: LabelGame, cpr: CprGame, greenred: GreenRedGame, mythfact: MythFactGame };
+const GAME_OF = { ship: ShipGame, dots: DotsGame, pairs: PairsGame, sort: SortGame, maze: MazeGame, jigsaw: JigsawGame, pong: PongGame, sprint: SprintGame, order: OrderGame, build: BuildGame, fix: FixGame, mix: MixGame, debug: DebugGame, ptable: PtableGame, evidence: EvidenceGame, catch: CatchGame, path: PathGame, buckets: BucketsGame, jump: JumpGame, map: MapGame, balance: BalanceGame, walk: WalkGame, teach: TeachGame, bits: BitsGame, pay: PayGame, price: PriceGame, loan: LoanGame, fund: FundGame, search: SearchGame, spot: SpotGame, pattern: PatternGame, shape: ShapeGame, chord: ChordGame, valid: ValidGame, reason: ReasonGame, because: BecauseGame, share: ShareGame, stat: StatGame, recall: RecallGame, face: FaceGame, sense: SenseGame, filler: FillerGame, room: RoomGame, ask: AskGame, turn: TurnGame, jar: JarGame, relation: RelationGame, sprout: SproutGame, grow: GrowGame, breakeven: BreakEvenGame, deal: DealGame, savejar: SaveJarGame, tool: ToolGame, ledger: LedgerGame, label: LabelGame, cpr: CprGame, greenred: GreenRedGame, mythfact: MythFactGame, cause: CauseGame, gdp: GdpGame };
 // How to play, in a line or two, by kind of game (and by deck for the matching games).
 function gameInstructions(game) {
   if (game.kind === 'bits') return 'A number sits at the top and eight switches below it, worth 128 down to 1. Tap the switches on and off until the lit places add up to the number; the sum shows as you go. Six numbers, and the clock counts up.';
@@ -5061,6 +5136,8 @@ function gameInstructions(game) {
   if (game.kind === 'ledger') return 'An account appears, and you place it on the balance sheet: assets, liabilities or equity. Six accounts, and the clock counts up. Drag the card onto its box, tap the box, or press its number.';
   if (game.kind === 'label') return 'Two labels for the same kind of food. Read the row the question asks about, sodium, added sugars or fiber, and tap the better label. Six pairs, and the clock counts up.';
   if (game.kind === 'cpr') return 'Tap Push at the pace of chest compressions, 100 to 120 a minute, with the ring as your guide. After fifteen pushes the game tells you whether you were too slow, just right or too fast.';
+  if (game.kind === 'gdp') return 'Something happens this year, and you decide: does it count in GDP? New final goods and services made in the country count; used goods, stock trades, transfer payments, ingredients and unpaid work at home do not. Six cases a round. Flick the card left or right, tap a button, or press an arrow key.';
+  if (game.kind === 'cause') return 'A study appears, and you decide: an experiment, where chance chose the groups, or a correlation, where things were only measured. Only an experiment can show cause. Six studies a round. Flick the card left or right, tap a button, or press an arrow key.';
   if (game.kind === 'mythfact') return 'A statement appears, and you decide: myth or fact. Each answer shows the reason, so every card teaches. Six statements a round. Flick the card left or right, tap a button, or press an arrow key.';
   if (game.kind === 'greenred') return 'A behavior appears, and you decide: a green flag of a healthy relationship, or a red flag, a warning sign. Eight behaviors, and the clock counts up. Flick the card left or right, tap a button, or press an arrow key.';
   if (game.kind === 'deal') return 'An item with a price tag and two coupons, a percent off and a number of dollars off. Work out what each one saves and tap the coupon that saves more. Six items, and the clock counts up.';
@@ -5198,6 +5275,8 @@ function GameThumb({ kind, game = null }) {
   if (game && game.kind === 'grow') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><path d="M13 26h14l-2 10h-10z" fill="#C8734B" stroke={k} strokeWidth="1" /><path d="M20 26v-12" stroke={C.green} strokeWidth="2" strokeLinecap="round" /><path d="M20 20q-6-3-7-8q5 0 7 5z" fill={C.green} /><path d="M20 18q6-3 7-8q-5 0-7 5z" fill={C.green} /><circle cx="32" cy="8" r="4" fill="#F2C94C" /></svg>;
   if (game && game.kind === 'deal') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="4" y="9" width="14" height="22" rx="3" fill={C.paperBoard} stroke={C.green} strokeWidth="1.6" strokeDasharray="3 2" /><rect x="22" y="9" width="14" height="22" rx="3" fill={C.paperBoard} stroke={C.clay} strokeWidth="1.6" strokeDasharray="3 2" /><text x="11" y="24" textAnchor="middle" fontSize="9" fontWeight="700" fill={k}>%</text><text x="29" y="24" textAnchor="middle" fontSize="9" fontWeight="700" fill={k}>$</text></svg>;
   if (game && game.kind === 'greenred') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="4" y="5" width="32" height="30" rx="4" fill={C.paperBoard} stroke={k} strokeWidth="1" /><line x1="12" y1="10" x2="12" y2="31" stroke={k} strokeWidth="1.6" /><path d="M12 10 H20 L18 14 L20 18 H12 Z" fill={C.green} /><line x1="25" y1="10" x2="25" y2="31" stroke={k} strokeWidth="1.6" /><path d="M25 10 H33 L31 14 L33 18 H25 Z" fill={C.clay} /></svg>;
+  if (game && game.kind === 'gdp') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="4" y="5" width="32" height="30" rx="4" fill={C.paperBoard} stroke={k} strokeWidth="1" /><rect x="9" y="22" width="5" height="9" fill={C.green} /><rect x="17" y="17" width="5" height="14" fill={C.green} /><rect x="25" y="12" width="5" height="19" fill={C.green} /><path d="M8 11 L14 11" stroke={C.clay} strokeWidth="2" /></svg>;
+  if (game && game.kind === 'cause') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="4" y="5" width="32" height="30" rx="4" fill={C.paperBoard} stroke={k} strokeWidth="1" /><path d="M9 30 L31 10" stroke={k} strokeWidth="1" strokeDasharray="2 2" /><circle cx="11" cy="27" r="2" fill={C.clay} /><circle cx="15" cy="22" r="2" fill={C.clay} /><circle cx="20" cy="24" r="2" fill={C.clay} /><circle cx="24" cy="16" r="2" fill={C.green} /><circle cx="29" cy="13" r="2" fill={C.green} /></svg>;
   if (game && game.kind === 'mythfact') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="4" y="5" width="32" height="30" rx="4" fill={C.paperBoard} stroke={k} strokeWidth="1" /><rect x="8" y="12" width="11" height="16" rx="2" fill={C.clay} /><rect x="21" y="12" width="11" height="16" rx="2" fill={C.green} /><path d="M11 18 L16 23 M16 18 L11 23" stroke="#fff" strokeWidth="1.8" /><path d="M23.5 20.5 L26 23 L30 17.5" fill="none" stroke="#fff" strokeWidth="1.8" /></svg>;
   if (game && game.kind === 'cpr') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="4" y="5" width="32" height="30" rx="4" fill={C.paperBoard} stroke={k} strokeWidth="1" /><path d="M20 31 C10 24 8 19 8 15 C8 11 11 9 14 9 C17 9 19 11 20 13 C21 11 23 9 26 9 C29 9 32 11 32 15 C32 19 30 24 20 31 Z" fill={C.clay} /><path d="M10 20 H15 L17 16 L20 24 L22 19 H30" fill="none" stroke="#fff" strokeWidth="1.6" /></svg>;
   if (game && game.kind === 'label') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="4" y="5" width="32" height="30" rx="4" fill={C.paperBoard} stroke={k} strokeWidth="1" /><rect x="8" y="9" width="11" height="22" rx="1" fill="#fff" stroke={k} strokeWidth="1.2" /><rect x="21" y="9" width="11" height="22" rx="1" fill="#fff" stroke={k} strokeWidth="1.2" /><path d="M10 14h7M10 18h7M10 22h7M23 14h7M23 18h7M23 22h7" stroke={k} strokeWidth="1" /></svg>;
@@ -5531,7 +5610,7 @@ const COLORING_ART = {
 // A name is drawn at whatever size fits: two lines if it has a space in it, one if not, and never
 // stretched out of shape. Long names simply come out smaller.
 function nameLines(name) {
-  // Anything in brackets is the educator's note to themselves, not the child's name.
+  // Anything in parentheses is the educator's note to themselves, not the child's name.
   const words = String(name || 'Your name').replace(/\([^)]*\)/g, ' ').trim().split(/[\s-]+/).filter(Boolean);
   const lines = [];
   for (const word of words) {

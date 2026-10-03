@@ -7,7 +7,7 @@ const ok = (name, cond) => { if (cond) { pass++; console.log('PASS -', name); } 
 
 const { rows, orphans } = coverageReport(L.MODULES);
 
-ok('every plan names its published sources', CURRICULUM.every((p) => /TEKS|Texas/.test(p.source) && /Common Core|Head Start|Next Generation Science|National Council for the Social Studies/.test(p.source)));
+ok('every plan names its published sources', CURRICULUM.every((p) => /TEKS|Texas/.test(p.source) && /Common Core|Head Start|Next Generation Science|National Council for the Social Studies|American Psychological Association|Council for Economic Education/.test(p.source)));
 ok('every standard names a framework the platform knows', CURRICULUM.every((p) => p.standards.every((st) => FRAMEWORKS[st.framework])));
 ok('every state and the District of Columbia are listed with a framework', STATES.length === 51 && STATES.every((st) => FRAMEWORKS[st.framework]));
 ok('Texas builds to TEKS and California to Common Core', frameworkForState('TX') === 'TEKS' && frameworkForState('CA') === 'CCSS');

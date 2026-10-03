@@ -2,7 +2,7 @@
 
 Written by tools/games-plan.mjs from the app's own lists; run it again after any change to the games. Every course has its own game, or two, chosen to suit its subject and grade; finishing the course unlocks them. Inside a grade the same kind is avoided wherever today's kinds allow. A course that no game suits yet has a quick fire of its own lessons, and so does a history course whose only game is a map still waiting for its painting.
 
-Starter, open from the first day: Star. Kinds of game: 57. Quick fires still standing in for a game: 8. Kinds repeated inside a grade: 9. Courses holding two games of one kind: none. The rules test holds both numbers as ceilings, so each new kind must bring them down.
+Starter, open from the first day: Star. Kinds of game: 60. Quick fires still standing in for a game: 8. Kinds repeated inside a grade: 10. Courses holding two games of one kind: none. The rules test holds both numbers as ceilings, so each new kind must bring them down.
 
 ## New kinds, in order
 
@@ -40,16 +40,16 @@ Each new kind should make the course's idea the rule of the game, so playing is 
 | 1 | Numbers to 20 | Kite (dots), Many Pairs (pairs) |
 | 1 | Reading words and sentences | Big Puzzle (jigsaw) |
 | 1 | Sky, water and living things | Balance the Scale (balance) |
-| 1 | Our community | Step on the Circles (path) |
+| 1 | Our community | Step on the Goods (path) |
 | 1 | Beat, high, low, loud, soft | Big Maze (maze), Frog Jumps: Sums (jump) |
-| 2 | Numbers to 1,000 | Huge Maze (maze) |
-| 2 | Reading longer words and stories | Catch the Red Ones (catch) |
+| 2 | Numbers to 1,000 | Huge Maze (maze), Space Shooter: Even Numbers (ship) |
+| 2 | Reading longer words and stories | Catch the Compound Words (catch) |
 | 2 | Writing sentences | Boat (dots) |
 | 2 | Our community's story | Frog Jumps: Take Away (jump) |
 | 2 | Materials and habitats | More Pairs (pairs) |
 | 3 | Fractions | Catch the multiples of 3 (catch), Balance the scale: times (balance) |
 | 3 | Reading to understand | Find the evidence: stories and facts (evidence) |
-| 3 | How the world works | In order: how things happen (order), Grade 3 science words (pairs) |
+| 3 | How the world works | Space shooter: gases (ship), In order: how things happen (order), Grade 3 science words (pairs) |
 | 3 | Writing a paragraph | Build a sentence: say more (build) |
 | 3 | Multiplication and division | Fraction twins (pairs) |
 | 3 | Looking and making | Color mixer: make new colors (mix) |
@@ -78,7 +78,7 @@ Each new kind should make the course's idea the rule of the game, so playing is 
 | 5 | Programs that decide | Pong (pong), Debug the robot: turns (debug) |
 | 6 | Ratios, negatives and equations | Catch the multiples of 7 (catch), Frog jumps: fractions (jump) |
 | 6 | Reading like a thinker | Word roots (pairs) |
-| 6 | Matter, energy and Earth | Quick fire: science (sprint), Grade 6 science words (pairs) |
+| 6 | Matter, energy and Earth | Space shooter: elements (ship), Quick fire: science (sprint), Grade 6 science words (pairs) |
 | 6 | Writing with a purpose | Noun or verb (buckets) |
 | 6 | World cultures | Where is it? The oceans (map), In order: civilizations, inventions, buildings (order) |
 | 6 | What a machine learns | Teach the Robot (teach) |
@@ -93,9 +93,9 @@ Each new kind should make the course's idea the rule of the game, so playing is 
 | 6 | Reading a work of art | Shape the Sound (shape) |
 | 7 | Proportions, integers and circles | Balance the scale: fractions (balance) |
 | 7 | Reading with an eye for craft | Word meanings (pairs) |
-| 7 | Bodies, weather and change | Solid or liquid (buckets), Grade 7 science words (pairs) |
+| 7 | Bodies, weather and change | Producer or consumer (buckets), Grade 7 science words (pairs) |
 | 7 | Writing about what you read | Fix it: find the mistake (fix) |
-| 7 | Texas history | Where is it? Texas regions (map), Capitals (pairs) |
+| 7 | Texas history | Where is it? Texas regions (map), Texas pairs (pairs) |
 | 7 | Bits, networks and safety | Quick fire: Bits, networks and safety (sprint) |
 | 8 | Lines, powers and triangles | In order: the math way (order) |
 | 8 | Reading with a critical eye | Find the evidence: cause and reason (evidence) |
@@ -104,9 +104,9 @@ Each new kind should make the course's idea the rule of the game, so playing is 
 | 8 | The United States to 1877 | Where is it? The United States (map), In order: the United States to 1877 (order) |
 | 9 | Algebra 1 | Frog jumps: negative numbers (jump), Balance the scale: expressions (balance) |
 | 9 | English 1 | Find the evidence: claims and support (evidence) |
-| 9 | Biology | Element or compound (buckets), Grade 9 science words (pairs) |
+| 9 | Biology | Mitosis or meiosis (buckets), Grade 9 science words (pairs) |
 | 9 | Writing about texts and turns | Fix it: tricky words (fix) |
-| 9 | World geography | Where is it? Europe (map), Quick fire: World geography (sprint) |
+| 9 | World geography | Where is it? Europe (map), Capitals (pairs), Quick fire: World geography (sprint) |
 | 9 | How a program is built | Eight Switches (bits) |
 | 9 | Relationships and health | Myth or Fact (mythfact) |
 | 9 | Health for life | Push to the Beat (cpr) |
@@ -122,19 +122,21 @@ Each new kind should make the course's idea the rule of the game, so playing is 
 | 10 | Chemistry | Acid or base (buckets), Grade 10 science words (pairs), The periodic table: find it (ptable) |
 | 10 | Writing about texts | Fix it: fine points (fix) |
 | 10 | World history | Where is it? The biggest states (map), In order: world history (order) |
-| 11 | Algebra 2 | Quick fire: math (sprint) |
+| 11 | Algebra 2 | Step on the powers of 2 (path), Quick fire: math (sprint) |
 | 11 | English 3 | Find the evidence: argument and craft (evidence) |
 | 11 | Physics | Grade 11 science words (pairs) |
 | 11 | Writing with sources | Quick fire: Writing with sources (sprint) |
 | 11 | United States history since 1877 | Where is it? Africa (map), In order: the United States since 1877 (order) |
-| 12 | Precalculus | Step on the primes (path) |
+| 12 | Precalculus | Step on the positive sines (path) |
 | 12 | English 4 | Find the evidence: weighing a case (evidence) |
-| 12 | Earth and space | Catch the acids (catch), Grade 12 science words (pairs) |
+| 12 | Earth and space | Catch the igneous rocks (catch), Grade 12 science words (pairs) |
 | 12 | Writing for the world | Quick fire: Writing for the world (sprint) |
 | 12 | United States government | Where is it? Asia (map), In order: how our government grew (order) |
-| 12 | Economics and personal finance | State or country (buckets) |
-| C | Statistics and reasoning | Formulas (pairs) |
+| 12 | Economics and personal finance | Need or want (buckets) |
+| C | Statistics and reasoning | Statistics words (pairs) |
 | C | Academic reading | Find the evidence: academic reading (evidence) |
-| C | Thinking like a historian | Where is it? South America (map), Quick fire: Thinking like a historian (sprint) |
+| C | Thinking like a historian | Where is it? South America (map), Catch the primary sources (catch), Quick fire: Thinking like a historian (sprint) |
 | C | Business principles | Sort the Ledger (ledger) |
+| C | General psychology | Cause or Correlation (cause) |
+| C | Principles of macroeconomics | In GDP or Not (gdp) |
 | C | How computers compute | Split the Search (search) |

@@ -1340,6 +1340,26 @@ await page.waitForTimeout(200);
 }
 await page.getByRole('button', { name: 'Close game' }).first().click({ force: true });
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview');
+// In GDP or Not (pass JC, college macroeconomics): the board carries the right answer for each case.
+await page.evaluate(() => window.__eduTest.openColoring('play:gdp-macroeconomics-college'));
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'coloring');
+await page.waitForTimeout(200);
+{ ok('the In GDP or Not game opens with a case and two answers', (await page.getByRole('button', { name: /^Answer: / }).count()) === 2 && (await text()).includes('In GDP or not?'));
+  for (let i = 0; i < 6; i++) { const ans = await page.locator('[data-gdp-answer]').getAttribute('data-gdp-answer'); if (!ans) break; await page.getByRole('button', { name: `Answer: ${ans}`, exact: true }).click(); await page.waitForTimeout(1450); }
+  ok('six cases answered finish the round', (await text()).includes('Six cases sorted'));
+}
+await page.getByRole('button', { name: 'Close game' }).first().click({ force: true });
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview');
+// Cause or Correlation (pass JB, college psychology): the board carries the right answer for each study.
+await page.evaluate(() => window.__eduTest.openColoring('play:cause-psychology-college'));
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'coloring');
+await page.waitForTimeout(200);
+{ ok('the Cause or Correlation game opens with a study and two answers', (await page.getByRole('button', { name: /^Answer: / }).count()) === 2 && (await text()).includes('Experiment or correlation?'));
+  for (let i = 0; i < 6; i++) { const ans = await page.locator('[data-cause-answer]').getAttribute('data-cause-answer'); if (!ans) break; await page.getByRole('button', { name: `Answer: ${ans}`, exact: true }).click(); await page.waitForTimeout(1450); }
+  ok('six studies answered finish the round', (await text()).includes('Six studies sorted'));
+}
+await page.getByRole('button', { name: 'Close game' }).first().click({ force: true });
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview');
 // Some pictures are drawn on rather than filled in: a finger stroke leaves a line in the chosen color.
 await page.evaluate(() => window.__eduTest.openColoring('star'));
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'coloring');

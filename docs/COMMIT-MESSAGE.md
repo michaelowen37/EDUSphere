@@ -1,7 +1,7 @@
-Wonder questions for every stage, and game cards read by hand
+Parentheses, and General Psychology and Macroeconomics for college
 
-- Pass IX: twenty-four Wonder questions for pre-K through grade 5, failure and hard feelings first (343 in all), every research claim read before use and listed in DECISIONS for approval; three answers that told children to vent a feeling (stomp it out, squeeze a pillow, give it somewhere to go) rewritten around calming down and drawing something new, with a rules test that keeps venting advice out.
-- Pass IY: every game card with words read by hand. Sort the Because starts every choice with Because, so the form no longer gives the answer away; Valid or Not says "The street is not wet" instead of "It is not the case that" and never stacks two negatives; twenty-seven card fixes, among them half the plate for fruits and vegetables, nitrogen fixed from the air, and what birth control pills do and do not prevent.
-- Pass IZ: sixteen Wonder questions for teens and adults, failure and hard feelings first (359 in all), drawing on Aristotle, Marcus Aurelius, Viktor Frankl and Arthur Brooks and on newer research, every claim read before use and listed in DECISIONS for approval.
+- Pass JA: every lesson, question, deck, story and picture caption that called ( ) brackets now says parentheses, as American math, the TEKS and Common Core do, and factored forms say factors or binomials; grade 5 learns brackets [ ] as the outer of two levels of grouping (TEKS 5.4F) with a new practice question; the PEMDAS line now spells out what the letters stand for; a rules test keeps brackets for [ ] only.
+- Pass JB: college General Psychology on the ACGM PSYC 2301 outcomes and the APA undergraduate guidelines: four lessons and 62 questions, four true stories (Clever Hans, Mary Whiton Calkins, seven lenses on test anxiety, H.M.), a long story with Savanah, the Cause or Correlation game, and two Wonder questions.
+- Pass JC: college Principles of Macroeconomics on the ACGM ECON 2301 outcomes and the national economics standards: four lessons and 62 questions, four true stories (Smith's pin factory, Kuznets's first national income report, the stone money of Yap, Volcker's war on inflation), Mike's long story of the 2008 recession, a new game (In GDP or Not), and two Wonder questions.
 
-Passes: IX, IY, IZ
+Passes: JA, JB, JC

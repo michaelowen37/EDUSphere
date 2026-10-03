@@ -1178,6 +1178,36 @@ export const COURSES = [
     modules: BIZC_MODULES(),
   },
   // ---------------------------------------------------------------------------------------------------------------
+  // General Psychology, college level (2026-10-03, pass JB). In plain terms: the course card for the college psychology
+  // course, built on the six learning outcomes Texas sets for PSYC 2301 in its college course guide, deeper than the
+  // grade 9 course. Its four lessons live in PSYC_MODULES() further down.
+  // ---------------------------------------------------------------------------------------------------------------
+  {
+    id: 'psychology-college',
+    grade: 'C',
+    subject: 'Psychology',
+    title: 'General psychology',
+    audience: 'College level',
+    elective: true,
+    keywords: ['psychology', 'research methods', 'history of psychology', 'perspectives', 'neuroscience', 'brain', 'college', 'elective'],
+    modules: PSYC_MODULES(),
+  },
+  // ---------------------------------------------------------------------------------------------------------------
+  // Principles of Macroeconomics, college level (2026-10-03, pass JC). In plain terms: the course card for the college
+  // macroeconomics course, built on the eight learning outcomes Texas sets for ECON 2301 in its college course guide,
+  // deeper than the grade 12 economics course. Its four lessons live in MACRO_MODULES() further down.
+  // ---------------------------------------------------------------------------------------------------------------
+  {
+    id: 'macroeconomics-college',
+    grade: 'C',
+    subject: 'Economics',
+    title: 'Principles of macroeconomics',
+    audience: 'College level',
+    elective: true,
+    keywords: ['macroeconomics', 'economics', 'GDP', 'inflation', 'unemployment', 'money', 'Federal Reserve', 'fiscal policy', 'college', 'elective'],
+    modules: MACRO_MODULES(),
+  },
+  // ---------------------------------------------------------------------------------------------------------------
   // Reproductive and sexual health for grades 9 to 12 (2026-10-01, pass HP, Mikey). In plain terms: the second human
   // sexuality elective, on the strand of the Texas Health I course that the general high school course leaves out. Like
   // the grade 6 course, it appears only when an educator assigns it, and assigning it asks the educator to confirm a
@@ -1621,6 +1651,8 @@ export const GAMES = [
   { id: 'breakeven-business-9', kind: 'breakeven', title: 'Break Even', minGrade: '9', breakeven: 'businesses' },   // business 9 to 12 (pass HD): where the lines cross is the rule
   { id: 'tool-business-k', kind: 'tool', title: 'Find the Tool', minGrade: 'K', young: true, tool: 'jobs' },   // business K to 2 (pass HH): six jobs, six tools
   { id: 'ledger-business-college', kind: 'ledger', title: 'Sort the Ledger', minGrade: 'C', ledger: 'accounts' },   // business college (pass HK): assets, liabilities or equity
+  { id: 'cause-psychology-college', kind: 'cause', title: 'Cause or Correlation', minGrade: 'C', cause: 'studies' },   // psychology college (pass JB): experiment or correlation
+  { id: 'gdp-macroeconomics-college', kind: 'gdp', title: 'In GDP or Not', minGrade: 'C', gdp: 'cards' },   // macroeconomics college (pass JC): counted in GDP or left out
   { id: 'label-health-6', kind: 'label', title: 'Read the Label', minGrade: '6', label: 'foods' },   // health 6 to 8 (pass HM): the better label for the nutrient asked
   { id: 'cpr-health-9', kind: 'cpr', title: 'Push to the Beat', minGrade: '9', cpr: 'compressions' },   // health 9 to 12 (pass HN): 100 to 120 a minute
   { id: 'greenred-sexual-health-6', kind: 'greenred', title: 'Green Flag or Red Flag', minGrade: '6', greenred: 'behaviors' },   // reproductive and sexual health 6 to 8 (pass HO)
@@ -2643,6 +2675,64 @@ export function wonderAllowed(w, courseId, stage) {
   if ((w.stage || 'early') !== stage) return false;
   return !w.courseIds.some((id) => { const c = getCourse(id); return !!(c && c.consent); });
 }
+// ----------------------------------------------------------------------------------------------------------------
+// In GDP or Not (2026-10-03, pass JC): the college macroeconomics game. In plain terms: each card names one thing that
+// happened this year, and the student swipes or taps In GDP (a new final good or service, made in the country and sold
+// in a market) or Not in GDP (a used good, a financial trade, a transfer payment, an intermediate good, unpaid work at
+// home, or something made abroad). The rule is the lesson's. `GDP_CARDS` holds the cards with the one-line reason shown
+// after, and `gdpRounds(round)` deals three of each a round, in an order fixed by the round number.
+// ----------------------------------------------------------------------------------------------------------------
+export const GDP_CARDS = [
+  ['A family buys a new car built in Ohio this year.', 'in', 'A new final good bought by a household: consumption.'],
+  ['A trucking firm buys a new delivery truck for its business.', 'in', 'New equipment for a business counts as investment.'],
+  ['A builder finishes a brand-new house this year.', 'in', 'New homes count as investment.'],
+  ['A city pays a teacher to teach for the year.', 'in', 'Government purchases of services count.'],
+  ['A barber gives a $25 haircut.', 'in', 'A final service, produced and sold this year.'],
+  ['Texas cotton grown this year is sold to a buyer in Vietnam.', 'in', 'Exports are American production.'],
+  ['A dentist fills a cavity for a patient.', 'in', 'A final service counts.'],
+  ['A neighbor sells you a used car built five years ago.', 'out', 'It was counted the year it was built.'],
+  ['An investor buys shares of stock.', 'out', 'A financial trade, not new production.'],
+  ['A retiree receives a Social Security check.', 'out', 'A transfer payment buys nothing new by itself.'],
+  ['A bakery buys flour to make bread it will sell.', 'out', 'An intermediate good: it is counted inside the bread.'],
+  ['A parent cooks dinner at home for the family.', 'out', 'No market sale, so it is not counted.'],
+  ['A family in Texas buys a TV made in Japan.', 'out', 'It is Japan\'s production, so it counts in Japan\'s GDP.'],
+  ['A student buys a used textbook from a classmate.', 'out', 'It was counted when it was first made.'],
+];
+export function gdpRounds(round) {
+  let x = (round * 61483 + 41) >>> 0; const rnd = () => { x = (x * 1664525 + 1013904223) >>> 0; return x / 4294967296; };
+  const mix = (arr) => { const a = [...arr]; for (let j = a.length - 1; j > 0; j--) { const k = Math.floor(rnd() * (j + 1)); [a[j], a[k]] = [a[k], a[j]]; } return a; };
+  const deal = [...mix(GDP_CARDS.filter((c) => c[1] === 'in')).slice(0, 3), ...mix(GDP_CARDS.filter((c) => c[1] === 'out')).slice(0, 3)];
+  return mix(deal).map(([text, answer, why]) => ({ text, answer, why }));
+}
+// ----------------------------------------------------------------------------------------------------------------
+// Cause or Correlation (2026-10-03, pass JB): the college psychology game. In plain terms: each card describes a study
+// in one sentence, and the student swipes or taps Experiment (the groups were assigned by chance, so it can show cause)
+// or Correlation (the variables were only measured, so it cannot). The rule is the lesson's: random assignment is what
+// lets a study show cause. `CAUSE_STUDIES` holds the cards with the one-line reason shown after, and `causeRounds(round)`
+// deals three of each a round, in an order fixed by the round number.
+// ----------------------------------------------------------------------------------------------------------------
+export const CAUSE_STUDIES = [
+  ['Volunteers are randomly assigned to sleep 5 or 8 hours, then take a memory test.', 'experiment', 'Chance chose the groups, so sleep can be the cause.'],
+  ['A survey of 2,000 teens finds those who sleep less earn lower grades.', 'correlation', 'Nobody assigned the sleep, so a third variable could drive both.'],
+  ['Participants are randomly given caffeine or a placebo, then timed on a reaction task.', 'experiment', 'Random assignment and a placebo control group.'],
+  ['Cities that sell more ice cream have more drownings.', 'correlation', 'Summer heat drives both.'],
+  ['Students who chose to join band are compared with students who did not.', 'correlation', 'They chose their own groups, so the groups differ in other ways too.'],
+  ['Patients are randomly assigned to a new therapy or a waiting list, and symptoms are measured.', 'experiment', 'Chance decided who got the therapy.'],
+  ['People who exercise report being happier than people who do not.', 'correlation', 'Happier people may simply exercise more.'],
+  ['A coin flip decides which classrooms get a new reading program.', 'experiment', 'A coin flip is random assignment.'],
+  ['Children who watch more violent shows are rated more aggressive.', 'correlation', 'Aggressive children may choose violent shows.'],
+  ['Shoppers are randomly shown one of two price tags, and sales are compared.', 'experiment', 'The price tag was assigned by chance.'],
+  ['Students who sit in the front row earn higher grades.', 'correlation', 'Motivated students may choose the front row.'],
+  ['Drivers in a simulator are randomly assigned to talk on a phone or not, and braking is timed.', 'experiment', 'Phone use was assigned by chance.'],
+  ['A 20-year study finds that people with more friends live longer.', 'correlation', 'Good health could drive both friendships and long life.'],
+  ['Rats are randomly placed in a busy, toy-filled cage or a plain one, and maze learning is compared.', 'experiment', 'The cage was assigned at random.'],
+];
+export function causeRounds(round) {
+  let x = (round * 52711 + 29) >>> 0; const rnd = () => { x = (x * 1664525 + 1013904223) >>> 0; return x / 4294967296; };
+  const mix = (arr) => { const a = [...arr]; for (let j = a.length - 1; j > 0; j--) { const k = Math.floor(rnd() * (j + 1)); [a[j], a[k]] = [a[k], a[j]]; } return a; };
+  const deal = [...mix(CAUSE_STUDIES.filter((c) => c[1] === 'experiment')).slice(0, 3), ...mix(CAUSE_STUDIES.filter((c) => c[1] === 'correlation')).slice(0, 3)];
+  return mix(deal).map(([text, answer, why]) => ({ text, answer, why }));
+}
 // -----------------------------------------------------------------------------------------------------------------
 // Myth or Fact (2026-10-01, pass HP, the high school human sexuality elective's game). In plain terms: one statement at
 // a time about health, safety or relationships, and the student taps Myth or Fact; each card carries the one-line
@@ -2899,7 +2989,7 @@ export const ORDER_DECKS = {
     { title: 'Ancient to modern', steps: ['rivers flood and cities begin', 'Athens votes', 'Rome builds an empire', 'the Black Death', 'the age of revolutions'] },
   ],
   mathsteps: [
-    { title: 'Order of operations', steps: ['brackets', 'exponents', 'multiply and divide', 'add and subtract'] },
+    { title: 'Order of operations', steps: ['parentheses', 'exponents', 'multiply and divide', 'add and subtract'] },
     { title: 'Solving 2x + 3 = 11', steps: ['notice that adding 3 came last', 'subtract 3 from both sides', '2x = 8', 'divide both sides by 2', 'x = 4'] },
     { title: 'Long division, 96 by 4', steps: ['how many 4s in 9: two', 'write 2, subtract 8', 'bring down the 6', 'how many 4s in 16: four', 'the answer is 24'] },
     { title: 'Adding fractions with different bottoms', steps: ['find a common bottom', 'change each fraction to it', 'add the tops', 'keep the bottom', 'simplify if you can'] },
@@ -6157,9 +6247,9 @@ function GRADE9_MATH_MODULES() { return [
       paragraphs: [
         'When an **x** appears on both sides of an equation, the goal is to find ways to condense it down into a **single x** and have it sit alone on the left of the equation.\nSo, something like:\n[[4x + 2 = 2x + 6]]\nNeeds to be reduced down to:\n[[x = answer]]\nWe start by removing any **x** we see on the right side of the equation until we\'re left with only one **x** value situated on the left.\nThen, after the **x** is isolated to the left side of the equation, we must find ways of removing any of the remaining values that might be sitting in front of the **x** or beside it.\nRemember, we want to end with:\n[[x = answer]]\nThis is usually done by finding ways of moving any numerical value on the left over to the right.',
         'Let\'s look at an example:\n[[5x + 3 = 2x + 15]]\nFor this equation, we can start by subtracting 2x from both sides to get rid of the **x** on the right. That leaves us with:\n[[3x + 3 = 15]]\nThen, after we have isolated the **x** to the left side, we need to get rid of the extra numbers on the left by finding ways to move them to the right.\nIn this case, we need to get rid of the extra **3** that sits in front of the **x** as well as the **3** sitting by itself to the right of the **x**.\nLet\'s start by isolating the **3x**. We can subtract the **3** from both sides which leaves us with:\n[[3x = 12]]\nNow we need to get rid of the **3** sitting in front of the **x** so that we are left with only an **x** on the left side. This will allow us to find out what **x** is equivalent to.\nIn this case, we divide both sides of the equation by **3** which will leave us with:\n[[x = 4]]\nThat\'s how you solve for **x**!',
-        'Brackets come first. Before you gather anything, multiply out the bracket:\n[[3(x + 2) = 21]]\nbecomes\n[[3x + 6 = 21]]\nThen subtract **6** from both sides:\n[[3x = 15]]\nThen divide both sides by **3**:\n[[x = 5]]',
+        'Parentheses come first. Before you gather anything, multiply the 3 by each term inside the parentheses:\n[[3(x + 2) = 21]]\nbecomes\n[[3x + 6 = 21]]\nThen subtract **6** from both sides:\n[[3x = 15]]\nThen divide both sides by **3**:\n[[x = 5]]',
       ],
-      keyIdea: 'Whatever the shape of the equation, the moves are always the same.\nFirst, clear any brackets.\nThen, gather every **x** on the left.\nThen, gather every plain number on the right.\nThen, divide so that a single **x** stands alone.\nFinally, check by putting the answer back in.',
+      keyIdea: 'Whatever the shape of the equation, the moves are always the same.\nFirst, clear any parentheses.\nThen, gather every **x** on the left.\nThen, gather every plain number on the right.\nThen, divide so that a single **x** stands alone.\nFinally, check by putting the answer back in.',
       example: { kind: 'balance', left: '5x + 3', right: '2x + 15', caption: 'Take 2x and 3 from both pans: 3x is 12, so x is 4.' , formula: '5x + 3 = 2x + 15', another: "Gather your x's on one side, like sorting laundry.\n• **Start:** 5x + 3 = 2x + 15\n• **Take 2x from both sides:** 3x + 3 = 15\n• **Take 3 from both sides:** 3x = 12\n• **Divide both sides by 3:** x = 4"},
     },
     sources: ['Aligned with Texas TEKS A.5A (solve linear equations in one variable, including those for which the application of the distributive property is necessary and for which variables are included on both sides) and Common Core A-REI.B.3 (solve linear equations in one variable).'],
@@ -6207,11 +6297,11 @@ function GRADE9_MATH_MODULES() { return [
     requires: ['exponents'],
     lesson: {
       paragraphs: [
-        'Multiplying two brackets gives a trinomial:\n[[(x + 2)(x + 3) = x² + 5x + 6]]\nFactoring goes the other way: from the trinomial back to the brackets.',
+        'Multiplying two binomials gives a trinomial:\n[[(x + 2)(x + 3) = x² + 5x + 6]]\nFactoring goes the other way: from the trinomial back to the two binomials.',
         "For x² + bx + c, find two numbers that multiply to **c** and add to **b**.\nLet's look at x² + 5x + 6.\nWhich two numbers multiply to 6 and add to 5? **2** and **3**.\n[[x² + 5x + 6 = (x + 2)(x + 3)]]\nFor x² - x - 12, the numbers are **-4** and **3**, because -4 x 3 is -12 and -4 + 3 is -1.",
-        'Factoring solves equations. If a product is zero, one of the brackets must be zero:\n[[(x + 2)(x + 3) = 0]]\nSo x is -2 or x is -3.',
+        'Factoring solves equations. If a product is zero, one of its factors must be zero:\n[[(x + 2)(x + 3) = 0]]\nSo x is -2 or x is -3.',
       ],
-      keyIdea: 'Find two numbers that multiply to c and add to b.\nIf a product is zero, one of the brackets is zero.',
+      keyIdea: 'Find two numbers that multiply to c and add to b.\nIf a product is zero, one of its factors is zero.',
       example: { kind: 'tiles', p: 2, q: 3, caption: 'A rectangle x + 2 wide and x + 3 tall has area x² + 5x + 6.' , formula: 'x² + 5x + 6 = (x + 2)(x + 3)', another: 'Factoring is un-multiplying. x² + 5x + 6 came from (x + 2)(x + 3), because 2 × 3 is 6 and 2 + 3 is 5. Look for the two numbers that multiply to the last term and add to the middle one.'},
     },
     sources: ['Aligned with Texas TEKS A.10E (factor, if possible, trinomials with real factors in the form ax^2 + bx + c) and Common Core A-SSE.B.3a (factor a quadratic expression to reveal the zeros of the function it defines).'],
@@ -6511,9 +6601,9 @@ function GRADE11_MATH_MODULES() { return [
       paragraphs: [
         "A binomial has two pieces, like x + 3. To multiply two binomials, every piece of the first multiplies every piece of the second.\n[[(x + 2)(x + 3)]]",
         "Let's work it through.\nFirst, x times x: **x²**.\nThen, x times 3: **3x**.\nThen, 2 times x: **2x**.\nThen, 2 times 3: **6**.\nAdd the four pieces, joining the two x terms:\n[[(x + 2)(x + 3) = x² + 5x + 6]]",
-        "The memory hook is FOIL: First, Outer, Inner, Last. It is only a reminder that every piece meets every piece. When a bracket has three pieces, the same rule holds, with more multiplying.",
+        "The memory hook is FOIL: First, Outer, Inner, Last. It is only a reminder that every piece meets every piece. When a set of parentheses holds three pieces, the same rule holds, with more multiplying.",
       ],
-      keyIdea: 'Every piece of the first bracket multiplies every piece of the second.\nFirst, Outer, Inner, Last, then join the like terms.',
+      keyIdea: 'Every piece in the first set of parentheses multiplies every piece in the second.\nFirst, Outer, Inner, Last, then join the like terms.',
       example: { kind: 'tiles', p: 1, q: 4, caption: 'x + 1 by x + 4: four tiles, x², 4x, x and 4, so x² + 5x + 4.' , formula: 'FOIL', another: 'Think of a rectangle x + 1 wide and x + 4 tall. Its area is four tiles: x², 4x, 1x and 4. Add them and you have (x + 1)(x + 4) = x² + 5x + 4.'},
     },
     sources: ['Aligned with Texas TEKS 2A.7B (add, subtract, and multiply polynomials) and Common Core A-APR.A.1 (multiply polynomials).'],
@@ -6661,12 +6751,12 @@ function GRADE12_MATH_MODULES() { return [
     requires: ['functions'],
     lesson: {
       paragraphs: [
-        "Once you know the graph of a function, you know the graphs of all its shifted versions.\n[[f(x) + k moves the graph up by k]]\n[[f(x) - k moves it down by k]]\nAdding outside the brackets moves the whole picture up or down.",
-        "Adding inside the brackets moves it sideways, and the direction is the surprise:\n[[f(x - h) moves the graph right by h]]\n[[f(x + h) moves it left by h]]\nThe minus goes right, because x has to be h bigger to give the same output as before.",
+        "Once you know the graph of a function, you know the graphs of all its shifted versions.\n[[f(x) + k moves the graph up by k]]\n[[f(x) - k moves it down by k]]\nAdding outside the parentheses moves the whole picture up or down.",
+        "Adding inside the parentheses moves it sideways, and the direction is the surprise:\n[[f(x - h) moves the graph right by h]]\n[[f(x + h) moves it left by h]]\nThe minus goes right, because x has to be h bigger to give the same output as before.",
         "Let's look at an example. If f(x) = x², then:\n[[x² + 3 is the parabola moved up 3]]\n[[(x - 2)² is the parabola moved right 2]]\n[[(x + 4)² - 1 is moved left 4 and down 1]]",
       ],
-      keyIdea: 'Outside the brackets moves up or down.\nInside the brackets moves sideways, and minus goes right.',
-      example: { kind: 'plot', fn: 'shift', caption: 'The same curve, moved 2 right and 3 up.' , formula: '(x − 2)² + 3', another: 'Shifting a graph is like moving a picture on a wall. Adding outside the brackets lifts it up; subtracting inside the brackets slides it right. (x - 2)² + 3 is x² moved 2 right and 3 up.'},
+      keyIdea: 'Outside the parentheses moves up or down.\nInside the parentheses moves sideways, and minus goes right.',
+      example: { kind: 'plot', fn: 'shift', caption: 'The same curve, moved 2 right and 3 up.' , formula: '(x − 2)² + 3', another: 'Shifting a graph is like moving a picture on a wall. Adding outside the parentheses lifts it up; subtracting inside the parentheses slides it right. (x - 2)² + 3 is x² moved 2 right and 3 up.'},
     },
     sources: ['Aligned with Texas TEKS P.2G (graph functions, including transformations) and Common Core F-BF.B.3 (identify the effect on the graph of replacing f(x) by f(x) + k, k f(x), f(kx), and f(x + k)).'],
     generators: ['g12-shift-direction', 'g12-shifted-point', 'g12-shift-direction', 'g12-shifted-point', 'g12-write-shift'],
@@ -11026,6 +11116,192 @@ function HEALTH6_MODULES() { return [
   },
 ]; }
 // -----------------------------------------------------------------------------------------------------------------
+// MACRO_MODULES: the four lessons of the college macroeconomics course (2026-10-03, pass JC).
+// In plain terms: each object is one lesson at a first-year college level. `sources` names the ECON 2301 learning
+// outcomes from Texas's college course guide that the lesson meets, with the national economics standards beside them,
+// and `generators` the question banks below that make the quick checks. Every date and figure was checked by web.
+// -----------------------------------------------------------------------------------------------------------------
+function MACRO_MODULES() { return [
+  {
+    id: 'scarcity-and-markets-c',
+    order: 1,
+    title: 'Scarcity, trade and markets',
+    tagline: 'Opportunity cost, the production possibilities frontier, comparative advantage, and supply and demand',
+    requires: [],
+    lesson: {
+      paragraphs: ['Economics studies how people choose under scarcity: wants are unlimited, and the resources to meet them are not. Every choice has an opportunity cost, the value of the best alternative given up. A careful choice compares marginal benefit with marginal cost, the benefit and cost of one more unit, a habit called marginal analysis.',
+        'A production possibilities frontier shows the most an economy can make of two goods with its resources and technology. Points on the curve are efficient, points inside are inefficient because they waste resources, and points outside cannot be reached yet. The curve bows outward because resources are specialized, so the opportunity cost of each extra unit rises.',
+        'Specialization raises output. Comparative advantage means producing something at a lower opportunity cost than someone else, and it is what makes trade pay. David Ricardo showed in 1817 that two countries gain by specializing and trading even when one is better at making everything.',
+        'Demand shows how much buyers will purchase at each price, and the law of demand says the quantity demanded falls as price rises. Demand itself shifts with income, tastes, the prices of substitutes and complements, expectations and the number of buyers. Supply shifts with input costs, technology, expectations and the number of sellers.',
+        'Equilibrium is where quantity supplied equals quantity demanded. If demand rises, price and quantity both rise; if supply rises, price falls and quantity rises. A price ceiling below equilibrium causes a shortage, and a price floor above it causes a surplus.'],
+      keyIdea: 'Every choice has an opportunity cost. Specializing by comparative advantage lets both trading partners gain. Shifts in supply and demand move the equilibrium price and quantity.',
+      example: { kind: 'flow', steps: ['demand rises', 'a shortage at the old price', 'the price rises', 'a new equilibrium, higher price and quantity'], caption: 'How a market answers a rise in demand.',
+        another: ['If Ana can bake 10 loaves or knit 2 scarves in a day, each scarf costs her 5 loaves. If Ben gives up only 2 loaves per scarf, Ben should knit and Ana should bake.',
+          'A cold snap raises demand for heaters while a new factory raises their supply: the quantity sold rises for sure, and the price depends on which shift is bigger.'] },
+    },
+    sources: ['Aligned with ACGM ECON 2301 learning outcomes 1 (scarcity, specialization, opportunity cost and cost/benefit analysis) and 2 (the determinants of supply and demand, and shifts in equilibrium), and the Voluntary National Content Standards in Economics, Standards 5 and 6.'],
+    generators: ['macro-markets', 'macro-markets', 'macro-markets', 'macro-markets', 'macro-markets'],
+  },
+  {
+    id: 'measuring-the-economy-c',
+    order: 2,
+    title: 'Measuring the economy',
+    tagline: 'GDP and its parts, real and nominal, the price indexes, unemployment and the business cycle',
+    requires: [],
+    lesson: {
+      paragraphs: ['Gross domestic product, GDP, is the market value of all final goods and services produced within a country in a year. It counts only final goods, so the flour inside a loaf is not counted twice. Only new production counts, so a used car sold this year is left out, and stock trades and transfer payments such as Social Security checks are left out too.',
+        'Measured by spending, GDP is consumption plus investment plus government purchases plus net exports: C + I + G + NX. Investment here means new factories, equipment, homes and inventories, not stocks. Net exports are exports minus imports.',
+        'Nominal GDP uses current prices; real GDP uses the prices of a base year, so it rises only when output rises. The consumer price index tracks the cost of a fixed basket of goods, and inflation is the percentage change in the price level. If the index rises from 200 to 210, inflation is 5 percent.',
+        'The labor force is everyone working or actively looking for work. The unemployment rate is the unemployed divided by the labor force, so 6 million unemployed in a labor force of 150 million is 4 percent. Frictional unemployment is people between jobs, structural is a mismatch of skills and jobs, and cyclical comes from recessions.',
+        'The natural rate of unemployment is the frictional and structural kinds together, and it never reaches zero. The business cycle moves through expansion, peak, contraction and trough. A recession is a significant decline in activity, spread across the economy and lasting more than a few months. Over the long run, real GDP grows from more capital, more skills and better technology.',
+        'GDP was born in a crisis. In 1934, Simon Kuznets gave the Senate the first estimates of the nation\'s income, which had roughly halved since 1929. He also warned that a nation\'s welfare can scarcely be inferred from such a number.'],
+      keyIdea: 'GDP is the value of final goods and services produced in a year: C + I + G + NX. Real GDP removes price changes, inflation is the rise in the price level, and unemployment is the unemployed over the labor force.',
+      example: { kind: 'flow', steps: ['expansion', 'peak', 'contraction', 'trough'], caption: 'The four phases of the business cycle.',
+        another: ['If consumption is 14, investment 4, government purchases 4 and net exports -1, all in trillions, GDP is 21 trillion dollars.',
+          'The rule of 70: an economy growing 2 percent a year doubles in about 35 years, and one growing 7 percent doubles in about 10.'] },
+    },
+    sources: ['Aligned with ACGM ECON 2301 learning outcomes 3 (define and measure national income and rates of unemployment and inflation), 4 (the phases of the business cycle) and 8 (economic growth and its sources), and the Voluntary National Content Standards in Economics, Standards 15, 18 and 19.'],
+    generators: ['macro-measure', 'macro-measure', 'macro-measure', 'macro-measure', 'macro-measure'],
+  },
+  {
+    id: 'money-and-banking-c',
+    order: 3,
+    title: 'Money, banks and the Fed',
+    tagline: 'What money does, how banks create it, and how the Federal Reserve steers interest rates today',
+    requires: [],
+    lesson: {
+      paragraphs: ['Money is anything widely accepted as payment. It does three jobs: a medium of exchange, a unit of account and a store of value. Modern dollars are fiat money, valuable because people trust and accept them, not because gold stands behind them.',
+        'M1 is the most liquid measure of money: currency, checking deposits and other liquid deposits, including savings deposits since 2020. M2 adds small time deposits and retail money market funds. Liquidity means how easily something can be spent without losing value.',
+        'Banks create money when they lend. A deposit lets a bank lend much of it out, and the borrower\'s spending becomes someone else\'s deposit, which can be lent again. In the textbook model, with a 10 percent reserve ratio, the money multiplier is 1 divided by 0.10, or 10.',
+        'The real system has moved on. Since March 2020 the Federal Reserve has set reserve requirements to zero, and it now steers rates mainly through the interest it pays banks on their reserves. What limits lending today is mostly capital rules, willing borrowers and profit, not a required ratio.',
+        'The Federal Reserve, the central bank of the United States, has two goals set by Congress: maximum employment and stable prices, which it reads as inflation of 2 percent over time. Its Federal Open Market Committee sets a target range for the federal funds rate, the rate banks charge each other overnight.',
+        'To cool inflation, the Fed raises the rate, and borrowing for homes, cars and factories gets more expensive. To fight a recession, it lowers the rate. When its rate reached zero in 2008 and again in 2020, it also bought large amounts of bonds, a policy called quantitative easing.'],
+      keyIdea: 'Money is a medium of exchange, a unit of account and a store of value. Banks create money by lending. The Fed sets a target for the federal funds rate, raising it to cool inflation and lowering it in recessions.',
+      example: { kind: 'flow', steps: ['the Fed lowers its rate target', 'loans get cheaper', 'spending rises', 'output and jobs grow'], caption: 'How a lower interest rate reaches the economy.',
+        another: ['On the island of Yap, giant stone wheels served as money even when they never moved. Owners simply agreed who held each one.',
+          'A 10 percent reserve ratio gives a textbook multiplier of 10, and a 20 percent ratio gives 5.'] },
+    },
+    sources: ['Aligned with ACGM ECON 2301 learning outcome 5 (define money and the money supply; describe the process of money creation by the banking system and the role of the central bank), and the Voluntary National Content Standards in Economics, Standards 11, 12 and 20.'],
+    generators: ['macro-money', 'macro-money', 'macro-money', 'macro-money', 'macro-money'],
+  },
+  {
+    id: 'policy-and-the-world-c',
+    order: 4,
+    title: 'Policy, trade and the world',
+    tagline: 'Aggregate demand and supply, fiscal and monetary policy, deficits and debt, and trade and exchange rates',
+    requires: [],
+    lesson: {
+      paragraphs: ['Aggregate demand is the total spending on an economy\'s output at each price level, and aggregate supply is the total output firms will produce. Where they cross sets real GDP and the price level. Falling demand opens a recessionary gap, with output below its potential and unemployment rising.',
+        'Demand-pull inflation comes from spending that grows faster than output; cost-push inflation comes from a supply shock, such as a jump in oil prices, that raises costs. A supply shock can bring stagflation, rising prices and falling output at once, as in the 1970s.',
+        'Fiscal policy is government spending and taxes. Expansionary fiscal policy, more spending or lower taxes, raises aggregate demand, and contractionary policy does the opposite. The spending multiplier is 1 divided by 1 minus the marginal propensity to consume. If people spend 0.8 of each extra dollar, a dollar of new spending can raise GDP by up to 5 dollars.',
+        'Automatic stabilizers such as unemployment insurance and income taxes cushion recessions without a vote. A deficit is one year\'s gap between spending and revenue, and the debt is the total of past deficits. Heavy government borrowing can push interest rates up and crowd out private investment, an effect called crowding out.',
+        'Monetary policy can be the harder medicine. In 1980 and 1981 the Fed under Paul Volcker pushed its key rate to about 20 percent to break inflation that had neared 15 percent. Unemployment reached 10.8 percent in 1982, and inflation fell below 4 percent by 1983.',
+        'Trade links economies. A country\'s current account records its trade in goods and services and its income flows, and a deficit there is matched by an inflow of investment. A stronger dollar makes American exports more expensive abroad and imports cheaper at home, and tariffs raise the price of imports for domestic buyers.'],
+      keyIdea: 'Aggregate demand and aggregate supply set output and the price level. Fiscal policy uses spending and taxes, monetary policy uses interest rates, and a stronger dollar makes exports more expensive and imports cheaper.',
+      example: { kind: 'flow', steps: ['spending falls', 'aggregate demand shifts left', 'output and prices fall', 'a recessionary gap opens'], caption: 'A recession in the aggregate demand and supply model.',
+        another: ['If people spend 0.75 of each extra dollar, the multiplier is 1 divided by 0.25, or 4.',
+          'In 2008 and again in 2020 the Fed cut its rate to near zero while Congress passed spending packages: both levers at once.'] },
+    },
+    sources: ['Aligned with ACGM ECON 2301 learning outcomes 6 (the aggregate demand and aggregate supply model, with monetary and fiscal policy solutions) and 7 (the mechanics and institutions of international trade), and the Voluntary National Content Standards in Economics, Standards 5, 18 and 20.'],
+    generators: ['macro-policy', 'macro-policy', 'macro-policy', 'macro-policy', 'macro-policy'],
+  },
+]; }
+
+// -----------------------------------------------------------------------------------------------------------------
+// PSYC_MODULES: the four lessons of the college General Psychology course (2026-10-03, pass JB).
+// In plain terms: each object is one lesson at a first-year college level. `sources` names the PSYC 2301 learning
+// outcomes from Texas's college course guide that the lesson meets, with the APA undergraduate guidelines beside them,
+// and `generators` the question banks below that make the quick checks. Every name, date and figure was checked by web.
+// -----------------------------------------------------------------------------------------------------------------
+function PSYC_MODULES() { return [
+  {
+    id: 'methods-and-measurement-c',
+    order: 1,
+    title: 'Methods and measurement',
+    tagline: 'Hypotheses, correlation, experiments with random assignment, reliable and valid tests, replication and research ethics',
+    requires: [],
+    lesson: {
+      paragraphs: ['Psychology is the scientific study of behavior and mental processes. A study starts with a hypothesis, a testable prediction. Each idea in it needs an operational definition, the exact steps used to measure it: happiness might be a score on a tested questionnaire.',
+        'Descriptive methods show what happens. A case study looks deeply at one person, naturalistic observation watches behavior where it happens, and a survey asks many people the same questions. A random sample gives everyone in the population an equal chance of being chosen, so the results can stand for the whole.',
+        'A correlation measures how two variables move together, on a scale from -1 to +1, and near zero means little relationship. Correlation does not show causation, because a third variable may drive both: ice cream sales and drownings rise together because summer heat drives both.',
+        'An experiment can show cause. The researcher manipulates the independent variable and measures the dependent variable. Random assignment puts participants into groups by chance, so the groups start out alike. A control group gets no treatment or a placebo, and in a double-blind study neither participants nor researchers know who got what.',
+        'Good measurement is reliable and valid. Reliability means consistent results, such as similar scores when the same test is taken twice. Validity means the test measures what it claims to measure. A standardized test is given and scored the same way for everyone, and its norms compare one score with a large sample.',
+        'Findings must replicate. In 2015, the Open Science Collaboration repeated 100 published psychology studies: 97 of the originals had found significant results, but only about 36 percent of the repeats did. The field answered with larger samples and with plans registered before data are collected.',
+        'Ethics bind every study: informed consent before it starts, protection from harm, confidentiality, and debriefing that explains the study afterward. An institutional review board checks each plan before anyone takes part.'],
+      keyIdea: 'A hypothesis needs an operational definition. Correlation shows variables moving together, never cause. Experiments use random assignment to show cause. Good tests are reliable and valid, and findings must replicate.',
+      example: { kind: 'flow', steps: ['hypothesis', 'operational definition', 'random assignment', 'measure the dependent variable', 'replicate'], caption: 'An experiment from hunch to evidence, in five steps.',
+        another: ['A random sample decides who is studied; random assignment decides which group each person joins. Polls need the first, and experiments need the second.',
+          'A bathroom scale that reads five pounds heavy every day is reliable but not valid: consistent, and consistently wrong.'] },
+    },
+    sources: ['Aligned with ACGM PSYC 2301 learning outcomes 1 (identify various research methods and their characteristics), 4 (use terminology unique to the study of psychology) and 5 (accepted approaches and standards in psychological assessment and evaluation), and the APA Guidelines for the Undergraduate Psychology Major, Version 3.0, outcomes 2.1, 2.2 and 3.1.'],
+    generators: ['psyc-methods', 'psyc-methods', 'psyc-methods', 'psyc-methods', 'psyc-methods'],
+  },
+  {
+    id: 'schools-of-thought-c',
+    order: 2,
+    title: 'Where psychology came from',
+    tagline: 'From philosophy to the first laboratory, and the schools of thought that shaped the field',
+    requires: [],
+    lesson: {
+      paragraphs: ['Philosophers asked about the mind for thousands of years. Psychology became a science in 1879, when Wilhelm Wundt opened the first psychology laboratory in Leipzig, Germany. He measured reaction times and trained observers to report their own experiences, a method called introspection.',
+        'Wundt\'s student Edward Titchener built structuralism, which broke experience into basic elements the way chemists break matter into elements. In the United States, William James asked what the mind is for. His functionalism studied how thinking helps people adapt, and his book The Principles of Psychology appeared in 1890.',
+        'Sigmund Freud\'s psychoanalysis argued that the unconscious, the wishes and memories kept out of awareness, shapes behavior. Many of his specific claims failed testing, yet his focus on early experience and hidden motives shaped talk therapy. Gestalt psychologists such as Max Wertheimer showed that the mind sees whole patterns: the whole is different from the sum of its parts.',
+        'In 1913, John B. Watson declared that psychology should study only observable behavior. Behaviorism, extended by B. F. Skinner\'s work on reinforcement, led American psychology for decades. In the 1950s and 1960s, the cognitive revolution brought the mind back, studying memory, attention, language and problem solving.',
+        'Humanistic psychologists Abraham Maslow and Carl Rogers argued that people strive to grow, a drive Maslow called self-actualization. Rogers built his therapy on unconditional positive regard, acceptance that does not depend on behaving well.',
+        'The field\'s doors opened slowly. Margaret Floy Washburn became the first woman in the United States to earn a psychology doctorate, in 1894. Mary Whiton Calkins finished Harvard\'s doctoral work but was refused the degree, and in 1905 she became the first woman president of the American Psychological Association.',
+        'Francis Cecil Sumner became the first African American to earn a psychology doctorate, in 1920, and later taught Kenneth Clark at Howard University. Kenneth and Mamie Clark\'s doll studies were cited by the Supreme Court in Brown v. Board of Education in 1954, though later researchers questioned their methods. Each school of thought added a lens that modern perspectives still use.'],
+      keyIdea: 'Wundt opened the first psychology laboratory in 1879. Structuralism, functionalism, psychoanalysis, Gestalt, behaviorism, humanism and the cognitive revolution each added a lens that later perspectives kept.',
+      example: { kind: 'flow', steps: ['1879: Wundt\'s laboratory', '1890: James\'s Principles', '1913: Watson\'s behaviorism', '1950s: the cognitive revolution'], caption: 'Four turning points in psychology\'s history.',
+        another: ['Freud is a lesson in testability: an idea that can explain any result, and its opposite too, can never be checked.',
+          'Kenneth Clark first studied psychology in Francis Sumner\'s classes at Howard University. One pioneer trained the next.'] },
+    },
+    sources: ['Aligned with ACGM PSYC 2301 learning outcomes 2 (the historical influences and early schools of thought that shaped the field) and 4 (use terminology unique to the study of psychology), and the APA Guidelines for the Undergraduate Psychology Major, Version 3.0, outcome 1.3.'],
+    generators: ['psyc-history', 'psyc-history', 'psyc-history', 'psyc-history', 'psyc-history'],
+  },
+  {
+    id: 'perspectives-c',
+    order: 3,
+    title: 'One behavior, seven lenses',
+    tagline: 'The biological, evolutionary, psychodynamic, behavioral, cognitive, humanistic and sociocultural perspectives, and the model that joins them',
+    requires: [],
+    lesson: {
+      paragraphs: ['Psychologists explain the same behavior from several perspectives. Take test anxiety. The biological perspective looks at the body and brain: a racing heart, stress hormones, and genes that make some people more reactive than others.',
+        'The evolutionary perspective asks how a trait helped ancestors survive and reproduce: an alarm system that once fled predators now fires before exams. The psychodynamic perspective, descended from Freud, looks for unconscious conflicts and early experiences behind the worry.',
+        'The behavioral perspective looks at learning from the environment: past failures may have conditioned the fear, and avoiding studying is reinforced because it brings short relief. The cognitive perspective looks at thoughts: telling yourself that one exam decides everything raises the alarm.',
+        'The humanistic perspective looks at the whole person and their growth: does the student feel worthy only when succeeding? The sociocultural perspective looks at the setting: family expectations, school pressure and culture shape how much a test seems to matter.',
+        'No single lens is complete, because the factors interact. The biopsychosocial model joins biological, psychological and social factors: a sleepless night feeds catastrophic thoughts, and those thoughts grow louder in a high-pressure school.'],
+      keyIdea: 'Seven perspectives explain behavior: biological, evolutionary, psychodynamic, behavioral, cognitive, humanistic and sociocultural. The biopsychosocial model joins biological, psychological and social factors, because they interact.',
+      example: { kind: 'flow', steps: ['biological: body and brain', 'psychological: thoughts and feelings', 'social: family and culture'], caption: 'The biopsychosocial model: three kinds of factors, acting together.',
+        another: ['Depression is a classic case: genes and sleep, habits of thinking, and loneliness or loss all play a part, which is why treatment often combines medicine, therapy and support.',
+          'Perspectives are tools, not teams. A good psychologist picks the lens that fits the question.'] },
+    },
+    sources: ['Aligned with ACGM PSYC 2301 learning outcomes 3 (prominent perspectives and approaches used in the study of psychology), 4 (use terminology unique to the study of psychology) and 6 (factors in physiological and psychological processes), and the APA Guidelines for the Undergraduate Psychology Major, Version 3.0, outcome 1.1.'],
+    generators: ['psyc-perspectives', 'psyc-perspectives', 'psyc-perspectives', 'psyc-perspectives', 'psyc-perspectives'],
+  },
+  {
+    id: 'brain-and-behavior-c',
+    order: 4,
+    title: 'Brain, body and behavior',
+    tagline: 'Neurons and their signals, the nervous system, the brain\'s major regions, and the hormones that join body and mind',
+    requires: [],
+    lesson: {
+      paragraphs: ['The nervous system\'s messenger cells are neurons. A neuron receives messages through its dendrites and sends them down its axon, which is often wrapped in myelin that speeds the signal. Where one neuron meets the next lies a tiny gap called the synapse.',
+        'A neuron fires with an action potential, an electrical signal that is all-or-none: it fires fully or not at all. At the end of the axon, the signal releases neurotransmitters, chemical messengers that cross the synapse and excite or inhibit the next neuron.',
+        'Different neurotransmitters do different jobs. Dopamine is involved in movement and reward, serotonin in mood, sleep and appetite, and acetylcholine in muscle movement and memory. GABA is the main inhibitory messenger, and glutamate the main excitatory one.',
+        'The central nervous system is the brain and spinal cord, and the peripheral nervous system carries messages to and from the body. Its autonomic branch runs automatic functions: the sympathetic division prepares the body for fight or flight, and the parasympathetic division calms it to rest and digest.',
+        'The cerebral cortex has four lobes. The frontal lobe plans, decides and controls movement; the parietal lobe processes touch and body position; the temporal lobe handles hearing and language; and the occipital lobe handles vision.',
+        'Below the cortex, the hippocampus helps form new long-term memories, the amygdala helps detect threats and shape fear, and the cerebellum coordinates movement and balance. The endocrine system sends slower messages through the blood: in stress, the adrenal glands release adrenaline and cortisol.'],
+      keyIdea: 'Neurons fire all-or-none action potentials and signal across synapses with neurotransmitters. The nervous system has central and peripheral parts, and each brain region has its specialties, working together.',
+      example: { kind: 'flow', steps: ['dendrites receive', 'the axon carries the action potential', 'neurotransmitters cross the synapse'], caption: 'How one neuron passes a message to the next.',
+        another: ['Many antidepressants, called SSRIs, slow the reuptake of serotonin, so more of it stays in the synapse.',
+          'In stress, the sympathetic division speeds the heart within seconds, while cortisol from the adrenal glands works over minutes to hours.'] },
+    },
+    sources: ['Aligned with ACGM PSYC 2301 learning outcomes 6 (factors in physiological and psychological processes involved in human behavior) and 4 (use terminology unique to the study of psychology), and the APA Guidelines for the Undergraduate Psychology Major, Version 3.0, outcome 1.1.'],
+    generators: ['psyc-brain', 'psyc-brain', 'psyc-brain', 'psyc-brain', 'psyc-brain'],
+  },
+]; }
+
+// -----------------------------------------------------------------------------------------------------------------
 // BIZC_MODULES: the four lessons of the college business course (2026-10-01, pass HK).
 // In plain terms: each object is one lesson at a first-year college level. `sources` names the BUSI 1301 learning
 // outcomes from Texas's college course guide that the lesson meets, with the national economics standards beside them,
@@ -13407,7 +13683,7 @@ function GRADE5_MATH_MODULES() { return [
     tagline: 'Across, then up',
     requires: ['volume'],
     lesson: {
-      paragraphs: ['Two number lines crossed make a grid. The one going across is the x-axis. The one going up is the y-axis. They cross at the origin, (0, 0).\nA point is named by two numbers in brackets: the first number says how far across, the second says how far up. (3, 2) is three across and two up.', 'The order matters. (3, 2) and (2, 3) are different points.', 'Maps, game boards and graphs all use the same idea: two numbers find one spot.'],
+      paragraphs: ['Two number lines crossed make a grid. The one going across is the x-axis. The one going up is the y-axis. They cross at the origin, (0, 0).\nA point is named by two numbers in parentheses: the first number says how far across, the second says how far up. (3, 2) is three across and two up.', 'The order matters. (3, 2) and (2, 3) are different points.', 'Maps, game boards and graphs all use the same idea: two numbers find one spot.'],
       keyIdea: 'Across first, then up. Two numbers, one point.',
       example: { kind: 'plot', fn: 'point', px: 3, py: 2, caption: '(3, 2): three across on the x-axis, then two up on the y-axis.',
         another: ['Think of a city with numbered streets. Walk three blocks east, then two blocks north. The corner you reach is (3, 2). Walk north first and east second and you reach a different corner.',
@@ -13421,18 +13697,18 @@ function GRADE5_MATH_MODULES() { return [
     id: 'order-of-operations',
     order: 5,
     title: 'Order of operations',
-    tagline: 'Brackets first',
+    tagline: 'Parentheses first',
     lesson: {
       paragraphs: [
-        'When a problem has more than one operation, the order matters. Here is the order, always:\n[[1. Brackets first]]\n[[2. Multiply and divide, left to right]]\n[[3. Add and subtract, left to right]]',
+        'When a problem has more than one operation, the order matters. Here is the order, always:\n[[1. Parentheses and brackets first, inside out]]\n[[2. Multiply and divide, left to right]]\n[[3. Add and subtract, left to right]]',
         "Let's look at an example:\n[[3 + 4 x 2]]\nIt is tempting to add first and get 14. But multiplying comes before adding.\nFirst, multiply: 4 x 2 is **8**.\nThen, add: 3 + 8 is **11**.\n[[3 + 4 x 2 = 11]]",
-        'Now put in brackets and watch the answer change:\n[[(3 + 4) x 2]]\nFirst, the brackets: 3 + 4 is **7**.\nThen, multiply: 7 x 2 is **14**.\n[[(3 + 4) x 2 = 14]]\nReading the whole expression before you start is the habit that stops mistakes.',
+        'Now put in parentheses and watch the answer change:\n[[(3 + 4) x 2]]\nFirst, the parentheses: 3 + 4 is **7**.\nThen, multiply: 7 x 2 is **14**.\n[[(3 + 4) x 2 = 14]]\nReading the whole expression before you start is the habit that stops mistakes.\nWhen one group sits inside another, the outside pair is written as square brackets: 2 x [10 - (3 + 4)].\nWork from the inside out: 3 + 4 is **7**, then 10 - 7 is **3**, then 2 x 3 is **6**.',
       ],
-      keyIdea: 'Brackets first.\nThen multiply and divide, left to right.\nThen add and subtract, left to right.\nRead the whole thing before you start.',
-      example: { kind: 'opspic', add: 3, rows: 4, cols: 2, caption: '3 plus 4 times 2: the multiplication is one block of eight, then the three are added. Eleven, not fourteen.' , formula: '3 + 4 × 2 = 11', another: ['Multiplication is a package. In 3 + 4 × 2, the 4 × 2 is one package of eight that arrives already wrapped, and then you add the 3. If you wanted to add first, you would need brackets: (3 + 4) × 2.', 'Read a math sentence the way you read a recipe with a bracketed step:\n• **Brackets** first.\n• **Powers** next.\n• **Multiply and divide**, left to right.\n• **Add and subtract**, left to right.\n\nPEMDAS is just that order written down.']},
+      keyIdea: 'Parentheses and brackets first, working from the inside out.\nThen multiply and divide, left to right.\nThen add and subtract, left to right.\nRead the whole thing before you start.',
+      example: { kind: 'opspic', add: 3, rows: 4, cols: 2, caption: '3 plus 4 times 2: the multiplication is one block of eight, then the three are added. Eleven, not fourteen.' , formula: '3 + 4 × 2 = 11', another: ['Multiplication is a package. In 3 + 4 × 2, the 4 × 2 is one package of eight that arrives already wrapped, and then you add the 3. If you wanted to add first, you would need parentheses: (3 + 4) × 2.', 'Read a math sentence the way you read a recipe that says do this part first:\n• **Parentheses** first.\n• **Exponents** next, once you meet them in grade 6.\n• **Multiply and divide**, left to right.\n• **Add and subtract**, left to right.\n\nPEMDAS is just that order written down: Parentheses, Exponents, Multiply and Divide, Add and Subtract.']},
     },
     sources: ['Aligned with Texas TEKS 5.4F (simplify numerical expressions using the order of operations) and Common Core 5.OA.A.1 (use parentheses in numerical expressions and evaluate them).'],
-    generators: ['g5-order-ops', 'g5-brackets', 'g5-order-ops', 'g5-brackets', 'g5-order-ops'],
+    generators: ['g5-order-ops', 'g5-brackets', 'g5-order-ops', 'g5-brackets', 'g5-two-levels'],
   },
   {
     id: 'multiplying-decimals',
@@ -15684,7 +15960,16 @@ Object.assign(GENERATORS, {
     const a = randInt(rng, 2, 9); const b = randInt(rng, 2, 9); const c = randInt(rng, 2, 9); const right = (a + b) * c; const wrong = a + b * c;
     const wrongs = [wrong, right - c, a * c + b].filter((x) => x !== right);
     return { type: 'choice', story: null, prompt: `(${a} + ${b}) x ${c} = ?`, choices: shuffle(rng, [right, ...[...new Set(wrongs)].slice(0, 3)].map(String)), answer: String(right),
-      explain: `Brackets first: ${a} + ${b} = ${a + b}, then ${a + b} x ${c} = ${right}.`, visual: null, explainVisual: null };
+      explain: `Parentheses first: ${a} + ${b} = ${a + b}, then ${a + b} x ${c} = ${right}.`, visual: null, explainVisual: null };
+  },
+  // Two levels of grouping (2026-10-03, pass JA, TEKS 5.4F and Common Core 5.OA.A.1): square brackets outside, parentheses
+  // inside, worked from the inside out. The wrong choices are the two usual slips: multiplying before the square brackets are done,
+  // and dropping the parentheses so the subtraction reaches only the first number.
+  'g5-two-levels': (rng) => {
+    const a = randInt(rng, 1, 5); const b = randInt(rng, 1, 5); const s = a + b; const e = s + randInt(rng, 2, 9); const d = randInt(rng, 2, 6);
+    const right = d * (e - s); const wrongs = [d * e - s, d * (e - a + b), right + d].filter((x) => x !== right && x > 0);
+    return { type: 'choice', story: null, prompt: `${d} x [${e} - (${a} + ${b})] = ?`, choices: shuffle(rng, [right, ...[...new Set(wrongs)].slice(0, 3)].map(String)), answer: String(right),
+      explain: `Inside out: ${a} + ${b} = ${s}, then ${e} - ${s} = ${e - s}, then ${d} x ${e - s} = ${right}.`, visual: null, explainVisual: null };
   },
 });
 
@@ -16096,7 +16381,7 @@ Object.assign(GENERATORS, {
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
   'm5-data': (rng) => {
-    const Q = [['A line plot shows dots above numbers. What does each dot mean?', ['one measurement', 'a mistake', 'a star'], 'one measurement', 'Each dot is one piece of data stacked over its value.'], ['Three dots at 4 and one at 5. Which value is most common?', ['4', '5', '3'], '4', 'Three dots at 4: the tallest stack.'], ['Which graph shows a change over time?', ['a line graph', 'a bar graph', 'a pictograph'], 'a line graph', 'A line graph joins points over time so you can see it rise or fall.'], ['A line graph goes up steeply. What is happening?', ['a fast increase', 'a slow decrease', 'nothing'], 'a fast increase', 'Steep and rising means growing fast.'], ['The x-axis of a graph usually shows what?', ['what is being measured, like time', 'the answer', 'the title'], 'what is being measured, like time', 'Across is the thing you are tracking; up is how much.'], ['Which is a pair on a coordinate grid?', ['(2, 3)', '2 + 3', '2/3'], '(2, 3)', 'Two numbers in brackets: across, then up.'], ];
+    const Q = [['A line plot shows dots above numbers. What does each dot mean?', ['one measurement', 'a mistake', 'a star'], 'one measurement', 'Each dot is one piece of data stacked over its value.'], ['Three dots at 4 and one at 5. Which value is most common?', ['4', '5', '3'], '4', 'Three dots at 4: the tallest stack.'], ['Which graph shows a change over time?', ['a line graph', 'a bar graph', 'a pictograph'], 'a line graph', 'A line graph joins points over time so you can see it rise or fall.'], ['A line graph goes up steeply. What is happening?', ['a fast increase', 'a slow decrease', 'nothing'], 'a fast increase', 'Steep and rising means growing fast.'], ['The x-axis of a graph usually shows what?', ['what is being measured, like time', 'the answer', 'the title'], 'what is being measured, like time', 'Across is the thing you are tracking; up is how much.'], ['Which is a pair on a coordinate grid?', ['(2, 3)', '2 + 3', '2/3'], '(2, 3)', 'Two numbers in parentheses: across, then up.'], ];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
@@ -17657,6 +17942,170 @@ Object.assign(GENERATORS, {
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
+  // -----------------------------------------------------------------------------------------------------------------
+  // College macroeconomics question banks (2026-10-03, pass JC). In plain terms: four-answer quick checks for each
+  // lesson, every answer named in its lesson, so a round of ten never needs a repeat.
+  // -----------------------------------------------------------------------------------------------------------------
+  'macro-markets': (rng) => {
+    const Q = [['The value of the best alternative given up is called what?', ['opportunity cost', 'marginal benefit', 'equilibrium', 'a surplus'], 'opportunity cost', 'Every choice has one.'],
+      ['Unlimited wants and limited resources describe what?', ['scarcity', 'inflation', 'equilibrium', 'specialization'], 'scarcity', 'The reason every choice has a cost.'],
+      ['Comparing the benefit and cost of one more unit is called what?', ['marginal analysis', 'scarcity', 'specialization', 'equilibrium'], 'marginal analysis', 'Marginal means one more.'],
+      ['Points inside a production possibilities frontier are what?', ['inefficient', 'unreachable', 'efficient', 'equilibrium'], 'inefficient', 'They waste resources.'],
+      ['Why does a production possibilities frontier bow outward?', ['resources are specialized', 'prices fall', 'trade is banned', 'demand never changes'], 'resources are specialized', 'So opportunity cost rises.'],
+      ['Producing at a lower opportunity cost is called what?', ['comparative advantage', 'absolute advantage', 'scarcity', 'a price floor'], 'comparative advantage', 'It is what makes trade pay.'],
+      ['Who showed in 1817 that trade can help both countries?', ['David Ricardo', 'Adam Smith', 'John Maynard Keynes', 'Milton Friedman'], 'David Ricardo', 'Even when one is better at everything.'],
+      ['As price rises, quantity demanded does what?', ['falls', 'rises', 'stays the same', 'doubles'], 'falls', 'The law of demand.'],
+      ['Which of these shifts the demand curve?', ['income', 'input costs', 'technology', 'the number of sellers'], 'income', 'Input costs shift supply.'],
+      ['Which of these shifts the supply curve?', ['input costs', 'buyers\' incomes', 'buyers\' tastes', 'the number of buyers'], 'input costs', 'Incomes and tastes shift demand.'],
+      ['Where quantity supplied equals quantity demanded is called what?', ['equilibrium', 'a shortage', 'a surplus', 'the frontier'], 'equilibrium', 'The market clears.'],
+      ['If demand rises, the equilibrium price does what?', ['rises', 'falls', 'stays the same', 'drops to zero'], 'rises', 'And the quantity rises too.'],
+      ['If supply rises, the equilibrium price does what?', ['falls', 'rises', 'stays the same', 'doubles'], 'falls', 'And the quantity rises.'],
+      ['A price ceiling below equilibrium causes what?', ['a shortage', 'a surplus', 'equilibrium', 'inflation'], 'a shortage', 'Buyers want more than sellers offer.'],
+      ['A price floor above equilibrium causes what?', ['a surplus', 'a shortage', 'equilibrium', 'a recession'], 'a surplus', 'Sellers offer more than buyers want.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'macro-measure': (rng) => {
+    const Q = [['GDP counts the value of what kind of goods?', ['final goods and services', 'all goods ever sold', 'used goods', 'intermediate goods'], 'final goods and services', 'Produced within the country in a year.'],
+      ['Why is a used car sold this year left out of GDP?', ['only new production counts', 'it is too cheap', 'it was imported', 'it is taxed'], 'only new production counts', 'It was counted when it was built.'],
+      ['In C + I + G + NX, what does I stand for?', ['investment', 'imports', 'income', 'inflation'], 'investment', 'New factories, equipment, homes and inventories.'],
+      ['Net exports equal exports minus what?', ['imports', 'taxes', 'savings', 'investment'], 'imports', 'The NX in C + I + G + NX.'],
+      ['Which GDP measure removes the effect of price changes?', ['real GDP', 'nominal GDP', 'net exports', 'the labor force'], 'real GDP', 'It uses a base year\'s prices.'],
+      ['If the price index rises from 200 to 210, inflation is what?', ['5 percent', '10 percent', '2 percent', '210 percent'], '5 percent', '10 is 5 percent of 200.'],
+      ['Who is counted in the labor force?', ['everyone working or actively looking for work', 'everyone over 16', 'only full-time workers', 'retirees'], 'everyone working or actively looking for work', 'Not those who stopped looking.'],
+      ['6 million unemployed in a 150 million labor force is what rate?', ['4 percent', '6 percent', '15 percent', '25 percent'], '4 percent', '6 divided by 150 is 0.04.'],
+      ['People between jobs are which kind of unemployment?', ['frictional', 'structural', 'cyclical', 'seasonal'], 'frictional', 'Part of the natural rate.'],
+      ['A mismatch of skills and jobs is which unemployment?', ['structural', 'frictional', 'cyclical', 'seasonal'], 'structural', 'Part of the natural rate.'],
+      ['Unemployment caused by a recession is which kind?', ['cyclical', 'frictional', 'structural', 'seasonal'], 'cyclical', 'It falls again in the recovery.'],
+      ['Which phase of the business cycle follows the peak?', ['contraction', 'expansion', 'trough', 'recovery'], 'contraction', 'Then comes the trough.'],
+      ['The lowest point of the business cycle is called what?', ['trough', 'peak', 'expansion', 'contraction'], 'trough', 'Expansion follows it.'],
+      ['Who gave the Senate the first national income estimates in 1934?', ['Simon Kuznets', 'John Maynard Keynes', 'Paul Volcker', 'Adam Smith'], 'Simon Kuznets', 'His accounts grew into GDP.'],
+      ['Over the long run, real GDP grows from what?', ['more capital, more skills and better technology', 'higher prices', 'more money printed', 'lower taxes alone'], 'more capital, more skills and better technology', 'The sources of growth.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'macro-money': (rng) => {
+    const Q = [['Money spent at a store is acting as what?', ['a medium of exchange', 'a unit of account', 'a store of value', 'a reserve'], 'a medium of exchange', 'One of money\'s three jobs.'],
+      ['Money used to compare prices is acting as what?', ['a unit of account', 'a medium of exchange', 'a store of value', 'collateral'], 'a unit of account', 'One of money\'s three jobs.'],
+      ['Money saved for next year is acting as what?', ['a store of value', 'a unit of account', 'a medium of exchange', 'a reserve'], 'a store of value', 'One of money\'s three jobs.'],
+      ['Money valued because people accept it, not gold, is what?', ['fiat money', 'commodity money', 'a bond', 'a tariff'], 'fiat money', 'Modern dollars are fiat money.'],
+      ['Which is the most liquid measure of money?', ['M1', 'M2', 'GDP', 'the CPI'], 'M1', 'M2 adds less liquid assets.'],
+      ['How easily something can be spent without losing value is what?', ['liquidity', 'inflation', 'solvency', 'equity'], 'liquidity', 'Cash is the most liquid.'],
+      ['How do banks create money?', ['by lending', 'by printing bills', 'by raising taxes', 'by selling stock'], 'by lending', 'A loan becomes someone\'s deposit.'],
+      ['With a 10 percent reserve ratio, the textbook multiplier is what?', ['10', '5', '100', '1'], '10', '1 divided by 0.10.'],
+      ['With a 20 percent reserve ratio, the textbook multiplier is what?', ['5', '10', '20', '2'], '5', '1 divided by 0.20.'],
+      ['Since March 2020, US reserve requirements have been what?', ['zero', '10 percent', '20 percent', '3 percent'], 'zero', 'The Fed steers rates with interest on reserves.'],
+      ['What are the Fed\'s two goals set by Congress?', ['maximum employment and stable prices', 'low taxes and high exports', 'a balanced budget and growth', 'strong stocks and a strong dollar'], 'maximum employment and stable prices', 'Often called the dual mandate.'],
+      ['What inflation rate does the Fed aim for over time?', ['2 percent', '0 percent', '5 percent', '10 percent'], '2 percent', 'Its reading of stable prices.'],
+      ['Which group sets the target for the federal funds rate?', ['Federal Open Market Committee', 'Senate Finance Committee', 'Treasury Department', 'World Bank'], 'Federal Open Market Committee', 'Part of the Federal Reserve.'],
+      ['The rate banks charge each other overnight is called what?', ['the federal funds rate', 'the prime rate', 'the mortgage rate', 'the inflation rate'], 'the federal funds rate', 'The Fed targets a range for it.'],
+      ['To cool inflation, the Fed does what?', ['raises the rate', 'lowers the rate', 'prints more bills', 'cuts taxes'], 'raises the rate', 'Borrowing gets more expensive.'],
+      ['Large-scale Fed bond buying when rates hit zero is called what?', ['quantitative easing', 'fiscal policy', 'a price floor', 'deflation'], 'quantitative easing', 'Used in 2008 and 2020.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'macro-policy': (rng) => {
+    const Q = [['Total spending on output at each price level is called what?', ['aggregate demand', 'aggregate supply', 'GDP', 'the multiplier'], 'aggregate demand', 'Aggregate supply is total output.'],
+      ['Output below its potential is called what?', ['a recessionary gap', 'an inflationary gap', 'a surplus', 'equilibrium'], 'a recessionary gap', 'Unemployment rises.'],
+      ['Inflation from spending outpacing output is called what?', ['demand-pull inflation', 'cost-push inflation', 'stagflation', 'deflation'], 'demand-pull inflation', 'Too much spending chasing output.'],
+      ['A jump in oil prices causes which inflation?', ['cost-push inflation', 'demand-pull inflation', 'no inflation', 'deflation'], 'cost-push inflation', 'A supply shock raises costs.'],
+      ['Rising prices and falling output at once is called what?', ['stagflation', 'deflation', 'a boom', 'equilibrium'], 'stagflation', 'As in the 1970s.'],
+      ['Government spending and taxes make up which policy?', ['fiscal policy', 'monetary policy', 'trade policy', 'price controls'], 'fiscal policy', 'Monetary policy uses interest rates.'],
+      ['Lower taxes to fight a recession are which policy?', ['expansionary fiscal policy', 'contractionary fiscal policy', 'monetary policy', 'a tariff'], 'expansionary fiscal policy', 'It raises aggregate demand.'],
+      ['If people spend 0.8 of each extra dollar, the multiplier is what?', ['5', '8', '1.25', '2'], '5', '1 divided by 0.2.'],
+      ['If people spend 0.75 of each extra dollar, the multiplier is what?', ['4', '3', '7.5', '1.33'], '4', '1 divided by 0.25.'],
+      ['Unemployment insurance and income taxes are examples of what?', ['automatic stabilizers', 'tariffs', 'quantitative easing', 'price floors'], 'automatic stabilizers', 'They work without a vote.'],
+      ['One year\'s gap between spending and revenue is called what?', ['a deficit', 'the debt', 'a surplus', 'a tariff'], 'a deficit', 'The debt is the total of past deficits.'],
+      ['The total of past deficits is called what?', ['the debt', 'a deficit', 'GDP', 'the current account'], 'the debt', 'Each deficit adds to it.'],
+      ['Borrowing that pushes out private investment is called what?', ['crowding out', 'stagflation', 'liquidity', 'quantitative easing'], 'crowding out', 'Higher rates discourage private borrowing.'],
+      ['Who led the Fed when rates reached about 20 percent around 1980?', ['Paul Volcker', 'Alan Greenspan', 'Ben Bernanke', 'Janet Yellen'], 'Paul Volcker', 'Inflation fell below 4 percent by 1983.'],
+      ['With a stronger dollar, imports into the US become what?', ['cheaper', 'more expensive', 'banned', 'tax free'], 'cheaper', 'And exports more expensive abroad.'],
+      ['Tariffs raise the price of imports for whom?', ['domestic buyers', 'no one', 'foreign shoppers only', 'the central bank'], 'domestic buyers', 'The tariff is paid when goods come in.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  // -----------------------------------------------------------------------------------------------------------------
+  // College General Psychology question banks (2026-10-03, pass JB). In plain terms: four-answer quick checks for each
+  // lesson, every answer named in its lesson, so a round of ten never needs a repeat.
+  // -----------------------------------------------------------------------------------------------------------------
+  'psyc-methods': (rng) => {
+    const Q = [['A testable prediction is called what?', ['a hypothesis', 'a theory', 'a variable', 'a norm'], 'a hypothesis', 'A theory organizes many tested findings.'],
+      ['The exact steps used to measure an idea are its what?', ['operational definition', 'hypothesis', 'norm', 'sample'], 'operational definition', 'Happiness might be a questionnaire score.'],
+      ['Which method studies one person in depth?', ['a case study', 'a survey', 'an experiment', 'naturalistic observation'], 'a case study', 'Rich detail, but hard to generalize.'],
+      ['Watching behavior where it happens is called what?', ['naturalistic observation', 'a case study', 'random assignment', 'a survey'], 'naturalistic observation', 'No lab, no changes made.'],
+      ['A correlation can range from what to what?', ['-1 to +1', '0 to 100', '0 to 1', '-10 to +10'], '-1 to +1', 'Near zero means little relationship.'],
+      ['Why can a correlation not prove cause?', ['a third variable may drive both', 'it uses too many people', 'it is never reliable', 'it needs a placebo'], 'a third variable may drive both', 'Summer heat drives ice cream sales and drownings.'],
+      ['The variable a researcher manipulates is the what?', ['independent variable', 'dependent variable', 'third variable', 'control group'], 'independent variable', 'The dependent variable is measured.'],
+      ['The variable measured for an effect is the what?', ['dependent variable', 'independent variable', 'placebo', 'norm'], 'dependent variable', 'It depends on the manipulation.'],
+      ['What makes experimental groups start out alike?', ['random assignment', 'a random sample', 'a case study', 'informed consent'], 'random assignment', 'A random sample decides who is studied.'],
+      ['In a double-blind study, who knows who got what?', ['neither participants nor researchers', 'only the participants', 'only the researchers', 'everyone'], 'neither participants nor researchers', 'So no one\'s hopes sway the results.'],
+      ['A group that gets no treatment or a placebo is the what?', ['control group', 'experimental group', 'sample', 'population'], 'control group', 'It shows what happens without the treatment.'],
+      ['A test that gives consistent results is what?', ['reliable', 'valid', 'random', 'standardized'], 'reliable', 'Valid means it measures what it claims.'],
+      ['A test that measures what it claims to measure is what?', ['valid', 'reliable', 'random', 'standardized'], 'valid', 'A scale five pounds heavy is reliable, not valid.'],
+      ['In the 2015 project, about what share of repeats held up?', ['about 36 percent', 'about 90 percent', 'about 10 percent', 'all of them'], 'about 36 percent', '97 of the 100 originals had.'],
+      ['Which board checks a study\'s ethics before it starts?', ['an institutional review board', 'a school board', 'a jury', 'a peer group'], 'an institutional review board', 'Before anyone takes part.'],
+      ['Explaining a study to participants afterward is called what?', ['debriefing', 'informed consent', 'random assignment', 'replication'], 'debriefing', 'Informed consent comes before.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'psyc-history': (rng) => {
+    const Q = [['Who opened the first psychology laboratory, in 1879?', ['Wilhelm Wundt', 'William James', 'Sigmund Freud', 'John B. Watson'], 'Wilhelm Wundt', 'In Leipzig, Germany.'],
+      ['In what year did the first psychology laboratory open?', ['1879', '1913', '1890', '1954'], '1879', 'Wundt\'s laboratory in Leipzig.'],
+      ['Wundt\'s method of trained self-report was called what?', ['introspection', 'conditioning', 'psychoanalysis', 'debriefing'], 'introspection', 'Observers reported their own experiences.'],
+      ['Breaking experience into basic elements is which school?', ['structuralism', 'functionalism', 'behaviorism', 'humanism'], 'structuralism', 'Edward Titchener built it.'],
+      ['Which school asked what the mind is for?', ['functionalism', 'structuralism', 'Gestalt', 'psychoanalysis'], 'functionalism', 'William James led it.'],
+      ['Who wrote The Principles of Psychology in 1890?', ['William James', 'Wilhelm Wundt', 'B. F. Skinner', 'Carl Rogers'], 'William James', 'The founder of functionalism.'],
+      ['Which school stressed the unconscious?', ['psychoanalysis', 'behaviorism', 'functionalism', 'structuralism'], 'psychoanalysis', 'Sigmund Freud\'s school.'],
+      ['Which school showed the mind sees whole patterns?', ['Gestalt', 'structuralism', 'behaviorism', 'functionalism'], 'Gestalt', 'The whole differs from the sum of its parts.'],
+      ['Who said psychology should study only behavior, in 1913?', ['John B. Watson', 'Sigmund Freud', 'Abraham Maslow', 'Wilhelm Wundt'], 'John B. Watson', 'The start of behaviorism.'],
+      ['Whose work on reinforcement extended behaviorism?', ['B. F. Skinner', 'Carl Rogers', 'William James', 'Max Wertheimer'], 'B. F. Skinner', 'Behavior followed by reward repeats.'],
+      ['Maslow called the drive to grow toward potential what?', ['self-actualization', 'reinforcement', 'introspection', 'the unconscious'], 'self-actualization', 'A humanistic idea.'],
+      ['Which revolution brought the mind back to psychology?', ['the cognitive revolution', 'the behavioral revolution', 'the Gestalt revolution', 'the industrial revolution'], 'the cognitive revolution', 'In the 1950s and 1960s.'],
+      ['Who was the first US woman to earn a psychology doctorate?', ['Margaret Floy Washburn', 'Mary Whiton Calkins', 'Mamie Clark', 'Anna Freud'], 'Margaret Floy Washburn', 'In 1894.'],
+      ['Who was the first woman president of the APA, in 1905?', ['Mary Whiton Calkins', 'Margaret Floy Washburn', 'Mamie Clark', 'Karen Horney'], 'Mary Whiton Calkins', 'Harvard had refused her the degree.'],
+      ['Which pioneer earned the first African American psychology doctorate?', ['Francis Cecil Sumner', 'Kenneth Clark', 'Carl Rogers', 'Edward Titchener'], 'Francis Cecil Sumner', 'In 1920; he later taught Kenneth Clark.'],
+      ['Whose doll studies did the Supreme Court cite in 1954?', ['Kenneth and Mamie Clark', 'John B. Watson', 'Abraham Maslow', 'Edward Titchener'], 'Kenneth and Mamie Clark', 'The Court cited them on the harm of segregation.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'psyc-perspectives': (rng) => {
+    const Q = [['Which perspective studies the brain, hormones and genes?', ['biological', 'cognitive', 'humanistic', 'sociocultural'], 'biological', 'The body side of behavior.'],
+      ['Which perspective asks how a trait helped ancestors survive?', ['evolutionary', 'behavioral', 'psychodynamic', 'humanistic'], 'evolutionary', 'Survival and reproduction.'],
+      ['Which perspective looks for unconscious conflicts?', ['psychodynamic', 'cognitive', 'biological', 'sociocultural'], 'psychodynamic', 'It descends from Freud.'],
+      ['Which perspective explains behavior by learning and reward?', ['behavioral', 'humanistic', 'evolutionary', 'cognitive'], 'behavioral', 'Conditioning and reinforcement.'],
+      ['Which perspective focuses on thoughts and self-talk?', ['cognitive', 'behavioral', 'biological', 'psychodynamic'], 'cognitive', 'What you tell yourself matters.'],
+      ['Which perspective stresses growth toward one\'s potential?', ['humanistic', 'psychodynamic', 'evolutionary', 'biological'], 'humanistic', 'The whole person.'],
+      ['Which perspective looks at family, school and culture?', ['sociocultural', 'biological', 'cognitive', 'evolutionary'], 'sociocultural', 'The setting shapes behavior.'],
+      ['Which model joins biological, psychological and social factors?', ['the biopsychosocial model', 'the medical model', 'the Gestalt model', 'the reward model'], 'the biopsychosocial model', 'Because the factors interact.'],
+      ['A racing heart before a test fits which perspective?', ['biological', 'humanistic', 'sociocultural', 'psychodynamic'], 'biological', 'Stress hormones at work.'],
+      ['Avoiding study for short relief fits which perspective?', ['behavioral', 'cognitive', 'evolutionary', 'humanistic'], 'behavioral', 'The relief reinforces the avoiding.'],
+      ['An alarm that once fled predators fits which perspective?', ['evolutionary', 'cognitive', 'humanistic', 'sociocultural'], 'evolutionary', 'Old survival wiring.'],
+      ['The thought one exam decides everything fits which lens?', ['cognitive', 'biological', 'sociocultural', 'evolutionary'], 'cognitive', 'A catastrophic thought.'],
+      ['Feeling worthy only when succeeding is which lens\'s concern?', ['humanistic', 'biological', 'behavioral', 'evolutionary'], 'humanistic', 'Self-worth and growth.'],
+      ['Why does no single perspective explain behavior fully?', ['the factors interact', 'only biology matters', 'thoughts never matter', 'culture never changes'], 'the factors interact', 'A sleepless night feeds anxious thoughts.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'psyc-brain': (rng) => {
+    const Q = [['Which part of a neuron receives messages?', ['dendrites', 'axon', 'myelin', 'synapse'], 'dendrites', 'The axon sends them on.'],
+      ['The tiny gap between two neurons is called what?', ['the synapse', 'the axon', 'the cortex', 'the myelin'], 'the synapse', 'Neurotransmitters cross it.'],
+      ['What wraps many axons and speeds the signal?', ['myelin', 'dopamine', 'cortisol', 'GABA'], 'myelin', 'A fatty coating.'],
+      ['Firing fully or not at all is called what?', ['all-or-none', 'graded', 'random', 'reversible'], 'all-or-none', 'That is the action potential.'],
+      ['Which neurotransmitter is tied to movement and reward?', ['dopamine', 'serotonin', 'GABA', 'cortisol'], 'dopamine', 'Serotonin is tied to mood.'],
+      ['Which neurotransmitter is tied to mood, sleep and appetite?', ['serotonin', 'dopamine', 'acetylcholine', 'glutamate'], 'serotonin', 'Many antidepressants act on it.'],
+      ['What is the main inhibitory neurotransmitter?', ['GABA', 'glutamate', 'dopamine', 'adrenaline'], 'GABA', 'Glutamate is the main excitatory one.'],
+      ['Which division prepares the body for fight or flight?', ['sympathetic', 'parasympathetic', 'somatic', 'central'], 'sympathetic', 'The parasympathetic calms it.'],
+      ['Which division calms the body to rest and digest?', ['parasympathetic', 'sympathetic', 'somatic', 'central'], 'parasympathetic', 'Part of the autonomic branch.'],
+      ['The brain and spinal cord make up which system?', ['the central nervous system', 'the peripheral nervous system', 'the endocrine system', 'the autonomic branch'], 'the central nervous system', 'The rest is peripheral.'],
+      ['Which lobe of the cortex handles vision?', ['occipital', 'frontal', 'temporal', 'parietal'], 'occipital', 'At the back of the brain.'],
+      ['Which lobe plans, decides and controls movement?', ['frontal', 'occipital', 'parietal', 'temporal'], 'frontal', 'Behind the forehead.'],
+      ['Which structure helps form new long-term memories?', ['the hippocampus', 'the amygdala', 'the cerebellum', 'the occipital lobe'], 'the hippocampus', 'Below the cortex.'],
+      ['Which structure helps detect threats and shape fear?', ['the amygdala', 'the hippocampus', 'the cerebellum', 'the frontal lobe'], 'the amygdala', 'A small almond-shaped cluster.'],
+      ['Which structure coordinates movement and balance?', ['the cerebellum', 'the amygdala', 'the hippocampus', 'the temporal lobe'], 'the cerebellum', 'At the back, below the cortex.'],
+      ['Which glands release adrenaline and cortisol in stress?', ['the adrenal glands', 'the thyroid', 'the pituitary', 'the salivary glands'], 'the adrenal glands', 'Part of the endocrine system.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
   // ---------------------------------------------------------------------------------------------------------------
   // College business question banks (2026-10-01, pass HK). In plain terms: four-answer quick checks for each lesson.
   // The accounting bank also builds two questions from figures chosen on the spot, a firm's owners' equity (assets minus
@@ -19165,7 +19614,7 @@ Object.assign(GENERATORS, {
     const x = randInt(rng, 1, 9); const a = randInt(rng, 2, 6); const b = randInt(rng, 1, 8); const total = a * (x + b);
     const wrongs = [x + 1, total / a, x + b].filter((v) => v !== x && v > 0 && Number.isInteger(v));
     return { type: 'choice', story: null, prompt: `${a}(x + ${b}) = ${total}. What is x?`, choices: shuffle(rng, [x, ...[...new Set(wrongs)].slice(0, 3)].map(String)), answer: String(x),
-      explain: `First, you multiply out the bracket: **${a}x + ${a * b} = ${total}**\nThen, you subtract ${a * b} from both sides: **${a}x = ${total - a * b}**\nThen, you divide both sides by ${a} to leave the **x** alone: **x = ${x}**`, visual: null, explainVisual: null };
+      explain: `First, you multiply out the parentheses: **${a}x + ${a * b} = ${total}**\nThen, you subtract ${a * b} from both sides: **${a}x = ${total - a * b}**\nThen, you divide both sides by ${a} to leave the **x** alone: **x = ${x}**`, visual: null, explainVisual: null };
   },
   'g9-evaluate-function': (rng) => {
     const m = randInt(rng, 2, 6); const c = randInt(rng, -5, 9); const x = randInt(rng, 1, 8); const right = m * x + c;
@@ -19213,7 +19662,7 @@ Object.assign(GENERATORS, {
     const p = randInt(rng, 1, 6); let q = randInt(rng, 1, 6); if (q === p) q = p + 1; const lo = Math.min(p, q); const hi = Math.max(p, q);
     const right = `x = -${lo} or x = -${hi}`; const wrongs = [`x = ${lo} or x = ${hi}`, `x = -${lo} or x = ${hi}`, `x = 0 or x = -${hi}`];
     return { type: 'choice', story: `(x + ${lo})(x + ${hi}) = 0`, prompt: 'What are the solutions?', choices: shuffle(rng, [right, ...wrongs]), answer: right,
-      explain: 'One bracket must be zero, so x is the opposite of each number.', visual: null, explainVisual: null };
+      explain: 'One factor must be zero, so x is the opposite of each number.', visual: null, explainVisual: null };
   },
   'g9-linear-or-exponential': (rng) => {
     const start = randInt(rng, 2, 9); const exp = randInt(rng, 0, 1) === 1; const step = randInt(rng, 2, 4);
@@ -19705,20 +20154,20 @@ Object.assign(GENERATORS, {
     const expr = kind === 'up' ? `f(x) + ${k}` : kind === 'down' ? `f(x) - ${k}` : kind === 'right' ? `f(x - ${k})` : `f(x + ${k})`;
     const right = `${kind.charAt(0).toUpperCase() + kind.slice(1)} ${k}`; const wrongs = ['up', 'down', 'left', 'right'].filter((d) => d !== kind).map((d) => `${d.charAt(0).toUpperCase() + d.slice(1)} ${k}`);
     return { type: 'choice', story: expr, prompt: 'How is the graph of f moved?', choices: shuffle(rng, [right, ...wrongs]), answer: right,
-      explain: kind === 'up' || kind === 'down' ? 'Adding or subtracting outside the brackets moves the graph up or down.' : 'Adding or subtracting inside the brackets moves it sideways, and minus goes right.', visual: null, explainVisual: null };
+      explain: kind === 'up' || kind === 'down' ? 'Adding or subtracting outside the parentheses moves the graph up or down.' : 'Adding or subtracting inside the parentheses moves it sideways, and minus goes right.', visual: null, explainVisual: null };
   },
   'g12-shifted-point': (rng) => {
     const x = randInt(rng, -4, 4); const y = randInt(rng, -4, 4); const h = randInt(rng, 1, 5); const k = randInt(rng, 1, 5); const sx = randInt(rng, 0, 1) ? 1 : -1; const sy = randInt(rng, 0, 1) ? 1 : -1;
     const expr = `f(x ${sx > 0 ? '-' : '+'} ${h}) ${sy > 0 ? '+' : '-'} ${k}`; const right = `(${x + sx * h}, ${y + sy * k})`;
     const wrongs = [`(${x - sx * h}, ${y + sy * k})`, `(${x + sx * h}, ${y - sy * k})`, `(${x + sy * k}, ${y + sx * h})`].filter((v) => v !== right);
     return { type: 'choice', story: `The point (${x}, ${y}) is on the graph of f. The graph is changed to ${expr}.`, prompt: 'Where does this point move to?', choices: shuffle(rng, [right, ...[...new Set(wrongs)].slice(0, 3)]), answer: right,
-      explain: `Inside the brackets: ${sx > 0 ? 'minus, so right' : 'plus, so left'} ${h}. Outside: ${sy > 0 ? 'up' : 'down'} ${k}. The point lands at **${right}**.`, visual: null, explainVisual: null };
+      explain: `Inside the parentheses: ${sx > 0 ? 'minus, so right' : 'plus, so left'} ${h}. Outside: ${sy > 0 ? 'up' : 'down'} ${k}. The point lands at **${right}**.`, visual: null, explainVisual: null };
   },
   'g12-write-shift': (rng) => {
     const h = randInt(rng, 1, 6); const k = randInt(rng, 1, 6);
     const right = `(x - ${h})² + ${k}`; const wrongs = [`(x + ${h})² + ${k}`, `(x - ${h})² - ${k}`, `(x + ${h})² - ${k}`];
     return { type: 'choice', story: 'Start with y = x².', prompt: `Which rule moves it right ${h} and up ${k}?`, choices: shuffle(rng, [right, ...wrongs]), answer: right,
-      explain: `Right ${h} is x - ${h} inside the brackets. Up ${k} is + ${k} outside.`, visual: null, explainVisual: null };
+      explain: `Right ${h} is x - ${h} inside the parentheses. Up ${k} is + ${k} outside.`, visual: null, explainVisual: null };
   },
   'g12-compose-value': (rng) => {
     const m = randInt(rng, 2, 4); const c = randInt(rng, 1, 5); const x = randInt(rng, 1, 4); const g = x * x; const right = m * g + c;
@@ -26476,6 +26925,70 @@ export const WONDER = [
     ],
     closing: 'Who is one adult you could tell?',
   },
+  // Two grown-stage Wonder questions for the college macroeconomics course (pass JC): a failure question about losing a
+  // job in a recession, and a world question about the price of fighting inflation.
+  {
+    id: 'w-grown-laid-off-in-a-recession',
+    theme: 'failure',
+    stage: 'grown',
+    courseIds: ['macroeconomics-college'],
+    answerMode: 'typed',
+    prompt: 'You lose your job in a recession, along with thousands of others, through no fault of your own. Is it still a failure?',
+    perspectives: [
+      { voice: 'A scientist', says: 'Economists have a name for it: cyclical unemployment, caused by falling spending across the whole economy. When unemployment reached 10 percent in 2009, millions of skilled people lost jobs at once. The cause was the cycle, not their character.' },
+      { voice: 'An artist', says: 'A storm knocks down the good trees along with the weak ones. Nobody walks through a forest after a storm and blames each fallen tree.' },
+      { voice: 'A grandparent of faith', says: 'I was laid off twice, and both times I was ashamed for a week and stronger for the rest of my life. The shame was mine to keep or set down, and I set it down.' },
+      { voice: 'A skeptic', says: 'Be honest about one thing. If your whole field is shrinking for good, that is structural, and waiting for the recovery will not bring it back. Then the smart move is a new skill, and that is a choice, not a failure.' },
+    ],
+    closing: 'What part of a setback was yours to control, and what part was the weather?',
+  },
+  {
+    id: 'w-grown-the-price-of-cheaper-prices',
+    theme: 'world',
+    stage: 'grown',
+    courseIds: ['macroeconomics-college'],
+    answerMode: 'typed',
+    prompt: 'To bring inflation down for everyone, a central bank raises interest rates and some people lose their jobs. Is that a fair trade?',
+    perspectives: [
+      { voice: 'A scientist', says: 'History gives one hard case. Around 1980 the Fed pushed its key rate to about 20 percent, unemployment reached 10.8 percent by 1982, and inflation fell from near 15 percent to below 4. The cure worked and the cost was real.' },
+      { voice: 'An artist', says: 'Inflation is a slow leak in everyone\'s boat, and a recession is a hole in a few boats. Ask who is sitting in which one before you decide.' },
+      { voice: 'A grandparent of faith', says: 'In 1980 our mortgage rate was over 18 percent, and we ate a lot of beans. My brother lost his job that year. We both remember it, and we remember it differently.' },
+      { voice: 'A skeptic', says: 'Notice that the choice is between two costs, not a cost and nothing. Letting inflation run also hurts, most of all the people with savings in cash and wages that lag behind prices.' },
+    ],
+    closing: 'When a choice spreads a small cost over many people or a big cost over a few, which do you pick?',
+  },
+  // Two grown-stage Wonder questions for the college psychology course (pass JB): a failure question about the 2015
+  // replication project, and a feelings question about which lens explains your own behavior.
+  {
+    id: 'w-grown-when-the-study-fails-again',
+    theme: 'failure',
+    stage: 'grown',
+    courseIds: ['psychology-college'],
+    answerMode: 'typed',
+    prompt: 'In 2015, scientists repeated 100 published psychology studies, and only about a third found the same result again. Was that a failure for psychology?',
+    perspectives: [
+      { voice: 'A scientist', says: 'Two things are true at once. Of the 100 originals, 97 had reported a significant result, and only 36 of the repeats did, with effects about half as large. Finding that out was also science doing its job, and the field answered with larger samples and plans filed before the data come in.' },
+      { voice: 'An artist', says: 'A sculptor steps back from the clay and sees that the nose is crooked. That moment stings, and it is also the moment the statue starts getting better.' },
+      { voice: 'A grandparent of faith', says: 'My father used to say that a man who never admits a mistake never learns anything. A field is the same: the ones who check their own work are the ones worth trusting.' },
+      { voice: 'A skeptic', says: 'Be careful in both directions. The project\'s own leader warned that a study that failed to repeat is not thereby proven false, because a repeat can miss too. One study, first or second, is a reason to look again, not a verdict.' },
+    ],
+    closing: 'What is one belief of yours that you have never tested?',
+  },
+  {
+    id: 'w-grown-which-lens-explains-you',
+    theme: 'feelings',
+    stage: 'grown',
+    courseIds: ['psychology-college'],
+    answerMode: 'typed',
+    prompt: 'Think of something you did this week that you do not fully understand. Which lens explains it best: your body, your thoughts, your past, or the people around you?',
+    perspectives: [
+      { voice: 'A scientist', says: 'The honest answer is usually all of them at once. Psychologists call this the biopsychosocial model: a short night of sleep, a gloomy thought and a tense home can each push the same choice, and they push each other too.' },
+      { voice: 'An artist', says: 'A painting looks different in morning light and in lamplight, yet it is the same painting. You are the same: each lens shows a different side, and none of them shows everything.' },
+      { voice: 'A grandparent of faith', says: 'When I could not understand myself, I asked whether I was tired, what I was telling myself, and who I had been around. One of those three questions almost always held the answer.' },
+      { voice: 'A skeptic', says: 'Watch for the lens you always reach for. People who blame only their past, or only other people, or only their brain, miss whatever the other lenses would have shown them.' },
+    ],
+    closing: 'Which lens do you reach for first, and which one do you skip?',
+  },
   // Two grown-stage Wonder questions for the college business course (pass HK): one about cutting jobs or cutting
   // everyone's pay, and one a failure question about a product launch that failed.
   {
@@ -31533,6 +32046,8 @@ export const COURSE_GAMES = {
   'business-9': ['breakeven-business-9'],
   'business-k': ['tool-business-k'],
   'business-college': ['ledger-business-college'],
+  'psychology-college': ['cause-psychology-college'],
+  'macroeconomics-college': ['gdp-macroeconomics-college'],
   'health-6': ['label-health-6'],
   'health-9': ['cpr-health-9'],
   'sexual-health-6': ['greenred-sexual-health-6'],

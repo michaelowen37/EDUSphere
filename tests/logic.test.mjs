@@ -1556,6 +1556,13 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
   { // Sort the Because (pass GK): every round offers exactly two real reasons, the claim's own, among four, and the fakes come from the shared pile.
     ok('every because round has four options with exactly two real ones, the claim\'s own, and two fakes from the pile', [1, 2, 3, 4, 5, 6].every((r) => { const qs = L.becauseRounds(r); return qs.length === 5 && qs.every((q) => { const own = L.BECAUSE_CLAIMS.find((c) => c[0] === q.claim)[1]; return q.options.length === 4 && q.options.filter((o) => o.real).length === 2 && q.options.every((o) => (o.real ? own.includes(o.text) : L.BECAUSE_FAKES.includes(o.text))) && new Set(q.options.map((o) => o.text)).size === 4; }); }));
     // Pass IY: the look of a card never gives its answer away, and Valid or Not never stacks two negatives in a line.
+    { // Pass JA: ( ) are parentheses and [ ] are brackets, as American math, TEKS 5.4 and Common Core 5.OA.A.1 name them.
+      // Any other bracket in a lesson, question, deck or story must be the square kind, named as such.
+      const files = ['../src/logic.mjs', '../src/stories.mjs'].map((f) => readFileSync(new URL(f, import.meta.url), 'utf8'));
+      const bad = files.flatMap((s) => [...s.matchAll(/(?<!g5-)\bbrackets?\b/gi)].map((m) => s.slice(Math.max(0, m.index - 70), m.index + 70)).filter((w) => !/square brackets|parentheses and brackets/i.test(w)));
+      ok('every lesson, question, deck and story calls ( ) parentheses, and brackets only ever means [ ]', bad.length === 0, bad.slice(0, 3).join(' | '));
+      ok('grade 5 practice asks a question with two levels of grouping, brackets outside', [1, 2, 3, 4, 5, 6].every((s) => { const q = L.generateQuestion('g5-two-levels', s); const m = /^(\d+) x \[(\d+) - \((\d+) \+ (\d+)\)\] = \?$/.exec(q.prompt); return m && Number(q.answer) === m[1] * (m[2] - m[3] - m[4]) && Number(q.answer) > 0 && new Set(q.choices).size === q.choices.length; }));
+    }
     ok('every Sort the Because choice starts with Because, real or fake, so the form never gives the answer away', [...L.BECAUSE_CLAIMS.flatMap((c) => c[1]), ...L.BECAUSE_FAKES].every((s) => /^Because \S/.test(s)));
     ok('no Valid or Not line stacks two negatives, and none says it is not the case that', [1, 2, 3, 4, 5, 6, 7, 8].every((r) => L.argumentRounds(r).every((q) => q.lines.every((l) => (l.match(/\bnot\b/g) || []).length < 2 && !/not the case/.test(l)))));
     ok('the because game belongs to philosophy 3 to 5 and names its claims with its own key', L.COURSE_GAMES['philosophy-3'].includes('because-philosophy-3') && L.GAMES.find((g) => g.id === 'because-philosophy-3').because === 'claims' && !L.GAMES.find((g) => g.id === 'because-philosophy-3').deck);
@@ -1646,6 +1653,18 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
   }
   { // Sort the Ledger (pass HK): six accounts a round, two from each side of the balance sheet, each on its true side.
     ok('every ledger round deals two accounts from each side, each on its true side', [1, 2, 3, 4, 5].every((r) => { const qs = L.ledgerRounds(r); return qs.length === 6 && new Set(qs.map((q) => q.item)).size === 6 && L.LEDGER_SIDES.every((side) => qs.filter((q) => q.answer === side).length === 2) && qs.every((q) => L.LEDGER_ITEMS.find((it) => it[0] === q.item)[1] === q.answer); }));
+    { // Pass JC: college macroeconomics, built on ACGM ECON 2301, with its own game.
+      const c = L.COURSES.find((x) => x.id === 'macroeconomics-college');
+      ok('college macroeconomics has four lessons at grade C', !!c && c.grade === 'C' && c.subject === 'Economics' && c.elective === true && c.modules.length === 4, c ? c.modules.map((m) => m.id).join(',') : 'missing');
+      ok('In GDP or Not belongs to college macroeconomics and deals three of each a round', (L.COURSE_GAMES['macroeconomics-college'] || []).includes('gdp-macroeconomics-college') && [1, 2, 3, 7, 12].every((r) => { const d = L.gdpRounds(r); return d.length === 6 && d.filter((x) => x.answer === 'in').length === 3 && new Set(d.map((x) => x.text)).size === 6 && d.every((x) => x.why); }));
+      ok('every In GDP or Not card is new production or names why it is left out', L.GDP_CARDS.length === 14 && L.GDP_CARDS.filter((x) => x[1] === 'in').length === 7 && L.GDP_CARDS.filter((x) => x[1] === 'out').every(([t, , w]) => /used|stock|check|flour|home|made in|counted/i.test(t + ' ' + w)));
+    }
+    { // Pass JB: college General Psychology, built on ACGM PSYC 2301, with its own game.
+      const c = L.COURSES.find((x) => x.id === 'psychology-college');
+      ok('college General Psychology has four lessons at grade C', !!c && c.grade === 'C' && c.subject === 'Psychology' && c.elective === true && c.modules.length === 4, c ? c.modules.map((m) => m.id).join(',') : 'missing');
+      ok('Cause or Correlation belongs to college psychology and deals three experiments and three correlations a round', (L.COURSE_GAMES['psychology-college'] || []).includes('cause-psychology-college') && [1, 2, 3, 7, 12].every((r) => { const d = L.causeRounds(r); return d.length === 6 && d.filter((x) => x.answer === 'experiment').length === 3 && new Set(d.map((x) => x.text)).size === 6 && d.every((x) => x.why); }));
+      ok('every Cause or Correlation experiment names chance, and no correlation does', L.CAUSE_STUDIES.every(([t, a]) => (a === 'experiment') === /random|coin flip|by chance/i.test(t)), L.CAUSE_STUDIES.filter(([t, a]) => (a === 'experiment') !== /random|coin flip|by chance/i.test(t)).map((x) => x[0]).join(' | '));
+    }
     ok('the ledger game belongs to college business and names its accounts with its own key', L.COURSE_GAMES['business-college'].includes('ledger-business-college') && L.GAMES.find((g) => g.id === 'ledger-business-college').ledger === 'accounts');
     ok('the college accounting bank computes owners\' equity and the current ratio', [...Array(80).keys()].every((i) => { const q = L.generateQuestion('bzc-money', i); if (!q.story) return true; const n = q.story.match(/\d+/g).map(Number); if (new Set(q.choices).size !== 4 || !q.choices.includes(q.answer)) return false; if (q.prompt.includes('equity')) return q.answer === `$${n[0] - n[2]},000`; return Number(q.answer) === n[0] / n[2]; }));
   }

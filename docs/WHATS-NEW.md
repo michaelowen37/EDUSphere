@@ -2,6 +2,10 @@
 
 The newest block is what educators see once, in a pop-up on the classroom page, after each update. Write it the way Mikey talks to a teacher: conversational, complete sentences, say what changed and why it matters, and skip the shorthand (2026-09-23). Two to four items. The date line is the version stamp.
 
+## October 3, 2026 (Public Speaking for college)
+
+- A college public speaking course: communication and audience, ethics and evidence, organizing and delivering, and informing and persuading, with true stories about Gettysburg, Frederick Douglass's Fourth of July speech, Steve Jobs's three stories and Martin Luther King Jr.'s dream, a long story about Chloe's three minutes at city hall, and a new game, Cite It or Not.
+
 ## October 3, 2026 (Principles of Macroeconomics for college)
 
 - A college macroeconomics course: markets, measuring the economy, money and the Federal Reserve, and policy and trade, with true stories about Adam Smith's pin factory, the first measure of a nation's income, the stone money of Yap and the year interest rates hit 20 percent, a long story about Mike's crew in the 2008 recession, and a new game, In GDP or Not.

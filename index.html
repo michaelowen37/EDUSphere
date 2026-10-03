@@ -37,7 +37,7 @@ window.__eduArt = [];
 window.__eduColoringArt = [];
 window.__eduMapArt = [];
 window.__eduAudio = [];
-window.__eduNews = {"stamp":"October 3, 2026 (Principles of Macroeconomics for college)","date":"October 3, 2026","items":["A college macroeconomics course: markets, measuring the economy, money and the Federal Reserve, and policy and trade, with true stories about Adam Smith's pin factory, the first measure of a nation's income, the stone money of Yap and the year interest rates hit 20 percent, a long story about Mike's crew in the 2008 recession, and a new game, In GDP or Not."],"brief":["A college macroeconomics course."],"history":[{"date":"October 3, 2026","title":"Principles of Macroeconomics for college","items":["A college macroeconomics course: markets, measuring the economy, money and the Federal Reserve, and policy and trade, with true stories about Adam Smith's pin factory, the first measure of a nation's income, the stone money of Yap and the year interest rates hit 20 percent, a long story about Mike's crew in the 2008 recession, and a new game, In GDP or Not."]},{"date":"October 3, 2026","title":"General Psychology for college","items":["A college General Psychology course: how psychologists know what they know, where the field came from, seven ways to explain one behavior, and the brain and body behind it. Four true stories come with it, from a horse that seemed to count to a man who could not form new memories, and Savanah's class runs its own experiment with a coin.","A new game, Cause or Correlation: read a study and decide whether chance chose the groups. Only then can a study show cause."]},{"date":"October 3, 2026","title":"parentheses, not brackets","items":["Math lessons now call ( ) parentheses, the way American classrooms and the Texas standards do, and keep the word brackets for [ ]. Grade 5 also learns brackets as the outer of two groups, worked from the inside out, with a new practice question to match."]},{"date":"October 3, 2026","title":"more Wonder questions for teens and adults","items":["Sixteen new Wonder questions for middle school through college about failure, hard feelings and hard days: why rereading fools you, what makes an apology work, a friend who drifted away, a college that said no, and whether chasing happiness backfires. They draw on Aristotle, Marcus Aurelius, Viktor Frankl and Arthur Brooks, and are waiting in your Wonder review for approval."]},{"date":"October 3, 2026","title":"every game card read by hand","items":["Every card in the word games was read by hand. Valid or Not now says \"The street is not wet\" instead of the stiff \"It is not the case that,\" and Sort the Because starts every choice with Because, so the look of a card no longer gives away the answer.","A handful of facts were tightened: fruits and vegetables together make half the plate, bacteria in soybean roots turn nitrogen from the air into plant food, and birth control pills prevent pregnancy, not STIs."]},{"date":"October 3, 2026","title":"Wonder questions for younger learners","items":["Twenty-four new Wonder questions for pre-K through grade 5 about mistakes, hard feelings and hard days: a drawing that came out wrong, a scary dream, a thunderstorm, a shot at the doctor, a small lie, wanting to quit, and whether crying is for babies. They are waiting in your Wonder review for approval.","Three older answers about anger and sadness were rewritten. They suggested getting a feeling out by stomping or squeezing a pillow, and the research says calming down and drawing something new help more."]}]};
+window.__eduNews = {"stamp":"October 3, 2026 (Public Speaking for college)","date":"October 3, 2026","items":["A college public speaking course: communication and audience, ethics and evidence, organizing and delivering, and informing and persuading, with true stories about Gettysburg, Frederick Douglass's Fourth of July speech, Steve Jobs's three stories and Martin Luther King Jr.'s dream, a long story about Chloe's three minutes at city hall, and a new game, Cite It or Not."],"brief":["A college public speaking course."],"history":[{"date":"October 3, 2026","title":"Public Speaking for college","items":["A college public speaking course: communication and audience, ethics and evidence, organizing and delivering, and informing and persuading, with true stories about Gettysburg, Frederick Douglass's Fourth of July speech, Steve Jobs's three stories and Martin Luther King Jr.'s dream, a long story about Chloe's three minutes at city hall, and a new game, Cite It or Not."]},{"date":"October 3, 2026","title":"Principles of Macroeconomics for college","items":["A college macroeconomics course: markets, measuring the economy, money and the Federal Reserve, and policy and trade, with true stories about Adam Smith's pin factory, the first measure of a nation's income, the stone money of Yap and the year interest rates hit 20 percent, a long story about Mike's crew in the 2008 recession, and a new game, In GDP or Not."]},{"date":"October 3, 2026","title":"General Psychology for college","items":["A college General Psychology course: how psychologists know what they know, where the field came from, seven ways to explain one behavior, and the brain and body behind it. Four true stories come with it, from a horse that seemed to count to a man who could not form new memories, and Savanah's class runs its own experiment with a coin.","A new game, Cause or Correlation: read a study and decide whether chance chose the groups. Only then can a study show cause."]},{"date":"October 3, 2026","title":"parentheses, not brackets","items":["Math lessons now call ( ) parentheses, the way American classrooms and the Texas standards do, and keep the word brackets for [ ]. Grade 5 also learns brackets as the outer of two groups, worked from the inside out, with a new practice question to match."]},{"date":"October 3, 2026","title":"more Wonder questions for teens and adults","items":["Sixteen new Wonder questions for middle school through college about failure, hard feelings and hard days: why rereading fools you, what makes an apology work, a friend who drifted away, a college that said no, and whether chasing happiness backfires. They draw on Aristotle, Marcus Aurelius, Viktor Frankl and Arthur Brooks, and are waiting in your Wonder review for approval."]},{"date":"October 3, 2026","title":"every game card read by hand","items":["Every card in the word games was read by hand. Valid or Not now says \"The street is not wet\" instead of the stiff \"It is not the case that,\" and Sort the Because starts every choice with Because, so the look of a card no longer gives away the answer.","A handful of facts were tightened: fruits and vegetables together make half the plate, bacteria in soybean roots turn nitrogen from the air into plant food, and birth control pills prevent pregnancy, not STIs."]}]};
 // Installable app: the worker keeps a copy of the page for offline use and asks the network first, so a fresh build always wins.
 if ('serviceWorker' in navigator && /^https?:/.test(location.protocol)) { navigator.serviceWorker.register('sw.js').catch(function () {}); }
 var process = { env: { NODE_ENV: 'production' } };
@@ -18453,6 +18453,21 @@ const COURSES = [
         modules: MACRO_MODULES(),
     },
     // ---------------------------------------------------------------------------------------------------------------
+    // Public Speaking, college level (2026-10-03, pass JD). In plain terms: the course card for the college speech
+    // course, built on the seven learning outcomes Texas sets for SPCH 1315 in its college course guide, deeper than the
+    // grade 9 speech course. Its four lessons live in SPCH_MODULES() further down.
+    // ---------------------------------------------------------------------------------------------------------------
+    {
+        id: 'speech-college',
+        grade: 'C',
+        subject: 'Speech',
+        title: 'Public speaking',
+        audience: 'College level',
+        elective: true,
+        keywords: ['public speaking', 'speech', 'communication', 'persuasion', 'rhetoric', 'audience', 'college', 'elective'],
+        modules: SPCH_MODULES(),
+    },
+    // ---------------------------------------------------------------------------------------------------------------
     // Reproductive and sexual health for grades 9 to 12 (2026-10-01, pass HP, Mikey). In plain terms: the second human
     // sexuality elective, on the strand of the Texas Health I course that the general high school course leaves out. Like
     // the grade 6 course, it appears only when an educator assigns it, and assigning it asks the educator to confirm a
@@ -18896,6 +18911,7 @@ const GAMES = [
     { id: 'ledger-business-college', kind: 'ledger', title: 'Sort the Ledger', minGrade: 'C', ledger: 'accounts' }, // business college (pass HK): assets, liabilities or equity
     { id: 'cause-psychology-college', kind: 'cause', title: 'Cause or Correlation', minGrade: 'C', cause: 'studies' }, // psychology college (pass JB): experiment or correlation
     { id: 'gdp-macroeconomics-college', kind: 'gdp', title: 'In GDP or Not', minGrade: 'C', gdp: 'cards' }, // macroeconomics college (pass JC): counted in GDP or left out
+    { id: 'cite-speech-college', kind: 'cite', title: 'Cite It or Not', minGrade: 'C', cite: 'cards' }, // public speaking college (pass JD): cite it or not
     { id: 'label-health-6', kind: 'label', title: 'Read the Label', minGrade: '6', label: 'foods' }, // health 6 to 8 (pass HM): the better label for the nutrient asked
     { id: 'cpr-health-9', kind: 'cpr', title: 'Push to the Beat', minGrade: '9', cpr: 'compressions' }, // health 9 to 12 (pass HN): 100 to 120 a minute
     { id: 'greenred-sexual-health-6', kind: 'greenred', title: 'Green Flag or Red Flag', minGrade: '6', greenred: 'behaviors' }, // reproductive and sexual health 6 to 8 (pass HO)
@@ -20228,6 +20244,39 @@ function wonderAllowed(w, courseId, stage) {
     if ((w.stage || 'early') !== stage)
         return false;
     return !w.courseIds.some((id) => { const c = getCourse(id); return !!(c && c.consent); });
+}
+// ----------------------------------------------------------------------------------------------------------------
+// Cite It or Not (2026-10-03, pass JD): the college public speaking game. In plain terms: each card names something a
+// speaker might use, and the student swipes or taps Cite it (a specific statistic, quotation, paraphrased idea, image or
+// finding from a source) or No citation needed (common knowledge, or the speaker's own experience, opinion or data).
+// The rule is the lesson's. `CITE_CARDS` holds the cards with the one-line reason shown after, and `citeRounds(round)`
+// deals three of each a round, in an order fixed by the round number.
+// ----------------------------------------------------------------------------------------------------------------
+const CITE_CARDS = [
+    ['A statistic about teen sleep from a recent national survey.', 'cite', 'A specific statistic needs its source.'],
+    ['A quotation from Frederick Douglass.', 'cite', 'A quotation always names its speaker.'],
+    ['An idea you paraphrased from a magazine article.', 'cite', 'A paraphrased idea still needs credit.'],
+    ['A chart from a news site that you put on a slide.', 'cite', 'Borrowed images and charts need credit too.'],
+    ['Advice from a doctor that you read in a medical journal.', 'cite', 'Expert testimony names the expert and the source.'],
+    ['The finding of a study you read about memory.', 'cite', 'A research finding needs its source.'],
+    ['A summary of a documentary you watched for the speech.', 'cite', 'A summary of a source is still borrowed, so credit it.'],
+    ['The fact that the Earth orbits the sun.', 'free', 'Common knowledge needs no citation.'],
+    ['A story about your own first day of college.', 'free', 'Your own experience is yours to tell.'],
+    ['The fact that Austin is the capital of Texas.', 'free', 'Common knowledge needs no citation.'],
+    ['Your own opinion that the town needs a park.', 'free', 'Your own opinion needs no citation.'],
+    ['The fact that water freezes at 32 degrees Fahrenheit.', 'free', 'Common knowledge needs no citation.'],
+    ['Results of a survey you ran in your own class.', 'free', 'Your own data: just say how you gathered it.'],
+    ['The fact that George Washington was the first US president.', 'free', 'Common knowledge needs no citation.'],
+];
+function citeRounds(round) {
+    let x = (round * 70313 + 53) >>> 0;
+    const rnd = () => { x = (x * 1664525 + 1013904223) >>> 0; return x / 4294967296; };
+    const mix = (arr) => { const a = [...arr]; for (let j = a.length - 1; j > 0; j--) {
+        const k = Math.floor(rnd() * (j + 1));
+        [a[j], a[k]] = [a[k], a[j]];
+    } return a; };
+    const deal = [...mix(CITE_CARDS.filter((c) => c[1] === 'cite')).slice(0, 3), ...mix(CITE_CARDS.filter((c) => c[1] === 'free')).slice(0, 3)];
+    return mix(deal).map(([text, answer, why]) => ({ text, answer, why }));
 }
 // ----------------------------------------------------------------------------------------------------------------
 // In GDP or Not (2026-10-03, pass JC): the college macroeconomics game. In plain terms: each card names one thing that
@@ -28826,6 +28875,98 @@ function HEALTH6_MODULES() {
     ];
 }
 // -----------------------------------------------------------------------------------------------------------------
+// SPCH_MODULES: the four lessons of the college Public Speaking course (2026-10-03, pass JD).
+// In plain terms: each object is one lesson at a first-year college level. `sources` names the SPCH 1315 learning
+// outcomes from Texas's college course guide that the lesson meets, with the national communication outcomes beside
+// them, and `generators` the question banks below that make the quick checks. Every name and date was checked by web.
+// -----------------------------------------------------------------------------------------------------------------
+function SPCH_MODULES() {
+    return [
+        {
+            id: 'communication-and-audience-c',
+            order: 1,
+            title: 'Communication and audience',
+            tagline: 'Models of communication, noise, audience analysis and adaptation, and how culture shapes a message',
+            requires: [],
+            lesson: {
+                paragraphs: ['Public speaking is communication with a purpose. The linear model, drawn by Shannon and Weaver in 1949, sends a message from a sender through a channel to a receiver, with noise in the way. The interactional model adds feedback, and the transactional model says speaker and audience create meaning together, at the same time.',
+                    'Noise is anything that gets in the way of meaning. External noise is a siren outside; physiological noise is hunger or a headache; psychological noise is a worry that pulls attention away; semantic noise is a word the audience does not share. A good speaker plans around all four.',
+                    'Audience analysis comes first. Demographic analysis looks at age, background, culture and education. Psychological analysis asks what the audience already knows, believes and feels about the topic. Situational analysis looks at size, setting, time limit and occasion. Adapting means changing examples, words and length to fit what you learn.',
+                    'Culture, ethnicity and gender shape how messages are sent and heard. The anthropologist Edward T. Hall described high-context cultures, where much of the meaning sits in the setting and the relationship, and low-context cultures, where meaning is spelled out in words. Gestures, eye contact and humor carry different meanings in different places.',
+                    'Ethnocentrism is judging other cultures by the standards of your own, and it is a quiet form of noise. Gender expectations can shape how the same words are judged, so a fair listener asks whether they are judging the message or the speaker. Inclusive language, such as everyone instead of you guys, keeps listeners in the room.'],
+                keyIdea: 'Communication is transactional: speaker and audience make meaning together, through noise. Analyze the audience by demographics, beliefs and situation, then adapt. Culture, ethnicity and gender shape how a message is heard.',
+                example: { kind: 'flow', steps: ['analyze the audience', 'choose the purpose', 'adapt examples and words', 'watch feedback and adjust'], caption: 'Audience-centered speaking in four steps.',
+                    another: ['A speech on saving for retirement lands differently with first-year students than with nurses near retirement: the same facts, different examples.',
+                        'Semantic noise in action: a doctor who says idiopathic means cause unknown, and most of the room hears nothing at all.'] },
+            },
+            sources: ['Aligned with ACGM SPCH 1315 learning outcomes 1 (the foundational models of communication), 2 (audience analysis) and 6 (how culture, ethnicity and gender influence communication), and the National Communication Association\'s Learning Outcomes in Communication 2, 4 and 8.'],
+            generators: ['spch-audience', 'spch-audience', 'spch-audience', 'spch-audience', 'spch-audience'],
+        },
+        {
+            id: 'ethics-and-evidence-c',
+            order: 2,
+            title: 'Ethics, evidence and listening',
+            tagline: 'Citing sources out loud, avoiding plagiarism, testing evidence, spotting fallacies and listening ethically',
+            requires: [],
+            lesson: {
+                paragraphs: ['An ethical speaker tells the truth, gives credit and respects the audience. Plagiarism is presenting someone else\'s words or ideas as your own, and it comes in three forms. Global plagiarism takes a whole speech, patchwork plagiarism stitches together copied pieces, and incremental plagiarism leaves out credit for quotations or paraphrased ideas.',
+                    'Credit is spoken aloud. An oral citation names the source and why it is trustworthy, for example, according to a report published this year by the Centers for Disease Control and Prevention. Any specific statistic, quotation, paraphrased idea, image or finding needs a citation; common knowledge and your own experiences, opinions and data do not.',
+                    'Supporting material comes in three kinds: examples, statistics and testimony. Expert testimony comes from someone qualified, and peer testimony from someone with firsthand experience. Test every source for credibility, recency and bias: who wrote it, when, and who gains if you believe it.',
+                    'Reasoning connects evidence to claims. Inductive reasoning moves from specific cases to a general conclusion, and deductive reasoning moves from a general principle to a specific case. Causal reasoning links a cause to an effect, and analogical reasoning compares two similar cases.',
+                    'A fallacy is an error in reasoning. Ad hominem attacks the person instead of the argument, a straw man distorts an argument to make it easy to knock down, and a false dilemma offers only two choices when there are more. A slippery slope claims one step must lead to disaster, a hasty generalization draws a big conclusion from too few cases, and a bandwagon appeal says something is right because it is popular.',
+                    'Listening is half of ethical communication. Hearing is physical; listening is the active work of attending, understanding and responding. An ethical listener gives the speaker a fair hearing, separates the message from the messenger, and judges the evidence and logic rather than the delivery alone.'],
+                keyIdea: 'Cite every specific fact, quotation and borrowed idea out loud. Test evidence for credibility, recency and bias, connect it with sound reasoning, and name the fallacies. Listen to judge the argument, not the speaker.',
+                example: { kind: 'flow', steps: ['find the source', 'test credibility, recency and bias', 'cite it out loud', 'connect it to your claim'], caption: 'From a source to a fair, credited claim.',
+                    another: ['Incremental plagiarism is the easy one to miss: a speech with one paraphrased paragraph and no citation is still plagiarized.',
+                        'A hasty generalization in one sentence: my two neighbors got sick after the flu shot, so the shot makes people sick.'] },
+            },
+            sources: ['Aligned with ACGM SPCH 1315 learning outcomes 3 (ethical speaking and listening, analyzing presentations for evidence and logic) and 5 (technology when researching speeches), and the National Communication Association\'s Learning Outcomes in Communication 5 and 7.'],
+            generators: ['spch-ethics', 'spch-ethics', 'spch-ethics', 'spch-ethics', 'spch-ethics'],
+        },
+        {
+            id: 'organizing-and-delivering-c',
+            order: 3,
+            title: 'Organizing and delivering',
+            tagline: 'Purpose and thesis, patterns of organization, outlines and transitions, extemporaneous delivery, voice and body, slides and nerves',
+            requires: [],
+            lesson: {
+                paragraphs: ['Every speech starts with a general purpose, to inform, persuade or entertain, and a specific purpose, the one thing the audience should know or do. The central idea, or thesis, says it in one sentence. Two to five main points support it, because listeners cannot reread.',
+                    'Main points follow a pattern. Chronological order follows time, spatial order follows place, topical order divides a subject into parts, causal order moves from cause to effect, and problem-solution order names a problem and then the fix. Signposts such as first, next and finally tell listeners where they are.',
+                    'The introduction gains attention, states the thesis, builds credibility and previews the main points. The conclusion signals the end and reinforces the central idea. A preparation outline is full sentences for planning; a speaking outline is brief key words to glance at while you speak.',
+                    'There are four methods of delivery. Manuscript speaking reads a full text, memorized speaking recites it, and impromptu speaking happens with no preparation. Extemporaneous speaking is carefully prepared and practiced but delivered from brief notes, so it sounds like conversation, and it is the method most college speeches should use.',
+                    'Voice and body carry meaning. Vary your rate, pitch and volume, pause on purpose, and drop filler words such as um and like. Hold eye contact across the whole room, let gestures come from what you mean, and use slides as an aid, not a script: few words, large images, and never your back to the audience.',
+                    'Nervousness is normal, and it is often called communication apprehension. Preparation and practice help most. Speakers also overestimate how nervous they look; to an audience they look less nervous than they feel. In a 2003 study by Kenneth Savitsky and Thomas Gilovich, speakers who learned this gave better speeches, judged by themselves and by observers.'],
+                keyIdea: 'State one specific purpose and a one-sentence thesis, support it with two to five main points in a clear pattern, and tie them with signposts. Speak extemporaneously from brief notes, with a varied voice and steady eye contact.',
+                example: { kind: 'flow', steps: ['gain attention', 'state the thesis and preview', 'main points with signposts', 'conclude and reinforce'], caption: 'The shape of a well-organized speech.',
+                    another: ['A speech on hurricanes could go chronological (forming, landfall, aftermath), spatial (eye, eyewall, rain bands) or causal (warm water, rising air, spin).',
+                        'A speaking outline for a five-minute speech can fit on one card: key words, the first sentence, the source names and the last sentence.'] },
+            },
+            sources: ['Aligned with ACGM SPCH 1315 learning outcomes 4 (research, develop and deliver extemporaneous speeches with effective verbal and nonverbal techniques) and 5 (technology when presenting speeches), and the National Communication Association\'s Learning Outcomes in Communication 4 and 6.'],
+            generators: ['spch-organize', 'spch-organize', 'spch-organize', 'spch-organize', 'spch-organize'],
+        },
+        {
+            id: 'informing-and-persuading-c',
+            order: 4,
+            title: 'Informing and persuading',
+            tagline: 'Narrative, informative and persuasive speeches, questions of fact, value and policy, Aristotle\'s three proofs, the motivated sequence and group presentations',
+            requires: [],
+            lesson: {
+                paragraphs: ['Speeches come in kinds. A narrative speech tells a story with a point, an informative speech teaches by defining, describing, demonstrating or explaining, and a persuasive speech tries to change what listeners believe or do. Informative speakers aim for clarity and stay neutral; persuasive speakers take a side.',
+                    'Persuasive speeches answer one of three questions. A question of fact asks whether something is true, a question of value asks whether it is good or right, and a question of policy asks what should be done. Policy speeches need a plan and must show it can work.',
+                    'Aristotle named three proofs in his Rhetoric. Ethos is the speaker\'s credibility, built from competence, good character and goodwill. Pathos is an appeal to emotion, and logos is an appeal to reason and evidence. Strong persuasion uses all three, and ethical persuasion never fakes any of them.',
+                    'Alan Monroe\'s motivated sequence, taught since the 1930s, organizes a policy speech in five steps: attention, need, satisfaction, visualization and action. Gain attention, show the need, satisfy it with a plan, help listeners picture the result, and ask for a specific action.',
+                    'Some speeches are given by groups. In a symposium, members each present one part of a topic in turn; in a panel discussion, members talk with each other in front of an audience. Either way, plan who covers what, rehearse the handoffs, and keep one shared thesis.'],
+                keyIdea: 'Informative speeches teach; persuasive speeches take a side on a question of fact, value or policy. Persuade with ethos, pathos and logos, and organize a policy speech with the motivated sequence.',
+                example: { kind: 'flow', steps: ['attention', 'need', 'satisfaction', 'visualization', 'action'], caption: 'Monroe\'s motivated sequence.',
+                    another: ['Fact: does sleep loss lower grades? Value: is it wrong to start school before 8? Policy: should the district start high schools at 8:30?',
+                        'Ethos can be borrowed and lost: a cited expert lends credibility, and one false statistic can cost a speaker the whole room.'] },
+            },
+            sources: ['Aligned with ACGM SPCH 1315 learning outcome 7 (a variety of speeches, as an individual or group: narrative, informative or persuasive), and the National Communication Association\'s Learning Outcomes in Communication 4, 6 and 9.'],
+            generators: ['spch-persuade', 'spch-persuade', 'spch-persuade', 'spch-persuade', 'spch-persuade'],
+        },
+    ];
+}
+// -----------------------------------------------------------------------------------------------------------------
 // MACRO_MODULES: the four lessons of the college macroeconomics course (2026-10-03, pass JC).
 // In plain terms: each object is one lesson at a first-year college level. `sources` names the ECON 2301 learning
 // outcomes from Texas's college course guide that the lesson meets, with the national economics standards beside them,
@@ -36142,6 +36283,89 @@ Object.assign(GENERATORS, {
             ['Alcohol slows what?', ['reaction time and judgment', 'hair growth', 'eyesight only', 'nothing'], 'reaction time and judgment', 'That is why drinking and driving kills.'],
             ['What do prescription labels add?', ['the patient\'s name, the dose and the prescriber', 'a coupon', 'a recipe', 'nothing'], 'the patient\'s name, the dose and the prescriber', 'Over-the-counter labels list uses and warnings.'],
             ['Combining drugs is dangerous because effects do what?', ['add up', 'cancel out', 'disappear', 'stay the same'], 'add up', 'Never combine drugs without a doctor.']];
+        const [prompt, choices, answer, explain] = pick(rng, Q);
+        return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+    },
+    // -----------------------------------------------------------------------------------------------------------------
+    // College Public Speaking question banks (2026-10-03, pass JD). In plain terms: four-answer quick checks for each
+    // lesson, every answer named in its lesson, so a round of ten never needs a repeat.
+    // -----------------------------------------------------------------------------------------------------------------
+    'spch-audience': (rng) => {
+        const Q = [['Which model sends a message one way, sender to receiver?', ['the linear model', 'the transactional model', 'the interactional model', 'the feedback model'], 'the linear model', 'Noise can get in the way.'],
+            ['Which model says speaker and audience make meaning together?', ['the transactional model', 'the linear model', 'the interactional model', 'the channel model'], 'the transactional model', 'At the same time.'],
+            ['Which model adds feedback to the linear one?', ['the interactional model', 'the transactional model', 'the linear model', 'the noise model'], 'the interactional model', 'Messages go back and forth.'],
+            ['Who drew the linear model of communication in 1949?', ['Shannon and Weaver', 'Lincoln and Douglass', 'Monroe and Hall', 'Aristotle and Plato'], 'Shannon and Weaver', 'Sender, channel, receiver.'],
+            ['A siren outside the room is which kind of noise?', ['external noise', 'semantic noise', 'psychological noise', 'physiological noise'], 'external noise', 'It comes from the setting.'],
+            ['A word the audience does not share is which noise?', ['semantic noise', 'external noise', 'physiological noise', 'psychological noise'], 'semantic noise', 'Jargon is the usual cause.'],
+            ['A worry that pulls attention away is which noise?', ['psychological noise', 'semantic noise', 'external noise', 'physiological noise'], 'psychological noise', 'It is inside the listener\'s head.'],
+            ['Hunger or a headache is which kind of noise?', ['physiological noise', 'psychological noise', 'semantic noise', 'external noise'], 'physiological noise', 'It is inside the listener\'s body.'],
+            ['Looking at age, background and education is which analysis?', ['demographic analysis', 'psychological analysis', 'situational analysis', 'source analysis'], 'demographic analysis', 'Who the listeners are.'],
+            ['Asking what listeners believe and feel is which analysis?', ['psychological analysis', 'demographic analysis', 'situational analysis', 'peer review'], 'psychological analysis', 'What the listeners think.'],
+            ['Room size, time limit and occasion are which analysis?', ['situational analysis', 'demographic analysis', 'psychological analysis', 'content analysis'], 'situational analysis', 'Where and when you speak.'],
+            ['Changing examples and words to fit listeners is called what?', ['adapting', 'decoding', 'plagiarizing', 'signposting'], 'adapting', 'Analysis comes first.'],
+            ['Who described high-context and low-context cultures?', ['Edward T. Hall', 'Aristotle', 'Alan Monroe', 'Claude Shannon'], 'Edward T. Hall', 'An anthropologist.'],
+            ['In a high-context culture, much meaning sits where?', ['in the setting and the relationship', 'only in the words', 'in written contracts', 'in the speaker\'s slides'], 'in the setting and the relationship', 'Low-context cultures spell it out.'],
+            ['Judging other cultures by your own standards is called what?', ['ethnocentrism', 'audience analysis', 'feedback', 'decoding'], 'ethnocentrism', 'A quiet form of noise.']];
+        const [prompt, choices, answer, explain] = pick(rng, Q);
+        return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+    },
+    'spch-ethics': (rng) => {
+        const Q = [['Copying a whole speech is which kind of plagiarism?', ['global plagiarism', 'patchwork plagiarism', 'incremental plagiarism', 'fair use'], 'global plagiarism', 'The whole thing is borrowed.'],
+            ['Stitching together copied pieces is which plagiarism?', ['patchwork plagiarism', 'global plagiarism', 'incremental plagiarism', 'oral citation'], 'patchwork plagiarism', 'Several sources, no credit.'],
+            ['Leaving out credit for a paraphrase is which plagiarism?', ['incremental plagiarism', 'global plagiarism', 'patchwork plagiarism', 'a fallacy'], 'incremental plagiarism', 'The easy one to miss.'],
+            ['Naming a source out loud in a speech is called what?', ['an oral citation', 'a fallacy', 'a transition', 'a preview'], 'an oral citation', 'Name it and say why it is trustworthy.'],
+            ['Which of these needs no citation?', ['common knowledge', 'a statistic from a survey', 'a quotation', 'a paraphrased idea'], 'common knowledge', 'So do your own experiences.'],
+            ['Testimony from someone qualified on the topic is what?', ['expert testimony', 'peer testimony', 'a statistic', 'an analogy'], 'expert testimony', 'Peer testimony is firsthand.'],
+            ['Testimony from someone with firsthand experience is what?', ['peer testimony', 'expert testimony', 'a hasty generalization', 'an oral citation'], 'peer testimony', 'Expert testimony is qualified.'],
+            ['Which three tests should every source pass?', ['credibility, recency and bias', 'length, color and price', 'fame, humor and speed', 'rhyme, rhythm and rate'], 'credibility, recency and bias', 'Who wrote it, when, and who gains.'],
+            ['Reasoning from specific cases to a general rule is what?', ['inductive reasoning', 'deductive reasoning', 'causal reasoning', 'analogical reasoning'], 'inductive reasoning', 'Cases first, rule after.'],
+            ['Reasoning from a general principle to a case is what?', ['deductive reasoning', 'inductive reasoning', 'causal reasoning', 'a slippery slope'], 'deductive reasoning', 'Rule first, case after.'],
+            ['Attacking the person instead of the argument is what?', ['ad hominem', 'a straw man', 'a false dilemma', 'a bandwagon appeal'], 'ad hominem', 'Latin for to the person.'],
+            ['Distorting an argument to knock it down easily is what?', ['a straw man', 'ad hominem', 'a slippery slope', 'a false dilemma'], 'a straw man', 'The real argument goes unanswered.'],
+            ['Offering only two choices when there are more is what?', ['a false dilemma', 'a straw man', 'a bandwagon appeal', 'ad hominem'], 'a false dilemma', 'Look for the third option.'],
+            ['Claiming one step must lead to disaster is what?', ['a slippery slope', 'a false dilemma', 'a straw man', 'a hasty generalization'], 'a slippery slope', 'Each step needs its own evidence.'],
+            ['A big conclusion from too few cases is what?', ['a hasty generalization', 'a bandwagon appeal', 'deductive reasoning', 'an analogy'], 'a hasty generalization', 'Two neighbors are not a study.'],
+            ['Saying something is right because it is popular is what?', ['a bandwagon appeal', 'ad hominem', 'a straw man', 'expert testimony'], 'a bandwagon appeal', 'Popular is not proof.']];
+        const [prompt, choices, answer, explain] = pick(rng, Q);
+        return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+    },
+    'spch-organize': (rng) => {
+        const Q = [['Informing, persuading or entertaining is a speech\'s what?', ['general purpose', 'specific purpose', 'central idea', 'transition'], 'general purpose', 'The specific purpose narrows it.'],
+            ['One sentence stating the speech\'s main message is what?', ['the central idea', 'a signpost', 'a transition', 'the general purpose'], 'the central idea', 'Also called the thesis.'],
+            ['How many main points does a speech usually need?', ['two to five', 'one', 'ten or more', 'exactly seven'], 'two to five', 'Listeners cannot reread.'],
+            ['Which organizational pattern follows time?', ['chronological order', 'spatial order', 'topical order', 'causal order'], 'chronological order', 'First, then, next.'],
+            ['Which pattern follows place, such as top to bottom?', ['spatial order', 'chronological order', 'topical order', 'problem-solution order'], 'spatial order', 'A walk through space.'],
+            ['Which pattern divides a subject into its parts?', ['topical order', 'causal order', 'spatial order', 'chronological order'], 'topical order', 'The most common pattern.'],
+            ['Which pattern names a problem, then the fix?', ['problem-solution order', 'causal order', 'spatial order', 'topical order'], 'problem-solution order', 'Common in persuasion.'],
+            ['Words such as first, next and finally are called what?', ['signposts', 'fallacies', 'citations', 'filler words'], 'signposts', 'They show where you are.'],
+            ['Which outline uses full sentences for planning?', ['a preparation outline', 'a speaking outline', 'a manuscript', 'a slide deck'], 'a preparation outline', 'The speaking outline is brief.'],
+            ['Which outline uses brief key words while you speak?', ['a speaking outline', 'a preparation outline', 'a manuscript', 'a transcript'], 'a speaking outline', 'Glance, then look up.'],
+            ['Prepared and practiced, delivered from brief notes, is what?', ['extemporaneous speaking', 'impromptu speaking', 'manuscript speaking', 'memorized speaking'], 'extemporaneous speaking', 'It sounds like conversation.'],
+            ['Speaking with no preparation at all is called what?', ['impromptu speaking', 'extemporaneous speaking', 'manuscript speaking', 'memorized speaking'], 'impromptu speaking', 'Extemporaneous is prepared.'],
+            ['Reading a full text word for word is which method?', ['manuscript speaking', 'impromptu speaking', 'extemporaneous speaking', 'memorized speaking'], 'manuscript speaking', 'Hard to keep eye contact.'],
+            ['Um and like are examples of what?', ['filler words', 'signposts', 'transitions', 'citations'], 'filler words', 'A pause works better.'],
+            ['Speech nervousness is also called what?', ['communication apprehension', 'semantic noise', 'ethnocentrism', 'a bandwagon appeal'], 'communication apprehension', 'Normal and manageable.'],
+            ['To an audience, how nervous do speakers usually look?', ['less nervous than they feel', 'more nervous than they feel', 'exactly as nervous', 'not nervous at all'], 'less nervous than they feel', 'Savitsky and Gilovich, 2003.']];
+        const [prompt, choices, answer, explain] = pick(rng, Q);
+        return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+    },
+    'spch-persuade': (rng) => {
+        const Q = [['A speech that teaches without taking sides is which kind?', ['an informative speech', 'a persuasive speech', 'a narrative speech', 'a symposium'], 'an informative speech', 'Clarity, not a verdict.'],
+            ['A speech that tries to change beliefs or actions is what?', ['a persuasive speech', 'an informative speech', 'a narrative speech', 'a panel discussion'], 'a persuasive speech', 'It takes a side.'],
+            ['A speech that tells a story with a point is what?', ['a narrative speech', 'a persuasive speech', 'an informative speech', 'an impromptu speech'], 'a narrative speech', 'The point is the purpose.'],
+            ['Whether something is true is which kind of question?', ['a question of fact', 'a question of value', 'a question of policy', 'a question of taste'], 'a question of fact', 'True or false.'],
+            ['Whether something is good or right is which question?', ['a question of value', 'a question of fact', 'a question of policy', 'a question of law'], 'a question of value', 'Good or bad, right or wrong.'],
+            ['What should be done is which kind of question?', ['a question of policy', 'a question of fact', 'a question of value', 'a rhetorical question'], 'a question of policy', 'It needs a plan.'],
+            ['Who named ethos, pathos and logos?', ['Aristotle', 'Cicero', 'Alan Monroe', 'Edward T. Hall'], 'Aristotle', 'In his Rhetoric.'],
+            ['A speaker\'s credibility is which proof?', ['ethos', 'pathos', 'logos', 'kairos'], 'ethos', 'Competence, character and goodwill.'],
+            ['An appeal to emotion is which proof?', ['pathos', 'ethos', 'logos', 'telos'], 'pathos', 'Ethical only when the feeling fits the facts.'],
+            ['An appeal to reason and evidence is which proof?', ['logos', 'pathos', 'ethos', 'mythos'], 'logos', 'Evidence and reasoning.'],
+            ['Ethos is built from competence, good character and what?', ['goodwill', 'volume', 'humor', 'speed'], 'goodwill', 'The audience must trust your motives.'],
+            ['Whose motivated sequence ends with a call to action?', ['Alan Monroe', 'Aristotle', 'Abraham Lincoln', 'Claude Shannon'], 'Alan Monroe', 'Taught since the 1930s.'],
+            ['Which step of the motivated sequence comes after need?', ['satisfaction', 'attention', 'visualization', 'action'], 'satisfaction', 'The plan that meets the need.'],
+            ['Helping listeners picture the result is which step?', ['visualization', 'satisfaction', 'need', 'attention'], 'visualization', 'Then comes action.'],
+            ['Members presenting one part each in turn is called what?', ['a symposium', 'a panel discussion', 'a debate', 'a forum'], 'a symposium', 'A panel talks back and forth.'],
+            ['Members talking with each other before an audience is what?', ['a panel discussion', 'a symposium', 'a lecture', 'a toast'], 'a panel discussion', 'A symposium takes turns.']];
         const [prompt, choices, answer, explain] = pick(rng, Q);
         return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
     },
@@ -46094,6 +46318,38 @@ const WONDER = [
         ],
         closing: 'Who is one adult you could tell?',
     },
+    // Two grown-stage Wonder questions for the college public speaking course (pass JD): a failure question about going
+    // blank in the middle of a talk, and an ethics question about a moving story that cannot be checked.
+    {
+        id: 'w-grown-froze-mid-speech',
+        theme: 'failure',
+        stage: 'grown',
+        courseIds: ['speech-college'],
+        answerMode: 'typed',
+        prompt: 'In the middle of an important talk, your mind goes blank and the room goes quiet. Is that a failure?',
+        perspectives: [
+            { voice: 'A scientist', says: 'Speakers feel far more nervous than they look. In a 2003 study, people giving speeches overestimated how nervous they appeared, and those who learned this before speaking gave better speeches, by their own ratings and their listeners\' ratings.' },
+            { voice: 'An artist', says: 'A rest in music is written on purpose, and the silence makes the next note land. A pause that feels endless to you is often much shorter to the room.' },
+            { voice: 'A grandparent of faith', says: 'At my sister\'s wedding I forgot my toast halfway through. I said so, smiled, looked at my card, and finished. People remembered the smile, not the gap.' },
+            { voice: 'A skeptic', says: 'Look at what went wrong without making it a verdict. If you lost your place, a one-card speaking outline fixes that. If you memorized every word, practicing from notes instead fixes that.' },
+        ],
+        closing: 'What would you do in the first five seconds after a blank?',
+    },
+    {
+        id: 'w-grown-the-story-you-cannot-check',
+        theme: 'world',
+        stage: 'grown',
+        courseIds: ['speech-college'],
+        answerMode: 'typed',
+        prompt: 'A moving story would win the room, but you cannot confirm it really happened. Do you tell it?',
+        perspectives: [
+            { voice: 'A scientist', says: 'Stories spread because they are easy to remember, and false ones spread just as easily. If a claim cannot be checked, the honest move is to say so, or to find one that can be.' },
+            { voice: 'An artist', says: 'You can tell a story as a story. Saying here is a parable, not a fact, keeps its power and your honesty at the same time.' },
+            { voice: 'A grandparent of faith', says: 'My father said a reputation is built in years and lost in a sentence. An audience that catches one made-up story will doubt every true one after it.' },
+            { voice: 'A skeptic', says: 'Ask who gains if the story is false. If the answer is you, that is exactly the story to check twice, or to leave out.' },
+        ],
+        closing: 'What is one story you repeat that you have never checked?',
+    },
     // Two grown-stage Wonder questions for the college macroeconomics course (pass JC): a failure question about losing a
     // job in a recession, and a world question about the price of fighting inflation.
     {
@@ -51442,6 +51698,7 @@ const COURSE_GAMES = {
     'business-college': ['ledger-business-college'],
     'psychology-college': ['cause-psychology-college'],
     'macroeconomics-college': ['gdp-macroeconomics-college'],
+    'speech-college': ['cite-speech-college'],
     'health-6': ['label-health-6'],
     'health-9': ['cpr-health-9'],
     'sexual-health-6': ['greenred-sexual-health-6'],
@@ -53113,6 +53370,26 @@ const CURRICULUM = [
             { framework: 'CCSS', code: 'SL.6.4', text: 'Present claims and findings, sequencing ideas logically and using pertinent descriptions, facts, and details to accentuate main ideas or themes; use appropriate eye contact, adequate volume, and clear pronunciation.', moduleIds: ['a-two-minute-talk'] },
             { framework: 'CCSS', code: 'SL.6.5', text: 'Include multimedia components (e.g., graphics, images, music, sound) and visual displays in presentations to clarify information.', moduleIds: ['a-two-minute-talk'] },
             { framework: 'CCSS', code: 'SL.6.6', text: 'Adapt speech to a variety of contexts and tasks, demonstrating command of formal English when indicated or appropriate.', moduleIds: ['saying-it-clearly'] },
+        ],
+    },
+    {
+        grade: 'C', subject: 'Speech', status: 'ready',
+        source: 'Texas Higher Education Coordinating Board, Lower-Division Academic Course Guide Manual: SPCH 1315 Public Speaking, its seven learning outcomes (read as printed in Texas Southmost College\'s 2026-2027 catalog, and in other Texas college catalogs and syllabi that quote the course guide); the National Communication Association\'s Learning Outcomes in Communication, as printed by colleges that adopt them.',
+        standards: [
+            { framework: 'TEKS', code: 'ACGM SPCH 1315 LO1', text: 'Demonstrate an understanding of the foundational models of communication.', moduleIds: ['communication-and-audience-c'] },
+            { framework: 'TEKS', code: 'ACGM SPCH 1315 LO2', text: 'Apply elements of audience analysis.', moduleIds: ['communication-and-audience-c'] },
+            { framework: 'TEKS', code: 'ACGM SPCH 1315 LO3', text: 'Demonstrate ethical speaking and listening skills by analyzing presentations for evidence and logic.', moduleIds: ['ethics-and-evidence-c'] },
+            { framework: 'TEKS', code: 'ACGM SPCH 1315 LO4', text: 'Research, develop and deliver extemporaneous speeches with effective verbal and nonverbal techniques.', moduleIds: ['organizing-and-delivering-c'] },
+            { framework: 'TEKS', code: 'ACGM SPCH 1315 LO5', text: 'Demonstrate effective usage of technology when researching and/or presenting speeches.', moduleIds: ['ethics-and-evidence-c', 'organizing-and-delivering-c'] },
+            { framework: 'TEKS', code: 'ACGM SPCH 1315 LO6', text: 'Identify how culture, ethnicity and gender influence communication.', moduleIds: ['communication-and-audience-c'] },
+            { framework: 'TEKS', code: 'ACGM SPCH 1315 LO7', text: 'Develop proficiency in presenting a variety of speeches as an individual or group (e.g. narrative, informative or persuasive).', moduleIds: ['informing-and-persuading-c'] },
+            { framework: 'CCSS', code: 'NCA LOC 2', text: 'Employ communication theories, perspectives, principles, and concepts.', moduleIds: ['communication-and-audience-c'] },
+            { framework: 'CCSS', code: 'NCA LOC 4', text: 'Create messages appropriate to the audience, purpose, and context.', moduleIds: ['communication-and-audience-c', 'organizing-and-delivering-c', 'informing-and-persuading-c'] },
+            { framework: 'CCSS', code: 'NCA LOC 5', text: 'Critically analyze messages.', moduleIds: ['ethics-and-evidence-c'] },
+            { framework: 'CCSS', code: 'NCA LOC 6', text: 'Demonstrate the ability to accomplish communicative goals (self-efficacy).', moduleIds: ['organizing-and-delivering-c', 'informing-and-persuading-c'] },
+            { framework: 'CCSS', code: 'NCA LOC 7', text: 'Apply ethical communication principles and practices.', moduleIds: ['ethics-and-evidence-c'] },
+            { framework: 'CCSS', code: 'NCA LOC 8', text: 'Utilize communication to embrace difference.', moduleIds: ['communication-and-audience-c'] },
+            { framework: 'CCSS', code: 'NCA LOC 9', text: 'Influence public discourse.', moduleIds: ['informing-and-persuading-c'] },
         ],
     },
     {
@@ -59697,6 +59974,7 @@ const COURSE_STORIES = {
     'business-college': { title: 'Professor Frederick and the company in the classroom', about: 'a college class run as a company, five teams for five functions, a SWOT of an online store, a loan instead of shares, a cheaper supplier turned down, and three hundred bottles sold', art: 'CS565', alt: 'A professor in his fifties in front of a whiteboard in a busy college classroom', cast: ['Frederick'], words: ['On the first day of Business Principles, Professor Frederick told his thirty students that they would not just study a company that semester. They would run one, and it would sell insulated water bottles with the college logo by December.', 'He split them into five teams, one for each business function: management, marketing, accounting, finance and information systems. On paper, they formed a limited liability company, and he asked why. A student answered that no one wanted a bad semester to cost their own savings, and Frederick wrote limited liability on the board.', 'The information systems team built an online store, and the whole class ran a SWOT. Its strength was reaching every student at once, and its weakness was that the team had never run payments before. Graduation gifts were the opportunity. The threat was fraud, so they used a payment service instead of storing card numbers themselves.', 'They needed $3,000 to buy three hundred bottles at $10 each. The finance team compared two paths: borrow from the college\'s student business fund at 5 percent a year, or sell shares in the company to faculty. They chose the loan, because owners who borrow keep control.', 'Then a second supplier offered the same bottles for $7. The accounting team loved the savings, until a student found reports of unsafe conditions at that supplier\'s factory. Frederick asked whether choosing it would be a lapse or a dilemma. The class decided it would be a lapse, saving money by ignoring what they knew, and stayed with the $10 bottles.', 'Marketing set the price at $20 and timed a sale for family weekend. The bottles came from overseas, and Frederick used the shipment to show how a tariff added to the landed cost. By the second week of November, all three hundred were gone.', 'The accounting team closed the books in front of the class. Revenue was $6,000. The bottles cost $3,000, printing cost $400, and four months of interest cost $50, so the profit was $2,550. They repaid the $3,050 they owed and gave $1,000 to the campus food pantry, the top of Carroll\'s pyramid.', 'On the last day, Frederick erased the board and drew the five functions in a circle. Every chapter of the textbook, he said, had happened inside one small company in one semester. Then he handed back the final exams, and nobody missed the question on owners\' equity.'], more: [{ serial: 'CS566', after: 1, alt: 'Students in five small teams around tables, each with a sign for a business function' }, { serial: 'CS567', after: 2, alt: 'Students drawing a SWOT grid on a whiteboard beside a laptop showing an online store' }, { serial: 'CS568', after: 3, alt: 'A student signing a small loan form with a college business fund officer' }, { serial: 'CS569', after: 5, alt: 'Students comparing two water bottles and a supplier report at a table' }, { serial: 'CS570', after: 7, alt: 'Students handing a check to the campus food pantry' }] },
     'psychology-college': { title: 'Savanah and the coin-flip experiment', about: 'a sonography student in General Psychology, a class experiment that went wrong, a coin flip for forty classmates, a quiz graded blind, recall against rereading, a debriefing, and a racing heart on an echo monitor', art: 'CS595', alt: 'A woman in her late twenties in scrubs studying psychology notes at a community college table', cast: ['Savanah'], words: ['Savanah was twenty-seven and in the first year of a sonography program when she took General Psychology at an Austin community college, because her program required it. She expected a semester of memorizing terms. On the second day, the professor said the class would run a real experiment instead.', 'The question was practical: do students remember more by rereading their notes or by quizzing themselves? Savanah wrote the hypothesis on the board: practicing recall beats rereading. The operational definition took longer to agree on, and they settled on the score on a twenty-question quiz one week later.', 'The first try went wrong. The class let each student choose a method, and the self-quizzers scored higher. Then Savanah noticed who had chosen to self-quiz: mostly the students with the best grades already. That was a correlation, not an experiment, and motivation was a third variable that could explain the whole result.', 'So they started over with a coin. Forty classmates each flipped one: heads meant practice recall, and tails meant reread, the control group. Everyone signed a consent form first, and anyone could stop at any time. Random assignment spread the motivated students across both groups by chance.', 'A week later, a teaching assistant graded the quizzes without knowing who had flipped heads. The students knew their own method, so the study could not be double-blind, but the grader could be kept blind. The recall group averaged 14 out of 20, and the rereaders averaged 11.', 'Their professor then showed them a 2006 study by Henry Roediger and Jeffrey Karpicke. A week after studying, students who had practiced recall remembered 61 percent, against 40 percent for those who had reread. The class had replicated a famous finding with forty people and a coin, and the professor said that mattered more than any single result.', 'On the last day came the debriefing. The class explained the study to everyone who had reread, showed them the result, and taught them how to quiz themselves before the final. Leaving half the class with the weaker method would not have been fair.', 'That spring, at her first echo clinical, a nervous patient\'s heart rate climbed on the monitor before the exam began. Savanah recognized the sympathetic division at work, talked him through slow breaths to let the parasympathetic side calm him, and watched the number drift down. That night she quizzed herself for her registry exam instead of rereading.'], more: [{ serial: 'CS596', after: 1, alt: 'Students around a table writing a hypothesis on a whiteboard' }, { serial: 'CS597', after: 2, alt: 'A woman pointing at quiz scores beside a list of student grades' }, { serial: 'CS598', after: 3, alt: 'Students each flipping a coin at their desks, with consent forms beside them' }, { serial: 'CS599', after: 5, alt: 'A professor showing a slide of two bars for recall and rereading from a famous study' }, { serial: 'CS600', after: 7, alt: 'A sonographer coaching a nervous patient to breathe slowly beside a heart monitor' }] },
     'macroeconomics-college': { title: 'Mike and the year the cranes stopped', about: 'a concrete crew laid off in 2008, a night class in macroeconomics, two policy levers, and a crane going back up', art: 'CS601', alt: 'A bald man in his thirties with a short beard in a hard hat, looking up at still cranes over the city at dusk', cast: ['Mike'], words: ['Mike had poured concrete for nine years when, in the fall of 2008, the cranes over the city stopped moving. His crew went from six days a week to three, and then to none. The last pour was a parking garage, and the trucks left half full. Nobody on the crew had done anything wrong, and every one of them felt as if they had.', 'He wanted to know why, so he enrolled in Principles of Macroeconomics at the community college at night. The class had an opportunity cost, two evenings he could have spent hunting for side work, and he decided it was worth paying.', 'The first weeks were about measurement. The economy had been in recession since December 2007, a decline spread across the whole country. Real GDP was shrinking, and the unemployment rate kept climbing until it reached 10 percent in October 2009. Mike learned that the rate counted only people still looking, so friends who had given up searching were not in it at all.', 'His own job loss had a name: cyclical unemployment, caused by falling demand, not by anything wrong with his skills. When housing prices collapsed, banks stopped lending, families stopped buying and builders stopped building. On the board, his professor shifted aggregate demand to the left, and Mike recognized his own winter in the graph.', 'Then he watched the two levers move. In December 2008 the Fed cut its target to near zero and soon began buying bonds to push longer rates down. In February 2009 Congress passed a stimulus of roughly 800 billion dollars, and unemployment insurance, an automatic stabilizer, kept his rent paid.', 'His professor asked the class to weigh it all. The deficit soared, and economists still argue about how much the stimulus helped. Mike wrote that the stabilizers had carried his family, and that a multiplier depends on who gets the money and whether they spend it.', 'In 2011 a crane went back up over the river, and a foreman Mike knew called him. The recovery had started long before anyone hired him. The trough, the textbook said, came in June 2009, two years before his phone rang, because jobs return after output does.', 'Mike kept the dog-eared textbook behind the seat of his truck. The cycle would turn again, he knew. Next time he would watch it coming in the numbers, and he would know that a layoff in a recession is weather, not a verdict.'], more: [{ serial: 'CS602', after: 1, alt: 'A bald man with a short beard in a community college night class, a textbook open' }, { serial: 'CS603', after: 2, alt: 'A line on a classroom screen showing unemployment climbing to a peak' }, { serial: 'CS604', after: 4, alt: 'The Federal Reserve building and the Capitol dome side by side, two levers between them' }, { serial: 'CS605', after: 5, alt: 'A bald man writing an essay at a kitchen table late at night while his family sleeps' }, { serial: 'CS606', after: 6, alt: 'A crane rising over a river at sunrise while a phone rings in a pickup truck' }] },
+    'speech-college': { title: 'Chloe and the three minutes', about: 'a mural proposal, three minutes of public comment at city hall, and a whole public speaking course in one night', art: 'CS607', alt: 'A woman in her thirties in a bright, paint-flecked jacket waiting with note cards at a city council hearing', cast: ['Chloe'], words: ['Chloe had painted murals in four countries and still dreaded one thing: talking to a room. So when the city council opened a public hearing on a mural grant for the wall beside the bus station, she signed up for her three minutes of comment and then lay awake.', 'She started where her public speaking course had told her to, with the audience. Seven council members, most of them worried about budgets, few of them artists. The occasion was a hearing with a timer. Her purpose was narrow: persuade them to fund the mural this year. She wrote their names on her card so she could speak to each one.', 'She wrote one sentence as her thesis: a mural on the bus station wall would cost less than cleaning the graffiti there each year. She found the city\'s own cleaning costs in its budget documents and planned to cite them out loud, because a council trusts its own numbers.', 'She organized it with Monroe\'s motivated sequence. Attention: a photo of the wall as commuters see it at dawn. Need: the cleaning bill, cited. Satisfaction: the mural and its cost. Visualization: the same wall finished. Action: approve the grant tonight.', 'She did not memorize it. She practiced from a single card of key words until she could say each step five different ways, then practiced in front of her neighbor, who timed her at two minutes and fifty seconds. Extemporaneous, her instructor had called it: prepared, practiced, and spoken fresh each time.', 'At the podium her hands shook and her voice felt thin. She remembered what she had read in class: speakers look far less nervous than they feel. She slowed down, found her first key word, looked at each council member in turn, and let the pauses do their work.', 'A council member asked whether murals really stop graffiti. Chloe said honestly that she had found no study she trusted, only the experience of two nearby cities, and she named them. The member nodded. Admitting the limit of her evidence had made the rest of it believable.', 'The council funded half the mural that night and asked her to come back with a smaller design. It was not everything she had asked for. It was a yes from a room that had started at no, and on the walk home she added a line to her card for next time: start with their numbers.'], more: [{ serial: 'CS608', after: 1, alt: 'Seven council members at a curved dais, a timer glowing beside the podium' }, { serial: 'CS609', after: 2, alt: 'A woman in a paint-flecked jacket highlighting graffiti cleaning costs in thick city budget documents' }, { serial: 'CS610', after: 4, alt: 'A neighbor holding a stopwatch while a woman practices from a single note card in a kitchen' }, { serial: 'CS611', after: 5, alt: 'A woman at a podium pausing to look a council member in the eye' }, { serial: 'CS612', after: 6, alt: 'A council member leaning forward to ask a question about murals and graffiti' }] },
     'health-6': { title: 'Savanah and the summer at Camp Cedar', about: 'a junior counselor at seventeen, a camper with heat exhaustion, sunscreen and a handwashing race, a bee sting and an auto-injector, a mean group chat, a vape in the parking lot, and a cut shin', art: 'CS571', alt: 'A seventeen-year-old camp counselor with a clipboard leading young campers across a sunny field', cast: ['Savanah'], words: ['The summer she turned seventeen, Savanah worked as a junior counselor at a day camp outside Austin, in charge of twelve campers who were eleven and twelve years old. On the first morning, the camp nurse gave every counselor three rules: drink water, watch your campers, and never guess about health.', 'In the second week, the heat index passed 105 degrees. During kickball, a camper named Rosa went pale, sweaty and dizzy. Savanah walked her to the shade, loosened her collar, laid cool wet towels on her neck and gave her sips of water, the steps for heat exhaustion. Hot, red skin with confusion would have meant heat stroke and a call to 911, and she was ready to make it.', 'Rosa recovered within the hour. From the next morning on, Savanah started every day with sunscreen of SPF 30 or higher and a water bottle check, and handwashing before lunch became a race to twenty seconds that the campers timed by singing. Nobody else went pale that summer.', 'One camper, Theo, had a bee allergy and carried an epinephrine auto-injector. When a bee stung him near the pond and his lips began to swell, Savanah did not wait. She helped him use the auto-injector in his outer thigh, as his care plan said, while the nurse called 911. Theo was fine by evening.', 'The hardest week had nothing to do with the weather. Someone made a group chat that mocked a quiet camper named Eli. Savanah saved the messages, showed them to the camp director, and sat with Eli at lunch every day that week. The chat was gone by Friday, and Eli was talking at lunch by then.', 'In the last week, a camper found a vape in the parking lot and brought it to Savanah, half proud and half scared. She thanked him, gave it to the director, and answered the cabin\'s questions honestly: nicotine is highly addictive, and most teens never start.', 'On the final afternoon, a camper slipped on the dock and cut his shin. Savanah pressed a clean cloth firmly on the cut and kept pressing until the bleeding slowed, then walked him to the nurse, who cleaned the cut, covered it and called his father.', 'At the closing campfire, the director asked each counselor what they had learned. Savanah said that most of health is not drama. It is water, shade, sunscreen and clean hands, and knowing exactly what to do on the one day something goes wrong.'], more: [{ serial: 'CS572', after: 1, alt: 'A teen counselor helping a pale camper rest in the shade with a cool towel' }, { serial: 'CS573', after: 2, alt: 'Campers washing their hands at an outdoor sink before lunch' }, { serial: 'CS574', after: 3, alt: 'A counselor helping a camper use his auto-injector beside a pond after a bee sting' }, { serial: 'CS575', after: 5, alt: 'A camper handing a counselor a vape he found in the parking lot' }, { serial: 'CS576', after: 7, alt: 'A teen counselor speaking at a closing campfire with campers around her' }] },
     'health-9': { title: 'Mike and the Saturday at the ballpark', about: 'a grandfather who collapsed in the bleachers, a coach who knew the steps, an AED from the concession stand, one shock, and a free CPR class with forty parents', art: 'CS577', alt: 'A youth baseball field on a sunny Saturday with families in the bleachers', cast: ['Mike'], words: ['Mike was coaching third base at his son\'s Saturday baseball game when a grandfather in the bleachers stood up to cheer, swayed and fell. By the time Mike reached him, the man was not answering, and his breathing came in strange, gasping pulls.', 'Gasping is not normal breathing, Mike knew, and it is a sign the heart has stopped pumping. He pointed at one parent and said, "Call 911 and put it on speaker." He pointed at a teenager and said, "Run to the concession stand and bring back the AED."', 'Then he knelt, placed the heel of one hand in the center of the man\'s chest with his other hand on top, and began to push hard and fast, at least two inches deep. He counted out loud to keep the pace near 110 a minute, the beat he had practiced in a CPR class the spring before.', 'The dispatcher\'s calm voice coached him from the phone. Within two minutes the teenager was back, out of breath, with the AED, and knelt by the man\'s head, ready to take a turn if Mike\'s arms tired. Mike turned it on, and it began to talk: it told him to bare the chest and showed where the pads went, one below the right collarbone and one on the left side below the armpit.', '"Analyzing heart rhythm. Do not touch the patient." Everyone stepped back. "Shock advised." Mike checked that no one was touching the man, called out clear, and pressed the button. The machine told him to begin CPR again, and he did, right away.', 'Six minutes later, the ambulance pulled onto the field. The paramedics took over, and on the way to the hospital the man\'s heart settled into a steady rhythm. Doctors later told the family that the minutes of CPR and the early shock were the reason he survived.', 'For each minute without CPR and a shock, a person\'s chance of surviving cardiac arrest drops by about 7 to 10 percent, Mike told his son\'s team at practice that week. That is why bystanders matter: help is usually several minutes away, and the people nearby are already there.', 'In the spring, the man came back to the ballpark with his grandson and a box of donuts for the team. He shook Mike\'s hand for a long time. That month the league held a free CPR class, and forty parents signed up. Mike took it again too, because the steps fade if you do not practice them.'], more: [{ serial: 'CS578', after: 1, alt: 'A coach directing a parent to call 911 and a teenager to run for an AED' }, { serial: 'CS579', after: 2, alt: 'A coach giving chest compressions beside the bleachers of a baseball field' }, { serial: 'CS580', after: 3, alt: 'A teenager running across a baseball field carrying an AED' }, { serial: 'CS581', after: 5, alt: 'Paramedics loading a stretcher into an ambulance beside a baseball field' }, { serial: 'CS582', after: 7, alt: 'An older man and his grandson bringing donuts to a youth baseball team' }] },
     'sexual-health-6': { title: 'Savanah and the smallest heartbeat', about: 'a sonographer who looks at hearts, a baby\'s heart at twenty weeks, four chambers and tiny valves, one cell that became a person, prenatal care, and a printout in a backpack', art: 'CS583', alt: 'A sonographer making pictures of a heart with sound waves on an ultrasound screen', cast: ['Savanah'], words: ['Savanah spent most of her days making pictures of grown-up hearts with sound waves. On Thursdays, though, she helped the cardiologist who studied the smallest hearts of all, the ones still growing before birth.', 'That Thursday, Elena came in twenty weeks pregnant, with her ten-year-old daughter, Paz, holding her hand. An earlier scan had raised a small question about the baby\'s heart, and the doctor wanted a closer look with a fetal echocardiogram.', 'Savanah dimmed the lights and moved the probe slowly. On the screen, a gray shape the size of a grape flickered. Paz gasped, and Elena squeezed her hand. That is the heart, Savanah said, and it is beating about 145 times a minute, right in the range a baby\'s heart should be.', 'She showed them the four chambers, two on top and two on the bottom, and the valves opening and closing like tiny doors. The heart had started beating around week 6, she explained, when the baby was smaller than a pea, and it had been building itself ever since. Savanah saved two views, one for the doctor\'s report and one for the family.', 'The cardiologist studied every view and then smiled. The question from the earlier scan had only been the angle of the picture. The heart was healthy. Elena let out a long breath, and Paz asked whether she could have a printout.', 'While the printer worked, Paz asked how a baby could have a heart before it was even born. Savanah told her that every person begins as one cell, a fertilized egg, that divides again and again, and that by week 12 all the major organs have formed. After that, the baby mostly grows.', 'Elena talked about her prenatal care: the folic acid she started early, the checkups she never missed, the coffee she cut back and the alcohol she had stopped completely. She also took the vitamins her doctor prescribed and walked every evening. The baby still had about twenty weeks to go, and the lungs would be among the last organs to finish.', 'On the way out, Paz asked Savanah how she had learned to see hearts. Two years of sonography school, Savanah said, a great deal of practice, and a national exam to earn her credential. Paz folded the printout carefully and put it in her backpack, between her math book and her library book. Savanah said moments like this were the best part of the job.'], more: [{ serial: 'CS584', after: 1, alt: 'A pregnant woman and her young daughter holding hands in an exam room' }, { serial: 'CS585', after: 2, alt: 'A tiny heart flickering on an ultrasound screen as a girl gasps' }, { serial: 'CS586', after: 3, alt: 'A sonographer pointing to the four chambers of a heart on a monitor' }, { serial: 'CS587', after: 5, alt: 'A girl watching an ultrasound printout come out of a printer' }, { serial: 'CS588', after: 7, alt: 'A girl tucking an ultrasound printout into her backpack' }] },
@@ -62494,6 +62772,63 @@ STORIES['policy-and-the-world-c'] = {
         'Economists still argue over whether the pain could have been smaller. They agree on the lesson. When a central bank fights inflation with higher rates, it trades jobs now for steadier prices later, and someone always pays.',
     ],
 };
+// College Public Speaking (2026-10-03, pass JD): four true stories, told for readers, every fact checked.
+STORIES['communication-and-audience-c'] = {
+    about: 'two speakers at a new cemetery, one audience, and the speech that understood the occasion',
+    more: [{ serial: 'S3621', after: 1, alt: 'A famous orator speaking for two hours from memory to a weary crowd' }, { serial: 'S3622', after: 2, alt: 'A tall president speaking briefly beside rows of fresh graves' }, { serial: 'S3623', after: 3, alt: 'A crowd outdoors listening closely as a short speech moves from past to future' }, { serial: 'S3624', after: 4, alt: 'An older orator writing a generous letter to the president by lamplight' }, { serial: 'S3625', after: 5, alt: 'Schoolchildren today reciting the same short speech in a classroom' }],
+    title: 'Two hours and two minutes', art: 'S3620', cast: [],
+    alt: 'A crowd on a November hillside at Gettysburg in 1863, a tall man in a black coat rising to speak',
+    words: [
+        'On November 19, 1863, a crowd gathered at Gettysburg, Pennsylvania, to dedicate a cemetery for the soldiers killed there that summer. The main speaker was Edward Everett, the most celebrated orator in the country. Abraham Lincoln had been asked only for a few appropriate remarks.',
+        'Everett spoke for two hours, from memory, retelling the battle in rich detail. It was a fine speech of its kind, built for an audience that expected long oratory. Then the program went on, with music, and Lincoln rose near the end.',
+        'Lincoln spoke 272 words in about two minutes. He had read the occasion, not just the topic. The crowd was standing among fresh graves, so he spoke about why the dead had died and what the living now owed them.',
+        'His speech moved through time, from the nation\'s birth to the war in the present to the future the living had to secure. That chronological order let every listener follow without notes. He chose plain words that a crowd could hear outdoors, with no microphone.',
+        'The next day, Everett wrote to the president with rare generosity. He would be glad, he wrote, if he could flatter himself that he came as near to the central idea of the occasion in two hours as Lincoln did in two minutes.',
+        'Audience analysis means reading the occasion as well as the people. Everett gave the crowd what the program expected; Lincoln gave it what the moment needed, and his short speech is the one schoolchildren still recite.',
+    ],
+};
+STORIES['ethics-and-evidence-c'] = {
+    about: 'an invitation to celebrate the Fourth of July, and a speaker who used his audience\'s own laws as his evidence',
+    more: [{ serial: 'S3627', after: 1, alt: 'A speaker pausing at a lectern as Fourth of July bunting hangs behind him' }, { serial: 'S3628', after: 2, alt: 'Thick law books stacked on a lectern as evidence beside a speaker\'s notes' }, { serial: 'S3629', after: 3, alt: 'An old Virginia law book open to a long list of crimes' }, { serial: 'S3630', after: 4, alt: 'Listeners leaning forward in their seats as the reasoning lands' }, { serial: 'S3631', after: 5, alt: 'A speaker\'s final question hanging over a silent audience' }],
+    title: 'The point that was already conceded', art: 'S3626', cast: [],
+    alt: 'A dignified speaker at a lectern before a crowded hall in Rochester in 1852',
+    words: [
+        'In 1852, the Rochester Ladies\' Anti-Slavery Society in New York invited Frederick Douglass to speak for the Fourth of July. Douglass, who had escaped slavery, chose to speak on July 5 instead, the day after the holiday. The hall was filled mostly with white listeners who opposed slavery.',
+        'He began by honoring the founders and their courage. Then he turned. This Fourth of July is yours, not mine, he told them. You may rejoice; I must mourn. The audience, warmed by his praise of the founders, now had to hear the other half of the story.',
+        'Then he did something careful with evidence. Must I undertake to prove that the slave is a man, he asked. That point, he said, is conceded already, and he proved it with the audience\'s own laws.',
+        'There were seventy-two crimes in Virginia, he said, that carried the death penalty for a black man and only two for a white man. No one writes such laws for cattle or for dogs. The law itself admitted the humanity it denied.',
+        'That is ethical and airtight reasoning: evidence the listeners could not dismiss, drawn from their own records, and a refusal to waste time proving what everyone already knew. His anger was real, and every bit of it was backed by fact.',
+        'Douglass asked the question that named the speech: what, to the American slave, is your Fourth of July? Strong evidence does not have to be new. Sometimes the most persuasive source is one the audience already trusts.',
+    ],
+};
+STORIES['organizing-and-delivering-c'] = {
+    about: 'a commencement speech built on three stories, a preview, signposts and a closing line borrowed with credit',
+    more: [{ serial: 'S3633', after: 1, alt: 'Three open books on a podium, one for each of three stories' }, { serial: 'S3634', after: 2, alt: 'A student practicing calligraphy, the lettering flowing across the page' }, { serial: 'S3635', after: 3, alt: 'Three signposts along a path, each pointing to the next part of a life' }, { serial: 'S3636', after: 4, alt: 'The back cover of an old catalog showing a country road at dawn' }, { serial: 'S3637', after: 5, alt: 'An audience of millions watching the same speech on phones and laptops' }],
+    title: 'Just three stories', art: 'S3632', cast: [],
+    alt: 'A man in a black robe at a Stanford podium before the graduating class on a sunny day',
+    words: [
+        'On June 12, 2005, Steve Jobs stood before the graduating class at Stanford University. He had never finished college himself, and he did not try to sound like a professor. He opened with a plan the audience could hold in one hand.',
+        'Today I want to tell you three stories from my life, he said. That is it, no big deal, just three stories. In one breath he had given his thesis and a preview, and every listener knew how long the speech would take.',
+        'The first story was about connecting the dots: dropping out of college, then sitting in on a calligraphy class whose lettering ended up in the first Macintosh. The second was about love and loss: being fired from the company he had started. The third was about death.',
+        'Each story began with a signpost, first, second, third, so no one got lost. Each ended with one lesson in a single line. The pattern was topical, three parts of one life, and it was easy to remember.',
+        'He closed with a line he did not write. The final issue of The Whole Earth Catalog, he told them, had ended with the words stay hungry, stay foolish. He named the source, said what it meant to him, and wished it for them.',
+        'A clear thesis, a preview, three main points with signposts, and a borrowed line credited aloud: the speech runs about fifteen minutes and has been watched by millions. Organization is what lets an audience remember.',
+    ],
+};
+STORIES['informing-and-persuading-c'] = {
+    about: 'a persuasive speech with a prepared text, a gospel singer\'s call, and the extemporaneous passage that became its heart',
+    more: [{ serial: 'S3639', after: 1, alt: 'A giant bank check returned to a crowd, a symbol of a broken promise' }, { serial: 'S3640', after: 2, alt: 'A gospel singer calling out from the platform behind a speaker at a lectern' }, { serial: 'S3641', after: 3, alt: 'A speaker rehearsing the same theme in a Detroit church months earlier' }, { serial: 'S3642', after: 4, alt: 'A crowd frozen in attention as a speech rises into its most famous passage' }, { serial: 'S3643', after: 5, alt: 'A worn speech draft pushed aside on a lectern, the speaker looking out at his audience' }],
+    title: 'Tell them about the dream', art: 'S3638', cast: [],
+    alt: 'A vast crowd stretching from the Lincoln Memorial toward the Washington Monument on a summer day in 1963',
+    words: [
+        'On August 28, 1963, hundreds of thousands of people filled the National Mall for the March on Washington for Jobs and Freedom. Martin Luther King Jr. was the last speaker of a long, hot day. He had a prepared text, and he began by reading it.',
+        'It was a persuasive speech on a question of policy. The nation had written a promissory note of liberty, he said, and had given Black Americans a bad check. The claim was logos, the image was pathos, and his years of leadership supplied the ethos.',
+        'Then, according to his adviser Clarence Jones, the gospel singer Mahalia Jackson called out from the platform: tell them about the dream, Martin. King moved his text to the side of the lectern and began to speak without it.',
+        'The dream was not new. He had used the theme in Detroit that June and in earlier speeches. Because he had practiced the ideas without memorizing the words, he could carry them anywhere. That is extemporaneous speaking at its best.',
+        'Some who were there remember a hesitation, and it is not certain that King heard Jackson at all. What is certain is that the improvised passage, built on repetition and vivid images, is the part of the speech the world remembers.',
+        'Persuasion is preparation that leaves room to listen. King knew his audience, his evidence and his purpose so well that when the moment called for something else, he could give it, and a policy speech became a vision.',
+    ],
+};
 // Business, college level (2026-10-01, pass HK): four stories at the older length with six pictures each.
 STORIES['business-and-its-world-c'] = {
     about: 'a salsa maker in San Antonio, a fall at a market booth and an LLC, a bookkeeper who found the missing cash, an order from Monterrey, and the peso',
@@ -62867,6 +63202,7 @@ const COURSE_GOALS = {
     'business-college': 'The five business functions, forms of ownership, the business environment and international trade, the functions of management and leadership, accounting, banking and financing, and ethics, social responsibility and government',
     'psychology-college': 'Research methods and measurement, the history and early schools of thought, the major perspectives, and the brain, nervous system and hormones behind behavior',
     'macroeconomics-college': 'Scarcity and markets, measuring output, prices and jobs, money, banks and the Federal Reserve, and fiscal and monetary policy with trade and exchange rates',
+    'speech-college': 'Models of communication and audience analysis, ethics, evidence and listening, organizing and delivering a speech, and informing and persuading, alone or in a group',
     'health-6': 'Body systems, hygiene and prevention, illness first steps and trustworthy information, micronutrients, labels and activity, first aid, weapons safety and cyberbullying, and medicines, nicotine, fentanyl and refusal skills',
     'health-9': 'Health literacy and disease prevention, the warning signs of a heart attack and a stroke, food labels and energy balance, CPR, an AED and choking rescue, safety online and off, mental health and getting help, and medicines, drugs and refusal skills',
     'sexual-health-6': 'Puberty and its timing, the menstrual cycle and hormones, fertilization and fetal development, prenatal care and life goals, healthy and harmful relationships, boundaries and refusal skills, recognizing and reporting abuse, the laws that protect victims, and abstinence',
@@ -63220,7 +63556,7 @@ function PinInput({ value, onChange, placeholder, style, onEnter = null }) {
 }
 // A stamp of when this copy of the page was built, so a stale page in a cache can be told apart
 // from a fresh one at a glance. Written by the build, never by hand.
-const BUILD_STAMP = '2026-10-03 03:02 PM CDT';
+const BUILD_STAMP = '2026-10-03 03:42 PM CDT';
 function ContactLine({ onOpen, inline = false }) {
     return (react_1.default.createElement("p", { className: "edu-no-print", style: { textAlign: 'center', marginTop: inline ? 0 : 28, fontSize: inline ? 14 : 12, color: C.muted, margin: inline ? '0' : undefined } }, onOpen
         ? react_1.default.createElement("button", { type: "button", onClick: onOpen, style: { background: 'none', border: 'none', color: C.muted, fontFamily: FONT, fontSize: 12, cursor: 'pointer', padding: 0, textDecoration: 'underline' } }, "Contact us")
@@ -70469,6 +70805,62 @@ function GreenRedGame({ game, round, onScore = null }) {
         react_1.default.createElement(Done, { show: done })));
 }
 // -----------------------------------------------------------------------------------------------------------------
+// Cite It or Not (2026-10-03, pass JD, the college public speaking game). In plain terms: one item at a time, and the
+// student taps Cite it (a specific statistic, quotation, paraphrased idea, image or finding from a source) or No citation
+// needed (common knowledge, or the speaker's own experience, opinion or data). It is the Cause or Correlation screen
+// with its own words: a right tap shows the card's reason and moves on, a wrong one wobbles and shows the reason too.
+// Six cards a round, three of each, from citeRounds() in logic.mjs. The board carries the right answer in
+// `data-cite-answer` for the browser test.
+// -----------------------------------------------------------------------------------------------------------------
+function CiteGame({ game, round, onScore = null }) {
+    const rounds = (0, react_1.useMemo)(() => citeRounds(round), [round]); // the six items for this round, fixed by the round number
+    const [k, setK] = (0, react_1.useState)(0); // which item we are on
+    const [got, setGot] = (0, react_1.useState)(false); // true for a moment after a right tap
+    const [nudge, setNudge] = (0, react_1.useState)(null); // the wrong answer tapped, so its button wobbles
+    const [misses, setMisses] = (0, react_1.useState)(0); // wrong taps this round
+    const [streak, setStreak] = (0, react_1.useState)(0); // right answers in a row
+    const [done, setDone] = (0, react_1.useState)(false); // true once all six are answered
+    const q = rounds[Math.min(k, rounds.length - 1)];
+    (0, react_1.useEffect)(() => { setK(0); setGot(false); setMisses(0); setDone(false); setStreak(0); }, [round]);
+    (0, react_1.useEffect)(() => { if (done && onScore)
+        onScore(misses, 'low'); }, [done]);
+    (0, react_1.useEffect)(() => { if (nudge === null)
+        return undefined; const t = setTimeout(() => setNudge(null), 500); return () => clearTimeout(t); }, [nudge]);
+    (0, react_1.useEffect)(() => { if (!got)
+        return undefined; const t = setTimeout(() => { setGot(false); if (k + 1 >= rounds.length)
+        setDone(true);
+    else
+        setK(k + 1); }, 1300); return () => clearTimeout(t); }, [got]);
+    const pick = (ans) => { if (got || done)
+        return; if (ans === q.answer) {
+        setGot(true);
+        setStreak((n) => n + 1);
+    }
+    else {
+        setNudge(ans);
+        setMisses((n) => n + 1);
+        setStreak(0);
+    } };
+    return (react_1.default.createElement("div", { className: "edu-game-box", style: { ...GAME_BOX, aspectRatio: 'auto', padding: 14 }, "data-cite-answer": done ? '' : q.answer },
+        react_1.default.createElement("div", { style: { display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 } },
+            react_1.default.createElement("span", null,
+                "Cite it or not",
+                streak > 1 ? ` · ${streak} in a row` : ''),
+            react_1.default.createElement("span", null,
+                Math.min(k + 1, rounds.length),
+                " of ",
+                rounds.length)),
+        done ? react_1.default.createElement("p", { style: { margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 } },
+            "Six items sorted",
+            misses ? `, with ${misses} to look at again` : ', every one right',
+            ". Tap the round arrow for more.") : (react_1.default.createElement("div", { style: { textAlign: 'center' } },
+            react_1.default.createElement(SwipeCard, { left: ['free', 'No citation needed', B.clay], right: ['cite', 'Cite it', B.green], onPick: pick, off: got || done },
+                react_1.default.createElement("div", { style: { background: '#fff', border: `1.5px solid ${B.line}`, borderRadius: 12, padding: '16px 12px', marginBottom: 10, fontSize: 18, fontWeight: 700, color: B.ink, lineHeight: 1.4 } }, q.text)),
+            react_1.default.createElement("p", { style: { margin: '0 0 10px', fontSize: 15, minHeight: 22, color: got ? B.green : nudge ? B.clay : B.ink, fontWeight: got ? 700 : 400 } }, got || nudge ? `${q.answer === 'free' ? 'No citation needed' : 'Cite it'}: ${q.why}` : 'Cite it or not?'),
+            react_1.default.createElement("div", { style: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 } }, ['free', 'cite'].map((ans) => react_1.default.createElement("button", { key: ans, type: "button", className: `edu-press${nudge === ans ? ' edu-wobble' : ''}`, "aria-label": `Answer: ${ans}`, onClick: () => pick(ans), style: { fontFamily: FONT, fontSize: 17, fontWeight: 700, padding: '12px 4px', borderRadius: 12, border: `2px solid ${got && ans === q.answer ? B.green : B.line}`, background: '#fff', color: B.ink, cursor: got ? 'default' : 'pointer', textTransform: 'capitalize' } }, ans === 'free' ? '← No citation' : 'Cite it →'))))),
+        react_1.default.createElement(Done, { show: done })));
+}
+// -----------------------------------------------------------------------------------------------------------------
 // In GDP or Not (2026-10-03, pass JC, the college macroeconomics game). In plain terms: one case at a time, and the
 // student taps In GDP (a new final good or service made in the country and sold) or Not in GDP (used goods, stock
 // trades, transfer payments, ingredients, unpaid work at home, things made abroad). It is the Cause or Correlation
@@ -70633,7 +71025,7 @@ function MythFactGame({ game, round, onScore = null }) {
             react_1.default.createElement("div", { style: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 } }, ['myth', 'fact'].map((ans) => react_1.default.createElement("button", { key: ans, type: "button", className: `edu-press${nudge === ans ? ' edu-wobble' : ''}`, "aria-label": `Answer: ${ans}`, onClick: () => pick(ans), style: { fontFamily: FONT, fontSize: 17, fontWeight: 700, padding: '12px 4px', borderRadius: 12, border: `2px solid ${got && ans === q.answer ? B.green : B.line}`, background: '#fff', color: B.ink, cursor: got ? 'default' : 'pointer', textTransform: 'capitalize' } }, ans === 'myth' ? '← Myth' : 'Fact →'))))),
         react_1.default.createElement(Done, { show: done })));
 }
-const GAME_OF = { ship: ShipGame, dots: DotsGame, pairs: PairsGame, sort: SortGame, maze: MazeGame, jigsaw: JigsawGame, pong: PongGame, sprint: SprintGame, order: OrderGame, build: BuildGame, fix: FixGame, mix: MixGame, debug: DebugGame, ptable: PtableGame, evidence: EvidenceGame, catch: CatchGame, path: PathGame, buckets: BucketsGame, jump: JumpGame, map: MapGame, balance: BalanceGame, walk: WalkGame, teach: TeachGame, bits: BitsGame, pay: PayGame, price: PriceGame, loan: LoanGame, fund: FundGame, search: SearchGame, spot: SpotGame, pattern: PatternGame, shape: ShapeGame, chord: ChordGame, valid: ValidGame, reason: ReasonGame, because: BecauseGame, share: ShareGame, stat: StatGame, recall: RecallGame, face: FaceGame, sense: SenseGame, filler: FillerGame, room: RoomGame, ask: AskGame, turn: TurnGame, jar: JarGame, relation: RelationGame, sprout: SproutGame, grow: GrowGame, breakeven: BreakEvenGame, deal: DealGame, savejar: SaveJarGame, tool: ToolGame, ledger: LedgerGame, label: LabelGame, cpr: CprGame, greenred: GreenRedGame, mythfact: MythFactGame, cause: CauseGame, gdp: GdpGame };
+const GAME_OF = { ship: ShipGame, dots: DotsGame, pairs: PairsGame, sort: SortGame, maze: MazeGame, jigsaw: JigsawGame, pong: PongGame, sprint: SprintGame, order: OrderGame, build: BuildGame, fix: FixGame, mix: MixGame, debug: DebugGame, ptable: PtableGame, evidence: EvidenceGame, catch: CatchGame, path: PathGame, buckets: BucketsGame, jump: JumpGame, map: MapGame, balance: BalanceGame, walk: WalkGame, teach: TeachGame, bits: BitsGame, pay: PayGame, price: PriceGame, loan: LoanGame, fund: FundGame, search: SearchGame, spot: SpotGame, pattern: PatternGame, shape: ShapeGame, chord: ChordGame, valid: ValidGame, reason: ReasonGame, because: BecauseGame, share: ShareGame, stat: StatGame, recall: RecallGame, face: FaceGame, sense: SenseGame, filler: FillerGame, room: RoomGame, ask: AskGame, turn: TurnGame, jar: JarGame, relation: RelationGame, sprout: SproutGame, grow: GrowGame, breakeven: BreakEvenGame, deal: DealGame, savejar: SaveJarGame, tool: ToolGame, ledger: LedgerGame, label: LabelGame, cpr: CprGame, greenred: GreenRedGame, mythfact: MythFactGame, cause: CauseGame, gdp: GdpGame, cite: CiteGame };
 // How to play, in a line or two, by kind of game (and by deck for the matching games).
 function gameInstructions(game) {
     if (game.kind === 'bits')
@@ -70660,6 +71052,8 @@ function gameInstructions(game) {
         return 'Two labels for the same kind of food. Read the row the question asks about, sodium, added sugars or fiber, and tap the better label. Six pairs, and the clock counts up.';
     if (game.kind === 'cpr')
         return 'Tap Push at the pace of chest compressions, 100 to 120 a minute, with the ring as your guide. After fifteen pushes the game tells you whether you were too slow, just right or too fast.';
+    if (game.kind === 'cite')
+        return 'Something a speaker might use appears, and you decide: does it need a spoken citation? Specific statistics, quotations, paraphrased ideas, images and findings do; common knowledge and your own experiences, opinions and data do not. Six items a round. Flick the card left or right, tap a button, or press an arrow key.';
     if (game.kind === 'gdp')
         return 'Something happens this year, and you decide: does it count in GDP? New final goods and services made in the country count; used goods, stock trades, transfer payments, ingredients and unpaid work at home do not. Six cases a round. Flick the card left or right, tap a button, or press an arrow key.';
     if (game.kind === 'cause')
@@ -70934,6 +71328,11 @@ function GameThumb({ kind, game = null }) {
             react_1.default.createElement("path", { d: "M12 10 H20 L18 14 L20 18 H12 Z", fill: C.green }),
             react_1.default.createElement("line", { x1: "25", y1: "10", x2: "25", y2: "31", stroke: k, strokeWidth: "1.6" }),
             react_1.default.createElement("path", { d: "M25 10 H33 L31 14 L33 18 H25 Z", fill: C.clay }));
+    if (game && game.kind === 'cite')
+        return react_1.default.createElement("svg", { viewBox: "0 0 40 40", width: "44", height: "44", "aria-hidden": "true" },
+            react_1.default.createElement("rect", { x: "4", y: "5", width: "32", height: "30", rx: "4", fill: C.paperBoard, stroke: k, strokeWidth: "1" }),
+            react_1.default.createElement("path", { d: "M10 10 h20 a2 2 0 0 1 2 2 v11 a2 2 0 0 1 -2 2 h-11 l-5 5 v-5 h-4 a2 2 0 0 1 -2 -2 v-11 a2 2 0 0 1 2 -2 z", fill: C.green }),
+            react_1.default.createElement("path", { d: "M15 14 v5 M18 14 v5 M23 14 v5 M26 14 v5", stroke: "#fff", strokeWidth: "1.6" }));
     if (game && game.kind === 'gdp')
         return react_1.default.createElement("svg", { viewBox: "0 0 40 40", width: "44", height: "44", "aria-hidden": "true" },
             react_1.default.createElement("rect", { x: "4", y: "5", width: "32", height: "30", rx: "4", fill: C.paperBoard, stroke: k, strokeWidth: "1" }),

@@ -1653,6 +1653,12 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
   }
   { // Sort the Ledger (pass HK): six accounts a round, two from each side of the balance sheet, each on its true side.
     ok('every ledger round deals two accounts from each side, each on its true side', [1, 2, 3, 4, 5].every((r) => { const qs = L.ledgerRounds(r); return qs.length === 6 && new Set(qs.map((q) => q.item)).size === 6 && L.LEDGER_SIDES.every((side) => qs.filter((q) => q.answer === side).length === 2) && qs.every((q) => L.LEDGER_ITEMS.find((it) => it[0] === q.item)[1] === q.answer); }));
+    { // Pass JD: college Public Speaking, built on ACGM SPCH 1315, with its own game.
+      const c = L.COURSES.find((x) => x.id === 'speech-college');
+      ok('college Public Speaking has four lessons at grade C', !!c && c.grade === 'C' && c.subject === 'Speech' && c.elective === true && c.modules.length === 4, c ? c.modules.map((m) => m.id).join(',') : 'missing');
+      ok('Cite It or Not belongs to college speech and deals three of each a round', (L.COURSE_GAMES['speech-college'] || []).includes('cite-speech-college') && [1, 2, 3, 7, 12].every((r) => { const d = L.citeRounds(r); return d.length === 6 && d.filter((x) => x.answer === 'cite').length === 3 && new Set(d.map((x) => x.text)).size === 6 && d.every((x) => x.why); }));
+      ok('every Cite It or Not card gives the lesson\'s reason', L.CITE_CARDS.length === 14 && L.CITE_CARDS.every(([, a, w]) => (a === 'cite' ? /source|credit|names/i : /common knowledge|own/i).test(w)));
+    }
     { // Pass JC: college macroeconomics, built on ACGM ECON 2301, with its own game.
       const c = L.COURSES.find((x) => x.id === 'macroeconomics-college');
       ok('college macroeconomics has four lessons at grade C', !!c && c.grade === 'C' && c.subject === 'Economics' && c.elective === true && c.modules.length === 4, c ? c.modules.map((m) => m.id).join(',') : 'missing');

@@ -1340,6 +1340,16 @@ await page.waitForTimeout(200);
 }
 await page.getByRole('button', { name: 'Close game' }).first().click({ force: true });
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview');
+// Cite It or Not (pass JD, college public speaking): the board carries the right answer for each item.
+await page.evaluate(() => window.__eduTest.openColoring('play:cite-speech-college'));
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'coloring');
+await page.waitForTimeout(200);
+{ ok('the Cite It or Not game opens with an item and two answers', (await page.getByRole('button', { name: /^Answer: / }).count()) === 2 && (await text()).includes('Cite it or not?'));
+  for (let i = 0; i < 6; i++) { const ans = await page.locator('[data-cite-answer]').getAttribute('data-cite-answer'); if (!ans) break; await page.getByRole('button', { name: `Answer: ${ans}`, exact: true }).click(); await page.waitForTimeout(1450); }
+  ok('six items answered finish the round', (await text()).includes('Six items sorted'));
+}
+await page.getByRole('button', { name: 'Close game' }).first().click({ force: true });
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview');
 // In GDP or Not (pass JC, college macroeconomics): the board carries the right answer for each case.
 await page.evaluate(() => window.__eduTest.openColoring('play:gdp-macroeconomics-college'));
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'coloring');

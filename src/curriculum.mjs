@@ -1634,6 +1634,26 @@ export const CURRICULUM = [
     ],
   },
   {
+    grade: 'C', subject: 'Speech', status: 'ready',
+    source: 'Texas Higher Education Coordinating Board, Lower-Division Academic Course Guide Manual: SPCH 1315 Public Speaking, its seven learning outcomes (read as printed in Texas Southmost College\'s 2026-2027 catalog, and in other Texas college catalogs and syllabi that quote the course guide); the National Communication Association\'s Learning Outcomes in Communication, as printed by colleges that adopt them.',
+    standards: [
+      { framework: 'TEKS', code: 'ACGM SPCH 1315 LO1', text: 'Demonstrate an understanding of the foundational models of communication.', moduleIds: ['communication-and-audience-c'] },
+      { framework: 'TEKS', code: 'ACGM SPCH 1315 LO2', text: 'Apply elements of audience analysis.', moduleIds: ['communication-and-audience-c'] },
+      { framework: 'TEKS', code: 'ACGM SPCH 1315 LO3', text: 'Demonstrate ethical speaking and listening skills by analyzing presentations for evidence and logic.', moduleIds: ['ethics-and-evidence-c'] },
+      { framework: 'TEKS', code: 'ACGM SPCH 1315 LO4', text: 'Research, develop and deliver extemporaneous speeches with effective verbal and nonverbal techniques.', moduleIds: ['organizing-and-delivering-c'] },
+      { framework: 'TEKS', code: 'ACGM SPCH 1315 LO5', text: 'Demonstrate effective usage of technology when researching and/or presenting speeches.', moduleIds: ['ethics-and-evidence-c', 'organizing-and-delivering-c'] },
+      { framework: 'TEKS', code: 'ACGM SPCH 1315 LO6', text: 'Identify how culture, ethnicity and gender influence communication.', moduleIds: ['communication-and-audience-c'] },
+      { framework: 'TEKS', code: 'ACGM SPCH 1315 LO7', text: 'Develop proficiency in presenting a variety of speeches as an individual or group (e.g. narrative, informative or persuasive).', moduleIds: ['informing-and-persuading-c'] },
+      { framework: 'CCSS', code: 'NCA LOC 2', text: 'Employ communication theories, perspectives, principles, and concepts.', moduleIds: ['communication-and-audience-c'] },
+      { framework: 'CCSS', code: 'NCA LOC 4', text: 'Create messages appropriate to the audience, purpose, and context.', moduleIds: ['communication-and-audience-c', 'organizing-and-delivering-c', 'informing-and-persuading-c'] },
+      { framework: 'CCSS', code: 'NCA LOC 5', text: 'Critically analyze messages.', moduleIds: ['ethics-and-evidence-c'] },
+      { framework: 'CCSS', code: 'NCA LOC 6', text: 'Demonstrate the ability to accomplish communicative goals (self-efficacy).', moduleIds: ['organizing-and-delivering-c', 'informing-and-persuading-c'] },
+      { framework: 'CCSS', code: 'NCA LOC 7', text: 'Apply ethical communication principles and practices.', moduleIds: ['ethics-and-evidence-c'] },
+      { framework: 'CCSS', code: 'NCA LOC 8', text: 'Utilize communication to embrace difference.', moduleIds: ['communication-and-audience-c'] },
+      { framework: 'CCSS', code: 'NCA LOC 9', text: 'Influence public discourse.', moduleIds: ['informing-and-persuading-c'] },
+    ],
+  },
+  {
     grade: 'C', subject: 'Economics', status: 'ready',
     source: 'Texas Higher Education Coordinating Board, Lower-Division Academic Course Guide Manual: ECON 2301 Principles of Macroeconomics, its eight learning outcomes (read as printed in Texas Southmost College\'s 2026-2027 catalog, and in other Texas college catalogs and syllabi that quote the course guide); the Council for Economic Education\'s Voluntary National Content Standards in Economics, second edition, as printed on the Council\'s own site.',
     standards: [

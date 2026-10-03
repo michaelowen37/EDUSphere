@@ -1208,6 +1208,21 @@ export const COURSES = [
     modules: MACRO_MODULES(),
   },
   // ---------------------------------------------------------------------------------------------------------------
+  // Public Speaking, college level (2026-10-03, pass JD). In plain terms: the course card for the college speech
+  // course, built on the seven learning outcomes Texas sets for SPCH 1315 in its college course guide, deeper than the
+  // grade 9 speech course. Its four lessons live in SPCH_MODULES() further down.
+  // ---------------------------------------------------------------------------------------------------------------
+  {
+    id: 'speech-college',
+    grade: 'C',
+    subject: 'Speech',
+    title: 'Public speaking',
+    audience: 'College level',
+    elective: true,
+    keywords: ['public speaking', 'speech', 'communication', 'persuasion', 'rhetoric', 'audience', 'college', 'elective'],
+    modules: SPCH_MODULES(),
+  },
+  // ---------------------------------------------------------------------------------------------------------------
   // Reproductive and sexual health for grades 9 to 12 (2026-10-01, pass HP, Mikey). In plain terms: the second human
   // sexuality elective, on the strand of the Texas Health I course that the general high school course leaves out. Like
   // the grade 6 course, it appears only when an educator assigns it, and assigning it asks the educator to confirm a
@@ -1653,6 +1668,7 @@ export const GAMES = [
   { id: 'ledger-business-college', kind: 'ledger', title: 'Sort the Ledger', minGrade: 'C', ledger: 'accounts' },   // business college (pass HK): assets, liabilities or equity
   { id: 'cause-psychology-college', kind: 'cause', title: 'Cause or Correlation', minGrade: 'C', cause: 'studies' },   // psychology college (pass JB): experiment or correlation
   { id: 'gdp-macroeconomics-college', kind: 'gdp', title: 'In GDP or Not', minGrade: 'C', gdp: 'cards' },   // macroeconomics college (pass JC): counted in GDP or left out
+  { id: 'cite-speech-college', kind: 'cite', title: 'Cite It or Not', minGrade: 'C', cite: 'cards' },   // public speaking college (pass JD): cite it or not
   { id: 'label-health-6', kind: 'label', title: 'Read the Label', minGrade: '6', label: 'foods' },   // health 6 to 8 (pass HM): the better label for the nutrient asked
   { id: 'cpr-health-9', kind: 'cpr', title: 'Push to the Beat', minGrade: '9', cpr: 'compressions' },   // health 9 to 12 (pass HN): 100 to 120 a minute
   { id: 'greenred-sexual-health-6', kind: 'greenred', title: 'Green Flag or Red Flag', minGrade: '6', greenred: 'behaviors' },   // reproductive and sexual health 6 to 8 (pass HO)
@@ -2674,6 +2690,35 @@ export function wonderAllowed(w, courseId, stage) {
   if (w.courseIds.includes(courseId)) return true;
   if ((w.stage || 'early') !== stage) return false;
   return !w.courseIds.some((id) => { const c = getCourse(id); return !!(c && c.consent); });
+}
+// ----------------------------------------------------------------------------------------------------------------
+// Cite It or Not (2026-10-03, pass JD): the college public speaking game. In plain terms: each card names something a
+// speaker might use, and the student swipes or taps Cite it (a specific statistic, quotation, paraphrased idea, image or
+// finding from a source) or No citation needed (common knowledge, or the speaker's own experience, opinion or data).
+// The rule is the lesson's. `CITE_CARDS` holds the cards with the one-line reason shown after, and `citeRounds(round)`
+// deals three of each a round, in an order fixed by the round number.
+// ----------------------------------------------------------------------------------------------------------------
+export const CITE_CARDS = [
+  ['A statistic about teen sleep from a recent national survey.', 'cite', 'A specific statistic needs its source.'],
+  ['A quotation from Frederick Douglass.', 'cite', 'A quotation always names its speaker.'],
+  ['An idea you paraphrased from a magazine article.', 'cite', 'A paraphrased idea still needs credit.'],
+  ['A chart from a news site that you put on a slide.', 'cite', 'Borrowed images and charts need credit too.'],
+  ['Advice from a doctor that you read in a medical journal.', 'cite', 'Expert testimony names the expert and the source.'],
+  ['The finding of a study you read about memory.', 'cite', 'A research finding needs its source.'],
+  ['A summary of a documentary you watched for the speech.', 'cite', 'A summary of a source is still borrowed, so credit it.'],
+  ['The fact that the Earth orbits the sun.', 'free', 'Common knowledge needs no citation.'],
+  ['A story about your own first day of college.', 'free', 'Your own experience is yours to tell.'],
+  ['The fact that Austin is the capital of Texas.', 'free', 'Common knowledge needs no citation.'],
+  ['Your own opinion that the town needs a park.', 'free', 'Your own opinion needs no citation.'],
+  ['The fact that water freezes at 32 degrees Fahrenheit.', 'free', 'Common knowledge needs no citation.'],
+  ['Results of a survey you ran in your own class.', 'free', 'Your own data: just say how you gathered it.'],
+  ['The fact that George Washington was the first US president.', 'free', 'Common knowledge needs no citation.'],
+];
+export function citeRounds(round) {
+  let x = (round * 70313 + 53) >>> 0; const rnd = () => { x = (x * 1664525 + 1013904223) >>> 0; return x / 4294967296; };
+  const mix = (arr) => { const a = [...arr]; for (let j = a.length - 1; j > 0; j--) { const k = Math.floor(rnd() * (j + 1)); [a[j], a[k]] = [a[k], a[j]]; } return a; };
+  const deal = [...mix(CITE_CARDS.filter((c) => c[1] === 'cite')).slice(0, 3), ...mix(CITE_CARDS.filter((c) => c[1] === 'free')).slice(0, 3)];
+  return mix(deal).map(([text, answer, why]) => ({ text, answer, why }));
 }
 // ----------------------------------------------------------------------------------------------------------------
 // In GDP or Not (2026-10-03, pass JC): the college macroeconomics game. In plain terms: each card names one thing that
@@ -11116,6 +11161,97 @@ function HEALTH6_MODULES() { return [
   },
 ]; }
 // -----------------------------------------------------------------------------------------------------------------
+// SPCH_MODULES: the four lessons of the college Public Speaking course (2026-10-03, pass JD).
+// In plain terms: each object is one lesson at a first-year college level. `sources` names the SPCH 1315 learning
+// outcomes from Texas's college course guide that the lesson meets, with the national communication outcomes beside
+// them, and `generators` the question banks below that make the quick checks. Every name and date was checked by web.
+// -----------------------------------------------------------------------------------------------------------------
+function SPCH_MODULES() { return [
+  {
+    id: 'communication-and-audience-c',
+    order: 1,
+    title: 'Communication and audience',
+    tagline: 'Models of communication, noise, audience analysis and adaptation, and how culture shapes a message',
+    requires: [],
+    lesson: {
+      paragraphs: ['Public speaking is communication with a purpose. The linear model, drawn by Shannon and Weaver in 1949, sends a message from a sender through a channel to a receiver, with noise in the way. The interactional model adds feedback, and the transactional model says speaker and audience create meaning together, at the same time.',
+        'Noise is anything that gets in the way of meaning. External noise is a siren outside; physiological noise is hunger or a headache; psychological noise is a worry that pulls attention away; semantic noise is a word the audience does not share. A good speaker plans around all four.',
+        'Audience analysis comes first. Demographic analysis looks at age, background, culture and education. Psychological analysis asks what the audience already knows, believes and feels about the topic. Situational analysis looks at size, setting, time limit and occasion. Adapting means changing examples, words and length to fit what you learn.',
+        'Culture, ethnicity and gender shape how messages are sent and heard. The anthropologist Edward T. Hall described high-context cultures, where much of the meaning sits in the setting and the relationship, and low-context cultures, where meaning is spelled out in words. Gestures, eye contact and humor carry different meanings in different places.',
+        'Ethnocentrism is judging other cultures by the standards of your own, and it is a quiet form of noise. Gender expectations can shape how the same words are judged, so a fair listener asks whether they are judging the message or the speaker. Inclusive language, such as everyone instead of you guys, keeps listeners in the room.'],
+      keyIdea: 'Communication is transactional: speaker and audience make meaning together, through noise. Analyze the audience by demographics, beliefs and situation, then adapt. Culture, ethnicity and gender shape how a message is heard.',
+      example: { kind: 'flow', steps: ['analyze the audience', 'choose the purpose', 'adapt examples and words', 'watch feedback and adjust'], caption: 'Audience-centered speaking in four steps.',
+        another: ['A speech on saving for retirement lands differently with first-year students than with nurses near retirement: the same facts, different examples.',
+          'Semantic noise in action: a doctor who says idiopathic means cause unknown, and most of the room hears nothing at all.'] },
+    },
+    sources: ['Aligned with ACGM SPCH 1315 learning outcomes 1 (the foundational models of communication), 2 (audience analysis) and 6 (how culture, ethnicity and gender influence communication), and the National Communication Association\'s Learning Outcomes in Communication 2, 4 and 8.'],
+    generators: ['spch-audience', 'spch-audience', 'spch-audience', 'spch-audience', 'spch-audience'],
+  },
+  {
+    id: 'ethics-and-evidence-c',
+    order: 2,
+    title: 'Ethics, evidence and listening',
+    tagline: 'Citing sources out loud, avoiding plagiarism, testing evidence, spotting fallacies and listening ethically',
+    requires: [],
+    lesson: {
+      paragraphs: ['An ethical speaker tells the truth, gives credit and respects the audience. Plagiarism is presenting someone else\'s words or ideas as your own, and it comes in three forms. Global plagiarism takes a whole speech, patchwork plagiarism stitches together copied pieces, and incremental plagiarism leaves out credit for quotations or paraphrased ideas.',
+        'Credit is spoken aloud. An oral citation names the source and why it is trustworthy, for example, according to a report published this year by the Centers for Disease Control and Prevention. Any specific statistic, quotation, paraphrased idea, image or finding needs a citation; common knowledge and your own experiences, opinions and data do not.',
+        'Supporting material comes in three kinds: examples, statistics and testimony. Expert testimony comes from someone qualified, and peer testimony from someone with firsthand experience. Test every source for credibility, recency and bias: who wrote it, when, and who gains if you believe it.',
+        'Reasoning connects evidence to claims. Inductive reasoning moves from specific cases to a general conclusion, and deductive reasoning moves from a general principle to a specific case. Causal reasoning links a cause to an effect, and analogical reasoning compares two similar cases.',
+        'A fallacy is an error in reasoning. Ad hominem attacks the person instead of the argument, a straw man distorts an argument to make it easy to knock down, and a false dilemma offers only two choices when there are more. A slippery slope claims one step must lead to disaster, a hasty generalization draws a big conclusion from too few cases, and a bandwagon appeal says something is right because it is popular.',
+        'Listening is half of ethical communication. Hearing is physical; listening is the active work of attending, understanding and responding. An ethical listener gives the speaker a fair hearing, separates the message from the messenger, and judges the evidence and logic rather than the delivery alone.'],
+      keyIdea: 'Cite every specific fact, quotation and borrowed idea out loud. Test evidence for credibility, recency and bias, connect it with sound reasoning, and name the fallacies. Listen to judge the argument, not the speaker.',
+      example: { kind: 'flow', steps: ['find the source', 'test credibility, recency and bias', 'cite it out loud', 'connect it to your claim'], caption: 'From a source to a fair, credited claim.',
+        another: ['Incremental plagiarism is the easy one to miss: a speech with one paraphrased paragraph and no citation is still plagiarized.',
+          'A hasty generalization in one sentence: my two neighbors got sick after the flu shot, so the shot makes people sick.'] },
+    },
+    sources: ['Aligned with ACGM SPCH 1315 learning outcomes 3 (ethical speaking and listening, analyzing presentations for evidence and logic) and 5 (technology when researching speeches), and the National Communication Association\'s Learning Outcomes in Communication 5 and 7.'],
+    generators: ['spch-ethics', 'spch-ethics', 'spch-ethics', 'spch-ethics', 'spch-ethics'],
+  },
+  {
+    id: 'organizing-and-delivering-c',
+    order: 3,
+    title: 'Organizing and delivering',
+    tagline: 'Purpose and thesis, patterns of organization, outlines and transitions, extemporaneous delivery, voice and body, slides and nerves',
+    requires: [],
+    lesson: {
+      paragraphs: ['Every speech starts with a general purpose, to inform, persuade or entertain, and a specific purpose, the one thing the audience should know or do. The central idea, or thesis, says it in one sentence. Two to five main points support it, because listeners cannot reread.',
+        'Main points follow a pattern. Chronological order follows time, spatial order follows place, topical order divides a subject into parts, causal order moves from cause to effect, and problem-solution order names a problem and then the fix. Signposts such as first, next and finally tell listeners where they are.',
+        'The introduction gains attention, states the thesis, builds credibility and previews the main points. The conclusion signals the end and reinforces the central idea. A preparation outline is full sentences for planning; a speaking outline is brief key words to glance at while you speak.',
+        'There are four methods of delivery. Manuscript speaking reads a full text, memorized speaking recites it, and impromptu speaking happens with no preparation. Extemporaneous speaking is carefully prepared and practiced but delivered from brief notes, so it sounds like conversation, and it is the method most college speeches should use.',
+        'Voice and body carry meaning. Vary your rate, pitch and volume, pause on purpose, and drop filler words such as um and like. Hold eye contact across the whole room, let gestures come from what you mean, and use slides as an aid, not a script: few words, large images, and never your back to the audience.',
+        'Nervousness is normal, and it is often called communication apprehension. Preparation and practice help most. Speakers also overestimate how nervous they look; to an audience they look less nervous than they feel. In a 2003 study by Kenneth Savitsky and Thomas Gilovich, speakers who learned this gave better speeches, judged by themselves and by observers.'],
+      keyIdea: 'State one specific purpose and a one-sentence thesis, support it with two to five main points in a clear pattern, and tie them with signposts. Speak extemporaneously from brief notes, with a varied voice and steady eye contact.',
+      example: { kind: 'flow', steps: ['gain attention', 'state the thesis and preview', 'main points with signposts', 'conclude and reinforce'], caption: 'The shape of a well-organized speech.',
+        another: ['A speech on hurricanes could go chronological (forming, landfall, aftermath), spatial (eye, eyewall, rain bands) or causal (warm water, rising air, spin).',
+          'A speaking outline for a five-minute speech can fit on one card: key words, the first sentence, the source names and the last sentence.'] },
+    },
+    sources: ['Aligned with ACGM SPCH 1315 learning outcomes 4 (research, develop and deliver extemporaneous speeches with effective verbal and nonverbal techniques) and 5 (technology when presenting speeches), and the National Communication Association\'s Learning Outcomes in Communication 4 and 6.'],
+    generators: ['spch-organize', 'spch-organize', 'spch-organize', 'spch-organize', 'spch-organize'],
+  },
+  {
+    id: 'informing-and-persuading-c',
+    order: 4,
+    title: 'Informing and persuading',
+    tagline: 'Narrative, informative and persuasive speeches, questions of fact, value and policy, Aristotle\'s three proofs, the motivated sequence and group presentations',
+    requires: [],
+    lesson: {
+      paragraphs: ['Speeches come in kinds. A narrative speech tells a story with a point, an informative speech teaches by defining, describing, demonstrating or explaining, and a persuasive speech tries to change what listeners believe or do. Informative speakers aim for clarity and stay neutral; persuasive speakers take a side.',
+        'Persuasive speeches answer one of three questions. A question of fact asks whether something is true, a question of value asks whether it is good or right, and a question of policy asks what should be done. Policy speeches need a plan and must show it can work.',
+        'Aristotle named three proofs in his Rhetoric. Ethos is the speaker\'s credibility, built from competence, good character and goodwill. Pathos is an appeal to emotion, and logos is an appeal to reason and evidence. Strong persuasion uses all three, and ethical persuasion never fakes any of them.',
+        'Alan Monroe\'s motivated sequence, taught since the 1930s, organizes a policy speech in five steps: attention, need, satisfaction, visualization and action. Gain attention, show the need, satisfy it with a plan, help listeners picture the result, and ask for a specific action.',
+        'Some speeches are given by groups. In a symposium, members each present one part of a topic in turn; in a panel discussion, members talk with each other in front of an audience. Either way, plan who covers what, rehearse the handoffs, and keep one shared thesis.'],
+      keyIdea: 'Informative speeches teach; persuasive speeches take a side on a question of fact, value or policy. Persuade with ethos, pathos and logos, and organize a policy speech with the motivated sequence.',
+      example: { kind: 'flow', steps: ['attention', 'need', 'satisfaction', 'visualization', 'action'], caption: 'Monroe\'s motivated sequence.',
+        another: ['Fact: does sleep loss lower grades? Value: is it wrong to start school before 8? Policy: should the district start high schools at 8:30?',
+          'Ethos can be borrowed and lost: a cited expert lends credibility, and one false statistic can cost a speaker the whole room.'] },
+    },
+    sources: ['Aligned with ACGM SPCH 1315 learning outcome 7 (a variety of speeches, as an individual or group: narrative, informative or persuasive), and the National Communication Association\'s Learning Outcomes in Communication 4, 6 and 9.'],
+    generators: ['spch-persuade', 'spch-persuade', 'spch-persuade', 'spch-persuade', 'spch-persuade'],
+  },
+]; }
+
+// -----------------------------------------------------------------------------------------------------------------
 // MACRO_MODULES: the four lessons of the college macroeconomics course (2026-10-03, pass JC).
 // In plain terms: each object is one lesson at a first-year college level. `sources` names the ECON 2301 learning
 // outcomes from Texas's college course guide that the lesson meets, with the national economics standards beside them,
@@ -17939,6 +18075,89 @@ Object.assign(GENERATORS, {
       ['Alcohol slows what?', ['reaction time and judgment', 'hair growth', 'eyesight only', 'nothing'], 'reaction time and judgment', 'That is why drinking and driving kills.'],
       ['What do prescription labels add?', ['the patient\'s name, the dose and the prescriber', 'a coupon', 'a recipe', 'nothing'], 'the patient\'s name, the dose and the prescriber', 'Over-the-counter labels list uses and warnings.'],
       ['Combining drugs is dangerous because effects do what?', ['add up', 'cancel out', 'disappear', 'stay the same'], 'add up', 'Never combine drugs without a doctor.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  // -----------------------------------------------------------------------------------------------------------------
+  // College Public Speaking question banks (2026-10-03, pass JD). In plain terms: four-answer quick checks for each
+  // lesson, every answer named in its lesson, so a round of ten never needs a repeat.
+  // -----------------------------------------------------------------------------------------------------------------
+  'spch-audience': (rng) => {
+    const Q = [['Which model sends a message one way, sender to receiver?', ['the linear model', 'the transactional model', 'the interactional model', 'the feedback model'], 'the linear model', 'Noise can get in the way.'],
+      ['Which model says speaker and audience make meaning together?', ['the transactional model', 'the linear model', 'the interactional model', 'the channel model'], 'the transactional model', 'At the same time.'],
+      ['Which model adds feedback to the linear one?', ['the interactional model', 'the transactional model', 'the linear model', 'the noise model'], 'the interactional model', 'Messages go back and forth.'],
+      ['Who drew the linear model of communication in 1949?', ['Shannon and Weaver', 'Lincoln and Douglass', 'Monroe and Hall', 'Aristotle and Plato'], 'Shannon and Weaver', 'Sender, channel, receiver.'],
+      ['A siren outside the room is which kind of noise?', ['external noise', 'semantic noise', 'psychological noise', 'physiological noise'], 'external noise', 'It comes from the setting.'],
+      ['A word the audience does not share is which noise?', ['semantic noise', 'external noise', 'physiological noise', 'psychological noise'], 'semantic noise', 'Jargon is the usual cause.'],
+      ['A worry that pulls attention away is which noise?', ['psychological noise', 'semantic noise', 'external noise', 'physiological noise'], 'psychological noise', 'It is inside the listener\'s head.'],
+      ['Hunger or a headache is which kind of noise?', ['physiological noise', 'psychological noise', 'semantic noise', 'external noise'], 'physiological noise', 'It is inside the listener\'s body.'],
+      ['Looking at age, background and education is which analysis?', ['demographic analysis', 'psychological analysis', 'situational analysis', 'source analysis'], 'demographic analysis', 'Who the listeners are.'],
+      ['Asking what listeners believe and feel is which analysis?', ['psychological analysis', 'demographic analysis', 'situational analysis', 'peer review'], 'psychological analysis', 'What the listeners think.'],
+      ['Room size, time limit and occasion are which analysis?', ['situational analysis', 'demographic analysis', 'psychological analysis', 'content analysis'], 'situational analysis', 'Where and when you speak.'],
+      ['Changing examples and words to fit listeners is called what?', ['adapting', 'decoding', 'plagiarizing', 'signposting'], 'adapting', 'Analysis comes first.'],
+      ['Who described high-context and low-context cultures?', ['Edward T. Hall', 'Aristotle', 'Alan Monroe', 'Claude Shannon'], 'Edward T. Hall', 'An anthropologist.'],
+      ['In a high-context culture, much meaning sits where?', ['in the setting and the relationship', 'only in the words', 'in written contracts', 'in the speaker\'s slides'], 'in the setting and the relationship', 'Low-context cultures spell it out.'],
+      ['Judging other cultures by your own standards is called what?', ['ethnocentrism', 'audience analysis', 'feedback', 'decoding'], 'ethnocentrism', 'A quiet form of noise.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'spch-ethics': (rng) => {
+    const Q = [['Copying a whole speech is which kind of plagiarism?', ['global plagiarism', 'patchwork plagiarism', 'incremental plagiarism', 'fair use'], 'global plagiarism', 'The whole thing is borrowed.'],
+      ['Stitching together copied pieces is which plagiarism?', ['patchwork plagiarism', 'global plagiarism', 'incremental plagiarism', 'oral citation'], 'patchwork plagiarism', 'Several sources, no credit.'],
+      ['Leaving out credit for a paraphrase is which plagiarism?', ['incremental plagiarism', 'global plagiarism', 'patchwork plagiarism', 'a fallacy'], 'incremental plagiarism', 'The easy one to miss.'],
+      ['Naming a source out loud in a speech is called what?', ['an oral citation', 'a fallacy', 'a transition', 'a preview'], 'an oral citation', 'Name it and say why it is trustworthy.'],
+      ['Which of these needs no citation?', ['common knowledge', 'a statistic from a survey', 'a quotation', 'a paraphrased idea'], 'common knowledge', 'So do your own experiences.'],
+      ['Testimony from someone qualified on the topic is what?', ['expert testimony', 'peer testimony', 'a statistic', 'an analogy'], 'expert testimony', 'Peer testimony is firsthand.'],
+      ['Testimony from someone with firsthand experience is what?', ['peer testimony', 'expert testimony', 'a hasty generalization', 'an oral citation'], 'peer testimony', 'Expert testimony is qualified.'],
+      ['Which three tests should every source pass?', ['credibility, recency and bias', 'length, color and price', 'fame, humor and speed', 'rhyme, rhythm and rate'], 'credibility, recency and bias', 'Who wrote it, when, and who gains.'],
+      ['Reasoning from specific cases to a general rule is what?', ['inductive reasoning', 'deductive reasoning', 'causal reasoning', 'analogical reasoning'], 'inductive reasoning', 'Cases first, rule after.'],
+      ['Reasoning from a general principle to a case is what?', ['deductive reasoning', 'inductive reasoning', 'causal reasoning', 'a slippery slope'], 'deductive reasoning', 'Rule first, case after.'],
+      ['Attacking the person instead of the argument is what?', ['ad hominem', 'a straw man', 'a false dilemma', 'a bandwagon appeal'], 'ad hominem', 'Latin for to the person.'],
+      ['Distorting an argument to knock it down easily is what?', ['a straw man', 'ad hominem', 'a slippery slope', 'a false dilemma'], 'a straw man', 'The real argument goes unanswered.'],
+      ['Offering only two choices when there are more is what?', ['a false dilemma', 'a straw man', 'a bandwagon appeal', 'ad hominem'], 'a false dilemma', 'Look for the third option.'],
+      ['Claiming one step must lead to disaster is what?', ['a slippery slope', 'a false dilemma', 'a straw man', 'a hasty generalization'], 'a slippery slope', 'Each step needs its own evidence.'],
+      ['A big conclusion from too few cases is what?', ['a hasty generalization', 'a bandwagon appeal', 'deductive reasoning', 'an analogy'], 'a hasty generalization', 'Two neighbors are not a study.'],
+      ['Saying something is right because it is popular is what?', ['a bandwagon appeal', 'ad hominem', 'a straw man', 'expert testimony'], 'a bandwagon appeal', 'Popular is not proof.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'spch-organize': (rng) => {
+    const Q = [['Informing, persuading or entertaining is a speech\'s what?', ['general purpose', 'specific purpose', 'central idea', 'transition'], 'general purpose', 'The specific purpose narrows it.'],
+      ['One sentence stating the speech\'s main message is what?', ['the central idea', 'a signpost', 'a transition', 'the general purpose'], 'the central idea', 'Also called the thesis.'],
+      ['How many main points does a speech usually need?', ['two to five', 'one', 'ten or more', 'exactly seven'], 'two to five', 'Listeners cannot reread.'],
+      ['Which organizational pattern follows time?', ['chronological order', 'spatial order', 'topical order', 'causal order'], 'chronological order', 'First, then, next.'],
+      ['Which pattern follows place, such as top to bottom?', ['spatial order', 'chronological order', 'topical order', 'problem-solution order'], 'spatial order', 'A walk through space.'],
+      ['Which pattern divides a subject into its parts?', ['topical order', 'causal order', 'spatial order', 'chronological order'], 'topical order', 'The most common pattern.'],
+      ['Which pattern names a problem, then the fix?', ['problem-solution order', 'causal order', 'spatial order', 'topical order'], 'problem-solution order', 'Common in persuasion.'],
+      ['Words such as first, next and finally are called what?', ['signposts', 'fallacies', 'citations', 'filler words'], 'signposts', 'They show where you are.'],
+      ['Which outline uses full sentences for planning?', ['a preparation outline', 'a speaking outline', 'a manuscript', 'a slide deck'], 'a preparation outline', 'The speaking outline is brief.'],
+      ['Which outline uses brief key words while you speak?', ['a speaking outline', 'a preparation outline', 'a manuscript', 'a transcript'], 'a speaking outline', 'Glance, then look up.'],
+      ['Prepared and practiced, delivered from brief notes, is what?', ['extemporaneous speaking', 'impromptu speaking', 'manuscript speaking', 'memorized speaking'], 'extemporaneous speaking', 'It sounds like conversation.'],
+      ['Speaking with no preparation at all is called what?', ['impromptu speaking', 'extemporaneous speaking', 'manuscript speaking', 'memorized speaking'], 'impromptu speaking', 'Extemporaneous is prepared.'],
+      ['Reading a full text word for word is which method?', ['manuscript speaking', 'impromptu speaking', 'extemporaneous speaking', 'memorized speaking'], 'manuscript speaking', 'Hard to keep eye contact.'],
+      ['Um and like are examples of what?', ['filler words', 'signposts', 'transitions', 'citations'], 'filler words', 'A pause works better.'],
+      ['Speech nervousness is also called what?', ['communication apprehension', 'semantic noise', 'ethnocentrism', 'a bandwagon appeal'], 'communication apprehension', 'Normal and manageable.'],
+      ['To an audience, how nervous do speakers usually look?', ['less nervous than they feel', 'more nervous than they feel', 'exactly as nervous', 'not nervous at all'], 'less nervous than they feel', 'Savitsky and Gilovich, 2003.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'spch-persuade': (rng) => {
+    const Q = [['A speech that teaches without taking sides is which kind?', ['an informative speech', 'a persuasive speech', 'a narrative speech', 'a symposium'], 'an informative speech', 'Clarity, not a verdict.'],
+      ['A speech that tries to change beliefs or actions is what?', ['a persuasive speech', 'an informative speech', 'a narrative speech', 'a panel discussion'], 'a persuasive speech', 'It takes a side.'],
+      ['A speech that tells a story with a point is what?', ['a narrative speech', 'a persuasive speech', 'an informative speech', 'an impromptu speech'], 'a narrative speech', 'The point is the purpose.'],
+      ['Whether something is true is which kind of question?', ['a question of fact', 'a question of value', 'a question of policy', 'a question of taste'], 'a question of fact', 'True or false.'],
+      ['Whether something is good or right is which question?', ['a question of value', 'a question of fact', 'a question of policy', 'a question of law'], 'a question of value', 'Good or bad, right or wrong.'],
+      ['What should be done is which kind of question?', ['a question of policy', 'a question of fact', 'a question of value', 'a rhetorical question'], 'a question of policy', 'It needs a plan.'],
+      ['Who named ethos, pathos and logos?', ['Aristotle', 'Cicero', 'Alan Monroe', 'Edward T. Hall'], 'Aristotle', 'In his Rhetoric.'],
+      ['A speaker\'s credibility is which proof?', ['ethos', 'pathos', 'logos', 'kairos'], 'ethos', 'Competence, character and goodwill.'],
+      ['An appeal to emotion is which proof?', ['pathos', 'ethos', 'logos', 'telos'], 'pathos', 'Ethical only when the feeling fits the facts.'],
+      ['An appeal to reason and evidence is which proof?', ['logos', 'pathos', 'ethos', 'mythos'], 'logos', 'Evidence and reasoning.'],
+      ['Ethos is built from competence, good character and what?', ['goodwill', 'volume', 'humor', 'speed'], 'goodwill', 'The audience must trust your motives.'],
+      ['Whose motivated sequence ends with a call to action?', ['Alan Monroe', 'Aristotle', 'Abraham Lincoln', 'Claude Shannon'], 'Alan Monroe', 'Taught since the 1930s.'],
+      ['Which step of the motivated sequence comes after need?', ['satisfaction', 'attention', 'visualization', 'action'], 'satisfaction', 'The plan that meets the need.'],
+      ['Helping listeners picture the result is which step?', ['visualization', 'satisfaction', 'need', 'attention'], 'visualization', 'Then comes action.'],
+      ['Members presenting one part each in turn is called what?', ['a symposium', 'a panel discussion', 'a debate', 'a forum'], 'a symposium', 'A panel talks back and forth.'],
+      ['Members talking with each other before an audience is what?', ['a panel discussion', 'a symposium', 'a lecture', 'a toast'], 'a panel discussion', 'A symposium takes turns.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
@@ -26925,6 +27144,38 @@ export const WONDER = [
     ],
     closing: 'Who is one adult you could tell?',
   },
+  // Two grown-stage Wonder questions for the college public speaking course (pass JD): a failure question about going
+  // blank in the middle of a talk, and an ethics question about a moving story that cannot be checked.
+  {
+    id: 'w-grown-froze-mid-speech',
+    theme: 'failure',
+    stage: 'grown',
+    courseIds: ['speech-college'],
+    answerMode: 'typed',
+    prompt: 'In the middle of an important talk, your mind goes blank and the room goes quiet. Is that a failure?',
+    perspectives: [
+      { voice: 'A scientist', says: 'Speakers feel far more nervous than they look. In a 2003 study, people giving speeches overestimated how nervous they appeared, and those who learned this before speaking gave better speeches, by their own ratings and their listeners\' ratings.' },
+      { voice: 'An artist', says: 'A rest in music is written on purpose, and the silence makes the next note land. A pause that feels endless to you is often much shorter to the room.' },
+      { voice: 'A grandparent of faith', says: 'At my sister\'s wedding I forgot my toast halfway through. I said so, smiled, looked at my card, and finished. People remembered the smile, not the gap.' },
+      { voice: 'A skeptic', says: 'Look at what went wrong without making it a verdict. If you lost your place, a one-card speaking outline fixes that. If you memorized every word, practicing from notes instead fixes that.' },
+    ],
+    closing: 'What would you do in the first five seconds after a blank?',
+  },
+  {
+    id: 'w-grown-the-story-you-cannot-check',
+    theme: 'world',
+    stage: 'grown',
+    courseIds: ['speech-college'],
+    answerMode: 'typed',
+    prompt: 'A moving story would win the room, but you cannot confirm it really happened. Do you tell it?',
+    perspectives: [
+      { voice: 'A scientist', says: 'Stories spread because they are easy to remember, and false ones spread just as easily. If a claim cannot be checked, the honest move is to say so, or to find one that can be.' },
+      { voice: 'An artist', says: 'You can tell a story as a story. Saying here is a parable, not a fact, keeps its power and your honesty at the same time.' },
+      { voice: 'A grandparent of faith', says: 'My father said a reputation is built in years and lost in a sentence. An audience that catches one made-up story will doubt every true one after it.' },
+      { voice: 'A skeptic', says: 'Ask who gains if the story is false. If the answer is you, that is exactly the story to check twice, or to leave out.' },
+    ],
+    closing: 'What is one story you repeat that you have never checked?',
+  },
   // Two grown-stage Wonder questions for the college macroeconomics course (pass JC): a failure question about losing a
   // job in a recession, and a world question about the price of fighting inflation.
   {
@@ -32048,6 +32299,7 @@ export const COURSE_GAMES = {
   'business-college': ['ledger-business-college'],
   'psychology-college': ['cause-psychology-college'],
   'macroeconomics-college': ['gdp-macroeconomics-college'],
+  'speech-college': ['cite-speech-college'],
   'health-6': ['label-health-6'],
   'health-9': ['cpr-health-9'],
   'sexual-health-6': ['greenred-sexual-health-6'],

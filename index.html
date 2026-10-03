@@ -37,7 +37,7 @@ window.__eduArt = [];
 window.__eduColoringArt = [];
 window.__eduMapArt = [];
 window.__eduAudio = [];
-window.__eduNews = {"stamp":"October 3, 2026 (Public Speaking for college)","date":"October 3, 2026","items":["A college public speaking course: communication and audience, ethics and evidence, organizing and delivering, and informing and persuading, with true stories about Gettysburg, Frederick Douglass's Fourth of July speech, Steve Jobs's three stories and Martin Luther King Jr.'s dream, a long story about Chloe's three minutes at city hall, and a new game, Cite It or Not."],"brief":["A college public speaking course."],"history":[{"date":"October 3, 2026","title":"Public Speaking for college","items":["A college public speaking course: communication and audience, ethics and evidence, organizing and delivering, and informing and persuading, with true stories about Gettysburg, Frederick Douglass's Fourth of July speech, Steve Jobs's three stories and Martin Luther King Jr.'s dream, a long story about Chloe's three minutes at city hall, and a new game, Cite It or Not."]},{"date":"October 3, 2026","title":"Principles of Macroeconomics for college","items":["A college macroeconomics course: markets, measuring the economy, money and the Federal Reserve, and policy and trade, with true stories about Adam Smith's pin factory, the first measure of a nation's income, the stone money of Yap and the year interest rates hit 20 percent, a long story about Mike's crew in the 2008 recession, and a new game, In GDP or Not."]},{"date":"October 3, 2026","title":"General Psychology for college","items":["A college General Psychology course: how psychologists know what they know, where the field came from, seven ways to explain one behavior, and the brain and body behind it. Four true stories come with it, from a horse that seemed to count to a man who could not form new memories, and Savanah's class runs its own experiment with a coin.","A new game, Cause or Correlation: read a study and decide whether chance chose the groups. Only then can a study show cause."]},{"date":"October 3, 2026","title":"parentheses, not brackets","items":["Math lessons now call ( ) parentheses, the way American classrooms and the Texas standards do, and keep the word brackets for [ ]. Grade 5 also learns brackets as the outer of two groups, worked from the inside out, with a new practice question to match."]},{"date":"October 3, 2026","title":"more Wonder questions for teens and adults","items":["Sixteen new Wonder questions for middle school through college about failure, hard feelings and hard days: why rereading fools you, what makes an apology work, a friend who drifted away, a college that said no, and whether chasing happiness backfires. They draw on Aristotle, Marcus Aurelius, Viktor Frankl and Arthur Brooks, and are waiting in your Wonder review for approval."]},{"date":"October 3, 2026","title":"every game card read by hand","items":["Every card in the word games was read by hand. Valid or Not now says \"The street is not wet\" instead of the stiff \"It is not the case that,\" and Sort the Because starts every choice with Because, so the look of a card no longer gives away the answer.","A handful of facts were tightened: fruits and vegetables together make half the plate, bacteria in soybean roots turn nitrogen from the air into plant food, and birth control pills prevent pregnancy, not STIs."]}]};
+window.__eduNews = {"stamp":"October 3, 2026 (the tour, scrolling and titles)","date":"October 3, 2026","items":["The first week tour's cards now keep their places on every screen size, and the backup reminder waits until the tour is finished.","Lessons open at the top of the page, and so does your classroom after the tour and after Later.","Lesson titles are capitalized like titles everywhere they appear as a heading."],"brief":["The first week tour's cards now keep their places on every screen size, and the backup reminder waits until the tour is finished.","Lessons open at the top of the page, and so does your classroom after the tour and after Later.","Lesson titles are capitalized like titles everywhere they appear as a heading."],"history":[{"date":"October 3, 2026","title":"the tour, scrolling and titles","items":["The first week tour's cards now keep their places on every screen size, and the backup reminder waits until the tour is finished.","Lessons open at the top of the page, and so does your classroom after the tour and after Later.","Lesson titles are capitalized like titles everywhere they appear as a heading."]},{"date":"October 3, 2026","title":"Public Speaking for college","items":["A college public speaking course: communication and audience, ethics and evidence, organizing and delivering, and informing and persuading, with true stories about Gettysburg, Frederick Douglass's Fourth of July speech, Steve Jobs's three stories and Martin Luther King Jr.'s dream, a long story about Chloe's three minutes at city hall, and a new game, Cite It or Not."]},{"date":"October 3, 2026","title":"Principles of Macroeconomics for college","items":["A college macroeconomics course: markets, measuring the economy, money and the Federal Reserve, and policy and trade, with true stories about Adam Smith's pin factory, the first measure of a nation's income, the stone money of Yap and the year interest rates hit 20 percent, a long story about Mike's crew in the 2008 recession, and a new game, In GDP or Not."]},{"date":"October 3, 2026","title":"General Psychology for college","items":["A college General Psychology course: how psychologists know what they know, where the field came from, seven ways to explain one behavior, and the brain and body behind it. Four true stories come with it, from a horse that seemed to count to a man who could not form new memories, and Savanah's class runs its own experiment with a coin.","A new game, Cause or Correlation: read a study and decide whether chance chose the groups. Only then can a study show cause."]},{"date":"October 3, 2026","title":"parentheses, not brackets","items":["Math lessons now call ( ) parentheses, the way American classrooms and the Texas standards do, and keep the word brackets for [ ]. Grade 5 also learns brackets as the outer of two groups, worked from the inside out, with a new practice question to match."]},{"date":"October 3, 2026","title":"more Wonder questions for teens and adults","items":["Sixteen new Wonder questions for middle school through college about failure, hard feelings and hard days: why rereading fools you, what makes an apology work, a friend who drifted away, a college that said no, and whether chasing happiness backfires. They draw on Aristotle, Marcus Aurelius, Viktor Frankl and Arthur Brooks, and are waiting in your Wonder review for approval."]}]};
 // Installable app: the worker keeps a copy of the page for offline use and asks the network first, so a fresh build always wins.
 if ('serviceWorker' in navigator && /^https?:/.test(location.protocol)) { navigator.serviceWorker.register('sw.js').catch(function () {}); }
 var process = { env: { NODE_ENV: 'production' } };
@@ -51291,10 +51291,20 @@ function summaryParagraph(report) {
 // Story titles too (2026-09-24, Mikey), in the Chicago and AP habit: every word capitalized except the short articles,
 // conjunctions and prepositions in the middle; the first and last words always capitalized; a word already in capitals kept.
 const SMALL_WORDS = new Set(['a', 'an', 'the', 'and', 'but', 'or', 'nor', 'for', 'so', 'yet', 'at', 'by', 'in', 'of', 'on', 'to', 'up', 'as', 'off', 'per', 'via', 'vs', 'into', 'onto', 'from', 'with']);
+// titleCase (updated 2026-10-03, pass JE, Mikey: module titles shown as titles). In plain terms: capitalizes every word of a
+// title except small joining words in the middle. Each part of a hyphenated word is capitalized (Two-Digit Numbers), and a lone
+// letter or letter pair being taught keeps the case it was written in (The Silent e; Trace i, t and k; Sh, ch and th).
+const LETTER_TOKEN = /^(?:[b-z]|ch|sh|th|wh|ph|ck|ng)[,.?!:;]?$/;
 function titleCase(text) {
     const words = String(text || '').split(' ');
-    return words.map((w, i) => { const core = w.toLowerCase().replace(/[^a-z]/g, ''); if (i > 0 && i < words.length - 1 && SMALL_WORDS.has(core) && w === w.toLowerCase())
-        return w; return w.charAt(0).toUpperCase() + w.slice(1); }).join(' ');
+    const cap = (part, inner) => { const core = part.toLowerCase().replace(/[^a-z]/g, ''); if (inner && SMALL_WORDS.has(core) && part === part.toLowerCase())
+        return part; return part.charAt(0).toUpperCase() + part.slice(1); };
+    return words.map((w, i) => {
+        if (i > 0 && LETTER_TOKEN.test(w))
+            return w;
+        const inner = i > 0 && i < words.length - 1;
+        return w.split('-').map((p, k) => cap(p, k > 0 || inner)).join('-');
+    }).join(' ');
 }
 // The module a loop back returns to: the module before it in its course, else its first named prerequisite.
 function fundamentalsOf(moduleId) {
@@ -63556,7 +63566,7 @@ function PinInput({ value, onChange, placeholder, style, onEnter = null }) {
 }
 // A stamp of when this copy of the page was built, so a stale page in a cache can be told apart
 // from a fresh one at a glance. Written by the build, never by hand.
-const BUILD_STAMP = '2026-10-03 03:42 PM CDT';
+const BUILD_STAMP = '2026-10-03 05:27 PM CDT';
 function ContactLine({ onOpen, inline = false }) {
     return (react_1.default.createElement("p", { className: "edu-no-print", style: { textAlign: 'center', marginTop: inline ? 0 : 28, fontSize: inline ? 14 : 12, color: C.muted, margin: inline ? '0' : undefined } }, onOpen
         ? react_1.default.createElement("button", { type: "button", onClick: onOpen, style: { background: 'none', border: 'none', color: C.muted, fontFamily: FONT, fontSize: 12, cursor: 'pointer', padding: 0, textDecoration: 'underline' } }, "Contact us")
@@ -66474,14 +66484,26 @@ async function certificatePng(svgEl, w = 1600, h = 1100) {
 function saveBlob(name, blob) { const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000); }
 // The loading word: each letter bobs in turn, the same in the page shell and on the app's loading screen.
 Object.assign(STORY_TITLES, Object.fromEntries(Object.entries(STORIES).map(([id, st]) => [id, { title: titleCase(st.title), about: st.about || '' }])), Object.fromEntries(Object.entries(COURSE_STORIES).map(([id, st]) => [`course:${id}`, { title: st.title, about: st.about || '' }])));
-// The first-week tour: title, the element it points at (a data-tour name, or null), and the words.
+// The first-week tour: title, the element it points at (a data-tour name, or null), the sample screen it opens, where its card
+// sits, and the words. Where each card sits, in Mikey's words (passes DH, IT and JE), at every screen width the tour runs at:
+//   1 below-help: centered under Add someone new. Good as it is.
+//   2 flush-right-low: against the right edge of the screen, near the bottom, over the sample lesson.
+//   3 over-life-by-backup: close above the Backup classroom link, overlapping Practical Life Skills.
+//   4 right-mid: beside Wonder Questions when there is room. Good as it is.
+//   5 over-exp-by-life: over Science Experiments, never over Life Skills. Good as it is.
+//   6 under-reading: on top of Science Experiments, close under the glowing Reading Lists card.
+//   7 under-exp: overlapping Practical Life Skills, close by the glowing Experiments card.
+//   8 right-at-search: Who needs help at its top, the card right-aligned with its top level with the search box.
+//   9 bottom-right: the bottom right corner of the screen, so the top of the Story Log reads behind it.
+//  10 above: just above the transcript. Good as it is.
+// tests/e2e/tour.mjs checks every one of these at tablet and laptop sizes.
 const TOUR = [
     ['Welcome to your classroom', 'add', null, 'below-help', react_1.default.createElement(react_1.default.Fragment, null,
             "Add a student by using their school ID. Then, you'll have an option to create nicknames, assign fun sign-in pictures and more!",
             react_1.default.createElement("br", null),
             react_1.default.createElement("br", null),
             "No names or photos are ever stored.")],
-    ['Lessons, Stories, Practice, Mastery', 'lesson-card', 'lesson', 'lesson-low', react_1.default.createElement(react_1.default.Fragment, null,
+    ['Lessons, Stories, Practice, Mastery', 'lesson-card', 'lesson', 'flush-right-low', react_1.default.createElement(react_1.default.Fragment, null,
             "We combine mastery-based learning, spaced repetition, story-based learning, reflection questions, images and games to help information stick.",
             react_1.default.createElement("br", null),
             react_1.default.createElement("br", null),
@@ -66489,7 +66511,7 @@ const TOUR = [
             react_1.default.createElement("br", null),
             react_1.default.createElement("br", null),
             "Educators see detailed summaries along the way.")],
-    ['Backups live on this device', 'backup', null, 'over-life-low', react_1.default.createElement(react_1.default.Fragment, null,
+    ['Backups live on this device', 'backup', null, 'over-life-by-backup', react_1.default.createElement(react_1.default.Fragment, null,
             "A backup file automatically downloads to your device when a student taps ",
             react_1.default.createElement("em", null, "Exit"),
             " or, when an educator makes changes and ",
@@ -66511,9 +66533,9 @@ const TOUR = [
             react_1.default.createElement("br", null),
             react_1.default.createElement("br", null),
             "You'll find helpful skills for every age group!")],
-    ['Reading', 'reading', null, 'over-exp-high', react_1.default.createElement(react_1.default.Fragment, null, "Need direction finding books for various age groups? We've got you covered! Our reading list is quite extensive.")],
-    ['Experiments', 'experiments', null, 'over-life-high', react_1.default.createElement(react_1.default.Fragment, null, "Science is way more fun when it's tangible. We've got experiment ideas for every age group!")],
-    ['Student Summaries', 'rows', 'class', 'right-below-summary', react_1.default.createElement(react_1.default.Fragment, null,
+    ['Reading', 'reading', null, 'under-reading', react_1.default.createElement(react_1.default.Fragment, null, "Need direction finding books for various age groups? We've got you covered! Our reading list is quite extensive.")],
+    ['Experiments', 'experiments', null, 'under-exp', react_1.default.createElement(react_1.default.Fragment, null, "Science is way more fun when it's tangible. We've got experiment ideas for every age group!")],
+    ['Student Summaries', 'rows', 'class', 'right-at-search', react_1.default.createElement(react_1.default.Fragment, null,
             "Every student has a personalized report. Whether you want to see what they've done that day, that week or from the very beginning, we've got you covered! Every module they practice, every story they read, every attempt they make, even their level of confidence on any given topic is continually updated in plain English.",
             react_1.default.createElement("br", null),
             react_1.default.createElement("br", null),
@@ -66523,7 +66545,7 @@ const TOUR = [
             "Have more than one student? ",
             react_1.default.createElement("strong", null, "Who Needs Help"),
             " let's you know who might need a little guidance.")],
-    ['Story Log', 'storylog-page', 'storylog', 'story-right', react_1.default.createElement(react_1.default.Fragment, null, "Every module comes with a story, and the Story Log is where you see who has read what. Open any story from there to read it together, print it, or mark it as read.")],
+    ['Story Log', 'storylog-page', 'storylog', 'bottom-right', react_1.default.createElement(react_1.default.Fragment, null, "Every module comes with a story, and the Story Log is where you see who has read what. Open any story from there to read it together, print it, or mark it as read.")],
     ['Transcripts', 'transcript', 'report', 'above', react_1.default.createElement(react_1.default.Fragment, null, "Every student has a printable transcript covering everything they've ever worked on. While weekly summaries are helpful, this is the clearest view of progression across the years.")],
 ];
 // Three made-up students for the tour's sample Who needs help view. Nothing is saved.
@@ -66545,6 +66567,70 @@ function sampleRecord() {
     events.push(makeStoryReadEvent('count-to-10', day(6, 9)), makeStoryReadEvent('shapes', day(2, 9)));
     events.push(makeNoteEvent('Loves the counting stories. Needs a little more time with partners of ten.', day(1, 15)));
     return { name: 'Frederick', events, preview: true, level: 'early' };
+}
+// scrollToTop (2026-10-03, pass JE, Mikey on a Mac laptop in Chrome: lessons opened partway down the page, and Later left the
+// classroom at its bottom after the tour). In plain terms: puts the page at its very top. The app is sometimes shown inside a
+// frame as tall as the whole page, with the page around the frame doing the scrolling (some previews work this way); a frame
+// can only scroll its own window, so in that case the top of the app is also asked into view, which the browser passes up to
+// the page around it. The outer step is skipped when asked not to, so opening the app never moves the page that holds it.
+function framedFullHeight() {
+    if (typeof window === 'undefined' || typeof document === 'undefined')
+        return false;
+    let framed = false;
+    try {
+        framed = window.self !== window.top;
+    }
+    catch (e) {
+        framed = true;
+    }
+    // A frame taller than the screen itself can never be seen whole, so the page around it must be the one that scrolls.
+    const screenTall = (window.screen && window.screen.availHeight) || 0;
+    return framed && screenTall > 0 && window.innerHeight > screenTall + 40;
+}
+function scrollToTop(outer) {
+    if (typeof window === 'undefined')
+        return;
+    window.scrollTo(0, 0);
+    const root = document.scrollingElement || document.documentElement;
+    if (root)
+        root.scrollTop = 0;
+    if (document.body)
+        document.body.scrollTop = 0;
+    const first = document.body && document.body.firstElementChild;
+    if (outer && framedFullHeight() && first && first.scrollIntoView)
+        first.scrollIntoView({ block: 'start', behavior: 'auto' });
+}
+// visibleBand (pass JE). In plain terms: the stretch of the page a person can actually see, as a top and a bottom in the page's
+// own coordinates. In a normal window that is the whole window. In a page-tall frame the window is the whole page, so the app
+// pins a column of invisible 200-pixel probes down the frame and asks the browser how much of each is on screen; the first and
+// last probes that show give the top and bottom to within a few pixels, whichever way the page around the frame has scrolled.
+const BAND_STEP = 200;
+let bandWatch = null;
+const bandSeen = [];
+function visibleBand() {
+    const H = typeof window === 'undefined' ? 800 : window.innerHeight;
+    const fallback = { top: 0, bottom: Math.min(H, (typeof window !== 'undefined' && window.screen && window.screen.availHeight) || H) };
+    if (!framedFullHeight() || typeof IntersectionObserver === 'undefined')
+        return { top: 0, bottom: H };
+    if (!bandWatch) {
+        bandWatch = new IntersectionObserver((entries) => { for (const e of entries)
+            bandSeen[Number(e.target.dataset.band)] = e.intersectionRatio; }, { threshold: Array.from({ length: 41 }, (_, i) => i / 40) });
+        for (let k = 0; k * BAND_STEP < Math.min(H, 20000); k++) {
+            const probe = document.createElement('div');
+            probe.dataset.band = String(k);
+            probe.setAttribute('aria-hidden', 'true');
+            probe.className = 'edu-no-print';
+            probe.style.cssText = `position: fixed; left: 0; top: ${k * BAND_STEP}px; width: 1px; height: ${BAND_STEP}px; opacity: 0; pointer-events: none;`;
+            document.body.appendChild(probe);
+            bandWatch.observe(probe);
+        }
+    }
+    const shown = bandSeen.map((r, k) => (r > 0 ? k : -1)).filter((k) => k >= 0);
+    if (shown.length < 2)
+        return fallback;
+    const k0 = shown[0];
+    const k1 = shown[shown.length - 1];
+    return { top: (k0 + 1 - bandSeen[k0]) * BAND_STEP, bottom: (k1 + bandSeen[k1]) * BAND_STEP };
 }
 function LoadingWord() {
     return react_1.default.createElement("div", { className: "edu-boot-word", "aria-hidden": "true" },
@@ -73058,7 +73144,7 @@ function EduSphereScreens() {
         return undefined; const before = () => setPrinting(true); const after = () => setPrinting(false); window.addEventListener('beforeprint', before); window.addEventListener('afterprint', after); return () => { window.removeEventListener('beforeprint', before); window.removeEventListener('afterprint', after); }; }, []);
     const returnTo = (0, react_1.useRef)(null); // { screen, scrollY } to go back to after Change state or a PIN unlock
     const goBackTo = () => { const r = returnTo.current; returnTo.current = null; if (r) {
-        pendingScroll.current = r.scrollY;
+        pendingScroll.current = { screen: r.screen, y: r.scrollY };
         setScreen(r.screen);
     }
     else
@@ -73173,7 +73259,7 @@ function EduSphereScreens() {
                 addEvent(makeColoredEvent(coloring, new Date().toISOString()));
         }
         // Back to the overview where the student left it (2026-09-23, Mikey): the fold stays open and the page scrolls back to the tiles.
-        pendingScroll.current = overviewScroll.current;
+        pendingScroll.current = { screen: 'overview', y: overviewScroll.current };
         setColoring(null);
         setScreen('overview');
     };
@@ -73839,21 +73925,31 @@ function EduSphereScreens() {
         }, 1000);
         return () => clearInterval(tick);
     }, [onEducatorScreen, lastActive, tourStep]);
-    // Every screen opens at the top. Without this, a long page keeps the previous scroll position.
+    // Every screen opens at the top (pass JE, Mikey: lessons opened partway down, and Later left the classroom at its bottom).
+    // In plain terms: a new screen starts at its top, and while no tour card is placing the page, the top is asked for again a
+    // moment later in case the page was still settling. The one exception is a screen the student is coming back to (pass IU,
+    // Mikey: closing a game landed at the top): it returns to its saved spot, and only the screen that saved the spot can use it,
+    // so a spot saved for one screen is never carried into another.
+    const firstScreen = (0, react_1.useRef)(true);
     (0, react_1.useEffect)(() => {
         if (typeof window !== 'undefined' && window.scrollTo) {
-            // Back where the student was (pass IU, Mikey: closing a game landed at the top). The page can still be growing when
-            // it first draws, so the scroll is tried again for up to a second until it holds.
-            if (pendingScroll.current !== null) {
-                const y = pendingScroll.current;
-                pendingScroll.current = null;
+            const back = pendingScroll.current;
+            pendingScroll.current = null;
+            if (back && back.screen === screen) {
+                const y = back.y || 0;
                 let tries = 0;
                 const go = () => { window.scrollTo(0, y); if (Math.abs(window.scrollY - y) > 2 && tries++ < 20)
                     setTimeout(go, 50); };
                 setTimeout(go, 0);
             }
-            else
-                window.scrollTo(0, 0);
+            else {
+                scrollToTop(!firstScreen.current);
+                if (tourStep < 0)
+                    for (const wait of [80, 320])
+                        setTimeout(() => { if (window.scrollY > 0 || framedFullHeight())
+                            scrollToTop(!firstScreen.current); }, wait);
+            }
+            firstScreen.current = false;
             if (window.requestAnimationFrame)
                 window.requestAnimationFrame(() => { void document.body.offsetHeight; });
         }
@@ -74097,7 +74193,10 @@ function EduSphereScreens() {
             setScreen('educator-pick');
             return undefined;
         }
-        // The targets glow; the page scrolls so they show; the sheet takes the place the card asks for, whole, on screen.
+        // Where each card sits (Mikey's words are beside TOUR). Each place is measured from the live page and holds at every width
+        // the tour runs at (700 pixels and up), in the classroom's one column and its two columns alike; before pass JE five cards
+        // had their places only from 900 pixels up and fell back to "top or bottom, centered" below that, which is what Mikey saw.
+        // "The screen" is the stretch of page the person can see (visibleBand): the window, except inside a page-tall frame.
         const place = () => {
             const els = target ? [...document.querySelectorAll(`[data-tour="${target}"]`)] : [];
             for (const el of els)
@@ -74108,109 +74207,96 @@ function EduSphereScreens() {
             const wrapEl = sheet ? sheet.closest('.edu-wrap') : null;
             const z = (wrapEl && parseFloat(getComputedStyle(wrapEl).zoom)) || 1;
             const W = window.innerWidth;
-            const H = window.innerHeight;
+            const framed = framedFullHeight();
+            const band = visibleBand();
+            const T = band.top;
+            const B = band.bottom;
             const cardW = Math.min(440, W - 24);
             const cardH = (sheet ? sheet.offsetHeight : 260) * z;
             const gap = 14;
-            const expCard0 = document.querySelector('[data-tour="experiments"]');
-            const er0 = expCard0 ? expCard0.getBoundingClientRect() : null;
+            const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+            const rectOf = (name) => { const el = document.querySelector(`[data-tour="${name}"]`); return el ? el.getBoundingClientRect() : null; };
+            const flushRight = W - cardW - 12;
+            const center = (W - cardW) / 2;
+            const low = B - cardH - 12;
+            const write = (box) => setTourBox({ left: box.left / z, top: clamp(box.top, T + 12, low) / z, width: box.width / z });
             if (!els.length) {
-                if (where === 'under-cards' && er0) {
-                    expCard0.scrollIntoView({ block: 'center' });
-                    const e2 = expCard0.getBoundingClientRect();
-                    setTourBox({ left: (W - cardW) / 2 / z, top: Math.max(12, Math.min(H - cardH - 12, e2.bottom + 10 - cardH)) / z, width: cardW / z });
-                    return;
-                }
-                setTourBox({ left: (W - cardW) / 2 / z, top: (H - cardH - 12) / z, width: cardW / z });
+                write({ left: center, top: low, width: cardW });
                 return;
             }
-            if (where === 'right-top' || where === 'over-second' || where === 'right-below-summary' || where === 'right-edge-top' || where === 'story-right')
-                window.scrollTo(0, 0);
+            // Cards 8 and 9 read with the top of their page behind them; card 3 brings the backup link low on the screen with room
+            // above it for the whole card; every other card brings its target to the middle of the screen.
+            if (where === 'right-at-search' || where === 'bottom-right')
+                scrollToTop(true);
+            else if (where === 'over-life-by-backup') {
+                if (framed)
+                    els[0].scrollIntoView({ block: 'end' });
+                else
+                    window.scrollBy(0, els[0].getBoundingClientRect().top - clamp(B - 110, T + cardH + 30, B - 60));
+            }
             else
                 els[0].scrollIntoView({ block: 'center' });
             const r = els[0].getBoundingClientRect();
-            const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
-            const mid = clamp((H - cardH) / 2, 12, H - cardH - 12);
+            const lifeR = rectOf('life');
+            const expR = rectOf('experiments');
+            const readR = rectOf('reading');
+            const twoCol = !!(lifeR && expR && Math.abs(lifeR.top - expR.top) < 8); // Experiments and Life Skills side by side
+            const farEnd = r.top + r.height / 2 > (T + B) / 2 ? T + 12 : low; // the end of the screen away from the target
             let box = null;
-            const roomRight = W - r.right - gap - 12;
-            const roomLeft = r.left - gap - 12;
-            const expCard = document.querySelector('[data-tour="experiments"]');
-            const er = expCard ? expCard.getBoundingClientRect() : null;
-            const cardOf = (name) => { const el = document.querySelector(`[data-tour="${name}"]`); return el ? el.getBoundingClientRect() : null; };
-            // These places need a laptop's width; on a phone the card goes to the end of the screen away from its target.
-            const lifeR = cardOf('life');
-            const wide = W >= 900;
-            if (where === 'lesson-low' && wide) { // flush right and low on the lesson: the question stays readable, the picture's lower part sits under the card
-                const pic = els[0].querySelector('svg, img');
-                const pr = pic ? pic.getBoundingClientRect() : null;
-                box = { left: W - cardW - 12, top: clamp(pr && pr.height > 40 ? pr.top + pr.height * 0.45 : r.top + r.height * 0.55, 12, H - cardH - 12), width: cardW };
+            if (where === 'below-help') { // card 1: centered under Add someone new (or under Who needs help, once there are students)
+                const help = document.querySelector('[data-tour="help"]');
+                const hr = help ? help.getBoundingClientRect() : r;
+                box = { left: center, top: hr.bottom + 8, width: cardW };
             }
-            else if (wide && where === 'over-life-low' && lifeR)
-                box = { left: clamp(lifeR.right - cardW + 24, 12, W - cardW - 12), top: clamp(r.top - 10 - cardH, 12, H - cardH - 12), width: cardW }; // over Life Skills, its foot just above the backup line
-            else if (where === 'over-exp-by-life' && er && lifeR) {
-                // Card 5 (pass IT, Mikey): over Experiments and up into the card above it, never over Life Skills, on any width. In
-                // one column its foot rests on Experiments' lower edge; in two columns it also keeps to the left of Life Skills.
-                let left = clamp(er.left + er.width / 2 - cardW / 2, 12, W - cardW - 12);
-                if (lifeR.top < er.bottom - 4 && lifeR.left > er.left && left + cardW > lifeR.left - 8)
-                    left = clamp(lifeR.left - 8 - cardW, 12, W - cardW - 12);
-                let top = er.bottom - 10 - cardH;
-                if (top < 12) {
-                    const up = Math.min(12 - top, Math.max(0, H - 12 - lifeR.bottom));
+            else if (where === 'flush-right-low') { // card 2: against the right edge of the screen, near its bottom
+                box = { left: flushRight, top: low, width: cardW };
+            }
+            else if (where === 'over-life-by-backup' && lifeR) { // card 3: over Practical Life Skills, its foot just above the backup link
+                box = { left: clamp(lifeR.right - cardW + 24, 12, flushRight), top: r.top - 8 - cardH, width: cardW };
+            }
+            else if (where === 'right-mid') { // card 4: beside Wonder Questions when there is room, else the far end of the screen
+                const roomRight = W - r.right - gap - 12;
+                box = roomRight >= 260 ? { left: r.right + gap, top: T + (B - T - cardH) / 2, width: Math.min(cardW, roomRight) } : { left: center, top: farEnd, width: cardW };
+            }
+            else if (where === 'over-exp-by-life' && expR && lifeR) { // card 5 (pass IT): over Science Experiments, never over Life Skills
+                let left = clamp(expR.left + expR.width / 2 - cardW / 2, 12, flushRight);
+                if (lifeR.top < expR.bottom - 4 && lifeR.left > expR.left && left + cardW > lifeR.left - 8)
+                    left = clamp(lifeR.left - 8 - cardW, 12, flushRight);
+                let top = expR.bottom - 10 - cardH;
+                if (top < T + 12 && !framed) {
+                    const up = Math.min(T + 12 - top, Math.max(0, B - 12 - lifeR.bottom));
                     if (up > 0) {
                         window.scrollBy(0, -up);
                         top += up;
                     }
                 }
-                box = { left, top: clamp(top, 12, H - cardH - 12), width: cardW };
+                box = { left, top, width: cardW };
             }
-            else if (wide && where === 'over-exp-high' && er)
-                box = { left: clamp(er.right - cardW + 40, 12, W - cardW - 12), top: clamp(er.top - 24, 12, H - cardH - 12), width: cardW }; // over Experiments, up toward Reading
-            else if (wide && where === 'over-life-high' && lifeR)
-                box = { left: clamp(lifeR.left - 40, 12, W - cardW - 12), top: clamp(lifeR.top - 24, 12, H - cardH - 12), width: cardW }; // over Life Skills, up toward Experiments
-            else if (wide && where === 'story-right')
-                box = { left: clamp(r.right - cardW + 90, 12, W - cardW - 12), top: clamp(r.bottom - 70, 12, H - cardH - 12), width: cardW }; // low and to the right: the title, the choices and the newest stories with their Open buttons stay readable
-            else if (where === 'over-right')
-                box = { left: clamp(r.left + r.width * 0.55, 12, W - cardW - 12), top: mid, width: cardW }; // over the right part of a wide card, its left edge past the middle
-            else if (where === 'right-edge-top')
-                box = { left: W - cardW - 12, top: clamp(r.top + 24, 12, H - cardH - 12), width: cardW }; // flush right, near the top of the glowing card
-            else if (where === 'over-buttons' && er)
-                box = { left: (W - cardW) / 2, top: clamp(er.bottom - 44 - cardH, 12, H - cardH - 12), width: cardW }; // its foot over the top edge of the two buttons
-            else if (where === 'under-cards' && er)
-                box = { left: (W - cardW) / 2, top: clamp(er.bottom + 10 - cardH, 12, H - cardH - 12), width: cardW }; // its foot just past the cards' bottom edge
-            else if (where === 'right-below-summary')
-                box = { left: W - cardW - 12, top: clamp(r.bottom, 12, H - cardH - 12), width: cardW }; // card 8 (pass IT): flush right, its top on the summary card's foot
-            else if (where === 'over-second') {
-                const second = els[1] ? els[1].getBoundingClientRect() : r;
-                box = { left: clamp(second.right + 140 - cardW, 12, W - cardW - 12), top: clamp(second.top - 36, 12, H - cardH - 12), width: cardW };
-            } // beside the second student, clear of the green box, the word keep still showing
-            else if (where === 'above')
-                box = { left: (W - cardW) / 2, top: clamp(r.top - 8 - cardH, 12, H - cardH - 12), width: cardW };
-            else if (where === 'right-top')
-                box = { left: W - cardW - 12, top: mid, width: cardW }; // flush right, the page left readable, scrolled to its top
-            else if (where === 'right-mid' || where === 'right') {
-                if (roomRight >= 260)
-                    box = { left: r.right + gap, top: where === 'right' ? clamp(r.top + r.height / 2 - cardH / 2, 12, H - cardH - 12) : mid, width: Math.min(cardW, roomRight) };
+            else if (where === 'under-reading' && expR && readR) { // card 6: on top of Science Experiments, just under the glowing Reading Lists
+                box = { left: twoCol ? clamp(expR.right - cardW + 40, 12, flushRight) : clamp(expR.left + expR.width / 2 - cardW / 2, 12, flushRight), top: readR.bottom + 8, width: cardW };
             }
-            else if (where === 'left') {
-                if (roomLeft >= 260)
-                    box = { left: r.left - gap - Math.min(cardW, roomLeft), top: clamp(r.top + r.height / 2 - cardH / 2, 12, H - cardH - 12), width: Math.min(cardW, roomLeft) };
+            else if (where === 'under-exp' && expR && lifeR) { // card 7: over Practical Life Skills, up by the glowing Science Experiments
+                box = twoCol ? { left: clamp(Math.max(lifeR.left - 40, expR.right + 8), 12, flushRight), top: lifeR.top - 24, width: cardW } : { left: clamp(lifeR.left + lifeR.width / 2 - cardW / 2, 12, flushRight), top: expR.bottom + 8, width: cardW };
             }
-            if (!box && where === 'above-cards')
-                box = { left: (W - cardW) / 2, top: clamp(r.top - 110 - cardH, 12, H - cardH - 12), width: cardW };
-            if (!box && where === 'below-help') {
-                const help = document.querySelector('[data-tour="help"]');
-                const hr = help ? help.getBoundingClientRect() : r;
-                box = { left: (W - cardW) / 2, top: clamp(hr.bottom + 8, 12, H - cardH - 12), width: cardW };
+            else if (where === 'right-at-search') { // card 8: the page at its top, the card flush right, its top level with the search box's
+                const search = document.querySelector('input[aria-label="Search notes"]');
+                box = { left: flushRight, top: search ? search.getBoundingClientRect().top : r.bottom, width: cardW };
             }
-            if (!box && where === 'below')
-                box = { left: (W - cardW) / 2, top: clamp(r.bottom + gap, 12, H - cardH - 12), width: cardW };
-            if (!box)
-                box = { left: (W - cardW) / 2, top: r.top + r.height / 2 > H / 2 ? 12 : H - cardH - 12, width: cardW }; // a narrow screen: the end away from the target
-            setTourBox({ left: box.left / z, top: box.top / z, width: box.width / z });
+            else if (where === 'bottom-right') { // card 9: the bottom right corner, so the top of the page reads behind it
+                box = { left: flushRight, top: low, width: cardW };
+            }
+            else if (where === 'above') { // card 10: centered just above the transcript
+                box = { left: center, top: r.top - 8 - cardH, width: cardW };
+            }
+            write(box || { left: center, top: farEnd, width: cardW });
         };
+        visibleBand(); // starts watching what is on screen, in case the app sits in a page-tall frame
+        // Placed three times as the page settles, and again whenever the window changes size.
         const t1 = setTimeout(place, 60);
         const t2 = setTimeout(place, 450);
-        return () => { clearTimeout(t1); clearTimeout(t2); for (const el of document.querySelectorAll('.edu-tour-target'))
+        const t3 = setTimeout(place, 1000);
+        window.addEventListener('resize', place);
+        return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); window.removeEventListener('resize', place); for (const el of document.querySelectorAll('.edu-tour-target'))
             el.classList.remove('edu-tour-target'); };
     }, [screen, tourStep]);
     // A picture opens at the top of the page, so the palette and the buttons are where they were left.
@@ -74419,7 +74505,7 @@ function EduSphereScreens() {
                     renderModuleCard = (course, m, st, p, locked) => (react_1.default.createElement("div", { key: m.id, className: "edu-mod-card", style: { ...card, marginBottom: 10, opacity: locked || (m.needsTouch && !hasTouchScreen()) ? 0.6 : 1, borderColor: st === 'mastered' ? C.gold : st === 'available' ? C.green : C.line, borderWidth: isPreReader(course.id) && st === 'available' ? 3 : 1, boxShadow: isPreReader(course.id) && st === 'available' ? `0 0 0 4px ${C.greenSoft}` : 'none' } },
                         react_1.default.createElement("div", { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10 } },
                             react_1.default.createElement("div", null,
-                                react_1.default.createElement("h2", { style: { fontSize: 18, margin: '0 0 2px' } }, m.title),
+                                react_1.default.createElement("h2", { style: { fontSize: 18, margin: '0 0 2px' } }, titleCase(m.title)),
                                 react_1.default.createElement("p", { style: { margin: 0, color: C.muted, fontSize: 15 } }, m.tagline)),
                             isPreReader(course.id) ? react_1.default.createElement(StatusMark, { status: st }) : react_1.default.createElement(Tag, { tone: st }, st === 'mastered' ? 'Mastered' : st === 'passed' ? 'Passed once' : st === 'available' ? 'Ready' : 'Locked')),
                         youngLearner && st === 'passed' && react_1.default.createElement("p", { style: { color: C.muted, fontSize: 15, margin: '8px 0 0' } }, "Passed once. Pass again to master."),
@@ -74668,7 +74754,7 @@ function EduSphereScreens() {
             react_1.default.createElement(PageChrome, { idleWarning: idleWarning, logoutIn: logoutIn, walkthrough: !!(record && record.preview) }),
             react_1.default.createElement("div", { className: "edu-wrap", style: { ...wrap } },
                 react_1.default.createElement("div", { className: "edu-no-print", style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 } },
-                    react_1.default.createElement("button", { type: "button", onClick: () => { pendingScroll.current = overviewScroll.current; setScreen('overview'); }, style: { background: 'none', border: 'none', color: C.green, fontFamily: FONT, fontSize: 15, cursor: 'pointer', padding: 0 } }, "Back to my courses"),
+                    react_1.default.createElement("button", { type: "button", onClick: () => { pendingScroll.current = { screen: 'overview', y: overviewScroll.current }; setScreen('overview'); }, style: { background: 'none', border: 'none', color: C.green, fontFamily: FONT, fontSize: 15, cursor: 'pointer', padding: 0 } }, "Back to my courses"),
                     react_1.default.createElement("button", { type: "button", onClick: () => window.print(), style: { background: 'none', border: 'none', color: C.muted, fontFamily: FONT, fontSize: 13, cursor: 'pointer', padding: 0 } }, "Print")),
                 react_1.default.createElement("p", { style: { margin: '0 0 4px', fontSize: 14, color: C.muted, textAlign: 'center' } },
                     "The story of ",
@@ -74676,7 +74762,7 @@ function EduSphereScreens() {
                 react_1.default.createElement("div", { className: "edu-story-sheet" },
                     react_1.default.createElement(StoryBody, { story: cs })),
                 react_1.default.createElement("p", { className: "edu-no-print", style: { textAlign: 'center', margin: '18px 0 6px' } },
-                    react_1.default.createElement("button", { type: "button", onClick: () => { pendingScroll.current = overviewScroll.current; setScreen('overview'); }, style: { ...linkBtn, fontSize: 15 } }, "Back to my courses")))));
+                    react_1.default.createElement("button", { type: "button", onClick: () => { pendingScroll.current = { screen: 'overview', y: overviewScroll.current }; setScreen('overview'); }, style: { ...linkBtn, fontSize: 15 } }, "Back to my courses")))));
     }
     if (screen === 'story' && mod && storyFor(mod.id)) {
         return (react_1.default.createElement("div", { style: { ...page } },
@@ -74700,7 +74786,7 @@ function EduSphereScreens() {
                     mod.order,
                     " of ",
                     course.modules.length),
-                react_1.default.createElement("h1", { style: { fontSize: 26, margin: '14px 0 22px', textAlign: 'center' } }, mod.title),
+                react_1.default.createElement("h1", { style: { fontSize: 26, margin: '14px 0 22px', textAlign: 'center' } }, titleCase(mod.title)),
                 react_1.default.createElement("div", { style: { ...card }, "data-tour": "lesson-card" },
                     mod.lesson.paragraphs.map((t, i) => react_1.default.createElement(RichText, { key: i, text: formatTeachingText(t), size: 17, lineGap: 12 })),
                     react_1.default.createElement("div", { style: { background: C.greenSoft, borderRadius: 10, padding: 14 } },
@@ -74763,7 +74849,7 @@ function EduSphereScreens() {
                         react_1.default.createElement("svg", { viewBox: "0 0 24 24", width: "22", height: "22", "aria-hidden": "true" },
                             react_1.default.createElement("path", { d: "M6 6l12 12M18 6L6 18", fill: "none", stroke: "currentColor", strokeWidth: "3.2", strokeLinecap: "round" })))),
                 react_1.default.createElement("div", { "data-title-row": "", style: { display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, margin: isReviewQ ? '8px 0 10px' : '10px 0 18px' } },
-                    !isReviewQ && react_1.default.createElement("p", { style: { margin: 0, fontSize: 18, fontWeight: 600, textAlign: 'center' } }, mod.title),
+                    !isReviewQ && react_1.default.createElement("p", { style: { margin: 0, fontSize: 18, fontWeight: 600, textAlign: 'center' } }, titleCase(mod.title)),
                     react_1.default.createElement(SpeakButton, { mini: true, text: questionText, label: readAloud ? 'Hear it again' : 'Read it to me' })),
                 react_1.default.createElement("div", { style: { ...card, position: 'relative' } },
                     react_1.default.createElement("p", { "data-question-text": "", style: { fontSize: 20, fontWeight: 600, margin: '0 0 12px', textAlign: 'center' } }, q.prompt),
@@ -75090,7 +75176,7 @@ function EduSphereScreens() {
                     FEATURES.reflection && !readAloud && wonderOnFor(findStudent(roster, record.name)) && nextWonder(record.events, mod.courseId, wonderReview) && react_1.default.createElement(WonderButton, { onClick: () => { setWonder(nextWonder(record.events, mod.courseId, wonderReview)); setWonderText(''); setWonderPick(''); setWonderStartedAt(Date.now()); setScreen('wonder'); } }, "Wonder for a minute"),
                     mastered && nextMod && react_1.default.createElement(Btn, { full: true, onClick: () => openModule(nextMod.id), disabled: busy },
                         "Next: ",
-                        nextMod.title),
+                        titleCase(nextMod.title)),
                     !mastered && loopBackTarget(record.events, mod.id) && react_1.default.createElement(Btn, { full: true, onClick: () => loopBack(mod.id, loopBackTarget(record.events, mod.id)), disabled: busy },
                         "Look back at ",
                         getModule(loopBackTarget(record.events, mod.id)).title.toLowerCase()),
@@ -75223,7 +75309,7 @@ function EduSphereScreens() {
                             g.items.length === 0 && react_1.default.createElement("p", { style: { margin: '0 0 8px', color: C.muted, fontSize: 15, textAlign: 'center' } }, "Nothing here yet."),
                             g.items.map((m) => (react_1.default.createElement("div", { key: m.id, style: { padding: '10px 4px', borderTop: `1px solid ${C.line}`, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6, textAlign: 'center' } },
                                 react_1.default.createElement("div", null,
-                                    react_1.default.createElement("p", { style: { margin: 0, fontSize: 16, fontWeight: 600 } }, m.title),
+                                    react_1.default.createElement("p", { style: { margin: 0, fontSize: 16, fontWeight: 600 } }, titleCase(m.title)),
                                     react_1.default.createElement("p", { style: { margin: '4px 0 0', fontSize: 14, color: C.muted } }, m.mastered ? 'You showed you understand this.' : m.attempts ? `Your best so far is ${m.bestScore}. You need ${moduleRules(m.id).toMaster} to master it.` : g.key === 'locked' ? 'Opens when the module before it is mastered.' : 'Ready when you are.')),
                                 g.key !== 'locked' && react_1.default.createElement("div", { style: { width: '100%', textAlign: 'center', marginTop: 6 } },
                                     react_1.default.createElement(Btn, { kind: m.mastered ? 'secondary' : 'primary', onClick: () => openModule(m.id), disabled: busy }, m.mastered ? 'Practice again' : 'Open module')))))))));
@@ -75319,7 +75405,7 @@ function EduSphereScreens() {
                                                     react_1.default.createElement("strong", null, st.code),
                                                     " ",
                                                     st.text),
-                                                react_1.default.createElement("p", { style: { margin: '4px 0 0', fontSize: 14, color: st.moduleIds.length ? C.green : C.clay } }, st.moduleIds.length ? `Covered by: ${st.moduleIds.map((id) => (getModule(id) ? getModule(id).title : id)).join(', ')}` : 'Not yet covered')))))));
+                                                react_1.default.createElement("p", { style: { margin: '4px 0 0', fontSize: 14, color: st.moduleIds.length ? C.green : C.clay } }, st.moduleIds.length ? `Covered by: ${st.moduleIds.map((id) => (getModule(id) ? titleCase(getModule(id).title) : id)).join(', ')}` : 'Not yet covered')))))));
                                 }))));
                         })];
                 })(),
@@ -75971,7 +76057,10 @@ function EduSphereScreens() {
         // One pop-up at a time (2026-10-01, pass HL, Mikey's screenshot): a brand-new account also gets the first-backup reminder,
         // and the two opened together, the reminder on top of What's new, so More Details and Got it could not be tapped.
         // What's new now waits while the reminder is open and appears as soon as it is answered.
-        const backupNudgeOpen = !!(educator && backupAt === null && !backupNudgeSeen && tourStep < 0);
+        // The reminder waits for the tour (pass JE, Mikey saw it flash before card 1): on the first draw after Create account the
+        // tour has not started yet, because it starts a moment later, so a tour that is about to start counts as running.
+        const tourPending = !!(educator && !educator.tourSeen && !phoneScreen && !tourBegun.current);
+        const backupNudgeOpen = !!(educator && backupAt === null && !backupNudgeSeen && tourStep < 0 && !tourPending);
         const newsPopup = newsOpen && news && !backupNudgeOpen ? (react_1.default.createElement("div", { className: "edu-no-print", style: { position: 'fixed', top: 0, right: 0, bottom: 0, left: 0, background: C.scrim, zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 } },
             react_1.default.createElement("div", { className: "edu-rise", style: { width: 'min(440px, 100%)', maxHeight: '85vh', overflowY: 'auto', background: C.surface, ...(C.mode === 'dark' ? { border: `1px solid ${C.cardEdge}` } : {}), borderRadius: 14, padding: '24px 22px', textAlign: 'center' }, role: "dialog", "aria-label": "What's new" },
                 react_1.default.createElement("p", { style: { margin: '0 0 4px', fontSize: 19, fontWeight: 700 } }, "What's new"),
@@ -76007,10 +76096,7 @@ function EduSphereScreens() {
                         react_1.default.createElement("p", { style: { margin: '0 0 8px', fontSize: 18, fontWeight: 600 } }, "Make your first backup soon"),
                         react_1.default.createElement("p", { style: { margin: '0 0 18px', fontSize: 15, color: C.muted } }, "A forgotten PIN can only be reset with a backup file."),
                         react_1.default.createElement("div", { style: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 } },
-                            react_1.default.createElement(Btn, { full: true, kind: "secondary", onClick: () => { setBackupNudgeSeen(true); if (typeof window !== 'undefined') {
-                                    const calm = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-                                    window.scrollTo({ top: 0, behavior: calm ? 'auto' : 'smooth' });
-                                } } }, "Later"),
+                            react_1.default.createElement(Btn, { full: true, kind: "secondary", onClick: () => { setBackupNudgeSeen(true); scrollToTop(true); setTimeout(() => scrollToTop(true), 120); } }, "Later"),
                             react_1.default.createElement(Btn, { full: true, onClick: () => { setBackupNudgeSeen(true); setScreen('backup'); } }, "Backup now"))))),
                 react_1.default.createElement("h1", { style: { fontSize: 24, margin: '26px 0 4px', textAlign: 'center' } }, "My Classroom"),
                 react_1.default.createElement("p", { className: "edu-classroom-intro", style: { color: C.muted, marginTop: 0, fontSize: 15, textAlign: 'center' } },
@@ -77107,7 +77193,7 @@ function EduSphereScreens() {
                                 " ",
                                 getCourse(coursePreview).modules.length === 1 ? 'module' : 'modules'),
                             react_1.default.createElement("ol", { style: { margin: 0, padding: '0 0 0 22px' } }, getCourse(coursePreview).modules.map((m) => (react_1.default.createElement("li", { key: m.id, style: { padding: '6px 0', borderTop: `1px solid ${C.line}` } },
-                                react_1.default.createElement("span", { style: { display: 'block', fontSize: 16, fontWeight: 600 } }, m.title),
+                                react_1.default.createElement("span", { style: { display: 'block', fontSize: 16, fontWeight: 600 } }, titleCase(m.title)),
                                 react_1.default.createElement("span", { style: { display: 'block', fontSize: 14, color: C.muted } }, m.tagline || (m.lesson && m.lesson.keyIdea) || ''))))),
                             react_1.default.createElement("div", { style: { textAlign: 'center', marginTop: 16 } },
                                 react_1.default.createElement(Btn, { kind: "secondary", onClick: () => setCoursePreview(null) }, "Close")))))),
@@ -77145,7 +77231,7 @@ function EduSphereScreens() {
                             const state = m.mastered ? 'Mastered' : m.passed && m.firstPassedAt ? 'Passed once' : m.placed ? (m.quickCheck && m.quickCheck.passed ? 'Skipped by quick check' : 'Placed past') : m.pendingWriting ? 'Needs the educator\'s check' : m.attempts ? 'In progress' : 'Not started';
                             return (react_1.default.createElement("div", { key: m.id, style: { borderTop: `1px solid ${C.line}`, paddingTop: 10, marginTop: 10 } },
                                 react_1.default.createElement("div", { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10 } },
-                                    react_1.default.createElement("span", { style: { fontSize: 16, fontWeight: 600 } }, m.title),
+                                    react_1.default.createElement("span", { style: { fontSize: 16, fontWeight: 600 } }, titleCase(m.title)),
                                     react_1.default.createElement(Tag, { tone: m.mastered ? 'mastered' : m.attempts ? 'review' : 'locked' }, state)),
                                 m.mastered && codesForModule(m.id).length > 0 && react_1.default.createElement("p", { style: { margin: '4px 0 0', fontSize: 12, color: C.muted } },
                                     "Satisfies ",
@@ -77166,7 +77252,7 @@ function EduSphereScreens() {
                 storyModule && (react_1.default.createElement("div", { className: "edu-no-print", style: { position: 'fixed', top: 0, right: 0, bottom: 0, left: 0, background: C.scrim, zIndex: 100, overflowY: 'auto', padding: '24px 12px' } },
                     react_1.default.createElement("div", { className: "edu-rise", style: { maxWidth: 560, margin: '0 auto', background: C.surface, ...(C.mode === 'dark' ? { border: `1px solid ${C.cardEdge}` } : {}), borderRadius: 14, padding: 18, position: 'relative' } },
                         react_1.default.createElement("button", { type: "button", onClick: () => setStoryModule(null), "aria-label": "Close", style: { position: 'absolute', top: 8, right: 10, background: 'none', border: 'none', width: 36, height: 36, fontSize: 30, lineHeight: '34px', cursor: 'pointer', color: C.ink, fontFamily: FONT, padding: 0 } }, "\u00D7"),
-                        react_1.default.createElement("p", { style: { margin: '0 0 2px', fontSize: 18, fontWeight: 600, paddingRight: 40 } }, getModule(storyModule).title),
+                        react_1.default.createElement("p", { style: { margin: '0 0 2px', fontSize: 18, fontWeight: 600, paddingRight: 40 } }, titleCase(getModule(storyModule).title)),
                         react_1.default.createElement("p", { style: { margin: '0 0 14px', fontSize: 13, color: C.muted } }, courseLabel(getCourse(getModule(storyModule).courseId))),
                         react_1.default.createElement("p", { style: { margin: 0, fontSize: 16, lineHeight: 1.7 } }, moduleStory(shownName, educatorRecord.events, storyModule)),
                         (() => {

@@ -60,7 +60,8 @@ const educatorLogin = async () => {
 };
 // A full, right PIN opens the classroom on its own (2026-09-23); Open is only there to tap if it did not.
 const openIfStill = async () => { await page.waitForTimeout(120); if ((await state()).screen === 'educator-pin') await tap('Open'); };
-const openSubject = async (name, marker) => { if (!(await text()).includes(marker)) await page.getByRole('button', { name: new RegExp('^' + name) }).click(); };
+// Module titles show in title case since pass JE, so a title is looked for without regard to case.
+const openSubject = async (name, marker) => { if (!(await text()).toLowerCase().includes(marker.toLowerCase())) await page.getByRole('button', { name: new RegExp('^' + name) }).click(); };
 
 // Answers the current question right or wrong using the page's own question object.
 async function answer(correctly) {
@@ -238,7 +239,7 @@ t = await text();
 ok('opening a subject reveals its modules', t.includes('Fractions') && t.includes('Multiplication') && (t.match(/Ready/g) || []).length >= 1);
 await page.getByRole('button', { name: /^Reading/ }).click();
 t = await text();
-ok('only one subject is open at a time', /main idea/i.test(t) && !t.includes('What a fraction means'));
+ok('only one subject is open at a time', /main idea/i.test(t) && !/what a fraction means/i.test(t));
 await page.getByRole('button', { name: /^Math/ }).click();
 
 // 2. Master Fractions module 1 with a perfect set (early courses now list first, so open it by name)
@@ -263,9 +264,9 @@ console.log('DIAG before reload', JSON.stringify(await page.evaluate(() => ({ sc
   const token = 'edu-carry-' + Date.now();
   await page.addInitScript(([store, tok]) => { try { if (window.name === tok) return; for (const k of Object.keys(store)) if (window.localStorage.getItem(k) === null) window.localStorage.setItem(k, store[k]); window.name = tok; } catch (e) { /* storage may be off */ } }, [snap, token]); }
 await page.reload();
-await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen !== 'loading' && window.__eduTest.screen !== 'welcome' && document.body.textContent.includes('What a fraction means'), null, { timeout: 15000 }).catch(() => {});
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen !== 'loading' && window.__eduTest.screen !== 'welcome' && /what a fraction means/i.test(document.body.textContent), null, { timeout: 15000 }).catch(() => {});
 { const diag = await page.evaluate(() => ({ screen: window.__eduTest && window.__eduTest.screen, where: (() => { try { return localStorage.getItem('edusphere_v1_where'); } catch (e) { return null; } })() })); if (diag.screen !== 'lesson') console.log('DIAG refresh landed on', JSON.stringify(diag)); }
-ok('a refresh brings the student back to the lesson they were on', (await page.evaluate(() => window.__eduTest.screen)) === 'lesson' && (await text()).includes('What a fraction means'));
+ok('a refresh brings the student back to the lesson they were on', (await page.evaluate(() => window.__eduTest.screen)) === 'lesson' && /what a fraction means/i.test(await text()));
 // Story-based learning (2026-09-22): the lesson's green button opens the story page; its own Practice button leads on.
 t = await text();
 ok('lesson shows key idea and a plain-text source', t.includes('Key idea') && t.includes('Source:') && (await page.locator('a').count()) === 0);
@@ -397,7 +398,7 @@ t = await text();
 ok('two misses in a row explain the loop back in plain words', t.includes('tricky twice') && t.includes('what a fraction means'));
 await tap('Look back at what a fraction means');
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'lesson');
-ok('the loop back opens the prerequisite lesson', (await text()).includes('What a fraction means'));
+ok('the loop back opens the prerequisite lesson', /what a fraction means/i.test(await text()));
 await tap('Back to overview');
 
 // 5. A reader sees the regular overview; then switch to the young learner, S-1042
@@ -1457,7 +1458,7 @@ t = await text();
 ok('the pre-K screen keeps its skill folds after courses change', /Colors|Counting|Shapes|Matching/.test(t) && !t.includes('Math'));
 ok('a young learner sees no numbers and no My progress button', !t.includes('modules mastered') && (await page.getByRole('button', { name: 'My progress' }).count()) === 0);
 // With one course left in a subject its title is not repeated, so check the module names.
-ok('a switched-off course is hidden from the learner', !t.includes('What a fraction means') && !t.includes('Fractions'));
+ok('a switched-off course is hidden from the learner', !/what a fraction means/i.test(t) && !/\bFractions\b/.test(t.replace(/Equivalent Fractions|Comparing Fractions|Fractions on a Number Line|Multiplying Fractions|Dividing Fractions|Fractions and Decimals|Adding and Subtracting Fractions/g, '')));
 
 // Spoken stories (2026-09-23, Mikey): an early-years story read aloud speaks its title and every paragraph in order, and the
 // paragraph being read lights up as the voice moves on. The test page's voice ends each line after thirty milliseconds.

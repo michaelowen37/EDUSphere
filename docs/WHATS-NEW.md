@@ -2,6 +2,12 @@
 
 The newest block is what educators see once, in a pop-up on the classroom page, after each update. Write it the way Mikey talks to a teacher: conversational, complete sentences, say what changed and why it matters, and skip the shorthand (2026-09-23). Two to four items. The date line is the version stamp.
 
+## October 3, 2026 (the tour, scrolling and titles)
+
+- The first week tour's cards now keep their places on every screen size, and the backup reminder waits until the tour is finished.
+- Lessons open at the top of the page, and so does your classroom after the tour and after Later.
+- Lesson titles are capitalized like titles everywhere they appear as a heading.
+
 ## October 3, 2026 (Public Speaking for college)
 
 - A college public speaking course: communication and audience, ethics and evidence, organizing and delivering, and informing and persuading, with true stories about Gettysburg, Frederick Douglass's Fourth of July speech, Steve Jobs's three stories and Martin Luther King Jr.'s dream, a long story about Chloe's three minutes at city hall, and a new game, Cite It or Not.

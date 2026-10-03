@@ -31915,9 +31915,18 @@ export function summaryParagraph(report) {
 // Story titles too (2026-09-24, Mikey), in the Chicago and AP habit: every word capitalized except the short articles,
 // conjunctions and prepositions in the middle; the first and last words always capitalized; a word already in capitals kept.
 const SMALL_WORDS = new Set(['a', 'an', 'the', 'and', 'but', 'or', 'nor', 'for', 'so', 'yet', 'at', 'by', 'in', 'of', 'on', 'to', 'up', 'as', 'off', 'per', 'via', 'vs', 'into', 'onto', 'from', 'with']);
+// titleCase (updated 2026-10-03, pass JE, Mikey: module titles shown as titles). In plain terms: capitalizes every word of a
+// title except small joining words in the middle. Each part of a hyphenated word is capitalized (Two-Digit Numbers), and a lone
+// letter or letter pair being taught keeps the case it was written in (The Silent e; Trace i, t and k; Sh, ch and th).
+const LETTER_TOKEN = /^(?:[b-z]|ch|sh|th|wh|ph|ck|ng)[,.?!:;]?$/;
 export function titleCase(text) {
   const words = String(text || '').split(' ');
-  return words.map((w, i) => { const core = w.toLowerCase().replace(/[^a-z]/g, ''); if (i > 0 && i < words.length - 1 && SMALL_WORDS.has(core) && w === w.toLowerCase()) return w; return w.charAt(0).toUpperCase() + w.slice(1); }).join(' ');
+  const cap = (part, inner) => { const core = part.toLowerCase().replace(/[^a-z]/g, ''); if (inner && SMALL_WORDS.has(core) && part === part.toLowerCase()) return part; return part.charAt(0).toUpperCase() + part.slice(1); };
+  return words.map((w, i) => {
+    if (i > 0 && LETTER_TOKEN.test(w)) return w;
+    const inner = i > 0 && i < words.length - 1;
+    return w.split('-').map((p, k) => cap(p, k > 0 || inner)).join('-');
+  }).join(' ');
 }
 // The module a loop back returns to: the module before it in its course, else its first named prerequisite.
 export function fundamentalsOf(moduleId) {

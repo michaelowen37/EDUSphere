@@ -27,10 +27,12 @@ export function shortPools(samples = 600) {
 // same way poolSize does and lists every prompt at or over its limit. A scenario too long for the prompt belongs in
 // the question's setup line (its story), which the practice screen shows under the question.
 // -----------------------------------------------------------------------------------------------------------------
-export function longPrompts(samples = 600) {
+// longPrompts (pass JE): prompts at or over the limit, 400 characters by default. Before pass JE the limit was 70, or 110
+// for writing; Mikey lifted it so questions can carry their context.
+export function longPrompts(samples = 600, maxLength = 400) {
   const rows = []; const seen = new Set();
   for (const g of Object.keys(GENERATORS)) for (let s = 1; s <= samples; s++) {
-    const q = generateQuestion(g, s * 7919); const limit = q.type === 'writing' ? 110 : 70;
+    const q = generateQuestion(g, s * 7919); const limit = maxLength;
     if (typeof q.prompt !== 'string' || q.prompt.length < limit || seen.has(`${g}|${q.prompt}`)) continue;
     seen.add(`${g}|${q.prompt}`); rows.push({ generator: g, prompt: q.prompt, length: q.prompt.length, limit });
   }

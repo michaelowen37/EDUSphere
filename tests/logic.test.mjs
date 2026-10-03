@@ -737,7 +737,7 @@ ok('reset: history kept, but nothing counts as mastered afterwards', events.leng
   const rep = L.buildReport('Test', [att(M, '11110', t(1))]);
   ok('report includes a confidence score per module', rep.modules.find((m) => m.id === M).confidence.score === 3 && rep.modules.find((m) => m.id === 'equivalent-fractions').confidence.score === null);
   ok('report prints the confidence rules', rep.definitions.some((d) => d.startsWith('Confidence starts at 1')));
-  ok('every question has a one-sentence prompt and a story or null', Object.keys(L.GENERATORS).every((g) => { const q = L.generateQuestion(g, 7); return typeof q.prompt === 'string' && (q.type === 'writing' ? q.prompt.length < 110 : q.prompt.length < 70) && (q.story === null || typeof q.story === 'string'); }));
+  ok('every question has a one-sentence prompt and a story or null', Object.keys(L.GENERATORS).every((g) => { const q = L.generateQuestion(g, 7); return typeof q.prompt === 'string' && (q.story === null || typeof q.story === 'string'); }));
   ok('explanation pictures are valid bars or a group of dots', Object.keys(L.GENERATORS).every((g) => { const q = L.generateQuestion(g, 11); if (q.explainVisual === null) return true; if (Array.isArray(q.explainVisual)) return q.explainVisual.every((b) => Number.isInteger(b.parts) && b.parts >= 2 && b.shaded >= 0 && b.shaded <= b.parts && typeof b.label === 'string'); if (q.explainVisual.kind === 'letters') return typeof q.explainVisual.text === 'string' && q.explainVisual.text.length > 0; if (q.explainVisual.kind === 'numberline') return q.explainVisual.from < q.explainVisual.to && (q.explainVisual.marks || []).every((v) => v >= q.explainVisual.from && v <= q.explainVisual.to); if (q.explainVisual.kind === 'tri') return q.explainVisual.base > 0 && q.explainVisual.height > 0; if (q.explainVisual.kind === 'percentgrid') return q.explainVisual.shaded >= 0 && q.explainVisual.shaded <= 100; if (q.explainVisual.kind === 'pic') return typeof q.explainVisual.name === 'string' && q.explainVisual.name.length > 0; if (q.explainVisual.kind === 'pair') return [q.explainVisual.a, q.explainVisual.b].every((h) => h && typeof h.kind === 'string' && (h.name || h.colour || h.shape || h.count)); return q.explainVisual.kind === 'dots' && q.explainVisual.count >= 1 && q.explainVisual.count <= 10; }));
 }
 
@@ -1727,10 +1727,10 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
     ok('a repeat is the same question and answer, whatever the wrong choices', L.questionKey({ prompt: 'Tap the cup.', answer: 'icon:cup', choices: ['icon:cup', 'icon:sun'] }) === L.questionKey({ prompt: 'Tap the cup.', answer: 'icon:cup', choices: ['icon:moon', 'icon:cup'] }) && L.questionKey({ prompt: 'Tap the cup.', answer: 'icon:cup' }) !== L.questionKey({ prompt: 'Tap the cup.', answer: 'icon:sun' }));
     ok('an Animal sounds round never asks for the same animal twice', [1, 2, 3, 4, 5, 6, 7, 8].every((seed) => { const core = L.buildAttempt('animal-sounds', seed, []).core; return new Set(core.map((q) => `${q.prompt}|${q.answer}`)).size === core.length; }));
   }
-  { // Every prompt is under its limit (pass HZ): the seed 7 check near the top reads one question per bank, so this one
-    // samples every bank the way the pool audit does, and a long prompt can no longer hide among a bank's others.
-    const QP = await import('../tools/question-pools.mjs'); const longs = QP.longPrompts(200);
-    ok(`every prompt in every bank is under 70 characters, or 110 for writing (now ${longs.length} over${longs.length ? ': ' + longs.slice(0, 3).map((r) => r.generator).join(', ') : ''})`, longs.length === 0);
+  { // No prompt runs past 400 characters (pass JE, Mikey: "we probably don't need a hard 70 character limit"). The 70 and 110
+    // limits are gone, so questions can carry the context and flow they need; this guard only catches a pasted paragraph.
+    const QP = await import('../tools/question-pools.mjs'); const longs = QP.longPrompts(200, 400);
+    ok(`no prompt in any bank runs past 400 characters (now ${longs.length} over${longs.length ? ': ' + longs.slice(0, 3).map((r) => r.generator).join(', ') : ''})`, longs.length === 0);
   }
   { // Questions that read well (pass IB, Mikey): the wording checks in tools/question-review.mjs find questions that end in a
     // fragment, lean on a setup they come before, leave a word hanging, say 1 meters or a 8, or explain with a label or by

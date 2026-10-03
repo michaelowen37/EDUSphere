@@ -1085,6 +1085,10 @@ const KID_ANIMATION = () => `
   }
   /* Pairs cards: pinned columns so a long word can never widen the grid past its box; text decks go three wide on a phone. */
   .edu-pairs-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .edu-bin-hot { outline: 3px solid #E6B84B !important; outline-offset: 2px; transform: scale(1.05); }
+  /* The robot walk on a phone held sideways (pass IO): the grid on the left, the words, steps, arrows and Go on the right, so the
+     whole board fits the short screen. The box drops the height cap that square boards use, because this board is wide. */
+  @media (orientation: landscape) and (max-height: 520px) { .edu-walk-box { width: min(640px, 100%) !important; } .edu-walk { display: grid !important; grid-template-columns: auto minmax(0, 1fr); column-gap: 14px; align-items: start; } .edu-walk > .edu-walk-grid { grid-row: 1 / span 4; margin: 0 !important; width: calc(100vh - 150px) !important; max-width: calc(100vh - 150px) !important; } }
   .edu-pairs-three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   @media (max-width: 599px) { .edu-pairs-text { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
   /* The coloring fold wears the crayons: the whole strip drifts through them, with two sparkles
@@ -2424,7 +2428,7 @@ function grabPointer(el, e) {
   try { if (el && el.setPointerCapture) el.setPointerCapture(e.pointerId); } catch (err) { /* capture refused; moves still bubble to the board */ }
 }
 if (typeof document !== 'undefined') document.addEventListener('dragstart', (e) => { const t = e.target; if (t && t.closest && t.closest('.edu-game-box')) e.preventDefault(); });
-const GAME_BOX = themed(() => ({ width: 'min(520px, 100%)', aspectRatio: '1 / 1', margin: '0 auto', position: 'relative', background: C.paperBoard, color: THEMES.light.ink, border: `2px solid ${C.mode === 'dark' ? C.green : C.ink}`, borderRadius: 14, overflow: 'hidden', touchAction: 'none', userSelect: 'none', WebkitUserSelect: 'none', WebkitTouchCallout: 'none', boxSizing: 'border-box' }));
+const GAME_BOX = themed(() => ({ width: 'min(520px, 100%, max(240px, calc(100vh - 120px)))', aspectRatio: '1 / 1', margin: '0 auto', position: 'relative', background: C.paperBoard, color: THEMES.light.ink, border: `2px solid ${C.mode === 'dark' ? C.green : C.ink}`, borderRadius: 14, overflow: 'hidden', touchAction: 'none', userSelect: 'none', WebkitUserSelect: 'none', WebkitTouchCallout: 'none', boxSizing: 'border-box' }));
 const PAIR_ICONS = ['sun', 'fish', 'tree', 'flower', 'moon', 'bird', 'cup', 'drop'];
 // A small seeded random so a round is the same shuffle on every device, and "play again" is a new one.
 // (shuffle itself comes from logic.mjs: shuffle(rng, list).)
@@ -2488,7 +2492,7 @@ function PairsGame({ game, round }) {
         {cards.map((ic, i) => { const shown = up.includes(i) || found.includes(i); return (
           <button key={i} type="button" onClick={() => flip(i)} aria-label={shown ? (typeof ic === 'string' ? ic : ic.text) : 'Card'} className="edu-press"
             style={{ aspectRatio: '1 / 1', minWidth: 0, minHeight: 64, borderRadius: 12, border: `2px solid ${shown ? B.green : B.ink}`, background: shown ? '#FFFFFF' : B.greenSoft, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 4, overflowWrap: 'anywhere' }}>
-            {shown ? (typeof ic === 'string' ? <IconPic name={ic} size={60} /> : <span style={{ fontFamily: FONT, fontSize: ic.text.length > 10 ? 13 : 16, fontWeight: 700, color: B.ink, padding: 2, textAlign: 'center', lineHeight: 1.2 }}>{ic.text}</span>) : <span style={{ width: 26, height: 26, borderRadius: 13, background: B.green, opacity: 0.35 }} />}
+            {shown ? (typeof ic === 'string' ? <IconPic name={ic} size={60} /> : <span lang="en" style={{ fontFamily: FONT, fontSize: Math.max(...ic.text.split(/\s+/).map((w) => w.length)) > 9 ? 12 : ic.text.length > 10 ? 13 : 16, fontWeight: 700, color: B.ink, padding: 2, textAlign: 'center', lineHeight: 1.2, overflowWrap: 'anywhere', hyphens: 'auto', WebkitHyphens: 'auto', minWidth: 0, maxWidth: '100%' }}>{ic.text}</span>) : <span style={{ width: 26, height: 26, borderRadius: 13, background: B.green, opacity: 0.35 }} />}
           </button>); })}
       </div>
       <Done show={found.length === cards.length} />
@@ -2752,19 +2756,19 @@ function OrderGame({ game, round, onScore = null }) {
 // Four passages a round.
 function EvidenceGame({ game, round, onScore = null }) {
   const deck = EVIDENCE_DECKS[game.deck] || [];
-  const [k, setK] = useState(0); const [got, setGot] = useState(false); const [shake, setShake] = useState(-1); const [ticks, setTicks] = useState(0); const [done, setDone] = useState(false);
+  const [k, setK] = useState(0); const [got, setGot] = useState(false); const [shake, setShake] = useState(-1); const [ticks, setTicks] = useState(0); const [done, setDone] = useState(false); const [streak, setStreak] = useState(0);
   const item = deck.length ? deck[(round * 2 + k) % deck.length] : null;
-  useEffect(() => { setK(0); setGot(false); setShake(-1); setDone(false); setTicks(0); }, [round]);
+  useEffect(() => { setK(0); setGot(false); setShake(-1); setDone(false); setTicks(0); setStreak(0); }, [round]);
   useEffect(() => { if (done || got) return undefined; const t = setInterval(() => setTicks((n) => n + 1), 1000); return () => clearInterval(t); }, [done, got]);
   useEffect(() => { if (done && onScore) onScore(ticks, 'low'); }, [done]);   // every passage done: a lower time is a new best
   useEffect(() => { if (shake < 0) return undefined; const t = setTimeout(() => setShake(-1), 600); return () => clearTimeout(t); }, [shake]);
   if (!item) return null;
   const sets = Math.min(4, deck.length);
-  const tap = (i) => { if (done || got) return; if (i === item.answer) setGot(true); else setShake(i); };
+  const tap = (i) => { if (done || got) return; if (i === item.answer) { setGot(true); setStreak((n) => n + 1); } else { setShake(i); setStreak(0); } };
   const next = () => { if (k + 1 >= sets) setDone(true); else { setK(k + 1); setGot(false); } };
   return (
     <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Find the evidence</span><span>{ticks}s · {Math.min(k + 1, sets)} of {sets}</span></div>
+      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Find the evidence{streak > 1 ? ` · ${streak} in a row` : ''}</span><span>{ticks}s · {Math.min(k + 1, sets)} of {sets}</span></div>
       {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>All the evidence found in {ticks} seconds. Tap the round arrow for new passages.</p> : (
         <div>
           <p style={{ margin: '0 0 10px', textAlign: 'center', fontSize: 16, fontWeight: 700, color: B.ink }}>{item.ask}</p>
@@ -3077,6 +3081,76 @@ function CatchGame({ game, round, onScore = null }) {
     </div>
   );
 }
+// Space shooter (Mikey's idea, 2026-10-02, pass IN): chips drift down; tap where you want the ship and it glides there
+// and fires straight up. Hit the chips that fit the rule; hitting any other chip costs a point and says why. A chip that
+// reaches the ship's line simply passes. On a keyboard the arrows move the ship and the space bar fires.
+function ShipGame({ game, round, onScore = null }) {
+  const deck = ruleDeck(game.rule); const boxRef = useRef(null); const st = useRef(null);
+  const [view, setView] = useState({ items: [], shots: [], bursts: [], ship: 50, t: 0 }); const [score, setScore] = useState(0); const [done, setDone] = useState(null); const [note, setNote] = useState(null);
+  const TOTAL = 20; const low = (t) => t.charAt(0).toLowerCase() + t.slice(1);
+  const half = (text) => Math.max(9, String(text).length * 2.15 + 4) / 2;
+  useEffect(() => {
+    const rnd = lcg(round * 6151 + 29);
+    const n2 = TOTAL / 2; const pickN = (list, n) => Array.from({ length: n }, (_, k) => shuffle(rnd, list)[k % list.length]);
+    const s = { ship: 50, target: 50, fire: false, coolAt: 0, queue: shuffle(rnd, [...pickN(deck.a.items, n2), ...pickN(deck.b.items, n2)]), live: [], shots: [], bursts: [], spawnAt: 0, t: 0, n: 0, score: 0, hits: 0 };
+    st.current = s; setScore(0); setDone(null); setNote(null);
+    let raf; let last = null; let noteTimer = null;
+    const tick = (now) => {
+      const dt = last === null ? 1 : Math.min(3, (now - last) / 16.667); last = now; s.t += dt;
+      const gone = TOTAL - s.queue.length;                                     // chips come a little sooner and faster as the round goes
+      if (s.queue.length && s.t >= s.spawnAt && s.live.length < 3) { const text = s.queue.shift(); s.live.push({ id: s.n++, text, yes: deck.a.items.includes(text), x: 14 + rnd() * 72, y: -5 }); s.spawnAt = s.t + 70 - Math.min(30, gone * 1.5); }
+      s.ship += Math.max(-2.4 * dt, Math.min(2.4 * dt, s.target - s.ship));
+      if (s.fire && Math.abs(s.target - s.ship) < 1.5 && s.t >= s.coolAt && s.shots.length < 3) { s.shots.push({ id: s.n++, x: s.ship, y: 84 }); s.coolAt = s.t + 12; s.fire = false; }
+      for (const it of s.live) it.y += (0.16 + gone * 0.008) * dt;
+      for (const sh of s.shots) sh.y -= 2.6 * dt;
+      for (const sh of s.shots) {
+        const hit = s.live.find((it) => !it.gone && Math.abs(sh.x - it.x) < half(it.text) && Math.abs(sh.y - it.y) < 4.5);
+        if (!hit) continue;
+        sh.gone = true; hit.gone = true; s.bursts.push({ id: s.n++, x: hit.x, y: hit.y, ok: hit.yes, until: s.t + 18 });
+        if (hit.yes) { s.score += 1; s.hits += 1; }
+        else { s.score = Math.max(0, s.score - 1); const t = String(hit.text); setNote(`${t.charAt(0).toUpperCase() + t.slice(1)} is not one of the ${low(deck.a.label)}.`); clearTimeout(noteTimer); noteTimer = setTimeout(() => setNote(null), 1600); }
+      }
+      s.shots = s.shots.filter((sh) => !sh.gone && sh.y > -4);
+      s.live = s.live.filter((it) => !it.gone && it.y < 90);
+      s.bursts = s.bursts.filter((b) => b.until > s.t);
+      setView({ items: s.live.map((it) => ({ ...it })), shots: s.shots.map((x) => ({ ...x })), bursts: s.bursts.map((b) => ({ ...b })), ship: s.ship, t: s.t }); setScore(s.score);
+      if (!s.queue.length && !s.live.length && !s.shots.length) { setDone({ hits: s.hits, of: n2, score: s.score }); if (onScore && s.score > 0) onScore(s.score, 'high'); return; }
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => { cancelAnimationFrame(raf); clearTimeout(noteTimer); };
+  }, [round]);
+  const aim = (e) => { if (!st.current || !boxRef.current) return; const [x] = boxPoint(boxRef.current, e); st.current.target = Math.max(8, Math.min(92, x)); st.current.fire = true; };
+  const key = (e) => {
+    const s = st.current; if (!s) return;
+    if (e.key === 'ArrowLeft') { s.target = Math.max(8, s.target - 9); e.preventDefault(); }
+    else if (e.key === 'ArrowRight') { s.target = Math.min(92, s.target + 9); e.preventDefault(); }
+    else if (e.key === ' ' || e.key === 'ArrowUp' || e.key === 'Enter') { s.target = s.ship; s.fire = true; e.preventDefault(); }
+  };
+  if (done) return (
+    <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 16, textAlign: 'center' }}>
+      <p style={{ margin: '0 0 4px', fontSize: 22, fontWeight: 700 }}>{done.score} {done.score === 1 ? 'point' : 'points'}</p>
+      <p style={{ margin: '0 0 10px', color: B.muted }}>{done.hits} of {done.of} hit</p>
+      <p style={{ margin: 0, color: B.muted }}>Tap the round arrow to go again.</p>
+    </div>
+  );
+  const x = view.ship;
+  return (
+    <div ref={boxRef} className="edu-game-box" tabIndex={0} role="application" aria-label={`Space shooter: hit the ${low(deck.a.label)}. Tap where you want the ship, or use the arrow keys and the space bar.`} style={{ ...GAME_BOX, background: '#1E2A3A', touchAction: 'none' }} onPointerDown={(e) => { grabPointer(boxRef.current, e); aim(e); }} onKeyDown={key}>
+      <svg viewBox="0 0 100 100" width="100%" height="100%" style={{ display: 'block' }}>
+        {[[12, 18], [30, 42], [52, 12], [74, 30], [88, 58], [20, 66], [64, 74], [44, 56]].map(([sx, sy], k) => <circle key={k} cx={sx} cy={sy} r="0.5" fill="#DDE6F0" opacity="0.7" />)}
+        <text x="4" y="7" fontSize="4" fontWeight="700" fontFamily={FONT} fill="#F2F5F8">{score}</text>
+        <text x="96" y="7" fontSize="3.4" fontFamily={FONT} fill="#F2F5F8" textAnchor="end">{deck.a.label}</text>
+        {view.items.map((it) => <SvgChip key={it.id} text={it.text} x={it.x} y={it.y} />)}
+        {view.shots.map((sh) => <rect key={sh.id} x={sh.x - 0.6} y={sh.y - 3} width="1.2" height="4" rx="0.6" fill={B.gold} />)}
+        {view.bursts.map((b) => <circle key={b.id} cx={b.x} cy={b.y} r="5" fill="none" stroke={b.ok ? '#8FD18A' : '#F2A08A'} strokeWidth="1.2" />)}
+        {note ? <text x="50" y="80" fontSize="3.3" fontFamily={FONT} fontWeight="700" fill="#F2A08A" textAnchor="middle">{note}</text> : null}
+        {view.t < 200 && !view.shots.length && score === 0 && !note ? <text x="50" y="80" fontSize="3.3" fontFamily={FONT} fill="#DDE6F0" textAnchor="middle">Tap where you want the ship to fire</text> : null}
+        <g><path d={`M${x} 85 L${x + 5} 95 L${x} 93 L${x - 5} 95 Z`} fill={B.gold} stroke="#F2F5F8" strokeWidth="0.6" strokeLinejoin="round" /><circle cx={x} cy="90.5" r="1.3" fill="#1E2A3A" /></g>
+      </svg>
+    </div>
+  );
+}
 // Path: a grid of chips; drag the dot from the top corner to the star, stepping only on chips that fit the rule. The
 // fitting chips form a path the puzzle guarantees; a wrong step turns red and the dot stays where it was.
 function makePath(deck, n, seed) {
@@ -3336,11 +3410,11 @@ function WalkGame({ game, round, onScore = null }) {
     : prog.length ? 'Tap Go to watch the robot walk.' : 'Tap an arrow to give the robot its first step.';
   const arrowBtn = { fontFamily: FONT, width: 56, height: 56, borderRadius: 14, border: `2px solid ${B.green}`, background: '#fff', color: B.green, fontSize: 28, fontWeight: 700, cursor: running || home ? 'default' : 'pointer', padding: 0, lineHeight: 1 };
   return (
-    <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }}>
+    <div className="edu-game-box edu-walk-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Walk to the star</span><span>{ticks}s · {Math.min(k + 1, sets)} of {sets}</span></div>
       {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Every robot home in {ticks} seconds. Tap the round arrow for new ones.</p> : (
-        <div style={{ textAlign: 'center' }}>
-          <svg viewBox={`0 0 ${cell * 5 + pad * 2} ${cell * 5 + pad * 2}`} width="100%" style={{ maxWidth: 260, display: 'block', margin: '0 auto' }} role="img" aria-label="The robot's grid">
+        <div className="edu-walk" style={{ textAlign: 'center', display: 'flow-root' }}>
+          <svg viewBox={`0 0 ${cell * 5 + pad * 2} ${cell * 5 + pad * 2}`} width="100%" className="edu-walk-grid" style={{ maxWidth: 'clamp(150px, calc(100vh - 370px), 260px)', display: 'block', margin: '0 auto' }} role="img" aria-label="The robot's grid">
             {[0, 1, 2, 3, 4].map((a) => [0, 1, 2, 3, 4].map((b) => <rect key={`${a}-${b}`} x={pad + a * cell} y={pad + b * cell} width={cell} height={cell} fill="#fff" stroke={B.line} strokeWidth="1.5" />))}
             {shown > 0 && res.steps.slice(0, Math.min(shown, total)).map(([a, b], i) => <circle key={i} cx={px(a)} cy={px(b)} r="5" fill={B.green} opacity="0.45" />)}
             {p.rocks.map(([a, b]) => <ellipse key={`r${a}-${b}`} cx={px(a)} cy={px(b) + 3} rx="15" ry="12" fill="#8C8C84" stroke="#5E5E57" strokeWidth="2" />)}
@@ -3745,9 +3819,9 @@ function SpotGame({ game, round, onScore = null }) {
 // rule of the game: repetition in a picture and form in a song are the same thing, a part that comes back. Drawn with B.
 function PatternGame({ game, round, onScore = null }) {
   const rounds = useMemo(() => patternRounds(round), [round]);
-  const [k, setK] = useState(0); const [got, setGot] = useState(false); const [nudge, setNudge] = useState(null); const [ticks, setTicks] = useState(0); const [done, setDone] = useState(false);
+  const [k, setK] = useState(0); const [got, setGot] = useState(false); const [nudge, setNudge] = useState(null); const [ticks, setTicks] = useState(0); const [done, setDone] = useState(false); const [streak, setStreak] = useState(0);
   const q = rounds[Math.min(k, rounds.length - 1)];
-  useEffect(() => { setK(0); setGot(false); setTicks(0); setDone(false); }, [round]);
+  useEffect(() => { setK(0); setGot(false); setTicks(0); setDone(false); setStreak(0); }, [round]);
   useEffect(() => { if (done) return undefined; const t = setInterval(() => setTicks((n) => n + 1), 1000); return () => clearInterval(t); }, [done]);
   useEffect(() => { if (done && onScore) onScore(ticks, 'low'); }, [done]);
   useEffect(() => { if (nudge === null) return undefined; const t = setTimeout(() => setNudge(null), 500); return () => clearTimeout(t); }, [nudge]);
@@ -3757,10 +3831,10 @@ function PatternGame({ game, round, onScore = null }) {
     if (name === 'circle') return <circle cx={h} cy={h} r={h * 0.8} fill={c} stroke={B.ink} strokeWidth="1" />;
     if (name === 'square') return <rect x={h * 0.25} y={h * 0.25} width={h * 1.5} height={h * 1.5} rx="3" fill={c} stroke={B.ink} strokeWidth="1" />;
     return <polygon points={`${h},${h * 0.2} ${h * 1.8},${h * 1.8} ${h * 0.2},${h * 1.8}`} fill={c} stroke={B.ink} strokeWidth="1" strokeLinejoin="round" />; };
-  const pick = (name) => { if (got || done) return; if (name === q.answer) setGot(true); else setNudge(name); };
+  const pick = (name) => { if (got || done) return; if (name === q.answer) { setGot(true); setStreak((n) => n + 1); } else { setNudge(name); setStreak(0); } };
   return (
     <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }} data-pattern-answer={done ? '' : q.answer}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Form: {done ? '' : q.form}</span><span>{ticks}s · {Math.min(k + 1, rounds.length)} of {rounds.length}</span></div>
+      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Form: {done ? '' : q.form}{streak > 1 ? ` · ${streak} in a row` : ''}</span><span>{ticks}s · {Math.min(k + 1, rounds.length)} of {rounds.length}</span></div>
       {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Five patterns finished in {ticks} seconds. Tap the round arrow for more.</p> : (
         <div style={{ textAlign: 'center' }}>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, justifyContent: 'center', alignItems: 'center', marginBottom: 12 }}>
@@ -3799,12 +3873,12 @@ function ShapeGame({ game, round, onScore = null }) {
       <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Shape the sound</span><span>{ticks}s · line {Math.min(k + 1, 4)} of 4</span></div>
       {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Four lines shaped in {ticks} seconds. Tap the round arrow for more.</p> : (
         <div style={{ textAlign: 'center' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: 6, alignItems: 'end', marginBottom: 6 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, minmax(0, 1fr))', gap: 6, alignItems: 'end', marginBottom: 6 }}>
             {levels.map((v, i) => (
               <div key={i} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
-                <button type="button" className="edu-press" aria-label={`Bar ${i + 1} louder`} onClick={() => nudge(i, 1)} disabled={got} style={{ fontFamily: FONT, width: 34, height: 28, borderRadius: 8, border: `1.5px solid ${B.green}`, background: '#fff', color: B.green, fontWeight: 700, cursor: 'pointer', padding: 0 }}>▲</button>
+                <button type="button" className="edu-press" aria-label={`Bar ${i + 1} louder`} onClick={() => nudge(i, 1)} disabled={got} style={{ fontFamily: FONT, width: '100%', maxWidth: 34, height: 28, borderRadius: 8, border: `1.5px solid ${B.green}`, background: '#fff', color: B.green, fontWeight: 700, cursor: 'pointer', padding: 0 }}>▲</button>
                 <div style={{ width: '100%', height: 96, display: 'flex', alignItems: 'flex-end', justifyContent: 'center' }}><div style={{ width: '70%', height: `${(v / 6) * 100}%`, background: got ? B.green : plan[i] === 'forte' ? B.clay : plan[i] === 'piano' ? '#C7DFF8' : B.gold, borderRadius: '6px 6px 2px 2px', border: `1.5px solid ${B.ink}` }} /></div>
-                <button type="button" className="edu-press" aria-label={`Bar ${i + 1} softer`} onClick={() => nudge(i, -1)} disabled={got} style={{ fontFamily: FONT, width: 34, height: 28, borderRadius: 8, border: `1.5px solid ${B.green}`, background: '#fff', color: B.green, fontWeight: 700, cursor: 'pointer', padding: 0 }}>▼</button>
+                <button type="button" className="edu-press" aria-label={`Bar ${i + 1} softer`} onClick={() => nudge(i, -1)} disabled={got} style={{ fontFamily: FONT, width: '100%', maxWidth: 34, height: 28, borderRadius: 8, border: `1.5px solid ${B.green}`, background: '#fff', color: B.green, fontWeight: 700, cursor: 'pointer', padding: 0 }}>▼</button>
                 <span style={{ fontSize: 13, fontStyle: 'italic', fontWeight: 700, color: B.ink }}>{short[plan[i]]}</span>
               </div>
             ))}
@@ -3856,28 +3930,46 @@ function ChordGame({ game, round, onScore = null }) {
 // tollens do; affirming the consequent and denying the antecedent do not, however true the sentences sound. Tap Valid or
 // Not valid; the right answer names the form and moves on, the wrong one wobbles. Six arguments a round and the clock
 // counts up. The lesson's idea is the rule of the game: validity is about the shape. Drawn with B on the paper board.
+// A card you can flick (Mikey's games review, 2026-10-02, pass IP). Drag it left or right past a third of its width to
+// answer that side; it leans and shows the side it is heading for, and snaps back if let go early. The buttons below do the
+// same, and so do the arrow keys, so nobody has to swipe. left and right are [value, label, color].
+function SwipeCard({ left, right, onPick, off = false, children }) {
+  const [dx, setDx] = useState(0); const [held, setHeld] = useState(false); const ref = useRef(null); const start = useRef(null);
+  const down = (e) => { if (off) return; start.current = e.clientX; setHeld(true); try { ref.current.setPointerCapture(e.pointerId); } catch (err) { /* older browsers */ } };
+  const move = (e) => { if (start.current === null) return; setDx(e.clientX - start.current); };
+  const up = (e) => { if (start.current === null) return; const d = e.clientX - start.current; const w = ref.current ? ref.current.getBoundingClientRect().width : 300; start.current = null; setHeld(false); setDx(0); if (Math.abs(d) > w / 3) onPick(d < 0 ? left[0] : right[0]); };
+  const cancel = () => { start.current = null; setHeld(false); setDx(0); };
+  useEffect(() => { const key = (e) => { if (off || e.altKey || e.ctrlKey || e.metaKey) return; if (e.key === 'ArrowLeft') onPick(left[0]); else if (e.key === 'ArrowRight') onPick(right[0]); }; window.addEventListener('keydown', key); return () => window.removeEventListener('keydown', key); });
+  const lean = Math.max(-1, Math.min(1, dx / 160)); const side = lean < -0.25 ? left : lean > 0.25 ? right : null;
+  return (
+    <div ref={ref} onPointerDown={down} onPointerMove={move} onPointerUp={up} onPointerCancel={cancel} style={{ position: 'relative', touchAction: 'pan-y', userSelect: 'none', cursor: off ? 'default' : held ? 'grabbing' : 'grab', transform: `translateX(${dx}px) rotate(${lean * 5}deg)`, transition: held ? 'none' : 'transform 0.2s ease-out' }}>
+      {children}
+      {side ? <span aria-hidden="true" style={{ position: 'absolute', top: 6, [side === left ? 'left' : 'right']: 8, padding: '2px 8px', borderRadius: 8, border: `2px solid ${side[2]}`, background: '#fff', color: side[2], fontFamily: FONT, fontSize: 13, fontWeight: 700 }}>{side[1]}</span> : null}
+    </div>
+  );
+}
 function ValidGame({ game, round, onScore = null }) {
   const rounds = useMemo(() => argumentRounds(round), [round]);
-  const [k, setK] = useState(0); const [got, setGot] = useState(false); const [nudge, setNudge] = useState(null); const [ticks, setTicks] = useState(0); const [done, setDone] = useState(false);
+  const [k, setK] = useState(0); const [got, setGot] = useState(false); const [nudge, setNudge] = useState(null); const [ticks, setTicks] = useState(0); const [done, setDone] = useState(false); const [streak, setStreak] = useState(0);
   const q = rounds[Math.min(k, rounds.length - 1)];
-  useEffect(() => { setK(0); setGot(false); setTicks(0); setDone(false); }, [round]);
+  useEffect(() => { setK(0); setGot(false); setTicks(0); setDone(false); setStreak(0); }, [round]);
   useEffect(() => { if (done) return undefined; const t = setInterval(() => setTicks((n) => n + 1), 1000); return () => clearInterval(t); }, [done]);
   useEffect(() => { if (done && onScore) onScore(ticks, 'low'); }, [done]);
   useEffect(() => { if (nudge === null) return undefined; const t = setTimeout(() => setNudge(null), 500); return () => clearTimeout(t); }, [nudge]);
   useEffect(() => { if (!got) return undefined; const t = setTimeout(() => { setGot(false); if (k + 1 >= rounds.length) setDone(true); else setK(k + 1); }, 900); return () => clearTimeout(t); }, [got]);
-  const pick = (v) => { if (got || done) return; if (v === q.valid) setGot(true); else setNudge(v ? 'valid' : 'invalid'); };
+  const pick = (v) => { if (got || done) return; if (v === q.valid) { setGot(true); setStreak((n) => n + 1); } else { setNudge(v ? 'valid' : 'invalid'); setStreak(0); } };
   return (
     <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }} data-argument-valid={done ? '' : (q.valid ? 'yes' : 'no')}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Does the form hold?</span><span>{ticks}s · {Math.min(k + 1, rounds.length)} of {rounds.length}</span></div>
+      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Does the form hold?{streak > 1 ? ` · ${streak} in a row` : ''}</span><span>{ticks}s · {Math.min(k + 1, rounds.length)} of {rounds.length}</span></div>
       {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Six arguments sorted in {ticks} seconds. Tap the round arrow for more.</p> : (
         <div style={{ textAlign: 'center' }}>
-          <div style={{ background: '#fff', border: `1.5px solid ${B.line}`, borderRadius: 12, padding: '12px 14px', marginBottom: 12, textAlign: 'left' }}>
+          <SwipeCard left={[false, 'Not valid', B.clay]} right={[true, 'Valid', B.green]} onPick={pick} off={got || done}><div style={{ background: '#fff', border: `1.5px solid ${B.line}`, borderRadius: 12, padding: '12px 14px', marginBottom: 12, textAlign: 'left' }}>
             {q.lines.map((line, i) => <p key={i} style={{ margin: i ? '6px 0 0' : 0, fontSize: 16, color: B.ink, fontWeight: i === 2 ? 700 : 400 }}>{line}</p>)}
-          </div>
+          </div></SwipeCard>
           <p style={{ margin: '0 0 10px', fontSize: 15, color: got ? B.green : B.ink, minHeight: 22, fontWeight: got ? 700 : 400 }}>{got ? `${q.valid ? 'Valid' : 'Not valid'}: ${q.form}.` : 'If the premises were true, would the conclusion have to be?'}</p>
           <div style={{ display: 'flex', gap: 10, justifyContent: 'center' }}>
-            <button type="button" className={`edu-press${nudge === 'valid' ? ' edu-wobble' : ''}`} onClick={() => pick(true)} style={{ fontFamily: FONT, fontSize: 16, fontWeight: 700, padding: '10px 22px', borderRadius: 12, border: `2px solid ${B.green}`, background: '#fff', color: B.ink, cursor: got ? 'default' : 'pointer' }}>Valid</button>
-            <button type="button" className={`edu-press${nudge === 'invalid' ? ' edu-wobble' : ''}`} onClick={() => pick(false)} style={{ fontFamily: FONT, fontSize: 16, fontWeight: 700, padding: '10px 22px', borderRadius: 12, border: `2px solid ${B.clay}`, background: '#fff', color: B.ink, cursor: got ? 'default' : 'pointer' }}>Not valid</button>
+            <button type="button" className={`edu-press${nudge === 'invalid' ? ' edu-wobble' : ''}`} aria-label="Not valid" onClick={() => pick(false)} style={{ fontFamily: FONT, fontSize: 16, fontWeight: 700, padding: '10px 22px', borderRadius: 12, border: `2px solid ${B.clay}`, background: '#fff', color: B.ink, cursor: got ? 'default' : 'pointer' }}>← Not valid</button>
+            <button type="button" className={`edu-press${nudge === 'valid' ? ' edu-wobble' : ''}`} aria-label="Valid" onClick={() => pick(true)} style={{ fontFamily: FONT, fontSize: 16, fontWeight: 700, padding: '10px 22px', borderRadius: 12, border: `2px solid ${B.green}`, background: '#fff', color: B.ink, cursor: got ? 'default' : 'pointer' }}>Valid →</button>
           </div>
         </div>
       )}
@@ -3891,29 +3983,29 @@ function ValidGame({ game, round, onScore = null }) {
 // counts up. The lesson's idea is the rule of the game: a good reason is relevant. Drawn with B on the paper board.
 function ReasonGame({ game, round, onScore = null }) {
   const rounds = useMemo(() => reasonRounds(round), [round]);
-  const [k, setK] = useState(0); const [got, setGot] = useState(false); const [nudge, setNudge] = useState(null); const [ticks, setTicks] = useState(0); const [done, setDone] = useState(false);
+  const [k, setK] = useState(0); const [got, setGot] = useState(false); const [nudge, setNudge] = useState(null); const [ticks, setTicks] = useState(0); const [done, setDone] = useState(false); const [streak, setStreak] = useState(0);
   const q = rounds[Math.min(k, rounds.length - 1)];
-  useEffect(() => { setK(0); setGot(false); setTicks(0); setDone(false); }, [round]);
+  useEffect(() => { setK(0); setGot(false); setTicks(0); setDone(false); setStreak(0); }, [round]);
   useEffect(() => { if (done) return undefined; const t = setInterval(() => setTicks((n) => n + 1), 1000); return () => clearInterval(t); }, [done]);
   useEffect(() => { if (done && onScore) onScore(ticks, 'low'); }, [done]);
   useEffect(() => { if (nudge === null) return undefined; const t = setTimeout(() => setNudge(null), 500); return () => clearTimeout(t); }, [nudge]);
   useEffect(() => { if (!got) return undefined; const t = setTimeout(() => { setGot(false); if (k + 1 >= rounds.length) setDone(true); else setK(k + 1); }, 900); return () => clearTimeout(t); }, [got]);
-  const pick = (v) => { if (got || done) return; if (v === q.supports) setGot(true); else setNudge(v ? 'yes' : 'no'); };
+  const pick = (v) => { if (got || done) return; if (v === q.supports) { setGot(true); setStreak((n) => n + 1); } else { setNudge(v ? 'yes' : 'no'); setStreak(0); } };
   return (
     <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }} data-reason-supports={done ? '' : (q.supports ? 'yes' : 'no')}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Does the reason bear on the claim?</span><span>{ticks}s · {Math.min(k + 1, rounds.length)} of {rounds.length}</span></div>
+      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Does the reason bear on the claim?{streak > 1 ? ` · ${streak} in a row` : ''}</span><span>{ticks}s · {Math.min(k + 1, rounds.length)} of {rounds.length}</span></div>
       {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Six reasons sorted in {ticks} seconds. Tap the round arrow for more.</p> : (
         <div style={{ textAlign: 'center' }}>
-          <div style={{ background: '#fff', border: `1.5px solid ${B.line}`, borderRadius: 12, padding: '12px 14px', marginBottom: 12, textAlign: 'left' }}>
+          <SwipeCard left={[false, 'Does not', B.clay]} right={[true, 'Supports it', B.green]} onPick={pick} off={got || done}><div style={{ background: '#fff', border: `1.5px solid ${B.line}`, borderRadius: 12, padding: '12px 14px', marginBottom: 12, textAlign: 'left' }}>
             <p style={{ margin: 0, fontSize: 13, color: B.muted, textTransform: 'uppercase', letterSpacing: 0.5 }}>Claim</p>
             <p style={{ margin: '2px 0 8px', fontSize: 17, color: B.ink, fontWeight: 700 }}>{q.claim}</p>
             <p style={{ margin: 0, fontSize: 13, color: B.muted, textTransform: 'uppercase', letterSpacing: 0.5 }}>Reason</p>
             <p style={{ margin: '2px 0 0', fontSize: 16, color: B.ink }}>{q.reason}</p>
-          </div>
+          </div></SwipeCard>
           <p style={{ margin: '0 0 10px', fontSize: 15, color: got ? B.green : B.ink, minHeight: 22, fontWeight: got ? 700 : 400 }}>{got ? (q.supports ? 'Yes: relevant, and worth checking.' : 'No: true, maybe, and useless here.') : 'A good reason is relevant and true. Is this one relevant?'}</p>
           <div style={{ display: 'flex', gap: 10, justifyContent: 'center' }}>
-            <button type="button" className={`edu-press${nudge === 'yes' ? ' edu-wobble' : ''}`} onClick={() => pick(true)} style={{ fontFamily: FONT, fontSize: 16, fontWeight: 700, padding: '10px 22px', borderRadius: 12, border: `2px solid ${B.green}`, background: '#fff', color: B.ink, cursor: got ? 'default' : 'pointer' }}>Supports it</button>
-            <button type="button" className={`edu-press${nudge === 'no' ? ' edu-wobble' : ''}`} onClick={() => pick(false)} style={{ fontFamily: FONT, fontSize: 16, fontWeight: 700, padding: '10px 22px', borderRadius: 12, border: `2px solid ${B.clay}`, background: '#fff', color: B.ink, cursor: got ? 'default' : 'pointer' }}>Does not</button>
+            <button type="button" className={`edu-press${nudge === 'no' ? ' edu-wobble' : ''}`} aria-label="Does not" onClick={() => pick(false)} style={{ fontFamily: FONT, fontSize: 16, fontWeight: 700, padding: '10px 22px', borderRadius: 12, border: `2px solid ${B.clay}`, background: '#fff', color: B.ink, cursor: got ? 'default' : 'pointer' }}>← Does not</button>
+            <button type="button" className={`edu-press${nudge === 'yes' ? ' edu-wobble' : ''}`} aria-label="Supports it" onClick={() => pick(true)} style={{ fontFamily: FONT, fontSize: 16, fontWeight: 700, padding: '10px 22px', borderRadius: 12, border: `2px solid ${B.green}`, background: '#fff', color: B.ink, cursor: got ? 'default' : 'pointer' }}>Supports it →</button>
           </div>
         </div>
       )}
@@ -3927,19 +4019,19 @@ function ReasonGame({ game, round, onScore = null }) {
 // counts up. The lesson's idea is the rule of the game: a reason is about the thing and true. Drawn with B.
 function BecauseGame({ game, round, onScore = null }) {
   const rounds = useMemo(() => becauseRounds(round), [round]);
-  const [k, setK] = useState(0); const [found, setFound] = useState([]); const [nudge, setNudge] = useState(null); const [ticks, setTicks] = useState(0); const [done, setDone] = useState(false);
+  const [k, setK] = useState(0); const [found, setFound] = useState([]); const [nudge, setNudge] = useState(null); const [ticks, setTicks] = useState(0); const [done, setDone] = useState(false); const [streak, setStreak] = useState(0);
   const q = rounds[Math.min(k, rounds.length - 1)];
   const complete = found.length >= 2;
-  useEffect(() => { setK(0); setFound([]); setTicks(0); setDone(false); }, [round]);
+  useEffect(() => { setK(0); setFound([]); setTicks(0); setDone(false); setStreak(0); }, [round]);
   useEffect(() => { setFound([]); }, [q]);
   useEffect(() => { if (done) return undefined; const t = setInterval(() => setTicks((n) => n + 1), 1000); return () => clearInterval(t); }, [done]);
   useEffect(() => { if (done && onScore) onScore(ticks, 'low'); }, [done]);
   useEffect(() => { if (nudge === null) return undefined; const t = setTimeout(() => setNudge(null), 500); return () => clearTimeout(t); }, [nudge]);
   useEffect(() => { if (!complete) return undefined; const t = setTimeout(() => { if (k + 1 >= rounds.length) setDone(true); else setK(k + 1); }, 800); return () => clearTimeout(t); }, [complete]);
-  const tap = (i) => { if (done || complete || found.includes(i)) return; if (q.options[i].real) setFound([...found, i]); else setNudge(i); };
+  const tap = (i) => { if (done || complete || found.includes(i)) return; if (q.options[i].real) { setFound([...found, i]); setStreak((n) => n + 1); } else { setNudge(i); setStreak(0); } };
   return (
     <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }} data-because-real={done ? '' : q.options.filter((o) => o.real).map((o) => o.text).join(' | ')}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Tap the real reasons</span><span>{ticks}s · {Math.min(k + 1, rounds.length)} of {rounds.length}</span></div>
+      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Tap the real reasons{streak > 1 ? ` · ${streak} in a row` : ''}</span><span>{ticks}s · {Math.min(k + 1, rounds.length)} of {rounds.length}</span></div>
       {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Five claims sorted in {ticks} seconds. Tap the round arrow for more.</p> : (
         <div>
           <div style={{ background: '#fff', border: `1.5px solid ${B.line}`, borderRadius: 12, padding: '10px 14px', marginBottom: 10 }}>
@@ -4000,19 +4092,19 @@ function ShareGame({ game, round, onScore = null }) {
 // answers a different question. Drawn with B on the paper board.
 function StatGame({ game, round, onScore = null }) {
   const rounds = useMemo(() => statRounds(round), [round]);
-  const [k, setK] = useState(0); const [got, setGot] = useState(false); const [nudge, setNudge] = useState(null); const [ticks, setTicks] = useState(0); const [done, setDone] = useState(false);
+  const [k, setK] = useState(0); const [got, setGot] = useState(false); const [nudge, setNudge] = useState(null); const [ticks, setTicks] = useState(0); const [done, setDone] = useState(false); const [streak, setStreak] = useState(0);
   const q = rounds[Math.min(k, rounds.length - 1)];
-  useEffect(() => { setK(0); setGot(false); setTicks(0); setDone(false); }, [round]);
+  useEffect(() => { setK(0); setGot(false); setTicks(0); setDone(false); setStreak(0); }, [round]);
   useEffect(() => { if (done) return undefined; const t = setInterval(() => setTicks((n) => n + 1), 1000); return () => clearInterval(t); }, [done]);
   useEffect(() => { if (done && onScore) onScore(ticks, 'low'); }, [done]);
   useEffect(() => { if (nudge === null) return undefined; const t = setTimeout(() => setNudge(null), 500); return () => clearTimeout(t); }, [nudge]);
   useEffect(() => { if (!got) return undefined; const t = setTimeout(() => { setGot(false); if (k + 1 >= rounds.length) setDone(true); else setK(k + 1); }, 1000); return () => clearTimeout(t); }, [got]);
   const sorted = [...q.scores].sort((a, b) => a - b); const sum = q.scores.reduce((a, b) => a + b, 0);
   const how = q.ask === 'mean' ? `${sum} divided by 5 is ${q.answer}.` : q.ask === 'median' ? `In order, ${sorted.join(', ')}: the middle is ${q.answer}.` : `${q.answer} appears twice; nothing else repeats.`;
-  const pick = (v) => { if (got || done) return; if (v === q.answer) setGot(true); else setNudge(v); };
+  const pick = (v) => { if (got || done) return; if (v === q.answer) { setGot(true); setStreak((n) => n + 1); } else { setNudge(v); setStreak(0); } };
   return (
     <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }} data-stat-answer={done ? '' : String(q.answer)}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Three ways to say average</span><span>{ticks}s · {Math.min(k + 1, rounds.length)} of {rounds.length}</span></div>
+      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Three ways to say average{streak > 1 ? ` · ${streak} in a row` : ''}</span><span>{ticks}s · {Math.min(k + 1, rounds.length)} of {rounds.length}</span></div>
       {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Six averages found in {ticks} seconds. Tap the round arrow for more.</p> : (
         <div style={{ textAlign: 'center' }}>
           <div style={{ display: 'flex', gap: 8, justifyContent: 'center', marginBottom: 10 }}>{q.scores.map((v, i) => <span key={i} style={{ fontFamily: FONT, fontSize: 18, fontWeight: 700, color: B.ink, background: '#fff', border: `1.5px solid ${B.line}`, borderRadius: 10, padding: '6px 10px' }}>{v}</span>)}</div>
@@ -4069,14 +4161,14 @@ function RecallGame({ game, round, onScore = null }) {
 // feeling once, and the clock counts up. The lesson's first move, name the feeling, is the rule of the game. Drawn with B.
 function FaceGame({ game, round, onScore = null }) {
   const rounds = useMemo(() => feelingRounds(round), [round]);
-  const [k, setK] = useState(0); const [got, setGot] = useState(false); const [nudge, setNudge] = useState(null); const [ticks, setTicks] = useState(0); const [done, setDone] = useState(false);
+  const [k, setK] = useState(0); const [got, setGot] = useState(false); const [nudge, setNudge] = useState(null); const [ticks, setTicks] = useState(0); const [done, setDone] = useState(false); const [streak, setStreak] = useState(0);
   const q = rounds[Math.min(k, rounds.length - 1)];
-  useEffect(() => { setK(0); setGot(false); setTicks(0); setDone(false); }, [round]);
+  useEffect(() => { setK(0); setGot(false); setTicks(0); setDone(false); setStreak(0); }, [round]);
   useEffect(() => { if (done) return undefined; const t = setInterval(() => setTicks((n) => n + 1), 1000); return () => clearInterval(t); }, [done]);
   useEffect(() => { if (done && onScore) onScore(ticks, 'low'); }, [done]);
   useEffect(() => { if (nudge === null) return undefined; const t = setTimeout(() => setNudge(null), 500); return () => clearTimeout(t); }, [nudge]);
   useEffect(() => { if (!got) return undefined; const t = setTimeout(() => { setGot(false); if (k + 1 >= rounds.length) setDone(true); else setK(k + 1); }, 800); return () => clearTimeout(t); }, [got]);
-  const pick = (v) => { if (got || done) return; if (v === q.answer) setGot(true); else setNudge(v); };
+  const pick = (v) => { if (got || done) return; if (v === q.answer) { setGot(true); setStreak((n) => n + 1); } else { setNudge(v); setStreak(0); } };
   const face = (f) => {
     const ink = B.ink; const skin = '#F5CBA7';
     const brows = f === 'angry' ? <g><path d="M28 33l14 6" stroke={ink} strokeWidth="3" strokeLinecap="round" /><path d="M72 33l-14 6" stroke={ink} strokeWidth="3" strokeLinecap="round" /></g>
@@ -4096,13 +4188,13 @@ function FaceGame({ game, round, onScore = null }) {
   };
   return (
     <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }} data-feeling-answer={done ? '' : q.answer}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Name the feeling</span><span>{ticks}s · {Math.min(k + 1, rounds.length)} of {rounds.length}</span></div>
+      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Name the feeling{streak > 1 ? ` · ${streak} in a row` : ''}</span><span>{ticks}s · {Math.min(k + 1, rounds.length)} of {rounds.length}</span></div>
       {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Six feelings named in {ticks} seconds. Tap the round arrow for more.</p> : (
         <div style={{ textAlign: 'center' }}>
-          {face(q.answer)}
+          <DragCard onDrop={pick} off={got || done}>{face(q.answer)}</DragCard>
           <p style={{ margin: '0 0 10px', fontSize: 16, color: got ? B.green : B.ink, minHeight: 22, fontWeight: got ? 700 : 400 }}>{got ? `Yes: ${q.answer}. Naming it turns the volume down.` : 'What is this face feeling?'}</p>
           <div style={{ display: 'flex', gap: 10, justifyContent: 'center', flexWrap: 'wrap' }}>
-            {q.choices.map((v) => <button key={v} type="button" className={`edu-press${nudge === v ? ' edu-wobble' : ''}`} aria-label={`Feeling: ${v}`} onClick={() => pick(v)} style={{ fontFamily: FONT, fontSize: 17, fontWeight: 700, minWidth: 96, padding: '10px 14px', borderRadius: 12, border: `2px solid ${B.green}`, background: '#fff', color: B.ink, cursor: got ? 'default' : 'pointer', textTransform: 'capitalize' }}>{v}</button>)}
+            {q.choices.map((v) => <button key={v} type="button" className={`edu-press${nudge === v ? ' edu-wobble' : ''}`} data-bin={v} aria-label={`Feeling: ${v}`} onClick={() => pick(v)} style={{ fontFamily: FONT, fontSize: 17, fontWeight: 700, minWidth: 96, padding: '10px 14px', borderRadius: 12, border: `2px solid ${B.green}`, background: '#fff', color: B.ink, cursor: got ? 'default' : 'pointer', textTransform: 'capitalize' }}>{v}</button>)}
           </div>
         </div>
       )}
@@ -4114,17 +4206,36 @@ function FaceGame({ game, round, onScore = null }) {
 // drawn as an eye, an ear, a nose, a tongue and a hand; tap the sense that tells you about it. The right one moves on, a
 // wrong one wobbles. Five things a round, one for each sense, and the clock counts up. The lesson's first fact, the five
 // senses, is the rule of the game. Drawn with B on the paper board.
+// A card you can carry to its box (Mikey's games review, 2026-10-03, pass IQ). Drag the card onto one of the boxes below
+// and let go there to answer with that box; each box lights as the card passes over it, and a card let go anywhere else
+// slides home. Tapping a box still answers, and so do the number keys, 1 for the first box. Boxes carry data-bin.
+function DragCard({ onDrop, off = false, children }) {
+  const ref = useRef(null); const start = useRef(null); const [d, setD] = useState([0, 0]); const [held, setHeld] = useState(false);
+  const bins = () => { const box = ref.current && ref.current.closest('.edu-game-box'); return box ? [...box.querySelectorAll('[data-bin]')] : []; };
+  const binAt = (x, y) => bins().find((b) => { const r = b.getBoundingClientRect(); return x >= r.left && x <= r.right && y >= r.top && y <= r.bottom; }) || null;
+  const light = (hot) => { for (const b of bins()) b.classList.toggle('edu-bin-hot', b === hot); };
+  const down = (e) => { if (off) return; start.current = [e.clientX, e.clientY]; setHeld(true); try { ref.current.setPointerCapture(e.pointerId); } catch (err) { /* older browsers */ } };
+  const move = (e) => { if (!start.current) return; setD([e.clientX - start.current[0], e.clientY - start.current[1]]); light(binAt(e.clientX, e.clientY)); };
+  const up = (e) => { if (!start.current) return; const b = binAt(e.clientX, e.clientY); start.current = null; setHeld(false); setD([0, 0]); light(null); if (b) onDrop(b.getAttribute('data-bin')); };
+  const cancel = () => { start.current = null; setHeld(false); setD([0, 0]); light(null); };
+  useEffect(() => { const key = (e) => { if (off || e.altKey || e.ctrlKey || e.metaKey) return; const n = Number(e.key); if (!Number.isInteger(n) || n < 1) return; const b = bins()[n - 1]; if (b) onDrop(b.getAttribute('data-bin')); }; window.addEventListener('keydown', key); return () => window.removeEventListener('keydown', key); });
+  return (
+    <div ref={ref} onPointerDown={down} onPointerMove={move} onPointerUp={up} onPointerCancel={cancel} style={{ position: 'relative', zIndex: held ? 5 : 'auto', touchAction: 'none', userSelect: 'none', cursor: off ? 'default' : held ? 'grabbing' : 'grab', transform: `translate(${d[0]}px, ${d[1]}px) scale(${held ? 1.04 : 1})`, transition: held ? 'none' : 'transform 0.2s ease-out', filter: held ? 'drop-shadow(0 8px 10px rgba(0,0,0,0.2))' : 'none' }}>
+      {children}
+    </div>
+  );
+}
 function SenseGame({ game, round, onScore = null }) {
   const rounds = useMemo(() => senseRounds(round), [round]);
-  const [k, setK] = useState(0); const [got, setGot] = useState(false); const [nudge, setNudge] = useState(null); const [ticks, setTicks] = useState(0); const [done, setDone] = useState(false);
+  const [k, setK] = useState(0); const [got, setGot] = useState(false); const [nudge, setNudge] = useState(null); const [ticks, setTicks] = useState(0); const [done, setDone] = useState(false); const [streak, setStreak] = useState(0);
   const q = rounds[Math.min(k, rounds.length - 1)];
-  useEffect(() => { setK(0); setGot(false); setTicks(0); setDone(false); }, [round]);
+  useEffect(() => { setK(0); setGot(false); setTicks(0); setDone(false); setStreak(0); }, [round]);
   useEffect(() => { if (typeof speak === 'function' && !done && !got) speak(`Which sense tells you about ${q.thing}?`); }, [q, done]);
   useEffect(() => { if (done) return undefined; const t = setInterval(() => setTicks((n) => n + 1), 1000); return () => clearInterval(t); }, [done]);
   useEffect(() => { if (done && onScore) onScore(ticks, 'low'); }, [done]);
   useEffect(() => { if (nudge === null) return undefined; const t = setTimeout(() => setNudge(null), 500); return () => clearTimeout(t); }, [nudge]);
   useEffect(() => { if (!got) return undefined; const t = setTimeout(() => { setGot(false); if (k + 1 >= rounds.length) setDone(true); else setK(k + 1); }, 900); return () => clearTimeout(t); }, [got]);
-  const pick = (v) => { if (got || done) return; if (v === q.sense) setGot(true); else setNudge(v); };
+  const pick = (v) => { if (got || done) return; if (v === q.sense) { setGot(true); setStreak((n) => n + 1); } else { setNudge(v); setStreak(0); } };
   const word = { see: 'Eyes', hear: 'Ears', smell: 'Nose', taste: 'Tongue', touch: 'Hand' };
   const icon = (v) => { const k2 = B.ink;
     if (v === 'see') return <g><path d="M4 20q16-16 32 0q-16 16-32 0z" fill="#fff" stroke={k2} strokeWidth="1.5" /><circle cx="20" cy="20" r="6" fill="#4B6B8B" stroke={k2} strokeWidth="1" /><circle cx="20" cy="20" r="2.5" fill={k2} /></g>;
@@ -4134,12 +4245,12 @@ function SenseGame({ game, round, onScore = null }) {
     return <path d="M13 34v-14a2.5 2.5 0 0 1 5 0v-8a2.5 2.5 0 0 1 5 0v8a2.5 2.5 0 0 1 5 0v6a2.5 2.5 0 0 1 5 0v6a9 9 0 0 1-9 9h-2a9 9 0 0 1-9-7z" fill="#F5CBA7" stroke={k2} strokeWidth="1.5" strokeLinejoin="round" />; };
   return (
     <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }} data-sense-answer={done ? '' : q.sense}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Which sense?</span><span>{ticks}s · {Math.min(k + 1, rounds.length)} of {rounds.length}</span></div>
+      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Which sense?{streak > 1 ? ` · ${streak} in a row` : ''}</span><span>{ticks}s · {Math.min(k + 1, rounds.length)} of {rounds.length}</span></div>
       {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Five senses found in {ticks} seconds. Tap the round arrow for more.</p> : (
         <div style={{ textAlign: 'center' }}>
-          <p style={{ margin: '4px 0 12px', fontSize: 20, fontWeight: 700, color: got ? B.green : B.ink }}>{got ? `Yes: your ${word[q.sense].toLowerCase()}.` : q.thing}</p>
+          <DragCard onDrop={pick} off={got || done}><div style={{ display: 'inline-block', background: '#fff', border: `1.5px solid ${B.line}`, borderRadius: 12, padding: '6px 14px', margin: '4px 0 12px' }}><p style={{ margin: 0, fontSize: 20, fontWeight: 700, color: got ? B.green : B.ink }}>{got ? `Yes: your ${word[q.sense].toLowerCase()}.` : q.thing}</p></div></DragCard>
           <div style={{ display: 'flex', gap: 8, justifyContent: 'center', flexWrap: 'wrap' }}>
-            {SENSES.map((v) => <button key={v} type="button" className={`edu-press${nudge === v ? ' edu-wobble' : ''}`} aria-label={`Sense: ${v}`} onClick={() => pick(v)} style={{ fontFamily: FONT, width: 72, height: 78, borderRadius: 14, border: `2px solid ${B.green}`, background: '#fff', color: B.ink, cursor: got ? 'default' : 'pointer', padding: 4, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 2 }}><svg viewBox="0 0 40 40" width="40" height="40" aria-hidden="true">{icon(v)}</svg><span style={{ fontSize: 12, fontWeight: 700 }}>{word[v]}</span></button>)}
+            {SENSES.map((v) => <button key={v} type="button" className={`edu-press${nudge === v ? ' edu-wobble' : ''}`} data-bin={v} aria-label={`Sense: ${v}`} onClick={() => pick(v)} style={{ fontFamily: FONT, width: 72, height: 78, borderRadius: 14, border: `2px solid ${B.green}`, background: '#fff', color: B.ink, cursor: got ? 'default' : 'pointer', padding: 4, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 2 }}><svg viewBox="0 0 40 40" width="40" height="40" aria-hidden="true">{icon(v)}</svg><span style={{ fontSize: 12, fontWeight: 700 }}>{word[v]}</span></button>)}
           </div>
         </div>
       )}
@@ -4184,24 +4295,24 @@ function FillerGame({ game, round, onScore = null }) {
 // the clock counts up. Adapting speech to the room is the lesson, and here it is the rule. Drawn with B on the paper board.
 function RoomGame({ game, round, onScore = null }) {
   const rounds = useMemo(() => roomRounds(round), [round]);
-  const [k, setK] = useState(0); const [got, setGot] = useState(false); const [nudge, setNudge] = useState(null); const [ticks, setTicks] = useState(0); const [done, setDone] = useState(false);
+  const [k, setK] = useState(0); const [got, setGot] = useState(false); const [nudge, setNudge] = useState(null); const [ticks, setTicks] = useState(0); const [done, setDone] = useState(false); const [streak, setStreak] = useState(0);
   const q = rounds[Math.min(k, rounds.length - 1)];
-  useEffect(() => { setK(0); setGot(false); setTicks(0); setDone(false); }, [round]);
+  useEffect(() => { setK(0); setGot(false); setTicks(0); setDone(false); setStreak(0); }, [round]);
   useEffect(() => { if (done) return undefined; const t = setInterval(() => setTicks((n) => n + 1), 1000); return () => clearInterval(t); }, [done]);
   useEffect(() => { if (done && onScore) onScore(ticks, 'low'); }, [done]);
   useEffect(() => { if (nudge === null) return undefined; const t = setTimeout(() => setNudge(null), 500); return () => clearTimeout(t); }, [nudge]);
   useEffect(() => { if (!got) return undefined; const t = setTimeout(() => { setGot(false); if (k + 1 >= rounds.length) setDone(true); else setK(k + 1); }, 900); return () => clearTimeout(t); }, [got]);
-  const pick = (v) => { if (got || done) return; if (v === q.answer) setGot(true); else setNudge(v); };
+  const pick = (v) => { if (got || done) return; if (v === q.answer) { setGot(true); setStreak((n) => n + 1); } else { setNudge(v); setStreak(0); } };
   const why = { friends: 'casual words and half sentences', class: 'full sentences and the words of the subject', 'a job interview': 'a formal opening and no slang', 'a text to a grandparent': 'warm, short and clear' };
   return (
     <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }} data-room-answer={done ? '' : q.answer}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Fit the room</span><span>{ticks}s · {Math.min(k + 1, rounds.length)} of {rounds.length}</span></div>
+      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Fit the room{streak > 1 ? ` · ${streak} in a row` : ''}</span><span>{ticks}s · {Math.min(k + 1, rounds.length)} of {rounds.length}</span></div>
       {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Six lines in their rooms in {ticks} seconds. Tap the round arrow for more.</p> : (
         <div style={{ textAlign: 'center' }}>
-          <div style={{ background: '#fff', border: `1.5px solid ${B.line}`, borderRadius: 12, padding: '14px 12px', marginBottom: 10, fontSize: 18, fontWeight: 600, color: B.ink, fontStyle: 'italic' }}>{q.line}</div>
+          <DragCard onDrop={pick} off={got || done}><div style={{ background: '#fff', border: `1.5px solid ${B.line}`, borderRadius: 12, padding: '14px 12px', marginBottom: 10, fontSize: 18, fontWeight: 600, color: B.ink, fontStyle: 'italic' }}>{q.line}</div></DragCard>
           <p style={{ margin: '0 0 10px', fontSize: 15, color: got ? B.green : B.ink, minHeight: 22, fontWeight: got ? 700 : 400 }}>{got ? `Yes: ${q.answer}, ${why[q.answer]}.` : 'Which room does this line fit?'}</p>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
-            {q.choices.map((v) => <button key={v} type="button" className={`edu-press${nudge === v ? ' edu-wobble' : ''}`} aria-label={`Room: ${v}`} onClick={() => pick(v)} style={{ fontFamily: FONT, fontSize: 15, fontWeight: 700, padding: '10px 8px', borderRadius: 12, border: `2px solid ${B.green}`, background: '#fff', color: B.ink, cursor: got ? 'default' : 'pointer' }}>{v}</button>)}
+            {q.choices.map((v) => <button key={v} type="button" className={`edu-press${nudge === v ? ' edu-wobble' : ''}`} data-bin={v} aria-label={`Room: ${v}`} onClick={() => pick(v)} style={{ fontFamily: FONT, fontSize: 15, fontWeight: 700, padding: '10px 8px', borderRadius: 12, border: `2px solid ${B.green}`, background: '#fff', color: B.ink, cursor: got ? 'default' : 'pointer' }}>{v}</button>)}
           </div>
         </div>
       )}
@@ -4214,17 +4325,17 @@ function RoomGame({ game, round, onScore = null }) {
 // Six a round and the clock counts up. A relevant question is the lesson's rule, and here it is the rule. Drawn with B.
 function AskGame({ game, round, onScore = null }) {
   const rounds = useMemo(() => askRounds(round), [round]);
-  const [k, setK] = useState(0); const [got, setGot] = useState(false); const [nudge, setNudge] = useState(null); const [ticks, setTicks] = useState(0); const [done, setDone] = useState(false);
+  const [k, setK] = useState(0); const [got, setGot] = useState(false); const [nudge, setNudge] = useState(null); const [ticks, setTicks] = useState(0); const [done, setDone] = useState(false); const [streak, setStreak] = useState(0);
   const q = rounds[Math.min(k, rounds.length - 1)];
-  useEffect(() => { setK(0); setGot(false); setTicks(0); setDone(false); }, [round]);
+  useEffect(() => { setK(0); setGot(false); setTicks(0); setDone(false); setStreak(0); }, [round]);
   useEffect(() => { if (done) return undefined; const t = setInterval(() => setTicks((n) => n + 1), 1000); return () => clearInterval(t); }, [done]);
   useEffect(() => { if (done && onScore) onScore(ticks, 'low'); }, [done]);
   useEffect(() => { if (nudge === null) return undefined; const t = setTimeout(() => setNudge(null), 500); return () => clearTimeout(t); }, [nudge]);
   useEffect(() => { if (!got) return undefined; const t = setTimeout(() => { setGot(false); if (k + 1 >= rounds.length) setDone(true); else setK(k + 1); }, 900); return () => clearTimeout(t); }, [got]);
-  const pick = (v) => { if (got || done) return; if (v === q.answer) setGot(true); else setNudge(v); };
+  const pick = (v) => { if (got || done) return; if (v === q.answer) { setGot(true); setStreak((n) => n + 1); } else { setNudge(v); setStreak(0); } };
   return (
     <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }} data-ask-answer={done ? '' : q.answer}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Ask the right question</span><span>{ticks}s · {Math.min(k + 1, rounds.length)} of {rounds.length}</span></div>
+      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Ask the right question{streak > 1 ? ` · ${streak} in a row` : ''}</span><span>{ticks}s · {Math.min(k + 1, rounds.length)} of {rounds.length}</span></div>
       {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Six questions on the topic in {ticks} seconds. Tap the round arrow for more.</p> : (
         <div style={{ textAlign: 'center' }}>
           <div style={{ background: '#fff', border: `1.5px solid ${B.line}`, borderRadius: 12, padding: '14px 12px', marginBottom: 10, fontSize: 18, fontWeight: 600, color: B.ink }}>Your friend says: {q.said}</div>
@@ -4359,24 +4470,24 @@ function RelationGame({ game, round, onScore = null }) {
   const [got, setGot] = useState(false); // true for a moment after a right tap
   const [nudge, setNudge] = useState(null); // the name of a wrong tap, so that button wobbles
   const [ticks, setTicks] = useState(0); // seconds since the round started
-  const [done, setDone] = useState(false); // true once all six are answered
+  const [done, setDone] = useState(false); const [streak, setStreak] = useState(0); // true once all six are answered
   const q = rounds[Math.min(k, rounds.length - 1)];
-  useEffect(() => { setK(0); setGot(false); setTicks(0); setDone(false); }, [round]);
+  useEffect(() => { setK(0); setGot(false); setTicks(0); setDone(false); setStreak(0); }, [round]);
   useEffect(() => { if (done) return undefined; const t = setInterval(() => setTicks((n) => n + 1), 1000); return () => clearInterval(t); }, [done]);
   useEffect(() => { if (done && onScore) onScore(ticks, 'low'); }, [done]);
   useEffect(() => { if (nudge === null) return undefined; const t = setTimeout(() => setNudge(null), 500); return () => clearTimeout(t); }, [nudge]);
   useEffect(() => { if (!got) return undefined; const t = setTimeout(() => { setGot(false); if (k + 1 >= rounds.length) setDone(true); else setK(k + 1); }, 1000); return () => clearTimeout(t); }, [got]);
-  const pick = (v) => { if (got || done) return; if (v === q.answer) setGot(true); else setNudge(v); };
+  const pick = (v) => { if (got || done) return; if (v === q.answer) { setGot(true); setStreak((n) => n + 1); } else { setNudge(v); setStreak(0); } };
   const why = { mutualism: 'both gain', parasitism: 'one gains and the other is harmed', commensalism: 'one gains and the other is unaffected', predation: 'one eats the other' };
   return (
     <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }} data-relation-answer={done ? '' : q.answer}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Who gains</span><span>{ticks}s · {Math.min(k + 1, rounds.length)} of {rounds.length}</span></div>
+      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Who gains{streak > 1 ? ` · ${streak} in a row` : ''}</span><span>{ticks}s · {Math.min(k + 1, rounds.length)} of {rounds.length}</span></div>
       {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Six relationships named in {ticks} seconds. Tap the round arrow for more.</p> : (
         <div style={{ textAlign: 'center' }}>
-          <div style={{ background: '#fff', border: `1.5px solid ${B.line}`, borderRadius: 12, padding: '14px 12px', marginBottom: 10, fontSize: 17, fontWeight: 600, color: B.ink }}>{q.line}</div>
+          <DragCard onDrop={pick} off={got || done}><div style={{ background: '#fff', border: `1.5px solid ${B.line}`, borderRadius: 12, padding: '14px 12px', marginBottom: 10, fontSize: 17, fontWeight: 600, color: B.ink }}>{q.line}</div></DragCard>
           <p style={{ margin: '0 0 10px', fontSize: 15, color: got ? B.green : B.ink, minHeight: 22, fontWeight: got ? 700 : 400 }}>{got ? `Yes: ${q.answer}, ${why[q.answer]}.` : 'Which relationship is this?'}</p>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
-            {q.choices.map((v) => <button key={v} type="button" className={`edu-press${nudge === v ? ' edu-wobble' : ''}`} aria-label={`Relationship: ${v}`} onClick={() => pick(v)} style={{ fontFamily: FONT, fontSize: 16, fontWeight: 700, padding: '10px 8px', borderRadius: 12, border: `2px solid ${B.green}`, background: '#fff', color: B.ink, cursor: got ? 'default' : 'pointer', textTransform: 'capitalize' }}>{v}</button>)}
+            {q.choices.map((v) => <button key={v} type="button" className={`edu-press${nudge === v ? ' edu-wobble' : ''}`} data-bin={v} aria-label={`Relationship: ${v}`} onClick={() => pick(v)} style={{ fontFamily: FONT, fontSize: 16, fontWeight: 700, padding: '10px 8px', borderRadius: 12, border: `2px solid ${B.green}`, background: '#fff', color: B.ink, cursor: got ? 'default' : 'pointer', textTransform: 'capitalize' }}>{v}</button>)}
           </div>
         </div>
       )}
@@ -4581,14 +4692,14 @@ function DealGame({ game, round, onScore = null }) {
   const [got, setGot] = useState(false); // true for a moment after a right tap, while the two prices are shown
   const [nudge, setNudge] = useState(null); // the label of a wrong tap, so that coupon wobbles
   const [ticks, setTicks] = useState(0); // seconds since the round started
-  const [done, setDone] = useState(false); // true once all six are judged
+  const [done, setDone] = useState(false); const [streak, setStreak] = useState(0); // true once all six are judged
   const q = rounds[Math.min(k, rounds.length - 1)];
-  useEffect(() => { setK(0); setGot(false); setTicks(0); setDone(false); }, [round]);
+  useEffect(() => { setK(0); setGot(false); setTicks(0); setDone(false); setStreak(0); }, [round]);
   useEffect(() => { if (done) return undefined; const t = setInterval(() => setTicks((n) => n + 1), 1000); return () => clearInterval(t); }, [done]);
   useEffect(() => { if (done && onScore) onScore(ticks, 'low'); }, [done]);
   useEffect(() => { if (nudge === null) return undefined; const t = setTimeout(() => setNudge(null), 500); return () => clearTimeout(t); }, [nudge]);
   useEffect(() => { if (!got) return undefined; const t = setTimeout(() => { setGot(false); if (k + 1 >= rounds.length) setDone(true); else setK(k + 1); }, 1300); return () => clearTimeout(t); }, [got]);
-  const pick = (label) => { if (got || done) return; if (label === q.answer) setGot(true); else setNudge(label); };
+  const pick = (label) => { if (got || done) return; if (label === q.answer) { setGot(true); setStreak((n) => n + 1); } else { setNudge(label); setStreak(0); } };
   const pctSaves = dealSaving(q.price, q.pct);
   const coupon = (label, saves, color) => (
     <button key={label} type="button" className={`edu-press${nudge === label ? ' edu-wobble' : ''}`} aria-label={`Deal: ${label}`} onClick={() => pick(label)}
@@ -4599,7 +4710,7 @@ function DealGame({ game, round, onScore = null }) {
   );
   return (
     <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }} data-deal-answer={done ? '' : q.answer}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>The better deal</span><span>{ticks}s · {Math.min(k + 1, rounds.length)} of {rounds.length}</span></div>
+      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>The better deal{streak > 1 ? ` · ${streak} in a row` : ''}</span><span>{ticks}s · {Math.min(k + 1, rounds.length)} of {rounds.length}</span></div>
       {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Six deals judged in {ticks} seconds. Tap the round arrow for more.</p> : (
         <div style={{ textAlign: 'center' }}>
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: 10, background: '#fff', border: `1.5px solid ${B.line}`, borderRadius: 12, padding: '10px 16px', marginBottom: 10 }}>
@@ -4684,26 +4795,26 @@ function ToolGame({ game, round, onScore = null }) {
   const [got, setGot] = useState(false); // true for a moment after a right tap
   const [nudge, setNudge] = useState(null); // the tool of a wrong tap, so that picture wobbles
   const [ticks, setTicks] = useState(0); // seconds since the round started
-  const [done, setDone] = useState(false); // true once all six jobs are matched
+  const [done, setDone] = useState(false); const [streak, setStreak] = useState(0); // true once all six jobs are matched
   const q = rounds[Math.min(k, rounds.length - 1)];
-  useEffect(() => { setK(0); setGot(false); setTicks(0); setDone(false); }, [round]);
+  useEffect(() => { setK(0); setGot(false); setTicks(0); setDone(false); setStreak(0); }, [round]);
   useEffect(() => { if (done) return undefined; const t = setInterval(() => setTicks((n) => n + 1), 1000); return () => clearInterval(t); }, [done]);
   useEffect(() => { if (done && onScore) onScore(ticks, 'low'); }, [done]);
   useEffect(() => { if (nudge === null) return undefined; const t = setTimeout(() => setNudge(null), 500); return () => clearTimeout(t); }, [nudge]);
   useEffect(() => { if (!got) return undefined; const t = setTimeout(() => { setGot(false); if (k + 1 >= rounds.length) setDone(true); else setK(k + 1); }, 1100); return () => clearTimeout(t); }, [got]);
-  const pick = (name) => { if (got || done) return; if (name === q.answer) setGot(true); else setNudge(name); };
+  const pick = (name) => { if (got || done) return; if (name === q.answer) { setGot(true); setStreak((n) => n + 1); } else { setNudge(name); setStreak(0); } };
   const ask = `Which tool does ${q.job} use?`;
   return (
     <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }} data-tool-answer={done ? '' : q.answer}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Find the tool</span><span>{ticks}s · {Math.min(k + 1, rounds.length)} of {rounds.length}</span></div>
+      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Find the tool{streak > 1 ? ` · ${streak} in a row` : ''}</span><span>{ticks}s · {Math.min(k + 1, rounds.length)} of {rounds.length}</span></div>
       {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Six jobs, six tools, in {ticks} seconds. Tap the round arrow for more.</p> : (
         <div style={{ textAlign: 'center' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, margin: '4px 0 12px' }}>
-            <p style={{ margin: 0, fontSize: 19, fontWeight: 700, color: got ? B.green : B.ink }}>{got ? `Yes: ${q.job} uses a ${q.answer}.` : ask}</p>
+            <DragCard onDrop={pick} off={got || done}><p style={{ margin: 0, fontSize: 19, fontWeight: 700, color: got ? B.green : B.ink, background: '#fff', border: `1.5px solid ${B.line}`, borderRadius: 12, padding: '6px 12px' }}>{got ? `Yes: ${q.job} uses a ${q.answer}.` : ask}</p></DragCard>
             {!got && <SpeakButton mini text={ask} label="Hear it" />}
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10 }}>
-            {q.choices.map((name) => <button key={name} type="button" className={`edu-press${nudge === name ? ' edu-wobble' : ''}`} aria-label={`Tool: ${name}`} onClick={() => pick(name)} style={{ fontFamily: FONT, background: '#fff', border: `2px solid ${got && name === q.answer ? B.green : B.line}`, borderRadius: 14, padding: '10px 4px 8px', cursor: got ? 'default' : 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, color: B.ink, fontSize: 14, fontWeight: 600 }}><ToolIcon name={name} />{name}</button>)}
+            {q.choices.map((name) => <button key={name} type="button" className={`edu-press${nudge === name ? ' edu-wobble' : ''}`} data-bin={name} aria-label={`Tool: ${name}`} onClick={() => pick(name)} style={{ fontFamily: FONT, background: '#fff', border: `2px solid ${got && name === q.answer ? B.green : B.line}`, borderRadius: 14, padding: '10px 4px 8px', cursor: got ? 'default' : 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, color: B.ink, fontSize: 14, fontWeight: 600 }}><ToolIcon name={name} />{name}</button>)}
           </div>
         </div>
       )}
@@ -4723,25 +4834,25 @@ function LedgerGame({ game, round, onScore = null }) {
   const [got, setGot] = useState(false); // true for a moment after a right tap
   const [nudge, setNudge] = useState(null); // the side of a wrong tap, so that button wobbles
   const [ticks, setTicks] = useState(0); // seconds since the round started
-  const [done, setDone] = useState(false); // true once all six are placed
+  const [done, setDone] = useState(false); const [streak, setStreak] = useState(0); // true once all six are placed
   const q = rounds[Math.min(k, rounds.length - 1)];
-  useEffect(() => { setK(0); setGot(false); setTicks(0); setDone(false); }, [round]);
+  useEffect(() => { setK(0); setGot(false); setTicks(0); setDone(false); setStreak(0); }, [round]);
   useEffect(() => { if (done) return undefined; const t = setInterval(() => setTicks((n) => n + 1), 1000); return () => clearInterval(t); }, [done]);
   useEffect(() => { if (done && onScore) onScore(ticks, 'low'); }, [done]);
   useEffect(() => { if (nudge === null) return undefined; const t = setTimeout(() => setNudge(null), 500); return () => clearTimeout(t); }, [nudge]);
   useEffect(() => { if (!got) return undefined; const t = setTimeout(() => { setGot(false); if (k + 1 >= rounds.length) setDone(true); else setK(k + 1); }, 1100); return () => clearTimeout(t); }, [got]);
-  const pick = (side) => { if (got || done) return; if (side === q.answer) setGot(true); else setNudge(side); };
+  const pick = (side) => { if (got || done) return; if (side === q.answer) { setGot(true); setStreak((n) => n + 1); } else { setNudge(side); setStreak(0); } };
   const why = { assets: 'something the firm owns, an asset', liabilities: 'something the firm owes, a liability', equity: 'part of the owners\' equity' }[q.answer];
   return (
     <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }} data-ledger-answer={done ? '' : q.answer}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Sort the ledger</span><span>{ticks}s · {Math.min(k + 1, rounds.length)} of {rounds.length}</span></div>
+      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Sort the ledger{streak > 1 ? ` · ${streak} in a row` : ''}</span><span>{ticks}s · {Math.min(k + 1, rounds.length)} of {rounds.length}</span></div>
       {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Six accounts placed in {ticks} seconds. Tap the round arrow for more.</p> : (
         <div style={{ textAlign: 'center' }}>
           <p style={{ margin: '0 0 8px', fontSize: 14, color: B.muted, fontWeight: 600 }}>Assets = Liabilities + Equity</p>
-          <div style={{ background: '#fff', border: `1.5px solid ${B.line}`, borderRadius: 12, padding: '14px 12px', marginBottom: 8, fontSize: 20, fontWeight: 700, color: B.ink }}>{q.item}</div>
+          <DragCard onDrop={pick} off={got || done}><div style={{ background: '#fff', border: `1.5px solid ${B.line}`, borderRadius: 12, padding: '14px 12px', marginBottom: 8, fontSize: 20, fontWeight: 700, color: B.ink }}>{q.item}</div></DragCard>
           <p style={{ margin: '0 0 10px', fontSize: 15, color: got ? B.green : B.ink, minHeight: 22, fontWeight: got ? 700 : 400 }}>{got ? `Yes: ${q.item} is ${why}.` : 'Where does it go on the balance sheet?'}</p>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8 }}>
-            {LEDGER_SIDES.map((side) => <button key={side} type="button" className={`edu-press${nudge === side ? ' edu-wobble' : ''}`} aria-label={`Side: ${side}`} onClick={() => pick(side)} style={{ fontFamily: FONT, fontSize: 15, fontWeight: 700, padding: '12px 4px', borderRadius: 12, border: `2px solid ${got && side === q.answer ? B.green : B.line}`, background: '#fff', color: B.ink, cursor: got ? 'default' : 'pointer', textTransform: 'capitalize' }}>{side}</button>)}
+            {LEDGER_SIDES.map((side) => <button key={side} type="button" className={`edu-press${nudge === side ? ' edu-wobble' : ''}`} data-bin={side} aria-label={`Side: ${side}`} onClick={() => pick(side)} style={{ fontFamily: FONT, fontSize: 15, fontWeight: 700, padding: '12px 4px', borderRadius: 12, border: `2px solid ${got && side === q.answer ? B.green : B.line}`, background: '#fff', color: B.ink, cursor: got ? 'default' : 'pointer', textTransform: 'capitalize' }}>{side}</button>)}
           </div>
         </div>
       )}
@@ -4762,14 +4873,14 @@ function LabelGame({ game, round, onScore = null }) {
   const [got, setGot] = useState(false); // true for a moment after a right tap
   const [nudge, setNudge] = useState(null); // the label of a wrong tap, so that card wobbles
   const [ticks, setTicks] = useState(0); // seconds since the round started
-  const [done, setDone] = useState(false); // true once all six are read
+  const [done, setDone] = useState(false); const [streak, setStreak] = useState(0); // true once all six are read
   const q = rounds[Math.min(k, rounds.length - 1)];
-  useEffect(() => { setK(0); setGot(false); setTicks(0); setDone(false); }, [round]);
+  useEffect(() => { setK(0); setGot(false); setTicks(0); setDone(false); setStreak(0); }, [round]);
   useEffect(() => { if (done) return undefined; const t = setInterval(() => setTicks((n) => n + 1), 1000); return () => clearInterval(t); }, [done]);
   useEffect(() => { if (done && onScore) onScore(ticks, 'low'); }, [done]);
   useEffect(() => { if (nudge === null) return undefined; const t = setTimeout(() => setNudge(null), 500); return () => clearTimeout(t); }, [nudge]);
   useEffect(() => { if (!got) return undefined; const t = setTimeout(() => { setGot(false); if (k + 1 >= rounds.length) setDone(true); else setK(k + 1); }, 1400); return () => clearTimeout(t); }, [got]);
-  const pick = (side) => { if (got || done) return; if (side === q.answer) setGot(true); else setNudge(side); };
+  const pick = (side) => { if (got || done) return; if (side === q.answer) { setGot(true); setStreak((n) => n + 1); } else { setNudge(side); setStreak(0); } };
   const name = q.food.charAt(0).toUpperCase() + q.food.slice(1);
   const ask = `Which ${q.food} has ${q.goal} ${q.nutrient} per serving?`;
   const rows = [['sodium', 'Sodium', 'mg'], ['added sugars', 'Added sugars', 'g'], ['fiber', 'Fiber', 'g']];
@@ -4782,7 +4893,7 @@ function LabelGame({ game, round, onScore = null }) {
   );
   return (
     <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }} data-label-answer={done ? '' : q.answer}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Read the label</span><span>{ticks}s · {Math.min(k + 1, rounds.length)} of {rounds.length}</span></div>
+      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Read the label{streak > 1 ? ` · ${streak} in a row` : ''}</span><span>{ticks}s · {Math.min(k + 1, rounds.length)} of {rounds.length}</span></div>
       {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Six labels read in {ticks} seconds. Tap the round arrow for more.</p> : (
         <div style={{ textAlign: 'center' }}>
           <p style={{ margin: '0 0 10px', fontSize: 16, fontWeight: 700, color: got ? B.green : B.ink, minHeight: 22 }}>{got ? `Yes: ${q.answer} has ${q.answer === 'A' ? q.a[q.nutrient] : q.b[q.nutrient]} ${q.unit} of ${q.nutrient}, against ${q.answer === 'A' ? q.b[q.nutrient] : q.a[q.nutrient]} ${q.unit}.` : ask}</p>
@@ -4848,22 +4959,23 @@ function GreenRedGame({ game, round, onScore = null }) {
   const [nudge, setNudge] = useState(null); // the flag of a wrong tap, so that button wobbles
   const [ticks, setTicks] = useState(0); // seconds since the round started
   const [done, setDone] = useState(false); // true once all eight are sorted
+  const [streak, setStreak] = useState(0); // right answers in a row
   const q = rounds[Math.min(k, rounds.length - 1)];
-  useEffect(() => { setK(0); setGot(false); setTicks(0); setDone(false); }, [round]);
+  useEffect(() => { setK(0); setGot(false); setTicks(0); setDone(false); setStreak(0); }, [round]);
   useEffect(() => { if (done) return undefined; const t = setInterval(() => setTicks((n) => n + 1), 1000); return () => clearInterval(t); }, [done]);
   useEffect(() => { if (done && onScore) onScore(ticks, 'low'); }, [done]);
   useEffect(() => { if (nudge === null) return undefined; const t = setTimeout(() => setNudge(null), 500); return () => clearTimeout(t); }, [nudge]);
   useEffect(() => { if (!got) return undefined; const t = setTimeout(() => { setGot(false); if (k + 1 >= rounds.length) setDone(true); else setK(k + 1); }, 1100); return () => clearTimeout(t); }, [got]);
-  const pick = (flag) => { if (got || done) return; if (flag === q.answer) setGot(true); else setNudge(flag); };
+  const pick = (flag) => { if (got || done) return; if (flag === q.answer) { setGot(true); setStreak((n) => n + 1); } else { setNudge(flag); setStreak(0); } };
   const why = q.answer === 'green' ? 'a green flag, a sign of a healthy relationship' : 'a red flag, a warning sign';
-  const flags = [['green', 'Green flag', B.green], ['red', 'Red flag', B.clay]];
+  const flags = [['red', '← Red flag', B.clay], ['green', 'Green flag →', B.green]];   // red on the left and green on the right, the way the card flicks
   return (
     <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }} data-greenred-answer={done ? '' : q.answer}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Green flag or red flag</span><span>{ticks}s · {Math.min(k + 1, rounds.length)} of {rounds.length}</span></div>
+      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Green flag or red flag{streak > 1 ? ` · ${streak} in a row` : ''}</span><span>{ticks}s · {Math.min(k + 1, rounds.length)} of {rounds.length}</span></div>
       {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Eight behaviors sorted in {ticks} seconds. Tap the round arrow for more.</p> : (
         <div style={{ textAlign: 'center' }}>
           <p style={{ margin: '0 0 8px', fontSize: 14, color: B.muted }}>Someone who...</p>
-          <div style={{ background: '#fff', border: `1.5px solid ${B.line}`, borderRadius: 12, padding: '16px 12px', marginBottom: 8, fontSize: 19, fontWeight: 700, color: B.ink }}>{q.behavior}</div>
+          <SwipeCard left={['red', 'Red flag', B.clay]} right={['green', 'Green flag', B.green]} onPick={pick} off={got || done}><div style={{ background: '#fff', border: `1.5px solid ${B.line}`, borderRadius: 12, padding: '16px 12px', marginBottom: 8, fontSize: 19, fontWeight: 700, color: B.ink }}>{q.behavior}</div></SwipeCard>
           <p style={{ margin: '0 0 10px', fontSize: 15, color: got ? B.green : B.ink, minHeight: 22, fontWeight: got ? 700 : 400 }}>{got ? `Yes: that is ${why}.` : 'Healthy, or a warning sign?'}</p>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
             {flags.map(([flag, label, ink]) => <button key={flag} type="button" className={`edu-press${nudge === flag ? ' edu-wobble' : ''}`} aria-label={`Flag: ${flag}`} onClick={() => pick(flag)} style={{ fontFamily: FONT, fontSize: 16, fontWeight: 700, padding: '12px 6px', borderRadius: 12, border: `2px solid ${ink}`, background: '#fff', color: B.ink, cursor: got ? 'default' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}><span aria-hidden="true" style={{ width: 14, height: 14, borderRadius: 3, background: ink, display: 'inline-block' }} />{label}</button>)}
@@ -4886,22 +4998,23 @@ function MythFactGame({ game, round, onScore = null }) {
   const [got, setGot] = useState(false); // true for a moment after a right tap
   const [nudge, setNudge] = useState(null); // the wrong answer tapped, so its button wobbles
   const [misses, setMisses] = useState(0); // wrong taps this round
+  const [streak, setStreak] = useState(0); // right answers in a row
   const [done, setDone] = useState(false); // true once all six are answered
   const q = rounds[Math.min(k, rounds.length - 1)];
-  useEffect(() => { setK(0); setGot(false); setMisses(0); setDone(false); }, [round]);
+  useEffect(() => { setK(0); setGot(false); setMisses(0); setDone(false); setStreak(0); }, [round]);
   useEffect(() => { if (done && onScore) onScore(misses, 'low'); }, [done]);
   useEffect(() => { if (nudge === null) return undefined; const t = setTimeout(() => setNudge(null), 500); return () => clearTimeout(t); }, [nudge]);
   useEffect(() => { if (!got) return undefined; const t = setTimeout(() => { setGot(false); if (k + 1 >= rounds.length) setDone(true); else setK(k + 1); }, 1300); return () => clearTimeout(t); }, [got]);
-  const pick = (ans) => { if (got || done) return; if (ans === q.answer) setGot(true); else { setNudge(ans); setMisses((n) => n + 1); } };
+  const pick = (ans) => { if (got || done) return; if (ans === q.answer) { setGot(true); setStreak((n) => n + 1); } else { setNudge(ans); setMisses((n) => n + 1); setStreak(0); } };
   return (
     <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }} data-myth-answer={done ? '' : q.answer}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Myth or fact</span><span>{Math.min(k + 1, rounds.length)} of {rounds.length}</span></div>
+      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Myth or fact{streak > 1 ? ` · ${streak} in a row` : ''}</span><span>{Math.min(k + 1, rounds.length)} of {rounds.length}</span></div>
       {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Six statements sorted{misses ? `, with ${misses} to look at again` : ', every one right'}. Tap the round arrow for more.</p> : (
         <div style={{ textAlign: 'center' }}>
-          <div style={{ background: '#fff', border: `1.5px solid ${B.line}`, borderRadius: 12, padding: '16px 12px', marginBottom: 10, fontSize: 18, fontWeight: 700, color: B.ink, lineHeight: 1.4 }}>{q.text}</div>
+          <SwipeCard left={['myth', 'Myth', B.clay]} right={['fact', 'Fact', B.green]} onPick={pick} off={got || done}><div style={{ background: '#fff', border: `1.5px solid ${B.line}`, borderRadius: 12, padding: '16px 12px', marginBottom: 10, fontSize: 18, fontWeight: 700, color: B.ink, lineHeight: 1.4 }}>{q.text}</div></SwipeCard>
           <p style={{ margin: '0 0 10px', fontSize: 15, minHeight: 22, color: got ? B.green : nudge ? B.clay : B.ink, fontWeight: got ? 700 : 400 }}>{got || nudge ? `${q.answer === 'myth' ? 'Myth' : 'Fact'}: ${q.why}` : 'Is it a myth or a fact?'}</p>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-            {['myth', 'fact'].map((ans) => <button key={ans} type="button" className={`edu-press${nudge === ans ? ' edu-wobble' : ''}`} aria-label={`Answer: ${ans}`} onClick={() => pick(ans)} style={{ fontFamily: FONT, fontSize: 17, fontWeight: 700, padding: '12px 4px', borderRadius: 12, border: `2px solid ${got && ans === q.answer ? B.green : B.line}`, background: '#fff', color: B.ink, cursor: got ? 'default' : 'pointer', textTransform: 'capitalize' }}>{ans}</button>)}
+            {['myth', 'fact'].map((ans) => <button key={ans} type="button" className={`edu-press${nudge === ans ? ' edu-wobble' : ''}`} aria-label={`Answer: ${ans}`} onClick={() => pick(ans)} style={{ fontFamily: FONT, fontSize: 17, fontWeight: 700, padding: '12px 4px', borderRadius: 12, border: `2px solid ${got && ans === q.answer ? B.green : B.line}`, background: '#fff', color: B.ink, cursor: got ? 'default' : 'pointer', textTransform: 'capitalize' }}>{ans === 'myth' ? '← Myth' : 'Fact →'}</button>)}
           </div>
         </div>
       )}
@@ -4909,42 +5022,42 @@ function MythFactGame({ game, round, onScore = null }) {
     </div>
   );
 }
-const GAME_OF = { dots: DotsGame, pairs: PairsGame, sort: SortGame, maze: MazeGame, jigsaw: JigsawGame, pong: PongGame, sprint: SprintGame, order: OrderGame, build: BuildGame, fix: FixGame, mix: MixGame, debug: DebugGame, ptable: PtableGame, evidence: EvidenceGame, catch: CatchGame, path: PathGame, buckets: BucketsGame, jump: JumpGame, map: MapGame, balance: BalanceGame, walk: WalkGame, teach: TeachGame, bits: BitsGame, pay: PayGame, price: PriceGame, loan: LoanGame, fund: FundGame, search: SearchGame, spot: SpotGame, pattern: PatternGame, shape: ShapeGame, chord: ChordGame, valid: ValidGame, reason: ReasonGame, because: BecauseGame, share: ShareGame, stat: StatGame, recall: RecallGame, face: FaceGame, sense: SenseGame, filler: FillerGame, room: RoomGame, ask: AskGame, turn: TurnGame, jar: JarGame, relation: RelationGame, sprout: SproutGame, grow: GrowGame, breakeven: BreakEvenGame, deal: DealGame, savejar: SaveJarGame, tool: ToolGame, ledger: LedgerGame, label: LabelGame, cpr: CprGame, greenred: GreenRedGame, mythfact: MythFactGame };
+const GAME_OF = { ship: ShipGame, dots: DotsGame, pairs: PairsGame, sort: SortGame, maze: MazeGame, jigsaw: JigsawGame, pong: PongGame, sprint: SprintGame, order: OrderGame, build: BuildGame, fix: FixGame, mix: MixGame, debug: DebugGame, ptable: PtableGame, evidence: EvidenceGame, catch: CatchGame, path: PathGame, buckets: BucketsGame, jump: JumpGame, map: MapGame, balance: BalanceGame, walk: WalkGame, teach: TeachGame, bits: BitsGame, pay: PayGame, price: PriceGame, loan: LoanGame, fund: FundGame, search: SearchGame, spot: SpotGame, pattern: PatternGame, shape: ShapeGame, chord: ChordGame, valid: ValidGame, reason: ReasonGame, because: BecauseGame, share: ShareGame, stat: StatGame, recall: RecallGame, face: FaceGame, sense: SenseGame, filler: FillerGame, room: RoomGame, ask: AskGame, turn: TurnGame, jar: JarGame, relation: RelationGame, sprout: SproutGame, grow: GrowGame, breakeven: BreakEvenGame, deal: DealGame, savejar: SaveJarGame, tool: ToolGame, ledger: LedgerGame, label: LabelGame, cpr: CprGame, greenred: GreenRedGame, mythfact: MythFactGame };
 // How to play, in a line or two, by kind of game (and by deck for the matching games).
 function gameInstructions(game) {
   if (game.kind === 'bits') return 'A number sits at the top and eight switches below it, worth 128 down to 1. Tap the switches on and off until the lit places add up to the number; the sum shows as you go. Six numbers, and the clock counts up.';
   if (game.kind === 'teach') return 'Twelve fruits, apples and bananas. The robot has seen one of each and guesses the rest from its nearest known fruit: a red ring means it guesses apple, a yellow ring banana. Tap a fruit the robot got wrong to teach it, and watch every guess change. Four boards; fewer lessons is the better score.';
   if (game.kind === 'loan') return 'You owe money on something at a rate per month. Tap a payment: each tap is a month, interest is added on what is still owed, and the payment comes off. Watch what the smallest payment costs over time. Four loans; less interest paid in all is the better score.';
   if (game.kind === 'fund') return 'A first year on your own, one month a tap. Income comes in, the bills go out, and you choose how much of the 500 that is left goes into your emergency fund; the rest is spent. Some months bring a surprise bill: the fund pays what it can and the rest is borrowed at 2 percent a month. The score is the fund minus the loan after twelve months, higher is better.';
-  if (game.kind === 'valid') return 'An argument in three lines: if this then that, a second line, and a conclusion. Ask whether the form guarantees the conclusion when the premises are true, however true the sentences sound, and tap Valid or Not valid. The right answer names the form. Six arguments a round, and the clock counts up.';
+  if (game.kind === 'valid') return 'An argument in three lines: if this then that, a second line, and a conclusion. Ask whether the form guarantees the conclusion when the premises are true, however true the sentences sound, and tap Valid or Not valid. The right answer names the form. Six arguments a round, and the clock counts up. Flick the card left or right, tap a button, or press an arrow key.';
   if (game.kind === 'stat') return 'Five quiz scores and one average to find: the mean, the median or the mode. Add and divide, or order and take the middle, or find the score that repeats, and tap the number. Six rounds, and the clock counts up.';
   if (game.kind === 'savejar') return 'Something to save for, its price, and how much goes in the jar each week. Tap how many weeks it takes to reach the goal line, and watch the jar fill one week at a time. Six goals, and the clock counts up.';
   if (game.kind === 'breakeven') return 'A small business with its fixed costs for a month, the price of one item and what each costs to make. The chart draws the revenue line and the total-cost line; tap how many it must sell to break even, where the lines cross. Six businesses, and the clock counts up.';
-  if (game.kind === 'tool') return 'A job is named, and three tools appear. Tap the tool that worker uses. Six jobs, and the clock counts up.';
-  if (game.kind === 'ledger') return 'An account appears, and you place it on the balance sheet: assets, liabilities or equity. Six accounts, and the clock counts up.';
+  if (game.kind === 'tool') return 'A job is named, and three tools appear. Tap the tool that worker uses. Six jobs, and the clock counts up. Drag the question onto its tool, tap the tool, or press its number.';
+  if (game.kind === 'ledger') return 'An account appears, and you place it on the balance sheet: assets, liabilities or equity. Six accounts, and the clock counts up. Drag the card onto its box, tap the box, or press its number.';
   if (game.kind === 'label') return 'Two labels for the same kind of food. Read the row the question asks about, sodium, added sugars or fiber, and tap the better label. Six pairs, and the clock counts up.';
   if (game.kind === 'cpr') return 'Tap Push at the pace of chest compressions, 100 to 120 a minute, with the ring as your guide. After fifteen pushes the game tells you whether you were too slow, just right or too fast.';
-  if (game.kind === 'mythfact') return 'A statement appears, and you decide: myth or fact. Each answer shows the reason, so every card teaches. Six statements a round.';
-  if (game.kind === 'greenred') return 'A behavior appears, and you decide: a green flag of a healthy relationship, or a red flag, a warning sign. Eight behaviors, and the clock counts up.';
+  if (game.kind === 'mythfact') return 'A statement appears, and you decide: myth or fact. Each answer shows the reason, so every card teaches. Six statements a round. Flick the card left or right, tap a button, or press an arrow key.';
+  if (game.kind === 'greenred') return 'A behavior appears, and you decide: a green flag of a healthy relationship, or a red flag, a warning sign. Eight behaviors, and the clock counts up. Flick the card left or right, tap a button, or press an arrow key.';
   if (game.kind === 'deal') return 'An item with a price tag and two coupons, a percent off and a number of dollars off. Work out what each one saves and tap the coupon that saves more. Six items, and the clock counts up.';
   if (game.kind === 'grow') return 'A seed in a pot and five pictures: water, sunshine, soil and two toys. Tap the three things the plant needs, in any order, and watch it grow. Four plants, and the clock counts up.';
   if (game.kind === 'sprout') return 'A bean seed in a cup and four facts about it: water, air, warmth and light. Decide whether it sprouts. A bean needs water, air and warmth, and light can wait until the shoot is up. Six seeds, and the clock counts up.';
-  if (game.kind === 'relation') return 'A line about two living things on a farm and four names: mutualism, parasitism, commensalism, predation. Tap the one that fits. Six cases, and the clock counts up.';
+  if (game.kind === 'relation') return 'A line about two living things on a farm and four names: mutualism, parasitism, commensalism, predation. Tap the one that fits. Six cases, and the clock counts up. Drag the card onto its box, tap the box, or press its number.';
   if (game.kind === 'jar') return 'A jar of soil and water has settled: sand at the bottom, silt in the middle, clay on top, drawn to the true percentages. Tap the texture the layers show: sandy at seventy percent sand or more, clay at forty percent clay or more, loam for the balance. Six jars, and the clock counts up.';
   if (game.kind === 'turn') return 'Four friends sit in a circle and one holds the talking stick. Tap the friend whose turn is next, going around the circle the way the arrow points. Six turns, and the clock counts up.';
   if (game.kind === 'ask') return 'Something a friend said and four questions. Tap the question that is about what they said; a question about you wobbles. Six a round, and the clock counts up.';
-  if (game.kind === 'room') return 'A line somebody said and four rooms: friends, class, a job interview, a text to a grandparent. Tap the room the line fits. Six lines a round, and the clock counts up.';
+  if (game.kind === 'room') return 'A line somebody said and four rooms: friends, class, a job interview, a text to a grandparent. Tap the room the line fits. Six lines a round, and the clock counts up. Drag the card onto its box, tap the box, or press its number.';
   if (game.kind === 'filler') return 'A line from a talk with filler words dropped into it: um, like, you know and their cousins. Tap every filler to strike it out; a real word wobbles. When the line is clean it reads itself back and the next comes. Five lines, and the clock counts up.';
-  if (game.kind === 'face') return 'A face and four feeling words. Read the eyebrows, the eyes and the mouth, and tap the word for what the face is feeling. Six faces a round, every feeling once, and the clock counts up.';
+  if (game.kind === 'face') return 'A face and four feeling words. Read the eyebrows, the eyes and the mouth, and tap the word for what the face is feeling. Six faces a round, every feeling once, and the clock counts up. Drag the face onto its feeling, tap the word, or press its number.';
   if (game.kind === 'recall') return 'Five words appear for four seconds and then hide. Hold them in mind, then tap the one of four that was on the list. Five lists, and the clock counts up.';
-  if (game.kind === 'reason') return 'A claim and a reason. Ask whether the reason bears on the claim at all, because a reason can be true and still have nothing to do with it, and tap Supports it or Does not. Six pairs a round, and the clock counts up.';
+  if (game.kind === 'reason') return 'A claim and a reason. Ask whether the reason bears on the claim at all, because a reason can be true and still have nothing to do with it, and tap Supports it or Does not. Six pairs a round, and the clock counts up. Flick the card left or right, tap a button, or press an arrow key.';
   if (game.kind === 'because') return 'A claim and four becauses. Two are real reasons, about the thing and true; two are a headcount, an order, a wish, or something true about the wrong thing. Tap the real ones; a fake one wobbles. Five claims a round, and the clock counts up.';
   if (game.kind === 'search') return 'Thirty-two cards lie face down in order from smallest to largest, and a number to find is on one of them. Tap a card to turn it over; the board says whether the number is higher or lower. Halve what is left each time and six looks always find it. Four numbers; fewer looks is the better score.';
   if (game.kind === 'price') return 'A lemonade stand with twelve customers, each with a top price in mind you cannot see, a cost for the day and a cost per cup. Tap a price to try it: the people who will pay it step forward with a cup, and the profit shows as money in minus money out. Three tries a stand, then the best price is revealed. Four stands; more profit found is the better score.';
   if (game.kind === 'pay') return 'A thing to buy shows its price in coins, with a dot for every coin. Tap coins from the table into the tray until the total matches the price exactly; tap a tray coin to put it back. Too many and the tray empties for another try. Four things, and the clock counts up.';
   if (game.kind === 'spot') return 'A picture made of lines and shapes in six colors, and a voice that asks for one piece at a time: the circle, the zigzag line, the blue shape. Tap the piece it asks for and it lights up; a wrong one wobbles. Three to find in every picture, four pictures, and the clock counts up.';
   if (game.kind === 'share') return 'A pile of cookies and two or three plates, and one fair rule: the same on every plate. Tap a plate to put a cookie on it, or tap it again to take one back, until the pile is empty and every plate matches, then tap Check. Four rounds, and the clock counts up.';
-  if (game.kind === 'sense') return 'A thing you might meet, said out loud, and five senses: eyes, ears, nose, tongue and hand. Tap the sense that tells you about it. Five things a round, one for each sense, and the clock counts up.';
+  if (game.kind === 'sense') return 'A thing you might meet, said out loud, and five senses: eyes, ears, nose, tongue and hand. Tap the sense that tells you about it. Five things a round, one for each sense, and the clock counts up. Drag the card onto its box, tap the box, or press its number.';
   if (game.kind === 'pattern') return 'A row of pieces repeats in a form, AB, ABA or abac, and then cuts off. Tap the piece that comes next from the three below; the right one fills the row and a wrong one wobbles. Five rounds, and the clock counts up.';
   if (game.kind === 'shape') return 'Six bars of loudness sit under a line of markings from the score: piano, crescendo, forte, decrescendo. Tap the arrows to raise or lower each bar until the line follows the markings, soft bars low, loud bars high, a crescendo climbing and a decrescendo falling, then check it. Four lines, and the clock counts up.';
   if (game.kind === 'chord') return 'Twelve keys from C to B and a chord named above them. Tap the three keys that make it: a major triad climbs four half steps and then three, a minor triad three and then four. A key that belongs lights up; one that does not wobbles. Five chords, and the clock counts up.';
@@ -4964,6 +5077,7 @@ function gameInstructions(game) {
   if (game.kind === 'map') return 'A place is named at the top. Tap it on the map. A right tap turns it green and plants a pin; a wrong tap wobbles the place you touched. Find every one, and the clock counts up.';
   if (game.rule && ruleDeck(game.rule)) {
     const { a, b } = ruleDeck(game.rule); const low = (t) => t.charAt(0).toLowerCase() + t.slice(1);
+    if (game.kind === 'ship') return `Tap where you want the ship to go: it glides there and fires straight up. Hit the ${low(a.label)}; hitting one of the ${low(b.label)} costs a point. On a keyboard, the arrow keys move the ship and the space bar fires.`;
     if (game.kind === 'catch') return `Slide the basket to catch the ${low(a.label)} and let the ${low(b.label)} fall past. A right catch is a point; a wrong one costs a point.`;
     if (game.kind === 'path') return `Drag the dot from the top corner to the star, stepping only on ${low(a.label)}. A wrong step turns red and the dot stays put.`;
     if (game.kind === 'buckets') return `Drag each chip into its bucket: ${a.label} on the left, ${b.label} on the right. A chip in the wrong bucket bounces back.`;
@@ -5058,6 +5172,7 @@ function GameThumb({ kind, game = null }) {
   if (game && game.kind === 'balance') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="19" y="14" width="2.4" height="16" fill="#8A9086" /><rect x="12" y="30" width="16" height="3" rx="1.5" fill="#8A9086" /><rect x="6" y="13" width="28" height="2.4" rx="1.2" fill={k} transform="rotate(-6 20 14)" /><path d="M4 22h10l-1.5 5h-7z" fill={C.greenSoft} stroke={k} strokeWidth="1" /><path d="M26 20h10l-1.5 5h-7z" fill="#F7EAD1" stroke={k} strokeWidth="1" /><rect x="28" y="15" width="5" height="4" rx="1" fill={C.gold} stroke={k} strokeWidth="0.8" /></svg>;
   if (game && game.kind === 'jump') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><line x1="4" y1="30" x2="36" y2="30" stroke={k} strokeWidth="1.5" strokeLinecap="round" />{[8, 15, 22, 29].map((x) => <line key={x} x1={x} y1="27.5" x2={x} y2="32.5" stroke={k} strokeWidth="1.2" />)}<ellipse cx="14" cy="18" rx="7" ry="5" fill="#5BA84A" stroke={k} strokeWidth="1.2" /><circle cx="11.5" cy="14.5" r="2" fill={C.paperBoard} stroke={k} strokeWidth="0.8" /><circle cx="16.5" cy="14.5" r="2" fill={C.paperBoard} stroke={k} strokeWidth="0.8" /><circle cx="12" cy="14.7" r="0.8" fill={k} /><circle cx="17" cy="14.7" r="0.8" fill={k} /><path d="M22 20q6-8 12 0" fill="none" stroke={C.gold} strokeWidth="1.6" strokeDasharray="2 1.5" /></svg>;
   if (game && game.kind === 'map') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="4" y="6" width="32" height="26" rx="3" fill="#DDEFF8" stroke={k} strokeWidth="1.3" /><path d="M9 12q6-4 10 1t-2 8q-8 2-8-9z" fill="#F1E8CF" stroke={k} strokeWidth="1" /><path d="M24 16q8-4 9 3t-6 7q-5-1-3-10z" fill={C.greenSoft} stroke={k} strokeWidth="1" /><path d="M27 21 L24.5 15 A3 3 0 1 1 29.5 15 Z" fill={C.gold} stroke={k} strokeWidth="0.8" /></svg>;
+  if (game && game.kind === 'ship') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="4" y="4" width="32" height="32" rx="6" fill="#1E2A3A" /><circle cx="11" cy="11" r="1" fill="#DDE6F0" /><circle cx="29" cy="14" r="1" fill="#DDE6F0" /><rect x="19" y="9" width="2" height="6" rx="1" fill={C.gold} /><path d="M20 19l7 13-7-3-7 3z" fill={C.gold} stroke="#F2F5F8" strokeWidth="1" strokeLinejoin="round" /></svg>;
   if (game && game.kind === 'catch') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><circle cx="17" cy="11" r="3.5" fill={C.gold} stroke={k} strokeWidth="1" /><rect x="24" y="17" width="9" height="6" rx="2" fill={C.paperBoard} stroke={k} strokeWidth="1.2" /><path d="M8 27h24l-3 9H11z" fill={C.gold} stroke={k} strokeWidth="1.4" strokeLinejoin="round" /><rect x="7" y="25" width="26" height="3" rx="1.5" fill={C.green} /></svg>;
   if (game && game.kind === 'path') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true">{[0, 1, 2].map((r) => [0, 1, 2].map((c) => <rect key={`${r}${c}`} x={5 + c * 10.5} y={5 + r * 10.5} width="9" height="9" rx="2" fill={(r === 0 && c <= 1) || (r >= 1 && c === 1) || (r === 2 && c === 2) ? C.greenSoft : C.paperBoard} stroke={k} strokeWidth="1.1" />))}<circle cx="9.5" cy="9.5" r="2.6" fill={C.gold} stroke={k} strokeWidth="0.8" /><path d="M30 26.5l1.4 2.9 3.2.5-2.3 2.2.6 3.2-2.9-1.5-2.9 1.5.6-3.2-2.3-2.2 3.2-.5z" fill={C.gold} stroke={k} strokeWidth="0.8" strokeLinejoin="round" /></svg>;
   if (game && game.kind === 'buckets') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="12" y="6" width="16" height="8" rx="3" fill={C.paperBoard} stroke={k} strokeWidth="1.3" /><path d="M4 20h14l-2 14H6z" fill={C.greenSoft} stroke={k} strokeWidth="1.3" strokeLinejoin="round" /><path d="M22 20h14l-2 14H24z" fill={C.paperBoard} stroke={k} strokeWidth="1.3" strokeLinejoin="round" /><path d="M20 15v4" stroke={C.green} strokeWidth="1.6" strokeLinecap="round" /></svg>;
@@ -7622,7 +7737,7 @@ function EduSphereScreens() {
           const enrolled = new Set(visibleCourses.map((c) => c.id));
           const mapArt = typeof window !== 'undefined' && Array.isArray(window.__eduMapArt) ? window.__eduMapArt : [];
           const listed = gamesFor(top).filter((g) => (youngLearner || g.deck || g.kind === 'pong' || g.kind === 'sprint' || g.kind === 'order' || ((g.rule || g.jump || g.map || g.balance) && !g.young)) && (record.preview || STARTER_GAMES.includes(g.id) || enrolled.has(gameCourse(g.id))) && (!g.map || record.preview || mapArt.includes((mapFor(g.map) || {}).art)) && (g.kind !== 'sprint' || sprintPool(visibleModules, g).length > 0));
-          const games = youngLearner ? listed : spreadKinds(listed);   // older lists take turns between kinds (2026-09-23, Mikey)
+          const games = funFirst(youngLearner ? listed : spreadKinds(listed));   // older lists take turns between kinds (2026-09-23, Mikey); the most playful leads and opens first (2026-10-02, Mikey)
           if (!games.length) return null;
           // A game opens when its course is finished (2026-09-24, Mikey): each course has its own, so finishing one always brings
           // something new, and the walk-through opens them all.

@@ -37,7 +37,7 @@ window.__eduArt = [];
 window.__eduColoringArt = [];
 window.__eduMapArt = [];
 window.__eduAudio = [];
-window.__eduNews = {"stamp":"October 2, 2026 (Wonder questions for older learners, and twelve new ones)","date":"October 2, 2026","items":["Every Wonder question has now been read through by hand, and the two questions about where the sun goes at night are one.","Twelve new Wonder questions for teens and adults, about failure, hard feelings and hard days, draw on Karl Popper, David Deutsch, Socrates, the Dalai Lama, Naval Ravikant and Arthur Brooks.","The scientist voice now gives the newest research on being left out and on whether crowds really stand by."],"brief":["Every Wonder question has now been read through by hand, and the two questions about where the sun goes at night are one.","Twelve new Wonder questions for teens and adults, about failure, hard feelings and hard days, draw on Karl Popper, David Deutsch, Socrates, the Dalai Lama, Naval Ravikant and Arthur Brooks.","The scientist voice now gives the newest research on being left out and on whether crowds really stand by."],"history":[{"date":"October 2, 2026","title":"Wonder questions for older learners, and twelve new ones","items":["Every Wonder question has now been read through by hand, and the two questions about where the sun goes at night are one.","Twelve new Wonder questions for teens and adults, about failure, hard feelings and hard days, draw on Karl Popper, David Deutsch, Socrates, the Dalai Lama, Naval Ravikant and Arthur Brooks.","The scientist voice now gives the newest research on being left out and on whether crowds really stand by."]},{"date":"October 2, 2026","title":"Wonder questions for younger learners","items":["Every Wonder question for the two youngest stages was read through by hand, all four voices.","The scientist voice now gives the newest research: how long feelings last, what handwriting does for memory, and which cells last a whole life.","Wonder voices for pre-K speak to the child, not about children."]},{"date":"October 2, 2026","title":"college courses, read through","items":["Every college question was read through by hand, so every grade from pre-K through college has now been read.","A logic question now uses a true contradiction, and a history example uses a fact we could source: Houston's deepwater ship channel, opened in 1914."]},{"date":"October 2, 2026","title":"grades 11 and 12, read through","items":["Every grade 11 and 12 question was read through by hand, so every grade from pre-K to 12 has now been read.","A momentum answer that printed sixteen decimal places is a whole number now, and polynomials read 6x - 4x^5 - 3.","Government questions ask whole questions and answer in sentences, like a President may serve 2 terms."]},{"date":"October 2, 2026","title":"grades 9 and 10, read through","items":["Every grade 9 and 10 question was read through by hand, and the rest of grades 6 to 8 too.","Fixes include a story question whose wrong answer matched the right one, the pH of baking soda, and the spelling of the explorer Álvarez de Pineda.","The automated wording checks now find nothing to flag anywhere in the app."]},{"date":"October 2, 2026","title":"grades 6 to 8, and the newest research","items":["The memory lessons now teach the newest research: the brain holds about four things at once, not the older figure of seven.","Every grade 6 to 8 question was read through by hand, with fixes to the Lyme disease, early pregnancy and cell questions.","Questions name what they ask about, like the triangle's area or the line's slope, and history dates ask when did this happen."]}]};
+window.__eduNews = {"stamp":"October 3, 2026 (streaks everywhere)","date":"October 3, 2026","items":["Every game where you pick an answer now counts your streak of right answers in a row.","Find the tool and Name the feeling are drag-and-drop games now: carry the question to its tool, or the face to its feeling."],"brief":["Every game where you pick an answer now counts your streak of right answers in a row.","Find the tool and Name the feeling are drag-and-drop games now."],"history":[{"date":"October 3, 2026","title":"streaks everywhere","items":["Every game where you pick an answer now counts your streak of right answers in a row.","Find the tool and Name the feeling are drag-and-drop games now: carry the question to its tool, or the face to its feeling."]},{"date":"October 3, 2026","title":"drag to the box","items":["Sort the ledger, Fit the room, Who gains and Which sense are drag-and-drop games now: carry the card onto its box, or tap the box, and keep a streak going."]},{"date":"October 2, 2026","title":"swipe cards","items":["Myth or fact, green flag or red flag, reason or not, and valid or not are swipe games now: flick the card left or right, or tap a button, and keep a streak going."]},{"date":"October 2, 2026","title":"every game matches its course","items":["Four more games now practice what their course teaches: compound words in grade 2 reading, goods and services in grade 1 civics, positive sines in precalculus, and mitosis or meiosis in biology.","On a phone held sideways, the robot walk sets its grid beside the arrows, so the whole board fits."]},{"date":"October 2, 2026","title":"a space shooter, and games that match their course","items":["New arcade game: Space Shooter. Tap where you want the ship and it fires at the right answers: even numbers in grade 2, gases in grade 3 and elements in grade 6.","Three games now practice what their course teaches: producers and consumers in grade 7 science, igneous rocks in grade 12 science, and needs and wants in grade 12 economics."]},{"date":"October 2, 2026","title":"games that fit every screen, and play first","items":["The first game open in every grade is a playful one now, like Catch, Frog Jumps or Pong, instead of a deck of cards on a hard topic.","Every game was opened on five screens, from a small phone to a laptop and a phone held sideways, and nothing runs off the screen or spills out of a tile.","New games: Step on the powers of 2 for Algebra II and Catch the primary sources for college history. Grade 7 Texas history has its own card deck."]}]};
 // Installable app: the worker keeps a copy of the page for offline use and asks the network first, so a fresh build always wins.
 if ('serviceWorker' in navigator && /^https?:/.test(location.protocol)) { navigator.serviceWorker.register('sw.js').catch(function () {}); }
 var process = { env: { NODE_ENV: 'production' } };
@@ -18747,12 +18747,10 @@ const GAMES = [
     { id: 'jigsaw-4', kind: 'jigsaw', title: 'Puzzle', side: 2 },
     { id: 'dots-boat', kind: 'dots', title: 'Boat', shape: 'boat' },
     { id: 'pairs-more', kind: 'pairs', title: 'More Pairs', pairs: 4 },
-    { id: 'path-circles', kind: 'path', title: 'Step on the Circles', rule: 'circles', young: true, minGrade: 'K' },
     { id: 'sort-color', kind: 'sort', title: 'Red and Blue', by: 'color' },
     { id: 'dots-house', kind: 'dots', title: 'House', shape: 'house' },
     { id: 'maze-big', kind: 'maze', title: 'Big Maze', cells: 9, minGrade: 'K' },
     { id: 'dots-star', kind: 'dots', title: 'Star', shape: 'star' },
-    { id: 'catch-red', kind: 'catch', title: 'Catch the Red Ones', rule: 'red', young: true, minGrade: '1' },
     { id: 'jump-sums', kind: 'jump', title: 'Frog Jumps: Sums', jump: 'sums', young: true, minGrade: '1' },
     { id: 'jigsaw-9', kind: 'jigsaw', title: 'Big Puzzle', side: 3, minGrade: '1' },
     { id: 'pairs-many', kind: 'pairs', title: 'Many Pairs', pairs: 6, minGrade: '1' },
@@ -18761,21 +18759,29 @@ const GAMES = [
     // with the rule deck and grade it teaches best; see RULE_DECKS.
     { id: 'path-even', kind: 'path', title: 'Step on the even numbers', rule: 'even-odd', minGrade: '3' },
     { id: 'catch-multiples-3', kind: 'catch', title: 'Catch the multiples of 3', rule: 'multiples-3', minGrade: '3' },
-    { id: 'buckets-solid-liquid', kind: 'buckets', title: 'Solid or liquid', rule: 'solid-liquid', minGrade: '3' },
     { id: 'buckets-noun-verb', kind: 'buckets', title: 'Noun or verb', rule: 'noun-verb', minGrade: '3' },
     { id: 'catch-living', kind: 'catch', title: 'Catch the living things', rule: 'living', minGrade: '3' },
     { id: 'path-multiples-4', kind: 'path', title: 'Step on the multiples of 4', rule: 'multiples-4', minGrade: '4' },
     { id: 'buckets-conductors', kind: 'buckets', title: 'Conductor or insulator', rule: 'conductor-insulator', minGrade: '4' },
     { id: 'catch-halves', kind: 'catch', title: 'Catch the halves', rule: 'halves', minGrade: '4' },
     { id: 'buckets-mammals', kind: 'buckets', title: 'Mammal or not', rule: 'mammals', minGrade: '4' },
-    { id: 'path-primes', kind: 'path', title: 'Step on the primes', rule: 'primes', minGrade: '5' },
     { id: 'buckets-adjective-adverb', kind: 'buckets', title: 'Adjective or adverb', rule: 'adjective-adverb', minGrade: '5' },
     { id: 'catch-multiples-7', kind: 'catch', title: 'Catch the multiples of 7', rule: 'multiples-7', minGrade: '5' },
-    { id: 'buckets-element-compound', kind: 'buckets', title: 'Element or compound', rule: 'element-compound', minGrade: '6' },
     { id: 'catch-renewable', kind: 'catch', title: 'Catch the renewable ones', rule: 'renewable', minGrade: '6' },
-    { id: 'buckets-state-country', kind: 'buckets', title: 'State or country', rule: 'state-country', minGrade: '6' },
     { id: 'path-squares', kind: 'path', title: 'Step on the square numbers', rule: 'squares', minGrade: '7' },
-    { id: 'catch-acids', kind: 'catch', title: 'Catch the acids', rule: 'acid-base', minGrade: '10' },
+    { id: 'path-powers-2', kind: 'path', title: 'Step on the powers of 2', rule: 'powers-2', minGrade: '11' },
+    { id: 'catch-primary-sources', kind: 'catch', title: 'Catch the primary sources', rule: 'primary-source', minGrade: 'C' },
+    // The spaceship game (Mikey, 2026-10-02): chips drift down; tap to aim and the ship fires straight up at them.
+    { id: 'ship-even', kind: 'ship', title: 'Space Shooter: Even Numbers', rule: 'even-odd', minGrade: '2' },
+    { id: 'ship-gases', kind: 'ship', title: 'Space shooter: gases', rule: 'gas-or-not', minGrade: '3' },
+    { id: 'ship-elements', kind: 'ship', title: 'Space shooter: elements', rule: 'element-compound', minGrade: '6' },
+    { id: 'catch-igneous', kind: 'catch', title: 'Catch the igneous rocks', rule: 'igneous-sedimentary', minGrade: '12' },
+    { id: 'buckets-producer-consumer', kind: 'buckets', title: 'Producer or consumer', rule: 'producer-consumer', minGrade: '7' },
+    { id: 'buckets-need-want', kind: 'buckets', title: 'Need or want', rule: 'need-want', minGrade: '12' },
+    { id: 'catch-compound', kind: 'catch', title: 'Catch the Compound Words', rule: 'compound-words', young: true, minGrade: '2' },
+    { id: 'path-goods', kind: 'path', title: 'Step on the Goods', rule: 'goods-services', young: true, minGrade: '1' },
+    { id: 'path-positive-sines', kind: 'path', title: 'Step on the positive sines', rule: 'sine-sign', minGrade: '12' },
+    { id: 'buckets-cell-division', kind: 'buckets', title: 'Mitosis or meiosis', rule: 'mitosis-meiosis', minGrade: '9' },
     // Number line jumps and Where is it? (2026-09-23): a frog dragged to the answer's tick, and a map to tap.
     { id: 'jump-fractions', kind: 'jump', title: 'Frog jumps: fractions', jump: 'fractions', minGrade: '4' },
     { id: 'jump-integers', kind: 'jump', title: 'Frog jumps: negative numbers', jump: 'integers', minGrade: '6' },
@@ -18796,11 +18802,12 @@ const GAMES = [
     { id: 'balance-expressions', kind: 'balance', title: 'Balance the scale: expressions', balance: 'expressions', minGrade: '6' },
     { id: 'buckets-acid-base', kind: 'buckets', title: 'Acid or base', rule: 'acid-base', minGrade: '10' },
     // Matching pairs for older students: each card's twin says the same thing another way.
-    { id: 'pairs-fractions', kind: 'pairs', title: 'Fraction twins', pairs: 6, minGrade: '3', deck: 'fractions' },
+    { id: 'pairs-fractions', kind: 'pairs', title: 'Fraction twins', pairs: 5, minGrade: '3', deck: 'fractions' },
     { id: 'pairs-vocabulary', kind: 'pairs', title: 'Word meanings', pairs: 6, minGrade: '4', deck: 'vocabulary' },
     { id: 'pairs-capitals', kind: 'pairs', title: 'Capitals', pairs: 6, minGrade: '6', deck: 'capitals' },
+    { id: 'pairs-texas', kind: 'pairs', title: 'Texas pairs', pairs: 6, minGrade: '6', deck: 'texas7' },
     { id: 'pairs-roots', kind: 'pairs', title: 'Word roots', pairs: 6, minGrade: '6', deck: 'roots' },
-    { id: 'pairs-formulas', kind: 'pairs', title: 'Formulas', pairs: 6, minGrade: '9', deck: 'formulas' },
+    { id: 'pairs-formulas', kind: 'pairs', title: 'Statistics words', pairs: 6, minGrade: '9', deck: 'stats' },
     // A review game for every science course from grade 3 up, shown once that course is on a student's list.
     { id: 'pairs-technology', kind: 'pairs', title: 'Computer words', pairs: 6, minGrade: '3', deck: 'technology' },
     { id: 'pairs-health', kind: 'pairs', title: 'Healthy words', pairs: 6, minGrade: '3', deck: 'health' },
@@ -18913,6 +18920,21 @@ function spreadLeads(items, titleOf) {
     return out;
 }
 function spreadKinds(games) { return spreadBy(games, (g) => g.kind); }
+// The game open from the first day of a grade is play, not homework (Mikey, 2026-10-02: a flip-card deck on a hard topic is
+// a poor welcome). The list keeps its order, except that the most playful kind on it moves to the front, and the front of
+// the list is the game that opens before any course is finished. Arcade and hands-on kinds come first; reading-heavy
+// decks and quick fires never lead unless nothing else is on the list.
+const FUN_FIRST = ['pong', 'ship', 'catch', 'jump', 'path', 'maze', 'dots', 'jigsaw', 'walk', 'balance', 'buckets', 'sort', 'map', 'mix', 'grow', 'sprout', 'savejar', 'share', 'pay', 'tool', 'spot', 'sense', 'turn', 'order', 'chord', 'cpr', 'bits', 'debug'];
+function funFirst(games) {
+    const rank = (g) => { const i = FUN_FIRST.indexOf(g.kind); return i < 0 ? FUN_FIRST.length : i; };
+    if (games.length < 2)
+        return games;
+    let best = 0;
+    for (let i = 1; i < games.length; i++)
+        if (rank(games[i]) < rank(games[best]))
+            best = i;
+    return best === 0 ? games : [games[best], ...games.slice(0, best), ...games.slice(best + 1)];
+}
 // Spread a list so items with the same key take turns (2026-09-23): each key is spread evenly along the list, and when
 // the key due next is the one just placed, another key that is nearly due goes first instead. Used for game kinds and
 // for the course stories' characters, so no character carries several stories in a row.
@@ -18953,23 +18975,32 @@ const isPrime = (n) => n > 1 && numbersWhere((d) => n % d === 0, 2, Math.floor(M
 const shapesOf = (kinds, colors) => kinds.flatMap((k) => colors.map((c) => `shape:${k}:${c}`));
 const RULE_DECKS = {
     circles: { a: { label: 'Circles', items: shapesOf(['circle'], ['red', 'blue', 'green', 'yellow']) }, b: { label: 'Other shapes', items: shapesOf(['square', 'triangle'], ['red', 'blue', 'green', 'yellow']) } },
-    red: { a: { label: 'Red ones', items: shapesOf(['circle', 'square', 'triangle', 'diamond'], ['red']) }, b: { label: 'Blue ones', items: shapesOf(['circle', 'square', 'triangle', 'diamond'], ['blue']) } },
     'even-odd': { a: { label: 'Even numbers', items: numbersWhere((n) => n % 2 === 0, 2, 40) }, b: { label: 'Odd numbers', items: numbersWhere((n) => n % 2 === 1, 1, 39) } },
     'multiples-3': { a: { label: 'Multiples of 3', items: numbersWhere((n) => n % 3 === 0, 3, 36) }, b: { label: 'Other numbers', items: numbersWhere((n) => n % 3 !== 0, 1, 40) } },
     'multiples-4': { a: { label: 'Multiples of 4', items: numbersWhere((n) => n % 4 === 0, 4, 48) }, b: { label: 'Other numbers', items: numbersWhere((n) => n % 4 !== 0, 1, 50) } },
     'multiples-7': { a: { label: 'Multiples of 7', items: numbersWhere((n) => n % 7 === 0, 7, 84) }, b: { label: 'Other numbers', items: numbersWhere((n) => n % 7 !== 0, 1, 90) } },
-    primes: { a: { label: 'Prime numbers', items: numbersWhere(isPrime, 2, 60) }, b: { label: 'Not prime', items: numbersWhere((n) => !isPrime(n), 4, 60) } },
+    // Pass IO (2026-10-02): the last four games that did not match their course.
+    'compound-words': { a: { label: 'Compound words', items: ['sunshine', 'raincoat', 'football', 'cupcake', 'snowman', 'bedroom', 'backpack', 'rainbow'] }, b: { label: 'Other words', items: ['happy', 'garden', 'yellow', 'pencil', 'rabbit', 'tiger', 'basket', 'kitten'] } },
+    'goods-services': { a: { label: 'Goods', items: ['shoes', 'apple', 'book', 'toy', 'bike', 'shirt', 'ball', 'bread'] }, b: { label: 'Services', items: ['haircut', 'teaching', 'mail', 'repair', 'bus ride', 'cleaning', 'checkup', 'tutoring'] } },
+    'sine-sign': { a: { label: 'Positive sines', items: ['sin 30°', 'sin 45°', 'sin 60°', 'sin 90°', 'sin 120°', 'sin 135°', 'sin 150°'] }, b: { label: 'Negative sines', items: ['sin 210°', 'sin 225°', 'sin 240°', 'sin 270°', 'sin 300°', 'sin 315°', 'sin 330°'] } },
+    'mitosis-meiosis': { a: { label: 'Mitosis', items: ['growth', 'repair', 'two cells', 'identical', 'skin cells', 'healing'] }, b: { label: 'Meiosis', items: ['egg', 'sperm', 'four cells', 'half set', 'sex cells', 'shuffled'] } },
+    // Pass IN (2026-10-02): decks for the spaceship games and for three games that now match their course.
+    'gas-or-not': { a: { label: 'Gases', items: ['steam', 'water vapor', 'air', 'wind', 'breath', 'helium', 'oxygen'] }, b: { label: 'Not gases', items: ['ice', 'rock', 'sand', 'wood', 'milk', 'juice', 'rain', 'honey'] } },
+    'producer-consumer': { a: { label: 'Producers', items: ['grass', 'oak tree', 'algae', 'seaweed', 'moss', 'cactus', 'corn', 'clover'] }, b: { label: 'Consumers', items: ['rabbit', 'hawk', 'deer', 'frog', 'snake', 'fox', 'cow', 'shark'] } },
+    'need-want': { a: { label: 'Needs', items: ['rent', 'groceries', 'electricity', 'water', 'medicine', 'heating', 'bus fare', 'insurance'] }, b: { label: 'Wants', items: ['video game', 'concert', 'candy', 'streaming', 'jewelry', 'toys', 'arcade', 'souvenir'] } },
+    'igneous-sedimentary': { a: { label: 'Igneous rocks', items: ['granite', 'basalt', 'obsidian', 'pumice'] }, b: { label: 'Sedimentary rocks', items: ['sandstone', 'limestone', 'shale', 'chalk', 'coal'] } },
+    // Pass IM (2026-10-02): grade 11 and college had no playful game, so a decks or quick-fire game opened first there.
+    'powers-2': { a: { label: 'Powers of 2', items: [2, 4, 8, 16, 32, 64, 128, 256, 512] }, b: { label: 'Other numbers', items: numbersWhere((n) => (n & (n - 1)) !== 0, 3, 600) } },
+    'primary-source': { a: { label: 'Primary sources', items: ['diary', 'letter', 'treaty', 'tax roll', 'photograph', 'poster', 'census', 'deed'] }, b: { label: 'Secondary sources', items: ['textbook', 'biography', 'documentary', 'summary', 'lecture', 'retelling', 'analysis', 'study'] } },
     squares: { a: { label: 'Square numbers', items: numbersWhere((n) => Number.isInteger(Math.sqrt(n)), 1, 144) }, b: { label: 'Not square', items: numbersWhere((n) => !Number.isInteger(Math.sqrt(n)), 2, 99) } },
     halves: { a: { label: 'Equal to one half', items: ['2/4', '3/6', '4/8', '5/10', '6/12', '7/14', '8/16', '10/20'] }, b: { label: 'Not one half', items: ['2/3', '3/4', '1/3', '2/5', '3/5', '5/8', '1/4', '4/6'] } },
     'noun-verb': { a: { label: 'Nouns', items: ['dog', 'city', 'river', 'teacher', 'apple', 'bridge', 'pencil', 'garden', 'ocean', 'doctor'] }, b: { label: 'Verbs', items: ['run', 'jump', 'think', 'sing', 'build', 'swim', 'read', 'climb', 'cook', 'laugh'] } },
     'adjective-adverb': { a: { label: 'Adjectives', items: ['quick', 'tall', 'bright', 'soft', 'angry', 'tiny', 'loud', 'brave', 'cold', 'sweet'] }, b: { label: 'Adverbs', items: ['quickly', 'softly', 'loudly', 'bravely', 'gently', 'slowly', 'rarely', 'boldly', 'calmly', 'sadly'] } },
-    'solid-liquid': { a: { label: 'Solids', items: ['rock', 'ice', 'wood', 'spoon', 'brick', 'coin', 'book', 'bone', 'chalk', 'nail'] }, b: { label: 'Liquids', items: ['milk', 'water', 'juice', 'oil', 'honey', 'rain', 'syrup', 'soup', 'tea', 'lava'] } },
     living: { a: { label: 'Living things', items: ['tree', 'fish', 'moss', 'ant', 'bird', 'mushroom', 'frog', 'grass', 'snake', 'bee'] }, b: { label: 'Not living', items: ['rock', 'cloud', 'spoon', 'fire', 'river', 'car', 'wind', 'sand', 'chair', 'coin'] } },
     'conductor-insulator': { a: { label: 'Conductors', items: ['copper', 'iron', 'silver', 'gold', 'steel', 'aluminum', 'nickel', 'tin'] }, b: { label: 'Insulators', items: ['rubber', 'wood', 'glass', 'plastic', 'cloth', 'paper', 'cork', 'wax'] } },
     mammals: { a: { label: 'Mammals', items: ['whale', 'bat', 'dog', 'cow', 'horse', 'dolphin', 'mouse', 'bear', 'deer', 'goat'] }, b: { label: 'Not mammals', items: ['shark', 'frog', 'snake', 'eagle', 'ant', 'trout', 'lizard', 'crab', 'owl', 'bee'] } },
     'element-compound': { a: { label: 'Elements', items: ['gold', 'oxygen', 'iron', 'helium', 'carbon', 'sodium', 'copper', 'neon', 'silver', 'zinc'] }, b: { label: 'Compounds', items: ['water', 'salt', 'sugar', 'rust', 'ammonia', 'methane', 'glucose', 'quartz', 'chalk', 'ethanol'] } },
     renewable: { a: { label: 'Renewable', items: ['sunlight', 'wind', 'wood', 'tides', 'rain', 'corn', 'wool', 'waves', 'bamboo', 'cotton'] }, b: { label: 'Not renewable', items: ['coal', 'oil', 'gas', 'copper', 'gold', 'uranium', 'diamond', 'tin', 'silver', 'iron ore'] } },
-    'state-country': { a: { label: 'US states', items: ['Texas', 'Ohio', 'Maine', 'Utah', 'Iowa', 'Idaho', 'Nevada', 'Kansas', 'Oregon', 'Alaska'] }, b: { label: 'Countries', items: ['Peru', 'Kenya', 'Japan', 'Spain', 'Chile', 'Cuba', 'Egypt', 'Italy', 'India', 'Ghana'] } },
     'acid-base': { a: { label: 'Acids', items: ['lemon', 'vinegar', 'soda', 'tomato', 'coffee', 'orange', 'lime', 'battery'] }, b: { label: 'Bases', items: ['soap', 'bleach', 'ammonia', 'antacid', 'lye', 'egg white', 'seawater', 'toothpaste'] } },
 };
 function ruleDeck(id) { return RULE_DECKS[id] || null; }
@@ -19153,11 +19184,16 @@ function insidePolygon(points, x, y) {
 // Decks for the text pairs games: each entry is a pair of cards that belong together.
 const PAIR_DECKS = {
     // No card text appears twice in a deck: two 3/4 cards from different pairs would fail to match each other.
-    fractions: [['1/2', '2/4'], ['1/3', '2/6'], ['1/4', '3/12'], ['2/3', '4/6'], ['3/4', '6/8'], ['1/5', '2/10'], ['5/10', '0.5'], ['25/100', '0.25'], ['3/8', '6/16'], ['1/10', '0.1'], ['2/5', '4/10'], ['7/10', '0.7']],
+    // Grade 3 denominators only (2, 3, 4, 6 and 8), and no two cards worth the same, so every true match is accepted (pass IM).
+    fractions: [['1/2', '2/4'], ['1/3', '2/6'], ['2/3', '4/6'], ['1/4', '2/8'], ['3/4', '6/8']],
     roots: [['port', 'carry'], ['aqua', 'water'], ['bio', 'life'], ['geo', 'earth'], ['tele', 'far'], ['photo', 'light'], ['scrib', 'write'], ['dict', 'say'], ['auto', 'self'], ['chron', 'time'], ['micro', 'small'], ['therm', 'heat']],
     elements: [['H', 'hydrogen'], ['O', 'oxygen'], ['C', 'carbon'], ['N', 'nitrogen'], ['Na', 'sodium'], ['Fe', 'iron'], ['Au', 'gold'], ['Ag', 'silver'], ['He', 'helium'], ['Cl', 'chlorine'], ['Ca', 'calcium'], ['K', 'potassium']],
     dates: [['1776', 'Declaration'], ['1787', 'Constitution'], ['1803', 'Louisiana'], ['1836', 'San Jacinto'], ['1845', 'Texas a state'], ['1861', 'Civil War begins'], ['1865', 'Juneteenth'], ['1914', 'WWI begins'], ['1929', 'the Crash'], ['1941', 'Pearl Harbor'], ['1954', 'Brown'], ['1969', 'Moon landing']],
     formulas: [['F = ma', 'force'], ['V = IR', 'voltage'], ['p = mv', 'momentum'], ['W = Fd', 'work'], ['A = πr²', 'circle area'], ['C = πd', 'circumference'], ['a² + b² = c²', 'right triangle'], ['y = mx + b', 'a line'], ['d = m/V', 'density'], ['v = λf', 'wave speed']],
+    // The college statistics course plays its own words, each one taught in its lessons (pass IM).
+    stats: [['mean', 'add them, divide by how many'], ['median', 'the middle value in order'], ['mode', 'the most common value'], ['range', 'biggest minus smallest'], ['standard deviation', 'typical distance from the mean'], ['probability', 'ways it can happen over all ways'], ['compound interest', 'interest on interest'], ['correlation', 'two things moving together']],
+    // Grade 7 Texas history plays Texas, not world capitals (those moved to world geography, pass IM).
+    texas7: [['1845', 'Texas becomes a state'], ['Sam Houston', 'led the army at San Jacinto'], ['San Jacinto', 'won in eighteen minutes'], ['the Alamo', 'a thirteen-day siege'], ['Spindletop', 'the 1901 oil gusher'], ['Galveston', 'the 1900 hurricane'], ['Juneteenth', 'freedom read out, June 19, 1865'], ['Barbara Jordan', 'first Black woman in the Texas Senate'], ['Comanche', 'rode the plains after buffalo'], ['Caddo', 'farmed the piney east']],
     times: [['3 × 4', '12'], ['6 × 7', '42'], ['8 × 8', '64'], ['9 × 6', '54'], ['7 × 8', '56'], ['5 × 9', '45'], ['4 × 7', '28'], ['9 × 9', '81'], ['6 × 6', '36'], ['8 × 3', '24'], ['7 × 7', '49'], ['4 × 8', '32']],
     vocabulary: [['enormous', 'very big'], ['fragile', 'breaks easily'], ['ancient', 'very old'], ['rapid', 'fast'], ['vacant', 'empty'], ['brief', 'short'], ['exhausted', 'very tired'], ['furious', 'very angry'], ['cautious', 'careful'], ['abundant', 'plenty'], ['reluctant', 'unwilling'], ['transparent', 'see-through']],
     capitals: [['Texas', 'Austin'], ['France', 'Paris'], ['Japan', 'Tokyo'], ['Mexico', 'Mexico City'], ['Canada', 'Ottawa'], ['Egypt', 'Cairo'], ['Brazil', 'Brasília'], ['Kenya', 'Nairobi'], ['Australia', 'Canberra'], ['India', 'New Delhi'], ['Italy', 'Rome'], ['United States', 'Washington']],
@@ -19166,15 +19202,15 @@ const PAIR_DECKS = {
     technology: [['input', 'you tell the computer'], ['output', 'it shows you'], ['algorithm', 'steps in order'], ['loop', 'steps that repeat'], ['variable', 'a named box'], ['condition', 'a yes or no question'], ['bug', 'a mistake in the steps'], ['binary', 'ones and zeros'], ['packet', 'a piece of a message'], ['DNS', 'the internet phone book'], ['password', 'a key to a door'], ['debug', 'find and fix the bug']],
     // Science review decks, one per course: a key word and what it means, from that course's modules.
     'science-3': [['solid', 'keeps its shape'], ['liquid', 'takes the shape of its container'], ['gas', 'fills its container'], ['friction', 'slows a slide'], ['gravity', 'pulls things down'], ['tadpole', 'a young frog'], ['season', 'part of the year'], ['vibration', 'what makes sound']],
-    'science-4': [['circuit', 'a complete loop'], ['insulator', 'blocks electricity'], ['conductor', 'carries electricity'], ['erosion', 'carries soil away'], ['deposition', 'drops soil somewhere'], ['adaptation', 'a tool for a place'], ['lever', 'a bar on a pivot'], ['inclined plane', 'a ramp']],
-    'science-5': [['solution', 'dissolved and mixed'], ['mixture', 'can be separated'], ['orbit', 'a path around'], ['evaporation', 'liquid to vapor'], ['condensation', 'vapor to drops'], ['inherited', 'from your parents'], ['learned', 'from practice'], ['rotation', 'one spin, one day']],
-    'science-6': [['element', 'one kind of atom'], ['compound', 'atoms joined'], ['conduction', 'heat by touch'], ['convection', 'heat by flow'], ['radiation', 'heat by rays'], ['plate', 'a piece of crust'], ['nucleus', 'the control center of a cell'], ['density', 'mass over volume']],
-    'science-7': [['photosynthesis', 'a leaf makes sugar'], ['chlorophyll', 'the green in a leaf'], ['high pressure', 'cool sinking air'], ['natural selection', 'the fit survive'], ['dominant', 'the trait that shows'], ['producer', 'makes its own food'], ['watershed', 'land that drains to a river'], ['organ', 'a body part with a job']],
+    'science-4': [['circuit', 'a complete loop'], ['insulator', 'blocks electricity'], ['conductor', 'carries electricity'], ['erosion', 'carries soil away'], ['deposition', 'drops soil somewhere'], ['adaptation', 'a trait that helps it survive'], ['lever', 'a bar on a pivot'], ['inclined plane', 'a ramp']],
+    'science-5': [['solution', 'one thing dissolved into another'], ['plain mixture', 'parts you can still see'], ['orbit', 'a path around'], ['evaporation', 'liquid to vapor'], ['condensation', 'vapor to drops'], ['inherited', 'from your parents'], ['learned', 'from practice'], ['rotation', 'one spin, one day']],
+    'science-6': [['element', 'one kind of atom'], ['compound', 'atoms joined'], ['conduction', 'heat by touch'], ['convection', 'heat by flow'], ['radiation', 'heat by rays'], ['plate', 'a piece of Earth\'s shell'], ['nucleus', 'the control center of a cell'], ['density', 'mass over volume']],
+    'science-7': [['photosynthesis', 'a leaf makes sugar'], ['chlorophyll', 'the green in a leaf'], ['high pressure', 'cool sinking air'], ['natural selection', 'the fit survive and pass it on'], ['dominant', 'the trait that shows'], ['producer', 'makes its own food'], ['watershed', 'land that drains to a river'], ['organ', 'a body part with a job']],
     'science-8': [['proton', 'positive, in the nucleus'], ['electron', 'negative, at the edge'], ['inertia', 'keeps doing what it does'], ['reaction', 'new substances form'], ['galaxy', 'billions of stars'], ['slope on a graph', 'speed'], ['fossil', 'a trace in rock'], ['neutron', 'no charge']],
     'science-9': [['DNA', 'the recipe book'], ['allele', 'one version of a gene'], ['mitosis', 'a full copy of a cell'], ['meiosis', 'a half copy'], ['ribosome', 'builds proteins'], ['homeostasis', 'keeping steady inside'], ['carbon cycle', 'carbon rides around'], ['respiration', 'cells burn sugar']],
     'science-10': [['ionic bond', 'electrons given'], ['covalent bond', 'electrons shared'], ['acid', 'below 7 on the scale'], ['base', 'above 7 on the scale'], ['mole', 'a dozen for chemists'], ['synthesis', 'two become one'], ['pressure', 'particles hitting walls'], ['molarity', 'moles per liter']],
     'science-11': [['acceleration', 'speed changing'], ['kinetic energy', 'moving energy'], ['potential energy', 'stored energy'], ['wavelength', 'crest to crest'], ['frequency', 'crests per second'], ['voltage', 'the push'], ['resistance', 'the narrow pipe'], ['momentum', 'mass times velocity']],
-    'science-12': [['igneous', 'cooled from lava'], ['sedimentary', 'pressed from layers'], ['metamorphic', 'changed by heat'], ['climate', 'decades of weather'], ['supernova', 'the end of a big star'], ['mantle', 'the hot middle layer'], ['deep current', 'cold salty water sinking'], ['half-life', 'time to halve']],
+    'science-12': [['igneous', 'cooled from melted rock'], ['sedimentary', 'pressed from layers'], ['metamorphic', 'changed by heat and pressure'], ['climate', 'decades of weather'], ['supernova', 'the end of a big star'], ['mantle', 'the hot middle layer'], ['deep current', 'cold salty water sinking'], ['half-life', 'time to halve']],
 };
 // Ordered sets for the In order game: steps or events a student taps first to last.
 // Sentence builder (2026-09-25): each set is a short sentence and then a longer one that says more. Every word is a
@@ -22608,7 +22644,7 @@ function GRADE2_MATH_MODULES() {
                     'Adding the same number again and again is called repeated addition.\n[[4 + 4 + 4 = 12]]\nThat is three rows of four.',
                     'Count the rows. Count how many are in each row. Then add that number once for every row.',
                 ],
-                keyIdea: 'Count the rows, count how many in each row.\nAdd that number once for every row.',
+                keyIdea: 'Count the rows, count how many in each row.\nAdd that number once for every row.\nEven numbers, like 8 and 14, split into two equal rows; odd numbers, like 7 and 15, leave one left over.',
                 example: { kind: 'array', rows: 3, cols: 4, caption: '3 rows of 4. 4 + 4 + 4 = 12.', another: 'An egg carton has 2 rows of 6. Count one row, then add it once for each row: 6 + 6 is 12. That repeated adding is what multiplication is for: 2 × 6 = 12.' },
             },
             sources: ['Aligned with Texas TEKS 2.6A (model, create, and describe contextual multiplication situations with equal groups) and Common Core 2.OA.C.4.'],
@@ -24276,7 +24312,7 @@ function GRADE12_MATH_MODULES() {
                     "Five angles are worth knowing by heart.\n[[0°: cos 1, sin 0]]\n[[30°: cos √3/2, sin 1/2]]\n[[45°: cos √2/2, sin √2/2]]\n[[60°: cos 1/2, sin √3/2]]\n[[90°: cos 0, sin 1]]",
                     "Angles past 90 degrees keep the same values with signs that follow the quarter of the circle they land in. In the second quarter, cosine turns negative and sine stays positive. In the third, both are negative. In the fourth, sine is negative and cosine is positive.",
                 ],
-                keyIdea: 'On the unit circle, x is cosine and y is sine.\nKnow 0, 30, 45, 60 and 90 degrees, and let the quarter set the signs.',
+                keyIdea: 'On the unit circle, x is cosine and y is sine.\nKnow 0, 30, 45, 60 and 90 degrees, and let the quarter set the signs.\nSine is positive in the first two quarters, from 0 to 180 degrees, and negative in the last two.',
                 example: { kind: 'unitcircle', deg: 45, caption: 'On the unit circle, cosine is how far across and sine is how far up.', formula: '(cos θ, sin θ)', another: 'Walk around a circle of radius 1. However far you have turned, your position across is the cosine and your position up is the sine. At 45 degrees you are equally across and up.' },
             },
             sources: ['Aligned with Texas TEKS P.4A (determine the relationship between the unit circle and the definition of a periodic function) and Common Core F-TF.A.2 (explain how the unit circle enables the extension of trigonometric functions to all real numbers).'],
@@ -24585,7 +24621,7 @@ function GRADE3_SCIENCE_MODULES() {
                     "Let's look at water, because it does all three.\nIce is water as a solid. It keeps its shape in your hand.\nWater from the tap is a liquid. Pour it into a cup and it becomes cup-shaped.\nSteam is water as a gas. It spreads out and fills the air above the pot.",
                     "Heat moves matter from one state to the next. Warm ice and it melts into a liquid. Boil the liquid and it becomes a gas. Cool the gas and it turns back into drops of liquid. Same water, the whole way through.",
                 ],
-                keyIdea: 'A solid keeps its shape, a liquid takes the shape of its container, and a gas fills its space.\nHeating and cooling move matter between them.',
+                keyIdea: 'A solid keeps its shape, a liquid takes the shape of its container, and a gas fills its space.\nHeating and cooling move matter between them.\nSteam, water vapor, air, wind, your breath, the helium in a balloon and the oxygen you breathe are gases. Ice, rock, sand and wood are solids. Milk, juice, rain and honey are liquids.',
                 example: { kind: 'states', caption: 'The same water: packed and still as ice, sliding as water, flying apart as steam.', formula: 'ice, water, steam', another: { text: 'Picture children in a room. Solid: standing in rows, holding hands, only wiggling. Liquid: walking around but staying in the room. Gas: running everywhere and out the door.', visual: { kind: 'states' } } },
             },
             sources: ['Aligned with Texas TEKS 3.5B (describe and classify samples of matter as solids, liquids, and gases) and NGSS 2-PS1-1 and 5-PS1-3 (observe and describe properties of matter).'],
@@ -24704,7 +24740,7 @@ function GRADE6_SCIENCE_MODULES() {
                     "Let's look at some formulas. The letters name the kinds of atom, and the small numbers count them.\n[[O₂ is two oxygen atoms: one kind, so an element.]]\n[[H₂O is two hydrogens and one oxygen: two kinds, so a compound.]]\n[[NaCl, table salt, is sodium and chlorine: a compound.]]",
                     "A compound is not a mix. Salt is not sodium sitting next to chlorine; it is a new substance with its own properties. Sodium alone burns in water. Chlorine alone is a poison gas. Joined, they season your food.",
                 ],
-                keyIdea: 'An element is one kind of atom. A compound is two or more kinds joined.\nRead the formula: the letters name the kinds, the small numbers count them.',
+                keyIdea: 'An element is one kind of atom. A compound is two or more kinds joined.\nRead the formula: the letters name the kinds, the small numbers count them.\nGold, oxygen, iron, helium, carbon, sodium, copper, neon, silver and zinc are elements; water, salt, sugar, rust, ammonia, methane, glucose, quartz, chalk and ethanol are compounds.',
                 example: { kind: 'molecule', formulaText: 'H₂O', caption: 'Two hydrogen atoms bonded to one oxygen atom: a compound, water.', formula: 'H₂O', another: 'Letters and words. An element is a single letter, like H or O. A compound is a word spelled from letters, like H₂O. You cannot make a new letter, but you can spell endless words.' },
             },
             sources: ['Aligned with Texas TEKS 6.5A (know that an element is a pure substance represented by a chemical symbol and that a compound is a pure substance represented by a chemical formula) and NGSS MS-PS1-1 (develop models to describe the atomic composition of simple molecules).'],
@@ -25163,7 +25199,7 @@ function GRADE7_SCIENCE_MODULES() {
                     "Draw the levels as a pyramid and you can see it: a wide base of plants, and a narrow tip of top predators. Every ecosystem is shaped this way, because the energy runs out. A world of only lions could not exist; there would be nothing left to feed them.",
                     'Read the pyramid from the wide base of producers, up through the middle levels of consumers, to the narrow tip of top predators.'
                 ],
-                keyIdea: 'Only about a tenth of the energy passes to the next level of a food chain.\nThat is why there is much grass and few top predators.',
+                keyIdea: 'Only about a tenth of the energy passes to the next level of a food chain.\nThat is why there is much grass and few top predators.\nGrass, oak trees, algae, seaweed, moss, cactus, corn and clover are producers; rabbits, hawks, deer, frogs, snakes, foxes, cows and sharks are consumers.',
                 example: { kind: 'pyramid', levels: [1000, 100, 10, 1], caption: 'About a tenth passes up each level: 1,000 units of grass feed 100 of grasshopper, 10 of bird, 1 of hawk.', formula: '1,000, 100, 10, 1', another: { text: 'Energy leaks at every step. A thousand units of grass feed a hundred of grasshopper, ten of bird, one of hawk. That is why there are far more blades of grass than hawks.', visual: { kind: 'pyramid', levels: [1000, 100, 10, 1] } } },
             },
             sources: ['Aligned with Texas TEKS 7.5C (diagram the flow of energy through living systems, including food chains, food webs, and energy pyramids) and NGSS MS-LS2-3 (develop a model to describe the cycling of matter and flow of energy among living and nonliving parts of an ecosystem).'],
@@ -25393,7 +25429,7 @@ function GRADE9_SCIENCE_MODULES() {
                     "Let's follow the numbers. A human body cell has 46 chromosomes.\nMitosis copies them and splits: two cells, 46 each. Your skin, your blood and your bones are made this way.\nMeiosis copies them and splits twice: four cells, 23 each. When an egg with 23 meets a sperm with 23, the child has 46, half from each parent.",
                     "That halving is why children resemble both parents and neither exactly. Meiosis also shuffles which chromosomes go into which cell, so no two eggs or sperm are the same. Every sibling is a different draw from the same two decks.",
                 ],
-                keyIdea: 'Mitosis makes two identical cells for growth and repair.\nMeiosis makes four cells with half the chromosomes, for egg and sperm.',
+                keyIdea: 'Mitosis makes two identical cells for growth and repair.\nMeiosis makes four cells with half the chromosomes, for egg and sperm.\nHealing a cut and making new skin cells use mitosis. Meiosis shuffles the chromosomes, so no two sex cells are alike.',
                 example: { kind: 'celldiv', caption: 'One cell with 46 chromosomes divides; for sex cells the count halves to 23.', formula: '46 to 23', another: { text: 'Copying a recipe book. Mitosis photocopies all 46 pages for a new cell just like the old one. Meiosis makes a half-book of 23, so two half-books from two parents make a whole.', visual: { kind: 'celldiv' } } },
             },
             sources: ['Aligned with Texas TEKS Bio.5A (describe the stages of the cell cycle, including DNA replication and mitosis, and the importance of the cell cycle to the growth of organisms) and NGSS HS-LS1-4 (use a model to illustrate the role of cellular division and differentiation in producing and maintaining complex organisms).'],
@@ -25772,7 +25808,7 @@ function GRADE12_SCIENCE_MODULES() {
                     "To name a rock, ask how it formed. Crystals locked together from a melt: igneous. Layers or visible grains: sedimentary. Bands or crystals that were squeezed flat: metamorphic. The cycle has no start and no end, only the rock in your hand and where it has been.",
                     'Three kinds of rock: igneous rock from cooled magma, sedimentary rock from pressed layers, and metamorphic rock from heat and squeezing.'
                 ],
-                keyIdea: 'Igneous cooled from a melt, sedimentary was pressed from pieces, metamorphic was changed by heat and pressure.\nEach kind can become the others.',
+                keyIdea: 'Igneous cooled from a melt, sedimentary was pressed from pieces, metamorphic was changed by heat and pressure.\nEach kind can become the others.\nGranite, basalt, obsidian and pumice are igneous; sandstone, limestone, shale, chalk and coal are sedimentary.',
                 example: { kind: 'loop', steps: ['magma', 'igneous', 'sediment', 'sedimentary', 'metamorphic'], caption: 'Melt, cool, break, press, squeeze: rock keeps turning into other rock.', formula: 'melt, press, squeeze', another: 'Rock is never finished. Lava cools into igneous rock. Rain grinds it into sand that presses into sedimentary rock. Heat and squeezing turn that into metamorphic rock. Melt it, and around it goes again.' },
             },
             sources: ['Aligned with Texas TEKS ESS.10B (analyze the interactions among Earth\'s spheres, including the rock cycle) and NGSS HS-ESS2-1 (develop a model to illustrate how Earth\'s internal and surface processes operate at different spatial and temporal scales).'],
@@ -26448,7 +26484,7 @@ function GRADE1_CIVICS_MODULES() {
             requires: ['leaders-near-and-far'],
             lesson: {
                 paragraphs: ['A good is a thing you can hold, like bread or shoes.', 'A service is work someone does for you, like a haircut or a bus ride.', 'People earn money by working. Then they trade the money for goods and services.'],
-                keyIdea: 'Goods are things. Services are work done for you. Money comes from work.',
+                keyIdea: 'Goods are things. Services are work done for you. Money comes from work.\nShoes, apples, books, toys, bikes, shirts, balls and bread are goods. Haircuts, teaching, the mail, repairs, bus rides, cleaning, checkups and tutoring are services.',
                 example: { kind: 'letters', text: '10 cents', caption: 'A dime is worth ten cents.' },
                 script: [
                     { say: 'Bread is a good. You can hold it.', show: null },
@@ -30778,7 +30814,7 @@ function GRADE12_ECONOMICS_MODULES() {
                     "Let's look at why saving early is worth so much.\nMoney that earns interest grows on its own interest. That is **compound interest**.\nA quick rule: money doubles in about 72 divided by the rate, in years.\n[[Years to double ≈ 72 ÷ rate]]\nAt 6 percent, 72 ÷ 6 is 12 years. At 8 percent, 9 years. Start at 20 with one doubling every nine years, and the money doubles five times by 65, which is 32 times what you put in.",
                     "Credit is compound interest running against you.\nA credit card charging 24 percent a year charges 2 percent a month on what you have not paid. On a 1,200-dollar balance, that is 24 dollars a month for nothing.\n[[Monthly interest = balance × yearly rate ÷ 12]]\nPay the full balance every month, and credit costs nothing. Pay the minimum, and the balance can take many years to clear.\nA **credit score** is a record of whether you pay what you owe on time. A good one makes every future loan cheaper. It is built the same way as savings: a little, on time, every month.",
                 ],
-                keyIdea: 'A budget is income minus expenses, and 50/30/20 is one way to split it, with the saving done first.\nSavings compound, and money doubles in about 72 divided by the rate, in years.\nCredit compounds against you, and monthly interest is the balance times the yearly rate divided by 12.',
+                keyIdea: 'A budget is income minus expenses, and 50/30/20 is one way to split it, with the saving done first.\nSavings compound, and money doubles in about 72 divided by the rate, in years.\nCredit compounds against you, and monthly interest is the balance times the yearly rate divided by 12.\nNeeds come first: rent, groceries, electricity, water, medicine, heating, bus fare and insurance. Wants come after: a video game, a concert, candy, streaming, jewelry, toys, the arcade and souvenirs.',
                 example: { kind: 'growthbars', values: [100, 200, 400, 800], labels: ['now', '9 yr', '18 yr', '27 yr'], caption: 'At eight percent, money doubles about every nine years: 72 divided by the rate.', formula: '72 ÷ rate', another: "A budget is income minus expenses. One split: 50 for needs, 30 for wants, 20 for saving. Credit is borrowing tomorrow's money at a price, the interest, that grows if you wait." },
             },
             sources: ['Aligned with Texas TEKS Economics (personal financial literacy: budgeting, saving, compound interest, credit and credit scores) and Council for Economic Education national standards 2 and 12 (Decision Making; Interest Rates).'],
@@ -49330,8 +49366,8 @@ const COURSE_GAMES = {
     'fractions-intro': ['catch-multiples-3', 'balance-times'],
     'numbers-1': ['dots-kite', 'pairs-many'],
     'reading-1': ['jigsaw-9'],
-    'numbers-2': ['maze-huge'],
-    'reading-2': ['catch-red'],
+    'numbers-2': ['maze-huge', 'ship-even'],
+    'reading-2': ['catch-compound'],
     'reading-3': ['evidence-reading-3'],
     'reading-4': ['evidence-reading-4'],
     'math-5': ['path-multiples-4', 'catch-halves'],
@@ -49346,22 +49382,22 @@ const COURSE_GAMES = {
     'reading-9': ['evidence-reading-9'],
     'math-10': ['path-squares'],
     'reading-10': ['evidence-reading-10'],
-    'math-11': ['sprint-math'],
+    'math-11': ['path-powers-2', 'sprint-math'],
     'reading-11': ['evidence-reading-11'],
-    'math-12': ['path-primes'],
+    'math-12': ['path-positive-sines'],
     'reading-12': ['evidence-reading-12'],
     'math-college': ['pairs-formulas'],
     'reading-college': ['evidence-reading-college'],
-    'science-3': ['order-steps', 'pairs-science-3'],
-    'science-6': ['sprint-science', 'pairs-science-6'],
+    'science-3': ['ship-gases', 'order-steps', 'pairs-science-3'],
+    'science-6': ['ship-elements', 'sprint-science', 'pairs-science-6'],
     'science-4': ['catch-living', 'buckets-conductors', 'pairs-science-4'],
     'science-5': ['buckets-mammals', 'pairs-science-5'],
-    'science-7': ['buckets-solid-liquid', 'pairs-science-7'],
+    'science-7': ['buckets-producer-consumer', 'pairs-science-7'],
     'science-8': ['catch-renewable', 'pairs-science-8'],
-    'science-9': ['buckets-element-compound', 'pairs-science-9'],
+    'science-9': ['buckets-cell-division', 'pairs-science-9'],
     'science-10': ['buckets-acid-base', 'pairs-science-10', 'ptable-science-10'],
     'science-11': ['pairs-science-11'],
-    'science-12': ['catch-acids', 'pairs-science-12'],
+    'science-12': ['catch-igneous', 'pairs-science-12'],
     'writing-4': ['build-writing-4'],
     'writing-2': ['dots-boat'],
     'writing-3': ['build-writing-3'],
@@ -49375,14 +49411,14 @@ const COURSE_GAMES = {
     'writing-8': ['buckets-adjective-adverb'],
     'history-4': ['map-hemispheres', 'order-history-4'],
     'history-6': ['map-oceans', 'order-history-6'],
-    'history-7': ['map-texas', 'pairs-capitals'],
-    'history-9': ['map-europe', 'sprint-history-9'],
-    'history-college': ['map-south-america', 'sprint-history-college'],
+    'history-7': ['map-texas', 'pairs-texas'],
+    'history-9': ['map-europe', 'pairs-capitals', 'sprint-history-9'],
+    'history-college': ['map-south-america', 'catch-primary-sources', 'sprint-history-college'],
     'history-8': ['map-us-regions', 'order-history-8'],
     'history-10': ['map-us-states', 'order-history-10'],
     'history-11': ['map-africa', 'order-history-11'],
     'government-12': ['map-asia', 'order-government-12'],
-    'economics-12': ['buckets-state-country'],
+    'economics-12': ['buckets-need-want'],
     'history-5': ['order-timeline'],
     'math-4': ['path-even'],
     'multiplication-3': ['pairs-fractions'],
@@ -49393,7 +49429,7 @@ const COURSE_GAMES = {
     'science-k': ['catch-circles'],
     'science-1': ['balance-ten'],
     'civics-k': ['sort-size'],
-    'civics-1': ['path-circles'],
+    'civics-1': ['path-goods'],
     'civics-2': ['jump-differences'],
     'music-1': ['maze-big', 'jump-sums'],
     'music-4': ['pairs-music'],
@@ -61041,7 +61077,7 @@ function PinInput({ value, onChange, placeholder, style, onEnter = null }) {
 }
 // A stamp of when this copy of the page was built, so a stale page in a cache can be told apart
 // from a fresh one at a glance. Written by the build, never by hand.
-const BUILD_STAMP = '2026-10-02 06:14 PM CDT';
+const BUILD_STAMP = '2026-10-03 05:33 AM CDT';
 function ContactLine({ onOpen, inline = false }) {
     return (react_1.default.createElement("p", { className: "edu-no-print", style: { textAlign: 'center', marginTop: inline ? 0 : 28, fontSize: inline ? 14 : 12, color: C.muted, margin: inline ? '0' : undefined } }, onOpen
         ? react_1.default.createElement("button", { type: "button", onClick: onOpen, style: { background: 'none', border: 'none', color: C.muted, fontFamily: FONT, fontSize: 12, cursor: 'pointer', padding: 0, textDecoration: 'underline' } }, "Contact us")
@@ -62163,6 +62199,10 @@ const KID_ANIMATION = () => `
   }
   /* Pairs cards: pinned columns so a long word can never widen the grid past its box; text decks go three wide on a phone. */
   .edu-pairs-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .edu-bin-hot { outline: 3px solid #E6B84B !important; outline-offset: 2px; transform: scale(1.05); }
+  /* The robot walk on a phone held sideways (pass IO): the grid on the left, the words, steps, arrows and Go on the right, so the
+     whole board fits the short screen. The box drops the height cap that square boards use, because this board is wide. */
+  @media (orientation: landscape) and (max-height: 520px) { .edu-walk-box { width: min(640px, 100%) !important; } .edu-walk { display: grid !important; grid-template-columns: auto minmax(0, 1fr); column-gap: 14px; align-items: start; } .edu-walk > .edu-walk-grid { grid-row: 1 / span 4; margin: 0 !important; width: calc(100vh - 150px) !important; max-width: calc(100vh - 150px) !important; } }
   .edu-pairs-three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   @media (max-width: 599px) { .edu-pairs-text { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
   /* The coloring fold wears the crayons: the whole strip drifts through them, with two sparkles
@@ -64175,7 +64215,7 @@ function grabPointer(el, e) {
 if (typeof document !== 'undefined')
     document.addEventListener('dragstart', (e) => { const t = e.target; if (t && t.closest && t.closest('.edu-game-box'))
         e.preventDefault(); });
-const GAME_BOX = themed(() => ({ width: 'min(520px, 100%)', aspectRatio: '1 / 1', margin: '0 auto', position: 'relative', background: C.paperBoard, color: THEMES.light.ink, border: `2px solid ${C.mode === 'dark' ? C.green : C.ink}`, borderRadius: 14, overflow: 'hidden', touchAction: 'none', userSelect: 'none', WebkitUserSelect: 'none', WebkitTouchCallout: 'none', boxSizing: 'border-box' }));
+const GAME_BOX = themed(() => ({ width: 'min(520px, 100%, max(240px, calc(100vh - 120px)))', aspectRatio: '1 / 1', margin: '0 auto', position: 'relative', background: C.paperBoard, color: THEMES.light.ink, border: `2px solid ${C.mode === 'dark' ? C.green : C.ink}`, borderRadius: 14, overflow: 'hidden', touchAction: 'none', userSelect: 'none', WebkitUserSelect: 'none', WebkitTouchCallout: 'none', boxSizing: 'border-box' }));
 const PAIR_ICONS = ['sun', 'fish', 'tree', 'flower', 'moon', 'bird', 'cup', 'drop'];
 // A small seeded random so a round is the same shuffle on every device, and "play again" is a new one.
 // (shuffle itself comes from logic.mjs: shuffle(rng, list).)
@@ -64248,7 +64288,7 @@ function PairsGame({ game, round }) {
     return (react_1.default.createElement("div", { className: "edu-game-box", style: { ...GAME_BOX, aspectRatio: 'auto', padding: 12 } },
         react_1.default.createElement("div", { className: `edu-pairs-grid${cols === 3 ? ' edu-pairs-three' : ''}${game.deck ? ' edu-pairs-text' : ''}`, style: { display: 'grid', gap: 10 } }, cards.map((ic, i) => {
             const shown = up.includes(i) || found.includes(i);
-            return (react_1.default.createElement("button", { key: i, type: "button", onClick: () => flip(i), "aria-label": shown ? (typeof ic === 'string' ? ic : ic.text) : 'Card', className: "edu-press", style: { aspectRatio: '1 / 1', minWidth: 0, minHeight: 64, borderRadius: 12, border: `2px solid ${shown ? B.green : B.ink}`, background: shown ? '#FFFFFF' : B.greenSoft, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 4, overflowWrap: 'anywhere' } }, shown ? (typeof ic === 'string' ? react_1.default.createElement(IconPic, { name: ic, size: 60 }) : react_1.default.createElement("span", { style: { fontFamily: FONT, fontSize: ic.text.length > 10 ? 13 : 16, fontWeight: 700, color: B.ink, padding: 2, textAlign: 'center', lineHeight: 1.2 } }, ic.text)) : react_1.default.createElement("span", { style: { width: 26, height: 26, borderRadius: 13, background: B.green, opacity: 0.35 } })));
+            return (react_1.default.createElement("button", { key: i, type: "button", onClick: () => flip(i), "aria-label": shown ? (typeof ic === 'string' ? ic : ic.text) : 'Card', className: "edu-press", style: { aspectRatio: '1 / 1', minWidth: 0, minHeight: 64, borderRadius: 12, border: `2px solid ${shown ? B.green : B.ink}`, background: shown ? '#FFFFFF' : B.greenSoft, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 4, overflowWrap: 'anywhere' } }, shown ? (typeof ic === 'string' ? react_1.default.createElement(IconPic, { name: ic, size: 60 }) : react_1.default.createElement("span", { lang: "en", style: { fontFamily: FONT, fontSize: Math.max(...ic.text.split(/\s+/).map((w) => w.length)) > 9 ? 12 : ic.text.length > 10 ? 13 : 16, fontWeight: 700, color: B.ink, padding: 2, textAlign: 'center', lineHeight: 1.2, overflowWrap: 'anywhere', hyphens: 'auto', WebkitHyphens: 'auto', minWidth: 0, maxWidth: '100%' } }, ic.text)) : react_1.default.createElement("span", { style: { width: 26, height: 26, borderRadius: 13, background: B.green, opacity: 0.35 } })));
         })),
         react_1.default.createElement(Done, { show: found.length === cards.length })));
 }
@@ -64660,8 +64700,9 @@ function EvidenceGame({ game, round, onScore = null }) {
     const [shake, setShake] = (0, react_1.useState)(-1);
     const [ticks, setTicks] = (0, react_1.useState)(0);
     const [done, setDone] = (0, react_1.useState)(false);
+    const [streak, setStreak] = (0, react_1.useState)(0);
     const item = deck.length ? deck[(round * 2 + k) % deck.length] : null;
-    (0, react_1.useEffect)(() => { setK(0); setGot(false); setShake(-1); setDone(false); setTicks(0); }, [round]);
+    (0, react_1.useEffect)(() => { setK(0); setGot(false); setShake(-1); setDone(false); setTicks(0); setStreak(0); }, [round]);
     (0, react_1.useEffect)(() => { if (done || got)
         return undefined; const t = setInterval(() => setTicks((n) => n + 1), 1000); return () => clearInterval(t); }, [done, got]);
     (0, react_1.useEffect)(() => { if (done && onScore)
@@ -64672,10 +64713,14 @@ function EvidenceGame({ game, round, onScore = null }) {
         return null;
     const sets = Math.min(4, deck.length);
     const tap = (i) => { if (done || got)
-        return; if (i === item.answer)
+        return; if (i === item.answer) {
         setGot(true);
-    else
-        setShake(i); };
+        setStreak((n) => n + 1);
+    }
+    else {
+        setShake(i);
+        setStreak(0);
+    } };
     const next = () => { if (k + 1 >= sets)
         setDone(true);
     else {
@@ -64684,7 +64729,9 @@ function EvidenceGame({ game, round, onScore = null }) {
     } };
     return (react_1.default.createElement("div", { className: "edu-game-box", style: { ...GAME_BOX, aspectRatio: 'auto', padding: 14 } },
         react_1.default.createElement("div", { style: { display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 } },
-            react_1.default.createElement("span", null, "Find the evidence"),
+            react_1.default.createElement("span", null,
+                "Find the evidence",
+                streak > 1 ? ` · ${streak} in a row` : ''),
             react_1.default.createElement("span", null,
                 ticks,
                 "s \u00B7 ",
@@ -65169,6 +65216,134 @@ function CatchGame({ game, round, onScore = null }) {
                 react_1.default.createElement("path", { d: `M${basket - 14} 88 L${basket - 11} 97 L${basket + 11} 97 L${basket + 14} 88`, fill: B.gold, stroke: "#2E2E2E", strokeWidth: "1", strokeLinejoin: "round" }),
                 react_1.default.createElement("rect", { x: basket - 15, y: "86.5", width: "30", height: "3", rx: "1.5", fill: B.green })))));
 }
+// Space shooter (Mikey's idea, 2026-10-02, pass IN): chips drift down; tap where you want the ship and it glides there
+// and fires straight up. Hit the chips that fit the rule; hitting any other chip costs a point and says why. A chip that
+// reaches the ship's line simply passes. On a keyboard the arrows move the ship and the space bar fires.
+function ShipGame({ game, round, onScore = null }) {
+    const deck = ruleDeck(game.rule);
+    const boxRef = (0, react_1.useRef)(null);
+    const st = (0, react_1.useRef)(null);
+    const [view, setView] = (0, react_1.useState)({ items: [], shots: [], bursts: [], ship: 50, t: 0 });
+    const [score, setScore] = (0, react_1.useState)(0);
+    const [done, setDone] = (0, react_1.useState)(null);
+    const [note, setNote] = (0, react_1.useState)(null);
+    const TOTAL = 20;
+    const low = (t) => t.charAt(0).toLowerCase() + t.slice(1);
+    const half = (text) => Math.max(9, String(text).length * 2.15 + 4) / 2;
+    (0, react_1.useEffect)(() => {
+        const rnd = lcg(round * 6151 + 29);
+        const n2 = TOTAL / 2;
+        const pickN = (list, n) => Array.from({ length: n }, (_, k) => shuffle(rnd, list)[k % list.length]);
+        const s = { ship: 50, target: 50, fire: false, coolAt: 0, queue: shuffle(rnd, [...pickN(deck.a.items, n2), ...pickN(deck.b.items, n2)]), live: [], shots: [], bursts: [], spawnAt: 0, t: 0, n: 0, score: 0, hits: 0 };
+        st.current = s;
+        setScore(0);
+        setDone(null);
+        setNote(null);
+        let raf;
+        let last = null;
+        let noteTimer = null;
+        const tick = (now) => {
+            const dt = last === null ? 1 : Math.min(3, (now - last) / 16.667);
+            last = now;
+            s.t += dt;
+            const gone = TOTAL - s.queue.length; // chips come a little sooner and faster as the round goes
+            if (s.queue.length && s.t >= s.spawnAt && s.live.length < 3) {
+                const text = s.queue.shift();
+                s.live.push({ id: s.n++, text, yes: deck.a.items.includes(text), x: 14 + rnd() * 72, y: -5 });
+                s.spawnAt = s.t + 70 - Math.min(30, gone * 1.5);
+            }
+            s.ship += Math.max(-2.4 * dt, Math.min(2.4 * dt, s.target - s.ship));
+            if (s.fire && Math.abs(s.target - s.ship) < 1.5 && s.t >= s.coolAt && s.shots.length < 3) {
+                s.shots.push({ id: s.n++, x: s.ship, y: 84 });
+                s.coolAt = s.t + 12;
+                s.fire = false;
+            }
+            for (const it of s.live)
+                it.y += (0.16 + gone * 0.008) * dt;
+            for (const sh of s.shots)
+                sh.y -= 2.6 * dt;
+            for (const sh of s.shots) {
+                const hit = s.live.find((it) => !it.gone && Math.abs(sh.x - it.x) < half(it.text) && Math.abs(sh.y - it.y) < 4.5);
+                if (!hit)
+                    continue;
+                sh.gone = true;
+                hit.gone = true;
+                s.bursts.push({ id: s.n++, x: hit.x, y: hit.y, ok: hit.yes, until: s.t + 18 });
+                if (hit.yes) {
+                    s.score += 1;
+                    s.hits += 1;
+                }
+                else {
+                    s.score = Math.max(0, s.score - 1);
+                    const t = String(hit.text);
+                    setNote(`${t.charAt(0).toUpperCase() + t.slice(1)} is not one of the ${low(deck.a.label)}.`);
+                    clearTimeout(noteTimer);
+                    noteTimer = setTimeout(() => setNote(null), 1600);
+                }
+            }
+            s.shots = s.shots.filter((sh) => !sh.gone && sh.y > -4);
+            s.live = s.live.filter((it) => !it.gone && it.y < 90);
+            s.bursts = s.bursts.filter((b) => b.until > s.t);
+            setView({ items: s.live.map((it) => ({ ...it })), shots: s.shots.map((x) => ({ ...x })), bursts: s.bursts.map((b) => ({ ...b })), ship: s.ship, t: s.t });
+            setScore(s.score);
+            if (!s.queue.length && !s.live.length && !s.shots.length) {
+                setDone({ hits: s.hits, of: n2, score: s.score });
+                if (onScore && s.score > 0)
+                    onScore(s.score, 'high');
+                return;
+            }
+            raf = requestAnimationFrame(tick);
+        };
+        raf = requestAnimationFrame(tick);
+        return () => { cancelAnimationFrame(raf); clearTimeout(noteTimer); };
+    }, [round]);
+    const aim = (e) => { if (!st.current || !boxRef.current)
+        return; const [x] = boxPoint(boxRef.current, e); st.current.target = Math.max(8, Math.min(92, x)); st.current.fire = true; };
+    const key = (e) => {
+        const s = st.current;
+        if (!s)
+            return;
+        if (e.key === 'ArrowLeft') {
+            s.target = Math.max(8, s.target - 9);
+            e.preventDefault();
+        }
+        else if (e.key === 'ArrowRight') {
+            s.target = Math.min(92, s.target + 9);
+            e.preventDefault();
+        }
+        else if (e.key === ' ' || e.key === 'ArrowUp' || e.key === 'Enter') {
+            s.target = s.ship;
+            s.fire = true;
+            e.preventDefault();
+        }
+    };
+    if (done)
+        return (react_1.default.createElement("div", { className: "edu-game-box", style: { ...GAME_BOX, aspectRatio: 'auto', padding: 16, textAlign: 'center' } },
+            react_1.default.createElement("p", { style: { margin: '0 0 4px', fontSize: 22, fontWeight: 700 } },
+                done.score,
+                " ",
+                done.score === 1 ? 'point' : 'points'),
+            react_1.default.createElement("p", { style: { margin: '0 0 10px', color: B.muted } },
+                done.hits,
+                " of ",
+                done.of,
+                " hit"),
+            react_1.default.createElement("p", { style: { margin: 0, color: B.muted } }, "Tap the round arrow to go again.")));
+    const x = view.ship;
+    return (react_1.default.createElement("div", { ref: boxRef, className: "edu-game-box", tabIndex: 0, role: "application", "aria-label": `Space shooter: hit the ${low(deck.a.label)}. Tap where you want the ship, or use the arrow keys and the space bar.`, style: { ...GAME_BOX, background: '#1E2A3A', touchAction: 'none' }, onPointerDown: (e) => { grabPointer(boxRef.current, e); aim(e); }, onKeyDown: key },
+        react_1.default.createElement("svg", { viewBox: "0 0 100 100", width: "100%", height: "100%", style: { display: 'block' } },
+            [[12, 18], [30, 42], [52, 12], [74, 30], [88, 58], [20, 66], [64, 74], [44, 56]].map(([sx, sy], k) => react_1.default.createElement("circle", { key: k, cx: sx, cy: sy, r: "0.5", fill: "#DDE6F0", opacity: "0.7" })),
+            react_1.default.createElement("text", { x: "4", y: "7", fontSize: "4", fontWeight: "700", fontFamily: FONT, fill: "#F2F5F8" }, score),
+            react_1.default.createElement("text", { x: "96", y: "7", fontSize: "3.4", fontFamily: FONT, fill: "#F2F5F8", textAnchor: "end" }, deck.a.label),
+            view.items.map((it) => react_1.default.createElement(SvgChip, { key: it.id, text: it.text, x: it.x, y: it.y })),
+            view.shots.map((sh) => react_1.default.createElement("rect", { key: sh.id, x: sh.x - 0.6, y: sh.y - 3, width: "1.2", height: "4", rx: "0.6", fill: B.gold })),
+            view.bursts.map((b) => react_1.default.createElement("circle", { key: b.id, cx: b.x, cy: b.y, r: "5", fill: "none", stroke: b.ok ? '#8FD18A' : '#F2A08A', strokeWidth: "1.2" })),
+            note ? react_1.default.createElement("text", { x: "50", y: "80", fontSize: "3.3", fontFamily: FONT, fontWeight: "700", fill: "#F2A08A", textAnchor: "middle" }, note) : null,
+            view.t < 200 && !view.shots.length && score === 0 && !note ? react_1.default.createElement("text", { x: "50", y: "80", fontSize: "3.3", fontFamily: FONT, fill: "#DDE6F0", textAnchor: "middle" }, "Tap where you want the ship to fire") : null,
+            react_1.default.createElement("g", null,
+                react_1.default.createElement("path", { d: `M${x} 85 L${x + 5} 95 L${x} 93 L${x - 5} 95 Z`, fill: B.gold, stroke: "#F2F5F8", strokeWidth: "0.6", strokeLinejoin: "round" }),
+                react_1.default.createElement("circle", { cx: x, cy: "90.5", r: "1.3", fill: "#1E2A3A" })))));
+}
 // Path: a grid of chips; drag the dot from the top corner to the star, stepping only on chips that fit the rule. The
 // fitting chips form a path the puzzle guarantees; a wrong step turns red and the dot stays where it was.
 function makePath(deck, n, seed) {
@@ -65573,7 +65748,7 @@ function WalkGame({ game, round, onScore = null }) {
                 : running ? `Step ${Math.max(1, shown)} of ${prog.length}`
                     : prog.length ? 'Tap Go to watch the robot walk.' : 'Tap an arrow to give the robot its first step.';
     const arrowBtn = { fontFamily: FONT, width: 56, height: 56, borderRadius: 14, border: `2px solid ${B.green}`, background: '#fff', color: B.green, fontSize: 28, fontWeight: 700, cursor: running || home ? 'default' : 'pointer', padding: 0, lineHeight: 1 };
-    return (react_1.default.createElement("div", { className: "edu-game-box", style: { ...GAME_BOX, aspectRatio: 'auto', padding: 14 } },
+    return (react_1.default.createElement("div", { className: "edu-game-box edu-walk-box", style: { ...GAME_BOX, aspectRatio: 'auto', padding: 14 } },
         react_1.default.createElement("div", { style: { display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 } },
             react_1.default.createElement("span", null, "Walk to the star"),
             react_1.default.createElement("span", null,
@@ -65585,8 +65760,8 @@ function WalkGame({ game, round, onScore = null }) {
         done ? react_1.default.createElement("p", { style: { margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 } },
             "Every robot home in ",
             ticks,
-            " seconds. Tap the round arrow for new ones.") : (react_1.default.createElement("div", { style: { textAlign: 'center' } },
-            react_1.default.createElement("svg", { viewBox: `0 0 ${cell * 5 + pad * 2} ${cell * 5 + pad * 2}`, width: "100%", style: { maxWidth: 260, display: 'block', margin: '0 auto' }, role: "img", "aria-label": "The robot's grid" },
+            " seconds. Tap the round arrow for new ones.") : (react_1.default.createElement("div", { className: "edu-walk", style: { textAlign: 'center', display: 'flow-root' } },
+            react_1.default.createElement("svg", { viewBox: `0 0 ${cell * 5 + pad * 2} ${cell * 5 + pad * 2}`, width: "100%", className: "edu-walk-grid", style: { maxWidth: 'clamp(150px, calc(100vh - 370px), 260px)', display: 'block', margin: '0 auto' }, role: "img", "aria-label": "The robot's grid" },
                 [0, 1, 2, 3, 4].map((a) => [0, 1, 2, 3, 4].map((b) => react_1.default.createElement("rect", { key: `${a}-${b}`, x: pad + a * cell, y: pad + b * cell, width: cell, height: cell, fill: "#fff", stroke: B.line, strokeWidth: "1.5" }))),
                 shown > 0 && res.steps.slice(0, Math.min(shown, total)).map(([a, b], i) => react_1.default.createElement("circle", { key: i, cx: px(a), cy: px(b), r: "5", fill: B.green, opacity: "0.45" })),
                 p.rocks.map(([a, b]) => react_1.default.createElement("ellipse", { key: `r${a}-${b}`, cx: px(a), cy: px(b) + 3, rx: "15", ry: "12", fill: "#8C8C84", stroke: "#5E5E57", strokeWidth: "2" })),
@@ -66173,8 +66348,9 @@ function PatternGame({ game, round, onScore = null }) {
     const [nudge, setNudge] = (0, react_1.useState)(null);
     const [ticks, setTicks] = (0, react_1.useState)(0);
     const [done, setDone] = (0, react_1.useState)(false);
+    const [streak, setStreak] = (0, react_1.useState)(0);
     const q = rounds[Math.min(k, rounds.length - 1)];
-    (0, react_1.useEffect)(() => { setK(0); setGot(false); setTicks(0); setDone(false); }, [round]);
+    (0, react_1.useEffect)(() => { setK(0); setGot(false); setTicks(0); setDone(false); setStreak(0); }, [round]);
     (0, react_1.useEffect)(() => { if (done)
         return undefined; const t = setInterval(() => setTicks((n) => n + 1), 1000); return () => clearInterval(t); }, [done]);
     (0, react_1.useEffect)(() => { if (done && onScore)
@@ -66197,15 +66373,20 @@ function PatternGame({ game, round, onScore = null }) {
         return react_1.default.createElement("polygon", { points: `${h},${h * 0.2} ${h * 1.8},${h * 1.8} ${h * 0.2},${h * 1.8}`, fill: c, stroke: B.ink, strokeWidth: "1", strokeLinejoin: "round" });
     };
     const pick = (name) => { if (got || done)
-        return; if (name === q.answer)
+        return; if (name === q.answer) {
         setGot(true);
-    else
-        setNudge(name); };
+        setStreak((n) => n + 1);
+    }
+    else {
+        setNudge(name);
+        setStreak(0);
+    } };
     return (react_1.default.createElement("div", { className: "edu-game-box", style: { ...GAME_BOX, aspectRatio: 'auto', padding: 14 }, "data-pattern-answer": done ? '' : q.answer },
         react_1.default.createElement("div", { style: { display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 } },
             react_1.default.createElement("span", null,
                 "Form: ",
-                done ? '' : q.form),
+                done ? '' : q.form,
+                streak > 1 ? ` · ${streak} in a row` : ''),
             react_1.default.createElement("span", null,
                 ticks,
                 "s \u00B7 ",
@@ -66275,11 +66456,11 @@ function ShapeGame({ game, round, onScore = null }) {
             "Four lines shaped in ",
             ticks,
             " seconds. Tap the round arrow for more.") : (react_1.default.createElement("div", { style: { textAlign: 'center' } },
-            react_1.default.createElement("div", { style: { display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: 6, alignItems: 'end', marginBottom: 6 } }, levels.map((v, i) => (react_1.default.createElement("div", { key: i, style: { display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 } },
-                react_1.default.createElement("button", { type: "button", className: "edu-press", "aria-label": `Bar ${i + 1} louder`, onClick: () => nudge(i, 1), disabled: got, style: { fontFamily: FONT, width: 34, height: 28, borderRadius: 8, border: `1.5px solid ${B.green}`, background: '#fff', color: B.green, fontWeight: 700, cursor: 'pointer', padding: 0 } }, "\u25B2"),
+            react_1.default.createElement("div", { style: { display: 'grid', gridTemplateColumns: 'repeat(6, minmax(0, 1fr))', gap: 6, alignItems: 'end', marginBottom: 6 } }, levels.map((v, i) => (react_1.default.createElement("div", { key: i, style: { display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 } },
+                react_1.default.createElement("button", { type: "button", className: "edu-press", "aria-label": `Bar ${i + 1} louder`, onClick: () => nudge(i, 1), disabled: got, style: { fontFamily: FONT, width: '100%', maxWidth: 34, height: 28, borderRadius: 8, border: `1.5px solid ${B.green}`, background: '#fff', color: B.green, fontWeight: 700, cursor: 'pointer', padding: 0 } }, "\u25B2"),
                 react_1.default.createElement("div", { style: { width: '100%', height: 96, display: 'flex', alignItems: 'flex-end', justifyContent: 'center' } },
                     react_1.default.createElement("div", { style: { width: '70%', height: `${(v / 6) * 100}%`, background: got ? B.green : plan[i] === 'forte' ? B.clay : plan[i] === 'piano' ? '#C7DFF8' : B.gold, borderRadius: '6px 6px 2px 2px', border: `1.5px solid ${B.ink}` } })),
-                react_1.default.createElement("button", { type: "button", className: "edu-press", "aria-label": `Bar ${i + 1} softer`, onClick: () => nudge(i, -1), disabled: got, style: { fontFamily: FONT, width: 34, height: 28, borderRadius: 8, border: `1.5px solid ${B.green}`, background: '#fff', color: B.green, fontWeight: 700, cursor: 'pointer', padding: 0 } }, "\u25BC"),
+                react_1.default.createElement("button", { type: "button", className: "edu-press", "aria-label": `Bar ${i + 1} softer`, onClick: () => nudge(i, -1), disabled: got, style: { fontFamily: FONT, width: '100%', maxWidth: 34, height: 28, borderRadius: 8, border: `1.5px solid ${B.green}`, background: '#fff', color: B.green, fontWeight: 700, cursor: 'pointer', padding: 0 } }, "\u25BC"),
                 react_1.default.createElement("span", { style: { fontSize: 13, fontStyle: 'italic', fontWeight: 700, color: B.ink } }, short[plan[i]]))))),
             react_1.default.createElement("p", { style: { margin: '6px 0 8px', fontSize: 14, color: B.muted } }, "Soft bars low, loud bars high, a crescendo climbing, a decrescendo falling."),
             react_1.default.createElement("p", { style: { margin: '0 0 8px', fontSize: 15, color: B.ink, minHeight: 22 } }, said),
@@ -66346,6 +66527,36 @@ function ChordGame({ game, round, onScore = null }) {
 // tollens do; affirming the consequent and denying the antecedent do not, however true the sentences sound. Tap Valid or
 // Not valid; the right answer names the form and moves on, the wrong one wobbles. Six arguments a round and the clock
 // counts up. The lesson's idea is the rule of the game: validity is about the shape. Drawn with B on the paper board.
+// A card you can flick (Mikey's games review, 2026-10-02, pass IP). Drag it left or right past a third of its width to
+// answer that side; it leans and shows the side it is heading for, and snaps back if let go early. The buttons below do the
+// same, and so do the arrow keys, so nobody has to swipe. left and right are [value, label, color].
+function SwipeCard({ left, right, onPick, off = false, children }) {
+    const [dx, setDx] = (0, react_1.useState)(0);
+    const [held, setHeld] = (0, react_1.useState)(false);
+    const ref = (0, react_1.useRef)(null);
+    const start = (0, react_1.useRef)(null);
+    const down = (e) => { if (off)
+        return; start.current = e.clientX; setHeld(true); try {
+        ref.current.setPointerCapture(e.pointerId);
+    }
+    catch (err) { /* older browsers */ } };
+    const move = (e) => { if (start.current === null)
+        return; setDx(e.clientX - start.current); };
+    const up = (e) => { if (start.current === null)
+        return; const d = e.clientX - start.current; const w = ref.current ? ref.current.getBoundingClientRect().width : 300; start.current = null; setHeld(false); setDx(0); if (Math.abs(d) > w / 3)
+        onPick(d < 0 ? left[0] : right[0]); };
+    const cancel = () => { start.current = null; setHeld(false); setDx(0); };
+    (0, react_1.useEffect)(() => { const key = (e) => { if (off || e.altKey || e.ctrlKey || e.metaKey)
+        return; if (e.key === 'ArrowLeft')
+        onPick(left[0]);
+    else if (e.key === 'ArrowRight')
+        onPick(right[0]); }; window.addEventListener('keydown', key); return () => window.removeEventListener('keydown', key); });
+    const lean = Math.max(-1, Math.min(1, dx / 160));
+    const side = lean < -0.25 ? left : lean > 0.25 ? right : null;
+    return (react_1.default.createElement("div", { ref: ref, onPointerDown: down, onPointerMove: move, onPointerUp: up, onPointerCancel: cancel, style: { position: 'relative', touchAction: 'pan-y', userSelect: 'none', cursor: off ? 'default' : held ? 'grabbing' : 'grab', transform: `translateX(${dx}px) rotate(${lean * 5}deg)`, transition: held ? 'none' : 'transform 0.2s ease-out' } },
+        children,
+        side ? react_1.default.createElement("span", { "aria-hidden": "true", style: { position: 'absolute', top: 6, [side === left ? 'left' : 'right']: 8, padding: '2px 8px', borderRadius: 8, border: `2px solid ${side[2]}`, background: '#fff', color: side[2], fontFamily: FONT, fontSize: 13, fontWeight: 700 } }, side[1]) : null));
+}
 function ValidGame({ game, round, onScore = null }) {
     const rounds = (0, react_1.useMemo)(() => argumentRounds(round), [round]);
     const [k, setK] = (0, react_1.useState)(0);
@@ -66353,8 +66564,9 @@ function ValidGame({ game, round, onScore = null }) {
     const [nudge, setNudge] = (0, react_1.useState)(null);
     const [ticks, setTicks] = (0, react_1.useState)(0);
     const [done, setDone] = (0, react_1.useState)(false);
+    const [streak, setStreak] = (0, react_1.useState)(0);
     const q = rounds[Math.min(k, rounds.length - 1)];
-    (0, react_1.useEffect)(() => { setK(0); setGot(false); setTicks(0); setDone(false); }, [round]);
+    (0, react_1.useEffect)(() => { setK(0); setGot(false); setTicks(0); setDone(false); setStreak(0); }, [round]);
     (0, react_1.useEffect)(() => { if (done)
         return undefined; const t = setInterval(() => setTicks((n) => n + 1), 1000); return () => clearInterval(t); }, [done]);
     (0, react_1.useEffect)(() => { if (done && onScore)
@@ -66367,13 +66579,19 @@ function ValidGame({ game, round, onScore = null }) {
     else
         setK(k + 1); }, 900); return () => clearTimeout(t); }, [got]);
     const pick = (v) => { if (got || done)
-        return; if (v === q.valid)
+        return; if (v === q.valid) {
         setGot(true);
-    else
-        setNudge(v ? 'valid' : 'invalid'); };
+        setStreak((n) => n + 1);
+    }
+    else {
+        setNudge(v ? 'valid' : 'invalid');
+        setStreak(0);
+    } };
     return (react_1.default.createElement("div", { className: "edu-game-box", style: { ...GAME_BOX, aspectRatio: 'auto', padding: 14 }, "data-argument-valid": done ? '' : (q.valid ? 'yes' : 'no') },
         react_1.default.createElement("div", { style: { display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 } },
-            react_1.default.createElement("span", null, "Does the form hold?"),
+            react_1.default.createElement("span", null,
+                "Does the form hold?",
+                streak > 1 ? ` · ${streak} in a row` : ''),
             react_1.default.createElement("span", null,
                 ticks,
                 "s \u00B7 ",
@@ -66384,11 +66602,12 @@ function ValidGame({ game, round, onScore = null }) {
             "Six arguments sorted in ",
             ticks,
             " seconds. Tap the round arrow for more.") : (react_1.default.createElement("div", { style: { textAlign: 'center' } },
-            react_1.default.createElement("div", { style: { background: '#fff', border: `1.5px solid ${B.line}`, borderRadius: 12, padding: '12px 14px', marginBottom: 12, textAlign: 'left' } }, q.lines.map((line, i) => react_1.default.createElement("p", { key: i, style: { margin: i ? '6px 0 0' : 0, fontSize: 16, color: B.ink, fontWeight: i === 2 ? 700 : 400 } }, line))),
+            react_1.default.createElement(SwipeCard, { left: [false, 'Not valid', B.clay], right: [true, 'Valid', B.green], onPick: pick, off: got || done },
+                react_1.default.createElement("div", { style: { background: '#fff', border: `1.5px solid ${B.line}`, borderRadius: 12, padding: '12px 14px', marginBottom: 12, textAlign: 'left' } }, q.lines.map((line, i) => react_1.default.createElement("p", { key: i, style: { margin: i ? '6px 0 0' : 0, fontSize: 16, color: B.ink, fontWeight: i === 2 ? 700 : 400 } }, line)))),
             react_1.default.createElement("p", { style: { margin: '0 0 10px', fontSize: 15, color: got ? B.green : B.ink, minHeight: 22, fontWeight: got ? 700 : 400 } }, got ? `${q.valid ? 'Valid' : 'Not valid'}: ${q.form}.` : 'If the premises were true, would the conclusion have to be?'),
             react_1.default.createElement("div", { style: { display: 'flex', gap: 10, justifyContent: 'center' } },
-                react_1.default.createElement("button", { type: "button", className: `edu-press${nudge === 'valid' ? ' edu-wobble' : ''}`, onClick: () => pick(true), style: { fontFamily: FONT, fontSize: 16, fontWeight: 700, padding: '10px 22px', borderRadius: 12, border: `2px solid ${B.green}`, background: '#fff', color: B.ink, cursor: got ? 'default' : 'pointer' } }, "Valid"),
-                react_1.default.createElement("button", { type: "button", className: `edu-press${nudge === 'invalid' ? ' edu-wobble' : ''}`, onClick: () => pick(false), style: { fontFamily: FONT, fontSize: 16, fontWeight: 700, padding: '10px 22px', borderRadius: 12, border: `2px solid ${B.clay}`, background: '#fff', color: B.ink, cursor: got ? 'default' : 'pointer' } }, "Not valid")))),
+                react_1.default.createElement("button", { type: "button", className: `edu-press${nudge === 'invalid' ? ' edu-wobble' : ''}`, "aria-label": "Not valid", onClick: () => pick(false), style: { fontFamily: FONT, fontSize: 16, fontWeight: 700, padding: '10px 22px', borderRadius: 12, border: `2px solid ${B.clay}`, background: '#fff', color: B.ink, cursor: got ? 'default' : 'pointer' } }, "\u2190 Not valid"),
+                react_1.default.createElement("button", { type: "button", className: `edu-press${nudge === 'valid' ? ' edu-wobble' : ''}`, "aria-label": "Valid", onClick: () => pick(true), style: { fontFamily: FONT, fontSize: 16, fontWeight: 700, padding: '10px 22px', borderRadius: 12, border: `2px solid ${B.green}`, background: '#fff', color: B.ink, cursor: got ? 'default' : 'pointer' } }, "Valid \u2192")))),
         react_1.default.createElement(Done, { show: done })));
 }
 // Reason or Not (2026-09-29, pass GJ, a new kind for philosophy 6 to 8): a claim and a reason, and one question: does the
@@ -66402,8 +66621,9 @@ function ReasonGame({ game, round, onScore = null }) {
     const [nudge, setNudge] = (0, react_1.useState)(null);
     const [ticks, setTicks] = (0, react_1.useState)(0);
     const [done, setDone] = (0, react_1.useState)(false);
+    const [streak, setStreak] = (0, react_1.useState)(0);
     const q = rounds[Math.min(k, rounds.length - 1)];
-    (0, react_1.useEffect)(() => { setK(0); setGot(false); setTicks(0); setDone(false); }, [round]);
+    (0, react_1.useEffect)(() => { setK(0); setGot(false); setTicks(0); setDone(false); setStreak(0); }, [round]);
     (0, react_1.useEffect)(() => { if (done)
         return undefined; const t = setInterval(() => setTicks((n) => n + 1), 1000); return () => clearInterval(t); }, [done]);
     (0, react_1.useEffect)(() => { if (done && onScore)
@@ -66416,13 +66636,19 @@ function ReasonGame({ game, round, onScore = null }) {
     else
         setK(k + 1); }, 900); return () => clearTimeout(t); }, [got]);
     const pick = (v) => { if (got || done)
-        return; if (v === q.supports)
+        return; if (v === q.supports) {
         setGot(true);
-    else
-        setNudge(v ? 'yes' : 'no'); };
+        setStreak((n) => n + 1);
+    }
+    else {
+        setNudge(v ? 'yes' : 'no');
+        setStreak(0);
+    } };
     return (react_1.default.createElement("div", { className: "edu-game-box", style: { ...GAME_BOX, aspectRatio: 'auto', padding: 14 }, "data-reason-supports": done ? '' : (q.supports ? 'yes' : 'no') },
         react_1.default.createElement("div", { style: { display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 } },
-            react_1.default.createElement("span", null, "Does the reason bear on the claim?"),
+            react_1.default.createElement("span", null,
+                "Does the reason bear on the claim?",
+                streak > 1 ? ` · ${streak} in a row` : ''),
             react_1.default.createElement("span", null,
                 ticks,
                 "s \u00B7 ",
@@ -66433,15 +66659,16 @@ function ReasonGame({ game, round, onScore = null }) {
             "Six reasons sorted in ",
             ticks,
             " seconds. Tap the round arrow for more.") : (react_1.default.createElement("div", { style: { textAlign: 'center' } },
-            react_1.default.createElement("div", { style: { background: '#fff', border: `1.5px solid ${B.line}`, borderRadius: 12, padding: '12px 14px', marginBottom: 12, textAlign: 'left' } },
-                react_1.default.createElement("p", { style: { margin: 0, fontSize: 13, color: B.muted, textTransform: 'uppercase', letterSpacing: 0.5 } }, "Claim"),
-                react_1.default.createElement("p", { style: { margin: '2px 0 8px', fontSize: 17, color: B.ink, fontWeight: 700 } }, q.claim),
-                react_1.default.createElement("p", { style: { margin: 0, fontSize: 13, color: B.muted, textTransform: 'uppercase', letterSpacing: 0.5 } }, "Reason"),
-                react_1.default.createElement("p", { style: { margin: '2px 0 0', fontSize: 16, color: B.ink } }, q.reason)),
+            react_1.default.createElement(SwipeCard, { left: [false, 'Does not', B.clay], right: [true, 'Supports it', B.green], onPick: pick, off: got || done },
+                react_1.default.createElement("div", { style: { background: '#fff', border: `1.5px solid ${B.line}`, borderRadius: 12, padding: '12px 14px', marginBottom: 12, textAlign: 'left' } },
+                    react_1.default.createElement("p", { style: { margin: 0, fontSize: 13, color: B.muted, textTransform: 'uppercase', letterSpacing: 0.5 } }, "Claim"),
+                    react_1.default.createElement("p", { style: { margin: '2px 0 8px', fontSize: 17, color: B.ink, fontWeight: 700 } }, q.claim),
+                    react_1.default.createElement("p", { style: { margin: 0, fontSize: 13, color: B.muted, textTransform: 'uppercase', letterSpacing: 0.5 } }, "Reason"),
+                    react_1.default.createElement("p", { style: { margin: '2px 0 0', fontSize: 16, color: B.ink } }, q.reason))),
             react_1.default.createElement("p", { style: { margin: '0 0 10px', fontSize: 15, color: got ? B.green : B.ink, minHeight: 22, fontWeight: got ? 700 : 400 } }, got ? (q.supports ? 'Yes: relevant, and worth checking.' : 'No: true, maybe, and useless here.') : 'A good reason is relevant and true. Is this one relevant?'),
             react_1.default.createElement("div", { style: { display: 'flex', gap: 10, justifyContent: 'center' } },
-                react_1.default.createElement("button", { type: "button", className: `edu-press${nudge === 'yes' ? ' edu-wobble' : ''}`, onClick: () => pick(true), style: { fontFamily: FONT, fontSize: 16, fontWeight: 700, padding: '10px 22px', borderRadius: 12, border: `2px solid ${B.green}`, background: '#fff', color: B.ink, cursor: got ? 'default' : 'pointer' } }, "Supports it"),
-                react_1.default.createElement("button", { type: "button", className: `edu-press${nudge === 'no' ? ' edu-wobble' : ''}`, onClick: () => pick(false), style: { fontFamily: FONT, fontSize: 16, fontWeight: 700, padding: '10px 22px', borderRadius: 12, border: `2px solid ${B.clay}`, background: '#fff', color: B.ink, cursor: got ? 'default' : 'pointer' } }, "Does not")))),
+                react_1.default.createElement("button", { type: "button", className: `edu-press${nudge === 'no' ? ' edu-wobble' : ''}`, "aria-label": "Does not", onClick: () => pick(false), style: { fontFamily: FONT, fontSize: 16, fontWeight: 700, padding: '10px 22px', borderRadius: 12, border: `2px solid ${B.clay}`, background: '#fff', color: B.ink, cursor: got ? 'default' : 'pointer' } }, "\u2190 Does not"),
+                react_1.default.createElement("button", { type: "button", className: `edu-press${nudge === 'yes' ? ' edu-wobble' : ''}`, "aria-label": "Supports it", onClick: () => pick(true), style: { fontFamily: FONT, fontSize: 16, fontWeight: 700, padding: '10px 22px', borderRadius: 12, border: `2px solid ${B.green}`, background: '#fff', color: B.ink, cursor: got ? 'default' : 'pointer' } }, "Supports it \u2192")))),
         react_1.default.createElement(Done, { show: done })));
 }
 // Sort the Because (2026-09-29, pass GK, a new kind for philosophy 3 to 5): a claim and four becauses, two of them real
@@ -66455,9 +66682,10 @@ function BecauseGame({ game, round, onScore = null }) {
     const [nudge, setNudge] = (0, react_1.useState)(null);
     const [ticks, setTicks] = (0, react_1.useState)(0);
     const [done, setDone] = (0, react_1.useState)(false);
+    const [streak, setStreak] = (0, react_1.useState)(0);
     const q = rounds[Math.min(k, rounds.length - 1)];
     const complete = found.length >= 2;
-    (0, react_1.useEffect)(() => { setK(0); setFound([]); setTicks(0); setDone(false); }, [round]);
+    (0, react_1.useEffect)(() => { setK(0); setFound([]); setTicks(0); setDone(false); setStreak(0); }, [round]);
     (0, react_1.useEffect)(() => { setFound([]); }, [q]);
     (0, react_1.useEffect)(() => { if (done)
         return undefined; const t = setInterval(() => setTicks((n) => n + 1), 1000); return () => clearInterval(t); }, [done]);
@@ -66471,13 +66699,19 @@ function BecauseGame({ game, round, onScore = null }) {
     else
         setK(k + 1); }, 800); return () => clearTimeout(t); }, [complete]);
     const tap = (i) => { if (done || complete || found.includes(i))
-        return; if (q.options[i].real)
+        return; if (q.options[i].real) {
         setFound([...found, i]);
-    else
-        setNudge(i); };
+        setStreak((n) => n + 1);
+    }
+    else {
+        setNudge(i);
+        setStreak(0);
+    } };
     return (react_1.default.createElement("div", { className: "edu-game-box", style: { ...GAME_BOX, aspectRatio: 'auto', padding: 14 }, "data-because-real": done ? '' : q.options.filter((o) => o.real).map((o) => o.text).join(' | ') },
         react_1.default.createElement("div", { style: { display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 } },
-            react_1.default.createElement("span", null, "Tap the real reasons"),
+            react_1.default.createElement("span", null,
+                "Tap the real reasons",
+                streak > 1 ? ` · ${streak} in a row` : ''),
             react_1.default.createElement("span", null,
                 ticks,
                 "s \u00B7 ",
@@ -66580,8 +66814,9 @@ function StatGame({ game, round, onScore = null }) {
     const [nudge, setNudge] = (0, react_1.useState)(null);
     const [ticks, setTicks] = (0, react_1.useState)(0);
     const [done, setDone] = (0, react_1.useState)(false);
+    const [streak, setStreak] = (0, react_1.useState)(0);
     const q = rounds[Math.min(k, rounds.length - 1)];
-    (0, react_1.useEffect)(() => { setK(0); setGot(false); setTicks(0); setDone(false); }, [round]);
+    (0, react_1.useEffect)(() => { setK(0); setGot(false); setTicks(0); setDone(false); setStreak(0); }, [round]);
     (0, react_1.useEffect)(() => { if (done)
         return undefined; const t = setInterval(() => setTicks((n) => n + 1), 1000); return () => clearInterval(t); }, [done]);
     (0, react_1.useEffect)(() => { if (done && onScore)
@@ -66597,13 +66832,19 @@ function StatGame({ game, round, onScore = null }) {
     const sum = q.scores.reduce((a, b) => a + b, 0);
     const how = q.ask === 'mean' ? `${sum} divided by 5 is ${q.answer}.` : q.ask === 'median' ? `In order, ${sorted.join(', ')}: the middle is ${q.answer}.` : `${q.answer} appears twice; nothing else repeats.`;
     const pick = (v) => { if (got || done)
-        return; if (v === q.answer)
+        return; if (v === q.answer) {
         setGot(true);
-    else
-        setNudge(v); };
+        setStreak((n) => n + 1);
+    }
+    else {
+        setNudge(v);
+        setStreak(0);
+    } };
     return (react_1.default.createElement("div", { className: "edu-game-box", style: { ...GAME_BOX, aspectRatio: 'auto', padding: 14 }, "data-stat-answer": done ? '' : String(q.answer) },
         react_1.default.createElement("div", { style: { display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 } },
-            react_1.default.createElement("span", null, "Three ways to say average"),
+            react_1.default.createElement("span", null,
+                "Three ways to say average",
+                streak > 1 ? ` · ${streak} in a row` : ''),
             react_1.default.createElement("span", null,
                 ticks,
                 "s \u00B7 ",
@@ -66689,8 +66930,9 @@ function FaceGame({ game, round, onScore = null }) {
     const [nudge, setNudge] = (0, react_1.useState)(null);
     const [ticks, setTicks] = (0, react_1.useState)(0);
     const [done, setDone] = (0, react_1.useState)(false);
+    const [streak, setStreak] = (0, react_1.useState)(0);
     const q = rounds[Math.min(k, rounds.length - 1)];
-    (0, react_1.useEffect)(() => { setK(0); setGot(false); setTicks(0); setDone(false); }, [round]);
+    (0, react_1.useEffect)(() => { setK(0); setGot(false); setTicks(0); setDone(false); setStreak(0); }, [round]);
     (0, react_1.useEffect)(() => { if (done)
         return undefined; const t = setInterval(() => setTicks((n) => n + 1), 1000); return () => clearInterval(t); }, [done]);
     (0, react_1.useEffect)(() => { if (done && onScore)
@@ -66703,10 +66945,14 @@ function FaceGame({ game, round, onScore = null }) {
     else
         setK(k + 1); }, 800); return () => clearTimeout(t); }, [got]);
     const pick = (v) => { if (got || done)
-        return; if (v === q.answer)
+        return; if (v === q.answer) {
         setGot(true);
-    else
-        setNudge(v); };
+        setStreak((n) => n + 1);
+    }
+    else {
+        setNudge(v);
+        setStreak(0);
+    } };
     const face = (f) => {
         const ink = B.ink;
         const skin = '#F5CBA7';
@@ -66748,7 +66994,9 @@ function FaceGame({ game, round, onScore = null }) {
     };
     return (react_1.default.createElement("div", { className: "edu-game-box", style: { ...GAME_BOX, aspectRatio: 'auto', padding: 14 }, "data-feeling-answer": done ? '' : q.answer },
         react_1.default.createElement("div", { style: { display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 } },
-            react_1.default.createElement("span", null, "Name the feeling"),
+            react_1.default.createElement("span", null,
+                "Name the feeling",
+                streak > 1 ? ` · ${streak} in a row` : ''),
             react_1.default.createElement("span", null,
                 ticks,
                 "s \u00B7 ",
@@ -66759,15 +67007,44 @@ function FaceGame({ game, round, onScore = null }) {
             "Six feelings named in ",
             ticks,
             " seconds. Tap the round arrow for more.") : (react_1.default.createElement("div", { style: { textAlign: 'center' } },
-            face(q.answer),
+            react_1.default.createElement(DragCard, { onDrop: pick, off: got || done }, face(q.answer)),
             react_1.default.createElement("p", { style: { margin: '0 0 10px', fontSize: 16, color: got ? B.green : B.ink, minHeight: 22, fontWeight: got ? 700 : 400 } }, got ? `Yes: ${q.answer}. Naming it turns the volume down.` : 'What is this face feeling?'),
-            react_1.default.createElement("div", { style: { display: 'flex', gap: 10, justifyContent: 'center', flexWrap: 'wrap' } }, q.choices.map((v) => react_1.default.createElement("button", { key: v, type: "button", className: `edu-press${nudge === v ? ' edu-wobble' : ''}`, "aria-label": `Feeling: ${v}`, onClick: () => pick(v), style: { fontFamily: FONT, fontSize: 17, fontWeight: 700, minWidth: 96, padding: '10px 14px', borderRadius: 12, border: `2px solid ${B.green}`, background: '#fff', color: B.ink, cursor: got ? 'default' : 'pointer', textTransform: 'capitalize' } }, v))))),
+            react_1.default.createElement("div", { style: { display: 'flex', gap: 10, justifyContent: 'center', flexWrap: 'wrap' } }, q.choices.map((v) => react_1.default.createElement("button", { key: v, type: "button", className: `edu-press${nudge === v ? ' edu-wobble' : ''}`, "data-bin": v, "aria-label": `Feeling: ${v}`, onClick: () => pick(v), style: { fontFamily: FONT, fontSize: 17, fontWeight: 700, minWidth: 96, padding: '10px 14px', borderRadius: 12, border: `2px solid ${B.green}`, background: '#fff', color: B.ink, cursor: got ? 'default' : 'pointer', textTransform: 'capitalize' } }, v))))),
         react_1.default.createElement(Done, { show: done })));
 }
 // Which Sense (2026-09-30, pass GP, a new kind for psychology K to 2): a thing you might meet, said aloud, and five senses
 // drawn as an eye, an ear, a nose, a tongue and a hand; tap the sense that tells you about it. The right one moves on, a
 // wrong one wobbles. Five things a round, one for each sense, and the clock counts up. The lesson's first fact, the five
 // senses, is the rule of the game. Drawn with B on the paper board.
+// A card you can carry to its box (Mikey's games review, 2026-10-03, pass IQ). Drag the card onto one of the boxes below
+// and let go there to answer with that box; each box lights as the card passes over it, and a card let go anywhere else
+// slides home. Tapping a box still answers, and so do the number keys, 1 for the first box. Boxes carry data-bin.
+function DragCard({ onDrop, off = false, children }) {
+    const ref = (0, react_1.useRef)(null);
+    const start = (0, react_1.useRef)(null);
+    const [d, setD] = (0, react_1.useState)([0, 0]);
+    const [held, setHeld] = (0, react_1.useState)(false);
+    const bins = () => { const box = ref.current && ref.current.closest('.edu-game-box'); return box ? [...box.querySelectorAll('[data-bin]')] : []; };
+    const binAt = (x, y) => bins().find((b) => { const r = b.getBoundingClientRect(); return x >= r.left && x <= r.right && y >= r.top && y <= r.bottom; }) || null;
+    const light = (hot) => { for (const b of bins())
+        b.classList.toggle('edu-bin-hot', b === hot); };
+    const down = (e) => { if (off)
+        return; start.current = [e.clientX, e.clientY]; setHeld(true); try {
+        ref.current.setPointerCapture(e.pointerId);
+    }
+    catch (err) { /* older browsers */ } };
+    const move = (e) => { if (!start.current)
+        return; setD([e.clientX - start.current[0], e.clientY - start.current[1]]); light(binAt(e.clientX, e.clientY)); };
+    const up = (e) => { if (!start.current)
+        return; const b = binAt(e.clientX, e.clientY); start.current = null; setHeld(false); setD([0, 0]); light(null); if (b)
+        onDrop(b.getAttribute('data-bin')); };
+    const cancel = () => { start.current = null; setHeld(false); setD([0, 0]); light(null); };
+    (0, react_1.useEffect)(() => { const key = (e) => { if (off || e.altKey || e.ctrlKey || e.metaKey)
+        return; const n = Number(e.key); if (!Number.isInteger(n) || n < 1)
+        return; const b = bins()[n - 1]; if (b)
+        onDrop(b.getAttribute('data-bin')); }; window.addEventListener('keydown', key); return () => window.removeEventListener('keydown', key); });
+    return (react_1.default.createElement("div", { ref: ref, onPointerDown: down, onPointerMove: move, onPointerUp: up, onPointerCancel: cancel, style: { position: 'relative', zIndex: held ? 5 : 'auto', touchAction: 'none', userSelect: 'none', cursor: off ? 'default' : held ? 'grabbing' : 'grab', transform: `translate(${d[0]}px, ${d[1]}px) scale(${held ? 1.04 : 1})`, transition: held ? 'none' : 'transform 0.2s ease-out', filter: held ? 'drop-shadow(0 8px 10px rgba(0,0,0,0.2))' : 'none' } }, children));
+}
 function SenseGame({ game, round, onScore = null }) {
     const rounds = (0, react_1.useMemo)(() => senseRounds(round), [round]);
     const [k, setK] = (0, react_1.useState)(0);
@@ -66775,8 +67052,9 @@ function SenseGame({ game, round, onScore = null }) {
     const [nudge, setNudge] = (0, react_1.useState)(null);
     const [ticks, setTicks] = (0, react_1.useState)(0);
     const [done, setDone] = (0, react_1.useState)(false);
+    const [streak, setStreak] = (0, react_1.useState)(0);
     const q = rounds[Math.min(k, rounds.length - 1)];
-    (0, react_1.useEffect)(() => { setK(0); setGot(false); setTicks(0); setDone(false); }, [round]);
+    (0, react_1.useEffect)(() => { setK(0); setGot(false); setTicks(0); setDone(false); setStreak(0); }, [round]);
     (0, react_1.useEffect)(() => { if (typeof speak === 'function' && !done && !got)
         speak(`Which sense tells you about ${q.thing}?`); }, [q, done]);
     (0, react_1.useEffect)(() => { if (done)
@@ -66791,10 +67069,14 @@ function SenseGame({ game, round, onScore = null }) {
     else
         setK(k + 1); }, 900); return () => clearTimeout(t); }, [got]);
     const pick = (v) => { if (got || done)
-        return; if (v === q.sense)
+        return; if (v === q.sense) {
         setGot(true);
-    else
-        setNudge(v); };
+        setStreak((n) => n + 1);
+    }
+    else {
+        setNudge(v);
+        setStreak(0);
+    } };
     const word = { see: 'Eyes', hear: 'Ears', smell: 'Nose', taste: 'Tongue', touch: 'Hand' };
     const icon = (v) => {
         const k2 = B.ink;
@@ -66815,7 +67097,9 @@ function SenseGame({ game, round, onScore = null }) {
     };
     return (react_1.default.createElement("div", { className: "edu-game-box", style: { ...GAME_BOX, aspectRatio: 'auto', padding: 14 }, "data-sense-answer": done ? '' : q.sense },
         react_1.default.createElement("div", { style: { display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 } },
-            react_1.default.createElement("span", null, "Which sense?"),
+            react_1.default.createElement("span", null,
+                "Which sense?",
+                streak > 1 ? ` · ${streak} in a row` : ''),
             react_1.default.createElement("span", null,
                 ticks,
                 "s \u00B7 ",
@@ -66826,8 +67110,10 @@ function SenseGame({ game, round, onScore = null }) {
             "Five senses found in ",
             ticks,
             " seconds. Tap the round arrow for more.") : (react_1.default.createElement("div", { style: { textAlign: 'center' } },
-            react_1.default.createElement("p", { style: { margin: '4px 0 12px', fontSize: 20, fontWeight: 700, color: got ? B.green : B.ink } }, got ? `Yes: your ${word[q.sense].toLowerCase()}.` : q.thing),
-            react_1.default.createElement("div", { style: { display: 'flex', gap: 8, justifyContent: 'center', flexWrap: 'wrap' } }, SENSES.map((v) => react_1.default.createElement("button", { key: v, type: "button", className: `edu-press${nudge === v ? ' edu-wobble' : ''}`, "aria-label": `Sense: ${v}`, onClick: () => pick(v), style: { fontFamily: FONT, width: 72, height: 78, borderRadius: 14, border: `2px solid ${B.green}`, background: '#fff', color: B.ink, cursor: got ? 'default' : 'pointer', padding: 4, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 2 } },
+            react_1.default.createElement(DragCard, { onDrop: pick, off: got || done },
+                react_1.default.createElement("div", { style: { display: 'inline-block', background: '#fff', border: `1.5px solid ${B.line}`, borderRadius: 12, padding: '6px 14px', margin: '4px 0 12px' } },
+                    react_1.default.createElement("p", { style: { margin: 0, fontSize: 20, fontWeight: 700, color: got ? B.green : B.ink } }, got ? `Yes: your ${word[q.sense].toLowerCase()}.` : q.thing))),
+            react_1.default.createElement("div", { style: { display: 'flex', gap: 8, justifyContent: 'center', flexWrap: 'wrap' } }, SENSES.map((v) => react_1.default.createElement("button", { key: v, type: "button", className: `edu-press${nudge === v ? ' edu-wobble' : ''}`, "data-bin": v, "aria-label": `Sense: ${v}`, onClick: () => pick(v), style: { fontFamily: FONT, width: 72, height: 78, borderRadius: 14, border: `2px solid ${B.green}`, background: '#fff', color: B.ink, cursor: got ? 'default' : 'pointer', padding: 4, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 2 } },
                 react_1.default.createElement("svg", { viewBox: "0 0 40 40", width: "40", height: "40", "aria-hidden": "true" }, icon(v)),
                 react_1.default.createElement("span", { style: { fontSize: 12, fontWeight: 700 } }, word[v])))))),
         react_1.default.createElement(Done, { show: done })));
@@ -66894,8 +67180,9 @@ function RoomGame({ game, round, onScore = null }) {
     const [nudge, setNudge] = (0, react_1.useState)(null);
     const [ticks, setTicks] = (0, react_1.useState)(0);
     const [done, setDone] = (0, react_1.useState)(false);
+    const [streak, setStreak] = (0, react_1.useState)(0);
     const q = rounds[Math.min(k, rounds.length - 1)];
-    (0, react_1.useEffect)(() => { setK(0); setGot(false); setTicks(0); setDone(false); }, [round]);
+    (0, react_1.useEffect)(() => { setK(0); setGot(false); setTicks(0); setDone(false); setStreak(0); }, [round]);
     (0, react_1.useEffect)(() => { if (done)
         return undefined; const t = setInterval(() => setTicks((n) => n + 1), 1000); return () => clearInterval(t); }, [done]);
     (0, react_1.useEffect)(() => { if (done && onScore)
@@ -66908,14 +67195,20 @@ function RoomGame({ game, round, onScore = null }) {
     else
         setK(k + 1); }, 900); return () => clearTimeout(t); }, [got]);
     const pick = (v) => { if (got || done)
-        return; if (v === q.answer)
+        return; if (v === q.answer) {
         setGot(true);
-    else
-        setNudge(v); };
+        setStreak((n) => n + 1);
+    }
+    else {
+        setNudge(v);
+        setStreak(0);
+    } };
     const why = { friends: 'casual words and half sentences', class: 'full sentences and the words of the subject', 'a job interview': 'a formal opening and no slang', 'a text to a grandparent': 'warm, short and clear' };
     return (react_1.default.createElement("div", { className: "edu-game-box", style: { ...GAME_BOX, aspectRatio: 'auto', padding: 14 }, "data-room-answer": done ? '' : q.answer },
         react_1.default.createElement("div", { style: { display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 } },
-            react_1.default.createElement("span", null, "Fit the room"),
+            react_1.default.createElement("span", null,
+                "Fit the room",
+                streak > 1 ? ` · ${streak} in a row` : ''),
             react_1.default.createElement("span", null,
                 ticks,
                 "s \u00B7 ",
@@ -66926,9 +67219,10 @@ function RoomGame({ game, round, onScore = null }) {
             "Six lines in their rooms in ",
             ticks,
             " seconds. Tap the round arrow for more.") : (react_1.default.createElement("div", { style: { textAlign: 'center' } },
-            react_1.default.createElement("div", { style: { background: '#fff', border: `1.5px solid ${B.line}`, borderRadius: 12, padding: '14px 12px', marginBottom: 10, fontSize: 18, fontWeight: 600, color: B.ink, fontStyle: 'italic' } }, q.line),
+            react_1.default.createElement(DragCard, { onDrop: pick, off: got || done },
+                react_1.default.createElement("div", { style: { background: '#fff', border: `1.5px solid ${B.line}`, borderRadius: 12, padding: '14px 12px', marginBottom: 10, fontSize: 18, fontWeight: 600, color: B.ink, fontStyle: 'italic' } }, q.line)),
             react_1.default.createElement("p", { style: { margin: '0 0 10px', fontSize: 15, color: got ? B.green : B.ink, minHeight: 22, fontWeight: got ? 700 : 400 } }, got ? `Yes: ${q.answer}, ${why[q.answer]}.` : 'Which room does this line fit?'),
-            react_1.default.createElement("div", { style: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 } }, q.choices.map((v) => react_1.default.createElement("button", { key: v, type: "button", className: `edu-press${nudge === v ? ' edu-wobble' : ''}`, "aria-label": `Room: ${v}`, onClick: () => pick(v), style: { fontFamily: FONT, fontSize: 15, fontWeight: 700, padding: '10px 8px', borderRadius: 12, border: `2px solid ${B.green}`, background: '#fff', color: B.ink, cursor: got ? 'default' : 'pointer' } }, v))))),
+            react_1.default.createElement("div", { style: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 } }, q.choices.map((v) => react_1.default.createElement("button", { key: v, type: "button", className: `edu-press${nudge === v ? ' edu-wobble' : ''}`, "data-bin": v, "aria-label": `Room: ${v}`, onClick: () => pick(v), style: { fontFamily: FONT, fontSize: 15, fontWeight: 700, padding: '10px 8px', borderRadius: 12, border: `2px solid ${B.green}`, background: '#fff', color: B.ink, cursor: got ? 'default' : 'pointer' } }, v))))),
         react_1.default.createElement(Done, { show: done })));
 }
 // Ask the Right Question (2026-09-30, pass GS, a new kind for speech 3 to 5): something a friend said, on a paper card,
@@ -66941,8 +67235,9 @@ function AskGame({ game, round, onScore = null }) {
     const [nudge, setNudge] = (0, react_1.useState)(null);
     const [ticks, setTicks] = (0, react_1.useState)(0);
     const [done, setDone] = (0, react_1.useState)(false);
+    const [streak, setStreak] = (0, react_1.useState)(0);
     const q = rounds[Math.min(k, rounds.length - 1)];
-    (0, react_1.useEffect)(() => { setK(0); setGot(false); setTicks(0); setDone(false); }, [round]);
+    (0, react_1.useEffect)(() => { setK(0); setGot(false); setTicks(0); setDone(false); setStreak(0); }, [round]);
     (0, react_1.useEffect)(() => { if (done)
         return undefined; const t = setInterval(() => setTicks((n) => n + 1), 1000); return () => clearInterval(t); }, [done]);
     (0, react_1.useEffect)(() => { if (done && onScore)
@@ -66955,13 +67250,19 @@ function AskGame({ game, round, onScore = null }) {
     else
         setK(k + 1); }, 900); return () => clearTimeout(t); }, [got]);
     const pick = (v) => { if (got || done)
-        return; if (v === q.answer)
+        return; if (v === q.answer) {
         setGot(true);
-    else
-        setNudge(v); };
+        setStreak((n) => n + 1);
+    }
+    else {
+        setNudge(v);
+        setStreak(0);
+    } };
     return (react_1.default.createElement("div", { className: "edu-game-box", style: { ...GAME_BOX, aspectRatio: 'auto', padding: 14 }, "data-ask-answer": done ? '' : q.answer },
         react_1.default.createElement("div", { style: { display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 } },
-            react_1.default.createElement("span", null, "Ask the right question"),
+            react_1.default.createElement("span", null,
+                "Ask the right question",
+                streak > 1 ? ` · ${streak} in a row` : ''),
             react_1.default.createElement("span", null,
                 ticks,
                 "s \u00B7 ",
@@ -67130,9 +67431,10 @@ function RelationGame({ game, round, onScore = null }) {
     const [got, setGot] = (0, react_1.useState)(false); // true for a moment after a right tap
     const [nudge, setNudge] = (0, react_1.useState)(null); // the name of a wrong tap, so that button wobbles
     const [ticks, setTicks] = (0, react_1.useState)(0); // seconds since the round started
-    const [done, setDone] = (0, react_1.useState)(false); // true once all six are answered
+    const [done, setDone] = (0, react_1.useState)(false);
+    const [streak, setStreak] = (0, react_1.useState)(0); // true once all six are answered
     const q = rounds[Math.min(k, rounds.length - 1)];
-    (0, react_1.useEffect)(() => { setK(0); setGot(false); setTicks(0); setDone(false); }, [round]);
+    (0, react_1.useEffect)(() => { setK(0); setGot(false); setTicks(0); setDone(false); setStreak(0); }, [round]);
     (0, react_1.useEffect)(() => { if (done)
         return undefined; const t = setInterval(() => setTicks((n) => n + 1), 1000); return () => clearInterval(t); }, [done]);
     (0, react_1.useEffect)(() => { if (done && onScore)
@@ -67145,14 +67447,20 @@ function RelationGame({ game, round, onScore = null }) {
     else
         setK(k + 1); }, 1000); return () => clearTimeout(t); }, [got]);
     const pick = (v) => { if (got || done)
-        return; if (v === q.answer)
+        return; if (v === q.answer) {
         setGot(true);
-    else
-        setNudge(v); };
+        setStreak((n) => n + 1);
+    }
+    else {
+        setNudge(v);
+        setStreak(0);
+    } };
     const why = { mutualism: 'both gain', parasitism: 'one gains and the other is harmed', commensalism: 'one gains and the other is unaffected', predation: 'one eats the other' };
     return (react_1.default.createElement("div", { className: "edu-game-box", style: { ...GAME_BOX, aspectRatio: 'auto', padding: 14 }, "data-relation-answer": done ? '' : q.answer },
         react_1.default.createElement("div", { style: { display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 } },
-            react_1.default.createElement("span", null, "Who gains"),
+            react_1.default.createElement("span", null,
+                "Who gains",
+                streak > 1 ? ` · ${streak} in a row` : ''),
             react_1.default.createElement("span", null,
                 ticks,
                 "s \u00B7 ",
@@ -67163,9 +67471,10 @@ function RelationGame({ game, round, onScore = null }) {
             "Six relationships named in ",
             ticks,
             " seconds. Tap the round arrow for more.") : (react_1.default.createElement("div", { style: { textAlign: 'center' } },
-            react_1.default.createElement("div", { style: { background: '#fff', border: `1.5px solid ${B.line}`, borderRadius: 12, padding: '14px 12px', marginBottom: 10, fontSize: 17, fontWeight: 600, color: B.ink } }, q.line),
+            react_1.default.createElement(DragCard, { onDrop: pick, off: got || done },
+                react_1.default.createElement("div", { style: { background: '#fff', border: `1.5px solid ${B.line}`, borderRadius: 12, padding: '14px 12px', marginBottom: 10, fontSize: 17, fontWeight: 600, color: B.ink } }, q.line)),
             react_1.default.createElement("p", { style: { margin: '0 0 10px', fontSize: 15, color: got ? B.green : B.ink, minHeight: 22, fontWeight: got ? 700 : 400 } }, got ? `Yes: ${q.answer}, ${why[q.answer]}.` : 'Which relationship is this?'),
-            react_1.default.createElement("div", { style: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 } }, q.choices.map((v) => react_1.default.createElement("button", { key: v, type: "button", className: `edu-press${nudge === v ? ' edu-wobble' : ''}`, "aria-label": `Relationship: ${v}`, onClick: () => pick(v), style: { fontFamily: FONT, fontSize: 16, fontWeight: 700, padding: '10px 8px', borderRadius: 12, border: `2px solid ${B.green}`, background: '#fff', color: B.ink, cursor: got ? 'default' : 'pointer', textTransform: 'capitalize' } }, v))))),
+            react_1.default.createElement("div", { style: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 } }, q.choices.map((v) => react_1.default.createElement("button", { key: v, type: "button", className: `edu-press${nudge === v ? ' edu-wobble' : ''}`, "data-bin": v, "aria-label": `Relationship: ${v}`, onClick: () => pick(v), style: { fontFamily: FONT, fontSize: 16, fontWeight: 700, padding: '10px 8px', borderRadius: 12, border: `2px solid ${B.green}`, background: '#fff', color: B.ink, cursor: got ? 'default' : 'pointer', textTransform: 'capitalize' } }, v))))),
         react_1.default.createElement(Done, { show: done })));
 }
 // -----------------------------------------------------------------------------------------------------------------
@@ -67461,9 +67770,10 @@ function DealGame({ game, round, onScore = null }) {
     const [got, setGot] = (0, react_1.useState)(false); // true for a moment after a right tap, while the two prices are shown
     const [nudge, setNudge] = (0, react_1.useState)(null); // the label of a wrong tap, so that coupon wobbles
     const [ticks, setTicks] = (0, react_1.useState)(0); // seconds since the round started
-    const [done, setDone] = (0, react_1.useState)(false); // true once all six are judged
+    const [done, setDone] = (0, react_1.useState)(false);
+    const [streak, setStreak] = (0, react_1.useState)(0); // true once all six are judged
     const q = rounds[Math.min(k, rounds.length - 1)];
-    (0, react_1.useEffect)(() => { setK(0); setGot(false); setTicks(0); setDone(false); }, [round]);
+    (0, react_1.useEffect)(() => { setK(0); setGot(false); setTicks(0); setDone(false); setStreak(0); }, [round]);
     (0, react_1.useEffect)(() => { if (done)
         return undefined; const t = setInterval(() => setTicks((n) => n + 1), 1000); return () => clearInterval(t); }, [done]);
     (0, react_1.useEffect)(() => { if (done && onScore)
@@ -67476,10 +67786,14 @@ function DealGame({ game, round, onScore = null }) {
     else
         setK(k + 1); }, 1300); return () => clearTimeout(t); }, [got]);
     const pick = (label) => { if (got || done)
-        return; if (label === q.answer)
+        return; if (label === q.answer) {
         setGot(true);
-    else
-        setNudge(label); };
+        setStreak((n) => n + 1);
+    }
+    else {
+        setNudge(label);
+        setStreak(0);
+    } };
     const pctSaves = dealSaving(q.price, q.pct);
     const coupon = (label, saves, color) => (react_1.default.createElement("button", { key: label, type: "button", className: `edu-press${nudge === label ? ' edu-wobble' : ''}`, "aria-label": `Deal: ${label}`, onClick: () => pick(label), style: { fontFamily: FONT, flex: '1 1 130px', maxWidth: 200, padding: '14px 10px', borderRadius: 14, border: `2px dashed ${color}`, background: got && label === q.answer ? '#EAF6EE' : '#fff', color: B.ink, cursor: got ? 'default' : 'pointer' } },
         react_1.default.createElement("div", { style: { fontSize: 22, fontWeight: 800, color } }, label),
@@ -67490,7 +67804,9 @@ function DealGame({ game, round, onScore = null }) {
             q.price - saves)));
     return (react_1.default.createElement("div", { className: "edu-game-box", style: { ...GAME_BOX, aspectRatio: 'auto', padding: 14 }, "data-deal-answer": done ? '' : q.answer },
         react_1.default.createElement("div", { style: { display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 } },
-            react_1.default.createElement("span", null, "The better deal"),
+            react_1.default.createElement("span", null,
+                "The better deal",
+                streak > 1 ? ` · ${streak} in a row` : ''),
             react_1.default.createElement("span", null,
                 ticks,
                 "s \u00B7 ",
@@ -67637,9 +67953,10 @@ function ToolGame({ game, round, onScore = null }) {
     const [got, setGot] = (0, react_1.useState)(false); // true for a moment after a right tap
     const [nudge, setNudge] = (0, react_1.useState)(null); // the tool of a wrong tap, so that picture wobbles
     const [ticks, setTicks] = (0, react_1.useState)(0); // seconds since the round started
-    const [done, setDone] = (0, react_1.useState)(false); // true once all six jobs are matched
+    const [done, setDone] = (0, react_1.useState)(false);
+    const [streak, setStreak] = (0, react_1.useState)(0); // true once all six jobs are matched
     const q = rounds[Math.min(k, rounds.length - 1)];
-    (0, react_1.useEffect)(() => { setK(0); setGot(false); setTicks(0); setDone(false); }, [round]);
+    (0, react_1.useEffect)(() => { setK(0); setGot(false); setTicks(0); setDone(false); setStreak(0); }, [round]);
     (0, react_1.useEffect)(() => { if (done)
         return undefined; const t = setInterval(() => setTicks((n) => n + 1), 1000); return () => clearInterval(t); }, [done]);
     (0, react_1.useEffect)(() => { if (done && onScore)
@@ -67652,14 +67969,20 @@ function ToolGame({ game, round, onScore = null }) {
     else
         setK(k + 1); }, 1100); return () => clearTimeout(t); }, [got]);
     const pick = (name) => { if (got || done)
-        return; if (name === q.answer)
+        return; if (name === q.answer) {
         setGot(true);
-    else
-        setNudge(name); };
+        setStreak((n) => n + 1);
+    }
+    else {
+        setNudge(name);
+        setStreak(0);
+    } };
     const ask = `Which tool does ${q.job} use?`;
     return (react_1.default.createElement("div", { className: "edu-game-box", style: { ...GAME_BOX, aspectRatio: 'auto', padding: 14 }, "data-tool-answer": done ? '' : q.answer },
         react_1.default.createElement("div", { style: { display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 } },
-            react_1.default.createElement("span", null, "Find the tool"),
+            react_1.default.createElement("span", null,
+                "Find the tool",
+                streak > 1 ? ` · ${streak} in a row` : ''),
             react_1.default.createElement("span", null,
                 ticks,
                 "s \u00B7 ",
@@ -67671,9 +67994,10 @@ function ToolGame({ game, round, onScore = null }) {
             ticks,
             " seconds. Tap the round arrow for more.") : (react_1.default.createElement("div", { style: { textAlign: 'center' } },
             react_1.default.createElement("div", { style: { display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, margin: '4px 0 12px' } },
-                react_1.default.createElement("p", { style: { margin: 0, fontSize: 19, fontWeight: 700, color: got ? B.green : B.ink } }, got ? `Yes: ${q.job} uses a ${q.answer}.` : ask),
+                react_1.default.createElement(DragCard, { onDrop: pick, off: got || done },
+                    react_1.default.createElement("p", { style: { margin: 0, fontSize: 19, fontWeight: 700, color: got ? B.green : B.ink, background: '#fff', border: `1.5px solid ${B.line}`, borderRadius: 12, padding: '6px 12px' } }, got ? `Yes: ${q.job} uses a ${q.answer}.` : ask)),
                 !got && react_1.default.createElement(SpeakButton, { mini: true, text: ask, label: "Hear it" })),
-            react_1.default.createElement("div", { style: { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10 } }, q.choices.map((name) => react_1.default.createElement("button", { key: name, type: "button", className: `edu-press${nudge === name ? ' edu-wobble' : ''}`, "aria-label": `Tool: ${name}`, onClick: () => pick(name), style: { fontFamily: FONT, background: '#fff', border: `2px solid ${got && name === q.answer ? B.green : B.line}`, borderRadius: 14, padding: '10px 4px 8px', cursor: got ? 'default' : 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, color: B.ink, fontSize: 14, fontWeight: 600 } },
+            react_1.default.createElement("div", { style: { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10 } }, q.choices.map((name) => react_1.default.createElement("button", { key: name, type: "button", className: `edu-press${nudge === name ? ' edu-wobble' : ''}`, "data-bin": name, "aria-label": `Tool: ${name}`, onClick: () => pick(name), style: { fontFamily: FONT, background: '#fff', border: `2px solid ${got && name === q.answer ? B.green : B.line}`, borderRadius: 14, padding: '10px 4px 8px', cursor: got ? 'default' : 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, color: B.ink, fontSize: 14, fontWeight: 600 } },
                 react_1.default.createElement(ToolIcon, { name: name }),
                 name))))),
         react_1.default.createElement(Done, { show: done })));
@@ -67690,9 +68014,10 @@ function LedgerGame({ game, round, onScore = null }) {
     const [got, setGot] = (0, react_1.useState)(false); // true for a moment after a right tap
     const [nudge, setNudge] = (0, react_1.useState)(null); // the side of a wrong tap, so that button wobbles
     const [ticks, setTicks] = (0, react_1.useState)(0); // seconds since the round started
-    const [done, setDone] = (0, react_1.useState)(false); // true once all six are placed
+    const [done, setDone] = (0, react_1.useState)(false);
+    const [streak, setStreak] = (0, react_1.useState)(0); // true once all six are placed
     const q = rounds[Math.min(k, rounds.length - 1)];
-    (0, react_1.useEffect)(() => { setK(0); setGot(false); setTicks(0); setDone(false); }, [round]);
+    (0, react_1.useEffect)(() => { setK(0); setGot(false); setTicks(0); setDone(false); setStreak(0); }, [round]);
     (0, react_1.useEffect)(() => { if (done)
         return undefined; const t = setInterval(() => setTicks((n) => n + 1), 1000); return () => clearInterval(t); }, [done]);
     (0, react_1.useEffect)(() => { if (done && onScore)
@@ -67705,14 +68030,20 @@ function LedgerGame({ game, round, onScore = null }) {
     else
         setK(k + 1); }, 1100); return () => clearTimeout(t); }, [got]);
     const pick = (side) => { if (got || done)
-        return; if (side === q.answer)
+        return; if (side === q.answer) {
         setGot(true);
-    else
-        setNudge(side); };
+        setStreak((n) => n + 1);
+    }
+    else {
+        setNudge(side);
+        setStreak(0);
+    } };
     const why = { assets: 'something the firm owns, an asset', liabilities: 'something the firm owes, a liability', equity: 'part of the owners\' equity' }[q.answer];
     return (react_1.default.createElement("div", { className: "edu-game-box", style: { ...GAME_BOX, aspectRatio: 'auto', padding: 14 }, "data-ledger-answer": done ? '' : q.answer },
         react_1.default.createElement("div", { style: { display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 } },
-            react_1.default.createElement("span", null, "Sort the ledger"),
+            react_1.default.createElement("span", null,
+                "Sort the ledger",
+                streak > 1 ? ` · ${streak} in a row` : ''),
             react_1.default.createElement("span", null,
                 ticks,
                 "s \u00B7 ",
@@ -67724,9 +68055,10 @@ function LedgerGame({ game, round, onScore = null }) {
             ticks,
             " seconds. Tap the round arrow for more.") : (react_1.default.createElement("div", { style: { textAlign: 'center' } },
             react_1.default.createElement("p", { style: { margin: '0 0 8px', fontSize: 14, color: B.muted, fontWeight: 600 } }, "Assets = Liabilities + Equity"),
-            react_1.default.createElement("div", { style: { background: '#fff', border: `1.5px solid ${B.line}`, borderRadius: 12, padding: '14px 12px', marginBottom: 8, fontSize: 20, fontWeight: 700, color: B.ink } }, q.item),
+            react_1.default.createElement(DragCard, { onDrop: pick, off: got || done },
+                react_1.default.createElement("div", { style: { background: '#fff', border: `1.5px solid ${B.line}`, borderRadius: 12, padding: '14px 12px', marginBottom: 8, fontSize: 20, fontWeight: 700, color: B.ink } }, q.item)),
             react_1.default.createElement("p", { style: { margin: '0 0 10px', fontSize: 15, color: got ? B.green : B.ink, minHeight: 22, fontWeight: got ? 700 : 400 } }, got ? `Yes: ${q.item} is ${why}.` : 'Where does it go on the balance sheet?'),
-            react_1.default.createElement("div", { style: { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8 } }, LEDGER_SIDES.map((side) => react_1.default.createElement("button", { key: side, type: "button", className: `edu-press${nudge === side ? ' edu-wobble' : ''}`, "aria-label": `Side: ${side}`, onClick: () => pick(side), style: { fontFamily: FONT, fontSize: 15, fontWeight: 700, padding: '12px 4px', borderRadius: 12, border: `2px solid ${got && side === q.answer ? B.green : B.line}`, background: '#fff', color: B.ink, cursor: got ? 'default' : 'pointer', textTransform: 'capitalize' } }, side))))),
+            react_1.default.createElement("div", { style: { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8 } }, LEDGER_SIDES.map((side) => react_1.default.createElement("button", { key: side, type: "button", className: `edu-press${nudge === side ? ' edu-wobble' : ''}`, "data-bin": side, "aria-label": `Side: ${side}`, onClick: () => pick(side), style: { fontFamily: FONT, fontSize: 15, fontWeight: 700, padding: '12px 4px', borderRadius: 12, border: `2px solid ${got && side === q.answer ? B.green : B.line}`, background: '#fff', color: B.ink, cursor: got ? 'default' : 'pointer', textTransform: 'capitalize' } }, side))))),
         react_1.default.createElement(Done, { show: done })));
 }
 // -----------------------------------------------------------------------------------------------------------------
@@ -67742,9 +68074,10 @@ function LabelGame({ game, round, onScore = null }) {
     const [got, setGot] = (0, react_1.useState)(false); // true for a moment after a right tap
     const [nudge, setNudge] = (0, react_1.useState)(null); // the label of a wrong tap, so that card wobbles
     const [ticks, setTicks] = (0, react_1.useState)(0); // seconds since the round started
-    const [done, setDone] = (0, react_1.useState)(false); // true once all six are read
+    const [done, setDone] = (0, react_1.useState)(false);
+    const [streak, setStreak] = (0, react_1.useState)(0); // true once all six are read
     const q = rounds[Math.min(k, rounds.length - 1)];
-    (0, react_1.useEffect)(() => { setK(0); setGot(false); setTicks(0); setDone(false); }, [round]);
+    (0, react_1.useEffect)(() => { setK(0); setGot(false); setTicks(0); setDone(false); setStreak(0); }, [round]);
     (0, react_1.useEffect)(() => { if (done)
         return undefined; const t = setInterval(() => setTicks((n) => n + 1), 1000); return () => clearInterval(t); }, [done]);
     (0, react_1.useEffect)(() => { if (done && onScore)
@@ -67757,10 +68090,14 @@ function LabelGame({ game, round, onScore = null }) {
     else
         setK(k + 1); }, 1400); return () => clearTimeout(t); }, [got]);
     const pick = (side) => { if (got || done)
-        return; if (side === q.answer)
+        return; if (side === q.answer) {
         setGot(true);
-    else
-        setNudge(side); };
+        setStreak((n) => n + 1);
+    }
+    else {
+        setNudge(side);
+        setStreak(0);
+    } };
     const name = q.food.charAt(0).toUpperCase() + q.food.slice(1);
     const ask = `Which ${q.food} has ${q.goal} ${q.nutrient} per serving?`;
     const rows = [['sodium', 'Sodium', 'mg'], ['added sugars', 'Added sugars', 'g'], ['fiber', 'Fiber', 'g']];
@@ -67778,7 +68115,9 @@ function LabelGame({ game, round, onScore = null }) {
                 unit)))));
     return (react_1.default.createElement("div", { className: "edu-game-box", style: { ...GAME_BOX, aspectRatio: 'auto', padding: 14 }, "data-label-answer": done ? '' : q.answer },
         react_1.default.createElement("div", { style: { display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 } },
-            react_1.default.createElement("span", null, "Read the label"),
+            react_1.default.createElement("span", null,
+                "Read the label",
+                streak > 1 ? ` · ${streak} in a row` : ''),
             react_1.default.createElement("span", null,
                 ticks,
                 "s \u00B7 ",
@@ -67857,8 +68196,9 @@ function GreenRedGame({ game, round, onScore = null }) {
     const [nudge, setNudge] = (0, react_1.useState)(null); // the flag of a wrong tap, so that button wobbles
     const [ticks, setTicks] = (0, react_1.useState)(0); // seconds since the round started
     const [done, setDone] = (0, react_1.useState)(false); // true once all eight are sorted
+    const [streak, setStreak] = (0, react_1.useState)(0); // right answers in a row
     const q = rounds[Math.min(k, rounds.length - 1)];
-    (0, react_1.useEffect)(() => { setK(0); setGot(false); setTicks(0); setDone(false); }, [round]);
+    (0, react_1.useEffect)(() => { setK(0); setGot(false); setTicks(0); setDone(false); setStreak(0); }, [round]);
     (0, react_1.useEffect)(() => { if (done)
         return undefined; const t = setInterval(() => setTicks((n) => n + 1), 1000); return () => clearInterval(t); }, [done]);
     (0, react_1.useEffect)(() => { if (done && onScore)
@@ -67871,15 +68211,21 @@ function GreenRedGame({ game, round, onScore = null }) {
     else
         setK(k + 1); }, 1100); return () => clearTimeout(t); }, [got]);
     const pick = (flag) => { if (got || done)
-        return; if (flag === q.answer)
+        return; if (flag === q.answer) {
         setGot(true);
-    else
-        setNudge(flag); };
+        setStreak((n) => n + 1);
+    }
+    else {
+        setNudge(flag);
+        setStreak(0);
+    } };
     const why = q.answer === 'green' ? 'a green flag, a sign of a healthy relationship' : 'a red flag, a warning sign';
-    const flags = [['green', 'Green flag', B.green], ['red', 'Red flag', B.clay]];
+    const flags = [['red', '← Red flag', B.clay], ['green', 'Green flag →', B.green]]; // red on the left and green on the right, the way the card flicks
     return (react_1.default.createElement("div", { className: "edu-game-box", style: { ...GAME_BOX, aspectRatio: 'auto', padding: 14 }, "data-greenred-answer": done ? '' : q.answer },
         react_1.default.createElement("div", { style: { display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 } },
-            react_1.default.createElement("span", null, "Green flag or red flag"),
+            react_1.default.createElement("span", null,
+                "Green flag or red flag",
+                streak > 1 ? ` · ${streak} in a row` : ''),
             react_1.default.createElement("span", null,
                 ticks,
                 "s \u00B7 ",
@@ -67891,7 +68237,8 @@ function GreenRedGame({ game, round, onScore = null }) {
             ticks,
             " seconds. Tap the round arrow for more.") : (react_1.default.createElement("div", { style: { textAlign: 'center' } },
             react_1.default.createElement("p", { style: { margin: '0 0 8px', fontSize: 14, color: B.muted } }, "Someone who..."),
-            react_1.default.createElement("div", { style: { background: '#fff', border: `1.5px solid ${B.line}`, borderRadius: 12, padding: '16px 12px', marginBottom: 8, fontSize: 19, fontWeight: 700, color: B.ink } }, q.behavior),
+            react_1.default.createElement(SwipeCard, { left: ['red', 'Red flag', B.clay], right: ['green', 'Green flag', B.green], onPick: pick, off: got || done },
+                react_1.default.createElement("div", { style: { background: '#fff', border: `1.5px solid ${B.line}`, borderRadius: 12, padding: '16px 12px', marginBottom: 8, fontSize: 19, fontWeight: 700, color: B.ink } }, q.behavior)),
             react_1.default.createElement("p", { style: { margin: '0 0 10px', fontSize: 15, color: got ? B.green : B.ink, minHeight: 22, fontWeight: got ? 700 : 400 } }, got ? `Yes: that is ${why}.` : 'Healthy, or a warning sign?'),
             react_1.default.createElement("div", { style: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 } }, flags.map(([flag, label, ink]) => react_1.default.createElement("button", { key: flag, type: "button", className: `edu-press${nudge === flag ? ' edu-wobble' : ''}`, "aria-label": `Flag: ${flag}`, onClick: () => pick(flag), style: { fontFamily: FONT, fontSize: 16, fontWeight: 700, padding: '12px 6px', borderRadius: 12, border: `2px solid ${ink}`, background: '#fff', color: B.ink, cursor: got ? 'default' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 } },
                 react_1.default.createElement("span", { "aria-hidden": "true", style: { width: 14, height: 14, borderRadius: 3, background: ink, display: 'inline-block' } }),
@@ -67910,9 +68257,10 @@ function MythFactGame({ game, round, onScore = null }) {
     const [got, setGot] = (0, react_1.useState)(false); // true for a moment after a right tap
     const [nudge, setNudge] = (0, react_1.useState)(null); // the wrong answer tapped, so its button wobbles
     const [misses, setMisses] = (0, react_1.useState)(0); // wrong taps this round
+    const [streak, setStreak] = (0, react_1.useState)(0); // right answers in a row
     const [done, setDone] = (0, react_1.useState)(false); // true once all six are answered
     const q = rounds[Math.min(k, rounds.length - 1)];
-    (0, react_1.useEffect)(() => { setK(0); setGot(false); setMisses(0); setDone(false); }, [round]);
+    (0, react_1.useEffect)(() => { setK(0); setGot(false); setMisses(0); setDone(false); setStreak(0); }, [round]);
     (0, react_1.useEffect)(() => { if (done && onScore)
         onScore(misses, 'low'); }, [done]);
     (0, react_1.useEffect)(() => { if (nudge === null)
@@ -67923,15 +68271,20 @@ function MythFactGame({ game, round, onScore = null }) {
     else
         setK(k + 1); }, 1300); return () => clearTimeout(t); }, [got]);
     const pick = (ans) => { if (got || done)
-        return; if (ans === q.answer)
+        return; if (ans === q.answer) {
         setGot(true);
+        setStreak((n) => n + 1);
+    }
     else {
         setNudge(ans);
         setMisses((n) => n + 1);
+        setStreak(0);
     } };
     return (react_1.default.createElement("div", { className: "edu-game-box", style: { ...GAME_BOX, aspectRatio: 'auto', padding: 14 }, "data-myth-answer": done ? '' : q.answer },
         react_1.default.createElement("div", { style: { display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 } },
-            react_1.default.createElement("span", null, "Myth or fact"),
+            react_1.default.createElement("span", null,
+                "Myth or fact",
+                streak > 1 ? ` · ${streak} in a row` : ''),
             react_1.default.createElement("span", null,
                 Math.min(k + 1, rounds.length),
                 " of ",
@@ -67940,12 +68293,13 @@ function MythFactGame({ game, round, onScore = null }) {
             "Six statements sorted",
             misses ? `, with ${misses} to look at again` : ', every one right',
             ". Tap the round arrow for more.") : (react_1.default.createElement("div", { style: { textAlign: 'center' } },
-            react_1.default.createElement("div", { style: { background: '#fff', border: `1.5px solid ${B.line}`, borderRadius: 12, padding: '16px 12px', marginBottom: 10, fontSize: 18, fontWeight: 700, color: B.ink, lineHeight: 1.4 } }, q.text),
+            react_1.default.createElement(SwipeCard, { left: ['myth', 'Myth', B.clay], right: ['fact', 'Fact', B.green], onPick: pick, off: got || done },
+                react_1.default.createElement("div", { style: { background: '#fff', border: `1.5px solid ${B.line}`, borderRadius: 12, padding: '16px 12px', marginBottom: 10, fontSize: 18, fontWeight: 700, color: B.ink, lineHeight: 1.4 } }, q.text)),
             react_1.default.createElement("p", { style: { margin: '0 0 10px', fontSize: 15, minHeight: 22, color: got ? B.green : nudge ? B.clay : B.ink, fontWeight: got ? 700 : 400 } }, got || nudge ? `${q.answer === 'myth' ? 'Myth' : 'Fact'}: ${q.why}` : 'Is it a myth or a fact?'),
-            react_1.default.createElement("div", { style: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 } }, ['myth', 'fact'].map((ans) => react_1.default.createElement("button", { key: ans, type: "button", className: `edu-press${nudge === ans ? ' edu-wobble' : ''}`, "aria-label": `Answer: ${ans}`, onClick: () => pick(ans), style: { fontFamily: FONT, fontSize: 17, fontWeight: 700, padding: '12px 4px', borderRadius: 12, border: `2px solid ${got && ans === q.answer ? B.green : B.line}`, background: '#fff', color: B.ink, cursor: got ? 'default' : 'pointer', textTransform: 'capitalize' } }, ans))))),
+            react_1.default.createElement("div", { style: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 } }, ['myth', 'fact'].map((ans) => react_1.default.createElement("button", { key: ans, type: "button", className: `edu-press${nudge === ans ? ' edu-wobble' : ''}`, "aria-label": `Answer: ${ans}`, onClick: () => pick(ans), style: { fontFamily: FONT, fontSize: 17, fontWeight: 700, padding: '12px 4px', borderRadius: 12, border: `2px solid ${got && ans === q.answer ? B.green : B.line}`, background: '#fff', color: B.ink, cursor: got ? 'default' : 'pointer', textTransform: 'capitalize' } }, ans === 'myth' ? '← Myth' : 'Fact →'))))),
         react_1.default.createElement(Done, { show: done })));
 }
-const GAME_OF = { dots: DotsGame, pairs: PairsGame, sort: SortGame, maze: MazeGame, jigsaw: JigsawGame, pong: PongGame, sprint: SprintGame, order: OrderGame, build: BuildGame, fix: FixGame, mix: MixGame, debug: DebugGame, ptable: PtableGame, evidence: EvidenceGame, catch: CatchGame, path: PathGame, buckets: BucketsGame, jump: JumpGame, map: MapGame, balance: BalanceGame, walk: WalkGame, teach: TeachGame, bits: BitsGame, pay: PayGame, price: PriceGame, loan: LoanGame, fund: FundGame, search: SearchGame, spot: SpotGame, pattern: PatternGame, shape: ShapeGame, chord: ChordGame, valid: ValidGame, reason: ReasonGame, because: BecauseGame, share: ShareGame, stat: StatGame, recall: RecallGame, face: FaceGame, sense: SenseGame, filler: FillerGame, room: RoomGame, ask: AskGame, turn: TurnGame, jar: JarGame, relation: RelationGame, sprout: SproutGame, grow: GrowGame, breakeven: BreakEvenGame, deal: DealGame, savejar: SaveJarGame, tool: ToolGame, ledger: LedgerGame, label: LabelGame, cpr: CprGame, greenred: GreenRedGame, mythfact: MythFactGame };
+const GAME_OF = { ship: ShipGame, dots: DotsGame, pairs: PairsGame, sort: SortGame, maze: MazeGame, jigsaw: JigsawGame, pong: PongGame, sprint: SprintGame, order: OrderGame, build: BuildGame, fix: FixGame, mix: MixGame, debug: DebugGame, ptable: PtableGame, evidence: EvidenceGame, catch: CatchGame, path: PathGame, buckets: BucketsGame, jump: JumpGame, map: MapGame, balance: BalanceGame, walk: WalkGame, teach: TeachGame, bits: BitsGame, pay: PayGame, price: PriceGame, loan: LoanGame, fund: FundGame, search: SearchGame, spot: SpotGame, pattern: PatternGame, shape: ShapeGame, chord: ChordGame, valid: ValidGame, reason: ReasonGame, because: BecauseGame, share: ShareGame, stat: StatGame, recall: RecallGame, face: FaceGame, sense: SenseGame, filler: FillerGame, room: RoomGame, ask: AskGame, turn: TurnGame, jar: JarGame, relation: RelationGame, sprout: SproutGame, grow: GrowGame, breakeven: BreakEvenGame, deal: DealGame, savejar: SaveJarGame, tool: ToolGame, ledger: LedgerGame, label: LabelGame, cpr: CprGame, greenred: GreenRedGame, mythfact: MythFactGame };
 // How to play, in a line or two, by kind of game (and by deck for the matching games).
 function gameInstructions(game) {
     if (game.kind === 'bits')
@@ -67957,7 +68311,7 @@ function gameInstructions(game) {
     if (game.kind === 'fund')
         return 'A first year on your own, one month a tap. Income comes in, the bills go out, and you choose how much of the 500 that is left goes into your emergency fund; the rest is spent. Some months bring a surprise bill: the fund pays what it can and the rest is borrowed at 2 percent a month. The score is the fund minus the loan after twelve months, higher is better.';
     if (game.kind === 'valid')
-        return 'An argument in three lines: if this then that, a second line, and a conclusion. Ask whether the form guarantees the conclusion when the premises are true, however true the sentences sound, and tap Valid or Not valid. The right answer names the form. Six arguments a round, and the clock counts up.';
+        return 'An argument in three lines: if this then that, a second line, and a conclusion. Ask whether the form guarantees the conclusion when the premises are true, however true the sentences sound, and tap Valid or Not valid. The right answer names the form. Six arguments a round, and the clock counts up. Flick the card left or right, tap a button, or press an arrow key.';
     if (game.kind === 'stat')
         return 'Five quiz scores and one average to find: the mean, the median or the mode. Add and divide, or order and take the middle, or find the score that repeats, and tap the number. Six rounds, and the clock counts up.';
     if (game.kind === 'savejar')
@@ -67965,17 +68319,17 @@ function gameInstructions(game) {
     if (game.kind === 'breakeven')
         return 'A small business with its fixed costs for a month, the price of one item and what each costs to make. The chart draws the revenue line and the total-cost line; tap how many it must sell to break even, where the lines cross. Six businesses, and the clock counts up.';
     if (game.kind === 'tool')
-        return 'A job is named, and three tools appear. Tap the tool that worker uses. Six jobs, and the clock counts up.';
+        return 'A job is named, and three tools appear. Tap the tool that worker uses. Six jobs, and the clock counts up. Drag the question onto its tool, tap the tool, or press its number.';
     if (game.kind === 'ledger')
-        return 'An account appears, and you place it on the balance sheet: assets, liabilities or equity. Six accounts, and the clock counts up.';
+        return 'An account appears, and you place it on the balance sheet: assets, liabilities or equity. Six accounts, and the clock counts up. Drag the card onto its box, tap the box, or press its number.';
     if (game.kind === 'label')
         return 'Two labels for the same kind of food. Read the row the question asks about, sodium, added sugars or fiber, and tap the better label. Six pairs, and the clock counts up.';
     if (game.kind === 'cpr')
         return 'Tap Push at the pace of chest compressions, 100 to 120 a minute, with the ring as your guide. After fifteen pushes the game tells you whether you were too slow, just right or too fast.';
     if (game.kind === 'mythfact')
-        return 'A statement appears, and you decide: myth or fact. Each answer shows the reason, so every card teaches. Six statements a round.';
+        return 'A statement appears, and you decide: myth or fact. Each answer shows the reason, so every card teaches. Six statements a round. Flick the card left or right, tap a button, or press an arrow key.';
     if (game.kind === 'greenred')
-        return 'A behavior appears, and you decide: a green flag of a healthy relationship, or a red flag, a warning sign. Eight behaviors, and the clock counts up.';
+        return 'A behavior appears, and you decide: a green flag of a healthy relationship, or a red flag, a warning sign. Eight behaviors, and the clock counts up. Flick the card left or right, tap a button, or press an arrow key.';
     if (game.kind === 'deal')
         return 'An item with a price tag and two coupons, a percent off and a number of dollars off. Work out what each one saves and tap the coupon that saves more. Six items, and the clock counts up.';
     if (game.kind === 'grow')
@@ -67983,7 +68337,7 @@ function gameInstructions(game) {
     if (game.kind === 'sprout')
         return 'A bean seed in a cup and four facts about it: water, air, warmth and light. Decide whether it sprouts. A bean needs water, air and warmth, and light can wait until the shoot is up. Six seeds, and the clock counts up.';
     if (game.kind === 'relation')
-        return 'A line about two living things on a farm and four names: mutualism, parasitism, commensalism, predation. Tap the one that fits. Six cases, and the clock counts up.';
+        return 'A line about two living things on a farm and four names: mutualism, parasitism, commensalism, predation. Tap the one that fits. Six cases, and the clock counts up. Drag the card onto its box, tap the box, or press its number.';
     if (game.kind === 'jar')
         return 'A jar of soil and water has settled: sand at the bottom, silt in the middle, clay on top, drawn to the true percentages. Tap the texture the layers show: sandy at seventy percent sand or more, clay at forty percent clay or more, loam for the balance. Six jars, and the clock counts up.';
     if (game.kind === 'turn')
@@ -67991,15 +68345,15 @@ function gameInstructions(game) {
     if (game.kind === 'ask')
         return 'Something a friend said and four questions. Tap the question that is about what they said; a question about you wobbles. Six a round, and the clock counts up.';
     if (game.kind === 'room')
-        return 'A line somebody said and four rooms: friends, class, a job interview, a text to a grandparent. Tap the room the line fits. Six lines a round, and the clock counts up.';
+        return 'A line somebody said and four rooms: friends, class, a job interview, a text to a grandparent. Tap the room the line fits. Six lines a round, and the clock counts up. Drag the card onto its box, tap the box, or press its number.';
     if (game.kind === 'filler')
         return 'A line from a talk with filler words dropped into it: um, like, you know and their cousins. Tap every filler to strike it out; a real word wobbles. When the line is clean it reads itself back and the next comes. Five lines, and the clock counts up.';
     if (game.kind === 'face')
-        return 'A face and four feeling words. Read the eyebrows, the eyes and the mouth, and tap the word for what the face is feeling. Six faces a round, every feeling once, and the clock counts up.';
+        return 'A face and four feeling words. Read the eyebrows, the eyes and the mouth, and tap the word for what the face is feeling. Six faces a round, every feeling once, and the clock counts up. Drag the face onto its feeling, tap the word, or press its number.';
     if (game.kind === 'recall')
         return 'Five words appear for four seconds and then hide. Hold them in mind, then tap the one of four that was on the list. Five lists, and the clock counts up.';
     if (game.kind === 'reason')
-        return 'A claim and a reason. Ask whether the reason bears on the claim at all, because a reason can be true and still have nothing to do with it, and tap Supports it or Does not. Six pairs a round, and the clock counts up.';
+        return 'A claim and a reason. Ask whether the reason bears on the claim at all, because a reason can be true and still have nothing to do with it, and tap Supports it or Does not. Six pairs a round, and the clock counts up. Flick the card left or right, tap a button, or press an arrow key.';
     if (game.kind === 'because')
         return 'A claim and four becauses. Two are real reasons, about the thing and true; two are a headcount, an order, a wish, or something true about the wrong thing. Tap the real ones; a fake one wobbles. Five claims a round, and the clock counts up.';
     if (game.kind === 'search')
@@ -68013,7 +68367,7 @@ function gameInstructions(game) {
     if (game.kind === 'share')
         return 'A pile of cookies and two or three plates, and one fair rule: the same on every plate. Tap a plate to put a cookie on it, or tap it again to take one back, until the pile is empty and every plate matches, then tap Check. Four rounds, and the clock counts up.';
     if (game.kind === 'sense')
-        return 'A thing you might meet, said out loud, and five senses: eyes, ears, nose, tongue and hand. Tap the sense that tells you about it. Five things a round, one for each sense, and the clock counts up.';
+        return 'A thing you might meet, said out loud, and five senses: eyes, ears, nose, tongue and hand. Tap the sense that tells you about it. Five things a round, one for each sense, and the clock counts up. Drag the card onto its box, tap the box, or press its number.';
     if (game.kind === 'pattern')
         return 'A row of pieces repeats in a form, AB, ABA or abac, and then cuts off. Tap the piece that comes next from the three below; the right one fills the row and a wrong one wobbles. Five rounds, and the clock counts up.';
     if (game.kind === 'shape')
@@ -68047,6 +68401,8 @@ function gameInstructions(game) {
     if (game.rule && ruleDeck(game.rule)) {
         const { a, b } = ruleDeck(game.rule);
         const low = (t) => t.charAt(0).toLowerCase() + t.slice(1);
+        if (game.kind === 'ship')
+            return `Tap where you want the ship to go: it glides there and fires straight up. Hit the ${low(a.label)}; hitting one of the ${low(b.label)} costs a point. On a keyboard, the arrow keys move the ship and the space bar fires.`;
         if (game.kind === 'catch')
             return `Slide the basket to catch the ${low(a.label)} and let the ${low(b.label)} fall past. A right catch is a point; a wrong one costs a point.`;
         if (game.kind === 'path')
@@ -68356,6 +68712,13 @@ function GameThumb({ kind, game = null }) {
             react_1.default.createElement("path", { d: "M9 12q6-4 10 1t-2 8q-8 2-8-9z", fill: "#F1E8CF", stroke: k, strokeWidth: "1" }),
             react_1.default.createElement("path", { d: "M24 16q8-4 9 3t-6 7q-5-1-3-10z", fill: C.greenSoft, stroke: k, strokeWidth: "1" }),
             react_1.default.createElement("path", { d: "M27 21 L24.5 15 A3 3 0 1 1 29.5 15 Z", fill: C.gold, stroke: k, strokeWidth: "0.8" }));
+    if (game && game.kind === 'ship')
+        return react_1.default.createElement("svg", { viewBox: "0 0 40 40", width: "44", height: "44", "aria-hidden": "true" },
+            react_1.default.createElement("rect", { x: "4", y: "4", width: "32", height: "32", rx: "6", fill: "#1E2A3A" }),
+            react_1.default.createElement("circle", { cx: "11", cy: "11", r: "1", fill: "#DDE6F0" }),
+            react_1.default.createElement("circle", { cx: "29", cy: "14", r: "1", fill: "#DDE6F0" }),
+            react_1.default.createElement("rect", { x: "19", y: "9", width: "2", height: "6", rx: "1", fill: C.gold }),
+            react_1.default.createElement("path", { d: "M20 19l7 13-7-3-7 3z", fill: C.gold, stroke: "#F2F5F8", strokeWidth: "1", strokeLinejoin: "round" }));
     if (game && game.kind === 'catch')
         return react_1.default.createElement("svg", { viewBox: "0 0 40 40", width: "44", height: "44", "aria-hidden": "true" },
             react_1.default.createElement("circle", { cx: "17", cy: "11", r: "3.5", fill: C.gold, stroke: k, strokeWidth: "1" }),
@@ -71411,7 +71774,7 @@ function EduSphereScreens() {
                     const enrolled = new Set(visibleCourses.map((c) => c.id));
                     const mapArt = typeof window !== 'undefined' && Array.isArray(window.__eduMapArt) ? window.__eduMapArt : [];
                     const listed = gamesFor(top).filter((g) => (youngLearner || g.deck || g.kind === 'pong' || g.kind === 'sprint' || g.kind === 'order' || ((g.rule || g.jump || g.map || g.balance) && !g.young)) && (record.preview || STARTER_GAMES.includes(g.id) || enrolled.has(gameCourse(g.id))) && (!g.map || record.preview || mapArt.includes((mapFor(g.map) || {}).art)) && (g.kind !== 'sprint' || sprintPool(visibleModules, g).length > 0));
-                    const games = youngLearner ? listed : spreadKinds(listed); // older lists take turns between kinds (2026-09-23, Mikey)
+                    const games = funFirst(youngLearner ? listed : spreadKinds(listed)); // older lists take turns between kinds (2026-09-23, Mikey); the most playful leads and opens first (2026-10-02, Mikey)
                     if (!games.length)
                         return null;
                     // A game opens when its course is finished (2026-09-24, Mikey): each course has its own, so finishing one always brings

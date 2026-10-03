@@ -806,6 +806,8 @@ ok('reset: history kept, but nothing counts as mastered afterwards', events.leng
   const almost = exhausted.filter((e) => !(e.type === 'wonder_answered' && e.wonderId === earlyIds[0] && e === log.filter((x) => x.wonderId === earlyIds[0])[1]));
   ok('a question answered only once is still offered before any repeats', L.nextWonder(almost, 'counting-k', allApproved) !== null && L.nextWonder(almost, 'counting-k', allApproved).id === earlyIds[0]);
   ok('every Wonder question has four perspectives and a closing question', L.WONDER.every((w) => w.perspectives.length === 4 && w.closing.includes('?')));
+  ok('the game that opens first is a playful one: Pong leads a list of decks and quick fires', (() => { const deck = { id: 'a', kind: 'pairs' }, quick = { id: 'b', kind: 'sprint' }, pong = { id: 'c', kind: 'pong' }; const out = L.funFirst([deck, quick, pong]); return out[0] === pong && out.length === 3 && out[1] === deck && out[2] === quick; })());
+  ok('a list with nothing playful keeps its order', (() => { const a = { id: 'a', kind: 'pairs' }, b = { id: 'b', kind: 'evidence' }; const out = L.funFirst([a, b]); return out[0] === a && out[1] === b; })());
   ok('every perspective is written in complete sentences, not fragments', L.WONDER.every((w) => w.perspectives.every((p) => p.says.split('. ').every((sentence) => sentence.trim().split(/\s+/).length >= 5))));
   ok('no perspective uses an em dash', L.WONDER.every((w) => w.perspectives.every((p) => !p.says.includes('\u2014'))));
   ok('pick-mode Wonder questions offer options', L.WONDER.filter((w) => w.answerMode === 'pick').every((w) => Array.isArray(w.options) && w.options.length >= 2));
@@ -1369,7 +1371,7 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
   // Rule decks (2026-09-23): two named groups, nothing in both, every word short enough for a chip, and every rule game names one.
   const deckBad = Object.entries(L.RULE_DECKS).flatMap(([id, d]) => [...(d.a.items.length < 4 || d.b.items.length < 4 ? [`${id} is short`] : []), ...d.a.items.filter((x) => d.b.items.includes(x)).map((x) => `${id} has ${x} in both`), ...[...d.a.items, ...d.b.items].filter((x) => !/^shape:/.test(x) && x.length > 11).map((x) => `${id}: ${x} is too long`)]);
   ok('every rule deck has two clean groups of short chips', deckBad.length === 0, deckBad.join(', '));
-  ok('every rule game names a rule deck and the kinds are catch, path or buckets', L.GAMES.filter((g) => g.rule).every((g) => L.RULE_DECKS[g.rule] && ['catch', 'path', 'buckets'].includes(g.kind)));
+  ok('every rule game names a rule deck and the kinds are catch, path, buckets or ship', L.GAMES.filter((g) => g.rule).every((g) => L.RULE_DECKS[g.rule] && ['catch', 'path', 'buckets', 'ship'].includes(g.kind)));
   ok('older lists take a rule, jump or map game only when it is not for the youngest', L.GAMES.filter((g) => (g.jump || g.map || g.balance) && !g.young).every((g) => L.GRADES.indexOf(g.minGrade) >= L.GRADES.indexOf('3')));
   ok('the older list holds at least ten kinds of game', new Set(older.map((g) => g.kind)).size >= 10, [...new Set(older.map((g) => g.kind))].join(','));
   // Frog jumps (2026-09-23): every deck's questions land on a tick of its own line, over many seeds.
@@ -1409,7 +1411,7 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
   const twoOfAKind = L.COURSES.filter((c) => new Set(L.COURSE_GAMES[c.id].map(kindOf)).size < L.COURSE_GAMES[c.id].length).length;
   ok('no course holds two games of one kind (the element pairs left physics for the periodic table, 2026-09-25)', twoOfAKind === 0, `${twoOfAKind}`);
   let repeats = 0; for (const gr of L.GRADES) { const ks = L.COURSES.filter((c) => c.grade === gr).flatMap((c) => L.COURSE_GAMES[c.id].map(kindOf)); repeats += ks.length - new Set(ks).size; }
-  ok('kinds repeated inside a grade stay at or under 9 (new kinds, timelines, the periodic table and find the evidence, 2026-09-25)', repeats <= 9, `${repeats}`);
+  ok('kinds repeated inside a grade stay at or under 10 (new kinds, timelines, the periodic table and find the evidence, 2026-09-25; world capitals in world geography, 2026-10-02)', repeats <= 10, `${repeats}`);
   const list = L.GAMES.filter((g) => ['counting-k', 'letters-k'].includes(L.gameCourse(g.id)) || L.STARTER_GAMES.includes(g.id));
   const fresh = L.unlockedGameIds([], list);
   ok('a new student has the starter and the first game open, and nothing from an unfinished course', fresh.size === new Set([...L.STARTER_GAMES, list[0].id]).size && list.slice(1).every((g) => L.STARTER_GAMES.includes(g.id) || !fresh.has(g.id)));

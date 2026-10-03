@@ -1504,12 +1504,10 @@ export const GAMES = [
   { id: 'jigsaw-4', kind: 'jigsaw', title: 'Puzzle', side: 2 },
   { id: 'dots-boat', kind: 'dots', title: 'Boat', shape: 'boat' },
   { id: 'pairs-more', kind: 'pairs', title: 'More Pairs', pairs: 4 },
-  { id: 'path-circles', kind: 'path', title: 'Step on the Circles', rule: 'circles', young: true, minGrade: 'K' },
   { id: 'sort-color', kind: 'sort', title: 'Red and Blue', by: 'color' },
   { id: 'dots-house', kind: 'dots', title: 'House', shape: 'house' },
   { id: 'maze-big', kind: 'maze', title: 'Big Maze', cells: 9, minGrade: 'K' },
   { id: 'dots-star', kind: 'dots', title: 'Star', shape: 'star' },
-  { id: 'catch-red', kind: 'catch', title: 'Catch the Red Ones', rule: 'red', young: true, minGrade: '1' },
   { id: 'jump-sums', kind: 'jump', title: 'Frog Jumps: Sums', jump: 'sums', young: true, minGrade: '1' },
   { id: 'jigsaw-9', kind: 'jigsaw', title: 'Big Puzzle', side: 3, minGrade: '1' },
   { id: 'pairs-many', kind: 'pairs', title: 'Many Pairs', pairs: 6, minGrade: '1' },
@@ -1518,21 +1516,29 @@ export const GAMES = [
   // with the rule deck and grade it teaches best; see RULE_DECKS.
   { id: 'path-even', kind: 'path', title: 'Step on the even numbers', rule: 'even-odd', minGrade: '3' },
   { id: 'catch-multiples-3', kind: 'catch', title: 'Catch the multiples of 3', rule: 'multiples-3', minGrade: '3' },
-  { id: 'buckets-solid-liquid', kind: 'buckets', title: 'Solid or liquid', rule: 'solid-liquid', minGrade: '3' },
   { id: 'buckets-noun-verb', kind: 'buckets', title: 'Noun or verb', rule: 'noun-verb', minGrade: '3' },
   { id: 'catch-living', kind: 'catch', title: 'Catch the living things', rule: 'living', minGrade: '3' },
   { id: 'path-multiples-4', kind: 'path', title: 'Step on the multiples of 4', rule: 'multiples-4', minGrade: '4' },
   { id: 'buckets-conductors', kind: 'buckets', title: 'Conductor or insulator', rule: 'conductor-insulator', minGrade: '4' },
   { id: 'catch-halves', kind: 'catch', title: 'Catch the halves', rule: 'halves', minGrade: '4' },
   { id: 'buckets-mammals', kind: 'buckets', title: 'Mammal or not', rule: 'mammals', minGrade: '4' },
-  { id: 'path-primes', kind: 'path', title: 'Step on the primes', rule: 'primes', minGrade: '5' },
   { id: 'buckets-adjective-adverb', kind: 'buckets', title: 'Adjective or adverb', rule: 'adjective-adverb', minGrade: '5' },
   { id: 'catch-multiples-7', kind: 'catch', title: 'Catch the multiples of 7', rule: 'multiples-7', minGrade: '5' },
-  { id: 'buckets-element-compound', kind: 'buckets', title: 'Element or compound', rule: 'element-compound', minGrade: '6' },
   { id: 'catch-renewable', kind: 'catch', title: 'Catch the renewable ones', rule: 'renewable', minGrade: '6' },
-  { id: 'buckets-state-country', kind: 'buckets', title: 'State or country', rule: 'state-country', minGrade: '6' },
   { id: 'path-squares', kind: 'path', title: 'Step on the square numbers', rule: 'squares', minGrade: '7' },
-  { id: 'catch-acids', kind: 'catch', title: 'Catch the acids', rule: 'acid-base', minGrade: '10' },
+  { id: 'path-powers-2', kind: 'path', title: 'Step on the powers of 2', rule: 'powers-2', minGrade: '11' },
+  { id: 'catch-primary-sources', kind: 'catch', title: 'Catch the primary sources', rule: 'primary-source', minGrade: 'C' },
+  // The spaceship game (Mikey, 2026-10-02): chips drift down; tap to aim and the ship fires straight up at them.
+  { id: 'ship-even', kind: 'ship', title: 'Space Shooter: Even Numbers', rule: 'even-odd', minGrade: '2' },
+  { id: 'ship-gases', kind: 'ship', title: 'Space shooter: gases', rule: 'gas-or-not', minGrade: '3' },
+  { id: 'ship-elements', kind: 'ship', title: 'Space shooter: elements', rule: 'element-compound', minGrade: '6' },
+  { id: 'catch-igneous', kind: 'catch', title: 'Catch the igneous rocks', rule: 'igneous-sedimentary', minGrade: '12' },
+  { id: 'buckets-producer-consumer', kind: 'buckets', title: 'Producer or consumer', rule: 'producer-consumer', minGrade: '7' },
+  { id: 'buckets-need-want', kind: 'buckets', title: 'Need or want', rule: 'need-want', minGrade: '12' },
+  { id: 'catch-compound', kind: 'catch', title: 'Catch the Compound Words', rule: 'compound-words', young: true, minGrade: '2' },
+  { id: 'path-goods', kind: 'path', title: 'Step on the Goods', rule: 'goods-services', young: true, minGrade: '1' },
+  { id: 'path-positive-sines', kind: 'path', title: 'Step on the positive sines', rule: 'sine-sign', minGrade: '12' },
+  { id: 'buckets-cell-division', kind: 'buckets', title: 'Mitosis or meiosis', rule: 'mitosis-meiosis', minGrade: '9' },
   // Number line jumps and Where is it? (2026-09-23): a frog dragged to the answer's tick, and a map to tap.
   { id: 'jump-fractions', kind: 'jump', title: 'Frog jumps: fractions', jump: 'fractions', minGrade: '4' },
   { id: 'jump-integers', kind: 'jump', title: 'Frog jumps: negative numbers', jump: 'integers', minGrade: '6' },
@@ -1553,11 +1559,12 @@ export const GAMES = [
   { id: 'balance-expressions', kind: 'balance', title: 'Balance the scale: expressions', balance: 'expressions', minGrade: '6' },
   { id: 'buckets-acid-base', kind: 'buckets', title: 'Acid or base', rule: 'acid-base', minGrade: '10' },
   // Matching pairs for older students: each card's twin says the same thing another way.
-  { id: 'pairs-fractions', kind: 'pairs', title: 'Fraction twins', pairs: 6, minGrade: '3', deck: 'fractions' },
+  { id: 'pairs-fractions', kind: 'pairs', title: 'Fraction twins', pairs: 5, minGrade: '3', deck: 'fractions' },
   { id: 'pairs-vocabulary', kind: 'pairs', title: 'Word meanings', pairs: 6, minGrade: '4', deck: 'vocabulary' },
   { id: 'pairs-capitals', kind: 'pairs', title: 'Capitals', pairs: 6, minGrade: '6', deck: 'capitals' },
+  { id: 'pairs-texas', kind: 'pairs', title: 'Texas pairs', pairs: 6, minGrade: '6', deck: 'texas7' },
   { id: 'pairs-roots', kind: 'pairs', title: 'Word roots', pairs: 6, minGrade: '6', deck: 'roots' },
-  { id: 'pairs-formulas', kind: 'pairs', title: 'Formulas', pairs: 6, minGrade: '9', deck: 'formulas' },
+  { id: 'pairs-formulas', kind: 'pairs', title: 'Statistics words', pairs: 6, minGrade: '9', deck: 'stats' },
   // A review game for every science course from grade 3 up, shown once that course is on a student's list.
   { id: 'pairs-technology', kind: 'pairs', title: 'Computer words', pairs: 6, minGrade: '3', deck: 'technology' },
   { id: 'pairs-health', kind: 'pairs', title: 'Healthy words', pairs: 6, minGrade: '3', deck: 'health' },
@@ -1660,6 +1667,17 @@ export function spreadLeads(items, titleOf) {
   return out;
 }
 export function spreadKinds(games) { return spreadBy(games, (g) => g.kind); }
+// The game open from the first day of a grade is play, not homework (Mikey, 2026-10-02: a flip-card deck on a hard topic is
+// a poor welcome). The list keeps its order, except that the most playful kind on it moves to the front, and the front of
+// the list is the game that opens before any course is finished. Arcade and hands-on kinds come first; reading-heavy
+// decks and quick fires never lead unless nothing else is on the list.
+export const FUN_FIRST = ['pong', 'ship', 'catch', 'jump', 'path', 'maze', 'dots', 'jigsaw', 'walk', 'balance', 'buckets', 'sort', 'map', 'mix', 'grow', 'sprout', 'savejar', 'share', 'pay', 'tool', 'spot', 'sense', 'turn', 'order', 'chord', 'cpr', 'bits', 'debug'];
+export function funFirst(games) {
+  const rank = (g) => { const i = FUN_FIRST.indexOf(g.kind); return i < 0 ? FUN_FIRST.length : i; };
+  if (games.length < 2) return games;
+  let best = 0; for (let i = 1; i < games.length; i++) if (rank(games[i]) < rank(games[best])) best = i;
+  return best === 0 ? games : [games[best], ...games.slice(0, best), ...games.slice(best + 1)];
+}
 // Spread a list so items with the same key take turns (2026-09-23): each key is spread evenly along the list, and when
 // the key due next is the one just placed, another key that is nearly due goes first instead. Used for game kinds and
 // for the course stories' characters, so no character carries several stories in a row.
@@ -1689,23 +1707,32 @@ const isPrime = (n) => n > 1 && numbersWhere((d) => n % d === 0, 2, Math.floor(M
 const shapesOf = (kinds, colors) => kinds.flatMap((k) => colors.map((c) => `shape:${k}:${c}`));
 export const RULE_DECKS = {
   circles: { a: { label: 'Circles', items: shapesOf(['circle'], ['red', 'blue', 'green', 'yellow']) }, b: { label: 'Other shapes', items: shapesOf(['square', 'triangle'], ['red', 'blue', 'green', 'yellow']) } },
-  red: { a: { label: 'Red ones', items: shapesOf(['circle', 'square', 'triangle', 'diamond'], ['red']) }, b: { label: 'Blue ones', items: shapesOf(['circle', 'square', 'triangle', 'diamond'], ['blue']) } },
   'even-odd': { a: { label: 'Even numbers', items: numbersWhere((n) => n % 2 === 0, 2, 40) }, b: { label: 'Odd numbers', items: numbersWhere((n) => n % 2 === 1, 1, 39) } },
   'multiples-3': { a: { label: 'Multiples of 3', items: numbersWhere((n) => n % 3 === 0, 3, 36) }, b: { label: 'Other numbers', items: numbersWhere((n) => n % 3 !== 0, 1, 40) } },
   'multiples-4': { a: { label: 'Multiples of 4', items: numbersWhere((n) => n % 4 === 0, 4, 48) }, b: { label: 'Other numbers', items: numbersWhere((n) => n % 4 !== 0, 1, 50) } },
   'multiples-7': { a: { label: 'Multiples of 7', items: numbersWhere((n) => n % 7 === 0, 7, 84) }, b: { label: 'Other numbers', items: numbersWhere((n) => n % 7 !== 0, 1, 90) } },
-  primes: { a: { label: 'Prime numbers', items: numbersWhere(isPrime, 2, 60) }, b: { label: 'Not prime', items: numbersWhere((n) => !isPrime(n), 4, 60) } },
+  // Pass IO (2026-10-02): the last four games that did not match their course.
+  'compound-words': { a: { label: 'Compound words', items: ['sunshine', 'raincoat', 'football', 'cupcake', 'snowman', 'bedroom', 'backpack', 'rainbow'] }, b: { label: 'Other words', items: ['happy', 'garden', 'yellow', 'pencil', 'rabbit', 'tiger', 'basket', 'kitten'] } },
+  'goods-services': { a: { label: 'Goods', items: ['shoes', 'apple', 'book', 'toy', 'bike', 'shirt', 'ball', 'bread'] }, b: { label: 'Services', items: ['haircut', 'teaching', 'mail', 'repair', 'bus ride', 'cleaning', 'checkup', 'tutoring'] } },
+  'sine-sign': { a: { label: 'Positive sines', items: ['sin 30°', 'sin 45°', 'sin 60°', 'sin 90°', 'sin 120°', 'sin 135°', 'sin 150°'] }, b: { label: 'Negative sines', items: ['sin 210°', 'sin 225°', 'sin 240°', 'sin 270°', 'sin 300°', 'sin 315°', 'sin 330°'] } },
+  'mitosis-meiosis': { a: { label: 'Mitosis', items: ['growth', 'repair', 'two cells', 'identical', 'skin cells', 'healing'] }, b: { label: 'Meiosis', items: ['egg', 'sperm', 'four cells', 'half set', 'sex cells', 'shuffled'] } },
+  // Pass IN (2026-10-02): decks for the spaceship games and for three games that now match their course.
+  'gas-or-not': { a: { label: 'Gases', items: ['steam', 'water vapor', 'air', 'wind', 'breath', 'helium', 'oxygen'] }, b: { label: 'Not gases', items: ['ice', 'rock', 'sand', 'wood', 'milk', 'juice', 'rain', 'honey'] } },
+  'producer-consumer': { a: { label: 'Producers', items: ['grass', 'oak tree', 'algae', 'seaweed', 'moss', 'cactus', 'corn', 'clover'] }, b: { label: 'Consumers', items: ['rabbit', 'hawk', 'deer', 'frog', 'snake', 'fox', 'cow', 'shark'] } },
+  'need-want': { a: { label: 'Needs', items: ['rent', 'groceries', 'electricity', 'water', 'medicine', 'heating', 'bus fare', 'insurance'] }, b: { label: 'Wants', items: ['video game', 'concert', 'candy', 'streaming', 'jewelry', 'toys', 'arcade', 'souvenir'] } },
+  'igneous-sedimentary': { a: { label: 'Igneous rocks', items: ['granite', 'basalt', 'obsidian', 'pumice'] }, b: { label: 'Sedimentary rocks', items: ['sandstone', 'limestone', 'shale', 'chalk', 'coal'] } },
+  // Pass IM (2026-10-02): grade 11 and college had no playful game, so a decks or quick-fire game opened first there.
+  'powers-2': { a: { label: 'Powers of 2', items: [2, 4, 8, 16, 32, 64, 128, 256, 512] }, b: { label: 'Other numbers', items: numbersWhere((n) => (n & (n - 1)) !== 0, 3, 600) } },
+  'primary-source': { a: { label: 'Primary sources', items: ['diary', 'letter', 'treaty', 'tax roll', 'photograph', 'poster', 'census', 'deed'] }, b: { label: 'Secondary sources', items: ['textbook', 'biography', 'documentary', 'summary', 'lecture', 'retelling', 'analysis', 'study'] } },
   squares: { a: { label: 'Square numbers', items: numbersWhere((n) => Number.isInteger(Math.sqrt(n)), 1, 144) }, b: { label: 'Not square', items: numbersWhere((n) => !Number.isInteger(Math.sqrt(n)), 2, 99) } },
   halves: { a: { label: 'Equal to one half', items: ['2/4', '3/6', '4/8', '5/10', '6/12', '7/14', '8/16', '10/20'] }, b: { label: 'Not one half', items: ['2/3', '3/4', '1/3', '2/5', '3/5', '5/8', '1/4', '4/6'] } },
   'noun-verb': { a: { label: 'Nouns', items: ['dog', 'city', 'river', 'teacher', 'apple', 'bridge', 'pencil', 'garden', 'ocean', 'doctor'] }, b: { label: 'Verbs', items: ['run', 'jump', 'think', 'sing', 'build', 'swim', 'read', 'climb', 'cook', 'laugh'] } },
   'adjective-adverb': { a: { label: 'Adjectives', items: ['quick', 'tall', 'bright', 'soft', 'angry', 'tiny', 'loud', 'brave', 'cold', 'sweet'] }, b: { label: 'Adverbs', items: ['quickly', 'softly', 'loudly', 'bravely', 'gently', 'slowly', 'rarely', 'boldly', 'calmly', 'sadly'] } },
-  'solid-liquid': { a: { label: 'Solids', items: ['rock', 'ice', 'wood', 'spoon', 'brick', 'coin', 'book', 'bone', 'chalk', 'nail'] }, b: { label: 'Liquids', items: ['milk', 'water', 'juice', 'oil', 'honey', 'rain', 'syrup', 'soup', 'tea', 'lava'] } },
   living: { a: { label: 'Living things', items: ['tree', 'fish', 'moss', 'ant', 'bird', 'mushroom', 'frog', 'grass', 'snake', 'bee'] }, b: { label: 'Not living', items: ['rock', 'cloud', 'spoon', 'fire', 'river', 'car', 'wind', 'sand', 'chair', 'coin'] } },
   'conductor-insulator': { a: { label: 'Conductors', items: ['copper', 'iron', 'silver', 'gold', 'steel', 'aluminum', 'nickel', 'tin'] }, b: { label: 'Insulators', items: ['rubber', 'wood', 'glass', 'plastic', 'cloth', 'paper', 'cork', 'wax'] } },
   mammals: { a: { label: 'Mammals', items: ['whale', 'bat', 'dog', 'cow', 'horse', 'dolphin', 'mouse', 'bear', 'deer', 'goat'] }, b: { label: 'Not mammals', items: ['shark', 'frog', 'snake', 'eagle', 'ant', 'trout', 'lizard', 'crab', 'owl', 'bee'] } },
   'element-compound': { a: { label: 'Elements', items: ['gold', 'oxygen', 'iron', 'helium', 'carbon', 'sodium', 'copper', 'neon', 'silver', 'zinc'] }, b: { label: 'Compounds', items: ['water', 'salt', 'sugar', 'rust', 'ammonia', 'methane', 'glucose', 'quartz', 'chalk', 'ethanol'] } },
   renewable: { a: { label: 'Renewable', items: ['sunlight', 'wind', 'wood', 'tides', 'rain', 'corn', 'wool', 'waves', 'bamboo', 'cotton'] }, b: { label: 'Not renewable', items: ['coal', 'oil', 'gas', 'copper', 'gold', 'uranium', 'diamond', 'tin', 'silver', 'iron ore'] } },
-  'state-country': { a: { label: 'US states', items: ['Texas', 'Ohio', 'Maine', 'Utah', 'Iowa', 'Idaho', 'Nevada', 'Kansas', 'Oregon', 'Alaska'] }, b: { label: 'Countries', items: ['Peru', 'Kenya', 'Japan', 'Spain', 'Chile', 'Cuba', 'Egypt', 'Italy', 'India', 'Ghana'] } },
   'acid-base': { a: { label: 'Acids', items: ['lemon', 'vinegar', 'soda', 'tomato', 'coffee', 'orange', 'lime', 'battery'] }, b: { label: 'Bases', items: ['soap', 'bleach', 'ammonia', 'antacid', 'lye', 'egg white', 'seawater', 'toothpaste'] } },
 };
 export function ruleDeck(id) { return RULE_DECKS[id] || null; }
@@ -1879,11 +1906,16 @@ export function insidePolygon(points, x, y) {
 // Decks for the text pairs games: each entry is a pair of cards that belong together.
 export const PAIR_DECKS = {
   // No card text appears twice in a deck: two 3/4 cards from different pairs would fail to match each other.
-  fractions: [['1/2', '2/4'], ['1/3', '2/6'], ['1/4', '3/12'], ['2/3', '4/6'], ['3/4', '6/8'], ['1/5', '2/10'], ['5/10', '0.5'], ['25/100', '0.25'], ['3/8', '6/16'], ['1/10', '0.1'], ['2/5', '4/10'], ['7/10', '0.7']],
+  // Grade 3 denominators only (2, 3, 4, 6 and 8), and no two cards worth the same, so every true match is accepted (pass IM).
+  fractions: [['1/2', '2/4'], ['1/3', '2/6'], ['2/3', '4/6'], ['1/4', '2/8'], ['3/4', '6/8']],
   roots: [['port', 'carry'], ['aqua', 'water'], ['bio', 'life'], ['geo', 'earth'], ['tele', 'far'], ['photo', 'light'], ['scrib', 'write'], ['dict', 'say'], ['auto', 'self'], ['chron', 'time'], ['micro', 'small'], ['therm', 'heat']],
   elements: [['H', 'hydrogen'], ['O', 'oxygen'], ['C', 'carbon'], ['N', 'nitrogen'], ['Na', 'sodium'], ['Fe', 'iron'], ['Au', 'gold'], ['Ag', 'silver'], ['He', 'helium'], ['Cl', 'chlorine'], ['Ca', 'calcium'], ['K', 'potassium']],
   dates: [['1776', 'Declaration'], ['1787', 'Constitution'], ['1803', 'Louisiana'], ['1836', 'San Jacinto'], ['1845', 'Texas a state'], ['1861', 'Civil War begins'], ['1865', 'Juneteenth'], ['1914', 'WWI begins'], ['1929', 'the Crash'], ['1941', 'Pearl Harbor'], ['1954', 'Brown'], ['1969', 'Moon landing']],
   formulas: [['F = ma', 'force'], ['V = IR', 'voltage'], ['p = mv', 'momentum'], ['W = Fd', 'work'], ['A = πr²', 'circle area'], ['C = πd', 'circumference'], ['a² + b² = c²', 'right triangle'], ['y = mx + b', 'a line'], ['d = m/V', 'density'], ['v = λf', 'wave speed']],
+  // The college statistics course plays its own words, each one taught in its lessons (pass IM).
+  stats: [['mean', 'add them, divide by how many'], ['median', 'the middle value in order'], ['mode', 'the most common value'], ['range', 'biggest minus smallest'], ['standard deviation', 'typical distance from the mean'], ['probability', 'ways it can happen over all ways'], ['compound interest', 'interest on interest'], ['correlation', 'two things moving together']],
+  // Grade 7 Texas history plays Texas, not world capitals (those moved to world geography, pass IM).
+  texas7: [['1845', 'Texas becomes a state'], ['Sam Houston', 'led the army at San Jacinto'], ['San Jacinto', 'won in eighteen minutes'], ['the Alamo', 'a thirteen-day siege'], ['Spindletop', 'the 1901 oil gusher'], ['Galveston', 'the 1900 hurricane'], ['Juneteenth', 'freedom read out, June 19, 1865'], ['Barbara Jordan', 'first Black woman in the Texas Senate'], ['Comanche', 'rode the plains after buffalo'], ['Caddo', 'farmed the piney east']],
   times: [['3 × 4', '12'], ['6 × 7', '42'], ['8 × 8', '64'], ['9 × 6', '54'], ['7 × 8', '56'], ['5 × 9', '45'], ['4 × 7', '28'], ['9 × 9', '81'], ['6 × 6', '36'], ['8 × 3', '24'], ['7 × 7', '49'], ['4 × 8', '32']],
   vocabulary: [['enormous', 'very big'], ['fragile', 'breaks easily'], ['ancient', 'very old'], ['rapid', 'fast'], ['vacant', 'empty'], ['brief', 'short'], ['exhausted', 'very tired'], ['furious', 'very angry'], ['cautious', 'careful'], ['abundant', 'plenty'], ['reluctant', 'unwilling'], ['transparent', 'see-through']],
   capitals: [['Texas', 'Austin'], ['France', 'Paris'], ['Japan', 'Tokyo'], ['Mexico', 'Mexico City'], ['Canada', 'Ottawa'], ['Egypt', 'Cairo'], ['Brazil', 'Brasília'], ['Kenya', 'Nairobi'], ['Australia', 'Canberra'], ['India', 'New Delhi'], ['Italy', 'Rome'], ['United States', 'Washington']],
@@ -1892,15 +1924,15 @@ export const PAIR_DECKS = {
   technology: [['input', 'you tell the computer'], ['output', 'it shows you'], ['algorithm', 'steps in order'], ['loop', 'steps that repeat'], ['variable', 'a named box'], ['condition', 'a yes or no question'], ['bug', 'a mistake in the steps'], ['binary', 'ones and zeros'], ['packet', 'a piece of a message'], ['DNS', 'the internet phone book'], ['password', 'a key to a door'], ['debug', 'find and fix the bug']],
   // Science review decks, one per course: a key word and what it means, from that course's modules.
   'science-3': [['solid', 'keeps its shape'], ['liquid', 'takes the shape of its container'], ['gas', 'fills its container'], ['friction', 'slows a slide'], ['gravity', 'pulls things down'], ['tadpole', 'a young frog'], ['season', 'part of the year'], ['vibration', 'what makes sound']],
-  'science-4': [['circuit', 'a complete loop'], ['insulator', 'blocks electricity'], ['conductor', 'carries electricity'], ['erosion', 'carries soil away'], ['deposition', 'drops soil somewhere'], ['adaptation', 'a tool for a place'], ['lever', 'a bar on a pivot'], ['inclined plane', 'a ramp']],
-  'science-5': [['solution', 'dissolved and mixed'], ['mixture', 'can be separated'], ['orbit', 'a path around'], ['evaporation', 'liquid to vapor'], ['condensation', 'vapor to drops'], ['inherited', 'from your parents'], ['learned', 'from practice'], ['rotation', 'one spin, one day']],
-  'science-6': [['element', 'one kind of atom'], ['compound', 'atoms joined'], ['conduction', 'heat by touch'], ['convection', 'heat by flow'], ['radiation', 'heat by rays'], ['plate', 'a piece of crust'], ['nucleus', 'the control center of a cell'], ['density', 'mass over volume']],
-  'science-7': [['photosynthesis', 'a leaf makes sugar'], ['chlorophyll', 'the green in a leaf'], ['high pressure', 'cool sinking air'], ['natural selection', 'the fit survive'], ['dominant', 'the trait that shows'], ['producer', 'makes its own food'], ['watershed', 'land that drains to a river'], ['organ', 'a body part with a job']],
+  'science-4': [['circuit', 'a complete loop'], ['insulator', 'blocks electricity'], ['conductor', 'carries electricity'], ['erosion', 'carries soil away'], ['deposition', 'drops soil somewhere'], ['adaptation', 'a trait that helps it survive'], ['lever', 'a bar on a pivot'], ['inclined plane', 'a ramp']],
+  'science-5': [['solution', 'one thing dissolved into another'], ['plain mixture', 'parts you can still see'], ['orbit', 'a path around'], ['evaporation', 'liquid to vapor'], ['condensation', 'vapor to drops'], ['inherited', 'from your parents'], ['learned', 'from practice'], ['rotation', 'one spin, one day']],
+  'science-6': [['element', 'one kind of atom'], ['compound', 'atoms joined'], ['conduction', 'heat by touch'], ['convection', 'heat by flow'], ['radiation', 'heat by rays'], ['plate', 'a piece of Earth\'s shell'], ['nucleus', 'the control center of a cell'], ['density', 'mass over volume']],
+  'science-7': [['photosynthesis', 'a leaf makes sugar'], ['chlorophyll', 'the green in a leaf'], ['high pressure', 'cool sinking air'], ['natural selection', 'the fit survive and pass it on'], ['dominant', 'the trait that shows'], ['producer', 'makes its own food'], ['watershed', 'land that drains to a river'], ['organ', 'a body part with a job']],
   'science-8': [['proton', 'positive, in the nucleus'], ['electron', 'negative, at the edge'], ['inertia', 'keeps doing what it does'], ['reaction', 'new substances form'], ['galaxy', 'billions of stars'], ['slope on a graph', 'speed'], ['fossil', 'a trace in rock'], ['neutron', 'no charge']],
   'science-9': [['DNA', 'the recipe book'], ['allele', 'one version of a gene'], ['mitosis', 'a full copy of a cell'], ['meiosis', 'a half copy'], ['ribosome', 'builds proteins'], ['homeostasis', 'keeping steady inside'], ['carbon cycle', 'carbon rides around'], ['respiration', 'cells burn sugar']],
   'science-10': [['ionic bond', 'electrons given'], ['covalent bond', 'electrons shared'], ['acid', 'below 7 on the scale'], ['base', 'above 7 on the scale'], ['mole', 'a dozen for chemists'], ['synthesis', 'two become one'], ['pressure', 'particles hitting walls'], ['molarity', 'moles per liter']],
   'science-11': [['acceleration', 'speed changing'], ['kinetic energy', 'moving energy'], ['potential energy', 'stored energy'], ['wavelength', 'crest to crest'], ['frequency', 'crests per second'], ['voltage', 'the push'], ['resistance', 'the narrow pipe'], ['momentum', 'mass times velocity']],
-  'science-12': [['igneous', 'cooled from lava'], ['sedimentary', 'pressed from layers'], ['metamorphic', 'changed by heat'], ['climate', 'decades of weather'], ['supernova', 'the end of a big star'], ['mantle', 'the hot middle layer'], ['deep current', 'cold salty water sinking'], ['half-life', 'time to halve']],
+  'science-12': [['igneous', 'cooled from melted rock'], ['sedimentary', 'pressed from layers'], ['metamorphic', 'changed by heat and pressure'], ['climate', 'decades of weather'], ['supernova', 'the end of a big star'], ['mantle', 'the hot middle layer'], ['deep current', 'cold salty water sinking'], ['half-life', 'time to halve']],
 };
 // Ordered sets for the In order game: steps or events a student taps first to last.
 // Sentence builder (2026-09-25): each set is a short sentence and then a longer one that says more. Every word is a
@@ -5003,7 +5035,7 @@ function GRADE2_MATH_MODULES() { return [
         'Adding the same number again and again is called repeated addition.\n[[4 + 4 + 4 = 12]]\nThat is three rows of four.',
         'Count the rows. Count how many are in each row. Then add that number once for every row.',
       ],
-      keyIdea: 'Count the rows, count how many in each row.\nAdd that number once for every row.',
+      keyIdea: 'Count the rows, count how many in each row.\nAdd that number once for every row.\nEven numbers, like 8 and 14, split into two equal rows; odd numbers, like 7 and 15, leave one left over.',
       example: { kind: 'array', rows: 3, cols: 4, caption: '3 rows of 4. 4 + 4 + 4 = 12.' , another: 'An egg carton has 2 rows of 6. Count one row, then add it once for each row: 6 + 6 is 12. That repeated adding is what multiplication is for: 2 × 6 = 12.'},
     },
     sources: ['Aligned with Texas TEKS 2.6A (model, create, and describe contextual multiplication situations with equal groups) and Common Core 2.OA.C.4.'],
@@ -6654,7 +6686,7 @@ function GRADE12_MATH_MODULES() { return [
         "Five angles are worth knowing by heart.\n[[0°: cos 1, sin 0]]\n[[30°: cos √3/2, sin 1/2]]\n[[45°: cos √2/2, sin √2/2]]\n[[60°: cos 1/2, sin √3/2]]\n[[90°: cos 0, sin 1]]",
         "Angles past 90 degrees keep the same values with signs that follow the quarter of the circle they land in. In the second quarter, cosine turns negative and sine stays positive. In the third, both are negative. In the fourth, sine is negative and cosine is positive.",
       ],
-      keyIdea: 'On the unit circle, x is cosine and y is sine.\nKnow 0, 30, 45, 60 and 90 degrees, and let the quarter set the signs.',
+      keyIdea: 'On the unit circle, x is cosine and y is sine.\nKnow 0, 30, 45, 60 and 90 degrees, and let the quarter set the signs.\nSine is positive in the first two quarters, from 0 to 180 degrees, and negative in the last two.',
       example: { kind: 'unitcircle', deg: 45, caption: 'On the unit circle, cosine is how far across and sine is how far up.' , formula: '(cos θ, sin θ)', another: 'Walk around a circle of radius 1. However far you have turned, your position across is the cosine and your position up is the sine. At 45 degrees you are equally across and up.'},
     },
     sources: ['Aligned with Texas TEKS P.4A (determine the relationship between the unit circle and the definition of a periodic function) and Common Core F-TF.A.2 (explain how the unit circle enables the extension of trigonometric functions to all real numbers).'],
@@ -6959,7 +6991,7 @@ function GRADE3_SCIENCE_MODULES() { return [
         "Let's look at water, because it does all three.\nIce is water as a solid. It keeps its shape in your hand.\nWater from the tap is a liquid. Pour it into a cup and it becomes cup-shaped.\nSteam is water as a gas. It spreads out and fills the air above the pot.",
         "Heat moves matter from one state to the next. Warm ice and it melts into a liquid. Boil the liquid and it becomes a gas. Cool the gas and it turns back into drops of liquid. Same water, the whole way through.",
       ],
-      keyIdea: 'A solid keeps its shape, a liquid takes the shape of its container, and a gas fills its space.\nHeating and cooling move matter between them.',
+      keyIdea: 'A solid keeps its shape, a liquid takes the shape of its container, and a gas fills its space.\nHeating and cooling move matter between them.\nSteam, water vapor, air, wind, your breath, the helium in a balloon and the oxygen you breathe are gases. Ice, rock, sand and wood are solids. Milk, juice, rain and honey are liquids.',
       example: { kind: 'states', caption: 'The same water: packed and still as ice, sliding as water, flying apart as steam.' , formula: 'ice, water, steam', another: { text: 'Picture children in a room. Solid: standing in rows, holding hands, only wiggling. Liquid: walking around but staying in the room. Gas: running everywhere and out the door.', visual: { kind: 'states' } }},
     },
     sources: ['Aligned with Texas TEKS 3.5B (describe and classify samples of matter as solids, liquids, and gases) and NGSS 2-PS1-1 and 5-PS1-3 (observe and describe properties of matter).'],
@@ -7077,7 +7109,7 @@ function GRADE6_SCIENCE_MODULES() { return [
         "Let's look at some formulas. The letters name the kinds of atom, and the small numbers count them.\n[[O₂ is two oxygen atoms: one kind, so an element.]]\n[[H₂O is two hydrogens and one oxygen: two kinds, so a compound.]]\n[[NaCl, table salt, is sodium and chlorine: a compound.]]",
         "A compound is not a mix. Salt is not sodium sitting next to chlorine; it is a new substance with its own properties. Sodium alone burns in water. Chlorine alone is a poison gas. Joined, they season your food.",
       ],
-      keyIdea: 'An element is one kind of atom. A compound is two or more kinds joined.\nRead the formula: the letters name the kinds, the small numbers count them.',
+      keyIdea: 'An element is one kind of atom. A compound is two or more kinds joined.\nRead the formula: the letters name the kinds, the small numbers count them.\nGold, oxygen, iron, helium, carbon, sodium, copper, neon, silver and zinc are elements; water, salt, sugar, rust, ammonia, methane, glucose, quartz, chalk and ethanol are compounds.',
       example: { kind: 'molecule', formulaText: 'H₂O', caption: 'Two hydrogen atoms bonded to one oxygen atom: a compound, water.' , formula: 'H₂O', another: 'Letters and words. An element is a single letter, like H or O. A compound is a word spelled from letters, like H₂O. You cannot make a new letter, but you can spell endless words.'},
     },
     sources: ['Aligned with Texas TEKS 6.5A (know that an element is a pure substance represented by a chemical symbol and that a compound is a pure substance represented by a chemical formula) and NGSS MS-PS1-1 (develop models to describe the atomic composition of simple molecules).'],
@@ -7533,7 +7565,7 @@ function GRADE7_SCIENCE_MODULES() { return [
         "Draw the levels as a pyramid and you can see it: a wide base of plants, and a narrow tip of top predators. Every ecosystem is shaped this way, because the energy runs out. A world of only lions could not exist; there would be nothing left to feed them.",
         'Read the pyramid from the wide base of producers, up through the middle levels of consumers, to the narrow tip of top predators.'
       ],
-      keyIdea: 'Only about a tenth of the energy passes to the next level of a food chain.\nThat is why there is much grass and few top predators.',
+      keyIdea: 'Only about a tenth of the energy passes to the next level of a food chain.\nThat is why there is much grass and few top predators.\nGrass, oak trees, algae, seaweed, moss, cactus, corn and clover are producers; rabbits, hawks, deer, frogs, snakes, foxes, cows and sharks are consumers.',
       example: { kind: 'pyramid', levels: [1000, 100, 10, 1], caption: 'About a tenth passes up each level: 1,000 units of grass feed 100 of grasshopper, 10 of bird, 1 of hawk.' , formula: '1,000, 100, 10, 1', another: { text: 'Energy leaks at every step. A thousand units of grass feed a hundred of grasshopper, ten of bird, one of hawk. That is why there are far more blades of grass than hawks.', visual: { kind: 'pyramid', levels: [1000, 100, 10, 1] } }},
     },
     sources: ['Aligned with Texas TEKS 7.5C (diagram the flow of energy through living systems, including food chains, food webs, and energy pyramids) and NGSS MS-LS2-3 (develop a model to describe the cycling of matter and flow of energy among living and nonliving parts of an ecosystem).'],
@@ -7761,7 +7793,7 @@ function GRADE9_SCIENCE_MODULES() { return [
         "Let's follow the numbers. A human body cell has 46 chromosomes.\nMitosis copies them and splits: two cells, 46 each. Your skin, your blood and your bones are made this way.\nMeiosis copies them and splits twice: four cells, 23 each. When an egg with 23 meets a sperm with 23, the child has 46, half from each parent.",
         "That halving is why children resemble both parents and neither exactly. Meiosis also shuffles which chromosomes go into which cell, so no two eggs or sperm are the same. Every sibling is a different draw from the same two decks.",
       ],
-      keyIdea: 'Mitosis makes two identical cells for growth and repair.\nMeiosis makes four cells with half the chromosomes, for egg and sperm.',
+      keyIdea: 'Mitosis makes two identical cells for growth and repair.\nMeiosis makes four cells with half the chromosomes, for egg and sperm.\nHealing a cut and making new skin cells use mitosis. Meiosis shuffles the chromosomes, so no two sex cells are alike.',
       example: { kind: 'celldiv', caption: 'One cell with 46 chromosomes divides; for sex cells the count halves to 23.' , formula: '46 to 23', another: { text: 'Copying a recipe book. Mitosis photocopies all 46 pages for a new cell just like the old one. Meiosis makes a half-book of 23, so two half-books from two parents make a whole.', visual: { kind: 'celldiv' } }},
     },
     sources: ['Aligned with Texas TEKS Bio.5A (describe the stages of the cell cycle, including DNA replication and mitosis, and the importance of the cell cycle to the growth of organisms) and NGSS HS-LS1-4 (use a model to illustrate the role of cellular division and differentiation in producing and maintaining complex organisms).'],
@@ -8137,7 +8169,7 @@ function GRADE12_SCIENCE_MODULES() { return [
         "To name a rock, ask how it formed. Crystals locked together from a melt: igneous. Layers or visible grains: sedimentary. Bands or crystals that were squeezed flat: metamorphic. The cycle has no start and no end, only the rock in your hand and where it has been.",
         'Three kinds of rock: igneous rock from cooled magma, sedimentary rock from pressed layers, and metamorphic rock from heat and squeezing.'
       ],
-      keyIdea: 'Igneous cooled from a melt, sedimentary was pressed from pieces, metamorphic was changed by heat and pressure.\nEach kind can become the others.',
+      keyIdea: 'Igneous cooled from a melt, sedimentary was pressed from pieces, metamorphic was changed by heat and pressure.\nEach kind can become the others.\nGranite, basalt, obsidian and pumice are igneous; sandstone, limestone, shale, chalk and coal are sedimentary.',
       example: { kind: 'loop', steps: ['magma', 'igneous', 'sediment', 'sedimentary', 'metamorphic'], caption: 'Melt, cool, break, press, squeeze: rock keeps turning into other rock.' , formula: 'melt, press, squeeze', another: 'Rock is never finished. Lava cools into igneous rock. Rain grinds it into sand that presses into sedimentary rock. Heat and squeezing turn that into metamorphic rock. Melt it, and around it goes again.'},
     },
     sources: ['Aligned with Texas TEKS ESS.10B (analyze the interactions among Earth\'s spheres, including the rock cycle) and NGSS HS-ESS2-1 (develop a model to illustrate how Earth\'s internal and surface processes operate at different spatial and temporal scales).'],
@@ -8805,7 +8837,7 @@ function GRADE1_CIVICS_MODULES() { return [
     requires: ['leaders-near-and-far'],
     lesson: {
       paragraphs: ['A good is a thing you can hold, like bread or shoes.', 'A service is work someone does for you, like a haircut or a bus ride.', 'People earn money by working. Then they trade the money for goods and services.'],
-      keyIdea: 'Goods are things. Services are work done for you. Money comes from work.',
+      keyIdea: 'Goods are things. Services are work done for you. Money comes from work.\nShoes, apples, books, toys, bikes, shirts, balls and bread are goods. Haircuts, teaching, the mail, repairs, bus rides, cleaning, checkups and tutoring are services.',
       example: { kind: 'letters', text: '10 cents', caption: 'A dime is worth ten cents.' },
       script: [
         { say: 'Bread is a good. You can hold it.', show: null },
@@ -13037,7 +13069,7 @@ function GRADE12_ECONOMICS_MODULES() { return [
         "Let's look at why saving early is worth so much.\nMoney that earns interest grows on its own interest. That is **compound interest**.\nA quick rule: money doubles in about 72 divided by the rate, in years.\n[[Years to double ≈ 72 ÷ rate]]\nAt 6 percent, 72 ÷ 6 is 12 years. At 8 percent, 9 years. Start at 20 with one doubling every nine years, and the money doubles five times by 65, which is 32 times what you put in.",
         "Credit is compound interest running against you.\nA credit card charging 24 percent a year charges 2 percent a month on what you have not paid. On a 1,200-dollar balance, that is 24 dollars a month for nothing.\n[[Monthly interest = balance × yearly rate ÷ 12]]\nPay the full balance every month, and credit costs nothing. Pay the minimum, and the balance can take many years to clear.\nA **credit score** is a record of whether you pay what you owe on time. A good one makes every future loan cheaper. It is built the same way as savings: a little, on time, every month.",
       ],
-      keyIdea: 'A budget is income minus expenses, and 50/30/20 is one way to split it, with the saving done first.\nSavings compound, and money doubles in about 72 divided by the rate, in years.\nCredit compounds against you, and monthly interest is the balance times the yearly rate divided by 12.',
+      keyIdea: 'A budget is income minus expenses, and 50/30/20 is one way to split it, with the saving done first.\nSavings compound, and money doubles in about 72 divided by the rate, in years.\nCredit compounds against you, and monthly interest is the balance times the yearly rate divided by 12.\nNeeds come first: rent, groceries, electricity, water, medicine, heating, bus fare and insurance. Wants come after: a video game, a concert, candy, streaming, jewelry, toys, the arcade and souvenirs.',
       example: { kind: 'growthbars', values: [100, 200, 400, 800], labels: ['now', '9 yr', '18 yr', '27 yr'], caption: 'At eight percent, money doubles about every nine years: 72 divided by the rate.' , formula: '72 ÷ rate' , another: "A budget is income minus expenses. One split: 50 for needs, 30 for wants, 20 for saving. Credit is borrowing tomorrow's money at a price, the interest, that grows if you wait."},
     },
     sources: ['Aligned with Texas TEKS Economics (personal financial literacy: budgeting, saving, compound interest, credit and credit scores) and Council for Economic Education national standards 2 and 12 (Decision Making; Interest Rates).'],
@@ -29990,8 +30022,8 @@ export const COURSE_GAMES = {
   'fractions-intro': ['catch-multiples-3', 'balance-times'],
   'numbers-1': ['dots-kite', 'pairs-many'],
   'reading-1': ['jigsaw-9'],
-  'numbers-2': ['maze-huge'],
-  'reading-2': ['catch-red'],
+  'numbers-2': ['maze-huge', 'ship-even'],
+  'reading-2': ['catch-compound'],
   'reading-3': ['evidence-reading-3'],
   'reading-4': ['evidence-reading-4'],
   'math-5': ['path-multiples-4', 'catch-halves'],
@@ -30006,22 +30038,22 @@ export const COURSE_GAMES = {
   'reading-9': ['evidence-reading-9'],
   'math-10': ['path-squares'],
   'reading-10': ['evidence-reading-10'],
-  'math-11': ['sprint-math'],
+  'math-11': ['path-powers-2', 'sprint-math'],
   'reading-11': ['evidence-reading-11'],
-  'math-12': ['path-primes'],
+  'math-12': ['path-positive-sines'],
   'reading-12': ['evidence-reading-12'],
   'math-college': ['pairs-formulas'],
   'reading-college': ['evidence-reading-college'],
-  'science-3': ['order-steps', 'pairs-science-3'],
-  'science-6': ['sprint-science', 'pairs-science-6'],
+  'science-3': ['ship-gases', 'order-steps', 'pairs-science-3'],
+  'science-6': ['ship-elements', 'sprint-science', 'pairs-science-6'],
   'science-4': ['catch-living', 'buckets-conductors', 'pairs-science-4'],
   'science-5': ['buckets-mammals', 'pairs-science-5'],
-  'science-7': ['buckets-solid-liquid', 'pairs-science-7'],
+  'science-7': ['buckets-producer-consumer', 'pairs-science-7'],
   'science-8': ['catch-renewable', 'pairs-science-8'],
-  'science-9': ['buckets-element-compound', 'pairs-science-9'],
+  'science-9': ['buckets-cell-division', 'pairs-science-9'],
   'science-10': ['buckets-acid-base', 'pairs-science-10', 'ptable-science-10'],
   'science-11': ['pairs-science-11'],
-  'science-12': ['catch-acids', 'pairs-science-12'],
+  'science-12': ['catch-igneous', 'pairs-science-12'],
   'writing-4': ['build-writing-4'],
   'writing-2': ['dots-boat'],
   'writing-3': ['build-writing-3'],
@@ -30035,14 +30067,14 @@ export const COURSE_GAMES = {
   'writing-8': ['buckets-adjective-adverb'],
   'history-4': ['map-hemispheres', 'order-history-4'],
   'history-6': ['map-oceans', 'order-history-6'],
-  'history-7': ['map-texas', 'pairs-capitals'],
-  'history-9': ['map-europe', 'sprint-history-9'],
-  'history-college': ['map-south-america', 'sprint-history-college'],
+  'history-7': ['map-texas', 'pairs-texas'],
+  'history-9': ['map-europe', 'pairs-capitals', 'sprint-history-9'],
+  'history-college': ['map-south-america', 'catch-primary-sources', 'sprint-history-college'],
   'history-8': ['map-us-regions', 'order-history-8'],
   'history-10': ['map-us-states', 'order-history-10'],
   'history-11': ['map-africa', 'order-history-11'],
   'government-12': ['map-asia', 'order-government-12'],
-  'economics-12': ['buckets-state-country'],
+  'economics-12': ['buckets-need-want'],
   'history-5': ['order-timeline'],
   'math-4': ['path-even'],
   'multiplication-3': ['pairs-fractions'],
@@ -30053,7 +30085,7 @@ export const COURSE_GAMES = {
   'science-k': ['catch-circles'],
   'science-1': ['balance-ten'],
   'civics-k': ['sort-size'],
-  'civics-1': ['path-circles'],
+  'civics-1': ['path-goods'],
   'civics-2': ['jump-differences'],
   'music-1': ['maze-big', 'jump-sums'],
   'music-4': ['pairs-music'],

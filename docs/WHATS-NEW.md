@@ -2,6 +2,35 @@
 
 The newest block is what educators see once, in a pop-up on the classroom page, after each update. Write it the way Mikey talks to a teacher: conversational, complete sentences, say what changed and why it matters, and skip the shorthand (2026-09-23). Two to four items. The date line is the version stamp.
 
+## October 3, 2026 (streaks everywhere)
+
+- Every game where you pick an answer now counts your streak of right answers in a row.
+- Find the tool and Name the feeling are drag-and-drop games now: carry the question to its tool, or the face to its feeling.
+
+## October 3, 2026 (drag to the box)
+
+- Sort the ledger, Fit the room, Who gains and Which sense are drag-and-drop games now: carry the card onto its box, or tap the box, and keep a streak going.
+
+## October 2, 2026 (swipe cards)
+
+- Myth or fact, green flag or red flag, reason or not, and valid or not are swipe games now: flick the card left or right, or tap a button, and keep a streak going.
+
+## October 2, 2026 (every game matches its course)
+
+- Four more games now practice what their course teaches: compound words in grade 2 reading, goods and services in grade 1 civics, positive sines in precalculus, and mitosis or meiosis in biology.
+- On a phone held sideways, the robot walk sets its grid beside the arrows, so the whole board fits.
+
+## October 2, 2026 (a space shooter, and games that match their course)
+
+- New arcade game: Space Shooter. Tap where you want the ship and it fires at the right answers: even numbers in grade 2, gases in grade 3 and elements in grade 6.
+- Three games now practice what their course teaches: producers and consumers in grade 7 science, igneous rocks in grade 12 science, and needs and wants in grade 12 economics.
+
+## October 2, 2026 (games that fit every screen, and play first)
+
+- The first game open in every grade is a playful one now, like Catch, Frog Jumps or Pong, instead of a deck of cards on a hard topic.
+- Every game was opened on five screens, from a small phone to a laptop and a phone held sideways, and nothing runs off the screen or spills out of a tile.
+- New games: Step on the powers of 2 for Algebra II and Catch the primary sources for college history. Grade 7 Texas history has its own card deck.
+
 ## October 2, 2026 (Wonder questions for older learners, and twelve new ones)
 
 - Every Wonder question has now been read through by hand, and the two questions about where the sun goes at night are one.

@@ -142,7 +142,7 @@ for (const name of [/Let's Color/, /Let's Play/, /Let's Read/]) {
   await b.click().catch(() => {}); await page.waitForTimeout(200);
 }
 // Games are played on a paper board in both themes (Mikey's laptop, 2026-09-24): three games whose boards carry words.
-for (const title of ['Quick fire: math', 'Solid or liquid', 'In order: how things happen']) {
+for (const title of ['Quick fire: math', 'Space shooter: gases', 'In order: how things happen']) {   // the space shooter took the place of Solid or liquid, which left grade 7 science (pass IN)
   await keepAlive(); await page.evaluate(() => window.__eduTest.goTo('overview')); await page.waitForTimeout(300);
   const lp = page.getByRole('button', { name: "Let's Play" }).first(); if ((await lp.getAttribute('aria-expanded')) !== 'true') { await lp.click(); await page.waitForTimeout(300); }
   const g = page.getByRole('button', { name: new RegExp(title, 'i') }).first();

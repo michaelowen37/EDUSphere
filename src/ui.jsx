@@ -448,7 +448,16 @@ function IconPic({ name, size = 90 }) {
   const gold = C.gold; const green = C.green; const grey = '#8A9086'; const blue = '#4A86C5'; const red = '#C9573E'; const brown = '#8B5A2B';
   const body = {
     sun: <g><defs><radialGradient id="eduSunG" cx="40%" cy="38%" r="65%"><stop offset="0" stopColor="#FFF1B8" /><stop offset="0.6" stopColor={gold} /><stop offset="1" stopColor="#D99A2B" /></radialGradient></defs><circle cx="50" cy="50" r="30" fill={gold} opacity="0.18" /><circle cx="50" cy="50" r="20" fill="url(#eduSunG)" />{[0, 45, 90, 135, 180, 225, 270, 315].map((a) => <line key={a} x1={50 + 28 * Math.cos(a * Math.PI / 180)} y1={50 + 28 * Math.sin(a * Math.PI / 180)} x2={50 + 40 * Math.cos(a * Math.PI / 180)} y2={50 + 40 * Math.sin(a * Math.PI / 180)} stroke={gold} strokeWidth="5" strokeLinecap="round" />)}</g>,
-    moon: <path d="M62 14a34 34 0 1 0 0 72 27 27 0 0 1 0-72z" fill={gold} />,
+    // The moon (pass IT): the old path's two arcs fell onto the same half-circle and drew nothing. Now a crescent, an outer
+    // half-circle and a flatter inner arc.
+    moon: <path d="M66 16A34 34 0 0 0 66 84A40 40 0 0 1 66 16Z" fill={gold} />,
+    // Six pictures the questions used with no drawing (pass IT, Mikey's screenshots): each fell back to a grey circle.
+    cup: <g><path d="M38 14q-4 6 0 11M50 12q-4 7 0 13" fill="none" stroke="#B9C2C9" strokeWidth="3" strokeLinecap="round" /><path d="M68 40h6a10 10 0 0 1 0 20h-6" fill="none" stroke="#4A6A86" strokeWidth="5" strokeLinecap="round" /><path d="M24 32h44v30a18 18 0 0 1-18 18h-8a18 18 0 0 1-18-18z" fill="#E8EEF3" stroke="#4A6A86" strokeWidth="3" strokeLinejoin="round" /><path d="M28 41h36" stroke={blue} strokeWidth="4" strokeLinecap="round" /></g>,
+    bus: <g><rect x="12" y="28" width="76" height="40" rx="8" fill="#F2B632" stroke="#8A5A12" strokeWidth="3" /><rect x="13" y="56" width="74" height="5" fill="#2E2E2E" />{[20, 36, 52].map((x) => <rect key={x} x={x} y="34" width="12" height="12" rx="2" fill="#CFE6F5" stroke="#8A5A12" strokeWidth="2" />)}<rect x="68" y="34" width="14" height="20" rx="2" fill="#CFE6F5" stroke="#8A5A12" strokeWidth="2" /><circle cx="28" cy="70" r="9" fill="#2E2E2E" stroke="#BFC5C9" strokeWidth="3" /><circle cx="72" cy="70" r="9" fill="#2E2E2E" stroke="#BFC5C9" strokeWidth="3" /></g>,
+    dog: <g><ellipse cx="26" cy="48" rx="11" ry="20" fill="#7A4E2A" transform="rotate(18 26 48)" /><ellipse cx="74" cy="48" rx="11" ry="20" fill="#7A4E2A" transform="rotate(-18 74 48)" /><circle cx="50" cy="52" r="26" fill="#C98B52" /><ellipse cx="50" cy="66" rx="14" ry="10" fill="#F1D3B0" /><circle cx="40" cy="47" r="4" fill="#2E2E2E" /><circle cx="60" cy="47" r="4" fill="#2E2E2E" /><ellipse cx="50" cy="60" rx="6" ry="4.5" fill="#2E2E2E" /><path d="M50 64v5M44 71q6 5 12 0" fill="none" stroke="#2E2E2E" strokeWidth="2.5" strokeLinecap="round" /></g>,
+    hat: <g><ellipse cx="50" cy="66" rx="40" ry="10" fill="#3F5F9E" stroke="#22365E" strokeWidth="3" /><path d="M28 64V40a22 14 0 0 1 44 0v24" fill="#4E73B8" stroke="#22365E" strokeWidth="3" /><rect x="29.5" y="53" width="41" height="8" fill="#C9573E" /></g>,
+    bed: <g><rect x="12" y="34" width="8" height="46" rx="2" fill={brown} /><rect x="80" y="50" width="8" height="30" rx="2" fill={brown} /><rect x="16" y="56" width="68" height="14" rx="3" fill="#8DB3DB" stroke="#2F66A8" strokeWidth="2" /><rect x="21" y="45" width="22" height="12" rx="5" fill="#F4F6F7" stroke="#B9C2C9" strokeWidth="2" /><path d="M44 57q18-9 40 0z" fill="#5E8FD0" /><rect x="16" y="70" width="68" height="6" fill={brown} /></g>,
+    fan: <g><rect x="46" y="58" width="8" height="22" fill="#8A9086" /><rect x="30" y="78" width="40" height="8" rx="4" fill="#6B716A" /><circle cx="50" cy="40" r="28" fill="#DCE6EC" stroke="#6B716A" strokeWidth="3" />{[0, 120, 240].map((a) => { const x = 50 + 12 * Math.cos((a - 90) * Math.PI / 180); const y = 40 + 12 * Math.sin((a - 90) * Math.PI / 180); return <ellipse key={a} cx={x} cy={y} rx="7" ry="13" fill="#4A86C5" transform={`rotate(${a} ${x} ${y})`} />; })}<circle cx="50" cy="40" r="5" fill="#2E2E2E" /></g>,
     cloud: <path d="M28 66a14 14 0 0 1 3-27 20 20 0 0 1 38-4 15 15 0 0 1 3 31z" fill="#D6DBD2" stroke={grey} strokeWidth="3" />,
     rain: <g><path d="M28 52a14 14 0 0 1 3-27 20 20 0 0 1 38-4 15 15 0 0 1 3 31z" fill="#D6DBD2" stroke={grey} strokeWidth="3" />{[34, 50, 66].map((x) => <line key={x} x1={x} y1="62" x2={x - 6} y2="82" stroke={blue} strokeWidth="5" strokeLinecap="round" />)}</g>,
     snow: <g><path d="M28 52a14 14 0 0 1 3-27 20 20 0 0 1 38-4 15 15 0 0 1 3 31z" fill="#D6DBD2" stroke={grey} strokeWidth="3" />{[34, 50, 66].map((x) => <circle key={x} cx={x} cy="74" r="5" fill="#fff" stroke={blue} strokeWidth="2" />)}</g>,
@@ -2252,7 +2261,7 @@ const TOUR = [
   ['Life skills', 'life', null, 'over-exp-by-life', <>The Wise Human is designed to make learning more efficient. Our curated list of practical life skills is a perfect way to fill the time you gain back.<br /><br />You'll find helpful skills for every age group!</>],
   ['Reading', 'reading', null, 'over-exp-high', <>Need direction finding books for various age groups? We've got you covered! Our reading list is quite extensive.</>],
   ['Experiments', 'experiments', null, 'over-life-high', <>Science is way more fun when it's tangible. We've got experiment ideas for every age group!</>],
-  ['Student Summaries', 'rows', 'class', 'over-second', <>Every student has a personalized report. Whether you want to see what they've done that day, that week or from the very beginning, we've got you covered! Every module they practice, every story they read, every attempt they make, even their level of confidence on any given topic is continually updated in plain English.<br /><br />Print weekly summaries, add personalized notes, practice missed questions and more!<br /><br />Have more than one student? <strong>Who Needs Help</strong> let's you know who might need a little guidance.</>],
+  ['Student Summaries', 'rows', 'class', 'right-below-summary', <>Every student has a personalized report. Whether you want to see what they've done that day, that week or from the very beginning, we've got you covered! Every module they practice, every story they read, every attempt they make, even their level of confidence on any given topic is continually updated in plain English.<br /><br />Print weekly summaries, add personalized notes, practice missed questions and more!<br /><br />Have more than one student? <strong>Who Needs Help</strong> let's you know who might need a little guidance.</>],
   ['Story Log', 'storylog-page', 'storylog', 'story-right', <>Every module comes with a story, and the Story Log is where you see who has read what. Open any story from there to read it together, print it, or mark it as read.</>],
   ['Transcripts', 'transcript', 'report', 'above', <>Every student has a printable transcript covering everything they've ever worked on. While weekly summaries are helpful, this is the clearest view of progression across the years.</>],
 ];
@@ -2263,7 +2272,7 @@ function sampleClass() {
   const rough = (moduleId, seed, at, misses) => { const a = buildAttempt(moduleId, seed, []); const res = a.core.map((q, k) => ({ genId: q.genId, seed: q.seed, correct: k >= misses, given: k >= misses ? q.answer : '', answer: q.answer, elapsedMs: 9000 })); return makeAttemptEvent(a, res, null, at, at); };
   const two = [makeCoursesEnabledEvent(['counting-k', 'letters-k'], day(9, 8)), rough('count-to-10', 21, day(7, 9), 3), rough('count-to-10', 22, day(5, 9), 2), rough('count-to-10', 23, day(3, 9), 3)];
   const three = [makeCoursesEnabledEvent(['counting-k', 'letters-k'], day(2, 8))];
-  return [{ id: 'S-1001', label: 'Frederick', events: one.events }, { id: 'S-1002', label: 'Second student', events: two }, { id: 'S-1003', label: 'Third student', events: three }];
+  return [{ id: 'S-1001', label: 'Frederick', events: one.events }, { id: 'S-1002', label: 'Alex', events: two }, { id: 'S-1003', label: 'Sydney', events: three }];
 }
 // A made-up student for the tour's sample report: a few days of work, a story, a note. Nothing is saved.
 function sampleRecord() {
@@ -4556,30 +4565,37 @@ function SproutGame({ game, round, onScore = null }) {
   );
 }
 // -----------------------------------------------------------------------------------------------------------------
-// Grow the Plant (2026-09-30, pass HC, the kindergarten agriculture game). In plain terms: a pot with a seed sits on the
-// board and five pictures sit under it: water, sunshine, soil and two toys. The child taps the three things the plant
-// needs, in any order; each one grows the plant a step, from a seed to a sprout to a leafy plant to a bean pod, a
-// sunflower, a tomato or an ear of corn. A toy wobbles and changes nothing. Four plants a round, and the clock counts up.
-// This component only draws and reacts: the four rounds come from growRounds() in logic.mjs, and which pictures count as
-// needs comes from GROW_NEEDS there. The board carries the plant and how many needs it has had in `data-grow-plant` and
-// `data-grow-given`, so the browser test can play a round. Drawn with B, the paper palette of every game board.
+// Grow the Plant (2026-09-30, pass HC; remade 2026-10-03, pass IV). In plain terms: a plant in a pot shows one problem,
+// said aloud and shown in the picture (droopy with dry soil, pale and leaning toward a window, or roots with no soil), and
+// five pictures sit under it: water, sunshine, soil and two toys. The one need that fixes the problem makes the plant
+// perk up and grow; a wrong need or a toy wobbles, and a wrong need sends the child back to what the plant shows. Four
+// plants a round from growRounds() in logic.mjs, the clock counting up. The board carries the plant, its need and whether
+// it is fixed in `data-grow-plant`, `data-grow-need` and `data-grow-fixed`, so the browser test can play a round. Drawn
+// with B, the paper palette of every game board.
 // -----------------------------------------------------------------------------------------------------------------
 function GrowGame({ game, round, onScore = null }) {
-  const rounds = useMemo(() => growRounds(round), [round]); // the four plants for this round, fixed by the round number
+  const rounds = useMemo(() => growRounds(round), [round]); // four plants, each with one problem, fixed by the round number
   const [k, setK] = useState(0); // which plant we are on
-  const [given, setGiven] = useState([]); // the needs tapped so far for this plant
-  const [nudge, setNudge] = useState(null); // a toy tapped by mistake, so that picture wobbles
+  const [fixed, setFixed] = useState(false); // the right need was given, so this plant perks up and grows
+  const [nudge, setNudge] = useState(null); // a wrong picture tapped, so it wobbles
+  const [hint, setHint] = useState(''); // after a wrong tap: back to what the plant shows
   const [ticks, setTicks] = useState(0); // seconds since the round started
   const [done, setDone] = useState(false); // true once all four plants have grown
   const q = rounds[Math.min(k, rounds.length - 1)];
-  const grown = given.length >= GROW_NEEDS.length;
-  useEffect(() => { setK(0); setGiven([]); setTicks(0); setDone(false); }, [round]); // a new round starts fresh
-  useEffect(() => { if (typeof speak === 'function' && !done) speak(`Help the ${q.plant} grow. Tap what it needs.`); }, [q, done]);
+  const look = GROW_PROBLEMS[q.need];
+  useEffect(() => { setK(0); setFixed(false); setHint(''); setTicks(0); setDone(false); }, [round]); // a new round starts fresh
+  useEffect(() => { if (typeof speak === 'function' && !done) speak(`${look.say.replace('This plant', `This ${q.plant} plant`)} Tap what it needs.`); }, [q, done]);
   useEffect(() => { if (done) return undefined; const t = setInterval(() => setTicks((n) => n + 1), 1000); return () => clearInterval(t); }, [done]);
   useEffect(() => { if (done && onScore) onScore(ticks, 'low'); }, [done]); // hand the time up; lower is better
   useEffect(() => { if (nudge === null) return undefined; const t = setTimeout(() => setNudge(null), 500); return () => clearTimeout(t); }, [nudge]);
-  useEffect(() => { if (!grown) return undefined; if (typeof speak === 'function') speak(`The ${q.plant} is growing!`); const t = setTimeout(() => { if (k + 1 >= rounds.length) setDone(true); else { setK(k + 1); setGiven([]); } }, 1100); return () => clearTimeout(t); }, [grown]);
-  const tap = (item) => { if (done || grown || given.includes(item)) return; if (GROW_NEEDS.includes(item)) setGiven([...given, item]); else setNudge(item); };
+  useEffect(() => { if (!fixed) return undefined; if (typeof speak === 'function') speak(`The ${q.plant} is growing!`); const t = setTimeout(() => { if (k + 1 >= rounds.length) setDone(true); else { setK(k + 1); setFixed(false); setHint(''); } }, 1300); return () => clearTimeout(t); }, [fixed]);
+  const tap = (item) => {
+    if (done || fixed) return;
+    if (item === q.need) { setFixed(true); setHint(''); return; }
+    setNudge(item);
+    const h = GROW_NEEDS.includes(item) ? `Look again: ${look.clue}` : 'A toy cannot help a plant grow.';
+    setHint(h); if (typeof speak === 'function') speak(h);
+  };
   const ink = B.ink;
   // The small picture on each button, drawn in a 40 by 40 box.
   const icon = (item) => {
@@ -4598,32 +4614,40 @@ function GrowGame({ game, round, onScore = null }) {
     if (plant === 'corn') return <g><ellipse cx="58" cy="38" rx="4.5" ry="9" fill="#F2C94C" stroke={ink} strokeWidth="1.2" /><path d="M54 44q-3-8 1-14" stroke="#3E8E4F" strokeWidth="2" fill="none" /></g>;
     return <path d="M56 34q9 4 6 14q-5-1-7-7q-1-4 1-7z" fill="#5DB36D" stroke={ink} strokeWidth="1.2" />; // a bean pod
   };
-  const stage = given.length; // 0 seed, 1 sprout, 2 leafy plant, 3 finished plant
+  // The plant as it looks now: healthy once fixed, otherwise showing its one problem.
+  const leaf = '#5DB36D';
+  const plant = () => {
+    if (fixed) return <g><path d="M50 70 V34" stroke="#3E8E4F" strokeWidth="3" strokeLinecap="round" /><path d="M50 62q-10-6-12-12q8 0 12 8z" fill={leaf} /><path d="M50 60q10-6 12-12q-8 0-12 8z" fill={leaf} /><path d="M50 48q-12-4-15-12q10 0 15 8z" fill={leaf} /><path d="M50 44q12-4 15-12q-10 0-15 8z" fill={leaf} />{crown(q.plant)}</g>;
+    if (q.need === 'water') return <g><path d="M50 70C50 52 52 44 62 46" stroke="#6E8A4E" strokeWidth="3" fill="none" strokeLinecap="round" /><path d="M50 60q-8 2-10 10q6-2 10-8z" fill="#8FAE6A" /><path d="M51 54q8 3 9 11q-6-3-9-9z" fill="#8FAE6A" /><path d="M62 46q4 4 2 10q-4-4-2-10z" fill="#8FAE6A" /></g>;
+    if (q.need === 'sunshine') return <g><path d="M50 70C50 52 58 36 70 24" stroke="#B7C77A" strokeWidth="2.2" fill="none" strokeLinecap="round" /><path d="M53 56q-7-3-9-9q7 1 9 7z" fill="#D5DE9C" /><path d="M61 41q8-1 11-7q-7 0-11 5z" fill="#D5DE9C" /></g>;
+    return <g><path d="M50 64 V40" stroke="#3E8E4F" strokeWidth="3" strokeLinecap="round" /><path d="M50 54q-9-5-11-11q7 0 11 7z" fill={leaf} /><path d="M50 52q9-5 11-11q-7 0-11 7z" fill={leaf} /></g>;
+  };
   return (
-    <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }} data-grow-plant={done ? '' : q.plant} data-grow-given={done ? '' : String(stage)}>
+    <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }} data-grow-plant={done ? '' : q.plant} data-grow-need={done ? '' : q.need} data-grow-fixed={fixed ? 'yes' : 'no'}>
       <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 6 }}><span>Grow the plant</span><span>{ticks}s · {Math.min(k + 1, rounds.length)} of {rounds.length}</span></div>
       {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Four plants grown in {ticks} seconds. Tap the round arrow for more.</p> : (
         <div style={{ textAlign: 'center' }}>
-          <svg viewBox="0 0 100 100" width="160" height="160" role="img" aria-label={`A ${q.plant} in a pot, ${['still a seed', 'a small sprout', 'a leafy plant', 'grown'][stage]}`} style={{ display: 'block', margin: '0 auto 6px' }}>
-            {stage >= 1 && <path d={`M50 70 V${stage >= 2 ? 34 : 56}`} stroke="#3E8E4F" strokeWidth="3" strokeLinecap="round" />}
-            {stage >= 1 && <g><path d="M50 62q-10-6-12-12q8 0 12 8z" fill="#5DB36D" /><path d="M50 60q10-6 12-12q-8 0-12 8z" fill="#5DB36D" /></g>}
-            {stage >= 2 && <g><path d="M50 48q-12-4-15-12q10 0 15 8z" fill="#5DB36D" /><path d="M50 44q12-4 15-12q-10 0-15 8z" fill="#5DB36D" /></g>}
-            {stage >= 3 && crown(q.plant)}
+          <svg viewBox="0 0 100 100" width="160" height="160" role="img" aria-label={`A ${q.plant} plant in a pot. ${fixed ? 'It is growing well.' : look.say.replace('This plant', 'It')}`} style={{ display: 'block', margin: '0 auto 6px' }}>
+            {q.need === 'sunshine' && !fixed && <g><rect x="74" y="8" width="20" height="22" rx="2" fill="#FFF3C4" stroke={ink} strokeWidth="1.2" /><path d="M84 8v22M74 19h20" stroke={ink} strokeWidth="1" /></g>}
+            {q.need !== 'soil' || fixed ? plant() : null}
             <path d="M30 70h40l-5 24h-30z" fill="#C8734B" stroke={ink} strokeWidth="1.5" />
-            <rect x="31" y="68" width="38" height="5" rx="2" fill="#6B4A2F" />
-            {stage === 0 && <ellipse cx="50" cy="68" rx="4" ry="2.5" fill="#E8D8A8" stroke={ink} strokeWidth="1" />}
+            {q.need === 'soil' && !fixed ? <g><ellipse cx="50" cy="70" rx="20" ry="3.5" fill="#3A2A20" opacity="0.35" />{plant()}<path d="M50 64q-5 5-9 8M50 64q0 6-1 11M50 64q5 5 10 7" stroke="#E8D9B5" strokeWidth="1.6" fill="none" strokeLinecap="round" /></g>
+              : <g><ellipse cx="50" cy="70" rx="20" ry="3.5" fill={q.need === 'water' && !fixed ? '#C9B08A' : '#6B4A2F'} />{q.need === 'water' && !fixed && <path d="M40 70l3 1.5M55 69.5l-2 1.8M47 71l2-1.2" stroke="#8C6A4A" strokeWidth="0.8" />}</g>}
           </svg>
-          <p style={{ margin: '0 0 10px', fontSize: 16, color: grown ? B.green : B.ink, minHeight: 22, fontWeight: grown ? 700 : 400 }}>{grown ? `The ${q.plant} is growing!` : `Tap what the ${q.plant} needs.`}</p>
-          <div style={{ display: 'flex', gap: 8, justifyContent: 'center', flexWrap: 'wrap' }}>
-            {q.items.map((item) => { const used = given.includes(item); return (
-              <button key={item} type="button" className={`edu-press${nudge === item ? ' edu-wobble' : ''}`} aria-label={`Give ${item}`} aria-pressed={used} onClick={() => tap(item)} style={{ fontFamily: FONT, width: 76, padding: '6px 4px', borderRadius: 14, border: `2px solid ${used ? B.green : B.line}`, background: used ? '#E4F3EA' : '#fff', color: B.ink, cursor: used || grown ? 'default' : 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
-                <svg viewBox="0 0 40 40" width="40" height="40" aria-hidden="true">{icon(item)}</svg>
-                <span style={{ fontSize: 13, fontWeight: 700, textTransform: 'capitalize' }}>{item}</span>
-              </button>); })}
+          <p style={{ margin: '0 0 4px', fontSize: 16, color: ink }}>{fixed ? `The ${q.plant} is growing!` : look.say}</p>
+          <p style={{ margin: '0 0 10px', fontSize: 17, fontWeight: 700, color: ink }}>Tap what the {q.plant} needs.</p>
+          {hint && !fixed && <p role="status" style={{ margin: '0 0 10px', fontSize: 15, color: B.clay }}>{hint}</p>}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 6 }}>
+            {q.items.map((item) => (
+              <button key={item} type="button" aria-label={`Give ${item}`} onClick={() => tap(item)} className={`edu-press${nudge === item ? ' edu-wobble' : ''}`}
+                style={{ fontFamily: FONT, background: B.surface, border: `2px solid ${B.line}`, borderRadius: 10, padding: '6px 2px', cursor: done || fixed ? 'default' : 'pointer', minWidth: 0 }}>
+                <svg viewBox="0 0 40 40" width="40" height="40" aria-hidden="true" style={{ display: 'block', margin: '0 auto' }}>{icon(item)}</svg>
+                <span style={{ display: 'block', fontSize: 12, color: ink, lineHeight: 1.2 }}>{item}</span>
+              </button>
+            ))}
           </div>
         </div>
       )}
-      <Done show={done} />
     </div>
   );
 }
@@ -5085,10 +5109,35 @@ function gameInstructions(game) {
   if (game.kind === 'sort') return game.by === 'size' ? 'Drag each object to the side it belongs. When they are all sorted, you win!' : 'Drag each object to the side it belongs. When each one is sorted, you win!';
   return { sprint: 'Sixty seconds. Questions from your own lessons come one after another; tap the answer and the next one appears. A right answer is a point, a wrong one takes a point away, and three right in a row starts a streak. Beat your best.', order: 'The steps are shuffled. Tap them in the order they happen, first to last. Tap a numbered step to take its number back. When every step has a number, a right order moves on and the first mistake comes loose to try again. On a timeline, the dates appear once the set is in order, and the clock waits while you read them. Three sets, and the clock counts up, so race yourself.', dots: 'Tap the dots in order, 1, 2, 3, and a picture appears. Tap the wrong dot and nothing happens; find the next number.', pairs: 'Tap two cards. If the pictures match, they stay up. If not, they turn back over. Find every pair.', maze: 'Drag the dot to the star without crossing a wall.', jigsaw: 'Drag each piece to where it belongs until the picture is whole.', pong: 'Slide the paddle to hit the ball back. Miss, and the ball resets. See how many hits you can keep going.' }[game.kind] || 'Tap to play.';
 }
+// The foot of an opened fold (pass IT, Mikey): a centered Collapse link, so a long open list can be closed from the bottom.
+// Closing brings the fold's own title back into view, so the student is not left somewhere unfamiliar.
+function FoldEnd({ label, onCollapse }) {
+  const close = () => {
+    onCollapse();
+    if (typeof window === 'undefined') return;
+    const calm = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    requestAnimationFrame(() => { const head = document.querySelector(`button[aria-label="${label}"]`); if (head && head.scrollIntoView) head.scrollIntoView({ block: 'center', behavior: calm ? 'auto' : 'smooth' }); });
+  };
+  return <div style={{ textAlign: 'center', margin: '12px 0 2px' }}><button type="button" onClick={close} style={{ background: 'none', border: 'none', color: C.green, fontFamily: FONT, fontSize: 15, fontWeight: 600, textDecoration: 'underline', cursor: 'pointer', padding: '6px 12px' }}>Collapse</button></div>;
+}
+// Games that move on their own wait behind a Begin cover (pass IU, Mikey), so nothing starts before a child is ready and
+// How to play can be read first. Play again starts the next round at once, because the child just asked for it.
+const MOVING_GAMES = new Set(['ship', 'catch', 'pong']);   // Frog Jumps and Buckets wait for a drag, so they need no cover
+function BeginCover({ onBegin }) {
+  return (
+    <div data-begin-cover="" style={{ width: 'min(100%, 70vh)', aspectRatio: '1 / 1', margin: '0 auto', borderRadius: 16, background: C.paperBoard, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 12, padding: 16, boxSizing: 'border-box' }}>
+      <Btn pal={B} onClick={onBegin} style={{ minWidth: 170, minHeight: 56, fontSize: 21 }}>
+        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 10 }}><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M7 4.5v15l12-7.5z" fill="currentColor" /></svg>Begin</span>
+      </Btn>
+      <p style={{ margin: 0, fontSize: 14, color: B.muted, textAlign: 'center' }}>The game starts moving when you tap Begin.</p>
+    </div>
+  );
+}
 function GamePad({ game, name, secondsLeft, total, onClose, modules = [], onScore = null, best = null, young = false }) {
   const [round, setRound] = useState(1);
   const [showHow, setShowHow] = useState(false);
   const Game = GAME_OF[game.kind];
+  const [begun, setBegun] = useState(!MOVING_GAMES.has(game.kind));   // pass IU: moving games wait for Begin
   const iconBtn = { background: 'none', border: 'none', padding: 6, cursor: 'pointer', color: C.green, lineHeight: 0 };
   return (
     <div style={{ maxWidth: 560, margin: '0 auto' }}>
@@ -5104,7 +5153,7 @@ function GamePad({ game, name, secondsLeft, total, onClose, modules = [], onScor
       <div style={{ margin: '8px 0 12px', height: 10, borderRadius: 5, background: C.line, overflow: 'hidden' }}>
         <div style={{ height: '100%', width: `${Math.min(100, Math.max(0, (secondsLeft / total) * 100))}%`, background: `linear-gradient(90deg, ${CRAYONS[0]}, ${CRAYONS[3]}, ${CRAYONS[4]})`, transition: 'width 1s linear' }} />
       </div>
-      <Game game={game} name={name} round={round} modules={modules} onScore={onScore} best={best} />
+      {begun ? <Game game={game} name={name} round={round} modules={modules} onScore={onScore} best={best} /> : <BeginCover onBegin={() => setBegun(true)} />}
       <p style={{ margin: '12px 0 0', textAlign: 'center' }}><button type="button" onClick={() => setShowHow(true)} style={{ background: 'none', border: 'none', color: C.green, fontFamily: FONT, fontSize: 15, textDecoration: 'underline', cursor: 'pointer' }}>Instructions</button></p>
       {/* The youngest can hear the instructions (2026-09-23, Mikey): a speaker under the link, played only when tapped. */}
       {young && <div style={{ display: 'flex', justifyContent: 'center', marginTop: 8 }}><SpeakButton mini text={`${game.title}. ${gameInstructions(game)}`} label="Hear the instructions" /></div>}
@@ -6724,6 +6773,7 @@ function EduSphereScreens() {
   const [wonder, setWonder] = useState(null);        // the Wonder question shown after mastery
   const [wonderText, setWonderText] = useState('');  // stays on the screen only; never saved
   const [wonderPick, setWonderPick] = useState('');
+  const [wonderLit, setWonderLit] = useState(-1);   // the choice a pre-reader is hearing now, lit on screen (pass IS)
   const [wonderStartedAt, setWonderStartedAt] = useState(0);
   const [openSubject, setOpenSubject] = useState(null); // the one subject a learner has opened, if any
   const [showFinished, setShowFinished] = useState(false); // young learners: finished modules stay folded away
@@ -7149,7 +7199,9 @@ function EduSphereScreens() {
   // Every screen opens at the top. Without this, a long page keeps the previous scroll position.
   useEffect(() => {
     if (typeof window !== 'undefined' && window.scrollTo) {
-      if (pendingScroll.current !== null) { const y = pendingScroll.current; pendingScroll.current = null; setTimeout(() => window.scrollTo(0, y), 0); }
+      // Back where the student was (pass IU, Mikey: closing a game landed at the top). The page can still be growing when
+      // it first draws, so the scroll is tried again for up to a second until it holds.
+      if (pendingScroll.current !== null) { const y = pendingScroll.current; pendingScroll.current = null; let tries = 0; const go = () => { window.scrollTo(0, y); if (Math.abs(window.scrollY - y) > 2 && tries++ < 20) setTimeout(go, 50); }; setTimeout(go, 0); }
       else window.scrollTo(0, 0);
       if (window.requestAnimationFrame) window.requestAnimationFrame(() => { void document.body.offsetHeight; });
     }
@@ -7202,7 +7254,13 @@ function EduSphereScreens() {
     if (!educator.tourSeen && !phoneScreen) { if (!tourBegun.current) { tourBegun.current = true; setTourStep(0); } return; }
     if (news && educator.newsSeen !== news.stamp) setNewsOpen(true);
   }, [screen, educator && educator.newsSeen, educator && educator.tourSeen]);
-  useEffect(() => { if (screen === 'wonder' && readAloud && wonder) speak(wonder.prompt); }, [screen, readAloud, wonder]);
+  // A pre-reader hears the Wonder question and then each choice, the choice being read lit on screen (pass IS). Leaving
+  // the screen stops the reading, so the two short voices that follow are never talked over.
+  useEffect(() => {
+    if (!(screen === 'wonder' && readAloud && wonder)) return undefined;
+    const stop = speakSequence(wonderSpokenParts(wonder), (i) => setWonderLit(i - 1), () => setWonderLit(-1));
+    return () => stop();
+  }, [screen, readAloud, wonder]);
   const spokenVoice = screen === 'wonder-voices' && readAloud && wonder ? (wonder.simple || [])[Math.min(wonderVoiceStep, ((wonder.simple || []).length || 1) - 1)] : null;
   useEffect(() => { if (spokenVoice) speak(`${spokenVoice.voice}. ${spokenVoice.says}`); }, [spokenVoice]);
   // The test hook: what screen is up, which question, and a way to open a named module without
@@ -7286,7 +7344,7 @@ function EduSphereScreens() {
         if (where === 'under-cards' && er0) { expCard0.scrollIntoView({ block: 'center' }); const e2 = expCard0.getBoundingClientRect(); setTourBox({ left: (W - cardW) / 2 / z, top: Math.max(12, Math.min(H - cardH - 12, e2.bottom + 10 - cardH)) / z, width: cardW / z }); return; }
         setTourBox({ left: (W - cardW) / 2 / z, top: (H - cardH - 12) / z, width: cardW / z }); return;
       }
-      if (where === 'right-top' || where === 'over-second' || where === 'right-edge-top' || where === 'story-right') window.scrollTo(0, 0); else els[0].scrollIntoView({ block: 'center' });
+      if (where === 'right-top' || where === 'over-second' || where === 'right-below-summary' || where === 'right-edge-top' || where === 'story-right') window.scrollTo(0, 0); else els[0].scrollIntoView({ block: 'center' });
       const r = els[0].getBoundingClientRect(); const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
       const mid = clamp((H - cardH) / 2, 12, H - cardH - 12);
       let box = null;
@@ -7299,7 +7357,15 @@ function EduSphereScreens() {
         const pic = els[0].querySelector('svg, img'); const pr = pic ? pic.getBoundingClientRect() : null;
         box = { left: W - cardW - 12, top: clamp(pr && pr.height > 40 ? pr.top + pr.height * 0.45 : r.top + r.height * 0.55, 12, H - cardH - 12), width: cardW };
       } else if (wide && where === 'over-life-low' && lifeR) box = { left: clamp(lifeR.right - cardW + 24, 12, W - cardW - 12), top: clamp(r.top - 10 - cardH, 12, H - cardH - 12), width: cardW };   // over Life Skills, its foot just above the backup line
-      else if (wide && where === 'over-exp-by-life' && er) box = { left: clamp(er.right - cardW + 18, 12, W - cardW - 12), top: clamp(r.top + r.height / 2 - cardH / 2 + 24, 12, H - cardH - 12), width: cardW };   // over Experiments, beside Life Skills
+      else if (where === 'over-exp-by-life' && er && lifeR) {
+        // Card 5 (pass IT, Mikey): over Experiments and up into the card above it, never over Life Skills, on any width. In
+        // one column its foot rests on Experiments' lower edge; in two columns it also keeps to the left of Life Skills.
+        let left = clamp(er.left + er.width / 2 - cardW / 2, 12, W - cardW - 12);
+        if (lifeR.top < er.bottom - 4 && lifeR.left > er.left && left + cardW > lifeR.left - 8) left = clamp(lifeR.left - 8 - cardW, 12, W - cardW - 12);
+        let top = er.bottom - 10 - cardH;
+        if (top < 12) { const up = Math.min(12 - top, Math.max(0, H - 12 - lifeR.bottom)); if (up > 0) { window.scrollBy(0, -up); top += up; } }
+        box = { left, top: clamp(top, 12, H - cardH - 12), width: cardW };
+      }
       else if (wide && where === 'over-exp-high' && er) box = { left: clamp(er.right - cardW + 40, 12, W - cardW - 12), top: clamp(er.top - 24, 12, H - cardH - 12), width: cardW };   // over Experiments, up toward Reading
       else if (wide && where === 'over-life-high' && lifeR) box = { left: clamp(lifeR.left - 40, 12, W - cardW - 12), top: clamp(lifeR.top - 24, 12, H - cardH - 12), width: cardW };   // over Life Skills, up toward Experiments
       else if (wide && where === 'story-right') box = { left: clamp(r.right - cardW + 90, 12, W - cardW - 12), top: clamp(r.bottom - 70, 12, H - cardH - 12), width: cardW };   // low and to the right: the title, the choices and the newest stories with their Open buttons stay readable
@@ -7307,6 +7373,7 @@ function EduSphereScreens() {
       else if (where === 'right-edge-top') box = { left: W - cardW - 12, top: clamp(r.top + 24, 12, H - cardH - 12), width: cardW };   // flush right, near the top of the glowing card
       else if (where === 'over-buttons' && er) box = { left: (W - cardW) / 2, top: clamp(er.bottom - 44 - cardH, 12, H - cardH - 12), width: cardW };   // its foot over the top edge of the two buttons
       else if (where === 'under-cards' && er) box = { left: (W - cardW) / 2, top: clamp(er.bottom + 10 - cardH, 12, H - cardH - 12), width: cardW };   // its foot just past the cards' bottom edge
+      else if (where === 'right-below-summary') box = { left: W - cardW - 12, top: clamp(r.bottom, 12, H - cardH - 12), width: cardW };   // card 8 (pass IT): flush right, its top on the summary card's foot
       else if (where === 'over-second') { const second = els[1] ? els[1].getBoundingClientRect() : r; box = { left: clamp(second.right + 140 - cardW, 12, W - cardW - 12), top: clamp(second.top - 36, 12, H - cardH - 12), width: cardW }; }   // beside the second student, clear of the green box, the word keep still showing
       else if (where === 'above') box = { left: (W - cardW) / 2, top: clamp(r.top - 8 - cardH, 12, H - cardH - 12), width: cardW };
       else if (where === 'right-top') box = { left: W - cardW - 12, top: mid, width: cardW };                                     // flush right, the page left readable, scrolled to its top
@@ -7528,8 +7595,8 @@ function EduSphereScreens() {
                             {locked ? (
                               !isPreReader(course.id) && <p style={{ color: C.muted, fontSize: 14, margin: '10px 0 0' }}>Finish the module before this one first.</p>
                             ) : m.needsTouch && !hasTouchScreen() ? (
-                              <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 12 }}>
-                                <p style={{ margin: 0, width: '34%', minWidth: 150, textAlign: 'center', alignSelf: 'center', fontSize: 14, fontWeight: 600, color: C.clay }}>This needs a touch screen. An iPad or another large tablet with a stylus is best.</p>
+                              <div style={{ marginTop: 12 }}>
+                                <p data-touch-note="" style={{ margin: 0, textAlign: 'center', fontSize: 14, fontWeight: 600, color: C.clay }}>This needs a touch screen. An iPad or another large tablet with a stylus is best.</p>
                               </div>
                             ) : (
                               <div style={{ marginTop: 12 }}>
@@ -7678,6 +7745,7 @@ function EduSphereScreens() {
                   })()}
                 </div>
               )}
+              {open && <FoldEnd label="Let's Color" onCollapse={() => setOpenSubject(null)} />}
             </div>
           ); })()}
         {/* Let's Read: for students past the early years, one longer story per course, unlocked when the whole
@@ -7725,6 +7793,7 @@ function EduSphereScreens() {
                   </div>
                 </div>
               )}
+              {open && <FoldEnd label="Let's Read" onCollapse={() => setOpenSubject(null)} />}
             </div>
           );
         })()}
@@ -7786,6 +7855,7 @@ function EduSphereScreens() {
                   </div>
                 </div>
               )}
+              {open && <FoldEnd label="Let's Play" onCollapse={() => setOpenSubject(null)} />}
             </div>
           );
         })()}
@@ -8001,7 +8071,7 @@ function EduSphereScreens() {
                   // because naming it would hand over the answer.
                   <button key={c} type="button" data-choice={c} onClick={() => { if (!checked) { if (readAloud) { playTap(); if (!c.includes(':')) speak(c); } setGiven(c); } }}
                     style={{ opacity: ruledOut && !checked ? (C.mode === 'dark' ? 0.72 : 0.5) : 1, fontFamily: FONT, fontSize: choiceFont(q.choices), textAlign: 'center', padding: '12px 10px', minWidth: 0, overflowWrap: /^-?[\d.,\/ ]+$/.test(c) ? 'normal' : 'anywhere', whiteSpace: /^-?[\d.,\/ ]+$/.test(c) ? 'nowrap' : 'normal', borderRadius: 10, background: bg, border: `2px solid ${border}`, color: C.ink, cursor: checked ? 'default' : 'pointer', minHeight: 48 }}>
-                    {/^dots:(\d+)$/.test(c) ? <DotGroup count={Number(c.split(':')[1])} size={28} /> : /^shape:/.test(c) ? <ShapePic name={c.split(':')[1]} size={c.endsWith(':big') ? 88 : c.endsWith(':small') ? 34 : c.endsWith(':medium') ? 58 : 64} /> : /^tens:(\d+)$/.test(c) ? <TensGroup count={Number(c.split(':')[1])} size={14} /> : /^bar:(\d+)$/.test(c) ? <BarPic length={Number(c.split(':')[1])} size={18} /> : /^tower:(\d+)$/.test(c) ? <BarPic length={Number(c.split(':')[1])} vertical size={14} /> : /^solid:/.test(c) ? <SolidPic name={c.slice(6)} size={64} /> : /^pic:/.test(c) ? <StudentPicture name={c.slice(4).split('#')[0]} size={72} /> : /^art:/.test(c) ? <ColorThumb picture={c.slice(4).split('#')[0]} size={84} /> : /^icon:/.test(c) ? <IconPic name={c.slice(5)} size={64} /> : /^swatch:/.test(c) ? <Swatch colour={c.slice(7)} size={64} /> : /^item:/.test(c) ? <Item spec={c.slice(5)} size={64} /> : /^clock:/.test(c) ? <ClockPic hour={Number(c.split(':')[1])} minute={Number(c.split(':')[2])} size={80} /> : /^array:/.test(c) ? <ArrayPic rows={Number(c.slice(6).split('x')[0])} cols={Number(c.slice(6).split('x')[1])} size={12} /> : c}
+                    {/^dots:(\d+)$/.test(c) ? <DotGroup count={Number(c.split(':')[1])} size={28} /> : /^shape:/.test(c) ? <ShapePic name={c.split(':')[1]} size={c.endsWith(':big') ? 88 : c.endsWith(':small') ? 34 : c.endsWith(':medium') ? 58 : 64} /> : /^tens:(\d+)$/.test(c) ? <TensGroup count={Number(c.split(':')[1])} size={14} /> : /^bar:(\d+)$/.test(c) ? <BarPic length={Number(c.split(':')[1])} size={18} /> : /^tower:(\d+)$/.test(c) ? <BarPic length={Number(c.split(':')[1])} vertical size={14} /> : /^solid:/.test(c) ? <SolidPic name={c.slice(6)} size={64} /> : /^pic:/.test(c) ? <span style={{ display: 'flex', justifyContent: 'center' }}><StudentPicture name={c.slice(4).split('#')[0]} size={72} /></span> : /^art:/.test(c) ? <span style={{ display: 'flex', justifyContent: 'center' }}><ColorThumb picture={c.slice(4).split('#')[0]} size={84} /></span> : /^icon:/.test(c) ? <IconPic name={c.slice(5)} size={64} /> : /^swatch:/.test(c) ? <Swatch colour={c.slice(7)} size={64} /> : /^item:/.test(c) ? <Item spec={c.slice(5)} size={64} /> : /^clock:/.test(c) ? <ClockPic hour={Number(c.split(':')[1])} minute={Number(c.split(':')[2])} size={80} /> : /^array:/.test(c) ? <ArrayPic rows={Number(c.slice(6).split('x')[0])} cols={Number(c.slice(6).split('x')[1])} size={12} /> : c}
                   </button>
                 );
               })}
@@ -8305,7 +8375,7 @@ function EduSphereScreens() {
         </div>
         <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 14 }}>
           {canSpeak() && (
-            <button type="button" onClick={() => speak(wonder.prompt)} aria-label="Say it again" className="edu-press edu-sway"
+            <button type="button" onClick={() => speakSequence(wonderSpokenParts(wonder), (i) => setWonderLit(i - 1), () => setWonderLit(-1))} aria-label="Say it again" className="edu-press edu-sway"
               style={{ width: 66, height: 66, borderRadius: 999, border: `3px solid ${C.gold}`, background: C.goldSoft, cursor: 'pointer', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <svg viewBox="0 0 24 24" width="34" height="34" aria-hidden="true">
                 <path d="M4 9.5h3.5L12 5.5v13L7.5 14.5H4z" fill={C.gold} />
@@ -8314,11 +8384,12 @@ function EduSphereScreens() {
             </button>
           )}
         </div>
-        {/* Big tap targets, read aloud when tapped, so choosing needs no reading. */}
+        {/* Big tap targets. The question and then each choice are read aloud in turn, and the choice being read lights up,
+            so a child who cannot read yet knows what each button says (pass IS: before it, the choices were never spoken). */}
         <div style={{ display: 'grid', gap: 12, gridTemplateColumns: `repeat(${Math.min(3, options.length)}, 1fr)` }}>
-          {options.map((o) => (
-            <button key={o} type="button" onClick={() => finish(o)} className="edu-press"
-              style={{ fontFamily: FONT, fontSize: 20, fontWeight: 600, padding: '22px 10px', borderRadius: 14, background: C.surface, border: `3px solid ${C.green}`, color: C.green, cursor: 'pointer', minHeight: 78 }}>
+          {options.map((o, i) => (
+            <button key={o} type="button" onClick={() => finish(o)} className="edu-press" data-wonder-lit={wonderLit === i ? '' : undefined}
+              style={{ fontFamily: FONT, fontSize: 20, fontWeight: 600, padding: '22px 10px', borderRadius: 14, background: wonderLit === i ? C.goldSoft : C.surface, border: `3px solid ${wonderLit === i ? C.gold : C.green}`, color: wonderLit === i ? C.ink : C.green, cursor: 'pointer', minHeight: 78, transform: wonderLit === i ? 'scale(1.04)' : 'none', transition: 'transform 200ms, background 200ms' }}>
               {o}
             </button>
           ))}
@@ -8483,12 +8554,15 @@ function EduSphereScreens() {
         {/* My stories: the ones this student has read, a shelf to reopen, and how many wait. */}
         {(() => {
           const read = storiesRead(record.events).filter((r) => storyFor(r.moduleId));
-          const waiting = visibleModules.filter((m) => storyFor(m.id) && !read.some((r) => r.moduleId === m.id)).length;
-          if (!read.length && !waiting) return null;
+          // Long stories count too (pass IT, Mikey): one per course, unlocked when the course is finished.
+          const longRead = storiesRead(record.events).filter((r) => String(r.moduleId).startsWith('course:') && visibleCourses.some((c) => `course:${c.id}` === r.moduleId)).length;
+          const waiting = visibleModules.filter((m) => storyFor(m.id) && !read.some((r) => r.moduleId === m.id)).length
+            + visibleCourses.filter((c) => courseStoryFor(c.id) && !storiesRead(record.events).some((r) => r.moduleId === `course:${c.id}`)).length;
+          if (!read.length && !longRead && !waiting) return null;
           return (
             <div style={{ ...card, marginTop: 24 }}>
               <p className="edu-card-title" style={{ margin: '0 0 6px', fontWeight: 600, textAlign: 'center' }}>My Stories</p>
-              <p style={{ margin: '0 0 10px', fontSize: 14, color: C.muted, textAlign: 'center' }}>{read.length ? `${read.length} read` : 'None read yet'}{waiting ? ` · ${waiting} waiting` : ''}</p>
+              <p style={{ margin: '0 0 10px', fontSize: 14, color: C.muted, textAlign: 'center' }}>{read.length + longRead ? `${read.length + longRead} read` : 'None read yet'}{waiting ? ` · ${waiting} waiting` : ''}</p>
               {read.slice(0, 12).map((r) => { const st = storyFor(r.moduleId); return (
                 <div key={r.moduleId} style={{ display: 'flex', gap: 10, alignItems: 'center', padding: '8px 0', borderTop: `1px solid ${C.line}` }}>
                   <StoryThumb serial={st.art} />
@@ -9247,7 +9321,7 @@ function EduSphereScreens() {
               <p style={{ margin: '0 0 8px', fontSize: 18, fontWeight: 600 }}>Make your first backup soon</p>
               <p style={{ margin: '0 0 18px', fontSize: 15, color: C.muted }}>A forgotten PIN can only be reset with a backup file.</p>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-                <Btn full kind="secondary" onClick={() => setBackupNudgeSeen(true)}>Later</Btn>
+                <Btn full kind="secondary" onClick={() => { setBackupNudgeSeen(true); if (typeof window !== 'undefined') { const calm = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches; window.scrollTo({ top: 0, behavior: calm ? 'auto' : 'smooth' }); } }}>Later</Btn>
                 <Btn full onClick={() => { setBackupNudgeSeen(true); setScreen('backup'); }}>Backup now</Btn>
               </div>
             </div>
@@ -9559,11 +9633,11 @@ function EduSphereScreens() {
         <div style={{ ...card, marginTop: 22, textAlign: 'center' }}>
           <div style={{ margin: '0 0 16px', padding: '12px 14px', borderRadius: 10, background: C.greenSoft, textAlign: 'center' }}>
             <p style={{ margin: '0 0 4px', fontWeight: 600 }}>Quick checks</p>
-            <p style={{ margin: '0 0 8px', fontSize: 14, color: C.muted, lineHeight: 1.5 }}>All new students (above grade 2) start by taking placement tests. Quick-Checks merely refine that further.<br />Short knowledge checks let students skip the material they already know. <InfoButton onClick={() => setShowQuickTip(!showQuickTip)} label="About quick checks" open={showQuickTip} /></p>
+            <p style={{ margin: '0 0 8px', fontSize: 14, color: C.muted, lineHeight: 1.5 }}>All new students (above grade 2) start by taking placement tests. Quick-Checks merely refine that further. <InfoButton onClick={() => setShowQuickTip(!showQuickTip)} label="About quick checks" open={showQuickTip} /></p>
             {showQuickTip && <TipText>Generically placing a student into grade 3 math (after failing grade 4 in a placement test) is an over-simplification. They may already understand some of the grade 3 material. Quick-checks are opportunities for students to skip individual modules (in this case, grade 3 math modules) through five-question knowledge tests and allow for less wasted time.<br /><br /><strong>Note:</strong> Successful skips lead to a transcript status of "placed" rather than "mastered." If they answer too quickly, it doesn't count. Future memory checks will further test their level of understanding of these skipped modules by integrating the concepts into new material, ensuring that nothing slips through the cracks. If necessary, we route them backwards.</TipText>}
             <SegToggle options={[['on', 'On'], ['off', 'Off']]} value={quickChecks ? 'on' : 'off'} onChange={async (key) => { const next = key === 'on'; setQuickChecks(next); await saveQuickChecks(next); }} ariaLabel="Quick checks on or off" />
           </div>
-          <p style={{ margin: '0 0 6px', fontWeight: 600 }} data-tour="walk">Walk through as a student</p>
+          <p style={{ margin: '22px 0 6px', fontWeight: 600 }} data-tour="walk">Walk through as a student</p>
           <p style={{ margin: '0 0 10px', fontSize: 15 }}>See exactly what a student sees. Every module is open, every question can be skipped, and nothing is recorded.</p>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, justifyContent: 'center' }}>
             {LEVELS.map((lv) => <button key={lv.id} type="button" aria-label={`Walk through ${lv.title.toLowerCase()}`} onClick={() => startPreview(lv.id)} style={{ fontFamily: FONT, fontSize: 15, fontWeight: 600, padding: '10px 16px', borderRadius: 10, background: C.surface, border: `2px solid ${C.green}`, color: C.green, cursor: 'pointer' }}>{lv.title}</button>)}
@@ -9699,7 +9773,7 @@ function EduSphereScreens() {
                     <div className="edu-story-words" style={{ gridRow: '1 / span 2', minWidth: 0 }}>
                       <p style={{ margin: 0, fontWeight: 600 }}>{it.title}</p>
                       {it.at && <p style={{ margin: '1px 0 0', fontSize: 13, color: C.muted }}>{niceDateShort(it.at)}</p>}
-                      <p style={{ margin: '2px 0 0', fontSize: 14, color: C.muted }}>{it.about ? `A story about ${it.about}. ` : ''}{it.goal ? (it.isCourse ? `The ${it.goal} course.` : `It teaches ${it.goal.charAt(0).toLowerCase() + it.goal.slice(1)}.`) : ''}{it.note ? ` ${it.note.charAt(0).toUpperCase() + it.note.slice(1)}.` : ''}</p>
+                      <p style={{ margin: '2px 0 0', fontSize: 14, color: C.muted }}>{it.about ? `A story about ${it.about}. ` : ''}{it.goal ? (it.isCourse ? `The ${it.goal} course.` : `It teaches ${teachPhrase(it.goal)}.`) : ''}{it.note ? ` ${it.note.charAt(0).toUpperCase() + it.note.slice(1)}.` : ''}</p>
                     </div>
                     <div className="edu-story-thumb" style={{ justifySelf: 'end' }}><StoryThumb serial={it.isCourse ? (courseStoryFor(it.moduleId.slice(7)) || {}).art : (storyFor(it.moduleId) || {}).art} /></div>
                     <div className="edu-story-open" style={{ justifySelf: 'end', alignSelf: 'end' }}><Btn kind="secondary" onClick={() => { setOpenStoryId(it.moduleId); setOpenStoryFor(row.id); }} style={{ padding: '8px 14px', minHeight: 38, fontSize: 14 }}>Open</Btn></div>

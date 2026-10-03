@@ -59,7 +59,9 @@ export function lowerTitle(title) {
   const first = words[0];
   // Names keep their capital wherever they land in a sentence (pass IE added the history names: Texas, Texans, San Jacinto, Lincoln...).
   const keep = /^[A-Z]{2,}/.test(first) || /^(Dr|Mr|Mrs|Ms|St|Newton|Ohm|Boyle|Punnett|Pythagorean|Earth|Milky|Gulf|Big|Texas|Texans|Texan|Tejanos|Tejano|San|Santa|Juneteenth|Austin|Stephen|Sputnik|D-Day|Brown|Pearl|Germany|Standard|Social|Americans|Marbury|Federalist|Japan|Japanese|Soviet|Berlin|Cuban|Montgomery|Franklin|Hitler|Congress|Kansas|Missouri|Andrew|Jefferson|Leo|Mia|Ava|Ben|Max|Zoe|Ana|Eli|Noah|Maya|Omar|Priya|Kai|Mateo|Amara|Marcus|Nadia|Rosa|Sol|Grandpa|Grandma|Ortiz|Jaxon|Harlow|Savanah|Mike|Chloe|Frederick|Georgette|Moses|Sam|Houston|Galveston|Goliad|Gonzales|Alamo|Spindletop|President|Congress|Rome|Roman|Romans|Greek|Greece|Athens|Sumer|Egypt|Egyptian|China|Chinese|Japan|Japanese|Pearl|Germany|German|Germans|Hitler|Soviet|Soviets|Martin|Rosa|Neil|Americans|American|America|Brown|British|Britain|English|England|Spanish|Spain|Mexico|Mexican|Mexicans|French|France|Europe|European|Europeans|Africa|African|Asia|Columbus|Magellan|Gutenberg|Napoleon|Washington|Lincoln|Jefferson|Franklin|Roosevelt|Kennedy|Johnson|Nixon|Reagan|Obama|Churchill|Confederate|Confederacy|Union|Allied|Allies|Treaty|Battle|Declaration|Constitution|Comanche|Apache|Caddo|Jumano|Karankawa|Native|Indian|Christopher|George|Abraham|Thomas|Benjamin|John|Juan|Lyndon|Barack|Ronald)\b/.test(first);
-  words[0] = keep ? first : first.charAt(0).toLowerCase() + first.slice(1);
+  // Big, Standard and Social are names only before another name (Big Bang, Big Dipper); Big and small is not (pass IT).
+  const common = /^(Big|Standard|Social)$/.test(first) && !/^[A-Z]/.test(words[1] || '');
+  words[0] = keep && !common ? first : first.charAt(0).toLowerCase() + first.slice(1);
   return words.map((w, i) => (i === 0 ? w : (/^[A-Z]{2,}/.test(w) || /^(DNA|RNA|Earth|Newton|Ohm|Boyle|Punnett|Pythagorean|Milky|Gulf|Big|Bang)$/.test(w) ? w : w))).join(' ');
 }
 
@@ -2450,20 +2452,25 @@ export function sproutRounds(round) {
   return out;
 }
 // -----------------------------------------------------------------------------------------------------------------
-// Grow the Plant (2026-09-30, pass HC, the kindergarten agriculture game). In plain terms: a pot with a seed sits on the
-// board, and five pictures sit below it: water, sunshine, soil, and two toys. The child taps the three things the plant
-// needs, in any order, and the plant grows a step with each one; a toy wobbles. The lesson names five needs, and the game
-// uses the three a child can give with a tap (air and room are already there). `GROW_NEEDS` and `GROW_TOYS` are the
-// pictures, and `growRounds(round)` builds four rounds, each a plant with the three needs and two different toys, shuffled.
-// The screen reads the rounds from here, so one rules test can prove every round is fair.
+// Grow the Plant (2026-09-30, pass HC; rounds remade 2026-10-03, pass IV, Mikey: the same three answers every round made it
+// pointless). In plain terms: each of four plants shows one problem a child can see, and the child taps the one need that
+// fixes it: droopy with dry soil needs water, pale and leaning toward a window needs sunshine, roots with no soil around
+// them need soil. The wrong need or a toy changes nothing. `GROW_PROBLEMS` holds what each problem looks like in words,
+// and `growRounds(round)` gives every round all three problems at least once, so a child has to read each plant.
 // -----------------------------------------------------------------------------------------------------------------
 export const GROW_NEEDS = ['water', 'sunshine', 'soil'];
 export const GROW_TOYS = ['ball', 'shoe', 'toy car', 'hat'];
 export const GROW_PLANTS = ['bean', 'sunflower', 'tomato', 'corn'];
+export const GROW_PROBLEMS = {
+  water: { say: 'This plant is droopy, and its soil is dry.', clue: 'the plant is droopy, and the soil is dry.' },
+  sunshine: { say: 'This plant is pale, and it leans toward the window.', clue: 'the plant is pale, and it leans toward the light.' },
+  soil: { say: 'This plant has no soil around its roots.', clue: 'the roots have no soil around them.' },
+};
 export function growRounds(round) {
   let x = (round * 69621 + 23) >>> 0; const rnd = () => { x = (x * 1664525 + 1013904223) >>> 0; return x / 4294967296; };
   const shuffled = (list) => { const a = [...list]; for (let j = a.length - 1; j > 0; j--) { const k = Math.floor(rnd() * (j + 1)); [a[j], a[k]] = [a[k], a[j]]; } return a; };
-  return GROW_PLANTS.map((plant) => ({ plant, items: shuffled([...GROW_NEEDS, ...shuffled(GROW_TOYS).slice(0, 2)]) }));
+  const needs = shuffled([...GROW_NEEDS, GROW_NEEDS[Math.floor(rnd() * GROW_NEEDS.length)]]);   // every problem at least once, one twice
+  return GROW_PLANTS.map((plant, i) => ({ plant, need: needs[i], items: shuffled([...GROW_NEEDS, ...shuffled(GROW_TOYS).slice(0, 2)]) }));
 }
 // -----------------------------------------------------------------------------------------------------------------
 // The Better Deal (2026-09-30, pass HF, the middle school business game). In plain terms: an item with a price tag and
@@ -14290,13 +14297,13 @@ Object.assign(GENERATORS, {
       explain: `The ${not} is not living. It does not grow.`, visual: null, explainVisual: null };
   },
   'sk-plant-needs': (rng) => {
-    const need = pick(rng, ['drop', 'sun']);
-    return { type: 'choice', story: null, prompt: `Look at the ${need === 'drop' ? 'drop of water' : 'sun'}. Does a plant need it?`, choices: ['Yes', 'No'], answer: 'Yes',
-      explain: need === 'drop' ? 'A plant needs water.' : 'A plant needs the sun.', visual: { kind: 'icon', name: need }, explainVisual: null };
+    // Pass IU: things a plant does not need beside the two it does, so a round of five never asks the same question twice.
+    const [name, label, answer, explain] = pick(rng, [['drop', 'drop of water', 'Yes', 'A plant needs water.'], ['sun', 'sun', 'Yes', 'A plant needs the sun.'], ['rock', 'rock', 'No', 'A plant does not need a rock. It needs water and the sun.'], ['magnet', 'magnet', 'No', 'A plant does not need a magnet. It needs water and the sun.'], ['nail', 'nail', 'No', 'A plant does not need a nail. It needs water and the sun.']]);
+    return { type: 'choice', story: null, prompt: `Look at the ${label}. Does a plant need it?`, choices: ['Yes', 'No'], answer, explain, visual: { kind: 'icon', name }, explainVisual: null };
   },
   'sk-tap-plant-need': (rng) => {
-    const need = pick(rng, ['drop', 'sun']); const not = pick(rng, ['rock', 'magnet']);
-    return { type: 'choice', story: null, prompt: 'Tap what a plant needs to grow.', choices: shuffle(rng, [`icon:${need}`, `icon:${not}`]), answer: `icon:${need}`,
+    const [prompt, need] = pick(rng, [['Tap what a plant needs to grow.', 'drop'], ['Tap what a plant needs to grow.', 'sun'], ['Tap what a plant drinks.', 'drop'], ['Tap what gives a plant light.', 'sun']]); const not = pick(rng, ['rock', 'magnet']);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [`icon:${need}`, `icon:${not}`]), answer: `icon:${need}`,
       explain: need === 'drop' ? 'A plant needs water.' : 'A plant needs the sun.', visual: null, explainVisual: null };
   },
   's1-when-sun': (rng) => {
@@ -19238,6 +19245,8 @@ const ARCS = [
   { begins: 'Marcus wants to win the science prize at any cost.', ends: 'Marcus gives his rival the notes she needs and finishes second, content.', theme: 'Winning matters less than the kind of person you become.', wrong: ['Science prizes are unfair.', 'Second place is a good result.'], shift: 'Marcus gives his rival the notes.' },
   { begins: 'The village fears the stranger who moves in at the edge of town.', ends: 'The stranger is the one who carries the sick child through the storm to the doctor.', theme: 'Fear of outsiders can blind people to who they really are.', wrong: ['Storms are dangerous.', 'Doctors live far from villages.'], shift: 'The stranger carries the child through the storm.' },
   { begins: 'Priya keeps her grandmother\'s letters unread in a drawer.', ends: 'Priya reads them aloud to her own daughter and understands her grandmother at last.', theme: 'We come to know people through the stories they leave behind.', wrong: ['Letters should be kept in drawers.', 'Grandmothers write many letters.'], shift: 'Priya reads the letters aloud.' },
+  { begins: 'Leo believes winning every argument proves he is right.', ends: 'Leo admits a friend was right, and the friendship grows stronger.', theme: 'Admitting you are wrong can be a kind of strength.', wrong: ['Arguments are a waste of time.', 'Friends should never disagree.'], shift: 'Leo listens and changes his mind.' },
+  { begins: 'Mei hides her drawings because she fears people will laugh.', ends: 'Mei hangs her drawings at the school fair, and a few people laugh, but many more stop to look.', theme: 'Sharing your work takes courage, and the risk is worth it.', wrong: ['Drawing is a hard skill to learn.', 'School fairs are too crowded.'], shift: 'Mei shows one drawing to a friend.' },
 ];
 const WORD_EFFECTS = [
   { plain: 'The crowd left the square.', strong: 'The crowd scattered from the square.', effect: 'It makes the leaving feel sudden and afraid.', word: 'scattered' },
@@ -19425,6 +19434,8 @@ const PARAPHRASES = [
   { original: 'The library will extend its weekday hours to nine in the evening starting in October, though weekend hours stay the same.', good: 'From October the library stays open until nine on weekdays, with no change on weekends.', bad: 'The library will be open later starting in October.', lost: 'That weekend hours do not change' },
   { original: 'Students who miss the field trip will complete a written project instead, due the same day the class returns.', good: 'Any student not on the field trip writes a project, handed in the day the class gets back.', bad: 'Students who miss the trip do a project.', lost: 'When the project is due' },
   { original: 'The bakery raised the price of bread by fifty cents but kept rolls at last year\'s price.', good: 'Bread now costs fifty cents more at the bakery, while rolls cost what they did last year.', bad: 'The bakery raised its prices.', lost: 'That rolls did not go up' },
+  { original: 'The pool opens at noon on Saturday, but swimmers under twelve must come with an adult.', good: 'From noon on Saturday the pool is open, though anyone under twelve needs an adult along.', bad: 'The pool opens at noon on Saturday.', lost: 'That swimmers under twelve need an adult' },
+  { original: 'The museum is free on the first Sunday of each month, except in December, when it closes for repairs.', good: 'On the first Sunday of every month the museum charges nothing, except in December, when repairs close it.', bad: 'The museum is free on the first Sunday of each month.', lost: 'That it closes in December for repairs' },
 ];
 const TORN = [
   { text: 'Nadia wants the scholarship, and she wants her best friend Lena, who is also competing, to win it.', wants: 'To win, and to see her friend win', wrong: ['To win, and to be famous', 'To lose on purpose'], scene: 'Nadia stays up late helping Lena rehearse the night before the final.', won: 'Her wish for her friend', other: 'to win' },
@@ -19437,8 +19448,10 @@ const SYMBOLS = [
   { thing: 'A locked door the boy passes every day, mentioned again whenever his parents keep a secret', meaning: 'The things he is not allowed to know', wrong: ['His fear of the dark', 'The house\'s age'] },
   { thing: 'A cracked watch the old man winds every morning, described again as his memory fails', meaning: 'His struggle to hold on to time', wrong: ['His punctuality', 'His taste in jewelry'] },
   { thing: 'A single lit window across the bay that the sailor watches, returned to every night he is away', meaning: 'The home he hopes to reach', wrong: ['The town\'s electricity', 'A lighthouse warning'] },
+  { thing: 'A garden the grandmother stops tending after her husband dies, described again each time she sits alone', meaning: 'Her grief', wrong: ['Her love of flowers', 'The changing seasons'] },
+  { thing: 'An old bridge between the brothers\' farms that neither will cross after their quarrel, described again whenever one thinks of the other', meaning: 'The broken bond between the brothers', wrong: ['The age of the farms', 'The danger of the river'] },
 ];
-const ONCE_ONLY = ['A bird mentioned once, flying past the window in the first chapter.', 'A door described once, when the family moves in.', 'A watch mentioned once, when the old man checks the time.', 'A window mentioned once, in a description of the harbor.'];
+const ONCE_ONLY = ['A bird mentioned once, flying past the window in the first chapter.', 'A door described once, when the family moves in.', 'A watch mentioned once, when the old man checks the time.', 'A window mentioned once, in a description of the harbor.', 'A garden described once, when the family first visits.', 'A bridge mentioned once, on the drive into town.'];
 Object.assign(GENERATORS, {
   'r10-which-leans': (rng) => {
     const b = pick(rng, BIAS_PAIRS);
@@ -19458,7 +19471,7 @@ Object.assign(GENERATORS, {
   'r10-best-paraphrase': (rng) => {
     const pp = pick(rng, PARAPHRASES);
     return { type: 'choice', story: `Original:\n${pp.original}`, prompt: 'Which paraphrase keeps the whole meaning?', choices: shuffle(rng, [pp.good, pp.bad]), answer: pp.good,
-      explain: `The other one lost something: ${pp.lost.toLowerCase()}.`, visual: null, explainVisual: null };
+      explain: `The other one lost something: ${pp.lost.charAt(0).toLowerCase() + pp.lost.slice(1)}.`, visual: null, explainVisual: null };
   },
   'r10-what-was-lost': (rng) => {
     const pp = pick(rng, PARAPHRASES); const others = shuffle(rng, PARAPHRASES.filter((x) => x !== pp)).slice(0, 2).map((x) => x.lost);
@@ -19600,8 +19613,10 @@ const SATIRES = [
   { text: 'The school proudly announced that its new cafeteria menu features fourteen shades of beige, each more nutritious-sounding than the last.', target: 'The cafeteria food is bland and not truly healthy', wrong: ['Beige is a popular color', 'The school has too many menus'] },
   { text: 'Officials assured residents that the pothole, now in its fourth year, had been officially recognized as a historic landmark.', target: 'The town never fixes its roads', wrong: ['Historic landmarks are overrated', 'Potholes are very old'] },
   { text: 'The company thanked its customers for their patience during the two-hour hold time by playing them a recording about how much it values their time.', target: 'The company says it values customers while treating them badly', wrong: ['Hold music is too loud', 'Customers are impatient'] },
+  { text: 'The airline proudly announced a new comfort fee for passengers who would like to keep their knees during the flight.', target: 'The airline charges extra for every small comfort', wrong: ['Airplane seats are too soft', 'Passengers pack too many bags'] },
+  { text: 'Experts praised the new rule of four hours of homework a night for second graders, saying it will finally teach children to love learning.', target: 'Schools give young children far too much homework', wrong: ['Second graders learn too slowly', 'Experts dislike homework'] },
 ];
-const STRAIGHT_REPORTS = ['The city added two marching bands to this year\'s parade and moved the fire trucks to the front.', 'The school updated its cafeteria menu to include more vegetables.', 'The town filled the pothole on Elm Street on Tuesday.', 'The company reduced its average hold time to six minutes.'];
+const STRAIGHT_REPORTS = ['The city added two marching bands to this year\'s parade and moved the fire trucks to the front.', 'The school updated its cafeteria menu to include more vegetables.', 'The town filled the pothole on Elm Street on Tuesday.', 'The company reduced its average hold time to six minutes.', 'The airline added a fee for checked bags on short flights.', 'The school set a limit of twenty minutes of homework a night for second graders.'];
 const SENTENCE_EFFECTS = [
   { text: 'The house was quiet, the lamps were low, and the letter lay unopened on the table where it had lain for three days. Then the phone rang.', effect: 'The long sentence builds the waiting and the short one breaks it', wrong: ['The long sentence describes the phone', 'The short sentence slows the reader down'] },
   { text: 'She checked the lock. She checked it again. She checked it a third time and did not feel better.', effect: 'The repeated short sentences make her worry feel like a drumbeat', wrong: ['The repetition shows the lock was broken', 'The sentences describe three different doors'] },
@@ -19619,6 +19634,8 @@ const SUFFICIENCY = [
   { claim: 'The new bus route saves riders time.', evidence: 'Timed trips on the route over a month, compared with the old route.', verdict: 'Relevant and sufficient', enough: 'That is already enough for this claim' },
   { claim: 'Students in the county exercise less than they did ten years ago.', evidence: 'A survey of one gym class this spring.', verdict: 'Relevant but not sufficient', enough: 'Surveys across the county, then and now' },
   { claim: 'The factory pollutes the river.', evidence: 'The factory\'s parking lot is often full.', verdict: 'Neither relevant nor sufficient', enough: 'Water samples upstream and downstream of the factory' },
+  { claim: 'The air in our city got cleaner this year.', evidence: 'One afternoon this week the sky looked very clear.', verdict: 'Relevant but not sufficient', enough: 'Air quality readings across the city, for this year and last' },
+  { claim: 'The new cafeteria menu is more popular than the old one.', evidence: 'A survey of every student found that four in five prefer it to the old menu.', verdict: 'Relevant and sufficient', enough: 'A survey of every student, before and after the change' },
 ];
 const VERDICTS = ['Relevant and sufficient', 'Relevant but not sufficient', 'Neither relevant nor sufficient'];
 const UNIT = { 0: { cos: '1', sin: '0' }, 30: { cos: '√3/2', sin: '1/2' }, 45: { cos: '√2/2', sin: '√2/2' }, 60: { cos: '1/2', sin: '√3/2' }, 90: { cos: '0', sin: '1' } };
@@ -19761,6 +19778,8 @@ const ASSUMPTION_SETS = [
   { claim: 'The school should ban phones, because test scores fell after phones became common.', assumption: 'Phones caused the fall in scores', wrong: ['Scores fell', 'Phones are common'], test: 'Compare scores in schools that banned phones with schools that did not' },
   { claim: 'The town should build a bigger parking lot, because the current one is always full.', assumption: 'A bigger lot would not simply fill up too', wrong: ['The lot is full', 'Parking lots cost money'], test: 'Look at what happened in towns that enlarged their lots' },
   { claim: 'We should shorten the lunch break, because students say they finish eating early.', assumption: 'Lunch is only for eating', wrong: ['Students finish early', 'Lunch is a break'], test: 'Ask what students do with the rest of the break, and whether it matters' },
+  { claim: 'The library should stay open later, because students say they have nowhere quiet to study at night.', assumption: 'Students would use the library if it stayed open later', wrong: ['Students say they have nowhere quiet to study', 'The library closes early now'], test: 'Open late for a trial month and count how many students come' },
+  { claim: 'The city should plant more trees downtown, because the streets get too hot in summer.', assumption: 'More trees would make the streets cooler', wrong: ['The streets get too hot in summer', 'The city has room for trees'], test: 'Compare summer temperatures on shaded streets and on unshaded ones' },
 ];
 const PRECISE = [
   { context: 'A witness was not sure of the car\'s speed and offered a rough number.', right: 'estimated', wrong: ['claimed', 'proved'], implies: { estimated: 'The speaker admits it is a guess', claimed: 'The writer hints at doubt', proved: 'The writer says it was demonstrated' } },
@@ -19780,6 +19799,8 @@ const CAUSE_CASES = [
   { text: 'In an experiment, plants given more light on purpose grew taller than plants given less.', verdict: 'Causation, shown by an experiment', third: 'None, because light was changed on purpose' },
   { text: 'Towns with more firefighters have more fire damage.', verdict: 'Correlation, with a third factor', third: 'Town size' },
   { text: 'In a trial, patients given the drug recovered faster than patients given a placebo, chosen at random.', verdict: 'Causation, shown by an experiment', third: 'None, because the drug was assigned at random' },
+  { text: 'People who carry umbrellas are more likely to have wet shoes.', verdict: 'Correlation, with a third factor', third: 'Rain, which brings out umbrellas and soaks shoes' },
+  { text: 'Students who own more books tend to score higher on reading tests.', verdict: 'Correlation, with a third factor', third: 'Homes where reading is valued and practiced' },
 ];
 const THESES = [
   { thesis: 'The town library survived because it kept changing what it was for.', topic: 'The history of the town library.', broad: 'Libraries are important.', obvious: 'The library was built in 1911.' },
@@ -19798,11 +19819,16 @@ const BASE_CASES = [
   { text: 'Sales of the new phone rose 300 percent in its second week.', missing: 'How many were sold in the first week' },
   { text: 'The disease is up 50 percent this year.', missing: 'How many cases there were last year' },
   { text: 'Test scores improved by a fifth after the program began.', missing: 'What the scores were before the program' },
+  { text: 'Bike thefts on campus tripled this semester.', missing: 'How many bike thefts there were last semester' },
+  { text: 'Nine out of ten dentists surveyed recommend the toothpaste.', missing: 'How many dentists were surveyed' },
+  { text: 'Club membership grew by 40 percent.', missing: 'How many members the club had before' },
 ];
 const CHANGE_PAIRS = [
   { a: 'A rise from 2 cases to 4 cases', b: 'A rise from 200 cases to 300 cases', bigger: 'A rise from 200 cases to 300 cases', why: 'A hundred more cases, against two more, even though the first doubled' },
   { a: 'A 50 percent rise in a disease with 10 cases', b: 'A 5 percent rise in a disease with 10,000 cases', bigger: 'A 5 percent rise in a disease with 10,000 cases', why: 'Five hundred more people, against five' },
   { a: 'Sales tripled from 3 to 9', b: 'Sales rose 20 percent from 5,000 to 6,000', bigger: 'Sales rose 20 percent from 5,000 to 6,000', why: 'A thousand more sales, against six' },
+  { a: 'A 50 percent rise from 8 cases to 12', b: 'A 10 percent rise from 2,000 cases to 2,200', bigger: 'A 10 percent rise from 2,000 cases to 2,200', why: 'Two hundred more cases, against four more, even though the first is the bigger percent' },
+  { a: 'Attendance up 300 percent, from 5 people to 20', b: 'Attendance up 2 percent, from 5,000 people to 5,100', bigger: 'Attendance up 2 percent, from 5,000 people to 5,100', why: 'A hundred more people, against fifteen more' },
 ];
 const CONSISTENCY = [
   { claims: ['The program\'s spending fell every year.', 'The program spent more this year than last year.'], consistent: false, why: 'Spending cannot fall every year and also rise this year' },
@@ -20826,8 +20852,16 @@ Object.assign(GENERATORS, {
       explain: `${c.cause} leads to ${c.effect.toLowerCase()}.`, visual: null, explainVisual: null };
   },
   's12-what-fixed': (rng) => {
-    return { type: 'choice', story: 'The ozone layer was thinning in the 1980s and is now slowly healing.', prompt: 'What fixed it?', choices: shuffle(rng, ['Countries agreed to stop using the chemicals that caused it', 'The sun grew dimmer', 'Nothing; it healed on its own']), answer: 'Countries agreed to stop using the chemicals that caused it',
-      explain: 'The science was clear, the fix was shared, and it worked.', visual: null, explainVisual: null };
+    // The ozone fix and six facts from the same lesson (pass IU), so a round never needs the same question twice.
+    const Q = [['The ozone layer was thinning in the 1980s and is now slowly healing.', 'What fixed it?', ['Countries agreed to stop using the chemicals that caused it', 'The sun grew dimmer', 'Nothing; it healed on its own'], 'Countries agreed to stop using the chemicals that caused it', 'The science was clear, the fix was shared, and it worked.'],
+      [null, 'What gas does burning fossil fuels add to the air?', ['Carbon dioxide', 'Oxygen', 'Helium'], 'Carbon dioxide', 'Burning fossil fuels adds carbon dioxide, which traps heat.'],
+      [null, 'What does the ozone layer shield us from?', ['Ultraviolet light', 'Rain', 'Wind'], 'Ultraviolet light', 'The ozone layer shields us from ultraviolet light.'],
+      [null, 'What is the hole in the ozone layer doing now?', ['Slowly closing', 'Growing faster every year', 'Staying exactly the same'], 'Slowly closing', 'Once the chemicals stopped, the hole stopped growing and began slowly closing.'],
+      [null, 'What does fertilizer washing into rivers feed?', ['Algae', 'Fish', 'Rocks'], 'Algae', 'The algae use up the oxygen that fish need.'],
+      [null, 'About how many people live on Earth today?', ['Eight billion', 'Eight million', 'Eight hundred million'], 'Eight billion', 'About eight billion people live on Earth.'],
+      [null, 'Why does clearing forests leave more carbon dioxide in the air?', ['Fewer trees are left to take it back out', 'Bare soil gives off oxygen', 'Wind blows more carbon dioxide in'], 'Fewer trees are left to take it back out', 'Trees take carbon dioxide back out of the air.']];
+    const [story, prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story, prompt, choices: shuffle(rng, choices), answer, explain, visual: null, explainVisual: null };
   },
   's12-fix-pattern': (rng) => {
     return { type: 'choice', story: 'The pattern behind every environmental fix.', prompt: 'What are the three steps, in order?', choices: shuffle(rng, ['Measure the change, find the cause, act on the cause', 'Act first, then measure, then find the cause', 'Find the cause, act, then measure']), answer: 'Measure the change, find the cause, act on the cause',
@@ -20924,8 +20958,13 @@ Object.assign(GENERATORS, {
       explain: up ? 'Insulin moves sugar out of the blood into cells.' : 'The liver releases stored sugar into the blood.', visual: null, explainVisual: null };
   },
   's9-negative-feedback': (rng) => {
-    return { type: 'choice', story: 'The body senses a change and acts to undo it.', prompt: 'What is this called?', choices: shuffle(rng, ['Negative feedback', 'Positive feedback', 'Digestion']), answer: 'Negative feedback',
-      explain: 'Negative feedback works against the change, like a thermostat.', visual: null, explainVisual: null };
+    // Four questions on one idea (pass IU): the name for undoing a change, the thermostat, the steadiness itself, and failed feedback.
+    const Q = [['The body senses a change and acts to undo it.', 'What is this called?', ['Negative feedback', 'Positive feedback', 'Digestion'], 'Negative feedback', 'Negative feedback works against the change, like a thermostat.'],
+      ['A thermostat heats a cold room and stops when it is warm enough.', 'What kind of control is this?', ['Negative feedback', 'Positive feedback', 'Digestion'], 'Negative feedback', 'It works against the change, the same way the body does.'],
+      ['Your body keeps its inside steady while the outside changes.', 'What is this steadiness called?', ['Homeostasis', 'Digestion', 'Respiration'], 'Homeostasis', 'Homeostasis is the steadiness, and negative feedback keeps it.'],
+      ['Blood sugar feedback no longer works, and the level runs away.', 'What condition is this?', ['Diabetes', 'A fever', 'A cold'], 'Diabetes', 'Diabetes is blood sugar feedback that no longer works.']];
+    const [story, prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story, prompt, choices: shuffle(rng, choices), answer, explain, visual: null, explainVisual: null };
   },
   's10-molar-mass': (rng) => {
     const m = pick(rng, MOLAR);
@@ -22120,15 +22159,25 @@ Object.assign(GENERATORS, {
   'h10-which-river': (rng) => { const c = pick(rng, RIVERS); return { type: 'choice', story: `${c.civ}.`, prompt: 'Which river did it grow along?', choices: shuffle(rng, RIVERS.map((x) => x.river)), answer: c.river, explain: `${c.civ} grew along ${lowerTitle(c.river)}.`, visual: null, explainVisual: null }; },
   'h10-surplus': (rng) => ({ type: 'choice', story: 'One farmer can feed five people.', prompt: 'What does that surplus make possible?', choices: shuffle(rng, ['Four people free to build, trade, rule, pray or write', 'Nothing changes', 'Fewer cities']), answer: 'Four people free to build, trade, rule, pray or write', explain: 'A surplus is what frees people to do something other than farm.', visual: null, explainVisual: null }),
   'h10-first-writing': (rng) => ({ type: 'choice', story: 'The first writing, on clay in Mesopotamia.', prompt: 'What was it for?', choices: shuffle(rng, ['Keeping accounts of grain and sheep', 'Writing poems', 'Sending letters']), answer: 'Keeping accounts of grain and sheep', explain: 'Writing began as accounting and became law, story and scripture.', visual: null, explainVisual: null }),
-  'h10-athens-or-rome': (rng) => { const a = randInt(rng, 0, 1) === 1; return { type: 'choice', story: a ? 'Citizens vote directly on the laws.' : 'Citizens elect officials, and a senate governs.', prompt: 'Was this Athens or Rome?', choices: ['Athens', 'Rome'], answer: a ? 'Athens' : 'Rome', explain: a ? 'Athens: direct democracy.' : 'Rome: a republic.', visual: null, explainVisual: null }; },
+  'h10-athens-or-rome': (rng) => { const [story, answer, explain] = pick(rng, [['Citizens vote directly on the laws.', 'Athens', 'Athens: direct democracy.'], ['Citizens elect officials, and a senate governs.', 'Rome', 'Rome: a republic.'], ['Democracy begins, about 500 BC.', 'Athens', 'Athens invented democracy about 500 BC.'], ['A republic begins, in 509 BC.', 'Rome', 'Rome became a republic in 509 BC.']]); return { type: 'choice', story, prompt: 'Was this Athens or Rome?', choices: ['Athens', 'Rome'], answer, explain, visual: null, explainVisual: null }; },
   'h10-rome-year': (rng) => yearQuestionS(rng, ROME_DATES),
-  'h10-founders-fear': (rng) => ({ type: 'choice', story: 'The American founders read Roman history closely.', prompt: 'What did it make them build into the Constitution?', choices: shuffle(rng, ['Power split three ways and limited terms, out of fear of a Caesar', 'An emperor for life', 'A senate with no elections']), answer: 'Power split three ways and limited terms, out of fear of a Caesar', explain: 'Their fear of a Caesar is why power is split and terms are limited.', visual: null, explainVisual: null }),
+  'h10-founders-fear': (rng) => { const k = randInt(rng, 0, 2); if (k === 0) return { type: 'choice', story: 'The American founders read Roman history closely.', prompt: 'What did it make them build into the Constitution?', choices: shuffle(rng, ['Power split three ways and limited terms, out of fear of a Caesar', 'An emperor for life', 'A senate with no elections']), answer: 'Power split three ways and limited terms, out of fear of a Caesar', explain: 'Their fear of a Caesar is why power is split and terms are limited.', visual: null, explainVisual: null };
+    const [story, prompt, choices, answer, explain] = [[null, 'Who became the first emperor of Rome, in 27 BC?', ['Augustus', 'Julius Caesar', 'Cicero'], 'Augustus', 'Caesar\'s heir Augustus became the first emperor, and the republic was over.'], [null, 'Who crossed the Rubicon in 49 BC?', ['Julius Caesar', 'Augustus', 'Nero'], 'Julius Caesar', 'Julius Caesar crossed the Rubicon in 49 BC and was killed in 44 BC.']][k - 1];
+    return { type: 'choice', story, prompt, choices: shuffle(rng, choices), answer, explain, visual: null, explainVisual: null }; },
   'h10-medieval-year': (rng) => yearQuestionS(rng, MEDIEVAL),
-  'h10-feudal': (rng) => ({ type: 'choice', story: null, prompt: 'What was the deal at the heart of feudalism?', choices: shuffle(rng, ['Land in exchange for service', 'Money in exchange for votes', 'Food in exchange for books']), answer: 'Land in exchange for service', explain: 'Lords gave land; knights and peasants gave loyalty and work.', visual: null, explainVisual: null }),
-  'h10-press': (rng) => ({ type: 'choice', story: 'The printing press, about 1450.', prompt: 'What did it change?', choices: shuffle(rng, ['Ideas moved faster than any ruler could stop them', 'Fewer people could read', 'Books became rarer']), answer: 'Ideas moved faster than any ruler could stop them', explain: 'The Reformation and the age of exploration followed straight from it.', visual: null, explainVisual: null }),
+  'h10-feudal': (rng) => { const k = randInt(rng, 0, 3); if (k === 0) return { type: 'choice', story: null, prompt: 'What was the deal at the heart of feudalism?', choices: shuffle(rng, ['Land in exchange for service', 'Money in exchange for votes', 'Food in exchange for books']), answer: 'Land in exchange for service', explain: 'Lords gave land; knights and peasants gave loyalty and work.', visual: null, explainVisual: null };
+    const [story, prompt, choices, answer, explain] = [[null, 'In feudal Europe, what stood over lords and peasants alike?', ['The church', 'The merchants', 'The peasants'], 'The church', 'Lords and knights above, peasants below, and the church over all.'], [null, 'About how much of Europe did the Black Death kill in five years?', ['Perhaps a third', 'About one in a hundred', 'Nine in ten'], 'Perhaps a third', 'It arrived in 1347 and killed perhaps a third of Europe in five years.'], [null, 'Why did labor grow valuable after the Black Death?', ['There were fewer workers', 'Kings paid more taxes', 'Farms grew larger'], 'There were fewer workers', 'With fewer workers, labor grew valuable and old bonds loosened.']][k - 1];
+    return { type: 'choice', story, prompt, choices: shuffle(rng, choices), answer, explain, visual: null, explainVisual: null }; },
+  'h10-press': (rng) => { const k = randInt(rng, 0, 3); if (k === 0) return { type: 'choice', story: 'The printing press, about 1450.', prompt: 'What did it change?', choices: shuffle(rng, ['Ideas moved faster than any ruler could stop them', 'Fewer people could read', 'Books became rarer']), answer: 'Ideas moved faster than any ruler could stop them', explain: 'The Reformation and the age of exploration followed straight from it.', visual: null, explainVisual: null };
+    const [story, prompt, choices, answer, explain] = [[null, 'Who built the printing press of about 1450?', ['Gutenberg', 'Columbus', 'Napoleon'], 'Gutenberg', 'Gutenberg\'s press put books in ordinary hands.'], [null, 'What did the Renaissance rediscover?', ['Greek and Roman learning', 'The printing press', 'The New World'], 'Greek and Roman learning', 'It rediscovered Greek and Roman learning and built new art and science on it.'], [null, 'Where did the Renaissance begin, about 1400?', ['In Italy', 'In England', 'In Russia'], 'In Italy', 'Trade cities in Italy grew rich, and the Renaissance began there.']][k - 1];
+    return { type: 'choice', story, prompt, choices: shuffle(rng, choices), answer, explain, visual: null, explainVisual: null }; },
   'h10-rev-year': (rng) => yearQuestionS(rng, REVS),
-  'h10-why-different': (rng) => ({ type: 'choice', story: 'The American and French revolutions ended very differently.', prompt: 'Why?', choices: shuffle(rng, ['America had a century of practice at self-rule; France tore out a whole society at once', 'America was richer', 'France had no thinkers']), answer: 'America had a century of practice at self-rule; France tore out a whole society at once', explain: 'Practice at self-rule was the difference.', visual: null, explainVisual: null }),
-  'h10-enlightenment': (rng) => ({ type: 'choice', story: null, prompt: 'What was the Enlightenment\'s central claim about government?', choices: shuffle(rng, ['People have natural rights, and governments get their power from the governed', 'Kings rule by divine right', 'Only the church may make laws']), answer: 'People have natural rights, and governments get their power from the governed', explain: 'Rights first, consent second: the idea both revolutions tested.', visual: null, explainVisual: null }),
+  'h10-why-different': (rng) => { const k = randInt(rng, 0, 2); if (k === 0) return { type: 'choice', story: 'The American and French revolutions ended very differently.', prompt: 'Why?', choices: shuffle(rng, ['America had a century of practice at self-rule; France tore out a whole society at once', 'America was richer', 'France had no thinkers']), answer: 'America had a century of practice at self-rule; France tore out a whole society at once', explain: 'Practice at self-rule was the difference.', visual: null, explainVisual: null };
+    const [story, prompt, choices, answer, explain] = [[null, 'After the terror, who ruled France as emperor?', ['Napoleon', 'Louis XVI', 'George Washington'], 'Napoleon', 'The result was terror and then Napoleon, an emperor by 1804.'], [null, 'About how far was America from its king?', ['Three thousand miles', 'Three hundred miles', 'Thirty miles'], 'Three thousand miles', 'America was three thousand miles from its king, with elected assemblies of its own.']][k - 1];
+    return { type: 'choice', story, prompt, choices: shuffle(rng, choices), answer, explain, visual: null, explainVisual: null }; },
+  'h10-enlightenment': (rng) => { const k = randInt(rng, 0, 3); if (k === 0) return { type: 'choice', story: null, prompt: 'What was the Enlightenment\'s central claim about government?', choices: shuffle(rng, ['People have natural rights, and governments get their power from the governed', 'Kings rule by divine right', 'Only the church may make laws']), answer: 'People have natural rights, and governments get their power from the governed', explain: 'Rights first, consent second: the idea both revolutions tested.', visual: null, explainVisual: null };
+    const [story, prompt, choices, answer, explain] = [[null, 'When did Enlightenment thinkers make their argument?', ['In the 1600s and 1700s', 'In the 1300s', 'In the 1900s'], 'In the 1600s and 1700s', 'In the 1600s and 1700s, Enlightenment thinkers argued for natural rights.'], ['Rights, consent and constitutions spread across Europe and Latin America.', 'By about what year had these ideas spread?', ['1850', '1650', '1950'], '1850', 'By 1850 they had spread across Europe and Latin America.'], [null, 'In the Enlightenment view, where do governments get power?', ['From the governed', 'From the king alone', 'From the army'], 'From the governed', 'Governments get their power from the governed.']][k - 1];
+    return { type: 'choice', story, prompt, choices: shuffle(rng, choices), answer, explain, visual: null, explainVisual: null }; },
   // The Industrial Revolution (2026-10-02, pass HX): a small fact bank so a round never needs a repeat.
   'h10-industry-facts': (rng) => {
     const Q = [['Machines were driven first by water, then by what?', ['steam', 'wind', 'electricity', 'horses'], 'steam', 'James Watt improved the steam engine.'],
@@ -26908,7 +26957,7 @@ export const WONDER = [
     answerMode: 'pick',
     prompt: 'You clapped along to a song and lost the beat in front of everyone. What now?',
     options: ['Listen, then join back in', 'Stop clapping', 'Clap louder'],
-    simple: [{ voice: 'A scientist says', says: 'Feet find the beat before hands do.' }, { voice: 'An artist says', says: 'Everyone loses the beat; music waits for you.' }],
+    simple: [{ voice: 'A scientist says', says: 'Tap your foot first. Then your hands can follow.' }, { voice: 'An artist says', says: 'Everyone loses the beat; music waits for you.' }],
     perspectives: [
       { voice: 'A scientist', says: 'Stop, listen for the steady thump, and tap your foot to it first. A quiet foot can find the beat again, and then your hands can follow it.' },
       { voice: 'An artist', says: 'Every musician loses the beat sometimes, even the drummer. The song keeps going, and it takes you back the moment you listen. Music is very forgiving in that way.' },
@@ -27307,6 +27356,695 @@ export const WONDER = [
     ],
     closing: 'Think of a recent setback. Which question did you ask first, and which question would help you now?',
   },
+  // Pass IS (2026-10-03, Mikey: younger stages, failure and hard feelings first): twelve early and twelve growing
+  // questions. Every early one is shared across the whole early stage, so it must make sense from pre-K 3 to grade 2.
+  // Every new text is listed in docs/DECISIONS.md for approval, and none reaches a student until an educator approves it.
+  {
+    id: 'w-early-spilled-on-my-picture',
+    theme: 'failure',
+    stage: 'early',
+    courseIds: [],
+    answerMode: 'pick',
+    prompt: 'You spilled water on your picture. Is it ruined?',
+    options: ['Yes, it is ruined', 'No, I can change it', 'I am not sure'],
+    simple: [{ voice: 'An artist says', says: 'A spill can turn into a cloud or a puddle.' }, { voice: 'A scientist says', says: 'Watch how the water spreads. It makes new shapes.' }],
+    perspectives: [
+      { voice: 'A scientist', says: 'Water soaks along paper and can carry some of the color with it. That is why a spill makes soft new edges. Look closely before you decide anything, because the new shapes might be interesting.' },
+      { voice: 'An artist', says: 'Many painters wet their paper on purpose to make the colors run together. Your spill did the same thing by accident. You could add a few lines and turn it into rain, a lake or a sky.' },
+      { voice: 'A grandparent of faith', says: 'It is fine to feel sad when something you made gets spoiled. Many grandparents would tell you the same thing: you made it once, so you can make it again. Sometimes the second one turns out even better.' },
+      { voice: 'A skeptic', says: 'Before you call it ruined, wait for it to dry, because wet paper looks darker than it will later. Then decide whether to fix it, change it or start again.' },
+    ],
+    closing: 'What could your spill turn into?',
+  },
+  {
+    id: 'w-early-stuck-zipper',
+    theme: 'failure',
+    stage: 'early',
+    courseIds: [],
+    answerMode: 'pick',
+    prompt: 'You tried and tried to zip your coat, and it kept getting stuck. What now?',
+    options: ['Try again slowly', 'Ask someone to show me', 'Take a break first'],
+    simple: [{ voice: 'A scientist says', says: 'Your hands learn a little more every time you try.' }, { voice: 'A skeptic says', says: 'Pull gently. Pulling harder can make it stick more.' }],
+    perspectives: [
+      { voice: 'A scientist', says: 'Hands learn new jobs a little at a time, by doing them again and again. Each try teaches your fingers something, even the tries that do not work. That is how everyone learns to zip, button and tie.' },
+      { voice: 'An artist', says: 'Slow hands are careful hands. Try it the way a painter makes a careful line, slowly, with your eyes on the spot. Speed comes later, after the slow way works.' },
+      { voice: 'A grandparent of faith', says: 'Asking for help is not giving up. In many families, the big ones teach the little ones, and one day the little ones teach someone else. It is a gift that gets passed along.' },
+      { voice: 'A skeptic', says: 'Pulling harder can jam a stuck zipper even more. Look at where it catches, and fix that one spot first. When something keeps getting stuck, change the way you try, not just how hard.' },
+    ],
+    closing: 'What is something your hands learned slowly?',
+  },
+  {
+    id: 'w-early-outside-the-lines',
+    theme: 'failure',
+    stage: 'early',
+    courseIds: [],
+    answerMode: 'pick',
+    prompt: 'You colored outside the lines. Is that a mistake?',
+    options: ['Yes', 'No', 'Sometimes'],
+    simple: [{ voice: 'An artist says', says: 'Lines are a helper, not a rule.' }, { voice: 'A scientist says', says: 'Hands get steadier the more you color.' }],
+    perspectives: [
+      { voice: 'A scientist', says: 'Coloring inside small lines takes steady hands and careful eyes working together. That skill keeps growing for years, so going over the lines is normal while it grows. Every picture you color is practice for your hands.' },
+      { voice: 'An artist', says: 'Plenty of artists paint right past the lines on purpose. Lines are a helper when you want them and a choice when you do not. Ask yourself whether the picture looks the way you wanted.' },
+      { voice: 'A grandparent of faith', says: 'Nobody has to be perfect to make something lovely. Many people of faith say that what matters is the heart you put into what you make. Your picture still holds that.' },
+      { voice: 'A skeptic', says: 'A mistake is when you meant to do one thing and did another. If you meant to stay inside and did not, try going slower next time. If you went outside on purpose, that was a choice, not a mistake.' },
+    ],
+    closing: 'Did you mean to go outside the lines, or was it an accident?',
+  },
+  {
+    id: 'w-early-missed-the-ball',
+    theme: 'failure',
+    stage: 'early',
+    courseIds: [],
+    answerMode: 'pick',
+    prompt: 'You kicked at the ball and missed it. What do you do next?',
+    options: ['Kick again', 'Watch the ball closely', 'Stop playing'],
+    simple: [{ voice: 'A scientist says', says: 'Your eyes tell your foot where to go.' }, { voice: 'An artist says', says: 'Every good player has missed the ball lots of times.' }],
+    perspectives: [
+      { voice: 'A scientist', says: 'Kicking is a team job for your eyes, your brain and your legs. Your eyes tell your brain where the ball is going, and your brain gets better at guessing with every try. Misses are how that guessing gets sharper.' },
+      { voice: 'An artist', says: 'Watch a good player for a while and you will see them miss too. The difference is what they do next: they get ready for the next ball. A miss is one moment, not the whole game.' },
+      { voice: 'A grandparent of faith', says: 'I have watched many children learn to kick, and every one of them missed at first. Laugh if it was funny, and try again. Being gentle with yourself is part of getting good.' },
+      { voice: 'A skeptic', says: 'If you stop now, you never find out how good you could get. If you are tired, rest, but if you are just embarrassed, stay. The next kick is the one that counts.' },
+    ],
+    closing: 'What do you look at when you kick a ball?',
+  },
+  {
+    id: 'w-early-shoes-wrong-feet',
+    theme: 'failure',
+    stage: 'early',
+    courseIds: [],
+    answerMode: 'pick',
+    prompt: 'Your shoes are on the wrong feet. Is that a big mistake?',
+    options: ['A big mistake', 'A small one I can fix', 'I am not sure'],
+    simple: [{ voice: 'A scientist says', says: 'Your feet can tell. The shoes feel squished and funny.' }, { voice: 'A grandparent of faith says', says: 'Everybody does this sometimes. Switch them and off you go.' }],
+    perspectives: [
+      { voice: 'A scientist', says: 'Most shoes are shaped to fit one foot, with more room on the big toe side. On the wrong feet, they press in the wrong places, and that is the funny feeling you notice. Your feet are giving you a clue.' },
+      { voice: 'An artist', says: 'A pair of shoes is two mirror shapes, like your two hands. Put them side by side and look at them from the top. You can see how each one curves to fit one foot.' },
+      { voice: 'A grandparent of faith', says: 'Every grown-up you know has done this, and some of us still do it when we rush. A small mistake only needs a small fix. Switch them, and save your worry for bigger things.' },
+      { voice: 'A skeptic', says: 'Some mistakes are big and some are tiny, and it helps to tell them apart. Ask yourself how long it will take to fix. Ten seconds to fix means it is a tiny one.' },
+    ],
+    closing: 'What is a small mistake you fixed all by yourself?',
+  },
+  {
+    id: 'w-early-missing-someone',
+    theme: 'feelings',
+    stage: 'early',
+    courseIds: [],
+    answerMode: 'pick',
+    prompt: 'When you miss someone you love, what can you do?',
+    options: ['Draw them a picture', 'Call or visit them', 'Hug someone close'],
+    simple: [{ voice: 'A scientist says', says: 'Missing someone shows how much they matter to you.' }, { voice: 'An artist says', says: 'A picture can carry your love to someone far away.' }],
+    perspectives: [
+      { voice: 'A scientist', says: 'Missing someone is a feeling that comes from caring about them. People feel it at every age, even grown-ups. Doing something for that person, like drawing or calling, can make the feeling easier to hold.' },
+      { voice: 'An artist', says: 'Draw the person you miss doing something you love to do together. Then you can mail it, give it to them later, or keep it by your bed. Making something for someone is a way of being with them.' },
+      { voice: 'A grandparent of faith', says: 'When I miss someone, I think of them kindly, and sometimes I pray for them. Many families keep loved ones close with photos, stories and prayers. Whatever you believe, you can hold someone in your heart from far away.' },
+      { voice: 'A skeptic', says: 'Missing someone hurts, and no trick makes it vanish. But it helps to know when you will see them next. Ask a grown-up, and count the days on a calendar.' },
+    ],
+    closing: 'Who do you miss, and what would you like to tell them?',
+  },
+  {
+    id: 'w-early-not-asked-to-play',
+    theme: 'feelings',
+    stage: 'early',
+    courseIds: [],
+    answerMode: 'pick',
+    prompt: 'Your friends are playing a game and did not ask you. How do you feel?',
+    options: ['Sad', 'Cross', 'A little of both'],
+    simple: [{ voice: 'A scientist says', says: 'Being left out hurts. That hurt is real, and lots of people feel it.' }, { voice: 'A skeptic says', says: 'Try asking to join. Maybe they just forgot to ask.' }],
+    perspectives: [
+      { voice: 'A scientist', says: 'Scientists study this with a simple ball game on a computer. When the other players stop passing to one person, that person feels sad and left out, even when the others are strangers. So the hurt you feel is real, and lots of people feel it.' },
+      { voice: 'An artist', says: 'Feelings show in our faces and in how we stand. When you feel left out, you might look at the ground and stand far away. Standing a little closer and smiling can make it easier for others to invite you in.' },
+      { voice: 'A grandparent of faith', says: 'Many traditions teach us to notice anyone who is standing alone. So when you are inside a game, look around for someone on the outside. You know how it feels, so you are a good one to ask them in.' },
+      { voice: 'A skeptic', says: 'Before you decide they left you out on purpose, check. Maybe they did not see you, or thought you were busy. Ask to join, and you will find out.' },
+    ],
+    closing: 'What could you say if you want to join a game?',
+  },
+  {
+    id: 'w-early-slow-breaths',
+    theme: 'feelings',
+    stage: 'early',
+    courseIds: [],
+    answerMode: 'pick',
+    prompt: 'When a feeling gets very big, can slow breaths help it get smaller?',
+    options: ['Yes', 'No', 'Let me try'],
+    simple: [{ voice: 'A scientist says', says: 'Long, slow breaths out help your body calm down.' }, { voice: 'An artist says', says: 'Smell a flower, then slowly blow out a candle.' }],
+    perspectives: [
+      { voice: 'A scientist', says: 'When a feeling gets big, your heart beats faster and your breathing speeds up. Breathing out long and slow helps your body settle down. In one study, grown-ups who did five minutes of long breaths out each day felt their mood lift over a month.' },
+      { voice: 'An artist', says: 'Try painting a picture of your breath. Breathe in while you count to three, then breathe out while you count to five, slow and smooth like a long brushstroke. Watch your shoulders drop as you go.' },
+      { voice: 'A grandparent of faith', says: 'People in many faiths pray, sing or sit quietly when their hearts are heavy, and their breathing slows as they do. Whatever you believe, a quiet minute and a slow breath can be a safe place to rest.' },
+      { voice: 'A skeptic', says: 'Do not take my word for it. Put your hand on your chest, take five slow breaths, and notice whether you feel calmer. You are the scientist of your own body.' },
+    ],
+    closing: 'What helps your body calm down when a feeling gets big?',
+  },
+  {
+    id: 'w-early-feeling-shy',
+    theme: 'feelings',
+    stage: 'early',
+    courseIds: [],
+    answerMode: 'pick',
+    prompt: 'Is it okay to feel shy when you meet someone new?',
+    options: ['Yes', 'No', 'Sometimes'],
+    simple: [{ voice: 'A scientist says', says: 'Lots of people feel shy at first. It often fades as you get to know someone.' }, { voice: 'An artist says', says: 'Quiet watching is a fine way to start.' }],
+    perspectives: [
+      { voice: 'A scientist', says: 'Many children, and many grown-ups, feel shy with someone new. It is a careful feeling, a way of waiting until you know the new person is safe and kind. For most people, it fades as they get to know someone.' },
+      { voice: 'An artist', says: 'Shy people are often good at watching, and watching is a big part of art. Start by noticing one thing you like about the new person, like their shoes or their laugh. Then you have something to say.' },
+      { voice: 'A grandparent of faith', says: 'I was shy as a child, and sometimes I still am. A kind word to someone new is a gift, and you can give it softly. A small smile counts too.' },
+      { voice: 'A skeptic', says: 'Shy is a feeling, not a rule about who you are. You can feel shy and still say hello. Try it once and see what happens next.' },
+    ],
+    closing: 'What helps you when you feel shy?',
+  },
+  {
+    id: 'w-early-grown-up-said-no',
+    theme: 'feelings',
+    stage: 'early',
+    courseIds: [],
+    answerMode: 'pick',
+    prompt: 'A grown-up said no to something you really wanted. What helps the cross feeling?',
+    options: ['Take a big breath', 'Ask why', 'Find something else to do'],
+    simple: [{ voice: 'A scientist says', says: 'A cross feeling is biggest at the start. It usually shrinks with time.' }, { voice: 'A skeptic says', says: 'Ask why, in a calm voice. There may be a good reason.' }],
+    perspectives: [
+      { voice: 'A scientist', says: 'When you want something a lot, hearing no can sting. The cross feeling is usually biggest right at the start and gets smaller as the minutes go by. Slow breaths and a little waiting often help it shrink.' },
+      { voice: 'An artist', says: 'Feelings need somewhere to go. You could stomp out a drum beat, squeeze a pillow, or draw a stormy cloud with dark crayons. Then look at your cloud and see if you feel a little lighter.' },
+      { voice: 'A grandparent of faith', says: 'Often a grown-up says no to keep you safe or to help you grow, even when it does not feel that way. Many families teach that you can disagree and still be kind. You can say how you feel, calmly and politely.' },
+      { voice: 'A skeptic', says: 'Ask why, and really listen to the answer. Sometimes there is a reason you did not know about. Sometimes the answer is not now, and not now is different from never.' },
+    ],
+    closing: 'What is one thing you can do when you feel cross?',
+  },
+  {
+    id: 'w-early-pretend-hero',
+    theme: 'ups-and-downs',
+    stage: 'early',
+    courseIds: [],
+    answerMode: 'pick',
+    prompt: 'A job feels long and boring, and you want to stop. What could help you keep going?',
+    options: ['Pretend I am a hero', 'Take a short break', 'Ask a friend to help'],
+    simple: [{ voice: 'A scientist says', says: 'Kids who pretended to be a hard-working hero kept going longer.' }, { voice: 'An artist says', says: 'Picture a hero who keeps going. Do the job the way they would.' }],
+    perspectives: [
+      { voice: 'A scientist', says: 'Scientists gave children aged four and six a boring job, with a fun game they could switch to whenever they liked. The children who pretended to be a hard-working hero stuck with the job the longest. Picturing yourself from a little farther away seems to help.' },
+      { voice: 'An artist', says: 'Actors do this every day. They step into someone braver or calmer and borrow the way that person moves. You can borrow the patience of a hero for ten minutes and give it back when you are done.' },
+      { voice: 'A grandparent of faith', says: 'Many people think of someone they look up to when a job gets hard. It might be a grandparent, a teacher or someone from a story they love. Thinking about how that person would do it can make a hard job feel lighter.' },
+      { voice: 'A skeptic', says: 'You do not have to believe it to test it. Time yourself once as you, and once as your hero. If the hero version lasts longer, keep the trick.' },
+    ],
+    closing: 'Which hero would you pretend to be, and why?',
+  },
+  {
+    id: 'w-early-tired-and-cranky',
+    theme: 'ups-and-downs',
+    stage: 'early',
+    courseIds: [],
+    answerMode: 'pick',
+    prompt: 'When you are very tired, do little problems feel bigger?',
+    options: ['Yes', 'No', 'Sometimes'],
+    simple: [{ voice: 'A scientist says', says: 'A tired body makes feelings bigger. Sleep helps shrink them back.' }, { voice: 'An artist says', says: 'Tired eyes see a gray world. Rested eyes see more color.' }],
+    perspectives: [
+      { voice: 'A scientist', says: 'Scientists asked some young children who usually nap to skip one nap, and then watched them do puzzles. Without the nap, they got upset more easily and smiled less. Sleep helps your brain handle big feelings.' },
+      { voice: 'An artist', says: 'When I am tired, I stop painting, because tired hands make muddy colors. I come back after a rest and see the picture fresh. A problem can look smaller in the morning too.' },
+      { voice: 'A grandparent of faith', says: 'Many families say a prayer or tell a quiet story at bedtime, to help the day end gently. Whatever your family does, a calm bedtime helps your body rest. Tomorrow is a fresh start.' },
+      { voice: 'A skeptic', says: 'Next time something feels terrible, ask yourself one question: am I just tired? If the answer is yes, it may feel smaller after a rest. Check again in the morning.' },
+    ],
+    closing: 'What helps you feel better after a long, tired day?',
+  },
+  {
+    id: 'w-growing-sure-and-wrong',
+    theme: 'failure',
+    stage: 'growing',
+    courseIds: [],
+    answerMode: 'typed',
+    prompt: 'You were completely sure of an answer, and it turned out to be wrong. How did that feel, and what did you do next?',
+    perspectives: [
+      { voice: 'A scientist', says: 'Here is a surprise from memory research. When people are very sure of an answer and learn it was wrong, they are more likely to get it right next time than when they only guessed. Scientists call it the hypercorrection effect, and it shows up in children too.' },
+      { voice: 'An artist', says: 'Being sure and wrong feels like missing a step on the stairs, a jolt in your stomach. That jolt is your mind waking up and paying attention. Many artists learn to welcome it, because it means they are about to see something new.' },
+      { voice: 'A grandparent of faith', says: 'Being humble is not thinking little of yourself. It is being willing to say I was wrong, and to mean it. Many faiths count that as a strength, not a weakness.' },
+      { voice: 'A skeptic', says: 'Feeling sure is a feeling, not a proof. The question to ask is: how would I know if I were wrong? Asking it before you answer is one of the best habits a thinker can have.' },
+    ],
+    closing: 'Think of a time you were sure and wrong. What do you know now that you did not know then?',
+  },
+  {
+    id: 'w-growing-team-lost-my-mistake',
+    theme: 'failure',
+    stage: 'growing',
+    courseIds: [],
+    answerMode: 'typed',
+    prompt: 'Your team lost, and your mistake was part of the reason. What do you say to your team?',
+    perspectives: [
+      { voice: 'A scientist', says: 'Close games turn on many small moments, and most of them get forgotten. Your mistake feels huge partly because it is the one you remember best. Studies find that people think others noticed their slip-ups far more than they really did.' },
+      { voice: 'An artist', says: 'A team is like a band. When one player hits a wrong note, the band keeps playing, and the next song can still be great. Being a good teammate after your own mistake is part of the music too.' },
+      { voice: 'A grandparent of faith', says: 'Saying I am sorry, and I will work on it, takes courage. Many traditions teach that owning a mistake honestly is how trust grows. In my experience, people remember how you handled a mistake longer than the mistake itself.' },
+      { voice: 'A skeptic', says: 'Do not take all the blame, and do not hide from your part either. Say what you did, say what you will practice, and then let it go. Replaying it all night will not change the score.' },
+    ],
+    closing: 'What would you want a teammate to say to you after a mistake like that?',
+  },
+  {
+    id: 'w-growing-froze-at-the-recital',
+    theme: 'failure',
+    stage: 'growing',
+    courseIds: [],
+    answerMode: 'typed',
+    prompt: 'You practiced a piece all week, and at the recital your fingers froze. Does that mean the practice was wasted?',
+    perspectives: [
+      { voice: 'A scientist', says: 'Practice builds skill even when one performance goes badly. Under pressure, people sometimes stumble on things they can do easily when they are relaxed. Scientists call that choking, and it happens to experts too.' },
+      { voice: 'An artist', says: 'Ask any musician and you will likely hear a story about a night it went wrong. The piece did not leave your hands because of one bad minute. It is still there, waiting for the next time you play.' },
+      { voice: 'A grandparent of faith', says: 'The people who came were not listening for a perfect piece; they came because they love you. Many performers say a quiet prayer or take a calm moment before they begin, not to be perfect but to be brave. You can be gentle with yourself tonight.' },
+      { voice: 'A skeptic', says: 'Wasted is the wrong word. Play the piece at home tonight and see if it is still there. If it is, the practice worked, and the recital was one bad minute, not a bad week.' },
+    ],
+    closing: 'What could help you the next time you have to perform?',
+  },
+  {
+    id: 'w-growing-covered-in-corrections',
+    theme: 'failure',
+    stage: 'growing',
+    courseIds: [],
+    answerMode: 'typed',
+    prompt: 'Your writing came back covered in corrections. Is that a bad sign?',
+    perspectives: [
+      { voice: 'A scientist', says: 'Researchers who reviewed many studies found that feedback is one of the strongest helps for learning, especially when it says exactly what to change. A page full of notes is a map, not a mark against you. It shows you where to go next.' },
+      { voice: 'An artist', says: 'Every artist has someone who marks up their work, an editor, a coach or a teacher. Many of the best ones go looking for it, because fresh eyes see what they cannot. Corrections mean someone took your work seriously.' },
+      { voice: 'A grandparent of faith', says: 'It is natural to feel stung when you see so many marks. Take a breath before you read them, and then read them slowly. Being taught is a gift, even when it does not feel like one.' },
+      { voice: 'A skeptic', says: 'Count the kinds of mistakes, not the number. Twenty marks might be the same two habits, over and over. Fix those two, and the next page will look very different.' },
+    ],
+    closing: 'Pick one correction you got recently. What did it teach you?',
+  },
+  {
+    id: 'w-growing-did-not-make-it',
+    theme: 'failure',
+    stage: 'growing',
+    courseIds: [],
+    answerMode: 'typed',
+    prompt: 'You tried out for a team or a play and did not make it. What would you do next?',
+    perspectives: [
+      { voice: 'A scientist', says: 'Not getting picked feels like a judgment of you, but it is a judgment of one tryout on one day. Skills grow with good practice, so what is weak this year can be strong next year. Some people who got cut kept practicing and made it the next time.' },
+      { voice: 'An artist', says: 'Plenty of actors, writers and painters heard no many times before they heard yes. What kept them going was that they kept making their work. You can keep playing, singing or acting even when you are not on the list.' },
+      { voice: 'A grandparent of faith', says: 'It is all right to be sad about it for a while. There is an old saying that when one door closes, another opens. Sometimes a different door opens, and sometimes we learn to knock better.' },
+      { voice: 'A skeptic', says: 'Ask the coach or director one question: what should I work on? Then work on that, and try again next time. A no with a reason is worth more than a no without one.' },
+    ],
+    closing: 'What is something you were not picked for that you could still get better at?',
+  },
+  {
+    id: 'w-growing-voice-in-my-head',
+    theme: 'feelings',
+    stage: 'growing',
+    courseIds: [],
+    answerMode: 'typed',
+    prompt: 'Sometimes a voice in your head says you are bad at something. Do you have to believe it?',
+    perspectives: [
+      { voice: 'A scientist', says: 'Most people say they hear an inner voice, though how often varies a lot from person to person. That voice is a stream of thoughts, and thoughts can be wrong. You can check a thought the way you would check any other claim.' },
+      { voice: 'An artist', says: 'Imagine that voice as a grumpy little narrator in a cartoon, sitting on your shoulder. Once you can picture it, it is easier to hear it without obeying it. You might even give it a silly name.' },
+      { voice: 'A grandparent of faith', says: 'A spiritual teacher named Michael Singer writes that you are not the voice in your head; you are the one who hears it. Many traditions teach something similar through prayer or quiet sitting. You can notice a thought and let it float past, like a cloud.' },
+      { voice: 'A skeptic', says: 'Treat the voice like a witness who might be mistaken. When it says you are bad at math, ask for evidence: what did you get right this week? Often the voice has read only half the facts.' },
+    ],
+    closing: 'What does your inner voice say when things go wrong, and what would you say back to it?',
+  },
+  {
+    id: 'w-growing-one-mean-comment',
+    theme: 'feelings',
+    stage: 'growing',
+    courseIds: [],
+    answerMode: 'typed',
+    prompt: 'Why can one mean comment stick in your mind longer than ten nice ones?',
+    perspectives: [
+      { voice: 'A scientist', says: 'Scientists call it the negativity bias. People tend to notice and remember bad things more strongly than good ones, and studies suggest it starts very young. It may once have helped people remember danger, but it can make a good day feel worse than it was.' },
+      { voice: 'An artist', says: 'A single dark smudge on a bright painting grabs the eye, even when the rest is beautiful. Step back and look at the whole canvas. The smudge is still there, but so is everything else.' },
+      { voice: 'A grandparent of faith', says: 'Many faiths teach gratitude, giving thanks for the good things in each day. A psychologist named Rick Hanson suggests something similar: when a good moment comes, stay with it for a few extra seconds and let it sink in. The kind comments deserve that time too.' },
+      { voice: 'A skeptic', says: 'Try counting them, honestly, on paper. Write down every comment you got this week, kind and unkind. If the kind ones win, your memory has been telling you a lopsided story.' },
+    ],
+    closing: 'What is one good moment from today that deserves a few extra seconds?',
+  },
+  {
+    id: 'w-growing-not-invited',
+    theme: 'feelings',
+    stage: 'growing',
+    courseIds: [],
+    answerMode: 'typed',
+    prompt: 'You found out about a party you were not invited to. What do you do with that feeling?',
+    perspectives: [
+      { voice: 'A scientist', says: 'Being left out hurts, and scientists have measured it. In a simple computer game, when the other players stop passing the ball to one person, that person feels sad and less like they belong. It happens to children and grown-ups alike, and time with people who include you helps.' },
+      { voice: 'An artist', says: 'Most parties have room for only a few friends. A guest list is not a list of who is worth knowing. Plan something of your own, and invite someone who might feel left out too.' },
+      { voice: 'A grandparent of faith', says: 'It is all right to feel hurt, and it is all right to tell someone you trust. Many traditions teach that you are loved and valued no matter whose list you are on. That is still true today.' },
+      { voice: 'A skeptic', says: 'Before you decide it means they do not like you, look for other reasons. Maybe the party was only for a team, a club or a family. If you still wonder, you can ask a friend kindly, without blaming anyone.' },
+    ],
+    closing: 'What would you want someone to do if they knew you felt left out?',
+  },
+  {
+    id: 'w-growing-heart-races',
+    theme: 'feelings',
+    stage: 'growing',
+    courseIds: [],
+    answerMode: 'typed',
+    prompt: 'Your heart races before a test or a game. Is that feeling helping you or getting in your way?',
+    perspectives: [
+      { voice: 'A scientist', says: 'A racing heart is your body getting ready to act, sending more blood and oxygen to where you might need them. Some studies found that people who thought of their nerves as their body getting ready did a little better. The help was small, and most of those studies were with grown-ups.' },
+      { voice: 'An artist', says: 'Many performers say the nerves never fully go away; they learn to ride them like a wave. The same jitters that shake your hands can put energy in your voice. The goal is not to have no butterflies but to get them flying together.' },
+      { voice: 'A grandparent of faith', says: 'Before something big, many people say a quiet prayer or take a moment to remember who they are doing it for. For many, that moment makes the worry feel steadier. You do not walk in alone.' },
+      { voice: 'A skeptic', says: 'Notice what you tell yourself about the feeling. "I am going to fail" and "my body is getting ready" are two stories about the same heartbeat. Pick the story that helps you do the work, and then do the work.' },
+    ],
+    closing: 'What do you usually tell yourself when your heart races, and what could you tell yourself instead?',
+  },
+  {
+    id: 'w-growing-talk-like-a-friend',
+    theme: 'feelings',
+    stage: 'growing',
+    courseIds: [],
+    answerMode: 'typed',
+    prompt: 'When you make a mistake, what do you say to yourself? Would you say the same thing to a friend?',
+    perspectives: [
+      { voice: 'A scientist', says: 'Studies of young people aged ten to nineteen found that those who treat themselves kindly tend to feel less stressed, worried and down. In another study, fifth graders thought about a time they got angry as if watching from across the room, and they got less upset than those who relived it.' },
+      { voice: 'An artist', says: 'Try writing yourself a note the way you would write to a friend who made the same mistake. Use your own name, and be as kind as you would be to them. Read it back, and notice how it sounds.' },
+      { voice: 'A grandparent of faith', says: 'An old teaching found in several faiths says to love your neighbor as yourself, and that asks us to be kind to ourselves too. Being gentle with your own mistakes is not being lazy. It gives you strength to try again.' },
+      { voice: 'A skeptic', says: 'Here is the honest part: those studies found a link, and a link is not proof that kindness causes calm. But the test costs nothing. Next time you slip, talk to yourself the way a good coach would, and see what happens.' },
+    ],
+    closing: 'What would a good coach say to you after your last mistake?',
+  },
+  {
+    id: 'w-growing-bored-on-purpose',
+    theme: 'ups-and-downs',
+    stage: 'growing',
+    courseIds: [],
+    answerMode: 'typed',
+    prompt: 'When you are bored, should you grab a screen right away, or let your mind wander for a while?',
+    perspectives: [
+      { voice: 'A scientist', says: 'When you are not busy with a task, a set of brain areas called the default mode network gets more active. It works on daydreams, memories and imagining the future. A few studies found people had more ideas after doing something boring, though not every study agrees.' },
+      { voice: 'An artist', says: 'Some of my best ideas came while I stared out a window with nothing to do. Boredom is like an empty page, uncomfortable at first and then full of room. If every empty minute gets filled, there is less room for your own ideas.' },
+      { voice: 'A grandparent of faith', says: 'A professor named Arthur Brooks argues that boredom turns the mind toward big questions, like what makes a life good, and that reaching for a phone every time crowds those questions out. Many traditions keep quiet times for the same reason. You might try ten quiet minutes and see where your mind goes.' },
+      { voice: 'A skeptic', says: 'Boredom is not always a gift; sometimes it just means you need something to do. Still, it is worth a test. Next time you are bored, wait ten minutes before you pick anything up, and notice what your mind comes up with.' },
+    ],
+    closing: 'What does your mind do when you let it wander?',
+  },
+  {
+    id: 'w-growing-short-night',
+    theme: 'ups-and-downs',
+    stage: 'growing',
+    courseIds: [],
+    answerMode: 'typed',
+    prompt: 'On days after you slept badly, does everything seem to go wrong?',
+    perspectives: [
+      { voice: 'A scientist', says: 'In one study, children aged eight to twelve went to bed an hour later than usual for four nights. With less sleep, they had a harder time handling their feelings and enjoyed good things less, and their memory and attention slipped too. A bad day after a short night may partly be a tired brain.' },
+      { voice: 'An artist', says: 'On tired days, I do the easy work, like cleaning brushes and sorting paints, and save the hard painting for tomorrow. Matching the job to your energy is a skill. Not every day has to be your best day.' },
+      { voice: 'A grandparent of faith', says: 'Many families keep a bedtime ritual, a story, a prayer or a song, to help the day close gently. Whatever you believe, a steady bedtime is a kind gift to your future self. Tomorrow, you will thank yourself for tonight.' },
+      { voice: 'A skeptic', says: 'You can test this on yourself. On days that feel awful, write down how many hours you slept, and keep it up for a few weeks. If the worst days line up with short nights, you have found something worth fixing.' },
+    ],
+    closing: 'What could make your bedtime a little easier tonight?',
+  },
+  // Pass IW (2026-10-03): ten teen and ten grown questions, failure and hard feelings first, drawing on Frankl, Marcus
+  // Aurelius, Aristotle, Michael Singer and Rick Hanson. Listed in docs/DECISIONS.md for approval; shown only once approved.
+  {
+    id: 'w-teen-shoved-in-the-bag',
+    theme: 'failure',
+    stage: 'teen',
+    courseIds: [],
+    answerMode: 'typed',
+    prompt: 'You got a test back covered in red marks. Did you read the mistakes, or shove it in your bag? Why?',
+    perspectives: [
+      { voice: 'A scientist', says: 'A 2019 study found that people learned less from their own failures than from their successes, apparently because failing stings and the mind tunes out. A later critique questions how that study measured learning, so treat it as a lead, not a law. Either way, a mistake you never look at cannot teach you anything.' },
+      { voice: 'An artist', says: 'When a painting goes wrong, I turn it upside down and look at it as shapes, not as my painting. That small distance makes it easier to see what went wrong. You can do the same with a test: read it as if a friend had taken it.' },
+      { voice: 'A grandparent of faith', says: 'Many traditions treat humility as the door to learning. Being willing to look at your own mistakes, without hiding them from yourself, is a quiet kind of courage. Nobody has to see you do it.' },
+      { voice: 'A skeptic', says: 'Try a test of your own. Next time, give yourself five minutes with the marks before you put the paper away. Write down one mistake you will not make again, and see whether it sticks.' },
+    ],
+    closing: 'What is one mistake from a recent test that you could look at again today?',
+  },
+  {
+    id: 'w-teen-brave-by-doing',
+    theme: 'failure',
+    stage: 'teen',
+    courseIds: [],
+    answerMode: 'typed',
+    prompt: 'You froze when it was your turn to speak, and now the next time scares you even more. How does anyone get braver?',
+    perspectives: [
+      { voice: 'A scientist', says: 'Fear tends to shrink with practice in small, safe steps, which is the idea behind how psychologists treat many fears. Avoiding the scary thing usually makes it feel bigger the next time. Each small try teaches your body that it can get through the moment.' },
+      { voice: 'An artist', says: 'The first time I showed my work in public, my hands shook so hard I dropped the pins. The tenth time, they only shook a little. Nothing had changed but the number of times I had done it.' },
+      { voice: 'A grandparent of faith', says: 'Long ago, the philosopher Aristotle argued that we become brave the same way we become builders: by doing brave acts, again and again. Courage, in his view, is a habit more than a gift. Many faiths would add that you do not have to do it alone.' },
+      { voice: 'A skeptic', says: 'Start smaller than feels useful. Say one sentence out loud in class this week, then two the week after. If the fear really is shrinking, you will notice it.' },
+    ],
+    closing: 'What is the smallest brave thing you could practice this week?',
+  },
+  {
+    id: 'w-teen-imagine-it-failed',
+    theme: 'failure',
+    stage: 'teen',
+    courseIds: [],
+    answerMode: 'typed',
+    prompt: 'Before a big project, imagine it is already finished and it failed. What went wrong?',
+    perspectives: [
+      { voice: 'A scientist', says: 'A psychologist named Gary Klein calls this a premortem. Imagining that a plan has already failed makes it easier to name the problems people would otherwise keep quiet about. Then you can fix them before they happen.' },
+      { voice: 'An artist', says: 'Before a big piece, I make a quick, ugly sketch and ask where it would fall apart. Usually it is the part I was most excited about. Better to find that out on scrap paper.' },
+      { voice: 'A grandparent of faith', says: 'There is wisdom in looking ahead with open eyes. Many traditions teach planning with care and then letting go of what you cannot control. Prepare well, and then you can rest.' },
+      { voice: 'A skeptic', says: 'Write your top three reasons it might fail, and give each one a fix. If a reason has no fix, that is the part of the plan to rethink. Pessimism on paper is cheaper than failure in real life.' },
+    ],
+    closing: 'Think of something you have coming up. What is the most likely way it could go wrong, and how could you head it off?',
+  },
+  {
+    id: 'w-teen-hid-the-grade',
+    theme: 'failure',
+    stage: 'teen',
+    courseIds: [],
+    answerMode: 'typed',
+    prompt: 'You got a bad grade and hid it from your family. Now it feels worse than the grade did. What now?',
+    perspectives: [
+      { voice: 'A scientist', says: 'Psychologists who study secrets find that much of their weight comes from how often the mind keeps returning to them. Telling someone usually lightens it. The grade itself does not change, but the secret stops growing.' },
+      { voice: 'An artist', says: 'A hidden mistake is like a smudge you keep painting over. The more layers you add, the muddier it gets. Sometimes the cleanest fix is to show it and start the next layer fresh.' },
+      { voice: 'A grandparent of faith', says: 'Most families would rather hear hard news from you than find it out later. Owning a mistake honestly is how trust grows, in many traditions and in most homes. You might be surprised how gently it is received.' },
+      { voice: 'A skeptic', says: 'Make a plan before you talk: say what happened, what you think caused it, and what you will do next. A grade with a plan sounds very different from a grade that was hidden. Then ask for the help you need.' },
+    ],
+    closing: 'What is the first sentence you could say when you tell them?',
+  },
+  {
+    id: 'w-teen-who-hears-the-voice',
+    theme: 'feelings',
+    stage: 'teen',
+    courseIds: [],
+    answerMode: 'typed',
+    prompt: 'The writer Michael Singer says you are not the voice in your head, but the one who hears it. What would change if that were true?',
+    perspectives: [
+      { voice: 'A scientist', says: 'People differ a lot in how much inner speech they report, so not everyone hears that voice the same way. Researchers have also found that talking to yourself by your own name, the way a coach would, can make stress easier to handle. Both suggest there is some distance between you and your thoughts.' },
+      { voice: 'An artist', says: 'When I listen to that voice like a radio playing in the next room, it loses some of its power. I can hear it without dancing to every song. The music goes on, but I choose what to do.' },
+      { voice: 'A grandparent of faith', says: 'Singer draws on old spiritual traditions that teach a quiet watching of the mind, through prayer, meditation or stillness. In his book The Untethered Soul, the practice is simply to notice the voice and let it pass. Many people find a kind of peace in that noticing.' },
+      { voice: 'A skeptic', says: 'Test it rather than believing it on faith. The next time the voice says something harsh, write the sentence down and ask whether you would accept it from a stranger. If not, why accept it from inside?' },
+    ],
+    closing: 'What does your inner voice say most often, and what would you say back?',
+  },
+  {
+    id: 'w-teen-velcro-and-teflon',
+    theme: 'feelings',
+    stage: 'teen',
+    courseIds: [],
+    answerMode: 'typed',
+    prompt: 'The psychologist Rick Hanson says the brain is like Velcro for bad experiences and Teflon for good ones. Is that true of yours?',
+    perspectives: [
+      { voice: 'A scientist', says: 'Scientists call the pattern the negativity bias: bad events tend to grab attention and stick in memory more than good ones, and studies suggest it starts early in life. It probably helped our ancestors notice danger. It can also make an ordinary good day feel thin.' },
+      { voice: 'An artist', says: 'I keep a small sketchbook of good moments, like a stranger laughing or light on a wall. Drawing them makes me slow down long enough for them to stick. A pencil is a very good glue.' },
+      { voice: 'A grandparent of faith', says: 'Hanson suggests a simple practice: when something good happens, stay with it for a few extra seconds and let it sink in. Many faiths have their own version, giving thanks at meals or at the end of the day. Gratitude is attention, practiced on purpose.' },
+      { voice: 'A skeptic', says: 'Run your own count for a week. Each night, write down one bad moment and one good one that you almost forgot. See which list was easier to fill, and whether the good list grows.' },
+    ],
+    closing: 'What good moment from today deserves a few extra seconds?',
+  },
+  {
+    id: 'w-teen-replaying-it',
+    theme: 'feelings',
+    stage: 'teen',
+    courseIds: [],
+    answerMode: 'typed',
+    prompt: 'Something embarrassing happened weeks ago, and your mind keeps replaying it. Why does it do that, and how do you make it stop?',
+    perspectives: [
+      { voice: 'A scientist', says: 'Psychologists call this rumination: going over a bad moment again and again without solving anything. Research finds it tends to keep the bad feeling going. Doing something absorbing, or deciding on one concrete step, often breaks the loop better than thinking harder.' },
+      { voice: 'An artist', says: 'Replaying a moment is like watching the same scene of a movie on a loop. You notice details nobody else remembers. Everyone else saw it once and moved on to the next scene.' },
+      { voice: 'A grandparent of faith', says: 'Many traditions teach a way to set things down: a prayer, a confession, or simply saying it out loud to someone you trust. Naming a thing to a kind listener often takes some of its weight. You do not have to carry it alone.' },
+      { voice: 'A skeptic', says: 'Ask what the replay is trying to get you to do. If there is something to fix, like an apology, do it and let the replay retire. If there is nothing to fix, notice the loop and change the channel.' },
+    ],
+    closing: 'Is there a moment you keep replaying, and is there anything left to do about it?',
+  },
+  {
+    id: 'w-teen-friend-moving',
+    theme: 'feelings',
+    stage: 'teen',
+    courseIds: [],
+    answerMode: 'typed',
+    prompt: 'Your best friend is moving far away. How do you say goodbye, and how do you stay friends?',
+    perspectives: [
+      { voice: 'A scientist', says: 'Sadness about a goodbye is a sign of how much the friendship matters. Putting the feeling into words, out loud or on paper, tends to make it easier to hold. Friendships can last across distance, but they need small, regular check-ins to stay alive.' },
+      { voice: 'An artist', says: 'Make something together before they go: a playlist, a comic, a map of your favorite places. A shared thing keeps a thread between you. You can keep adding to it from far away.' },
+      { voice: 'A grandparent of faith', says: 'In many families, people say goodbye with a blessing or a promise to keep each other in their thoughts and prayers. Whatever you believe, a goodbye said well is a gift to both of you. Distance changes a friendship, but it does not have to end it.' },
+      { voice: 'A skeptic', says: 'Be realistic about how this goes. Some friendships fade with distance and some grow stronger, and the difference is usually effort. Pick one way to stay in touch and one day of the week, and keep it simple enough to last.' },
+    ],
+    closing: 'What would you want to say to a friend before they moved away?',
+  },
+  {
+    id: 'w-teen-the-obstacle',
+    theme: 'ups-and-downs',
+    stage: 'teen',
+    courseIds: [],
+    answerMode: 'typed',
+    prompt: 'The Roman emperor Marcus Aurelius wrote in his private notebook that what stands in the way can become the way. Is something in your way right now?',
+    perspectives: [
+      { voice: 'A scientist', says: 'Hard problems often build the very skills they demand. Learning research finds that struggling with something just beyond your reach tends to build stronger, longer-lasting skill than easy practice does. The obstacle can be part of the training.' },
+      { voice: 'An artist', says: 'When a canvas tears, I sometimes stitch it and paint over the seam. The seam becomes part of the picture. Some of my favorite pieces have a scar like that.' },
+      { voice: 'A grandparent of faith', says: 'Marcus Aurelius ruled through wars, a plague and the deaths of many of his children, and he still wrote to himself about patience and duty. Many faiths teach something close to his idea: that hardship can shape us. That is not the same as saying hardship is good.' },
+      { voice: 'A skeptic', says: 'Be careful with this idea. Some obstacles are lessons, and some are just walls you should walk around. The useful question is whether pushing through this one will build something you want.' },
+    ],
+    closing: 'What obstacle in your way might be teaching you something?',
+  },
+  {
+    id: 'w-teen-awful-morning',
+    theme: 'ups-and-downs',
+    stage: 'teen',
+    courseIds: [],
+    answerMode: 'typed',
+    prompt: 'You woke up in a bad mood for no clear reason. Do you have to stay in it all day?',
+    perspectives: [
+      { voice: 'A scientist', says: 'Moods are strongly shaped by sleep, food and movement, even when no reason comes to mind. Studies find that even a short walk or a little exercise often lifts mood for a while. A bad morning is weather, not a forecast for the whole day.' },
+      { voice: 'An artist', says: 'On gray mornings I change one small thing: a brighter shirt, a different song, a new route to school. A tiny change of scene can shift the whole picture. The mood does not have to be the frame.' },
+      { voice: 'A grandparent of faith', says: 'Many people start their day with a prayer, a quiet minute or a few words of thanks, and some say it helps on the hard mornings most of all. Whatever you believe, a small ritual can steady you. Each day is a fresh start.' },
+      { voice: 'A skeptic', says: 'Check the basics before you blame the day. Did you sleep, eat and drink some water? If a bad mood keeps coming back for weeks, that is worth telling a grown-up you trust.' },
+    ],
+    closing: 'What is one small thing that usually helps your mood turn around?',
+  },
+  {
+    id: 'w-grown-cv-of-failures',
+    theme: 'failure',
+    stage: 'grown',
+    courseIds: [],
+    answerMode: 'typed',
+    prompt: 'A Princeton professor named Johannes Haushofer published a CV of his failures: the programs, jobs and grants he did not get. What would yours list, and why might sharing it help someone?',
+    perspectives: [
+      { voice: 'A scientist', says: 'Haushofer wrote that most of what he tries fails, but the failures are invisible while the successes are visible. That gap makes other people blame themselves for their own rejections. He credited the idea to a 2010 article in Nature by the scientist Melanie Stefan.' },
+      { voice: 'An artist', says: 'Every gallery wall hides a stack of rejected work in somebody\'s studio. Visitors only see the wall. If they saw the stack, more of them might keep painting.' },
+      { voice: 'A grandparent of faith', says: 'Many traditions honor confession, not to wallow in failure, but to put it in the light where it loses its power. Telling the truth about our failures can be a gift to someone who thinks they are the only one. Humility is generous that way.' },
+      { voice: 'A skeptic', says: 'Notice what Haushofer also wrote: his CV of failures got more attention than his entire body of academic work. Failure stories are attractive, and they can become a performance. Share them to help someone, not to collect applause.' },
+    ],
+    closing: 'What would the first three lines of your CV of failures say?',
+  },
+  {
+    id: 'w-grown-the-try-you-skipped',
+    theme: 'failure',
+    stage: 'grown',
+    courseIds: [],
+    answerMode: 'typed',
+    prompt: 'Years from now, which will you regret more: a try that failed, or a try you never made?',
+    perspectives: [
+      { voice: 'A scientist', says: 'Research on regret by Thomas Gilovich and Victoria Medvec found that recent regrets lean toward things people did, while regrets over a lifetime lean toward things they never tried. Later work found many of those long-term regrets are more wistful than painful. The pattern held as a tendency, not a rule.' },
+      { voice: 'An artist', says: 'I still think about a residency I never applied for. The paintings I failed at I barely remember. The one I never started keeps its shine, which is exactly the problem.' },
+      { voice: 'A grandparent of faith', says: 'Many elders, looking back, speak less of their failures and more of the words they did not say and the chances they did not take. Their stories are not proof, but they are worth hearing. Ask an older person you trust what they wish they had tried.' },
+      { voice: 'A skeptic', says: 'Do not let this become a reason to say yes to everything. Some tries are reckless, and avoiding them is wisdom, not cowardice. The question is whether the fear is protecting you or just keeping you small.' },
+    ],
+    closing: 'What is one thing you would regret not trying, and what is stopping you?',
+  },
+  {
+    id: 'w-grown-sunk-cost',
+    theme: 'failure',
+    stage: 'grown',
+    courseIds: [],
+    answerMode: 'typed',
+    prompt: 'You have put two years into something that is not working. Is the time you already spent a reason to keep going?',
+    perspectives: [
+      { voice: 'A scientist', says: 'Economists call this the sunk cost fallacy: time and money already spent cannot be recovered, so they should not decide what you do next. A classic 1985 study by Hal Arkes and Catherine Blumer found people kept investing in failing projects partly because of what they had already put in. The real question is whether the next year is worth it.' },
+      { voice: 'An artist', says: 'Some of my best work came from abandoning a painting I had spent months on. Letting it go felt like losing those months. It was really getting the next ones back.' },
+      { voice: 'A grandparent of faith', says: 'Many traditions honor faithfulness, staying with something hard. Many also honor wisdom, knowing when a season has ended. Telling the two apart is the work, and it is worth doing slowly, with people who know you.' },
+      { voice: 'A skeptic', says: 'Write down what you would do if you were starting fresh today, knowing everything you know now. If the answer is not this, the two years are not a reason. If the answer is still this, keep going with a clearer head.' },
+    ],
+    closing: 'Is there something you are continuing mainly because of what you already put in?',
+  },
+  {
+    id: 'w-grown-other-peoples-failures',
+    theme: 'failure',
+    stage: 'grown',
+    courseIds: [],
+    answerMode: 'typed',
+    prompt: 'One study found people learned as much from other people\'s failures as from their successes, but less from their own. Whose failures have taught you the most?',
+    perspectives: [
+      { voice: 'A scientist', says: 'In the 2019 study by Lauren Eskreis-Winkler and Ayelet Fishbach, failure seemed to threaten people\'s sense of themselves, so they tuned out. When the failure belonged to someone else, the threat was gone and they learned. A later critique questions how learning was measured, so hold the finding loosely.' },
+      { voice: 'An artist', says: 'I learned more from watching a teacher ruin a glaze than from any of my own disasters. Her mistake was a lesson. Mine always felt like a verdict.' },
+      { voice: 'A grandparent of faith', says: 'Stories of failure fill the old texts of many faiths, from proud kings to frightened prophets. Perhaps they were kept so others could learn without paying the full price. A story about someone else lets us look honestly.' },
+      { voice: 'A skeptic', says: 'If your own failures make you tune out, borrow some distance. Describe your mistake in the third person, as if it happened to a colleague, and ask what advice you would give them. Then take that advice yourself.' },
+    ],
+    closing: 'What did someone else\'s failure teach you that your own never could?',
+  },
+  {
+    id: 'w-grown-inner-roommate',
+    theme: 'feelings',
+    stage: 'grown',
+    courseIds: [],
+    answerMode: 'typed',
+    prompt: 'Michael Singer asks readers to imagine the voice in their head as a roommate who talks all day long. Would you keep a roommate like that?',
+    perspectives: [
+      { voice: 'A scientist', says: 'Inner speech varies widely: some people report a near-constant stream, others very little. Studies of self-distancing find that stepping back from that stream, for example by addressing yourself by name, can make hard feelings easier to manage. Neither finding says the voice is always wrong.' },
+      { voice: 'An artist', says: 'If my inner roommate were a person, I would paint them as a nervous little critic pacing the hallway. Seeing it that way makes me kinder to it. It is trying to protect me, badly.' },
+      { voice: 'A grandparent of faith', says: 'In The Untethered Soul, Singer suggests relaxing and letting the inner noise pass through rather than fighting it. Contemplatives in many faiths describe a similar quiet watching. The goal is not silence, but freedom from being ruled by the noise.' },
+      { voice: 'A skeptic', says: 'Take the roommate seriously enough to fact-check it. Keep a log of its predictions for a week and score them. A roommate who is wrong most of the time deserves less of a vote.' },
+    ],
+    closing: 'What does your inner roommate say most often, and how often has it been right?',
+  },
+  {
+    id: 'w-grown-noticing-the-good',
+    theme: 'feelings',
+    stage: 'grown',
+    courseIds: [],
+    answerMode: 'typed',
+    prompt: 'Rick Hanson argues that lingering on good experiences for a few extra seconds helps them stick. Is noticing the good a real skill, or a way of fooling yourself?',
+    perspectives: [
+      { voice: 'A scientist', says: 'Research on savoring supports a modest version: people who deliberately stop to enjoy good moments tend to report more positive feelings. Some of the bolder claims about rewiring the brain run ahead of the evidence. The practice can help without the biggest promises being true.' },
+      { voice: 'An artist', says: 'Painters train themselves to see light most people walk past. Noticing the good is the same training pointed at a life. It is not pretending; it is looking.' },
+      { voice: 'A grandparent of faith', says: 'Gratitude runs through nearly every faith tradition, from blessings before meals to thanks at the end of the day. Hanson calls his version taking in the good. The old practice and the new name point the same way.' },
+      { voice: 'A skeptic', says: 'Fooling yourself would mean ignoring real problems. Noticing the good does not require that; it only asks you to count both columns. If the bad still needs fixing, fix it, and then let the good count too.' },
+    ],
+    closing: 'What good moment this week did you nearly miss?',
+  },
+  {
+    id: 'w-grown-awe',
+    theme: 'feelings',
+    stage: 'grown',
+    courseIds: [],
+    answerMode: 'typed',
+    prompt: 'When did you last feel awe, and what did it do to the worries you brought with you?',
+    perspectives: [
+      { voice: 'A scientist', says: 'In one study, people spent a single minute looking up at a grove of towering eucalyptus trees. Afterward, they helped a stranger pick up more dropped pens than people who had looked at a tall building. The researchers found awe made people feel smaller in a good way, less focused on themselves. Awe seems to widen the frame.' },
+      { voice: 'An artist', says: 'The night sky away from city lights still knocks the breath out of me. My problems are still there afterward, but they are the right size again. Awe is a reset for proportion.' },
+      { voice: 'A grandparent of faith', says: 'Many traditions describe awe as the beginning of wisdom or of worship. Whatever you believe, standing before something vast tends to quiet the small self. It is one of the oldest medicines people know.' },
+      { voice: 'A skeptic', says: 'Awe is not reserved for mountains. The same researchers stirred it with slow-motion video of drops of colored water falling into milk. Look for it close by, and test whether it changes your day.' },
+    ],
+    closing: 'Where could you find a moment of awe this week without traveling far?',
+  },
+  {
+    id: 'w-grown-unanswered-message',
+    theme: 'feelings',
+    stage: 'grown',
+    courseIds: [],
+    answerMode: 'typed',
+    prompt: 'You sent a message and heard nothing back for a day. What story did you tell yourself about why?',
+    perspectives: [
+      { voice: 'A scientist', says: 'People often underestimate how much others like them. In studies of conversations between strangers, people believed their partners liked them less than the partners actually did. Researchers call it the liking gap, and it can turn silence into imagined rejection.' },
+      { voice: 'An artist', says: 'An empty space on a canvas is not a message; it is just empty. The mind loves to fill blanks with drama. Sometimes the most accurate picture is the plain one.' },
+      { voice: 'A grandparent of faith', says: 'Many traditions counsel giving others the benefit of the doubt. People are busy, tired, grieving or distracted far more often than they are cruel. Patience with others is also peace for yourself.' },
+      { voice: 'A skeptic', says: 'List three ordinary reasons someone might not reply: busy, phone dead, did not see it. Then ask how much evidence you have for the worst story. Usually it is none, and a simple follow-up settles it.' },
+    ],
+    closing: 'What is the kindest likely reason for a silence you are worrying about?',
+  },
+  {
+    id: 'w-grown-last-freedom',
+    theme: 'ups-and-downs',
+    stage: 'grown',
+    courseIds: [],
+    answerMode: 'typed',
+    prompt: 'Viktor Frankl, a psychiatrist who survived the Nazi camps, wrote that one freedom can never be taken away: the freedom to choose your attitude. Do you believe that?',
+    perspectives: [
+      { voice: 'A scientist', says: 'Frankl wrote it in Man\'s Search for Meaning after describing prisoners who comforted others and gave away their last piece of bread. Later research on coping supports part of his point: how people interpret a hardship shapes how they come through it. It does not mean attitude can undo every circumstance.' },
+      { voice: 'An artist', says: 'Frankl called it the last of the human freedoms, and I think of it when a day goes wrong in ways I cannot control. I cannot choose the weather, but I can choose what I make of the gray. Some of my truest work came from days like that.' },
+      { voice: 'A grandparent of faith', says: 'Frankl found meaning even in terrible suffering, and many traditions teach something close to his insight. Choosing your attitude is not pretending the pain is not there. It is deciding who you will be inside it.' },
+      { voice: 'A skeptic', says: 'Be careful not to turn this into blame. Frankl described what some people managed in terrible conditions, not a test that everyone who struggles has failed. Choosing an attitude is a skill, and skills take practice and help.' },
+    ],
+    closing: 'In a situation you cannot change, what attitude would you want to choose?',
+  },
+  {
+    id: 'w-grown-move-on-a-heavy-day',
+    theme: 'ups-and-downs',
+    stage: 'grown',
+    courseIds: [],
+    answerMode: 'typed',
+    prompt: 'On a heavy day, does moving your body change your mind?',
+    perspectives: [
+      { voice: 'A scientist', says: 'A large 2024 review of 218 trials found that exercise eased depression, with walking or jogging, yoga and strength training among the most effective. Many of the trials were not high quality, so the authors were careful about how certain to be. They suggested exercise be considered alongside therapy and medication, not instead of them.' },
+      { voice: 'An artist', says: 'When my head is crowded, I walk until my feet set the rhythm instead of my worries. Something in the pace untangles things. I rarely solve the problem on the walk, but I come back able to.' },
+      { voice: 'A grandparent of faith', says: 'Many traditions join body and spirit: walking pilgrimages, bowing, dancing, working the land. They knew that a heavy heart can be helped by moving feet. Caring for the body is part of caring for the whole person.' },
+      { voice: 'A skeptic', says: 'Notice the difference between a heavy day and a heavy season. A walk helps the first; the second, especially if it lasts for weeks, deserves real help from a doctor or a counselor. Moving is a good tool, not a replacement for care.' },
+    ],
+    closing: 'What kind of movement helps you most on a heavy day?',
+  },
 ];
 
 // Nothing reaches a student until somebody at the school has read it and said yes.
@@ -27440,6 +28178,15 @@ export function wonderFor(courseId, seed, review) {
 // The only thing stored about a reflection: which one, when, how long, roughly how much.
 export function makeWonderEvent(wonderId, moduleId, at, seconds, wordCount) {
   return { type: 'wonder_answered', at, wonderId, moduleId, seconds, wordCount };
+}
+// -----------------------------------------------------------------------------------------------------------------
+// wonderSpokenParts (2026-10-03, pass IS). In plain terms: what a child who cannot read yet hears on a Wonder question,
+// the question and then each choice in turn, with Or before the last. Before this pass the choices were never spoken,
+// so a pre-reader tapped a button without knowing what it said. The screen lights each choice while it is read.
+// -----------------------------------------------------------------------------------------------------------------
+export function wonderSpokenParts(w) {
+  const options = (w && w.options) || ['Yes', 'No'];
+  return [w.prompt, ...options.map((o, i) => `${options.length > 1 && i === options.length - 1 ? 'Or ' : ''}${o}.`)];
 }
 
 // ---------------------------------------------------------------------
@@ -28151,10 +28898,12 @@ export function daysSinceBackup(lastAt, now) {
 // from a fixed bank, with its choices shuffled, is the same question. Rounds, memory checks, placement probes, the
 // question-pool audit and the rules tests all use this one definition.
 // -----------------------------------------------------------------------------------------------------------------
+// What counts as the same question (pass IU, Mikey: the same question and answer twice in one Animal sounds round): the
+// setup, the wording, the picture and the answer. The wrong choices are left out on purpose. Tap the animal that says
+// buzz with a different wrong animal is still the same question to a child, and before this pass it counted as new.
 export function questionKey(q) {
   if (!q) return '';
-  const choices = Array.isArray(q.choices) ? q.choices.map((c) => (typeof c === 'string' ? c : JSON.stringify(c))).sort() : null;
-  return JSON.stringify([q.story || '', q.prompt || '', q.visual || null, q.answer === undefined ? null : q.answer, choices, q.trace || q.target || null]);
+  return JSON.stringify([q.story || '', q.prompt || '', q.visual || null, q.answer === undefined ? null : q.answer, q.trace || q.target || null]);
 }
 
 // Builds one practice set for a module. Same (moduleId, seed, masteredIds) => same set.
@@ -29431,6 +30180,35 @@ export function moduleStory(learnerName, events, moduleId) {
 // Higher means more in need. The reasons are listed in words so the score is never a
 // mystery.
 // ---------------------------------------------------------------------
+// -----------------------------------------------------------------------------------------------------------------
+// teachPhrase and goalPhrase (2026-10-03, pass IT, Mikey). In plain terms: a lesson title inside a sentence. "It teaches
+// counting to 10" and "the goal was to learn how to count to 10", never "It teaches count to 10". A title that starts with
+// a doing word is turned around (both doing words when there are two, as in Compare and contrast); a question title
+// reads as it is; a sentence title takes that; any other title is a topic.
+// -----------------------------------------------------------------------------------------------------------------
+const TITLE_DOING = { Count: 'counting', Trace: 'tracing', Match: 'matching', Read: 'reading', Tell: 'telling', Draw: 'drawing', Find: 'finding', Compare: 'comparing', Contrast: 'contrasting', Listen: 'listening', Tap: 'tapping', Show: 'showing', Spend: 'spending', Save: 'saving', Share: 'sharing' };
+const QUESTION_TITLE = /^(How|What|Why|Where|When|Which|Who)\b/;
+const SENTENCE_TITLE = /^[A-Z][a-z]+(?: [a-z]+)? (is|are|was|were|has|have|need|needs|makes|make|moves|grows)\b/;
+const doingOf = (w) => TITLE_DOING[w.charAt(0).toUpperCase() + w.slice(1)];
+export function titleAsDoing(title) {
+  const t = String(title || ''); const all = /^([A-Z][a-z]+)((?:, [a-z]+)*(?: and [a-z]+)?)$/.exec(t);
+  if (all) { const words = t.match(/[A-Za-z]+/g).filter((w) => w !== 'and'); if (words.every(doingOf)) return t.replace(/[A-Za-z]+/g, (w) => (w === 'and' ? w : doingOf(w))); }
+  const first = t.split(/[ ,]/)[0];
+  return TITLE_DOING[first] ? TITLE_DOING[first] + t.slice(first.length) : null;
+}
+export function teachPhrase(title) {
+  const t = String(title || ''); const doing = titleAsDoing(t);
+  if (doing) return doing;
+  if (SENTENCE_TITLE.test(t) && !QUESTION_TITLE.test(t)) return `that ${lowerTitle(t)}`;
+  return lowerTitle(t);
+}
+export function goalPhrase(title) {
+  const t = String(title || '');
+  if (titleAsDoing(t)) return `how to ${t.charAt(0).toLowerCase()}${t.slice(1)}`;
+  if (QUESTION_TITLE.test(t)) return lowerTitle(t);
+  if (SENTENCE_TITLE.test(t)) return `that ${lowerTitle(t)}`;
+  return `about ${lowerTitle(t)}`;
+}
 // The weekly note: one plain paragraph about the last seven days, the same on the report and in the
 // class printout. Nothing about the student beyond what the log already holds.
 export function weeklyNote(shownName, events, now) {
@@ -29442,14 +30220,19 @@ export function weeklyNote(shownName, events, now) {
   const masteredNow = rows.filter((m) => m.mastered && m.masteredAt && new Date(m.masteredAt).getTime() >= week).map((m) => m.title);
   const colored = recent.filter((e) => e.type === 'colored').length;
   const met = storiesRead(events).filter((r) => new Date(r.at).getTime() >= week).map((r) => STORY_TITLES[r.moduleId] ? { ...STORY_TITLES[r.moduleId], goal: String(r.moduleId).startsWith('course:') ? ((getCourse(r.moduleId.slice(7)) || {}).title || '') : ((getModule(r.moduleId) || {}).title || '') } : null).filter(Boolean);
-  const next = rows.find((m) => !m.mastered && m.attempts > 0) || rows.find((m) => !m.mastered);
-  const listOf = (xs, cap) => xs.slice(0, cap).join(', ') + (xs.length > cap ? ` and ${xs.length - cap} more` : '');
+  // Each lesson name sits on its own bold line (pass IT, Mikey): a list run into one sentence read the comma inside One
+  // more, one less as two lessons, and the same lessons appeared twice, once as worked on and again as mastered. Now the
+  // week splits into mastered this week, still practicing, and what comes next, and no lesson is named twice.
+  const practicing = touched.filter((t) => !rows.some((m) => m.title === t && m.mastered));
+  const next = rows.find((m) => !m.mastered && !practicing.includes(m.title));
+  const bullets = (xs, cap) => [...xs.slice(0, cap).map((t) => `\n• **${t}**`), xs.length > cap ? `\n• and ${xs.length - cap} more` : ''].join('');
   const parts = [];
-  parts.push(attempts.length ? ['This week ', shownName, ' answered ', String(asked), ' questions and got ', String(right), ' right, working on ', listOf(touched, 3), '.'].join('') : ['This week ', shownName, ' did not practice on this device.'].join(''));
-  if (masteredNow.length) parts.push([shownName, ' mastered:', ...masteredNow.map((t) => `\n• **${t}**`)].join(''));
+  parts.push(attempts.length ? ['This week ', shownName, ' answered ', String(asked), ' questions and got ', String(right), ' right.'].join('') : ['This week ', shownName, ' did not practice on this device.'].join(''));
+  if (masteredNow.length) parts.push([shownName, ' mastered:', bullets(masteredNow, 8)].join(''));
+  if (practicing.length) parts.push(['Still practicing:', bullets(practicing, 5)].join(''));
   if (colored) parts.push([shownName, ' colored ', colored === 1 ? 'a picture' : `${colored} pictures`, '.'].join(''));
-  if (met.length) parts.push([shownName, ' read:', ...met.map((m) => ['\n• **', m.title, '**', m.about ? [', a story about ', m.about].join('') : '', '.', m.goal ? [' Through this story, the goal was to learn about ', m.goal.charAt(0).toLowerCase() + m.goal.slice(1), '.'].join('') : ''].join(''))].join(''));
-  parts.push(next ? 'Next up: ' + next.title + '.' : 'Every assigned module is mastered.');
+  if (met.length) parts.push([shownName, ' read:', ...met.map((m) => ['\n• **', m.title, '**', m.about ? [', a story about ', m.about].join('') : '', '.', m.goal ? [' Through this story, the goal was to learn ', goalPhrase(m.goal), '.'].join('') : ''].join(''))].join(''));
+  if (next) parts.push(`Next up: **${next.title}**.`); else if (!practicing.length) parts.push('Every assigned module is mastered.');
   return parts.join('\n\n');
 }
 // Story titles by module, filled by the app at start (stories live in their own file), so the note

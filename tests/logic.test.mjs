@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs';
 // Tests for src/logic.mjs.  Run:  node tests/logic.test.mjs
 // Any model (or person) can read PASS/FAIL lines below without knowing React.
 import * as L from '../src/logic.mjs';
@@ -86,7 +87,7 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
     else if (q.visual && q.visual.kind === 'item') { if (!q.visual.shape || !q.visual.colour) problems.push('item incomplete'); }
     else if (q.visual && q.visual.kind === 'pattern') { if (!Array.isArray(q.visual.items) || (q.visual.counting ? q.visual.items.length < 1 : q.visual.items.length < 3)) problems.push('pattern too short'); } // a counting row (pass HS) may hold one shape
     else if (q.visual && q.visual.kind === 'clock') { if (!(q.visual.hour >= 1 && q.visual.hour <= 12 && [0, 15, 30, 45].includes(q.visual.minute))) problems.push('clock out of range'); }
-    else if (q.visual && q.visual.kind === 'icon') { if (!['sun', 'moon', 'cloud', 'rain', 'snow', 'plant', 'tree', 'flower', 'fish', 'bird', 'rock', 'drop', 'ice', 'fire', 'magnet'].includes(q.visual.name)) problems.push('unknown icon'); }
+    else if (q.visual && q.visual.kind === 'icon') { if (!['sun', 'moon', 'cloud', 'rain', 'snow', 'plant', 'tree', 'flower', 'fish', 'bird', 'rock', 'drop', 'ice', 'fire', 'magnet', 'clip', 'nail', 'cup', 'bus', 'dog', 'hat', 'bed', 'fan'].includes(q.visual.name)) problems.push('unknown icon'); }
     else if (q.visual && (q.visual.kind === 'pic' || q.visual.kind === 'art')) { if (!q.visual.name) problems.push('picture incomplete'); }
     else if (q.visual && q.visual.kind === 'numberline') { if (!(q.visual.from < q.visual.to && (q.visual.marks || [q.visual.mark]).every((v) => v === null || v === undefined || (v >= q.visual.from && v <= q.visual.to)))) problems.push('number line out of range'); }
     else if (q.visual && (q.visual.kind === 'tri' || q.visual.kind === 'para')) { if (!(q.visual.base > 0 && (q.visual.height === '?' || q.visual.height > 0))) problems.push('shape measures missing'); }
@@ -811,6 +812,33 @@ ok('reset: history kept, but nothing counts as mastered afterwards', events.leng
   ok('every perspective is written in complete sentences, not fragments', L.WONDER.every((w) => w.perspectives.every((p) => p.says.split('. ').every((sentence) => sentence.trim().split(/\s+/).length >= 5))));
   ok('no perspective uses an em dash', L.WONDER.every((w) => w.perspectives.every((p) => !p.says.includes('\u2014'))));
   ok('pick-mode Wonder questions offer options', L.WONDER.filter((w) => w.answerMode === 'pick').every((w) => Array.isArray(w.options) && w.options.length >= 2));
+  { // Pass IS: a child who cannot read yet hears the question and then every choice, in order, with Or before the last.
+    const spokenEarly = L.WONDER.filter((w) => w.stage === 'early' && w.answerMode === 'pick' && Array.isArray(w.simple));
+    ok('a pre-reader hears the Wonder question and then every choice, in order', spokenEarly.length > 0 && spokenEarly.every((w) => { const p = L.wonderSpokenParts(w); return p.length === w.options.length + 1 && p[0] === w.prompt && w.options.every((o, i) => p[i + 1].includes(o)) && p[p.length - 1].startsWith('Or '); }));
+    ok('the two voices a pre-reader hears are short and end like sentences', spokenEarly.every((w) => w.simple.length === 2 && w.simple.every((v) => /[.?!]$/.test(v.says) && v.says.split(/\s+/).length <= 20)));
+    ok('every Wonder question has its own id', new Set(L.WONDER.map((w) => w.id)).size === L.WONDER.length);
+    ok('every Wonder question carries a theme the rotation knows', L.WONDER.every((w) => Object.keys(L.WONDER_THEMES).includes(w.theme || 'world')));
+  }
+  { // Pass IT (Mikey's screenshots): every picture a lesson or a question names has a drawing, so none falls back to a grey circle.
+    const uiSrc = readFileSync(new URL('../src/ui.jsx', import.meta.url), 'utf8'); const logicSrc = readFileSync(new URL('../src/logic.mjs', import.meta.url), 'utf8');
+    const iconBody = uiSrc.slice(uiSrc.indexOf('function IconPic('), uiSrc.indexOf('}[name] ||', uiSrc.indexOf('function IconPic(')));
+    const drawn = new Set([...iconBody.matchAll(/^\s{4}([a-z]+): </gm)].map((m) => m[1])); const named = new Set();
+    for (const m of logicSrc.matchAll(/icon:([a-z]+)/g)) named.add(m[1]); for (const m of logicSrc.matchAll(/kind: 'icon', name: '([a-z]+)'/g)) named.add(m[1]);
+    for (const id of Object.keys(L.GENERATORS)) for (let s = 1; s <= 30; s++) { let q; try { q = L.generateQuestion(id, s); } catch (e) { break; } for (const c of [...(q.choices || []), q.answer]) if (typeof c === 'string' && c.startsWith('icon:')) named.add(c.slice(5).split(/[:#]/)[0]); for (const v of [q.visual, q.explainVisual]) if (v && v.kind === 'icon') named.add(v.name); }
+    const missing = [...named].filter((n) => !drawn.has(n));
+    ok('every icon a lesson or question names has a drawing', named.size > 10 && missing.length === 0, missing.join(', '));
+    ok('the moon is drawn as a crescent, not two arcs that cancel out', /moon: <path d="M66 16A34 34 0 0 0 66 84A40 40 0 0 1 66 16Z"/.test(iconBody));
+  }
+  { // Pass IT: lesson titles read naturally inside sentences.
+    ok('a lesson title that starts with a doing word reads naturally', L.teachPhrase('Count to 10') === 'counting to 10' && L.goalPhrase('Count to 10') === 'how to count to 10' && L.teachPhrase('Spend, save and share') === 'spending, saving and sharing' && L.teachPhrase('Compare and contrast') === 'comparing and contrasting' && L.teachPhrase('Find the match') === 'finding the match');
+    ok('question, sentence and topic titles read naturally too', L.goalPhrase('How plants grow') === 'how plants grow' && L.teachPhrase('Sound is a vibration') === 'that sound is a vibration' && L.goalPhrase('Shapes') === 'about shapes');
+    ok('every lesson title gives a phrase that keeps a capital only for a name', L.COURSES.flatMap((c) => c.modules).every((m) => { const t = L.teachPhrase(m.title); const g = L.goalPhrase(m.title); return t && g && (!/^[A-Z][a-z]/.test(t) || L.lowerTitle(m.title).charAt(0) === m.title.charAt(0)) && !/  /.test(t + g); }) && L.teachPhrase('Big and small') === 'big and small' && L.lowerTitle('Big Bang') === 'Big Bang');
+    const at = (d) => new Date(Date.now() - d * 86400000).toISOString();
+    const rnd = (id, d, flags) => ({ type: 'attempt_completed', at: at(d), startedAt: at(d), moduleId: id, seed: d, core: flags.map((c) => ({ correct: c })), review: null, coreCorrect: flags.filter(Boolean).length, coreTotal: flags.length });
+    const ids = L.COURSES.find((c) => c.id === 'counting-k').modules.slice(0, 3).map((m) => m.id);
+    const note = L.weeklyNote('Sam', [L.makeCoursesEnabledEvent(['counting-k'], at(9)), rnd(ids[0], 3, [true, true, true, true, true]), rnd(ids[1], 2, [true, false, false, true, false]), rnd(ids[2], 1, [true, true, false, true, true])], new Date().toISOString());
+    ok('the weekly note names each lesson once, each on its own line', ids.every((id) => note.split(L.getModule(id).title).length - 1 <= 1) && !note.includes('working on'), note.replace(/\n/g, ' / '));
+  }
   const ev = L.makeWonderEvent('w-one-thing', 'fraction-meaning', '2026-09-04T10:00:00.000Z', 42, 12);
   ok('a Wonder event stores no words', !Object.values(ev).some((v) => typeof v === 'string' && v.split(' ').length > 3));
   ok('Wonder never affects mastery', L.deriveProgress([ev]).masteredIds.length === 0);
@@ -1576,6 +1604,7 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
     ok('the squash-tally questions compute their answers', [...Array(40).keys()].every((i) => { const q = L.generateQuestion('ag3-tiny', i); if (!q.story) return true; const n = q.story.match(/\d+/g).map(Number); return q.answer === String(n[0] + n[1] + n[2]); }));
   }
   { // Grow the Plant (pass HC): four rounds, each a listed plant with five distinct pictures, the three needs and two toys from the list.
+    ok('every grow round shows all three plant problems, each plant needing one of them (pass IV)', [1, 2, 3, 4, 5, 6].every((r) => { const qs = L.growRounds(r); return qs.every((q) => L.GROW_NEEDS.includes(q.need) && q.items.includes(q.need)) && L.GROW_NEEDS.every((n) => qs.some((q) => q.need === n)); }) && L.GROW_NEEDS.every((n) => L.GROW_PROBLEMS[n] && L.GROW_PROBLEMS[n].say.endsWith('.')));
     ok('every grow round holds the three needs and two different toys for a listed plant', [1, 2, 3, 4, 5].every((r) => { const qs = L.growRounds(r); return qs.length === 4 && qs.every((q) => L.GROW_PLANTS.includes(q.plant) && q.items.length === 5 && new Set(q.items).size === 5 && L.GROW_NEEDS.every((n) => q.items.includes(n)) && q.items.filter((i) => L.GROW_TOYS.includes(i)).length === 2); }));
     ok('the grow game belongs to agriculture K to 2, is marked young and names its needs with its own key', L.COURSE_GAMES['agriculture-k'].includes('grow-agriculture-k') && L.GAMES.find((g) => g.id === 'grow-agriculture-k').young === true && L.GAMES.find((g) => g.id === 'grow-agriculture-k').grow === 'needs' && !L.GAMES.find((g) => g.id === 'grow-agriculture-k').deck);
   }
@@ -1659,6 +1688,9 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
     { const src = (await import('node:fs')).readFileSync(new URL('../src/logic.mjs', import.meta.url), 'utf8'); const keys = [...src.matchAll(/^  '([a-z0-9-]+)': \(rng\) => \{/gm)].map((m) => m[1]); const twice = keys.filter((k, i) => keys.indexOf(k) !== i);
       ok('no question bank is defined twice, so an edit can never land on an unused copy', twice.length === 0); }
     ok('the two agriculture banks from the screenshots fill a ten-question round', QP.poolSize(['ag-scope']) >= 12 && QP.poolSize(['ag-animals']) >= 12);
+    // Pass IU (Mikey: the same question and answer twice in one Animal sounds round): a new wrong choice does not make a question new.
+    ok('a repeat is the same question and answer, whatever the wrong choices', L.questionKey({ prompt: 'Tap the cup.', answer: 'icon:cup', choices: ['icon:cup', 'icon:sun'] }) === L.questionKey({ prompt: 'Tap the cup.', answer: 'icon:cup', choices: ['icon:moon', 'icon:cup'] }) && L.questionKey({ prompt: 'Tap the cup.', answer: 'icon:cup' }) !== L.questionKey({ prompt: 'Tap the cup.', answer: 'icon:sun' }));
+    ok('an Animal sounds round never asks for the same animal twice', [1, 2, 3, 4, 5, 6, 7, 8].every((seed) => { const core = L.buildAttempt('animal-sounds', seed, []).core; return new Set(core.map((q) => `${q.prompt}|${q.answer}`)).size === core.length; }));
   }
   { // Every prompt is under its limit (pass HZ): the seed 7 check near the top reads one question per bank, so this one
     // samples every bank the way the pool audit does, and a long prompt can no longer hide among a bank's others.

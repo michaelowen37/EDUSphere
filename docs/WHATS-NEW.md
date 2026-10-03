@@ -2,6 +2,31 @@
 
 The newest block is what educators see once, in a pop-up on the classroom page, after each update. Write it the way Mikey talks to a teacher: conversational, complete sentences, say what changed and why it matters, and skip the shorthand (2026-09-23). Two to four items. The date line is the version stamp.
 
+## October 3, 2026 (Wonder questions for teens and adults)
+
+- Twenty new Wonder questions for middle school through college, about failure, hard feelings and hard days, draw on Viktor Frankl, Marcus Aurelius, Aristotle, Michael Singer and Rick Hanson. They are waiting in your Wonder review for approval.
+
+## October 3, 2026 (Grow the Plant)
+
+- Grow the Plant shows each plant with a problem to solve, a droopy plant in dry soil, a pale one leaning toward the window, or roots with no soil, and children choose the one thing it needs.
+
+## October 3, 2026 (no repeated questions, and games that wait for you)
+
+- A practice round never asks the same question twice now, even with different wrong answers, and the lessons that needed more questions got them.
+- The space shooter, Catch and Pong wait for a Begin button, so you can read How to play first.
+- Closing a game brings you back to the same spot on the page.
+
+## October 3, 2026 (pictures, clearer summaries and smaller fixes)
+
+- Six pictures that showed up as plain circles, a cup, a bus, a dog, a hat, a bed and a fan, are drawn now, and the moon shows up again.
+- The weekly summary lists what was mastered and what is still being practiced, one lesson per line, so nothing repeats.
+- Let's Color, Let's Read and Let's Play have a Collapse link at the bottom, and My Stories counts the longer course stories too.
+
+## October 3, 2026 (new Wonder questions for younger learners)
+
+- Twenty-four new Wonder questions for pre-K through grade 5, about mistakes, hard feelings and hard days, are waiting in your Wonder review for approval.
+- Children who cannot read yet now hear every choice of a Wonder question read aloud, and each choice lights up as it is read.
+
 ## October 3, 2026 (streaks everywhere)
 
 - Every game where you pick an answer now counts your streak of right answers in a row.

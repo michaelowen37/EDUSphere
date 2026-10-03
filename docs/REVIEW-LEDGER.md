@@ -2,13 +2,13 @@
 
 Generated 2026-10-03 by tools/review-ledger.mjs. What Mikey wants from the review is in docs/FABLE-REVIEW.md; this file is the work list, in order. To mark an item reviewed, add its key to "reviewed" in docs/review-status.json with the pass that did it (keys look like module:saving-investing-and-risk, course-story:econ-9, game:dots-kite, wonder:w-grown-the-rumor), then run the tool again.
 
-Reviewed so far: 0 of 1239 items (615 modules with their lessons, stories and question banks, 102 long stories, 157 games and 365 Wonder questions). Colons today: 2239 in lessons and 1330 in stories (times like 3:30 and ratios are not counted). Pictures are reviewed through docs/ART-REQUESTS.md as they are painted; a rewritten story keeps each picture beside the paragraph it shows.
+Reviewed so far: 1 of 1239 items (615 modules with their lessons, stories and question banks, 102 long stories, 157 games and 365 Wonder questions). Colons today: 2237 in lessons and 1329 in stories (times like 3:30 and ratios are not counted). Pictures are reviewed through docs/ART-REQUESTS.md as they are painted; a rewritten story keeps each picture beside the paragraph it shows.
 
 ## 1. Start here: the modules Mikey named on October 3, 2026
 
 | Reviewed | Grade | Course | Module | Lesson colons | Story | Story colons | Question banks |
 |---|---|---|---|---|---|---|---|
-|  | C | Principles of macroeconomics | Scarcity, trade and markets (`scarcity-and-markets-c`) | 2 | Ten workers and forty-eight thousand pins (S3596) | 1 | macro-markets |
+| yes (JF, an Opus 5.5 sample: lesson, story and questions rewritten) | C | Principles of macroeconomics | Scarcity, trade and markets (`scarcity-and-markets-c`) | 0 | Ten workers and forty-eight thousand pins (S3596) | 0 | macro-markets |
 |  | C | Public speaking | Communication and audience (`communication-and-audience-c`) | 3 | Two hours and two minutes (S3620) | 0 | spch-audience |
 |  | 9 | Say it so it lands | The communication process (`the-communication-process`) | 3 | The text that lost its tone (S3170) | 2 | sp-process |
 |  | 9 | Money for a life | Saving, investing and risk (`saving-investing-and-risk`) | 7 | The first thousand (S2850) | 3 | e9-invest |
@@ -25,7 +25,7 @@ Reviewed so far: 0 of 1239 items (615 modules with their lessons, stories and qu
 |  | C | General psychology | Where psychology came from (`schools-of-thought-c`) | 3 | The degree Harvard would not give (S3578) | 3 | psyc-history |
 |  | C | General psychology | One behavior, seven lenses (`perspectives-c`) | 13 | Seven ways to look at one night (S3584) | 2 | psyc-perspectives |
 |  | C | General psychology | Brain, body and behavior (`brain-and-behavior-c`) | 3 | The man who lived in the present (S3590) | 2 | psyc-brain |
-|  | C | Principles of macroeconomics | Scarcity, trade and markets (`scarcity-and-markets-c`) | 2 | Ten workers and forty-eight thousand pins (S3596) | 1 | macro-markets |
+| yes (JF, an Opus 5.5 sample: lesson, story and questions rewritten) | C | Principles of macroeconomics | Scarcity, trade and markets (`scarcity-and-markets-c`) | 0 | Ten workers and forty-eight thousand pins (S3596) | 0 | macro-markets |
 |  | C | Principles of macroeconomics | Measuring the economy (`measuring-the-economy-c`) | 2 | The number that came with a warning (S3602) | 0 | macro-measure |
 |  | C | Principles of macroeconomics | Money, banks and the Fed (`money-and-banking-c`) | 3 | The stone at the bottom of the sea (S3608) | 0 | macro-money |
 |  | C | Principles of macroeconomics | Policy, trade and the world (`policy-and-the-world-c`) | 1 | The year rates hit twenty percent (S3614) | 1 | macro-policy |

@@ -1,4 +1,6 @@
 {
   "about": "Items Fable has reviewed and rewritten, by key, with the pass that did it. tools/review-ledger.mjs reads this file. Example entry: \"module:saving-investing-and-risk\": \"JF\".",
-  "reviewed": {}
+  "reviewed": {
+    "module:scarcity-and-markets-c": "JF, an Opus 5.5 sample: lesson, story and questions rewritten"
+  }
 }

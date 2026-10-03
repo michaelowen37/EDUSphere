@@ -1948,7 +1948,7 @@ function FlowPic({ steps = [] }) {
   // A chain with any label longer than 12 characters is drawn top to bottom, each label wrapped inside its own wide box
   // (flowLayout in logic.mjs, pass HG, Mikey's screenshots); short labels keep the left-to-right row below.
   const lay = flowLayout(steps);
-  if (lay.dir === 'column') return <Diagram label={steps.join(', then ')}>{lay.boxes.map((bx, i) => { const lh = bx.size * 1.2; const cy = bx.y + bx.h / 2 - ((bx.lines.length - 1) * lh) / 2; return <g key={i}><rect x={bx.x} y={bx.y} width={bx.w} height={bx.h} rx="5" fill={i === lay.boxes.length - 1 ? B.goldSoft : '#FFFFFF'} stroke="#2E2E2E" strokeWidth="1" /><text {...DIAGRAM_TEXT} fontSize={bx.size} dominantBaseline="central" data-flow-label="">{bx.lines.map((ln, k) => <tspan key={k} x={bx.x + bx.w / 2} y={cy + k * lh}>{ln}</tspan>)}</text>{i < lay.boxes.length - 1 && <Arrow d={`M80 ${bx.y + bx.h + 0.6} L80 ${lay.boxes[i + 1].y - 0.8}`} />}</g>; })}</Diagram>;
+  if (lay.dir === 'column') return <Diagram label={steps.join(', then ')}>{lay.boxes.map((bx, i) => { const lh = bx.size * 1.2; const cy = bx.y + bx.h / 2 - ((bx.lines.length - 1) * lh) / 2; return <g key={i}><rect x={bx.x} y={bx.y} width={bx.w} height={bx.h} rx="5" fill={i === lay.boxes.length - 1 ? B.goldSoft : '#FFFFFF'} stroke="#2E2E2E" strokeWidth="1" /><text {...DIAGRAM_TEXT} fontSize={bx.size} dominantBaseline="central" data-flow-label="">{bx.lines.map((ln, k) => <tspan key={k} x={bx.x + bx.w / 2} y={cy + k * lh}>{ln}</tspan>)}</text>{i < lay.boxes.length - 1 && <Arrow d={`M80 ${bx.y + bx.h + lay.air} L80 ${lay.boxes[i + 1].y - lay.air}`} />}</g>; })}</Diagram>;
   // Up to four boxes in a row; a longer chain wraps to a second row and the arrow turns the corner.
   const per = steps.length > 4 ? Math.ceil(steps.length / 2) : steps.length; const rows = Math.ceil(steps.length / per);
   const w = Math.min(40, (150 - (per - 1) * 12) / per); const gap = (160 - per * w) / (per + 1); const y0 = rows > 1 ? 18 : 38;
@@ -2259,7 +2259,8 @@ Object.assign(STORY_TITLES, Object.fromEntries(Object.entries(STORIES).map(([id,
 //   3 over-life-by-backup: close above the Backup classroom link, overlapping Practical Life Skills.
 //   4 right-mid: beside Wonder Questions when there is room. Good as it is.
 //   5 over-exp-by-life: over Science Experiments, never over Life Skills. Good as it is.
-//   6 under-reading: on top of Science Experiments, close under the glowing Reading Lists card.
+//   6 by-reading: on a laptop, to the left of the glowing Reading Lists card, over Wonder Questions (pass JF); in one column,
+//     on top of Science Experiments, close under Reading Lists.
 //   7 under-exp: overlapping Practical Life Skills, close by the glowing Experiments card.
 //   8 right-at-search: Who needs help at its top, the card right-aligned with its top level with the search box.
 //   9 bottom-right: the bottom right corner of the screen, so the top of the Story Log reads behind it.
@@ -2271,7 +2272,7 @@ const TOUR = [
   ['Backups live on this device', 'backup', null, 'over-life-by-backup', <>A backup file automatically downloads to your device when a student taps <em>Exit</em> or, when an educator makes changes and <em>signs out</em>.<br /><br />We still recommend periodic manual backups to a password-protected drive folder, which protects you against lost or broken devices.<br /><br />One file restores everything on any device.</>],
   ['Wonder Questions', 'wonder', null, 'right-mid', <>Wonder questions are deep, thought-provoking questions sprinkled between learning modules. They're designed to promote curiosity, reflection and critical thinking and once a student finds themselves failing modules, the questions are re-prioritized to cover emotional resilience and frame failure as an effective way to learn.<br /><br />Students only see the questions you approve.</>],
   ['Life skills', 'life', null, 'over-exp-by-life', <>The Wise Human is designed to make learning more efficient. Our curated list of practical life skills is a perfect way to fill the time you gain back.<br /><br />You'll find helpful skills for every age group!</>],
-  ['Reading', 'reading', null, 'under-reading', <>Need direction finding books for various age groups? We've got you covered! Our reading list is quite extensive.</>],
+  ['Reading', 'reading', null, 'by-reading', <>Need direction finding books for various age groups? We've got you covered! Our reading list is quite extensive.</>],
   ['Experiments', 'experiments', null, 'under-exp', <>Science is way more fun when it's tangible. We've got experiment ideas for every age group!</>],
   ['Student Summaries', 'rows', 'class', 'right-at-search', <>Every student has a personalized report. Whether you want to see what they've done that day, that week or from the very beginning, we've got you covered! Every module they practice, every story they read, every attempt they make, even their level of confidence on any given topic is continually updated in plain English.<br /><br />Print weekly summaries, add personalized notes, practice missed questions and more!<br /><br />Have more than one student? <strong>Who Needs Help</strong> let's you know who might need a little guidance.</>],
   ['Story Log', 'storylog-page', 'storylog', 'bottom-right', <>Every module comes with a story, and the Story Log is where you see who has read what. Open any story from there to read it together, print it, or mark it as read.</>],
@@ -2310,11 +2311,27 @@ function framedFullHeight() {
   const screenTall = (window.screen && window.screen.availHeight) || 0;
   return framed && screenTall > 0 && window.innerHeight > screenTall + 40;
 }
+// scrollerOf, pageScroller, scrollPageBy and pageScrolled (2026-10-03, pass JF, Mikey's screenshot of the .jsx preview in the
+// claude.ai panel). In plain terms: find what actually scrolls, the window or a box that holds the app. That preview scrolls
+// the app inside a box of its own, where scrolling the window does nothing, which is why Later, the tour's card 3 and new
+// screens missed the top there. Every scroll the app makes on its own goes through these.
+function scrollerOf(el) {
+  if (typeof window === 'undefined') return null;
+  for (let p = el ? el.parentElement : null; p && p !== document.body && p !== document.documentElement; p = p.parentElement) {
+    const oy = getComputedStyle(p).overflowY;
+    if ((oy === 'auto' || oy === 'scroll' || oy === 'overlay') && p.scrollHeight > p.clientHeight + 1) return p;
+  }
+  return window;
+}
+function pageScroller() { return scrollerOf(typeof document === 'undefined' ? null : document.querySelector('.edu-wrap')); }
+function scrollPageBy(el, dy) { const box = scrollerOf(el); if (!box) return; if (box === window) window.scrollBy(0, dy); else box.scrollTop += dy; }
+function pageScrolled() { const box = pageScroller(); return !!box && (box === window ? window.scrollY : box.scrollTop) > 0; }
 function scrollToTop(outer) {
   if (typeof window === 'undefined') return;
   window.scrollTo(0, 0);
   const root = document.scrollingElement || document.documentElement; if (root) root.scrollTop = 0;
   if (document.body) document.body.scrollTop = 0;
+  const box = pageScroller(); if (box && box !== window) box.scrollTop = 0;   // a preview that scrolls the app inside a box
   const first = document.body && document.body.firstElementChild;
   if (outer && framedFullHeight() && first && first.scrollIntoView) first.scrollIntoView({ block: 'start', behavior: 'auto' });
 }
@@ -7382,7 +7399,7 @@ function EduSphereScreens() {
       if (back && back.screen === screen) { const y = back.y || 0; let tries = 0; const go = () => { window.scrollTo(0, y); if (Math.abs(window.scrollY - y) > 2 && tries++ < 20) setTimeout(go, 50); }; setTimeout(go, 0); }
       else {
         scrollToTop(!firstScreen.current);
-        if (tourStep < 0) for (const wait of [80, 320]) setTimeout(() => { if (window.scrollY > 0 || framedFullHeight()) scrollToTop(!firstScreen.current); }, wait);
+        if (tourStep < 0) for (const wait of [80, 320]) setTimeout(() => { if (pageScrolled() || framedFullHeight()) scrollToTop(!firstScreen.current); }, wait);
       }
       firstScreen.current = false;
       if (window.requestAnimationFrame) window.requestAnimationFrame(() => { void document.body.offsetHeight; });
@@ -7534,7 +7551,7 @@ function EduSphereScreens() {
       if (where === 'right-at-search' || where === 'bottom-right') scrollToTop(true);
       else if (where === 'over-life-by-backup') {
         if (framed) els[0].scrollIntoView({ block: 'end' });
-        else window.scrollBy(0, els[0].getBoundingClientRect().top - clamp(B - 110, T + cardH + 30, B - 60));
+        else scrollPageBy(els[0], els[0].getBoundingClientRect().top - clamp(B - 110, T + cardH + 30, B - 60));
       } else els[0].scrollIntoView({ block: 'center' });
       const r = els[0].getBoundingClientRect();
       const lifeR = rectOf('life'); const expR = rectOf('experiments'); const readR = rectOf('reading');
@@ -7555,10 +7572,10 @@ function EduSphereScreens() {
         let left = clamp(expR.left + expR.width / 2 - cardW / 2, 12, flushRight);
         if (lifeR.top < expR.bottom - 4 && lifeR.left > expR.left && left + cardW > lifeR.left - 8) left = clamp(lifeR.left - 8 - cardW, 12, flushRight);
         let top = expR.bottom - 10 - cardH;
-        if (top < T + 12 && !framed) { const up = Math.min(T + 12 - top, Math.max(0, B - 12 - lifeR.bottom)); if (up > 0) { window.scrollBy(0, -up); top += up; } }
+        if (top < T + 12 && !framed) { const up = Math.min(T + 12 - top, Math.max(0, B - 12 - lifeR.bottom)); if (up > 0) { scrollPageBy(els[0], -up); top += up; } }
         box = { left, top, width: cardW };
-      } else if (where === 'under-reading' && expR && readR) {   // card 6: on top of Science Experiments, just under the glowing Reading Lists
-        box = { left: twoCol ? clamp(expR.right - cardW + 40, 12, flushRight) : clamp(expR.left + expR.width / 2 - cardW / 2, 12, flushRight), top: readR.bottom + 8, width: cardW };
+      } else if (where === 'by-reading' && readR) {   // card 6: two columns, left of the glowing Reading Lists over Wonder Questions; one column, under it
+        box = twoCol ? { left: clamp(readR.left - gap - cardW, 12, flushRight), top: readR.top + readR.height / 2 - cardH / 2, width: cardW } : { left: clamp(expR ? expR.left + expR.width / 2 - cardW / 2 : center, 12, flushRight), top: readR.bottom + 8, width: cardW };
       } else if (where === 'under-exp' && expR && lifeR) {   // card 7: over Practical Life Skills, up by the glowing Science Experiments
         box = twoCol ? { left: clamp(Math.max(lifeR.left - 40, expR.right + 8), 12, flushRight), top: lifeR.top - 24, width: cardW } : { left: clamp(lifeR.left + lifeR.width / 2 - cardW / 2, 12, flushRight), top: expR.bottom + 8, width: cardW };
       } else if (where === 'right-at-search') {   // card 8: the page at its top, the card flush right, its top level with the search box's
@@ -8163,7 +8180,7 @@ function EduSphereScreens() {
         <p style={{ color: C.muted, margin: '-22px 0 0', fontSize: 14, textAlign: 'right' }}>Module {mod.order} of {course.modules.length}</p>
         <h1 style={{ fontSize: 26, margin: '14px 0 22px', textAlign: 'center' }}>{titleCase(mod.title)}</h1>
         <div style={{ ...card }} data-tour="lesson-card">
-          {mod.lesson.paragraphs.map((t, i) => <RichText key={i} text={formatTeachingText(t)} size={17} lineGap={12} />)}
+          {mod.lesson.paragraphs.map((t, i) => <RichText key={i} text={mod.lesson.prose ? t : formatTeachingText(t)} size={17} lineGap={12} />)}
           <div style={{ background: C.greenSoft, borderRadius: 10, padding: 14 }}>
             <Picture visual={wayVisual(mod.lesson.example, anotherWay)} />
             {mod.lesson.example.formula && <p style={{ margin: '10px 0 0', fontSize: 17, fontWeight: 700, textAlign: 'center' }}>{mod.lesson.example.formula}</p>}

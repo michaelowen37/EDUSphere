@@ -37,7 +37,7 @@ window.__eduArt = [];
 window.__eduColoringArt = [];
 window.__eduMapArt = [];
 window.__eduAudio = [];
-window.__eduNews = {"stamp":"October 3, 2026 (the tour, scrolling and titles)","date":"October 3, 2026","items":["The first week tour's cards now keep their places on every screen size, and the backup reminder waits until the tour is finished.","Lessons open at the top of the page, and so does your classroom after the tour and after Later.","Lesson titles are capitalized like titles everywhere they appear as a heading."],"brief":["The first week tour's cards now keep their places on every screen size, and the backup reminder waits until the tour is finished.","Lessons open at the top of the page, and so does your classroom after the tour and after Later.","Lesson titles are capitalized like titles everywhere they appear as a heading."],"history":[{"date":"October 3, 2026","title":"the tour, scrolling and titles","items":["The first week tour's cards now keep their places on every screen size, and the backup reminder waits until the tour is finished.","Lessons open at the top of the page, and so does your classroom after the tour and after Later.","Lesson titles are capitalized like titles everywhere they appear as a heading."]},{"date":"October 3, 2026","title":"Public Speaking for college","items":["A college public speaking course: communication and audience, ethics and evidence, organizing and delivering, and informing and persuading, with true stories about Gettysburg, Frederick Douglass's Fourth of July speech, Steve Jobs's three stories and Martin Luther King Jr.'s dream, a long story about Chloe's three minutes at city hall, and a new game, Cite It or Not."]},{"date":"October 3, 2026","title":"Principles of Macroeconomics for college","items":["A college macroeconomics course: markets, measuring the economy, money and the Federal Reserve, and policy and trade, with true stories about Adam Smith's pin factory, the first measure of a nation's income, the stone money of Yap and the year interest rates hit 20 percent, a long story about Mike's crew in the 2008 recession, and a new game, In GDP or Not."]},{"date":"October 3, 2026","title":"General Psychology for college","items":["A college General Psychology course: how psychologists know what they know, where the field came from, seven ways to explain one behavior, and the brain and body behind it. Four true stories come with it, from a horse that seemed to count to a man who could not form new memories, and Savanah's class runs its own experiment with a coin.","A new game, Cause or Correlation: read a study and decide whether chance chose the groups. Only then can a study show cause."]},{"date":"October 3, 2026","title":"parentheses, not brackets","items":["Math lessons now call ( ) parentheses, the way American classrooms and the Texas standards do, and keep the word brackets for [ ]. Grade 5 also learns brackets as the outer of two groups, worked from the inside out, with a new practice question to match."]},{"date":"October 3, 2026","title":"more Wonder questions for teens and adults","items":["Sixteen new Wonder questions for middle school through college about failure, hard feelings and hard days: why rereading fools you, what makes an apology work, a friend who drifted away, a college that said no, and whether chasing happiness backfires. They draw on Aristotle, Marcus Aurelius, Viktor Frankl and Arthur Brooks, and are waiting in your Wonder review for approval."]}]};
+window.__eduNews = {"stamp":"October 3, 2026 (a rewritten economics lesson, the tour and diagrams)","date":"October 3, 2026","items":["The college lesson Scarcity, Trade and Markets has been rewritten to explain its ideas the way a good teacher talks them through, with examples you can picture, and its questions now read naturally.","The tour's cards now sit where they belong in the preview as well as on wider screens.","Step-by-step diagrams have a little more room around their arrows."],"brief":["The college lesson Scarcity, Trade and Markets has been rewritten to explain its ideas the way a good teacher talks them through, with examples you can picture, and its questions now read naturally.","The tour's cards now sit where they belong in the preview as well as on wider screens.","Step-by-step diagrams have a little more room around their arrows."],"history":[{"date":"October 3, 2026","title":"a rewritten economics lesson, the tour and diagrams","items":["The college lesson Scarcity, Trade and Markets has been rewritten to explain its ideas the way a good teacher talks them through, with examples you can picture, and its questions now read naturally.","The tour's cards now sit where they belong in the preview as well as on wider screens.","Step-by-step diagrams have a little more room around their arrows."]},{"date":"October 3, 2026","title":"the tour, scrolling and titles","items":["The first week tour's cards now keep their places on every screen size, and the backup reminder waits until the tour is finished.","Lessons open at the top of the page, and so does your classroom after the tour and after Later.","Lesson titles are capitalized like titles everywhere they appear as a heading."]},{"date":"October 3, 2026","title":"Public Speaking for college","items":["A college public speaking course: communication and audience, ethics and evidence, organizing and delivering, and informing and persuading, with true stories about Gettysburg, Frederick Douglass's Fourth of July speech, Steve Jobs's three stories and Martin Luther King Jr.'s dream, a long story about Chloe's three minutes at city hall, and a new game, Cite It or Not."]},{"date":"October 3, 2026","title":"Principles of Macroeconomics for college","items":["A college macroeconomics course: markets, measuring the economy, money and the Federal Reserve, and policy and trade, with true stories about Adam Smith's pin factory, the first measure of a nation's income, the stone money of Yap and the year interest rates hit 20 percent, a long story about Mike's crew in the 2008 recession, and a new game, In GDP or Not."]},{"date":"October 3, 2026","title":"General Psychology for college","items":["A college General Psychology course: how psychologists know what they know, where the field came from, seven ways to explain one behavior, and the brain and body behind it. Four true stories come with it, from a horse that seemed to count to a man who could not form new memories, and Savanah's class runs its own experiment with a coin.","A new game, Cause or Correlation: read a study and decide whether chance chose the groups. Only then can a study show cause."]},{"date":"October 3, 2026","title":"parentheses, not brackets","items":["Math lessons now call ( ) parentheses, the way American classrooms and the Texas standards do, and keep the word brackets for [ ]. Grade 5 also learns brackets as the outer of two groups, worked from the inside out, with a new practice question to match."]}]};
 // Installable app: the worker keeps a copy of the page for offline use and asks the network first, so a fresh build always wins.
 if ('serviceWorker' in navigator && /^https?:/.test(location.protocol)) { navigator.serviceWorker.register('sw.js').catch(function () {}); }
 var process = { env: { NODE_ENV: 'production' } };
@@ -20129,13 +20129,16 @@ function wrapLabel(text, maxWidth, maxHeight) {
 function flowLayout(steps) {
     if (!steps.some((t) => String(t).length > 12))
         return { dir: 'row' };
+    // Air around each arrow (pass JF, Mikey): the gap between boxes grew so an arrow no longer touches the boxes it joins;
+    // a chain of six or more keeps the old tight gap so its boxes stay tall enough to read.
     const n = steps.length;
-    const gapY = n > 5 ? 4 : n > 4 ? 5 : 7;
+    const gapY = n > 5 ? 4 : n > 4 ? 8 : 11;
+    const air = gapY >= 8 ? 2.2 : 0.7;
     const w = 136;
     const x = 12;
     const h = Math.min(18, (94 - (n - 1) * gapY) / n);
     const y0 = (100 - (n * h + (n - 1) * gapY)) / 2;
-    return { dir: 'column', boxes: steps.map((t, i) => ({ x, y: y0 + i * (h + gapY), w, h, ...wrapLabel(t, w - 8, h - 2) })) };
+    return { dir: 'column', air, boxes: steps.map((t, i) => ({ x, y: y0 + i * (h + gapY), w, h, ...wrapLabel(t, w - 8, h - 2) })) };
 }
 // -----------------------------------------------------------------------------------------------------------------
 // Find the Tool (2026-10-01, pass HH, the kindergarten to grade 2 business game). In plain terms: a job is named and
@@ -28981,15 +28984,24 @@ function MACRO_MODULES() {
             tagline: 'Opportunity cost, the production possibilities frontier, comparative advantage, and supply and demand',
             requires: [],
             lesson: {
-                paragraphs: ['Economics studies how people choose under scarcity: wants are unlimited, and the resources to meet them are not. Every choice has an opportunity cost, the value of the best alternative given up. A careful choice compares marginal benefit with marginal cost, the benefit and cost of one more unit, a habit called marginal analysis.',
-                    'A production possibilities frontier shows the most an economy can make of two goods with its resources and technology. Points on the curve are efficient, points inside are inefficient because they waste resources, and points outside cannot be reached yet. The curve bows outward because resources are specialized, so the opportunity cost of each extra unit rises.',
-                    'Specialization raises output. Comparative advantage means producing something at a lower opportunity cost than someone else, and it is what makes trade pay. David Ricardo showed in 1817 that two countries gain by specializing and trading even when one is better at making everything.',
-                    'Demand shows how much buyers will purchase at each price, and the law of demand says the quantity demanded falls as price rises. Demand itself shifts with income, tastes, the prices of substitutes and complements, expectations and the number of buyers. Supply shifts with input costs, technology, expectations and the number of sellers.',
-                    'Equilibrium is where quantity supplied equals quantity demanded. If demand rises, price and quantity both rise; if supply rises, price falls and quantity rises. A price ceiling below equilibrium causes a shortage, and a price floor above it causes a surplus.'],
-                keyIdea: 'Every choice has an opportunity cost. Specializing by comparative advantage lets both trading partners gain. Shifts in supply and demand move the equilibrium price and quantity.',
+                // prose (pass JF): this lesson is written as connected paragraphs, so the screen keeps each paragraph whole instead of
+                // breaking it into one sentence per line. Rewritten 2026-10-03 as the first sample of the writing review (docs/FABLE-REVIEW.md).
+                prose: true,
+                paragraphs: ['Economics begins with something everyone already knows from daily life. There is never enough time, money or material to do everything we want, and economists call that gap between unlimited wants and limited resources **scarcity**. Because of scarcity, every choice is also a choice to give something up. An evening spent studying is an evening not spent working or with friends. The value of the best option you give up is the choice\'s **opportunity cost**, and it is the real price of anything you decide to do.',
+                    'Most real choices are not all or nothing, so economists think at the margin, which simply means one more. A baker deciding whether to bake one more batch before closing compares two numbers. The **marginal benefit** is what that extra batch will bring in, and the **marginal cost** is what it takes to make. If the batch will sell for 40 dollars and cost 25 dollars in flour, power and wages, it is worth baking. Weighing one more unit this way is called **marginal analysis**.',
+                    'Economists picture a whole economy\'s choices with a **production possibilities frontier**. It is a curve showing the most a country can make of two goods, say food and machines, with the workers, land and technology it has right now. Every point on the curve is efficient, because nothing is wasted. A point inside the curve is **inefficient**, because resources are being wasted, as when workers sit idle or factories stand empty, and the country could have more of both. A point outside the curve is out of reach for now.',
+                    'The curve bows outward because resources are specialized. When the country first moves workers from farms to factories, it moves the people who were least useful on the farm, so it loses little food. Keep going and it must move its best farmers too, so each extra machine costs more and more food. That rising opportunity cost is what bends the curve. When the country gains workers, machines or a better way to make food, the frontier itself shifts. It moves outward, since more of both goods can now be made.',
+                    'Trade grows out of the same idea. Ana can bake 12 loaves of bread or knit 4 scarves in a day, so each scarf costs her 3 loaves. Ben can bake 4 loaves or knit 2 scarves, so each scarf costs him only 2 loaves. Ana is better at both jobs, which economists call an **absolute advantage**, yet Ben gives up less bread for each scarf. Producing something at a lower opportunity cost than someone else is a **comparative advantage**, and Ben has it in scarves while Ana has it in bread.',
+                    'Watch what specializing does. If each of them splits the day in half, they make 8 loaves and 3 scarves between them. If Ben knits all day and Ana spends three quarters of her day baking, they make 9 loaves and the same 3 scarves. The extra loaf is the gain from trade, and they can share it. In 1817 **David Ricardo** made the same argument for whole countries, using England and Portugal, cloth and wine. Both countries gain, he showed, even when one is better at making everything.',
+                    'Markets coordinate millions of choices like these through prices. **Demand** describes how much buyers want at each possible price. The law of demand says that when a price rises, the quantity demanded falls, and when it falls, the quantity demanded rises. People buy less of something that costs more, or they switch to something else. That is a slide along the demand curve, not a shift of it. The whole curve shifts only when something other than the price changes, such as income, tastes, expectations or the number of buyers. The price of a related good can shift it too, as when coffee gets expensive and more people want tea.',
+                    '**Supply** describes how much sellers will offer at each price, and a higher price usually draws out more, because it covers the cost of making extra. The supply curve shifts when making the good gets cheaper or harder, through **input costs** such as wages and materials, new technology, expectations or the number of sellers.',
+                    'Put the two together and a market settles where the amount buyers want matches the amount sellers offer. That price is **the equilibrium price**, and the amount sold there is the equilibrium quantity. Below it, buyers want more than sellers offer, a **shortage**, and empty shelves push the price up. Above it, sellers offer more than buyers want, a **surplus**, and unsold goods push the price down.',
+                    'When demand rises, the old price leaves a shortage, so the price climbs until the market settles again at a higher price and a larger quantity. The steps below show it one at a time. When supply rises, the old price leaves a surplus, so the price falls and more is sold. When both rise at once, more is sold for certain, but the price can go either way, depending on which change is bigger.',
+                    'Governments sometimes set prices by law. A **price ceiling** is a legal maximum, like a cap on rent. Set below the equilibrium, it causes a shortage, because more people want apartments at that low rent than landlords will offer. A **price floor** is a legal minimum, like a guaranteed price for milk. Set above the equilibrium, it causes a surplus, because farmers offer more milk than buyers want. Each can protect someone, and each has a cost, which is why economists still argue about where to use them.'],
+                keyIdea: 'Scarcity gives every choice an opportunity cost. Trading by comparative advantage leaves both sides better off. Prices settle at the equilibrium, and shifts in supply or demand move it.',
                 example: { kind: 'flow', steps: ['demand rises', 'a shortage at the old price', 'the price rises', 'a new equilibrium, higher price and quantity'], caption: 'How a market answers a rise in demand.',
-                    another: ['If Ana can bake 10 loaves or knit 2 scarves in a day, each scarf costs her 5 loaves. If Ben gives up only 2 loaves per scarf, Ben should knit and Ana should bake.',
-                        'A cold snap raises demand for heaters while a new factory raises their supply: the quantity sold rises for sure, and the price depends on which shift is bigger.'] },
+                    another: ['Think of a Saturday. Maya can work a shift that pays 90 dollars, or she can go to her brother\'s basketball game. If she goes to the game, its opportunity cost is the 90 dollars she could have earned, even though the game itself was free. Every choice has a price like this, whether or not money changes hands.',
+                        'A cold snap makes many more people want space heaters, so demand rises. At the same time a new factory opens, so supply rises too. Both changes push up the number of heaters sold. They pull the price in opposite directions, though, so whether heaters end up costing more or less depends on which change is bigger.'] },
             },
             sources: ['Aligned with ACGM ECON 2301 learning outcomes 1 (scarcity, specialization, opportunity cost and cost/benefit analysis) and 2 (the determinants of supply and demand, and shifts in equilibrium), and the Voluntary National Content Standards in Economics, Standards 5 and 6.'],
             generators: ['macro-markets', 'macro-markets', 'macro-markets', 'macro-markets', 'macro-markets'],
@@ -36374,23 +36386,31 @@ Object.assign(GENERATORS, {
     // lesson, every answer named in its lesson, so a round of ten never needs a repeat.
     // -----------------------------------------------------------------------------------------------------------------
     'macro-markets': (rng) => {
-        const Q = [['The value of the best alternative given up is called what?', ['opportunity cost', 'marginal benefit', 'equilibrium', 'a surplus'], 'opportunity cost', 'Every choice has one.'],
-            ['Unlimited wants and limited resources describe what?', ['scarcity', 'inflation', 'equilibrium', 'specialization'], 'scarcity', 'The reason every choice has a cost.'],
-            ['Comparing the benefit and cost of one more unit is called what?', ['marginal analysis', 'scarcity', 'specialization', 'equilibrium'], 'marginal analysis', 'Marginal means one more.'],
-            ['Points inside a production possibilities frontier are what?', ['inefficient', 'unreachable', 'efficient', 'equilibrium'], 'inefficient', 'They waste resources.'],
-            ['Why does a production possibilities frontier bow outward?', ['resources are specialized', 'prices fall', 'trade is banned', 'demand never changes'], 'resources are specialized', 'So opportunity cost rises.'],
-            ['Producing at a lower opportunity cost is called what?', ['comparative advantage', 'absolute advantage', 'scarcity', 'a price floor'], 'comparative advantage', 'It is what makes trade pay.'],
-            ['Who showed in 1817 that trade can help both countries?', ['David Ricardo', 'Adam Smith', 'John Maynard Keynes', 'Milton Friedman'], 'David Ricardo', 'Even when one is better at everything.'],
-            ['As price rises, quantity demanded does what?', ['falls', 'rises', 'stays the same', 'doubles'], 'falls', 'The law of demand.'],
-            ['Which of these shifts the demand curve?', ['income', 'input costs', 'technology', 'the number of sellers'], 'income', 'Input costs shift supply.'],
-            ['Which of these shifts the supply curve?', ['input costs', 'buyers\' incomes', 'buyers\' tastes', 'the number of buyers'], 'input costs', 'Incomes and tastes shift demand.'],
-            ['Where quantity supplied equals quantity demanded is called what?', ['equilibrium', 'a shortage', 'a surplus', 'the frontier'], 'equilibrium', 'The market clears.'],
-            ['If demand rises, the equilibrium price does what?', ['rises', 'falls', 'stays the same', 'drops to zero'], 'rises', 'And the quantity rises too.'],
-            ['If supply rises, the equilibrium price does what?', ['falls', 'rises', 'stays the same', 'doubles'], 'falls', 'And the quantity rises.'],
-            ['A price ceiling below equilibrium causes what?', ['a shortage', 'a surplus', 'equilibrium', 'inflation'], 'a shortage', 'Buyers want more than sellers offer.'],
-            ['A price floor above equilibrium causes what?', ['a surplus', 'a shortage', 'equilibrium', 'a recession'], 'a surplus', 'Sellers offer more than buyers want.']];
-        const [prompt, choices, answer, explain] = pick(rng, Q);
-        return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+        // Rewritten 2026-10-03 (pass JF), the first sample of the writing review: natural questions, with a setup line (the fifth
+        // item) wherever a question needs a situation to think about. Every short answer is taught in the lesson.
+        const Q = [['What do economists call the value of the best option you give up when you make a choice?', ['opportunity cost', 'marginal benefit', 'equilibrium', 'a surplus'], 'opportunity cost', 'Every choice has one, even when no money changes hands.'],
+            ['If Maya goes to the game, what is the opportunity cost of this choice?', ['the 90 dollars she could have earned', 'nothing, since the game is free', 'the price of a ticket', 'the time her brother spent playing'], 'the 90 dollars she could have earned', 'The best option she gave up was the shift, so its pay is the real price of the game.', 'Maya can work a Saturday shift that pays 90 dollars, or she can go to her brother\'s basketball game, which is free.'],
+            ['What do economists call the gap between unlimited wants and the limited resources to meet them?', ['scarcity', 'inflation', 'equilibrium', 'specialization'], 'scarcity', 'Scarcity is why every choice means giving something up.'],
+            ['What do economists call the way this baker weighs the extra benefit and the extra cost of one more batch?', ['marginal analysis', 'scarcity', 'specialization', 'equilibrium'], 'marginal analysis', 'Marginal means one more, so she compares what one more batch brings in with what it costs to make.', 'A baker is deciding whether to bake one more batch of bread before closing. It would sell for 40 dollars and cost 25 dollars to make.'],
+            ['Should this baker bake the extra batch?', ['yes, because it brings in 15 dollars more than it costs', 'no, because baking always costs money', 'no, because she has baked enough today', 'yes, because any sale is worth making'], 'yes, because it brings in 15 dollars more than it costs', 'Its marginal benefit, 40 dollars, is bigger than its marginal cost, 25 dollars.', 'A baker is deciding whether to bake one more batch of bread before closing. It would sell for 40 dollars and cost 25 dollars to make.'],
+            ['Where does this country\'s output sit compared with its production possibilities frontier?', ['inside the curve', 'on the curve', 'outside the curve', 'far beyond the curve'], 'inside the curve', 'Idle workers and empty factories are wasted resources, so the country could have more of both goods.', 'Many of a country\'s workers cannot find jobs, and half its factories stand empty.'],
+            ['Why is a point inside a production possibilities frontier called inefficient?', ['resources are being wasted', 'the country has run out of resources', 'prices are too high', 'trade has stopped'], 'resources are being wasted', 'The country could make more of both goods with what it already has.'],
+            ['Why does a production possibilities frontier bow outward?', ['because resources are specialized', 'because prices always fall', 'because trade is banned', 'because demand never changes'], 'because resources are specialized', 'Each extra unit of one good costs more and more of the other, since the best-suited workers move first.'],
+            ['What happens to this country\'s production possibilities frontier?', ['it moves outward', 'it moves inward', 'it stays where it was', 'it turns into a straight line'], 'it moves outward', 'With more resources and better technology, it can make more of both goods than before.', 'A country builds new factories and trains more workers, so it can now make more food and more machines than before.'],
+            ['What do economists call the ability to produce something at a lower opportunity cost than someone else?', ['comparative advantage', 'absolute advantage', 'scarcity', 'a price floor'], 'comparative advantage', 'It is what makes trade pay, even for someone who is better at everything.'],
+            ['Who has the comparative advantage in knitting scarves in this case?', ['Ben, because a scarf costs him fewer loaves', 'Ana, because she can knit more scarves', 'neither of them', 'Ana, because she is better at both jobs'], 'Ben, because a scarf costs him fewer loaves', 'A scarf costs Ben 2 loaves and Ana 3, so Ben gives up less to knit one.', 'Ana can bake 12 loaves or knit 4 scarves in a day. Ben can bake 4 loaves or knit 2 scarves.'],
+            ['Which economist showed in 1817 that two countries can both gain from trade, even when one is better at making everything?', ['David Ricardo', 'Adam Smith', 'John Maynard Keynes', 'Milton Friedman'], 'David Ricardo', 'His example was England and Portugal trading cloth and wine.'],
+            ['When the price of something rises, what usually happens to the amount people want to buy?', ['it falls', 'it rises', 'it stays the same', 'it doubles'], 'it falls', 'This is the law of demand, a slide along the demand curve rather than a shift of the whole curve.'],
+            ['Which of these changes would shift the whole demand curve for restaurant meals?', ['a rise in people\'s incomes', 'a rise in the price of cooking oil', 'a faster new oven', 'more restaurants opening'], 'a rise in people\'s incomes', 'Income changes how much people want at every price. The other three change supply.'],
+            ['Which of these changes would shift the whole supply curve for bread?', ['a rise in the price of flour', 'a rise in buyers\' incomes', 'a new craze for sandwiches', 'more people moving to town'], 'a rise in the price of flour', 'Flour is an input, so bakers offer less bread at every price. The other three change demand.'],
+            ['What do economists call the price where the amount buyers want matches the amount sellers offer?', ['the equilibrium price', 'a price ceiling', 'a price floor', 'the opportunity cost'], 'the equilibrium price', 'At that price nothing is left over, and nobody who will pay it goes without.'],
+            ['What happens to the price of ice cream and the amount sold in this case?', ['the price rises and more is sold', 'the price falls and more is sold', 'nothing changes', 'the price rises and less is sold'], 'the price rises and more is sold', 'Demand rose, so the old price left a shortage until the price climbed.', 'A hot summer makes far more people want ice cream, while the shops\' costs stay the same.'],
+            ['What happens to the price of wheat and the amount sold in this case?', ['the price falls and more is sold', 'the price rises and more is sold', 'nothing changes', 'the price falls and less is sold'], 'the price falls and more is sold', 'Supply rose, so the old price left a surplus until the price came down.', 'A new machine lets farmers grow far more wheat at the same cost, while demand for wheat stays the same.'],
+            ['What does this price ceiling cause?', ['a shortage of apartments', 'a surplus of apartments', 'a new equilibrium at 1,300 dollars', 'no change at all'], 'a shortage of apartments', 'Below the equilibrium, more people want apartments than landlords will offer.', 'A city caps rent at 900 dollars a month in a neighborhood where apartments would otherwise rent for 1,300 dollars.'],
+            ['What does this price floor cause?', ['a surplus of milk', 'a shortage of milk', 'a new equilibrium', 'no change at all'], 'a surplus of milk', 'Above the equilibrium, farmers offer more milk than buyers want.', 'The government guarantees dairy farmers a price for milk above the price the market would settle on.'],
+            ['What can we say for certain about space heaters in this case?', ['more heaters are sold', 'the price rises', 'the price falls', 'fewer heaters are sold'], 'more heaters are sold', 'Both changes push the quantity up, but they pull the price in opposite directions.', 'A cold snap makes many more people want space heaters, and a new factory raises their supply at the same time.']];
+        const [prompt, choices, answer, explain, setup] = pick(rng, Q);
+        return { type: 'choice', story: setup || null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
     },
     'macro-measure': (rng) => {
         const Q = [['GDP counts the value of what kind of goods?', ['final goods and services', 'all goods ever sold', 'used goods', 'intermediate goods'], 'final goods and services', 'Produced within the country in a year.'],
@@ -62731,13 +62751,14 @@ STORIES['scarcity-and-markets-c'] = {
     more: [{ serial: 'S3597', after: 1, alt: 'One worker drawing out wire while another straightens it and a third cuts it' }, { serial: 'S3598', after: 2, alt: 'A lone untrained worker struggling to finish a single pin at a cluttered bench' }, { serial: 'S3599', after: 3, alt: 'A historian comparing an old French report with a copy of The Wealth of Nations' }, { serial: 'S3600', after: 4, alt: 'Two countries trading goods across the sea, each making what it gives up least to make' }, { serial: 'S3601', after: 5, alt: 'Pins pouring from a modern machine beside workers each doing one job' }],
     title: 'Ten workers and forty-eight thousand pins', art: 'S3596', cast: [],
     alt: 'A small eighteenth-century workshop where ten workers each do one step of making pins',
+    // Retold 2026-10-03 (pass JF, Mikey: say what The Wealth of Nations is, and give the pins room).
     words: [
-        'In 1776, Adam Smith opened The Wealth of Nations not with kings or gold but with pins. He had seen a small workshop where only ten men worked, and its numbers astonished him.',
-        'Making a pin, Smith wrote, took about eighteen distinct operations. One man drew out the wire, another straightened it, a third cut it and a fourth pointed it. Dividing the work this way, the ten made upwards of forty-eight thousand pins a day.',
-        'Working separately and untrained, Smith guessed, each could not have made twenty, perhaps not one. That gap was his whole argument. Specialization multiplies output, because each worker grows fast at one task and nobody wastes time switching. Later in the book he also warned of the cost: a worker whose whole life is spent on a few simple operations has little reason to use his mind.',
-        'Historians have since checked his sources. A French report from 1723 suggests that a skilled pin maker working alone made about two thousand pins a day, so Smith\'s gap was exaggerated. Even so, dividing the work still more than doubled each worker\'s output.',
-        'Forty years later, David Ricardo carried the idea across borders. A country gains by specializing in what it gives up least to make, its comparative advantage, and trading for the rest, even when it is better at making everything.',
-        'The pins hold the first lesson of economics. Time and hands are scarce, so every task has an opportunity cost. Divide the work by comparative advantage, and everyone ends up with more.',
+        'In 1776, a Scottish philosopher named Adam Smith published An Inquiry into the Nature and Causes of the Wealth of Nations, a book now called simply The Wealth of Nations. It asked why some countries grow rich while others stay poor. Smith could have opened with kings or gold. He opened with a workshop that made pins.',
+        'A pin seems too small to matter, which was the point. Making one, Smith wrote, took about eighteen steps. One worker drew out the wire, another straightened it, a third cut it and a fourth sharpened the point. In a workshop he said he had seen, ten men shared the steps and made about forty-eight thousand pins a day.',
+        'Then he asked what one untrained worker could do alone. Without the practice or the tools, such a worker could not make twenty pins a day, and perhaps not a single pin. That gap was his whole argument. Specialized jobs multiply what people make, because each worker grows quick at one task and no time is lost switching.',
+        'Historians have since checked his figures. Smith appears to have taken them from French books about pin making. A French report from 1723 suggests a pin maker working alone could make about two thousand pins a day, far more than Smith allowed. His gap was exaggerated, though dividing the work still more than doubled what each worker made.',
+        'About forty years later, the English economist David Ricardo carried the idea across borders. In 1817 he argued that each country should specialize in what it gives up least to make, its comparative advantage, and trade for the rest. Both gain even when one is better at making everything. His example had England trading its cloth across the sea for Portugal\'s wine.',
+        'Today pins pour from modern machines, each part doing one job, but Smith\'s question still sits at the heart of economics. Time and skill are scarce, so every hour spent on one task has an opportunity cost. People and countries grow richer by doing what they give up least to do and trading for the rest.',
     ],
 };
 STORIES['measuring-the-economy-c'] = {
@@ -63566,7 +63587,7 @@ function PinInput({ value, onChange, placeholder, style, onEnter = null }) {
 }
 // A stamp of when this copy of the page was built, so a stale page in a cache can be told apart
 // from a fresh one at a glance. Written by the build, never by hand.
-const BUILD_STAMP = '2026-10-03 05:27 PM CDT';
+const BUILD_STAMP = '2026-10-03 06:14 PM CDT';
 function ContactLine({ onOpen, inline = false }) {
     return (react_1.default.createElement("p", { className: "edu-no-print", style: { textAlign: 'center', marginTop: inline ? 0 : 28, fontSize: inline ? 14 : 12, color: C.muted, margin: inline ? '0' : undefined } }, onOpen
         ? react_1.default.createElement("button", { type: "button", onClick: onOpen, style: { background: 'none', border: 'none', color: C.muted, fontFamily: FONT, fontSize: 12, cursor: 'pointer', padding: 0, textDecoration: 'underline' } }, "Contact us")
@@ -65854,7 +65875,7 @@ function FlowPic({ steps = [] }) {
         return react_1.default.createElement(Diagram, { label: steps.join(', then ') }, lay.boxes.map((bx, i) => { const lh = bx.size * 1.2; const cy = bx.y + bx.h / 2 - ((bx.lines.length - 1) * lh) / 2; return react_1.default.createElement("g", { key: i },
             react_1.default.createElement("rect", { x: bx.x, y: bx.y, width: bx.w, height: bx.h, rx: "5", fill: i === lay.boxes.length - 1 ? B.goldSoft : '#FFFFFF', stroke: "#2E2E2E", strokeWidth: "1" }),
             react_1.default.createElement("text", { ...DIAGRAM_TEXT, fontSize: bx.size, dominantBaseline: "central", "data-flow-label": "" }, bx.lines.map((ln, k) => react_1.default.createElement("tspan", { key: k, x: bx.x + bx.w / 2, y: cy + k * lh }, ln))),
-            i < lay.boxes.length - 1 && react_1.default.createElement(Arrow, { d: `M80 ${bx.y + bx.h + 0.6} L80 ${lay.boxes[i + 1].y - 0.8}` })); }));
+            i < lay.boxes.length - 1 && react_1.default.createElement(Arrow, { d: `M80 ${bx.y + bx.h + lay.air} L80 ${lay.boxes[i + 1].y - lay.air}` })); }));
     // Up to four boxes in a row; a longer chain wraps to a second row and the arrow turns the corner.
     const per = steps.length > 4 ? Math.ceil(steps.length / 2) : steps.length;
     const rows = Math.ceil(steps.length / per);
@@ -66491,7 +66512,8 @@ Object.assign(STORY_TITLES, Object.fromEntries(Object.entries(STORIES).map(([id,
 //   3 over-life-by-backup: close above the Backup classroom link, overlapping Practical Life Skills.
 //   4 right-mid: beside Wonder Questions when there is room. Good as it is.
 //   5 over-exp-by-life: over Science Experiments, never over Life Skills. Good as it is.
-//   6 under-reading: on top of Science Experiments, close under the glowing Reading Lists card.
+//   6 by-reading: on a laptop, to the left of the glowing Reading Lists card, over Wonder Questions (pass JF); in one column,
+//     on top of Science Experiments, close under Reading Lists.
 //   7 under-exp: overlapping Practical Life Skills, close by the glowing Experiments card.
 //   8 right-at-search: Who needs help at its top, the card right-aligned with its top level with the search box.
 //   9 bottom-right: the bottom right corner of the screen, so the top of the Story Log reads behind it.
@@ -66533,7 +66555,7 @@ const TOUR = [
             react_1.default.createElement("br", null),
             react_1.default.createElement("br", null),
             "You'll find helpful skills for every age group!")],
-    ['Reading', 'reading', null, 'under-reading', react_1.default.createElement(react_1.default.Fragment, null, "Need direction finding books for various age groups? We've got you covered! Our reading list is quite extensive.")],
+    ['Reading', 'reading', null, 'by-reading', react_1.default.createElement(react_1.default.Fragment, null, "Need direction finding books for various age groups? We've got you covered! Our reading list is quite extensive.")],
     ['Experiments', 'experiments', null, 'under-exp', react_1.default.createElement(react_1.default.Fragment, null, "Science is way more fun when it's tangible. We've got experiment ideas for every age group!")],
     ['Student Summaries', 'rows', 'class', 'right-at-search', react_1.default.createElement(react_1.default.Fragment, null,
             "Every student has a personalized report. Whether you want to see what they've done that day, that week or from the very beginning, we've got you covered! Every module they practice, every story they read, every attempt they make, even their level of confidence on any given topic is continually updated in plain English.",
@@ -66587,6 +66609,27 @@ function framedFullHeight() {
     const screenTall = (window.screen && window.screen.availHeight) || 0;
     return framed && screenTall > 0 && window.innerHeight > screenTall + 40;
 }
+// scrollerOf, pageScroller, scrollPageBy and pageScrolled (2026-10-03, pass JF, Mikey's screenshot of the .jsx preview in the
+// claude.ai panel). In plain terms: find what actually scrolls, the window or a box that holds the app. That preview scrolls
+// the app inside a box of its own, where scrolling the window does nothing, which is why Later, the tour's card 3 and new
+// screens missed the top there. Every scroll the app makes on its own goes through these.
+function scrollerOf(el) {
+    if (typeof window === 'undefined')
+        return null;
+    for (let p = el ? el.parentElement : null; p && p !== document.body && p !== document.documentElement; p = p.parentElement) {
+        const oy = getComputedStyle(p).overflowY;
+        if ((oy === 'auto' || oy === 'scroll' || oy === 'overlay') && p.scrollHeight > p.clientHeight + 1)
+            return p;
+    }
+    return window;
+}
+function pageScroller() { return scrollerOf(typeof document === 'undefined' ? null : document.querySelector('.edu-wrap')); }
+function scrollPageBy(el, dy) { const box = scrollerOf(el); if (!box)
+    return; if (box === window)
+    window.scrollBy(0, dy);
+else
+    box.scrollTop += dy; }
+function pageScrolled() { const box = pageScroller(); return !!box && (box === window ? window.scrollY : box.scrollTop) > 0; }
 function scrollToTop(outer) {
     if (typeof window === 'undefined')
         return;
@@ -66596,6 +66639,9 @@ function scrollToTop(outer) {
         root.scrollTop = 0;
     if (document.body)
         document.body.scrollTop = 0;
+    const box = pageScroller();
+    if (box && box !== window)
+        box.scrollTop = 0; // a preview that scrolls the app inside a box
     const first = document.body && document.body.firstElementChild;
     if (outer && framedFullHeight() && first && first.scrollIntoView)
         first.scrollIntoView({ block: 'start', behavior: 'auto' });
@@ -73946,7 +73992,7 @@ function EduSphereScreens() {
                 scrollToTop(!firstScreen.current);
                 if (tourStep < 0)
                     for (const wait of [80, 320])
-                        setTimeout(() => { if (window.scrollY > 0 || framedFullHeight())
+                        setTimeout(() => { if (pageScrolled() || framedFullHeight())
                             scrollToTop(!firstScreen.current); }, wait);
             }
             firstScreen.current = false;
@@ -74232,7 +74278,7 @@ function EduSphereScreens() {
                 if (framed)
                     els[0].scrollIntoView({ block: 'end' });
                 else
-                    window.scrollBy(0, els[0].getBoundingClientRect().top - clamp(B - 110, T + cardH + 30, B - 60));
+                    scrollPageBy(els[0], els[0].getBoundingClientRect().top - clamp(B - 110, T + cardH + 30, B - 60));
             }
             else
                 els[0].scrollIntoView({ block: 'center' });
@@ -74266,14 +74312,14 @@ function EduSphereScreens() {
                 if (top < T + 12 && !framed) {
                     const up = Math.min(T + 12 - top, Math.max(0, B - 12 - lifeR.bottom));
                     if (up > 0) {
-                        window.scrollBy(0, -up);
+                        scrollPageBy(els[0], -up);
                         top += up;
                     }
                 }
                 box = { left, top, width: cardW };
             }
-            else if (where === 'under-reading' && expR && readR) { // card 6: on top of Science Experiments, just under the glowing Reading Lists
-                box = { left: twoCol ? clamp(expR.right - cardW + 40, 12, flushRight) : clamp(expR.left + expR.width / 2 - cardW / 2, 12, flushRight), top: readR.bottom + 8, width: cardW };
+            else if (where === 'by-reading' && readR) { // card 6: two columns, left of the glowing Reading Lists over Wonder Questions; one column, under it
+                box = twoCol ? { left: clamp(readR.left - gap - cardW, 12, flushRight), top: readR.top + readR.height / 2 - cardH / 2, width: cardW } : { left: clamp(expR ? expR.left + expR.width / 2 - cardW / 2 : center, 12, flushRight), top: readR.bottom + 8, width: cardW };
             }
             else if (where === 'under-exp' && expR && lifeR) { // card 7: over Practical Life Skills, up by the glowing Science Experiments
                 box = twoCol ? { left: clamp(Math.max(lifeR.left - 40, expR.right + 8), 12, flushRight), top: lifeR.top - 24, width: cardW } : { left: clamp(lifeR.left + lifeR.width / 2 - cardW / 2, 12, flushRight), top: expR.bottom + 8, width: cardW };
@@ -74788,7 +74834,7 @@ function EduSphereScreens() {
                     course.modules.length),
                 react_1.default.createElement("h1", { style: { fontSize: 26, margin: '14px 0 22px', textAlign: 'center' } }, titleCase(mod.title)),
                 react_1.default.createElement("div", { style: { ...card }, "data-tour": "lesson-card" },
-                    mod.lesson.paragraphs.map((t, i) => react_1.default.createElement(RichText, { key: i, text: formatTeachingText(t), size: 17, lineGap: 12 })),
+                    mod.lesson.paragraphs.map((t, i) => react_1.default.createElement(RichText, { key: i, text: mod.lesson.prose ? t : formatTeachingText(t), size: 17, lineGap: 12 })),
                     react_1.default.createElement("div", { style: { background: C.greenSoft, borderRadius: 10, padding: 14 } },
                         react_1.default.createElement(Picture, { visual: wayVisual(mod.lesson.example, anotherWay) }),
                         mod.lesson.example.formula && react_1.default.createElement("p", { style: { margin: '10px 0 0', fontSize: 17, fontWeight: 700, textAlign: 'center' } }, mod.lesson.example.formula),

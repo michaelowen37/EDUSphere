@@ -54,6 +54,13 @@ Short, spoken, and shown rather than told, as now, but natural. Context and flow
 6. After the first batch, ask Mikey whether the new voice is what he wants before going wide.
 7. New courses after the review (PHIL 1301 and the rest) are written this way from the start.
 
+## Learned in pass JF, from the first rewritten module
+
+- The screen used to break every lesson paragraph into one sentence per line (formatTeachingText), which is a large part of why lessons read like checklists. Set `prose: true` on every rewritten lesson so its paragraphs stay whole, and put each key term in bold (**term**) where it is defined.
+- Scarcity, trade and markets (college macroeconomics: the lesson, the story S3596 and the bank macro-markets) is the first rewrite and the reference for the new style. Read it before writing, and change it too if Mikey asks.
+- A question that needs a situation gets a setup line, the bank entry's fifth item, and its prompt names the setup with "this". The untaught check reads answers of three words or fewer, so those words must appear in the lesson's paragraphs or key idea (for example "it falls" and "it moves outward").
+- A short story may run to 350 words. If one truly needs more room, ask Mikey before raising STORY_WORD_LIMIT.
+
 ## Order
 
 docs/REVIEW-LEDGER.md lists the four modules Mikey named first, then every module from college down to pre-K, then the long stories, the games and the Wonder questions. Mikey may reorder it.

@@ -2,6 +2,12 @@
 
 The newest block is what educators see once, in a pop-up on the classroom page, after each update. Write it the way Mikey talks to a teacher: conversational, complete sentences, say what changed and why it matters, and skip the shorthand (2026-09-23). Two to four items. The date line is the version stamp.
 
+## October 3, 2026 (a rewritten economics lesson, the tour and diagrams)
+
+- The college lesson Scarcity, Trade and Markets has been rewritten to explain its ideas the way a good teacher talks them through, with examples you can picture, and its questions now read naturally.
+- The tour's cards now sit where they belong in the preview as well as on wider screens.
+- Step-by-step diagrams have a little more room around their arrows.
+
 ## October 3, 2026 (the tour, scrolling and titles)
 
 - The first week tour's cards now keep their places on every screen size, and the backup reminder waits until the tour is finished.

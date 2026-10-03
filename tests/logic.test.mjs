@@ -819,6 +819,13 @@ ok('reset: history kept, but nothing counts as mastered afterwards', events.leng
     ok('every Wonder question has its own id', new Set(L.WONDER.map((w) => w.id)).size === L.WONDER.length);
     ok('every Wonder question carries a theme the rotation knows', L.WONDER.every((w) => Object.keys(L.WONDER_THEMES).includes(w.theme || 'world')));
   }
+  { // Pass IX: no Wonder voice tells a child to vent a feeling out (give it somewhere to go, stomp it out, squeeze or punch a
+    // pillow). The evidence supports calming the body and absorbing distraction (Bushman 2002; Kjaervik and Bushman 2024;
+    // Drake and Winner 2013). Prompts may still ask about the myth; only the voices are read.
+    const VENTING = /somewhere to go|out of your body|squeeze a pillow|stomp (it |out )|let (it|your anger|the anger|your feelings) out|punch(ing)? a pillow/i;
+    const voices = L.WONDER.flatMap((w) => [...w.perspectives.map((p) => p.says), ...(w.simple || []).map((v) => v.says)]);
+    ok('no Wonder voice recommends venting a feeling out', voices.every((t) => !VENTING.test(t)), voices.filter((t) => VENTING.test(t)).join(' | '));
+  }
   { // Pass IT (Mikey's screenshots): every picture a lesson or a question names has a drawing, so none falls back to a grey circle.
     const uiSrc = readFileSync(new URL('../src/ui.jsx', import.meta.url), 'utf8'); const logicSrc = readFileSync(new URL('../src/logic.mjs', import.meta.url), 'utf8');
     const iconBody = uiSrc.slice(uiSrc.indexOf('function IconPic('), uiSrc.indexOf('}[name] ||', uiSrc.indexOf('function IconPic(')));
@@ -1548,6 +1555,9 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
   }
   { // Sort the Because (pass GK): every round offers exactly two real reasons, the claim's own, among four, and the fakes come from the shared pile.
     ok('every because round has four options with exactly two real ones, the claim\'s own, and two fakes from the pile', [1, 2, 3, 4, 5, 6].every((r) => { const qs = L.becauseRounds(r); return qs.length === 5 && qs.every((q) => { const own = L.BECAUSE_CLAIMS.find((c) => c[0] === q.claim)[1]; return q.options.length === 4 && q.options.filter((o) => o.real).length === 2 && q.options.every((o) => (o.real ? own.includes(o.text) : L.BECAUSE_FAKES.includes(o.text))) && new Set(q.options.map((o) => o.text)).size === 4; }); }));
+    // Pass IY: the look of a card never gives its answer away, and Valid or Not never stacks two negatives in a line.
+    ok('every Sort the Because choice starts with Because, real or fake, so the form never gives the answer away', [...L.BECAUSE_CLAIMS.flatMap((c) => c[1]), ...L.BECAUSE_FAKES].every((s) => /^Because \S/.test(s)));
+    ok('no Valid or Not line stacks two negatives, and none says it is not the case that', [1, 2, 3, 4, 5, 6, 7, 8].every((r) => L.argumentRounds(r).every((q) => q.lines.every((l) => (l.match(/\bnot\b/g) || []).length < 2 && !/not the case/.test(l)))));
     ok('the because game belongs to philosophy 3 to 5 and names its claims with its own key', L.COURSE_GAMES['philosophy-3'].includes('because-philosophy-3') && L.GAMES.find((g) => g.id === 'because-philosophy-3').because === 'claims' && !L.GAMES.find((g) => g.id === 'because-philosophy-3').deck);
   }
   { // Share the Cookies (pass GL): every round divides evenly, says its numbers, and the rounds use both two and three plates.

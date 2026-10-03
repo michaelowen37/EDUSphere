@@ -1093,8 +1093,8 @@ await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen ===
 await page.evaluate(() => window.__eduTest.openColoring('play:because-philosophy-3'));
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'coloring');
 await page.waitForTimeout(200);
-{ ok('the because game opens with a claim and four becauses', (await page.getByRole('button', { name: /^Because: / }).count()) === 4 && /Claim/.test(await text()));
-  for (let i = 0; i < 5; i++) { const real = await page.locator('[data-because-real]').getAttribute('data-because-real'); if (!real) break; for (const t of real.split(' | ')) { await page.getByRole('button', { name: `Because: ${t}`, exact: true }).click(); await page.waitForTimeout(120); } await page.waitForTimeout(950); }
+{ ok('the because game opens with a claim and four becauses', (await page.getByRole('button', { name: /^Because / }).count()) === 4 && /Claim/.test(await text()));
+  for (let i = 0; i < 5; i++) { const real = await page.locator('[data-because-real]').getAttribute('data-because-real'); if (!real) break; for (const t of real.split(' | ')) { await page.getByRole('button', { name: t, exact: true }).click(); await page.waitForTimeout(120); } await page.waitForTimeout(950); }
   ok('five claims sorted by their real reasons finish the round', (await text()).includes('Five claims sorted'));
 }
 await page.getByRole('button', { name: 'Close game' }).first().click({ force: true });

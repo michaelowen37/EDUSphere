@@ -37,7 +37,7 @@ window.__eduArt = [];
 window.__eduColoringArt = [];
 window.__eduMapArt = [];
 window.__eduAudio = [];
-window.__eduNews = {"stamp":"October 3, 2026 (Wonder questions for teens and adults)","date":"October 3, 2026","items":["Twenty new Wonder questions for middle school through college, about failure, hard feelings and hard days, draw on Viktor Frankl, Marcus Aurelius, Aristotle, Michael Singer and Rick Hanson. They are waiting in your Wonder review for approval."],"brief":["Twenty new Wonder questions for middle school through college, about failure, hard feelings and hard days, draw on Viktor Frankl, Marcus Aurelius, Aristotle, Michael Singer and Rick Hanson."],"history":[{"date":"October 3, 2026","title":"Wonder questions for teens and adults","items":["Twenty new Wonder questions for middle school through college, about failure, hard feelings and hard days, draw on Viktor Frankl, Marcus Aurelius, Aristotle, Michael Singer and Rick Hanson. They are waiting in your Wonder review for approval."]},{"date":"October 3, 2026","title":"Grow the Plant","items":["Grow the Plant shows each plant with a problem to solve, a droopy plant in dry soil, a pale one leaning toward the window, or roots with no soil, and children choose the one thing it needs."]},{"date":"October 3, 2026","title":"no repeated questions, and games that wait for you","items":["A practice round never asks the same question twice now, even with different wrong answers, and the lessons that needed more questions got them.","The space shooter, Catch and Pong wait for a Begin button, so you can read How to play first.","Closing a game brings you back to the same spot on the page."]},{"date":"October 3, 2026","title":"pictures, clearer summaries and smaller fixes","items":["Six pictures that showed up as plain circles, a cup, a bus, a dog, a hat, a bed and a fan, are drawn now, and the moon shows up again.","The weekly summary lists what was mastered and what is still being practiced, one lesson per line, so nothing repeats.","Let's Color, Let's Read and Let's Play have a Collapse link at the bottom, and My Stories counts the longer course stories too."]},{"date":"October 3, 2026","title":"new Wonder questions for younger learners","items":["Twenty-four new Wonder questions for pre-K through grade 5, about mistakes, hard feelings and hard days, are waiting in your Wonder review for approval.","Children who cannot read yet now hear every choice of a Wonder question read aloud, and each choice lights up as it is read."]},{"date":"October 3, 2026","title":"streaks everywhere","items":["Every game where you pick an answer now counts your streak of right answers in a row.","Find the tool and Name the feeling are drag-and-drop games now: carry the question to its tool, or the face to its feeling."]}]};
+window.__eduNews = {"stamp":"October 3, 2026 (more Wonder questions for teens and adults)","date":"October 3, 2026","items":["Sixteen new Wonder questions for middle school through college about failure, hard feelings and hard days: why rereading fools you, what makes an apology work, a friend who drifted away, a college that said no, and whether chasing happiness backfires. They draw on Aristotle, Marcus Aurelius, Viktor Frankl and Arthur Brooks, and are waiting in your Wonder review for approval."],"brief":["Sixteen new Wonder questions for middle school through college about failure, hard feelings and hard days."],"history":[{"date":"October 3, 2026","title":"more Wonder questions for teens and adults","items":["Sixteen new Wonder questions for middle school through college about failure, hard feelings and hard days: why rereading fools you, what makes an apology work, a friend who drifted away, a college that said no, and whether chasing happiness backfires. They draw on Aristotle, Marcus Aurelius, Viktor Frankl and Arthur Brooks, and are waiting in your Wonder review for approval."]},{"date":"October 3, 2026","title":"every game card read by hand","items":["Every card in the word games was read by hand. Valid or Not now says \"The street is not wet\" instead of the stiff \"It is not the case that,\" and Sort the Because starts every choice with Because, so the look of a card no longer gives away the answer.","A handful of facts were tightened: fruits and vegetables together make half the plate, bacteria in soybean roots turn nitrogen from the air into plant food, and birth control pills prevent pregnancy, not STIs."]},{"date":"October 3, 2026","title":"Wonder questions for younger learners","items":["Twenty-four new Wonder questions for pre-K through grade 5 about mistakes, hard feelings and hard days: a drawing that came out wrong, a scary dream, a thunderstorm, a shot at the doctor, a small lie, wanting to quit, and whether crying is for babies. They are waiting in your Wonder review for approval.","Three older answers about anger and sadness were rewritten. They suggested getting a feeling out by stomping or squeezing a pillow, and the research says calming down and drawing something new help more."]},{"date":"October 3, 2026","title":"Wonder questions for teens and adults","items":["Twenty new Wonder questions for middle school through college, about failure, hard feelings and hard days, draw on Viktor Frankl, Marcus Aurelius, Aristotle, Michael Singer and Rick Hanson. They are waiting in your Wonder review for approval."]},{"date":"October 3, 2026","title":"Grow the Plant","items":["Grow the Plant shows each plant with a problem to solve, a droopy plant in dry soil, a pale one leaning toward the window, or roots with no soil, and children choose the one thing it needs."]},{"date":"October 3, 2026","title":"no repeated questions, and games that wait for you","items":["A practice round never asks the same question twice now, even with different wrong answers, and the lessons that needed more questions got them.","The space shooter, Catch and Pong wait for a Begin button, so you can read How to play first.","Closing a game brings you back to the same spot on the page."]}]};
 // Installable app: the worker keeps a copy of the page for offline use and asks the network first, so a fresh build always wins.
 if ('serviceWorker' in navigator && /^https?:/.test(location.protocol)) { navigator.serviceWorker.register('sw.js').catch(function () {}); }
 var process = { env: { NODE_ENV: 'production' } };
@@ -18996,14 +18996,14 @@ const RULE_DECKS = {
     'primary-source': { a: { label: 'Primary sources', items: ['diary', 'letter', 'treaty', 'tax roll', 'photograph', 'poster', 'census', 'deed'] }, b: { label: 'Secondary sources', items: ['textbook', 'biography', 'documentary', 'summary', 'lecture', 'retelling', 'analysis', 'study'] } },
     squares: { a: { label: 'Square numbers', items: numbersWhere((n) => Number.isInteger(Math.sqrt(n)), 1, 144) }, b: { label: 'Not square', items: numbersWhere((n) => !Number.isInteger(Math.sqrt(n)), 2, 99) } },
     halves: { a: { label: 'Equal to one half', items: ['2/4', '3/6', '4/8', '5/10', '6/12', '7/14', '8/16', '10/20'] }, b: { label: 'Not one half', items: ['2/3', '3/4', '1/3', '2/5', '3/5', '5/8', '1/4', '4/6'] } },
-    'noun-verb': { a: { label: 'Nouns', items: ['dog', 'city', 'river', 'teacher', 'apple', 'bridge', 'pencil', 'garden', 'ocean', 'doctor'] }, b: { label: 'Verbs', items: ['run', 'jump', 'think', 'sing', 'build', 'swim', 'read', 'climb', 'cook', 'laugh'] } },
+    'noun-verb': { a: { label: 'Nouns', items: ['dog', 'city', 'river', 'teacher', 'apple', 'bridge', 'pencil', 'garden', 'ocean', 'doctor'] }, b: { label: 'Verbs', items: ['run', 'jump', 'think', 'sing', 'build', 'swim', 'read', 'climb', 'write', 'carry'] } },
     'adjective-adverb': { a: { label: 'Adjectives', items: ['quick', 'tall', 'bright', 'soft', 'angry', 'tiny', 'loud', 'brave', 'cold', 'sweet'] }, b: { label: 'Adverbs', items: ['quickly', 'softly', 'loudly', 'bravely', 'gently', 'slowly', 'rarely', 'boldly', 'calmly', 'sadly'] } },
     living: { a: { label: 'Living things', items: ['tree', 'fish', 'moss', 'ant', 'bird', 'mushroom', 'frog', 'grass', 'snake', 'bee'] }, b: { label: 'Not living', items: ['rock', 'cloud', 'spoon', 'fire', 'river', 'car', 'wind', 'sand', 'chair', 'coin'] } },
     'conductor-insulator': { a: { label: 'Conductors', items: ['copper', 'iron', 'silver', 'gold', 'steel', 'aluminum', 'nickel', 'tin'] }, b: { label: 'Insulators', items: ['rubber', 'wood', 'glass', 'plastic', 'cloth', 'paper', 'cork', 'wax'] } },
     mammals: { a: { label: 'Mammals', items: ['whale', 'bat', 'dog', 'cow', 'horse', 'dolphin', 'mouse', 'bear', 'deer', 'goat'] }, b: { label: 'Not mammals', items: ['shark', 'frog', 'snake', 'eagle', 'ant', 'trout', 'lizard', 'crab', 'owl', 'bee'] } },
     'element-compound': { a: { label: 'Elements', items: ['gold', 'oxygen', 'iron', 'helium', 'carbon', 'sodium', 'copper', 'neon', 'silver', 'zinc'] }, b: { label: 'Compounds', items: ['water', 'salt', 'sugar', 'rust', 'ammonia', 'methane', 'glucose', 'quartz', 'chalk', 'ethanol'] } },
     renewable: { a: { label: 'Renewable', items: ['sunlight', 'wind', 'wood', 'tides', 'rain', 'corn', 'wool', 'waves', 'bamboo', 'cotton'] }, b: { label: 'Not renewable', items: ['coal', 'oil', 'gas', 'copper', 'gold', 'uranium', 'diamond', 'tin', 'silver', 'iron ore'] } },
-    'acid-base': { a: { label: 'Acids', items: ['lemon', 'vinegar', 'soda', 'tomato', 'coffee', 'orange', 'lime', 'battery'] }, b: { label: 'Bases', items: ['soap', 'bleach', 'ammonia', 'antacid', 'lye', 'egg white', 'seawater', 'toothpaste'] } },
+    'acid-base': { a: { label: 'Acids', items: ['lemon', 'vinegar', 'soda', 'tomato', 'coffee', 'orange', 'lime', 'grapefruit'] }, b: { label: 'Bases', items: ['soap', 'bleach', 'ammonia', 'antacid', 'lye', 'egg white', 'seawater', 'toothpaste'] } },
 };
 function ruleDeck(id) { return RULE_DECKS[id] || null; }
 // Number line jumps (2026-09-23): a frog on a drawn line; each round asks eight small sums and the frog is dragged to
@@ -19197,21 +19197,21 @@ const PAIR_DECKS = {
     // Grade 7 Texas history plays Texas, not world capitals (those moved to world geography, pass IM).
     texas7: [['1845', 'Texas becomes a state'], ['Sam Houston', 'led the army at San Jacinto'], ['San Jacinto', 'won in eighteen minutes'], ['the Alamo', 'a thirteen-day siege'], ['Spindletop', 'the 1901 oil gusher'], ['Galveston', 'the 1900 hurricane'], ['Juneteenth', 'freedom read out, June 19, 1865'], ['Barbara Jordan', 'first Black woman in the Texas Senate'], ['Comanche', 'rode the plains after buffalo'], ['Caddo', 'farmed the piney east']],
     times: [['3 × 4', '12'], ['6 × 7', '42'], ['8 × 8', '64'], ['9 × 6', '54'], ['7 × 8', '56'], ['5 × 9', '45'], ['4 × 7', '28'], ['9 × 9', '81'], ['6 × 6', '36'], ['8 × 3', '24'], ['7 × 7', '49'], ['4 × 8', '32']],
-    vocabulary: [['enormous', 'very big'], ['fragile', 'breaks easily'], ['ancient', 'very old'], ['rapid', 'fast'], ['vacant', 'empty'], ['brief', 'short'], ['exhausted', 'very tired'], ['furious', 'very angry'], ['cautious', 'careful'], ['abundant', 'plenty'], ['reluctant', 'unwilling'], ['transparent', 'see-through']],
+    vocabulary: [['enormous', 'very big'], ['fragile', 'breaks easily'], ['ancient', 'very old'], ['rapid', 'fast'], ['vacant', 'empty'], ['brief', 'short'], ['exhausted', 'very tired'], ['furious', 'very angry'], ['cautious', 'careful'], ['abundant', 'plentiful'], ['reluctant', 'unwilling'], ['transparent', 'see-through']],
     capitals: [['Texas', 'Austin'], ['France', 'Paris'], ['Japan', 'Tokyo'], ['Mexico', 'Mexico City'], ['Canada', 'Ottawa'], ['Egypt', 'Cairo'], ['Brazil', 'Brasília'], ['Kenya', 'Nairobi'], ['Australia', 'Canberra'], ['India', 'New Delhi'], ['Italy', 'Rome'], ['United States', 'Washington']],
     music: [['beat', 'the pulse under a song'], ['pitch', 'high or low'], ['dynamics', 'loud or soft'], ['tempo', 'the speed'], ['forte', 'loud'], ['piano', 'soft'], ['allegro', 'fast'], ['adagio', 'slow'], ['whole note', 'four beats'], ['quarter note', 'one beat'], ['staff', 'five lines'], ['FACE', 'the spaces']],
-    health: [['sleep', 'when the brain files the day'], ['protein', 'builds muscle'], ['serving size', 'read this first'], ['pulse', 'the heart\'s beat'], ['cavity', 'a hole a germ made'], ['twenty seconds', 'a proper hand wash'], ['vegetables', 'half the plate'], ['recovery', 'the pulse settling'], ['water', 'the everyday drink'], ['screen light', 'a small sun'], ['an hour', 'play each day'], ['twenty-twenty-twenty', 'rest for the eyes']],
+    health: [['sleep', 'when the brain files the day'], ['protein', 'builds muscle'], ['serving size', 'read this first'], ['pulse', 'the heart\'s beat'], ['cavity', 'a hole made by germs'], ['twenty seconds', 'a proper hand wash'], ['fruits and vegetables', 'half the plate'], ['recovery', 'the pulse settling'], ['water', 'the everyday drink'], ['screen light', 'tells the brain it is day'], ['an hour', 'play each day'], ['twenty-twenty-twenty', 'rest for the eyes']],
     technology: [['input', 'you tell the computer'], ['output', 'it shows you'], ['algorithm', 'steps in order'], ['loop', 'steps that repeat'], ['variable', 'a named box'], ['condition', 'a yes or no question'], ['bug', 'a mistake in the steps'], ['binary', 'ones and zeros'], ['packet', 'a piece of a message'], ['DNS', 'the internet phone book'], ['password', 'a key to a door'], ['debug', 'find and fix the bug']],
     // Science review decks, one per course: a key word and what it means, from that course's modules.
     'science-3': [['solid', 'keeps its shape'], ['liquid', 'takes the shape of its container'], ['gas', 'fills its container'], ['friction', 'slows a slide'], ['gravity', 'pulls things down'], ['tadpole', 'a young frog'], ['season', 'part of the year'], ['vibration', 'what makes sound']],
     'science-4': [['circuit', 'a complete loop'], ['insulator', 'blocks electricity'], ['conductor', 'carries electricity'], ['erosion', 'carries soil away'], ['deposition', 'drops soil somewhere'], ['adaptation', 'a trait that helps it survive'], ['lever', 'a bar on a pivot'], ['inclined plane', 'a ramp']],
     'science-5': [['solution', 'one thing dissolved into another'], ['plain mixture', 'parts you can still see'], ['orbit', 'a path around'], ['evaporation', 'liquid to vapor'], ['condensation', 'vapor to drops'], ['inherited', 'from your parents'], ['learned', 'from practice'], ['rotation', 'one spin, one day']],
-    'science-6': [['element', 'one kind of atom'], ['compound', 'atoms joined'], ['conduction', 'heat by touch'], ['convection', 'heat by flow'], ['radiation', 'heat by rays'], ['plate', 'a piece of Earth\'s shell'], ['nucleus', 'the control center of a cell'], ['density', 'mass over volume']],
+    'science-6': [['element', 'one kind of atom'], ['compound', 'different atoms joined'], ['conduction', 'heat by touch'], ['convection', 'heat by flow'], ['radiation', 'heat by rays'], ['plate', 'a piece of Earth\'s shell'], ['nucleus', 'the control center of a cell'], ['density', 'mass over volume']],
     'science-7': [['photosynthesis', 'a leaf makes sugar'], ['chlorophyll', 'the green in a leaf'], ['high pressure', 'cool sinking air'], ['natural selection', 'the fit survive and pass it on'], ['dominant', 'the trait that shows'], ['producer', 'makes its own food'], ['watershed', 'land that drains to a river'], ['organ', 'a body part with a job']],
     'science-8': [['proton', 'positive, in the nucleus'], ['electron', 'negative, at the edge'], ['inertia', 'keeps doing what it does'], ['reaction', 'new substances form'], ['galaxy', 'billions of stars'], ['slope on a graph', 'speed'], ['fossil', 'a trace in rock'], ['neutron', 'no charge']],
     'science-9': [['DNA', 'the recipe book'], ['allele', 'one version of a gene'], ['mitosis', 'a full copy of a cell'], ['meiosis', 'a half copy'], ['ribosome', 'builds proteins'], ['homeostasis', 'keeping steady inside'], ['carbon cycle', 'carbon rides around'], ['respiration', 'cells burn sugar']],
     'science-10': [['ionic bond', 'electrons given'], ['covalent bond', 'electrons shared'], ['acid', 'below 7 on the scale'], ['base', 'above 7 on the scale'], ['mole', 'a dozen for chemists'], ['synthesis', 'two become one'], ['pressure', 'particles hitting walls'], ['molarity', 'moles per liter']],
-    'science-11': [['acceleration', 'speed changing'], ['kinetic energy', 'moving energy'], ['potential energy', 'stored energy'], ['wavelength', 'crest to crest'], ['frequency', 'crests per second'], ['voltage', 'the push'], ['resistance', 'the narrow pipe'], ['momentum', 'mass times velocity']],
+    'science-11': [['acceleration', 'velocity changing'], ['kinetic energy', 'moving energy'], ['potential energy', 'stored energy'], ['wavelength', 'crest to crest'], ['frequency', 'crests per second'], ['voltage', 'the push'], ['resistance', 'the narrow pipe'], ['momentum', 'mass times velocity']],
     'science-12': [['igneous', 'cooled from melted rock'], ['sedimentary', 'pressed from layers'], ['metamorphic', 'changed by heat and pressure'], ['climate', 'decades of weather'], ['supernova', 'the end of a big star'], ['mantle', 'the hot middle layer'], ['deep current', 'cold salty water sinking'], ['half-life', 'time to halve']],
 };
 // Ordered sets for the In order game: steps or events a student taps first to last.
@@ -19519,24 +19519,32 @@ function chordRounds(round) {
 // Valid or Not (2026-09-29, pass GI, philosophy 9 to 12): an argument in one of four forms, filled with everyday
 // content, and one question: does the form guarantee the conclusion? Modus ponens and modus tollens do; affirming the
 // consequent and denying the antecedent do not, however true the sentences sound. The form is the rule of the game.
+// Each pair is [p, q, not p, not q], written as a person would say them (pass IY): the old "It is not the case that"
+// read stiffly and turned the dead battery into a double negative ("not the case that the car will not start").
 const ARGUMENT_PAIRS = [
-    ['it rains', 'the street is wet'], ['the oven is on', 'the kitchen is warm'], ['she studied', 'she passed'], ['the tide is in', 'the rocks are covered'],
-    ['the dog hears the car', 'the dog barks'], ['the battery is dead', 'the car will not start'], ['the bread is fresh', 'the crust cracks'], ['the pool is open', 'the gate is unlocked'],
+    ['it is raining', 'the street is wet', 'it is not raining', 'the street is not wet'],
+    ['the oven is on', 'the kitchen is warm', 'the oven is off', 'the kitchen is not warm'],
+    ['she studied', 'she passed', 'she did not study', 'she did not pass'],
+    ['the tide is in', 'the rocks are covered', 'the tide is out', 'the rocks are not covered'],
+    ['the dog hears the car', 'the dog barks', 'the dog does not hear the car', 'the dog does not bark'],
+    ['the battery is dead', 'the car will not start', 'the battery is not dead', 'the car will start'],
+    ['the bread is fresh', 'the crust cracks', 'the bread is not fresh', 'the crust does not crack'],
+    ['the pool is open', 'the gate is unlocked', 'the pool is closed', 'the gate is locked'],
 ];
 const ARGUMENT_FORMS = [
-    { name: 'modus ponens', valid: true, second: (p, q) => `${p}.`, conclusion: (p, q) => `So ${q}.` },
-    { name: 'modus tollens', valid: true, second: (p, q) => `It is not the case that ${q}.`, conclusion: (p, q) => `So it is not the case that ${p}.` },
-    { name: 'affirming the consequent', valid: false, second: (p, q) => `${q}.`, conclusion: (p, q) => `So ${p}.` },
-    { name: 'denying the antecedent', valid: false, second: (p, q) => `It is not the case that ${p}.`, conclusion: (p, q) => `So it is not the case that ${q}.` },
+    { name: 'modus ponens', valid: true, second: (p, q, np, nq) => `${p}.`, conclusion: (p, q, np, nq) => `So ${q}.` },
+    { name: 'modus tollens', valid: true, second: (p, q, np, nq) => `${nq}.`, conclusion: (p, q, np, nq) => `So ${np}.` },
+    { name: 'affirming the consequent', valid: false, second: (p, q, np, nq) => `${q}.`, conclusion: (p, q, np, nq) => `So ${p}.` },
+    { name: 'denying the antecedent', valid: false, second: (p, q, np, nq) => `${np}.`, conclusion: (p, q, np, nq) => `So ${nq}.` },
 ];
 function argumentRounds(round) {
     let x = (round * 40503 + 7) >>> 0;
     const rnd = () => { x = (x * 1664525 + 1013904223) >>> 0; return x / 4294967296; };
     return Array.from({ length: 6 }, (_, i) => {
-        const [p, q] = ARGUMENT_PAIRS[(i * 3 + round) % ARGUMENT_PAIRS.length];
+        const [p, q, np, nq] = ARGUMENT_PAIRS[(i * 3 + round) % ARGUMENT_PAIRS.length];
         const form = ARGUMENT_FORMS[Math.floor(rnd() * ARGUMENT_FORMS.length)];
         const cap = (t) => t.charAt(0).toUpperCase() + t.slice(1);
-        return { form: form.name, valid: form.valid, lines: [`If ${p}, then ${q}.`, cap(form.second(p, q)), cap(form.conclusion(p, q))] };
+        return { form: form.name, valid: form.valid, lines: [`If ${p}, then ${q}.`, cap(form.second(p, q, np, nq)), cap(form.conclusion(p, q, np, nq))] };
     });
 }
 // Reason or Not (2026-09-29, pass GJ, philosophy 6 to 8): a claim and a reason, and one question: does the reason bear
@@ -19544,11 +19552,11 @@ function argumentRounds(round) {
 // Relevance is the rule of the game, and the round mixes both kinds.
 const CLAIM_REASONS = [
     ['The school should start later.', ['Students who sleep more learn more, studies find.', 'Many students fall asleep in first period.']],
-    ['The park needs more trash cans.', ['Litter piles up by the benches every weekend.', 'The nearest can is a five-minute walk from the swings.']],
-    ['Our team should practice on Tuesdays.', ['The field is empty on Tuesdays.', 'Most players have no other clubs that day.']],
-    ['The library should stay open later.', ['Students line up outside it after school.', 'Many families have no quiet place to study at home.']],
-    ['The class should read a play this term.', ['Reading a play aloud builds speaking skills.', 'The drama club has copies of one already.']],
-    ['The cafeteria should serve fruit at breakfast.', ['Fruit costs less than pastries by the tray.', 'Students who eat fruit early stay full longer.']],
+    ['The park needs more trash cans.', ['Litter piles up by the benches every weekend.', 'The nearest trash can is a five-minute walk from the swings.']],
+    ['Our team should practice on Tuesdays.', ['The field is empty on Tuesdays.', 'Most players have no other clubs on Tuesdays.']],
+    ['The library should stay open later.', ['Students line up outside the library after school.', 'Many families have no quiet place to study at home.']],
+    ['The class should read a play this term.', ['Reading a play aloud builds speaking skills.', 'The drama club already has copies of a play.']],
+    ['The cafeteria should serve fruit at breakfast.', ['Fruit costs less than pastries by the tray.', 'Fruit has fiber, which helps students feel full longer.']],
     ['The bus route should add a stop on Elm Street.', ['Twelve students walk a mile from Elm Street.', 'The bus already passes the corner of Elm.']],
     ['The science fair should move to spring.', ['Projects need weeks the fall calendar does not have.', 'The gym is booked for sports all fall.']],
 ];
@@ -19569,12 +19577,12 @@ function reasonRounds(round) {
 // of them a headcount, an order, a wish or something true about the wrong thing. Tap the real ones. Every claim carries
 // its own real reasons, and the fakes are drawn from a shared pile, so the rule of the game is the lesson's test.
 const BECAUSE_CLAIMS = [
-    ['We should have recess before lunch.', ['Kids eat more when they have already run around.', 'The playground is empty before lunch.']],
-    ['The class pet should be a fish.', ['Nobody in the class is allergic to fish.', 'A fish can stay at school over the weekend.']],
-    ['We should plant a garden by the fence.', ['That corner gets sun all day.', 'The cafeteria could use the vegetables.']],
-    ['The library needs more chairs.', ['Students sit on the floor at lunch reading.', 'There are six chairs for twenty readers.']],
-    ['Our field trip should be to the river.', ['The science unit this month is about water.', 'The river is a ten-minute bus ride.']],
-    ['The class should read aloud on Fridays.', ['Reading aloud helps with new words.', 'Friday afternoons have no other lessons.']],
+    ['We should have recess before lunch.', ['Because kids eat more when they have already run around.', 'Because the playground is empty before lunch.']],
+    ['The class pet should be a fish.', ['Because a fish has no fur to set off allergies.', 'Because a fish can stay at school over the weekend.']],
+    ['We should plant a garden by the fence.', ['Because that corner gets sun all day.', 'Because the cafeteria could use the vegetables.']],
+    ['The library needs more chairs.', ['Because students sit on the floor at lunch reading.', 'Because there are six chairs for twenty readers.']],
+    ['Our field trip should be to the river.', ['Because the science unit this month is about water.', 'Because the river is a ten-minute bus ride.']],
+    ['The class should read aloud on Fridays.', ['Because reading aloud helps with new words.', 'Because Friday afternoons have no other lessons.']],
 ];
 const BECAUSE_FAKES = ['Because everybody says so.', 'Because I said so.', 'Because I want to.', 'Because it just is.', 'Because the sky is blue.', 'Because my cousin said so.', 'Because Tuesday comes after Monday.', 'Because the mascot is a hawk.'];
 function becauseRounds(round) {
@@ -19690,7 +19698,7 @@ function feelingRounds(round) {
 // sense, which the rules test proves. Five things a round, one for each sense, and the clock counts up.
 const SENSES = ['see', 'hear', 'smell', 'taste', 'touch'];
 const SENSE_THINGS = [
-    ['a rainbow', 'see'], ['a red apple', 'see'], ['a ringing bell', 'hear'], ['a barking dog', 'hear'], ['a rose', 'smell'], ['fresh bread baking', 'smell'],
+    ['a rainbow', 'see'], ['a red apple', 'see'], ['a ringing bell', 'hear'], ['a barking dog', 'hear'], ['a sweet-smelling rose', 'smell'], ['fresh bread baking', 'smell'],
     ['a sour lemon', 'taste'], ['sweet honey', 'taste'], ['soft kitten fur', 'touch'], ['a cold ice cube', 'touch'],
 ];
 function senseRounds(round) {
@@ -19867,7 +19875,7 @@ function jarRounds(round) {
 const FARM_RELATIONS = ['mutualism', 'parasitism', 'commensalism', 'predation'];
 const RELATION_CASES = [
     ['Bees carry pollen between the orchard\'s blossoms and take nectar home.', 'mutualism'],
-    ['Bacteria in a soybean\'s roots make nitrogen for the plant and get sugar from it.', 'mutualism'],
+    ['Bacteria in a soybean\'s roots feed the plant nitrogen from the air and get sugar back.', 'mutualism'],
     ['A tick drinks a cow\'s blood.', 'parasitism'],
     ['A tapeworm lives in a sheep\'s gut and eats what the sheep ate.', 'parasitism'],
     ['An egret eats the grasshoppers a cow kicks up, and the cow does not notice.', 'commensalism'],
@@ -20202,9 +20210,9 @@ const MYTHFACT_CARDS = [
     ['Abstinence is the only method that is 100 percent effective.', 'fact', 'For both pregnancy and STIs.'],
     ['Traffickers are often someone the victim knows.', 'fact', 'Many recruit online with flattery and promises.'],
     ['You can tell by looking whether someone has an STI.', 'myth', 'Many STIs have no visible signs; only testing tells.'],
-    ['Birth control pills protect against STIs.', 'myth', 'Only condoms lower STI risk.'],
+    ['Birth control pills protect against STIs.', 'myth', 'Pills help prevent pregnancy, not STIs; condoms lower STI risk.'],
     ['Only people with symptoms need STI testing.', 'myth', 'Many infections have no symptoms at all.'],
-    ['Trafficking always means being kidnapped by a stranger.', 'myth', 'Most victims are recruited by someone they trust.'],
+    ['Trafficking always means being kidnapped by a stranger.', 'myth', 'Many victims are recruited by someone they know or trust.'],
     ['Once you say yes, you cannot change your mind.', 'myth', 'Consent can be taken back at any time.'],
 ];
 function mythfactRounds(round) {
@@ -20329,20 +20337,20 @@ const EVIDENCE_DECKS = {
         { text: ["Leo stood at the edge of the stage.", "His hands shook as he held his paper.", "The room was full of parents.", "His teacher smiled and gave him a thumbs-up.", "Then he began to read his poem."], ask: "Which sentence shows that Leo was nervous?", answer: 1, why: "Shaking hands are a clue that someone feels nervous." },
         { text: ["Sea otters spend most of their lives in the water.", "They wrap themselves in kelp so they do not drift away while they sleep.", "Their thick fur keeps them warm in cold water.", "Sea otters eat clams, crabs and sea urchins."], ask: "Which sentence explains how sea otters stay warm?", answer: 2, why: "It names what keeps them warm: their thick fur." },
         { text: ["Maya's garden had been dry for weeks.", "Every morning she carried a heavy bucket from the pond.", "One day, dark clouds rolled over the hill.", "Maya laughed and danced as the first drops fell."], ask: "Which sentence shows how Maya felt about the rain?", answer: 3, why: "Laughing and dancing show that she was happy." },
-        { text: ["Honeybees live together in a hive.", "The queen lays all the eggs.", "Worker bees collect nectar and make honey.", "Drones do not collect food."], ask: "Which sentence tells who makes the honey?", answer: 2, why: "It says the worker bees make the honey." },
+        { text: ["Honeybees live together in a hive.", "The queen lays the eggs.", "Worker bees collect nectar and make honey.", "Drones do not collect food."], ask: "Which sentence tells who makes the honey?", answer: 2, why: "It says the worker bees make the honey." },
         { text: ["Sam's little brother dropped his ice cream on the sidewalk.", "He started to cry.", "Sam looked at his own cone for a long moment.", "Then he handed it to his brother and said, \"Here, take mine.\""], ask: "Which sentence shows that Sam is kind?", answer: 3, why: "Giving away his own ice cream is a kind thing to do." },
         { text: ["The Moon does not make its own light.", "It shines because sunlight bounces off its surface.", "The Moon travels around Earth about once a month.", "It has no air and no liquid water on its surface."], ask: "Which sentence explains why the Moon shines?", answer: 1, why: "It gives the reason with the word because: sunlight bounces off it." },
     ],
     ev5: [
         { text: ["The old bridge had stood for ninety years.", "Last spring, engineers found deep cracks in two of its supports.", "Trucks were banned from it the next day.", "Now the town is voting on whether to repair it or build a new one."], ask: "Which sentence gives the reason trucks were banned?", answer: 1, why: "The cracks came first and the ban followed the next day: cause, then effect." },
         { text: ["Priya had practiced the song every night for a month.", "When her name was called, she walked to the piano without looking at the crowd.", "Her first notes were quiet, but they grew stronger with every line.", "By the end, the whole room was on its feet."], ask: "Which sentence shows that the audience loved her performance?", answer: 3, why: "A crowd rising to its feet at the end is the audience's answer." },
-        { text: ["Plastic bags can take hundreds of years to break down.", "Many end up in rivers and oceans.", "Sea turtles sometimes mistake floating bags for jellyfish, one of their foods.", "Some cities now charge a small fee for each bag."], ask: "Which sentence explains how plastic bags can harm sea turtles?", answer: 2, why: "It shows how the harm happens: the turtles take the bags for food." },
+        { text: ["Plastic bags break down very slowly, over many years.", "Many end up in rivers and oceans.", "Sea turtles sometimes mistake floating bags for jellyfish, one of their foods.", "Some cities now charge a small fee for each bag."], ask: "Which sentence explains how plastic bags can harm sea turtles?", answer: 2, why: "It shows how the harm happens: the turtles take the bags for food." },
         { text: ["Marcus checked his watch again.", "The bus was already ten minutes late, and the test started at eight.", "He looked down the empty street and then at the long hill toward school.", "Without another word, he started running."], ask: "Which sentence explains why Marcus was worried?", answer: 1, why: "It gives the reason: a late bus on the morning of a test." },
         { text: ["Octopuses have three hearts.", "Two pump blood through the gills, and one pumps it through the rest of the body.", "Their blood is blue because it carries oxygen using copper instead of iron.", "An octopus can squeeze through any gap larger than its beak."], ask: "Which sentence explains why an octopus's blood is blue?", answer: 2, why: "It gives the cause with the word because: copper carries the oxygen." },
         { text: ["Lena's grandmother kept every letter she had ever received.", "They filled three boxes in the attic.", "One rainy afternoon, Lena opened the oldest box and found a letter from 1962.", "It was from a young soldier who would one day become Lena's grandfather."], ask: "Which sentence reveals a surprise about who wrote the old letter?", answer: 3, why: "The writer turns out to be her grandfather, which nothing before it hints." },
     ],
     ev9: [
-        { text: ["Some people argue that homework should be banned in high school.", "They claim it causes stress and takes time away from family.", "However, a large review of research found that moderate homework in high school is linked to higher achievement.", "The key word is moderate: the benefit fades when students spend more than about two hours a night."], ask: "Which sentence offers research as evidence?", answer: 2, why: "It points to a review of research, not to opinion." },
+        { text: ["Some people argue that homework should be banned in high school.", "They claim it causes stress and takes time away from family.", "However, a large review of research found that moderate homework in high school is linked to higher achievement.", "The key word is moderate: the benefit levels off past about two hours a night."], ask: "Which sentence offers research as evidence?", answer: 2, why: "It points to a review of research, not to opinion." },
         { text: ["The storm had passed, but the town was silent.", "Shop windows were boarded, and no children played in the street.", "Mrs. Alvarez stood on her porch, staring at the river that had swallowed her garden.", "Somewhere a dog barked once, then stopped."], ask: "Which sentence shows the storm's cost to one person?", answer: 2, why: "It narrows from the whole town to a single loss: her garden." },
         { text: ["The company's advertisement promises that its drink will make you smarter.", "It shows students acing tests after a single can.", "But the ad cites no studies, and its small print says the claim has not been tested.", "Readers should be skeptical of claims that come without evidence."], ask: "Which sentence reveals that the ad's claim lacks support?", answer: 2, why: "No studies and an untested claim: the ad offers a promise, not proof." },
         { text: ["In 1905, Albert Einstein worked as a clerk in a patent office in Switzerland.", "In his spare time, he wrote four papers that changed physics.", "One of them showed that mass and energy are related, the idea behind E = mc².", "He did not become a professor until 1909."], ask: "Which sentence shows that Einstein did his breakthrough work outside his job?", answer: 1, why: "The phrase in his spare time places the work outside the office." },
@@ -20485,7 +20493,7 @@ const ORDER_DECKS = {
     ],
     mathsteps: [
         { title: 'Order of operations', steps: ['brackets', 'exponents', 'multiply and divide', 'add and subtract'] },
-        { title: 'Solving 2x + 3 = 11', steps: ['see the plus 3 was done last', 'subtract 3 from both sides', '2x = 8', 'divide both sides by 2', 'x = 4'] },
+        { title: 'Solving 2x + 3 = 11', steps: ['notice that adding 3 came last', 'subtract 3 from both sides', '2x = 8', 'divide both sides by 2', 'x = 4'] },
         { title: 'Long division, 96 by 4', steps: ['how many 4s in 9: two', 'write 2, subtract 8', 'bring down the 6', 'how many 4s in 16: four', 'the answer is 24'] },
         { title: 'Adding fractions with different bottoms', steps: ['find a common bottom', 'change each fraction to it', 'add the tops', 'keep the bottom', 'simplify if you can'] },
         { title: 'Reading a coordinate', steps: ['start at the origin', 'go across the first number', 'go up the second number', 'mark the point', 'name it (x, y)'] },
@@ -44437,7 +44445,7 @@ const WONDER = [
         ],
         perspectives: [
             { voice: 'A scientist', says: 'Anger starts in the body before you even know it is there. Your heart speeds up, your hands get tight, your face gets warm. Learning to notice those signs early is like seeing a wave before it reaches you. You get a moment to choose what to do.' },
-            { voice: 'An artist', says: 'Try giving your anger a color and a shape. Is it red and spiky, or gray and heavy? Drawing a feeling is a way of getting it out of your body and onto paper, where you can look at it.' },
+            { voice: 'An artist', says: 'Try giving your anger a color and a shape. Is it red and spiky, or gray and heavy? Putting a feeling on paper turns it into something you can look at and name, instead of something that pushes you around.' },
             { voice: 'A grandparent of faith', says: 'Every tradition has something to say about anger, and most say the same thing: the feeling is not wrong, but what you do with it matters. Taking a slow breath before you act is advice older than any book.' },
             { voice: 'A skeptic', says: 'Some people say count to ten, and I would ask whether that actually works for you. Try it and notice what happens. If it does not, try something else, like walking to the door and back. Find your own way to let the wave pass.' },
         ],
@@ -45219,7 +45227,7 @@ const WONDER = [
     { "id": "w-growing-proud", "theme": "feelings", "stage": "growing", "courseIds": [], "answerMode": "typed", "prompt": "What does it feel like to be proud of yourself, and how is that different from showing off?", "perspectives": [{ "voice": "A scientist", "says": "Feeling proud after hard work is healthy; it helps you want to keep trying. It is different from bragging, which is about how others see you." }, { "voice": "An artist", "says": "When I finish a painting I am proud of, I want to show it to someone who will be happy for me, not to someone I want to beat." }, { "voice": "A grandparent of faith", "says": "Being grateful for what you did well, and for the people who helped you, is a gentle kind of pride." }, { "voice": "A skeptic", "says": "A good test: would you still feel proud if nobody ever found out? If yes, that is real pride." }], "closing": "What is something you are proud of this week?" },
     { "id": "w-growing-embarrassed", "theme": "feelings", "stage": "growing", "courseIds": [], "answerMode": "typed", "prompt": "Everyone laughed when you tripped. How long does embarrassment really last?", "perspectives": [{ "voice": "A scientist", "says": "Embarrassment is strongest right away and fades quickly. Other people forget much faster than we do, usually by the next class." }, { "voice": "An artist", "says": "Some of the funniest stories people tell are about the times they tripped. Years later, they laugh along." }, { "voice": "A grandparent of faith", "says": "Laughing at yourself kindly is a gift. It helps you and everyone around you move on." }, { "voice": "A skeptic", "says": "If someone keeps teasing you about it for days, that is not okay, and it is worth telling a teacher." }], "closing": "What is a funny story you can tell about yourself now?" },
     { "id": "w-early-tower-fell", "theme": "failure", "stage": "early", "courseIds": [], "answerMode": "pick", "prompt": "Your block tower fell down. What do you do next?", "options": ["Build it again", "Build it wider", "Take a break first"], "simple": [{ "voice": "A scientist says", "says": "A wide bottom helps a tower stand." }, { "voice": "An artist says", "says": "Every tower you build is a new one." }], "perspectives": [{ "voice": "A scientist", "says": "Towers fall when they are taller than their bottom can hold. A wider bottom helps them stand. Every fall teaches you how to build the next one." }, { "voice": "An artist", "says": "I like to build the second tower a little differently from the first. Sometimes the new way is better." }, { "voice": "A grandparent of faith", "says": "It is okay to be sad when something falls. Take a breath, and try again when you are ready." }, { "voice": "A skeptic", "says": "Look at how it fell before you build again. Did it lean? Wobble? That tells you what to change." }], "closing": "What will you build next?" },
-    { "id": "w-early-feeling-sad", "theme": "feelings", "stage": "early", "courseIds": [], "answerMode": "pick", "prompt": "When you feel sad, what helps you feel better?", "options": ["A hug", "Telling someone", "Quiet time"], "simple": [{ "voice": "A scientist says", "says": "Telling someone how you feel can make it feel smaller." }, { "voice": "A grandparent of faith says", "says": "You are never alone when you are sad." }], "perspectives": [{ "voice": "A scientist", "says": "Telling someone how you feel helps your body calm down. Your feelings are real, and they change." }, { "voice": "An artist", "says": "Some people draw a picture of how they feel. Then the feeling has somewhere to go." }, { "voice": "A grandparent of faith", "says": "It is okay to be sad sometimes. The people who love you want to help. Let them help you feel better." }, { "voice": "A skeptic", "says": "Sad feelings come and go like clouds. If a sad feeling stays a long time, tell a grown-up you trust." }], "closing": "Who can you go to when you feel sad?" },
+    { "id": "w-early-feeling-sad", "theme": "feelings", "stage": "early", "courseIds": [], "answerMode": "pick", "prompt": "When you feel sad, what helps you feel better?", "options": ["A hug", "Telling someone", "Quiet time"], "simple": [{ "voice": "A scientist says", "says": "Telling someone how you feel can make it feel smaller." }, { "voice": "A grandparent of faith says", "says": "You are never alone when you are sad." }], "perspectives": [{ "voice": "A scientist", "says": "Telling someone how you feel helps your body calm down. Your feelings are real, and they change." }, { "voice": "An artist", "says": "Some people draw something they love when they feel sad, like a pet or a favorite place. In one study, that helped children feel better more than drawing the sad thing did." }, { "voice": "A grandparent of faith", "says": "It is okay to be sad sometimes. The people who love you want to help. Let them help you feel better." }, { "voice": "A skeptic", "says": "Sad feelings come and go like clouds. If a sad feeling stays a long time, tell a grown-up you trust." }], "closing": "Who can you go to when you feel sad?" },
     {
         id: 'w-grown-exactly-what-you-wrote',
         theme: 'failure',
@@ -46677,7 +46685,7 @@ const WONDER = [
         simple: [{ voice: 'A scientist says', says: 'A cross feeling is biggest at the start. It usually shrinks with time.' }, { voice: 'A skeptic says', says: 'Ask why, in a calm voice. There may be a good reason.' }],
         perspectives: [
             { voice: 'A scientist', says: 'When you want something a lot, hearing no can sting. The cross feeling is usually biggest right at the start and gets smaller as the minutes go by. Slow breaths and a little waiting often help it shrink.' },
-            { voice: 'An artist', says: 'Feelings need somewhere to go. You could stomp out a drum beat, squeeze a pillow, or draw a stormy cloud with dark crayons. Then look at your cloud and see if you feel a little lighter.' },
+            { voice: 'An artist', says: 'When I feel cross, I draw something I love, like a garden or my dog, and my busy hands help my mind settle. In one study, children who drew something new felt better than children who drew what had upset them.' },
             { voice: 'A grandparent of faith', says: 'Often a grown-up says no to keep you safe or to help you grow, even when it does not feel that way. Many families teach that you can disagree and still be kind. You can say how you feel, calmly and politely.' },
             { voice: 'A skeptic', says: 'Ask why, and really listen to the answer. Sometimes there is a reason you did not know about. Sometimes the answer is not now, and not now is different from never.' },
         ],
@@ -47198,6 +47206,636 @@ const WONDER = [
             { voice: 'A skeptic', says: 'Notice the difference between a heavy day and a heavy season. A walk helps the first; the second, especially if it lasts for weeks, deserves real help from a doctor or a counselor. Moving is a good tool, not a replacement for care.' },
         ],
         closing: 'What kind of movement helps you most on a heavy day?',
+    },
+    // Pass IX (2026-10-03, Mikey: the next Wonder batch for the younger stages, failure and hard feelings first): twelve
+    // early and twelve growing questions, every research claim read before use. Listed in docs/DECISIONS.md for approval;
+    // a student meets them only after an educator approves them in the app.
+    {
+        id: 'w-early-drawing-in-my-head',
+        theme: 'failure',
+        stage: 'early',
+        courseIds: [],
+        answerMode: 'pick',
+        prompt: 'Your drawing came out different from the picture in your head. Is it a bad drawing?',
+        options: ['Yes', 'No', 'It is a start'],
+        simple: [{ voice: 'An artist says', says: 'Every artist feels this. The picture in your head is something to aim for.' }, { voice: 'A scientist says', says: 'Your hands get better at drawing every time you try.' }],
+        perspectives: [
+            { voice: 'A scientist', says: 'Drawing what you picture takes your eyes, your memory and your hands working together. Your hands keep getting more skillful for many years. So the gap between your idea and your drawing is normal, and it shrinks as you practice.' },
+            { voice: 'An artist', says: 'Every artist knows this feeling, even the famous ones. Many artists make lots of sketches before they keep one. Find one part you like, and start your next drawing from there.' },
+            { voice: 'A grandparent of faith', says: 'Something you made with care is worth keeping, even when it surprises you. Many grandparents keep a drawer full of drawings like yours. We keep them because you made them, not because they are perfect.' },
+            { voice: 'A skeptic', says: 'Bad compared to what? Compare it to your drawings from last month, not to the picture in your head. If it is a little better, you are getting somewhere.' },
+        ],
+        closing: 'What part of your drawing do you like best?',
+    },
+    {
+        id: 'w-early-said-it-wrong',
+        theme: 'failure',
+        stage: 'early',
+        courseIds: [],
+        answerMode: 'pick',
+        prompt: 'You said a word wrong, and someone giggled. What do you do?',
+        options: ['Giggle too', 'Say it again', 'Feel a bit sad'],
+        simple: [{ voice: 'A scientist says', says: 'Some sounds are hard to say. Lots of kids learn them later.' }, { voice: 'A skeptic says', says: 'Maybe they giggled because it sounded funny, not to be mean.' }],
+        perspectives: [
+            { voice: 'A scientist', says: 'Some sounds take longer to learn than others. Most children can say almost every English sound by about age five, but the th in thumb often comes last, at around six. Saying a word wrong is part of learning to say it right.' },
+            { voice: 'An artist', says: 'Actors and singers practice hard words out loud, slowly, again and again. They break a long word into small pieces, like a song with beats. Try clapping the parts of a tricky word as you say it.' },
+            { voice: 'A grandparent of faith', says: 'I still say some words wrong, especially names from languages I never learned. I smile and ask how to say it. Many traditions teach us to be gentle when someone stumbles, and that includes being gentle with yourself.' },
+            { voice: 'A skeptic', says: 'Was the giggle mean, or was the word just funny? People often laugh at a funny sound, not at the person. If it felt mean, you can say so calmly.' },
+        ],
+        closing: 'What is a word that is tricky for you to say?',
+    },
+    {
+        id: 'w-early-paper-plane-crashed',
+        theme: 'failure',
+        stage: 'early',
+        courseIds: [],
+        answerMode: 'pick',
+        prompt: 'Your paper airplane crashed right away. What do you do next?',
+        options: ['Fold a new one', 'Change one thing', 'Give up on it'],
+        simple: [{ voice: 'A scientist says', says: 'Each crash is a test. It shows you what to change next.' }, { voice: 'A skeptic says', says: 'Change just one thing at a time. Then you know what helped.' }],
+        perspectives: [
+            { voice: 'A scientist', says: 'The Wright brothers\' first gliders lifted much less than their math said they would. So in 1901 they built a wind tunnel and tested about two hundred little wing shapes. In 1903, their airplane flew.' },
+            { voice: 'An artist', says: 'Folding is a craft, like painting. Sharp creases, matching wings and a little weight at the front can all change how a plane flies. Make a few planes, give each one a name, and see which flies best.' },
+            { voice: 'A grandparent of faith', says: 'After one hard summer, Wilbur Wright told his brother that people would not fly for fifty years. Two years later, they were flying. Hope is something you can keep even before you can see the way.' },
+            { voice: 'A skeptic', says: 'Do not change everything at once. Change one thing, like the wings or the nose, and test again. Then you will know what made the difference.' },
+        ],
+        closing: 'If you made a paper airplane, what would you try first?',
+    },
+    {
+        id: 'w-early-broke-a-friends-toy',
+        theme: 'failure',
+        stage: 'early',
+        courseIds: [],
+        answerMode: 'pick',
+        prompt: 'You broke your friend\'s toy by accident. What do you do?',
+        options: ['Say sorry', 'Help fix it', 'Tell a grown-up'],
+        simple: [{ voice: 'A grandparent of faith says', says: 'A real sorry, and an offer to help, can mend a lot.' }, { voice: 'A scientist says', says: 'Your friend may still feel sad, even though it was an accident.' }],
+        perspectives: [
+            { voice: 'A scientist', says: 'Even when it was an accident, your friend may still feel sad or cross. Studies find that young children often judge by what happened more than by what someone meant. Weighing what a person meant grows a lot between about four and eight.' },
+            { voice: 'An artist', says: 'A broken thing can sometimes be mended into something new. In Japan, an old art called kintsugi mends broken bowls with gold along the cracks. The mended bowl shows its story instead of hiding it.' },
+            { voice: 'A grandparent of faith', says: 'A real sorry has three parts: saying what happened, saying you are sorry, and offering to help. Many traditions teach that making things right matters more than being perfect. Good friends usually forgive a true accident.' },
+            { voice: 'A skeptic', says: 'Tell the truth about what happened, even if it is hard. If you hide it, your friend may think someone broke it on purpose. The truth keeps an accident from turning into a bigger problem.' },
+        ],
+        closing: 'What would you want a friend to do if they broke your toy?',
+    },
+    {
+        id: 'w-early-helping-made-a-mess',
+        theme: 'failure',
+        stage: 'early',
+        courseIds: [],
+        answerMode: 'pick',
+        prompt: 'You tried to help wash the dishes, and water went everywhere. Was helping a mistake?',
+        options: ['Yes', 'No', 'A little of both'],
+        simple: [{ voice: 'A scientist says', says: 'Even toddlers want to help. Helping well just takes practice.' }, { voice: 'A skeptic says', says: 'Helping was good. Too much water was the part to change.' }],
+        perspectives: [
+            { voice: 'A scientist', says: 'Scientists found that toddlers only one and a half years old will help a grown-up who drops something, without being asked and without a reward. Wanting to help starts very early. Doing the job neatly takes longer to learn.' },
+            { voice: 'An artist', says: 'Every new job is a little messy at first, like a first painting. Ask to be shown one small part, like rinsing the cups. Do that part well, and add a new part next time.' },
+            { voice: 'A grandparent of faith', says: 'In my kitchen, a helper with wet sleeves is still a helper. Many families believe that working together matters more than how neat it looks. Cleaning up together is part of the job too.' },
+            { voice: 'A skeptic', says: 'Helping was not the mistake. Using too much water was, and that part is easy to change. Keep the good part, and fix the other part.' },
+        ],
+        closing: 'What is a job at home you could help with?',
+    },
+    {
+        id: 'w-early-bad-dream',
+        theme: 'feelings',
+        stage: 'early',
+        courseIds: [],
+        answerMode: 'pick',
+        prompt: 'You woke up from a scary dream. What helps you feel safe again?',
+        options: ['A big hug', 'A light on', 'Telling someone'],
+        simple: [{ voice: 'A scientist says', says: 'Bad dreams are common in young children. A dream cannot hurt you.' }, { voice: 'An artist says', says: 'Draw your dream again, and give it a happy ending.' }],
+        perspectives: [
+            { voice: 'A scientist', says: 'Bad dreams are very common in young children, especially between about three and six. A dream is a story your brain makes while you sleep, and it cannot hurt you. Most children have bad dreams less often as they grow.' },
+            { voice: 'An artist', says: 'In the morning, try drawing your dream, but give it a new ending. Make the scary thing small and silly, or give yourself a shield and a flashlight. You are the artist, so you get to decide how it ends.' },
+            { voice: 'A grandparent of faith', says: 'When my grandchildren have bad dreams, I sit with them until they feel calm. Some families say a bedtime prayer, sing a song or keep a favorite toy close. Whatever you believe, it helps to know someone is near.' },
+            { voice: 'A skeptic', says: 'A dream can feel real, but you can check. Look around the room at the walls, your bed and your blanket. Your eyes will show you what is real, and the scary feeling will start to fade.' },
+        ],
+        closing: 'What helps you fall back asleep after a bad dream?',
+    },
+    {
+        id: 'w-early-thunder-booms',
+        theme: 'feelings',
+        stage: 'early',
+        courseIds: [],
+        answerMode: 'pick',
+        prompt: 'A thunderstorm is booming outside. What helps when you feel scared?',
+        options: ['Count after the flash', 'Snuggle up close', 'Cover my ears'],
+        simple: [{ voice: 'A scientist says', says: 'Count after the flash. Five seconds means the lightning is about a mile away.' }, { voice: 'A skeptic says', says: 'When you hear thunder, go inside. Inside is the safest place.' }],
+        perspectives: [
+            { voice: 'A scientist', says: 'Thunder is the sound lightning makes when it heats the air very fast. Light reaches you first, so count the seconds from the flash to the boom. Every five seconds is about one mile.' },
+            { voice: 'An artist', says: 'Musicians use big drums to make thunder on a stage, from a soft rumble to a giant boom. Listen to the storm like music. Is this boom louder or softer than the last one?' },
+            { voice: 'A grandparent of faith', says: 'When storms came at night, my family sat together and told stories until they passed. Some families pray or sing during a storm. Being close to someone you love makes the noise easier to bear.' },
+            { voice: 'A skeptic', says: 'Being scared of thunder makes sense, because lightning really can be dangerous outside. That is why weather experts say that when thunder roars, go indoors. Inside, away from windows and water, you are much safer.' },
+        ],
+        closing: 'What helps you feel calm during a storm?',
+    },
+    {
+        id: 'w-early-shot-at-the-doctor',
+        theme: 'feelings',
+        stage: 'early',
+        courseIds: [],
+        answerMode: 'pick',
+        prompt: 'You need a shot at the doctor. What helps you feel brave?',
+        options: ['Hold a hand', 'Look at something else', 'Slow breaths'],
+        simple: [{ voice: 'A scientist says', says: 'Looking at something else, or slow breaths, can make a shot hurt less.' }, { voice: 'A grandparent of faith says', says: 'Holding a hand you love makes hard things easier.' }],
+        perspectives: [
+            { voice: 'A scientist', says: 'Doctors have tested many ways to help children with needles. A large review of 59 studies found that distractions, like a toy or a video, and slow breathing helped many children feel less pain and fear. The studies were not perfect, but the help showed up again and again.' },
+            { voice: 'An artist', says: 'Pick something to look at closely, like a picture on the wall or a pattern on your sleeve. Count its colors or its corners while the nurse works. Your eyes stay busy, and the moment passes quickly.' },
+            { voice: 'A grandparent of faith', says: 'When I was little, I squeezed my mother\'s hand hard at the doctor. Many people of faith say a short prayer before something scary, and others count or sing. It is fine to feel scared, and it is fine to hold on tight.' },
+            { voice: 'A skeptic', says: 'You can test which trick works best for you. Next time, look at something else, and afterward rate how much it hurt from one to five. Try slow breaths the time after that, and compare.' },
+        ],
+        closing: 'What helps you feel brave when something is a little scary?',
+    },
+    {
+        id: 'w-early-someone-grabbed-my-toy',
+        theme: 'feelings',
+        stage: 'early',
+        courseIds: [],
+        answerMode: 'pick',
+        prompt: 'Someone grabbed your toy without asking. What do you do?',
+        options: ['Use my words', 'Get a grown-up', 'Grab it back'],
+        simple: [{ voice: 'A scientist says', says: 'Anger makes your body hot and fast. A slow breath helps you think.' }, { voice: 'A skeptic says', says: 'Say it calmly: I was playing with that. Please give it back.' }],
+        perspectives: [
+            { voice: 'A scientist', says: 'When you feel angry, your heart beats faster and your muscles get tight. Your body gets ready to act before your thinking has caught up. A slow breath gives your thinking time to catch up.' },
+            { voice: 'An artist', says: 'Your face and voice tell a story. A calm, strong voice says I mean it, and it works without yelling. Try practicing your strong voice with a stuffed animal first.' },
+            { voice: 'A grandparent of faith', says: 'Many traditions teach us to treat others the way we want to be treated. That works both ways: ask nicely, and expect to be asked nicely too. If words do not work, a grown-up can help you both.' },
+            { voice: 'A skeptic', says: 'Grabbing it back might work for a moment, but it often starts a tug of war. Then two people are angry instead of one. Words first, then a grown-up if you need one.' },
+        ],
+        closing: 'What words can you use when someone takes something of yours?',
+    },
+    {
+        id: 'w-early-trip-canceled',
+        theme: 'feelings',
+        stage: 'early',
+        courseIds: [],
+        answerMode: 'pick',
+        prompt: 'A fun trip got canceled because of the rain. What helps the sad feeling?',
+        options: ['Plan a new day', 'Find fun inside', 'Feel sad for a while'],
+        simple: [{ voice: 'A scientist says', says: 'Feeling let down shows how much you were looking forward to it.' }, { voice: 'An artist says', says: 'Rainy days are good for building forts and drawing pictures.' }],
+        perspectives: [
+            { voice: 'A scientist', says: 'The let-down feeling has a name: disappointment. It shows up when what happens is different from what you hoped for. The bigger the hope, the bigger the feeling, and like most feelings, it usually gets smaller with time.' },
+            { voice: 'An artist', says: 'A rainy day can be its own adventure. Build a blanket fort, draw the trip you will take another day, or put on music and dance. Plans can change and still be fun.' },
+            { voice: 'A grandparent of faith', says: 'When plans fall through, my family likes to say that a day can hold a different gift than the one we expected. Many people of faith practice being thankful even on gray days. You can be sad and still find something good.' },
+            { voice: 'A skeptic', says: 'Ask when the trip can happen instead. A trip moved to another day is still coming. Put the new day on a calendar, and you will have something to look forward to.' },
+        ],
+        closing: 'What could you do on a rainy day that would still be fun?',
+    },
+    {
+        id: 'w-early-bad-start',
+        theme: 'ups-and-downs',
+        stage: 'early',
+        courseIds: [],
+        answerMode: 'pick',
+        prompt: 'Your morning went wrong: spilled cereal and a lost shoe. Will the whole day be bad?',
+        options: ['Yes', 'No', 'It can get better'],
+        simple: [{ voice: 'An artist says', says: 'A boy named Alexander had a very bad day in a famous book. Some days are like that.' }, { voice: 'A skeptic says', says: 'Two bad things this morning do not mean the whole day is bad.' }],
+        perspectives: [
+            { voice: 'A scientist', says: 'When a day starts badly, it is easy to start watching for more bad things, and then you notice them more. But each new hour is a fresh chance. The cereal does not know about the shoe.' },
+            { voice: 'An artist', says: 'In a famous picture book by Judith Viorst, a boy named Alexander wakes up with gum in his hair, and everything goes wrong from there. He wants to move to Australia. At the end, his mom tells him some days are like that, even in Australia.' },
+            { voice: 'A grandparent of faith', says: 'Some families start again at lunch with a quiet moment, a prayer or a deep breath. Whatever you believe, you can make a fresh start any time. The morning does not get to decide the whole day.' },
+            { voice: 'A skeptic', says: 'Count the good things too, not just the bad ones. Maybe the bus was on time, or your friend saved you a seat. A fair count often shows a day that was not all bad.' },
+        ],
+        closing: 'What could you do to give a bad morning a fresh start?',
+    },
+    {
+        id: 'w-early-so-hard-to-wait',
+        theme: 'ups-and-downs',
+        stage: 'early',
+        courseIds: [],
+        answerMode: 'pick',
+        prompt: 'Waiting for something you really want feels so long. What helps you wait?',
+        options: ['Play something else', 'Sing a song', 'Count the days'],
+        simple: [{ voice: 'A scientist says', says: 'Kids waited longer when they looked away and thought about something else.' }, { voice: 'A skeptic says', says: 'Waiting is easier when you trust the promise will be kept.' }],
+        perspectives: [
+            { voice: 'A scientist', says: 'In famous experiments from around 1970, children could have a small treat now or a bigger one if they waited. Children who looked away, sang or thought about something else could wait longer. Later studies found that waiting well at four does not decide how a life turns out.' },
+            { voice: 'An artist', says: 'Make the waiting into something. Draw a picture each day until the big day, or make a paper chain and tear off one loop every night. Then you can watch the wait get shorter.' },
+            { voice: 'A grandparent of faith', says: 'Many traditions have seasons of waiting, with days counted before a holiday. People fill them with songs, small gifts and getting ready. Waiting can be part of the joy, not only something to get through.' },
+            { voice: 'A skeptic', says: 'Another study found children waited about four times longer when the grown-up had kept earlier promises. So waiting is not only about willpower. It makes sense to wait when you trust the promise.' },
+        ],
+        closing: 'What is something you are waiting for right now?',
+    },
+    {
+        id: 'w-growing-left-it-at-home',
+        theme: 'failure',
+        stage: 'growing',
+        courseIds: [],
+        answerMode: 'typed',
+        prompt: 'You finished your homework and then left it at home. What would help next time?',
+        perspectives: [
+            { voice: 'A scientist', says: 'Even experts forget steps, so many use checklists. In one large study, eight hospitals around the world started using a short checklist before surgery. Problems after operations fell from about 11 in 100 patients to 7 in 100.' },
+            { voice: 'An artist', says: 'Make your checklist fun to look at, with a picture for each thing you need. Tape it to the door you walk through every morning. A list you can see is a list you will use.' },
+            { voice: 'A grandparent of faith', says: 'Many families keep a spot by the door for everything that has to leave the house. My grandmother called ours the launch pad. Small habits like that are a gift you give your future self.' },
+            { voice: 'A skeptic', says: 'Do not blame your memory; fix the system. Find where the plan broke: packing, leaving or remembering. Then put one small check exactly at that spot.' },
+        ],
+        closing: 'What is one thing you always forget, and where could a reminder go?',
+    },
+    {
+        id: 'w-growing-blamed-the-wrong-friend',
+        theme: 'failure',
+        stage: 'growing',
+        courseIds: [],
+        answerMode: 'typed',
+        prompt: 'You blamed a friend for something, and then found out they did not do it. What now?',
+        perspectives: [
+            { voice: 'A scientist', says: 'Once we suspect someone, we tend to notice the clues that fit and skip the ones that do not. Scientists call this confirmation bias, and it fools grown-ups as well as kids. Knowing about it is the first step to catching it.' },
+            { voice: 'An artist', says: 'Writers know every story can be told from another point of view. Try telling this one as your friend would tell it, from the moment you blamed them. That version is the one your apology needs to answer.' },
+            { voice: 'A grandparent of faith', says: 'An apology for blaming someone unfairly is one of the hardest and most important kinds. Many faiths teach that admitting you were wrong is a strength. Say what you got wrong, say you are sorry, and ask how you can make it right.' },
+            { voice: 'A skeptic', says: 'The Greek thinker Socrates said he was wiser than others in one small way: he did not think he knew what he did not know. Before you blame anyone, ask what else could explain it. Look for a clue that does not fit your guess, and take it seriously.' },
+        ],
+        closing: 'How would you want a friend to apologize if they blamed you by mistake?',
+    },
+    {
+        id: 'w-growing-one-small-lie',
+        theme: 'failure',
+        stage: 'growing',
+        courseIds: [],
+        answerMode: 'typed',
+        prompt: 'You told a small lie to stay out of trouble, and now you have to keep remembering it. Was it worth it?',
+        perspectives: [
+            { voice: 'A scientist', says: 'In one kind of experiment, children are asked not to peek at a toy while the grown-up leaves the room. Most peek, and many say they did not. But younger children often blurt out the toy\'s name when asked what it was, and the lie falls apart.' },
+            { voice: 'An artist', says: 'A lie is like a painting you have to keep adding to, because every new question needs another brushstroke. The picture gets bigger and harder to keep straight. The truth only has to be painted once.' },
+            { voice: 'A grandparent of faith', says: 'Many traditions treat honesty as a foundation, because trust is hard to rebuild once it cracks. Telling the truth after a lie takes courage. In my experience, owning up is usually met more kindly than people fear.' },
+            { voice: 'A skeptic', says: 'Count the cost of the lie honestly. It saved you one bad moment, but now you have to guard it every day. You can still set it down: tell the truth, and take the smaller trouble now.' },
+        ],
+        closing: 'What would make telling the truth easier for you?',
+    },
+    {
+        id: 'w-growing-want-to-quit',
+        theme: 'failure',
+        stage: 'growing',
+        courseIds: [],
+        answerMode: 'typed',
+        prompt: 'You want to quit your team or your lessons in the middle of the season. Is quitting the same as failing?',
+        perspectives: [
+            { voice: 'A scientist', says: 'The psychologist Angela Duckworth, who studies grit, has a rule in her family. You may quit something, but not on a bad day and not in the middle; you finish the season first. And you get to pick your next hard thing yourself.' },
+            { voice: 'An artist', says: 'I quit piano at nine and came back to music at twenty, this time with a guitar. Quitting one thing can make room for the right thing. What matters is whether you are running toward something or only running away.' },
+            { voice: 'A grandparent of faith', says: 'Keeping your word to a team matters, because others are counting on you. Many traditions honor finishing what you promised, even when it is hard. After the season, you can decide with a clear head.' },
+            { voice: 'A skeptic', says: 'Ask why you want to quit. If it is one bad week, wait it out. If you have disliked it for months and tried to fix it, quitting at the right time can be a smart choice, not a failure.' },
+        ],
+        closing: 'What is one hard thing you would choose for yourself?',
+    },
+    {
+        id: 'w-growing-took-three-times-longer',
+        theme: 'failure',
+        stage: 'growing',
+        courseIds: [],
+        answerMode: 'typed',
+        prompt: 'You were sure your project would take one evening, and it took three. Why does everything take longer than we think?',
+        perspectives: [
+            { voice: 'A scientist', says: 'Scientists call it the planning fallacy. College students writing a big paper guessed it would take about 34 days, and it took about 56. Fewer than half finished even by their worst-case guess.' },
+            { voice: 'An artist', says: 'When I picture a painting, I picture it finished, not the hours of mixing paint and fixing mistakes. Planning works the same way: we imagine the smooth path and forget the bumps. Now I add time for the bumps on purpose.' },
+            { voice: 'A grandparent of faith', says: 'Patience with yourself is part of every big job. Many traditions teach that steady work matters more than speed. A project that takes three evenings and is done well is something to be proud of.' },
+            { voice: 'A skeptic', says: 'Do not trust the guess; check the record. How long did your last project really take? Studies also find that listing every small step before you start makes guesses better.' },
+        ],
+        closing: 'What is something that took you much longer than you thought it would?',
+    },
+    {
+        id: 'w-growing-hit-a-pillow',
+        theme: 'feelings',
+        stage: 'growing',
+        courseIds: [],
+        answerMode: 'typed',
+        prompt: 'Some people say hitting a pillow gets your anger out. Does it?',
+        perspectives: [
+            { voice: 'A scientist', says: 'Scientists have tested this idea. In one study, angry people who hit a punching bag while thinking about the person who upset them ended up angrier than people who did nothing at all. A 2024 review of 154 studies found that calming things, like slow breathing or a short break, worked better.' },
+            { voice: 'An artist', says: 'When I was angry, I used to scribble hard and fast, and I felt worse. Now I draw something slow and careful, like leaves on a tree. In one study, children who drew something new felt better than children who drew what had upset them.' },
+            { voice: 'A grandparent of faith', says: 'Many traditions teach patience with anger, like counting to ten before you speak. A wise person once told me anger is like a fire: feed it and it grows, give it time and it settles. Waiting is not the same as weakness.' },
+            { voice: 'A skeptic', says: 'This does not mean anger is bad. Anger can tell you something is unfair. The question is what to do with it: calm your body first, then use words to fix the problem.' },
+        ],
+        closing: 'What calms your body down when you are angry?',
+    },
+    {
+        id: 'w-growing-bad-thing-or-bad-kid',
+        theme: 'feelings',
+        stage: 'growing',
+        courseIds: [],
+        answerMode: 'typed',
+        prompt: 'After you do something wrong, do you think "I did a bad thing" or "I am a bad kid"? Is there a difference?',
+        perspectives: [
+            { voice: 'A scientist', says: 'Psychologists call the first feeling guilt, about what you did, and the second shame, about who you are. One team followed 380 fifth graders until they were young adults. On average, the kids who tended to feel guilt had fewer serious problems later, and the kids who tended to feel shame had more.' },
+            { voice: 'An artist', says: 'A bad brushstroke does not make a bad painter. You can paint over a stroke, and you never need to paint over yourself. Fix the stroke, keep the painter.' },
+            { voice: 'A grandparent of faith', says: 'Many faiths teach that a person is always more than their worst mistake. You can be sorry for what you did and still know you are loved. That is what makes it possible to try again.' },
+            { voice: 'A skeptic', says: 'Look closely at the evidence here. One wrong thing is one wrong thing, not proof about your whole self. If the "I am bad" thought keeps coming back for weeks, tell a grown-up you trust.' },
+        ],
+        closing: 'What would you say to a friend who thinks they are a bad kid?',
+    },
+    {
+        id: 'w-growing-happy-and-sad-at-once',
+        theme: 'feelings',
+        stage: 'growing',
+        courseIds: [],
+        answerMode: 'typed',
+        prompt: 'Your friend won the prize you wanted. Can you feel happy for them and sad for you at the same time?',
+        perspectives: [
+            { voice: 'A scientist', says: 'Yes, and it gets easier to notice as you grow. In one study, children aged 5 to 12 watched a bittersweet goodbye in an animated film. The older children were more likely to say they felt happy and sad at once.' },
+            { voice: 'An artist', says: 'Some of the best music is happy and sad at the same time, and so are some sunsets, pink and gray together. Mixed feelings are not a mistake. They show that you care about two things at once.' },
+            { voice: 'A grandparent of faith', says: 'Many traditions teach us to celebrate with others even when our own hearts ache. You can clap for your friend and still need a hug yourself. Both of those feelings deserve room.' },
+            { voice: 'A skeptic', says: 'Do not pretend the sad part is not there, and do not let it turn into being mean. Say well done and mean it. Then ask yourself what you would practice for next time.' },
+        ],
+        closing: 'When have you felt two feelings at the same time?',
+    },
+    {
+        id: 'w-growing-crying-is-for-babies',
+        theme: 'feelings',
+        stage: 'growing',
+        courseIds: [],
+        answerMode: 'typed',
+        prompt: 'Some people say crying is for babies. Is it?',
+        perspectives: [
+            { voice: 'A scientist', says: 'Grown-ups cry too, and scientists have studied why. In a survey of more than 5,000 students in 35 countries, people most often felt better after crying when someone comforted them. Crying helped less when people felt ashamed of their tears.' },
+            { voice: 'An artist', says: 'Actors, singers and writers spend years learning to show real feelings, tears included. A story where nobody ever cries does not feel true. Tears are part of being human.' },
+            { voice: 'A grandparent of faith', says: 'I have cried at weddings, at funerals and once over a very good sandwich. Many sacred stories tell of strong people who wept. You can cry and still be strong.' },
+            { voice: 'A skeptic', says: 'Crying is not a cure for everything. About a third of the time, people say it does not change how they feel. In that survey, fighting the tears or feeling ashamed of them made a cry less likely to help.' },
+        ],
+        closing: 'What helps you when you feel like crying?',
+    },
+    {
+        id: 'w-growing-waiting-is-the-worst-part',
+        theme: 'feelings',
+        stage: 'growing',
+        courseIds: [],
+        answerMode: 'typed',
+        prompt: 'Is waiting for something scary, like the dentist or a big test, sometimes worse than the thing itself?',
+        perspectives: [
+            { voice: 'A scientist', says: 'In one experiment, grown-up volunteers waited for an electric zap on the foot. Most chose to get it over with sooner, and some even picked a stronger zap now over a weaker one later. Brain scans suggested the waiting felt bad because their attention kept going to the spot that would be zapped.' },
+            { voice: 'An artist', says: 'While you wait, your imagination paints the scary thing bigger than life. Give it a different job. Read, draw or build something, so your mind has something else to paint.' },
+            { voice: 'A grandparent of faith', says: 'Many people pray, sing or say something steady to themselves while they wait for something hard. I keep a little verse I say slowly in waiting rooms. Having something steady to hold makes the waiting kinder.' },
+            { voice: 'A skeptic', says: 'You can test this one yourself. Next time, write down how bad you expect it to be, from one to ten, and rate it again afterward. Then you will know whether, for you, the waiting is the worse part.' },
+        ],
+        closing: 'What helps you most while you wait for something hard?',
+    },
+    {
+        id: 'w-growing-everything-at-once',
+        theme: 'ups-and-downs',
+        stage: 'growing',
+        courseIds: [],
+        answerMode: 'typed',
+        prompt: 'A test, a fight with a friend and a sick pet, all in one week. What do you do when hard things pile up?',
+        perspectives: [
+            { voice: 'A scientist', says: 'Try writing it all down first. In one sleep study, young adults who wrote a to-do list for five minutes before bed fell asleep faster than those who wrote about what they had already done. Putting the jobs on paper seems to let the mind stop holding them so tightly.' },
+            { voice: 'An artist', says: 'When my studio gets too full, I clear one table and work there. Pick one problem for today, give it your full attention, and let the others wait their turn. One clear table beats three messy ones.' },
+            { voice: 'A grandparent of faith', says: 'Some weeks are heavy, and it is fine to say so out loud. Many families share the load: one person helps with the pet, and another helps you study. Asking for help in a heavy week is wise, not weak.' },
+            { voice: 'A skeptic', says: 'Start by sorting the pile. Which problems can you fix, which can someone help with, and which just need time? The test needs a plan, the friend needs a talk, and the pet needs care.' },
+        ],
+        closing: 'When everything piles up, what is the first thing you do?',
+    },
+    {
+        id: 'w-growing-three-good-things',
+        theme: 'ups-and-downs',
+        stage: 'growing',
+        courseIds: [],
+        answerMode: 'typed',
+        prompt: 'At the end of a hard day, can you still find three good things?',
+        perspectives: [
+            { voice: 'A scientist', says: 'In a 2005 study, grown-ups wrote down three things that went well each day for a week, and why. Many were happier months later. Later reviews found the effects of exercises like this are smaller than first reported, so treat it as worth a try, not as magic.' },
+            { voice: 'An artist', says: 'Painters look for light even in a dark scene, because a little light makes the darkness easier to read. Your three good things can be tiny, like warm socks or a funny joke. Even tiny good things still count.' },
+            { voice: 'A grandparent of faith', says: 'Many faiths make a habit of giving thanks at the end of the day. Being thankful does not mean the day was easy. It means the hard parts were not the only parts.' },
+            { voice: 'A skeptic', says: 'Do not use it to pretend the bad things did not happen. Name the hard part honestly first. Then look for the good, because both can be true at once.' },
+        ],
+        closing: 'What are three good things from today, even small ones?',
+    },
+    // Pass IZ (2026-10-03): eight teen and eight grown questions, failure and hard feelings first, from Mikey's authors
+    // (Aristotle, Marcus Aurelius, Viktor Frankl, Arthur Brooks) and newer research, every claim read before use. Listed in
+    // docs/DECISIONS.md for approval; a student meets them only after an educator approves them in the app.
+    {
+        id: 'w-teen-reread-felt-ready',
+        theme: 'failure',
+        stage: 'teen',
+        courseIds: [],
+        answerMode: 'typed',
+        prompt: 'You reread your notes three times and felt ready, but the test went badly. Why can feeling ready fool you?',
+        perspectives: [
+            { voice: 'A scientist', says: 'In a well-known 2006 study, students who reread a passage did slightly better on a test five minutes later. A week later, students who had practiced recalling it remembered about 61 percent, and the rereaders about 40. The rereaders had predicted the opposite.' },
+            { voice: 'An artist', says: 'Rereading is like admiring a painting in a museum: it looks familiar, so you feel you could paint it. Then you face a blank canvas. Practice on the blank canvas: close the notes and write down what you remember.' },
+            { voice: 'A grandparent of faith', says: 'Many traditions value testing yourself honestly, the way a student of scripture might recite a passage before checking the page. Humility is admitting what you do not know yet. A practice quiz is humility with a pencil.' },
+            { voice: 'A skeptic', says: 'Feeling familiar and being able to recall are two different things. Test yourself the way the test will: cover the page, answer from memory, then check. Your mistakes on a practice quiz are the cheapest ones you will ever make.' },
+        ],
+        closing: 'How could you check what you really know before your next test?',
+    },
+    {
+        id: 'w-teen-forgot-the-promise',
+        theme: 'failure',
+        stage: 'teen',
+        courseIds: [],
+        answerMode: 'typed',
+        prompt: 'You promised to help a friend with something important, and you forgot. What makes an apology actually repair it?',
+        perspectives: [
+            { voice: 'A scientist', says: 'Researchers asked 755 people to rate apologies built from different parts. Saying clearly that it was your fault mattered most, and offering to fix things came second. Asking to be forgiven mattered least.' },
+            { voice: 'An artist', says: 'An apology is like a repair on a painting: dabbing over the crack is not enough. You have to show you see the damage. Say what you forgot and what it cost your friend, in your own words.' },
+            { voice: 'A grandparent of faith', says: 'Many traditions teach that making amends means more than words. Keep the next promise you make, and keep it carefully. Trust is rebuilt one kept promise at a time.' },
+            { voice: 'A skeptic', says: 'Keep any explanation short, or it can sound like an excuse. Say it was your fault, offer a real fix, and then do it. Forgiveness is your friend\'s choice, not something you can demand.' },
+        ],
+        closing: 'What would you want to hear from a friend who forgot a promise to you?',
+    },
+    {
+        id: 'w-teen-broke-the-streak',
+        theme: 'failure',
+        stage: 'teen',
+        courseIds: [],
+        answerMode: 'typed',
+        prompt: 'You were building a new habit and missed three days in a row. Is the habit ruined?',
+        perspectives: [
+            { voice: 'A scientist', says: 'In a 2010 study, 96 volunteers each tried to make one daily action automatic, like eating fruit with lunch. The middle estimate was about 66 days, with a huge range from 18 to 254. Missing one day did not undo the progress.' },
+            { voice: 'An artist', says: 'A famous line says we are what we repeatedly do, and excellence is a habit. People credit it to Aristotle, but Will Durant wrote it in 1926, summing up Aristotle\'s ideas. The idea still holds: a habit is built by coming back, not by never slipping.' },
+            { voice: 'A grandparent of faith', says: 'Many traditions have a practice of beginning again: a new day, a new prayer, a fresh start after a fall. Starting over is not the same as failing. It may be the habit underneath every other habit.' },
+            { voice: 'A skeptic', says: 'Look at the whole record, not just the gap. The study only showed that one missed day did not matter, so nobody can promise more than that. Restart today, and see how quickly it comes back.' },
+        ],
+        closing: 'What habit would you restart today if a slip did not count as failing?',
+    },
+    {
+        id: 'w-teen-scrolling-their-best-moments',
+        theme: 'feelings',
+        stage: 'teen',
+        courseIds: [],
+        answerMode: 'typed',
+        prompt: 'Scrolling through other people\'s best moments, do you ever end up feeling worse about your own life? Why might that happen?',
+        perspectives: [
+            { voice: 'A scientist', says: 'In one study of young adults, scrolling and watching without posting or chatting led to lower mood later on, and envy seemed to explain it. But a 2020 study of teenagers found the effect differs from person to person. After scrolling, 10 percent felt worse, 46 percent felt better and 44 percent felt no different.' },
+            { voice: 'An artist', says: 'A feed is a gallery of best moments: framed, lit and edited. Nobody posts the dishes in the sink. Comparing your whole life to someone\'s gallery is comparing a rough draft to a finished painting.' },
+            { voice: 'A grandparent of faith', says: 'Many traditions warn against envy because it shrinks gratitude for what is already yours. Some people answer it by naming one good thing in their own day whenever they close the app. Gratitude does not make envy vanish, but it gives it company.' },
+            { voice: 'A skeptic', says: 'Run your own test, since the study says people differ. For one week, notice how you feel after scrolling and after messaging a friend. Let your own results, not anyone\'s guess, decide your habits.' },
+        ],
+        closing: 'What do you notice about your mood after you scroll?',
+    },
+    {
+        id: 'w-teen-talked-about-behind-my-back',
+        theme: 'feelings',
+        stage: 'teen',
+        courseIds: [],
+        answerMode: 'typed',
+        prompt: 'You found out people were talking about you when you were not there. Does that mean they were saying something mean?',
+        perspectives: [
+            { voice: 'A scientist', says: 'Researchers had 467 people wear small recorders that caught bits of their daily conversations. They talked about people who were not there for about 52 minutes a day, but only about 15 percent of it was negative. About three quarters was neutral, like news about who is doing what.' },
+            { voice: 'An artist', says: 'When you hear only a piece of a conversation, your imagination paints the rest, and it usually paints it dark. Before you believe the painting, look for the real picture. Ask what was actually said.' },
+            { voice: 'A grandparent of faith', says: 'Many traditions warn against spreading talk about people, and just as strongly against assuming the worst about them. Give others the benefit of the doubt you would want. If it was unkind, you can still answer with dignity.' },
+            { voice: 'A skeptic', says: 'Separate what you know from what you fear. You know people mentioned you; you do not yet know what they said. If it matters, ask one person you trust what was said, calmly and directly.' },
+        ],
+        closing: 'How do you find out what was really said before deciding how to feel?',
+    },
+    {
+        id: 'w-teen-friend-drifted-away',
+        theme: 'feelings',
+        stage: 'teen',
+        courseIds: [],
+        answerMode: 'typed',
+        prompt: 'A friend you used to be close to has drifted away. Does that mean the friendship failed?',
+        perspectives: [
+            { voice: 'A scientist', says: 'Researchers who study friendship find that time spent together is one of the main things that builds it. When a class, team or schedule changes, that time shrinks. A friendship can fade without anyone doing anything wrong.' },
+            { voice: 'An artist', says: 'Aristotle described three kinds of friendship: for usefulness, for fun, and for goodness, where each person wants good for the other. He said the first two break up easily, while the third is rare and takes time. Which kind it was can change how you feel about its ending.' },
+            { voice: 'A grandparent of faith', says: 'Some friendships are for a season, and that does not make them less real. Many people of faith give thanks for the people who walked with them for a while. You can let a friend go with gratitude instead of blame.' },
+            { voice: 'A skeptic', says: 'Before you decide it is over, check. Send one simple message, without blame, and see what comes back. If nothing does, you will know, and you will have kept your side honest.' },
+        ],
+        closing: 'What did that friendship give you, even if it has changed?',
+    },
+    {
+        id: 'w-teen-phone-out-of-the-bedroom',
+        theme: 'ups-and-downs',
+        stage: 'teen',
+        courseIds: [],
+        answerMode: 'typed',
+        prompt: 'Arthur Brooks, who studies happiness, suggests keeping your phone out of the bedroom and off for the first hour after you wake. What would a week of that do to your mornings?',
+        perspectives: [
+            { voice: 'A scientist', says: 'Brooks argues that boredom switches on the brain\'s default mode network, the system that turns the mind toward questions of meaning. Phones can fill every quiet moment, so that system rarely gets a turn. Scientists agree the network is real; how much phones crowd it out is still being studied.' },
+            { voice: 'An artist', says: 'Mornings without a screen leave room for the first ideas of the day, the ones that drift in while you brush your teeth. Many writers and artists guard that time. Try a notebook by the bed instead of the phone.' },
+            { voice: 'A grandparent of faith', says: 'Many traditions begin the day with a quiet practice: a prayer, a reading or a few minutes of stillness. Whatever you believe, the first hour sets the tone. You get to choose what fills it.' },
+            { voice: 'A skeptic', says: 'Treat it as an experiment, not a vow. Try it for one week, and rate your mood each morning from one to ten. Compare that with a normal week, and decide based on what you see.' },
+        ],
+        closing: 'What would you do with the first hour of your day if your phone stayed off?',
+    },
+    {
+        id: 'w-teen-expect-hard-people',
+        theme: 'ups-and-downs',
+        stage: 'teen',
+        courseIds: [],
+        answerMode: 'typed',
+        prompt: 'The Roman emperor Marcus Aurelius wrote a note to himself to begin the morning by expecting ungrateful and difficult people. Is expecting a hard day gloomy, or wise?',
+        perspectives: [
+            { voice: 'A scientist', says: 'Surprise makes a bad moment feel bigger, because the body reacts before the mind catches up. A moment you saw coming leaves more room to think. That is why people rehearse fire drills before there is a fire.' },
+            { voice: 'An artist', says: 'Actors rehearse the hardest scene the most, so it does not throw them on the night. Picture the tricky moment of your day before it comes. Then picture yourself handling it well.' },
+            { voice: 'A grandparent of faith', says: 'Marcus did not stop at the warning. He wrote that such people act out of not knowing better, and that we are made to work together, like hands and feet. The point was to stay kind when the hard moment came.' },
+            { voice: 'A skeptic', says: 'Expecting some difficulty is not the same as expecting the worst. Make a short list: what might go wrong today, and what would you do if it did? Then let the rest of the day surprise you.' },
+        ],
+        closing: 'What is one hard moment you can see coming tomorrow, and how will you meet it?',
+    },
+    {
+        id: 'w-grown-helplessness-backward',
+        theme: 'failure',
+        stage: 'grown',
+        courseIds: [],
+        answerMode: 'typed',
+        prompt: 'For fifty years, students learned that animals given shocks they could not escape learned to be helpless. In 2016 the two scientists behind that idea wrote that they had it backward. What changes if they were right?',
+        perspectives: [
+            { voice: 'A scientist', says: 'Steven Maier and Martin Seligman concluded that giving up under long, inescapable stress is the brain\'s default, not something learned. What gets learned is control: noticing that your actions make a difference switches the default off. The evidence comes from animal studies, and some researchers still question parts of it.' },
+            { voice: 'An artist', says: 'The scientists who built the theory were the ones who rewrote it, half a century later. That takes a kind of courage most people never need. A changed mind, done honestly, is a masterpiece of its own.' },
+            { voice: 'A grandparent of faith', says: 'Many traditions speak of hope as something practiced, not just felt. If giving up is the default under stress, then small acts of doing something are how hope is rebuilt. Start with one thing you can actually change today.' },
+            { voice: 'A skeptic', says: 'Be careful with the leap from rats to people; the authors themselves were. But the practical idea is worth testing: after a failure, find one small action that clearly works. Notice what happens to your sense of what is possible.' },
+        ],
+        closing: 'After a hard failure, what is one small thing you can do that clearly works?',
+    },
+    {
+        id: 'w-grown-good-call-bad-result',
+        theme: 'failure',
+        stage: 'grown',
+        courseIds: [],
+        answerMode: 'typed',
+        prompt: 'You made a careful decision, and it turned out badly. Was it a bad decision?',
+        perspectives: [
+            { voice: 'A scientist', says: 'Poker players have a name for judging a decision only by how it turned out: resulting. In her book Thinking in Bets, Annie Duke uses the 2015 Super Bowl, when a coach\'s call to pass was intercepted and critics called it the worst ever. Had the pass been caught, the same call would have been praised.' },
+            { voice: 'An artist', says: 'A painter can mix the right colors and still have the canvas warp in the heat. Judge the work by what you chose and why, not only by what the weather did. Then decide what you would choose again.' },
+            { voice: 'A grandparent of faith', says: 'Many traditions separate faithfulness from success: you are asked to do your part well, and the outcome is not fully yours. That is not an excuse for careless choices. It is a reason not to drown in results you could not control.' },
+            { voice: 'A skeptic', says: 'Ask yourself two questions, separately. What did I know, and was my choice reasonable given that? Then ask what luck did. Mixing them up teaches the wrong lesson whether you win or lose.' },
+        ],
+        closing: 'Think of a choice that turned out badly. Was it the choice, or the luck?',
+    },
+    {
+        id: 'w-grown-first-choice-said-no',
+        theme: 'failure',
+        stage: 'grown',
+        courseIds: [],
+        answerMode: 'typed',
+        prompt: 'Your first-choice college said no. How much does that decide about your future?',
+        perspectives: [
+            { voice: 'A scientist', says: 'Economists Stacy Dale and Alan Krueger compared students admitted to similar colleges who chose different ones. Those who chose the less selective school earned about the same on average. The exceptions were Black and Hispanic students and students whose parents had less education, who gained more from selective schools.' },
+            { voice: 'An artist', says: 'Many artists were turned down by the schools or shows they wanted most. What they made afterward is what people remember. A rejection is one door, not the whole house.' },
+            { voice: 'A grandparent of faith', says: 'Many traditions teach that where you end up matters less than who you become there. The people you meet and the work you do will shape you wherever you land. Build a life with what you find.' },
+            { voice: 'A skeptic', says: 'Read the research carefully, because studies answer different questions. A 2023 study found the most elite colleges raised the chance of reaching the very top jobs and incomes, though not average earnings by much. Decide which question is yours.' },
+        ],
+        closing: 'If your first choice says no, what would you want to build wherever you go?',
+    },
+    {
+        id: 'w-grown-write-it-down',
+        theme: 'feelings',
+        stage: 'grown',
+        courseIds: [],
+        answerMode: 'typed',
+        prompt: 'Something hard happened and you have not told anyone. Could writing about it, just for yourself, help?',
+        perspectives: [
+            { voice: 'A scientist', says: 'In 1986, James Pennebaker asked college students to write about their deepest thoughts and feelings on a hard experience, 15 minutes a day for four days. Over the following months, they visited the campus health center less often than students who wrote about everyday topics. Later reviews of many studies found the benefit is real but small.' },
+            { voice: 'An artist', says: 'Writing turns a swirl into sentences, and sentences have an order. Studies of the essays found that people who improved used more words like because, realize and understand as the days went on. The story started to make sense to them.' },
+            { voice: 'A grandparent of faith', says: 'Many traditions have honored writing a hard thing down: in journals, in letters never sent, in prayers set on paper. Putting it outside yourself can make it easier to carry. Some people read it once, then let it go.' },
+            { voice: 'A skeptic', says: 'Know two things before you start. Writing about something painful often feels worse for a little while before it helps. If it brings up more than you can handle, stop and talk to someone you trust or a counselor.' },
+        ],
+        closing: 'Is there something you have been carrying that might be easier on paper?',
+    },
+    {
+        id: 'w-grown-chasing-happiness',
+        theme: 'feelings',
+        stage: 'grown',
+        courseIds: [],
+        answerMode: 'typed',
+        prompt: 'Is happiness a good thing to aim for, or can chasing it make you less happy?',
+        perspectives: [
+            { voice: 'A scientist', says: 'In a 2011 study, women who were led to value happiness highly felt less happy watching a happy film clip than women who were not. Their disappointment at not feeling happy enough seemed to explain it. It is one line of research, but it suggests that grading your own mood can spoil it.' },
+            { voice: 'An artist', says: 'Happiness seems to show up sideways, while your attention is on something else: a song, a problem, a person. Artists call that being lost in the work. You rarely notice it until it is over.' },
+            { voice: 'A grandparent of faith', says: 'Viktor Frankl wrote that happiness cannot be pursued; it must ensue, as a side effect of giving yourself to a cause or a person beyond yourself. Many traditions say something similar about love and service. Aim at what matters, and let happiness follow.' },
+            { voice: 'A skeptic', says: 'Aiming at a full life is not the same as checking your mood every hour. Try aiming at something specific, like finishing a project or helping a friend. Then notice, afterward, how you felt.' },
+        ],
+        closing: 'When were you happiest recently, and what were you actually focused on?',
+    },
+    {
+        id: 'w-grown-fifteen-bored-minutes',
+        theme: 'feelings',
+        stage: 'grown',
+        courseIds: [],
+        answerMode: 'typed',
+        prompt: 'Arthur Brooks suggests practicing boredom in stretches of fifteen minutes or more, with no phone. Why might anyone want to feel bored on purpose?',
+        perspectives: [
+            { voice: 'A scientist', says: 'Brooks\'s argument rests on the default mode network, a set of brain regions that becomes active when the mind is not focused on a task. It is involved in thinking about yourself, your past and your future. Whether phones really starve it of time is still an open question.' },
+            { voice: 'An artist', says: 'Boredom is the blank page before the drawing. Many of my best ideas arrived while I was waiting for something else. If the page is never blank, the drawing never starts.' },
+            { voice: 'A grandparent of faith', says: 'Many traditions keep a sabbath or a quiet hour, a time when nothing is supposed to happen. People have long believed that stillness makes room for what matters. Boredom may be stillness that has not yet found its purpose.' },
+            { voice: 'A skeptic', says: 'Boredom is uncomfortable, and that is the point of the test. Try fifteen minutes, three times this week, and write down what your mind wandered to. Then judge the idea by your own notes.' },
+        ],
+        closing: 'What does your mind wander to when there is nothing to do?',
+    },
+    {
+        id: 'w-grown-cannot-change-the-situation',
+        theme: 'ups-and-downs',
+        stage: 'grown',
+        courseIds: [],
+        answerMode: 'typed',
+        prompt: 'Viktor Frankl wrote that when a situation can no longer be changed, the challenge becomes changing ourselves. What would that look like in a situation you cannot change?',
+        perspectives: [
+            { voice: 'A scientist', says: 'Frankl was a psychiatrist who survived the Nazi camps and treated patients for decades afterward. He gave the example of an illness that cannot be cured. Changing yourself, in his sense, meant finding meaning and choosing your attitude toward what you cannot change.' },
+            { voice: 'An artist', says: 'Some of the most moving art was made by people facing what they could not change. They did not change the illness, the war or the loss. They changed what they made of it.' },
+            { voice: 'A grandparent of faith', says: 'Many prayers ask for the strength to accept what cannot be changed and the courage to change what can. People of many faiths, and of none, find that sorting the two is half the work. The other half is doing it.' },
+            { voice: 'A skeptic', says: 'Be honest about which situations truly cannot change. Many can change a little, and giving up too early is its own mistake. Change what you can, accept what you cannot, and keep checking which is which.' },
+        ],
+        closing: 'What is one situation you cannot change, and one thing in yourself you could?',
+    },
+    {
+        id: 'w-grown-dyed-by-thoughts',
+        theme: 'ups-and-downs',
+        stage: 'grown',
+        courseIds: [],
+        answerMode: 'typed',
+        prompt: 'Marcus Aurelius wrote in his private notebook that the soul is dyed by its thoughts. What color are your thoughts dyeing yours lately?',
+        perspectives: [
+            { voice: 'A scientist', says: 'Habits of thought work a little like other habits: the more often a pattern runs, the more automatic it becomes. Therapies like cognitive behavioral therapy teach people to notice repeated thoughts and test them against evidence. Thoughts are not facts, but they can be practiced.' },
+            { voice: 'An artist', says: 'A cloth soaks up whatever dye it sits in, a little at a time. Change the bath and the color slowly changes too. What you read, watch and repeat to yourself is the bath.' },
+            { voice: 'A grandparent of faith', says: 'Many traditions ask people to guard their minds and dwell on what is true and good. That is not pretending life is easy. It is choosing carefully what you let soak in.' },
+            { voice: 'A skeptic', says: 'Try doing an honest audit. For one day, jot down the thoughts that keep returning, then ask of each: is it true, is it useful, and would I say it to a friend? Keep the ones that pass.' },
+        ],
+        closing: 'Which thought would you like to soak in more often?',
     },
 ];
 // Nothing reaches a student until somebody at the school has read it and said yes.
@@ -61895,7 +62533,7 @@ function PinInput({ value, onChange, placeholder, style, onEnter = null }) {
 }
 // A stamp of when this copy of the page was built, so a stale page in a cache can be told apart
 // from a fresh one at a glance. Written by the build, never by hand.
-const BUILD_STAMP = '2026-10-03 08:39 AM CDT';
+const BUILD_STAMP = '2026-10-03 12:20 PM CDT';
 function ContactLine({ onOpen, inline = false }) {
     return (react_1.default.createElement("p", { className: "edu-no-print", style: { textAlign: 'center', marginTop: inline ? 0 : 28, fontSize: inline ? 14 : 12, color: C.muted, margin: inline ? '0' : undefined } }, onOpen
         ? react_1.default.createElement("button", { type: "button", onClick: onOpen, style: { background: 'none', border: 'none', color: C.muted, fontFamily: FONT, fontSize: 12, cursor: 'pointer', padding: 0, textDecoration: 'underline' } }, "Contact us")
@@ -67586,7 +68224,7 @@ function BecauseGame({ game, round, onScore = null }) {
                 react_1.default.createElement("p", { style: { margin: '2px 0 0', fontSize: 17, color: B.ink, fontWeight: 700 } }, q.claim)),
             react_1.default.createElement("div", { style: { display: 'grid', gridTemplateColumns: '1fr', gap: 8 } }, q.options.map((o, i) => {
                 const hit = found.includes(i);
-                return (react_1.default.createElement("button", { key: i, type: "button", className: `edu-press${nudge === i ? ' edu-wobble' : ''}`, "aria-label": `Because: ${o.text}`, onClick: () => tap(i), style: { fontFamily: FONT, fontSize: 15, textAlign: 'left', padding: '10px 12px', borderRadius: 10, border: `2px solid ${hit ? B.green : B.line}`, background: hit ? '#DDEFE3' : '#fff', color: B.ink, cursor: hit || complete ? 'default' : 'pointer' } },
+                return (react_1.default.createElement("button", { key: i, type: "button", className: `edu-press${nudge === i ? ' edu-wobble' : ''}`, "aria-label": o.text, onClick: () => tap(i), style: { fontFamily: FONT, fontSize: 15, textAlign: 'left', padding: '10px 12px', borderRadius: 10, border: `2px solid ${hit ? B.green : B.line}`, background: hit ? '#DDEFE3' : '#fff', color: B.ink, cursor: hit || complete ? 'default' : 'pointer' } },
                     hit ? '✓ ' : '',
                     o.text));
             })),

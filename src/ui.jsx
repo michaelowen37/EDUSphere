@@ -4049,7 +4049,7 @@ function BecauseGame({ game, round, onScore = null }) {
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 8 }}>
             {q.options.map((o, i) => { const hit = found.includes(i); return (
-              <button key={i} type="button" className={`edu-press${nudge === i ? ' edu-wobble' : ''}`} aria-label={`Because: ${o.text}`} onClick={() => tap(i)} style={{ fontFamily: FONT, fontSize: 15, textAlign: 'left', padding: '10px 12px', borderRadius: 10, border: `2px solid ${hit ? B.green : B.line}`, background: hit ? '#DDEFE3' : '#fff', color: B.ink, cursor: hit || complete ? 'default' : 'pointer' }}>{hit ? '✓ ' : ''}{o.text}</button>); })}
+              <button key={i} type="button" className={`edu-press${nudge === i ? ' edu-wobble' : ''}`} aria-label={o.text} onClick={() => tap(i)} style={{ fontFamily: FONT, fontSize: 15, textAlign: 'left', padding: '10px 12px', borderRadius: 10, border: `2px solid ${hit ? B.green : B.line}`, background: hit ? '#DDEFE3' : '#fff', color: B.ink, cursor: hit || complete ? 'default' : 'pointer' }}>{hit ? '✓ ' : ''}{o.text}</button>); })}
           </div>
           <p style={{ margin: '10px 0 0', fontSize: 14, color: complete ? B.green : B.muted, textAlign: 'center', fontWeight: complete ? 700 : 400 }}>{complete ? 'Both real reasons found: about the thing, and true.' : `${2 - found.length} real ${found.length === 1 ? 'reason' : 'reasons'} left to find.`}</p>
         </div>

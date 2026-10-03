@@ -2,6 +2,20 @@
 
 The newest block is what educators see once, in a pop-up on the classroom page, after each update. Write it the way Mikey talks to a teacher: conversational, complete sentences, say what changed and why it matters, and skip the shorthand (2026-09-23). Two to four items. The date line is the version stamp.
 
+## October 3, 2026 (more Wonder questions for teens and adults)
+
+- Sixteen new Wonder questions for middle school through college about failure, hard feelings and hard days: why rereading fools you, what makes an apology work, a friend who drifted away, a college that said no, and whether chasing happiness backfires. They draw on Aristotle, Marcus Aurelius, Viktor Frankl and Arthur Brooks, and are waiting in your Wonder review for approval.
+
+## October 3, 2026 (every game card read by hand)
+
+- Every card in the word games was read by hand. Valid or Not now says "The street is not wet" instead of the stiff "It is not the case that," and Sort the Because starts every choice with Because, so the look of a card no longer gives away the answer.
+- A handful of facts were tightened: fruits and vegetables together make half the plate, bacteria in soybean roots turn nitrogen from the air into plant food, and birth control pills prevent pregnancy, not STIs.
+
+## October 3, 2026 (Wonder questions for younger learners)
+
+- Twenty-four new Wonder questions for pre-K through grade 5 about mistakes, hard feelings and hard days: a drawing that came out wrong, a scary dream, a thunderstorm, a shot at the doctor, a small lie, wanting to quit, and whether crying is for babies. They are waiting in your Wonder review for approval.
+- Three older answers about anger and sadness were rewritten. They suggested getting a feeling out by stomping or squeezing a pillow, and the research says calming down and drawing something new help more.
+
 ## October 3, 2026 (Wonder questions for teens and adults)
 
 - Twenty new Wonder questions for middle school through college, about failure, hard feelings and hard days, draw on Viktor Frankl, Marcus Aurelius, Aristotle, Michael Singer and Rick Hanson. They are waiting in your Wonder review for approval.

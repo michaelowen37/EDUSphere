@@ -76,3 +76,17 @@ Never change the words on the tour cards (Mikey, pass JI). The pages behind them
 ## Order
 
 Mikey's order (pass JG): pre-K first, then kindergarten, grades 1 to 12 and college, course by course, core courses before electives. docs/REVIEW-LEDGER.md lists every module in that order, then the long stories, the games and the Wonder questions. The three other modules Mikey named in his first review (Saving, investing and risk; The communication process; Communication and audience) come up in their grades.
+
+## The full standard (pass JO, Mikey: more than grammar, accuracy, colons and audio)
+
+Mikey asked whether the review covers writing style, explanatory quality and context in the lessons, titles, questions, answers and stories, and pictures that add value. Passes JG to JN did not, fully: they were a first pass, fixing facts, punctuation and story flow and writing audio tags, with some explanation fixes, but they did not rewrite lessons for teaching quality or add lesson pictures (the app had no lesson picture slot until pass JO). Those items are marked "firstPass" in docs/review-status.json, and the full standard goes back over them, starting again at pre-K. An item counts as reviewed only when all nine of these are done.
+
+1. Accuracy. Every fact checked against a source; nothing a learner will have to unlearn later; the numbers inside a story add up.
+2. Teaching quality. The lesson says why, not only what, and connects its ideas into one system (what causes what, how the pieces fit). It gives one clear example a learner can picture, at the right level for the grade, and teaches everything its questions ask.
+3. Writing style. Natural sentences that flow, as in the Scarcity sample (pass JF): no colons or semicolons, warm plain words, no robotic runs, and the read-aloud limits for the early years.
+4. Titles. Clear, accurate and inviting, shown in title case.
+5. Questions. Each reads as a natural sentence, with a setup line wherever the question needs a situation; distractors are mistakes a learner could really make; the answer is taught in the lesson.
+6. Explanations. Each says the answer and the reason in whole sentences, so it makes sense read aloud or seen after a wrong answer, never a fragment that only continues the answer ("And in good shape."). A rule now checks this for pre-K to grade 1.
+7. Stories. A real problem, a turn and a resolution; the lesson's facts and no others; one tense; smooth read aloud.
+8. Pictures. A lesson picture (P serial) wherever seeing the real thing teaches more than words, such as landmarks, plant parts, instruments and the moon's shapes; story picture prompts match the story; every prompt follows Mikey's template, and a real place is checked against a photo.
+9. Audio. Eleven v4 tags in every story.

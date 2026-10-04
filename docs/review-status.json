@@ -1,7 +1,9 @@
 {
-  "about": "Items Fable has reviewed and rewritten, by key, with the pass that did it. tools/review-ledger.mjs reads this file. Example entry: \"module:saving-investing-and-risk\": \"JF\".",
+  "about": "Items Fable has reviewed and rewritten, by key, with the pass that did it. tools/review-ledger.mjs reads this file. Example entry: \"module:saving-investing-and-risk\": \"JF\". \"reviewed\" means the full standard in docs/FABLE-REVIEW.md; \"firstPass\" means accuracy, punctuation and audio tags only (passes JG to JN), still due the full read.",
   "reviewed": {
-    "module:scarcity-and-markets-c": "JF, an Opus 5.5 sample: lesson, story and questions rewritten",
+    "module:scarcity-and-markets-c": "JF, an Opus 5.5 sample: lesson, story and questions rewritten"
+  },
+  "firstPass": {
     "module:red-and-blue": "JG, read by hand: red like a strawberry, blue like the sky; Which one is mine; JH: audio tags",
     "module:find-the-match": "JG, read by hand: what the same means; a colon gone; JH: audio tags",
     "module:match-the-animals": "JG, read by hand: Two foxes, not foxs; the odd one out said plainly; JH: audio tags",
@@ -119,6 +121,32 @@
     "module:lines-shapes-and-colors": "JM, read by hand: red, yellow and blue mix into many colors, not any color; colons and a line break fixed; audio tags",
     "module:what-a-picture-says": "JM, read by hand: colons and a line break fixed; audio tags",
     "module:beat-and-sound": "JM, read by hand: a resting heart keeps a steady pace (a heart does speed up); semicolons and a line break fixed; audio tags",
-    "module:voices-and-instruments": "JM, read by hand: a line break made a paragraph break; audio tags"
+    "module:voices-and-instruments": "JM, read by hand: a line break made a paragraph break; audio tags",
+    "module:teen-numbers": "JN, read by hand: colons and a semicolon gone; audio tags",
+    "module:adding-to-20": "JN, read by hand: colons gone from the story and a setup; audio tags",
+    "module:subtracting-to-20": "JN, read by hand: six birds flew away, not six left; audio tags",
+    "module:tens-and-ones": "JN, read by hand: read, no change needed; audio tags",
+    "module:comparing-to-100": "JN, read by hand: a colon gone from an explanation; audio tags",
+    "module:writing-numbers": "JN, read by hand: a story colon gone; audio tags",
+    "module:sun-moon-patterns": "JN, read by hand: the moon is often up in the day too; audio tags",
+    "module:water-changes": "JN, read by hand: read, no change needed; audio tags",
+    "module:animal-needs": "JN, read by hand: many birds nest in trees, not every bird; every animal needs water (some get it from food); audio tags",
+    "module:the-steady-beat": "JN, read by hand: colons, a semicolon and a line break fixed; audio tags",
+    "module:high-and-low": "JN, read by hand: colons, semicolons and a line break fixed; audio tags",
+    "module:loud-and-soft": "JN, read by hand: colons and a line break fixed; audio tags",
+    "module:read-the-word": "JN, read by hand: read, no change needed; audio tags",
+    "module:sh-ch-th": "JN, read by hand: th says two sounds (thin, this); the odd-word explanation names the word; audio tags",
+    "module:silent-e": "JN, read by hand: the second word in an explanation names the word; audio tags",
+    "module:read-the-sentence": "JN, read by hand: one pen, not one pens; story colons gone; audio tags",
+    "module:what-happened": "JN, read by hand: a story colon gone; audio tags",
+    "module:tracing-more-small-letters": "JN, read by hand: story colons gone; audio tags",
+    "module:trace-small-letters-3": "JN, read by hand: a colon and semicolons gone; audio tags",
+    "module:trace-small-letters-4": "JN, read by hand: a story colon gone; audio tags",
+    "module:trace-small-letters-5": "JN, read by hand: three story colons gone; audio tags",
+    "module:leaders-near-and-far": "JN, read by hand: a caption semicolon gone; audio tags",
+    "module:goods-and-services": "JN, read by hand: the goods list moved from the key idea into the lesson; audio tags",
+    "module:maps-of-my-world": "JN, read by hand: colons gone; audio tags",
+    "module:signs-around-town": "JN, read by hand: story colons gone; audio tags",
+    "module:symbols-of-our-country": "JN, read by hand: the Alamo is an old mission where Texans fought, as the lesson says; audio tags"
   }
 }

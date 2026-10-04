@@ -1,6 +1,6 @@
 # Audio ledger
 
-Generated 2026-10-04 by tools/audio-ledger.mjs. Every clip the app can play in a recorded voice is a row of docs/AUDIO-LEDGER.csv: its key (the file name, audio/<key>.mp3, that the app already looks for), its group (the story or lesson it belongs to) and the words with their Eleven v4 audio tags. 6107 clips, 1,193,835 characters in all; the longest clip is 508 characters and the longest whole story 2,751, far under Eleven v4's 10,000 a request. 118 stories carry hand-written tags so far (the writing review adds them course by course); the rest open with their age band's voice direction only.
+Generated 2026-10-04 by tools/audio-ledger.mjs. Every clip the app can play in a recorded voice is a row of docs/AUDIO-LEDGER.csv: its key (the file name, audio/<key>.mp3, that the app already looks for), its group (the story or lesson it belongs to) and the words with their Eleven v4 audio tags. 6107 clips, 1,196,777 characters in all; the longest clip is 508 characters and the longest whole story 2,751, far under Eleven v4's 10,000 a request. 144 stories carry hand-written tags so far (the writing review adds them course by course); the rest open with their age band's voice direction only.
 
 ## How to make the audio
 
@@ -17,7 +17,7 @@ ElevenLabs counts characters, tags included, so this is the size of each part of
 
 | Band | Clips | Characters |
 |---|---|---|
-| Pre-K to grade 2 | 2051 | 242,175 |
+| Pre-K to grade 2 | 2051 | 245,117 |
 | Grades 3 to 5 | 1263 | 278,553 |
 | Grades 6 to 8 | 1138 | 272,072 |
 | Grades 9 to college | 1655 | 401,035 |
@@ -857,6 +857,236 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 - S314-6: V, A, N. [a wave washing over sand] Then a wave came and washed them away. Jamal drew them again, bigger and farther up the beach.
 - S314-7: [slowly, warmly] Slanted lines make V, A and N. Start at the dot.
 
+### Ten and three (S317, teen-numbers)
+
+- S317-1: [warm] Ten eggs filled the carton, in two rows of five. Three more eggs sat beside it, brown and speckled. Mia had to say how many.
+- S317-2: [frustrated] She started counting from one, and by eight she had lost her place. The eggs all looked the same.
+- S317-3: [a tap on a carton] Mom tapped the carton. This is ten, she said, and you do not need to count those again. [firmly, kindly] Ten is done.
+- S317-4: [slowly, counting on] Ten, and then the three more, eleven, twelve, thirteen. Ten and three is thirteen.
+- S317-5: [confident] Mia tried more. Ten and five was eleven, twelve, thirteen, fourteen, fifteen. Ten and seven was seventeen.
+- S317-6: [thoughtful] Every teen number is ten and some more. The carton is the ten, and the loose eggs are the some.
+- S317-7: [slowly, warmly] A teen number is ten and some more. Start at ten and count on.
+
+### Two pockets (S320, adding-to-20)
+
+- S320-1: Leo had marbles in both pockets, eight in one and six in the other. He wanted to know how many in all. He tried to count them inside his pockets, [amused] but pockets are dark.
+- S320-2: [marbles clattering onto a rug] So he tipped them out onto the rug, eight in one pile and six in another. Blue ones, green ones, and one with a swirl.
+- S320-3: [slowly] He could count them all from one, fourteen marbles one at a time, but that was slow.
+- S320-4: His sister showed him a faster way. Start with the bigger number, eight, and then count on. [counting on, brisk] Nine, ten, eleven, twelve, thirteen, fourteen.
+- S320-5: [delighted] Fourteen! It was the same answer, in six counts instead of fourteen. Leo put them all in the jar.
+- S320-6: [pennies clinking] He tried it with pennies, nine and four. Nine, then ten, eleven, twelve, thirteen. It worked every time.
+- S320-7: [slowly, warmly] Start with the bigger number. Count on from there.
+
+### Birds on the wire (S323, subtracting-to-20)
+
+- S323-1: [birds chirping on a wire] Fifteen small brown birds sat on the wire, and Ana counted them twice to be sure. Fifteen.
+- S323-2: [wings flapping away] Then six flew away at once, flap, flap, off over the roof. [curious] How many were left?
+- S323-3: [a little frustrated] Ana started to count all over again, but the birds kept hopping and moving. Counting from one was slow.
+- S323-4: Grandpa said to count back. You had fifteen and six flew away, [slowly, counting back] so fourteen, thirteen, twelve, eleven, ten, nine. Six steps back.
+- S323-5: [pleased] Nine! Nine birds were left on the wire. Ana counted them the slow way to check, and it was nine, the same answer.
+- S323-6: Then two more flew off, so nine became eight, then seven. Seven birds. [a flurry of wings] Then all of them left at once, [amused] and that was zero.
+- S323-7: [slowly, warmly] Take away by counting back. One step for each one gone.
+
+### Bundles of ten (S326, tens-and-ones)
+
+- S326-1: [sticks clattering] Sam had a pile of craft sticks, flat and smooth, and his teacher asked how many. He started counting one at a time, but the pile did not seem to get any smaller.
+- S326-2: Then she handed him rubber bands. Ten sticks and one band made a bundle, so Sam counted ten [a rubber band snapping] and snapped a band on.
+- S326-3: [steady] He made three bundles, and four sticks were left over, not enough for another bundle.
+- S326-4: Three tens and four ones. Three, four. [delighted] Thirty-four! He read the number right off the bundles.
+- S326-5: [confident] His friend had five bundles and two loose, fifty-two. Sam could read it without counting a single stick.
+- S326-6: [thoughtful] Tens come in bundles and ones are the loose ones. Every number is some bundles and some loose sticks.
+- S326-7: [slowly, warmly] Tens come in bundles. The ones are the loose ones.
+
+### Two jars of buttons (S329, comparing-to-100)
+
+- S329-1: [buttons rattling in jars] This jar had 62 buttons and that jar had 48. Rosa wanted the bigger one for her sewing. The jars looked the same size, and the numbers looked close.
+- S329-2: [thoughtful] She did not want to count a hundred buttons twice, so there had to be a faster way.
+- S329-3: [warm, wise] Grandma said to look at the tens first. Rosa made stacks of ten, and this jar had six stacks and two loose. Sixty-two.
+- S329-4: That jar had four stacks and eight loose, forty-eight. [slowly, comparing] Six tens against four tens, and six is more.
+- S329-5: Six tens is more than four tens, so the ones do not even matter. [sure] Sixty-two is bigger than forty-eight.
+- S329-6: [pleased] Rosa took the big jar and sewed six buttons on her coat. That left fifty-six, which was still more than forty-eight.
+- S329-7: [slowly, warmly] Look at the tens first. If the tens match, the ones decide.
+
+### The five (S332, writing-numbers)
+
+- S332-1: Lena wrote a five, and it looked like an S. She wrote it again and got an S with a hat. [teasing] Her brother said it was a snake.
+- S332-2: [frustrated] A five has a place to start. Lena kept starting in the wrong spot, in the middle or at the bottom.
+- S332-3: Her teacher drew a dot at the top. [gently] Start here, she said. Down, round the belly, lift, and across the top.
+- S332-4: Lena tried it, [slowly, tracing] down, round, lift and across. [delighted] A five, and not a snake! A real five stood up straight on the page.
+- S332-5: [thoughtful] Every number had its own dot. A two started at the top and curved. A seven started at the top and went across, then down.
+- S332-6: Lena wrote a row of fives and then a row of sevens, all from their dots. [proud] No snakes.
+- S332-7: [slowly, warmly] Every number starts at its dot. Follow the arrow.
+
+### The word on the box (S335, read-the-word)
+
+- S335-1: [curious] There were three letters on the box, M, A and P, and Kai knew them all. [slowly, letter names] Em, ay, pee. He said the names, but that was not a word.
+- S335-2: [gently] Letter names do not make words, said Dad. Sounds do. He tapped the M and asked what sound it makes.
+- S335-3: [slowly, each sound] Mmm. After that came the A, aaa, and then the P, puh. Kai said them one at a time. Mmm, aaa, puh.
+- S335-4: Now push them together, said Dad. Kai slid his finger under the letters. [faster and faster] Mmm-aaa-puh, mmm-aaa-puh, map!
+- S335-5: [a box opening, paper rustling] He opened the box, and inside was a map, a big folded one. The word had told him what was inside.
+- S335-6: [excited] Kai looked for more boxes. C-U-P was cuh-uh-puh, cup, and there was a cup inside. He read every box in the garage.
+- S335-7: [slowly, warmly] Say each sound. Push them together. Read the word.
+
+### Shell, chair, thumb (S338, sh-ch-th)
+
+- S338-1: [ocean waves] Ana found a shell, pink and curly, and held it to her ear. Then she tried to read the word on the sign. S, h, e, l, l. [puzzled] Sss-huh. That was not shell.
+- S338-2: [thoughtful] Two of the letters were working as a team, and she was reading them one by one. That was the problem.
+- S338-3: S and H together say shh, said Mom, like when you want quiet. [a soft shush] Shh. Shell.
+- S338-4: [playful] Ana looked around. C and H together say ch, as in chair, so she sat in the beach chair. Ch.
+- S338-5: [playful] T and H together say th, as in thumb, so she held up her thumb. Th. Two letters, one sound.
+- S338-6: [waves, warmly] Shell, chair, thumb. Ana found all three on the beach, and she said them along with the sea.
+- S338-7: [slowly, warmly] Sh, ch and th are two letters that say one sound.
+
+### The quiet e (S341, silent-e)
+
+- S341-1: Leo read cap, a hat, and put it on. Then he saw cape and read it cap-eh. [laughing] His sister laughed, because there was no eh.
+- S341-2: [curious] The e at the end made no sound at all. So what was it for? Was it just sitting there?
+- S341-3: [explaining] It was there to change the a. In cap, the a says aa, but in cape, the a says its name, ay. Cape.
+- S341-4: [softly] The e was silent, and it worked by staying quiet. It reached back and changed the a.
+- S341-5: [confident] Leo tried more. Kit became kite, and the i said its name. Tub became tube, and the u said its name. The quiet e did it every time.
+- S341-6: [playful, swooping around a room] Leo put on the cape and flew around the room. Cape, not cap. He knew the difference now.
+- S341-7: [slowly, warmly] A silent e at the end makes the vowel say its name.
+
+### From the capital to the period (S344, read-the-sentence)
+
+- S344-1: Rosa read the words one at a time. [flat, word by word] The. Dog. Is. Out. Four words, said like a list, and she did not know when to stop.
+- S344-2: [thoughtful] A sentence is not a pile of words. It has a start and an end, and Rosa had to find both.
+- S344-3: [gently] Start at the capital letter, said her teacher, the big T. Read across, and stop at the period, the little dot.
+- S344-4: [smoothly] The dog is out. Rosa read it smooth, and now it was a sentence. It said something. [delighted] A dog was out!
+- S344-5: [steady] The next line had a capital letter too, so she read across to the period. He ran to the park. That was another sentence.
+- S344-6: Rosa read the whole page that way, capital, across, period, then capital, across, period. [warm, excited] The story came alive.
+- S344-7: [slowly, warmly] A sentence starts with a capital letter and stops at a period.
+
+### First, then, last (S347, what-happened)
+
+- S347-1: Sam told the story of his kite. [jumbled, hurried] Dad got it down, it went up, it got stuck. [puzzled] His mom looked confused and asked what happened first.
+- S347-2: [thoughtful] All of it was true, but it was in the wrong order, with the end at the start.
+- S347-3: [wind blowing] Sam tried again. First, the kite went up, high in the wind. Then it caught in a tree and got stuck.
+- S347-4: [clear, in order] Last, Dad climbed up and got it down. Three little words, first, then, last, and now the day made sense.
+- S347-5: [pleased] Mom nodded, because she could see it now. Up, stuck, down, in that order.
+- S347-6: [warm] Sam told the story again at dinner, first, then, last, and everyone understood it the first time.
+- S347-7: [slowly, warmly] First, then, last. Tell what happened in order.
+
+### Tails, bumps and zigzags (S350, tracing-more-small-letters)
+
+- S350-1: Mia traced a g and kept its tail on the line. [amused] It looked like a q with a hat. Her teacher smiled.
+- S350-2: [puzzled] Some small letters go below the line, some have bumps, and some zigzag. Mia did not know which was which.
+- S350-3: A g has a tail, said her teacher, and it hangs below the line, so let it drop. Mia traced it, the tail hung down, [pleased] and there was a real g.
+- S350-4: [slowly, tracing] An m has two bumps, up, over, up, over. Mia traced two round hills. A z zigzags, across, down, across.
+- S350-5: [playful] Tails, bumps and zigzags. Mia found more: a y had a tail, an n had one bump, and a w zigzagged too.
+- S350-6: She traced a whole row, every letter its own way. [proud] Her teacher put a star on the page.
+- S350-7: [slowly, warmly] Tall sticks, bumps and zigzags. Start at the dot and follow the arrow.
+
+### One line, then the rest (S353, trace-small-letters-3)
+
+- S353-1: [a little frustrated] Kai traced an i and forgot the dot. He traced a t and forgot the bar. Both looked like the letter l, so he had three l's in a row.
+- S353-2: [gently] Each one starts the same way, said his teacher, with one line down, and then something else. The something else was the part he kept forgetting.
+- S353-3: One line down, then a dot on top, makes an i. Kai traced it. [delighted] Dot! Not an l anymore.
+- S353-4: One line down, then a bar across, makes a t. Kai traced it. [delighted] Bar! And one line down, then a kick out, makes a k.
+- S353-5: [rhythmic] Start the same, finish your own way. Kai said it as he traced, line and dot, line and bar, line and kick.
+- S353-6: [proud] He traced a whole row of i, t and k, with no more l's. Every letter had its own finish.
+- S353-7: [slowly, warmly] One line down, then the rest. Start at the dot.
+
+### Curve, point, cross (S356, trace-small-letters-4)
+
+- S356-1: [frustrated] Ana traced a c, and it came out as a circle. She traced a v, and it came out round, like a u. All she drew was round.
+- S356-2: [gently] Not every letter is round, said her teacher. Some have points, and some cross. Ana looked at the letters again.
+- S356-3: A c is a curve, like a cup on its side, open on the right. Ana traced it and stopped. [pleased] Not a circle, but a c.
+- S356-4: A v goes down to a point and back up, sharp at the bottom. Ana made the point. [crisp] Sharp!
+- S356-5: [slowly, tracing] An x is two lines that cross, one slant and then the other slant over it. An x, with nothing round at all.
+- S356-6: [proud] Curve, point, cross. Ana traced them in a row, c, v, x, each one different and each one right.
+- S356-7: [slowly, warmly] A curve, a point, a cross. Start at the dot.
+
+### Line and arch (S359, trace-small-letters-5)
+
+- S359-1: [curious] Sam traced an n, then a u, then an r. His teacher asked what they had in common, and Sam said nothing, because they looked different.
+- S359-2: [thoughtful] He looked again. Each one had a line, and each one had a little arch. The arch went one way or another.
+- S359-3: [slowly, tracing] A line down, then up and over, makes an arch, and that is an n. Sam traced it, down, up and over.
+- S359-4: [slowly, tracing] Down, round the bottom, and up makes a u, an arch turned upside down. Sam traced it, down, round and up.
+- S359-5: [slowly, tracing] A line down, then a small arch that stops, makes an r, just the start of an n. Sam traced it, down, a little arch, and stop.
+- S359-6: Line and arch, three letters from one move. Sam wrote run, r, u, n, [delighted] all three in one word!
+- S359-7: [slowly, warmly] A line, then a little arch. Start at the dot.
+
+### The same place every day (S362, sun-moon-patterns)
+
+- S362-1: [birds at dawn] Rosa woke early and saw the sun come up over the fence. The next day it came up over the fence again, and the next. [curious] Was it always the same fence?
+- S362-2: [determined] She decided to check, every morning for a week. She made a chart with a sun for each day.
+- S362-3: [steady] Every morning it rose in the east, over the fence. Every evening it set in the west, behind the far hill. Not once did it change.
+- S362-4: [softly, night crickets] Then she watched the moon. One night it was a thin curve. A few nights later it was half, and a week after that it was round and full.
+- S362-5: [slow, wondering] The moon changed shape a little each night, round, then thin, then round again. It was slow, but it was the same every month.
+- S362-6: [proud] Rosa showed her chart to the class. The sun in the east, the sun in the west, and the moon getting round. Patterns that repeat.
+- S362-7: [slowly, warmly] The sun and moon follow patterns that repeat.
+
+### Ice, water, ice (S365, water-changes)
+
+- S365-1: Leo left an ice cube on the step. It was hard, cold and slippery, but when he came back it was a puddle. [puzzled] Where did the ice go?
+- S365-2: [gently amused] Nowhere, said Mom. It is right there. The sun warmed it, and heat melts ice into water.
+- S365-3: [a freezer door opening and closing] Leo scooped the puddle into a tray and put the tray in the freezer. It was cold in there, very cold.
+- S365-4: [amazed] In the morning it was hard again, an ice cube, the same water frozen back.
+- S365-5: [thoughtful] Cold makes ice, and heat melts it back, round and round. The water never left. It just changed.
+- S365-6: [playful] Leo tried a snowball next. Warm hands melted it into water, and the freezer froze it into ice again. He did it three times.
+- S365-7: [slowly, warmly] Cold makes ice. Heat melts it back to water.
+
+### What the puppy needed (S368, animal-needs)
+
+- S368-1: [a puppy whining] The puppy whined, and Ana did not know why. It had a collar, a name and a squeaky toy, and it still whined.
+- S368-2: [gently] A puppy needs more than a name, said Dad. Think about what you need every day.
+- S368-3: [eager] Food! Ana filled the bowl, [crunching] and the puppy ate, crunch, crunch, and then it whined again. [eager] Water! Ana filled the dish, and the puppy lapped and lapped.
+- S368-4: It was still tired, so Ana made it a soft bed in the corner. A blanket, a pillow, a home. [softly] The puppy curled up there and slept.
+- S368-5: [relieved] Fed, watered and rested, the puppy stopped whining. It had what it needed.
+- S368-6: [warm] Every morning after that, Ana checked three things, the bowl, the dish and the bed. Food, water and a home. The puppy grew big and happy.
+- S368-7: [slowly, warmly] Animals need food, water and a home.
+
+### Near and far (S371, leaders-near-and-far)
+
+- S371-1: [curious] Kai heard about a mayor, a governor and a president, all in one day. Three leaders, and he thought they all did the same job.
+- S371-2: [explaining] They do the same kind of job, said his teacher, for places of different sizes. Small, medium and big.
+- S371-3: [warm] The mayor leads the city, and that is near. Kai could walk to the town hall, and the mayor had cut the ribbon at his park.
+- S371-4: The governor leads the whole state, which is bigger, [emphatic, proud] and Texas is huge. That is farther. The president leads the whole country, and that is far.
+- S371-5: [a pencil drawing] Kai drew three circles. A small one was for the city, and a bigger one around it was for the state. The biggest was for the country.
+- S371-6: The mayor went in the small circle and the governor in the middle. The president went in the big one. [slowly] Near, farther, far.
+- S371-7: [slowly, warmly] Mayor for the city, governor for the state, president for the country.
+
+### The hat and the haircut (S374, goods-and-services)
+
+- S374-1: [a busy street] Mia bought a hat and got a haircut on the same street. Both cost money and both came from a shop. Only one of them went home in a bag.
+- S374-2: [puzzled] The haircut was not a thing she could hold, so what had she paid for?
+- S374-3: The hat was a good, a thing you can hold, put on, take off and keep. [a bag rustling] Goods go in bags.
+- S374-4: The haircut was a service, work someone did for her. [scissors snipping] Snip, snip. She could not put it in a bag, but she had it.
+- S374-5: [warm] Both were paid for with money, and money comes from work. Mom worked at the bakery, and that paid for the hat and the haircut.
+- S374-6: [pleased] Mia looked down the street. The toy shop sold goods and the car wash sold a service. She could tell them apart now.
+- S374-7: [slowly, warmly] Goods are things. Services are work done for you.
+
+### Where the sun comes up (S377, maps-of-my-world)
+
+- S377-1: [puzzled] Sam had a map of his yard, and it said north at the top. He turned it every way, and he still could not tell which way was which.
+- S377-2: [patient] The map needed one true direction to start from, and Dad said to wait for the sun.
+- S377-3: [morning birds] The sun rose over the fence, so that way was east. Sam faced the sun and turned the map until its east side pointed at the fence.
+- S377-4: [slowly, turning] Now north was on his left, where the tree stood. South was on his right, by the door. West was behind him. Four directions, like a cross laid over the yard.
+- S377-5: [proud] Sam drew the cross on the map, north, south, east and west. Now he would never have to wait for the sun again.
+- S377-6: He walked the yard, north to the tree, east to the fence and south to the door. Then west, back toward the house. [satisfied] The map matched the world.
+- S377-7: [slowly, warmly] North, south, east, west. The sun rises in the east.
+
+### The sign that stopped everyone (S380, signs-around-town)
+
+- S380-1: [cars braking at a stop sign] Rosa watched a red sign with eight sides, and every car that came to it stopped. Nobody told the drivers to. [curious] How did they all know?
+- S380-2: [explaining] The sign told them, all of them at once, and that is what signs do.
+- S380-3: [steady] A stop sign says stop, in red, with eight sides. A green sign says the street's name, like Oak Street, that way.
+- S380-4: [careful] A yellow sign says to slow down, because something is ahead. This one had children on it, so a school was ahead.
+- S380-5: [confident] Rosa read the signs all the way home, stop, Oak Street and school. She knew what each one meant.
+- S380-6: Then she made a sign for her room, red with eight sides, and it said stop. Her brother stopped at the door. [triumphant, giggling] It worked.
+- S380-7: [slowly, warmly] Signs tell everyone the same thing at once.
+
+### The bell and the torch (S383, symbols-of-our-country)
+
+- S383-1: [curious] Leo saw a picture of a bell with a big crack in it. Why keep a broken bell? His teacher said it was famous.
+- S383-2: [puzzled] Famous for what? A crack is a crack, and Leo did not get it.
+- S383-3: [a distant bell ringing] The Liberty Bell rang for freedom, long ago, and people came to hear it. The crack came later, and they kept the bell anyway.
+- S383-4: [harbor waves, gulls] The Statue of Liberty holds up a torch to welcome people. She stands in the harbor, green and tall.
+- S383-5: [respectful] The Alamo is an old mission in Texas where Texans fought, and people remember what happened there. And the flag stands for the whole country.
+- S383-6: [proud] Each one stands for something bigger than itself. Leo drew all four, the bell, the torch, the mission and the flag.
+- S383-7: [slowly, warmly] The bell, the statue, the Alamo and the flag stand for us.
+
 ### The sound at the end (S1172, ending-sounds)
 
 - S1172-1: [curious] Sam could hear the start of cat, cuh, but he could not hear the end. It went by too fast. [quickly] Cat, and it was gone.
@@ -906,6 +1136,36 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 - S1235-5: [crunching] Ana ate the rainbow, crunch and pop and sweet. Every color brought something her body needed.
 - S1235-6: Every day after that, Ana looked at her plate to see if there was a rainbow. If there was not, [playful] she asked for one.
 - S1235-7: [slowly, warmly] Half the plate is fruits and veggies, with water to drink.
+
+### The clock in the song (S1250, the-steady-beat)
+
+- S1250-1: [a clock ticking] Tick, tick, tick. The clock on the wall kept time, and Mia tapped along on her knees. Then the music teacher played a song and told her to keep tapping.
+- S1250-2: [confused] The song had lots of notes, fast ones and slow ones. Mia did not know where to tap.
+- S1250-3: [gently] Listen under the notes, said the teacher. There is a pulse down there, even, like the clock.
+- S1250-4: Mia listened, and there it was. [steady tapping] Tap, tap, tap, steady, under it all. The beat.
+- S1250-5: [delighted] She found it and tapped it. The notes danced on top while the beat stayed steady underneath.
+- S1250-6: Every song had a clock inside it. [a radio playing, tapping along] Mia tapped the beat to the radio all the way home.
+- S1250-7: [slowly, warmly] The beat is the even pulse under a song, like a clock.
+
+### Bird high, cow low (S1253, high-and-low)
+
+- S1253-1: [a bird tweeting, a cow mooing] The bird sang, tweet, and the cow mooed, moo. Kai said they were the same sound, but his sister said one was high and one was low.
+- S1253-2: [puzzled] What did high and low mean for a sound? A sound was not up or down, and Kai did not get it.
+- S1253-3: [piano notes climbing] Inside, on the piano, Kai walked his fingers to the right. The notes climbed higher and higher, toward the bird.
+- S1253-4: [piano notes sinking] Then he walked his fingers to the left, and the notes sank lower and lower, toward the cow.
+- S1253-5: [understanding] High and low is pitch. The bird was high and the cow was low, and Kai could hear it now.
+- S1253-6: He played a bird way up on the right, and then a cow way down on the left. [laughing] His sister laughed.
+- S1253-7: [slowly, warmly] High and low is pitch. On a piano, right is higher.
+
+### The drum and the lullaby (S1256, loud-and-soft)
+
+- S1256-1: The parade drum was so loud that Ana covered her ears. [a loud parade drum] Boom! Boom! [very softly] That night her mom sang a lullaby so soft that Ana could barely hear it.
+- S1256-2: [curious] Why not sing loud too? Ana asked. Mom smiled and said that loud and soft are for different jobs.
+- S1256-3: [bold] The drum had to reach the whole street, everyone at once, so it was loud.
+- S1256-4: [softly] The lullaby had to reach one sleepy girl, just Ana, so it was soft.
+- S1256-5: [explaining] A song can grow louder or fade away, and that is called dynamics. Loud, soft, and all the steps between.
+- S1256-6: [whispering] Ana sang to her doll, soft as a whisper. [a pot lid banging] Then she marched with a pot lid, loud as a drum. Both were right.
+- S1256-7: [slowly, warmly] Loud and soft is dynamics. A song can grow louder or fade.
 
 ### The quiet tablet (S2702, tell-and-show)
 

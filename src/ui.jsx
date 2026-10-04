@@ -8197,6 +8197,8 @@ function EduSphereScreens() {
         <h1 style={{ fontSize: 26, margin: '14px 0 22px', textAlign: 'center' }}>{titleCase(mod.title)}</h1>
         <div style={{ ...card }} data-tour="lesson-card">
           {mod.lesson.paragraphs.map((t, i) => <RichText key={i} text={mod.lesson.prose ? t : formatTeachingText(t)} size={17} lineGap={12} />)}
+          {/* Lesson pictures (pass JO): where a real picture teaches better than words, like the Liberty Bell's crack or the plant parts we eat. P serials live in art/stories with the story art. */}
+          {(mod.lesson.pictures || []).length > 0 && <div data-lesson-pictures="" style={{ display: 'grid', gridTemplateColumns: `repeat(auto-fit, minmax(${mod.lesson.pictures.length > 1 ? 150 : 220}px, 1fr))`, gap: 10, margin: '2px 0 12px' }}>{mod.lesson.pictures.map((pic) => <StoryArt key={pic.serial} serial={pic.serial} alt={pic.alt} />)}</div>}
           <div style={{ background: C.greenSoft, borderRadius: 10, padding: 14 }}>
             <Picture visual={wayVisual(mod.lesson.example, anotherWay)} />
             {mod.lesson.example.formula && <p style={{ margin: '10px 0 0', fontSize: 17, fontWeight: 700, textAlign: 'center' }}>{mod.lesson.example.formula}</p>}

@@ -3919,12 +3919,13 @@ function GRADE1_SCIENCE_MODULES() { return [
     tagline: 'The sun comes back every day',
     requires: ['day-and-night'],
     lesson: {
+      pictures: [{ serial: 'P6', alt: 'The moon\'s shapes, from a thin curve to half to full' }],
       paragraphs: ['The sun comes up every morning and goes down every night. The moon changes shape a little each night.', 'The pattern repeats.'],
       keyIdea: 'The sun and moon follow patterns that repeat.',
       example: { kind: 'icon', name: 'moon', caption: 'The moon.' },
       script: [
         { say: 'The sun comes up every morning.', show: { kind: 'icon', name: 'sun' } },
-        { say: 'The moon comes out at night, and its shape changes.', show: { kind: 'icon', name: 'moon' } },
+        { say: 'We often see the moon at night, and its shape changes.', show: { kind: 'icon', name: 'moon' } },
         { say: 'The sun comes back every day. That is a pattern.', show: { kind: 'icon', name: 'sun' } },
         { say: 'The sun comes up in the morning and goes down in the evening.', show: { kind: 'daynight' } },
       ],
@@ -3938,6 +3939,7 @@ function GRADE1_SCIENCE_MODULES() { return [
     title: 'Water changes',
     tagline: 'Ice, water, steam',
     lesson: {
+      pictures: [{ serial: 'P12', alt: 'Ice, water and steam' }],
       paragraphs: ['Ice is cold and hard. Warm it and it melts into water.', 'Heat water a lot and it turns to steam.'],
       keyIdea: 'Cold makes ice. Heat melts it back to water.',
       example: { kind: 'icon', name: 'ice', caption: 'Ice.' },
@@ -3957,14 +3959,15 @@ function GRADE1_SCIENCE_MODULES() { return [
     tagline: 'Food, water, a home',
     requires: ['what-plants-need'],
     lesson: {
-      paragraphs: ['A fish needs water to live in. A bird needs a tree for its nest.', 'Every animal needs food, water and a place to live.'],
+      pictures: [{ serial: 'P7', alt: 'Animal homes, a pond, a nest in a tree, a nest in the reeds and a burrow' }],
+      paragraphs: ['A fish needs water to live in. Many birds build a nest in a tree.', 'Every animal needs food, water and a place to live.'],
       keyIdea: 'Animals need food, water and a home.',
       example: { kind: 'icon', name: 'fish', caption: 'A fish.' },
       script: [
         { say: 'A fish lives in water.', show: { kind: 'icon', name: 'fish' } },
-        { say: 'A bird makes its home in a tree.', show: { kind: 'icon', name: 'tree' } },
-        { say: 'Every animal needs a drop of water to drink.', show: { kind: 'icon', name: 'drop' } },
-        { say: 'A fish lives in the water. A bird lives in the trees.', show: { kind: 'flow', steps: ['fish', 'water'] } },
+        { say: 'Many birds make their homes in trees.', show: { kind: 'icon', name: 'tree' } },
+        { say: 'Every animal needs water, like this drop.', show: { kind: 'icon', name: 'drop' } },
+        { say: 'A fish lives in the water. Many birds live in the trees.', show: { kind: 'flow', steps: ['fish', 'water'] } },
       ],
     },
     sources: ['Aligned with Texas TEKS 1.9A (identify basic needs of plants and animals) and NGSS 1-LS1-1 (how plants and animals use their external parts to help them survive).'],
@@ -4954,7 +4957,7 @@ function GRADE1_READING_MODULES() { return [
     lesson: {
       paragraphs: [
         'Sometimes two letters make one sound.\n[[s + h = sh, as in ship]]\n[[c + h = ch, as in chip]]\n[[t + h = th, as in thin]]',
-        'Look for the pair at the start or the end of a word. When you see the two letters together, say the one sound, not two.',
+        'Look for the pair at the start or the end of a word. When you see the two letters together, say the one sound, not two. Th can sound soft, as in thin, or buzzy, as in this.',
       ],
     },
     sources: ['Aligned with Texas TEKS 1.2B.ii (decode words with consonant digraphs) and Common Core RF.1.3.A.'],
@@ -8969,9 +8972,10 @@ function GRADE1_CIVICS_MODULES() { return [
     tagline: 'Mayor, governor, president',
     requires: ['our-flag-and-holidays'],
     lesson: {
+      pictures: [{ serial: 'P4', alt: 'The Texas State Capitol in Austin, with its pink granite dome' }, { serial: 'P5', alt: 'The White House in Washington, D.C.' }],
       paragraphs: ['A mayor leads a city. A governor leads a state. A president leads the whole country.', 'The capital of Texas is Austin. The capital of the United States is Washington, D.C.'],
       keyIdea: 'Mayor for the city, governor for the state, president for the country.',
-      example: { kind: 'map', region: 'texas', spots: [[92, 72, 'Austin']], caption: 'Austin is where Texas makes its state laws; the capital of the country is farther away.' , formula: 'Austin' },
+      example: { kind: 'map', region: 'texas', spots: [[92, 72, 'Austin']], caption: 'Austin is where Texas makes its state laws, and the capital of the country is farther away.' , formula: 'Austin' },
       script: [
         { say: 'A mayor leads a city. A governor leads a state. A president leads the whole country.', show: null },
         { say: 'Austin is the capital of Texas.', show: { kind: 'letters', text: 'Austin' } },
@@ -8988,8 +8992,8 @@ function GRADE1_CIVICS_MODULES() { return [
     tagline: 'Things you buy and work done for you',
     requires: ['leaders-near-and-far'],
     lesson: {
-      paragraphs: ['A good is a thing you can hold, like bread or shoes.', 'A service is work someone does for you, like a haircut or a bus ride.', 'People earn money by working. Then they trade the money for goods and services.'],
-      keyIdea: 'Goods are things. Services are work done for you. Money comes from work.\nShoes, apples, books, toys, bikes, shirts, balls and bread are goods. Haircuts, teaching, the mail, repairs, bus rides, cleaning, checkups and tutoring are services.',
+      paragraphs: ['A good is a thing you can hold, like bread or shoes.', 'A service is work someone does for you, like a haircut or a bus ride.', 'Shoes, apples, books, toys, bikes, shirts, balls and bread are goods. Haircuts, teaching, the mail, repairs, bus rides, cleaning, checkups and tutoring are services.', 'People earn money by working. Then they trade the money for goods and services.'],
+      keyIdea: 'Goods are things. Services are work done for you. Money comes from work.',
       example: { kind: 'letters', text: '10 cents', caption: 'A dime is worth ten cents.' },
       script: [
         { say: 'Bread is a good. You can hold it.', show: null },
@@ -9009,7 +9013,7 @@ function GRADE1_CIVICS_MODULES() { return [
     lesson: {
       paragraphs: ['A map is a flat drawing of a place. A globe is a round model of the whole earth.', 'A compass rose shows north, south, east and west. The sun rises in the east.', 'A map key tells you what the little pictures mean.'],
       keyIdea: 'North, south, east, west. The sun rises in the east.',
-      example: { kind: 'compass', caption: 'North, south, east, west: a compass rose tells a map which way is which.' , formula: 'N, S, E, W' },
+      example: { kind: 'compass', caption: 'North, south, east, west. A compass rose tells a map which way is which.' , formula: 'N, S, E, W' },
       script: [
         { say: 'North, south, east and west. Those are the four directions.', show: { kind: 'letters', text: 'N S E W' } },
         { say: 'The sun rises in the east every morning.', show: { kind: 'icon', name: 'sun' } },
@@ -9047,6 +9051,7 @@ function GRADE1_CIVICS_MODULES() { return [
     tagline: 'A bell, a statue, a mission and a flag',
     requires: ['signs-around-town'],
     lesson: {
+      pictures: [{ serial: 'P1', alt: 'The Liberty Bell, with its long crack' }, { serial: 'P2', alt: 'The Statue of Liberty holding up her torch' }, { serial: 'P3', alt: 'The Alamo, the old mission in San Antonio' }],
       paragraphs: ['A symbol stands for something bigger. The Liberty Bell is a big bell with a crack, in Philadelphia. The Statue of Liberty is a green statue holding a torch, in New York.', 'The Alamo is an old mission in San Antonio where Texans fought. Our flag has 50 stars and 13 stripes.'],
       keyIdea: 'The Liberty Bell, the Statue of Liberty, the Alamo and the flag stand for our country and our state.',
       example: { kind: 'flag', caption: 'Thirteen stripes for the first thirteen colonies.' , formula: '13 stripes' },
@@ -9190,9 +9195,9 @@ function MUSIC1_MODULES() { return [
     tagline: 'The pulse under every song',
     requires: [],
     lesson: {
-      paragraphs: ['Every song has a steady pulse under it, like a ticking clock. That is the beat.\nYou can keep it with your hands, clapping, or tap it or march to it: left, right, left, right, on the pulse.', 'The words change and the tune goes up and down, but the beat stays even underneath.', 'Find the beat and you can join any song.'],
+      paragraphs: ['Every song has a steady pulse under it, like a ticking clock. That is the beat.', 'You can keep it with your hands, clapping, or tap it or march to it, left, right, left, right, on the pulse.', 'The words change and the tune goes up and down, but the beat stays even underneath.', 'Find the beat and you can join any song.'],
       keyIdea: 'The beat is the even pulse under a song, like a clock. Clap it, tap it, march to it.',
-      example: { kind: 'flow', steps: ['tick', 'tick', 'tick', 'tick'], caption: 'Four even beats, like a clock: the pulse a song is built on.',
+      example: { kind: 'flow', steps: ['tick', 'tick', 'tick', 'tick'], caption: 'Four even beats, like a clock. That is the pulse a song is built on.',
         another: ['Put a hand on your chest and feel your heartbeat. That steady thump is a beat too, and a song has one just like it.',
           { text: 'Walking is a beat: left, right, left, right, always even. Walk to a song and your feet find its pulse by themselves.', visual: { kind: 'loop', steps: ['left', 'right', 'left', 'right'] } },
           'The beat is not the words and not the tune. Hum a song with your mouth closed and tap the table: the tapping is the beat.'] },
@@ -9207,9 +9212,9 @@ function MUSIC1_MODULES() { return [
     tagline: 'A bird and a cow',
     requires: ['the-steady-beat'],
     lesson: {
-      paragraphs: ['A bird sings high. A cow moos low. Thunder rumbles low; a whistle and a squeak are high.\nHigh and low is called pitch.', 'On a piano, the keys go from low to high, left to right: the high notes are to the right. Walk your fingers right and the notes climb.', 'Every tune is a walk up and down between high and low.'],
+      paragraphs: ['A bird sings high. A cow moos low. Thunder rumbles low, and a whistle and a squeak are high.', 'High and low is called pitch.', 'On a piano, the keys go from low to high, left to right, so the high notes are to the right. Walk your fingers right and the notes climb.', 'Every tune is a walk up and down between high and low.'],
       keyIdea: 'High and low is pitch. On a piano, right is higher.',
-      example: { kind: 'twoway', a: 'a bird', b: 'a cow', top: 'high', bottom: 'low', caption: 'Two animals, two pitches: the bird high, the cow low.',
+      example: { kind: 'twoway', a: 'a bird', b: 'a cow', top: 'high', bottom: 'low', caption: 'Two animals, two pitches. The bird is high, and the cow is low.',
         another: ['Slide your voice from a growl to a squeak. That slide is pitch going from low to high, and you just played every note in between.',
           { text: 'A piano is a staircase lying on its side: each key to the right is one step up. A tune climbs and descends the stairs.', visual: { kind: 'stack', levels: ['high: the right end', 'middle', 'low: the left end'] } },
           'Big things sound low and small things sound high: a tuba and a piccolo, a cow and a bird, a drum and a bell.'] },
@@ -9224,9 +9229,9 @@ function MUSIC1_MODULES() { return [
     tagline: 'A lullaby and a parade',
     requires: ['high-and-low'],
     lesson: {
-      paragraphs: ['A lullaby is sung softly so a baby can drift off. A drum in a parade is loud so it can be heard down the street.\nLoud and soft is called dynamics.', 'A song can change: growing louder and louder toward the end, or fading to a whisper. Fading is the loudness getting softer: a change in dynamics, not in pitch or speed.', 'Loud, soft, growing, fading: the volume of a song is one of its tools.'],
+      paragraphs: ['A lullaby is sung softly so a baby can drift off. A drum in a parade is loud so it can be heard down the street.', 'Loud and soft is called dynamics.', 'A song can change, growing louder and louder toward the end or fading to a whisper. Fading is the loudness getting softer, which is a change in dynamics, not in pitch or speed.', 'Loud, soft, growing and fading are tools a song can use.'],
       keyIdea: 'Loud and soft is dynamics. A song can grow louder or fade.',
-      example: { kind: 'twoway', a: 'a lullaby', b: 'a parade drum', top: 'soft', bottom: 'loud', caption: 'Two songs, two dynamics: soft for sleeping, loud for the street.',
+      example: { kind: 'twoway', a: 'a lullaby', b: 'a parade drum', top: 'soft', bottom: 'loud', caption: 'Two songs, two dynamics. Soft is for sleeping, and loud is for the street.',
         another: ['Turn the volume knob on a radio slowly up. The song does not change; only how loud it is. That knob is dynamics.',
           { text: 'A whisper and a shout are the same words at two dynamics. Sing a line both ways and hear that the tune never moved.', visual: { kind: 'flow', steps: ['whisper', 'talk', 'shout'] } },
           'Growing louder builds excitement; fading out says goodbye. Listen for how a song ends and you will hear the dynamics doing the talking.'] },
@@ -10074,6 +10079,7 @@ function ARTSK_MODULES() { return [
     tagline: 'Five voices, three families, and how to listen',
     requires: ['beat-and-sound'],
     lesson: {
+      pictures: [{ serial: 'P10', alt: 'Strings, wind and percussion instruments' }],
       paragraphs: ['You have five voices. A singing voice. A speaking voice. A whispering voice. A calling voice, for across the yard. And an inner voice, the one you hear only inside your head. A grown-up\'s singing voice sounds lower than a child\'s.', 'Instruments come in families. String instruments, like a guitar or a violin, have strings you pluck or bow. Wind instruments, like a flute or a trumpet, sound when you blow. Percussion instruments, like a drum or a shaker, sound when you hit or shake them.', 'Every family has its own sound, and you can tell them apart with your eyes closed.', 'People sing songs and play music games everywhere: rhymes, folk songs, songs for holidays. When someone plays for you, be a good audience: sit still, listen with your ears, and clap at the end.'],
       keyIdea: 'Five voices: singing, speaking, whispering, calling and inner. Three instrument families: strings, wind and percussion. A good audience listens and claps at the end.',
       example: { kind: 'flow', steps: ['strings: pluck or bow', 'wind: blow', 'percussion: hit or shake'], caption: 'Each family makes its sound a different way.',
@@ -10470,6 +10476,7 @@ function AGRIK_MODULES() { return [
     tagline: 'Farmers grow plants, and we eat their roots, leaves, flowers, fruits and seeds',
     requires: [],
     lesson: {
+      pictures: [{ serial: 'P8', alt: 'Plant parts we eat, a root, leaves, flower buds, a fruit and seeds' }],
       paragraphs: ['Farmers grow plants for us to eat. A plant has parts: roots, a stem, leaves, flowers and fruits. We eat every one of those parts.', 'A carrot is a root, and it grows under the ground. Lettuce is leaves. Broccoli is a bunch of tiny flower buds, picked before they open. Asparagus is a young stem.', 'An apple is a fruit, and its seeds are inside.', 'Corn and wheat are seeds. Wheat seeds are ground into flour for our bread, and corn seeds pop into popcorn. Cows eat plants too, like grass and hay.'],
       keyIdea: 'Farmers grow plants for food. We eat roots like carrots, leaves like lettuce, flower buds like broccoli, fruits like apples, and seeds like corn and wheat.',
       example: { kind: 'flow', steps: ['a carrot: a root', 'lettuce: leaves', 'broccoli: flower buds', 'an apple: a fruit'], caption: 'Plant parts we eat.',
@@ -10487,6 +10494,7 @@ function AGRIK_MODULES() { return [
     tagline: 'A seed grows into a plant, and a plant needs air, sunlight, water, soil and room',
     requires: ['plants-we-eat-k'],
     lesson: {
+      pictures: [{ serial: 'P9', alt: 'A bean\'s life, from seed to seedling to plant to pod' }],
       paragraphs: ['A plant starts as a seed. The seed opens, and a tiny root goes down into the soil. A small shoot comes up, and now it is a seedling.', 'The seedling grows into a plant. The plant grows flowers, and the flowers make fruit with new seeds inside. Seed, seedling, plant, flower, fruit!', 'A baby bean plant looks like its parent, with the same kind of leaves.', 'Plants need air, sunlight, water, nutrients in the soil, and room to grow. Nutrients are plant food. Farmers plant seeds apart, so each plant has room.'],
       keyIdea: 'A seed grows into a seedling, then a plant, then flowers and fruit with new seeds. Plants need air, sunlight, water, nutrients in the soil, and room to grow.',
       example: { kind: 'flow', steps: ['seed', 'seedling', 'plant', 'flower', 'fruit'], caption: 'The life of a plant.',
@@ -10504,6 +10512,7 @@ function AGRIK_MODULES() { return [
     tagline: 'What farm animals need, the body parts that help them, and what they give us',
     requires: ['seed-to-plant-k'],
     lesson: {
+      pictures: [{ serial: 'P11', alt: 'A cow\'s ears, a hen\'s beak and a goat\'s lips at work' }],
       paragraphs: ['Farm animals need air, water, food, space, and shelter. Shelter is a barn or a shed. It keeps them dry in the rain and cool on a hot day.', 'Animals have body parts that help them. A cow can see almost all the way around, and her ears turn to hear. A hen uses her beak to pick up seeds.', 'A goat grabs leaves with her lips, and a horse has strong legs to run.', 'Farm animals give us things we need. Cows give milk, and hens lay eggs. Sheep grow wool, and the wool is made into warm sweaters. Farmers take care of them every day.'],
       keyIdea: 'Farm animals need air, water, food, space and shelter. Body parts help them see, hear, grab and move. Cows give milk, hens lay eggs, and sheep grow wool.',
       example: { kind: 'flow', steps: ['air and water', 'food', 'space', 'shelter'], caption: 'What every farm animal needs.',
@@ -14739,8 +14748,8 @@ Object.assign(GENERATORS, {
   },
   's1-when-sun': (rng) => {
     const sun = randInt(rng, 0, 1) === 1;
-    return { type: 'choice', story: null, prompt: sun ? 'When does the sun come up?' : 'When does the moon come out?', choices: ['In the morning', 'At night'], answer: sun ? 'In the morning' : 'At night',
-      explain: sun ? 'The sun comes up every morning.' : 'The moon comes out at night.', visual: { kind: 'icon', name: sun ? 'sun' : 'moon' }, explainVisual: null };
+    return { type: 'choice', story: null, prompt: sun ? 'When does the sun come up?' : 'When do we often see the moon?', choices: ['In the morning', 'At night'], answer: sun ? 'In the morning' : 'At night',
+      explain: sun ? 'The sun comes up every morning.' : 'We often see the moon at night. Sometimes it is up in the day too.', visual: { kind: 'icon', name: sun ? 'sun' : 'moon' }, explainVisual: null };
   },
   's1-pattern-next': (rng) => {
     const dayFirst = randInt(rng, 0, 1) === 1;
@@ -14750,7 +14759,7 @@ Object.assign(GENERATORS, {
   's1-tap-sky-time': (rng) => {
     const night = randInt(rng, 0, 1) === 1;
     return { type: 'choice', story: null, prompt: night ? 'It is night. Tap the sun or the moon that you see.' : 'It is morning. Tap the sun or the moon that you see.', choices: shuffle(rng, ['icon:sun', 'icon:moon']), answer: night ? 'icon:moon' : 'icon:sun',
-      explain: night ? 'At night you see the moon.' : 'In the morning you see the sun.', visual: null, explainVisual: null };
+      explain: night ? 'At night the sun is down, so you might see the moon.' : 'In the morning you see the sun.', visual: null, explainVisual: null };
   },
   's1-heat-or-cold': (rng) => {
     const ice = randInt(rng, 0, 1) === 1;
@@ -14772,7 +14781,7 @@ Object.assign(GENERATORS, {
   's1-where-it-lives': (rng) => {
     const fish = randInt(rng, 0, 1) === 1;
     return { type: 'choice', story: null, prompt: fish ? 'Look at the fish. Where does it live?' : 'Look at the bird. Where does it make its nest?', choices: shuffle(rng, ['In the water', 'In a tree']), answer: fish ? 'In the water' : 'In a tree',
-      explain: fish ? 'A fish lives in the water.' : 'A bird makes its nest in a tree.', visual: { kind: 'icon', name: fish ? 'fish' : 'bird' }, explainVisual: null };
+      explain: fish ? 'A fish lives in the water.' : 'Many birds make their nests in trees.', visual: { kind: 'icon', name: fish ? 'fish' : 'bird' }, explainVisual: null };
   },
   's1-tap-home': (rng) => {
     const fish = randInt(rng, 0, 1) === 1;
@@ -15488,7 +15497,7 @@ Object.assign(GENERATORS, {
     const [a, b] = shuffle(rng, DIGRAPH_WORDS.filter((x) => x[1] === pair)).slice(0, 2).map((x) => x[0]);
     const odd = pick(rng, DIGRAPH_WORDS.filter((x) => x[1] !== pair))[0];
     return { type: 'choice', story: null, prompt: `Two of these have ${pair}. Which one does not?`, choices: shuffle(rng, [a, b, odd]), answer: odd,
-      explain: `${capFirst(a)} and ${b} have ${pair}. ${capFirst(odd)} does not.`, visual: null, explainVisual: null };
+      explain: `${capFirst(a)} and ${b} have ${pair}. The word ${odd} does not.`, visual: null, explainVisual: null };
   },
   'r1-add-e': (rng) => {
     const [short, long] = pick(rng, SILENT_E);
@@ -15509,7 +15518,7 @@ Object.assign(GENERATORS, {
   'r1-pick-long': (rng) => {
     const [short, long] = pick(rng, SILENT_E);
     return { type: 'choice', story: null, prompt: 'Which word has a vowel that says its name?', choices: shuffle(rng, [long, short]), answer: long,
-      explain: `${long} has the silent e. ${short} does not.`, visual: null, explainVisual: null };
+      explain: `${capFirst(long)} has the silent e. The word ${short} does not.`, visual: null, explainVisual: null };
   },
   'r1-take-e': (rng) => {
     const [short, long] = pick(rng, SILENT_E);
@@ -15538,7 +15547,7 @@ Object.assign(GENERATORS, {
   'r1-sentence-count': (rng) => {
     const n = randInt(rng, 1, 5); const thing = pick(rng, ['cats', 'hats', 'cups', 'pens', 'dogs']);
     return { type: 'choice', story: null, prompt: 'Read the sentence. How many?', choices: shuffle(rng, distinctCounts(rng, 3, 6, n).map(String)), answer: String(n),
-      explain: `The sentence says ${NUMBER_WORDS[n - 1]} ${thing}. That is ${n}.`, visual: { kind: 'letters', text: `I see ${NUMBER_WORDS[n - 1]} ${thing}.` }, explainVisual: null };
+      explain: `The sentence says ${NUMBER_WORDS[n - 1]} ${n === 1 ? thing.slice(0, -1) : thing}. That is ${n}.`, visual: { kind: 'letters', text: `I see ${NUMBER_WORDS[n - 1]} ${n === 1 ? thing.slice(0, -1) : thing}.` }, explainVisual: null };
   },
   'r1-sentence-yes-no': (rng) => {
     const sh = pick(rng, ['circle', 'square', 'triangle']); const c = pick(rng, COLOUR_WORDS); const yes = randInt(rng, 0, 1) === 1;
@@ -15601,7 +15610,7 @@ Object.assign(GENERATORS, {
   'g1-which-teen': (rng) => {
     const n = randInt(rng, 11, 19);
     return { type: 'choice', story: `Here is a full ten.`, prompt: `Which group of extra ones makes ${n}?`, choices: shuffle(rng, [...new Set([`dots:${n - 10}`, `dots:${Math.max(1, n - 11)}`, `dots:${Math.min(9, n - 9)}`])]), answer: `dots:${n - 10}`,
-      explain: `${n} is ten and ${n - 10}. The ten is the frame; these are the ${n - 10} more.`, visual: { kind: 'tenframe', filled: 10 }, explainVisual: null };
+      explain: `${n} is ten and ${n - 10}. The ten is the frame, and these are the ${n - 10} more.`, visual: { kind: 'tenframe', filled: 10 }, explainVisual: null };
   },
   'g1-teen-after': (rng) => {
     const n = randInt(rng, 10, 18);
@@ -15621,7 +15630,7 @@ Object.assign(GENERATORS, {
   'g1-make-ten-add': (rng) => {
     const a = randInt(rng, 6, 9); const b = randInt(rng, 10 - a + 1, 9);
     const toTen = 10 - a; const rest = b - toTen;
-    return { type: 'choice', story: `Make ten first: ${a} + ${toTen} = 10. Then add the rest.`, prompt: `What is ${a} + ${b}?`, choices: nearNumbers(rng, a + b, 10, 20), answer: String(a + b),
+    return { type: 'choice', story: `Make ten first. ${a} + ${toTen} = 10. Then add the rest.`, prompt: `What is ${a} + ${b}?`, choices: nearNumbers(rng, a + b, 10, 20), answer: String(a + b),
       explain: `${a} + ${toTen} = 10, then 10 + ${rest} = ${a + b}.`, visual: { kind: 'tenframe', filled: a }, explainVisual: null };
   },
   'g1-add-pic': (rng) => {
@@ -16621,22 +16630,22 @@ Object.assign(GENERATORS, {
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
   'mu1-beat': (rng) => {
-    const Q = [['Which body part can keep a beat?', ['your hands, clapping', 'your eyes', 'your nose'], 'your hands, clapping', 'Clap it, tap it, march to it. Hands and feet keep a beat.'], ['Does the beat change when the words change?', ['no, it stays even', 'yes, it stops', 'yes, it gets higher'], 'no, it stays even', 'Words and tune change; the beat stays even underneath.'],['What is the steady beat of a song?', ['the even pulse you can clap', 'the words', 'the loud part'], 'the even pulse you can clap', 'The beat is the steady pulse under a song, like a clock. You can clap it, tap it or march to it.'],
+    const Q = [['Which body part can keep a beat?', ['your hands, clapping', 'your eyes', 'your nose'], 'your hands, clapping', 'Your hands keep the beat when you clap. Your feet keep it when you march.'], ['Does the beat change when the words change?', ['no, it stays even', 'yes, it stops', 'yes, it gets higher'], 'no, it stays even', 'Words and tune change, but the beat stays even underneath.'],['What is the steady beat of a song?', ['the even pulse you can clap', 'the words', 'the loud part'], 'the even pulse you can clap', 'The beat is the steady pulse under a song, like a clock. You can clap it, tap it or march to it.'],
       ['Which keeps a steady beat?', ['a ticking clock', 'a barking dog', 'a page turning'], 'a ticking clock', 'A clock ticks evenly. That evenness is what a beat is.'],
-      ['You march to a song. What are your feet keeping?', ['the beat', 'the melody', 'the words'], 'the beat', 'Left, right, left, right on the pulse: your feet are keeping the beat.']];
+      ['You march to a song. What are your feet keeping?', ['the beat', 'the melody', 'the words'], 'the beat', 'Left, right, left, right on the pulse. Your feet are keeping the beat.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
   'mu1-high-low': (rng) => {
-    const Q = [['Which sound is high?', ['a whistle', 'thunder', 'a truck engine'], 'a whistle', 'A whistle is high; thunder and engines are low.'], ['How do big things usually sound?', ['low', 'high', 'silent'], 'low', 'A tuba, a cow and a drum are big and low. Small things are high.'],['A bird sings and a cow moos. Which sound is higher?', ['the bird', 'the cow', 'they are the same'], 'the bird', 'A bird\'s song is high; a cow\'s moo is low. High and low is called pitch.'],
+    const Q = [['Which sound is high?', ['a whistle', 'thunder', 'a truck engine'], 'a whistle', 'A whistle is high, and thunder and engines are low.'], ['How do big things usually sound?', ['low', 'high', 'silent'], 'low', 'A tuba, a cow and a drum are big and low. Small things are high.'],['A bird sings and a cow moos. Which sound is higher?', ['the bird', 'the cow', 'they are the same'], 'the bird', 'A bird\'s song is high; a cow\'s moo is low. High and low is called pitch.'],
       ['Which is a low sound?', ['thunder', 'a whistle', 'a squeak'], 'thunder', 'Thunder rumbles low. Whistles and squeaks are high.'],
       ['On a piano, where are the high notes?', ['to the right', 'to the left', 'in the middle only'], 'to the right', 'Piano keys go low to high from left to right. Walk your fingers right and the notes climb.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
   'mu1-loud-soft': (rng) => {
-    const Q = [['Which is a soft sound?', ['a whisper', 'a fire truck', 'a cheering crowd'], 'a whisper', 'A whisper is soft. Sirens and crowds are loud.'], ['A song fades away at the end. What is fading?', ['the loudness', 'the pitch', 'the words'], 'the loudness', 'Fading is getting softer: a change in dynamics.'],['A lullaby should be sung how?', ['softly', 'loudly', 'as fast as possible'], 'softly', 'A lullaby is soft so a baby can drift off. Loud and soft is called dynamics.'],
-      ['Which is a loud sound?', ['a drum in a parade', 'a whisper', 'a cat purring'], 'a drum in a parade', 'A parade drum is loud on purpose: it must be heard down the street.'],
+    const Q = [['Which is a soft sound?', ['a whisper', 'a fire truck', 'a cheering crowd'], 'a whisper', 'A whisper is soft. Sirens and crowds are loud.'], ['A song fades away at the end. What is fading?', ['the loudness', 'the pitch', 'the words'], 'the loudness', 'Fading is getting softer, which is a change in dynamics.'],['A lullaby should be sung how?', ['softly', 'loudly', 'as fast as possible'], 'softly', 'Softly. A lullaby is soft so a baby can drift off to sleep.'],
+      ['Which is a loud sound?', ['a drum in a parade', 'a whisper', 'a cat purring'], 'a drum in a parade', 'A parade drum is loud on purpose, so it can be heard down the street.'],
       ['A song gets louder and louder. What is that called?', ['growing louder', 'getting higher', 'getting faster'], 'growing louder', 'Growing louder is a change in dynamics, not pitch or speed.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
@@ -16852,7 +16861,7 @@ Object.assign(GENERATORS, {
   // Economics and personal finance, K to 2 (2026-09-29, pass FV): spoken questions, tapped answers, coins counted where there is counting.
   'ek-wants': (rng) => {
     const Q = [['Which one is a need?', ['water', 'a toy', 'candy'], 'water', 'Food, water, clothes and a home are needs. You must have them to live.'],
-      ['Which one is a want?', ['a new game', 'food', 'a home'], 'a new game', 'A want is nice to have, not needed to live.'],
+      ['Which one is a want?', ['a new game', 'food', 'a home'], 'a new game', 'A new game is a want. It is nice to have, but you can live without it.'],
       ['Which comes first, needs or wants?', ['needs', 'wants', 'neither'], 'needs', 'Needs first, then wants, if there is money left.'],
       ['You pick the ball instead of the crayons. What is that?', ['a choice', 'a gift', 'income'], 'a choice', 'Picking one and letting the other go is a choice.'],
       ['When you choose one thing, what happens to the other?', ['you give it up', 'you get it too', 'it costs less'], 'you give it up', 'The thing you did not pick is what you give up, for now.'],
@@ -17047,7 +17056,7 @@ Object.assign(GENERATORS, {
   // right answer is a phrase the lesson said first, which the untaught-answer check proves.
   // ---------------------------------------------------------------------------------------------------------------
   'spk-listen': (rng) => {
-    const Q = [['Listening is what kind of job?', ['a whole-body job', 'an ear job only', 'a hand job only'], 'a whole-body job', 'You listen with your eyes, ears, hands, feet and mind.'],
+    const Q = [['Listening is what kind of job?', ['a whole-body job', 'an ear job only', 'a hand job only'], 'a whole-body job', 'Listening is a whole-body job. You listen with your eyes, ears, hands, feet and mind.'],
       ['Where do your eyes look when you listen?', ['at the person', 'at the floor', 'at your lunch'], 'at the person', 'Your eyes look at the person.'],
       ['What do your hands do when you listen?', ['stay still', 'wave', 'clap'], 'stay still', 'Your hands stay still, and so do your feet.'],
       ['If you do not understand, what do you do?', ['ask', 'hide', 'guess'], 'ask', 'Asking is how listeners get it right.'],
@@ -17068,9 +17077,9 @@ Object.assign(GENERATORS, {
   },
   'spk-voice': (rng) => {
     const Q = [['How loud do you talk?', ['loud enough for the last friend', 'as quiet as a mouse', 'as loud as a truck'], 'loud enough for the last friend', 'If the back friend can hear you, everyone can.'],
-      ['How fast do you talk?', ['slow enough to follow', 'as fast as you can', 'not at all'], 'slow enough to follow', 'If you go too fast, your friends cannot keep up.'],
+      ['How fast do you talk?', ['slow enough to follow', 'as fast as you can', 'not at all'], 'slow enough to follow', 'Talk slow enough to follow. If you go too fast, your friends cannot keep up.'],
       ['Which is a whole word?', ['cat', 'ca', 'c'], 'cat', 'Say the whole word: cat, not ca.'],
-      ['A good telling has how many parts?', ['three', 'ten', 'one'], 'three', 'What it is, what it does, and why you like it.'],
+      ['A good telling has how many parts?', ['three', 'ten', 'one'], 'three', 'Three parts. Say what it is, what it does, and why you like it.'],
       ['This is my dog. He is brown and likes to dig. What comes next?', ['why you like him', 'his shoe size', 'the end'], 'why you like him', 'Next, say why you like him. I like him because he is funny.'],
       ['After you hold up your picture, where do you look?', ['at your friends', 'at the floor', 'at the door'], 'at your friends', 'Your friends are the ones you are talking to.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
@@ -17089,10 +17098,10 @@ Object.assign(GENERATORS, {
   // Psychology, K to 2 (2026-09-30, pass GP): spoken questions with tapped answers, every answer said in its lesson first.
   'pyk-brain': (rng) => {
     const Q = [['What is the boss of you?', ['your brain', 'your shoe', 'your lunch'], 'your brain', 'It moves your legs and picks your words.'],
-      ['How many senses does your brain get its news from?', ['five', 'two', 'ten'], 'five', 'Eyes, ears, nose, tongue and skin.'],
+      ['How many senses does your brain get its news from?', ['five', 'two', 'ten'], 'five', 'Five senses. Your eyes, ears, nose, tongue and skin send your brain the news.'],
       ['What do your ears do?', ['hear', 'see', 'taste'], 'hear', 'Eyes see. Ears hear.'],
       ['What does your tongue do?', ['tastes', 'hears', 'smells'], 'tastes', 'Your tongue tastes. Your skin feels.'],
-      ['In the dark, a coat on a hook can look like what?', ['a monster', 'a cake', 'a friend'], 'a monster', 'Turn on the light, and it is a coat.'],
+      ['In the dark, a coat on a hook can look like what?', ['a monster', 'a cake', 'a friend'], 'a monster', 'It can look like a monster. Turn on the light, and your brain sees it is a coat.'],
       ['About how many hours of sleep does a child your age need?', ['ten to twelve', 'two', 'twenty'], 'ten to twelve', 'About ten to twelve hours each night. A tired brain gets grumpy and forgets things.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
@@ -17100,8 +17109,8 @@ Object.assign(GENERATORS, {
   'pyk-memory': (rng) => {
     const Q = [['To remember something, what do you do first?', ['look and listen', 'run', 'close your eyes'], 'look and listen', 'If you are looking at something else, it does not go in.'],
       ['What puts a memory in deeper?', ['saying it again', 'whispering once', 'forgetting it'], 'saying it again', 'Saying it again, out loud, puts it in deeper.'],
-      ['Three words today and three tomorrow beats what?', ['all of them at once', 'nothing', 'a nap'], 'all of them at once', 'A little every day helps.'],
-      ['A brain can hold how many things at a time?', ['only a few', 'a thousand', 'none'], 'only a few', 'So we break big things into small pieces.'],
+      ['Three words today and three tomorrow beats what?', ['all of them at once', 'nothing', 'a nap'], 'all of them at once', 'It beats learning all of them at once. A little every day helps you remember.'],
+      ['A brain can hold how many things at a time?', ['only a few', 'a thousand', 'none'], 'only a few', 'Only a few things at a time, so we break big things into small pieces.'],
       ['How do you say a phone number?', ['in three small pieces', 'all at once', 'backwards'], 'in three small pieces', 'Small pieces are easier to hold in your head.'],
       ['Your brain forgets. Is that normal?', ['yes', 'no', 'only on Mondays'], 'yes', 'Forgetting just means say it again.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
@@ -17110,31 +17119,31 @@ Object.assign(GENERATORS, {
   'pyk-feelings': (rng) => {
     const Q = [['Scared says what?', ['be careful', 'eat lunch', 'run fast'], 'be careful', 'Scared is a signal. It says be careful.'],
       ['Angry says what?', ['that is not fair', 'time for bed', 'I am hungry'], 'that is not fair', 'Angry is a signal too. It says that is not fair.'],
-      ['When a big feeling comes, what do you do first?', ['say its name', 'shout', 'hide'], 'say its name', 'Naming it makes it smaller.'],
-      ['After you name a big feeling, what do you do?', ['breathe in slow and out slow', 'jump up and down', 'eat candy'], 'breathe in slow and out slow', 'Or count to ten, or hug someone you love.'],
+      ['When a big feeling comes, what do you do first?', ['say its name', 'shout', 'hide'], 'say its name', 'Say its name first. Naming a big feeling makes it smaller.'],
+      ['After you name a big feeling, what do you do?', ['breathe in slow and out slow', 'jump up and down', 'eat candy'], 'breathe in slow and out slow', 'Breathe in slow and out slow. You can also count to ten, or hug someone you love.'],
       ['Is a feeling a fact?', ['no', 'yes', 'only at night'], 'no', 'You can feel scared and still be safe.'],
       ['Telling a grown-up you trust about a big feeling is what?', ['smart', 'weak', 'silly'], 'smart', 'It is smart, not weak.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
   'pyk-friends': (rng) => {
-    const Q = [['To make a new friend, what do you say first?', ['hello and your name', 'go away', 'nothing'], 'hello and your name', 'Then ask what they like, and ask to play.'],
-      ['A good friend helps you be what?', ['kind and brave', 'mean', 'loud'], 'kind and brave', 'If a friend wants you to be mean, you can say no.'],
+    const Q = [['To make a new friend, what do you say first?', ['hello and your name', 'go away', 'nothing'], 'hello and your name', 'Say hello and your name first. Then ask what they like, and ask to play.'],
+      ['A good friend helps you be what?', ['kind and brave', 'mean', 'loud'], 'kind and brave', 'A good friend helps you be kind and brave. If a friend wants you to be mean, you can say no.'],
       ['Which is a thing a good friend does?', ['takes turns', 'grabs', 'lies'], 'takes turns', 'Say please and thank you. Tell the truth. Take turns.'],
       ['To fix a fight, what do you say?', ['what you feel and what you want', 'you are bad', 'nothing'], 'what you feel and what you want', 'I felt sad when you took the ball, and I want a turn.'],
-      ['After you say what you feel, what do you do?', ['listen', 'walk away', 'shout'], 'listen', 'Then you listen to how they feel.'],
-      ['Everyone is different. How does everyone get treated?', ['with respect', 'with a push', 'with a frown'], 'with respect', 'Kind is the same for everyone.']];
+      ['After you say what you feel, what do you do?', ['listen', 'walk away', 'shout'], 'listen', 'Listen. Then you hear how your friend feels too.'],
+      ['Everyone is different. How does everyone get treated?', ['with respect', 'with a push', 'with a frown'], 'with respect', 'Everyone gets treated with respect, because kind is the same for everyone.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
   // Philosophy, K to 2 (2026-09-29, pass GL): spoken questions with tapped answers, every answer said in its lesson first.
   'pk-wonder': (rng) => {
-    const Q = [['Why is the sky blue? What kind of question is that?', ['a finding question', 'a wondering question', 'a wish'], 'a finding question', 'Someone can tell you, and then you know.'],
-      ['What makes a good friend? What kind of question is that?', ['a wondering question', 'a finding question', 'an order'], 'a wondering question', 'Nobody can just tell you. You think about it.'],
+    const Q = [['Why is the sky blue? What kind of question is that?', ['a finding question', 'a wondering question', 'a wish'], 'a finding question', 'It is a finding question. Someone can tell you the answer, and then you know.'],
+      ['What makes a good friend? What kind of question is that?', ['a wondering question', 'a finding question', 'an order'], 'a wondering question', 'It is a wondering question. Nobody can just tell you, so you think about it.'],
       ['When someone says a word, what can you ask?', ['what do you mean?', 'who cares?', 'what time is it?'], 'what do you mean?', 'Asking what do you mean helps.'],
       ['A toy is a thing you play with. What can you ask about a stick?', ['but what about a stick?', 'is it blue?', 'how much is it?'], 'but what about a stick?', 'Asking but what about helps an idea get better.'],
-      ['Who asked wondering questions all day, long ago?', ['Socrates', 'a robot', 'a king'], 'Socrates', 'He is famous for it. You can wonder too.'],
-      ['Who wrote down the questions Socrates asked?', ['Plato', 'nobody', 'a bird'], 'Plato', 'That is why we still have them.']];
+      ['Who asked wondering questions all day, long ago?', ['Socrates', 'a robot', 'a king'], 'Socrates', 'Socrates did. He lived long ago, and he is famous for his questions.'],
+      ['Who wrote down the questions Socrates asked?', ['Plato', 'nobody', 'a bird'], 'Plato', 'His friend Plato wrote them down. That is why we still have them.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
@@ -17143,7 +17152,7 @@ Object.assign(GENERATORS, {
       ['We should go outside, because my shirt is blue. Is that a reason?', ['no, it is not about going outside', 'yes', 'only on Tuesday'], 'no, it is not about going outside', 'A reason is about the thing.'],
       ['Because I want to is what?', ['a wish', 'a reason', 'a question'], 'a wish', 'A wish is not a reason.'],
       ['Because I said so is what?', ['an order', 'a reason', 'a song'], 'an order', 'An order is not a reason.'],
-      ['What is the best question?', ['how do you know?', 'who is first?', 'is it lunch?'], 'how do you know?', 'Then you go and look.'],
+      ['What is the best question?', ['how do you know?', 'who is first?', 'is it lunch?'], 'how do you know?', 'Ask how do you know? Then you go and look for yourself.'],
       ['I want an apple, because I am hungry. Is that a reason?', ['yes', 'no', 'only for bananas'], 'yes', 'It is about the thing, and it is true.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
@@ -17152,19 +17161,19 @@ Object.assign(GENERATORS, {
     const Q = [['How many voices at a time?', ['one', 'two', 'all'], 'one', 'One voice at a time, so everyone can hear.'],
       ['When it is not your turn, what do you do?', ['listen', 'shout', 'leave'], 'listen', 'Listen with your ears and your eyes.'],
       ['To show you listened, what do you do?', ['say it back', 'say nothing', 'sing'], 'say it back', 'Say it back, like this: you think the class pet should be a fish.'],
-      ['You think an idea is wrong. What do you say?', ['I do not agree with that reason', 'you are silly', 'go away'], 'I do not agree with that reason', 'Talk about the idea, not the friend.'],
+      ['You think an idea is wrong. What do you say?', ['I do not agree with that reason', 'you are silly', 'go away'], 'I do not agree with that reason', 'Say I do not agree with that reason. Talk about the idea, not the friend.'],
       ['Your friend gives a better reason. Changing your mind is what?', ['brave', 'losing', 'silly'], 'brave', 'Changing your mind for a better reason is brave. It is not losing.'],
-      ['Whoever holds the talking stick does what?', ['talks', 'hides', 'runs'], 'talks', 'Everyone else listens.']];
+      ['Whoever holds the talking stick does what?', ['talks', 'hides', 'runs'], 'talks', 'Whoever holds the stick talks, and everyone else listens.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
   'pk-fair': (rng) => {
-    const Q = [['Four cookies and two children. What is fair?', ['two each', 'four for one', 'none'], 'two each', 'That is equal shares.'],
-      ['One child has a hurt knee. Who gets the ice pack first?', ['the child with the hurt knee', 'the oldest', 'the loudest'], 'the child with the hurt knee', 'That is fair too, by need.'],
-      ['On the swing, how is it fair?', ['we take turns', 'the biggest swings', 'nobody swings'], 'we take turns', 'Every turn is the same size.'],
-      ['An exception needs what?', ['a reason everyone can hear', 'a secret', 'a shout'], 'a reason everyone can hear', 'A rule can have an exception.'],
-      ['What test can you ask about any rule?', ['would you like it if it were you?', 'is it big?', 'is it red?'], 'would you like it if it were you?', 'If not, the rule needs another look.'],
-      ['When you cut the cake, who picks last?', ['the cutter', 'the tallest', 'the first one'], 'the cutter', 'Then the pieces come out even.']];
+    const Q = [['Four cookies and two children. What is fair?', ['two each', 'four for one', 'none'], 'two each', 'Two each is fair. Equal shares means the same for everyone.'],
+      ['One child has a hurt knee. Who gets the ice pack first?', ['the child with the hurt knee', 'the oldest', 'the loudest'], 'the child with the hurt knee', 'The child with the hurt knee gets it first. More for the one who needs it is fair too.'],
+      ['On the swing, how is it fair?', ['we take turns', 'the biggest swings', 'nobody swings'], 'we take turns', 'We take turns, and every turn is the same size.'],
+      ['An exception needs what?', ['a reason everyone can hear', 'a secret', 'a shout'], 'a reason everyone can hear', 'An exception needs a reason everyone can hear, so everyone knows why the rule bends.'],
+      ['What test can you ask about any rule?', ['would you like it if it were you?', 'is it big?', 'is it red?'], 'would you like it if it were you?', 'Ask, would you like it if it were you? If not, the rule needs another look.'],
+      ['When you cut the cake, who picks last?', ['the cutter', 'the tallest', 'the first one'], 'the cutter', 'The cutter picks last, so the cutter makes the pieces even.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
@@ -17492,9 +17501,9 @@ Object.assign(GENERATORS, {
   // untaught-answer check proves. The prefix agk keeps these apart from every other bank.
   // ---------------------------------------------------------------------------------------------------------------
   'agk-plants': (rng) => {
-    const Q = [['Which part of a plant is a carrot?', ['a root', 'a flower', 'a fruit'], 'a root', 'A carrot grows under the ground.'],
+    const Q = [['Which part of a plant is a carrot?', ['a root', 'a flower', 'a fruit'], 'a root', 'A carrot is a root. It grows under the ground.'],
       ['What part of the plant is lettuce?', ['leaves', 'roots', 'seeds'], 'leaves', 'Lettuce is leaves.'],
-      ['Broccoli is a bunch of tiny what?', ['flower buds', 'roots', 'rocks'], 'flower buds', 'They are picked before they open.'],
+      ['Broccoli is a bunch of tiny what?', ['flower buds', 'roots', 'rocks'], 'flower buds', 'Broccoli is a bunch of tiny flower buds, picked before they open.'],
       ['Where are an apple\'s seeds?', ['inside', 'on top', 'under the ground'], 'inside', 'An apple is a fruit, and its seeds are inside.'],
       ['Corn and wheat are what part of a plant?', ['seeds', 'roots', 'leaves'], 'seeds', 'Wheat seeds become flour for bread.'],
       ['Who grows plants for us to eat?', ['farmers', 'pilots', 'dentists'], 'farmers', 'Farmers grow plants for us to eat.']];
@@ -17504,7 +17513,7 @@ Object.assign(GENERATORS, {
   'agk-grow': (rng) => {
     const Q = [['What does a plant start as?', ['a seed', 'a rock', 'a leaf'], 'a seed', 'The seed opens, and a tiny root goes down.'],
       ['A tiny plant with a new shoot is called what?', ['a seedling', 'a fruit', 'a flower'], 'a seedling', 'Seed, then seedling.'],
-      ['What do the flowers make?', ['fruit', 'rocks', 'rain'], 'fruit', 'And the fruit has new seeds inside.'],
+      ['What do the flowers make?', ['fruit', 'rocks', 'rain'], 'fruit', 'The flowers make fruit, and the fruit has new seeds inside.'],
       ['A baby bean plant looks like what?', ['its parent', 'a tree', 'a cat'], 'its parent', 'It grows the same kind of leaves as its parent.'],
       ['Which one does a plant need to grow?', ['sunlight', 'a toy', 'a shoe'], 'sunlight', 'Air, sunlight, water, nutrients in the soil, and room.'],
       ['Why do farmers plant seeds apart?', ['so each plant has room', 'to hide them', 'for fun'], 'so each plant has room', 'Room to grow is something every plant needs.']];
@@ -17512,9 +17521,9 @@ Object.assign(GENERATORS, {
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
   'agk-animals': (rng) => {
-    const Q = [['A barn or a shed is what for animals?', ['shelter', 'food', 'a toy'], 'shelter', 'It keeps them dry in the rain.'],
-      ['What does a hen pick up with her beak?', ['seeds', 'rocks', 'hats'], 'seeds', 'Her beak does the picking up.'],
-      ['What does a goat grab with her lips?', ['leaves', 'shoes', 'cars'], 'leaves', 'Her lips do the grabbing.'],
+    const Q = [['A barn or a shed is what for animals?', ['shelter', 'food', 'a toy'], 'shelter', 'A barn or a shed is shelter. It keeps the animals dry in the rain.'],
+      ['What does a hen pick up with her beak?', ['seeds', 'rocks', 'hats'], 'seeds', 'A hen picks up seeds with her beak.'],
+      ['What does a goat grab with her lips?', ['leaves', 'shoes', 'cars'], 'leaves', 'A goat grabs leaves with her lips.'],
       ['What do cows give us?', ['milk', 'wool', 'eggs'], 'milk', 'Cows give milk, and hens lay eggs.'],
       ['Which farm animal lays eggs?', ['hens', 'cows', 'sheep'], 'hens', 'Hens lay eggs.'],
       ['What do sheep grow?', ['wool', 'milk', 'apples'], 'wool', 'The wool is made into warm sweaters.']];
@@ -17522,10 +17531,10 @@ Object.assign(GENERATORS, {
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
   'agk-day': (rng) => {
-    const Q = [['When does a farmer\'s day start?', ['early', 'at bedtime', 'never'], 'early', 'The farmer feeds the animals first.'],
-      ['What happens when rain falls on a farm?', ['plants grow', 'cars go', 'toys break'], 'plants grow', 'But too much rain can drown them.'],
+    const Q = [['When does a farmer\'s day start?', ['early', 'at bedtime', 'never'], 'early', 'A farmer starts early, before the sun comes up, and feeds the animals first.'],
+      ['What happens when rain falls on a farm?', ['plants grow', 'cars go', 'toys break'], 'plants grow', 'Rain helps plants grow, but too much rain can drown them.'],
       ['What do animals need in the cold?', ['a warm barn', 'ice cream', 'a pool'], 'a warm barn', 'In the cold, animals need a warm barn.'],
-      ['Where does milk go after the farm?', ['to the store', 'to the moon', 'to the sea'], 'to the store', 'And from the store to your table.'],
+      ['Where does milk go after the farm?', ['to the store', 'to the moon', 'to the sea'], 'to the store', 'Milk goes to the store, and from the store to your table.'],
       ['Who finds its own food in the woods?', ['a deer', 'a farm cow', 'a pet fish'], 'a deer', 'A deer is wild and finds its own food. A farm cow is cared for by a farmer.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
@@ -18430,19 +18439,19 @@ Object.assign(GENERATORS, {
   // ---------------------------------------------------------------------------------------------------------------
   'bzk-earn': (rng) => {
     const Q = [['Money you earn by working is called what?', ['income', 'a gift', 'a toy'], 'income', 'You work, and you earn income.'],
-      ['Grandma gives you money for your birthday. What is it?', ['a gift', 'income', 'a job'], 'a gift', 'You did not work for it.'],
-      ['How does a baker earn money?', ['baking bread', 'sleeping late', 'playing games'], 'baking bread', 'That is the baker\'s job.'],
-      ['What skill does a baker need?', ['to measure', 'to fly', 'to swim'], 'to measure', 'And to get up early.'],
+      ['Grandma gives you money for your birthday. What is it?', ['a gift', 'income', 'a job'], 'a gift', 'It is a gift. You did not work for it, so it is not income.'],
+      ['How does a baker earn money?', ['baking bread', 'sleeping late', 'playing games'], 'baking bread', 'A baker earns money by baking bread. That is the baker\'s job.'],
+      ['What skill does a baker need?', ['to measure', 'to fly', 'to swim'], 'to measure', 'A baker needs to measure, and to get up early.'],
       ['Why do people work at jobs?', ['to earn money', 'to get a gift', 'to sleep'], 'to earn money', 'Money earned is income.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
   'bzk-wants': (rng) => {
-    const Q = [['Is food a need or a want?', ['a need', 'a want', 'a gift'], 'a need', 'We must have food to live.'],
-      ['Is a new toy a need or a want?', ['a want', 'a need', 'a job'], 'a want', 'It is nice to have.'],
+    const Q = [['Is food a need or a want?', ['a need', 'a want', 'a gift'], 'a need', 'Food is a need. We must have food to live.'],
+      ['Is a new toy a need or a want?', ['a want', 'a need', 'a job'], 'a want', 'A new toy is a want. It is nice to have, but we can live without it.'],
       ['Which one is a need?', ['water', 'a kite', 'a game'], 'water', 'We must have water.'],
       ['Which one is a want?', ['a kite', 'food', 'a home'], 'a kite', 'We can live without a kite.'],
-      ['What do families buy first?', ['needs', 'wants', 'games'], 'needs', 'Then they choose some wants.']];
+      ['What do families buy first?', ['needs', 'wants', 'games'], 'needs', 'Families buy needs first. Then they choose some wants.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
@@ -18452,9 +18461,9 @@ Object.assign(GENERATORS, {
       const answer = `${total} dollars`; const choices = [answer, `${total + each} dollars`, `${Math.max(1, total - each) === total ? total + 2 * each : Math.max(1, total - each)} dollars`];
       return { type: 'choice', story: `You save ${each === 1 ? 'one dollar' : 'two dollars'} each week.`, prompt: `How much will you have after ${weeks} weeks?`, choices: shuffle(rng, choices), answer, explain: `${Array.from({ length: weeks }, () => each).join(' + ')} = ${each * weeks} dollars, one week at a time.`, visual: null, explainVisual: null };
     }
-    const Q = [['Putting money in the bank is called what?', ['a deposit', 'a withdrawal', 'a gift'], 'a deposit', 'Taking it out is a withdrawal.'],
-      ['Taking money out of the bank is called what?', ['a withdrawal', 'a deposit', 'a job'], 'a withdrawal', 'Putting it in is a deposit.'],
-      ['Giving to help others is called what?', ['charity', 'income', 'a loan'], 'charity', 'Like giving to an animal shelter.'],
+    const Q = [['Putting money in the bank is called what?', ['a deposit', 'a withdrawal', 'a gift'], 'a deposit', 'Putting money in is a deposit. Taking it out is a withdrawal.'],
+      ['Taking money out of the bank is called what?', ['a withdrawal', 'a deposit', 'a job'], 'a withdrawal', 'Taking money out is a withdrawal. Putting it in is a deposit.'],
+      ['Giving to help others is called what?', ['charity', 'income', 'a loan'], 'charity', 'Giving to help others is called charity, like giving to an animal shelter.'],
       ['What keeps money safe?', ['a bank', 'a pocket with a hole', 'the sidewalk'], 'a bank', 'A bank keeps money safe.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
@@ -18465,9 +18474,9 @@ Object.assign(GENERATORS, {
       const answer = `${cost} dollars`; const others = [...new Set([paper, ribbon, cost + 1, cost - 1].filter((v) => v > 0 && v !== cost))].slice(0, 2);
       return { type: 'choice', story: `Paper costs ${paper} dollars. Ribbon costs ${ribbon} dollars.`, prompt: 'What does the bookmark cost to make?', choices: shuffle(rng, [answer, ...others.map((v) => `${v} dollars`)]), answer, explain: `Add the parts. The paper plus the ribbon is ${answer}.`, visual: null, explainVisual: null };
     }
-    const Q = [['People who make things are called what?', ['producers', 'consumers', 'bankers'], 'producers', 'A baker is a producer.'],
-      ['People who buy and use things are called what?', ['consumers', 'producers', 'farmers'], 'consumers', 'You are a consumer when you buy bread.'],
-      ['How do you borrow well?', ['give it back on time', 'keep it forever', 'lose it'], 'give it back on time', 'And in good shape.'],
+    const Q = [['People who make things are called what?', ['producers', 'consumers', 'bankers'], 'producers', 'People who make things are producers. A baker is a producer.'],
+      ['People who buy and use things are called what?', ['consumers', 'producers', 'farmers'], 'consumers', 'People who buy and use things are consumers. You are a consumer when you buy bread.'],
+      ['How do you borrow well?', ['give it back on time', 'keep it forever', 'lose it'], 'give it back on time', 'Give it back on time, and in good shape.'],
       ['Letting someone use your things is to do what?', ['lend', 'borrow', 'spend'], 'lend', 'Think before you lend.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
@@ -19017,7 +19026,7 @@ Object.assign(GENERATORS, {
       ['Bright colors and curved lines can feel how?', ['happy', 'stormy', 'quiet'], 'happy', 'Bright colors and curved lines can feel happy.'],
       ['Dark colors and sharp zigzags can feel how?', ['stormy', 'happy', 'sleepy'], 'stormy', 'Dark colors and sharp zigzags can feel stormy.'],
       ['Two people feel different things about one picture. Who is right?', ['both', 'the older one', 'nobody'], 'both', 'Two people can look at the same picture and feel different things. Both are right.'],
-      ['Where can you find art besides a museum?', ['on a cup', 'nowhere', 'only in a book'], 'on a cup', 'A cup, a quilt, a street sign, a birthday card, a wall.'],
+      ['Where can you find art besides a museum?', ['on a cup', 'nowhere', 'only in a book'], 'on a cup', 'Art can be on a cup, a quilt, a street sign, a birthday card or a wall.'],
       ['What are the two questions to ask a picture?', ['what does it show, how does it feel', 'how big, how old', 'who paid, who sold'], 'what does it show, how does it feel', 'What does it show? How does it make me feel?']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
@@ -19241,7 +19250,7 @@ Object.assign(GENERATORS, {
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
   'hk-sleep': (rng) => {
-    const Q = [['What is a good last step before sleep?', ['a story in bed', 'a video game', 'a big dinner'], 'a story in bed', 'A quiet story tells your body it is time. Bath, book, bed.'], ['Sleep is when your body does what?', ['grows', 'shrinks', 'nothing'], 'grows', 'Growing happens while you sleep, and so does remembering.'],['About how many hours of sleep do kids your age need each night?', ['ten to twelve', 'two', 'twenty'], 'ten to twelve', 'About ten to twelve hours each night. Sleep is when your body grows and your brain files the day away.'],
+    const Q = [['What is a good last step before sleep?', ['a story in bed', 'a video game', 'a big dinner'], 'a story in bed', 'A quiet story tells your body it is time. Bath, book, bed.'], ['Sleep is when your body does what?', ['grows', 'shrinks', 'nothing'], 'grows', 'Your body grows while you sleep, and your brain remembers the day.'],['About how many hours of sleep do kids your age need each night?', ['ten to twelve', 'two', 'twenty'], 'ten to twelve', 'About ten to twelve hours each night. Sleep is when your body grows and your brain files the day away.'],
       ['What happens when you do not sleep enough?', ['you feel grumpy and forget things', 'you get taller', 'nothing'], 'you feel grumpy and forget things', 'A tired brain drops things. A rested one remembers.'],
       ['What helps you fall asleep?', ['the same quiet routine each night', 'a bright screen', 'a big snack'], 'the same quiet routine each night', 'Bath, book, bed. The same steps tell your body it is time.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
@@ -21975,7 +21984,7 @@ Object.assign(GENERATORS, {
   'ord-numbers-100': (rng) => {
     const nums = []; while (nums.length < 4) { const n = randInt(rng, 10, 99); if (!nums.includes(n)) nums.push(n); }
     const sorted = [...nums].sort((a, b) => a - b).map(String);
-    return orderQuestion(rng, null, 'Tap the numbers from smallest to biggest.', sorted, `Look at the tens first, then the ones: ${sorted.join(', ')}.`);
+    return orderQuestion(rng, null, 'Tap the numbers from smallest to biggest.', sorted, `Look at the tens first, then the ones. ${sorted.join(', ')}.`);
   },
   'ord-life-cycle': (rng) => {
     const name = pick(rng, Object.keys(STAGES)); const stages = STAGES[name];
@@ -23435,7 +23444,7 @@ Object.assign(GENERATORS, {
   'ko-which-group-more': (rng) => {
     const [a, b] = distinctCounts(rng, 2, 8, randInt(rng, 1, 8));
     return { type: 'choice', story: `${a} ${a === 1 ? 'circle' : 'circles'} and ${b} ${b === 1 ? 'square' : 'squares'}.`, prompt: 'Which group has more?', choices: shuffle(rng, ['Circles', 'Squares']), answer: a > b ? 'Circles' : 'Squares',
-      explain: `${Math.max(a, b)} is more than ${Math.min(a, b)}.`, visual: null, explainVisual: null };
+      explain: `${Math.max(a, b)} is more than ${Math.min(a, b)}, so the ${a > b ? 'circles have' : 'squares have'} more.`, visual: null, explainVisual: null };
   },
   'ko-does-not-belong': (rng) => {
     const sh = pickShape(rng); const odd = otherShapes(rng, sh, 1)[0];

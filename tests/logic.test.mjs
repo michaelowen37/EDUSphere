@@ -1848,5 +1848,18 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
   ok('pre-readers have spoken failure and feelings questions for three early reflections in four', spokenComfort.length * L.WONDER_MAX_REPEATS >= Math.ceil(0.75 * L.COURSES.filter((c) => L.stageForGrade(c.grade) === 'early').reduce((n, c) => n + c.modules.length, 0) / L.WONDER_EVERY));
 }
 
+// Explanations stand on their own (pass JO, Mikey: review the explanatory quality too). A learner hears or reads the
+// explanation after a wrong answer, so it says the answer and the reason in whole sentences instead of continuing a
+// thought ("And in good shape."). Checked for the grades read by hand so far, pre-K through grade 1.
+{
+  const early = L.COURSES.filter((c) => ['PK3', 'PK4', 'K', '1'].includes(String(c.grade)));
+  const bad = [];
+  for (const c of early) for (const m of c.modules) for (const g of [...new Set(m.generators)]) for (let s = 1; s < 80; s++) {
+    let q; try { q = L.generateQuestion(g, s * 7919); } catch (e) { continue; }
+    if (/^(And|But|Then|Or|So|If not)\b/.test(String(q.explain || '')) && !/claps?\.$/.test(String(q.explain))) { bad.push(`${g}: ${q.explain}`); break; }   // clapped syllables (But ter fly) are not a thought
+  }
+  ok('early-years explanations never start in the middle of a thought', bad.length === 0, bad.slice(0, 6).join(' | '));
+}
+
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exitCode = fail ? 1 : 0;   // never process.exit(): it can drop the last lines of a piped stdout (2026-09-23)

@@ -2,6 +2,17 @@
 
 The newest block is what educators see once, in a pop-up on the classroom page, after each update. Write it the way Mikey talks to a teacher: conversational, complete sentences, say what changed and why it matters, and skip the shorthand (2026-09-23). Two to four items. The date line is the version stamp.
 
+## October 4, 2026 (pictures in lessons and clearer explanations)
+
+- Lessons can show pictures now, where seeing the real thing helps, like the Liberty Bell's crack, the Alamo, the moon's shapes and the plant parts we eat. Each shows a placeholder until its picture is made.
+- After a question, every early-years explanation now says the answer and why, in whole sentences.
+
+## October 4, 2026 (grade 1 read by hand)
+
+- Every grade 1 lesson has been read again by hand, from teen numbers to the Liberty Bell.
+- A few facts are more exact. Many birds nest in trees, but not all of them, and the moon is often up in the daytime too.
+- All of grade 1's stories carry directions for a recorded voice.
+
 ## October 4, 2026 (kindergarten finished)
 
 - Every pre-K and kindergarten lesson has now been read again by hand, all six kindergarten electives included.

@@ -11,11 +11,10 @@ const flat = (v) => (typeof v === 'string' ? v : Array.isArray(v) ? v.map(flat).
 const colons = (v) => (flat(v).match(/(?<!\d):(?!\d)/g) || []).length;            // 3:30 and 1:2 are not counted
 const cell = (s) => String(s == null ? '' : s).replace(/\|/g, '/').replace(/\s+/g, ' ').trim();
 const done = (key) => (reviewed[key] ? `yes (${cell(reviewed[key])})` : '');
-// College first, then grade 12 down to pre-K: the older the reader, the more the lesson has to explain.
-const rank = (g) => { const s = String(g); if (/^c/i.test(s)) return 0; if (/^\d+$/.test(s)) return 13 - Number(s); if (/^k$/i.test(s)) return 13; return 14 + (/3/.test(s) ? 1 : 0); };
-const courses = [...COURSES].sort((a, b) => rank(a.grade) - rank(b.grade) || (b.elective ? 1 : 0) - (a.elective ? 1 : 0));
+// Pre-K first, then up through college (Mikey, pass JG: "Let's look at everything starting with pre-k and working up").
+const rank = (g) => { const s = String(g); if (/^pk3$/i.test(s)) return 0; if (/^pk/i.test(s)) return 1; if (/^k$/i.test(s)) return 2; if (/^\d+$/.test(s)) return 2 + Number(s); if (/^c/i.test(s)) return 15; return 16; };
+const courses = [...COURSES].sort((a, b) => rank(a.grade) - rank(b.grade) || (a.elective ? 1 : 0) - (b.elective ? 1 : 0));
 const rows = []; for (const c of courses) for (const m of c.modules) rows.push({ c, m, st: STORIES[m.id] });
-const flagged = ['Saving, investing and risk', 'Scarcity, trade and markets', 'The communication process', 'Communication and audience'];
 const moduleRow = ({ c, m, st }) => `| ${done(`module:${m.id}`)} | ${cell(c.grade)} | ${cell(c.title)} | ${cell(m.title)} (\`${m.id}\`) | ${colons(m.lesson)} | ${st ? cell(st.title) + ' (' + st.art + ')' : 'none'} | ${st ? colons(st.words || st.paragraphs || '') : ''} | ${[...new Set(m.generators || [])].join(', ')} |`;
 const head = '| Reviewed | Grade | Course | Module | Lesson colons | Story | Story colons | Question banks |\n|---|---|---|---|---|---|---|---|';
 const gameCourse = {}; for (const [cid, ids] of Object.entries(COURSE_GAMES || {})) for (const id of [].concat(ids)) (gameCourse[id] ||= []).push(cid);
@@ -28,29 +27,24 @@ Generated ${new Date().toISOString().slice(0, 10)} by tools/review-ledger.mjs. W
 
 Reviewed so far: ${keys.filter((k) => reviewed[k]).length} of ${keys.length} items (${rows.length} modules with their lessons, stories and question banks, ${Object.keys(COURSE_STORIES).length} long stories, ${GAMES.length} games and ${wonders.length} Wonder questions). Colons today: ${lessonColons} in lessons and ${storyColons} in stories (times like 3:30 and ratios are not counted). Pictures are reviewed through docs/ART-REQUESTS.md as they are painted; a rewritten story keeps each picture beside the paragraph it shows.
 
-## 1. Start here: the modules Mikey named on October 3, 2026
-
-${head}
-${rows.filter((r) => flagged.includes(r.m.title)).map(moduleRow).join('\n')}
-
-## 2. Every module, in review order (college first, then grade 12 down to pre-K)
+## 1. Every module, in review order (pre-K first, then up through college)
 
 ${head}
 ${rows.map(moduleRow).join('\n')}
 
-## 3. Long course stories
+## 2. Long course stories
 
 | Reviewed | Grade | Course | Story | Colons |
 |---|---|---|---|---|
 ${courses.filter((c) => COURSE_STORIES[c.id]).map((c) => { const s = COURSE_STORIES[c.id]; return `| ${done(`course-story:${c.id}`)} | ${cell(c.grade)} | ${cell(c.title)} | ${cell(s.title)} (${s.art}) | ${colons(s.words || s.paragraphs || '')} |`; }).join('\n')}
 
-## 4. Games
+## 3. Games
 
 | Reviewed | Game | Kind | Course |
 |---|---|---|---|
 ${GAMES.map((g) => `| ${done(`game:${g.id}`)} | ${cell(g.title)} (\`${g.id}\`) | ${cell(g.kind)} | ${cell((gameCourse[g.id] || []).join(', '))} |`).join('\n')}
 
-## 5. Wonder questions
+## 4. Wonder questions
 
 | Reviewed | Id | Question |
 |---|---|---|

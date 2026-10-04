@@ -14,13 +14,13 @@ export const STORIES = {
     title: 'Three stones', art: 'S1', cast: ['Mike'], more: [{ serial: 'S29', after: 1, alt: 'A creek full of stones, big, wet and sparkling' }, { serial: 'S1448', after: 3, alt: 'One stone placed on a flat rock' }, { serial: 'S1450', after: 5, alt: 'A stone skipping across the water, three bounces' }],
     alt: 'A small boy crouched at the edge of a creek, three smooth stones lined up on a flat rock',
     words: [
-      'Mike had a job: three stones from the creek, not a pile, just three. He nodded. Easy.',
+      'Mike had one job, to bring back three stones from the creek, not a pile, just three. He nodded. Easy.',
       'The creek was full of stones, big ones, wet ones, ones that sparkled. Mike scooped a handful and ran back.',
-      'That is a lot of stones, came the answer, with a laugh. I asked for three.',
+      'That is a lot of stones, said his teacher with a laugh. I asked for three.',
       'So Mike put one stone on the flat rock, one, and another next to it, two. One more made three, and then he stopped.',
       'Three stones, not a pile. He held up three fingers. Three!',
-      'All three got skipped across the water, and each one bounced. Plip, plip, plip.',
-      'Touch and count. One, two, three. A number is where you stop.',
+      'Mike skipped all three across the water, and each one bounced. Plip, plip, plip.',
+      'Touch and count. One, two, three. The last number you say tells how many.',
     ],
   },
   'count-to-5': {
@@ -469,10 +469,10 @@ STORIES['red-and-blue'] = {
     'Mia had a ball, and it was red, red like a strawberry. She rolled it down the yard.',
     'Sam had a ball too, and it was blue, blue like the sky. He rolled his ball after hers.',
     'Bump! The two balls hit and stopped together in the grass. Mia ran over, and so did Sam.',
-    'Which one was mine? said Mia. They were the same size and the same shape, and they felt the same.',
+    'Which one is mine? said Mia. They were the same size and the same shape, and they felt the same.',
     'Mia looked hard, and then she smiled. Mine is red, she said, and she picked up the red ball.',
     'Sam laughed. Mine is blue, he said, and he picked up the blue ball and took it home.',
-    'Red and blue are colors. Colors tell things apart, even when all else is the same.',
+    'Red and blue are colors. Colors help us tell things apart, even when all else is the same.',
   ],
 };
 STORIES['big-and-small'] = {
@@ -487,7 +487,7 @@ STORIES['big-and-small'] = {
     'Max tried it first. He squeezed in, but his legs hung off and his tail hung off. He did not fit.',
     'Bean tried it. She curled up until her nose touched her tail. Just right.',
     'Max sighed and lay down on the big rug. Both dogs fell asleep.',
-    'Big is more room. Small is less. A small bed is for a small dog.',
+    'Big things take up more room, and small things take up less. A small bed fits a small dog.',
   ],
 };
 STORIES['one-and-two'] = {
@@ -517,7 +517,7 @@ STORIES['please-and-thank-you'] = {
     'Mom waited, and she was smiling. What is the magic word?',
     'Sam thought, and then he said it. Cookie, please? The plate came down.',
     'He took one, and it was warm. Thank you! he said, and Mom smiled bigger.',
-    'Please to ask. Thank you when you get it. Two magic words.',
+    'Please when you ask. Thank you when you get it. Two magic words.',
   ],
 };
 STORIES['colours'] = {
@@ -589,7 +589,7 @@ STORIES['find-the-match'] = {
   words: [
     'Snow! Leo wanted to go out, so he needed his mittens. He found one, and it was red.',
     'One mitten, but two hands, so one hand would be cold. Where was the other one?',
-    'Leo tipped the basket over, and mittens went all over: blue ones, black ones, striped ones.',
+    'Leo tipped the basket over, and out came mittens of every kind. Blue ones, black ones and striped ones.',
     'He held up a blue one. No, not the same. He held up a big black one. No, too big.',
     'Then he saw it, a red one, small and soft, just like the first. He put them side by side. A match!',
     'Two red mittens meant two warm hands. Leo ran out into the snow.',
@@ -608,7 +608,7 @@ STORIES['match-the-animals'] = {
     'It saw a cat, soft, but with fur and not feathers, and it said meow. No, not like me.',
     'The duckling sat down in the straw and peeped one small peep.',
     'Peep! Something peeped back. Another duckling, with the same yellow, the same feathers and the same peep. Yes, just like me!',
-    'The same means just alike. Look, then look again, then say yes.',
+    'The same means just alike. Look closely, and then look again.',
   ],
 };
 STORIES['more-or-fewer'] = {
@@ -681,8 +681,8 @@ STORIES['triangles-too'] = {
     'Diego took a slice. It had a pointy end and a wide end, and it was hot.',
     'He counted the corners. One corner, at the point.',
     'Two corners and three corners, at the wide end, and then no more. He counted again. Three.',
-    'Three corners and three sides, and Diego knew that shape. A triangle!',
-    'He drew one on his napkin, with three lines and three corners. It looked like his pizza.',
+    'Three corners and three sides, and Diego knew that shape. A triangle, almost!',
+    'He drew a triangle on his napkin, with three straight lines and three corners. It looked like his pizza.',
     'A triangle has three corners. Count them. One, two, three.',
   ],
 };
@@ -726,7 +726,7 @@ STORIES['a-and-b'] = {
     'Kai looked up. He knew they were letters, but he did not know their names.',
     'Grandma came over and pointed at the first one. That is A, she said.',
     'A was tall, with a bar across the middle. Kai said it. A.',
-    'Next to it was B, round on one side. B, said Grandma. A, then B.',
+    'Next to it was B, with two round bumps on one side. B, said Grandma. A, then B.',
     'Kai said them together, A and B, and Grandma clapped. So he said them again.',
     'A and B are letters. A comes first. B comes next.',
   ],
@@ -737,7 +737,7 @@ STORIES['not-the-same'] = {
   title: 'The green apple', art: 'S149', cast: [],
   alt: 'A small girl at a counter looking at four apples in a row, three red and one green',
   words: [
-    'Four apples sat in a row: red, red, red, green. Mia looked at them.',
+    'Four apples sat in a row, red, red, red and green. Mia looked at them.',
     'Which one is different? asked Dad. Mia looked, and looked.',
     'Three apples were red, with the same color and the same shine.',
     'One apple was green, not like the others. Different!',
@@ -752,11 +752,11 @@ STORIES['listen-and-tap-pictures'] = {
   title: 'Where is the dog?', art: 'S152', cast: [],
   alt: 'A small boy at a low table with picture cards: a dog, a cup and a hat',
   words: [
-    'Three cards lay on the table: a dog, a cup and a hat. Leo looked at them.',
+    'Three cards lay on the table. One had a dog, one had a cup, and one had a hat. Leo looked at them.',
     'Dog, said his sister. Where is the dog?',
     'Leo looked, and there! He tapped the dog card, and his sister cheered.',
     'Cup, she said, and where is the cup? Leo looked again.',
-    'There! He tapped the cup, and then he tapped the hat.',
+    'There! He tapped the cup. Hat, she said, and he tapped the hat.',
     'Every word had a picture, and Leo found them all. He wanted more cards.',
     'Listen to the word. Find its picture. Tap it.',
   ],
@@ -812,12 +812,12 @@ STORIES['match-the-things'] = {
   title: 'Twins on the table', art: 'S164', cast: [],
   alt: 'A small girl setting a table with cups, spoons and plates, pairing them up',
   words: [
-    'Ana was helping, and the dishes were on the table in a jumble: cups, spoons and plates.',
+    'Ana was helping, and the dishes were on the table in a jumble of cups, spoons and plates.',
     'She found a cup, and then another cup, blue like the first. They went together. Twins.',
     'She found a spoon and wondered what went with it. A cup? No, because a cup is not a spoon.',
     'She hunted, and there was another spoon, shiny. Together. Twins.',
     'A plate, and another plate, together. Every thing on the table had a twin.',
-    'Ana set them out in pairs: cup and cup, spoon and spoon, plate and plate. The table looked neat.',
+    'Ana set them out in pairs, cup with cup, spoon with spoon and plate with plate. The table looked neat.',
     'The same means just alike. Find the twin.',
   ],
 };
@@ -847,7 +847,7 @@ STORIES['match-the-land-animals'] = {
     'One pig rolled in the mud, pink and round, just one. Rosa frowned. Where was its twin?',
     'She looked in the barn, she looked by the trough, and she looked behind the hay.',
     'Then, splat! Another pig flopped into the mud, pink and round and just the same. Two pigs.',
-    'Two by two: rabbits, cows and pigs. Every animal on the farm had a match.',
+    'Two by two, the rabbits, the cows and the pigs. Every animal on the farm had a match.',
     'The same means just alike. Two by two.',
   ],
 };
@@ -857,7 +857,7 @@ STORIES['match-the-shapes'] = {
   title: 'The right hole', art: 'S173', cast: [],
   alt: 'A small boy pushing a triangle block toward a wooden shape sorter',
   words: [
-    'Diego had a box with holes: a round hole, a square hole and a triangle hole. And he had a block.',
+    'Diego had a box with three holes, a round one, a square one and a triangle one. And he had a block.',
     'The block had three corners. He tried the round hole and pushed, but it did not fit. It stuck.',
     'He tried the square hole and pushed harder, but it did not fit either. He was getting cross.',
     'Mom said to look at the block and look at the hole. Are they the same shape?',
@@ -887,12 +887,12 @@ STORIES['more-and-fewer-5'] = {
   title: 'Five, then two', art: 'S179', cast: [],
   alt: 'A small boy on a dock counting five ducks on a pond',
   words: [
-    'Theo sat on the dock, and five ducks floated by. He counted them: one, two, three, four, five.',
+    'Theo sat on the dock, and five ducks floated by. He counted them. One, two, three, four, five.',
     'Five ducks, and five fingers. He held up his whole hand. Five!',
     'Then, flap, flap, flap! Three ducks flew away, up over the trees, and were gone.',
     'Theo looked at the water and counted again. One, two. Only two ducks were left.',
     'Two is fewer than five, and five was more. He held up two fingers, then five, then two.',
-    'The two ducks quacked at him. The pond seemed quiet now, because more ducks was noisier.',
+    'The two ducks quacked at him. The pond seemed much quieter now, since more ducks had made more noise.',
     'More is the bigger group. Fewer is the smaller group.',
   ],
 };
@@ -907,8 +907,8 @@ STORIES['bigger-and-smaller'] = {
     'She saw a tiny one, small as her fist. She put it in, and it rolled around. Too small.',
     'Rosa walked the whole patch, past big ones and little ones. She wanted just right.',
     'There! A middle one, not huge and not tiny. She lifted it, and it fit the wagon, snug.',
-    'Bigger takes more room, and smaller takes less. Rosa pulled her pumpkin home.',
-    'Bigger takes more room. Smaller takes less.',
+    'Rosa set it in the wagon and pulled her pumpkin home, slow and steady.',
+    'Bigger things take up more room. Smaller things take up less.',
   ],
 };
 STORIES['first-strokes'] = {
@@ -934,7 +934,7 @@ STORIES['connect-the-dots'] = {
   words: [
     'Leo had a page of dots, and each dot had a tiny number. What was hiding in there?',
     'One to two, and he drew a line. Two to three, and another line. What is it?',
-    'Three to four, then four to five, made a corner, and then another corner. Leo could not tell yet.',
+    'Three to four, then four to five. That made a corner, and then another corner. Leo could not tell yet.',
     'Is it a house, he guessed, or is it a boat? He kept going, six, and then seven.',
     'Eight, and the last line! Leo sat back and saw points all around. A star!',
     'The dots had known all along. They just needed to be joined in order.',
@@ -962,7 +962,7 @@ STORIES['big-bigger-biggest'] = {
   title: 'Three bowls', art: 'S194', cast: [],
   alt: 'Three bears at a wooden table with three bowls of porridge, little, middle and big',
   words: [
-    'Three bears had three bowls: a little bowl, a middle bowl and a big bowl.',
+    'Three bears had three bowls, a little bowl, a middle bowl and a big bowl.',
     'Little bear grabbed the big bowl, and it was too heavy! It wobbled, and porridge spilled.',
     'Big bear took the little bowl, and it was too small! One bite, and it was empty.',
     'Middle bear looked at the middle bowl. Not too big, not too small, but just right.',
@@ -9270,3 +9270,44 @@ export const COLOR_PAGES = {
   'save-spend-share-k': ['D193', 'Three glass jars with coins on a shelf'],
   'borrow-and-make-k': ['D194', 'A child handing a book back to a smiling friend'],
 };
+
+// Audio tags (2026-10-04, pass JH, Mikey). In plain terms: how ElevenLabs' Eleven v4 should perform each story the writing review
+// has read, written into the words as tags in square brackets: a sound effect, a whisper, a pause, a feeling. The tags only reach
+// the audio ledger (tools/audio-ledger.mjs); readers see `words`, and the stories test proves `audio` is `words` plus tags, nothing
+// else. Every clip also opens with its age band's voice direction, which the ledger adds.
+STORIES["red-and-blue"].audio = ["[cheerful] Mia had a ball, and it was red, red like a strawberry. [a ball rolling on grass] She rolled it down the yard.", "Sam had a ball too, and it was blue, blue like the sky. He rolled his ball after hers.", "[soft bump] Bump! The two balls hit and stopped together in the grass. Mia ran over, and so did Sam.", "[puzzled] Which one is mine? said Mia. They were the same size and the same shape, and they felt the same.", "Mia looked hard, and then she smiled. [happily] Mine is red, she said, and she picked up the red ball.", "Sam laughed. [playful] Mine is blue, he said, and he picked up the blue ball and took it home.", "[slowly, warmly] Red and blue are colors. Colors help us tell things apart, even when all else is the same."];
+STORIES["find-the-match"].audio = ["[excited] Snow! Leo wanted to go out, so he needed his mittens. He found one, and it was red.", "One mitten, but two hands, so one hand would be cold. [wondering] Where was the other one?", "[soft rustling] Leo tipped the basket over, and out came mittens of every kind. Blue ones, black ones and striped ones.", "[playful] He held up a blue one. No, not the same. He held up a big black one. No, too big.", "Then he saw it, a red one, small and soft, just like the first. He put them side by side. [delighted] A match!", "Two red mittens meant two warm hands. [footsteps crunching in snow] Leo ran out into the snow.", "[slowly, warmly] Same means just alike. Look for the same color and the same size."];
+STORIES["match-the-animals"].audio = ["[softly] A little duckling woke up alone in the big barn. Where was everyone? [small, hopeful voice] Is there anyone like me?", "It saw a hen. The hen had feathers, but they were brown, and it clucked. [hen clucking] No, not like me.", "It saw a goat, big, with horns, and it said maa. [goat bleating] No, not like me.", "It saw a cat, soft, but with fur and not feathers, and it said meow. [cat meowing] No, not like me.", "[quietly, a little sad] The duckling sat down in the straw and peeped one small peep.", "[a duckling peeping] Peep! Something peeped back. Another duckling, with the same yellow, the same feathers and the same peep. [overjoyed] Yes, just like me!", "[slowly, warmly] The same means just alike. Look closely, and then look again."];
+STORIES["big-and-small"].audio = ["[warm, playful] Max was a big dog, long and tall. When he lay down, he filled the rug.", "Bean was a small dog, short and light. She could fit in a basket.", "There was one bed, and it was a small bed. Both dogs wanted it.", "Max tried it first. He squeezed in, but his legs hung off and his tail hung off. [amused] He did not fit.", "Bean tried it. She curled up until her nose touched her tail. [softly, pleased] Just right.", "[a big dog sighing] Max sighed and lay down on the big rug. [whispers] Both dogs fell asleep.", "[slowly, warmly] Big things take up more room, and small things take up less. A small bed fits a small dog."];
+STORIES["one-and-two"].audio = ["[softly, gentle water lapping] One duck swam on the pond, all by itself. The water was still.", "It quacked. [a single duck quacking] Quack! [quietly] Nobody quacked back, and only the wind moved.", "[wings flapping, coming closer] Then a shape came in the sky, wings and feathers, coming closer.", "[a big splash] Splash! Another duck landed, and water flew up. The first duck jumped.", "[happy] Now there were two ducks, two heads and two tails, and they swam together.", "[two ducks quacking] Quack, quack! Two quacks, not one, and the pond was not quiet anymore.", "[slowly, counting] One, then two. One more makes two."];
+STORIES["more-or-fewer"].audio = ["[warm] Two bowls sat on the table, and both had green grapes, cold from the fridge.", "This bowl was full, with grapes piled up high. That bowl had three, just three at the bottom.", "Ana looked at one, and then the other. [thinking] Which one had more? She wanted more.", "She counted the small bowl. [slowly, counting] One, two, three, and that was all.", "She did not count the big bowl, because she could see it was full. [excited] More!", "Ana picked the full bowl. [happy munching] She ate one grape, and then another, and there were plenty.", "[slowly, warmly] More means a bigger group. The full bowl has more."];
+STORIES["first-marks"].audio = ["[warm, playful] Kai had a new crayon, fat and red, and he held it tight.", "He pressed it on the paper, and it made a dot. [soft tap] One red dot.", "[thoughtful] A dot is nice, but it just sits there. It does not go anywhere.", "[crayon scribbling] Kai moved his hand, and the dot grew a tail. The tail got longer, and it was a line! [giggles] A wobbly line.", "The line went across, then up, then right off the page. [a child laughing] Kai laughed.", "[quick crayon scribbles] He made another, and another, until lines were all over. His page was full.", "[slowly, warmly] Start at the dot. Follow the line. A line is a dot that went for a walk."];
+STORIES["three-dots"].audio = ["[slowly, counting] One, two, three. Three dots on the page, just dots. Rosa looked at them.", "[curious] What were they for? Dots do not do anything, and they just sit.", "Rosa put her crayon on dot one and drew to dot two. [pleased] A line!", "From two, she drew to three, and that was another line. Now there was a corner.", "From three, she drew back to one, the last line, and the lines met.", "Rosa held up the page. The dots had become a shape with three sides and three corners. [delighted] A triangle!", "[slowly, warmly] Start at 1. Draw to each dot in order. The dots know the way."];
+STORIES["yellow-and-green"].audio = ["[softly, birds chirping] The sun came up, round and yellow, bright yellow like a lemon.", "[a door opening] Theo went outside. The air was fresh, and something cool was under his feet.", "He sat down and touched it. [softly] Grass, green grass, soft and cool.", "He looked up and saw yellow, and he looked down and saw green. [playful] Yellow up, green down.", "[peaceful] Theo lay back, with warm sun on his face and cool grass on his arms.", "[gentle wonder] A flower grew by his hand, yellow. A yellow flower in green grass.", "[slowly, warmly] Yellow like the sun. Green like the grass. Two colors, one morning."];
+STORIES["triangles-too"].audio = ["[cheerful] Dinner was pizza, a big round pizza cut into slices.", "Diego took a slice. It had a pointy end and a wide end, [blowing on hot food] and it was hot.", "He counted the corners. [slowly, counting] One corner, at the point.", "Two corners and three corners, at the wide end, and then no more. He counted again. [pleased] Three.", "Three corners and three sides, and Diego knew that shape. [delighted] A triangle, almost!", "[pencil scratching] He drew a triangle on his napkin, with three straight lines and three corners. It looked like his pizza.", "[slowly, warmly] A triangle has three corners. Count them. One, two, three."];
+STORIES["big-and-little"].audio = ["[warm, playful] By the door there were two shoes, one big and one little. Lena looked at both.", "She tried the big one. Her foot went in, and in, and in. [giggles] It swam inside.", "She tried to walk. [heavy clomping footsteps] Clomp, wobble, and the big shoe fell off.", "She tried the little one, and her foot went in and stopped. [pleased] Just right.", "The big shoe was Dad's, and the little shoe was hers.", "Dad put on the big one and Lena put on the little one, [a door opening] and they went out together.", "[slowly, warmly] Big and little. Point to the big one. Point to the little one."];
+STORIES["please-and-thank-you"].audio = ["[excited] Cookies! Sam smelled them, warm ones on a plate, [running footsteps] and he ran to the table.", "He grabbed, and the plate went up, out of reach. [disappointed] No cookie.", "He grabbed again, and the plate went up again. Sam frowned. [sighs] Still no cookie.", "Mom waited, and she was smiling. [gently, teasing] What is the magic word?", "Sam thought, and then he said it. [sweetly] Cookie, please? The plate came down.", "He took one, and it was warm. [happily] Thank you! he said, and Mom smiled bigger.", "[slowly, warmly] Please when you ask. Thank you when you get it. Two magic words."];
+STORIES["circle-and-square"].audio = ["[curious] Ana had a ramp, a ball and a block. Which one would roll?", "She put the ball at the top. [a ball rolling down a ramp] Whee! It rolled down fast, all the way.", "She put the block at the top, and it just sat there. [puzzled] It did not move.", "She gave it a push. [a wooden block thunk] It tipped over, and then it stopped. No rolling.", "[thoughtful] Ana looked at the ball, round all over. She looked at the block, with corners and flat sides.", "Round rolls, and corners sit. Ana rolled the ball again. [a ball rolling, delighted] Whee!", "[slowly, warmly] A circle is round. A square has corners."];
+STORIES["a-and-b"].audio = ["[cheerful, party chatter in the background] It was a party, and a banner hung across the room. It had big letters on it.", "[wondering] Kai looked up. He knew they were letters, but he did not know their names.", "Grandma came over and pointed at the first one. [warm, grandmotherly] That is A, she said.", "A was tall, with a bar across the middle. [proudly] Kai said it. A.", "Next to it was B, with two round bumps on one side. B, said Grandma. [slowly] A, then B.", "Kai said them together, A and B, [clapping] and Grandma clapped. So he said them again.", "[slowly, warmly] A and B are letters. A comes first. B comes next."];
+STORIES["not-the-same"].audio = ["[warm, curious] Four apples sat in a row, red, red, red and green. Mia looked at them.", "[gently] Which one is different? asked Dad. Mia looked, and looked.", "Three apples were red, with the same color and the same shine.", "One apple was green, not like the others. [excited] Different!", "Mia pointed at that one, the green one, and Dad nodded.", "Mia picked it up and took a bite. [an apple crunching] Crunch. It was sour, and good.", "[slowly, warmly] Different means not alike. Find the one that does not match."];
+STORIES["listen-and-tap-pictures"].audio = ["[warm] Three cards lay on the table. One had a dog, one had a cup, and one had a hat. Leo looked at them.", "[playful] Dog, said his sister. Where is the dog?", "Leo looked, and there! He tapped the dog card, [cheering] and his sister cheered.", "[playful] Cup, she said, and where is the cup? Leo looked again.", "[excited] There! He tapped the cup. Hat, she said, and he tapped the hat.", "[proud] Every word had a picture, and Leo found them all. He wanted more cards.", "[slowly, warmly] Listen to the word. Find its picture. Tap it."];
+STORIES["animal-sounds"].audio = ["Rosa stood at the fence and heard a sound. [a cow mooing in the distance] Moo! [curious] Who said that?", "She looked, and there was a cow, big and brown. [a cow mooing] Moo, it said again. The cow!", "[a duck quacking] Then, quack! Who said that? Rosa looked, and there was a duck by the pond. The duck!", "[a cat meowing] Then, meow! Who said that? Rosa looked up, and there was a cat on the post. The cat!", "[playful] Rosa played a game with the sounds. Moo! She pointed at the cow. Quack! She pointed at the duck.", "Meow! She pointed at the cat. [proud] Every animal had its own sound, and Rosa knew them all.", "[slowly, warmly] Listen. Then tap the animal that says it."];
+// First steps (pre-K 4), pass JI: audio tags for the eighteen stories read in this pass, written the same way.
+STORIES["colours"].audio = ["[rain pattering on a window] It rained all morning. Lena watched the drops run down the glass, drip, drip, [wistful] and she wanted to go out.", "[brightening] Then the rain stopped, the sun came out, and the whole yard sparkled.", "Lena ran outside and looked up. [amazed] A rainbow! It went all the way across the sky.", "She wanted to name it, but it had so many colors. [wondering] Where should she start?", "Dad said to start at the top. [slowly, naming each color] Red, said Lena. Then orange, then yellow, then green.", "Then blue, then purple. Six colors, and she said them all, one at a time. [quickly, playful] Then she said them again, fast.", "[slowly, warmly] Every color has a name. Say them one at a time."];
+STORIES["same-and-different"].audio = ["Kai needed socks, [rummaging in a drawer] so he dug in the drawer. He found two with blue and white stripes.", "He held them together, stripes and stripes, the same size. [wondering] Were they the same? They looked it.", "[gently] Look again, said Mom. Kai looked closer, and closer still, until his nose almost touched them.", "One sock had a hole, right at the toe, [surprised] and his finger went through it. The other sock had no hole.", "This one has a hole, and that one does not. They were not the same after all. [delighted] Different!", "Kai wore the good sock and waved the holey one. [laughs] Mom laughed and got the sewing box.", "[slowly, warmly] Same looks alike. Different does not. Look twice to be sure."];
+STORIES["match-the-vehicles"].audio = ["Sam had a red car, small and shiny. [playful, a toy car revving] Vroom! He wanted to race it, but a race needs two.", "[playful] He looked down the line and held up a truck. No, too big, and not the same.", "A bus was yellow and long, so no. A tractor was green with big wheels, so no.", "Sam looked and looked, and then, at the end of the line, [hopeful] he saw something red.", "Another red car, with the same size, the same shine and the same four wheels! He put them side by side. [delighted] Twins!", "[toy cars racing across a rug] Two red cars, vroom, vroom, raced across the rug. [laughing] The red one won, and the red one came second.", "[slowly, warmly] The same means just alike. Same color, same size, same shape."];
+STORIES["match-the-things"].audio = ["[dishes clinking] Ana was helping, and the dishes were on the table in a jumble of cups, spoons and plates.", "She found a cup, and then another cup, blue like the first. They went together. [pleased] Twins.", "She found a spoon and wondered what went with it. [thinking] A cup? No, because a cup is not a spoon.", "She hunted, and there was another spoon, shiny. [pleased] Together. Twins.", "A plate, and another plate, together. Every thing on the table had a twin.", "Ana set them out in pairs, cup with cup, spoon with spoon and plate with plate. [proud] The table looked neat.", "[slowly, warmly] The same means just alike. Find the twin."];
+STORIES["match-the-water-animals"].audio = ["[gentle pond sounds] Leo lay on his tummy by the pond and looked in. The water was full of animals.", "[a soft splash] A fish, orange, and then another fish, just the same. Two fish, and they swam together.", "[a frog croaking] A frog sat on a rock, green with a white belly. [wondering] Where was its twin?", "[searching, slowly] Leo looked in the reeds, under the leaves, and on the log.", "[excited] There, on the lily pad! Another frog, just the same, green with a white belly. Two frogs.", "[ducks quacking softly] Then two ducks floated by. Two of each. In the pond, everyone had a match.", "[slowly, warmly] The same means just alike. Every animal had a twin."];
+STORIES["match-the-land-animals"].audio = ["[playful] Two rabbits hopped by, with the same ears, the same hop and the same white tails.", "Two cows stood in the field, with the same spots and the same slow chew. [cows mooing] Moo, moo.", "[a pig oinking] One pig rolled in the mud, pink and round, just one. Rosa frowned. [puzzled] Where was its twin?", "[searching] She looked in the barn, she looked by the trough, and she looked behind the hay.", "[a big muddy splat] Then, splat! Another pig flopped into the mud, pink and round and just the same. Two pigs.", "[happy] Two by two, the rabbits, the cows and the pigs. Every animal on the farm had a match.", "[slowly, warmly] The same means just alike. Two by two."];
+STORIES["match-the-shapes"].audio = ["[curious] Diego had a box with three holes, a round one, a square one and a triangle one. And he had a block.", "The block had three corners. He tried the round hole and pushed, but it did not fit. [straining] It stuck.", "He tried the square hole and pushed harder, but it did not fit either. [frustrated] He was getting cross.", "Mom said to look at the block and look at the hole. [gently] Are they the same shape?", "Three corners on the block, and three corners on the triangle hole. [delighted] Yes, the same! In it went. [a soft plop] Plop.", "Diego picked up the round block and knew which hole it wanted, the round one, of course. [a soft plop] Plop.", "[slowly, warmly] The same means just alike. Same shape, same hole."];
+STORIES["match-the-solids"].audio = ["[warm, playful] Mia had a pile of shapes, some cubes and some balls, and she wanted to build.", "She took a cube and another cube, just the same, and put one on top. It stayed. [pleased] A tower!", "Then a ball and another ball. She put one on top of the cube, [a ball wobbling and rolling away] and it wobbled and rolled off.", "She tried again, and the ball rolled off again. [amused] Balls do not stack. Balls roll.", "So Mia matched them up, cubes with cubes and balls with balls. The ones alike went together.", "The cubes made a tall tower, and the balls went in a basket. [satisfied] Each thing was in its place.", "[slowly, warmly] The same means just alike. Cubes stack. Balls roll."];
+STORIES["more-and-fewer-5"].audio = ["Theo sat on the dock, and five ducks floated by. He counted them. [slowly, counting] One, two, three, four, five.", "Five ducks, and five fingers. He held up his whole hand. [proud] Five!", "[wings flapping] Then, flap, flap, flap! Three ducks flew away, up over the trees, and were gone.", "Theo looked at the water and counted again. [slowly] One, two. Only two ducks were left.", "[thoughtful] Two is fewer than five, and five was more. He held up two fingers, then five, then two.", "[two ducks quacking] The two ducks quacked at him. The pond seemed much quieter now, since more ducks had made more noise.", "[slowly, warmly] More is the bigger group. Fewer is the smaller group."];
+STORIES["bigger-and-smaller"].audio = ["[cheerful] It was pumpkin day, and Rosa had a red wagon. She wanted one pumpkin to take home.", "She saw a huge one, bigger than the wagon! [straining] She pushed, but it did not move. [laughing] Too big.", "She saw a tiny one, small as her fist. She put it in, [something small rolling in a wagon] and it rolled around. Too small.", "[footsteps in dry leaves] Rosa walked the whole patch, past big ones and little ones. She wanted just right.", "[delighted] There! A middle one, not huge and not tiny. She lifted it, and it fit the wagon, snug.", "[a wagon rolling] Rosa set it in the wagon and pulled her pumpkin home, slow and steady.", "[slowly, warmly] Bigger things take up more room. Smaller things take up less."];
+STORIES["patterns"].audio = ["[warm] Kai was making a necklace. He had a bowl of beads, red ones and blue ones, and a long string.", "[beads clicking, steady] Red bead, blue bead, red bead, blue bead, and he threaded them on.", "Then he stopped. [puzzled] What comes next? He held a bead in the air, and he did not know.", "Grandma said to look back, so Kai looked at the string. [slowly] Red, blue, red, blue.", "He said it out loud, red, blue, red, blue, and then he knew. [excited] Red! The next one was red.", "Red, blue, red, blue, all the way to the end. The necklace was long, [proud] and Grandma put it on.", "[slowly, warmly] A pattern repeats. Say it out loud to find what comes next."];
+STORIES["count-to-3"].audio = ["[warm, playful] Mike had one job, to bring back three stones from the creek, not a pile, just three. He nodded. Easy.", "The creek was full of stones, big ones, wet ones, ones that sparkled. [splashing in a creek] Mike scooped a handful and ran back.", "[laughing gently] That is a lot of stones, said his teacher with a laugh. I asked for three.", "So Mike put one stone on the flat rock, one, and another next to it, two. [slowly, counting] One more made three, and then he stopped.", "Three stones, not a pile. He held up three fingers. [proud] Three!", "Mike skipped all three across the water, and each one bounced. [stones skipping across water] Plip, plip, plip.", "[slowly, warmly] Touch and count. One, two, three. The last number you say tells how many."];
+STORIES["first-strokes"].audio = ["[rain on a window] It was raining, and the window was fogged up. Ana pressed her finger on it, [a finger squeaking on glass] and it squeaked.", "[softly] Her finger went down and left a line, a clear line in the fog, straight down.", "Then she drew across, and another line crossed the first one. [pleased] A plus sign.", "[playful] Then a wavy one, up and down, up and down, like a wave and like a snake.", "Down, across, wavy. Lines can go any way you like, [happily] so Ana drew and drew.", "[gentle wonder] Soon the whole window was lines, and she could see the yard through them.", "[slowly, warmly] Start at the dot. Follow the line. A line goes where your finger goes."];
+STORIES["connect-the-dots"].audio = ["Leo had a page of dots, and each dot had a tiny number. [curious] What was hiding in there?", "[slowly, counting] One to two, and he drew a line. Two to three, and another line. What is it?", "Three to four, then four to five. That made a corner, and then another corner. [puzzled] Leo could not tell yet.", "[wondering] Is it a house, he guessed, or is it a boat? He kept going, six, and then seven.", "Eight, and the last line! Leo sat back and saw points all around. [amazed] A star!", "[warmly] The dots had known all along. They just needed to be joined in order.", "[slowly, warmly] Start at 1. Draw to each dot in order. The picture comes out."];
+STORIES["draw-the-shapes"].audio = ["[warm] Mia put her crayon on the dot. Start here, go round. She started.", "[a crayon gliding on paper] Round and round, the curve grew. It was like a moon, and then like a bowl.", "She stopped and looked. Her circle had a gap, like a door in it. [thoughtful] It was not a circle yet.", "[encouraging] Almost there, said her teacher. Keep going, and do not stop early.", "Mia kept going, round and round, back to the dot. The gap closed. [delighted] A circle!", "[happy] She drew another one, all the way round with no stopping. Two circles, and then three.", "[slowly, warmly] Start at the dot. Go all the way around. Back to the dot."];
+STORIES["taking-turns"].audio = ["One swing, and two children, Sam and Rosa. Both wanted it, [impatient] and both wanted it now.", "[tugging and grunting] Pull, pull. Sam pulled one way and Rosa pulled the other, and nobody swung.", "[kindly] You go, said Rosa, and then I go. She let go of the swing, and Sam sat down.", "[a swing creaking] Rosa counted. [slowly, counting] One, two, three, and Sam swung high. Four, five, six, and higher.", "[excited] Seven, eight, nine, ten! Sam jumped off and Rosa sat down, and now Sam counted.", "[children laughing] Ten for Sam and ten for Rosa. Both of them swung, and both of them flew.", "[slowly, warmly] Wait, and then it is your turn. Count to ten."];
+STORIES["big-bigger-biggest"].audio = ["[like a storyteller] Three bears had three bowls, a little bowl, a middle bowl and a big bowl.", "Little bear grabbed the big bowl, and it was too heavy! [a bowl wobbling, porridge splashing] It wobbled, and porridge spilled.", "Big bear took the little bowl, and it was too small! [a big gulp] One bite, and it was empty.", "Middle bear looked at the middle bowl. [slowly, pleased] Not too big, not too small, but just right.", "So little bear took the little bowl, and big bear took the big bowl. [happy] Now everyone matched.", "[warm] Little, middle, biggest. Three bears, three bowls, three sizes in a row.", "[slowly, warmly] Little, middle, biggest. Three sizes in a row."];
+STORIES["helpers-all-around"].audio = ["Kai walked to school, [cars zooming past] and cars zoomed by. [a crossing guard whistle] The crossing guard held up her sign, the cars stopped, and Kai crossed.", "[bus doors opening] The bus pulled up and the driver opened the door. [cheerful] Good morning, he said, and Kai climbed in.", "At school, Kai fell and hurt his knee. [gently] The nurse cleaned it and put on a bandage, and it was all better.", "[a fire truck siren in the distance] A fire truck drove by the window, and the driver waved. Kai waved back.", "[warmly] Helpers were all around him. Each one had a job, and each one helped.", "At dinner, Kai told everyone about the guard, the bus driver, the nurse and the fire truck. [proud] Four helpers in one day.", "[slowly, warmly] Helpers are all around. Every helper has a job."];

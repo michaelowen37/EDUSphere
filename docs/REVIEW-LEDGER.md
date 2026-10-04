@@ -1,551 +1,56 @@
 # Review ledger
 
-Generated 2026-10-03 by tools/review-ledger.mjs. What Mikey wants from the review is in docs/FABLE-REVIEW.md; this file is the work list, in order. To mark an item reviewed, add its key to "reviewed" in docs/review-status.json with the pass that did it (keys look like module:saving-investing-and-risk, course-story:econ-9, game:dots-kite, wonder:w-grown-the-rumor), then run the tool again.
+Generated 2026-10-04 by tools/review-ledger.mjs. What Mikey wants from the review is in docs/FABLE-REVIEW.md; this file is the work list, in order. To mark an item reviewed, add its key to "reviewed" in docs/review-status.json with the pass that did it (keys look like module:saving-investing-and-risk, course-story:econ-9, game:dots-kite, wonder:w-grown-the-rumor), then run the tool again.
 
-Reviewed so far: 1 of 1239 items (615 modules with their lessons, stories and question banks, 102 long stories, 157 games and 365 Wonder questions). Colons today: 2237 in lessons and 1329 in stories (times like 3:30 and ratios are not counted). Pictures are reviewed through docs/ART-REQUESTS.md as they are painted; a rewritten story keeps each picture beside the paragraph it shows.
+Reviewed so far: 36 of 1239 items (615 modules with their lessons, stories and question banks, 102 long stories, 157 games and 365 Wonder questions). Colons today: 2235 in lessons and 1319 in stories (times like 3:30 and ratios are not counted). Pictures are reviewed through docs/ART-REQUESTS.md as they are painted; a rewritten story keeps each picture beside the paragraph it shows.
 
-## 1. Start here: the modules Mikey named on October 3, 2026
-
-| Reviewed | Grade | Course | Module | Lesson colons | Story | Story colons | Question banks |
-|---|---|---|---|---|---|---|---|
-| yes (JF, an Opus 5.5 sample: lesson, story and questions rewritten) | C | Principles of macroeconomics | Scarcity, trade and markets (`scarcity-and-markets-c`) | 0 | Ten workers and forty-eight thousand pins (S3596) | 0 | macro-markets |
-|  | C | Public speaking | Communication and audience (`communication-and-audience-c`) | 3 | Two hours and two minutes (S3620) | 0 | spch-audience |
-|  | 9 | Say it so it lands | The communication process (`the-communication-process`) | 3 | The text that lost its tone (S3170) | 2 | sp-process |
-|  | 9 | Money for a life | Saving, investing and risk (`saving-investing-and-risk`) | 7 | The first thousand (S2850) | 3 | e9-invest |
-
-## 2. Every module, in review order (college first, then grade 12 down to pre-K)
+## 1. Every module, in review order (pre-K first, then up through college)
 
 | Reviewed | Grade | Course | Module | Lesson colons | Story | Story colons | Question banks |
 |---|---|---|---|---|---|---|---|
-|  | C | Business principles | Business and its world (`business-and-its-world-c`) | 9 | Salsa across the border (S3446) | 3 | bzc-world |
-|  | C | Business principles | Management and leadership (`management-c`) | 2 | The night shift that kept quitting (S3452) | 1 | bzc-manage |
-|  | C | Business principles | Accounting, finance and markets (`money-and-markets-c`) | 4 | Two ways to pay for a second oven (S3458) | 3 | bzc-money |
-|  | C | Business principles | Ethics, responsibility and the law (`ethics-and-government-c`) | 6 | The recall that cost a week's profit (S3464) | 1 | bzc-ethics |
-|  | C | General psychology | Methods and measurement (`methods-and-measurement-c`) | 5 | The horse who seemed to count (S3572) | 2 | psyc-methods |
-|  | C | General psychology | Where psychology came from (`schools-of-thought-c`) | 3 | The degree Harvard would not give (S3578) | 3 | psyc-history |
-|  | C | General psychology | One behavior, seven lenses (`perspectives-c`) | 13 | Seven ways to look at one night (S3584) | 2 | psyc-perspectives |
-|  | C | General psychology | Brain, body and behavior (`brain-and-behavior-c`) | 3 | The man who lived in the present (S3590) | 2 | psyc-brain |
-| yes (JF, an Opus 5.5 sample: lesson, story and questions rewritten) | C | Principles of macroeconomics | Scarcity, trade and markets (`scarcity-and-markets-c`) | 0 | Ten workers and forty-eight thousand pins (S3596) | 0 | macro-markets |
-|  | C | Principles of macroeconomics | Measuring the economy (`measuring-the-economy-c`) | 2 | The number that came with a warning (S3602) | 0 | macro-measure |
-|  | C | Principles of macroeconomics | Money, banks and the Fed (`money-and-banking-c`) | 3 | The stone at the bottom of the sea (S3608) | 0 | macro-money |
-|  | C | Principles of macroeconomics | Policy, trade and the world (`policy-and-the-world-c`) | 1 | The year rates hit twenty percent (S3614) | 1 | macro-policy |
-|  | C | Public speaking | Communication and audience (`communication-and-audience-c`) | 3 | Two hours and two minutes (S3620) | 0 | spch-audience |
-|  | C | Public speaking | Ethics, evidence and listening (`ethics-and-evidence-c`) | 4 | The point that was already conceded (S3626) | 2 | spch-ethics |
-|  | C | Public speaking | Organizing and delivering (`organizing-and-delivering-c`) | 2 | Just three stories (S3632) | 3 | spch-organize |
-|  | C | Public speaking | Informing and persuading (`informing-and-persuading-c`) | 5 | Tell them about the dream (S3638) | 1 | spch-persuade |
-|  | C | How computers compute | Inside a running program (`inside-a-running-program`) | 9 | The box at address 1000 (S2862) | 5 | tc-inside |
-|  | C | How computers compute | Counting steps (`counting-steps`) | 8 | Guess my number (S2868) | 6 | tc-steps |
-|  | C | How computers compute | The shapes of data (`shapes-of-data`) | 15 | The plates and the line (S2874) | 4 | tc-shapes |
-|  | C | How computers compute | Recursion and the limits of computing (`recursion-and-limits`) | 9 | The folder inside the folder (S2880) | 4 | tc-recursion |
-|  | C | Statistics and reasoning | Mean, median and mode (`mean-median-mode`) | 5 | The rich friend (S1130) | 2 | gc-mean, gc-median, gc-mode |
-|  | C | Statistics and reasoning | How spread out the data is (`spread`) | 4 | Same average, different rooms (S1133) | 1 | gc-range, gc-more-spread, gc-same-mean |
-|  | C | Statistics and reasoning | Probability (`probability`) | 4 | Three slices (S1136) | 2 | gc-simple-probability, gc-not-probability, gc-two-independent |
-|  | C | Statistics and reasoning | Compound interest (`compound-interest`) | 6 | The snowball (S1139) | 2 | gc-compound-amount, gc-simple-vs-compound, gc-years-to-grow |
-|  | C | Statistics and reasoning | Correlation is not causation (`correlation-causation`) | 5 | Ice cream and the pool (S1142) | 4 | gc-cause-or-correlate, gc-third-factor |
-|  | C | Academic reading | Thesis statements (`thesis-statements`) | 6 | A fight worth picking (S1145) | 2 | rc-which-thesis, rc-thesis-flaw |
-|  | C | Academic reading | The shape of an academic argument (`academic-structure`) | 4 | The sentence that explains why (S1148) | 4 | rc-which-part, rc-missing-warrant |
-|  | C | Academic reading | Reading numbers inside prose (`numbers-in-prose`) | 1 | A number with no clothes on (S1151) | 6 | rc-missing-base, rc-bigger-change |
-|  | C | Academic reading | Logical consistency (`logical-consistency`) | 0 | Cheap, and the most expensive ever (S1154) | 0 | rc-contradiction, rc-consistent-pair, rc-consistency-facts |
-|  | C | Thinking like a historian | Primary and secondary sources (`primary-and-secondary-sources`) | 9 | The letter and the textbook (S1157) | 2 | hc-source-kind, hc-why-made, hc-closer-witness |
-|  | C | Thinking like a historian | Counting time (`counting-time`) | 5 | The century off by one (S1160) | 2 | hc-which-century, hc-years-between, hc-earlier, hc-which-decade |
-|  | C | Thinking like a historian | Cause and effect (`cause-and-effect`) | 10 | Dry wood and a match (S1163) | 5 | hc-cause-kind, hc-correlation, hc-counterfactual |
-|  | C | Thinking like a historian | The big turns (`the-big-turns`) | 8 | Eight hinges (S1166) | 2 | hc-turn-year, hc-turn-fact, hc-turns-order |
-|  | C | Thinking like a historian | Writing history (`writing-history`) | 5 | Bricks and a house (S1169) | 3 | hc-thesis-or-fact, hc-evidence-fits, hc-hedge |
-|  | 12 | Precalculus | Shifting a function (`function-shifts`) | 2 | The picture, moved (S1040) | 3 | g12-shift-direction, g12-shifted-point, g12-write-shift |
-|  | 12 | Precalculus | Composite functions (`composite-functions`) | 5 | Two machines in a row (S1043) | 2 | g12-compose-value, g12-compose-order |
-|  | 12 | Precalculus | The unit circle (`unit-circle`) | 6 | A walk around the circle (S1046) | 3 | g12-unit-value, g12-quadrant-sign |
-|  | 12 | Precalculus | Half-life (`half-life`) | 6 | The halving clock (S1049) | 2 | g12-half-life-left, g12-half-lives-count |
-|  | 12 | Precalculus | End behavior of polynomials (`end-behavior`) | 5 | What the ends do (S1052) | 3 | g12-end-behavior, g12-leading-term |
-|  | 12 | English 4 | Reading two sources together (`two-sources`) | 2 | Two witnesses (S1055) | 1 | r12-agree-or-differ, r12-what-added, r12-together-they-say |
-|  | 12 | English 4 | Unstated assumptions (`assumptions`) | 3 | The skipped step (S1058) | 1 | r12-find-assumption, r12-assumption-test |
-|  | 12 | English 4 | The precise word (`precise-words`) | 2 | Walk, stroll, march, trudge (S1061) | 2 | r12-precise-word, r12-word-implies |
-|  | 12 | English 4 | Why the author built it that way (`author-choices`) | 0 | Why it starts here (S1064) | 0 | r12-structure-choice, r12-if-it-began, r12-choice-facts |
-|  | 12 | Earth and space | The rock cycle (`rock-cycle`) | 11 | Never finished (S1067) | 1 | s12-rock-kind, s12-how-formed, s12-rock-next |
-|  | 12 | Earth and space | Climate and weather (`climate-and-weather`) | 4 | One Tuesday and thirty years (S1070) | 0 | s12-weather-or-climate, s12-climate-driver, s12-single-day |
-|  | 12 | Earth and space | The life of a star (`life-of-a-star`) | 1 | The long campfire (S1073) | 1 | s12-star-ending, s12-star-stage, s12-where-elements |
-|  | 12 | Earth and space | People and the planet (`human-impact`) | 0 | The way a doctor does it (S1076) | 1 | s12-cause-of, s12-what-fixed, s12-fix-pattern |
-|  | 12 | Earth and space | The layers of the Earth (`earths-layers`) | 4 | The peach (S1079) | 1 | s12-which-layer, s12-layer-order, s12-how-we-know, s12-layer-facts |
-|  | 12 | Earth and space | Ocean currents (`ocean-currents`) | 0 | The conveyor belt (S1082) | 0 | s12-current-driver, s12-why-mild, s12-sinks-or-rises, s12-ocean-facts |
-|  | 12 | Earth and space | Renewable and nonrenewable (`natural-resources`) | 5 | Slower than it grows (S1085) | 0 | s12-renewable-or-not, s12-rate-decides, s12-old-sunlight |
-|  | 12 | Earth and space | The expanding universe (`the-big-bang`) | 3 | Raisins in the dough (S1088) | 1 | s12-big-bang-evidence, s12-redshift, s12-no-center |
-|  | 12 | Writing for the world | A research paper (`research-paper`) | 4 | The question, the sources, the answer (S1091) | 2 | wr-research-paper |
-|  | 12 | Writing for the world | A personal essay (`personal-essay`) | 0 | One small moment (S1094) | 3 | wr-personal-essay |
-|  | 12 | Writing for the world | A letter to an editor (`letter-to-an-editor`) | 4 | One point, one ask (S1097) | 3 | wr-letter-to-an-editor |
-|  | 12 | United States government | The principles of the Constitution (`principles-of-the-constitution`) | 9 | The ideas underneath (S1100) | 3 | g12-which-principle, g12-constitution-year, g12-madison-line, g12-constitution-fact |
-|  | 12 | United States government | The three branches and checks and balances (`three-branches`) | 13 | Three teams (S1103) | 0 | g12-which-branch, g12-how-many, g12-which-check, g12-two-thirds, g12-term-length |
-|  | 12 | United States government | Federalism: national, state and local (`federalism`) | 15 | The school and the district (S1106) | 4 | g12-which-level, g12-power-kind, g12-supremacy, g12-tenth |
-|  | 12 | United States government | The Bill of Rights and civil liberties (`bill-of-rights`) | 8 | The fence (S1109) | 0 | g12-which-amendment, g12-amendment-year, g12-first-freedoms, g12-vote-order |
-|  | 12 | United States government | How a bill becomes a law (`how-a-bill-becomes-law`) | 3 | The obstacle course (S1112) | 0 | g12-bill-order, g12-where-bills-die, g12-after-veto, g12-override-votes, g12-bill-next-step |
-|  | 12 | United States government | Elections, parties and voting (`elections-parties-and-voting`) | 4 | Two rounds, 270 (S1115) | 0 | g12-electors, g12-presidential-year, g12-primary-or-general, g12-who-can-vote |
-|  | 12 | Economics and personal finance | Scarcity and opportunity cost (`scarcity-and-opportunity-cost`) | 6 | Sixty dollars, two wants (S1118) | 2 | e12-opportunity-cost, e12-factor-kind, e12-basic-question |
-|  | 12 | Economics and personal finance | Supply, demand and price (`supply-demand-and-price`) | 4 | The day it rained (S12) | 0 | e12-equilibrium-price, e12-shortage-or-surplus, e12-shift-effect, e12-law-of-demand |
-|  | 12 | Economics and personal finance | Competition and markets (`competition-and-markets`) | 6 | Two stands on one street (S1121) | 1 | e12-revenue, e12-profit, e12-competition-effect, e12-free-enterprise-kind |
-|  | 12 | Economics and personal finance | Money, banking and the Fed (`money-banking-and-the-fed`) | 6 | A promise everyone accepts (S1124) | 1 | e12-simple-interest, e12-money-job, e12-fed-response, e12-bank-gap |
-|  | 12 | Economics and personal finance | GDP, inflation and unemployment (`gdp-inflation-and-unemployment`) | 3 | The country's paycheck (S1127) | 1 | e12-growth-rate, e12-price-after-inflation, e12-unemployment-rate, e12-in-labor-force |
-|  | 12 | Economics and personal finance | Budgets, saving and credit (`budgets-saving-and-credit`) | 7 | The bike jar (S13) | 3 | e12-budget-left, e12-percent-of-income, e12-rule-of-72, e12-card-interest, e12-need-or-want |
-|  | 11 | Algebra 2 | The quadratic formula (`quadratic-formula`) | 5 | Where the arch lands (S968) | 4 | g11-quadratic-roots, g11-discriminant, g11-how-many-roots |
-|  | 11 | Algebra 2 | Multiplying binomials (`multiplying-binomials`) | 5 | Four patches (S971) | 8 | g11-multiply-binomials, g11-middle-term, g11-square-binomial |
-|  | 11 | Algebra 2 | Sequences (`sequences`) | 9 | Two staircases (S974) | 8 | g11-arithmetic-term, g11-geometric-term, g11-sequence-kind |
-|  | 11 | Algebra 2 | Logarithms (`logarithms`) | 6 | How many doublings (S977) | 0 | g11-log-value, g11-exp-to-log, g11-log-to-exp |
-|  | 11 | Algebra 2 | Absolute value equations (`absolute-value`) | 3 | Four steps from three (S980) | 4 | g11-absolute-solve, g11-absolute-value-of, g11-absolute-none |
-|  | 11 | English 3 | Counterclaims (`counterclaims`) | 4 | The objection that got there first (S983) | 3 | r11-which-part, r11-best-rebuttal |
-|  | 11 | English 3 | Satire (`satire`) | 1 | A straight face (S986) | 2 | r11-satire-target, r11-is-satire |
-|  | 11 | English 3 | Sentence structure and effect (`sentence-structure`) | 0 | The long one, then the short one (S989) | 1 | r11-structure-effect, r11-short-for-impact, r11-structure-facts |
-|  | 11 | English 3 | Is the evidence enough? (`enough-evidence`) | 3 | A big claim on a small pile (S992) | 1 | r11-relevant-or-sufficient, r11-what-would-suffice |
-|  | 11 | Physics | Speed and acceleration (`speed-and-acceleration`) | 2 | The red bike, part two (S24) | 3 | s11-speed, s11-acceleration, s11-steady-speed |
-|  | 11 | Physics | Kinetic and potential energy (`energy-kinds`) | 1 | The ball on the balcony (S995) | 1 | s11-potential, s11-kinetic, s11-which-energy |
-|  | 11 | Physics | Waves (`waves`) | 3 | The rope (S998) | 0 | s11-wave-speed, s11-wavelength-from, s11-higher-pitch |
-|  | 11 | Physics | Current, voltage and resistance (`electricity`) | 6 | The water pipe (S1001) | 3 | s11-current, s11-resistance, s11-voltage, s11-more-resistance |
-|  | 11 | Physics | Momentum (`momentum`) | 2 | The bike and the truck (S1004) | 2 | s11-momentum, s11-after-collision, s11-same-momentum |
-|  | 11 | Physics | Work and power (`work-and-power`) | 4 | The same box, twice (S1007) | 1 | s11-work, s11-power, s11-no-work |
-|  | 11 | Physics | Light: reflection and refraction (`light-and-optics`) | 7 | The straw that broke (S27) | 1 | s11-reflect-or-refract, s11-angle-out, s11-why-straw-bends |
-|  | 11 | Physics | Series and parallel circuits (`series-and-parallel`) | 8 | Two strings of lights (S1010) | 3 | s11-series-or-parallel, s11-bulb-burns-out, s11-series-resistance |
-|  | 11 | Writing with sources | A synthesis essay (`synthesis-essay`) | 4 | By reasons, not by sources (S1013) | 3 | wr-synthesis-essay |
-|  | 11 | Writing with sources | A literary argument (`literary-argument`) | 6 | Three times, from three places (S1016) | 2 | wr-literary-argument |
-|  | 11 | Writing with sources | An op-ed (`op-ed`) | 5 | Thirty seconds (S1019) | 6 | wr-op-ed |
-|  | 11 | United States history since 1877 | The Gilded Age and the Progressives (`gilded-age-and-progressives`) | 2 | Gold on the outside (S1022) | 0 | h11-gilded-year, h11-gilded-fact, h11-turning-year, h11-progressive-law |
-|  | 11 | United States history since 1877 | The Depression and the New Deal (`depression-and-new-deal`) | 2 | One in four (S1025) | 2 | h11-depression-year, h11-depression-fact, h11-new-deal, h11-newdeal-facts |
-|  | 11 | United States history since 1877 | America in the Second World War (`america-in-world-war-two`) | 0 | The morning that ended the argument (S1028) | 0 | h11-ww2-year, h11-ww2-fact, h11-turning-fact, h11-home-front |
-|  | 11 | United States history since 1877 | The Cold War (`cold-war`) | 0 | Two powers, no shots (S1031) | 1 | h11-cold-year, h11-cold-fact, h11-why-cold |
-|  | 11 | United States history since 1877 | The civil rights movement (`civil-rights-movement`) | 5 | Courts, feet, crowds, laws (S1034) | 4 | h11-cr-year, h11-cr-fact, h11-order-cr |
-|  | 11 | United States history since 1877 | Recent America (`recent-america`) | 1 | The shocks (S1037) | 1 | h11-recent-year, h11-recent-fact, h11-handover |
-|  | 10 | Geometry | Angle relationships (`angle-relationships`) | 4 | The bow tie (S896) | 2 | g10-vertical-angle, g10-supplementary, g10-triangle-angle |
-|  | 10 | Geometry | Similar triangles (`similar-triangles`) | 5 | The enlargement (S899) | 1 | g10-scale-factor, g10-missing-side, g10-shadow |
-|  | 10 | Geometry | Transformations (`transformations`) | 11 | The picture on the wall (S902) | 4 | g10-translate, g10-reflect, g10-rotate |
-|  | 10 | Geometry | Sine, cosine and tangent (`right-triangle-trig`) | 6 | Standing at the corner (S905) | 4 | g10-sine, g10-cosine, g10-tangent |
-|  | 10 | Geometry | Arcs and sectors (`arcs-and-sectors`) | 3 | A quarter of the pizza (S908) | 2 | g10-sector-fraction, g10-arc-length, g10-sector-area |
-|  | 10 | English 2 | Spotting bias (`spotting-bias`) | 1 | The missing middle (S911) | 2 | r10-which-leans, r10-charged-word, r10-bias-move |
-|  | 10 | English 2 | Paraphrasing precisely (`paraphrasing`) | 3 | A different truck (S914) | 4 | r10-best-paraphrase, r10-what-was-lost |
-|  | 10 | English 2 | Complex characters (`complex-characters`) | 1 | Two wants (S917) | 4 | r10-two-wants, r10-which-won, r10-complex-facts |
-|  | 10 | English 2 | Symbols (`symbols`) | 1 | The green light (S920) | 2 | r10-symbol-meaning, r10-symbol-signal |
-|  | 10 | Chemistry | The periodic table (`periodic-table`) | 11 | The professor who guessed (S11) | 1 | s10-row-or-column, s10-which-group, s10-metal-or-not |
-|  | 10 | Chemistry | Ionic and covalent bonds (`ionic-and-covalent`) | 8 | Two ways to share (S923) | 0 | s10-ionic-or-covalent, s10-gives-or-shares, s10-bond-property |
-|  | 10 | Chemistry | Balancing equations (`balancing-equations`) | 6 | Bricks in, bricks out (S926) | 3 | s10-count-atoms, s10-is-balanced, s10-which-number-changes |
-|  | 10 | Chemistry | Acids and bases (`acids-and-bases`) | 2 | The ruler from 0 to 14 (S929) | 0 | s10-acid-or-base, s10-more-acidic, s10-how-many-times, s10-neutralize |
-|  | 10 | Chemistry | Moles and molar mass (`moles-and-molar-mass`) | 7 | A dozen for chemists (S932) | 2 | s10-molar-mass, s10-grams-in-moles, s10-moles-from-grams |
-|  | 10 | Chemistry | Types of reactions (`reaction-types`) | 13 | Snap, split, swap, burn (S935) | 6 | s10-reaction-type, s10-type-example |
-|  | 10 | Chemistry | Gas laws (`gas-laws`) | 1 | The balloon (S938) | 1 | s10-boyle, s10-heat-a-gas, s10-squeeze |
-|  | 10 | Chemistry | Concentration (`concentration`) | 3 | How strong the lemonade is (S941) | 4 | s10-molarity, s10-dilute, s10-solute-or-solvent |
-|  | 10 | Writing about texts | A literary analysis (`literary-analysis`) | 3 | A claim, not a summary (S944) | 4 | wr-literary-analysis |
-|  | 10 | Writing about texts | An argument with sources (`sourced-argument`) | 5 | Where did you get that? (S947) | 2 | wr-sourced-argument |
-|  | 10 | Writing about texts | A reflective essay (`reflective-essay`) | 5 | Before and after (S950) | 0 | wr-reflective-essay |
-|  | 10 | World history | The first civilizations (`ancient-civilizations`) | 6 | The river that kept time (S953) | 2 | h10-which-river, h10-surplus, h10-period-year, h10-first-writing, h10-period-fact |
-|  | 10 | World history | Greece and Rome (`greece-and-rome`) | 4 | Everyone, some, one (S956) | 4 | h10-athens-or-rome, h10-rome-year, h10-founders-fear |
-|  | 10 | World history | The Middle Ages and the Renaissance (`middle-ages-and-renaissance`) | 3 | Land, plague, press (S959) | 1 | h10-medieval-year, h10-feudal, h10-press |
-|  | 10 | World history | The age of revolutions (`age-of-revolutions`) | 2 | One idea, three endings (S962) | 2 | h10-rev-year, h10-why-different, h10-enlightenment |
-|  | 10 | World history | The Industrial Revolution (`industrial-revolution`) | 2 | The loom in the valley (S19) | 1 | h10-industry-fact, h10-price-and-payoff, h10-pattern, h10-industry-facts |
-|  | 10 | World history | The world wars (`world-wars`) | 1 | Twenty years apart (S965) | 0 | h10-war-year, h10-war-fact, h10-never-again |
-|  | 9 | How a program is built | Inside the machine (`inside-the-machine`) | 8 | The laptop that would not wake (S2746) | 1 | t9-machine |
-|  | 9 | How a program is built | Counting in binary (`counting-in-binary`) | 5 | The eight lanterns (S2752) | 2 | t9-binary |
-|  | 9 | How a program is built | Variables, decisions and loops (`variables-and-decisions`) | 12 | The machine that gave change (S2758) | 2 | t9-program |
-|  | 9 | How a program is built | Working like a coder (`working-like-a-programmer`) | 6 | The license on the map (S2764) | 4 | t9-craft |
-|  | 9 | Relationships and health | Healthy relationships and boundaries (`healthy-relationships-9`) | 1 | What my cousin told me (S3548) | 1 | hs9-rel |
-|  | 9 | Relationships and health | Safety, abuse and trafficking (`safety-and-abuse-9`) | 2 | The modeling offer (S3554) | 2 | hs9-safety |
-|  | 9 | Relationships and health | STIs, testing and prenatal care (`sti-prevention-9`) | 1 | The checkup (S3560) | 2 | hs9-sti |
-|  | 9 | Relationships and health | Choices, risks and responsibilities (`choices-and-responsibilities-9`) | 5 | What Darnell wishes he had known (S3566) | 1 | hs9-choices |
-|  | 9 | Health for life | Health literacy and prevention (`health-literacy-9`) | 3 | The pressure he almost ignored (S3494) | 2 | hl9-literacy |
-|  | 9 | Health for life | Food, fitness and energy balance (`nutrition-and-activity-9`) | 3 | The energy drink month (S3500) | 1 | hl9-food |
-|  | 9 | Health for life | Emergencies, CPR and staying safe (`first-aid-and-safety-9`) | 5 | The grape and the stranger (S3506) | 1 | hl9-safety |
-|  | 9 | Health for life | Mind and mood (`mind-and-mood-9`) | 1 | The message at midnight (S3512) | 3 | hl9-mind |
-|  | 9 | Health for life | Drugs, medicine and choices (`drugs-and-choices-9`) | 5 | The pill in the locker room (S3518) | 1 | hl9-drugs |
-|  | 9 | Open for business | How a business works (`business-basics`) | 7 | Two mowers and a sign (S3354) | 1 | bz-basics |
-|  | 9 | Open for business | Marketing and the four Ps (`marketing-mix-9`) | 4 | The hoodies nobody bought (S3360) | 2 | bz-market |
-|  | 9 | Open for business | Money in a business (`business-money`) | 5 | The bakery's two statements (S3366) | 0 | bz-money |
-|  | 9 | Open for business | Ethics, law and careers (`ethics-and-careers`) | 1 | The cheaper screens (S3372) | 2 | bz-ethics |
-|  | 9 | From soil to supper | What agriculture is (`what-agriculture-is`) | 5 | The bale and the dollar (S3262) | 0 | ag-scope |
-|  | 9 | From soil to supper | Soil and plants (`soil-and-plants`) | 3 | The jar on the windowsill (S3268) | 1 | ag-soil |
-|  | 9 | From soil to supper | Animals and food (`animals-and-food`) | 4 | Four stomachs and a cold chain (S3274) | 1 | ag-animals |
-|  | 9 | From soil to supper | Running a farm (`running-a-farm`) | 6 | Six goats and a ledger (S3280) | 1 | ag-farm |
-|  | 9 | Say it so it lands | The communication process (`the-communication-process`) | 3 | The text that lost its tone (S3170) | 2 | sp-process |
-|  | 9 | Say it so it lands | Listening that works (`listening-that-works`) | 4 | The question under the question (S3176) | 3 | sp-listen |
-|  | 9 | Say it so it lands | Building a talk (`building-a-talk`) | 3 | Three questions in a doorway (S3182) | 4 | sp-build |
-|  | 9 | Say it so it lands | Delivery and nerves (`delivery-and-nerves`) | 6 | Ready, not doomed (S3188) | 3 | sp-deliver |
-|  | 9 | The science of behavior | How psychologists know (`how-psychologists-know`) | 2 | The two classes with the same mean (S3074) | 1 | ps-know, ps-stats |
-|  | 9 | The science of behavior | Brain, senses and growing up (`brain-senses-and-growing-up`) | 4 | The tall glass (S3080) | 1 | ps-brain |
-|  | 9 | The science of behavior | Learning, memory and thinking (`learning-memory-and-thinking`) | 6 | The bell and the bus (S3086) | 1 | ps-learn |
-|  | 9 | The science of behavior | People among people (`people-among-people`) | 5 | The one in the blue coat (S3092) | 0 | ps-social |
-|  | 9 | How to think about anything | What is an argument (`what-is-an-argument`) | 6 | The penguin in the syllogism (S2978) | 3 | ph-argument |
-|  | 9 | How to think about anything | The usual mistakes (`the-usual-mistakes`) | 5 | The third door (S2984) | 2 | ph-fallacy |
-|  | 9 | How to think about anything | What can we know (`what-can-we-know`) | 5 | The horoscope and the forecast (S2990) | 1 | ph-know |
-|  | 9 | How to think about anything | How should we live (`how-should-we-live`) | 6 | The switch and the cake (S2996) | 0 | ph-ethics |
-|  | 9 | Money for a life | Paychecks and statements (`paychecks-and-statements`) | 6 | The stub that told the truth (S2838) | 5 | e9-pay |
-|  | 9 | Money for a life | The true cost of credit (`the-true-cost-of-credit`) | 8 | Fifteen dollars per hundred (S2844) | 2 | e9-credit |
-|  | 9 | Money for a life | Saving, investing and risk (`saving-investing-and-risk`) | 7 | The first thousand (S2850) | 3 | e9-invest |
-|  | 9 | Money for a life | Insurance, scams and paying for college (`insurance-scams-and-college`) | 10 | The deductible and the phone call (S2856) | 5 | e9-protect |
-|  | 9 | The informed eye and ear | Reading artwork with precision (`reading-artwork-with-precision`) | 1 | The chair by the window (S2954) | 4 | a9-read |
-|  | 9 | The informed eye and ear | Styles, themes and cultures (`styles-themes-and-cultures`) | 7 | Two portraits, one wall (S2960) | 3 | a9-styles |
-|  | 9 | The informed eye and ear | The elements of music (`the-elements-of-music`) | 7 | Four half steps and three (S2966) | 1 | a9-elements |
-|  | 9 | The informed eye and ear | Music in society (`music-in-society`) | 4 | The song built from a song (S2972) | 3 | a9-society |
-|  | 9 | Algebra 1 | Multi-step equations (`multi-step-equations`) | 14 | Two sides of the bed (S821) | 4 | g9-both-sides, g9-distribute-solve |
-|  | 9 | Algebra 1 | Functions (`functions`) | 3 | The honest machine (S824) | 3 | g9-evaluate-function, g9-is-function, g9-find-input |
-|  | 9 | Algebra 1 | Systems of equations (`systems-of-equations`) | 6 | Two clues (S827) | 5 | g9-system-substitute, g9-check-pair |
-|  | 9 | Algebra 1 | Factoring (`factoring`) | 3 | Un-multiplying (S830) | 4 | g9-factor-pair, g9-factor-trinomial, g9-zeros |
-|  | 9 | Algebra 1 | Exponential growth (`exponential-growth`) | 6 | The rumor (S833) | 3 | g9-linear-or-exponential, g9-growth-value, g9-next-term |
-|  | 9 | English 1 | Rhetorical appeals (`rhetorical-appeals`) | 11 | Three ways to sell a bicycle (S836) | 4 | r9-which-appeal, r9-appeal-fits |
-|  | 9 | English 1 | How a theme develops (`theme-development`) | 0 | The key (S839) | 5 | r9-theme-from-arc, r9-theme-shift |
-|  | 9 | English 1 | The effect of word choice (`word-choice-effect`) | 1 | Sprinted, or ran (S842) | 0 | r9-word-effect, r9-stronger-word |
-|  | 9 | English 1 | Credible sources (`credible-sources`) | 7 | The page with no name (S845) | 2 | r9-more-credible, r9-credibility-flag, r9-credibility-check |
-|  | 9 | Biology | DNA and genes (`dna-and-genes`) | 7 | The recipe book (S22) | 2 | s9-pair-letter, s9-complement, s9-gene-or-chromosome |
-|  | 9 | Biology | Punnett squares (`punnett-squares`) | 7 | Four tickets (S848) | 2 | s9-shows-trait, s9-cross-odds, s9-which-boxes, s9-genetics-facts |
-|  | 9 | Biology | Respiration and photosynthesis (`respiration-and-photosynthesis`) | 4 | The leaf and the lung (S851) | 1 | s9-which-process, s9-reactant-or-product, s9-where-process |
-|  | 9 | Biology | Evidence for evolution (`evidence-for-evolution`) | 4 | Three witnesses (S854) | 4 | s9-which-evidence, s9-closer-relative, s9-older-layer |
-|  | 9 | Biology | Mitosis and meiosis (`cell-division`) | 4 | The recipe book, copied twice (S857) | 1 | s9-mitosis-or-meiosis, s9-chromosome-count, s9-why-half |
-|  | 9 | Biology | From DNA to protein (`protein-synthesis`) | 3 | The book that stays (S860) | 0 | s9-transcription-or-translation, s9-codon-count, s9-rna-letter |
-|  | 9 | Biology | The carbon and nitrogen cycles (`carbon-and-nitrogen-cycles`) | 3 | The atom on the bus (S863) | 0 | s9-which-cycle, s9-cycle-step, s9-who-fixes-nitrogen, s9-cycles-facts |
-|  | 9 | Biology | Homeostasis (`homeostasis`) | 8 | The thermostat inside (S866) | 2 | s9-feedback-response, s9-too-hot-or-cold, s9-blood-sugar, s9-negative-feedback |
-|  | 9 | Writing about texts and turns | An analysis paragraph (`analysis-paragraph`) | 3 | The sentence after the quote (S869) | 3 | wr-analysis-paragraph |
-|  | 9 | Writing about texts and turns | A narrative with a turn (`narrative-with-a-turn`) | 4 | The phone rang (S872) | 4 | wr-narrative-with-a-turn |
-|  | 9 | Writing about texts and turns | A rhetorical analysis (`rhetorical-analysis`) | 6 | Taking it apart (S875) | 1 | wr-rhetorical-analysis |
-|  | 9 | World geography | The shape of the earth (`the-shape-of-the-earth`) | 14 | The cracked egg (S878) | 3 | wg9-landform, wg9-plate-effect, wg9-biggest |
-|  | 9 | World geography | Climate and biomes (`climate-and-biomes`) | 11 | Three dials (S881) | 0 | wg9-biome, wg9-lapse, wg9-climate-factor |
-|  | 9 | World geography | Reading maps (`reading-maps`) | 3 | The shrunken photograph (S884) | 0 | wg9-map-scale, wg9-time-zones, wg9-map-kind |
-|  | 9 | World geography | People and places (`people-and-places`) | 2 | The block and the ranch (S887) | 1 | wg9-density, wg9-natural-increase, wg9-urban-share |
-|  | 9 | World geography | Resources and work (`resources-and-work`) | 9 | The paycheck and the jar (S890) | 2 | wg9-renewable, wg9-sector, wg9-trade-balance |
-|  | 9 | World geography | Regions of the world (`regions-of-the-world`) | 8 | The map behind your eyes (S893) | 2 | wg9-capital, wc6-feature-continent, wc6-continent-of |
-|  | 8 | Lines, powers and triangles | Slope (`slope`) | 9 | Two hills (S764) | 1 | g8-slope-points, g8-slope-from-equation, g8-intercept-from-equation |
-|  | 8 | Lines, powers and triangles | Exponents (`exponents`) | 8 | Five folds (S767) | 2 | g8-power-value, g8-multiply-powers, g8-divide-powers, g8-zero-negative-power |
-|  | 8 | Lines, powers and triangles | Square roots (`square-roots`) | 6 | Forty-nine tiles (S770) | 3 | g8-square-root, g8-root-between, g8-square-of |
-|  | 8 | Lines, powers and triangles | The Pythagorean theorem (`pythagorean-theorem`) | 3 | The rope with twelve knots (S9) | 3 | g8-hypotenuse, g8-missing-leg, g8-is-right-triangle |
-|  | 8 | Lines, powers and triangles | Scientific notation (`scientific-notation`) | 1 | Sliding the point (S773) | 5 | g8-to-scientific, g8-from-scientific, g8-compare-scientific |
-|  | 8 | Lines, powers and triangles | Linear functions (`linear-functions`) | 6 | The taxi meter (S1280) | 2 | m8-linear |
-|  | 8 | Lines, powers and triangles | Volume of cylinders and cones (`volume-of-cylinders`) | 4 | A circle, stacked (S1283) | 1 | m8-cylinder |
-|  | 8 | Reading with a critical eye | Flawed reasoning (`flawed-reasoning`) | 2 | The car and the rain (S776) | 8 | r8-name-flaw, r8-which-flawed |
-|  | 8 | Reading with a critical eye | Irony (`irony`) | 1 | The fire station (S779) | 1 | r8-irony-type, r8-is-ironic |
-|  | 8 | Reading with a critical eye | Allusions (`allusions`) | 2 | One word, one story (S782) | 0 | r8-allusion-meaning, r8-allusion-source |
-|  | 8 | Reading with a critical eye | An objective summary (`objective-summary`) | 0 | The mirror (S785) | 2 | r8-objective-summary, r8-loaded-word |
-|  | 8 | Reading with a critical eye | Purpose and bias (`purpose-and-bias`) | 7 | Outside the frame (S1352) | 5 | r8-author-purpose |
-|  | 8 | Reading with a critical eye | Theme across texts (`theme-across-texts`) | 3 | One tune, two songs (S1355) | 2 | r8-theme-across |
-|  | 8 | Atoms, forces and the universe | Inside the atom (`inside-the-atom`) | 9 | The balloon on the wall (S16) | 2 | s8-particle-charge, s8-particle-where, s8-atomic-number |
-|  | 8 | Atoms, forces and the universe | Newton's laws (`newtons-laws`) | 14 | The cart that would not start (S10) | 4 | s8-which-law, s8-f-equals-ma, s8-more-mass |
-|  | 8 | Atoms, forces and the universe | Chemical reactions (`chemical-reactions`) | 6 | Fold it, burn it (S788) | 2 | s8-physical-or-chemical, s8-reaction-sign, s8-mass-conserved |
-|  | 8 | Atoms, forces and the universe | The scale of the universe (`scale-of-the-universe`) | 2 | Boxes inside boxes (S791) | 2 | s8-inside-which, s8-light-time, s8-biggest-of |
-|  | 8 | Atoms, forces and the universe | Speed on a graph (`speed-and-graphs`) | 9 | The walk on a graph (S794) | 1 | s8-read-slope, s8-line-means, s8-average-speed |
-|  | 8 | Atoms, forces and the universe | Rock layers and fossils (`weathering-to-fossils`) | 1 | The laundry pile (S797) | 1 | s8-which-older, s8-layer-tells, s8-tilted-layers |
-|  | 8 | Writing essays | A thesis and an outline (`thesis-and-outline`) | 1 | A fight worth picking (S800) | 3 | wr8-thesis-outline |
-|  | 8 | Writing essays | A paragraph that proves something (`evidence-paragraph`) | 6 | The missing sentence (S803) | 5 | wr8-evidence-paragraph |
-|  | 8 | Writing essays | A five-paragraph essay (`full-essay`) | 3 | Body first (S806) | 1 | wr8-full-essay |
-|  | 8 | The United States to 1877 | The founding documents (`founding-documents`) | 3 | Why, how, and what may not (S809) | 3 | h8-which-document, h8-compromise, h8-reference-year, h8-reference-fact, h8-we-the-people |
-|  | 8 | The United States to 1877 | The early republic (`early-republic`) | 1 | Learning to drive (S812) | 3 | h8-republic-year, h8-republic-fact, h8-hamilton-jefferson |
-|  | 8 | The United States to 1877 | The road to the Civil War (`sectional-crisis`) | 3 | The coin toss (S815) | 1 | h8-crisis-year, h8-crisis-fact, h8-order-crisis, h8-what-war-was-about |
-|  | 8 | The United States to 1877 | Reconstruction (`reconstruction`) | 10 | Three promises (S818) | 1 | h8-which-amendment, h8-amendment-year, h8-after-1877, h8-reconstruction-facts |
-|  | 7 | Proportions, integers and circles | Proportions (`proportions`) | 7 | The price of one (S701) | 2 | g7-unit-rate, g7-solve-proportion, g7-is-proportional |
-|  | 7 | Proportions, integers and circles | Percents (`percents`) | 5 | Half off what? (S25) | 2 | g7-percent-of, g7-discount, g7-what-percent |
-|  | 7 | Proportions, integers and circles | Adding and subtracting integers (`integers`) | 3 | The debt (S704) | 2 | g7-add-integers, g7-subtract-integers, g7-integer-story |
-|  | 7 | Proportions, integers and circles | Two-step equations (`two-step-equations`) | 7 | Shoes then socks (S707) | 5 | g7-two-step, g7-two-step-subtract, g7-first-step |
-|  | 7 | Proportions, integers and circles | Circles (`circles`) | 2 | The string and the can (S710) | 1 | g7-circumference, g7-circle-area, g7-radius-or-diameter |
-|  | 7 | Proportions, integers and circles | Probability (`probability-7`) | 2 | A hundred flips (S1328) | 1 | m7-probability |
-|  | 7 | Proportions, integers and circles | Scale drawings (`scale-drawings`) | 3 | The bedroom on the page (S1331) | 0 | m7-scale |
-|  | 7 | Reading with an eye for craft | The author's purpose (`authors-purpose`) | 11 | Three pages (S713) | 4 | r7-purpose, r7-purpose-clue |
-|  | 7 | Reading with an eye for craft | Strong and weak evidence (`evidence-quality`) | 0 | One story against ten thousand (S716) | 3 | r7-strong-evidence, r7-why-weak |
-|  | 7 | Reading with an eye for craft | Connotation (`connotation`) | 0 | Slim, thin, skinny (S719) | 1 | r7-connotation, r7-positive-word |
-|  | 7 | Reading with an eye for craft | Why a character acts (`character-motive`) | 1 | What she wanted and what she feared (S722) | 3 | r7-motive, r7-motive-clue |
-|  | 7 | Reading with an eye for craft | Figurative language (`figurative-language-7`) | 11 | The clock that glared (S1346) | 4 | r7-figurative |
-|  | 7 | Reading with an eye for craft | How a text is organized (`text-structures-7`) | 7 | Two rooms (S1349) | 5 | r7-structure |
-|  | 7 | Bodies, weather and change | Body systems (`body-systems`) | 11 | The city inside (S725) | 0 | s7-which-system, s7-system-job, s7-organ-belongs |
-|  | 7 | Bodies, weather and change | Photosynthesis (`photosynthesis`) | 8 | The flower in the basement (S8) | 1 | s7-in-or-out, s7-photo-missing, s7-where-it-happens |
-|  | 7 | Bodies, weather and change | Weather systems (`weather-systems`) | 0 | The slope of the air (S728) | 2 | s7-front-result, s7-pressure-sky, s7-air-rule, s7-weather-facts |
-|  | 7 | Bodies, weather and change | Natural selection (`natural-selection`) | 4 | The moths (S731) | 1 | s7-what-selected, s7-selection-parts, s7-selection-order |
-|  | 7 | Bodies, weather and change | Genes and traits (`genes-and-traits`) | 4 | The kittens that did not match (S26) | 4 | s7-dominant-or-recessive, s7-which-shows, s7-why-blue-child, s7-genes-facts |
-|  | 7 | Bodies, weather and change | Energy in ecosystems (`energy-in-ecosystems`) | 3 | The pyramid (S734) | 0 | s7-tenth-rule, s7-pyramid-level, s7-why-few-lions |
-|  | 7 | Bodies, weather and change | Where the water comes from (`watersheds`) | 5 | The crumpled bag (S1184) | 1 | sc7-watershed |
-|  | 7 | Writing about what you read | A summary and a response (`summary-and-response`) | 0 | The summary that gave nothing away (S737) | 2 | wr-summary-and-response |
-|  | 7 | Writing about what you read | An argument with a counterclaim (`argument-with-a-counterclaim`) | 5 | The objection said out loud (S740) | 3 | wr-argument-with-a-counterclaim |
-|  | 7 | Writing about what you read | An explanatory essay (`explanatory-essay`) | 4 | Starting where the reader is (S743) | 2 | wr-explanatory-essay |
-|  | 7 | Texas history | The first Texans (`the-first-texans`) | 5 | Four regions (S746) | 1 | tx7-people-region, tx7-way-of-life, tx7-four-regions |
-|  | 7 | Texas history | Spanish and Mexican Texas (`spain-and-mexico-in-texas`) | 1 | Three centuries and a door (S749) | 1 | tx7-spanish-year, tx7-spanish-fact, h4-tx-year, tx7-empresario |
-|  | 7 | Texas history | Revolution and republic (`revolution-and-republic`) | 0 | From a cannon to eighteen minutes (S752) | 0 | h4-rev-year, h4-rev-fact, tx7-republic-year, tx7-republic-fact, tx7-rev-order |
-|  | 7 | Texas history | Statehood and the Civil War (`statehood-and-civil-war`) | 4 | A state, a war, and June nineteenth (S755) | 1 | h4-union-year, h4-union-fact, tx7-state-year, tx7-state-fact, tx7-houston-stand |
-|  | 7 | Texas history | Cattle, cotton and oil (`cattle-cotton-and-oil`) | 2 | Three fortunes (S758) | 0 | tx7-growth-year, tx7-growth-fact, tx7-why-drive, tx7-herd-math |
-|  | 7 | Texas history | Modern Texas (`modern-texas`) | 3 | From farms to skylines (S761) | 1 | tx7-modern-year, tx7-modern-fact, tx7-texas-today |
-|  | 7 | Bits, networks and safety | Counting in binary (`binary`) | 2 | Four flashlights (S1217) | 3 | t7-binary |
-|  | 7 | Bits, networks and safety | How the internet moves a message (`how-the-internet-works`) | 4 | One piece at a time (S1220) | 0 | t7-internet |
-|  | 7 | Bits, networks and safety | Passwords and privacy (`passwords-and-privacy`) | 7 | The message that said now (S1223) | 2 | t7-safety |
-|  | 6 | What a machine learns | A machine that learns (`learning-from-examples`) | 3 | The bird feeder that learned (S2722) | 2 | t6-learn |
-|  | 6 | What a machine learns | Wrong and sure (`wrong-and-sure`) | 3 | The bridge that was never built (S2728) | 3 | t6-sure |
-|  | 6 | What a machine learns | Fair examples (`fair-examples`) | 2 | The voice it never heard (S2734) | 1 | t6-fair |
-|  | 6 | What a machine learns | Staying in charge (`staying-in-charge`) | 2 | The postcard rule (S2740) | 0 | t6-charge |
-|  | 6 | How people work | The brain you are growing (`the-brain-you-are-growing`) | 3 | The night before the test (S3098) | 0 | py6-brain |
-|  | 6 | How people work | Attention, memory and practice (`attention-memory-and-practice`) | 5 | The closed book (S3104) | 0 | py6-memory |
-|  | 6 | How people work | Feelings are signals (`feelings-are-signals`) | 4 | The smoke detector (S3110) | 0 | py6-feelings |
-|  | 6 | How people work | Other people (`other-people`) | 3 | The kid in the red jacket (S3116) | 0 | py6-people |
-|  | 6 | Big questions, good reasons | Questions that open (`questions-that-open`) | 3 | The hot dog court (S3002) | 3 | p6-questions |
-|  | 6 | Big questions, good reasons | Reasons and evidence (`reasons-and-evidence`) | 4 | How do you know? (S3008) | 1 | p6-reasons |
-|  | 6 | Big questions, good reasons | Disagreeing well (`disagreeing-well`) | 3 | So you are saying (S3014) | 1 | p6-disagree |
-|  | 6 | Big questions, good reasons | Fair and unfair (`fair-and-unfair`) | 5 | Fair by which rule (S3020) | 3 | p6-fair |
-|  | 6 | Money over time | Accounts and cards (`accounts-and-cards`) | 8 | The card that was not money (S2814) | 3 | e6-accounts |
-|  | 6 | Money over time | Credit history and the cost of a loan (`credit-history-and-loans`) | 5 | The seven-year shadow (S2820) | 2 | e6-loans |
-|  | 6 | Money over time | Interest that compounds (`interest-that-compounds`) | 5 | Two ways to grow a hundred dollars (S2826) | 2 | e6-compound |
-|  | 6 | Money over time | Budgets, taxes and paying for college (`budgets-taxes-and-college`) | 9 | The paycheck and the percent (S2832) | 4 | e6-budget |
-|  | 6 | Say what you mean | Listening on purpose (`listening-on-purpose`) | 4 | Say it back (S3194) | 1 | s6-listen |
-|  | 6 | Say what you mean | Saying it clearly (`saying-it-clearly`) | 5 | The ends of the words (S3200) | 5 | s6-clear |
-|  | 6 | Say what you mean | A two-minute talk (`a-two-minute-talk`) | 10 | Two hundred and fifty words (S3206) | 4 | s6-talk |
-|  | 6 | Say what you mean | Disagreeing out loud (`disagreeing-out-loud`) | 6 | The quiet one (S3212) | 2 | s6-discuss |
-|  | 6 | Where food comes from | Where food comes from (`where-food-comes-from`) | 7 | The taco with four farms (S3286) | 2 | a6-food |
-|  | 6 | Where food comes from | Soil and seeds (`soil-and-seeds`) | 3 | Two pots and one change (S3292) | 4 | a6-soil |
-|  | 6 | Where food comes from | Animals on a farm (`animals-on-a-farm`) | 10 | The egret and the cow (S3298) | 6 | a6-animals |
-|  | 6 | Where food comes from | A small project (`a-small-project`) | 7 | Three hens and a graph (S3304) | 5 | a6-project |
-|  | 6 | Earn, save, start | Earning money and paying taxes (`earning-and-taxes`) | 4 | The snow cone paycheck (S3378) | 4 | bz6-earn |
-|  | 6 | Earn, save, start | Banks, cards and credit (`banking-and-credit`) | 2 | The card that was not money (S3384) | 1 | bz6-bank |
-|  | 6 | Earn, save, start | Budgets and net worth (`budgets-and-net-worth`) | 6 | The budget on the refrigerator (S3390) | 2 | bz6-budget |
-|  | 6 | Earn, save, start | A small business of your own (`starting-a-small-business`) | 4 | Walks for hire (S3396) | 2 | bz6-start |
-|  | 6 | Growing up healthy | Puberty and the growing body (`puberty-and-the-body-6`) | 0 | The growth chart in the nurse's office (S3524) | 1 | rsh6-body |
-|  | 6 | Growing up healthy | Reproduction and pregnancy (`reproduction-and-pregnancy-6`) | 0 | The ultrasound picture on the fridge (S3530) | 2 | rsh6-life |
-|  | 6 | Growing up healthy | Healthy relationships (`healthy-relationships-6`) | 3 | The friend who wanted all of Sam's time (S3536) | 3 | rsh6-relate |
-|  | 6 | Growing up healthy | Safety, boundaries and choices (`safety-and-choices-6`) | 0 | The comments in the group chat (S3542) | 0 | rsh6-safe |
-|  | 6 | Healthy choices | Your body and your health (`body-and-hygiene-6`) | 3 | The tick on the trail (S3470) | 1 | hl6-body |
-|  | 6 | Healthy choices | Food and movement (`eating-and-moving-6`) | 2 | The soup aisle (S3476) | 1 | hl6-food |
-|  | 6 | Healthy choices | Staying safe, in person and online (`staying-safe-6`) | 4 | The group chat (S3482) | 1 | hl6-safe |
-|  | 6 | Healthy choices | Medicines, nicotine and other drugs (`substance-free-6`) | 1 | The pills at the bus stop (S3488) | 0 | hl6-drugs |
-|  | 6 | Reading a work of art | The four-step critique (`the-four-step-critique`) | 5 | The review that skipped three steps (S2930) | 4 | a6-critique |
-|  | 6 | Reading a work of art | Art, history and power (`art-history-and-power`) | 5 | The wall that answered a war (S2936) | 0 | a6-history |
-|  | 6 | Reading a work of art | The language of the score (`the-language-of-the-score`) | 12 | Twelve bars and a repeat sign (S2942) | 1 | a6-score |
-|  | 6 | Reading a work of art | Judging a performance (`judging-a-performance`) | 8 | The judge with five questions (S2948) | 6 | a6-judge |
-|  | 6 | Ratios, negatives and equations | Ratios (`ratios`) | 5 | Two blues to one yellow (S18) | 2 | g6-simplify-ratio, g6-scale-ratio, g6-ratio-from-words |
-|  | 6 | Ratios, negatives and equations | Dividing fractions (`dividing-fractions`) | 7 | How many halves (S638) | 3 | g6-divide-by-fraction, g6-whole-by-fraction |
-|  | 6 | Ratios, negatives and equations | Negative numbers (`negative-numbers`) | 1 | The elevator that counted backward (S17) | 4 | g6-compare-negatives, g6-opposite, g6-order-negatives, g6-temperature |
-|  | 6 | Ratios, negatives and equations | Area of triangles and parallelograms (`area-of-triangles`) | 7 | Half a rectangle (S641) | 2 | g6-triangle-area, g6-parallelogram-area, g6-missing-height |
-|  | 6 | Ratios, negatives and equations | One-step equations (`one-step-equations`) | 6 | The mystery box (S644) | 1 | g6-solve-add, g6-solve-multiply, g6-check-solution |
-|  | 6 | Ratios, negatives and equations | Mean, median, mode and range (`mean-median-mode-6`) | 11 | The friend who moved the mean (S1274) | 7 | m6-mean |
-|  | 6 | Ratios, negatives and equations | The four quadrants (`four-quadrants`) | 8 | East and north (S1277) | 1 | m6-quadrants |
-|  | 6 | Reading like a thinker | Claims and reasons (`claims-and-reasons`) | 3 | The reason that fell (S647) | 7 | r6-find-claim, r6-supports-claim, r6-weak-reason |
-|  | 6 | Reading like a thinker | Tone and mood (`tone-and-mood`) | 5 | Two rains (S650) | 2 | r6-mood, r6-mood-word, r6-tone |
-|  | 6 | Reading like a thinker | Word roots (`word-roots`) | 2 | The root port (S653) | 9 | r6-root-meaning, r6-word-from-root |
-|  | 6 | Reading like a thinker | The central idea (`central-idea`) | 2 | The same job (S656) | 3 | r6-central-idea, r6-detail-not-central |
-|  | 6 | Reading like a thinker | Plot and conflict (`plot-and-conflict`) | 6 | The hill (S1292) | 6 | r6-plot |
-|  | 6 | Reading like a thinker | How a poem is built (`poetry-elements`) | 3 | The song without music (S1295) | 2 | r6-poetry |
-|  | 6 | Matter, energy and Earth | Elements and compounds (`elements-and-compounds`) | 5 | Letters and words (S659) | 3 | s6-element-or-compound, s6-count-kinds |
-|  | 6 | Matter, energy and Earth | How heat moves (`heat-transfer`) | 8 | Three ways (S662) | 3 | s6-which-transfer, s6-transfer-example, s6-warm-to-cool |
-|  | 6 | Matter, energy and Earth | The moving Earth (`plate-tectonics`) | 5 | Two rugs (S665) | 3 | s6-boundary-result, s6-which-boundary, s6-where-quakes |
-|  | 6 | Matter, energy and Earth | Cells (`cells`) | 1 | The pond that moved (S7) | 0 | s6-cell-part-job, s6-plant-or-both |
-|  | 6 | Matter, energy and Earth | Who eats whom (`ecosystems`) | 7 | Follow the energy (S668) | 1 | s6-which-role, s6-chain-order, s6-remove-a-link |
-|  | 6 | Matter, energy and Earth | Density (`density`) | 3 | Feathers and rocks (S671) | 4 | s6-density, s6-float-or-sink, s6-why-ship-floats |
-|  | 6 | Matter, energy and Earth | The microscope (`microscopes`) | 4 | The rooms in the cork (S1193) | 1 | sc6-microscope |
-|  | 6 | Writing with a purpose | An argument with evidence (`argument-with-evidence`) | 3 | Show the numbers (S674) | 3 | wr-argument-with-evidence |
-|  | 6 | Writing with a purpose | Compare and contrast (`compare-and-contrast`) | 5 | Two towns (S677) | 3 | wr-compare-and-contrast |
-|  | 6 | Writing with a purpose | A narrative with dialogue (`narrative-with-dialogue`) | 1 | Let them talk (S680) | 2 | wr-narrative-with-dialogue |
-|  | 6 | World cultures | Maps and hemispheres (`maps-and-hemispheres`) | 8 | The orange globe (S683) | 2 | wc6-hemisphere, wc6-continent-of, wc6-how-many, wc6-which-line |
-|  | 6 | World cultures | What culture is (`what-culture-is`) | 9 | What we would have to teach (S686) | 4 | wc6-culture-part, wc6-how-it-spread, wc6-religion-origin |
-|  | 6 | World cultures | Kinds of government (`kinds-of-government`) | 18 | The remote (S689) | 6 | wc6-government-kind, wc6-limited-or-not, wc6-who-rules |
-|  | 6 | World cultures | Kinds of economies (`kinds-of-economies`) | 10 | Who decides (S692) | 3 | wc6-economy-kind, wc6-gdp-per-person, wc6-who-decides |
-|  | 6 | World cultures | People on the move (`people-on-the-move`) | 5 | Push and pull (S695) | 3 | wc6-density, wc6-push-or-pull, wc6-more-crowded |
-|  | 6 | World cultures | World regions today (`world-regions-today`) | 10 | The neighborhood on the map (S698) | 1 | wc6-feature-continent, wc6-language-of, wc6-feature-kind |
-|  | 6 | World cultures | Where things come from (`where-things-come-from`) | 5 | The tag (S1196) | 1 | h6-supply-chain |
-|  | 5 | Decimals, fractions and volume | Adding and subtracting decimals (`adding-decimals`) | 9 | Two prices (S578) | 1 | g5-add-decimals, g5-subtract-decimals, g5-decimal-money |
-|  | 5 | Decimals, fractions and volume | Multiplying fractions (`multiplying-fractions`) | 12 | Half of a half (S581) | 2 | g5-multiply-fractions, g5-fraction-of-whole |
-|  | 5 | Decimals, fractions and volume | Dividing by two-digit numbers (`dividing-by-two-digits`) | 7 | Cartons of 24 (S584) | 2 | g5-divide-2digit, g5-divide-check, g5-divide-remainder |
-|  | 5 | Decimals, fractions and volume | Volume (`volume`) | 6 | Sugar cubes (S587) | 1 | g5-volume, g5-missing-side, g5-volume-layers |
-|  | 5 | Decimals, fractions and volume | The coordinate plane (`coordinate-plane`) | 5 | Three east, two north (S1181) | 2 | m5-read-point, m5-which-axis |
-|  | 5 | Decimals, fractions and volume | Order of operations (`order-of-operations`) | 12 | The package (S590) | 2 | g5-order-ops, g5-brackets, g5-two-levels |
-|  | 5 | Decimals, fractions and volume | Multiplying decimals (`multiplying-decimals`) | 5 | The dimes (S1322) | 5 | m5-decimal-mult |
-|  | 5 | Decimals, fractions and volume | Data and line plots (`data-and-line-plots`) | 4 | Ten beans (S1325) | 2 | m5-data |
-|  | 5 | Reading with judgment | Theme (`theme`) | 6 | What it was really about (S593) | 3 | r5-theme, r5-topic-or-theme |
-|  | 5 | Reading with judgment | Point of view (`point-of-view`) | 6 | Two cameras (S596) | 0 | r5-pov, r5-pov-clue |
-|  | 5 | Reading with judgment | Idioms and sayings (`idioms`) | 1 | Break a leg (S599) | 0 | r5-idiom-meaning, r5-idiom-use, r5-literal-or-idiom |
-|  | 5 | Reading with judgment | Backing it up (`text-evidence`) | 0 | Point to the line (S602) | 3 | r5-evidence, r5-claim-supported |
-|  | 5 | Reading with judgment | Comparing two texts (`comparing-texts`) | 0 | Two storms (S1340) | 2 | r5-compare-texts |
-|  | 5 | Reading with judgment | Reading an argument (`reading-an-argument`) | 3 | The cousin (S1343) | 1 | r5-argument |
-|  | 5 | Mixtures, sky and water | Mixtures and solutions (`mixtures-and-solutions`) | 7 | Two glasses (S605) | 0 | s5-mixture-or-solution, s5-how-to-separate, s5-still-there |
-|  | 5 | Mixtures, sky and water | The Earth, the sun and the moon (`earth-sun-moon`) | 3 | Top, lamp, marble (S608) | 0 | s5-which-motion, s5-moon-phase, s5-moon-light |
-|  | 5 | Mixtures, sky and water | The water cycle (`water-cycle`) | 4 | The lake that would not stay (S6) | 1 | s5-which-stage, s5-next-stage, s5-state-change-in-cycle |
-|  | 5 | Mixtures, sky and water | Inherited or learned (`inherited-and-learned`) | 6 | Eyes and wheels (S611) | 1 | s5-inherited-or-learned, s5-which-is-inherited, s5-which-is-learned |
-|  | 5 | Mixtures, sky and water | Balanced and unbalanced forces (`forces-and-motion-5`) | 5 | The rope that did not move (S1304) | 0 | sc5-forces |
-|  | 5 | Mixtures, sky and water | Fossils and what they tell (`fossils-and-earth-5`) | 10 | The shell on the mountain (S1307) | 0 | sc5-fossils |
-|  | 5 | Writing several paragraphs | An informational piece (`informational-piece`) | 5 | The tour (S614) | 7 | wr-informational-piece |
-|  | 5 | Writing several paragraphs | An opinion essay (`opinion-essay-5`) | 6 | Five paragraphs (S617) | 5 | wr-opinion-essay-5 |
-|  | 5 | Writing several paragraphs | A personal narrative (`personal-narrative-5`) | 5 | The moment (S620) | 7 | wr-personal-narrative-5 |
-|  | 5 | The story of the United States | The thirteen colonies (`thirteen-colonies`) | 4 | Three rows (S623) | 0 | h5-colony-region, h5-why-they-came, h5-first-colony |
-|  | 5 | The story of the United States | The road to revolution (`road-to-revolution`) | 1 | Four steps to a war (S626) | 1 | h5-event-year, h5-order-events, h5-what-declared |
-|  | 5 | The story of the United States | The Constitution (`the-constitution`) | 8 | The second plan (S629) | 3 | h5-which-branch, h5-branch-job, h5-bill-of-rights |
-|  | 5 | The story of the United States | Growing west (`growing-west`) | 0 | Doubling the map (S632) | 1 | h5-west-year, h5-west-what, h5-who-paid |
-|  | 5 | The story of the United States | The Civil War (`civil-war`) | 2 | The split (S635) | 1 | h5-war-year, h5-war-fact, h5-war-settled |
-|  | 5 | The story of the United States | Immigrants and growing cities (`immigration-and-cities`) | 3 | The ship in the family tree (S1310) | 0 | h5-immigration |
-|  | 5 | The story of the United States | Industry and invention (`industry-and-invention`) | 5 | Fourteen hours (S1313) | 0 | h5-industry |
-|  | 5 | Programs that decide | Variables (`variables`) | 10 | The scoreboard (S1208) | 1 | t5-variables |
-|  | 5 | Programs that decide | If, then, else (`if-then`) | 6 | The thermostat that never sleeps (S1211) | 2 | t5-if-then |
-|  | 5 | Programs that decide | Finding the bug (`finding-the-bug`) | 5 | Facing the wall (S1214) | 1 | t5-debug |
-|  | 4 | Color, shape and story | Balance and pattern (`balance-and-pattern`) | 7 | A face, a flower, a fence (S569) | 3 | art-which-balance, art-which-principle, art-break-pattern |
-|  | 4 | Color, shape and story | Making space on paper (`making-space-on-paper`) | 5 | The road into the distance (S572) | 4 | art-depth-trick, art-positive-negative, art-perspective-part |
-|  | 4 | Color, shape and story | Art tells a story (`art-tells-a-story`) | 6 | The handprint (S575) | 4 | art-why-made, art-ask-first, art-caves |
-|  | 4 | Reading between the lines | Summarizing (`summarizing`) | 2 | One minute (S512) | 2 | r4-best-summary, r4-not-important, r4-summary-order |
-|  | 4 | Reading between the lines | Making inferences (`making-inferences`) | 4 | The muddy boots (S515) | 1 | r4-infer, r4-which-clue |
-|  | 4 | Reading between the lines | Similes and metaphors (`similes-and-metaphors`) | 4 | Brave as a lion (S518) | 1 | r4-simile-or-metaphor, r4-find-figurative, r4-figurative-meaning |
-|  | 4 | Reading between the lines | How a text is built (`text-structure`) | 4 | Road signs (S521) | 4 | r4-structure, r4-signal-word |
-|  | 4 | Reading between the lines | Finding a word (`dictionary-skills`) | 3 | The wrong page (S1175) | 2 | r4-alpha-first, r4-same-letter-order, r4-guide-words |
-|  | 4 | Reading between the lines | Cause and effect (`cause-and-effect-4`) | 5 | The icy road (S1334) | 1 | r4-cause-effect |
-|  | 4 | Reading between the lines | Text features (`text-features`) | 3 | Two minutes first (S1337) | 1 | r4-text-features |
-|  | 4 | Energy, Earth and living things | Forms of energy (`forms-of-energy`) | 8 | Five kinds before breakfast (S524) | 2 | s4-which-form, s4-form-change, s4-form-example |
-|  | 4 | Energy, Earth and living things | Circuits (`circuits`) | 3 | The loop (S527) | 2 | s4-conductor-or-insulator, s4-will-it-light, s4-find-the-break |
-|  | 4 | Energy, Earth and living things | How land changes (`changing-land`) | 3 | The sandcastle (S530) | 0 | s4-which-step, s4-what-caused, s4-order-steps |
-|  | 4 | Energy, Earth and living things | Adaptations (`adaptations`) | 2 | The right tools (S533) | 1 | s4-what-it-is-for, s4-which-adaptation, s4-what-problem |
-|  | 4 | Energy, Earth and living things | Simple machines (`simple-machines`) | 4 | The piano (S1178) | 1 | sc4-which-machine, sc4-machine-trade |
-|  | 4 | Energy, Earth and living things | Properties of matter (`properties-of-matter-4`) | 8 | Four tests (S1358) | 2 | sc4-matter |
-|  | 4 | Energy, Earth and living things | Food webs (`food-webs-4`) | 1 | The strings (S1361) | 2 | sc4-food-webs |
-|  | 4 | Writing paragraphs | A paragraph with a topic sentence (`topic-sentences`) | 2 | The big thing first (S536) | 3 | wr4-topic-paragraph |
-|  | 4 | Writing paragraphs | An opinion paragraph (`opinion-paragraph`) | 0 | Longer recess (S539) | 4 | wr4-opinion |
-|  | 4 | Writing paragraphs | A small story (`narrative-paragraph`) | 5 | The bird in the house (S542) | 5 | wr4-story |
-|  | 4 | The story of Texas | The first Texans (`first-texans`) | 8 | Three kitchens (S545) | 0 | h4-which-people, h4-land-shapes |
-|  | 4 | The story of Texas | Spanish and Mexican Texas (`spanish-and-mexican-texas`) | 1 | The mission bell (S548) | 1 | h4-flag-order, h4-tx-year, h4-austin |
-|  | 4 | The story of Texas | The Texas Revolution (`texas-revolution`) | 1 | The thirteen days (S14) | 0 | h4-rev-year, h4-rev-fact, h4-order-revolution |
-|  | 4 | The story of Texas | Texas joins the Union (`texas-joins-the-union`) | 2 | The 28th star (S551) | 1 | h4-union-year, h4-union-fact, h4-six-flags |
-|  | 4 | Bigger numbers and operations | Multiplying bigger numbers (`multi-digit-multiplication`) | 3 | Twenty-three boxes (S554) | 3 | g4-two-by-one, g4-split-first, g4-two-by-two, g4-multiply-story, g4-estimate-product |
-|  | 4 | Bigger numbers and operations | Dividing bigger numbers (`long-division`) | 4 | Sharing in rounds (S557) | 2 | g4-divide-exact, g4-divide-remainder, g4-check-division, g4-divide-story, g4-remainder-only |
-|  | 4 | Bigger numbers and operations | Factors and multiples (`factors-and-multiples`) | 4 | Twelve chairs (S560) | 2 | g4-is-factor, g4-list-factor, g4-multiple, g4-prime, g4-next-multiple |
-|  | 4 | Bigger numbers and operations | Fractions and decimals (`equivalent-and-decimals`) | 1 | The quarter (S563) | 0 | g4-fraction-to-decimal, g4-decimal-to-fraction, g4-compare-decimals, g4-tenths-hundredths, g4-decimal-picture |
-|  | 4 | Bigger numbers and operations | Adding and subtracting fractions (`add-fractions`) | 4 | Half and a quarter (S566) | 2 | g4-add-fraction, g4-sub-fraction, g4-mixed-number, g4-fraction-story, g4-simplify |
-|  | 4 | Bigger numbers and operations | Area and perimeter (`area-and-perimeter`) | 7 | Around and inside (S1268) | 4 | m4-area-perimeter |
-|  | 4 | Bigger numbers and operations | Angles and lines (`angles-and-lines`) | 3 | The door (S1271) | 4 | m4-angles |
-|  | 4 | Reading music | How long a note lasts (`note-lengths`) | 5 | The pizza of notes (S1259) | 5 | mu4-lengths |
-|  | 4 | Reading music | The staff (`the-staff`) | 7 | The ladder of letters (S1262) | 3 | mu4-staff |
-|  | 4 | Reading music | Fast, slow, loud, soft (`tempo-and-dynamics`) | 6 | Four Italian words (S1265) | 2 | mu4-words |
-|  | 4 | A body that works well | Sleep and the brain (`sleep-and-the-brain`) | 2 | The night librarian (S1238) | 1 | h4-sleep |
-|  | 4 | A body that works well | Reading a food label (`reading-a-food-label`) | 6 | The serving size (S1241) | 2 | h4-label |
-|  | 4 | A body that works well | The heart at work (`the-heart-at-work`) | 7 | The top of the stairs (S1244) | 3 | h4-heart |
-|  | 4 | A body that works well | Screens and you (`screens-and-you`) | 1 | Twenty, twenty, twenty (S1247) | 0 | h4-screens |
-|  | 3 | Looking and making | The elements of art (`elements-of-art`) | 12 | A cup, seven ways (S494) | 0 | art-which-element, art-element-or-principle, art-how-many-elements |
-|  | 3 | Looking and making | The color wheel (`the-color-wheel`) | 8 | Three jars (S497) | 3 | art-mix-colors, art-primary-or-secondary, art-warm-or-cool, art-tint-or-shade |
-|  | 3 | Looking and making | Looking at a picture (`looking-at-a-picture`) | 9 | Four looks (S500) | 4 | art-which-step, art-step-order, art-focus-how |
-|  | 3 | How your mind works | Your brain and your senses (`your-brain-and-senses`) | 2 | The monster that was a coat (S3122) | 0 | py3-brain |
-|  | 3 | How your mind works | How remembering works (`how-remembering-works`) | 2 | Nine words, five days (S3128) | 1 | py3-memory |
-|  | 3 | How your mind works | Big feelings (`big-feelings`) | 6 | The smoke detector (S3134) | 3 | py3-feelings |
-|  | 3 | How your mind works | Friends and other minds (`friends-and-other-minds`) | 3 | The loud game (S3140) | 2 | py3-friends |
-|  | 3 | I wonder why | Wondering out loud (`wondering-out-loud`) | 2 | Can a robot be your friend (S3026) | 1 | p3-wonder |
-|  | 3 | I wonder why | Because (`because`) | 3 | Recess before lunch (S3032) | 2 | p3-because |
-|  | 3 | I wonder why | Listening to disagree (`listening-to-disagree`) | 2 | The rabbit and the fish (S3038) | 0 | p3-listen |
-|  | 3 | I wonder why | What is fair (`what-is-fair`) | 1 | Three boxes and a fence (S3044) | 0 | p3-fair |
-|  | 3 | Money that works | Skills and income (`skills-and-income`) | 4 | The blade sharpener (S2790) | 1 | e3-skills |
-|  | 3 | Money that works | Planned spending and credit (`planned-spending-and-credit`) | 4 | The bike that cost forty-four dollars (S2796) | 1 | e3-credit |
-|  | 3 | Money that works | Expenses and profit (`expenses-and-profit`) | 8 | The cookie table (S2802) | 5 | e3-profit |
-|  | 3 | Money that works | Savings, taxes and budgets (`savings-taxes-and-budgets`) | 6 | The paycheck with a hole in it (S2808) | 6 | e3-budget |
-|  | 3 | Listen, then say it | Listening and asking (`listening-and-asking`) | 4 | The question about lunch (S3218) | 2 | s3-listen |
-|  | 3 | Listen, then say it | Telling it in order (`telling-it-in-order`) | 5 | Four steps to the library (S3224) | 2 | s3-order |
-|  | 3 | Listen, then say it | A one-minute talk (`a-one-minute-talk`) | 8 | Clover (S3230) | 1 | s3-talk |
-|  | 3 | Listen, then say it | Taking turns to talk (`taking-turns-to-talk`) | 5 | The talking stick (S3236) | 1 | s3-turns |
-|  | 3 | Down on the farm | Farms feed us (`farms-and-food`) | 4 | The path of a loaf of bread (S3310) | 0 | ag3-farm |
-|  | 3 | Down on the farm | Seeds and soil (`seeds-and-soil-3`) | 1 | The cup in the closet (S3316) | 0 | ag3-soil |
-|  | 3 | Down on the farm | Farm animals (`farm-animals-3`) | 2 | Four questions every morning (S3322) | 1 | ag3-animals |
-|  | 3 | Down on the farm | A tiny farm of my own (`a-tiny-farm`) | 2 | The squash that would not come (S3328) | 1 | ag3-tiny |
-|  | 3 | Jars, banks and lemonade | Work, skills and prices (`work-and-income-3`) | 1 | The price of strawberries (S3402) | 1 | bz3-work |
-|  | 3 | Jars, banks and lemonade | Spend, save and share (`spend-save-share`) | 3 | Three jars (S3408) | 3 | bz3-jars |
-|  | 3 | Jars, banks and lemonade | Banks and borrowing (`banks-and-borrowing`) | 0 | The bank with the big door (S3414) | 0 | bz3-bank |
-|  | 3 | Jars, banks and lemonade | A stand of my own (`my-first-stand`) | 2 | Lemonade on Saturday (S3420) | 0 | bz3-stand |
-|  | 3 | Looking closer, listening longer | The principles of design (`principles-of-design`) | 4 | The red bird in the gray sky (S2906) | 1 | a3-principles |
-|  | 3 | Looking closer, listening longer | Art across time and place (`art-across-time-and-place`) | 2 | Three pictures, one question (S2912) | 3 | a3-time |
-|  | 3 | Looking closer, listening longer | Families and forms (`families-and-forms`) | 8 | The concert with the eyes closed (S2918) | 1 | a3-families |
-|  | 3 | Looking closer, listening longer | Listening with a purpose (`listening-with-a-purpose`) | 7 | The night the mariachi played (S2924) | 3 | a3-listen |
-|  | 3 | Fractions | What a fraction means (`fraction-meaning`) | 1 | The broken cups (S5) | 3 | m1-part-eaten, m1-part-left, m1-picture, m1-top-or-bottom, m1-what-number-means |
-|  | 3 | Fractions | Equivalent fractions (`equivalent-fractions`) | 3 | Two pizzas (S443) | 0 | m2-which-equals, m2-fill-bottom, m2-fill-top, m2-simplify, m2-equivalent-or-not |
-|  | 3 | Fractions | Comparing fractions (`comparing-fractions`) | 6 | Which slice is bigger? (S446) | 0 | m3-same-bottom, m3-same-top, m3-different, m3-smallest-of-three, m3-true-false |
-|  | 3 | Fractions | Fractions on a number line (`fractions-on-a-line`) | 0 | Marks on the ruler (S449) | 3 | nl-which-fraction, nl-how-many-steps, nl-place, nl-halfway, nl-closer-to |
-|  | 3 | Fractions | Building fractions (`building-fractions`) | 3 | Blocks of a fifth (S452) | 2 | bf-how-many-units, bf-sum-of-units, bf-split, bf-share, bf-add-same-bottom |
-|  | 3 | Reading to understand | The main idea (`main-idea`) | 1 | The movie in one sentence (S20) | 1 | r3-main-idea, r3-detail, r3-not-in-passage, r3-best-title |
-|  | 3 | Reading to understand | Prefixes and suffixes (`prefixes-and-suffixes`) | 3 | Happy, unhappy, happily (S455) | 3 | r3-prefix-meaning, r3-suffix-meaning, r3-build-word, r3-which-affix, r3-take-affix |
-|  | 3 | Reading to understand | Fact or opinion (`fact-or-opinion`) | 3 | Check it or argue it (S458) | 1 | r3-fact-opinion, r3-which-is-fact, r3-which-is-opinion, r3-clue-word |
-|  | 3 | Reading to understand | Because, so, then (`sequence-and-cause`) | 3 | Because and so (S461) | 0 | r3-cause, r3-effect, ord-story-steps, r3-signal-word, r3-what-next |
-|  | 3 | Reading to understand | Clues around a word (`context-clues`) | 4 | The friends it came with (S1286) | 2 | r3-context |
-|  | 3 | Reading to understand | Characters and setting (`character-and-setting`) | 6 | What she did at recess (S1289) | 1 | r3-character |
-|  | 3 | How the world works | Solids, liquids and gases (`states-of-matter`) | 4 | Three states in the kitchen (S464) | 0 | s3-which-state, s3-state-change, s3-state-property |
-|  | 3 | How the world works | Pushes and pulls (`forces-and-motion`) | 1 | Pushes and pulls (S467) | 0 | s3-push-or-pull, s3-which-force, s3-what-stops-it |
-|  | 3 | How the world works | Life cycles (`life-cycles`) | 3 | The jar of eggs (S470) | 1 | s3-next-stage, s3-what-a-seed-needs, ord-life-cycle, s3-first-stage |
-|  | 3 | How the world works | Weather and seasons (`weather-and-seasons`) | 3 | Cold in July (S21) | 0 | s3-which-tool, s3-next-season, s3-weather-or-season |
-|  | 3 | How the world works | Sound is a vibration (`sound`) | 6 | The rubber band (S1190) | 1 | sc3-sound |
-|  | 3 | How the world works | Soil and rocks (`soil-and-rocks`) | 5 | The jar (S1298) | 0 | sc3-soil |
-|  | 3 | How the world works | Food chains (`food-chains-3`) | 2 | The bucket line (S1301) | 0 | sc3-food-chain |
-|  | 3 | Writing a paragraph | The shape of a paragraph (`paragraph-shape`) | 1 | The shape of it (S473) | 1 | wr-paragraph-shape |
-|  | 3 | Writing a paragraph | Explain how to do something (`explain-how`) | 1 | The paper boat (S476) | 2 | wr-explain-how |
-|  | 3 | Writing a paragraph | Give a reason (`give-a-reason`) | 4 | I think, because (S479) | 1 | wr-give-a-reason |
-|  | 3 | Multiplication and division | Equal groups (`equal-groups`) | 1 | Three bags (S482) | 1 | mu-groups-total, mu-array, mu-story, mu-which-equation, mu-swap |
-|  | 3 | Multiplication and division | Times tables to 10 (`times-tables`) | 1 | Seven times eight (S485) | 3 | tt-fact, tt-missing-factor, tt-pattern, tt-fact-story |
-|  | 3 | Multiplication and division | Dividing (`sharing-equally`) | 4 | Deal them out (S488) | 2 | dv-share, dv-fact, dv-story, dv-undo, dv-how-many-groups |
-|  | 3 | Multiplication and division | Adding and subtracting to 1,000 (`add-subtract-1000`) | 4 | Column by column (S491) | 3 | as-add, as-subtract, as-story-add, as-story-subtract, as-two-step |
-|  | 3 | Multiplication and division | Measuring things (`measuring-things`) | 10 | Three ways to measure a puppy (S1316) | 0 | m3-measure |
-|  | 3 | Multiplication and division | Graphs and tallies (`graphs-and-tallies`) | 4 | The cars (S1319) | 0 | m3-graphs |
-|  | 3 | How computers think | Inputs and outputs (`inputs-and-outputs`) | 6 | The talking toaster (S1199) | 0 | t3-parts |
-|  | 3 | How computers think | Steps in order (`steps-in-order`) | 5 | Exactly what she was told (S1202) | 2 | t3-steps |
-|  | 3 | How computers think | Patterns and loops (`patterns-and-loops`) | 5 | One instruction, repeated (S1205) | 4 | t3-loops |
-|  | 3 | Communities and government | Three levels of government (`three-levels-of-government`) | 10 | Three levels (S503) | 3 | c3-which-level, c3-leader-title, c3-capital-city |
-|  | 3 | Communities and government | How we decide (`how-we-decide`) | 3 | Rule or law? (S506) | 1 | c3-rule-or-law, c3-branch-job, c3-vote-winner, c3-vote-margin |
-|  | 3 | Communities and government | Earning and choosing (`earning-and-choosing`) | 2 | The eleven dollars (S509) | 1 | c3-can-afford, c3-opportunity-cost, c3-money-left, c3-free-enterprise |
-|  | 2 | Numbers to 1,000 | Hundreds, tens and ones (`hundreds-tens-ones`) | 4 | Stacks of pennies (S386) | 2 | g2-place-value, g2-expanded, g2-digit-means, g2-build-3digit, g2-hundred-more |
-|  | 2 | Numbers to 1,000 | Adding two-digit numbers (`adding-with-regrouping`) | 6 | Bundles of stickers (S389) | 0 | g2-add, g2-add-story, g2-add-carry-ones, g2-add-missing, g2-add-three |
-|  | 2 | Numbers to 1,000 | Subtracting two-digit numbers (`subtracting-with-regrouping`) | 7 | Borrow a ten (S392) | 1 | g2-sub, g2-sub-story, g2-sub-borrow-ones, g2-sub-check, g2-sub-compare |
-|  | 2 | Numbers to 1,000 | Telling time (`telling-time`) | 2 | The clock that ran the town (S4) | 0 | g2-read-clock, g2-half-past, g2-which-clock, g2-minutes-in, g2-hour-later |
-|  | 2 | Numbers to 1,000 | Coins and dollars (`money`) | 5 | Counting the change (S395) | 2 | g2-coin-value, g2-count-coins, g2-make-amount, g2-change, g2-which-more-money |
-|  | 2 | Numbers to 1,000 | Rows and columns (`rows-and-columns`) | 2 | Rows of eggs (S398) | 2 | g2-array-total, g2-repeated-add, g2-rows-in, g2-which-array, g2-even-odd |
-|  | 2 | Numbers to 1,000 | Quarter past, half past, quarter to (`quarter-hours`) | 8 | Quarter past (S1187) | 0 | m2-read-quarter |
-|  | 2 | Reading longer words and stories | Vowel teams (`vowel-teams`) | 1 | The o that talked (S401) | 1 | r2-team-sound, r2-which-team, r2-team-word, r2-same-team, r2-odd-team |
-|  | 2 | Reading longer words and stories | Reading longer words (`two-syllable-words`) | 1 | Rab, bit (S404) | 2 | r2-split-word, r2-join-parts, r2-compound, r2-compound-parts, r2-count-parts |
-|  | 2 | Reading longer words and stories | What does the story say? (`reading-for-meaning`) | 1 | Who, where, what, why (S407) | 1 | r2-why, r2-first, r2-last, r2-who-did, r2-how-felt |
-|  | 2 | Reading longer words and stories | Working out a new word (`word-meaning-from-context`) | 1 | The words around it (S410) | 0 | r2-context, r2-opposite, r2-best-fit |
-|  | 2 | Writing sentences | Complete sentences (`complete-sentences`) | 1 | Who ran? (S413) | 3 | wr-complete-sentences |
-|  | 2 | Writing sentences | Sentences that describe (`describing-sentences`) | 0 | The fluffy cat (S416) | 1 | wr-describing-sentences |
-|  | 2 | Writing sentences | Tell what happened (`tell-a-story-2`) | 0 | The wobbly tooth (S419) | 0 | wr-tell-a-story-2 |
-|  | 2 | Our community's story | Then and now (`then-and-now`) | 1 | Then and now (S422) | 2 | c2-then-or-now, c2-timeline-order, c2-earlier-year |
-|  | 2 | Our community's story | Good citizens (`good-citizens`) | 1 | The wallet (S425) | 0 | c2-which-trait, c2-vote-winner, c2-vote-margin |
-|  | 2 | Our community's story | Producers and consumers (`producers-and-consumers`) | 1 | The lemonade stand (S428) | 1 | c2-producer-or-consumer, c2-money-left, c2-natural-resource |
-|  | 2 | Our community's story | Maps of our town (`maps-of-our-town`) | 1 | The key on the map (S431) | 1 | c2-blocks-walked, c2-opposite-direction, c2-map-symbol |
-|  | 2 | Our community's story | Services in our town (`services-in-our-town`) | 1 | Who sent the truck (S434) | 1 | c2-service-or-business, c2-which-service |
-|  | 2 | Our community's story | Saving for a goal (`saving-for-a-goal`) | 0 | The kite jar (S437) | 0 | c2-weeks-to-save, c2-save-or-spend, c2-money-left |
-|  | 2 | Materials and habitats | Hard, soft, wet, dry (`hard-or-soft`) | 1 | By feel (S440) | 2 | s2-hard-or-soft, s2-tap-hard, s2-wet-or-dry, s2-tap-wet |
-|  | 2 | Materials and habitats | Magnets (`magnets`) | 0 | The needle that knew (S3) | 0 | s2-magnet-pulls, s2-tap-not-pulled, s2-tap-magnet |
-|  | 2 | Materials and habitats | Habitats (`habitats`) | 0 | The crab with no shell (S28) | 1 | s2-habitat-of, s2-tap-habitat, s2-who-lives-there |
-|  | 1 | Numbers to 20 | Teen numbers (`teen-numbers`) | 0 | Ten and three (S317) | 1 | g1-ten-and, g1-teen-split, g1-teen-pic, g1-which-teen, g1-teen-after |
-|  | 1 | Numbers to 20 | Adding to 20 (`adding-to-20`) | 0 | Two pockets (S320) | 1 | g1-add, g1-add-story, g1-make-ten-add, g1-add-pic, g1-add-missing |
-|  | 1 | Numbers to 20 | Subtracting to 20 (`subtracting-to-20`) | 0 | Birds on the wire (S323) | 0 | g1-sub, g1-sub-story, g1-sub-undo, g1-sub-pic, g1-compare-diff |
-|  | 1 | Numbers to 20 | Tens and ones (`tens-and-ones`) | 0 | Bundles of ten (S326) | 0 | g1-tens-ones, g1-how-many-tens, g1-how-many-ones, g1-build-number, g1-ten-more |
-|  | 1 | Numbers to 20 | Bigger and smaller to 100 (`comparing-to-100`) | 0 | Two jars of buttons (S329) | 0 | g1-bigger, g1-smaller, g1-between, ord-numbers-100, g1-more-less-same |
-|  | 1 | Numbers to 20 | Writing numbers (`writing-numbers`) | 0 | The five (S332) | 1 | kn-trace-number |
-|  | 1 | Reading words and sentences | Read the word (`read-the-word`) | 1 | The word on the box (S335) | 0 | r1-word-picture, r1-word-colour, r1-word-number, r1-which-word, r1-word-shape |
-|  | 1 | Reading words and sentences | Sh, ch and th (`sh-ch-th`) | 0 | Shell, chair, thumb (S338) | 0 | r1-starts-with, r1-ends-with, r1-which-pair, r1-same-pair, r1-odd-pair |
-|  | 1 | Reading words and sentences | The silent e (`silent-e`) | 1 | The quiet e (S341) | 0 | r1-add-e, r1-has-silent-e, r1-long-or-short, r1-pick-long, r1-take-e |
-|  | 1 | Reading words and sentences | Read the sentence (`read-the-sentence`) | 0 | From the capital to the period (S344) | 2 | r1-sentence-picture, r1-sentence-which, r1-sentence-colour, r1-sentence-count, r1-sentence-yes-no |
-|  | 1 | Reading words and sentences | What happened? (`what-happened`) | 0 | First, then, last (S347) | 1 | r1-who, r1-where, r1-what-colour, r1-how-many, r1-true-false |
-|  | 1 | Reading words and sentences | More small letters to trace (`tracing-more-small-letters`) | 0 | Tails, bumps and zigzags (S350) | 3 | r1-trace-tall, r1-trace-bumps, r1-trace-zigzag, r1-trace-any-small |
-|  | 1 | Reading words and sentences | Trace i, t and k (`trace-small-letters-3`) | 0 | One line, then the rest (S353) | 1 | p1-trace-itk |
-|  | 1 | Reading words and sentences | Trace c, v and x (`trace-small-letters-4`) | 0 | Curve, point, cross (S356) | 1 | p1-trace-cvx |
-|  | 1 | Reading words and sentences | Trace n, u and r (`trace-small-letters-5`) | 0 | Line and arch (S359) | 3 | p1-trace-nur |
-|  | 1 | Sky, water and living things | Patterns in the sky (`sun-moon-patterns`) | 0 | The same place every day (S362) | 0 | s1-when-sun, s1-pattern-next, s1-tap-sky-time |
-|  | 1 | Sky, water and living things | Water changes (`water-changes`) | 0 | Ice, water, ice (S365) | 0 | s1-heat-or-cold, s1-tap-hot, s1-tap-cold, s1-what-happens-ice |
-|  | 1 | Sky, water and living things | What animals need (`animal-needs`) | 0 | What the puppy needed (S368) | 1 | s1-where-it-lives, s1-tap-home, s1-what-all-need |
-|  | 1 | Our community | Leaders near and far (`leaders-near-and-far`) | 0 | Near and far (S371) | 0 | c1-which-leader, c1-where-they-work, c1-texas-capital |
-|  | 1 | Our community | Goods and services (`goods-and-services`) | 0 | The hat and the haircut (S374) | 0 | c1-good-or-service, c1-count-coins, c1-money-from |
-|  | 1 | Our community | Maps of my world (`maps-of-my-world`) | 1 | Where the sun comes up (S377) | 1 | c1-direction, c1-map-or-globe, c1-map-key |
-|  | 1 | Our community | Signs around town (`signs-around-town`) | 0 | The sign that stopped everyone (S380) | 2 | c1-sign-means, c1-sign-color, c1-why-signs |
-|  | 1 | Our community | Symbols of our country (`symbols-of-our-country`) | 0 | The bell and the torch (S383) | 1 | c1-which-symbol, ck-flag-count, c1-texas-symbol |
-|  | 1 | Beat, high, low, loud, soft | The steady beat (`the-steady-beat`) | 4 | The clock in the song (S1250) | 0 | mu1-beat |
-|  | 1 | Beat, high, low, loud, soft | High and low (`high-and-low`) | 6 | Bird high, cow low (S1253) | 0 | mu1-high-low |
-|  | 1 | Beat, high, low, loud, soft | Loud and soft (`loud-and-soft`) | 4 | The drum and the lullaby (S1256) | 0 | mu1-loud-soft |
-|  | K | Tell, show, step and repeat | Tell and show (`tell-and-show`) | 3 | The quiet tablet (S2702) | 0 | tk-tell |
-|  | K | Tell, show, step and repeat | First, next, then, last (`first-next-then-last`) | 9 | Shoes before socks (S2707) | 1 | tk-order |
-|  | K | Tell, show, step and repeat | Do it again (`do-it-again`) | 3 | Clap four times (S2712) | 2 | tk-again |
-|  | K | Tell, show, step and repeat | Safe and kind online (`safe-online-k`) | 8 | The secret word (S2717) | 0 | tk-safe |
-|  | K | I can listen, I can say | My listening body (`my-listening-body`) | 1 | Get your coat (S3242) | 0 | spk-listen |
-|  | K | I can listen, I can say | First, then, do it (`first-then-do`) | 4 | Cup, water, table (S3247) | 2 | spk-steps |
-|  | K | I can listen, I can say | My clear voice (`my-clear-voice`) | 0 | This is my dog (S3252) | 0 | spk-voice |
-|  | K | I can listen, I can say | My turn and kind words (`my-turn-and-kind-words`) | 1 | The hand that waited (S3257) | 0 | spk-turns |
-|  | K | Me and my mind | My brain and my senses (`my-brain-and-senses`) | 1 | Five reporters (S3146) | 0 | pyk-brain |
-|  | K | Me and my mind | Remember it (`remember-it`) | 0 | Three at a time (S3152) | 0 | pyk-memory |
-|  | K | Me and my mind | My feelings (`my-feelings`) | 0 | The name of the feeling (S3158) | 1 | pyk-feelings |
-|  | K | Me and my mind | Making friends (`making-friends`) | 0 | Hello, my name is (S3164) | 0 | pyk-friends |
-|  | K | I wonder | I wonder (`i-wonder`) | 0 | The stick (S3050) | 0 | pk-wonder |
-|  | K | I wonder | Because (`because-k`) | 0 | The blue shirt reason (S3056) | 1 | pk-because |
-|  | K | I wonder | My turn, your turn (`my-turn-your-turn`) | 1 | The talking stick (S3062) | 0 | pk-turns |
-|  | K | I wonder | Fair shares (`fair-shares`) | 0 | Four cookies, two kids (S3068) | 0 | pk-fair |
-|  | K | Needs, wants, work and saving | Needs, wants and choices (`wants-needs-and-choices`) | 6 | One coin, two wants (S2770) | 1 | ek-wants |
-|  | K | Needs, wants, work and saving | Earning income (`earning-income`) | 6 | The dog walk (S2775) | 0 | ek-income |
-|  | K | Needs, wants, work and saving | Spending and saving (`spending-and-saving`) | 6 | Two coins a week (S2780) | 0 | ek-saving |
-|  | K | Needs, wants, work and saving | Trading and markets (`trading-and-markets`) | 4 | The sticker market (S2785) | 0 | ek-trade |
-|  | K | On the farm | Plants we eat (`plants-we-eat-k`) | 6 | Lunch from the garden (S3334) | 0 | agk-plants |
-|  | K | On the farm | From seed to plant (`seed-to-plant-k`) | 0 | The bean in the cup (S3339) | 0 | agk-grow |
-|  | K | On the farm | Farm animals (`farm-animals-k`) | 1 | The red barn (S3344) | 0 | agk-animals |
-|  | K | On the farm | A day on the farm (`a-day-on-the-farm-k`) | 0 | Up with the sun (S3349) | 0 | agk-day |
-|  | K | Money and me | Earning money (`earning-money-k`) | 0 | Mom at the bakery (S3426) | 0 | bzk-earn |
-|  | K | Money and me | Wants and needs (`wants-and-needs-k`) | 0 | Two lists on the fridge (S3431) | 0 | bzk-wants |
-|  | K | Money and me | Save, spend and share (`save-spend-share-k`) | 1 | Three jars on the shelf (S3436) | 0 | bzk-save |
-|  | K | Money and me | Borrow, lend and make (`borrow-and-make-k`) | 5 | The bookmark shop (S3441) | 1 | bzk-make |
-|  | K | Looking and listening | Lines, shapes and colors (`lines-shapes-and-colors`) | 6 | The orange that was not there (S2886) | 0 | ak-lines |
-|  | K | Looking and listening | What a picture says (`what-a-picture-says`) | 2 | The picture on the wall (S2891) | 0 | ak-picture |
-|  | K | Looking and listening | Beat and sound (`beat-and-sound`) | 5 | The drum and the heartbeat (S2896) | 0 | ak-beat |
-|  | K | Looking and listening | Voices and instruments (`voices-and-instruments`) | 8 | Five voices (S2901) | 1 | ak-voices |
+| yes (JG, read by hand: red like a strawberry, blue like the sky; Which one is mine; JH: audio tags) | PK3 | Very first steps | Red and blue (`red-and-blue`) | 0 | Two balls (S95) | 0 | p3-tap-red-blue, p3-which-colour |
+| yes (JG, read by hand: what the same means; a colon gone; JH: audio tags) | PK3 | Very first steps | Find the match (`find-the-match`) | 0 | The other mitten (S119) | 0 | p3-find-match |
+| yes (JG, read by hand: Two foxes, not foxs; the odd one out said plainly; JH: audio tags) | PK3 | Very first steps | Match the animals (`match-the-animals`) | 0 | Like me? (S122) | 0 | pm-same-animals, pm-different-animals |
+| yes (JG, read by hand: big things take up more room; JH: audio tags) | PK3 | Very first steps | Big and small (`big-and-small`) | 0 | One small bed (S98) | 0 | p4-tap-bigger, p4-tap-smaller |
+| yes (JG, read by hand: read, no change needed; JH: audio tags) | PK3 | Very first steps | One and two (`one-and-two`) | 0 | Splash (S101) | 0 | p3-tap-count, p3-how-many |
+| yes (JG, read by hand: One dot is fewer than three dots; JH: audio tags) | PK3 | Very first steps | More (`more-or-fewer`) | 0 | Two bowls (S125) | 0 | p3-tap-more, p3-tap-fewer |
+| yes (JG, read by hand: read, no change needed; JH: audio tags) | PK3 | Very first steps | First marks (`first-marks`) | 0 | The first line (S128) | 0 | p3-trace-mark |
+| yes (JG, read by hand: read, no change needed; JH: audio tags) | PK3 | Very first steps | Three dots (`three-dots`) | 0 | One, two, three (S131) | 0 | p3-connect-few |
+| yes (JG, read by hand: a colon gone; JH: audio tags) | PK3 | Very first steps | Yellow and green (`yellow-and-green`) | 0 | Sun and grass (S134) | 0 | p3-tap-yellow-green, p3-which-colour-four, p3-tap-any-colour |
+| yes (JG, read by hand: a pizza slice is almost a triangle; JH: audio tags) | PK3 | Very first steps | Triangles (`triangles-too`) | 0 | Pizza corners (S137) | 0 | p3-tap-three-shapes, p3-name-three-shapes |
+| yes (JG, read by hand: asks for the little one, as its lesson says; JH: audio tags) | PK3 | Very first steps | Big and little (`big-and-little`) | 0 | Two shoes (S140) | 0 | pk3-tap-big, pk3-tap-little |
+| yes (JG, read by hand: please when you ask; taking turns and sharing are kind; JH: audio tags) | PK3 | Very first steps | Please and thank you (`please-and-thank-you`) | 0 | The magic word (S104) | 0 | pk3-magic-word, pk-turn-choice |
+| yes (JH, read by hand: read, no change needed; audio tags) | PK3 | Listen and point | Circle and square (`circle-and-square`) | 0 | Roll or sit (S143) | 0 | p3-tap-shape, p3-name-shape |
+| yes (JH, read by hand: B has two round bumps; alligator, not arm (the short a); audio tags) | PK3 | Listen and point | A and B (`a-and-b`) | 0 | A, then B (S146) | 0 | p3-tap-ab, p3-name-ab |
+| yes (JH, read by hand: a colon gone; audio tags) | PK3 | Listen and point | Which one is different? (`not-the-same`) | 0 | The green apple (S149) | 0 | p3-odd-one |
+| yes (JH, read by hand: the hat asked for before it is tapped; a colon gone; audio tags) | PK3 | Listen and point | Listen and tap (`listen-and-tap-pictures`) | 0 | Where is the dog? (S152) | 0 | p3-tap-picture |
+| yes (JH, read by hand: read, no change needed; audio tags with the animals heard) | PK3 | Listen and point | Animal sounds (`animal-sounds`) | 0 | Who said that? (S155) | 0 | p3-animal-sound |
+| yes (JI, read by hand: read, no change needed; audio tags) | PK4 | First steps | Colors (`colours`) | 0 | One color at a time (S107) | 0 | pc-tap-colour, pc-name-colour, pc-same-colour, pc-different-colour |
+| yes (JI, read by hand: read, no change needed; audio tags) | PK4 | First steps | Same and different (`same-and-different`) | 0 | Two socks (S158) | 0 | ps-find-match, ps-odd-one-out, ps-same-colour-shape, ps-bigger, ps-smaller |
+| yes (JI, read by hand: says plainly when two are the same; audio tags) | PK4 | First steps | Match the vehicles (`match-the-vehicles`) | 0 | The other red car (S161) | 0 | pm-same-vehicles, pm-different-vehicles |
+| yes (JI, read by hand: says plainly when two are the same; two colons gone; audio tags) | PK4 | First steps | Match the things (`match-the-things`) | 0 | Twins on the table (S164) | 0 | pm-same-things, pm-different-things |
+| yes (JI, read by hand: says plainly when two are the same; audio tags) | PK4 | First steps | Match the water animals (`match-the-water-animals`) | 0 | Two of each (S167) | 0 | pm-same-water, pm-different-water |
+| yes (JI, read by hand: says plainly when two are the same; a colon gone; audio tags) | PK4 | First steps | Match the land animals (`match-the-land-animals`) | 0 | Two by two (S170) | 0 | pm-same-land, pm-different-land |
+| yes (JI, read by hand: says plainly when two are the same; a colon gone; audio tags) | PK4 | First steps | Match the shapes (`match-the-shapes`) | 0 | The right hole (S173) | 0 | pm-same-shape, pm-different-shape |
+| yes (JI, read by hand: says plainly when two are the same; audio tags) | PK4 | First steps | Match the solids (`match-the-solids`) | 0 | Stack or roll (S176) | 0 | pm-same-solid, pm-different-solid |
+| yes (JI, read by hand: one dot, not one dots; more ducks made more noise; a colon gone; audio tags) | PK4 | First steps | More and fewer (`more-and-fewer-5`) | 0 | Five, then two (S179) | 0 | p4-tap-more-5, p4-tap-fewer-5 |
+| yes (JI, read by hand: bigger things take up more room; the story ends without saying it twice; audio tags) | PK4 | First steps | Bigger and smaller (`bigger-and-smaller`) | 0 | The pumpkin wagon (S182) | 0 | p4-tap-bigger, p4-tap-smaller |
+| yes (JI, read by hand: read, no change needed; audio tags) | PK4 | First steps | Patterns (`patterns`) | 0 | Red, blue, red, blue (S110) | 0 | pp-what-next, pp-which-repeats, pp-missing |
+| yes (JI, read by hand: the teacher asks for three stones; the last number you say tells how many; audio tags) | PK4 | First steps | One, two, three (`count-to-3`) | 0 | Three stones (S1) | 0 | p3-how-many, p3-tap-group, p3-tap-one, p3-more |
+| yes (JI, read by hand: read, no change needed; audio tags) | PK4 | First steps | First strokes (`first-strokes`) | 0 | Lines on the window (S185) | 0 | pd-trace-line |
+| yes (JI, read by hand: a run-on line made two; audio tags) | PK4 | First steps | Connect the dots (`connect-the-dots`) | 0 | What is it? (S188) | 0 | pd-connect-dots |
+| yes (JI, read by hand: read, no change needed; audio tags) | PK4 | First steps | Draw the shapes (`draw-the-shapes`) | 0 | Back to the dot (S191) | 0 | kn-trace-shape |
+| yes (JI, read by hand: each good choice taught in a whole sentence; audio tags) | PK4 | First steps | Taking turns (`taking-turns`) | 0 | Count to ten (S113) | 0 | pk-turn-choice, ck-good-choice, pk-whose-turn |
+| yes (JI, read by hand: two colons gone; audio tags) | PK4 | First steps | Big, bigger, biggest (`big-bigger-biggest`) | 0 | Three bowls (S194) | 0 | pk4-tap-biggest, pk4-tap-smallest, pk4-tap-middle |
+| yes (JI, read by hand: read, no change needed; audio tags) | PK4 | First steps | Helpers all around (`helpers-all-around`) | 0 | Helpers (S197) | 0 | ck-which-helper, ck-job-tool |
+|  | PK4 | First sounds and letters | Rhyme time (`listen-for-rhymes`) | 0 | Cat, mat, hat (S116) | 1 | rr-does-rhyme, rr-pick-rhyme |
+|  | PK4 | First sounds and letters | First sounds (`first-sounds`) | 0 | Buh and sss (S200) | 0 | rs-same-start, rs-odd-start |
+|  | PK4 | First sounds and letters | Which came first? (`which-came-first`) | 3 | The roar came first (S203) | 0 | p4-which-came-first |
+|  | PK4 | First sounds and letters | Second and last (`which-came-second`) | 3 | Whistle, tick, woof (S206) | 3 | p4-which-came-second |
+|  | PK4 | First sounds and letters | Big letters (`big-letters`) | 0 | B, U, S (S209) | 1 | pl-tap-letter, pl-name-letter |
+|  | PK4 | First sounds and letters | Trace a big letter (`first-letter-tracing`) | 0 | A letter in the sand (S212) | 0 | pl-trace-first |
+|  | PK4 | First sounds and letters | Trace more big letters (`more-big-letters`) | 0 | Sticks make letters (S215) | 0 | pl-trace-more |
+|  | PK4 | First sounds and letters | Trace L, T and F (`trace-straight-letters`) | 0 | Down, then across (S218) | 0 | pl-trace-ltf |
 |  | K | Looking at the world | Day and night (`day-and-night`) | 0 | The rooster and the sun (S23) | 0 | sk-day-or-night, sk-tap-sky |
 |  | K | Looking at the world | Kinds of weather (`kinds-of-weather`) | 0 | The puddle by the gate (S83) | 0 | sk-which-weather, sk-tap-weather, sk-what-to-wear |
 |  | K | Looking at the world | Living or not living (`living-or-not`) | 0 | The rock and the snail (S86) | 0 | sk-living-or-not, sk-tap-living, sk-tap-not-living |
@@ -589,104 +94,582 @@ Reviewed so far: 1 of 1239 items (615 modules with their lessons, stories and qu
 |  | K | Letters | Which way we read (`which-way-we-read`) | 0 | Which way the finger goes (S308) | 0 | rw-first, rw-last, rw-next, rw-count-words, rw-which-way |
 |  | K | Letters | What a word means (`word-meanings`) | 0 | The card and the picture (S311) | 1 | rm-match-picture, rm-pick-word, rm-does-match, rm-count-word, rm-shape-word |
 |  | K | Letters | Trace V, A and N (`trace-slant-letters`) | 0 | Slants in the sand (S314) | 2 | pk-trace-van |
-|  | PK4 | First steps | Colors (`colours`) | 0 | One color at a time (S107) | 0 | pc-tap-colour, pc-name-colour, pc-same-colour, pc-different-colour |
-|  | PK4 | First steps | Same and different (`same-and-different`) | 0 | Two socks (S158) | 0 | ps-find-match, ps-odd-one-out, ps-same-colour-shape, ps-bigger, ps-smaller |
-|  | PK4 | First steps | Match the vehicles (`match-the-vehicles`) | 0 | The other red car (S161) | 0 | pm-same-vehicles, pm-different-vehicles |
-|  | PK4 | First steps | Match the things (`match-the-things`) | 0 | Twins on the table (S164) | 2 | pm-same-things, pm-different-things |
-|  | PK4 | First steps | Match the water animals (`match-the-water-animals`) | 0 | Two of each (S167) | 0 | pm-same-water, pm-different-water |
-|  | PK4 | First steps | Match the land animals (`match-the-land-animals`) | 0 | Two by two (S170) | 1 | pm-same-land, pm-different-land |
-|  | PK4 | First steps | Match the shapes (`match-the-shapes`) | 0 | The right hole (S173) | 1 | pm-same-shape, pm-different-shape |
-|  | PK4 | First steps | Match the solids (`match-the-solids`) | 0 | Stack or roll (S176) | 0 | pm-same-solid, pm-different-solid |
-|  | PK4 | First steps | More and fewer (`more-and-fewer-5`) | 0 | Five, then two (S179) | 1 | p4-tap-more-5, p4-tap-fewer-5 |
-|  | PK4 | First steps | Bigger and smaller (`bigger-and-smaller`) | 1 | The pumpkin wagon (S182) | 0 | p4-tap-bigger, p4-tap-smaller |
-|  | PK4 | First steps | Patterns (`patterns`) | 0 | Red, blue, red, blue (S110) | 0 | pp-what-next, pp-which-repeats, pp-missing |
-|  | PK4 | First steps | One, two, three (`count-to-3`) | 0 | Three stones (S1) | 1 | p3-how-many, p3-tap-group, p3-tap-one, p3-more |
-|  | PK4 | First steps | First strokes (`first-strokes`) | 0 | Lines on the window (S185) | 0 | pd-trace-line |
-|  | PK4 | First steps | Connect the dots (`connect-the-dots`) | 0 | What is it? (S188) | 0 | pd-connect-dots |
-|  | PK4 | First steps | Draw the shapes (`draw-the-shapes`) | 0 | Back to the dot (S191) | 0 | kn-trace-shape |
-|  | PK4 | First steps | Taking turns (`taking-turns`) | 0 | Count to ten (S113) | 0 | pk-turn-choice, ck-good-choice, pk-whose-turn |
-|  | PK4 | First steps | Big, bigger, biggest (`big-bigger-biggest`) | 0 | Three bowls (S194) | 1 | pk4-tap-biggest, pk4-tap-smallest, pk4-tap-middle |
-|  | PK4 | First steps | Helpers all around (`helpers-all-around`) | 0 | Helpers (S197) | 0 | ck-which-helper, ck-job-tool |
-|  | PK4 | First sounds and letters | Rhyme time (`listen-for-rhymes`) | 0 | Cat, mat, hat (S116) | 1 | rr-does-rhyme, rr-pick-rhyme |
-|  | PK4 | First sounds and letters | First sounds (`first-sounds`) | 0 | Buh and sss (S200) | 0 | rs-same-start, rs-odd-start |
-|  | PK4 | First sounds and letters | Which came first? (`which-came-first`) | 3 | The roar came first (S203) | 0 | p4-which-came-first |
-|  | PK4 | First sounds and letters | Second and last (`which-came-second`) | 3 | Whistle, tick, woof (S206) | 3 | p4-which-came-second |
-|  | PK4 | First sounds and letters | Big letters (`big-letters`) | 0 | B, U, S (S209) | 1 | pl-tap-letter, pl-name-letter |
-|  | PK4 | First sounds and letters | Trace a big letter (`first-letter-tracing`) | 0 | A letter in the sand (S212) | 0 | pl-trace-first |
-|  | PK4 | First sounds and letters | Trace more big letters (`more-big-letters`) | 0 | Sticks make letters (S215) | 0 | pl-trace-more |
-|  | PK4 | First sounds and letters | Trace L, T and F (`trace-straight-letters`) | 0 | Down, then across (S218) | 0 | pl-trace-ltf |
-|  | PK3 | Very first steps | Red and blue (`red-and-blue`) | 0 | Two balls (S95) | 0 | p3-tap-red-blue, p3-which-colour |
-|  | PK3 | Very first steps | Find the match (`find-the-match`) | 0 | The other mitten (S119) | 1 | p3-find-match |
-|  | PK3 | Very first steps | Match the animals (`match-the-animals`) | 0 | Like me? (S122) | 0 | pm-same-animals, pm-different-animals |
-|  | PK3 | Very first steps | Big and small (`big-and-small`) | 0 | One small bed (S98) | 0 | p4-tap-bigger, p4-tap-smaller |
-|  | PK3 | Very first steps | One and two (`one-and-two`) | 0 | Splash (S101) | 0 | p3-tap-count, p3-how-many |
-|  | PK3 | Very first steps | More (`more-or-fewer`) | 0 | Two bowls (S125) | 0 | p3-tap-more, p3-tap-fewer |
-|  | PK3 | Very first steps | First marks (`first-marks`) | 0 | The first line (S128) | 0 | p3-trace-mark |
-|  | PK3 | Very first steps | Three dots (`three-dots`) | 0 | One, two, three (S131) | 0 | p3-connect-few |
-|  | PK3 | Very first steps | Yellow and green (`yellow-and-green`) | 1 | Sun and grass (S134) | 0 | p3-tap-yellow-green, p3-which-colour-four, p3-tap-any-colour |
-|  | PK3 | Very first steps | Triangles (`triangles-too`) | 0 | Pizza corners (S137) | 0 | p3-tap-three-shapes, p3-name-three-shapes |
-|  | PK3 | Very first steps | Big and little (`big-and-little`) | 0 | Two shoes (S140) | 0 | pk3-tap-big, pk3-tap-little |
-|  | PK3 | Very first steps | Please and thank you (`please-and-thank-you`) | 0 | The magic word (S104) | 0 | pk3-magic-word, pk-turn-choice |
-|  | PK3 | Listen and point | Circle and square (`circle-and-square`) | 0 | Roll or sit (S143) | 0 | p3-tap-shape, p3-name-shape |
-|  | PK3 | Listen and point | A and B (`a-and-b`) | 0 | A, then B (S146) | 0 | p3-tap-ab, p3-name-ab |
-|  | PK3 | Listen and point | Which one is different? (`not-the-same`) | 0 | The green apple (S149) | 1 | p3-odd-one |
-|  | PK3 | Listen and point | Listen and tap (`listen-and-tap-pictures`) | 0 | Where is the dog? (S152) | 1 | p3-tap-picture |
-|  | PK3 | Listen and point | Animal sounds (`animal-sounds`) | 0 | Who said that? (S155) | 0 | p3-animal-sound |
+|  | K | Tell, show, step and repeat | Tell and show (`tell-and-show`) | 3 | The quiet tablet (S2702) | 0 | tk-tell |
+|  | K | Tell, show, step and repeat | First, next, then, last (`first-next-then-last`) | 9 | Shoes before socks (S2707) | 1 | tk-order |
+|  | K | Tell, show, step and repeat | Do it again (`do-it-again`) | 3 | Clap four times (S2712) | 2 | tk-again |
+|  | K | Tell, show, step and repeat | Safe and kind online (`safe-online-k`) | 8 | The secret word (S2717) | 0 | tk-safe |
+|  | K | I can listen, I can say | My listening body (`my-listening-body`) | 1 | Get your coat (S3242) | 0 | spk-listen |
+|  | K | I can listen, I can say | First, then, do it (`first-then-do`) | 4 | Cup, water, table (S3247) | 2 | spk-steps |
+|  | K | I can listen, I can say | My clear voice (`my-clear-voice`) | 0 | This is my dog (S3252) | 0 | spk-voice |
+|  | K | I can listen, I can say | My turn and kind words (`my-turn-and-kind-words`) | 1 | The hand that waited (S3257) | 0 | spk-turns |
+|  | K | Me and my mind | My brain and my senses (`my-brain-and-senses`) | 1 | Five reporters (S3146) | 0 | pyk-brain |
+|  | K | Me and my mind | Remember it (`remember-it`) | 0 | Three at a time (S3152) | 0 | pyk-memory |
+|  | K | Me and my mind | My feelings (`my-feelings`) | 0 | The name of the feeling (S3158) | 1 | pyk-feelings |
+|  | K | Me and my mind | Making friends (`making-friends`) | 0 | Hello, my name is (S3164) | 0 | pyk-friends |
+|  | K | I wonder | I wonder (`i-wonder`) | 0 | The stick (S3050) | 0 | pk-wonder |
+|  | K | I wonder | Because (`because-k`) | 0 | The blue shirt reason (S3056) | 1 | pk-because |
+|  | K | I wonder | My turn, your turn (`my-turn-your-turn`) | 1 | The talking stick (S3062) | 0 | pk-turns |
+|  | K | I wonder | Fair shares (`fair-shares`) | 0 | Four cookies, two kids (S3068) | 0 | pk-fair |
+|  | K | Needs, wants, work and saving | Needs, wants and choices (`wants-needs-and-choices`) | 6 | One coin, two wants (S2770) | 1 | ek-wants |
+|  | K | Needs, wants, work and saving | Earning income (`earning-income`) | 6 | The dog walk (S2775) | 0 | ek-income |
+|  | K | Needs, wants, work and saving | Spending and saving (`spending-and-saving`) | 6 | Two coins a week (S2780) | 0 | ek-saving |
+|  | K | Needs, wants, work and saving | Trading and markets (`trading-and-markets`) | 4 | The sticker market (S2785) | 0 | ek-trade |
+|  | K | On the farm | Plants we eat (`plants-we-eat-k`) | 6 | Lunch from the garden (S3334) | 0 | agk-plants |
+|  | K | On the farm | From seed to plant (`seed-to-plant-k`) | 0 | The bean in the cup (S3339) | 0 | agk-grow |
+|  | K | On the farm | Farm animals (`farm-animals-k`) | 1 | The red barn (S3344) | 0 | agk-animals |
+|  | K | On the farm | A day on the farm (`a-day-on-the-farm-k`) | 0 | Up with the sun (S3349) | 0 | agk-day |
+|  | K | Money and me | Earning money (`earning-money-k`) | 0 | Mom at the bakery (S3426) | 0 | bzk-earn |
+|  | K | Money and me | Wants and needs (`wants-and-needs-k`) | 0 | Two lists on the fridge (S3431) | 0 | bzk-wants |
+|  | K | Money and me | Save, spend and share (`save-spend-share-k`) | 1 | Three jars on the shelf (S3436) | 0 | bzk-save |
+|  | K | Money and me | Borrow, lend and make (`borrow-and-make-k`) | 5 | The bookmark shop (S3441) | 1 | bzk-make |
+|  | K | Looking and listening | Lines, shapes and colors (`lines-shapes-and-colors`) | 6 | The orange that was not there (S2886) | 0 | ak-lines |
+|  | K | Looking and listening | What a picture says (`what-a-picture-says`) | 2 | The picture on the wall (S2891) | 0 | ak-picture |
+|  | K | Looking and listening | Beat and sound (`beat-and-sound`) | 5 | The drum and the heartbeat (S2896) | 0 | ak-beat |
+|  | K | Looking and listening | Voices and instruments (`voices-and-instruments`) | 8 | Five voices (S2901) | 1 | ak-voices |
+|  | 1 | Numbers to 20 | Teen numbers (`teen-numbers`) | 0 | Ten and three (S317) | 1 | g1-ten-and, g1-teen-split, g1-teen-pic, g1-which-teen, g1-teen-after |
+|  | 1 | Numbers to 20 | Adding to 20 (`adding-to-20`) | 0 | Two pockets (S320) | 1 | g1-add, g1-add-story, g1-make-ten-add, g1-add-pic, g1-add-missing |
+|  | 1 | Numbers to 20 | Subtracting to 20 (`subtracting-to-20`) | 0 | Birds on the wire (S323) | 0 | g1-sub, g1-sub-story, g1-sub-undo, g1-sub-pic, g1-compare-diff |
+|  | 1 | Numbers to 20 | Tens and ones (`tens-and-ones`) | 0 | Bundles of ten (S326) | 0 | g1-tens-ones, g1-how-many-tens, g1-how-many-ones, g1-build-number, g1-ten-more |
+|  | 1 | Numbers to 20 | Bigger and smaller to 100 (`comparing-to-100`) | 0 | Two jars of buttons (S329) | 0 | g1-bigger, g1-smaller, g1-between, ord-numbers-100, g1-more-less-same |
+|  | 1 | Numbers to 20 | Writing numbers (`writing-numbers`) | 0 | The five (S332) | 1 | kn-trace-number |
+|  | 1 | Reading words and sentences | Read the word (`read-the-word`) | 1 | The word on the box (S335) | 0 | r1-word-picture, r1-word-colour, r1-word-number, r1-which-word, r1-word-shape |
+|  | 1 | Reading words and sentences | Sh, ch and th (`sh-ch-th`) | 0 | Shell, chair, thumb (S338) | 0 | r1-starts-with, r1-ends-with, r1-which-pair, r1-same-pair, r1-odd-pair |
+|  | 1 | Reading words and sentences | The silent e (`silent-e`) | 1 | The quiet e (S341) | 0 | r1-add-e, r1-has-silent-e, r1-long-or-short, r1-pick-long, r1-take-e |
+|  | 1 | Reading words and sentences | Read the sentence (`read-the-sentence`) | 0 | From the capital to the period (S344) | 2 | r1-sentence-picture, r1-sentence-which, r1-sentence-colour, r1-sentence-count, r1-sentence-yes-no |
+|  | 1 | Reading words and sentences | What happened? (`what-happened`) | 0 | First, then, last (S347) | 1 | r1-who, r1-where, r1-what-colour, r1-how-many, r1-true-false |
+|  | 1 | Reading words and sentences | More small letters to trace (`tracing-more-small-letters`) | 0 | Tails, bumps and zigzags (S350) | 3 | r1-trace-tall, r1-trace-bumps, r1-trace-zigzag, r1-trace-any-small |
+|  | 1 | Reading words and sentences | Trace i, t and k (`trace-small-letters-3`) | 0 | One line, then the rest (S353) | 1 | p1-trace-itk |
+|  | 1 | Reading words and sentences | Trace c, v and x (`trace-small-letters-4`) | 0 | Curve, point, cross (S356) | 1 | p1-trace-cvx |
+|  | 1 | Reading words and sentences | Trace n, u and r (`trace-small-letters-5`) | 0 | Line and arch (S359) | 3 | p1-trace-nur |
+|  | 1 | Sky, water and living things | Patterns in the sky (`sun-moon-patterns`) | 0 | The same place every day (S362) | 0 | s1-when-sun, s1-pattern-next, s1-tap-sky-time |
+|  | 1 | Sky, water and living things | Water changes (`water-changes`) | 0 | Ice, water, ice (S365) | 0 | s1-heat-or-cold, s1-tap-hot, s1-tap-cold, s1-what-happens-ice |
+|  | 1 | Sky, water and living things | What animals need (`animal-needs`) | 0 | What the puppy needed (S368) | 1 | s1-where-it-lives, s1-tap-home, s1-what-all-need |
+|  | 1 | Our community | Leaders near and far (`leaders-near-and-far`) | 0 | Near and far (S371) | 0 | c1-which-leader, c1-where-they-work, c1-texas-capital |
+|  | 1 | Our community | Goods and services (`goods-and-services`) | 0 | The hat and the haircut (S374) | 0 | c1-good-or-service, c1-count-coins, c1-money-from |
+|  | 1 | Our community | Maps of my world (`maps-of-my-world`) | 1 | Where the sun comes up (S377) | 1 | c1-direction, c1-map-or-globe, c1-map-key |
+|  | 1 | Our community | Signs around town (`signs-around-town`) | 0 | The sign that stopped everyone (S380) | 2 | c1-sign-means, c1-sign-color, c1-why-signs |
+|  | 1 | Our community | Symbols of our country (`symbols-of-our-country`) | 0 | The bell and the torch (S383) | 1 | c1-which-symbol, ck-flag-count, c1-texas-symbol |
+|  | 1 | Beat, high, low, loud, soft | The steady beat (`the-steady-beat`) | 4 | The clock in the song (S1250) | 0 | mu1-beat |
+|  | 1 | Beat, high, low, loud, soft | High and low (`high-and-low`) | 6 | Bird high, cow low (S1253) | 0 | mu1-high-low |
+|  | 1 | Beat, high, low, loud, soft | Loud and soft (`loud-and-soft`) | 4 | The drum and the lullaby (S1256) | 0 | mu1-loud-soft |
+|  | 2 | Numbers to 1,000 | Hundreds, tens and ones (`hundreds-tens-ones`) | 4 | Stacks of pennies (S386) | 2 | g2-place-value, g2-expanded, g2-digit-means, g2-build-3digit, g2-hundred-more |
+|  | 2 | Numbers to 1,000 | Adding two-digit numbers (`adding-with-regrouping`) | 6 | Bundles of stickers (S389) | 0 | g2-add, g2-add-story, g2-add-carry-ones, g2-add-missing, g2-add-three |
+|  | 2 | Numbers to 1,000 | Subtracting two-digit numbers (`subtracting-with-regrouping`) | 7 | Borrow a ten (S392) | 1 | g2-sub, g2-sub-story, g2-sub-borrow-ones, g2-sub-check, g2-sub-compare |
+|  | 2 | Numbers to 1,000 | Telling time (`telling-time`) | 2 | The clock that ran the town (S4) | 0 | g2-read-clock, g2-half-past, g2-which-clock, g2-minutes-in, g2-hour-later |
+|  | 2 | Numbers to 1,000 | Coins and dollars (`money`) | 5 | Counting the change (S395) | 2 | g2-coin-value, g2-count-coins, g2-make-amount, g2-change, g2-which-more-money |
+|  | 2 | Numbers to 1,000 | Rows and columns (`rows-and-columns`) | 2 | Rows of eggs (S398) | 2 | g2-array-total, g2-repeated-add, g2-rows-in, g2-which-array, g2-even-odd |
+|  | 2 | Numbers to 1,000 | Quarter past, half past, quarter to (`quarter-hours`) | 8 | Quarter past (S1187) | 0 | m2-read-quarter |
+|  | 2 | Reading longer words and stories | Vowel teams (`vowel-teams`) | 1 | The o that talked (S401) | 1 | r2-team-sound, r2-which-team, r2-team-word, r2-same-team, r2-odd-team |
+|  | 2 | Reading longer words and stories | Reading longer words (`two-syllable-words`) | 1 | Rab, bit (S404) | 2 | r2-split-word, r2-join-parts, r2-compound, r2-compound-parts, r2-count-parts |
+|  | 2 | Reading longer words and stories | What does the story say? (`reading-for-meaning`) | 1 | Who, where, what, why (S407) | 1 | r2-why, r2-first, r2-last, r2-who-did, r2-how-felt |
+|  | 2 | Reading longer words and stories | Working out a new word (`word-meaning-from-context`) | 1 | The words around it (S410) | 0 | r2-context, r2-opposite, r2-best-fit |
+|  | 2 | Writing sentences | Complete sentences (`complete-sentences`) | 1 | Who ran? (S413) | 3 | wr-complete-sentences |
+|  | 2 | Writing sentences | Sentences that describe (`describing-sentences`) | 0 | The fluffy cat (S416) | 1 | wr-describing-sentences |
+|  | 2 | Writing sentences | Tell what happened (`tell-a-story-2`) | 0 | The wobbly tooth (S419) | 0 | wr-tell-a-story-2 |
+|  | 2 | Our community's story | Then and now (`then-and-now`) | 1 | Then and now (S422) | 2 | c2-then-or-now, c2-timeline-order, c2-earlier-year |
+|  | 2 | Our community's story | Good citizens (`good-citizens`) | 1 | The wallet (S425) | 0 | c2-which-trait, c2-vote-winner, c2-vote-margin |
+|  | 2 | Our community's story | Producers and consumers (`producers-and-consumers`) | 1 | The lemonade stand (S428) | 1 | c2-producer-or-consumer, c2-money-left, c2-natural-resource |
+|  | 2 | Our community's story | Maps of our town (`maps-of-our-town`) | 1 | The key on the map (S431) | 1 | c2-blocks-walked, c2-opposite-direction, c2-map-symbol |
+|  | 2 | Our community's story | Services in our town (`services-in-our-town`) | 1 | Who sent the truck (S434) | 1 | c2-service-or-business, c2-which-service |
+|  | 2 | Our community's story | Saving for a goal (`saving-for-a-goal`) | 0 | The kite jar (S437) | 0 | c2-weeks-to-save, c2-save-or-spend, c2-money-left |
+|  | 2 | Materials and habitats | Hard, soft, wet, dry (`hard-or-soft`) | 1 | By feel (S440) | 2 | s2-hard-or-soft, s2-tap-hard, s2-wet-or-dry, s2-tap-wet |
+|  | 2 | Materials and habitats | Magnets (`magnets`) | 0 | The needle that knew (S3) | 0 | s2-magnet-pulls, s2-tap-not-pulled, s2-tap-magnet |
+|  | 2 | Materials and habitats | Habitats (`habitats`) | 0 | The crab with no shell (S28) | 1 | s2-habitat-of, s2-tap-habitat, s2-who-lives-there |
+|  | 3 | Fractions | What a fraction means (`fraction-meaning`) | 1 | The broken cups (S5) | 3 | m1-part-eaten, m1-part-left, m1-picture, m1-top-or-bottom, m1-what-number-means |
+|  | 3 | Fractions | Equivalent fractions (`equivalent-fractions`) | 3 | Two pizzas (S443) | 0 | m2-which-equals, m2-fill-bottom, m2-fill-top, m2-simplify, m2-equivalent-or-not |
+|  | 3 | Fractions | Comparing fractions (`comparing-fractions`) | 6 | Which slice is bigger? (S446) | 0 | m3-same-bottom, m3-same-top, m3-different, m3-smallest-of-three, m3-true-false |
+|  | 3 | Fractions | Fractions on a number line (`fractions-on-a-line`) | 0 | Marks on the ruler (S449) | 3 | nl-which-fraction, nl-how-many-steps, nl-place, nl-halfway, nl-closer-to |
+|  | 3 | Fractions | Building fractions (`building-fractions`) | 3 | Blocks of a fifth (S452) | 2 | bf-how-many-units, bf-sum-of-units, bf-split, bf-share, bf-add-same-bottom |
+|  | 3 | Reading to understand | The main idea (`main-idea`) | 1 | The movie in one sentence (S20) | 1 | r3-main-idea, r3-detail, r3-not-in-passage, r3-best-title |
+|  | 3 | Reading to understand | Prefixes and suffixes (`prefixes-and-suffixes`) | 3 | Happy, unhappy, happily (S455) | 3 | r3-prefix-meaning, r3-suffix-meaning, r3-build-word, r3-which-affix, r3-take-affix |
+|  | 3 | Reading to understand | Fact or opinion (`fact-or-opinion`) | 3 | Check it or argue it (S458) | 1 | r3-fact-opinion, r3-which-is-fact, r3-which-is-opinion, r3-clue-word |
+|  | 3 | Reading to understand | Because, so, then (`sequence-and-cause`) | 3 | Because and so (S461) | 0 | r3-cause, r3-effect, ord-story-steps, r3-signal-word, r3-what-next |
+|  | 3 | Reading to understand | Clues around a word (`context-clues`) | 4 | The friends it came with (S1286) | 2 | r3-context |
+|  | 3 | Reading to understand | Characters and setting (`character-and-setting`) | 6 | What she did at recess (S1289) | 1 | r3-character |
+|  | 3 | How the world works | Solids, liquids and gases (`states-of-matter`) | 4 | Three states in the kitchen (S464) | 0 | s3-which-state, s3-state-change, s3-state-property |
+|  | 3 | How the world works | Pushes and pulls (`forces-and-motion`) | 1 | Pushes and pulls (S467) | 0 | s3-push-or-pull, s3-which-force, s3-what-stops-it |
+|  | 3 | How the world works | Life cycles (`life-cycles`) | 3 | The jar of eggs (S470) | 1 | s3-next-stage, s3-what-a-seed-needs, ord-life-cycle, s3-first-stage |
+|  | 3 | How the world works | Weather and seasons (`weather-and-seasons`) | 3 | Cold in July (S21) | 0 | s3-which-tool, s3-next-season, s3-weather-or-season |
+|  | 3 | How the world works | Sound is a vibration (`sound`) | 6 | The rubber band (S1190) | 1 | sc3-sound |
+|  | 3 | How the world works | Soil and rocks (`soil-and-rocks`) | 5 | The jar (S1298) | 0 | sc3-soil |
+|  | 3 | How the world works | Food chains (`food-chains-3`) | 2 | The bucket line (S1301) | 0 | sc3-food-chain |
+|  | 3 | Writing a paragraph | The shape of a paragraph (`paragraph-shape`) | 1 | The shape of it (S473) | 1 | wr-paragraph-shape |
+|  | 3 | Writing a paragraph | Explain how to do something (`explain-how`) | 1 | The paper boat (S476) | 2 | wr-explain-how |
+|  | 3 | Writing a paragraph | Give a reason (`give-a-reason`) | 4 | I think, because (S479) | 1 | wr-give-a-reason |
+|  | 3 | Multiplication and division | Equal groups (`equal-groups`) | 1 | Three bags (S482) | 1 | mu-groups-total, mu-array, mu-story, mu-which-equation, mu-swap |
+|  | 3 | Multiplication and division | Times tables to 10 (`times-tables`) | 1 | Seven times eight (S485) | 3 | tt-fact, tt-missing-factor, tt-pattern, tt-fact-story |
+|  | 3 | Multiplication and division | Dividing (`sharing-equally`) | 4 | Deal them out (S488) | 2 | dv-share, dv-fact, dv-story, dv-undo, dv-how-many-groups |
+|  | 3 | Multiplication and division | Adding and subtracting to 1,000 (`add-subtract-1000`) | 4 | Column by column (S491) | 3 | as-add, as-subtract, as-story-add, as-story-subtract, as-two-step |
+|  | 3 | Multiplication and division | Measuring things (`measuring-things`) | 10 | Three ways to measure a puppy (S1316) | 0 | m3-measure |
+|  | 3 | Multiplication and division | Graphs and tallies (`graphs-and-tallies`) | 4 | The cars (S1319) | 0 | m3-graphs |
+|  | 3 | How computers think | Inputs and outputs (`inputs-and-outputs`) | 6 | The talking toaster (S1199) | 0 | t3-parts |
+|  | 3 | How computers think | Steps in order (`steps-in-order`) | 5 | Exactly what she was told (S1202) | 2 | t3-steps |
+|  | 3 | How computers think | Patterns and loops (`patterns-and-loops`) | 5 | One instruction, repeated (S1205) | 4 | t3-loops |
+|  | 3 | Communities and government | Three levels of government (`three-levels-of-government`) | 10 | Three levels (S503) | 3 | c3-which-level, c3-leader-title, c3-capital-city |
+|  | 3 | Communities and government | How we decide (`how-we-decide`) | 3 | Rule or law? (S506) | 1 | c3-rule-or-law, c3-branch-job, c3-vote-winner, c3-vote-margin |
+|  | 3 | Communities and government | Earning and choosing (`earning-and-choosing`) | 2 | The eleven dollars (S509) | 1 | c3-can-afford, c3-opportunity-cost, c3-money-left, c3-free-enterprise |
+|  | 3 | Looking and making | The elements of art (`elements-of-art`) | 12 | A cup, seven ways (S494) | 0 | art-which-element, art-element-or-principle, art-how-many-elements |
+|  | 3 | Looking and making | The color wheel (`the-color-wheel`) | 8 | Three jars (S497) | 3 | art-mix-colors, art-primary-or-secondary, art-warm-or-cool, art-tint-or-shade |
+|  | 3 | Looking and making | Looking at a picture (`looking-at-a-picture`) | 9 | Four looks (S500) | 4 | art-which-step, art-step-order, art-focus-how |
+|  | 3 | How your mind works | Your brain and your senses (`your-brain-and-senses`) | 2 | The monster that was a coat (S3122) | 0 | py3-brain |
+|  | 3 | How your mind works | How remembering works (`how-remembering-works`) | 2 | Nine words, five days (S3128) | 1 | py3-memory |
+|  | 3 | How your mind works | Big feelings (`big-feelings`) | 6 | The smoke detector (S3134) | 3 | py3-feelings |
+|  | 3 | How your mind works | Friends and other minds (`friends-and-other-minds`) | 3 | The loud game (S3140) | 2 | py3-friends |
+|  | 3 | I wonder why | Wondering out loud (`wondering-out-loud`) | 2 | Can a robot be your friend (S3026) | 1 | p3-wonder |
+|  | 3 | I wonder why | Because (`because`) | 3 | Recess before lunch (S3032) | 2 | p3-because |
+|  | 3 | I wonder why | Listening to disagree (`listening-to-disagree`) | 2 | The rabbit and the fish (S3038) | 0 | p3-listen |
+|  | 3 | I wonder why | What is fair (`what-is-fair`) | 1 | Three boxes and a fence (S3044) | 0 | p3-fair |
+|  | 3 | Money that works | Skills and income (`skills-and-income`) | 4 | The blade sharpener (S2790) | 1 | e3-skills |
+|  | 3 | Money that works | Planned spending and credit (`planned-spending-and-credit`) | 4 | The bike that cost forty-four dollars (S2796) | 1 | e3-credit |
+|  | 3 | Money that works | Expenses and profit (`expenses-and-profit`) | 8 | The cookie table (S2802) | 5 | e3-profit |
+|  | 3 | Money that works | Savings, taxes and budgets (`savings-taxes-and-budgets`) | 6 | The paycheck with a hole in it (S2808) | 6 | e3-budget |
+|  | 3 | Listen, then say it | Listening and asking (`listening-and-asking`) | 4 | The question about lunch (S3218) | 2 | s3-listen |
+|  | 3 | Listen, then say it | Telling it in order (`telling-it-in-order`) | 5 | Four steps to the library (S3224) | 2 | s3-order |
+|  | 3 | Listen, then say it | A one-minute talk (`a-one-minute-talk`) | 8 | Clover (S3230) | 1 | s3-talk |
+|  | 3 | Listen, then say it | Taking turns to talk (`taking-turns-to-talk`) | 5 | The talking stick (S3236) | 1 | s3-turns |
+|  | 3 | Down on the farm | Farms feed us (`farms-and-food`) | 4 | The path of a loaf of bread (S3310) | 0 | ag3-farm |
+|  | 3 | Down on the farm | Seeds and soil (`seeds-and-soil-3`) | 1 | The cup in the closet (S3316) | 0 | ag3-soil |
+|  | 3 | Down on the farm | Farm animals (`farm-animals-3`) | 2 | Four questions every morning (S3322) | 1 | ag3-animals |
+|  | 3 | Down on the farm | A tiny farm of my own (`a-tiny-farm`) | 2 | The squash that would not come (S3328) | 1 | ag3-tiny |
+|  | 3 | Jars, banks and lemonade | Work, skills and prices (`work-and-income-3`) | 1 | The price of strawberries (S3402) | 1 | bz3-work |
+|  | 3 | Jars, banks and lemonade | Spend, save and share (`spend-save-share`) | 3 | Three jars (S3408) | 3 | bz3-jars |
+|  | 3 | Jars, banks and lemonade | Banks and borrowing (`banks-and-borrowing`) | 0 | The bank with the big door (S3414) | 0 | bz3-bank |
+|  | 3 | Jars, banks and lemonade | A stand of my own (`my-first-stand`) | 2 | Lemonade on Saturday (S3420) | 0 | bz3-stand |
+|  | 3 | Looking closer, listening longer | The principles of design (`principles-of-design`) | 4 | The red bird in the gray sky (S2906) | 1 | a3-principles |
+|  | 3 | Looking closer, listening longer | Art across time and place (`art-across-time-and-place`) | 2 | Three pictures, one question (S2912) | 3 | a3-time |
+|  | 3 | Looking closer, listening longer | Families and forms (`families-and-forms`) | 8 | The concert with the eyes closed (S2918) | 1 | a3-families |
+|  | 3 | Looking closer, listening longer | Listening with a purpose (`listening-with-a-purpose`) | 7 | The night the mariachi played (S2924) | 3 | a3-listen |
+|  | 4 | Reading between the lines | Summarizing (`summarizing`) | 2 | One minute (S512) | 2 | r4-best-summary, r4-not-important, r4-summary-order |
+|  | 4 | Reading between the lines | Making inferences (`making-inferences`) | 4 | The muddy boots (S515) | 1 | r4-infer, r4-which-clue |
+|  | 4 | Reading between the lines | Similes and metaphors (`similes-and-metaphors`) | 4 | Brave as a lion (S518) | 1 | r4-simile-or-metaphor, r4-find-figurative, r4-figurative-meaning |
+|  | 4 | Reading between the lines | How a text is built (`text-structure`) | 4 | Road signs (S521) | 4 | r4-structure, r4-signal-word |
+|  | 4 | Reading between the lines | Finding a word (`dictionary-skills`) | 3 | The wrong page (S1175) | 2 | r4-alpha-first, r4-same-letter-order, r4-guide-words |
+|  | 4 | Reading between the lines | Cause and effect (`cause-and-effect-4`) | 5 | The icy road (S1334) | 1 | r4-cause-effect |
+|  | 4 | Reading between the lines | Text features (`text-features`) | 3 | Two minutes first (S1337) | 1 | r4-text-features |
+|  | 4 | Energy, Earth and living things | Forms of energy (`forms-of-energy`) | 8 | Five kinds before breakfast (S524) | 2 | s4-which-form, s4-form-change, s4-form-example |
+|  | 4 | Energy, Earth and living things | Circuits (`circuits`) | 3 | The loop (S527) | 2 | s4-conductor-or-insulator, s4-will-it-light, s4-find-the-break |
+|  | 4 | Energy, Earth and living things | How land changes (`changing-land`) | 3 | The sandcastle (S530) | 0 | s4-which-step, s4-what-caused, s4-order-steps |
+|  | 4 | Energy, Earth and living things | Adaptations (`adaptations`) | 2 | The right tools (S533) | 1 | s4-what-it-is-for, s4-which-adaptation, s4-what-problem |
+|  | 4 | Energy, Earth and living things | Simple machines (`simple-machines`) | 4 | The piano (S1178) | 1 | sc4-which-machine, sc4-machine-trade |
+|  | 4 | Energy, Earth and living things | Properties of matter (`properties-of-matter-4`) | 8 | Four tests (S1358) | 2 | sc4-matter |
+|  | 4 | Energy, Earth and living things | Food webs (`food-webs-4`) | 1 | The strings (S1361) | 2 | sc4-food-webs |
+|  | 4 | Writing paragraphs | A paragraph with a topic sentence (`topic-sentences`) | 2 | The big thing first (S536) | 3 | wr4-topic-paragraph |
+|  | 4 | Writing paragraphs | An opinion paragraph (`opinion-paragraph`) | 0 | Longer recess (S539) | 4 | wr4-opinion |
+|  | 4 | Writing paragraphs | A small story (`narrative-paragraph`) | 5 | The bird in the house (S542) | 5 | wr4-story |
+|  | 4 | The story of Texas | The first Texans (`first-texans`) | 8 | Three kitchens (S545) | 0 | h4-which-people, h4-land-shapes |
+|  | 4 | The story of Texas | Spanish and Mexican Texas (`spanish-and-mexican-texas`) | 1 | The mission bell (S548) | 1 | h4-flag-order, h4-tx-year, h4-austin |
+|  | 4 | The story of Texas | The Texas Revolution (`texas-revolution`) | 1 | The thirteen days (S14) | 0 | h4-rev-year, h4-rev-fact, h4-order-revolution |
+|  | 4 | The story of Texas | Texas joins the Union (`texas-joins-the-union`) | 2 | The 28th star (S551) | 1 | h4-union-year, h4-union-fact, h4-six-flags |
+|  | 4 | Bigger numbers and operations | Multiplying bigger numbers (`multi-digit-multiplication`) | 3 | Twenty-three boxes (S554) | 3 | g4-two-by-one, g4-split-first, g4-two-by-two, g4-multiply-story, g4-estimate-product |
+|  | 4 | Bigger numbers and operations | Dividing bigger numbers (`long-division`) | 4 | Sharing in rounds (S557) | 2 | g4-divide-exact, g4-divide-remainder, g4-check-division, g4-divide-story, g4-remainder-only |
+|  | 4 | Bigger numbers and operations | Factors and multiples (`factors-and-multiples`) | 4 | Twelve chairs (S560) | 2 | g4-is-factor, g4-list-factor, g4-multiple, g4-prime, g4-next-multiple |
+|  | 4 | Bigger numbers and operations | Fractions and decimals (`equivalent-and-decimals`) | 1 | The quarter (S563) | 0 | g4-fraction-to-decimal, g4-decimal-to-fraction, g4-compare-decimals, g4-tenths-hundredths, g4-decimal-picture |
+|  | 4 | Bigger numbers and operations | Adding and subtracting fractions (`add-fractions`) | 4 | Half and a quarter (S566) | 2 | g4-add-fraction, g4-sub-fraction, g4-mixed-number, g4-fraction-story, g4-simplify |
+|  | 4 | Bigger numbers and operations | Area and perimeter (`area-and-perimeter`) | 7 | Around and inside (S1268) | 4 | m4-area-perimeter |
+|  | 4 | Bigger numbers and operations | Angles and lines (`angles-and-lines`) | 3 | The door (S1271) | 4 | m4-angles |
+|  | 4 | Reading music | How long a note lasts (`note-lengths`) | 5 | The pizza of notes (S1259) | 5 | mu4-lengths |
+|  | 4 | Reading music | The staff (`the-staff`) | 7 | The ladder of letters (S1262) | 3 | mu4-staff |
+|  | 4 | Reading music | Fast, slow, loud, soft (`tempo-and-dynamics`) | 6 | Four Italian words (S1265) | 2 | mu4-words |
+|  | 4 | A body that works well | Sleep and the brain (`sleep-and-the-brain`) | 2 | The night librarian (S1238) | 1 | h4-sleep |
+|  | 4 | A body that works well | Reading a food label (`reading-a-food-label`) | 6 | The serving size (S1241) | 2 | h4-label |
+|  | 4 | A body that works well | The heart at work (`the-heart-at-work`) | 7 | The top of the stairs (S1244) | 3 | h4-heart |
+|  | 4 | A body that works well | Screens and you (`screens-and-you`) | 1 | Twenty, twenty, twenty (S1247) | 0 | h4-screens |
+|  | 4 | Color, shape and story | Balance and pattern (`balance-and-pattern`) | 7 | A face, a flower, a fence (S569) | 3 | art-which-balance, art-which-principle, art-break-pattern |
+|  | 4 | Color, shape and story | Making space on paper (`making-space-on-paper`) | 5 | The road into the distance (S572) | 4 | art-depth-trick, art-positive-negative, art-perspective-part |
+|  | 4 | Color, shape and story | Art tells a story (`art-tells-a-story`) | 6 | The handprint (S575) | 4 | art-why-made, art-ask-first, art-caves |
+|  | 5 | Decimals, fractions and volume | Adding and subtracting decimals (`adding-decimals`) | 9 | Two prices (S578) | 1 | g5-add-decimals, g5-subtract-decimals, g5-decimal-money |
+|  | 5 | Decimals, fractions and volume | Multiplying fractions (`multiplying-fractions`) | 12 | Half of a half (S581) | 2 | g5-multiply-fractions, g5-fraction-of-whole |
+|  | 5 | Decimals, fractions and volume | Dividing by two-digit numbers (`dividing-by-two-digits`) | 7 | Cartons of 24 (S584) | 2 | g5-divide-2digit, g5-divide-check, g5-divide-remainder |
+|  | 5 | Decimals, fractions and volume | Volume (`volume`) | 6 | Sugar cubes (S587) | 1 | g5-volume, g5-missing-side, g5-volume-layers |
+|  | 5 | Decimals, fractions and volume | The coordinate plane (`coordinate-plane`) | 5 | Three east, two north (S1181) | 2 | m5-read-point, m5-which-axis |
+|  | 5 | Decimals, fractions and volume | Order of operations (`order-of-operations`) | 12 | The package (S590) | 2 | g5-order-ops, g5-brackets, g5-two-levels |
+|  | 5 | Decimals, fractions and volume | Multiplying decimals (`multiplying-decimals`) | 5 | The dimes (S1322) | 5 | m5-decimal-mult |
+|  | 5 | Decimals, fractions and volume | Data and line plots (`data-and-line-plots`) | 4 | Ten beans (S1325) | 2 | m5-data |
+|  | 5 | Reading with judgment | Theme (`theme`) | 6 | What it was really about (S593) | 3 | r5-theme, r5-topic-or-theme |
+|  | 5 | Reading with judgment | Point of view (`point-of-view`) | 6 | Two cameras (S596) | 0 | r5-pov, r5-pov-clue |
+|  | 5 | Reading with judgment | Idioms and sayings (`idioms`) | 1 | Break a leg (S599) | 0 | r5-idiom-meaning, r5-idiom-use, r5-literal-or-idiom |
+|  | 5 | Reading with judgment | Backing it up (`text-evidence`) | 0 | Point to the line (S602) | 3 | r5-evidence, r5-claim-supported |
+|  | 5 | Reading with judgment | Comparing two texts (`comparing-texts`) | 0 | Two storms (S1340) | 2 | r5-compare-texts |
+|  | 5 | Reading with judgment | Reading an argument (`reading-an-argument`) | 3 | The cousin (S1343) | 1 | r5-argument |
+|  | 5 | Mixtures, sky and water | Mixtures and solutions (`mixtures-and-solutions`) | 7 | Two glasses (S605) | 0 | s5-mixture-or-solution, s5-how-to-separate, s5-still-there |
+|  | 5 | Mixtures, sky and water | The Earth, the sun and the moon (`earth-sun-moon`) | 3 | Top, lamp, marble (S608) | 0 | s5-which-motion, s5-moon-phase, s5-moon-light |
+|  | 5 | Mixtures, sky and water | The water cycle (`water-cycle`) | 4 | The lake that would not stay (S6) | 1 | s5-which-stage, s5-next-stage, s5-state-change-in-cycle |
+|  | 5 | Mixtures, sky and water | Inherited or learned (`inherited-and-learned`) | 6 | Eyes and wheels (S611) | 1 | s5-inherited-or-learned, s5-which-is-inherited, s5-which-is-learned |
+|  | 5 | Mixtures, sky and water | Balanced and unbalanced forces (`forces-and-motion-5`) | 5 | The rope that did not move (S1304) | 0 | sc5-forces |
+|  | 5 | Mixtures, sky and water | Fossils and what they tell (`fossils-and-earth-5`) | 10 | The shell on the mountain (S1307) | 0 | sc5-fossils |
+|  | 5 | Writing several paragraphs | An informational piece (`informational-piece`) | 5 | The tour (S614) | 7 | wr-informational-piece |
+|  | 5 | Writing several paragraphs | An opinion essay (`opinion-essay-5`) | 6 | Five paragraphs (S617) | 5 | wr-opinion-essay-5 |
+|  | 5 | Writing several paragraphs | A personal narrative (`personal-narrative-5`) | 5 | The moment (S620) | 7 | wr-personal-narrative-5 |
+|  | 5 | The story of the United States | The thirteen colonies (`thirteen-colonies`) | 4 | Three rows (S623) | 0 | h5-colony-region, h5-why-they-came, h5-first-colony |
+|  | 5 | The story of the United States | The road to revolution (`road-to-revolution`) | 1 | Four steps to a war (S626) | 1 | h5-event-year, h5-order-events, h5-what-declared |
+|  | 5 | The story of the United States | The Constitution (`the-constitution`) | 8 | The second plan (S629) | 3 | h5-which-branch, h5-branch-job, h5-bill-of-rights |
+|  | 5 | The story of the United States | Growing west (`growing-west`) | 0 | Doubling the map (S632) | 1 | h5-west-year, h5-west-what, h5-who-paid |
+|  | 5 | The story of the United States | The Civil War (`civil-war`) | 2 | The split (S635) | 1 | h5-war-year, h5-war-fact, h5-war-settled |
+|  | 5 | The story of the United States | Immigrants and growing cities (`immigration-and-cities`) | 3 | The ship in the family tree (S1310) | 0 | h5-immigration |
+|  | 5 | The story of the United States | Industry and invention (`industry-and-invention`) | 5 | Fourteen hours (S1313) | 0 | h5-industry |
+|  | 5 | Programs that decide | Variables (`variables`) | 10 | The scoreboard (S1208) | 1 | t5-variables |
+|  | 5 | Programs that decide | If, then, else (`if-then`) | 6 | The thermostat that never sleeps (S1211) | 2 | t5-if-then |
+|  | 5 | Programs that decide | Finding the bug (`finding-the-bug`) | 5 | Facing the wall (S1214) | 1 | t5-debug |
+|  | 6 | Ratios, negatives and equations | Ratios (`ratios`) | 5 | Two blues to one yellow (S18) | 2 | g6-simplify-ratio, g6-scale-ratio, g6-ratio-from-words |
+|  | 6 | Ratios, negatives and equations | Dividing fractions (`dividing-fractions`) | 7 | How many halves (S638) | 3 | g6-divide-by-fraction, g6-whole-by-fraction |
+|  | 6 | Ratios, negatives and equations | Negative numbers (`negative-numbers`) | 1 | The elevator that counted backward (S17) | 4 | g6-compare-negatives, g6-opposite, g6-order-negatives, g6-temperature |
+|  | 6 | Ratios, negatives and equations | Area of triangles and parallelograms (`area-of-triangles`) | 7 | Half a rectangle (S641) | 2 | g6-triangle-area, g6-parallelogram-area, g6-missing-height |
+|  | 6 | Ratios, negatives and equations | One-step equations (`one-step-equations`) | 6 | The mystery box (S644) | 1 | g6-solve-add, g6-solve-multiply, g6-check-solution |
+|  | 6 | Ratios, negatives and equations | Mean, median, mode and range (`mean-median-mode-6`) | 11 | The friend who moved the mean (S1274) | 7 | m6-mean |
+|  | 6 | Ratios, negatives and equations | The four quadrants (`four-quadrants`) | 8 | East and north (S1277) | 1 | m6-quadrants |
+|  | 6 | Reading like a thinker | Claims and reasons (`claims-and-reasons`) | 3 | The reason that fell (S647) | 7 | r6-find-claim, r6-supports-claim, r6-weak-reason |
+|  | 6 | Reading like a thinker | Tone and mood (`tone-and-mood`) | 5 | Two rains (S650) | 2 | r6-mood, r6-mood-word, r6-tone |
+|  | 6 | Reading like a thinker | Word roots (`word-roots`) | 2 | The root port (S653) | 9 | r6-root-meaning, r6-word-from-root |
+|  | 6 | Reading like a thinker | The central idea (`central-idea`) | 2 | The same job (S656) | 3 | r6-central-idea, r6-detail-not-central |
+|  | 6 | Reading like a thinker | Plot and conflict (`plot-and-conflict`) | 6 | The hill (S1292) | 6 | r6-plot |
+|  | 6 | Reading like a thinker | How a poem is built (`poetry-elements`) | 3 | The song without music (S1295) | 2 | r6-poetry |
+|  | 6 | Matter, energy and Earth | Elements and compounds (`elements-and-compounds`) | 5 | Letters and words (S659) | 3 | s6-element-or-compound, s6-count-kinds |
+|  | 6 | Matter, energy and Earth | How heat moves (`heat-transfer`) | 8 | Three ways (S662) | 3 | s6-which-transfer, s6-transfer-example, s6-warm-to-cool |
+|  | 6 | Matter, energy and Earth | The moving Earth (`plate-tectonics`) | 5 | Two rugs (S665) | 3 | s6-boundary-result, s6-which-boundary, s6-where-quakes |
+|  | 6 | Matter, energy and Earth | Cells (`cells`) | 1 | The pond that moved (S7) | 0 | s6-cell-part-job, s6-plant-or-both |
+|  | 6 | Matter, energy and Earth | Who eats whom (`ecosystems`) | 7 | Follow the energy (S668) | 1 | s6-which-role, s6-chain-order, s6-remove-a-link |
+|  | 6 | Matter, energy and Earth | Density (`density`) | 3 | Feathers and rocks (S671) | 4 | s6-density, s6-float-or-sink, s6-why-ship-floats |
+|  | 6 | Matter, energy and Earth | The microscope (`microscopes`) | 4 | The rooms in the cork (S1193) | 1 | sc6-microscope |
+|  | 6 | Writing with a purpose | An argument with evidence (`argument-with-evidence`) | 3 | Show the numbers (S674) | 3 | wr-argument-with-evidence |
+|  | 6 | Writing with a purpose | Compare and contrast (`compare-and-contrast`) | 5 | Two towns (S677) | 3 | wr-compare-and-contrast |
+|  | 6 | Writing with a purpose | A narrative with dialogue (`narrative-with-dialogue`) | 1 | Let them talk (S680) | 2 | wr-narrative-with-dialogue |
+|  | 6 | World cultures | Maps and hemispheres (`maps-and-hemispheres`) | 8 | The orange globe (S683) | 2 | wc6-hemisphere, wc6-continent-of, wc6-how-many, wc6-which-line |
+|  | 6 | World cultures | What culture is (`what-culture-is`) | 9 | What we would have to teach (S686) | 4 | wc6-culture-part, wc6-how-it-spread, wc6-religion-origin |
+|  | 6 | World cultures | Kinds of government (`kinds-of-government`) | 18 | The remote (S689) | 6 | wc6-government-kind, wc6-limited-or-not, wc6-who-rules |
+|  | 6 | World cultures | Kinds of economies (`kinds-of-economies`) | 10 | Who decides (S692) | 3 | wc6-economy-kind, wc6-gdp-per-person, wc6-who-decides |
+|  | 6 | World cultures | People on the move (`people-on-the-move`) | 5 | Push and pull (S695) | 3 | wc6-density, wc6-push-or-pull, wc6-more-crowded |
+|  | 6 | World cultures | World regions today (`world-regions-today`) | 10 | The neighborhood on the map (S698) | 1 | wc6-feature-continent, wc6-language-of, wc6-feature-kind |
+|  | 6 | World cultures | Where things come from (`where-things-come-from`) | 5 | The tag (S1196) | 1 | h6-supply-chain |
+|  | 6 | What a machine learns | A machine that learns (`learning-from-examples`) | 3 | The bird feeder that learned (S2722) | 2 | t6-learn |
+|  | 6 | What a machine learns | Wrong and sure (`wrong-and-sure`) | 3 | The bridge that was never built (S2728) | 3 | t6-sure |
+|  | 6 | What a machine learns | Fair examples (`fair-examples`) | 2 | The voice it never heard (S2734) | 1 | t6-fair |
+|  | 6 | What a machine learns | Staying in charge (`staying-in-charge`) | 2 | The postcard rule (S2740) | 0 | t6-charge |
+|  | 6 | How people work | The brain you are growing (`the-brain-you-are-growing`) | 3 | The night before the test (S3098) | 0 | py6-brain |
+|  | 6 | How people work | Attention, memory and practice (`attention-memory-and-practice`) | 5 | The closed book (S3104) | 0 | py6-memory |
+|  | 6 | How people work | Feelings are signals (`feelings-are-signals`) | 4 | The smoke detector (S3110) | 0 | py6-feelings |
+|  | 6 | How people work | Other people (`other-people`) | 3 | The kid in the red jacket (S3116) | 0 | py6-people |
+|  | 6 | Big questions, good reasons | Questions that open (`questions-that-open`) | 3 | The hot dog court (S3002) | 3 | p6-questions |
+|  | 6 | Big questions, good reasons | Reasons and evidence (`reasons-and-evidence`) | 4 | How do you know? (S3008) | 1 | p6-reasons |
+|  | 6 | Big questions, good reasons | Disagreeing well (`disagreeing-well`) | 3 | So you are saying (S3014) | 1 | p6-disagree |
+|  | 6 | Big questions, good reasons | Fair and unfair (`fair-and-unfair`) | 5 | Fair by which rule (S3020) | 3 | p6-fair |
+|  | 6 | Money over time | Accounts and cards (`accounts-and-cards`) | 8 | The card that was not money (S2814) | 3 | e6-accounts |
+|  | 6 | Money over time | Credit history and the cost of a loan (`credit-history-and-loans`) | 5 | The seven-year shadow (S2820) | 2 | e6-loans |
+|  | 6 | Money over time | Interest that compounds (`interest-that-compounds`) | 5 | Two ways to grow a hundred dollars (S2826) | 2 | e6-compound |
+|  | 6 | Money over time | Budgets, taxes and paying for college (`budgets-taxes-and-college`) | 9 | The paycheck and the percent (S2832) | 4 | e6-budget |
+|  | 6 | Say what you mean | Listening on purpose (`listening-on-purpose`) | 4 | Say it back (S3194) | 1 | s6-listen |
+|  | 6 | Say what you mean | Saying it clearly (`saying-it-clearly`) | 5 | The ends of the words (S3200) | 5 | s6-clear |
+|  | 6 | Say what you mean | A two-minute talk (`a-two-minute-talk`) | 10 | Two hundred and fifty words (S3206) | 4 | s6-talk |
+|  | 6 | Say what you mean | Disagreeing out loud (`disagreeing-out-loud`) | 6 | The quiet one (S3212) | 2 | s6-discuss |
+|  | 6 | Where food comes from | Where food comes from (`where-food-comes-from`) | 7 | The taco with four farms (S3286) | 2 | a6-food |
+|  | 6 | Where food comes from | Soil and seeds (`soil-and-seeds`) | 3 | Two pots and one change (S3292) | 4 | a6-soil |
+|  | 6 | Where food comes from | Animals on a farm (`animals-on-a-farm`) | 10 | The egret and the cow (S3298) | 6 | a6-animals |
+|  | 6 | Where food comes from | A small project (`a-small-project`) | 7 | Three hens and a graph (S3304) | 5 | a6-project |
+|  | 6 | Earn, save, start | Earning money and paying taxes (`earning-and-taxes`) | 4 | The snow cone paycheck (S3378) | 4 | bz6-earn |
+|  | 6 | Earn, save, start | Banks, cards and credit (`banking-and-credit`) | 2 | The card that was not money (S3384) | 1 | bz6-bank |
+|  | 6 | Earn, save, start | Budgets and net worth (`budgets-and-net-worth`) | 6 | The budget on the refrigerator (S3390) | 2 | bz6-budget |
+|  | 6 | Earn, save, start | A small business of your own (`starting-a-small-business`) | 4 | Walks for hire (S3396) | 2 | bz6-start |
+|  | 6 | Growing up healthy | Puberty and the growing body (`puberty-and-the-body-6`) | 0 | The growth chart in the nurse's office (S3524) | 1 | rsh6-body |
+|  | 6 | Growing up healthy | Reproduction and pregnancy (`reproduction-and-pregnancy-6`) | 0 | The ultrasound picture on the fridge (S3530) | 2 | rsh6-life |
+|  | 6 | Growing up healthy | Healthy relationships (`healthy-relationships-6`) | 3 | The friend who wanted all of Sam's time (S3536) | 3 | rsh6-relate |
+|  | 6 | Growing up healthy | Safety, boundaries and choices (`safety-and-choices-6`) | 0 | The comments in the group chat (S3542) | 0 | rsh6-safe |
+|  | 6 | Healthy choices | Your body and your health (`body-and-hygiene-6`) | 3 | The tick on the trail (S3470) | 1 | hl6-body |
+|  | 6 | Healthy choices | Food and movement (`eating-and-moving-6`) | 2 | The soup aisle (S3476) | 1 | hl6-food |
+|  | 6 | Healthy choices | Staying safe, in person and online (`staying-safe-6`) | 4 | The group chat (S3482) | 1 | hl6-safe |
+|  | 6 | Healthy choices | Medicines, nicotine and other drugs (`substance-free-6`) | 1 | The pills at the bus stop (S3488) | 0 | hl6-drugs |
+|  | 6 | Reading a work of art | The four-step critique (`the-four-step-critique`) | 5 | The review that skipped three steps (S2930) | 4 | a6-critique |
+|  | 6 | Reading a work of art | Art, history and power (`art-history-and-power`) | 5 | The wall that answered a war (S2936) | 0 | a6-history |
+|  | 6 | Reading a work of art | The language of the score (`the-language-of-the-score`) | 12 | Twelve bars and a repeat sign (S2942) | 1 | a6-score |
+|  | 6 | Reading a work of art | Judging a performance (`judging-a-performance`) | 8 | The judge with five questions (S2948) | 6 | a6-judge |
+|  | 7 | Proportions, integers and circles | Proportions (`proportions`) | 7 | The price of one (S701) | 2 | g7-unit-rate, g7-solve-proportion, g7-is-proportional |
+|  | 7 | Proportions, integers and circles | Percents (`percents`) | 5 | Half off what? (S25) | 2 | g7-percent-of, g7-discount, g7-what-percent |
+|  | 7 | Proportions, integers and circles | Adding and subtracting integers (`integers`) | 3 | The debt (S704) | 2 | g7-add-integers, g7-subtract-integers, g7-integer-story |
+|  | 7 | Proportions, integers and circles | Two-step equations (`two-step-equations`) | 7 | Shoes then socks (S707) | 5 | g7-two-step, g7-two-step-subtract, g7-first-step |
+|  | 7 | Proportions, integers and circles | Circles (`circles`) | 2 | The string and the can (S710) | 1 | g7-circumference, g7-circle-area, g7-radius-or-diameter |
+|  | 7 | Proportions, integers and circles | Probability (`probability-7`) | 2 | A hundred flips (S1328) | 1 | m7-probability |
+|  | 7 | Proportions, integers and circles | Scale drawings (`scale-drawings`) | 3 | The bedroom on the page (S1331) | 0 | m7-scale |
+|  | 7 | Reading with an eye for craft | The author's purpose (`authors-purpose`) | 11 | Three pages (S713) | 4 | r7-purpose, r7-purpose-clue |
+|  | 7 | Reading with an eye for craft | Strong and weak evidence (`evidence-quality`) | 0 | One story against ten thousand (S716) | 3 | r7-strong-evidence, r7-why-weak |
+|  | 7 | Reading with an eye for craft | Connotation (`connotation`) | 0 | Slim, thin, skinny (S719) | 1 | r7-connotation, r7-positive-word |
+|  | 7 | Reading with an eye for craft | Why a character acts (`character-motive`) | 1 | What she wanted and what she feared (S722) | 3 | r7-motive, r7-motive-clue |
+|  | 7 | Reading with an eye for craft | Figurative language (`figurative-language-7`) | 11 | The clock that glared (S1346) | 4 | r7-figurative |
+|  | 7 | Reading with an eye for craft | How a text is organized (`text-structures-7`) | 7 | Two rooms (S1349) | 5 | r7-structure |
+|  | 7 | Bodies, weather and change | Body systems (`body-systems`) | 11 | The city inside (S725) | 0 | s7-which-system, s7-system-job, s7-organ-belongs |
+|  | 7 | Bodies, weather and change | Photosynthesis (`photosynthesis`) | 8 | The flower in the basement (S8) | 1 | s7-in-or-out, s7-photo-missing, s7-where-it-happens |
+|  | 7 | Bodies, weather and change | Weather systems (`weather-systems`) | 0 | The slope of the air (S728) | 2 | s7-front-result, s7-pressure-sky, s7-air-rule, s7-weather-facts |
+|  | 7 | Bodies, weather and change | Natural selection (`natural-selection`) | 4 | The moths (S731) | 1 | s7-what-selected, s7-selection-parts, s7-selection-order |
+|  | 7 | Bodies, weather and change | Genes and traits (`genes-and-traits`) | 4 | The kittens that did not match (S26) | 4 | s7-dominant-or-recessive, s7-which-shows, s7-why-blue-child, s7-genes-facts |
+|  | 7 | Bodies, weather and change | Energy in ecosystems (`energy-in-ecosystems`) | 3 | The pyramid (S734) | 0 | s7-tenth-rule, s7-pyramid-level, s7-why-few-lions |
+|  | 7 | Bodies, weather and change | Where the water comes from (`watersheds`) | 5 | The crumpled bag (S1184) | 1 | sc7-watershed |
+|  | 7 | Writing about what you read | A summary and a response (`summary-and-response`) | 0 | The summary that gave nothing away (S737) | 2 | wr-summary-and-response |
+|  | 7 | Writing about what you read | An argument with a counterclaim (`argument-with-a-counterclaim`) | 5 | The objection said out loud (S740) | 3 | wr-argument-with-a-counterclaim |
+|  | 7 | Writing about what you read | An explanatory essay (`explanatory-essay`) | 4 | Starting where the reader is (S743) | 2 | wr-explanatory-essay |
+|  | 7 | Texas history | The first Texans (`the-first-texans`) | 5 | Four regions (S746) | 1 | tx7-people-region, tx7-way-of-life, tx7-four-regions |
+|  | 7 | Texas history | Spanish and Mexican Texas (`spain-and-mexico-in-texas`) | 1 | Three centuries and a door (S749) | 1 | tx7-spanish-year, tx7-spanish-fact, h4-tx-year, tx7-empresario |
+|  | 7 | Texas history | Revolution and republic (`revolution-and-republic`) | 0 | From a cannon to eighteen minutes (S752) | 0 | h4-rev-year, h4-rev-fact, tx7-republic-year, tx7-republic-fact, tx7-rev-order |
+|  | 7 | Texas history | Statehood and the Civil War (`statehood-and-civil-war`) | 4 | A state, a war, and June nineteenth (S755) | 1 | h4-union-year, h4-union-fact, tx7-state-year, tx7-state-fact, tx7-houston-stand |
+|  | 7 | Texas history | Cattle, cotton and oil (`cattle-cotton-and-oil`) | 2 | Three fortunes (S758) | 0 | tx7-growth-year, tx7-growth-fact, tx7-why-drive, tx7-herd-math |
+|  | 7 | Texas history | Modern Texas (`modern-texas`) | 3 | From farms to skylines (S761) | 1 | tx7-modern-year, tx7-modern-fact, tx7-texas-today |
+|  | 7 | Bits, networks and safety | Counting in binary (`binary`) | 2 | Four flashlights (S1217) | 3 | t7-binary |
+|  | 7 | Bits, networks and safety | How the internet moves a message (`how-the-internet-works`) | 4 | One piece at a time (S1220) | 0 | t7-internet |
+|  | 7 | Bits, networks and safety | Passwords and privacy (`passwords-and-privacy`) | 7 | The message that said now (S1223) | 2 | t7-safety |
+|  | 8 | Lines, powers and triangles | Slope (`slope`) | 9 | Two hills (S764) | 1 | g8-slope-points, g8-slope-from-equation, g8-intercept-from-equation |
+|  | 8 | Lines, powers and triangles | Exponents (`exponents`) | 8 | Five folds (S767) | 2 | g8-power-value, g8-multiply-powers, g8-divide-powers, g8-zero-negative-power |
+|  | 8 | Lines, powers and triangles | Square roots (`square-roots`) | 6 | Forty-nine tiles (S770) | 3 | g8-square-root, g8-root-between, g8-square-of |
+|  | 8 | Lines, powers and triangles | The Pythagorean theorem (`pythagorean-theorem`) | 3 | The rope with twelve knots (S9) | 3 | g8-hypotenuse, g8-missing-leg, g8-is-right-triangle |
+|  | 8 | Lines, powers and triangles | Scientific notation (`scientific-notation`) | 1 | Sliding the point (S773) | 5 | g8-to-scientific, g8-from-scientific, g8-compare-scientific |
+|  | 8 | Lines, powers and triangles | Linear functions (`linear-functions`) | 6 | The taxi meter (S1280) | 2 | m8-linear |
+|  | 8 | Lines, powers and triangles | Volume of cylinders and cones (`volume-of-cylinders`) | 4 | A circle, stacked (S1283) | 1 | m8-cylinder |
+|  | 8 | Reading with a critical eye | Flawed reasoning (`flawed-reasoning`) | 2 | The car and the rain (S776) | 8 | r8-name-flaw, r8-which-flawed |
+|  | 8 | Reading with a critical eye | Irony (`irony`) | 1 | The fire station (S779) | 1 | r8-irony-type, r8-is-ironic |
+|  | 8 | Reading with a critical eye | Allusions (`allusions`) | 2 | One word, one story (S782) | 0 | r8-allusion-meaning, r8-allusion-source |
+|  | 8 | Reading with a critical eye | An objective summary (`objective-summary`) | 0 | The mirror (S785) | 2 | r8-objective-summary, r8-loaded-word |
+|  | 8 | Reading with a critical eye | Purpose and bias (`purpose-and-bias`) | 7 | Outside the frame (S1352) | 5 | r8-author-purpose |
+|  | 8 | Reading with a critical eye | Theme across texts (`theme-across-texts`) | 3 | One tune, two songs (S1355) | 2 | r8-theme-across |
+|  | 8 | Atoms, forces and the universe | Inside the atom (`inside-the-atom`) | 9 | The balloon on the wall (S16) | 2 | s8-particle-charge, s8-particle-where, s8-atomic-number |
+|  | 8 | Atoms, forces and the universe | Newton's laws (`newtons-laws`) | 14 | The cart that would not start (S10) | 4 | s8-which-law, s8-f-equals-ma, s8-more-mass |
+|  | 8 | Atoms, forces and the universe | Chemical reactions (`chemical-reactions`) | 6 | Fold it, burn it (S788) | 2 | s8-physical-or-chemical, s8-reaction-sign, s8-mass-conserved |
+|  | 8 | Atoms, forces and the universe | The scale of the universe (`scale-of-the-universe`) | 2 | Boxes inside boxes (S791) | 2 | s8-inside-which, s8-light-time, s8-biggest-of |
+|  | 8 | Atoms, forces and the universe | Speed on a graph (`speed-and-graphs`) | 9 | The walk on a graph (S794) | 1 | s8-read-slope, s8-line-means, s8-average-speed |
+|  | 8 | Atoms, forces and the universe | Rock layers and fossils (`weathering-to-fossils`) | 1 | The laundry pile (S797) | 1 | s8-which-older, s8-layer-tells, s8-tilted-layers |
+|  | 8 | Writing essays | A thesis and an outline (`thesis-and-outline`) | 1 | A fight worth picking (S800) | 3 | wr8-thesis-outline |
+|  | 8 | Writing essays | A paragraph that proves something (`evidence-paragraph`) | 6 | The missing sentence (S803) | 5 | wr8-evidence-paragraph |
+|  | 8 | Writing essays | A five-paragraph essay (`full-essay`) | 3 | Body first (S806) | 1 | wr8-full-essay |
+|  | 8 | The United States to 1877 | The founding documents (`founding-documents`) | 3 | Why, how, and what may not (S809) | 3 | h8-which-document, h8-compromise, h8-reference-year, h8-reference-fact, h8-we-the-people |
+|  | 8 | The United States to 1877 | The early republic (`early-republic`) | 1 | Learning to drive (S812) | 3 | h8-republic-year, h8-republic-fact, h8-hamilton-jefferson |
+|  | 8 | The United States to 1877 | The road to the Civil War (`sectional-crisis`) | 3 | The coin toss (S815) | 1 | h8-crisis-year, h8-crisis-fact, h8-order-crisis, h8-what-war-was-about |
+|  | 8 | The United States to 1877 | Reconstruction (`reconstruction`) | 10 | Three promises (S818) | 1 | h8-which-amendment, h8-amendment-year, h8-after-1877, h8-reconstruction-facts |
+|  | 9 | Algebra 1 | Multi-step equations (`multi-step-equations`) | 14 | Two sides of the bed (S821) | 4 | g9-both-sides, g9-distribute-solve |
+|  | 9 | Algebra 1 | Functions (`functions`) | 3 | The honest machine (S824) | 3 | g9-evaluate-function, g9-is-function, g9-find-input |
+|  | 9 | Algebra 1 | Systems of equations (`systems-of-equations`) | 6 | Two clues (S827) | 5 | g9-system-substitute, g9-check-pair |
+|  | 9 | Algebra 1 | Factoring (`factoring`) | 3 | Un-multiplying (S830) | 4 | g9-factor-pair, g9-factor-trinomial, g9-zeros |
+|  | 9 | Algebra 1 | Exponential growth (`exponential-growth`) | 6 | The rumor (S833) | 3 | g9-linear-or-exponential, g9-growth-value, g9-next-term |
+|  | 9 | English 1 | Rhetorical appeals (`rhetorical-appeals`) | 11 | Three ways to sell a bicycle (S836) | 4 | r9-which-appeal, r9-appeal-fits |
+|  | 9 | English 1 | How a theme develops (`theme-development`) | 0 | The key (S839) | 5 | r9-theme-from-arc, r9-theme-shift |
+|  | 9 | English 1 | The effect of word choice (`word-choice-effect`) | 1 | Sprinted, or ran (S842) | 0 | r9-word-effect, r9-stronger-word |
+|  | 9 | English 1 | Credible sources (`credible-sources`) | 7 | The page with no name (S845) | 2 | r9-more-credible, r9-credibility-flag, r9-credibility-check |
+|  | 9 | Biology | DNA and genes (`dna-and-genes`) | 7 | The recipe book (S22) | 2 | s9-pair-letter, s9-complement, s9-gene-or-chromosome |
+|  | 9 | Biology | Punnett squares (`punnett-squares`) | 7 | Four tickets (S848) | 2 | s9-shows-trait, s9-cross-odds, s9-which-boxes, s9-genetics-facts |
+|  | 9 | Biology | Respiration and photosynthesis (`respiration-and-photosynthesis`) | 4 | The leaf and the lung (S851) | 1 | s9-which-process, s9-reactant-or-product, s9-where-process |
+|  | 9 | Biology | Evidence for evolution (`evidence-for-evolution`) | 4 | Three witnesses (S854) | 4 | s9-which-evidence, s9-closer-relative, s9-older-layer |
+|  | 9 | Biology | Mitosis and meiosis (`cell-division`) | 4 | The recipe book, copied twice (S857) | 1 | s9-mitosis-or-meiosis, s9-chromosome-count, s9-why-half |
+|  | 9 | Biology | From DNA to protein (`protein-synthesis`) | 3 | The book that stays (S860) | 0 | s9-transcription-or-translation, s9-codon-count, s9-rna-letter |
+|  | 9 | Biology | The carbon and nitrogen cycles (`carbon-and-nitrogen-cycles`) | 3 | The atom on the bus (S863) | 0 | s9-which-cycle, s9-cycle-step, s9-who-fixes-nitrogen, s9-cycles-facts |
+|  | 9 | Biology | Homeostasis (`homeostasis`) | 8 | The thermostat inside (S866) | 2 | s9-feedback-response, s9-too-hot-or-cold, s9-blood-sugar, s9-negative-feedback |
+|  | 9 | Writing about texts and turns | An analysis paragraph (`analysis-paragraph`) | 3 | The sentence after the quote (S869) | 3 | wr-analysis-paragraph |
+|  | 9 | Writing about texts and turns | A narrative with a turn (`narrative-with-a-turn`) | 4 | The phone rang (S872) | 4 | wr-narrative-with-a-turn |
+|  | 9 | Writing about texts and turns | A rhetorical analysis (`rhetorical-analysis`) | 6 | Taking it apart (S875) | 1 | wr-rhetorical-analysis |
+|  | 9 | World geography | The shape of the earth (`the-shape-of-the-earth`) | 14 | The cracked egg (S878) | 3 | wg9-landform, wg9-plate-effect, wg9-biggest |
+|  | 9 | World geography | Climate and biomes (`climate-and-biomes`) | 11 | Three dials (S881) | 0 | wg9-biome, wg9-lapse, wg9-climate-factor |
+|  | 9 | World geography | Reading maps (`reading-maps`) | 3 | The shrunken photograph (S884) | 0 | wg9-map-scale, wg9-time-zones, wg9-map-kind |
+|  | 9 | World geography | People and places (`people-and-places`) | 2 | The block and the ranch (S887) | 1 | wg9-density, wg9-natural-increase, wg9-urban-share |
+|  | 9 | World geography | Resources and work (`resources-and-work`) | 9 | The paycheck and the jar (S890) | 2 | wg9-renewable, wg9-sector, wg9-trade-balance |
+|  | 9 | World geography | Regions of the world (`regions-of-the-world`) | 8 | The map behind your eyes (S893) | 2 | wg9-capital, wc6-feature-continent, wc6-continent-of |
+|  | 9 | How a program is built | Inside the machine (`inside-the-machine`) | 8 | The laptop that would not wake (S2746) | 1 | t9-machine |
+|  | 9 | How a program is built | Counting in binary (`counting-in-binary`) | 5 | The eight lanterns (S2752) | 2 | t9-binary |
+|  | 9 | How a program is built | Variables, decisions and loops (`variables-and-decisions`) | 12 | The machine that gave change (S2758) | 2 | t9-program |
+|  | 9 | How a program is built | Working like a coder (`working-like-a-programmer`) | 6 | The license on the map (S2764) | 4 | t9-craft |
+|  | 9 | Relationships and health | Healthy relationships and boundaries (`healthy-relationships-9`) | 1 | What my cousin told me (S3548) | 1 | hs9-rel |
+|  | 9 | Relationships and health | Safety, abuse and trafficking (`safety-and-abuse-9`) | 2 | The modeling offer (S3554) | 2 | hs9-safety |
+|  | 9 | Relationships and health | STIs, testing and prenatal care (`sti-prevention-9`) | 1 | The checkup (S3560) | 2 | hs9-sti |
+|  | 9 | Relationships and health | Choices, risks and responsibilities (`choices-and-responsibilities-9`) | 5 | What Darnell wishes he had known (S3566) | 1 | hs9-choices |
+|  | 9 | Health for life | Health literacy and prevention (`health-literacy-9`) | 3 | The pressure he almost ignored (S3494) | 2 | hl9-literacy |
+|  | 9 | Health for life | Food, fitness and energy balance (`nutrition-and-activity-9`) | 3 | The energy drink month (S3500) | 1 | hl9-food |
+|  | 9 | Health for life | Emergencies, CPR and staying safe (`first-aid-and-safety-9`) | 5 | The grape and the stranger (S3506) | 1 | hl9-safety |
+|  | 9 | Health for life | Mind and mood (`mind-and-mood-9`) | 1 | The message at midnight (S3512) | 3 | hl9-mind |
+|  | 9 | Health for life | Drugs, medicine and choices (`drugs-and-choices-9`) | 5 | The pill in the locker room (S3518) | 1 | hl9-drugs |
+|  | 9 | Open for business | How a business works (`business-basics`) | 7 | Two mowers and a sign (S3354) | 1 | bz-basics |
+|  | 9 | Open for business | Marketing and the four Ps (`marketing-mix-9`) | 4 | The hoodies nobody bought (S3360) | 2 | bz-market |
+|  | 9 | Open for business | Money in a business (`business-money`) | 5 | The bakery's two statements (S3366) | 0 | bz-money |
+|  | 9 | Open for business | Ethics, law and careers (`ethics-and-careers`) | 1 | The cheaper screens (S3372) | 2 | bz-ethics |
+|  | 9 | From soil to supper | What agriculture is (`what-agriculture-is`) | 5 | The bale and the dollar (S3262) | 0 | ag-scope |
+|  | 9 | From soil to supper | Soil and plants (`soil-and-plants`) | 3 | The jar on the windowsill (S3268) | 1 | ag-soil |
+|  | 9 | From soil to supper | Animals and food (`animals-and-food`) | 4 | Four stomachs and a cold chain (S3274) | 1 | ag-animals |
+|  | 9 | From soil to supper | Running a farm (`running-a-farm`) | 6 | Six goats and a ledger (S3280) | 1 | ag-farm |
+|  | 9 | Say it so it lands | The communication process (`the-communication-process`) | 3 | The text that lost its tone (S3170) | 2 | sp-process |
+|  | 9 | Say it so it lands | Listening that works (`listening-that-works`) | 4 | The question under the question (S3176) | 3 | sp-listen |
+|  | 9 | Say it so it lands | Building a talk (`building-a-talk`) | 3 | Three questions in a doorway (S3182) | 4 | sp-build |
+|  | 9 | Say it so it lands | Delivery and nerves (`delivery-and-nerves`) | 6 | Ready, not doomed (S3188) | 3 | sp-deliver |
+|  | 9 | The science of behavior | How psychologists know (`how-psychologists-know`) | 2 | The two classes with the same mean (S3074) | 1 | ps-know, ps-stats |
+|  | 9 | The science of behavior | Brain, senses and growing up (`brain-senses-and-growing-up`) | 4 | The tall glass (S3080) | 1 | ps-brain |
+|  | 9 | The science of behavior | Learning, memory and thinking (`learning-memory-and-thinking`) | 6 | The bell and the bus (S3086) | 1 | ps-learn |
+|  | 9 | The science of behavior | People among people (`people-among-people`) | 5 | The one in the blue coat (S3092) | 0 | ps-social |
+|  | 9 | How to think about anything | What is an argument (`what-is-an-argument`) | 6 | The penguin in the syllogism (S2978) | 3 | ph-argument |
+|  | 9 | How to think about anything | The usual mistakes (`the-usual-mistakes`) | 5 | The third door (S2984) | 2 | ph-fallacy |
+|  | 9 | How to think about anything | What can we know (`what-can-we-know`) | 5 | The horoscope and the forecast (S2990) | 1 | ph-know |
+|  | 9 | How to think about anything | How should we live (`how-should-we-live`) | 6 | The switch and the cake (S2996) | 0 | ph-ethics |
+|  | 9 | Money for a life | Paychecks and statements (`paychecks-and-statements`) | 6 | The stub that told the truth (S2838) | 5 | e9-pay |
+|  | 9 | Money for a life | The true cost of credit (`the-true-cost-of-credit`) | 8 | Fifteen dollars per hundred (S2844) | 2 | e9-credit |
+|  | 9 | Money for a life | Saving, investing and risk (`saving-investing-and-risk`) | 7 | The first thousand (S2850) | 3 | e9-invest |
+|  | 9 | Money for a life | Insurance, scams and paying for college (`insurance-scams-and-college`) | 10 | The deductible and the phone call (S2856) | 5 | e9-protect |
+|  | 9 | The informed eye and ear | Reading artwork with precision (`reading-artwork-with-precision`) | 1 | The chair by the window (S2954) | 4 | a9-read |
+|  | 9 | The informed eye and ear | Styles, themes and cultures (`styles-themes-and-cultures`) | 7 | Two portraits, one wall (S2960) | 3 | a9-styles |
+|  | 9 | The informed eye and ear | The elements of music (`the-elements-of-music`) | 7 | Four half steps and three (S2966) | 1 | a9-elements |
+|  | 9 | The informed eye and ear | Music in society (`music-in-society`) | 4 | The song built from a song (S2972) | 3 | a9-society |
+|  | 10 | Geometry | Angle relationships (`angle-relationships`) | 4 | The bow tie (S896) | 2 | g10-vertical-angle, g10-supplementary, g10-triangle-angle |
+|  | 10 | Geometry | Similar triangles (`similar-triangles`) | 5 | The enlargement (S899) | 1 | g10-scale-factor, g10-missing-side, g10-shadow |
+|  | 10 | Geometry | Transformations (`transformations`) | 11 | The picture on the wall (S902) | 4 | g10-translate, g10-reflect, g10-rotate |
+|  | 10 | Geometry | Sine, cosine and tangent (`right-triangle-trig`) | 6 | Standing at the corner (S905) | 4 | g10-sine, g10-cosine, g10-tangent |
+|  | 10 | Geometry | Arcs and sectors (`arcs-and-sectors`) | 3 | A quarter of the pizza (S908) | 2 | g10-sector-fraction, g10-arc-length, g10-sector-area |
+|  | 10 | English 2 | Spotting bias (`spotting-bias`) | 1 | The missing middle (S911) | 2 | r10-which-leans, r10-charged-word, r10-bias-move |
+|  | 10 | English 2 | Paraphrasing precisely (`paraphrasing`) | 3 | A different truck (S914) | 4 | r10-best-paraphrase, r10-what-was-lost |
+|  | 10 | English 2 | Complex characters (`complex-characters`) | 1 | Two wants (S917) | 4 | r10-two-wants, r10-which-won, r10-complex-facts |
+|  | 10 | English 2 | Symbols (`symbols`) | 1 | The green light (S920) | 2 | r10-symbol-meaning, r10-symbol-signal |
+|  | 10 | Chemistry | The periodic table (`periodic-table`) | 11 | The professor who guessed (S11) | 1 | s10-row-or-column, s10-which-group, s10-metal-or-not |
+|  | 10 | Chemistry | Ionic and covalent bonds (`ionic-and-covalent`) | 8 | Two ways to share (S923) | 0 | s10-ionic-or-covalent, s10-gives-or-shares, s10-bond-property |
+|  | 10 | Chemistry | Balancing equations (`balancing-equations`) | 6 | Bricks in, bricks out (S926) | 3 | s10-count-atoms, s10-is-balanced, s10-which-number-changes |
+|  | 10 | Chemistry | Acids and bases (`acids-and-bases`) | 2 | The ruler from 0 to 14 (S929) | 0 | s10-acid-or-base, s10-more-acidic, s10-how-many-times, s10-neutralize |
+|  | 10 | Chemistry | Moles and molar mass (`moles-and-molar-mass`) | 7 | A dozen for chemists (S932) | 2 | s10-molar-mass, s10-grams-in-moles, s10-moles-from-grams |
+|  | 10 | Chemistry | Types of reactions (`reaction-types`) | 13 | Snap, split, swap, burn (S935) | 6 | s10-reaction-type, s10-type-example |
+|  | 10 | Chemistry | Gas laws (`gas-laws`) | 1 | The balloon (S938) | 1 | s10-boyle, s10-heat-a-gas, s10-squeeze |
+|  | 10 | Chemistry | Concentration (`concentration`) | 3 | How strong the lemonade is (S941) | 4 | s10-molarity, s10-dilute, s10-solute-or-solvent |
+|  | 10 | Writing about texts | A literary analysis (`literary-analysis`) | 3 | A claim, not a summary (S944) | 4 | wr-literary-analysis |
+|  | 10 | Writing about texts | An argument with sources (`sourced-argument`) | 5 | Where did you get that? (S947) | 2 | wr-sourced-argument |
+|  | 10 | Writing about texts | A reflective essay (`reflective-essay`) | 5 | Before and after (S950) | 0 | wr-reflective-essay |
+|  | 10 | World history | The first civilizations (`ancient-civilizations`) | 6 | The river that kept time (S953) | 2 | h10-which-river, h10-surplus, h10-period-year, h10-first-writing, h10-period-fact |
+|  | 10 | World history | Greece and Rome (`greece-and-rome`) | 4 | Everyone, some, one (S956) | 4 | h10-athens-or-rome, h10-rome-year, h10-founders-fear |
+|  | 10 | World history | The Middle Ages and the Renaissance (`middle-ages-and-renaissance`) | 3 | Land, plague, press (S959) | 1 | h10-medieval-year, h10-feudal, h10-press |
+|  | 10 | World history | The age of revolutions (`age-of-revolutions`) | 2 | One idea, three endings (S962) | 2 | h10-rev-year, h10-why-different, h10-enlightenment |
+|  | 10 | World history | The Industrial Revolution (`industrial-revolution`) | 2 | The loom in the valley (S19) | 1 | h10-industry-fact, h10-price-and-payoff, h10-pattern, h10-industry-facts |
+|  | 10 | World history | The world wars (`world-wars`) | 1 | Twenty years apart (S965) | 0 | h10-war-year, h10-war-fact, h10-never-again |
+|  | 11 | Algebra 2 | The quadratic formula (`quadratic-formula`) | 5 | Where the arch lands (S968) | 4 | g11-quadratic-roots, g11-discriminant, g11-how-many-roots |
+|  | 11 | Algebra 2 | Multiplying binomials (`multiplying-binomials`) | 5 | Four patches (S971) | 8 | g11-multiply-binomials, g11-middle-term, g11-square-binomial |
+|  | 11 | Algebra 2 | Sequences (`sequences`) | 9 | Two staircases (S974) | 8 | g11-arithmetic-term, g11-geometric-term, g11-sequence-kind |
+|  | 11 | Algebra 2 | Logarithms (`logarithms`) | 6 | How many doublings (S977) | 0 | g11-log-value, g11-exp-to-log, g11-log-to-exp |
+|  | 11 | Algebra 2 | Absolute value equations (`absolute-value`) | 3 | Four steps from three (S980) | 4 | g11-absolute-solve, g11-absolute-value-of, g11-absolute-none |
+|  | 11 | English 3 | Counterclaims (`counterclaims`) | 4 | The objection that got there first (S983) | 3 | r11-which-part, r11-best-rebuttal |
+|  | 11 | English 3 | Satire (`satire`) | 1 | A straight face (S986) | 2 | r11-satire-target, r11-is-satire |
+|  | 11 | English 3 | Sentence structure and effect (`sentence-structure`) | 0 | The long one, then the short one (S989) | 1 | r11-structure-effect, r11-short-for-impact, r11-structure-facts |
+|  | 11 | English 3 | Is the evidence enough? (`enough-evidence`) | 3 | A big claim on a small pile (S992) | 1 | r11-relevant-or-sufficient, r11-what-would-suffice |
+|  | 11 | Physics | Speed and acceleration (`speed-and-acceleration`) | 2 | The red bike, part two (S24) | 3 | s11-speed, s11-acceleration, s11-steady-speed |
+|  | 11 | Physics | Kinetic and potential energy (`energy-kinds`) | 1 | The ball on the balcony (S995) | 1 | s11-potential, s11-kinetic, s11-which-energy |
+|  | 11 | Physics | Waves (`waves`) | 3 | The rope (S998) | 0 | s11-wave-speed, s11-wavelength-from, s11-higher-pitch |
+|  | 11 | Physics | Current, voltage and resistance (`electricity`) | 6 | The water pipe (S1001) | 3 | s11-current, s11-resistance, s11-voltage, s11-more-resistance |
+|  | 11 | Physics | Momentum (`momentum`) | 2 | The bike and the truck (S1004) | 2 | s11-momentum, s11-after-collision, s11-same-momentum |
+|  | 11 | Physics | Work and power (`work-and-power`) | 4 | The same box, twice (S1007) | 1 | s11-work, s11-power, s11-no-work |
+|  | 11 | Physics | Light: reflection and refraction (`light-and-optics`) | 7 | The straw that broke (S27) | 1 | s11-reflect-or-refract, s11-angle-out, s11-why-straw-bends |
+|  | 11 | Physics | Series and parallel circuits (`series-and-parallel`) | 8 | Two strings of lights (S1010) | 3 | s11-series-or-parallel, s11-bulb-burns-out, s11-series-resistance |
+|  | 11 | Writing with sources | A synthesis essay (`synthesis-essay`) | 4 | By reasons, not by sources (S1013) | 3 | wr-synthesis-essay |
+|  | 11 | Writing with sources | A literary argument (`literary-argument`) | 6 | Three times, from three places (S1016) | 2 | wr-literary-argument |
+|  | 11 | Writing with sources | An op-ed (`op-ed`) | 5 | Thirty seconds (S1019) | 6 | wr-op-ed |
+|  | 11 | United States history since 1877 | The Gilded Age and the Progressives (`gilded-age-and-progressives`) | 2 | Gold on the outside (S1022) | 0 | h11-gilded-year, h11-gilded-fact, h11-turning-year, h11-progressive-law |
+|  | 11 | United States history since 1877 | The Depression and the New Deal (`depression-and-new-deal`) | 2 | One in four (S1025) | 2 | h11-depression-year, h11-depression-fact, h11-new-deal, h11-newdeal-facts |
+|  | 11 | United States history since 1877 | America in the Second World War (`america-in-world-war-two`) | 0 | The morning that ended the argument (S1028) | 0 | h11-ww2-year, h11-ww2-fact, h11-turning-fact, h11-home-front |
+|  | 11 | United States history since 1877 | The Cold War (`cold-war`) | 0 | Two powers, no shots (S1031) | 1 | h11-cold-year, h11-cold-fact, h11-why-cold |
+|  | 11 | United States history since 1877 | The civil rights movement (`civil-rights-movement`) | 5 | Courts, feet, crowds, laws (S1034) | 4 | h11-cr-year, h11-cr-fact, h11-order-cr |
+|  | 11 | United States history since 1877 | Recent America (`recent-america`) | 1 | The shocks (S1037) | 1 | h11-recent-year, h11-recent-fact, h11-handover |
+|  | 12 | Precalculus | Shifting a function (`function-shifts`) | 2 | The picture, moved (S1040) | 3 | g12-shift-direction, g12-shifted-point, g12-write-shift |
+|  | 12 | Precalculus | Composite functions (`composite-functions`) | 5 | Two machines in a row (S1043) | 2 | g12-compose-value, g12-compose-order |
+|  | 12 | Precalculus | The unit circle (`unit-circle`) | 6 | A walk around the circle (S1046) | 3 | g12-unit-value, g12-quadrant-sign |
+|  | 12 | Precalculus | Half-life (`half-life`) | 6 | The halving clock (S1049) | 2 | g12-half-life-left, g12-half-lives-count |
+|  | 12 | Precalculus | End behavior of polynomials (`end-behavior`) | 5 | What the ends do (S1052) | 3 | g12-end-behavior, g12-leading-term |
+|  | 12 | English 4 | Reading two sources together (`two-sources`) | 2 | Two witnesses (S1055) | 1 | r12-agree-or-differ, r12-what-added, r12-together-they-say |
+|  | 12 | English 4 | Unstated assumptions (`assumptions`) | 3 | The skipped step (S1058) | 1 | r12-find-assumption, r12-assumption-test |
+|  | 12 | English 4 | The precise word (`precise-words`) | 2 | Walk, stroll, march, trudge (S1061) | 2 | r12-precise-word, r12-word-implies |
+|  | 12 | English 4 | Why the author built it that way (`author-choices`) | 0 | Why it starts here (S1064) | 0 | r12-structure-choice, r12-if-it-began, r12-choice-facts |
+|  | 12 | Earth and space | The rock cycle (`rock-cycle`) | 11 | Never finished (S1067) | 1 | s12-rock-kind, s12-how-formed, s12-rock-next |
+|  | 12 | Earth and space | Climate and weather (`climate-and-weather`) | 4 | One Tuesday and thirty years (S1070) | 0 | s12-weather-or-climate, s12-climate-driver, s12-single-day |
+|  | 12 | Earth and space | The life of a star (`life-of-a-star`) | 1 | The long campfire (S1073) | 1 | s12-star-ending, s12-star-stage, s12-where-elements |
+|  | 12 | Earth and space | People and the planet (`human-impact`) | 0 | The way a doctor does it (S1076) | 1 | s12-cause-of, s12-what-fixed, s12-fix-pattern |
+|  | 12 | Earth and space | The layers of the Earth (`earths-layers`) | 4 | The peach (S1079) | 1 | s12-which-layer, s12-layer-order, s12-how-we-know, s12-layer-facts |
+|  | 12 | Earth and space | Ocean currents (`ocean-currents`) | 0 | The conveyor belt (S1082) | 0 | s12-current-driver, s12-why-mild, s12-sinks-or-rises, s12-ocean-facts |
+|  | 12 | Earth and space | Renewable and nonrenewable (`natural-resources`) | 5 | Slower than it grows (S1085) | 0 | s12-renewable-or-not, s12-rate-decides, s12-old-sunlight |
+|  | 12 | Earth and space | The expanding universe (`the-big-bang`) | 3 | Raisins in the dough (S1088) | 1 | s12-big-bang-evidence, s12-redshift, s12-no-center |
+|  | 12 | Writing for the world | A research paper (`research-paper`) | 4 | The question, the sources, the answer (S1091) | 2 | wr-research-paper |
+|  | 12 | Writing for the world | A personal essay (`personal-essay`) | 0 | One small moment (S1094) | 3 | wr-personal-essay |
+|  | 12 | Writing for the world | A letter to an editor (`letter-to-an-editor`) | 4 | One point, one ask (S1097) | 3 | wr-letter-to-an-editor |
+|  | 12 | United States government | The principles of the Constitution (`principles-of-the-constitution`) | 9 | The ideas underneath (S1100) | 3 | g12-which-principle, g12-constitution-year, g12-madison-line, g12-constitution-fact |
+|  | 12 | United States government | The three branches and checks and balances (`three-branches`) | 13 | Three teams (S1103) | 0 | g12-which-branch, g12-how-many, g12-which-check, g12-two-thirds, g12-term-length |
+|  | 12 | United States government | Federalism: national, state and local (`federalism`) | 15 | The school and the district (S1106) | 4 | g12-which-level, g12-power-kind, g12-supremacy, g12-tenth |
+|  | 12 | United States government | The Bill of Rights and civil liberties (`bill-of-rights`) | 8 | The fence (S1109) | 0 | g12-which-amendment, g12-amendment-year, g12-first-freedoms, g12-vote-order |
+|  | 12 | United States government | How a bill becomes a law (`how-a-bill-becomes-law`) | 3 | The obstacle course (S1112) | 0 | g12-bill-order, g12-where-bills-die, g12-after-veto, g12-override-votes, g12-bill-next-step |
+|  | 12 | United States government | Elections, parties and voting (`elections-parties-and-voting`) | 4 | Two rounds, 270 (S1115) | 0 | g12-electors, g12-presidential-year, g12-primary-or-general, g12-who-can-vote |
+|  | 12 | Economics and personal finance | Scarcity and opportunity cost (`scarcity-and-opportunity-cost`) | 6 | Sixty dollars, two wants (S1118) | 2 | e12-opportunity-cost, e12-factor-kind, e12-basic-question |
+|  | 12 | Economics and personal finance | Supply, demand and price (`supply-demand-and-price`) | 4 | The day it rained (S12) | 0 | e12-equilibrium-price, e12-shortage-or-surplus, e12-shift-effect, e12-law-of-demand |
+|  | 12 | Economics and personal finance | Competition and markets (`competition-and-markets`) | 6 | Two stands on one street (S1121) | 1 | e12-revenue, e12-profit, e12-competition-effect, e12-free-enterprise-kind |
+|  | 12 | Economics and personal finance | Money, banking and the Fed (`money-banking-and-the-fed`) | 6 | A promise everyone accepts (S1124) | 1 | e12-simple-interest, e12-money-job, e12-fed-response, e12-bank-gap |
+|  | 12 | Economics and personal finance | GDP, inflation and unemployment (`gdp-inflation-and-unemployment`) | 3 | The country's paycheck (S1127) | 1 | e12-growth-rate, e12-price-after-inflation, e12-unemployment-rate, e12-in-labor-force |
+|  | 12 | Economics and personal finance | Budgets, saving and credit (`budgets-saving-and-credit`) | 7 | The bike jar (S13) | 3 | e12-budget-left, e12-percent-of-income, e12-rule-of-72, e12-card-interest, e12-need-or-want |
+|  | C | Statistics and reasoning | Mean, median and mode (`mean-median-mode`) | 5 | The rich friend (S1130) | 2 | gc-mean, gc-median, gc-mode |
+|  | C | Statistics and reasoning | How spread out the data is (`spread`) | 4 | Same average, different rooms (S1133) | 1 | gc-range, gc-more-spread, gc-same-mean |
+|  | C | Statistics and reasoning | Probability (`probability`) | 4 | Three slices (S1136) | 2 | gc-simple-probability, gc-not-probability, gc-two-independent |
+|  | C | Statistics and reasoning | Compound interest (`compound-interest`) | 6 | The snowball (S1139) | 2 | gc-compound-amount, gc-simple-vs-compound, gc-years-to-grow |
+|  | C | Statistics and reasoning | Correlation is not causation (`correlation-causation`) | 5 | Ice cream and the pool (S1142) | 4 | gc-cause-or-correlate, gc-third-factor |
+|  | C | Academic reading | Thesis statements (`thesis-statements`) | 6 | A fight worth picking (S1145) | 2 | rc-which-thesis, rc-thesis-flaw |
+|  | C | Academic reading | The shape of an academic argument (`academic-structure`) | 4 | The sentence that explains why (S1148) | 4 | rc-which-part, rc-missing-warrant |
+|  | C | Academic reading | Reading numbers inside prose (`numbers-in-prose`) | 1 | A number with no clothes on (S1151) | 6 | rc-missing-base, rc-bigger-change |
+|  | C | Academic reading | Logical consistency (`logical-consistency`) | 0 | Cheap, and the most expensive ever (S1154) | 0 | rc-contradiction, rc-consistent-pair, rc-consistency-facts |
+|  | C | Thinking like a historian | Primary and secondary sources (`primary-and-secondary-sources`) | 9 | The letter and the textbook (S1157) | 2 | hc-source-kind, hc-why-made, hc-closer-witness |
+|  | C | Thinking like a historian | Counting time (`counting-time`) | 5 | The century off by one (S1160) | 2 | hc-which-century, hc-years-between, hc-earlier, hc-which-decade |
+|  | C | Thinking like a historian | Cause and effect (`cause-and-effect`) | 10 | Dry wood and a match (S1163) | 5 | hc-cause-kind, hc-correlation, hc-counterfactual |
+|  | C | Thinking like a historian | The big turns (`the-big-turns`) | 8 | Eight hinges (S1166) | 2 | hc-turn-year, hc-turn-fact, hc-turns-order |
+|  | C | Thinking like a historian | Writing history (`writing-history`) | 5 | Bricks and a house (S1169) | 3 | hc-thesis-or-fact, hc-evidence-fits, hc-hedge |
+|  | C | Business principles | Business and its world (`business-and-its-world-c`) | 9 | Salsa across the border (S3446) | 3 | bzc-world |
+|  | C | Business principles | Management and leadership (`management-c`) | 2 | The night shift that kept quitting (S3452) | 1 | bzc-manage |
+|  | C | Business principles | Accounting, finance and markets (`money-and-markets-c`) | 4 | Two ways to pay for a second oven (S3458) | 3 | bzc-money |
+|  | C | Business principles | Ethics, responsibility and the law (`ethics-and-government-c`) | 6 | The recall that cost a week's profit (S3464) | 1 | bzc-ethics |
+|  | C | General psychology | Methods and measurement (`methods-and-measurement-c`) | 5 | The horse who seemed to count (S3572) | 2 | psyc-methods |
+|  | C | General psychology | Where psychology came from (`schools-of-thought-c`) | 3 | The degree Harvard would not give (S3578) | 3 | psyc-history |
+|  | C | General psychology | One behavior, seven lenses (`perspectives-c`) | 13 | Seven ways to look at one night (S3584) | 2 | psyc-perspectives |
+|  | C | General psychology | Brain, body and behavior (`brain-and-behavior-c`) | 3 | The man who lived in the present (S3590) | 2 | psyc-brain |
+| yes (JF, an Opus 5.5 sample: lesson, story and questions rewritten) | C | Principles of macroeconomics | Scarcity, trade and markets (`scarcity-and-markets-c`) | 0 | Ten workers and forty-eight thousand pins (S3596) | 0 | macro-markets |
+|  | C | Principles of macroeconomics | Measuring the economy (`measuring-the-economy-c`) | 2 | The number that came with a warning (S3602) | 0 | macro-measure |
+|  | C | Principles of macroeconomics | Money, banks and the Fed (`money-and-banking-c`) | 3 | The stone at the bottom of the sea (S3608) | 0 | macro-money |
+|  | C | Principles of macroeconomics | Policy, trade and the world (`policy-and-the-world-c`) | 1 | The year rates hit twenty percent (S3614) | 1 | macro-policy |
+|  | C | Public speaking | Communication and audience (`communication-and-audience-c`) | 3 | Two hours and two minutes (S3620) | 0 | spch-audience |
+|  | C | Public speaking | Ethics, evidence and listening (`ethics-and-evidence-c`) | 4 | The point that was already conceded (S3626) | 2 | spch-ethics |
+|  | C | Public speaking | Organizing and delivering (`organizing-and-delivering-c`) | 2 | Just three stories (S3632) | 3 | spch-organize |
+|  | C | Public speaking | Informing and persuading (`informing-and-persuading-c`) | 5 | Tell them about the dream (S3638) | 1 | spch-persuade |
+|  | C | How computers compute | Inside a running program (`inside-a-running-program`) | 9 | The box at address 1000 (S2862) | 5 | tc-inside |
+|  | C | How computers compute | Counting steps (`counting-steps`) | 8 | Guess my number (S2868) | 6 | tc-steps |
+|  | C | How computers compute | The shapes of data (`shapes-of-data`) | 15 | The plates and the line (S2874) | 4 | tc-shapes |
+|  | C | How computers compute | Recursion and the limits of computing (`recursion-and-limits`) | 9 | The folder inside the folder (S2880) | 4 | tc-recursion |
 
-## 3. Long course stories
+## 2. Long course stories
 
 | Reviewed | Grade | Course | Story | Colons |
 |---|---|---|---|---|
-|  | C | Business principles | Professor Frederick and the company in the classroom (CS565) | 2 |
-|  | C | General psychology | Savanah and the coin-flip experiment (CS595) | 4 |
-|  | C | Principles of macroeconomics | Mike and the year the cranes stopped (CS601) | 1 |
-|  | C | Public speaking | Chloe and the three minutes (CS607) | 11 |
-|  | C | How computers compute | Chloe and the catalogue of ten thousand paintings (CS415) | 4 |
-|  | C | Statistics and reasoning | Frederick and the numbers that lied (CS57) | 2 |
-|  | C | Academic reading | Georgette and the argument (CS58) | 4 |
-|  | C | Thinking like a historian | Mike thinks like a historian (CS56) | 5 |
-|  | 12 | Precalculus | Frederick and the tide (CS55) | 2 |
-|  | 12 | English 4 | Georgette reads two sources (CS52) | 3 |
-|  | 12 | Earth and space | The road trip to the observatory (CS31) | 1 |
-|  | 12 | Writing for the world | Mike and the letter to the editor (CS62) | 4 |
-|  | 12 | United States government | The pothole (CS34) | 2 |
-|  | 12 | Economics and personal finance | The first paycheck (CS35) | 1 |
-|  | 11 | Algebra 2 | Mike and the arch (CS54) | 3 |
-|  | 11 | English 3 | Chloe and the satire (CS51) | 1 |
-|  | 11 | Physics | The skate park (CS30) | 2 |
-|  | 11 | Writing with sources | Frederick writes the op-ed (CS61) | 4 |
-|  | 11 | United States history since 1877 | The house on Fourth Street (CS33) | 0 |
-|  | 10 | Geometry | Chloe and the shadow (CS53) | 3 |
-|  | 10 | English 2 | Georgette and the two newspapers (CS50) | 0 |
-|  | 10 | Chemistry | The kitchen chemist (CS29) | 5 |
-|  | 10 | Writing about texts | Chloe writes about a painting (CS60) | 5 |
-|  | 10 | World history | The stone in the wall (CS32) | 1 |
-|  | 9 | How a program is built | Savanah and the buses that ran on time (CS385) | 6 |
-|  | 9 | Relationships and health | Georgette and the question box (CS589) | 4 |
-|  | 9 | Health for life | Mike and the Saturday at the ballpark (CS577) | 2 |
-|  | 9 | Open for business | Frederick and the taco truck (CS541) | 1 |
-|  | 9 | From soil to supper | Chloe and the forty acres (CS517) | 1 |
-|  | 9 | Say it so it lands | Mike at the council (CS493) | 4 |
-|  | 9 | The science of behavior | Savanah and the waiting room (CS469) | 2 |
-|  | 9 | How to think about anything | Frederick and the burden of proof (CS445) | 3 |
-|  | 9 | Money for a life | Chloe and the lease on Water Street (CS409) | 3 |
-|  | 9 | The informed eye and ear | Georgette and the two portraits (CS439) | 4 |
-|  | 9 | Algebra 1 | Frederick and the culture flask (CS27) | 4 |
-|  | 9 | English 1 | Chloe and the speech (CS49) | 2 |
-|  | 9 | Biology | The strawberry and the frog (CS28) | 3 |
-|  | 9 | Writing about texts and turns | Mike and the turn (CS59) | 3 |
-|  | 9 | World geography | Mike reads the map (CS48) | 2 |
-|  | 8 | Lines, powers and triangles | The treehouse (CS20) | 5 |
-|  | 8 | Reading with a critical eye | The fire station that burned down (CS26) | 6 |
-|  | 8 | Atoms, forces and the universe | The night sky over the quarry (CS12) | 5 |
-|  | 8 | Writing essays | Frederick builds the essay (CS47) | 6 |
-|  | 8 | The United States to 1877 | Four papers on the wall (CS23) | 3 |
-|  | 7 | Proportions, integers and circles | The road trip (CS19) | 8 |
-|  | 7 | Reading with an eye for craft | The mystery of the missing bicycle (CS25) | 3 |
-|  | 7 | Bodies, weather and change | The garden that taught everything (CS11) | 3 |
-|  | 7 | Writing about what you read | Chloe and the counterclaim (CS46) | 6 |
-|  | 7 | Texas history | The land under the highway (CS22) | 0 |
-|  | 7 | Bits, networks and safety | The message across the ocean (CS15) | 2 |
+|  | K | Tell, show, step and repeat | Mike and the robot that listened (CS373) | 1 |
+|  | K | I can listen, I can say | The circle that learned to listen (CS511) | 1 |
+|  | K | Me and my mind | The rainy day club (CS487) | 2 |
+|  | K | I wonder | The wondering rug (CS463) | 1 |
+|  | K | Needs, wants, work and saving | The lemonade stand on Maple Street (CS391) | 2 |
+|  | K | On the farm | Ella's farm year (CS535) | 0 |
+|  | K | Money and me | The cookie stand on Maple Street (CS559) | 1 |
+|  | K | Looking and listening | The concert in the park (CS421) | 2 |
+|  | 3 | Fractions | The pizza that fed the whole street (CS1) | 2 |
+|  | 3 | Reading to understand | The day the newspaper came to school (CS2) | 5 |
+|  | 3 | How the world works | The storm that came to the science fair (CS4) | 2 |
+|  | 3 | Writing a paragraph | Georgette and the letter (CS42) | 3 |
+|  | 3 | Multiplication and division | Frederick and the ants (CS37) | 1 |
+|  | 3 | How computers think | The robot birthday (CS13) | 5 |
+|  | 3 | Communities and government | Mike and the crosswalk (CS39) | 0 |
+|  | 3 | Looking and making | Chloe looks at a picture (CS40) | 5 |
+|  | 3 | How your mind works | Chloe and the worry jar (CS481) | 2 |
+|  | 3 | I wonder why | Georgette and the wondering jar (CS457) | 3 |
+|  | 3 | Money that works | Savanah and the egg money (CS397) | 4 |
+|  | 3 | Listen, then say it | Savanah and the fire chief (CS505) | 3 |
+|  | 3 | Down on the farm | Mike and the twenty-one days (CS529) | 1 |
+|  | 3 | Jars, banks and lemonade | Georgette and the market table (CS553) | 4 |
+|  | 3 | Looking closer, listening longer | Chloe and the orchestra (CS427) | 3 |
+|  | 4 | Reading between the lines | The letter with the missing lines (CS3) | 7 |
+|  | 4 | Energy, Earth and living things | The night the lights went out (CS5) | 3 |
+|  | 4 | Writing paragraphs | Mike writes it down (CS43) | 8 |
+|  | 4 | The story of Texas | Six flags over one town (CS9) | 2 |
+|  | 4 | Bigger numbers and operations | Chloe and the mural (CS38) | 4 |
+|  | 4 | Reading music | The school concert (CS36) | 5 |
+|  | 4 | A body that works well | The week the phone charged and I did not (CS24) | 4 |
+|  | 4 | Color, shape and story | Chloe draws the road home (CS41) | 2 |
+|  | 5 | Decimals, fractions and volume | The bake sale (CS16) | 9 |
+|  | 5 | Reading with judgment | The play (CS17) | 5 |
+|  | 5 | Mixtures, sky and water | The trip to the lake (CS6) | 5 |
+|  | 5 | Writing several paragraphs | Georgette and the class pet (CS44) | 7 |
+|  | 5 | The story of the United States | The road from the coast (CS10) | 1 |
+|  | 5 | Programs that decide | The game that kept score (CS14) | 4 |
+|  | 6 | Ratios, negatives and equations | The paint job (CS8) | 9 |
+|  | 6 | Reading like a thinker | The editorial (CS18) | 6 |
+|  | 6 | Matter, energy and Earth | The kitchen laboratory (CS7) | 8 |
+|  | 6 | Writing with a purpose | Mike argues for the later start (CS45) | 5 |
+|  | 6 | World cultures | The market at the crossroads (CS21) | 4 |
 |  | 6 | What a machine learns | Frederick and the jar of pond water (CS379) | 3 |
 |  | 6 | How people work | Mike and the team that could not remember the plays (CS475) | 1 |
 |  | 6 | Big questions, good reasons | Savanah and the fair share (CS451) | 3 |
@@ -697,50 +680,58 @@ Reviewed so far: 1 of 1239 items (615 modules with their lessons, stories and qu
 |  | 6 | Growing up healthy | Savanah and the smallest heartbeat (CS583) | 1 |
 |  | 6 | Healthy choices | Savanah and the summer at Camp Cedar (CS571) | 2 |
 |  | 6 | Reading a work of art | The mural that changed its mind (CS433) | 4 |
-|  | 6 | Ratios, negatives and equations | The paint job (CS8) | 9 |
-|  | 6 | Reading like a thinker | The editorial (CS18) | 6 |
-|  | 6 | Matter, energy and Earth | The kitchen laboratory (CS7) | 8 |
-|  | 6 | Writing with a purpose | Mike argues for the later start (CS45) | 5 |
-|  | 6 | World cultures | The market at the crossroads (CS21) | 4 |
-|  | 5 | Decimals, fractions and volume | The bake sale (CS16) | 9 |
-|  | 5 | Reading with judgment | The play (CS17) | 5 |
-|  | 5 | Mixtures, sky and water | The trip to the lake (CS6) | 5 |
-|  | 5 | Writing several paragraphs | Georgette and the class pet (CS44) | 7 |
-|  | 5 | The story of the United States | The road from the coast (CS10) | 1 |
-|  | 5 | Programs that decide | The game that kept score (CS14) | 4 |
-|  | 4 | Color, shape and story | Chloe draws the road home (CS41) | 2 |
-|  | 4 | Reading between the lines | The letter with the missing lines (CS3) | 7 |
-|  | 4 | Energy, Earth and living things | The night the lights went out (CS5) | 3 |
-|  | 4 | Writing paragraphs | Mike writes it down (CS43) | 8 |
-|  | 4 | The story of Texas | Six flags over one town (CS9) | 2 |
-|  | 4 | Bigger numbers and operations | Chloe and the mural (CS38) | 4 |
-|  | 4 | Reading music | The school concert (CS36) | 5 |
-|  | 4 | A body that works well | The week the phone charged and I did not (CS24) | 4 |
-|  | 3 | Looking and making | Chloe looks at a picture (CS40) | 5 |
-|  | 3 | How your mind works | Chloe and the worry jar (CS481) | 2 |
-|  | 3 | I wonder why | Georgette and the wondering jar (CS457) | 3 |
-|  | 3 | Money that works | Savanah and the egg money (CS397) | 4 |
-|  | 3 | Listen, then say it | Savanah and the fire chief (CS505) | 3 |
-|  | 3 | Down on the farm | Mike and the twenty-one days (CS529) | 1 |
-|  | 3 | Jars, banks and lemonade | Georgette and the market table (CS553) | 4 |
-|  | 3 | Looking closer, listening longer | Chloe and the orchestra (CS427) | 3 |
-|  | 3 | Fractions | The pizza that fed the whole street (CS1) | 2 |
-|  | 3 | Reading to understand | The day the newspaper came to school (CS2) | 5 |
-|  | 3 | How the world works | The storm that came to the science fair (CS4) | 2 |
-|  | 3 | Writing a paragraph | Georgette and the letter (CS42) | 3 |
-|  | 3 | Multiplication and division | Frederick and the ants (CS37) | 1 |
-|  | 3 | How computers think | The robot birthday (CS13) | 5 |
-|  | 3 | Communities and government | Mike and the crosswalk (CS39) | 0 |
-|  | K | Tell, show, step and repeat | Mike and the robot that listened (CS373) | 1 |
-|  | K | I can listen, I can say | The circle that learned to listen (CS511) | 1 |
-|  | K | Me and my mind | The rainy day club (CS487) | 2 |
-|  | K | I wonder | The wondering rug (CS463) | 1 |
-|  | K | Needs, wants, work and saving | The lemonade stand on Maple Street (CS391) | 2 |
-|  | K | On the farm | Ella's farm year (CS535) | 0 |
-|  | K | Money and me | The cookie stand on Maple Street (CS559) | 1 |
-|  | K | Looking and listening | The concert in the park (CS421) | 2 |
+|  | 7 | Proportions, integers and circles | The road trip (CS19) | 8 |
+|  | 7 | Reading with an eye for craft | The mystery of the missing bicycle (CS25) | 3 |
+|  | 7 | Bodies, weather and change | The garden that taught everything (CS11) | 3 |
+|  | 7 | Writing about what you read | Chloe and the counterclaim (CS46) | 6 |
+|  | 7 | Texas history | The land under the highway (CS22) | 0 |
+|  | 7 | Bits, networks and safety | The message across the ocean (CS15) | 2 |
+|  | 8 | Lines, powers and triangles | The treehouse (CS20) | 5 |
+|  | 8 | Reading with a critical eye | The fire station that burned down (CS26) | 6 |
+|  | 8 | Atoms, forces and the universe | The night sky over the quarry (CS12) | 5 |
+|  | 8 | Writing essays | Frederick builds the essay (CS47) | 6 |
+|  | 8 | The United States to 1877 | Four papers on the wall (CS23) | 3 |
+|  | 9 | Algebra 1 | Frederick and the culture flask (CS27) | 4 |
+|  | 9 | English 1 | Chloe and the speech (CS49) | 2 |
+|  | 9 | Biology | The strawberry and the frog (CS28) | 3 |
+|  | 9 | Writing about texts and turns | Mike and the turn (CS59) | 3 |
+|  | 9 | World geography | Mike reads the map (CS48) | 2 |
+|  | 9 | How a program is built | Savanah and the buses that ran on time (CS385) | 6 |
+|  | 9 | Relationships and health | Georgette and the question box (CS589) | 4 |
+|  | 9 | Health for life | Mike and the Saturday at the ballpark (CS577) | 2 |
+|  | 9 | Open for business | Frederick and the taco truck (CS541) | 1 |
+|  | 9 | From soil to supper | Chloe and the forty acres (CS517) | 1 |
+|  | 9 | Say it so it lands | Mike at the council (CS493) | 4 |
+|  | 9 | The science of behavior | Savanah and the waiting room (CS469) | 2 |
+|  | 9 | How to think about anything | Frederick and the burden of proof (CS445) | 3 |
+|  | 9 | Money for a life | Chloe and the lease on Water Street (CS409) | 3 |
+|  | 9 | The informed eye and ear | Georgette and the two portraits (CS439) | 4 |
+|  | 10 | Geometry | Chloe and the shadow (CS53) | 3 |
+|  | 10 | English 2 | Georgette and the two newspapers (CS50) | 0 |
+|  | 10 | Chemistry | The kitchen chemist (CS29) | 5 |
+|  | 10 | Writing about texts | Chloe writes about a painting (CS60) | 5 |
+|  | 10 | World history | The stone in the wall (CS32) | 1 |
+|  | 11 | Algebra 2 | Mike and the arch (CS54) | 3 |
+|  | 11 | English 3 | Chloe and the satire (CS51) | 1 |
+|  | 11 | Physics | The skate park (CS30) | 2 |
+|  | 11 | Writing with sources | Frederick writes the op-ed (CS61) | 4 |
+|  | 11 | United States history since 1877 | The house on Fourth Street (CS33) | 0 |
+|  | 12 | Precalculus | Frederick and the tide (CS55) | 2 |
+|  | 12 | English 4 | Georgette reads two sources (CS52) | 3 |
+|  | 12 | Earth and space | The road trip to the observatory (CS31) | 1 |
+|  | 12 | Writing for the world | Mike and the letter to the editor (CS62) | 4 |
+|  | 12 | United States government | The pothole (CS34) | 2 |
+|  | 12 | Economics and personal finance | The first paycheck (CS35) | 1 |
+|  | C | Statistics and reasoning | Frederick and the numbers that lied (CS57) | 2 |
+|  | C | Academic reading | Georgette and the argument (CS58) | 4 |
+|  | C | Thinking like a historian | Mike thinks like a historian (CS56) | 5 |
+|  | C | Business principles | Professor Frederick and the company in the classroom (CS565) | 2 |
+|  | C | General psychology | Savanah and the coin-flip experiment (CS595) | 4 |
+|  | C | Principles of macroeconomics | Mike and the year the cranes stopped (CS601) | 1 |
+|  | C | Public speaking | Chloe and the three minutes (CS607) | 11 |
+|  | C | How computers compute | Chloe and the catalogue of ten thousand paintings (CS415) | 4 |
 
-## 4. Games
+## 3. Games
 
 | Reviewed | Game | Kind | Course |
 |---|---|---|---|
@@ -902,7 +893,7 @@ Reviewed so far: 1 of 1239 items (615 modules with their lessons, stories and qu
 |  | Fix it: tricky words (`fix-writing-9`) | fix | writing-9 |
 |  | Fix it: find the mistake (`fix-writing-7`) | fix | writing-7 |
 
-## 5. Wonder questions
+## 4. Wonder questions
 
 | Reviewed | Id | Question |
 |---|---|---|

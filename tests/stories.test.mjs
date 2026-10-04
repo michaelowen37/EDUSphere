@@ -18,7 +18,7 @@ for (const [id, s] of Object.entries(STORIES)) {
   // The about line feeds the weekly note: "read “Title”, a story about {about}." It must read as a phrase there:
   // lowercase start (a name is fine), no closing punctuation, no "a story" of its own, no double spaces.
   if (s.about !== undefined) ok(`${id}: the about line reads inside the weekly note sentence`, typeof s.about === 'string' && s.about.length > 4 && !/[.!?]$/.test(s.about) && !/^(A|An|The) story/i.test(s.about) && !/  /.test(s.about) && (s.about[0] === s.about[0].toLowerCase() || /^[A-Z][a-z]*[, ]/.test(s.about)), JSON.stringify(s.about));
-  ok(`${id}: no em dashes and no sentence over 32 words`, !s.words.some((p) => p.includes('\u2014')) && s.words.every((p) => p.split(/[.!?]\s/).every((sent) => sent.split(/\s+/).length <= 32)));
+  ok(`${id}: no em dashes and no sentence over 45 words (a run-on guard; Eleven v4 sets no limit, pass JG)`, !s.words.some((p) => p.includes('\u2014')) && s.words.every((p) => p.split(/[.!?]\s/).every((sent) => sent.split(/\s+/).length <= 45)));
   ok(`${id}: cast names are core characters`, s.cast.every((n) => CORE.includes(n)));
   ok(`${id}: a where line only when the core cast is here, one short line`, !s.where || (s.cast.length > 0 && s.where.length <= 90 && !/\b(was|is|turned) (four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|\d+)\b/.test(s.where)));
   ok(`${id}: no ages in the text (they live in the art prompts)`, !/\b(Mike|Chloe|Frederick|Georgette|Savanah|Jaxon|Harlow) (was|is|turned) (four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|\d+)\b/.test(s.words.join(' ')));
@@ -171,6 +171,18 @@ for (const [id, cs] of Object.entries(COURSE_STORIES)) {
     st.words.forEach((par, i) => { const parts = L.printParts([par], [0], true); if (parts.length !== 1 || parts[0].used > P.room) tall.push(`${id} paragraph ${i + 1}: ${parts[0] ? parts[0].used : '?'} inches`); });
   }
   ok('every paragraph fits one sheet beside its picture, under the title and main painting', tall.length === 0, tall.slice(0, 5).join(' | '));
+}
+
+// Audio tags (pass JH): a story's `audio` is its `words` with Eleven v4 tags added and nothing else changed, the words never
+// carry a tag, and every story fits one Eleven v4 request (10,000 characters).
+{
+  const stripTags = (p) => String(p).replace(/\[[^\]]*\]\s*/g, '').replace(/\s+/g, ' ').trim();
+  const all = Object.entries(STORIES);
+  const tagged = all.filter(([, s]) => s.audio);
+  ok(`tagged stories keep their words exactly (${tagged.length} tagged)`, tagged.every(([, s]) => s.audio.length === s.words.length && s.audio.every((p, i) => stripTags(p) === s.words[i].replace(/\s+/g, ' ').trim())));
+  ok('no story shows a tag to readers', all.every(([, s]) => s.words.every((p) => !/[\[\]]/.test(p))));
+  ok('every tag is a short phrase in one pair of brackets', tagged.every(([, s]) => s.audio.every((p) => (p.match(/\[[^\[\]]{1,60}\]/g) || []).length === (p.match(/\[/g) || []).length)));
+  ok('every story fits one Eleven v4 request of 10,000 characters', all.every(([, s]) => (s.audio || s.words).join(' ').length + s.title.length < 9000));
 }
 
 console.log(`\n${pass} passed, ${fail} failed`);

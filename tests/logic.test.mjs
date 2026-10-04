@@ -472,8 +472,8 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
     if (genId === 'c3-vote-winner') { const nums = q.story.match(/\d+/g).map(Number); const total = nums[0]; const zoo = q.story.indexOf('zoo') < q.story.indexOf('museum') ? nums[1] : nums[2]; if (!(zoo > total / 2)) problems.push('zoo must hold the majority'); }
     if (genId === 'c2-earlier-year') { const [a, b] = q.choices.map(Number); if (Number(q.answer) !== Math.min(a, b)) problems.push('earlier year wrong'); }
     if (genId === 'c1-count-coins') { const n = ['Two', 'Three', 'Four', 'Five'].indexOf(q.story.split(' ')[0]) + 2; const cents = /dime/.test(q.story) ? 10 : /nickel/.test(q.story) ? 5 : 1; if (Number(q.answer) !== n * cents) problems.push('coins wrong'); }
-    // Explanations read cleanly too: no sentence runs past 32 words (the second run-on check).
-    for (const sent of String(q.explain || '').replace(/\[\[|\]\]|\*\*/g, '').split(/(?<=[.!?])\s+|\n/)) { if (sent.trim().split(/\s+/).filter(Boolean).length > 32) problems.push(`explanation sentence over 32 words: ${sent.trim().slice(0, 40)}`); }
+    // Explanations read cleanly too: no sentence runs past 45 words, a run-on guard (pass JG) (the second run-on check).
+    for (const sent of String(q.explain || '').replace(/\[\[|\]\]|\*\*/g, '').split(/(?<=[.!?])\s+|\n/)) { if (sent.trim().split(/\s+/).filter(Boolean).length > 45) problems.push(`explanation sentence over 32 words: ${sent.trim().slice(0, 40)}`); }
     // Science facts carry a story after the answer (the story rule, applied centrally)
     if (L.SCIENCE_WHY_GENERATORS.includes(genId) && !q.explain.includes('\n')) problems.push('science fact has no story');
     // Grades 6, 7 and 9 social studies, re-derived from the story

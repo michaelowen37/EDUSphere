@@ -2274,7 +2274,7 @@ const TOUR = [
   ['Life skills', 'life', null, 'over-exp-by-life', <>The Wise Human is designed to make learning more efficient. Our curated list of practical life skills is a perfect way to fill the time you gain back.<br /><br />You'll find helpful skills for every age group!</>],
   ['Reading', 'reading', null, 'by-reading', <>Need direction finding books for various age groups? We've got you covered! Our reading list is quite extensive.</>],
   ['Experiments', 'experiments', null, 'under-exp', <>Science is way more fun when it's tangible. We've got experiment ideas for every age group!</>],
-  ['Student Summaries', 'rows', 'class', 'right-at-search', <>Every student has a personalized report. Whether you want to see what they've done that day, that week or from the very beginning, we've got you covered! Every module they practice, every story they read, every attempt they make, even their level of confidence on any given topic is continually updated in plain English.<br /><br />Print weekly summaries, add personalized notes, practice missed questions and more!<br /><br />Have more than one student? <strong>Who Needs Help</strong> let's you know who might need a little guidance.</>],
+  ['Student Summaries', 'rows', 'class', 'right-at-search', <>Every student has a personalized report. Whether you want to see what they've done that day, that week or from the very beginning, we've got you covered! Every module they practice, every story they read, every attempt they make, even their level of confidence on any given topic is continually updated in plain English.<br /><br />Print weekly summaries, add personalized notes, practice missed questions and more!<br /><br />Have more than one student? <strong>Who Needs Help</strong> lets you know who might need a little guidance.</>],
   ['Story Log', 'storylog-page', 'storylog', 'bottom-right', <>Every module comes with a story, and the Story Log is where you see who has read what. Open any story from there to read it together, print it, or mark it as read.</>],
   ['Transcripts', 'transcript', 'report', 'above', <>Every student has a printable transcript covering everything they've ever worked on. While weekly summaries are helpful, this is the clearest view of progression across the years.</>],
 ];
@@ -2315,14 +2315,18 @@ function framedFullHeight() {
 // claude.ai panel). In plain terms: find what actually scrolls, the window or a box that holds the app. That preview scrolls
 // the app inside a box of its own, where scrolling the window does nothing, which is why Later, the tour's card 3 and new
 // screens missed the top there. Every scroll the app makes on its own goes through these.
+// Pass JG (Mikey's screenshot: card 3 still at the top in that preview): the body counts too. A host page that sets html and
+// body to the screen's height makes the body do the scrolling, because the app's html, body { overflow-x: hidden } turns the
+// body into a scroll box of its own; scrolling the window does nothing there, and scrollIntoView, used by the other cards, did.
 function scrollerOf(el) {
   if (typeof window === 'undefined') return null;
-  for (let p = el ? el.parentElement : null; p && p !== document.body && p !== document.documentElement; p = p.parentElement) {
+  for (let p = el ? el.parentElement : null; p && p !== document.documentElement; p = p.parentElement) {
     const oy = getComputedStyle(p).overflowY;
     if ((oy === 'auto' || oy === 'scroll' || oy === 'overlay') && p.scrollHeight > p.clientHeight + 1) return p;
   }
-  return window;
+  return window;   // the root element's scrolling belongs to the window
 }
+function isFramed() { if (typeof window === 'undefined') return false; try { return window.self !== window.top; } catch (e) { return true; } }
 function pageScroller() { return scrollerOf(typeof document === 'undefined' ? null : document.querySelector('.edu-wrap')); }
 function scrollPageBy(el, dy) { const box = scrollerOf(el); if (!box) return; if (box === window) window.scrollBy(0, dy); else box.scrollTop += dy; }
 function pageScrolled() { const box = pageScroller(); return !!box && (box === window ? window.scrollY : box.scrollTop) > 0; }
@@ -2333,7 +2337,8 @@ function scrollToTop(outer) {
   if (document.body) document.body.scrollTop = 0;
   const box = pageScroller(); if (box && box !== window) box.scrollTop = 0;   // a preview that scrolls the app inside a box
   const first = document.body && document.body.firstElementChild;
-  if (outer && framedFullHeight() && first && first.scrollIntoView) first.scrollIntoView({ block: 'start', behavior: 'auto' });
+  // The page around a frame is asked too when the frame is page-tall or its top is off screen (pass JG).
+  if (outer && first && first.scrollIntoView && (framedFullHeight() || (isFramed() && visibleBand().top > 1))) first.scrollIntoView({ block: 'start', behavior: 'auto' });
 }
 // visibleBand (pass JE). In plain terms: the stretch of the page a person can actually see, as a top and a bottom in the page's
 // own coordinates. In a normal window that is the whole window. In a page-tall frame the window is the whole page, so the app
@@ -2343,10 +2348,11 @@ const BAND_STEP = 200; let bandWatch = null; const bandSeen = [];
 function visibleBand() {
   const H = typeof window === 'undefined' ? 800 : window.innerHeight;
   const fallback = { top: 0, bottom: Math.min(H, (typeof window !== 'undefined' && window.screen && window.screen.availHeight) || H) };
-  if (!framedFullHeight() || typeof IntersectionObserver === 'undefined') return { top: 0, bottom: H };
+  // Any frame (pass JG): a host page can cut a frame short, not only make it page-tall, so in a frame the probes always decide.
+  if (!isFramed() || typeof IntersectionObserver === 'undefined') return { top: 0, bottom: H };
   if (!bandWatch) {
     bandWatch = new IntersectionObserver((entries) => { for (const e of entries) bandSeen[Number(e.target.dataset.band)] = e.intersectionRatio; }, { threshold: Array.from({ length: 41 }, (_, i) => i / 40) });
-    for (let k = 0; k * BAND_STEP < Math.min(H, 20000); k++) {
+    for (let k = 0; k * BAND_STEP < 20000; k++) {   // probes down to 20,000 pixels, since a frame can grow after they are made
       const probe = document.createElement('div'); probe.dataset.band = String(k); probe.setAttribute('aria-hidden', 'true'); probe.className = 'edu-no-print';
       probe.style.cssText = `position: fixed; left: 0; top: ${k * BAND_STEP}px; width: 1px; height: ${BAND_STEP}px; opacity: 0; pointer-events: none;`;
       document.body.appendChild(probe); bandWatch.observe(probe);
@@ -7550,8 +7556,9 @@ function EduSphereScreens() {
       // above it for the whole card; every other card brings its target to the middle of the screen.
       if (where === 'right-at-search' || where === 'bottom-right') scrollToTop(true);
       else if (where === 'over-life-by-backup') {
-        if (framed) els[0].scrollIntoView({ block: 'end' });
-        else scrollPageBy(els[0], els[0].getBoundingClientRect().top - clamp(B - 110, T + cardH + 30, B - 60));
+        if (!framed) scrollPageBy(els[0], els[0].getBoundingClientRect().top - clamp(B - 110, T + cardH + 30, B - 60));
+        const lr = els[0].getBoundingClientRect();   // where a host page scrolls in a way none of that reaches, ask the link into view
+        if (framed || lr.bottom > B + 1 || lr.top < T + cardH) els[0].scrollIntoView({ block: 'end' });
       } else els[0].scrollIntoView({ block: 'center' });
       const r = els[0].getBoundingClientRect();
       const lifeR = rectOf('life'); const expR = rectOf('experiments'); const readR = rectOf('reading');

@@ -1,6 +1,6 @@
-# The writing review, for Fable
+# The writing review
 
-Written 2026-10-03 (pass JE) from Mikey's review of the newest lessons on his Mac. Mikey decided that Fable 5.1 does this rewrite, and asked that this file say plainly what he wants. Read it with docs/NEW-CHAT.md before the first rewrite. The work list, in order, is docs/REVIEW-LEDGER.md.
+Written 2026-10-03 (pass JE) from Mikey's review of the newest lessons on his Mac. Mikey first planned for Fable 5.1 to do the rewrite. After the Opus sample in pass JF he asked Opus to carry on ("You can continue editing each lesson, story, title, question etc."), starting with pre-K and working up (pass JG). The file keeps its name so older notes still point here; it says plainly what he wants, whichever model does the work. Read it with docs/NEW-CHAT.md before the first rewrite. The work list, in order, is docs/REVIEW-LEDGER.md.
 
 ## What Mikey said, in his words
 
@@ -14,7 +14,7 @@ Written 2026-10-03 (pass JE) from Mikey's review of the newest lessons on his Ma
 
 ## Why the old writing came out this way
 
-The house rules and the pace produced it. Teaching text was written one idea per line. A test requires every quiz answer to appear in the lesson, which rewarded naming terms over explaining them. Prompts were capped at 70 characters. Each pass shipped a whole course in one turn, and no check measured whether a lesson reads well. Pass JE lifted the prompt cap and rewrote the house rule. Keep the good parts of the old rules (every answer is taught before it is asked, sentences stay at 32 words or fewer and key ideas at 28) and drop the habits.
+The house rules and the pace produced it. Teaching text was written one idea per line. A test requires every quiz answer to appear in the lesson, which rewarded naming terms over explaining them. Prompts were capped at 70 characters. Each pass shipped a whole course in one turn, and no check measured whether a lesson reads well. Pass JE lifted the prompt cap and rewrote the house rule. Keep the good parts of the old rules (every answer is taught before it is asked, key ideas stay at 28 words a sentence) and drop the habits.
 
 ## What good looks like
 
@@ -44,6 +44,14 @@ Short, spoken, and shown rather than told, as now, but natural. Context and flow
 - Never assume the reader knows something. "Adam Smith opened the Wealth of Nations" never says it is a book, Smith's 1776 book about what makes nations rich, and a line about "the day the transmission goes" assumes a car-repair idiom. Say what a thing is the first time it appears, and let the story grow when that is what it takes. The pin factory deserves the room.
 - Keep the Miniature Gladwell arc, the cast rules and the true-story checks (every fact verified by web). Keep every picture beside the paragraph it shows (the art audit); a rewritten paragraph may need its picture's caption and prompt updated in docs/ART-REQUESTS.md.
 
+## Sentence length
+
+Mikey checked ElevenLabs' Eleven v4 page (his screenshots, 2026-10-03). It sets no sentence-length limit, takes up to 10,000 characters in one generation and stitches longer pieces together, and uses inline tags such as [pause], [long pause], [whispers], [excited] and [sighs] where older models used SSML breaks. So audio never shortens a sentence. Write each sentence as long as its thought needs. The only reader whose sentence length still matters is a pre-reader listening, and even there flow and clarity come first. The tests keep a 45-word run-on guard for stories and explanations (it was 32), the eighteen-word read-aloud rule for early-years stories, and 28 words for each sentence of a key idea.
+
+## Audio tags
+
+When a story is read, write its audio tags in the same pass (Mikey, pass JH). A story's `audio` field in src/stories.mjs is its words with Eleven v4 tags in square brackets and nothing else changed, and readers never see it. Use sound effects sparingly, one to three a story, where the story already names the sound (a splash, a moo, footsteps in snow). Use feeling and delivery tags where a line turns ([puzzled], [whispers], [sighs], [delighted]), and end an early-years story's closing lesson line with [slowly, warmly]. Questions are spoken warm, pleasant and mildly upbeat, never over-excited. Young learners hear words drawn out and stressed the way a favorite preschool teacher says them; older learners hear a warm, engaging voice that never talks down. Then run node tools/audio-ledger.mjs > docs/AUDIO-LEDGER.md. Mikey also welcomes more paintings wherever a picture would teach a lesson better; log each one in docs/ART-REQUESTS.md (the lesson screen will need a painting slot the first time one is used).
+
 ## How to work
 
 1. One small batch a pass. Three or four modules (lesson, story and questions together), more for the early years. Slow is the point.
@@ -51,7 +59,7 @@ Short, spoken, and shown rather than told, as now, but natural. Context and flow
 3. Keep the standards citations exactly as they are unless one is wrong. Keep the bank at least as large as it is, since questions are never reduced, and keep every answer taught.
 4. Mark each item in docs/review-status.json with the pass name, then run node tools/review-ledger.mjs > docs/REVIEW-LEDGER.md. The ledger's colon counts show the change.
 5. Deliver the pass the usual way (docs/NEW-CHAT.md and CLAUDE.md), and say in the DECISIONS entry what changed in each module.
-6. After the first batch, ask Mikey whether the new voice is what he wants before going wide.
+6. Mikey approved the voice after the JF sample. Keep showing him each batch, and change course when he says so.
 7. New courses after the review (PHIL 1301 and the rest) are written this way from the start.
 
 ## Learned in pass JF, from the first rewritten module
@@ -61,6 +69,10 @@ Short, spoken, and shown rather than told, as now, but natural. Context and flow
 - A question that needs a situation gets a setup line, the bank entry's fifth item, and its prompt names the setup with "this". The untaught check reads answers of three words or fewer, so those words must appear in the lesson's paragraphs or key idea (for example "it falls" and "it moves outward").
 - A short story may run to 350 words. If one truly needs more room, ask Mikey before raising STORY_WORD_LIMIT.
 
+## The tour
+
+Never change the words on the tour cards (Mikey, pass JI). The pages behind them come from the live lessons and titles, so look at them when a rewrite touches what they show, such as the fraction lesson behind card 2 or the sample students' modules.
+
 ## Order
 
-docs/REVIEW-LEDGER.md lists the four modules Mikey named first, then every module from college down to pre-K, then the long stories, the games and the Wonder questions. Mikey may reorder it.
+Mikey's order (pass JG): pre-K first, then kindergarten, grades 1 to 12 and college, course by course, core courses before electives. docs/REVIEW-LEDGER.md lists every module in that order, then the long stories, the games and the Wonder questions. The three other modules Mikey named in his first review (Saving, investing and risk; The communication process; Communication and audience) come up in their grades.

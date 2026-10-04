@@ -2,6 +2,21 @@
 
 The newest block is what educators see once, in a pop-up on the classroom page, after each update. Write it the way Mikey talks to a teacher: conversational, complete sentences, say what changed and why it matters, and skip the shorthand (2026-09-23). Two to four items. The date line is the version stamp.
 
+## October 3, 2026 (pre-K 4 lessons read by hand)
+
+- Every First steps lesson for four-year-olds has been read again by hand, with clearer matching lessons, one dot instead of one dots, and a taking-turns lesson that explains each kind choice.
+- Their stories now carry directions for a recorded voice too.
+
+## October 3, 2026 (voices for the stories, and more pre-K read by hand)
+
+- The stories now carry directions for a recorded voice, a whisper here and a splash or a moo there, ready for when the audio is made. Readers never see them.
+- Every Listen and point lesson for three-year-olds has been read again by hand, with a few small fixes.
+
+## October 3, 2026 (pre-K lessons read by hand, and the tour in the preview)
+
+- Every lesson in Very first steps for three-year-olds has been read again by hand, with clearer wording, a few small fixes, and colors children can picture, red like a strawberry and blue like the sky.
+- The tour's backup card now sits beside the Backup classroom link in the preview, as it does in Chrome.
+
 ## October 3, 2026 (a rewritten economics lesson, the tour and diagrams)
 
 - The college lesson Scarcity, Trade and Markets has been rewritten to explain its ideas the way a good teacher talks them through, with examples you can picture, and its questions now read naturally.

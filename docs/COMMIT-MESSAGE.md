@@ -1,6 +1,7 @@
-Tour fixes, title case, a rewritten economics lesson, roomier diagrams
+Pre-K read by hand with voice tags, tour fixes, and an audio ledger
 
-- Pass JE: the first week tour's ten cards placed by Mikey's words at every screen width from 700 pixels (five had places only from 900 up) and checked by a new browser walk at five sizes; the backup reminder waits for the tour; screens and Later open at the top, also inside a page-tall frame; module titles shown in title case; the 70-character question limit lifted; docs/FABLE-REVIEW.md and docs/REVIEW-LEDGER.md hand the writing rewrite to Fable.
-- Pass JF: tour card 6 beside Reading Lists on a laptop; every scroll now reaches the box the claude.ai preview scrolls in (card 3, Later and new screens there); air above and below flow-diagram arrows; lessons can keep whole paragraphs (prose: true); Scarcity, trade and markets rewritten as the first writing-review sample (the lesson, the pin factory story, 21 natural questions).
+- Pass JG: tour card 3 placed beside the Backup classroom link in the claude.ai .jsx preview, where the page's body does the scrolling (reproduced, and covered by two new tour walks); the writing review from pre-K up begins with Very first steps, all twelve modules read by hand (lessons, stories, questions and titles, among them Two foxes, One dot is fewer and Tap the little one); sentences may run longer, with a 45-word run-on guard, since Eleven v4 sets no limit.
+- Pass JH: an audio ledger of every clip the app can play recorded (6,101 clips, docs/AUDIO-LEDGER.csv and .md), with Eleven v4 voice directions by age and a one-command maker (tools/audio-generate.mjs, model eleven_v4); audio tags written into the seventeen pre-K stories read so far; Listen and point read by hand (B's two bumps, alligator for the short a); the typo on tour card 8 fixed (lets you know).
+- Pass JI: the tour cards' own words restored exactly as Mikey wrote them, with only lets you know kept; First steps (pre-K 4) read by hand, all eighteen modules (matching lessons that say plainly when things are the same, one dot instead of one dots, Mike's teacher in Three stones, a taking-turns lesson in whole sentences, colons gone) with audio tags in its eighteen stories; the tour test checks that the lesson behind card 2 is the live module.
 
-Passes: JE, JF
+Passes: JG, JH, JI

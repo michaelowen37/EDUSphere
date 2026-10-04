@@ -3482,12 +3482,12 @@ function PREK3_MODULES() { return [
     title: 'Red and blue',
     tagline: 'Two colors',
     lesson: {
-      paragraphs: ['This color is red. This color is blue.', 'Tap the color you hear.'],
+      paragraphs: ['This color is red, like a strawberry. This color is blue, like the sky.', 'Tap the color you hear.'],
       keyIdea: 'Red and blue are colors.',
       example: { kind: 'pair', a: { kind: 'swatch', colour: 'red' }, b: { kind: 'swatch', colour: 'blue' }, caption: 'Red and blue.' },
       script: [
-        { say: 'This color is red.', show: { kind: 'swatch', colour: 'red' } },
-        { say: 'This color is blue.', show: { kind: 'swatch', colour: 'blue' } },
+        { say: 'This color is red, like a strawberry.', show: { kind: 'swatch', colour: 'red' } },
+        { say: 'This color is blue, like the sky.', show: { kind: 'swatch', colour: 'blue' } },
         { say: 'Red and blue are colors.', show: { kind: 'pair', a: { kind: 'swatch', colour: 'red' }, b: { kind: 'swatch', colour: 'blue' } } },
       ],
     },
@@ -3501,8 +3501,8 @@ function PREK3_MODULES() { return [
     title: 'Find the match',
     tagline: 'The same one',
     lesson: {
-      paragraphs: ['Look at this one. Find the one that is the same.', 'Same means it looks just alike.'],
-      keyIdea: 'Same means just alike.',
+      paragraphs: ['Look at this one. Find the one that is the same.', 'The same means it looks just alike, the same shape and the same color.'],
+      keyIdea: 'The same means just alike.',
       example: { kind: 'item', shape: 'circle', colour: 'red', caption: 'A red circle.' },
       script: [
         { say: 'Look at this red circle.', show: { kind: 'item', shape: 'circle', colour: 'red' } },
@@ -3521,9 +3521,9 @@ function PREK3_MODULES() { return [
     tagline: 'Which is the same?',
     requires: ['find-the-match'],
     lesson: {
-      paragraphs: ['Look at the animals. Two that look just alike are the same. One that looks different is not.', 'Find the one that matches, or find the odd one out.'],
+      paragraphs: ['Look at the animals. When two look just alike, they are the same. When one looks different, it is the odd one out.', 'Find the one that matches, or find the odd one out.'],
       keyIdea: 'The same means just alike.',
-      example: { kind: 'pair', a: { kind: 'pic', name: 'fox' }, b: { kind: 'pic', name: 'fox' }, caption: 'Two foxs. They are the same.' },
+      example: { kind: 'pair', a: { kind: 'pic', name: 'fox' }, b: { kind: 'pic', name: 'fox' }, caption: 'Two foxes. They are the same.' },
       script: [
         { say: 'Look at this fox.', show: { kind: 'pic', name: 'fox' } },
         { say: 'Here is another fox. They are the same.', show: { kind: 'pair', a: { kind: 'pic', name: 'fox' }, b: { kind: 'pic', name: 'fox' } } },
@@ -3541,12 +3541,12 @@ function PREK3_MODULES() { return [
     tagline: 'Which is bigger?',
     requires: ['find-the-match'],
     lesson: {
-      paragraphs: ['Two circles. One is big. One is small.', 'Big takes more room. Small takes less.'],
-      keyIdea: 'Big is more room. Small is less.',
+      paragraphs: ['Here are two circles. One is big, and one is small.', 'A big thing takes up more room. A small thing takes up less.'],
+      keyIdea: 'Big things take up more room. Small things take up less.',
       example: { kind: 'pair', a: { kind: 'shape', name: 'circle', size: 'big' }, b: { kind: 'shape', name: 'circle', size: 'small' }, caption: 'A big circle and a small circle.' },
       script: [
         { say: 'Here is a big circle, and here is a small circle.', show: { kind: 'pair', a: { kind: 'shape', name: 'circle', size: 'big' }, b: { kind: 'shape', name: 'circle', size: 'small' } } },
-        { say: 'The big circle is bigger.', show: { kind: 'pair', a: { kind: 'shape', name: 'circle', size: 'big' }, b: { kind: 'shape', name: 'circle', size: 'small' } } },
+        { say: 'The big circle takes up more room, so it is bigger.', show: { kind: 'pair', a: { kind: 'shape', name: 'circle', size: 'big' }, b: { kind: 'shape', name: 'circle', size: 'small' } } },
         { say: 'The small triangle is smaller than the big triangle.', show: { kind: 'pair', a: { kind: 'shape', name: 'triangle', size: 'small' }, b: { kind: 'shape', name: 'triangle', size: 'big' } } },
       ],
     },
@@ -3645,7 +3645,7 @@ function PREK3_MODULES() { return [
         { say: 'This is yellow. Yellow like the sun.', show: { kind: 'swatch', colour: 'yellow' } },
         { say: 'This is green. Green like the grass.', show: { kind: 'swatch', colour: 'green' } },
         { say: 'Yellow like the sun. Green like the grass.', show: { kind: 'pair', a: { kind: 'swatch', colour: 'yellow' }, b: { kind: 'swatch', colour: 'green' } } },
-        { say: 'Red and blue are colors too. Four colors now: red, blue, yellow, green.', show: { kind: 'pair', a: { kind: 'swatch', colour: 'red' }, b: { kind: 'swatch', colour: 'blue' } } },
+        { say: 'Red and blue are colors too. Now you know four colors, red, blue, yellow and green.', show: { kind: 'pair', a: { kind: 'swatch', colour: 'red' }, b: { kind: 'swatch', colour: 'blue' } } },
       ],
     },
     sources: ['Aligned with Texas Prekindergarten Guidelines V.E.1 (sorts objects that are the same and different into groups) and Head Start ELOF Goal P-SCI 1.'],
@@ -3698,13 +3698,13 @@ function PREK3_MODULES() { return [
     tagline: 'Two words that open doors',
     lesson: {
       paragraphs: ['When you want something, say please. When you get it, say thank you.'],
-      keyIdea: 'Please to ask. Thank you when you get it.',
+      keyIdea: 'Say please when you ask. Say thank you when you get something.',
       example: { kind: 'pair', a: { kind: 'pic', name: 'bear' }, b: { kind: 'pic', name: 'rabbit' }, caption: 'Please. Thank you.' },
       script: [
         { say: 'Please. That is the word for asking. May I have a cracker, please?', show: { kind: 'letters', text: 'Please' } },
         { say: 'Thank you. That is what we say when someone gives us something.', show: { kind: 'letters', text: 'Thank you' } },
-        { say: 'Please to ask. Thank you when you get it.', show: null },
-        { say: 'Take turns. Share it. Those are kind words too.', show: { kind: 'pic', name: 'bear' } },
+        { say: 'Say please when you ask. Say thank you when you get something.', show: null },
+        { say: 'When two friends want one thing, they can take turns or share it. That is kind, too.', show: { kind: 'pic', name: 'bear' } },
       ],
     },
     sources: ['Aligned with Texas Prekindergarten Guidelines I.C.1 (forms positive relationships with adults and peers) and Head Start ELOF Goal P-SE 2 (engages in prosocial and cooperative behavior with adults).'],
@@ -4080,7 +4080,7 @@ function PREK_MODULES() { return [
     tagline: 'Cars, trains, boats',
     requires: ['same-and-different'],
     lesson: {
-      paragraphs: ['Look at the vehicles. Two that look just alike are the same. One that looks different is not.', 'Find the one that matches, or find the odd one out.'],
+      paragraphs: ['Look at the vehicles. When two look just alike, they are the same. When one looks different, it is the odd one out.', 'Find the one that matches, or find the odd one out.'],
       keyIdea: 'The same means just alike.',
       example: { kind: 'pair', a: { kind: 'art', name: 'car' }, b: { kind: 'art', name: 'car' }, caption: 'Two cars. They are the same.' },
       script: [
@@ -4100,7 +4100,7 @@ function PREK_MODULES() { return [
     tagline: 'Balls, balloons, robots',
     requires: ['match-the-vehicles'],
     lesson: {
-      paragraphs: ['Look at the things. Two that look just alike are the same. One that looks different is not.', 'Find the one that matches, or find the odd one out.'],
+      paragraphs: ['Look at the things. When two look just alike, they are the same. When one looks different, it is the odd one out.', 'Find the one that matches, or find the odd one out.'],
       keyIdea: 'The same means just alike.',
       example: { kind: 'pair', a: { kind: 'art', name: 'ball' }, b: { kind: 'art', name: 'ball' }, caption: 'Two balls. They are the same.' },
       script: [
@@ -4120,7 +4120,7 @@ function PREK_MODULES() { return [
     tagline: 'Whales, fish, turtles',
     requires: ['match-the-things'],
     lesson: {
-      paragraphs: ['Look at the water animals. Two that look just alike are the same. One that looks different is not.', 'Find the one that matches, or find the odd one out.'],
+      paragraphs: ['Look at the water animals. When two look just alike, they are the same. When one looks different, it is the odd one out.', 'Find the one that matches, or find the odd one out.'],
       keyIdea: 'The same means just alike.',
       example: { kind: 'pair', a: { kind: 'pic', name: 'whale' }, b: { kind: 'pic', name: 'whale' }, caption: 'Two whales. They are the same.' },
       script: [
@@ -4140,7 +4140,7 @@ function PREK_MODULES() { return [
     tagline: 'Foxes, bears, rabbits',
     requires: ['match-the-water-animals'],
     lesson: {
-      paragraphs: ['Look at the land animals. Two that look just alike are the same. One that looks different is not.', 'Find the one that matches, or find the odd one out.'],
+      paragraphs: ['Look at the land animals. When two look just alike, they are the same. When one looks different, it is the odd one out.', 'Find the one that matches, or find the odd one out.'],
       keyIdea: 'The same means just alike.',
       example: { kind: 'pair', a: { kind: 'pic', name: 'bear' }, b: { kind: 'pic', name: 'bear' }, caption: 'Two bears. They are the same.' },
       script: [
@@ -4160,7 +4160,7 @@ function PREK_MODULES() { return [
     tagline: 'Circles, squares, triangles',
     requires: ['match-the-land-animals'],
     lesson: {
-      paragraphs: ['Look at the shapes. Two that look just alike are the same. One that looks different is not.', 'Find the one that matches, or find the odd one out.'],
+      paragraphs: ['Look at the shapes. When two look just alike, they are the same. When one looks different, it is the odd one out.', 'Find the one that matches, or find the odd one out.'],
       keyIdea: 'The same means just alike.',
       example: { kind: 'pair', a: { kind: 'shape', name: 'triangle' }, b: { kind: 'shape', name: 'triangle' }, caption: 'Two triangles. They are the same.' },
       script: [
@@ -4180,7 +4180,7 @@ function PREK_MODULES() { return [
     tagline: 'Blocks, balls, cones',
     requires: ['match-the-shapes'],
     lesson: {
-      paragraphs: ['Look at the solid shapes. Two that look just alike are the same. One that looks different is not.', 'Find the one that matches, or find the odd one out.'],
+      paragraphs: ['Look at the solid shapes. When two look just alike, they are the same. When one looks different, it is the odd one out.', 'Find the one that matches, or find the odd one out.'],
       keyIdea: 'The same means just alike.',
       example: { kind: 'pair', a: { kind: 'solid', name: 'cube' }, b: { kind: 'solid', name: 'cube' }, caption: 'Two cubes. They are the same.' },
       script: [
@@ -4221,8 +4221,8 @@ function PREK_MODULES() { return [
     tagline: 'Two of the same shape',
     requires: ['big-bigger-biggest'],
     lesson: {
-      paragraphs: ['Two of the same shape. One takes up more room: it is bigger. The other is smaller.', 'Look at both before you choose.'],
-      keyIdea: 'Bigger takes more room. Smaller takes less.',
+      paragraphs: ['Here are two of the same shape. One takes up more room, so it is bigger. The other is smaller.', 'Look at both before you choose.'],
+      keyIdea: 'Bigger things take up more room. Smaller things take up less.',
       example: { kind: 'pair', a: { kind: 'shape', name: 'square', size: 'big' }, b: { kind: 'shape', name: 'square', size: 'small' }, caption: 'A big square and a small square.' },
       script: [
         { say: 'Here is a big square, and here is a small square.', show: { kind: 'pair', a: { kind: 'shape', name: 'square', size: 'big' }, b: { kind: 'shape', name: 'square', size: 'small' } } },
@@ -4347,7 +4347,7 @@ function PREK_MODULES() { return [
         { say: 'Two children want one swing. Take turns.', show: { kind: 'dots', count: 2 } },
         { say: 'First one child swings. The other one waits.', show: { kind: 'dots', count: 1 } },
         { say: 'Then they swap. Now it is the other child\'s turn.', show: null },
-        { say: 'Listen when a friend talks. Share it. Throw away the wrapper. Help pick them up. Ana waits for her turn, and then it is hers.', show: { kind: 'pic', name: 'rabbit' } },
+        { say: 'Good choices help everyone. When a friend talks, listen. When you finish a snack, throw away the wrapper. When a friend drops their crayons, help pick them up. One ball and two friends? Share it. Sam has a turn, and then it is Ana\'s turn.', show: { kind: 'pic', name: 'rabbit' } },
       ],
     },
     sources: ['Aligned with Texas Prekindergarten Guidelines I.C.4 (interacts with peers during cooperative play scenarios that share a common plan and goal) and Head Start ELOF Goal P-SE 3 (engages in and maintains positive interactions and relationships with other children).'],
@@ -14663,7 +14663,7 @@ Object.assign(GENERATORS, {
   'p3-tap-group': (rng) => {
     const n = randInt(rng, 1, 3);
     return { type: 'choice', story: null, prompt: `Tap ${n}.`, choices: shuffle(rng, [1, 2, 3].map((c) => `dots:${c}`)), answer: `dots:${n}`,
-      explain: `This is ${n}: ${countUp(n)}.`, visual: null, explainVisual: null };
+      explain: `This is ${n}. ${capFirst(countUp(n))}.`, visual: null, explainVisual: null };
   },
   'p3-tap-one': (rng) => {
     const other = randInt(rng, 2, 3);
@@ -14917,12 +14917,12 @@ Object.assign(GENERATORS, {
   'k-tap-more-10': (rng) => {
     const small = randInt(rng, 2, 6); const big = Math.min(10, small + randInt(rng, 1, 4));
     return { type: 'choice', story: null, prompt: 'Tap the one with more dots.', choices: shuffle(rng, [`dots:${big}`, `dots:${small}`]), answer: `dots:${big}`,
-      explain: `${NUMBER_NAMES[big].charAt(0).toUpperCase() + NUMBER_NAMES[big].slice(1)} dots are more than ${NUMBER_NAMES[small]} dots.`, visual: null, explainVisual: { kind: 'pair', a: { kind: 'dots', count: big }, b: { kind: 'dots', count: small } } };
+      explain: `${NUMBER_NAMES[big].charAt(0).toUpperCase() + NUMBER_NAMES[big].slice(1)} dots are more than ${NUMBER_NAMES[small]} ${small === 1 ? 'dot' : 'dots'}.`, visual: null, explainVisual: { kind: 'pair', a: { kind: 'dots', count: big }, b: { kind: 'dots', count: small } } };
   },
   'k-tap-fewer-10': (rng) => {
     const small = randInt(rng, 2, 6); const big = Math.min(10, small + randInt(rng, 1, 4));
     return { type: 'choice', story: null, prompt: 'Tap the one with fewer dots.', choices: shuffle(rng, [`dots:${big}`, `dots:${small}`]), answer: `dots:${small}`,
-      explain: `${NUMBER_NAMES[small].charAt(0).toUpperCase() + NUMBER_NAMES[small].slice(1)} dots are fewer than ${NUMBER_NAMES[big]} dots.`, visual: null, explainVisual: { kind: 'pair', a: { kind: 'dots', count: small }, b: { kind: 'dots', count: big } } };
+      explain: `${NUMBER_NAMES[small].charAt(0).toUpperCase() + NUMBER_NAMES[small].slice(1)} ${small === 1 ? 'dot is' : 'dots are'} fewer than ${NUMBER_NAMES[big]} dots.`, visual: null, explainVisual: { kind: 'pair', a: { kind: 'dots', count: small }, b: { kind: 'dots', count: big } } };
   },
   'p4-tap-bigger': (rng) => {
     const shape = pick(rng, ['square', 'circle', 'triangle']);
@@ -14937,22 +14937,22 @@ Object.assign(GENERATORS, {
   'p4-tap-more-5': (rng) => {
     const small = randInt(rng, 1, 3); const big = Math.min(5, small + randInt(rng, 1, 2));
     return { type: 'choice', story: null, prompt: 'Tap the one with more dots.', choices: shuffle(rng, [`dots:${big}`, `dots:${small}`]), answer: `dots:${big}`,
-      explain: `${NUMBER_NAMES[big].charAt(0).toUpperCase() + NUMBER_NAMES[big].slice(1)} dots are more than ${NUMBER_NAMES[small]} dots.`, visual: null, explainVisual: { kind: 'pair', a: { kind: 'dots', count: big }, b: { kind: 'dots', count: small } } };
+      explain: `${NUMBER_NAMES[big].charAt(0).toUpperCase() + NUMBER_NAMES[big].slice(1)} dots are more than ${NUMBER_NAMES[small]} ${small === 1 ? 'dot' : 'dots'}.`, visual: null, explainVisual: { kind: 'pair', a: { kind: 'dots', count: big }, b: { kind: 'dots', count: small } } };
   },
   'p4-tap-fewer-5': (rng) => {
     const small = randInt(rng, 1, 3); const big = Math.min(5, small + randInt(rng, 1, 2));
     return { type: 'choice', story: null, prompt: 'Tap the one with fewer dots.', choices: shuffle(rng, [`dots:${big}`, `dots:${small}`]), answer: `dots:${small}`,
-      explain: `${NUMBER_NAMES[small].charAt(0).toUpperCase() + NUMBER_NAMES[small].slice(1)} dots are fewer than ${NUMBER_NAMES[big]} dots.`, visual: null, explainVisual: { kind: 'pair', a: { kind: 'dots', count: small }, b: { kind: 'dots', count: big } } };
+      explain: `${NUMBER_NAMES[small].charAt(0).toUpperCase() + NUMBER_NAMES[small].slice(1)} ${small === 1 ? 'dot is' : 'dots are'} fewer than ${NUMBER_NAMES[big]} dots.`, visual: null, explainVisual: { kind: 'pair', a: { kind: 'dots', count: small }, b: { kind: 'dots', count: big } } };
   },
   'p3-tap-more': (rng) => {
     const small = randInt(rng, 1, 2); const big = small + randInt(rng, 1, 2);
     return { type: 'choice', story: null, prompt: 'Tap the one with more dots.', choices: shuffle(rng, [`dots:${big}`, `dots:${small}`]), answer: `dots:${big}`,
-      explain: `${big} dots are more than ${small} dots.`, visual: null, explainVisual: null };
+      explain: `${capFirst(NUMBER_WORDS[big - 1])} dots are more than ${NUMBER_WORDS[small - 1]} ${small === 1 ? 'dot' : 'dots'}.`, visual: null, explainVisual: null };
   },
   'p3-tap-fewer': (rng) => {
     const small = randInt(rng, 1, 2); const big = small + randInt(rng, 1, 2);
     return { type: 'choice', story: null, prompt: 'Tap the one with fewer dots.', choices: shuffle(rng, [`dots:${big}`, `dots:${small}`]), answer: `dots:${small}`,
-      explain: `${small} dots are fewer than ${big} dots.`, visual: null, explainVisual: null };
+      explain: `${capFirst(NUMBER_WORDS[small - 1])} ${small === 1 ? 'dot is' : 'dots are'} fewer than ${NUMBER_WORDS[big - 1]} dots.`, visual: null, explainVisual: null };
   },
   'p3-tap-yellow-green': (rng) => {
     const color = pick(rng, ['yellow', 'green']); const other = color === 'yellow' ? 'green' : 'yellow';
@@ -15001,7 +15001,7 @@ Object.assign(GENERATORS, {
   },
   'p3-name-ab': (rng) => {
     // More examples (pass HT, Mikey): the letter alone, or lit up at the start of a word read aloud.
-    if (rng() < 0.6) { const [word, L] = pick(rng, [['Apple', 'A'], ['Ant', 'A'], ['Arm', 'A'], ['Ball', 'B'], ['Bee', 'B'], ['Bus', 'B'], ['Bat', 'B']]);
+    if (rng() < 0.6) { const [word, L] = pick(rng, [['Apple', 'A'], ['Ant', 'A'], ['Alligator', 'A'], ['Ball', 'B'], ['Bee', 'B'], ['Bus', 'B'], ['Bat', 'B']]);
       return { type: 'choice', story: null, prompt: `What letter does ${word.toLowerCase()} start with?`, choices: shuffle(rng, ['A', 'B']), answer: L, explain: `${word} starts with ${L}.`, visual: { kind: 'letters', text: word, highlight: 0 }, explainVisual: null }; }
     const L = pick(rng, ['A', 'B']);
     return { type: 'choice', story: null, prompt: 'What letter is this?', choices: shuffle(rng, ['A', 'B']), answer: L,
@@ -22255,13 +22255,13 @@ Object.assign(GENERATORS, {
   'pk4-tap-smallest': (rng) => { const sh = pick(rng, ['circle', 'square', 'triangle']);
     return { type: 'choice', story: null, prompt: 'Tap the smallest one.', choices: shuffle(rng, [`shape:${sh}:big`, `shape:${sh}:medium`, `shape:${sh}:small`]), answer: `shape:${sh}:small`, explain: `That is the smallest ${sh}.`, visual: null, explainVisual: null }; },
   'pk4-tap-middle': (rng) => { const sh = pick(rng, ['circle', 'square', 'triangle']);
-    return { type: 'choice', story: null, prompt: 'Tap the middle-sized one.', choices: shuffle(rng, [`shape:${sh}:big`, `shape:${sh}:medium`, `shape:${sh}:small`]), answer: `shape:${sh}:medium`, explain: `That is the middle-sized ${sh}: not little, not big.`, visual: null, explainVisual: null }; },
+    return { type: 'choice', story: null, prompt: 'Tap the middle-sized one.', choices: shuffle(rng, [`shape:${sh}:big`, `shape:${sh}:medium`, `shape:${sh}:small`]), answer: `shape:${sh}:medium`, explain: `That is the middle-sized ${sh}, not little and not big.`, visual: null, explainVisual: null }; },
   'pk3-magic-word': (rng) => { const ask = randInt(rng, 0, 1) === 1;
     return { type: 'choice', story: ask ? 'You want a cracker.' : 'Someone hands you a cracker.', prompt: 'What do you say?', choices: shuffle(rng, ask ? ['Please', 'Give me'] : ['Thank you', 'Nothing']), answer: ask ? 'Please' : 'Thank you', explain: ask ? 'Please is the word for asking.' : 'We say thank you when someone gives us something.', visual: null, explainVisual: null }; },
   'pk3-tap-big': (rng) => { const sh = pick(rng, ['circle', 'square', 'triangle']);
     return { type: 'choice', story: null, prompt: 'Tap the big one.', choices: shuffle(rng, [`shape:${sh}:big`, `shape:${sh}:small`]), answer: `shape:${sh}:big`, explain: `That is the big ${sh}.`, visual: null, explainVisual: null }; },
   'pk3-tap-little': (rng) => { const sh = pick(rng, ['circle', 'square', 'triangle']);
-    return { type: 'choice', story: null, prompt: 'Tap the small one.', choices: shuffle(rng, [`shape:${sh}:big`, `shape:${sh}:small`]), answer: `shape:${sh}:small`, explain: `That is the small ${sh}.`, visual: null, explainVisual: null }; },
+    return { type: 'choice', story: null, prompt: 'Tap the little one.', choices: shuffle(rng, [`shape:${sh}:big`, `shape:${sh}:small`]), answer: `shape:${sh}:small`, explain: `That is the little ${sh}.`, visual: null, explainVisual: null }; },
   'pk-turn-choice': (rng) => { const c = pick(rng, [['You both want the swing.', 'Take turns', 'Grab it'], ['You both want the red crayon.', 'Take turns', 'Keep it all day'], ['Two friends, one ball.', 'Share it', 'Hide it']]);
     return { type: 'choice', story: c[0], prompt: 'What do we do?', choices: shuffle(rng, [c[1], c[2]]), answer: c[1], explain: `${c[1]}. That way, you both get to play.`, visual: null, explainVisual: null }; },
   'pk-whose-turn': (rng) => { const first = randInt(rng, 0, 1) === 1; const done = first ? 'Sam' : 'Ana'; const next = first ? 'Ana' : 'Sam';

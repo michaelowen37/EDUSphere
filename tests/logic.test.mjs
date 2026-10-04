@@ -186,7 +186,7 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
     if (genId === 'rd-first-sound' && q.answer !== q.story.replace(/\.$/, '').toLowerCase()[0]) problems.push('first sound wrong');
     if (genId === 'rd-last-sound' && q.answer !== q.story.replace(/\.$/, '').toLowerCase().slice(-1)) problems.push('last sound wrong');
     if (genId === 'rd-middle-sound' && q.answer !== q.story.replace(/\.$/, '').toLowerCase()[1]) problems.push('middle sound wrong');
-    if (genId === 'rd-which-word' && q.answer !== q.story.replace(/^Read: /, '').replace(/[ .]/g, '')) problems.push('which word wrong');
+    if (genId === 'rd-which-word' && q.answer !== q.story.replace(/^Read(?: the sounds)?:? /, '').replace(/[ .]/g, '')) problems.push('which word wrong');
     const lineWords = (t) => t.trim().split(/\s+/);
     if (genId === 'rw-first' && q.answer !== lineWords(q.story)[0]) problems.push('first word wrong');
     if (genId === 'rw-last' && q.answer !== lineWords(q.story).slice(-1)[0]) problems.push('last word wrong');
@@ -198,7 +198,7 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
     if (genId === 'rm-pick-word' && PIC_WORD[q.answer.split(':')[1]] !== q.story.match(/word is (\w+)/)[1]) problems.push('picked picture wrong');
     if (genId === 'rm-does-match' && q.answer !== (PIC_WORD[q.visual.name] === q.story.match(/says (\w+)/)[1] ? 'Yes' : 'No')) problems.push('does-match wrong');
     if (genId === 'rm-count-word' && ['one', 'two', 'three', 'four', 'five', 'six'].indexOf(q.answer) + 1 !== q.visual.count) problems.push('count word wrong');
-    if (genId === 'rm-shape-word' && q.answer !== `shape:${q.story.match(/word: (\w+)/)[1]}`) problems.push('shape word wrong');
+    if (genId === 'rm-shape-word' && q.answer !== `shape:${q.story.match(/word:? (\w+)/)[1]}`) problems.push('shape word wrong');
     // Grade 3 multiplication, division, and adding to 1,000: redone from the numbers in the words
     const allInts = text.match(/\d+/g) ? text.match(/\d+/g).map(Number) : [];
     if (genId === 'mu-groups-total' && Number(q.answer) !== allInts[0] * allInts[1]) problems.push('groups total wrong');

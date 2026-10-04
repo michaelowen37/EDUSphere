@@ -37,7 +37,7 @@ window.__eduArt = [];
 window.__eduColoringArt = [];
 window.__eduMapArt = [];
 window.__eduAudio = [];
-window.__eduNews = {"stamp":"October 3, 2026 (pre-K finished, and kindergarten counting read by hand)","date":"October 3, 2026","items":["Every pre-K lesson has now been read again by hand, finishing with First sounds and letters.","Kindergarten Counting is read too, with fixes like \"There is 1,\" a square and a rectangle told apart by their sides, and a block as the everyday cube.","Their stories carry directions for a recorded voice, from a lion's roar to a whoosh down a slide."],"brief":["Every pre-K lesson has now been read again by hand, finishing with First sounds and letters.","Kindergarten Counting is read too, with fixes like \"There is 1,\" a square and a rectangle told apart by their sides, and a block as the everyday cube.","Their stories carry directions for a recorded voice, from a lion's roar to a whoosh down a slide."],"history":[{"date":"October 3, 2026","title":"pre-K finished, and kindergarten counting read by hand","items":["Every pre-K lesson has now been read again by hand, finishing with First sounds and letters.","Kindergarten Counting is read too, with fixes like \"There is 1,\" a square and a rectangle told apart by their sides, and a block as the everyday cube.","Their stories carry directions for a recorded voice, from a lion's roar to a whoosh down a slide."]},{"date":"October 3, 2026","title":"pre-K 4 lessons read by hand","items":["Every First steps lesson for four-year-olds has been read again by hand, with clearer matching lessons, one dot instead of one dots, and a taking-turns lesson that explains each kind choice.","Their stories now carry directions for a recorded voice too."]},{"date":"October 3, 2026","title":"voices for the stories, and more pre-K read by hand","items":["The stories now carry directions for a recorded voice, a whisper here and a splash or a moo there, ready for when the audio is made. Readers never see them.","Every Listen and point lesson for three-year-olds has been read again by hand, with a few small fixes."]},{"date":"October 3, 2026","title":"pre-K lessons read by hand, and the tour in the preview","items":["Every lesson in Very first steps for three-year-olds has been read again by hand, with clearer wording, a few small fixes, and colors children can picture, red like a strawberry and blue like the sky.","The tour's backup card now sits beside the Backup classroom link in the preview, as it does in Chrome."]},{"date":"October 3, 2026","title":"a rewritten economics lesson, the tour and diagrams","items":["The college lesson Scarcity, Trade and Markets has been rewritten to explain its ideas the way a good teacher talks them through, with examples you can picture, and its questions now read naturally.","The tour's cards now sit where they belong in the preview as well as on wider screens.","Step-by-step diagrams have a little more room around their arrows."]},{"date":"October 3, 2026","title":"the tour, scrolling and titles","items":["The first week tour's cards now keep their places on every screen size, and the backup reminder waits until the tour is finished.","Lessons open at the top of the page, and so does your classroom after the tour and after Later.","Lesson titles are capitalized like titles everywhere they appear as a heading."]}]};
+window.__eduNews = {"stamp":"October 4, 2026 (kindergarten core finished)","date":"October 4, 2026","items":["The kindergarten community and health lessons are read again by hand. The holiday lesson now teaches Martin Luther King Jr. Day, and the sleep lesson gives one honest number, about ten to twelve hours a night.","Kindergarten computers now teach that a touch screen is both an input and an output.","A new picture is on the way for Day and night: the Earth spinning on a finger."],"brief":["The kindergarten community and health lessons are read again by hand.","Kindergarten computers now teach that a touch screen is both an input and an output.","A new picture is on the way for Day and night."],"history":[{"date":"October 4, 2026","title":"kindergarten core finished","items":["The kindergarten community and health lessons are read again by hand. The holiday lesson now teaches Martin Luther King Jr. Day, and the sleep lesson gives one honest number, about ten to twelve hours a night.","Kindergarten computers now teach that a touch screen is both an input and an output.","A new picture is on the way for Day and night: the Earth spinning on a finger."]},{"date":"October 3, 2026","title":"kindergarten letters and science read by hand","items":["Kindergarten Letters is read again by hand, with clearer read-aloud lines like \"Say it slowly, c, a, t.\"","Kindergarten science is more accurate. A dark sky means night, not the moon, since the moon is often up in the day. Plants need air as well as water and sun.","Their stories carry directions for a recorded voice, from the alphabet song to a rooster at dawn."]},{"date":"October 3, 2026","title":"pre-K finished, and kindergarten counting read by hand","items":["Every pre-K lesson has now been read again by hand, finishing with First sounds and letters.","Kindergarten Counting is read too, with fixes like \"There is 1,\" a square and a rectangle told apart by their sides, and a block as the everyday cube.","Their stories carry directions for a recorded voice, from a lion's roar to a whoosh down a slide."]},{"date":"October 3, 2026","title":"pre-K 4 lessons read by hand","items":["Every First steps lesson for four-year-olds has been read again by hand, with clearer matching lessons, one dot instead of one dots, and a taking-turns lesson that explains each kind choice.","Their stories now carry directions for a recorded voice too."]},{"date":"October 3, 2026","title":"voices for the stories, and more pre-K read by hand","items":["The stories now carry directions for a recorded voice, a whisper here and a splash or a moo there, ready for when the audio is made. Readers never see them.","Every Listen and point lesson for three-year-olds has been read again by hand, with a few small fixes."]},{"date":"October 3, 2026","title":"pre-K lessons read by hand, and the tour in the preview","items":["Every lesson in Very first steps for three-year-olds has been read again by hand, with clearer wording, a few small fixes, and colors children can picture, red like a strawberry and blue like the sky.","The tour's backup card now sits beside the Backup classroom link in the preview, as it does in Chrome."]}]};
 // Installable app: the worker keeps a copy of the page for offline use and asks the network first, so a fresh build always wins.
 if ('serviceWorker' in navigator && /^https?:/.test(location.protocol)) { navigator.serviceWorker.register('sw.js').catch(function () {}); }
 var process = { env: { NODE_ENV: 'production' } };
@@ -20814,7 +20814,7 @@ function LETTER_MODULES() {
             title: 'Letter names',
             tagline: 'A, B, C',
             lesson: {
-                paragraphs: ['Every letter has a name. This is A. This is B. This is C.', 'The letters go in order: A, B, C, D, E.'],
+                paragraphs: ['Every letter has a name. This is A. This is B. This is C.', 'The letters go in order. A, B, C, D, E.'],
                 keyIdea: 'Letters have names and an order.',
                 example: { kind: 'letters', text: 'A B C D E', caption: 'A, B, C, D, E.' },
                 script: [
@@ -20892,11 +20892,11 @@ function LETTER_MODULES() {
             lesson: {
                 paragraphs: ['Words end with a sound too. Cat ends with T. Bus ends with S.', 'Say the word slowly. The last sound you hear is the ending sound.'],
                 keyIdea: 'Say it slowly. The last sound is the ending sound.',
-                example: { kind: 'letters', text: 'caT', caption: 'Cat ends with T. Say it slowly: c, a, t.' },
+                example: { kind: 'letters', text: 'caT', caption: 'Cat ends with T. Say it slowly, c, a, t.' },
                 script: [
-                    { say: 'Cat ends with T. Say it slowly: c, a, t.', show: { kind: 'letters', text: 'caT' } },
-                    { say: 'Bus ends with S. Say it slowly: b, u, s.', show: { kind: 'letters', text: 'buS' } },
-                    { say: 'Sun ends with N. Say it slowly: s, u, n.', show: { kind: 'letters', text: 'suN' } },
+                    { say: 'Cat ends with T. Say it slowly, c, a, t.', show: { kind: 'letters', text: 'caT' } },
+                    { say: 'Bus ends with S. Say it slowly, b, u, s.', show: { kind: 'letters', text: 'buS' } },
+                    { say: 'Sun ends with N. Say it slowly, s, u, n.', show: { kind: 'letters', text: 'suN' } },
                 ],
             },
             sources: ['Aligned with TEKS K.2A.ii (recognizes spoken alliteration or groups of words that begin with the same spoken onset) and CCSS RF.K.2.d.'],
@@ -20988,7 +20988,7 @@ function LETTER_MODULES() {
             tagline: 'The beats in a word',
             requires: ['rhymes'],
             lesson: {
-                paragraphs: ['Every word has beats. Clap them as you say the word. Cat has one clap. Rabbit has two: rab, bit.', 'Long words have more beats. Ba-na-na has three.'],
+                paragraphs: ['Every word has beats. Clap them as you say the word. Cat has one clap. Rabbit has two, rab and bit.', 'Long words have more beats. Ba-na-na has three.'],
                 keyIdea: 'Say the word slowly and clap each beat.',
                 example: { kind: 'letters', text: 'rab bit', caption: 'Rab, bit. Two claps.' },
                 script: [
@@ -21436,12 +21436,12 @@ function K_SCIENCE_MODULES() {
             title: 'Day and night',
             tagline: 'The sun and the moon',
             lesson: {
-                paragraphs: ['The sun shines in the day. The moon shines at night. In the day the sky is bright. At night the sky is dark.', 'Look up and see which one it is.'],
-                keyIdea: 'Sun in the day, moon at night.',
+                paragraphs: ['The sun shines in the day, and the sky is bright. At night the sky is dark, and we often see the moon and the stars.', 'Look up and see which one it is.'],
+                keyIdea: 'The sun lights the day. At night the sky is dark.',
                 example: { kind: 'daynight', caption: 'The side facing the sun has day. The side facing away has night. The Earth turns.', formula: 'the Earth turns' },
                 script: [
                     { say: 'This is the sun. It shines in the day.', show: { kind: 'icon', name: 'sun' } },
-                    { say: 'This is the moon. It shines at night.', show: { kind: 'icon', name: 'moon' } },
+                    { say: 'This is the moon. We often see it at night.', show: { kind: 'icon', name: 'moon' } },
                     { say: 'The sun is for the day.', show: { kind: 'icon', name: 'sun' } },
                     { say: 'The Earth turns. The side facing the sun has day. The side facing away has night.', show: { kind: 'daynight' } },
                 ],
@@ -21460,8 +21460,8 @@ function K_SCIENCE_MODULES() {
                 example: { kind: 'icon', name: 'rain', caption: 'Rain.' },
                 script: [
                     { say: 'When the sun is out, the day is sunny.', show: { kind: 'icon', name: 'sun' } },
-                    { say: 'When rain falls from the cloud, the day is rainy.', show: { kind: 'icon', name: 'rain' } },
-                    { say: 'When snow falls from the cloud, the day is snowy.', show: { kind: 'icon', name: 'snow' } },
+                    { say: 'When rain falls from the clouds, the day is rainy.', show: { kind: 'icon', name: 'rain' } },
+                    { say: 'When snow falls from the clouds, the day is snowy.', show: { kind: 'icon', name: 'snow' } },
                     { say: 'On a cold day you wear a warm coat. On a sunny day, a sun hat. On a rainy day, a raincoat.', show: { kind: 'flow', steps: ['warm coat', 'sun hat', 'raincoat'] } },
                 ],
             },
@@ -21492,13 +21492,13 @@ function K_SCIENCE_MODULES() {
             title: 'What a plant needs',
             tagline: 'Water and sun',
             lesson: {
-                paragraphs: ['A plant needs water. A plant needs the sun.', 'Give a plant water and sun and it grows.'],
-                keyIdea: 'A plant needs water and the sun to grow.',
+                paragraphs: ['A plant needs water. A plant needs the sun. It needs air too, just like you.', 'Give a plant water and sun and it grows.'],
+                keyIdea: 'A plant needs water, sun and air to grow.',
                 example: { kind: 'icon', name: 'drop', caption: 'A drop of water.' },
                 script: [
                     { say: 'A plant needs a drop of water to grow.', show: { kind: 'icon', name: 'drop' } },
                     { say: 'A plant needs the sun to grow.', show: { kind: 'icon', name: 'sun' } },
-                    { say: 'Water and sun make the plant grow.', show: { kind: 'icon', name: 'plant' } },
+                    { say: 'Water, sun and air help the plant grow.', show: { kind: 'icon', name: 'plant' } },
                 ],
             },
             sources: ['Aligned with Texas TEKS K.9B (identify basic needs of plants and animals) and NGSS K-LS1-1 (patterns of what plants need to survive).'],
@@ -21511,13 +21511,13 @@ function K_SCIENCE_MODULES() {
             tagline: 'Sun, fire, ice, snow',
             requires: ['kinds-of-weather'],
             lesson: {
-                paragraphs: ['Some things are hot. The sun is hot. Fire is hot.', 'Some things are cold. Ice is cold. Snow is cold.', 'We keep away from hot things. We wear a coat near cold things.'],
+                paragraphs: ['Some things are hot. The sun is hot. Fire is hot.', 'Some things are cold. Ice is cold. Snow is cold.', 'We keep away from hot things. We wear a coat when it is cold.'],
                 keyIdea: 'Hot things warm us. Cold things chill us.',
                 example: { kind: 'pair', a: { kind: 'icon', name: 'sun' }, b: { kind: 'icon', name: 'ice' }, caption: 'The sun is hot. Ice is cold.' },
                 script: [
                     { say: 'The sun is hot. Fire is hot too.', show: { kind: 'pair', a: { kind: 'icon', name: 'sun' }, b: { kind: 'icon', name: 'fire' } } },
                     { say: 'Ice is cold. Snow is cold too.', show: { kind: 'pair', a: { kind: 'icon', name: 'ice' }, b: { kind: 'icon', name: 'snow' } } },
-                    { say: 'We keep away from hot things. We wear a coat near cold things.', show: { kind: 'pair', a: { kind: 'icon', name: 'sun' }, b: { kind: 'icon', name: 'ice' } } },
+                    { say: 'We keep away from hot things. We wear a coat when it is cold.', show: { kind: 'pair', a: { kind: 'icon', name: 'sun' }, b: { kind: 'icon', name: 'ice' } } },
                 ],
             },
             sources: ['Aligned with TEKS K.5A (observe and record properties of objects, including relative temperature) and NGSS K-PS3-1.'],
@@ -26548,8 +26548,8 @@ function KINDER_CIVICS_MODULES() {
             tagline: 'Stars, stripes and days we celebrate',
             requires: ['needs-and-wants'],
             lesson: {
-                paragraphs: ['Our flag is red, white and blue. It has 50 stars, one for each state, and 13 stripes for the first 13 states.', 'On July 4 we celebrate Independence Day. In November we give thanks on Thanksgiving.'],
-                keyIdea: 'Fifty stars, thirteen stripes, red white and blue.',
+                paragraphs: ['Our flag is red, white and blue. It has 50 stars, one for each state, and 13 stripes for the first 13 states.', 'The third Monday of January is Martin Luther King Jr. Day, when we honor Dr. King. On July 4 we celebrate Independence Day. In November we give thanks on Thanksgiving.'],
+                keyIdea: 'Fifty stars, thirteen stripes, red, white and blue.',
                 example: { kind: 'flag', stars: true, caption: 'Fifty stars, one for each state.', formula: '50' },
                 script: [
                     { say: 'Our flag has 50 stars. One star for each state.', show: { kind: 'letters', text: '50' } },
@@ -26608,7 +26608,7 @@ function KINDER_CIVICS_MODULES() {
             lesson: {
                 paragraphs: ['The United States flag has 50 stars, one for each state. The Texas flag has one big star. That is why Texas is called the Lone Star State.'],
                 keyIdea: 'Fifty stars for the country. One star for Texas.',
-                example: { kind: 'flag', texas: true, caption: 'One star: the Texas flag.', formula: '1' },
+                example: { kind: 'flag', texas: true, caption: 'One star. That is the Texas flag.', formula: '1' },
                 script: [
                     { say: 'The Texas flag has 1 big star, so Texas is the Lone Star State.', show: { kind: 'letters', text: '1' } },
                     { say: 'The United States flag has 50 stars, one for each state.', show: { kind: 'letters', text: '50' } },
@@ -26962,8 +26962,8 @@ function HEALTHK_MODULES() {
             tagline: 'Soap, water, count to twenty',
             requires: [],
             lesson: {
-                paragraphs: ['Germs are too small to see, and they ride on hands. Wash your hands before eating, and after the bathroom the next thing you do is wash your hands.\nSoap, water, and scrub while you count to twenty. Between the fingers too, and under the nails.', 'Twenty seconds is a short song. Sing it and you are done.', 'Clean hands keep the germs off your food and out of your mouth.'],
-                keyIdea: 'Wash before eating and after the bathroom: soap, water, count to twenty.',
+                paragraphs: ['Germs are too small to see, and they ride on hands. Wash your hands before eating, and after the bathroom the next thing you do is wash your hands.', 'Soap, water, and scrub while you count to twenty. Between the fingers too, and under the nails.', 'Twenty seconds is a short song. Sing it and you are done.', 'Clean hands keep the germs off your food and out of your mouth.'],
+                keyIdea: 'Wash before eating and after the bathroom. Use soap and water, and count to twenty.',
                 example: { kind: 'flow', steps: ['wet', 'soap', 'scrub to twenty', 'rinse', 'dry'], caption: 'Five steps, and the germs go down the drain.',
                     another: ['Put a little glitter on your hands and wash with water only. Some stays. Now wash with soap: it goes. Germs are like glitter you cannot see.',
                         { text: 'Between the fingers is where germs hide, like crumbs in the cracks of a couch. Scrub there on purpose.', visual: { kind: 'letters', text: 'between the fingers' } },
@@ -26979,9 +26979,9 @@ function HEALTHK_MODULES() {
             tagline: 'Two times, two minutes',
             requires: ['washing-hands'],
             lesson: {
-                paragraphs: ['Germs eat leftover sugar on teeth and make tiny holes called cavities. Brushing sweeps them away.\nBrush two times a day, morning and night, for two minutes each: front, back and the tops where you chew.', 'A timer or a two-minute song keeps you honest. Water is the best drink for teeth; the most important brushing is at night, because germs work all night on whatever you leave them.', 'Two times, two minutes, and the sugar bugs lose.'],
+                paragraphs: ['Germs eat leftover sugar on teeth and make tiny holes called cavities. Brushing sweeps them away.', 'Brush two times a day, morning and night, for two minutes each, cleaning the front, the back and the tops where you chew.', 'A timer or a two-minute song keeps you honest. Water is the best drink for teeth. The most important brushing is at night, because germs work all night on whatever you leave them.', 'Two times, two minutes, and the sugar bugs lose.'],
                 keyIdea: 'Brush two times a day for two minutes, front, back and tops.',
-                example: { kind: 'flow', steps: ['fronts', 'backs', 'chewing tops', 'tongue', 'rinse'], caption: 'Around the mouth in two minutes: every side of every tooth.',
+                example: { kind: 'flow', steps: ['fronts', 'backs', 'chewing tops', 'tongue', 'rinse'], caption: 'Around the mouth in two minutes, every side of every tooth.',
                     another: ['Your teeth are like a fence with a picket for every tooth. Paint every picket, both sides, or the unpainted ones rot.',
                         { text: 'Two minutes feels long. Split it: thirty seconds for each corner of your mouth, top right, top left, bottom left, bottom right.', visual: { kind: 'flow', steps: ['top right', 'top left', 'bottom left', 'bottom right'] } },
                         'Morning brushing cleans up breakfast. Night brushing matters more: germs work all night on whatever you leave them.'] },
@@ -26996,7 +26996,7 @@ function HEALTHK_MODULES() {
             tagline: 'When your body grows',
             requires: ['brushing-teeth'],
             lesson: {
-                paragraphs: ['Sleep is when your body grows and your brain files the day away. A five-year-old needs ten to thirteen hours, counting naps.\nWithout enough, you feel grumpy and forget things. A tired brain drops things; a rested one remembers.', 'The same quiet routine each night tells your body it is time: bath, book, bed.', 'Ten to twelve hours, the same way every night.'],
+                paragraphs: ['Sleep is when your body grows and your brain files the day away. Kids your age need about ten to twelve hours each night.', 'Without enough, you feel grumpy and forget things. A tired brain drops things. A rested one remembers.', 'The same quiet routine each night tells your body it is time: bath, book, bed.', 'Ten to twelve hours, the same way every night.'],
                 keyIdea: 'Ten to twelve hours of sleep, with the same quiet routine each night.',
                 example: { kind: 'flow', steps: ['bath', 'book', 'bed', 'sleep'], caption: 'The same steps each night, and your body knows what comes next.',
                     another: ['Your brain is a desk. All day, papers pile up. At night, while you sleep, someone files them. Skip the night and the desk is a mess in the morning.',
@@ -27013,9 +27013,9 @@ function HEALTHK_MODULES() {
             tagline: 'Half fruits and vegetables',
             requires: ['sleep-k'],
             lesson: {
-                paragraphs: ['Half your plate is fruits and vegetables: a carrot, peas, broccoli, spinach, an apple. Then grains, like bread and rice, and protein, like eggs and beans.\nColors on the plate mean vitamins.', 'Drink water most of the time. Milk is good too. Soda is sugar with bubbles. Sweets are for sometimes, not for every day.', 'Half the plate green and orange and red, and a glass of water beside it.'],
-                keyIdea: 'Half the plate fruits and vegetables; water to drink.',
-                example: { kind: 'bar', parts: 4, shaded: 2, caption: 'A plate in four parts: two for fruits and vegetables, one for grains, one for protein.',
+                paragraphs: ['Half your plate is fruits and vegetables, like a carrot, peas, broccoli, spinach or an apple. Then grains, like bread and rice, and protein, like eggs and beans.', 'Colors on the plate mean vitamins.', 'Drink water most of the time. Milk is good too. Soda is sugar with bubbles. Sweets are for sometimes, not for every day.', 'Half the plate green and orange and red, and a glass of water beside it.'],
+                keyIdea: 'Half the plate is fruits and vegetables, with water to drink.',
+                example: { kind: 'bar', parts: 4, shaded: 2, caption: 'A plate in four parts, two for fruits and vegetables, one for grains and one for protein.',
                     another: ['Think of a rainbow on the plate. Red tomatoes, orange carrots, green peas, purple grapes. Each color brings something different.',
                         { text: 'A plate is a pizza cut in four: two slices of vegetables and fruit, one of grains, one of protein. Same idea, every meal.', visual: { kind: 'bar', parts: 4, shaded: 2 } },
                         'Sweets are for sometimes, not for every day. Water is for every day.'] },
@@ -27109,9 +27109,9 @@ function TECHK_MODULES() {
             tagline: 'Inputs tell, outputs show',
             requires: [],
             lesson: {
-                paragraphs: ['A computer cannot see you or hear you on its own. You tell it things with a keyboard, a mouse or a touch screen. Those parts are called inputs.\nIt shows you things on a screen and plays sounds with a speaker. Those parts are called outputs.', 'You tell, and it shows. Press a key, and a letter appears on the screen. Tap a picture on a touch screen, and a song plays from the speaker. A touch screen is an input, because you tell with it. A speaker is an output, because it shows you, with sound.', 'A computer only does what it is told. The telling parts are inputs. The showing parts are outputs.'],
+                paragraphs: ['A computer cannot see you or hear you on its own. You tell it things with a keyboard, a mouse or a touch screen. Those parts are called inputs.', 'It shows you things on a screen and plays sounds with a speaker. Those parts are called outputs.', 'You tell, and it shows. Press a key, and a letter appears on the screen. Tap a picture on a touch screen, and a song plays from the speaker. A touch screen does both jobs. When you tap it, it is an input, because you tell with it. When it shows you a picture, it is an output. A speaker is an output, because it shows you, with sound.', 'A computer only does what it is told. The telling parts are inputs. The showing parts are outputs.'],
                 keyIdea: 'Inputs tell a computer. Outputs show you.',
-                example: { kind: 'flow', steps: ['tap the screen', 'the computer works', 'a song plays'], caption: 'You tap; the computer follows its steps; the speaker plays the song.',
+                example: { kind: 'flow', steps: ['tap the screen', 'the computer works', 'a song plays'], caption: 'You tap, the computer follows its steps, and the speaker plays the song.',
                     another: ['A computer is like a helper who cannot see or hear. Its inputs are its ears: the keyboard, the mouse, the touch screen. Its outputs are its voice and its hands: the screen and the speaker.',
                         { text: 'A toaster works the same way. The lever you push down is the input. The toast that pops up is the output.', visual: { kind: 'flow', steps: ['push the lever', 'the toaster heats', 'toast pops up'] } },
                         'Ask about any part: do I use it to tell, or does it show me? Tell is an input. Show is an output.'] },
@@ -27126,8 +27126,8 @@ function TECHK_MODULES() {
             tagline: 'Steps in order',
             requires: ['tell-and-show'],
             lesson: {
-                paragraphs: ['A list of steps in order is called an algorithm. That is a big word for a small idea: first, next, then, last.\nTo make a jam sandwich: first get the bread, next spread the jam, then close the sandwich, last take a bite.', 'Mix up the order and it goes wrong. Bite first, and there is no sandwich yet. Spread the jam last, and it lands on top of your bite.', 'A big job breaks into small steps. Getting dressed is one big job: socks first, then shoes. Shoes first, and the socks will not go on.', 'First, next, then, last. A computer follows its steps the same way, one at a time, in order, and it never skips one.'],
-                keyIdea: 'Steps in order, first, next, then, last: that is an algorithm.',
+                paragraphs: ['A list of steps in order is called an algorithm. That is a big word for a small idea, first, next, then, last.', 'To make a jam sandwich, first get the bread, next spread the jam, then close the sandwich, last take a bite.', 'Mix up the order and it goes wrong. Bite first, and there is no sandwich yet. Spread the jam last, and it lands on top of your bite.', 'A big job breaks into small steps. Getting dressed is one big job: socks first, then shoes. Shoes first, and the socks will not go on.', 'First, next, then, last. A computer follows its steps the same way, one at a time, in order, and it never skips one.'],
+                keyIdea: 'Steps in order, first, next, then, last, are called an algorithm.',
                 example: { kind: 'flow', steps: ['first: bread', 'next: jam', 'then: close it', 'last: bite'], caption: 'Four steps in order make a sandwich. The same steps out of order make a mess.',
                     another: ['An algorithm is a recipe. A recipe tells you what to do and in what order, and a cook who skips a step gets a different dinner.',
                         { text: 'Getting dressed is an algorithm too: socks, then shoes. Try it the other way and the shoes are already on when the socks arrive.', visual: { kind: 'flow', steps: ['socks', 'shoes', 'coat', 'out the door'] } },
@@ -27143,7 +27143,7 @@ function TECHK_MODULES() {
             tagline: 'Patterns and loops',
             requires: ['first-next-then-last'],
             lesson: {
-                paragraphs: ['A pattern is something that repeats: red, blue, red, blue. When you know the pattern, you can guess what comes next. After blue, red comes again.', 'A computer can repeat steps too. Instead of saying clap, clap, clap, clap, you can say clap four times. Saying a step again and again is called a loop.\nA loop needs two things: what to do, and how many times. Jump three times. Blink two times.', 'You can write steps for a toy robot the same way. Forward, forward, forward, turn is four steps. Forward three times, then turn, says the same thing in two.', 'A pattern helps you guess what comes next. A loop lets a few words do a lot of work.'],
+                paragraphs: ['A pattern is something that repeats: red, blue, red, blue. When you know the pattern, you can guess what comes next. After blue, red comes again.', 'A computer can repeat steps too. Instead of saying clap, clap, clap, clap, you can say clap four times. Saying a step again and again is called a loop.', 'A loop needs two things, what to do and how many times. Jump three times. Blink two times.', 'You can write steps for a toy robot the same way. Forward, forward, forward, turn is four steps. Forward three times, then turn, says the same thing in two.', 'A pattern helps you guess what comes next. A loop lets a few words do a lot of work.'],
                 keyIdea: 'A pattern repeats. A loop says do it again, and how many times.',
                 example: { kind: 'flow', steps: ['clap four times', 'jump three times', 'blink two times'], caption: 'Three loops. Each one says what to do and how many times.',
                     another: ['Beads on a string: red, blue, red, blue. Cover the string with your hand and you can still say what the next bead is. That is what a pattern gives you.',
@@ -27160,7 +27160,7 @@ function TECHK_MODULES() {
             tagline: 'Secret words and private things',
             requires: ['do-it-again'],
             lesson: {
-                paragraphs: ['A password is a secret word that opens your account. Keep it secret. Only a parent or a teacher may know it. When you are done, log off, so the next person cannot get in.', 'Some things are safe to share online: your favorite color, a game you like, a pet. Some things are private and stay private: your full name, your address, your school and your birthday.', 'Be kind online, just like at the park, because a real person is on the other side. If something online makes you feel bad, stop and tell a grown-up.', 'Secret password, private things private, kind words, and tell a grown-up.'],
+                paragraphs: ['A password is a secret word that opens your account. Keep it secret. Only a parent or a teacher may know it. When you are done, log off, so the next person cannot get in.', 'Some things are safe to share online: your favorite color, a game you like, a pet. Some things are private and stay private, like your full name, your address, your school and your birthday.', 'Be kind online, just like at the park, because a real person is on the other side. If something online makes you feel bad, stop and tell a grown-up.', 'Secret password, private things private, kind words, and tell a grown-up.'],
                 keyIdea: 'Keep your password secret, keep private things private, be kind, and tell a grown-up.',
                 example: { kind: 'flow', steps: ['log in', 'play', 'log off'], caption: 'Log in with your secret word, and log off when you are done.',
                     another: ['A password is like the key to your house. You do not hand your key to a stranger, and you lock the door when you leave. Logging off is locking the door.',
@@ -29802,7 +29802,7 @@ function SPEECHK_MODULES() {
             tagline: 'Eyes, ears, hands, feet and mind, all listening at once',
             requires: [],
             lesson: {
-                paragraphs: ['Listening is a whole-body job. Your eyes look at the person. Your ears hear the words. Your hands stay still. Your feet stay still. And your mind thinks about the words, not about lunch.', 'If you do not understand, ask. You can say, what do you mean? Or, can you say it again? Asking is not rude. Asking is how listeners get it right.\nWhen someone asks you a question, answer with more than one word. Not just yes. Say, yes, I saw the red bird.', 'A good listener can say the story back. Try it after a story. What happened first? What happened last? If you can say it back, you heard it.'],
+                paragraphs: ['Listening is a whole-body job. Your eyes look at the person. Your ears hear the words. Your hands stay still. Your feet stay still. And your mind thinks about the words, not about lunch.', 'If you do not understand, ask. You can say, what do you mean? Or, can you say it again? Asking is not rude. Asking is how listeners get it right.', 'When someone asks you a question, answer with more than one word. Not just yes. Say, yes, I saw the red bird.', 'A good listener can say the story back. Try it after a story. What happened first? What happened last? If you can say it back, you heard it.'],
                 keyIdea: 'Listen with your eyes, ears, hands, feet and mind. If you do not understand, ask. Answer with more than one word. If you can say the story back, you heard it.',
                 example: { kind: 'flow', steps: ['eyes look', 'ears hear', 'hands still', 'mind on the words'], caption: 'A whole-body listener.',
                     another: ['Your teacher says, get your coat. If you did not hear, ask: can you say it again? Then you will get the coat and not the hat.',
@@ -29819,8 +29819,8 @@ function SPEECHK_MODULES() {
             tagline: 'Hear the steps, say them back, then do them in order',
             requires: ['my-listening-body'],
             lesson: {
-                paragraphs: ['Directions come in steps. First, then, last. First get a cup. Then fill it with water. Last, put it on the table. Three steps, in order.', 'Before you do the steps, say them back. Cup, water, table. Saying them back keeps them in your head. If you say one wrong, the grown-up fixes it before you start.\nThen do the steps in order. First things first. Last things last.', 'You can give directions too. Say how many steps. Say first, then, last. Then ask your friend to say them back to you. Two steps: first, get the ball. Then, roll it to me. Now you say it.'],
-                keyIdea: 'Directions come in steps: first, then, last. Say the steps back before you do them. Do them in order. When you give directions, say first, then, last, and ask for them back.',
+                paragraphs: ['Directions come in steps. First, then, last. First get a cup. Then fill it with water. Last, put it on the table. Three steps, in order.', 'Before you do the steps, say them back. Cup, water, table. Saying them back keeps them in your head. If you say one wrong, the grown-up fixes it before you start.', 'Then do the steps in order. First things first. Last things last.', 'You can give directions too. Say how many steps. Say first, then, last. Then ask your friend to say them back to you. Two steps: first, get the ball. Then, roll it to me. Now you say it.'],
+                keyIdea: 'Directions come in steps, first, then, last. Say the steps back before you do them. Do them in order. When you give directions, say first, then, last, and ask for them back.',
                 example: { kind: 'flow', steps: ['hear the steps', 'say them back', 'do them in order'], caption: 'First, then, last.',
                     another: ['First, wash your hands. Then, sit down. Last, eat. Say it back: hands, sit, eat.',
                         { text: 'Two steps for a friend: first, get the crayons. Then, put them on the table. Now you say it. If they say table first, fix it.', visual: { kind: 'flow', steps: ['first', 'then', 'say it back'] } },
@@ -29854,7 +29854,7 @@ function SPEECHK_MODULES() {
             requires: ['my-clear-voice'],
             lesson: {
                 paragraphs: ['In a group, one person talks at a time. Everyone else listens. If you want a turn, put your hand up and wait. Your turn will come. That is the rule, and the rule is fair.', 'Kind words open doors. Hello, my name is Sam. Please. Thank you. Excuse me. I need help. These words work in every room, at school and at home and at the store.', 'If you want something, say it in words. I need help with my zipper. I want a turn with the truck. Saying it in words works better than grabbing, and better than crying. People can help you when they know what you need.'],
-                keyIdea: 'One talker at a time; put your hand up and wait for your turn. Kind words: hello and my name, please, thank you, excuse me. Say what you need in words.',
+                keyIdea: 'One talker at a time. Put your hand up and wait for your turn. Kind words are hello and my name, please, thank you and excuse me. Say what you need in words.',
                 example: { kind: 'flow', steps: ['one talker', 'hand up', 'my turn'], caption: 'How a group takes turns.',
                     another: ['Hello, my name is Ava. That is how you meet someone. Then they know your name, and you can be friends.',
                         { text: 'I want a turn with the truck. That is words. Grabbing the truck is not words. Words get you a turn.', visual: { kind: 'flow', steps: ['I want a turn', 'they hear it', 'a turn'] } },
@@ -32463,10 +32463,10 @@ const PREK_LETTERS = ['A', 'B', 'C', 'D', 'E', 'M', 'S'];
 Object.assign(GENERATORS, {
     'sk-day-or-night': (rng) => {
         // More examples (pass HT, Mikey): eight short scenes, each answered by the lesson's sun, moon, bright and dark.
-        const Q = [['Is the sun for the day or the night?', 'Day', 'sun', 'The sun shines in the day.'], ['Is the moon for the day or the night?', 'Night', 'moon', 'The moon shines at night.'],
-            ['The moon is out. Is it day or night?', 'Night', 'moon', 'The moon shines at night.'], ['The sun is shining. Is it day or night?', 'Day', 'sun', 'The sun shines in the day.'],
+        const Q = [['Is the sun for the day or the night?', 'Day', 'sun', 'The sun shines in the day.'], ['It is dark, and the stars are out. Is it day or night?', 'Night', null, 'A dark sky with stars means it is night.'],
+            ['The moon is out, and the sky is dark. Is it day or night?', 'Night', 'moon', 'A dark sky means it is night.'], ['The sun is shining. Is it day or night?', 'Day', 'sun', 'The sun shines in the day.'],
             ['The sky is bright. Is it day or night?', 'Day', null, 'In the day the sky is bright.'], ['The sky is dark. Is it day or night?', 'Night', null, 'At night the sky is dark.'],
-            ['You see the sun out the window. Is it day or night?', 'Day', 'sun', 'The sun shines in the day.'], ['You see the moon out the window. Is it day or night?', 'Night', 'moon', 'The moon shines at night.']];
+            ['You see the sun out the window. Is it day or night?', 'Day', 'sun', 'The sun shines in the day.'], ['You see the moon in a dark sky. Is it day or night?', 'Night', 'moon', 'A dark sky means it is night.']];
         const [prompt, answer, icon, explain] = pick(rng, Q);
         return { type: 'choice', story: null, prompt, choices: ['Day', 'Night'], answer, explain, visual: icon ? { kind: 'icon', name: icon } : null, explainVisual: null };
     },
@@ -32474,7 +32474,7 @@ Object.assign(GENERATORS, {
         // More examples (pass HT, Mikey): tap the sun or the moon by name or by when it shines.
         const [prompt, sun] = pick(rng, [['Tap the sun.', true], ['Tap the moon.', false], ['Tap what shines in the day.', true], ['Tap what shines at night.', false]]);
         return { type: 'choice', story: null, prompt, choices: shuffle(rng, ['icon:sun', 'icon:moon']), answer: sun ? 'icon:sun' : 'icon:moon',
-            explain: sun ? 'This is the sun. It shines in the day.' : 'This is the moon. It shines at night.', visual: null, explainVisual: null };
+            explain: sun ? 'This is the sun. It shines in the day.' : 'This is the moon. We often see it at night.', visual: null, explainVisual: null };
     },
     'sk-which-weather': (rng) => {
         const w = pick(rng, ['sun', 'rain', 'snow']);
@@ -32497,7 +32497,7 @@ Object.assign(GENERATORS, {
     'sk-living-or-not': (rng) => {
         const t = pick(rng, [{ n: 'plant', living: true }, { n: 'fish', living: true }, { n: 'bird', living: true }, { n: 'tree', living: true }, { n: 'rock', living: false }, { n: 'ice', living: false }]);
         return { type: 'choice', story: null, prompt: `Look at the ${t.n}. Is it living?`, choices: ['Living', 'Not living'], answer: t.living ? 'Living' : 'Not living',
-            explain: t.living ? `${thingWords(t.n)} grows and needs food and water. It is living.` : `${thingWords(t.n)} does not grow or eat. It is not living.`, visual: { kind: 'icon', name: t.n }, explainVisual: null };
+            explain: t.living ? `${thingWords(t.n)} grows and needs food and water. It is living.` : t.n === 'ice' ? 'Ice is frozen water. It does not eat, so it is not living.' : `${thingWords(t.n)} does not grow or eat. It is not living.`, visual: { kind: 'icon', name: t.n }, explainVisual: null };
     },
     'sk-tap-living': (rng) => {
         const living = pick(rng, ['plant', 'fish', 'bird', 'tree']);
@@ -32509,11 +32509,11 @@ Object.assign(GENERATORS, {
         const living = pick(rng, ['plant', 'fish', 'bird', 'tree']);
         const not = pick(rng, ['rock', 'ice']);
         return { type: 'choice', story: null, prompt: 'Tap the thing that is not living.', choices: shuffle(rng, [`icon:${living}`, `icon:${not}`]), answer: `icon:${not}`,
-            explain: `The ${not} is not living. It does not grow.`, visual: null, explainVisual: null };
+            explain: `The ${not} is not living. ${not === 'ice' ? 'It is frozen water, and it does not eat.' : 'It does not grow.'}`, visual: null, explainVisual: null };
     },
     'sk-plant-needs': (rng) => {
         // Pass IU: things a plant does not need beside the two it does, so a round of five never asks the same question twice.
-        const [name, label, answer, explain] = pick(rng, [['drop', 'drop of water', 'Yes', 'A plant needs water.'], ['sun', 'sun', 'Yes', 'A plant needs the sun.'], ['rock', 'rock', 'No', 'A plant does not need a rock. It needs water and the sun.'], ['magnet', 'magnet', 'No', 'A plant does not need a magnet. It needs water and the sun.'], ['nail', 'nail', 'No', 'A plant does not need a nail. It needs water and the sun.']]);
+        const [name, label, answer, explain] = pick(rng, [['drop', 'drop of water', 'Yes', 'A plant needs water.'], ['sun', 'sun', 'Yes', 'A plant needs the sun.'], ['rock', 'rock', 'No', 'A plant does not need a rock. It needs water, sun and air.'], ['magnet', 'magnet', 'No', 'A plant does not need a magnet. It needs water, sun and air.'], ['nail', 'nail', 'No', 'A plant does not need a nail. It needs water, sun and air.']]);
         return { type: 'choice', story: null, prompt: `Look at the ${label}. Does a plant need it?`, choices: ['Yes', 'No'], answer, explain, visual: { kind: 'icon', name }, explainVisual: null };
     },
     'sk-tap-plant-need': (rng) => {
@@ -34778,12 +34778,12 @@ Object.assign(GENERATORS, {
             ['What do we call the parts that tell a computer?', ['inputs', 'outputs', 'wheels'], 'inputs', 'Inputs tell. A keyboard, a mouse and a touch screen are inputs.'],
             ['What do we call the parts that show you things?', ['outputs', 'inputs', 'wheels'], 'outputs', 'Outputs show you. The screen and the speaker are outputs.'],
             ['Which part plays a sound?', ['a speaker', 'a mouse', 'a keyboard'], 'a speaker', 'The speaker plays sounds. It shows you with sound, so it is an output.'],
-            ['A touch screen is which kind of part?', ['an input', 'an output', 'a wheel'], 'an input', 'You tell with a touch screen, so it is an input.']];
+            ['When you tap a touch screen, which kind of part is it?', ['an input', 'an output', 'a wheel'], 'an input', 'Tapping tells the computer something, so the touch screen is working as an input.']];
         const [prompt, choices, answer, explain] = pick(rng, Q);
         return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
     },
     'tk-order': (rng) => {
-        const Q = [['What is a list of steps in order called?', ['an algorithm', 'a picture', 'a song'], 'an algorithm', 'An algorithm is steps in order: first, next, then, last.'],
+        const Q = [['What is a list of steps in order called?', ['an algorithm', 'a picture', 'a song'], 'an algorithm', 'An algorithm is steps in order, first, next, then, last.'],
             ['To make a jam sandwich, what do you do first?', ['get the bread', 'take a bite', 'spread the jam'], 'get the bread', 'First get the bread, next spread the jam, then close the sandwich, last take a bite.'],
             ['When you get dressed, what goes on first?', ['socks', 'shoes', 'a hat'], 'socks', 'Socks first, then shoes. Shoes first, and the socks will not go on.'],
             ['What happens if you take a bite first?', ['there is no sandwich yet', 'the sandwich is done', 'the jam goes away'], 'there is no sandwich yet', 'Bite first and there is no sandwich yet. The order matters.'],
@@ -35210,13 +35210,13 @@ Object.assign(GENERATORS, {
             ['Where do your eyes look when you listen?', ['at the person', 'at the floor', 'at your lunch'], 'at the person', 'Your eyes look at the person.'],
             ['What do your hands do when you listen?', ['stay still', 'wave', 'clap'], 'stay still', 'Your hands stay still, and so do your feet.'],
             ['If you do not understand, what do you do?', ['ask', 'hide', 'guess'], 'ask', 'Asking is how listeners get it right.'],
-            ['Someone asks a question. How many words do you answer with?', ['more than one', 'one', 'none'], 'more than one', 'More than one word: not just yes, but yes, I saw the red bird.'],
+            ['Someone asks a question. How many words do you answer with?', ['more than one', 'one', 'none'], 'more than one', 'More than one word. Not just yes, but yes, I saw the red bird.'],
             ['If you can say the story back, what does that mean?', ['you heard it', 'you missed it', 'it is over'], 'you heard it', 'If you can tell what happened first and last, you heard it.']];
         const [prompt, choices, answer, explain] = pick(rng, Q);
         return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
     },
     'spk-steps': (rng) => {
-        const Q = [['Directions come in what?', ['steps', 'colors', 'songs'], 'steps', 'Directions come in steps: first, then, last.'],
+        const Q = [['Directions come in what?', ['steps', 'colors', 'songs'], 'steps', 'Directions come in steps, first, then, last.'],
             ['Before you do the steps, what do you do?', ['say them back', 'run', 'sing'], 'say them back', 'Say the steps back first. Then you know you heard them right.'],
             ['Get a cup, fill it, put it on the table. What is first?', ['get a cup', 'the table', 'fill it'], 'get a cup', 'Get a cup first. You cannot fill a cup you do not have yet.'],
             ['If you say a step wrong, what happens?', ['the grown-up fixes it', 'nothing', 'you start over'], 'the grown-up fixes it', 'The grown-up fixes it before you start. That is why you say them back.'],
@@ -35230,7 +35230,7 @@ Object.assign(GENERATORS, {
             ['How fast do you talk?', ['slow enough to follow', 'as fast as you can', 'not at all'], 'slow enough to follow', 'If you go too fast, your friends cannot keep up.'],
             ['Which is a whole word?', ['cat', 'ca', 'c'], 'cat', 'Say the whole word: cat, not ca.'],
             ['A good telling has how many parts?', ['three', 'ten', 'one'], 'three', 'What it is, what it does, and why you like it.'],
-            ['This is my dog. He is brown and likes to dig. What comes next?', ['why you like him', 'his shoe size', 'the end'], 'why you like him', 'Next, say why you like him, like: I like him because he is funny.'],
+            ['This is my dog. He is brown and likes to dig. What comes next?', ['why you like him', 'his shoe size', 'the end'], 'why you like him', 'Next, say why you like him. I like him because he is funny.'],
             ['After you hold up your picture, where do you look?', ['at your friends', 'at the floor', 'at the door'], 'at your friends', 'Your friends are the ones you are talking to.']];
         const [prompt, choices, answer, explain] = pick(rng, Q);
         return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
@@ -37516,7 +37516,7 @@ Object.assign(GENERATORS, {
         return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
     },
     'hk-hands': (rng) => {
-        const Q = [['What should you use besides water to wash your hands?', ['soap', 'sand', 'nothing'], 'soap', 'Water alone slides off. Soap grabs the germs and the water carries them away.'], ['After the bathroom, what comes next?', ['wash your hands', 'go play', 'eat a snack'], 'wash your hands', 'Every time. After the bathroom, before food.'], ['When should you wash your hands?', ['before eating', 'never', 'only on Sundays'], 'before eating', 'Before eating and after the bathroom. Soap, water, and count to twenty.'],
+        const Q = [['What should you use besides water to wash your hands?', ['soap', 'sand', 'nothing'], 'soap', 'Water alone slides off. Soap grabs the germs and the water carries them away.'], ['After the bathroom, what comes next?', ['wash your hands', 'go play', 'eat a snack'], 'wash your hands', 'Wash your hands every time, after the bathroom and before food.'], ['When should you wash your hands?', ['before eating', 'never', 'only on Sundays'], 'before eating', 'Before eating and after the bathroom. Soap, water, and count to twenty.'],
             ['How long should you scrub with soap?', ['while you count to twenty', 'one second', 'all afternoon'], 'while you count to twenty', 'Twenty seconds gets the germs off. Sing a short song and you are there.'],
             ['Which part of your hand do people forget?', ['between the fingers', 'the palm', 'the top'], 'between the fingers', 'Germs hide between fingers and under nails. Scrub there too.']];
         const [prompt, choices, answer, explain] = pick(rng, Q);
@@ -37530,7 +37530,7 @@ Object.assign(GENERATORS, {
         return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
     },
     'hk-sleep': (rng) => {
-        const Q = [['What is a good last step before sleep?', ['a story in bed', 'a video game', 'a big dinner'], 'a story in bed', 'A quiet story tells your body it is time. Bath, book, bed.'], ['Sleep is when your body does what?', ['grows', 'shrinks', 'nothing'], 'grows', 'Growing happens while you sleep, and so does remembering.'], ['About how many hours of sleep does a five-year-old need?', ['ten to thirteen', 'two', 'twenty'], 'ten to thirteen', 'Ten to thirteen hours, counting naps. Sleep is when your body grows and your brain files the day away.'],
+        const Q = [['What is a good last step before sleep?', ['a story in bed', 'a video game', 'a big dinner'], 'a story in bed', 'A quiet story tells your body it is time. Bath, book, bed.'], ['Sleep is when your body does what?', ['grows', 'shrinks', 'nothing'], 'grows', 'Growing happens while you sleep, and so does remembering.'], ['About how many hours of sleep do kids your age need each night?', ['ten to twelve', 'two', 'twenty'], 'ten to twelve', 'About ten to twelve hours each night. Sleep is when your body grows and your brain files the day away.'],
             ['What happens when you do not sleep enough?', ['you feel grumpy and forget things', 'you get taller', 'nothing'], 'you feel grumpy and forget things', 'A tired brain drops things. A rested one remembers.'],
             ['What helps you fall asleep?', ['the same quiet routine each night', 'a bright screen', 'a big snack'], 'the same quiet routine each night', 'Bath, book, bed. The same steps tell your body it is time.']];
         const [prompt, choices, answer, explain] = pick(rng, Q);
@@ -40998,7 +40998,7 @@ const CIV_RULE_WHYS = [['Why do we stop at a red light?', 'To let the other cars
 const CIV_GOOD_CHOICES = [['A friend drops their crayons.', 'Help pick them up', 'Walk away'], ['Someone is talking.', 'Listen', 'Talk over them'], ['You finish your snack.', 'Throw away the wrapper', 'Leave it on the floor']];
 const CIV_NEED_WANT = [['Water', 'Need'], ['A home', 'Need'], ['A warm coat', 'Need'], ['An apple', 'Need'], ['A toy car', 'Want'], ['Candy', 'Want'], ['A video game', 'Want'], ['A balloon', 'Want']];
 const CIV_FLAG_COUNTS = [['How many stars are on our flag?', 50], ['How many stripes are on our flag?', 13]];
-const CIV_HOLIDAYS = [['Which holiday do we celebrate on July 4?', 'Independence Day', 'July 4 is Independence Day, the birthday of our country.'], ['Which November holiday is for giving thanks?', 'Thanksgiving', 'Thanksgiving comes in November. It is a day for giving thanks.'], ['Which holiday comes on the third Monday of January?', 'Martin Luther King Day', 'Martin Luther King Day is the third Monday of January. It honors Dr. King.']]; // whole questions, each with its own explanation (pass ID)
+const CIV_HOLIDAYS = [['Which holiday do we celebrate on July 4?', 'Independence Day', 'July 4 is Independence Day, the birthday of our country.'], ['Which November holiday is for giving thanks?', 'Thanksgiving', 'Thanksgiving comes in November. It is a day for giving thanks.'], ['Which holiday comes on the third Monday of January?', 'Martin Luther King Jr. Day', 'Martin Luther King Jr. Day is the third Monday of January. It honors Dr. King.']]; // whole questions, each with its own explanation (pass ID)
 const CIV_LEADERS = [['Who leads a city?', 'Mayor'], ['Who leads a state?', 'Governor'], ['Who leads the whole country?', 'President']];
 const CIV_WORKPLACES = [['Who works in the White House?', 'President'], ['Who works in the state capitol in Austin?', 'Governor'], ['Who works at city hall?', 'Mayor']];
 const CIV_GOOD_SERVICE = [['Bread', 'Good'], ['Shoes', 'Good'], ['A toy', 'Good'], ['A haircut', 'Service'], ['A bus ride', 'Service'], ['A visit to the doctor', 'Service']];
@@ -42699,7 +42699,7 @@ const sylWord = (rng, n) => pick(rng, SYLLABLE_WORDS.filter(([, c]) => !n || c =
 Object.assign(GENERATORS, {
     'ry-how-many-claps': (rng) => {
         const [w, n] = sylWord(rng);
-        return { type: 'choice', story: `Say it slowly: ${w}.`, prompt: 'How many claps?', choices: ['1', '2', '3'], answer: String(n),
+        return { type: 'choice', story: `Say it slowly, ${w}.`, prompt: 'How many claps?', choices: ['1', '2', '3'], answer: String(n),
             explain: `${SYL_SPLIT[w] || w}. ${n} ${n === 1 ? 'clap' : 'claps'}.`, visual: { kind: 'letters', text: w }, explainVisual: null };
     },
     'ry-pick-two': (rng) => {
@@ -42767,7 +42767,7 @@ Object.assign(GENERATORS, {
         const w = pick(rng, CVC_WORDS);
         const near = CVC_WORDS.filter((x) => x !== w && (x[0] === w[0] || x[2] === w[2]));
         const others = shuffle(rng, near.length >= 2 ? near : CVC_WORDS.filter((x) => x !== w)).slice(0, 2);
-        return { type: 'choice', story: `Read: ${w.split('').join(' ')}.`, prompt: 'Which word did you read?', choices: shuffle(rng, [w, ...others]), answer: w,
+        return { type: 'choice', story: `Read the sounds ${w.split('').join(' ')}.`, prompt: 'Which word did you read?', choices: shuffle(rng, [w, ...others]), answer: w,
             explain: `${w[0]}, ${w[1]}, ${w[2]} makes ${w}.`, visual: { kind: 'letters', text: w.split('').join(' ') }, explainVisual: null };
     },
 });
@@ -42838,7 +42838,7 @@ Object.assign(GENERATORS, {
     },
     'rm-shape-word': (rng) => {
         const it = pick(rng, MEANING_ITEMS.slice(0, 4));
-        return { type: 'choice', story: `Read the word: ${it.word}.`, prompt: 'Tap that shape.', choices: shuffle(rng, [it, ...shuffle(rng, MEANING_ITEMS.slice(0, 4).filter((x) => x.word !== it.word)).slice(0, 2)].map((x) => `shape:${x.visual.name}`)), answer: `shape:${it.visual.name}`,
+        return { type: 'choice', story: `Read the word ${it.word}.`, prompt: 'Tap that shape.', choices: shuffle(rng, [it, ...shuffle(rng, MEANING_ITEMS.slice(0, 4).filter((x) => x.word !== it.word)).slice(0, 2)].map((x) => `shape:${x.visual.name}`)), answer: `shape:${it.visual.name}`,
             explain: `${it.word[0].toUpperCase() + it.word.slice(1)}. This is the ${it.word}.`, visual: null, explainVisual: null };
     },
 });
@@ -43182,7 +43182,7 @@ Object.assign(GENERATORS, {
         const [a, b] = shuffle(rng, fam).slice(0, 2);
         const odd = pick(rng, pick(rng, RHYME_FAMILIES.filter((f) => f !== fam)));
         return { type: 'choice', story: 'Two of these rhyme.', prompt: 'Which one does not?', choices: shuffle(rng, [a, b, odd]), answer: odd,
-            explain: `${a} and ${b} rhyme. ${odd} does not.`, visual: null, explainVisual: null };
+            explain: `${a} and ${b} rhyme. ${capFirst(odd)} does not.`, visual: null, explainVisual: null };
     },
     'rr-same-end': (rng) => {
         const fam = pick(rng, RHYME_FAMILIES);
@@ -54501,17 +54501,17 @@ STORIES['dna-and-genes'] = {
 };
 STORIES['day-and-night'] = {
     about: 'a rooster who was sure he made the sun come up, and the morning he slept in',
-    more: [{ serial: 'S71', after: 0, alt: 'The rooster crowing, the sun just peeking up' }, { serial: 'S1577', after: 2, alt: 'The sun up high, the rooster waking with a jump' }, { serial: 'S1578', after: 3, alt: 'The Earth turning slowly like a ball, drawn simply' }, { serial: 'S1579', after: 4, alt: 'The moon over the barn at night' }],
+    more: [{ serial: 'S71', after: 0, alt: 'The rooster crowing, the sun just peeking up' }, { serial: 'S1577', after: 2, alt: 'The sun up high, the rooster waking with a jump' }, { serial: 'S1578', after: 3, alt: 'The Earth spinning on a fingertip like a ball, the sun lighting one side' }, { serial: 'S1579', after: 4, alt: 'The moon and stars over the barn at night' }],
     title: 'The rooster and the sun', art: 'S23', cast: [],
     alt: 'A rooster on a fence crowing at a rising sun',
     words: [
         'Every morning the rooster crowed, and every morning the sun came up. The rooster was sure he was the one doing it. One crow from him, and up came the sun.',
         'Then one morning he slept in. He was so tired from a long day. He tucked his beak under his wing and did not wake up.',
         'When he finally opened his eyes, the sun was already high in the sky. It had come up without him! The rooster could hardly believe it.',
-        'The sun did not need the rooster at all. Our Earth turns slowly, like a big ball rolling in a big room. That slow turning is what makes day and night.',
-        'When your side of the Earth turns to face the sun, it is day. When it turns away, it is night, and that is when you notice the moon.',
+        'The sun did not need the rooster at all. Our Earth turns slowly, like a big ball spinning on a finger. That slow turning is what makes day and night.',
+        'When your side of the Earth turns to face the sun, it is day. When it turns away, it is night, and that is when you can see the stars.',
         'The rooster crowed anyway the next morning, just in case. But now he knew the truth. Day and night come from the Earth turning, not from a rooster.',
-        'Sun in the day, moon at night. Day and night are the Earth turning.',
+        'The sun lights the day. At night the sky is dark. Day and night are the Earth turning.',
     ],
 };
 STORIES['speed-and-acceleration'] = {
@@ -54600,7 +54600,7 @@ STORIES['kinds-of-weather'] = {
         'The next day the wind blew so hard that leaves ran across the yard. Rosa\'s hat blew off. There was still no puddle.',
         'Then one cold morning, white flakes came drifting down. Snow! It landed on the gate, and it did not splash the way rain does. It just sat there.',
         'Rain, sun, wind, snow. Every day the sky did something different. Rosa looked out each morning to see what it had chosen.',
-        'The rain made the puddle and the sun took it away. Then the snow put a white one there instead. The sky was never the same two days in a row.',
+        'The rain made the puddle and the sun took it away. Then the snow laid a white patch there instead. The sky was never the same two days in a row.',
         'Weather is what the sky is doing today. Look out the window and see.',
     ],
 };
@@ -54629,9 +54629,9 @@ STORIES['what-plants-need'] = {
         'One day a green sprout came up, and then a leaf, and then two. Mia checked on it every single morning.',
         'The little plant began to lean. It leaned toward the window, toward the sun, a bit more every day.',
         'Mia moved the pot into a dark cupboard, just to see what would happen. Three days later the plant drooped, and its leaves went pale.',
-        'Back it went to the windowsill, with water and sun. In two days it stood up again, greener than before.',
-        'The plant drank water and it drank sunlight. Take one away and it wilted; give it both and it grew.',
-        'A plant needs water and the sun to grow.',
+        'Back it went to the windowsill, with water and sun. In a few days it stood up again and turned green.',
+        'The plant drank water and soaked up sunlight. Take one away and it drooped, but give it both and it grew.',
+        'A plant needs water, sun and air to grow.',
     ],
 };
 STORIES['hot-and-cold'] = {
@@ -54646,7 +54646,7 @@ STORIES['hot-and-cold'] = {
         'When he came back, the cocoa was not hot anymore. It was only warm, and a little later it was not even that.',
         'The snow cone was not cold anymore either. It had melted into a puddle of juice. When Sam touched both cups, they felt the same.',
         'Hot things cool down and cold things warm up. In the end it all feels as warm as the room.',
-        'Hot things warm us and cold things chill us. Then they both become the room.',
+        'Hot things warm us and cold things chill us. Then they both end up as warm as the room.',
     ],
 };
 // Pre-K stories: the fewest words that still make a story, three pictures each, read aloud.
@@ -55290,7 +55290,7 @@ STORIES['rules-and-helpers'] = {
     words: [
         'At recess, all of the kids wanted the slide at once. Bump, ouch! Diego went down on top of Rosa, and Rosa cried. Nobody had fun.',
         'The slide was fine and the kids were fine, so something else was missing.',
-        'The teacher made a rule: one at a time. Wait at the top, and go when the bottom is clear.',
+        'The teacher made a rule. Go one at a time, and wait at the top until the bottom is clear.',
         'Now the slide was fun again. Whee! Diego went, then Rosa, then Kai, with no bumps and no tears.',
         'Then a fire truck came by, and the driver waved. A helper, with a job for the whole town.',
         'Rules keep us safe, and helpers do jobs for everyone. Rosa waved at the truck with both arms.',
@@ -55324,7 +55324,7 @@ STORIES['our-flag-and-holidays'] = {
         'Fifty stars for fifty states, and thirteen stripes for the first thirteen. Red, white and blue.',
         'On holidays, the flag went up early, and on the Fourth of July everyone waved a little one.',
         'Sam drew the flag at home. He ran out of room for the stars at thirty, but he did his best.',
-        'Fifty stars, thirteen stripes, red white and blue.',
+        'Fifty stars, thirteen stripes, red, white and blue.',
     ],
 };
 STORIES['jobs-people-do'] = {
@@ -55348,8 +55348,8 @@ STORIES['voting-in-class'] = {
     title: 'Hands up', art: 'S233', cast: [],
     alt: 'Children on a classroom rug with their hands up, a teacher holding two picture books',
     words: [
-        'There were two books for story time, a dragon book and a dog book. Half the class wanted the dragon and half wanted the dog, so everyone shouted.',
-        'Nobody could hear a thing. Shouting did not pick a book; it only made the room loud.',
+        'There were two books for story time, a dragon book and a dog book. Some of the class wanted the dragon and some wanted the dog, so everyone shouted.',
+        'Nobody could hear a thing, because shouting did not pick a book. It only made the room loud.',
         'The teacher said to put hands up for the dragon, and she counted nine. Then hands up for the dog, and she counted seven.',
         'One vote each, and nine is more than seven, so the dragon won. The dog would get next week.',
         'Nobody shouted, because everyone had counted, and even the dog voters nodded. It was fair.',
@@ -55633,7 +55633,7 @@ STORIES['rhymes'] = {
     title: 'Cat, hat, bat', art: 'S290', cast: [],
     alt: 'A small girl in bed with a picture book, a cat, a hat and a bat drawn in the air above her',
     words: [
-        'At bedtime Rosa heard a rhyme: the cat sat on the hat. She giggled, because cat and hat sounded like twins.',
+        'At bedtime Rosa heard a rhyme about a cat that sat on a hat. She giggled, because cat and hat sounded like twins.',
         'Why did they sound alike? The starts were different, cuh and huh, not the same at all.',
         'The ends were the same, at and at. Then the bat came in, and there was at again. Three words with one ending.',
         'That was what made them rhyme, the same ending sound. Rosa listened for it after that.',
@@ -55653,7 +55653,7 @@ STORIES['tracing-letters'] = {
         'His mom put a dot at the top of the glass. Start here, she said. Go down, lift your finger, and then go across the top.',
         'Diego put his finger on the dot. Down, lift, across the top. A T, dripping a little!',
         'He made another one next to it. Then he made an L, down and across the bottom, and an I, which was just down.',
-        'By the time the fog cleared, the window was full of letters. Then the sun came out, and they all melted away.',
+        'By the time the fog cleared, the window was full of letters. Then the sun came out, and they all faded away.',
         'Start at the dot. Follow the arrow. Stay on the line.',
     ],
 };
@@ -55680,9 +55680,9 @@ STORIES['tracing-more-letters'] = {
     words: [
         'Kai tried to draw an E without lifting his chalk, and he got a wiggly snake with teeth. It did not look like an E.',
         'His teacher laughed, kindly. An E is not one line, she said. It is four.',
-        'Down, then lift; across the top, then lift; across the middle, then lift; and across the bottom. That is four lines and three lifts.',
+        'Down and lift, across the top and lift, across the middle and lift, and then across the bottom. That is four lines and three lifts.',
         'Kai tried it. Down, lift, across, lift, across, lift, across. An E, clean and straight!',
-        'Then he made an F: down, across the top and across the middle. Three lines and two lifts. Then an H, two downs and a bridge.',
+        'Then he made an F, with one line down and two lines across. Three lines and two lifts. Then an H, two downs and a bridge.',
         'Lift, lift, lift, and the chalk squeaked every time. Kai filled the whole board with letters made of lines.',
         'One line at a time. Lift your finger between lines.',
     ],
@@ -55697,7 +55697,7 @@ STORIES['syllables'] = {
         'He said his name fast, and it came out as one blur. How many claps was a blur?',
         'Say it slowly, said the teacher. E. Li. Jah. Clap, clap, clap. Three beats had been hiding in there the whole time.',
         'Elijah clapped it, E, li, jah, and that made three! He grinned, and then he clapped it again, louder.',
-        'They went around the circle. Sam was one clap, and Rosa was two, Ro, sa. Then a girl with a long name clapped four: Ma, ri, an, na!',
+        'They went around the circle. Sam was one clap, and Rosa was two, Ro, sa. Then a girl with a long name clapped four, Ma, ri, an, na!',
         'Then they clapped other words. Apple was ap, ple, and banana was ba, na, na. Every word had beats inside it.',
         'Say the word slowly and clap each beat.',
     ],
@@ -55738,7 +55738,7 @@ STORIES['word-meanings'] = {
     title: 'The card and the picture', art: 'S311', cast: [],
     alt: 'A small girl holding a word card, pictures of a dog, a sun and a fish on the table in front of her',
     words: [
-        'Rosa had a card that said dog. On the table were three pictures: a dog, a sun and a fish. Where did the card go?',
+        'Rosa had a card that said dog. On the table were three pictures, a dog, a sun and a fish. Where did the card go?',
         'She put it on the sun. Her teacher smiled and shook her head. Not that one.',
         'So Rosa said the word out loud. Dog. She looked for the dog, and there it was, ears and a tail. The card went on the dog.',
         'Then came sun. She said it, and looked for something round and yellow. There it was, so the card went on the sun.',
@@ -55756,8 +55756,8 @@ STORIES['trace-slant-letters'] = {
         'Jamal had a stick and a patch of wet sand. He drew a line straight down and a line straight across. Every letter he knew was made of those two.',
         'His sister asked for a V. Jamal tried straight down and then straight across, but that was not a V. That was an L.',
         'Slant, she said. Down a slant, then up a slant. Jamal tried it, and there was a point at the bottom. A V!',
-        'Then came an A: up a slant, down a slant, and a line across the middle. It looked like a tent with a bar.',
-        'Then an N: down, then a slant, then up. Three lines made an N, and slanted lines had made all three letters.',
+        'Then came an A, with a slant up, a slant down and a line across the middle. It looked like a tent with a bar.',
+        'Then came an N. It went down, then slanted, then went up. Three lines made an N, and slanted lines had made all three letters.',
         'V, A, N. Then a wave came and washed them away. Jamal drew them again, bigger and farther up the beach.',
         'Slanted lines make V, A and N. Start at the dot.',
     ],
@@ -59848,7 +59848,7 @@ STORIES['ending-sounds'] = {
         'Sam could hear the start of cat, cuh, but he could not hear the end. It went by too fast. Cat, and it was gone.',
         'His dad told him to say it slowly. Sam said cat. Slower, said his dad, like a snail.',
         'C. A. T. There it was, a little tuh at the end. His tongue tapped behind his teeth to make it.',
-        'Then bus: b, u, sss. The last sound was sss, a hiss like a snake.',
+        'Then came bus, b, u, sss. The last sound was sss, a hiss like a snake.',
         'Then dog, d, o, guh, with guh at the end. After that came cup, c, u, puh, and his lips popped on the puh.',
         'Sam said every word in the kitchen slowly. Pan ended in nnn, spoon ended in nnn, and fork ended in kuh. He found every ending.',
         'Say the word slowly. The last sound is the ending sound.',
@@ -60217,7 +60217,7 @@ STORIES['washing-hands'] = {
         'Rinsing was not enough, because the glitter hid between her fingers and around her thumbs.',
         'So she used soap and counted to twenty. She scrubbed between the fingers, around the thumbs and under the nails. Then it was gone.',
         'Germs are like glitter, said the nurse. You cannot see them, but they hide in exactly the same places.',
-        'Mia washed before lunch and after the bathroom: soap, count to twenty, rinse.',
+        'Mia washed before lunch and after the bathroom, with soap, a count to twenty and a rinse.',
         'She sang a song while she counted. By the time she reached twenty, the song was done and her hands were clean.',
         'Wash with soap before eating and after the bathroom. Count to twenty.',
     ],
@@ -60259,12 +60259,12 @@ STORIES['my-plate'] = {
     alt: 'A small girl at a table with a plate half full of colorful fruits and greens, a glass of water beside it',
     words: [
         'Ana\'s plate was all one color, beige. Bread, crackers and more bread, and she ate it all.',
-        'Her tummy was full, but her body was not happy. She felt slow, and she felt tired.',
+        'Her tummy was full, but her mom shook her head. A plate of one color is missing a lot.',
         'Mom made a new plate with red tomatoes, orange carrots, green peas and purple grapes. It was a rainbow.',
         'Half the plate was all colors, and the other half was bread and chicken. A glass of water sat beside it.',
-        'Ana ate the rainbow, crunch and pop and sweet. Her body felt better, and she had energy to run.',
+        'Ana ate the rainbow, crunch and pop and sweet. Every color brought something her body needed.',
         'Every day after that, Ana looked at her plate to see if there was a rainbow. If there was not, she asked for one.',
-        'Half the plate fruits and greens. Water to drink.',
+        'Half the plate is fruits and veggies, with water to drink.',
     ],
 };
 STORIES['sleep-and-the-brain'] = {
@@ -60902,7 +60902,7 @@ STORIES['first-next-then-last'] = {
         'His dad came in and looked at the shoes. You did the steps, he said, but not in order. Socks first, then shoes.',
         'Leo took the shoes off and started again. First socks. Next shoes. Then his coat, and last, out the door. It took one minute.',
         'At the park he made a sandwich with his dad. First bread, next jam, then close it, last a bite. It tasted better in order too.',
-        'Steps in order have a name: an algorithm. First, next, then, last, and the socks go on every time.',
+        'Steps in order have a name. They are called an algorithm. First, next, then, last, and the socks go on every time.',
     ],
 };
 STORIES['do-it-again'] = {
@@ -60913,7 +60913,7 @@ STORIES['do-it-again'] = {
     words: [
         'Miss Ada wrote a dance for the class robot on the board. Clap. Clap. Clap. Clap. Turn. The list filled the whole board, and her marker ran dry.',
         'Priya raised her hand. There is a pattern, she said. Clap comes four times, and then one turn.',
-        'Miss Ada smiled and wiped the board clean. She wrote two short lines instead: clap four times, then turn. A loop, she said, does the same step again and again.',
+        'Miss Ada smiled and wiped the board clean. She wrote two short lines instead, clap four times and then turn. A loop, she said, does the same step again and again.',
         'The robot read the two lines and clapped four times. It turned, and the class cheered, because the dance was exactly the same.',
         'Then the class wrote a bigger dance with loops: jump three times, spin two times, clap four times. It fit on one small card.',
         'A pattern tells you what comes next. A loop says do it again, and says how many times.',
@@ -62208,7 +62208,7 @@ STORIES['first-then-do'] = {
     alt: 'A girl at snack time with a cup, a water jug and a table',
     words: [
         'It was snack time, and Miss Ruiz gave Lena three steps. First, get a cup, and then fill it with water. Last, put it on the table where you sit.',
-        'Lena said the steps back to her: cup, water, table. Miss Ruiz nodded. The steps were in Lena\'s head now, in order.',
+        'Lena said the steps back to her, cup, water, table. Miss Ruiz nodded. The steps were in Lena\'s head now, in order.',
         'Lena got a cup and filled it with water. She carried it to the table and set it down. First things first, and last things last. Nothing spilled.',
         'Then it was Lena\'s turn to give directions. She told Ben two steps. First, get the ball, and then roll it to me. Now you say it, Ben.',
         'Ben said, roll the ball and then get it. Lena fixed it for him: get it first, then roll it. Ben said it right, and the ball rolled all the way to Lena.',
@@ -63522,6 +63522,47 @@ STORIES["sorting"].audio = ["[playful] Ana had a mountain of clean socks to pair
 STORIES["solids"].audio = ["Diego tried to stack a ball on top of a block, [a ball rolling away] and it rolled off. He tried again, and it rolled off again, even farther this time.", "[curious] Some shapes stack and some do not, and Diego wanted to know which was which.", "[thoughtful] A ball rolls because it is a sphere, round all over. A block stacks because it is a cube, with flat sides all around.", "[a can rolling, then set upright] A can rolls when it lies on its side, but stand it up and it stacks. That shape is a cylinder, and it can do both.", "A party hat comes to a point at the top. That is a cone, and it sat on top of the tower [pleased] like a little roof.", "Cube, cube, cylinder, cone made a tower. [a ball rolling around] The ball rolled around the bottom, because a sphere cannot join a tower.", "[slowly, warmly] Solid shapes are things you can hold, like a sphere, a cube, a cylinder and a cone."];
 STORIES["making-ten"].audio = ["[warm] Rosa had ten fingers, and her teacher said to fold three down. How many were still up? [impatient] Rosa did not want to count, because counting was slow.", "[thoughtful] She looked at her hands. Three fingers were down and the rest were up, but how many was the rest?", "She counted them just once. [slowly] Seven. Three and seven together made ten, [delighted] so they were partners!", "[gently] Fold two down, said the teacher, and Rosa did. Eight were up, so two and eight were partners too.", "[rhythmic, playful] Fold five down and five stay up. Five and five. Fold one down and nine stay up. One and nine.", "Every number had a partner, and Rosa went through them all. After that she did not have to count anymore, [proud] because her hands knew.", "[slowly, warmly] Every number up to nine has a partner that makes ten."];
 STORIES["more-and-fewer-10"].audio = ["[waves on a beach] Leo had two buckets of shells and wanted to know which one had more. One bucket was big, so it looked like more. His sister said no.", "[thoughtful] A bigger bucket does not mean more shells, so Leo had to check.", "[shells clattering] He tipped the big bucket out, lined the shells up and counted them. [slowly] Eight shells.", "Then he tipped the small bucket out and made another row. [slowly] He counted six shells. Six was fewer.", "Eight is bigger than six, so the big bucket had more after all, [amused] but only by two.", "Then his sister found five more shells and put them in the small bucket. Now that one had eleven, [surprised, laughing] and that was more!", "[slowly, warmly] Count both. The bigger number has more."];
+// Letters (kindergarten), pass JK: audio tags for its fourteen stories.
+STORIES["letter-names"].audio = ["Ben knew lots of letters, but he did not know what came next. [slowly] A, B, C, D, and then he stopped. [stuck] His mouth stayed open and nothing came out.", "[a bus rumbling] His sister leaned over the bus seat and told him to sing it. Ben said he could not sing letters. [amused] But the bus ride was long, so he tried.", "[singing the alphabet song] A, B, C, D, E, F, G. The tune pulled the next letter out, and he did not have to think.", "[singing] H, I, J, K, and still going. L, M, N, O, P. The letters lined up like the bus seats.", "[singing, building] Q, R, S, then T, U, V, then W, X, Y and Z! He got all the way to the end, [clapping] and his sister clapped.", "The next day he sang it for the whole bus. Then he sang it backward, just to see, [laughing] and that was much harder.", "[slowly, warmly] Letters have names and an order. The song keeps them in line."];
+STORIES["big-and-small-letters"].audio = ["[curious] Mia had two cards. One said G and one said g, and they did not look alike at all. One was tall, [playful] and one had a tail like a monkey.", "She was sure they were two different letters, because two cards meant two letters. [gently] Her teacher shook her head.", "Say the sound, her teacher said. [slowly] Mia looked at the big G and said guh. She looked at the small g and said guh.", "[delighted] Same sound, so the same letter, just in different clothes. One was dressed up tall, and one was dressed down small.", "Mia tried more cards. [slowly, stressing each sound] B and b both said buh, and D and d both said duh. Every pair said the same thing.", "She lined them up with the big letters on top and the small ones underneath. [proud] Twenty-six pairs and fifty-two cards made one alphabet.", "[slowly, warmly] Big and small are the same letter. One is dressed up. One is not."];
+STORIES["letter-sounds"].audio = ["Leo said ball, and his teacher asked what sound it started with. Leo said B. [gently] That is its name, she said, but what is its sound?", "[surprised] A letter had a name and a sound? Leo had not known that. So he said ball again, slowly.", "He felt his lips pop right at the start. [a soft lip pop] Buh. That was it, and that was the sound.", "B was the letter and buh was the sound. [slowly, stressing each first sound] Ball started with buh, and so did bat, and so did bug.", "[playground sounds] Leo looked around the playground. Bus was buh, bird was buh, and bench was buh! [delighted] The whole place was full of buh.", "He found seven things that started with buh before recess ended. [a ball bouncing] He bounced the ball on every one of them.", "[slowly, warmly] Letters make sounds. The first sound of a word is its first letter."];
+STORIES["beginning-sounds"].audio = ["[curious] Ana had to find something that started with mmm. She held up a cup, but cup had no mmm. She held up a hat, and hat had no mmm either.", "[a little discouraged] So she sat down on the floor. Nothing in her room started with mmm, not her bed, not her book and not her ball.", "Then she saw her mitten on the dresser and said it slowly. [slowly, humming the m] Mmm-itten. Her lips closed, and they hummed.", "[delighted] Mmm! That was it. Mitten started with mmm, so she held it up high.", "What else? She looked out the window and saw the moon. [slowly, humming] Mmm-oon. Under the bed she found a toy mouse. [slowly, humming] Mmm-ouse.", "Mitten, moon, mouse, three things that started with mmm. [humming] She hummed it all through dinner. Milk! Meat! Mmm.", "[slowly, warmly] Say the name. Hear the first sound. Match it to the letter."];
+STORIES["ending-sounds"].audio = ["[curious] Sam could hear the start of cat, cuh, but he could not hear the end. It went by too fast. [quickly] Cat, and it was gone.", "His dad told him to say it slowly. Sam said cat. [slowly, teasing] Slower, said his dad, like a snail.", "[very slowly] C. A. T. There it was, a little tuh at the end. His tongue tapped behind his teeth to make it.", "Then came bus, b, u, sss. The last sound was sss, [a soft hiss] a hiss like a snake.", "[slowly, stressing the last sounds] Then dog, d, o, guh, with guh at the end. After that came cup, c, u, puh, and his lips popped on the puh.", "Sam said every word in the kitchen slowly. Pan ended in nnn, spoon ended in nnn, and fork ended in kuh. [proud] He found every ending.", "[slowly, warmly] Say the word slowly. The last sound is the ending sound."];
+STORIES["rhymes"].audio = ["[softly, a bedtime voice] At bedtime Rosa heard a rhyme about a cat that sat on a hat. [giggles] She giggled, because cat and hat sounded like twins.", "[curious] Why did they sound alike? The starts were different, cuh and huh, not the same at all.", "The ends were the same, [slowly, stretching the sounds] at and at. Then the bat came in, and there was at again. Three words with one ending.", "[thoughtful] That was what made them rhyme, the same ending sound. Rosa listened for it after that.", "Mom read on. [playful, rhyming] The dog on a log, og and og! A frog on the log, og! [clapping] Rosa clapped every time.", "Then she made up her own: cat, hat, bat, mat, sat, rat. [whispers] She was still going when the light went out.", "[slowly, warmly] Rhyming words end with the same sound."];
+STORIES["tracing-letters"].audio = ["[a finger squeaking on a foggy window] The window was foggy, and Diego pressed a finger on it to make a line. He wanted to make a T, like the one on his cup.", "He drew a line across, and then another line across. [puzzled] That looked like an equals sign, not a T.", "His mom put a dot at the top of the glass. [gently] Start here, she said. Go down, lift your finger, and then go across the top.", "Diego put his finger on the dot. [slowly] Down, lift, across the top. [delighted] A T, dripping a little!", "[playful] He made another one next to it. Then he made an L, down and across the bottom, and an I, which was just down.", "By the time the fog cleared, the window was full of letters. [softly, a little wistful] Then the sun came out, and they all faded away.", "[slowly, warmly] Start at the dot. Follow the arrow. Stay on the line."];
+STORIES["tracing-small-letters"].audio = ["Lena traced a big A, and it stood tall. Then came the small a, and she made it tall too. [puzzled] It looked wrong.", "[playful] The small a did not want to be tall. It kept falling over, like a bent stick.", "[gently] Start at the dot, her teacher said. Go round, then down, and do not go up high. Stay low.", "Lena tried it, round and then down. The small a sat low on the line, like a curled-up cat, [pleased] and that was right.", "[slowly, tracing] Then she traced the small c, round and stop, low. After that, the small o, round and round, and low.", "[proud] Big letters stand tall and small letters sit low. Lena traced a whole line of them, all of them sitting.", "[slowly, warmly] Small letters sit low. Start at the dot and follow the arrow."];
+STORIES["tracing-more-letters"].audio = ["[chalk squeaking] Kai tried to draw an E without lifting his chalk, and he got a wiggly snake with teeth. [giggles] It did not look like an E.", "His teacher laughed, kindly. [warmly] An E is not one line, she said. It is four.", "[slowly, a steady rhythm] Down and lift, across the top and lift, across the middle and lift, and then across the bottom. That is four lines and three lifts.", "Kai tried it. [slowly] Down, lift, across, lift, across, lift, across. [proud] An E, clean and straight!", "[playful] Then he made an F, with one line down and two lines across. Three lines and two lifts. Then an H, two downs and a bridge.", "Lift, lift, lift, [chalk squeaking] and the chalk squeaked every time. Kai filled the whole board with letters made of lines.", "[slowly, warmly] One line at a time. Lift your finger between lines."];
+STORIES["syllables"].audio = ["[clapping in a circle] Ben clapped his name, Ben, in one clap. Maya clapped hers, Ma, ya, in two. [unsure] Then it was Elijah's turn, and he was not sure.", "He said his name fast, and it came out as one blur. [puzzled] How many claps was a blur?", "Say it slowly, said the teacher. [slowly, clapping each beat] E. Li. Jah. Clap, clap, clap. Three beats had been hiding in there the whole time.", "Elijah clapped it, E, li, jah, [delighted] and that made three! [proud] He grinned, and then he clapped it again, louder.", "They went around the circle. Sam was one clap, and Rosa was two, Ro, sa. Then a girl with a long name clapped four, [clapping four beats] Ma, ri, an, na!", "[playful, clapping] Then they clapped other words. Apple was ap, ple, and banana was ba, na, na. Every word had beats inside it.", "[slowly, warmly] Say the word slowly and clap each beat."];
+STORIES["sounding-out"].audio = ["[curious] There were three letters on the door, C, A and T, and Ana knew each one. What she did not know was the word.", "She said the letter names, [slowly] see, ay, tee, but that was not a word. It was just three names in a row.", "[helpful] Say the sounds, said her brother, not the names. [slowly, stressing each sound] Cuh. A. Tuh. Say them slowly, and then say them faster.", "[slowly, then faster] Cuh, a, tuh. Cuh-a-tuh, cuh-a-tuh, and then all at once, cat! [excited] Ana said it again, louder. Cat!", "[a door creaking open] She opened the door, [a cat meowing] and there was the cat, sitting on the mat and looking up at her.", "Ana went looking for more doors. D-O-G came out as duh-o-guh, [delighted] and then dog! [amused] There was no dog behind that one, but she read it anyway.", "[slowly, warmly] Say each sound. Then say them fast together."];
+STORIES["which-way-we-read"].audio = ["Theo put his finger on a page and moved it from right to left. The words came out backward, [robotic] tac and gid, and it sounded like a robot.", "[frustrated] He tried starting in the middle, and that was even worse. He got half a word, and then nothing.", "[gently] [a finger tapping a page] Start on the left, said his teacher, and she tapped the corner. Go to the right, and at the end of the line, hop down.", "Theo started on the left. [slowly, reading] Cat. Dig. Now the words made sense, and at the end of the line he hopped down.", "[steady, like a journey] Back to the left, then right again, line after line. The page had a road on it, and he was on the road.", "[proud] He read the whole page, and then the next one. His finger knew the way now, even with his eyes closed.", "[slowly, warmly] Start on the left. Go right. Then down to the next line."];
+STORIES["word-meanings"].audio = ["[curious] Rosa had a card that said dog. On the table were three pictures, a dog, a sun and a fish. Where did the card go?", "She put it on the sun. Her teacher smiled and shook her head. [gently] Not that one.", "So Rosa said the word out loud. [slowly] Dog. She looked for the dog, and there it was, ears and a tail. [pleased] The card went on the dog.", "[thoughtful] Then came sun. She said it, and looked for something round and yellow. There it was, so the card went on the sun.", "Then fish, with its fins and scales. There. [delighted] Three cards on three pictures, all of them matched.", "[proud] Her teacher gave her more cards, cat, hat and cup. Rosa said each word and found each picture, and she did not miss again.", "[slowly, warmly] Match the word to the picture. Say it, then find it."];
+STORIES["trace-slant-letters"].audio = ["[waves rolling in] Jamal had a stick and a patch of wet sand. He drew a line straight down and a line straight across. Every letter he knew was made of those two.", "His sister asked for a V. Jamal tried straight down and then straight across, but that was not a V. [giggles] That was an L.", "[helpful] Slant, she said. Down a slant, then up a slant. Jamal tried it, and there was a point at the bottom. [delighted] A V!", "Then came an A, with a slant up, a slant down and a line across the middle. [playful] It looked like a tent with a bar.", "[slowly, tracing] Then came an N. It went down, then slanted, then went up. Three lines made an N, and slanted lines had made all three letters.", "V, A, N. [a wave washing over sand] Then a wave came and washed them away. Jamal drew them again, bigger and farther up the beach.", "[slowly, warmly] Slanted lines make V, A and N. Start at the dot."];
+// Looking at the world (kindergarten), pass JK: audio tags for its five stories.
+STORIES["day-and-night"].audio = ["[a rooster crowing at dawn] Every morning the rooster crowed, and every morning the sun came up. [proud, a little pompous] The rooster was sure he was the one doing it. One crow from him, and up came the sun.", "[softly] Then one morning he slept in. He was so tired from a long day. [sleepy] He tucked his beak under his wing and did not wake up.", "When he finally opened his eyes, the sun was already high in the sky. [surprised] It had come up without him! The rooster could hardly believe it.", "The sun did not need the rooster at all. [calm, explaining] Our Earth turns slowly, like a big ball spinning on a finger. That slow turning is what makes day and night.", "[slowly] When your side of the Earth turns to face the sun, it is day. When it turns away, it is night, [softly, in wonder] and that is when you can see the stars.", "[a rooster crowing] The rooster crowed anyway the next morning, [amused] just in case. But now he knew the truth. Day and night come from the Earth turning, not from a rooster.", "[slowly, warmly] The sun lights the day. At night the sky is dark. Day and night are the Earth turning."];
+STORIES["kinds-of-weather"].audio = ["[rain pattering on a roof] Rain came in the night, pit, pat, pit, pat on the roof. In the morning there was a puddle by the gate. [a splash] Rosa splashed right in it.", "[warm, birds singing] Then the sun came out, warm and bright. By lunch the puddle was small, and by dinner it was gone. Only a dark spot was left behind.", "[wind gusting] The next day the wind blew so hard that leaves ran across the yard. [surprised] Rosa's hat blew off. There was still no puddle.", "[hushed] Then one cold morning, white flakes came drifting down. [a delighted whisper] Snow! It landed on the gate, and it did not splash the way rain does. It just sat there.", "[slowly, listing] Rain, sun, wind, snow. Every day the sky did something different. Rosa looked out each morning to see what it had chosen.", "[thoughtful] The rain made the puddle and the sun took it away. Then the snow laid a white patch there instead. The sky was never the same two days in a row.", "[slowly, warmly] Weather is what the sky is doing today. Look out the window and see."];
+STORIES["living-or-not"].audio = ["[curious] On the path there was a rock, and right next to it was a snail. They were the same size and the same gray. Leo looked hard at both of them.", "The rock did nothing at all. It just sat. [slowly, fascinated] The snail poked out two eyes, stretched, and slowly began to eat a leaf.", "Leo put a leaf on the rock to see what would happen. [amused] The rock did not eat it. The leaf just sat there on top.", "When he came back after lunch, the rock was exactly where he had left it. [surprised] But the snail was gone. All that was left was a silver trail.", "[thoughtful] The snail grew, and ate, and moved. It needed water and food to do all of that. The rock needed nothing, and it never would.", "[warmly] A rock is not alive, but a snail is. They can look alike at first, so watch for a while, and you will know.", "[slowly, warmly] Living things grow and need food and water. A rock does not."];
+STORIES["what-plants-need"].audio = ["[gentle] A bean seed went into a pot of soil, and Mia pushed it down with her thumb. Every morning after that, it got a drink of water.", "[delighted] One day a green sprout came up, and then a leaf, and then two. Mia checked on it every single morning.", "[slowly] The little plant began to lean. It leaned toward the window, toward the sun, a bit more every day.", "[a cupboard door closing] Mia moved the pot into a dark cupboard, just to see what would happen. [worried] Three days later the plant drooped, and its leaves went pale.", "Back it went to the windowsill, with water and sun. [relieved] In a few days it stood up again and turned green.", "[thoughtful] The plant drank water and soaked up sunlight. Take one away and it drooped, but give it both and it grew.", "[slowly, warmly] A plant needs water, sun and air to grow."];
+STORIES["hot-and-cold"].audio = ["The cocoa was hot, so hot that steam came curling up from the cup. [blowing gently] Sam had to blow on it, and wait, and blow on it again.", "[shivering] The snow cone was cold. It made his teeth hurt and his hands wet, so he ate it fast.", "He left half the cocoa on the table, with half the snow cone right next to it. [footsteps running off] Then he ran off to play.", "[curious] When he came back, the cocoa was not hot anymore. It was only warm, and a little later it was not even that.", "The snow cone was not cold anymore either. It had melted into a puddle of juice. [surprised] When Sam touched both cups, they felt the same.", "[thoughtful] Hot things cool down and cold things warm up. In the end it all feels as warm as the room.", "[slowly, warmly] Hot things warm us and cold things chill us. Then they both end up as warm as the room."];
+// Me and my community and Taking care of me (kindergarten), pass JL: audio tags for their ten stories.
+STORIES["rules-and-helpers"].audio = ["[playground noise] At recess, all of the kids wanted the slide at once. [a bump and a cry] Bump, ouch! Diego went down on top of Rosa, and Rosa cried. [sad] Nobody had fun.", "[thoughtful] The slide was fine and the kids were fine, so something else was missing.", "[calm, clear] The teacher made a rule. Go one at a time, and wait at the top until the bottom is clear.", "Now the slide was fun again. [joyful, sliding] Whee! Diego went, then Rosa, then Kai, with no bumps and no tears.", "[a fire truck rumbling past] Then a fire truck came by, and the driver waved. A helper, with a job for the whole town.", "Rules keep us safe, and helpers do jobs for everyone. [happy] Rosa waved at the truck with both arms.", "[slowly, warmly] Rules keep us safe. Helpers do jobs for everyone."];
+STORIES["needs-and-wants"].audio = ["[coins jingling] Ana had money for one thing, and she held the coins tight. Bread, or the toy? [longing] She wanted the toy, and she really, really wanted it.", "[a tummy rumbling] But her tummy rumbled, loud. [gently] Her mom asked which one they needed.", "[thoughtful] Ana thought about it. We need to eat, but we only want to play, and a need comes first.", "[decided] So Ana picked the bread. The toy could wait, but her tummy could not.", "[content] At home she ate warm bread with butter, and her tummy stopped rumbling. That felt better than any toy.", "The next week, with new coins, she came back, and the toy was still on the shelf. [delighted] This time she could pick it.", "[slowly, warmly] Needs come first. Wants can wait."];
+STORIES["our-flag-and-holidays"].audio = ["[a flag flapping in the wind] Up went the flag, red, white and blue, waving in the wind. Sam wanted to know what was on it, but it was too far up to see.", "[warmly] So the teacher brought a small one down to his desk. It was the same flag, just little.", "Sam counted the stripes, [slowly, counting] red, white, red, white, and got thirteen. Then he counted the stars, and that took a while. [proud] Fifty!", "[steady] Fifty stars for fifty states, and thirteen stripes for the first thirteen. Red, white and blue.", "On holidays, the flag went up early, [festive] and on the Fourth of July everyone waved a little one.", "Sam drew the flag at home. [amused] He ran out of room for the stars at thirty, but he did his best.", "[slowly, warmly] Fifty stars, thirteen stripes, red, white and blue."];
+STORIES["jobs-people-do"].audio = ["[morning street sounds] In the morning, Lena watched everyone go off to work. The baker went to bake bread, and the nurse went to help sick people. The mail carrier went out with a bag of letters.", "[curious] Why did they all go? Lena thought they just liked it. [warmly] Her dad said that was part of it, and that they got paid too.", "[explaining] People work to earn money, and money buys the things we need. Food, a home, and new shoes when yours get small.", "[slowly, listing] Every job has its tools, too. The baker had a big bowl and the nurse had a stethoscope. The mail carrier had a big bag.", "[a spoon stirring in a bowl] Lena played baker with a toy bowl and a wooden spoon, and she baked pretend bread all afternoon.", "Then she played mail carrier, with a paper bag and a letter for every room. [warm, laughing] She got paid in hugs.", "[slowly, warmly] People work to earn money for needs. Every job has its tools."];
+STORIES["voting-in-class"].audio = ["There were two books for story time, a dragon book and a dog book. Some of the class wanted the dragon and some wanted the dog, [children shouting over each other] so everyone shouted.", "[frustrated] Nobody could hear a thing, because shouting did not pick a book. It only made the room loud.", "[calm, counting hands] The teacher said to put hands up for the dragon, and she counted nine. Then hands up for the dog, and she counted seven.", "One vote each, and nine is more than seven, [cheers] so the dragon won. The dog would get next week.", "Nobody shouted, because everyone had counted, and even the dog voters nodded. [warmly] It was fair.", "[happy] The dragon book was good, and the next week the dog book was good too. Both of them got their turn.", "[slowly, warmly] One vote each. More votes wins."];
+STORIES["our-two-flags"].audio = ["[flags flapping in the wind] Two flags flew on one pole, and Kai asked why. [puzzled] One flag is enough, he said, so why two?", "[curious] His teacher asked him to count the stars on each one, so Kai squinted up at them.", "The top one had fifty, one star for every state, too many to count fast. [surprised] The one below had just one big star.", "That was the flag for Texas, our state. [proud] One star, the Lone Star.", "[warm] Two flags, one for the country and one for home, both on one pole and waving together.", "[proud] Kai saluted both of them. Then he drew them, fifty little stars and one big one.", "[slowly, warmly] Fifty stars for the country. One star for Texas."];
+STORIES["washing-hands"].audio = ["[water running] Mia had gold glitter on both hands from art class. She rinsed them with water, and some of the glitter stayed.", "[puzzled] Rinsing was not enough, because the glitter hid between her fingers and around her thumbs.", "[scrubbing, counting] So she used soap and counted to twenty. She scrubbed between the fingers, around the thumbs and under the nails. [pleased] Then it was gone.", "[gently] Germs are like glitter, said the nurse. You cannot see them, but they hide in exactly the same places.", "[steady] Mia washed before lunch and after the bathroom, with soap, a count to twenty and a rinse.", "[humming a tune] She sang a song while she counted. By the time she reached twenty, the song was done and her hands were clean.", "[slowly, warmly] Wash with soap before eating and after the bathroom. Count to twenty."];
+STORIES["brushing-teeth"].audio = ["[quick brushing] Leo brushed fast, front teeth only, and he was done in ten seconds. Then he ran off to play.", "His dentist looked in his mouth. [playful, mock-serious] The back pickets are unpainted, she said, on both sides.", "[explaining] Teeth are like a fence, and every picket needs paint on both sides. Front and back, top and bottom.", "It takes two minutes. [slowly, counting] Top right, top left, bottom left, bottom right, with thirty seconds for each corner.", "[a timer ticking] Leo set a timer, and two minutes felt long. But he brushed every corner, front and back.", "He did it morning and night, two times a day. When his dentist looked again, [proud] every picket was painted.", "[slowly, warmly] Brush two times a day for two minutes. Every tooth, both sides."];
+STORIES["sleep-k"].audio = ["[a quiet night] The phone charged all night, plugged in and quiet. Sam stayed up, playing, then reading, then just looking at the ceiling.", "In the morning the phone was at a hundred. Sam was at about fifty, and grumpy, [yawning] and he yawned all through breakfast.", "[gently] Kids need ten to twelve hours of sleep to fill up, and Sam had gotten six. His battery was low.", "That night Sam went to bed earlier, with the same quiet steps in the same order. [softly] A bath, a book, and lights out.", "He slept ten hours, and in the morning he bounced out of bed. [energetic] A hundred percent!", "[warmly] The phone charges every night, and so does a boy. After that, Sam plugged himself in on time.", "[slowly, warmly] Ten to twelve hours of sleep. The same quiet routine each night."];
+STORIES["my-plate"].audio = ["[playful] Ana's plate was all one color, beige. Bread, crackers and more bread, and she ate it all.", "Her tummy was full, but her mom shook her head. [gently] A plate of one color is missing a lot.", "Mom made a new plate with red tomatoes, orange carrots, green peas and purple grapes. [delighted] It was a rainbow.", "[steady] Half the plate was all colors, and the other half was bread and chicken. A glass of water sat beside it.", "[crunching] Ana ate the rainbow, crunch and pop and sweet. Every color brought something her body needed.", "Every day after that, Ana looked at her plate to see if there was a rainbow. If there was not, [playful] she asked for one.", "[slowly, warmly] Half the plate is fruits and veggies, with water to drink."];
+// Tell, show, step and repeat and I can listen, I can say (kindergarten), pass JL: audio tags for their eight stories.
+STORIES["tell-and-show"].audio = ["[curious] Nia got a tablet for her birthday, and it sat on the table doing nothing. The screen was dark and quiet, and she waited for it to start.", "[a big brother, helpful] It cannot start on its own, said her brother Sam. You have to tell it something first.", "So Nia tapped the screen with one finger. [a soft chime, a little tune] A picture of a cat lit up, and a small song played from the speaker. Tap, and it shows, said Sam. The tapping part is an input.", "The screen and the speaker are outputs, because they show you things. [drum beats] Nia tapped a drum picture next, and the tablet played a drum. She tapped it again and again [giggles] and laughed every time.", "[keys clicking] Then Sam showed her the keyboard, and she typed her name one letter at a time. Each letter she pressed showed up on the screen, big and blue.", "[slowly, warmly] A tablet does not know what you want until you tell it. Inputs tell. Outputs show."];
+STORIES["first-next-then-last"].audio = ["[hurried] Leo was in a hurry to get to the park. He grabbed his shoes and pushed his feet in, and then he reached for his socks.", "The socks would not go on over the shoes. He pulled and pulled, [a rip] and one sock ripped. [grumpy] Leo sat down on the floor and frowned.", "His dad came in and looked at the shoes. [gently, amused] You did the steps, he said, but not in order. Socks first, then shoes.", "Leo took the shoes off and started again. [brisk, counting steps] First socks. Next shoes. Then his coat, and last, out the door. It took one minute.", "[birds in a park] At the park he made a sandwich with his dad. First bread, next jam, then close it, last a bite. [pleased] It tasted better in order too.", "[slowly, warmly] Steps in order have a name. They are called an algorithm. First, next, then, last, and the socks go on every time."];
+STORIES["do-it-again"].audio = ["Miss Ada wrote a dance for the class robot on the board. [clapping] Clap. Clap. Clap. Clap. Turn. The list filled the whole board, [a marker squeaking dry] and her marker ran dry.", "Priya raised her hand. [eager] There is a pattern, she said. Clap comes four times, and then one turn.", "[a board being wiped] Miss Ada smiled and wiped the board clean. She wrote two short lines instead, clap four times and then turn. A loop, she said, does the same step again and again.", "[a robot whirring, four claps] The robot read the two lines and clapped four times. It turned, [children cheering] and the class cheered, because the dance was exactly the same.", "[excited] Then the class wrote a bigger dance with loops: jump three times, spin two times, clap four times. It fit on one small card.", "[slowly, warmly] A pattern tells you what comes next. A loop says do it again, and says how many times."];
+STORIES["safe-online-k"].audio = ["[proud] Omar got his very first account on the class computer, with a password all his own. It was a secret word, and it opened his page.", "A boy named Ben asked what the word was. [hesitant] Omar almost said it, and then he stopped. Only a parent or a teacher may know it.", "[friendly] It is a secret, Omar said. Ben shrugged, and they went to play instead.", "[a game chiming] Later a game asked Omar to type his address to win a prize. He knew that his address was private, so he stopped and told his teacher. [warmly] She said he did exactly the right thing.", "[a school bell ringing] When the bell rang, Omar logged off, so the next person could not get into his page. He felt like the keeper of a small key.", "[slowly, warmly] Keep your password secret. Keep private things private. Be kind, and tell a grown-up."];
+STORIES["my-listening-body"].audio = ["[dreamy] Milo was thinking about lunch. His teacher said, get your coat and line up. [dreamy, sing-song] Milo heard lunch, lunch, lunch, and he got his hat.", "Miss Ruiz smiled and asked where his coat was. Milo did not know what she had said. So he asked her. [politely] Can you say it again, please?", "Miss Ruiz said it again, get your coat and line up. [focused] This time Milo looked right at her. His hands were still, and his mind was on the words. He got his coat.", "At recess Miss Ruiz asked, did you like the slide? Milo answered with more than one word. Yes, I went down it three times, he said. [laughing] Miss Ruiz laughed.", "After the story that afternoon, Milo said it back. First the bear was hungry, and last the bear found honey. [proud] He had heard the whole thing."];
+STORIES["first-then-do"].audio = ["[snack time chatter] It was snack time, and Miss Ruiz gave Lena three steps. First, get a cup, and then fill it with water. Last, put it on the table where you sit.", "Lena said the steps back to her, [slowly] cup, water, table. Miss Ruiz nodded. The steps were in Lena's head now, in order.", "[water pouring] Lena got a cup and filled it with water. She carried it to the table and set it down. First things first, and last things last. [pleased] Nothing spilled.", "[confident] Then it was Lena's turn to give directions. She told Ben two steps. First, get the ball, and then roll it to me. Now you say it, Ben.", "[mixed up, playful] Ben said, roll the ball and then get it. Lena fixed it for him: get it first, then roll it. Ben said it right, [a ball rolling] and the ball rolled all the way to Lena."];
+STORIES["my-clear-voice"].audio = ["It was Theo's turn to tell. He held up his drawing of his dog [very quietly] and said, this is my dog. [gently] Nobody in the back could hear him.", "Miss Ruiz said, talk to the friend at the back. Theo looked at Priya in the back row and said it again, louder. [loud and clear] This is my dog.", "[clear, steady] Theo told the three parts. This is my dog. He is brown and he likes to dig. I like him because he is funny. Everyone could hear.", "He said whole words, slow. [slowly, clearly] He said dig, not di, and funny, not fun. Priya in the back smiled.", "[warm] Theo held his drawing up for the digging part. Then he put it down and looked at his friends. They were the ones he was talking to."];
+STORIES["my-turn-and-kind-words"].audio = ["Ava wanted the red truck, but Ben had it. [a toy snatched, a child crying] Ava grabbed it, and Ben cried. Ava did not get the truck.", "Miss Ruiz sat with them and said, say it in words, Ava. Ava tried. [politely] I want a turn with the truck, please. Ben said, okay, when I am done.", "[a quiet circle] At circle time, one person talked at a time. Ava had an idea, so she put her hand up and waited. Two friends went first. Then it was Ava's turn, and everyone listened.", "A new boy came to class after lunch, and Ava walked over to him. [friendly] Hello, my name is Ava. The new boy said, my name is Sam. Now they knew each other.", "At the end of the day, Ben brought Ava the red truck. [grateful] Thank you, Ava said. Kind words had opened the door."];
 // The Wise Human. Copyright (c) 2026. Source-available; not for reuse. See LICENSE.md.
 // =====================================================================
 //  FILE: src/ui.jsx — the screens
@@ -63651,7 +63692,7 @@ function PinInput({ value, onChange, placeholder, style, onEnter = null }) {
 }
 // A stamp of when this copy of the page was built, so a stale page in a cache can be told apart
 // from a fresh one at a glance. Written by the build, never by hand.
-const BUILD_STAMP = '2026-10-03 08:29 PM CDT';
+const BUILD_STAMP = '2026-10-03 10:28 PM CDT';
 function ContactLine({ onOpen, inline = false }) {
     return (react_1.default.createElement("p", { className: "edu-no-print", style: { textAlign: 'center', marginTop: inline ? 0 : 28, fontSize: inline ? 14 : 12, color: C.muted, margin: inline ? '0' : undefined } }, onOpen
         ? react_1.default.createElement("button", { type: "button", onClick: onOpen, style: { background: 'none', border: 'none', color: C.muted, fontFamily: FONT, fontSize: 12, cursor: 'pointer', padding: 0, textDecoration: 'underline' } }, "Contact us")
@@ -74066,10 +74107,20 @@ function EduSphereScreens() {
             }
             else {
                 scrollToTop(!firstScreen.current);
-                if (tourStep < 0)
+                // Pass JK: the second asks for the top stop the moment a person scrolls, taps or types, so someone who starts moving
+                // while the page settles keeps their place instead of being pulled back up.
+                if (tourStep < 0) {
+                    let touched = false;
+                    const mark = () => { touched = true; };
+                    const evs = ['wheel', 'touchstart', 'pointerdown', 'keydown'];
+                    for (const ev of evs)
+                        window.addEventListener(ev, mark, { passive: true, capture: true });
                     for (const wait of [80, 320])
-                        setTimeout(() => { if (pageScrolled() || framedFullHeight())
+                        setTimeout(() => { if (!touched && (pageScrolled() || framedFullHeight()))
                             scrollToTop(!firstScreen.current); }, wait);
+                    setTimeout(() => { for (const ev of evs)
+                        window.removeEventListener(ev, mark, { capture: true }); }, 400);
+                }
             }
             firstScreen.current = false;
             if (window.requestAnimationFrame)

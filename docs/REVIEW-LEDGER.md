@@ -2,7 +2,7 @@
 
 Generated 2026-10-04 by tools/review-ledger.mjs. What Mikey wants from the review is in docs/FABLE-REVIEW.md; this file is the work list, in order. To mark an item reviewed, add its key to "reviewed" in docs/review-status.json with the pass that did it (keys look like module:saving-investing-and-risk, course-story:econ-9, game:dots-kite, wonder:w-grown-the-rumor), then run the tool again.
 
-Reviewed so far: 58 of 1239 items (615 modules with their lessons, stories and question banks, 102 long stories, 157 games and 365 Wonder questions). Colons today: 2226 in lessons and 1308 in stories (times like 3:30 and ratios are not counted). Pictures are reviewed through docs/ART-REQUESTS.md as they are painted; a rewritten story keeps each picture beside the paragraph it shows.
+Reviewed so far: 95 of 1239 items (615 modules with their lessons, stories and question banks, 102 long stories, 157 games and 365 Wonder questions). Colons today: 2207 in lessons and 1296 in stories (times like 3:30 and ratios are not counted). Pictures are reviewed through docs/ART-REQUESTS.md as they are painted; a rewritten story keeps each picture beside the paragraph it shows.
 
 ## 1. Every module, in review order (pre-K first, then up through college)
 
@@ -51,21 +51,21 @@ Reviewed so far: 58 of 1239 items (615 modules with their lessons, stories and q
 | yes (JJ, read by hand: read, no change needed; audio tags) | PK4 | First sounds and letters | Trace a big letter (`first-letter-tracing`) | 0 | A letter in the sand (S212) | 0 | pl-trace-first |
 | yes (JJ, read by hand: read, no change needed; audio tags) | PK4 | First sounds and letters | Trace more big letters (`more-big-letters`) | 0 | Sticks make letters (S215) | 0 | pl-trace-more |
 | yes (JJ, read by hand: read, no change needed; audio tags) | PK4 | First sounds and letters | Trace L, T and F (`trace-straight-letters`) | 0 | Down, then across (S218) | 0 | pl-trace-ltf |
-|  | K | Looking at the world | Day and night (`day-and-night`) | 0 | The rooster and the sun (S23) | 0 | sk-day-or-night, sk-tap-sky |
-|  | K | Looking at the world | Kinds of weather (`kinds-of-weather`) | 0 | The puddle by the gate (S83) | 0 | sk-which-weather, sk-tap-weather, sk-what-to-wear |
-|  | K | Looking at the world | Living or not living (`living-or-not`) | 0 | The rock and the snail (S86) | 0 | sk-living-or-not, sk-tap-living, sk-tap-not-living |
-|  | K | Looking at the world | What a plant needs (`what-plants-need`) | 0 | The bean on the windowsill (S89) | 0 | sk-plant-needs, sk-tap-plant-need |
-|  | K | Looking at the world | Hot and cold (`hot-and-cold`) | 0 | Two cups (S92) | 0 | sk-hot-or-cold, sk-tap-hot |
-|  | K | Me and my community | Rules and helpers (`rules-and-helpers`) | 0 | One at a time (S221) | 1 | ck-why-rule, ck-which-helper, ck-good-choice |
-|  | K | Me and my community | Needs and wants (`needs-and-wants`) | 0 | Bread or the toy (S224) | 0 | ck-need-or-want, ck-which-is-need |
-|  | K | Me and my community | Our flag and holidays (`our-flag-and-holidays`) | 0 | Up went the flag (S227) | 0 | ck-flag-count, ck-not-on-flag, ck-holiday |
-|  | K | Me and my community | Jobs people do (`jobs-people-do`) | 0 | Off to work (S230) | 0 | ck-job-tool, ck-why-work, ck-which-helper |
-|  | K | Me and my community | Voting in class (`voting-in-class`) | 0 | Hands up (S233) | 0 | ck-more-votes, ck-one-vote-each |
-|  | K | Me and my community | Our two flags (`our-two-flags`) | 1 | Two flags, one pole (S236) | 0 | ck-which-flag, ck-lone-star, ck-flag-count |
-|  | K | Taking care of me | Washing hands (`washing-hands`) | 2 | The glitter (S1226) | 1 | hk-hands |
-|  | K | Taking care of me | Brushing teeth (`brushing-teeth`) | 4 | The fence of teeth (S1229) | 0 | hk-teeth |
-|  | K | Taking care of me | Sleep (`sleep-k`) | 1 | The phone and the boy (S1232) | 0 | hk-sleep |
-|  | K | Taking care of me | My plate (`my-plate`) | 3 | The rainbow plate (S1235) | 0 | hk-plate |
+| yes (JK, read by hand: a dark sky means night, not the moon (the moon is often up in the day); the Earth spins like a ball on a finger; audio tags) | K | Looking at the world | Day and night (`day-and-night`) | 0 | The rooster and the sun (S23) | 0 | sk-day-or-night, sk-tap-sky |
+| yes (JK, read by hand: rain and snow fall from the clouds; snow lays a white patch; audio tags) | K | Looking at the world | Kinds of weather (`kinds-of-weather`) | 0 | The puddle by the gate (S83) | 0 | sk-which-weather, sk-tap-weather, sk-what-to-wear |
+| yes (JK, read by hand: ice is not living because it does not eat (icicles do grow); audio tags) | K | Looking at the world | Living or not living (`living-or-not`) | 0 | The rock and the snail (S86) | 0 | sk-living-or-not, sk-tap-living, sk-tap-not-living |
+| yes (JK, read by hand: plants need air too; the plant turns green again; no semicolon; audio tags) | K | Looking at the world | What a plant needs (`what-plants-need`) | 0 | The bean on the windowsill (S89) | 0 | sk-plant-needs, sk-tap-plant-need |
+| yes (JK, read by hand: a coat is for cold weather; both cups end up as warm as the room; audio tags) | K | Looking at the world | Hot and cold (`hot-and-cold`) | 0 | Two cups (S92) | 0 | sk-hot-or-cold, sk-tap-hot |
+| yes (JL, read by hand: a story colon gone; audio tags) | K | Me and my community | Rules and helpers (`rules-and-helpers`) | 0 | One at a time (S221) | 0 | ck-why-rule, ck-which-helper, ck-good-choice |
+| yes (JL, read by hand: read, no change needed; audio tags) | K | Me and my community | Needs and wants (`needs-and-wants`) | 0 | Bread or the toy (S224) | 0 | ck-need-or-want, ck-which-is-need |
+| yes (JL, read by hand: the lesson now teaches Martin Luther King Jr. Day, which its question asked about; red, white and blue; audio tags) | K | Me and my community | Our flag and holidays (`our-flag-and-holidays`) | 0 | Up went the flag (S227) | 0 | ck-flag-count, ck-not-on-flag, ck-holiday |
+| yes (JL, read by hand: read, no change needed; audio tags) | K | Me and my community | Jobs people do (`jobs-people-do`) | 0 | Off to work (S230) | 0 | ck-job-tool, ck-why-work, ck-which-helper |
+| yes (JL, read by hand: nine to seven is some and some, not half and half; a semicolon gone; audio tags) | K | Me and my community | Voting in class (`voting-in-class`) | 0 | Hands up (S233) | 0 | ck-more-votes, ck-one-vote-each |
+| yes (JL, read by hand: a caption colon gone; audio tags) | K | Me and my community | Our two flags (`our-two-flags`) | 0 | Two flags, one pole (S236) | 0 | ck-which-flag, ck-lone-star, ck-flag-count |
+| yes (JL, read by hand: a stray line break, a colon and a fragment explanation fixed; audio tags) | K | Taking care of me | Washing hands (`washing-hands`) | 1 | The glitter (S1226) | 0 | hk-hands |
+| yes (JL, read by hand: a stray line break, a colon and a semicolon fixed; audio tags) | K | Taking care of me | Brushing teeth (`brushing-teeth`) | 2 | The fence of teeth (S1229) | 0 | hk-teeth |
+| yes (JL, read by hand: one honest number, about ten to twelve hours a night (it said ten to thirteen in two places); audio tags) | K | Taking care of me | Sleep (`sleep-k`) | 1 | The phone and the boy (S1232) | 0 | hk-sleep |
+| yes (JL, read by hand: colons and a semicolon gone; no one-meal cause and effect; fruits and vegetables, not greens; audio tags) | K | Taking care of me | My plate (`my-plate`) | 1 | The rainbow plate (S1235) | 0 | hk-plate |
 | yes (JJ, read by hand: one thing is "there is 1"; counted words in their own sentence; audio tags) | K | Counting | Count to 5 (`count-to-5`) | 0 | Five ducklings (S2) | 0 | k5-how-many, k5-tap-group, k5-more, k5-fewer, k5-after, k5-same |
 | yes (JJ, read by hand: one thing is "there is 1"; counted words in their own sentence; audio tags) | K | Counting | Count to 10 (`count-to-10`) | 0 | Ten steps (S239) | 0 | k10-how-many, k10-tap-group, k10-more, k10-fewer, k10-after, k10-same |
 | yes (JJ, read by hand: a colon gone; audio tags) | K | Counting | Tracing numbers (`tracing-numbers`) | 0 | Start at the dot (S242) | 0 | kn-trace-number |
@@ -80,28 +80,28 @@ Reviewed so far: 58 of 1239 items (615 modules with their lessons, stories and q
 | yes (JJ, read by hand: a block is the everyday cube (a box often is not); colons gone; audio tags) | K | Counting | Solid shapes (`solids`) | 0 | Roll, stack, point (S269) | 0 | kd-name-solid, kd-tap-solid, kd-real-thing, kd-flat-or-solid, kd-rolls |
 | yes (JJ, read by hand: read, no change needed; audio tags) | K | Counting | Making ten (`making-ten`) | 0 | Partners for ten (S272) | 0 | kn-partner, kn-frame, kn-two-ways, kn-take-from-ten, kn-is-ten |
 | yes (JJ, read by hand: read, no change needed; audio tags) | K | Counting | More and fewer to ten (`more-and-fewer-10`) | 0 | Two buckets (S275) | 0 | k-tap-more-10, k-tap-fewer-10 |
-|  | K | Letters | Letter names (`letter-names`) | 1 | The song that holds them (S278) | 0 | r-tap-letter, r-after, r-before, r-first-letter, r-count-letters |
-|  | K | Letters | Big and small letters (`big-and-small-letters`) | 0 | Big G, small g (S281) | 0 | r-match-small, r-match-big, r-tap-letter, r-first-letter, r-count-letters |
-|  | K | Letters | Letter sounds (`letter-sounds`) | 0 | Buh for ball (S284) | 0 | rs-word-starts, rs-letter-for-sound, rs-pick-word, rs-same-start, rs-odd-start |
-|  | K | Letters | Beginning sounds (`beginning-sounds`) | 0 | What starts with mmm (S287) | 0 | sk-first-sound |
-|  | K | Letters | Ending sounds (`ending-sounds`) | 4 | The sound at the end (S1172) | 1 | sk-last-sound |
-|  | K | Letters | Rhymes (`rhymes`) | 0 | Cat, hat, bat (S290) | 2 | rr-does-rhyme, rr-pick-rhyme, rr-odd-rhyme, rr-same-end, rr-which-two |
-|  | K | Letters | Tracing letters (`tracing-letters`) | 0 | The T on the window (S293) | 0 | rt-trace-easy, rt-trace-medium, rt-trace-any |
-|  | K | Letters | Tracing small letters (`tracing-small-letters`) | 0 | The small a sits low (S296) | 0 | rt-trace-small-easy, rt-trace-small-round, rt-trace-small-any |
-|  | K | Letters | More letters to trace (`tracing-more-letters`) | 0 | The E, one line at a time (S299) | 1 | rt-trace-more, rt-trace-mixed |
-|  | K | Letters | Clapping syllables (`syllables`) | 1 | Clap your name (S302) | 1 | ry-how-many-claps, ry-pick-two, ry-pick-one, ry-more-claps, ry-same-claps |
-|  | K | Letters | Sounding out words (`sounding-out`) | 0 | The word on the door (S305) | 0 | rd-blend, rd-first-sound, rd-last-sound, rd-middle-sound, rd-which-word |
-|  | K | Letters | Which way we read (`which-way-we-read`) | 0 | Which way the finger goes (S308) | 0 | rw-first, rw-last, rw-next, rw-count-words, rw-which-way |
-|  | K | Letters | What a word means (`word-meanings`) | 0 | The card and the picture (S311) | 1 | rm-match-picture, rm-pick-word, rm-does-match, rm-count-word, rm-shape-word |
-|  | K | Letters | Trace V, A and N (`trace-slant-letters`) | 0 | Slants in the sand (S314) | 2 | pk-trace-van |
-|  | K | Tell, show, step and repeat | Tell and show (`tell-and-show`) | 3 | The quiet tablet (S2702) | 0 | tk-tell |
-|  | K | Tell, show, step and repeat | First, next, then, last (`first-next-then-last`) | 9 | Shoes before socks (S2707) | 1 | tk-order |
-|  | K | Tell, show, step and repeat | Do it again (`do-it-again`) | 3 | Clap four times (S2712) | 2 | tk-again |
-|  | K | Tell, show, step and repeat | Safe and kind online (`safe-online-k`) | 8 | The secret word (S2717) | 0 | tk-safe |
-|  | K | I can listen, I can say | My listening body (`my-listening-body`) | 1 | Get your coat (S3242) | 0 | spk-listen |
-|  | K | I can listen, I can say | First, then, do it (`first-then-do`) | 4 | Cup, water, table (S3247) | 2 | spk-steps |
-|  | K | I can listen, I can say | My clear voice (`my-clear-voice`) | 0 | This is my dog (S3252) | 0 | spk-voice |
-|  | K | I can listen, I can say | My turn and kind words (`my-turn-and-kind-words`) | 1 | The hand that waited (S3257) | 0 | spk-turns |
+| yes (JK, read by hand: a colon gone; audio tags) | K | Letters | Letter names (`letter-names`) | 0 | The song that holds them (S278) | 0 | r-tap-letter, r-after, r-before, r-first-letter, r-count-letters |
+| yes (JK, read by hand: read, no change needed; audio tags) | K | Letters | Big and small letters (`big-and-small-letters`) | 0 | Big G, small g (S281) | 0 | r-match-small, r-match-big, r-tap-letter, r-first-letter, r-count-letters |
+| yes (JK, read by hand: read, no change needed; audio tags) | K | Letters | Letter sounds (`letter-sounds`) | 0 | Buh for ball (S284) | 0 | rs-word-starts, rs-letter-for-sound, rs-pick-word, rs-same-start, rs-odd-start |
+| yes (JK, read by hand: read, no change needed; audio tags) | K | Letters | Beginning sounds (`beginning-sounds`) | 0 | What starts with mmm (S287) | 0 | sk-first-sound |
+| yes (JK, read by hand: say it slowly, c, a, t (colons gone from the caption, lines and story); audio tags) | K | Letters | Ending sounds (`ending-sounds`) | 0 | The sound at the end (S1172) | 0 | sk-last-sound |
+| yes (JK, read by hand: the odd word starts its sentence with a capital; a story colon gone; audio tags) | K | Letters | Rhymes (`rhymes`) | 0 | Cat, hat, bat (S290) | 1 | rr-does-rhyme, rr-pick-rhyme, rr-odd-rhyme, rr-same-end, rr-which-two |
+| yes (JK, read by hand: fog letters fade away (they do not melt); audio tags) | K | Letters | Tracing letters (`tracing-letters`) | 0 | The T on the window (S293) | 0 | rt-trace-easy, rt-trace-medium, rt-trace-any |
+| yes (JK, read by hand: read, no change needed; audio tags) | K | Letters | Tracing small letters (`tracing-small-letters`) | 0 | The small a sits low (S296) | 0 | rt-trace-small-easy, rt-trace-small-round, rt-trace-small-any |
+| yes (JK, read by hand: three semicolons made one sentence; a colon gone; audio tags) | K | Letters | More letters to trace (`tracing-more-letters`) | 0 | The E, one line at a time (S299) | 0 | rt-trace-more, rt-trace-mixed |
+| yes (JK, read by hand: colons gone from the lesson, the questions and the story; audio tags) | K | Letters | Clapping syllables (`syllables`) | 0 | Clap your name (S302) | 0 | ry-how-many-claps, ry-pick-two, ry-pick-one, ry-more-claps, ry-same-claps |
+| yes (JK, read by hand: Read the sounds j a m (a colon gone); audio tags) | K | Letters | Sounding out words (`sounding-out`) | 0 | The word on the door (S305) | 0 | rd-blend, rd-first-sound, rd-last-sound, rd-middle-sound, rd-which-word |
+| yes (JK, read by hand: read, no change needed; audio tags) | K | Letters | Which way we read (`which-way-we-read`) | 0 | Which way the finger goes (S308) | 0 | rw-first, rw-last, rw-next, rw-count-words, rw-which-way |
+| yes (JK, read by hand: Read the word triangle; a story colon gone; audio tags) | K | Letters | What a word means (`word-meanings`) | 0 | The card and the picture (S311) | 0 | rm-match-picture, rm-pick-word, rm-does-match, rm-count-word, rm-shape-word |
+| yes (JK, read by hand: two story colons gone; audio tags) | K | Letters | Trace V, A and N (`trace-slant-letters`) | 0 | Slants in the sand (S314) | 0 | pk-trace-van |
+| yes (JL, read by hand: a touch screen is both an input and an output; semicolons and a line break fixed; audio tags) | K | Tell, show, step and repeat | Tell and show (`tell-and-show`) | 3 | The quiet tablet (S2702) | 0 | tk-tell |
+| yes (JL, read by hand: colons and a line break fixed; audio tags) | K | Tell, show, step and repeat | First, next, then, last (`first-next-then-last`) | 6 | Shoes before socks (S2707) | 0 | tk-order |
+| yes (JL, read by hand: colons and a line break fixed; audio tags) | K | Tell, show, step and repeat | Do it again (`do-it-again`) | 2 | Clap four times (S2712) | 1 | tk-again |
+| yes (JL, read by hand: a colon gone; audio tags) | K | Tell, show, step and repeat | Safe and kind online (`safe-online-k`) | 7 | The secret word (S2717) | 0 | tk-safe |
+| yes (JL, read by hand: a colon and a line break fixed; audio tags) | K | I can listen, I can say | My listening body (`my-listening-body`) | 1 | Get your coat (S3242) | 0 | spk-listen |
+| yes (JL, read by hand: colons and a line break fixed; audio tags) | K | I can listen, I can say | First, then, do it (`first-then-do`) | 3 | Cup, water, table (S3247) | 1 | spk-steps |
+| yes (JL, read by hand: a colon gone; audio tags) | K | I can listen, I can say | My clear voice (`my-clear-voice`) | 0 | This is my dog (S3252) | 0 | spk-voice |
+| yes (JL, read by hand: a semicolon and a colon gone from the key idea; audio tags) | K | I can listen, I can say | My turn and kind words (`my-turn-and-kind-words`) | 0 | The hand that waited (S3257) | 0 | spk-turns |
 |  | K | Me and my mind | My brain and my senses (`my-brain-and-senses`) | 1 | Five reporters (S3146) | 0 | pyk-brain |
 |  | K | Me and my mind | Remember it (`remember-it`) | 0 | Three at a time (S3152) | 0 | pyk-memory |
 |  | K | Me and my mind | My feelings (`my-feelings`) | 0 | The name of the feeling (S3158) | 1 | pyk-feelings |

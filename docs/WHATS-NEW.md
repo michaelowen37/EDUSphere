@@ -2,6 +2,18 @@
 
 The newest block is what educators see once, in a pop-up on the classroom page, after each update. Write it the way Mikey talks to a teacher: conversational, complete sentences, say what changed and why it matters, and skip the shorthand (2026-09-23). Two to four items. The date line is the version stamp.
 
+## October 4, 2026 (kindergarten core finished)
+
+- The kindergarten community and health lessons are read again by hand. The holiday lesson now teaches Martin Luther King Jr. Day, and the sleep lesson gives one honest number, about ten to twelve hours a night.
+- Kindergarten computers now teach that a touch screen is both an input and an output.
+- A new picture is on the way for Day and night: the Earth spinning on a finger.
+
+## October 3, 2026 (kindergarten letters and science read by hand)
+
+- Kindergarten Letters is read again by hand, with clearer read-aloud lines like "Say it slowly, c, a, t."
+- Kindergarten science is more accurate. A dark sky means night, not the moon, since the moon is often up in the day. Plants need air as well as water and sun.
+- Their stories carry directions for a recorded voice, from the alphabet song to a rooster at dawn.
+
 ## October 3, 2026 (pre-K finished, and kindergarten counting read by hand)
 
 - Every pre-K lesson has now been read again by hand, finishing with First sounds and letters.

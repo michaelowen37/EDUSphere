@@ -885,7 +885,7 @@ await page.fill('input[aria-label="Search notes"]', '');
 // Coloring: play with no score. One picture from the start, opened and colored from the overview.
 await tap('Back to Classroom');
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'educator-pick');
-await page.getByRole('button', { name: 'Walk through early years' }).click();
+await page.waitForTimeout(400); await page.getByRole('button', { name: 'Walk through early years' }).click();
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview');
 await page.waitForTimeout(300);
 await page.getByRole('button', { name: "Let's Color" }).first().click({ force: true });
@@ -1467,6 +1467,9 @@ ok('a switched-off course is hidden from the learner', !/what a fraction means/i
   const story = S.STORIES['letter-names'];
   await page.evaluate(() => window.__eduTest.goHome());
   await page.waitForFunction(() => window.__eduTest && (window.__eduTest.screen === 'educator-pick' || window.__eduTest.screen === 'welcome'));
+  // The page asks for its top again 80 and 320 milliseconds after a screen opens, so a tap that has to scroll first waits for
+  // that to finish (pass JK: twice the scroll to this far-down button was undone before the tap landed).
+  await page.waitForTimeout(400);
   if ((await state()).screen === 'educator-pick') { await page.getByLabel('Walk through early years').click({ force: true }); await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview'); }
   await page.evaluate(() => window.__eduTest.openStory('letter-names')); await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'story');
   await page.evaluate(() => { window.__spoken = []; });

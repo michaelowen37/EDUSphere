@@ -19,6 +19,9 @@ async function setup(refuseCapture) {
   for (const name of ['Skip tour', 'Later', 'Got it']) { const b = page.getByRole('button', { name }); if (await b.count()) { await b.first().click({ force: true }); await page.waitForTimeout(150); } }
   await page.getByLabel(/Walk through early years/i).first().click({ force: true });
   await page.waitForFunction(() => window.__eduTest.screen === 'overview');
+  // The new screen asks for its top again at 80 and 320 ms, so the first tap waits for that (pass JK: the settle-scroll race
+  // twice sent the Let's Play tap to the wrong spot, and the games list never opened).
+  await page.waitForTimeout(400);
   return page;
 }
 async function openGame(page, title) {

@@ -3203,7 +3203,7 @@ function LETTER_MODULES() { return [
     title: 'Letter names',
     tagline: 'A, B, C',
     lesson: {
-      paragraphs: ['Every letter has a name. This is A. This is B. This is C.', 'The letters go in order: A, B, C, D, E.'],
+      paragraphs: ['Every letter has a name. This is A. This is B. This is C.', 'The letters go in order. A, B, C, D, E.'],
       keyIdea: 'Letters have names and an order.',
       example: { kind: 'letters', text: 'A B C D E', caption: 'A, B, C, D, E.' },
       script: [
@@ -3281,11 +3281,11 @@ function LETTER_MODULES() { return [
     lesson: {
       paragraphs: ['Words end with a sound too. Cat ends with T. Bus ends with S.', 'Say the word slowly. The last sound you hear is the ending sound.'],
       keyIdea: 'Say it slowly. The last sound is the ending sound.',
-      example: { kind: 'letters', text: 'caT', caption: 'Cat ends with T. Say it slowly: c, a, t.' },
+      example: { kind: 'letters', text: 'caT', caption: 'Cat ends with T. Say it slowly, c, a, t.' },
       script: [
-        { say: 'Cat ends with T. Say it slowly: c, a, t.', show: { kind: 'letters', text: 'caT' } },
-        { say: 'Bus ends with S. Say it slowly: b, u, s.', show: { kind: 'letters', text: 'buS' } },
-        { say: 'Sun ends with N. Say it slowly: s, u, n.', show: { kind: 'letters', text: 'suN' } },
+        { say: 'Cat ends with T. Say it slowly, c, a, t.', show: { kind: 'letters', text: 'caT' } },
+        { say: 'Bus ends with S. Say it slowly, b, u, s.', show: { kind: 'letters', text: 'buS' } },
+        { say: 'Sun ends with N. Say it slowly, s, u, n.', show: { kind: 'letters', text: 'suN' } },
       ],
     },
     sources: ['Aligned with TEKS K.2A.ii (recognizes spoken alliteration or groups of words that begin with the same spoken onset) and CCSS RF.K.2.d.'],
@@ -3377,7 +3377,7 @@ function LETTER_MODULES() { return [
     tagline: 'The beats in a word',
     requires: ['rhymes'],
     lesson: {
-      paragraphs: ['Every word has beats. Clap them as you say the word. Cat has one clap. Rabbit has two: rab, bit.', 'Long words have more beats. Ba-na-na has three.'],
+      paragraphs: ['Every word has beats. Clap them as you say the word. Cat has one clap. Rabbit has two, rab and bit.', 'Long words have more beats. Ba-na-na has three.'],
       keyIdea: 'Say the word slowly and clap each beat.',
       example: { kind: 'letters', text: 'rab bit', caption: 'Rab, bit. Two claps.' },
       script: [
@@ -3822,12 +3822,12 @@ function K_SCIENCE_MODULES() { return [
     title: 'Day and night',
     tagline: 'The sun and the moon',
     lesson: {
-      paragraphs: ['The sun shines in the day. The moon shines at night. In the day the sky is bright. At night the sky is dark.', 'Look up and see which one it is.'],
-      keyIdea: 'Sun in the day, moon at night.',
+      paragraphs: ['The sun shines in the day, and the sky is bright. At night the sky is dark, and we often see the moon and the stars.', 'Look up and see which one it is.'],
+      keyIdea: 'The sun lights the day. At night the sky is dark.',
       example: { kind: 'daynight', caption: 'The side facing the sun has day. The side facing away has night. The Earth turns.' , formula: 'the Earth turns'},
       script: [
         { say: 'This is the sun. It shines in the day.', show: { kind: 'icon', name: 'sun' } },
-        { say: 'This is the moon. It shines at night.', show: { kind: 'icon', name: 'moon' } },
+        { say: 'This is the moon. We often see it at night.', show: { kind: 'icon', name: 'moon' } },
         { say: 'The sun is for the day.', show: { kind: 'icon', name: 'sun' } },
         { say: 'The Earth turns. The side facing the sun has day. The side facing away has night.', show: { kind: 'daynight' } },
       ],
@@ -3846,8 +3846,8 @@ function K_SCIENCE_MODULES() { return [
       example: { kind: 'icon', name: 'rain', caption: 'Rain.' },
       script: [
         { say: 'When the sun is out, the day is sunny.', show: { kind: 'icon', name: 'sun' } },
-        { say: 'When rain falls from the cloud, the day is rainy.', show: { kind: 'icon', name: 'rain' } },
-        { say: 'When snow falls from the cloud, the day is snowy.', show: { kind: 'icon', name: 'snow' } },
+        { say: 'When rain falls from the clouds, the day is rainy.', show: { kind: 'icon', name: 'rain' } },
+        { say: 'When snow falls from the clouds, the day is snowy.', show: { kind: 'icon', name: 'snow' } },
         { say: 'On a cold day you wear a warm coat. On a sunny day, a sun hat. On a rainy day, a raincoat.', show: { kind: 'flow', steps: ['warm coat', 'sun hat', 'raincoat'] } },
       ],
     },
@@ -3878,13 +3878,13 @@ function K_SCIENCE_MODULES() { return [
     title: 'What a plant needs',
     tagline: 'Water and sun',
     lesson: {
-      paragraphs: ['A plant needs water. A plant needs the sun.', 'Give a plant water and sun and it grows.'],
-      keyIdea: 'A plant needs water and the sun to grow.',
+      paragraphs: ['A plant needs water. A plant needs the sun. It needs air too, just like you.', 'Give a plant water and sun and it grows.'],
+      keyIdea: 'A plant needs water, sun and air to grow.',
       example: { kind: 'icon', name: 'drop', caption: 'A drop of water.' },
       script: [
         { say: 'A plant needs a drop of water to grow.', show: { kind: 'icon', name: 'drop' } },
         { say: 'A plant needs the sun to grow.', show: { kind: 'icon', name: 'sun' } },
-        { say: 'Water and sun make the plant grow.', show: { kind: 'icon', name: 'plant' } },
+        { say: 'Water, sun and air help the plant grow.', show: { kind: 'icon', name: 'plant' } },
       ],
     },
     sources: ['Aligned with Texas TEKS K.9B (identify basic needs of plants and animals) and NGSS K-LS1-1 (patterns of what plants need to survive).'],
@@ -3897,13 +3897,13 @@ function K_SCIENCE_MODULES() { return [
     tagline: 'Sun, fire, ice, snow',
     requires: ['kinds-of-weather'],
     lesson: {
-      paragraphs: ['Some things are hot. The sun is hot. Fire is hot.', 'Some things are cold. Ice is cold. Snow is cold.', 'We keep away from hot things. We wear a coat near cold things.'],
+      paragraphs: ['Some things are hot. The sun is hot. Fire is hot.', 'Some things are cold. Ice is cold. Snow is cold.', 'We keep away from hot things. We wear a coat when it is cold.'],
       keyIdea: 'Hot things warm us. Cold things chill us.',
       example: { kind: 'pair', a: { kind: 'icon', name: 'sun' }, b: { kind: 'icon', name: 'ice' }, caption: 'The sun is hot. Ice is cold.' },
       script: [
         { say: 'The sun is hot. Fire is hot too.', show: { kind: 'pair', a: { kind: 'icon', name: 'sun' }, b: { kind: 'icon', name: 'fire' } } },
         { say: 'Ice is cold. Snow is cold too.', show: { kind: 'pair', a: { kind: 'icon', name: 'ice' }, b: { kind: 'icon', name: 'snow' } } },
-        { say: 'We keep away from hot things. We wear a coat near cold things.', show: { kind: 'pair', a: { kind: 'icon', name: 'sun' }, b: { kind: 'icon', name: 'ice' } } },
+        { say: 'We keep away from hot things. We wear a coat when it is cold.', show: { kind: 'pair', a: { kind: 'icon', name: 'sun' }, b: { kind: 'icon', name: 'ice' } } },
       ],
     },
     sources: ['Aligned with TEKS K.5A (observe and record properties of objects, including relative temperature) and NGSS K-PS3-1.'],
@@ -8889,8 +8889,8 @@ function KINDER_CIVICS_MODULES() { return [
     tagline: 'Stars, stripes and days we celebrate',
     requires: ['needs-and-wants'],
     lesson: {
-      paragraphs: ['Our flag is red, white and blue. It has 50 stars, one for each state, and 13 stripes for the first 13 states.', 'On July 4 we celebrate Independence Day. In November we give thanks on Thanksgiving.'],
-      keyIdea: 'Fifty stars, thirteen stripes, red white and blue.',
+      paragraphs: ['Our flag is red, white and blue. It has 50 stars, one for each state, and 13 stripes for the first 13 states.', 'The third Monday of January is Martin Luther King Jr. Day, when we honor Dr. King. On July 4 we celebrate Independence Day. In November we give thanks on Thanksgiving.'],
+      keyIdea: 'Fifty stars, thirteen stripes, red, white and blue.',
       example: { kind: 'flag', stars: true, caption: 'Fifty stars, one for each state.' , formula: '50' },
       script: [
         { say: 'Our flag has 50 stars. One star for each state.', show: { kind: 'letters', text: '50' } },
@@ -8949,7 +8949,7 @@ function KINDER_CIVICS_MODULES() { return [
     lesson: {
       paragraphs: ['The United States flag has 50 stars, one for each state. The Texas flag has one big star. That is why Texas is called the Lone Star State.'],
       keyIdea: 'Fifty stars for the country. One star for Texas.',
-      example: { kind: 'flag', texas: true, caption: 'One star: the Texas flag.' , formula: '1' },
+      example: { kind: 'flag', texas: true, caption: 'One star. That is the Texas flag.' , formula: '1' },
       script: [
         { say: 'The Texas flag has 1 big star, so Texas is the Lone Star State.', show: { kind: 'letters', text: '1' } },
         { say: 'The United States flag has 50 stars, one for each state.', show: { kind: 'letters', text: '50' } },
@@ -9296,8 +9296,8 @@ function HEALTHK_MODULES() { return [
     tagline: 'Soap, water, count to twenty',
     requires: [],
     lesson: {
-      paragraphs: ['Germs are too small to see, and they ride on hands. Wash your hands before eating, and after the bathroom the next thing you do is wash your hands.\nSoap, water, and scrub while you count to twenty. Between the fingers too, and under the nails.', 'Twenty seconds is a short song. Sing it and you are done.', 'Clean hands keep the germs off your food and out of your mouth.'],
-      keyIdea: 'Wash before eating and after the bathroom: soap, water, count to twenty.',
+      paragraphs: ['Germs are too small to see, and they ride on hands. Wash your hands before eating, and after the bathroom the next thing you do is wash your hands.', 'Soap, water, and scrub while you count to twenty. Between the fingers too, and under the nails.', 'Twenty seconds is a short song. Sing it and you are done.', 'Clean hands keep the germs off your food and out of your mouth.'],
+      keyIdea: 'Wash before eating and after the bathroom. Use soap and water, and count to twenty.',
       example: { kind: 'flow', steps: ['wet', 'soap', 'scrub to twenty', 'rinse', 'dry'], caption: 'Five steps, and the germs go down the drain.',
         another: ['Put a little glitter on your hands and wash with water only. Some stays. Now wash with soap: it goes. Germs are like glitter you cannot see.',
           { text: 'Between the fingers is where germs hide, like crumbs in the cracks of a couch. Scrub there on purpose.', visual: { kind: 'letters', text: 'between the fingers' } },
@@ -9313,9 +9313,9 @@ function HEALTHK_MODULES() { return [
     tagline: 'Two times, two minutes',
     requires: ['washing-hands'],
     lesson: {
-      paragraphs: ['Germs eat leftover sugar on teeth and make tiny holes called cavities. Brushing sweeps them away.\nBrush two times a day, morning and night, for two minutes each: front, back and the tops where you chew.', 'A timer or a two-minute song keeps you honest. Water is the best drink for teeth; the most important brushing is at night, because germs work all night on whatever you leave them.', 'Two times, two minutes, and the sugar bugs lose.'],
+      paragraphs: ['Germs eat leftover sugar on teeth and make tiny holes called cavities. Brushing sweeps them away.', 'Brush two times a day, morning and night, for two minutes each, cleaning the front, the back and the tops where you chew.', 'A timer or a two-minute song keeps you honest. Water is the best drink for teeth. The most important brushing is at night, because germs work all night on whatever you leave them.', 'Two times, two minutes, and the sugar bugs lose.'],
       keyIdea: 'Brush two times a day for two minutes, front, back and tops.',
-      example: { kind: 'flow', steps: ['fronts', 'backs', 'chewing tops', 'tongue', 'rinse'], caption: 'Around the mouth in two minutes: every side of every tooth.',
+      example: { kind: 'flow', steps: ['fronts', 'backs', 'chewing tops', 'tongue', 'rinse'], caption: 'Around the mouth in two minutes, every side of every tooth.',
         another: ['Your teeth are like a fence with a picket for every tooth. Paint every picket, both sides, or the unpainted ones rot.',
           { text: 'Two minutes feels long. Split it: thirty seconds for each corner of your mouth, top right, top left, bottom left, bottom right.', visual: { kind: 'flow', steps: ['top right', 'top left', 'bottom left', 'bottom right'] } },
           'Morning brushing cleans up breakfast. Night brushing matters more: germs work all night on whatever you leave them.'] },
@@ -9330,7 +9330,7 @@ function HEALTHK_MODULES() { return [
     tagline: 'When your body grows',
     requires: ['brushing-teeth'],
     lesson: {
-      paragraphs: ['Sleep is when your body grows and your brain files the day away. A five-year-old needs ten to thirteen hours, counting naps.\nWithout enough, you feel grumpy and forget things. A tired brain drops things; a rested one remembers.', 'The same quiet routine each night tells your body it is time: bath, book, bed.', 'Ten to twelve hours, the same way every night.'],
+      paragraphs: ['Sleep is when your body grows and your brain files the day away. Kids your age need about ten to twelve hours each night.', 'Without enough, you feel grumpy and forget things. A tired brain drops things. A rested one remembers.', 'The same quiet routine each night tells your body it is time: bath, book, bed.', 'Ten to twelve hours, the same way every night.'],
       keyIdea: 'Ten to twelve hours of sleep, with the same quiet routine each night.',
       example: { kind: 'flow', steps: ['bath', 'book', 'bed', 'sleep'], caption: 'The same steps each night, and your body knows what comes next.',
         another: ['Your brain is a desk. All day, papers pile up. At night, while you sleep, someone files them. Skip the night and the desk is a mess in the morning.',
@@ -9347,9 +9347,9 @@ function HEALTHK_MODULES() { return [
     tagline: 'Half fruits and vegetables',
     requires: ['sleep-k'],
     lesson: {
-      paragraphs: ['Half your plate is fruits and vegetables: a carrot, peas, broccoli, spinach, an apple. Then grains, like bread and rice, and protein, like eggs and beans.\nColors on the plate mean vitamins.', 'Drink water most of the time. Milk is good too. Soda is sugar with bubbles. Sweets are for sometimes, not for every day.', 'Half the plate green and orange and red, and a glass of water beside it.'],
-      keyIdea: 'Half the plate fruits and vegetables; water to drink.',
-      example: { kind: 'bar', parts: 4, shaded: 2, caption: 'A plate in four parts: two for fruits and vegetables, one for grains, one for protein.',
+      paragraphs: ['Half your plate is fruits and vegetables, like a carrot, peas, broccoli, spinach or an apple. Then grains, like bread and rice, and protein, like eggs and beans.', 'Colors on the plate mean vitamins.', 'Drink water most of the time. Milk is good too. Soda is sugar with bubbles. Sweets are for sometimes, not for every day.', 'Half the plate green and orange and red, and a glass of water beside it.'],
+      keyIdea: 'Half the plate is fruits and vegetables, with water to drink.',
+      example: { kind: 'bar', parts: 4, shaded: 2, caption: 'A plate in four parts, two for fruits and vegetables, one for grains and one for protein.',
         another: ['Think of a rainbow on the plate. Red tomatoes, orange carrots, green peas, purple grapes. Each color brings something different.',
           { text: 'A plate is a pizza cut in four: two slices of vegetables and fruit, one of grains, one of protein. Same idea, every meal.', visual: { kind: 'bar', parts: 4, shaded: 2 } },
           'Sweets are for sometimes, not for every day. Water is for every day.'] },
@@ -9439,9 +9439,9 @@ function TECHK_MODULES() { return [
     tagline: 'Inputs tell, outputs show',
     requires: [],
     lesson: {
-      paragraphs: ['A computer cannot see you or hear you on its own. You tell it things with a keyboard, a mouse or a touch screen. Those parts are called inputs.\nIt shows you things on a screen and plays sounds with a speaker. Those parts are called outputs.', 'You tell, and it shows. Press a key, and a letter appears on the screen. Tap a picture on a touch screen, and a song plays from the speaker. A touch screen is an input, because you tell with it. A speaker is an output, because it shows you, with sound.', 'A computer only does what it is told. The telling parts are inputs. The showing parts are outputs.'],
+      paragraphs: ['A computer cannot see you or hear you on its own. You tell it things with a keyboard, a mouse or a touch screen. Those parts are called inputs.', 'It shows you things on a screen and plays sounds with a speaker. Those parts are called outputs.', 'You tell, and it shows. Press a key, and a letter appears on the screen. Tap a picture on a touch screen, and a song plays from the speaker. A touch screen does both jobs. When you tap it, it is an input, because you tell with it. When it shows you a picture, it is an output. A speaker is an output, because it shows you, with sound.', 'A computer only does what it is told. The telling parts are inputs. The showing parts are outputs.'],
       keyIdea: 'Inputs tell a computer. Outputs show you.',
-      example: { kind: 'flow', steps: ['tap the screen', 'the computer works', 'a song plays'], caption: 'You tap; the computer follows its steps; the speaker plays the song.',
+      example: { kind: 'flow', steps: ['tap the screen', 'the computer works', 'a song plays'], caption: 'You tap, the computer follows its steps, and the speaker plays the song.',
         another: ['A computer is like a helper who cannot see or hear. Its inputs are its ears: the keyboard, the mouse, the touch screen. Its outputs are its voice and its hands: the screen and the speaker.',
           { text: 'A toaster works the same way. The lever you push down is the input. The toast that pops up is the output.', visual: { kind: 'flow', steps: ['push the lever', 'the toaster heats', 'toast pops up'] } },
           'Ask about any part: do I use it to tell, or does it show me? Tell is an input. Show is an output.'] },
@@ -9456,8 +9456,8 @@ function TECHK_MODULES() { return [
     tagline: 'Steps in order',
     requires: ['tell-and-show'],
     lesson: {
-      paragraphs: ['A list of steps in order is called an algorithm. That is a big word for a small idea: first, next, then, last.\nTo make a jam sandwich: first get the bread, next spread the jam, then close the sandwich, last take a bite.', 'Mix up the order and it goes wrong. Bite first, and there is no sandwich yet. Spread the jam last, and it lands on top of your bite.', 'A big job breaks into small steps. Getting dressed is one big job: socks first, then shoes. Shoes first, and the socks will not go on.', 'First, next, then, last. A computer follows its steps the same way, one at a time, in order, and it never skips one.'],
-      keyIdea: 'Steps in order, first, next, then, last: that is an algorithm.',
+      paragraphs: ['A list of steps in order is called an algorithm. That is a big word for a small idea, first, next, then, last.', 'To make a jam sandwich, first get the bread, next spread the jam, then close the sandwich, last take a bite.', 'Mix up the order and it goes wrong. Bite first, and there is no sandwich yet. Spread the jam last, and it lands on top of your bite.', 'A big job breaks into small steps. Getting dressed is one big job: socks first, then shoes. Shoes first, and the socks will not go on.', 'First, next, then, last. A computer follows its steps the same way, one at a time, in order, and it never skips one.'],
+      keyIdea: 'Steps in order, first, next, then, last, are called an algorithm.',
       example: { kind: 'flow', steps: ['first: bread', 'next: jam', 'then: close it', 'last: bite'], caption: 'Four steps in order make a sandwich. The same steps out of order make a mess.',
         another: ['An algorithm is a recipe. A recipe tells you what to do and in what order, and a cook who skips a step gets a different dinner.',
           { text: 'Getting dressed is an algorithm too: socks, then shoes. Try it the other way and the shoes are already on when the socks arrive.', visual: { kind: 'flow', steps: ['socks', 'shoes', 'coat', 'out the door'] } },
@@ -9473,7 +9473,7 @@ function TECHK_MODULES() { return [
     tagline: 'Patterns and loops',
     requires: ['first-next-then-last'],
     lesson: {
-      paragraphs: ['A pattern is something that repeats: red, blue, red, blue. When you know the pattern, you can guess what comes next. After blue, red comes again.', 'A computer can repeat steps too. Instead of saying clap, clap, clap, clap, you can say clap four times. Saying a step again and again is called a loop.\nA loop needs two things: what to do, and how many times. Jump three times. Blink two times.', 'You can write steps for a toy robot the same way. Forward, forward, forward, turn is four steps. Forward three times, then turn, says the same thing in two.', 'A pattern helps you guess what comes next. A loop lets a few words do a lot of work.'],
+      paragraphs: ['A pattern is something that repeats: red, blue, red, blue. When you know the pattern, you can guess what comes next. After blue, red comes again.', 'A computer can repeat steps too. Instead of saying clap, clap, clap, clap, you can say clap four times. Saying a step again and again is called a loop.', 'A loop needs two things, what to do and how many times. Jump three times. Blink two times.', 'You can write steps for a toy robot the same way. Forward, forward, forward, turn is four steps. Forward three times, then turn, says the same thing in two.', 'A pattern helps you guess what comes next. A loop lets a few words do a lot of work.'],
       keyIdea: 'A pattern repeats. A loop says do it again, and how many times.',
       example: { kind: 'flow', steps: ['clap four times', 'jump three times', 'blink two times'], caption: 'Three loops. Each one says what to do and how many times.',
         another: ['Beads on a string: red, blue, red, blue. Cover the string with your hand and you can still say what the next bead is. That is what a pattern gives you.',
@@ -9490,7 +9490,7 @@ function TECHK_MODULES() { return [
     tagline: 'Secret words and private things',
     requires: ['do-it-again'],
     lesson: {
-      paragraphs: ['A password is a secret word that opens your account. Keep it secret. Only a parent or a teacher may know it. When you are done, log off, so the next person cannot get in.', 'Some things are safe to share online: your favorite color, a game you like, a pet. Some things are private and stay private: your full name, your address, your school and your birthday.', 'Be kind online, just like at the park, because a real person is on the other side. If something online makes you feel bad, stop and tell a grown-up.', 'Secret password, private things private, kind words, and tell a grown-up.'],
+      paragraphs: ['A password is a secret word that opens your account. Keep it secret. Only a parent or a teacher may know it. When you are done, log off, so the next person cannot get in.', 'Some things are safe to share online: your favorite color, a game you like, a pet. Some things are private and stay private, like your full name, your address, your school and your birthday.', 'Be kind online, just like at the park, because a real person is on the other side. If something online makes you feel bad, stop and tell a grown-up.', 'Secret password, private things private, kind words, and tell a grown-up.'],
       keyIdea: 'Keep your password secret, keep private things private, be kind, and tell a grown-up.',
       example: { kind: 'flow', steps: ['log in', 'play', 'log off'], caption: 'Log in with your secret word, and log off when you are done.',
         another: ['A password is like the key to your house. You do not hand your key to a stranger, and you lock the door when you leave. Logging off is locking the door.',
@@ -12067,7 +12067,7 @@ function SPEECHK_MODULES() { return [
     tagline: 'Eyes, ears, hands, feet and mind, all listening at once',
     requires: [],
     lesson: {
-      paragraphs: ['Listening is a whole-body job. Your eyes look at the person. Your ears hear the words. Your hands stay still. Your feet stay still. And your mind thinks about the words, not about lunch.', 'If you do not understand, ask. You can say, what do you mean? Or, can you say it again? Asking is not rude. Asking is how listeners get it right.\nWhen someone asks you a question, answer with more than one word. Not just yes. Say, yes, I saw the red bird.', 'A good listener can say the story back. Try it after a story. What happened first? What happened last? If you can say it back, you heard it.'],
+      paragraphs: ['Listening is a whole-body job. Your eyes look at the person. Your ears hear the words. Your hands stay still. Your feet stay still. And your mind thinks about the words, not about lunch.', 'If you do not understand, ask. You can say, what do you mean? Or, can you say it again? Asking is not rude. Asking is how listeners get it right.', 'When someone asks you a question, answer with more than one word. Not just yes. Say, yes, I saw the red bird.', 'A good listener can say the story back. Try it after a story. What happened first? What happened last? If you can say it back, you heard it.'],
       keyIdea: 'Listen with your eyes, ears, hands, feet and mind. If you do not understand, ask. Answer with more than one word. If you can say the story back, you heard it.',
       example: { kind: 'flow', steps: ['eyes look', 'ears hear', 'hands still', 'mind on the words'], caption: 'A whole-body listener.',
         another: ['Your teacher says, get your coat. If you did not hear, ask: can you say it again? Then you will get the coat and not the hat.',
@@ -12084,8 +12084,8 @@ function SPEECHK_MODULES() { return [
     tagline: 'Hear the steps, say them back, then do them in order',
     requires: ['my-listening-body'],
     lesson: {
-      paragraphs: ['Directions come in steps. First, then, last. First get a cup. Then fill it with water. Last, put it on the table. Three steps, in order.', 'Before you do the steps, say them back. Cup, water, table. Saying them back keeps them in your head. If you say one wrong, the grown-up fixes it before you start.\nThen do the steps in order. First things first. Last things last.', 'You can give directions too. Say how many steps. Say first, then, last. Then ask your friend to say them back to you. Two steps: first, get the ball. Then, roll it to me. Now you say it.'],
-      keyIdea: 'Directions come in steps: first, then, last. Say the steps back before you do them. Do them in order. When you give directions, say first, then, last, and ask for them back.',
+      paragraphs: ['Directions come in steps. First, then, last. First get a cup. Then fill it with water. Last, put it on the table. Three steps, in order.', 'Before you do the steps, say them back. Cup, water, table. Saying them back keeps them in your head. If you say one wrong, the grown-up fixes it before you start.', 'Then do the steps in order. First things first. Last things last.', 'You can give directions too. Say how many steps. Say first, then, last. Then ask your friend to say them back to you. Two steps: first, get the ball. Then, roll it to me. Now you say it.'],
+      keyIdea: 'Directions come in steps, first, then, last. Say the steps back before you do them. Do them in order. When you give directions, say first, then, last, and ask for them back.',
       example: { kind: 'flow', steps: ['hear the steps', 'say them back', 'do them in order'], caption: 'First, then, last.',
         another: ['First, wash your hands. Then, sit down. Last, eat. Say it back: hands, sit, eat.',
           { text: 'Two steps for a friend: first, get the crayons. Then, put them on the table. Now you say it. If they say table first, fix it.', visual: { kind: 'flow', steps: ['first', 'then', 'say it back'] } },
@@ -12119,7 +12119,7 @@ function SPEECHK_MODULES() { return [
     requires: ['my-clear-voice'],
     lesson: {
       paragraphs: ['In a group, one person talks at a time. Everyone else listens. If you want a turn, put your hand up and wait. Your turn will come. That is the rule, and the rule is fair.', 'Kind words open doors. Hello, my name is Sam. Please. Thank you. Excuse me. I need help. These words work in every room, at school and at home and at the store.', 'If you want something, say it in words. I need help with my zipper. I want a turn with the truck. Saying it in words works better than grabbing, and better than crying. People can help you when they know what you need.'],
-      keyIdea: 'One talker at a time; put your hand up and wait for your turn. Kind words: hello and my name, please, thank you, excuse me. Say what you need in words.',
+      keyIdea: 'One talker at a time. Put your hand up and wait for your turn. Kind words are hello and my name, please, thank you and excuse me. Say what you need in words.',
       example: { kind: 'flow', steps: ['one talker', 'hand up', 'my turn'], caption: 'How a group takes turns.',
         another: ['Hello, my name is Ava. That is how you meet someone. Then they know your name, and you can be friends.',
           { text: 'I want a turn with the truck. That is words. Grabbing the truck is not words. Words get you a turn.', visual: { kind: 'flow', steps: ['I want a turn', 'they hear it', 'a turn'] } },
@@ -14682,10 +14682,10 @@ const PREK_LETTERS = ['A', 'B', 'C', 'D', 'E', 'M', 'S'];
 Object.assign(GENERATORS, {
   'sk-day-or-night': (rng) => {
     // More examples (pass HT, Mikey): eight short scenes, each answered by the lesson's sun, moon, bright and dark.
-    const Q = [['Is the sun for the day or the night?', 'Day', 'sun', 'The sun shines in the day.'], ['Is the moon for the day or the night?', 'Night', 'moon', 'The moon shines at night.'],
-      ['The moon is out. Is it day or night?', 'Night', 'moon', 'The moon shines at night.'], ['The sun is shining. Is it day or night?', 'Day', 'sun', 'The sun shines in the day.'],
+    const Q = [['Is the sun for the day or the night?', 'Day', 'sun', 'The sun shines in the day.'], ['It is dark, and the stars are out. Is it day or night?', 'Night', null, 'A dark sky with stars means it is night.'],
+      ['The moon is out, and the sky is dark. Is it day or night?', 'Night', 'moon', 'A dark sky means it is night.'], ['The sun is shining. Is it day or night?', 'Day', 'sun', 'The sun shines in the day.'],
       ['The sky is bright. Is it day or night?', 'Day', null, 'In the day the sky is bright.'], ['The sky is dark. Is it day or night?', 'Night', null, 'At night the sky is dark.'],
-      ['You see the sun out the window. Is it day or night?', 'Day', 'sun', 'The sun shines in the day.'], ['You see the moon out the window. Is it day or night?', 'Night', 'moon', 'The moon shines at night.']];
+      ['You see the sun out the window. Is it day or night?', 'Day', 'sun', 'The sun shines in the day.'], ['You see the moon in a dark sky. Is it day or night?', 'Night', 'moon', 'A dark sky means it is night.']];
     const [prompt, answer, icon, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: ['Day', 'Night'], answer, explain, visual: icon ? { kind: 'icon', name: icon } : null, explainVisual: null };
   },
@@ -14694,7 +14694,7 @@ Object.assign(GENERATORS, {
     // More examples (pass HT, Mikey): tap the sun or the moon by name or by when it shines.
     const [prompt, sun] = pick(rng, [['Tap the sun.', true], ['Tap the moon.', false], ['Tap what shines in the day.', true], ['Tap what shines at night.', false]]);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, ['icon:sun', 'icon:moon']), answer: sun ? 'icon:sun' : 'icon:moon',
-      explain: sun ? 'This is the sun. It shines in the day.' : 'This is the moon. It shines at night.', visual: null, explainVisual: null };
+      explain: sun ? 'This is the sun. It shines in the day.' : 'This is the moon. We often see it at night.', visual: null, explainVisual: null };
   },
 
   'sk-which-weather': (rng) => {
@@ -14715,7 +14715,7 @@ Object.assign(GENERATORS, {
   'sk-living-or-not': (rng) => {
     const t = pick(rng, [{ n: 'plant', living: true }, { n: 'fish', living: true }, { n: 'bird', living: true }, { n: 'tree', living: true }, { n: 'rock', living: false }, { n: 'ice', living: false }]);
     return { type: 'choice', story: null, prompt: `Look at the ${t.n}. Is it living?`, choices: ['Living', 'Not living'], answer: t.living ? 'Living' : 'Not living',
-      explain: t.living ? `${thingWords(t.n)} grows and needs food and water. It is living.` : `${thingWords(t.n)} does not grow or eat. It is not living.`, visual: { kind: 'icon', name: t.n }, explainVisual: null };
+      explain: t.living ? `${thingWords(t.n)} grows and needs food and water. It is living.` : t.n === 'ice' ? 'Ice is frozen water. It does not eat, so it is not living.' : `${thingWords(t.n)} does not grow or eat. It is not living.`, visual: { kind: 'icon', name: t.n }, explainVisual: null };
   },
   'sk-tap-living': (rng) => {
     const living = pick(rng, ['plant', 'fish', 'bird', 'tree']); const not = pick(rng, ['rock', 'ice']);
@@ -14725,11 +14725,11 @@ Object.assign(GENERATORS, {
   'sk-tap-not-living': (rng) => {
     const living = pick(rng, ['plant', 'fish', 'bird', 'tree']); const not = pick(rng, ['rock', 'ice']);
     return { type: 'choice', story: null, prompt: 'Tap the thing that is not living.', choices: shuffle(rng, [`icon:${living}`, `icon:${not}`]), answer: `icon:${not}`,
-      explain: `The ${not} is not living. It does not grow.`, visual: null, explainVisual: null };
+      explain: `The ${not} is not living. ${not === 'ice' ? 'It is frozen water, and it does not eat.' : 'It does not grow.'}`, visual: null, explainVisual: null };
   },
   'sk-plant-needs': (rng) => {
     // Pass IU: things a plant does not need beside the two it does, so a round of five never asks the same question twice.
-    const [name, label, answer, explain] = pick(rng, [['drop', 'drop of water', 'Yes', 'A plant needs water.'], ['sun', 'sun', 'Yes', 'A plant needs the sun.'], ['rock', 'rock', 'No', 'A plant does not need a rock. It needs water and the sun.'], ['magnet', 'magnet', 'No', 'A plant does not need a magnet. It needs water and the sun.'], ['nail', 'nail', 'No', 'A plant does not need a nail. It needs water and the sun.']]);
+    const [name, label, answer, explain] = pick(rng, [['drop', 'drop of water', 'Yes', 'A plant needs water.'], ['sun', 'sun', 'Yes', 'A plant needs the sun.'], ['rock', 'rock', 'No', 'A plant does not need a rock. It needs water, sun and air.'], ['magnet', 'magnet', 'No', 'A plant does not need a magnet. It needs water, sun and air.'], ['nail', 'nail', 'No', 'A plant does not need a nail. It needs water, sun and air.']]);
     return { type: 'choice', story: null, prompt: `Look at the ${label}. Does a plant need it?`, choices: ['Yes', 'No'], answer, explain, visual: { kind: 'icon', name }, explainVisual: null };
   },
   'sk-tap-plant-need': (rng) => {
@@ -16670,12 +16670,12 @@ Object.assign(GENERATORS, {
       ['What do we call the parts that tell a computer?', ['inputs', 'outputs', 'wheels'], 'inputs', 'Inputs tell. A keyboard, a mouse and a touch screen are inputs.'],
       ['What do we call the parts that show you things?', ['outputs', 'inputs', 'wheels'], 'outputs', 'Outputs show you. The screen and the speaker are outputs.'],
       ['Which part plays a sound?', ['a speaker', 'a mouse', 'a keyboard'], 'a speaker', 'The speaker plays sounds. It shows you with sound, so it is an output.'],
-      ['A touch screen is which kind of part?', ['an input', 'an output', 'a wheel'], 'an input', 'You tell with a touch screen, so it is an input.']];
+      ['When you tap a touch screen, which kind of part is it?', ['an input', 'an output', 'a wheel'], 'an input', 'Tapping tells the computer something, so the touch screen is working as an input.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
   'tk-order': (rng) => {
-    const Q = [['What is a list of steps in order called?', ['an algorithm', 'a picture', 'a song'], 'an algorithm', 'An algorithm is steps in order: first, next, then, last.'],
+    const Q = [['What is a list of steps in order called?', ['an algorithm', 'a picture', 'a song'], 'an algorithm', 'An algorithm is steps in order, first, next, then, last.'],
       ['To make a jam sandwich, what do you do first?', ['get the bread', 'take a bite', 'spread the jam'], 'get the bread', 'First get the bread, next spread the jam, then close the sandwich, last take a bite.'],
       ['When you get dressed, what goes on first?', ['socks', 'shoes', 'a hat'], 'socks', 'Socks first, then shoes. Shoes first, and the socks will not go on.'],
       ['What happens if you take a bite first?', ['there is no sandwich yet', 'the sandwich is done', 'the jam goes away'], 'there is no sandwich yet', 'Bite first and there is no sandwich yet. The order matters.'],
@@ -17051,13 +17051,13 @@ Object.assign(GENERATORS, {
       ['Where do your eyes look when you listen?', ['at the person', 'at the floor', 'at your lunch'], 'at the person', 'Your eyes look at the person.'],
       ['What do your hands do when you listen?', ['stay still', 'wave', 'clap'], 'stay still', 'Your hands stay still, and so do your feet.'],
       ['If you do not understand, what do you do?', ['ask', 'hide', 'guess'], 'ask', 'Asking is how listeners get it right.'],
-      ['Someone asks a question. How many words do you answer with?', ['more than one', 'one', 'none'], 'more than one', 'More than one word: not just yes, but yes, I saw the red bird.'],
+      ['Someone asks a question. How many words do you answer with?', ['more than one', 'one', 'none'], 'more than one', 'More than one word. Not just yes, but yes, I saw the red bird.'],
       ['If you can say the story back, what does that mean?', ['you heard it', 'you missed it', 'it is over'], 'you heard it', 'If you can tell what happened first and last, you heard it.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
   'spk-steps': (rng) => {
-    const Q = [['Directions come in what?', ['steps', 'colors', 'songs'], 'steps', 'Directions come in steps: first, then, last.'],
+    const Q = [['Directions come in what?', ['steps', 'colors', 'songs'], 'steps', 'Directions come in steps, first, then, last.'],
       ['Before you do the steps, what do you do?', ['say them back', 'run', 'sing'], 'say them back', 'Say the steps back first. Then you know you heard them right.'],
       ['Get a cup, fill it, put it on the table. What is first?', ['get a cup', 'the table', 'fill it'], 'get a cup', 'Get a cup first. You cannot fill a cup you do not have yet.'],
       ['If you say a step wrong, what happens?', ['the grown-up fixes it', 'nothing', 'you start over'], 'the grown-up fixes it', 'The grown-up fixes it before you start. That is why you say them back.'],
@@ -17071,7 +17071,7 @@ Object.assign(GENERATORS, {
       ['How fast do you talk?', ['slow enough to follow', 'as fast as you can', 'not at all'], 'slow enough to follow', 'If you go too fast, your friends cannot keep up.'],
       ['Which is a whole word?', ['cat', 'ca', 'c'], 'cat', 'Say the whole word: cat, not ca.'],
       ['A good telling has how many parts?', ['three', 'ten', 'one'], 'three', 'What it is, what it does, and why you like it.'],
-      ['This is my dog. He is brown and likes to dig. What comes next?', ['why you like him', 'his shoe size', 'the end'], 'why you like him', 'Next, say why you like him, like: I like him because he is funny.'],
+      ['This is my dog. He is brown and likes to dig. What comes next?', ['why you like him', 'his shoe size', 'the end'], 'why you like him', 'Next, say why you like him. I like him because he is funny.'],
       ['After you hold up your picture, where do you look?', ['at your friends', 'at the floor', 'at the door'], 'at your friends', 'Your friends are the ones you are talking to.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
@@ -19227,7 +19227,7 @@ Object.assign(GENERATORS, {
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
   'hk-hands': (rng) => {
-    const Q = [['What should you use besides water to wash your hands?', ['soap', 'sand', 'nothing'], 'soap', 'Water alone slides off. Soap grabs the germs and the water carries them away.'], ['After the bathroom, what comes next?', ['wash your hands', 'go play', 'eat a snack'], 'wash your hands', 'Every time. After the bathroom, before food.'],['When should you wash your hands?', ['before eating', 'never', 'only on Sundays'], 'before eating', 'Before eating and after the bathroom. Soap, water, and count to twenty.'],
+    const Q = [['What should you use besides water to wash your hands?', ['soap', 'sand', 'nothing'], 'soap', 'Water alone slides off. Soap grabs the germs and the water carries them away.'], ['After the bathroom, what comes next?', ['wash your hands', 'go play', 'eat a snack'], 'wash your hands', 'Wash your hands every time, after the bathroom and before food.'],['When should you wash your hands?', ['before eating', 'never', 'only on Sundays'], 'before eating', 'Before eating and after the bathroom. Soap, water, and count to twenty.'],
       ['How long should you scrub with soap?', ['while you count to twenty', 'one second', 'all afternoon'], 'while you count to twenty', 'Twenty seconds gets the germs off. Sing a short song and you are there.'],
       ['Which part of your hand do people forget?', ['between the fingers', 'the palm', 'the top'], 'between the fingers', 'Germs hide between fingers and under nails. Scrub there too.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
@@ -19241,7 +19241,7 @@ Object.assign(GENERATORS, {
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
   'hk-sleep': (rng) => {
-    const Q = [['What is a good last step before sleep?', ['a story in bed', 'a video game', 'a big dinner'], 'a story in bed', 'A quiet story tells your body it is time. Bath, book, bed.'], ['Sleep is when your body does what?', ['grows', 'shrinks', 'nothing'], 'grows', 'Growing happens while you sleep, and so does remembering.'],['About how many hours of sleep does a five-year-old need?', ['ten to thirteen', 'two', 'twenty'], 'ten to thirteen', 'Ten to thirteen hours, counting naps. Sleep is when your body grows and your brain files the day away.'],
+    const Q = [['What is a good last step before sleep?', ['a story in bed', 'a video game', 'a big dinner'], 'a story in bed', 'A quiet story tells your body it is time. Bath, book, bed.'], ['Sleep is when your body does what?', ['grows', 'shrinks', 'nothing'], 'grows', 'Growing happens while you sleep, and so does remembering.'],['About how many hours of sleep do kids your age need each night?', ['ten to twelve', 'two', 'twenty'], 'ten to twelve', 'About ten to twelve hours each night. Sleep is when your body grows and your brain files the day away.'],
       ['What happens when you do not sleep enough?', ['you feel grumpy and forget things', 'you get taller', 'nothing'], 'you feel grumpy and forget things', 'A tired brain drops things. A rested one remembers.'],
       ['What helps you fall asleep?', ['the same quiet routine each night', 'a bright screen', 'a big snack'], 'the same quiet routine each night', 'Bath, book, bed. The same steps tell your body it is time.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
@@ -22233,7 +22233,7 @@ const CIV_RULE_WHYS = [['Why do we stop at a red light?', 'To let the other cars
 const CIV_GOOD_CHOICES = [['A friend drops their crayons.', 'Help pick them up', 'Walk away'], ['Someone is talking.', 'Listen', 'Talk over them'], ['You finish your snack.', 'Throw away the wrapper', 'Leave it on the floor']];
 const CIV_NEED_WANT = [['Water', 'Need'], ['A home', 'Need'], ['A warm coat', 'Need'], ['An apple', 'Need'], ['A toy car', 'Want'], ['Candy', 'Want'], ['A video game', 'Want'], ['A balloon', 'Want']];
 const CIV_FLAG_COUNTS = [['How many stars are on our flag?', 50], ['How many stripes are on our flag?', 13]];
-const CIV_HOLIDAYS = [['Which holiday do we celebrate on July 4?', 'Independence Day', 'July 4 is Independence Day, the birthday of our country.'], ['Which November holiday is for giving thanks?', 'Thanksgiving', 'Thanksgiving comes in November. It is a day for giving thanks.'], ['Which holiday comes on the third Monday of January?', 'Martin Luther King Day', 'Martin Luther King Day is the third Monday of January. It honors Dr. King.']]; // whole questions, each with its own explanation (pass ID)
+const CIV_HOLIDAYS = [['Which holiday do we celebrate on July 4?', 'Independence Day', 'July 4 is Independence Day, the birthday of our country.'], ['Which November holiday is for giving thanks?', 'Thanksgiving', 'Thanksgiving comes in November. It is a day for giving thanks.'], ['Which holiday comes on the third Monday of January?', 'Martin Luther King Jr. Day', 'Martin Luther King Jr. Day is the third Monday of January. It honors Dr. King.']]; // whole questions, each with its own explanation (pass ID)
 const CIV_LEADERS = [['Who leads a city?', 'Mayor'], ['Who leads a state?', 'Governor'], ['Who leads the whole country?', 'President']];
 const CIV_WORKPLACES = [['Who works in the White House?', 'President'], ['Who works in the state capitol in Austin?', 'Governor'], ['Who works at city hall?', 'Mayor']];
 const CIV_GOOD_SERVICE = [['Bread', 'Good'], ['Shoes', 'Good'], ['A toy', 'Good'], ['A haircut', 'Service'], ['A bus ride', 'Service'], ['A visit to the doctor', 'Service']];
@@ -23554,7 +23554,7 @@ const sylWord = (rng, n) => pick(rng, SYLLABLE_WORDS.filter(([, c]) => !n || c =
 Object.assign(GENERATORS, {
   'ry-how-many-claps': (rng) => {
     const [w, n] = sylWord(rng);
-    return { type: 'choice', story: `Say it slowly: ${w}.`, prompt: 'How many claps?', choices: ['1', '2', '3'], answer: String(n),
+    return { type: 'choice', story: `Say it slowly, ${w}.`, prompt: 'How many claps?', choices: ['1', '2', '3'], answer: String(n),
       explain: `${SYL_SPLIT[w] || w}. ${n} ${n === 1 ? 'clap' : 'claps'}.`, visual: { kind: 'letters', text: w }, explainVisual: null };
   },
   'ry-pick-two': (rng) => {
@@ -23614,7 +23614,7 @@ Object.assign(GENERATORS, {
     const w = pick(rng, CVC_WORDS);
     const near = CVC_WORDS.filter((x) => x !== w && (x[0] === w[0] || x[2] === w[2]));
     const others = shuffle(rng, near.length >= 2 ? near : CVC_WORDS.filter((x) => x !== w)).slice(0, 2);
-    return { type: 'choice', story: `Read: ${w.split('').join(' ')}.`, prompt: 'Which word did you read?', choices: shuffle(rng, [w, ...others]), answer: w,
+    return { type: 'choice', story: `Read the sounds ${w.split('').join(' ')}.`, prompt: 'Which word did you read?', choices: shuffle(rng, [w, ...others]), answer: w,
       explain: `${w[0]}, ${w[1]}, ${w[2]} makes ${w}.`, visual: { kind: 'letters', text: w.split('').join(' ') }, explainVisual: null };
   },
 });
@@ -23685,7 +23685,7 @@ Object.assign(GENERATORS, {
   },
   'rm-shape-word': (rng) => {
     const it = pick(rng, MEANING_ITEMS.slice(0, 4));
-    return { type: 'choice', story: `Read the word: ${it.word}.`, prompt: 'Tap that shape.', choices: shuffle(rng, [it, ...shuffle(rng, MEANING_ITEMS.slice(0, 4).filter((x) => x.word !== it.word)).slice(0, 2)].map((x) => `shape:${x.visual.name}`)), answer: `shape:${it.visual.name}`,
+    return { type: 'choice', story: `Read the word ${it.word}.`, prompt: 'Tap that shape.', choices: shuffle(rng, [it, ...shuffle(rng, MEANING_ITEMS.slice(0, 4).filter((x) => x.word !== it.word)).slice(0, 2)].map((x) => `shape:${x.visual.name}`)), answer: `shape:${it.visual.name}`,
       explain: `${it.word[0].toUpperCase() + it.word.slice(1)}. This is the ${it.word}.`, visual: null, explainVisual: null };
   },
 });
@@ -24019,7 +24019,7 @@ Object.assign(GENERATORS, {
     const fam = pick(rng, RHYME_FAMILIES); const [a, b] = shuffle(rng, fam).slice(0, 2);
     const odd = pick(rng, pick(rng, RHYME_FAMILIES.filter((f) => f !== fam)));
     return { type: 'choice', story: 'Two of these rhyme.', prompt: 'Which one does not?', choices: shuffle(rng, [a, b, odd]), answer: odd,
-      explain: `${a} and ${b} rhyme. ${odd} does not.`, visual: null, explainVisual: null };
+      explain: `${a} and ${b} rhyme. ${capFirst(odd)} does not.`, visual: null, explainVisual: null };
   },
   'rr-same-end': (rng) => {
     const fam = pick(rng, RHYME_FAMILIES); const [a, b] = shuffle(rng, fam).slice(0, 2);

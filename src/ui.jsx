@@ -7405,7 +7405,14 @@ function EduSphereScreens() {
       if (back && back.screen === screen) { const y = back.y || 0; let tries = 0; const go = () => { window.scrollTo(0, y); if (Math.abs(window.scrollY - y) > 2 && tries++ < 20) setTimeout(go, 50); }; setTimeout(go, 0); }
       else {
         scrollToTop(!firstScreen.current);
-        if (tourStep < 0) for (const wait of [80, 320]) setTimeout(() => { if (pageScrolled() || framedFullHeight()) scrollToTop(!firstScreen.current); }, wait);
+        // Pass JK: the second asks for the top stop the moment a person scrolls, taps or types, so someone who starts moving
+        // while the page settles keeps their place instead of being pulled back up.
+        if (tourStep < 0) {
+          let touched = false; const mark = () => { touched = true; }; const evs = ['wheel', 'touchstart', 'pointerdown', 'keydown'];
+          for (const ev of evs) window.addEventListener(ev, mark, { passive: true, capture: true });
+          for (const wait of [80, 320]) setTimeout(() => { if (!touched && (pageScrolled() || framedFullHeight())) scrollToTop(!firstScreen.current); }, wait);
+          setTimeout(() => { for (const ev of evs) window.removeEventListener(ev, mark, { capture: true }); }, 400);
+        }
       }
       firstScreen.current = false;
       if (window.requestAnimationFrame) window.requestAnimationFrame(() => { void document.body.offsetHeight; });

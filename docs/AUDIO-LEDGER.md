@@ -1,6 +1,6 @@
 # Audio ledger
 
-Generated 2026-10-04 by tools/audio-ledger.mjs. Every clip the app can play in a recorded voice is a row of docs/AUDIO-LEDGER.csv: its key (the file name, audio/<key>.mp3, that the app already looks for), its group (the story or lesson it belongs to) and the words with their Eleven v4 audio tags. 6107 clips, 1,186,723 characters in all; the longest clip is 508 characters and the longest whole story 2,751, far under Eleven v4's 10,000 a request. 57 stories carry hand-written tags so far (the writing review adds them course by course); the rest open with their age band's voice direction only.
+Generated 2026-10-04 by tools/audio-ledger.mjs. Every clip the app can play in a recorded voice is a row of docs/AUDIO-LEDGER.csv: its key (the file name, audio/<key>.mp3, that the app already looks for), its group (the story or lesson it belongs to) and the words with their Eleven v4 audio tags. 6107 clips, 1,191,220 characters in all; the longest clip is 508 characters and the longest whole story 2,751, far under Eleven v4's 10,000 a request. 94 stories carry hand-written tags so far (the writing review adds them course by course); the rest open with their age band's voice direction only.
 
 ## How to make the audio
 
@@ -17,7 +17,7 @@ ElevenLabs counts characters, tags included, so this is the size of each part of
 
 | Band | Clips | Characters |
 |---|---|---|
-| Pre-K to grade 2 | 2051 | 235,063 |
+| Pre-K to grade 2 | 2051 | 239,560 |
 | Grades 3 to 5 | 1263 | 278,553 |
 | Grades 6 to 8 | 1138 | 272,072 |
 | Grades 9 to college | 1655 | 401,035 |
@@ -66,6 +66,56 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 - S2-5: The last number was four, but there should have been five. Four is not five. [alarmed] One duckling was missing!
 - S2-6: She turned back, and there in the reeds was the fifth, chasing a bug. [a duckling peeping] Peep! She bumped that one too, [relieved] and that made five.
 - S2-7: [slowly, warmly] Count one at a time. The last number you say is how many.
+
+### The rooster and the sun (S23, day-and-night)
+
+- S23-1: [a rooster crowing at dawn] Every morning the rooster crowed, and every morning the sun came up. [proud, a little pompous] The rooster was sure he was the one doing it. One crow from him, and up came the sun.
+- S23-2: [softly] Then one morning he slept in. He was so tired from a long day. [sleepy] He tucked his beak under his wing and did not wake up.
+- S23-3: When he finally opened his eyes, the sun was already high in the sky. [surprised] It had come up without him! The rooster could hardly believe it.
+- S23-4: The sun did not need the rooster at all. [calm, explaining] Our Earth turns slowly, like a big ball spinning on a finger. That slow turning is what makes day and night.
+- S23-5: [slowly] When your side of the Earth turns to face the sun, it is day. When it turns away, it is night, [softly, in wonder] and that is when you can see the stars.
+- S23-6: [a rooster crowing] The rooster crowed anyway the next morning, [amused] just in case. But now he knew the truth. Day and night come from the Earth turning, not from a rooster.
+- S23-7: [slowly, warmly] The sun lights the day. At night the sky is dark. Day and night are the Earth turning.
+
+### The puddle by the gate (S83, kinds-of-weather)
+
+- S83-1: [rain pattering on a roof] Rain came in the night, pit, pat, pit, pat on the roof. In the morning there was a puddle by the gate. [a splash] Rosa splashed right in it.
+- S83-2: [warm, birds singing] Then the sun came out, warm and bright. By lunch the puddle was small, and by dinner it was gone. Only a dark spot was left behind.
+- S83-3: [wind gusting] The next day the wind blew so hard that leaves ran across the yard. [surprised] Rosa's hat blew off. There was still no puddle.
+- S83-4: [hushed] Then one cold morning, white flakes came drifting down. [a delighted whisper] Snow! It landed on the gate, and it did not splash the way rain does. It just sat there.
+- S83-5: [slowly, listing] Rain, sun, wind, snow. Every day the sky did something different. Rosa looked out each morning to see what it had chosen.
+- S83-6: [thoughtful] The rain made the puddle and the sun took it away. Then the snow laid a white patch there instead. The sky was never the same two days in a row.
+- S83-7: [slowly, warmly] Weather is what the sky is doing today. Look out the window and see.
+
+### The rock and the snail (S86, living-or-not)
+
+- S86-1: [curious] On the path there was a rock, and right next to it was a snail. They were the same size and the same gray. Leo looked hard at both of them.
+- S86-2: The rock did nothing at all. It just sat. [slowly, fascinated] The snail poked out two eyes, stretched, and slowly began to eat a leaf.
+- S86-3: Leo put a leaf on the rock to see what would happen. [amused] The rock did not eat it. The leaf just sat there on top.
+- S86-4: When he came back after lunch, the rock was exactly where he had left it. [surprised] But the snail was gone. All that was left was a silver trail.
+- S86-5: [thoughtful] The snail grew, and ate, and moved. It needed water and food to do all of that. The rock needed nothing, and it never would.
+- S86-6: [warmly] A rock is not alive, but a snail is. They can look alike at first, so watch for a while, and you will know.
+- S86-7: [slowly, warmly] Living things grow and need food and water. A rock does not.
+
+### The bean on the windowsill (S89, what-plants-need)
+
+- S89-1: [gentle] A bean seed went into a pot of soil, and Mia pushed it down with her thumb. Every morning after that, it got a drink of water.
+- S89-2: [delighted] One day a green sprout came up, and then a leaf, and then two. Mia checked on it every single morning.
+- S89-3: [slowly] The little plant began to lean. It leaned toward the window, toward the sun, a bit more every day.
+- S89-4: [a cupboard door closing] Mia moved the pot into a dark cupboard, just to see what would happen. [worried] Three days later the plant drooped, and its leaves went pale.
+- S89-5: Back it went to the windowsill, with water and sun. [relieved] In a few days it stood up again and turned green.
+- S89-6: [thoughtful] The plant drank water and soaked up sunlight. Take one away and it drooped, but give it both and it grew.
+- S89-7: [slowly, warmly] A plant needs water, sun and air to grow.
+
+### Two cups (S92, hot-and-cold)
+
+- S92-1: The cocoa was hot, so hot that steam came curling up from the cup. [blowing gently] Sam had to blow on it, and wait, and blow on it again.
+- S92-2: [shivering] The snow cone was cold. It made his teeth hurt and his hands wet, so he ate it fast.
+- S92-3: He left half the cocoa on the table, with half the snow cone right next to it. [footsteps running off] Then he ran off to play.
+- S92-4: [curious] When he came back, the cocoa was not hot anymore. It was only warm, and a little later it was not even that.
+- S92-5: The snow cone was not cold anymore either. It had melted into a puddle of juice. [surprised] When Sam touched both cups, they felt the same.
+- S92-6: [thoughtful] Hot things cool down and cold things warm up. In the end it all feels as warm as the room.
+- S92-7: [slowly, warmly] Hot things warm us and cold things chill us. Then they both end up as warm as the room.
 
 ### Two balls (S95, red-and-blue)
 
@@ -487,6 +537,66 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 - S218-6: [playful, slowly] L for lamp, T for tree, F for fish. He said them as he went.
 - S218-7: [slowly, warmly] Down, then across. Start at the dot.
 
+### One at a time (S221, rules-and-helpers)
+
+- S221-1: [playground noise] At recess, all of the kids wanted the slide at once. [a bump and a cry] Bump, ouch! Diego went down on top of Rosa, and Rosa cried. [sad] Nobody had fun.
+- S221-2: [thoughtful] The slide was fine and the kids were fine, so something else was missing.
+- S221-3: [calm, clear] The teacher made a rule. Go one at a time, and wait at the top until the bottom is clear.
+- S221-4: Now the slide was fun again. [joyful, sliding] Whee! Diego went, then Rosa, then Kai, with no bumps and no tears.
+- S221-5: [a fire truck rumbling past] Then a fire truck came by, and the driver waved. A helper, with a job for the whole town.
+- S221-6: Rules keep us safe, and helpers do jobs for everyone. [happy] Rosa waved at the truck with both arms.
+- S221-7: [slowly, warmly] Rules keep us safe. Helpers do jobs for everyone.
+
+### Bread or the toy (S224, needs-and-wants)
+
+- S224-1: [coins jingling] Ana had money for one thing, and she held the coins tight. Bread, or the toy? [longing] She wanted the toy, and she really, really wanted it.
+- S224-2: [a tummy rumbling] But her tummy rumbled, loud. [gently] Her mom asked which one they needed.
+- S224-3: [thoughtful] Ana thought about it. We need to eat, but we only want to play, and a need comes first.
+- S224-4: [decided] So Ana picked the bread. The toy could wait, but her tummy could not.
+- S224-5: [content] At home she ate warm bread with butter, and her tummy stopped rumbling. That felt better than any toy.
+- S224-6: The next week, with new coins, she came back, and the toy was still on the shelf. [delighted] This time she could pick it.
+- S224-7: [slowly, warmly] Needs come first. Wants can wait.
+
+### Up went the flag (S227, our-flag-and-holidays)
+
+- S227-1: [a flag flapping in the wind] Up went the flag, red, white and blue, waving in the wind. Sam wanted to know what was on it, but it was too far up to see.
+- S227-2: [warmly] So the teacher brought a small one down to his desk. It was the same flag, just little.
+- S227-3: Sam counted the stripes, [slowly, counting] red, white, red, white, and got thirteen. Then he counted the stars, and that took a while. [proud] Fifty!
+- S227-4: [steady] Fifty stars for fifty states, and thirteen stripes for the first thirteen. Red, white and blue.
+- S227-5: On holidays, the flag went up early, [festive] and on the Fourth of July everyone waved a little one.
+- S227-6: Sam drew the flag at home. [amused] He ran out of room for the stars at thirty, but he did his best.
+- S227-7: [slowly, warmly] Fifty stars, thirteen stripes, red, white and blue.
+
+### Off to work (S230, jobs-people-do)
+
+- S230-1: [morning street sounds] In the morning, Lena watched everyone go off to work. The baker went to bake bread, and the nurse went to help sick people. The mail carrier went out with a bag of letters.
+- S230-2: [curious] Why did they all go? Lena thought they just liked it. [warmly] Her dad said that was part of it, and that they got paid too.
+- S230-3: [explaining] People work to earn money, and money buys the things we need. Food, a home, and new shoes when yours get small.
+- S230-4: [slowly, listing] Every job has its tools, too. The baker had a big bowl and the nurse had a stethoscope. The mail carrier had a big bag.
+- S230-5: [a spoon stirring in a bowl] Lena played baker with a toy bowl and a wooden spoon, and she baked pretend bread all afternoon.
+- S230-6: Then she played mail carrier, with a paper bag and a letter for every room. [warm, laughing] She got paid in hugs.
+- S230-7: [slowly, warmly] People work to earn money for needs. Every job has its tools.
+
+### Hands up (S233, voting-in-class)
+
+- S233-1: There were two books for story time, a dragon book and a dog book. Some of the class wanted the dragon and some wanted the dog, [children shouting over each other] so everyone shouted.
+- S233-2: [frustrated] Nobody could hear a thing, because shouting did not pick a book. It only made the room loud.
+- S233-3: [calm, counting hands] The teacher said to put hands up for the dragon, and she counted nine. Then hands up for the dog, and she counted seven.
+- S233-4: One vote each, and nine is more than seven, [cheers] so the dragon won. The dog would get next week.
+- S233-5: Nobody shouted, because everyone had counted, and even the dog voters nodded. [warmly] It was fair.
+- S233-6: [happy] The dragon book was good, and the next week the dog book was good too. Both of them got their turn.
+- S233-7: [slowly, warmly] One vote each. More votes wins.
+
+### Two flags, one pole (S236, our-two-flags)
+
+- S236-1: [flags flapping in the wind] Two flags flew on one pole, and Kai asked why. [puzzled] One flag is enough, he said, so why two?
+- S236-2: [curious] His teacher asked him to count the stars on each one, so Kai squinted up at them.
+- S236-3: The top one had fifty, one star for every state, too many to count fast. [surprised] The one below had just one big star.
+- S236-4: That was the flag for Texas, our state. [proud] One star, the Lone Star.
+- S236-5: [warm] Two flags, one for the country and one for home, both on one pole and waving together.
+- S236-6: [proud] Kai saluted both of them. Then he drew them, fifty little stars and one big one.
+- S236-7: [slowly, warmly] Fifty stars for the country. One star for Texas.
+
 ### Ten steps (S239, count-to-10)
 
 - S239-1: [cheerful, playground sounds] Sam wanted to know how many steps went up the big slide. It was tall, and it was the best slide in the park.
@@ -616,4 +726,252 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 - S275-5: Eight is bigger than six, so the big bucket had more after all, [amused] but only by two.
 - S275-6: Then his sister found five more shells and put them in the small bucket. Now that one had eleven, [surprised, laughing] and that was more!
 - S275-7: [slowly, warmly] Count both. The bigger number has more.
+
+### The song that holds them (S278, letter-names)
+
+- S278-1: Ben knew lots of letters, but he did not know what came next. [slowly] A, B, C, D, and then he stopped. [stuck] His mouth stayed open and nothing came out.
+- S278-2: [a bus rumbling] His sister leaned over the bus seat and told him to sing it. Ben said he could not sing letters. [amused] But the bus ride was long, so he tried.
+- S278-3: [singing the alphabet song] A, B, C, D, E, F, G. The tune pulled the next letter out, and he did not have to think.
+- S278-4: [singing] H, I, J, K, and still going. L, M, N, O, P. The letters lined up like the bus seats.
+- S278-5: [singing, building] Q, R, S, then T, U, V, then W, X, Y and Z! He got all the way to the end, [clapping] and his sister clapped.
+- S278-6: The next day he sang it for the whole bus. Then he sang it backward, just to see, [laughing] and that was much harder.
+- S278-7: [slowly, warmly] Letters have names and an order. The song keeps them in line.
+
+### Big G, small g (S281, big-and-small-letters)
+
+- S281-1: [curious] Mia had two cards. One said G and one said g, and they did not look alike at all. One was tall, [playful] and one had a tail like a monkey.
+- S281-2: She was sure they were two different letters, because two cards meant two letters. [gently] Her teacher shook her head.
+- S281-3: Say the sound, her teacher said. [slowly] Mia looked at the big G and said guh. She looked at the small g and said guh.
+- S281-4: [delighted] Same sound, so the same letter, just in different clothes. One was dressed up tall, and one was dressed down small.
+- S281-5: Mia tried more cards. [slowly, stressing each sound] B and b both said buh, and D and d both said duh. Every pair said the same thing.
+- S281-6: She lined them up with the big letters on top and the small ones underneath. [proud] Twenty-six pairs and fifty-two cards made one alphabet.
+- S281-7: [slowly, warmly] Big and small are the same letter. One is dressed up. One is not.
+
+### Buh for ball (S284, letter-sounds)
+
+- S284-1: Leo said ball, and his teacher asked what sound it started with. Leo said B. [gently] That is its name, she said, but what is its sound?
+- S284-2: [surprised] A letter had a name and a sound? Leo had not known that. So he said ball again, slowly.
+- S284-3: He felt his lips pop right at the start. [a soft lip pop] Buh. That was it, and that was the sound.
+- S284-4: B was the letter and buh was the sound. [slowly, stressing each first sound] Ball started with buh, and so did bat, and so did bug.
+- S284-5: [playground sounds] Leo looked around the playground. Bus was buh, bird was buh, and bench was buh! [delighted] The whole place was full of buh.
+- S284-6: He found seven things that started with buh before recess ended. [a ball bouncing] He bounced the ball on every one of them.
+- S284-7: [slowly, warmly] Letters make sounds. The first sound of a word is its first letter.
+
+### What starts with mmm (S287, beginning-sounds)
+
+- S287-1: [curious] Ana had to find something that started with mmm. She held up a cup, but cup had no mmm. She held up a hat, and hat had no mmm either.
+- S287-2: [a little discouraged] So she sat down on the floor. Nothing in her room started with mmm, not her bed, not her book and not her ball.
+- S287-3: Then she saw her mitten on the dresser and said it slowly. [slowly, humming the m] Mmm-itten. Her lips closed, and they hummed.
+- S287-4: [delighted] Mmm! That was it. Mitten started with mmm, so she held it up high.
+- S287-5: What else? She looked out the window and saw the moon. [slowly, humming] Mmm-oon. Under the bed she found a toy mouse. [slowly, humming] Mmm-ouse.
+- S287-6: Mitten, moon, mouse, three things that started with mmm. [humming] She hummed it all through dinner. Milk! Meat! Mmm.
+- S287-7: [slowly, warmly] Say the name. Hear the first sound. Match it to the letter.
+
+### Cat, hat, bat (S290, rhymes)
+
+- S290-1: [softly, a bedtime voice] At bedtime Rosa heard a rhyme about a cat that sat on a hat. [giggles] She giggled, because cat and hat sounded like twins.
+- S290-2: [curious] Why did they sound alike? The starts were different, cuh and huh, not the same at all.
+- S290-3: The ends were the same, [slowly, stretching the sounds] at and at. Then the bat came in, and there was at again. Three words with one ending.
+- S290-4: [thoughtful] That was what made them rhyme, the same ending sound. Rosa listened for it after that.
+- S290-5: Mom read on. [playful, rhyming] The dog on a log, og and og! A frog on the log, og! [clapping] Rosa clapped every time.
+- S290-6: Then she made up her own: cat, hat, bat, mat, sat, rat. [whispers] She was still going when the light went out.
+- S290-7: [slowly, warmly] Rhyming words end with the same sound.
+
+### The T on the window (S293, tracing-letters)
+
+- S293-1: [a finger squeaking on a foggy window] The window was foggy, and Diego pressed a finger on it to make a line. He wanted to make a T, like the one on his cup.
+- S293-2: He drew a line across, and then another line across. [puzzled] That looked like an equals sign, not a T.
+- S293-3: His mom put a dot at the top of the glass. [gently] Start here, she said. Go down, lift your finger, and then go across the top.
+- S293-4: Diego put his finger on the dot. [slowly] Down, lift, across the top. [delighted] A T, dripping a little!
+- S293-5: [playful] He made another one next to it. Then he made an L, down and across the bottom, and an I, which was just down.
+- S293-6: By the time the fog cleared, the window was full of letters. [softly, a little wistful] Then the sun came out, and they all faded away.
+- S293-7: [slowly, warmly] Start at the dot. Follow the arrow. Stay on the line.
+
+### The small a sits low (S296, tracing-small-letters)
+
+- S296-1: Lena traced a big A, and it stood tall. Then came the small a, and she made it tall too. [puzzled] It looked wrong.
+- S296-2: [playful] The small a did not want to be tall. It kept falling over, like a bent stick.
+- S296-3: [gently] Start at the dot, her teacher said. Go round, then down, and do not go up high. Stay low.
+- S296-4: Lena tried it, round and then down. The small a sat low on the line, like a curled-up cat, [pleased] and that was right.
+- S296-5: [slowly, tracing] Then she traced the small c, round and stop, low. After that, the small o, round and round, and low.
+- S296-6: [proud] Big letters stand tall and small letters sit low. Lena traced a whole line of them, all of them sitting.
+- S296-7: [slowly, warmly] Small letters sit low. Start at the dot and follow the arrow.
+
+### The E, one line at a time (S299, tracing-more-letters)
+
+- S299-1: [chalk squeaking] Kai tried to draw an E without lifting his chalk, and he got a wiggly snake with teeth. [giggles] It did not look like an E.
+- S299-2: His teacher laughed, kindly. [warmly] An E is not one line, she said. It is four.
+- S299-3: [slowly, a steady rhythm] Down and lift, across the top and lift, across the middle and lift, and then across the bottom. That is four lines and three lifts.
+- S299-4: Kai tried it. [slowly] Down, lift, across, lift, across, lift, across. [proud] An E, clean and straight!
+- S299-5: [playful] Then he made an F, with one line down and two lines across. Three lines and two lifts. Then an H, two downs and a bridge.
+- S299-6: Lift, lift, lift, [chalk squeaking] and the chalk squeaked every time. Kai filled the whole board with letters made of lines.
+- S299-7: [slowly, warmly] One line at a time. Lift your finger between lines.
+
+### Clap your name (S302, syllables)
+
+- S302-1: [clapping in a circle] Ben clapped his name, Ben, in one clap. Maya clapped hers, Ma, ya, in two. [unsure] Then it was Elijah's turn, and he was not sure.
+- S302-2: He said his name fast, and it came out as one blur. [puzzled] How many claps was a blur?
+- S302-3: Say it slowly, said the teacher. [slowly, clapping each beat] E. Li. Jah. Clap, clap, clap. Three beats had been hiding in there the whole time.
+- S302-4: Elijah clapped it, E, li, jah, [delighted] and that made three! [proud] He grinned, and then he clapped it again, louder.
+- S302-5: They went around the circle. Sam was one clap, and Rosa was two, Ro, sa. Then a girl with a long name clapped four, [clapping four beats] Ma, ri, an, na!
+- S302-6: [playful, clapping] Then they clapped other words. Apple was ap, ple, and banana was ba, na, na. Every word had beats inside it.
+- S302-7: [slowly, warmly] Say the word slowly and clap each beat.
+
+### The word on the door (S305, sounding-out)
+
+- S305-1: [curious] There were three letters on the door, C, A and T, and Ana knew each one. What she did not know was the word.
+- S305-2: She said the letter names, [slowly] see, ay, tee, but that was not a word. It was just three names in a row.
+- S305-3: [helpful] Say the sounds, said her brother, not the names. [slowly, stressing each sound] Cuh. A. Tuh. Say them slowly, and then say them faster.
+- S305-4: [slowly, then faster] Cuh, a, tuh. Cuh-a-tuh, cuh-a-tuh, and then all at once, cat! [excited] Ana said it again, louder. Cat!
+- S305-5: [a door creaking open] She opened the door, [a cat meowing] and there was the cat, sitting on the mat and looking up at her.
+- S305-6: Ana went looking for more doors. D-O-G came out as duh-o-guh, [delighted] and then dog! [amused] There was no dog behind that one, but she read it anyway.
+- S305-7: [slowly, warmly] Say each sound. Then say them fast together.
+
+### Which way the finger goes (S308, which-way-we-read)
+
+- S308-1: Theo put his finger on a page and moved it from right to left. The words came out backward, [robotic] tac and gid, and it sounded like a robot.
+- S308-2: [frustrated] He tried starting in the middle, and that was even worse. He got half a word, and then nothing.
+- S308-3: [gently] [a finger tapping a page] Start on the left, said his teacher, and she tapped the corner. Go to the right, and at the end of the line, hop down.
+- S308-4: Theo started on the left. [slowly, reading] Cat. Dig. Now the words made sense, and at the end of the line he hopped down.
+- S308-5: [steady, like a journey] Back to the left, then right again, line after line. The page had a road on it, and he was on the road.
+- S308-6: [proud] He read the whole page, and then the next one. His finger knew the way now, even with his eyes closed.
+- S308-7: [slowly, warmly] Start on the left. Go right. Then down to the next line.
+
+### The card and the picture (S311, word-meanings)
+
+- S311-1: [curious] Rosa had a card that said dog. On the table were three pictures, a dog, a sun and a fish. Where did the card go?
+- S311-2: She put it on the sun. Her teacher smiled and shook her head. [gently] Not that one.
+- S311-3: So Rosa said the word out loud. [slowly] Dog. She looked for the dog, and there it was, ears and a tail. [pleased] The card went on the dog.
+- S311-4: [thoughtful] Then came sun. She said it, and looked for something round and yellow. There it was, so the card went on the sun.
+- S311-5: Then fish, with its fins and scales. There. [delighted] Three cards on three pictures, all of them matched.
+- S311-6: [proud] Her teacher gave her more cards, cat, hat and cup. Rosa said each word and found each picture, and she did not miss again.
+- S311-7: [slowly, warmly] Match the word to the picture. Say it, then find it.
+
+### Slants in the sand (S314, trace-slant-letters)
+
+- S314-1: [waves rolling in] Jamal had a stick and a patch of wet sand. He drew a line straight down and a line straight across. Every letter he knew was made of those two.
+- S314-2: His sister asked for a V. Jamal tried straight down and then straight across, but that was not a V. [giggles] That was an L.
+- S314-3: [helpful] Slant, she said. Down a slant, then up a slant. Jamal tried it, and there was a point at the bottom. [delighted] A V!
+- S314-4: Then came an A, with a slant up, a slant down and a line across the middle. [playful] It looked like a tent with a bar.
+- S314-5: [slowly, tracing] Then came an N. It went down, then slanted, then went up. Three lines made an N, and slanted lines had made all three letters.
+- S314-6: V, A, N. [a wave washing over sand] Then a wave came and washed them away. Jamal drew them again, bigger and farther up the beach.
+- S314-7: [slowly, warmly] Slanted lines make V, A and N. Start at the dot.
+
+### The sound at the end (S1172, ending-sounds)
+
+- S1172-1: [curious] Sam could hear the start of cat, cuh, but he could not hear the end. It went by too fast. [quickly] Cat, and it was gone.
+- S1172-2: His dad told him to say it slowly. Sam said cat. [slowly, teasing] Slower, said his dad, like a snail.
+- S1172-3: [very slowly] C. A. T. There it was, a little tuh at the end. His tongue tapped behind his teeth to make it.
+- S1172-4: Then came bus, b, u, sss. The last sound was sss, [a soft hiss] a hiss like a snake.
+- S1172-5: [slowly, stressing the last sounds] Then dog, d, o, guh, with guh at the end. After that came cup, c, u, puh, and his lips popped on the puh.
+- S1172-6: Sam said every word in the kitchen slowly. Pan ended in nnn, spoon ended in nnn, and fork ended in kuh. [proud] He found every ending.
+- S1172-7: [slowly, warmly] Say the word slowly. The last sound is the ending sound.
+
+### The glitter (S1226, washing-hands)
+
+- S1226-1: [water running] Mia had gold glitter on both hands from art class. She rinsed them with water, and some of the glitter stayed.
+- S1226-2: [puzzled] Rinsing was not enough, because the glitter hid between her fingers and around her thumbs.
+- S1226-3: [scrubbing, counting] So she used soap and counted to twenty. She scrubbed between the fingers, around the thumbs and under the nails. [pleased] Then it was gone.
+- S1226-4: [gently] Germs are like glitter, said the nurse. You cannot see them, but they hide in exactly the same places.
+- S1226-5: [steady] Mia washed before lunch and after the bathroom, with soap, a count to twenty and a rinse.
+- S1226-6: [humming a tune] She sang a song while she counted. By the time she reached twenty, the song was done and her hands were clean.
+- S1226-7: [slowly, warmly] Wash with soap before eating and after the bathroom. Count to twenty.
+
+### The fence of teeth (S1229, brushing-teeth)
+
+- S1229-1: [quick brushing] Leo brushed fast, front teeth only, and he was done in ten seconds. Then he ran off to play.
+- S1229-2: His dentist looked in his mouth. [playful, mock-serious] The back pickets are unpainted, she said, on both sides.
+- S1229-3: [explaining] Teeth are like a fence, and every picket needs paint on both sides. Front and back, top and bottom.
+- S1229-4: It takes two minutes. [slowly, counting] Top right, top left, bottom left, bottom right, with thirty seconds for each corner.
+- S1229-5: [a timer ticking] Leo set a timer, and two minutes felt long. But he brushed every corner, front and back.
+- S1229-6: He did it morning and night, two times a day. When his dentist looked again, [proud] every picket was painted.
+- S1229-7: [slowly, warmly] Brush two times a day for two minutes. Every tooth, both sides.
+
+### The phone and the boy (S1232, sleep-k)
+
+- S1232-1: [a quiet night] The phone charged all night, plugged in and quiet. Sam stayed up, playing, then reading, then just looking at the ceiling.
+- S1232-2: In the morning the phone was at a hundred. Sam was at about fifty, and grumpy, [yawning] and he yawned all through breakfast.
+- S1232-3: [gently] Kids need ten to twelve hours of sleep to fill up, and Sam had gotten six. His battery was low.
+- S1232-4: That night Sam went to bed earlier, with the same quiet steps in the same order. [softly] A bath, a book, and lights out.
+- S1232-5: He slept ten hours, and in the morning he bounced out of bed. [energetic] A hundred percent!
+- S1232-6: [warmly] The phone charges every night, and so does a boy. After that, Sam plugged himself in on time.
+- S1232-7: [slowly, warmly] Ten to twelve hours of sleep. The same quiet routine each night.
+
+### The rainbow plate (S1235, my-plate)
+
+- S1235-1: [playful] Ana's plate was all one color, beige. Bread, crackers and more bread, and she ate it all.
+- S1235-2: Her tummy was full, but her mom shook her head. [gently] A plate of one color is missing a lot.
+- S1235-3: Mom made a new plate with red tomatoes, orange carrots, green peas and purple grapes. [delighted] It was a rainbow.
+- S1235-4: [steady] Half the plate was all colors, and the other half was bread and chicken. A glass of water sat beside it.
+- S1235-5: [crunching] Ana ate the rainbow, crunch and pop and sweet. Every color brought something her body needed.
+- S1235-6: Every day after that, Ana looked at her plate to see if there was a rainbow. If there was not, [playful] she asked for one.
+- S1235-7: [slowly, warmly] Half the plate is fruits and veggies, with water to drink.
+
+### The quiet tablet (S2702, tell-and-show)
+
+- S2702-1: [curious] Nia got a tablet for her birthday, and it sat on the table doing nothing. The screen was dark and quiet, and she waited for it to start.
+- S2702-2: [a big brother, helpful] It cannot start on its own, said her brother Sam. You have to tell it something first.
+- S2702-3: So Nia tapped the screen with one finger. [a soft chime, a little tune] A picture of a cat lit up, and a small song played from the speaker. Tap, and it shows, said Sam. The tapping part is an input.
+- S2702-4: The screen and the speaker are outputs, because they show you things. [drum beats] Nia tapped a drum picture next, and the tablet played a drum. She tapped it again and again [giggles] and laughed every time.
+- S2702-5: [keys clicking] Then Sam showed her the keyboard, and she typed her name one letter at a time. Each letter she pressed showed up on the screen, big and blue.
+- S2702-6: [slowly, warmly] A tablet does not know what you want until you tell it. Inputs tell. Outputs show.
+
+### Shoes before socks (S2707, first-next-then-last)
+
+- S2707-1: [hurried] Leo was in a hurry to get to the park. He grabbed his shoes and pushed his feet in, and then he reached for his socks.
+- S2707-2: The socks would not go on over the shoes. He pulled and pulled, [a rip] and one sock ripped. [grumpy] Leo sat down on the floor and frowned.
+- S2707-3: His dad came in and looked at the shoes. [gently, amused] You did the steps, he said, but not in order. Socks first, then shoes.
+- S2707-4: Leo took the shoes off and started again. [brisk, counting steps] First socks. Next shoes. Then his coat, and last, out the door. It took one minute.
+- S2707-5: [birds in a park] At the park he made a sandwich with his dad. First bread, next jam, then close it, last a bite. [pleased] It tasted better in order too.
+- S2707-6: [slowly, warmly] Steps in order have a name. They are called an algorithm. First, next, then, last, and the socks go on every time.
+
+### Clap four times (S2712, do-it-again)
+
+- S2712-1: Miss Ada wrote a dance for the class robot on the board. [clapping] Clap. Clap. Clap. Clap. Turn. The list filled the whole board, [a marker squeaking dry] and her marker ran dry.
+- S2712-2: Priya raised her hand. [eager] There is a pattern, she said. Clap comes four times, and then one turn.
+- S2712-3: [a board being wiped] Miss Ada smiled and wiped the board clean. She wrote two short lines instead, clap four times and then turn. A loop, she said, does the same step again and again.
+- S2712-4: [a robot whirring, four claps] The robot read the two lines and clapped four times. It turned, [children cheering] and the class cheered, because the dance was exactly the same.
+- S2712-5: [excited] Then the class wrote a bigger dance with loops: jump three times, spin two times, clap four times. It fit on one small card.
+- S2712-6: [slowly, warmly] A pattern tells you what comes next. A loop says do it again, and says how many times.
+
+### The secret word (S2717, safe-online-k)
+
+- S2717-1: [proud] Omar got his very first account on the class computer, with a password all his own. It was a secret word, and it opened his page.
+- S2717-2: A boy named Ben asked what the word was. [hesitant] Omar almost said it, and then he stopped. Only a parent or a teacher may know it.
+- S2717-3: [friendly] It is a secret, Omar said. Ben shrugged, and they went to play instead.
+- S2717-4: [a game chiming] Later a game asked Omar to type his address to win a prize. He knew that his address was private, so he stopped and told his teacher. [warmly] She said he did exactly the right thing.
+- S2717-5: [a school bell ringing] When the bell rang, Omar logged off, so the next person could not get into his page. He felt like the keeper of a small key.
+- S2717-6: [slowly, warmly] Keep your password secret. Keep private things private. Be kind, and tell a grown-up.
+
+### Get your coat (S3242, my-listening-body)
+
+- S3242-1: [dreamy] Milo was thinking about lunch. His teacher said, get your coat and line up. [dreamy, sing-song] Milo heard lunch, lunch, lunch, and he got his hat.
+- S3242-2: Miss Ruiz smiled and asked where his coat was. Milo did not know what she had said. So he asked her. [politely] Can you say it again, please?
+- S3242-3: Miss Ruiz said it again, get your coat and line up. [focused] This time Milo looked right at her. His hands were still, and his mind was on the words. He got his coat.
+- S3242-4: At recess Miss Ruiz asked, did you like the slide? Milo answered with more than one word. Yes, I went down it three times, he said. [laughing] Miss Ruiz laughed.
+- S3242-5: After the story that afternoon, Milo said it back. First the bear was hungry, and last the bear found honey. [proud] He had heard the whole thing.
+
+### Cup, water, table (S3247, first-then-do)
+
+- S3247-1: [snack time chatter] It was snack time, and Miss Ruiz gave Lena three steps. First, get a cup, and then fill it with water. Last, put it on the table where you sit.
+- S3247-2: Lena said the steps back to her, [slowly] cup, water, table. Miss Ruiz nodded. The steps were in Lena's head now, in order.
+- S3247-3: [water pouring] Lena got a cup and filled it with water. She carried it to the table and set it down. First things first, and last things last. [pleased] Nothing spilled.
+- S3247-4: [confident] Then it was Lena's turn to give directions. She told Ben two steps. First, get the ball, and then roll it to me. Now you say it, Ben.
+- S3247-5: [mixed up, playful] Ben said, roll the ball and then get it. Lena fixed it for him: get it first, then roll it. Ben said it right, [a ball rolling] and the ball rolled all the way to Lena.
+
+### This is my dog (S3252, my-clear-voice)
+
+- S3252-1: It was Theo's turn to tell. He held up his drawing of his dog [very quietly] and said, this is my dog. [gently] Nobody in the back could hear him.
+- S3252-2: Miss Ruiz said, talk to the friend at the back. Theo looked at Priya in the back row and said it again, louder. [loud and clear] This is my dog.
+- S3252-3: [clear, steady] Theo told the three parts. This is my dog. He is brown and he likes to dig. I like him because he is funny. Everyone could hear.
+- S3252-4: He said whole words, slow. [slowly, clearly] He said dig, not di, and funny, not fun. Priya in the back smiled.
+- S3252-5: [warm] Theo held his drawing up for the digging part. Then he put it down and looked at his friends. They were the ones he was talking to.
+
+### The hand that waited (S3257, my-turn-and-kind-words)
+
+- S3257-1: Ava wanted the red truck, but Ben had it. [a toy snatched, a child crying] Ava grabbed it, and Ben cried. Ava did not get the truck.
+- S3257-2: Miss Ruiz sat with them and said, say it in words, Ava. Ava tried. [politely] I want a turn with the truck, please. Ben said, okay, when I am done.
+- S3257-3: [a quiet circle] At circle time, one person talked at a time. Ava had an idea, so she put her hand up and waited. Two friends went first. Then it was Ava's turn, and everyone listened.
+- S3257-4: A new boy came to class after lunch, and Ava walked over to him. [friendly] Hello, my name is Ava. The new boy said, my name is Sam. Now they knew each other.
+- S3257-5: At the end of the day, Ben brought Ava the red truck. [grateful] Thank you, Ava said. Kind words had opened the door.
 

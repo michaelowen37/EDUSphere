@@ -1,7 +1,5 @@
-Pre-K read by hand with voice tags, tour fixes, and an audio ledger
+Pre-K finished and kindergarten Counting read by hand, with voice tags
 
-- Pass JG: tour card 3 placed beside the Backup classroom link in the claude.ai .jsx preview, where the page's body does the scrolling (reproduced, and covered by two new tour walks); the writing review from pre-K up begins with Very first steps, all twelve modules read by hand (lessons, stories, questions and titles, among them Two foxes, One dot is fewer and Tap the little one); sentences may run longer, with a 45-word run-on guard, since Eleven v4 sets no limit.
-- Pass JH: an audio ledger of every clip the app can play recorded (6,101 clips, docs/AUDIO-LEDGER.csv and .md), with Eleven v4 voice directions by age and a one-command maker (tools/audio-generate.mjs, model eleven_v4); audio tags written into the seventeen pre-K stories read so far; Listen and point read by hand (B's two bumps, alligator for the short a); the typo on tour card 8 fixed (lets you know).
-- Pass JI: the tour cards' own words restored exactly as Mikey wrote them, with only lets you know kept; First steps (pre-K 4) read by hand, all eighteen modules (matching lessons that say plainly when things are the same, one dot instead of one dots, Mike's teacher in Three stones, a taking-turns lesson in whole sentences, colons gone) with audio tags in its eighteen stories; the tour test checks that the lesson behind card 2 is the live module.
+- Pass JJ: First sounds and letters (pre-K 4) read by hand, finishing pre-K (sound-order lessons and questions in two clear steps, such as Listen. Hoot, then ribbit.; B has two bumps; story colons gone); kindergarten Counting read by hand, all fourteen modules (There is 1, counted words in their own sentence, a square and a rectangle told apart by their sides, a block as the everyday cube, one goes away, the longer one and the heavier one); audio tags in all twenty-two of their stories (57 tagged).
 
-Passes: JG, JH, JI
+Passes: JJ

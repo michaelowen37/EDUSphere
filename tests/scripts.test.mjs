@@ -38,7 +38,7 @@ for (const mod of L.MODULES) {
     }
     if (show.kind === 'shape' && !said.includes(show.name)) mismatches.push(`${mod.id}: "${line.say}" shows a ${show.name}`);
     if (show.kind === 'icon' && !said.includes(show.name)) mismatches.push(`${mod.id}: "${line.say}" shows a ${show.name}`);
-    if (show.kind === 'solid' && !said.includes(show.name) && !said.includes({ sphere: 'ball', cube: 'box', cylinder: 'can', cone: 'cone' }[show.name])) mismatches.push(`${mod.id}: "${line.say}" shows a ${show.name}`);
+    if (show.kind === 'solid' && !said.includes(show.name) && !said.includes({ sphere: 'ball', cube: 'block', cylinder: 'can', cone: 'cone' }[show.name])) mismatches.push(`${mod.id}: "${line.say}" shows a ${show.name}`);
     // Every sign-in animal the words name must be on screen too, so a line never mentions a creature the child cannot see.
     { const shownPics = (show.kind === 'pair' ? [show.a, show.b] : [show]).filter((h) => h && h.kind === 'pic').map((h) => h.name);
       if (shownPics.length) { const named = L.PICTURES.filter((n) => new RegExp(`\\b${n}s?\\b`).test(said)); const missing = named.filter((n) => !shownPics.includes(n)); if (missing.length) mismatches.push(`${mod.id}: "${line.say}" names ${missing.join(', ')} but shows ${shownPics.join(', ')}`); } }
@@ -55,7 +55,7 @@ for (const mod of L.MODULES) {
 }
 // Questions too: in every read-aloud course, the picture beside a question must be named or
 // pointed at by the words, so what a child sees and hears agree.
-const THING = { sphere: 'ball', cube: 'box', cylinder: 'can', cone: 'cone' };
+const THING = { sphere: 'ball', cube: 'block', cylinder: 'can', cone: 'cone' };
 const deictic = /\b(this|it|these|those|the picture|the word|the group|the shape|the letter|the letters|the array|the line|the frame|the clock|the sentence|the story|here)\b/i;
 const qbad = [];
 for (const c of L.COURSES.filter((x) => x.readAloud)) for (const m of c.modules) for (const g of new Set(m.generators)) for (let seed = 1; seed <= 40; seed++) {

@@ -37,7 +37,7 @@ window.__eduArt = [];
 window.__eduColoringArt = [];
 window.__eduMapArt = [];
 window.__eduAudio = [];
-window.__eduNews = {"stamp":"October 3, 2026 (pre-K 4 lessons read by hand)","date":"October 3, 2026","items":["Every First steps lesson for four-year-olds has been read again by hand, with clearer matching lessons, one dot instead of one dots, and a taking-turns lesson that explains each kind choice.","Their stories now carry directions for a recorded voice too."],"brief":["Every First steps lesson for four-year-olds has been read again by hand, with clearer matching lessons, one dot instead of one dots, and a taking-turns lesson that explains each kind choice.","Their stories now carry directions for a recorded voice too."],"history":[{"date":"October 3, 2026","title":"pre-K 4 lessons read by hand","items":["Every First steps lesson for four-year-olds has been read again by hand, with clearer matching lessons, one dot instead of one dots, and a taking-turns lesson that explains each kind choice.","Their stories now carry directions for a recorded voice too."]},{"date":"October 3, 2026","title":"voices for the stories, and more pre-K read by hand","items":["The stories now carry directions for a recorded voice, a whisper here and a splash or a moo there, ready for when the audio is made. Readers never see them.","Every Listen and point lesson for three-year-olds has been read again by hand, with a few small fixes."]},{"date":"October 3, 2026","title":"pre-K lessons read by hand, and the tour in the preview","items":["Every lesson in Very first steps for three-year-olds has been read again by hand, with clearer wording, a few small fixes, and colors children can picture, red like a strawberry and blue like the sky.","The tour's backup card now sits beside the Backup classroom link in the preview, as it does in Chrome."]},{"date":"October 3, 2026","title":"a rewritten economics lesson, the tour and diagrams","items":["The college lesson Scarcity, Trade and Markets has been rewritten to explain its ideas the way a good teacher talks them through, with examples you can picture, and its questions now read naturally.","The tour's cards now sit where they belong in the preview as well as on wider screens.","Step-by-step diagrams have a little more room around their arrows."]},{"date":"October 3, 2026","title":"the tour, scrolling and titles","items":["The first week tour's cards now keep their places on every screen size, and the backup reminder waits until the tour is finished.","Lessons open at the top of the page, and so does your classroom after the tour and after Later.","Lesson titles are capitalized like titles everywhere they appear as a heading."]},{"date":"October 3, 2026","title":"Public Speaking for college","items":["A college public speaking course: communication and audience, ethics and evidence, organizing and delivering, and informing and persuading, with true stories about Gettysburg, Frederick Douglass's Fourth of July speech, Steve Jobs's three stories and Martin Luther King Jr.'s dream, a long story about Chloe's three minutes at city hall, and a new game, Cite It or Not."]}]};
+window.__eduNews = {"stamp":"October 3, 2026 (pre-K finished, and kindergarten counting read by hand)","date":"October 3, 2026","items":["Every pre-K lesson has now been read again by hand, finishing with First sounds and letters.","Kindergarten Counting is read too, with fixes like \"There is 1,\" a square and a rectangle told apart by their sides, and a block as the everyday cube.","Their stories carry directions for a recorded voice, from a lion's roar to a whoosh down a slide."],"brief":["Every pre-K lesson has now been read again by hand, finishing with First sounds and letters.","Kindergarten Counting is read too, with fixes like \"There is 1,\" a square and a rectangle told apart by their sides, and a block as the everyday cube.","Their stories carry directions for a recorded voice, from a lion's roar to a whoosh down a slide."],"history":[{"date":"October 3, 2026","title":"pre-K finished, and kindergarten counting read by hand","items":["Every pre-K lesson has now been read again by hand, finishing with First sounds and letters.","Kindergarten Counting is read too, with fixes like \"There is 1,\" a square and a rectangle told apart by their sides, and a block as the everyday cube.","Their stories carry directions for a recorded voice, from a lion's roar to a whoosh down a slide."]},{"date":"October 3, 2026","title":"pre-K 4 lessons read by hand","items":["Every First steps lesson for four-year-olds has been read again by hand, with clearer matching lessons, one dot instead of one dots, and a taking-turns lesson that explains each kind choice.","Their stories now carry directions for a recorded voice too."]},{"date":"October 3, 2026","title":"voices for the stories, and more pre-K read by hand","items":["The stories now carry directions for a recorded voice, a whisper here and a splash or a moo there, ready for when the audio is made. Readers never see them.","Every Listen and point lesson for three-year-olds has been read again by hand, with a few small fixes."]},{"date":"October 3, 2026","title":"pre-K lessons read by hand, and the tour in the preview","items":["Every lesson in Very first steps for three-year-olds has been read again by hand, with clearer wording, a few small fixes, and colors children can picture, red like a strawberry and blue like the sky.","The tour's backup card now sits beside the Backup classroom link in the preview, as it does in Chrome."]},{"date":"October 3, 2026","title":"a rewritten economics lesson, the tour and diagrams","items":["The college lesson Scarcity, Trade and Markets has been rewritten to explain its ideas the way a good teacher talks them through, with examples you can picture, and its questions now read naturally.","The tour's cards now sit where they belong in the preview as well as on wider screens.","Step-by-step diagrams have a little more room around their arrows."]},{"date":"October 3, 2026","title":"the tour, scrolling and titles","items":["The first week tour's cards now keep their places on every screen size, and the backup reminder waits until the tour is finished.","Lessons open at the top of the page, and so does your classroom after the tour and after Later.","Lesson titles are capitalized like titles everywhere they appear as a heading."]}]};
 // Installable app: the worker keeps a copy of the page for offline use and asks the network first, so a fresh build always wins.
 if ('serviceWorker' in navigator && /^https?:/.test(location.protocol)) { navigator.serviceWorker.register('sw.js').catch(function () {}); }
 var process = { env: { NODE_ENV: 'production' } };
@@ -22061,13 +22061,13 @@ function PREK_READING_MODULES() {
             tagline: 'Two sounds, in order',
             requires: ['first-sounds'],
             lesson: {
-                paragraphs: ['Listen to two animal sounds. Which one came first?', 'The owl says hoot. The bee says buzz. Hoot, then buzz: the owl came first.'],
+                paragraphs: ['Listen to two animal sounds. Which one came first?', 'The owl says hoot. The bee says buzz. Hoot, then buzz. The owl came first.'],
                 keyIdea: 'Hold the first sound in your head while you hear the second.',
                 example: { kind: 'pair', a: { kind: 'pic', name: 'owl' }, b: { kind: 'pic', name: 'bee' }, caption: 'Hoot, then buzz. The owl came first.' },
                 script: [
                     { say: 'The cat says meow. The duck says quack.', show: { kind: 'pair', a: { kind: 'pic', name: 'cat' }, b: { kind: 'pic', name: 'duck' } } },
-                    { say: 'Listen: meow, then quack. Which came first? The cat.', show: { kind: 'pic', name: 'cat' } },
-                    { say: 'Listen: quack, then meow. Now the duck came first.', show: { kind: 'pic', name: 'duck' } },
+                    { say: 'Listen to the sounds. Meow, then quack. Which came first? The cat.', show: { kind: 'pic', name: 'cat' } },
+                    { say: 'Listen. Quack, then meow. Now the duck came first.', show: { kind: 'pic', name: 'duck' } },
                 ],
             },
             sources: ['Aligned with Texas Prekindergarten Guidelines II.A.3 (shows understanding of the new language being spoken by English-speaking adults and peers) and Head Start ELOF Goal P-LC 1.'],
@@ -22081,13 +22081,13 @@ function PREK_READING_MODULES() {
             tagline: 'Three sounds, in order',
             requires: ['which-came-first'],
             lesson: {
-                paragraphs: ['Now there are three sounds. Hold all three in your head.', 'The owl says hoot. The bee says buzz. The frog says ribbit. Hoot, buzz, ribbit: the bee came second, and the frog came last.'],
+                paragraphs: ['Now there are three sounds. Hold all three in your head.', 'The owl says hoot. The bee says buzz. The frog says ribbit. Hoot, buzz, ribbit. The bee came second, and the frog came last.'],
                 keyIdea: 'Keep the sounds in a row in your head, then point to the place.',
                 example: { kind: 'pair', a: { kind: 'pic', name: 'bee' }, b: { kind: 'pic', name: 'frog' }, caption: 'Hoot, buzz, ribbit. The bee was second. The frog was last.' },
                 script: [
                     { say: 'The owl says hoot. The bee says buzz.', show: { kind: 'pair', a: { kind: 'pic', name: 'owl' }, b: { kind: 'pic', name: 'bee' } } },
-                    { say: 'The frog says ribbit. Hoot, buzz, ribbit: the bee came second.', show: { kind: 'pair', a: { kind: 'pic', name: 'bee' }, b: { kind: 'pic', name: 'frog' } } },
-                    { say: 'Hoot, buzz, ribbit: the frog came last.', show: { kind: 'pic', name: 'frog' } },
+                    { say: 'The frog says ribbit. Hoot, buzz, ribbit. The bee came second.', show: { kind: 'pair', a: { kind: 'pic', name: 'bee' }, b: { kind: 'pic', name: 'frog' } } },
+                    { say: 'Hoot, buzz, ribbit. The frog came last.', show: { kind: 'pic', name: 'frog' } },
                 ],
             },
             sources: ['Aligned with Texas Prekindergarten Guidelines II.A.3 (shows understanding of the new language being spoken by English-speaking adults and peers) and Head Start ELOF Goal P-LC 1.'],
@@ -22266,7 +22266,7 @@ function COUNTING_MODULES() {
             tagline: 'Putting together, taking apart',
             requires: ['one-more-one-less'],
             lesson: {
-                paragraphs: ['When two groups join, count them all together to find how many. When some go away, count what is left.', 'Three birds on a fence, then two more land. Count them all: five birds.'],
+                paragraphs: ['When two groups join, count them all together to find how many. When some go away, count what is left.', 'Three birds on a fence, then two more land. Count them all. Five birds.'],
                 keyIdea: 'Joining makes more. Taking away leaves fewer. Count to find out how many.',
                 example: { kind: 'dots', count: 5, caption: 'Three and two more. That makes five.' },
                 script: [
@@ -22346,7 +22346,7 @@ function COUNTING_MODULES() {
             requires: ['count-to-10'],
             lesson: {
                 paragraphs: ['Counting by tens is a fast way to count big groups. Ten, twenty, thirty, forty, fifty.', 'Each jump adds ten more. Say them in order and you reach one hundred in ten jumps.'],
-                keyIdea: 'Count by tens: 10, 20, 30, 40, 50, 60, 70, 80, 90, 100.',
+                keyIdea: 'Count by tens. 10, 20, 30, 40, 50, 60, 70, 80, 90, 100.',
                 example: { kind: 'tens', count: 3, caption: 'Ten, twenty, thirty.' },
                 script: [
                     { say: 'Ten. Twenty. Thirty. Each group has ten.', show: { kind: 'tens', count: 3 } },
@@ -22402,12 +22402,12 @@ function COUNTING_MODULES() {
             tagline: 'Ball, box, can, cone',
             requires: ['shapes'],
             lesson: {
-                paragraphs: ['Some shapes are flat, like a drawing. Some are solid, like things you can hold.', 'A ball is a sphere. A box is a cube. A can is a cylinder. An ice cream cone is a cone.'],
-                keyIdea: 'Solid shapes are things you can hold: sphere, cube, cylinder, cone.',
+                paragraphs: ['Some shapes are flat, like a drawing. Some are solid, like things you can hold.', 'A ball is a sphere. A block is a cube. A can is a cylinder. An ice cream cone is a cone.'],
+                keyIdea: 'Solid shapes are things you can hold, like a sphere, a cube, a cylinder and a cone.',
                 example: { kind: 'solid', name: 'sphere', caption: 'A ball is a sphere.' },
                 script: [
                     { say: 'A ball. It rolls every way. That is a sphere.', show: { kind: 'solid', name: 'sphere' } },
-                    { say: 'A box. Flat sides and corners. That is a cube.', show: { kind: 'solid', name: 'cube' } },
+                    { say: 'A block. Flat sides and corners. That is a cube.', show: { kind: 'solid', name: 'cube' } },
                     { say: 'A can. Round, with flat ends. That is a cylinder.', show: { kind: 'solid', name: 'cylinder' } },
                     { say: 'An ice cream cone. A point at one end. That is a cone.', show: { kind: 'solid', name: 'cone' } },
                 ],
@@ -32677,7 +32677,7 @@ Object.assign(GENERATORS, {
         const SOUNDS = [['cat', 'meow'], ['duck', 'quack'], ['bee', 'buzz'], ['frog', 'ribbit'], ['owl', 'hoot'], ['bear', 'growl']];
         const [a, sa] = pick(rng, SOUNDS);
         const [b, sb] = pick(rng, SOUNDS.filter((x) => x[0] !== a));
-        return { type: 'choice', story: null, prompt: `Listen: ${sa}, then ${sb}. Which animal came first?`, choices: shuffle(rng, [`pic:${a}`, `pic:${b}`]), answer: `pic:${a}`,
+        return { type: 'choice', story: null, prompt: `Listen. ${capFirst(sa)}, then ${sb}. Which animal came first?`, choices: shuffle(rng, [`pic:${a}`, `pic:${b}`]), answer: `pic:${a}`,
             explain: `${sa.charAt(0).toUpperCase() + sa.slice(1)} came first. That is the ${a}.`, visual: null, explainVisual: { kind: 'pic', name: a } };
     },
     'p4-which-came-second': (rng) => {
@@ -32687,7 +32687,7 @@ Object.assign(GENERATORS, {
         const askLast = rng() < 0.5;
         const want = askLast ? c : b;
         const word = askLast ? 'last' : 'second';
-        return { type: 'choice', story: null, prompt: `Listen: ${a[1]}, then ${b[1]}, then ${c[1]}. Which animal came ${word}?`, choices: shuffle(rng, three.map((x) => `pic:${x[0]}`)), answer: `pic:${want[0]}`,
+        return { type: 'choice', story: null, prompt: `Listen. ${capFirst(a[1])}, then ${b[1]}, then ${c[1]}. Which animal came ${word}?`, choices: shuffle(rng, three.map((x) => `pic:${x[0]}`)), answer: `pic:${want[0]}`,
             explain: `${want[1].charAt(0).toUpperCase() + want[1].slice(1)} came ${word}. That is the ${want[0]}.`, visual: null, explainVisual: { kind: 'pic', name: want[0] } };
     },
     'sk-last-sound': (rng) => {
@@ -32874,13 +32874,13 @@ function makeCountingGenerators(prefix, max) {
             const n = randInt(rng, 1, max);
             const choices = shuffle(rng, distinctCounts(rng, Math.min(4, max), max, n).map(String));
             return { type: 'choice', story: null, prompt: 'How many?', choices, answer: String(n),
-                explain: `${countUp(n)}. There are ${n}.`, visual: { kind: 'dots', count: n }, explainVisual: null };
+                explain: `${capFirst(countUp(n))}. ${n === 1 ? 'There is' : 'There are'} ${n}.`, visual: { kind: 'dots', count: n }, explainVisual: null };
         },
         [`${prefix}-tap-group`]: (rng) => {
             const n = randInt(rng, 1, max);
             const choices = shuffle(rng, distinctCounts(rng, 3, max, n).map((c) => `dots:${c}`));
             return { type: 'choice', story: null, prompt: `Tap the group with ${n}.`, choices, answer: `dots:${n}`,
-                explain: `This group has ${n}: ${countUp(n)}.`, visual: null, explainVisual: null };
+                explain: `This group has ${n}. ${capFirst(countUp(n))}.`, visual: null, explainVisual: null };
         },
         [`${prefix}-more`]: (rng) => {
             const [a, b] = distinctCounts(rng, 2, max, randInt(rng, 1, max));
@@ -42390,7 +42390,7 @@ Object.assign(GENERATORS, {
         const sh = pickShape(rng);
         const choices = shuffle(rng, [sh, ...otherShapes(rng, sh, 2)].map((x) => x.name));
         return { type: 'choice', story: null, prompt: 'What shape is this?', choices, answer: sh.name,
-            explain: sh.sides === 0 ? 'It is round with no corners, so it is a circle.' : `Count the sides: ${sh.sides}. It is a ${sh.name}.`, visual: { kind: 'shape', name: sh.name }, explainVisual: null };
+            explain: sh.sides === 0 ? 'It is round with no corners, so it is a circle.' : `${sh.name === 'square' ? 'Four sides, all the same length.' : sh.name === 'rectangle' ? 'Four sides, two long and two short.' : 'Count the sides. There are ' + sh.sides + '.'} It is a ${sh.name}.`, visual: { kind: 'shape', name: sh.name }, explainVisual: null };
     },
     'ks-tap': (rng) => {
         const sh = pickShape(rng);
@@ -42401,7 +42401,7 @@ Object.assign(GENERATORS, {
     'ks-sides': (rng) => {
         const sh = SHAPES[randInt(rng, 1, SHAPES.length - 1)]; // not the circle
         return { type: 'choice', story: null, prompt: 'How many sides does it have?', choices: shuffle(rng, ['3', '4', '5']), answer: String(sh.sides),
-            explain: `Count the sides of the ${sh.name}: ${sh.sides}.`, visual: { kind: 'shape', name: sh.name }, explainVisual: null };
+            explain: `Count the sides of the ${sh.name}. There are ${sh.sides}.`, visual: { kind: 'shape', name: sh.name }, explainVisual: null };
     },
     'ks-odd-one-out': (rng) => {
         const sh = pickShape(rng);
@@ -42419,7 +42419,7 @@ Object.assign(GENERATORS, {
 // Solid shapes. A choice 'solid:cube' is a picture the screen draws.
 const SOLIDS = [
     { name: 'sphere', thing: 'a ball', rolls: true, flatSides: false },
-    { name: 'cube', thing: 'a box', rolls: false, flatSides: true },
+    { name: 'cube', thing: 'a block', rolls: false, flatSides: true },
     { name: 'cylinder', thing: 'a can', rolls: true, flatSides: true },
     { name: 'cone', thing: 'an ice cream cone', rolls: true, flatSides: true },
 ];
@@ -42566,11 +42566,11 @@ Object.assign(GENERATORS, {
         const n = randInt(rng, 1, 6);
         const sh = pickShape(rng);
         return { type: 'choice', story: `Here is the ${sh.name} group.`, prompt: 'How many are in it?', choices: shuffle(rng, distinctCounts(rng, 4, 8, n).map(String)), answer: String(n),
-            explain: `Count the ${sh.name}s: ${countUp(n)}. There are ${n}.`, visual: { kind: 'dots', count: n }, explainVisual: null };
+            explain: `Count the ${sh.name}s. ${capFirst(countUp(n))}. ${n === 1 ? 'There is' : 'There are'} ${n}.`, visual: { kind: 'dots', count: n }, explainVisual: null };
     },
     'ko-which-group-more': (rng) => {
         const [a, b] = distinctCounts(rng, 2, 8, randInt(rng, 1, 8));
-        return { type: 'choice', story: `Circles: ${a}. Squares: ${b}.`, prompt: 'Which group has more?', choices: shuffle(rng, ['Circles', 'Squares']), answer: a > b ? 'Circles' : 'Squares',
+        return { type: 'choice', story: `${a} ${a === 1 ? 'circle' : 'circles'} and ${b} ${b === 1 ? 'square' : 'squares'}.`, prompt: 'Which group has more?', choices: shuffle(rng, ['Circles', 'Squares']), answer: a > b ? 'Circles' : 'Squares',
             explain: `${Math.max(a, b)} is more than ${Math.min(a, b)}.`, visual: null, explainVisual: null };
     },
     'ko-does-not-belong': (rng) => {
@@ -42583,7 +42583,7 @@ Object.assign(GENERATORS, {
     'ko-how-many-groups': (rng) => {
         const n = randInt(rng, 2, 3);
         const names = shuffle(rng, SHAPES.map((x) => x.name)).slice(0, n);
-        return { type: 'choice', story: `${names.map((x) => x[0].toUpperCase() + x.slice(1)).join(', ')}.`, prompt: 'How many groups are there?', choices: ['2', '3', '4'], answer: String(n),
+        return { type: 'choice', story: `${capFirst(names.map((x) => 'a ' + x).join(', '))}.`, prompt: 'How many groups are there?', choices: ['2', '3', '4'], answer: String(n),
             explain: `${names.join(', ')}. That is ${n} kinds, so ${n} groups.`, visual: null, explainVisual: null };
     },
 });
@@ -42624,14 +42624,14 @@ Object.assign(GENERATORS, {
         const b = randInt(rng, 1, 10 - a);
         const thing = kidThing(rng);
         return { type: 'choice', story: `${countWords(a)[0].toUpperCase() + countWords(a).slice(1)} ${a === 1 ? (ONE_OF[thing] || thing) : thing}. Then ${b} more.`, prompt: 'How many now?', choices: shuffle(rng, distinctCounts(rng, 4, 10, a + b).map(String)), answer: String(a + b),
-            explain: `${a} and ${b} more makes ${a + b}. Count them all: ${countUp(a + b)}.`, visual: { kind: 'dots', count: a }, explainVisual: { kind: 'dots', count: a + b } };
+            explain: `${a} and ${b} more makes ${a + b}. Count them all. ${capFirst(countUp(a + b))}.`, visual: { kind: 'dots', count: a }, explainVisual: { kind: 'dots', count: a + b } };
     },
     'km-take-story': (rng) => {
         const a = randInt(rng, 3, 10);
         const b = randInt(rng, 1, a - 1);
         const thing = kidThing(rng);
-        return { type: 'choice', story: `${countWords(a)[0].toUpperCase() + countWords(a).slice(1)} ${a === 1 ? (ONE_OF[thing] || thing) : thing}. Then ${b} go away.`, prompt: 'How many are left?', choices: shuffle(rng, distinctCounts(rng, 4, 10, a - b).map(String)), answer: String(a - b),
-            explain: `${a} take away ${b} leaves ${a - b}. Count what is left: ${countUp(a - b)}.`, visual: { kind: 'dots', count: a }, explainVisual: { kind: 'dots', count: a - b } };
+        return { type: 'choice', story: `${countWords(a)[0].toUpperCase() + countWords(a).slice(1)} ${a === 1 ? (ONE_OF[thing] || thing) : thing}. Then ${b} ${b === 1 ? 'goes' : 'go'} away.`, prompt: 'How many are left?', choices: shuffle(rng, distinctCounts(rng, 4, 10, a - b).map(String)), answer: String(a - b),
+            explain: `${a} take away ${b} leaves ${a - b}. Count what is left. ${capFirst(countUp(a - b))}.`, visual: { kind: 'dots', count: a }, explainVisual: { kind: 'dots', count: a - b } };
     },
     'km-join-pic': (rng) => {
         const a = randInt(rng, 1, 5);
@@ -54761,7 +54761,7 @@ STORIES['listen-for-rhymes'] = {
     title: 'Cat, mat, hat', art: 'S116', cast: [],
     alt: 'A small girl in bed giggling at a picture book of a cat in a hat sitting on a mat',
     words: [
-        'At bedtime, Mom read a rhyme: a cat sat on a mat. Rosa giggled. Cat, mat.',
+        'At bedtime, Mom read a rhyme about a cat that sat on a mat. Rosa giggled. Cat, mat.',
         'Hear it? said Mom. Rosa listened. Cat and mat ended the same way, at and at.',
         'The cat put on a hat. Hat! Rosa said it. Cat, mat, hat, all the same at the end.',
         'What else? said Mom, and Rosa thought. She thought hard.',
@@ -55212,12 +55212,12 @@ STORIES['which-came-second'] = {
     title: 'Whistle, tick, woof', art: 'S206', cast: [],
     alt: 'A small girl in a kitchen with a kettle, a clock and a dog, three sounds in the air',
     words: [
-        'In the kitchen there were three sounds: whistle, tick, woof. The kettle, the clock and the dog.',
+        'In the kitchen there were three sounds, a whistle, a tick and a woof. The kettle, the clock and the dog.',
         'Which came second? asked Grandpa. Not the first and not the last, but the middle one.',
         'Ana thought. Whistle was first and woof was last, so the middle was tick, the clock!',
         'Which came last? Ana knew that one. Woof, the dog, and it was still barking.',
-        'She held up three fingers and said them in a row: first, whistle; second, tick; last, woof.',
-        'Grandpa made new sounds: clap, stomp, snap. Ana found the second one every time.',
+        'She held up three fingers and said them in a row. First whistle, second tick, last woof.',
+        'Grandpa made new sounds, a clap, a stomp and a snap. Ana found the second one every time.',
         'Keep the sounds in a row in your head. Then point to the one you want.',
     ],
 };
@@ -55228,7 +55228,7 @@ STORIES['big-letters'] = {
     alt: 'A small boy at a bus stop pointing at big letters painted on a yellow bus',
     words: [
         'The bus came, yellow and big, with big letters on its side. Sam looked up.',
-        'He did not know them yet. There were three shapes: one round, one like a cup, one curvy.',
+        'He did not know them yet. There were three shapes, one with two bumps, one like a cup and one all curves.',
         'His sister said that one is B, and B says its name, bee. Sam said bee.',
         'That one is U, and it says you. And that one is S, and it says ess, like a snake.',
         'B, U, S. Sam said them together, bee, you, ess. Bus! The letters spelled the bus!',
@@ -55397,7 +55397,7 @@ STORIES['tracing-numbers'] = {
         'Where did a two even start? Lena had no idea, so she kept starting in the middle.',
         'Her teacher put a green dot at the top. Start here, she said, then curve round, and then go down.',
         'Lena put her finger on the dot. Round, down, along the bottom, and stop. A two, every time!',
-        'Then she did a three, with a dot at the top, round and round. After that came a five: dot, down, and round.',
+        'Then she did a three, with a dot at the top, round and round. After that came a five. Dot, down and round.',
         'Every number had its own dot, and once she knew where to start, the rest followed.',
         'Start at the dot. Follow the arrow. That draws the number.',
     ],
@@ -55413,7 +55413,7 @@ STORIES['one-more-one-less'] = {
         'One more than four is just the next number, said Mom. So Diego counted up, four, five, and there were five cookies!',
         'Then his sister came in and ate one. Crunch. One less than five is the number before, so there were four.',
         'Diego kept track without counting. One more is the next number, and one less is the number before.',
-        'Then he ate one himself: four, three. Mom put two more on: three, four, five. He had it now.',
+        'Then he ate one himself, and four became three. Mom put two more on, and three became four, then five. He had it now.',
         'One more is the next number. One less is the number before.',
     ],
 };
@@ -55468,7 +55468,7 @@ STORIES['tracing-shapes'] = {
     title: 'All the way around', art: 'S257', cast: [],
     alt: 'A small boy tracing a square on paper, his finger nearly back at the starting dot',
     words: [
-        'Kai traced a square: across, down, back across, and then he stopped. His square had a gap, so it looked like a cup.',
+        'Kai traced a square. Across, down, back across, and then he stopped. His square had a gap, so it looked like a cup.',
         'A square with a gap is not a square, but Kai did not know what was missing.',
         'Start at the dot, said his teacher. Across, down, back across, and up. Go all the way around, back to the dot.',
         'Kai tried it. Across, down, back across, and up! His finger came back to the dot, and the gap was gone.',
@@ -55503,7 +55503,7 @@ STORIES['longer-and-heavier'] = {
         'The stick was long. When he laid it down, it reached all the way across the creek. Longer reaches farther.',
         'The rock was heavy. He tried to lift it, and he needed both hands and a big grunt. Heavier is harder to lift.',
         'The stick was easy to lift with one hand, but it was long. The rock was short, but it was heavy.',
-        'So Sam sat on the rock and held the stick up like a flag. Longest and heaviest, and both of them his.',
+        'So Sam sat on the rock and held the stick up like a flag. The longer one and the heavier one, and both of them his.',
         'Longer reaches farther. Heavier is harder to lift.',
     ],
 };
@@ -55517,7 +55517,7 @@ STORIES['sorting'] = {
         'Every pair she grabbed was wrong, and the pile did not get any smaller. Ana flopped back on the bed.',
         'Her mom said to sort first, putting the ones that are alike together, and to match after that.',
         'Red socks went here, blue socks went there, and white socks went in the middle. Alike with alike, in three piles.',
-        'Then she counted each pile: six red, four blue, two white. Now matching was easy, red with red.',
+        'Then she counted each pile, six red, four blue and two white. Now matching was easy, red with red.',
         'Three red pairs, two blue pairs and one white pair made six rolled-up balls in a row. The mountain was gone.',
         'Put things that are alike together. Then count each group.',
     ],
@@ -55534,7 +55534,7 @@ STORIES['solids'] = {
         'A can rolls when it lies on its side, but stand it up and it stacks. That shape is a cylinder, and it can do both.',
         'A party hat comes to a point at the top. That is a cone, and it sat on top of the tower like a little roof.',
         'Cube, cube, cylinder, cone made a tower. The ball rolled around the bottom, because a sphere cannot join a tower.',
-        'Solid shapes are things you can hold: sphere, cube, cylinder, cone.',
+        'Solid shapes are things you can hold, like a sphere, a cube, a cylinder and a cone.',
     ],
 };
 STORIES['making-ten'] = {
@@ -63498,6 +63498,30 @@ STORIES["draw-the-shapes"].audio = ["[warm] Mia put her crayon on the dot. Start
 STORIES["taking-turns"].audio = ["One swing, and two children, Sam and Rosa. Both wanted it, [impatient] and both wanted it now.", "[tugging and grunting] Pull, pull. Sam pulled one way and Rosa pulled the other, and nobody swung.", "[kindly] You go, said Rosa, and then I go. She let go of the swing, and Sam sat down.", "[a swing creaking] Rosa counted. [slowly, counting] One, two, three, and Sam swung high. Four, five, six, and higher.", "[excited] Seven, eight, nine, ten! Sam jumped off and Rosa sat down, and now Sam counted.", "[children laughing] Ten for Sam and ten for Rosa. Both of them swung, and both of them flew.", "[slowly, warmly] Wait, and then it is your turn. Count to ten."];
 STORIES["big-bigger-biggest"].audio = ["[like a storyteller] Three bears had three bowls, a little bowl, a middle bowl and a big bowl.", "Little bear grabbed the big bowl, and it was too heavy! [a bowl wobbling, porridge splashing] It wobbled, and porridge spilled.", "Big bear took the little bowl, and it was too small! [a big gulp] One bite, and it was empty.", "Middle bear looked at the middle bowl. [slowly, pleased] Not too big, not too small, but just right.", "So little bear took the little bowl, and big bear took the big bowl. [happy] Now everyone matched.", "[warm] Little, middle, biggest. Three bears, three bowls, three sizes in a row.", "[slowly, warmly] Little, middle, biggest. Three sizes in a row."];
 STORIES["helpers-all-around"].audio = ["Kai walked to school, [cars zooming past] and cars zoomed by. [a crossing guard whistle] The crossing guard held up her sign, the cars stopped, and Kai crossed.", "[bus doors opening] The bus pulled up and the driver opened the door. [cheerful] Good morning, he said, and Kai climbed in.", "At school, Kai fell and hurt his knee. [gently] The nurse cleaned it and put on a bandage, and it was all better.", "[a fire truck siren in the distance] A fire truck drove by the window, and the driver waved. Kai waved back.", "[warmly] Helpers were all around him. Each one had a job, and each one helped.", "At dinner, Kai told everyone about the guard, the bus driver, the nurse and the fire truck. [proud] Four helpers in one day.", "[slowly, warmly] Helpers are all around. Every helper has a job."];
+// First sounds and letters (pre-K 4), pass JJ: audio tags for its eight stories.
+STORIES["listen-for-rhymes"].audio = ["[softly, a bedtime voice] At bedtime, Mom read a rhyme about a cat that sat on a mat. [giggles] Rosa giggled. [playful, rhyming] Cat, mat.", "[gently] Hear it? said Mom. Rosa listened. Cat and mat ended the same way, [slowly, stretching the sounds] at and at.", "The cat put on a hat. [delighted] Hat! Rosa said it. Cat, mat, hat, all the same at the end.", "What else? said Mom, and Rosa thought. [thoughtful] She thought hard.", "[excited] Bat! [wings fluttering past a window] A bat flew past the window. Cat, mat, hat, bat, four words with one ending.", "They made up more, rat and sat and fat. [whispers] Rosa was still saying them when she fell asleep.", "[slowly, warmly] Rhymes end the same way. Listen for the ending."];
+STORIES["first-sounds"].audio = ["[warm, classroom chatter in the background] Ben, said the teacher, what does Ben start with? Ben pressed his lips together, [slowly, stressing the first sound] buh, and there it was. Ben starts with buh.", "Sam, said the teacher. Sam thought, and then he said his name slowly. [slowly, drawing out the s] Sss-am.", "[a playful hiss] Sss! Like a snake. Sam starts with sss, and he hissed, [children laughing] and everyone laughed.", "Mia, said the teacher, and Mia closed her lips and hummed. [humming] Mmm. Mia starts with mmm.", "[slowly, stressing each first sound] Buh like ball, sss like sun, and mmm like moon. Every name had a first sound.", "They pointed at each other. [playful] Buh! Sss! Mmm! They did it all the way to snack time.", "[slowly, warmly] Listen to the start of the word. That is the first sound."];
+STORIES["which-came-first"].audio = ["Leo was at the zoo. [a lion roaring] Roar! [a parrot squawking] Then, squawk! [curious] Two sounds, but which one came first?", "[thoughtful] Leo had to think back, so he closed his eyes. What had he heard first?", "[slowly] The roar, and that was the lion. It came first. Then the squawk, so the parrot came after.", "Dad tried again with two new sounds. [a duck quacking] Quack! [a cow mooing] Then, moo! Which came first?", "Leo held the first sound in his head. [slowly] Quack. The duck came first, and the cow came after.", "[playful] All day, Leo played the game, first sound and then the next. He never mixed them up.", "[slowly, warmly] Hold the first sound in your head while you hear the rest."];
+STORIES["which-came-second"].audio = ["[a kettle whistling, a clock ticking, a dog barking once] In the kitchen there were three sounds, a whistle, a tick and a woof. The kettle, the clock and the dog.", "[warm, grandfatherly] Which came second? asked Grandpa. Not the first and not the last, but the middle one.", "Ana thought. Whistle was first and woof was last, [excited] so the middle was tick, the clock!", "Which came last? Ana knew that one. Woof, the dog, [a dog barking] and it was still barking.", "She held up three fingers and said them in a row. [slowly, counting] First whistle, second tick, last woof.", "[a clap, a stomp, a snap] Grandpa made new sounds, a clap, a stomp and a snap. [proud] Ana found the second one every time.", "[slowly, warmly] Keep the sounds in a row in your head. Then point to the one you want."];
+STORIES["big-letters"].audio = ["[a school bus pulling up] The bus came, yellow and big, with big letters on its side. Sam looked up.", "[curious] He did not know them yet. There were three shapes, one with two bumps, one like a cup and one all curves.", "His sister said that one is B, and B says its name, bee. [slowly] Sam said bee.", "That one is U, and it says you. And that one is S, and it says ess, [a soft hiss] like a snake.", "B, U, S. Sam said them together, bee, you, ess. [excited] Bus! The letters spelled the bus!", "[proud] Every day after that, Sam read the bus, B, U, S, and he read it to everyone.", "[slowly, warmly] Every letter has a name. Say it when you see it."];
+STORIES["first-letter-tracing"].audio = ["[waves rolling in, gulls calling] Diego had a stick, and the sand was wet. Dad made a dot and said to start there.", "Diego pushed the stick, and it went wiggly. It went the wrong way. [a little frustrated] That was not a letter.", "[sand brushing] He smoothed the sand flat, found the dot again, and tried again.", "[gently] Follow the arrow, said Dad. Down, in a straight line. Lift the stick, and now go across the top.", "[proud] A letter! A big T stood in the sand, and Diego stood over it. He had made it.", "[a wave washing over sand] Then a wave came and washed the T away. [laughs] Diego laughed and made another one.", "[slowly, warmly] Start at the dot. Follow the arrow. Lift, then go again."];
+STORIES["more-big-letters"].audio = ["Mia had a pile of sticks, flat ones and colored ones. [wondering] Could sticks make letters?", "[sticks clicking] One stick went down, and one stick went across the bottom. [delighted] An L! [clapping] Mia clapped.", "[thoughtful] Could they make more? She tried, with one stick down again.", "This time one stick went across the top. [excited] A T! A different letter from the same two sticks.", "One stick down, one across the top and one across the middle. [proud] Three sticks made an F!", "[slowly, naming each letter] L, T, F, three letters in a row, all made of straight sticks.", "[slowly, warmly] Straight lines make letters. Start at the dot."];
+STORIES["trace-straight-letters"].audio = ["[slowly, tracing] Down, then across. Kai traced it, down the line and across the bottom. An L.", "That was easy. [curious] But his teacher asked what would happen if across went on top.", "Kai tried it, down and then across the top. [delighted] A T! [giggles] A hat on a stick.", "Now across the top, and across the middle too, two acrosses. [excited] An F!", "[amazed] Down, then across, made three letters from one move. Kai traced them all again.", "[playful, slowly] L for lamp, T for tree, F for fish. He said them as he went.", "[slowly, warmly] Down, then across. Start at the dot."];
+// Counting (kindergarten), pass JJ: audio tags for its fourteen stories.
+STORIES["count-to-5"].audio = ["[gentle pond sounds] Every morning a mother duck swam across the pond. [ducklings peeping] Behind her came her ducklings, in a wobbly yellow line.", "One morning the line felt short, but she could not tell why. [worried] Something was wrong.", "She looked back, but looking was no help. [playful] Ducklings wiggle, and swap places, and splash.", "So she counted the way ducks count, one bump of the beak for each. [slowly, counting] One bump, two bumps, three bumps, four.", "The last number was four, but there should have been five. Four is not five. [alarmed] One duckling was missing!", "She turned back, and there in the reeds was the fifth, chasing a bug. [a duckling peeping] Peep! She bumped that one too, [relieved] and that made five.", "[slowly, warmly] Count one at a time. The last number you say is how many."];
+STORIES["count-to-10"].audio = ["[cheerful, playground sounds] Sam wanted to know how many steps went up the big slide. It was tall, and it was the best slide in the park.", "He climbed and counted. [slowly, counting] One, two, three, four. [a bird chirping] Then a blue bird flew by, and he stopped to watch it.", "When he looked back down, he had lost his place. [puzzled] Was he on five, or six? He did not know.", "[frustrated] He tried to start again from the middle, but that did not work. The numbers came out wrong.", "So he went back to the bottom and put his finger on the first step. [slowly, counting] One, then two, slowly, one step at a time.", "Five, six, seven, higher and higher, then eight, nine, ten. [triumphant] The top! Ten steps, and then, [a whoosh down a slide] whoosh, down the slide.", "[slowly, warmly] Count one at a time. The last number is how many."];
+STORIES["tracing-numbers"].audio = ["[warm, playful] Lena tried to draw a two, and it came out like a snake. She tried again and got a snake with a hat. [a boy laughing] Her brother laughed.", "[puzzled] Where did a two even start? Lena had no idea, so she kept starting in the middle.", "Her teacher put a green dot at the top. [gently] Start here, she said, then curve round, and then go down.", "Lena put her finger on the dot. Round, down, along the bottom, and stop. [delighted] A two, every time!", "[a pencil on paper] Then she did a three, with a dot at the top, round and round. After that came a five. Dot, down and round.", "[warmly] Every number had its own dot, and once she knew where to start, the rest followed.", "[slowly, warmly] Start at the dot. Follow the arrow. That draws the number."];
+STORIES["one-more-one-less"].audio = ["[warm, playful] Four chocolate cookies sat on the plate. Mom put one more on, and Diego said that now there were lots.", "Mom asked how many, and Diego was not sure. He did not want to count them all again, [laughing] because cookies do not wait.", "One more than four is just the next number, said Mom. So Diego counted up, [slowly, counting] four, five, and there were five cookies!", "Then his sister came in and ate one. [a cookie crunching] Crunch. One less than five is the number before, so there were four.", "[proud] Diego kept track without counting. One more is the next number, and one less is the number before.", "[munching] Then he ate one himself, and four became three. Mom put two more on, and three became four, then five. He had it now.", "[slowly, warmly] One more is the next number. One less is the number before."];
+STORIES["joining-and-taking-away"].audio = ["Two cars sat in the toy garage, a red one and a green one. Then Ana rolled three more in. [toy cars rolling] Vroom.", "[puzzled] Was it more cars now, or fewer? Ana said more, but she could not tell how many, because the cars were all jumbled.", "So she counted, with one finger on each car. [slowly, counting] One, two, three, four, five. Joining had made five cars.", "[a toy car rolling away] Then one car drove away, out the door and across the rug.", "Taking away leaves fewer. Ana counted again, [slowly, counting] one, two, three, four, and there were four cars now.", "She rolled two more in, and joining made six. Then she drove three out, and taking away left three. [happy] The garage was busy all morning.", "[slowly, warmly] Joining makes more. Taking away leaves fewer. Count to find out how many."];
+STORIES["comparing-numbers"].audio = ["[playful] Leo had six blocks and his friend Max had four. Max said four was bigger, and Leo said six was.", "[two children arguing playfully, getting louder] They both said it louder, and then louder still. But being loud did not help, because neither of them could show it.", "[blocks clacking] So Leo lined his blocks up in a row, and Max lined his up next to them. One row was longer than the other.", "Then Leo counted up, [slowly, counting] one, two, three, four, and there was Max's pile. Five, six, and there was his.", "[thoughtful] Six comes later than four when you count, and later means bigger. So six is bigger than four.", "Max nodded. [happy] Then they put all the blocks together and counted ten. That was enough for a tower taller than both of them.", "[slowly, warmly] The number you say later when counting is the bigger one."];
+STORIES["shapes"].audio = ["[curious] Rosa knew the clock was a circle and the window was a square. But why? They were both just shapes to her.", "Her dad asked her to find the corners. On the clock her finger went round, and round, [puzzled] and never found one.", "On the window her finger stopped at a corner, and then at another one. [slowly, counting] It stopped four times, so a square has four corners and four sides.", "[thoughtful] A square has four corners, and a circle has none. That is how you tell them apart.", "Rosa looked around the room. Her book had four corners, her ball had none, [delighted] and her paper hat had three!", "[happy] Three corners and three sides make a triangle. Rosa found shapes all day long.", "[slowly, warmly] Count the sides and corners to tell shapes apart."];
+STORIES["tracing-shapes"].audio = ["Kai traced a square. [slowly, tracing] Across, down, back across, and then he stopped. [puzzled] His square had a gap, so it looked like a cup.", "[thoughtful] A square with a gap is not a square, but Kai did not know what was missing.", "[gently] Start at the dot, said his teacher. Across, down, back across, and up. Go all the way around, back to the dot.", "Kai tried it. Across, down, back across, and up! His finger came back to the dot, [delighted] and the gap was gone.", "[proud] A square has four sides. He traced it again, and again, with no gaps.", "[happy] Then he traced a triangle, three sides all the way around. After that came a circle, round and back to the dot.", "[slowly, warmly] Start at the dot and go all the way around."];
+STORIES["counting-by-tens"].audio = ["Mia wanted to count all the fingers in the room, so she started with one. [slowly, counting] One, two, three. [tired] By the third friend she was tired, and lost.", "There were too many fingers to count one by one. [warmly] Her teacher smiled and said that every friend has ten.", "Ten. Mia looked at one friend and saw ten fingers. She looked at the next friend, and that was ten more. [excited] Twenty!", "So she counted by tens, [rhythmic, counting] ten, twenty, thirty, forty, fifty, and every friend was one jump.", "[building excitement] Sixty, seventy, eighty, ninety, one hundred! Ten friends made one hundred fingers.", "It took a minute instead of the whole morning. [giggles] Then Mia counted the toes, ten each, and got one hundred again.", "[slowly, warmly] Count by tens. Ten, twenty, thirty, all the way to one hundred."];
+STORIES["longer-and-heavier"].audio = ["[a creek babbling] Sam found a stick and a rock by the creek. He wanted to know which one was bigger. The stick was longer, but the rock was fatter, so Sam could not decide.", "[thoughtful] Bigger, it turned out, was two different things.", "The stick was long. When he laid it down, it reached all the way across the creek. [slowly] Longer reaches farther.", "The rock was heavy. He tried to lift it, [straining] and he needed both hands and a big grunt. [slowly] Heavier is harder to lift.", "[thoughtful] The stick was easy to lift with one hand, but it was long. The rock was short, but it was heavy.", "[proud] So Sam sat on the rock and held the stick up like a flag. The longer one and the heavier one, and both of them his.", "[slowly, warmly] Longer reaches farther. Heavier is harder to lift."];
+STORIES["sorting"].audio = ["[playful] Ana had a mountain of clean socks to pair up. She grabbed two, a red one and a blue one, and that was no good. Two more were blue and white, and that was no good either.", "Every pair she grabbed was wrong, and the pile did not get any smaller. [a big sigh] Ana flopped back on the bed.", "[gently] Her mom said to sort first, putting the ones that are alike together, and to match after that.", "[brisk, cheerful] Red socks went here, blue socks went there, and white socks went in the middle. Alike with alike, in three piles.", "Then she counted each pile, [slowly, counting] six red, four blue and two white. Now matching was easy, red with red.", "Three red pairs, two blue pairs and one white pair made six rolled-up balls in a row. [triumphant] The mountain was gone.", "[slowly, warmly] Put things that are alike together. Then count each group."];
+STORIES["solids"].audio = ["Diego tried to stack a ball on top of a block, [a ball rolling away] and it rolled off. He tried again, and it rolled off again, even farther this time.", "[curious] Some shapes stack and some do not, and Diego wanted to know which was which.", "[thoughtful] A ball rolls because it is a sphere, round all over. A block stacks because it is a cube, with flat sides all around.", "[a can rolling, then set upright] A can rolls when it lies on its side, but stand it up and it stacks. That shape is a cylinder, and it can do both.", "A party hat comes to a point at the top. That is a cone, and it sat on top of the tower [pleased] like a little roof.", "Cube, cube, cylinder, cone made a tower. [a ball rolling around] The ball rolled around the bottom, because a sphere cannot join a tower.", "[slowly, warmly] Solid shapes are things you can hold, like a sphere, a cube, a cylinder and a cone."];
+STORIES["making-ten"].audio = ["[warm] Rosa had ten fingers, and her teacher said to fold three down. How many were still up? [impatient] Rosa did not want to count, because counting was slow.", "[thoughtful] She looked at her hands. Three fingers were down and the rest were up, but how many was the rest?", "She counted them just once. [slowly] Seven. Three and seven together made ten, [delighted] so they were partners!", "[gently] Fold two down, said the teacher, and Rosa did. Eight were up, so two and eight were partners too.", "[rhythmic, playful] Fold five down and five stay up. Five and five. Fold one down and nine stay up. One and nine.", "Every number had a partner, and Rosa went through them all. After that she did not have to count anymore, [proud] because her hands knew.", "[slowly, warmly] Every number up to nine has a partner that makes ten."];
+STORIES["more-and-fewer-10"].audio = ["[waves on a beach] Leo had two buckets of shells and wanted to know which one had more. One bucket was big, so it looked like more. His sister said no.", "[thoughtful] A bigger bucket does not mean more shells, so Leo had to check.", "[shells clattering] He tipped the big bucket out, lined the shells up and counted them. [slowly] Eight shells.", "Then he tipped the small bucket out and made another row. [slowly] He counted six shells. Six was fewer.", "Eight is bigger than six, so the big bucket had more after all, [amused] but only by two.", "Then his sister found five more shells and put them in the small bucket. Now that one had eleven, [surprised, laughing] and that was more!", "[slowly, warmly] Count both. The bigger number has more."];
 // The Wise Human. Copyright (c) 2026. Source-available; not for reuse. See LICENSE.md.
 // =====================================================================
 //  FILE: src/ui.jsx — the screens
@@ -63627,7 +63651,7 @@ function PinInput({ value, onChange, placeholder, style, onEnter = null }) {
 }
 // A stamp of when this copy of the page was built, so a stale page in a cache can be told apart
 // from a fresh one at a glance. Written by the build, never by hand.
-const BUILD_STAMP = '2026-10-03 07:56 PM CDT';
+const BUILD_STAMP = '2026-10-03 08:29 PM CDT';
 function ContactLine({ onOpen, inline = false }) {
     return (react_1.default.createElement("p", { className: "edu-no-print", style: { textAlign: 'center', marginTop: inline ? 0 : 28, fontSize: inline ? 14 : 12, color: C.muted, margin: inline ? '0' : undefined } }, onOpen
         ? react_1.default.createElement("button", { type: "button", onClick: onOpen, style: { background: 'none', border: 'none', color: C.muted, fontFamily: FONT, fontSize: 12, cursor: 'pointer', padding: 0, textDecoration: 'underline' } }, "Contact us")

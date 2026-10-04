@@ -2,7 +2,7 @@
 
 Generated 2026-10-04 by tools/review-ledger.mjs. What Mikey wants from the review is in docs/FABLE-REVIEW.md; this file is the work list, in order. To mark an item reviewed, add its key to "reviewed" in docs/review-status.json with the pass that did it (keys look like module:saving-investing-and-risk, course-story:econ-9, game:dots-kite, wonder:w-grown-the-rumor), then run the tool again.
 
-Reviewed so far: 36 of 1239 items (615 modules with their lessons, stories and question banks, 102 long stories, 157 games and 365 Wonder questions). Colons today: 2235 in lessons and 1319 in stories (times like 3:30 and ratios are not counted). Pictures are reviewed through docs/ART-REQUESTS.md as they are painted; a rewritten story keeps each picture beside the paragraph it shows.
+Reviewed so far: 58 of 1239 items (615 modules with their lessons, stories and question banks, 102 long stories, 157 games and 365 Wonder questions). Colons today: 2226 in lessons and 1308 in stories (times like 3:30 and ratios are not counted). Pictures are reviewed through docs/ART-REQUESTS.md as they are painted; a rewritten story keeps each picture beside the paragraph it shows.
 
 ## 1. Every module, in review order (pre-K first, then up through college)
 
@@ -43,14 +43,14 @@ Reviewed so far: 36 of 1239 items (615 modules with their lessons, stories and q
 | yes (JI, read by hand: each good choice taught in a whole sentence; audio tags) | PK4 | First steps | Taking turns (`taking-turns`) | 0 | Count to ten (S113) | 0 | pk-turn-choice, ck-good-choice, pk-whose-turn |
 | yes (JI, read by hand: two colons gone; audio tags) | PK4 | First steps | Big, bigger, biggest (`big-bigger-biggest`) | 0 | Three bowls (S194) | 0 | pk4-tap-biggest, pk4-tap-smallest, pk4-tap-middle |
 | yes (JI, read by hand: read, no change needed; audio tags) | PK4 | First steps | Helpers all around (`helpers-all-around`) | 0 | Helpers (S197) | 0 | ck-which-helper, ck-job-tool |
-|  | PK4 | First sounds and letters | Rhyme time (`listen-for-rhymes`) | 0 | Cat, mat, hat (S116) | 1 | rr-does-rhyme, rr-pick-rhyme |
-|  | PK4 | First sounds and letters | First sounds (`first-sounds`) | 0 | Buh and sss (S200) | 0 | rs-same-start, rs-odd-start |
-|  | PK4 | First sounds and letters | Which came first? (`which-came-first`) | 3 | The roar came first (S203) | 0 | p4-which-came-first |
-|  | PK4 | First sounds and letters | Second and last (`which-came-second`) | 3 | Whistle, tick, woof (S206) | 3 | p4-which-came-second |
-|  | PK4 | First sounds and letters | Big letters (`big-letters`) | 0 | B, U, S (S209) | 1 | pl-tap-letter, pl-name-letter |
-|  | PK4 | First sounds and letters | Trace a big letter (`first-letter-tracing`) | 0 | A letter in the sand (S212) | 0 | pl-trace-first |
-|  | PK4 | First sounds and letters | Trace more big letters (`more-big-letters`) | 0 | Sticks make letters (S215) | 0 | pl-trace-more |
-|  | PK4 | First sounds and letters | Trace L, T and F (`trace-straight-letters`) | 0 | Down, then across (S218) | 0 | pl-trace-ltf |
+| yes (JJ, read by hand: a colon gone; audio tags) | PK4 | First sounds and letters | Rhyme time (`listen-for-rhymes`) | 0 | Cat, mat, hat (S116) | 0 | rr-does-rhyme, rr-pick-rhyme |
+| yes (JJ, read by hand: read, no change needed; audio tags) | PK4 | First sounds and letters | First sounds (`first-sounds`) | 0 | Buh and sss (S200) | 0 | rs-same-start, rs-odd-start |
+| yes (JJ, read by hand: Listen. Hoot, then ribbit. (colons gone from the lesson, its lines and its questions); audio tags) | PK4 | First sounds and letters | Which came first? (`which-came-first`) | 0 | The roar came first (S203) | 0 | p4-which-came-first |
+| yes (JJ, read by hand: colons gone from the lesson, its lines, its questions and its story; audio tags) | PK4 | First sounds and letters | Second and last (`which-came-second`) | 0 | Whistle, tick, woof (S206) | 0 | p4-which-came-second |
+| yes (JJ, read by hand: B has two bumps, not round; a colon gone; audio tags) | PK4 | First sounds and letters | Big letters (`big-letters`) | 0 | B, U, S (S209) | 0 | pl-tap-letter, pl-name-letter |
+| yes (JJ, read by hand: read, no change needed; audio tags) | PK4 | First sounds and letters | Trace a big letter (`first-letter-tracing`) | 0 | A letter in the sand (S212) | 0 | pl-trace-first |
+| yes (JJ, read by hand: read, no change needed; audio tags) | PK4 | First sounds and letters | Trace more big letters (`more-big-letters`) | 0 | Sticks make letters (S215) | 0 | pl-trace-more |
+| yes (JJ, read by hand: read, no change needed; audio tags) | PK4 | First sounds and letters | Trace L, T and F (`trace-straight-letters`) | 0 | Down, then across (S218) | 0 | pl-trace-ltf |
 |  | K | Looking at the world | Day and night (`day-and-night`) | 0 | The rooster and the sun (S23) | 0 | sk-day-or-night, sk-tap-sky |
 |  | K | Looking at the world | Kinds of weather (`kinds-of-weather`) | 0 | The puddle by the gate (S83) | 0 | sk-which-weather, sk-tap-weather, sk-what-to-wear |
 |  | K | Looking at the world | Living or not living (`living-or-not`) | 0 | The rock and the snail (S86) | 0 | sk-living-or-not, sk-tap-living, sk-tap-not-living |
@@ -66,20 +66,20 @@ Reviewed so far: 36 of 1239 items (615 modules with their lessons, stories and q
 |  | K | Taking care of me | Brushing teeth (`brushing-teeth`) | 4 | The fence of teeth (S1229) | 0 | hk-teeth |
 |  | K | Taking care of me | Sleep (`sleep-k`) | 1 | The phone and the boy (S1232) | 0 | hk-sleep |
 |  | K | Taking care of me | My plate (`my-plate`) | 3 | The rainbow plate (S1235) | 0 | hk-plate |
-|  | K | Counting | Count to 5 (`count-to-5`) | 0 | Five ducklings (S2) | 0 | k5-how-many, k5-tap-group, k5-more, k5-fewer, k5-after, k5-same |
-|  | K | Counting | Count to 10 (`count-to-10`) | 0 | Ten steps (S239) | 0 | k10-how-many, k10-tap-group, k10-more, k10-fewer, k10-after, k10-same |
-|  | K | Counting | Tracing numbers (`tracing-numbers`) | 0 | Start at the dot (S242) | 1 | kn-trace-number |
-|  | K | Counting | One more, one less (`one-more-one-less`) | 0 | One more, one less (S245) | 2 | km-one-more, km-one-less, km-one-more-pic, km-one-less-pic, km-which-neighbour |
-|  | K | Counting | Joining and taking away (`joining-and-taking-away`) | 1 | Cars in the garage (S248) | 0 | km-join-story, km-take-story, km-join-pic, km-take-pic, km-how-many-more |
-|  | K | Counting | Which is bigger? (`comparing-numbers`) | 0 | Which is bigger? (S251) | 0 | km-bigger, km-smaller, km-more-less-same, km-make-more, km-make-fewer |
-|  | K | Counting | Shapes (`shapes`) | 0 | Counting corners (S254) | 0 | ks-name, ks-tap, ks-sides, ks-odd-one-out, ks-corners |
-|  | K | Counting | Tracing shapes (`tracing-shapes`) | 0 | All the way around (S257) | 1 | kn-trace-shape |
-|  | K | Counting | Counting by tens (`counting-by-tens`) | 1 | Ten fingers each (S260) | 0 | kt-next-ten, kt-how-many-tens, kt-tap-tens, kt-before-ten, kt-count-on |
-|  | K | Counting | Longer and heavier (`longer-and-heavier`) | 0 | The stick and the rock (S263) | 0 | kl-longer, kl-shorter, kl-same-length, kl-heavier-words, kl-taller |
-|  | K | Counting | Sorting (`sorting`) | 0 | The sock pile (S266) | 1 | ko-belongs, ko-count-group, ko-which-group-more, ko-does-not-belong, ko-how-many-groups |
-|  | K | Counting | Solid shapes (`solids`) | 1 | Roll, stack, point (S269) | 1 | kd-name-solid, kd-tap-solid, kd-real-thing, kd-flat-or-solid, kd-rolls |
-|  | K | Counting | Making ten (`making-ten`) | 0 | Partners for ten (S272) | 0 | kn-partner, kn-frame, kn-two-ways, kn-take-from-ten, kn-is-ten |
-|  | K | Counting | More and fewer to ten (`more-and-fewer-10`) | 0 | Two buckets (S275) | 0 | k-tap-more-10, k-tap-fewer-10 |
+| yes (JJ, read by hand: one thing is "there is 1"; counted words in their own sentence; audio tags) | K | Counting | Count to 5 (`count-to-5`) | 0 | Five ducklings (S2) | 0 | k5-how-many, k5-tap-group, k5-more, k5-fewer, k5-after, k5-same |
+| yes (JJ, read by hand: one thing is "there is 1"; counted words in their own sentence; audio tags) | K | Counting | Count to 10 (`count-to-10`) | 0 | Ten steps (S239) | 0 | k10-how-many, k10-tap-group, k10-more, k10-fewer, k10-after, k10-same |
+| yes (JJ, read by hand: a colon gone; audio tags) | K | Counting | Tracing numbers (`tracing-numbers`) | 0 | Start at the dot (S242) | 0 | kn-trace-number |
+| yes (JJ, read by hand: four became three, then three became four, then five (colons gone); audio tags) | K | Counting | One more, one less (`one-more-one-less`) | 0 | One more, one less (S245) | 0 | km-one-more, km-one-less, km-one-more-pic, km-one-less-pic, km-which-neighbour |
+| yes (JJ, read by hand: story numbers in words, one goes away, colons gone; audio tags) | K | Counting | Joining and taking away (`joining-and-taking-away`) | 0 | Cars in the garage (S248) | 0 | km-join-story, km-take-story, km-join-pic, km-take-pic, km-how-many-more |
+| yes (JJ, read by hand: read, no change needed; audio tags) | K | Counting | Which is bigger? (`comparing-numbers`) | 0 | Which is bigger? (S251) | 0 | km-bigger, km-smaller, km-more-less-same, km-make-more, km-make-fewer |
+| yes (JJ, read by hand: a square and a rectangle told apart by their sides, not only their number; audio tags) | K | Counting | Shapes (`shapes`) | 0 | Counting corners (S254) | 0 | ks-name, ks-tap, ks-sides, ks-odd-one-out, ks-corners |
+| yes (JJ, read by hand: a colon gone; audio tags) | K | Counting | Tracing shapes (`tracing-shapes`) | 0 | All the way around (S257) | 0 | kn-trace-shape |
+| yes (JJ, read by hand: a colon gone from the key idea; audio tags) | K | Counting | Counting by tens (`counting-by-tens`) | 0 | Ten fingers each (S260) | 0 | kt-next-ten, kt-how-many-tens, kt-tap-tens, kt-before-ten, kt-count-on |
+| yes (JJ, read by hand: the longer one and the heavier one (two things, not longest); audio tags) | K | Counting | Longer and heavier (`longer-and-heavier`) | 0 | The stick and the rock (S263) | 0 | kl-longer, kl-shorter, kl-same-length, kl-heavier-words, kl-taller |
+| yes (JJ, read by hand: questions name the groups in words; colons gone; audio tags) | K | Counting | Sorting (`sorting`) | 0 | The sock pile (S266) | 0 | ko-belongs, ko-count-group, ko-which-group-more, ko-does-not-belong, ko-how-many-groups |
+| yes (JJ, read by hand: a block is the everyday cube (a box often is not); colons gone; audio tags) | K | Counting | Solid shapes (`solids`) | 0 | Roll, stack, point (S269) | 0 | kd-name-solid, kd-tap-solid, kd-real-thing, kd-flat-or-solid, kd-rolls |
+| yes (JJ, read by hand: read, no change needed; audio tags) | K | Counting | Making ten (`making-ten`) | 0 | Partners for ten (S272) | 0 | kn-partner, kn-frame, kn-two-ways, kn-take-from-ten, kn-is-ten |
+| yes (JJ, read by hand: read, no change needed; audio tags) | K | Counting | More and fewer to ten (`more-and-fewer-10`) | 0 | Two buckets (S275) | 0 | k-tap-more-10, k-tap-fewer-10 |
 |  | K | Letters | Letter names (`letter-names`) | 1 | The song that holds them (S278) | 0 | r-tap-letter, r-after, r-before, r-first-letter, r-count-letters |
 |  | K | Letters | Big and small letters (`big-and-small-letters`) | 0 | Big G, small g (S281) | 0 | r-match-small, r-match-big, r-tap-letter, r-first-letter, r-count-letters |
 |  | K | Letters | Letter sounds (`letter-sounds`) | 0 | Buh for ball (S284) | 0 | rs-word-starts, rs-letter-for-sound, rs-pick-word, rs-same-start, rs-odd-start |

@@ -2,6 +2,12 @@
 
 The newest block is what educators see once, in a pop-up on the classroom page, after each update. Write it the way Mikey talks to a teacher: conversational, complete sentences, say what changed and why it matters, and skip the shorthand (2026-09-23). Two to four items. The date line is the version stamp.
 
+## October 3, 2026 (pre-K finished, and kindergarten counting read by hand)
+
+- Every pre-K lesson has now been read again by hand, finishing with First sounds and letters.
+- Kindergarten Counting is read too, with fixes like "There is 1," a square and a rectangle told apart by their sides, and a block as the everyday cube.
+- Their stories carry directions for a recorded voice, from a lion's roar to a whoosh down a slide.
+
 ## October 3, 2026 (pre-K 4 lessons read by hand)
 
 - Every First steps lesson for four-year-olds has been read again by hand, with clearer matching lessons, one dot instead of one dots, and a taking-turns lesson that explains each kind choice.

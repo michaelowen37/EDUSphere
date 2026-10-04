@@ -4443,13 +4443,13 @@ function PREK_READING_MODULES() { return [
     tagline: 'Two sounds, in order',
     requires: ['first-sounds'],
     lesson: {
-      paragraphs: ['Listen to two animal sounds. Which one came first?', 'The owl says hoot. The bee says buzz. Hoot, then buzz: the owl came first.'],
+      paragraphs: ['Listen to two animal sounds. Which one came first?', 'The owl says hoot. The bee says buzz. Hoot, then buzz. The owl came first.'],
       keyIdea: 'Hold the first sound in your head while you hear the second.',
       example: { kind: 'pair', a: { kind: 'pic', name: 'owl' }, b: { kind: 'pic', name: 'bee' }, caption: 'Hoot, then buzz. The owl came first.' },
       script: [
         { say: 'The cat says meow. The duck says quack.', show: { kind: 'pair', a: { kind: 'pic', name: 'cat' }, b: { kind: 'pic', name: 'duck' } } },
-        { say: 'Listen: meow, then quack. Which came first? The cat.', show: { kind: 'pic', name: 'cat' } },
-        { say: 'Listen: quack, then meow. Now the duck came first.', show: { kind: 'pic', name: 'duck' } },
+        { say: 'Listen to the sounds. Meow, then quack. Which came first? The cat.', show: { kind: 'pic', name: 'cat' } },
+        { say: 'Listen. Quack, then meow. Now the duck came first.', show: { kind: 'pic', name: 'duck' } },
       ],
     },
     sources: ['Aligned with Texas Prekindergarten Guidelines II.A.3 (shows understanding of the new language being spoken by English-speaking adults and peers) and Head Start ELOF Goal P-LC 1.'],
@@ -4463,13 +4463,13 @@ function PREK_READING_MODULES() { return [
     tagline: 'Three sounds, in order',
     requires: ['which-came-first'],
     lesson: {
-      paragraphs: ['Now there are three sounds. Hold all three in your head.', 'The owl says hoot. The bee says buzz. The frog says ribbit. Hoot, buzz, ribbit: the bee came second, and the frog came last.'],
+      paragraphs: ['Now there are three sounds. Hold all three in your head.', 'The owl says hoot. The bee says buzz. The frog says ribbit. Hoot, buzz, ribbit. The bee came second, and the frog came last.'],
       keyIdea: 'Keep the sounds in a row in your head, then point to the place.',
       example: { kind: 'pair', a: { kind: 'pic', name: 'bee' }, b: { kind: 'pic', name: 'frog' }, caption: 'Hoot, buzz, ribbit. The bee was second. The frog was last.' },
       script: [
         { say: 'The owl says hoot. The bee says buzz.', show: { kind: 'pair', a: { kind: 'pic', name: 'owl' }, b: { kind: 'pic', name: 'bee' } } },
-        { say: 'The frog says ribbit. Hoot, buzz, ribbit: the bee came second.', show: { kind: 'pair', a: { kind: 'pic', name: 'bee' }, b: { kind: 'pic', name: 'frog' } } },
-        { say: 'Hoot, buzz, ribbit: the frog came last.', show: { kind: 'pic', name: 'frog' } },
+        { say: 'The frog says ribbit. Hoot, buzz, ribbit. The bee came second.', show: { kind: 'pair', a: { kind: 'pic', name: 'bee' }, b: { kind: 'pic', name: 'frog' } } },
+        { say: 'Hoot, buzz, ribbit. The frog came last.', show: { kind: 'pic', name: 'frog' } },
       ],
     },
     sources: ['Aligned with Texas Prekindergarten Guidelines II.A.3 (shows understanding of the new language being spoken by English-speaking adults and peers) and Head Start ELOF Goal P-LC 1.'],
@@ -4647,7 +4647,7 @@ function COUNTING_MODULES() { return [
     tagline: 'Putting together, taking apart',
     requires: ['one-more-one-less'],
     lesson: {
-      paragraphs: ['When two groups join, count them all together to find how many. When some go away, count what is left.', 'Three birds on a fence, then two more land. Count them all: five birds.'],
+      paragraphs: ['When two groups join, count them all together to find how many. When some go away, count what is left.', 'Three birds on a fence, then two more land. Count them all. Five birds.'],
       keyIdea: 'Joining makes more. Taking away leaves fewer. Count to find out how many.',
       example: { kind: 'dots', count: 5, caption: 'Three and two more. That makes five.' },
       script: [
@@ -4727,7 +4727,7 @@ function COUNTING_MODULES() { return [
     requires: ['count-to-10'],
     lesson: {
       paragraphs: ['Counting by tens is a fast way to count big groups. Ten, twenty, thirty, forty, fifty.', 'Each jump adds ten more. Say them in order and you reach one hundred in ten jumps.'],
-      keyIdea: 'Count by tens: 10, 20, 30, 40, 50, 60, 70, 80, 90, 100.',
+      keyIdea: 'Count by tens. 10, 20, 30, 40, 50, 60, 70, 80, 90, 100.',
       example: { kind: 'tens', count: 3, caption: 'Ten, twenty, thirty.' },
       script: [
         { say: 'Ten. Twenty. Thirty. Each group has ten.', show: { kind: 'tens', count: 3 } },
@@ -4783,12 +4783,12 @@ function COUNTING_MODULES() { return [
     tagline: 'Ball, box, can, cone',
     requires: ['shapes'],
     lesson: {
-      paragraphs: ['Some shapes are flat, like a drawing. Some are solid, like things you can hold.', 'A ball is a sphere. A box is a cube. A can is a cylinder. An ice cream cone is a cone.'],
-      keyIdea: 'Solid shapes are things you can hold: sphere, cube, cylinder, cone.',
+      paragraphs: ['Some shapes are flat, like a drawing. Some are solid, like things you can hold.', 'A ball is a sphere. A block is a cube. A can is a cylinder. An ice cream cone is a cone.'],
+      keyIdea: 'Solid shapes are things you can hold, like a sphere, a cube, a cylinder and a cone.',
       example: { kind: 'solid', name: 'sphere', caption: 'A ball is a sphere.' },
       script: [
         { say: 'A ball. It rolls every way. That is a sphere.', show: { kind: 'solid', name: 'sphere' } },
-        { say: 'A box. Flat sides and corners. That is a cube.', show: { kind: 'solid', name: 'cube' } },
+        { say: 'A block. Flat sides and corners. That is a cube.', show: { kind: 'solid', name: 'cube' } },
         { say: 'A can. Round, with flat ends. That is a cylinder.', show: { kind: 'solid', name: 'cylinder' } },
         { say: 'An ice cream cone. A point at one end. That is a cone.', show: { kind: 'solid', name: 'cone' } },
       ],
@@ -14876,14 +14876,14 @@ Object.assign(GENERATORS, {
   'p4-which-came-first': (rng) => {
     const SOUNDS = [['cat', 'meow'], ['duck', 'quack'], ['bee', 'buzz'], ['frog', 'ribbit'], ['owl', 'hoot'], ['bear', 'growl']];
     const [a, sa] = pick(rng, SOUNDS); const [b, sb] = pick(rng, SOUNDS.filter((x) => x[0] !== a));
-    return { type: 'choice', story: null, prompt: `Listen: ${sa}, then ${sb}. Which animal came first?`, choices: shuffle(rng, [`pic:${a}`, `pic:${b}`]), answer: `pic:${a}`,
+    return { type: 'choice', story: null, prompt: `Listen. ${capFirst(sa)}, then ${sb}. Which animal came first?`, choices: shuffle(rng, [`pic:${a}`, `pic:${b}`]), answer: `pic:${a}`,
       explain: `${sa.charAt(0).toUpperCase() + sa.slice(1)} came first. That is the ${a}.`, visual: null, explainVisual: { kind: 'pic', name: a } };
   },
   'p4-which-came-second': (rng) => {
     const SOUNDS = [['cat', 'meow'], ['duck', 'quack'], ['bee', 'buzz'], ['frog', 'ribbit'], ['owl', 'hoot'], ['bear', 'growl']];
     const three = shuffle(rng, SOUNDS).slice(0, 3); const [a, b, c] = three; const askLast = rng() < 0.5;
     const want = askLast ? c : b; const word = askLast ? 'last' : 'second';
-    return { type: 'choice', story: null, prompt: `Listen: ${a[1]}, then ${b[1]}, then ${c[1]}. Which animal came ${word}?`, choices: shuffle(rng, three.map((x) => `pic:${x[0]}`)), answer: `pic:${want[0]}`,
+    return { type: 'choice', story: null, prompt: `Listen. ${capFirst(a[1])}, then ${b[1]}, then ${c[1]}. Which animal came ${word}?`, choices: shuffle(rng, three.map((x) => `pic:${x[0]}`)), answer: `pic:${want[0]}`,
       explain: `${want[1].charAt(0).toUpperCase() + want[1].slice(1)} came ${word}. That is the ${want[0]}.`, visual: null, explainVisual: { kind: 'pic', name: want[0] } };
   },
   'sk-last-sound': (rng) => {
@@ -15043,13 +15043,13 @@ function makeCountingGenerators(prefix, max) {
       const n = randInt(rng, 1, max);
       const choices = shuffle(rng, distinctCounts(rng, Math.min(4, max), max, n).map(String));
       return { type: 'choice', story: null, prompt: 'How many?', choices, answer: String(n),
-        explain: `${countUp(n)}. There are ${n}.`, visual: { kind: 'dots', count: n }, explainVisual: null };
+        explain: `${capFirst(countUp(n))}. ${n === 1 ? 'There is' : 'There are'} ${n}.`, visual: { kind: 'dots', count: n }, explainVisual: null };
     },
     [`${prefix}-tap-group`]: (rng) => {
       const n = randInt(rng, 1, max);
       const choices = shuffle(rng, distinctCounts(rng, 3, max, n).map((c) => `dots:${c}`));
       return { type: 'choice', story: null, prompt: `Tap the group with ${n}.`, choices, answer: `dots:${n}`,
-        explain: `This group has ${n}: ${countUp(n)}.`, visual: null, explainVisual: null };
+        explain: `This group has ${n}. ${capFirst(countUp(n))}.`, visual: null, explainVisual: null };
     },
     [`${prefix}-more`]: (rng) => {
       const [a, b] = distinctCounts(rng, 2, max, randInt(rng, 1, max));
@@ -23257,7 +23257,7 @@ Object.assign(GENERATORS, {
     const sh = pickShape(rng);
     const choices = shuffle(rng, [sh, ...otherShapes(rng, sh, 2)].map((x) => x.name));
     return { type: 'choice', story: null, prompt: 'What shape is this?', choices, answer: sh.name,
-      explain: sh.sides === 0 ? 'It is round with no corners, so it is a circle.' : `Count the sides: ${sh.sides}. It is a ${sh.name}.`, visual: { kind: 'shape', name: sh.name }, explainVisual: null };
+      explain: sh.sides === 0 ? 'It is round with no corners, so it is a circle.' : `${sh.name === 'square' ? 'Four sides, all the same length.' : sh.name === 'rectangle' ? 'Four sides, two long and two short.' : 'Count the sides. There are ' + sh.sides + '.'} It is a ${sh.name}.`, visual: { kind: 'shape', name: sh.name }, explainVisual: null };
   },
   'ks-tap': (rng) => {
     const sh = pickShape(rng);
@@ -23268,7 +23268,7 @@ Object.assign(GENERATORS, {
   'ks-sides': (rng) => {
     const sh = SHAPES[randInt(rng, 1, SHAPES.length - 1)]; // not the circle
     return { type: 'choice', story: null, prompt: 'How many sides does it have?', choices: shuffle(rng, ['3', '4', '5']), answer: String(sh.sides),
-      explain: `Count the sides of the ${sh.name}: ${sh.sides}.`, visual: { kind: 'shape', name: sh.name }, explainVisual: null };
+      explain: `Count the sides of the ${sh.name}. There are ${sh.sides}.`, visual: { kind: 'shape', name: sh.name }, explainVisual: null };
   },
   'ks-odd-one-out': (rng) => {
     const sh = pickShape(rng); const other = otherShapes(rng, sh, 1)[0];
@@ -23286,7 +23286,7 @@ Object.assign(GENERATORS, {
 // Solid shapes. A choice 'solid:cube' is a picture the screen draws.
 const SOLIDS = [
   { name: 'sphere', thing: 'a ball', rolls: true, flatSides: false },
-  { name: 'cube', thing: 'a box', rolls: false, flatSides: true },
+  { name: 'cube', thing: 'a block', rolls: false, flatSides: true },
   { name: 'cylinder', thing: 'a can', rolls: true, flatSides: true },
   { name: 'cone', thing: 'an ice cream cone', rolls: true, flatSides: true },
 ];
@@ -23430,11 +23430,11 @@ Object.assign(GENERATORS, {
   'ko-count-group': (rng) => {
     const n = randInt(rng, 1, 6); const sh = pickShape(rng);
     return { type: 'choice', story: `Here is the ${sh.name} group.`, prompt: 'How many are in it?', choices: shuffle(rng, distinctCounts(rng, 4, 8, n).map(String)), answer: String(n),
-      explain: `Count the ${sh.name}s: ${countUp(n)}. There are ${n}.`, visual: { kind: 'dots', count: n }, explainVisual: null };
+      explain: `Count the ${sh.name}s. ${capFirst(countUp(n))}. ${n === 1 ? 'There is' : 'There are'} ${n}.`, visual: { kind: 'dots', count: n }, explainVisual: null };
   },
   'ko-which-group-more': (rng) => {
     const [a, b] = distinctCounts(rng, 2, 8, randInt(rng, 1, 8));
-    return { type: 'choice', story: `Circles: ${a}. Squares: ${b}.`, prompt: 'Which group has more?', choices: shuffle(rng, ['Circles', 'Squares']), answer: a > b ? 'Circles' : 'Squares',
+    return { type: 'choice', story: `${a} ${a === 1 ? 'circle' : 'circles'} and ${b} ${b === 1 ? 'square' : 'squares'}.`, prompt: 'Which group has more?', choices: shuffle(rng, ['Circles', 'Squares']), answer: a > b ? 'Circles' : 'Squares',
       explain: `${Math.max(a, b)} is more than ${Math.min(a, b)}.`, visual: null, explainVisual: null };
   },
   'ko-does-not-belong': (rng) => {
@@ -23446,7 +23446,7 @@ Object.assign(GENERATORS, {
   'ko-how-many-groups': (rng) => {
     const n = randInt(rng, 2, 3);
     const names = shuffle(rng, SHAPES.map((x) => x.name)).slice(0, n);
-    return { type: 'choice', story: `${names.map((x) => x[0].toUpperCase() + x.slice(1)).join(', ')}.`, prompt: 'How many groups are there?', choices: ['2', '3', '4'], answer: String(n),
+    return { type: 'choice', story: `${capFirst(names.map((x) => 'a ' + x).join(', '))}.`, prompt: 'How many groups are there?', choices: ['2', '3', '4'], answer: String(n),
       explain: `${names.join(', ')}. That is ${n} kinds, so ${n} groups.`, visual: null, explainVisual: null };
   },
 });
@@ -23486,12 +23486,12 @@ Object.assign(GENERATORS, {
   'km-join-story': (rng) => {
     const a = randInt(rng, 1, 5); const b = randInt(rng, 1, 10 - a); const thing = kidThing(rng);
     return { type: 'choice', story: `${countWords(a)[0].toUpperCase() + countWords(a).slice(1)} ${a === 1 ? (ONE_OF[thing] || thing) : thing}. Then ${b} more.`, prompt: 'How many now?', choices: shuffle(rng, distinctCounts(rng, 4, 10, a + b).map(String)), answer: String(a + b),
-      explain: `${a} and ${b} more makes ${a + b}. Count them all: ${countUp(a + b)}.`, visual: { kind: 'dots', count: a }, explainVisual: { kind: 'dots', count: a + b } };
+      explain: `${a} and ${b} more makes ${a + b}. Count them all. ${capFirst(countUp(a + b))}.`, visual: { kind: 'dots', count: a }, explainVisual: { kind: 'dots', count: a + b } };
   },
   'km-take-story': (rng) => {
     const a = randInt(rng, 3, 10); const b = randInt(rng, 1, a - 1); const thing = kidThing(rng);
-    return { type: 'choice', story: `${countWords(a)[0].toUpperCase() + countWords(a).slice(1)} ${a === 1 ? (ONE_OF[thing] || thing) : thing}. Then ${b} go away.`, prompt: 'How many are left?', choices: shuffle(rng, distinctCounts(rng, 4, 10, a - b).map(String)), answer: String(a - b),
-      explain: `${a} take away ${b} leaves ${a - b}. Count what is left: ${countUp(a - b)}.`, visual: { kind: 'dots', count: a }, explainVisual: { kind: 'dots', count: a - b } };
+    return { type: 'choice', story: `${countWords(a)[0].toUpperCase() + countWords(a).slice(1)} ${a === 1 ? (ONE_OF[thing] || thing) : thing}. Then ${b} ${b === 1 ? 'goes' : 'go'} away.`, prompt: 'How many are left?', choices: shuffle(rng, distinctCounts(rng, 4, 10, a - b).map(String)), answer: String(a - b),
+      explain: `${a} take away ${b} leaves ${a - b}. Count what is left. ${capFirst(countUp(a - b))}.`, visual: { kind: 'dots', count: a }, explainVisual: { kind: 'dots', count: a - b } };
   },
   'km-join-pic': (rng) => {
     const a = randInt(rng, 1, 5); const b = randInt(rng, 1, 10 - a);

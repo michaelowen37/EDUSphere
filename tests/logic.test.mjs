@@ -164,7 +164,7 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
     if (genId === 'ko-does-not-belong' && shapeOf(q.answer) === q.story.match(/the (\w+) group/)[1]) problems.push('odd one is in the group');
     if (genId === 'ko-how-many-groups' && Number(q.answer) !== q.story.replace(/\.$/, '').split(', ').length) problems.push('group count wrong');
     // Solids and making ten
-    const THING = { 'a ball': 'sphere', 'a box': 'cube', 'a can': 'cylinder', 'an ice cream cone': 'cone' };
+    const THING = { 'a ball': 'sphere', 'a block': 'cube', 'a can': 'cylinder', 'an ice cream cone': 'cone' };
     const ROLLS = { sphere: 'Yes', cube: 'No', cylinder: 'Yes', cone: 'Yes' };
     if (genId === 'kd-name-solid' && q.answer !== q.visual.name) problems.push('named the wrong solid');
     if (genId === 'kd-tap-solid' && q.answer !== `solid:${q.prompt.match(/Tap the (\w+)/)[1]}`) problems.push('tapped the wrong solid');

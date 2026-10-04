@@ -2,7 +2,7 @@
 
 Generated 2026-10-04 by tools/review-ledger.mjs. What Mikey wants from the review is in docs/FABLE-REVIEW.md; this file is the work list, in order. To mark an item reviewed, add its key to "reviewed" in docs/review-status.json with the pass that did it (keys look like module:saving-investing-and-risk, course-story:econ-9, game:dots-kite, wonder:w-grown-the-rumor), then run the tool again.
 
-Reviewed to the full standard so far: 91 of 1239 items; first pass only (accuracy, punctuation, audio tags): 54 (615 modules with their lessons, stories and question banks, 102 long stories, 157 games and 365 Wonder questions). Colons today: 2163 in lessons and 1273 in stories (times like 3:30 and ratios are not counted). Pictures are reviewed through docs/ART-REQUESTS.md as they are painted; a rewritten story keeps each picture beside the paragraph it shows.
+Reviewed to the full standard so far: 95 of 1239 items; first pass only (accuracy, punctuation, audio tags): 50 (615 modules with their lessons, stories and question banks, 102 long stories, 157 games and 365 Wonder questions). Colons today: 2159 in lessons and 1271 in stories (times like 3:30 and ratios are not counted). Pictures are reviewed through docs/ART-REQUESTS.md as they are painted; a rewritten story keeps each picture beside the paragraph it shows.
 
 ## 1. Every module, in review order (pre-K first, then up through college)
 
@@ -98,10 +98,10 @@ Reviewed to the full standard so far: 91 of 1239 items; first pass only (accurac
 | yes (KC, full standard: a spoken script; the sandwich steps shown without colons; explanations in whole sentences with reasons; TEKS 126.1(c)(1)(A) and (c)(1)(C) quoted in full) | K | Tell, show, step and repeat | First, next, then, last (`first-next-then-last`) | 0 | Shoes before socks (S2707) | 0 | tk-order |
 | yes (KC, full standard: a spoken script with its red and blue shown; explanations in whole sentences; TEKS 126.1(c)(1)(B) and 126.1(c)(2), which has no lettered parts (it cited (b)(2)(A))) | K | Tell, show, step and repeat | Do it again (`do-it-again`) | 0 | Clap four times (S2712) | 1 | tk-again |
 | yes (KC, full standard: a spoken script; explanations give reasons (private things tell people who you are and where to find you); TEKS 126.1(c)(7)(A), (c)(7)(B) and (c)(5), which has no lettered parts (it cited (b)(5)(A)); (c)(6)(B), that all digital content has owners, earmarked) | K | Tell, show, step and repeat | Safe and kind online (`safe-online-k`) | 0 | The secret word (S2717) | 0 | tk-safe |
-| first pass only (JL, read by hand: a colon and a line break fixed; audio tags) | K | I can listen, I can say | My listening body (`my-listening-body`) | 1 | Get your coat (S3242) | 0 | spk-listen |
-| first pass only (JL, read by hand: colons and a line break fixed; audio tags) | K | I can listen, I can say | First, then, do it (`first-then-do`) | 3 | Cup, water, table (S3247) | 1 | spk-steps |
-| first pass only (JL, read by hand: a colon gone; audio tags) | K | I can listen, I can say | My clear voice (`my-clear-voice`) | 0 | This is my dog (S3252) | 0 | spk-voice |
-| first pass only (JL, read by hand: a semicolon and a colon gone from the key idea; audio tags) | K | I can listen, I can say | My turn and kind words (`my-turn-and-kind-words`) | 0 | The hand that waited (S3257) | 0 | spk-turns |
+| yes (KD, full standard: listening with brain and body (it taught whole body listening as fixed rules, eyes on the speaker and hands and feet still, and marked looking at the floor wrong; Truesdale calls it a tool, not a rule, and Social Thinking now teaches listening with brain and body); retitled Listening with my brain and body; children listen in different ways (P26 painting); a spoken script; nine questions (six); SL.K.2 quoted in full) | K | I can listen, I can say | Listening with my brain and body (`my-listening-body`) | 0 | Get your coat (S3242) | 0 | spk-listen |
+| yes (KD, full standard: the reason the order matters, a finger for each step, ask when you forget one (SL.K.3); colons gone; a spoken script; ten questions (six)) | K | I can listen, I can say | First, then, do it (`first-then-do`) | 0 | Cup, water, table (S3247) | 0 | spk-steps |
+| yes (KD, full standard: the end of a word taught by what its last sound tells apart (cat, cap, can), since a voice reads clipped words such as do as other words; what it is like (not what it does); whole sentences; a spoken script; ten questions (six)) | K | I can listen, I can say | My clear voice (`my-clear-voice`) | 0 | This is my dog (S3252) | 0 | spk-voice |
+| yes (KD, full standard: no idiom (kind words open doors), crying not treated as wrong (a waaa answer is gone), it is okay to feel upset and words tell people what you need; greetings with good morning and goodbye; a talk goes back and forth (SL.K.1.b); a spoken script; twelve questions (six)) | K | I can listen, I can say | My turn and kind words (`my-turn-and-kind-words`) | 0 | The hand that waited (S3257) | 0 | spk-turns |
 | first pass only (JM, read by hand: sleep matches the sleep lesson (about ten to twelve hours a night); colons and a semicolon gone; audio tags) | K | Me and my mind | My brain and my senses (`my-brain-and-senses`) | 0 | Five reporters (S3146) | 0 | pyk-brain |
 | first pass only (JM, read by hand: a line break made a paragraph break; audio tags) | K | Me and my mind | Remember it (`remember-it`) | 0 | Three at a time (S3152) | 0 | pyk-memory |
 | first pass only (JM, read by hand: a story colon gone; audio tags) | K | Me and my mind | My feelings (`my-feelings`) | 0 | The name of the feeling (S3158) | 0 | pyk-feelings |
@@ -629,7 +629,7 @@ Reviewed to the full standard so far: 91 of 1239 items; first pass only (accurac
 | Reviewed | Grade | Course | Story | Colons |
 |---|---|---|---|---|
 |  | K | Tell, show, step and repeat | Mike and the robot that listened (CS373) | 1 |
-|  | K | I can listen, I can say | The circle that learned to listen (CS511) | 1 |
+|  | K | I can listen, I can say | The circle that learned to listen (CS511) | 0 |
 |  | K | Me and my mind | The rainy day club (CS487) | 2 |
 |  | K | I wonder | The wondering rug (CS463) | 1 |
 |  | K | Needs, wants, work and saving | The lemonade stand on Maple Street (CS391) | 2 |

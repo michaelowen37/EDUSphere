@@ -2,6 +2,12 @@
 
 The newest block is what educators see once, in a pop-up on the classroom page, after each update. Write it the way Mikey talks to a teacher: conversational, complete sentences, say what changed and why it matters, and skip the shorthand (2026-09-23). Two to four items. The date line is the version stamp.
 
+## October 4, 2026 (listening and speaking)
+
+- The kindergarten listening and speaking lessons now have spoken lessons written for the ear, and every answer comes with its reason.
+- Listening is now taught the way the people behind whole body listening teach it today. Your brain does the listening and your body helps, and children listen in different ways, so a child who listens best looking down is no longer told that is wrong.
+- Saying whole words now comes with a reason a five-year-old can hear. Cat, cap and can start the same way, so the last sound tells a friend which word you mean.
+
 ## October 4, 2026 (kindergarten computer science)
 
 - The kindergarten computer science lessons now have spoken lessons written for the ear, with pictures that match what is being said, and every answer comes with its reason.

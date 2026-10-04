@@ -1,6 +1,6 @@
 # Audio ledger
 
-Generated 2026-10-04 by tools/audio-ledger.mjs. Every clip the app can play in a recorded voice is a row of docs/AUDIO-LEDGER.csv: its key (the file name, audio/<key>.mp3, that the app already looks for), its group (the story or lesson it belongs to) and the words with their Eleven v4 audio tags. 6932 clips, 1,275,113 characters in all; the longest clip is 508 characters and the longest whole story 2,751, far under Eleven v4's 10,000 a request. 144 stories carry hand-written tags so far (the writing review adds them course by course); the rest open with their age band's voice direction only.
+Generated 2026-10-04 by tools/audio-ledger.mjs. Every clip the app can play in a recorded voice is a row of docs/AUDIO-LEDGER.csv: its key (the file name, audio/<key>.mp3, that the app already looks for), its group (the story or lesson it belongs to) and the words with their Eleven v4 audio tags. 6926 clips, 1,275,724 characters in all; the longest clip is 508 characters and the longest whole story 2,751, far under Eleven v4's 10,000 a request. 144 stories carry hand-written tags so far (the writing review adds them course by course); the rest open with their age band's voice direction only.
 
 ## How to make the audio
 
@@ -17,7 +17,7 @@ ElevenLabs counts characters, tags included, so this is the size of each part of
 
 | Band | Clips | Characters |
 |---|---|---|
-| Pre-K to grade 2 | 2876 | 323,453 |
+| Pre-K to grade 2 | 2870 | 324,064 |
 | Grades 3 to 5 | 1263 | 278,553 |
 | Grades 6 to 8 | 1138 | 272,072 |
 | Grades 9 to college | 1655 | 401,035 |
@@ -41,7 +41,7 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 |---|---|
 | story title | 615 |
 | story | 3887 |
-| lesson line | 1512 |
+| lesson line | 1506 |
 | long story title | 102 |
 | long story | 816 |
 
@@ -1349,11 +1349,11 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 
 ### Get your coat (S3242, my-listening-body)
 
-- S3242-1: [dreamy] Milo was thinking about lunch. His teacher said, get your coat and line up. [dreamy, sing-song] Milo heard lunch, lunch, lunch, and he got his hat.
+- S3242-1: [dreamy] Milo was thinking about lunch. His teacher said, get your coat and line up. [dreamy, sing-song] His ears heard her, but his brain was on lunch, and he got his hat.
 - S3242-2: Miss Ruiz smiled and asked where his coat was. Milo did not know what she had said. So he asked her. [politely] Can you say it again, please?
-- S3242-3: Miss Ruiz said it again, get your coat and line up. [focused] This time Milo looked right at her. His hands were still, and his mind was on the words. He got his coat.
+- S3242-3: Miss Ruiz said it again, get your coat and line up. [focused] This time Milo turned toward her, and his brain stayed on the words. He got his coat.
 - S3242-4: At recess Miss Ruiz asked, did you like the slide? Milo answered with more than one word. Yes, I went down it three times, he said. [laughing] Miss Ruiz laughed.
-- S3242-5: After the story that afternoon, Milo said it back. First the bear was hungry, and last the bear found honey. [proud] He had heard the whole thing.
+- S3242-5: After the story that afternoon, Milo said it back. First the bear was hungry, and last the bear found honey. [slowly, warmly] His brain had been listening the whole time.
 
 ### Cup, water, table (S3247, first-then-do)
 
@@ -1361,15 +1361,15 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 - S3247-2: Lena said the steps back to her, [slowly] cup, water, table. Miss Ruiz nodded. The steps were in Lena's head now, in order.
 - S3247-3: [water pouring] Lena got a cup and filled it with water. She carried it to the table and set it down. First things first, and last things last. [pleased] Nothing spilled.
 - S3247-4: [confident] Then it was Lena's turn to give directions. She told Ben two steps. First, get the ball, and then roll it to me. Now you say it, Ben.
-- S3247-5: [mixed up, playful] Ben said, roll the ball and then get it. Lena fixed it for him: get it first, then roll it. Ben said it right, [a ball rolling] and the ball rolled all the way to Lena.
+- S3247-5: [mixed up, playful] Ben said, roll the ball and then get it. Lena fixed it for him. Get it first, and then roll it. [slowly, warmly] Ben said it right, [a ball rolling] and the ball rolled all the way to Lena.
 
 ### This is my dog (S3252, my-clear-voice)
 
 - S3252-1: It was Theo's turn to tell. He held up his drawing of his dog [very quietly] and said, this is my dog. [gently] Nobody in the back could hear him.
 - S3252-2: Miss Ruiz said, talk to the friend at the back. Theo looked at Priya in the back row and said it again, louder. [loud and clear] This is my dog.
 - S3252-3: [clear, steady] Theo told the three parts. This is my dog. He is brown and he likes to dig. I like him because he is funny. Everyone could hear.
-- S3252-4: He said whole words, slow. [slowly, clearly] He said dig, not di, and funny, not fun. Priya in the back smiled.
-- S3252-5: [warm] Theo held his drawing up for the digging part. Then he put it down and looked at his friends. They were the ones he was talking to.
+- S3252-4: [slowly, clearly] He talked slowly and said every sound, right to the end of each word. He said dig with its last sound, so nobody heard dip. Priya in the back smiled.
+- S3252-5: [warm] Theo held his drawing up for the digging part. Then he put it down and turned to his friends. [slowly, warmly] They were the ones he was talking to.
 
 ### The hand that waited (S3257, my-turn-and-kind-words)
 
@@ -1377,7 +1377,7 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 - S3257-2: Miss Ruiz sat with them and said, say it in words, Ava. Ava tried. [politely] I want a turn with the truck, please. Ben said, okay, when I am done.
 - S3257-3: [a quiet circle] At circle time, one person talked at a time. Ava had an idea, so she put her hand up and waited. Two friends went first. Then it was Ava's turn, and everyone listened.
 - S3257-4: A new boy came to class after lunch, and Ava walked over to him. [friendly] Hello, my name is Ava. The new boy said, my name is Sam. Now they knew each other.
-- S3257-5: At the end of the day, Ben brought Ava the red truck. [grateful] Thank you, Ava said. Kind words had opened the door.
+- S3257-5: At the end of the day, Ben brought Ava the red truck. [grateful] Thank you, Ava said. [slowly, warmly] Asking in words had worked better than grabbing.
 
 ### Lunch from the garden (S3334, plants-we-eat-k)
 

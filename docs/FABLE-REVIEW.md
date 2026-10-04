@@ -136,7 +136,7 @@ Mikey's example: the pre-K 3 Triangles lesson says a slice of pizza is almost a 
 - An explanation that says the question back teaches nothing (Who teaches you at school? A teacher teaches you at school). Say what the person does or why the answer is right.
 - Read every example against its caption. Two more disagreed (four dots captioned five votes, a cup captioned a drop of water).
 - Keep each claim true as said. Nobody must have an apple; an apple is a need because it is food, and that reason also tells it from candy.
-- When the review finds a standard no lesson teaches, earmark it in docs/NEW-CHAT.md rather than build it (Mikey: accuracy of what exists comes first).
+- When the review finds a standard no lesson teaches, earmark it in docs/EARMARKS.md, the one list since pass KD, rather than build it (Mikey: accuracy of what exists comes first).
 
 ## Learned in pass KB (Taking care of me, and the trace arrow)
 
@@ -148,3 +148,12 @@ Mikey's example: the pre-K 3 Triangles lesson says a slice of pizza is almost a 
 
 - Read a code's subsection letter too. In the 2022 Technology Applications sections, (b) is the introduction and (c) holds the knowledge and skills, and a paragraph with a single expectation, such as 126.1(c)(2), takes no letter.
 - A read-aloud lesson without a script reads its paragraphs over one picture; write the script so each line shows what it says.
+
+## Learned in pass KD (I can listen, I can say)
+
+- Check a social skill against how its own experts teach it today, not only against the standard. Whole body listening (Truesdale, 1990) had become a rule that marked a child who listens looking down as wrong; its creator calls it a tool, not a rule, and its publisher now teaches listening with brain and body. The brain is the listener, the body helps, and children listen in different ways.
+- A clipped word written for a voice is usually another word (do, di, fun). Teach the end of a word by the words its last sound tells apart (cat, cap, can), never by spelling the clipped word.
+- Keep idioms out of early-years lines (kind words open doors), and never make a feeling the wrong answer (crying, or a waaa among the choices). Say the feeling is okay and what words can still do.
+- When a cited standard has lettered parts (SL.K.1.a and SL.K.1.b), read them and teach each part the lesson claims.
+- A course's long story often repeats its lessons' mistakes; read it when the lessons change, even before section 2 of the ledger reaches it.
+- Every earmark goes in docs/EARMARKS.md and that pass's DECISIONS entry, nowhere else.

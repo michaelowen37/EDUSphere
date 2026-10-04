@@ -1,5 +1,6 @@
-Kindergarten computer science at the full standard
+Kindergarten listening and speaking at the full standard, and one list of earmarks
 
-- Pass KC: Tell, show, step and repeat (computer science, K to 2) at the full standard. Each of the four lessons has a spoken script of its own with matching pictures; a computer learns what you want through its inputs, a microphone among them; colons gone; explanations give reasons. Citations: the knowledge and skills of 19 TAC 126.1 are subsection (c), and the course cited (b), with two lettered parts that do not exist ((b)(2)(A) and (b)(5)(A)); the lessons and plan now cite (c) and quote in full. The other technology courses cite (b) too, an open item; 126.1(c)(6)(B) earmarked.
+- Pass KD: I can listen, I can say at the full standard. Listening is taught with brain and body: the old whole body listening rules (eyes on the speaker, hands and feet still) marked a child who listens looking down as wrong, while the idea's creator calls it a tool, not a rule, and its publisher has replaced the name. The end of a word is taught by what its last sound tells apart (cat, cap and can), since a voice reads a clipped word like "do" as the word do. Kind words without an idiom and without treating crying as wrong; greetings, and talks that go back and forth (SL.K.1.a and SL.K.1.b added to the plan). Spoken scripts for all four lessons, every answer with its reason, banks from 24 questions to 41, painting P26 logged, and the course's long story corrected the same way.
+- docs/EARMARKS.md: every earmark in one list (E1 to E6, and A1 for an accuracy item), after 126.1(c)(6)(B) from pass KC was found missing from NEW-CHAT's list. Built after the kindergarten electives, before grade 1.
 
-Passes: KC
+Passes: KD

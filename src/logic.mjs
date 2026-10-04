@@ -12399,29 +12399,52 @@ function PHIL3_MODULES() { return [
   },
 ]; }
 // -----------------------------------------------------------------------------------------------------------------
-// SPEECHK_MODULES: the four lessons of the kindergarten speech course (2026-09-30, pass GT).
-// In plain terms: each object below is one lesson a five-year-old hears read aloud. `paragraphs` is the lesson text,
-// `keyIdea` is the one-sentence takeaway, `example` gives the pictures and extra examples the screen shows, `sources`
-// names the Texas standard the lesson meets (the kindergarten oral language strand, read from the published text) and
-// the national standard beside it, and `generators` lists which question banks below make the five quick checks.
+// SPEECHK_MODULES: the four lessons of the kindergarten speech course (2026-09-30, pass GT; full standard, pass KD).
+// In plain terms: each object below is one lesson a five-year-old hears read aloud. `script` is what the child hears, one
+// line at a time with the picture beside it, so for a pre-reader the script is the lesson; `paragraphs` say the same for a
+// grown-up reading along, `keyIdea` is the takeaway, `example` gives the pictures and the extra examples shown after a
+// miss, `sources` names the Texas standard the lesson meets (the kindergarten oral language strand, read in 19 TAC
+// §110.2(b)(1)) and the national standard beside it, and `generators` lists the question banks below.
 // The course sits above the Texas minimum at Mikey's direction: Texas has no kindergarten speech course of its own.
+// Pass KD: listening is taught as brain and body, since people listen in different ways (Social Thinking retired the
+// narrower whole body listening); the end of a word is taught by the words its last sound tells apart, because a voice
+// reads a clipped word such as "do" as another word; greetings, turns in a talk and feelings are said the way the
+// standards and a kind teacher would say them.
 // -----------------------------------------------------------------------------------------------------------------
 function SPEECHK_MODULES() { return [
   {
     id: 'my-listening-body',
     order: 1,
-    title: 'My listening body',
-    tagline: 'Eyes, ears, hands, feet and mind, all listening at once',
+    title: 'Listening with my brain and body',
+    tagline: 'Your brain listens, and your body helps',
     requires: [],
     lesson: {
-      paragraphs: ['Listening is a whole-body job. Your eyes look at the person. Your ears hear the words. Your hands stay still. Your feet stay still. And your mind thinks about the words, not about lunch.', 'If you do not understand, ask. You can say, what do you mean? Or, can you say it again? Asking is not rude. Asking is how listeners get it right.', 'When someone asks you a question, answer with more than one word. Not just yes. Say, yes, I saw the red bird.', 'A good listener can say the story back. Try it after a story. What happened first? What happened last? If you can say it back, you heard it.'],
-      keyIdea: 'Listen with your eyes, ears, hands, feet and mind. If you do not understand, ask. Answer with more than one word. If you can say the story back, you heard it.',
-      example: { kind: 'flow', steps: ['eyes look', 'ears hear', 'hands still', 'mind on the words'], caption: 'A whole-body listener.',
-        another: ['Your teacher says, get your coat. If you did not hear, ask: can you say it again? Then you will get the coat and not the hat.',
-          { text: 'Did you like the story? Not just yes. Yes, I liked the part with the boat. That is more than one word.', visual: { kind: 'flow', steps: ['a question', 'more than one word', 'a real answer'] } },
-          'After the story, say it back. First the bear was hungry. Last the bear found honey. You heard it.'] },
+      paragraphs: ['Your ears hear every sound in the room, a fan humming, a chair scraping, a dog barking far away. Listening is more than hearing. When you listen, your brain picks out the words the person is saying and thinks about them, not about lunch.', 'Your body helps your brain listen. Turn toward the person who is talking, so you can hear them well and they can see you are listening. Keep your mouth quiet until it is your turn to talk, and keep your hands and feet to yourself, so your friends can listen too.', 'Children listen in different ways. Some listen best looking at the person\'s face, some listen best looking down, and some listen best holding something soft in their hands. Every one of them is listening when the brain is on the words.', 'If you do not understand, ask. You can say, what does that mean? Or, can you say it again, please? Asking is not rude. Asking is how listeners get it right.', 'When someone asks you a question, answer with more than one word, so they know what you mean. Not just yes, but yes, I saw the red bird.', 'After a story, try saying it back. What happened first? What happened last? If you can say it back, your brain was listening.'],
+      // Full standard (pass KD): a spoken script of its own (it read its paragraphs over one picture of word boxes). It taught
+      // whole body listening as fixed rules, eyes on the speaker and hands and feet still, and a question marked looking at
+      // the floor wrong. Truesdale, who named whole body listening in 1990, calls it a tool, not a rule, and wrote that its
+      // eye-contact part should be changed or dropped for autistic children; Social Thinking, its publisher, now teaches it
+      // as listening with brain and body, because some people listen best moving, looking away or fidgeting. So the brain
+      // is the listener here, the body helps, and children listen in different ways (painting P26).
+      script: [
+        { say: 'Your ears hear every sound in the room, a fan, a chair, a dog far away.', show: { kind: 'icon', name: 'dog' } },
+        { say: 'Listening is more than hearing. When you listen, your brain picks out the words and thinks about them.', show: { kind: 'flow', steps: ['ears hear the words', 'your brain thinks about them'] } },
+        { say: 'Your body helps your brain listen. Turn toward the person who is talking.', show: null },
+        { say: 'Keep your mouth quiet until it is your turn. Keep your hands and feet to yourself, so your friends can listen too.', show: { kind: 'flow', steps: ['turn toward the person', 'quiet mouth', 'hands to yourself'] } },
+        { say: 'Children listen in different ways. Some look at the person\'s face, some look down, and some hold something soft.', show: null },
+        { say: 'Every one of them is listening, because their brains are on the words.', show: null },
+        { say: 'If you do not understand, ask. You can say, can you say it again, please?', show: null },
+        { say: 'Answer a question with more than one word. Not just yes, but yes, I saw the red bird.', show: { kind: 'icon', name: 'bird' } },
+        { say: 'After a story, say what happened first and what happened last. Then you know your brain was listening.', show: { kind: 'flow', steps: ['what happened first', 'what happened last'] } },
+      ],
+      pictures: [{ serial: 'P26', step: 4, alt: 'Children on a rug listening to their teacher in different ways' }],
+      keyIdea: 'Your ears hear sounds, and your brain listens by thinking about the words. Turn toward the person, keep your hands to yourself, ask when you do not understand, and answer with more than one word.',
+      example: { kind: 'flow', steps: ['ears hear', 'brain thinks', 'body helps'], caption: 'Your brain listens, and your body helps.',
+        another: ['Your teacher says, get your coat. If you did not hear it, ask. Can you say it again, please? Then you will get your coat and not your hat.',
+          { text: 'Did you like the story? Not just yes. Yes, I liked the part with the boat. That answer tells the person what you mean.', visual: { kind: 'flow', steps: ['a question', 'more than one word', 'a real answer'] } },
+          'Mia listens best looking down at her shoes. Her brain is on the words, so Mia is listening.'] },
     },
-    sources: ['Aligned with TEKS English Language Arts and Reading 110.2(b)(1)(A) (listen actively and ask questions to understand information and answer questions using multi-word responses), and the Common Core State Standards for English Language Arts, SL.K.2 (confirm understanding of a text read aloud or information presented orally by asking and answering questions about key details and requesting clarification if something is not understood) and SL.K.3 (ask and answer questions in order to seek help, get information, or clarify something that is not understood).'],
+    sources: ['Aligned with TEKS English Language Arts and Reading 110.2(b)(1)(A) (listen actively and ask questions to understand information and answer questions using multi-word responses), and the Common Core State Standards for English Language Arts, SL.K.1.a (follow agreed-upon rules for discussions (e.g., listening to others and taking turns speaking about the topics and texts under discussion)), SL.K.2 (confirm understanding of a text read aloud or information presented orally or through other media by asking and answering questions about key details and requesting clarification if something is not understood) and SL.K.3 (ask and answer questions in order to seek help, get information, or clarify something that is not understood). Listening with brain and body follows Social Thinking\'s update of whole body listening (Truesdale, 1990).'],
     generators: ['spk-listen', 'spk-listen', 'spk-listen', 'spk-listen', 'spk-listen'],
   },
   {
@@ -12431,29 +12454,58 @@ function SPEECHK_MODULES() { return [
     tagline: 'Hear the steps, say them back, then do them in order',
     requires: ['my-listening-body'],
     lesson: {
-      paragraphs: ['Directions come in steps. First, then, last. First get a cup. Then fill it with water. Last, put it on the table. Three steps, in order.', 'Before you do the steps, say them back. Cup, water, table. Saying them back keeps them in your head. If you say one wrong, the grown-up fixes it before you start.', 'Then do the steps in order. First things first. Last things last.', 'You can give directions too. Say how many steps. Say first, then, last. Then ask your friend to say them back to you. Two steps: first, get the ball. Then, roll it to me. Now you say it.'],
-      keyIdea: 'Directions come in steps, first, then, last. Say the steps back before you do them. Do them in order. When you give directions, say first, then, last, and ask for them back.',
-      example: { kind: 'flow', steps: ['hear the steps', 'say them back', 'do them in order'], caption: 'First, then, last.',
-        another: ['First, wash your hands. Then, sit down. Last, eat. Say it back: hands, sit, eat.',
-          { text: 'Two steps for a friend: first, get the crayons. Then, put them on the table. Now you say it. If they say table first, fix it.', visual: { kind: 'flow', steps: ['first', 'then', 'say it back'] } },
+      paragraphs: ['Directions often come in steps. We say first, then, last, and the order matters. First get a cup. Then fill it with water. Last, put it on the table. You cannot fill a cup before you have one, so getting the cup comes first.', 'Before you start, say the steps back. Cup, water, table. Saying them back helps you hold them in your head, and if you heard one wrong, the grown-up can fix it before you begin.', 'Hold up one finger for each step. Three steps make three fingers. If you forget a step, it is fine to ask. Then do the steps in order, first things first and last things last.', 'You can give directions too. Give a friend two steps. First, get the ball. Then, roll it to me. Say the steps in order, and ask your friend to say them back to you.'],
+      // Full standard (pass KD): a spoken script of its own (it read its paragraphs over one picture). It gains the reason the
+      // order matters, a finger for each step to hold them in mind, and asking when a step is forgotten (SL.K.3); its colons
+      // are gone (Say it back: hands, sit, eat).
+      script: [
+        { say: 'Directions often come in steps. We say first, then, last, and the order matters.', show: { kind: 'flow', steps: ['first', 'then', 'last'] } },
+        { say: 'First get a cup. Then fill it with water. Last, put it on the table.', show: { kind: 'icon', name: 'cup' } },
+        { say: 'You cannot fill a cup before you have one, so getting the cup comes first.', show: null },
+        { say: 'Before you start, say the steps back. Cup, water, table.', show: { kind: 'flow', steps: ['cup', 'water', 'table'] } },
+        { say: 'Saying them back helps you hold them in your head. If you heard one wrong, the grown-up can fix it.', show: null },
+        { say: 'Hold up one finger for each step. Three steps make three fingers.', show: { kind: 'dots', count: 3 } },
+        { say: 'If you forget a step, it is fine to ask. Then do the steps in order.', show: null },
+        { say: 'You can give directions too. Give a friend two steps. First, get the ball. Then, roll it to me.', show: { kind: 'flow', steps: ['first, get the ball', 'then, roll it to me'] } },
+        { say: 'Now ask your friend to say them back to you.', show: null },
+      ],
+      keyIdea: 'Directions come in steps, and the order matters. Say the steps back before you start, hold up a finger for each one, ask if you forget one, and do them in order.',
+      example: { kind: 'flow', steps: ['hear the steps', 'say them back', 'do them in order'], caption: 'Hear the steps, say them back, then do them.',
+        another: ['First, wash your hands. Then, sit down. Last, eat. Say it back. Hands, sit, eat.',
+          { text: 'Two steps for a friend. First, get the crayons. Then, put them on the table. Now you say it. If your friend says table first, fix it together.', visual: { kind: 'flow', steps: ['first', 'then', 'say it back'] } },
           'Saying the steps back is like putting them in your pocket. They are there when you need them.'] },
     },
-    sources: ['Aligned with TEKS English Language Arts and Reading 110.2(b)(1)(B) (restate and follow oral directions that involve a short, related sequence of actions), and the Common Core State Standards for English Language Arts, SL.K.2.'],
+    sources: ['Aligned with TEKS English Language Arts and Reading 110.2(b)(1)(B) (restate and follow oral directions that involve a short, related sequence of actions), and the Common Core State Standards for English Language Arts, SL.K.2 (confirm understanding of a text read aloud or information presented orally or through other media by asking and answering questions about key details and requesting clarification if something is not understood) and SL.K.3 (ask and answer questions in order to seek help, get information, or clarify something that is not understood).'],
     generators: ['spk-steps', 'spk-steps', 'spk-steps', 'spk-steps', 'spk-steps'],
   },
   {
     id: 'my-clear-voice',
     order: 3,
     title: 'My clear voice',
-    tagline: 'Loud enough, slow enough, whole words, and something to show',
+    tagline: 'Loud enough, slow enough, and every word to its end',
     requires: ['first-then-do'],
     lesson: {
-      paragraphs: ['When you tell something, talk so your friends can hear. Loud enough to reach the last friend. Slow enough to follow. Say whole words. Cat, not ca.', 'A good telling has three parts. This is my dog. He is brown and he likes to dig. I like him because he is funny. What it is, what it does, and why you like it.', 'A picture helps. Draw your dog. Hold it up when you talk about him. Then put it down and look at your friends. Your friends are the ones you are talking to.'],
-      keyIdea: 'Talk loud enough for the last friend, slow enough to follow, with whole words. Tell what it is, what it does, and why you like it. Show a picture, then look at your friends.',
-      example: { kind: 'flow', steps: ['what it is', 'what it does', 'why I like it'], caption: 'Three parts of a telling.',
-        another: ['This is my cat. She sleeps in the sun. I like her because she is soft. Three parts, and everyone can hear.',
+      paragraphs: ['When you tell something, talk so every friend can hear. Talk to the friend at the back of the room, because if that friend can hear you, everyone can. Loud enough is not a shout.', 'Talk slowly enough for your friends to follow. Their brains need time to think about each word.', 'Say every sound, right to the end of each word. Cat, cap and can all start the same way, and only the last sound tells your friend which word you mean.', 'Speak in whole sentences, and give a telling three parts. Say what it is, what it is like, and why you like it. This is my dog. He is brown and he likes to dig. I like him because he is funny.', 'A picture helps your friends see what you mean. Draw your dog and hold the drawing up when you talk about him. Then put it down and face your friends, because they are the ones you are talking to.'],
+      // Full standard (pass KD): a spoken script of its own (it read its paragraphs over one picture). It taught whole words
+      // with clipped ones (dog, not do; jump, not jum), which a voice reads as other words, and funny, not fun, where fun is
+      // a word too; it now gives the reason the end of a word matters (cat, cap and can start the same). The second part of
+      // a telling is what it is like, which fits any thing a child describes (it said what it does).
+      script: [
+        { say: 'When you tell something, talk to the friend at the back of the room.', show: null },
+        { say: 'If the friend at the back can hear you, everyone can. Loud enough is not a shout.', show: null },
+        { say: 'Talk slowly, so your friends have time to think about each word.', show: null },
+        { say: 'Say every sound, right to the end of each word.', show: null },
+        { say: 'Cat, cap and can all start the same way. The last sound tells your friend which word you mean.', show: { kind: 'letters', text: 'cat cap can' } },
+        { say: 'Speak in whole sentences. A good telling has three parts.', show: null },
+        { say: 'Say what it is, what it is like, and why you like it.', show: { kind: 'flow', steps: ['what it is', 'what it is like', 'why I like it'] } },
+        { say: 'This is my dog. He is brown and he likes to dig. I like him because he is funny.', show: { kind: 'icon', name: 'dog' } },
+        { say: 'A picture helps your friends see what you mean. Hold up your drawing, then put it down and face your friends.', show: null },
+      ],
+      keyIdea: 'Talk loud enough for the friend at the back and slowly enough to follow. Say every sound to the end of each word. Tell what it is, what it is like, and why you like it.',
+      example: { kind: 'flow', steps: ['what it is', 'what it is like', 'why I like it'], caption: 'Three parts of a telling.',
+        another: ['This is my cat. She is gray and she sleeps in the sun. I like her because she is soft. Three parts, and everyone can hear.',
           { text: 'Talk to the friend at the back. If the back friend can hear you, everyone can.', visual: { kind: 'flow', steps: ['the back friend', 'loud enough', 'everyone hears'] } },
-          'Whole words have ends. Dog, not do. Jump, not jum. Say the end and the word is whole.'] },
+          'Dog, doll and dot start the same way. Say each word to the end, and your friend knows which one you mean.'] },
     },
     sources: ['Aligned with TEKS English Language Arts and Reading 110.2(b)(1)(C) (share information and ideas by speaking audibly and clearly using the conventions of language), and the Common Core State Standards for English Language Arts, SL.K.4 (describe familiar people, places, things, and events and, with prompting and support, provide additional detail), SL.K.5 (add drawings or other visual displays to descriptions as desired to provide additional detail) and SL.K.6 (speak audibly and express thoughts, feelings, and ideas clearly).'],
     generators: ['spk-voice', 'spk-voice', 'spk-voice', 'spk-voice', 'spk-voice'],
@@ -12465,14 +12517,30 @@ function SPEECHK_MODULES() { return [
     tagline: 'One talker at a time, a hand up for a turn, and words that are kind',
     requires: ['my-clear-voice'],
     lesson: {
-      paragraphs: ['In a group, one person talks at a time. Everyone else listens. If you want a turn, put your hand up and wait. Your turn will come. That is the rule, and the rule is fair.', 'Kind words open doors. Hello, my name is Sam. Please. Thank you. Excuse me. I need help. These words work in every room, at school and at home and at the store.', 'If you want something, say it in words. I need help with my zipper. I want a turn with the truck. Saying it in words works better than grabbing, and better than crying. People can help you when they know what you need.'],
-      keyIdea: 'One talker at a time. Put your hand up and wait for your turn. Kind words are hello and my name, please, thank you and excuse me. Say what you need in words.',
+      paragraphs: ['In a group, one person talks at a time, and everyone else listens. If everyone talked at once, nobody could hear anybody. To ask for a turn, put your hand up and wait. Your turn will come, and that is fair.', 'Talking with one friend takes turns too. Your friend says something, you answer, and then you ask something back. I have a dog. What is your dog\'s name? Back and forth, the talk keeps going.', 'When you see someone, say hello or good morning, and when you go, say goodbye. To meet someone new, say hello and tell your name. Hello, my name is Ava.', 'Kind words help us play and work together. Say please and thank you, and say excuse me when you need to go past someone.', 'Say what you need or want in words. I need help with my zipper. I want a turn with the truck, please. It is okay to feel upset, and your words still tell people what you need, so they can help.'],
+      // Full standard (pass KD): a spoken script of its own (it read its paragraphs over one picture). Kind words open doors
+      // was an idiom a five-year-old may take literally, and words worked better than crying, with a waaa among the
+      // answers, which treated crying as wrong; it is okay to feel upset, and words tell people what you need. Greetings
+      // now include good morning and goodbye (TEKS (b)(1)(E)), and a talk with a friend goes back and forth (SL.K.1.b).
+      script: [
+        { say: 'In a group, one person talks at a time, and everyone else listens.', show: null },
+        { say: 'If everyone talked at once, nobody could hear anybody.', show: null },
+        { say: 'To ask for a turn, put your hand up and wait. Your turn will come.', show: { kind: 'flow', steps: ['one talker', 'hand up', 'my turn'] } },
+        { say: 'Talking with a friend takes turns too. Your friend says something, and you answer.', show: null },
+        { say: 'Then ask something back. I have a dog. What is your dog\'s name?', show: { kind: 'icon', name: 'dog' } },
+        { say: 'When you see someone, say hello or good morning. When you go, say goodbye.', show: null },
+        { say: 'To meet someone new, say hello and tell your name. Hello, my name is Ava.', show: null },
+        { say: 'Kind words help us play together. Say please, thank you, and excuse me when you need to go past someone.', show: null },
+        { say: 'Say what you need in words. I need help with my zipper.', show: null },
+        { say: 'It is okay to feel upset. Your words still tell people what you need, so they can help.', show: null },
+      ],
+      keyIdea: 'One talker at a time, and a hand up for a turn. In a talk, answer and then ask something back. Say hello, good morning, goodbye and your name, say please, thank you and excuse me, and say what you need in words.',
       example: { kind: 'flow', steps: ['one talker', 'hand up', 'my turn'], caption: 'How a group takes turns.',
         another: ['Hello, my name is Ava. That is how you meet someone. Then they know your name, and you can be friends.',
-          { text: 'I want a turn with the truck. That is words. Grabbing the truck is not words. Words get you a turn.', visual: { kind: 'flow', steps: ['I want a turn', 'they hear it', 'a turn'] } },
-          'Excuse me is the word for going by someone or for needing to say something. It is a small word that says I see you.'] },
+          { text: 'I want a turn with the truck, please. Those are words, and grabbing the truck is not. Words tell Ben what you want, so he can give you a turn.', visual: { kind: 'flow', steps: ['I want a turn', 'Ben hears it', 'a turn'] } },
+          'Your friend says, I like the slide. You can ask something back. How many times did you go down? Back and forth, the talk keeps going.'] },
     },
-    sources: ['Aligned with TEKS English Language Arts and Reading 110.2(b)(1)(D) (work collaboratively with others by following agreed-upon rules for discussion, including taking turns) and 110.2(b)(1)(E) (develop social communication such as introducing himself/herself, using common greetings, and expressing needs and wants), and the Common Core State Standards for English Language Arts, SL.K.1 (participate in collaborative conversations with diverse partners about kindergarten topics and texts with peers and adults in small and larger groups).'],
+    sources: ['Aligned with TEKS English Language Arts and Reading 110.2(b)(1)(D) (work collaboratively with others by following agreed-upon rules for discussion, including taking turns) and 110.2(b)(1)(E) (develop social communication such as introducing himself/herself, using common greetings, and expressing needs and wants), and the Common Core State Standards for English Language Arts, SL.K.1 (participate in collaborative conversations with diverse partners about kindergarten topics and texts with peers and adults in small and larger groups), SL.K.1.a (follow agreed-upon rules for discussions (e.g., listening to others and taking turns speaking about the topics and texts under discussion)) and SL.K.1.b (continue a conversation through multiple exchanges).'],
     generators: ['spk-turns', 'spk-turns', 'spk-turns', 'spk-turns', 'spk-turns'],
   },
 ]; }
@@ -17414,50 +17482,68 @@ Object.assign(GENERATORS, {
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
   // ---------------------------------------------------------------------------------------------------------------
-  // Kindergarten speech question banks (2026-09-30, pass GT). In plain terms: each bank is a short list of quick-check
-  // questions for one lesson. Every question is [what is asked, the three answers to tap, the right one, one line said
-  // after]. `pick` chooses one at random and `shuffle` mixes the three answers, so the right answer moves around. Every
-  // right answer is a phrase the lesson said first, which the untaught-answer check proves.
+  // Kindergarten speech question banks (2026-09-30, pass GT; full standard, pass KD). In plain terms: each bank is a list
+  // of quick-check questions for one lesson. Every question is [what is asked, the three answers to tap, the right one,
+  // the reason said after, and sometimes a setup line said before the question]. `pick` chooses one at random and
+  // `shuffle` mixes the three answers, so the right answer moves around. Every right answer is said in the lesson's
+  // spoken script first, and every reason is a whole sentence a child can hear after a miss.
   // ---------------------------------------------------------------------------------------------------------------
   'spk-listen': (rng) => {
-    const Q = [['Listening is what kind of job?', ['a whole-body job', 'an ear job only', 'a hand job only'], 'a whole-body job', 'Listening is a whole-body job. You listen with your eyes, ears, hands, feet and mind.'],
-      ['Where do your eyes look when you listen?', ['at the person', 'at the floor', 'at your lunch'], 'at the person', 'Your eyes look at the person.'],
-      ['What do your hands do when you listen?', ['stay still', 'wave', 'clap'], 'stay still', 'Your hands stay still, and so do your feet.'],
-      ['If you do not understand, what do you do?', ['ask', 'hide', 'guess'], 'ask', 'Asking is how listeners get it right.'],
-      ['Someone asks a question. How many words do you answer with?', ['more than one', 'one', 'none'], 'more than one', 'More than one word. Not just yes, but yes, I saw the red bird.'],
-      ['If you can say the story back, what does that mean?', ['you heard it', 'you missed it', 'it is over'], 'you heard it', 'If you can tell what happened first and last, you heard it.']];
-    const [prompt, choices, answer, explain] = pick(rng, Q);
-    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+    const Q = [['Which part of you thinks about the words?', ['your brain', 'your feet', 'your elbows'], 'your brain', 'Your brain thinks about the words. Your ears hear the sounds, and your brain is what listens.'],
+      ['Your ears hear a fan, a chair and a dog. What does your brain do when you listen?', ['picks out the words', 'goes to sleep', 'thinks about lunch'], 'picks out the words', 'When you listen, your brain picks out the words and thinks about them, not about lunch.'],
+      ['Who do you turn toward when you listen?', ['the person who is talking', 'the door', 'the window'], 'the person who is talking', 'Turn toward the person who is talking. Then you hear them well, and they can see you are listening.'],
+      ['What do you do with your hands while a friend talks?', ['keep them to yourself', 'poke a friend', 'take a friend\'s toy'], 'keep them to yourself', 'Keep your hands to yourself, so your friends can listen too.'],
+      ['Is Mia listening?', ['yes, her brain is on the words', 'no, she has to look up', 'no, listening is only for ears'], 'yes, her brain is on the words', 'Mia is listening. Children listen in different ways, and her brain is on the words.', 'Mia looks down at her shoes while her teacher talks, and her brain is thinking about the words.'],
+      ['If you do not understand, what do you do?', ['ask', 'hide', 'guess'], 'ask', 'When you do not understand, ask. Asking is not rude, and it is how listeners get it right.'],
+      ['What can you say when you did not hear?', ['can you say it again, please?', 'go away', 'nothing at all'], 'can you say it again, please?', 'Can you say it again, please? Then the person says it again, and you get it right.'],
+      ['Someone asks you a question. How many words do you answer with?', ['more than one', 'just one', 'none'], 'more than one', 'Answer with more than one word, so the person knows what you mean. Yes, I saw the red bird.'],
+      ['You can say what happened first and last in a story. What does that show?', ['your brain was listening', 'the story was too long', 'you were sleepy'], 'your brain was listening', 'Saying the story back shows your brain was on the words, so you were listening.']];
+    const [prompt, choices, answer, explain, setup] = pick(rng, Q);
+    return { type: 'choice', story: setup || null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
   'spk-steps': (rng) => {
-    const Q = [['Directions come in what?', ['steps', 'colors', 'songs'], 'steps', 'Directions come in steps, first, then, last.'],
-      ['Before you do the steps, what do you do?', ['say them back', 'run', 'sing'], 'say them back', 'Say the steps back first. Then you know you heard them right.'],
-      ['Get a cup, fill it, put it on the table. What is first?', ['get a cup', 'the table', 'fill it'], 'get a cup', 'Get a cup first. You cannot fill a cup you do not have yet.'],
-      ['If you say a step wrong, what happens?', ['the grown-up fixes it', 'nothing', 'you start over'], 'the grown-up fixes it', 'The grown-up fixes it before you start. That is why you say them back.'],
-      ['When you give directions, what words do you use?', ['first, then, last', 'big, small', 'red, blue'], 'first, then, last', 'First, then and last put the steps in order.'],
-      ['First, get the ball. Then, roll it. How many steps?', ['two', 'five', 'ten'], 'two', 'Get the ball, then roll it. That is two steps.']];
-    const [prompt, choices, answer, explain] = pick(rng, Q);
-    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+    const Q = [['Directions often come in what?', ['steps', 'colors', 'songs'], 'steps', 'Directions come in steps, first, then, last, and the order matters.'],
+      ['Before you do the steps, what do you do?', ['say them back', 'run', 'sing'], 'say them back', 'Say the steps back first. It helps you hold them in your head.'],
+      ['What do you do first?', ['get a cup', 'put it on the table', 'fill it with water'], 'get a cup', 'Get a cup first, because you cannot fill a cup before you have one.', 'First get a cup. Then fill it with water. Last, put it on the table.'],
+      ['What do you do last?', ['put it on the table', 'get a cup', 'fill it with water'], 'put it on the table', 'Put the cup on the table last, once it is full of water.', 'First get a cup. Then fill it with water. Last, put it on the table.'],
+      ['Why do you say the steps back?', ['to hold them in your head', 'to make them longer', 'to skip one'], 'to hold them in your head', 'Saying them back helps you hold the steps in your head, and a grown-up can fix one you heard wrong.'],
+      ['If you heard a step wrong, who can fix it?', ['the grown-up', 'nobody', 'the table'], 'the grown-up', 'When you say the steps back, the grown-up hears them and can fix one before you begin.'],
+      ['How many steps are in these directions?', ['three', 'two', 'five'], 'three', 'Wash, sit, eat. One finger for each step makes three fingers.', 'First, wash your hands. Then, sit down. Last, eat.'],
+      ['How many steps are in these directions?', ['two', 'three', 'ten'], 'two', 'Get the ball, then roll it. One finger for each step makes two fingers.', 'First, get the ball. Then, roll it to me.'],
+      ['You forgot a step. What can you do?', ['ask', 'make one up', 'skip it'], 'ask', 'It is fine to ask. You can say, can you say the steps again, please?'],
+      ['When you give directions, what words do you use?', ['first, then, last', 'big, small', 'red, blue'], 'first, then, last', 'First, then and last put the steps in order, so your friend knows what comes when.']];
+    const [prompt, choices, answer, explain, setup] = pick(rng, Q);
+    return { type: 'choice', story: setup || null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
   'spk-voice': (rng) => {
-    const Q = [['How loud do you talk?', ['loud enough for the last friend', 'as quiet as a mouse', 'as loud as a truck'], 'loud enough for the last friend', 'If the back friend can hear you, everyone can.'],
-      ['How fast do you talk?', ['slow enough to follow', 'as fast as you can', 'not at all'], 'slow enough to follow', 'Talk slow enough to follow. If you go too fast, your friends cannot keep up.'],
-      ['Which is a whole word?', ['cat', 'ca', 'c'], 'cat', 'Say the whole word: cat, not ca.'],
-      ['A good telling has how many parts?', ['three', 'ten', 'one'], 'three', 'Three parts. Say what it is, what it does, and why you like it.'],
-      ['This is my dog. He is brown and likes to dig. What comes next?', ['why you like him', 'his shoe size', 'the end'], 'why you like him', 'Next, say why you like him. I like him because he is funny.'],
-      ['After you hold up your picture, where do you look?', ['at your friends', 'at the floor', 'at the door'], 'at your friends', 'Your friends are the ones you are talking to.']];
-    const [prompt, choices, answer, explain] = pick(rng, Q);
-    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+    const Q = [['How loud do you talk when you tell something?', ['loud enough for the friend at the back', 'as quiet as a mouse', 'as loud as you can shout'], 'loud enough for the friend at the back', 'If the friend at the back can hear you, everyone can. Loud enough is not a shout.'],
+      ['How fast do you talk?', ['slowly enough to follow', 'as fast as you can', 'not at all'], 'slowly enough to follow', 'Talk slowly, so your friends have time to think about each word.'],
+      ['Cat, cap and can start the same way. What tells them apart?', ['the last sound', 'the first sound', 'how loud you say it'], 'the last sound', 'Only the last sound is different, so say every word right to the end.'],
+      ['How much of a word do you say?', ['every sound, right to the end', 'just the start', 'only the middle'], 'every sound, right to the end', 'Say every sound, right to the end of each word, so your friend knows which word you mean.'],
+      ['A good telling has how many parts?', ['three', 'ten', 'one'], 'three', 'A good telling has three parts. Say what it is, what it is like, and why you like it.'],
+      ['What part comes next?', ['why you like him', 'his shoe size', 'the end'], 'why you like him', 'Next, say why you like him. I like him because he is funny.', 'This is my dog. He is brown and he likes to dig.'],
+      ['Which part of a telling is this line?', ['what it is', 'why you like it', 'what it is like'], 'what it is', 'That line says what it is, a dog. Next comes what it is like, such as he is brown.', 'This is my dog.'],
+      ['After you hold up your picture, who do you face?', ['your friends', 'the wall', 'the door'], 'your friends', 'Face your friends, because they are the ones you are talking to.'],
+      ['Why does a picture help when you tell something?', ['it shows what you mean', 'it makes you quiet', 'it ends the telling'], 'it shows what you mean', 'A picture helps your friends see what you mean.'],
+      ['How do you speak when you tell something?', ['in whole sentences', 'with one word', 'with no words'], 'in whole sentences', 'Speak in whole sentences, like this is my dog, so your friends know what you mean.']];
+    const [prompt, choices, answer, explain, setup] = pick(rng, Q);
+    return { type: 'choice', story: setup || null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
   'spk-turns': (rng) => {
-    const Q = [['In a group, how many people talk at a time?', ['one', 'everyone', 'two'], 'one', 'One person talks, and everyone else listens.'],
-      ['If you want a turn, what do you do?', ['put your hand up and wait', 'shout', 'grab'], 'put your hand up and wait', 'Put your hand up and wait. Your turn will come.'],
-      ['How do you meet someone?', ['hello, my name is Sam', 'nothing', 'give me that'], 'hello, my name is Sam', 'Say hello and your name. Then they know who you are.'],
-      ['What do you say to go by someone?', ['excuse me', 'move', 'nothing'], 'excuse me', 'Excuse me is small, and it says I see you.'],
-      ['You want the truck. What do you say?', ['I want a turn with the truck', 'nothing, just grab it', 'mine'], 'I want a turn with the truck', 'Use your words. Words get you a turn, and grabbing does not.'],
-      ['Your zipper is stuck. What do you say?', ['I need help with my zipper', 'nothing', 'waaa'], 'I need help with my zipper', 'People can help you when they know what you need.']];
-    const [prompt, choices, answer, explain] = pick(rng, Q);
-    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+    const Q = [['In a group, how many people talk at a time?', ['one', 'everyone', 'two'], 'one', 'One person talks, and everyone else listens. If everyone talked at once, nobody could hear anybody.'],
+      ['You want a turn to talk in a group. What do you do?', ['put your hand up and wait', 'shout', 'talk over your friend'], 'put your hand up and wait', 'Put your hand up and wait. Your turn will come, and that is fair.'],
+      ['Why does a group talk one at a time?', ['so everyone can hear', 'so nobody talks', 'so it gets loud'], 'so everyone can hear', 'When one person talks at a time, everyone can hear. If everyone talked at once, nobody could hear anybody.'],
+      ['What could you say back?', ['What is your dog\'s name?', 'Go away.', 'I am not listening.'], 'What is your dog\'s name?', 'Ask something back, like what is your dog\'s name? Then the talk keeps going, back and forth.', 'Your friend says, I have a dog.'],
+      ['What can Ava say to meet him?', ['Hello, my name is Ava.', 'Give me that.', 'Nothing at all.'], 'Hello, my name is Ava.', 'Say hello and tell your name. Then the new boy knows who Ava is, and they can be friends.', 'A new boy comes to Ava\'s class.'],
+      ['What can you say when you see someone in the morning?', ['good morning', 'goodbye', 'mine'], 'good morning', 'Good morning is a greeting, a kind way to say hello when the day starts.'],
+      ['What do you say when you leave?', ['goodbye', 'hello', 'excuse me'], 'goodbye', 'Say goodbye when you go. You say hello when you see someone.'],
+      ['What do you say to go past someone?', ['excuse me', 'move', 'nothing'], 'excuse me', 'Say excuse me when you need to go past. It is a kind way to ask.'],
+      ['What do you say?', ['I want a turn with the truck, please', 'nothing, just grab it', 'mine'], 'I want a turn with the truck, please', 'Say it in words. Ben can hear what you want, and he can give you a turn when he is done.', 'Ben has the truck, and you want a turn.'],
+      ['What do you say?', ['I need help with my zipper', 'nothing', 'I want the truck'], 'I need help with my zipper', 'Say what you need in words. Then people know what you need, and they can help.', 'Your zipper is stuck.'],
+      ['You feel upset. What can your words still do?', ['tell people what you need', 'make you invisible', 'nothing at all'], 'tell people what you need', 'It is okay to feel upset. Your words still tell people what you need, so they can help.'],
+      ['Which is a kind word?', ['please', 'mine', 'move'], 'please', 'Please is a kind word. Kind words help us play together.']];
+    const [prompt, choices, answer, explain, setup] = pick(rng, Q);
+    return { type: 'choice', story: setup || null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
   // Psychology, K to 2 (2026-09-30, pass GP): spoken questions with tapped answers, every answer said in its lesson first.
   'pyk-brain': (rng) => {

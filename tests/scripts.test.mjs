@@ -1,6 +1,7 @@
 // Every spoken lesson line must make sense with the picture beside it, and read like a
 // person talking rather than a list of words. This checks all of them.
 import * as L from '../src/logic.mjs';
+import { readFileSync } from 'node:fs';
 
 let pass = 0, fail = 0;
 const ok = (name, cond, detail = '') => { if (cond) { pass++; console.log('PASS -', name); } else { fail++; console.log('FAIL -', name, detail); } };
@@ -78,6 +79,37 @@ for (const c of L.COURSES.filter((x) => x.readAloud)) for (const m of c.modules)
   }
   if (!fine && !qbad.some((x) => x.startsWith(g + ':'))) qbad.push(`${g}: "${q.story || ''} ${q.prompt}" shows ${JSON.stringify(v)}`);
 }
+// Lesson pictures in read-aloud courses (pass JP): a pre-reader meets the lesson one spoken line at a time, so every
+// painting belongs to one line (its step) and shares a word with it, the way a story picture shares a word with its paragraph.
+const stem = (w) => w.replace(/'s$/, '').replace(/s$/, '');
+const wordsOf = (t) => new Set((String(t).toLowerCase().match(/[a-z']{4,}/g) || []).map(stem));
+const artBad = [];
+for (const c of L.COURSES.filter((x) => x.readAloud)) for (const m of c.modules) for (const pic of (m.lesson && m.lesson.pictures) || []) {
+  const line = L.readAloudScript(m)[pic.step];
+  if (!Number.isInteger(pic.step) || !line) { artBad.push(`${m.id} ${pic.serial}: no spoken line (step ${pic.step})`); continue; }
+  const said = wordsOf(line.say); if (![...wordsOf(pic.alt)].some((w) => said.has(w))) artBad.push(`${m.id} ${pic.serial}: "${pic.alt}" shares no word with "${line.say}"`);
+}
+ok('every lesson picture in a read-aloud course belongs to a spoken line that names it', artBad.length === 0, '\n  ' + artBad.join('\n  '));
+// Taught before asked, for pictures and letters (pass JR): a question that asks for a picture or a letter by name (Tap
+// the moon, What letter does bee start with?) asks for something its lesson must have said. Held for every module at
+// the full standard (docs/review-status.json); tools/untaught.mjs lists the rest for the passes still to come.
+const reviewedIds = Object.keys(JSON.parse(readFileSync(new URL('../docs/review-status.json', import.meta.url), 'utf8')).reviewed).filter((k) => k.startsWith('module:')).map((k) => k.slice(7));
+const namesBad = new Set();
+for (const id of reviewedIds) { const m = L.getModule(id); if (!m) continue;
+  const raw = [...m.lesson.paragraphs, m.lesson.keyIdea, (m.lesson.example || {}).caption || '', ...L.readAloudScript(m).map((s) => s.say)].join(' '); const low = raw.toLowerCase();
+  for (const g of new Set(m.generators)) for (let seed = 1; seed <= 60; seed++) for (const w of L.askedNames(L.generateQuestion(g, seed))) {
+    if (!(/^[A-Z]$/.test(w) ? new RegExp(`\\b${w}\\b`).test(raw) : new RegExp(`\\b${w}`).test(low))) namesBad.add(`${id}: ${w}`);
+  } }
+ok('every picture or letter a reviewed lesson\'s questions ask for by name is said in that lesson', namesBad.size === 0, [...namesBad].join(', '));
+// Taught before asked, for tracing (pass JT): every line, shape or letter a reviewed lesson's questions ask a child to
+// trace is traced in that lesson first (First strokes once asked for waves and zigzags it never drew). Connect the dots
+// pictures are exempt: the skill there is the order of the numbers, which one picture teaches.
+const traceBad = new Set();
+for (const id of reviewedIds) { const m = L.getModule(id); if (!m || !m.needsTouch) continue;
+  const shown = new Set((m.lesson.script || []).filter((s) => s.show && s.show.kind === 'trace').map((s) => s.show.text));
+  for (const g of new Set(m.generators)) for (let seed = 1; seed <= 60; seed++) { const q = L.generateQuestion(g, seed);
+    if (q.type === 'trace' && q.traceKind !== 'dots' && !(L.TRACE_LETTERS[q.answer] || {}).dots && !shown.has(q.answer)) traceBad.add(`${id}: ${q.answer}`); } }
+ok('every line, shape or letter a reviewed lesson asks a child to trace is traced in that lesson first', traceBad.size === 0, [...traceBad].join(', '));
 // Every tracing lesson shows the stroke drawing itself, never a static letter or a count of dots (Mikey, 2026-09-14).
 const traced = L.MODULES.filter((m) => m.needsTouch && m.lesson.script);
 ok('every touch lesson shows a stroke drawing itself', traced.length > 0 && traced.every((m) => m.lesson.script.some((line) => line.show && line.show.kind === 'trace')), traced.filter((m) => !m.lesson.script.some((line) => line.show && line.show.kind === 'trace')).map((m) => m.id).join(', '));

@@ -431,7 +431,9 @@ t = await text();
 ok('kindergarten counting waits out of sight while pre-K is unfinished', !t.includes('Count to 5') && t.includes('Counting'));
 await openModuleNamed('One, two, three');
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'lesson');
-for (let i = 0; i < 3; i++) await page.getByLabel('Next').click();
+// Step through every spoken line to the Start practice star (pass JS: the lesson grew from four lines to five, so walk
+// until the star appears rather than counting taps).
+for (let i = 0; i < 12 && !(await page.getByLabel('Start practice').count()); i++) await page.getByLabel('Next').click();
 await page.getByLabel('Start practice').click();
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'practice');
 await runSet([true, true, true, true, true]);
@@ -442,6 +444,14 @@ await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen ===
 t = await text();
 ok('after a pass the pre-K screen keeps its shape and kindergarten still waits', !t.includes('Count to 5') && !t.includes('Math'));
 // The pass unlocked kindergarten counting underneath: the test hook opens it the way the overview will once pre-K is done.
+// Pass JP: a read-aloud lesson shows its lesson picture on the spoken line it belongs to (P13, a strawberry under a blue
+// sky, on the third line of Red and blue), as the painting or, until it is painted, the line's drawing with a note.
+await page.evaluate(() => window.__eduTest.openModule('red-and-blue'));
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'lesson');
+for (let i = 0; i < 2; i++) await page.getByLabel('Next').click();
+ok('a read-aloud lesson shows its picture on the spoken line it belongs to', (await page.locator('[data-lesson-picture="P13"]').count()) === 1 && /Illustration P13 to come/.test(await text()));
+await page.getByLabel('Back').first().click();
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview');
 await page.evaluate(() => window.__eduTest.openModule('count-to-5'));
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'lesson');
 t = await text();

@@ -120,7 +120,10 @@ for (const s of [...screens.filter((x) => studentScreens.has(x) && x !== 'overvi
   for (const id of ['count-to-3', 'one-and-two', 'washing-hands', 'tell-and-show', 'wants-needs-and-choices']) {
     await page.evaluate((mid) => window.__eduTest.openModule(mid), id); await page.waitForTimeout(500);
     const sc = await page.evaluate(() => window.__eduTest.screen);
-    if (sc === 'lesson') { const start = page.getByLabel('Start practice'); if (await start.count()) { await start.first().click(); await page.waitForTimeout(500); } }
+    // A read-aloud lesson can run several spoken lines (since pass JP every lesson speaks all of its teaching), so step
+    // through them with Next until the Start practice star appears.
+    if (sc === 'lesson') { for (let n = 0; n < 12 && !(await page.getByLabel('Start practice').count()); n++) { const next = page.getByLabel('Next'); if (!(await next.count())) break; await next.first().click(); await page.waitForTimeout(150); }
+      const start = page.getByLabel('Start practice'); if (await start.count()) { await start.first().click(); await page.waitForTimeout(500); } }
     if ((await page.evaluate(() => window.__eduTest.screen)) === 'practice') break;
     await page.evaluate(() => window.__eduTest.goTo('overview')); await page.waitForTimeout(200);
   }

@@ -2,6 +2,38 @@
 
 The newest block is what educators see once, in a pop-up on the classroom page, after each update. Write it the way Mikey talks to a teacher: conversational, complete sentences, say what changed and why it matters, and skip the shorthand (2026-09-23). Two to four items. The date line is the version stamp.
 
+## October 4, 2026 (pre-K 4 finished)
+
+- Pre-K 4 is finished to the full standard. First sounds and letters now teaches all seven letters its questions ask, each with its shape, like M with two pointy hills and S curvy like a snake.
+- The rhyming lesson now shows a pair that does not rhyme, cat and dog, and the first sounds lesson shows a word that begins differently.
+- The bus story no longer suggests that saying letter names sounds out a word. The sticks story now builds I, H and E, the letters its lesson traces.
+- A new check makes sure every line, shape or letter a lesson asks a child to trace is traced in the lesson first.
+
+## October 4, 2026 (pre-K 4 First steps finished)
+
+- Pre-K 4's First steps lessons now all teach what their questions ask. Children see waves and zigzags before drawing them, stars and hearts before tracing them, and a row that is not a pattern before being asked about one.
+- The helpers lesson now teaches each helper's tool, like a doctor's stethoscope and a firefighter's hose, which its questions ask about.
+- Three lessons showed the wrong picture beside their words, such as a flower captioned A firefighter puts out the fire. Each now shows the right one.
+
+## October 4, 2026 (pre-K 4 colors and matching)
+
+- Pre-K 4's color and matching lessons now teach what to look at, not just what matches. Children hear that two things can match by color alone, that a true match is alike in shape, color and size, and how a square differs from a rectangle.
+- The solid shapes lesson ties each shape to something real. A cube is like a block, a sphere like a ball, a cone like an ice cream cone and a cylinder like a can.
+- A new check makes sure every lesson names what its questions ask for by name, like the moon or the letter B.
+
+## October 4, 2026 (pre-K 3 listening lessons)
+
+- Pre-K 3's Listen and point lessons now teach everything their questions ask. The letters lesson says that apple starts with A and ball starts with B, and the listening lesson names all six of its pictures, the moon and the flower included.
+- After each question, the explanation now gives the reason too, like a square has four corners.
+- Circle and square now shows why round things roll and things with corners sit still, with a picture of a real ball and block to come.
+
+## October 4, 2026 (pre-K 3 lessons that teach)
+
+- The pre-K 3 Very first steps lessons now teach rather than only show. Each says why, gives an example a child can picture, and teaches every word its questions use, so More and Fewer now teaches fewer as well as more.
+- Lessons that are read aloud now show their pictures on the line that talks about them, like a strawberry under a blue sky for red and blue. Until a picture is painted, that line keeps its drawing.
+- Forty kindergarten and grade 1 lessons used to read only one line aloud, the caption under their picture. They now read the whole lesson.
+- Two stories were rewritten. May I, Please? shows please as the kind way to ask, and Where Is the Frog? shows why a yellow toy is easy to spot in green grass.
+
 ## October 4, 2026 (pictures in lessons and clearer explanations)
 
 - Lessons can show pictures now, where seeing the real thing helps, like the Liberty Bell's crack, the Alamo, the moon's shapes and the plant parts we eat. Each shows a placeholder until its picture is made.

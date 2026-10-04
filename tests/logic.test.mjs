@@ -229,7 +229,7 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
     if (genId === 'bf-share') { const [things, people] = allInts; if (q.answer !== `${things}/${people}`) problems.push('share wrong'); }
     // Pre-K, re-derived from the words and picture specs
     const spec = (c) => String(c).replace(/^item:/, '').split('#')[0].split('-');
-    if (genId === 'pc-tap-colour' && q.answer !== `swatch:${q.prompt.match(/Tap (\w+)/)[1]}`) problems.push('tapped colour wrong');
+    if (genId === 'pc-tap-colour' && q.answer !== `swatch:${q.prompt.match(/Tap (?:the )?(\w+)/)[1]}`) problems.push('tapped colour wrong');
     if (genId === 'pc-name-colour' && q.answer !== q.visual.colour) problems.push('named colour wrong');
     if (genId === 'pc-same-colour' && spec(q.answer)[1] !== q.visual.colour) problems.push('same colour wrong');
     if (genId === 'pc-different-colour') { const cols = q.choices.map((c) => spec(c)[1]); const odd = q.choices.find((c) => cols.filter((x) => x === spec(c)[1]).length === 1); if (q.answer !== odd) problems.push('different colour wrong'); }
@@ -242,7 +242,7 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
     if (genId === 'pp-which-repeats') { const it = q.visual.items; const repeats = it.every((x, i) => x === it[i % 2]); if (q.answer !== (repeats ? 'Yes' : 'No')) problems.push('repeats wrong'); }
     if (genId === 'pp-missing') { const it = q.visual.items; const i = it.indexOf('?'); if (spec(q.answer)[0] !== it[i % 2 === 0 ? 0 : 1]) problems.push('missing wrong'); }
     if (genId === 'p3-how-many' && Number(q.answer) !== (q.visual.counting ? q.visual.items.length : q.visual.count)) problems.push('pre-K how many wrong'); // dots or a counting row (pass HS)
-    if (genId === 'p3-tap-group' && dotCount(q.answer) !== Number(q.prompt.match(/Tap (\d)/)[1])) problems.push('pre-K tap group wrong');
+    if (genId === 'p3-tap-group' && dotCount(q.answer) !== Number(q.prompt.match(/Tap (?:the group of )?(\d)/)[1])) problems.push('pre-K tap group wrong');
     if (genId === 'p3-tap-one' && dotCount(q.answer) !== 1) problems.push('tap one wrong');
     if (genId === 'p3-more' && dotCount(q.answer) !== Math.max(...q.choices.map(dotCount))) problems.push('pre-K more wrong');
     // Grade 1, re-derived from the numbers in the words

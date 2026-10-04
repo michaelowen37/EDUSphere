@@ -1,6 +1,6 @@
 # Audio ledger
 
-Generated 2026-10-04 by tools/audio-ledger.mjs. Every clip the app can play in a recorded voice is a row of docs/AUDIO-LEDGER.csv: its key (the file name, audio/<key>.mp3, that the app already looks for), its group (the story or lesson it belongs to) and the words with their Eleven v4 audio tags. 6107 clips, 1,196,777 characters in all; the longest clip is 508 characters and the longest whole story 2,751, far under Eleven v4's 10,000 a request. 144 stories carry hand-written tags so far (the writing review adds them course by course); the rest open with their age band's voice direction only.
+Generated 2026-10-04 by tools/audio-ledger.mjs. Every clip the app can play in a recorded voice is a row of docs/AUDIO-LEDGER.csv: its key (the file name, audio/<key>.mp3, that the app already looks for), its group (the story or lesson it belongs to) and the words with their Eleven v4 audio tags. 6770 clips, 1,253,914 characters in all; the longest clip is 508 characters and the longest whole story 2,751, far under Eleven v4's 10,000 a request. 144 stories carry hand-written tags so far (the writing review adds them course by course); the rest open with their age band's voice direction only.
 
 ## How to make the audio
 
@@ -17,7 +17,7 @@ ElevenLabs counts characters, tags included, so this is the size of each part of
 
 | Band | Clips | Characters |
 |---|---|---|
-| Pre-K to grade 2 | 2051 | 245,117 |
+| Pre-K to grade 2 | 2714 | 302,254 |
 | Grades 3 to 5 | 1263 | 278,553 |
 | Grades 6 to 8 | 1138 | 272,072 |
 | Grades 9 to college | 1655 | 401,035 |
@@ -41,7 +41,7 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 |---|---|
 | story title | 615 |
 | story | 3887 |
-| lesson line | 687 |
+| lesson line | 1350 |
 | long story title | 102 |
 | long story | 816 |
 
@@ -147,15 +147,15 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 - S101-6: [two ducks quacking] Quack, quack! Two quacks, not one, and the pond was not quiet anymore.
 - S101-7: [slowly, counting] One, then two. One more makes two.
 
-### The magic word (S104, please-and-thank-you)
+### May I, Please? (S104, please-and-thank-you)
 
-- S104-1: [excited] Cookies! Sam smelled them, warm ones on a plate, [running footsteps] and he ran to the table.
-- S104-2: He grabbed, and the plate went up, out of reach. [disappointed] No cookie.
-- S104-3: He grabbed again, and the plate went up again. Sam frowned. [sighs] Still no cookie.
-- S104-4: Mom waited, and she was smiling. [gently, teasing] What is the magic word?
-- S104-5: Sam thought, and then he said it. [sweetly] Cookie, please? The plate came down.
-- S104-6: He took one, and it was warm. [happily] Thank you! he said, and Mom smiled bigger.
-- S104-7: [slowly, warmly] Please when you ask. Thank you when you get it. Two magic words.
+- S104-1: [warm] Sam was drawing a big red fire truck. He needed the red crayon, but it was in Ana's hand.
+- S104-2: [quick] Sam reached over and grabbed it. [sharply] Mine! he said.
+- S104-3: [softly, sad] Ana's face crumpled, and her lip shook. She was not done with it yet.
+- S104-4: [slowly, thoughtful] Sam looked at her sad face, and his tummy felt funny. He gave the crayon back.
+- S104-5: Then he tried again. [gently, kindly] Ana, may I have the red crayon, please, when you are done?
+- S104-6: [warmly] Ana smiled and drew one more line. Here you go, she said. [happily] Thank you! said Sam.
+- S104-7: [slowly, warmly] Please is the kind way to ask. Thank you shows we are glad. Kind words make friends glad too.
 
 ### One color at a time (S107, colours)
 
@@ -164,8 +164,8 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 - S107-3: Lena ran outside and looked up. [amazed] A rainbow! It went all the way across the sky.
 - S107-4: She wanted to name it, but it had so many colors. [wondering] Where should she start?
 - S107-5: Dad said to start at the top. [slowly, naming each color] Red, said Lena. Then orange, then yellow, then green.
-- S107-6: Then blue, then purple. Six colors, and she said them all, one at a time. [quickly, playful] Then she said them again, fast.
-- S107-7: [slowly, warmly] Every color has a name. Say them one at a time.
+- S107-6: Then blue, then purple, every color she could see. She said them one at a time, then again, fast.
+- S107-7: [slowly, warmly] Every color has a name, and naming them helps us tell things apart.
 
 ### Red, blue, red, blue (S110, patterns)
 
@@ -225,7 +225,7 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 - S125-4: She counted the small bowl. [slowly, counting] One, two, three, and that was all.
 - S125-5: She did not count the big bowl, because she could see it was full. [excited] More!
 - S125-6: Ana picked the full bowl. [happy munching] She ate one grape, and then another, and there were plenty.
-- S125-7: [slowly, warmly] More means a bigger group. The full bowl has more.
+- S125-7: [slowly, warmly] More means the bigger group, and fewer means the smaller one. The full bowl had more, and the small bowl had fewer.
 
 ### The first line (S128, first-marks)
 
@@ -247,15 +247,15 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 - S131-6: Rosa held up the page. The dots had become a shape with three sides and three corners. [delighted] A triangle!
 - S131-7: [slowly, warmly] Start at 1. Draw to each dot in order. The dots know the way.
 
-### Sun and grass (S134, yellow-and-green)
+### Where Is the Frog? (S134, yellow-and-green)
 
-- S134-1: [softly, birds chirping] The sun came up, round and yellow, bright yellow like a lemon.
-- S134-2: [a door opening] Theo went outside. The air was fresh, and something cool was under his feet.
-- S134-3: He sat down and touched it. [softly] Grass, green grass, soft and cool.
-- S134-4: He looked up and saw yellow, and he looked down and saw green. [playful] Yellow up, green down.
-- S134-5: [peaceful] Theo lay back, with warm sun on his face and cool grass on his arms.
-- S134-6: [gentle wonder] A flower grew by his hand, yellow. A yellow flower in green grass.
-- S134-7: [slowly, warmly] Yellow like the sun. Green like the grass. Two colors, one morning.
+- S134-1: [cheerful] Theo had two bath toys, a yellow duck and a green frog. Today they got to play outside.
+- S134-2: [playful whisper] Let's hide them! said Theo. [soft rustling grass] He tucked the duck and the frog into the tall green grass.
+- S134-3: Grandma came out to look, and [pleased] she saw the yellow duck right away. Yellow on green is easy to spot.
+- S134-4: [puzzled] But where was the frog? Grandma looked and looked. Green on green is hard to see.
+- S134-5: [a child giggling] Theo giggled. [delighted] The frog is green like the grass, he said. It looks just like the grass!
+- S134-6: At last Grandma found it by a green leaf. [happily] Theo held up both toys, one yellow and one green.
+- S134-7: [slowly, warmly] Yellow like a banana, green like the grass. When colors are different, they are easy to tell apart.
 
 ### Pizza corners (S137, triangles-too)
 
@@ -275,7 +275,7 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 - S140-4: She tried the little one, and her foot went in and stopped. [pleased] Just right.
 - S140-5: The big shoe was Dad's, and the little shoe was hers.
 - S140-6: Dad put on the big one and Lena put on the little one, [a door opening] and they went out together.
-- S140-7: [slowly, warmly] Big and little. Point to the big one. Point to the little one.
+- S140-7: [slowly, warmly] Big things take up lots of room, and little things take up just a little. That is how Lena knew which shoe was hers.
 
 ### Roll or sit (S143, circle-and-square)
 
@@ -315,7 +315,7 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 - S152-4: [playful] Cup, she said, and where is the cup? Leo looked again.
 - S152-5: [excited] There! He tapped the cup. Hat, she said, and he tapped the hat.
 - S152-6: [proud] Every word had a picture, and Leo found them all. He wanted more cards.
-- S152-7: [slowly, warmly] Listen to the word. Find its picture. Tap it.
+- S152-7: [slowly, warmly] A word names a thing. Hear the word, and you can find its picture.
 
 ### Who said that? (S155, animal-sounds)
 
@@ -325,7 +325,7 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 - S155-4: [a cat meowing] Then, meow! Who said that? Rosa looked up, and there was a cat on the post. The cat!
 - S155-5: [playful] Rosa played a game with the sounds. Moo! She pointed at the cow. Quack! She pointed at the duck.
 - S155-6: Meow! She pointed at the cat. [proud] Every animal had its own sound, and Rosa knew them all.
-- S155-7: [slowly, warmly] Listen. Then tap the animal that says it.
+- S155-7: [slowly, warmly] Many animals have a sound of their own. Listen, and the sound tells you who is there.
 
 ### Two socks (S158, same-and-different)
 
@@ -335,7 +335,7 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 - S158-4: One sock had a hole, right at the toe, [surprised] and his finger went through it. The other sock had no hole.
 - S158-5: This one has a hole, and that one does not. They were not the same after all. [delighted] Different!
 - S158-6: Kai wore the good sock and waved the holey one. [laughs] Mom laughed and got the sewing box.
-- S158-7: [slowly, warmly] Same looks alike. Different does not. Look twice to be sure.
+- S158-7: [slowly, warmly] The same means alike in every way. One small difference, like a hole, makes two things different. Look twice to be sure.
 
 ### The other red car (S161, match-the-vehicles)
 
@@ -403,7 +403,7 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 - S179-2: Five ducks, and five fingers. He held up his whole hand. [proud] Five!
 - S179-3: [wings flapping] Then, flap, flap, flap! Three ducks flew away, up over the trees, and were gone.
 - S179-4: Theo looked at the water and counted again. [slowly] One, two. Only two ducks were left.
-- S179-5: [thoughtful] Two is fewer than five, and five was more. He held up two fingers, then five, then two.
+- S179-5: [thoughtful] Now there were fewer ducks, two instead of five. He held up two fingers, then five, then two.
 - S179-6: [two ducks quacking] The two ducks quacked at him. The pond seemed much quieter now, since more ducks had made more noise.
 - S179-7: [slowly, warmly] More is the bigger group. Fewer is the smaller group.
 
@@ -501,10 +501,10 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 
 - S209-1: [a school bus pulling up] The bus came, yellow and big, with big letters on its side. Sam looked up.
 - S209-2: [curious] He did not know them yet. There were three shapes, one with two bumps, one like a cup and one all curves.
-- S209-3: His sister said that one is B, and B says its name, bee. [slowly] Sam said bee.
-- S209-4: That one is U, and it says you. And that one is S, and it says ess, [a soft hiss] like a snake.
-- S209-5: B, U, S. Sam said them together, bee, you, ess. [excited] Bus! The letters spelled the bus!
-- S209-6: [proud] Every day after that, Sam read the bus, B, U, S, and he read it to everyone.
+- S209-3: His sister pointed. That one is B, she said, and its name is bee. Sam said bee.
+- S209-4: That one is U, and its name sounds like you. And that one, all curves like a snake, is S.
+- S209-5: B, U, S. Sam said their names, bee, you, ess. Those letters spell bus, said his sister. Bus!
+- S209-6: [proud] Every day after that, Sam named the letters on the bus, B, U, S, for everyone.
 - S209-7: [slowly, warmly] Every letter has a name. Say it when you see it.
 
 ### A letter in the sand (S212, first-letter-tracing)
@@ -517,14 +517,14 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 - S212-6: [a wave washing over sand] Then a wave came and washed the T away. [laughs] Diego laughed and made another one.
 - S212-7: [slowly, warmly] Start at the dot. Follow the arrow. Lift, then go again.
 
-### Sticks make letters (S215, more-big-letters)
+### Sticks Make Letters (S215, more-big-letters)
 
-- S215-1: Mia had a pile of sticks, flat ones and colored ones. [wondering] Could sticks make letters?
-- S215-2: [sticks clicking] One stick went down, and one stick went across the bottom. [delighted] An L! [clapping] Mia clapped.
-- S215-3: [thoughtful] Could they make more? She tried, with one stick down again.
-- S215-4: This time one stick went across the top. [excited] A T! A different letter from the same two sticks.
-- S215-5: One stick down, one across the top and one across the middle. [proud] Three sticks made an F!
-- S215-6: [slowly, naming each letter] L, T, F, three letters in a row, all made of straight sticks.
+- S215-1: [curious] Mia had a pile of sticks, flat ones and colored ones. Could sticks make letters?
+- S215-2: One stick stood straight up and down. [delighted] An I! Mia clapped.
+- S215-3: [thoughtful] Could she make more? She laid two sticks down, side by side, with a gap between them.
+- S215-4: Then one stick went across the middle, like a little bridge. [excited] An H!
+- S215-5: One stick down, then three across, at the top, the middle and the bottom. [proudly] An E!
+- S215-6: [happily] I, H, E, three letters in a row, all made of straight sticks.
 - S215-7: [slowly, warmly] Straight lines make letters. Start at the dot.
 
 ### Down, then across (S218, trace-straight-letters)

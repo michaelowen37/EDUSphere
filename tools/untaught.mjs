@@ -21,3 +21,11 @@ for (const m of L.MODULES) {
 console.log('# Untaught answers\n\nModules where a question can ask for a worded answer the lesson never says. Numbers, pictures and computed answers are not counted. Fix by teaching the fact in the lesson (or a story), or by narrowing the generator.\n');
 console.log(`Modules: ${rows.length} of ${L.MODULES.length}.\n\n| Grade | Subject | Module | Answers never said in the lesson |\n|---|---|---|---|`);
 for (const r of rows) console.log(`| ${r.grade} | ${r.subject} | ${r.id} | ${r.missing.join(', ')} |`);
+// Pictures and letters (pass JR): names a question asks for by name (Tap the moon, Tap the letter B) that its lesson
+// never says, in every subject, Reading included. tests/scripts.test.mjs holds modules at the full standard to none.
+const named = [];
+for (const m of L.MODULES) { const raw = [...m.lesson.paragraphs, m.lesson.keyIdea, (m.lesson.example || {}).caption || '', ...L.readAloudScript(m).map((s) => s.say)].join(' '); const low = raw.toLowerCase(); const miss = new Set();
+  for (const g of new Set(m.generators)) for (let seed = 1; seed <= 60; seed++) for (const w of L.askedNames(L.generateQuestion(g, seed))) if (!(/^[A-Z]$/.test(w) ? new RegExp(`\\b${w}\\b`).test(raw) : new RegExp(`\\b${w}`).test(low))) miss.add(w);
+  if (miss.size) { const c = L.getCourse(m.courseId); named.push(`| ${c.grade} | ${c.subject} | ${m.id} | ${[...miss].slice(0, 8).join(', ')} |`); } }
+console.log(`\n## Pictures and letters asked for by name and never said\n\nModules: ${named.length}. A question like Tap the moon asks for a name its lesson must have said; the full standard fixes each as it reaches it.\n\n| Grade | Subject | Module | Names never said in the lesson |\n|---|---|---|---|`);
+for (const r of named) console.log(r);

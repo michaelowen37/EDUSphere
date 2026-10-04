@@ -6,7 +6,7 @@
 // the voice direction for its age band. Every clip, and every whole story, stays far under Eleven v4's 10,000 characters.
 // Run: node tools/audio-ledger.mjs > docs/AUDIO-LEDGER.md   (it also writes docs/AUDIO-LEDGER.csv, which tools/audio-generate.mjs reads)
 import { writeFileSync } from 'node:fs';
-import { COURSES } from '../src/logic.mjs';
+import { COURSES, readAloudScript } from '../src/logic.mjs';
 import { STORIES, COURSE_STORIES } from '../src/stories.mjs';
 
 // Voices by age (Mikey, pass JH). The directions are short on purpose: one opens every clip, and ElevenLabs counts tags as characters.
@@ -34,7 +34,8 @@ for (const c of courses) {
       add(`${st.art}-0`, 'story title', m.id, c.grade, `${DIRECTION.title} ${st.title}.`, `${st.title}.`, st.art);
       st.words.forEach((p, i) => add(`${st.art}-${i + 1}`, 'story', m.id, c.grade, `${DIRECTION[band(c.grade)]} ${(st.audio && st.audio[i]) || p}`, p, st.art));
     }
-    (m.lesson && m.lesson.script ? m.lesson.script : []).forEach((line, li) => sentencesOf(line.say).forEach((s, si) => add(`${m.id}-${li}-${si}`, 'lesson line', m.id, c.grade, `${DIRECTION.early} ${s}`, s, `${m.id}-lesson`)));
+    // A read-aloud lesson speaks readAloudScript's lines (pass JP: paragraphs too when it has no script), keyed by step as the app plays them.
+    (c.readAloud ? readAloudScript(m) : (m.lesson && m.lesson.script ? m.lesson.script : [])).forEach((line, li) => sentencesOf(line.say).forEach((s, si) => add(`${m.id}-${li}-${si}`, 'lesson line', m.id, c.grade, `${DIRECTION.early} ${s}`, s, `${m.id}-lesson`)));
   }
   const cs = COURSE_STORIES[c.id];
   if (cs) {

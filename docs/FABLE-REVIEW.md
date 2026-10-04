@@ -90,3 +90,11 @@ Mikey asked whether the review covers writing style, explanatory quality and con
 7. Stories. A real problem, a turn and a resolution; the lesson's facts and no others; one tense; smooth read aloud.
 8. Pictures. A lesson picture (P serial) wherever seeing the real thing teaches more than words, such as landmarks, plant parts, instruments and the moon's shapes; story picture prompts match the story; every prompt follows Mikey's template, and a real place is checked against a photo.
 9. Audio. Eleven v4 tags in every story.
+
+## Learned in pass JP, the first full-standard batch (pre-K 3)
+
+- For a pre-reader the spoken script is the lesson. The read-aloud screen shows one line at a time with its picture, and the paragraphs and key idea never reach the child, so the review rewrites the script first and the paragraphs to match. Every word the questions use must be spoken in the script: More once asked for fewer and never said the word.
+- Forty read-aloud lessons have no script. Since pass JP they speak every paragraph and then the caption, far better than the single caption they spoke before, but a lesson written for the ear is better still. Write each one a script when the review reaches it.
+- A lesson picture in a read-aloud lesson names its spoken line (step) and shares a word with it.
+- Anchor an early idea to something that is truly so (yellow like a banana, not like the sun), and never model something unsafe, even in passing.
+- Explanations say the answer and the reason in the lesson's own words (This one is red, like a strawberry; The big circle takes up more room, so it is bigger).

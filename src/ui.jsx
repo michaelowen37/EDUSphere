@@ -2396,6 +2396,16 @@ function StoryArt({ serial, alt, fallback = null }) {
     </div>
   );
 }
+// A lesson picture on a read-aloud line (pass JP). Pre-readers meet a lesson one spoken line at a time, each with its own
+// picture, so a painting (P serial) belongs to the line that names what it shows (its `step`). Once painted, it takes that
+// line's place; until then the line keeps its drawn picture, with a small note naming the painting to come.
+function LessonStepArt({ pic, visual, animKey }) {
+  const present = typeof window !== 'undefined' && Array.isArray(window.__eduArt) && window.__eduArt.includes(pic.serial);
+  const [missing, setMissing] = useState(!present);
+  if (!missing) return <img data-lesson-picture={pic.serial} src={`art/stories/${pic.serial}.webp`} alt={pic.alt} onError={() => setMissing(true)} style={{ display: 'block', width: '100%', maxWidth: 420, maxHeight: 300, objectFit: 'contain', margin: '0 auto', borderRadius: 12 }} />;
+  if (!visual) return <div data-lesson-picture={pic.serial}><StoryArt serial={pic.serial} alt={pic.alt} /></div>;
+  return <div data-lesson-picture={pic.serial}><Picture visual={visual} animate animKey={animKey} /><p style={{ margin: '4px 0 0', fontSize: 12, color: C.muted }}>Illustration {pic.serial} to come</p></div>;
+}
 // The story page body: title, pictures where they fall in the text, the words, one speaker.
 // The snail and the hare (2026-09-23, Mikey): an early-years story is read at three quarters speed on the snail and at the
 // usual pace on the hare. Pre-K starts on the snail, K to 2 on the hare, and the last choice is remembered on this device.
@@ -8117,13 +8127,14 @@ function EduSphereScreens() {
     const step = script[Math.min(lessonStep, script.length - 1)];
     const line = step.say;
     const last = lessonStep >= script.length - 1;
+    const stepArt = (mod.lesson.pictures || []).find((pic) => pic.step === Math.min(lessonStep, script.length - 1)) || null;   // a painting this line shows (pass JP)
     return (
       <div style={{ ...page }}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={{ ...wrap }}>
         <button type="button" onClick={() => setScreen('overview')} aria-label="Back" style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>
           <svg viewBox="0 0 24 24" width="34" height="34" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke={C.green} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" /></svg>
         </button>
         <div key={lessonStep} className="edu-rise" style={{ ...card, textAlign: 'center', padding: '20px 18px' }}>
-          <Picture visual={step.show} animate animKey={`${lessonStep}-${replays}`} />
+          {stepArt ? <LessonStepArt pic={stepArt} visual={step.show} animKey={`${lessonStep}-${replays}`} /> : <Picture visual={step.show} animate animKey={`${lessonStep}-${replays}`} />}
 
           <p style={{ fontSize: 22, lineHeight: 1.5, margin: '18px 0 0' }}>{sentencesOf(line).map((sentence, i) => <span key={i} style={{ background: litSentence === i ? C.goldSoft : 'transparent', borderRadius: 6, padding: litSentence === i ? '0 4px' : 0, transition: 'background 150ms' }}>{sentence}{i < sentencesOf(line).length - 1 ? ' ' : ''}</span>)}</p>
         </div>

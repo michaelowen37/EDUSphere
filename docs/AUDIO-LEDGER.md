@@ -1,6 +1,6 @@
 # Audio ledger
 
-Generated 2026-10-04 by tools/audio-ledger.mjs. Every clip the app can play in a recorded voice is a row of docs/AUDIO-LEDGER.csv: its key (the file name, audio/<key>.mp3, that the app already looks for), its group (the story or lesson it belongs to) and the words with their Eleven v4 audio tags. 6826 clips, 1,261,841 characters in all; the longest clip is 508 characters and the longest whole story 2,751, far under Eleven v4's 10,000 a request. 144 stories carry hand-written tags so far (the writing review adds them course by course); the rest open with their age band's voice direction only.
+Generated 2026-10-04 by tools/audio-ledger.mjs. Every clip the app can play in a recorded voice is a row of docs/AUDIO-LEDGER.csv: its key (the file name, audio/<key>.mp3, that the app already looks for), its group (the story or lesson it belongs to) and the words with their Eleven v4 audio tags. 6874 clips, 1,266,888 characters in all; the longest clip is 508 characters and the longest whole story 2,751, far under Eleven v4's 10,000 a request. 144 stories carry hand-written tags so far (the writing review adds them course by course); the rest open with their age band's voice direction only.
 
 ## How to make the audio
 
@@ -17,7 +17,7 @@ ElevenLabs counts characters, tags included, so this is the size of each part of
 
 | Band | Clips | Characters |
 |---|---|---|
-| Pre-K to grade 2 | 2770 | 310,181 |
+| Pre-K to grade 2 | 2818 | 315,228 |
 | Grades 3 to 5 | 1263 | 278,553 |
 | Grades 6 to 8 | 1138 | 272,072 |
 | Grades 9 to college | 1655 | 401,035 |
@@ -41,7 +41,7 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 |---|---|
 | story title | 615 |
 | story | 3887 |
-| lesson line | 1406 |
+| lesson line | 1454 |
 | long story title | 102 |
 | long story | 816 |
 
@@ -62,7 +62,7 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 - S2-1: [gentle pond sounds] Every morning a mother duck swam across the pond. [ducklings peeping] Behind her came her ducklings, in a wobbly yellow line.
 - S2-2: One morning the line felt short, but she could not tell why. [worried] Something was wrong.
 - S2-3: She looked back, but looking was no help. [playful] Ducklings wiggle, and swap places, and splash.
-- S2-4: So she counted the way ducks count, one bump of the beak for each. [slowly, counting] One bump, two bumps, three bumps, four.
+- S2-4: So she counted them, one bump of her beak for each duckling. [slowly, counting] One bump, two bumps, three bumps, four.
 - S2-5: The last number was four, but there should have been five. Four is not five. [alarmed] One duckling was missing!
 - S2-6: She turned back, and there in the reeds was the fifth, chasing a bug. [a duckling peeping] Peep! She bumped that one too, [relieved] and that made five.
 - S2-7: [slowly, warmly] Count one at a time. The last number you say is how many.
@@ -611,9 +611,9 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 
 - S242-1: [warm, playful] Lena tried to draw a two, and it came out like a snake. She tried again and got a snake with a hat. [a boy laughing] Her brother laughed.
 - S242-2: [puzzled] Where did a two even start? Lena had no idea, so she kept starting in the middle.
-- S242-3: Her teacher put a green dot at the top. [gently] Start here, she said, then curve round, and then go down.
+- S242-3: Her teacher put a green dot near the top. [gently] Start here, she said, then curve round, and then go down.
 - S242-4: Lena put her finger on the dot. Round, down, along the bottom, and stop. [delighted] A two, every time!
-- S242-5: [a pencil on paper] Then she did a three, with a dot at the top, round and round. After that came a five. Dot, down and round.
+- S242-5: Then she put her finger on the dot of a three. Across the top, in to the middle, and around the bottom. [proudly] After that came a five, across, down and around its belly.
 - S242-6: [warmly] Every number had its own dot, and once she knew where to start, the rest followed.
 - S242-7: [slowly, warmly] Start at the dot. Follow the arrow. That draws the number.
 
@@ -641,7 +641,7 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 
 - S251-1: [playful] Leo had six blocks and his friend Max had four. Max said four was bigger, and Leo said six was.
 - S251-2: [two children arguing playfully, getting louder] They both said it louder, and then louder still. But being loud did not help, because neither of them could show it.
-- S251-3: [blocks clacking] So Leo lined his blocks up in a row, and Max lined his up next to them. One row was longer than the other.
+- S251-3: [blocks clacking] So they made pairs, one of Leo's blocks beside each of Max's. [surprised] Max ran out of blocks first, and two of Leo's had no partner.
 - S251-4: Then Leo counted up, [slowly, counting] one, two, three, four, and there was Max's pile. Five, six, and there was his.
 - S251-5: [thoughtful] Six comes later than four when you count, and later means bigger. So six is bigger than four.
 - S251-6: Max nodded. [happy] Then they put all the blocks together and counted ten. That was enough for a tower taller than both of them.
@@ -653,7 +653,7 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 - S254-2: Her dad asked her to find the corners. On the clock her finger went round, and round, [puzzled] and never found one.
 - S254-3: On the window her finger stopped at a corner, and then at another one. [slowly, counting] It stopped four times, so a square has four corners and four sides.
 - S254-4: [thoughtful] A square has four corners, and a circle has none. That is how you tell them apart.
-- S254-5: Rosa looked around the room. Her book had four corners, her ball had none, [delighted] and her paper hat had three!
+- S254-5: Rosa looked around the room. Her book had four corners, with two long sides and two short ones, so it was a rectangle. Her ball had none, [delighted] and her paper hat had three!
 - S254-6: [happy] Three corners and three sides make a triangle. Rosa found shapes all day long.
 - S254-7: [slowly, warmly] Count the sides and corners to tell shapes apart.
 

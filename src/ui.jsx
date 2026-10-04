@@ -450,6 +450,10 @@ function IconPic({ name, size = 90 }) {
     // A slice of pizza (pass JV, Mikey): drawn beside a triangle where a lesson says a slice is almost a triangle. The point is
     // at the bottom and the crust is the curved top edge, so the three corners line up with the triangle's.
     pizza: <g><path d="M18 24 Q50 8 82 24 L50 90 Z" fill="#F2C14E" stroke="#C98A2E" strokeWidth="3" strokeLinejoin="round" /><path d="M18 24 Q50 8 82 24 L79 31 Q50 17 21 31 Z" fill="#C98A2E" /><circle cx="44" cy="40" r="6" fill={red} /><circle cx="58" cy="52" r="5.5" fill={red} /><circle cx="48" cy="66" r="5" fill={red} /></g>,
+    // A door and a window (pass JW): drawn beside the rectangle and the square in kindergarten Shapes, so a child sees the real
+    // thing beside the shape. The door is tall and narrow (two long sides, two short); the window's four sides are equal.
+    door: <g><rect x="31" y="10" width="38" height="80" rx="2" fill="#A9743F" stroke="#6E4A26" strokeWidth="3" /><rect x="37" y="18" width="26" height="28" rx="1" fill="none" stroke="#6E4A26" strokeWidth="2" opacity="0.55" /><rect x="37" y="53" width="26" height="30" rx="1" fill="none" stroke="#6E4A26" strokeWidth="2" opacity="0.55" /><circle cx="61" cy="50" r="3.6" fill={gold} stroke="#8A6A1F" strokeWidth="1" /></g>,
+    window: <g><rect x="18" y="18" width="64" height="64" fill="#CFEAF7" stroke={brown} strokeWidth="5" strokeLinejoin="round" /><line x1="50" y1="18" x2="50" y2="82" stroke={brown} strokeWidth="4" /><line x1="18" y1="50" x2="82" y2="50" stroke={brown} strokeWidth="4" /><path d="M25 25 L39 25 L25 39 Z" fill="#FFFFFF" opacity="0.7" /><path d="M57 57 L71 57 L57 71 Z" fill="#FFFFFF" opacity="0.45" /></g>,
     sun: <g><defs><radialGradient id="eduSunG" cx="40%" cy="38%" r="65%"><stop offset="0" stopColor="#FFF1B8" /><stop offset="0.6" stopColor={gold} /><stop offset="1" stopColor="#D99A2B" /></radialGradient></defs><circle cx="50" cy="50" r="30" fill={gold} opacity="0.18" /><circle cx="50" cy="50" r="20" fill="url(#eduSunG)" />{[0, 45, 90, 135, 180, 225, 270, 315].map((a) => <line key={a} x1={50 + 28 * Math.cos(a * Math.PI / 180)} y1={50 + 28 * Math.sin(a * Math.PI / 180)} x2={50 + 40 * Math.cos(a * Math.PI / 180)} y2={50 + 40 * Math.sin(a * Math.PI / 180)} stroke={gold} strokeWidth="5" strokeLinecap="round" />)}</g>,
     // The moon (pass IT): the old path's two arcs fell onto the same half-circle and drew nothing. Now a crescent, an outer
     // half-circle and a flatter inner arc.
@@ -2257,9 +2261,11 @@ function saveBlob(name, blob) { const a = document.createElement('a'); a.href = 
 Object.assign(STORY_TITLES, Object.fromEntries(Object.entries(STORIES).map(([id, st]) => [id, { title: titleCase(st.title), about: st.about || '' }])), Object.fromEntries(Object.entries(COURSE_STORIES).map(([id, st]) => [`course:${id}`, { title: st.title, about: st.about || '' }])));
 // The first-week tour: title, the element it points at (a data-tour name, or null), the sample screen it opens, where its card
 // sits, and the words. Where each card sits, in Mikey's words (passes DH, IT and JE), at every screen width the tour runs at:
-//   1 below-help: centered under Add someone new. Good as it is.
+//   1 below-add: centered close under Add someone new, its top a little above Who needs help, so it sits by the glowing Add
+//     button (pass JW, Mikey, Chrome on a laptop: once a classroom had students it sat under Who needs help).
 //   2 flush-right-low: against the right edge of the screen, near the bottom, over the sample lesson.
-//   3 over-life-by-backup: close above the Backup classroom link, overlapping Practical Life Skills.
+//   3 over-life-by-backup: centered over the Backup classroom link, close above it, overlapping Practical Life Skills (pass JW,
+//     Mikey: in Chrome on a laptop it sat to the right of the link).
 //   4 right-mid: beside Wonder Questions when there is room. Good as it is.
 //   5 over-exp-by-life: over Science Experiments, never over Life Skills. Good as it is.
 //   6 by-reading: on a laptop, to the left of the glowing Reading Lists card, over Wonder Questions (pass JF); in one column,
@@ -2270,7 +2276,7 @@ Object.assign(STORY_TITLES, Object.fromEntries(Object.entries(STORIES).map(([id,
 //  10 above: just above the transcript. Good as it is.
 // tests/e2e/tour.mjs checks every one of these at tablet and laptop sizes.
 const TOUR = [
-  ['Welcome to your classroom', 'add', null, 'below-help', <>Add a student by using their school ID. Then, you'll have an option to create nicknames, assign fun sign-in pictures and more!<br /><br />No names or photos are ever stored.</>],
+  ['Welcome to your classroom', 'add', null, 'below-add', <>Add a student by using their school ID. Then, you'll have an option to create nicknames, assign fun sign-in pictures and more!<br /><br />No names or photos are ever stored.</>],
   ['Lessons, Stories, Practice, Mastery', 'lesson-card', 'lesson', 'flush-right-low', <>We combine mastery-based learning, spaced repetition, story-based learning, reflection questions, images and games to help information stick.<br /><br />Mastery requires continuous proof of competence over time. Modules are presented multiple times across multiple days and even when a student masters a subject, they'll continue to be exposed through "memory checks."<br /><br />Educators see detailed summaries along the way.</>],
   ['Backups live on this device', 'backup', null, 'over-life-by-backup', <>A backup file automatically downloads to your device when a student taps <em>Exit</em> or, when an educator makes changes and <em>signs out</em>.<br /><br />We still recommend periodic manual backups to a password-protected drive folder, which protects you against lost or broken devices.<br /><br />One file restores everything on any device.</>],
   ['Wonder Questions', 'wonder', null, 'right-mid', <>Wonder questions are deep, thought-provoking questions sprinkled between learning modules. They're designed to promote curiosity, reflection and critical thinking and once a student finds themselves failing modules, the questions are re-prioritized to cover emotional resilience and frame failure as an effective way to learn.<br /><br />Students only see the questions you approve.</>],
@@ -7587,13 +7593,13 @@ function EduSphereScreens() {
       const twoCol = !!(lifeR && expR && Math.abs(lifeR.top - expR.top) < 8);    // Experiments and Life Skills side by side
       const farEnd = r.top + r.height / 2 > (T + B) / 2 ? T + 12 : low;            // the end of the screen away from the target
       let box = null;
-      if (where === 'below-help') {   // card 1: centered under Add someone new (or under Who needs help, once there are students)
-        const help = document.querySelector('[data-tour="help"]'); const hr = help ? help.getBoundingClientRect() : r;
-        box = { left: center, top: hr.bottom + 8, width: cardW };
+      if (where === 'below-add') {   // card 1 (pass JW, Mikey): centered close under Add someone new, over Who needs help when it shows
+        box = { left: clamp(r.left + r.width / 2 - cardW / 2, 12, flushRight), top: r.bottom + 10, width: cardW };
       } else if (where === 'flush-right-low') {   // card 2: against the right edge of the screen, near its bottom
         box = { left: flushRight, top: low, width: cardW };
-      } else if (where === 'over-life-by-backup' && lifeR) {   // card 3: over Practical Life Skills, its foot just above the backup link
-        box = { left: clamp(lifeR.right - cardW + 24, 12, flushRight), top: r.top - 8 - cardH, width: cardW };
+      } else if (where === 'over-life-by-backup') {   // card 3 (pass JW, Mikey): centered over the Backup classroom link, its foot just above it
+        const link = els[0].querySelector('.edu-backup-link'); const lk = link ? link.getBoundingClientRect() : r;
+        box = { left: clamp(lk.left + lk.width / 2 - cardW / 2, 12, flushRight), top: r.top - 8 - cardH, width: cardW };
       } else if (where === 'right-mid') {   // card 4: beside Wonder Questions when there is room, else the far end of the screen
         const roomRight = W - r.right - gap - 12;
         box = roomRight >= 260 ? { left: r.right + gap, top: T + (B - T - cardH) / 2, width: Math.min(cardW, roomRight) } : { left: center, top: farEnd, width: cardW };

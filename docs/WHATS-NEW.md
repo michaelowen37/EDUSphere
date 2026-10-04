@@ -2,6 +2,13 @@
 
 The newest block is what educators see once, in a pop-up on the classroom page, after each update. Write it the way Mikey talks to a teacher: conversational, complete sentences, say what changed and why it matters, and skip the shorthand (2026-09-23). Two to four items. The date line is the version stamp.
 
+## October 4, 2026 (kindergarten counting, part one)
+
+- Kindergarten's first seven counting lessons now teach everything their questions ask. Count to 5 used to count only to three, and both counting lessons now teach more, fewer, the same and what comes next, which the questions were already asking.
+- Every answer in those lessons now comes with its reason in counting words, like four dots are more than two dots, because you count past two to get to four.
+- The shapes lesson now teaches that a square is a special kind of rectangle, as the Texas standards ask, and it shows a round clock, a door and a window beside the circle, the rectangle and the square.
+- The first card of the welcome tour now sits right under Add Someone New, and the backup card sits centered over the Backup Classroom link.
+
 ## October 4, 2026 (kindergarten letters finished)
 
 - The sounding out lesson now says sounds, not letter names. It used to read c, a, t aloud, which a voice says as see, ay, tee, and those names never blend into cat. It now teaches the five short vowel sounds with a word for each (apple, egg, igloo, octopus and up).

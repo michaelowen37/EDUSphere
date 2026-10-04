@@ -455,11 +455,13 @@ await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen ===
 await page.evaluate(() => window.__eduTest.openModule('count-to-5'));
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'lesson');
 t = await text();
-ok('a pre-reader lesson opens with a worked example, not a rule', t.includes('There are three') && !t.includes('The last number you say tells you how many'));
+// Pass JW: Count to 5 counts all five dots and says the total first, and its rule (the last number tells how many) comes next.
+ok('a pre-reader lesson opens with a worked example, not a rule', t.includes('There are five dots') && !t.includes('The last number you say tells how many'));
 ok('the lesson speaks itself without being asked', (await page.evaluate(() => window.__spoken.length)) >= 1);
 ok('the controls are drawn rather than written', (await page.getByLabel('Next').count()) === 1 && (await page.getByLabel('Say it again').count()) === 1);
-for (let i = 0; i < 2; i++) await page.getByLabel('Next').click();
-ok('the rule comes after the example has been shown', (await text()).includes('The last number you say tells you how many'));
+await page.getByLabel('Next').click();
+ok('the rule comes after the example has been shown', (await text()).includes('The last number you say tells how many'));
+for (let i = 0; i < 12 && !(await page.getByLabel('Start practice').count()); i++) await page.getByLabel('Next').click();
 await page.getByLabel('Start practice').click();
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'practice');
 const spokenBefore = await page.evaluate(() => window.__spoken.length);

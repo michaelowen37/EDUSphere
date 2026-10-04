@@ -133,7 +133,7 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
     if (genId === 'km-how-many-more' && Number(q.answer) !== ints[1] - ints[0]) problems.push('how many more wrong');
     if (genId === 'km-bigger' && Number(q.answer) !== Math.max(...q.choices.map(Number))) problems.push('bigger picked the smaller');
     if (genId === 'km-smaller' && Number(q.answer) !== Math.min(...q.choices.map(Number))) problems.push('smaller picked the bigger');
-    if (genId === 'km-more-less-same') { const [a, b] = ints; const want = a > b ? 'More' : a < b ? 'Less' : 'The same'; if (q.answer !== want) problems.push('more/less/same wrong'); }
+    if (genId === 'km-more-less-same') { const [a, b] = ints; const want = a > b ? 'More' : a < b ? 'Fewer' : 'The same'; if (q.answer !== want) problems.push('more/fewer/same wrong'); }
     if (genId === 'km-make-more' && !(dotCount(q.answer) > ints[0])) problems.push('make-more is not more');
     if (genId === 'km-make-fewer' && !(dotCount(q.answer) < ints[0])) problems.push('make-fewer is not fewer');
     if (/^km-/.test(genId) && q.explainVisual && !(q.explainVisual.count >= 1 && q.explainVisual.count <= 10)) problems.push('explain picture out of range');

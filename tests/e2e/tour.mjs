@@ -28,7 +28,7 @@ const measure = (f) => f.evaluate(() => {
   const r = (el) => { if (!el) return null; const b = el.getBoundingClientRect(); return { left: Math.round(b.left), top: Math.round(b.top), right: Math.round(b.right), bottom: Math.round(b.bottom) }; };
   const q = (s) => r(document.querySelector(s));
   const sheet = document.querySelector('[aria-label="First week tour"]');
-  return { screen: window.__eduTest.screen, y: Math.round(window.scrollY + ((document.getElementById('root') || {}).scrollTop || 0) + document.body.scrollTop), W: window.innerWidth, H: window.innerHeight, sheet: r(sheet), title: sheet ? (sheet.querySelectorAll('p')[1] || {}).textContent : '', life: q('[data-tour="life"]'), exp: q('[data-tour="experiments"]'), wonder: q('[data-tour="wonder"]'), reading: q('[data-tour="reading"]'), backup: q('[data-tour="backup"]'), search: q('input[aria-label="Search notes"]'), transcript: q('[data-tour="transcript"]') };
+  return { screen: window.__eduTest.screen, y: Math.round(window.scrollY + ((document.getElementById('root') || {}).scrollTop || 0) + document.body.scrollTop), W: window.innerWidth, H: window.innerHeight, sheet: r(sheet), title: sheet ? (sheet.querySelectorAll('p')[1] || {}).textContent : '', life: q('[data-tour="life"]'), exp: q('[data-tour="experiments"]'), wonder: q('[data-tour="wonder"]'), reading: q('[data-tour="reading"]'), backup: q('[data-tour="backup"]'), link: q('.edu-backup-link'), add: q('[data-tour="add"]'), help: q('[data-tour="help"]'), search: q('input[aria-label="Search notes"]'), transcript: q('[data-tour="transcript"]') };
 });
 // Card by card at one size, then the classroom after the tour and after Later.
 // box: the app scrolls inside a box of its own, as in the claude.ai panel that previews the .jsx file (pass JF), where scrolling
@@ -46,10 +46,13 @@ async function walk(W, H, box = false) {   // box: false, 'root' (a box holds th
     const m = await measure(page); const s = m.sheet;
     let good = !!s && s.left >= -1 && s.top >= -1 && s.right <= m.W + 1 && s.bottom <= m.H + 1;
     const oneCol = m.life && m.exp ? Math.abs(m.life.top - m.exp.top) > 8 : true;
+    // Card 1 sits centered close under Add someone new, and above Who needs help when it shows (pass JW, Mikey).
+    if (step === 1) good = good && !!m.add && s.top - m.add.bottom >= 0 && s.top - m.add.bottom <= 24 && near((s.left + s.right) / 2, (m.add.left + m.add.right) / 2, 8) && (!m.help || s.top < m.help.top);
     if (step === 2) good = good && near(s.right, m.W, 14) && near(s.bottom, m.H, 14);
     // The page behind card 2 is the live fraction lesson (pass JI, Mikey): a rewrite of it, or of its title, shows in the tour by itself.
     if (step === 2) { const h1 = await page.evaluate(() => (document.querySelector('h1') || {}).textContent || ''); good = good && h1 === L.titleCase(L.getModule('fraction-meaning').title); }
-    if (step === 3) good = good && m.backup.top - s.bottom >= -1 && m.backup.top - s.bottom <= 24 && overlap(s, m.life);
+    // Card 3 is centered over the Backup classroom link (pass JW, Mikey: it sat to the right of the link).
+    if (step === 3) good = good && m.backup.top - s.bottom >= -1 && m.backup.top - s.bottom <= 24 && overlap(s, m.life) && !!m.link && near((s.left + s.right) / 2, (m.link.left + m.link.right) / 2, 8);
     if (step === 5) good = good && !overlap(s, m.life);
     if (step === 6) good = good && !overlap(s, m.reading) && (oneCol ? overlap(s, m.exp) && s.top - m.reading.bottom >= -1 && s.top - m.reading.bottom <= 24 : overlap(s, m.wonder) && s.right <= m.reading.left + 1);
     if (step === 7) good = good && overlap(s, m.life) && !overlap(s, m.exp) && (oneCol ? s.top - m.exp.bottom >= -1 && s.top - m.exp.bottom <= 24 : s.top <= m.life.top);
@@ -82,6 +85,28 @@ for (const [W, H, box] of process.env.FRAME_ONLY ? [] : [[760, 900], [820, 1180]
   ok(`${box ? 'in a scrolling box, ' : ''}a lesson opened from far down the overview starts at its top`, before > 200 && opened.screen !== 'overview' && opened.y === 0, { before, ...opened });
   const words = opened.h1.split(/[\s-]+/).filter((w) => /^[A-Za-z]{4,}/.test(w));
   ok(`${box ? 'in a scrolling box, ' : ''}the lesson title shows in title case`, opened.screen !== 'lesson' || (words.length > 0 && words.every((w) => /^[A-Z]/.test(w))), opened);
+  await page.close();
+}
+{ // Card 1 in a classroom with students (pass JW, Mikey, Chrome on a laptop): Who needs help shows under Add someone new, and card 1
+  // sits close under the glowing Add button with its top a little above Who needs help, never below it. The tour is replayed
+  // from the backup page's Show the first week tour again.
+  const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+  await page.goto(pageUrl); await signUp(page);
+  for (let i = 0; i < 9; i++) { await page.getByRole('button', { name: 'Next' }).first().click(); await page.waitForTimeout(700); }
+  await page.getByRole('button', { name: 'Done' }).first().click(); await page.waitForTimeout(900);
+  for (const name of ['Later', 'Got it']) { const b = page.getByRole('button', { name }); if (await b.count()) { await b.first().click({ force: true }); await page.waitForTimeout(250); } }
+  for (const id of ['S-1', 'S-2']) {
+    await page.getByRole('button', { name: 'Add someone new' }).first().click(); await page.waitForTimeout(300);
+    await page.fill('input[placeholder="School-issued ID"]', id); await page.getByRole('button', { name: /^Elementary/ }).first().click();
+    await page.getByRole('button', { name: 'Add', exact: true }).click(); await page.waitForTimeout(400);
+    for (const name of ['Done', 'Not now', 'Skip', 'Later', 'Got it']) { const b = page.getByRole('button', { name }); if (await b.count()) { await b.first().click({ force: true }); await page.waitForTimeout(200); } }
+  }
+  await page.getByRole('button', { name: 'Backup classroom' }).first().click(); await page.waitForTimeout(700);
+  await page.getByRole('button', { name: 'Show the first week tour again' }).first().click();
+  await page.waitForSelector('[aria-label="First week tour"]', { timeout: 5000 }); await page.waitForTimeout(1300);
+  const m = await measure(page); const s = m.sheet;
+  const good = !!s && !!m.add && !!m.help && s.top - m.add.bottom >= 0 && s.top - m.add.bottom <= 24 && s.top < m.help.top && near((s.left + s.right) / 2, (m.add.left + m.add.right) / 2, 8);
+  ok('with students in the classroom, card 1 sits close under Add someone new, a little above Who needs help', good, good ? null : { sheet: s, add: m.add, help: m.help });
   await page.close();
 }
 { // A frame as tall as the whole page: the app's own window never scrolls there, so the page around the frame must.

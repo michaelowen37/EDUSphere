@@ -4706,18 +4706,23 @@ function COUNTING_MODULES() { return [
     title: 'Count to 5',
     tagline: 'One, two, three, four, five',
     lesson: {
-      paragraphs: ['Count each one. Touch it and say the number.', 'The last number you say tells how many there are.'],
-      keyIdea: 'The last number you say is how many.',
-      example: { kind: 'dots', count: 3, caption: 'One, two, three. There are 3.' },
-      // Spoken script for children who cannot read. Always show before telling: the
-      // example comes first, then the instruction, then the rule it teaches.
+      // Full standard (pass JW): for a pre-reader the spoken script is the lesson, so it teaches everything the questions ask,
+      // counting to five, the last number says how many in any order, small groups seen at a glance, what comes after, more,
+      // fewer and the same.
+      paragraphs: ['Touch each dot as you count it, and say one number for each one. One, two, three, four, five.', 'The last number you say tells how many there are. It does not matter which dot you start with, as long as you touch each dot once.', 'You can see a small group, like three, at a glance, without counting.', 'Numbers always come in the same order, so after three comes four, and after four comes five.', 'To compare two groups, count each one. Four dots are more than two dots, because you count past two to get to four, and two dots are fewer. Two groups with the same number, like three and three, have the same.'],
+      keyIdea: 'Touch each one and say one number. The last number you say is how many.',
+      example: { kind: 'dots', count: 5, caption: 'One, two, three, four, five. There are 5.' },
       script: [
-        { say: 'One. Two. Three. There are three dots.', show: { kind: 'dots', count: 3 } },
-        { say: 'Count each one. Touch it and say the number.', show: { kind: 'dots', count: 3 } },
-        { say: 'The last number you say tells you how many. Three.', show: { kind: 'dots', count: 3 } },
+        { say: 'Touch each dot and say one number. One, two, three, four, five. There are five dots.', show: { kind: 'dots', count: 5 } },
+        { say: 'The last number you say tells how many dots there are, five. It does not matter which dot you start with, as long as you touch each dot once.', show: { kind: 'dots', count: 5 } },
+        { say: 'You can see a small group at a glance, without counting. Look, three dots. You know it is three.', show: { kind: 'dots', count: 3 } },
+        { say: 'Numbers always come in the same order. After three comes four, and after four comes five.', show: { kind: 'dots', count: 5 } },
+        { say: 'Here are four dots and two dots. Four dots are more than two dots, because you count past two to get to four.', show: { kind: 'pair', a: { kind: 'dots', count: 4 }, b: { kind: 'dots', count: 2 } } },
+        { say: 'Two dots are fewer than four dots, so this group has fewer.', show: { kind: 'pair', a: { kind: 'dots', count: 2 }, b: { kind: 'dots', count: 4 } } },
+        { say: 'Here are three dots and three dots. They have the same number, so neither group has more.', show: { kind: 'pair', a: { kind: 'dots', count: 3 }, b: { kind: 'dots', count: 3 } } },
       ],
     },
-    sources: ['Aligned with Common Core math standards K.CC.B.4 and K.CC.B.5 (counting to tell how many).'],
+    sources: ['Aligned with Texas TEKS K.2A, K.2C and K.2D (counting, the last number said tells how many in any order, and small groups known at a glance) and Common Core K.CC.B.4 and K.CC.B.5 (counting to tell how many).'],
     generators: ['k5-how-many', 'k5-tap-group', 'k5-more', 'k5-fewer', 'k5-after', 'k5-same'],
   },
   {
@@ -4726,16 +4731,22 @@ function COUNTING_MODULES() { return [
     title: 'Count to 10',
     tagline: 'Bigger groups',
     lesson: {
-      paragraphs: ['Bigger groups work the same way. Count each one and say the number.', 'Count slowly. The last number tells how many.'],
-      keyIdea: 'Count one at a time. The last number is how many.',
+      // Full standard (pass JW): counts on to ten, says what to do when you lose your place, and teaches more, fewer and the
+      // same, which its questions ask.
+      paragraphs: ['Bigger groups work the same way as small ones. Touch each dot, say one number for each, and the last number you say tells how many.', 'The numbers go on past five in the same order every time. Six, seven, eight, nine, ten. After nine comes ten.', 'In a big group it is easy to lose your place, so go slowly and touch each dot only once. If you lose your place, start again at the first one.', 'To compare two groups, count both. Eight dots are more than six dots, because you count past six to get to eight, and six dots are fewer. Two groups with the same number have the same.'],
+      keyIdea: 'Count one at a time. The last number you say is how many.',
       example: { kind: 'dots', count: 7, caption: 'One, two, three, four, five, six, seven. There are 7.' },
       script: [
-        { say: 'One. Two. Three. Four. Five. Six. Seven. There are seven dots.', show: { kind: 'dots', count: 7 } },
-        { say: 'Bigger groups work the same way. Count slowly.', show: { kind: 'dots', count: 7 } },
-        { say: 'The last number you say tells you how many. Seven.', show: { kind: 'dots', count: 7 } },
+        { say: 'Here are seven dots. Touch each one and count. One, two, three, four, five, six, seven.', show: { kind: 'dots', count: 7 } },
+        { say: 'The last number you say tells how many. Seven. There are seven dots.', show: { kind: 'dots', count: 7 } },
+        { say: 'The numbers keep going in the same order. Eight, nine, ten. After nine comes ten.', show: { kind: 'dots', count: 10 } },
+        { say: 'In a big group it is easy to lose your place. Go slowly, and touch each dot only once.', show: { kind: 'dots', count: 10 } },
+        { say: 'Here are eight dots and six dots. Eight dots are more than six dots, because you count past six to get to eight.', show: { kind: 'pair', a: { kind: 'dots', count: 8 }, b: { kind: 'dots', count: 6 } } },
+        { say: 'Six dots are fewer than eight dots, so this group has fewer.', show: { kind: 'pair', a: { kind: 'dots', count: 6 }, b: { kind: 'dots', count: 8 } } },
+        { say: 'Here are seven dots and seven dots. They have the same number, so neither group has more.', show: { kind: 'pair', a: { kind: 'dots', count: 7 }, b: { kind: 'dots', count: 7 } } },
       ],
     },
-    sources: ['Aligned with Common Core math standards K.CC.B.5 and K.CC.C.6 (counting to 10 and comparing groups).'],
+    sources: ['Aligned with Texas TEKS K.2A, K.2C and K.2G (counting, the last number said tells how many, and comparing sets) and Common Core K.CC.B.5 and K.CC.C.6 (counting to 10 and comparing groups).'],
     generators: ['k10-how-many', 'k10-tap-group', 'k10-more', 'k10-fewer', 'k10-after', 'k10-same'],
   },
   {
@@ -4746,13 +4757,23 @@ function COUNTING_MODULES() { return [
     requires: ['count-to-10'],
     needsTouch: true,
     lesson: {
-      paragraphs: ['Every number has a shape. Start at the dot and follow the arrow.', 'Go slowly. A stylus helps.'],
+      // Full standard (pass JW): the questions ask all ten numbers, so the lesson traces all ten, each told the way the app draws
+      // it (TRACE_LETTERS): 3 has a flat top and 8 starts in the middle.
+      paragraphs: ['Every number has its own shape, and each one starts at its own dot. Put your finger on the dot and follow the arrow, and the number draws itself.', 'Some numbers are made of straight lines, like 1, 4 and 7. Zero goes around. The others mix lines and curves, like 2, 3, 5, 6, 8 and 9.', 'Go slowly, and keep your finger on the screen until the number is done. A finger works, and so does a stylus.'],
       keyIdea: 'Start at the dot. Follow the arrow. That draws the number.',
-      example: { kind: 'trace', text: '3', caption: 'Around, and around again. That is 3.' },
+      example: { kind: 'trace', text: '3', caption: 'Across the top, in to the middle, then around the bottom. That is 3.' },
       script: [
-        { say: 'Start at the dot. Go straight down. That is 1.', show: { kind: 'trace', text: '1' } },
-        { say: 'Start at the dot. Go around, then around again. That is 3.', show: { kind: 'trace', text: '3' } },
-        { say: 'Start at the dot. Follow the arrow. That draws the number.', show: { kind: 'trace', text: '3' } },
+        { say: 'Every number starts at its own dot. Zero starts at the top, goes around to the left, down and all the way back up. That is 0.', show: { kind: 'trace', text: '0' } },
+        { say: 'One goes a little way up to the top, then straight down. That is 1.', show: { kind: 'trace', text: '1' } },
+        { say: 'Two goes up and around, slants down to the bottom, then goes across. That is 2.', show: { kind: 'trace', text: '2' } },
+        { say: 'Three goes across the top, slants in to the middle, then goes around the bottom. That is 3.', show: { kind: 'trace', text: '3' } },
+        { say: 'Four slants down and goes across. Then lift your finger, start at the top again and go straight down. That is 4.', show: { kind: 'trace', text: '4' } },
+        { say: 'Five goes across the top, then down, then around its round belly. That is 5.', show: { kind: 'trace', text: '5' } },
+        { say: 'Six curves down to the bottom, then goes around to make a loop. That is 6.', show: { kind: 'trace', text: '6' } },
+        { say: 'Seven goes across the top, then slants down. That is 7.', show: { kind: 'trace', text: '7' } },
+        { say: 'Eight starts in the middle. It goes up and around the top, then down and around the bottom. That is 8.', show: { kind: 'trace', text: '8' } },
+        { say: 'Nine goes around to make a circle at the top, then a line down. That is 9.', show: { kind: 'trace', text: '9' } },
+        { say: 'Find the dot, follow the arrow, and keep your finger down until the number is done.', show: { kind: 'trace', text: '5' } },
       ],
     },
     sources: ['Aligned with Texas TEKS K.2B (read, write, and represent whole numbers from 0 to at least 20) and Common Core K.CC.A.3 (write numbers from 0 to 20).'],
@@ -4765,17 +4786,21 @@ function COUNTING_MODULES() { return [
     tagline: 'Next door numbers',
     requires: ['count-to-10'],
     lesson: {
-      paragraphs: ['Every number has a neighbor on each side. One more than 4 is 5. One less than 4 is 3.', 'Count on to find one more. Count back to find one less.'],
-      keyIdea: 'One more is the next number. One less is the number before.',
-      example: { kind: 'dots', count: 4, caption: 'Four. One more makes five.' },
+      // Full standard (pass JW): one more as the next number you say and one less as the number just before, shown with dots
+      // and then said as neighbors, which is how the questions ask it.
+      paragraphs: ['When you count, every number has a neighbor on each side. Four comes right after three and right before five.', 'One more is the next number you say. Put one more dot with four dots, count them, and you get five. So one more than four is five.', 'One less is the number you say just before. Take one dot away from five dots, and four are left. So one less than five is four.', 'You can count on to find one more and count back to find one less, without counting the whole group again.'],
+      keyIdea: 'One more is the next number you say. One less is the number just before.',
+      example: { kind: 'dots', count: 5, caption: 'Four dots and one more. That makes five.' },
       script: [
-        { say: 'Four. Add one. Now there are five.', show: { kind: 'dots', count: 5 } },
-        { say: 'One more is the next number you say when you count.', show: { kind: 'dots', count: 5 } },
-        { say: 'Five. Take one away. Now there are four.', show: { kind: 'dots', count: 4 } },
-        { say: 'One less is the number just before.', show: { kind: 'dots', count: 4 } },
+        { say: 'Here are four dots. One, two, three, four.', show: { kind: 'dots', count: 4 } },
+        { say: 'Add one more dot. Now there are five. One more than four is five.', show: { kind: 'dots', count: 5 } },
+        { say: 'One more is always the next number you say when you count. After four comes five.', show: { kind: 'dots', count: 5 } },
+        { say: 'Now take one dot away. Five dots become four. One less than five is four.', show: { kind: 'dots', count: 4 } },
+        { say: 'One less is the number you say just before. Before five comes four.', show: { kind: 'dots', count: 4 } },
+        { say: 'So five has a neighbor on each side. Four is one less, and six is one more.', show: { kind: 'dots', count: 5 } },
       ],
     },
-    sources: ['Aligned with Texas TEKS K.2F (one more and one less than a given number up to 20) and Common Core K.CC.A.2.'],
+    sources: ['Aligned with Texas TEKS K.2F (generate a number that is one more than or one less than another number up to at least 20) and K.2A (count forward and backward) and Common Core K.CC.A.2 (count forward beginning from a given number).'],
     generators: ['km-one-more', 'km-one-less', 'km-one-more-pic', 'km-one-less-pic', 'km-which-neighbour'],
   },
   {
@@ -4785,14 +4810,17 @@ function COUNTING_MODULES() { return [
     tagline: 'Putting together, taking apart',
     requires: ['one-more-one-less'],
     lesson: {
-      paragraphs: ['When two groups join, count them all together to find how many. When some go away, count what is left.', 'Three birds on a fence, then two more land. Count them all. Five birds.'],
-      keyIdea: 'Joining makes more. Taking away leaves fewer. Count to find out how many.',
-      example: { kind: 'dots', count: 5, caption: 'Three and two more. That makes five.' },
+      // Full standard (pass JW): joining, taking away, and counting on to find how many more you need, which a question asks
+      // and the old lesson never showed.
+      paragraphs: ['When two groups join, there are more than before. Count them all together to find how many.', 'Three birds sit on a fence, and two more land. Count them all, one, two, three, four, five. Three and two more make five.', 'When some go away, there are fewer. Count only what is left. Five birds sit there, and two fly away. One, two, three. Three birds are left.', 'To find how many more you need, count on. You have three birds and want five. Say three, then count on, four, five. That is two more.'],
+      keyIdea: 'Joining makes more. Taking away leaves fewer. Count to find how many.',
+      example: { kind: 'dots', count: 5, caption: 'Three and two more make five.' },
       script: [
-        { say: 'Three birds. Two more birds land. Count them all. Five birds.', show: { kind: 'dots', count: 5 } },
-        { say: 'When groups join, there are more. Count them all to find how many.', show: { kind: 'dots', count: 5 } },
-        { say: 'Five birds. Two fly away. Count what is left. Three birds.', show: { kind: 'dots', count: 3 } },
-        { say: 'When some go away, there are fewer. Count what is left.', show: { kind: 'dots', count: 3 } },
+        { say: 'Three birds sit on a fence. Two more birds land. Count them all. One, two, three, four, five.', show: { kind: 'dots', count: 5 } },
+        { say: 'Joining puts groups together, so there are more. Three and two more make five.', show: { kind: 'dots', count: 5 } },
+        { say: 'Now two birds fly away. Count only the birds that are left. One, two, three.', show: { kind: 'dots', count: 3 } },
+        { say: 'Taking away leaves fewer. Five take away two leaves three.', show: { kind: 'dots', count: 3 } },
+        { say: 'You have three birds, and you want five. Say three, then count on. Four, five. You need two more.', show: { kind: 'dots', count: 3 } },
       ],
     },
     sources: ['Aligned with Texas TEKS K.3A, K.3B and K.3C (joining and separating, word problems within 10) and Common Core K.OA.A.1 and K.OA.A.2.'],
@@ -4805,16 +4833,21 @@ function COUNTING_MODULES() { return [
     tagline: 'Comparing numbers',
     requires: ['count-to-10'],
     lesson: {
-      paragraphs: ['A bigger number means more things. When you count, the numbers you say later are bigger.', 'Seven comes after four when you count, so seven is bigger than four.'],
-      keyIdea: 'The number you say later when counting is the bigger one.',
-      example: { kind: 'dots', count: 7, caption: 'Seven is bigger than four.' },
+      // Full standard (pass JW): bigger and smaller from the counting order, more, fewer and the same, and how to make a group
+      // with more or fewer, all of which its questions ask.
+      paragraphs: ['A bigger number means more things. When you count, you say the smaller numbers first and the bigger numbers later.', 'Seven comes after four when you count, so seven is bigger than four, and four is smaller than seven. Seven dots are more than four dots, and four dots are fewer.', 'Two groups can have the same number, like five and five. Then neither group has more.', 'To make a group with more, add some. To make a group with fewer, take some away.'],
+      keyIdea: 'The number you say later when you count is the bigger one.',
+      example: { kind: 'pair', a: { kind: 'dots', count: 7 }, b: { kind: 'dots', count: 4 }, caption: 'Seven dots and four dots. Seven is bigger.' },
       script: [
-        { say: 'Seven and four. Seven has more, so seven is bigger.', show: { kind: 'dots', count: 7 } },
-        { say: 'When you count, the numbers you say later are bigger.', show: { kind: 'dots', count: 7 } },
-        { say: 'Four is smaller than seven. It has fewer.', show: { kind: 'dots', count: 4 } },
+        { say: 'Here are seven dots and four dots. Seven dots are more than four dots.', show: { kind: 'pair', a: { kind: 'dots', count: 7 }, b: { kind: 'dots', count: 4 } } },
+        { say: 'When you count, you say four first and seven later. The number you say later is bigger, so seven is bigger than four.', show: { kind: 'pair', a: { kind: 'dots', count: 7 }, b: { kind: 'dots', count: 4 } } },
+        { say: 'Four is smaller than seven, so four dots are fewer than seven dots.', show: { kind: 'pair', a: { kind: 'dots', count: 4 }, b: { kind: 'dots', count: 7 } } },
+        { say: 'Here are five dots and five dots. Both have five, so they have the same number.', show: { kind: 'pair', a: { kind: 'dots', count: 5 }, b: { kind: 'dots', count: 5 } } },
+        { say: 'Here are three dots. Add some dots, and the new group has more. Five dots are more than three dots.', show: { kind: 'pair', a: { kind: 'dots', count: 3 }, b: { kind: 'dots', count: 5 } } },
+        { say: 'Take some dots away, and the new group has fewer. Two dots are fewer than three dots.', show: { kind: 'pair', a: { kind: 'dots', count: 3 }, b: { kind: 'dots', count: 2 } } },
       ],
     },
-    sources: ['Aligned with Texas TEKS K.2E, K.2G and K.2H (comparing sets and written numerals up to 20) and Common Core K.CC.C.7.'],
+    sources: ['Aligned with Texas TEKS K.2E, K.2G and K.2H (comparing sets and written numerals up to 20) and Common Core K.CC.C.6 and K.CC.C.7.'],
     generators: ['km-bigger', 'km-smaller', 'km-more-less-same', 'km-make-more', 'km-make-fewer'],
   },
   {
@@ -4824,18 +4857,26 @@ function COUNTING_MODULES() { return [
     tagline: 'Circle, triangle, square, rectangle',
     requires: ['count-to-5'],
     lesson: {
-      paragraphs: ['A circle is round with no corners. A triangle has three sides and three corners.', 'A square has four sides that are all the same. A rectangle has four sides too, but two are longer.'],
-      keyIdea: 'Count the sides and corners to tell shapes apart.',
-      example: { kind: 'shape', name: 'square', caption: 'A triangle. Three sides, three corners.' },
+      // Full standard (pass JW): sides and corners explained; a square is a special rectangle, as TEKS K.6A has it (the old lesson
+      // said a rectangle's two sides are longer, which leaves a square out); the example showed a square captioned A triangle.
+      paragraphs: ['Shapes are told apart by their sides and corners. A side is a straight edge, and a corner is where two sides meet.', 'A circle is round, with no sides and no corners. A triangle has three sides and three corners.', 'A rectangle has four sides and four corners, like a door. Its opposite sides match, and often two sides are long and two are short.', 'A square is a special rectangle. It has four sides and four corners too, and all four of its sides are the same length. A long rectangle is not a square.', 'A shape keeps its name when it turns or grows. A triangle upside down is still a triangle.'],
+      keyIdea: 'Count the sides and corners to tell shapes apart. A square is a special rectangle with all four sides the same.',
+      example: { kind: 'pair', a: { kind: 'shape', name: 'square' }, b: { kind: 'shape', name: 'rectangle' }, caption: 'A square and a long rectangle. A square is a special rectangle.' },
+      // Real things beside their shapes (pass JW): each line shows a drawn pair now, and its painting replaces the pair once it comes.
+      pictures: [{ serial: 'P18', alt: 'A round clock beside a circle', step: 5 }, { serial: 'P19', alt: 'A door beside a rectangle', step: 6 }, { serial: 'P20', alt: 'A square window beside a square', step: 7 }],
       script: [
-        { say: 'This is a circle. It is round. It has no corners.', show: { kind: 'shape', name: 'circle' } },
-        { say: 'This is a triangle. One, two, three sides. Three corners.', show: { kind: 'shape', name: 'triangle' } },
-        { say: 'This is a square. Four sides, all the same.', show: { kind: 'shape', name: 'square' } },
-        { say: 'This is a rectangle. Four sides. Two long, two short.', show: { kind: 'shape', name: 'rectangle' } },
+        { say: 'This is a circle. It is round, with no sides and no corners.', show: { kind: 'shape', name: 'circle' } },
+        { say: 'This is a triangle. Count its sides. One, two, three. A triangle has three sides and three corners.', show: { kind: 'shape', name: 'triangle' } },
+        { say: 'This is a rectangle. It has four sides and four corners. Two sides are long and two are short.', show: { kind: 'shape', name: 'rectangle' } },
+        { say: 'This is a square. It has four sides and four corners too, and all four sides are the same length.', show: { kind: 'shape', name: 'square' } },
+        { say: 'So a square is a special rectangle, with all its sides the same. A long rectangle is not a square.', show: { kind: 'pair', a: { kind: 'shape', name: 'square' }, b: { kind: 'shape', name: 'rectangle' } } },
+        { say: 'Look around you for shapes. This round clock is a circle, with no corners at all.', show: { kind: 'pair', a: { kind: 'clock', hour: 3, minute: 0 }, b: { kind: 'shape', name: 'circle' } } },
+        { say: 'This door is a rectangle, with two long sides and two short sides.', show: { kind: 'pair', a: { kind: 'icon', name: 'door' }, b: { kind: 'shape', name: 'rectangle' } } },
+        { say: 'This window is a square, with all four sides the same length.', show: { kind: 'pair', a: { kind: 'icon', name: 'window' }, b: { kind: 'shape', name: 'square' } } },
       ],
     },
-    sources: ['Aligned with Texas TEKS K.6A and K.6E (identify and classify two-dimensional shapes) and Common Core K.G.A.2.'],
-    generators: ['ks-name', 'ks-tap', 'ks-sides', 'ks-odd-one-out', 'ks-corners'],
+    sources: ['Aligned with Texas TEKS K.6A (identify circles, triangles, rectangles, and squares as special rectangles), K.6D (attributes of two-dimensional shapes) and K.6E (classify and sort figures regardless of orientation or size) and Common Core K.G.A.2.'],
+    generators: ['ks-name', 'ks-tap', 'ks-sides', 'ks-odd-one-out', 'ks-corners', 'ks-special-rectangle'],
   },
   {
     id: 'tracing-shapes',
@@ -15187,43 +15228,48 @@ function distinctCounts(rng, howMany, max, mustInclude) {
   while (out.length < howMany && guard++ < 100) { const c = randInt(rng, 1, max); if (!out.includes(c)) out.push(c); }
   return out;
 }
+// Every counting explanation says the answer and the reason the lesson gave (pass JW, full standard): the last number you say
+// tells how many, you count past the smaller number to get to the bigger one, and the same number means neither has more.
+function kDotNoun(n) { return n === 1 ? 'dot' : 'dots'; }
+// The numbers said after start, up to end, in words: countFrom(4, 7) is "five, six, seven".
+function countFrom(start, end) { return Array.from({ length: end - start }, (_, i) => countWords(start + 1 + i)).join(', '); }
 function makeCountingGenerators(prefix, max) {
   return {
     [`${prefix}-how-many`]: (rng) => {
       const n = randInt(rng, 1, max);
       const choices = shuffle(rng, distinctCounts(rng, Math.min(4, max), max, n).map(String));
-      return { type: 'choice', story: null, prompt: 'How many?', choices, answer: String(n),
-        explain: `${capFirst(countUp(n))}. ${n === 1 ? 'There is' : 'There are'} ${n}.`, visual: { kind: 'dots', count: n }, explainVisual: null };
+      return { type: 'choice', story: null, prompt: 'How many dots are there?', choices, answer: String(n),
+        explain: n === 1 ? 'There is just one dot. You say one, so there is 1.' : `Touch each dot and count, ${countUp(n)}. The last number you say is ${countWords(n)}, so there are ${n}.`, visual: { kind: 'dots', count: n }, explainVisual: null };
     },
     [`${prefix}-tap-group`]: (rng) => {
       const n = randInt(rng, 1, max);
       const choices = shuffle(rng, distinctCounts(rng, 3, max, n).map((c) => `dots:${c}`));
-      return { type: 'choice', story: null, prompt: `Tap the group with ${n}.`, choices, answer: `dots:${n}`,
-        explain: `This group has ${n}. ${capFirst(countUp(n))}.`, visual: null, explainVisual: null };
+      return { type: 'choice', story: null, prompt: `Tap the group with ${n} dots.`, choices, answer: `dots:${n}`,
+        explain: n === 1 ? 'This group has just one dot.' : `Count this group, ${countUp(n)}. The last number is ${countWords(n)}, so it has ${n} dots.`, visual: null, explainVisual: null };
     },
     [`${prefix}-more`]: (rng) => {
       const [a, b] = distinctCounts(rng, 2, max, randInt(rng, 1, max));
-      const big = Math.max(a, b);
-      return { type: 'choice', story: null, prompt: 'Which group has more?', choices: shuffle(rng, [`dots:${a}`, `dots:${b}`]), answer: `dots:${big}`,
-        explain: `${big} is more than ${Math.min(a, b)}.`, visual: null, explainVisual: null };
+      const big = Math.max(a, b); const small = Math.min(a, b);
+      return { type: 'choice', story: null, prompt: 'Which group has more dots?', choices: shuffle(rng, [`dots:${a}`, `dots:${b}`]), answer: `dots:${big}`,
+        explain: `${capFirst(countWords(big))} dots are more than ${countWords(small)} ${kDotNoun(small)}, because you count past ${countWords(small)} to get to ${countWords(big)}.`, visual: null, explainVisual: null };
     },
     [`${prefix}-fewer`]: (rng) => {
       const [a, b] = distinctCounts(rng, 2, max, randInt(rng, 1, max));
-      const small = Math.min(a, b);
-      return { type: 'choice', story: null, prompt: 'Which group has fewer?', choices: shuffle(rng, [`dots:${a}`, `dots:${b}`]), answer: `dots:${small}`,
-        explain: `${small} is less than ${Math.max(a, b)}.`, visual: null, explainVisual: null };
+      const big = Math.max(a, b); const small = Math.min(a, b);
+      return { type: 'choice', story: null, prompt: 'Which group has fewer dots?', choices: shuffle(rng, [`dots:${a}`, `dots:${b}`]), answer: `dots:${small}`,
+        explain: `${capFirst(countWords(small))} ${kDotNoun(small)} ${small === 1 ? 'is' : 'are'} fewer than ${countWords(big)} dots, because you reach ${countWords(small)} first when you count.`, visual: null, explainVisual: null };
     },
     [`${prefix}-after`]: (rng) => {
       const n = randInt(rng, 1, max - 1);
       const choices = shuffle(rng, distinctCounts(rng, Math.min(4, max), max, n + 1).map(String));
-      return { type: 'choice', story: null, prompt: `What comes after ${n}?`, choices, answer: String(n + 1),
-        explain: `${countWords(n)}, then ${countWords(n + 1)}. After ${n} comes ${n + 1}.`, visual: { kind: 'dots', count: n }, explainVisual: null };
+      return { type: 'choice', story: null, prompt: `What number comes after ${n} when you count?`, choices, answer: String(n + 1),
+        explain: `When you count, you say ${countWords(n)} and then ${countWords(n + 1)}. So ${n + 1} comes after ${n}.`, visual: { kind: 'dots', count: n }, explainVisual: null };
     },
     [`${prefix}-same`]: (rng) => {
       const n = randInt(rng, 1, max);
       const choices = shuffle(rng, distinctCounts(rng, 3, max, n).map((c) => `dots:${c}`));
-      return { type: 'choice', story: null, prompt: 'Tap the group with the same number.', choices, answer: `dots:${n}`,
-        explain: `Both groups have ${n}.`, visual: { kind: 'dots', count: n }, explainVisual: null };
+      return { type: 'choice', story: null, prompt: 'Tap the group that has the same number of dots as this one.', choices, answer: `dots:${n}`,
+        explain: n === 1 ? 'Each group has just one dot, so they have the same number.' : `Count both groups. Each one has ${countWords(n)} dots, so they have the same number.`, visual: { kind: 'dots', count: n }, explainVisual: null };
     },
   };
 }
@@ -23401,44 +23447,56 @@ Object.assign(GENERATORS, {
   },
 });
 
-// Shapes. A choice written as 'shape:circle' is a picture the screen draws.
+// Shapes. A choice written as 'shape:circle' is a picture the screen draws. A square is a special rectangle (TEKS K.6A,
+// pass JW), so no question offers rectangle as a wrong name for a square, or a square as a wrong choice when the answer is
+// the rectangle. The rectangle the screen draws is a long one, two long sides and two short, which is not a square.
 const SHAPES = [
   { name: 'circle', sides: 0, corners: 0 },
   { name: 'triangle', sides: 3, corners: 3 },
   { name: 'square', sides: 4, corners: 4 },
   { name: 'rectangle', sides: 4, corners: 4 },
 ];
+// What each shape has, in the lesson's words, for the explanations.
+const SHAPE_HAS = { circle: 'is round, with no sides and no corners', triangle: 'has three sides and three corners', square: 'has four sides, all the same length', rectangle: 'has four sides, two long and two short' };
 const pickShape = (rng) => SHAPES[randInt(rng, 0, SHAPES.length - 1)];
-const otherShapes = (rng, not, n) => shuffle(rng, SHAPES.filter((x) => x.name !== not.name)).slice(0, n);
+// The other shapes for a question, leaving out the one whose name would also be true (avoid): a square is a rectangle too.
+const otherShapes = (rng, not, n, avoid = null) => shuffle(rng, SHAPES.filter((x) => x.name !== not.name && x.name !== avoid)).slice(0, n);
 Object.assign(GENERATORS, {
   'ks-name': (rng) => {
     const sh = pickShape(rng);
-    const choices = shuffle(rng, [sh, ...otherShapes(rng, sh, 2)].map((x) => x.name));
+    const choices = shuffle(rng, [sh, ...otherShapes(rng, sh, 2, sh.name === 'square' ? 'rectangle' : null)].map((x) => x.name));
     return { type: 'choice', story: null, prompt: 'What shape is this?', choices, answer: sh.name,
-      explain: sh.sides === 0 ? 'It is round with no corners, so it is a circle.' : `${sh.name === 'square' ? 'Four sides, all the same length.' : sh.name === 'rectangle' ? 'Four sides, two long and two short.' : 'Count the sides. There are ' + sh.sides + '.'} It is a ${sh.name}.`, visual: { kind: 'shape', name: sh.name }, explainVisual: null };
+      explain: `It ${SHAPE_HAS[sh.name]}, so it is a ${sh.name}.`, visual: { kind: 'shape', name: sh.name }, explainVisual: null };
   },
   'ks-tap': (rng) => {
     const sh = pickShape(rng);
-    const choices = shuffle(rng, [sh, ...otherShapes(rng, sh, 2)].map((x) => `shape:${x.name}`));
+    const choices = shuffle(rng, [sh, ...otherShapes(rng, sh, 2, sh.name === 'rectangle' ? 'square' : null)].map((x) => `shape:${x.name}`));
     return { type: 'choice', story: null, prompt: `Tap the ${sh.name}.`, choices, answer: `shape:${sh.name}`,
-      explain: `This one is the ${sh.name}.`, visual: null, explainVisual: null };
+      explain: `This is the ${sh.name}. It ${SHAPE_HAS[sh.name]}.`, visual: null, explainVisual: null };
   },
   'ks-sides': (rng) => {
     const sh = SHAPES[randInt(rng, 1, SHAPES.length - 1)]; // not the circle
-    return { type: 'choice', story: null, prompt: 'How many sides does it have?', choices: shuffle(rng, ['3', '4', '5']), answer: String(sh.sides),
-      explain: `Count the sides of the ${sh.name}. There are ${sh.sides}.`, visual: { kind: 'shape', name: sh.name }, explainVisual: null };
+    return { type: 'choice', story: null, prompt: 'How many sides does this shape have?', choices: shuffle(rng, ['3', '4', '5']), answer: String(sh.sides),
+      explain: `Count the sides of the ${sh.name}, ${countUp(sh.sides)}. A ${sh.name} has ${sh.sides} sides.`, visual: { kind: 'shape', name: sh.name }, explainVisual: null };
   },
   'ks-odd-one-out': (rng) => {
-    const sh = pickShape(rng); const other = otherShapes(rng, sh, 1)[0];
+    const sh = pickShape(rng); const other = otherShapes(rng, sh, 1, sh.name === 'rectangle' ? 'square' : null)[0];
     const choices = shuffle(rng, [`shape:${other.name}`, `shape:${sh.name}`, `shape:${sh.name}`].map((c, i) => `${c}#${i}`));
     return { type: 'choice', story: `Two are the same shape.`, prompt: 'Tap the one that is different.', choices, answer: choices.find((c) => c.startsWith(`shape:${other.name}`)),
-      explain: `Two are ${sh.name}s. The ${other.name} is different.`, visual: null, explainVisual: null };
+      explain: `Two of them are ${sh.name}s. The ${other.name} ${SHAPE_HAS[other.name]}, so it is the different one.`, visual: null, explainVisual: null };
   },
   'ks-corners': (rng) => {
     const sh = pickShape(rng);
-    return { type: 'choice', story: null, prompt: 'Does it have corners?', choices: ['Yes', 'No'], answer: sh.corners > 0 ? 'Yes' : 'No',
-      explain: sh.corners > 0 ? `A ${sh.name} has ${sh.corners} corners.` : 'A circle is round all the way around. No corners.', visual: { kind: 'shape', name: sh.name }, explainVisual: null };
+    return { type: 'choice', story: null, prompt: 'Does this shape have corners?', choices: ['Yes', 'No'], answer: sh.corners > 0 ? 'Yes' : 'No',
+      explain: sh.corners > 0 ? `A ${sh.name} has ${countWords(sh.corners)} corners, where its sides meet.` : 'A circle is round all the way around, so it has no corners.', visual: { kind: 'shape', name: sh.name }, explainVisual: null };
   },
+  // A square is a special rectangle (TEKS K.6A, pass JW): four sides and four corners, all four sides the same length. The long
+  // rectangle the screen draws is not a square.
+  'ks-special-rectangle': (rng) => (rng() < 0.5
+    ? { type: 'choice', story: null, prompt: 'Is this square a rectangle too?', choices: ['Yes', 'No'], answer: 'Yes',
+      explain: 'A square has four sides and four corners, like every rectangle, and all four of its sides are the same length. So a square is a special rectangle.', visual: { kind: 'shape', name: 'square' }, explainVisual: null }
+    : { type: 'choice', story: null, prompt: 'Is this rectangle a square?', choices: ['Yes', 'No'], answer: 'No',
+      explain: 'This rectangle has two long sides and two short sides. A square has all four sides the same length, so this one is not a square.', visual: { kind: 'shape', name: 'rectangle' }, explainVisual: null }),
 });
 
 // Solid shapes. A choice 'solid:cube' is a picture the screen draws.
@@ -23617,86 +23675,90 @@ Object.assign(GENERATORS, {
   'km-one-more': (rng) => {
     const n = randInt(rng, 1, 9);
     return { type: 'choice', story: null, prompt: `What is one more than ${n}?`, choices: shuffle(rng, distinctCounts(rng, 4, 10, n + 1).map(String)), answer: String(n + 1),
-      explain: `${countWords(n)}, then ${countWords(n + 1)}. One more than ${n} is ${n + 1}.`, visual: { kind: 'dots', count: n }, explainVisual: { kind: 'dots', count: n + 1 } };
+      explain: `One more is the next number you say when you count. After ${countWords(n)} comes ${countWords(n + 1)}, so one more than ${n} is ${n + 1}.`, visual: { kind: 'dots', count: n }, explainVisual: { kind: 'dots', count: n + 1 } };
   },
   'km-one-less': (rng) => {
     const n = randInt(rng, 2, 10);
     return { type: 'choice', story: null, prompt: `What is one less than ${n}?`, choices: shuffle(rng, distinctCounts(rng, 4, 10, n - 1).map(String)), answer: String(n - 1),
-      explain: `Count back one from ${n}. One less than ${n} is ${n - 1}.`, visual: { kind: 'dots', count: n }, explainVisual: { kind: 'dots', count: n - 1 } };
+      explain: `One less is the number you say just before. Before ${countWords(n)} comes ${countWords(n - 1)}, so one less than ${n} is ${n - 1}.`, visual: { kind: 'dots', count: n }, explainVisual: { kind: 'dots', count: n - 1 } };
   },
   'km-one-more-pic': (rng) => {
     const n = randInt(rng, 1, 9);
     return { type: 'choice', story: null, prompt: `Tap the group with one more than ${n}.`, choices: shuffle(rng, distinctCounts(rng, 3, 10, n + 1).map((c) => `dots:${c}`)), answer: `dots:${n + 1}`,
-      explain: `This group has ${n + 1}. That is one more than ${n}.`, visual: { kind: 'dots', count: n }, explainVisual: null };
+      explain: `This group has ${n + 1} dots. ${capFirst(countWords(n + 1))} is the next number after ${countWords(n)}, so it is one more than ${n}.`, visual: { kind: 'dots', count: n }, explainVisual: null };
   },
   'km-one-less-pic': (rng) => {
     const n = randInt(rng, 2, 10);
     return { type: 'choice', story: null, prompt: `Tap the group with one less than ${n}.`, choices: shuffle(rng, distinctCounts(rng, 3, 10, n - 1).map((c) => `dots:${c}`)), answer: `dots:${n - 1}`,
-      explain: `This group has ${n - 1}. That is one less than ${n}.`, visual: { kind: 'dots', count: n }, explainVisual: null };
+      explain: `This group has ${n - 1} ${kDotNoun(n - 1)}. ${capFirst(countWords(n - 1))} comes just before ${countWords(n)}, so it is one less than ${n}.`, visual: { kind: 'dots', count: n }, explainVisual: null };
   },
   'km-which-neighbour': (rng) => {
     const n = randInt(rng, 2, 9);
     const more = randInt(rng, 0, 1) === 1;
     const answer = String(more ? n + 1 : n - 1);
-    return { type: 'choice', story: null, prompt: `Which is one ${more ? 'more' : 'less'} than ${n}?`, choices: shuffle(rng, [String(n - 1), String(n + 1), String(n)]), answer,
-      explain: `One ${more ? 'more' : 'less'} than ${n} is ${answer}.`, visual: { kind: 'dots', count: n }, explainVisual: null };
+    return { type: 'choice', story: null, prompt: `Which number is one ${more ? 'more' : 'less'} than ${n}?`, choices: shuffle(rng, [String(n - 1), String(n + 1), String(n)]), answer,
+      explain: more ? `${capFirst(countWords(n + 1))} comes right after ${countWords(n)} when you count, so one more than ${n} is ${n + 1}.` : `${capFirst(countWords(n - 1))} comes just before ${countWords(n)} when you count, so one less than ${n} is ${n - 1}.`, visual: { kind: 'dots', count: n }, explainVisual: null };
   },
   'km-join-story': (rng) => {
     const a = randInt(rng, 1, 5); const b = randInt(rng, 1, 10 - a); const thing = kidThing(rng);
-    return { type: 'choice', story: `${countWords(a)[0].toUpperCase() + countWords(a).slice(1)} ${a === 1 ? (ONE_OF[thing] || thing) : thing}. Then ${b} more.`, prompt: 'How many now?', choices: shuffle(rng, distinctCounts(rng, 4, 10, a + b).map(String)), answer: String(a + b),
-      explain: `${a} and ${b} more makes ${a + b}. Count them all. ${capFirst(countUp(a + b))}.`, visual: { kind: 'dots', count: a }, explainVisual: { kind: 'dots', count: a + b } };
+    return { type: 'choice', story: `${countWords(a)[0].toUpperCase() + countWords(a).slice(1)} ${a === 1 ? (ONE_OF[thing] || thing) : thing}. Then ${b} more.`, prompt: 'How many are there now?', choices: shuffle(rng, distinctCounts(rng, 4, 10, a + b).map(String)), answer: String(a + b),
+      explain: `Joining puts the groups together, so count them all, ${countUp(a + b)}. ${a} and ${b} more make ${a + b}.`, visual: { kind: 'dots', count: a }, explainVisual: { kind: 'dots', count: a + b } };
   },
   'km-take-story': (rng) => {
     const a = randInt(rng, 3, 10); const b = randInt(rng, 1, a - 1); const thing = kidThing(rng);
     return { type: 'choice', story: `${countWords(a)[0].toUpperCase() + countWords(a).slice(1)} ${a === 1 ? (ONE_OF[thing] || thing) : thing}. Then ${b} ${b === 1 ? 'goes' : 'go'} away.`, prompt: 'How many are left?', choices: shuffle(rng, distinctCounts(rng, 4, 10, a - b).map(String)), answer: String(a - b),
-      explain: `${a} take away ${b} leaves ${a - b}. Count what is left. ${capFirst(countUp(a - b))}.`, visual: { kind: 'dots', count: a }, explainVisual: { kind: 'dots', count: a - b } };
+      explain: `Taking away leaves fewer, so count only what is left, ${countUp(a - b)}. ${a} take away ${b} leaves ${a - b}.`, visual: { kind: 'dots', count: a }, explainVisual: { kind: 'dots', count: a - b } };
   },
   'km-join-pic': (rng) => {
     const a = randInt(rng, 1, 5); const b = randInt(rng, 1, 10 - a);
     return { type: 'choice', story: `${a} and ${b} more.`, prompt: 'Tap the group that shows them all together.', choices: shuffle(rng, distinctCounts(rng, 3, 10, a + b).map((c) => `dots:${c}`)), answer: `dots:${a + b}`,
-      explain: `${a} and ${b} together is ${a + b}.`, visual: { kind: 'dots', count: a }, explainVisual: null };
+      explain: `Put ${a} and ${b} together and count them all, and you get ${a + b}. This group has ${a + b} dots.`, visual: { kind: 'dots', count: a }, explainVisual: null };
   },
   'km-take-pic': (rng) => {
     const a = randInt(rng, 3, 10); const b = randInt(rng, 1, a - 1);
-    return { type: 'choice', story: `${a}, then ${b} go away.`, prompt: 'Tap the group that shows what is left.', choices: shuffle(rng, distinctCounts(rng, 3, 10, a - b).map((c) => `dots:${c}`)), answer: `dots:${a - b}`,
-      explain: `${a} take away ${b} leaves ${a - b}.`, visual: { kind: 'dots', count: a }, explainVisual: null };
+    return { type: 'choice', story: `${a}, then ${b} ${b === 1 ? 'goes' : 'go'} away.`, prompt: 'Tap the group that shows what is left.', choices: shuffle(rng, distinctCounts(rng, 3, 10, a - b).map((c) => `dots:${c}`)), answer: `dots:${a - b}`,
+      explain: `Start with ${a} and take ${b} away. Count what is left, and there ${a - b === 1 ? 'is' : 'are'} ${a - b}.`, visual: { kind: 'dots', count: a }, explainVisual: null };
   },
   'km-how-many-more': (rng) => {
-    const total = randInt(rng, 3, 10); const have = randInt(rng, 1, total - 1); const thing = kidThing(rng);
-    return { type: 'choice', story: `You have ${have} ${thing}. You want ${total}.`, prompt: 'How many more do you need?', choices: shuffle(rng, distinctCounts(rng, 4, 10, total - have).map(String)), answer: String(total - have),
-      explain: `Count on from ${have} to ${total}. That is ${total - have} more.`, visual: { kind: 'dots', count: have }, explainVisual: { kind: 'dots', count: total } };
+    const total = randInt(rng, 3, 10); const have = randInt(rng, 1, total - 1); const thing = kidThing(rng); const need = total - have;
+    return { type: 'choice', story: `You have ${have} ${thing}. You want ${total}.`, prompt: 'How many more do you need?', choices: shuffle(rng, distinctCounts(rng, 4, 10, need).map(String)), answer: String(need),
+      // Counting on, said the way the lesson says it (pass JW): one more is the next number; more than one is counted out.
+      explain: need === 1 ? `${capFirst(countWords(total))} comes right after ${countWords(have)} when you count, so you need just 1 more.` : `Say ${countWords(have)}, then count on, ${countFrom(have, total)}. You counted ${countWords(need)} more numbers to reach ${countWords(total)}, so you need ${need} more.`, visual: { kind: 'dots', count: have }, explainVisual: { kind: 'dots', count: total } };
   },
   'km-bigger': (rng) => {
     const [a, b] = distinctCounts(rng, 2, 10, randInt(rng, 1, 10));
-    return { type: 'choice', story: null, prompt: 'Which number is bigger?', choices: shuffle(rng, [String(a), String(b)]), answer: String(Math.max(a, b)),
-      explain: `${Math.max(a, b)} comes later when you count, so it is bigger than ${Math.min(a, b)}.`, visual: null, explainVisual: { kind: 'dots', count: Math.max(a, b) } };
+    const big = Math.max(a, b); const small = Math.min(a, b);
+    return { type: 'choice', story: null, prompt: 'Which number is bigger?', choices: shuffle(rng, [String(a), String(b)]), answer: String(big),
+      explain: `When you count, you say ${countWords(small)} first and ${countWords(big)} later. The number you say later is bigger, so ${big} is bigger than ${small}.`, visual: null, explainVisual: { kind: 'dots', count: big } };
   },
   'km-smaller': (rng) => {
     const [a, b] = distinctCounts(rng, 2, 10, randInt(rng, 1, 10));
-    return { type: 'choice', story: null, prompt: 'Which number is smaller?', choices: shuffle(rng, [String(a), String(b)]), answer: String(Math.min(a, b)),
-      explain: `${Math.min(a, b)} comes first when you count, so it is smaller than ${Math.max(a, b)}.`, visual: null, explainVisual: { kind: 'dots', count: Math.min(a, b) } };
+    const big = Math.max(a, b); const small = Math.min(a, b);
+    return { type: 'choice', story: null, prompt: 'Which number is smaller?', choices: shuffle(rng, [String(a), String(b)]), answer: String(small),
+      explain: `When you count, you say ${countWords(small)} before ${countWords(big)}. The number you say first is smaller, so ${small} is smaller than ${big}.`, visual: null, explainVisual: { kind: 'dots', count: small } };
   },
+  // Fewer, not less (pass JW): these are dots a child can count, and the lessons say fewer, as the pre-K lessons do.
   'km-more-less-same': (rng) => {
     const a = randInt(rng, 1, 10); const same = randInt(rng, 0, 2) === 0; const b = same ? a : distinctCounts(rng, 2, 10, a)[1];
-    const answer = a > b ? 'More' : a < b ? 'Less' : 'The same';
-    return { type: 'choice', story: `This group has ${a}. The other group has ${b}.`, prompt: 'Is this group more, less, or the same?', choices: ['More', 'Less', 'The same'], answer,
-      explain: answer === 'The same' ? `${a} and ${b} are the same.` : `${a} is ${answer.toLowerCase()} than ${b}.`, visual: { kind: 'dots', count: a }, explainVisual: null };
+    const answer = a > b ? 'More' : a < b ? 'Fewer' : 'The same';
+    return { type: 'choice', story: `This group has ${a} dots. The other group has ${b}.`, prompt: 'Does this group have more dots, fewer dots, or the same number?', choices: ['More', 'Fewer', 'The same'], answer,
+      explain: answer === 'The same' ? `Both groups have ${countWords(a)}, so they have the same number.` : answer === 'More' ? `${capFirst(countWords(a))} comes after ${countWords(b)} when you count, so this group has more.` : `${capFirst(countWords(a))} comes before ${countWords(b)} when you count, so this group has fewer.`, visual: { kind: 'dots', count: a }, explainVisual: null };
   },
   'km-make-more': (rng) => {
     const n = randInt(rng, 1, 8);
     const bigger = distinctCounts(rng, 3, 10, randInt(rng, n + 1, 10)).filter((c) => c !== n);
     const right = bigger.find((c) => c > n);
     const choices = shuffle(rng, [right, ...distinctCounts(rng, 3, n, n).slice(0, 2)].map((c) => `dots:${c}`));
-    return { type: 'choice', story: `Here are ${n}.`, prompt: 'Tap a group that has more than this.', choices, answer: `dots:${right}`,
-      explain: `${right} is more than ${n}.`, visual: { kind: 'dots', count: n }, explainVisual: null };
+    return { type: 'choice', story: n === 1 ? 'Here is 1 dot.' : `Here are ${n} dots.`, prompt: 'Tap a group that has more dots than this one.', choices, answer: `dots:${right}`,
+      explain: `This group has ${right} dots. You count past ${countWords(n)} to get to ${countWords(right)}, so it has more.`, visual: { kind: 'dots', count: n }, explainVisual: null };
   },
   'km-make-fewer': (rng) => {
     const n = randInt(rng, 3, 10);
     const right = randInt(rng, 1, n - 1);
     const others = distinctCounts(rng, 3, 10, randInt(rng, n, 10)).filter((c) => c >= n).slice(0, 2);
     const choices = shuffle(rng, [right, ...others].map((c) => `dots:${c}`));
-    return { type: 'choice', story: `Here are ${n}.`, prompt: 'Tap a group that has fewer than this.', choices, answer: `dots:${right}`,
-      explain: `${right} is less than ${n}.`, visual: { kind: 'dots', count: n }, explainVisual: null };
+    return { type: 'choice', story: `Here are ${n} dots.`, prompt: 'Tap a group that has fewer dots than this one.', choices, answer: `dots:${right}`,
+      explain: `This group has ${right} ${kDotNoun(right)}. You reach ${countWords(right)} before ${countWords(n)} when you count, so it has fewer.`, visual: { kind: 'dots', count: n }, explainVisual: null };
   },
 });
 
@@ -23962,6 +24024,8 @@ const FIRST_MARKS = ['line-down', 'line-across', 'line-circle'];
 const FEW_DOTS = ['triangle', 'square', 'boat', 'cup'];
 const LINE_WORDS = { 'line-down': 'a line down', 'line-across': 'a line across', 'line-wave': 'a wavy line', 'line-zigzag': 'a zigzag', 'line-circle': 'a circle' };
 const TRACE_NUMBERS = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+// How each number is drawn, stroke by stroke, the way TRACE_LETTERS draws it (pass JW): the tracing lesson says the same words.
+const DIGIT_STROKES = { 0: 'Zero starts at the top and goes around to the left, down and back up.', 1: 'One goes a little way up to the top, then straight down.', 2: 'Two goes up and around, slants down, then goes across the bottom.', 3: 'Three goes across the top, slants in to the middle, then goes around the bottom.', 4: 'Four slants down and goes across, then a second line goes straight down from the top.', 5: 'Five goes across the top, then down, then around its round belly.', 6: 'Six curves down to the bottom, then goes around to make a loop.', 7: 'Seven goes across the top, then slants down.', 8: 'Eight starts in the middle, goes up and around the top, then down and around the bottom.', 9: 'Nine goes around to make a circle at the top, then a line down.' };
 const TRACE_SHAPES = ['shape-triangle', 'shape-square', 'shape-circle', 'shape-star', 'shape-heart'];
 const TRACE_SMALL_EASY = ['l', 'i', 't', 'v', 'x'];
 const TRACE_SMALL_ROUND = ['o', 'c', 'n', 'u'];
@@ -24092,8 +24156,8 @@ Object.assign(GENERATORS, {
   },
   'kn-trace-number': (rng) => {
     const n = pick(rng, TRACE_NUMBERS);
-    return { type: 'trace', traceKind: 'number', story: null, prompt: `Trace the number ${n}.`, choices: [], answer: n,
-      explain: `That is ${n}. Start at the dot and follow the arrow.`, visual: { kind: 'letters', text: n }, explainVisual: null };
+    return { type: 'trace', traceKind: 'number', story: null, prompt: `Trace the number ${n}. Start at the dot.`, choices: [], answer: n,
+      explain: `That is ${n}. ${DIGIT_STROKES[n]}`, visual: { kind: 'letters', text: n }, explainVisual: null };
   },
   'pd-connect-dots': (rng) => {
     const name = pick(rng, DOT_PICTURES);

@@ -109,3 +109,10 @@ Mikey asked whether the review covers writing style, explanatory quality and con
 ## Pictures beside comparisons (pass JV, Mikey)
 
 Mikey's example: the pre-K 3 Triangles lesson says a slice of pizza is almost a triangle, and a slice beside the triangle shows it at a glance. Whenever a lesson compares an idea to a real thing (almost a triangle like a pizza slice, a cone like an ice cream cone, red like a strawberry), part 8 asks whether a picture of the real thing beside the idea would teach more than the words. For young learners it usually would. Do both halves: give the line a drawn pair now when the app can draw the thing (show a pair, the real thing and the idea, adding a drawing if one is missing), and log a P painting in docs/ART-REQUESTS.md with the real thing and the idea side by side. A painting replaces the drawn pair on that line once Mikey uploads it. docs/PICTURE-CANDIDATES.md lists every early-years lesson line that compares and has no picture yet; read its rows for each module in the batch, and widen the tool to older grades when the review reaches them.
+
+## Learned in pass JW (kindergarten Counting, part one)
+
+- Check that every wrong choice is truly wrong when one category sits inside another. A square is a special rectangle (TEKS K.6A), so a square shown with rectangle offered as a wrong answer was a question with two right answers, and the old lesson taught a child something to unlearn.
+- Check a story's way of solving its problem, not only its facts. Two boys settled who had more blocks by which row was longer, the exact mistake young children make (Piaget's number conservation); matching in pairs or counting is the honest way.
+- In the early years an explanation gives its reason in the lesson's own counting words: Four dots are more than two dots, because you count past two to get to four.
+- A real thing beside a shape is worth a line of its own, with a drawn pair now (add the drawing if the app lacks it, as the door and the window were) and a P painting logged for it.

@@ -1,6 +1,6 @@
 # Question pools
 
-Generated 2026-10-03 by tools/question-pools.mjs. 0 of 603 modules can produce fewer different questions than one practice round asks for. The rules test fails on any such module, because a round is never shortened and never repeats a question; a bank that lands here needs more questions, written so every answer is taught in its lesson.
+Generated 2026-10-04 by tools/question-pools.mjs. 0 of 615 modules can produce fewer different questions than one practice round asks for. The rules test fails on any such module, because a round is never shortened and never repeats a question; a bank that lands here needs more questions, written so every answer is taught in its lesson.
 
 | Grade | Subject | Course | Module | Different questions | Round length |
 |---|---|---|---|---|---|

@@ -143,3 +143,8 @@ Mikey's example: the pre-K 3 Triangles lesson says a slice of pizza is almost a 
 - A plan's source line can name the right section while its codes come from somewhere else. Read each code's words in the named section; the kindergarten health codes K.1A and K.1B were not in §115.12 at all.
 - A read-aloud lesson without a script reads its paragraphs out. Write it a script for the ear when the review reaches it, as this pass did for all four.
 - When a picture follows a curve, place what sits on it along the drawn curve, not along a straight tangent (the trace arrow).
+
+## Learned in pass KC (kindergarten computer science)
+
+- Read a code's subsection letter too. In the 2022 Technology Applications sections, (b) is the introduction and (c) holds the knowledge and skills, and a paragraph with a single expectation, such as 126.1(c)(2), takes no letter.
+- A read-aloud lesson without a script reads its paragraphs over one picture; write the script so each line shows what it says.

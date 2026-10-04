@@ -1,5 +1,5 @@
-The trace arrow on its stroke, and kindergarten Taking care of me at the full standard
+Kindergarten computer science at the full standard
 
-- Pass KB: from Mikey's phone screenshot, the arrow beside a trace's start dot now sits on the stroke (arrowOnStroke walks the drawn curve; it stood off the circle as a stray mark), with a browser check of every start arrow in three tracing lessons. Kindergarten Taking care of me at the full standard: the plan and lessons cited codes that are not in the 2020 health standards and now quote 19 TAC 115.12 (K.2B, K.2C, K.7B, K.6A, K.6C, K.6D); each lesson has a spoken script of its own; why night brushing matters, a pea of toothpaste and spit rather than rinse; dairy named, as K.6C requires; the body is mostly water; every explanation gives its reason, and eight questions are added. Kindergarten health codes no lesson covers are earmarked.
+- Pass KC: Tell, show, step and repeat (computer science, K to 2) at the full standard. Each of the four lessons has a spoken script of its own with matching pictures; a computer learns what you want through its inputs, a microphone among them; colons gone; explanations give reasons. Citations: the knowledge and skills of 19 TAC 126.1 are subsection (c), and the course cited (b), with two lettered parts that do not exist ((b)(2)(A) and (b)(5)(A)); the lessons and plan now cite (c) and quote in full. The other technology courses cite (b) too, an open item; 126.1(c)(6)(B) earmarked.
 
-Passes: KB
+Passes: KC

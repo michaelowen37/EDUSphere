@@ -2,6 +2,11 @@
 
 The newest block is what educators see once, in a pop-up on the classroom page, after each update. Write it the way Mikey talks to a teacher: conversational, complete sentences, say what changed and why it matters, and skip the shorthand (2026-09-23). Two to four items. The date line is the version stamp.
 
+## October 4, 2026 (kindergarten computer science)
+
+- The kindergarten computer science lessons now have spoken lessons written for the ear, with pictures that match what is being said, and every answer comes with its reason.
+- The inputs lesson now counts a microphone as an input, since most tablets can hear you, and the Texas standards these lessons follow are cited by their correct codes.
+
 ## October 4, 2026 (taking care of me)
 
 - The little arrow beside the starting dot now sits right on the line being traced. On curves it used to stick out beside the line.

@@ -9747,14 +9747,24 @@ function TECHK_MODULES() { return [
     tagline: 'Inputs tell, outputs show',
     requires: [],
     lesson: {
-      paragraphs: ['A computer cannot see you or hear you on its own. You tell it things with a keyboard, a mouse or a touch screen. Those parts are called inputs.', 'It shows you things on a screen and plays sounds with a speaker. Those parts are called outputs.', 'You tell, and it shows. Press a key, and a letter appears on the screen. Tap a picture on a touch screen, and a song plays from the speaker. A touch screen does both jobs. When you tap it, it is an input, because you tell with it. When it shows you a picture, it is an output. A speaker is an output, because it shows you, with sound.', 'A computer only does what it is told. The telling parts are inputs. The showing parts are outputs.'],
+      paragraphs: ['A computer only does what it is told, and it learns what you want through its inputs. A keyboard, a mouse, a touch screen and a microphone are inputs, the parts you use to tell it things.', 'It shows you things on a screen and plays sounds with a speaker. Those parts are called outputs.', 'You tell, and it shows. Press a key, and a letter appears on the screen. Tap a picture on a touch screen, and a song plays from the speaker. A touch screen does both jobs. When you tap it, it is an input, because you tell with it. When it shows you a picture, it is an output. A speaker is an output, because it shows you, with sound.', 'A computer only does what it is told. The telling parts are inputs. The showing parts are outputs.'],
+      // Full standard (pass KC): a spoken script of its own (it read its paragraphs, each over the same picture). A computer
+      // learns what you want through its inputs, a microphone among them, since most tablets can hear and see.
+      script: [
+        { say: 'A computer only does what you tell it. The parts you use to tell it things are called inputs.', show: { kind: 'letters', text: 'input' } },
+        { say: 'A keyboard, a mouse and a touch screen are inputs. A microphone is an input too, because it hears what you say.', show: null },
+        { say: 'The parts that show you things are called outputs. A screen shows pictures, and a speaker plays sounds.', show: { kind: 'letters', text: 'output' } },
+        { say: 'Tap a picture on the screen, and a song plays from the speaker. You tell, and it shows.', show: { kind: 'flow', steps: ['tap the screen', 'the computer works', 'a song plays'] } },
+        { say: 'A touch screen does both jobs. When you tap it, it is an input. When it shows you a picture, it is an output.', show: null },
+        { say: 'So inputs tell the computer, and outputs show you.', show: null },
+      ],
       keyIdea: 'Inputs tell a computer. Outputs show you.',
       example: { kind: 'flow', steps: ['tap the screen', 'the computer works', 'a song plays'], caption: 'You tap, the computer follows its steps, and the speaker plays the song.',
-        another: ['A computer is like a helper who cannot see or hear. Its inputs are its ears: the keyboard, the mouse, the touch screen. Its outputs are its voice and its hands: the screen and the speaker.',
+        another: ['A computer is like a helper who only knows what you tell it. Its inputs are its ears and eyes, the keyboard, the mouse, the touch screen and the microphone. Its outputs are its voice and its hands, the screen and the speaker.',
           { text: 'A toaster works the same way. The lever you push down is the input. The toast that pops up is the output.', visual: { kind: 'flow', steps: ['push the lever', 'the toaster heats', 'toast pops up'] } },
-          'Ask about any part: do I use it to tell, or does it show me? Tell is an input. Show is an output.'] },
+          'For any part, ask whether you use it to tell or whether it shows you. Tell is an input, and show is an output.'] },
     },
-    sources: ['Aligned with TEKS Technology Applications 126.1(b)(8)(B) (identify basic computer hardware, including a variety of input and output devices, and software using accurate terminology) and CSTA K-12 CS Standards 1A-CS-02.'],
+    sources: ['Aligned with Texas TEKS Technology Applications 126.1(c)(8)(B) (identify basic computer hardware, including a variety of input and output devices, and software using accurate terminology) and CSTA K-12 CS Standards 1A-CS-02.'],
     generators: ['tk-tell', 'tk-tell', 'tk-tell', 'tk-tell', 'tk-tell'],
   },
   {
@@ -9764,14 +9774,22 @@ function TECHK_MODULES() { return [
     tagline: 'Steps in order',
     requires: ['tell-and-show'],
     lesson: {
-      paragraphs: ['A list of steps in order is called an algorithm. That is a big word for a small idea, first, next, then, last.', 'To make a jam sandwich, first get the bread, next spread the jam, then close the sandwich, last take a bite.', 'Mix up the order and it goes wrong. Bite first, and there is no sandwich yet. Spread the jam last, and it lands on top of your bite.', 'A big job breaks into small steps. Getting dressed is one big job: socks first, then shoes. Shoes first, and the socks will not go on.', 'First, next, then, last. A computer follows its steps the same way, one at a time, in order, and it never skips one.'],
+      paragraphs: ['A list of steps in order is called an algorithm. That is a big word for a small idea, first, next, then, last.', 'To make a jam sandwich, first get the bread, next spread the jam, then close the sandwich, last take a bite.', 'Mix up the order and it goes wrong. Bite first, and there is no sandwich yet. Spread the jam last, and it lands on top of your bite.', 'A big job breaks into small steps. Getting dressed is one big job, so put on socks first, then shoes. Shoes first, and the socks will not go on.', 'First, next, then, last. A computer follows its steps the same way, one at a time, in order, and it never skips one.'],
+      // Full standard (pass KC): a spoken script of its own, the sandwich steps shown without colons.
+      script: [
+        { say: 'Steps in order have a name. They are called an algorithm, a big word for a small idea, first, next, then, last.', show: { kind: 'flow', steps: ['first', 'next', 'then', 'last'] } },
+        { say: 'To make a jam sandwich, first get the bread, next spread the jam, then close the sandwich, and last take a bite.', show: { kind: 'flow', steps: ['get the bread', 'spread the jam', 'close it', 'take a bite'] } },
+        { say: 'Mix up the order and it goes wrong. Take a bite first, and there is no sandwich yet.', show: null },
+        { say: 'A big job breaks into small steps. To get dressed, put your socks on first, then your shoes.', show: { kind: 'flow', steps: ['socks', 'shoes'] } },
+        { say: 'A computer follows its steps the same way, one at a time, in order, and it never skips one.', show: null },
+      ],
       keyIdea: 'Steps in order, first, next, then, last, are called an algorithm.',
-      example: { kind: 'flow', steps: ['first: bread', 'next: jam', 'then: close it', 'last: bite'], caption: 'Four steps in order make a sandwich. The same steps out of order make a mess.',
+      example: { kind: 'flow', steps: ['get the bread', 'spread the jam', 'close it', 'take a bite'], caption: 'Four steps in order make a sandwich. The same steps out of order make a mess.',
         another: ['An algorithm is a recipe. A recipe tells you what to do and in what order, and a cook who skips a step gets a different dinner.',
-          { text: 'Getting dressed is an algorithm too: socks, then shoes. Try it the other way and the shoes are already on when the socks arrive.', visual: { kind: 'flow', steps: ['socks', 'shoes', 'coat', 'out the door'] } },
+          { text: 'Getting dressed is an algorithm too, socks and then shoes. Try it the other way and the shoes are already on when the socks arrive.', visual: { kind: 'flow', steps: ['socks', 'shoes', 'coat', 'out the door'] } },
           'When a job feels big, break it into small steps and do the first one. A sandwich is four small steps.'] },
     },
-    sources: ['Aligned with TEKS Technology Applications 126.1(b)(1)(A) (identify a problem or task and break it down into smaller pieces) and 126.1(b)(1)(C) (identify algorithms using a sequential process such as first, next, then and last), and CSTA K-12 CS Standards 1A-AP-08 and 1A-AP-11.'],
+    sources: ['Aligned with Texas TEKS Technology Applications 126.1(c)(1)(A) (identify a problem or task such as making a sandwich and break it down (decompose) into smaller pieces) and 126.1(c)(1)(C) (identify algorithms (step-by-step instructions) using a sequential process such as first, next, then, and last), and CSTA K-12 CS Standards 1A-AP-08 and 1A-AP-11.'],
     generators: ['tk-order', 'tk-order', 'tk-order', 'tk-order', 'tk-order'],
   },
   {
@@ -9781,14 +9799,22 @@ function TECHK_MODULES() { return [
     tagline: 'Patterns and loops',
     requires: ['first-next-then-last'],
     lesson: {
-      paragraphs: ['A pattern is something that repeats: red, blue, red, blue. When you know the pattern, you can guess what comes next. After blue, red comes again.', 'A computer can repeat steps too. Instead of saying clap, clap, clap, clap, you can say clap four times. Saying a step again and again is called a loop.', 'A loop needs two things, what to do and how many times. Jump three times. Blink two times.', 'You can write steps for a toy robot the same way. Forward, forward, forward, turn is four steps. Forward three times, then turn, says the same thing in two.', 'A pattern helps you guess what comes next. A loop lets a few words do a lot of work.'],
+      paragraphs: ['A pattern is something that repeats, like red, blue, red, blue. When you know the pattern, you can guess what comes next. After blue, red comes again.', 'A computer can repeat steps too. Instead of saying clap, clap, clap, clap, you can say clap four times. Saying a step again and again is called a loop.', 'A loop needs two things, what to do and how many times. Jump three times. Blink two times.', 'You can write steps for a toy robot the same way. Forward, forward, forward, turn is four steps. Forward three times, then turn, says the same thing in two.', 'A pattern helps you guess what comes next. A loop lets a few words do a lot of work.'],
+      // Full standard (pass KC): a spoken script of its own, with the red and blue of its pattern shown.
+      script: [
+        { say: 'A pattern is something that repeats, like red, blue, red, blue. After blue, red comes again.', show: { kind: 'pair', a: { kind: 'swatch', colour: 'red' }, b: { kind: 'swatch', colour: 'blue' } } },
+        { say: 'When you know the pattern, you can guess what comes next.', show: null },
+        { say: 'A computer can repeat steps too. Instead of clap, clap, clap, clap, you can say clap four times.', show: null },
+        { say: 'Saying a step again and again is called a loop. A loop needs two things, what to do and how many times.', show: { kind: 'flow', steps: ['clap four times', 'jump three times', 'blink two times'] } },
+        { say: 'You can tell a toy robot to move forward three times and then turn. That is a loop, and it uses fewer words.', show: null },
+      ],
       keyIdea: 'A pattern repeats. A loop says do it again, and how many times.',
       example: { kind: 'flow', steps: ['clap four times', 'jump three times', 'blink two times'], caption: 'Three loops. Each one says what to do and how many times.',
-        another: ['Beads on a string: red, blue, red, blue. Cover the string with your hand and you can still say what the next bead is. That is what a pattern gives you.',
-          { text: 'A song has a chorus that comes back after every verse. The singer does not write it out three times; the page says repeat. That is a loop.', visual: { kind: 'flow', steps: ['verse', 'chorus', 'verse', 'chorus'] } },
+        another: ['Look at beads on a string, red, blue, red, blue. Cover the string with your hand and you can still say what the next bead is. That is what a pattern gives you.',
+          { text: 'A song has a chorus that comes back after every verse. The singer does not write it out three times, because the page says repeat. That is a loop.', visual: { kind: 'flow', steps: ['verse', 'chorus', 'verse', 'chorus'] } },
           'Forward, forward, forward, turn is four steps. Forward three times, then turn, is two. Same walk, fewer words.'] },
     },
-    sources: ['Aligned with TEKS Technology Applications 126.1(b)(1)(B) (identify simple patterns and make predictions based on the patterns) and 126.1(b)(2)(A) (create a sequence of code with or without technology), and CSTA K-12 CS Standards 1A-AP-10.'],
+    sources: ['Aligned with Texas TEKS Technology Applications 126.1(c)(1)(B) (identify simple patterns and make predictions based on the patterns) and 126.1(c)(2) (create a sequence of code with or without technology such as solving a maze using drag-and-drop programming or creating step-by-step directions for student movement to a specific location), and CSTA K-12 CS Standards 1A-AP-10.'],
     generators: ['tk-again', 'tk-again', 'tk-again', 'tk-again', 'tk-again'],
   },
   {
@@ -9798,14 +9824,23 @@ function TECHK_MODULES() { return [
     tagline: 'Secret words and private things',
     requires: ['do-it-again'],
     lesson: {
-      paragraphs: ['A password is a secret word that opens your account. Keep it secret. Only a parent or a teacher may know it. When you are done, log off, so the next person cannot get in.', 'Some things are safe to share online: your favorite color, a game you like, a pet. Some things are private and stay private, like your full name, your address, your school and your birthday.', 'Be kind online, just like at the park, because a real person is on the other side. If something online makes you feel bad, stop and tell a grown-up.', 'Secret password, private things private, kind words, and tell a grown-up.'],
+      paragraphs: ['A password is a secret word that opens your account. Keep it secret. Only a parent or a teacher may know it. When you are done, log off, so the next person cannot get in.', 'Some things are safe to share online, like your favorite color, a game you like or a pet. Some things are private and stay private, like your full name, your address, your school and your birthday.', 'Be kind online, just like at the park, because a real person is on the other side. If something online makes you feel bad, stop and tell a grown-up.', 'Secret password, private things private, kind words, and tell a grown-up.'],
+      // Full standard (pass KC): a spoken script of its own, one idea a line.
+      script: [
+        { say: 'A password is a secret word that opens your account. Keep it secret. Only a parent or a teacher may know it.', show: null },
+        { say: 'When you are done, log off, so the next person cannot get into your account.', show: { kind: 'flow', steps: ['log in', 'play', 'log off'] } },
+        { say: 'Some things are safe to share online, like your favorite color, a game you like or a pet.', show: null },
+        { say: 'Some things are private and stay private, like your full name, your address, your school and your birthday.', show: null },
+        { say: 'Be kind online, just like at the park, because a real person is on the other side.', show: null },
+        { say: 'If something online makes you feel bad, stop and tell a grown-up.', show: null },
+      ],
       keyIdea: 'Keep your password secret, keep private things private, be kind, and tell a grown-up.',
       example: { kind: 'flow', steps: ['log in', 'play', 'log off'], caption: 'Log in with your secret word, and log off when you are done.',
         another: ['A password is like the key to your house. You do not hand your key to a stranger, and you lock the door when you leave. Logging off is locking the door.',
-          { text: 'Safe to share: a favorite color, a favorite game, a pet. Private: your full name, your address, your school, your birthday.', visual: { kind: 'flow', steps: ['color: safe', 'game: safe', 'address: private'] } },
-          'Kind online is the same as kind at the park: if you would not say it to a face, do not type it.'] },
+          { text: 'A favorite color, a favorite game and a pet are safe to share. Your full name, your address, your school and your birthday are private.', visual: { kind: 'flow', steps: ['color is safe', 'game is safe', 'address is private'] } },
+          "Kind online is the same as kind at the park, so if you would not say it to someone's face, do not type it."] },
     },
-    sources: ['Aligned with TEKS Technology Applications 126.1(b)(7)(A) (identify ways to keep a user account safe, including not sharing login information and logging off), 126.1(b)(7)(B) (identify and discuss what information is safe to share online and what is unsafe) and 126.1(b)(5)(A) (identify and demonstrate responsible behavior within a digital environment), and CSTA K-12 CS Standards 1A-IC-18, 1A-NI-04 and 1A-IC-17.'],
+    sources: ['Aligned with Texas TEKS Technology Applications 126.1(c)(7)(A) (identify ways to keep a user account safe, including not sharing login information and logging off accounts and devices), 126.1(c)(7)(B) (identify and discuss what information is safe to share online such as hobbies and likes and dislikes and what information is unsafe such as identifying information) and 126.1(c)(5) (identify and demonstrate responsible behavior within a digital environment), and CSTA K-12 CS Standards 1A-IC-18, 1A-NI-04 and 1A-IC-17.'],
     generators: ['tk-safe', 'tk-safe', 'tk-safe', 'tk-safe', 'tk-safe'],
   },
 ]; }
@@ -17013,32 +17048,32 @@ Object.assign(GENERATORS, {
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
   'tk-order': (rng) => {
-    const Q = [['What is a list of steps in order called?', ['an algorithm', 'a picture', 'a song'], 'an algorithm', 'An algorithm is steps in order, first, next, then, last.'],
+    const Q = [['What is a list of steps in order called?', ['an algorithm', 'a picture', 'a song'], 'an algorithm', 'A list of steps in order is called an algorithm, like first, next, then, last.'],
       ['To make a jam sandwich, what do you do first?', ['get the bread', 'take a bite', 'spread the jam'], 'get the bread', 'First get the bread, next spread the jam, then close the sandwich, last take a bite.'],
-      ['When you get dressed, what goes on first?', ['socks', 'shoes', 'a hat'], 'socks', 'Socks first, then shoes. Shoes first, and the socks will not go on.'],
-      ['What happens if you take a bite first?', ['there is no sandwich yet', 'the sandwich is done', 'the jam goes away'], 'there is no sandwich yet', 'Bite first and there is no sandwich yet. The order matters.'],
-      ['How does a computer follow its steps?', ['one at a time, in order', 'all at once', 'backward'], 'one at a time, in order', 'One at a time, in order, and it never skips one.'],
-      ['What word do we say for the step at the end?', ['last', 'first', 'next'], 'last', 'First, next, then, last. Last is the end.']];
+      ['When you get dressed, what goes on first?', ['socks', 'shoes', 'a hat'], 'socks', 'Socks go on first, then shoes, because once your shoes are on, the socks cannot go on.'],
+      ['What happens if you take a bite first?', ['there is no sandwich yet', 'the sandwich is done', 'the jam goes away'], 'there is no sandwich yet', 'If you bite first, there is no sandwich yet, so the order matters.'],
+      ['How does a computer follow its steps?', ['one at a time, in order', 'all at once', 'backward'], 'one at a time, in order', 'A computer follows its steps one at a time, in order, and it never skips one.'],
+      ['What word do we say for the step at the end?', ['last', 'first', 'next'], 'last', 'We say first, next, then and last, so last is the step at the end.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
   'tk-again': (rng) => {
     const Q = [['Red, blue, red, blue. What comes next?', ['red', 'blue', 'green'], 'red', 'The pattern repeats. After blue, red comes again.'],
       ['What do we call something that repeats?', ['a pattern', 'a loop', 'a song'], 'a pattern', 'A pattern repeats, like red, blue, red, blue.'],
-      ['Saying a step again and again is called what?', ['a loop', 'a pattern', 'a screen'], 'a loop', 'A loop says do it again, and how many times.'],
-      ['A loop needs what to do and what else?', ['how many times', 'a color', 'a friend'], 'how many times', 'What to do, and how many times. Jump three times.'],
+      ['Saying a step again and again is called what?', ['a loop', 'a pattern', 'a screen'], 'a loop', 'Saying a step again and again is called a loop, like clap four times.'],
+      ['A loop needs what to do and what else?', ['how many times', 'a color', 'a friend'], 'how many times', 'A loop needs what to do and how many times, like jump three times.'],
       ['Which one is a loop?', ['clap four times', 'clap once', 'sit still'], 'clap four times', 'Clap four times says clap, and how many times. That is a loop.'],
       ['What helps you guess what comes next?', ['a pattern', 'a mouse', 'a bite'], 'a pattern', 'When you know the pattern, you can guess what comes next.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
   'tk-safe': (rng) => {
-    const Q = [['Who may know your password?', ['a parent or a teacher', 'everyone in class', 'a stranger'], 'a parent or a teacher', 'Only a parent or a teacher. A password is a secret word.'],
-      ['What do you do when you are done on a computer?', ['log off', 'shout', 'share your password'], 'log off', 'Log off, so the next person cannot get in.'],
+    const Q = [['Who may know your password?', ['a parent or a teacher', 'everyone in class', 'a stranger'], 'a parent or a teacher', 'Only a parent or a teacher may know your password, because it is a secret word.'],
+      ['What do you do when you are done on a computer?', ['log off', 'shout', 'share your password'], 'log off', 'Log off when you are done, so the next person cannot get into your account.'],
       ['Which is safe to share online?', ['your favorite color', 'your address', 'your full name'], 'your favorite color', 'A favorite color, a game you like or a pet are safe to share.'],
-      ['Which one is private?', ['your address', 'your favorite color', 'a game you like'], 'your address', 'Your full name, address, school and birthday are private.'],
-      ['Something online makes you feel bad. What do you do?', ['stop and tell a grown-up', 'keep going', 'hide it'], 'stop and tell a grown-up', 'Stop, and tell a grown-up. That is always the right move.'],
-      ['A password is what kind of word?', ['a secret word', 'a loud word', 'a long song'], 'a secret word', 'A secret word that opens your account. Keep it secret.']];
+      ['Which one is private?', ['your address', 'your favorite color', 'a game you like'], 'your address', 'Your address is private, like your full name, your school and your birthday, because they tell people who you are and where to find you.'],
+      ['Something online makes you feel bad. What do you do?', ['stop and tell a grown-up', 'keep going', 'hide it'], 'stop and tell a grown-up', 'Stop and tell a grown-up, who can help make it right.'],
+      ['A password is what kind of word?', ['a secret word', 'a loud word', 'a long song'], 'a secret word', 'A password is a secret word that opens your account, so keep it secret.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },

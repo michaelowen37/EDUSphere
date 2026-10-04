@@ -9564,14 +9564,24 @@ function HEALTHK_MODULES() { return [
     tagline: 'Soap, water, count to twenty',
     requires: [],
     lesson: {
-      paragraphs: ['Germs are too small to see, and they ride on hands. Wash your hands before eating, and after the bathroom the next thing you do is wash your hands.', 'Soap, water, and scrub while you count to twenty. Between the fingers too, and under the nails.', 'Twenty seconds is a short song. Sing it and you are done.', 'Clean hands keep the germs off your food and out of your mouth.'],
-      keyIdea: 'Wash before eating and after the bathroom. Use soap and water, and count to twenty.',
+      // Full standard (pass KB): a spoken script of its own (it read its paragraphs aloud), when to wash (before eating, after the
+      // bathroom, after blowing your nose), how, and why soap works, with every explanation giving its reason (TEKS K.2B, K.2C).
+      paragraphs: ['Germs are tiny, too small to see, and some of them can make you sick. They ride along on your hands, so wash your hands before eating, after the bathroom, and after you blow your nose.', 'Wet your hands, add soap, and scrub while you count to twenty, between the fingers and under the nails too, because germs hide there. Then rinse and dry.', 'Soap lifts the germs off your skin, and the water carries them down the drain. Clean hands keep germs off your food and out of your mouth.'],
+      keyIdea: 'Wash with soap before eating and after the bathroom. Scrub while you count to twenty.',
       example: { kind: 'flow', steps: ['wet', 'soap', 'scrub to twenty', 'rinse', 'dry'], caption: 'Five steps, and the germs go down the drain.',
-        another: ['Put a little glitter on your hands and wash with water only. Some stays. Now wash with soap: it goes. Germs are like glitter you cannot see.',
+        another: ['Put a little glitter on your hands and wash with water only. Some stays. Now wash with soap, and it goes. Germs are like glitter you cannot see.',
           { text: 'Between the fingers is where germs hide, like crumbs in the cracks of a couch. Scrub there on purpose.', visual: { kind: 'letters', text: 'between the fingers' } },
-          'Sing the birthday song twice while you scrub. That is twenty seconds, every time.'] },
+          'Sing the birthday song twice while you scrub. That is about twenty seconds, every time.'] },
+      script: [
+        { say: 'Germs are tiny, too small to see. Some germs can make you sick, and they ride along on your hands.', show: null },
+        { say: 'So wash your hands before eating, after the bathroom, and after you blow your nose.', show: null },
+        { say: 'Wet your hands, add soap, and scrub while you count to twenty. Then rinse, and dry.', show: { kind: 'flow', steps: ['wet', 'soap', 'scrub to twenty', 'rinse', 'dry'] } },
+        { say: 'Scrub between the fingers and under the nails too, because germs hide there.', show: null },
+        { say: 'Soap lifts the germs off your skin, and drops of water carry them down the drain.', show: { kind: 'icon', name: 'drop' } },
+        { say: 'Clean hands keep germs off your food and out of your mouth.', show: null },
+      ],
     },
-    sources: ['Aligned with TEKS Health Education K.1A (identify healthy habits, including hand washing) and CDC handwashing guidance.'],
+    sources: ['Aligned with Texas TEKS K.2B (identify personal hygiene and health habits that help individuals stay healthy such as hand washing and brushing teeth) and K.2C (discuss ways in which germs are transmitted, methods of preventing the spread of germs, and the importance of immunization), and CDC handwashing guidance.'],
     generators: ['hk-hands', 'hk-hands', 'hk-hands', 'hk-hands', 'hk-hands'],
   },
   {
@@ -9581,14 +9591,24 @@ function HEALTHK_MODULES() { return [
     tagline: 'Two times, two minutes',
     requires: ['washing-hands'],
     lesson: {
-      paragraphs: ['Germs eat leftover sugar on teeth and make tiny holes called cavities. Brushing sweeps them away.', 'Brush two times a day, morning and night, for two minutes each, cleaning the front, the back and the tops where you chew.', 'A timer or a two-minute song keeps you honest. Water is the best drink for teeth. The most important brushing is at night, because germs work all night on whatever you leave them.', 'Two times, two minutes, and the sugar bugs lose.'],
-      keyIdea: 'Brush two times a day for two minutes, front, back and tops.',
-      example: { kind: 'flow', steps: ['fronts', 'backs', 'chewing tops', 'tongue', 'rinse'], caption: 'Around the mouth in two minutes, every side of every tooth.',
-        another: ['Your teeth are like a fence with a picket for every tooth. Paint every picket, both sides, or the unpainted ones rot.',
-          { text: 'Two minutes feels long. Split it: thirty seconds for each corner of your mouth, top right, top left, bottom left, bottom right.', visual: { kind: 'flow', steps: ['top right', 'top left', 'bottom left', 'bottom right'] } },
-          'Morning brushing cleans up breakfast. Night brushing matters more: germs work all night on whatever you leave them.'] },
+      // Full standard (pass KB): a spoken script of its own; why night brushing matters (less spit while you sleep), a dab of
+      // toothpaste the size of a pea, a grown-up's help, and spitting out the toothpaste (TEKS K.2B).
+      paragraphs: ['Germs in your mouth eat the sugar left on your teeth, and they can make tiny holes called cavities. Brushing sweeps the sugar and the germs away.', 'Brush two times a day, in the morning and at night, for two minutes each time. Use a dab of toothpaste with fluoride the size of a pea, brush the fronts, the backs and the chewing sides of every tooth, and spit out the toothpaste when you are done. A grown-up can help you reach every tooth.', 'Brushing at night matters most, because your mouth makes less spit while you sleep and germs have all night to work. Water is the best drink for your teeth, since it rinses sugar away.'],
+      keyIdea: 'Brush two times a day for two minutes, every side of every tooth.',
+      example: { kind: 'flow', steps: ['fronts', 'backs', 'chewing sides', 'tongue', 'spit'], caption: 'Around the mouth in two minutes, every side of every tooth.',
+        another: ['Your teeth are like a fence with a picket for every tooth. Paint every picket on both sides, or the unpainted ones rot.',
+          { text: 'Two minutes feels long, so split it into thirty seconds for each corner of your mouth, top right, top left, bottom left and bottom right.', visual: { kind: 'flow', steps: ['top right', 'top left', 'bottom left', 'bottom right'] } },
+          'Morning brushing cleans up after breakfast. Night brushing matters most, because germs have all night to work.'] },
+      script: [
+        { say: 'Germs in your mouth eat the sugar left on your teeth, and they can make tiny holes called cavities.', show: null },
+        { say: 'Brushing sweeps the sugar and the germs away. Brush two times a day, in the morning and at night.', show: null },
+        { say: 'Brush for two minutes, with a dab of toothpaste the size of a pea. A grown-up can help.', show: null },
+        { say: 'Brush the fronts, the backs and the chewing sides of every tooth, then spit out the toothpaste.', show: { kind: 'flow', steps: ['fronts', 'backs', 'chewing sides', 'tongue', 'spit'] } },
+        { say: 'Brushing at night matters most. Your mouth makes less spit while you sleep, so germs have all night to work.', show: null },
+        { say: 'Water is the best drink for your teeth. A cup of water rinses sugar away.', show: { kind: 'icon', name: 'cup' } },
+      ],
     },
-    sources: ['Aligned with TEKS Health Education K.1A (identify healthy habits, including dental care) and American Dental Association guidance.'],
+    sources: ['Aligned with Texas TEKS K.2B (identify personal hygiene and health habits that help individuals stay healthy such as hand washing and brushing teeth) and American Dental Association guidance.'],
     generators: ['hk-teeth', 'hk-teeth', 'hk-teeth', 'hk-teeth', 'hk-teeth'],
   },
   {
@@ -9598,14 +9618,24 @@ function HEALTHK_MODULES() { return [
     tagline: 'When your body grows',
     requires: ['brushing-teeth'],
     lesson: {
-      paragraphs: ['Sleep is when your body grows and your brain files the day away. Kids your age need about ten to twelve hours each night.', 'Without enough, you feel grumpy and forget things. A tired brain drops things. A rested one remembers.', 'The same quiet routine each night tells your body it is time: bath, book, bed.', 'Ten to twelve hours, the same way every night.'],
-      keyIdea: 'Ten to twelve hours of sleep, with the same quiet routine each night.',
+      // Full standard (pass KB): a spoken script of its own; what sleep does, how much, the bedtime steps, what keeps a body
+      // awake, and daily play, the other habit TEKS K.7B names.
+      paragraphs: ['Sleep is when your body grows and rests, and your brain sorts out what you learned today. Kids your age need about ten to twelve hours of sleep each night.', 'Without enough sleep you feel grumpy and forget things. A tired brain drops things, and a rested one remembers.', 'The same quiet steps each night tell your body it is time, like a bath, a book, then bed. Bright screens and big snacks keep your body awake, and moving and playing every day helps you sleep well.'],
+      keyIdea: 'About ten to twelve hours of sleep, with the same quiet steps each night.',
       example: { kind: 'flow', steps: ['bath', 'book', 'bed', 'sleep'], caption: 'The same steps each night, and your body knows what comes next.',
-        another: ['Your brain is a desk. All day, papers pile up. At night, while you sleep, someone files them. Skip the night and the desk is a mess in the morning.',
-          { text: 'A phone charges overnight. So do you. Wake up at fifty percent and the whole day runs slow.', visual: { kind: 'letters', text: 'charge to 100' } },
-          'Grumpy in the morning is not a bad mood. It is a body that did not finish its work.'] },
+        another: ['Your brain is like a desk. All day, papers pile up, and at night, while you sleep, your brain files them away. Skip the sleep and the desk is a mess in the morning.',
+          { text: 'A phone charges overnight, and so do you. Wake up at fifty percent and the whole day runs slow.', visual: { kind: 'letters', text: 'charge to 100' } },
+          'Grumpy in the morning is often a body that did not get enough sleep.'] },
+      script: [
+        { say: 'Sleep is when your body grows and rests, and your brain sorts out what you learned today.', show: null },
+        { say: 'Kids your age need about ten to twelve hours of sleep each night.', show: null },
+        { say: 'Without enough sleep, you feel grumpy and forget things. A rested brain remembers.', show: null },
+        { say: 'The same quiet steps every night tell your body it is time to sleep, like a bath, a book, then bed.', show: { kind: 'flow', steps: ['bath', 'book', 'bed', 'sleep'] } },
+        { say: 'Bright screens and big snacks keep your body awake, so put them away before bed.', show: null },
+        { say: 'Moving and playing every day helps you sleep well too.', show: null },
+      ],
     },
-    sources: ['Aligned with TEKS Health Education K.1A (identify healthy habits, including sleep) and American Academy of Sleep Medicine guidance for children.'],
+    sources: ['Aligned with Texas TEKS K.7B (identify habits that help individuals stay healthy such as getting the proper amount of sleep and daily physical activity) and American Academy of Sleep Medicine guidance for children.'],
     generators: ['hk-sleep', 'hk-sleep', 'hk-sleep', 'hk-sleep', 'hk-sleep'],
   },
   {
@@ -9615,14 +9645,24 @@ function HEALTHK_MODULES() { return [
     tagline: 'Half fruits and vegetables',
     requires: ['sleep-k'],
     lesson: {
-      paragraphs: ['Half your plate is fruits and vegetables, like a carrot, peas, broccoli, spinach or an apple. Then grains, like bread and rice, and protein, like eggs and beans.', 'Colors on the plate mean vitamins.', 'Drink water most of the time. Milk is good too. Soda is sugar with bubbles. Sweets are for sometimes, not for every day.', 'Half the plate green and orange and red, and a glass of water beside it.'],
-      keyIdea: 'Half the plate is fruits and vegetables, with water to drink.',
+      // Full standard (pass KB): a spoken script of its own; the body is mostly water (TEKS K.6A), the foods that help it grow,
+      // fruits and vegetables, dairy and protein, which K.6C requires by name (dairy was never named), and healthy snacks (K.6D).
+      paragraphs: ['Your body is mostly water, so drink water every day. Water is the best drink, and milk is good too.', 'Fill half your plate with fruits and vegetables, like an apple, a carrot, peas or broccoli. Different colors bring different good things your body needs, so eat a rainbow.', 'Foods that help your body grow are fruits and vegetables, dairy like milk, yogurt and cheese, and protein like eggs, beans and chicken. Grains like bread and rice give you energy.', 'A healthy snack is an apple or a carrot. Sweets and soda are mostly sugar, so they are for sometimes, not every day.'],
+      keyIdea: 'Fill half your plate with fruits and vegetables, eat dairy and protein to grow, and drink water.',
       example: { kind: 'bar', parts: 4, shaded: 2, caption: 'A plate in four parts, two for fruits and vegetables, one for grains and one for protein.',
         another: ['Think of a rainbow on the plate. Red tomatoes, orange carrots, green peas, purple grapes. Each color brings something different.',
-          { text: 'A plate is a pizza cut in four: two slices of vegetables and fruit, one of grains, one of protein. Same idea, every meal.', visual: { kind: 'bar', parts: 4, shaded: 2 } },
+          { text: 'A plate is like a pizza cut in four, two slices of vegetables and fruit, one of grains and one of protein. Same idea, every meal.', visual: { kind: 'bar', parts: 4, shaded: 2 } },
           'Sweets are for sometimes, not for every day. Water is for every day.'] },
+      script: [
+        { say: 'Your body is mostly water, so drink water every day, a cup at a time.', show: { kind: 'icon', name: 'cup' } },
+        { say: 'Fill half your plate with fruits and vegetables, like an apple, a carrot, peas or broccoli.', show: { kind: 'bar', parts: 4, shaded: 2 } },
+        { say: 'Different colors bring different good things your body needs, so eat a rainbow.', show: null },
+        { say: 'Foods that help your body grow are fruits and vegetables, dairy like milk, yogurt and cheese, and protein like eggs, beans and chicken.', show: null },
+        { say: 'Grains like bread and rice give you energy too.', show: null },
+        { say: 'A healthy snack is an apple or a carrot. Sweets and soda are for sometimes, not every day.', show: null },
+      ],
     },
-    sources: ['Aligned with TEKS Health Education K.1B (identify healthy foods) and USDA MyPlate guidance.'],
+    sources: ['Aligned with Texas TEKS K.6A (demonstrate an understanding that the human body is composed mostly of water and explain the importance of drinking water daily), K.6C (identify types of foods that help the body grow, including fruits and vegetables, dairy, and protein) and K.6D (identify healthy and unhealthy snack choices), and USDA MyPlate guidance.'],
     generators: ['hk-plate', 'hk-plate', 'hk-plate', 'hk-plate', 'hk-plate'],
   },
 ]; }
@@ -19525,30 +19565,52 @@ Object.assign(GENERATORS, {
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
   'hk-hands': (rng) => {
-    const Q = [['What should you use besides water to wash your hands?', ['soap', 'sand', 'nothing'], 'soap', 'Water alone slides off. Soap grabs the germs and the water carries them away.'], ['After the bathroom, what comes next?', ['wash your hands', 'go play', 'eat a snack'], 'wash your hands', 'Wash your hands every time, after the bathroom and before food.'],['When should you wash your hands?', ['before eating', 'never', 'only on Sundays'], 'before eating', 'Before eating and after the bathroom. Soap, water, and count to twenty.'],
-      ['How long should you scrub with soap?', ['while you count to twenty', 'one second', 'all afternoon'], 'while you count to twenty', 'Twenty seconds gets the germs off. Sing a short song and you are there.'],
-      ['Which part of your hand do people forget?', ['between the fingers', 'the palm', 'the top'], 'between the fingers', 'Germs hide between fingers and under nails. Scrub there too.']];
+    // Full standard (pass KB): every explanation says why, and two questions join from the lesson (after blowing your nose,
+    // and why hands can look clean and still carry germs).
+    const Q = [['What should you use besides water to wash your hands?', ['soap', 'sand', 'nothing'], 'soap', 'Use soap. Water alone slides off, but soap lifts the germs off your skin so the water can wash them away.'],
+      ['After the bathroom, what comes next?', ['wash your hands', 'go play', 'eat a snack'], 'wash your hands', 'Wash your hands every time you use the bathroom, so the germs do not come with you.'],
+      ['When should you wash your hands?', ['before eating', 'never', 'only on Sundays'], 'before eating', 'Wash before eating, so the germs on your hands do not get on your food.'],
+      ['How long should you scrub with soap?', ['while you count to twenty', 'one second', 'all afternoon'], 'while you count to twenty', 'Scrub while you count to twenty. That gives the soap time to lift the germs off.'],
+      ['Which part of your hand do people forget?', ['between the fingers', 'the palm', 'the top'], 'between the fingers', 'People forget between the fingers, and germs hide there, so scrub there too.'],
+      ['You just blew your nose. What should you do next?', ['wash your hands', 'touch your snack', 'rub your eyes'], 'wash your hands', 'Wash your hands after you blow your nose, so the germs do not spread to other things.'],
+      ['Why can hands look clean and still have germs?', ['germs are too small to see', 'germs are made of paint', 'clean hands never have germs'], 'germs are too small to see', 'Germs are too small to see, so hands can look clean and still carry them. That is why we wash.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
   'hk-teeth': (rng) => {
-    const Q = [['Which drink is best for your teeth?', ['water', 'soda', 'juice all day'], 'water', 'Water rinses sugar away. Soda and juice leave sugar for the germs.'], ['When is the most important brushing?', ['at night', 'at noon', 'before lunch'], 'at night', 'Germs work all night on whatever you leave them. Brush before bed.'],['How many times a day should you brush your teeth?', ['two', 'zero', 'ten'], 'two', 'Morning and night, two minutes each. That is what keeps the sugar bugs away.'],
-      ['How long should you brush?', ['two minutes', 'five seconds', 'an hour'], 'two minutes', 'Two minutes is long enough to reach every tooth, front and back.'],
-      ['What likes to live on teeth that are not brushed?', ['germs that make holes', 'butterflies', 'nothing'], 'germs that make holes', 'Germs eat leftover sugar and make tiny holes called cavities. Brushing sweeps them away.']];
+    // Full standard (pass KB): explanations say why; how much toothpaste and which sides of a tooth join from the lesson.
+    const Q = [['Which drink is best for your teeth?', ['water', 'soda', 'juice all day'], 'water', 'Water is the best drink for your teeth. It rinses sugar away, while soda and juice leave sugar for the germs.'],
+      ['When is the most important brushing?', ['at night', 'at noon', 'before lunch'], 'at night', 'Brushing at night matters most, because your mouth makes less spit while you sleep and germs have all night to work.'],
+      ['How many times a day should you brush your teeth?', ['two', 'zero', 'ten'], 'two', 'Brush two times a day, in the morning and at night, so germs never have long to work.'],
+      ['How long should you brush?', ['two minutes', 'five seconds', 'an hour'], 'two minutes', 'Brush for two minutes. That is long enough to reach every side of every tooth.'],
+      ['What likes to live on teeth that are not brushed?', ['germs that make holes', 'butterflies', 'nothing'], 'germs that make holes', 'Germs eat the sugar left on teeth and make tiny holes called cavities. Brushing sweeps them away.'],
+      ['How much toothpaste should you use?', ['a dab the size of a pea', 'the whole tube', 'none at all'], 'a dab the size of a pea', 'A dab of toothpaste the size of a pea is enough to clean every tooth.'],
+      ['Which sides of each tooth should you brush?', ['the front, the back and the chewing side', 'only the front', 'only the tongue'], 'the front, the back and the chewing side', 'Brush the front, the back and the chewing side of every tooth, because germs hide on every side.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
   'hk-sleep': (rng) => {
-    const Q = [['What is a good last step before sleep?', ['a story in bed', 'a video game', 'a big dinner'], 'a story in bed', 'A quiet story tells your body it is time. Bath, book, bed.'], ['Sleep is when your body does what?', ['grows', 'shrinks', 'nothing'], 'grows', 'Your body grows while you sleep, and your brain remembers the day.'],['About how many hours of sleep do kids your age need each night?', ['ten to twelve', 'two', 'twenty'], 'ten to twelve', 'About ten to twelve hours each night. Sleep is when your body grows and your brain files the day away.'],
-      ['What happens when you do not sleep enough?', ['you feel grumpy and forget things', 'you get taller', 'nothing'], 'you feel grumpy and forget things', 'A tired brain drops things. A rested one remembers.'],
-      ['What helps you fall asleep?', ['the same quiet routine each night', 'a bright screen', 'a big snack'], 'the same quiet routine each night', 'Bath, book, bed. The same steps tell your body it is time.']];
+    // Full standard (pass KB): explanations say why; daily play joins from the lesson (TEKS K.7B).
+    const Q = [['What is a good last step before sleep?', ['a story in bed', 'a video game', 'a big dinner'], 'a story in bed', 'A quiet story in bed tells your body it is time to sleep. A video game or a big dinner keeps it awake.'],
+      ['Sleep is when your body does what?', ['grows', 'shrinks', 'nothing'], 'grows', 'Your body grows and rests while you sleep, and your brain sorts out what you learned.'],
+      ['About how many hours of sleep do kids your age need each night?', ['ten to twelve', 'two', 'twenty'], 'ten to twelve', 'Kids your age need about ten to twelve hours of sleep each night.'],
+      ['What happens when you do not sleep enough?', ['you feel grumpy and forget things', 'you get taller', 'nothing'], 'you feel grumpy and forget things', 'Without enough sleep you feel grumpy and forget things. A rested brain remembers.'],
+      ['What helps you fall asleep?', ['the same quiet routine each night', 'a bright screen', 'a big snack'], 'the same quiet routine each night', 'The same quiet steps each night, like a bath, a book, then bed, tell your body it is time to sleep.'],
+      ['Besides a bedtime routine, what helps you sleep well?', ['moving and playing every day', 'a bright screen in bed', 'a big snack at bedtime'], 'moving and playing every day', 'Moving and playing every day helps your body sleep well at night.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
   'hk-plate': (rng) => {
-    const Q = [['Which is a fruit?', ['an apple', 'a cookie', 'bread'], 'an apple', 'Apples, bananas, grapes and berries are fruits. Sweet, and from a plant.'], ['When should we have sweets?', ['sometimes', 'every meal', 'never'], 'sometimes', 'Sweets are for sometimes, not for every day. Water is for every day.'],['Which should fill half your plate?', ['fruits and vegetables', 'candy', 'nothing'], 'fruits and vegetables', 'Half the plate is fruits and vegetables, then grains and protein. Colors on the plate mean vitamins.'],
-      ['Which is a vegetable?', ['a carrot', 'a cookie', 'a cracker'], 'a carrot', 'Carrots, peas, broccoli and spinach are vegetables. They grow in the ground or on a plant.'],
-      ['What should you drink most?', ['water', 'soda', 'juice all day'], 'water', 'Water, most of the time. Milk is good too. Soda is sugar with bubbles.']];
+    // Full standard (pass KB): explanations say why; dairy, a healthy snack and the body being mostly water join from the lesson
+    // (TEKS K.6A, K.6C, K.6D).
+    const Q = [['Which is a fruit?', ['an apple', 'a cookie', 'bread'], 'an apple', 'An apple is a fruit. Fruits grow on plants, and many have seeds inside, like apples, grapes and berries.'],
+      ['When should we have sweets?', ['sometimes', 'every meal', 'never'], 'sometimes', 'Sweets are for sometimes, not every day, because they are mostly sugar.'],
+      ['Which should fill half your plate?', ['fruits and vegetables', 'candy', 'nothing'], 'fruits and vegetables', 'Fruits and vegetables fill half your plate, with grains and protein in the other half.'],
+      ['Which is a vegetable?', ['a carrot', 'a cookie', 'a cracker'], 'a carrot', 'A carrot is a vegetable. Carrots, peas, broccoli and spinach are parts of plants we eat.'],
+      ['What should you drink most?', ['water', 'soda', 'juice all day'], 'water', 'Drink water most of the time, because your body is mostly water. Milk is good too, and soda is mostly sugar.'],
+      ['Which food is dairy?', ['yogurt', 'an apple', 'rice'], 'yogurt', 'Yogurt is dairy, like milk and cheese. Dairy is one of the foods that help your body grow.'],
+      ['Which is a healthy snack?', ['an apple', 'a candy bar', 'a can of soda'], 'an apple', 'An apple is a healthy snack. Candy and soda are mostly sugar, so they are for sometimes.'],
+      ['Your body is mostly made of what?', ['water', 'sugar', 'sand'], 'water', 'Your body is mostly water, so you need to drink water every day.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },

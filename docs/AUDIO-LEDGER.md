@@ -1,6 +1,6 @@
 # Audio ledger
 
-Generated 2026-10-04 by tools/audio-ledger.mjs. Every clip the app can play in a recorded voice is a row of docs/AUDIO-LEDGER.csv: its key (the file name, audio/<key>.mp3, that the app already looks for), its group (the story or lesson it belongs to) and the words with their Eleven v4 audio tags. 6951 clips, 1,276,363 characters in all; the longest clip is 508 characters and the longest whole story 2,751, far under Eleven v4's 10,000 a request. 144 stories carry hand-written tags so far (the writing review adds them course by course); the rest open with their age band's voice direction only.
+Generated 2026-10-04 by tools/audio-ledger.mjs. Every clip the app can play in a recorded voice is a row of docs/AUDIO-LEDGER.csv: its key (the file name, audio/<key>.mp3, that the app already looks for), its group (the story or lesson it belongs to) and the words with their Eleven v4 audio tags. 6950 clips, 1,276,551 characters in all; the longest clip is 508 characters and the longest whole story 2,751, far under Eleven v4's 10,000 a request. 144 stories carry hand-written tags so far (the writing review adds them course by course); the rest open with their age band's voice direction only.
 
 ## How to make the audio
 
@@ -17,7 +17,7 @@ ElevenLabs counts characters, tags included, so this is the size of each part of
 
 | Band | Clips | Characters |
 |---|---|---|
-| Pre-K to grade 2 | 2895 | 324,703 |
+| Pre-K to grade 2 | 2894 | 324,891 |
 | Grades 3 to 5 | 1263 | 278,553 |
 | Grades 6 to 8 | 1138 | 272,072 |
 | Grades 9 to college | 1655 | 401,035 |
@@ -41,7 +41,7 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 |---|---|
 | story title | 615 |
 | story | 3887 |
-| lesson line | 1531 |
+| lesson line | 1530 |
 | long story title | 102 |
 | long story | 816 |
 
@@ -1102,7 +1102,7 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 - S1226-1: [water running] Mia had gold glitter on both hands from art class. She rinsed them with water, and some of the glitter stayed.
 - S1226-2: [puzzled] Rinsing was not enough, because the glitter hid between her fingers and around her thumbs.
 - S1226-3: [scrubbing, counting] So she used soap and counted to twenty. She scrubbed between the fingers, around the thumbs and under the nails. [pleased] Then it was gone.
-- S1226-4: [gently] Germs are like glitter, said the nurse. You cannot see them, but they hide in exactly the same places.
+- S1226-4: [gently] Germs are like glitter, said the nurse. You cannot see them, but they hide in the same kinds of places.
 - S1226-5: [steady] Mia washed before lunch and after the bathroom, with soap, a count to twenty and a rinse.
 - S1226-6: [humming a tune] She sang a song while she counted. By the time she reached twenty, the song was done and her hands were clean.
 - S1226-7: [slowly, warmly] Wash with soap before eating and after the bathroom. Count to twenty.

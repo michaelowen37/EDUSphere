@@ -220,8 +220,23 @@ function strokeLength(st, corners) {
   }
   return len;
 }
-// Where the first move heads, for the little arrow beside the start dot: along the curve's first tangent when it is round.
-const firstToward = (st, corners) => { const seg = strokeSegments(st, corners)[0]; return seg[1] || seg[3]; };
+// The little arrow beside the start dot (pass KB, Mikey's phone screenshot). Its tip lies `dist` units along the stroke itself
+// and it points the way the stroke runs there. Pass KA aimed it along the curve's first tangent, which on a circle left the
+// arrow standing off the curve as a stray mark; walking the drawn curve keeps it on the line, straight strokes as before.
+function arrowOnStroke(st, corners, dist = 16) {
+  let walked = 0;
+  for (const [p0, c1, c2, p1] of strokeSegments(st, corners)) {
+    const at = (t) => { if (!c1) return [p0[0] + (p1[0] - p0[0]) * t, p0[1] + (p1[1] - p0[1]) * t]; const u = 1 - t; return [0, 1].map((d) => u * u * u * p0[d] + 3 * u * u * t * c1[d] + 3 * u * t * t * c2[d] + t * t * t * p1[d]); };
+    let prev = p0;
+    for (let k = 1; k <= 48; k++) {
+      const pt = at(k / 48); const step = Math.hypot(pt[0] - prev[0], pt[1] - prev[1]);
+      if (step > 0 && walked + step >= dist) { const f = (dist - walked) / step; return { tip: [prev[0] + (pt[0] - prev[0]) * f, prev[1] + (pt[1] - prev[1]) * f], ux: (pt[0] - prev[0]) / step, uy: (pt[1] - prev[1]) / step }; }
+      walked += step; prev = pt;
+    }
+  }
+  const a = st[0]; const b = st[st.length - 1]; const len = Math.hypot(b[0] - a[0], b[1] - a[1]) || 1;   // a stroke shorter than dist
+  return { tip: b, ux: (b[0] - a[0]) / len, uy: (b[1] - a[1]) / len };
+}
 // The letter's real shape, faint, fitted to the guide strokes' box, so a child traces inside a letter.
 function TraceShape({ letter, def }) {
   const g = LETTER_GLYPHS[letter];
@@ -255,7 +270,7 @@ function TracePad({ letter, paths, onChange, disabled = false, tone = null }) {
           <path d={strokeD(st, cornersOf(def, i))} fill="none" stroke={C.line} strokeWidth="9" strokeLinecap="round" strokeLinejoin="round" />
           {/* the starting dot and the direction of the first move */}
           <circle cx={st[0][0]} cy={st[0][1]} r="4.5" fill={C.green} />
-          {(() => { const [a, b] = [st[0], firstToward(st, cornersOf(def, i))]; const dx = b[0] - a[0]; const dy = b[1] - a[1]; const len = Math.hypot(dx, dy) || 1; const ux = dx / len; const uy = dy / len; const tip = [a[0] + ux * 16, a[1] + uy * 16]; const l = [tip[0] - ux * 5 - uy * 3.5, tip[1] - uy * 5 + ux * 3.5]; const r = [tip[0] - ux * 5 + uy * 3.5, tip[1] - uy * 5 - ux * 3.5]; return <polygon points={`${tip.join(',')} ${l.join(',')} ${r.join(',')}`} fill={C.green} />; })()}
+          {(() => { const { tip, ux, uy } = arrowOnStroke(st, cornersOf(def, i)); const l = [tip[0] - ux * 5 - uy * 3.5, tip[1] - uy * 5 + ux * 3.5]; const r = [tip[0] - ux * 5 + uy * 3.5, tip[1] - uy * 5 - ux * 3.5]; return <polygon points={`${tip.join(',')} ${l.join(',')} ${r.join(',')}`} fill={C.green} />; })()}
         </g>
       ))}
       {paths.map((path, i) => path.length > 1
@@ -284,10 +299,10 @@ function TraceDemo({ letter, animKey = 0, pace = 'slow', nudge = 0 }) {
   const frames = strokes.map((st, i) => { const dur = lengths[i] / speed; const a = (t / cycle) * 100; const b = ((t + dur) / cycle) * 100; t += dur + 0.5; return { a, b }; });
   const css = frames.map((f, i) => `@keyframes ${id}-${i} { 0%, ${f.a.toFixed(2)}% { stroke-dashoffset: ${lengths[i].toFixed(2)}; } ${f.b.toFixed(2)}%, 100% { stroke-dashoffset: 0; } }`).join('\n');
   const points = (st) => st.map((pt) => pt.join(',')).join(' ');
-  const [a, b] = [strokes[0][0], firstToward(strokes[0], cornersOf(def, 0))];
-  const dx = b[0] - a[0]; const dy = b[1] - a[1]; const len = Math.hypot(dx, dy) || 1; const ux = dx / len; const uy = dy / len;
-  const tip = [a[0] + ux * 16, a[1] + uy * 16];
-  const wing = (side) => [tip[0] - ux * 5 + side * uy * 4, tip[1] - uy * 5 - side * ux * 4];
+  const a = strokes[0][0]; const { tip, ux, uy } = arrowOnStroke(strokes[0], cornersOf(def, 0));
+  // A small filled arrowhead inside the ink's width (pass KB): it shows on the gray guide ahead of the pen and disappears under
+  // the ink as it passes. A wider chevron left two bumps on each side of the ink once it was covered (Mikey's screenshot).
+  const wing = (side) => [tip[0] - ux * 4 + side * uy * 2.4, tip[1] - uy * 4 - side * ux * 2.4];
   return (
     <svg key={animKey} viewBox="0 0 100 100" role="img" aria-label={def.dots ? `Connect the dots to make a ${letter}` : def.line ? 'A line drawing itself' : `${letter} drawing itself`}
       style={{ width: '100%', maxWidth: 230, aspectRatio: '1 / 1', display: 'block', margin: '0 auto', background: C.surface, border: `2px solid ${C.line}`, borderRadius: 16 }}>
@@ -300,7 +315,7 @@ function TraceDemo({ letter, animKey = 0, pace = 'slow', nudge = 0 }) {
       {strokes.map((st, i) => <path key={`ink-${i}`} className="edu-trace-draw" d={strokeD(st, cornersOf(def, i))} fill="none" stroke={C.green} strokeWidth="6" strokeLinecap="round" strokeLinejoin="round"
         style={{ strokeDasharray: lengths[i], strokeDashoffset: 0, animation: `${id}-${i} ${cycle.toFixed(2)}s linear infinite` }} />)}
       <circle cx={a[0]} cy={a[1]} r="4.5" fill={C.green} />
-      {!def.dots && <polyline points={`${wing(1).join(',')} ${tip.join(',')} ${wing(-1).join(',')}`} fill="none" stroke={C.green} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />}
+      {!def.dots && <polygon data-trace-arrow points={`${wing(1).join(',')} ${tip.join(',')} ${wing(-1).join(',')}`} fill={C.green} />}
       {/* The pen: a gold dot that rides the tip of the ink. SVG motion, so it needs no script, and it is
           left out entirely when the device asks for reduced motion. */}
       {!prefersReducedMotion() && strokes.map((st, i) => (

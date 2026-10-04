@@ -41,6 +41,30 @@ ok('the cue goes away once the Next row shows', !m.cue, m);
 await page.getByRole('button', { name: 'Next', exact: true }).first().click({ force: true }); await page.waitForTimeout(1500);
 m = await look();
 ok('on the next line the cue comes back whenever the row is out of sight again', m.navTop > m.H ? m.cue : !m.cue, m);
+// The arrow beside each start dot sits on its stroke (pass KB, Mikey's phone screenshot: a stray mark beside the circle). In
+// First marks, Tracing shapes and Tracing numbers, every line's drawing is checked: the arrow's tip must lie inside the gray
+// guide stroke, which SVG can test directly (isPointInStroke uses the guide's own width).
+const arrowsOnLine = () => page.evaluate(() => [...document.querySelectorAll('svg[role="img"]')].filter((s) => /drawing itself$/.test(s.getAttribute('aria-label') || '')).map((s) => {
+  const guide = s.querySelector('path[stroke-width="9"]'); const arrow = s.querySelector('[data-trace-arrow]');
+  if (!guide || !arrow) return null;
+  // The tip must sit on the stroke's middle (within 1.5 units) and the whole arrowhead inside the ink's width (6), so nothing
+  // pokes out once the ink covers it (pass KB: a chevron wider than the ink left two bumps on the circle in Mikey's screenshot).
+  const inside = (pt, w) => { guide.setAttribute('stroke-width', String(w)); const r = guide.isPointInStroke(new DOMPoint(pt.x, pt.y)); guide.setAttribute('stroke-width', '9'); return r; };
+  const [w1, tip, w2] = [0, 1, 2].map((k) => arrow.points.getItem(k));
+  return { label: s.getAttribute('aria-label'), curved: / C /.test(guide.getAttribute('d')), on: inside(tip, 3) && inside(w1, 6) && inside(w2, 6) };
+}).filter(Boolean));
+const seen = []; let curved = 0;
+for (const id of ['first-marks', 'tracing-shapes', 'tracing-numbers']) {
+  await page.evaluate((m) => window.__eduTest.openModule(m), id); await page.waitForFunction(() => window.__eduTest.screen === 'lesson'); await page.waitForTimeout(900);
+  for (let step = 0; step < 14; step++) {
+    for (const r of await arrowsOnLine()) { seen.push({ id, ...r }); if (r.curved) curved++; }
+    const next = page.getByRole('button', { name: 'Next', exact: true }); if (!(await next.count())) break;
+    await next.first().click({ force: true }); await page.waitForTimeout(700);
+  }
+}
+const off = seen.filter((r) => !r.on);
+console.log(`checked ${seen.length} start arrows, ${curved} of them on curves`);
+ok('every start arrow in the tracing lessons sits on its stroke, curves included', seen.length >= 12 && curved >= 4 && off.length === 0, { checked: seen.length, curved, off });
 await browser.close();
 console.log(`\n${passed} passed, ${failed} failed`);
 process.exitCode = failed ? 1 : 0;

@@ -137,3 +137,9 @@ Mikey's example: the pre-K 3 Triangles lesson says a slice of pizza is almost a 
 - Read every example against its caption. Two more disagreed (four dots captioned five votes, a cup captioned a drop of water).
 - Keep each claim true as said. Nobody must have an apple; an apple is a need because it is food, and that reason also tells it from candy.
 - When the review finds a standard no lesson teaches, earmark it in docs/NEW-CHAT.md rather than build it (Mikey: accuracy of what exists comes first).
+
+## Learned in pass KB (Taking care of me, and the trace arrow)
+
+- A plan's source line can name the right section while its codes come from somewhere else. Read each code's words in the named section; the kindergarten health codes K.1A and K.1B were not in §115.12 at all.
+- A read-aloud lesson without a script reads its paragraphs out. Write it a script for the ear when the review reaches it, as this pass did for all four.
+- When a picture follows a curve, place what sits on it along the drawn curve, not along a straight tangent (the trace arrow).

@@ -190,6 +190,38 @@ function FractionBar({ parts, shaded, color = C.green, height = 44 }) {
 // green starting dot and a small arrow on each. The finger's path is collected in the
 // pad's own 100 by 100 coordinates, so a check can be done by arithmetic regardless of
 // screen size. Works with a mouse too, but it is built for glass.
+// Round strokes drawn round (pass KA, Mikey's phone screenshot of First marks). The points of a stroke are where a finger must
+// pass, and straight lines joined them, so the circle showed eight corners and the wave looked like a zigzag. A stroke that
+// TRACE_LETTERS marks in `curve` is drawn as a smooth Catmull-Rom curve through the same points, sharp only at the corners it
+// lists (a closed loop with none joins smoothly where it starts). Straight strokes draw exactly as before.
+const cornersOf = (def, i) => (def && def.curve && def.curve[i]) || null;
+function strokeSegments(st, corners) {
+  const n = st.length; const out = [];
+  if (!corners) { for (let i = 0; i < n - 1; i++) out.push([st[i], null, null, st[i + 1]]); return out; }
+  const closed = n > 3 && corners.length === 0 && st[0][0] === st[n - 1][0] && st[0][1] === st[n - 1][1];
+  const sharp = (i) => (i === 0 || i === n - 1 ? !closed : corners.includes(i));
+  const at = (i) => (closed ? st[(((i % (n - 1)) + (n - 1)) % (n - 1))] : st[Math.max(0, Math.min(n - 1, i))]);
+  for (let i = 0; i < n - 1; i++) {
+    const p0 = st[i]; const p1 = st[i + 1]; const prev = sharp(i) ? p0 : at(i - 1); const next = sharp(i + 1) ? p1 : at(i + 2);
+    out.push([p0, [p0[0] + (p1[0] - prev[0]) / 6, p0[1] + (p1[1] - prev[1]) / 6], [p1[0] - (next[0] - p0[0]) / 6, p1[1] - (next[1] - p0[1]) / 6], p1]);
+  }
+  return out;
+}
+function strokeD(st, corners) {
+  const f = (v) => +v.toFixed(2);
+  return `M ${f(st[0][0])} ${f(st[0][1])} ` + strokeSegments(st, corners).map(([, c1, c2, p1]) => (c1 ? `C ${f(c1[0])} ${f(c1[1])} ${f(c2[0])} ${f(c2[1])} ${f(p1[0])} ${f(p1[1])}` : `L ${f(p1[0])} ${f(p1[1])}`)).join(' ');
+}
+function strokeLength(st, corners) {
+  let len = 0;
+  for (const [p0, c1, c2, p1] of strokeSegments(st, corners)) {
+    if (!c1) { len += Math.hypot(p1[0] - p0[0], p1[1] - p0[1]); continue; }
+    let prev = p0;
+    for (let k = 1; k <= 16; k++) { const t = k / 16; const u = 1 - t; const pt = [0, 1].map((d) => u * u * u * p0[d] + 3 * u * u * t * c1[d] + 3 * u * t * t * c2[d] + t * t * t * p1[d]); len += Math.hypot(pt[0] - prev[0], pt[1] - prev[1]); prev = pt; }
+  }
+  return len;
+}
+// Where the first move heads, for the little arrow beside the start dot: along the curve's first tangent when it is round.
+const firstToward = (st, corners) => { const seg = strokeSegments(st, corners)[0]; return seg[1] || seg[3]; };
 // The letter's real shape, faint, fitted to the guide strokes' box, so a child traces inside a letter.
 function TraceShape({ letter, def }) {
   const g = LETTER_GLYPHS[letter];
@@ -220,10 +252,10 @@ function TracePad({ letter, paths, onChange, disabled = false, tone = null }) {
       <TraceShape letter={letter} def={def} />
       {def && !def.dots && def.strokes.map((st, i) => (
         <g key={i}>
-          <polyline points={st.map((p) => p.join(',')).join(' ')} fill="none" stroke={C.line} strokeWidth="9" strokeLinecap="round" strokeLinejoin="round" />
+          <path d={strokeD(st, cornersOf(def, i))} fill="none" stroke={C.line} strokeWidth="9" strokeLinecap="round" strokeLinejoin="round" />
           {/* the starting dot and the direction of the first move */}
           <circle cx={st[0][0]} cy={st[0][1]} r="4.5" fill={C.green} />
-          {(() => { const [a, b] = [st[0], st[1]]; const dx = b[0] - a[0]; const dy = b[1] - a[1]; const len = Math.hypot(dx, dy) || 1; const ux = dx / len; const uy = dy / len; const tip = [a[0] + ux * 16, a[1] + uy * 16]; const l = [tip[0] - ux * 5 - uy * 3.5, tip[1] - uy * 5 + ux * 3.5]; const r = [tip[0] - ux * 5 + uy * 3.5, tip[1] - uy * 5 - ux * 3.5]; return <polygon points={`${tip.join(',')} ${l.join(',')} ${r.join(',')}`} fill={C.green} />; })()}
+          {(() => { const [a, b] = [st[0], firstToward(st, cornersOf(def, i))]; const dx = b[0] - a[0]; const dy = b[1] - a[1]; const len = Math.hypot(dx, dy) || 1; const ux = dx / len; const uy = dy / len; const tip = [a[0] + ux * 16, a[1] + uy * 16]; const l = [tip[0] - ux * 5 - uy * 3.5, tip[1] - uy * 5 + ux * 3.5]; const r = [tip[0] - ux * 5 + uy * 3.5, tip[1] - uy * 5 - ux * 3.5]; return <polygon points={`${tip.join(',')} ${l.join(',')} ${r.join(',')}`} fill={C.green} />; })()}
         </g>
       ))}
       {paths.map((path, i) => path.length > 1
@@ -243,7 +275,7 @@ function TraceDemo({ letter, animKey = 0, pace = 'slow', nudge = 0 }) {
   const def = TRACE_LETTERS[letter];
   if (!def) return null;
   const strokes = def.strokes;
-  const lengths = strokes.map((st) => st.slice(1).reduce((acc, p, i) => acc + Math.hypot(p[0] - st[i][0], p[1] - st[i][1]), 0));
+  const lengths = strokes.map((st, i) => strokeLength(st, cornersOf(def, i)) + (cornersOf(def, i) ? 1 : 0)); // a curve's length is sampled, plus a unit so its dash always covers it
   const speed = PACES[Math.max(0, Math.min(2, (pace === 'quick' ? 2 : 1) + nudge))]; // the lesson's own pace, nudged slower or faster by the student
   const rest = 1.8; // seconds with the finished shape before it draws again
   const cycle = lengths.reduce((a, b) => a + b, 0) / speed + 0.5 * strokes.length + rest;
@@ -252,7 +284,7 @@ function TraceDemo({ letter, animKey = 0, pace = 'slow', nudge = 0 }) {
   const frames = strokes.map((st, i) => { const dur = lengths[i] / speed; const a = (t / cycle) * 100; const b = ((t + dur) / cycle) * 100; t += dur + 0.5; return { a, b }; });
   const css = frames.map((f, i) => `@keyframes ${id}-${i} { 0%, ${f.a.toFixed(2)}% { stroke-dashoffset: ${lengths[i].toFixed(2)}; } ${f.b.toFixed(2)}%, 100% { stroke-dashoffset: 0; } }`).join('\n');
   const points = (st) => st.map((pt) => pt.join(',')).join(' ');
-  const [a, b] = [strokes[0][0], strokes[0][1]];
+  const [a, b] = [strokes[0][0], firstToward(strokes[0], cornersOf(def, 0))];
   const dx = b[0] - a[0]; const dy = b[1] - a[1]; const len = Math.hypot(dx, dy) || 1; const ux = dx / len; const uy = dy / len;
   const tip = [a[0] + ux * 16, a[1] + uy * 16];
   const wing = (side) => [tip[0] - ux * 5 + side * uy * 4, tip[1] - uy * 5 - side * ux * 4];
@@ -264,8 +296,8 @@ function TraceDemo({ letter, animKey = 0, pace = 'slow', nudge = 0 }) {
       {def.dots && strokes[0].map((pt, i) => (i === strokes[0].length - 1 && pt.join() === strokes[0][0].join() ? null : (
         <g key={`dot-${i}`}><circle cx={pt[0]} cy={pt[1]} r="5" fill={C.gold} /><text x={pt[0]} y={pt[1] - 7} fontSize="7" textAnchor="middle" fill={C.ink} fontFamily={FONT}>{i + 1}</text></g>
       )))}
-      {!def.dots && strokes.map((st, i) => <polyline key={`guide-${i}`} points={points(st)} fill="none" stroke={C.line} strokeWidth="9" strokeLinecap="round" strokeLinejoin="round" />)}
-      {strokes.map((st, i) => <polyline key={`ink-${i}`} className="edu-trace-draw" points={points(st)} fill="none" stroke={C.green} strokeWidth="6" strokeLinecap="round" strokeLinejoin="round"
+      {!def.dots && strokes.map((st, i) => <path key={`guide-${i}`} d={strokeD(st, cornersOf(def, i))} fill="none" stroke={C.line} strokeWidth="9" strokeLinecap="round" strokeLinejoin="round" />)}
+      {strokes.map((st, i) => <path key={`ink-${i}`} className="edu-trace-draw" d={strokeD(st, cornersOf(def, i))} fill="none" stroke={C.green} strokeWidth="6" strokeLinecap="round" strokeLinejoin="round"
         style={{ strokeDasharray: lengths[i], strokeDashoffset: 0, animation: `${id}-${i} ${cycle.toFixed(2)}s linear infinite` }} />)}
       <circle cx={a[0]} cy={a[1]} r="4.5" fill={C.green} />
       {!def.dots && <polyline points={`${wing(1).join(',')} ${tip.join(',')} ${wing(-1).join(',')}`} fill="none" stroke={C.green} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />}
@@ -273,7 +305,7 @@ function TraceDemo({ letter, animKey = 0, pace = 'slow', nudge = 0 }) {
           left out entirely when the device asks for reduced motion. */}
       {!prefersReducedMotion() && strokes.map((st, i) => (
         <circle key={`pen-${i}`} r="4" fill={C.gold} stroke="#fff" strokeWidth="1.5" opacity="0">
-          <animateMotion dur={`${cycle.toFixed(2)}s`} repeatCount="indefinite" calcMode="linear" keyPoints="0;0;1;1" keyTimes={`0;${(frames[i].a / 100).toFixed(4)};${(frames[i].b / 100).toFixed(4)};1`} path={`M ${st[0][0]} ${st[0][1]} ` + st.slice(1).map((pt) => `L ${pt[0]} ${pt[1]}`).join(' ')} />
+          <animateMotion dur={`${cycle.toFixed(2)}s`} repeatCount="indefinite" calcMode="linear" keyPoints="0;0;1;1" keyTimes={`0;${(frames[i].a / 100).toFixed(4)};${(frames[i].b / 100).toFixed(4)};1`} path={strokeD(st, cornersOf(def, i))} />
           <animate attributeName="opacity" dur={`${cycle.toFixed(2)}s`} repeatCount="indefinite" calcMode="discrete" values="0;1;0;0" keyTimes={`0;${(frames[i].a / 100).toFixed(4)};${(frames[i].b / 100).toFixed(4)};1`} />
         </circle>
       ))}
@@ -454,6 +486,17 @@ function IconPic({ name, size = 90 }) {
     // thing beside the shape. The door is tall and narrow (two long sides, two short); the window's four sides are equal.
     door: <g><rect x="31" y="10" width="38" height="80" rx="2" fill="#A9743F" stroke="#6E4A26" strokeWidth="3" /><rect x="37" y="18" width="26" height="28" rx="1" fill="none" stroke="#6E4A26" strokeWidth="2" opacity="0.55" /><rect x="37" y="53" width="26" height="30" rx="1" fill="none" stroke="#6E4A26" strokeWidth="2" opacity="0.55" /><circle cx="61" cy="50" r="3.6" fill={gold} stroke="#8A6A1F" strokeWidth="1" /></g>,
     window: <g><rect x="18" y="18" width="64" height="64" fill="#CFEAF7" stroke={brown} strokeWidth="5" strokeLinejoin="round" /><line x1="50" y1="18" x2="50" y2="82" stroke={brown} strokeWidth="4" /><line x1="18" y1="50" x2="82" y2="50" stroke={brown} strokeWidth="4" /><path d="M25 25 L39 25 L25 39 Z" fill="#FFFFFF" opacity="0.7" /><path d="M57 57 L71 57 L57 71 Z" fill="#FFFFFF" opacity="0.45" /></g>,
+    // A feather, a bucket and a small cup (pass JX): drawn beside the rock and each other in kindergarten Longer and heavier.
+    // The cup sits small in its box, so beside the bucket a child sees which has more room inside.
+    feather: <g><path d="M74 12 C52 18 34 38 30 62 C29 70 27 78 24 86 C36 74 46 68 58 56 C72 42 78 26 74 12 Z" fill="#EEE7D6" stroke="#A89A7C" strokeWidth="2.5" strokeLinejoin="round" /><path d="M24 88 C40 60 56 38 72 16" fill="none" stroke="#8C7D60" strokeWidth="2.5" strokeLinecap="round" /><path d="M44 50 L56 46 M38 62 L50 58 M50 38 L62 34" stroke="#C9BEA4" strokeWidth="2" strokeLinecap="round" /></g>,
+    bucket: <g><path d="M14 36 Q50 -6 86 36" fill="none" stroke="#6B706A" strokeWidth="3.5" strokeLinecap="round" /><path d="M16 36 L84 36 L76 90 L24 90 Z" fill="#C9573E" stroke="#8E3A27" strokeWidth="3" strokeLinejoin="round" /><ellipse cx="50" cy="36" rx="34" ry="8" fill="#8EC5EA" stroke="#8E3A27" strokeWidth="2.5" /><path d="M22 58 L78 58" stroke="#E07A62" strokeWidth="3" opacity="0.6" /></g>,
+    teacup: <g><path d="M38 66 L62 66 L60 84 Q59 88 54 88 L46 88 Q41 88 40 84 Z" fill="#4A86C5" stroke="#2F5F91" strokeWidth="2.5" strokeLinejoin="round" /><path d="M61 70 Q70 71 69 77 Q68 82 60 82" fill="none" stroke="#2F5F91" strokeWidth="3" strokeLinecap="round" /><ellipse cx="50" cy="66" rx="12" ry="3" fill="#8EC5EA" stroke="#2F5F91" strokeWidth="1.5" /></g>,
+    // A star, soil and wind (pass JY): drawn for kindergarten Looking at the world, where the day and night lesson says the stars
+    // hide in the day, the plant lesson says soil holds nutrients (specks in a mound, a sprout on top) and the weather lesson
+    // says wind is moving air (three swirling lines).
+    star: <path d="M50 12 L60 38 L88 39 L66 56 L74 84 L50 68 L26 84 L34 56 L12 39 L40 38 Z" fill={gold} stroke="#D99A2B" strokeWidth="3" strokeLinejoin="round" />,
+    soil: <g><path d="M10 80 Q50 44 90 80 Z" fill={brown} /><path d="M10 80 L90 80" stroke="#6B4321" strokeWidth="4" strokeLinecap="round" />{[[30, 74], [42, 68], [56, 70], [68, 75], [50, 77]].map(([x, y], i) => <circle key={i} cx={x} cy={y} r="2.6" fill="#E8C9A0" />)}<path d="M50 62 L50 36" stroke={green} strokeWidth="4" strokeLinecap="round" /><path d="M50 46 Q38 36 30 42 Q40 50 50 46 Z" fill={green} /><path d="M50 41 Q62 30 72 36 Q60 46 50 41 Z" fill={green} /></g>,
+    wind: <g fill="none" stroke={blue} strokeWidth="5" strokeLinecap="round"><path d="M14 36 H62 a10 10 0 1 0 -10 -10" /><path d="M14 54 H76 a10 10 0 1 1 -10 10" /><path d="M14 72 H48" /></g>,
     sun: <g><defs><radialGradient id="eduSunG" cx="40%" cy="38%" r="65%"><stop offset="0" stopColor="#FFF1B8" /><stop offset="0.6" stopColor={gold} /><stop offset="1" stopColor="#D99A2B" /></radialGradient></defs><circle cx="50" cy="50" r="30" fill={gold} opacity="0.18" /><circle cx="50" cy="50" r="20" fill="url(#eduSunG)" />{[0, 45, 90, 135, 180, 225, 270, 315].map((a) => <line key={a} x1={50 + 28 * Math.cos(a * Math.PI / 180)} y1={50 + 28 * Math.sin(a * Math.PI / 180)} x2={50 + 40 * Math.cos(a * Math.PI / 180)} y2={50 + 40 * Math.sin(a * Math.PI / 180)} stroke={gold} strokeWidth="5" strokeLinecap="round" />)}</g>,
     // The moon (pass IT): the old path's two arcs fell onto the same half-circle and drew nothing. Now a crescent, an outer
     // half-circle and a flatter inner arc.
@@ -567,7 +610,8 @@ function PictureInner({ visual, animate = false, animKey = 0, nudge = 0 }) {
   if (visual.kind === 'pattern') return <div key={animKey} className={animate ? 'edu-rise' : undefined} style={{ padding: '6px 0' }}><PatternRow items={visual.items} colour={visual.colour || 'green'} /></div>;
   if (visual.kind === 'solid') return <div key={animKey} className={animate ? 'edu-drift' : undefined} style={{ padding: '6px 0' }}><SolidPic name={visual.name} size={110} /></div>;
   if (visual.kind === 'tenframe') return <div key={animKey} className={animate ? 'edu-rise' : undefined} style={{ padding: '6px 0' }}><TenFrame filled={visual.filled} /></div>;
-  if (visual.kind === 'bars') return <div style={{ padding: '6px 0', display: 'grid', gap: 10 }}>{visual.lengths.map((n, i) => <BarPic key={`${animKey}-${i}`} length={n} />)}</div>;
+  // Towers (pass JX): with vertical set, the bars stand side by side on one floor, so a lesson can compare heights.
+  if (visual.kind === 'bars') return <div style={visual.vertical ? { padding: '6px 0', display: 'flex', gap: 28, justifyContent: 'center', alignItems: 'flex-end' } : { padding: '6px 0', display: 'grid', gap: 10 }}>{visual.lengths.map((n, i) => <BarPic vertical={!!visual.vertical} key={`${animKey}-${i}`} length={n} />)}</div>;
   if (visual.kind === 'letters') {
     // Words and expressions ("ethos pathos logos", "5x + 3 = 2x + 15") are shown as one centered
     // line that wraps. Only short runs of single letters are spelled out large, one by one.
@@ -1275,6 +1319,9 @@ html, body { overflow-x: hidden; }
 .edu-stress { animation: edu-stress 1.6s ease-in-out both; }
 @keyframes edu-pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.025); } }
 .edu-pulse { animation: edu-pulse 1.6s ease-in-out infinite; }
+@keyframes edu-chevron { 0%, 55%, 100% { opacity: 0.22; } 22% { opacity: 1; } }
+.edu-chevron { animation: edu-chevron 1.2s ease-in-out infinite; opacity: 0.22; }
+@media (prefers-reduced-motion: reduce) { .edu-chevron { animation: none !important; opacity: 1 !important; } }
 /* The beat never stops: a card that is open simply turns it down to nothing with --beat, so it
    is still on the same stroke as every other card when it comes back. */
 /* The ring is a light, bright green (Mikey, 2026-09-24), deeper in the light theme so it still shows on ivory. */
@@ -2354,6 +2401,34 @@ function scrollToTop(outer) {
 // pins a column of invisible 200-pixel probes down the frame and asks the browser how much of each is on screen; the first and
 // last probes that show give the top and bottom to within a few pixels, whichever way the page around the frame has scrolled.
 const BAND_STEP = 200; let bandWatch = null; const bandSeen = [];
+// The scroll cue (pass KA, Mikey's phone screenshots). On a phone a pre-reader's lesson picture, words and speaker fill the
+// screen, and the row with Next and the star sits below it, where a child who cannot read does not know to look. While that row
+// is below what shows, three arrows stacked inside one another pulse in turn, top to bottom, in a round button at the bottom of
+// the screen, and a tap scrolls the row into view. It sits in the bottom right corner, where the star appears, so it never
+// covers the speaker button in the middle or the words above it (pass KA). It watches the page and any box the app scrolls in (visibleBand), comes
+// back when a new line starts at the top, and holds still when the device asks for reduced motion.
+function ScrollCue({ target, watch }) {
+  const [show, setShow] = useState(false);
+  useEffect(() => {
+    if (typeof window === 'undefined') return undefined;
+    let frame = 0;
+    const check = () => { frame = 0; const el = document.querySelector(target); if (!el) { setShow(false); return; } const r = el.getBoundingClientRect(); const band = visibleBand(); setShow(r.top > band.bottom - 24); };
+    const soon = () => { if (!frame) frame = window.requestAnimationFrame(check); };
+    const timers = [60, 450, 1200].map((ms) => setTimeout(check, ms));
+    window.addEventListener('scroll', soon, true); window.addEventListener('resize', soon);
+    return () => { timers.forEach(clearTimeout); if (frame) window.cancelAnimationFrame(frame); window.removeEventListener('scroll', soon, true); window.removeEventListener('resize', soon); };
+  }, [target, watch]);
+  if (!show) return null;
+  const go = () => { const el = document.querySelector(target); if (el) el.scrollIntoView({ behavior: prefersReducedMotion() ? 'auto' : 'smooth', block: 'end' }); };
+  return (
+    <button type="button" onClick={go} aria-label="Scroll down to the next button" data-scroll-cue
+      style={{ position: 'fixed', right: 'calc(14px + env(safe-area-inset-right, 0px))', bottom: 'calc(14px + env(safe-area-inset-bottom, 0px))', zIndex: 60, width: 58, height: 70, borderRadius: 29, border: `2px solid ${C.gold}`, background: C.surface, boxShadow: '0 6px 18px rgba(0,0,0,0.28)', padding: 0, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <svg viewBox="0 0 40 50" width="34" height="44" aria-hidden="true">
+        {[0, 1, 2].map((k) => <polyline key={k} className="edu-chevron" points={`8,${7 + k * 13} 20,${18 + k * 13} 32,${7 + k * 13}`} fill="none" stroke={C.gold} strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" style={{ animationDelay: `${k * 0.2}s` }} />)}
+      </svg>
+    </button>
+  );
+}
 function visibleBand() {
   const H = typeof window === 'undefined' ? 800 : window.innerHeight;
   const fallback = { top: 0, bottom: Math.min(H, (typeof window !== 'undefined' && window.screen && window.screen.availHeight) || H) };
@@ -8161,7 +8236,7 @@ function EduSphereScreens() {
             <p style={{ margin: 0, fontSize: 14, color: C.muted }}>Reading aloud is not available in this preview.</p>
           )}
         </div>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div data-lesson-nav style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', scrollMarginBottom: 28 }}>
           <BigTap dir="back" label="Go back" disabled={lessonStep === 0} onClick={() => setLessonStep(Math.max(0, lessonStep - 1))} />
           <div style={{ display: 'flex', gap: 6 }}>
             {script.map((_, i) => <span key={i} style={{ width: 9, height: 9, borderRadius: 999, background: i === lessonStep ? C.green : C.line }} />)}
@@ -8177,6 +8252,7 @@ function EduSphereScreens() {
             <BigTap dir="next" label="Next" onClick={() => setLessonStep(lessonStep + 1)} />
           )}
         </div>
+        <ScrollCue target="[data-lesson-nav]" watch={`${moduleId}-${lessonStep}`} />
       </div></div>
     );
   }

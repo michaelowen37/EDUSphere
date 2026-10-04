@@ -1,6 +1,6 @@
 # Audio ledger
 
-Generated 2026-10-04 by tools/audio-ledger.mjs. Every clip the app can play in a recorded voice is a row of docs/AUDIO-LEDGER.csv: its key (the file name, audio/<key>.mp3, that the app already looks for), its group (the story or lesson it belongs to) and the words with their Eleven v4 audio tags. 6874 clips, 1,266,888 characters in all; the longest clip is 508 characters and the longest whole story 2,751, far under Eleven v4's 10,000 a request. 144 stories carry hand-written tags so far (the writing review adds them course by course); the rest open with their age band's voice direction only.
+Generated 2026-10-04 by tools/audio-ledger.mjs. Every clip the app can play in a recorded voice is a row of docs/AUDIO-LEDGER.csv: its key (the file name, audio/<key>.mp3, that the app already looks for), its group (the story or lesson it belongs to) and the words with their Eleven v4 audio tags. 6951 clips, 1,276,363 characters in all; the longest clip is 508 characters and the longest whole story 2,751, far under Eleven v4's 10,000 a request. 144 stories carry hand-written tags so far (the writing review adds them course by course); the rest open with their age band's voice direction only.
 
 ## How to make the audio
 
@@ -17,7 +17,7 @@ ElevenLabs counts characters, tags included, so this is the size of each part of
 
 | Band | Clips | Characters |
 |---|---|---|
-| Pre-K to grade 2 | 2818 | 315,228 |
+| Pre-K to grade 2 | 2895 | 324,703 |
 | Grades 3 to 5 | 1263 | 278,553 |
 | Grades 6 to 8 | 1138 | 272,072 |
 | Grades 9 to college | 1655 | 401,035 |
@@ -41,7 +41,7 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 |---|---|
 | story title | 615 |
 | story | 3887 |
-| lesson line | 1454 |
+| lesson line | 1531 |
 | long story title | 102 |
 | long story | 816 |
 
@@ -95,7 +95,7 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 - S86-4: When he came back after lunch, the rock was exactly where he had left it. [surprised] But the snail was gone. All that was left was a silver trail.
 - S86-5: [thoughtful] The snail grew, and ate, and moved. It needed water and food to do all of that. The rock needed nothing, and it never would.
 - S86-6: [warmly] A rock is not alive, but a snail is. They can look alike at first, so watch for a while, and you will know.
-- S86-7: [slowly, warmly] Living things grow and need food and water. A rock does not.
+- S86-7: [slowly, warmly] Living things need food and water, they grow, and they make more of their kind. A rock does not.
 
 ### The bean on the windowsill (S89, what-plants-need)
 
@@ -105,7 +105,7 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 - S89-4: [a cupboard door closing] Mia moved the pot into a dark cupboard, just to see what would happen. [worried] Three days later the plant drooped, and its leaves went pale.
 - S89-5: Back it went to the windowsill, with water and sun. [relieved] In a few days it stood up again and turned green.
 - S89-6: [thoughtful] The plant drank water and soaked up sunlight. Take one away and it drooped, but give it both and it grew.
-- S89-7: [slowly, warmly] A plant needs water, sun and air to grow.
+- S89-7: [slowly, warmly] A plant needs water, sunlight, air, nutrients from the soil, and room to grow.
 
 ### Two cups (S92, hot-and-cold)
 
@@ -562,7 +562,7 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 - S227-1: [a flag flapping in the wind] Up went the flag, red, white and blue, waving in the wind. Sam wanted to know what was on it, but it was too far up to see.
 - S227-2: [warmly] So the teacher brought a small one down to his desk. It was the same flag, just little.
 - S227-3: Sam counted the stripes, [slowly, counting] red, white, red, white, and got thirteen. Then he counted the stars, and that took a while. [proud] Fifty!
-- S227-4: [steady] Fifty stars for fifty states, and thirteen stripes for the first thirteen. Red, white and blue.
+- S227-4: [steady] Fifty stars for fifty states, and thirteen stripes for the thirteen colonies that became the first states. Red, white and blue.
 - S227-5: On holidays, the flag went up early, [festive] and on the Fourth of July everyone waved a little one.
 - S227-6: Sam drew the flag at home. [amused] He ran out of room for the stars at thirty, but he did his best.
 - S227-7: [slowly, warmly] Fifty stars, thirteen stripes, red, white and blue.
@@ -679,18 +679,18 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 
 ### The stick and the rock (S263, longer-and-heavier)
 
-- S263-1: [a creek babbling] Sam found a stick and a rock by the creek. He wanted to know which one was bigger. The stick was longer, but the rock was fatter, so Sam could not decide.
+- S263-1: [a creek babbling] Omar found a stick and a rock by the creek. He wanted to know which one was bigger. The stick was longer, but the rock was fatter, so Omar could not decide.
 - S263-2: [thoughtful] Bigger, it turned out, was two different things.
 - S263-3: The stick was long. When he laid it down, it reached all the way across the creek. [slowly] Longer reaches farther.
 - S263-4: The rock was heavy. He tried to lift it, [straining] and he needed both hands and a big grunt. [slowly] Heavier is harder to lift.
 - S263-5: [thoughtful] The stick was easy to lift with one hand, but it was long. The rock was short, but it was heavy.
-- S263-6: [proud] So Sam sat on the rock and held the stick up like a flag. The longer one and the heavier one, and both of them his.
+- S263-6: [proud] So Omar sat on the rock and held the stick up like a flag. The longer one and the heavier one, and both of them his.
 - S263-7: [slowly, warmly] Longer reaches farther. Heavier is harder to lift.
 
 ### The sock pile (S266, sorting)
 
-- S266-1: [playful] Ana had a mountain of clean socks to pair up. She grabbed two, a red one and a blue one, and that was no good. Two more were blue and white, and that was no good either.
-- S266-2: Every pair she grabbed was wrong, and the pile did not get any smaller. [a big sigh] Ana flopped back on the bed.
+- S266-1: [playful] Isla had a mountain of clean socks to pair up. She grabbed two, a red one and a blue one, and that was no good. Two more were blue and white, and that was no good either.
+- S266-2: Every pair she grabbed was wrong, and the pile did not get any smaller. [a big sigh] Isla flopped back on the bed.
 - S266-3: [gently] Her mom said to sort first, putting the ones that are alike together, and to match after that.
 - S266-4: [brisk, cheerful] Red socks went here, blue socks went there, and white socks went in the middle. Alike with alike, in three piles.
 - S266-5: Then she counted each pile, [slowly, counting] six red, four blue and two white. Now matching was easy, red with red.
@@ -699,28 +699,28 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 
 ### Roll, stack, point (S269, solids)
 
-- S269-1: Diego tried to stack a ball on top of a block, [a ball rolling away] and it rolled off. He tried again, and it rolled off again, even farther this time.
-- S269-2: [curious] Some shapes stack and some do not, and Diego wanted to know which was which.
+- S269-1: Mateo tried to stack a ball on top of a block, [a ball rolling away] and it rolled off. He tried again, and it rolled off again, even farther this time.
+- S269-2: [curious] Some shapes stack and some do not, and Mateo wanted to know which was which.
 - S269-3: [thoughtful] A ball rolls because it is a sphere, round all over. A block stacks because it is a cube, with flat sides all around.
 - S269-4: [a can rolling, then set upright] A can rolls when it lies on its side, but stand it up and it stacks. That shape is a cylinder, and it can do both.
 - S269-5: A party hat comes to a point at the top. That is a cone, and it sat on top of the tower [pleased] like a little roof.
-- S269-6: Cube, cube, cylinder, cone made a tower. [a ball rolling around] The ball rolled around the bottom, because a sphere cannot join a tower.
+- S269-6: Cube, cube, cylinder, cone made a tower. [a ball rolling around] The ball rolled around the bottom, because a sphere rolls right off a flat top.
 - S269-7: [slowly, warmly] Solid shapes are things you can hold, like a sphere, a cube, a cylinder and a cone.
 
 ### Partners for ten (S272, making-ten)
 
-- S272-1: [warm] Rosa had ten fingers, and her teacher said to fold three down. How many were still up? [impatient] Rosa did not want to count, because counting was slow.
+- S272-1: [warm] Hana had ten fingers, and her teacher said to fold three down. How many were still up? [impatient] Hana did not want to count, because counting was slow.
 - S272-2: [thoughtful] She looked at her hands. Three fingers were down and the rest were up, but how many was the rest?
 - S272-3: She counted them just once. [slowly] Seven. Three and seven together made ten, [delighted] so they were partners!
-- S272-4: [gently] Fold two down, said the teacher, and Rosa did. Eight were up, so two and eight were partners too.
+- S272-4: [gently] Fold two down, said the teacher, and Hana did. Eight were up, so two and eight were partners too.
 - S272-5: [rhythmic, playful] Fold five down and five stay up. Five and five. Fold one down and nine stay up. One and nine.
-- S272-6: Every number had a partner, and Rosa went through them all. After that she did not have to count anymore, [proud] because her hands knew.
+- S272-6: Every number had a partner, and Hana went through them all. After that she did not have to count anymore, [proud] because her hands knew.
 - S272-7: [slowly, warmly] Every number up to nine has a partner that makes ten.
 
 ### Two buckets (S275, more-and-fewer-10)
 
-- S275-1: [waves on a beach] Leo had two buckets of shells and wanted to know which one had more. One bucket was big, so it looked like more. His sister said no.
-- S275-2: [thoughtful] A bigger bucket does not mean more shells, so Leo had to check.
+- S275-1: [waves on a beach] Kofi had two buckets of shells and wanted to know which one had more. One bucket was big, so it looked like more. His sister said no.
+- S275-2: [thoughtful] A bigger bucket does not mean more shells, so Kofi had to check.
 - S275-3: [shells clattering] He tipped the big bucket out, lined the shells up and counted them. [slowly] Eight shells.
 - S275-4: Then he tipped the small bucket out and made another row. [slowly] He counted six shells. Six was fewer.
 - S275-5: Eight is bigger than six, so the big bucket had more after all, [amused] but only by two.

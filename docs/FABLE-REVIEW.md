@@ -116,3 +116,24 @@ Mikey's example: the pre-K 3 Triangles lesson says a slice of pizza is almost a 
 - Check a story's way of solving its problem, not only its facts. Two boys settled who had more blocks by which row was longer, the exact mistake young children make (Piaget's number conservation); matching in pairs or counting is the honest way.
 - In the early years an explanation gives its reason in the lesson's own counting words: Four dots are more than two dots, because you count past two to get to four.
 - A real thing beside a shape is worth a line of its own, with a drawn pair now (add the drawing if the app lacks it, as the door and the window were) and a P painting logged for it.
+
+## Learned in pass JX (kindergarten Counting, part two)
+
+- When a standard names something with "including" (TEKS K.7A's capacity, K.6C's flat parts of solids) and the course never teaches it, teach it and give it a question kind of its own. A citation alone claims coverage the learner never got.
+- A picture beside a counting question shows the things being counted (a group of squares, not dots standing in for them).
+- Comparing length or height needs a fair start, both lines starting at the same place and both towers on the same floor, and the lesson says so.
+- Before naming a one-off child in a story, read the names in the course's other stories. Five Counting stories gave their lead a name another Counting story already used.
+- A comparison line gets its painting logged even when the app can draw the pair (P23), so docs/PICTURE-CANDIDATES.md never grows in a pass.
+
+## Learned in pass JY (kindergarten Looking at the world)
+
+- Check which edition of a standard is in force before checking its codes. Kindergarten science cited 2017 codes after the 2021 standards replaced them, and a code can name a different skill in each edition (K.9A was living and nonliving in 2017, and it is day and night in 2021).
+- Test a definition against every example its bank uses. "It does not eat, so it is not living" was true of ice and untrue of every plant in the same bank.
+- When a standard lists what must be taught (the five needs of a plant in K.12A), teach the whole list, each item true at the child's level (nutrients are not food, since a plant makes its own).
+
+## Learned in pass JZ (kindergarten Me and my community)
+
+- An explanation that says the question back teaches nothing (Who teaches you at school? A teacher teaches you at school). Say what the person does or why the answer is right.
+- Read every example against its caption. Two more disagreed (four dots captioned five votes, a cup captioned a drop of water).
+- Keep each claim true as said. Nobody must have an apple; an apple is a need because it is food, and that reason also tells it from candy.
+- When the review finds a standard no lesson teaches, earmark it in docs/NEW-CHAT.md rather than build it (Mikey: accuracy of what exists comes first).

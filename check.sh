@@ -24,4 +24,5 @@ echo "10/13 the first week tour, card by card, and pages that open at the top"; 
 echo "11/13 back button from every screen"; timeout 200 node tests/e2e/back-sweep.mjs 2>&1 | tail -1 | tee /tmp/edu_back.txt; grep -q " 0 failed" /tmp/edu_back.txt || fail=1
 echo "12/13 dark theme: every word readable, paper screens light"; timeout 200 node tests/e2e/dark-contrast.mjs 2>&1 | tail -1 | tee /tmp/edu_dark.txt; grep -q " 0 failed" /tmp/edu_dark.txt || fail=1
 echo "13/13 standalone page keeps its data"; timeout 120 node tests/site.test.mjs 2>&1 | tail -1 | tee /tmp/edu_site.txt; grep -q " 0 failed" /tmp/edu_site.txt || fail=1
+echo "13b/13 the scroll cue on a phone lesson"; timeout 120 node tests/e2e/scroll-cue.mjs 2>&1 | tail -1 | tee /tmp/edu_cue.txt; grep -q " 0 failed" /tmp/edu_cue.txt || fail=1
 if [ "$fail" = 0 ]; then echo "ALL CHECKS PASSED"; else echo "CHECKS FAILED - read the lines above"; exit 1; fi

@@ -87,7 +87,7 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
     else if (q.visual && q.visual.kind === 'item') { if (!q.visual.shape || !q.visual.colour) problems.push('item incomplete'); }
     else if (q.visual && q.visual.kind === 'pattern') { if (!Array.isArray(q.visual.items) || (q.visual.counting ? q.visual.items.length < 1 : q.visual.items.length < 3)) problems.push('pattern too short'); } // a counting row (pass HS) may hold one shape
     else if (q.visual && q.visual.kind === 'clock') { if (!(q.visual.hour >= 1 && q.visual.hour <= 12 && [0, 15, 30, 45].includes(q.visual.minute))) problems.push('clock out of range'); }
-    else if (q.visual && q.visual.kind === 'icon') { if (!['sun', 'moon', 'cloud', 'rain', 'snow', 'plant', 'tree', 'flower', 'fish', 'bird', 'rock', 'drop', 'ice', 'fire', 'magnet', 'clip', 'nail', 'cup', 'bus', 'dog', 'hat', 'bed', 'fan'].includes(q.visual.name)) problems.push('unknown icon'); }
+    else if (q.visual && q.visual.kind === 'icon') { if (!['sun', 'moon', 'cloud', 'rain', 'snow', 'plant', 'tree', 'flower', 'fish', 'bird', 'rock', 'drop', 'ice', 'fire', 'magnet', 'clip', 'nail', 'cup', 'bus', 'dog', 'hat', 'bed', 'fan', 'soil'].includes(q.visual.name)) problems.push('unknown icon'); }
     else if (q.visual && (q.visual.kind === 'pic' || q.visual.kind === 'art')) { if (!q.visual.name) problems.push('picture incomplete'); }
     else if (q.visual && q.visual.kind === 'numberline') { if (!(q.visual.from < q.visual.to && (q.visual.marks || [q.visual.mark]).every((v) => v === null || v === undefined || (v >= q.visual.from && v <= q.visual.to)))) problems.push('number line out of range'); }
     else if (q.visual && (q.visual.kind === 'tri' || q.visual.kind === 'para')) { if (!(q.visual.base > 0 && (q.visual.height === '?' || q.visual.height > 0))) problems.push('shape measures missing'); }
@@ -159,7 +159,7 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
     if (genId === 'kl-taller' && num(q.answer, 'tower') !== Math.max(...q.choices.map((c) => num(c, 'tower')))) problems.push('taller wrong');
     if (genId === 'kl-heavier-words' && !/rock|book|bucket|chair|car|brick/.test(q.answer)) problems.push('heavier picked the light thing');
     if (genId === 'ko-belongs' && q.answer !== `shape:${q.story.match(/the (\w+) group/)[1]}`) problems.push('belongs wrong');
-    if (genId === 'ko-count-group' && Number(q.answer) !== q.visual.count) problems.push('group count wrong');
+    if (genId === 'ko-count-group' && Number(q.answer) !== (q.visual.items ? q.visual.items.length : q.visual.count)) problems.push('group count wrong');
     if (genId === 'ko-which-group-more') { const [a, b] = q.story.match(/\d+/g).map(Number); if (q.answer !== (a > b ? 'Circles' : 'Squares')) problems.push('more group wrong'); }
     if (genId === 'ko-does-not-belong' && shapeOf(q.answer) === q.story.match(/the (\w+) group/)[1]) problems.push('odd one is in the group');
     if (genId === 'ko-how-many-groups' && Number(q.answer) !== q.story.replace(/\.$/, '').split(', ').length) problems.push('group count wrong');
@@ -174,6 +174,10 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
     if ((genId === 'kn-partner' || genId === 'kn-frame') && Number(q.answer) !== 10 - q.visual.filled) problems.push('partner of ten wrong');
     if (genId === 'kn-two-ways') { const [a, b] = q.answer.split(' and ').map(Number); if (a + b !== 10) problems.push('pair does not make ten'); if (q.choices.filter((c) => c.split(' and ').map(Number).reduce((x, y) => x + y) === 10).length !== 1) problems.push('two pairs make ten'); }
     if (genId === 'kn-take-from-ten' && Number(q.answer) !== 10 - Number(q.story.match(/then (\d+)/)[1])) problems.push('take from ten wrong');
+    // Pass JX: capacity, the flat parts of solids, and no square set against a rectangle in sorting (a square is a special rectangle).
+    if (genId === 'kl-holds-more' && !/bucket|bowl|bathtub|pitcher|teapot|backpack/.test(q.answer)) problems.push('holds more picked the smaller thing');
+    if (genId === 'kd-flat-face' && q.answer !== (q.visual.name === 'cube' ? 'shape:square' : 'shape:circle')) problems.push('flat part wrong');
+    if (['ko-belongs', 'ko-does-not-belong', 'ko-how-many-groups'].includes(genId) && /square/.test(`${q.story} ${q.choices.join(' ')}`) && /rectangle/.test(`${q.story} ${q.choices.join(' ')}`)) problems.push('a square and a rectangle sorted apart');
     if (genId === 'kn-is-ten') { const [a, b] = q.story.match(/\d+/g).map(Number); if (q.answer !== (a + b === 10 ? 'Yes' : 'No')) problems.push('is-ten wrong'); }
     // Syllables, sounding out, reading direction, word meanings
     const SYL = { cat: 1, dog: 1, sun: 1, hat: 1, fish: 1, ball: 1, rabbit: 2, apple: 2, window: 2, pencil: 2, monkey: 2, tiger: 2, banana: 3, elephant: 3, umbrella: 3, butterfly: 3 };

@@ -2,6 +2,31 @@
 
 The newest block is what educators see once, in a pop-up on the classroom page, after each update. Write it the way Mikey talks to a teacher: conversational, complete sentences, say what changed and why it matters, and skip the shorthand (2026-09-23). Two to four items. The date line is the version stamp.
 
+## October 4, 2026 (phones and round shapes)
+
+- On a phone, a young learner's lesson now shows three flashing arrows in the bottom corner of the screen when the next button is out of sight. One tap scrolls down to it.
+- Circles, waves and the curves in letters and numbers are now drawn smooth for tracing. They used to be drawn with short straight lines, so the circle had corners and the wave looked like a zigzag.
+
+## October 4, 2026 (kindergarten community)
+
+- Me and My Community now teaches everything its questions ask. The flag and holidays lesson used to name no holidays aloud, though its questions asked about three.
+- The needs and wants lesson now explains why, so an apple is a need because it is food, and candy is a want because your body does not need it.
+- The voting lesson now teaches that everyone goes with the choice that wins, and the two flags lesson shows each flag as it is described.
+
+## October 4, 2026 (kindergarten science)
+
+- Kindergarten science now teaches everything its questions ask, and more of what the Texas standards ask. All five Looking at the World lessons were rewritten.
+- A plant now needs all five things the Texas standards list, which are water, sunlight, air, nutrients from the soil and space to grow.
+- The day and night lesson now explains that the moon shines with sunlight bouncing off it and that the stars are still there in the daytime, with new questions that ask what comes next.
+- The weather lesson now teaches that wind is moving air and that weather changes with the seasons.
+
+## October 4, 2026 (kindergarten counting finished)
+
+- Kindergarten counting is finished, with all fourteen lessons now teaching everything their questions ask. The last seven are tracing shapes, counting by tens, comparing size, sorting, solid shapes, making ten, and more and fewer.
+- Comparing size now teaches how much something holds, which the Texas standards ask for, with new questions like which holds more, a cup or a bucket.
+- Solid shapes now teaches that the flat end of a can is a circle and each side of a block is a square, and the tracing lesson traces every shape its questions ask for.
+- Sorting no longer puts a square and a rectangle in different groups, since a square is a special rectangle, and every answer in these lessons comes with its reason.
+
 ## October 4, 2026 (kindergarten counting, part one)
 
 - Kindergarten's first seven counting lessons now teach everything their questions ask. Count to 5 used to count only to three, and both counting lessons now teach more, fewer, the same and what comes next, which the questions were already asking.

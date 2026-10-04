@@ -3924,17 +3924,22 @@ function K_SCIENCE_MODULES() { return [
     title: 'Day and night',
     tagline: 'The sun and the moon',
     lesson: {
-      paragraphs: ['The sun shines in the day, and the sky is bright. At night the sky is dark, and we often see the moon and the stars.', 'Look up and see which one it is.'],
-      keyIdea: 'The sun lights the day. At night the sky is dark.',
-      example: { kind: 'daynight', caption: 'The side facing the sun has day. The side facing away has night. The Earth turns.' , formula: 'the Earth turns'},
+      // Full standard (pass JY): for a pre-reader the spoken script is the lesson. It says what makes the sky bright, why the moon
+      // shines (sunlight bounces off it), why the stars hide in the day, and that day and night take turns, the pattern TEKS K.9A
+      // asks a child to predict, which three questions now ask.
+      paragraphs: ['In the day the sun shines, and its light makes the sky bright. At night the sky is dark, and we often see the moon and the stars.', 'The moon does not make its own light. It shines because sunlight bounces off it. The stars are in the sky in the day too, but the bright sun hides them.', 'Day and night come from the Earth turning, like a ball spinning on a finger. The side facing the sun has day, and the side turned away has night. They take turns again and again, so after night comes day, and after day comes night.'],
+      keyIdea: 'The sun lights the day, and at night the sky is dark. Day and night take turns because the Earth turns.',
+      example: { kind: 'daynight', caption: 'The side facing the sun has day. The side facing away has night. The Earth turns.', formula: 'the Earth turns' },
       script: [
-        { say: 'This is the sun. It shines in the day.', show: { kind: 'icon', name: 'sun' } },
-        { say: 'This is the moon. We often see it at night.', show: { kind: 'icon', name: 'moon' } },
-        { say: 'The sun is for the day.', show: { kind: 'icon', name: 'sun' } },
-        { say: 'The Earth turns. The side facing the sun has day. The side facing away has night.', show: { kind: 'daynight' } },
+        { say: 'This is the sun. In the day it shines, and its light makes the sky bright.', show: { kind: 'icon', name: 'sun' } },
+        { say: 'This is the moon. At night the sky is dark, and we often see the moon and the stars.', show: { kind: 'icon', name: 'moon' } },
+        { say: 'The moon does not make its own light. The moon shines because sunlight bounces off it.', show: { kind: 'icon', name: 'moon' } },
+        { say: 'This is a star. Stars are in the sky in the day too, but the bright sun hides them.', show: { kind: 'icon', name: 'star' } },
+        { say: 'The Earth turns like a ball spinning on a finger. The side facing the sun has day, and the side facing away has night.', show: { kind: 'daynight' } },
+        { say: 'So day and night take turns. After night comes day, and after day comes night, again and again.', show: { kind: 'daynight' } },
       ],
     },
-    sources: ['Aligned with Texas TEKS K.8B (identify and observe objects in the sky, including the Sun, the Moon, and stars) and NGSS K-ESS2-1 (observe and describe patterns of the sun and the moon).'],
+    sources: ['Aligned with Texas TEKS K.9A (identify, describe, and predict the patterns of day and night and their observable characteristics) and K.9B (observe, describe, and illustrate the Sun, Moon, stars, and objects in the sky such as clouds). NGSS places the sun, moon and stars in grade 1, 1-ESS1-1 (use observations of the sun, moon, and stars to describe patterns that can be predicted).'],
     generators: ['sk-day-or-night', 'sk-tap-sky', 'sk-day-or-night', 'sk-tap-sky', 'sk-day-or-night'],
   },
   {
@@ -3943,17 +3948,22 @@ function K_SCIENCE_MODULES() { return [
     title: 'Kinds of weather',
     tagline: 'Sun, rain, snow',
     lesson: {
-      paragraphs: ['Some days are sunny. Some days it rains. Some days it snows.', 'Look outside and say the weather.'],
-      keyIdea: 'Weather is what the sky is doing today.',
-      example: { kind: 'icon', name: 'rain', caption: 'Rain.' },
+      // Full standard (pass JY): weather words with their causes (rain and snow fall from the clouds), wind as moving air (TEKS
+      // K.10C), weather changing day to day and with the seasons (K.10B), and dressing for it, which its questions ask.
+      paragraphs: ['Weather is what the sky and the air are doing today. When the sun is out, the day is sunny. When rain falls from the clouds, the day is rainy, and when it is very cold, snow can fall instead, and the day is snowy.', 'Wind is air that moves. We cannot see the wind, but we can see what it does, like blowing leaves or making a ribbon dance.', 'Weather changes from day to day, and over the year it changes with the seasons. Winter brings colder days and summer brings hotter ones, so we dress for the weather, a warm coat for snow, a raincoat for rain and a sun hat for a sunny day.'],
+      keyIdea: 'Weather is what the sky and the air are doing today. It changes from day to day and with the seasons.',
+      example: { kind: 'icon', name: 'rain', caption: 'Rain falls from the clouds. It is rainy.' },
       script: [
-        { say: 'When the sun is out, the day is sunny.', show: { kind: 'icon', name: 'sun' } },
+        { say: 'Weather is what the sky and the air are doing today. When the sun is out, the day is sunny.', show: { kind: 'icon', name: 'sun' } },
         { say: 'When rain falls from the clouds, the day is rainy.', show: { kind: 'icon', name: 'rain' } },
-        { say: 'When snow falls from the clouds, the day is snowy.', show: { kind: 'icon', name: 'snow' } },
-        { say: 'On a cold day you wear a warm coat. On a sunny day, a sun hat. On a rainy day, a raincoat.', show: { kind: 'flow', steps: ['warm coat', 'sun hat', 'raincoat'] } },
+        { say: 'When it is very cold, snow can fall from the clouds instead, and the day is snowy.', show: { kind: 'icon', name: 'snow' } },
+        { say: 'Wind is air that moves. You cannot see the wind, but you can see it blow leaves and make a ribbon dance.', show: { kind: 'icon', name: 'wind' } },
+        { say: 'Weather changes from day to day, and with the seasons. Winter brings colder days, sometimes with snow, and summer brings hotter days with lots of sun.', show: { kind: 'pair', a: { kind: 'icon', name: 'snow' }, b: { kind: 'icon', name: 'sun' } } },
+        { say: 'We dress for the weather, a warm coat for snow, a sun hat for a sunny day, and a raincoat for rain.', show: { kind: 'flow', steps: ['warm coat', 'sun hat', 'raincoat'] } },
       ],
+      pictures: [{ serial: 'P25', step: 3, alt: 'A ribbon dancing in the wind on a windy day' }],
     },
-    sources: ['Aligned with Texas TEKS K.8A (observe and describe weather changes from day to day and over seasons) and NGSS K-ESS2-1 (use and share observations of local weather conditions).'],
+    sources: ['Aligned with Texas TEKS K.10B (observe and describe weather changes from day to day and over seasons) and K.10C (identify evidence that supports the idea that air is all around us and demonstrate that wind is moving air using items such as a windsock, pinwheel, or ribbon), and NGSS K-ESS2-1 (use and share observations of local weather conditions to describe patterns over time).'],
     generators: ['sk-which-weather', 'sk-tap-weather', 'sk-which-weather', 'sk-tap-weather', 'sk-what-to-wear'],
   },
   {
@@ -3962,34 +3972,45 @@ function K_SCIENCE_MODULES() { return [
     title: 'Living or not living',
     tagline: 'What grows and what does not',
     lesson: {
-      paragraphs: ['A plant is living. It grows. A fish is living. It moves and eats.', 'A rock is not living. It does not grow or eat.'],
-      keyIdea: 'Living things grow and need food and water.',
-      example: { kind: 'icon', name: 'plant', caption: 'A plant is living.' },
+      // Full standard (pass JY): living things need things (water, air, and food or sunlight), grow, and make young like
+      // themselves. That test also settles ice, which an icicle shows can get bigger, and never says a plant eats.
+      paragraphs: ['Living things need things to stay alive. A plant needs water, air and sunlight, and it makes its own food from the sunlight. A fish or a bird needs food and water.', 'Living things grow, and they make more living things like themselves. A plant or a tree makes seeds, a bird lays eggs, and a fish has babies.', 'A rock is not living, and neither is ice. They need no food or water, they never grow the way living things do, and they never have young.'],
+      keyIdea: 'Living things need water, air and food, they grow, and they make more of their kind. A plant makes its own food from sunlight.',
+      example: { kind: 'icon', name: 'plant', caption: 'A plant is living. It needs water, air and sunlight, and it grows.' },
       script: [
-        { say: 'This plant is living. It grows.', show: { kind: 'icon', name: 'plant' } },
-        { say: 'This fish is living. It moves and eats.', show: { kind: 'icon', name: 'fish' } },
-        { say: 'This rock is not living. It does not grow.', show: { kind: 'icon', name: 'rock' } },
+        { say: 'This plant is living. It needs water, air and sunlight, and it grows.', show: { kind: 'icon', name: 'plant' } },
+        { say: 'This fish is living. It needs food and water, it grows, and it has babies.', show: { kind: 'icon', name: 'fish' } },
+        { say: 'Living things make more living things like themselves. A plant or a tree makes seeds, and a bird lays eggs.', show: { kind: 'icon', name: 'bird' } },
+        { say: 'This rock is not living. It needs no food or water, it does not grow, and it never has babies.', show: { kind: 'icon', name: 'rock' } },
+        { say: 'Ice is not living either. It is only frozen water, and it never has babies.', show: { kind: 'icon', name: 'ice' } },
+        { say: 'A tree is living too. Living things need water and food or sunlight, they grow, and they make young.', show: { kind: 'icon', name: 'tree' } },
       ],
     },
-    sources: ['Aligned with Texas TEKS K.9A (differentiate between living and nonliving things) and NGSS K-LS1-1 (describe patterns of what plants and animals need to survive).'],
+    sources: ['Aligned with Texas TEKS K.12B (observe and identify the dependence of animals on air, water, food, space, and shelter), since the 2021 kindergarten standards tell what is alive by its basic needs, and NGSS K-LS1-1, use observations to describe patterns of what plants and animals (including humans) need to survive.'],
     generators: ['sk-living-or-not', 'sk-tap-living', 'sk-living-or-not', 'sk-tap-not-living', 'sk-living-or-not'],
   },
   {
     id: 'what-plants-need',
     order: 4,
     title: 'What a plant needs',
-    tagline: 'Water and sun',
+    tagline: 'Water, sun, air, soil and space',
     lesson: {
-      paragraphs: ['A plant needs water. A plant needs the sun. It needs air too, just like you.', 'Give a plant water and sun and it grows.'],
-      keyIdea: 'A plant needs water, sun and air to grow.',
-      example: { kind: 'icon', name: 'drop', caption: 'A drop of water.' },
+      // Full standard (pass JY): all five needs TEKS K.12A names (air, sunlight, water, nutrients in the soil and space), each
+      // with what it does. Nutrients are not called food, since a plant makes its own food from sunlight.
+      paragraphs: ['A plant needs water, and its roots drink it up from the soil. A plant needs sunlight, and its leaves use the light to make food for the plant. A plant needs air too, just like you.', 'A plant needs soil, which holds nutrients, tiny bits a plant needs to grow strong. And a plant needs space, room for its roots to spread and its leaves to reach out.', 'Water, sunlight, air, nutrients and space. Give a plant all five and it grows, but take one away, like the light, and it droops. A plant does not need a rock, a nail or a magnet.'],
+      keyIdea: 'A plant needs water, sunlight, air, nutrients from the soil and space to grow.',
+      example: { kind: 'icon', name: 'drop', caption: 'A drop of water. Roots drink it from the soil.' },
       script: [
-        { say: 'A plant needs a drop of water to grow.', show: { kind: 'icon', name: 'drop' } },
-        { say: 'A plant needs the sun to grow.', show: { kind: 'icon', name: 'sun' } },
-        { say: 'Water, sun and air help the plant grow.', show: { kind: 'icon', name: 'plant' } },
+        { say: 'A plant needs water. Its roots drink up drops of water from the soil.', show: { kind: 'icon', name: 'drop' } },
+        { say: 'A plant needs sunlight. Its leaves use the light to make food for the plant.', show: { kind: 'icon', name: 'sun' } },
+        { say: 'A plant needs air too, just like you, even though you cannot see it.', show: { kind: 'icon', name: 'plant' } },
+        { say: 'A plant needs soil. The soil holds nutrients, tiny bits a plant needs to grow strong.', show: { kind: 'icon', name: 'soil' } },
+        { say: 'And a plant needs space, room for its roots to spread and its leaves to reach out.', show: { kind: 'icon', name: 'plant' } },
+        { say: 'Water, sunlight, air, nutrients and space. Give a plant all five, and it grows.', show: { kind: 'icon', name: 'plant' } },
       ],
+      pictures: [{ serial: 'P24', step: 3, alt: 'A bean plant in a clear pot, its roots spreading through the soil' }],
     },
-    sources: ['Aligned with Texas TEKS K.9B (identify basic needs of plants and animals) and NGSS K-LS1-1 (patterns of what plants need to survive).'],
+    sources: ['Aligned with Texas TEKS K.12A (observe and identify the dependence of plants on air, sunlight, water, nutrients in the soil, and space to grow) and NGSS K-LS1-1, use observations to describe patterns of what plants and animals (including humans) need to survive.'],
     generators: ['sk-plant-needs', 'sk-plant-needs', 'sk-tap-plant-need', 'sk-plant-needs', 'sk-tap-plant-need'],
   },
   {
@@ -3999,16 +4020,20 @@ function K_SCIENCE_MODULES() { return [
     tagline: 'Sun, fire, ice, snow',
     requires: ['kinds-of-weather'],
     lesson: {
-      paragraphs: ['Some things are hot. The sun is hot. Fire is hot.', 'Some things are cold. Ice is cold. Snow is cold.', 'We keep away from hot things. We wear a coat when it is cold.'],
-      keyIdea: 'Hot things warm us. Cold things chill us.',
+      // Full standard (pass JY): why the sun warms us, why we keep away from hot things, and that hot things cool and cold things
+      // warm until they match the room, the idea its story turns on and the lesson never said.
+      paragraphs: ['Some things are hot. The sun is hot, and its light warms the ground, the air and you. Fire is hot too, and hot things can burn, so we keep away from them.', 'Some things are cold. Ice is cold, and snow is cold too. Hot things cool down and cold things warm up, until they are as warm as the room around them.', 'We dress for hot and cold. On a cold, snowy day we wear a warm coat, and on a hot, sunny day we find some shade and drink water.'],
+      keyIdea: 'Some things are hot and some are cold. Hot things cool down and cold things warm up.',
       example: { kind: 'pair', a: { kind: 'icon', name: 'sun' }, b: { kind: 'icon', name: 'ice' }, caption: 'The sun is hot. Ice is cold.' },
       script: [
-        { say: 'The sun is hot. Fire is hot too.', show: { kind: 'pair', a: { kind: 'icon', name: 'sun' }, b: { kind: 'icon', name: 'fire' } } },
-        { say: 'Ice is cold. Snow is cold too.', show: { kind: 'pair', a: { kind: 'icon', name: 'ice' }, b: { kind: 'icon', name: 'snow' } } },
-        { say: 'We keep away from hot things. We wear a coat when it is cold.', show: { kind: 'pair', a: { kind: 'icon', name: 'sun' }, b: { kind: 'icon', name: 'ice' } } },
+        { say: 'The sun is hot. Its light warms the ground, the air and you.', show: { kind: 'icon', name: 'sun' } },
+        { say: 'Fire is hot too. Hot things can burn, so we keep away from them.', show: { kind: 'icon', name: 'fire' } },
+        { say: 'Ice is cold, and snow is cold too. Touch snow and your fingers feel chilly.', show: { kind: 'pair', a: { kind: 'icon', name: 'ice' }, b: { kind: 'icon', name: 'snow' } } },
+        { say: 'Hot things cool down, and cold things like ice warm up and melt, until they are as warm as the room.', show: { kind: 'icon', name: 'ice' } },
+        { say: 'On a cold, snowy day we wear a warm coat. On a hot, sunny day we find some shade and drink water.', show: { kind: 'pair', a: { kind: 'icon', name: 'snow' }, b: { kind: 'icon', name: 'sun' } } },
       ],
     },
-    sources: ['Aligned with TEKS K.5A (observe and record properties of objects, including relative temperature) and NGSS K-PS3-1.'],
+    sources: ["Aligned with Texas TEKS K.5B (investigate and predict cause-and-effect relationships in science) and K.5G (describe how factors or conditions can cause objects, organisms, and systems to either change or stay the same), since the 2021 kindergarten standards no longer name temperature, and NGSS K-PS3-1 (make observations to determine the effect of sunlight on Earth's surface)."],
     generators: ['sk-hot-or-cold', 'sk-tap-hot', 'sk-hot-or-cold', 'sk-tap-hot', 'sk-hot-or-cold'],
   },
 ]; }
@@ -4886,16 +4911,21 @@ function COUNTING_MODULES() { return [
     requires: ['shapes'],
     needsTouch: true,
     lesson: {
-      paragraphs: ['A shape is a line that comes back to where it started. Start at the dot and go all the way around.', 'Corners are where you turn. Circles have no corners.'],
-      keyIdea: 'Start at the dot and go all the way around.',
-      example: { kind: 'trace', text: 'shape-triangle', caption: 'Three corners. Start at the dot and go all the way around.' },
+      // Full standard (pass JX): the lesson traced only the triangle while its questions ask for a circle, a square, a
+      // triangle, a star and a heart, so it now traces all five, each said the way TRACE_LETTERS draws it.
+      paragraphs: ['A shape is a line that comes back to where it started. To trace one, start at the dot and go all the way around until you are back at the dot.', 'Turn at each corner. A square turns at four corners and a triangle at three, while a circle curves the whole way around with no corners. A star goes out to five points, and a heart has two round bumps and one point.', 'Go slowly and keep your finger on the line. If the line stops early, the shape has a gap and is not finished.'],
+      keyIdea: 'Start at the dot and go all the way around, back to the dot.',
+      example: { kind: 'trace', text: 'shape-square', caption: 'Across, down, back across and up, back to the dot. That is a square.' },
       script: [
-        { say: 'This is a triangle. It has three corners.', show: { kind: 'shape', name: 'triangle' } },
-        { say: 'This is a circle. It has no corners at all.', show: { kind: 'shape', name: 'circle' } },
-        { say: 'Watch. Start at the dot and go all the way around the triangle.', show: { kind: 'trace', text: 'shape-triangle' } },
+        { say: 'Watch the circle. Start at the dot at the top, go around to the left, and come all the way back to the dot. A circle has no corners.', show: { kind: 'trace', text: 'shape-circle' } },
+        { say: 'Now the square. Start at the dot, go across the top, down the side, back across the bottom and up. It turns at four corners.', show: { kind: 'trace', text: 'shape-square' } },
+        { say: 'The triangle starts at the dot at the top. Slide down, go across the bottom, and go back up to the dot. It turns at three corners.', show: { kind: 'trace', text: 'shape-triangle' } },
+        { say: 'A star has five points. Start at the top point, go out to every point and back in between them, and end at the dot.', show: { kind: 'trace', text: 'shape-star' } },
+        { say: 'A heart starts at the dot at its bottom point. Go up and around one bump, dip down in the middle, go around the other bump and back down to the point.', show: { kind: 'trace', text: 'shape-heart' } },
+        { say: 'Every shape ends back at the dot where it started. If the line stops early, the square has a gap and is not finished.', show: { kind: 'trace', text: 'shape-square' } },
       ],
     },
-    sources: ['Aligned with Texas TEKS K.6A (identify two-dimensional shapes) and Common Core K.G.A.2 (correctly name shapes regardless of their orientations or overall size).'],
+    sources: ['Aligned with Texas TEKS K.6F (create two-dimensional shapes using a variety of materials and drawings) and K.6A (identify two-dimensional shapes, including circles, triangles, rectangles, and squares as special rectangles), and Common Core K.G.A.2 and K.G.B.5 (drawing shapes).'],
     generators: ['kn-trace-shape', 'kn-trace-shape', 'kn-trace-shape', 'kn-trace-shape', 'kn-trace-shape'],
   },
   {
@@ -4905,36 +4935,50 @@ function COUNTING_MODULES() { return [
     tagline: 'Ten, twenty, thirty',
     requires: ['count-to-10'],
     lesson: {
-      paragraphs: ['Counting by tens is a fast way to count big groups. Ten, twenty, thirty, forty, fifty.', 'Each jump adds ten more. Say them in order and you reach one hundred in ten jumps.'],
-      keyIdea: 'Count by tens. 10, 20, 30, 40, 50, 60, 70, 80, 90, 100.',
-      example: { kind: 'tens', count: 3, caption: 'Ten, twenty, thirty.' },
+      // Full standard (pass JX): the lesson named ten to fifty while its questions run to one hundred and ask what comes
+      // before a ten; it now says every ten, counts back, and says a jump is always ten, never one (a wrong choice is 41).
+      paragraphs: ['When things come in groups of ten, counting by tens is a fast way to count them. Each group adds ten more, so the numbers go ten, twenty, thirty, forty, fifty.', 'Keep going and the tens reach one hundred. Sixty, seventy, eighty, ninety, one hundred. Ten groups of ten make one hundred.', 'You can start at any ten. Going forward adds ten and going back takes ten away, so after forty comes fifty and before seventy comes sixty. Each jump is ten, never one.'],
+      keyIdea: 'Count by tens, adding ten each jump. 10, 20, 30, 40, 50, 60, 70, 80, 90, 100.',
+      example: { kind: 'tens', count: 3, caption: 'Ten, twenty, thirty. Three groups of ten make thirty.' },
       script: [
-        { say: 'Ten. Twenty. Thirty. Each group has ten.', show: { kind: 'tens', count: 3 } },
-        { say: 'Counting by tens is fast. Ten, twenty, thirty, forty, fifty.', show: { kind: 'tens', count: 5 } },
-        { say: 'Ten jumps of ten reach one hundred.', show: { kind: 'tens', count: 10 } },
+        { say: 'Here is a group of ten. When things come in groups of ten, we can count them by tens.', show: { kind: 'tens', count: 1 } },
+        { say: 'Count the groups by tens. Ten, twenty, thirty. Three groups of ten make thirty.', show: { kind: 'tens', count: 3 } },
+        { say: 'Each jump adds ten more, so the numbers go ten, twenty, thirty, forty, fifty.', show: { kind: 'tens', count: 5 } },
+        { say: 'Keep going. Sixty, seventy, eighty, ninety, one hundred. Ten groups of ten make one hundred.', show: { kind: 'tens', count: 10 } },
+        { say: 'To go back, take ten away. Before seventy comes sixty, and before thirty comes twenty.', show: { kind: 'tens', count: 6 } },
+        { say: 'You can start at any ten. Each jump is ten, never one, so after forty comes fifty, not forty-one.', show: { kind: 'tens', count: 4 } },
       ],
     },
-    sources: ['Aligned with Texas TEKS K.5A (recite numbers up to at least 100 by ones and tens) and Common Core K.CC.A.1.'],
+    sources: ['Aligned with Texas TEKS K.5A (recite numbers up to at least 100 by ones and tens beginning with any given number) and Common Core K.CC.A.1 (count to 100 by ones and by tens).'],
     generators: ['kt-next-ten', 'kt-how-many-tens', 'kt-tap-tens', 'kt-before-ten', 'kt-count-on'],
   },
   {
     id: 'longer-and-heavier',
     order: 10,
     title: 'Longer and heavier',
-    tagline: 'Comparing size',
+    tagline: 'Length, height, weight and how much it holds',
     requires: ['comparing-numbers'],
     lesson: {
-      paragraphs: ['Things can be compared by how long they are and how heavy they are.', 'A longer thing reaches farther. A heavier thing is harder to lift.'],
-      keyIdea: 'Longer reaches farther. Heavier is harder to lift.',
-      example: { kind: 'bars', lengths: [3, 7], caption: 'The bottom one is longer.' },
+      // Full standard (pass JX): the spoken lesson never said same length or taller, which its questions ask, and spoke of
+      // heavy and light over two equal lines. TEKS K.7A names capacity beside length and weight, and nothing taught it. All
+      // four are taught now, with a fair start for length and height, and a feather and a rock, a cup and a bucket beside
+      // their words (drawn now, paintings P21 and P22 logged).
+      paragraphs: ['There is more than one way to be bigger, so we say which way we mean. Length is how long a thing is, height is how tall it stands, weight is how heavy it is, and capacity is how much it holds.', 'To compare length or height fairly, start both things at the same place, side by side or on the same floor. The longer one reaches farther, the taller one reaches higher, and two that end at the same place are the same.', 'A heavier thing is harder to lift, like a rock beside a feather. A thing that holds more has more room inside, like a bucket beside a cup. A long stick is not always heavy, and a heavy rock is not always long.'],
+      keyIdea: 'Say which way you compare. Longer reaches farther, taller reaches higher, heavier is harder to lift, and more room inside holds more.',
+      example: { kind: 'bars', lengths: [3, 7], caption: 'Both lines start at the same place. The bottom one reaches farther, so it is longer.' },
+      pictures: [{ serial: 'P21', alt: 'A feather in one hand and a rock in the other', step: 4 }, { serial: 'P22', alt: 'A small cup beside a big bucket of water', step: 5 }],
       script: [
-        { say: 'Two lines. This one is short. This one is long.', show: { kind: 'bars', lengths: [3, 7] } },
-        { say: 'The longer one reaches farther. The shorter one does not reach as far.', show: { kind: 'bars', lengths: [7, 3] } },
-        { say: 'A heavy thing is hard to lift. A light thing is easy.', show: { kind: 'bars', lengths: [5, 5] } },
+        { say: 'There is more than one way to be bigger. To see which line is longer, start both lines at the same place.', show: { kind: 'bars', lengths: [3, 7] } },
+        { say: 'The longer line reaches farther, and the shorter line stops sooner.', show: { kind: 'bars', lengths: [7, 3] } },
+        { say: 'These two lines start together and end together, so they are the same length.', show: { kind: 'bars', lengths: [5, 5] } },
+        { say: 'Taller means reaching higher. Stand two towers on the same floor, and the taller one reaches higher.', show: { kind: 'bars', lengths: [4, 8], vertical: true } },
+        { say: 'Heavier means harder to lift. A rock is heavier than a feather, so the hand holding the rock feels it pull down more.', show: { kind: 'pair', a: { kind: 'icon', name: 'feather' }, b: { kind: 'icon', name: 'rock' } } },
+        { say: 'Some things hold more than others. A bucket holds more water than a cup, because it has more room inside.', show: { kind: 'pair', a: { kind: 'icon', name: 'teacup' }, b: { kind: 'icon', name: 'bucket' } } },
+        { say: 'So say which way you compare. A long stick is not always heavy, and a heavy rock is not always long.', show: { kind: 'icon', name: 'rock' } },
       ],
     },
-    sources: ['Aligned with Texas TEKS K.7A and K.7B (measurable attributes; compare two objects) and Common Core K.MD.A.1 and K.MD.A.2.'],
-    generators: ['kl-longer', 'kl-shorter', 'kl-same-length', 'kl-heavier-words', 'kl-taller'],
+    sources: ['Aligned with Texas TEKS K.7A (give an example of a measurable attribute of a given object, including length, capacity, and weight) and K.7B (compare two objects with a common measurable attribute to see which object has more of/less of the attribute and describe the difference), and Common Core K.MD.A.1 and K.MD.A.2.'],
+    generators: ['kl-longer', 'kl-shorter', 'kl-same-length', 'kl-heavier-words', 'kl-taller', 'kl-holds-more'],
   },
   {
     id: 'sorting',
@@ -4943,37 +4987,47 @@ function COUNTING_MODULES() { return [
     tagline: 'Putting things in groups',
     requires: ['shapes'],
     lesson: {
-      paragraphs: ['Sorting means putting things that are alike together. All the circles in one group, all the squares in another.', 'Then you can count each group and see which has more.'],
-      keyIdea: 'Put things that are alike together. Then count each group.',
-      example: { kind: 'shape', name: 'circle', caption: 'Circles go with circles.' },
+      // Full standard (pass JX): the lesson showed dots while it talked about counting a group of squares, and never taught
+      // what does not belong or how many groups there are, which its questions ask. Sorting by color is shown too.
+      paragraphs: ['Sorting means putting things that are alike together. Each group has a rule, like every one is a circle, and anything that does not fit the rule does not belong there.', 'After sorting, count each group to see which has more. The group with the bigger number has more. To find how many groups there are, count the kinds of things.', 'We can sort by shape, by color or by size, so first decide the rule. Socks can be sorted by color, red with red and blue with blue.'],
+      keyIdea: 'Put things that are alike together, then count each group.',
+      example: { kind: 'pair', a: { kind: 'shape', name: 'circle' }, b: { kind: 'shape', name: 'square' }, caption: 'Circles go with circles, and squares go with squares.' },
       script: [
-        { say: 'Circles go with circles. Squares go with squares.', show: { kind: 'shape', name: 'circle' } },
-        { say: 'That is sorting. Every square goes with the other squares.', show: { kind: 'shape', name: 'square' } },
-        { say: 'Then count each group. Which group has more?', show: { kind: 'dots', count: 4 } },
+        { say: 'Sorting means putting things that are alike together. Circles go with circles, and squares go with squares.', show: { kind: 'pair', a: { kind: 'shape', name: 'circle' }, b: { kind: 'shape', name: 'square' } } },
+        { say: 'Each group has a rule. In the triangle group, every one is a triangle, so a circle does not belong there.', show: { kind: 'pair', a: { kind: 'shape', name: 'triangle' }, b: { kind: 'shape', name: 'circle' } } },
+        { say: 'Then count each group. Here are four squares. One, two, three, four.', show: { kind: 'pattern', items: ['square', 'square', 'square', 'square'], colour: 'blue', counting: true } },
+        { say: 'Count the circles too. One, two, three, four, five. Five is more than four, so the circle group has more.', show: { kind: 'pattern', items: ['circle', 'circle', 'circle', 'circle', 'circle'], colour: 'red', counting: true } },
+        { say: 'To find how many groups there are, count the kinds. A circle, a square and a triangle make three groups.', show: { kind: 'pattern', items: ['circle', 'square', 'triangle'], colour: 'green' } },
+        { say: 'We can sort by color too. Red socks go with red socks, and blue socks go with blue socks.', show: { kind: 'pair', a: { kind: 'swatch', colour: 'red' }, b: { kind: 'swatch', colour: 'blue' } } },
       ],
     },
-    sources: ['Aligned with Texas TEKS K.8A (collect, sort, and organize data into two or three categories) and Common Core K.MD.B.3.'],
+    sources: ['Aligned with Texas TEKS K.8A (collect, sort, and organize data into two or three categories) and Common Core K.MD.B.3 (classify objects into given categories; count the numbers of objects in each category and sort the categories by count).'],
     generators: ['ko-belongs', 'ko-count-group', 'ko-which-group-more', 'ko-does-not-belong', 'ko-how-many-groups'],
   },
   {
     id: 'solids',
     order: 12,
     title: 'Solid shapes',
-    tagline: 'Ball, box, can, cone',
+    tagline: 'Ball, block, can, cone',
     requires: ['shapes'],
     lesson: {
-      paragraphs: ['Some shapes are flat, like a drawing. Some are solid, like things you can hold.', 'A ball is a sphere. A block is a cube. A can is a cylinder. An ice cream cone is a cone.'],
-      keyIdea: 'Solid shapes are things you can hold, like a sphere, a cube, a cylinder and a cone.',
+      // Full standard (pass JX): rolling and stacking explained by the shape, flat and solid told apart, and the flat parts of
+      // solids (TEKS K.6C) with a new question kind; the tagline said box, while a box often is not a cube (pass JJ).
+      paragraphs: ['Some shapes are flat, like a circle drawn on paper. Others are solid, things you can pick up and hold.', 'A ball is a sphere, round all over, so it rolls every way. A block is a cube, with six flat square sides, so it stacks but does not roll. A can is a cylinder, which rolls on its side and stacks on its flat ends. An ice cream cone is a cone, with a point at one end and a flat circle at the other.', 'The flat parts of a solid are flat shapes. Trace around the end of a can and you draw a circle, and trace around a side of a block and you draw a square.'],
+      keyIdea: 'Solid shapes are things you can hold, like a sphere, a cube, a cylinder and a cone. Their flat parts are flat shapes.',
       example: { kind: 'solid', name: 'sphere', caption: 'A ball is a sphere.' },
+      pictures: [{ serial: 'P23', alt: 'A circle drawn on paper beside a real ball', step: 0 }],
       script: [
-        { say: 'A ball. It rolls every way. That is a sphere.', show: { kind: 'solid', name: 'sphere' } },
-        { say: 'A block. Flat sides and corners. That is a cube.', show: { kind: 'solid', name: 'cube' } },
-        { say: 'A can. Round, with flat ends. That is a cylinder.', show: { kind: 'solid', name: 'cylinder' } },
-        { say: 'An ice cream cone. A point at one end. That is a cone.', show: { kind: 'solid', name: 'cone' } },
+        { say: 'A circle is flat, like a drawing on paper. A ball is a solid shape, a thing you can pick up and hold.', show: { kind: 'pair', a: { kind: 'shape', name: 'circle' }, b: { kind: 'solid', name: 'sphere' } } },
+        { say: 'A ball is a sphere. It is round all over, so it rolls every way.', show: { kind: 'solid', name: 'sphere' } },
+        { say: 'A block is a cube. Every flat side is a square, so it stacks and slides, but it does not roll.', show: { kind: 'solid', name: 'cube' } },
+        { say: 'A can is a cylinder. Its two flat ends are circles. On its side it rolls, and standing on an end it stacks.', show: { kind: 'solid', name: 'cylinder' } },
+        { say: 'An ice cream cone is a cone. It has a point at one end and a flat circle at the other, and it rolls around in a circle.', show: { kind: 'solid', name: 'cone' } },
+        { say: 'Trace around the flat end of a can and you draw a circle. Trace around a side of a block and you draw a square.', show: { kind: 'pair', a: { kind: 'solid', name: 'cylinder' }, b: { kind: 'shape', name: 'circle' } } },
       ],
     },
-    sources: ['Aligned with Texas TEKS K.6B (identify three-dimensional solids) and Common Core K.G.A.3.'],
-    generators: ['kd-name-solid', 'kd-tap-solid', 'kd-real-thing', 'kd-flat-or-solid', 'kd-rolls'],
+    sources: ['Aligned with Texas TEKS K.6B (identify three-dimensional solids, including cylinders, cones, spheres, and cubes, in the real world) and K.6C (identify two-dimensional components of three-dimensional objects), and Common Core K.G.A.3 (identify shapes as two-dimensional (lying in a plane, "flat") or three-dimensional ("solid")).'],
+    generators: ['kd-name-solid', 'kd-tap-solid', 'kd-real-thing', 'kd-flat-or-solid', 'kd-rolls', 'kd-flat-face'],
   },
   {
     id: 'making-ten',
@@ -4982,16 +5036,21 @@ function COUNTING_MODULES() { return [
     tagline: 'Pairs that make ten',
     requires: ['joining-and-taking-away'],
     lesson: {
-      paragraphs: ['Ten is a special number. Two numbers that join to make ten are partners.', 'Seven needs three more to make ten. Four needs six. Find the partner.'],
-      keyIdea: 'Every number up to nine has a partner that makes ten.',
-      example: { kind: 'tenframe', filled: 7, caption: 'Seven, and three more make ten.' },
+      // Full standard (pass JX): the ten frame explained (two rows of five), every partner pair said, taking away from ten and
+      // checking a pair, which its questions ask; cited to TEKS K.2I (compose and decompose numbers up to 10).
+      paragraphs: ['A ten frame has ten spaces in two rows of five. When every space is full, there are ten, and the empty spaces show how many more make ten.', 'Two numbers that join to make ten are partners. Seven and three are partners, and so are four and six. Every number up to nine has a partner, from one and nine to five and five.', 'Partners work backward too. Take six away from ten and four is left, because six and four make ten. To check a pair, count them together and see if you land on ten.'],
+      keyIdea: 'Two numbers that make ten are partners. Count the empty spaces to find the partner.',
+      example: { kind: 'tenframe', filled: 7, caption: 'Seven full and three empty. Seven and three make ten.' },
       script: [
-        { say: 'Seven in the frame. Three empty. Seven and three make ten.', show: { kind: 'tenframe', filled: 7 } },
-        { say: 'Four in the frame. Six empty. Four and six make ten.', show: { kind: 'tenframe', filled: 4 } },
-        { say: 'Count the empty spaces. That is how many more make ten.', show: { kind: 'tenframe', filled: 8 } },
+        { say: 'This is a ten frame. It has ten spaces, in two rows of five. When every space is full, there are ten.', show: { kind: 'tenframe', filled: 10 } },
+        { say: 'Here, seven spaces are full and three are empty. Seven and three make ten, so they are partners.', show: { kind: 'tenframe', filled: 7 } },
+        { say: 'To find how many more make ten, count the empty spaces. Eight are full and two are empty, so eight needs two more.', show: { kind: 'tenframe', filled: 8 } },
+        { say: 'Every number up to nine has a partner. One and nine, two and eight, three and seven, four and six, and five and five.', show: { kind: 'tenframe', filled: 5 } },
+        { say: 'Partners work backward too. Start with ten and take six away, and its partner, four, is left.', show: { kind: 'tenframe', filled: 4 } },
+        { say: 'To check two numbers, count them together. Six and four make ten, but six and five make eleven, one too many.', show: { kind: 'tenframe', filled: 6 } },
       ],
     },
-    sources: ['Aligned with Common Core K.OA.A.3 and K.OA.A.4 (decompose numbers; find the number that makes 10) and Texas TEKS K.3B.'],
+    sources: ['Aligned with Texas TEKS K.2I (compose and decompose numbers up to 10 with objects and pictures) and Common Core K.OA.A.3 and K.OA.A.4 (pairs that make a number, and the number that makes 10).'],
     generators: ['kn-partner', 'kn-frame', 'kn-two-ways', 'kn-take-from-ten', 'kn-is-ten'],
   },
   {
@@ -5001,16 +5060,19 @@ function COUNTING_MODULES() { return [
     tagline: 'Bigger groups',
     requires: ['comparing-numbers'],
     lesson: {
-      paragraphs: ['Two groups. Which has more? Count each one, or look for the bigger crowd.', 'The group with the bigger number has more. The other has fewer.'],
-      keyIdea: 'Count both. The bigger number has more.',
+      // Full standard (pass JX): when two groups look close, count each one or match them one to one; explanations give the
+      // counting reason. TEKS K.2G quoted from 19 TAC 111.2.
+      paragraphs: ['To find which of two groups has more, count each one, most of all when they look close. The group with the bigger number has more, and the other has fewer.', 'You can also match them one to one. Pair each dot with a dot from the other group, and the group with dots left over has more.'],
+      keyIdea: 'Count both groups. The bigger number has more, and the smaller number has fewer.',
       example: { kind: 'pair', a: { kind: 'dots', count: 8 }, b: { kind: 'dots', count: 6 }, caption: 'Eight dots and six dots. Eight is more.' },
       script: [
         { say: 'Here are eight dots, and here are six dots.', show: { kind: 'pair', a: { kind: 'dots', count: 8 }, b: { kind: 'dots', count: 6 } } },
-        { say: 'Eight is more than six. This group has more.', show: { kind: 'pair', a: { kind: 'dots', count: 8 }, b: { kind: 'dots', count: 6 } } },
-        { say: 'Six is fewer than eight. This group has fewer.', show: { kind: 'pair', a: { kind: 'dots', count: 6 }, b: { kind: 'dots', count: 8 } } },
+        { say: 'When two groups look close, count each one. Eight comes after six when you count, so eight is more.', show: { kind: 'pair', a: { kind: 'dots', count: 8 }, b: { kind: 'dots', count: 6 } } },
+        { say: 'Six is fewer than eight, so this group has fewer.', show: { kind: 'pair', a: { kind: 'dots', count: 6 }, b: { kind: 'dots', count: 8 } } },
+        { say: 'You can also match them, one dot with one dot. Two dots have no partner, so the group of eight has two more.', show: { kind: 'pair', a: { kind: 'dots', count: 8 }, b: { kind: 'dots', count: 6 } } },
       ],
     },
-    sources: ['Aligned with TEKS K.2G (compares sets of objects up to at least 20 using comparative language) and CCSS K.CC.C.6.'],
+    sources: ['Aligned with Texas TEKS K.2G (compare sets of objects up to at least 20 in each set using comparative language) and Common Core K.CC.C.6 (comparing two groups by matching and counting).'],
     generators: ['k-tap-more-10', 'k-tap-fewer-10', 'k-tap-more-10', 'k-tap-fewer-10', 'k-tap-more-10'],
   },
 ]; }
@@ -9027,18 +9089,22 @@ function KINDER_CIVICS_MODULES() { return [
     title: 'Rules and helpers',
     tagline: 'Rules keep us safe, and helpers keep us going',
     lesson: {
-      paragraphs: ['A rule tells us what to do. Rules keep everyone safe.', 'We stop at a red light to let the other cars go. We wait our turn so it is fair for everyone. We walk in the hall so nobody bumps or falls.', 'Helpers do jobs for the whole town. A firefighter puts out fires. A doctor helps when you are sick.'],
-      keyIdea: 'Rules keep us safe. Helpers do jobs for everyone.',
-      example: { kind: 'sign', text: 'STOP', color: '#D9534F', caption: 'A red sign means stop. Rules keep everyone safe.' , formula: 'STOP' },
+      // Full standard (pass JZ): rules keep us safe and make things fair (TEKS K.7A, K.7B), grown-ups help us follow them (K.8A),
+      // the five helpers its questions ask about, and the good choices its questions ask, each said aloud before it is asked.
+      paragraphs: ['A rule tells us what to do. Rules keep us safe, like stopping at a red light to let the other cars go and walking in the hall so nobody bumps or falls. Rules also make things fair, like waiting our turn.', 'Grown-ups help us follow rules, like a parent at home, a teacher at school and a police officer in town.', 'Helpers do jobs for everyone. A firefighter puts out fires, a doctor helps when you are sick, a teacher helps you learn, a mail carrier brings the mail, and a police officer keeps people safe on the street. We help too, with good choices like listening, throwing away our trash and helping a friend.'],
+      keyIdea: 'Rules keep us safe and make things fair. Helpers do jobs for everyone.',
+      example: { kind: 'sign', text: 'STOP', color: '#D9534F', caption: 'A red sign means stop. Rules keep everyone safe.', formula: 'STOP' },
       script: [
-        { say: 'Stop at the sign. That is a rule. Rules keep everyone safe.', show: { kind: 'letters', text: 'STOP' } },
-        { say: 'We stop at a red light to let the other cars go. We wait our turn so it is fair for everyone. We walk in the hall so nobody bumps or falls.', show: { kind: 'sign', text: 'STOP', color: '#D9534F' } },
-        { say: 'A firefighter puts out the fire. That is a helper.', show: { kind: 'icon', name: 'fire' } },
-        { say: 'A doctor helps when you are sick. A teacher helps you learn.', show: null },
-        { say: 'Rules help us to stay safe. A police officer and a mail carrier are helpers. When a helper talks, we listen.', show: { kind: 'sign', text: 'STOP', color: '#D9534F' } },
+        { say: 'Stop at the sign. That is a rule. A rule tells us what to do.', show: { kind: 'letters', text: 'STOP' } },
+        { say: 'Rules keep us safe. We stop at a red light to let the other cars go, and we walk in the hall so nobody bumps or falls.', show: { kind: 'sign', text: 'STOP', color: '#D9534F' } },
+        { say: 'Rules make things fair, too. We wait our turn so it is fair for everyone.', show: null },
+        { say: 'Grown-ups help us follow the rules, like a parent at home, a teacher at school and a police officer in town.', show: null },
+        { say: 'Helpers do jobs for everyone. A firefighter puts out the fire.', show: { kind: 'icon', name: 'fire' } },
+        { say: 'A doctor helps when you are sick, a teacher helps you learn, a mail carrier brings the mail, and a police officer keeps people safe on the street.', show: null },
+        { say: 'We help too, with good choices. We listen when someone talks, throw away our trash, and help a friend who drops something.', show: null },
       ],
     },
-    sources: ['Aligned with Texas TEKS Kindergarten Social Studies (citizenship: the purpose of rules; community helpers and their jobs) and NCSS Theme VI (Power, Authority, and Governance).'],
+    sources: ['Aligned with Texas TEKS K.7A (identify purposes for having rules), K.7B (identify rules that provide order, security, and safety in the home and school) and K.8A (identify authority figures in the home, school, and community), and NCSS Theme VI (Power, Authority, and Governance).'],
     generators: ['ck-why-rule', 'ck-which-helper', 'ck-good-choice', 'ck-which-helper', 'ck-why-rule'],
   },
   {
@@ -9048,17 +9114,21 @@ function KINDER_CIVICS_MODULES() { return [
     tagline: 'What we must have and what we would like',
     requires: ['rules-and-helpers'],
     lesson: {
-      paragraphs: ['A need is something you must have to live. Food, water, a home and clothes are needs.', 'A want is something you would like. A toy is a want.'],
-      keyIdea: 'Needs come first. Wants can wait.',
-      example: { kind: 'icon', name: 'cup', caption: 'A drop of water. Water is a need.' },
+      // Full standard (pass JZ): food, clothing and shelter (TEKS K.5A), a need against a want (K.5B), and how families meet them
+      // (K.5C). An apple is a need because it is food, and candy is a want because the body does not need it.
+      paragraphs: ['A need is something you must have to live. Food, water, clothes and a home are needs, so an apple to eat and a warm coat for the cold are needs too.', 'A want is something you would like but can live without, like a toy car, a video game, a balloon or candy. Candy tastes good, but your body does not need it.', 'Families pay for needs first, with money grown-ups earn at work, and then for wants when there is money left. Needs come first, and wants can wait.'],
+      keyIdea: 'A need is something you must have to live. A want is something you would like. Needs come first.',
+      example: { kind: 'icon', name: 'cup', caption: 'A cup of water. Water is a need.' },
       script: [
         { say: 'A drop of water. Water is a need. You must have it to live.', show: { kind: 'icon', name: 'drop' } },
-        { say: 'A home and warm clothes are needs too.', show: null },
-        { say: 'A toy is a want. It is nice, but you can live without it.', show: null },
-        { say: 'A warm coat is a need. An apple is a need. A toy is a want.', show: { kind: 'flow', steps: ['coat', 'apple', 'toy'] } },
+        { say: 'Food, clothes and a home are needs too. An apple is food, and a warm coat keeps you warm.', show: null },
+        { say: 'A want is something you would like but can live without. A toy car is a want.', show: null },
+        { say: 'Candy is a want too. It tastes good, but your body does not need it.', show: null },
+        { say: 'Families pay for needs first, like food and a home, and then for wants when there is money left.', show: null },
+        { say: 'So needs come first, and wants can wait.', show: null },
       ],
     },
-    sources: ['Aligned with Texas TEKS Kindergarten Social Studies (economics: the difference between needs and wants) and NCSS Theme VII (Production, Distribution, and Consumption).'],
+    sources: ['Aligned with Texas TEKS K.5A (identify basic human needs of food, clothing, and shelter), K.5B (explain the difference between needs and wants) and K.5C (explain how basic human needs and wants can be met), and NCSS Theme VII (Production, Distribution, and Consumption).'],
     generators: ['ck-need-or-want', 'ck-need-or-want', 'ck-which-is-need', 'ck-need-or-want', 'ck-which-is-need'],
   },
   {
@@ -9068,16 +9138,22 @@ function KINDER_CIVICS_MODULES() { return [
     tagline: 'Stars, stripes and days we celebrate',
     requires: ['needs-and-wants'],
     lesson: {
-      paragraphs: ['Our flag is red, white and blue. It has 50 stars, one for each state, and 13 stripes for the first 13 states.', 'The third Monday of January is Martin Luther King Jr. Day, when we honor Dr. King. On July 4 we celebrate Independence Day. In November we give thanks on Thanksgiving.'],
-      keyIdea: 'Fifty stars, thirteen stripes, red, white and blue.',
-      example: { kind: 'flag', stars: true, caption: 'Fifty stars, one for each state.' , formula: '50' },
+      // Full standard (pass JZ): the spoken lesson now says the three holidays its questions ask (it said none), with a custom for
+      // Independence Day (TEKS K.1A, K.1B), and the stripes stand for the 13 colonies that became the first states.
+      paragraphs: ['Our flag, the flag of the United States, is red, white and blue. It has 50 stars, one for each state, and 13 stripes, for the 13 colonies that became our first states.', "Holidays help us remember special days. On Independence Day, July 4, we celebrate our country's birthday with parades and fireworks. On Martin Luther King Jr. Day, the third Monday of January, we honor Dr. King, who worked so that people of every color would be treated fairly. In November, families give thanks and share a meal on Thanksgiving."],
+      keyIdea: 'Our flag has fifty stars and thirteen stripes, in red, white and blue. Holidays help us remember special days.',
+      example: { kind: 'flag', stars: true, caption: 'Fifty stars, one for each state.', formula: '50' },
       script: [
-        { say: 'Our flag has 50 stars. One star for each state.', show: { kind: 'letters', text: '50' } },
-        { say: 'It has 13 stripes for the first 13 states.', show: { kind: 'letters', text: '13' } },
-        { say: 'Red is on our flag. So are white and blue.', show: { kind: 'swatch', colour: 'red' } },
+        { say: 'This is our flag, the flag of the United States. It is red, white and blue.', show: { kind: 'flag', stars: true } },
+        { say: 'It has 50 stars, one for each of our 50 states.', show: { kind: 'letters', text: '50' } },
+        { say: 'It has 13 stripes, for the 13 colonies that became our first states.', show: { kind: 'letters', text: '13' } },
+        { say: 'Red is on our flag, and so are white and blue. There is no green or yellow.', show: { kind: 'swatch', colour: 'red' } },
+        { say: "Holidays help us remember special days. On Independence Day, July 4, we celebrate our country's birthday with parades and fireworks.", show: { kind: 'flag', stars: true } },
+        { say: 'On Martin Luther King Jr. Day, the third Monday of January, we honor Dr. King, who worked so that people of every color would be treated fairly.', show: null },
+        { say: 'On Thanksgiving, in November, families give thanks and share a meal.', show: null },
       ],
     },
-    sources: ['Aligned with Texas TEKS Kindergarten Social Studies (patriotism: the flag of the United States and patriotic holidays) and NCSS Theme X (Civic Ideals and Practices).'],
+    sources: ["Aligned with Texas TEKS K.9A (identify the United States flag and the Texas state flag), K.1A (identify national patriotic holidays such as Constitution Day, Presidents' Day, Veterans Day, and Independence Day) and K.1B (identify customs associated with national patriotic holidays such as parades and fireworks on Independence Day), and NCSS Theme X (Civic Ideals and Practices)."],
     generators: ['ck-flag-count', 'ck-not-on-flag', 'ck-holiday', 'ck-flag-count', 'ck-holiday'],
   },
   {
@@ -9087,17 +9163,20 @@ function KINDER_CIVICS_MODULES() { return [
     tagline: 'Why grown-ups go to work',
     requires: ['our-flag-and-holidays'],
     lesson: {
-      paragraphs: ['Grown-ups go to work to earn money. Money pays for needs, like food and a home.', 'Every job has its tools. A firefighter has a hose. A doctor has a stethoscope. A teacher has a whiteboard.'],
-      keyIdea: 'People work to earn money for needs. Every job has its tools.',
+      // Full standard (pass JZ): why people work (TEKS K.6B), jobs at home, at school and in town (K.6A), and every tool its
+      // questions ask about, the mail truck included, which the old lesson never said.
+      paragraphs: ['Grown-ups go to work to earn money, and that money pays for needs, like food, clothes and a home. Many jobs help other people too.', 'Every job has its tools. A firefighter sprays water from a hose, a doctor listens to your heart with a stethoscope, a teacher writes on a whiteboard, and a mail carrier drives a mail truck and brings the mail.', 'Jobs happen in town, at school and at home. A police officer keeps people safe in town, a teacher teaches at school, and at home a family cooks, cleans and cares for one another.'],
+      keyIdea: 'People work to earn money for needs, and many jobs help others too. Every job has its tools.',
       example: { kind: 'icon', name: 'fire', caption: 'A firefighter fights the fire with a hose.' },
       script: [
-        { say: 'Grown-ups go to work to earn money for food and a home.', show: null },
-        { say: 'A firefighter fights the fire with a hose.', show: { kind: 'icon', name: 'fire' } },
-        { say: 'A doctor listens with a stethoscope. A teacher writes on a whiteboard.', show: null },
-        { say: 'A mail carrier brings letters. A police officer keeps us safe. A teacher helps us learn.', show: { kind: 'flow', steps: ['mail carrier', 'police officer', 'teacher'] } },
+        { say: 'Grown-ups go to work to earn money. That money pays for needs, like food and a home.', show: null },
+        { say: 'Many jobs help other people too. A firefighter fights the fire with a hose.', show: { kind: 'icon', name: 'fire' } },
+        { say: 'A doctor listens to your heart with a stethoscope. A teacher writes on a whiteboard.', show: null },
+        { say: 'A mail carrier drives a mail truck and brings the mail. A police officer keeps people safe.', show: null },
+        { say: 'There are jobs at home too, like cooking and cleaning, and jobs at school, like teaching. Every job has its tools.', show: null },
       ],
     },
-    sources: ['Aligned with Texas TEKS Kindergarten Social Studies (economics: jobs people do and why people work) and NCSS Theme VII (Production, Distribution, and Consumption).'],
+    sources: ['Aligned with Texas TEKS K.6A (identify jobs in the home, school, and community) and K.6B (explain why people have jobs), and NCSS Theme VII (Production, Distribution, and Consumption).'],
     generators: ['ck-job-tool', 'ck-why-work', 'ck-which-helper', 'ck-job-tool', 'ck-why-work'],
   },
   {
@@ -9107,16 +9186,20 @@ function KINDER_CIVICS_MODULES() { return [
     tagline: 'Everyone gets one vote, and more wins',
     requires: ['jobs-people-do'],
     lesson: {
-      paragraphs: ['When the class has to choose, everyone gets one vote. Count the votes. The choice with more votes wins.'],
-      keyIdea: 'One vote each. More votes wins.',
-      example: { kind: 'dots', count: 4, caption: 'Five votes for the story.' },
+      // Full standard (pass JZ): one vote each so it is fair, count the votes, the choice with more wins, and everyone goes with
+      // it (TEKS K.9C, K.15A). Its example showed four dots captioned five votes.
+      paragraphs: ['When a class has to choose, it can vote. Everyone gets one vote, so it is fair, and nobody votes twice.', 'Count the votes for each choice. The choice with more votes wins, so five votes for the story beat three votes for the song.', 'Everyone goes with the choice that wins, even the people who voted for something else. Their choice can have a turn next time.'],
+      keyIdea: 'Everyone gets one vote. The choice with more votes wins.',
+      example: { kind: 'dots', count: 5, caption: 'Five votes for the story.' },
       script: [
+        { say: 'When a class has to choose, it can vote. Everyone gets one vote, so it is fair.', show: null },
         { say: 'Count these five dots. Five children voted for the story.', show: { kind: 'dots', count: 5 } },
         { say: 'Count these three dots. Three children voted for the song.', show: { kind: 'dots', count: 3 } },
-        { say: 'Five is more than three. The story wins.', show: null },
+        { say: 'Five is more than three, so the story wins. The choice with more votes wins.', show: { kind: 'pair', a: { kind: 'dots', count: 5 }, b: { kind: 'dots', count: 3 } } },
+        { say: 'Nobody votes twice, and everyone goes with the choice that wins. The song can have a turn next time.', show: null },
       ],
     },
-    sources: ['Aligned with Texas TEKS Kindergarten Social Studies K.9C (use voting as a method for group decision making) and NCSS Theme X (Civic Ideals and Practices).'],
+    sources: ['Aligned with Texas TEKS K.9C (use voting as a method for group decision making) and K.15A (use democratic procedures to collaborate with others when making decisions on issues in the classroom, school, or community), and NCSS Theme X (Civic Ideals and Practices).'],
     generators: ['ck-more-votes', 'ck-one-vote-each', 'ck-more-votes', 'ck-more-votes', 'ck-one-vote-each'],
   },
   {
@@ -9126,16 +9209,19 @@ function KINDER_CIVICS_MODULES() { return [
     tagline: 'Fifty stars, and one lone star',
     requires: ['voting-in-class'],
     lesson: {
-      paragraphs: ['The United States flag has 50 stars, one for each state. The Texas flag has one big star. That is why Texas is called the Lone Star State.'],
-      keyIdea: 'Fifty stars for the country. One star for Texas.',
-      example: { kind: 'flag', texas: true, caption: 'One star. That is the Texas flag.' , formula: '1' },
+      // Full standard (pass JZ): each flag is shown as its line is spoken, the Texas flag is described, and the one star is why
+      // Texas is the Lone Star State.
+      paragraphs: ['The United States flag is the flag of our country. It has 50 stars, one for each state, and 13 stripes.', 'The Texas flag is the flag of our state. It has one big white star on a blue stripe, with a white stripe and a red stripe beside it. Because of that one star, Texas is called the Lone Star State.', "Both flags are red, white and blue, and in Texas you often see them flying together, with the country's flag on top."],
+      keyIdea: 'Fifty stars for the country, one star for Texas. Texas is the Lone Star State.',
+      example: { kind: 'flag', texas: true, caption: 'One star. That is the Texas flag.', formula: '1' },
       script: [
-        { say: 'The Texas flag has 1 big star, so Texas is the Lone Star State.', show: { kind: 'letters', text: '1' } },
-        { say: 'The United States flag has 50 stars, one for each state.', show: { kind: 'letters', text: '50' } },
-        { say: 'Two flags. Fifty stars for the country, one star for Texas.', show: null },
+        { say: 'This is the flag of the United States, our country. It has 50 stars, one for each state.', show: { kind: 'flag', stars: true } },
+        { say: 'This is the Texas flag, the flag of our state. It has one big white star on a blue stripe.', show: { kind: 'flag', texas: true } },
+        { say: 'The Texas flag has just one star, so Texas is called the Lone Star State.', show: { kind: 'flag', texas: true } },
+        { say: 'Both flags are red, white and blue. Fifty stars for the country, and one star for Texas.', show: null },
       ],
     },
-    sources: ['Aligned with Texas TEKS Kindergarten Social Studies K.9A (identify the United States flag and the Texas state flag) and NCSS Theme X (Civic Ideals and Practices).'],
+    sources: ['Aligned with Texas TEKS K.9A (identify the United States flag and the Texas state flag) and NCSS Theme X (Civic Ideals and Practices).'],
     generators: ['ck-which-flag', 'ck-lone-star', 'ck-flag-count', 'ck-which-flag', 'ck-lone-star'],
   },
 ]; }
@@ -14869,61 +14955,77 @@ const PREK_LETTERS = ['A', 'B', 'C', 'D', 'E', 'M', 'S'];
 const LETTER_LOOKS = { A: 'It is tall and pointy, with a bar across the middle.', B: 'It has two round bumps.', C: 'It is curved, like a cookie with a bite out of it.', D: 'It has a straight line and a big curve.', E: 'It has a line down and three lines across.', M: 'It has two pointy hills.', S: 'It is curvy, like a snake.' };
 Object.assign(GENERATORS, {
   'sk-day-or-night': (rng) => {
-    // More examples (pass HT, Mikey): eight short scenes, each answered by the lesson's sun, moon, bright and dark.
-    const Q = [['Is the sun for the day or the night?', 'Day', 'sun', 'The sun shines in the day.'], ['It is dark, and the stars are out. Is it day or night?', 'Night', null, 'A dark sky with stars means it is night.'],
-      ['The moon is out, and the sky is dark. Is it day or night?', 'Night', 'moon', 'A dark sky means it is night.'], ['The sun is shining. Is it day or night?', 'Day', 'sun', 'The sun shines in the day.'],
-      ['The sky is bright. Is it day or night?', 'Day', null, 'In the day the sky is bright.'], ['The sky is dark. Is it day or night?', 'Night', null, 'At night the sky is dark.'],
-      ['You see the sun out the window. Is it day or night?', 'Day', 'sun', 'The sun shines in the day.'], ['You see the moon in a dark sky. Is it day or night?', 'Night', 'moon', 'A dark sky means it is night.']];
+    // Full standard (pass JY): every scene is answered by the lesson's clues (the sun makes the sky bright, a dark sky means
+    // night, and the moon can be up in the day too), and three ask what comes next, the pattern TEKS K.9A asks a child to predict.
+    const Q = [
+      ['When do we see the sun shining, in the day or at night?', 'Day', 'sun', 'We see the sun shining in the day, and its light makes the sky bright.'],
+      ['It is dark, and the stars are out. Is it day or night?', 'Night', null, 'A dark sky with stars means it is night. In the day the bright sun hides the stars.'],
+      ['The moon is out, and the sky is dark. Is it day or night?', 'Night', 'moon', 'A dark sky means it is night. The moon can be up in the day too, so the dark sky is the clue.'],
+      ['The sun is shining. Is it day or night?', 'Day', 'sun', 'The sun is shining, so it is day. Its light makes the sky bright.'],
+      ['The sky is bright. Is it day or night?', 'Day', null, 'The sky is bright because the sun is shining, so it is day.'],
+      ['The sky is dark. Is it day or night?', 'Night', null, 'A dark sky means our side of the Earth has turned away from the sun, so it is night.'],
+      ['You see the sun out the window. Is it day or night?', 'Day', 'sun', 'The sun is out, and it shines in the day, so it is day.'],
+      ['You see the moon in a dark sky. Is it day or night?', 'Night', 'moon', 'A dark sky means it is night. The moon can be up in the day too, so the dark sky is the clue.'],
+      ['It was night, and now the sun is coming up. What comes next, day or night?', 'Day', 'sun', 'After night comes day. The Earth turns, and our side turns to face the sun.'],
+      ['The sun is going down, and the sky is getting dark. What comes next, day or night?', 'Night', null, 'After day comes night. The Earth turns, and our side turns away from the sun.'],
+      ['Day and night take turns. What comes after night?', 'Day', null, 'Day and night take turns, so after night comes day.'],
+    ];
     const [prompt, answer, icon, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: ['Day', 'Night'], answer, explain, visual: icon ? { kind: 'icon', name: icon } : null, explainVisual: null };
   },
 
   'sk-tap-sky': (rng) => {
-    // More examples (pass HT, Mikey): tap the sun or the moon by name or by when it shines.
+    // More examples (pass HT, Mikey): tap the sun or the moon by name or by when it shines. Explanations give the reason (pass JY).
     const [prompt, sun] = pick(rng, [['Tap the sun.', true], ['Tap the moon.', false], ['Tap what shines in the day.', true], ['Tap what shines at night.', false]]);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, ['icon:sun', 'icon:moon']), answer: sun ? 'icon:sun' : 'icon:moon',
-      explain: sun ? 'This is the sun. It shines in the day.' : 'This is the moon. We often see it at night.', visual: null, explainVisual: null };
+      explain: sun ? 'This is the sun. It shines in the day, and its light makes the sky bright.' : 'This is the moon. We often see it at night, shining with sunlight that bounces off it.', visual: null, explainVisual: null };
   },
 
   'sk-which-weather': (rng) => {
+    // Full standard (pass JY): the question shows the weather without naming it, so the child reads the picture.
     const w = pick(rng, ['sun', 'rain', 'snow']); const word = { sun: 'Sunny', rain: 'Rainy', snow: 'Snowy' };
-    return { type: 'choice', story: null, prompt: `Look at the ${w}. What is the weather?`, choices: shuffle(rng, ['Sunny', 'Rainy', 'Snowy']), answer: word[w],
-      explain: `${w === 'sun' ? 'The sun is out' : w === 'rain' ? 'Rain is falling' : 'Snow is falling'}, so it is ${word[w].toLowerCase()}.`, visual: { kind: 'icon', name: w }, explainVisual: null };
+    const prompt = pick(rng, ['What is the weather in this picture?', 'What kind of day does this picture show?']);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, ['Sunny', 'Rainy', 'Snowy']), answer: word[w],
+      explain: { sun: 'The sun is out and shining, so it is sunny.', rain: 'Rain is falling from the clouds, so it is rainy.', snow: 'Snow is falling from the clouds, so it is snowy.' }[w], visual: { kind: 'icon', name: w }, explainVisual: null };
   },
   'sk-tap-weather': (rng) => {
     const w = pick(rng, ['sun', 'rain', 'snow']); const others = ['sun', 'rain', 'snow'].filter((x) => x !== w);
     return { type: 'choice', story: null, prompt: `Tap the ${w}.`, choices: shuffle(rng, [`icon:${w}`, ...others.map((x) => `icon:${x}`)]), answer: `icon:${w}`,
-      explain: `This is the ${w}.`, visual: null, explainVisual: null };
+      explain: { sun: 'This is the sun. When it is out, the day is sunny.', rain: 'This is the rain. It falls from the clouds on a rainy day.', snow: 'This is the snow. It falls from the clouds when it is very cold.' }[w], visual: null, explainVisual: null };
   },
   'sk-what-to-wear': (rng) => {
     const w = pick(rng, ['rain', 'snow', 'sun']); const right = { rain: 'A raincoat', snow: 'A warm coat', sun: 'A sun hat' }[w];
-    return { type: 'choice', story: null, prompt: `It is ${w === 'sun' ? 'sunny' : w === 'rain' ? 'raining' : 'snowing'}. Look at the ${w}. What do you wear?`, choices: shuffle(rng, ['A raincoat', 'A warm coat', 'A sun hat']), answer: right,
-      explain: `${right} is for ${w === 'sun' ? 'a sunny day' : w === 'rain' ? 'rain' : 'snow'}.`, visual: { kind: 'icon', name: w }, explainVisual: null };
+    return { type: 'choice', story: null, prompt: `It is ${w === 'sun' ? 'sunny and hot' : w === 'rain' ? 'raining' : 'snowing'} outside. What should you wear?`, choices: shuffle(rng, ['A raincoat', 'A warm coat', 'A sun hat']), answer: right,
+      explain: { rain: 'A raincoat keeps the rain off, so you stay dry.', snow: 'Snow means it is very cold, and a warm coat keeps you warm.', sun: 'A sun hat shades your face from the hot sun.' }[w], visual: { kind: 'icon', name: w }, explainVisual: null };
   },
   'sk-living-or-not': (rng) => {
+    // Full standard (pass JY): living things need things, grow, and make young; the old test (it does not eat) was untrue of plants.
+    const WHY = { plant: 'A plant needs water, air and sunlight, it grows, and it makes seeds. It is living.', tree: 'A tree needs water, air and sunlight, it grows, and it makes seeds that grow into new trees. It is living.', bird: 'A bird needs food, water and air, it grows, and it lays eggs that hatch into baby birds. It is living.', fish: 'A fish needs food and water, it grows, and it has babies. It is living.', rock: 'A rock needs no food or water, it does not grow, and it never has babies. It is not living.', ice: 'Ice is frozen water. It needs no food, and it never has babies, so it is not living.' };
     const t = pick(rng, [{ n: 'plant', living: true }, { n: 'fish', living: true }, { n: 'bird', living: true }, { n: 'tree', living: true }, { n: 'rock', living: false }, { n: 'ice', living: false }]);
     return { type: 'choice', story: null, prompt: `Look at the ${t.n}. Is it living?`, choices: ['Living', 'Not living'], answer: t.living ? 'Living' : 'Not living',
-      explain: t.living ? `${thingWords(t.n)} grows and needs food and water. It is living.` : t.n === 'ice' ? 'Ice is frozen water. It does not eat, so it is not living.' : `${thingWords(t.n)} does not grow or eat. It is not living.`, visual: { kind: 'icon', name: t.n }, explainVisual: null };
+      explain: WHY[t.n], visual: { kind: 'icon', name: t.n }, explainVisual: null };
   },
   'sk-tap-living': (rng) => {
     const living = pick(rng, ['plant', 'fish', 'bird', 'tree']); const not = pick(rng, ['rock', 'ice']);
+    const why = { plant: 'It needs water and sunlight, and it grows.', tree: 'It needs water and sunlight, and it grows.', fish: 'It needs food and water, and it grows.', bird: 'It needs food and water, and it grows.' }[living];
     return { type: 'choice', story: null, prompt: 'Tap the living thing.', choices: shuffle(rng, [`icon:${living}`, `icon:${not}`]), answer: `icon:${living}`,
-      explain: `The ${living} is living. It grows.`, visual: null, explainVisual: null };
+      explain: `The ${living} is living. ${why}`, visual: null, explainVisual: null };
   },
   'sk-tap-not-living': (rng) => {
     const living = pick(rng, ['plant', 'fish', 'bird', 'tree']); const not = pick(rng, ['rock', 'ice']);
     return { type: 'choice', story: null, prompt: 'Tap the thing that is not living.', choices: shuffle(rng, [`icon:${living}`, `icon:${not}`]), answer: `icon:${not}`,
-      explain: `The ${not} is not living. ${not === 'ice' ? 'It is frozen water, and it does not eat.' : 'It does not grow.'}`, visual: null, explainVisual: null };
+      explain: `The ${not} is not living. ${not === 'ice' ? 'It is frozen water, and it never has babies.' : 'It needs no food or water, and it never grows or has babies.'}`, visual: null, explainVisual: null };
   },
   'sk-plant-needs': (rng) => {
-    // Pass IU: things a plant does not need beside the two it does, so a round of five never asks the same question twice.
-    const [name, label, answer, explain] = pick(rng, [['drop', 'drop of water', 'Yes', 'A plant needs water.'], ['sun', 'sun', 'Yes', 'A plant needs the sun.'], ['rock', 'rock', 'No', 'A plant does not need a rock. It needs water, sun and air.'], ['magnet', 'magnet', 'No', 'A plant does not need a magnet. It needs water, sun and air.'], ['nail', 'nail', 'No', 'A plant does not need a nail. It needs water, sun and air.']]);
+    // Pass IU: things a plant does not need beside the ones it does, so a round of five never asks the same question twice.
+    // Pass JY: soil joins water and the sun, since TEKS K.12A names nutrients in the soil, and each answer says why.
+    const [name, label, answer, explain] = pick(rng, [['drop', 'drop of water', 'Yes', 'A plant needs water. Its roots drink it up from the soil.'], ['sun', 'sun', 'Yes', 'A plant needs the sun. Its leaves use the sunlight to make food for the plant.'], ['soil', 'soil', 'Yes', 'A plant needs soil. It holds nutrients, tiny bits a plant needs to grow strong.'], ['rock', 'rock', 'No', 'A plant does not need a rock. It needs water, sunlight, air, nutrients and space.'], ['magnet', 'magnet', 'No', 'A plant does not need a magnet. It needs water, sunlight, air, nutrients and space.'], ['nail', 'nail', 'No', 'A plant does not need a nail. It needs water, sunlight, air, nutrients and space.']]);
     return { type: 'choice', story: null, prompt: `Look at the ${label}. Does a plant need it?`, choices: ['Yes', 'No'], answer, explain, visual: { kind: 'icon', name }, explainVisual: null };
   },
   'sk-tap-plant-need': (rng) => {
-    const [prompt, need] = pick(rng, [['Tap what a plant needs to grow.', 'drop'], ['Tap what a plant needs to grow.', 'sun'], ['Tap what a plant drinks.', 'drop'], ['Tap what gives a plant light.', 'sun']]); const not = pick(rng, ['rock', 'magnet']);
+    const [prompt, need] = pick(rng, [['Tap what a plant needs to grow.', 'drop'], ['Tap what a plant needs to grow.', 'sun'], ['Tap what a plant needs to grow.', 'soil'], ['Tap what a plant drinks.', 'drop'], ['Tap what gives a plant light.', 'sun'], ["Tap what a plant's roots grow in.", 'soil']]); const not = pick(rng, ['rock', 'magnet']);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [`icon:${need}`, `icon:${not}`]), answer: `icon:${need}`,
-      explain: need === 'drop' ? 'A plant needs water.' : 'A plant needs the sun.', visual: null, explainVisual: null };
+      explain: { drop: 'A plant needs water. Its roots drink it up from the soil.', sun: 'A plant needs the sun. Its leaves use the light to make food.', soil: "A plant's roots grow in the soil, which holds the nutrients it needs." }[need], visual: null, explainVisual: null };
   },
   's1-when-sun': (rng) => {
     const sun = randInt(rng, 0, 1) === 1;
@@ -15096,24 +15198,24 @@ Object.assign(GENERATORS, {
       explain: `The ${animal} says ${sound}.`, visual: null, explainVisual: { kind: 'pic', name: animal } };
   },
   'sk-hot-or-cold': (rng) => {
-    const things = [['sun', 'Hot'], ['fire', 'Hot'], ['ice', 'Cold'], ['snow', 'Cold']]; const [name, answer] = pick(rng, things);
-    return { type: 'choice', story: null, prompt: `Look at the ${name}. Is it hot or cold?`, choices: ['Hot', 'Cold'], answer,
-      explain: `${name === 'sun' ? 'The sun' : capFirst(name)} is ${answer.toLowerCase()}.`, visual: { kind: 'icon', name }, explainVisual: null };
+    // Full standard (pass JY): each answer gives its reason, and the hot ones say what the warmth does or why we keep away.
+    const [name, answer, explain] = pick(rng, [['ice', 'Cold', 'Ice is frozen water, and it feels cold.'], ['fire', 'Hot', 'Fire is hot. It can burn, so we keep away from it.'], ['snow', 'Cold', 'Snow is frozen water that falls from the clouds, and it feels cold.'], ['sun', 'Hot', 'The sun is hot. Its light warms us, even from far away.']]);
+    return { type: 'choice', story: null, prompt: `Look at the ${name}. Is it hot or cold?`, choices: ['Hot', 'Cold'], answer, explain, visual: { kind: 'icon', name }, explainVisual: null };
   },
   'sk-tap-hot': (rng) => {
-    const hot = pick(rng, ['sun', 'fire']); const cold = pick(rng, ['ice', 'snow']);
+    const [hot, cold] = pick(rng, [['fire', 'snow'], ['sun', 'snow'], ['fire', 'ice'], ['sun', 'ice']]);
     return { type: 'choice', story: null, prompt: 'Tap the hot one.', choices: shuffle(rng, [`icon:${hot}`, `icon:${cold}`]), answer: `icon:${hot}`,
-      explain: `The ${hot} is hot. The ${cold} is cold.`, visual: null, explainVisual: { kind: 'pair', a: { kind: 'icon', name: hot }, b: { kind: 'icon', name: cold } } };
+      explain: `The ${hot} is hot${hot === 'fire' ? ', and it can burn' : ''}. The ${cold} is cold.`, visual: null, explainVisual: { kind: 'pair', a: { kind: 'icon', name: hot }, b: { kind: 'icon', name: cold } } };
   },
   'k-tap-more-10': (rng) => {
     const small = randInt(rng, 2, 6); const big = Math.min(10, small + randInt(rng, 1, 4));
     return { type: 'choice', story: null, prompt: 'Tap the one with more dots.', choices: shuffle(rng, [`dots:${big}`, `dots:${small}`]), answer: `dots:${big}`,
-      explain: `${NUMBER_NAMES[big].charAt(0).toUpperCase() + NUMBER_NAMES[big].slice(1)} dots are more than ${NUMBER_NAMES[small]} ${small === 1 ? 'dot' : 'dots'}.`, visual: null, explainVisual: { kind: 'pair', a: { kind: 'dots', count: big }, b: { kind: 'dots', count: small } } };
+      explain: `${capFirst(NUMBER_NAMES[big])} dots are more than ${NUMBER_NAMES[small]} dots, because you count past ${NUMBER_NAMES[small]} to get to ${NUMBER_NAMES[big]}.`, visual: null, explainVisual: { kind: 'pair', a: { kind: 'dots', count: big }, b: { kind: 'dots', count: small } } };
   },
   'k-tap-fewer-10': (rng) => {
     const small = randInt(rng, 2, 6); const big = Math.min(10, small + randInt(rng, 1, 4));
     return { type: 'choice', story: null, prompt: 'Tap the one with fewer dots.', choices: shuffle(rng, [`dots:${big}`, `dots:${small}`]), answer: `dots:${small}`,
-      explain: `${NUMBER_NAMES[small].charAt(0).toUpperCase() + NUMBER_NAMES[small].slice(1)} ${small === 1 ? 'dot is' : 'dots are'} fewer than ${NUMBER_NAMES[big]} dots.`, visual: null, explainVisual: { kind: 'pair', a: { kind: 'dots', count: small }, b: { kind: 'dots', count: big } } };
+      explain: `${capFirst(NUMBER_NAMES[small])} dots are fewer than ${NUMBER_NAMES[big]} dots, because ${NUMBER_NAMES[small]} comes before ${NUMBER_NAMES[big]} when you count.`, visual: null, explainVisual: { kind: 'pair', a: { kind: 'dots', count: small }, b: { kind: 'dots', count: big } } };
   },
   'p4-tap-bigger': (rng) => {
     const shape = pick(rng, ['square', 'circle', 'triangle']);
@@ -22430,7 +22532,12 @@ const CIV_RULE_WHYS = [['Why do we stop at a red light?', 'To let the other cars
 const CIV_GOOD_CHOICES = [['A friend drops their crayons.', 'Help pick them up', 'Walk away', 'Helping pick them up is the good choice, because it helps your friend.'], ['Someone is talking.', 'Listen', 'Talk over them', 'Listening is the good choice, because it shows you care what they say.'], ['You finish your snack.', 'Throw away the wrapper', 'Leave it on the floor', 'Throwing away the wrapper is the good choice, because it keeps the room clean for everyone.']];
 const CIV_NEED_WANT = [['Water', 'Need'], ['A home', 'Need'], ['A warm coat', 'Need'], ['An apple', 'Need'], ['A toy car', 'Want'], ['Candy', 'Want'], ['A video game', 'Want'], ['A balloon', 'Want']];
 const CIV_FLAG_COUNTS = [['How many stars are on our flag?', 50], ['How many stripes are on our flag?', 13]];
-const CIV_HOLIDAYS = [['Which holiday do we celebrate on July 4?', 'Independence Day', 'July 4 is Independence Day, the birthday of our country.'], ['Which November holiday is for giving thanks?', 'Thanksgiving', 'Thanksgiving comes in November. It is a day for giving thanks.'], ['Which holiday comes on the third Monday of January?', 'Martin Luther King Jr. Day', 'Martin Luther King Jr. Day is the third Monday of January. It honors Dr. King.']]; // whole questions, each with its own explanation (pass ID)
+const CIV_HOLIDAYS = [['Which holiday do we celebrate on July 4?', 'Independence Day', "July 4 is Independence Day, our country's birthday, when many people watch parades and fireworks."], ['Which November holiday is for giving thanks?', 'Thanksgiving', 'Thanksgiving comes in November. It is a day for giving thanks and sharing a meal.'], ['Which holiday comes on the third Monday of January?', 'Martin Luther King Jr. Day', 'Martin Luther King Jr. Day is the third Monday of January. It honors Dr. King, who worked so that people of every color would be treated fairly.']];
+// Why each answer is right, in the kindergarten lessons' own words (pass JZ): an explanation says what a helper does or why a
+// thing is a need, never the question back (Who teaches you at school? A teacher teaches you at school).
+const CIV_HELPER_WHY = { Firefighter: 'A firefighter puts out fires and helps keep people safe.', Doctor: 'A doctor helps sick people get well.', Teacher: 'A teacher helps you learn at school.', 'Mail carrier': 'A mail carrier brings letters and packages to every home.', 'Police officer': 'A police officer keeps people safe on the street and helps everyone follow the rules.' };
+const CIV_TOOL_WHY = { Firefighter: 'A firefighter sprays water from a hose to put out fires.', Doctor: 'A doctor uses a stethoscope to listen to your heart and lungs.', Teacher: 'A teacher writes on a whiteboard so the whole class can see.', 'Mail carrier': 'A mail carrier drives a mail truck full of letters and packages.' };
+const CIV_NEED_WHY = { Water: 'Water is a need. Your body must have water to live.', 'A home': 'A home is a need. It keeps you safe, dry and warm.', 'A warm coat': 'A warm coat is a need. Clothes keep you warm when it is cold.', 'An apple': 'An apple is food, and food is a need. Your body must have food to live and grow.', 'A toy car': 'A toy car is a want. It is fun, but you can live without it.', Candy: 'Candy is a want. It tastes good, but your body does not need it.', 'A video game': 'A video game is a want. It is fun, but you can live without it.', 'A balloon': 'A balloon is a want. It is fun, but you can live without it.' }; // whole questions, each with its own explanation (pass ID)
 const CIV_LEADERS = [['Who leads a city?', 'Mayor'], ['Who leads a state?', 'Governor'], ['Who leads the whole country?', 'President']];
 const CIV_WORKPLACES = [['Who works in the White House?', 'President'], ['Who works in the state capitol in Austin?', 'Governor'], ['Who works at city hall?', 'Mayor']];
 const CIV_GOOD_SERVICE = [['Bread', 'Good'], ['Shoes', 'Good'], ['A toy', 'Good'], ['A haircut', 'Service'], ['A bus ride', 'Service'], ['A visit to the doctor', 'Service']];
@@ -22471,22 +22578,34 @@ Object.assign(GENERATORS, {
   'pk-whose-turn': (rng) => { const first = randInt(rng, 0, 1) === 1; const done = first ? 'Sam' : 'Ana'; const next = first ? 'Ana' : 'Sam';
     return { type: 'choice', story: null, prompt: `${done} had a turn and is done, so whose turn is next?`, choices: ['Sam', 'Ana'], answer: next, explain: `${done} had a turn, so ${next} is next.`, visual: null, explainVisual: null }; },
   'ck-which-flag': (rng) => { const tx = randInt(rng, 0, 1) === 1;
-    return { type: 'choice', story: tx ? 'A flag with one big star.' : 'A flag with 50 stars.', prompt: 'Which flag is this?', choices: ['The Texas flag', 'The United States flag'], answer: tx ? 'The Texas flag' : 'The United States flag', explain: tx ? 'One big star means the Texas flag. Texas is the Lone Star State.' : 'Fifty stars means the United States flag, one star for each state.', visual: null, explainVisual: null }; },
-  'ck-lone-star': (rng) => ({ type: 'choice', story: null, prompt: 'How many stars does the Texas flag have?', choices: shuffle(rng, ['One', 'Fifty', 'Thirteen']), answer: 'One', explain: 'One big star. That is why Texas is the Lone Star State.', visual: null, explainVisual: null }),
+    return { type: 'choice', story: tx ? 'A flag with one big star.' : 'A flag with 50 stars.', prompt: 'Which flag is this?', choices: ['The Texas flag', 'The United States flag'], answer: tx ? 'The Texas flag' : 'The United States flag', explain: tx ? 'One big star means the Texas flag, the flag of our state. Texas is called the Lone Star State.' : 'Fifty stars means the United States flag, one star for each state.', visual: null, explainVisual: null }; },
+  'ck-lone-star': (rng) => ({ type: 'choice', story: null, prompt: 'How many stars does the Texas flag have?', choices: shuffle(rng, ['One', 'Fifty', 'Thirteen']), answer: 'One', explain: 'The Texas flag has one big star. That is why Texas is called the Lone Star State.', visual: null, explainVisual: null }),
   'ck-more-votes': (rng) => { let a = randInt(rng, 1, 6); let b = randInt(rng, 1, 6); if (a === b) b = a === 6 ? 5 : a + 1;
-    return { type: 'choice', story: 'The first group is votes for the story. The second is votes for the song.', prompt: 'Tap the one with more votes.', choices: [`dots:${a}`, `dots:${b}`], answer: `dots:${Math.max(a, b)}`, explain: `${Math.max(a, b)} is more than ${Math.min(a, b)}, so that one wins.`, visual: null, explainVisual: null }; },
-  'ck-one-vote-each': (rng) => ({ type: 'choice', story: 'The class is voting.', prompt: 'How many votes does each person get?', choices: shuffle(rng, ['One', 'As many as they want']), answer: 'One', explain: 'Everyone gets one vote. That is what makes it fair.', visual: null, explainVisual: null }),
+    return { type: 'choice', story: 'The first group is votes for the story. The second is votes for the song.', prompt: 'Tap the one with more votes.', choices: [`dots:${a}`, `dots:${b}`], answer: `dots:${Math.max(a, b)}`, explain: `${Math.max(a, b)} votes are more than ${Math.min(a, b)}, so the ${a > b ? 'story' : 'song'} wins.`, visual: null, explainVisual: null }; },
+  // Voting (pass JZ): one vote each, why voting twice is not fair, which choice wins, and going with the result (TEKS K.9C, K.15A).
+  'ck-one-vote-each': (rng) => { const c = pick(rng, [
+      ['The class is voting.', 'How many votes does each person get?', ['One', 'As many as they want'], 'One', 'Everyone gets one vote. That is what makes it fair.'],
+      ['The class is voting on a game, and one child wants to vote three times.', 'Is this fair?', ['Yes', 'No'], 'No', 'It is not fair. Everyone gets just one vote, so every vote counts the same.'],
+      ['Nine children vote for the story and seven vote for the song.', 'Which one wins this vote?', ['The story', 'The song'], 'The story', 'Nine is more than seven, so the story wins. The choice with more votes wins.'],
+      ['The vote is over, and the story won.', 'After this vote, what should the children who voted for the song do?', ['Go with the story', 'Keep arguing'], 'Go with the story', 'Everyone goes with the choice that wins. The song can have a turn next time.'],
+    ]);
+    return { type: 'choice', story: c[0], prompt: c[1], choices: shuffle(rng, c[2]), answer: c[3], explain: c[4], visual: null, explainVisual: null }; },
   'ck-job-tool': (rng) => { const c = pick(rng, [['Who uses a hose?', 'Firefighter'], ['Who uses a stethoscope?', 'Doctor'], ['Who writes on a whiteboard?', 'Teacher'], ['Who drives a mail truck?', 'Mail carrier']]);
-    return { type: 'choice', story: null, prompt: c[0], choices: twoOf(rng, CIV_HELPER_NAMES, c[1]), answer: c[1], explain: `A ${c[1].toLowerCase()} ${c[0].replace(/^Who /, '').replace(/\?$/, '')}.`, visual: null, explainVisual: null }; },
-  'ck-why-work': (rng) => ({ type: 'choice', story: null, prompt: 'Why do grown-ups go to work?', choices: shuffle(rng, ['To earn money for needs', 'Because school is closed', 'To stay away from home']), answer: 'To earn money for needs', explain: 'Work earns money, and money pays for food, a home and clothes.', visual: null, explainVisual: null }),
+    return { type: 'choice', story: null, prompt: c[0], choices: twoOf(rng, CIV_HELPER_NAMES, c[1]), answer: c[1], explain: CIV_TOOL_WHY[c[1]], visual: null, explainVisual: null }; },
+  'ck-why-work': (rng) => { const c = pick(rng, [
+      ['Why do grown-ups go to work?', 'To earn money for needs', ['Because school is closed', 'To stay away from home'], 'Grown-ups work to earn money, and that money pays for needs like food, clothes and a home.'],
+      ['Why do people have jobs?', 'To earn money and help others', ['Because it is Monday', 'To get out of the rain'], 'People work to earn money for their needs, and many jobs help other people too.'],
+      ['What does the money from work pay for first?', 'Needs, like food and a home', ['Only toys', 'Nothing at all'], 'Money from work pays for needs first, like food, clothes and a home. Wants can wait.'],
+    ]);
+    return { type: 'choice', story: null, prompt: c[0], choices: shuffle(rng, [c[1], ...c[2]]), answer: c[1], explain: c[3], visual: null, explainVisual: null }; },
   'ck-why-rule': (rng) => { const c = pick(rng, CIV_RULE_WHYS); const others = CIV_RULE_WHYS.filter((x) => x !== c).map((x) => x[1]);
     return { type: 'choice', story: null, prompt: c[0], choices: shuffle(rng, [c[1], ...others]), answer: c[1], explain: `We ${c[0].replace(/^Why do we /, '').replace(/\?$/, '')} ${c[1].charAt(0).toLowerCase() + c[1].slice(1)}.`, visual: null, explainVisual: null }; },
-  'ck-which-helper': (rng) => { const c = pick(rng, CIV_HELPERS); return { type: 'choice', story: null, prompt: c[0], choices: twoOf(rng, CIV_HELPER_NAMES, c[1]), answer: c[1], explain: `A ${c[1].toLowerCase()} ${c[0].replace(/^Who /, '').replace(/\?$/, '')}.`, visual: null, explainVisual: null }; },
+  'ck-which-helper': (rng) => { const c = pick(rng, CIV_HELPERS); return { type: 'choice', story: null, prompt: c[0], choices: twoOf(rng, CIV_HELPER_NAMES, c[1]), answer: c[1], explain: CIV_HELPER_WHY[c[1]], visual: null, explainVisual: null }; },
   'ck-good-choice': (rng) => { const c = pick(rng, CIV_GOOD_CHOICES); return { type: 'choice', story: c[0], prompt: 'What is the good choice?', choices: shuffle(rng, [c[1], c[2]]), answer: c[1], explain: c[3], visual: null, explainVisual: null }; },
-  'ck-need-or-want': (rng) => { const c = pick(rng, CIV_NEED_WANT); return { type: 'choice', story: null, prompt: `Is ${c[0].charAt(0).toLowerCase() + c[0].slice(1)} a need or a want?`, choices: ['Need', 'Want'], answer: c[1], explain: c[1] === 'Need' ? `${c[0]} is a need. You must have it.` : `${c[0]} is a want. It is nice, but you can live without it.`, visual: null, explainVisual: null }; },
+  'ck-need-or-want': (rng) => { const c = pick(rng, CIV_NEED_WANT); return { type: 'choice', story: null, prompt: `Is ${c[0].charAt(0).toLowerCase() + c[0].slice(1)} a need or a want?`, choices: ['Need', 'Want'], answer: c[1], explain: CIV_NEED_WHY[c[0]], visual: null, explainVisual: null }; },
   'ck-which-is-need': (rng) => { const need = pick(rng, CIV_NEED_WANT.filter((x) => x[1] === 'Need'))[0]; const wants = shuffle(rng, CIV_NEED_WANT.filter((x) => x[1] === 'Want')).slice(0, 2).map((x) => x[0]);
-    return { type: 'choice', story: null, prompt: 'Which one is a need?', choices: shuffle(rng, [need, ...wants]), answer: need, explain: `${need} is a need. The others are wants.`, visual: null, explainVisual: null }; },
-  'ck-flag-count': (rng) => { const c = pick(rng, CIV_FLAG_COUNTS); return { type: 'choice', story: null, prompt: c[0], choices: shuffle(rng, ['50', '13', '10']), answer: String(c[1]), explain: c[1] === 50 ? 'Fifty stars, one for each state.' : 'Thirteen stripes, for the first thirteen states.', visual: null, explainVisual: null }; },
+    return { type: 'choice', story: null, prompt: 'Which one is a need?', choices: shuffle(rng, [need, ...wants]), answer: need, explain: `${CIV_NEED_WHY[need]} The other two are wants, nice to have but not needed to live.`, visual: null, explainVisual: null }; },
+  'ck-flag-count': (rng) => { const c = pick(rng, CIV_FLAG_COUNTS); return { type: 'choice', story: null, prompt: c[0], choices: shuffle(rng, ['50', '13', '10']), answer: String(c[1]), explain: c[1] === 50 ? 'Our flag has 50 stars, one for each of the 50 states.' : 'Our flag has 13 stripes, for the 13 colonies that became our first states.', visual: null, explainVisual: null }; },
   'ck-not-on-flag': (rng) => { const odd = pick(rng, ['green', 'yellow']); return { type: 'choice', story: null, prompt: 'Which color is not on our flag?', choices: shuffle(rng, [`swatch:${odd}`, 'swatch:red', 'swatch:blue']), answer: `swatch:${odd}`, explain: `Our flag is red, white and blue. There is no ${odd} on it.`, visual: null, explainVisual: null }; },
   'ck-holiday': (rng) => { const c = pick(rng, CIV_HOLIDAYS); return { type: 'choice', story: null, prompt: c[0], choices: shuffle(rng, CIV_HOLIDAYS.map((x) => x[1])), answer: c[1], explain: c[2], visual: null, explainVisual: null }; },
   'c1-which-symbol': (rng) => { const c = pick(rng, [['A big bell with a crack, in Philadelphia', 'The Liberty Bell'], ['A green statue holding a torch, in New York', 'The Statue of Liberty'], ['An old mission in San Antonio where Texans fought', 'The Alamo'], ['Fifty stars and thirteen stripes', 'The flag']]);
@@ -23508,162 +23627,190 @@ const SOLIDS = [
 ];
 const pickSolid = (rng) => SOLIDS[randInt(rng, 0, SOLIDS.length - 1)];
 const otherSolids = (rng, not, n) => shuffle(rng, SOLIDS.filter((x) => x.name !== not.name)).slice(0, n);
+// How each solid looks, said the same way in every explanation (pass JX).
+const SOLID_LOOKS = { sphere: 'It is round all over, like a ball.', cube: 'Every side is a flat square, like a block.', cylinder: 'It has two flat round ends and a curved side, like a can.', cone: 'It has a point at one end and a flat circle at the other, like an ice cream cone.' };
+const SOLID_ROLLS = { sphere: 'A sphere is round all over, so it rolls every way.', cube: 'A cube has flat sides all around, so it slides but does not roll.', cylinder: 'A cylinder has a curved side, so it rolls when it lies down.', cone: 'A cone has a curved side, so it rolls around in a circle.' };
 Object.assign(GENERATORS, {
   'kd-name-solid': (rng) => {
     const sd = pickSolid(rng);
     return { type: 'choice', story: null, prompt: 'What solid shape is this?', choices: shuffle(rng, [sd, ...otherSolids(rng, sd, 2)].map((x) => x.name)), answer: sd.name,
-      explain: `It is shaped like ${sd.thing}. That is a ${sd.name}.`, visual: { kind: 'solid', name: sd.name }, explainVisual: null };
+      explain: `This is a ${sd.name}. ${SOLID_LOOKS[sd.name]}`, visual: { kind: 'solid', name: sd.name }, explainVisual: null };
   },
   'kd-tap-solid': (rng) => {
     const sd = pickSolid(rng);
     return { type: 'choice', story: null, prompt: `Tap the ${sd.name}.`, choices: shuffle(rng, [sd, ...otherSolids(rng, sd, 2)].map((x) => `solid:${x.name}`)), answer: `solid:${sd.name}`,
-      explain: `This one is the ${sd.name}, like ${sd.thing}.`, visual: null, explainVisual: null };
+      explain: `This is the ${sd.name}. ${SOLID_LOOKS[sd.name]}`, visual: null, explainVisual: null };
   },
   'kd-real-thing': (rng) => {
     const sd = pickSolid(rng);
     return { type: 'choice', story: null, prompt: `What solid shape is ${sd.thing}?`, choices: shuffle(rng, [sd, ...otherSolids(rng, sd, 2)].map((x) => x.name)), answer: sd.name,
-      explain: `${sd.thing[0].toUpperCase() + sd.thing.slice(1)} is a ${sd.name}.`, visual: { kind: 'solid', name: sd.name }, explainVisual: null };
+      explain: `${capFirst(sd.thing)} is a ${sd.name}. ${SOLID_LOOKS[sd.name].replace(/, like [^.]+\./, '.')}`, visual: { kind: 'solid', name: sd.name }, explainVisual: null };
   },
   'kd-flat-or-solid': (rng) => {
     const solid = randInt(rng, 0, 1) === 1;
     const sd = pickSolid(rng); const sh = pickShape(rng);
     return { type: 'choice', story: null, prompt: 'Is this shape flat or solid?', choices: ['Flat', 'Solid'], answer: solid ? 'Solid' : 'Flat',
-      explain: solid ? `A ${sd.name} is solid. You can hold it.` : `A ${sh.name} is flat, like a drawing.`, visual: solid ? { kind: 'solid', name: sd.name } : { kind: 'shape', name: sh.name }, explainVisual: null };
+      explain: solid ? `A ${sd.name} is solid. It is a thing you can pick up and hold.` : `A ${sh.name} is flat, like a drawing on paper.`, visual: solid ? { kind: 'solid', name: sd.name } : { kind: 'shape', name: sh.name }, explainVisual: null };
   },
   'kd-rolls': (rng) => {
     const sd = pickSolid(rng);
-    return { type: 'choice', story: null, prompt: 'Can it roll?', choices: ['Yes', 'No'], answer: sd.rolls ? 'Yes' : 'No',
-      explain: sd.rolls ? `A ${sd.name} has a round part, so it rolls.` : `A ${sd.name} has flat sides all round, so it slides but does not roll.`, visual: { kind: 'solid', name: sd.name }, explainVisual: null };
+    return { type: 'choice', story: null, prompt: 'Can this shape roll?', choices: ['Yes', 'No'], answer: sd.rolls ? 'Yes' : 'No',
+      explain: SOLID_ROLLS[sd.name], visual: { kind: 'solid', name: sd.name }, explainVisual: null };
+  },
+  // The flat parts of solids (pass JX, TEKS K.6C): trace around a flat part of a solid and you draw a flat shape.
+  'kd-flat-face': (rng) => {
+    const sd = pick(rng, ['cylinder', 'cube', 'cone']);
+    const [part, answer, why] = { cylinder: ['the flat end of this can', 'circle', 'The flat end of a can is round, so tracing around it draws a circle.'], cube: ['one flat side of this block', 'square', 'Each flat side of a block has four sides of the same length, so tracing around one draws a square.'], cone: ['the flat round end of this cone', 'circle', 'The flat end of a cone is round, so tracing around it draws a circle.'] }[sd];
+    return { type: 'choice', story: null, prompt: `Trace around ${part}. What flat shape do you draw?`, choices: shuffle(rng, ['shape:circle', 'shape:square', 'shape:triangle']), answer: `shape:${answer}`,
+      explain: why, visual: { kind: 'solid', name: sd }, explainVisual: null };
   },
 });
 
 // Making ten. A ten-frame with some spaces filled; the empty spaces are the partner.
 Object.assign(GENERATORS, {
+  // Full standard (pass JX): every explanation says why, the empty spaces fill the frame to ten; one goes away, not go.
   'kn-partner': (rng) => {
     const n = randInt(rng, 1, 9);
     return { type: 'choice', story: null, prompt: `How many more does ${n} need to make 10?`, choices: shuffle(rng, distinctCounts(rng, 4, 9, 10 - n).map(String)), answer: String(10 - n),
-      explain: `${n} and ${10 - n} make 10. Count the empty spaces.`, visual: { kind: 'tenframe', filled: n }, explainVisual: null };
+      explain: `The frame has ${n} full and ${10 - n} empty. Filling the empty spaces makes ten, so ${n} needs ${10 - n} more.`, visual: { kind: 'tenframe', filled: n }, explainVisual: null };
   },
   'kn-frame': (rng) => {
     const n = randInt(rng, 1, 9);
-    return { type: 'choice', story: null, prompt: 'How many empty spaces?', choices: shuffle(rng, distinctCounts(rng, 4, 9, 10 - n).map(String)), answer: String(10 - n),
-      explain: `${n} filled, ${10 - n} empty. ${n} and ${10 - n} make 10.`, visual: { kind: 'tenframe', filled: n }, explainVisual: null };
+    return { type: 'choice', story: null, prompt: 'How many empty spaces are in this frame?', choices: shuffle(rng, distinctCounts(rng, 4, 9, 10 - n).map(String)), answer: String(10 - n),
+      explain: `A ten frame has ten spaces, and ${n} ${n === 1 ? 'is' : 'are'} full. ${n} and ${10 - n} make 10, so ${10 - n} ${10 - n === 1 ? 'is' : 'are'} empty.`, visual: { kind: 'tenframe', filled: n }, explainVisual: null };
   },
   'kn-two-ways': (rng) => {
     const a = randInt(rng, 1, 9); const b = 10 - a;
     const right = `${a} and ${b}`;
     const wrongs = [`${a} and ${b + 1 <= 9 ? b + 1 : b - 1}`, `${a + 1 <= 9 ? a + 1 : a - 1} and ${b}`];
     return { type: 'choice', story: `The frame shows ${a}.`, prompt: 'Which pair makes 10?', choices: [...new Set(shuffle(rng, [right, ...wrongs]))], answer: right,
-      explain: `${a} and ${b} make 10.`, visual: { kind: 'tenframe', filled: a }, explainVisual: null };
+      explain: `The frame shows ${a}, and its ${b} empty ${b === 1 ? 'space fills' : 'spaces fill'} it to ten, so ${a} and ${b} make 10.`, visual: { kind: 'tenframe', filled: a }, explainVisual: null };
   },
   'kn-take-from-ten': (rng) => {
     const n = randInt(rng, 1, 9);
-    return { type: 'choice', story: `Ten, then ${n} go away.`, prompt: 'How many are left?', choices: shuffle(rng, distinctCounts(rng, 4, 9, 10 - n).map(String)), answer: String(10 - n),
-      explain: `10 take away ${n} leaves ${10 - n}.`, visual: { kind: 'tenframe', filled: 10 }, explainVisual: { kind: 'dots', count: 10 - n } };
+    return { type: 'choice', story: `Ten, then ${n} ${n === 1 ? 'goes' : 'go'} away.`, prompt: 'How many are left?', choices: shuffle(rng, distinctCounts(rng, 4, 9, 10 - n).map(String)), answer: String(10 - n),
+      explain: `${n} and ${10 - n} are partners that make 10, so taking ${n} away from 10 leaves ${10 - n}.`, visual: { kind: 'tenframe', filled: 10 }, explainVisual: { kind: 'dots', count: 10 - n } };
   },
   'kn-is-ten': (rng) => {
     const a = randInt(rng, 1, 9); const yes = randInt(rng, 0, 1) === 1; const b = yes ? 10 - a : Math.max(1, Math.min(9, 10 - a + (randInt(rng, 0, 1) ? 1 : -1)));
     return { type: 'choice', story: `${a} and ${b}.`, prompt: 'Do they make 10?', choices: ['Yes', 'No'], answer: a + b === 10 ? 'Yes' : 'No',
-      explain: a + b === 10 ? `${a} and ${b} make 10.` : `${a} and ${b} make ${a + b}, not 10.`, visual: { kind: 'tenframe', filled: a }, explainVisual: null };
+      explain: a + b === 10 ? `${a} and ${b} make 10, so they are partners for ten.` : `${a} and ${b} make ${a + b}, not 10, so they are not partners for ten.`, visual: { kind: 'tenframe', filled: a }, explainVisual: null };
   },
 });
 
 // Counting by tens. A choice 'tens:3' is a picture of three groups of ten.
 const TEN_WORDS = ['', 'ten', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety', 'one hundred'];
+// Each ten said in order, ten, twenty, thirty, for the explanations below.
+const tensUp = (n) => Array.from({ length: n }, (_, i) => TEN_WORDS[i + 1]).join(', ');
 Object.assign(GENERATORS, {
+  // Full standard (pass JX): every explanation says each jump adds ten, and counts the tens out loud.
   'kt-next-ten': (rng) => {
     const n = randInt(rng, 1, 9);
     const answer = String((n + 1) * 10);
     const choices = shuffle(rng, [answer, String((n + 2 > 10 ? n - 1 : n + 2) * 10), String(n * 10), String(n * 10 + 1)]);
     return { type: 'choice', story: null, prompt: `Counting by tens, what comes after ${n * 10}?`, choices: [...new Set(choices)], answer,
-      explain: `${TEN_WORDS[n]}, then ${TEN_WORDS[n + 1]}. After ${n * 10} comes ${answer}.`, visual: { kind: 'tens', count: n }, explainVisual: null };
+      explain: `Each jump adds ten. ${capFirst(TEN_WORDS[n])}, then ${TEN_WORDS[n + 1]}, so after ${n * 10} comes ${answer}.`, visual: { kind: 'tens', count: n }, explainVisual: null };
   },
   'kt-how-many-tens': (rng) => {
     const n = randInt(rng, 2, 6);
     const choices = shuffle(rng, distinctCounts(rng, 4, 10, n).map((c) => String(c * 10)));
     return { type: 'choice', story: null, prompt: 'Count by tens. How many are there?', choices, answer: String(n * 10),
-      explain: `${Array.from({ length: n }, (_, i) => TEN_WORDS[i + 1]).join(', ')}. There are ${n * 10}.`, visual: { kind: 'tens', count: n }, explainVisual: null };
+      explain: `Each group has ten. Count by tens, ${tensUp(n)}. The last number is ${TEN_WORDS[n]}, so there are ${n * 10}.`, visual: { kind: 'tens', count: n }, explainVisual: null };
   },
   'kt-tap-tens': (rng) => {
     const n = randInt(rng, 2, 5);
     const choices = shuffle(rng, distinctCounts(rng, 3, 6, n).map((c) => `tens:${c}`));
     return { type: 'choice', story: null, prompt: `Tap the picture that shows ${n * 10}.`, choices, answer: `tens:${n}`,
-      explain: `${n} groups of ten make ${n * 10}.`, visual: null, explainVisual: null };
+      explain: `This picture has ${n} groups of ten. Count them by tens, ${tensUp(n)}, so it shows ${n * 10}.`, visual: null, explainVisual: null };
   },
   'kt-before-ten': (rng) => {
     const n = randInt(rng, 2, 10);
     const answer = String((n - 1) * 10);
     const choices = [...new Set(shuffle(rng, [answer, String(n * 10), String((n < 10 ? n + 1 : n - 2) * 10), String((n - 1) * 10 + 1)]))];
     return { type: 'choice', story: null, prompt: `Counting by tens, what comes before ${n * 10}?`, choices, answer,
-      explain: `${TEN_WORDS[n - 1]} comes before ${TEN_WORDS[n]}.`, visual: { kind: 'tens', count: n - 1 }, explainVisual: null };
+      explain: `Counting by tens goes ${TEN_WORDS[n - 1]}, then ${TEN_WORDS[n]}. ${answer} is ten less than ${n * 10}, so it comes just before.`, visual: { kind: 'tens', count: n - 1 }, explainVisual: null };
   },
   'kt-count-on': (rng) => {
     const n = randInt(rng, 1, 7);
     const answer = String((n + 2) * 10);
     const choices = [...new Set(shuffle(rng, [answer, String((n + 1) * 10), String((n + 3) * 10), String((n + 2) * 10 + 1)]))];
     return { type: 'choice', story: `${n * 10}, ${(n + 1) * 10}, ...`, prompt: 'What comes next?', choices, answer,
-      explain: `${TEN_WORDS[n]}, ${TEN_WORDS[n + 1]}, ${TEN_WORDS[n + 2]}.`, visual: null, explainVisual: null };
+      explain: `Each jump adds ten. ${capFirst(TEN_WORDS[n])}, ${TEN_WORDS[n + 1]}, ${TEN_WORDS[n + 2]}, so ${answer} comes next.`, visual: null, explainVisual: null };
   },
 });
 
 // Longer, shorter, heavier. A choice 'bar:7' is a line seven units long.
 const HEAVY_PAIRS = [['a feather', 'a rock', 'a rock'], ['a leaf', 'a book', 'a book'], ['a balloon', 'a bucket of water', 'a bucket of water'], ['a sock', 'a chair', 'a chair'], ['a crayon', 'a car', 'a car'], ['a paper cup', 'a brick', 'a brick']];
+// Holds more (pass JX): capacity, which TEKS K.7A names beside length and weight. Each pair is [smaller, bigger].
+const HOLD_PAIRS = [['a cup', 'a bucket'], ['a spoon', 'a bowl'], ['a sink', 'a bathtub'], ['a glass', 'a pitcher'], ['a teacup', 'a teapot'], ['a lunch box', 'a backpack']];
 Object.assign(GENERATORS, {
+  // Full standard (pass JX): each explanation gives the reason, and lines and towers are compared from the same start.
   'kl-longer': (rng) => {
     const [a, b] = distinctCounts(rng, 2, 9, randInt(rng, 2, 9));
     return { type: 'choice', story: null, prompt: 'Which line is longer?', choices: shuffle(rng, [`bar:${a}`, `bar:${b}`]), answer: `bar:${Math.max(a, b)}`,
-      explain: 'The longer line reaches farther.', visual: null, explainVisual: null };
+      explain: 'Both lines start at the same place, and this one reaches farther, so it is longer.', visual: null, explainVisual: null };
   },
   'kl-shorter': (rng) => {
     const [a, b] = distinctCounts(rng, 2, 9, randInt(rng, 2, 9));
     return { type: 'choice', story: null, prompt: 'Which line is shorter?', choices: shuffle(rng, [`bar:${a}`, `bar:${b}`]), answer: `bar:${Math.min(a, b)}`,
-      explain: 'The shorter line does not reach as far.', visual: null, explainVisual: null };
+      explain: 'Both lines start at the same place, and this one stops sooner, so it is shorter.', visual: null, explainVisual: null };
   },
   'kl-same-length': (rng) => {
     const n = randInt(rng, 2, 8); const other = distinctCounts(rng, 2, 9, n)[1];
     return { type: 'choice', story: null, prompt: 'Which line is the same length as the top one?', choices: shuffle(rng, [`bar:${n}`, `bar:${other}`]), answer: `bar:${n}`,
-      explain: 'They reach just as far. They are the same length.', visual: { kind: 'bars', lengths: [n] }, explainVisual: null };
+      explain: 'Both lines start at the same place and end at the same place, so they are the same length.', visual: { kind: 'bars', lengths: [n] }, explainVisual: null };
   },
   'kl-heavier-words': (rng) => {
     const [light, heavy, answer] = HEAVY_PAIRS[randInt(rng, 0, HEAVY_PAIRS.length - 1)];
-    return { type: 'choice', story: `${light[0].toUpperCase() + light.slice(1)} and ${heavy}.`, prompt: 'Which is heavier?', choices: shuffle(rng, [light, heavy]), answer,
-      explain: `${heavy[0].toUpperCase() + heavy.slice(1)} is heavier. It is harder to lift.`, visual: null, explainVisual: null };
+    return { type: 'choice', story: `${capFirst(light)} and ${heavy}.`, prompt: 'Which is heavier?', choices: shuffle(rng, [light, heavy]), answer,
+      explain: `${capFirst(heavy)} is heavier than ${light}, so it would be much harder to lift.`, visual: null, explainVisual: null };
   },
   'kl-taller': (rng) => {
     const [a, b] = distinctCounts(rng, 2, 9, randInt(rng, 2, 9));
     return { type: 'choice', story: null, prompt: 'Which is taller?', choices: shuffle(rng, [`tower:${a}`, `tower:${b}`]), answer: `tower:${Math.max(a, b)}`,
-      explain: 'The taller one reaches higher.', visual: null, explainVisual: null };
+      explain: 'Both towers stand on the same floor, and this one reaches higher, so it is taller.', visual: null, explainVisual: null };
+  },
+  'kl-holds-more': (rng) => {
+    const [small, big] = HOLD_PAIRS[randInt(rng, 0, HOLD_PAIRS.length - 1)];
+    return { type: 'choice', story: `${capFirst(small)} and ${big}.`, prompt: 'Which holds more?', choices: shuffle(rng, [small, big]), answer: big,
+      explain: `${capFirst(big)} holds more than ${small}. It has more room inside, so it takes more to fill it.`, visual: null, explainVisual: null };
   },
 });
 
 // Sorting into groups. Groups are shapes, because a child already knows those.
+// A square is a special rectangle (TEKS K.6A, pass JW), so no sorting question sets a square and a rectangle apart as
+// different groups: the square would belong in both (pass JX).
+const squareAndRectangle = (a, b) => (a === 'square' && b === 'rectangle') || (a === 'rectangle' && b === 'square');
+const SORT_SETS = [['circle', 'triangle'], ['circle', 'square'], ['circle', 'rectangle'], ['triangle', 'square'], ['triangle', 'rectangle'], ['circle', 'triangle', 'square'], ['circle', 'triangle', 'rectangle']];
 Object.assign(GENERATORS, {
+  // Full standard (pass JX): a group of squares is counted as squares (it showed dots), and every explanation gives its reason.
   'ko-belongs': (rng) => {
-    const sh = pickShape(rng); const other = otherShapes(rng, sh, 1)[0];
+    const sh = pickShape(rng); const other = pick(rng, SHAPES.filter((x) => x.name !== sh.name && !squareAndRectangle(sh.name, x.name)));
     return { type: 'choice', story: `This is the ${sh.name} group.`, prompt: 'Which one belongs in it?', choices: shuffle(rng, [`shape:${sh.name}`, `shape:${other.name}`]), answer: `shape:${sh.name}`,
-      explain: `A ${sh.name} goes with the ${sh.name}s.`, visual: { kind: 'shape', name: sh.name }, explainVisual: null };
+      explain: `This one is a ${sh.name}, so it belongs in the ${sh.name} group.`, visual: { kind: 'shape', name: sh.name }, explainVisual: null };
   },
   'ko-count-group': (rng) => {
-    const n = randInt(rng, 1, 6); const sh = pickShape(rng);
+    const n = randInt(rng, 1, 6); const sh = pickShape(rng); const colour = pickColor(rng);
     return { type: 'choice', story: `Here is the ${sh.name} group.`, prompt: 'How many are in it?', choices: shuffle(rng, distinctCounts(rng, 4, 8, n).map(String)), answer: String(n),
-      explain: `Count the ${sh.name}s. ${capFirst(countUp(n))}. ${n === 1 ? 'There is' : 'There are'} ${n}.`, visual: { kind: 'dots', count: n }, explainVisual: null };
+      explain: n === 1 ? `There is just one ${sh.name} in the group, so there is 1.` : `Count the ${sh.name}s, one number for each. ${capFirst(countUp(n))}. The last number is ${countWords(n)}, so there are ${n}.`,
+      visual: { kind: 'pattern', items: Array.from({ length: n }, () => sh.name), colour, counting: true }, explainVisual: null };
   },
   'ko-which-group-more': (rng) => {
     const [a, b] = distinctCounts(rng, 2, 8, randInt(rng, 1, 8));
+    const big = Math.max(a, b); const small = Math.min(a, b);
     return { type: 'choice', story: `${a} ${a === 1 ? 'circle' : 'circles'} and ${b} ${b === 1 ? 'square' : 'squares'}.`, prompt: 'Which group has more?', choices: shuffle(rng, ['Circles', 'Squares']), answer: a > b ? 'Circles' : 'Squares',
-      explain: `${Math.max(a, b)} is more than ${Math.min(a, b)}, so the ${a > b ? 'circles have' : 'squares have'} more.`, visual: null, explainVisual: null };
+      explain: `${capFirst(countWords(big))} is more than ${countWords(small)}, because you count past ${countWords(small)} to get to ${countWords(big)}. So the ${a > b ? 'circles' : 'squares'} have more.`, visual: null, explainVisual: null };
   },
   'ko-does-not-belong': (rng) => {
-    const sh = pickShape(rng); const odd = otherShapes(rng, sh, 1)[0];
+    const sh = pickShape(rng); const odd = pick(rng, SHAPES.filter((x) => x.name !== sh.name && !squareAndRectangle(sh.name, x.name)));
     const choices = shuffle(rng, [`shape:${sh.name}#0`, `shape:${sh.name}#1`, `shape:${odd.name}#2`]);
     return { type: 'choice', story: `This is the ${sh.name} group.`, prompt: 'Which one does not belong?', choices, answer: choices.find((c) => c.startsWith(`shape:${odd.name}`)),
-      explain: `The ${odd.name} does not belong with the ${sh.name}s.`, visual: null, explainVisual: null };
+      explain: `This one is a ${odd.name}, not a ${sh.name}, so it does not belong in the ${sh.name} group.`, visual: null, explainVisual: null };
   },
   'ko-how-many-groups': (rng) => {
-    const n = randInt(rng, 2, 3);
-    const names = shuffle(rng, SHAPES.map((x) => x.name)).slice(0, n);
-    return { type: 'choice', story: `${capFirst(names.map((x) => 'a ' + x).join(', '))}.`, prompt: 'How many groups are there?', choices: ['2', '3', '4'], answer: String(n),
-      explain: `${names.join(', ')}. That is ${n} kinds, so ${n} groups.`, visual: null, explainVisual: null };
+    const names = shuffle(rng, pick(rng, SORT_SETS)); const n = names.length; const things = names.map((x) => 'a ' + x);
+    return { type: 'choice', story: `${capFirst(things.join(', '))}.`, prompt: 'How many groups are there?', choices: ['2', '3', '4'], answer: String(n),
+      explain: `There are ${n} kinds of shapes here, ${things.slice(0, -1).join(', ')} and ${things[n - 1]}. Each kind makes its own group, so there are ${n} groups.`, visual: null, explainVisual: null };
   },
 });
 
@@ -23928,6 +24075,14 @@ const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 // Strokes for tracing, on a 100 by 100 grid. Each stroke is a list of points from its
 // starting dot. A letter is traced when the finger's path stays near every stroke in
 // turn. Straight-line letters first, because they are easiest to form.
+// Points on a ring or an oval and on a wave (pass KA): a round shape takes sixteen points on a true circle, so the curve drawn
+// through them is round. Angles are on the screen, where y grows downward: -90 is the top, and going from -90 toward -450 runs
+// from the top toward the left, the way a pencil makes O.
+const ringPts = (cx, cy, rx, ry, from, to, n) => Array.from({ length: n + 1 }, (_, k) => { const a = ((from + ((to - from) * k) / n) * Math.PI) / 180; return [+(cx + rx * Math.cos(a)).toFixed(1), +(cy + ry * Math.sin(a)).toFixed(1)]; });
+const wavePts = (x0, x1, y, amp, period, n) => Array.from({ length: n + 1 }, (_, k) => { const x = x0 + ((x1 - x0) * k) / n; return [+x.toFixed(1), +(y - amp * Math.sin((2 * Math.PI * (x - x0)) / period)).toFixed(1)]; });
+// `curve` (pass KA): a round stroke's points are where a finger must pass, and straight lines between them drew the circle
+// with eight corners and the wave as a zigzag. A shape with curve lists, for each stroke, the points that stay corners (null
+// for a straight stroke); the app draws the rest as a smooth curve through the same points. Checking a trace is unchanged.
 export const TRACE_LETTERS = {
   L: { strokes: [[[30, 15], [30, 85]], [[30, 85], [75, 85]]] },
   T: { strokes: [[[20, 15], [80, 15]], [[50, 15], [50, 85]]] },
@@ -23939,32 +24094,32 @@ export const TRACE_LETTERS = {
   A: { strokes: [[[50, 15], [20, 85]], [[50, 15], [80, 85]], [[32, 60], [68, 60]]] },
   N: { strokes: [[[25, 15], [25, 85]], [[25, 15], [75, 85], [75, 15]]] },
   M: { strokes: [[[20, 15], [20, 85]], [[20, 15], [50, 60], [80, 15], [80, 85]]] },
-  O: { strokes: [[[50, 15], [22, 30], [15, 50], [22, 70], [50, 85], [78, 70], [85, 50], [78, 30], [50, 15]]] },
-  C: { strokes: [[[78, 28], [50, 15], [22, 30], [15, 50], [22, 70], [50, 85], [78, 72]]] },
+  O: { strokes: [ringPts(50, 50, 35, 35, -90, -450, 16)], curve: [[]] },
+  C: { strokes: [ringPts(50, 50, 35, 35, -38, -322, 14)], curve: [[]] },
   K: { strokes: [[[28, 15], [28, 85]], [[72, 15], [28, 52]], [[28, 52], [72, 85]]] },
   // First strokes, before any letter: a straight line, a wave, a zigzag, a circle.
   'line-down': { strokes: [[[50, 15], [50, 85]]], line: true },
   'line-across': { strokes: [[[15, 50], [85, 50]]], line: true },
-  'line-wave': { strokes: [[[12, 50], [24, 32], [36, 50], [48, 68], [60, 50], [72, 32], [84, 50]]], line: true },
+  'line-wave': { strokes: [wavePts(12, 84, 50, 18, 48, 12)], line: true, curve: [[]] },
   'line-zigzag': { strokes: [[[12, 70], [30, 30], [48, 70], [66, 30], [84, 70]]], line: true },
-  'line-circle': { strokes: [[[50, 18], [24, 30], [16, 50], [24, 70], [50, 82], [76, 70], [84, 50], [76, 30], [50, 18]]], line: true },
+  'line-circle': { strokes: [ringPts(50, 50, 32, 32, -90, -450, 16)], line: true, curve: [[]] },
   // Numbers 0 to 9, for kindergarten counting.
-  0: { strokes: [[[50, 15], [30, 25], [24, 50], [30, 75], [50, 85], [70, 75], [76, 50], [70, 25], [50, 15]]] },
+  0: { strokes: [ringPts(50, 50, 26, 35, -90, -450, 16)], curve: [[]] },
   1: { strokes: [[[38, 28], [50, 15], [50, 85]]] },
-  2: { strokes: [[[30, 30], [50, 15], [70, 30], [30, 85], [72, 85]]] },
-  3: { strokes: [[[30, 20], [70, 20], [50, 48], [72, 65], [50, 85], [28, 75]]] },
+  2: { strokes: [[[30, 30], [50, 15], [70, 30], [30, 85], [72, 85]]], curve: [[3]] },
+  3: { strokes: [[[30, 20], [70, 20], [50, 48], [72, 65], [50, 85], [28, 75]]], curve: [[1, 2]] },
   4: { strokes: [[[60, 15], [26, 60], [78, 60]], [[60, 15], [60, 85]]] },
-  5: { strokes: [[[70, 15], [32, 15], [30, 48], [60, 45], [72, 65], [55, 85], [28, 78]]] },
-  6: { strokes: [[[66, 18], [36, 40], [28, 65], [50, 85], [70, 68], [50, 52], [30, 62]]] },
+  5: { strokes: [[[70, 15], [32, 15], [30, 48], [60, 45], [72, 65], [55, 85], [28, 78]]], curve: [[1, 2]] },
+  6: { strokes: [[[66, 18], [36, 40], [28, 65], [50, 85], [70, 68], [50, 52], [30, 62]]], curve: [[]] },
   7: { strokes: [[[28, 15], [72, 15], [42, 85]]] },
-  8: { strokes: [[[50, 50], [30, 32], [50, 15], [70, 32], [50, 50], [28, 68], [50, 85], [72, 68], [50, 50]]] },
-  9: { strokes: [[[68, 32], [50, 15], [30, 32], [50, 50], [68, 32], [66, 60], [46, 85]]] },
+  8: { strokes: [[[50, 50], [30, 32], [50, 15], [70, 32], [50, 50], [28, 68], [50, 85], [72, 68], [50, 50]]], curve: [[]] },
+  9: { strokes: [[[68, 32], [50, 15], [30, 32], [50, 50], [68, 32], [66, 60], [46, 85]]], curve: [[4]] },
   // Shapes to trace along a guide, for kindergarten.
   'shape-triangle': { strokes: [[[50, 18], [82, 82], [18, 82], [50, 18]]] },
   'shape-square': { strokes: [[[22, 22], [78, 22], [78, 78], [22, 78], [22, 22]]] },
-  'shape-circle': { strokes: [[[50, 15], [22, 30], [15, 50], [22, 70], [50, 85], [78, 70], [85, 50], [78, 30], [50, 15]]] },
+  'shape-circle': { strokes: [ringPts(50, 50, 35, 35, -90, -450, 16)], curve: [[]] },
   'shape-star': { strokes: [[[50, 12], [62, 44], [90, 44], [66, 62], [76, 90], [50, 72], [24, 90], [34, 62], [10, 44], [38, 44], [50, 12]]] },
-  'shape-heart': { strokes: [[[50, 84], [16, 46], [24, 22], [50, 32], [76, 22], [84, 46], [50, 84]]] },
+  'shape-heart': { strokes: [[[50, 84], [16, 46], [24, 22], [50, 32], [76, 22], [84, 46], [50, 84]]], curve: [[3]] },
   // Connect-the-dots pictures: one stroke through numbered dots, for pre-K.
   triangle: { strokes: [[[50, 18], [82, 82], [18, 82], [50, 18]]], dots: true },
   square: { strokes: [[[22, 22], [78, 22], [78, 78], [22, 78], [22, 22]]], dots: true },
@@ -23984,15 +24139,15 @@ export const TRACE_LETTERS = {
   l: { strokes: [[[50, 15], [50, 85]]] },
   i: { strokes: [[[50, 42], [50, 85]], [[50, 26], [50, 30]]] },
   t: { strokes: [[[50, 20], [50, 85]], [[35, 42], [65, 42]]] },
-  o: { strokes: [[[50, 42], [32, 50], [28, 63], [32, 76], [50, 85], [68, 76], [72, 63], [68, 50], [50, 42]]] },
-  c: { strokes: [[[70, 50], [50, 42], [32, 50], [28, 63], [32, 76], [50, 85], [70, 76]]] },
+  o: { strokes: [ringPts(50, 63.5, 22, 21.5, -90, -450, 16)], curve: [[]] },
+  c: { strokes: [ringPts(50, 63.5, 22, 21.5, -35, -325, 14)], curve: [[]] },
   v: { strokes: [[[30, 42], [50, 85], [70, 42]]] },
   x: { strokes: [[[30, 42], [70, 85]], [[70, 42], [30, 85]]] },
-  n: { strokes: [[[32, 42], [32, 85]], [[32, 52], [44, 42], [60, 42], [68, 52], [68, 85]]] },
-  u: { strokes: [[[32, 42], [32, 74], [42, 85], [58, 85], [68, 74], [68, 42]], [[68, 42], [68, 85]]] },
-  m: { strokes: [[[24, 42], [24, 85]], [[24, 52], [32, 42], [42, 42], [48, 52], [48, 85]], [[48, 52], [56, 42], [66, 42], [74, 52], [74, 85]]] },
-  h: { strokes: [[[32, 15], [32, 85]], [[32, 52], [44, 42], [60, 42], [68, 52], [68, 85]]] },
-  r: { strokes: [[[36, 42], [36, 85]], [[36, 52], [46, 42], [60, 42], [66, 48]]] },
+  n: { strokes: [[[32, 42], [32, 85]], [[32, 52], [44, 42], [60, 42], [68, 52], [68, 85]]], curve: [null, []] },
+  u: { strokes: [[[32, 42], [32, 74], [42, 85], [58, 85], [68, 74], [68, 42]], [[68, 42], [68, 85]]], curve: [[], null] },
+  m: { strokes: [[[24, 42], [24, 85]], [[24, 52], [32, 42], [42, 42], [48, 52], [48, 85]], [[48, 52], [56, 42], [66, 42], [74, 52], [74, 85]]], curve: [null, [], []] },
+  h: { strokes: [[[32, 15], [32, 85]], [[32, 52], [44, 42], [60, 42], [68, 52], [68, 85]]], curve: [null, []] },
+  r: { strokes: [[[36, 42], [36, 85]], [[36, 52], [46, 42], [60, 42], [66, 48]]], curve: [null, []] },
   w: { strokes: [[[22, 42], [36, 85], [50, 50], [64, 85], [78, 42]]] },
   z: { strokes: [[[32, 42], [68, 42]], [[68, 42], [32, 85]], [[32, 85], [68, 85]]] },
   k: { strokes: [[[32, 15], [32, 85]], [[64, 42], [32, 66]], [[42, 58], [66, 85]]] },
@@ -24027,6 +24182,14 @@ const TRACE_NUMBERS = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
 // How each number is drawn, stroke by stroke, the way TRACE_LETTERS draws it (pass JW): the tracing lesson says the same words.
 const DIGIT_STROKES = { 0: 'Zero starts at the top and goes around to the left, down and back up.', 1: 'One goes a little way up to the top, then straight down.', 2: 'Two goes up and around, slants down, then goes across the bottom.', 3: 'Three goes across the top, slants in to the middle, then goes around the bottom.', 4: 'Four slants down and goes across, then a second line goes straight down from the top.', 5: 'Five goes across the top, then down, then around its round belly.', 6: 'Six curves down to the bottom, then goes around to make a loop.', 7: 'Seven goes across the top, then slants down.', 8: 'Eight starts in the middle, goes up and around the top, then down and around the bottom.', 9: 'Nine goes around to make a circle at the top, then a line down.' };
 const TRACE_SHAPES = ['shape-triangle', 'shape-square', 'shape-circle', 'shape-star', 'shape-heart'];
+// How each traced shape is drawn, in the order TRACE_LETTERS draws it (pass JX), said after a child traces it.
+const SHAPE_STROKES = {
+  'shape-circle': 'It starts at the top, goes around to the left and comes all the way back to the dot, with no corners.',
+  'shape-square': 'It goes across the top, down the side, back across the bottom and up, turning at four corners.',
+  'shape-triangle': 'It slides down from the top, goes across the bottom and goes back up, turning at three corners.',
+  'shape-star': 'It goes out to each of its five points and back in between them, ending at the dot.',
+  'shape-heart': 'It starts at the bottom point, goes up around one bump, dips in the middle, goes around the other bump and comes back down.',
+};
 const TRACE_SMALL_EASY = ['l', 'i', 't', 'v', 'x'];
 const TRACE_SMALL_ROUND = ['o', 'c', 'n', 'u'];
 const TRACE_SMALL_ANY = [...TRACE_SMALL_EASY, ...TRACE_SMALL_ROUND];
@@ -24152,7 +24315,7 @@ Object.assign(GENERATORS, {
   'kn-trace-shape': (rng) => {
     const name = pick(rng, TRACE_SHAPES); const word = name.slice(6);
     return { type: 'trace', traceKind: 'shape', story: null, prompt: `Trace the ${word}. Start at the dot.`, choices: [], answer: name,
-      explain: `That is a ${word}. Start at the dot and go all the way around.`, visual: null, explainVisual: null };
+      explain: `That is a ${word}. ${SHAPE_STROKES[name]}`, visual: null, explainVisual: null };
   },
   'kn-trace-number': (rng) => {
     const n = pick(rng, TRACE_NUMBERS);

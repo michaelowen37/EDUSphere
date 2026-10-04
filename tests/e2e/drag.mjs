@@ -6,9 +6,13 @@ const require = createRequire(import.meta.url);
 const { chromium } = require('playwright');
 let passed = 0, failed = 0; const ok = (name, cond) => { if (cond) { passed++; console.log('PASS - ' + name); } else { failed++; console.log('FAIL - ' + name); } };
 const browser = await chromium.launch();
+// Every tap waits out the page's settle window (pass JM): a new screen asks for its top again at 80 and 320 ms, and a tap whose
+// scroll lands inside that window is undone before it arrives. The app marks the window's end in window.__eduSettleUntil.
+function settleTaps(pg) { const proto = Object.getPrototypeOf(pg.locator('body')); if (proto.__settleWrapped) return; const click = proto.click; proto.click = async function (...a) { await this.page().waitForFunction(() => !window.__eduSettleUntil || Date.now() >= window.__eduSettleUntil, null, { timeout: 5000 }).catch(() => {}); return click.apply(this, a); }; proto.__settleWrapped = true; }
 async function setup(refuseCapture) {
   const page = await browser.newPage({ viewport: { width: 1280, height: 900 } });
   if (refuseCapture) await page.addInitScript(() => { Element.prototype.setPointerCapture = function () { throw new Error('refused'); }; });
+  settleTaps(page);
   await page.goto(pathToFileURL(new URL('./page.html', import.meta.url).pathname).href);
   await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'welcome');
   await page.getByRole('button', { name: 'Create account' }).click(); await page.waitForTimeout(300);

@@ -9658,9 +9658,9 @@ function ECONK_MODULES() { return [
     tagline: 'Pick one, and let the other go',
     requires: [],
     lesson: {
-      paragraphs: ['A need is something you must have to live: food, water, clothes and a home. A want is something nice to have: a toy, a candy bar, a new game.\nNeeds come first. When the money is spent on needs, wants wait.', 'Nobody can have everything. When you cannot have both, you make a choice, and the thing you did not pick is what you give up. If you choose the ball, you give up the crayons for now.', 'Needs first, then wants. A choice means picking one and letting the other go.'],
-      keyIdea: 'Needs come first; wants wait. A choice means picking one and letting the other go.',
-      example: { kind: 'flow', steps: ['two things you want', 'money for one', 'pick one', 'let the other go'], caption: 'One coin, two wants: the choice gives one up.',
+      paragraphs: ['A need is something you must have to live, like food, water, clothes and a home. A want is something nice to have, like a toy, a candy bar or a new game.', 'Needs come first. When the money is spent on needs, wants wait.', 'Nobody can have everything. When you cannot have both, you make a choice, and the thing you did not pick is what you give up. If you choose the ball, you give up the crayons for now.', 'Needs first, then wants. A choice means picking one and letting the other go.'],
+      keyIdea: 'Needs come first, and wants wait. A choice means picking one and letting the other go.',
+      example: { kind: 'flow', steps: ['two things you want', 'money for one', 'pick one', 'let the other go'], caption: 'One coin, two wants. Choosing one gives the other up.',
         another: ['Ask of anything: would I be hurt without it? Food, water, clothes, a home: yes, so they are needs. A toy: no, so it is a want.',
           { text: 'A grocery cart holds needs first. If there is money left at the end, a want can ride on top.', visual: { kind: 'flow', steps: ['bread and milk', 'soap', 'money left?', 'a treat'] } },
           'Giving something up is not losing. It is the price of choosing, and everyone pays it, even grown-ups.'] },
@@ -9675,7 +9675,7 @@ function ECONK_MODULES() { return [
     tagline: 'Work earns money',
     requires: ['wants-needs-and-choices'],
     lesson: {
-      paragraphs: ['Money you get for doing a job is called income. A baker earns income baking bread, a bus driver earns income driving, and you can earn income too: walking a dog, raking leaves, washing a car.\nMoney a grandmother gives you for your birthday is a gift. It is nice, but it is not income, because you did not work for it.', 'Every job needs skills. Being on time, following the steps, doing the job well, and being kind to people are skills. The more skills you have, the more jobs you can do.', 'Work earns income. A gift is not income. Skills get you the job.'],
+      paragraphs: ['Money you get for doing a job is called income. A baker earns income baking bread, a bus driver earns income driving, and you can earn income too, by walking a dog, raking leaves or washing a car.', 'Money a grandmother gives you for your birthday is a gift. It is nice, but it is not income, because you did not work for it.', 'Every job needs skills. Being on time, following the steps, doing the job well, and being kind to people are skills. The more skills you have, the more jobs you can do.', 'Work earns income. A gift is not income. Skills get you the job.'],
       keyIdea: 'Income is money earned by working. A gift is not income. Every job needs skills.',
       example: { kind: 'flow', steps: ['a job to do', 'do it well', 'income'], caption: 'Do the job, earn the money.',
         another: ['A lemonade stand is a small job: make the lemonade, pour it, take the coins. The coins are income because they came from work.',
@@ -9692,9 +9692,9 @@ function ECONK_MODULES() { return [
     tagline: 'Coins in the bank add up',
     requires: ['earning-income'],
     lesson: {
-      paragraphs: ['Income buys things: goods, like bread and shoes, and services, like a haircut. Bread is a good; a haircut is a service. Spending is using money now. Saving is keeping money for later.\nA piggy bank or a savings account keeps money safe. Putting money in is a deposit. Taking money out is a withdrawal.', 'Saving adds up. Two coins a week for three weeks is six coins. Save a little every week and a big thing gets closer: two coins, then four, then six, then eight.', 'Some people also give some money to help others. Spend some, save some, and share some.'],
-      keyIdea: 'Spending is now; saving is for later. A deposit puts money in, a withdrawal takes it out, and saving adds up.',
-      example: { kind: 'flow', steps: ['week 1: 2 coins', 'week 2: 4', 'week 3: 6', 'week 4: 8'], caption: 'Two coins a week: the bank grows by two every week.',
+      paragraphs: ['Income buys things, both goods like bread and shoes and services like a haircut. Bread is a good, and a haircut is a service. Spending is using money now. Saving is keeping money for later.', 'A piggy bank or a savings account keeps money safe. Putting money in is a deposit. Taking money out is a withdrawal.', 'Saving adds up. Two coins a week for three weeks is six coins. Save a little every week and a big thing gets closer: two coins, then four, then six, then eight.', 'Some people also give some money to help others. Spend some, save some, and share some.'],
+      keyIdea: 'Spending is now, and saving is for later. A deposit puts money in, a withdrawal takes it out, and saving adds up.',
+      example: { kind: 'flow', steps: ['week 1: 2 coins', 'week 2: 4', 'week 3: 6', 'week 4: 8'], caption: 'Two coins a week, so the bank grows by two every week.',
         another: ['A jar with a picture of the thing you are saving for taped on the front. Every coin makes the picture closer.',
           { text: 'A deposit is putting in; a withdrawal is taking out. In, out: the words say which way the money moves.', visual: { kind: 'flow', steps: ['deposit: in', 'withdrawal: out'] } },
           'Spend some, save some, share some. Three jars, and every coin goes in one of them.'] },
@@ -9709,9 +9709,9 @@ function ECONK_MODULES() { return [
     tagline: 'A price is the coins it takes',
     requires: ['spending-and-saving'],
     lesson: {
-      paragraphs: ['A trade is a swap. You can trade a thing for a thing, like a sticker for a marble, or a thing for money. Most trades use money, because money is easy to carry and everyone takes it.\nA market is any place where buyers and sellers meet: a store, a farm stand, a lemonade stand.', 'The price is how many coins a thing costs. If a ball costs 4 coins and you have 6, you can buy it, and 2 coins are left. If it costs 8, you cannot buy it yet: you save more, or you choose something else.', 'A trade is a swap. A market is where buyers meet sellers. The price is the coins it takes.'],
+      paragraphs: ['A trade is a swap. You can trade a thing for a thing, like a sticker for a marble, or a thing for money. Most trades use money, because money is easy to carry and everyone takes it.', 'A market is any place where buyers and sellers meet, like a store, a farm stand or a lemonade stand.', 'The price is how many coins a thing costs. If a ball costs 4 coins and you have 6, you can buy it, and 2 coins are left. If it costs 8, you cannot buy it yet. You save more, or you choose something else.', 'A trade is a swap. A market is where buyers meet sellers. The price is the coins it takes.'],
       keyIdea: 'A trade is a swap, a market is where buyers meet sellers, and the price is how many coins a thing costs.',
-      example: { kind: 'flow', steps: ['ball: 4 coins', 'you have 6', 'pay 4', '2 left'], caption: 'Count out the price; what is left stays yours.',
+      example: { kind: 'flow', steps: ['ball: 4 coins', 'you have 6', 'pay 4', '2 left'], caption: 'Count out the price, and what is left stays yours.',
         another: ['Before money, people swapped: eggs for bread, wool for a pot. It only worked when each wanted what the other had. Money made every swap easy.',
           { text: 'A store is a market with a roof. A farm stand is a market with a table. A lemonade stand is a market with a pitcher.', visual: { kind: 'flow', steps: ['store', 'farm stand', 'lemonade stand'] } },
           'Not enough coins is not the end. It means save more, or choose something else.'] },
@@ -10023,7 +10023,7 @@ function ARTSK_MODULES() { return [
     tagline: 'The pieces every picture is made of',
     requires: [],
     lesson: {
-      paragraphs: ['Every picture is made of lines, shapes and colors. A line can be straight, curved or a zigzag. A shape is a line that closes: a circle, a square, a triangle.\nRed, yellow and blue are the primary colors. Mix two and you get a new one: red and yellow make orange, blue and yellow make green, red and blue make purple.', 'Some colors feel warm, like red, orange and yellow, the colors of the sun. Some feel cool, like blue, green and purple, the colors of water. Texture is how a thing would feel: rough like bark, smooth like glass. A pattern is something that repeats, like stripes.', 'Lines, shapes, colors, texture and pattern. Look at any picture and you can find them all.'],
+      paragraphs: ['Every picture is made of lines, shapes and colors. A line can be straight, curved or a zigzag. A shape is a line that closes, like a circle, a square or a triangle.', 'Red, yellow and blue are the primary colors. Mix two and you get a new one. Red and yellow make orange, blue and yellow make green, and red and blue make purple.', 'Some colors feel warm, like red, orange and yellow, the colors of the sun. Some feel cool, like blue, green and purple, the colors of water. Texture is how a thing would feel: rough like bark, smooth like glass. A pattern is something that repeats, like stripes.', 'Lines, shapes, colors, texture and pattern. Look at any picture and you can find them all.'],
       keyIdea: 'Lines, shapes and colors make every picture. Red, yellow and blue mix into orange, green and purple. Warm colors feel like sun, cool colors like water.',
       example: { kind: 'flow', steps: ['red and yellow', 'orange'], caption: 'Two primary colors mixed make a new one.',
         another: ['Take a walk with your eyes. The road is a straight line, a hill is a curve, a roof is a zigzag or a triangle. The world is drawn with the same lines a picture is.',
@@ -10040,7 +10040,7 @@ function ARTSK_MODULES() { return [
     tagline: 'A picture shows something, and it makes you feel something',
     requires: ['lines-shapes-and-colors'],
     lesson: {
-      paragraphs: ['A picture shows something: a cat, a house, a storm. That is its subject. A picture also makes you feel something. Bright colors and curved lines can feel happy. Dark colors and sharp zigzags can feel stormy.\nTwo people can look at the same picture and feel different things. Both are right.', 'Art is not only in museums. It is on a cup, a quilt, a street sign, a birthday card and the wall of a building. People make art to show what they love and to make plain things beautiful.', 'When you look at a picture, ask two questions. What does it show? How does it make me feel? Then say your idea out loud, and listen to a friend say theirs.'],
+      paragraphs: ['A picture shows something, like a cat, a house or a storm. That is its subject. A picture also makes you feel something. Bright colors and curved lines can feel happy. Dark colors and sharp zigzags can feel stormy.', 'Two people can look at the same picture and feel different things. Both are right.', 'Art is not only in museums. It is on a cup, a quilt, a street sign, a birthday card and the wall of a building. People make art to show what they love and to make plain things beautiful.', 'When you look at a picture, ask two questions. What does it show? How does it make me feel? Then say your idea out loud, and listen to a friend say theirs.'],
       keyIdea: 'A picture has a subject, what it shows, and a feeling. Art is everywhere, and two people can see it differently.',
       example: { kind: 'flow', steps: ['look', 'what does it show?', 'how does it feel?', 'say your idea'], caption: 'Two questions open any picture.',
         another: ['A museum is a house for pictures, but the first gallery a child visits is the fridge door, and the rules are the same: look, and say what you see.',
@@ -10057,9 +10057,9 @@ function ARTSK_MODULES() { return [
     tagline: 'The steady beat, the rhythm on top, and how sounds differ',
     requires: ['what-a-picture-says'],
     lesson: {
-      paragraphs: ['Put a hand on your heart. That steady thump is a beat. Music has a steady beat too, and you can clap it, tap it or march to it, always the same.\nRhythm is different. Rhythm is the pattern of the words on top of the beat. Clap your name: some claps are quick and some are slow. That is rhythm.', 'Sounds can be fast or slow, loud or soft, high or low. A bird sings high; a big drum sounds low. A lullaby is soft and slow; a marching song is loud and steady. Between the sounds there is silence, and silence is part of music too.', 'Steady beat, rhythm on top, fast or slow, loud or soft, high or low, and silence in between. Listen for each one.'],
-      keyIdea: 'The steady beat is the same every time; the rhythm is the pattern of the words on top. Sounds can be fast or slow, loud or soft, high or low.',
-      example: { kind: 'flow', steps: ['beat: tap, tap, tap, tap', 'rhythm: clap your name'], caption: 'The beat stays steady; the rhythm follows the words.',
+      paragraphs: ['Put a hand on your heart. That steady thump is a beat. Music has a steady beat too, and you can clap it, tap it or march to it, always the same.', 'Rhythm is different. Rhythm is the pattern of the words on top of the beat. Clap your name: some claps are quick and some are slow. That is rhythm.', 'Sounds can be fast or slow, loud or soft, high or low. A bird sings high, and a big drum sounds low. A lullaby is soft and slow, and a marching song is loud and steady. Between the sounds there is silence, and silence is part of music too.', 'Steady beat, rhythm on top, fast or slow, loud or soft, high or low, and silence in between. Listen for each one.'],
+      keyIdea: 'The steady beat is the same every time, and the rhythm is the pattern of the words on top. Sounds can be fast or slow, loud or soft, high or low.',
+      example: { kind: 'flow', steps: ['beat: tap, tap, tap, tap', 'rhythm: clap your name'], caption: 'The beat stays steady, and the rhythm follows the words.',
         another: ['A clock ticks a steady beat. A song sung over the ticking has a rhythm. The tick never changes; the song does.',
           { text: 'Loud and soft are volume; fast and slow are speed; high and low are pitch. A bird is high and soft, a truck is low and loud.', visual: { kind: 'flow', steps: ['bird: high, soft', 'drum: low, loud'] } },
           'The best way to find the beat is to move to it. Feet know before ears do.'] },
@@ -10074,7 +10074,7 @@ function ARTSK_MODULES() { return [
     tagline: 'Five voices, three families, and how to listen',
     requires: ['beat-and-sound'],
     lesson: {
-      paragraphs: ['You have five voices. A singing voice. A speaking voice. A whispering voice. A calling voice, for across the yard. And an inner voice, the one you hear only inside your head. A grown-up\'s singing voice sounds lower than a child\'s.', 'Instruments come in families. String instruments, like a guitar or a violin, have strings you pluck or bow. Wind instruments, like a flute or a trumpet, sound when you blow. Percussion instruments, like a drum or a shaker, sound when you hit or shake them.\nEvery family has its own sound, and you can tell them apart with your eyes closed.', 'People sing songs and play music games everywhere: rhymes, folk songs, songs for holidays. When someone plays for you, be a good audience: sit still, listen with your ears, and clap at the end.'],
+      paragraphs: ['You have five voices. A singing voice. A speaking voice. A whispering voice. A calling voice, for across the yard. And an inner voice, the one you hear only inside your head. A grown-up\'s singing voice sounds lower than a child\'s.', 'Instruments come in families. String instruments, like a guitar or a violin, have strings you pluck or bow. Wind instruments, like a flute or a trumpet, sound when you blow. Percussion instruments, like a drum or a shaker, sound when you hit or shake them.', 'Every family has its own sound, and you can tell them apart with your eyes closed.', 'People sing songs and play music games everywhere: rhymes, folk songs, songs for holidays. When someone plays for you, be a good audience: sit still, listen with your ears, and clap at the end.'],
       keyIdea: 'Five voices: singing, speaking, whispering, calling and inner. Three instrument families: strings, wind and percussion. A good audience listens and claps at the end.',
       example: { kind: 'flow', steps: ['strings: pluck or bow', 'wind: blow', 'percussion: hit or shake'], caption: 'Each family makes its sound a different way.',
         another: ['Try the five voices on one word. Sing hello, say hello, whisper hello, call hello across the room, and think hello without a sound. Same word, five voices.',
@@ -10470,7 +10470,7 @@ function AGRIK_MODULES() { return [
     tagline: 'Farmers grow plants, and we eat their roots, leaves, flowers, fruits and seeds',
     requires: [],
     lesson: {
-      paragraphs: ['Farmers grow plants for us to eat. A plant has parts: roots, a stem, leaves, flowers and fruits. We eat every one of those parts.', 'A carrot is a root, and it grows under the ground. Lettuce is leaves. Broccoli is a bunch of tiny flower buds, picked before they open. Asparagus is a young stem.\nAn apple is a fruit, and its seeds are inside.', 'Corn and wheat are seeds. Wheat seeds are ground into flour for our bread, and corn seeds pop into popcorn. Cows eat plants too, like grass and hay.'],
+      paragraphs: ['Farmers grow plants for us to eat. A plant has parts: roots, a stem, leaves, flowers and fruits. We eat every one of those parts.', 'A carrot is a root, and it grows under the ground. Lettuce is leaves. Broccoli is a bunch of tiny flower buds, picked before they open. Asparagus is a young stem.', 'An apple is a fruit, and its seeds are inside.', 'Corn and wheat are seeds. Wheat seeds are ground into flour for our bread, and corn seeds pop into popcorn. Cows eat plants too, like grass and hay.'],
       keyIdea: 'Farmers grow plants for food. We eat roots like carrots, leaves like lettuce, flower buds like broccoli, fruits like apples, and seeds like corn and wheat.',
       example: { kind: 'flow', steps: ['a carrot: a root', 'lettuce: leaves', 'broccoli: flower buds', 'an apple: a fruit'], caption: 'Plant parts we eat.',
         another: ['A salad can hold four plant parts at once: carrot roots, lettuce leaves, broccoli flower buds and tomato fruits.',
@@ -10487,7 +10487,7 @@ function AGRIK_MODULES() { return [
     tagline: 'A seed grows into a plant, and a plant needs air, sunlight, water, soil and room',
     requires: ['plants-we-eat-k'],
     lesson: {
-      paragraphs: ['A plant starts as a seed. The seed opens, and a tiny root goes down into the soil. A small shoot comes up, and now it is a seedling.', 'The seedling grows into a plant. The plant grows flowers, and the flowers make fruit with new seeds inside. Seed, seedling, plant, flower, fruit!\nA baby bean plant looks like its parent, with the same kind of leaves.', 'Plants need air, sunlight, water, nutrients in the soil, and room to grow. Nutrients are plant food. Farmers plant seeds apart, so each plant has room.'],
+      paragraphs: ['A plant starts as a seed. The seed opens, and a tiny root goes down into the soil. A small shoot comes up, and now it is a seedling.', 'The seedling grows into a plant. The plant grows flowers, and the flowers make fruit with new seeds inside. Seed, seedling, plant, flower, fruit!', 'A baby bean plant looks like its parent, with the same kind of leaves.', 'Plants need air, sunlight, water, nutrients in the soil, and room to grow. Nutrients are plant food. Farmers plant seeds apart, so each plant has room.'],
       keyIdea: 'A seed grows into a seedling, then a plant, then flowers and fruit with new seeds. Plants need air, sunlight, water, nutrients in the soil, and room to grow.',
       example: { kind: 'flow', steps: ['seed', 'seedling', 'plant', 'flower', 'fruit'], caption: 'The life of a plant.',
         another: ['A sunflower seed grows into a sunflower, never into a bean. Young plants look like their parent plants.',
@@ -10504,7 +10504,7 @@ function AGRIK_MODULES() { return [
     tagline: 'What farm animals need, the body parts that help them, and what they give us',
     requires: ['seed-to-plant-k'],
     lesson: {
-      paragraphs: ['Farm animals need air, water, food, space, and shelter. Shelter is a barn or a shed. It keeps them dry in the rain and cool on a hot day.', 'Animals have body parts that help them. A cow can see almost all the way around, and her ears turn to hear. A hen uses her beak to pick up seeds.\nA goat grabs leaves with her lips, and a horse has strong legs to run.', 'Farm animals give us things we need. Cows give milk, and hens lay eggs. Sheep grow wool, and the wool is made into warm sweaters. Farmers take care of them every day.'],
+      paragraphs: ['Farm animals need air, water, food, space, and shelter. Shelter is a barn or a shed. It keeps them dry in the rain and cool on a hot day.', 'Animals have body parts that help them. A cow can see almost all the way around, and her ears turn to hear. A hen uses her beak to pick up seeds.', 'A goat grabs leaves with her lips, and a horse has strong legs to run.', 'Farm animals give us things we need. Cows give milk, and hens lay eggs. Sheep grow wool, and the wool is made into warm sweaters. Farmers take care of them every day.'],
       keyIdea: 'Farm animals need air, water, food, space and shelter. Body parts help them see, hear, grab and move. Cows give milk, hens lay eggs, and sheep grow wool.',
       example: { kind: 'flow', steps: ['air and water', 'food', 'space', 'shelter'], caption: 'What every farm animal needs.',
         another: ['A barn is shelter. When a storm comes, the animals go inside and stay dry.',
@@ -10521,7 +10521,7 @@ function AGRIK_MODULES() { return [
     tagline: 'What a farmer does all day, how weather helps or hurts, and how a farm feeds a town',
     requires: ['farm-animals-k'],
     lesson: {
-      paragraphs: ['A farmer\'s day starts early. The farmer feeds the animals, checks their water, and looks at the sky. Weather matters on a farm.', 'Rain helps plants grow, but too much rain can drown them. Hot sun dries the soil, so plants need water. In the cold, animals need a warm barn.', 'A farm feeds a whole town. Milk, eggs and apples go from the farm to the store, and from the store to your table.\nA cow on a farm is cared for by a farmer, but a deer in the woods finds its own food.'],
+      paragraphs: ['A farmer\'s day starts early. The farmer feeds the animals, checks their water, and looks at the sky. Weather matters on a farm.', 'Rain helps plants grow, but too much rain can drown them. Hot sun dries the soil, so plants need water. In the cold, animals need a warm barn.', 'A farm feeds a whole town. Milk, eggs and apples go from the farm to the store, and from the store to your table.', 'A cow on a farm is cared for by a farmer, but a deer in the woods finds its own food.'],
       keyIdea: 'A farmer cares for plants and animals every day. Rain, sun and cold can help or hurt a farm. Food goes from the farm to the store to your table.',
       example: { kind: 'flow', steps: ['the farm', 'the truck', 'the store', 'your table'], caption: 'How food gets to you.',
         another: ['The eggs in your fridge were laid by a hen. A farmer gathered them, and a truck brought them to the store.',
@@ -11589,7 +11589,7 @@ function BIZK_MODULES() { return [
     tagline: 'Borrowing and lending with care, and the people who make things and the people who buy them',
     requires: ['save-spend-share-k'],
     lesson: {
-      paragraphs: ['To borrow is to use something that belongs to someone else and give it back. When you borrow well, you give it back on time and in good shape. Losing it or breaking it is borrowing badly.', 'To lend is to let someone use your things. Before you lend, think: what could go well, and what could go wrong? A friend may give it back late, or not at all.', 'People who make things are producers. People who buy and use things are consumers. To find what something costs to make, add up the cost of each part. A bookmark made from paper that costs two dollars and a ribbon that costs one dollar costs three dollars to make.'],
+      paragraphs: ['To borrow is to use something that belongs to someone else and give it back. When you borrow well, you give it back on time and in good shape. Losing it or breaking it is borrowing badly.', 'To lend is to let someone use your things. Before you lend, think about what could go well and what could go wrong. A friend may give it back late, or not at all.', 'People who make things are producers. People who buy and use things are consumers. To find what something costs to make, add up the cost of each part. A bookmark made from paper that costs two dollars and a ribbon that costs one dollar costs three dollars to make.'],
       keyIdea: 'Borrow well: give it back on time and in good shape. Think before you lend. Producers make things, and consumers buy and use them.',
       example: { kind: 'flow', steps: ['paper: two dollars', 'ribbon: one dollar', 'a bookmark: three dollars'], caption: 'The cost to make a bookmark.',
         another: ['A baker is a producer. The family that buys her bread is a consumer.',
@@ -11915,7 +11915,7 @@ function PHILK_MODULES() { return [
     tagline: 'Some questions you find out; some questions you think about',
     requires: [],
     lesson: {
-      paragraphs: ['Why is the sky blue? Someone can tell you, and then you know. That is a finding question.\nWhat makes a good friend? Nobody can just tell you. You think about it. That is a wondering question.', 'When someone says a word, you can ask, what do you mean? A toy is a thing you play with. But what about a stick? You play with it. Is a stick a toy? Asking but what about helps an idea get better.', 'Long ago, a man named Socrates asked wondering questions all day. He is famous for it. His friend Plato wrote his questions down. You can wonder too.'],
+      paragraphs: ['Why is the sky blue? Someone can tell you, and then you know. That is a finding question.', 'What makes a good friend? Nobody can just tell you. You think about it. That is a wondering question.', 'When someone says a word, you can ask, what do you mean? A toy is a thing you play with. But what about a stick? You play with it. Is a stick a toy? Asking but what about helps an idea get better.', 'Long ago, a man named Socrates asked wondering questions all day. He is famous for it. His friend Plato wrote his questions down. You can wonder too.'],
       keyIdea: 'A finding question has an answer you find. A wondering question you think about. Ask what do you mean, and but what about.',
       example: { kind: 'flow', steps: ['a toy is a thing you play with', 'but what about a stick?', 'the idea gets better'], caption: 'But what about finds a hole, and the hole helps.',
         another: ['Is a hot dog a sandwich? Say what a sandwich is first. Then see if the hot dog fits.',
@@ -11932,7 +11932,7 @@ function PHILK_MODULES() { return [
     tagline: 'A reason comes after because, and it has to be about the thing',
     requires: ['i-wonder'],
     lesson: {
-      paragraphs: ['A reason is what comes after because. We should go outside, because the sun is out. That is a reason.\nWe should go outside, because my shirt is blue. That is not a reason. It is not about going outside.', 'Because I want to is a wish, not a reason. Because I said so is an order, not a reason. A reason is about the thing, and it is true.', 'The best question is how do you know? Then you go and look. If you can see it or count it, you can point to it.'],
+      paragraphs: ['A reason is what comes after because. We should go outside, because the sun is out. That is a reason.', 'We should go outside, because my shirt is blue. That is not a reason. It is not about going outside.', 'Because I want to is a wish, not a reason. Because I said so is an order, not a reason. A reason is about the thing, and it is true.', 'The best question is how do you know? Then you go and look. If you can see it or count it, you can point to it.'],
       keyIdea: 'A reason comes after because and is about the thing. A wish and an order are not reasons. Ask how do you know, then look.',
       example: { kind: 'flow', steps: ['we should go outside', 'because', 'the sun is out'], caption: 'A reason that is about the thing.',
         another: ['Try it with a snack. I want an apple, because I am hungry. That is a reason. I want an apple, because it is Tuesday. That one is silly.',
@@ -11949,7 +11949,7 @@ function PHILK_MODULES() { return [
     tagline: 'One voice at a time, say it back, and you can change your mind',
     requires: ['because-k'],
     lesson: {
-      paragraphs: ['When we talk about a wondering question, we take turns. One voice at a time. When it is your turn, you talk. When it is not, you listen with your ears and your eyes. A talking stick helps: whoever holds the stick talks.', 'To show you listened, say it back. You think the class pet should be a fish. If your friend says yes, that is it, you understood.\nYou can think an idea is wrong and still like your friend. Say I do not agree with that reason. Do not say you are silly.', 'If your friend gives a better reason, you can change your mind. That is brave. It is not losing.'],
+      paragraphs: ['When we talk about a wondering question, we take turns. One voice at a time. When it is your turn, you talk. When it is not, you listen with your ears and your eyes. A talking stick helps: whoever holds the stick talks.', 'To show you listened, say it back. You think the class pet should be a fish. If your friend says yes, that is it, you understood.', 'You can think an idea is wrong and still like your friend. Say I do not agree with that reason. Do not say you are silly.', 'If your friend gives a better reason, you can change your mind. That is brave. It is not losing.'],
       keyIdea: 'One voice at a time. Say it back. Talk about the idea, not the friend. Changing your mind is brave.',
       example: { kind: 'flow', steps: ['my turn', 'your turn', 'say it back', 'yes, that is it'], caption: 'A talk where everyone gets heard.',
         another: ['A talking stick helps. Whoever holds the stick talks. Everyone else listens. Then the stick moves on.',
@@ -11966,7 +11966,7 @@ function PHILK_MODULES() { return [
     tagline: 'The same for everyone, or more for the one who needs it, and a test for both',
     requires: ['my-turn-your-turn'],
     lesson: {
-      paragraphs: ['Four cookies and two children. Fair is two each. That is equal shares.\nOne child fell down and has a hurt knee. The ice pack goes to that child first. That is fair too, by need.', 'On the swing, we take turns. Every turn is the same size. That is fair for a swing.\nA rule can have an exception, but the exception needs a reason everyone can hear.', 'Here is a test. Would you like it if it were you? If not, the rule needs another look. And when you cut the cake, the cutter picks last. Then the pieces come out even.'],
+      paragraphs: ['Four cookies and two children. Fair is two each. That is equal shares.', 'One child fell down and has a hurt knee. The ice pack goes to that child first. That is fair too, by need.', 'On the swing, we take turns. Every turn is the same size. That is fair for a swing.', 'A rule can have an exception, but the exception needs a reason everyone can hear.', 'Here is a test. Would you like it if it were you? If not, the rule needs another look. And when you cut the cake, the cutter picks last. Then the pieces come out even.'],
       keyIdea: 'Equal shares are fair. More for the one who needs it is fair too. Ask would you like it if it were you. The cutter picks last.',
       example: { kind: 'flow', steps: ['four cookies', 'two children', 'two each'], caption: 'Equal shares.',
         another: ['A hurt knee gets the ice pack first. Nobody says that is unfair, because everyone can hear the reason.',
@@ -12141,9 +12141,9 @@ function PSYK_MODULES() { return [
     tagline: 'The brain is the boss, and the five senses tell it what is out there',
     requires: [],
     lesson: {
-      paragraphs: ['Inside your head is your brain. It is the boss of you. It moves your legs, it picks your words, and it makes your dreams.\nYour brain gets its news from five senses. Eyes see. Ears hear. Your nose smells. Your tongue tastes. Your skin feels.', 'The senses tell, and the brain decides. In the dark, the brain can guess wrong. A coat on a hook can look like a monster. Turn on the light, and it is a coat.', 'A brain needs sleep to work well. A child your age needs about ten hours a night. A tired brain gets grumpy and forgets things. Sleep helps it remember.'],
-      keyIdea: 'Your brain is the boss. Five senses tell it what is out there: eyes, ears, nose, tongue and skin. The brain can guess wrong in the dark. Sleep helps it work.',
-      example: { kind: 'flow', steps: ['eyes see', 'the brain decides', 'a coat, not a monster'], caption: 'The senses tell; the brain decides.',
+      paragraphs: ['Inside your head is your brain. It is the boss of you. It moves your legs, it picks your words, and it makes your dreams.', 'Your brain gets its news from five senses. Eyes see. Ears hear. Your nose smells. Your tongue tastes. Your skin feels.', 'The senses tell, and the brain decides. In the dark, the brain can guess wrong. A coat on a hook can look like a monster. Turn on the light, and it is a coat.', 'A brain needs sleep to work well. A child your age needs about ten to twelve hours a night. A tired brain gets grumpy and forgets things. Sleep helps it remember.'],
+      keyIdea: 'Your brain is the boss. Five senses tell it what is out there, through the eyes, ears, nose, tongue and skin. The brain can guess wrong in the dark. Sleep helps it work.',
+      example: { kind: 'flow', steps: ['eyes see', 'the brain decides', 'a coat, not a monster'], caption: 'The senses tell, and the brain decides.',
         another: ['Close your eyes and listen. Your ears are still working. Your brain is still getting news.',
           { text: 'A tired brain is like a toy with a low battery. It still goes, but slowly. Sleep is how it charges.', visual: { kind: 'flow', steps: ['ten hours of sleep', 'a charged brain', 'a good day'] } },
           'Smell a flower. That is your nose telling your brain, and your brain saying nice.'] },
@@ -12158,7 +12158,7 @@ function PSYK_MODULES() { return [
     tagline: 'Look, listen, say it again, and a little every day',
     requires: ['my-brain-and-senses'],
     lesson: {
-      paragraphs: ['To remember something, first look and listen. If you are looking at something else, it does not go in. Then say it again, out loud. Saying it again puts it in deeper.', 'Your brain forgets, and that is normal. A little every day helps. Three words today and three words tomorrow beats all of them at once.\nA brain can hold only a few things at a time. So we break big things into small pieces.', 'Try it with your phone number. Say it in three small pieces. Say it every day for a week. Then you have it.'],
+      paragraphs: ['To remember something, first look and listen. If you are looking at something else, it does not go in. Then say it again, out loud. Saying it again puts it in deeper.', 'Your brain forgets, and that is normal. A little every day helps. Three words today and three words tomorrow beats all of them at once.', 'A brain can hold only a few things at a time. So we break big things into small pieces.', 'Try it with your phone number. Say it in three small pieces. Say it every day for a week. Then you have it.'],
       keyIdea: 'Look and listen first. Say it again out loud. A little every day beats all at once. Break big things into small pieces.',
       example: { kind: 'flow', steps: ['look and listen', 'say it again', 'a little every day'], caption: 'How remembering works.',
         another: ['Close the book and say it. If you can say it, you have it.',
@@ -12192,7 +12192,7 @@ function PSYK_MODULES() { return [
     tagline: 'How to say hello, how to be kind, and how to fix a fight',
     requires: ['my-feelings'],
     lesson: {
-      paragraphs: ['To make a new friend, say hello and your name. Ask what they like. Ask to play. That is all it takes to start.\nFriends can change what you do. A good friend helps you be kind and brave. If a friend wants you to be mean, you can say no.', 'Be kind with your words. Say please and thank you. Tell the truth. A good friend takes turns and keeps promises.', 'Friends fight sometimes. To fix it, say what you feel and what you want. I felt sad when you took the ball, and I want a turn. Then listen. Everyone is different, and everyone gets to be treated with respect.'],
+      paragraphs: ['To make a new friend, say hello and your name. Ask what they like. Ask to play. That is all it takes to start.', 'Friends can change what you do. A good friend helps you be kind and brave. If a friend wants you to be mean, you can say no.', 'Be kind with your words. Say please and thank you. Tell the truth. A good friend takes turns and keeps promises.', 'Friends fight sometimes. To fix it, say what you feel and what you want. I felt sad when you took the ball, and I want a turn. Then listen. Everyone is different, and everyone gets to be treated with respect.'],
       keyIdea: 'Say hello, your name, and ask to play. A good friend helps you be kind and brave. Tell the truth and take turns. Fix a fight by saying what you feel and what you want.',
       example: { kind: 'flow', steps: ['hello, my name is', 'what do you like?', 'want to play?'], caption: 'Three steps to a new friend.',
         another: ['A fight fixed with words is over in a minute. A fight fixed with pushing lasts all week.',
@@ -16865,7 +16865,7 @@ Object.assign(GENERATORS, {
       ['Grandma gives you money for your birthday. What is that?', ['a gift', 'income', 'a deposit'], 'a gift', 'You did not work for it, so it is a gift, not income.'],
       ['Which one earns income?', ['walking a dog', 'a birthday card', 'a nap'], 'walking a dog', 'Walking a dog is a job, so the money is income.'],
       ['Which one is a skill for a job?', ['being on time', 'being tall', 'being sleepy'], 'being on time', 'Being on time, following the steps and being kind are skills.'],
-      ['A baker earns income by doing what?', ['baking bread', 'eating bread', 'buying bread'], 'baking bread', 'Baking is the work; the money for it is income.'],
+      ['A baker earns income by doing what?', ['baking bread', 'eating bread', 'buying bread'], 'baking bread', 'Baking is the work, and the money for it is income.'],
       ['More skills let you do what?', ['more jobs', 'fewer jobs', 'no jobs'], 'more jobs', 'The more skills you have, the more jobs you can do.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
@@ -16883,8 +16883,8 @@ Object.assign(GENERATORS, {
     const Q = [['Using money now is called what?', ['spending', 'saving', 'a deposit'], 'spending', 'Spending is using money now. Saving is keeping it for later.'],
       ['Keeping money for later is called what?', ['saving', 'spending', 'a gift'], 'saving', 'Saving keeps money for something later.'],
       ['Putting money into the bank is called what?', ['a deposit', 'a withdrawal', 'a price'], 'a deposit', 'In: a deposit. Out: a withdrawal.'],
-      ['Taking money out of the bank is called what?', ['a withdrawal', 'a deposit', 'a trade'], 'a withdrawal', 'Out: a withdrawal. In: a deposit.'],
-      ['A haircut is which kind of thing you buy?', ['a service', 'a good', 'a gift'], 'a service', 'Goods are things like bread and shoes; a haircut is a service.']];
+      ['Taking money out of the bank is called what?', ['a withdrawal', 'a deposit', 'a trade'], 'a withdrawal', 'Taking money out is a withdrawal. Putting it in is a deposit.'],
+      ['A haircut is which kind of thing you buy?', ['a service', 'a good', 'a gift'], 'a service', 'Goods are things like bread and shoes, and a haircut is a service.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
@@ -16894,7 +16894,7 @@ Object.assign(GENERATORS, {
       const price = randInt(rng, 2, 6); const have = price + randInt(rng, 1, 4); const ans = have - price;
       return { type: 'choice', story: `A toy costs ${price} coins and you have ${have}.`, prompt: 'How many coins are left after you buy it?', choices: shuffle(rng, [ans, have + price, price, ans + 1].filter((v, i, a) => a.indexOf(v) === i).slice(0, 3).map(String)), answer: String(ans), explain: `Count out the price: ${have} take away ${price} leaves **${ans}**.`, visual: null, explainVisual: null };
     }
-    const Q = [['A sticker for a marble is what?', ['a trade', 'income', 'a need'], 'a trade', 'A trade is a swap: a thing for a thing, or a thing for money.'],
+    const Q = [['A sticker for a marble is what?', ['a trade', 'income', 'a need'], 'a trade', 'A trade is a swap, a thing for a thing or a thing for money.'],
       ['A place where buyers and sellers meet is called what?', ['a market', 'a bank', 'a gift'], 'a market', 'A store, a farm stand and a lemonade stand are all markets.'],
       ['How many coins a thing costs is called what?', ['the price', 'the income', 'the deposit'], 'the price', 'The price is the coins it takes.'],
       ['Why do most trades use money?', ['everyone takes it', 'it is heavy', 'it is a want'], 'everyone takes it', 'Money is easy to carry and everyone takes it.'],
@@ -17093,7 +17093,7 @@ Object.assign(GENERATORS, {
       ['What do your ears do?', ['hear', 'see', 'taste'], 'hear', 'Eyes see. Ears hear.'],
       ['What does your tongue do?', ['tastes', 'hears', 'smells'], 'tastes', 'Your tongue tastes. Your skin feels.'],
       ['In the dark, a coat on a hook can look like what?', ['a monster', 'a cake', 'a friend'], 'a monster', 'Turn on the light, and it is a coat.'],
-      ['About how many hours of sleep does a child your age need?', ['ten', 'two', 'twenty'], 'ten', 'About ten hours or more. A tired brain gets grumpy and forgets things.']];
+      ['About how many hours of sleep does a child your age need?', ['ten to twelve', 'two', 'twenty'], 'ten to twelve', 'About ten to twelve hours each night. A tired brain gets grumpy and forgets things.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
@@ -17524,7 +17524,7 @@ Object.assign(GENERATORS, {
   'agk-day': (rng) => {
     const Q = [['When does a farmer\'s day start?', ['early', 'at bedtime', 'never'], 'early', 'The farmer feeds the animals first.'],
       ['What happens when rain falls on a farm?', ['plants grow', 'cars go', 'toys break'], 'plants grow', 'But too much rain can drown them.'],
-      ['What do animals need in the cold?', ['a warm barn', 'ice cream', 'a pool'], 'a warm barn', 'Weather matters on a farm.'],
+      ['What do animals need in the cold?', ['a warm barn', 'ice cream', 'a pool'], 'a warm barn', 'In the cold, animals need a warm barn.'],
       ['Where does milk go after the farm?', ['to the store', 'to the moon', 'to the sea'], 'to the store', 'And from the store to your table.'],
       ['Who finds its own food in the woods?', ['a deer', 'a farm cow', 'a pet fish'], 'a deer', 'A deer is wild and finds its own food. A farm cow is cared for by a farmer.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
@@ -18463,7 +18463,7 @@ Object.assign(GENERATORS, {
     if (rng() < 0.3) { // the cost to make a bookmark: add up its two parts
       const paper = 1 + Math.floor(rng() * 4); const ribbon = 1 + Math.floor(rng() * 3); const cost = paper + ribbon;
       const answer = `${cost} dollars`; const others = [...new Set([paper, ribbon, cost + 1, cost - 1].filter((v) => v > 0 && v !== cost))].slice(0, 2);
-      return { type: 'choice', story: `Paper costs ${paper} dollars. Ribbon costs ${ribbon} dollars.`, prompt: 'What does the bookmark cost to make?', choices: shuffle(rng, [answer, ...others.map((v) => `${v} dollars`)]), answer, explain: `Add the parts: the paper plus the ribbon is ${answer}.`, visual: null, explainVisual: null };
+      return { type: 'choice', story: `Paper costs ${paper} dollars. Ribbon costs ${ribbon} dollars.`, prompt: 'What does the bookmark cost to make?', choices: shuffle(rng, [answer, ...others.map((v) => `${v} dollars`)]), answer, explain: `Add the parts. The paper plus the ribbon is ${answer}.`, visual: null, explainVisual: null };
     }
     const Q = [['People who make things are called what?', ['producers', 'consumers', 'bankers'], 'producers', 'A baker is a producer.'],
       ['People who buy and use things are called what?', ['consumers', 'producers', 'farmers'], 'consumers', 'You are a consumer when you buy bread.'],
@@ -19007,13 +19007,13 @@ Object.assign(GENERATORS, {
       ['Blue and yellow mixed make what?', ['green', 'orange', 'purple'], 'green', 'Blue and yellow make green.'],
       ['Red and blue mixed make what?', ['purple', 'green', 'orange'], 'purple', 'Red and blue make purple.'],
       ['Which color feels warm, like the sun?', ['red', 'blue', 'green'], 'red', 'Red, orange and yellow are the warm colors.'],
-      ['A line that closes makes what?', ['a shape', 'a color', 'a pattern'], 'a shape', 'A shape is a line that closes: a circle, a square, a triangle.'],
+      ['A line that closes makes what?', ['a shape', 'a color', 'a pattern'], 'a shape', 'A shape is a line that closes, like a circle, a square or a triangle.'],
       ['Stripe, stripe, stripe. What is that?', ['a pattern', 'a texture', 'a shape'], 'a pattern', 'A pattern is something that repeats.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
   'ak-picture': (rng) => {
-    const Q = [['What a picture shows is called its what?', ['subject', 'pattern', 'beat'], 'subject', 'A cat, a house, a storm: that is the subject.'],
+    const Q = [['What a picture shows is called its what?', ['subject', 'pattern', 'beat'], 'subject', 'A cat, a house or a storm. That is the subject.'],
       ['Bright colors and curved lines can feel how?', ['happy', 'stormy', 'quiet'], 'happy', 'Bright colors and curved lines can feel happy.'],
       ['Dark colors and sharp zigzags can feel how?', ['stormy', 'happy', 'sleepy'], 'stormy', 'Dark colors and sharp zigzags can feel stormy.'],
       ['Two people feel different things about one picture. Who is right?', ['both', 'the older one', 'nobody'], 'both', 'Two people can look at the same picture and feel different things. Both are right.'],
@@ -19024,10 +19024,10 @@ Object.assign(GENERATORS, {
   },
   'ak-beat': (rng) => {
     const Q = [['Tap, tap, tap, tap, always the same. What is that?', ['the steady beat', 'the rhythm', 'silence'], 'the steady beat', 'A steady beat is the same every time, like your heart.'],
-      ['The pattern of the words on top of the beat is called what?', ['rhythm', 'beat', 'pitch'], 'rhythm', 'Clap your name: quick and slow claps. That is rhythm.'],
-      ['How does a bird sing?', ['high', 'low', 'loud'], 'high', 'A bird sings high; a big drum sounds low.'],
+      ['The pattern of the words on top of the beat is called what?', ['rhythm', 'beat', 'pitch'], 'rhythm', 'Clap your name, with quick and slow claps. That is rhythm.'],
+      ['How does a bird sing?', ['high', 'low', 'loud'], 'high', 'A bird sings high, and a big drum sounds low.'],
       ['A big drum sounds how?', ['low', 'high', 'soft'], 'low', 'A big drum sounds low.'],
-      ['What is a lullaby like?', ['soft and slow', 'loud and fast', 'high and loud'], 'soft and slow', 'A lullaby is soft and slow; a marching song is loud and steady.'],
+      ['What is a lullaby like?', ['soft and slow', 'loud and fast', 'high and loud'], 'soft and slow', 'A lullaby is soft and slow, and a marching song is loud and steady.'],
       ['The quiet between the sounds is called what?', ['silence', 'rhythm', 'a pattern'], 'silence', 'Silence is part of music too.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };

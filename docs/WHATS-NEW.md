@@ -2,6 +2,12 @@
 
 The newest block is what educators see once, in a pop-up on the classroom page, after each update. Write it the way Mikey talks to a teacher: conversational, complete sentences, say what changed and why it matters, and skip the shorthand (2026-09-23). Two to four items. The date line is the version stamp.
 
+## October 4, 2026 (kindergarten finished)
+
+- Every pre-K and kindergarten lesson has now been read again by hand, all six kindergarten electives included.
+- A few facts are more exact, like the sleep a kindergartner needs, the colors red, yellow and blue can make, and a saving jar that now adds up.
+- Every one of their stories carries directions for a recorded voice.
+
 ## October 4, 2026 (kindergarten core finished)
 
 - The kindergarten community and health lessons are read again by hand. The holiday lesson now teaches Martin Luther King Jr. Day, and the sleep lesson gives one honest number, about ten to twelve hours a night.

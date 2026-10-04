@@ -7408,6 +7408,8 @@ function EduSphereScreens() {
         // Pass JK: the second asks for the top stop the moment a person scrolls, taps or types, so someone who starts moving
         // while the page settles keeps their place instead of being pulled back up.
         if (tourStep < 0) {
+          // Pass JM: the end of this settle window is marked for the browser tests, which wait it out before a tap.
+          window.__eduSettleUntil = Date.now() + 360;
           let touched = false; const mark = () => { touched = true; }; const evs = ['wheel', 'touchstart', 'pointerdown', 'keydown'];
           for (const ev of evs) window.addEventListener(ev, mark, { passive: true, capture: true });
           for (const wait of [80, 320]) setTimeout(() => { if (!touched && (pageScrolled() || framedFullHeight())) scrollToTop(!firstScreen.current); }, wait);

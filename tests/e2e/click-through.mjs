@@ -12,7 +12,11 @@ let pass = 0, fail = 0;
 const ok = (label, cond) => { console.log((cond ? 'PASS' : 'FAIL') + ' - ' + label); cond ? pass++ : fail++; };
 const browser = await chromium.launch();
 // A phone-sized touch screen, so tracing lessons open (they refuse a mouse-only device on purpose).
+// Every tap waits out the page's settle window (pass JM): a new screen asks for its top again at 80 and 320 ms, and a tap whose
+// scroll lands inside that window is undone before it arrives. The app marks the window's end in window.__eduSettleUntil.
+function settleTaps(pg) { const proto = Object.getPrototypeOf(pg.locator('body')); if (proto.__settleWrapped) return; const click = proto.click; proto.click = async function (...a) { await this.page().waitForFunction(() => !window.__eduSettleUntil || Date.now() >= window.__eduSettleUntil, null, { timeout: 5000 }).catch(() => {}); return click.apply(this, a); }; proto.__settleWrapped = true; }
 const page = await browser.newPage({ viewport: { width: 390, height: 844 }, reducedMotion: 'reduce', hasTouch: true });
+settleTaps(page);
 // These checks were written for the light theme; the dark theme has its own check (dark-contrast.mjs).
 await page.addInitScript(() => { try { if (!window.localStorage.getItem('edusphere_v1_theme')) window.localStorage.setItem('edusphere_v1_theme', 'light'); } catch (e) { /* storage may be off */ } });
 const errors = [];

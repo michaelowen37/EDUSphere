@@ -1,6 +1,6 @@
 # Audio ledger
 
-Generated 2026-10-04 by tools/audio-ledger.mjs. Every clip the app can play in a recorded voice is a row of docs/AUDIO-LEDGER.csv: its key (the file name, audio/<key>.mp3, that the app already looks for), its group (the story or lesson it belongs to) and the words with their Eleven v4 audio tags. 6107 clips, 1,191,220 characters in all; the longest clip is 508 characters and the longest whole story 2,751, far under Eleven v4's 10,000 a request. 94 stories carry hand-written tags so far (the writing review adds them course by course); the rest open with their age band's voice direction only.
+Generated 2026-10-04 by tools/audio-ledger.mjs. Every clip the app can play in a recorded voice is a row of docs/AUDIO-LEDGER.csv: its key (the file name, audio/<key>.mp3, that the app already looks for), its group (the story or lesson it belongs to) and the words with their Eleven v4 audio tags. 6107 clips, 1,193,835 characters in all; the longest clip is 508 characters and the longest whole story 2,751, far under Eleven v4's 10,000 a request. 118 stories carry hand-written tags so far (the writing review adds them course by course); the rest open with their age band's voice direction only.
 
 ## How to make the audio
 
@@ -17,7 +17,7 @@ ElevenLabs counts characters, tags included, so this is the size of each part of
 
 | Band | Clips | Characters |
 |---|---|---|
-| Pre-K to grade 2 | 2051 | 239,560 |
+| Pre-K to grade 2 | 2051 | 242,175 |
 | Grades 3 to 5 | 1263 | 278,553 |
 | Grades 6 to 8 | 1138 | 272,072 |
 | Grades 9 to college | 1655 | 401,035 |
@@ -943,6 +943,150 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 - S2717-5: [a school bell ringing] When the bell rang, Omar logged off, so the next person could not get into his page. He felt like the keeper of a small key.
 - S2717-6: [slowly, warmly] Keep your password secret. Keep private things private. Be kind, and tell a grown-up.
 
+### One coin, two wants (S2770, wants-needs-and-choices)
+
+- S2770-1: [a busy school fair] Rosa had one shiny coin for the school fair. She walked past the balloons, and then past the sparkly rings, and stopped.
+- S2770-2: She wanted a balloon. She wanted a ring too. [torn] But the coin could buy only one thing.
+- S2770-3: [gently] Her big brother Luis knelt down beside her. You have to choose, he said. When you pick one, you let the other go.
+- S2770-4: Rosa held the coin for a long time. [decided] Then she chose the ring, because a balloon can pop and a ring can stay. She gave the coin to the man and slid the ring on her finger.
+- S2770-5: At the gate she saw the balloons again, [wistful] and she felt a little sad. Luis said that was normal. Giving something up is part of choosing.
+- S2770-6: [slowly, warmly] Needs come first, and wants wait. One coin, two wants. You pick one and let the other go.
+
+### The dog walk (S2775, earning-income)
+
+- S2775-1: [hopeful] Kofi wanted a kite, and kites cost coins. [a dog barking happily] Miss Ito next door had a dog named Pepper who needed a walk every day.
+- S2775-2: [eager] I will walk Pepper, Kofi said. Miss Ito said yes, and she said the job had rules. Be on time, hold the leash tight, and bring Pepper home dry.
+- S2775-3: Every day Kofi came at four. [a leash tugging] Every day Pepper pulled, and Kofi held on. [coins clinking] At the end of the week Miss Ito gave him five coins. That was income, money he had earned.
+- S2775-4: On Sunday his aunt came to visit and gave him two coins in a card. Kofi put them in the jar too. [gently] But those were a gift, his aunt said. You did not work for them.
+- S2775-5: [proud] By the end of the month the jar held enough for the kite. Kofi knew which coins he had earned and which had been given. Both bought the kite, but only one had been work.
+- S2775-6: [slowly, warmly] Work earns income. A gift is not income. Skills like being on time get you the job.
+
+### Two coins a week (S2780, spending-and-saving)
+
+- S2780-1: [longing] Amara wanted a red scooter. It cost more coins than she had ever seen in one place. So her mother gave her a jar and a plan.
+- S2780-2: Every week Amara earned three coins for setting the table. [coins dropping into a jar] Two coins went in the jar, and one coin was hers to spend. Putting coins in the jar was a deposit.
+- S2780-3: The jar filled slowly. [slowly, counting] Two, then four, then six, then eight. Amara taped a picture of the scooter on the front, and the picture got closer every week.
+- S2780-4: One day she took three coins out to buy a birthday card for her friend. Taking coins out is a withdrawal. [thoughtful] The jar went down, and then it went up again.
+- S2780-5: By the end of the summer the jar was full. Amara spent it on the scooter. [a scooter rolling, joyful] She rode it up and down the street until the sun went down.
+- S2780-6: [slowly, warmly] Spending is now. Saving is for later. A deposit puts money in, a withdrawal takes it out, and saving adds up.
+
+### The sticker market (S2785, trading-and-markets)
+
+- S2785-1: [classroom buzz] On Friday the class had a trading day. Diego brought stickers, Lena brought marbles, and Sam brought tiny toy cars.
+- S2785-2: A trade is a swap, Miss Ray said. You give one thing and get one thing. [pleased] Diego gave Lena two stickers and got one blue marble.
+- S2785-3: Then Sam wanted a sticker, but Diego did not want a car. [stuck] They had nothing to swap. [explaining] That is why people use money, Miss Ray said. Everyone takes money.
+- S2785-4: [a shop bell] After lunch the class went to the school store, which is a market with a roof. A pencil cost 2 coins. A small ball cost 4. Diego had 3 coins in his pocket.
+- S2785-5: He could buy the pencil and have 1 coin left, but he could not buy the ball yet. Not enough coins means save more, or choose something else. [content] Diego chose the pencil and kept saving.
+- S2785-6: [slowly, warmly] A trade is a swap. A market is where buyers meet sellers. The price is the coins it takes.
+
+### The orange that was not there (S2886, lines-shapes-and-colors)
+
+- S2886-1: [disappointed] Nia wanted to paint a pumpkin, and there was no orange paint in the whole box. There was red, yellow and blue, and that was all.
+- S2886-2: [calm, a little mysterious] Her art teacher did not look worried at all. He put a dab of red on the plate, and a dab of yellow beside it. Then he handed Nia the brush.
+- S2886-3: [a brush swishing] Nia mixed them, round and round. The red and the yellow turned into orange, bright as a real pumpkin. [laughing] She laughed out loud. Two colors had made a third one.
+- S2886-4: [excited] After that she could not stop. Blue and yellow made green for the stem. Red and blue made purple for the sky at night. Every mix was a small surprise.
+- S2886-5: [playful] For the pumpkin's face she drew a zigzag mouth and two triangle eyes. She added a curved line for a smile under the zigzag. Lines and shapes, her teacher said, are the bones of a picture.
+- S2886-6: [slowly, warmly] Red, yellow and blue can mix into many new colors. Lines and shapes hold the picture together.
+
+### The picture on the wall (S2891, what-a-picture-says)
+
+- S2891-1: [footsteps in a quiet hall] The class walked to the library to see the big picture on the wall. It showed a boat on a wide blue river, with a red sun going down.
+- S2891-2: [curious] What does it show, asked Miss Lopez. A boat, said Omar, and Ana added the river, and Kofi added the red sun. All of them were right.
+- S2891-3: How does it make you feel, she asked next. [calm] Omar said calm, because the water was so smooth and still. [softly] Ana said sad, because the boat was alone out there. Both of you are right, said Miss Lopez, and a picture can be two things at once.
+- S2891-4: [wonder] On the walk back, Kofi began to see art all around him. On a cup in the coffee shop window. On a street sign with a painted bird. On a quilt hung over a fence.
+- S2891-5: [warmly] People make art to show what they love, Miss Lopez said, and to make plain things beautiful. A cup does not need a bird on it. Someone wanted one there.
+- S2891-6: [slowly, warmly] Ask a picture what it shows and how it feels. Then say your idea, and listen to a friend say theirs.
+
+### The drum and the heartbeat (S2896, beat-and-sound)
+
+- S2896-1: Ben put his hand on his chest the way the music teacher showed him. [a steady heartbeat] Thump. Thump. Thump. While he sat still, it kept the same steady pace.
+- S2896-2: That is a steady beat, said the teacher. Music has one too. [a drum tapping a steady beat] She tapped a drum, tap, tap, tap, tap. [marching feet] The class marched around the rug in time.
+- S2896-3: Then she asked Ben to clap his name. [clapping, quick, quick, slow] Ben-ja-min, three claps, quick, quick, slow. That was rhythm, the pattern of the words on top of the beat. Ana's name had two claps, and Kofi's had two.
+- S2896-4: [a flute, high and soft] The teacher played a bird song on the flute, high and soft. [a big drum, low and loud] Then she hit the big drum, low and loud. Fast and slow, loud and soft, high and low, she said. Listen for each one.
+- S2896-5: [silence] When the song stopped, nobody moved. The quiet was part of the music too. [softly] Ben could still feel the beat in his chest, going on and on.
+- S2896-6: [slowly, warmly] The steady beat is always the same. The rhythm is the pattern of the words on top.
+
+### Five voices (S2901, voices-and-instruments)
+
+- S2901-1: [playful] On Friday the music room had a game. Say hello five ways, said the teacher. Everyone said hello in a speaking voice first, all together.
+- S2901-2: [singing] Next they sang hello, high and sweet. [whispering] After that they whispered it, so soft it was almost silence. [calling out] They called it too, as if across a big yard. Last, the teacher said, now say it with your inner voice.
+- S2901-3: [silence, then warmly] Nobody made a sound. Every child said hello inside their own head, and every child smiled. Five voices, the teacher said, and you have them all.
+- S2901-4: After the game she played sounds, and the class guessed with their eyes closed. [a guitar, a flute, a drum] A guitar has strings you pluck, and a flute sounds when you blow. A drum sounds when you hit it. Three families of instruments, and each one had its own sound.
+- S2901-5: On Monday the grown-ups came to hear the spring songs. The children sat still, listened with their ears, [applause] and clapped at the end. That, said the teacher, is what a good audience does.
+- S2901-6: [slowly, warmly] Five voices, three families of instruments, and two rules for an audience: listen, and clap at the end.
+
+### The stick (S3050, i-wonder)
+
+- S3050-1: Noor found a stick at the park. [playful, a stick swishing] It was long and smooth and made a fine sword. [a big brother, sure of himself] Her brother Sami said a stick is not a toy. Toys come from a store.
+- S3050-2: [curious] Noor asked him what he meant by toy. Sami thought hard and said a toy is a thing you play with. Noor held up the stick and said she was playing with it right now.
+- S3050-3: [thoughtful] That is a wondering question, said their dad. Why the sky is blue is a finding question. You can look it up. What a toy is, you have to think about.
+- S3050-4: Sami tried again. A toy is a thing you play with that came from a store, he said. [triumphant] But what about the box, said Noor. They played in a box all summer. Nobody bought it as a toy.
+- S3050-5: [laughing] Sami laughed. But what about was a good test. Every time he said what a toy was, Noor found a hole. Long ago, their dad said, a man named Socrates asked questions all day. His friend Plato wrote them down.
+- S3050-6: [slowly, warmly] Some questions you find out. Some questions you think about. Both are good questions, and a stick can be a sword either way.
+
+### The blue shirt reason (S3056, because-k)
+
+- S3056-1: Omar wanted to go outside, and he said so at circle time. Why should we go out, asked Miss Ruth. [proud, a little silly] Because my shirt is blue, said Omar.
+- S3056-2: [a class laughing] Everyone laughed, and Omar laughed too, because his shirt really was blue. But that was not a reason, since it was not about going outside at all.
+- S3056-3: Try again, said Miss Ruth. Omar thought. [brightly] Because the sun is out, he said, and we can run. That is a reason, she said. It is about going outside, and it is true.
+- S3056-4: [gently] Then Lila said we should go out because she wanted to. Miss Ruth smiled and said that wanting is a wish, not a reason. A reason has to be about the thing.
+- S3056-5: Omar had one more reason, and he said it would not rain. [curious] How do you know, asked Miss Ruth. Omar did not know, so the whole class walked to the window and looked out at the day. [delighted] The sky was clear and blue, like a shirt.
+- S3056-6: [slowly, warmly] A reason is what comes after because, and it has to be about the thing. When you do not know, go and look.
+
+### The talking stick (S3062, my-turn-your-turn)
+
+- S3062-1: [warm] The class had a talking stick painted with stars. Whoever held the stick could talk, and everyone else had to listen with their ears.
+- S3062-2: The question that day was what pet to get. Ben held the stick and said a fish, because a fish is quiet. [blurting out] Ava said a rabbit before the stick got to her, [softly] and Ben looked sad.
+- S3062-3: Miss Ruth asked Ava to say Ben's idea back first. You think we should get a fish, because a fish is quiet, said Ava. [pleased] Yes, said Ben, that is it. Then Ava got the stick and said a rabbit is soft to hold.
+- S3062-4: [thoughtful] Ben did not agree, but he did not say Ava was silly. He said he did not agree, because a rabbit can be shy. Ava thought about that. It was a good reason.
+- S3062-5: When the stick came around again, Ava said she had changed her mind. A fish was better for a class, she said, and nobody said she lost. [warmly] Miss Ruth said it was brave, and the class got a fish.
+- S3062-6: [slowly, warmly] One voice at a time. Say it back before you answer. And if a friend has a better reason, you can change your mind.
+
+### Four cookies, two kids (S3068, fair-shares)
+
+- S3068-1: Mia and her cousin Leo had four cookies on one plate. [cheeky] Leo took three, [indignant] and Mia said that was not fair, because two each is fair.
+- S3068-2: Their grandma agreed. Equal shares, she said, the same for everyone. Leo gave one cookie back. [munching slowly] Then he ate his two very slowly, to make them last.
+- S3068-3: [a thump and an ouch] Later Leo fell off the swing and hurt his knee. Grandma had one ice pack, and she gave it to Leo. [gently] Mia did not say that was unfair. Leo needed it, and she did not. That is fair too, by need.
+- S3068-4: [a swing creaking] On the swing they took turns. Every turn was the same size, ten pushes each. A turn is a fair rule for a swing, Grandma said. Would you like it if it were you, is the test.
+- S3068-5: At snack time there was one cake left. Grandma gave Mia the knife and said the cutter picks last. [carefully] Mia cut the cake with great care into two even pieces. [playful] Leo picked first, and it did not matter which piece he took.
+- S3068-6: [slowly, warmly] Equal shares are fair. More for the one who needs it is fair too. And when you cut the cake, the cutter picks last.
+
+### Five reporters (S3146, my-brain-and-senses)
+
+- S3146-1: [warm, a grandma telling a secret] Leo's grandma said his brain was the boss of him. It had five reporters, she said. They tell the boss the news.
+- S3146-2: Leo tried them. His nose reported cookies in the oven. [a doorbell ringing] His ears reported the doorbell. His eyes reported his uncle at the door with a big box.
+- S3146-3: [a puppy yipping] Inside the box was a puppy. Leo's skin felt its soft fur, and his tongue tasted a cookie at the same time. Five reporters, all at once, said Grandma, [delighted] and the boss was very happy.
+- S3146-4: [a puppy whining softly] That night the puppy whined in the dark, and Leo saw a shape by the door. [whispering, a little scared] A monster, said his brain. [relieved] Grandma turned on the light, and it was the puppy's bed. The eyes reported a shape, she said. The brain guessed wrong.
+- S3146-5: [yawning] Leo yawned. A tired brain guesses wrong more, said Grandma, and it gets grumpy too. A boy your age needs about ten to twelve hours of sleep. [softly] She tucked him in with the puppy nearby, and the boss went to sleep.
+- S3146-6: [slowly, warmly] Five senses tell the brain the news. The brain decides, and now and then it guesses wrong. Sleep helps the boss get it right.
+
+### Three at a time (S3152, remember-it)
+
+- S3152-1: [frustrated] Mina could not remember her phone number. Ten numbers is a lot. Her dad said the brain holds only a few things at a time.
+- S3152-2: First, said Dad, look and listen. [a TV clicking off] He turned off the TV. If your eyes are on the TV, the number does not go in.
+- S3152-3: [slowly, clearly] Then he broke the number into three small pieces and said the first piece slowly. Mina said it out loud, because saying it puts it in deeper.
+- S3152-4: [steady, day by day] On Monday she learned the first piece. On Tuesday she said it again and learned the second. On Wednesday she added the third. A little every day, said Dad.
+- S3152-5: [a little worried] On Thursday she forgot the middle piece, and Dad said that was normal. [reassuring] Forgetting just means say it again, so she said it three more times.
+- S3152-6: [a phone ringing] On Friday Mina said all ten numbers to her grandma on the phone. Look and listen, say it again, a little every day. [proud] Her brain had kept it.
+
+### The name of the feeling (S3158, my-feelings)
+
+- S3158-1: Sam built a block tower as tall as his chest. [blocks crashing] His baby sister knocked it down. [upset] Sam felt hot all over and did not know what to do.
+- S3158-2: His teacher, Miss Bell, had said every feeling has a name. Sam looked for the name and found it. [firmly] I am angry, he said out loud.
+- S3158-3: Saying it made the feeling a little smaller. Then he did what Miss Bell had shown the class, [a slow breath in and out] breathing in slow and breathing out slow. Five times he did it, [calmer] and his hands stopped being tight.
+- S3158-4: The feeling said the tower was ruined for good. [gently] But a feeling is not a fact. The blocks were fine. They were just on the floor.
+- S3158-5: Sam told his dad about the hot feeling and the slow breaths. Dad said that was smart, not weak. Then they built the tower again, [a baby giggling] and this time the baby helped.
+- S3158-6: [slowly, warmly] Every feeling has a name. Say the name, breathe slow, and then decide what to do.
+
+### Hello, my name is (S3164, making-friends)
+
+- S3164-1: [playground noise] Ana was new at school and did not know one name. [shy] At recess she stood by the fence and watched. Then she thought of what her mom had said.
+- S3164-2: Say hello and your name, then ask what they like and ask to play. [brave] Ana walked up to a boy with a red ball and said her name. The boy, Kai, liked soccer, and asked if she wanted to play.
+- S3164-3: They played all week. On Friday, another boy told Ana to skip the lunch line with him. That is mean to the kids waiting, [firm] so Ana said no. A good friend helps you be kind.
+- S3164-4: On Monday Ana and Kai both wanted the ball, [two kids arguing] and they yelled. [calm] Then Ana used the words. I felt sad when you grabbed the ball, and I want a turn. Kai listened. He gave her the ball.
+- S3164-5: [warm] A girl named Rosa learned words more slowly than the rest, and Kai waited for her every time. Everyone is different, said the teacher, and everyone gets respect. Kai, Ana decided, was a good friend.
+- S3164-6: [slowly, warmly] Say hello and your name. Be kind, tell the truth, and take turns. When you fight, say what you feel and what you want.
+
 ### Get your coat (S3242, my-listening-body)
 
 - S3242-1: [dreamy] Milo was thinking about lunch. His teacher said, get your coat and line up. [dreamy, sing-song] Milo heard lunch, lunch, lunch, and he got his hat.
@@ -974,4 +1118,68 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 - S3257-3: [a quiet circle] At circle time, one person talked at a time. Ava had an idea, so she put her hand up and waited. Two friends went first. Then it was Ava's turn, and everyone listened.
 - S3257-4: A new boy came to class after lunch, and Ava walked over to him. [friendly] Hello, my name is Ava. The new boy said, my name is Sam. Now they knew each other.
 - S3257-5: At the end of the day, Ben brought Ava the red truck. [grateful] Thank you, Ava said. Kind words had opened the door.
+
+### Lunch from the garden (S3334, plants-we-eat-k)
+
+- S3334-1: [birds in a garden] Rosa helped her grandpa pick lunch from the garden. [a carrot popping out of the soil] First she pulled a carrot out of the dirt. It was orange and long, because a carrot is a root that grows under the ground.
+- S3334-2: [leaves rustling] Next they picked lettuce. Grandpa said lettuce is leaves. Rosa tore off the big green leaves and left the small ones to grow.
+- S3334-3: [curious] The broccoli looked like a tiny green tree. Grandpa showed her the bumps on top. Each bump was a flower bud that had not opened yet.
+- S3334-4: Rosa picked a red tomato, and Grandpa cut it in half. [amazed] Inside were lots of little seeds. A tomato is a fruit, he said, and each seed could grow a new tomato plant.
+- S3334-5: They made a big salad with a root, leaves, flower buds and a fruit. Rosa ate every plant part, [happy] and she asked for more carrots.
+
+### The bean in the cup (S3339, seed-to-plant-k)
+
+- S3339-1: [gentle] Leo pushed a bean seed into a clear cup of soil and gave it a drink. He put the cup in a warm spot and waited.
+- S3339-2: [amazed, quiet] After a few days, the seed opened. Leo could see a tiny white root through the cup, going down into the soil. A green shoot came up next.
+- S3339-3: Now it was a seedling. Leo moved it to a sunny window, because a plant needs sunlight, water and air to grow. [softly] Its leaves turned toward the light.
+- S3339-4: [outdoors, birdsong] The cup got too small, so Leo moved the bean to the garden, where it had room. It grew tall and made little white flowers.
+- S3339-5: The flowers turned into green pods. Leo opened one, and inside were new beans just like the one he planted. [delighted] The bean plant had made more beans!
+
+### The red barn (S3344, farm-animals-k)
+
+- S3344-1: [a cow mooing] Maya visited a farm with a big red barn. A brown cow looked at her, and its ears turned toward her voice. Cows can see almost all the way around.
+- S3344-2: [hens clucking] The hens were busy pecking at seeds on the ground. Their beaks picked up the seeds one at a time, quick as a wink.
+- S3344-3: [a goat bleating] A goat stretched its neck over the fence. It grabbed a leaf with its lips and chewed it slowly [laughing] while Maya laughed.
+- S3344-4: [rain starting, thunder far off] Then dark clouds rolled in, and it began to rain. The farmer led the animals into the barn, where it was dry. A barn is shelter, and every farm animal needs it.
+- S3344-5: Before Maya left, the farmer gave her a brown egg from a hen. [softly, amazed] It was still warm. Maya held it with both hands all the way home.
+
+### Up with the sun (S3349, a-day-on-the-farm-k)
+
+- S3349-1: [a rooster crowing at dawn] Sam's mom is a farmer, and her day starts before the sun comes up. First she feeds the cows and fills their water.
+- S3349-2: [thoughtful] Then she looks at the sky. Rain today means the corn gets a drink, so she will not need the hose. On hot days, she waters the garden every evening.
+- S3349-3: [a truck rumbling up] At noon, a big truck comes for the milk. The milk goes to a dairy and the store, and soon it is on tables in town.
+- S3349-4: [a quiet evening, crickets] In the evening, Sam sees a deer at the edge of the woods. Nobody feeds the deer, his mom says. It finds its own food, but our cows count on us.
+- S3349-5: At the store the next day, Sam finds milk from his mom's farm. [proud] He points at the carton and grins, because he knows just where it came from.
+
+### Mom at the bakery (S3426, earning-money-k)
+
+- S3426-1: [a bakery bell, early morning] Nia's mom is a baker at the little shop on the corner of Pine Street. She gets up early.
+- S3426-2: At the shop, Mom measures flour and salt with great care. [serious, a little playful] Too much salt spoils a loaf. Measuring is a skill her job needs, and so is getting there on time.
+- S3426-3: [explaining] People buy the bread, and the shop pays Mom for her work. That pay is called income. Mom uses her income to buy food for the family and to pay for their home.
+- S3426-4: On her birthday, Nia got a card from Grandpa with five dollars inside. [curious] Was that money income? [gently] Mom shook her head and smiled. Nia did not do a job for that money, so it was a gift.
+- S3426-5: [playful] That night Nia sold pretend bread to her bear, who paid with buttons. Someday, she said, she would earn real income too.
+
+### Two lists on the fridge (S3431, wants-and-needs-k)
+
+- S3431-1: [a quiet kitchen] On Saturday, Leo and his dad sat at the kitchen table with two sheets of paper. One said Needs, and the other said Wants.
+- S3431-2: [steady] On the needs list, Dad wrote food, water, warm coats and the rent for their home. Those are things a family must have to live and be well.
+- S3431-3: Leo got to fill in the wants list. He wrote a red kite, a game, a puppy [dreamy] and a trip to the moon. [laughing] Dad laughed at the last one.
+- S3431-4: [thoughtful] Dad's pay comes in each week, and it does not stretch forever. So the needs list gets paid first, every single time. If money is left over, the family picks one want.
+- S3431-5: This week there was enough for one want, and Leo chose the red kite. [wind, a kite flapping] He flew it in the park on Sunday, and it was the best want of all.
+
+### Three jars on the shelf (S3436, save-spend-share-k)
+
+- S3436-1: [warm] Maya has three jars on her shelf, and each one has a word on it. The words say spend, save and share.
+- S3436-2: Each week, Maya earns three dollars for feeding the cat and folding towels. [coins dropping into jars] She puts one dollar in each jar.
+- S3436-3: [steady] The spend jar buys small things, like a sticker or a pencil. The save jar is for something bigger. One dollar each week adds up, and after five weeks Maya had five dollars.
+- S3436-4: [a quiet bank] When the save jar was full, Maya and her mom took it to the bank. Putting money in the bank is called a deposit. Later, taking some out is called a withdrawal.
+- S3436-5: The share jar was the one Maya loved best. She gave it to the animal shelter, [a dog barking softly] where it helped buy food for a shy brown dog.
+
+### The bookmark shop (S3441, borrow-and-make-k)
+
+- S3441-1: [careful] Ben borrowed his friend Sam's blue marker to make a sign for his bookmark shop. He used it with care and put the cap back on each time.
+- S3441-2: [pleased] The next day, Ben gave the marker back, just as good as new. That is how to borrow well. A lost or broken marker would have been borrowing badly.
+- S3441-3: Ben was a producer, because he made the bookmarks himself. Each one took paper that cost two dollars and a ribbon that cost one dollar. [slowly, adding] So each bookmark cost three dollars to make.
+- S3441-4: [a shop bell] His neighbors were the consumers. They bought the bookmarks and used them in their books.
+- S3441-5: Then Sam asked to borrow Ben's new scissors. [thoughtful] Ben thought about it first. Sam had given the marker back on time, [warm] so Ben said yes.
 

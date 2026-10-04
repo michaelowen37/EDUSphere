@@ -2,7 +2,7 @@
 
 Generated 2026-10-04 by tools/review-ledger.mjs. What Mikey wants from the review is in docs/FABLE-REVIEW.md; this file is the work list, in order. To mark an item reviewed, add its key to "reviewed" in docs/review-status.json with the pass that did it (keys look like module:saving-investing-and-risk, course-story:econ-9, game:dots-kite, wonder:w-grown-the-rumor), then run the tool again.
 
-Reviewed so far: 95 of 1239 items (615 modules with their lessons, stories and question banks, 102 long stories, 157 games and 365 Wonder questions). Colons today: 2207 in lessons and 1296 in stories (times like 3:30 and ratios are not counted). Pictures are reviewed through docs/ART-REQUESTS.md as they are painted; a rewritten story keeps each picture beside the paragraph it shows.
+Reviewed so far: 119 of 1239 items (615 modules with their lessons, stories and question banks, 102 long stories, 157 games and 365 Wonder questions). Colons today: 2194 in lessons and 1292 in stories (times like 3:30 and ratios are not counted). Pictures are reviewed through docs/ART-REQUESTS.md as they are painted; a rewritten story keeps each picture beside the paragraph it shows.
 
 ## 1. Every module, in review order (pre-K first, then up through college)
 
@@ -102,30 +102,30 @@ Reviewed so far: 95 of 1239 items (615 modules with their lessons, stories and q
 | yes (JL, read by hand: colons and a line break fixed; audio tags) | K | I can listen, I can say | First, then, do it (`first-then-do`) | 3 | Cup, water, table (S3247) | 1 | spk-steps |
 | yes (JL, read by hand: a colon gone; audio tags) | K | I can listen, I can say | My clear voice (`my-clear-voice`) | 0 | This is my dog (S3252) | 0 | spk-voice |
 | yes (JL, read by hand: a semicolon and a colon gone from the key idea; audio tags) | K | I can listen, I can say | My turn and kind words (`my-turn-and-kind-words`) | 0 | The hand that waited (S3257) | 0 | spk-turns |
-|  | K | Me and my mind | My brain and my senses (`my-brain-and-senses`) | 1 | Five reporters (S3146) | 0 | pyk-brain |
-|  | K | Me and my mind | Remember it (`remember-it`) | 0 | Three at a time (S3152) | 0 | pyk-memory |
-|  | K | Me and my mind | My feelings (`my-feelings`) | 0 | The name of the feeling (S3158) | 1 | pyk-feelings |
-|  | K | Me and my mind | Making friends (`making-friends`) | 0 | Hello, my name is (S3164) | 0 | pyk-friends |
-|  | K | I wonder | I wonder (`i-wonder`) | 0 | The stick (S3050) | 0 | pk-wonder |
-|  | K | I wonder | Because (`because-k`) | 0 | The blue shirt reason (S3056) | 1 | pk-because |
-|  | K | I wonder | My turn, your turn (`my-turn-your-turn`) | 1 | The talking stick (S3062) | 0 | pk-turns |
-|  | K | I wonder | Fair shares (`fair-shares`) | 0 | Four cookies, two kids (S3068) | 0 | pk-fair |
-|  | K | Needs, wants, work and saving | Needs, wants and choices (`wants-needs-and-choices`) | 6 | One coin, two wants (S2770) | 1 | ek-wants |
-|  | K | Needs, wants, work and saving | Earning income (`earning-income`) | 6 | The dog walk (S2775) | 0 | ek-income |
-|  | K | Needs, wants, work and saving | Spending and saving (`spending-and-saving`) | 6 | Two coins a week (S2780) | 0 | ek-saving |
-|  | K | Needs, wants, work and saving | Trading and markets (`trading-and-markets`) | 4 | The sticker market (S2785) | 0 | ek-trade |
-|  | K | On the farm | Plants we eat (`plants-we-eat-k`) | 6 | Lunch from the garden (S3334) | 0 | agk-plants |
-|  | K | On the farm | From seed to plant (`seed-to-plant-k`) | 0 | The bean in the cup (S3339) | 0 | agk-grow |
-|  | K | On the farm | Farm animals (`farm-animals-k`) | 1 | The red barn (S3344) | 0 | agk-animals |
-|  | K | On the farm | A day on the farm (`a-day-on-the-farm-k`) | 0 | Up with the sun (S3349) | 0 | agk-day |
-|  | K | Money and me | Earning money (`earning-money-k`) | 0 | Mom at the bakery (S3426) | 0 | bzk-earn |
-|  | K | Money and me | Wants and needs (`wants-and-needs-k`) | 0 | Two lists on the fridge (S3431) | 0 | bzk-wants |
-|  | K | Money and me | Save, spend and share (`save-spend-share-k`) | 1 | Three jars on the shelf (S3436) | 0 | bzk-save |
-|  | K | Money and me | Borrow, lend and make (`borrow-and-make-k`) | 5 | The bookmark shop (S3441) | 1 | bzk-make |
-|  | K | Looking and listening | Lines, shapes and colors (`lines-shapes-and-colors`) | 6 | The orange that was not there (S2886) | 0 | ak-lines |
-|  | K | Looking and listening | What a picture says (`what-a-picture-says`) | 2 | The picture on the wall (S2891) | 0 | ak-picture |
-|  | K | Looking and listening | Beat and sound (`beat-and-sound`) | 5 | The drum and the heartbeat (S2896) | 0 | ak-beat |
-|  | K | Looking and listening | Voices and instruments (`voices-and-instruments`) | 8 | Five voices (S2901) | 1 | ak-voices |
+| yes (JM, read by hand: sleep matches the sleep lesson (about ten to twelve hours a night); colons and a semicolon gone; audio tags) | K | Me and my mind | My brain and my senses (`my-brain-and-senses`) | 0 | Five reporters (S3146) | 0 | pyk-brain |
+| yes (JM, read by hand: a line break made a paragraph break; audio tags) | K | Me and my mind | Remember it (`remember-it`) | 0 | Three at a time (S3152) | 0 | pyk-memory |
+| yes (JM, read by hand: a story colon gone; audio tags) | K | Me and my mind | My feelings (`my-feelings`) | 0 | The name of the feeling (S3158) | 0 | pyk-feelings |
+| yes (JM, read by hand: a line break made a paragraph break; audio tags) | K | Me and my mind | Making friends (`making-friends`) | 0 | Hello, my name is (S3164) | 0 | pyk-friends |
+| yes (JM, read by hand: a line break made a paragraph break; audio tags) | K | I wonder | I wonder (`i-wonder`) | 0 | The stick (S3050) | 0 | pk-wonder |
+| yes (JM, read by hand: a story colon gone; audio tags) | K | I wonder | Because (`because-k`) | 0 | The blue shirt reason (S3056) | 0 | pk-because |
+| yes (JM, read by hand: a line break made a paragraph break; audio tags) | K | I wonder | My turn, your turn (`my-turn-your-turn`) | 1 | The talking stick (S3062) | 0 | pk-turns |
+| yes (JM, read by hand: two line breaks made paragraph breaks; audio tags) | K | I wonder | Fair shares (`fair-shares`) | 0 | Four cookies, two kids (S3068) | 0 | pk-fair |
+| yes (JM, read by hand: colons and semicolons gone; audio tags) | K | Needs, wants, work and saving | Needs, wants and choices (`wants-needs-and-choices`) | 3 | One coin, two wants (S2770) | 0 | ek-wants |
+| yes (JM, read by hand: colons and a semicolon gone; audio tags) | K | Needs, wants, work and saving | Earning income (`earning-income`) | 5 | The dog walk (S2775) | 0 | ek-income |
+| yes (JM, read by hand: the jar grew by two a week while Amara saved one, so she now earns three and saves two; colons and semicolons gone; audio tags) | K | Needs, wants, work and saving | Spending and saving (`spending-and-saving`) | 4 | Two coins a week (S2780) | 0 | ek-saving |
+| yes (JM, read by hand: colons and a semicolon gone; audio tags) | K | Needs, wants, work and saving | Trading and markets (`trading-and-markets`) | 2 | The sticker market (S2785) | 0 | ek-trade |
+| yes (JM, read by hand: a line break made a paragraph break; audio tags) | K | On the farm | Plants we eat (`plants-we-eat-k`) | 6 | Lunch from the garden (S3334) | 0 | agk-plants |
+| yes (JM, read by hand: a line break made a paragraph break; audio tags) | K | On the farm | From seed to plant (`seed-to-plant-k`) | 0 | The bean in the cup (S3339) | 0 | agk-grow |
+| yes (JM, read by hand: a line break made a paragraph break; audio tags) | K | On the farm | Farm animals (`farm-animals-k`) | 1 | The red barn (S3344) | 0 | agk-animals |
+| yes (JM, read by hand: one tense through the story; the cold-weather explanation now explains; audio tags) | K | On the farm | A day on the farm (`a-day-on-the-farm-k`) | 0 | Up with the sun (S3349) | 0 | agk-day |
+| yes (JM, read by hand: read, no change needed; audio tags) | K | Money and me | Earning money (`earning-money-k`) | 0 | Mom at the bakery (S3426) | 0 | bzk-earn |
+| yes (JM, read by hand: read, no change needed; audio tags) | K | Money and me | Wants and needs (`wants-and-needs-k`) | 0 | Two lists on the fridge (S3431) | 0 | bzk-wants |
+| yes (JM, read by hand: read, no change needed; audio tags) | K | Money and me | Save, spend and share (`save-spend-share-k`) | 1 | Three jars on the shelf (S3436) | 0 | bzk-save |
+| yes (JM, read by hand: colons gone from the lesson, a question and the story; audio tags) | K | Money and me | Borrow, lend and make (`borrow-and-make-k`) | 4 | The bookmark shop (S3441) | 0 | bzk-make |
+| yes (JM, read by hand: red, yellow and blue mix into many colors, not any color; colons and a line break fixed; audio tags) | K | Looking and listening | Lines, shapes and colors (`lines-shapes-and-colors`) | 4 | The orange that was not there (S2886) | 0 | ak-lines |
+| yes (JM, read by hand: colons and a line break fixed; audio tags) | K | Looking and listening | What a picture says (`what-a-picture-says`) | 1 | The picture on the wall (S2891) | 0 | ak-picture |
+| yes (JM, read by hand: a resting heart keeps a steady pace (a heart does speed up); semicolons and a line break fixed; audio tags) | K | Looking and listening | Beat and sound (`beat-and-sound`) | 5 | The drum and the heartbeat (S2896) | 0 | ak-beat |
+| yes (JM, read by hand: a line break made a paragraph break; audio tags) | K | Looking and listening | Voices and instruments (`voices-and-instruments`) | 8 | Five voices (S2901) | 1 | ak-voices |
 |  | 1 | Numbers to 20 | Teen numbers (`teen-numbers`) | 0 | Ten and three (S317) | 1 | g1-ten-and, g1-teen-split, g1-teen-pic, g1-which-teen, g1-teen-after |
 |  | 1 | Numbers to 20 | Adding to 20 (`adding-to-20`) | 0 | Two pockets (S320) | 1 | g1-add, g1-add-story, g1-make-ten-add, g1-add-pic, g1-add-missing |
 |  | 1 | Numbers to 20 | Subtracting to 20 (`subtracting-to-20`) | 0 | Birds on the wire (S323) | 0 | g1-sub, g1-sub-story, g1-sub-undo, g1-sub-pic, g1-compare-diff |

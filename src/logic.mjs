@@ -12553,17 +12553,34 @@ function PSYK_MODULES() { return [
     id: 'my-brain-and-senses',
     order: 1,
     title: 'My brain and my senses',
-    tagline: 'The brain is the boss, and the five senses tell it what is out there',
+    tagline: 'The brain is the boss, and the senses tell it what is out there',
     requires: [],
     lesson: {
-      paragraphs: ['Inside your head is your brain. It is the boss of you. It moves your legs, it picks your words, and it makes your dreams.', 'Your brain gets its news from five senses. Eyes see. Ears hear. Your nose smells. Your tongue tastes. Your skin feels.', 'The senses tell, and the brain decides. In the dark, the brain can guess wrong. A coat on a hook can look like a monster. Turn on the light, and it is a coat.', 'A brain needs sleep to work well. A child your age needs about ten to twelve hours a night. A tired brain gets grumpy and forgets things. Sleep helps it remember.'],
-      keyIdea: 'Your brain is the boss. Five senses tell it what is out there, through the eyes, ears, nose, tongue and skin. The brain can guess wrong in the dark. Sleep helps it work.',
-      example: { kind: 'flow', steps: ['eyes see', 'the brain decides', 'a coat, not a monster'], caption: 'The senses tell, and the brain decides.',
-        another: ['Close your eyes and listen. Your ears are still working. Your brain is still getting news.',
+      paragraphs: ['Inside your head is your brain, and it is the boss of you. It moves your legs, it picks your words, and it makes your dreams at night.', 'Your brain gets its news from five senses. Your eyes see, your ears hear, your nose smells, your tongue tastes, and your skin feels. Your body has a few more ways of knowing things, like feeling when you are upside down, but these five are the ones we name.', 'The senses tell, and the brain decides what the news means. In the dark, the brain can guess wrong. A coat on a hook can look like a monster. Turn on the light, look again, and it is a coat.', 'A brain needs sleep to work well. A child your age needs about ten to twelve hours of sleep each night. A tired brain gets grumpy and forgets things, and sleep helps it remember what it learned. Moving and playing every day is good for your brain, and it helps you sleep at night.'],
+      // Full standard, pass KE: a spoken script of its own (it read its paragraphs over one picture of word boxes); the five
+      // senses named one by one, with the honest note that the body has more; the brain's wrong guess in the dark gets a
+      // painting (P27) and a way out (turn on the light, look again); sleep hours from the AASM (ten to thirteen at three to
+      // five, nine to twelve at six to twelve, so ten to twelve for a kindergartner); daily play, which 115.12(b)(7)(B) names.
+      script: [
+        { say: 'Inside your head is your brain, and it is the boss of you. It moves your legs, picks your words, and makes your dreams.', show: null },
+        { say: 'Your brain gets its news from five senses. Your eyes see, and your ears hear.', show: { kind: 'flow', steps: ['eyes see', 'ears hear'] } },
+        { say: 'Your nose smells, your tongue tastes, and your skin feels.', show: { kind: 'flow', steps: ['nose smells', 'tongue tastes', 'skin feels'] } },
+        { say: 'Smell a flower. That is your nose telling your brain, and your brain deciding it is nice.', show: { kind: 'icon', name: 'flower' } },
+        { say: 'Your body has a few more ways of knowing things, like feeling when you are upside down, but these five are the ones we name.', show: null },
+        { say: 'The senses tell, and the brain decides what the news means. In the dark, the brain can guess wrong.', show: null },
+        { say: 'A coat on a hook can look like a monster. Turn on the light, look again, and it is a coat.', show: null },
+        { say: 'A brain needs sleep to work well. A child your age needs about ten to twelve hours of sleep each night.', show: { kind: 'letters', text: 'sleep' } },
+        { say: 'A tired brain gets grumpy and forgets things. Sleep helps it remember what it learned.', show: null },
+        { say: 'Moving and playing every day is good for your brain, and it helps you sleep at night.', show: null },
+      ],
+      pictures: [{ serial: 'P27', step: 6, alt: 'A coat on a hook in a dark room that looks like a monster' }],
+      keyIdea: 'Your brain is the boss, and five senses tell it what is out there. The brain can guess wrong in the dark, so look again. Sleep and play every day help it work.',
+      example: { kind: 'flow', steps: ['eyes see a shape', 'the brain decides', 'a coat, not a monster'], caption: 'The senses tell, and the brain decides.',
+        another: ['Close your eyes and listen. Your ears are still working, and your brain is still getting news.',
           { text: 'A tired brain is like a toy with a low battery. It still goes, but slowly. Sleep is how it charges.', visual: { kind: 'flow', steps: ['ten hours of sleep', 'a charged brain', 'a good day'] } },
-          'Smell a flower. That is your nose telling your brain, and your brain saying nice.'] },
+          'Smell a flower. That is your nose telling your brain, and your brain deciding it is nice.'] },
     },
-    sources: ['Aligned with TEKS Health Education 115.12(b)(1) (name the five senses) and 115.12(b)(7)(B) (identify habits that help individuals stay healthy such as getting the proper amount of sleep and daily physical activity), and the CASEL framework, Self-awareness.'],
+    sources: ['Aligned with TEKS Health Education 115.12(b)(1) (name the five senses) and 115.12(b)(7)(B) (identify habits that help individuals stay healthy such as getting the proper amount of sleep and daily physical activity), and the CASEL framework, Self-awareness (the abilities to understand one\'s own emotions, thoughts, and values and how they influence behavior across contexts).'],
     generators: ['pyk-brain', 'pyk-brain', 'pyk-brain', 'pyk-brain', 'pyk-brain'],
   },
   {
@@ -12573,14 +12590,27 @@ function PSYK_MODULES() { return [
     tagline: 'Look, listen, say it again, and a little every day',
     requires: ['my-brain-and-senses'],
     lesson: {
-      paragraphs: ['To remember something, first look and listen. If you are looking at something else, it does not go in. Then say it again, out loud. Saying it again puts it in deeper.', 'Your brain forgets, and that is normal. A little every day helps. Three words today and three words tomorrow beats all of them at once.', 'A brain can hold only a few things at a time. So we break big things into small pieces.', 'Try it with your phone number. Say it in three small pieces. Say it every day for a week. Then you have it.'],
-      keyIdea: 'Look and listen first. Say it again out loud. A little every day beats all at once. Break big things into small pieces.',
+      paragraphs: ['To remember something, first look and listen. If your eyes and ears are on something else, it does not go in. Then say it again, out loud. Saying it again puts it in deeper.', 'Your brain can hold only a few things at a time, so break big things into small pieces. A phone number is ten numbers, and that is too many at once. Three small pieces are easy.', 'A little every day helps. Three numbers today and three tomorrow beats all of them at once. Then close your eyes and say it. If you can say it with your eyes closed, you have it.', 'Your brain forgets, and that is normal. Forgetting just means say it again. A goal is something you decide to do and then work at, a little every day. Knowing your phone number by Friday is a goal, and going to bed on time every night is a goal for your health.'],
+      // Full standard, pass KE: a spoken script; saying it with your eyes closed (remembering it, not rereading it) is the test;
+      // and the lesson now teaches what its citation claims, a goal and a health goal, which it never said before.
+      script: [
+        { say: 'To remember something, first look and listen. If your eyes and ears are on something else, it does not go in.', show: null },
+        { say: 'Then say it again, out loud. Saying it again puts it in deeper.', show: { kind: 'letters', text: 'say it again' } },
+        { say: 'Your brain can hold only a few things at a time. So break big things into small pieces.', show: null },
+        { say: 'A phone number is ten numbers, and that is too many at once. Three small pieces are easy.', show: { kind: 'flow', steps: ['ten numbers', 'three pieces', 'easy'] } },
+        { say: 'A little every day helps. Three numbers today and three tomorrow beats all of them at once.', show: null },
+        { say: 'Then close your eyes and say it. If you can say it with your eyes closed, you have it.', show: null },
+        { say: 'Your brain forgets, and that is normal. Forgetting just means say it again.', show: null },
+        { say: 'A goal is something you decide to do, and then you work at it a little every day. Knowing your phone number by Friday is a goal.', show: { kind: 'flow', steps: ['decide', 'a little every day', 'done'] } },
+        { say: 'Going to bed on time every night is a goal for your health.', show: null },
+      ],
+      keyIdea: 'Look and listen first, then say it again out loud. Break big things into small pieces, and learn a little every day. Forgetting is normal. A goal is something you decide to do and work at.',
       example: { kind: 'flow', steps: ['look and listen', 'say it again', 'a little every day'], caption: 'How remembering works.',
-        another: ['Close the book and say it. If you can say it, you have it.',
+        another: ['Close your eyes and say it. If you can say it, you have it.',
           { text: 'A phone number is ten numbers. That is too many at once. Three small pieces are easy.', visual: { kind: 'flow', steps: ['ten numbers', 'three pieces', 'easy'] } },
           'Forgetting is not bad. It just means say it again.'] },
     },
-    sources: ['Aligned with TEKS Health Education 115.12(b)(4)(B) (discuss the meaning of goals and identify at least one health-related goal), and the CASEL framework, Self-management.'],
+    sources: ['Aligned with TEKS Health Education 115.12(b)(4)(B) (discuss the meaning of goals and identify at least one health-related goal), and the CASEL framework, Self-management (the abilities to manage one\'s emotions, thoughts, and behaviors effectively in different situations and to achieve goals and aspirations).'],
     generators: ['pyk-memory', 'pyk-memory', 'pyk-memory', 'pyk-memory', 'pyk-memory'],
   },
   {
@@ -12590,14 +12620,30 @@ function PSYK_MODULES() { return [
     tagline: 'Every feeling has a name, and naming it helps',
     requires: ['remember-it'],
     lesson: {
-      paragraphs: ['Feelings come and go. Happy, sad, angry, scared, surprised, calm. Every feeling has a name. Feelings are signals. Scared says be careful. Angry says that is not fair. Sad says I miss it.', 'When a big feeling comes, say its name. I am angry. I am scared. Naming it makes it smaller. Then calm your body. Breathe in slow, and breathe out slow. Count to ten. Hug someone you love.', 'A feeling is not a fact. You can feel scared and still be safe. Say the name, calm your body, and then decide what to do. Telling a grown-up you trust is smart.'],
-      keyIdea: 'Every feeling has a name, and naming it makes it smaller. Then breathe in slow and out slow, or count to ten. A feeling is not a fact.',
+      paragraphs: ['Feelings come and go. Happy, sad, angry, scared, surprised, calm. Every feeling has a name, and every feeling is okay to have. Feelings are signals. Scared says be careful. Angry says that is not fair. Sad says I miss it.', 'Your body gives you clues about which feeling it is. Angry can feel hot, with tight hands. Scared can feel shaky, with a fast heart. Happy feels light and bouncy.', 'When a big feeling comes, say its name. I am angry. I am scared. Saying the name often makes the feeling a little smaller. Then calm your body. Breathe in slow while you count to four, and breathe out slow while you count to four. You can also count to ten, or hug someone you love.', 'A feeling is not a fact. You can feel scared and still be safe. Say the name, calm your body, and then decide what to do. Telling a grown-up you trust about a big feeling is smart, because they can help.'],
+      // Full standard, pass KE: a spoken script; the six feelings get a painting (P28); the body's clues come before the names
+      // (hot and tight, shaky with a fast heart), since 115.12(b)(3)(A) asks a child to identify their own feelings; naming a
+      // feeling "often makes it a little smaller" (affect labeling, Torre and Lieberman 2018); every feeling is okay to have.
+      script: [
+        { say: 'Feelings come and go. Happy, sad, angry, scared, surprised, and calm. Every feeling has a name.', show: null },
+        { say: 'Every feeling is okay to have. Feelings are signals. Scared says be careful, angry says that is not fair, and sad says I miss it.', show: { kind: 'flow', steps: ['scared says be careful', 'angry says not fair', 'sad says I miss it'] } },
+        { say: 'Your body gives you clues. Angry can feel hot, with tight hands. Scared can feel shaky, with a fast heart.', show: null },
+        { say: 'When a big feeling comes, say its name. I am angry. I am scared.', show: { kind: 'letters', text: 'angry' } },
+        { say: 'Saying the name often makes the feeling a little smaller.', show: null },
+        { say: 'Then calm your body. Breathe in slow while you count to four, and breathe out slow while you count to four.', show: { kind: 'flow', steps: ['in, two, three, four', 'out, two, three, four'] } },
+        { say: 'You can also count to ten, or hug someone you love.', show: null },
+        { say: 'A feeling is not a fact. You can feel scared and still be safe.', show: null },
+        { say: 'Say the name, calm your body, and then decide what to do.', show: { kind: 'flow', steps: ['say its name', 'calm your body', 'then decide'] } },
+        { say: 'Telling a grown-up you trust about a big feeling is smart, because they can help.', show: null },
+      ],
+      pictures: [{ serial: 'P28', step: 0, alt: 'Six children showing happy, sad, angry, scared, surprised and calm faces' }],
+      keyIdea: 'Every feeling has a name, and naming it often makes it smaller. Then breathe in slow and out slow, or count to ten. A feeling is not a fact, and a grown-up you trust can help.',
       example: { kind: 'flow', steps: ['a big feeling', 'say its name', 'breathe slow', 'then decide'], caption: 'Name it, calm down, then choose.',
         another: ['A smoke alarm beeps for burnt toast too. Scared is like that. It is a good alarm that sometimes beeps at toast.',
-          { text: 'Breathe in while you count to four. Breathe out while you count to four. Do it five times. Your body gets quiet.', visual: { kind: 'flow', steps: ['in, two, three, four', 'out, two, three, four', 'quiet'] } },
-          'Telling a grown-up you trust about a big feeling is smart, not weak.'] },
+          { text: 'Breathe in while you count to four. Breathe out while you count to four. Do it five times, and your body gets quiet.', visual: { kind: 'flow', steps: ['in, two, three, four', 'out, two, three, four', 'quiet'] } },
+          'Telling a grown-up you trust about a big feeling is smart. They have had big feelings too, and they know what helps.'] },
     },
-    sources: ['Aligned with TEKS Health Education 115.12(b)(3)(A) (identify their own feelings and emotions) and 115.12(b)(3)(B) (describe and practice calming and self-management strategies), and the CASEL framework, Self-awareness and Self-management.'],
+    sources: ['Aligned with TEKS Health Education 115.12(b)(3)(A) (identify their own feelings and emotions) and 115.12(b)(3)(B) (describe and practice calming and self-management strategies), and the CASEL framework, Self-awareness (the abilities to understand one\'s own emotions, thoughts, and values and how they influence behavior across contexts) and Self-management (the abilities to manage one\'s emotions, thoughts, and behaviors effectively in different situations and to achieve goals and aspirations).'],
     generators: ['pyk-feelings', 'pyk-feelings', 'pyk-feelings', 'pyk-feelings', 'pyk-feelings'],
   },
   {
@@ -12607,14 +12653,29 @@ function PSYK_MODULES() { return [
     tagline: 'How to say hello, how to be kind, and how to fix a fight',
     requires: ['my-feelings'],
     lesson: {
-      paragraphs: ['To make a new friend, say hello and your name. Ask what they like. Ask to play. That is all it takes to start.', 'Friends can change what you do. A good friend helps you be kind and brave. If a friend wants you to be mean, you can say no.', 'Be kind with your words. Say please and thank you. Tell the truth. A good friend takes turns and keeps promises.', 'Friends fight sometimes. To fix it, say what you feel and what you want. I felt sad when you took the ball, and I want a turn. Then listen. Everyone is different, and everyone gets to be treated with respect.'],
-      keyIdea: 'Say hello, your name, and ask to play. A good friend helps you be kind and brave. Tell the truth and take turns. Fix a fight by saying what you feel and what you want.',
+      paragraphs: ['To make a new friend, say hello and your name. Ask what they like, and ask to play. That is all it takes to start.', 'Friends can change what you do. A good friend helps you be kind and brave. If a friend wants you to be mean, you can say no, and still be friends.', 'Good friends tell the truth, say please and thank you, take turns, and keep their promises. Those are the things that make people trust you.', 'Friends fight sometimes. To fix it, say what you feel and what you want. I felt sad when you took the ball, and I want a turn. Then listen, because your friend has feelings too. If you hurt someone, say sorry.', 'Everyone is different. Some friends learn in a different way or need more time, and every friend is treated with kindness and respect.'],
+      // Full standard, pass KE: a spoken script; the truth, kindness, reliability and respect of 115.12(b)(4)(A) in a child's
+      // words (tell the truth, take turns, keep promises, and that is what makes people trust you); saying no and still being
+      // friends; sorry after a hurt; and 115.12(b)(5) said plainly, friends who learn differently or need more time are
+      // treated with the same kindness and respect.
+      script: [
+        { say: 'To make a new friend, say hello and your name. Ask what they like, and ask to play.', show: { kind: 'flow', steps: ['hello, my name is', 'what do you like?', 'want to play?'] } },
+        { say: 'Friends can change what you do. A good friend helps you be kind and brave.', show: null },
+        { say: 'If a friend wants you to be mean, you can say no, and still be friends.', show: null },
+        { say: 'Good friends tell the truth, say please and thank you, take turns, and keep their promises.', show: { kind: 'flow', steps: ['tell the truth', 'take turns', 'keep promises'] } },
+        { say: 'Those are the things that make people trust you.', show: null },
+        { say: 'Friends fight sometimes. To fix it, say what you feel and what you want.', show: null },
+        { say: 'I felt sad when you took the ball, and I want a turn. Then listen, because your friend has feelings too.', show: { kind: 'flow', steps: ['I felt', 'when you', 'and I want'] } },
+        { say: 'If you hurt someone, say sorry.', show: { kind: 'letters', text: 'sorry' } },
+        { say: 'Everyone is different. Some friends learn in a different way or need more time, and every friend is treated with kindness and respect.', show: null },
+      ],
+      keyIdea: 'Say hello and your name, and ask to play. A good friend helps you be kind and brave. Tell the truth, take turns and keep promises. Fix a fight by saying what you feel and what you want, then listen.',
       example: { kind: 'flow', steps: ['hello, my name is', 'what do you like?', 'want to play?'], caption: 'Three steps to a new friend.',
         another: ['A fight fixed with words is over in a minute. A fight fixed with pushing lasts all week.',
           { text: 'I felt sad when you took the ball, and I want a turn. That sentence works on the playground and at home.', visual: { kind: 'flow', steps: ['I felt', 'when you', 'and I want'] } },
           'Everyone learns in their own way and at their own speed. Kind is the same for everyone.'] },
     },
-    sources: ['Aligned with TEKS Health Education 115.12(b)(3)(C) (discuss how friends can influence a person\'s behavior), 115.12(b)(3)(D) (demonstrate skills for making new acquaintances), 115.12(b)(3)(E) (demonstrate respect and communicate appropriately with individuals), 115.12(b)(3)(F) (identify and practice ways to solve conflicts with a friend), 115.12(b)(4)(A) (describe positive social skills and personal qualities such as truth, kindness, reliability, and respectfulness) and 115.12(b)(5) (discuss how to treat peers with different learning needs with dignity), and the CASEL framework, Social awareness and Relationship skills.'],
+    sources: ['Aligned with TEKS Health Education 115.12(b)(3)(C) (discuss how friends can influence a person\'s behavior), 115.12(b)(3)(D) (demonstrate skills for making new acquaintances), 115.12(b)(3)(E) (demonstrate respect and communicate appropriately with individuals), 115.12(b)(3)(F) (identify and practice ways to solve conflicts with a friend), 115.12(b)(4)(A) (describe positive social skills and personal qualities such as truth, kindness, reliability, and respectfulness) and 115.12(b)(5) (discuss how to treat peers with different learning needs with dignity), and the CASEL framework, Social awareness (the abilities to understand the perspectives of and empathize with others, including those from diverse backgrounds, cultures, and contexts) and Relationship skills (the abilities to establish and maintain healthy and supportive relationships and to effectively navigate settings with diverse individuals and groups).'],
     generators: ['pyk-friends', 'pyk-friends', 'pyk-friends', 'pyk-friends', 'pyk-friends'],
   },
 ]; }
@@ -17547,44 +17608,68 @@ Object.assign(GENERATORS, {
   },
   // Psychology, K to 2 (2026-09-30, pass GP): spoken questions with tapped answers, every answer said in its lesson first.
   'pyk-brain': (rng) => {
-    const Q = [['What is the boss of you?', ['your brain', 'your shoe', 'your lunch'], 'your brain', 'It moves your legs and picks your words.'],
+    // Full standard, pass KE: every answer is spoken in the lesson, every explanation gives the reason, and a setup line
+    // (the fifth item) carries the situation a question needs.
+    const Q = [['What is the boss of you?', ['your brain', 'your lunch', 'your shoe'], 'your brain', 'Your brain is the boss. It moves your legs, picks your words, and makes your dreams.'],
       ['How many senses does your brain get its news from?', ['five', 'two', 'ten'], 'five', 'Five senses. Your eyes, ears, nose, tongue and skin send your brain the news.'],
-      ['What do your ears do?', ['hear', 'see', 'taste'], 'hear', 'Eyes see. Ears hear.'],
-      ['What does your tongue do?', ['tastes', 'hears', 'smells'], 'tastes', 'Your tongue tastes. Your skin feels.'],
-      ['In the dark, a coat on a hook can look like what?', ['a monster', 'a cake', 'a friend'], 'a monster', 'It can look like a monster. Turn on the light, and your brain sees it is a coat.'],
-      ['About how many hours of sleep does a child your age need?', ['ten to twelve', 'two', 'twenty'], 'ten to twelve', 'About ten to twelve hours each night. A tired brain gets grumpy and forgets things.']];
-    const [prompt, choices, answer, explain] = pick(rng, Q);
-    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+      ['What do your ears do?', ['hear', 'see', 'taste'], 'hear', 'Your ears hear. They send the sounds to your brain, and your brain decides what they mean.'],
+      ['What does your tongue do?', ['tastes', 'hears', 'smells'], 'tastes', 'Your tongue tastes. Your nose smells, and your skin feels.'],
+      ['What does your skin do?', ['feels', 'sees', 'tastes'], 'feels', 'Your skin feels, like the soft fur of a puppy or the cold of ice.'],
+      ['Which part of you makes sense of the news from your eyes and ears?', ['your brain', 'your nose', 'your feet'], 'your brain', 'The senses tell, and the brain decides. Your eyes see a shape, and your brain decides what it is.'],
+      ['In the dark, a coat on a hook can look like what?', ['a monster', 'a cake', 'a friend'], 'a monster', 'In the dark your brain can guess wrong, so the coat can look like a monster. Turn on the light, look again, and it is a coat.'],
+      ['What can you do?', ['turn on the light and look again', 'hide under the bed all night', 'shout at it'], 'turn on the light and look again', 'Turn on the light and look again. With more light, your eyes send better news, and your brain can see what it really is.', 'In the dark, something by the door looks like a monster.'],
+      ['About how many hours of sleep does a child your age need?', ['ten to twelve', 'two', 'twenty'], 'ten to twelve', 'About ten to twelve hours each night. A tired brain gets grumpy and forgets things.'],
+      ['What does sleep help your brain do?', ['remember what it learned', 'grow taller', 'smell better'], 'remember what it learned', 'Sleep helps your brain remember what it learned, and a rested brain is not grumpy.'],
+      ['What else is good for your brain every day?', ['moving and playing', 'staying very still', 'skipping sleep'], 'moving and playing', 'Moving and playing every day is good for your brain, and it helps you sleep at night.']];
+    const [prompt, choices, answer, explain, story = null] = pick(rng, Q);
+    return { type: 'choice', story, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
   'pyk-memory': (rng) => {
-    const Q = [['To remember something, what do you do first?', ['look and listen', 'run', 'close your eyes'], 'look and listen', 'If you are looking at something else, it does not go in.'],
-      ['What puts a memory in deeper?', ['saying it again', 'whispering once', 'forgetting it'], 'saying it again', 'Saying it again, out loud, puts it in deeper.'],
-      ['Three words today and three tomorrow beats what?', ['all of them at once', 'nothing', 'a nap'], 'all of them at once', 'It beats learning all of them at once. A little every day helps you remember.'],
-      ['A brain can hold how many things at a time?', ['only a few', 'a thousand', 'none'], 'only a few', 'Only a few things at a time, so we break big things into small pieces.'],
-      ['How do you say a phone number?', ['in three small pieces', 'all at once', 'backwards'], 'in three small pieces', 'Small pieces are easier to hold in your head.'],
-      ['Your brain forgets. Is that normal?', ['yes', 'no', 'only on Mondays'], 'yes', 'Forgetting just means say it again.']];
-    const [prompt, choices, answer, explain] = pick(rng, Q);
-    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+    const Q = [['To remember something, what do you do first?', ['look and listen', 'look at the TV', 'run around'], 'look and listen', 'Look and listen first. If your eyes and ears are on something else, it does not go in.'],
+      ['What puts a memory in deeper?', ['saying it again', 'forgetting it', 'whispering it once'], 'saying it again', 'Saying it again, out loud, puts it in deeper.'],
+      ['How many things can your brain hold at a time?', ['only a few', 'a thousand', 'none'], 'only a few', 'Only a few things at a time. That is why we break big things into small pieces.'],
+      ['How do you learn a phone number?', ['in three small pieces', 'all ten numbers at once', 'backwards'], 'in three small pieces', 'Ten numbers is too many at once. Three small pieces are easy to hold in your head.'],
+      ['Three numbers today and three tomorrow beats what?', ['all of them at once', 'a nap', 'nothing'], 'all of them at once', 'A little every day beats all at once, because your brain keeps more that way.'],
+      ['How do you know you have it?', ['you can say it with your eyes closed', 'you read it one more time', 'you write it very big'], 'you can say it with your eyes closed', 'Close your eyes and say it. If you can say it with your eyes closed, you have it.'],
+      ['Your brain forgets. Is that normal?', ['yes, it just means say it again', 'no, never', 'only on Mondays'], 'yes, it just means say it again', 'Forgetting is normal. It just means say it again.'],
+      ['What is a goal?', ['something you decide to do and work at', 'a kind of hat', 'a long nap'], 'something you decide to do and work at', 'A goal is something you decide to do, and then you work at it a little every day.'],
+      ['Which is a goal for your health?', ['going to bed on time every night', 'staying up all night', 'skipping breakfast'], 'going to bed on time every night', 'Going to bed on time every night is a goal for your health, because your brain needs sleep to work well.'],
+      ['What do you call this?', ['a goal', 'a mistake', 'a game'], 'a goal', 'Knowing her phone number by Friday is a goal. She decided to do it, and she works at it a little every day.', 'Mina wants to know her phone number by Friday.'],
+      ['You forgot the middle piece of your number. What do you do?', ['say it again', 'give up', 'learn a different number'], 'say it again', 'Forgetting is normal. Say it again, a little every day, and it comes back.']];
+    const [prompt, choices, answer, explain, story = null] = pick(rng, Q);
+    return { type: 'choice', story, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
   'pyk-feelings': (rng) => {
-    const Q = [['Scared says what?', ['be careful', 'eat lunch', 'run fast'], 'be careful', 'Scared is a signal. It says be careful.'],
-      ['Angry says what?', ['that is not fair', 'time for bed', 'I am hungry'], 'that is not fair', 'Angry is a signal too. It says that is not fair.'],
-      ['When a big feeling comes, what do you do first?', ['say its name', 'shout', 'hide'], 'say its name', 'Say its name first. Naming a big feeling makes it smaller.'],
-      ['After you name a big feeling, what do you do?', ['breathe in slow and out slow', 'jump up and down', 'eat candy'], 'breathe in slow and out slow', 'Breathe in slow and out slow. You can also count to ten, or hug someone you love.'],
-      ['Is a feeling a fact?', ['no', 'yes', 'only at night'], 'no', 'You can feel scared and still be safe.'],
-      ['Telling a grown-up you trust about a big feeling is what?', ['smart', 'weak', 'silly'], 'smart', 'It is smart, not weak.']];
-    const [prompt, choices, answer, explain] = pick(rng, Q);
-    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+    const Q = [['When a big feeling comes, what do you do first?', ['say its name', 'hide', 'shout'], 'say its name', 'Say its name first, like I am angry. Saying the name often makes the feeling a little smaller.'],
+      ['After you name a big feeling, what do you do?', ['breathe in slow and out slow', 'eat candy', 'jump on the couch'], 'breathe in slow and out slow', 'Calm your body. Breathe in slow and out slow, count to ten, or hug someone you love.'],
+      ['Scared says what?', ['be careful', 'eat lunch', 'run fast'], 'be careful', 'Scared is a signal. It says be careful.'],
+      ['Angry says what?', ['that is not fair', 'I am hungry', 'time for bed'], 'that is not fair', 'Angry is a signal too. It says that is not fair.'],
+      ['Sad says what?', ['I miss it', 'be careful', 'let us play'], 'I miss it', 'Sad is a signal. It says I miss it, like when a friend moves away.'],
+      ['Which feeling is this?', ['angry', 'calm', 'happy'], 'angry', 'Hot and tight are clues for angry. Say its name, and then calm your body.', 'Your face feels hot and your hands are tight.'],
+      ['Which feeling is this?', ['scared', 'calm', 'happy'], 'scared', 'Shaky, with a fast heart, is a clue for scared. Scared says be careful.', 'Your heart is going fast and your legs feel shaky.'],
+      ['Is a feeling a fact?', ['no, you can feel scared and still be safe', 'yes, always', 'only at night'], 'no, you can feel scared and still be safe', 'A feeling is not a fact. You can feel scared and still be safe.'],
+      ['Is it okay to feel sad?', ['yes, every feeling is okay to have', 'no, never', 'only babies feel sad'], 'yes, every feeling is okay to have', 'Every feeling is okay to have. Sad is a signal that says I miss it.'],
+      ['Telling a grown-up you trust about a big feeling is what?', ['smart', 'weak', 'silly'], 'smart', 'It is smart, because a grown-up you trust can help.'],
+      ['After you say the name and calm your body, what comes next?', ['decide what to do', 'go back to shouting', 'nothing'], 'decide what to do', 'Say the name, calm your body, and then decide what to do.'],
+      ['Breathe in slow while you count to what?', ['four', 'one hundred', 'zero'], 'four', 'Breathe in while you count to four, and out while you count to four. Do it a few times, and your body gets quiet.']];
+    const [prompt, choices, answer, explain, story = null] = pick(rng, Q);
+    return { type: 'choice', story, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
   'pyk-friends': (rng) => {
-    const Q = [['To make a new friend, what do you say first?', ['hello and your name', 'go away', 'nothing'], 'hello and your name', 'Say hello and your name first. Then ask what they like, and ask to play.'],
-      ['A good friend helps you be what?', ['kind and brave', 'mean', 'loud'], 'kind and brave', 'A good friend helps you be kind and brave. If a friend wants you to be mean, you can say no.'],
-      ['Which is a thing a good friend does?', ['takes turns', 'grabs', 'lies'], 'takes turns', 'Say please and thank you. Tell the truth. Take turns.'],
-      ['To fix a fight, what do you say?', ['what you feel and what you want', 'you are bad', 'nothing'], 'what you feel and what you want', 'I felt sad when you took the ball, and I want a turn.'],
-      ['After you say what you feel, what do you do?', ['listen', 'walk away', 'shout'], 'listen', 'Listen. Then you hear how your friend feels too.'],
-      ['Everyone is different. How does everyone get treated?', ['with respect', 'with a push', 'with a frown'], 'with respect', 'Everyone gets treated with respect, because kind is the same for everyone.']];
-    const [prompt, choices, answer, explain] = pick(rng, Q);
-    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+    const Q = [['To make a new friend, what do you say first?', ['hello and your name', 'nothing', 'go away'], 'hello and your name', 'Say hello and your name first. Then ask what they like, and ask to play.'],
+      ['After you say your name, what can you ask?', ['what they like', 'how old their shoes are', 'nothing at all'], 'what they like', 'Ask what they like, and then ask to play. That is how a new friend starts.'],
+      ['A good friend helps you be what?', ['kind and brave', 'mean', 'loud'], 'kind and brave', 'A good friend helps you be kind and brave.'],
+      ['What can you say?', ['no, that is mean to the kids waiting', 'okay, if you say so', 'let us push to the front'], 'no, that is mean to the kids waiting', 'You can say no and still be friends. Skipping the line is mean to the kids who are waiting.', 'A friend says, let us skip the lunch line.'],
+      ['Which is a thing good friends do?', ['take turns', 'lie', 'grab'], 'take turns', 'Good friends take turns, tell the truth, and keep their promises. That is what makes people trust you.'],
+      ['Good friends tell the truth and keep their what?', ['promises', 'toys', 'hats'], 'promises', 'Good friends keep their promises, and that makes people trust them.'],
+      ['To fix a fight, what do you say?', ['what you feel and what you want', 'you are bad', 'nothing'], 'what you feel and what you want', 'Say what you feel and what you want. I felt sad when you took the ball, and I want a turn.'],
+      ['After you say what you feel, what do you do?', ['listen', 'shout', 'walk away'], 'listen', 'Listen, because your friend has feelings too. Then you both know what the other one wants.'],
+      ['If you hurt someone, what do you say?', ['sorry', 'nothing', 'it was not me'], 'sorry', 'If you hurt someone, say sorry. It helps fix the fight.'],
+      ['How do you treat her?', ['with kindness and respect', 'with a frown', 'by leaving her out'], 'with kindness and respect', 'Everyone is different, and every friend is treated with kindness and respect. Some friends need more time, and that is fine.', 'Rosa learns words more slowly than the rest of the class.'],
+      ['Everyone is different. How is everyone treated?', ['with kindness and respect', 'with a frown', 'with a push'], 'with kindness and respect', 'Everyone is treated with kindness and respect, because kind is the same for everyone.'],
+      ['What is a good way to fix it?', ['say what you feel and what you want', 'push Kai', 'take the ball and run'], 'say what you feel and what you want', 'Say I felt sad when you grabbed the ball, and I want a turn. Then listen to Kai.', 'You and Kai both want the ball, and you yell.']];
+    const [prompt, choices, answer, explain, story = null] = pick(rng, Q);
+    return { type: 'choice', story, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
   // Philosophy, K to 2 (2026-09-29, pass GL): spoken questions with tapped answers, every answer said in its lesson first.
   'pk-wonder': (rng) => {

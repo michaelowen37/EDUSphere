@@ -157,3 +157,10 @@ Mikey's example: the pre-K 3 Triangles lesson says a slice of pizza is almost a 
 - When a cited standard has lettered parts (SL.K.1.a and SL.K.1.b), read them and teach each part the lesson claims.
 - A course's long story often repeats its lessons' mistakes; read it when the lessons change, even before section 2 of the ledger reaches it.
 - Every earmark goes in docs/EARMARKS.md and that pass's DECISIONS entry, nowhere else.
+
+## Learned in pass KE (kindergarten Me and my mind)
+
+- Read each citation against the lesson, not only against the published text. Two codes were quoted exactly and taught nowhere (the meaning of goals, daily physical activity); a citation a lesson does not teach is a claim the learner never gets.
+- When a standard names a count the world has outgrown (the five senses), teach the count the standard asks for and tell the truth beside it, so nothing has to be unlearned later.
+- For feelings, the clue comes before the name. A child identifies a feeling by what the body does (hot and tight, shaky with a fast heart) and only then can say what it is called.
+- Quote a national framework from its own document (CASEL's 2020 SEL Framework), never from the paraphrase that reached the plan.

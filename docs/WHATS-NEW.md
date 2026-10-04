@@ -2,6 +2,12 @@
 
 The newest block is what educators see once, in a pop-up on the classroom page, after each update. Write it the way Mikey talks to a teacher: conversational, complete sentences, say what changed and why it matters, and skip the shorthand (2026-09-23). Two to four items. The date line is the version stamp.
 
+## October 4, 2026 (my brain and my feelings)
+
+- The kindergarten lessons about the brain, memory, feelings and friends now have spoken lessons written for the ear, and every answer comes with its reason.
+- Children now hear that their body gives clues to a feeling, a hot face and tight hands for angry, a fast heart for scared, before they learn its name, and that every feeling is okay to have.
+- Remembering now ends with a goal. A goal is something you decide to do and work at a little every day, and going to bed on time is a goal for your health.
+
 ## October 4, 2026 (listening and speaking)
 
 - The kindergarten listening and speaking lessons now have spoken lessons written for the ear, and every answer comes with its reason.

@@ -1,6 +1,6 @@
 # Audio ledger
 
-Generated 2026-10-04 by tools/audio-ledger.mjs. Every clip the app can play in a recorded voice is a row of docs/AUDIO-LEDGER.csv: its key (the file name, audio/<key>.mp3, that the app already looks for), its group (the story or lesson it belongs to) and the words with their Eleven v4 audio tags. 6926 clips, 1,275,724 characters in all; the longest clip is 508 characters and the longest whole story 2,751, far under Eleven v4's 10,000 a request. 144 stories carry hand-written tags so far (the writing review adds them course by course); the rest open with their age band's voice direction only.
+Generated 2026-10-04 by tools/audio-ledger.mjs. Every clip the app can play in a recorded voice is a row of docs/AUDIO-LEDGER.csv: its key (the file name, audio/<key>.mp3, that the app already looks for), its group (the story or lesson it belongs to) and the words with their Eleven v4 audio tags. 6925 clips, 1,276,749 characters in all; the longest clip is 508 characters and the longest whole story 2,751, far under Eleven v4's 10,000 a request. 144 stories carry hand-written tags so far (the writing review adds them course by course); the rest open with their age band's voice direction only.
 
 ## How to make the audio
 
@@ -17,7 +17,7 @@ ElevenLabs counts characters, tags included, so this is the size of each part of
 
 | Band | Clips | Characters |
 |---|---|---|
-| Pre-K to grade 2 | 2870 | 324,064 |
+| Pre-K to grade 2 | 2869 | 325,089 |
 | Grades 3 to 5 | 1263 | 278,553 |
 | Grades 6 to 8 | 1138 | 272,072 |
 | Grades 9 to college | 1655 | 401,035 |
@@ -41,7 +41,7 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 |---|---|
 | story title | 615 |
 | story | 3887 |
-| lesson line | 1506 |
+| lesson line | 1505 |
 | long story title | 102 |
 | long story | 816 |
 
@@ -1322,12 +1322,12 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 
 ### Three at a time (S3152, remember-it)
 
-- S3152-1: [frustrated] Mina could not remember her phone number. Ten numbers is a lot. Her dad said the brain holds only a few things at a time.
+- S3152-1: [frustrated] Mina could not remember her phone number. Ten numbers is a lot. Her dad said the brain holds only a few things at a time, so they made a goal. By Friday, she would know it.
 - S3152-2: First, said Dad, look and listen. [a TV clicking off] He turned off the TV. If your eyes are on the TV, the number does not go in.
 - S3152-3: [slowly, clearly] Then he broke the number into three small pieces and said the first piece slowly. Mina said it out loud, because saying it puts it in deeper.
 - S3152-4: [steady, day by day] On Monday she learned the first piece. On Tuesday she said it again and learned the second. On Wednesday she added the third. A little every day, said Dad.
 - S3152-5: [a little worried] On Thursday she forgot the middle piece, and Dad said that was normal. [reassuring] Forgetting just means say it again, so she said it three more times.
-- S3152-6: [a phone ringing] On Friday Mina said all ten numbers to her grandma on the phone. Look and listen, say it again, a little every day. [proud] Her brain had kept it.
+- S3152-6: [a phone ringing] On Friday Mina said all ten numbers to her grandma on the phone. Look and listen, say it again, a little every day. [proud] Her brain had kept it, and her goal was done.
 
 ### The name of the feeling (S3158, my-feelings)
 

@@ -10001,14 +10001,28 @@ function ECONK_MODULES() { return [
     tagline: 'Pick one, and let the other go',
     requires: [],
     lesson: {
-      paragraphs: ['A need is something you must have to live, like food, water, clothes and a home. A want is something nice to have, like a toy, a candy bar or a new game.', 'Needs come first. When the money is spent on needs, wants wait.', 'Nobody can have everything. When you cannot have both, you make a choice, and the thing you did not pick is what you give up. If you choose the ball, you give up the crayons for now.', 'Needs first, then wants. A choice means picking one and letting the other go.'],
-      keyIdea: 'Needs come first, and wants wait. A choice means picking one and letting the other go.',
+      paragraphs: ['A need is something you must have to live, like food, water, clothes and a home. A want is something nice to have, like a toy, a candy bar or a new game. You can live without it.', 'Needs come first. When the money is spent on needs, wants wait.', 'Nobody can have everything, because money and time run out before wants do. When you cannot have both, you make a choice, and the thing you did not pick is what you give up. If you choose the ball, you give up the crayons for now, and feeling a little sad about the crayons is normal.', 'Sometimes you can choose a little of each, like one scoop of ice cream and one cookie, instead of two scoops. Needs first, then wants. A choice means picking one and letting the other go.'],
+      // Full standard, pass KG: a spoken script of its own (it read its paragraphs over one picture of word boxes); needs and
+      // wants get a painting (P30); why nobody can have everything is said (money and time run out before wants do); the sad
+      // feeling after a choice is named as normal; a little of each (few choices are all or nothing, Standard 2) is taught.
+      script: [
+        { say: 'A need is something you must have to live, like food, water, clothes and a home.', show: { kind: 'flow', steps: ['food', 'water', 'clothes', 'a home'] } },
+        { say: 'A want is something nice to have, like a toy, a candy bar or a new game. You can live without it.', show: { kind: 'flow', steps: ['a toy', 'a candy bar', 'a new game'] } },
+        { say: 'Needs come first. When the money is spent on needs, wants wait.', show: null },
+        { say: 'Nobody can have everything, because money and time run out before wants do.', show: null },
+        { say: 'When you cannot have both, you make a choice, and the thing you did not pick is what you give up.', show: { kind: 'flow', steps: ['two things you want', 'money for one', 'pick one', 'let the other go'] } },
+        { say: 'If you choose the ball, you give up the crayons for now. Feeling a little sad about the crayons is normal.', show: null },
+        { say: 'Sometimes you can choose a little of each, like one scoop of ice cream and one cookie, instead of two scoops.', show: null },
+        { say: 'Needs first, then wants. A choice means picking one and letting the other go.', show: null },
+      ],
+      pictures: [{ serial: 'P30', step: 0, alt: 'Food, water, clothes and a home beside a toy, a candy bar and a game' }],
+      keyIdea: 'Needs come first, and wants wait. Nobody can have everything, so a choice means picking one and letting the other go, and sometimes a little of each.',
       example: { kind: 'flow', steps: ['two things you want', 'money for one', 'pick one', 'let the other go'], caption: 'One coin, two wants. Choosing one gives the other up.',
-        another: ['Ask of anything: would I be hurt without it? Food, water, clothes, a home: yes, so they are needs. A toy: no, so it is a want.',
+        another: ['Ask of anything whether you would be hurt without it. Food, water, clothes and a home, yes, so they are needs. A toy, no, so it is a want.',
           { text: 'A grocery cart holds needs first. If there is money left at the end, a want can ride on top.', visual: { kind: 'flow', steps: ['bread and milk', 'soap', 'money left?', 'a treat'] } },
-          'Giving something up is not losing. It is the price of choosing, and everyone pays it, even grown-ups.'] },
+          'Giving something up is part of choosing. The little sad feeling passes, and the thing you chose is still yours.'] },
     },
-    sources: ['Aligned with TEKS Mathematics K.9(D) (distinguish between wants and needs and identify income as a source to meet one\'s wants and needs) and the Voluntary National Content Standards in Economics, Standards 1 (Scarcity) and 2 (Decision Making).'],
+    sources: ['Aligned with TEKS Mathematics K.9(D) (distinguish between wants and needs and identify income as a source to meet one\'s wants and needs) and the National Content Standards in K-12 Economics (Council for Economic Education, third edition, 2025), Standards 1 (Scarcity and Allocation) and 2 (Decision-Making).'],
     generators: ['ek-wants', 'ek-wants', 'ek-wants', 'ek-wants', 'ek-wants'],
   },
   {
@@ -10018,14 +10032,26 @@ function ECONK_MODULES() { return [
     tagline: 'Work earns money',
     requires: ['wants-needs-and-choices'],
     lesson: {
-      paragraphs: ['Money you get for doing a job is called income. A baker earns income baking bread, a bus driver earns income driving, and you can earn income too, by walking a dog, raking leaves or washing a car.', 'Money a grandmother gives you for your birthday is a gift. It is nice, but it is not income, because you did not work for it.', 'Every job needs skills. Being on time, following the steps, doing the job well, and being kind to people are skills. The more skills you have, the more jobs you can do.', 'Work earns income. A gift is not income. Skills get you the job.'],
-      keyIdea: 'Income is money earned by working. A gift is not income. Every job needs skills.',
+      paragraphs: ['Money you get for doing a job is called income. A baker earns income baking bread, a bus driver earns income driving the bus, and you can earn income too, by walking a dog, raking leaves or washing a car. People pay for work they want done, and that is why a job earns income.', 'Money a grandmother gives you for your birthday is a gift. It is nice, but it is not income, because you did not work for it.', 'Every job needs skills. Being on time, following the steps, doing the job well, and being kind to people are skills. The more skills you have, the more jobs you can do, and skills grow with practice.', 'Work earns income. A gift is not income. Skills get you the job.'],
+      // Full standard, pass KG: a spoken script; why a job earns income (people pay for work they want done, Standard 8 in a
+      // child's words); the gift test said with its reason; skills grow with practice.
+      script: [
+        { say: 'Money you get for doing a job is called income.', show: { kind: 'letters', text: 'income' } },
+        { say: 'A baker earns income baking bread, and a bus driver earns income driving the bus.', show: { kind: 'icon', name: 'bus' } },
+        { say: 'You can earn income too, by walking a dog, raking leaves or washing a car.', show: { kind: 'icon', name: 'dog' } },
+        { say: 'People pay for work they want done. That is why a job earns income.', show: null },
+        { say: 'Money a grandmother gives you for your birthday is a gift. It is nice, but it is not income, because you did not work for it.', show: { kind: 'flow', steps: ['walked the dog, income', 'birthday card, gift'] } },
+        { say: 'Every job needs skills. Being on time, following the steps, doing the job well, and being kind to people are skills.', show: null },
+        { say: 'The more skills you have, the more jobs you can do. Skills grow with practice.', show: null },
+        { say: 'Work earns income. A gift is not income. Skills get you the job.', show: null },
+      ],
+      keyIdea: 'Income is money earned by working, because people pay for work they want done. A gift is not income. Every job needs skills, and skills grow with practice.',
       example: { kind: 'flow', steps: ['a job to do', 'do it well', 'income'], caption: 'Do the job, earn the money.',
-        another: ['A lemonade stand is a small job: make the lemonade, pour it, take the coins. The coins are income because they came from work.',
-          { text: 'Ask where the money came from. Work: income. A birthday card: a gift. Both spend the same, but only one you earned.', visual: { kind: 'flow', steps: ['walked the dog: income', 'birthday card: gift'] } },
-          'Skills grow with practice. Being on time is a skill you can practice tomorrow morning.'] },
+        another: ['A lemonade stand is a small job. Make the lemonade, pour it, take the coins. The coins are income because they came from work.',
+          { text: 'Ask where the money came from. Work means income, and a birthday card means a gift. Both spend the same, but only one you earned.', visual: { kind: 'flow', steps: ['walked the dog, income', 'birthday card, gift'] } },
+          'Skills grow with practice. Being on time is a skill you can practice every morning.'] },
     },
-    sources: ['Aligned with TEKS Mathematics K.9(A) (identify ways to earn income), K.9(B) (differentiate between money received as income and money received as gifts) and K.9(C) (list simple skills required for jobs), and the Voluntary National Content Standards in Economics, Standard 13 (Income).'],
+    sources: ['Aligned with TEKS Mathematics K.9(A) (identify ways to earn income), K.9(B) (differentiate between money received as income and money received as gifts) and K.9(C) (list simple skills required for jobs), and the National Content Standards in K-12 Economics (Council for Economic Education, third edition, 2025), Standard 8 (Labor and Income).'],
     generators: ['ek-income', 'ek-income', 'ek-income', 'ek-income', 'ek-income'],
   },
   {
@@ -10035,14 +10061,27 @@ function ECONK_MODULES() { return [
     tagline: 'Coins in the bank add up',
     requires: ['earning-income'],
     lesson: {
-      paragraphs: ['Income buys things, both goods like bread and shoes and services like a haircut. Bread is a good, and a haircut is a service. Spending is using money now. Saving is keeping money for later.', 'A piggy bank or a savings account keeps money safe. Putting money in is a deposit. Taking money out is a withdrawal.', 'Saving adds up. Two coins a week for three weeks is six coins. Save a little every week and a big thing gets closer: two coins, then four, then six, then eight.', 'Some people also give some money to help others. Spend some, save some, and share some.'],
+      paragraphs: ['Income buys things, both goods like bread and shoes and services like a haircut. Bread is a good, a thing you can hold. A haircut is a service, a thing someone does for you. Spending is using money now. Saving is keeping money for later.', 'A piggy bank or a bank keeps money safe, and a bank is a place that keeps money safe for lots of people. Putting money in is a deposit. Taking money out is a withdrawal.', 'Saving adds up. Two coins a week for three weeks is six coins. Save a little every week, and a big thing gets closer. Two coins, then four, then six, then eight.', 'Some people also give some money to help others. Spend some, save some, and share some.'],
+      // Full standard, pass KG: a spoken script; goods and services get a painting (P31) and each its reason (a thing you can
+      // hold, a thing someone does for you); a bank is said to keep money safe for lots of people (Standard 14); colons gone.
+      script: [
+        { say: 'Income buys things, both goods like bread and shoes and services like a haircut.', show: { kind: 'letters', text: 'goods' } },
+        { say: 'Bread is a good, a thing you can hold. A haircut is a service, a thing someone does for you.', show: null },
+        { say: 'Spending is using money now. Saving is keeping money for later.', show: { kind: 'flow', steps: ['spending, now', 'saving, later'] } },
+        { say: 'A piggy bank or a bank keeps money safe. A bank is a place that keeps money safe for lots of people.', show: null },
+        { say: 'Putting money in is a deposit. Taking money out is a withdrawal.', show: { kind: 'flow', steps: ['deposit, in', 'withdrawal, out'] } },
+        { say: 'Saving adds up. Two coins a week for three weeks is six coins.', show: { kind: 'dots', count: 2 } },
+        { say: 'Save a little every week, and a big thing gets closer. Two coins, then four, then six, then eight.', show: { kind: 'flow', steps: ['two', 'four', 'six', 'eight'] } },
+        { say: 'Some people also give some money to help others. Spend some, save some, and share some.', show: null },
+      ],
+      pictures: [{ serial: 'P31', step: 0, alt: 'A loaf of bread and a pair of shoes beside a barber giving a haircut' }],
       keyIdea: 'Spending is now, and saving is for later. A deposit puts money in, a withdrawal takes it out, and saving adds up.',
-      example: { kind: 'flow', steps: ['week 1: 2 coins', 'week 2: 4', 'week 3: 6', 'week 4: 8'], caption: 'Two coins a week, so the bank grows by two every week.',
+      example: { kind: 'flow', steps: ['week 1, 2 coins', 'week 2, 4', 'week 3, 6', 'week 4, 8'], caption: 'Two coins a week, so the bank grows by two every week.',
         another: ['A jar with a picture of the thing you are saving for taped on the front. Every coin makes the picture closer.',
-          { text: 'A deposit is putting in; a withdrawal is taking out. In, out: the words say which way the money moves.', visual: { kind: 'flow', steps: ['deposit: in', 'withdrawal: out'] } },
+          { text: 'A deposit is putting in, and a withdrawal is taking out. In and out, the words say which way the money moves.', visual: { kind: 'flow', steps: ['deposit, in', 'withdrawal, out'] } },
           'Spend some, save some, share some. Three jars, and every coin goes in one of them.'] },
     },
-    sources: ['Aligned with TEKS Mathematics 1.9(B) (identify income as a means of obtaining goods and services), 1.9(C) (distinguish between spending and saving), 1.9(D) (consider charitable giving), 2.11(A) (calculate how money saved can accumulate into a larger amount over time), 2.11(B) (explain that saving is an alternative to spending) and 2.11(C) (distinguish between a deposit and a withdrawal), and the Voluntary National Content Standards in Economics, Standard 10 (Institutions).'],
+    sources: ['Aligned with TEKS Mathematics 1.9(B) (identify income as a means of obtaining goods and services, oftentimes making choices between wants and needs), 1.9(C) (distinguish between spending and saving), 1.9(D) (consider charitable giving), 2.11(A) (calculate how money saved can accumulate into a larger amount over time), 2.11(B) (explain that saving is an alternative to spending) and 2.11(C) (distinguish between a deposit and a withdrawal), and the National Content Standards in K-12 Economics (Council for Economic Education, third edition, 2025), Standard 14 (Banks, Interest Rates, and Financial Markets).'],
     generators: ['ek-saving', 'ek-saving', 'ek-saving', 'ek-saving', 'ek-saving'],
   },
   {
@@ -10052,14 +10091,26 @@ function ECONK_MODULES() { return [
     tagline: 'A price is the coins it takes',
     requires: ['spending-and-saving'],
     lesson: {
-      paragraphs: ['A trade is a swap. You can trade a thing for a thing, like a sticker for a marble, or a thing for money. Most trades use money, because money is easy to carry and everyone takes it.', 'A market is any place where buyers and sellers meet, like a store, a farm stand or a lemonade stand.', 'The price is how many coins a thing costs. If a ball costs 4 coins and you have 6, you can buy it, and 2 coins are left. If it costs 8, you cannot buy it yet. You save more, or you choose something else.', 'A trade is a swap. A market is where buyers meet sellers. The price is the coins it takes.'],
-      keyIdea: 'A trade is a swap, a market is where buyers meet sellers, and the price is how many coins a thing costs.',
-      example: { kind: 'flow', steps: ['ball: 4 coins', 'you have 6', 'pay 4', '2 left'], caption: 'Count out the price, and what is left stays yours.',
-        another: ['Before money, people swapped: eggs for bread, wool for a pot. It only worked when each wanted what the other had. Money made every swap easy.',
+      paragraphs: ['A trade is a swap. You can trade a thing for a thing, like a sticker for a marble, or a thing for money. A trade works when both people want what the other has, and then both are glad after the swap. Most trades use money, because money is easy to carry and everyone takes it.', 'A market is any place where buyers and sellers meet, like a store, a farm stand or a lemonade stand.', 'The price is how many coins a thing costs. If a ball costs four coins and you have six, you can buy it, and two coins are left. If it costs eight coins and you have six, you cannot buy it yet. You save more, or you choose something else.', 'A trade is a swap. A market is where buyers meet sellers. The price is the coins it takes.'],
+      // Full standard, pass KG: a spoken script; a trade works when both people want what the other has (Standard 3), with a
+      // painting (P32); a market gets a painting too (P33); the price example is counted on screen.
+      script: [
+        { say: 'A trade is a swap. You can trade a thing for a thing, like a sticker for a marble, or a thing for money.', show: null },
+        { say: 'A trade works when both people want what the other has. Then both are glad after the swap.', show: null },
+        { say: 'Most trades use money, because money is easy to carry and everyone takes it.', show: null },
+        { say: 'A market is any place where buyers and sellers meet, like a store, a farm stand or a lemonade stand.', show: { kind: 'flow', steps: ['store', 'farm stand', 'lemonade stand'] } },
+        { say: 'The price is how many coins a thing costs. If a ball costs four coins and you have six, you can buy it, and two coins are left.', show: { kind: 'flow', steps: ['a ball costs 4 coins', 'you have 6', 'pay 4', '2 left'] } },
+        { say: 'If it costs eight coins and you have six, you cannot buy it yet. You save more, or you choose something else.', show: null },
+        { say: 'A trade is a swap. A market is where buyers meet sellers. The price is the coins it takes.', show: null },
+      ],
+      pictures: [{ serial: 'P32', step: 0, alt: 'Two children swapping a sticker for a marble' }, { serial: 'P33', step: 3, alt: 'A farm stand with a table of vegetables, a seller behind it and a buyer in front' }],
+      keyIdea: 'A trade is a swap that works when both people want what the other has. A market is where buyers meet sellers, and the price is how many coins a thing costs.',
+      example: { kind: 'flow', steps: ['a ball costs 4 coins', 'you have 6', 'pay 4', '2 left'], caption: 'Count out the price, and what is left stays yours.',
+        another: ['Before money, people swapped eggs for bread, or wool for a pot. It only worked when each wanted what the other had. Money made every swap easy.',
           { text: 'A store is a market with a roof. A farm stand is a market with a table. A lemonade stand is a market with a pitcher.', visual: { kind: 'flow', steps: ['store', 'farm stand', 'lemonade stand'] } },
           'Not enough coins is not the end. It means save more, or choose something else.'] },
     },
-    sources: ['Aligned with TEKS Mathematics 1.9(B) (identify income as a means of obtaining goods and services) and the Voluntary National Content Standards in Economics, Standards 5 (Trade) and 7 (Markets and Prices).'],
+    sources: ['Aligned with TEKS Mathematics 1.9(B) (identify income as a means of obtaining goods and services, oftentimes making choices between wants and needs) and the National Content Standards in K-12 Economics (Council for Economic Education, third edition, 2025), Standards 3 (Specialization and Exchange), 4 (Markets) and 13 (Money).'],
     generators: ['ek-trade', 'ek-trade', 'ek-trade', 'ek-trade', 'ek-trade'],
   },
 ]; }
@@ -10814,11 +10865,24 @@ function AGRIK_MODULES() { return [
     tagline: 'Farmers grow plants, and we eat their roots, leaves, flowers, fruits and seeds',
     requires: [],
     lesson: {
+      paragraphs: ['Farmers grow plants for us to eat. A plant has parts, roots, a stem, leaves, flowers and fruits, and we eat every one of those parts.', 'A carrot is a root, and it grows under the ground, where it stores food for the plant. Lettuce is leaves. Asparagus is a young stem. Broccoli is a bunch of tiny flower buds, picked before they open. Leave it in the garden, and the buds open into yellow flowers.', 'An apple is a fruit, and its seeds are inside. Cut an apple across the middle, and the seeds sit in a little star.', 'Corn and wheat are seeds. Wheat seeds are ground into flour for our bread, and corn seeds pop into popcorn, because the little bit of water inside the seed heats up and bursts out. Cows eat plants too, like grass and hay. A farmer grows plants for animals as well as for people.'],
+      // Full standard, pass KH: a spoken script of its own (it read its paragraphs over one picture of word boxes); the painting
+      // P8 sits on the line that names the parts; each part comes with a reason it is that part (a carrot stores food under the
+      // ground, broccoli buds open into yellow flowers, an apple's seeds sit in a star); why popcorn pops; the colon is gone.
+      script: [
+        { say: 'Farmers grow plants for us to eat. A plant has parts, roots, a stem, leaves, flowers and fruits, and we eat every one of those parts.', show: null },
+        { say: 'A carrot is a root, and it grows under the ground, where it stores food for the plant.', show: null },
+        { say: 'Lettuce is leaves. Asparagus is a young stem.', show: null },
+        { say: 'Broccoli is a bunch of tiny flower buds, picked before they open. Leave it in the garden, and the buds open into yellow flowers.', show: { kind: 'icon', name: 'flower' } },
+        { say: 'An apple is a fruit, and its seeds are inside. Cut an apple across the middle, and the seeds sit in a little star.', show: null },
+        { say: 'Corn and wheat are seeds. Wheat seeds are ground into flour for our bread, and corn seeds pop into popcorn.', show: null },
+        { say: 'Popcorn pops because the little bit of water inside the seed heats up and bursts out.', show: null },
+        { say: 'Cows eat plants too, like grass and hay. A farmer grows plants for animals as well as for people.', show: null },
+      ],
       pictures: [{ serial: 'P8', alt: 'Plant parts we eat, a root, leaves, flower buds, a fruit and seeds', step: 0 }],
-      paragraphs: ['Farmers grow plants for us to eat. A plant has parts: roots, a stem, leaves, flowers and fruits. We eat every one of those parts.', 'A carrot is a root, and it grows under the ground. Lettuce is leaves. Broccoli is a bunch of tiny flower buds, picked before they open. Asparagus is a young stem.', 'An apple is a fruit, and its seeds are inside.', 'Corn and wheat are seeds. Wheat seeds are ground into flour for our bread, and corn seeds pop into popcorn. Cows eat plants too, like grass and hay.'],
       keyIdea: 'Farmers grow plants for food. We eat roots like carrots, leaves like lettuce, flower buds like broccoli, fruits like apples, and seeds like corn and wheat.',
-      example: { kind: 'flow', steps: ['a carrot: a root', 'lettuce: leaves', 'broccoli: flower buds', 'an apple: a fruit'], caption: 'Plant parts we eat.',
-        another: ['A salad can hold four plant parts at once: carrot roots, lettuce leaves, broccoli flower buds and tomato fruits.',
+      example: { kind: 'flow', steps: ['a carrot is a root', 'lettuce is leaves', 'broccoli is flower buds', 'an apple is a fruit'], caption: 'Plant parts we eat.',
+        another: ['A salad can hold four plant parts at once, carrot roots, lettuce leaves, broccoli flower buds and tomato fruits.',
           { text: 'Cut an apple across the middle and look. The seeds sit in a little star inside the fruit.', visual: { kind: 'flow', steps: ['an apple', 'cut it across', 'a star of seeds'] } },
           'Popcorn is a seed. The water inside heats up, and pop, the seed turns inside out.'] },
     },
@@ -10832,15 +10896,28 @@ function AGRIK_MODULES() { return [
     tagline: 'A seed grows into a plant, and a plant needs air, sunlight, water, soil and room',
     requires: ['plants-we-eat-k'],
     lesson: {
+      paragraphs: ['A plant starts as a seed. The seed opens, and a tiny root goes down into the soil. A small shoot comes up, and now it is a seedling.', 'The seedling grows into a plant. The plant grows flowers, and the flowers make fruit with new seeds inside. Seed, seedling, plant, flower, fruit, and then the new seeds start it all over again.', 'A baby bean plant looks like its parent, with the same kind of leaves. A sunflower seed grows into a sunflower, never into a bean.', 'Plants need air, sunlight, water, nutrients in the soil, and room to grow. Nutrients are tiny bits in the soil that help a plant grow strong. They are not the plant\'s food, because a plant makes its own food from sunlight. Farmers plant seeds apart, so each plant has room. Two seeds too close fight for water and light.'],
+      // Full standard, pass KH: a spoken script; nutrients are no longer called plant food (a plant makes its own food from
+      // sunlight, as Looking at the world teaches since pass JY); the root comes before the shoot; the painting P9 sits on the
+      // seed line.
+      script: [
+        { say: 'A plant starts as a seed. The seed opens, and a tiny root goes down into the soil.', show: null },
+        { say: 'A small shoot comes up, and now it is a seedling.', show: null },
+        { say: 'The seedling grows into a plant. The plant grows flowers, and the flowers make fruit with new seeds inside.', show: { kind: 'flow', steps: ['seed', 'seedling', 'plant', 'flower', 'fruit'] } },
+        { say: 'Seed, seedling, plant, flower, fruit. Then the new seeds start it all over again.', show: null },
+        { say: 'A baby bean plant looks like its parent, with the same kind of leaves. A sunflower seed grows into a sunflower, never into a bean.', show: { kind: 'icon', name: 'plant' } },
+        { say: 'Plants need air, sunlight, water, nutrients in the soil, and room to grow.', show: { kind: 'flow', steps: ['air', 'sunlight', 'water', 'nutrients', 'room'] } },
+        { say: 'Nutrients are tiny bits in the soil that help a plant grow strong. They are not the plant\'s food, because a plant makes its own food from sunlight.', show: null },
+        { say: 'Farmers plant seeds apart, so each plant has room. Two seeds too close fight for water and light.', show: null },
+      ],
       pictures: [{ serial: 'P9', alt: 'A bean\'s life, from seed to seedling to plant to pod', step: 0 }],
-      paragraphs: ['A plant starts as a seed. The seed opens, and a tiny root goes down into the soil. A small shoot comes up, and now it is a seedling.', 'The seedling grows into a plant. The plant grows flowers, and the flowers make fruit with new seeds inside. Seed, seedling, plant, flower, fruit!', 'A baby bean plant looks like its parent, with the same kind of leaves.', 'Plants need air, sunlight, water, nutrients in the soil, and room to grow. Nutrients are plant food. Farmers plant seeds apart, so each plant has room.'],
       keyIdea: 'A seed grows into a seedling, then a plant, then flowers and fruit with new seeds. Plants need air, sunlight, water, nutrients in the soil, and room to grow.',
       example: { kind: 'flow', steps: ['seed', 'seedling', 'plant', 'flower', 'fruit'], caption: 'The life of a plant.',
         another: ['A sunflower seed grows into a sunflower, never into a bean. Young plants look like their parent plants.',
           { text: 'Two seeds planted too close fight for water and light. Room to grow is one of the five things a plant needs.', visual: { kind: 'flow', steps: ['seeds apart', 'room for roots', 'strong plants'] } },
           'The fruit holds new seeds, and new seeds start the whole thing over again.'] },
     },
-    sources: ['Aligned with TEKS Science, Kindergarten, 112.2(b)(12)(A) (observe and identify the dependence of plants on air, sunlight, water, nutrients in the soil, and space to grow), 112.2(b)(13)(C) (identify and record the changes from seed, seedling, plant, flower, and fruit in a simple plant life cycle) and 112.2(b)(13)(D) (identify ways that young plants resemble the parent plant), and the National Agricultural Literacy Outcomes, T1.K-2.b (describe the importance of soil and water in raising crops and livestock), T2.K-2.a (explain how farmers/ranchers work with the lifecycle of plants and animals to harvest a crop) and T2.K-2.e (identify the importance of natural resources in farming).'],
+    sources: ['Aligned with TEKS Science, Kindergarten, 112.2(b)(12)(A) (observe and identify the dependence of plants on air, sunlight, water, nutrients in the soil, and space to grow), 112.2(b)(13)(C) (identify and record the changes from seed, seedling, plant, flower, and fruit in a simple plant life cycle) and 112.2(b)(13)(D) (identify ways that young plants resemble the parent plant), and the National Agricultural Literacy Outcomes, T1.K-2.b (describe the importance of soil and water in raising crops and livestock), T2.K-2.a (explain how farmers/ranchers work with the lifecycle of plants and animals (planting/breeding) to harvest a crop) and T2.K-2.e (identify the importance of natural resources (e.g., sun, soil, water, minerals) in farming).'],
     generators: ['agk-grow', 'agk-grow', 'agk-grow', 'agk-grow', 'agk-grow'],
   },
   {
@@ -10850,15 +10927,27 @@ function AGRIK_MODULES() { return [
     tagline: 'What farm animals need, the body parts that help them, and what they give us',
     requires: ['seed-to-plant-k'],
     lesson: {
-      pictures: [{ serial: 'P11', alt: 'A cow\'s ears, a hen\'s beak and a goat\'s lips at work', step: 1 }],
-      paragraphs: ['Farm animals need air, water, food, space, and shelter. Shelter is a barn or a shed. It keeps them dry in the rain and cool on a hot day.', 'Animals have body parts that help them. A cow can see almost all the way around, and her ears turn to hear. A hen uses her beak to pick up seeds.', 'A goat grabs leaves with her lips, and a horse has strong legs to run.', 'Farm animals give us things we need. Cows give milk, and hens lay eggs. Sheep grow wool, and the wool is made into warm sweaters. Farmers take care of them every day.'],
+      paragraphs: ['Farm animals need air, water, food, space, and shelter. Shelter is a barn or a shed. It keeps them dry in the rain and cool on a hot day.', 'Animals have body parts that help them. A cow can see almost all the way around, and her ears turn to hear. A hen uses her beak to pick up seeds, because she has no hands. A goat grabs leaves with her lips, and a horse has strong legs to run.', 'Farm animals give us things we need. Cows give milk, and hens lay eggs. Sheep grow wool. A farmer shears it off, it is spun into yarn, and the yarn is made into warm sweaters. Farmers take care of their animals every day, with food, water and a safe place to sleep.'],
+      // Full standard, pass KH: a spoken script; each body part comes with its reason (a hen has no hands, so her beak does
+      // the picking up); wool's whole path from sheep to sweater; the painting P11 sits on the cow line.
+      script: [
+        { say: 'Farm animals need air, water, food, space, and shelter.', show: { kind: 'flow', steps: ['air and water', 'food', 'space', 'shelter'] } },
+        { say: 'Shelter is a barn or a shed. It keeps them dry in the rain and cool on a hot day.', show: null },
+        { say: 'Animals have body parts that help them. A cow can see almost all the way around, and her ears turn to hear.', show: null },
+        { say: 'A hen uses her beak to pick up seeds, because she has no hands.', show: null },
+        { say: 'A goat grabs leaves with her lips, and a horse has strong legs to run.', show: null },
+        { say: 'Farm animals give us things we need. Cows give milk, and hens lay eggs.', show: null },
+        { say: 'Sheep grow wool. A farmer shears it off, it is spun into yarn, and the yarn is made into warm sweaters.', show: null },
+        { say: 'Farmers take care of their animals every day, with food, water and a safe place to sleep.', show: null },
+      ],
+      pictures: [{ serial: 'P11', alt: 'A cow\'s ears, a hen\'s beak and a goat\'s lips at work', step: 2 }],
       keyIdea: 'Farm animals need air, water, food, space and shelter. Body parts help them see, hear, grab and move. Cows give milk, hens lay eggs, and sheep grow wool.',
       example: { kind: 'flow', steps: ['air and water', 'food', 'space', 'shelter'], caption: 'What every farm animal needs.',
         another: ['A barn is shelter. When a storm comes, the animals go inside and stay dry.',
           { text: 'A hen has no hands, so her beak does the picking up. A goat has no hands either, so her lips do the grabbing.', visual: { kind: 'flow', steps: ['a beak for seeds', 'lips for leaves', 'legs to run'] } },
-          'A sweater can start on a farm: sheep grow wool, a farmer shears it off, and it is spun into yarn.'] },
+          'A sweater can start on a farm. Sheep grow wool, a farmer shears it off, and it is spun into yarn.'] },
     },
-    sources: ['Aligned with TEKS Science, Kindergarten, 112.2(b)(12)(B) (observe and identify the dependence of animals on air, water, food, space, and shelter) and 112.2(b)(13)(B) (identify the different structures that animals have that allow them to interact with their environment such as seeing, hearing, moving, and grasping objects), and the National Agricultural Literacy Outcomes, T2.K-2.b (identify animals involved in agricultural production and their uses) and T3.K-2.b (recognize that agriculture provides our most basic necessities: food, fiber, energy, and shelter).'],
+    sources: ['Aligned with TEKS Science, Kindergarten, 112.2(b)(12)(B) (observe and identify the dependence of animals on air, water, food, space, and shelter) and 112.2(b)(13)(B) (identify the different structures that animals have that allow them to interact with their environment such as seeing, hearing, moving, and grasping objects), and the National Agricultural Literacy Outcomes, T2.K-2.b (identify animals involved in agricultural production and their uses (i.e., work, meat, dairy, eggs)) and T3.K-2.b (recognize that agriculture provides our most basic necessities: food, fiber (fabric or clothing), energy, and shelter).'],
     generators: ['agk-animals', 'agk-animals', 'agk-animals', 'agk-animals', 'agk-animals'],
   },
   {
@@ -10868,14 +10957,24 @@ function AGRIK_MODULES() { return [
     tagline: 'What a farmer does all day, how weather helps or hurts, and how a farm feeds a town',
     requires: ['farm-animals-k'],
     lesson: {
-      paragraphs: ['A farmer\'s day starts early. The farmer feeds the animals, checks their water, and looks at the sky. Weather matters on a farm.', 'Rain helps plants grow, but too much rain can drown them. Hot sun dries the soil, so plants need water. In the cold, animals need a warm barn.', 'A farm feeds a whole town. Milk, eggs and apples go from the farm to the store, and from the store to your table.', 'A cow on a farm is cared for by a farmer, but a deer in the woods finds its own food.'],
+      paragraphs: ['A farmer\'s day starts early. The farmer feeds the animals, checks their water, and looks at the sky. Weather matters on a farm.', 'Rain helps plants grow, but too much rain can drown them. Hot sun dries the soil, so the farmer waters the plants. In the cold, animals need a warm barn.', 'A farm feeds a whole town. Milk, eggs and apples go from the farm to the store, and from the store to your table.', 'A cow on a farm is cared for by a farmer, but a deer in the woods finds its own food. Farm animals count on people. Farm plants are different from wild plants too. Corn grows in rows because a farmer planted it, and a wild flower grows where its seed happened to fall.'],
+      // Full standard, pass KH: a spoken script; farm and wild compared for plants as well as animals (NALO T2.K-2.f, now
+      // cited); the farmer's answer to dry soil is said; the bank grows from five questions to eleven.
+      script: [
+        { say: 'A farmer\'s day starts early. The farmer feeds the animals, checks their water, and looks at the sky.', show: null },
+        { say: 'Weather matters on a farm. Rain helps plants grow, but too much rain can drown them.', show: { kind: 'icon', name: 'rain' } },
+        { say: 'Hot sun dries the soil, so the farmer waters the plants. In the cold, animals need a warm barn.', show: { kind: 'icon', name: 'sun' } },
+        { say: 'A farm feeds a whole town. Milk, eggs and apples go from the farm to the store, and from the store to your table.', show: { kind: 'flow', steps: ['the farm', 'the truck', 'the store', 'your table'] } },
+        { say: 'A cow on a farm is cared for by a farmer, but a deer in the woods finds its own food. Farm animals count on people.', show: null },
+        { say: 'Farm plants are different from wild plants too. Corn grows in rows because a farmer planted it, and a wild flower grows where its seed happened to fall.', show: null },
+      ],
       keyIdea: 'A farmer cares for plants and animals every day. Rain, sun and cold can help or hurt a farm. Food goes from the farm to the store to your table.',
       example: { kind: 'flow', steps: ['the farm', 'the truck', 'the store', 'your table'], caption: 'How food gets to you.',
         another: ['The eggs in your fridge were laid by a hen. A farmer gathered them, and a truck brought them to the store.',
           { text: 'A dry summer means the farmer waters the garden every evening. A rainy spring means the farmer waits for the fields to dry.', visual: { kind: 'flow', steps: ['look at the sky', 'rain or sun?', 'what the farm needs today'] } },
-          'A farm cow gets hay from the farmer in winter. A deer in the woods has to find its own food.'] },
+          'A farm cow gets hay from the farmer in winter. A deer in the woods digs for its own.'] },
     },
-    sources: ['Aligned with TEKS Science, Kindergarten, 112.2(b)(12)(A) and 112.2(b)(12)(B), and the National Agricultural Literacy Outcomes, T1.K-2.d (provide examples of how weather patterns affect plant and animal growth for food), T5.K-2.a (discuss what a farmer does) and T5.K-2.f (trace the sources of agricultural products used daily).'],
+    sources: ['Aligned with TEKS Science, Kindergarten, 112.2(b)(12)(A) and 112.2(b)(12)(B), and the National Agricultural Literacy Outcomes, T1.K-2.d (provide examples of how weather patterns affect plant and animal growth for food), T2.K-2.f (identify the types of plants and animals found on farms and compare with plants and animals found in wild landscapes), T5.K-2.a (discuss what a farmer does) and T5.K-2.f (trace the sources of agricultural products (plant or animal) used daily).'],
     generators: ['agk-day', 'agk-day', 'agk-day', 'agk-day', 'agk-day'],
   },
 ]; }
@@ -12259,15 +12358,29 @@ function PHILK_MODULES() { return [
     id: 'i-wonder',
     order: 1,
     title: 'I wonder',
-    tagline: 'Some questions you find out; some questions you think about',
+    tagline: 'Some questions you find out, and some you think about',
     requires: [],
     lesson: {
-      paragraphs: ['Why is the sky blue? Someone can tell you, and then you know. That is a finding question.', 'What makes a good friend? Nobody can just tell you. You think about it. That is a wondering question.', 'When someone says a word, you can ask, what do you mean? A toy is a thing you play with. But what about a stick? You play with it. Is a stick a toy? Asking but what about helps an idea get better.', 'Long ago, a man named Socrates asked wondering questions all day. He is famous for it. His friend Plato wrote his questions down. You can wonder too.'],
-      keyIdea: 'A finding question has an answer you find. A wondering question you think about. Ask what do you mean, and but what about.',
+      paragraphs: ['Why is the sky blue? Someone can tell you, or you can look it up, and then you know. That is a finding question.', 'What makes a good friend? Nobody can just tell you the answer. You have to think about it, and so does everyone else. That is a wondering question.', 'When someone says a word, you can ask, what do you mean? A toy is a thing you play with. But what about a stick? You play with it, so is a stick a toy? Asking but what about finds a hole in an idea, and fixing the hole makes the idea better.', 'More than two thousand years ago, in a city called Athens, a man named Socrates asked wondering questions all day. He is famous for it. Socrates wrote nothing down, so his student Plato wrote his questions down, and that is why we still have them. You can wonder too.'],
+      // Full standard, pass KF: a spoken script of its own (it read its paragraphs over one picture of word boxes); finding and
+      // wondering questions each get a line that says what makes them so; Socrates placed in time and in Athens, and Plato is his
+      // student, not his friend (Socrates wrote nothing; Plato and Xenophon wrote him down).
+      script: [
+        { say: 'Why is the sky blue? Someone can tell you, or you can look it up, and then you know.', show: null },
+        { say: 'That is a finding question. A finding question has an answer you can find.', show: { kind: 'letters', text: 'finding' } },
+        { say: 'What makes a good friend? Nobody can just tell you the answer. You have to think about it.', show: null },
+        { say: 'That is a wondering question. A wondering question you think about, and so does everyone else.', show: { kind: 'letters', text: 'wondering' } },
+        { say: 'When someone says a word, you can ask, what do you mean? A toy is a thing you play with.', show: null },
+        { say: 'But what about a stick? You play with it, so is a stick a toy?', show: null },
+        { say: 'Asking but what about finds a hole in an idea, and fixing the hole makes the idea better.', show: { kind: 'flow', steps: ['a toy is a thing you play with', 'but what about a stick?', 'the idea gets better'] } },
+        { say: 'More than two thousand years ago, in a city called Athens, a man named Socrates asked wondering questions all day.', show: null },
+        { say: 'Socrates wrote nothing down. His student Plato wrote his questions down, and that is why we still have them. You can wonder too.', show: null },
+      ],
+      keyIdea: 'A finding question has an answer you can find. A wondering question you think about. Ask what do you mean, and but what about, and the idea gets better.',
       example: { kind: 'flow', steps: ['a toy is a thing you play with', 'but what about a stick?', 'the idea gets better'], caption: 'But what about finds a hole, and the hole helps.',
         another: ['Is a hot dog a sandwich? Say what a sandwich is first. Then see if the hot dog fits.',
-          { text: 'Two people can wonder about the same thing and think different things. Both of them are thinking.', visual: { kind: 'flow', steps: ['I wonder', 'you wonder', 'we talk'] } },
-          'Socrates did not write his questions down. His friend Plato did. That is why we still have them.'] },
+          { text: 'Two people can wonder about the same thing and think different things. Both of them are thinking, and talking about it helps them both.', visual: { kind: 'flow', steps: ['I wonder', 'you wonder', 'we talk'] } },
+          'Socrates did not write his questions down. His student Plato did. That is why we still have them.'] },
     },
     sources: ['Aligned with the Texas College and Career Readiness Standards, Cross-Disciplinary Standards I.A.1 (engage in scholarly inquiry and dialogue), and the Common Core State Standards for English Language Arts, SL.K.3 (ask and answer questions in order to seek help, get information, or clarify something that is not understood).'],
     generators: ['pk-wonder', 'pk-wonder', 'pk-wonder', 'pk-wonder', 'pk-wonder'],
@@ -12279,14 +12392,26 @@ function PHILK_MODULES() { return [
     tagline: 'A reason comes after because, and it has to be about the thing',
     requires: ['i-wonder'],
     lesson: {
-      paragraphs: ['A reason is what comes after because. We should go outside, because the sun is out. That is a reason.', 'We should go outside, because my shirt is blue. That is not a reason. It is not about going outside.', 'Because I want to is a wish, not a reason. Because I said so is an order, not a reason. A reason is about the thing, and it is true.', 'The best question is how do you know? Then you go and look. If you can see it or count it, you can point to it.'],
-      keyIdea: 'A reason comes after because and is about the thing. A wish and an order are not reasons. Ask how do you know, then look.',
+      paragraphs: ['A reason is what comes after because. We should go outside, because the sun is out. That is a reason, because it is about going outside, and it is true.', 'We should go outside, because my shirt is blue. That is not a reason. It is not about going outside at all. A reason has to be about the thing.', 'Because I want to is a wish, not a reason. Because I said so is an order, not a reason. A reason is about the thing, and it is true.', 'A great question is how do you know? Then you go and look. If you can see it or count it, you can point to it, and other people can check it too.'],
+      // Full standard, pass KF: a spoken script; a reason is about the thing and true, said with its reason each time; how do you
+      // know leads to looking, and what you can point to, other people can check.
+      script: [
+        { say: 'A reason is what comes after because. We should go outside, because the sun is out.', show: { kind: 'flow', steps: ['we should go outside', 'because', 'the sun is out'] } },
+        { say: 'That is a reason, because it is about going outside, and it is true. The sun is out.', show: { kind: 'icon', name: 'sun' } },
+        { say: 'We should go outside, because my shirt is blue. That is not a reason, because it is not about going outside at all.', show: null },
+        { say: 'A reason has to be about the thing.', show: null },
+        { say: 'Because I want to is a wish, not a reason. Because I said so is an order, not a reason.', show: { kind: 'letters', text: 'because' } },
+        { say: 'A reason is about the thing, and it is true.', show: null },
+        { say: 'A great question is how do you know? Then you go and look.', show: null },
+        { say: 'If you can see it or count it, you can point to it, and other people can check it too.', show: { kind: 'flow', steps: ['how do you know?', 'go and look', 'now we know'] } },
+      ],
+      keyIdea: 'A reason comes after because and is about the thing, and it is true. A wish and an order are not reasons. Ask how do you know, then go and look.',
       example: { kind: 'flow', steps: ['we should go outside', 'because', 'the sun is out'], caption: 'A reason that is about the thing.',
-        another: ['Try it with a snack. I want an apple, because I am hungry. That is a reason. I want an apple, because it is Tuesday. That one is silly.',
+        another: ['Try it with a snack. I want an apple, because I am hungry. That is a reason. I want an apple, because it is Tuesday. That one is silly, because Tuesday has nothing to do with apples.',
           { text: 'How do you know is a kind question when you really want to find out. It is not a mean one.', visual: { kind: 'flow', steps: ['how do you know?', 'let us look', 'now we know'] } },
           'A reason another person can check is the best kind. Is the sun out? Look out the window.'] },
     },
-    sources: ['Aligned with the Texas College and Career Readiness Standards, Cross-Disciplinary Standards I.B.1 (consider arguments and conclusions of self and others), and the Common Core State Standards for English Language Arts, W.K.1 (use a combination of drawing, dictating, and writing to compose opinion pieces that state an opinion or preference about the topic).'],
+    sources: ['Aligned with the Texas College and Career Readiness Standards, Cross-Disciplinary Standards I.B.1 (consider arguments and conclusions of self and others), and the Common Core State Standards for English Language Arts, W.K.1 (use a combination of drawing, dictating, and writing to compose opinion pieces in which they tell a reader the topic or the name of the book they are writing about and state an opinion or preference about the topic or book (e.g., My favorite book is...)).'],
     generators: ['pk-because', 'pk-because', 'pk-because', 'pk-because', 'pk-because'],
   },
   {
@@ -12296,8 +12421,21 @@ function PHILK_MODULES() { return [
     tagline: 'One voice at a time, say it back, and you can change your mind',
     requires: ['because-k'],
     lesson: {
-      paragraphs: ['When we talk about a wondering question, we take turns. One voice at a time. When it is your turn, you talk. When it is not, you listen with your ears and your eyes. A talking stick helps: whoever holds the stick talks.', 'To show you listened, say it back. You think the class pet should be a fish. If your friend says yes, that is it, you understood.', 'You can think an idea is wrong and still like your friend. Say I do not agree with that reason. Do not say you are silly.', 'If your friend gives a better reason, you can change your mind. That is brave. It is not losing.'],
-      keyIdea: 'One voice at a time. Say it back. Talk about the idea, not the friend. Changing your mind is brave.',
+      paragraphs: ['When we talk about a wondering question, we take turns, one voice at a time. When it is your turn, you talk. When it is not your turn, you listen, and your brain thinks about the words. A talking stick helps. Whoever holds the stick talks, and everyone else listens.', 'To show you listened, say it back. You think the class pet should be a fish. If your friend says yes, that is it, you understood.', 'You can think an idea is wrong and still like your friend. Say I do not agree with that reason. Do not say you are silly. Talk about the idea, not the friend.', 'If your friend gives a better reason, you can change your mind. That is brave, and it is how we learn. It is not losing. Loud is not the same as right. A quiet reason is still a reason.'],
+      // Full standard, pass KF: a spoken script; listening is the brain on the words, as the listening lesson now teaches (it said
+      // with your ears and your eyes); the colon in the talking stick line is gone; changing your mind is how we learn.
+      script: [
+        { say: 'When we talk about a wondering question, we take turns, one voice at a time.', show: { kind: 'flow', steps: ['my turn', 'your turn'] } },
+        { say: 'When it is your turn, you talk. When it is not your turn, you listen, and your brain thinks about the words.', show: null },
+        { say: 'A talking stick helps. Whoever holds the stick talks, and everyone else listens.', show: null },
+        { say: 'To show you listened, say it back. You think the class pet should be a fish.', show: { kind: 'icon', name: 'fish' } },
+        { say: 'If your friend says yes, that is it, you understood.', show: null },
+        { say: 'You can think an idea is wrong and still like your friend. Say I do not agree with that reason.', show: null },
+        { say: 'Do not say you are silly. Talk about the idea, not the friend.', show: null },
+        { say: 'If your friend gives a better reason, you can change your mind. That is brave, and it is how we learn. It is not losing.', show: { kind: 'flow', steps: ['a better reason', 'change your mind', 'brave'] } },
+        { say: 'Loud is not the same as right. A quiet reason is still a reason.', show: null },
+      ],
+      keyIdea: 'One voice at a time. Say it back. Talk about the idea, not the friend. Changing your mind for a better reason is brave, and it is how we learn.',
       example: { kind: 'flow', steps: ['my turn', 'your turn', 'say it back', 'yes, that is it'], caption: 'A talk where everyone gets heard.',
         another: ['A talking stick helps. Whoever holds the stick talks. Everyone else listens. Then the stick moves on.',
           { text: 'Loud is not the same as right. A quiet reason is still a reason.', visual: { kind: 'flow', steps: ['a quiet reason', 'a loud reason', 'the same reason'] } },
@@ -12313,14 +12451,27 @@ function PHILK_MODULES() { return [
     tagline: 'The same for everyone, or more for the one who needs it, and a test for both',
     requires: ['my-turn-your-turn'],
     lesson: {
-      paragraphs: ['Four cookies and two children. Fair is two each. That is equal shares.', 'One child fell down and has a hurt knee. The ice pack goes to that child first. That is fair too, by need.', 'On the swing, we take turns. Every turn is the same size. That is fair for a swing.', 'A rule can have an exception, but the exception needs a reason everyone can hear.', 'Here is a test. Would you like it if it were you? If not, the rule needs another look. And when you cut the cake, the cutter picks last. Then the pieces come out even.'],
-      keyIdea: 'Equal shares are fair. More for the one who needs it is fair too. Ask would you like it if it were you. The cutter picks last.',
+      paragraphs: ['Four cookies and two children. Fair is two each, the same for everyone. That is equal shares.', 'One child fell down and has a hurt knee. The ice pack goes to that child first. That is fair too, by need, and everyone can hear the reason.', 'On the swing, we take turns, and every turn is the same size. That is fair for a swing, because there is only one swing and the turns can be equal.', 'A rule can have an exception, but the exception needs a reason everyone can hear. A hurt knee is a reason. Wanting it is not a reason.', 'Here is a test for any rule. Would you like it if it were you? If not, the rule needs another look. And when you cut the cake, the cutter picks last, so the cutter makes every piece a good one and the pieces come out even.'],
+      // Full standard, pass KF: a spoken script; equal shares get a painting (P29) and the cookies are counted; fair by need
+      // comes with its condition (everyone can hear the reason); the cutter picks last comes with its reason.
+      script: [
+        { say: 'Four cookies and two children. Fair is two each, the same for everyone.', show: { kind: 'dots', count: 4 } },
+        { say: 'Two each is equal shares, the same for everyone.', show: { kind: 'flow', steps: ['four cookies', 'two children', 'two each'] } },
+        { say: 'One child fell down and has a hurt knee. The ice pack goes to that child first.', show: { kind: 'icon', name: 'ice' } },
+        { say: 'That is fair too, by need, and everyone can hear the reason.', show: null },
+        { say: 'On the swing, we take turns, and every turn is the same size. That is fair for a swing.', show: null },
+        { say: 'A rule can have an exception, but the exception needs a reason everyone can hear. A hurt knee is a reason. Wanting it is not a reason.', show: null },
+        { say: 'Here is a test for any rule. Would you like it if it were you? If not, the rule needs another look.', show: { kind: 'flow', steps: ['a rule', 'would you like it if it were you?', 'if not, look again'] } },
+        { say: 'When you cut the cake, the cutter picks last. So the cutter makes every piece a good one, and the pieces come out even.', show: { kind: 'flow', steps: ['one cuts', 'others pick', 'the cutter takes the last'] } },
+      ],
+      pictures: [{ serial: 'P29', step: 0, alt: 'Four cookies shared two and two between two children' }],
+      keyIdea: 'Equal shares are fair. More for the one who needs it is fair too, when everyone can hear the reason. Ask would you like it if it were you. The cutter picks last.',
       example: { kind: 'flow', steps: ['four cookies', 'two children', 'two each'], caption: 'Equal shares.',
         another: ['A hurt knee gets the ice pack first. Nobody says that is unfair, because everyone can hear the reason.',
           { text: 'The cutter picks last is a very old trick. It still works, because the cutter wants every piece to be a good one.', visual: { kind: 'flow', steps: ['one cuts', 'others pick', 'the cutter takes the last'] } },
           'Would you like it if it were you is a question you can ask about any rule, at home or at school.'] },
     },
-    sources: ['Aligned with the Texas College and Career Readiness Standards, Cross-Disciplinary Standards I.B.2 (construct well-reasoned arguments to explain phenomena, validate conjectures, or support positions), and the Common Core State Standards for English Language Arts, W.K.1.'],
+    sources: ['Aligned with the Texas College and Career Readiness Standards, Cross-Disciplinary Standards I.B.2 (construct well-reasoned arguments to explain phenomena, validate conjectures, or support positions), and the Common Core State Standards for English Language Arts, W.K.1 (use a combination of drawing, dictating, and writing to compose opinion pieces in which they tell a reader the topic or the name of the book they are writing about and state an opinion or preference about the topic or book (e.g., My favorite book is...)).'],
     generators: ['pk-fair', 'pk-fair', 'pk-fair', 'pk-fair', 'pk-fair'],
   },
 ]; }
@@ -17353,40 +17504,55 @@ Object.assign(GENERATORS, {
   },
   // Economics and personal finance, K to 2 (2026-09-29, pass FV): spoken questions, tapped answers, coins counted where there is counting.
   'ek-wants': (rng) => {
-    const Q = [['Which one is a need?', ['water', 'a toy', 'candy'], 'water', 'Food, water, clothes and a home are needs. You must have them to live.'],
-      ['Which one is a want?', ['a new game', 'food', 'a home'], 'a new game', 'A new game is a want. It is nice to have, but you can live without it.'],
-      ['Which comes first, needs or wants?', ['needs', 'wants', 'neither'], 'needs', 'Needs first, then wants, if there is money left.'],
-      ['You pick the ball instead of the crayons. What is that?', ['a choice', 'a gift', 'income'], 'a choice', 'Picking one and letting the other go is a choice.'],
-      ['When you choose one thing, what happens to the other?', ['you give it up', 'you get it too', 'it costs less'], 'you give it up', 'The thing you did not pick is what you give up, for now.'],
-      ['Which one is a need?', ['clothes', 'a candy bar', 'a sticker'], 'clothes', 'Clothes keep you warm and safe. They are a need.']];
-    const [prompt, choices, answer, explain] = pick(rng, Q);
-    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+    // Full standard, pass KG: every answer is spoken in the lesson, every explanation gives the reason, and a setup line
+    // (the fifth item) carries the situation a question needs.
+    const Q = [['Which one is a need?', ['water', 'a toy', 'candy'], 'water', 'Water is a need. You must have food, water, clothes and a home to live.'],
+      ['Which one is a need?', ['clothes', 'a candy bar', 'a sticker'], 'clothes', 'Clothes are a need, because they keep you warm and safe.'],
+      ['Which one is a want?', ['a new game', 'a home', 'food'], 'a new game', 'A new game is a want. It is nice to have, and you can live without it.'],
+      ['Which comes first, needs or wants?', ['needs', 'wants', 'neither'], 'needs', 'Needs come first, because you must have them to live. Wants wait until there is money left.'],
+      ['Why can nobody have everything?', ['money and time run out before wants do', 'stores close at night', 'wants are bad'], 'money and time run out before wants do', 'Money and time run out before wants do, so everyone has to choose.'],
+      ['What is this called?', ['a choice', 'a gift', 'income'], 'a choice', 'Picking one and letting the other go is a choice. The crayons are what you give up, for now.', 'You have money for one thing, and you pick the ball instead of the crayons.'],
+      ['When you choose one thing, what happens to the other?', ['you give it up', 'you get it too', 'it costs less'], 'you give it up', 'The thing you did not pick is what you give up, for now. Nobody can have everything.'],
+      ['You feel a little sad about the thing you gave up. Is that normal?', ['yes, giving something up is part of choosing', 'no, never', 'only on Tuesdays'], 'yes, giving something up is part of choosing', 'It is normal. Giving something up is part of choosing, and the sad feeling passes.'],
+      ['Which choice is a little of each?', ['one scoop and one cookie', 'three scoops', 'no ice cream and no cookie'], 'one scoop and one cookie', 'Sometimes you can choose a little of each, like one scoop of ice cream and one cookie, instead of two scoops.', 'You have money for two scoops of ice cream.'],
+      ['Is a candy bar a need or a want?', ['a want', 'a need', 'a choice'], 'a want', 'A candy bar is a want. It is nice to have, but your body does not need it to live.'],
+      ['What do we call picking one thing and letting the other go?', ['a choice', 'a trade', 'a deposit'], 'a choice', 'That is a choice. You pick one, and you let the other go for now.']];
+    const [prompt, choices, answer, explain, story = null] = pick(rng, Q);
+    return { type: 'choice', story, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
   'ek-income': (rng) => {
-    const Q = [['Money you get for doing a job is called what?', ['income', 'a gift', 'a price'], 'income', 'Income is money earned by working.'],
-      ['Grandma gives you money for your birthday. What is that?', ['a gift', 'income', 'a deposit'], 'a gift', 'You did not work for it, so it is a gift, not income.'],
-      ['Which one earns income?', ['walking a dog', 'a birthday card', 'a nap'], 'walking a dog', 'Walking a dog is a job, so the money is income.'],
-      ['Which one is a skill for a job?', ['being on time', 'being tall', 'being sleepy'], 'being on time', 'Being on time, following the steps and being kind are skills.'],
-      ['A baker earns income by doing what?', ['baking bread', 'eating bread', 'buying bread'], 'baking bread', 'Baking is the work, and the money for it is income.'],
-      ['More skills let you do what?', ['more jobs', 'fewer jobs', 'no jobs'], 'more jobs', 'The more skills you have, the more jobs you can do.']];
-    const [prompt, choices, answer, explain] = pick(rng, Q);
-    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+    const Q = [['Money you get for doing a job is called what?', ['income', 'a price', 'a gift'], 'income', 'Income is money you earn by working. People pay for work they want done.'],
+      ['Which one earns income?', ['walking a dog', 'a birthday card', 'a nap'], 'walking a dog', 'Walking a dog is a job someone wants done, so the money for it is income.'],
+      ['A baker earns income by doing what?', ['baking bread', 'eating bread', 'buying bread'], 'baking bread', 'Baking bread is the work, and the money people pay for the bread is the baker\'s income.'],
+      ['Grandma gives you money for your birthday. What is that?', ['a gift', 'income', 'a deposit'], 'a gift', 'It is a gift, not income, because you did not work for it.'],
+      ['Why does a job earn income?', ['people pay for work they want done', 'money grows on jobs', 'because it is Monday'], 'people pay for work they want done', 'People pay for work they want done, like a dog walked or bread baked. That is why a job earns income.'],
+      ['Which one is a skill for a job?', ['being on time', 'being sleepy', 'being tall'], 'being on time', 'Being on time, following the steps, doing the job well and being kind are skills.'],
+      ['More skills let you do what?', ['more jobs', 'fewer jobs', 'no jobs'], 'more jobs', 'The more skills you have, the more jobs you can do.'],
+      ['How do skills grow?', ['with practice', 'by sleeping', 'by wishing'], 'with practice', 'Skills grow with practice. Being on time is a skill you can practice every morning.'],
+      ['What are the five coins?', ['income', 'a gift', 'a need'], 'income', 'The coins are income, because Kofi worked for them. Walking the dog was a job the neighbor wanted done.', 'Kofi walks a neighbor\'s dog every day and gets five coins on Friday.'],
+      ['What are the two coins?', ['a gift', 'income', 'a price'], 'a gift', 'The coins are a gift. Kofi did not work for them, so they are not income.', 'An aunt gives Kofi two coins in a birthday card.'],
+      ['Which is a way to earn income?', ['raking leaves', 'getting a birthday card', 'finding a coin'], 'raking leaves', 'Raking leaves is work someone wants done, so the money for it is income.']];
+    const [prompt, choices, answer, explain, story = null] = pick(rng, Q);
+    return { type: 'choice', story, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
   'ek-saving': (rng) => {
     const r = rng();
     if (r < 0.3) {
       const per = randInt(rng, 1, 3); const weeks = randInt(rng, 2, 4); const ans = per * weeks;
-      return { type: 'choice', story: null, prompt: `You save ${per} ${per === 1 ? 'coin' : 'coins'} each week for ${weeks} weeks. How many coins?`, choices: shuffle(rng, [ans, ans + per, per + weeks, ans - 1].filter((v, i, a) => a.indexOf(v) === i && v > 0).slice(0, 3).map(String)), answer: String(ans), explain: `${Array.from({ length: weeks }, () => per).join(' + ')} = **${ans}**. Saving adds up.`, visual: null, explainVisual: null };
+      return { type: 'choice', story: null, prompt: `You save ${per} ${per === 1 ? 'coin' : 'coins'} each week for ${weeks} weeks. How many coins?`, choices: shuffle(rng, [ans, ans + per, per + weeks, ans - 1].filter((v, i, a) => a.indexOf(v) === i && v > 0).slice(0, 3).map(String)), answer: String(ans), explain: `${Array.from({ length: weeks }, () => per).join(' + ')} = **${ans}**. Saving adds up, a little every week.`, visual: null, explainVisual: null };
     }
     if (r < 0.55) {
       const put = randInt(rng, 4, 9); const take = randInt(rng, 1, 3); const ans = put - take;
-      return { type: 'choice', story: null, prompt: `You deposit ${put} coins and withdraw ${take}. How many are in the bank?`, choices: shuffle(rng, [ans, put + take, put, take].filter((v, i, a) => a.indexOf(v) === i).slice(0, 3).map(String)), answer: String(ans), explain: `A deposit puts in, a withdrawal takes out: ${put} take away ${take} is **${ans}**.`, visual: null, explainVisual: null };
+      return { type: 'choice', story: null, prompt: `You deposit ${put} coins and withdraw ${take}. How many are in the bank?`, choices: shuffle(rng, [ans, put + take, put, take].filter((v, i, a) => a.indexOf(v) === i).slice(0, 3).map(String)), answer: String(ans), explain: `A deposit puts in and a withdrawal takes out, so ${put} take away ${take} is **${ans}**.`, visual: null, explainVisual: null };
     }
     const Q = [['Using money now is called what?', ['spending', 'saving', 'a deposit'], 'spending', 'Spending is using money now. Saving is keeping it for later.'],
-      ['Keeping money for later is called what?', ['saving', 'spending', 'a gift'], 'saving', 'Saving keeps money for something later.'],
-      ['Putting money into the bank is called what?', ['a deposit', 'a withdrawal', 'a price'], 'a deposit', 'In: a deposit. Out: a withdrawal.'],
+      ['Keeping money for later is called what?', ['saving', 'spending', 'a gift'], 'saving', 'Saving is keeping money for later, so a big thing gets closer.'],
+      ['Putting money into the bank is called what?', ['a deposit', 'a withdrawal', 'a price'], 'a deposit', 'Putting money in is a deposit, and taking it out is a withdrawal.'],
       ['Taking money out of the bank is called what?', ['a withdrawal', 'a deposit', 'a trade'], 'a withdrawal', 'Taking money out is a withdrawal. Putting it in is a deposit.'],
-      ['A haircut is which kind of thing you buy?', ['a service', 'a good', 'a gift'], 'a service', 'Goods are things like bread and shoes, and a haircut is a service.']];
+      ['A haircut is which kind of thing you buy?', ['a service', 'a good', 'a gift'], 'a service', 'A haircut is a service, a thing someone does for you. Bread and shoes are goods, things you can hold.'],
+      ['Bread is which kind of thing you buy?', ['a good', 'a service', 'a deposit'], 'a good', 'Bread is a good, a thing you can hold. A haircut is a service.'],
+      ['What does a bank do?', ['keeps money safe for lots of people', 'eats coins', 'makes money disappear'], 'keeps money safe for lots of people', 'A bank keeps money safe for lots of people. Putting money in is a deposit.'],
+      ['Spend some, save some, and what?', ['share some', 'hide some', 'lose some'], 'share some', 'Some people also give some money to help others. Spend some, save some, and share some.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
@@ -17394,15 +17560,18 @@ Object.assign(GENERATORS, {
     const r = rng();
     if (r < 0.4) {
       const price = randInt(rng, 2, 6); const have = price + randInt(rng, 1, 4); const ans = have - price;
-      return { type: 'choice', story: `A toy costs ${price} coins and you have ${have}.`, prompt: 'How many coins are left after you buy it?', choices: shuffle(rng, [ans, have + price, price, ans + 1].filter((v, i, a) => a.indexOf(v) === i).slice(0, 3).map(String)), answer: String(ans), explain: `Count out the price: ${have} take away ${price} leaves **${ans}**.`, visual: null, explainVisual: null };
+      return { type: 'choice', story: `A toy costs ${price} coins and you have ${have}.`, prompt: 'How many coins are left after you buy it?', choices: shuffle(rng, [ans, have + price, price, ans + 1].filter((v, i, a) => a.indexOf(v) === i).slice(0, 3).map(String)), answer: String(ans), explain: `Count out the price. ${have} take away ${price} leaves **${ans}**, and what is left stays yours.`, visual: null, explainVisual: null };
     }
     const Q = [['A sticker for a marble is what?', ['a trade', 'income', 'a need'], 'a trade', 'A trade is a swap, a thing for a thing or a thing for money.'],
-      ['A place where buyers and sellers meet is called what?', ['a market', 'a bank', 'a gift'], 'a market', 'A store, a farm stand and a lemonade stand are all markets.'],
-      ['How many coins a thing costs is called what?', ['the price', 'the income', 'the deposit'], 'the price', 'The price is the coins it takes.'],
-      ['Why do most trades use money?', ['everyone takes it', 'it is heavy', 'it is a want'], 'everyone takes it', 'Money is easy to carry and everyone takes it.'],
-      ['A ball costs 8 coins and you have 6. What can you do?', ['save more', 'take it anyway', 'pay 6'], 'save more', 'Not enough coins means save more, or choose something else.']];
-    const [prompt, choices, answer, explain] = pick(rng, Q);
-    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+      ['When does a trade work?', ['when both people want what the other has', 'when one person grabs', 'when nobody wants anything'], 'when both people want what the other has', 'A trade works when both people want what the other has. Then both are glad after the swap.'],
+      ['Why do most trades use money?', ['everyone takes it', 'it is heavy', 'it is a want'], 'everyone takes it', 'Money is easy to carry and everyone takes it, so you do not need to find someone who wants your sticker.'],
+      ['A place where buyers and sellers meet is called what?', ['a market', 'a bank', 'a gift'], 'a market', 'A market is any place where buyers and sellers meet. A store, a farm stand and a lemonade stand are all markets.'],
+      ['How many coins a thing costs is called what?', ['the price', 'the income', 'the deposit'], 'the price', 'The price is how many coins a thing costs.'],
+      ['A ball costs 8 coins and you have 6. What can you do?', ['save more', 'take it anyway', 'pay 6'], 'save more', 'You cannot buy it yet. Not enough coins means save more, or choose something else.'],
+      ['Is a lemonade stand a market?', ['yes, buyers and sellers meet there', 'no, it is too small', 'only on Fridays'], 'yes, buyers and sellers meet there', 'A lemonade stand is a market, because buyers and sellers meet there.'],
+      ['Why does the trade not work?', ['Diego does not want what Sam has', 'stickers are not for trading', 'it is lunchtime'], 'Diego does not want what Sam has', 'A trade works only when both people want what the other has. That is why people use money, which everyone takes.', 'Sam wants a sticker, but Diego does not want Sam\'s toy car.']];
+    const [prompt, choices, answer, explain, story = null] = pick(rng, Q);
+    return { type: 'choice', story, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
   // Economics and personal finance, grades 3 to 5 (2026-09-29, pass FW): the money is computed each time; the concepts are said in the lesson first.
   'e3-skills': (rng) => {
@@ -17673,44 +17842,66 @@ Object.assign(GENERATORS, {
   },
   // Philosophy, K to 2 (2026-09-29, pass GL): spoken questions with tapped answers, every answer said in its lesson first.
   'pk-wonder': (rng) => {
-    const Q = [['Why is the sky blue? What kind of question is that?', ['a finding question', 'a wondering question', 'a wish'], 'a finding question', 'It is a finding question. Someone can tell you the answer, and then you know.'],
-      ['What makes a good friend? What kind of question is that?', ['a wondering question', 'a finding question', 'an order'], 'a wondering question', 'It is a wondering question. Nobody can just tell you, so you think about it.'],
-      ['When someone says a word, what can you ask?', ['what do you mean?', 'who cares?', 'what time is it?'], 'what do you mean?', 'Asking what do you mean helps.'],
-      ['A toy is a thing you play with. What can you ask about a stick?', ['but what about a stick?', 'is it blue?', 'how much is it?'], 'but what about a stick?', 'Asking but what about helps an idea get better.'],
-      ['Who asked wondering questions all day, long ago?', ['Socrates', 'a robot', 'a king'], 'Socrates', 'Socrates did. He lived long ago, and he is famous for his questions.'],
-      ['Who wrote down the questions Socrates asked?', ['Plato', 'nobody', 'a bird'], 'Plato', 'His friend Plato wrote them down. That is why we still have them.']];
-    const [prompt, choices, answer, explain] = pick(rng, Q);
-    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+    // Full standard, pass KF: every answer is spoken in the lesson, every explanation gives the reason, and a setup line
+    // (the fifth item) carries the situation a question needs.
+    const Q = [['Why is the sky blue? What kind of question is this?', ['a finding question', 'a wish', 'a wondering question'], 'a finding question', 'It is a finding question. Someone can tell you the answer, or you can look it up, and then you know.'],
+      ['What makes a good friend? What kind of question is this?', ['a wondering question', 'an order', 'a finding question'], 'a wondering question', 'It is a wondering question. Nobody can just tell you the answer, so you think about it.'],
+      ['What kind of question has an answer you can find?', ['a finding question', 'a wondering question', 'a silly question'], 'a finding question', 'A finding question has an answer you can find. Someone can tell you, or you can look it up.'],
+      ['How many legs does a dog have? What kind of question is this?', ['a finding question', 'a wondering question', 'a wish'], 'a finding question', 'You can find out by looking at a dog. A dog has four legs, so it is a finding question.'],
+      ['Is it ever okay to tell a lie? What kind of question is this?', ['a wondering question', 'a finding question', 'an order'], 'a wondering question', 'Nobody can look up the answer. You have to think about it, so it is a wondering question.'],
+      ['When someone says a word, what can you ask?', ['what do you mean?', 'who cares?', 'what time is it?'], 'what do you mean?', 'Ask what do you mean? Then you both know which idea you are talking about.'],
+      ['What can you ask about a stick?', ['but what about a stick?', 'how much is it?', 'is it blue?'], 'but what about a stick?', 'Ask but what about a stick? You play with a stick, so the idea of a toy has a hole in it, and fixing the hole makes the idea better.', 'A toy is a thing you play with.'],
+      ['What does asking but what about do to an idea?', ['finds a hole, and the idea gets better', 'makes it disappear', 'makes it bigger'], 'finds a hole, and the idea gets better', 'Asking but what about finds a hole in an idea, and fixing the hole makes the idea better.'],
+      ['Who asked wondering questions all day, long ago in Athens?', ['Socrates', 'a robot', 'a king'], 'Socrates', 'Socrates did, more than two thousand years ago, and he is famous for it.'],
+      ['Who wrote down the questions Socrates asked?', ['Plato', 'nobody', 'a bird'], 'Plato', 'His student Plato wrote them down, because Socrates wrote nothing down himself. That is why we still have them.'],
+      ['Did Socrates write his questions down himself?', ['no, his student Plato did', 'yes, in a big book', 'yes, on the wall'], 'no, his student Plato did', 'Socrates wrote nothing down. His student Plato wrote his questions down, and that is why we still have them.']];
+    const [prompt, choices, answer, explain, story = null] = pick(rng, Q);
+    return { type: 'choice', story, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
   'pk-because': (rng) => {
-    const Q = [['A reason comes after which word?', ['because', 'maybe', 'hello'], 'because', 'We should go outside, because the sun is out.'],
-      ['We should go outside, because my shirt is blue. Is that a reason?', ['no, it is not about going outside', 'yes', 'only on Tuesday'], 'no, it is not about going outside', 'A reason is about the thing.'],
-      ['Because I want to is what?', ['a wish', 'a reason', 'a question'], 'a wish', 'A wish is not a reason.'],
-      ['Because I said so is what?', ['an order', 'a reason', 'a song'], 'an order', 'An order is not a reason.'],
-      ['What is the best question?', ['how do you know?', 'who is first?', 'is it lunch?'], 'how do you know?', 'Ask how do you know? Then you go and look for yourself.'],
-      ['I want an apple, because I am hungry. Is that a reason?', ['yes', 'no', 'only for bananas'], 'yes', 'It is about the thing, and it is true.']];
-    const [prompt, choices, answer, explain] = pick(rng, Q);
-    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+    const Q = [['A reason comes after which word?', ['because', 'maybe', 'hello'], 'because', 'A reason comes after because. We should go outside, because the sun is out.'],
+      ['Is this a reason?', ['yes, it is about going outside and it is true', 'no, it is a wish', 'no, it is an order'], 'yes, it is about going outside and it is true', 'It is a reason. It is about going outside, and it is true, so anyone can check it by looking out the window.', 'We should go outside, because the sun is out.'],
+      ['Is this a reason?', ['no, it is not about going outside', 'yes', 'only on Tuesday'], 'no, it is not about going outside', 'A reason has to be about the thing. A blue shirt has nothing to do with going outside.', 'We should go outside, because my shirt is blue.'],
+      ['Is this a reason?', ['yes, it is about the apple and it is true', 'no, it is silly', 'no, it is an order'], 'yes, it is about the apple and it is true', 'It is a reason. Being hungry is about wanting food, and it is true.', 'I want an apple, because I am hungry.'],
+      ['Is this a reason?', ['no, Tuesday has nothing to do with apples', 'yes', 'only if it is sunny'], 'no, Tuesday has nothing to do with apples', 'It is silly, because Tuesday has nothing to do with apples. A reason has to be about the thing.', 'I want an apple, because it is Tuesday.'],
+      ['Because I want to is what?', ['a wish', 'a reason', 'a question'], 'a wish', 'Because I want to is a wish, not a reason, because wanting does not say anything about the thing.'],
+      ['Because I said so is what?', ['an order', 'a reason', 'a song'], 'an order', 'Because I said so is an order, not a reason, because it does not say anything about the thing.'],
+      ['A reason has to be about the thing, and it has to be what?', ['true', 'loud', 'long'], 'true', 'A reason is about the thing, and it is true. If it is not true, it cannot hold the idea up.'],
+      ['What is a great question when you are not sure?', ['how do you know?', 'is it lunch?', 'who is first?'], 'how do you know?', 'Ask how do you know? Then you go and look for yourself.'],
+      ['You do not know if it will rain. What do you do?', ['go and look', 'guess and shout', 'say it will'], 'go and look', 'Go and look. If you can see it, you can point to it, and other people can check it too.'],
+      ['Why is a reason other people can check the best kind?', ['they can see it too', 'it is longer', 'it is louder'], 'they can see it too', 'If you can see it or count it, you can point to it, and other people can check it too.']];
+    const [prompt, choices, answer, explain, story = null] = pick(rng, Q);
+    return { type: 'choice', story, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
   'pk-turns': (rng) => {
-    const Q = [['How many voices at a time?', ['one', 'two', 'all'], 'one', 'One voice at a time, so everyone can hear.'],
-      ['When it is not your turn, what do you do?', ['listen', 'shout', 'leave'], 'listen', 'Listen with your ears and your eyes.'],
-      ['To show you listened, what do you do?', ['say it back', 'say nothing', 'sing'], 'say it back', 'Say it back, like this: you think the class pet should be a fish.'],
+    const Q = [['When we talk about a wondering question, how many voices at a time?', ['one', 'two', 'all'], 'one', 'One voice at a time, so everyone can hear each idea.'],
+      ['When it is not your turn, what do you do?', ['listen', 'shout', 'leave'], 'listen', 'When it is not your turn, you listen, and your brain thinks about the words.'],
+      ['Whoever holds the talking stick does what?', ['talks', 'hides', 'runs'], 'talks', 'Whoever holds the stick talks, and everyone else listens. Then the stick moves on.'],
+      ['To show you listened, what do you do?', ['say it back', 'say nothing', 'sing'], 'say it back', 'Say it back. You think the class pet should be a fish. If your friend says yes, that is it, you understood.'],
       ['You think an idea is wrong. What do you say?', ['I do not agree with that reason', 'you are silly', 'go away'], 'I do not agree with that reason', 'Say I do not agree with that reason. Talk about the idea, not the friend.'],
-      ['Your friend gives a better reason. Changing your mind is what?', ['brave', 'losing', 'silly'], 'brave', 'Changing your mind for a better reason is brave. It is not losing.'],
-      ['Whoever holds the talking stick does what?', ['talks', 'hides', 'runs'], 'talks', 'Whoever holds the stick talks, and everyone else listens.']];
-    const [prompt, choices, answer, explain] = pick(rng, Q);
-    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+      ['Is this about the idea or about the friend?', ['about the friend', 'about the idea', 'about the stick'], 'about the friend', 'You are silly is about the friend, not the idea. Talk about the idea, like I do not agree with that reason.', 'Your friend says, you are silly.'],
+      ['Your friend gives a better reason. Changing your mind is what?', ['brave', 'losing', 'silly'], 'brave', 'Changing your mind for a better reason is brave, and it is how we learn. It is not losing.'],
+      ['A quiet reason is still what?', ['a reason', 'a whisper', 'nothing'], 'a reason', 'A quiet reason is still a reason. Loud is not the same as right.'],
+      ['Is loud the same as right?', ['no, a quiet reason is still a reason', 'yes, always', 'only outside'], 'no, a quiet reason is still a reason', 'Loud is not the same as right. A quiet reason is still a reason.'],
+      ['Can you think an idea is wrong and still like your friend?', ['yes, talk about the idea, not the friend', 'no, never', 'only on Fridays'], 'yes, talk about the idea, not the friend', 'Yes. You can think an idea is wrong and still like your friend. Talk about the idea, not the friend.'],
+      ['Why is changing your mind for a better reason not losing?', ['it is how we learn', 'because nobody saw', 'because reasons do not matter'], 'it is how we learn', 'Changing your mind for a better reason is how we learn, so it is brave, not losing.']];
+    const [prompt, choices, answer, explain, story = null] = pick(rng, Q);
+    return { type: 'choice', story, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
   'pk-fair': (rng) => {
     const Q = [['Four cookies and two children. What is fair?', ['two each', 'four for one', 'none'], 'two each', 'Two each is fair. Equal shares means the same for everyone.'],
-      ['One child has a hurt knee. Who gets the ice pack first?', ['the child with the hurt knee', 'the oldest', 'the loudest'], 'the child with the hurt knee', 'The child with the hurt knee gets it first. More for the one who needs it is fair too.'],
-      ['On the swing, how is it fair?', ['we take turns', 'the biggest swings', 'nobody swings'], 'we take turns', 'We take turns, and every turn is the same size.'],
-      ['An exception needs what?', ['a reason everyone can hear', 'a secret', 'a shout'], 'a reason everyone can hear', 'An exception needs a reason everyone can hear, so everyone knows why the rule bends.'],
-      ['What test can you ask about any rule?', ['would you like it if it were you?', 'is it big?', 'is it red?'], 'would you like it if it were you?', 'Ask, would you like it if it were you? If not, the rule needs another look.'],
-      ['When you cut the cake, who picks last?', ['the cutter', 'the tallest', 'the first one'], 'the cutter', 'The cutter picks last, so the cutter makes the pieces even.']];
-    const [prompt, choices, answer, explain] = pick(rng, Q);
-    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+      ['What are equal shares?', ['the same for everyone', 'more for the biggest', 'more for the loudest'], 'the same for everyone', 'Equal shares are the same for everyone, like two cookies each.'],
+      ['One child has a hurt knee. Who gets the ice pack first?', ['the child with the hurt knee', 'the loudest', 'the oldest'], 'the child with the hurt knee', 'The child with the hurt knee gets it first. More for the one who needs it is fair too, and everyone can hear the reason.'],
+      ['More for the one who needs it is fair when what?', ['everyone can hear the reason', 'nobody is looking', 'it is a secret'], 'everyone can hear the reason', 'It is fair by need when everyone can hear the reason, like a hurt knee.'],
+      ['On the swing, how is it fair?', ['we take turns', 'the biggest swings', 'nobody swings'], 'we take turns', 'We take turns, and every turn is the same size, because there is only one swing.'],
+      ['A rule has an exception. What does the exception need?', ['a reason everyone can hear', 'a secret', 'a shout'], 'a reason everyone can hear', 'An exception needs a reason everyone can hear, so everyone knows why the rule bends.'],
+      ['Is this a reason for an exception?', ['no, wanting it is not a reason', 'yes, wanting is enough', 'yes, if he shouts'], 'no, wanting it is not a reason', 'Wanting it is not a reason. A hurt knee is a reason, because everyone can hear why.', 'Ben wants to go first on the swing, because he wants to.'],
+      ['What test can you ask about any rule?', ['would you like it if it were you?', 'is it big?', 'is it red?'], 'would you like it if it were you?', 'Ask would you like it if it were you? If not, the rule needs another look.'],
+      ['When you cut the cake, who picks last?', ['the cutter', 'the tallest', 'the first one'], 'the cutter', 'The cutter picks last, so the cutter makes every piece a good one.'],
+      ['Why does the cutter cut even pieces?', ['the cutter picks last', 'the knife is sharp', 'the cake is round'], 'the cutter picks last', 'The cutter picks last, so the cutter wants every piece to be a good one, and the pieces come out even.'],
+      ['Would you like it if it were you, and you were the shortest?', ['no, so the rule needs another look', 'yes, rules are rules', 'only if it is sunny'], 'no, so the rule needs another look', 'If you would not like it, the rule needs another look. A rule should work for everyone.', 'A rule says the tallest child always goes first.']];
+    const [prompt, choices, answer, explain, story = null] = pick(rng, Q);
+    return { type: 'choice', story, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
   // Psychology, grades 3 to 5 (2026-09-29, pass GO): every answer is said in its lesson first.
   'py3-brain': (rng) => {
@@ -18036,41 +18227,63 @@ Object.assign(GENERATORS, {
   // untaught-answer check proves. The prefix agk keeps these apart from every other bank.
   // ---------------------------------------------------------------------------------------------------------------
   'agk-plants': (rng) => {
-    const Q = [['Which part of a plant is a carrot?', ['a root', 'a flower', 'a fruit'], 'a root', 'A carrot is a root. It grows under the ground.'],
-      ['What part of the plant is lettuce?', ['leaves', 'roots', 'seeds'], 'leaves', 'Lettuce is leaves.'],
-      ['Broccoli is a bunch of tiny what?', ['flower buds', 'roots', 'rocks'], 'flower buds', 'Broccoli is a bunch of tiny flower buds, picked before they open.'],
-      ['Where are an apple\'s seeds?', ['inside', 'on top', 'under the ground'], 'inside', 'An apple is a fruit, and its seeds are inside.'],
-      ['Corn and wheat are what part of a plant?', ['seeds', 'roots', 'leaves'], 'seeds', 'Wheat seeds become flour for bread.'],
-      ['Who grows plants for us to eat?', ['farmers', 'pilots', 'dentists'], 'farmers', 'Farmers grow plants for us to eat.']];
+    // Full standard, pass KH: every answer is spoken in the lesson and every explanation gives the reason.
+    const Q = [['Who grows plants for us to eat?', ['farmers', 'pilots', 'dentists'], 'farmers', 'Farmers grow plants for us to eat, and for animals too.'],
+      ['Which part of a plant is a carrot?', ['a root', 'a flower', 'a fruit'], 'a root', 'A carrot is a root. It grows under the ground and stores food for the plant.'],
+      ['What part of the plant is lettuce?', ['leaves', 'seeds', 'roots'], 'leaves', 'Lettuce is leaves, the green parts we tear off and eat.'],
+      ['Which plant part is asparagus?', ['a young stem', 'a root', 'a seed'], 'a young stem', 'Asparagus is a young stem, cut while it is still tender.'],
+      ['Broccoli is a bunch of tiny what?', ['flower buds', 'rocks', 'roots'], 'flower buds', 'Broccoli is a bunch of tiny flower buds, picked before they open into yellow flowers.'],
+      ['Where are an apple\'s seeds?', ['inside', 'on top', 'under the ground'], 'inside', 'An apple is a fruit, and its seeds are inside. Cut it across, and they sit in a little star.'],
+      ['Corn and wheat are what part of a plant?', ['seeds', 'leaves', 'roots'], 'seeds', 'Corn and wheat are seeds. Wheat seeds are ground into flour for bread.'],
+      ['What is flour made from?', ['wheat seeds', 'carrot roots', 'lettuce leaves'], 'wheat seeds', 'Wheat seeds are ground into flour, and flour becomes our bread.'],
+      ['Why does popcorn pop?', ['the water inside heats up and bursts out', 'it is scared', 'it is a flower'], 'the water inside heats up and bursts out', 'The little bit of water inside the seed heats up and bursts out, and the seed pops open.'],
+      ['What do cows eat?', ['grass and hay', 'apples only', 'popcorn'], 'grass and hay', 'Cows eat plants too, like grass and hay. A farmer grows plants for animals as well as for people.'],
+      ['A tomato has seeds inside. What part of the plant is it?', ['a fruit', 'a root', 'a leaf'], 'a fruit', 'A tomato is a fruit, because its seeds are inside, just like an apple.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
   'agk-grow': (rng) => {
-    const Q = [['What does a plant start as?', ['a seed', 'a rock', 'a leaf'], 'a seed', 'The seed opens, and a tiny root goes down.'],
-      ['A tiny plant with a new shoot is called what?', ['a seedling', 'a fruit', 'a flower'], 'a seedling', 'Seed, then seedling.'],
+    const Q = [['What does a plant start as?', ['a seed', 'a rock', 'a leaf'], 'a seed', 'A plant starts as a seed. The seed opens, and a tiny root goes down into the soil.'],
+      ['What comes out of the seed first?', ['a tiny root', 'a flower', 'a fruit'], 'a tiny root', 'A tiny root goes down into the soil first. Then a small shoot comes up.'],
+      ['A tiny plant with a new shoot is called what?', ['a seedling', 'a flower', 'a fruit'], 'a seedling', 'A small shoot comes up, and now the plant is a seedling.'],
       ['What do the flowers make?', ['fruit', 'rocks', 'rain'], 'fruit', 'The flowers make fruit, and the fruit has new seeds inside.'],
-      ['A baby bean plant looks like what?', ['its parent', 'a tree', 'a cat'], 'its parent', 'It grows the same kind of leaves as its parent.'],
-      ['Which one does a plant need to grow?', ['sunlight', 'a toy', 'a shoe'], 'sunlight', 'Air, sunlight, water, nutrients in the soil, and room.'],
-      ['Why do farmers plant seeds apart?', ['so each plant has room', 'to hide them', 'for fun'], 'so each plant has room', 'Room to grow is something every plant needs.']];
+      ['What comes after the plant grows flowers?', ['fruit with new seeds', 'a seed', 'a root'], 'fruit with new seeds', 'Seed, seedling, plant, flower, fruit. The fruit holds new seeds, and they start it all over again.'],
+      ['A baby bean plant looks like what?', ['its parent', 'a tree', 'a cat'], 'its parent', 'A baby bean plant looks like its parent, with the same kind of leaves.'],
+      ['What does a sunflower seed grow into?', ['a sunflower', 'a bean', 'a tree'], 'a sunflower', 'A sunflower seed grows into a sunflower, never into a bean. Young plants look like their parents.'],
+      ['Which one does a plant need to grow?', ['sunlight', 'a toy', 'a shoe'], 'sunlight', 'A plant needs air, sunlight, water, nutrients in the soil, and room to grow.'],
+      ['What are nutrients?', ['tiny bits in the soil that help a plant grow strong', 'the plant\'s food', 'little rocks'], 'tiny bits in the soil that help a plant grow strong', 'Nutrients are tiny bits in the soil that help a plant grow strong. A plant makes its own food from sunlight.'],
+      ['Why do farmers plant seeds apart?', ['so each plant has room', 'to hide them', 'for fun'], 'so each plant has room', 'Each plant needs room. Two seeds too close fight for water and light.'],
+      ['How does a plant make its food?', ['from sunlight', 'from rocks', 'from the farmer'], 'from sunlight', 'A plant makes its own food from sunlight, in its leaves.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
   'agk-animals': (rng) => {
-    const Q = [['A barn or a shed is what for animals?', ['shelter', 'food', 'a toy'], 'shelter', 'A barn or a shed is shelter. It keeps the animals dry in the rain.'],
-      ['What does a hen pick up with her beak?', ['seeds', 'rocks', 'hats'], 'seeds', 'A hen picks up seeds with her beak.'],
-      ['What does a goat grab with her lips?', ['leaves', 'shoes', 'cars'], 'leaves', 'A goat grabs leaves with her lips.'],
+    const Q = [['Which does a farm animal need?', ['shelter', 'a toy', 'a hat'], 'shelter', 'Farm animals need air, water, food, space, and shelter.'],
+      ['A barn or a shed is what for animals?', ['shelter', 'a toy', 'food'], 'shelter', 'A barn or a shed is shelter. It keeps the animals dry in the rain and cool on a hot day.'],
+      ['Why does a hen use her beak to pick up seeds?', ['she has no hands', 'she likes rocks', 'she cannot see'], 'she has no hands', 'A hen has no hands, so her beak does the picking up.'],
+      ['What does a goat grab with her lips?', ['leaves', 'cars', 'shoes'], 'leaves', 'A goat grabs leaves with her lips, because she has no hands either.'],
+      ['How much can a cow see?', ['almost all the way around', 'only straight ahead', 'nothing at all'], 'almost all the way around', 'A cow can see almost all the way around, and her ears turn to hear.'],
       ['What do cows give us?', ['milk', 'wool', 'eggs'], 'milk', 'Cows give milk, and hens lay eggs.'],
-      ['Which farm animal lays eggs?', ['hens', 'cows', 'sheep'], 'hens', 'Hens lay eggs.'],
-      ['What do sheep grow?', ['wool', 'milk', 'apples'], 'wool', 'The wool is made into warm sweaters.']];
+      ['Which farm animal lays eggs?', ['hens', 'sheep', 'cows'], 'hens', 'Hens lay eggs. Cows give milk, and sheep grow wool.'],
+      ['What do sheep grow?', ['wool', 'apples', 'milk'], 'wool', 'Sheep grow wool. A farmer shears it off, and it is spun into yarn for warm sweaters.'],
+      ['What is wool spun into?', ['yarn', 'milk', 'bread'], 'yarn', 'Wool is spun into yarn, and the yarn is made into warm sweaters.'],
+      ['Which body part helps a horse run?', ['strong legs', 'a beak', 'wool'], 'strong legs', 'A horse has strong legs to run.'],
+      ['Who takes care of farm animals every day?', ['farmers', 'the animals', 'nobody'], 'farmers', 'Farmers take care of their animals every day, with food, water and a safe place to sleep.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
   'agk-day': (rng) => {
-    const Q = [['When does a farmer\'s day start?', ['early', 'at bedtime', 'never'], 'early', 'A farmer starts early, before the sun comes up, and feeds the animals first.'],
-      ['What happens when rain falls on a farm?', ['plants grow', 'cars go', 'toys break'], 'plants grow', 'Rain helps plants grow, but too much rain can drown them.'],
+    const Q = [['When does a farmer\'s day start?', ['early', 'at bedtime', 'never'], 'early', 'A farmer starts early and feeds the animals first.'],
+      ['What does a farmer do first in the morning?', ['feeds the animals', 'goes to the store', 'takes a nap'], 'feeds the animals', 'The farmer feeds the animals, checks their water, and looks at the sky.'],
+      ['What happens when rain falls on a farm?', ['plants grow', 'toys break', 'cars go'], 'plants grow', 'Rain helps plants grow, but too much rain can drown them.'],
+      ['Can too much rain hurt plants?', ['yes, too much rain can drown them', 'no, never', 'only on Mondays'], 'yes, too much rain can drown them', 'Too much rain can drown plants, so weather matters on a farm.'],
+      ['Hot sun dries the soil. What does the farmer do?', ['waters the plants', 'adds more sun', 'picks the rocks'], 'waters the plants', 'When hot sun dries the soil, the farmer waters the plants.'],
       ['What do animals need in the cold?', ['a warm barn', 'ice cream', 'a pool'], 'a warm barn', 'In the cold, animals need a warm barn.'],
       ['Where does milk go after the farm?', ['to the store', 'to the moon', 'to the sea'], 'to the store', 'Milk goes to the store, and from the store to your table.'],
-      ['Who finds its own food in the woods?', ['a deer', 'a farm cow', 'a pet fish'], 'a deer', 'A deer is wild and finds its own food. A farm cow is cared for by a farmer.']];
+      ['Who finds its own food in the woods?', ['a deer', 'a farm cow', 'a pet fish'], 'a deer', 'A deer is wild and finds its own food. A farm cow is cared for by a farmer.'],
+      ['Who do farm animals count on?', ['people', 'the deer', 'nobody'], 'people', 'Farm animals count on people. A farmer brings them food, water and shelter.'],
+      ['Why does corn grow in rows?', ['a farmer planted it', 'it likes lines', 'the wind did it'], 'a farmer planted it', 'Corn grows in rows because a farmer planted it. A wild flower grows where its seed happened to fall.'],
+      ['Eggs come to the store from where?', ['a farm', 'the moon', 'a bank'], 'a farm', 'Eggs come from hens on a farm. A farmer gathers them, and a truck brings them to the store.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },

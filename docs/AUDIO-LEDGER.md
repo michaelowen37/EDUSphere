@@ -1,6 +1,6 @@
 # Audio ledger
 
-Generated 2026-10-04 by tools/audio-ledger.mjs. Every clip the app can play in a recorded voice is a row of docs/AUDIO-LEDGER.csv: its key (the file name, audio/<key>.mp3, that the app already looks for), its group (the story or lesson it belongs to) and the words with their Eleven v4 audio tags. 6925 clips, 1,276,749 characters in all; the longest clip is 508 characters and the longest whole story 2,751, far under Eleven v4's 10,000 a request. 144 stories carry hand-written tags so far (the writing review adds them course by course); the rest open with their age band's voice direction only.
+Generated 2026-10-05 by tools/audio-ledger.mjs. Every clip the app can play in a recorded voice is a row of docs/AUDIO-LEDGER.csv: its key (the file name, audio/<key>.mp3, that the app already looks for), its group (the story or lesson it belongs to) and the words with their Eleven v4 audio tags. 6941 clips, 1,279,255 characters in all; the longest clip is 508 characters and the longest whole story 2,751, far under Eleven v4's 10,000 a request. 144 stories carry hand-written tags so far (the writing review adds them course by course); the rest open with their age band's voice direction only.
 
 ## How to make the audio
 
@@ -17,7 +17,7 @@ ElevenLabs counts characters, tags included, so this is the size of each part of
 
 | Band | Clips | Characters |
 |---|---|---|
-| Pre-K to grade 2 | 2869 | 325,089 |
+| Pre-K to grade 2 | 2885 | 327,595 |
 | Grades 3 to 5 | 1263 | 278,553 |
 | Grades 6 to 8 | 1138 | 272,072 |
 | Grades 9 to college | 1655 | 401,035 |
@@ -41,7 +41,7 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 |---|---|
 | story title | 615 |
 | story | 3887 |
-| lesson line | 1505 |
+| lesson line | 1521 |
 | long story title | 102 |
 | long story | 816 |
 
@@ -1281,7 +1281,7 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 - S3050-2: [curious] Noor asked him what he meant by toy. Sami thought hard and said a toy is a thing you play with. Noor held up the stick and said she was playing with it right now.
 - S3050-3: [thoughtful] That is a wondering question, said their dad. Why the sky is blue is a finding question. You can look it up. What a toy is, you have to think about.
 - S3050-4: Sami tried again. A toy is a thing you play with that came from a store, he said. [triumphant] But what about the box, said Noor. They played in a box all summer. Nobody bought it as a toy.
-- S3050-5: [laughing] Sami laughed. But what about was a good test. Every time he said what a toy was, Noor found a hole. Long ago, their dad said, a man named Socrates asked questions all day. His friend Plato wrote them down.
+- S3050-5: [laughing] Sami laughed. But what about was a good test. Every time he said what a toy was, Noor found a hole. Long ago, their dad said, a man named Socrates asked questions all day. His student Plato wrote them down.
 - S3050-6: [slowly, warmly] Some questions you find out. Some questions you think about. Both are good questions, and a stick can be a sword either way.
 
 ### The blue shirt reason (S3056, because-k)

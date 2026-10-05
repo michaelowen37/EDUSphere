@@ -2,6 +2,24 @@
 
 The newest block is what educators see once, in a pop-up on the classroom page, after each update. Write it the way Mikey talks to a teacher: conversational, complete sentences, say what changed and why it matters, and skip the shorthand (2026-09-23). Two to four items. The date line is the version stamp.
 
+## October 4, 2026 (on the farm)
+
+- The kindergarten farm lessons now have spoken lessons written for the ear, and every answer comes with its reason.
+- Nutrients in the soil are now called what they are, tiny bits that help a plant grow strong, never the plant's food, because a plant makes its own food from sunlight.
+- Children now hear why a hen uses her beak, why popcorn pops, and why corn grows in rows while a wild flower grows where its seed happened to fall.
+
+## October 4, 2026 (needs, wants, work and saving)
+
+- The kindergarten money lessons now have spoken lessons written for the ear, and every answer comes with its reason.
+- Children now hear why nobody can have everything, that a little sad feeling after a choice is normal, and that sometimes you can choose a little of each.
+- The national economics standards these lessons follow are now the Council for Economic Education's 2025 edition.
+
+## October 4, 2026 (I wonder)
+
+- The kindergarten wondering lessons now have spoken lessons written for the ear, and every answer comes with its reason.
+- Plato is now called what he was, a student of Socrates, and children hear that Socrates lived in Athens more than two thousand years ago and wrote nothing down himself.
+- Every example of a reason now says why it is or is not one, so a child hears that a blue shirt has nothing to do with going outside, and Tuesday has nothing to do with apples.
+
 ## October 4, 2026 (my brain and my feelings)
 
 - The kindergarten lessons about the brain, memory, feelings and friends now have spoken lessons written for the ear, and every answer comes with its reason.

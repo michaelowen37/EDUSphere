@@ -164,3 +164,22 @@ Mikey's example: the pre-K 3 Triangles lesson says a slice of pizza is almost a 
 - When a standard names a count the world has outgrown (the five senses), teach the count the standard asks for and tell the truth beside it, so nothing has to be unlearned later.
 - For feelings, the clue comes before the name. A child identifies a feeling by what the body does (hot and tight, shaky with a fast heart) and only then can say what it is called.
 - Quote a national framework from its own document (CASEL's 2020 SEL Framework), never from the paraphrase that reached the plan.
+
+## Learned in pass KF (kindergarten I wonder)
+
+- A word a lesson uses about a person in history is a fact to check like a date. Plato was called Socrates's friend; he was his student, and the story said it too.
+- When a pass retires a rule a learner was taught (listening with your ears and your eyes, pass KD), search every lesson and long story for the old wording in the same pass. I wonder had it twice.
+- An example that shows a rule should say which part of the rule it passes or fails (a blue shirt is not about going outside; Tuesday has nothing to do with apples), or the child only hears that one is silly.
+
+## Learned in pass KG (kindergarten Needs, wants, work and saving)
+
+- A national framework has editions too. The Council for Economic Education's third edition (2025) replaced the 2010 standards the project cites, with new numbers and new words; check the newest edition before quoting any framework, as pass JY learned for TEKS.
+- A computed question's explanation is read like any other. Colons hid in the sums (a deposit puts in, a withdrawal takes out: 8 take away 3 is 5).
+- When a long story says a rule the lesson never does (a trade works when both want what the other has), the lesson gets it; the story is not where a child is taught.
+- A sad feeling after a choice is part of the lesson, not a flaw in the child; name it as normal.
+
+## Learned in pass KH (kindergarten On the farm)
+
+- An earmark can be covered by a course in another subject. The science earmark listed the plant and animal codes, and the agriculture course had mapped every one of them; read every plan that cites the section before building anything from the list.
+- A fact settled in one course must hold in every course. Looking at the world stopped calling nutrients food in pass JY, and From seed to plant still did; grep every lesson for a corrected claim in the pass that corrects it.
+- A bank at the round's bare minimum (five questions for a five-question round) is a bank to grow, since no round can vary.

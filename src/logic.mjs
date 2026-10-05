@@ -5094,7 +5094,7 @@ function COUNTING_MODULES() { return [
         { say: 'You can start at any ten. Each jump is ten, never one, so after forty comes fifty, not forty-one.', show: { kind: 'tens', count: 4 } },
       ],
     },
-    sources: ['Aligned with Texas TEKS K.5A (recite numbers up to at least 100 by ones and tens beginning with any given number) and Common Core K.CC.A.1 (count to 100 by ones and by tens).'],
+    sources: ['Aligned with Texas TEKS K.5 (recite numbers up to at least 100 by ones and tens beginning with any given number; paragraph (5) of 19 TAC 111.2 is a single expectation, so it takes no letter) and Common Core K.CC.A.1 (count to 100 by ones and by tens).'],
     generators: ['kt-next-ten', 'kt-how-many-tens', 'kt-tap-tens', 'kt-before-ten', 'kt-count-on'],
   },
   {
@@ -5219,6 +5219,64 @@ function COUNTING_MODULES() { return [
     },
     sources: ['Aligned with Texas TEKS K.2G (compare sets of objects up to at least 20 in each set using comparative language) and Common Core K.CC.C.6 (comparing two groups by matching and counting).'],
     generators: ['k-tap-more-10', 'k-tap-fewer-10', 'k-tap-more-10', 'k-tap-fewer-10', 'k-tap-more-10'],
+  },
+  {
+    id: 'coins-k',
+    order: 15,
+    title: 'Pennies, nickels, dimes and quarters',
+    tagline: 'The four coins, by name',
+    requires: ['count-to-10'],
+    lesson: {
+      // Earmark E2, pass KL (TEKS K.4, identify U.S. coins by name, including pennies, nickels, dimes, and quarters): no
+      // kindergarten lesson named the coins. Each coin is told apart the way a five-year-old can, by color, size and edge
+      // (a penny is copper colored with a smooth edge; a nickel is silver colored, thick and smooth edged, bigger than a
+      // penny; a dime is the smallest, thin, with a reeded edge; a quarter is the biggest, reeded), with its value as extra
+      // context, and the surprise that the smallest coin is not worth the least. Every fact checked against the U.S. Mint.
+      paragraphs: ['A coin is a small, round piece of metal money. In the United States you will meet four coins most, a penny, a nickel, a dime and a quarter. A penny is the only brown one, the color of copper, and its edge is smooth. A penny is worth one cent.', 'A nickel is silver colored and thick, with a smooth edge, and it is bigger than a penny. A nickel is worth five cents. A dime is the smallest coin of all, thin and silver colored, with tiny ridges all around its edge. Small does not mean worth little. A dime is worth ten cents, more than a nickel, even though it is smaller.', 'A quarter is the biggest of the four, silver colored, and its edge has ridges, the same as a dime. A quarter is worth twenty-five cents. Every coin has a face on the front. George Washington is on the quarter, and Abraham Lincoln is on the penny. They were presidents long ago.', 'To tell the coins apart, look and feel. Brown means a penny. The smallest coin is the dime. The biggest coin is the quarter. Silver, smooth around the edge and bigger than a penny means the nickel.'],
+      keyIdea: 'A penny is brown. The dime is the smallest coin, the quarter is the biggest, and the nickel is silver with a smooth edge, bigger than a penny.',
+      example: { kind: 'pair', a: { kind: 'icon', name: 'dime' }, b: { kind: 'icon', name: 'quarter' }, caption: 'A dime is the smallest coin. A quarter is the biggest.' },
+      script: [
+        { say: 'A coin is a small, round piece of metal money. In the United States you will meet four coins most, a penny, a nickel, a dime and a quarter.', show: { kind: 'pair', a: { kind: 'icon', name: 'penny' }, b: { kind: 'icon', name: 'quarter' } } },
+        { say: 'This is a penny. A penny is the only brown one, the color of copper, and its edge is smooth. A penny is worth one cent.', show: { kind: 'icon', name: 'penny' } },
+        { say: 'This is a nickel. A nickel is silver colored and thick, with a smooth edge, and it is bigger than a penny. A nickel is worth five cents.', show: { kind: 'icon', name: 'nickel' } },
+        { say: 'This is a dime. A dime is the smallest coin of all, thin and silver colored, with tiny ridges all around its edge. Run your fingernail around it, and you can feel them.', show: { kind: 'icon', name: 'dime' } },
+        { say: 'Small does not mean worth little. A dime is worth ten cents, more than a nickel, even though it is smaller.', show: { kind: 'pair', a: { kind: 'icon', name: 'dime' }, b: { kind: 'icon', name: 'nickel' } } },
+        { say: 'This is a quarter. A quarter is the biggest of the four, silver colored, and its edge has ridges, the same as a dime. A quarter is worth twenty-five cents.', show: { kind: 'icon', name: 'quarter' } },
+        { say: 'Every coin has a face on the front. George Washington is on the quarter, and Abraham Lincoln is on the penny. They were presidents long ago.', show: { kind: 'pair', a: { kind: 'icon', name: 'quarter' }, b: { kind: 'icon', name: 'penny' } } },
+        { say: 'To tell the coins apart, look and feel. Brown means a penny. The smallest coin is the dime. The biggest coin is the quarter. Silver, smooth around the edge and bigger than a penny means the nickel.', show: { kind: 'flow', steps: ['penny', 'nickel', 'dime', 'quarter'] } },
+      ],
+      pictures: [{ serial: 'P43', step: 0, alt: 'The four United States coins side by side, a penny, a nickel, a dime and a quarter' }],
+    },
+    sources: ['Aligned with Texas TEKS K.4 (identify U.S. coins by name, including pennies, nickels, dimes, and quarters; paragraph (4) of 19 TAC 111.2 is a single expectation, so it takes no letter) and Common Core 2.MD.C.8 (solve word problems involving dollar bills, quarters, dimes, nickels, and pennies, using $ and ¢ symbols appropriately), which Common Core places in grade 2.'],
+    generators: ['kc-name-coin', 'kc-tap-coin', 'kc-which-coin', 'kc-name-coin', 'kc-tap-coin'],
+  },
+  {
+    id: 'picture-graphs-k',
+    order: 16,
+    title: 'Picture graphs',
+    tagline: 'Show what you counted, then see which has more',
+    requires: ['sorting'],
+    lesson: {
+      // Earmark E2, pass KL (TEKS K.8B, use data to create real-object and picture graphs, and K.8C, draw conclusions from
+      // real-object and picture graphs): a real-object graph lines the things up in rows from one edge, a picture graph draws
+      // one picture for each thing so the graph outlives the things, and the conclusions a five-year-old draws are more,
+      // fewer, the same, how many in each row, how many in all, how many more, and the most and fewest of three rows.
+      paragraphs: ['After we sort things and count them, we can show the counts in a graph. A graph lets you see which group has more without counting again. First, a real-object graph. Line up the real things in rows, the balls in one row and the teddy bears in another, both rows starting at the same end. The row that reaches farther has more.', 'Now a picture graph. Draw one picture for each thing, one picture for each ball and one for each bear. The graph stays even after the toys are put away.', 'A graph answers questions. How many balls? Three. Which has fewer? The bears, because two is fewer than three. There is one more ball than bears, because three is one more than two. How many toys in all? Three and two make five.', 'A graph can have three rows. This week had four sunny days, two rainy days and one snowy day. The sunny row is the longest, so sunny days were the most, and snowy days were the fewest.'],
+      keyIdea: 'A real-object graph lines up the real things in rows. A picture graph draws one picture for each thing. The longer row has more.',
+      example: { kind: 'picto', rows: [{ icon: 'ball', count: 3 }, { icon: 'teddy', count: 2 }], caption: 'Three balls and two teddy bears. The ball row is longer, so there are more balls.' },
+      script: [
+        { say: 'After we sort things and count them, we can show the counts in a graph. A graph lets you see which group has more without counting again.', show: { kind: 'picto', rows: [{ icon: 'ball', count: 3 }, { icon: 'teddy', count: 2 }] } },
+        { say: 'First, a real-object graph. Line up the real things in rows, the balls in one row and the teddy bears in another, both rows starting at the same end.', show: { kind: 'picto', rows: [{ icon: 'ball', count: 3 }, { icon: 'teddy', count: 2 }] } },
+        { say: 'The row that reaches farther has more. The ball row is longer, so there are more balls. Count to see how many. One, two, three balls, and one, two teddy bears.', show: { kind: 'picto', rows: [{ icon: 'ball', count: 3 }, { icon: 'teddy', count: 2 }] } },
+        { say: 'Now a picture graph. Draw one picture for each thing, one picture for each ball and one for each bear. The graph stays even after the toys are put away.', show: { kind: 'picto', rows: [{ icon: 'ball', count: 3 }, { icon: 'teddy', count: 2 }] } },
+        { say: 'A graph answers questions. How many balls? Three. Which has fewer? The bears, because two is fewer than three. There is one more ball than bears, because three is one more than two. How many toys in all? Three and two make five.', show: { kind: 'picto', rows: [{ icon: 'ball', count: 3 }, { icon: 'teddy', count: 2 }] } },
+        { say: 'A graph can have three rows. This week had four sunny days, two rainy days and one snowy day. The sunny row is the longest, so sunny days were the most, and snowy days were the fewest.', show: { kind: 'picto', rows: [{ icon: 'sun', count: 4 }, { icon: 'rain', count: 2 }, { icon: 'snow', count: 1 }] } },
+        { say: 'Sort, count, and make a graph. The graph shows you which has more, which has fewer, and how many in all.', show: { kind: 'flow', steps: ['sort', 'count', 'graph'] } },
+      ],
+      pictures: [{ serial: 'P44', step: 1, alt: 'Two rows of toys lined up on a rug, balls in one row and teddy bears in a shorter row, both rows starting at the same edge' }],
+    },
+    sources: ['Aligned with Texas TEKS K.8B (use data to create real-object and picture graphs) and K.8C (draw conclusions from real-object and picture graphs), and Common Core 1.MD.C.4 (organize, represent, and interpret data with up to three categories; ask and answer questions about the total number of data points, how many in each category, and how many more or less are in one category than in another), which Common Core places in grade 1.'],
+    generators: ['kg-which-more', 'kg-how-many', 'kg-in-all', 'kg-most-three', 'kg-make-graph'],
   },
 ]; }
 
@@ -9236,7 +9294,7 @@ function KINDER_CIVICS_MODULES() { return [
     lesson: {
       // Full standard (pass JZ): rules keep us safe and make things fair (TEKS K.7A, K.7B), grown-ups help us follow them (K.8A),
       // the five helpers its questions ask about, and the good choices its questions ask, each said aloud before it is asked.
-      paragraphs: ['A rule tells us what to do. Rules keep us safe, like stopping at a red light to let the other cars go and walking in the hall so nobody bumps or falls. Rules also make things fair, like waiting our turn.', 'Grown-ups help us follow rules, like a parent at home, a teacher at school and a police officer in town.', 'Helpers do jobs for everyone. A firefighter puts out fires, a doctor helps when you are sick, a teacher helps you learn, a mail carrier brings the mail, and a police officer keeps people safe on the street. We help too, with good choices like listening, throwing away our trash and helping a friend.'],
+      paragraphs: ['A rule tells us what to do. Rules keep us safe, like stopping at a red light to let the other cars go and walking in the hall so nobody bumps or falls. Rules also make things fair, like waiting our turn.', 'Grown-ups help us follow rules, like a parent at home, a teacher at school and a police officer in town. When a rule is broken, the grown-up in charge enforces it, which means making sure the rule is followed. A teacher reminds you of the rule, stops the unsafe thing, and may give a consequence, like sitting out of the game for a minute.', 'Helpers do jobs for everyone. A firefighter puts out fires, a doctor helps when you are sick, a teacher helps you learn, a mail carrier brings the mail, and a police officer keeps people safe on the street. We help too, with good choices like listening, throwing away our trash and helping a friend.'],
       keyIdea: 'Rules keep us safe and make things fair. Helpers do jobs for everyone.',
       example: { kind: 'sign', text: 'STOP', color: '#D9534F', caption: 'A red sign means stop. Rules keep everyone safe.', formula: 'STOP' },
       script: [
@@ -9244,13 +9302,15 @@ function KINDER_CIVICS_MODULES() { return [
         { say: 'Rules keep us safe. We stop at a red light to let the other cars go, and we walk in the hall so nobody bumps or falls.', show: { kind: 'sign', text: 'STOP', color: '#D9534F' } },
         { say: 'Rules make things fair, too. We wait our turn so it is fair for everyone.', show: null },
         { say: 'Grown-ups help us follow the rules, like a parent at home, a teacher at school and a police officer in town.', show: null },
+        // Earmark E3, pass KM (TEKS K.8B): how an authority figure enforces a rule, in a five-year-old's words.
+        { say: 'When a rule is broken, the grown-up in charge enforces it, which means making sure the rule is followed. A teacher reminds you of the rule, stops the unsafe thing, and may give a consequence, like sitting out of the game for a minute.', show: null },
         { say: 'Helpers do jobs for everyone. A firefighter puts out the fire.', show: { kind: 'icon', name: 'fire' } },
         { say: 'A doctor helps when you are sick, a teacher helps you learn, a mail carrier brings the mail, and a police officer keeps people safe on the street.', show: null },
         { say: 'We help too, with good choices. We listen when someone talks, throw away our trash, and help a friend who drops something.', show: null },
       ],
     },
-    sources: ['Aligned with Texas TEKS K.7A (identify purposes for having rules), K.7B (identify rules that provide order, security, and safety in the home and school) and K.8A (identify authority figures in the home, school, and community), and NCSS Theme VI (Power, Authority, and Governance).'],
-    generators: ['ck-why-rule', 'ck-which-helper', 'ck-good-choice', 'ck-which-helper', 'ck-why-rule'],
+    sources: ['Aligned with Texas TEKS K.7A (identify purposes for having rules), K.7B (identify rules that provide order, security, and safety in the home and school), K.8A (identify authority figures in the home, school, and community) and K.8B (explain how authority figures enforce rules), and NCSS Theme VI (Power, Authority, and Governance).'],
+    generators: ['ck-why-rule', 'ck-which-helper', 'ck-good-choice', 'ck-enforce', 'ck-why-rule'],
   },
   {
     id: 'needs-and-wants',
@@ -9368,6 +9428,212 @@ function KINDER_CIVICS_MODULES() { return [
     },
     sources: ['Aligned with Texas TEKS K.9A (identify the United States flag and the Texas state flag) and NCSS Theme X (Civic Ideals and Practices).'],
     generators: ['ck-which-flag', 'ck-lone-star', 'ck-flag-count', 'ck-which-flag', 'ck-lone-star'],
+  },
+  {
+    id: 'people-who-shaped-us',
+    order: 7,
+    title: 'People who shaped Texas and America',
+    tagline: 'Washington, Columbus, Austin and Navarro',
+    requires: ['our-two-flags'],
+    lesson: {
+      // Earmark E3, pass KM (TEKS K.2, identify contributions of historical figures, including Stephen F. Austin, George
+      // Washington, Christopher Columbus, and José Antonio Navarro): one true, plain contribution for each, with the people
+      // who already lived in the Americas said plainly beside Columbus. Facts checked against the Texas Historical Commission,
+      // the Texas State Cemetery and Britannica (Navarro), and the usual sources for the rest.
+      paragraphs: ['Long ago, some people did big things that still shape where we live. Four of them are George Washington, Christopher Columbus, Stephen F. Austin and José Antonio Navarro. George Washington led the army that won our country\'s freedom, long ago. Then the people chose him to be the first president of the United States. His face is on the quarter and on the one dollar bill.', 'Christopher Columbus was a sailor from long before that. In 1492 he sailed west across the ocean from Spain with three ships and reached islands in the Americas. People already lived on those islands and all across the Americas. After Columbus, people from Europe came here too, and that changed life for everyone who lived here, in good ways and in hard ways.', 'Stephen F. Austin brought about three hundred families to Texas to build farms and towns, back when Texas was part of Mexico. People call him the Father of Texas, and the city of Austin, our capital, is named for him.', 'José Antonio Navarro was born in San Antonio. He signed the paper that made Texas its own country, and later he helped write the rules for Texas as a state. Navarro spoke up for Tejanos, Texans whose families came from Mexico, so that they could vote and own land like everyone else. Navarro County is named for him.'],
+      keyIdea: 'George Washington was the first president. Christopher Columbus sailed to the Americas in 1492. Stephen F. Austin is the Father of Texas, and José Antonio Navarro signed for Texas and spoke up for Tejanos.',
+      example: { kind: 'map', region: 'world', caption: 'Columbus sailed west across the ocean from Spain to the Americas. Washington, Austin and Navarro shaped the land on the other side.' },
+      script: [
+        { say: 'Long ago, some people did big things that still shape where we live. Four of them are George Washington, Christopher Columbus, Stephen F. Austin and José Antonio Navarro.', show: { kind: 'pair', a: { kind: 'icon', name: 'quarter' }, b: { kind: 'icon', name: 'globe' } } },
+        { say: 'George Washington led the army that won our country\'s freedom, long ago. Then the people chose him to be the first president of the United States. His face is on the quarter and on the one dollar bill.', show: { kind: 'flag', stars: true } },
+        { say: 'Christopher Columbus was a sailor from long before that. In 1492 he sailed west across the ocean from Spain with three ships and reached islands in the Americas.', show: { kind: 'map', region: 'world' } },
+        { say: 'People already lived on those islands and all across the Americas. After Columbus, people from Europe came here too, and that changed life for everyone who lived here, in good ways and in hard ways.', show: { kind: 'map', region: 'world' } },
+        { say: 'Stephen F. Austin brought about three hundred families to Texas to build farms and towns, back when Texas was part of Mexico. People call him the Father of Texas, and the city of Austin, our capital, is named for him.', show: { kind: 'flag', texas: true } },
+        { say: 'José Antonio Navarro was born in San Antonio. He signed the paper that made Texas its own country, and later he helped write the rules for Texas as a state.', show: { kind: 'flag', texas: true } },
+        { say: 'Navarro spoke up for Tejanos, Texans whose families came from Mexico, so that they could vote and own land like everyone else. Navarro County is named for him.', show: { kind: 'flag', texas: true } },
+        { say: 'Washington, Columbus, Austin and Navarro each helped shape our state and our nation. That is why we remember their names.', show: { kind: 'pair', a: { kind: 'flag', stars: true }, b: { kind: 'flag', texas: true } } },
+      ],
+      pictures: [{ serial: 'P46', step: 1, alt: 'George Washington in his blue and buff uniform, from his best known portrait' }, { serial: 'P47', step: 2, alt: 'Christopher Columbus at the rail of a wooden sailing ship, land in sight' }, { serial: 'P45', step: 4, alt: 'Stephen F. Austin beside a log cabin and a field, settlers arriving in wagons' }, { serial: 'P48', step: 5, alt: 'José Antonio Navarro at a desk with a quill and papers, the paper that made Texas its own country' }],   // four paintings, one for each figure the standard names (pass KM)
+    },
+    sources: ['Aligned with Texas TEKS K.2 (identify contributions of historical figures, including Stephen F. Austin, George Washington, Christopher Columbus, and José Antonio Navarro, who helped to shape the state and nation; paragraph (2) of 19 TAC 113.11 is a single expectation, so it takes no letter) and NCSS Theme II (Time, Continuity, and Change).'],
+    generators: ['ck-figure', 'ck-figure', 'ck-figure-did', 'ck-figure', 'ck-figure-did'],
+  },
+  {
+    id: 'our-pledges',
+    order: 8,
+    title: 'The two pledges',
+    tagline: 'Words we say to our flags, and what they mean',
+    requires: ['our-two-flags'],
+    lesson: {
+      // Earmark E3, pass KM (TEKS K.9B, recite the Pledge of Allegiance to the United States Flag and the Pledge to the Texas
+      // Flag): both pledges word for word (4 U.S.C. 4, and Texas Government Code 3100.101 as amended in 2007), each hard
+      // word explained, how to stand, and that saying a pledge is a family's choice.
+      paragraphs: ['A pledge is a promise you say out loud. We have a pledge to the United States flag and a pledge to the Texas flag. Here is the Pledge of Allegiance to the United States flag. I pledge allegiance to the Flag of the United States of America, and to the Republic for which it stands, one Nation under God, indivisible, with liberty and justice for all.', 'Allegiance means being loyal. It is a promise to stand by your country. The Republic is our country, where the people choose their leaders. Indivisible means it cannot be split apart. Liberty means being free, and justice means being fair to everyone.', 'Here is the Pledge to the Texas Flag. Honor the Texas flag; I pledge allegiance to thee, Texas, one state under God, one and indivisible. Thee is an old word for you. So the Texas pledge says, I promise to be loyal to you, Texas, one state that cannot be split apart.', 'When we say a pledge, we stand, face the flag, and put our right hand over our heart. Say the words slowly and mean them. Some families choose not to say the pledges, and that is their choice. The words still tell us what the flags stand for.'],
+      keyIdea: 'A pledge is a promise said out loud. One pledge is to the flag of the United States, and one is to the flag of Texas.',
+      example: { kind: 'flag', stars: true, caption: 'Stand, face the flag, and put your right hand over your heart.' },
+      script: [
+        { say: 'A pledge is a promise you say out loud. We have a pledge to the United States flag and a pledge to the Texas flag.', show: { kind: 'pair', a: { kind: 'flag', stars: true }, b: { kind: 'flag', texas: true } } },
+        { say: 'Here is the Pledge of Allegiance to the United States flag. I pledge allegiance to the Flag of the United States of America, and to the Republic for which it stands, one Nation under God, indivisible, with liberty and justice for all.', show: { kind: 'flag', stars: true } },
+        { say: 'Allegiance means being loyal. It is a promise to stand by your country. The Republic is our country, where the people choose their leaders.', show: { kind: 'flag', stars: true } },
+        { say: 'Indivisible means it cannot be split apart. Liberty means being free, and justice means being fair to everyone.', show: { kind: 'flag', stars: true } },
+        { say: 'Here is the Pledge to the Texas Flag. Honor the Texas flag; I pledge allegiance to thee, Texas, one state under God, one and indivisible.', show: { kind: 'flag', texas: true } },
+        { say: 'Thee is an old word for you. So the Texas pledge says, I promise to be loyal to you, Texas, one state that cannot be split apart.', show: { kind: 'flag', texas: true } },
+        { say: 'When we say a pledge, we stand, face the flag, and put our right hand over our heart. Say the words slowly and mean them.', show: { kind: 'pair', a: { kind: 'flag', stars: true }, b: { kind: 'flag', texas: true } } },
+        { say: 'Some families choose not to say the pledges, and that is their choice. The words still tell us what the flags stand for.', show: null },
+        { say: 'A pledge is a promise said out loud. One pledge is to the flag of the United States, and one is to the flag of Texas.', show: { kind: 'pair', a: { kind: 'flag', stars: true }, b: { kind: 'flag', texas: true } } },
+      ],
+      pictures: [{ serial: 'P49', step: 6, alt: 'A small child standing with a hand over the heart, facing the United States flag and the Texas flag' }],
+    },
+    sources: ['Aligned with Texas TEKS K.9B (recite the Pledge of Allegiance to the United States Flag and the Pledge to the Texas Flag) and NCSS Theme X (Civic Ideals and Practices). The pledges are quoted from 4 U.S.C. 4 and Texas Government Code 3100.101.'],
+    generators: ['ck-pledge-word', 'ck-pledge-next', 'ck-pledge-word', 'ck-pledge-next', 'ck-pledge-word'],
+  },
+  {
+    id: 'near-far-left-right',
+    order: 9,
+    title: 'Over, under, near and far',
+    tagline: 'Words that tell where a thing is',
+    lesson: {
+      // Earmark E3, pass KM (TEKS K.3A, spatial terms including over, under, near, far, left and right, and K.3B, places on the
+      // school campus and their relative locations): each word shown on a picture, left and right from the child's own
+      // hands, and the school's places told from the front door.
+      paragraphs: ['Words like over, under, near, far, left and right tell where a thing is. A bird can be over a table, which means above it, higher up. A cat can be under the table, lower down.', 'Near means close. A ball near a tree is right beside it. Far means a long way off, like a house far from the tree, way up a hill.', 'Left and right are the two sides. Hold up your hands. Your left hand is on your left side, and your right hand is on your right side. In a picture, a ball can be on the left and a block on the right.', 'We use these words at school. The library is near the front door. The playground is far from the front door, at the back. The gym is on the left of the hall, and the office is on the right. To tell someone where something is, pick a thing they know and say where yours is from it. The lunch room is near the gym. The ball is under the bench.'],
+      keyIdea: 'Over and under, near and far, left and right. Those words tell where a thing is.',
+      example: { kind: 'icon', name: 'table', caption: 'The bird is over the table. The cat is under the table.' },
+      script: [
+        { say: 'Where is the ball? Words like over, under, near, far, left and right tell where a thing is.', show: { kind: 'icon', name: 'ball' } },
+        { say: 'This bird is over the table, and this cat is under the table. Over means higher up, and under means lower down.', show: { kind: 'icon', name: 'table' } },
+        { say: 'Near means close. This ball is near the tree, right beside it. Far means a long way off. The house is far from the tree, way up the hill.', show: { kind: 'icon', name: 'hill' } },
+        { say: 'Left and right are the two sides. Hold up your hands. Your left hand is on your left side, and your right hand is on your right side.', show: null },
+        { say: 'In this picture the ball is on the left and the block is on the right.', show: { kind: 'pair', a: { kind: 'icon', name: 'ball' }, b: { kind: 'icon', name: 'block' } } },
+        { say: 'We use these words at school. The library is near the front door. The playground is far from the front door, at the back. The gym is on the left of the hall, and the office is on the right.', show: { kind: 'map', region: 'town', spots: [[22, 84, 'front door'], [36, 70, 'library'], [60, 40, 'gym'], [100, 40, 'office'], [130, 14, 'playground']] } },
+        { say: 'To tell someone where something is, pick a thing they know and say where yours is from it. The lunch room is near the gym. The ball is under the bench.', show: null },
+        { say: 'Over and under, near and far, left and right. Those words tell where a thing is.', show: { kind: 'flow', steps: ['over', 'under', 'near', 'far', 'left', 'right'] } },
+      ],
+      pictures: [{ serial: 'P50', step: 2, alt: 'A ball beside a tree in a field, a house far away up a hill behind' }],
+    },
+    sources: ['Aligned with Texas TEKS K.3A (use spatial terms, including over, under, near, far, left, and right, to describe relative location) and K.3B (locate places on the school campus and describe their relative locations), and NCSS Theme III (People, Places, and Environments).'],
+    generators: ['ck-where-is', 'ck-tap-side', 'ck-where-word', 'ck-where-is', 'ck-tap-side'],
+  },
+  {
+    id: 'maps-and-globes',
+    order: 10,
+    title: 'Maps and globes',
+    tagline: 'A drawing of a place from above, and a model of the whole Earth',
+    requires: ['near-far-left-right'],
+    lesson: {
+      // Earmark E3, pass KM (TEKS K.3C, identify and use geographic tools that aid in determining location, including maps
+      // and globes, and K.14D, create and interpret visuals, including pictures and maps): what a map is, what its marks
+      // stand for, how to follow one, what a globe is and why a flat map of the world cannot be exact, and drawing a map.
+      paragraphs: ['A map is a drawing of a place as if you looked down on it from above, like a bird. A map of a school shows the building, the office and the playground. On a map, little pictures and colors stand for real things. A blue line is a river. A green patch is a park. A small square can be a house.', 'A map helps you find your way. Put your finger on where you are, find where you want to go, and follow the path between them.', 'A globe is a round model of the whole Earth, the planet we live on. Blue is the water, and green and brown are the land. Spin it, and you can see every side. The Earth is round like a ball, so a flat map of the whole world cannot show it exactly. A globe shows the real shape, and a map is easier to carry and to hang on a wall.', 'Texas is on the globe, and so is your town, but they are too small to see there. A map of Texas shows them bigger. You can make a map too. Draw your room from above, a square for your bed and a circle for the rug, and now someone can find your bed without you.'],
+      keyIdea: 'A map is a drawing of a place from above. A globe is a round model of the whole Earth.',
+      example: { kind: 'icon', name: 'globe', caption: 'A globe is a round model of the whole Earth. Blue is the water, and green and brown are the land.' },
+      script: [
+        { say: 'A map is a drawing of a place as if you looked down on it from above, like a bird. This map shows a school. The big box is the building, the small box is the office, and the far corner is the playground.', show: { kind: 'map', region: 'town', spots: [[50, 50, 'school'], [96, 70, 'office'], [130, 18, 'playground']] } },
+        { say: 'On a map, little pictures and colors stand for real things. A blue line is a river. A green patch is a park. A small square can be a house.', show: { kind: 'icon', name: 'map' } },
+        { say: 'A map helps you find your way. Put your finger on where you are, find where you want to go, and follow the path between them.', show: { kind: 'icon', name: 'map' } },
+        { say: 'A globe is a round model of the whole Earth, the planet we live on. Blue is the water, and green and brown are the land. Spin it, and you can see every side.', show: { kind: 'icon', name: 'globe' } },
+        { say: 'The Earth is round like a ball, so a flat map of the whole world cannot show it exactly. A globe shows the real shape, and a map is easier to carry and to hang on a wall.', show: { kind: 'pair', a: { kind: 'icon', name: 'globe' }, b: { kind: 'icon', name: 'ball' } } },
+        { say: 'Texas is on the globe, and so is your town, but they are too small to see there. A map of Texas shows them bigger.', show: { kind: 'map', region: 'texas', spots: [[88, 62, 'Austin'], [78, 76, 'San Antonio']] } },
+        { say: 'You can make a map too. Draw your room from above, a square for your bed and a circle for the rug, and now someone can find your bed without you.', show: { kind: 'icon', name: 'map' } },
+        { say: 'A map is a drawing of a place from above. A globe is a round model of the whole Earth.', show: { kind: 'pair', a: { kind: 'icon', name: 'map' }, b: { kind: 'icon', name: 'globe' } } },
+      ],
+      pictures: [{ serial: 'P53', step: 0, alt: 'A bird high over a town, the roofs, roads and park seen from above like a map' }, { serial: 'P51', step: 3, alt: 'A globe on its stand, blue oceans and green and brown land, the Americas facing out' }, { serial: 'P52', step: 4, alt: 'A globe beside a ball, both round' }],
+    },
+    sources: ['Aligned with Texas TEKS K.3C (identify and use geographic tools that aid in determining location, including maps and globes) and K.14D (create and interpret visuals, including pictures and maps), and NCSS Theme III (People, Places, and Environments).'],
+    generators: ['ck-map-what', 'ck-tap-map', 'ck-map-what', 'ck-tap-map', 'ck-map-what'],
+  },
+  {
+    id: 'land-water-and-weather',
+    order: 11,
+    title: 'Land, water and weather where we live',
+    tagline: 'Every place has its own land, water and weather, and that shapes how people live there',
+    requires: ['maps-and-globes'],
+    lesson: {
+      // Earmark E3 part two, pass KN (TEKS K.4A, physical characteristics of place such as landforms, bodies of water,
+      // Earth's resources and weather, and K.4B, how geographic location influences human characteristics of place such as
+      // shelter, clothing, food and activities): flat land, hills and mountains; a river, a lake and the sea; the resources
+      // around us; hot and snowy places; and how people by the sea, in the snow, in the desert and in the Texas Hill Country
+      // build, dress, eat and play. Texas facts checked (the Hill Country and the Colorado River at Austin, the plains, the
+      // coast, the Guadalupe Mountains in the far west, Texas limestone houses).
+      paragraphs: ['Every place has land and water of its own. Some land is flat, like the plains. Some land has hills, and some has mountains, which are so high that snow can sit on top. A river is water that moves along, a lake is still water with land all around it, and the sea, also called the ocean, is huge and salty.', 'The Earth gives every place resources, things people use. Soil for farms, trees for wood, rocks for building, and water to drink. Every place has weather too. Some places are hot most of the year, and some get snow every winter.', 'Where you live shapes how you live, so people build, dress, eat and play by where they live. By the sea, people fish, eat fish, swim and sail, and some houses stand on tall legs called stilts, so high water goes under them. In a snowy place, people wear thick coats, hats and boots, roofs are steep so the snow slides off, and children sled.', 'In a hot, dry desert, people wear light clothes and hats, houses have thick walls that stay cool, water is precious, and cactus grows where grass cannot. Here in Texas, Austin sits in the Hill Country, with hills, springs and the Colorado River running through, and many houses are built of the limestone rock from the hills. Texas has flat plains too, a long sea coast, and mountains far in the west.'],
+      keyIdea: 'Every place has its own land, water, resources and weather. Where people live shapes their houses, their clothes, their food and what they do.',
+      example: { kind: 'pair', a: { kind: 'icon', name: 'mountain' }, b: { kind: 'icon', name: 'river' }, caption: 'A mountain is high land. A river is water that moves along.' },
+      script: [
+        { say: 'Every place has land and water of its own. Some land is flat, like the plains. Some land has hills, and some has mountains, so high that snow can sit on top.', show: { kind: 'pair', a: { kind: 'icon', name: 'hill' }, b: { kind: 'icon', name: 'mountain' } } },
+        { say: 'A river is water that moves along. A lake is still water with land all around it.', show: { kind: 'pair', a: { kind: 'icon', name: 'river' }, b: { kind: 'icon', name: 'lake' } } },
+        { say: 'The sea, also called the ocean, is huge and salty, and it goes on farther than you can see. Texas has a long sea coast.', show: { kind: 'icon', name: 'ocean' } },
+        { say: 'The Earth gives every place resources, things people use. Soil for farms, trees for wood, rocks for building, and water to drink.', show: { kind: 'flow', steps: ['soil', 'trees', 'rocks', 'water'] } },
+        { say: 'Every place has weather too. Some places are hot most of the year, and some get snow every winter.', show: { kind: 'pair', a: { kind: 'icon', name: 'sun' }, b: { kind: 'icon', name: 'snow' } } },
+        { say: 'Where you live shapes how you live, so people build, dress, eat and play by where they live. By the sea, people fish, eat fish, swim and sail, and some houses stand on tall legs called stilts, so high water goes under them.', show: { kind: 'pair', a: { kind: 'icon', name: 'ocean' }, b: { kind: 'icon', name: 'fish' } } },
+        { say: 'In a snowy place, people wear a thick coat, a hat and boots, roofs are steep so the snow slides off, and children sled.', show: { kind: 'pair', a: { kind: 'icon', name: 'snow' }, b: { kind: 'icon', name: 'coat' } } },
+        { say: 'In a hot, dry desert, people wear light clothes and hats, houses have thick walls that stay cool, water is precious, and cactus grows where grass cannot.', show: { kind: 'icon', name: 'cactus' } },
+        { say: 'Here in Texas, Austin sits in the Hill Country, with hills, springs and the Colorado River running through, and many houses are built of limestone rock from the hills. Texas has flat plains too, a long sea coast, and mountains far in the west.', show: { kind: 'map', region: 'texas', spots: [[88, 62, 'Austin'], [120, 80, 'coast'], [14, 56, 'mountains']] } },
+        { say: 'Every place has its own land, water, resources and weather, and where people live shapes their houses, their clothes, their food and what they do.', show: { kind: 'flow', steps: ['land', 'water', 'weather', 'how we live'] } },
+      ],
+      pictures: [{ serial: 'P54', step: 0, alt: 'Flat plains, green hills and a snow-topped mountain in one landscape' }, { serial: 'P55', step: 5, alt: 'A house on stilts by the sea beside a snowy house with a steep roof' }],
+    },
+    sources: ['Aligned with Texas TEKS K.4A (identify the physical characteristics of place such as landforms, bodies of water, Earth\'s resources, and weather) and K.4B (identify how geographic location influences human characteristics of place such as shelter, clothing, food, and activities), and NCSS Theme III (People, Places, and Environments).'],
+    generators: ['ck-land-water', 'ck-tap-place', 'ck-live-there', 'ck-land-water', 'ck-live-there'],
+  },
+  {
+    id: 'families-and-traditions',
+    order: 12,
+    title: 'Families alike and different',
+    tagline: 'Who is in a family, what a family believes, and the things a family does again and again',
+    requires: ['needs-and-wants'],
+    lesson: {
+      // Earmark E3 part two, pass KN (TEKS K.10, similarities and differences among individuals such as kinship and religion,
+      // and K.11A and K.11B, the importance of family traditions and comparing traditions among families): families of many
+      // shapes, religion and language as things families decide, what everyone shares, what a tradition is and why it
+      // matters, and two families' traditions compared with respect.
+      paragraphs: ['People are different in some ways and alike in others. One difference is kinship, which means who is in your family. Some children live with a mom and a dad, some with one parent, some with grandparents, and some have many brothers and sisters or none at all. Families come in many shapes, and all of these are families.', 'Another difference is religion. Some families go to a church, a synagogue, a mosque or a temple. Some pray at home, and some do not belong to a religion. Each family decides. Some families speak Spanish at home, some English, and some both. We are alike too. Everyone needs food, sleep and someone who loves them, and everyone laughs and everyone gets sad sometimes.', 'A tradition is something a family does the same way again and again, like pancakes on Sunday, a song at bedtime, candles on a holiday or a piñata on a birthday. Traditions matter because they connect us to our family and to the people who came before us, and they help us feel we belong.', 'Families have different traditions. One family eats tamales on a winter holiday, and another lights a candle each night for eight nights. One family has a birthday pancake, and another has a piñata. Both families gather together, and both traditions are special. When you see a tradition that is new to you, ask about it, and share one of yours.'],
+      keyIdea: 'Families come in many shapes and believe different things, and everyone needs food, sleep and love. A tradition is something a family does again and again, and it helps us feel we belong.',
+      example: { kind: 'icon', name: 'candle', caption: 'Candles on a holiday are one family\'s tradition. Another family has a different one.' },
+      script: [
+        { say: 'People are different in some ways and alike in others. One difference is kinship, which means who is in your family.', show: null },
+        { say: 'Some children live with a mom and a dad, some with one parent, some with grandparents, and some have many brothers and sisters or none at all. Families come in many shapes, and all of these are families.', show: null },
+        { say: 'Another difference is religion. Some families go to a church, a synagogue, a mosque or a temple. Some pray at home, and some do not belong to a religion. Each family decides.', show: null },
+        { say: 'Some families speak Spanish at home, some English, and some both. We are alike too. Everyone needs food, sleep and someone who loves them, and everyone laughs and everyone gets sad sometimes.', show: { kind: 'flow', steps: ['food', 'sleep', 'love'] } },
+        { say: 'A tradition is something a family does the same way again and again, like pancakes on Sunday, a song at bedtime, a candle on a holiday or a cake with candles on a birthday.', show: { kind: 'pair', a: { kind: 'icon', name: 'candle' }, b: { kind: 'icon', name: 'cake' } } },
+        { say: 'Traditions matter because they connect us to our family and to the people who came before us, and they help us feel we belong. A candle lit every year says we are still here, together.', show: { kind: 'icon', name: 'candle' } },
+        { say: 'Families have different traditions. One family eats tamales on a winter holiday, and another lights a candle each night for eight nights. One family has a birthday pancake, and another has a piñata.', show: { kind: 'pair', a: { kind: 'icon', name: 'candle' }, b: { kind: 'icon', name: 'cake' } } },
+        { say: 'Both families gather together, and both traditions are special. When you see a tradition that is new to you, ask about it, and share one of yours.', show: null },
+        { say: 'Families come in many shapes and believe different things, and everyone needs food, sleep and love. A tradition is something a family does again and again, and it helps us feel we belong.', show: { kind: 'flow', steps: ['alike', 'different', 'traditions'] } },
+      ],
+      pictures: [{ serial: 'P56', step: 1, alt: 'Families of many shapes together at a park, a child with two parents, one with a grandmother, one with one parent and three siblings' }, { serial: 'P57', step: 5, alt: 'A family lighting candles together at a table, young and old' }],
+    },
+    sources: ['Aligned with Texas TEKS K.10 (identify similarities and differences among individuals such as kinship and religion; paragraph (10) of 19 TAC 113.11 is a single expectation, so it takes no letter), K.11A (describe and explain the importance of family traditions) and K.11B (compare traditions among families), and NCSS Theme I (Culture).'],
+    generators: ['ck-alike-different', 'ck-tradition', 'ck-alike-different', 'ck-tradition', 'ck-compare-traditions'],
+  },
+  {
+    id: 'tools-that-help',
+    order: 13,
+    title: 'Technology at home and school',
+    tagline: 'Things people make to do a job, and what life would be like without them',
+    requires: ['jobs-people-do'],
+    lesson: {
+      // Earmark E3 part two, pass KN (TEKS K.12A, examples of technology used in the home and school, K.12B, how technology
+      // helps accomplish specific tasks and meet people's needs, and K.12C, how life might be different without modern
+      // technology): technology as anything people make to do a job, old and new; each example with the task it does and the
+      // need it meets; life without it; and screens as a tool to put away and play, in the spirit of Arthur Brooks's advice.
+      paragraphs: ['Technology is anything people make to do a job better. Some technology is old and simple, like a pencil, a spoon or a wheel. Some is new, such as a phone or a tablet. At home, a refrigerator keeps food cold so it does not spoil, a stove cooks, and a washing machine washes the clothes. A phone lets you talk to someone far away, and a car goes much faster than feet.', 'At school there are lights, a clock, a pencil sharpener and a computer. A tablet shows lessons, like this one. Each one does a job and meets a need. The refrigerator and the stove meet the need for food. A heater keeps a house warm, which is part of shelter. Lights let us see at night.', 'Without modern technology, life would be different. People washed clothes by hand in a tub, kept food cold with blocks of ice, walked or rode a horse, wrote letters that took weeks to arrive, and lit candles at night. You could still live, but many things would take much longer.', 'Technology is a tool, and a tool is for a job. A screen is good for a lesson or a call to Grandma, and then it is good to put it away and go play outside.'],
+      keyIdea: 'Technology is anything people make to do a job better. Each one meets a need, and without it many things would take much longer.',
+      example: { kind: 'icon', name: 'fridge', caption: 'A refrigerator keeps food cold so it does not spoil. That meets the need for food.' },
+      script: [
+        { say: 'Technology is anything people make to do a job better. Some technology is old and simple, like this pencil, a spoon or a wheel. Some is new, such as a phone or a tablet.', show: { kind: 'icon', name: 'pencil' } },
+        { say: 'At home, a refrigerator keeps food cold so it does not spoil. A fridge is a refrigerator.', show: { kind: 'icon', name: 'fridge' } },
+        { say: 'A stove cooks, and a washing machine washes the clothes. This washer does in an hour what took a whole morning by hand.', show: { kind: 'icon', name: 'washer' } },
+        { say: 'A phone lets you talk to someone far away, and a car goes much faster than feet.', show: { kind: 'icon', name: 'phone' } },
+        { say: 'At school there are lights, a clock, a pencil sharpener and a computer. A tablet shows lessons, like this one.', show: { kind: 'icon', name: 'tablet' } },
+        { say: 'Each one does a job and meets a need. The refrigerator and the stove meet the need for food. A heater keeps a house warm, which is part of shelter. A lamp lets us see at night.', show: { kind: 'pair', a: { kind: 'icon', name: 'fridge' }, b: { kind: 'icon', name: 'lamp' } } },
+        { say: 'Without modern technology, life would be different. People washed clothes by hand in a tub, kept food cold with blocks of ice, walked or rode a horse, wrote letters that took weeks to arrive, and lit candles at night.', show: { kind: 'pair', a: { kind: 'icon', name: 'ice' }, b: { kind: 'icon', name: 'candle' } } },
+        { say: 'You could still live without it, but many things would take much longer.', show: null },
+        { say: 'Technology is a tool, and a tool is for a job. A screen is good for a lesson or a call to Grandma, and then it is good to put it away and go play outside.', show: { kind: 'pair', a: { kind: 'icon', name: 'tablet' }, b: { kind: 'icon', name: 'ball' } } },
+      ],
+      pictures: [{ serial: 'P58', step: 1, alt: 'A kitchen with a refrigerator, a stove, a washing machine and a phone on the counter' }, { serial: 'P59', step: 6, alt: 'Clothes being washed by hand in a tub beside a modern washing machine' }],
+    },
+    sources: ['Aligned with Texas TEKS K.12A (identify examples of technology used in the home and school), K.12B (describe how technology helps accomplish specific tasks and meet people\'s needs) and K.12C (describe how his or her life might be different without modern technology), and NCSS Theme VIII (Science, Technology, and Society).'],
+    generators: ['ck-tech-does', 'ck-tap-tech', 'ck-without-tech', 'ck-tech-does', 'ck-tap-tech'],
   },
 ]; }
 
@@ -23579,6 +23845,233 @@ Object.assign(GENERATORS, {
       ['What does the money from work pay for first?', 'Needs, like food and a home', ['Only toys', 'Nothing at all'], 'Money from work pays for needs first, like food, clothes and a home. Wants can wait.'],
     ]);
     return { type: 'choice', story: null, prompt: c[0], choices: shuffle(rng, [c[1], ...c[2]]), answer: c[1], explain: c[3], visual: null, explainVisual: null }; },
+  // ---------------------------------------------------------------------------------------------------------------
+  // Kindergarten social studies banks for earmark E3, part one (pass KM): how a rule is enforced (K.8B), the four
+  // historical figures (K.2), the two pledges (K.9B), where things are (K.3A and K.3B) and maps and globes (K.3C). Each
+  // entry is [what is asked, the choices, the right one, the reason said after], with a setup as the fifth item.
+  // ---------------------------------------------------------------------------------------------------------------
+  // Kindergarten social studies banks for earmark E3, part two (pass KN): places (K.4A and K.4B), families and traditions
+  // (K.10, K.11A and K.11B) and technology (K.12A to K.12C).
+  'ck-land-water': (rng) => {
+    const Q = [['What is a river?', ['Water that moves along', 'Still water with land all around', 'Very high land'], 'Water that moves along', 'A river is water that moves along. A lake is still water with land all around it.', null],
+      ['What is a lake?', ['Still water with land all around it', 'Water that moves along', 'Huge salty water'], 'Still water with land all around it', 'A lake is still water with land all around it.', null],
+      ['What is the sea like?', ['Huge and salty', 'Small and sweet', 'Dry and sandy'], 'Huge and salty', 'The sea is huge and salty, and it goes on farther than you can see.', null],
+      ['Which land is so high that snow can sit on top?', ['A mountain', 'A plain', 'A lake'], 'A mountain', 'A mountain is land so high that snow can sit on top. Plains are flat.', null],
+      ['What is flat land called?', ['Plains', 'Mountains', 'The sea'], 'Plains', 'Flat land is called the plains. Texas has flat plains.', null],
+      ['Which is a resource the Earth gives a place?', ['Soil for farms', 'A toy', 'A song'], 'Soil for farms', 'The Earth gives every place resources, like soil for farms, trees for wood, rocks for building and water to drink.', null],
+      ['What do trees give people?', ['Wood', 'Salt', 'Snow'], 'Wood', 'Trees are a resource. They give people wood.', null],
+      ['What river runs through Austin?', ['The Colorado River', 'The sea', 'A lake'], 'The Colorado River', 'Austin sits in the Hill Country, with the Colorado River running through it.', null],
+      ['Where does Texas have mountains?', ['Far in the west', 'In Austin', 'On the coast'], 'Far in the west', 'Texas has mountains far in the west, flat plains, and a long sea coast.', null],
+      ['What are many Austin houses built of?', ['Limestone rock from the hills', 'Snow', 'Sand'], 'Limestone rock from the hills', 'Many houses in Austin are built of limestone rock from the hills of the Hill Country.', null]];
+    const [prompt, choices, answer, explain, story] = pick(rng, Q);
+    return { type: 'choice', story, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'ck-tap-place': (rng) => {
+    const Q = [['Tap the mountain.', 'mountain', 'lake', 'The mountain is the high land with snow on top. The other picture is a lake.'],
+      ['Tap the river.', 'river', 'mountain', 'The river is the water that moves along. The other picture is a mountain.'],
+      ['Tap the lake.', 'lake', 'river', 'The lake is still water with land all around it. The river moves along.'],
+      ['Tap the sea.', 'ocean', 'lake', 'The sea is huge and salty, with waves. The lake is small, with land all around.'],
+      ['Tap the water that moves along.', 'river', 'lake', 'A river is water that moves along. A lake is still.'],
+      ['Tap the plant that grows in a hot, dry desert.', 'cactus', 'tree', 'Cactus grows in the desert, where grass cannot. A tree needs more water.'],
+      ['Tap what people wear in a snowy place.', 'coat', 'hat', 'In a snowy place people wear a thick coat, with a hat and boots. A sun hat is for a hot place.'],
+      ['Tap the high land.', 'mountain', 'river', 'A mountain is high land. A river is water that moves along.']];
+    const [prompt, yes, no, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [`icon:${yes}`, `icon:${no}`]), answer: `icon:${yes}`, explain, visual: null, explainVisual: null };
+  },
+  'ck-live-there': (rng) => {
+    const Q = [['What do people by the sea often do?', ['Fish, swim and sail', 'Sled', 'Grow cactus'], 'Fish, swim and sail', 'By the sea, people fish, eat fish, swim and sail.', null],
+      ['Why do some houses by the sea stand on stilts?', ['So high water goes under them', 'To be closer to the sun', 'Because stilts are pretty'], 'So high water goes under them', 'Some houses by the sea stand on tall legs called stilts, so high water goes under them.', null],
+      ['Why are roofs steep in a snowy place?', ['So the snow slides off', 'To look tall', 'To catch rain'], 'So the snow slides off', 'In a snowy place, roofs are steep so the snow slides off.', null],
+      ['What do people wear in a snowy place?', ['A thick coat, a hat and boots', 'Light clothes and sandals', 'A swimsuit'], 'A thick coat, a hat and boots', 'In a snowy place, people wear a thick coat, a hat and boots.', null],
+      ['Why do desert houses have thick walls?', ['The thick walls stay cool', 'To keep the snow out', 'To hold fish'], 'The thick walls stay cool', 'In a hot, dry desert, houses have thick walls that stay cool.', null],
+      ['What is precious in a desert?', ['Water', 'Sand', 'Sun'], 'Water', 'In a hot, dry desert, water is precious, and cactus grows where grass cannot.', null],
+      ['What do children do for fun there?', ['Sled', 'Swim in the sea', 'Pick cactus'], 'Sled', 'In a snowy place, children sled.', 'A family lives where snow falls every winter.'],
+      ['What do people eat a lot of there?', ['Fish', 'Snow', 'Cactus'], 'Fish', 'By the sea, people fish and eat fish.', 'A family lives in a town by the sea.'],
+      ['What shapes how people build, dress, eat and play?', ['Where they live', 'The day of the week', 'Their shoes'], 'Where they live', 'Where you live shapes how you live, from the house to the clothes to the food.', null]];
+    const [prompt, choices, answer, explain, story] = pick(rng, Q);
+    return { type: 'choice', story, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'ck-alike-different': (rng) => {
+    const Q = [['What does kinship mean?', ['Who is in your family', 'What you eat', 'Where you live'], 'Who is in your family', 'Kinship means who is in your family. Families come in many shapes.', null],
+      ['Which is a way people can be different?', ['The language they speak at home', 'Needing sleep', 'Needing food'], 'The language they speak at home', 'Some families speak Spanish at home, some English, and some both. Everyone needs food and sleep.', null],
+      ['Which is a way everyone is alike?', ['Everyone needs food and sleep', 'Everyone has a brother', 'Everyone goes to a temple'], 'Everyone needs food and sleep', 'Everyone needs food, sleep and someone who loves them, and everyone laughs and gets sad sometimes.', null],
+      ['A family does not belong to a religion. Is that still a family?', ['Yes, each family decides', 'No'], 'Yes, each family decides', 'Some families belong to a religion and some do not. Each family decides, and every one is a family.', null],
+      ['Which is a family?', ['All of these', 'Only a mom, a dad and children', 'Only a big family'], 'All of these', 'Families come in many shapes, with one parent, two, or grandparents, and every shape is a family.', 'One child lives with a grandmother. Another lives with a mom and a dad. Another lives with one parent and three brothers.'],
+      ['Where do some families go to pray?', ['A church, a synagogue, a mosque or a temple', 'A grocery store', 'A bus stop'], 'A church, a synagogue, a mosque or a temple', 'Some families go to a church, a synagogue, a mosque or a temple, and some pray at home.', null],
+      ['What does everyone do sometimes?', ['Laugh, and get sad', 'Sled', 'Speak French'], 'Laugh, and get sad', 'Everyone laughs, and everyone gets sad sometimes. That is one way we are all alike.', null]];
+    const [prompt, choices, answer, explain, story] = pick(rng, Q);
+    return { type: 'choice', story, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'ck-tradition': (rng) => {
+    const Q = [['What is a tradition?', ['Something a family does the same way again and again', 'A kind of food', 'A new toy'], 'Something a family does the same way again and again', 'A tradition is something a family does the same way again and again, like pancakes on Sunday.', null],
+      ['Why do traditions matter?', ['They help us feel we belong', 'They cost money', 'They are loud'], 'They help us feel we belong', 'Traditions connect us to our family and to the people who came before us, and they help us feel we belong.', null],
+      ['Which one is a tradition?', ['A song at bedtime every night', 'A sneeze', 'A rainy day'], 'A song at bedtime every night', 'A song at bedtime every night is a tradition, something a family does again and again.', null],
+      ['Who do traditions connect us to?', ['Our family and the people who came before us', 'Strangers', 'Nobody'], 'Our family and the people who came before us', 'Traditions connect us to our family and to the people who came before us.', null],
+      ['Is this a tradition?', ['Yes, they do it the same way again and again', 'No, it only happened once'], 'Yes, they do it the same way again and again', 'Pancakes every Sunday is something the family does the same way again and again, so it is a tradition.', 'Every Sunday morning a family makes pancakes together.'],
+      ['What should you do when you see a tradition that is new to you?', ['Ask about it, and share one of yours', 'Laugh at it', 'Walk away'], 'Ask about it, and share one of yours', 'When you see a tradition that is new to you, ask about it, and share one of yours.', null]];
+    const [prompt, choices, answer, explain, story] = pick(rng, Q);
+    return { type: 'choice', story, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'ck-compare-traditions': (rng) => {
+    const Q = [['How are these two families alike?', ['Both gather for a holiday tradition', 'Both eat the same food', 'Both do nothing'], 'Both gather for a holiday tradition', 'The traditions are different, but both families gather, and both traditions are special.', 'One family eats tamales on a winter holiday. Another family lights a candle each night for eight nights.'],
+      ['How are these two families different?', ['One has a pancake and one has a piñata', 'One has a birthday and one does not', 'They are not different'], 'One has a pancake and one has a piñata', 'The birthdays are alike, and the traditions are different, a pancake for one family and a piñata for the other.', 'One family has a birthday pancake. Another family has a piñata on a birthday.'],
+      ['Can two families have different traditions and both be right?', ['Yes, both traditions are special', 'No, only one can be right'], 'Yes, both traditions are special', 'Families have different traditions, and both are special. Each family decides.', null],
+      ['Which family has a tradition?', ['Both families', 'Only the first family', 'Only the second family'], 'Both families', 'Both families do something the same way again and again, so both have a tradition.', 'One family sings a song at bedtime every night. Another family reads a story every night.'],
+      ['Which is the same for both families?', ['Both families gather together', 'Both light candles', 'Both eat tamales'], 'Both families gather together', 'The traditions are different, but both families gather together.', 'One family lights candles on a holiday. Another family hangs lights outside.']];
+    const [prompt, choices, answer, explain, story] = pick(rng, Q);
+    return { type: 'choice', story, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'ck-tech-does': (rng) => {
+    const Q = [['What is technology?', ['Anything people make to do a job better', 'Only phones', 'Only things that plug in'], 'Anything people make to do a job better', 'Technology is anything people make to do a job better. A pencil is technology, and so is a phone.', null],
+      ['What does a refrigerator do?', ['Keeps food cold so it does not spoil', 'Washes clothes', 'Lights the room'], 'Keeps food cold so it does not spoil', 'A refrigerator keeps food cold so it does not spoil. That meets the need for food.', null],
+      ['What does a washing machine do?', ['Washes the clothes', 'Cooks dinner', 'Keeps food cold'], 'Washes the clothes', 'A washing machine washes the clothes, in an hour instead of a whole morning by hand.', null],
+      ['What does a phone let you do?', ['Talk to someone far away', 'Cook', 'Wash clothes'], 'Talk to someone far away', 'A phone lets you talk to someone far away.', null],
+      ['Which need do the refrigerator and the stove meet?', ['Food', 'Shelter', 'Clothes'], 'Food', 'The refrigerator and the stove meet the need for food.', null],
+      ['A heater keeps a house warm. Which need is that part of?', ['Shelter', 'Food', 'Play'], 'Shelter', 'A heater keeps a house warm, which is part of shelter.', null],
+      ['Which of these is old, simple technology?', ['A pencil', 'A tablet', 'A phone'], 'A pencil', 'A pencil is old, simple technology. People made it to do a job better, writing.', null],
+      ['What is a screen good for?', ['A lesson or a call, and then put it away and play', 'All day, every day', 'Nothing'], 'A lesson or a call, and then put it away and play', 'A screen is good for a lesson or a call to Grandma, and then it is good to put it away and go play outside.', null],
+      ['Which is technology you find at school?', ['A pencil sharpener', 'A cloud', 'A puddle'], 'A pencil sharpener', 'At school there are lights, a clock, a pencil sharpener and a computer. People made each one to do a job.', null]];
+    const [prompt, choices, answer, explain, story] = pick(rng, Q);
+    return { type: 'choice', story, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'ck-tap-tech': (rng) => {
+    const Q = [['Tap what keeps food cold.', 'fridge', 'washer', 'The refrigerator keeps food cold so it does not spoil. The washing machine washes clothes.'],
+      ['Tap what washes the clothes.', 'washer', 'fridge', 'The washing machine washes the clothes. The refrigerator keeps food cold.'],
+      ['Tap what lets you talk to someone far away.', 'phone', 'pencil', 'A phone lets you talk to someone far away. A pencil is for writing.'],
+      ['Tap what shows a lesson like this one.', 'tablet', 'fridge', 'A tablet shows lessons, like this one. A refrigerator keeps food cold.'],
+      ['Tap the old, simple technology.', 'pencil', 'tablet', 'A pencil is old, simple technology. A tablet is new.'],
+      ['Tap what lets us see at night.', 'lamp', 'washer', 'A lamp lets us see at night. The washing machine washes clothes.'],
+      ['Tap what people used for light before lamps.', 'candle', 'phone', 'Before lamps, people lit candles at night.'],
+      ['Tap what kept food cold before refrigerators.', 'ice', 'candle', 'Before refrigerators, people kept food cold with blocks of ice.']];
+    const [prompt, yes, no, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [`icon:${yes}`, `icon:${no}`]), answer: `icon:${yes}`, explain, visual: null, explainVisual: null };
+  },
+  'ck-without-tech': (rng) => {
+    const Q = [['How did people wash clothes before washing machines?', ['By hand in a tub', 'They never washed them', 'With a phone'], 'By hand in a tub', 'Before washing machines, people washed clothes by hand in a tub, and it took a whole morning.', null],
+      ['How did people keep food cold before refrigerators?', ['With blocks of ice', 'With a stove', 'They could not'], 'With blocks of ice', 'Before refrigerators, people kept food cold with blocks of ice.', null],
+      ['How did people get places before cars?', ['They walked or rode a horse', 'They flew', 'They stayed home forever'], 'They walked or rode a horse', 'Before cars, people walked or rode a horse, and a trip took much longer.', null],
+      ['How long could a letter take before phones?', ['Weeks', 'One second', 'One minute'], 'Weeks', 'Before phones, people wrote letters that took weeks to arrive.', null],
+      ['What did people use for light at night before lamps?', ['Candles', 'Phones', 'The sun'], 'Candles', 'Before lamps, people lit candles at night.', null],
+      ['Could people live without modern technology?', ['Yes, but many things would take much longer', 'No, not at all'], 'Yes, but many things would take much longer', 'You could still live without modern technology, but many things would take much longer.', null],
+      ['What would be different for this family?', ['Washing would take a whole morning by hand', 'The clothes would wash themselves', 'Nothing'], 'Washing would take a whole morning by hand', 'Without a washing machine, washing clothes by hand in a tub takes a whole morning.', 'A family has no washing machine.']];
+    const [prompt, choices, answer, explain, story] = pick(rng, Q);
+    return { type: 'choice', story, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'ck-enforce': (rng) => {
+    const Q = [['What does it mean to enforce a rule?', ['To make sure the rule is followed', 'To break the rule', 'To forget the rule'], 'To make sure the rule is followed', 'To enforce a rule means to make sure the rule is followed. The grown-up in charge does that.', null],
+      ['What does a teacher do when a rule is broken?', ['Reminds you of the rule and stops the unsafe thing', 'Ignores it', 'Breaks the rule too'], 'Reminds you of the rule and stops the unsafe thing', 'A teacher enforces the rule. She reminds you of it, stops the unsafe thing, and may give a consequence.', null],
+      ['What is a consequence?', ['What happens after a rule is broken, like sitting out for a minute', 'A new toy', 'A kind of rule'], 'What happens after a rule is broken, like sitting out for a minute', 'A consequence is what happens after a rule is broken, like sitting out of the game for a minute.', null],
+      ['Who enforces the rules at home?', ['A parent', 'The cat', 'A mail carrier'], 'A parent', 'A parent is the grown-up in charge at home, so a parent enforces the rules there.', null],
+      ['Who makes sure drivers follow the rules on the street?', ['A police officer', 'A baker', 'A fish'], 'A police officer', 'A police officer keeps people safe on the street and makes sure drivers follow the rules.', null],
+      ['What does the teacher do first?', ['Reminds him of the rule', 'Runs too', 'Goes home'], 'Reminds him of the rule', 'A teacher enforces the rule by reminding him of it and stopping the unsafe running.', 'A boy runs in the hall, where the rule is to walk.']];
+    const [prompt, choices, answer, explain, story] = pick(rng, Q);
+    return { type: 'choice', story, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'ck-figure': (rng) => {
+    const NAMES = ['George Washington', 'Christopher Columbus', 'Stephen F. Austin', 'José Antonio Navarro'];
+    const Q = [['Who was the first president of the United States?', 'George Washington', 'George Washington led the army that won our country\'s freedom, and then the people chose him to be the first president.'],
+      ['Who is called the Father of Texas?', 'Stephen F. Austin', 'Stephen F. Austin brought about three hundred families to Texas, so people call him the Father of Texas.'],
+      ['Who sailed west across the ocean from Spain in 1492?', 'Christopher Columbus', 'Christopher Columbus sailed west from Spain in 1492 with three ships and reached islands in the Americas.'],
+      ['Who signed the paper that made Texas its own country and spoke up for Tejanos?', 'José Antonio Navarro', 'José Antonio Navarro signed the paper that made Texas its own country, and he spoke up for Tejanos so they could vote and own land.'],
+      ['Our capital city, Austin, is named for whom?', 'Stephen F. Austin', 'The city of Austin, our capital, is named for Stephen F. Austin, the Father of Texas.'],
+      ['Whose face is on the quarter and the one dollar bill?', 'George Washington', 'George Washington\'s face is on the quarter and on the one dollar bill, because he was the first president.'],
+      ['Who was born in San Antonio and has a county named for him?', 'José Antonio Navarro', 'José Antonio Navarro was born in San Antonio, and Navarro County is named for him.'],
+      ['Who led the army that won our country\'s freedom?', 'George Washington', 'George Washington led the army that won our country\'s freedom, long ago.']];
+    const [prompt, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [answer, ...shuffle(rng, NAMES.filter((n) => n !== answer)).slice(0, 2)]), answer, explain, visual: null, explainVisual: null };
+  },
+  'ck-figure-did': (rng) => {
+    const Q = [['How many ships did Christopher Columbus sail with in 1492?', ['Three', 'One', 'Ten'], 'Three', 'Columbus sailed west from Spain in 1492 with three ships.'],
+      ['Who lived in the Americas before Columbus came?', ['People already lived there', 'Nobody at all', 'Only fish'], 'People already lived there', 'People already lived on those islands and all across the Americas before Columbus came.'],
+      ['What did Stephen Austin bring to Texas?', ['About three hundred families', 'A big ship', 'A flag'], 'About three hundred families', 'Stephen F. Austin brought about three hundred families to Texas to build farms and towns.'],
+      ['Who are Tejanos?', ['Texans whose families came from Mexico', 'People who live on ships', 'Presidents'], 'Texans whose families came from Mexico', 'Tejanos are Texans whose families came from Mexico. Navarro spoke up for them.'],
+      ['What is named for José Antonio Navarro?', ['Navarro County', 'The moon', 'The quarter'], 'Navarro County', 'Navarro County is named for José Antonio Navarro.'],
+      ['Where was José Antonio Navarro born?', ['San Antonio', 'Spain', 'On a ship'], 'San Antonio', 'José Antonio Navarro was born in San Antonio, Texas.'],
+      ['Texas was part of which country when Stephen Austin brought families here?', ['Mexico', 'Spain', 'France'], 'Mexico', 'Back then Texas was part of Mexico. Austin brought families to build farms and towns there.'],
+      ['What did the people choose George Washington to be?', ['The first president', 'A sailor', 'A king'], 'The first president', 'After the war, the people chose George Washington to be the first president of the United States.']];
+    const [prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'ck-pledge-word': (rng) => {
+    const Q = [['What is a pledge?', ['A promise you say out loud', 'A kind of flag', 'A song'], 'A promise you say out loud', 'A pledge is a promise you say out loud. We have one for each flag.', null],
+      ['What does allegiance mean?', ['Being loyal, a promise to stand by your country', 'Being tall', 'Being quiet'], 'Being loyal, a promise to stand by your country', 'Allegiance means being loyal. It is a promise to stand by your country.', null],
+      ['What does indivisible mean?', ['It cannot be split apart', 'It is very big', 'It is red, white and blue'], 'It cannot be split apart', 'Indivisible means it cannot be split apart. Both pledges say it.', null],
+      ['What does liberty mean?', ['Being free', 'Being loud', 'Being fast'], 'Being free', 'Liberty means being free.', null],
+      ['What does justice mean?', ['Being fair to everyone', 'Being first', 'Being quiet'], 'Being fair to everyone', 'Justice means being fair to everyone.', null],
+      ['Which pledge begins with Honor the Texas flag?', ['The Pledge to the Texas Flag', 'The Pledge of Allegiance to the United States flag'], 'The Pledge to the Texas Flag', 'The Pledge to the Texas Flag begins with Honor the Texas flag.', null],
+      ['Which pledge ends with liberty and justice for all?', ['The Pledge of Allegiance to the United States flag', 'The Pledge to the Texas Flag'], 'The Pledge of Allegiance to the United States flag', 'The Pledge of Allegiance to the United States flag ends with liberty and justice for all.', null],
+      ['Where does your right hand go when you say a pledge?', ['Over your heart', 'On your head', 'In your pocket'], 'Over your heart', 'When we say a pledge, we stand, face the flag, and put our right hand over our heart.', null],
+      ['What does thee mean in the Texas pledge?', ['You', 'Three', 'Tree'], 'You', 'Thee is an old word for you. The Texas pledge says I pledge allegiance to you, Texas.', null],
+      ['What is the Republic in the pledge?', ['Our country, where the people choose their leaders', 'A ship', 'A kind of flag'], 'Our country, where the people choose their leaders', 'The Republic is our country, where the people choose their leaders.', null],
+      ['Which pledge is for this flag?', ['The Pledge to the Texas Flag', 'The Pledge of Allegiance to the United States flag'], 'The Pledge to the Texas Flag', 'One big star means the Texas flag, so its pledge is the Pledge to the Texas Flag.', 'A flag with one big star on a blue stripe.'],
+      ['Which pledge is for this flag?', ['The Pledge of Allegiance to the United States flag', 'The Pledge to the Texas Flag'], 'The Pledge of Allegiance to the United States flag', 'Fifty stars means the United States flag, so its pledge is the Pledge of Allegiance to the United States flag.', 'A flag with fifty stars and thirteen stripes.']];
+    const [prompt, choices, answer, explain, story] = pick(rng, Q);
+    return { type: 'choice', story, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'ck-pledge-next': (rng) => {
+    const Q = [['I pledge allegiance to the Flag of the United States of America, and to the Republic for which it ...', 'stands', ['stands', 'sits', 'flies'], 'The pledge says and to the Republic for which it stands.'],
+      ['One Nation under God, ...', 'indivisible', ['indivisible', 'invisible', 'inside'], 'The pledge says one Nation under God, indivisible, which means it cannot be split apart.'],
+      ['With liberty and justice for ...', 'all', ['all', 'some', 'me'], 'The pledge ends with liberty and justice for all.'],
+      ['I pledge allegiance to the Flag of the United States of ...', 'America', ['America', 'Texas', 'Austin'], 'The pledge says the Flag of the United States of America.'],
+      ['Honor the Texas flag; I pledge allegiance to thee, ...', 'Texas', ['Texas', 'America', 'Mexico'], 'The Texas pledge says I pledge allegiance to thee, Texas.'],
+      ['Texas, one state under God, one and ...', 'indivisible', ['indivisible', 'invisible', 'divided'], 'The Texas pledge ends with one and indivisible, which means it cannot be split apart.'],
+      ['Honor the Texas ...', 'flag', ['flag', 'star', 'song'], 'The Texas pledge begins with Honor the Texas flag.']];
+    const [story, answer, choices, explain] = pick(rng, Q);
+    return { type: 'choice', story, prompt: 'Which word comes next in this pledge?', choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'ck-where-is': (rng) => {
+    const Q = [['table', 'Look at the picture. Where is the bird?', ['Over the table', 'Under the table'], 'Over the table', 'The bird is over the table, higher up. Over means above it.'],
+      ['table', 'Look at the picture. Where is the cat?', ['Under the table', 'Over the table'], 'Under the table', 'The cat is under the table, lower down. Under means below it.'],
+      ['hill', 'Look at the picture. Where is the ball?', ['Near the tree', 'Far from the tree'], 'Near the tree', 'The ball is near the tree, right beside it. Near means close.'],
+      ['hill', 'Look at the picture. Where is the house?', ['Far from the tree', 'Near the tree'], 'Far from the tree', 'The house is far from the tree, way up the hill. Far means a long way off.'],
+      ['table', 'Look at the picture. Which one is higher up?', ['The bird', 'The cat'], 'The bird', 'The bird is over the table, so it is higher up. The cat is under it.'],
+      ['hill', 'Look at the picture. Which one is a long way off?', ['The house', 'The ball'], 'The house', 'The house is far from the tree, a long way off up the hill. The ball is near.']];
+    const [name, prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: [...choices], answer, explain, visual: { kind: 'icon', name }, explainVisual: null };
+  },
+  'ck-tap-side': (rng) => {
+    // The two pictures are shown in this order, so left is the first choice and right is the second.
+    const [a, b] = shuffle(rng, ['ball', 'block', 'teddy', 'cup']).slice(0, 2); const left = randInt(rng, 0, 1) === 1;
+    const NAME = { ball: 'ball', block: 'block', teddy: 'teddy bear', cup: 'cup' };
+    return { type: 'choice', story: null, prompt: left ? 'Tap the picture on the left.' : 'Tap the picture on the right.', choices: [`icon:${a}`, `icon:${b}`], answer: `icon:${left ? a : b}`,
+      explain: left ? `The ${NAME[a]} is on the left, the side your left hand is on. The ${NAME[b]} is on the right.` : `The ${NAME[b]} is on the right, the side your right hand is on. The ${NAME[a]} is on the left.`, visual: null, explainVisual: null };
+  },
+  'ck-where-word': (rng) => {
+    const Q = [['Which word means higher up, above something?', ['Over', 'Under', 'Far'], 'Over', 'Over means higher up, above something, like a bird over a table.', null],
+      ['Which word means lower down, below something?', ['Under', 'Over', 'Near'], 'Under', 'Under means lower down, below something, like a cat under a table.', null],
+      ['Which word means close?', ['Near', 'Far', 'Left'], 'Near', 'Near means close, like a ball right beside a tree.', null],
+      ['Which word means a long way off?', ['Far', 'Near', 'Under'], 'Far', 'Far means a long way off, like a house way up a hill.', null],
+      ['Is the library near the front door or far from it?', ['Near', 'Far'], 'Near', 'The library is right beside the front door, so it is near.', 'The library is right beside the front door.'],
+      ['Is the playground near the front door or far from it?', ['Far', 'Near'], 'Far', 'The playground is at the back, a long way from the front door, so it is far.', 'The playground is at the back, a long way from the front door.'],
+      ['Which hand is on your left side?', ['Your left hand', 'Your right hand'], 'Your left hand', 'Your left hand is on your left side, and your right hand is on your right side.', null],
+      ['How do you tell someone where a thing is?', ['Pick a thing they know and say where yours is from it', 'Point at the sky', 'Say its color'], 'Pick a thing they know and say where yours is from it', 'Pick a thing they know and say where yours is from it, like the lunch room is near the gym.', null]];
+    const [prompt, choices, answer, explain, story] = pick(rng, Q);
+    return { type: 'choice', story, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'ck-map-what': (rng) => {
+    const Q = [['What is a map?', ['A drawing of a place from above', 'A round ball', 'A kind of bird'], 'A drawing of a place from above', 'A map is a drawing of a place as if you looked down on it from above, like a bird.', null],
+      ['What is a globe?', ['A round model of the whole Earth', 'A flat drawing of a school', 'A kind of ball to throw'], 'A round model of the whole Earth', 'A globe is a round model of the whole Earth, the planet we live on.', null],
+      ['On a map, what does a blue line usually stand for?', ['A river', 'A road', 'A house'], 'A river', 'On a map, a blue line is a river. Little pictures and colors stand for real things.', null],
+      ['Which shows the real round shape of the Earth?', ['A globe', 'A map', 'A book'], 'A globe', 'The Earth is round like a ball, and a globe shows that real shape.', null],
+      ['Which is easier to carry and to hang on a wall?', ['A map', 'A globe'], 'A map', 'A map is flat, so it is easier to carry and to hang on a wall. A globe shows the real shape.', null],
+      ['What planet do we live on?', ['Earth', 'The moon', 'The sun'], 'Earth', 'We live on the Earth, and a globe is a round model of it.', null],
+      ['What have you made?', ['A map', 'A globe', 'A story'], 'A map', 'A drawing of a place from above is a map, even a map of your room.', 'You draw your room from above, with a square for your bed and a circle for the rug.'],
+      ['On a globe, what is blue?', ['The water', 'The land', 'The sky'], 'The water', 'On a globe, blue is the water, and green and brown are the land.', null],
+      ['How do you use a map to find your way?', ['Put your finger where you are and follow the path to where you want to go', 'Spin it', 'Fold it up'], 'Put your finger where you are and follow the path to where you want to go', 'Put your finger on where you are, find where you want to go, and follow the path between them.', null],
+      ['On a map, what can a green patch stand for?', ['A park', 'A river', 'A car'], 'A park', 'On a map, a green patch is a park, and a blue line is a river.', null]];
+    const [prompt, choices, answer, explain, story] = pick(rng, Q);
+    return { type: 'choice', story, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'ck-tap-map': (rng) => {
+    const Q = [['Tap the globe.', 'globe', 'map', 'The globe is the round model of the whole Earth. The flat drawing is a map.'],
+      ['Tap the map.', 'map', 'globe', 'The map is the flat drawing of a place from above. The round one is a globe.'],
+      ['Tap the one that shows the real round shape of the Earth.', 'globe', 'map', 'The globe shows the real round shape of the Earth.'],
+      ['Tap the one you could hang on a wall.', 'map', 'globe', 'A map is flat, so you can hang it on a wall. A globe is round.'],
+      ['Tap the one you can spin to see every side.', 'globe', 'map', 'A globe spins, so you can see every side of the Earth.'],
+      ['Tap the drawing of a place from above.', 'map', 'globe', 'A map is a drawing of a place from above, like a bird sees it.']];
+    const [prompt, yes, no, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [`icon:${yes}`, `icon:${no}`]), answer: `icon:${yes}`, explain, visual: null, explainVisual: null };
+  },
   'ck-why-rule': (rng) => { const c = pick(rng, CIV_RULE_WHYS); const others = CIV_RULE_WHYS.filter((x) => x !== c).map((x) => x[1]);
     return { type: 'choice', story: null, prompt: c[0], choices: shuffle(rng, [c[1], ...others]), answer: c[1], explain: `We ${c[0].replace(/^Why do we /, '').replace(/\?$/, '')} ${c[1].charAt(0).toLowerCase() + c[1].slice(1)}.`, visual: null, explainVisual: null }; },
   'ck-which-helper': (rng) => { const c = pick(rng, CIV_HELPERS); return { type: 'choice', story: null, prompt: c[0], choices: twoOf(rng, CIV_HELPER_NAMES, c[1]), answer: c[1], explain: CIV_HELPER_WHY[c[1]], visual: null, explainVisual: null }; },
@@ -24763,8 +25256,105 @@ Object.assign(GENERATORS, {
 // different groups: the square would belong in both (pass JX).
 const squareAndRectangle = (a, b) => (a === 'square' && b === 'rectangle') || (a === 'rectangle' && b === 'square');
 const SORT_SETS = [['circle', 'triangle'], ['circle', 'square'], ['circle', 'rectangle'], ['triangle', 'square'], ['triangle', 'rectangle'], ['circle', 'triangle', 'square'], ['circle', 'triangle', 'rectangle']];
+// Picture graph rows (pass KL): three sets of things a kindergartner can sort, each icon with its singular and plural
+// name, so a graph question can be about toys, pets or the week's weather.
+const KG_SETS = [
+  { what: 'toys', icons: ['ball', 'teddy', 'block'], names: { ball: ['ball', 'balls'], teddy: ['teddy bear', 'teddy bears'], block: ['block', 'blocks'] } },
+  { what: 'pets', icons: ['dog', 'fish', 'bird'], names: { dog: ['dog', 'dogs'], fish: ['fish', 'fish'], bird: ['bird', 'birds'] } },
+  { what: 'days', icons: ['sun', 'rain', 'snow'], names: { sun: ['sunny day', 'sunny days'], rain: ['rainy day', 'rainy days'], snow: ['snowy day', 'snowy days'] } },
+];
 Object.assign(GENERATORS, {
   // Full standard (pass JX): a group of squares is counted as squares (it showed dots), and every explanation gives its reason.
+  // ---------------------------------------------------------------------------------------------------------------
+  // Kindergarten coins (kc, TEKS K.4) and picture graphs (kg, K.8B and K.8C), earmark E2 (pass KL). A coin question shows
+  // one coin or a pair; a graph question shows a picto visual, rows of pictures from one edge, and its answer is computed
+  // from the counts, never typed by hand. Explanations give the counting reason in the lesson's own words.
+  // ---------------------------------------------------------------------------------------------------------------
+  'kc-name-coin': (rng) => {
+    const WHY = { penny: 'This is a penny. It is the brown one, the color of copper, with a smooth edge, and it is worth one cent.', nickel: 'This is a nickel. It is silver colored with a smooth edge, bigger than a penny, and it is worth five cents.', dime: 'This is a dime, the smallest coin of all, with tiny ridges around its edge. It is worth ten cents.', quarter: 'This is a quarter, the biggest of the four, with ridges around its edge. It is worth twenty-five cents.' };
+    const coin = pick(rng, ['penny', 'nickel', 'dime', 'quarter']); const prompt = pick(rng, ['What is this coin called?', 'Which coin is this?']);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, ['A penny', 'A nickel', 'A dime', 'A quarter']), answer: `A ${coin}`, explain: WHY[coin], visual: { kind: 'icon', name: coin }, explainVisual: null };
+  },
+  'kc-tap-coin': (rng) => {
+    const Q = [['Tap the penny.', 'penny', 'nickel', 'The penny is the brown one, the color of copper. The nickel is silver colored.'],
+      ['Tap the nickel.', 'nickel', 'penny', 'The nickel is silver colored with a smooth edge, and bigger than a penny. The brown one is the penny.'],
+      ['Tap the dime.', 'dime', 'quarter', 'The dime is the smallest coin, with ridges around its edge. The big one is a quarter.'],
+      ['Tap the quarter.', 'quarter', 'dime', 'The quarter is the biggest of the four coins. The small one is a dime.'],
+      ['Tap the biggest coin.', 'quarter', 'nickel', 'The quarter is the biggest coin. A nickel is smaller than a quarter.'],
+      ['Tap the smallest coin.', 'dime', 'nickel', 'The dime is the smallest coin of all, even smaller than a penny.'],
+      ['Tap the brown coin.', 'penny', 'dime', 'The penny is the brown one, the color of copper. A dime is silver colored.'],
+      ['Tap the coin that is worth ten cents.', 'dime', 'nickel', 'The dime is worth ten cents, more than the nickel, even though the dime is smaller.'],
+      ['Tap the coin with a smooth edge.', 'nickel', 'quarter', 'The nickel has a smooth edge. The quarter has ridges around its edge.']];
+    const [prompt, yes, no, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [`icon:${yes}`, `icon:${no}`]), answer: `icon:${yes}`, explain, visual: null, explainVisual: null };
+  },
+  'kc-which-coin': (rng) => {
+    const Q = [['Which coin is the smallest?', ['The dime', 'The quarter', 'The nickel'], 'The dime', 'The dime is the smallest coin of all, thin, with ridges around its edge.', null],
+      ['Which coin is the biggest?', ['The quarter', 'The dime', 'The penny'], 'The quarter', 'The quarter is the biggest of the four coins.', null],
+      ['Which coin is brown, the color of copper?', ['The penny', 'The dime', 'The nickel'], 'The penny', 'The penny is the only brown one, the color of copper.', null],
+      ['Which coin is silver colored with a smooth edge, bigger than a penny?', ['The nickel', 'The dime', 'The penny'], 'The nickel', 'The nickel is silver colored and thick, with a smooth edge, and bigger than a penny.', null],
+      ['How much is a penny worth?', ['One cent', 'Ten cents', 'Five cents'], 'One cent', 'A penny is worth one cent.', null],
+      ['How much is a dime worth?', ['Ten cents', 'One cent', 'Five cents'], 'Ten cents', 'A dime is worth ten cents, even though it is the smallest coin.', null],
+      ['Which is worth more, a dime or a nickel?', ['The dime', 'The nickel'], 'The dime', 'A dime is worth ten cents and a nickel five, so the dime is worth more, even though it is smaller.', null],
+      ['Which coin is this?', ['A dime', 'A quarter', 'A penny'], 'A dime', 'A small, thin, silver coin with ridges around its edge is a dime.', 'You find a small, thin, silver coin with ridges all around its edge.'],
+      ['Which coin is this?', ['A penny', 'A nickel', 'A dime'], 'A penny', 'A brown coin with a smooth edge is a penny.', 'You find a brown coin, and its edge is smooth.'],
+      ['Who is on the quarter?', ['George Washington', 'A dog', 'A dime'], 'George Washington', 'George Washington is on the quarter. He was a president long ago.', null],
+      ['Which coin has ridges around its edge like a dime?', ['The quarter', 'The penny', 'The nickel'], 'The quarter', 'The quarter has ridges around its edge like a dime. The penny and the nickel are smooth.', null]];
+    const [prompt, choices, answer, explain, story] = pick(rng, Q);
+    return { type: 'choice', story, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'kg-which-more': (rng) => {
+    const set = pick(rng, KG_SETS); const [a, b] = shuffle(rng, set.icons).slice(0, 2); const [na, nb] = distinctCounts(rng, 2, 5, randInt(rng, 1, 5));
+    const fewer = randInt(rng, 0, 1) === 1; const big = na > nb ? a : b; const small = na > nb ? b : a; const nBig = Math.max(na, nb); const nSmall = Math.min(na, nb);
+    const want = fewer ? small : big;
+    return { type: 'choice', story: null, prompt: fewer ? 'Look at this graph. Which row has fewer?' : 'Look at this graph. Which row has more?', choices: shuffle(rng, [`icon:${a}`, `icon:${b}`]), answer: `icon:${want}`,
+      explain: fewer ? `The ${set.names[small][1]} row stops sooner. ${capFirst(countWords(nSmall))} is fewer than ${countWords(nBig)}, so there are fewer ${set.names[small][1]}.` : `The ${set.names[big][1]} row reaches farther. ${capFirst(countWords(nBig))} is more than ${countWords(nSmall)}, so there are more ${set.names[big][1]}.`,
+      visual: { kind: 'picto', rows: [{ icon: a, count: na }, { icon: b, count: nb }] }, explainVisual: null };
+  },
+  'kg-how-many': (rng) => {
+    const set = pick(rng, KG_SETS); const [a, b] = shuffle(rng, set.icons).slice(0, 2); const [na, nb] = distinctCounts(rng, 2, 6, randInt(rng, 1, 6));
+    const which = randInt(rng, 0, 1) === 1; const icon = which ? a : b; const n = which ? na : nb;
+    return { type: 'choice', story: null, prompt: `Look at this graph. How many ${set.names[icon][1]} are there?`, choices: shuffle(rng, distinctCounts(rng, 4, 6, n).map(String)), answer: String(n),
+      explain: n === 1 ? `There is just one ${set.names[icon][0]} in its row, so there is 1.` : `Count the ${set.names[icon][1]} in their row, ${countUp(n)}. The last number you say is ${countWords(n)}, so there are ${n}.`,
+      visual: { kind: 'picto', rows: [{ icon: a, count: na }, { icon: b, count: nb }] }, explainVisual: null };
+  },
+  'kg-in-all': (rng) => {
+    const set = pick(rng, KG_SETS); const [a, b] = shuffle(rng, set.icons).slice(0, 2);
+    const na = randInt(rng, 1, 5); const nb = Math.min(randInt(rng, 1, 5), 10 - na); const total = na + nb;
+    const more = randInt(rng, 0, 1) === 1 && na !== nb;
+    if (more) {
+      const big = na > nb ? a : b; const small = na > nb ? b : a; const diff = Math.abs(na - nb);
+      return { type: 'choice', story: null, prompt: `Look at this graph. How many more ${set.names[big][1]} than ${set.names[small][1]} are there?`, choices: shuffle(rng, distinctCounts(rng, 4, 6, diff).map(String)), answer: String(diff),
+        explain: `Match them, one ${set.names[big][0]} with one ${set.names[small][0]}. ${capFirst(countWords(diff))} ${diff === 1 ? set.names[big][0] + ' has' : set.names[big][1] + ' have'} no partner, so there ${diff === 1 ? 'is' : 'are'} ${diff} more.`,
+        visual: { kind: 'picto', rows: [{ icon: a, count: na }, { icon: b, count: nb }] }, explainVisual: null };
+    }
+    return { type: 'choice', story: null, prompt: `Look at this graph. How many ${set.what} are there in all?`, choices: shuffle(rng, distinctCounts(rng, 4, 10, total).map(String)), answer: String(total),
+      explain: `${capFirst(countWords(na))} ${set.names[a][na === 1 ? 0 : 1]} and ${countWords(nb)} ${set.names[b][nb === 1 ? 0 : 1]} make ${countWords(total)} in all. Count on from ${countWords(na)}, ${countFrom(na, total)}.`,
+      visual: { kind: 'picto', rows: [{ icon: a, count: na }, { icon: b, count: nb }] }, explainVisual: null };
+  },
+  'kg-most-three': (rng) => {
+    const set = pick(rng, KG_SETS); const icons = shuffle(rng, [...set.icons]); const counts = distinctCounts(rng, 3, 5, randInt(rng, 1, 5));
+    const rows = icons.map((icon, i) => ({ icon, count: counts[i] })); const fewest = randInt(rng, 0, 1) === 1;
+    const sorted = [...rows].sort((x, y) => y.count - x.count); const want = fewest ? sorted[2] : sorted[0];
+    return { type: 'choice', story: null, prompt: fewest ? 'Look at this graph. Which row has the fewest?' : 'Look at this graph. Which row has the most?', choices: shuffle(rng, rows.map((r) => `icon:${r.icon}`)), answer: `icon:${want.icon}`,
+      explain: fewest ? `The ${set.names[want.icon][1]} row is the shortest, with ${countWords(want.count)}, so it has the fewest.` : `The ${set.names[want.icon][1]} row is the longest, with ${countWords(want.count)}, so it has the most.`,
+      visual: { kind: 'picto', rows }, explainVisual: null };
+  },
+  'kg-make-graph': (rng) => {
+    const Q = [[null, 'A graph made by lining up the real things in rows is called what?', ['A real-object graph', 'A picture graph', 'A clock'], 'A real-object graph', 'A real-object graph lines up the real things in rows, both rows starting at the same end.'],
+      [null, 'A graph with one picture for each thing is called what?', ['A picture graph', 'A real-object graph', 'A clock'], 'A picture graph', 'A picture graph draws one picture for each thing, so the graph stays even after the things are put away.'],
+      [null, 'In a graph, which row has more?', ['The row that reaches farther', 'The shorter row', 'The top row'], 'The row that reaches farther', 'The row that reaches farther has more, when both rows start at the same end.'],
+      [null, 'Why do both rows of a graph start at the same end?', ['So you can see which row is longer', 'To look pretty', 'So they fall over'], 'So you can see which row is longer', 'Both rows start at the same end, so the row that reaches farther really does have more.'],
+      [null, 'Why draw a picture graph after a real-object graph?', ['The graph stays after the things are put away', 'Pictures are bigger', 'You cannot count real things'], 'The graph stays after the things are put away', 'A picture graph draws one picture for each thing, and the graph stays even after the toys are put away.']];
+    const picked = pick(rng, Q);
+    if (picked[0] !== null || randInt(rng, 0, 1) === 1) {
+      const set = pick(rng, KG_SETS); const icon = pick(rng, set.icons); const n = randInt(rng, 2, 6);
+      return { type: 'choice', story: `We counted ${n} ${set.names[icon][1]}, and a picture graph gets one picture for each ${set.names[icon][0]}.`, prompt: `How many ${set.names[icon][0]} pictures go in this graph?`, choices: shuffle(rng, distinctCounts(rng, 4, 6, n).map(String)), answer: String(n),
+        explain: `One picture for each ${set.names[icon][0]}. ${capFirst(countWords(n))} ${set.names[icon][1]} need ${countWords(n)} pictures, so ${n} go in the graph.`, visual: null, explainVisual: null };
+    }
+    const [story, prompt, choices, answer, explain] = picked;
+    return { type: 'choice', story, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
   'ko-belongs': (rng) => {
     const sh = pickShape(rng); const other = pick(rng, SHAPES.filter((x) => x.name !== sh.name && !squareAndRectangle(sh.name, x.name)));
     return { type: 'choice', story: `This is the ${sh.name} group.`, prompt: 'Which one belongs in it?', choices: shuffle(rng, [`shape:${sh.name}`, `shape:${other.name}`]), answer: `shape:${sh.name}`,

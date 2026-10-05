@@ -535,6 +535,144 @@ STORIES['rocks-soil-and-water'] = {
     'Rocks to build with, soil to grow in, water to drink. The Earth gives us all three.',
   ],
 };
+// Kindergarten Counting, earmark E2 (pass KL): the four coins by name, and a real-object graph that became a picture graph.
+STORIES['coins-k'] = {
+  about: 'four coins from the couch, and the tiny one that turned out to be worth more than the bigger one',
+  more: [{ serial: 'S3670', after: 1, alt: 'Four coins lined up by size on a table, biggest to smallest' }, { serial: 'S3671', after: 3, alt: 'Grandma pointing at the tiny dime in the boy\'s palm' }, { serial: 'S3672', after: 4, alt: 'A penny, a nickel, a dime and a quarter, each with its name being said' }, { serial: 'S3673', after: 5, alt: 'The boy with his eyes shut, feeling the ridged edge of a dime' }],
+  title: 'Four coins in the couch', art: 'S3669', cast: [],
+  alt: 'A small boy with his arm down the side of a couch, four coins in his other hand',
+  words: [
+    'Nico pushed his hand down the side of the couch and felt something cold. A coin! He dug deeper and found three more, so four coins sat in his palm.',
+    'One was brown, one was big and silver, and one was tiny and thin. The last one was in between, with a smooth edge. Nico lined them up by size, biggest to smallest.',
+    'The big silver one is the best, he said, because it is the biggest. This tiny one is the worst. Grandma looked over and smiled.',
+    'That tiny one is a dime, she said. It is worth ten cents. This smooth one is a nickel, only five cents, even though it is bigger. Nico\'s mouth fell open.',
+    'Grandma named them all. The brown one with the smooth edge was a penny. The big one with ridges around its edge was a quarter, worth the most.',
+    'Nico ran his fingernail around the dime and felt the tiny ridges. Then he felt the smooth nickel. He could tell them apart with his eyes shut.',
+    'A penny, a nickel, a dime and a quarter. Look at the color, the size and the edge, and you will know each one by name.',
+  ],
+};
+STORIES['picture-graphs-k'] = {
+  about: 'a row of apples and a row of bananas on a picnic blanket, and the graph that outlived the fruit',
+  more: [{ serial: 'S3675', after: 1, alt: 'Apples in one row and bananas in another on the blanket, both rows starting at the same edge' }, { serial: 'S3676', after: 2, alt: 'The girl\'s brother biting an apple, the apple row one shorter' }, { serial: 'S3677', after: 3, alt: 'The girl drawing one apple picture for each apple with a crayon' }, { serial: 'S3678', after: 5, alt: 'The paper picture graph pinned to the cooler, the family looking at it' }],
+  title: 'Apples or bananas', art: 'S3674', cast: [],
+  alt: 'A small girl at a picnic laying apples and bananas in two rows on a blanket',
+  words: [
+    'At the picnic, Zara set out a bowl of apples and a bowl of bananas. Everyone took one. Which fruit do we like more? she asked. Nobody knew.',
+    'So Zara made a graph on the blanket. She laid the apples in one row and the bananas in another, both rows starting at one edge.',
+    'The apple row reached farther, four apples and two bananas. We like apples more, said Zara. Then her brother ate an apple, and the row got shorter.',
+    'If the fruit went away, the graph went away. Zara got her crayons. She drew one apple picture for each apple and one banana picture for each banana.',
+    'Now the graph was on paper, and nobody could eat it. Four apple pictures, two banana pictures. The apple row was longer by two, so there were two more apples than bananas.',
+    'Dad counted the whole graph. Four and two make six, he said, six pieces of fruit for six people. Zara pinned the graph to the cooler so everyone could see.',
+    'Line up the real things, or draw one picture for each. The longer row has more, and the graph shows it.',
+  ],
+};
+// Kindergarten Me and my community, earmark E3 part one (pass KM): the names on the signs, the pledge, a lost shoe, a backyard map.
+STORIES['people-who-shaped-us'] = {
+  about: 'a street sign that said Navarro, and the real people behind the names all over town',
+  more: [{ serial: 'S3680', after: 1, alt: 'The grandmother telling the boy about José Antonio Navarro as they pass his street sign' }, { serial: 'S3681', after: 2, alt: 'A school with a sign naming it for George Washington' }, { serial: 'S3682', after: 3, alt: 'The Texas Capitol in Austin seen from the car window' }, { serial: 'S3683', after: 5, alt: 'The boy reading street signs out the window on the way home' }],
+  title: 'The names on the signs', art: 'S3679', cast: [],
+  alt: 'A small boy and his grandmother in a car at a city corner, a street sign reading Navarro above them',
+  words: [
+    'Tomas and his grandmother drove to the city. Navarro Street, said the sign on the corner, and Tomas asked who Navarro was. A real person, said Grandma, from long ago.',
+    'José Antonio Navarro was born here in Texas. He signed the paper that made Texas its own country. Then he spoke up for Tejanos, so they could vote and own land like everyone else.',
+    'Later they passed a school named Washington, and Tomas knew that one. George Washington led the army that won our country\'s freedom, and then he was the first president.',
+    'Our capital city is Austin, said Grandma, named for Stephen F. Austin. He brought about three hundred families to build farms and towns, back when Texas was part of Mexico.',
+    'And Columbus? asked Tomas. A sailor, said Grandma. In 1492 he sailed west from Spain and reached islands across the ocean, where people already lived. After him, people from Europe came too.',
+    'All the way home, Tomas read the signs. Streets, schools and towns are named for people who did big things, and the names were stories.',
+    'Washington, Columbus, Austin and Navarro helped shape our state and our nation. That is why we remember their names.',
+  ],
+};
+STORIES['our-pledges'] = {
+  about: 'a boy\'s first morning saying the pledge, a word that sounded like library, and what the words really mean',
+  more: [{ serial: 'S3685', after: 1, alt: 'The boy moving his lips, unsure of the words, as the class says the pledge' }, { serial: 'S3686', after: 2, alt: 'Dad laughing at the kitchen table, explaining the word liberty' }, { serial: 'S3687', after: 4, alt: 'Dad pointing to the Texas flag as he says its pledge line by line' }, { serial: 'S3688', after: 5, alt: 'The boy standing straight with his hand over his heart, saying the pledge' }],
+  title: 'Hand over heart', art: 'S3684', cast: [],
+  alt: 'A small boy standing with his class facing the United States flag, hand over his heart',
+  words: [
+    'On his first day at the new school, everyone stood and faced the flag. Eli stood too. Then they all said words he did not know, fast, like one long sound.',
+    'He moved his lips and hoped nobody noticed. One word stuck in his head. It sounded like library. Why would a flag have a library?',
+    'At home he asked Dad, who laughed. The word is liberty, he said, and it means being free. The pledge is a promise to stand by our country, with freedom and fairness for all.',
+    'Dad said the whole pledge slowly and told Eli what each word meant. Allegiance means being loyal, and the Republic is our country. Justice means being fair to everyone. Eli said each line back.',
+    'Then Dad taught him the Texas pledge, the one that begins Honor the Texas flag. Thee is an old word for you, so you are promising to be loyal to Texas.',
+    'The next morning Eli stood with his hand over his heart. He said the words slowly, and this time he knew what they meant. Nobody noticed, but Eli did.',
+    'A pledge is a promise said out loud. Know the words, and the promise is yours.',
+  ],
+};
+STORIES['near-far-left-right'] = {
+  about: 'a lost red shoe, and the one word that finally found it',
+  more: [{ serial: 'S3690', after: 1, alt: 'The girl at the front door with a mat, a plant and a basket, but no shoe' }, { serial: 'S3691', after: 2, alt: 'The red shoe under the bench on the left, tucked behind a boot' }, { serial: 'S3692', after: 4, alt: 'The girl on the bus, the driver in front, the window on her left, a lunch box under the seat' }, { serial: 'S3693', after: 5, alt: 'The red shoe waiting under the bench again at the end of the day' }],
+  title: 'Where is the red shoe?', art: 'S3689', cast: [],
+  alt: 'A small girl with one red shoe on and one bare foot, looking around a hallway',
+  words: [
+    'Nia had one red shoe on and one bare foot. The other shoe was somewhere in the house, and the bus was coming. Where is it? she called.',
+    'Near the door, said her brother Theo from the couch. Nia ran to the door. Near the door was a mat, a plant and a basket, but no shoe.',
+    'Near is not enough, she said. Theo looked up. Under the bench, he said, on the left. Nia looked under the bench, left side. There it was, tucked behind a boot.',
+    'Over, under, near, far, left and right, said Theo. One word can find a shoe. Near the door only got you close.',
+    'On the bus, Nia practiced. The driver was in front of her. The window was on her left. Her lunch box was under her seat, and school was still far away.',
+    'When she got home, the red shoe was waiting under the bench again. This time she knew exactly where to look.',
+    'Over and under, near and far, left and right. Those words tell where a thing is.',
+  ],
+};
+STORIES['maps-and-globes'] = {
+  about: 'a toy car buried in the backyard, the map that found it, and the globe that was too big to show the yard',
+  more: [{ serial: 'S3695', after: 1, alt: 'The boy drawing a map of the yard from above, a circle for the tree and a long box for the fence' }, { serial: 'S3696', after: 2, alt: 'His sister digging at the spot on the map, the toy car coming up' }, { serial: 'S3697', after: 3, alt: 'Grandpa holding a globe for the two children at night' }, { serial: 'S3698', after: 5, alt: 'The map on the wall and the globe on the shelf' }],
+  title: 'The map of the backyard', art: 'S3694', cast: [],
+  alt: 'A small boy digging in a backyard by a fence, a swing and a tree, a toy car nowhere to be seen',
+  words: [
+    'Jonah buried a toy car in the backyard. Then he could not find it. He dug by the fence, by the tree, by the swing. Nothing.',
+    'The next time, he made a map. He drew the yard from above, like a bird would see it. A circle for the tree, a long box for the fence, a square where the car was buried.',
+    'His sister Mae looked at the map, walked to the spot and dug. Up came the car on the first try. A map works, she said. It is a drawing of a place from above.',
+    'That night Grandpa showed them a globe, a round ball of the whole Earth. Blue for the water, green and brown for the land. Where is our yard? asked Jonah.',
+    'Too small to see, said Grandpa. He spun the globe and put his finger on Texas. Your yard is in there, he said, and your toy car too.',
+    'Jonah hung his map on the wall, and the globe sat on the shelf. One showed the backyard. The other showed the whole world.',
+    'A map is a drawing of a place from above. A globe is a round model of the whole Earth.',
+  ],
+};
+// Kindergarten Me and my community, earmark E3 part two (pass KN): two cousins' places, two families' lights, a night without power.
+STORIES['land-water-and-weather'] = {
+  about: 'two cousins who traded houses for a week, one in the hills and one by the sea',
+  more: [{ serial: 'S3700', after: 1, alt: 'A house on tall stilts by the sea, a plate of fresh fish on the porch table' }, { serial: 'S3701', after: 2, alt: 'The girl swimming in the waves in a sun hat, sand on her sandals' }, { serial: 'S3702', after: 3, alt: 'The boy staring at the hills, the girl pointing to a river and a swimming hole' }, { serial: 'S3703', after: 4, alt: 'The boy on a hilltop at dusk, pale limestone houses below and bright stars above' }],
+  title: 'Two postcards', art: 'S3699', cast: [],
+  alt: 'A small girl in the hills by a river and a small boy by the sea, each holding a postcard',
+  words: [
+    'Ava lived in the hills, where a river ran past limestone cliffs. Her cousin Ravi lived far away by the sea. One summer they traded houses for a week.',
+    'At Ravi\'s house the air smelled like salt. The house stood on tall stilts, so high water could go under it. For dinner they ate fish that Ravi\'s dad had caught that morning.',
+    'Ava swam in the waves and got sand in her shoes. Everyone wore sandals and hats. The sun was hot, and the wind never stopped.',
+    'Back home, Ravi stared at the hills and asked where the sea was. We have a river, said Ava, and a swimming hole with cold spring water.',
+    'Ravi climbed a hill and saw the whole town below, with houses built of pale limestone rock. That night the air was dry and cool, and the stars were bright.',
+    'Different land, different water, different weather, said Ava\'s mom. So you eat different food, wear different clothes, and play in different ways.',
+    'Every place has its own land, water and weather, and where you live shapes how you live.',
+  ],
+};
+STORIES['families-and-traditions'] = {
+  about: 'lights on a house, candles on a table, and two girls who found the same gathering in both',
+  more: [{ serial: 'S3705', after: 1, alt: 'Noor telling Mila about the candles, a December window behind them' }, { serial: 'S3706', after: 3, alt: 'Noor\'s family around the lit candles, the grandmother telling a story' }, { serial: 'S3707', after: 4, alt: 'Mila and her mom walking home under the house lights, talking' }, { serial: 'S3708', after: 5, alt: 'Noor helping hang lights on Mila\'s house, a plate of tamales waiting' }],
+  title: 'Two kinds of lights', art: 'S3704', cast: [],
+  alt: 'Two small girls on a porch, one house strung with winter lights and a candle glowing in the other\'s hands',
+  words: [
+    'Every winter, Mila\'s family hung lights on the house and ate tamales on the big night. Mila thought every family did the same.',
+    'Then her friend Noor came over in December. We do not hang lights, said Noor. We light a candle each night for eight nights, and we eat potato pancakes.',
+    'Mila frowned. No lights on the house? she asked. Noor shook her head. Mila felt a little sorry for her, and then she felt bad about that.',
+    'That weekend Mila went to Noor\'s house, where the whole family stood around the candles and sang. Noor\'s grandmother told a story from long ago. Everyone was together, and everyone was happy.',
+    'It is like our big night, Mila said on the way home. Different food and different lights, but the same gathering. Her mom nodded. Every family has its own traditions, she said.',
+    'The next week Noor came to Mila\'s house and helped hang the lights. Then she ate four tamales. Next year, said Mila, you bring the candles.',
+    'Families are alike and different. A tradition is something a family does again and again, and sharing one makes it bigger.',
+  ],
+};
+STORIES['tools-that-help'] = {
+  about: 'a storm that took the lights, the fridge and the phone, and the slow night that followed',
+  more: [{ serial: 'S3710', after: 1, alt: 'Dad lighting candles on the table while Mom packs milk and eggs into a cooler of ice' }, { serial: 'S3711', after: 2, alt: 'The boy holding a dead phone, Dad shaking his head by candlelight' }, { serial: 'S3712', after: 3, alt: 'The boy washing dishes in a tub by candlelight, a card game on the table' }, { serial: 'S3713', after: 4, alt: 'Morning, the lights back on, the fridge humming and the tablet lit' }],
+  title: 'The night the lights went out', art: 'S3709', cast: [],
+  alt: 'A small boy at a dark dinner table as a storm rages outside, his tablet gone black',
+  words: [
+    'The storm came at dinner, and then the lights went out. Owen\'s tablet went dark. The fridge stopped humming. The whole house was quiet in a way he had never heard.',
+    'Dad lit candles and set them on the table. Mom filled a cooler with ice and moved the milk and eggs into it to keep them cold.',
+    'Can I call Grandma? asked Owen. His phone was dead, and there was no way to charge it. Dad shook his head. Tonight is like long ago, he said.',
+    'They played cards by candlelight. Owen washed the dinner dishes in a tub of water that Mom warmed on the camp stove. It took a long time.',
+    'In the morning the lights came back on. The fridge hummed, the tablet lit up, and the phone charged. Owen looked at each one in a new way. Every one did a job.',
+    'People lived without these things for a long, long time, said Dad. They just did every job the slow way. Owen nodded, then he went outside to play. The tablet could wait.',
+    'A tool is anything people make to do a job better. Without our tools, many things would take much longer.',
+  ],
+};
 // Pre-K stories: the fewest words that still make a story, three pictures each, read aloud.
 STORIES['red-and-blue'] = {
   about: 'a red ball and a blue ball that looked alike until Mia said their colors',
@@ -9055,10 +9193,10 @@ export const COURSE_GOALS = {
   'listen-and-point-pk3': 'Hearing a word, a sound or a letter and knowing which picture it belongs to',
   'first-steps-pk': 'Matching, sorting and counting the world one thing at a time',
   'first-sounds-pk': 'Hearing the sounds inside words and meeting the first letters',
-  'counting-k': 'Counting with confidence and seeing how numbers grow and shrink',
+  'counting-k': 'Counting with confidence, seeing how numbers grow and shrink, and showing what was counted in a graph',
   'letters-k': 'Turning letters into sounds and sounds into the first read words',
   'science-k': 'Looking closely at the sky, the weather, every living thing, and the rocks, magnets and light around us',
-  'civics-k': 'Learning what it means to be part of a class, a town and a country',
+  'civics-k': 'Learning what it means to be part of a class, a town, a state and a country, and finding your way around them',
   'health-k': 'Building the small daily habits that keep a body well',
   'numbers-1': 'Working with numbers to twenty and beyond, in tens and ones',
   'reading-1': 'Reading whole words and whole sentences, and telling what happened',
@@ -9351,6 +9489,18 @@ export const COLOR_PAGES = {
   'light-and-shadows': ['D197', 'A child making a bunny shadow with a hand in front of a flashlight'],
   'kinds-of-rocks': ['D198', 'A row of rocks from a tiny pebble to a big boulder beside a river'],
   'rocks-soil-and-water': ['D199', 'A low stone wall around a garden bed with sprouts and a watering can'],
+  // Kindergarten Counting, earmark E2 (pass KL).
+  'coins-k': ['D200', 'Four coins side by side on a table, the smallest, a bigger one, a bigger one still and the biggest'],
+  'picture-graphs-k': ['D201', 'A picnic blanket with a row of apples and a shorter row of bananas lined up on it'],
+  // Kindergarten Me and my community, earmark E3 part one (pass KM).
+  'people-who-shaped-us': ['D202', 'A boy and his grandmother looking up at a street sign on a city corner'],
+  'our-pledges': ['D203', 'A child standing with a hand over the heart in front of two flags on a pole'],
+  'near-far-left-right': ['D204', 'A red shoe under a bench with a boot beside it, a mat and a plant by the door'],
+  'maps-and-globes': ['D205', 'A hand-drawn map of a backyard with a tree, a fence and a swing, a toy car beside it'],
+  // Kindergarten Me and my community, earmark E3 part two (pass KN).
+  'land-water-and-weather': ['D206', 'A house on stilts by the sea on one side and a snowy house with a steep roof on the other'],
+  'families-and-traditions': ['D207', 'Two families at a table, one with candles and one with a plate of tamales, everyone smiling'],
+  'tools-that-help': ['D208', 'A kitchen with a refrigerator, a stove, a washing machine and a phone on the counter'],
 };
 
 // Audio tags (2026-10-04, pass JH, Mikey). In plain terms: how ElevenLabs' Eleven v4 should perform each story the writing review
@@ -9516,3 +9666,12 @@ STORIES["magnets-k"].audio = ["[a jar clattering to the floor] Nora bumped the t
 STORIES["light-and-shadows"].audio = ["[softly] Omar woke up in the night. It was so dark that he could not see his own hand. Then a little light came in from the hall.", "Now he could see shapes, but no colors. His red rug looked gray. [a little scared] And on the wall was a big dark shape with two long arms.", "Omar pulled the blanket up. [calling out] Mom! he called. [a light switch clicking on] Mom came in and turned on the lamp. [relieved] The room was bright, and the rug was red again.", "The dark shape was still there, but now Omar could see what made it. It was his coat on its hook. The hall light had hit the coat, and the coat had blocked it. The dark shape was its shadow.", "Mom held her hand up in front of the lamp. A hand shadow sat on the wall. [playful] She bent two fingers, and the hand turned into a bunny with tall ears. [laughing] Omar laughed and made a dog.", "[quietly] When Mom turned off the lamp, the shadows went too. No light, no shadows, and no colors either. [sleepy] Omar closed his eyes and slept.", "[slowly, warmly] You see things only when there is light. Where something blocks the light, there is a shadow."];
 STORIES["kinds-of-rocks"].audio = ["[a river murmuring] Priya walked by the river with a bag, and she kept bending down. She found a gray pebble, a flat white rock and a speckled one with pink spots. [a little out of breath] The bag got heavy fast.", "[rocks tumbling onto a table] At home she tipped the rocks onto the table. They were all so different. [wondering] How could she put them in rows?", "First she sorted by color, gray, white and brown. The speckled rock had three colors and fit nowhere, so it got a pile of its own.", "Next she sorted by size, from tiny pebbles up to the one that filled her hand. After that came shape, round ones here and flat ones there. [pleased] Three ways to sort, and the rocks fit every time.", "She rubbed a river pebble, smooth as an egg. [curious] Why is it so smooth? she asked. The river did it, said Grandma. Water rolled it against other rocks for years and years, until every bump wore away.", "Priya lined her rocks up on the shelf, smooth ones in front and rough ones behind. [proud] The speckled rock sat in the middle, where she could see it best.", "[slowly, warmly] Size, shape, color and feel. Look closely, and every rock has a place."];
 STORIES["rocks-soil-and-water"].audio = ["[hopeful] Ben wanted a garden. He pushed a bean seed into the gravel path. [disappointed] Nothing came up. Little rocks are good for a path, said Aunt May, but a seed needs soil.", "So they built a garden bed. [rocks clunking together] They carried flat rocks and stacked them into a low wall. Rocks are good for building, she said, so this wall will last.", "Inside the wall they poured dark soil. It smelled like rain. Ben pushed the bean seeds in, this time where they could grow.", "[water pouring] The soil was dry, so Ben filled the watering can and gave the bed a drink. Seeds need water, said Aunt May. So do we, and so does every plant and animal on the farm.", "Days went by. [delighted] Then one morning a green sprout came up, and then another. The wall held the soil, the soil held the roots, and the water kept them alive.", "Ben sat on the wall and ate a cracker. Even the cracker came from a plant grown in soil, said Aunt May. Rocks, soil and water. [proud] Ben used all three before lunch.", "[slowly, warmly] Rocks to build with, soil to grow in, water to drink. The Earth gives us all three."];
+STORIES["coins-k"].audio = ["Nico pushed his hand down the side of the couch and felt something cold. [excited] A coin! He dug deeper and found three more, so four coins sat in his palm.", "One was brown, one was big and silver, and one was tiny and thin. The last one was in between, with a smooth edge. [coins clinking] Nico lined them up by size, biggest to smallest.", "[confident] The big silver one is the best, he said, because it is the biggest. This tiny one is the worst. [warmly] Grandma looked over and smiled.", "That tiny one is a dime, she said. It is worth ten cents. This smooth one is a nickel, only five cents, even though it is bigger. [surprised] Nico's mouth fell open.", "Grandma named them all. The brown one with the smooth edge was a penny. The big one with ridges around its edge was a quarter, worth the most.", "Nico ran his fingernail around the dime and felt the tiny ridges. Then he felt the smooth nickel. [proud] He could tell them apart with his eyes shut.", "[slowly, warmly] A penny, a nickel, a dime and a quarter. Look at the color, the size and the edge, and you will know each one by name."];
+STORIES["picture-graphs-k"].audio = ["[cheerful] At the picnic, Zara set out a bowl of apples and a bowl of bananas. Everyone took one. [curious] Which fruit do we like more? she asked. Nobody knew.", "So Zara made a graph on the blanket. She laid the apples in one row and the bananas in another, both rows starting at one edge.", "The apple row reached farther, four apples and two bananas. [pleased] We like apples more, said Zara. [a crunchy bite] Then her brother ate an apple, and the row got shorter.", "[thoughtful] If the fruit went away, the graph went away. Zara got her crayons. She drew one apple picture for each apple and one banana picture for each banana.", "Now the graph was on paper, and nobody could eat it. Four apple pictures, two banana pictures. The apple row was longer by two, so there were two more apples than bananas.", "Dad counted the whole graph. Four and two make six, he said, six pieces of fruit for six people. [proud] Zara pinned the graph to the cooler so everyone could see.", "[slowly, warmly] Line up the real things, or draw one picture for each. The longer row has more, and the graph shows it."];
+STORIES["people-who-shaped-us"].audio = ["[a car humming along] Tomas and his grandmother drove to the city. Navarro Street, said the sign on the corner, and [curious] Tomas asked who Navarro was. A real person, said Grandma, from long ago.", "José Antonio Navarro was born here in Texas. He signed the paper that made Texas its own country. [warmly] Then he spoke up for Tejanos, so they could vote and own land like everyone else.", "[pleased] Later they passed a school named Washington, and Tomas knew that one. George Washington led the army that won our country's freedom, and then he was the first president.", "Our capital city is Austin, said Grandma, named for Stephen F. Austin. He brought about three hundred families to build farms and towns, back when Texas was part of Mexico.", "[curious] And Columbus? asked Tomas. A sailor, said Grandma. In 1492 he sailed west from Spain and reached islands across the ocean, where people already lived. [gently] After him, people from Europe came too.", "All the way home, Tomas read the signs. [thoughtful] Streets, schools and towns are named for people who did big things, and the names were stories.", "[slowly, warmly] Washington, Columbus, Austin and Navarro helped shape our state and our nation. That is why we remember their names."];
+STORIES["our-pledges"].audio = ["On his first day at the new school, everyone stood and faced the flag. Eli stood too. [a classroom chanting softly] Then they all said words he did not know, fast, like one long sound.", "[shy] He moved his lips and hoped nobody noticed. One word stuck in his head. [puzzled] It sounded like library. Why would a flag have a library?", "At home he asked Dad, who laughed. [kindly] The word is liberty, he said, and it means being free. The pledge is a promise to stand by our country, with freedom and fairness for all.", "Dad said the whole pledge slowly and told Eli what each word meant. Allegiance means being loyal, and the Republic is our country. Justice means being fair to everyone. Eli said each line back.", "Then Dad taught him the Texas pledge, the one that begins Honor the Texas flag. Thee is an old word for you, so you are promising to be loyal to Texas.", "[proud] The next morning Eli stood with his hand over his heart. He said the words slowly, and this time he knew what they meant. Nobody noticed, but Eli did.", "[slowly, warmly] A pledge is a promise said out loud. Know the words, and the promise is yours."];
+STORIES["near-far-left-right"].audio = ["[hurried] Nia had one red shoe on and one bare foot. The other shoe was somewhere in the house, and the bus was coming. [calling out] Where is it? she called.", "Near the door, said her brother Theo from the couch. [quick footsteps] Nia ran to the door. [disappointed] Near the door was a mat, a plant and a basket, but no shoe.", "Near is not enough, she said. Theo looked up. Under the bench, he said, on the left. Nia looked under the bench, left side. [relieved] There it was, tucked behind a boot.", "Over, under, near, far, left and right, said Theo. One word can find a shoe. Near the door only got you close.", "[a bus engine rumbling] On the bus, Nia practiced. The driver was in front of her. The window was on her left. Her lunch box was under her seat, and school was still far away.", "When she got home, the red shoe was waiting under the bench again. [pleased] This time she knew exactly where to look.", "[slowly, warmly] Over and under, near and far, left and right. Those words tell where a thing is."];
+STORIES["maps-and-globes"].audio = ["[digging in dirt] Jonah buried a toy car in the backyard. Then he could not find it. He dug by the fence, by the tree, by the swing. [sighs] Nothing.", "[thoughtful] The next time, he made a map. He drew the yard from above, like a bird would see it. A circle for the tree, a long box for the fence, a square where the car was buried.", "His sister Mae looked at the map, walked to the spot and dug. [delighted] Up came the car on the first try. A map works, she said. It is a drawing of a place from above.", "That night Grandpa showed them a globe, a round ball of the whole Earth. Blue for the water, green and brown for the land. [curious] Where is our yard? asked Jonah.", "Too small to see, said Grandpa. He spun the globe and put his finger on Texas. [warmly] Your yard is in there, he said, and your toy car too.", "Jonah hung his map on the wall, and the globe sat on the shelf. One showed the backyard. The other showed the whole world.", "[slowly, warmly] A map is a drawing of a place from above. A globe is a round model of the whole Earth."];
+STORIES["land-water-and-weather"].audio = ["Ava lived in the hills, where a river ran past limestone cliffs. Her cousin Ravi lived far away by the sea. [excited] One summer they traded houses for a week.", "[waves and gulls] At Ravi's house the air smelled like salt. The house stood on tall stilts, so high water could go under it. For dinner they ate fish that Ravi's dad had caught that morning.", "[playful] Ava swam in the waves and got sand in her shoes. Everyone wore sandals and hats. The sun was hot, and the wind never stopped.", "[puzzled] Back home, Ravi stared at the hills and asked where the sea was. We have a river, said Ava, and a swimming hole with cold spring water.", "Ravi climbed a hill and saw the whole town below, with houses built of pale limestone rock. [softly] That night the air was dry and cool, and the stars were bright.", "Different land, different water, different weather, said Ava's mom. So you eat different food, wear different clothes, and play in different ways.", "[slowly, warmly] Every place has its own land, water and weather, and where you live shapes how you live."];
+STORIES["families-and-traditions"].audio = ["Every winter, Mila's family hung lights on the house and ate tamales on the big night. Mila thought every family did the same.", "Then her friend Noor came over in December. We do not hang lights, said Noor. We light a candle each night for eight nights, and we eat potato pancakes.", "[puzzled] Mila frowned. No lights on the house? she asked. Noor shook her head. [quietly] Mila felt a little sorry for her, and then she felt bad about that.", "[a family singing softly] That weekend Mila went to Noor's house, where the whole family stood around the candles and sang. Noor's grandmother told a story from long ago. [warmly] Everyone was together, and everyone was happy.", "[thoughtful] It is like our big night, Mila said on the way home. Different food and different lights, but the same gathering. Her mom nodded. Every family has its own traditions, she said.", "The next week Noor came to Mila's house and helped hang the lights. [laughing] Then she ate four tamales. Next year, said Mila, you bring the candles.", "[slowly, warmly] Families are alike and different. A tradition is something a family does again and again, and sharing one makes it bigger."];
+STORIES["tools-that-help"].audio = ["[thunder rumbling] The storm came at dinner, and then the lights went out. Owen's tablet went dark. The fridge stopped humming. [hushed] The whole house was quiet in a way he had never heard.", "Dad lit candles and set them on the table. Mom filled a cooler with ice and moved the milk and eggs into it to keep them cold.", "[hopeful] Can I call Grandma? asked Owen. His phone was dead, and there was no way to charge it. Dad shook his head. Tonight is like long ago, he said.", "They played cards by candlelight. [water sloshing in a tub] Owen washed the dinner dishes in a tub of water that Mom warmed on the camp stove. [sighs] It took a long time.", "[a refrigerator humming to life] In the morning the lights came back on. The fridge hummed, the tablet lit up, and the phone charged. Owen looked at each one in a new way. Every one did a job.", "People lived without these things for a long, long time, said Dad. They just did every job the slow way. Owen nodded, then he went outside to play. [playful] The tablet could wait.", "[slowly, warmly] A tool is anything people make to do a job better. Without our tools, many things would take much longer."];

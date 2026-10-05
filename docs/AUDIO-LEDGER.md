@@ -1,6 +1,6 @@
 # Audio ledger
 
-Generated 2026-10-05 by tools/audio-ledger.mjs. Every clip the app can play in a recorded voice is a row of docs/AUDIO-LEDGER.csv: its key (the file name, audio/<key>.mp3, that the app already looks for), its group (the story or lesson it belongs to) and the words with their Eleven v4 audio tags. 7078 clips, 1,296,064 characters in all; the longest clip is 508 characters and the longest whole story 2,751, far under Eleven v4's 10,000 a request. 149 stories carry hand-written tags so far (the writing review adds them course by course); the rest open with their age band's voice direction only.
+Generated 2026-10-05 by tools/audio-ledger.mjs. Every clip the app can play in a recorded voice is a row of docs/AUDIO-LEDGER.csv: its key (the file name, audio/<key>.mp3, that the app already looks for), its group (the story or lesson it belongs to) and the words with their Eleven v4 audio tags. 7337 clips, 1,327,726 characters in all; the longest clip is 508 characters and the longest whole story 2,751, far under Eleven v4's 10,000 a request. 158 stories carry hand-written tags so far (the writing review adds them course by course); the rest open with their age band's voice direction only.
 
 ## How to make the audio
 
@@ -17,7 +17,7 @@ ElevenLabs counts characters, tags included, so this is the size of each part of
 
 | Band | Clips | Characters |
 |---|---|---|
-| Pre-K to grade 2 | 3022 | 344,404 |
+| Pre-K to grade 2 | 3281 | 376,066 |
 | Grades 3 to 5 | 1263 | 278,553 |
 | Grades 6 to 8 | 1138 | 272,072 |
 | Grades 9 to college | 1655 | 401,035 |
@@ -39,9 +39,9 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 
 | Kind | Clips |
 |---|---|
-| story title | 620 |
-| story | 3922 |
-| lesson line | 1618 |
+| story title | 629 |
+| story | 3985 |
+| lesson line | 1805 |
 | long story title | 102 |
 | long story | 816 |
 
@@ -166,6 +166,96 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 - S3664-5: Days went by. [delighted] Then one morning a green sprout came up, and then another. The wall held the soil, the soil held the roots, and the water kept them alive.
 - S3664-6: Ben sat on the wall and ate a cracker. Even the cracker came from a plant grown in soil, said Aunt May. Rocks, soil and water. [proud] Ben used all three before lunch.
 - S3664-7: [slowly, warmly] Rocks to build with, soil to grow in, water to drink. The Earth gives us all three.
+
+### Four coins in the couch (S3669, coins-k)
+
+- S3669-1: Nico pushed his hand down the side of the couch and felt something cold. [excited] A coin! He dug deeper and found three more, so four coins sat in his palm.
+- S3669-2: One was brown, one was big and silver, and one was tiny and thin. The last one was in between, with a smooth edge. [coins clinking] Nico lined them up by size, biggest to smallest.
+- S3669-3: [confident] The big silver one is the best, he said, because it is the biggest. This tiny one is the worst. [warmly] Grandma looked over and smiled.
+- S3669-4: That tiny one is a dime, she said. It is worth ten cents. This smooth one is a nickel, only five cents, even though it is bigger. [surprised] Nico's mouth fell open.
+- S3669-5: Grandma named them all. The brown one with the smooth edge was a penny. The big one with ridges around its edge was a quarter, worth the most.
+- S3669-6: Nico ran his fingernail around the dime and felt the tiny ridges. Then he felt the smooth nickel. [proud] He could tell them apart with his eyes shut.
+- S3669-7: [slowly, warmly] A penny, a nickel, a dime and a quarter. Look at the color, the size and the edge, and you will know each one by name.
+
+### Apples or bananas (S3674, picture-graphs-k)
+
+- S3674-1: [cheerful] At the picnic, Zara set out a bowl of apples and a bowl of bananas. Everyone took one. [curious] Which fruit do we like more? she asked. Nobody knew.
+- S3674-2: So Zara made a graph on the blanket. She laid the apples in one row and the bananas in another, both rows starting at one edge.
+- S3674-3: The apple row reached farther, four apples and two bananas. [pleased] We like apples more, said Zara. [a crunchy bite] Then her brother ate an apple, and the row got shorter.
+- S3674-4: [thoughtful] If the fruit went away, the graph went away. Zara got her crayons. She drew one apple picture for each apple and one banana picture for each banana.
+- S3674-5: Now the graph was on paper, and nobody could eat it. Four apple pictures, two banana pictures. The apple row was longer by two, so there were two more apples than bananas.
+- S3674-6: Dad counted the whole graph. Four and two make six, he said, six pieces of fruit for six people. [proud] Zara pinned the graph to the cooler so everyone could see.
+- S3674-7: [slowly, warmly] Line up the real things, or draw one picture for each. The longer row has more, and the graph shows it.
+
+### The names on the signs (S3679, people-who-shaped-us)
+
+- S3679-1: [a car humming along] Tomas and his grandmother drove to the city. Navarro Street, said the sign on the corner, and [curious] Tomas asked who Navarro was. A real person, said Grandma, from long ago.
+- S3679-2: José Antonio Navarro was born here in Texas. He signed the paper that made Texas its own country. [warmly] Then he spoke up for Tejanos, so they could vote and own land like everyone else.
+- S3679-3: [pleased] Later they passed a school named Washington, and Tomas knew that one. George Washington led the army that won our country's freedom, and then he was the first president.
+- S3679-4: Our capital city is Austin, said Grandma, named for Stephen F. Austin. He brought about three hundred families to build farms and towns, back when Texas was part of Mexico.
+- S3679-5: [curious] And Columbus? asked Tomas. A sailor, said Grandma. In 1492 he sailed west from Spain and reached islands across the ocean, where people already lived. [gently] After him, people from Europe came too.
+- S3679-6: All the way home, Tomas read the signs. [thoughtful] Streets, schools and towns are named for people who did big things, and the names were stories.
+- S3679-7: [slowly, warmly] Washington, Columbus, Austin and Navarro helped shape our state and our nation. That is why we remember their names.
+
+### Hand over heart (S3684, our-pledges)
+
+- S3684-1: On his first day at the new school, everyone stood and faced the flag. Eli stood too. [a classroom chanting softly] Then they all said words he did not know, fast, like one long sound.
+- S3684-2: [shy] He moved his lips and hoped nobody noticed. One word stuck in his head. [puzzled] It sounded like library. Why would a flag have a library?
+- S3684-3: At home he asked Dad, who laughed. [kindly] The word is liberty, he said, and it means being free. The pledge is a promise to stand by our country, with freedom and fairness for all.
+- S3684-4: Dad said the whole pledge slowly and told Eli what each word meant. Allegiance means being loyal, and the Republic is our country. Justice means being fair to everyone. Eli said each line back.
+- S3684-5: Then Dad taught him the Texas pledge, the one that begins Honor the Texas flag. Thee is an old word for you, so you are promising to be loyal to Texas.
+- S3684-6: [proud] The next morning Eli stood with his hand over his heart. He said the words slowly, and this time he knew what they meant. Nobody noticed, but Eli did.
+- S3684-7: [slowly, warmly] A pledge is a promise said out loud. Know the words, and the promise is yours.
+
+### Where is the red shoe? (S3689, near-far-left-right)
+
+- S3689-1: [hurried] Nia had one red shoe on and one bare foot. The other shoe was somewhere in the house, and the bus was coming. [calling out] Where is it? she called.
+- S3689-2: Near the door, said her brother Theo from the couch. [quick footsteps] Nia ran to the door. [disappointed] Near the door was a mat, a plant and a basket, but no shoe.
+- S3689-3: Near is not enough, she said. Theo looked up. Under the bench, he said, on the left. Nia looked under the bench, left side. [relieved] There it was, tucked behind a boot.
+- S3689-4: Over, under, near, far, left and right, said Theo. One word can find a shoe. Near the door only got you close.
+- S3689-5: [a bus engine rumbling] On the bus, Nia practiced. The driver was in front of her. The window was on her left. Her lunch box was under her seat, and school was still far away.
+- S3689-6: When she got home, the red shoe was waiting under the bench again. [pleased] This time she knew exactly where to look.
+- S3689-7: [slowly, warmly] Over and under, near and far, left and right. Those words tell where a thing is.
+
+### The map of the backyard (S3694, maps-and-globes)
+
+- S3694-1: [digging in dirt] Jonah buried a toy car in the backyard. Then he could not find it. He dug by the fence, by the tree, by the swing. [sighs] Nothing.
+- S3694-2: [thoughtful] The next time, he made a map. He drew the yard from above, like a bird would see it. A circle for the tree, a long box for the fence, a square where the car was buried.
+- S3694-3: His sister Mae looked at the map, walked to the spot and dug. [delighted] Up came the car on the first try. A map works, she said. It is a drawing of a place from above.
+- S3694-4: That night Grandpa showed them a globe, a round ball of the whole Earth. Blue for the water, green and brown for the land. [curious] Where is our yard? asked Jonah.
+- S3694-5: Too small to see, said Grandpa. He spun the globe and put his finger on Texas. [warmly] Your yard is in there, he said, and your toy car too.
+- S3694-6: Jonah hung his map on the wall, and the globe sat on the shelf. One showed the backyard. The other showed the whole world.
+- S3694-7: [slowly, warmly] A map is a drawing of a place from above. A globe is a round model of the whole Earth.
+
+### Two postcards (S3699, land-water-and-weather)
+
+- S3699-1: Ava lived in the hills, where a river ran past limestone cliffs. Her cousin Ravi lived far away by the sea. [excited] One summer they traded houses for a week.
+- S3699-2: [waves and gulls] At Ravi's house the air smelled like salt. The house stood on tall stilts, so high water could go under it. For dinner they ate fish that Ravi's dad had caught that morning.
+- S3699-3: [playful] Ava swam in the waves and got sand in her shoes. Everyone wore sandals and hats. The sun was hot, and the wind never stopped.
+- S3699-4: [puzzled] Back home, Ravi stared at the hills and asked where the sea was. We have a river, said Ava, and a swimming hole with cold spring water.
+- S3699-5: Ravi climbed a hill and saw the whole town below, with houses built of pale limestone rock. [softly] That night the air was dry and cool, and the stars were bright.
+- S3699-6: Different land, different water, different weather, said Ava's mom. So you eat different food, wear different clothes, and play in different ways.
+- S3699-7: [slowly, warmly] Every place has its own land, water and weather, and where you live shapes how you live.
+
+### Two kinds of lights (S3704, families-and-traditions)
+
+- S3704-1: Every winter, Mila's family hung lights on the house and ate tamales on the big night. Mila thought every family did the same.
+- S3704-2: Then her friend Noor came over in December. We do not hang lights, said Noor. We light a candle each night for eight nights, and we eat potato pancakes.
+- S3704-3: [puzzled] Mila frowned. No lights on the house? she asked. Noor shook her head. [quietly] Mila felt a little sorry for her, and then she felt bad about that.
+- S3704-4: [a family singing softly] That weekend Mila went to Noor's house, where the whole family stood around the candles and sang. Noor's grandmother told a story from long ago. [warmly] Everyone was together, and everyone was happy.
+- S3704-5: [thoughtful] It is like our big night, Mila said on the way home. Different food and different lights, but the same gathering. Her mom nodded. Every family has its own traditions, she said.
+- S3704-6: The next week Noor came to Mila's house and helped hang the lights. [laughing] Then she ate four tamales. Next year, said Mila, you bring the candles.
+- S3704-7: [slowly, warmly] Families are alike and different. A tradition is something a family does again and again, and sharing one makes it bigger.
+
+### The night the lights went out (S3709, tools-that-help)
+
+- S3709-1: [thunder rumbling] The storm came at dinner, and then the lights went out. Owen's tablet went dark. The fridge stopped humming. [hushed] The whole house was quiet in a way he had never heard.
+- S3709-2: Dad lit candles and set them on the table. Mom filled a cooler with ice and moved the milk and eggs into it to keep them cold.
+- S3709-3: [hopeful] Can I call Grandma? asked Owen. His phone was dead, and there was no way to charge it. Dad shook his head. Tonight is like long ago, he said.
+- S3709-4: They played cards by candlelight. [water sloshing in a tub] Owen washed the dinner dishes in a tub of water that Mom warmed on the camp stove. [sighs] It took a long time.
+- S3709-5: [a refrigerator humming to life] In the morning the lights came back on. The fridge hummed, the tablet lit up, and the phone charged. Owen looked at each one in a new way. Every one did a job.
+- S3709-6: People lived without these things for a long, long time, said Dad. They just did every job the slow way. Owen nodded, then he went outside to play. [playful] The tablet could wait.
+- S3709-7: [slowly, warmly] A tool is anything people make to do a job better. Without our tools, many things would take much longer.
 
 ### Two balls (S95, red-and-blue)
 

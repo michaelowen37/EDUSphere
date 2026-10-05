@@ -2,6 +2,24 @@
 
 The newest block is what educators see once, in a pop-up on the classroom page, after each update. Write it the way Mikey talks to a teacher: conversational, complete sentences, say what changed and why it matters, and skip the shorthand (2026-09-23). Two to four items. The date line is the version stamp.
 
+## October 5, 2026 (places, families and technology)
+
+- Kindergarten Me and my community has three more lessons, so it now covers every Texas kindergarten social studies standard: the land, water and weather of a place and how it shapes the way people live there, families alike and different and the traditions they keep, and technology at home and school.
+- Children hear why houses by the sea stand on stilts and why roofs are steep where it snows, that families come in many shapes and each family decides what it believes, and what a night without a refrigerator, a phone or a lamp is like.
+- Each lesson is spoken for a child who cannot read yet, every answer comes with its reason, and each has a story of its own with a coloring page.
+
+## October 5, 2026 (people, pledges, places and maps)
+
+- Kindergarten Me and my community has four new lessons: the people who shaped Texas and America (Washington, Columbus, Stephen F. Austin and José Antonio Navarro), the two pledges with every word explained, where things are (over, under, near, far, left and right), and maps and globes.
+- Rules and helpers now says how a grown-up in charge enforces a rule, by reminding, stopping the unsafe thing and sometimes giving a consequence.
+- Each lesson is spoken for a child who cannot read yet, every answer comes with its reason, and each has a story of its own with a coloring page.
+
+## October 5, 2026 (coins and picture graphs)
+
+- Kindergarten Counting has two new lessons, so it now covers every Texas kindergarten math standard: the four coins by name, and picture graphs.
+- Children learn to tell a penny, a nickel, a dime and a quarter apart by color, size and edge, and hear the surprise that the tiny dime is worth more than the bigger nickel.
+- They line up real things in rows to see which has more, draw one picture for each thing so the graph stays, and answer how many, how many more and how many in all from the graph.
+
 ## October 5, 2026 (sorting, magnets, light, rocks, soil and water)
 
 - Kindergarten science has five new lessons, so the course now covers every Texas kindergarten science standard it claims: sorting things by shape, color, feel and material, magnets, light and shadows, kinds of rocks, and how we use rocks, soil and water every day.

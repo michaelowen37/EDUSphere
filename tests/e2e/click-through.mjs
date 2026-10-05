@@ -604,7 +604,7 @@ ok('the transcript lists work done and states its privacy position', t.includes(
 ok('the transcript offers a way to print', (await page.getByRole('button', { name: 'Print or save as PDF' }).count()) === 1);
 await tap('Back to report');
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'educator-report');
-ok('resetting one module changes the summary', (await text()).includes('0 of 14 in Kindergarten math'));
+ok('resetting one module changes the summary', (await text()).includes('0 of 16 in Kindergarten math'));
 ok('a summary with a coloring line carries a short rule above it', !(await text()).includes('Coloring breaks taken') || (await page.locator('[data-summary-rule]').count()) >= 1);
 ok('a new student starts on a short list of recommended courses', !(await text()).includes('fourth grade math'));
 ok('the all-progress reset carries the student\'s name', (await page.getByRole('button', { name: /^Reset .*Progress$/ }).count()) === 1);

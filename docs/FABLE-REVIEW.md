@@ -190,6 +190,30 @@ Mikey's example: the pre-K 3 Triangles lesson says a slice of pizza is almost a 
 - A thing a lesson names, it also says what it is. A food bank and an animal shelter were named for a five-year-old who may know neither.
 - A computed question's words are checked like any other (one dollar, two dollars), and a bank whose setups the rules read for numbers never carries a wordy setup.
 
+## Learned in pass KN (earmark E3 part two, places, families and technology)
+
+- Teach religion and family shape as things each family decides, name several and the choice of none, and keep every painting free of a default: P57's prompt asks for no religious symbols so that no family's way is painted as the way.
+- A place name with four syllables (Colorado) cannot appear in a kindergarten story under the read-aloud rule, so the lesson names the river and the story says a river; the same rule turns technology into tools in a closing line.
+- When a geographic name is contested on current maps (the Gulf), teach the idea (the sea along our coast) and leave the dispute to a later grade.
+- A patch that writes one file before asserting an anchor in the next can half-apply; guard each file's part on its own, so a rerun finishes the rest without repeating the first.
+
+## Learned in pass KM (earmark E3 part one, kindergarten social studies)
+
+- Quoted text is not ours to tidy. The Texas pledge keeps its semicolon and the United States pledge its capitals, because a child who learns them will say and later read the real words.
+- Check a quoted law's latest enacted text, not only the version everyone recites. Bills to add words to the Texas pledge were filed in 2021 and 2023; the enacted text found still ends at indivisible, and the entry says so rather than guessing.
+- A three-syllable rule shapes a story's plot. Indivisible and invisible are both four syllables or more, so the pledge story's mishearing had to be a three-syllable pair (library for liberty).
+- A prompt that ends in an abbreviation (Stephen F. Austin) reads as two sentences to the wording check; say the name without the initial in a prompt, and keep the full name in the lesson.
+- A scene icon can carry a word the line says (table, hill), so the picture rule holds without a label; a name like overunder that no sentence can say fails it.
+- When a standard names four required figures, four paintings is right even though lessons usually carry three, and a figure with no true likeness (Columbus) gets a scene, not a face.
+
+## Learned in pass KL (earmark E2, kindergarten coins and picture graphs)
+
+- Check an earmark's whole section, not only the earmarked codes. The file said the math graphs were missing; reading 19 TAC 111.2 code by code found K.4 (coins by name) in no plan and no lesson, and K.5 cited with a letter it does not have.
+- A picture whose count matters is kept out of the Leonardo prompt (P44 shows rows of toys with no counts), because a painted count that disagrees with the lesson would teach the wrong thing.
+- When two drawn things differ only by size (a dime and a quarter), draw them to one scale and show them side by side, and give each a second difference a child can feel (a reeded edge against a smooth one).
+- A screenshot taken before a pair's second half has drifted in shows one picture; wait for the animation before judging a rendered lesson.
+- A line that compares two real things (ridges like a dime) reads as a picture candidate; say the same as instead when both things are already pictured.
+
 ## Learned in pass KK (earmark E1, five new kindergarten science modules)
 
 - A national framework's assessment boundary can exclude the very thing a code seems to cover. NGSS K-PS2-1 (pushes and pulls) says in its boundary that it excludes non-contact pushes or pulls such as those produced by magnets, so a magnet lesson cites 3-PS2-3 with a note, never K-PS2-1. Read the boundary and the clarification statement, not only the performance expectation.

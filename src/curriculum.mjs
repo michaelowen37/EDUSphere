@@ -176,7 +176,7 @@ export const CURRICULUM = [
   },
   {
     grade: 'K', subject: 'Math', status: 'ready', // every TEKS standard has a module; CCSS K.NBT.A.1 (teen numbers as ten and some more) is the one open item
-    source: 'Texas Essential Knowledge and Skills, Kindergarten Mathematics (TEKS §111.2); Common Core Kindergarten Mathematics',
+    source: 'Texas Essential Knowledge and Skills, Kindergarten Mathematics (TEKS §111.2, Adopted 2012, read in full in pass KL); Common Core Kindergarten Mathematics',
     standards: [
       { framework: 'TEKS', code: 'K.2A', text: 'Count forward and backward to at least 20 with and without objects.', moduleIds: ['count-to-5', 'count-to-10', 'one-more-one-less'] },
       { framework: 'TEKS', code: 'K.2B', text: 'Read, write, and represent whole numbers from 0 to at least 20 with and without objects or pictures.', moduleIds: ['count-to-5', 'count-to-10', 'tracing-numbers'] },
@@ -190,7 +190,8 @@ export const CURRICULUM = [
       { framework: 'TEKS', code: 'K.3A', text: 'Model the action of joining to represent addition and the action of separating to represent subtraction.', moduleIds: ['joining-and-taking-away'] },
       { framework: 'TEKS', code: 'K.3B', text: 'Solve word problems using objects and drawings to find sums up to 10 and differences within 10.', moduleIds: ['joining-and-taking-away'] },
       { framework: 'TEKS', code: 'K.3C', text: 'Explain the strategies used to solve problems involving adding and subtracting within 10 using spoken words, concrete and pictorial models, and number sentences.', moduleIds: ['joining-and-taking-away'] },
-      { framework: 'TEKS', code: 'K.5A', text: 'Recite numbers up to at least 100 by ones and tens beginning with any given number.', moduleIds: ['counting-by-tens'] },
+      { framework: 'TEKS', code: 'K.4', text: 'Identify U.S. coins by name, including pennies, nickels, dimes, and quarters.', moduleIds: ['coins-k'] },   // paragraph (4) is a single expectation, no letter (pass KL)
+      { framework: 'TEKS', code: 'K.5', text: 'Recite numbers up to at least 100 by ones and tens beginning with any given number.', moduleIds: ['counting-by-tens'] },   // paragraph (5) is a single expectation; it was cited as K.5A until pass KL
       { framework: 'TEKS', code: 'K.6A', text: 'Identify two-dimensional shapes, including circles, triangles, rectangles, and squares as special rectangles.', moduleIds: ['shapes', 'tracing-shapes'] },
       { framework: 'TEKS', code: 'K.6B', text: 'Identify three-dimensional solids, including cylinders, cones, spheres, and cubes, in the real world.', moduleIds: ['solids'] },
       { framework: 'TEKS', code: 'K.6C', text: 'Identify two-dimensional components of three-dimensional objects.', moduleIds: ['solids'] },
@@ -200,6 +201,8 @@ export const CURRICULUM = [
       { framework: 'TEKS', code: 'K.7A', text: 'Give an example of a measurable attribute of a given object, including length, capacity, and weight.', moduleIds: ['longer-and-heavier'] },
       { framework: 'TEKS', code: 'K.7B', text: 'Compare two objects with a common measurable attribute to see which object has more of/less of the attribute and describe the difference.', moduleIds: ['longer-and-heavier'] },
       { framework: 'TEKS', code: 'K.8A', text: 'Collect, sort, and organize data into two or three categories.', moduleIds: ['sorting'] },
+      { framework: 'TEKS', code: 'K.8B', text: 'Use data to create real-object and picture graphs.', moduleIds: ['picture-graphs-k'] },
+      { framework: 'TEKS', code: 'K.8C', text: 'Draw conclusions from real-object and picture graphs.', moduleIds: ['picture-graphs-k'] },
       { framework: 'CCSS', code: 'K.CC.A.1', text: 'Count to 100 by ones and by tens.', moduleIds: ['counting-by-tens'] },
       { framework: 'CCSS', code: 'K.CC.A.2', text: 'Count forward beginning from a given number within the known sequence.', moduleIds: ['one-more-one-less'] },
       { framework: 'CCSS', code: 'K.CC.A.3', text: 'Write numbers from 0 to 20 and represent a number of objects with a written numeral.', moduleIds: ['count-to-5', 'count-to-10', 'tracing-numbers'] },
@@ -216,6 +219,8 @@ export const CURRICULUM = [
       { framework: 'CCSS', code: 'K.MD.A.1', text: 'Describe measurable attributes of objects, such as length or weight.', moduleIds: ['longer-and-heavier'] },
       { framework: 'CCSS', code: 'K.MD.A.2', text: 'Directly compare two objects with a measurable attribute in common.', moduleIds: ['longer-and-heavier'] },
       { framework: 'CCSS', code: 'K.MD.B.3', text: 'Classify objects into given categories; count the numbers of objects in each category and sort by count.', moduleIds: ['sorting'] },
+      { framework: 'CCSS', code: '1.MD.C.4', text: 'Organize, represent, and interpret data with up to three categories; ask and answer questions about the total number of data points, how many in each category, and how many more or less are in one category than in another.', moduleIds: ['picture-graphs-k'] },   // Common Core places graphs in grade 1 (pass KL)
+      { framework: 'CCSS', code: '2.MD.C.8', text: 'Solve word problems involving dollar bills, quarters, dimes, nickels, and pennies, using $ and ¢ symbols appropriately.', moduleIds: ['coins-k'] },   // Common Core places coins in grade 2 (pass KL)
       { framework: 'CCSS', code: 'K.G.A.2', text: 'Correctly name shapes regardless of their orientations or overall size.', moduleIds: ['shapes', 'tracing-shapes'] },
       { framework: 'CCSS', code: 'K.G.A.3', text: 'Identify shapes as two-dimensional or three-dimensional.', moduleIds: ['solids'] },
       { framework: 'CCSS', code: 'K.G.B.4', text: 'Analyze and compare two- and three-dimensional shapes, describing their similarities and differences.', moduleIds: ['shapes'] },
@@ -1108,9 +1113,30 @@ export const CURRICULUM = [
       { framework: 'TEKS', code: 'K.7B', text: 'Identify rules that provide order, security, and safety in the home and school.', moduleIds: ['rules-and-helpers'] },
       { framework: 'TEKS', code: 'K.8A', text: 'Identify authority figures in the home, school, and community.', moduleIds: ['rules-and-helpers'] },
       { framework: 'TEKS', code: 'K.15A', text: 'Use democratic procedures to collaborate with others when making decisions on issues in the classroom, school, or community.', moduleIds: ['voting-in-class'] },
+      // Earmark E3, part one (pass KM), each read in 19 TAC 113.11 (Adopted 2022). K.2 is a single expectation, so it takes no letter.
+      { framework: 'TEKS', code: 'K.2', text: 'Identify contributions of historical figures, including Stephen F. Austin, George Washington, Christopher Columbus, and José Antonio Navarro, who helped to shape the state and nation.', moduleIds: ['people-who-shaped-us'] },
+      { framework: 'TEKS', code: 'K.3A', text: 'Use spatial terms, including over, under, near, far, left, and right, to describe relative location.', moduleIds: ['near-far-left-right'] },
+      { framework: 'TEKS', code: 'K.3B', text: 'Locate places on the school campus and describe their relative locations.', moduleIds: ['near-far-left-right'] },
+      { framework: 'TEKS', code: 'K.3C', text: 'Identify and use geographic tools that aid in determining location, including maps and globes.', moduleIds: ['maps-and-globes'] },
+      { framework: 'TEKS', code: 'K.8B', text: 'Explain how authority figures enforce rules.', moduleIds: ['rules-and-helpers'] },
+      { framework: 'TEKS', code: 'K.9B', text: 'Recite the Pledge of Allegiance to the United States Flag and the Pledge to the Texas Flag.', moduleIds: ['our-pledges'] },
+      { framework: 'TEKS', code: 'K.14D', text: 'Create and interpret visuals, including pictures and maps.', moduleIds: ['maps-and-globes'] },
+      // Earmark E3, part two (pass KN). K.10 is a single expectation, so it takes no letter.
+      { framework: 'TEKS', code: 'K.4A', text: 'Identify the physical characteristics of place such as landforms, bodies of water, Earth\'s resources, and weather.', moduleIds: ['land-water-and-weather'] },
+      { framework: 'TEKS', code: 'K.4B', text: 'Identify how geographic location influences human characteristics of place such as shelter, clothing, food, and activities.', moduleIds: ['land-water-and-weather'] },
+      { framework: 'TEKS', code: 'K.10', text: 'Identify similarities and differences among individuals such as kinship and religion.', moduleIds: ['families-and-traditions'] },
+      { framework: 'TEKS', code: 'K.11A', text: 'Describe and explain the importance of family traditions.', moduleIds: ['families-and-traditions'] },
+      { framework: 'TEKS', code: 'K.11B', text: 'Compare traditions among families.', moduleIds: ['families-and-traditions'] },
+      { framework: 'TEKS', code: 'K.12A', text: 'Identify examples of technology used in the home and school.', moduleIds: ['tools-that-help'] },
+      { framework: 'TEKS', code: 'K.12B', text: 'Describe how technology helps accomplish specific tasks and meet people\'s needs.', moduleIds: ['tools-that-help'] },
+      { framework: 'TEKS', code: 'K.12C', text: 'Describe how his or her life might be different without modern technology.', moduleIds: ['tools-that-help'] },
       { framework: 'CCSS', code: 'NCSS Theme VI', text: 'Power, Authority, and Governance.', moduleIds: ['rules-and-helpers'] },
       { framework: 'CCSS', code: 'NCSS Theme VII', text: 'Production, Distribution, and Consumption.', moduleIds: ['needs-and-wants', 'jobs-people-do'] },
-      { framework: 'CCSS', code: 'NCSS Theme X', text: 'Civic Ideals and Practices.', moduleIds: ['our-flag-and-holidays', 'voting-in-class', 'our-two-flags'] },
+      { framework: 'CCSS', code: 'NCSS Theme X', text: 'Civic Ideals and Practices.', moduleIds: ['our-flag-and-holidays', 'voting-in-class', 'our-two-flags', 'our-pledges'] },
+      { framework: 'CCSS', code: 'NCSS Theme II', text: 'Time, Continuity, and Change.', moduleIds: ['people-who-shaped-us'] },
+      { framework: 'CCSS', code: 'NCSS Theme III', text: 'People, Places, and Environments.', moduleIds: ['near-far-left-right', 'maps-and-globes', 'land-water-and-weather'] },
+      { framework: 'CCSS', code: 'NCSS Theme I', text: 'Culture.', moduleIds: ['families-and-traditions'] },
+      { framework: 'CCSS', code: 'NCSS Theme VIII', text: 'Science, Technology, and Society.', moduleIds: ['tools-that-help'] },
     ],
   },
   {
